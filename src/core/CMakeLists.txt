@@ -285,17 +285,26 @@ set(QGIS_CORE_SRCS
   processing/qgsprocessingalgrunnertask.cpp
   processing/qgsprocessingbatch.cpp
   processing/qgsprocessingcontext.cpp
+  processing/qgsprocessingdefaultstyleregistry.cpp
   processing/qgsprocessingfeedback.cpp
   processing/qgsprocessingoutputs.cpp
+  processing/qgsprocessingmodelprovider.cpp
   processing/qgsprocessingparameteraggregate.cpp
   processing/qgsprocessingparameterdxflayers.cpp
   processing/qgsprocessingparameterfieldmap.cpp
+  processing/qgsprocessingparameterheatmappixelsize.cpp
+  processing/qgsprocessingparameterinterpolationpixelsize.cpp
+  processing/qgsprocessingparameterinterpolationsource.cpp
   processing/qgsprocessingparametermeshdataset.cpp
   processing/qgsprocessingparameters.cpp
+  processing/qgsprocessingparameterreliefcolors.cpp
   processing/qgsprocessingparametertininputlayers.cpp
   processing/qgsprocessingparametertype.cpp
+  processing/qgsprocessingparametertileextentmaxzoomlist.cpp
   processing/qgsprocessingparametervectortilewriterlayers.cpp
   processing/qgsprocessingparameteralignrasterlayers.cpp
+  processing/qgsprocessingpostprocessor.cpp
+  processing/qgsprocessingprojectmodelprovider.cpp
   processing/qgsprocessingprovider.cpp
   processing/qgsprocessingregistry.cpp
   processing/qgsprocessingutils.cpp
@@ -435,6 +444,7 @@ set(QGIS_CORE_SRCS
   qgis.cpp
   qgsabstractcontentcache.cpp
   qgsabstractgeopdfexporter.cpp
+  qgsacademicreference.cpp
   qgsapplication.cpp
   qgsapplicationthemeregistry.cpp
   qgsaggregatecalculator.cpp
@@ -511,6 +521,7 @@ set(QGIS_CORE_SRCS
   qgsgeometryoptions.cpp
   qgsgml.cpp
   qgsgmlschema.cpp
+  qgsgpkgtiles.cpp
   qgsgroupedfeaturefilterprovider.cpp
   qgsgrouplayer.cpp
   qgsgrouplayerrenderer.cpp
@@ -560,6 +571,7 @@ set(QGIS_CORE_SRCS
   qgsmaskrendersettings.cpp
   qgsmathutils.cpp
   qgsmatrix4x4.cpp
+  qgsmatrixsolver.cpp
   qgsmbtiles.cpp
   qgsmeasureutils.cpp
   qgsmessagelog.cpp
@@ -838,6 +850,7 @@ set(QGIS_CORE_SRCS
   raster/qgsrastershader.cpp
   raster/qgsrastershaderfunction.cpp
   raster/qgsrastertransparency.cpp
+  raster/qgssortedrasterblockindex.cpp
 
   raster/qgsbilinearrasterresampler.cpp
   raster/qgsbrightnesscontrastfilter.cpp
@@ -875,6 +888,7 @@ set(QGIS_CORE_SRCS
   mesh/qgsmeshspatialindex.cpp
   mesh/qgsmeshtimesettings.cpp
   mesh/qgsmeshtracerenderer.cpp
+  mesh/qgsmeshvectorfieldvaluesource.cpp
   mesh/qgsmeshvectorrenderer.cpp
   mesh/qgstriangularmesh.cpp
   mesh/qgsmeshcalcnode.cpp
@@ -971,6 +985,7 @@ set(QGIS_CORE_SRCS
   geometry/qgsrectangle.cpp
   geometry/qgsreferencedgeometry.cpp
   geometry/qgsregularpolygon.cpp
+  geometry/qgssimplecurve.cpp
   geometry/qgssphere.cpp
   geometry/qgssurface.cpp
   geometry/qgstriangle.cpp
@@ -993,10 +1008,12 @@ set(QGIS_CORE_SRCS
   3d/materials/qgsphongmaterialsettings.cpp
   3d/materials/qgsphongtexturedmaterialsettings.cpp
   3d/materials/qgssimplelinematerialsettings.cpp
+  3d/materials/qgsunlitmaterialsettings.cpp
 
   fieldformatter/qgscheckboxfieldformatter.cpp
   fieldformatter/qgsrangefieldformatter.cpp
   fieldformatter/qgsdatetimefieldformatter.cpp
+  fieldformatter/qgsenumerationfieldformatter.cpp
   fieldformatter/qgsfallbackfieldformatter.cpp
   fieldformatter/qgskeyvaluefieldformatter.cpp
   fieldformatter/qgslistfieldformatter.cpp
@@ -1043,6 +1060,16 @@ set(QGIS_CORE_SRCS
   vector/qgsvectorlayerundocommand.cpp
   vector/qgsvectorlayerundopassthroughcommand.cpp
   vector/qgsvectorlayerutils.cpp
+
+  vectorfield/qgsvectorfieldarrowsettings.cpp
+  vectorfield/qgsvectorfieldengine.cpp
+  vectorfield/qgsvectorfieldsettings.cpp
+  vectorfield/qgsvectorfieldstreamfield.cpp
+  vectorfield/qgsvectorfieldstreamlinesettings.cpp
+  vectorfield/qgsvectorfieldtraceanimationgenerator.cpp
+  vectorfield/qgsvectorfieldtracessettings.cpp
+  vectorfield/qgsvectorfieldvaluesource.cpp
+  vectorfield/qgsvectorfieldwindbarbsettings.cpp
 
   vectortile/qgsarcgisvectortileservicedataprovider.cpp
   vectortile/qgsmapboxglstyleconverter.cpp
@@ -1166,6 +1193,7 @@ set(QGIS_CORE_HDRS
   qgis_sip.h
   qgsabstractcontentcache.h
   qgsabstractgeopdfexporter.h
+  qgsacademicreference.h
   qgsaggregatecalculator.h
   qgsalignrasterdata.h
   qgsanimatedicon.h
@@ -1250,6 +1278,7 @@ set(QGIS_CORE_HDRS
   qgsgeometryoptions.h
   qgsgeometrysimplifier.h
   qgsgeometryvalidator.h
+  qgsgpkgtiles.h
   qgsgml.h
   qgsgmlschema.h
   qgsgroupedfeaturefilterprovider.h
@@ -1265,6 +1294,7 @@ set(QGIS_CORE_HDRS
   qgsinterval.h
   qgsjsonutils.h
   qgslayerdefinition.h
+  qgslayerrenderingsettings.h
   qgslayernotesutils.h
   qgslegendrenderer.h
   qgslegendsettings.h
@@ -1305,6 +1335,7 @@ set(QGIS_CORE_HDRS
   qgsmaskrendersettings.h
   qgsmathutils.h
   qgsmatrix4x4.h
+  qgsmatrixsolver.h
   qgsmbtiles.h
   qgsmeasureutils.h
   qgsmessagelog.h
@@ -1433,6 +1464,7 @@ set(QGIS_CORE_HDRS
   3d/materials/qgsphongmaterialsettings.h
   3d/materials/qgsphongtexturedmaterialsettings.h
   3d/materials/qgssimplelinematerialsettings.h
+  3d/materials/qgsunlitmaterialsettings.h
 
   actions/qgsaction.h
   actions/qgsactionmanager.h
@@ -1554,6 +1586,7 @@ set(QGIS_CORE_HDRS
 
   fieldformatter/qgscheckboxfieldformatter.h
   fieldformatter/qgsdatetimefieldformatter.h
+  fieldformatter/qgsenumerationfieldformatter.h
   fieldformatter/qgsfallbackfieldformatter.h
   fieldformatter/qgskeyvaluefieldformatter.h
   fieldformatter/qgslistfieldformatter.h
@@ -1604,6 +1637,7 @@ set(QGIS_CORE_HDRS
   geometry/qgsrectangle.h
   geometry/qgsreferencedgeometry.h
   geometry/qgsregularpolygon.h
+  geometry/qgssimplecurve.h
   geometry/qgssphere.h
   geometry/qgssurface.h
   geometry/qgstriangle.h
@@ -1762,6 +1796,7 @@ set(QGIS_CORE_HDRS
   mesh/qgsmeshspatialindex.h
   mesh/qgsmeshtimesettings.h
   mesh/qgsmeshtracerenderer.h
+  mesh/qgsmeshvectorfieldvaluesource.h
   mesh/qgsmeshvectorrenderer.h
   mesh/qgstriangularmesh.h
   mesh/qgsmeshcalcnode.h
@@ -1900,21 +1935,31 @@ set(QGIS_CORE_HDRS
   processing/models/qgsprocessingmodelresult.h
   processing/qgsprocessing.h
   processing/qgsprocessingalgorithm.h
+  processing/qgsprocessingalgorithm_p.h
   processing/qgsprocessingalgrunnertask.h
   processing/qgsprocessingbatch.h
   processing/qgsprocessingcontext.h
+  processing/qgsprocessingdefaultstyleregistry.h
   processing/qgsprocessingfeedback.h
   processing/qgsprocessingoutputs.h
+  processing/qgsprocessingmodelprovider.h
   processing/qgsprocessingparameteraggregate.h
   processing/qgsprocessingparameterdxflayers.h
   processing/qgsprocessingparameterfieldmap.h
+  processing/qgsprocessingparameterheatmappixelsize.h
+  processing/qgsprocessingparameterinterpolationpixelsize.h
+  processing/qgsprocessingparameterinterpolationsource.h
   processing/qgsprocessingparametermeshdataset.h
+  processing/qgsprocessingparameterreliefcolors.h
   processing/qgsprocessingparameters.h
+  processing/qgsprocessingparametertileextentmaxzoomlist.h
   processing/qgsprocessingparametertininputlayers.h
   processing/qgsprocessingparametertype.h
   processing/qgsprocessingparametertypeimpl.h
   processing/qgsprocessingparametervectortilewriterlayers.h
   processing/qgsprocessingparameteralignrasterlayers.h
+  processing/qgsprocessingpostprocessor.h
+  processing/qgsprocessingprojectmodelprovider.h
   processing/qgsprocessingprovider.h
   processing/qgsprocessingregistry.h
   processing/qgsprocessingutils.h
@@ -2044,6 +2089,7 @@ set(QGIS_CORE_HDRS
   raster/qgssinglebandgrayrenderer.h
   raster/qgssinglebandpseudocolorrenderer.h
   raster/qgsrastersinglecolorrenderer.h
+  raster/qgssortedrasterblockindex.h
 
   scalebar/qgsdoubleboxscalebarrenderer.h
   scalebar/qgshollowscalebarrenderer.h
@@ -2216,6 +2262,16 @@ set(QGIS_CORE_HDRS
   vector/qgsvectorlayerundopassthroughcommand.h
   vector/qgsvectorlayerutils.h
 
+  vectorfield/qgsvectorfieldarrowsettings.h
+  vectorfield/qgsvectorfieldengine.h
+  vectorfield/qgsvectorfieldsettings.h
+  vectorfield/qgsvectorfieldstreamfield.h
+  vectorfield/qgsvectorfieldstreamlinesettings.h
+  vectorfield/qgsvectorfieldtraceanimationgenerator.h
+  vectorfield/qgsvectorfieldtracessettings.h
+  vectorfield/qgsvectorfieldvaluesource.h
+  vectorfield/qgsvectorfieldwindbarbsettings.h
+
   vectortile/qgsarcgisvectortileservicedataprovider.h
   vectortile/qgsmapboxglstyleconverter.h
   vectortile/qgsmbtilesvectortiledataprovider.h
@@ -2305,7 +2361,6 @@ set(QGIS_CORE_PRIVATE_HDRS
   proj/qgscoordinatereferencesystem_p.h
   proj/qgscoordinatetransformcontext_p.h
   proj/qgscoordinatetransform_p.h
-  proj/qgscoordinatereferencesystem_legacy_p.h
 
   providers/ogr/qgscplerrorhandler_p.h
 
@@ -2340,7 +2395,9 @@ if(MSVC)
       expression/qgsexpressionfunction.cpp
       proj/qgscoordinatereferencesystem.cpp
       textrenderer/qgsfontmanager.cpp
+      vector/qgsvectorlayer.cpp
       qgsapplication.cpp
+      qgis.cpp
       PROPERTIES COMPILE_FLAGS "/bigobj"
   )
 elseif(EMSCRIPTEN)
@@ -2358,8 +2415,15 @@ elseif(EMSCRIPTEN)
     SKIP_PRECOMPILE_HEADERS ON
   )
 elseif ("${CMAKE_CXX_COMPILER_ID}" MATCHES "Clang" AND (CMAKE_BUILD_TYPE MATCHES Release OR CMAKE_BUILD_TYPE MATCHES RelWithDebInfo))
-  set_source_files_properties(${CMAKE_CURRENT_BINARY_DIR}/qgsexpression_texts.cpp PROPERTIES COMPILE_FLAGS "-O1")
+  set_source_files_properties(${CMAKE_CURRENT_BINARY_DIR}/qgsexpression_texts.cpp PROPERTIES
+    COMPILE_FLAGS "-O1"
+    SKIP_PRECOMPILE_HEADERS ON
+  )
   set_source_files_properties(proj/qgscoordinatereferencesystem.cpp PROPERTIES COMPILE_FLAGS "-mllvm -inline-threshold=128")
+  set_source_files_properties(textrenderer/qgsfontmanager.cpp PROPERTIES
+    COMPILE_FLAGS "-O0"
+    SKIP_PRECOMPILE_HEADERS ON
+  )
 endif()
 
 # Generate cpp+header file from .proto file using "protoc" tool (to support MVT encoding of vector tiles)
@@ -2731,6 +2795,7 @@ target_include_directories(qgis_core PUBLIC
   tiledscene
   validity
   vector
+  vectorfield
   vectortile
   web
   ${CMAKE_SOURCE_DIR}/external/delaunator-cpp
@@ -2752,6 +2817,10 @@ endif()
 if (WITH_EPT)
   target_include_directories(qgis_core PUBLIC
     ${CMAKE_SOURCE_DIR}/src/core/providers/ept)
+endif()
+
+if(HAVE_GSL)
+  target_link_libraries(qgis_core GSL::gsl)
 endif()
 
 if (WITH_COPC)
@@ -2872,6 +2941,10 @@ endif()
 
 if (WITH_DRACO)
   target_link_libraries(qgis_core ${DRACO_LIBRARY})
+endif()
+
+if (WITH_TRACY)
+  target_link_libraries(qgis_core Tracy::TracyClient)
 endif()
 
 if (WITH_SPATIALITE)

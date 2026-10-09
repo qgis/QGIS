@@ -599,13 +599,13 @@ class TestQgsRasterLayer(QgisTestCase):
         renderer.setOpacity(33.3)
         layer.setRenderer(renderer)
 
-        # clone layer
-        clone = layer.clone()
-
         # generate xml from layer
         layer_doc = QDomDocument("doc")
         layer_elem = layer_doc.createElement("maplayer")
         layer.writeLayerXml(layer_elem, layer_doc, QgsReadWriteContext())
+
+        # clone layer
+        clone = layer.clone()
 
         # generate xml from clone
         clone_doc = QDomDocument("doc")

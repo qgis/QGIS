@@ -154,6 +154,95 @@ class CORE_EXPORT QgsGeometryParameters
     double mGridSize = -1;
 };
 
+
+/**
+ * \ingroup core
+ * \brief Encapsulates parameters for a coverage cleaning operation.
+ *
+ * \since QGIS 4.4
+ */
+class CORE_EXPORT QgsCoverageCleanParameters
+{
+  public:
+    /**
+     * Returns the snapping distance.
+     *
+     * Snapping to nearby vertices and line segment snapping is used to improve noding robustness
+     * and eliminate small errors in an efficient way.
+     *
+     * By default the snapping distance is -1, which means that the clean operation
+     * uses a very small snapping distance based on the extent of the input data.
+     *
+     * The snapping distance may be specified explicitly.
+     *
+     * This can reduce the number of overlaps and gaps that need to be merged,
+     * and reduce the risk of spikes formed by merging gaps.
+     * However, a large snapping distance may introduce undesirable
+     * data alteration.
+     *
+     * A distance of zero prevents snapping from being used.
+     *
+     * \see setSnappingDistance()
+     */
+    double snappingDistance() const { return mSnappingDistance; }
+
+    /**
+     * Sets the snapping \a distance.
+     *
+     * \see snappingDistance()
+    */
+    void setSnappingDistance( double distance ) { mSnappingDistance = distance; }
+
+    /**
+     * Returns the maximum gap width.
+     *
+     * Gaps which are smaller than this distance are merged with an adjacent polygon.
+     *
+     * Polygon width is determined as twice the radius of the maximum inscribed circle
+     * of the gap polygon.
+     *
+     * Gaps are merged with the adjacent polygon depending on overlapMergeStrategy().
+     *
+     * Empty holes in input polygons are treated as gaps, and may be filled in.
+     *
+     * Gaps which are not fully enclosed ("inlets") are not removed.
+     *
+     * The width of a gap is twice the radius of the Maximum Inscribed Circle in the gap polygon,
+     *
+     * A width of zero prevents gaps from being merged.
+     *
+     * \see setMaximumGapWidth()
+     */
+    double maximumGapWidth() const { return mMaximumGapWidth; }
+
+    /**
+     * Sets the maximum gap \a width.
+     *
+     * \see maximumGapWidth()
+     */
+    void setMaximumGapWidth( double width ) { mMaximumGapWidth = width; }
+
+    /**
+     * Returns the overlap merge strategy to use during cleaning.
+     *
+     * \see setOverlapMergeStrategy()
+     */
+    Qgis::CoverageCleanOverlapMergeStrategy overlapMergeStrategy() const { return mOverlapMergeStrategy; } //#spellok
+
+    /**
+     * Sets the overlap merge \a strategy to use during cleaning.
+     *
+     * \see overlapMergeStrategy()
+     */
+    void setOverlapMergeStrategy( Qgis::CoverageCleanOverlapMergeStrategy strategy ) { mOverlapMergeStrategy = strategy; } //#spellok
+
+  private:
+    double mSnappingDistance = -1;
+    double mMaximumGapWidth = 0;
+    Qgis::CoverageCleanOverlapMergeStrategy mOverlapMergeStrategy = Qgis::CoverageCleanOverlapMergeStrategy::LongestBorder; //#spellok
+};
+
+
 /**
  * \ingroup core
  * \brief A geometry is the spatial representation of a feature.
@@ -953,6 +1042,21 @@ class CORE_EXPORT QgsGeometry
     bool deleteVertex( int atVertex );
 
     /**
+     * Deletes vertices at the given positions (first number is index 0)
+     *
+     * For Point geometries, this clears the geometry.
+     * For MultiPoint geometries, this removes point geometries at the specified indices.
+     * For other geometry types, this removes the vertices at the specified indices.
+     * If after removal of the vertices the geometry would become invalid (e.g. a LineString with less than 2 vertices),
+     * the geometry is cleared instead.
+     * \returns FALSE if any of the given atVertices does not correspond to a valid vertex
+     * on this geometry or if any vertices fail to be deleted
+     * \see deleteVertex()
+     * \since QGIS 4.2
+     */
+    bool deleteVertices( const QSet<int> &atVertices );
+
+    /**
      * Converts the vertex at the given position from/to circular
      * \returns FALSE if atVertex does not correspond to a valid vertex
      * on this geometry (including if this geometry is a Point),
@@ -1140,7 +1244,7 @@ class CORE_EXPORT QgsGeometry
      * \param splitLine the line that splits the geometry
      * \param[out] newGeometries list of new geometries that have been created with the split
      * \param topological TRUE if topological editing is enabled
-     * \param[out] topologyTestPoints points that need to be tested for topological completeness in the dataset
+     * \param[out] topologyTestPoints points that need to be tested for topological completeness in the dataset. Points from curve geometries are not yet fully supported.
      * \param splitFeature Set to TRUE if you want to split a feature, otherwise set to FALSE to split parts
      * \returns Qgis::GeometryOperationResult a result code: success or reason of failure
      * \deprecated QGIS 3.12. Will be removed in QGIS 5.0. Use the variant which accepts QgsPoint objects instead of QgsPointXY.
@@ -1152,7 +1256,7 @@ class CORE_EXPORT QgsGeometry
      * \param splitLine the line that splits the geometry
      * \param[out] newGeometries list of new geometries that have been created with the ``splitLine``. If the geometry is 3D, a linear interpolation of the z value is performed on the geometry at split points, see example.
      * \param topological TRUE if topological editing is enabled
-     * \param[out] topologyTestPoints points that need to be tested for topological completeness in the dataset
+     * \param[out] topologyTestPoints points that need to be tested for topological completeness in the dataset. Points from curve geometries are not yet fully supported.
      * \param splitFeature Set to TRUE if you want to split a feature, otherwise set to FALSE to split parts
      * \param skipIntersectionTest set to TRUE to skip the potentially expensive initial intersection check. Only set this flag if an intersection
      * test has already been performed by the caller! Not available in Python bindings.
@@ -1269,9 +1373,9 @@ class CORE_EXPORT QgsGeometry
     * Splits this geometry according to a given curve.
     * \param curve the curve that splits the geometry
     * \param[out] newGeometries list of new geometries that have been created with the ``splitLine``. If the geometry is 3D, a linear interpolation of the z value is performed on the geometry at split points, see example.
-    * \param preserveCircular whether if circular strings are preserved after splitting
+    * \param preserveCircular whether if circular strings are reconstructed from segmentized geometries after splitting. From GEOS 3.15 on, this parameter is unused, and circular strings are preserved.
     * \param topological TRUE if topological editing is enabled
-    * \param[out] topologyTestPoints points that need to be tested for topological completeness in the dataset
+    * \param[out] topologyTestPoints points that need to be tested for topological completeness in the dataset. Points from curve geometries are not yet fully supported.
     * \param splitFeature Set to TRUE if you want to split a feature, otherwise set to FALSE to split parts
     * \returns OperationResult a result code: success or reason of failure
     * \since QGIS 3.16
@@ -1289,8 +1393,9 @@ class CORE_EXPORT QgsGeometry
      * \param other geometry that should not be intersect
      * \param feedback optional feedback object for early cancellation (since QGIS 4.2).
      * \note Not available in Python
+     * \deprecated QGIS 4.4
      */
-    int makeDifferenceInPlace( const QgsGeometry &other, QgsFeedback* feedback = nullptr ) SIP_SKIP;
+    Q_DECL_DEPRECATED int makeDifferenceInPlace( const QgsGeometry &other, QgsFeedback* feedback = nullptr ) SIP_SKIP;
 
     /**
      * Returns the geometry formed by modifying this geometry such that it does not
@@ -1298,8 +1403,9 @@ class CORE_EXPORT QgsGeometry
      * \param other geometry that should not be intersect
      * \param feedback optional feedback object for early cancellation (since QGIS 4.2).
      * \returns difference geometry, or empty geometry if difference could not be calculated
+     * \deprecated QGIS 4.4. Use QgsGeometry::difference().
      */
-    QgsGeometry makeDifference( const QgsGeometry &other, QgsFeedback* feedback = nullptr ) const;
+    Q_DECL_DEPRECATED QgsGeometry makeDifference( const QgsGeometry &other, QgsFeedback* feedback = nullptr ) const SIP_DEPRECATED;
 
     /**
      * Returns the bounding box of the geometry.
@@ -1728,8 +1834,11 @@ class CORE_EXPORT QgsGeometry
      * Extends a (multi)line geometry by extrapolating out the start or end of the line
      * by a specified distance. Lines are extended using the bearing of the first or last
      * segment in the line.
+     *
+     * Since QGIS 4.4, the \a startDeflection and \a endDeflection arguments can be used to deflect the
+     * start and end extensions by the specified angles (specified in degrees clockwise).
      */
-    QgsGeometry extendLine( double startDistance, double endDistance ) const;
+    QgsGeometry extendLine( double startDistance, double endDistance, double startDeflection = 0, double endDeflection = 0 ) const;
 
     /**
      * Returns a simplified version of this geometry using a specified \a tolerance value.
@@ -2061,6 +2170,25 @@ class CORE_EXPORT QgsGeometry
     QgsGeometry unionCoverage() const;
 
     /**
+     * Operates on a coverage (represented as a list of polygonal geometry),
+     * to fix cases where the geometry does not in fact exactly match.
+     *
+     * The input is a collection of polygons, and the output is a collection
+     * with the same number of cleaned polygons, in the same order as
+     * the input. Polygons that have collapsed during cleaning will be returned
+     * as empty polygons.
+     *
+     * The optional \a feedback argument supports early cancellation of the operation.
+     *
+     * This method requires a QGIS build based on GEOS 3.14 or later.
+     *
+     * \throws QgsNotSupportedException on QGIS builds based on GEOS 3.13 or earlier.
+     * \see validateCoverage()
+     * \since QGIS 4.4
+     */
+    QgsGeometry cleanCoverage( const QgsCoverageCleanParameters &parameters, QgsFeedback *feedback = nullptr ) const SIP_THROW( QgsNotSupportedException );
+
+    /**
      * Returns a (Multi)LineString representing the fully noded version of a collection of linestrings.
      *
      * The noding preserves all of the input nodes, and introduces the least possible number of new nodes.
@@ -2363,16 +2491,24 @@ class CORE_EXPORT QgsGeometry
 #endif
 
     /**
-    * Exports the geometry to a GeoJSON string.
+    * Exports the geometry to a GeoJSON RFC7946 string.
+    * \see asGeoJson() for exporting using other GeoJSON profiles
     */
     QString asJson( int precision = 17 ) const;
 
     /**
-     * Exports the geometry to a json object.
+     * Export the geometry to a GeoJSON string, with the given \a precision and following the specified GeoJSON \a profile.
+     * Note: this is identical to asJson() when using the Legacy and Rfc7946 profile, but differs when using other profiles with "CircularString," "CompoundCurve," "CurvePolygon," "MultiCurve," or "MultiSurface" geometries.
+     * \since QGIS 4.4
+     */
+    QString asGeoJson( int precision = 17, Qgis::GeoJsonProfile profile = Qgis::GeoJsonProfile::Legacy ) const;
+
+    /**
+     * Exports the geometry to a json object with the give \a precision and following the specified GeoJSON \a profile.
      * \note not available in Python bindings
      * \since QGIS 3.8
      */
-    virtual json asJsonObject( int precision = 17 ) const SIP_SKIP;
+    virtual json asJsonObject( int precision = 17, Qgis::GeoJsonProfile profile = Qgis::GeoJsonProfile::Legacy ) const SIP_SKIP;
 
     /**
      * Attempts to coerce this geometry into the specified destination \a type.
@@ -2988,6 +3124,8 @@ class CORE_EXPORT QgsGeometry
      *
      * The \a flags parameter indicates optional flags which control the type of validity checking performed.
      *
+     * \throws QgsNotSupportedException when method is not supported
+     *
      */
     void validateGeometry( QVector<QgsGeometry::Error> &errors SIP_OUT, Qgis::GeometryValidationEngine method = Qgis::GeometryValidationEngine::QgisInternal, Qgis::GeometryValidityFlags flags = Qgis::GeometryValidityFlags() ) const;
 
@@ -3491,6 +3629,10 @@ class CORE_EXPORT QgsGeometry
     std::unique_ptr< QgsPolygon > smoothPolygon( const QgsPolygon &polygon, unsigned int iterations = 1, double offset = 0.25, double minimumDistance = -1, double maxAngle = 180.0 ) const;
 
     QgsGeometry doChamferFillet( ChamferFilletOperationType op, int vertexIndex, double distance1, double distance2, int segments ) const;
+
+    QVector< QgsGeometry > collectSplitFeatures( const QVector< QgsGeometry> newGeoms ) const;
+    QVector< QgsGeometry > collectSplitParts( const QVector< QgsGeometry> newGeoms ) const;
+    QVector< QgsGeometry > collectSplitGeometries( const QVector< QgsGeometry> newGeomsTemp, const bool splitFeatures );
 
     friend class QgsInternalGeometryEngine;
 

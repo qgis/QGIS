@@ -30,6 +30,7 @@
 #include "qgsterrainprovider.h"
 #include "qgstextformat.h"
 
+#include <QImageWriter>
 #include <QString>
 
 using namespace Qt::StringLiterals;
@@ -146,7 +147,7 @@ void QgsGenerateElevationProfileAlgorithm::initAlgorithm( const QVariantMap & )
   dpiParam->setFlags( dpiParam->flags() | Qgis::ProcessingParameterFlag::Advanced );
   addParameter( dpiParam.release() );
 
-  addParameter( new QgsProcessingParameterFileDestination( u"OUTPUT"_s, QObject::tr( "Output image" ) ) );
+  addParameter( new QgsProcessingParameterFileDestination( u"OUTPUT"_s, QObject::tr( "Output image" ), QgsProcessingUtils::supportedImageFileFilters() ) );
 }
 
 QString QgsGenerateElevationProfileAlgorithm::name() const
@@ -236,6 +237,8 @@ bool QgsGenerateElevationProfileAlgorithm::prepareAlgorithm( const QVariantMap &
 
 QVariantMap QgsGenerateElevationProfileAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback * )
 {
+  QGS_MARK_ALGORITHM_SOURCE
+
   const QgsGeometry curveGeom = parameterAsGeometry( parameters, u"CURVE"_s, context );
 
   const bool hasMinimumDistance = parameters.value( u"MINIMUM_DISTANCE"_s ).isValid();

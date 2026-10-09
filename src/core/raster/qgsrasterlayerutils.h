@@ -18,15 +18,70 @@
 #ifndef QGSRASTERLAYERUTILS_H
 #define QGSRASTERLAYERUTILS_H
 
+#include "qgis.h"
 #include "qgis_core.h"
 #include "qgis_sip.h"
 #include "qgspointxy.h"
 #include "qgsrange.h"
 
+#include <QColor>
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 class QgsRasterLayer;
 class QgsRasterDataProvider;
 class QgsRasterMinMaxOrigin;
 class QgsRectangle;
+
+/**
+ * \class QgsRasterReliefColor
+ * \ingroup core
+ * \brief Defines elevation range and color for raster relief coloring.
+ *
+ * \note Prior to 4.2 this was available as QgsRelief::ReliefColor.
+ *
+ * \since QGIS 4.2
+ */
+class CORE_EXPORT QgsRasterReliefColor
+{
+  public:
+    /**
+   * Constructor for QgsRasterReliefColor.
+   * \param c color
+   * \param min elevation range minimum
+   * \param max elevation range maximum
+   */
+    QgsRasterReliefColor( const QColor &c, double min, double max )
+      : color( c )
+      , minElevation( min )
+      , maxElevation( max )
+    {}
+
+    //! Color
+    QColor color;
+    //! Elevation range minimum
+    double minElevation = 0;
+    //! Elevation range maximum
+    double maxElevation = 0;
+
+    bool operator==( const QgsRasterReliefColor &other ) const
+    {
+      return qgsDoubleNear( minElevation, other.minElevation ) && qgsDoubleNear( maxElevation, other.maxElevation ) && color == other.color;
+    }
+
+    bool operator!=( const QgsRasterReliefColor &other ) const { return !( *this == other ); }
+
+#ifdef SIP_RUN
+    // clang-format off
+    SIP_PYOBJECT __repr__();
+    % MethodCode
+    QString str = u"<QgsRasterReliefColor: %1-%2 (%3)>"_s.arg( qgsDoubleToString( sipCpp->minElevation ), qgsDoubleToString( sipCpp->maxElevation ), sipCpp->color.name() );
+    sipRes = PyUnicode_FromString( str.toUtf8().constData() );
+    % End
+// clang-format on
+#endif
+};
 
 /**
  * \class QgsRasterLayerUtils
@@ -73,6 +128,31 @@ class CORE_EXPORT QgsRasterLayerUtils
      * \since QGIS 4.0
      */
     static QgsRectangle alignRasterExtent( const QgsRectangle &extent, const QgsPointXY &origin, double pixelSizeX, double pixelSizeY );
+
+    /**
+     * Calculates optimized relief class breaks according with the method of Buenzli (2011) using an iterative algorithm for segmented regression.
+     *
+     * \since QGIS 4.2
+    */
+    static QList<QgsRasterReliefColor> calculateOptimizedReliefClasses( QgsRasterDataProvider *provider, int band );
+
+  private:
+    /**
+     * Returns class (0-255) for an elevation value
+     * \returns elevation class or -1 in case of error
+     */
+    static int frequencyClassForElevation( double elevation, double minElevation, double elevationClassRange );
+
+    //! Do one iteration of class break optimisation (algorithm from Garcia and Rodriguez)
+    static void optimiseClassBreaks( QList<int> &breaks, double *frequencies );
+
+    /**
+     * Calculates coefficients a and b
+     * \param input data points ( elevation class / frequency )
+     * \param a slope
+     * \param b y value for x=0
+     */
+    static bool calculateRegression( const QList<QPair<int, double>> &input, double &a, double &b );
 };
 
 #endif //QGSRASTERLAYERUTILS_H

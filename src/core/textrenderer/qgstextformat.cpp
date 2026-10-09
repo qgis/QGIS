@@ -642,7 +642,12 @@ void QgsTextFormat::readXml( const QDomElement &elem, const QgsReadWriteContext 
 
   if ( !mTextFontFound )
   {
-    context.pushMessage( QObject::tr( "Font “%1” not available on system" ).arg( mTextFontFamily ) );
+    // don't show warning for MS Shell Dlg font -- if someone is using that, then they don't care
+    // at all about the appearance of their map
+    if ( mTextFontFamily.compare( "MS Shell Dlg"_L1, Qt::CaseInsensitive ) != 0 && mTextFontFamily.compare( "MS Shell Dlg 2"_L1, Qt::CaseInsensitive ) != 0 )
+    {
+      context.pushMessage( QObject::tr( "Font “%1” not available on system" ).arg( mTextFontFamily ) );
+    }
   }
 
   if ( textStyleElem.hasAttribute( u"fontSize"_s ) )
@@ -863,11 +868,11 @@ QDomElement QgsTextFormat::writeXml( QDomDocument &doc, const QgsReadWriteContex
   return textStyleElem;
 }
 
-QMimeData *QgsTextFormat::toMimeData() const
+std::unique_ptr<QMimeData> QgsTextFormat::toMimeData() const
 {
   //set both the mime color data, and the text (format settings).
 
-  QMimeData *mimeData = new QMimeData;
+  auto mimeData = std::make_unique<QMimeData>();
   mimeData->setColorData( QVariant( color() ) );
 
   QgsReadWriteContext rwContext;

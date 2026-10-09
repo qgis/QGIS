@@ -8,7 +8,7 @@ Rectangle {
   signal supportClicked
   signal websiteClicked
   
-  implicitHeight: 60
+  implicitHeight: Math.max(60, footerText.contentHeight + 10)
   color: "transparent"
   clip: true
 
@@ -17,9 +17,10 @@ Rectangle {
     spacing: 8
 
     Text {
+      id: footerText
       text: qsTr("QGIS is a community project that relies on sustaining memberships and donations to fund many of our improvements and activities.")
       Layout.fillWidth: true
-      font.pointSize: Application.font.pointSize * 0.8
+      font.pointSize: tinyFontSize
       font.bold: true
       color: "#f9fafb"
       wrapMode: Text.WordWrap
@@ -39,6 +40,7 @@ Rectangle {
       icon.source: "../images/love.svg"
       icon.width: 20
       icon.height: 20
+      font.pointSize: tinyFontSize
       font.bold: true
       background.layer.enabled: false
       onClicked: root.supportClicked()
@@ -52,6 +54,7 @@ Rectangle {
       highlighted: true
       Material.accent: "#8c8c8c"
       text: qsTr("Go to qgis.org")
+      font.pointSize: tinyFontSize
       font.bold: true
       background.layer.enabled: false
       onClicked: root.websiteClicked()

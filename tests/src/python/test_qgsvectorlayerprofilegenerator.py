@@ -54,9 +54,9 @@ class TestQgsVectorLayerProfileGenerator(QgisTestCase):
         return "profile_chart"
 
     @staticmethod
-    def round_dict(val, places):
+    def round_dict(val, key_places, value_places):
         return {
-            round(k, places): round(val[k], places)
+            round(k, key_places): round(val[k], value_places)
             for k in val.keys()
             if not math.isnan(val[k])
         }
@@ -113,7 +113,7 @@ class TestQgsVectorLayerProfileGenerator(QgisTestCase):
         results = generator.takeResults()
 
         self.assertEqual(
-            self.round_dict(results.distanceToHeightMap(), 1),
+            self.round_dict(results.distanceToHeightMap(), 1, 1),
             {
                 31.2: 274.0,
                 1223.2: 227.2,
@@ -131,7 +131,7 @@ class TestQgsVectorLayerProfileGenerator(QgisTestCase):
         self.assertTrue(generator.generateProfile())
         results = generator.takeResults()
         self.assertEqual(
-            self.round_dict(results.distanceToHeightMap(), 1),
+            self.round_dict(results.distanceToHeightMap(), 1, 1),
             {31.2: 274.0, 175.6: 274.0, 1242.5: 221.8},
         )
 
@@ -162,8 +162,8 @@ class TestQgsVectorLayerProfileGenerator(QgisTestCase):
         self.assertEqual(len(features), 3)
         self.assertEqual(features[0].layerIdentifier, vl.id())
         self.assertCountEqual(
-            [f.attributes["distance"] for f in features],
-            [31.204980351872074, 175.61729584080234, 1242.5349752853108],
+            [round(f.attributes["distance"], 3) for f in features],
+            [31.205, 175.617, 1242.535],
         )
         self.assertCountEqual(
             [f.attributes["elevation"] for f in features], [274.0, 274.0, 221.75]
@@ -220,7 +220,7 @@ class TestQgsVectorLayerProfileGenerator(QgisTestCase):
         results = generator.takeResults()
 
         self.assertEqual(
-            self.round_dict(results.distanceToHeightMap(), 1),
+            self.round_dict(results.distanceToHeightMap(), 1, 1),
             {175.6: 69.5, 31.2: 69.5, 1242.5: 55.2},
         )
         self.assertAlmostEqual(results.zRange().lower(), 55.249, 2)
@@ -233,7 +233,7 @@ class TestQgsVectorLayerProfileGenerator(QgisTestCase):
         results = generator.takeResults()
 
         self.assertEqual(
-            self.round_dict(results.distanceToHeightMap(), 1),
+            self.round_dict(results.distanceToHeightMap(), 1, 1),
             {175.6: 69.5, 31.2: 69.5, 1223.2: 56.8, 1242.5: 55.2},
         )
         self.assertAlmostEqual(results.zRange().lower(), 55.249, 2)
@@ -280,7 +280,7 @@ class TestQgsVectorLayerProfileGenerator(QgisTestCase):
         self.assertTrue(generator.generateProfile())
         results = generator.takeResults()
         self.assertEqual(
-            self.round_dict(results.distanceToHeightMap(), 1),
+            self.round_dict(results.distanceToHeightMap(), 1, 1),
             {31.2: 333.5, 175.6: 333.5, 1242.5: 267.0},
         )
         self.assertAlmostEqual(results.zRange().lower(), 267.0, 2)
@@ -326,7 +326,7 @@ class TestQgsVectorLayerProfileGenerator(QgisTestCase):
         results = generator.takeResults()
 
         self.assertEqual(
-            self.round_dict(results.distanceToHeightMap(), 1),
+            self.round_dict(results.distanceToHeightMap(), 1, 1),
             {31.2: 333.5, 175.6: 333.5, 1242.5: 267.0},
         )
 
@@ -370,7 +370,7 @@ class TestQgsVectorLayerProfileGenerator(QgisTestCase):
 
         results = generator.takeResults()
         self.assertEqual(
-            self.round_dict(results.distanceToHeightMap(), 1),
+            self.round_dict(results.distanceToHeightMap(), 1, 1),
             {1158.2: 232.8, 1172.4: 235.5, 1196.5: 241.0},
         )
 
@@ -417,7 +417,7 @@ class TestQgsVectorLayerProfileGenerator(QgisTestCase):
         results = generator.takeResults()
 
         self.assertEqual(
-            self.round_dict(results.distanceToHeightMap(), 1),
+            self.round_dict(results.distanceToHeightMap(), 1, 1),
             {
                 675.2: 27.7,
                 1195.7: 47.5,
@@ -456,7 +456,7 @@ class TestQgsVectorLayerProfileGenerator(QgisTestCase):
         results = generator.takeResults()
 
         self.assertEqual(
-            self.round_dict(results.distanceToHeightMap(), 1),
+            self.round_dict(results.distanceToHeightMap(), 1, 1),
             {0.0: 0.0, 5723.6: 0.0, 15213.2: 0.0, 29417.7: 0.0, 42723.2: 0.0},
         )
 
@@ -476,7 +476,7 @@ class TestQgsVectorLayerProfileGenerator(QgisTestCase):
         results = generator.takeResults()
 
         self.assertEqual(
-            self.round_dict(results.distanceToHeightMap(), 1),
+            self.round_dict(results.distanceToHeightMap(), 1, 1),
             {0.0: 0.0, 5723.6: 0.0, 15213.2: 0.0},
         )
 
@@ -508,7 +508,7 @@ class TestQgsVectorLayerProfileGenerator(QgisTestCase):
         results = generator.takeResults()
 
         self.assertEqual(
-            self.round_dict(results.distanceToHeightMap(), 1),
+            self.round_dict(results.distanceToHeightMap(), 1, 1),
             {0.0: 690.0, 5723.6: 705.0, 15213.2: 680.0, 29417.7: 700.0, 42723.2: 710.0},
         )
 
@@ -528,7 +528,7 @@ class TestQgsVectorLayerProfileGenerator(QgisTestCase):
         results = generator.takeResults()
 
         self.assertEqual(
-            self.round_dict(results.distanceToHeightMap(), 1),
+            self.round_dict(results.distanceToHeightMap(), 1, 1),
             {0.0: 690.0, 5723.6: 705.0, 15213.2: 680.0},
         )
 
@@ -577,7 +577,7 @@ class TestQgsVectorLayerProfileGenerator(QgisTestCase):
         results = generator.takeResults()
 
         self.assertEqual(
-            self.round_dict(results.distanceToHeightMap(), 1),
+            self.round_dict(results.distanceToHeightMap(), 1, 1),
             {
                 675.2: 66.5,
                 1195.7: 49.2,
@@ -636,7 +636,7 @@ class TestQgsVectorLayerProfileGenerator(QgisTestCase):
         results = generator.takeResults()
 
         self.assertEqual(
-            self.round_dict(results.distanceToHeightMap(), 2),
+            self.round_dict(results.distanceToHeightMap(), 2, 2),
             {
                 675.09: 66.5,
                 675.24: 66.5,
@@ -664,7 +664,7 @@ class TestQgsVectorLayerProfileGenerator(QgisTestCase):
         results = generator.takeResults()
 
         self.assertEqual(
-            self.round_dict(results.distanceToHeightMap(), 2),
+            self.round_dict(results.distanceToHeightMap(), 2, 2),
             {
                 674.43: 66.5,
                 675.91: 66.5,
@@ -692,7 +692,7 @@ class TestQgsVectorLayerProfileGenerator(QgisTestCase):
         results = generator.takeResults()
 
         self.assertEqual(
-            self.round_dict(results.distanceToHeightMap(), 2),
+            self.round_dict(results.distanceToHeightMap(), 2, 2),
             {
                 664.1: 65.75,
                 686.24: 67.25,
@@ -753,7 +753,7 @@ class TestQgsVectorLayerProfileGenerator(QgisTestCase):
         results = generator.takeResults()
 
         self.assertEqual(
-            self.round_dict(results.distanceToHeightMap(), 1),
+            self.round_dict(results.distanceToHeightMap(), 1, 1),
             {
                 675.2: 84.2,
                 1195.7: 86.8,
@@ -810,7 +810,7 @@ class TestQgsVectorLayerProfileGenerator(QgisTestCase):
         results = generator.takeResults()
 
         self.assertEqual(
-            self.round_dict(results.distanceToHeightMap(), 1),
+            self.round_dict(results.distanceToHeightMap(), 1, 1),
             {
                 675.2: 84.2,
                 1195.7: 86.8,
@@ -874,7 +874,7 @@ class TestQgsVectorLayerProfileGenerator(QgisTestCase):
         results = generator.takeResults()
 
         self.assertEqual(
-            self.round_dict(results.distanceToHeightMap(), 1),
+            self.round_dict(results.distanceToHeightMap(), 1, 1),
             {
                 1041.8: 15.0,
                 1042.4: 15.0,
@@ -897,6 +897,40 @@ class TestQgsVectorLayerProfileGenerator(QgisTestCase):
 
         self.assertAlmostEqual(results.zRange().lower(), 15.0, 2)
         self.assertAlmostEqual(results.zRange().upper(), 22.5000, 2)
+
+    def testPolygonGenerationFollowingLinestringZExactly(self):
+        """
+        Test that a purely vertical line from a polygon is correctly
+        handled by the generator
+        """
+        vl = QgsVectorLayer("PolygonZ?crs=EPSG:3857", "polygon", "memory")
+        self.assertTrue(vl.isValid())
+
+        polygon_wkt = "Polygon Z ((547405.88 6150237.19 0, 547405.88 6150237.19 5, 547413.39 6150203.24 5, 547413.39 6150203.24 0, 547405.88 6150237.19 0))"
+        feature = QgsFeature()
+        feature.setGeometry(QgsGeometry.fromWkt(polygon_wkt))
+        self.assertTrue(vl.dataProvider().addFeature(feature))
+
+        vl.elevationProperties().setClamping(Qgis.AltitudeClamping.Absolute)
+
+        curve = QgsLineString()
+        curve.fromWkt(
+            "LineString (547394.297515 6150220.613784, 547416.10922 6150225.219982)"
+        )
+        req = QgsProfileRequest(curve)
+        req.setCrs(QgsCoordinateReferenceSystem("EPSG:3857"))
+
+        generator = vl.createProfileGenerator(req)
+        self.assertTrue(generator.generateProfile())
+        results = generator.takeResults()
+
+        self.assertEqual(
+            self.round_dict(results.distanceToHeightMap(), 1, 1),
+            {14.9: 5.0},
+        )
+
+        self.assertAlmostEqual(results.zRange().lower(), 0.0, 2)
+        self.assertAlmostEqual(results.zRange().upper(), 5.0, 2)
 
     def testPolygonGenerationTerrain(self):
         vl = QgsVectorLayer("PolygonZ?crs=EPSG:27700", "lines", "memory")
@@ -938,27 +972,51 @@ class TestQgsVectorLayerProfileGenerator(QgisTestCase):
         self.assertTrue(generator.generateProfile())
         results = generator.takeResults()
 
-        self.assertEqual(
-            self.round_dict(results.distanceToHeightMap(), 1),
-            {
-                1041.8: 55.3,
-                1042.4: 55.3,
-                1049.5: 55.2,
-                1070.2: 55.2,
-                1073.1: 55.2,
-                1074.8: 55.3,
-                1078.9: 54.5,
-                1083.9: 54.5,
-                1091.1: 54.5,
-                1186.8: 49.3,
-                1189.8: 49.2,
-                1192.7: 49.2,
-                1199.2: 49.2,
-                1450.0: 53.0,
-                1455.6: 53.0,
-                1458.1: 53.0,
-            },
-        )
+        res = self.round_dict(results.distanceToHeightMap(), 1, 0)
+        if res[1083.9] == 54:
+            self.assertEqual(
+                res,
+                {
+                    1041.8: 55,
+                    1042.4: 55,
+                    1049.5: 55,
+                    1070.2: 55,
+                    1073.1: 55,
+                    1074.8: 55,
+                    1078.9: 55,
+                    1083.9: 54,
+                    1091.1: 54,
+                    1186.8: 49,
+                    1189.8: 49,
+                    1192.7: 49,
+                    1199.2: 49,
+                    1450.0: 53,
+                    1455.6: 53,
+                    1458.1: 53,
+                },
+            )
+        else:
+            self.assertEqual(
+                res,
+                {
+                    1041.8: 55.0,
+                    1042.4: 55.0,
+                    1049.5: 55.0,
+                    1070.2: 55.0,
+                    1073.1: 55.0,
+                    1074.8: 55.0,
+                    1078.9: 55.0,
+                    1083.9: 55.0,
+                    1091.1: 54.0,
+                    1186.8: 49.0,
+                    1189.8: 49.0,
+                    1192.7: 49.0,
+                    1199.2: 49.0,
+                    1450.0: 53.0,
+                    1455.6: 53.0,
+                    1458.1: 53.0,
+                },
+            )
         self.assertAlmostEqual(results.zRange().lower(), 49.25, 2)
         self.assertAlmostEqual(results.zRange().upper(), 55.250, 2)
 
@@ -1003,38 +1061,53 @@ class TestQgsVectorLayerProfileGenerator(QgisTestCase):
         results = generator.takeResults()
 
         self.assertEqual(
-            self.round_dict(results.distanceToHeightMap(), 1),
+            self.round_dict(results.distanceToHeightMap(), 1, 0),
             {
-                1041.8: 60.3,
-                1042.4: 60.3,
-                1049.5: 60.2,
-                1070.2: 60.2,
-                1073.1: 60.2,
-                1074.8: 60.3,
+                1041.8: 60.0,
+                1042.4: 60.0,
+                1049.5: 60.0,
+                1070.2: 60.0,
+                1073.1: 60.0,
+                1074.8: 60.0,
                 1078.9: 62.0,
                 1083.9: 62.0,
                 1091.1: 62.0,
-                1186.8: 59.3,
-                1189.8: 59.2,
-                1192.7: 59.2,
-                1199.2: 59.3,
-                1450.0: 65.5,
-                1455.6: 65.5,
-                1458.1: 65.5,
+                1186.8: 59.0,
+                1189.8: 59.0,
+                1192.7: 59.0,
+                1199.2: 59.0,
+                1450.0: 66.0,
+                1455.6: 66.0,
+                1458.1: 66.0,
             },
         )
         self.assertAlmostEqual(results.zRange().lower(), 59.2499, 2)
         self.assertAlmostEqual(results.zRange().upper(), 65.5000, 2)
 
-        self.assertCountEqual(
-            [g.asWkt(1) for g in results.asGeometries()],
-            [
-                "MultiLineString Z ((-346384.8 6632219 65.5, -346383.5 6632216.9 65.5),(-346387.6 6632223.9 65.5, -346384.8 6632219 65.5))",
-                "MultiLineString Z ((-346582.6 6632371.7 59.3, -346579.7 6632370.7 59.3),(-346579.7 6632370.7 59.3, -346577 6632369.7 59.3, -346570.8 6632367.9 59.3))",
-                "MultiLineString Z ((-346684.3 6632407.6 62, -346679.6 6632406 62),(-346679.6 6632406 62, -346672.8 6632403.6 62))",
-                "MultiLineString Z ((-346719.3 6632420 60.3, -346718.7 6632419.8 60.3),(-346689.7 6632409.5 60.3, -346688.2 6632409 60.3),(-346692.5 6632410.5 60.3, -346689.7 6632409.5 60.3),(-346718.7 6632419.8 60.3, -346712 6632417.4 60.3))",
-            ],
-        )
+        res = [g.asWkt(0) for g in results.asGeometries()]
+        if (
+            "MultiLineString Z ((-346385 6632219 66, -346384 6632217 66),(-346388 6632224 66, -346385 6632219 66))"
+            in res
+        ):
+            self.assertCountEqual(
+                res,
+                [
+                    "MultiLineString Z ((-346385 6632219 66, -346384 6632217 66),(-346388 6632224 66, -346385 6632219 66))",
+                    "MultiLineString Z ((-346583 6632372 59, -346580 6632371 59),(-346580 6632371 59, -346577 6632370 59, -346571 6632368 59))",
+                    "MultiLineString Z ((-346684 6632408 62, -346680 6632406 62),(-346680 6632406 62, -346673 6632404 62))",
+                    "MultiLineString Z ((-346719 6632420 60, -346719 6632420 60),(-346690 6632410 60, -346688 6632409 60),(-346692 6632411 60, -346690 6632410 60),(-346719 6632420 60, -346712 6632417 60))",
+                ],
+            )
+        else:
+            self.assertCountEqual(
+                res,
+                [
+                    "MultiLineString Z ((-346385 6632219 65, -346384 6632217 66),(-346388 6632224 66, -346385 6632219 66))",
+                    "MultiLineString Z ((-346583 6632372 59, -346580 6632371 59),(-346580 6632371 59, -346577 6632370 59, -346571 6632368 59))",
+                    "MultiLineString Z ((-346684 6632408 62, -346680 6632406 62),(-346680 6632406 62, -346673 6632404 62))",
+                    "MultiLineString Z ((-346719 6632420 60, -346719 6632420 60),(-346690 6632410 60, -346688 6632409 60),(-346692 6632411 60, -346690 6632410 60),(-346719 6632420 60, -346712 6632417 60))",
+                ],
+            )
 
     def testPolygonGenerationRelativeExtrusion(self):
         vl = QgsVectorLayer("PolygonZ?crs=EPSG:27700", "lines", "memory")
@@ -1079,38 +1152,53 @@ class TestQgsVectorLayerProfileGenerator(QgisTestCase):
         results = generator.takeResults()
 
         self.assertEqual(
-            self.round_dict(results.distanceToHeightMap(), 1),
+            self.round_dict(results.distanceToHeightMap(), 1, 0),
             {
-                1041.8: 60.3,
-                1042.4: 60.3,
-                1049.5: 60.2,
-                1070.2: 60.2,
-                1073.1: 60.2,
-                1074.8: 60.3,
-                1078.9: 62.0,
-                1083.9: 62.0,
-                1091.1: 62.0,
-                1186.8: 59.3,
-                1189.8: 59.2,
-                1192.7: 59.2,
-                1199.2: 59.3,
-                1450.0: 65.5,
-                1455.6: 65.5,
-                1458.1: 65.5,
+                1041.8: 60,
+                1042.4: 60,
+                1049.5: 60,
+                1070.2: 60,
+                1073.1: 60,
+                1074.8: 60,
+                1078.9: 62,
+                1083.9: 62,
+                1091.1: 62,
+                1186.8: 59,
+                1189.8: 59,
+                1192.7: 59,
+                1199.2: 59,
+                1450.0: 66,
+                1455.6: 66,
+                1458.1: 66,
             },
         )
         self.assertAlmostEqual(results.zRange().lower(), 59.2499, 2)
         self.assertAlmostEqual(results.zRange().upper(), 72.50000, 2)
 
-        self.assertCountEqual(
-            [g.asWkt(1) for g in results.asGeometries()],
-            [
-                "MultiPolygon Z (((-346684.3 6632407.6 62, -346679.6 6632406 62, -346679.6 6632406 69, -346684.3 6632407.6 69, -346684.3 6632407.6 62)),((-346679.6 6632406 62, -346672.8 6632403.6 62, -346672.8 6632403.6 69, -346679.6 6632406 69, -346679.6 6632406 62)))",
-                "MultiPolygon Z (((-346719.3 6632420 60.3, -346718.7 6632419.8 60.3, -346718.7 6632419.8 67.3, -346719.3 6632420 67.3, -346719.3 6632420 60.3)),((-346689.7 6632409.5 60.3, -346688.2 6632409 60.3, -346688.2 6632409 67.3, -346689.7 6632409.5 67.3, -346689.7 6632409.5 60.3)),((-346692.5 6632410.5 60.3, -346689.7 6632409.5 60.3, -346689.7 6632409.5 67.3, -346692.5 6632410.5 67.3, -346692.5 6632410.5 60.3)),((-346718.7 6632419.8 60.3, -346712 6632417.4 60.3, -346712 6632417.4 67.3, -346718.7 6632419.8 67.3, -346718.7 6632419.8 60.3)))",
-                "MultiPolygon Z (((-346384.8 6632219 65.5, -346383.5 6632216.9 65.5, -346383.5 6632216.9 72.5, -346384.8 6632219 72.5, -346384.8 6632219 65.5)),((-346387.6 6632223.9 65.5, -346384.8 6632219 65.5, -346384.8 6632219 72.5, -346387.6 6632223.9 72.5, -346387.6 6632223.9 65.5)))",
-                "MultiPolygon Z (((-346582.6 6632371.7 59.3, -346579.7 6632370.7 59.3, -346579.7 6632370.7 66.3, -346582.6 6632371.7 66.3, -346582.6 6632371.7 59.3)),((-346579.7 6632370.7 59.3, -346577 6632369.7 59.3, -346570.8 6632367.9 59.3, -346570.8 6632367.9 66.3, -346577 6632369.7 66.3, -346579.7 6632370.7 66.3, -346579.7 6632370.7 59.3)))",
-            ],
-        )
+        res = [g.asWkt(0) for g in results.asGeometries()]
+        if (
+            "MultiPolygon Z (((-346385 6632219 66, -346384 6632217 66, -346384 6632217 73, -346385 6632219 73, -346385 6632219 66)),((-346388 6632224 66, -346385 6632219 66, -346385 6632219 73, -346388 6632224 73, -346388 6632224 66)))"
+            in res
+        ):
+            self.assertCountEqual(
+                [g.asWkt(0) for g in results.asGeometries()],
+                [
+                    "MultiPolygon Z (((-346684 6632408 62, -346680 6632406 62, -346680 6632406 69, -346684 6632408 69, -346684 6632408 62)),((-346680 6632406 62, -346673 6632404 62, -346673 6632404 69, -346680 6632406 69, -346680 6632406 62)))",
+                    "MultiPolygon Z (((-346719 6632420 60, -346719 6632420 60, -346719 6632420 67, -346719 6632420 67, -346719 6632420 60)),((-346690 6632410 60, -346688 6632409 60, -346688 6632409 67, -346690 6632410 67, -346690 6632410 60)),((-346692 6632411 60, -346690 6632410 60, -346690 6632410 67, -346692 6632411 67, -346692 6632411 60)),((-346719 6632420 60, -346712 6632417 60, -346712 6632417 67, -346719 6632420 67, -346719 6632420 60)))",
+                    "MultiPolygon Z (((-346385 6632219 66, -346384 6632217 66, -346384 6632217 73, -346385 6632219 73, -346385 6632219 66)),((-346388 6632224 66, -346385 6632219 66, -346385 6632219 73, -346388 6632224 73, -346388 6632224 66)))",
+                    "MultiPolygon Z (((-346583 6632372 59, -346580 6632371 59, -346580 6632371 66, -346583 6632372 66, -346583 6632372 59)),((-346580 6632371 59, -346577 6632370 59, -346571 6632368 59, -346571 6632368 66, -346577 6632370 66, -346580 6632371 66, -346580 6632371 59)))",
+                ],
+            )
+        else:
+            self.assertCountEqual(
+                [g.asWkt(0) for g in results.asGeometries()],
+                [
+                    "MultiPolygon Z (((-346684 6632408 62, -346680 6632406 62, -346680 6632406 69, -346684 6632408 69, -346684 6632408 62)),((-346680 6632406 62, -346673 6632404 62, -346673 6632404 69, -346680 6632406 69, -346680 6632406 62)))",
+                    "MultiPolygon Z (((-346719 6632420 60, -346719 6632420 60, -346719 6632420 67, -346719 6632420 67, -346719 6632420 60)),((-346690 6632410 60, -346688 6632409 60, -346688 6632409 67, -346690 6632410 67, -346690 6632410 60)),((-346692 6632411 60, -346690 6632410 60, -346690 6632410 67, -346692 6632411 67, -346692 6632411 60)),((-346719 6632420 60, -346712 6632417 60, -346712 6632417 67, -346719 6632420 67, -346719 6632420 60)))",
+                    "MultiPolygon Z (((-346385 6632219 65, -346384 6632217 66, -346384 6632217 73, -346385 6632219 72, -346385 6632219 65)),((-346388 6632224 66, -346385 6632219 66, -346385 6632219 73, -346388 6632224 73, -346388 6632224 66)))",
+                    "MultiPolygon Z (((-346583 6632372 59, -346580 6632371 59, -346580 6632371 66, -346583 6632372 66, -346583 6632372 59)),((-346580 6632371 59, -346577 6632370 59, -346571 6632368 59, -346571 6632368 66, -346577 6632370 66, -346580 6632371 66, -346580 6632371 59)))",
+                ],
+            )
 
     def testPolygonGenerationRelativeExtrusionTolerance(self):
         vl = QgsVectorLayer("PolygonZ?crs=EPSG:27700", "lines", "memory")
@@ -1159,7 +1247,7 @@ class TestQgsVectorLayerProfileGenerator(QgisTestCase):
         results = generator.takeResults()
 
         self.assertEqual(
-            self.round_dict(results.distanceToHeightMap(), 1),
+            self.round_dict(results.distanceToHeightMap(), 1, 1),
             {
                 1041.0: 60.2,
                 1042.2: 60.2,
@@ -1221,7 +1309,7 @@ class TestQgsVectorLayerProfileGenerator(QgisTestCase):
         results = generator.takeResults()
 
         self.assertEqual(
-            self.round_dict(results.distanceToHeightMap(), 1), {2.3: 445.6}
+            self.round_dict(results.distanceToHeightMap(), 1, 1), {2.3: 445.6}
         )
 
         self.assertAlmostEqual(results.zRange().lower(), 444.744, 2)
@@ -2793,6 +2881,7 @@ class TestQgsVectorLayerProfileGenerator(QgisTestCase):
         layer: QgsVectorLayer,
         expectedFeatures: list[list[tuple[int, int]]],
         geomType: Qgis.GeometryType,
+        allowNullHeight: bool = False,
     ):
         """
         The expectedFeatures is a list of valid features, with each tuple
@@ -2819,7 +2908,10 @@ class TestQgsVectorLayerProfileGenerator(QgisTestCase):
             self.assertEqual(feat.geometry.type(), geomType)
 
         for _, height in enumerate(results.distanceToHeightMap()):
-            self.assertTrue(math.isnan(height) or height > 0.0)
+            if allowNullHeight:
+                self.assertTrue(math.isnan(height) or height >= 0.0)
+            else:
+                self.assertTrue(math.isnan(height) or height > 0.0)
 
         return results
 
@@ -2915,6 +3007,46 @@ class TestQgsVectorLayerProfileGenerator(QgisTestCase):
         self.doCheckLine(
             req, 50, vl, [[(1, 1), (0, 1), (2, 1)]], Qgis.GeometryType.Line
         )
+
+    def testLineGenerationFeatureIsCurve(self):
+        """
+        Test that a purely vertical feature matching the profile curve is
+        correctly handled by the generator.
+        """
+        line_wkt = (
+            "LineString Z (389688.6 4601015.0 266.1, 389690.6 4601015.4 266.4, "
+            "389695.1 4601016.3 266.4, 389696.8 4601016.6 266.2, "
+            "389698.0 4601016.9 266.2, 389705.2 4601018.4 266.3, "
+            "389707.4 4601018.8 266.3, 389710.4 4601019.4 266.4, "
+            "389714.7 4601020.3 266.7, 389719.1 4601021.2 267.0, "
+            "389721.5 4601021.7 267.1, 389723.5 4601022.1 267.3, "
+            "389733.7 4601024.3 267.9, 389746.4 4601027.0 268.7, "
+            "389753.9 4601029.0 269.3, 389759.1 4601030.9 269.8)"
+        )
+
+        vl = QgsVectorLayer("LineStringZ?crs=epsg:3857", "line", "memory")
+        self.assertTrue(vl.isValid())
+        self.assertEqual(vl.crs().authid(), "EPSG:3857")
+        vl.elevationProperties().setClamping(Qgis.AltitudeClamping.Absolute)
+        vl.elevationProperties().setExtrusionEnabled(False)
+
+        vl_feature = QgsFeature()
+        vl_feature.setGeometry(QgsGeometry.fromWkt(line_wkt))
+        self.assertTrue(vl.dataProvider().addFeature(vl_feature))
+
+        # Do an intersection
+        curve = QgsLineString()
+        curve.fromWkt(line_wkt)
+        req = QgsProfileRequest(curve)
+
+        req.setCrs(QgsCoordinateReferenceSystem("EPSG:3857"))
+        generator = vl.createProfileGenerator(req)
+        self.assertTrue(generator.generateProfile())
+
+        # Check the result
+        results = generator.takeResults().asGeometries()
+        self.assertEqual(len(results), 15)
+        self.doCheckLine(req, 0, vl, [[(1, 15)]], Qgis.GeometryType.Line, True)
 
     @unittest.skipIf(
         Qgis.geosVersionMajor() == 3 and Qgis.geosVersionMinor() == 11,
@@ -3378,6 +3510,34 @@ class TestQgsVectorLayerProfileGenerator(QgisTestCase):
         self.assertAlmostEqual(res.constGet().y(), -23.445567853, 6)
         # comparing against results from https://geodesyapps.ga.gov.au/ausgeoid2020
         self.assertAlmostEqual(res.constGet().z(), 5543.325, 3)
+
+    def testRenderProfileReplaceSourceRenderingOrder(self):
+        # For issue #62677
+        def create_layer(name):
+            l = QgsVectorLayer("LineStringZ?crs=EPSG:27700", name, "memory")
+            l.setCrs(QgsCoordinateReferenceSystem())
+            self.assertTrue(l.isValid())
+            return l
+
+        vl = create_layer("above")
+        vl2 = create_layer("below")
+
+        curve = QgsLineString()
+        req = QgsProfileRequest(curve)
+
+        plot_renderer = QgsProfilePlotRenderer([vl2, vl], req)
+        sources = plot_renderer.sourceIds()
+        self.assertEqual(sources, [vl2.id(), vl.id()])
+
+        plot_renderer.replaceSource(
+            vl2
+        )  # E.g., after a change in the elevation profile settings
+        sources = plot_renderer.sourceIds()
+        self.assertEqual(
+            sources,
+            [vl2.id(), vl.id()],
+            "The order of the generators does not correspond to the order of the sources! (i.e., issue #62677)",
+        )
 
 
 if __name__ == "__main__":

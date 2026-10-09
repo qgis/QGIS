@@ -811,7 +811,7 @@ void QgsSymbol::setAnimationSettings( const QgsSymbolAnimationSettings &settings
   mAnimationSettings = settings;
 }
 
-QgsSymbol *QgsSymbol::defaultSymbol( Qgis::GeometryType geomType )
+std::unique_ptr<QgsSymbol> QgsSymbol::defaultSymbol( Qgis::GeometryType geomType )
 {
   std::unique_ptr< QgsSymbol > s;
 
@@ -873,7 +873,7 @@ QgsSymbol *QgsSymbol::defaultSymbol( Qgis::GeometryType geomType )
     s->setColor( s->color().toRgb() );
   }
 
-  return s.release();
+  return s;
 }
 
 QgsSymbolLayer *QgsSymbol::symbolLayer( int layer )
@@ -1721,21 +1721,6 @@ void QgsSymbol::renderFeature(
         // no segmentation required
         processedGeometry = part;
       }
-
-      // Simplify the geometry, if needed.
-      if ( context.vectorSimplifyMethod().forceLocalOptimization() )
-      {
-        const int simplifyHints = context.vectorSimplifyMethod().simplifyHints();
-        const QgsMapToPixelSimplifier simplifier( simplifyHints, context.vectorSimplifyMethod().tolerance(), context.vectorSimplifyMethod().simplifyAlgorithm() );
-
-        std::unique_ptr< QgsAbstractGeometry > simplified( simplifier.simplify( processedGeometry ) );
-        if ( simplified )
-        {
-          temporaryGeometryContainer.set( simplified.release() );
-          processedGeometry = temporaryGeometryContainer.constGet();
-        }
-      }
-
       // clip geometry to render context clipping regions
       if ( !context.featureClipGeometry().isEmpty() )
       {
@@ -1748,6 +1733,24 @@ void QgsSymbol::renderFeature(
         if ( clippedGeom )
         {
           temporaryGeometryContainer.set( clippedGeom.release() );
+          processedGeometry = temporaryGeometryContainer.constGet();
+        }
+        else
+        {
+          return;
+        }
+      }
+
+      // Simplify the geometry, if needed.
+      if ( context.vectorSimplifyMethod().forceLocalOptimization() )
+      {
+        const int simplifyHints = context.vectorSimplifyMethod().simplifyHints();
+        const QgsMapToPixelSimplifier simplifier( simplifyHints, context.vectorSimplifyMethod().tolerance(), context.vectorSimplifyMethod().simplifyAlgorithm() );
+
+        std::unique_ptr< QgsAbstractGeometry > simplified( simplifier.simplify( processedGeometry ) );
+        if ( simplified )
+        {
+          temporaryGeometryContainer.set( simplified.release() );
           processedGeometry = temporaryGeometryContainer.constGet();
         }
       }
@@ -1772,6 +1775,12 @@ void QgsSymbol::renderFeature(
         if ( mType != Qgis::SymbolType::Marker )
         {
           QgsDebugMsgLevel( u"point can be drawn only with marker symbol!"_s, 2 );
+          break;
+        }
+
+        if ( processedGeometry->isEmpty() )
+        {
+          // point was clipped away entirely by the render context's feature clip geometry
           break;
         }
 
@@ -2079,18 +2088,9 @@ void QgsSymbol::renderFeature(
       constexpr double BOUNDS_MARGIN = 0.05;
       maximalBounds.adjust( -maximalBounds.width() * BOUNDS_MARGIN, -maximalBounds.height() * BOUNDS_MARGIN, maximalBounds.width() * BOUNDS_MARGIN, maximalBounds.height() * BOUNDS_MARGIN );
 
-      const bool hadClipping = context.painter()->hasClipping();
-      const QPainterPath oldClipPath = hadClipping ? context.painter()->clipPath() : QPainterPath();
-
-      const bool isMasked = symbolLayer->installMasks( context, false, maximalBounds );
-
+      symbolLayer->installMasks( context, false, maximalBounds );
       context.painter()->drawPicture( QPointF( 0, 0 ), *renderedPicture );
-
-      if ( isMasked )
-      {
-        context.painter()->setClipPath( oldClipPath );
-        context.painter()->setClipping( hadClipping );
-      }
+      symbolLayer->removeMasks( context, false );
     }
   }
 
@@ -2241,10 +2241,12 @@ void QgsSymbol::renderFeature(
 
   if ( drawVertexMarker )
   {
+    // vertex markers should ignore symbology reference scale
+    QgsScopedRenderContextReferenceScaleOverride overrideReferenceScale( context, -1 );
+
     if ( !markers.isEmpty() && !context.renderingStopped() )
     {
-      const auto constMarkers = markers;
-      for ( QPointF marker : constMarkers )
+      for ( QPointF marker : std::as_const( markers ) )
       {
         renderVertexMarker( marker, context, currentVertexMarkerType, currentVertexMarkerSize );
       }

@@ -109,6 +109,8 @@ void QgsFixGeometryAreaAlgorithm::initAlgorithm( const QVariantMap &configuratio
 
 QVariantMap QgsFixGeometryAreaAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
+  QGS_MARK_ALGORITHM_SOURCE
+
   const std::unique_ptr<QgsProcessingFeatureSource> input( parameterAsSource( parameters, u"INPUT"_s, context ) );
   if ( !input )
     throw QgsProcessingException( invalidSourceError( parameters, u"INPUT"_s ) );
@@ -243,6 +245,8 @@ QVariantMap QgsFixGeometryAreaAlgorithm::processAlgorithm( const QVariantMap &pa
 
     if ( !sink_report->addFeature( reportFeature, QgsFeatureSink::FastInsert ) )
       throw QgsProcessingException( writeFeatureError( sink_report.get(), parameters, u"REPORT"_s ) );
+    else
+      feedback->featureAddedToSink( u"REPORT"_s );
   }
   multiStepFeedback.setProgress( 100 );
 
@@ -261,8 +265,15 @@ QVariantMap QgsFixGeometryAreaAlgorithm::processAlgorithm( const QVariantMap &pa
     multiStepFeedback.setProgress( static_cast<double>( static_cast<long double>( progression ) / totalProgression ) * 100 );
     if ( !sink_output->addFeature( fixedFeature, QgsFeatureSink::FastInsert ) )
       throw QgsProcessingException( writeFeatureError( sink_output.get(), parameters, u"OUTPUT"_s ) );
+    else
+      feedback->featureAddedToSink( u"OUTPUT"_s );
   }
   multiStepFeedback.setProgress( 100 );
+
+  sink_output->finalize();
+  feedback->featureSinkFinalized( u"OUTPUT"_s );
+  sink_report->finalize();
+  feedback->featureSinkFinalized( u"REPORT"_s );
 
   QVariantMap outputs;
   outputs.insert( u"OUTPUT"_s, dest_output );

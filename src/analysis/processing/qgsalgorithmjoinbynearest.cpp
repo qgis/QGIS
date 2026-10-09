@@ -122,6 +122,8 @@ QgsJoinByNearestAlgorithm *QgsJoinByNearestAlgorithm::createInstance() const
 
 QVariantMap QgsJoinByNearestAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
+  QGS_MARK_ALGORITHM_SOURCE
+
   const int neighbors = parameterAsInt( parameters, u"NEIGHBORS"_s, context );
   const bool discardNonMatching = parameterAsBoolean( parameters, u"DISCARD_NONMATCHING"_s, context );
   const double maxDistance = parameters.value( u"MAX_DISTANCE"_s ).isValid() ? parameterAsDouble( parameters, u"MAX_DISTANCE"_s, context ) : std::numeric_limits<double>::quiet_NaN();
@@ -258,6 +260,8 @@ QVariantMap QgsJoinByNearestAlgorithm::processAlgorithm( const QVariantMap &para
       {
         if ( !sinkNonMatching1->addFeature( f, QgsFeatureSink::FastInsert ) )
           throw QgsProcessingException( writeFeatureError( sinkNonMatching1.get(), parameters, u"NON_MATCHING"_s ) );
+        else
+          feedback->featureAddedToSink( u"NON_MATCHING"_s );
       }
       if ( sink && !discardNonMatching )
       {
@@ -266,6 +270,8 @@ QVariantMap QgsJoinByNearestAlgorithm::processAlgorithm( const QVariantMap &para
         f.setAttributes( attr );
         if ( !sink->addFeature( f, QgsFeatureSink::FastInsert ) )
           throw QgsProcessingException( writeFeatureError( sink.get(), parameters, u"OUTPUT"_s ) );
+        else
+          feedback->featureAddedToSink( u"OUTPUT"_s );
       }
     }
     else
@@ -317,6 +323,8 @@ QVariantMap QgsJoinByNearestAlgorithm::processAlgorithm( const QVariantMap &para
           out.setAttributes( attr );
           if ( !sink->addFeature( out, QgsFeatureSink::FastInsert ) )
             throw QgsProcessingException( writeFeatureError( sink.get(), parameters, u"OUTPUT"_s ) );
+          else
+            feedback->featureAddedToSink( u"OUTPUT"_s );
         }
       }
       if ( j > 0 )
@@ -327,6 +335,8 @@ QVariantMap QgsJoinByNearestAlgorithm::processAlgorithm( const QVariantMap &para
         {
           if ( !sinkNonMatching1->addFeature( f, QgsFeatureSink::FastInsert ) )
             throw QgsProcessingException( writeFeatureError( sinkNonMatching1.get(), parameters, u"NON_MATCHING"_s ) );
+          else
+            feedback->featureAddedToSink( u"NON_MATCHING"_s );
         }
         if ( !discardNonMatching && sink )
         {
@@ -335,6 +345,8 @@ QVariantMap QgsJoinByNearestAlgorithm::processAlgorithm( const QVariantMap &para
           f.setAttributes( attr );
           if ( !sink->addFeature( f, QgsFeatureSink::FastInsert ) )
             throw QgsProcessingException( writeFeatureError( sink.get(), parameters, u"OUTPUT"_s ) );
+          else
+            feedback->featureAddedToSink( u"OUTPUT"_s );
         }
         unjoinedCount++;
       }
@@ -347,11 +359,13 @@ QVariantMap QgsJoinByNearestAlgorithm::processAlgorithm( const QVariantMap &para
   if ( sink )
   {
     sink->finalize();
+    feedback->featureSinkFinalized( u"OUTPUT"_s );
     outputs.insert( u"OUTPUT"_s, dest );
   }
   if ( sinkNonMatching1 )
   {
     sinkNonMatching1->finalize();
+    feedback->featureSinkFinalized( u"NON_MATCHING"_s );
     outputs.insert( u"NON_MATCHING"_s, destNonMatching1 );
   }
   return outputs;

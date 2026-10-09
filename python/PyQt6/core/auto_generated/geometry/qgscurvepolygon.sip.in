@@ -269,6 +269,10 @@ This convention matches the OGC Simple Features specification.
 
     virtual bool deleteVertex( QgsVertexId position );
 
+    virtual bool deleteVertices( const QSet<QgsVertexId> &positions );
+
+    virtual bool hasVertex( QgsVertexId position ) const;
+
 
     virtual QgsCoordinateSequence coordinateSequence() const;
 

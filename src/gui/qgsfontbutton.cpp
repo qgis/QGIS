@@ -104,7 +104,7 @@ void QgsFontButton::showSettingsDialog()
         mActivePanel->setPanelTitle( mDialogTitle );
         mActivePanel->setContext( symbolContext );
 
-        connect( mActivePanel, &QgsTextFormatPanelWidget::widgetChanged, this, [this] {
+        connect( mActivePanel, &QgsTextFormatPanelWidget::changed, this, [this] {
           setTextFormat( mActivePanel->format() );
           QgsFontUtils::addRecentFontFamily( mActivePanel->format().font().family() );
         } );
@@ -202,7 +202,7 @@ void QgsFontButton::copyFormat()
   switch ( mMode )
   {
     case ModeTextRenderer:
-      QApplication::clipboard()->setMimeData( mFormat.toMimeData() );
+      QApplication::clipboard()->setMimeData( mFormat.toMimeData().release() );
       break;
 
     case ModeQFont:
@@ -287,7 +287,7 @@ void QgsFontButton::mouseMoveEvent( QMouseEvent *e )
   switch ( mMode )
   {
     case ModeTextRenderer:
-      drag->setMimeData( mFormat.toMimeData() );
+      drag->setMimeData( mFormat.toMimeData().release() );
       break;
 
     case ModeQFont:
@@ -981,7 +981,7 @@ void QgsFontButton::updatePreview( const QColor &color, QgsTextFormat *format, Q
 void QgsFontButton::copyColor()
 {
   //copy color
-  QApplication::clipboard()->setMimeData( QgsSymbolLayerUtils::colorToMimeData( mFormat.color() ) );
+  QApplication::clipboard()->setMimeData( QgsSymbolLayerUtils::colorToMimeData( mFormat.color() ).release() );
 }
 
 void QgsFontButton::pasteColor()

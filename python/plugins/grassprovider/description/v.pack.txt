@@ -1,5 +1,5 @@
 v.pack
-Exports a vector map as GRASS GIS specific archive file.
+Exports a vector map as GRASS specific archive file.
 Vector (v.*)
 QgsProcessingParameterFeatureSource|input|Name of input vector map to pack|-1|None|False
 *QgsProcessingParameterBoolean|-c|Switch the compression off|False

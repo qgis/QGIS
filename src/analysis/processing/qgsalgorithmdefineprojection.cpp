@@ -80,6 +80,8 @@ void QgsDefineProjectionAlgorithm::initAlgorithm( const QVariantMap & )
 
 bool QgsDefineProjectionAlgorithm::prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
+  QGS_MARK_ALGORITHM_SOURCE
+
   QgsVectorLayer *layer = parameterAsVectorLayer( parameters, u"INPUT"_s, context );
   const QgsCoordinateReferenceSystem crs = parameterAsCrs( parameters, u"CRS"_s, context );
 

@@ -85,7 +85,7 @@ class CORE_EXPORT QgsAnnotationItemAbstractMetadata
 };
 
 //! Annotation item creation function
-typedef std::function<QgsAnnotationItem *()> QgsAnnotationItemCreateFunc SIP_SKIP;
+typedef std::function<std::unique_ptr<QgsAnnotationItem>()> QgsAnnotationItemCreateFunc SIP_SKIP;
 
 #ifndef SIP_RUN
 
@@ -114,7 +114,7 @@ class CORE_EXPORT QgsAnnotationItemMetadata : public QgsAnnotationItemAbstractMe
      */
     QgsAnnotationItemCreateFunc createFunction() const { return mCreateFunc; }
 
-    QgsAnnotationItem *createItem() override { return mCreateFunc ? mCreateFunc() : nullptr; }
+    QgsAnnotationItem *createItem() override;
 
   protected:
     QgsAnnotationItemCreateFunc mCreateFunc = nullptr;
@@ -176,7 +176,7 @@ class CORE_EXPORT QgsAnnotationItemRegistry : public QObject
     /**
      * Creates a new instance of a annotation item given the item \a type.
      */
-    QgsAnnotationItem *createItem( const QString &type ) const SIP_FACTORY;
+    std::unique_ptr<QgsAnnotationItem> createItem( const QString &type ) const;
 
     /**
      * Returns a map of available item types to translated name.

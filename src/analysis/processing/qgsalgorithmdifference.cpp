@@ -105,6 +105,8 @@ void QgsDifferenceAlgorithm::initAlgorithm( const QVariantMap & )
 
 QVariantMap QgsDifferenceAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
+  QGS_MARK_ALGORITHM_SOURCE
+
   std::unique_ptr<QgsFeatureSource> sourceA( parameterAsSource( parameters, u"INPUT"_s, context ) );
   if ( !sourceA )
     throw QgsProcessingException( invalidSourceError( parameters, u"INPUT"_s ) );
@@ -132,9 +134,10 @@ QVariantMap QgsDifferenceAlgorithm::processAlgorithm( const QVariantMap &paramet
     geometryParameters.setGridSize( parameterAsDouble( parameters, u"GRID_SIZE"_s, context ) );
   }
 
-  QgsOverlayUtils::difference( *sourceA, *sourceB, *sink, context, feedback, count, total, QgsOverlayUtils::OutputA, geometryParameters, QgsOverlayUtils::SanitizeFlag::DontPromotePointGeometryToMultiPoint );
+  QgsOverlayUtils::difference( *sourceA, *sourceB, *sink, u"OUTPUT"_s, context, feedback, count, total, QgsOverlayUtils::OutputA, geometryParameters, QgsOverlayUtils::SanitizeFlag::DontPromotePointGeometryToMultiPoint );
 
   sink->finalize();
+  feedback->featureSinkFinalized( u"OUTPUT"_s );
   return outputs;
 }
 

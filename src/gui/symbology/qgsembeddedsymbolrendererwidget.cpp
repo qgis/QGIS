@@ -66,12 +66,12 @@ QgsEmbeddedSymbolRendererWidget::QgsEmbeddedSymbolRendererWidget( QgsVectorLayer
   // (null renderer means "no previous renderer")
   if ( renderer )
   {
-    mRenderer.reset( QgsEmbeddedSymbolRenderer::convertFromRenderer( renderer ) );
+    mRenderer = QgsEmbeddedSymbolRenderer::convertFromRenderer( renderer );
   }
   if ( !mRenderer )
   {
     // use default embedded renderer
-    mRenderer = std::make_unique<QgsEmbeddedSymbolRenderer>( QgsSymbol::defaultSymbol( type ) );
+    mRenderer = std::make_unique<QgsEmbeddedSymbolRenderer>( QgsSymbol::defaultSymbol( type ).release() );
     if ( renderer )
       renderer->copyRendererData( mRenderer.get() );
   }
@@ -83,7 +83,7 @@ QgsEmbeddedSymbolRendererWidget::QgsEmbeddedSymbolRendererWidget( QgsVectorLayer
 
   connect( mDefaultSymbolToolButton, &QgsSymbolButton::changed, this, [this] {
     mRenderer->setDefaultSymbol( mDefaultSymbolToolButton->symbol()->clone() );
-    emit widgetChanged();
+    emit changed();
   } );
 }
 

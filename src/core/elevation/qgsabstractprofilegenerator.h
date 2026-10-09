@@ -409,7 +409,7 @@ class CORE_EXPORT QgsAbstractProfileGenerator
      * Returns a unique identifier representing the source of the profile.
      *
      * For generators associated with a map layer the source ID will match the layer's QgsMapLayer::id(). Other (non-map-layer) sources
-     * will have a different unique ID with its own custom interpretation.gen
+     * will have a different unique ID with its own custom interpretation.
      */
     virtual QString sourceId() const = 0;
 

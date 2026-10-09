@@ -268,7 +268,7 @@ class _3D_EXPORT Qgs3DMapCanvas : public QWindow
     bool eventFilter( QObject *watched, QEvent *event ) override;
 
   private:
-    Qt3DCore::QAspectEngine *m_aspectEngine;
+    std::unique_ptr<Qt3DCore::QAspectEngine> m_aspectEngine;
 
     // Aspects
     Qt3DRender::QRenderAspect *m_renderAspect;

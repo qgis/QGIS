@@ -77,6 +77,8 @@ void QgsStringConcatenationAlgorithm::initAlgorithm( const QVariantMap & )
 
 QVariantMap QgsStringConcatenationAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback * )
 {
+  QGS_MARK_ALGORITHM_SOURCE
+
   const QString input_1 = parameterAsString( parameters, u"INPUT_1"_s, context );
   const QString input_2 = parameterAsString( parameters, u"INPUT_2"_s, context );
 

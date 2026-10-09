@@ -1687,7 +1687,7 @@
     {
       "type": "Feature",
       "properties": {
-        "login": "ValentinBuira",
+        "login": "CeliaBuira",
         "avatar_url": "https://avatars.githubusercontent.com/u/30632058?v=4",
         "total_contributions": 68,
         "has_github_account": true,
@@ -1695,7 +1695,13 @@
         "web_sites": 0,
         "documentation": 0
       },
-      "geometry": null
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          5.3684,
+          43.2945
+        ]
+      }
     },
     {
       "type": "Feature",

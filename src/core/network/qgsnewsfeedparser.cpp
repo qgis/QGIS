@@ -430,7 +430,7 @@ void QgsNewsFeedParser::fetchImageForEntry( const QgsNewsFeedParser::Entry &entr
 
 QString QgsNewsFeedParser::keyForFeed( const QString &baseUrl )
 {
-  static const QRegularExpression sRegexp( u"[^a-zA-Z0-9]"_s );
+  const thread_local QRegularExpression sRegexp( u"[^a-zA-Z0-9]"_s );
   QString res = baseUrl;
   res = res.replace( sRegexp, QString() );
   return res;

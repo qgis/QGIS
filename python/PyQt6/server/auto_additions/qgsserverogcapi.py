@@ -10,15 +10,42 @@ QgsServerOgcApi.prev = QgsServerOgcApi.Rel.prev
 QgsServerOgcApi.next = QgsServerOgcApi.Rel.next
 QgsServerOgcApi.license = QgsServerOgcApi.Rel.license
 QgsServerOgcApi.items = QgsServerOgcApi.Rel.items
+QgsServerOgcApi.queryables = QgsServerOgcApi.Rel.queryables
 QgsServerOgcApi.conformance = QgsServerOgcApi.Rel.conformance
 QgsServerOgcApi.data = QgsServerOgcApi.Rel.data
+QgsServerOgcApi.schema = QgsServerOgcApi.Rel.schema
+QgsServerOgcApi.profile = QgsServerOgcApi.Rel.profile
+QgsServerOgcApi.functions = QgsServerOgcApi.Rel.functions
 QgsServerOgcApi.Rel.baseClass = QgsServerOgcApi
 QgsServerOgcApi.GEOJSON = QgsServerOgcApi.ContentType.GEOJSON
 QgsServerOgcApi.OPENAPI3 = QgsServerOgcApi.ContentType.OPENAPI3
 QgsServerOgcApi.JSON = QgsServerOgcApi.ContentType.JSON
+QgsServerOgcApi.SCHEMA_JSON = QgsServerOgcApi.ContentType.SCHEMA_JSON
 QgsServerOgcApi.HTML = QgsServerOgcApi.ContentType.HTML
 QgsServerOgcApi.XML = QgsServerOgcApi.ContentType.XML
+QgsServerOgcApi.FLATGEOBUF = QgsServerOgcApi.ContentType.FLATGEOBUF
 QgsServerOgcApi.ContentType.baseClass = QgsServerOgcApi
+# monkey patching scoped based enum
+QgsServerOgcApi.Profile.Unset.__doc__ = "No profile"
+QgsServerOgcApi.Profile.Rfc7946.__doc__ = "GeoJSON profile according to RFC7946"
+QgsServerOgcApi.Profile.JsonFg.__doc__ = "JSON Feature Geometry profile according to OGC API - Features 1.0"
+QgsServerOgcApi.Profile.JsonFgPlus.__doc__ = "JSON Feature Geometry profile with GeoJSON compatibility extensions"
+QgsServerOgcApi.Profile.RelAsLink.__doc__ = "JSON responses that include links for referenced resources http://www.opengis.net/def/profile/ogc/0/rel-as-link"
+QgsServerOgcApi.Profile.RelAsKey.__doc__ = "JSON responses that include key for referenced resources http://www.opengis.net/def/profile/ogc/0/rel-as-key"
+QgsServerOgcApi.Profile.RelAsUri.__doc__ = "JSON responses that include URI for referenced resources http://www.opengis.net/def/profile/ogc/0/rel-as-uri"
+QgsServerOgcApi.Profile.__doc__ = """JSON profile
+
+* ``Unset``: No profile
+* ``Rfc7946``: GeoJSON profile according to RFC7946
+* ``JsonFg``: JSON Feature Geometry profile according to OGC API - Features 1.0
+* ``JsonFgPlus``: JSON Feature Geometry profile with GeoJSON compatibility extensions
+* ``RelAsLink``: JSON responses that include links for referenced resources http://www.opengis.net/def/profile/ogc/0/rel-as-link
+* ``RelAsKey``: JSON responses that include key for referenced resources http://www.opengis.net/def/profile/ogc/0/rel-as-key
+* ``RelAsUri``: JSON responses that include URI for referenced resources http://www.opengis.net/def/profile/ogc/0/rel-as-uri
+
+"""
+# --
+QgsServerOgcApi.Profile.baseClass = QgsServerOgcApi
 try:
     QgsServerOgcApi.sanitizeUrl = staticmethod(QgsServerOgcApi.sanitizeUrl)
     QgsServerOgcApi.relToString = staticmethod(QgsServerOgcApi.relToString)

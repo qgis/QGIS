@@ -495,12 +495,12 @@ QDomElement QgsGeometryCollection::asGml3( QDomDocument &doc, int precision, con
   return elemMultiGeometry;
 }
 
-json QgsGeometryCollection::asJsonObject( int precision ) const
+json QgsGeometryCollection::asJsonObject( int precision, Qgis::GeoJsonProfile profile ) const
 {
   json coordinates( json::array() );
   for ( const QgsAbstractGeometry *geom : std::as_const( mGeometries ) )
   {
-    coordinates.push_back( geom->asJsonObject( precision ) );
+    coordinates.push_back( geom->asJsonObject( precision, profile ) );
   }
   return { { "type", "GeometryCollection" }, { "geometries", coordinates } };
 }
@@ -677,6 +677,62 @@ bool QgsGeometryCollection::deleteVertex( QgsVertexId position )
     clearCache(); //set bounding box invalid
   }
   return success;
+}
+
+bool QgsGeometryCollection::deleteVertices( const QSet<QgsVertexId> &positions )
+{
+  QMap<int, QSet<QgsVertexId>> partVertices;
+  for ( QgsVertexId pos : positions )
+  {
+    if ( !hasVertex( pos ) )
+      return false;
+
+    partVertices[pos.part].insert( QgsVertexId( 0, pos.ring, pos.vertex ) );
+  }
+
+  QMapIterator<int, QSet<QgsVertexId>> partVerticesIt( partVertices );
+  partVerticesIt.toBack();
+  while ( partVerticesIt.hasPrevious() )
+  {
+    partVerticesIt.previous();
+    int part = partVerticesIt.key();
+    QSet<QgsVertexId> partVertices = partVerticesIt.value();
+    QgsAbstractGeometry *geom = mGeometries.at( part );
+
+    if ( QgsWkbTypes::flatType( geom->wkbType() ) == Qgis::WkbType::Point )
+    {
+      removeGeometry( part );
+      continue;
+    }
+
+    // quit if any vertex on any part fails to be deleted
+    if ( !geom->deleteVertices( partVertices ) )
+    {
+      Q_ASSERT( false );
+      return false;
+    }
+
+    // remove geometry if no vertices left
+    if ( geom->isEmpty() )
+    {
+      removeGeometry( part );
+    }
+  }
+  clearCache(); // set bounding box invalid
+  return true;
+}
+
+bool QgsGeometryCollection::hasVertex( QgsVertexId id ) const
+{
+  size_t parts = mGeometries.size();
+  if ( id.part < 0 || static_cast<size_t>( id.part ) >= parts )
+    return false;
+
+  QgsAbstractGeometry *geom = mGeometries.at( id.part );
+  if ( !geom )
+    return false;
+
+  return geom->hasVertex( QgsVertexId( 0, id.ring, id.vertex ) );
 }
 
 double QgsGeometryCollection::length() const

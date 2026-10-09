@@ -186,6 +186,26 @@ its mime type, returns an empty string if there are not matches.
 
 
 
+    QString headerLink(
+      const QgsServerApiContext &context,
+      const QgsServerOgcApi::Rel &linkType = QgsServerOgcApi::Rel::self,
+      const QgsServerOgcApi::ContentType contentType = QgsServerOgcApi::ContentType::JSON,
+      const QgsServerOgcApi::Profile &profile = QgsServerOgcApi::Profile::Unset,
+      const QString &title = ""
+    ) const;
+%Docstring
+Builds and returns a header link to the resource.
+
+:param context: request context
+:param linkType: type of the link (rel attribute), default to SELF
+:param contentType: content type of the link (default to JSON)
+:param title: title of the link
+
+.. note::
+
+   not available in Python bindings
+%End
+
     void write( QVariant &data, const QgsServerApiContext &context, const QVariantMap &htmlMetadata = QVariantMap() ) const;
 %Docstring
 Writes ``data`` to the ``context`` response stream, content-type is
@@ -260,6 +280,28 @@ default content type of the handler if none of the above matches.
 :raises QgsServerApiBadRequestError: if the content type of the request
                                      is not compatible with the handler
                                      (:py:func:`contentTypes` member)
+%End
+
+    static QgsServerOgcApi::Profile profileFromString( const QString &profile, bool &ok /Out/ );
+%Docstring
+Returns the Profile from the string representation in ``profile``, or
+Profile.None if the string was not recognized.
+
+:param profile: the string representation of the profile, for example
+                "rel-as-key" or "RFC7946"
+
+:return: - ok: output parameter set to true if the profile string was
+           recognized, false otherwise
+
+.. versionadded:: 4.4
+%End
+
+    QList<QgsServerOgcApi::Profile> profilesFromRequest( const QgsServerRequest *request ) const;
+%Docstring
+Return a list of the profiles in the request, extracted from the
+"profile" query parameter.
+
+.. versionadded:: 4.4
 %End
 
     static QString parentLink( const QUrl &url, int levels = 1 );

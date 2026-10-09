@@ -51,7 +51,7 @@ QgsTiledSceneRenderer *QgsTiledSceneWireframeRenderer::clone() const
   return res.release();
 }
 
-QgsTiledSceneRenderer *QgsTiledSceneWireframeRenderer::create( QDomElement &element, const QgsReadWriteContext &context )
+std::unique_ptr<QgsTiledSceneRenderer> QgsTiledSceneWireframeRenderer::create( QDomElement &element, const QgsReadWriteContext &context )
 {
   auto r = std::make_unique< QgsTiledSceneWireframeRenderer >();
   {
@@ -78,7 +78,7 @@ QgsTiledSceneRenderer *QgsTiledSceneWireframeRenderer::create( QDomElement &elem
   r->setUseTextureColors( element.attribute( u"useTextureColors"_s, u"0"_s ).toInt() );
 
   r->restoreCommonProperties( element, context );
-  return r.release();
+  return r;
 }
 
 std::unique_ptr< QgsFillSymbol > QgsTiledSceneWireframeRenderer::createDefaultFillSymbol()

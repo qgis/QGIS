@@ -25,6 +25,7 @@
 #include "qgsgrass.h"
 #include "qgsgrassplugin.h"
 #include "qgsgui.h"
+#include "qgshelp.h"
 #include "qgslocalec.h"
 #include "qgslogger.h"
 #include "qgsmapcanvas.h"
@@ -97,6 +98,8 @@ QgsGrassNewMapset::QgsGrassNewMapset( QgisInterface *iface, QgsGrassPlugin *plug
   connect( mMapsetLineEdit, &QLineEdit::returnPressed, this, &QgsGrassNewMapset::mMapsetLineEdit_returnPressed );
   connect( mMapsetLineEdit, &QLineEdit::textChanged, this, &QgsGrassNewMapset::mMapsetLineEdit_textChanged );
   connect( mOpenNewMapsetCheckBox, &QCheckBox::stateChanged, this, &QgsGrassNewMapset::mOpenNewMapsetCheckBox_stateChanged );
+  setOption( HaveHelpButton, true );
+  connect( this, &QWizard::helpRequested, this, [] { QgsHelp::openHelp( u"grass_integration/grass_integration.html#grass-plugin"_s ); } );
 #ifdef Q_OS_MAC
   setWizardStyle( QWizard::ClassicStyle );
 #endif
@@ -126,7 +129,7 @@ QgsGrassNewMapset::QgsGrassNewMapset( QgisInterface *iface, QgsGrassPlugin *plug
   mDirectoryWidget->setFilePath( gisdbase );
   databaseChanged();
 
-  // LOCATION
+  // PROJECT
   const thread_local QRegularExpression rx( "[A-Za-z0-9_.]+" );
   mLocationLineEdit->setValidator( new QRegularExpressionValidator( rx, mLocationLineEdit ) );
 
@@ -169,7 +172,7 @@ void QgsGrassNewMapset::databaseChanged()
   }
   else
   {
-    // Check if at least one writable location exists or database is writable
+    // Check if at least one writable project exists or database is writable
     bool locationExists = false;
     QDir dir( gisdbase() );
     for ( unsigned int i = 0; i < dir.count(); i++ )
@@ -195,7 +198,7 @@ void QgsGrassNewMapset::databaseChanged()
     }
     else
     {
-      setError( mDatabaseErrorLabel, tr( "No writable locations, the database is not writable!" ) );
+      setError( mDatabaseErrorLabel, tr( "No writable projects, the database is not writable!" ) );
     }
   }
 }
@@ -211,7 +214,7 @@ bool QgsGrassNewMapset::gisdbaseExists()
   return databaseInfo.exists();
 }
 
-/*************************** LOCATION *******************************/
+/*************************** PROJECT *******************************/
 void QgsGrassNewMapset::setLocationPage()
 {
   setLocations();
@@ -290,7 +293,7 @@ int QgsGrassNewMapset::nextId() const
   int id = currentId();
   switch ( id )
   {
-    case Location:
+    case Project:
       if ( mSelectLocationRadioButton->isChecked() )
       {
         id = MapSet;
@@ -322,14 +325,14 @@ void QgsGrassNewMapset::checkLocation()
     if ( location.isEmpty() )
     {
       button( QWizard::NextButton )->setEnabled( false );
-      setError( mLocationErrorLabel, tr( "Enter location name!" ) );
+      setError( mLocationErrorLabel, tr( "Enter project name!" ) );
     }
     else
     {
       if ( QFile::exists( gisdbase() + "/" + location ) )
       {
         button( QWizard::NextButton )->setEnabled( false );
-        setError( mLocationErrorLabel, tr( "The location exists!" ) );
+        setError( mLocationErrorLabel, tr( "The project exists!" ) );
       }
     }
   }
@@ -604,7 +607,7 @@ void QgsGrassNewMapset::loadRegions()
   }
   if ( !file.open( QIODevice::ReadOnly ) )
   {
-    QgsGrass::warning( tr( "Cannot open locations file (%1)" ).arg( path ) );
+    QgsGrass::warning( tr( "Cannot open projects file (%1)" ).arg( path ) );
     return;
   }
 
@@ -614,7 +617,7 @@ void QgsGrassNewMapset::loadRegions()
 
   if ( !doc.setContent( &file, &err, &line, &column ) )
   {
-    QString errmsg = tr( "Cannot read locations file (%1):" ).arg( path ) + tr( "\n%1\nat line %2 column %3" ).arg( err ).arg( line ).arg( column );
+    QString errmsg = tr( "Cannot read projects file (%1):" ).arg( path ) + tr( "\n%1\nat line %2 column %3" ).arg( err ).arg( line ).arg( column );
     QgsDebugError( errmsg );
     QgsGrass::warning( errmsg );
     file.close();
@@ -1037,7 +1040,7 @@ void QgsGrassNewMapset::setFinishPage()
   {
     location = mLocationLineEdit->text();
   }
-  mLocationLabel->setText( tr( "Location" ) + " : " + location );
+  mLocationLabel->setText( tr( "Project" ) + " : " + location );
 
   mMapsetLabel->setText( tr( "Mapset" ) + " : " + mMapsetLineEdit->text() );
 }
@@ -1080,11 +1083,11 @@ void QgsGrassNewMapset::createMapset()
 
     if ( ret != 0 )
     {
-      QgsGrass::warning( tr( "Cannot create new location: %1" ).arg( error ) );
+      QgsGrass::warning( tr( "Cannot create new project: %1" ).arg( error ) );
       return;
     }
 
-    // Location created -> reset widgets
+    // Project created -> reset widgets
     setLocations();
     mSelectLocationRadioButton->setChecked( true );
     mLocationComboBox->setItemText( mLocationComboBox->currentIndex(), location );
@@ -1170,7 +1173,7 @@ void QgsGrassNewMapset::pageSelected( int index )
 
   switch ( index )
   {
-    case Location:
+    case Project:
       if ( mPreviousPage == Database )
       {
         setLocationPage();
@@ -1202,7 +1205,7 @@ void QgsGrassNewMapset::pageSelected( int index )
           projRadioSwitched();
         }
       }
-      if ( mPreviousPage == Location )
+      if ( mPreviousPage == Project )
       {
         setProjectionPage();
       }
@@ -1223,7 +1226,7 @@ void QgsGrassNewMapset::pageSelected( int index )
       break;
 
     case MapSet:
-      if ( mPreviousPage == Location || mPreviousPage == Region )
+      if ( mPreviousPage == Project || mPreviousPage == Region )
       {
         setMapsets();
         mapsetChanged();

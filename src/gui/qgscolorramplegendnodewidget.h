@@ -35,7 +35,7 @@ class QDialogButtonBox;
  * The current settings are set by a call to setSettings(), and the settings defined by the
  * widget are retrieved by calling settings().
  *
- * When changes are made the to settings by a user the widgetChanged() signal is emitted.
+ * When changes are made the to settings by a user the changed() signal is emitted.
  *
  * \since QGIS 3.18
  */

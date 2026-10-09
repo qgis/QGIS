@@ -19,6 +19,7 @@ email                : marco.hugentobler at sourcepole dot com
 #include "qgis.h"
 #include "qgis_core.h"
 
+#include <QHash>
 #include <QString>
 
 using namespace Qt::StringLiterals;
@@ -86,8 +87,10 @@ struct CORE_EXPORT QgsVertexId
 
   /**
    * Returns TRUE if this vertex ID is valid for the specified \a geom.
+   *
+   * \deprecated QGIS 4.4. Use QgsAbstractGeometry::hasVertex() instead.
    */
-  bool isValid( const QgsAbstractGeometry *geom ) const SIP_HOLDGIL;
+  Q_DECL_DEPRECATED bool isValid( const QgsAbstractGeometry *geom ) const SIP_HOLDGIL SIP_DEPRECATED;
 
   //! Part number
   int part = -1;
@@ -112,5 +115,12 @@ struct CORE_EXPORT QgsVertexId
 #endif
 
 };
+
+#ifndef SIP_RUN
+inline size_t qHash( QgsVertexId id, size_t seed = 0 ) noexcept
+{
+  return qHashMulti( seed, id.part, id.ring, id.vertex );
+}
+#endif
 
 #endif //QGSVERTEXID_H

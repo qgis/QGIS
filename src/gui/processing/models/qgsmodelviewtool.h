@@ -18,6 +18,7 @@
 
 #include "qgis_gui.h"
 #include "qgis_sip.h"
+#include "qgsmodelcomponentgraphicitem.h"
 
 #include <QAction>
 #include <QCursor>
@@ -30,7 +31,6 @@ class QWheelEvent;
 class QKeyEvent;
 class QgsModelGraphicsView;
 class QgsModelViewMouseEvent;
-class QgsModelComponentGraphicItem;
 class QgsModelGraphicsScene;
 
 

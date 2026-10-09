@@ -433,13 +433,13 @@ class CORE_EXPORT QgsMapBoxGlStyleConverter
      * Returns a new instance of a vector tile renderer representing the converted style,
      * or NULLPTR if the style could not be converted successfully.
      */
-    QgsVectorTileRenderer *renderer() const SIP_FACTORY;
+    std::unique_ptr<QgsVectorTileRenderer> renderer() const;
 
     /**
      * Returns a new instance of a vector tile labeling representing the converted style,
      * or NULLPTR if the style could not be converted successfully.
      */
-    QgsVectorTileLabeling *labeling() const SIP_FACTORY;
+    std::unique_ptr<QgsVectorTileLabeling> labeling() const;
 
     /**
      * Returns the list of converted sources.

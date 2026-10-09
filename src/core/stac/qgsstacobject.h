@@ -98,13 +98,13 @@ class CORE_EXPORT QgsStacObject
     //! Sets the STAC links included in the object
     void setLinks( const QVector< QgsStacLink > &links );
 
-    //! Return the url stored in the object's "self" link
+    //! Returns the url stored in the object's "self" link
     QString url() const;
 
-    //! Return the url stored in the object's "root" link
+    //! Returns the url stored in the object's "root" link
     QString rootUrl() const;
 
-    //! Return the url stored in the object's "parent" link
+    //! Returns the url stored in the object's "parent" link
     QString parentUrl() const;
 
 

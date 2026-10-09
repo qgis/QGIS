@@ -80,37 +80,50 @@ void QgsMapToolAddPart::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
   QgsMapToolCapture::cadCanvasReleaseEvent( e );
 }
 
-void QgsMapToolAddPart::layerPointCaptured( const QgsPoint &point )
+void QgsMapToolAddPart::layerGeometryCaptured( const QgsGeometry &geometry )
 {
   QgsVectorLayer *layer = getLayerAndCheckSelection();
   if ( !layer )
     return;
+
   layer->beginEditCommand( tr( "Part added" ) );
-  Qgis::GeometryOperationResult errorCode = layer->addPart( QgsPointSequence() << point );
-  finalizeEditCommand( layer, errorCode );
+
+
+  const QVector<QgsGeometry> geomCollection = geometry.asGeometryCollection();
+
+  Qgis::GeometryOperationResult errorCode = Qgis::GeometryOperationResult::NothingHappened;
+  for ( const QgsGeometry &item : geomCollection )
+  {
+    switch ( item.type() )
+    {
+      case Qgis::GeometryType::Point:
+      {
+        auto pt = *qgsgeometry_cast<const QgsPoint *>( item.constGet() );
+        errorCode = layer->addPart( QgsPointSequence() << pt );
+        break;
+      }
+      case Qgis::GeometryType::Line:
+      {
+        auto line = qgsgeometry_cast<const QgsCurve *>( item.constGet() );
+        errorCode = layer->addPart( line->clone() );
+        break;
+      }
+      case Qgis::GeometryType::Polygon:
+      {
+        auto polygon = qgsgeometry_cast<const QgsCurvePolygon *>( item.constGet() );
+        errorCode = layer->addPart( polygon->clone() );
+        break;
+      }
+      case Qgis::GeometryType::Null:
+      case Qgis::GeometryType::Unknown:
+        break;
+    }
+  }
+
+  finalizeEditCommand( layer, geometry, errorCode );
 }
 
-void QgsMapToolAddPart::layerLineCaptured( const QgsCurve *line )
-{
-  QgsVectorLayer *layer = getLayerAndCheckSelection();
-  if ( !layer )
-    return;
-  layer->beginEditCommand( tr( "Part added" ) );
-  Qgis::GeometryOperationResult errorCode = layer->addPart( line->clone() );
-  finalizeEditCommand( layer, errorCode );
-}
-
-void QgsMapToolAddPart::layerPolygonCaptured( const QgsCurvePolygon *polygon )
-{
-  QgsVectorLayer *layer = getLayerAndCheckSelection();
-  if ( !layer )
-    return;
-  layer->beginEditCommand( tr( "Part added" ) );
-  Qgis::GeometryOperationResult errorCode = layer->addPart( polygon->exteriorRing()->clone() );
-  finalizeEditCommand( layer, errorCode );
-}
-
-void QgsMapToolAddPart::finalizeEditCommand( QgsVectorLayer *layer, Qgis::GeometryOperationResult errorCode )
+void QgsMapToolAddPart::finalizeEditCommand( QgsVectorLayer *layer, const QgsGeometry &topologicalCandidates, Qgis::GeometryOperationResult errorCode )
 {
   QString errorMessage;
   switch ( errorCode )
@@ -124,7 +137,7 @@ void QgsMapToolAddPart::finalizeEditCommand( QgsVectorLayer *layer, Qgis::Geomet
       const bool topologicalEditing = QgsProject::instance()->topologicalEditing();
       if ( topologicalEditing )
       {
-        addTopologicalPoints( pointsZM() );
+        ( void ) layer->addTopologicalPoints( topologicalCandidates );
       }
 
       layer->endEditCommand();

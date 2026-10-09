@@ -115,6 +115,8 @@ QVariantMap QgsVectorizeAlgorithmBase::processAlgorithm( const QVariantMap &para
           f.setAttributes( QgsAttributes() << value );
           if ( !sink->addFeature( f, QgsFeatureSink::FastInsert ) )
             throw QgsProcessingException( writeFeatureError( sink.get(), parameters, u"OUTPUT"_s ) );
+          else
+            feedback->featureAddedToSink( u"OUTPUT"_s );
         }
         currentX += mRasterUnitsPerPixelX;
       }
@@ -123,6 +125,7 @@ QVariantMap QgsVectorizeAlgorithmBase::processAlgorithm( const QVariantMap &para
   }
 
   sink->finalize();
+  feedback->featureSinkFinalized( u"OUTPUT"_s );
 
   QVariantMap outputs;
   outputs.insert( u"OUTPUT"_s, dest );
@@ -184,6 +187,8 @@ Qgis::WkbType QgsRasterPixelsToPolygonsAlgorithm::sinkType() const
 
 QgsGeometry QgsRasterPixelsToPolygonsAlgorithm::createGeometryForPixel( double centerX, double centerY, double pixelWidthX, double pixelWidthY ) const
 {
+  QGS_MARK_ALGORITHM_SOURCE
+
   const double hCellSizeX = pixelWidthX / 2.0;
   const double hCellSizeY = pixelWidthY / 2.0;
   return QgsGeometry::fromRect( QgsRectangle( centerX - hCellSizeX, centerY - hCellSizeY, centerX + hCellSizeX, centerY + hCellSizeY ) );
@@ -245,6 +250,8 @@ Qgis::WkbType QgsRasterPixelsToPointsAlgorithm::sinkType() const
 
 QgsGeometry QgsRasterPixelsToPointsAlgorithm::createGeometryForPixel( double centerX, double centerY, double, double ) const
 {
+  QGS_MARK_ALGORITHM_SOURCE
+
   return QgsGeometry( new QgsPoint( centerX, centerY ) );
 }
 

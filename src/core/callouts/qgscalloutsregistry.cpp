@@ -38,7 +38,7 @@ QgsCalloutWidget *QgsCalloutAbstractMetadata::createCalloutWidget( QgsMapLayer *
 
 QgsCallout *QgsCalloutMetadata::createCallout( const QVariantMap &properties, const QgsReadWriteContext &context )
 {
-  return mCreateFunc ? mCreateFunc( properties, context ) : nullptr;
+  return mCreateFunc ? mCreateFunc( properties, context ).release() : nullptr;
 }
 
 QgsCalloutWidget *QgsCalloutMetadata::createCalloutWidget( QgsMapLayer *vl )
@@ -74,7 +74,7 @@ bool QgsCalloutRegistry::addCalloutType( QgsCalloutAbstractMetadata *metadata )
   return true;
 }
 
-QgsCallout *QgsCalloutRegistry::createCallout( const QString &name, const QDomElement &element, const QgsReadWriteContext &context ) const
+std::unique_ptr<QgsCallout> QgsCalloutRegistry::createCallout( const QString &name, const QDomElement &element, const QgsReadWriteContext &context ) const
 {
   const QVariantMap props = QgsXmlUtils::readVariant( element.firstChildElement() ).toMap();
   return createCallout( name, props, context );
@@ -90,15 +90,15 @@ QgsCalloutAbstractMetadata *QgsCalloutRegistry::calloutMetadata( const QString &
   return mMetadata.value( name );
 }
 
-QgsCallout *QgsCalloutRegistry::defaultCallout()
+std::unique_ptr<QgsCallout> QgsCalloutRegistry::defaultCallout()
 {
-  return new QgsSimpleLineCallout();
+  return std::make_unique<QgsSimpleLineCallout>();
 }
 
-QgsCallout *QgsCalloutRegistry::createCallout( const QString &name, const QVariantMap &properties, const QgsReadWriteContext &context ) const
+std::unique_ptr<QgsCallout> QgsCalloutRegistry::createCallout( const QString &name, const QVariantMap &properties, const QgsReadWriteContext &context ) const
 {
   if ( !mMetadata.contains( name ) )
     return nullptr;
 
-  return mMetadata[name]->createCallout( properties, context );
+  return std::unique_ptr<QgsCallout>( mMetadata[name]->createCallout( properties, context ) );
 }

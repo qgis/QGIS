@@ -1,0 +1,15 @@
+[general]
+name=Additional QGIS Processing Tools
+description=Additional QGIS Processing Tools
+about=Exposes additional algorithms and tools for use within the QGIS Processing framework.
+category=Analysis
+version=2.12.99
+qgisMinimumVersion=4.0
+
+icon=:/images/themes/default/processingAlgorithm.svg
+
+homepage=https://qgis.org
+tracker=https://github.com/qgis/QGIS/issues
+repository=https://github.com/qgis/QGIS
+
+hasProcessingProvider=yes

@@ -86,6 +86,8 @@ void QgsRenameTableFieldAlgorithm::initParameters( const QVariantMap & )
 
 QgsFields QgsRenameTableFieldAlgorithm::outputFields( const QgsFields &inputFields ) const
 {
+  QGS_MARK_ALGORITHM_SOURCE
+
   QgsFields outFields = inputFields;
   const int index = outFields.lookupField( mOriginalName );
   if ( index < 0 )

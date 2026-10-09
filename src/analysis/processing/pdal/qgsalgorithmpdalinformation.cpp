@@ -74,6 +74,8 @@ void QgsPdalInformationAlgorithm::initAlgorithm( const QVariantMap & )
 
 QVariantMap QgsPdalInformationAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
+  QGS_MARK_ALGORITHM_SOURCE
+
 #if QT_CONFIG( process )
   const QStringList processArgs = createArgumentLists( parameters, context, feedback );
   const QString wrenchPath = wrenchExecutableBinary();

@@ -70,7 +70,7 @@ class CORE_EXPORT QgsMapInfoSymbolConverter
      *
      * The caller takes ownership of the returned symbol.
      */
-    static QgsLineSymbol *convertLineSymbol( int identifier, QgsMapInfoSymbolConversionContext &context, const QColor &foreColor, double size, Qgis::RenderUnit sizeUnit, bool interleaved = false ) SIP_FACTORY;
+    static std::unique_ptr<QgsLineSymbol> convertLineSymbol( int identifier, QgsMapInfoSymbolConversionContext &context, const QColor &foreColor, double size, Qgis::RenderUnit sizeUnit, bool interleaved = false );
     // clang-format on
 
     /**
@@ -78,7 +78,7 @@ class CORE_EXPORT QgsMapInfoSymbolConverter
      *
      * The caller takes ownership of the returned symbol.
      */
-    static QgsFillSymbol *convertFillSymbol( int identifier, QgsMapInfoSymbolConversionContext &context, const QColor &foreColor, const QColor &backColor = QColor() ) SIP_FACTORY;
+    static std::unique_ptr<QgsFillSymbol> convertFillSymbol( int identifier, QgsMapInfoSymbolConversionContext &context, const QColor &foreColor, const QColor &backColor = QColor() );
 
     /**
      * Converts the MapInfo marker symbol with the specified \a identifier to a QgsMarkerSymbol.
@@ -87,7 +87,7 @@ class CORE_EXPORT QgsMapInfoSymbolConverter
      *
      * The caller takes ownership of the returned symbol.
      */
-    static QgsMarkerSymbol *convertMarkerSymbol( int identifier, QgsMapInfoSymbolConversionContext &context, const QColor &color, double size, Qgis::RenderUnit sizeUnit ) SIP_FACTORY;
+    static std::unique_ptr<QgsMarkerSymbol> convertMarkerSymbol( int identifier, QgsMapInfoSymbolConversionContext &context, const QColor &color, double size, Qgis::RenderUnit sizeUnit );
 };
 
 #endif // QGSMAPINFOSYMBOLCONVERTER_H

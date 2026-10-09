@@ -56,6 +56,7 @@ email                : sherman at mrcc.com
 #include "qgsmessagelog.h"
 #include "qgsmimedatautils.h"
 #include "qgsoverlaywidgetlayout.h"
+#include "qgspainting.h"
 #include "qgsproject.h"
 #include "qgsprojectionselectiondialog.h"
 #include "qgsprojectviewsettings.h"
@@ -108,6 +109,10 @@ email                : sherman at mrcc.com
 using namespace Qt::StringLiterals;
 
 const QgsSettingsEntryString *QgsMapCanvas::settingsCustomCoordinateCrs = new QgsSettingsEntryString( u"custom-coordinate-crs"_s, QgsSettingsTree::sTreeMap, QString() );
+const QgsSettingsEntryBool *QgsMapCanvas::settingsMainCanvasPreviewJobs
+  = new QgsSettingsEntryBool( u"main-canvas-preview-jobs"_s, QgsSettingsTree::sTreeRendering, true, u"Whether the main map canvas displays preview tiles while rendering"_s );
+const QgsSettingsEntryBool *QgsMapCanvas::settingsEnableRenderCaching
+  = new QgsSettingsEntryBool( u"enable-render-caching"_s, QgsSettingsTree::sTreeRendering, true, u"Whether map rendering uses a cache to speed up redraws"_s );
 
 /**
  * \ingroup gui
@@ -180,6 +185,7 @@ QgsMapCanvas::QgsMapCanvas( QWidget *parent )
     mSettings.setFlag( Qgis::MapSettingsFlag::DrawEditingInfo );
     mSettings.setFlag( Qgis::MapSettingsFlag::UseRenderingOptimization );
     mSettings.setFlag( Qgis::MapSettingsFlag::RenderPartialOutput );
+    mSettings.setFlag( Qgis::MapSettingsFlag::DrawLabelSelection );
     mSettings.setEllipsoid( QgsProject::instance()->ellipsoid() );
     connect( QgsProject::instance(), &QgsProject::ellipsoidChanged, this, [this] {
       mSettings.setEllipsoid( QgsProject::instance()->ellipsoid() );
@@ -2308,7 +2314,7 @@ void QgsMapCanvas::flashGeometries( const QList<QgsGeometry> &geometries, const 
     rb->setSecondaryStrokeColor( QColor( 255, 255, 255 ) );
   }
   if ( geomType == Qgis::GeometryType::Point )
-    rb->setIcon( QgsRubberBand::ICON_CIRCLE );
+    rb->setIcon( Qgis::RubberBandIconType::Circle );
 
   QColor startColor = color1;
   if ( !startColor.isValid() )

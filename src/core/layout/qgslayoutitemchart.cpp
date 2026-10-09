@@ -29,6 +29,7 @@
 #include "qgslayoututils.h"
 #include "qgslinechartplot.h"
 #include "qgsmarkersymbol.h"
+#include "qgspainting.h"
 #include "qgspiechartplot.h"
 #include "qgsplotregistry.h"
 #include "qgspointdistancerenderer.h"

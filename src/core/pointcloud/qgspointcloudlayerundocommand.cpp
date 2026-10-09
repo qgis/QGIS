@@ -37,7 +37,7 @@ QgsPointCloudLayerUndoCommandChangeAttribute::QgsPointCloudLayerUndoCommandChang
   , mAttribute( attribute )
   , mNewValue( value )
 {
-  QgsEventTracing::ScopedEvent _trace( u"PointCloud"_s, u"QgsPointCloudLayerUndoCommand constructor"_s );
+  QgsScopedEvent _trace( u"PointCloud"_s, u"QgsPointCloudLayerUndoCommand constructor"_s );
 
   QList<NodeProcessData> processData;
   for ( auto it = mappedPoints.constBegin(); it != mappedPoints.constEnd(); ++it )
@@ -114,7 +114,7 @@ void QgsPointCloudLayerUndoCommandChangeAttribute::redo()
 
 void QgsPointCloudLayerUndoCommandChangeAttribute::undoRedoPrivate( bool isUndo )
 {
-  QgsEventTracing::ScopedEvent _trace( u"PointCloud"_s, u"QgsPointCloudLayerUndoCommand::undoRedoPrivate"_s );
+  QgsScopedEvent _trace( u"PointCloud"_s, u"QgsPointCloudLayerUndoCommand::undoRedoPrivate"_s );
 
   QgsPointCloudAttribute attribute = mAttribute;
   double newValue = mNewValue;

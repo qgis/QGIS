@@ -16,6 +16,7 @@
 #ifndef QGSPHONGTEXTUREDMATERIAL_H
 #define QGSPHONGTEXTUREDMATERIAL_H
 
+#include "qgis.h"
 #include "qgis_3d.h"
 #include "qgsmaterial.h"
 
@@ -25,10 +26,15 @@
 
 #define SIP_NO_FILE
 
+class QMatrix4x4;
+
+
 namespace Qt3DRender
 {
   class QParameter;
-
+  class QShaderProgram;
+  class QRenderPass;
+  class QFilterKey;
 } // namespace Qt3DRender
 
 ///@cond PRIVATE
@@ -49,6 +55,20 @@ class _3D_EXPORT QgsPhongTexturedMaterial : public QgsMaterial
     explicit QgsPhongTexturedMaterial( Qt3DCore::QNode *parent = nullptr );
     ~QgsPhongTexturedMaterial() override;
 
+    /**
+     * Enables or disables instanced point rendering mode.
+     * When \a enabled is TRUE the material uses the instanced vertex shader with
+     * texture coordinate support. \a flags controls which per-instance attributes
+     * (scale, rotation) are active.
+     */
+    void setInstancingEnabled( bool enabled, Qgis::InstancedMaterialFlags flags );
+
+    /**
+     * Sets the transform from mesh space to object space
+     * \note Only applies when instancing is enabled
+     */
+    void setInstancingMeshTransform( const QMatrix4x4 &transform );
+
   public slots:
     //! Sets ambient color, must be a SRGB color
     void setAmbient( const QColor &ambient );
@@ -63,21 +83,44 @@ class _3D_EXPORT QgsPhongTexturedMaterial : public QgsMaterial
 
     void setDiffuseTextureScale( float textureScale );
     void setDiffuseTextureRotation( float textureRotation );
+    void setDiffuseTextureOffset( float textureOffsetX, float textureOffsetY );
     //! Sets specular color, must be a SRGB color
     void setSpecular( const QColor &specular );
     void setShininess( float shininess );
     void setOpacity( float opacity );
 
+    /**
+     * When data defined texture translation is enabled,
+     * the fragment shader uses per-instance
+     * translation, rotation, and scale attributes for the texture coordinates.
+     */
+    void setDataDefinedTextureTransformEnabled( bool enabled );
+
   private:
     void init();
+    void updateShaders();
 
     Qt3DRender::QParameter *mAmbientParameter = nullptr;
     Qt3DRender::QParameter *mDiffuseTextureParameter = nullptr;
     Qt3DRender::QParameter *mDiffuseTextureScaleParameter = nullptr;
     Qt3DRender::QParameter *mDiffuseTextureRotationParameter = nullptr;
+    Qt3DRender::QParameter *mDiffuseTextureOffsetParameter = nullptr;
     Qt3DRender::QParameter *mSpecularParameter = nullptr;
     Qt3DRender::QParameter *mShininessParameter = nullptr;
     Qt3DRender::QParameter *mOpacityParameter = nullptr;
+
+    bool mInstanced = false;
+    Qgis::InstancedMaterialFlags mInstanceFlags;
+
+    Qt3DRender::QEffect *mEffect = nullptr;
+    Qt3DRender::QTechnique *mGL3Technique = nullptr;
+    Qt3DRender::QRenderPass *mGL3RenderPass = nullptr;
+    Qt3DRender::QShaderProgram *mShaderProgram = nullptr;
+    Qt3DRender::QFilterKey *mFilterKey = nullptr;
+    Qt3DRender::QParameter *mTransformParameter = nullptr;
+    Qt3DRender::QParameter *mNormalTransformParameter = nullptr;
+
+    bool mDataDefinedTextureTransformEnabled = false;
 };
 
 ///@endcond PRIVATE

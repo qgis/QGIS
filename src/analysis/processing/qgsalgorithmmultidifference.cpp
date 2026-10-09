@@ -88,6 +88,8 @@ void QgsMultiDifferenceAlgorithm::initAlgorithm( const QVariantMap & )
 
 QVariantMap QgsMultiDifferenceAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
+  QGS_MARK_ALGORITHM_SOURCE
+
   std::unique_ptr<QgsFeatureSource> sourceA( parameterAsSource( parameters, u"INPUT"_s, context ) );
   if ( !sourceA )
     throw QgsProcessingException( invalidSourceError( parameters, u"INPUT"_s ) );
@@ -128,8 +130,9 @@ QVariantMap QgsMultiDifferenceAlgorithm::processAlgorithm( const QVariantMap &pa
     QgsVectorLayer *overlayLayer = qobject_cast<QgsVectorLayer *>( layers.at( 0 ) );
 
     const long total = sourceA->featureCount();
-    QgsOverlayUtils::difference( *sourceA, *overlayLayer, *sink, context, feedback, count, total, QgsOverlayUtils::OutputA );
+    QgsOverlayUtils::difference( *sourceA, *overlayLayer, *sink, u"OUTPUT"_s, context, feedback, count, total, QgsOverlayUtils::OutputA );
     sink->finalize();
+    feedback->featureSinkFinalized( u"OUTPUT"_s );
   }
   else
   {
@@ -156,7 +159,7 @@ QVariantMap QgsMultiDifferenceAlgorithm::processAlgorithm( const QVariantMap &pa
       {
         QString id = u"memory:"_s;
         sink.reset( QgsProcessingUtils::createFeatureSink( id, context, sourceA->fields(), geometryType, crs ) );
-        QgsOverlayUtils::difference( *sourceA, *overlayLayer, *sink, context, &multiStepFeedback, count, sourceA->featureCount(), QgsOverlayUtils::OutputA );
+        QgsOverlayUtils::difference( *sourceA, *overlayLayer, *sink, QString(), context, &multiStepFeedback, count, sourceA->featureCount(), QgsOverlayUtils::OutputA );
 
         differenceLayer = qobject_cast<QgsVectorLayer *>( QgsProcessingUtils::mapLayerFromString( id, context ) );
       }
@@ -169,13 +172,15 @@ QVariantMap QgsMultiDifferenceAlgorithm::processAlgorithm( const QVariantMap &pa
 
         outputs.insert( u"OUTPUT"_s, dest );
 
-        QgsOverlayUtils::difference( *differenceLayer, *overlayLayer, *sink, context, &multiStepFeedback, count, differenceLayer->featureCount(), QgsOverlayUtils::OutputA );
+        QgsOverlayUtils::difference( *differenceLayer, *overlayLayer, *sink, u"OUTPUT"_s, context, &multiStepFeedback, count, differenceLayer->featureCount(), QgsOverlayUtils::OutputA );
+        sink->finalize();
+        feedback->featureSinkFinalized( u"OUTPUT"_s );
       }
       else
       {
         QString id = u"memory:"_s;
         sink.reset( QgsProcessingUtils::createFeatureSink( id, context, differenceLayer->fields(), geometryType, crs ) );
-        QgsOverlayUtils::difference( *differenceLayer, *overlayLayer, *sink, context, &multiStepFeedback, count, differenceLayer->featureCount(), QgsOverlayUtils::OutputA );
+        QgsOverlayUtils::difference( *differenceLayer, *overlayLayer, *sink, QString(), context, &multiStepFeedback, count, differenceLayer->featureCount(), QgsOverlayUtils::OutputA );
 
         differenceLayer = qobject_cast<QgsVectorLayer *>( QgsProcessingUtils::mapLayerFromString( id, context ) );
       }

@@ -21,7 +21,6 @@
 #include "qgs3drendererregistry.h"
 #include "qgsabstract3dsymbol.h"
 #include "qgsabstractvectorlayer3drenderer.h"
-#include "qgsphongmaterialsettings.h"
 
 #include <QObject>
 

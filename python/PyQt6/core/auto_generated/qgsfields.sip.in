@@ -9,7 +9,6 @@
 
 
 
-
 class QgsFields
 {
 %Docstring(signature="appended")
@@ -356,7 +355,7 @@ Utility function to return a list of :py:class:`QgsField` instances
 %End
 
     bool operator==( const QgsFields &other ) const /HoldGIL/;
-    bool operator!=( const QgsFields &other ) const  /HoldGIL/;
+    bool operator!=( const QgsFields &other ) const /HoldGIL/;
 
 
     QIcon iconForField( int fieldIdx, bool considerOrigin = false ) const /Factory/;

@@ -97,6 +97,8 @@ QgsLayoutMapExtentToLayerAlgorithm *QgsLayoutMapExtentToLayerAlgorithm::createIn
 
 bool QgsLayoutMapExtentToLayerAlgorithm::prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
+  QGS_MARK_ALGORITHM_SOURCE
+
   // this needs to be done in main thread, layouts are not thread safe
   QgsPrintLayout *layout = parameterAsLayout( parameters, u"LAYOUT"_s, context );
   if ( !layout )
@@ -166,9 +168,12 @@ QVariantMap QgsLayoutMapExtentToLayerAlgorithm::processAlgorithm( const QVariant
   {
     if ( !sink->addFeature( f, QgsFeatureSink::FastInsert ) )
       throw QgsProcessingException( writeFeatureError( sink.get(), parameters, u"OUTPUT"_s ) );
+    else
+      feedback->featureAddedToSink( u"OUTPUT"_s );
   }
 
   sink->finalize();
+  feedback->featureSinkFinalized( u"OUTPUT"_s );
 
   feedback->setProgress( 100 );
 

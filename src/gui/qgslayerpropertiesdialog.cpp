@@ -33,6 +33,7 @@
 #include <QDir>
 #include <QFileDialog>
 #include <QMessageBox>
+#include <QPushButton>
 #include <QString>
 #include <qstackedwidget.h>
 
@@ -351,42 +352,40 @@ void QgsLayerPropertiesDialog::saveDefaultStyle()
     QMessageBox askToUser;
     askToUser.setText( tr( "Save default style to: " ) );
     askToUser.setIcon( QMessageBox::Question );
-    askToUser.addButton( tr( "Cancel" ), QMessageBox::RejectRole );
+    QPushButton *cancelButton = askToUser.addButton( tr( "Cancel" ), QMessageBox::RejectRole );
     askToUser.addButton( tr( "Local Database" ), QMessageBox::NoRole );
-    askToUser.addButton( tr( "Datasource Database" ), QMessageBox::YesRole );
+    QPushButton *datasourceButton = askToUser.addButton( tr( "Datasource Database" ), QMessageBox::YesRole );
 
-    switch ( askToUser.exec() )
+    askToUser.exec();
+
+    if ( askToUser.clickedButton() == cancelButton )
     {
-      case 0:
-        return;
-      case 2:
+      return;
+    }
+    else if ( askToUser.clickedButton() == datasourceButton )
+    {
+      apply();
+      QString errorMessage;
+      if ( QgsProviderRegistry::instance()->styleExists( mLayer->providerType(), mLayer->source(), QString(), errorMessage ) )
       {
-        apply();
-        QString errorMessage;
-        if ( QgsProviderRegistry::instance()->styleExists( mLayer->providerType(), mLayer->source(), QString(), errorMessage ) )
-        {
-          if ( QMessageBox::
-                 question( nullptr, QObject::tr( "Save style in database" ), QObject::tr( "A matching style already exists in the database for this layer. Do you want to overwrite it?" ), QMessageBox::Yes | QMessageBox::No )
-               == QMessageBox::No )
-          {
-            return;
-          }
-        }
-        else if ( !errorMessage.isEmpty() )
-        {
-          QMessageBox::warning( nullptr, QObject::tr( "Save style in database" ), errorMessage );
-          return;
-        }
-
-        mLayer->saveStyleToDatabaseV2( QString(), QString(), true, QString(), errorMsg );
-        if ( errorMsg.isNull() )
+        if ( QMessageBox::
+               question( nullptr, QObject::tr( "Save style in database" ), QObject::tr( "A matching style already exists in the database for this layer. Do you want to overwrite it?" ), QMessageBox::Yes | QMessageBox::No )
+             == QMessageBox::No )
         {
           return;
         }
-        break;
       }
-      default:
-        break;
+      else if ( !errorMessage.isEmpty() )
+      {
+        QMessageBox::warning( nullptr, QObject::tr( "Save style in database" ), errorMessage );
+        return;
+      }
+
+      mLayer->saveStyleToDatabaseV2( QString(), QString(), true, QString(), errorMsg );
+      if ( errorMsg.isNull() )
+      {
+        return;
+      }
     }
   }
 

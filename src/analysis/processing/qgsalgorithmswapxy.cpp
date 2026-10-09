@@ -93,6 +93,8 @@ Qgis::ProcessingFeatureSourceFlags QgsSwapXYAlgorithm::sourceFlags() const
 
 QgsFeatureList QgsSwapXYAlgorithm::processFeature( const QgsFeature &f, QgsProcessingContext &, QgsProcessingFeedback * )
 {
+  QGS_MARK_ALGORITHM_SOURCE
+
   QgsFeatureList list;
   QgsFeature feature = f;
   if ( feature.hasGeometry() )

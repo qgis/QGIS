@@ -159,6 +159,8 @@ bool QgsRasterRankAlgorithm::prepareAlgorithm( const QVariantMap &parameters, Qg
 
 QVariantMap QgsRasterRankAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
+  QGS_MARK_ALGORITHM_SOURCE
+
   QList<QgsMapLayer *> layers; // Needed for QgsProcessingUtils::combineLayerExtents
   for ( auto &layer : mLayers )
   {

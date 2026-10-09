@@ -14,6 +14,8 @@
  ***************************************************************************/
 
 
+#include <gdal_version.h>
+
 #include "editorwidgets/core/qgseditorwidgetregistry.h"
 #include "qgsapplication.h"
 #include "qgsattributeeditorcontainer.h"
@@ -22,6 +24,7 @@
 #include "qgsattributeformeditorwidget.h"
 #include "qgsattributeforminterface.h"
 #include "qgseditorwidgetwrapper.h"
+#include "qgsenumerationwidgetwrapper.h"
 #include "qgsexpressioncontextutils.h"
 #include "qgsfeature.h"
 #include "qgsgui.h"
@@ -72,6 +75,8 @@ class TestQgsAttributeForm : public QObject
     void testCaseInsensitiveFieldConstraint();
     void testCompositeForeignKeyHidesNonFirstFields();
     void testCustomComments();
+    void testFormWithMissingField();
+    void testFieldDomainsUseEnumerationWidget();
 
   private:
     QLabel *constraintsLabel( QgsAttributeForm *form, QgsEditorWidgetWrapper *ww )
@@ -1460,6 +1465,54 @@ void TestQgsAttributeForm::testCustomComments()
   ww1->setValues( u"Ned"_s, QVariantList() );
   form.updateLabels();
   QCOMPARE( buddyLabels.value( ww4->widget() )->parentWidget()->toolTip(), u"<b>Fourth field</b> (f4)<br><font style='font-family:monospace; white-space: nowrap;'>string NULL</font><br><em>Comment with Ned</em>"_s ); //it's the alias and the data defined comment
+}
+
+void TestQgsAttributeForm::testFormWithMissingField()
+{
+  // a drag-and-drop form layout references a
+  // field that does not exist on the layer (e.g. field was renamed / removed).
+  const QString def = u"Point?field=col0:integer"_s;
+  auto layer = std::make_unique<QgsVectorLayer>( def, u"test"_s, u"memory"_s );
+  QVERIFY( layer->isValid() );
+  layer->setEditorWidgetSetup( 0, QgsEditorWidgetSetup( u"TextEdit"_s, QVariantMap() ) );
+
+  QgsEditFormConfig editFormConfig = layer->editFormConfig();
+  editFormConfig.clearTabs();
+  editFormConfig.invisibleRootContainer()->addChildElement( new QgsAttributeEditorField( "col0", 0, editFormConfig.invisibleRootContainer() ) );
+  // Reference to a field that does not exist on the layer
+  editFormConfig.invisibleRootContainer()->addChildElement( new QgsAttributeEditorField( "missing_field", -1, editFormConfig.invisibleRootContainer() ) );
+  editFormConfig.setLayout( Qgis::AttributeFormLayout::DragAndDrop );
+  layer->setEditFormConfig( editFormConfig );
+
+  QgsFeature ft( layer->dataProvider()->fields(), 1 );
+  ft.setAttribute( u"col0"_s, 1 );
+
+  QgsAttributeForm form( layer.get() );
+  form.setFeature( ft );
+
+  // The valid field still has a corresponding editor widget
+  QVERIFY( form.mFormEditorWidgets.contains( 0 ) );
+  // No widget is registered for the bogus field index -1
+  QVERIFY( !form.mFormEditorWidgets.contains( -1 ) );
+}
+
+void TestQgsAttributeForm::testFieldDomainsUseEnumerationWidget()
+{
+#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION( 3, 13, 0 )
+  auto layer = std::make_unique<QgsVectorLayer>( QStringLiteral( TEST_DATA_DIR ) + u"/domains.gpkg|layername=test"_s, u"test"_s, u"ogr"_s );
+  QVERIFY( layer->isValid() );
+
+  QgsAttributeForm form( layer.get() );
+
+  const int fieldIdx = layer->fields().lookupField( u"with_enum_domain"_s );
+  QVERIFY( fieldIdx > -1 );
+
+  QgsWidgetWrapper *ww = form.mWidgets[fieldIdx];
+  QVERIFY( ww );
+
+  QgsEnumerationWidgetWrapper *eww = dynamic_cast<QgsEnumerationWidgetWrapper *>( ww );
+  QVERIFY( eww );
+#endif
 }
 
 QGSTEST_MAIN( TestQgsAttributeForm )

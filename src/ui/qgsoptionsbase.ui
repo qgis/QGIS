@@ -416,7 +416,7 @@
                      </widget>
                     </item>
                     <item>
-                     <widget class="QFontComboBox" name="mFontFamilyComboBox">
+                     <widget class="QgsFontComboBox" name="mFontFamilyComboBox">
                       <property name="sizeAdjustPolicy">
                        <enum>QComboBox::SizeAdjustPolicy::AdjustToMinimumContentsLengthWithIcon</enum>
                       </property>
@@ -4629,7 +4629,7 @@ The bigger the number, the faster zooming with the mouse wheel will be.</string>
                    </widget>
                   </item>
                   <item row="2" column="1">
-                   <widget class="QFontComboBox" name="mComposerFontComboBox"/>
+                   <widget class="QgsFontComboBox" name="mComposerFontComboBox"/>
                   </item>
                  </layout>
                 </widget>
@@ -5556,15 +5556,32 @@ li.checked::marker { content: &quot;\2612&quot;; }
    <container>1</container>
   </customwidget>
   <customwidget>
+   <class>QgsDoubleSpinBox</class>
+   <extends>QDoubleSpinBox</extends>
+   <header>qgsdoublespinbox.h</header>
+  </customwidget>
+  <customwidget>
+   <class>QgsScrollArea</class>
+   <extends>QScrollArea</extends>
+   <header>qgsscrollarea.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
    <class>QgsColorButton</class>
    <extends>QToolButton</extends>
    <header>qgscolorbutton.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>
-   <class>QgsDoubleSpinBox</class>
-   <extends>QDoubleSpinBox</extends>
-   <header>qgsdoublespinbox.h</header>
+   <class>QgsFontComboBox</class>
+   <extends>QFontComboBox</extends>
+   <header>qgsfontcombobox.h</header>
+  </customwidget>
+  <customwidget>
+   <class>QgsSpinBox</class>
+   <extends>QSpinBox</extends>
+   <header>qgsspinbox.h</header>
+   <container>1</container>
   </customwidget>
   <customwidget>
    <class>QgsFilterLineEdit</class>
@@ -5578,21 +5595,9 @@ li.checked::marker { content: &quot;\2612&quot;; }
    <container>1</container>
   </customwidget>
   <customwidget>
-   <class>QgsSpinBox</class>
-   <extends>QSpinBox</extends>
-   <header>qgsspinbox.h</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
    <class>QgsAuthSettingsWidget</class>
    <extends>QWidget</extends>
    <header>qgsauthsettingswidget.h</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
-   <class>QgsScrollArea</class>
-   <extends>QScrollArea</extends>
-   <header>qgsscrollarea.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>

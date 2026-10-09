@@ -21,7 +21,7 @@
 #include "qgsdatacollectionitem.h"
 #include "qgsdataitemprovider.h"
 #include "qgsdataitemproviderregistry.h"
-#include "qgsguiutils.h"
+#include "qgsgui.h"
 #include "qgsprovidermetadata.h"
 #include "qgsproviderregistry.h"
 #include "qgssettings.h"
@@ -82,7 +82,7 @@ QgsNewDatabaseTableNameWidget::QgsNewDatabaseTableNameWidget( QgsBrowserGuiModel
     }
   }
 
-  mBrowserToolbar->setIconSize( QgsGuiUtils::iconSize( true ) );
+  mBrowserToolbar->setIconSize( QgsGui::iconSize( Qgis::UserInterfaceIconType::DockedToolbar ) );
 
   mBrowserProxyModel.setBrowserModel( mBrowserModel );
   // If a filter was specified but the data provider could not be found

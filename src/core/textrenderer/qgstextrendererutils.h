@@ -145,11 +145,13 @@ class CORE_EXPORT QgsTextRendererUtils
      *
      * \param metrics precalculated text metrics for text to render
      * \param line line to render text along
-     * \param offsetAlongLine offset along line at which to start the curved text placement
+     * \param offsetAlongLine offset along line at which to start the curved text placement. Only applies when \a textAnchor is Qgis::TextAnchorPoint::StartOfText.
      * \param direction controls placement of text with respect to painter orientation or line direction
      * \param maxConcaveAngle maximum angle between characters for concave text, or -1 if not set
      * \param maxConvexAngle maximum angle between characters for convex text, or -1 if not set
      * \param flags flags controlling behavior of curved text generation
+     * \param textAnchor dictates where on the line the text should be anchored to. If the anchor point is the start of the text, the text will always start at the start of the line (and potential extend past the end of the line).
+     * If the anchor point is the end of the text, then the text will always end at the end of the line and potential extend past the start of the line. (since QGIS 4.4)
      *
      * \returns calculated placement properties, or NULLPTR if placement could not be calculated. Caller takes ownership of the returned placement.
      * \since QGIS 3.20
@@ -161,7 +163,8 @@ class CORE_EXPORT QgsTextRendererUtils
       LabelLineDirection direction = RespectPainterOrientation,
       double maxConcaveAngle = -1,
       double maxConvexAngle = -1,
-      Qgis::CurvedTextFlags flags = Qgis::CurvedTextFlags()
+      Qgis::CurvedTextFlags flags = Qgis::CurvedTextFlags(),
+      Qgis::TextAnchorPoint textAnchor = Qgis::TextAnchorPoint::StartOfText
     ) SIP_SKIP;
 
     /**
@@ -172,13 +175,15 @@ class CORE_EXPORT QgsTextRendererUtils
      * \param y array of linestring y coordinates
      * \param numPoints number of points in \a x, \a y arrays
      * \param pathDistances vector of precalculated distances between vertices in \a x, \a y arrays
-     * \param offsetAlongLine offset along line at which to start the curved text placement
+     * \param offsetAlongLine offset along line at which to start the curved text placement. Only applies when \a textAnchor is Qgis::TextAnchorPoint::StartOfText.
      * \param direction controls placement of text with respect to painter orientation or line direction
      * \param maxConcaveAngle maximum angle between characters for concave text, or -1 if not set
      * \param maxConvexAngle maximum angle between characters for convex text, or -1 if not set
      * \param flags flags controlling behavior of curved text generation
      * \param additionalCharacterSpacing additional spacing to apply between every character (grapheme). Can be negative to constrict text placement. (since QGIS 4.0)
      * \param additionalWordSpacing additional spacing to apply after every word (space character). Can be negative to constrict text placement. (since QGIS 4.0)
+     * \param textAnchor dictates where on the line the text should be anchored to. If the anchor point is the start of the text, the text will always start at the start of the line (and potential extend past the end of the line).
+     * If the anchor point is the end of the text, then the text will always end at the end of the line and potential extend past the start of the line. (since QGIS 4.4)
      *
      * \returns calculated placement properties, or NULLPTR if placement could not be calculated. Caller takes ownership of the returned placement.
      * \since QGIS 3.20
@@ -195,7 +200,8 @@ class CORE_EXPORT QgsTextRendererUtils
       double maxConvexAngle = -1,
       Qgis::CurvedTextFlags flags = Qgis::CurvedTextFlags(),
       double additionalCharacterSpacing = 0.0,
-      double additionalWordSpacing = 0.0
+      double additionalWordSpacing = 0.0,
+      Qgis::TextAnchorPoint textAnchor = Qgis::TextAnchorPoint::StartOfText
     ) SIP_SKIP;
 #endif
 
@@ -213,7 +219,8 @@ class CORE_EXPORT QgsTextRendererUtils
       double maxConvexAngle = -1,
       bool isSecondAttempt = false,
       double additionalCharacterSpacing = 0,
-      double additionalWordSpacing = 0
+      double additionalWordSpacing = 0,
+      Qgis::TextAnchorPoint textAnchor = Qgis::TextAnchorPoint::StartOfText
     ) SIP_SKIP;
 
     //! Returns TRUE if the next char position is found. The referenced parameters are updated.

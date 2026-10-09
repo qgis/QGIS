@@ -43,12 +43,15 @@ class TestQgsLayerTree(QgisTestCase):
         Test python methods for layer tree classes
         """
         group = QgsLayerTreeGroup("test")
+        self.assertTrue(group)
         self.assertEqual(len(group), 0)
         with self.assertRaises(IndexError):
             group[0]
         with self.assertRaises(IndexError):
             group[-1]
         group2 = group.addGroup("test 2")
+        self.assertTrue(group)
+        self.assertTrue(group2)
         self.assertEqual(len(group), 1)
         self.assertEqual(group[0], group2)
         with self.assertRaises(IndexError):
@@ -65,6 +68,7 @@ class TestQgsLayerTree(QgisTestCase):
         layer = QgsVectorLayer("Point?field=fldtxt:string", "layer1", "memory")
         layer_node = group.addLayer(layer)
         self.assertEqual(len(group), 3)
+        self.assertTrue(group)
         self.assertEqual(group[0], group2)
         self.assertEqual(group[1], group3)
         self.assertEqual(group[2], layer_node)

@@ -110,6 +110,8 @@ void QgsAlignRastersAlgorithm::initAlgorithm( const QVariantMap & )
 
 QVariantMap QgsAlignRastersAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
+  QGS_MARK_ALGORITHM_SOURCE
+
   QgsRasterLayer *referenceLayer = parameterAsRasterLayer( parameters, u"REFERENCE_LAYER"_s, context );
   if ( !referenceLayer )
     throw QgsProcessingException( invalidRasterError( parameters, u"REFERENCE_LAYER"_s ) );

@@ -3,7 +3,7 @@
 Qgis.AuthConfigurationStorageCapability.ClearStorage.__doc__ = "Can clear all configurations from storage"
 Qgis.AuthConfigurationStorageCapability.ReadConfiguration.__doc__ = "Can read an authentication configuration"
 Qgis.AuthConfigurationStorageCapability.UpdateConfiguration.__doc__ = "Can update an authentication configuration"
-Qgis.AuthConfigurationStorageCapability.DeleteConfiguration.__doc__ = "Can deleet an authentication configuration"
+Qgis.AuthConfigurationStorageCapability.DeleteConfiguration.__doc__ = "Can delete an authentication configuration"
 Qgis.AuthConfigurationStorageCapability.CreateConfiguration.__doc__ = "Can create a new authentication configuration"
 Qgis.AuthConfigurationStorageCapability.ReadCertificateIdentity.__doc__ = "Can read a certificate identity"
 Qgis.AuthConfigurationStorageCapability.UpdateCertificateIdentity.__doc__ = "Can update a certificate identity"
@@ -36,7 +36,7 @@ Qgis.AuthConfigurationStorageCapability.__doc__ = """Authentication configuratio
 * ``ClearStorage``: Can clear all configurations from storage
 * ``ReadConfiguration``: Can read an authentication configuration
 * ``UpdateConfiguration``: Can update an authentication configuration
-* ``DeleteConfiguration``: Can deleet an authentication configuration
+* ``DeleteConfiguration``: Can delete an authentication configuration
 * ``CreateConfiguration``: Can create a new authentication configuration
 * ``ReadCertificateIdentity``: Can read a certificate identity
 * ``UpdateCertificateIdentity``: Can update a certificate identity
@@ -287,6 +287,20 @@ Qgis.LayerFilter.__doc__ = """Filter for layers
 Qgis.LayerFilters = lambda flags=0: Qgis.LayerFilter(flags)
 Qgis.LayerFilters.baseClass = Qgis
 LayerFilters = Qgis  # dirty hack since SIP seems to introduce the flags in module
+# monkey patching scoped based enum
+Qgis.LayerItemCapability.AddComments.__doc__ = "Comments can be added to the layer item"
+Qgis.LayerItemCapability.__doc__ = """Flags for layer item capabilities
+
+.. versionadded:: 4.40
+
+* ``AddComments``: Comments can be added to the layer item
+
+"""
+# --
+Qgis.LayerItemCapability.baseClass = Qgis
+Qgis.LayerItemCapabilities = lambda flags=0: Qgis.LayerItemCapability(flags)
+Qgis.LayerItemCapabilities.baseClass = Qgis
+LayerItemCapabilities = Qgis  # dirty hack since SIP seems to introduce the flags in module
 # monkey patching scoped based enum
 Qgis.LoadStyleFlag.IgnoreMissingStyleErrors.__doc__ = "If the style is missing, then don't flag it as an error. This flag can be used when the caller is not certain that a style exists, and accordingly a failure to find the style does not indicate an issue with loading the style itself."
 Qgis.LoadStyleFlag.__doc__ = """Flags for loading layer styles.
@@ -1033,6 +1047,9 @@ QgsVectorDataProvider.FeatureSymbology.__doc__ = "Provider is able retrieve embe
 QgsVectorDataProvider.CacheData = Qgis.VectorProviderCapability.CacheData
 QgsVectorDataProvider.CacheData.is_monkey_patched = True
 QgsVectorDataProvider.CacheData.__doc__ = "Provider caches source data and should force provider data reloads when dependent layers are committed \n.. versionadded:: 4.2"
+QgsVectorDataProvider.ReadFieldDomains = Qgis.VectorProviderCapability.ReadFieldDomains
+QgsVectorDataProvider.ReadFieldDomains.is_monkey_patched = True
+QgsVectorDataProvider.ReadFieldDomains.__doc__ = "Provider can read field domains and their properties \n.. versionadded:: 4.2"
 QgsVectorDataProvider.EditingCapabilities = Qgis.VectorProviderCapability.EditingCapabilities
 QgsVectorDataProvider.EditingCapabilities.is_monkey_patched = True
 QgsVectorDataProvider.EditingCapabilities.__doc__ = "Bitmask of all editing capabilities"
@@ -1085,6 +1102,10 @@ Qgis.VectorProviderCapability.__doc__ = """Vector data provider capabilities.
 
   .. versionadded:: 4.2
 
+* ``ReadFieldDomains``: Provider can read field domains and their properties
+
+  .. versionadded:: 4.2
+
 * ``EditingCapabilities``: Bitmask of all editing capabilities
 
 """
@@ -1094,6 +1115,21 @@ Qgis.VectorProviderCapabilities = lambda flags=0: Qgis.VectorProviderCapability(
 QgsVectorDataProvider.Capabilities = Qgis.VectorProviderCapabilities
 Qgis.VectorProviderCapabilities.baseClass = Qgis
 VectorProviderCapabilities = Qgis  # dirty hack since SIP seems to introduce the flags in module
+# monkey patching scoped based enum
+Qgis.CreateLayerActionOnExisting.Abort.__doc__ = "Abort the creation on detecting an existing layer."
+Qgis.CreateLayerActionOnExisting.CreateOrOverwriteFile.__doc__ = "Create or overwrite whole file. For existing file-based datasources the entire datasource will be deleted, including all other layers in it. For non file-based datasources this is treated the same as CreateOrOverwriteLayer."
+Qgis.CreateLayerActionOnExisting.CreateOrOverwriteLayer.__doc__ = "Create or overwrite existing layer only. For existing file-based datasources other layers in the datasource will be untouched."
+Qgis.CreateLayerActionOnExisting.__doc__ = """Actions to take when attempting to create a layer on an existing datasource
+
+.. versionadded:: 4.2
+
+* ``Abort``: Abort the creation on detecting an existing layer.
+* ``CreateOrOverwriteFile``: Create or overwrite whole file. For existing file-based datasources the entire datasource will be deleted, including all other layers in it. For non file-based datasources this is treated the same as CreateOrOverwriteLayer.
+* ``CreateOrOverwriteLayer``: Create or overwrite existing layer only. For existing file-based datasources other layers in the datasource will be untouched.
+
+"""
+# --
+Qgis.CreateLayerActionOnExisting.baseClass = Qgis
 QgsVectorDataProvider.FeatureCountState = Qgis.FeatureCountState
 # monkey patching scoped based enum
 QgsVectorDataProvider.Uncounted = Qgis.FeatureCountState.Uncounted
@@ -2355,7 +2391,7 @@ QgsPalLayerSettings.Curved.is_monkey_patched = True
 QgsPalLayerSettings.Curved.__doc__ = "Arranges candidates following the curvature of a line feature. Applies to line layers only."
 QgsPalLayerSettings.Horizontal = Qgis.LabelPlacement.Horizontal
 QgsPalLayerSettings.Horizontal.is_monkey_patched = True
-QgsPalLayerSettings.Horizontal.__doc__ = "Arranges horizontal candidates scattered throughout a polygon feature. Applies to polygon layers only."
+QgsPalLayerSettings.Horizontal.__doc__ = "Arranges horizontal candidates scattered throughout a polygon feature or along a line feature. Applies to polygon and line layers only."
 QgsPalLayerSettings.Free = Qgis.LabelPlacement.Free
 QgsPalLayerSettings.Free.is_monkey_patched = True
 QgsPalLayerSettings.Free.__doc__ = "Arranges candidates scattered throughout a polygon feature. Candidates are rotated to respect the polygon's orientation. Applies to polygon layers only."
@@ -2380,7 +2416,7 @@ Qgis.LabelPlacement.__doc__ = """Placement modes which determine how label candi
 * ``OverPoint``: Arranges candidates over a point (or centroid of a polygon), or at a preset offset from the point. Applies to point or polygon layers only.
 * ``Line``: Arranges candidates parallel to a generalised line representing the feature or parallel to a polygon's perimeter. Applies to line or polygon layers only.
 * ``Curved``: Arranges candidates following the curvature of a line feature. Applies to line layers only.
-* ``Horizontal``: Arranges horizontal candidates scattered throughout a polygon feature. Applies to polygon layers only.
+* ``Horizontal``: Arranges horizontal candidates scattered throughout a polygon feature or along a line feature. Applies to polygon and line layers only.
 * ``Free``: Arranges candidates scattered throughout a polygon feature. Candidates are rotated to respect the polygon's orientation. Applies to polygon layers only.
 * ``OrderedPositionsAroundPoint``: Candidates are placed in predefined positions around a point. Preference is given to positions with greatest cartographic appeal, e.g., top right, bottom right, etc. Applies to point layers only.
 * ``PerimeterCurved``: Arranges candidates following the curvature of a polygon's boundary. Applies to polygon layers only.
@@ -2753,6 +2789,36 @@ Qgis.LabelMultiLineAlignment.__doc__ = """Text alignment for multi-line labels.
 """
 # --
 Qgis.LabelMultiLineAlignment.baseClass = Qgis
+QgsLabelLineSettings.AnchorTextPoint = Qgis.TextAnchorPoint
+# monkey patching scoped based enum
+QgsLabelLineSettings.StartOfText = Qgis.TextAnchorPoint.StartOfText
+QgsLabelLineSettings.StartOfText.is_monkey_patched = True
+QgsLabelLineSettings.StartOfText.__doc__ = "Anchor using start of text"
+QgsLabelLineSettings.CenterOfText = Qgis.TextAnchorPoint.CenterOfText
+QgsLabelLineSettings.CenterOfText.is_monkey_patched = True
+QgsLabelLineSettings.CenterOfText.__doc__ = "Anchor using center of text"
+QgsLabelLineSettings.EndOfText = Qgis.TextAnchorPoint.EndOfText
+QgsLabelLineSettings.EndOfText.is_monkey_patched = True
+QgsLabelLineSettings.EndOfText.__doc__ = "Anchor using end of text"
+QgsLabelLineSettings.FollowPlacement = Qgis.TextAnchorPoint.FollowPlacement
+QgsLabelLineSettings.FollowPlacement.is_monkey_patched = True
+QgsLabelLineSettings.FollowPlacement.__doc__ = "Automatically set the anchor point based on the line anchor point value. Values <25% of line length will use the start of text, values > 75% will use the end of text, and values in between will use the center of the text."
+Qgis.TextAnchorPoint.__doc__ = """Anchor point of label text.
+
+.. note::
+
+   Prior to QGIS 4.4 this was available as :py:class:`QgsLabelLineSettings`.AnchorTextPoint
+
+.. versionadded:: 4.4
+
+* ``StartOfText``: Anchor using start of text
+* ``CenterOfText``: Anchor using center of text
+* ``EndOfText``: Anchor using end of text
+* ``FollowPlacement``: Automatically set the anchor point based on the line anchor point value. Values <25% of line length will use the start of text, values > 75% will use the end of text, and values in between will use the center of the text.
+
+"""
+# --
+Qgis.TextAnchorPoint.baseClass = Qgis
 QgsProviderMetadata.FilterType = Qgis.FileFilterType
 # monkey patching scoped based enum
 QgsProviderMetadata.FilterVector = Qgis.FileFilterType.Vector
@@ -3995,6 +4061,9 @@ QgsGeometry.ValidatorGeos = Qgis.GeometryValidationEngine.Geos
 QgsGeometry.ValidationMethod.ValidatorGeos = Qgis.GeometryValidationEngine.Geos
 QgsGeometry.ValidatorGeos.is_monkey_patched = True
 QgsGeometry.ValidatorGeos.__doc__ = "Use GEOS validation methods"
+QgsGeometry.Sfcgal = Qgis.GeometryValidationEngine.Sfcgal
+QgsGeometry.Sfcgal.is_monkey_patched = True
+QgsGeometry.Sfcgal.__doc__ = "Use SFCGAL validation methods. Only available for QGIS builds with SFCGAL support enabled. \n.. versionadded:: 4.4"
 Qgis.GeometryValidationEngine.__doc__ = """Available engines for validating geometries.
 
 .. versionadded:: 3.22
@@ -4006,6 +4075,10 @@ Qgis.GeometryValidationEngine.__doc__ = """Available engines for validating geom
 * ``Geos``: Use GEOS validation methods
 
   Available as ``QgsGeometry.ValidatorGeos`` in older QGIS releases.
+
+* ``Sfcgal``: Use SFCGAL validation methods. Only available for QGIS builds with SFCGAL support enabled.
+
+  .. versionadded:: 4.4
 
 
 """
@@ -5188,6 +5261,9 @@ QgsMapSettings.RecordProfile.__doc__ = "Enable run-time profiling while renderin
 QgsMapSettings.AlwaysUseGlobalMasks = Qgis.MapSettingsFlag.AlwaysUseGlobalMasks
 QgsMapSettings.AlwaysUseGlobalMasks.is_monkey_patched = True
 QgsMapSettings.AlwaysUseGlobalMasks.__doc__ = "When applying clipping paths for selective masking, always use global (\"entire map\") paths, instead of calculating local clipping paths per rendered feature. This results in considerably more complex vector exports in all current Qt versions. This flag only applies to vector map exports. \n.. versionadded:: 3.38"
+QgsMapSettings.DrawLabelSelection = Qgis.MapSettingsFlag.DrawLabelSelection
+QgsMapSettings.DrawLabelSelection.is_monkey_patched = True
+QgsMapSettings.DrawLabelSelection.__doc__ = "Whether vector selections should be change the rendering of associated labels \n.. versionadded:: 4.4"
 Qgis.MapSettingsFlag.__doc__ = """Flags which adjust the way maps are rendered.
 
 .. versionadded:: 3.22
@@ -5231,6 +5307,10 @@ Qgis.MapSettingsFlag.__doc__ = """Flags which adjust the way maps are rendered.
 * ``AlwaysUseGlobalMasks``: When applying clipping paths for selective masking, always use global (\"entire map\") paths, instead of calculating local clipping paths per rendered feature. This results in considerably more complex vector exports in all current Qt versions. This flag only applies to vector map exports.
 
   .. versionadded:: 3.38
+
+* ``DrawLabelSelection``: Whether vector selections should be change the rendering of associated labels
+
+  .. versionadded:: 4.4
 
 
 """
@@ -5311,6 +5391,9 @@ QgsRenderContext.DisableSymbolClippingToExtent.__doc__ = "Force symbol clipping 
 QgsRenderContext.RenderLayerTree = Qgis.RenderContextFlag.RenderLayerTree
 QgsRenderContext.RenderLayerTree.is_monkey_patched = True
 QgsRenderContext.RenderLayerTree.__doc__ = "The render is for a layer tree display where map based properties are not available and where avoidance of long rendering freeze is crucial \n.. versionadded:: 3.44"
+QgsRenderContext.DrawLabelSelection = Qgis.RenderContextFlag.DrawLabelSelection
+QgsRenderContext.DrawLabelSelection.is_monkey_patched = True
+QgsRenderContext.DrawLabelSelection.__doc__ = "Whether vector selections should be change the rendering of associated labels \n.. versionadded:: 4.4"
 Qgis.RenderContextFlag.__doc__ = """Flags which affect rendering operations.
 
 .. versionadded:: 3.22
@@ -5364,6 +5447,10 @@ Qgis.RenderContextFlag.__doc__ = """Flags which affect rendering operations.
 * ``RenderLayerTree``: The render is for a layer tree display where map based properties are not available and where avoidance of long rendering freeze is crucial
 
   .. versionadded:: 3.44
+
+* ``DrawLabelSelection``: Whether vector selections should be change the rendering of associated labels
+
+  .. versionadded:: 4.4
 
 
 """
@@ -5467,6 +5554,18 @@ QgsLabelingEngineSettings.CollectUnplacedLabels.__doc__ = "Whether unplaced labe
 QgsLabelingEngineSettings.DrawLabelMetrics = Qgis.LabelingFlag.DrawLabelMetrics
 QgsLabelingEngineSettings.DrawLabelMetrics.is_monkey_patched = True
 QgsLabelingEngineSettings.DrawLabelMetrics.__doc__ = "Whether to render label metric guides (for debugging) \n.. versionadded:: 3.30"
+QgsLabelingEngineSettings.IgnoreObstacles = Qgis.LabelingFlag.IgnoreObstacles
+QgsLabelingEngineSettings.IgnoreObstacles.is_monkey_patched = True
+QgsLabelingEngineSettings.IgnoreObstacles.__doc__ = "Disable obstacle handling \n.. versionadded:: 4.4"
+QgsLabelingEngineSettings.SingleCandidateOnly = Qgis.LabelingFlag.SingleCandidateOnly
+QgsLabelingEngineSettings.SingleCandidateOnly.is_monkey_patched = True
+QgsLabelingEngineSettings.SingleCandidateOnly.__doc__ = "Generate only the single least-cost candidate for each feature. Useful for fast labeling, such as interactive labeling previews. \n.. versionadded:: 4.4"
+QgsLabelingEngineSettings.IgnoreOverlaps = Qgis.LabelingFlag.IgnoreOverlaps
+QgsLabelingEngineSettings.IgnoreOverlaps.is_monkey_patched = True
+QgsLabelingEngineSettings.IgnoreOverlaps.__doc__ = "Disable overlap detection and search solver, immediately returning lowest cost candidate per feature \n.. versionadded:: 4.4"
+QgsLabelingEngineSettings.DisableSearchTree = Qgis.LabelingFlag.DisableSearchTree
+QgsLabelingEngineSettings.DisableSearchTree.is_monkey_patched = True
+QgsLabelingEngineSettings.DisableSearchTree.__doc__ = "Disable the creation of the label search tree \n.. versionadded:: 4.4"
 Qgis.LabelingFlag.__doc__ = """Various flags that affect drawing and placement of labels.
 
 Prior to QGIS 3.30 this was available as :py:class:`QgsLabelingEngineSettings`.Flag
@@ -5486,6 +5585,22 @@ Prior to QGIS 3.30 this was available as :py:class:`QgsLabelingEngineSettings`.F
 * ``DrawLabelMetrics``: Whether to render label metric guides (for debugging)
 
   .. versionadded:: 3.30
+
+* ``IgnoreObstacles``: Disable obstacle handling
+
+  .. versionadded:: 4.4
+
+* ``SingleCandidateOnly``: Generate only the single least-cost candidate for each feature. Useful for fast labeling, such as interactive labeling previews.
+
+  .. versionadded:: 4.4
+
+* ``IgnoreOverlaps``: Disable overlap detection and search solver, immediately returning lowest cost candidate per feature
+
+  .. versionadded:: 4.4
+
+* ``DisableSearchTree``: Disable the creation of the label search tree
+
+  .. versionadded:: 4.4
 
 
 """
@@ -7101,6 +7216,39 @@ Qgis.ProcessingMode.__doc__ = """Types of modes which Processing widgets can be 
 """
 # --
 Qgis.ProcessingMode.baseClass = Qgis
+# monkey patching scoped based enum
+Qgis.ProcessingMenu.VectorAnalysis.__doc__ = "Vector Analysis menu"
+Qgis.ProcessingMenu.VectorResearch.__doc__ = "Vector Research menu"
+Qgis.ProcessingMenu.VectorGeoprocessing.__doc__ = "Vector Geoprocessing menu"
+Qgis.ProcessingMenu.VectorGeometry.__doc__ = "Vector Geometry menu"
+Qgis.ProcessingMenu.VectorDataManagement.__doc__ = "Vector Data Management menu"
+Qgis.ProcessingMenu.VectorGeneral.__doc__ = "Vector (top-level) menu"
+Qgis.ProcessingMenu.RasterProjections.__doc__ = "Raster Projections menu"
+Qgis.ProcessingMenu.RasterConversion.__doc__ = "Raster Conversion menu"
+Qgis.ProcessingMenu.RasterExtraction.__doc__ = "Raster Extraction menu"
+Qgis.ProcessingMenu.RasterAnalysis.__doc__ = "Raster Analysis menu"
+Qgis.ProcessingMenu.RasterMiscellaneous.__doc__ = "Raster Miscellaneous menu"
+Qgis.ProcessingMenu.RasterGeneral.__doc__ = "Raster (top-level) menu"
+Qgis.ProcessingMenu.__doc__ = """Standard menu groups for Processing tools
+
+.. versionadded:: 4.4
+
+* ``VectorAnalysis``: Vector Analysis menu
+* ``VectorResearch``: Vector Research menu
+* ``VectorGeoprocessing``: Vector Geoprocessing menu
+* ``VectorGeometry``: Vector Geometry menu
+* ``VectorDataManagement``: Vector Data Management menu
+* ``VectorGeneral``: Vector (top-level) menu
+* ``RasterProjections``: Raster Projections menu
+* ``RasterConversion``: Raster Conversion menu
+* ``RasterExtraction``: Raster Extraction menu
+* ``RasterAnalysis``: Raster Analysis menu
+* ``RasterMiscellaneous``: Raster Miscellaneous menu
+* ``RasterGeneral``: Raster (top-level) menu
+
+"""
+# --
+Qgis.ProcessingMenu.baseClass = Qgis
 QgsProcessingFeatureSourceDefinition.Flag = Qgis.ProcessingFeatureSourceDefinitionFlag
 # monkey patching scoped based enum
 QgsProcessingFeatureSourceDefinition.FlagOverrideDefaultGeometryCheck = Qgis.ProcessingFeatureSourceDefinitionFlag.OverrideDefaultGeometryCheck
@@ -7349,7 +7497,7 @@ Qgis.ProcessingModelChildParameterSource.ModelParameter.__doc__ = "Parameter val
 Qgis.ProcessingModelChildParameterSource.ChildOutput.__doc__ = "Parameter value is taken from an output generated by a child algorithm"
 Qgis.ProcessingModelChildParameterSource.StaticValue.__doc__ = "Parameter value is a static value"
 Qgis.ProcessingModelChildParameterSource.Expression.__doc__ = "Parameter value is taken from an expression, evaluated just before the algorithm runs"
-Qgis.ProcessingModelChildParameterSource.ExpressionText.__doc__ = "Parameter value is taken from a text with expressions, evaluated just before the algorithm runs"
+Qgis.ProcessingModelChildParameterSource.ExpressionText.__doc__ = "Parameter value is taken from a text with expressions, evaluated just before the algorithm runs. \n.. deprecated:: 4.4. Use Expression or StaticValue instead."
 Qgis.ProcessingModelChildParameterSource.ModelOutput.__doc__ = "Parameter value is linked to an output parameter for the model"
 Qgis.ProcessingModelChildParameterSource.__doc__ = """Processing model child parameter sources.
 
@@ -7359,7 +7507,10 @@ Qgis.ProcessingModelChildParameterSource.__doc__ = """Processing model child par
 * ``ChildOutput``: Parameter value is taken from an output generated by a child algorithm
 * ``StaticValue``: Parameter value is a static value
 * ``Expression``: Parameter value is taken from an expression, evaluated just before the algorithm runs
-* ``ExpressionText``: Parameter value is taken from a text with expressions, evaluated just before the algorithm runs
+* ``ExpressionText``: Parameter value is taken from a text with expressions, evaluated just before the algorithm runs.
+
+  .. deprecated:: 4.4. Use Expression or StaticValue instead.
+
 * ``ModelOutput``: Parameter value is linked to an output parameter for the model
 
 """
@@ -7735,6 +7886,49 @@ Qgis.PlotToolFlags = lambda flags=0: Qgis.PlotToolFlag(flags)
 Qgis.PlotToolFlags.baseClass = Qgis
 PlotToolFlags = Qgis  # dirty hack since SIP seems to introduce the flags in module
 # monkey patching scoped based enum
+Qgis.Map3DDebugFlag.ShowTerrainBoundingBoxes.__doc__ = "Displays bounding boxes of terrain tiles."
+Qgis.Map3DDebugFlag.ShowTerrainTileInfo.__doc__ = "Displays extra tile info on top of terrain tiles."
+Qgis.Map3DDebugFlag.ShowCameraViewCenter.__doc__ = "Shows the camera's view center as a sphere."
+Qgis.Map3DDebugFlag.ShowCameraRotationCenter.__doc__ = "Shows the camera's rotation center as a sphere."
+Qgis.Map3DDebugFlag.ShowLightSourceOrigins.__doc__ = "Shows the light source origins as a sphere."
+Qgis.Map3DDebugFlag.ShowFPS.__doc__ = "Shows the frames per second (FPS)."
+Qgis.Map3DDebugFlag.ShowDebugPanel.__doc__ = "Shows the debug panel next to the map."
+Qgis.Map3DDebugFlag.__doc__ = """Flags that control debug options for 3D maps.
+
+.. warning::
+
+   These are debugging options only, and are not considered part of stable API.
+
+.. versionadded:: 4.2
+
+* ``ShowTerrainBoundingBoxes``: Displays bounding boxes of terrain tiles.
+* ``ShowTerrainTileInfo``: Displays extra tile info on top of terrain tiles.
+* ``ShowCameraViewCenter``: Shows the camera's view center as a sphere.
+* ``ShowCameraRotationCenter``: Shows the camera's rotation center as a sphere.
+* ``ShowLightSourceOrigins``: Shows the light source origins as a sphere.
+* ``ShowFPS``: Shows the frames per second (FPS).
+* ``ShowDebugPanel``: Shows the debug panel next to the map.
+
+"""
+# --
+Qgis.Map3DDebugFlag.baseClass = Qgis
+Qgis.Map3DDebugFlags = lambda flags=0: Qgis.Map3DDebugFlag(flags)
+Qgis.Map3DDebugFlags.baseClass = Qgis
+Map3DDebugFlags = Qgis  # dirty hack since SIP seems to introduce the flags in module
+# monkey patching scoped based enum
+Qgis.Map3DProjectionType.Orthographic.__doc__ = "Orthogonal projection"
+Qgis.Map3DProjectionType.Perspective.__doc__ = "Perspective projection"
+Qgis.Map3DProjectionType.__doc__ = """3D map projection type
+
+.. versionadded:: 4.2
+
+* ``Orthographic``: Orthogonal projection
+* ``Perspective``: Perspective projection
+
+"""
+# --
+Qgis.Map3DProjectionType.baseClass = Qgis
+# monkey patching scoped based enum
 Qgis.Point3DShape.Cylinder.__doc__ = "Cylinder"
 Qgis.Point3DShape.Sphere.__doc__ = "Sphere"
 Qgis.Point3DShape.Cone.__doc__ = "Cone"
@@ -7796,6 +7990,19 @@ Qgis.MaterialRenderingTechnique.__doc__ = """Material rendering techniques.
 # --
 Qgis.MaterialRenderingTechnique.baseClass = Qgis
 # monkey patching scoped based enum
+Qgis.MaterialWidgetMode.Compact.__doc__ = "Shows only the main material settings"
+Qgis.MaterialWidgetMode.Full.__doc__ = "Shows all material settings"
+Qgis.MaterialWidgetMode.__doc__ = """Modes for material settings widgets.
+
+.. versionadded:: 4.4
+
+* ``Compact``: Shows only the main material settings
+* ``Full``: Shows all material settings
+
+"""
+# --
+Qgis.MaterialWidgetMode.baseClass = Qgis
+# monkey patching scoped based enum
 Qgis.InstancedMaterialFlag.DataDefinedScale.__doc__ = "Per-instance data-defined scale"
 Qgis.InstancedMaterialFlag.DataDefinedRotation.__doc__ = "Per-instance data-defined rotation"
 Qgis.InstancedMaterialFlag.__doc__ = """Optional per-instance properties of instanced materials.
@@ -7811,6 +8018,19 @@ Qgis.InstancedMaterialFlag.baseClass = Qgis
 Qgis.InstancedMaterialFlags = lambda flags=0: Qgis.InstancedMaterialFlag(flags)
 Qgis.InstancedMaterialFlags.baseClass = Qgis
 InstancedMaterialFlags = Qgis  # dirty hack since SIP seems to introduce the flags in module
+# monkey patching scoped based enum
+Qgis.BillboardScaleMode.ViewIndependent.__doc__ = "Billboard has a fixed pixel size on the screen, regardless of the camera distance"
+Qgis.BillboardScaleMode.Perspective.__doc__ = "Billboard size is scaled with perspective distance from camera, using world units"
+Qgis.BillboardScaleMode.__doc__ = """3D billboard scaling modes.
+
+.. versionadded:: 4.4
+
+* ``ViewIndependent``: Billboard has a fixed pixel size on the screen, regardless of the camera distance
+* ``Perspective``: Billboard size is scaled with perspective distance from camera, using world units
+
+"""
+# --
+Qgis.BillboardScaleMode.baseClass = Qgis
 # monkey patching scoped based enum
 Qgis.TextureFilterQuality.Trilinear.__doc__ = "Trilinear (LinearMipmapLinear)"
 Qgis.TextureFilterQuality.Anisotropic2x.__doc__ = "Anisotropic filtering (2x)"
@@ -7852,12 +8072,17 @@ Qgis.ShadowQuality.baseClass = Qgis
 # monkey patching scoped based enum
 Qgis.LightSourceType.Point.__doc__ = "Point light source"
 Qgis.LightSourceType.Directional.__doc__ = "Directional light source"
+Qgis.LightSourceType.Sun.__doc__ = "Sun based light source \n.. versionadded:: 4.2"
 Qgis.LightSourceType.__doc__ = """Light source types for 3D scenes.
 
 .. versionadded:: 3.26
 
 * ``Point``: Point light source
 * ``Directional``: Directional light source
+* ``Sun``: Sun based light source
+
+  .. versionadded:: 4.2
+
 
 """
 # --
@@ -7928,20 +8153,61 @@ Qgis.SceneMode.__doc__ = """The 3D scene mode used in 3D map views.
 # --
 Qgis.SceneMode.baseClass = Qgis
 # monkey patching scoped based enum
-Qgis.VerticalAxisInversion.Never.__doc__ = "Never invert vertical axis movements"
-Qgis.VerticalAxisInversion.WhenDragging.__doc__ = "Invert vertical axis movements when dragging in first person modes"
-Qgis.VerticalAxisInversion.Always.__doc__ = "Always invert vertical axis movements"
+Qgis.VerticalAxisInversion.WhenRotatingDragging.__doc__ = "When rotating camera around self with mouse captured \n.. versionadded:: 4.2"
+Qgis.VerticalAxisInversion.WhenRotatingCaptured.__doc__ = "When rotating camera around self with mouse button pressed \n.. versionadded:: 4.2"
+Qgis.VerticalAxisInversion.WhenPivoting.__doc__ = "When pivoting camera around point in terrain \n.. versionadded:: 4.2"
+Qgis.VerticalAxisInversion.Never.__doc__ = "Never invert vertical axis movements \n.. deprecated:: 4.2"
+Qgis.VerticalAxisInversion.WhenDragging.__doc__ = "Invert vertical axis movements when dragging in first person modes \n.. deprecated:: 4.2"
+Qgis.VerticalAxisInversion.Always.__doc__ = "Always invert vertical axis movements \n.. deprecated:: 4.2"
 Qgis.VerticalAxisInversion.__doc__ = """Vertical axis inversion options for 3D views.
 
 .. versionadded:: 3.30
 
+* ``WhenRotatingDragging``: When rotating camera around self with mouse captured
+
+  .. versionadded:: 4.2
+
+* ``WhenRotatingCaptured``: When rotating camera around self with mouse button pressed
+
+  .. versionadded:: 4.2
+
+* ``WhenPivoting``: When pivoting camera around point in terrain
+
+  .. versionadded:: 4.2
+
 * ``Never``: Never invert vertical axis movements
+
+  .. deprecated:: 4.2
+
 * ``WhenDragging``: Invert vertical axis movements when dragging in first person modes
+
+  .. deprecated:: 4.2
+
 * ``Always``: Always invert vertical axis movements
+
+  .. deprecated:: 4.2
+
 
 """
 # --
 Qgis.VerticalAxisInversion.baseClass = Qgis
+Qgis.VerticalAxisInversionFlags = lambda flags=0: Qgis.VerticalAxisInversion(flags)
+Qgis.VerticalAxisInversionFlags.baseClass = Qgis
+VerticalAxisInversionFlags = Qgis  # dirty hack since SIP seems to introduce the flags in module
+# monkey patching scoped based enum
+Qgis.ToneMappingMethod.Clamp.__doc__ = "Clamp HDR colors to SDR color ranges, leave SDR colors unchanged. This is computationally cheap and ensures exact reproduction of SDR colors, but causes bright highlights to visibly clip and lose detail."
+Qgis.ToneMappingMethod.Aces.__doc__ = "Applies an approximation to the Academy Color Encoding System (ACES) filmic tone curve. This provides a natural, cinematic highlight roll-off and preserves detail in extreme brightness."
+Qgis.ToneMappingMethod.__doc__ = """Defines the method used to map High Dynamic Range (HDR) scene colors
+to the Standard Dynamic Range (SDR) of a display monitor.
+
+.. versionadded:: 4.2
+
+* ``Clamp``: Clamp HDR colors to SDR color ranges, leave SDR colors unchanged. This is computationally cheap and ensures exact reproduction of SDR colors, but causes bright highlights to visibly clip and lose detail.
+* ``Aces``: Applies an approximation to the Academy Color Encoding System (ACES) filmic tone curve. This provides a natural, cinematic highlight roll-off and preserves detail in extreme brightness.
+
+"""
+# --
+Qgis.ToneMappingMethod.baseClass = Qgis
 # monkey patching scoped based enum
 Qgis.Export3DSceneFormat.Obj.__doc__ = "Wavefront OBJ format."
 Qgis.Export3DSceneFormat.StlAscii.__doc__ = "STL ascii format."
@@ -8502,6 +8768,21 @@ Qgis.LayerTreeInsertionMethod.__doc__ = """Layer tree insertion methods
 # --
 Qgis.LayerTreeInsertionMethod.baseClass = Qgis
 # monkey patching scoped based enum
+Qgis.LegendLayerDoubleClickAction.LayerProperties.__doc__ = "Open the layer properties dialog"
+Qgis.LegendLayerDoubleClickAction.AttributeTable.__doc__ = "Open the attribute table"
+Qgis.LegendLayerDoubleClickAction.LayerStyling.__doc__ = "Open the layer styling dock"
+Qgis.LegendLayerDoubleClickAction.__doc__ = """Action performed when double-clicking a layer in the legend.
+
+.. versionadded:: 4.0
+
+* ``LayerProperties``: Open the layer properties dialog
+* ``AttributeTable``: Open the attribute table
+* ``LayerStyling``: Open the layer styling dock
+
+"""
+# --
+Qgis.LegendLayerDoubleClickAction.baseClass = Qgis
+# monkey patching scoped based enum
 Qgis.LayerTreeFilterFlag.SkipVisibilityCheck.__doc__ = "If set, the standard visibility check should be skipped"
 Qgis.LayerTreeFilterFlag.__doc__ = """Layer tree filter flags.
 
@@ -8600,6 +8881,24 @@ Qgis.LegendJsonRenderFlag.baseClass = Qgis
 Qgis.LegendJsonRenderFlags = lambda flags=0: Qgis.LegendJsonRenderFlag(flags)
 Qgis.LegendJsonRenderFlags.baseClass = Qgis
 LegendJsonRenderFlags = Qgis  # dirty hack since SIP seems to introduce the flags in module
+# monkey patching scoped based enum
+Qgis.GeoJsonProfile.Legacy.__doc__ = "Legacy GeoJson profile used in QGIS prior to 4.2, which included some non-standard extensions and deviations from the RFC7946 standard, such as support for  transforming geometries to a CRS different than CRS84. This profile is still available for backward compatibility but is not recommended for new projects."
+Qgis.GeoJsonProfile.Rfc7946.__doc__ = "GeoJson profile compliant with RFC7946 standard \"http://www.opengis.net/def/profile/OGC/0/rfc7946\""
+Qgis.GeoJsonProfile.JsonFg.__doc__ = "GeoJson profile from OGC Features and Geometries JSON Part 1: core \"http://www.opengis.net/def/profile/OGC/0/jsonfg\""
+Qgis.GeoJsonProfile.JsonFgPlus.__doc__ = "GeoJson profile from OGC Features and Geometries JSON Part 1: core \"http://www.opengis.net/def/profile/OGC/0/jsonfg-plus\""
+Qgis.GeoJsonProfile.__doc__ = """GeoJson export Profile according to OGC Features and Geometries JSON - Part 1: Core
+https://docs.ogc.org/is/21-045r1/21-045r1.html
+
+.. versionadded:: 4.2
+
+* ``Legacy``: Legacy GeoJson profile used in QGIS prior to 4.2, which included some non-standard extensions and deviations from the RFC7946 standard, such as support for  transforming geometries to a CRS different than CRS84. This profile is still available for backward compatibility but is not recommended for new projects.
+* ``Rfc7946``: GeoJson profile compliant with RFC7946 standard \"http://www.opengis.net/def/profile/OGC/0/rfc7946\"
+* ``JsonFg``: GeoJson profile from OGC Features and Geometries JSON Part 1: core \"http://www.opengis.net/def/profile/OGC/0/jsonfg\"
+* ``JsonFgPlus``: GeoJson profile from OGC Features and Geometries JSON Part 1: core \"http://www.opengis.net/def/profile/OGC/0/jsonfg-plus\"
+
+"""
+# --
+Qgis.GeoJsonProfile.baseClass = Qgis
 # monkey patching scoped based enum
 Qgis.ActionType.Invalid.__doc__ = "Invalid"
 Qgis.ActionType.MapLayerAction.__doc__ = "Standard actions (defined by core or plugins), corresponds to QgsMapLayerAction class."
@@ -8727,6 +9026,27 @@ Qgis.MetadataDateType.__doc__ = """Date types for metadata.
 """
 # --
 Qgis.MetadataDateType.baseClass = Qgis
+# monkey patching scoped based enum
+Qgis.AcademicReferenceType.Unknown.__doc__ = "Unknown or generic reference"
+Qgis.AcademicReferenceType.Book.__doc__ = "Book"
+Qgis.AcademicReferenceType.JournalArticle.__doc__ = "Journal or periodical article"
+Qgis.AcademicReferenceType.Presentation.__doc__ = "Conference paper, presentation, or proceeding"
+Qgis.AcademicReferenceType.WebPage.__doc__ = "Web page or online resource"
+Qgis.AcademicReferenceType.Preprint.__doc__ = "Preprint or repository paper"
+Qgis.AcademicReferenceType.__doc__ = """Type of academic reference.
+
+.. versionadded:: 4.4
+
+* ``Unknown``: Unknown or generic reference
+* ``Book``: Book
+* ``JournalArticle``: Journal or periodical article
+* ``Presentation``: Conference paper, presentation, or proceeding
+* ``WebPage``: Web page or online resource
+* ``Preprint``: Preprint or repository paper
+
+"""
+# --
+Qgis.AcademicReferenceType.baseClass = Qgis
 QgsRaster.ColorInterpretation = Qgis.RasterColorInterpretation
 # monkey patching scoped based enum
 QgsRaster.UndefinedColorInterpretation = Qgis.RasterColorInterpretation.Undefined
@@ -10359,6 +10679,46 @@ Qgis.AngleUnit.__doc__ = """Units of angles.
 """
 # --
 Qgis.AngleUnit.baseClass = Qgis
+QgsMeshRendererVectorWindBarbSettings.WindSpeedUnit = Qgis.WindSpeedUnit
+# monkey patching scoped based enum
+QgsMeshRendererVectorWindBarbSettings.MetersPerSecond = Qgis.WindSpeedUnit.MetersPerSecond
+QgsMeshRendererVectorWindBarbSettings.MetersPerSecond.is_monkey_patched = True
+QgsMeshRendererVectorWindBarbSettings.MetersPerSecond.__doc__ = "Meters per second"
+QgsMeshRendererVectorWindBarbSettings.KilometersPerHour = Qgis.WindSpeedUnit.KilometersPerHour
+QgsMeshRendererVectorWindBarbSettings.KilometersPerHour.is_monkey_patched = True
+QgsMeshRendererVectorWindBarbSettings.KilometersPerHour.__doc__ = "Kilometers per hour"
+QgsMeshRendererVectorWindBarbSettings.Knots = Qgis.WindSpeedUnit.Knots
+QgsMeshRendererVectorWindBarbSettings.Knots.is_monkey_patched = True
+QgsMeshRendererVectorWindBarbSettings.Knots.__doc__ = "Knots (Nautical miles per hour)"
+QgsMeshRendererVectorWindBarbSettings.MilesPerHour = Qgis.WindSpeedUnit.MilesPerHour
+QgsMeshRendererVectorWindBarbSettings.MilesPerHour.is_monkey_patched = True
+QgsMeshRendererVectorWindBarbSettings.MilesPerHour.__doc__ = "Miles per hour"
+QgsMeshRendererVectorWindBarbSettings.FeetPerSecond = Qgis.WindSpeedUnit.FeetPerSecond
+QgsMeshRendererVectorWindBarbSettings.FeetPerSecond.is_monkey_patched = True
+QgsMeshRendererVectorWindBarbSettings.FeetPerSecond.__doc__ = "Feet per second"
+QgsMeshRendererVectorWindBarbSettings.OtherUnit = Qgis.WindSpeedUnit.OtherUnit
+QgsMeshRendererVectorWindBarbSettings.OtherUnit.is_monkey_patched = True
+QgsMeshRendererVectorWindBarbSettings.OtherUnit.__doc__ = "Other unit"
+Qgis.WindSpeedUnit.__doc__ = """Wind speed units.
+
+Wind barbs use knots so we use this enum for preset conversion values.
+
+.. note::
+
+   Prior to QGIS 4.4 this was available as :py:class:`QgsMeshRendererVectorWindBarbSettings`.WindSpeedUnit.
+
+.. versionadded:: 4.4
+
+* ``MetersPerSecond``: Meters per second
+* ``KilometersPerHour``: Kilometers per hour
+* ``Knots``: Knots (Nautical miles per hour)
+* ``MilesPerHour``: Miles per hour
+* ``FeetPerSecond``: Feet per second
+* ``OtherUnit``: Other unit
+
+"""
+# --
+Qgis.WindSpeedUnit.baseClass = Qgis
 QgsUnitTypes.TemporalUnit = Qgis.TemporalUnit
 # monkey patching scoped based enum
 QgsUnitTypes.TemporalMilliseconds = Qgis.TemporalUnit.Milliseconds
@@ -10976,6 +11336,46 @@ Qgis.ScaleBarDistanceLabelHorizontalPlacement.__doc__ = """Scale bar distance la
 """
 # --
 Qgis.ScaleBarDistanceLabelHorizontalPlacement.baseClass = Qgis
+# monkey patching scoped based enum
+Qgis.ScaleBarUnitLabelPlacement.BeforeBar.__doc__ = "Vertically centered on the bar, before the bar begins"
+Qgis.ScaleBarUnitLabelPlacement.AfterBar.__doc__ = "Vertically centered on the bar, after the bar ends"
+Qgis.ScaleBarUnitLabelPlacement.LeftAbove.__doc__ = "Text centered over the left edge of the bar, above the bar"
+Qgis.ScaleBarUnitLabelPlacement.CenteredAbove.__doc__ = "Horizontally centered on the bar, above the bar"
+Qgis.ScaleBarUnitLabelPlacement.RightAbove.__doc__ = "Text centered over the right edge of the bar, above the bar"
+Qgis.ScaleBarUnitLabelPlacement.LeftBelow.__doc__ = "Text centered over the left edge of the bar, below the bar"
+Qgis.ScaleBarUnitLabelPlacement.CenteredBelow.__doc__ = "Horizontally centered on the bar, below the bar"
+Qgis.ScaleBarUnitLabelPlacement.RightBelow.__doc__ = "Text centered over the right edge of the bar, below the bar"
+Qgis.ScaleBarUnitLabelPlacement.BeforeFirstDistanceLabel.__doc__ = "Placed before the first distance label"
+Qgis.ScaleBarUnitLabelPlacement.AfterLastDistanceLabel.__doc__ = "Placed after the last distance label"
+Qgis.ScaleBarUnitLabelPlacement.OnBarAfterFirstDivision.__doc__ = "Placed on top of the bar, after the first bar division"
+Qgis.ScaleBarUnitLabelPlacement.BeforeEveryDistanceLabel.__doc__ = "Placed before every distance label (as part of the distance label text)"
+Qgis.ScaleBarUnitLabelPlacement.AfterEveryDistanceLabel.__doc__ = "Placed after every distance label (as part of the distance label text)"
+Qgis.ScaleBarUnitLabelPlacement.__doc__ = """Available placement options for a scale bar's unit label.
+
+This is exposed as a flag type enum to support multiple placements.
+
+.. versionadded:: 4.4
+
+* ``BeforeBar``: Vertically centered on the bar, before the bar begins
+* ``AfterBar``: Vertically centered on the bar, after the bar ends
+* ``LeftAbove``: Text centered over the left edge of the bar, above the bar
+* ``CenteredAbove``: Horizontally centered on the bar, above the bar
+* ``RightAbove``: Text centered over the right edge of the bar, above the bar
+* ``LeftBelow``: Text centered over the left edge of the bar, below the bar
+* ``CenteredBelow``: Horizontally centered on the bar, below the bar
+* ``RightBelow``: Text centered over the right edge of the bar, below the bar
+* ``BeforeFirstDistanceLabel``: Placed before the first distance label
+* ``AfterLastDistanceLabel``: Placed after the last distance label
+* ``OnBarAfterFirstDivision``: Placed on top of the bar, after the first bar division
+* ``BeforeEveryDistanceLabel``: Placed before every distance label (as part of the distance label text)
+* ``AfterEveryDistanceLabel``: Placed after every distance label (as part of the distance label text)
+
+"""
+# --
+Qgis.ScaleBarUnitLabelPlacement.baseClass = Qgis
+Qgis.ScaleBarUnitLabelPlacements = lambda flags=0: Qgis.ScaleBarUnitLabelPlacement(flags)
+Qgis.ScaleBarUnitLabelPlacements.baseClass = Qgis
+ScaleBarUnitLabelPlacements = Qgis  # dirty hack since SIP seems to introduce the flags in module
 QgsLayoutItemMapGrid.GridUnit = Qgis.MapGridUnit
 # monkey patching scoped based enum
 QgsLayoutItemMapGrid.MapUnit = Qgis.MapGridUnit.MapUnits
@@ -11374,6 +11774,19 @@ Qgis.MapGridAnnotationType.__doc__ = """Annotation coordinate type.
 """
 # --
 Qgis.MapGridAnnotationType.baseClass = Qgis
+# monkey patching scoped based enum
+Qgis.ElevationProfileRangeMethod.ManualRange.__doc__ = "Distance/elevation ranges are manually set"
+Qgis.ElevationProfileRangeMethod.FixedScale.__doc__ = "Distance and elevation ranges are calculated from fixed scales."
+Qgis.ElevationProfileRangeMethod.__doc__ = """Elevation profile range calculation methods.
+
+.. versionadded:: 4.4
+
+* ``ManualRange``: Distance/elevation ranges are manually set
+* ``FixedScale``: Distance and elevation ranges are calculated from fixed scales.
+
+"""
+# --
+Qgis.ElevationProfileRangeMethod.baseClass = Qgis
 # monkey patching scoped based enum
 Qgis.InputControllerType.Map2D.__doc__ = "2D map controller"
 Qgis.InputControllerType.Map3D.__doc__ = "3D map controller"
@@ -12417,6 +12830,69 @@ Qgis.RasterBandStatistics = lambda flags=0: Qgis.RasterBandStatistic(flags)
 Qgis.RasterBandStatistics.baseClass = Qgis
 RasterBandStatistics = Qgis  # dirty hack since SIP seems to introduce the flags in module
 # monkey patching scoped based enum
+Qgis.InterpolationSourceType.Points.__doc__ = "Point source"
+Qgis.InterpolationSourceType.StructureLines.__doc__ = "Structure lines"
+Qgis.InterpolationSourceType.BreakLines.__doc__ = "Break lines"
+Qgis.InterpolationSourceType.__doc__ = """Interpolation source types.
+
+.. versionadded:: 4.4.
+
+* ``Points``: Point source
+* ``StructureLines``: Structure lines
+* ``BreakLines``: Break lines
+
+"""
+# --
+Qgis.InterpolationSourceType.baseClass = Qgis
+# monkey patching scoped based enum
+Qgis.InterpolationValueSource.Attribute.__doc__ = "Take value from feature's attribute"
+Qgis.InterpolationValueSource.Z.__doc__ = "Use feature's geometry Z values for interpolation"
+Qgis.InterpolationValueSource.M.__doc__ = "Use feature's geometry M values for interpolation"
+Qgis.InterpolationValueSource.__doc__ = """Source for interpolated values from features.
+
+.. versionadded:: 4.4.
+
+* ``Attribute``: Take value from feature's attribute
+* ``Z``: Use feature's geometry Z values for interpolation
+* ``M``: Use feature's geometry M values for interpolation
+
+"""
+# --
+Qgis.InterpolationValueSource.baseClass = Qgis
+# monkey patching scoped based enum
+Qgis.SensorThingsVersion.Version1_1.__doc__ = "1.1"
+Qgis.SensorThingsVersion.Version2_0.__doc__ = "2.0"
+Qgis.SensorThingsVersion.__doc__ = """OGC SensorThings API versions.
+
+.. versionadded:: 4.2
+
+* ``Version1_1``: 1.1
+* ``Version2_0``: 2.0
+
+"""
+# --
+Qgis.SensorThingsVersion.baseClass = Qgis
+# monkey patching scoped based enum
+Qgis.SensorThingsExtension.MultiDatastream.__doc__ = "MultiDatastream extension"
+Qgis.SensorThingsExtension.SensingExtensionObservationsMeasurements.__doc__ = "Sensing Extension (Observations & Measurements)"
+Qgis.SensorThingsExtension.SensingExtensionSampling.__doc__ = "Sensing Extension (Sampling)"
+Qgis.SensorThingsExtension.SensingExtensionRelations.__doc__ = "Sensing Extension (Relations)"
+Qgis.SensorThingsExtension.__doc__ = """OGC SensorThings extensions.
+
+.. versionadded:: 4.2
+
+* ``MultiDatastream``: MultiDatastream extension
+* ``SensingExtensionObservationsMeasurements``: Sensing Extension (Observations & Measurements)
+* ``SensingExtensionSampling``: Sensing Extension (Sampling)
+* ``SensingExtensionRelations``: Sensing Extension (Relations)
+
+"""
+# --
+Qgis.SensorThingsExtension.baseClass = Qgis
+Qgis.SensorThingsExtensions = lambda flags=0: Qgis.SensorThingsExtension(flags)
+Qgis.SensorThingsExtensions.baseClass = Qgis
+SensorThingsExtensions = Qgis  # dirty hack since SIP seems to introduce the flags in module
+# monkey patching scoped based enum
 Qgis.SensorThingsEntity.Invalid.__doc__ = "An invalid/unknown entity"
 Qgis.SensorThingsEntity.Thing.__doc__ = "A Thing is an object of the physical world (physical things) or the information world (virtual things) that is capable of being identified and integrated into communication networks"
 Qgis.SensorThingsEntity.Location.__doc__ = "A Location entity locates the Thing or the Things it associated with. A Thing’s Location entity is defined as the last known location of the Thing"
@@ -12427,6 +12903,20 @@ Qgis.SensorThingsEntity.ObservedProperty.__doc__ = "An ObservedProperty specifie
 Qgis.SensorThingsEntity.Observation.__doc__ = "An Observation is the act of measuring or otherwise determining the value of a property"
 Qgis.SensorThingsEntity.FeatureOfInterest.__doc__ = "In the context of the Internet of Things, many Observations’ FeatureOfInterest can be the Location of the Thing. For example, the FeatureOfInterest of a wifi-connect thermostat can be the Location of the thermostat (i.e., the living room where the thermostat is located in). In the case of remote sensing, the FeatureOfInterest can be the geographical area or volume that is being sensed"
 Qgis.SensorThingsEntity.MultiDatastream.__doc__ = "A MultiDatastream groups a collection of Observations and the Observations in a MultiDatastream have a complex result type. Implemented in the SensorThings version 1.1 \"MultiDatastream extension\". \n.. versionadded:: 3.38"
+Qgis.SensorThingsEntity.Feature.__doc__ = "A Feature is an abstraction of real-world phenomena. It acts as an independent entity that can represent the proximate feature (e.g., a physical sample) or the ultimate real-world object being observed, replacing the v1.1 FeatureOfInterest. \n.. versionadded:: 4.2"
+Qgis.SensorThingsEntity.FeatureType.__doc__ = "A FeatureType provides the classification and schema definition for a Feature, describing the common properties and structure expected for a specific category of Features. \n.. versionadded:: 4.2"
+Qgis.SensorThingsEntity.Deployment.__doc__ = "A Deployment is the association of a Sensor to a Thing that hosts this Sensor, and to the Datastreams that contain the Observations produced by the Sensor while it is/was hosted on this Thing. Implemented in the \"Sensing Extension (Observations & Measurements)\". \n.. versionadded:: 4.2"
+Qgis.SensorThingsEntity.ObservingProcedure.__doc__ = "An Observing Procedure. Implemented in the \"Sensing Extension (Observations & Measurements)\". \n.. versionadded:: 4.2"
+Qgis.SensorThingsEntity.Sampling.__doc__ = "The Sampling is the act of taking one or more Samples. The Sampling takes Samples from a SampledFeature. The Sampling is executed by a Sampler, following a SamplingProcedure. The Sampling can be associated with a Thing. Implemented in the \"Sampling Extension\". \n.. versionadded:: 4.2"
+Qgis.SensorThingsEntity.SamplingProcedure.__doc__ = "The SamplingProcedure describes the method, or procedure, that the Sampler uses to create Samples. A Sampler must implement at least one SamplingProcedure, but can implement many. A Sample is created using one SamplingProcedure, though this SamplingProcedure may not be known. Implemented in the \"Sampling Extension\". \n.. versionadded:: 4.2"
+Qgis.SensorThingsEntity.Sampler.__doc__ = "The Sampler describes the machine, device, human or other entity that executed the sampling procedure to produce a sample. Implemented in the \"Sampling Extension\". \n.. versionadded:: 4.2"
+Qgis.SensorThingsEntity.PreparationStep.__doc__ = "When applying a PreparationProcdedure to a Sample, the process is recorded in individual PreparationSteps. For a simple, short PreparationProcedure, a single PreparationStep can be sufficient to record the fact that the preparation procedure was applied to the Sample, and the time at which the procedure was applied. For a complex procedure, that takes a long time, many PreparationSteps may be recorded. Implemented in the \"Sampling Extension\". \n.. versionadded:: 4.2"
+Qgis.SensorThingsEntity.PreparationProcedure.__doc__ = "After a sample is taken, a preparation procedure can be applied to it. The difference with the sampling procedure is that the preparation procedure does not result in one or more new samples, but that an existing sample is modified. The PreparationProcedure stores the generic procedure that can be applied to many samples. Implemented in the \"Sampling Extension\". \n.. versionadded:: 4.2"
+Qgis.SensorThingsEntity.ThingRelation.__doc__ = "A ThingRelation Entity relates a source Thing to a target Thing, or to an external resource, using a RelationRole. Implemented in the \"Relations Extension\". \n.. versionadded:: 4.2"
+Qgis.SensorThingsEntity.RelationRole.__doc__ = "The RelationRole Entity holds a name and definition for both directions of the relation. Implemented in the \"Relations Extension\". \n.. versionadded:: 4.2"
+Qgis.SensorThingsEntity.FeatureRelation.__doc__ = "A FeatureRelation Entity relates a source Feature to a target Feature, or to an external resource, using a RelationRole. Implemented in the \"Relations Extension\". \n.. versionadded:: 4.2"
+Qgis.SensorThingsEntity.DatastreamRelation.__doc__ = "A DatastreamRelation Entity relates a source Datastream to a target Datastream, or to an external resource, using a RelationRole. Implemented in the \"Relations Extension\". \n.. versionadded:: 4.2"
+Qgis.SensorThingsEntity.ObservationRelation.__doc__ = "A ObservationRelation Entity relates a source Observation to a target Observation, or to an external resource, using a RelationRole. Implemented in the \"Relations Extension\". \n.. versionadded:: 4.2"
 Qgis.SensorThingsEntity.__doc__ = """OGC SensorThings API entity types.
 
 .. versionadded:: 3.36
@@ -12443,6 +12933,62 @@ Qgis.SensorThingsEntity.__doc__ = """OGC SensorThings API entity types.
 * ``MultiDatastream``: A MultiDatastream groups a collection of Observations and the Observations in a MultiDatastream have a complex result type. Implemented in the SensorThings version 1.1 \"MultiDatastream extension\".
 
   .. versionadded:: 3.38
+
+* ``Feature``: A Feature is an abstraction of real-world phenomena. It acts as an independent entity that can represent the proximate feature (e.g., a physical sample) or the ultimate real-world object being observed, replacing the v1.1 FeatureOfInterest.
+
+  .. versionadded:: 4.2
+
+* ``FeatureType``: A FeatureType provides the classification and schema definition for a Feature, describing the common properties and structure expected for a specific category of Features.
+
+  .. versionadded:: 4.2
+
+* ``Deployment``: A Deployment is the association of a Sensor to a Thing that hosts this Sensor, and to the Datastreams that contain the Observations produced by the Sensor while it is/was hosted on this Thing. Implemented in the \"Sensing Extension (Observations & Measurements)\".
+
+  .. versionadded:: 4.2
+
+* ``ObservingProcedure``: An Observing Procedure. Implemented in the \"Sensing Extension (Observations & Measurements)\".
+
+  .. versionadded:: 4.2
+
+* ``Sampling``: The Sampling is the act of taking one or more Samples. The Sampling takes Samples from a SampledFeature. The Sampling is executed by a Sampler, following a SamplingProcedure. The Sampling can be associated with a Thing. Implemented in the \"Sampling Extension\".
+
+  .. versionadded:: 4.2
+
+* ``SamplingProcedure``: The SamplingProcedure describes the method, or procedure, that the Sampler uses to create Samples. A Sampler must implement at least one SamplingProcedure, but can implement many. A Sample is created using one SamplingProcedure, though this SamplingProcedure may not be known. Implemented in the \"Sampling Extension\".
+
+  .. versionadded:: 4.2
+
+* ``Sampler``: The Sampler describes the machine, device, human or other entity that executed the sampling procedure to produce a sample. Implemented in the \"Sampling Extension\".
+
+  .. versionadded:: 4.2
+
+* ``PreparationStep``: When applying a PreparationProcdedure to a Sample, the process is recorded in individual PreparationSteps. For a simple, short PreparationProcedure, a single PreparationStep can be sufficient to record the fact that the preparation procedure was applied to the Sample, and the time at which the procedure was applied. For a complex procedure, that takes a long time, many PreparationSteps may be recorded. Implemented in the \"Sampling Extension\".
+
+  .. versionadded:: 4.2
+
+* ``PreparationProcedure``: After a sample is taken, a preparation procedure can be applied to it. The difference with the sampling procedure is that the preparation procedure does not result in one or more new samples, but that an existing sample is modified. The PreparationProcedure stores the generic procedure that can be applied to many samples. Implemented in the \"Sampling Extension\".
+
+  .. versionadded:: 4.2
+
+* ``ThingRelation``: A ThingRelation Entity relates a source Thing to a target Thing, or to an external resource, using a RelationRole. Implemented in the \"Relations Extension\".
+
+  .. versionadded:: 4.2
+
+* ``RelationRole``: The RelationRole Entity holds a name and definition for both directions of the relation. Implemented in the \"Relations Extension\".
+
+  .. versionadded:: 4.2
+
+* ``FeatureRelation``: A FeatureRelation Entity relates a source Feature to a target Feature, or to an external resource, using a RelationRole. Implemented in the \"Relations Extension\".
+
+  .. versionadded:: 4.2
+
+* ``DatastreamRelation``: A DatastreamRelation Entity relates a source Datastream to a target Datastream, or to an external resource, using a RelationRole. Implemented in the \"Relations Extension\".
+
+  .. versionadded:: 4.2
+
+* ``ObservationRelation``: A ObservationRelation Entity relates a source Observation to a target Observation, or to an external resource, using a RelationRole. Implemented in the \"Relations Extension\".
+
+  .. versionadded:: 4.2
 
 
 """
@@ -12736,6 +13282,211 @@ Qgis.DockableWidgetInitialState.__doc__ = """Dockable widget initial states.
 """
 # --
 Qgis.DockableWidgetInitialState.baseClass = Qgis
+# monkey patching scoped based enum
+Qgis.CoverageCleanOverlapMergeStrategy.LongestBorder.__doc__ = "Polygon with longest common border is selected to merge overlapping polygons into"
+Qgis.CoverageCleanOverlapMergeStrategy.MaximumArea.__doc__ = "Polygon with largest area is selected to merge overlapping polygons into"
+Qgis.CoverageCleanOverlapMergeStrategy.MinimumArea.__doc__ = "Polygon with minimum area is selected to merge overlapping polygons into"
+Qgis.CoverageCleanOverlapMergeStrategy.MinimumIndex.__doc__ = "Polygon with smallest input index is selected to merge overlapping polygons into"
+Qgis.CoverageCleanOverlapMergeStrategy.__doc__ = """Merge strategies for coverage cleaning operations.
+
+.. versionadded:: 4.4
+
+* ``LongestBorder``: Polygon with longest common border is selected to merge overlapping polygons into
+* ``MaximumArea``: Polygon with largest area is selected to merge overlapping polygons into
+* ``MinimumArea``: Polygon with minimum area is selected to merge overlapping polygons into
+* ``MinimumIndex``: Polygon with smallest input index is selected to merge overlapping polygons into
+
+"""
+# --
+Qgis.CoverageCleanOverlapMergeStrategy.baseClass = Qgis
+# monkey patching scoped based enum
+Qgis.PdfRenderFlag.RenderTextAsText.__doc__ = "Render text items as text objects, not painter paths"
+Qgis.PdfRenderFlag.__doc__ = """PDF rendering flags.
+
+.. versionadded:: 4.4
+
+* ``RenderTextAsText``: Render text items as text objects, not painter paths
+
+"""
+# --
+Qgis.PdfRenderFlag.baseClass = Qgis
+Qgis.PdfRenderFlags = lambda flags=0: Qgis.PdfRenderFlag(flags)
+Qgis.PdfRenderFlags.baseClass = Qgis
+PdfRenderFlags = Qgis  # dirty hack since SIP seems to introduce the flags in module
+# monkey patching scoped based enum
+Qgis.WmsDimensionDefaultDisplay.AllValues.__doc__ = "Display all values of the dimension"
+Qgis.WmsDimensionDefaultDisplay.MinValue.__doc__ = "Display minimum value of the dimension"
+Qgis.WmsDimensionDefaultDisplay.MaxValue.__doc__ = "Display maximum value of the dimension"
+Qgis.WmsDimensionDefaultDisplay.ReferenceValue.__doc__ = "Display a reference value"
+Qgis.WmsDimensionDefaultDisplay.__doc__ = """QGIS Server WMS Dimension default display types
+
+.. note::
+
+   Prior to QGIS 4.4 this was available as :py:class:`QgsServerWmsDimensionProperties`.WmsDimensionInfo.DefaultDisplay
+
+.. versionadded:: 4.4
+
+* ``AllValues``: Display all values of the dimension
+* ``MinValue``: Display minimum value of the dimension
+* ``MaxValue``: Display maximum value of the dimension
+* ``ReferenceValue``: Display a reference value
+
+"""
+# --
+Qgis.WmsDimensionDefaultDisplay.baseClass = Qgis
+# monkey patching scoped based enum
+Qgis.RubberBandIconType.NoIcon.__doc__ = "No icon is used"
+Qgis.RubberBandIconType.CrossPlus.__doc__ = "A cross is used to highlight points (+)"
+Qgis.RubberBandIconType.CrossX.__doc__ = "A cross is used to highlight points (x)"
+Qgis.RubberBandIconType.Box.__doc__ = "A box is used to highlight points (□)"
+Qgis.RubberBandIconType.Circle.__doc__ = "A circle is used to highlight points (○)"
+Qgis.RubberBandIconType.BoxFilled.__doc__ = "A filled box is used to highlight points (■)"
+Qgis.RubberBandIconType.Diamond.__doc__ = "A diamond is used to highlight points (◇)"
+Qgis.RubberBandIconType.DiamondFilled.__doc__ = "A filled diamond is used to highlight points (◆)"
+Qgis.RubberBandIconType.SVG.__doc__ = "An SVG image is used to highlight points"
+Qgis.RubberBandIconType.__doc__ = """Rubber band icon type.
+
+.. versionadded:: 4.4.
+
+* ``NoIcon``: No icon is used
+* ``CrossPlus``: A cross is used to highlight points (+)
+* ``CrossX``: A cross is used to highlight points (x)
+* ``Box``: A box is used to highlight points (□)
+* ``Circle``: A circle is used to highlight points (○)
+* ``BoxFilled``: A filled box is used to highlight points (■)
+* ``Diamond``: A diamond is used to highlight points (◇)
+* ``DiamondFilled``: A filled diamond is used to highlight points (◆)
+* ``SVG``: An SVG image is used to highlight points
+
+"""
+# --
+Qgis.RubberBandIconType.baseClass = Qgis
+# monkey patching scoped based enum
+Qgis.RubberBandComponent.Symbol.__doc__ = "Base symbol component"
+Qgis.RubberBandComponent.PreviewItems.__doc__ = "Preview overlayer items"
+Qgis.RubberBandComponent.__doc__ = """Rubber band components.
+
+.. versionadded:: 4.4
+
+* ``Symbol``: Base symbol component
+* ``PreviewItems``: Preview overlayer items
+
+"""
+# --
+Qgis.RubberBandComponent.baseClass = Qgis
+Qgis.RubberBandComponents = lambda flags=0: Qgis.RubberBandComponent(flags)
+Qgis.RubberBandComponents.baseClass = Qgis
+RubberBandComponents = Qgis  # dirty hack since SIP seems to introduce the flags in module
+# monkey patching scoped based enum
+Qgis.UserInterfaceIconType.MainWindowToolbar.__doc__ = "Main window toolbar icons"
+Qgis.UserInterfaceIconType.DockedToolbar.__doc__ = "Toolbars for docked windows"
+Qgis.UserInterfaceIconType.__doc__ = """Icon types for icons shown in the user interface.
+
+.. versionadded:: 4.4
+
+* ``MainWindowToolbar``: Main window toolbar icons
+* ``DockedToolbar``: Toolbars for docked windows
+
+"""
+# --
+Qgis.UserInterfaceIconType.baseClass = Qgis
+QgsMeshRendererVectorArrowSettings.ArrowScalingMethod = Qgis.VectorFieldArrowScalingMethod
+# monkey patching scoped based enum
+QgsMeshRendererVectorArrowSettings.MinMax = Qgis.VectorFieldArrowScalingMethod.MinMax
+QgsMeshRendererVectorArrowSettings.MinMax.is_monkey_patched = True
+QgsMeshRendererVectorArrowSettings.MinMax.__doc__ = "Scale vector magnitude linearly to fit in range of vectorFilterMin() and vectorFilterMax()"
+QgsMeshRendererVectorArrowSettings.Scaled = Qgis.VectorFieldArrowScalingMethod.Scaled
+QgsMeshRendererVectorArrowSettings.Scaled.is_monkey_patched = True
+QgsMeshRendererVectorArrowSettings.Scaled.__doc__ = "Scale vector magnitude by factor scaleFactor()"
+QgsMeshRendererVectorArrowSettings.Fixed = Qgis.VectorFieldArrowScalingMethod.Fixed
+QgsMeshRendererVectorArrowSettings.Fixed.is_monkey_patched = True
+QgsMeshRendererVectorArrowSettings.Fixed.__doc__ = "Use fixed length fixedShaftLength() regardless of vector's magnitude"
+Qgis.VectorFieldArrowScalingMethod.__doc__ = """Algorithm to transform vector magnitude to length of arrow on the device in pixels.
+
+.. note::
+
+   Prior to QGIS 4.4 this was available as :py:class:`QgsMeshRendererVectorArrowSettings`.ArrowScalingMethod.
+
+.. versionadded:: 4.4
+
+* ``MinMax``: Scale vector magnitude linearly to fit in range of vectorFilterMin() and vectorFilterMax()
+* ``Scaled``: Scale vector magnitude by factor scaleFactor()
+* ``Fixed``: Use fixed length fixedShaftLength() regardless of vector's magnitude
+
+"""
+# --
+Qgis.VectorFieldArrowScalingMethod.baseClass = Qgis
+QgsMeshRendererVectorSettings.Symbology = Qgis.VectorFieldSymbology
+# monkey patching scoped based enum
+QgsMeshRendererVectorSettings.Arrows = Qgis.VectorFieldSymbology.Arrows
+QgsMeshRendererVectorSettings.Arrows.is_monkey_patched = True
+QgsMeshRendererVectorSettings.Arrows.__doc__ = "Displaying vector dataset with arrows"
+QgsMeshRendererVectorSettings.Streamlines = Qgis.VectorFieldSymbology.Streamlines
+QgsMeshRendererVectorSettings.Streamlines.is_monkey_patched = True
+QgsMeshRendererVectorSettings.Streamlines.__doc__ = "Displaying vector dataset with streamlines"
+QgsMeshRendererVectorSettings.Traces = Qgis.VectorFieldSymbology.Traces
+QgsMeshRendererVectorSettings.Traces.is_monkey_patched = True
+QgsMeshRendererVectorSettings.Traces.__doc__ = "Displaying vector dataset with particle traces"
+QgsMeshRendererVectorSettings.WindBarbs = Qgis.VectorFieldSymbology.WindBarbs
+QgsMeshRendererVectorSettings.WindBarbs.is_monkey_patched = True
+QgsMeshRendererVectorSettings.WindBarbs.__doc__ = "Displaying vector dataset with wind barbs"
+Qgis.VectorFieldSymbology.__doc__ = """Defines the symbology of vector field rendering.
+
+.. note::
+
+   Prior to QGIS 4.4 this was available as :py:class:`QgsMeshRendererVectorSettings`.Symbology.
+
+.. versionadded:: 4.4
+
+* ``Arrows``: Displaying vector dataset with arrows
+* ``Streamlines``: Displaying vector dataset with streamlines
+* ``Traces``: Displaying vector dataset with particle traces
+* ``WindBarbs``: Displaying vector dataset with wind barbs
+
+"""
+# --
+Qgis.VectorFieldSymbology.baseClass = Qgis
+QgsMeshRendererVectorStreamlineSettings.SeedingStartPointsMethod = Qgis.VectorFieldSeedingMethod
+# monkey patching scoped based enum
+QgsMeshRendererVectorStreamlineSettings.MeshGridded = Qgis.VectorFieldSeedingMethod.Gridded
+QgsMeshRendererVectorStreamlineSettings.SeedingStartPointsMethod.MeshGridded = Qgis.VectorFieldSeedingMethod.Gridded
+QgsMeshRendererVectorStreamlineSettings.MeshGridded.is_monkey_patched = True
+QgsMeshRendererVectorStreamlineSettings.MeshGridded.__doc__ = "Seeds start points on data grid or user regular grid"
+QgsMeshRendererVectorStreamlineSettings.Random = Qgis.VectorFieldSeedingMethod.Random
+QgsMeshRendererVectorStreamlineSettings.Random.is_monkey_patched = True
+QgsMeshRendererVectorStreamlineSettings.Random.__doc__ = "Seeds start points randomly"
+Qgis.VectorFieldSeedingMethod.__doc__ = """Method used to define start points that are used to draw streamlines.
+
+.. note::
+
+   Prior to QGIS 4.4 this was available as :py:class:`QgsMeshRendererVectorStreamlineSettings`.SeedingStartPointsMethod.
+
+.. versionadded:: 4.4
+
+* ``Gridded``: Seeds start points on data grid or user regular grid
+
+  Available as ``QgsMeshRendererVectorStreamlineSettings.MeshGridded`` in older QGIS releases.
+
+* ``Random``: Seeds start points randomly
+
+"""
+# --
+Qgis.VectorFieldSeedingMethod.baseClass = Qgis
+# monkey patching scoped based enum
+Qgis.LinearMatrixMethod.Lu.__doc__ = "Fast lower-upper (LU) decomposition (fails on singular/collinear matrices)"
+Qgis.LinearMatrixMethod.Svd.__doc__ = "Singular Value Decomposition (handles collinearity and rank deficiency)"
+Qgis.LinearMatrixMethod.LuWithSvdFallback.__doc__ = "Try LU first; fallback to SVD on singularity"
+Qgis.LinearMatrixMethod.__doc__ = """Mathematical methods to use for solving linear matrix equations.
+
+.. versionadded:: 4.4
+
+* ``Lu``: Fast lower-upper (LU) decomposition (fails on singular/collinear matrices)
+* ``Svd``: Singular Value Decomposition (handles collinearity and rank deficiency)
+* ``LuWithSvdFallback``: Try LU first; fallback to SVD on singularity
+
+"""
+# --
+Qgis.LinearMatrixMethod.baseClass = Qgis
 try:
     Qgis.__attribute_docs__ = {'QGIS_DEV_VERSION': 'The development version', 'DEFAULT_SEARCH_RADIUS_MM': 'Identify search radius in mm', 'DEFAULT_MAPTOPIXEL_THRESHOLD': 'Default threshold between map coordinates and device coordinates for map2pixel simplification', 'DEFAULT_HIGHLIGHT_COLOR': 'Default highlight color.  The transparency is expected to only be applied to polygon\nfill. Lines and outlines are rendered opaque.', 'DEFAULT_HIGHLIGHT_BUFFER_MM': 'Default highlight buffer in mm.', 'DEFAULT_HIGHLIGHT_MIN_WIDTH_MM': 'Default highlight line/stroke minimum width in mm.', 'SCALE_PRECISION': 'Fudge factor used to compare two scales. The code is often going from scale to scale\ndenominator. So it looses precision and, when a limit is inclusive, can lead to errors.\nTo avoid that, use this factor instead of using <= or >=.\n\n.. deprecated:: 3.40\n\n   No longer used by QGIS and will be removed in QGIS 5.0.', 'DEFAULT_Z_COORDINATE': 'Default Z coordinate value.\nThis value have to be assigned to the Z coordinate for the vertex.', 'DEFAULT_M_COORDINATE': 'Default M coordinate value.\nThis value have to be assigned to the M coordinate for the vertex.\n\n.. versionadded:: 3.20', 'UI_SCALE_FACTOR': 'UI scaling factor. This should be applied to all widget sizes obtained from font metrics,\nto account for differences in the default font sizes across different platforms.', 'DEFAULT_SNAP_TOLERANCE': 'Default snapping distance tolerance.', 'DEFAULT_SNAP_UNITS': 'Default snapping distance units.', 'USER_CRS_START_ID': 'Minimum ID number for a user-defined projection.', 'DEFAULT_POINT_SIZE': 'The default size (in millimeters) for point marker symbols', 'DEFAULT_LINE_WIDTH': 'The default width (in millimeters) for line symbols', 'DEFAULT_SEGMENT_EPSILON': 'Default snapping tolerance for segments'}
     Qgis.__annotations__ = {'QGIS_DEV_VERSION': str, 'DEFAULT_SEARCH_RADIUS_MM': float, 'DEFAULT_MAPTOPIXEL_THRESHOLD': float, 'DEFAULT_HIGHLIGHT_COLOR': 'QColor', 'DEFAULT_HIGHLIGHT_BUFFER_MM': float, 'DEFAULT_HIGHLIGHT_MIN_WIDTH_MM': float, 'SCALE_PRECISION': float, 'DEFAULT_Z_COORDINATE': float, 'DEFAULT_M_COORDINATE': float, 'UI_SCALE_FACTOR': float, 'DEFAULT_SNAP_TOLERANCE': float, 'DEFAULT_SNAP_UNITS': 'Qgis.MapToolUnit', 'USER_CRS_START_ID': int, 'DEFAULT_POINT_SIZE': float, 'DEFAULT_LINE_WIDTH': float, 'DEFAULT_SEGMENT_EPSILON': float}

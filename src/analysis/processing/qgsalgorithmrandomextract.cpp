@@ -149,6 +149,8 @@ void QgsRandomExtractAlgorithm::initAlgorithm( const QVariantMap & )
 
 QVariantMap QgsRandomExtractAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
+  QGS_MARK_ALGORITHM_SOURCE
+
   std::unique_ptr<QgsProcessingFeatureSource> source( parameterAsSource( parameters, u"INPUT"_s, context ) );
   if ( !source )
     throw QgsProcessingException( invalidSourceError( parameters, u"INPUT"_s ) );
@@ -189,9 +191,12 @@ QVariantMap QgsRandomExtractAlgorithm::processAlgorithm( const QVariantMap &para
 
     if ( !sink->addFeature( f, QgsFeatureSink::FastInsert ) )
       throw QgsProcessingException( writeFeatureError( sink.get(), parameters, u"OUTPUT"_s ) );
+    else
+      feedback->featureAddedToSink( u"OUTPUT"_s );
   }
 
   sink->finalize();
+  feedback->featureSinkFinalized( u"OUTPUT"_s );
 
   QVariantMap outputs;
   outputs.insert( u"OUTPUT"_s, dest );
@@ -246,6 +251,8 @@ void QgsRandomSelectionAlgorithm::initAlgorithm( const QVariantMap & )
 
 QVariantMap QgsRandomSelectionAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
+  QGS_MARK_ALGORITHM_SOURCE
+
   mInput = parameters.value( u"INPUT"_s );
   mTargetLayer = parameterAsVectorLayer( parameters, u"INPUT"_s, context );
 

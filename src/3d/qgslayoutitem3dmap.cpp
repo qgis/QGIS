@@ -110,12 +110,9 @@ void QgsLayoutItem3DMap::draw( QgsLayoutItemRenderContext &context )
   int h = static_cast<int>( std::ceil( rect().height() * ctx.scaleFactor() ) );
   QRect r( 0, 0, w, h );
 
-  painter->save();
-
   if ( !mSettings )
   {
     painter->drawText( r, Qt::AlignCenter, tr( "Scene not set" ) );
-    painter->restore();
     return;
   }
 
@@ -128,7 +125,6 @@ void QgsLayoutItem3DMap::draw( QgsLayoutItemRenderContext &context )
   if ( !mCapturedImage.isNull() )
   {
     painter->drawImage( r, mCapturedImage );
-    painter->restore();
     return;
   }
 
@@ -137,7 +133,6 @@ void QgsLayoutItem3DMap::draw( QgsLayoutItemRenderContext &context )
   if ( mLayout->renderContext().isPreviewRender() )
   {
     painter->drawText( r, Qt::AlignCenter, tr( "Loading" ) );
-    painter->restore();
     if ( mSettings->rendererUsage() != Qgis::RendererUsage::View )
     {
       mSettings->setRendererUsage( Qgis::RendererUsage::View );
@@ -193,7 +188,6 @@ void QgsLayoutItem3DMap::draw( QgsLayoutItemRenderContext &context )
     Qgs3DUtils::captureSceneImage( *mEngine.get(), mScene );
     QImage img = Qgs3DUtils::captureSceneImage( *mEngine.get(), mScene );
     painter->drawImage( r, img );
-    painter->restore();
 
     connect( mEngine.get(), &QgsAbstract3DEngine::imageCaptured, this, &QgsLayoutItem3DMap::onImageCaptured );
     connect( mScene, &Qgs3DMapScene::sceneStateChanged, this, &QgsLayoutItem3DMap::onSceneStateChanged );

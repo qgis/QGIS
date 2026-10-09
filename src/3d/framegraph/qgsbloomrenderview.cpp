@@ -94,7 +94,7 @@ void QgsBloomRenderView::buildRenderPasses( Qt3DRender::QTexture2D *sourceTextur
 
     auto mipTexture = new Qt3DRender::QTexture2D( colorOutput );
     // "we are downscaling an HDR color buffer, so we need a float texture format" (Jorge Jimenez)
-    mipTexture->setFormat( Qt3DRender::QAbstractTexture::RGBA16F );
+    mipTexture->setFormat( Qt3DRender::QAbstractTexture::RG11B10F );
     // minimize VRAM during build -- if the effect is disabled, we don't want to waste resources
     mipTexture->setSize( 1, 1 );
     mipTexture->setGenerateMipMaps( false );

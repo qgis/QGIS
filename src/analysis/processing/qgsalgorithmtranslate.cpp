@@ -126,6 +126,8 @@ bool QgsTranslateAlgorithm::prepareAlgorithm( const QVariantMap &parameters, Qgs
 
 QgsFeatureList QgsTranslateAlgorithm::processFeature( const QgsFeature &feature, QgsProcessingContext &context, QgsProcessingFeedback * )
 {
+  QGS_MARK_ALGORITHM_SOURCE
+
   QgsFeature f = feature;
   if ( f.hasGeometry() )
   {

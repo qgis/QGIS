@@ -77,6 +77,8 @@ QgsExtractByExtentAlgorithm *QgsExtractByExtentAlgorithm::createInstance() const
 
 QVariantMap QgsExtractByExtentAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
+  QGS_MARK_ALGORITHM_SOURCE
+
   std::unique_ptr<QgsFeatureSource> featureSource( parameterAsSource( parameters, u"INPUT"_s, context ) );
   if ( !featureSource )
     throw QgsProcessingException( invalidSourceError( parameters, u"INPUT"_s ) );
@@ -126,10 +128,13 @@ QVariantMap QgsExtractByExtentAlgorithm::processAlgorithm( const QVariantMap &pa
 
     if ( !sink->addFeature( f, QgsFeatureSink::FastInsert ) )
       throw QgsProcessingException( writeFeatureError( sink.get(), parameters, u"OUTPUT"_s ) );
+    else
+      feedback->featureAddedToSink( u"OUTPUT"_s );
     feedback->setProgress( i * step );
   }
 
   sink->finalize();
+  feedback->featureSinkFinalized( u"OUTPUT"_s );
 
   QVariantMap outputs;
   outputs.insert( u"OUTPUT"_s, dest );

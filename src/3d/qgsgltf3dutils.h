@@ -28,8 +28,13 @@
 //
 
 
+#include <memory>
+#include <vector>
+
 #include "qgis_3d.h"
+#include "qgs3dutils.h"
 #include "qgsgltfutils.h"
+#include "qgsmaterial.h"
 #include "qgsmatrix4x4.h"
 
 #include <QQuaternion>
@@ -49,6 +54,8 @@ namespace Qt3DCore
 {
   class QEntity;
   class QGeometry;
+  class QNode;
+  class QBuffer;
 } //namespace Qt3DCore
 
 /**
@@ -143,6 +150,20 @@ class _3D_EXPORT QgsGltf3DUtils
     static QVector<Qt3DCore::QEntity *> createInstancedEntities(
       tinygltf::Model &model, const QVector<QgsGltfUtils::InstancedPrimitive> &primitives, const EntityTransform &transform, const QString &baseUri, const QgsMaterialContext &context, QStringList *errors
     );
+
+    /**
+     * Loads a GLTF file from \a filePath and returns one QgsMeshNodeData entry per
+     * triangle primitive found across the entire scene. Each entry holds the geometry,
+     * material, and the accumulated mesh space to object space transform; vertex positions
+     * are kept verbatim in the original mesh space.
+     *
+     * \a context is used to configure the created materials.
+     * \a bufferParent is used as the Qt3D parent for any GPU buffers that are created.
+     * Optional \a errors receives any non-fatal parse warnings.
+     *
+     * \since QGIS 4.2
+     */
+    static std::vector<QgsMeshNodeData> buildGltfGeometries( const QString &filePath, const QgsMaterialContext &context, QStringList *errors = nullptr, Qt3DCore::QNode *bufferParent = nullptr );
 };
 
 ///@endcond

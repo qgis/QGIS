@@ -557,7 +557,7 @@ void QgsTextBackgroundSettings::readFromLayer( QgsVectorLayer *layer )
     QDomDocument doc( u"effect"_s );
     doc.setContent( layer->customProperty( u"labeling/shapeEffect"_s ).toString() );
     const QDomElement effectElem = doc.firstChildElement( u"effect"_s ).firstChildElement( u"effect"_s );
-    setPaintEffect( QgsApplication::paintEffectRegistry()->createEffect( effectElem ) );
+    setPaintEffect( QgsApplication::paintEffectRegistry()->createEffect( effectElem ).release() );
   }
   else
     setPaintEffect( nullptr );
@@ -681,7 +681,7 @@ void QgsTextBackgroundSettings::readXml( const QDomElement &elem, const QgsReadW
 
   const QDomElement effectElem = backgroundElem.firstChildElement( u"effect"_s );
   if ( !effectElem.isNull() )
-    setPaintEffect( QgsApplication::paintEffectRegistry()->createEffect( effectElem ) );
+    setPaintEffect( QgsApplication::paintEffectRegistry()->createEffect( effectElem ).release() );
   else
     setPaintEffect( nullptr );
 

@@ -129,6 +129,8 @@ void QgsWriteVectorTilesXyzAlgorithm::initAlgorithm( const QVariantMap & )
 
 void QgsWriteVectorTilesXyzAlgorithm::prepareWriter( QgsVectorTileWriter &writer, const QVariantMap &parameters, QgsProcessingContext &context, QVariantMap &outputs )
 {
+  QGS_MARK_ALGORITHM_SOURCE
+
   const QString outputDir = parameterAsString( parameters, u"OUTPUT_DIRECTORY"_s, context );
   const QString xyzTemplate = parameterAsString( parameters, u"XYZ_TEMPLATE"_s, context );
   QgsDataSourceUri dsUri;
@@ -184,6 +186,8 @@ void QgsWriteVectorTilesMbtilesAlgorithm::initAlgorithm( const QVariantMap & )
 
 void QgsWriteVectorTilesMbtilesAlgorithm::prepareWriter( QgsVectorTileWriter &writer, const QVariantMap &parameters, QgsProcessingContext &context, QVariantMap &outputs )
 {
+  QGS_MARK_ALGORITHM_SOURCE
+
   const QString outputFile = parameterAsFileOutput( parameters, u"OUTPUT"_s, context );
   QgsDataSourceUri dsUri;
   dsUri.setParam( u"type"_s, u"mbtiles"_s );
@@ -217,6 +221,5 @@ void QgsWriteVectorTilesMbtilesAlgorithm::prepareWriter( QgsVectorTileWriter &wr
 
   outputs.insert( u"OUTPUT"_s, outputFile );
 }
-
 
 ///@endcond

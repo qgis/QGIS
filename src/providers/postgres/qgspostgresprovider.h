@@ -155,6 +155,7 @@ class QgsPostgresProvider final : public QgsVectorDataProvider
     QSet<QVariant> uniqueValues( int index, int limit = -1 ) const override;
     QStringList uniqueStringsMatching( int index, const QString &substring, int limit = -1, QgsFeedback *feedback = nullptr ) const override;
     void enumValues( int index, QStringList &enumList ) const override;
+    QList<QPair<QString, QString>> codedValues( int index ) const override;
     bool isValid() const override;
     Qgis::ProviderStyleStorageCapabilities styleStorageCapabilities() const override;
     QgsAttributeList attributeIndexes() const override;
@@ -511,6 +512,7 @@ class QgsPostgresProviderMetadata final : public QgsProviderMetadata
     QIcon icon() const override;
     QgsDataProvider *createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options, Qgis::DataProviderReadFlags flags = Qgis::DataProviderReadFlags() ) override;
     QList<QgsDataItemProvider *> dataItemProviders() const override;
+    using QgsProviderMetadata::createEmptyLayer;
     Qgis::VectorExportResult createEmptyLayer(
       const QString &uri,
       const QgsFields &fields,

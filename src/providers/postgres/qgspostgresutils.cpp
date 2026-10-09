@@ -318,7 +318,7 @@ QString QgsPostgresUtils::andWhereClauses( const QString &c1, const QString &c2 
 
 void QgsPostgresUtils::replaceInvalidXmlChars( QString &xml )
 {
-  static const QRegularExpression replaceRe { u"([\\x00-\\x08\\x0B-\\x1F\\x7F])"_s };
+  const thread_local QRegularExpression replaceRe { u"([\\x00-\\x08\\x0B-\\x1F\\x7F])"_s };
   QRegularExpressionMatchIterator it { replaceRe.globalMatch( xml ) };
   while ( it.hasNext() )
   {
@@ -330,7 +330,7 @@ void QgsPostgresUtils::replaceInvalidXmlChars( QString &xml )
 
 void QgsPostgresUtils::restoreInvalidXmlChars( QString &xml )
 {
-  static const QRegularExpression replaceRe { QStringLiteral( R"raw(UTF-8\[(\d+)\])raw" ) };
+  const thread_local QRegularExpression replaceRe { QStringLiteral( R"raw(UTF-8\[(\d+)\])raw" ) };
   QRegularExpressionMatchIterator it { replaceRe.globalMatch( xml ) };
   while ( it.hasNext() )
   {
@@ -423,6 +423,7 @@ bool QgsPostgresUtils::deleteLayer( const QString &uri, QString &errCause )
 
       int count = result.PQgetvalue( 0, 0 ).toInt();
 
+      QStringList overviewTables;
       if ( !geometryCol.isEmpty() && count > 1 )
       {
         // the table has more geometry columns, drop just the geometry column
@@ -432,12 +433,36 @@ bool QgsPostgresUtils::deleteLayer( const QString &uri, QString &errCause )
       {
         // drop the table
         sql = u"SELECT DropGeometryTable(%1,%2)"_s.arg( QgsPostgresConn::quotedValue( schemaName ), QgsPostgresConn::quotedValue( tableName ) );
+
+        // if it is a raster, we also drop overviews referencing that raster
+        const QList<QgsPostgresRasterOverviewLayerProperty> overviews = rasterOverviews( conn, schemaName, tableName );
+        for ( const QgsPostgresRasterOverviewLayerProperty &overview : overviews )
+        {
+          overviewTables.append( u"%1.%2"_s.arg( QgsPostgresConn::quotedIdentifier( overview.schemaName ), QgsPostgresConn::quotedIdentifier( overview.tableName ) ) );
+        }
       }
 
+      conn->begin();
       result = conn->LoggedPQexec( "QgsPostgresUtils", sql );
-      if ( result.PQresultStatus() != PGRES_TUPLES_OK )
+      bool ok = result.PQresultStatus() == PGRES_TUPLES_OK;
+      if ( ok && !overviewTables.isEmpty() )
+      {
+        const QString sqlOverviews = u"DROP TABLE %1"_s.arg( overviewTables.join( ", "_L1 ) );
+        result = conn->LoggedPQexec( "QgsPostgresUtils", sqlOverviews );
+        ok = result.PQresultStatus() == PGRES_COMMAND_OK;
+      }
+
+      if ( !ok )
       {
         errCause = QObject::tr( "Unable to delete layer %1: \n%2" ).arg( schemaTableName, result.PQresultErrorMessage() );
+        conn->rollback();
+        conn->unref();
+        return false;
+      }
+
+      if ( !conn->commit() )
+      {
+        errCause = QObject::tr( "Unable to delete layer %1: \n%2" ).arg( schemaTableName, conn->PQerrorMessage() );
         conn->unref();
         return false;
       }
@@ -633,46 +658,6 @@ bool QgsPostgresUtils::moveProjectToSchema( QgsPostgresConn *conn, const QString
   return true;
 }
 
-QString QgsPostgresUtils::variantMapToHtml( const QVariantMap &variantMap, const QString &title )
-{
-  QString result;
-  if ( !title.isEmpty() )
-  {
-    result += u"<tr><td class=\"highlight\">%1</td><td></td></tr>"_s.arg( title );
-  }
-  for ( auto it = variantMap.constBegin(); it != variantMap.constEnd(); ++it )
-  {
-    const QVariantMap childMap = it.value().toMap();
-    const QVariantList childList = it.value().toList();
-    if ( !childList.isEmpty() )
-    {
-      result += u"<tr><td class=\"highlight\">%1</td><td><ul>"_s.arg( it.key() );
-      for ( const QVariant &v : childList )
-      {
-        const QVariantMap grandChildMap = v.toMap();
-        if ( !grandChildMap.isEmpty() )
-        {
-          result += u"<li><table>%1</table></li>"_s.arg( variantMapToHtml( grandChildMap ) );
-        }
-        else
-        {
-          result += u"<li>%1</li>"_s.arg( QgsStringUtils::insertLinks( v.toString() ) );
-        }
-      }
-      result += "</ul></td></tr>"_L1;
-    }
-    else if ( !childMap.isEmpty() )
-    {
-      result += u"<tr><td class=\"highlight\">%1</td><td><table>%2</table></td></tr>"_s.arg( it.key(), variantMapToHtml( childMap ) );
-    }
-    else
-    {
-      result += u"<tr><td class=\"highlight\">%1</td><td>%2</td></tr>"_s.arg( it.key(), QgsStringUtils::insertLinks( it.value().toString() ) );
-    }
-  }
-  return result;
-}
-
 bool QgsPostgresUtils::setProjectComment( QgsPostgresConn *conn, const QString &projectName, const QString &schemaName, const QString &comment )
 {
   const QString sql = QStringLiteral(
@@ -791,32 +776,39 @@ bool QgsPostgresUtils::disableQgisProjectVersioning( QgsPostgresConn *conn, cons
 
 bool QgsPostgresUtils::qgisProjectVersioningEnabled( QgsPostgresConn *conn, const QString &schema )
 {
-  const QString sqlCheck = QStringLiteral(
-                             "SELECT EXISTS ("
-                             "SELECT 1 "
-                             "FROM information_schema.triggers "
-                             "WHERE trigger_schema = %1 "
-                             "AND trigger_name = 'qgis_project_versions' "
-                             "AND event_object_table = 'qgis_projects'"
-                             ") AS trigger_exists, "
-                             "EXISTS ("
-                             "SELECT 1 "
-                             "FROM information_schema.tables "
-                             "WHERE table_schema = %1 "
-                             "AND table_name = 'qgis_projects_versions' "
-                             ") AS table_exists;"
-  )
-                             .arg( QgsPostgresConn::quotedValue( schema ) );
+  const QString sqlCheck = uR"sql(
+    SELECT
+        COALESCE(obj.has_both, false) AS table_and_trigger_exist
+    FROM pg_catalog.pg_namespace n
+    LEFT JOIN (
+        SELECT
+            c.relnamespace,
+            (
+                BOOL_OR(c.relname = 'qgis_projects_versions' AND c.relkind = 'r')
+                AND
+                BOOL_OR(t.tgname = 'qgis_project_versions' AND NOT t.tgisinternal)
+            ) AS has_both
+        FROM pg_catalog.pg_class c
+        LEFT JOIN pg_catalog.pg_trigger t ON t.tgrelid = c.oid
+        WHERE (c.relname = 'qgis_projects_versions' AND c.relkind = 'r')
+           OR (t.tgname = 'qgis_project_versions' AND NOT t.tgisinternal)
+        GROUP BY c.relnamespace
+    ) obj ON n.oid = obj.relnamespace
+    WHERE n.nspname = %1
+    )sql"_s.arg( QgsPostgresConn::quotedValue( schema ) );
 
   QgsPostgresResult res( conn->PQexec( sqlCheck ) );
-  return res.PQgetvalue( 0, 0 ).startsWith( 't'_L1 ) && res.PQgetvalue( 0, 1 ).startsWith( 't'_L1 );
+  if ( res.PQresultStatus() != PGRES_TUPLES_OK || res.PQntuples() != 1 || res.PQnfields() != 1 )
+  {
+    return false;
+  }
+  return res.PQgetvalue( 0, 0 ).startsWith( 't'_L1 );
 }
 
 bool QgsPostgresUtils::moveProjectVersions( QgsPostgresConn *conn, const QString &originalSchema, const QString &project, const QString &targetSchema )
 {
-  const QString sqlCopy = u"INSERT INTO %1.qgis_projects_versions SELECT * FROM %2.qgis_projects_versions WHERE name=%3;"_s.arg( QgsPostgresConn::quotedIdentifier( targetSchema ) )
-                            .arg( QgsPostgresConn::quotedIdentifier( originalSchema ) )
-                            .arg( QgsPostgresConn::quotedValue( project ) );
+  const QString sqlCopy = u"INSERT INTO %1.qgis_projects_versions SELECT * FROM %2.qgis_projects_versions WHERE name=%3;"_s
+                            .arg( QgsPostgresConn::quotedIdentifier( targetSchema ), QgsPostgresConn::quotedIdentifier( originalSchema ), QgsPostgresConn::quotedValue( project ) );
 
   QgsPostgresResult resCopy( conn->PQexec( sqlCopy ) );
 
@@ -825,8 +817,7 @@ bool QgsPostgresUtils::moveProjectVersions( QgsPostgresConn *conn, const QString
     return false;
   }
 
-  const QString sqlDelete = u"DELETE FROM %1.qgis_projects_versions WHERE name=%2;"_s.arg( QgsPostgresConn::quotedIdentifier( originalSchema ) ).arg( QgsPostgresConn::quotedValue( project ) );
-  ;
+  const QString sqlDelete = u"DELETE FROM %1.qgis_projects_versions WHERE name=%2;"_s.arg( QgsPostgresConn::quotedIdentifier( originalSchema ), QgsPostgresConn::quotedValue( project ) );
 
   QgsPostgresResult resDelete( conn->PQexec( sqlDelete ) );
 
@@ -840,9 +831,8 @@ bool QgsPostgresUtils::moveProjectVersions( QgsPostgresConn *conn, const QString
 
 bool QgsPostgresUtils::renameProject( QgsPostgresConn *conn, const QString &schemaName, const QString &oldProjectName, const QString &newProjectName )
 {
-  const QString sql = u"UPDATE %1.qgis_projects SET name=%2 WHERE name=%3"_s.arg( QgsPostgresConn::quotedIdentifier( schemaName ) )
-                        .arg( QgsPostgresConn::quotedValue( newProjectName ) )
-                        .arg( QgsPostgresConn::quotedValue( oldProjectName ) );
+  const QString sql = u"UPDATE %1.qgis_projects SET name=%2 WHERE name=%3"_s
+                        .arg( QgsPostgresConn::quotedIdentifier( schemaName ), QgsPostgresConn::quotedValue( newProjectName ), QgsPostgresConn::quotedValue( oldProjectName ) );
 
   QgsPostgresResult result( conn->PQexec( sql ) );
   if ( result.PQresultStatus() != PGRES_COMMAND_OK )
@@ -877,4 +867,30 @@ QStringList QgsPostgresUtils::projectNamesInSchema( QgsPostgresConn *conn, const
   }
 
   return projects;
+}
+
+QList<QgsPostgresRasterOverviewLayerProperty> QgsPostgresUtils::rasterOverviews( QgsPostgresConn *conn, const QString &schema, const QString &table )
+{
+  if ( !tableExists( conn, QString(), u"raster_overviews"_s ) )
+    return {};
+
+  const QString sql = u"SELECT o_table_schema, o_table_name, o_raster_column, overview_factor, r_raster_column FROM raster_overviews WHERE r_table_schema = %1 AND r_table_name = %2"_s
+                        .arg( QgsPostgresConn::quotedValue( schema ), QgsPostgresConn::quotedValue( table ) );
+  QgsPostgresResult res( conn->LoggedPQexec( u"rasterOverviews"_s, sql ) );
+  if ( res.PQresultStatus() != PGRES_TUPLES_OK )
+    return {};
+
+  QList<QgsPostgresRasterOverviewLayerProperty> overviews;
+  overviews.reserve( res.PQntuples() );
+  for ( int i = 0; i < res.PQntuples(); i++ )
+  {
+    QgsPostgresRasterOverviewLayerProperty overview;
+    overview.schemaName = res.PQgetvalue( i, 0 );
+    overview.tableName = res.PQgetvalue( i, 1 );
+    overview.rasterColumn = res.PQgetvalue( i, 2 );
+    overview.overviewFactor = res.PQgetvalue( i, 3 );
+    overview.refRasterColumn = res.PQgetvalue( i, 4 );
+    overviews.append( overview );
+  }
+  return overviews;
 }

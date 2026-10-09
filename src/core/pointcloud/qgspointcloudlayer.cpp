@@ -1057,7 +1057,11 @@ bool QgsPointCloudLayer::rollBack()
   if ( mIsVpc )
   {
     if ( mEditingIndexes.isEmpty() )
-      return false;
+    {
+      mEditable = false;
+      emit editingStopped();
+      return true;
+    }
 
     QVector<QPair<int, QList<QgsPointCloudNodeId>>> queuedUpdates;
     queuedUpdates.reserve( mEditingIndexes.size() );
@@ -1154,7 +1158,7 @@ bool QgsPointCloudLayer::changeAttributeValue( const QHash<int, QHash<QgsPointCl
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
-  QgsEventTracing::ScopedEvent _trace( u"PointCloud"_s, u"QgsPointCloudLayer::changeAttributeValue"_s );
+  QgsScopedEvent _trace( u"PointCloud"_s, u"QgsPointCloudLayer::changeAttributeValue"_s );
 
   if ( !mEditable )
     return false;

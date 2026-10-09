@@ -197,13 +197,6 @@ class GUI_EXPORT QgsAggregateMappingWidget : public QgsPanelWidget
      */
     void registerExpressionContextGenerator( const QgsExpressionContextGenerator *generator );
 
-  signals:
-
-    /**
-     *Emitted when the aggregates defined in the widget are changed.
-     */
-    void changed();
-
   public slots:
 
     //! Appends a new \a field to the model, with an optional \a source and \a aggregate

@@ -184,7 +184,7 @@ const QgsSettingsEntryStringList *QgsSettingsRegistryCore::settingsCodeExecution
   = new QgsSettingsEntryStringList( u"code-execution-denied-projects-folders"_s, QgsSettingsTree::sTreeCore, QStringList(), u"Projects and folders that are untrusted and denied execution of embedded scripts"_s );
 
 const QgsSettingsEntryBool *QgsSettingsRegistryCore::settingsMeasurePlanimetric
-  = new QgsSettingsEntryBool( u"planimetric"_s, QgsSettingsTree::sTreeMeasure, true, u"Whether measurements should be planimetric (ellipsoid off) or use the ellipsoid"_s );
+  = new QgsSettingsEntryBool( u"planimetric"_s, QgsSettingsTree::sTreeMeasure, false, u"Whether measurements should be planimetric (ellipsoid off) or use the ellipsoid"_s );
 
 const QgsSettingsEntryBool *QgsSettingsRegistryCore::settingsMeasureKeepBaseUnit
   = new QgsSettingsEntryBool( u"keep-base-unit"_s, QgsSettingsTree::sTreeMeasure, true, u"Whether to keep base measurement units instead of converting to larger units"_s );

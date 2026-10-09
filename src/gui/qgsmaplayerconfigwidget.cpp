@@ -43,6 +43,11 @@ QgsMapLayerConfigWidget::QgsMapLayerConfigWidget( QgsMapLayer *layer, QgsMapCanv
   , mMapCanvas( canvas )
 {}
 
+QgsMapLayer *QgsMapLayerConfigWidget::layer()
+{
+  return mLayer;
+}
+
 void QgsMapLayerConfigWidget::setMapLayerConfigWidgetContext( const QgsMapLayerConfigWidgetContext &context )
 {
   mMapLayerConfigWidgetContext = context;

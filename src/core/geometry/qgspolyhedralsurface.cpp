@@ -308,8 +308,10 @@ QDomElement QgsPolyhedralSurface::asGml3( QDomDocument &doc, int precision, cons
   return elemPolyhedralSurface;
 }
 
-json QgsPolyhedralSurface::asJsonObject( int precision ) const
+json QgsPolyhedralSurface::asJsonObject( int precision, Qgis::GeoJsonProfile profile ) const
 {
+  // JSON-FG profile is not supported yet for PolyhedralSurface geometry
+  Q_UNUSED( profile );
   // GeoJSON format does not support PolyhedralSurface geometry
   // Return a multipolygon instead;
   std::unique_ptr<QgsMultiPolygon> multiPolygon( toMultiPolygon() );
@@ -757,6 +759,58 @@ bool QgsPolyhedralSurface::deleteVertex( QgsVertexId vId )
   }
 
   return success;
+}
+
+bool QgsPolyhedralSurface::deleteVertices( const QSet<QgsVertexId> &positions )
+{
+  QMap<int, QSet<QgsVertexId>> partVertices;
+  for ( QgsVertexId pos : positions )
+  {
+    if ( !hasVertex( pos ) )
+    {
+      return false;
+    }
+
+    partVertices[pos.part].insert( QgsVertexId( 0, pos.ring, pos.vertex ) );
+  }
+
+  QMapIterator<int, QSet<QgsVertexId>> partVerticesIt( partVertices );
+  partVerticesIt.toBack();
+  while ( partVerticesIt.hasPrevious() )
+  {
+    partVerticesIt.previous();
+
+    int part = partVerticesIt.key();
+    QSet<QgsVertexId> vertexMap = partVerticesIt.value();
+    QgsPolygon *patch = mPatches.at( part );
+
+    if ( !patch->deleteVertices( vertexMap ) )
+    {
+      Q_ASSERT( false );
+      return false;
+    }
+
+    if ( !patch->exteriorRing() )
+    {
+      delete mPatches.takeAt( part );
+    }
+  }
+
+  clearCache();
+  return true;
+}
+
+bool QgsPolyhedralSurface::hasVertex( QgsVertexId id ) const
+{
+  size_t parts = partCount();
+  if ( id.part < 0 || static_cast<size_t>( id.part ) >= parts )
+    return false;
+
+  QgsAbstractGeometry *geom = mPatches.at( id.part );
+  if ( !geom )
+    return false;
+
+  return geom->hasVertex( QgsVertexId( 0, id.ring, id.vertex ) );
 }
 
 bool QgsPolyhedralSurface::hasCurvedSegments() const

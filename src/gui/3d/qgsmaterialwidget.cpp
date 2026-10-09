@@ -20,7 +20,7 @@
 #include "qgsgui.h"
 #include "qgsmaterialregistry.h"
 #include "qgsmaterialsettingswidget.h"
-#include "qgsphongmaterialsettings.h"
+#include "qgsmetalroughmaterialsettings.h"
 #include "qgsreadwritecontext.h"
 #include "qgsvectorlayer.h"
 
@@ -53,7 +53,7 @@ QgsMaterialWidget::QgsMaterialWidget( QWidget *parent )
   connect( mMaterialTypeComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsMaterialWidget::materialTypeChanged );
   materialTypeChanged();
 
-  setSettings( new QgsPhongMaterialSettings(), nullptr );
+  setSettings( new QgsMetalRoughMaterialSettings(), nullptr );
 }
 
 QgsMaterialWidget::~QgsMaterialWidget() = default;
@@ -85,10 +85,10 @@ void QgsMaterialWidget::rebuildAvailableTypes()
   const int prevIndex = mMaterialTypeComboBox->findData( prevType );
   if ( prevIndex == -1 )
   {
-    // if phong material type is available, default to it (for now?)
-    const int phongIndex = mMaterialTypeComboBox->findData( u"phong"_s );
-    if ( phongIndex >= 0 )
-      mMaterialTypeComboBox->setCurrentIndex( phongIndex );
+    // if metalrough material type is available, default to it
+    const int metalroughIndex = mMaterialTypeComboBox->findData( u"metalrough"_s );
+    if ( metalroughIndex >= 0 )
+      mMaterialTypeComboBox->setCurrentIndex( metalroughIndex );
     else
       mMaterialTypeComboBox->setCurrentIndex( 0 );
   }
@@ -98,6 +98,7 @@ void QgsMaterialWidget::rebuildAvailableTypes()
   if ( QgsMaterialSettingsWidget *w = qobject_cast<QgsMaterialSettingsWidget *>( mStackedWidget->currentWidget() ) )
   {
     w->setTechnique( mTechnique );
+    w->setMode( mMode );
   }
 
   mMaterialTypeComboBox->blockSignals( false );
@@ -107,6 +108,12 @@ void QgsMaterialWidget::rebuildAvailableTypes()
 void QgsMaterialWidget::setFilterByTechnique( bool enabled )
 {
   mFilterByTechnique = enabled;
+  rebuildAvailableTypes();
+}
+
+void QgsMaterialWidget::setMode( Qgis::MaterialWidgetMode mode )
+{
+  mMode = mode;
   rebuildAvailableTypes();
 }
 
@@ -127,6 +134,15 @@ void QgsMaterialWidget::setType( const QString &type )
 {
   mMaterialTypeComboBox->setCurrentIndex( mMaterialTypeComboBox->findData( type ) );
   materialTypeChanged();
+}
+
+void QgsMaterialWidget::setDockMode( bool dockMode )
+{
+  QgsPanelWidget::setDockMode( dockMode );
+  if ( QgsMaterialSettingsWidget *w = qobject_cast<QgsMaterialSettingsWidget *>( mStackedWidget->currentWidget() ) )
+  {
+    w->setDockMode( dockMode );
+  }
 }
 
 void QgsMaterialWidget::setPreviewVisible( bool visible )
@@ -194,11 +210,14 @@ void QgsMaterialWidget::updateMaterialWidget()
     {
       w->setSettings( mCurrentSettings.get(), mLayer );
       w->setTechnique( mTechnique );
+      w->setMode( mMode );
       w->setPreviewVisible( mPreviewVisible );
+      w->setDockMode( dockMode() );
       mStackedWidget->addWidget( w );
       mStackedWidget->setCurrentWidget( w );
       // start receiving updates from widget
       connect( w, &QgsMaterialSettingsWidget::changed, this, &QgsMaterialWidget::materialWidgetChanged );
+      connect( w, &QgsMaterialSettingsWidget::showPanel, this, &QgsMaterialWidget::openPanel );
       return;
     }
   }
@@ -234,6 +253,16 @@ QgsMaterialWidgetDialog::QgsMaterialWidgetDialog( const QgsAbstractMaterialSetti
   setWindowTitle( tr( "Material" ) );
 
   connect( mWidget, &QgsPanelWidget::panelAccepted, this, &QDialog::reject );
+}
+
+void QgsMaterialWidgetDialog::setTechnique( Qgis::MaterialRenderingTechnique technique )
+{
+  mWidget->setTechnique( technique );
+}
+
+void QgsMaterialWidgetDialog::setFilterByTechnique( bool enabled )
+{
+  mWidget->setFilterByTechnique( enabled );
 }
 
 std::unique_ptr<QgsAbstractMaterialSettings> QgsMaterialWidgetDialog::settings()

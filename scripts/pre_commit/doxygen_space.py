@@ -59,6 +59,19 @@ def process_file(file_path):
             output.append(f"{indent}/**")
             line = f"{indent} * {content[0].upper()}{content[1:]}"
 
+        if match := re.match(r".*[\w\d,]\s*//![^<].*", line):
+            exit_with_error(
+                f"Correct doxygen tag for suffixed documentation is '//!<', not '//!': {line}"
+            )
+        elif match := re.match(r".*//<!.*", line):
+            exit_with_error(
+                f"Correct doxygen tag for suffixed documentation is '//!<', not '//<!': {line}"
+            )
+        elif match := re.match(r".*[a-zA-Z0-9,]\s*//<.*", line):
+            exit_with_error(
+                f"Correct doxygen tag for suffixed documentation is '//!<', not '//<': {line}"
+            )
+
         if match := re.match(
             r"^(.*)/\*[!*](?!\*)(<*)[ \t\r\n\f]*(.*?)[ \t\r\n\f]*\*/[ \t\r\n\f]*$", line
         ):

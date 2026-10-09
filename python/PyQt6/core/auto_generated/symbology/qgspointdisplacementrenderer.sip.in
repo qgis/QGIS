@@ -49,7 +49,7 @@ Constructor for QgsPointDisplacementRenderer.
     virtual bool accept( QgsStyleEntityVisitorInterface *visitor ) const;
 
 
-    static QgsFeatureRenderer *create( QDomElement &symbologyElem, const QgsReadWriteContext &context ) /Factory/;
+    static std::unique_ptr<QgsFeatureRenderer> create( QDomElement &symbologyElem, const QgsReadWriteContext &context );
 %Docstring
 Create a renderer from XML element
 %End
@@ -164,7 +164,7 @@ Sets the center symbol for a displacement group.
 .. seealso:: :py:func:`centerSymbol`
 %End
 
-    static QgsPointDisplacementRenderer *convertFromRenderer( const QgsFeatureRenderer *renderer ) /Factory/;
+    static std::unique_ptr<QgsPointDisplacementRenderer> convertFromRenderer( const QgsFeatureRenderer *renderer );
 %Docstring
 Creates a QgsPointDisplacementRenderer from an existing renderer.
 

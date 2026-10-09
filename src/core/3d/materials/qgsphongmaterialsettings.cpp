@@ -46,9 +46,9 @@ bool QgsPhongMaterialSettings::supportsTechnique( Qgis::MaterialRenderingTechniq
   return false;
 }
 
-QgsAbstractMaterialSettings *QgsPhongMaterialSettings::create()
+std::unique_ptr<QgsAbstractMaterialSettings> QgsPhongMaterialSettings::create()
 {
-  return new QgsPhongMaterialSettings();
+  return std::make_unique<QgsPhongMaterialSettings>();
 }
 
 QgsPhongMaterialSettings *QgsPhongMaterialSettings::clone() const
@@ -63,6 +63,15 @@ bool QgsPhongMaterialSettings::equals( const QgsAbstractMaterialSettings *other 
     return false;
 
   return *this == *otherPhong;
+}
+
+QSet<QgsAbstractMaterialSettings::Property> QgsPhongMaterialSettings::supportedProperties() const
+{
+  return {
+    QgsAbstractMaterialSettings::Property::Ambient,
+    QgsAbstractMaterialSettings::Property::Diffuse,
+    QgsAbstractMaterialSettings::Property::Specular,
+  };
 }
 
 QColor QgsPhongMaterialSettings::averageColor() const

@@ -262,7 +262,7 @@ Returns the symbol property definitions.
 
     virtual ~QgsSymbol();
 
-    static QgsSymbol *defaultSymbol( Qgis::GeometryType geomType ) /Factory/;
+    static std::unique_ptr<QgsSymbol> defaultSymbol( Qgis::GeometryType geomType );
 %Docstring
 Returns a new default symbol for the specified geometry type.
 

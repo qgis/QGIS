@@ -164,7 +164,7 @@ void QgsColorRampLegendNodeWidget::onChanged()
   if ( mBlockSignals )
     return;
 
-  emit widgetChanged();
+  emit changed();
 }
 
 //

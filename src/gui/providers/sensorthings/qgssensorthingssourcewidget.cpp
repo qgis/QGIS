@@ -95,18 +95,13 @@ QgsSensorThingsSourceWidget::QgsSensorThingsSourceWidget( QWidget *parent )
   mExpansionsTable->horizontalHeader()->resizeSection( QgsSensorThingsExpansionsModel::Column::SortOrder, fm.horizontalAdvance( '0' ) * 15 );
   mExpansionsTable->horizontalHeader()->resizeSection( QgsSensorThingsExpansionsModel::Column::Actions, fm.horizontalAdvance( '0' ) * 5 );
 
-  for ( Qgis::SensorThingsEntity type : {
-          Qgis::SensorThingsEntity::Thing,
-          Qgis::SensorThingsEntity::Location,
-          Qgis::SensorThingsEntity::HistoricalLocation,
-          Qgis::SensorThingsEntity::Datastream,
-          Qgis::SensorThingsEntity::Sensor,
-          Qgis::SensorThingsEntity::ObservedProperty,
-          Qgis::SensorThingsEntity::Observation,
-          Qgis::SensorThingsEntity::FeatureOfInterest,
-          Qgis::SensorThingsEntity::MultiDatastream,
-        } )
+  const QMetaEnum entities = QMetaEnum::fromType<Qgis::SensorThingsEntity>();
+  for ( qint32 i = 0, count = entities.keyCount(); i < count; i++ )
   {
+    const Qgis::SensorThingsEntity type = static_cast< Qgis::SensorThingsEntity >( entities.value( i ) );
+    if ( type == Qgis::SensorThingsEntity::Invalid )
+      continue;
+
     mComboEntityType->addItem( QgsSensorThingsUtils::displayString( type, true ), QVariant::fromValue( type ) );
   }
   mComboEntityType->setCurrentIndex( mComboEntityType->findData( QVariant::fromValue( Qgis::SensorThingsEntity::Location ) ) );
@@ -116,6 +111,8 @@ QgsSensorThingsSourceWidget::QgsSensorThingsSourceWidget( QWidget *parent )
   connect( mComboEntityType, qOverload<int>( &QComboBox::currentIndexChanged ), this, &QgsSensorThingsSourceWidget::entityTypeChanged );
   connect( mComboGeometryType, qOverload<int>( &QComboBox::currentIndexChanged ), this, &QgsSensorThingsSourceWidget::validate );
   connect( mSpinPageSize, qOverload<int>( &QSpinBox::valueChanged ), this, &QgsSensorThingsSourceWidget::validate );
+  connect( mRetrieveEntitiesButton, &QToolButton::clicked, this, &QgsSensorThingsSourceWidget::retrieveEntities );
+  mRetrieveEntitiesButton->setEnabled( true );
   connect( mRetrieveTypesButton, &QToolButton::clicked, this, &QgsSensorThingsSourceWidget::retrieveTypes );
   mRetrieveTypesButton->setEnabled( false );
   connect( mExtentWidget, &QgsExtentWidget::extentChanged, this, &QgsSensorThingsSourceWidget::validate );
@@ -130,6 +127,12 @@ QgsSensorThingsSourceWidget::~QgsSensorThingsSourceWidget()
     disconnect( mPropertiesTask, &QgsTask::taskCompleted, this, &QgsSensorThingsSourceWidget::connectionPropertiesTaskCompleted );
     mPropertiesTask->cancel();
     mPropertiesTask = nullptr;
+  }
+  if ( mCapabilitiesTask )
+  {
+    disconnect( mCapabilitiesTask, &QgsTask::taskCompleted, this, &QgsSensorThingsSourceWidget::connectionCapabilitiesTaskCompleted );
+    mCapabilitiesTask->cancel();
+    mCapabilitiesTask = nullptr;
   }
 }
 
@@ -194,6 +197,7 @@ void QgsSensorThingsSourceWidget::setSourceUri( const QString &uri )
   mExpansionsModel->setExpansions( expansions );
 
   mIsValid = true;
+  mRetrieveEntitiesButton->setEnabled( true );
 }
 
 QString QgsSensorThingsSourceWidget::sourceUri() const
@@ -316,6 +320,21 @@ void QgsSensorThingsSourceWidget::validate()
   emit validChanged( mIsValid );
 }
 
+void QgsSensorThingsSourceWidget::retrieveEntities()
+{
+  if ( mCapabilitiesTask )
+  {
+    disconnect( mCapabilitiesTask, &QgsTask::taskCompleted, this, &QgsSensorThingsSourceWidget::connectionCapabilitiesTaskCompleted );
+    mCapabilitiesTask->cancel();
+    mCapabilitiesTask = nullptr;
+  }
+
+  mCapabilitiesTask = new QgsSensorThingsConnectionCapabilitiesTask( mSourceParts.value( u"url"_s ).toString() );
+  connect( mCapabilitiesTask, &QgsTask::taskCompleted, this, &QgsSensorThingsSourceWidget::connectionCapabilitiesTaskCompleted );
+  QgsApplication::taskManager()->addTask( mCapabilitiesTask );
+  mRetrieveEntitiesButton->setEnabled( false );
+}
+
 void QgsSensorThingsSourceWidget::retrieveTypes()
 {
   if ( mPropertiesTask )
@@ -354,6 +373,30 @@ void QgsSensorThingsSourceWidget::connectionPropertiesTaskCompleted()
   mComboGeometryType->setCurrentIndex( mComboGeometryType->findData( QVariant::fromValue( currentWkbType ) ) );
   if ( mComboGeometryType->currentIndex() < 0 )
     mComboGeometryType->setCurrentIndex( 0 );
+}
+
+void QgsSensorThingsSourceWidget::connectionCapabilitiesTaskCompleted()
+{
+  const QgsSensorThingsUtils::ServiceCapabilities capabilities = mCapabilitiesTask->capabilities();
+
+  const Qgis::SensorThingsEntity currentEntityType = mComboEntityType->currentData().value<Qgis::SensorThingsEntity>();
+  mComboEntityType->clear();
+
+  const QMetaEnum entities = QMetaEnum::fromType<Qgis::SensorThingsEntity>();
+  for ( qint32 i = 0, count = entities.keyCount(); i < count; i++ )
+  {
+    const Qgis::SensorThingsEntity type = static_cast< Qgis::SensorThingsEntity >( entities.value( i ) );
+    if ( type == Qgis::SensorThingsEntity::Invalid || !capabilities.availableEntities.contains( type ) )
+      continue;
+
+    mComboEntityType->addItem( QgsSensorThingsUtils::displayString( type, true ), QVariant::fromValue( type ) );
+  }
+  mComboEntityType->setCurrentIndex( mComboEntityType->findData( QVariant::fromValue( Qgis::SensorThingsEntity::Location ) ) );
+
+  mComboEntityType->setCurrentIndex( mComboEntityType->findData( QVariant::fromValue( currentEntityType ) ) );
+  if ( mComboEntityType->currentIndex() < 0 )
+    mComboEntityType->setCurrentIndex( 0 );
+  mRetrieveEntitiesButton->setEnabled( true );
 }
 
 void QgsSensorThingsSourceWidget::setCurrentEntityType( Qgis::SensorThingsEntity type )

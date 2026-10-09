@@ -136,6 +136,8 @@ bool QgsSplitFeaturesByAttributeCharacterAlgorithm::prepareAlgorithm( const QVar
 
 QgsFeatureList QgsSplitFeaturesByAttributeCharacterAlgorithm::processFeature( const QgsFeature &f, QgsProcessingContext &, QgsProcessingFeedback * )
 {
+  QGS_MARK_ALGORITHM_SOURCE
+
   QgsFeatureList res;
   const QString val = f.attribute( mFieldIndex ).toString();
   const QStringList parts = mUseRegex ? val.split( mRegex ) : val.split( mChar );

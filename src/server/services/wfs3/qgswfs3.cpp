@@ -42,10 +42,13 @@ class QgsWfs3Module : public QgsServiceModule
       }
       auto wfs3Api = std::make_unique<QgsServerOgcApi>( serverIface, rootPath, u"OAPIF"_s, u"OGC API Features (WFS3)"_s, u"1.0.0"_s );
       // Register handlers
+      wfs3Api->registerHandler<QgsWfs3CollectionsSchemaHandler>();
       wfs3Api->registerHandler<QgsWfs3CollectionsItemsHandler>();
       wfs3Api->registerHandler<QgsWfs3CollectionsFeatureHandler>();
       wfs3Api->registerHandler<QgsWfs3CollectionsHandler>();
+      wfs3Api->registerHandler<QgsWfs3DescribeCollectionQueryablesHandler>();
       wfs3Api->registerHandler<QgsWfs3DescribeCollectionHandler>();
+      wfs3Api->registerHandler<QgsWfs3FunctionsHandler>();
       wfs3Api->registerHandler<QgsWfs3ConformanceHandler>();
       wfs3Api->registerHandler<QgsServerStaticHandler>();
       // API handler must access to the whole API

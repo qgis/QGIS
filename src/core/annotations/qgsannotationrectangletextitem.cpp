@@ -87,9 +87,9 @@ bool QgsAnnotationRectangleTextItem::writeXml( QDomElement &element, QDomDocumen
   return true;
 }
 
-QgsAnnotationRectangleTextItem *QgsAnnotationRectangleTextItem::create()
+std::unique_ptr<QgsAnnotationRectangleTextItem> QgsAnnotationRectangleTextItem::create()
 {
-  return new QgsAnnotationRectangleTextItem( QString(), QgsRectangle() );
+  return std::make_unique<QgsAnnotationRectangleTextItem>( QString(), QgsRectangle() );
 }
 
 bool QgsAnnotationRectangleTextItem::readXml( const QDomElement &element, const QgsReadWriteContext &context )

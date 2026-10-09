@@ -65,6 +65,7 @@ namespace QgsOverlayUtils
     const QgsFeatureSource &sourceA,
     const QgsFeatureSource &sourceB,
     QgsFeatureSink &sink,
+    const QString &sinkName,
     QgsProcessingContext &context,
     QgsProcessingFeedback *feedback,
     long &count,
@@ -78,6 +79,7 @@ namespace QgsOverlayUtils
     const QgsFeatureSource &sourceA,
     const QgsFeatureSource &sourceB,
     QgsFeatureSink &sink,
+    const QString &sinkName,
     QgsProcessingContext &context,
     QgsProcessingFeedback *feedback,
     long &count,
@@ -101,7 +103,12 @@ namespace QgsOverlayUtils
    * As a result, for all pairs of features in the output, a pair either has no common interior or their interior is the same.
    */
   void resolveOverlaps(
-    const QgsFeatureSource &source, QgsFeatureSink &sink, QgsProcessingFeedback *feedback, const QgsGeometryParameters &parameters = QgsGeometryParameters(), SanitizeFlags flags = SanitizeFlags()
+    const QgsFeatureSource &source,
+    QgsFeatureSink &sink,
+    const QString &sinkName,
+    QgsProcessingFeedback *feedback,
+    const QgsGeometryParameters &parameters = QgsGeometryParameters(),
+    SanitizeFlags flags = SanitizeFlags()
   );
 } // namespace QgsOverlayUtils
 

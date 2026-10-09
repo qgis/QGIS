@@ -98,6 +98,7 @@ class TestQgsCircularString : public QObject
     void exportImport();
     void addToPainterPath();
     void cast();
+    void isSimpleCurve();
 };
 
 void TestQgsCircularString::emptyConstructor()
@@ -1089,17 +1090,11 @@ void TestQgsCircularString::deleteVertex()
   //empty line
   QgsCircularString cs;
 
-  QVERIFY( cs.deleteVertex( QgsVertexId( 0, 0, 0 ) ) );
+  QVERIFY( !cs.deleteVertex( QgsVertexId( 0, 0, 0 ) ) );
   QVERIFY( cs.isEmpty() );
 
-  //valid line
-  cs.setPoints(
-    QgsPointSequence()
-    << QgsPoint( Qgis::WkbType::PointZM, 1, 2, 2, 3 )
-    << QgsPoint( Qgis::WkbType::PointZM, 11, 12, 4, 5 )
-    << QgsPoint( Qgis::WkbType::PointZM, 21, 22, 6, 7 )
-    << QgsPoint( Qgis::WkbType::PointZM, 31, 32, 6, 7 )
-  );
+  //valid line, deleting any vertex deletes entire geometry
+  cs.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointZM, 1, 2, 2, 3 ) << QgsPoint( Qgis::WkbType::PointZM, 11, 12, 4, 5 ) << QgsPoint( Qgis::WkbType::PointZM, 21, 22, 6, 7 ) );
 
   //out of range vertices
   QVERIFY( !cs.deleteVertex( QgsVertexId( 0, 0, -1 ) ) );
@@ -1108,24 +1103,31 @@ void TestQgsCircularString::deleteVertex()
   //valid vertices
   QVERIFY( cs.deleteVertex( QgsVertexId( 0, 0, 1 ) ) );
 
-  QCOMPARE( cs.numPoints(), 2 );
-  QCOMPARE( cs.pointN( 0 ), QgsPoint( Qgis::WkbType::PointZM, 1, 2, 2, 3 ) );
-  QCOMPARE( cs.pointN( 1 ), QgsPoint( Qgis::WkbType::PointZM, 31, 32, 6, 7 ) );
-
-  //removing the next vertex removes all remaining vertices
-  QVERIFY( cs.deleteVertex( QgsVertexId( 0, 0, 0 ) ) );
   QCOMPARE( cs.numPoints(), 0 );
   QVERIFY( cs.isEmpty() );
 
-  QVERIFY( cs.deleteVertex( QgsVertexId( 0, 0, 0 ) ) );
+  QVERIFY( !cs.deleteVertex( QgsVertexId( 0, 0, 0 ) ) );
   QVERIFY( cs.isEmpty() );
 
-  //removing a vertex from a 3 point circular string should remove the whole line
-  cs.setPoints( QgsPointSequence() << QgsPoint( 0, 0 ) << QgsPoint( 1, 1 ) << QgsPoint( 0, 2 ) );
+  cs.setPoints(
+    QgsPointSequence()
+    << QgsPoint( Qgis::WkbType::PointZ, 0, 0, 0 )
+    << QgsPoint( Qgis::WkbType::PointZ, 1, 1, 1 )
+    << QgsPoint( Qgis::WkbType::PointZ, 2, 2, 2 )
+    << QgsPoint( Qgis::WkbType::PointZ, 3, 3, 3 )
+    << QgsPoint( Qgis::WkbType::PointZ, 4, 4, 4 )
+  );
+
+  QVERIFY( cs.deleteVertex( QgsVertexId( 0, 0, 1 ) ) );
   QCOMPARE( cs.numPoints(), 3 );
 
-  cs.deleteVertex( QgsVertexId( 0, 0, 2 ) );
-  QCOMPARE( cs.numPoints(), 0 );
+  QCOMPARE( cs.pointN( 0 ), QgsPoint( Qgis::WkbType::PointZ, 0, 0, 0 ) );
+  QCOMPARE( cs.pointN( 1 ), QgsPoint( Qgis::WkbType::PointZ, 3, 3, 3 ) );
+  QCOMPARE( cs.pointN( 2 ), QgsPoint( Qgis::WkbType::PointZ, 4, 4, 4 ) );
+
+  // invalid geometry, test QGIS doesn't crash when deleteVertex is called
+  cs.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointZ, 0, 0, 0 ) << QgsPoint( Qgis::WkbType::PointZ, 1, 1, 1 ) );
+  QVERIFY( cs.deleteVertex( QgsVertexId( 0, 0, 1 ) ) );
 }
 
 void TestQgsCircularString::reversed()
@@ -1992,14 +1994,17 @@ void TestQgsCircularString::cast()
 
   cs.fromWkt( u"CircularString Z (10 0 1, 10 1 1, 10 2 1)"_s );
   QVERIFY( QgsCircularString::cast( &cs ) );
+  QVERIFY( QgsSimpleCurve::cast( &cs ) );
   QVERIFY( QgsCurve::cast( &cs ) );
 
   cs.fromWkt( u"CircularString M (10 0 1, 10 1 1, 10 2 1)"_s );
   QVERIFY( QgsCircularString::cast( &cs ) );
+  QVERIFY( QgsSimpleCurve::cast( &cs ) );
   QVERIFY( QgsCurve::cast( &cs ) );
 
   cs.fromWkt( u"CircularString ZM (10 0 1 2, 10 1 1 2, 10 2 1 2)"_s );
   QVERIFY( QgsCircularString::cast( &cs ) );
+  QVERIFY( QgsSimpleCurve::cast( &cs ) );
   QVERIFY( QgsCurve::cast( &cs ) );
 }
 
@@ -2561,6 +2566,25 @@ void TestQgsCircularString::append()
   QVERIFY( cs.isClosed() );
   QCOMPARE( cs.numPoints(), 5 );
   QCOMPARE( cs.vertexCount(), 5 );
+
+  // Avoid appending a LineString (i.e., another SimpleCurve with different type)
+  cs.clear();
+  cs.setPoints( QgsPointSequence() << QgsPoint( 0, 0 ) << QgsPoint( 1, 1 ) << QgsPoint( 0, 2 ) );
+  QCOMPARE( cs.numPoints(), 3 );
+  QCOMPARE( cs.wkbType(), Qgis::WkbType::CircularString );
+
+  auto toAppendLineString = std::make_unique<QgsLineString>();
+  cs.append( toAppendLineString.get() );
+  QVERIFY( !cs.isEmpty() );
+  QCOMPARE( cs.numPoints(), 3 );
+  QCOMPARE( cs.wkbType(), Qgis::WkbType::CircularString );
+
+  toAppend->setPoints( QgsPointSequence() << QgsPoint( 0, 2 ) << QgsPoint( 10, 12 ) );
+  cs.append( toAppendLineString.get() );
+
+  QVERIFY( !cs.isEmpty() );
+  QCOMPARE( cs.numPoints(), 3 );
+  QCOMPARE( cs.wkbType(), Qgis::WkbType::CircularString );
 }
 
 void TestQgsCircularString::appendZM()
@@ -2621,6 +2645,12 @@ void TestQgsCircularString::appendZM()
   QCOMPARE( cs.pointN( 2 ), QgsPoint( Qgis::WkbType::PointZM, 51, 52, 13, 23 ) );
   QCOMPARE( cs.pointN( 3 ), QgsPoint( Qgis::WkbType::PointZM, 141, 142 ) );
   QCOMPARE( cs.pointN( 4 ), QgsPoint( Qgis::WkbType::PointZM, 151, 152 ) );
+}
+
+void TestQgsCircularString::isSimpleCurve()
+{
+  QgsCircularString curve;
+  QVERIFY( curve.isSimpleCurve() );
 }
 
 QGSTEST_MAIN( TestQgsCircularString )

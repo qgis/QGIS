@@ -15,8 +15,9 @@
 
 #include "qgsnullmaterial3dhandler.h"
 
-#include "qgshighlightmaterial.h"
+#include "qgs3d.h"
 #include "qgsmaterial.h"
+#include "qgsunlitmaterial.h"
 
 #include <QMap>
 #include <QString>
@@ -27,7 +28,31 @@ using namespace Qt::StringLiterals;
 QgsMaterial *QgsNullMaterial3DHandler::toMaterial( const QgsAbstractMaterialSettings *, Qgis::MaterialRenderingTechnique technique, const QgsMaterialContext &context ) const
 {
   if ( context.isHighlighted() )
-    return new QgsHighlightMaterial( technique );
+  {
+    switch ( technique )
+    {
+      case Qgis::MaterialRenderingTechnique::Triangles:
+      case Qgis::MaterialRenderingTechnique::TrianglesWithFixedTexture:
+      case Qgis::MaterialRenderingTechnique::TrianglesFromModel:
+      case Qgis::MaterialRenderingTechnique::TrianglesDataDefined:
+      {
+        return Qgs3D::createHighlightMaterial();
+      }
+      case Qgis::MaterialRenderingTechnique::InstancedPoints:
+      {
+        Q_ASSERT( false );
+        return nullptr;
+      }
+      case Qgis::MaterialRenderingTechnique::Lines:
+      case Qgis::MaterialRenderingTechnique::Points:
+      case Qgis::MaterialRenderingTechnique::Billboards:
+      {
+        // Lines are single color and do not need the highlight material
+        // Billboards are not supported yet
+        break;
+      }
+    }
+  }
 
   return nullptr;
 }
@@ -37,9 +62,6 @@ QMap<QString, QString> QgsNullMaterial3DHandler::toExportParameters( const QgsAb
   QMap<QString, QString> parameters;
   return parameters;
 }
-
-void QgsNullMaterial3DHandler::addParametersToEffect( Qt3DRender::QEffect *, const QgsAbstractMaterialSettings *, const QgsMaterialContext & ) const
-{}
 
 bool QgsNullMaterial3DHandler::updatePreviewScene( Qt3DCore::QEntity *, const QgsAbstractMaterialSettings *, const QgsMaterialContext & ) const
 {

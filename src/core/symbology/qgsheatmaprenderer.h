@@ -52,9 +52,9 @@ class CORE_EXPORT QgsHeatmapRenderer : public QgsFeatureRenderer
     QString dump() const override;
     QSet<QString> usedAttributes( const QgsRenderContext &context ) const override;
     //! Creates a new heatmap renderer instance from XML
-    static QgsFeatureRenderer *create( QDomElement &element, const QgsReadWriteContext &context ) SIP_FACTORY;
+    static std::unique_ptr<QgsFeatureRenderer> create( QDomElement &element, const QgsReadWriteContext &context );
     QDomElement save( QDomDocument &doc, const QgsReadWriteContext &context ) override;
-    static QgsHeatmapRenderer *convertFromRenderer( const QgsFeatureRenderer *renderer ) SIP_FACTORY;
+    static std::unique_ptr<QgsHeatmapRenderer> convertFromRenderer( const QgsFeatureRenderer *renderer );
     bool accept( QgsStyleEntityVisitorInterface *visitor ) const override;
     QList<QgsLayerTreeModelLegendNode *> createLegendNodes( QgsLayerTreeLayer *nodeLayer ) const override SIP_FACTORY;
 
@@ -69,7 +69,7 @@ class CORE_EXPORT QgsHeatmapRenderer : public QgsFeatureRenderer
      * \returns color ramp for heatmap
      * \see setColorRamp
      */
-    QgsColorRamp *colorRamp() const { return mGradientRamp; }
+    QgsColorRamp *colorRamp() const { return mGradientRamp.get(); }
 
     /**
      * Sets the color ramp to use for shading the heatmap.
@@ -209,7 +209,7 @@ class CORE_EXPORT QgsHeatmapRenderer : public QgsFeatureRenderer
     int mWeightAttrNum = -1;
     std::unique_ptr<QgsExpression> mWeightExpression;
 
-    QgsColorRamp *mGradientRamp = nullptr;
+    std::unique_ptr<QgsColorRamp> mGradientRamp;
 
     double mExplicitMax = 0.0;
     int mRenderQuality = 3;

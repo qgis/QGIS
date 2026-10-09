@@ -140,7 +140,7 @@ class TestQgsFileDownloader(QgisTestCase):
     def ssl_compare(self, name, url, error):
         destination = tempfile.mktemp()
         self._make_download(url, destination)
-        msg = f"Failed in {name}: {url}"
+        msg = f"Failed in {name}: {url}\n"
         self.assertTrue(self.exited_was_called)
         self.assertFalse(self.completed_was_called, msg)
         self.assertFalse(self.canceled_was_called, msg)
@@ -149,28 +149,42 @@ class TestQgsFileDownloader(QgisTestCase):
         result = sorted(self.error_args[1])
         result = ";".join(result)
         self.assertTrue(
-            result.startswith(error), msg + f"expected:\n{result}\nactual:\n{error}\n"
+            result.startswith(error), msg + f"- Expected: {error}\n- Actual: {result}\n"
         )
 
-    @unittest.skipIf(
-        os.environ.get("QGIS_CONTINUOUS_INTEGRATION_RUN", "true"),
-        "Test with badssl.com unstable. Needs local server.",
-    )
     def test_sslExpired(self):
+
+        # badssl.com is really unstable, so prefer setting up a local instance if you want to reproduce
+        # like it's done in CI. To do so, see tests folder README.md, section "Local badssl server"
+
+        expired_url = os.environ.get(
+            "QGIS_BADSSL_URL_EXPIRED", "https://expired.badssl.com/"
+        )
+        print(f"expired url: {expired_url}")
         self.ssl_compare(
             "expired",
-            "https://expired.badssl.com/",
+            expired_url,
             "SSL Errors: ;The certificate has expired",
         )
+
+        selfsigned_url = os.environ.get(
+            "QGIS_BADSSL_URL_SELFSIGNED", "https://self-signed.badssl.com/"
+        )
+        print(f"selfsigned url: {selfsigned_url}")
         self.ssl_compare(
             "self-signed",
-            "https://self-signed.badssl.com/",
+            selfsigned_url,
             "SSL Errors: ;The certificate is self-signed, and untrusted",
         )
+
+        untrusted_url = os.environ.get(
+            "QGIS_BADSSL_URL_UNTRUSTED", "https://untrusted-root.badssl.com/"
+        )
+        print(f"untrusted_url: {untrusted_url}")
         self.ssl_compare(
             "untrusted-root",
-            "https://untrusted-root.badssl.com/",
-            "No certificates could be verified;SSL Errors: ;The issuer certificate of a locally looked up certificate could not be found",
+            untrusted_url,
+            "SSL Errors: ;The root certificate of the certificate chain is self-signed, and untrusted",
         )
 
     def _set_slot(self, *args, **kwargs):

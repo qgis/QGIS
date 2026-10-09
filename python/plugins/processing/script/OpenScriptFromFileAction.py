@@ -22,34 +22,38 @@ __copyright__ = "(C) 2018, Nyall Dawson"
 import os
 
 from qgis.core import QgsApplication, QgsSettings
+from qgis.gui import QgsProcessingToolboxAction
 from qgis.PyQt.QtCore import QCoreApplication, QFileInfo
 from qgis.PyQt.QtWidgets import QFileDialog
 from qgis.utils import iface
 
-from processing.gui.ToolboxAction import ToolboxAction
 from processing.script.ScriptEditorDialog import ScriptEditorDialog
 
 pluginPath = os.path.split(os.path.dirname(__file__))[0]
 
 
-class OpenScriptFromFileAction(ToolboxAction):
+class OpenScriptFromFileAction(QgsProcessingToolboxAction):
     def __init__(self):
-        self.name = QCoreApplication.translate(
-            "OpenScriptFromFileAction", "Open Existing Script…"
+        super().__init__(
+            QCoreApplication.translate(
+                "OpenScriptFromFileAction", "Open Existing Script…"
+            ),
+            QCoreApplication.translate("ToolboxAction", "Tools"),
         )
-        self.group = self.tr("Tools")
 
-    def getIcon(self):
+    def icon(self):
         return QgsApplication.getThemeIcon("/processingScript.svg")
 
-    def execute(self):
+    def trigger(self, context):
         settings = QgsSettings()
         lastDir = settings.value("Processing/lastScriptsDir", "")
         filename, selected_filter = QFileDialog.getOpenFileName(
-            self.toolbox,
-            self.tr("Open Script", "AddScriptFromFileAction"),
+            context.parentWidget(),
+            QCoreApplication.translate("AddScriptFromFileAction", "Open Script"),
             lastDir,
-            self.tr("Processing scripts (*.py *.PY)", "AddScriptFromFileAction"),
+            QCoreApplication.translate(
+                "AddScriptFromFileAction", "Processing scripts (*.py *.PY)"
+            ),
         )
         if filename:
             settings.setValue(

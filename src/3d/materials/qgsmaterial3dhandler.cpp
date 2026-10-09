@@ -40,11 +40,24 @@ QgsMaterialContext QgsMaterialContext::fromRenderContext( const Qgs3DRenderConte
   return res;
 }
 
-QgsMaterial *QgsAbstractMaterial3DHandler::toInstancedMaterial( const QgsAbstractMaterialSettings *settings, const QgsMaterialContext &context, Qgis::InstancedMaterialFlags flags ) const
+bool QgsMaterialContext::isPreview() const
+{
+  return mIsPreview;
+}
+
+void QgsMaterialContext::setIsPreview( bool isPreview )
+{
+  mIsPreview = isPreview;
+}
+
+QgsMaterial *QgsAbstractMaterial3DHandler::toInstancedMaterial(
+  const QgsAbstractMaterialSettings *settings, const QgsMaterialContext &context, Qgis::InstancedMaterialFlags flags, const QMatrix4x4 &transform
+) const
 {
   Q_UNUSED( flags )
   Q_UNUSED( settings )
   Q_UNUSED( context )
+  Q_UNUSED( transform )
   return nullptr;
 }
 
@@ -61,11 +74,6 @@ void QgsAbstractMaterial3DHandler::applyDataDefinedToGeometry( const QgsAbstract
   Q_UNUSED( geometry )
   Q_UNUSED( vertexCount )
   Q_UNUSED( dataDefinedBytes )
-}
-
-int QgsAbstractMaterial3DHandler::dataDefinedByteStride( const QgsAbstractMaterialSettings * ) const
-{
-  return 0;
 }
 
 QList<QgsAbstractMaterial3DHandler::PreviewMeshType> QgsAbstractMaterial3DHandler::previewMeshTypes() const

@@ -20,6 +20,7 @@
 
 #include "qgsgeometrycollection.h"
 #include "qgsgeos.h"
+#include "qgsvectorlayer.h"
 
 #include <QString>
 
@@ -92,6 +93,8 @@ QgsCoverageSimplifyAlgorithm *QgsCoverageSimplifyAlgorithm::createInstance() con
 
 QVariantMap QgsCoverageSimplifyAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
+  QGS_MARK_ALGORITHM_SOURCE
+
   std::unique_ptr<QgsProcessingFeatureSource> source( parameterAsSource( parameters, u"INPUT"_s, context ) );
   if ( !source )
     throw QgsProcessingException( invalidSourceError( parameters, u"INPUT"_s ) );
@@ -193,7 +196,8 @@ QVariantMap QgsCoverageSimplifyAlgorithm::processAlgorithm( const QVariantMap &p
     outFeature.setGeometry( QgsGeometry( *partsIt ? ( *partsIt )->clone() : nullptr ) );
     if ( !sink->addFeature( outFeature, QgsFeatureSink::FastInsert ) )
       throw QgsProcessingException( writeFeatureError( sink.get(), parameters, u"OUTPUT"_s ) );
-
+    else
+      feedback->featureAddedToSink( u"OUTPUT"_s );
 
     feedback->setProgress( featureIndex * step * 0.2 + 80 );
     featureIndex++;
@@ -203,13 +207,34 @@ QVariantMap QgsCoverageSimplifyAlgorithm::processAlgorithm( const QVariantMap &p
     QgsFeature outFeature = feature;
     if ( !sink->addFeature( outFeature, QgsFeatureSink::FastInsert ) )
       throw QgsProcessingException( writeFeatureError( sink.get(), parameters, u"OUTPUT"_s ) );
+    else
+      feedback->featureAddedToSink( u"OUTPUT"_s );
   }
 
   sink->finalize();
+  feedback->featureSinkFinalized( u"OUTPUT"_s );
 
   QVariantMap outputs;
   outputs.insert( u"OUTPUT"_s, sinkId );
   return outputs;
 }
+
+bool QgsCoverageSimplifyAlgorithm::supportInPlaceEdit( const QgsMapLayer *layer ) const
+{
+  const QgsVectorLayer *vlayer = qobject_cast<const QgsVectorLayer *>( layer );
+
+  if ( !vlayer )
+    return false;
+
+  return vlayer->geometryType() == Qgis::GeometryType::Polygon;
+}
+
+Qgis::ProcessingAlgorithmFlags QgsCoverageSimplifyAlgorithm::flags() const
+{
+  Qgis::ProcessingAlgorithmFlags f = QgsProcessingAlgorithm::flags();
+  f |= Qgis::ProcessingAlgorithmFlag::SupportsInPlaceEdits;
+  return f;
+}
+
 
 ///@endcond

@@ -27,9 +27,9 @@ QString QgsGoochMaterialSettings::type() const
   return u"gooch"_s;
 }
 
-QgsAbstractMaterialSettings *QgsGoochMaterialSettings::create()
+std::unique_ptr<QgsAbstractMaterialSettings> QgsGoochMaterialSettings::create()
 {
-  return new QgsGoochMaterialSettings();
+  return std::make_unique<QgsGoochMaterialSettings>();
 }
 
 bool QgsGoochMaterialSettings::supportsTechnique( Qgis::MaterialRenderingTechnique technique )
@@ -63,6 +63,11 @@ bool QgsGoochMaterialSettings::equals( const QgsAbstractMaterialSettings *other 
     return false;
 
   return *this == *otherGooch;
+}
+
+QSet<QgsAbstractMaterialSettings::Property> QgsGoochMaterialSettings::supportedProperties() const
+{
+  return { QgsAbstractMaterialSettings::Property::Warm, QgsAbstractMaterialSettings::Property::Cool, QgsAbstractMaterialSettings::Property::Diffuse, QgsAbstractMaterialSettings::Property::Specular };
 }
 
 QColor QgsGoochMaterialSettings::averageColor() const

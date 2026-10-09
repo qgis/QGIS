@@ -1,0 +1,18 @@
+diff --git a/c/driver/framework/status.h b/c/driver/framework/status.h
+index 3333333..4444444 100644
+--- a/c/driver/framework/status.h
++++ b/c/driver/framework/status.h
+@@ -29,3 +29,3 @@
+ #if defined(ADBC_FRAMEWORK_USE_FMT)
+-#include <fmt/core.h>
++#include <fmt/format.h>
+ #endif
+diff --git a/c/driver/postgresql/error.h b/c/driver/postgresql/error.h
+index 5555555..6666666 100644
+--- a/c/driver/postgresql/error.h
++++ b/c/driver/postgresql/error.h
+@@ -27,3 +27,3 @@
+ 
+-#include <fmt/core.h>
++#include <fmt/format.h>
+ 

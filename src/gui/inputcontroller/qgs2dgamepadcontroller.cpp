@@ -22,7 +22,7 @@ using namespace Qt::StringLiterals;
 #ifdef HAVE_QTGAMEPAD
 #include "moc_qgs2dgamepadcontroller.cpp"
 
-#include <QtGamepad/QGamepad>
+#include <QtGamepadLegacy/QGamepad>
 
 QgsGamepad2DMapController::QgsGamepad2DMapController( int gamepadDeviceId, QObject *parent )
   : QgsAbstract2DMapController( parent )

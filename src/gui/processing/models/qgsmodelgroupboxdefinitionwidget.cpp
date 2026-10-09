@@ -71,8 +71,8 @@ QgsModelGroupBoxDefinitionPanelWidget::QgsModelGroupBoxDefinitionPanelWidget( co
   mCommentEdit->setFocus();
   mCommentEdit->selectAll();
 
-  connect( mCommentEdit, &QTextEdit::textChanged, this, &QgsPanelWidget::widgetChanged );
-  connect( mCommentColorButton, &QgsColorButton::colorChanged, this, &QgsPanelWidget::widgetChanged );
+  connect( mCommentEdit, &QTextEdit::textChanged, this, &QgsPanelWidget::changed );
+  connect( mCommentColorButton, &QgsColorButton::colorChanged, this, &QgsPanelWidget::changed );
 }
 
 QgsProcessingModelGroupBox QgsModelGroupBoxDefinitionPanelWidget::groupBox() const

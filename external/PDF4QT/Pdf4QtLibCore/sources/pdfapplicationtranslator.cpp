@@ -27,6 +27,8 @@
 #include <QMetaEnum>
 #include <QCoreApplication>
 
+#include "config.h"
+
 namespace pdf
 {
 
@@ -48,7 +50,7 @@ PDFApplicationTranslator::ELanguage PDFApplicationTranslator::getLanguage() cons
 void PDFApplicationTranslator::installTranslator()
 {
     QDir applicationDirectory(QCoreApplication::applicationDirPath());
-    applicationDirectory.cd("translations");
+    applicationDirectory.cd(PDF4QT_TRANSLATIONS_RELATIVE_PATH);
     QString translationPath = applicationDirectory.absolutePath();
 
     Q_ASSERT(!m_translator);

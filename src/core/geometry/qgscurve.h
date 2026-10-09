@@ -59,6 +59,13 @@ class CORE_EXPORT QgsCurve : public QgsAbstractGeometry SIP_ABSTRACT
      */
     virtual QgsPoint endPoint() const = 0;
 
+    /**
+     * This method returns TRUE for classes that can be cast to the QgsSimpleCurve class.
+     *
+     * \since QGIS 4.4
+     */
+    virtual bool isSimpleCurve() const = 0;
+
     // clang-format off
     /**
      * Returns TRUE if the curve is closed.
@@ -153,7 +160,7 @@ class CORE_EXPORT QgsCurve : public QgsAbstractGeometry SIP_ABSTRACT
     int vertexNumberFromVertexId( QgsVertexId id ) const override;
 
     /**
-     * Returns the point and vertex id of a point within the curve.
+     * Returns the point and vertex type of a point within the curve.
      * \param node node number, where the first node is 0
      * \param point will be set to point at corresponding node in the curve
      * \param type will be set to the vertex type of the node
@@ -193,6 +200,7 @@ class CORE_EXPORT QgsCurve : public QgsAbstractGeometry SIP_ABSTRACT
     int ringCount( int part = 0 ) const override;
     int partCount() const override;
     QgsPoint vertexAt( QgsVertexId id ) const override;
+    bool hasVertex( QgsVertexId position ) const override;
     QgsCurve *toCurveType() const override SIP_FACTORY;
     void normalize() final SIP_HOLDGIL;
 
@@ -365,7 +373,7 @@ class CORE_EXPORT QgsCurve : public QgsAbstractGeometry SIP_ABSTRACT
 
     /**
      * Splits the curve at the specified vertex \a index, returning two curves which represent the portion of the
-     * curve up to an including the vertex at \a index, and the portion of the curve from the vertex at \a index (inclusive)
+     * curve up to including the vertex at \a index, and the portion of the curve from the vertex at \a index (inclusive)
      * to the end of the curve.
      *
      * \note The vertex \a index must correspond to a segment vertex, not a curve vertex.

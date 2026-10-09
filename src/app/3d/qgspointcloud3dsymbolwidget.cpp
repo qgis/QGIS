@@ -140,7 +140,7 @@ QgsPointCloud3DSymbolWidget::QgsPointCloud3DSymbolWidget( QgsPointCloudLayer *la
   mClassifiedRendererWidget->setParent( this );
   mClassifiedRenderingLayout->addWidget( mClassifiedRendererWidget );
 
-  connect( mClassifiedRendererWidget, &QgsPointCloudClassifiedRendererWidget::widgetChanged, this, &QgsPointCloud3DSymbolWidget::emitChangedSignal );
+  connect( mClassifiedRendererWidget, &QgsPointCloudClassifiedRendererWidget::changed, this, &QgsPointCloud3DSymbolWidget::emitChangedSignal );
 
   mPointSizeSpinBox->setToolTip( tr( "The size of each point in pixels" ) );
   mMaxScreenErrorSpinBox->setToolTip(

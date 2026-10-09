@@ -103,6 +103,8 @@ Qgis::ProcessingFeatureSourceFlags QgsPromoteToMultipartAlgorithm::sourceFlags()
 
 QgsFeatureList QgsPromoteToMultipartAlgorithm::processFeature( const QgsFeature &feature, QgsProcessingContext &, QgsProcessingFeedback * )
 {
+  QGS_MARK_ALGORITHM_SOURCE
+
   QgsFeature f = feature;
   if ( f.hasGeometry() && !f.geometry().isMultipart() )
   {

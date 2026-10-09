@@ -288,6 +288,8 @@ QgsSelectWithinDistanceAlgorithm *QgsSelectWithinDistanceAlgorithm::createInstan
 
 QVariantMap QgsSelectWithinDistanceAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
+  QGS_MARK_ALGORITHM_SOURCE
+
   QgsVectorLayer *selectLayer = parameterAsVectorLayer( parameters, u"INPUT"_s, context );
   if ( !selectLayer )
     throw QgsProcessingException( QObject::tr( "Could not load source layer for INPUT" ) );
@@ -380,6 +382,8 @@ QgsExtractWithinDistanceAlgorithm *QgsExtractWithinDistanceAlgorithm::createInst
 
 QVariantMap QgsExtractWithinDistanceAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
+  QGS_MARK_ALGORITHM_SOURCE
+
   std::unique_ptr<QgsProcessingFeatureSource> input( parameterAsSource( parameters, u"INPUT"_s, context ) );
   if ( !input )
     throw QgsProcessingException( invalidSourceError( parameters, u"INPUT"_s ) );
@@ -404,10 +408,13 @@ QVariantMap QgsExtractWithinDistanceAlgorithm::processAlgorithm( const QVariantM
     QgsFeature f = feature;
     if ( !sink->addFeature( f, QgsFeatureSink::FastInsert ) )
       throw QgsProcessingException( writeFeatureError( sink.get(), parameters, u"OUTPUT"_s ) );
+    else
+      feedback->featureAddedToSink( u"OUTPUT"_s );
   };
   process( context, input.get(), referenceSource.get(), distance, distanceProperty, addToSink, false, feedback, expressionContext );
 
   sink->finalize();
+  feedback->featureSinkFinalized( u"OUTPUT"_s );
 
   QVariantMap results;
   results.insert( u"OUTPUT"_s, dest );

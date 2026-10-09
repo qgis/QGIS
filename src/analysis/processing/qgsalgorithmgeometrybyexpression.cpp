@@ -142,6 +142,8 @@ bool QgsGeometryByExpressionAlgorithm::prepareAlgorithm( const QVariantMap &para
 
 QgsFeatureList QgsGeometryByExpressionAlgorithm::processFeature( const QgsFeature &f, QgsProcessingContext &context, QgsProcessingFeedback * )
 {
+  QGS_MARK_ALGORITHM_SOURCE
+
   if ( !mExpressionPrepared )
   {
     mExpression.prepare( &context.expressionContext() );

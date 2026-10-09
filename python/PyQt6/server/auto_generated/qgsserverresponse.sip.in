@@ -23,31 +23,86 @@ class QgsServerResponse
 
     virtual void setHeader( const QString &key, const QString &value ) = 0;
 %Docstring
-Set Header entry Add Header entry to the response Note that it is
-usually an error to set Header after data have been sent through the
-wire
+Set a single header ``value`` replacing any existing value(s) for the
+same ``key``
+
+.. note::
+
+   that it is usually an error to set Header after data have been sent through the wire
+
+.. seealso:: :py:func:`addHeader` for a method that allows setting multiple values for the same header key
+
+.. seealso:: :py:func:`removeHeader` to clear header values for a given key
+%End
+
+    virtual void addHeader( const QString &key, const QString &value ) = 0;
+%Docstring
+Add a header ``value`` for the given ``key``, without replacing any
+existing value for the same ``key`` Add Header entry to the response
+
+.. note::
+
+   that it is usually an error to set Header after data have been sent through the wire
+
+.. seealso:: :py:func:`setHeader` for a method that replaces any existing value(s) for the same header key
+
+.. versionadded:: 4.2
 %End
 
     virtual void removeHeader( const QString &key ) = 0;
 %Docstring
-Clear header Undo a previous 'setHeader' call
+Clear all header values for the given ``key`` Undo a previous
+'setHeader' call
 %End
 
-    virtual QString header( const QString &key ) const = 0;
+ virtual QString header( const QString &key ) const = 0 /Deprecated="Since 4.2. Use fullHeader() instead."/;
 %Docstring
-Returns the header value
+Returns a single header value for a given ``key``
+
+.. note::
+
+   if multiple values are set for the same key, the last one is returned
+
+.. deprecated:: 4.2
+
+   Use :py:func:`~QgsServerResponse.fullHeader` instead.
 %End
 
-    virtual QMap<QString, QString> headers() const = 0;
+    virtual QList<QString> fullHeader( const QString &key ) const = 0;
 %Docstring
-Returns the header value
+Returns a (possibly empty) list of all the header values for the given
+``key``
+
+.. seealso:: :py:func:`header` to get only the last value for a given header key
+
+.. versionadded:: 4.2
+%End
+
+ virtual QMap<QString, QString> headers() const = 0 /Deprecated="Since 4.2. Use fullHeaders() instead."/;
+%Docstring
+Returns the header values as a map: only the last value is returned if
+multiple values are set for the same header
+
+.. seealso:: :py:func:`fullHeaders` to get all the values for all the headers
+
+.. deprecated:: 4.2
+
+   Use :py:func:`~QgsServerResponse.fullHeaders` instead.
+%End
+
+    virtual QMap<QString, QList<QString>> fullHeaders() const = 0;
+%Docstring
+Returns all the header values
+
+.. seealso:: :py:func:`headers` to get only the last value for each header key
+
+.. versionadded:: 4.2
 %End
 
     virtual bool headersSent() const = 0;
 %Docstring
 Returns ``True`` if the headers have already been sent
 %End
-
 
     virtual void setStatusCode( int code ) = 0;
 %Docstring

@@ -8,7 +8,7 @@
             <dl class="row">
             {% for name, value in properties %}
                 <dt class="col-sm-12">{{ name }}</dt>
-                <dd class="col-sm-12">{{ value }}</dd>
+                <dd class="col-sm-12">{{ escape(value) }}</dd>
             {% endfor %}
             </dl>
         </div>

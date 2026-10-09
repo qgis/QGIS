@@ -100,6 +100,8 @@ bool QgsExportGeometryAttributesAlgorithm::prepareAlgorithm( const QVariantMap &
 
 QVariantMap QgsExportGeometryAttributesAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
+  QGS_MARK_ALGORITHM_SOURCE
+
   std::unique_ptr<QgsProcessingFeatureSource> source( parameterAsSource( parameters, u"INPUT"_s, context ) );
   if ( !source )
     throw QgsProcessingException( invalidSourceError( parameters, u"INPUT"_s ) );
@@ -233,12 +235,17 @@ QVariantMap QgsExportGeometryAttributesAlgorithm::processAlgorithm( const QVaria
     {
       throw QgsProcessingException( writeFeatureError( sink.get(), parameters, u"OUTPUT"_s ) );
     }
+    else
+    {
+      feedback->featureAddedToSink( u"OUTPUT"_s );
+    }
 
     i++;
     feedback->setProgress( i * step );
   }
 
   sink->finalize();
+  feedback->featureSinkFinalized( u"OUTPUT"_s );
 
   QVariantMap results;
   results.insert( u"OUTPUT"_s, dest );

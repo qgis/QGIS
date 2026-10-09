@@ -18,6 +18,7 @@
 #include "qgslinechartplot.h"
 
 #include "qgsexpressioncontextutils.h"
+#include "qgspainting.h"
 #include "qgssymbol.h"
 #include "qgssymbollayer.h"
 #include "qgssymbollayerutils.h"
@@ -63,7 +64,7 @@ void QgsLineChartPlot::renderContent( QgsRenderContext &context, QgsPlotRenderCo
   QgsExpressionContextScope *chartScope = new QgsExpressionContextScope( u"chart"_s );
   const QgsExpressionContextScopePopper scopePopper( context.expressionContext(), chartScope );
 
-  context.painter()->save();
+  QgsScopedQPainterState painterState( context.painter() );
   context.painter()->setClipRect( plotArea );
 
   double minX = xMinimum();
@@ -232,8 +233,6 @@ void QgsLineChartPlot::renderContent( QgsRenderContext &context, QgsPlotRenderCo
 
     seriesIndex++;
   }
-
-  context.painter()->restore();
 }
 
 QgsMarkerSymbol *QgsLineChartPlot::markerSymbolAt( int index ) const

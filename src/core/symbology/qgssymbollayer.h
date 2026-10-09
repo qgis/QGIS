@@ -43,6 +43,7 @@ class QgsRenderContext;
 class QgsPaintEffect;
 class QgsSymbolLayerReference;
 class QgsSldExportContext;
+class QgsScopedQPainterState;
 
 #ifndef SIP_RUN
 typedef QMap<QString, QString> QgsStringMap;
@@ -588,14 +589,41 @@ class CORE_EXPORT QgsSymbolLayer
     //! write as DXF
     virtual bool writeDxf( QgsDxfExport &e, double mmMapUnitScaleFactor, const QString &layerName, QgsSymbolRenderContext &context, QPointF shift = QPointF( 0.0, 0.0 ) ) const;
 
-    //! Gets line width
-    virtual double dxfWidth( const QgsDxfExport &e, QgsSymbolRenderContext &context ) const;
+    /**
+     * Gets line width.
+     * \deprecated QGIS 4.2. Use the overload without the \a e parameter instead.
+     */
+    Q_DECL_DEPRECATED virtual double dxfWidth( const QgsDxfExport &e, QgsSymbolRenderContext &context ) const SIP_DEPRECATED;
 
-    //! Gets marker size
-    virtual double dxfSize( const QgsDxfExport &e, QgsSymbolRenderContext &context ) const;
+    /**
+     * Gets line width.
+     * \since QGIS 4.2
+     */
+    virtual double dxfWidth( QgsSymbolRenderContext &context ) const;
 
-    //! Gets offset
-    virtual double dxfOffset( const QgsDxfExport &e, QgsSymbolRenderContext &context ) const;
+    /**
+     * Gets marker size.
+     * \deprecated QGIS 4.2. Use the overload without the \a e parameter instead.
+     */
+    Q_DECL_DEPRECATED virtual double dxfSize( const QgsDxfExport &e, QgsSymbolRenderContext &context ) const SIP_DEPRECATED;
+
+    /**
+     * Gets marker size.
+     * \since QGIS 4.2
+     */
+    virtual double dxfSize( QgsSymbolRenderContext &context ) const;
+
+    /**
+     * Gets offset.
+     * \deprecated QGIS 4.2. Use the overload without the \a e parameter instead.
+     */
+    Q_DECL_DEPRECATED virtual double dxfOffset( const QgsDxfExport &e, QgsSymbolRenderContext &context ) const SIP_DEPRECATED;
+
+    /**
+     * Gets offset.
+     * \since QGIS 4.2
+     */
+    virtual double dxfOffset( QgsSymbolRenderContext &context ) const;
 
     //! Gets color
     virtual QColor dxfColor( QgsSymbolRenderContext &context ) const;
@@ -717,23 +745,6 @@ class CORE_EXPORT QgsSymbolLayer
      */
     QString id() const;
 
-    /**
-     * When rendering, install masks on \a context painter.
-     *
-     * If \a recursive is TRUE masks are installed recursively for all children symbol layers.
-     *
-     * Since QGIS 3.38 the \a rect argument can be used to specify a target bounds (in painter coordinates)
-     * for mask geometries. Only mask geometries which intersect ``rect`` will be installed.
-     *
-     * \returns TRUE if any masks were installed (since QGIS 3.38)
-     *
-     * \see prepareMasks()
-     * \see removeMasks()
-     *
-     * \since QGIS 3.30
-     */
-    bool installMasks( QgsRenderContext &context, bool recursive, const QRectF &rect = QRectF() );
-
   protected:
     QgsSymbolLayer( const QgsSymbolLayer &other ) SIP_SKIP;
 
@@ -765,6 +776,7 @@ class CORE_EXPORT QgsSymbolLayer
 
     // clip path to be used during rendering
     QPainterPath mClipPath;
+    std::unique_ptr< QgsScopedQPainterState > mStateBeforeInstallingMaskClipPaths;
 
     // Configuration of selected symbology implementation
     //! Whether styles for selected features ignore symbol alpha
@@ -805,6 +817,23 @@ class CORE_EXPORT QgsSymbolLayer
     void copyPaintEffect( QgsSymbolLayer *destLayer ) const;
 
     /**
+     * When rendering, install masks on \a context painter.
+     *
+     * If \a recursive is TRUE masks are installed recursively for all children symbol layers.
+     *
+     * Since QGIS 3.38 the \a rect argument can be used to specify a target bounds (in painter coordinates)
+     * for mask geometries. Only mask geometries which intersect ``rect`` will be installed.
+     *
+     * \returns TRUE if any masks were installed (since QGIS 3.38)
+     *
+     * \see prepareMasks()
+     * \see removeMasks()
+     *
+     * \since QGIS 3.30
+     */
+    bool installMasks( QgsRenderContext &context, bool recursive, const QRectF &rect = QRectF() );
+
+    /**
      * When rendering, remove previously installed masks from \a context painter
      * if \a recursive is TRUE masks are removed recursively for all children symbol layers
      * \see prepareMasks()
@@ -830,6 +859,8 @@ class CORE_EXPORT QgsSymbolLayer
 #ifdef SIP_RUN
     QgsSymbolLayer( const QgsSymbolLayer &other );
 #endif
+
+    friend class QgsSymbol;
 };
 
 //////////////////////
@@ -1058,7 +1089,8 @@ class CORE_EXPORT QgsMarkerSymbolLayer : public QgsSymbolLayer
     Qgis::RenderUnit outputUnit() const override;
     void setMapUnitScale( const QgsMapUnitScale &scale ) override;
     QgsMapUnitScale mapUnitScale() const override;
-    double dxfSize( const QgsDxfExport &e, QgsSymbolRenderContext &context ) const override;
+    using QgsSymbolLayer::dxfSize;
+    double dxfSize( QgsSymbolRenderContext &context ) const override;
     double dxfAngle( QgsSymbolRenderContext &context ) const override;
 
     /**
@@ -1188,7 +1220,8 @@ class CORE_EXPORT QgsLineSymbolLayer : public QgsSymbolLayer
     void setMapUnitScale( const QgsMapUnitScale &scale ) override;
     QgsMapUnitScale mapUnitScale() const override;
     void drawPreviewIcon( QgsSymbolRenderContext &context, QSize size ) override;
-    double dxfWidth( const QgsDxfExport &e, QgsSymbolRenderContext &context ) const override;
+    using QgsSymbolLayer::dxfWidth;
+    double dxfWidth( QgsSymbolRenderContext &context ) const override;
 
     /**
      * Renders the line symbol layer along the line joining \a points, using the given render \a context.

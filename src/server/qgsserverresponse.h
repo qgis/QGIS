@@ -45,33 +45,60 @@ class SERVER_EXPORT QgsServerResponse
     virtual ~QgsServerResponse() = default;
 
     /**
-     *  Set Header entry
-     *  Add Header entry to the response
-     *  Note that it is usually an error to set Header after data have been sent through the wire
+     *  Set a single header \a value replacing any existing value(s) for the same \a key
+     *  \note that it is usually an error to set Header after data have been sent through the wire
+     *  \see addHeader() for a method that allows setting multiple values for the same header key
+     *  \see removeHeader() to clear header values for a given key
      */
     virtual void setHeader( const QString &key, const QString &value ) = 0;
 
     /**
-     * Clear header
+     *  Add a header \a value for the given \a key, without replacing any existing value for the same \a key
+     *  Add Header entry to the response
+     *  \note that it is usually an error to set Header after data have been sent through the wire
+     *  \see setHeader() for a method that replaces any existing value(s) for the same header key
+     *  \since QGIS 4.2
+     */
+    virtual void addHeader( const QString &key, const QString &value ) = 0;
+
+    /**
+     * Clear all header values for the given \a key
      * Undo a previous 'setHeader' call
      */
     virtual void removeHeader( const QString &key ) = 0;
 
     /**
-     * Returns the header value
+     * Returns a single header value for a given \a key
+     * \note if multiple values are set for the same key, the last one is returned
+     * \deprecated QGIS 4.2. Use fullHeader() instead.
      */
-    virtual QString header( const QString &key ) const = 0;
+    Q_DECL_DEPRECATED virtual QString header( const QString &key ) const = 0 SIP_DEPRECATED;
 
     /**
-     * Returns the header value
+     * Returns a (possibly empty) list of all the header values for the given \a key
+     * \see header() to get only the last value for a given header key
+     * \since QGIS 4.2
      */
-    virtual QMap<QString, QString> headers() const = 0;
+    virtual QList<QString> fullHeader( const QString &key ) const = 0;
+
+    /**
+     * Returns the header values as a map: only the last value is returned if multiple values are set for the same header
+     * \see fullHeaders() to get all the values for all the headers
+     * \deprecated QGIS 4.2. Use fullHeaders() instead.
+     */
+    Q_DECL_DEPRECATED virtual QMap<QString, QString> headers() const = 0 SIP_DEPRECATED;
+
+    /**
+     * Returns all the header values
+     * \see headers() to get only the last value for each header key
+     * \since QGIS 4.2
+     */
+    virtual QMap<QString, QList<QString>> fullHeaders() const = 0;
 
     /**
      * Returns TRUE if the headers have already been sent
      */
     virtual bool headersSent() const = 0;
-
 
     /**
      * Set the http status code

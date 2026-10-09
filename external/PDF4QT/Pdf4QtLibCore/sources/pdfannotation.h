@@ -59,6 +59,16 @@ class PDFModifiedDocument;
 using TextAlignment = Qt::Alignment;
 using Polygons = std::vector<QPolygonF>;
 
+struct PDFFreeTextStyle
+{
+    PDFFreeTextStyle() = default;
+
+    QString fontFamily = "Helvetica";
+    PDFReal fontSize = 10.0;
+    QColor textColor = Qt::black;
+    TextAlignment textAlignment = TextAlignment(Qt::AlignLeft | Qt::AlignTop);
+};
+
 enum class AnnotationType
 {
     Invalid,

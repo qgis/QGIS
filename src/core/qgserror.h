@@ -37,8 +37,8 @@ class CORE_EXPORT QgsErrorMessage
     //! Format
     enum Format
     {
-      Text, // Plain text
-      Html
+      Text, //!< Plain text format
+      Html, //!< HTML format
     };
 
     QgsErrorMessage() = default;

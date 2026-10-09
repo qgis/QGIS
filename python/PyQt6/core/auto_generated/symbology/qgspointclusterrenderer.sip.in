@@ -37,7 +37,7 @@ position.
     virtual bool accept( QgsStyleEntityVisitorInterface *visitor ) const;
 
 
-    static QgsFeatureRenderer *create( QDomElement &symbologyElem, const QgsReadWriteContext &context ) /Factory/;
+    static std::unique_ptr<QgsFeatureRenderer> create( QDomElement &symbologyElem, const QgsReadWriteContext &context );
 %Docstring
 Creates a renderer from XML element
 %End
@@ -60,7 +60,7 @@ Sets the symbol for rendering clustered groups.
 .. seealso:: :py:func:`clusterSymbol`
 %End
 
-    static QgsPointClusterRenderer *convertFromRenderer( const QgsFeatureRenderer *renderer ) /Factory/;
+    static std::unique_ptr<QgsPointClusterRenderer> convertFromRenderer( const QgsFeatureRenderer *renderer );
 %Docstring
 Creates a QgsPointClusterRenderer from an existing renderer.
 

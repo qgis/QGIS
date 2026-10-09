@@ -118,6 +118,8 @@ class QgsPGLayerItem : public QgsLayerItem
 
     QVector<QgsDataItem *> createChildren() override;
 
+    Qgis::LayerItemCapabilities layerCapabilities() const override;
+
   private:
     QgsPostgresLayerProperty mLayerProperty;
 };

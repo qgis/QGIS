@@ -28,6 +28,7 @@
 #include "qgsmaplayerelevationproperties.h"
 #include "qgsmaplayerlistutils_p.h"
 #include "qgsnumericformat.h"
+#include "qgspainting.h"
 #include "qgsplot.h"
 #include "qgsplotcanvasitem.h"
 #include "qgspoint.h"
@@ -326,7 +327,7 @@ class QgsElevationProfileCrossHairsItem : public QgsPlotCanvasItem
       if ( crossHairPlotPoint.isEmpty() )
         return;
 
-      painter->save();
+      QgsScopedQPainterState painterState( painter );
       painter->setBrush( Qt::NoBrush );
       QPen crossHairPen;
       crossHairPen.setCosmetic( true );
@@ -406,7 +407,6 @@ class QgsElevationProfileCrossHairsItem : public QgsPlotCanvasItem
 
       painter->drawText( xCoordOrigin, xCoordinateText );
       painter->drawText( yCoordOrigin, yCoordinateText );
-      painter->restore();
     }
 
   private:
@@ -963,7 +963,7 @@ void QgsElevationProfileCanvas::generationFinished()
   {
     // here we should invalidate cached results only for the layers which have been refined
 
-    // and if no layers are being refeined, don't invalidate anything
+    // and if no layers are being refined, don't invalidate anything
 
     mPlotItem->updatePlot();
   }

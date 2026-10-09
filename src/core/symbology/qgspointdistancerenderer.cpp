@@ -24,6 +24,7 @@
 #include "qgslogger.h"
 #include "qgsmarkersymbol.h"
 #include "qgsmultipoint.h"
+#include "qgspainting.h"
 #include "qgssldexportcontext.h"
 #include "qgsspatialindex.h"
 #include "qgsstyleentityvisitor.h"
@@ -36,7 +37,7 @@ QgsPointDistanceRenderer::QgsPointDistanceRenderer( const QString &rendererName,
   : QgsFeatureRenderer( rendererName )
   , mLabelAttributeName( labelAttributeName )
 {
-  mRenderer.reset( QgsFeatureRenderer::defaultRenderer( Qgis::GeometryType::Point ) );
+  mRenderer = QgsFeatureRenderer::defaultRenderer( Qgis::GeometryType::Point );
 }
 
 void QgsPointDistanceRenderer::toSld( QDomDocument &doc, QDomElement &element, const QVariantMap &props ) const

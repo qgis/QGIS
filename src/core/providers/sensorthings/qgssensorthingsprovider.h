@@ -53,6 +53,7 @@ class CORE_EXPORT QgsSensorThingsProvider final : public QgsVectorDataProvider
     QgsFields fields() const final;
     QgsLayerMetadata layerMetadata() const final;
     QString htmlMetadata() const final;
+    QVariantMap metadata() const final;
 
     Qgis::DataProviderFlags flags() const final;
     Qgis::VectorProviderCapabilities capabilities() const final;

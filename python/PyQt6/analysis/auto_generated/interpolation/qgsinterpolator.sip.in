@@ -46,20 +46,6 @@ z-Value can be an attribute or the z-coordinates in case of 3D types.
 #include "qgsinterpolator.h"
 %End
   public:
-    enum class SourceType /BaseType=IntEnum/
-    {
-      Points,
-      StructureLines,
-      BreakLines,
-    };
-
-    enum class ValueSource /BaseType=IntEnum/
-    {
-      Attribute,
-      Z,
-      M,
-    };
-
     enum class Result /BaseType=IntEnum/
     {
       Success,
@@ -71,9 +57,9 @@ z-Value can be an attribute or the z-coordinates in case of 3D types.
     struct LayerData
     {
         QgsFeatureSource *source;
-        QgsInterpolator::ValueSource valueSource;
+        Qgis::InterpolationValueSource valueSource;
         int interpolationAttribute;
-        QgsInterpolator::SourceType sourceType;
+        Qgis::InterpolationSourceType sourceType;
 
         QgsCoordinateTransformContext transformContext;
     };

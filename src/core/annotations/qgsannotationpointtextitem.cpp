@@ -106,9 +106,9 @@ bool QgsAnnotationPointTextItem::writeXml( QDomElement &element, QDomDocument &d
   return true;
 }
 
-QgsAnnotationPointTextItem *QgsAnnotationPointTextItem::create()
+std::unique_ptr<QgsAnnotationPointTextItem> QgsAnnotationPointTextItem::create()
 {
-  return new QgsAnnotationPointTextItem( QString(), QgsPointXY() );
+  return std::make_unique<QgsAnnotationPointTextItem>( QString(), QgsPointXY() );
 }
 
 bool QgsAnnotationPointTextItem::readXml( const QDomElement &element, const QgsReadWriteContext &context )
@@ -251,7 +251,7 @@ Qgis::AnnotationItemEditOperationResult QgsAnnotationPointTextItem::applyEditV2(
         setCalloutAnchor( QgsGeometry::fromPoint( moveOperation->after() ) );
         if ( !callout() )
         {
-          setCallout( QgsApplication::calloutRegistry()->defaultCallout() );
+          setCallout( QgsApplication::calloutRegistry()->defaultCallout().release() );
         }
       }
       return Qgis::AnnotationItemEditOperationResult::Success;
@@ -277,6 +277,7 @@ Qgis::AnnotationItemEditOperationResult QgsAnnotationPointTextItem::applyEditV2(
       return Qgis::AnnotationItemEditOperationResult::Success;
     }
 
+    case QgsAbstractAnnotationItemEditOperation::Type::SetItemBounds:
     case QgsAbstractAnnotationItemEditOperation::Type::AddNode:
       break;
   }
@@ -301,6 +302,7 @@ QgsAnnotationItemEditOperationTransientResults *QgsAnnotationPointTextItem::tran
     }
 
     case QgsAbstractAnnotationItemEditOperation::Type::RotateItem:
+    case QgsAbstractAnnotationItemEditOperation::Type::SetItemBounds:
     case QgsAbstractAnnotationItemEditOperation::Type::DeleteNode:
     case QgsAbstractAnnotationItemEditOperation::Type::AddNode:
       break;

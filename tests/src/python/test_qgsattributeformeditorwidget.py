@@ -111,21 +111,23 @@ class PyQgsAttributeFormEditorWidget(QgisTestCase):
             "\"fldtext\"<'2013-05-06' OR \"fldtext\">'2013-05-16'",
         )
 
-    def verifyJSONTypeFindBest(self, field_type, layer):
-
+    def verifyJSONTypeFindBest(self, field_type, layer, field_typename):
         # Create a JSON field
-        field = QgsField("json", field_type, "JSON", 0, 0, "comment", QVariant.String)
+        field = QgsField(
+            "json", field_type, field_typename, 0, 0, "comment", QVariant.String
+        )
+
+        # No records, so should default to json edit
         self.assertTrue(layer.startEditing())
         self.assertTrue(layer.addAttribute(field))
-        self.assertTrue(layer.commitChanges())
-
-        # No records, so should default to key/value
         registry = QgsGui.editorWidgetRegistry()
         setup = registry.findBest(layer, "json")
-        self.assertEqual(setup.type(), "KeyValue")
+        self.assertEqual(setup.type(), "JsonEdit")
+        self.assertTrue(layer.rollBack())
 
-        # Add a key/value record
-        layer.startEditing()
+        # Add a flat map record, so should take key/value
+        self.assertTrue(layer.startEditing())
+        self.assertTrue(layer.addAttribute(field))
         feature = QgsFeature(layer.fields())
         feature.setAttribute("json", '{"key": "value"}')
         self.assertTrue(layer.addFeature(feature))
@@ -133,8 +135,9 @@ class PyQgsAttributeFormEditorWidget(QgisTestCase):
         self.assertEqual(setup.type(), "KeyValue")
         layer.rollBack()
 
-        # Add an array record
+        # Add a flat array record, so should take list
         self.assertTrue(layer.startEditing())
+        self.assertTrue(layer.addAttribute(field))
         feature = QgsFeature(layer.fields())
         feature.setAttribute("json", '["value", "another_value"]')
         self.assertTrue(layer.addFeature(feature))
@@ -142,23 +145,45 @@ class PyQgsAttributeFormEditorWidget(QgisTestCase):
         self.assertEqual(setup.type(), "List")
         self.assertTrue(layer.rollBack())
 
-        # Add a null record followed by a map record followed by a list record
+        # Add an empty map record (not null), so should take key/value
         self.assertTrue(layer.startEditing())
+        self.assertTrue(layer.addAttribute(field))
         feature = QgsFeature(layer.fields())
-        feature.setAttribute("json", None)
-        self.assertTrue(layer.addFeature(feature))
-        feature = QgsFeature(layer.fields())
-        feature.setAttribute("json", '{"key": "value"}')
-        self.assertTrue(layer.addFeature(feature))
-        feature = QgsFeature(layer.fields())
-        feature.setAttribute("json", '["value", "another_value"]')
+        feature.setAttribute("json", "{}")
         self.assertTrue(layer.addFeature(feature))
         setup = registry.findBest(layer, "json")
         self.assertEqual(setup.type(), "KeyValue")
         self.assertTrue(layer.rollBack())
 
-        # Add a null record followed by A list record followed by a map record
+        # Add an empty array record (not null), so should take list
         self.assertTrue(layer.startEditing())
+        self.assertTrue(layer.addAttribute(field))
+        feature = QgsFeature(layer.fields())
+        feature.setAttribute("json", "[]")
+        self.assertTrue(layer.addFeature(feature))
+        setup = registry.findBest(layer, "json")
+        self.assertEqual(setup.type(), "List")
+        self.assertTrue(layer.rollBack())
+
+        # Add a null record followed by a flat map record followed by a flat list record, so should take json edit
+        self.assertTrue(layer.startEditing())
+        self.assertTrue(layer.addAttribute(field))
+        feature = QgsFeature(layer.fields())
+        feature.setAttribute("json", None)
+        self.assertTrue(layer.addFeature(feature))
+        feature = QgsFeature(layer.fields())
+        feature.setAttribute("json", '{"key": "value"}')
+        self.assertTrue(layer.addFeature(feature))
+        feature = QgsFeature(layer.fields())
+        feature.setAttribute("json", '["value", "another_value"]')
+        self.assertTrue(layer.addFeature(feature))
+        setup = registry.findBest(layer, "json")
+        self.assertEqual(setup.type(), "JsonEdit")
+        self.assertTrue(layer.rollBack())
+
+        # Add a null record followed by a flat list record followed by a flat map record, so should take json edit
+        self.assertTrue(layer.startEditing())
+        self.assertTrue(layer.addAttribute(field))
         feature = QgsFeature(layer.fields())
         feature.setAttribute("json", None)
         self.assertTrue(layer.addFeature(feature))
@@ -169,21 +194,42 @@ class PyQgsAttributeFormEditorWidget(QgisTestCase):
         feature.setAttribute("json", '{"key": "value"}')
         self.assertTrue(layer.addFeature(feature))
         setup = registry.findBest(layer, "json")
-        self.assertEqual(setup.type(), "List")
+        self.assertEqual(setup.type(), "JsonEdit")
         self.assertTrue(layer.rollBack())
 
-        # Add a string record which is neither a list or a map
+        # Add string records that are a primitive types like a string, a number or a boolean or no valid JSON at all, so it should take JSON edit.
         self.assertTrue(layer.startEditing())
+        self.assertTrue(layer.addAttribute(field))
         feature = QgsFeature(layer.fields())
-        feature.setAttribute("json", "not a list or map")
+        feature.setAttribute("json", "1")
+        self.assertTrue(layer.addFeature(feature))
+        feature = QgsFeature(layer.fields())
+        feature.setAttribute("json", "true")
+        self.assertTrue(layer.addFeature(feature))
+        feature = QgsFeature(layer.fields())
+        feature.setAttribute("json", '"Hello"')
+        self.assertTrue(layer.addFeature(feature))
+        feature = QgsFeature(layer.fields())
+        feature.setAttribute("json", "not a valid {json: value]")
         self.assertTrue(layer.addFeature(feature))
         setup = registry.findBest(layer, "json")
-        self.assertNotEqual(setup.type(), "List")
-        self.assertNotEqual(setup.type(), "KeyValue")
+        self.assertEqual(setup.type(), "JsonEdit")
         self.assertTrue(layer.rollBack())
 
-        # Add 21 records with a JSON field, only the last is NOT NULL
+        # Add 5 records with NULL values, so should default to json edit
         self.assertTrue(layer.startEditing())
+        self.assertTrue(layer.addAttribute(field))
+        for i in range(5):
+            feature = QgsFeature(layer.fields())
+            feature.setAttribute("json", None)
+            self.assertTrue(layer.addFeature(feature))
+        setup = registry.findBest(layer, "json")
+        self.assertEqual(setup.type(), "JsonEdit")
+        self.assertTrue(layer.rollBack())
+
+        # Add 20 records with NULL values in JSON field, and one last is NOT NULL (a flat list), so should default to json edit
+        self.assertTrue(layer.startEditing())
+        self.assertTrue(layer.addAttribute(field))
         for i in range(20):
             feature = QgsFeature(layer.fields())
             feature.setAttribute("json", None)
@@ -192,24 +238,58 @@ class PyQgsAttributeFormEditorWidget(QgisTestCase):
         feature.setAttribute("json", '["value", "another_value"]')
         self.assertTrue(layer.addFeature(feature))
         setup = registry.findBest(layer, "json")
-        self.assertNotEqual(setup.type(), "List")
-        # KeyValue is the default,
-        self.assertEqual(setup.type(), "KeyValue")
+        self.assertEqual(setup.type(), "JsonEdit")
+        self.assertTrue(layer.rollBack())
+
+        # Add a flat and a complex map, so should default to json edit
+        self.assertTrue(layer.startEditing())
+        self.assertTrue(layer.addAttribute(field))
+        feature = QgsFeature(layer.fields())
+        feature.setAttribute("json", '{"key": "value"}')
+        self.assertTrue(layer.addFeature(feature))
+        feature = QgsFeature(layer.fields())
+        feature.setAttribute("json", '{"key": ["value", "another_value"]}')
+        self.assertTrue(layer.addFeature(feature))
+        setup = registry.findBest(layer, "json")
+        self.assertEqual(setup.type(), "JsonEdit")
+        self.assertTrue(layer.rollBack())
+
+        # Add a flat and a complex list, so should default to json edit
+        self.assertTrue(layer.startEditing())
+        self.assertTrue(layer.addAttribute(field))
+        feature = QgsFeature(layer.fields())
+        feature.setAttribute("json", '["value", "another_value"]')
+        self.assertTrue(layer.addFeature(feature))
+        feature = QgsFeature(layer.fields())
+        feature.setAttribute("json", '["value", {"key": "value"}]')
+        self.assertTrue(layer.addFeature(feature))
+        setup = registry.findBest(layer, "json")
+        self.assertEqual(setup.type(), "JsonEdit")
         self.assertTrue(layer.rollBack())
 
         # Cleanup removing the field
         self.assertTrue(layer.startEditing())
+        self.assertTrue(layer.addAttribute(field))
         field_idx = layer.fields().indexOf("json")
         self.assertTrue(layer.deleteAttribute(field_idx))
         self.assertTrue(layer.commitChanges())
 
     def testJSONMemoryLayer(self):
-
         layer = QgsVectorLayer("Point?", "test", "memory")
-        self.verifyJSONTypeFindBest(QVariant.Map, layer)
+        field_typename = "JSON"
+        self.verifyJSONTypeFindBest(QVariant.Map, layer, field_typename)
+
+    def testJSONPostgresLikeLayer(self):
+        # we make a memory layer but pass the type json and jsonb
+        json_layer = QgsVectorLayer("Point?", "test", "memory")
+        field_typename = "json"
+        self.verifyJSONTypeFindBest(QVariant.Map, json_layer, field_typename)
+
+        jsonb_layer = QgsVectorLayer("Point?", "test", "memory")
+        field_typename = "jsonb"
+        self.verifyJSONTypeFindBest(QVariant.Map, jsonb_layer, field_typename)
 
     def testJSONGeoPackageLayer(self):
-
         temp_dir = QTemporaryDir()
         uri = temp_dir.filePath("test.gpkg")
         # Create a new geopackage layer using ogr
@@ -221,7 +301,8 @@ class PyQgsAttributeFormEditorWidget(QgisTestCase):
         del layer
         del ds
         layer = QgsVectorLayer(uri, "test", "ogr")
-        self.verifyJSONTypeFindBest(QVariant.Map, layer)
+        field_typename = "JSON"
+        self.verifyJSONTypeFindBest(QVariant.Map, layer, field_typename)
 
 
 if __name__ == "__main__":

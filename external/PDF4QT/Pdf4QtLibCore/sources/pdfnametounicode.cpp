@@ -23,6 +23,7 @@
 #include "pdfnametounicode.h"
 #include "pdfdbgheap.h"
 
+#include <algorithm>
 #include <array>
 
 namespace pdf
@@ -4548,6 +4549,36 @@ QChar PDFNameToUnicode::getUnicodeForNameZapfDingbats(const QByteArray& name)
     {
         return QChar();
     }
+}
+
+QByteArray PDFNameToUnicode::getNameForUnicode(QChar character)
+{
+    auto it = std::find_if(glyphNameToUnicode.cbegin(), glyphNameToUnicode.cend(), [character](const std::pair<QChar, const char*>& item)
+    {
+        return item.first == character;
+    });
+
+    if (it != glyphNameToUnicode.cend())
+    {
+        return QByteArray(it->second);
+    }
+
+    return QByteArray();
+}
+
+QByteArray PDFNameToUnicode::getNameForUnicodeZapfDingbats(QChar character)
+{
+    auto it = std::find_if(glyphNameZapfDingbatsToUnicode.cbegin(), glyphNameZapfDingbatsToUnicode.cend(), [character](const std::pair<QChar, const char*>& item)
+    {
+        return item.first == character;
+    });
+
+    if (it != glyphNameZapfDingbatsToUnicode.cend())
+    {
+        return QByteArray(it->second);
+    }
+
+    return QByteArray();
 }
 
 QChar PDFNameToUnicode::getUnicodeUsingResolvedName(const QByteArray& name)

@@ -33,6 +33,17 @@ Constructor for QgsConfigureShortcutsDialog.
                 :py:class:`QgsShortcutsManager` instance.
 %End
 
+  public slots:
+
+    void setFilter( const QString &filterText );
+%Docstring
+Sets the text for the filter line edit.
+
+This will immediately filter the shortcuts list to only matching items.
+
+.. versionadded:: 4.2
+%End
+
   protected:
     virtual void keyPressEvent( QKeyEvent *event );
 

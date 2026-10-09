@@ -21,6 +21,7 @@
 #include "qgscolorrampimpl.h"
 #include "qgsexpressioncontextutils.h"
 #include "qgsnumericformatregistry.h"
+#include "qgspainting.h"
 #include "qgssymbol.h"
 #include "qgssymbollayer.h"
 #include "qgssymbollayerutils.h"
@@ -98,7 +99,7 @@ void QgsPieChartPlot::renderContent( QgsRenderContext &context, QgsPlotRenderCon
   QgsExpressionContextScope *chartScope = new QgsExpressionContextScope( u"chart"_s );
   const QgsExpressionContextScopePopper scopePopper( context.expressionContext(), chartScope );
 
-  context.painter()->save();
+  QgsScopedQPainterState painterState( context.painter() );
   context.painter()->setClipRect( plotArea );
 
   const bool pieStackHorizontal = plotArea.width() >= plotArea.height();
@@ -255,8 +256,6 @@ void QgsPieChartPlot::renderContent( QgsRenderContext &context, QgsPlotRenderCon
     symbol->setColor( symbolColor );
     seriesIndex++;
   }
-
-  context.painter()->restore();
 }
 
 QgsFillSymbol *QgsPieChartPlot::fillSymbolAt( int index ) const

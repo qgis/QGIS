@@ -131,6 +131,12 @@ class CORE_EXPORT QgsLayerTreeNode : public QObject
     sipRes = sipCpp->children().count();
     % End
 
+    //! Ensures that bool(obj) returns TRUE (otherwise __len__() would be used)
+    int __bool__() const;
+    % MethodCode
+    sipRes = true;
+    % End
+
     /**
      * Returns the child node at the specified ``index``.
      *
@@ -183,6 +189,20 @@ class CORE_EXPORT QgsLayerTreeNode : public QObject
      * Set name of the node. Emits nameChanged signal.
      */
     virtual void setName( const QString &name ) = 0;
+
+    /**
+     * Returns the node's unique identifier.
+     *
+     * Each node subclass defines the identity it exposes: a group or custom node
+     * returns its own generated id, while a layer node returns the id of the map
+     * layer it references (see QgsLayerTreeLayer::layerId()).
+     *
+     * The base class returns an empty string; subclasses override this to return
+     * their identifier.
+     *
+     * \since QGIS 4.4
+     */
+    virtual QString id() const { return QString(); }
 
     /**
      * Read layer tree from XML. Returns new instance.

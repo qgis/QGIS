@@ -277,9 +277,9 @@ class CORE_EXPORT QgsPointCloudLayerExporter SIP_NODEFAULTCTORS
     int mPointRecordFormat;
     QgsVectorFileWriter::ActionOnExistingFile mActionOnExistingFile = QgsVectorFileWriter::ActionOnExistingFile::CreateOrOverwriteFile;
 
-    QgsMapLayer *mMemoryLayer = nullptr;
-    QgsFeatureSink *mVectorSink = nullptr;
-    QgsCoordinateTransform *mTransform = nullptr;
+    std::unique_ptr<QgsMapLayer> mMemoryLayer;
+    std::unique_ptr<QgsFeatureSink> mVectorSink;
+    QgsCoordinateTransform mTransform;
 
 
     class ExporterBase

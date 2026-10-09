@@ -110,6 +110,8 @@ QgsRasterizeAlgorithm *QgsRasterizeAlgorithm::createInstance() const
 
 QVariantMap QgsRasterizeAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
+  QGS_MARK_ALGORITHM_SOURCE
+
   // Note: MAP_THEME and LAYERS are handled and cloned in prepareAlgorithm
   const QgsRectangle extent { parameterAsExtent( parameters, u"EXTENT"_s, context, mCrs ) };
   const int tileSize { parameterAsInt( parameters, u"TILE_SIZE"_s, context ) };
@@ -240,6 +242,7 @@ QVariantMap QgsRasterizeAlgorithm::processAlgorithm( const QVariantMap &paramete
   mMapSettings.setFlag( Qgis::MapSettingsFlag::RenderMapTile, true );
   mMapSettings.setRasterizedRenderingPolicy( Qgis::RasterizedRenderingPolicy::Default );
   mMapSettings.setTransformContext( context.transformContext() );
+  mMapSettings.setEllipsoid( context.ellipsoid() );
   mMapSettings.setExtentBuffer( extentBuffer );
 
   // Set layers cloned in prepareAlgorithm

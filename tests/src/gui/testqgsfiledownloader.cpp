@@ -209,18 +209,28 @@ void TestQgsFileDownloader::testSslError_data()
   QTest::addColumn<QString>( "url" );
   QTest::addColumn<QString>( "result" );
 
-  QTest::newRow( "expired" )
-    << "https://expired.badssl.com/"
-    << "SSL Errors: ;The certificate has expired";
-  QTest::newRow( "self-signed" )
-    << "https://self-signed.badssl.com/"
-    << "SSL Errors: ;The certificate is self-signed, and untrusted";
+  // badssl.com is really unstable, so prefer setting up a local instance if you want to reproduce
+  // like it's done in CI. To do so, see tests folder README.md, section "Local badssl server"
+
+  QString expiredUrl = qgetenv( "QGIS_BADSSL_URL_EXPIRED" );
+  if ( expiredUrl.isEmpty() )
+    expiredUrl = u"https://expired.badssl.com/"_s;
+
+  QString selfSignedUrl = qgetenv( "QGIS_BADSSL_URL_SELFSIGNED" );
+  if ( selfSignedUrl.isEmpty() )
+    selfSignedUrl = u"https://self-signed.badssl.com/"_s;
+
+  QTest::newRow( "expired" ) << expiredUrl << "SSL Errors: ;The certificate has expired";
+  QTest::newRow( "self-signed" ) << selfSignedUrl << "SSL Errors: ;The certificate is self-signed, and untrusted";
 }
 
 void TestQgsFileDownloader::testSslError()
 {
   QFETCH( QString, url );
   QFETCH( QString, result );
+
+  qDebug() << "url:" << url;
+
   QVERIFY( !mTempFile->fileName().isEmpty() );
   makeCall( QUrl( url ), mTempFile->fileName() );
   QCOMPARE( mErrorMessage, result );

@@ -196,6 +196,15 @@ class GUI_EXPORT QgsProjectionSelectionWidget : public QWidget
      */
     void setFilters( QgsCoordinateReferenceSystemProxyModel::Filters filters );
 
+    /**
+     * Sets whether the topocentric CRS option is allowed in the CRS selector dialog
+     * opened by the widget's button. When \a allow is FALSE, the topocentric option
+     * will be hidden from the CRS selection dialog.
+     *
+     * \since QGIS 4.2
+     */
+    void setAllowTopocentricCrs( bool allow );
+
   signals:
 
     /**
@@ -241,6 +250,7 @@ class GUI_EXPORT QgsProjectionSelectionWidget : public QWidget
 
     QString mMessage;
 
+    bool mAllowTopocentricCrs = true;
     bool mShowAccuracyWarnings = false;
     QString mSourceEnsemble;
 

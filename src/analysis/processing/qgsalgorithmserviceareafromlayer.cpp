@@ -111,6 +111,8 @@ void QgsServiceAreaFromLayerAlgorithm::initAlgorithm( const QVariantMap & )
 
 QVariantMap QgsServiceAreaFromLayerAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
+  QGS_MARK_ALGORITHM_SOURCE
+
   loadCommonParams( parameters, context, feedback );
 
   std::unique_ptr<QgsProcessingFeatureSource> startPoints( parameterAsSource( parameters, u"START_POINTS"_s, context ) );
@@ -218,6 +220,8 @@ QVariantMap QgsServiceAreaFromLayerAlgorithm::processAlgorithm( const QVariantMa
           feat.setAttributes( attributes );
           if ( !nonRoutableSink->addFeature( feat, QgsFeatureSink::FastInsert ) )
             throw QgsProcessingException( writeFeatureError( nonRoutableSink.get(), parameters, u"OUTPUT_NON_ROUTABLE"_s ) );
+          else
+            feedback->featureAddedToSink( u"OUTPUT_NON_ROUTABLE"_s );
         }
 
         feedback->setProgress( i * step );
@@ -297,6 +301,8 @@ QVariantMap QgsServiceAreaFromLayerAlgorithm::processAlgorithm( const QVariantMa
       feat.setAttributes( attributes );
       if ( !pointsSink->addFeature( feat, QgsFeatureSink::FastInsert ) )
         throw QgsProcessingException( writeFeatureError( pointsSink.get(), parameters, u"OUTPUT"_s ) );
+      else
+        feedback->featureAddedToSink( u"OUTPUT"_s );
 
       if ( includeBounds )
       {
@@ -334,6 +340,8 @@ QVariantMap QgsServiceAreaFromLayerAlgorithm::processAlgorithm( const QVariantMa
         feat.setAttributes( attributes );
         if ( !pointsSink->addFeature( feat, QgsFeatureSink::FastInsert ) )
           throw QgsProcessingException( writeFeatureError( pointsSink.get(), parameters, u"OUTPUT"_s ) );
+        else
+          feedback->featureAddedToSink( u"OUTPUT"_s );
 
         feat.setGeometry( geomLower );
         attributes = sourceFeatures.value( i + 1 ).attributes();
@@ -341,6 +349,8 @@ QVariantMap QgsServiceAreaFromLayerAlgorithm::processAlgorithm( const QVariantMa
         feat.setAttributes( attributes );
         if ( !pointsSink->addFeature( feat, QgsFeatureSink::FastInsert ) )
           throw QgsProcessingException( writeFeatureError( pointsSink.get(), parameters, u"OUTPUT"_s ) );
+        else
+          feedback->featureAddedToSink( u"OUTPUT"_s );
       } // includeBounds
     }
 
@@ -353,6 +363,8 @@ QVariantMap QgsServiceAreaFromLayerAlgorithm::processAlgorithm( const QVariantMa
       feat.setAttributes( attributes );
       if ( !linesSink->addFeature( feat, QgsFeatureSink::FastInsert ) )
         throw QgsProcessingException( writeFeatureError( linesSink.get(), parameters, u"OUTPUT_LINES"_s ) );
+      else
+        feedback->featureAddedToSink( u"OUTPUT_LINES"_s );
     }
 
     feedback->setProgress( i * step );
@@ -362,16 +374,19 @@ QVariantMap QgsServiceAreaFromLayerAlgorithm::processAlgorithm( const QVariantMa
   if ( pointsSink )
   {
     pointsSink->finalize();
+    feedback->featureSinkFinalized( u"OUTPUT"_s );
     outputs.insert( u"OUTPUT"_s, pointsSinkId );
   }
   if ( linesSink )
   {
     linesSink->finalize();
+    feedback->featureSinkFinalized( linesSinkId );
     outputs.insert( u"OUTPUT_LINES"_s, linesSinkId );
   }
   if ( nonRoutableSink )
   {
     nonRoutableSink->finalize();
+    feedback->featureSinkFinalized( nonRoutableSinkId );
     outputs.insert( u"OUTPUT_NON_ROUTABLE"_s, nonRoutableSinkId );
   }
 

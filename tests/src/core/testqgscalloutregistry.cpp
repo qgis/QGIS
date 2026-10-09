@@ -32,7 +32,7 @@ class DummyCallout : public QgsCallout
     DummyCallout() = default;
     QString type() const override { return u"Dummy"_s; }
     QgsCallout *clone() const override { return new DummyCallout(); }
-    static QgsCallout *create( const QVariantMap &, const QgsReadWriteContext & ) { return new DummyCallout(); }
+    static std::unique_ptr<QgsCallout> create( const QVariantMap &, const QgsReadWriteContext & ) { return std::make_unique<DummyCallout>(); }
 
   protected:
     void draw( QgsRenderContext &, const QRectF &, const double, const QgsGeometry &, QgsCallout::QgsCalloutContext & ) override {}
@@ -147,7 +147,7 @@ void TestQgsCalloutRegistry::createCallout()
   QVERIFY( dummyCallout );
 
   //try creating a bad callout
-  callout.reset( registry->createCallout( u"bad callout"_s ) );
+  callout = registry->createCallout( u"bad callout"_s );
   QVERIFY( !callout.get() );
 }
 

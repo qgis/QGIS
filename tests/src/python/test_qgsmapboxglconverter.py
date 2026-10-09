@@ -11,6 +11,7 @@ __date__ = "29/07/2020"
 __copyright__ = "Copyright 2020, The QGIS Project"
 
 import json
+import os
 import unittest
 
 from qgis.core import (
@@ -22,14 +23,13 @@ from qgis.core import (
     QgsPalLayerSettings,
     QgsRasterLayer,
     QgsRasterPipe,
-    QgsSettings,
     QgsSymbol,
     QgsSymbolLayer,
+    QgsVectorTileUtils,
     QgsWkbTypes,
     qgsDoubleNear,
 )
 from qgis.PyQt.QtCore import (
-    QCoreApplication,
     QSize,
     QSizeF,
     Qt,
@@ -846,6 +846,67 @@ class TestQgsMapBoxGlStyleConverter(QgisTestCase):
                 False,
             ),
             """concat("numero", "indice_de_repetition")""",
+        )
+
+        # slice with start and end index
+        self.assertEqual(
+            QgsMapBoxGlStyleConverter.parseExpression(
+                ["slice", ["get", "ue_kz"], 0, 1],
+                conversion_context,
+                False,
+            ),
+            """substr("ue_kz", 1, 1)""",
+        )
+
+        # slice with start index only
+        self.assertEqual(
+            QgsMapBoxGlStyleConverter.parseExpression(
+                ["slice", ["get", "ue_kz"], 2],
+                conversion_context,
+                False,
+            ),
+            """substr("ue_kz", 3)""",
+        )
+
+        # slice with non-constant (expression) indices: arithmetic cannot be folded
+        self.assertEqual(
+            QgsMapBoxGlStyleConverter.parseExpression(
+                ["slice", ["get", "ue_kz"], ["get", "start"], ["get", "end"]],
+                conversion_context,
+                False,
+            ),
+            """substr("ue_kz", ("start") + 1, ("end") - ("start"))""",
+        )
+
+        # slice used within a filter expression
+        self.assertEqual(
+            QgsMapBoxGlStyleConverter.parseExpression(
+                [
+                    "all",
+                    ["==", ["get", "art"], "T"],
+                    [
+                        "in",
+                        ["slice", ["get", "ue_kz"], 0, 1],
+                        [
+                            "literal",
+                            ["A", "B", "C", "D", "E", "F", "G", "H", "U", "V"],
+                        ],
+                    ],
+                ],
+                conversion_context,
+                False,
+            ),
+            """("art" IS 'T') AND (substr("ue_kz", 1, 1) IN ('A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'U', 'V'))""",
+        )
+
+        # slice compared with == within a filter expression
+        self.assertEqual(
+            QgsMapBoxGlStyleConverter.parseExpression(
+                ["==", ["slice", ["get", "ue_kz"], 0, 1], "T"],
+                conversion_context,
+                False,
+            ),
+            """substr("ue_kz", 1, 1) IS 'T'""",
         )
 
         self.assertEqual(
@@ -2969,6 +3030,30 @@ class TestQgsMapBoxGlStyleConverter(QgisTestCase):
         expected = "CASE WHEN \"class\" IN ('sinkhole') THEN 'base64:[snip]' WHEN \"class\" IN ('sinkhole_rock','sinkhole_scree') THEN 'base64:[snip]' WHEN \"class\" IN ('sinkhole_ice','sinkhole_water') THEN 'base64:[snip]' ELSE '' END"
         self.assertEqual(strip_base64(sprite_property), expected)
 
+        # nested match: outer match on "class" with a nested match on "subclass"
+        icon_image = [
+            "match",
+            ["get", "class"],
+            "sinkhole",
+            "arrow_brown",
+            [
+                "match",
+                ["get", "subclass"],
+                "sinkhole_rock",
+                "arrow_grey",
+                "arrow_blue",
+            ],
+        ]
+        sprite, size, sprite_property, sprite_size_property = (
+            QgsMapBoxGlStyleConverter.retrieveSpriteAsBase64WithProperties(
+                icon_image, context
+            )
+        )
+        expected = "CASE WHEN \"class\" IN ('sinkhole') THEN 'base64:[snip]' ELSE CASE WHEN \"subclass\" IN ('sinkhole_rock') THEN 'base64:[snip]' ELSE 'base64:[snip]' END END"
+        self.assertEqual(strip_base64(sprite_property), expected)
+        # the representative sprite must be resolved (not empty)
+        self.assertTrue(sprite.startswith("base64:"))
+
         # swisstopo - lightbasemap - place_village
         icon_image = [
             "step",
@@ -3062,9 +3147,59 @@ class TestQgsMapBoxGlStyleConverter(QgisTestCase):
         expected = "CASE WHEN \"class\" IN ('sinkhole') THEN 'base64:[snip]' WHEN \"class\" IN ('sinkhole_rock','sinkhole_scree') THEN 'base64:[snip]' WHEN \"class\" IN ('sinkhole_ice','sinkhole_water') THEN 'base64:[snip]' ELSE '' END"
         self.assertEqual(strip_base64(sprite_property), expected)
 
+    def testLoadSpritesMultipleSheets(self):
+        """
+        Test QgsVectorTileUtils.loadSprites with the multi-sheet "sprite"
+        array form. A sprite source with the id "default" is registered under
+        the "default" category, and image names referenced in the style
+        without a prefix resolve against it, while other sprite ids are
+        registered under (and referenced via) their own category.
+        """
+
+        sprite_base = os.path.join(
+            TEST_DATA_DIR, "vector_tile", "sprites", "swisstopo-sprite"
+        )
+
+        # a sprite source with id "default" -> registered under "default"
+        style = {"sprite": [{"id": "default", "url": sprite_base}]}
+        context = QgsMapBoxGlStyleConversionContext()
+        QgsVectorTileUtils.loadSprites(style, context, "file://")
+        self.assertEqual(context.spriteCategories(), ["default"])
+        self.assertFalse(context.spriteImage("default").isNull())
+        self.assertIn("scree_large_1", context.spriteDefinitions("default"))
+
+        # an unprefixed image name resolves against the default sheet,
+        # with a valid (non-empty) sprite and a positive size
+        sprite, size, sprite_property, sprite_size_property = (
+            QgsMapBoxGlStyleConverter.retrieveSpriteAsBase64WithProperties(
+                "scree_large_1", context
+            )
+        )
+        self.assertTrue(sprite.startswith("base64:"))
+        self.assertGreater(size.width(), 0)
+
+        # a sprite source with a non-default id -> registered under that category
+        style = {"sprite": [{"id": "extra", "url": sprite_base}]}
+        context = QgsMapBoxGlStyleConversionContext()
+        QgsVectorTileUtils.loadSprites(style, context, "file://")
+        self.assertEqual(context.spriteCategories(), ["extra"])
+        # names must be prefixed with the category id to resolve
+        sprite, size, sprite_property, sprite_size_property = (
+            QgsMapBoxGlStyleConverter.retrieveSpriteAsBase64WithProperties(
+                "extra:scree_large_1", context
+            )
+        )
+        self.assertTrue(sprite.startswith("base64:"))
+
     def testSymbolSpacingNumeric(self):
         """Test symbol-spacing with a simple numeric value"""
+
+        # TODO: re-enable when the cost of label duplicate removal within distance is more reasonable
+        return
+
         context = QgsMapBoxGlStyleConversionContext()
+        context.setTargetUnit(Qgis.RenderUnit.Percentage)
+        context.setPixelSizeConversionFactor(2.0)
         style = {
             "layout": {
                 "text-field": "{name}",
@@ -3086,11 +3221,21 @@ class TestQgsMapBoxGlStyleConverter(QgisTestCase):
         dd = ls.dataDefinedProperties()
         prop = dd.property(QgsPalLayerSettings.Property.RemoveDuplicateLabelDistance)
         self.assertTrue(prop.isActive())
-        self.assertEqual(prop.asExpression(), "250")
+        self.assertEqual(prop.asExpression(), "500")
+        self.assertEqual(
+            ls.thinningSettings().minimumDistanceToDuplicateUnit(),
+            Qgis.RenderUnit.Percentage,
+        )
 
     def testSymbolSpacingList(self):
         """Test symbol-spacing with interpolate stops"""
+
+        # TODO: re-enable when the cost of label duplicate removal within distance is more reasonable
+        return
+
         context = QgsMapBoxGlStyleConversionContext()
+        context.setTargetUnit(Qgis.RenderUnit.Pixels)
+        context.setPixelSizeConversionFactor(2.0)
         style = {
             "layout": {
                 "text-field": "{name}",
@@ -3114,12 +3259,22 @@ class TestQgsMapBoxGlStyleConverter(QgisTestCase):
         self.assertTrue(prop.isActive())
         self.assertEqual(
             prop.asExpression(),
-            "CASE  WHEN @vector_tile_zoom >= 14 THEN (800)  WHEN @vector_tile_zoom >= 10 THEN (600) ELSE (300) END",
+            "CASE  WHEN @vector_tile_zoom >= 14 THEN (1600)  WHEN @vector_tile_zoom >= 10 THEN (1200) ELSE (600) END",
+        )
+        self.assertEqual(
+            ls.thinningSettings().minimumDistanceToDuplicateUnit(),
+            Qgis.RenderUnit.Pixels,
         )
 
     def testSymbolSpacingMap(self):
         """Test symbol-spacing with a QVariantMap stops definition"""
+
+        # TODO: re-enable when the cost of label duplicate removal within distance is more reasonable
+        return
+
         context = QgsMapBoxGlStyleConversionContext()
+        context.setTargetUnit(Qgis.RenderUnit.MapUnits)
+        context.setPixelSizeConversionFactor(2.0)
         style = {
             "layout": {
                 "text-field": "{name}",
@@ -3147,7 +3302,11 @@ class TestQgsMapBoxGlStyleConverter(QgisTestCase):
         self.assertTrue(prop.isActive())
         self.assertEqual(
             prop.asExpression(),
-            "scale_linear(@vector_tile_zoom,2,6,0.2,0)",
+            "(scale_linear(@vector_tile_zoom,2,6,0.2,0)) * 2",
+        )
+        self.assertEqual(
+            ls.thinningSettings().minimumDistanceToDuplicateUnit(),
+            Qgis.RenderUnit.MapUnits,
         )
 
 

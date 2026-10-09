@@ -25,15 +25,15 @@ public:
     int interval() const;
     void setInterval(int interval);
 
-Q_SIGNALS:
+signals:
     void verificationReceived(QMap<QString, QString>);
     void serverClosed(bool); // whether it has found parameters
     void intervalChanged(int interval);
 
-public Q_SLOTS:
+public slots:
     void startPolling();
 
-protected Q_SLOTS:
+protected slots:
     void onPollTimeout();
     void onExpiration();
     void onReplyFinished();

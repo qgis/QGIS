@@ -107,6 +107,8 @@ bool QgsSplitWithLinesAlgorithm::supportInPlaceEdit( const QgsMapLayer *l ) cons
 
 QVariantMap QgsSplitWithLinesAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
+  QGS_MARK_ALGORITHM_SOURCE
+
   std::unique_ptr<QgsFeatureSource> source( parameterAsSource( parameters, u"INPUT"_s, context ) );
   if ( !source )
     throw QgsProcessingException( invalidSourceError( parameters, u"INPUT"_s ) );
@@ -151,6 +153,8 @@ QVariantMap QgsSplitWithLinesAlgorithm::processAlgorithm( const QVariantMap &par
     {
       if ( !sink->addFeature( inFeatureA, QgsFeatureSink::FastInsert ) )
         throw QgsProcessingException( writeFeatureError( sink.get(), parameters, u"OUTPUT"_s ) );
+      else
+        feedback->featureAddedToSink( u"OUTPUT"_s );
       continue;
     }
 
@@ -180,7 +184,7 @@ QVariantMap QgsSplitWithLinesAlgorithm::processAlgorithm( const QVariantMap &par
           originalGeometryEngine->prepareGeometry();
         }
 
-        if ( originalGeometryEngine->intersects( splitFeatureCandidate.constGet() ) )
+        if ( originalGeometryEngine->intersects( splitFeatureCandidate.constGet(), nullptr, feedback ) )
         {
           QVector<QgsGeometry> splitGeomParts = splitFeatureCandidate.convertToType( Qgis::GeometryType::Line, true ).asGeometryCollection();
           splittingLines.append( splitGeomParts );
@@ -208,7 +212,7 @@ QVariantMap QgsSplitWithLinesAlgorithm::processAlgorithm( const QVariantMap &par
             if ( inGeom.isNull() )
               continue;
 
-            if ( splitGeomEngine->intersects( inGeom.constGet() ) )
+            if ( splitGeomEngine->intersects( inGeom.constGet(), nullptr, feedback ) )
             {
               QgsGeometry before = inGeom;
               if ( splitterPList.empty() )
@@ -294,12 +298,15 @@ QVariantMap QgsSplitWithLinesAlgorithm::processAlgorithm( const QVariantMap &par
       outFeat.setGeometry( g );
       if ( !sink->addFeature( outFeat, QgsFeatureSink::FastInsert ) )
         throw QgsProcessingException( writeFeatureError( sink.get(), parameters, u"OUTPUT"_s ) );
+      else
+        feedback->featureAddedToSink( u"OUTPUT"_s );
     }
 
     feedback->setProgress( i * step );
   }
 
   sink->finalize();
+  feedback->featureSinkFinalized( u"OUTPUT"_s );
 
   QVariantMap outputs;
   outputs.insert( u"OUTPUT"_s, dest );

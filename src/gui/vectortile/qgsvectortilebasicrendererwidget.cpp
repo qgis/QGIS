@@ -349,10 +349,17 @@ QgsVectorTileBasicRendererWidget::QgsVectorTileBasicRendererWidget( QgsVectorTil
         = mVTLayer
             ? mVTLayer->tileMatrixSet().calculateTileScaleForMap( mMapCanvas->scale(), mapSettings.destinationCrs(), mapSettings.visibleExtent(), mapSettings.outputSize(), mapSettings.outputDpi() )
             : scale;
-      const int zoom = mVTLayer ? mVTLayer->tileMatrixSet().scaleToZoomLevel( tileScale ) : QgsVectorTileUtils::scaleToZoomLevel( tileScale, 0, 99 );
-      mLabelCurrentZoom->setText( tr( "Current zoom: %1" ).arg( zoom ) );
-      if ( mProxyModel )
-        mProxyModel->setCurrentZoom( zoom );
+      if ( std::isfinite( tileScale ) )
+      {
+        const int zoom = mVTLayer ? mVTLayer->tileMatrixSet().scaleToZoomLevel( tileScale ) : QgsVectorTileUtils::scaleToZoomLevel( tileScale, 0, 99 );
+        mLabelCurrentZoom->setText( tr( "Current zoom: %1" ).arg( zoom ) );
+        if ( mProxyModel )
+          mProxyModel->setCurrentZoom( zoom );
+      }
+      else if ( mProxyModel )
+      {
+        mProxyModel->setCurrentZoom( -1 );
+      }
     } );
 
     const QgsMapSettings &mapSettings = mMapCanvas->mapSettings();
@@ -368,8 +375,8 @@ QgsVectorTileBasicRendererWidget::QgsVectorTileBasicRendererWidget( QgsVectorTil
 
   syncToLayer( layer );
 
-  connect( mOpacityWidget, &QgsOpacityWidget::opacityChanged, this, &QgsPanelWidget::widgetChanged );
-  connect( mBlendModeComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsPanelWidget::widgetChanged );
+  connect( mOpacityWidget, &QgsOpacityWidget::opacityChanged, this, &QgsPanelWidget::changed );
+  connect( mBlendModeComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsPanelWidget::changed );
 }
 
 void QgsVectorTileBasicRendererWidget::syncToLayer( QgsMapLayer *layer )
@@ -399,13 +406,20 @@ void QgsVectorTileBasicRendererWidget::syncToLayer( QgsMapLayer *layer )
     const double tileScale
       = mVTLayer ? mVTLayer->tileMatrixSet().calculateTileScaleForMap( mMapCanvas->scale(), mapSettings.destinationCrs(), mapSettings.visibleExtent(), mapSettings.outputSize(), mapSettings.outputDpi() )
                  : mMapCanvas->scale();
-    const int zoom = mVTLayer ? mVTLayer->tileMatrixSet().scaleToZoomLevel( tileScale ) : QgsVectorTileUtils::scaleToZoomLevel( tileScale, 0, 99 );
-    mProxyModel->setCurrentZoom( zoom );
+    if ( std::isfinite( tileScale ) )
+    {
+      const int zoom = mVTLayer ? mVTLayer->tileMatrixSet().scaleToZoomLevel( tileScale ) : QgsVectorTileUtils::scaleToZoomLevel( tileScale, 0, 99 );
+      mProxyModel->setCurrentZoom( zoom );
+    }
+    else
+    {
+      mProxyModel->setCurrentZoom( -1 );
+    }
   }
 
-  connect( mModel, &QAbstractItemModel::dataChanged, this, &QgsPanelWidget::widgetChanged );
-  connect( mModel, &QAbstractItemModel::rowsInserted, this, &QgsPanelWidget::widgetChanged );
-  connect( mModel, &QAbstractItemModel::rowsRemoved, this, &QgsPanelWidget::widgetChanged );
+  connect( mModel, &QAbstractItemModel::dataChanged, this, &QgsPanelWidget::changed );
+  connect( mModel, &QAbstractItemModel::rowsInserted, this, &QgsPanelWidget::changed );
+  connect( mModel, &QAbstractItemModel::rowsRemoved, this, &QgsPanelWidget::changed );
 
   mOpacityWidget->setOpacity( mVTLayer->opacity() );
 
@@ -426,7 +440,7 @@ void QgsVectorTileBasicRendererWidget::apply()
 void QgsVectorTileBasicRendererWidget::addStyle( Qgis::GeometryType geomType )
 {
   QgsVectorTileBasicRendererStyle style( QString(), QString(), geomType );
-  style.setSymbol( QgsSymbol::defaultSymbol( geomType ) );
+  style.setSymbol( QgsSymbol::defaultSymbol( geomType ).release() );
 
   switch ( geomType )
   {
@@ -494,7 +508,7 @@ void QgsVectorTileBasicRendererWidget::editStyleAtIndex( const QModelIndex &prox
     QgsSymbolSelectorWidget *widget = QgsSymbolSelectorWidget::createWidgetWithSymbolOwnership( std::move( symbol ), QgsStyle::defaultStyle(), vectorLayer, panel );
     widget->setContext( context );
     widget->setPanelTitle( style.styleName() );
-    connect( widget, &QgsPanelWidget::widgetChanged, this, [this, widget] { updateSymbolsFromWidget( widget ); } );
+    connect( widget, &QgsPanelWidget::changed, this, [this, widget] { updateSymbolsFromWidget( widget ); } );
     openPanel( widget );
   }
   else
@@ -508,7 +522,7 @@ void QgsVectorTileBasicRendererWidget::editStyleAtIndex( const QModelIndex &prox
 
     style.setSymbol( symbol.release() );
     mRenderer->setStyle( index.row(), style );
-    emit widgetChanged();
+    emit changed();
   }
 }
 
@@ -523,7 +537,7 @@ void QgsVectorTileBasicRendererWidget::updateSymbolsFromWidget( QgsSymbolSelecto
   style.setSymbol( widget->symbol()->clone() );
 
   mRenderer->setStyle( index, style );
-  emit widgetChanged();
+  emit changed();
 }
 
 void QgsVectorTileBasicRendererWidget::removeStyle()

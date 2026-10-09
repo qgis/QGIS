@@ -165,6 +165,8 @@ bool QgsCategorizeUsingStyleAlgorithm::prepareAlgorithm( const QVariantMap &para
 
 QVariantMap QgsCategorizeUsingStyleAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
+  QGS_MARK_ALGORITHM_SOURCE
+
   const QString styleFile = parameterAsFile( parameters, u"STYLE"_s, context );
   const bool caseSensitive = parameterAsBoolean( parameters, u"CASE_SENSITIVE"_s, context );
   const bool tolerant = parameterAsBoolean( parameters, u"TOLERANT"_s, context );
@@ -255,6 +257,8 @@ QVariantMap QgsCategorizeUsingStyleAlgorithm::processAlgorithm( const QVariantMa
         f.setAttributes( QgsAttributes() << cat.toString() );
         if ( !nonMatchingCategoriesSink->addFeature( f, QgsFeatureSink::FastInsert ) )
           throw QgsProcessingException( writeFeatureError( nonMatchingCategoriesSink.get(), parameters, u"NON_MATCHING_CATEGORIES"_s ) );
+        else
+          feedback->featureAddedToSink( u"NON_MATCHING_CATEGORIES"_s );
       }
     }
   }
@@ -272,6 +276,8 @@ QVariantMap QgsCategorizeUsingStyleAlgorithm::processAlgorithm( const QVariantMa
         f.setAttributes( QgsAttributes() << name );
         if ( !nonMatchingSymbolsSink->addFeature( f, QgsFeatureSink::FastInsert ) )
           throw QgsProcessingException( writeFeatureError( nonMatchingSymbolsSink.get(), parameters, u"NON_MATCHING_SYMBOLS"_s ) );
+        else
+          feedback->featureAddedToSink( u"NON_MATCHING_SYMBOLS"_s );
       }
     }
   }
@@ -280,9 +286,15 @@ QVariantMap QgsCategorizeUsingStyleAlgorithm::processAlgorithm( const QVariantMa
   context.layerToLoadOnCompletionDetails( mLayerId ).setPostProcessor( new SetCategorizedRendererPostProcessor( std::move( mRenderer ) ) );
 
   if ( nonMatchingCategoriesSink )
+  {
     nonMatchingCategoriesSink->finalize();
+    feedback->featureSinkFinalized( u"NON_MATCHING_CATEGORIES"_s );
+  }
   if ( nonMatchingSymbolsSink )
+  {
     nonMatchingSymbolsSink->finalize();
+    feedback->featureSinkFinalized( u"NON_MATCHING_SYMBOLS"_s );
+  }
 
   QVariantMap results;
   results.insert( u"OUTPUT"_s, mLayerId );

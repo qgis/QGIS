@@ -44,7 +44,7 @@ class CORE_EXPORT QgsGoochMaterialSettings : public QgsAbstractMaterialSettings
     /**
      * Returns a new instance of QgsGoochMaterialSettings.
      */
-    static QgsAbstractMaterialSettings *create() SIP_FACTORY;
+    static std::unique_ptr<QgsAbstractMaterialSettings> create();
 
     /**
      * Returns TRUE if the specified \a technique is supported by the Gooch material.
@@ -53,6 +53,7 @@ class CORE_EXPORT QgsGoochMaterialSettings : public QgsAbstractMaterialSettings
 
     QgsGoochMaterialSettings *clone() const override SIP_FACTORY;
     bool equals( const QgsAbstractMaterialSettings *other ) const override;
+    QSet< QgsAbstractMaterialSettings::Property > supportedProperties() const override;
 
     //! Returns warm color component
     QColor warm() const { return mWarm; }

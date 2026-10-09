@@ -91,6 +91,8 @@ Qgis::ProcessingFeatureSourceFlags QgsAssignProjectionAlgorithm::sourceFlags() c
 
 bool QgsAssignProjectionAlgorithm::prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback * )
 {
+  QGS_MARK_ALGORITHM_SOURCE
+
   mDestCrs = parameterAsCrs( parameters, u"CRS"_s, context );
   return true;
 }

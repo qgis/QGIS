@@ -24,6 +24,7 @@
 #include "qgsflatterraingenerator.h"
 #include "qgsflatterrainsettings.h"
 #include "qgsframegraph.h"
+#include "qgsmetalroughmaterialsettings.h"
 #include "qgsmetalroughtexturedmaterialsettings.h"
 #include "qgsoffscreen3dengine.h"
 #include "qgspolygon3dsymbol.h"
@@ -57,6 +58,8 @@ class TestQgs3DEffects : public QgsTest
     void cleanupTestCase(); // will be called after the last testfunction was executed.
     void testBloom_data();
     void testBloom();
+    void testColorCorrection_data();
+    void testColorCorrection();
 
   private:
     std::unique_ptr<QgsProject> mProject;
@@ -172,6 +175,79 @@ void TestQgs3DEffects::testBloom()
   bloom.setIntensity( intensity );
   bloom.setRadius( radius );
   map->setBloomSettings( bloom );
+
+  QgsFlatTerrainGenerator *flatTerrain = new QgsFlatTerrainGenerator;
+  flatTerrain->setCrs( map->crs(), map->transformContext() );
+  map->setTerrainGenerator( flatTerrain );
+
+  QgsOffscreen3DEngine engine;
+  Qgs3DMapScene *scene = new Qgs3DMapScene( *map, &engine );
+  engine.setRootEntity( scene );
+
+  scene->cameraController()->setLookingAtPoint( point, distance, pitch, yaw );
+
+  // When running the test on Travis, it would initially return empty rendered image.
+  // Capturing the initial image and throwing it away fixes that. Hopefully we will
+  // find a better fix in the future.
+  Qgs3DUtils::captureSceneImage( engine, scene );
+  QImage img = Qgs3DUtils::captureSceneImage( engine, scene );
+
+  QGSVERIFYIMAGECHECK( reference, reference, img, QString(), 40, QSize( 0, 0 ), 2 );
+}
+
+void TestQgs3DEffects::testColorCorrection_data()
+{
+  QTest::addColumn<double>( "exposure" );
+  QTest::addColumn<Qgis::ToneMappingMethod>( "toneMapping" );
+  QTest::addColumn<QString>( "reference" );
+
+  QTest::newRow( "increase exposure" ) << 2.0 << Qgis::ToneMappingMethod::Clamp << "exposure_increase";
+  QTest::newRow( "decrease exposure" ) << -2.0 << Qgis::ToneMappingMethod::Clamp << "exposure_decrease";
+  QTest::newRow( "aces mapping" ) << 0.0 << Qgis::ToneMappingMethod::Aces << "aces";
+}
+
+void TestQgs3DEffects::testColorCorrection()
+{
+  const float lightAzimuth = 210.f;
+  const float lightAltitude = 30.f;
+  const QgsVector3D point( 0, -250, 0 );
+  const float distance( 100.0f );
+  const float pitch( 75.0f );
+  const float yaw( -50.0f );
+  QFETCH( double, exposure );
+  QFETCH( Qgis::ToneMappingMethod, toneMapping );
+
+  QFETCH( QString, reference );
+
+  const QgsRectangle fullExtent = mLayerDtm->extent();
+
+  QgsMetalRoughMaterialSettings materialSettings;
+  materialSettings.setBaseColor( QColor( 255, 200, 0 ) );
+  materialSettings.setRoughness( 1.0 );
+  materialSettings.setMetalness( 0 );
+  QgsPolygon3DSymbol *symbol3d = new QgsPolygon3DSymbol;
+  symbol3d->setMaterialSettings( materialSettings.clone() );
+  symbol3d->setExtrusionHeight( 10.f );
+  QgsVectorLayer3DRenderer *renderer3d = new QgsVectorLayer3DRenderer( symbol3d );
+  mLayerBuildings->setRenderer3D( renderer3d );
+
+  Qgs3DMapSettings *map = new Qgs3DMapSettings;
+  map->setCrs( mProject->crs() );
+  map->setExtent( fullExtent );
+  map->setLayers( QList<QgsMapLayer *>() << mLayerBuildings );
+  map->setBackgroundColor( Qt::black );
+  QgsDirectionalLightSettings defaultLight;
+  defaultLight.setIntensity( 5 );
+
+  QgsColorGradingSettings colorSettings = map->colorGradingSettings();
+  colorSettings.setExposureAdjustment( exposure );
+  colorSettings.setToneMapping( toneMapping );
+  map->setColorGradingSettings( colorSettings );
+
+  const double horizontalVectorMagnitude = cos( lightAltitude / 180 * M_PI );
+  QgsVector3D lightDirection( -horizontalVectorMagnitude * sin( lightAzimuth / 180 * M_PI ), -horizontalVectorMagnitude * cos( lightAzimuth / 180 * M_PI ), -sin( lightAltitude / 180 * M_PI ) );
+  defaultLight.setDirection( lightDirection );
+  map->setLightSources( { defaultLight.clone() } );
 
   QgsFlatTerrainGenerator *flatTerrain = new QgsFlatTerrainGenerator;
   flatTerrain->setCrs( map->crs(), map->transformContext() );

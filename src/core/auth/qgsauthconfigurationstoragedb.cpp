@@ -1824,8 +1824,7 @@ void QgsAuthConfigurationStorageDb::checkCapabilities()
   }
 
   // Check if each table exist and set capabilities
-
-  static const QStringList existingTables = authDatabaseConnection().tables();
+  const QStringList existingTables = authDatabaseConnection().tables();
   QString schema { mConfiguration.value( u"schema"_s ).toString() };
   if ( !schema.isEmpty() )
   {

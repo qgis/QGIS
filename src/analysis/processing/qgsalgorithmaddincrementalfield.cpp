@@ -151,6 +151,8 @@ QgsFeatureRequest QgsAddIncrementalFieldAlgorithm::request() const
 
 QgsFeatureList QgsAddIncrementalFieldAlgorithm::processFeature( const QgsFeature &feature, QgsProcessingContext &, QgsProcessingFeedback * )
 {
+  QGS_MARK_ALGORITHM_SOURCE
+
   if ( !mGroupedFieldNames.empty() && mGroupedFields.empty() )
   {
     for ( const QString &field : std::as_const( mGroupedFieldNames ) )

@@ -101,6 +101,7 @@ class TestQgsCompoundCurve : public QObject
     void compoundCurveCondense_data();
     void compoundCurveCondense();
     void cast();
+    void isSimpleCurve();
 };
 
 void TestQgsCompoundCurve::constructor()
@@ -3303,17 +3304,25 @@ void TestQgsCompoundCurve::cast()
 
   cs.fromWkt( u"CompoundCurve Z ((6 0 -0.6, 6.5 0 -0.4))"_s );
   QVERIFY( QgsCompoundCurve::cast( &cs ) );
+  QVERIFY( !QgsSimpleCurve::cast( &cs ) );
   QVERIFY( QgsCurve::cast( &cs ) );
 
   cs.fromWkt( u"CompoundCurve M ((6 0 -0.6, 6.5 0 -0.4))"_s );
   QVERIFY( QgsCompoundCurve::cast( &cs ) );
+  QVERIFY( !QgsSimpleCurve::cast( &cs ) );
   QVERIFY( QgsCurve::cast( &cs ) );
 
   cs.fromWkt( u"CompoundCurve ZM ((6 0 -0.6 -1.2, 6.5 0 -0.4 -0.8))"_s );
   QVERIFY( QgsCompoundCurve::cast( &cs ) );
+  QVERIFY( !QgsSimpleCurve::cast( &cs ) );
   QVERIFY( QgsCurve::cast( &cs ) );
 }
 
+void TestQgsCompoundCurve::isSimpleCurve()
+{
+  QgsCompoundCurve curve;
+  QVERIFY( !curve.isSimpleCurve() );
+}
 
 QGSTEST_MAIN( TestQgsCompoundCurve )
 #include "testqgscompoundcurve.moc"

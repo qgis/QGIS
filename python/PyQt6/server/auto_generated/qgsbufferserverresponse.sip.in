@@ -29,21 +29,56 @@ usually an error to set Header after data have been sent through the
 wire
 %End
 
+    virtual void addHeader( const QString &key, const QString &value );
+
+%Docstring
+Add a header ``value`` for the given ``key``, without replacing any
+existing value for the same ``key`` Add Header entry to the response
+
+.. note::
+
+   that it is usually an error to set Header after data have been sent through the wire
+
+.. versionadded:: 4.2
+%End
+
     virtual void removeHeader( const QString &key );
 
 %Docstring
 Clear header Undo a previous 'setHeader' call
 %End
 
-    virtual QString header( const QString &key ) const;
+ virtual QString header( const QString &key ) const /Deprecated="Since 4.2. Use fullHeader() instead."/;
 
 %Docstring
-Returns the header value
+Returns a single header value, or an empty string if the header is not
+set. If multiple values are set for the same header, only the last value
+is returned.
+
+.. deprecated:: 4.2
+
+   Use :py:func:`~QgsBufferServerResponse.fullHeader` instead.
 %End
 
-    virtual QMap<QString, QString> headers() const;
+    virtual QMap<QString, QList<QString>> fullHeaders() const;
 %Docstring
 Returns all the headers
+%End
+
+    virtual QList<QString> fullHeader( const QString &key ) const;
+%Docstring
+Returns all the values for a header ``key``
+%End
+
+ virtual QMap<QString, QString> headers() const /Deprecated="Since 4.2. Use fullHeaders() instead."/;
+
+%Docstring
+Returns all the headers as a map: only the last value is returned if
+multiple values are set for the same header name.
+
+.. deprecated:: 4.2
+
+   Use :py:func:`~QgsBufferServerResponse.fullHeaders` instead.
 %End
 
     virtual bool headersSent() const;

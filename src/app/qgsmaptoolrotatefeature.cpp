@@ -307,7 +307,7 @@ void QgsMapToolRotateFeature::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
       mRotatedFeatures.clear();
       mRotatedFeatures << cf.id(); //todo: take the closest feature, not the first one...
 
-      mRubberBand = createRubberBand( vlayer->geometryType() );
+      mRubberBand = createRubberBandForLayer( vlayer, { cf.id() } );
       mGeom = cf.geometry();
       mRubberBand->setToGeometry( mGeom, vlayer );
     }
@@ -315,15 +315,17 @@ void QgsMapToolRotateFeature::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
     {
       mRotatedFeatures = vlayer->selectedFeatureIds();
 
-      mRubberBand = createRubberBand( vlayer->geometryType() );
-
       QgsFeature feat;
       QgsFeatureIterator it = vlayer->getSelectedFeatures();
       QVector<QgsGeometry> selectedGeometries;
+      QList< QgsFeatureId > fids;
       while ( it.nextFeature( feat ) )
       {
         selectedGeometries << feat.geometry();
+        fids << feat.id();
       }
+      mRubberBand = createRubberBandForLayer( vlayer, fids );
+
       mGeom = QgsGeometry::collectGeometry( selectedGeometries );
       mRubberBand->setToGeometry( mGeom, vlayer );
     }

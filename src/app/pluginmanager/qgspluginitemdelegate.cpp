@@ -17,6 +17,7 @@
 
 #include "qgspluginitemdelegate.h"
 
+#include "qgspainting.h"
 #include "qgspluginsortfilterproxymodel.h"
 #include "qgsrendercontext.h"
 

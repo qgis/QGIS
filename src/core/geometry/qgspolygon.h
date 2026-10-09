@@ -123,6 +123,9 @@ class CORE_EXPORT QgsPolygon : public QgsCurvePolygon
         return static_cast<QgsPolygon *>( geom );
       return nullptr;
     }
+
+    json asJsonObject(int precision = 17, Qgis::GeoJsonProfile profile = Qgis::GeoJsonProfile::Legacy ) const override;
+
 #endif
 
     QgsPolygon *createEmptyWithSameType() const override SIP_FACTORY;

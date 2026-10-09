@@ -107,6 +107,8 @@ void QgsConstantRasterAlgorithm::initAlgorithm( const QVariantMap & )
 
 QVariantMap QgsConstantRasterAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
+  QGS_MARK_ALGORITHM_SOURCE
+
   const QgsCoordinateReferenceSystem crs = parameterAsCrs( parameters, u"TARGET_CRS"_s, context );
   const QgsRectangle extent = parameterAsExtent( parameters, u"EXTENT"_s, context, crs );
   const double pixelSize = parameterAsDouble( parameters, u"PIXEL_SIZE"_s, context );

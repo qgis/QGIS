@@ -40,8 +40,8 @@ class APP_EXPORT QgsBookmarkEditorDialog : public QDialog, private Ui::QgsBookma
   public:
     enum SaveLocation
     {
-      ApplicationManager = 1, // Bookmark saved in the application bookmark manager
-      ProjectManager          // Bookmark saved in the project bookmark manager
+      ApplicationManager = 1, //!< Bookmark saved in the application bookmark manager
+      ProjectManager          //!< Bookmark saved in the project bookmark manager
     };
 
     /**

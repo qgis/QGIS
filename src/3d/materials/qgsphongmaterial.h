@@ -25,6 +25,9 @@
 
 #define SIP_NO_FILE
 
+class QMatrix4x4;
+
+
 namespace Qt3DRender
 {
   class QParameter;
@@ -55,6 +58,12 @@ class _3D_EXPORT QgsPhongMaterial : public QgsMaterial
      * \a flags controls which per-instance attributes (scale, rotation) are active.
      */
     void setInstancingEnabled( bool enabled, Qgis::InstancedMaterialFlags flags );
+
+    /**
+     * Sets the transform from mesh space to object space
+     * \note Only applies when instancing is enabled
+     */
+    void setInstancingMeshTransform( const QMatrix4x4 &transform );
 
     ~QgsPhongMaterial() override;
 
@@ -88,6 +97,8 @@ class _3D_EXPORT QgsPhongMaterial : public QgsMaterial
     bool mDataDefinedEnabled = false;
     bool mInstanced = false;
     Qgis::InstancedMaterialFlags mInstanceFlags;
+    Qt3DRender::QParameter *mTransformParameter = nullptr;
+    Qt3DRender::QParameter *mNormalTransformParameter = nullptr;
 };
 
 ///@endcond PRIVATE

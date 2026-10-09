@@ -32,6 +32,10 @@ from qgis.core import QgsExifTools
 # preserve API compatibility as QgsAlignRaster.Item moved to QgsAlignRasterData.RasterItem
 from qgis.core import QgsAlignRasterData
 
+# preserve API compatibility as QgsRelief.ReliefColor moved to core as QgsRasterReliefColor
+from qgis.core import QgsRasterReliefColor as _QgsRasterReliefColor
+QgsRelief.ReliefColor = _QgsRasterReliefColor
+
 QgsAlignRaster.Item = QgsAlignRasterData.RasterItem
 
 QgsAlignRaster.ResampleAlg = _Qgis.GdalResampleAlgorithm
@@ -152,6 +156,35 @@ QgsZonalStatistics.Canceled.__doc__ = "Algorithm was canceled"
 _Qgis.ZonalStatisticResult.__doc__ = "Zonal statistics result codes.\n\n.. versionadded:: 3.36.\n\n" + '* ``Success``: ' + _Qgis.ZonalStatisticResult.Success.__doc__ + '\n' + '* ``LayerTypeWrong``: ' + _Qgis.ZonalStatisticResult.LayerTypeWrong.__doc__ + '\n' + '* ``LayerInvalid``: ' + _Qgis.ZonalStatisticResult.LayerInvalid.__doc__ + '\n' + '* ``RasterInvalid``: ' + _Qgis.ZonalStatisticResult.RasterInvalid.__doc__ + '\n' + '* ``RasterBandInvalid``: ' + _Qgis.ZonalStatisticResult.RasterBandInvalid.__doc__ + '\n' + '* ``FailedToCreateField``: ' + _Qgis.ZonalStatisticResult.FailedToCreateField.__doc__ + '\n' + '* ``Canceled``: ' + _Qgis.ZonalStatisticResult.Canceled.__doc__
 # --
 _Qgis.ZonalStatisticResult.baseClass = _Qgis
+
+QgsInterpolator.SourceType = _Qgis.InterpolationSourceType
+QgsInterpolator.ValueSource = _Qgis.InterpolationValueSource
+
+QgsInterpolator.SourcePoints = QgsInterpolator.SourceType.Points
+QgsInterpolator.SourceType.SourcePoints = QgsInterpolator.SourceType.Points
+QgsInterpolator.SourcePoints.is_monkey_patched = True
+QgsInterpolator.SourcePoints.__doc__ = "Point source"
+QgsInterpolator.SourceStructureLines = QgsInterpolator.SourceType.StructureLines
+QgsInterpolator.SourceType.SourceStructureLines = QgsInterpolator.SourceType.StructureLines
+QgsInterpolator.SourceStructureLines.is_monkey_patched = True
+QgsInterpolator.SourceStructureLines.__doc__ = "Structure lines"
+QgsInterpolator.SourceBreakLines = QgsInterpolator.SourceType.BreakLines
+QgsInterpolator.SourceType.SourceBreakLines = QgsInterpolator.SourceType.BreakLines
+QgsInterpolator.SourceBreakLines.is_monkey_patched = True
+QgsInterpolator.SourceBreakLines.__doc__ = "Break lines"
+
+QgsInterpolator.ValueAttribute = QgsInterpolator.ValueSource.Attribute
+QgsInterpolator.ValueSource.ValueAttribute = QgsInterpolator.ValueSource.Attribute
+QgsInterpolator.ValueAttribute.is_monkey_patched = True
+QgsInterpolator.ValueAttribute.__doc__ = "Take value from feature's attribute"
+QgsInterpolator.ValueZ = QgsInterpolator.ValueSource.Z
+QgsInterpolator.ValueSource.ValueZ = QgsInterpolator.ValueSource.Z
+QgsInterpolator.ValueZ.is_monkey_patched = True
+QgsInterpolator.ValueZ.__doc__ = "Use feature's geometry Z values for interpolation"
+QgsInterpolator.ValueM = QgsInterpolator.ValueSource.M
+QgsInterpolator.ValueSource.ValueM = QgsInterpolator.ValueSource.M
+QgsInterpolator.ValueM.is_monkey_patched = True
+QgsInterpolator.ValueM.__doc__ = "Use feature's geometry M values for interpolation"
 
 
 @MONKEYPATCH_INJECTIONS@

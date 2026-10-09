@@ -29,7 +29,9 @@
 #include "qgsprovidersourcewidgetproviderregistry.h"
 #include "qgsvectortilebasiclabelingwidget.h"
 #include "qgsvectortilebasicrendererwidget.h"
+#include "qgsvectortilelabeling.h"
 #include "qgsvectortilelayer.h"
+#include "qgsvectortilerenderer.h"
 #include "qgsvectortileutils.h"
 
 #include <QDesktopServices>
@@ -284,11 +286,11 @@ void QgsVectorTileLayerProperties::loadStyle()
         {
           if ( dlg.styleCategories().testFlag( QgsMapLayer::StyleCategory::Symbology ) )
           {
-            mLayer->setRenderer( converter.renderer() );
+            mLayer->setRenderer( converter.renderer().release() );
           }
           if ( dlg.styleCategories().testFlag( QgsMapLayer::StyleCategory::Labeling ) )
           {
-            mLayer->setLabeling( converter.labeling() );
+            mLayer->setLabeling( converter.labeling().release() );
           }
           syncToLayer();
         }

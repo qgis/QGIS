@@ -69,6 +69,7 @@ struct QgsPostgresSchemaProperty
     QString name;
     QString description;
     QString owner;
+    bool hasProjectVersioning;
 };
 
 //! Raster overview table properties structure
@@ -76,6 +77,9 @@ struct QgsPostgresRasterOverviewLayerProperty
 {
     QString schemaName;
     QString tableName;
+    QString rasterColumn;
+    QString overviewFactor;
+    QString refRasterColumn;
 };
 
 //! Layer Property structure
@@ -155,6 +159,8 @@ struct QgsPostgresLayerProperty
 
       return u"%1.%2.%3 type=%4 srid=%5 pkCols=%6 sql=%7 nSpCols=%8"_s.arg( schemaName, tableName, geometryColName, typeString, sridString, pkCols.join( '|'_L1 ), sql ).arg( nSpCols );
     }
+#else
+    inline QString toString() const { return QString(); }
 #endif
 };
 

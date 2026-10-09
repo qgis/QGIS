@@ -15,7 +15,6 @@
 
 #include "qgsapplication.h"
 #include "qgsgeometry.h"
-#include "qgsgeos.h"
 #include "qgspointxy.h"
 #include "qgstest.h"
 #include "qgswkbptr.h"
@@ -31,17 +30,11 @@ class TestQgsGeometryImport : public QObject
     Q_OBJECT
 
   private slots:
-
-    void initTestCase();
-
     void pointWkt_data();
     void pointWkt();
 
     void pointWkb_data();
     void pointWkb();
-
-    void pointGeos_data();
-    void pointGeos();
 
     void linestringWkt_data();
     void linestringWkt();
@@ -49,22 +42,12 @@ class TestQgsGeometryImport : public QObject
     void linestringWkb_data();
     void linestringWkb();
 
-    void linestringGeos_data();
-    void linestringGeos();
-
     void delimiters_data();
     void delimiters();
 
   private:
     bool compareLineStrings( const QgsPolylineXY &polyline, QVariantList &line );
-
-    GEOSContextHandle_t geos = nullptr;
 };
-
-void TestQgsGeometryImport::initTestCase()
-{
-  geos = initGEOS_r( nullptr, nullptr );
-}
 
 void TestQgsGeometryImport::pointWkt_data()
 {
@@ -116,33 +99,6 @@ void TestQgsGeometryImport::pointWkb()
   QCOMPARE( geom.wkbType(), Qgis::WkbType::Point );
   QGSCOMPARENEAR( point.x(), x, 4 * std::numeric_limits<double>::epsilon() );
   QGSCOMPARENEAR( point.y(), y, 4 * std::numeric_limits<double>::epsilon() );
-}
-
-void TestQgsGeometryImport::pointGeos_data()
-{
-  QTest::addColumn<double>( "x" );
-  QTest::addColumn<double>( "y" );
-
-  QTest::newRow( "point_geos_1" ) << 30.0 << 10.0;
-}
-
-void TestQgsGeometryImport::pointGeos()
-{
-  QFETCH( double, x );
-  QFETCH( double, y );
-
-  GEOSCoordSequence *coord = GEOSCoordSeq_create_r( geos, 1, 2 );
-  GEOSCoordSeq_setX_r( geos, coord, 0, x );
-  GEOSCoordSeq_setY_r( geos, coord, 0, y );
-  GEOSGeometry *geosPt = GEOSGeom_createPoint_r( geos, coord );
-
-  const QgsGeometry geom = QgsGeos::geometryFromGeos( geosPt );
-  QVERIFY( geom.wkbType() == Qgis::WkbType::Point );
-
-  const QgsPointXY geomPt = geom.asPoint();
-
-  QGSCOMPARENEAR( x, geomPt.x(), 4 * std::numeric_limits<double>::epsilon() );
-  QGSCOMPARENEAR( y, geomPt.y(), 4 * std::numeric_limits<double>::epsilon() );
 }
 
 void TestQgsGeometryImport::linestringWkt_data()
@@ -199,35 +155,6 @@ void TestQgsGeometryImport::linestringWkb()
   const QgsPolylineXY polyline = geom.asPolyline();
   QVERIFY( compareLineStrings( polyline, line ) );
 }
-
-void TestQgsGeometryImport::linestringGeos_data()
-{
-  QTest::addColumn<QVariantList>( "line" );
-  QVariantList line;
-  line << QVariant( QPointF( 30.0, 10.0 ) ) << QVariant( QPointF( 10.0, 30.0 ) ) << QVariant( QPointF( 40.0, 40.0 ) );
-  QTest::newRow( "linestring_geos_1" ) << line;
-}
-
-void TestQgsGeometryImport::linestringGeos()
-{
-  QFETCH( QVariantList, line );
-
-  //create geos coord sequence first
-  GEOSCoordSequence *coord = GEOSCoordSeq_create_r( geos, line.count(), 2 );
-  for ( int i = 0; i < line.count(); i++ )
-  {
-    const QPointF pt = line.at( i ).toPointF();
-    GEOSCoordSeq_setX_r( geos, coord, i, pt.x() );
-    GEOSCoordSeq_setY_r( geos, coord, i, pt.y() );
-  }
-  GEOSGeometry *geosLine = GEOSGeom_createLineString_r( geos, coord );
-  const QgsGeometry geom = QgsGeos::geometryFromGeos( geosLine );
-  QVERIFY( geom.wkbType() == Qgis::WkbType::LineString );
-
-  const QgsPolylineXY polyline = geom.asPolyline();
-  QVERIFY( compareLineStrings( polyline, line ) );
-}
-
 
 bool TestQgsGeometryImport::compareLineStrings( const QgsPolylineXY &polyline, QVariantList &line )
 {

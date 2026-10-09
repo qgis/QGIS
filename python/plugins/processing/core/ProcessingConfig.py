@@ -26,7 +26,9 @@ from pathlib import Path
 
 from qgis.core import (
     NULL,
+    Qgis,
     QgsApplication,
+    QgsProcessingProvider,
     QgsProcessingUtils,
     QgsRasterFileWriter,
     QgsSettings,
@@ -34,13 +36,30 @@ from qgis.core import (
 )
 from qgis.PyQt.QtCore import QCoreApplication, QObject, pyqtSignal
 
-import processing.tools.dataobjects
-from processing.tools.system import defaultOutputFolder
-
 
 class SettingsWatcher(QObject):
     settingsChanged = pyqtSignal()
 
+
+DEFAULT_MENU_ENTRIES = {}
+try:
+    from qgis.gui import QgsProcessingGuiUtils
+
+    if QgsApplication.instance() is not None:
+        for (
+            key,
+            algorithm_list,
+        ) in QgsProcessingGuiUtils.defaultProcessingMenuEntries().items():
+            processing_menu = Qgis.ProcessingMenu(key)
+
+            default_key = QgsApplication.instance().property(
+                f"_processing_legacy_menu_key_{key}"
+            )
+            for algorithm_id in algorithm_list:
+                DEFAULT_MENU_ENTRIES[algorithm_id] = default_key
+
+except ImportError:
+    pass
 
 settingsWatcher = SettingsWatcher()
 
@@ -54,8 +73,6 @@ class ProcessingConfig:
     FILTER_INVALID_GEOMETRIES = "FILTER_INVALID_GEOMETRIES"
     PREFER_FILENAME_AS_LAYER_NAME = "prefer-filename-as-layer-name"
     KEEP_DIALOG_OPEN = "KEEP_DIALOG_OPEN"
-    PRE_EXECUTION_SCRIPT = "PRE_EXECUTION_SCRIPT"
-    POST_EXECUTION_SCRIPT = "POST_EXECUTION_SCRIPT"
     SHOW_CRS_DEF = "SHOW_CRS_DEF"
     WARN_UNMATCHING_CRS = "WARN_UNMATCHING_CRS"
     SHOW_PROVIDERS_TOOLTIP = "SHOW_PROVIDERS_TOOLTIP"
@@ -104,7 +121,7 @@ class ProcessingConfig:
                 ProcessingConfig.tr("General"),
                 ProcessingConfig.OUTPUT_FOLDER,
                 ProcessingConfig.tr("Output folder"),
-                defaultOutputFolder(),
+                QgsProcessingUtils.defaultOutputFolder(),
                 valuetype=Setting.FOLDER,
             )
         )
@@ -166,24 +183,6 @@ class ProcessingConfig:
                 ProcessingConfig.tr("General"),
                 ProcessingConfig.VECTOR_POLYGON_STYLE,
                 ProcessingConfig.tr("Style for polygon layers"),
-                "",
-                valuetype=Setting.FILE,
-            )
-        )
-        ProcessingConfig.addSetting(
-            Setting(
-                ProcessingConfig.tr("General"),
-                ProcessingConfig.PRE_EXECUTION_SCRIPT,
-                ProcessingConfig.tr("Pre-execution script"),
-                "",
-                valuetype=Setting.FILE,
-            )
-        )
-        ProcessingConfig.addSetting(
-            Setting(
-                ProcessingConfig.tr("General"),
-                ProcessingConfig.POST_EXECUTION_SCRIPT,
-                ProcessingConfig.tr("Post-execution script"),
                 "",
                 valuetype=Setting.FILE,
             )
@@ -525,3 +524,27 @@ class Setting:
         if context == "":
             context = "ProcessingConfig"
         return QCoreApplication.translate(context, string)
+
+
+MENU_SETTINGS_GROUP = "Menus"
+
+
+def initialize_menu_settings_for_provider(provider: QgsProcessingProvider):
+    for alg in provider.algorithms():
+        d = DEFAULT_MENU_ENTRIES.get(alg.id(), "")
+        setting = Setting(MENU_SETTINGS_GROUP, "MENU_" + alg.id(), "Menu path", d)
+        ProcessingConfig.addSetting(setting)
+        setting = Setting(
+            MENU_SETTINGS_GROUP, "BUTTON_" + alg.id(), "Add button", False
+        )
+        ProcessingConfig.addSetting(setting)
+        setting = Setting(
+            MENU_SETTINGS_GROUP,
+            "ICON_" + alg.id(),
+            "Icon",
+            "",
+            valuetype=Setting.FILE,
+        )
+        ProcessingConfig.addSetting(setting)
+
+    ProcessingConfig.readSettings()

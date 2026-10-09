@@ -374,10 +374,22 @@ void QgsLayoutItemMapOverview::overviewExtentChanged()
   {
     QgsRectangle extent = mMap->extent();
     QgsRectangle otherExtent = mFrameMap->extent();
-
     QgsPointXY center = otherExtent.center();
-    QgsRectangle movedExtent( center.x() - extent.width() / 2, center.y() - extent.height() / 2, center.x() - extent.width() / 2 + extent.width(), center.y() - extent.height() / 2 + extent.height() );
-    mMap->setExtent( movedExtent );
+
+    if ( mMap->crs() != mFrameMap->crs() )
+    {
+      QgsCoordinateTransform ct( mFrameMap->crs(), mMap->crs(), mLayout->project()->transformContext() );
+      try
+      {
+        center = ct.transform( center );
+      }
+      catch ( QgsCsException & )
+      {
+        return;
+      }
+    }
+
+    mMap->setExtent( QgsRectangle::fromCenterAndSize( center, extent.width(), extent.height() ) );
   }
 
   //repaint map so that overview gets updated

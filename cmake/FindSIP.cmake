@@ -13,10 +13,6 @@
 #
 # SIP_VERSION_STR - The version of SIP found as a human readable string.
 #
-# SIP_BINARY_PATH - Path and filename of the SIP command line executable.
-#
-# SIP_INCLUDE_DIR - Directory holding the SIP C++ header file.
-#
 # SIP_DEFAULT_SIP_DIR - Default directory where .sip files should be installed
 #     into.
 
@@ -36,7 +32,6 @@ ELSE(SIP_VERSION)
   EXECUTE_PROCESS(COMMAND ${Python_EXECUTABLE} ${_find_sip_py} OUTPUT_VARIABLE sip_config)
   IF(sip_config)
     STRING(REGEX REPLACE "^sip_version:([^\n]+).*$" "\\1" SIP_VERSION ${sip_config})
-    STRING(REGEX REPLACE ".*\nsip_version_num:([^\n]+).*$" "\\1" SIP_VERSION_NUM ${sip_config})
     STRING(REGEX REPLACE ".*\nsip_version_str:([^\n]+).*$" "\\1" SIP_VERSION_STR ${sip_config})
     IF(NOT DEFINED SIP_DEFAULT_SIP_DIR)
       STRING(REGEX REPLACE ".*\ndefault_sip_dir:([^\n]+).*$" "\\1" SIP_DEFAULT_SIP_DIR ${sip_config})
@@ -45,22 +40,15 @@ ELSE(SIP_VERSION)
       MESSAGE(STATUS "Found SIP version: ${SIP_VERSION_STR}")
     ENDIF(NOT SIP_FIND_QUIETLY)
 
-    IF(${SIP_VERSION_STR} VERSION_LESS 5)
-      STRING(REGEX REPLACE ".*\nsip_bin:([^\n]+).*$" "\\1" SIP_BINARY_PATH ${sip_config})
-      STRING(REGEX REPLACE ".*\nsip_inc_dir:([^\n]+).*$" "\\1" SIP_INCLUDE_DIR ${sip_config})
-      STRING(REGEX REPLACE ".*\nsip_module_dir:([^\n]+).*$" "\\1" SIP_MODULE_DIR ${sip_config})
+    FIND_PROGRAM(SIP_BUILD_EXECUTABLE sip-build)
+    IF(SIP_BUILD_EXECUTABLE)
+      IF(NOT SIP_FIND_QUIETLY)
+        MESSAGE(STATUS "Found sip-build executable: ${SIP_BUILD_EXECUTABLE}")
+      ENDIF(NOT SIP_FIND_QUIETLY)
       SET(SIP_FOUND TRUE)
-    ELSE(${SIP_VERSION_STR} VERSION_LESS 5)
-      FIND_PROGRAM(SIP_BUILD_EXECUTABLE sip-build)
-      IF(SIP_BUILD_EXECUTABLE)
-        IF(NOT SIP_FIND_QUIETLY)
-          MESSAGE(STATUS "Found sip-build executable: ${SIP_BUILD_EXECUTABLE}")
-        ENDIF(NOT SIP_FIND_QUIETLY)
-        SET(SIP_FOUND TRUE)
-      ELSE(SIP_BUILD_EXECUTABLE)
-        MESSAGE (FATAL_ERROR "Could not find sip-build executable")
-      ENDIF(SIP_BUILD_EXECUTABLE)
-    ENDIF(${SIP_VERSION_STR} VERSION_LESS 5)
+    ELSE(SIP_BUILD_EXECUTABLE)
+      MESSAGE (FATAL_ERROR "Could not find sip-build executable")
+    ENDIF(SIP_BUILD_EXECUTABLE)
   ENDIF(sip_config)
 
   IF(NOT SIP_FOUND)

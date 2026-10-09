@@ -135,6 +135,8 @@ bool QgsApproximateMedialAxisAlgorithm::prepareAlgorithm( const QVariantMap &par
 
 QgsFeatureList QgsApproximateMedialAxisAlgorithm::processFeature( const QgsFeature &feature, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
+  QGS_MARK_ALGORITHM_SOURCE
+
   Q_UNUSED( context )
 
 #ifdef WITH_SFCGAL
@@ -143,6 +145,22 @@ QgsFeatureList QgsApproximateMedialAxisAlgorithm::processFeature( const QgsFeatu
   {
     QgsGeometry outputGeometry;
     QgsSfcgalGeometry inputSfcgalGeometry;
+    bool constructorSuccess = true;
+
+    if ( QgsWkbTypes::isCurvedType( modifiedFeature.geometry().wkbType() ) )
+    {
+      feedback->reportError(
+        QObject::tr(
+          "Cannot calculate approximate medial axis for feature %1 because the geometry contains curved segments. "
+          "A feature without a geometry will be returned. "
+          "Consider segmentizing the geometry if an approximation is acceptable."
+        )
+          .arg( feature.id() )
+      );
+      modifiedFeature.clearGeometry();
+      constructorSuccess = false;
+    }
+
     try
     {
       inputSfcgalGeometry = QgsSfcgalGeometry( modifiedFeature.geometry() );
@@ -151,9 +169,10 @@ QgsFeatureList QgsApproximateMedialAxisAlgorithm::processFeature( const QgsFeatu
     {
       feedback->reportError( QObject::tr( "Cannot calculate approximate medial axis for feature %1: %2" ).arg( feature.id() ).arg( exception.what() ) );
       modifiedFeature.clearGeometry();
+      constructorSuccess = false;
     }
 
-    if ( !inputSfcgalGeometry.isEmpty() )
+    if ( constructorSuccess && !inputSfcgalGeometry.isEmpty() )
     {
       try
       {

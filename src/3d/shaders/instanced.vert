@@ -2,6 +2,12 @@
 
 in vec3 vertexPosition;
 in vec3 vertexNormal;
+#ifdef HAS_TEXTURE
+in vec2 vertexTexCoord;
+#endif
+#ifdef HAS_TANGENT
+in vec4 vertexTangent;
+#endif
 in vec3 instanceTranslation;
 #ifdef USE_INSTANCE_SCALE
 in vec3 instanceScale;
@@ -12,7 +18,21 @@ in vec4 instanceRotation;
 
 out vec3 worldPosition;
 out vec3 worldNormal;
+#ifdef HAS_TEXTURE
+out vec2 texCoord;
+#endif
+#ifdef HAS_TANGENT
+out vec4 worldTangent;
+#endif
 
+// transform from mesh space (raw input vertex coordinates) to object space.
+// Often this is an identity matrix, but it could be an axis flip and/or a transform
+// from the gltf node of the source mesh.
+uniform mat4 meshMatrix;
+uniform mat3 meshNormalMatrix;
+
+// transform from chunk space to world space (from entity's QTransform),
+// applied at the very end.
 uniform mat4 modelMatrix;
 uniform mat3 modelNormalMatrix;
 uniform mat4 mvp;
@@ -30,33 +50,10 @@ vec3 rotateByQuat(vec3 v, vec4 q) {
 
 void main()
 {
-    // vertexPosition uses XY plane as the base plane, with Z going upwards
-    // and the coordinates are local to the object
-
-    const mat3 zUpTransform = mat3(
-        // column 1
-        1.0, 0.0, 0.0,
-        // column 2
-        0.0, 0.0, 1.0,
-        // column 3
-        0.0, -1.0, 0.0
-    );
-    // transposed inverse of z-up transform matrix
-    const mat3 zUpNormalTransform = mat3(
-        // column 1
-        1.0, 0.0, 0.0,
-        // column 2
-        0.0, 0.0, 1.0,
-        // column 3
-        0.0, -1.0, 0.0
-    );
-
     #ifdef USE_INSTANCE_SCALE
     vec3 thisInstanceScale = instanceScale;
-    vec3 thisInstanceNormalScale = 1.0 / instanceScale;
     #else
     vec3 thisInstanceScale = symbolScale;
-    vec3 thisInstanceNormalScale = 1.0 / symbolScale;
     #endif
 
     #ifdef USE_INSTANCE_ROTATION
@@ -66,29 +63,34 @@ void main()
     #endif
 
     // order of operations are:
-    // 1. Correct for y-up to z-up
-    // 2. Apply either per-instance scale or default symbol scale
-    // 3. Apply either per-instance rotation or default symbol rotation
-    // 4. Apply per-instance translation
+    // 1. mesh space to object space: apply mesh matrix
+    // 2. object space to chunk space: apply per-instance scale, rotation, translation (in this order)
+    // 3. chunk space to world space: apply model matrix
 
-    // for vertices:
-    vec3 zUpPosition = zUpTransform * vertexPosition;
-    vec3 scaledPosition = zUpPosition * thisInstanceScale;
-    vec3 vertexPositionObject = rotateByQuat(scaledPosition, thisInstanceRotation);
+    // for vertices
+    vec3 objectPosition = (meshMatrix * vec4(vertexPosition, 1.0)).xyz;
+    vec3 chunkPosition = rotateByQuat(objectPosition * thisInstanceScale, thisInstanceRotation) + instanceTranslation;
 
-    // for normals:
-    vec3 zUpNormal = zUpNormalTransform * vertexNormal;
-    vec3 scaledNormal = zUpNormal * thisInstanceNormalScale;
-    vec3 vertexNormalObject = rotateByQuat(scaledNormal, thisInstanceRotation);
-
-    vec3 vertexPositionChunk = vertexPositionObject + instanceTranslation;
+    // for normals
+    vec3 objectNormal = meshNormalMatrix * vertexNormal;
+    vec3 chunkNormal = rotateByQuat(objectNormal / thisInstanceScale, thisInstanceRotation);
 
     // Transform position and normal to world space
-    worldPosition = vec3(modelMatrix * vec4(vertexPositionChunk, 1.0));
-    worldNormal = normalize(modelNormalMatrix * vertexNormalObject);
+    worldPosition = vec3(modelMatrix * vec4(chunkPosition, 1.0));
+    worldNormal = normalize(modelNormalMatrix * chunkNormal);
+
+#ifdef HAS_TEXTURE
+    texCoord = vertexTexCoord;
+#endif
+
+#ifdef HAS_TANGENT
+    vec3 chunkTangent = rotateByQuat(vertexTangent.xyz * thisInstanceScale, thisInstanceRotation);
+    worldTangent.xyz = normalize(vec3(modelMatrix * vec4(chunkTangent, 0.0)));
+    worldTangent.w = vertexTangent.w;
+#endif
 
     // Calculate vertex position in clip coordinates
-    gl_Position = mvp * vec4(vertexPositionChunk, 1.0);
+    gl_Position = mvp * vec4(chunkPosition, 1.0);
 
 #ifdef CLIPPING
     setClipDistance(worldPosition);

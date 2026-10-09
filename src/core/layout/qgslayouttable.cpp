@@ -28,6 +28,7 @@
 #include "qgslayoutrendercontext.h"
 #include "qgslayouttablecolumn.h"
 #include "qgslayoututils.h"
+#include "qgspainting.h"
 #include "qgstextrenderer.h"
 
 #include <QString>
@@ -446,11 +447,11 @@ void QgsLayoutTable::render( QgsLayoutItemRenderContext &context, const QRectF &
 
       const QgsTextFormat headerFormat = textFormatForHeader( col );
       //draw background
-      p->save();
+      QgsScopedQPainterState painterState( p );
       p->setPen( Qt::NoPen );
       p->setBrush( backgroundColor( -1, col ) );
       p->drawRect( QRectF( currentX, currentY, mMaxColumnWidthMap[col] + 2 * mCellMargin, cellHeaderHeight ) );
-      p->restore();
+      painterState.restore();
 
       currentX += mCellMargin;
 
@@ -557,11 +558,10 @@ void QgsLayoutTable::render( QgsLayoutItemRenderContext &context, const QRectF &
         if ( !isSpanned )
         {
           //draw background
-          p->save();
+          QgsScopedQPainterState painterState( p );
           p->setPen( Qt::NoPen );
           p->setBrush( backgroundColor( row, col, rowsSpan, colsSpan ) );
           p->drawRect( fullCell );
-          p->restore();
         }
 
         // currentY = gridSize;
@@ -577,7 +577,7 @@ void QgsLayoutTable::render( QgsLayoutItemRenderContext &context, const QRectF &
           QgsExpressionContextScopePopper popper( context.renderContext().expressionContext(), scopeForCell( row, col ) );
           cellFormat.updateDataDefinedProperties( context.renderContext() );
 
-          p->save();
+          QgsScopedQPainterState painterState( p );
           p->setClipRect( fullCell );
           const QRectF textCell = QRectF( currentX, currentY + mCellMargin, cellWidth - 2 * mCellMargin, cellHeight - 2 * mCellMargin );
 
@@ -608,7 +608,6 @@ void QgsLayoutTable::render( QgsLayoutItemRenderContext &context, const QRectF &
               mWrapBehavior == WrapText ? Qgis::TextRendererFlag::WrapLines : Qgis::TextRendererFlags()
             );
           }
-          p->restore();
         }
 
         currentX += mMaxColumnWidthMap[col];
@@ -623,7 +622,7 @@ void QgsLayoutTable::render( QgsLayoutItemRenderContext &context, const QRectF &
 
   if ( numberRowsToDraw > rowsDrawn )
   {
-    p->save();
+    QgsScopedQPainterState painterState( p );
     p->setPen( Qt::NoPen );
 
     //draw background of empty rows
@@ -657,7 +656,6 @@ void QgsLayoutTable::render( QgsLayoutItemRenderContext &context, const QRectF &
       }
       currentY += cellBodyHeightForEmptyRows + gridSizeY;
     }
-    p->restore();
   }
 
   //and the borders

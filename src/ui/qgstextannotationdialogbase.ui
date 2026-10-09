@@ -39,7 +39,7 @@
    <item row="0" column="0">
     <layout class="QHBoxLayout" name="horizontalLayout">
      <item>
-      <widget class="QFontComboBox" name="mFontComboBox"/>
+      <widget class="QgsFontComboBox" name="mFontComboBox"/>
      </item>
      <item>
       <spacer name="horizontalSpacer">
@@ -127,11 +127,18 @@
    <class>QgsColorButton</class>
    <extends>QToolButton</extends>
    <header>qgscolorbutton.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsFontComboBox</class>
+   <extends>QFontComboBox</extends>
+   <header>qgsfontcombobox.h</header>
   </customwidget>
   <customwidget>
    <class>QgsSpinBox</class>
    <extends>QSpinBox</extends>
    <header>qgsspinbox.h</header>
+   <container>1</container>
   </customwidget>
  </customwidgets>
  <tabstops>

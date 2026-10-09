@@ -560,7 +560,7 @@ class CORE_EXPORT QgsLabelFeature
      *
      * \since QGIS 3.26
      */
-    QgsLabelLineSettings::AnchorTextPoint lineAnchorTextPoint() const;
+    Qgis::TextAnchorPoint lineAnchorTextPoint() const;
 
     /**
      * Sets the line anchor text \a point, which dictates which part of the label text
@@ -570,7 +570,7 @@ class CORE_EXPORT QgsLabelFeature
      *
      * \since QGIS 3.26
      */
-    void setLineAnchorTextPoint( QgsLabelLineSettings::AnchorTextPoint point ) { mAnchorTextPoint = point; }
+    void setLineAnchorTextPoint( Qgis::TextAnchorPoint point ) { mAnchorTextPoint = point; }
 
     /**
      * Returns the mode which determine how curved labels are generated and placed.
@@ -836,7 +836,7 @@ class CORE_EXPORT QgsLabelFeature
 
     double mLineAnchorPercent = 0.5;
     QgsLabelLineSettings::AnchorType mLineAnchorType = QgsLabelLineSettings::AnchorType::HintOnly;
-    QgsLabelLineSettings::AnchorTextPoint mAnchorTextPoint = QgsLabelLineSettings::AnchorTextPoint::CenterOfText;
+    Qgis::TextAnchorPoint mAnchorTextPoint = Qgis::TextAnchorPoint::CenterOfText;
     Qgis::CurvedLabelMode mCurvedLabelMode = Qgis::CurvedLabelMode::Default;
 
     Qgis::LabelOverlapHandling mOverlapHandling = Qgis::LabelOverlapHandling::PreventOverlap;

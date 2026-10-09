@@ -154,6 +154,7 @@ class GUI_EXPORT QgsCodeEditorPython : public QgsCodeEditor
   protected:
     void initializeLexer() override;
     void keyPressEvent( QKeyEvent *event ) override;
+    void showEvent( QShowEvent *event ) override;
     QString reformatCodeString( const QString &string ) override;
     void populateContextMenu( QMenu *menu ) override;
 
@@ -171,11 +172,13 @@ class GUI_EXPORT QgsCodeEditorPython : public QgsCodeEditor
     QString mPapFile;
 
     Qgis::ScriptLanguageCapabilities mCapabilities;
+    bool mInitializedLexer = false;
 
     static const QMap<QString, QString> sCompletionPairs;
 
     // Only used for selected text
     static const QStringList sCompletionSingleCharacters;
+    void deferredInitializeLexer();
 };
 
 #endif

@@ -95,6 +95,7 @@ QgsLayoutManualTableWidget::QgsLayoutManualTableWidget( QgsLayoutFrame *frame )
   mBackgroundColorButton->setContext( u"composer"_s );
   mBackgroundColorButton->setShowNoColor( true );
   mBackgroundColorButton->setNoColorString( tr( "No Background" ) );
+  mBackgroundColorButton->setOpaqueColorString( tr( "Opaque Background" ) );
 
   updateGuiElements();
 

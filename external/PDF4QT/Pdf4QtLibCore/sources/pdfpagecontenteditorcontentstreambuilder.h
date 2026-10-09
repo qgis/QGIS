@@ -24,6 +24,7 @@
 #define PDFPAGECONTENTEDITORCONTENTSTREAMBUILDER_H
 
 #include "pdfpagecontenteditorprocessor.h"
+#include "pdfeditorfallbackfont.h"
 
 #include <QHash>
 #include <QPaintDevice>
@@ -66,6 +67,8 @@ public:
     const PDFDictionary& getGraphicStateDictionary() const { return m_graphicStateDictionary; }
 
     void setFontDictionary(const PDFDictionary& newFontDictionary);
+    void setXObjectDictionary(const PDFDictionary& newXObjectDictionary);
+    void setGraphicStateDictionary(const PDFDictionary& newGraphicStateDictionary);
 
     const QStringList& getErrors() const { return m_errors; }
     void clearErrors() { m_errors.clear(); }
@@ -76,15 +79,28 @@ public:
                          bool isStroking,
                          bool isFilling);
 
+    /// Writes styled path with the given graphic state. Optional clip path
+    /// is expressed in the page coordinate space (it is applied before
+    /// the current transformation matrix is written). An empty clip path
+    /// means no clipping.
     void writeStyledPath(const QPainterPath& path,
                          const PDFPageContentProcessorState& state,
                          bool isStroking,
-                         bool isFilling);
+                         bool isFilling,
+                         const QPainterPath& clipPath = QPainterPath());
 
     void writeImage(const QImage& image, const QRectF& rectangle);
-    void writeImage(const QImage& image, QTransform transform, const QRectF& rectangle);
+
+    /// Writes image placed by the painter transform. Optional clip path
+    /// is expressed in the page coordinate space. An empty clip path
+    /// means no clipping.
+    void writeImage(const QImage& image, QTransform transform, const QRectF& rectangle, const QPainterPath& clipPath = QPainterPath());
 
     const PDFPageContentProcessorState& getCurrentState() { return m_currentState; }
+
+    /// Writes the path construction operators (m, l, c, h) for the given path,
+    /// without any painting operator.
+    static void writePathGeometry(QTextStream& stream, const QPainterPath& path);
 
 private:
     bool isNeededToWriteCurrentTransformationMatrix() const;
@@ -97,10 +113,22 @@ private:
                           bool isStroking,
                           bool isFilling);
 
+    /// Writes the path as a clip path (path construction operators followed
+    /// by "W n" or "W* n", according to the path fill rule).
+    void writeClipPath(QTextStream& stream, const QPainterPath& clipPath);
+
     void writeText(QTextStream& stream, const QString& text);
     void writeTextCommand(QTextStream& stream, const QXmlStreamReader& reader);
 
+    /// Writes text characters using the current text font. Characters, which
+    /// cannot be encoded into the current font, are written using an on-the-fly
+    /// generated Type 3 fallback font.
+    void writeTextWithFallback(QTextStream& stream, const QString& characters);
+
+    void writeTextHexString(QTextStream& stream, const QByteArray& encodedText);
+
     void writeImage(QTextStream& stream, const QImage& image);
+    void writeImageObject(QTextStream& stream, const PDFObject& imageObject);
 
     QByteArray selectFont(const QByteArray& font);
     void addError(const QString& error);
@@ -114,6 +142,9 @@ private:
     PDFFontPointer m_textFont;
     QHash<QByteArray, PDFFontPointer> m_fontOverrides;
     QStringList m_errors;
+    PDFEditorFallbackFontManager m_fallbackFontManager;
+    QByteArray m_currentTextFontKey;    ///< Resource key of the last written Tf operator
+    PDFReal m_currentTextFontSize = 0.0;
 };
 
 }   // namespace pdf

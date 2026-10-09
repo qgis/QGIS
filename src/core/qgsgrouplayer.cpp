@@ -41,7 +41,7 @@ QgsGroupLayer::QgsGroupLayer( const QString &name, const LayerOptions &options )
   mShouldValidateCrs = false;
   mValid = true;
 
-  mPaintEffect.reset( QgsPaintEffectRegistry::defaultStack() );
+  mPaintEffect.reset( QgsPaintEffectRegistry::defaultStack().release() );
   mPaintEffect->setEnabled( false );
 
   QgsDataProvider::ProviderOptions providerOptions;
@@ -204,11 +204,11 @@ bool QgsGroupLayer::readSymbology( const QDomNode &node, QString &, QgsReadWrite
     if ( !effectElem.isNull() )
     {
       const QDomElement effectPropertiesElem = effectElem.firstChildElement( u"effect"_s ).toElement();
-      mPaintEffect.reset( QgsApplication::paintEffectRegistry()->createEffect( effectPropertiesElem ) );
+      mPaintEffect.reset( QgsApplication::paintEffectRegistry()->createEffect( effectPropertiesElem ).release() );
     }
     else
     {
-      mPaintEffect.reset( QgsPaintEffectRegistry::defaultStack() );
+      mPaintEffect.reset( QgsPaintEffectRegistry::defaultStack().release() );
       mPaintEffect->setEnabled( false );
     }
   }

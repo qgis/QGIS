@@ -75,6 +75,8 @@ void QgsUniqueValuesAlgorithm::initAlgorithm( const QVariantMap & )
 
 QVariantMap QgsUniqueValuesAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
+  QGS_MARK_ALGORITHM_SOURCE
+
   std::unique_ptr<QgsProcessingFeatureSource> source( parameterAsSource( parameters, u"INPUT"_s, context ) );
   if ( !source )
     throw QgsProcessingException( invalidSourceError( parameters, u"INPUT"_s ) );
@@ -168,8 +170,11 @@ QVariantMap QgsUniqueValuesAlgorithm::processAlgorithm( const QVariantMap &param
       f.setAttributes( *it );
       if ( !sink->addFeature( f, QgsFeatureSink::Flag::FastInsert ) )
         throw QgsProcessingException( writeFeatureError( sink.get(), parameters, u"OUTPUT"_s ) );
+      else
+        feedback->featureAddedToSink( u"OUTPUT"_s );
     }
     sink->finalize();
+    feedback->featureSinkFinalized( u"OUTPUT"_s );
     outputs.insert( u"OUTPUT"_s, dest );
   }
 

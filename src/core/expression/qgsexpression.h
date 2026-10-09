@@ -797,6 +797,17 @@ class CORE_EXPORT QgsExpression
      */
     static bool attemptReduceToInClause( const QStringList &expressions, QString &result SIP_OUT );
 
+    /**
+     * Returns an expression which is the simplest direct equivalent of this expression
+     *
+     * Eg. an expression like ``1 + 2`` can be effectively replaced by the expression ``3``, or a nested expression like
+     * ``coalesce(coalesce("field_a", "field_b"), "field_c")`` could be replaced by a single ``coalesce("field_a", "field_b", "field_c")``
+     * expression.
+     *
+     * \since QGIS 4.4
+     */
+    QgsExpression simplified() const;
+
     // clang-format off
 #ifdef SIP_RUN
     SIP_PYOBJECT __repr__();

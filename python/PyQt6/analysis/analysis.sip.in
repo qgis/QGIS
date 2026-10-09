@@ -1,7 +1,7 @@
 %Module(name=qgis._analysis,
         keyword_arguments="All")
 
-${DEFAULTDOCSTRINGSIGNATURE}
+%DefaultDocstringSignature "prepended"
 
 %Import QtCore/QtCoremod.sip
 %Import QtGui/QtGuimod.sip

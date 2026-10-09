@@ -21,9 +21,15 @@
 
 #define SIP_NO_FILE
 
+class QgsDirectionalLightSettings;
 class QgsFrameGraph;
 class QgsShadowRenderView;
 class QgsDirectionalLightSettings;
+class QgsColorGradingSettings;
+class QgsVector3D;
+class QgsShadowSettings;
+class Qgs3DMapSettings;
+class QgsBloomSettings;
 
 namespace Qt3DRender
 {
@@ -47,6 +53,7 @@ class QgsPostprocessingEntity : public QgsRenderPassQuad
   public:
     //! Constructor
     QgsPostprocessingEntity( QgsFrameGraph *frameGraph, Qt3DRender::QLayer *layer, QNode *parent = nullptr );
+
     //! Sets whether shadow rendering is enabled
     void setShadowRenderingEnabled( bool enabled );
 
@@ -57,8 +64,22 @@ class QgsPostprocessingEntity : public QgsRenderPassQuad
      */
     void setShowCascadingShadowSplits( bool enabled );
 
+    //! Sets the index of the directional light that is casting shadows
+    void setShadowLightIndex( int index );
     //! Sets the shadow bias value
     void setShadowBias( float shadowBias );
+
+    /**
+     * Sets shadow rendering to use a directional light
+     * \since QGIS 4.2
+     */
+    void updateShadowSettings( const QgsShadowSettings &shadowSettings, const QgsVector3D &lightDir, int size, int globalLightIndex );
+
+    /**
+     * Updates eye dome lighting settings from \a settings
+     * \since QGIS 4.2
+     */
+    void updateEyeDomeSettings( const Qgs3DMapSettings &settings );
     //! Sets whether eye dome lighting is enabled
     void setEyeDomeLightingEnabled( bool enabled );
     //! Sets the eye dome lighting strength
@@ -67,16 +88,16 @@ class QgsPostprocessingEntity : public QgsRenderPassQuad
     void setEyeDomeLightingDistance( int distance );
 
     /**
-     * Sets shadow rendering to use a directional light
-     * \since QGIS 3.44
-     */
-    void updateShadowSettings( const QgsDirectionalLightSettings &light, float maximumShadowRenderingDistance );
-
-    /**
      * Sets whether screen space ambient occlusion is enabled
      * \since QGIS 3.28
      */
     void setAmbientOcclusionEnabled( bool enabled );
+
+    /**
+     * Sets bloom rendering to use a directional light
+     * \since QGIS 4.2
+     */
+    void updateBloomSettings( const QgsBloomSettings &settings );
 
     /**
      * Sets whether physically based bloom is enabled
@@ -90,8 +111,17 @@ class QgsPostprocessingEntity : public QgsRenderPassQuad
      */
     void setBloomFactor( float factor );
 
+    /**
+     * Updates settings for color grading.
+     *
+     * \since QGIS 4.2
+     */
+    void updateColorGradingSettings( const QgsColorGradingSettings &settings );
+
   private:
     Qt3DRender::QCamera *mMainCamera = nullptr;
+
+    int mShadowMapResolution = 512;
 
     Qt3DRender::QParameter *mColorTextureParameter = nullptr;
     Qt3DRender::QParameter *mDepthTextureParameter = nullptr;
@@ -102,6 +132,7 @@ class QgsPostprocessingEntity : public QgsRenderPassQuad
     Qt3DRender::QParameter *mMainCameraInvViewMatrixParameter = nullptr;
     Qt3DRender::QParameter *mMainCameraInvProjMatrixParameter = nullptr;
 
+    Qt3DRender::QParameter *mShadowLightIndexParameter = nullptr;
     Qt3DRender::QCamera *mLightCameras[Qgs3D::NUM_SHADOW_CASCADES] = { nullptr };
     Qt3DRender::QParameter *mCsmMatricesParameter = nullptr;
     Qt3DRender::QParameter *mCsmBoundsMatricesParameter = nullptr;
@@ -118,6 +149,9 @@ class QgsPostprocessingEntity : public QgsRenderPassQuad
     Qt3DRender::QParameter *mBloomTextureParameter = nullptr;
     Qt3DRender::QParameter *mBloomEnabledParameter = nullptr;
     Qt3DRender::QParameter *mBloomFactorParameter = nullptr;
+
+    Qt3DRender::QParameter *mExposureParameter = nullptr;
+    Qt3DRender::QParameter *mToneMappingParameter = nullptr;
 };
 
 #endif // QGSPOSTPROCESSINGENTITY_H

@@ -36,11 +36,11 @@ class GUI_EXPORT QgsRasterFormatSaveOptionsWidget : public QWidget, private Ui::
   public:
     enum Type
     {
-      Default,        // everything except profile buttons (save as dlg)
-      Full,           // everything (options dlg)
-      Table,          // just table
-      LineEdit,       // just the line edit
-      ProfileLineEdit // Profile + LineEdit
+      Default,        //!< Everything except profile buttons (save as dlg)
+      Full,           //!< Everything (options dlg)
+      Table,          //!< Just table
+      LineEdit,       //!< Just the line edit
+      ProfileLineEdit //!< Profile + LineEdit
     };
 
     QgsRasterFormatSaveOptionsWidget( QWidget *parent SIP_TRANSFERTHIS = nullptr, const QString &format = "GTiff", QgsRasterFormatSaveOptionsWidget::Type type = Default, const QString &provider = "gdal" );

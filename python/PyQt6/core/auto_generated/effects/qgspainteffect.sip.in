@@ -350,7 +350,7 @@ then the original picture will be rendered as a vector.
   public:
     QgsDrawSourceEffect();
 
-    static QgsPaintEffect *create( const QVariantMap &map ) /Factory/;
+    static std::unique_ptr<QgsPaintEffect> create( const QVariantMap &map );
 %Docstring
 Creates a new :py:class:`QgsDrawSource` effect from a properties string
 map.
@@ -444,6 +444,7 @@ needed
 %End
     ~QgsEffectPainter();
 
+
     void setEffect( QgsPaintEffect *effect );
 %Docstring
 Sets the effect to be painted
@@ -454,6 +455,7 @@ Sets the effect to be painted
 
 
   private:
+    QgsEffectPainter( const QgsEffectPainter & );
     const QgsEffectPainter &operator=( const QgsEffectPainter & );
 };
 

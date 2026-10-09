@@ -99,13 +99,13 @@ class _3D_EXPORT QgsCameraController : public QObject
      * Returns the vertical axis inversion behavior.
      * \since QGIS 3.18
      */
-    Qgis::VerticalAxisInversion verticalAxisInversion() const { return mVerticalAxisInversion; }
+    Qgis::VerticalAxisInversionFlags verticalAxisInversion() const { return mVerticalAxisInversion; }
 
     /**
      * Sets the vertical axis \a inversion behavior.
      * \since QGIS 3.18
      */
-    void setVerticalAxisInversion( Qgis::VerticalAxisInversion inversion );
+    void setVerticalAxisInversion( Qgis::VerticalAxisInversionFlags inversion );
 
     //! Called internally from 3D scene when a new frame is generated. Updates camera according to keyboard/mouse input
     void frameTriggered( float dt );
@@ -335,6 +335,16 @@ class _3D_EXPORT QgsCameraController : public QObject
      */
     void moveCenterPoint( const QVector3D &posDiff );
 
+    /**
+     * Returns the minimum depth value in the square [px - 3, px + 3] * [py - 3, py + 3]
+     * Returned depth is in range [0..1] and it is returned as it was written to the
+     * depth buffer (not linearized, see Qgs3DUtils::screenPointToWorldPos() for conversion
+     * to linear depth). Returned value 1 means there void around that pixel (no 3D objects).
+     * \since QGIS 4.2
+     */
+    double sampleDepthBuffer( int px, int py );
+
+
   private:
 #ifdef SIP_RUN
     QgsCameraController();
@@ -354,12 +364,12 @@ class _3D_EXPORT QgsCameraController : public QObject
     //! List of possible operations with the mouse in TerrainBased navigation
     enum class MouseOperation
     {
-      None = 0,       // no operation
-      Translation,    // left button pressed, no modifier
-      RotationCamera, // left button pressed + ctrl modifier
-      RotationCenter, // left button pressed + shift modifier
-      Zoom,           // right button pressed
-      ZoomWheel       // mouse wheel scroll
+      None = 0,       //!< No operation
+      Translation,    //!< Left button pressed, no modifier
+      RotationCamera, //!< Left button pressed + ctrl modifier
+      RotationCenter, //!< Left button pressed + shift modifier
+      Zoom,           //!< Right button pressed
+      ZoomWheel       //!< Mouse wheel scroll
     };
 
     // This list gathers all the rotation and translation operations.
@@ -415,6 +425,12 @@ class _3D_EXPORT QgsCameraController : public QObject
      */
     void cameraRotationCenterChanged( QVector3D position );
 
+    /**
+     * Emitted after the depth buffer has been captured and is ready to sample.
+     * \since QGIS 4.2
+     */
+    void depthBufferReady();
+
   private slots:
     void onPositionChanged( Qt3DInput::QMouseEvent *mouse );
     void onWheel( Qt3DInput::QWheelEvent *wheel );
@@ -432,14 +448,6 @@ class _3D_EXPORT QgsCameraController : public QObject
     void onPositionChangedGlobeTerrainNavigation( Qt3DInput::QMouseEvent *mouse );
 
     void handleTerrainNavigationWheelZoom();
-
-    /**
-     * Returns the minimum depth value in the square [px - 3, px + 3] * [py - 3, py + 3]
-     * Returned depth is in range [0..1] and it is returned as it was written to the
-     * depth buffer (not linearized, see Qgs3DUtils::screenPointToWorldPos() for conversion
-     * to linear depth). Returned value 1 means there void around that pixel (no 3D objects).
-     */
-    double sampleDepthBuffer( int px, int py );
 
     // Returns the average depth of all non void pixels
     double depthBufferNonVoidAverage();
@@ -499,7 +507,7 @@ class _3D_EXPORT QgsCameraController : public QObject
     Qt3DInput::QKeyboardHandler *mKeyboardHandler = nullptr;
     bool mInputHandlersEnabled = true;
     Qgis::NavigationMode mCameraNavigationMode = Qgis::NavigationMode::TerrainBased;
-    Qgis::VerticalAxisInversion mVerticalAxisInversion = Qgis::VerticalAxisInversion::WhenDragging;
+    Qgis::VerticalAxisInversionFlags mVerticalAxisInversion = Qgis::VerticalAxisInversion::WhenPivoting | Qgis::VerticalAxisInversion::WhenRotatingDragging;
     double mCameraMovementSpeed = 5.0;
 
     QSet<int> mDepressedKeys;

@@ -185,6 +185,8 @@ void QgsValidateNetworkAlgorithm::initAlgorithm( const QVariantMap & )
 
 QVariantMap QgsValidateNetworkAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
+  QGS_MARK_ALGORITHM_SOURCE
+
   std::unique_ptr<QgsFeatureSource> networkSource( parameterAsSource( parameters, u"INPUT"_s, context ) );
   if ( !networkSource )
     throw QgsProcessingException( invalidSourceError( parameters, u"INPUT"_s ) );
@@ -277,6 +279,10 @@ QVariantMap QgsValidateNetworkAlgorithm::processAlgorithm( const QVariantMap &pa
             {
               throw QgsProcessingException( writeFeatureError( networkErrorSink.get(), parameters, u"OUTPUT_INVALID_NETWORK"_s ) );
             }
+            else
+            {
+              feedback->featureAddedToSink( u"OUTPUT_INVALID_NETWORK"_s );
+            }
           }
           countInvalidFeatures++;
         }
@@ -289,6 +295,7 @@ QVariantMap QgsValidateNetworkAlgorithm::processAlgorithm( const QVariantMap &pa
     if ( networkErrorSink )
     {
       networkErrorSink->finalize();
+      feedback->featureSinkFinalized( u"OUTPUT_INVALID_NETWORK"_s );
     }
   }
 
@@ -494,6 +501,8 @@ QVariantMap QgsValidateNetworkAlgorithm::processAlgorithm( const QVariantMap &pa
           nodeErrorFeature.setAttributes( QgsAttributes() << QObject::tr( "Node too close to adjacent node (%1 < %2)" ).arg( closestError.distance ).arg( toleranceNodeToNode ) );
           if ( !nodeErrorSink->addFeature( nodeErrorFeature, QgsFeatureSink::FastInsert ) )
             throw QgsProcessingException( writeFeatureError( nodeErrorSink.get(), parameters, u"OUTPUT_INVALID_NODES"_s ) );
+          else
+            feedback->featureAddedToSink( u"OUTPUT_INVALID_NODES"_s );
         }
         countInvalidNodes++;
       }
@@ -544,6 +553,8 @@ QVariantMap QgsValidateNetworkAlgorithm::processAlgorithm( const QVariantMap &pa
           nodeErrorFeature.setAttributes( QgsAttributes() << QObject::tr( "Node too close to non-noded segment (%1 < %2)" ).arg( closestError.distance ).arg( toleranceNodeToSegment ) );
           if ( !nodeErrorSink->addFeature( nodeErrorFeature, QgsFeatureSink::FastInsert ) )
             throw QgsProcessingException( writeFeatureError( nodeErrorSink.get(), parameters, u"OUTPUT_INVALID_NODES"_s ) );
+          else
+            feedback->featureAddedToSink( u"OUTPUT_INVALID_NODES"_s );
         }
         countInvalidNodes++;
       }
@@ -555,6 +566,7 @@ QVariantMap QgsValidateNetworkAlgorithm::processAlgorithm( const QVariantMap &pa
   if ( nodeErrorSink )
   {
     nodeErrorSink->finalize();
+    feedback->featureSinkFinalized( u"OUTPUT_INVALID_NODES"_s );
   }
 
   feedback->setProgress( 100 );

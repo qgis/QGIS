@@ -17,6 +17,7 @@
 
 #include "qgsapplication.h"
 #include "qgsmessagelog.h"
+#include "qgsmodelchildalgorithmwidgets.h"
 #include "qgsmodelgraphicitem.h"
 #include "qgsmodelgraphicsscene.h"
 #include "qgsmodelgraphicsview.h"
@@ -29,7 +30,9 @@
 #include "qgsprocessingmodelgroupbox.h"
 #include "qgsprocessingmodeloutput.h"
 #include "qgsprocessingmodelparameter.h"
+#include "qgsprocessingparameterdefinitionwidget.h"
 #include "qgsprocessingparameters.h"
+#include "qgsprocessingwidgetwrapper.h"
 
 #include <QApplication>
 #include <QGraphicsSceneHoverEvent>
@@ -317,7 +320,19 @@ QRectF QgsModelComponentGraphicItem::boundingRect() const
 
   const double hUp = linksAbove == 0 ? 0 : fm.height() * 1.2 * ( ( mComponent->linksCollapsed( Qt::TopEdge ) ? 0 : linksAbove ) + 2 );
   const double hDown = linksBelow == 0 ? 0 : fm.height() * 1.2 * ( ( mComponent->linksCollapsed( Qt::BottomEdge ) ? 0 : linksBelow ) + 2 );
-  return QRectF( -( itemSize().width() ) / 2 - RECT_PEN_SIZE, -( itemSize().height() ) / 2 - hUp - RECT_PEN_SIZE, itemSize().width() + 2 * RECT_PEN_SIZE, itemSize().height() + hDown + hUp + 2 * RECT_PEN_SIZE );
+
+  double outlineSize = 0;
+  if ( outlineColor().isValid() )
+  {
+    outlineSize = RECT_OUTLINE_SIZE + 0.5; // 0.5 for antialiasing
+  }
+
+  return QRectF(
+    -( itemSize().width() ) / 2 - RECT_PEN_SIZE - outlineSize,
+    -( itemSize().height() ) / 2 - hUp - RECT_PEN_SIZE - outlineSize,
+    itemSize().width() + 2 * RECT_PEN_SIZE + outlineSize * 2,
+    itemSize().height() + hDown + hUp + 2 * RECT_PEN_SIZE + outlineSize * 2
+  );
 }
 
 bool QgsModelComponentGraphicItem::contains( const QPointF &point ) const
@@ -335,12 +350,11 @@ bool QgsModelComponentGraphicItem::contains( const QPointF &point ) const
   return true;
 }
 
-void QgsModelComponentGraphicItem::paint( QPainter *painter, const QStyleOptionGraphicsItem *, QWidget * )
+void QgsModelComponentGraphicItem::paintBackground( QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget )
 {
   const QRectF rect = itemRect();
   QColor color;
   QColor stroke;
-  QColor foreColor;
   if ( mComponent->color().isValid() )
   {
     color = mComponent->color();
@@ -357,20 +371,68 @@ void QgsModelComponentGraphicItem::paint( QPainter *painter, const QStyleOptionG
         break;
     }
     stroke = color.darker( 110 );
-    foreColor = color.lightness() > 150 ? QColor( 0, 0, 0 ) : QColor( 255, 255, 255 );
   }
   else
   {
     color = fillColor( state() );
     stroke = strokeColor( state() );
-    foreColor = textColor( state() );
   }
+
+  paintOutline( painter, option, widget );
 
   QPen strokePen = QPen( stroke, 0 ); // 0 width "cosmetic" pen
   strokePen.setStyle( strokeStyle( state() ) );
   painter->setPen( strokePen );
   painter->setBrush( QBrush( color, Qt::SolidPattern ) );
   painter->drawRect( rect );
+}
+
+void QgsModelComponentGraphicItem::paintOutline( QPainter *painter, const QStyleOptionGraphicsItem *, QWidget * )
+{
+  const QColor outline = outlineColor();
+  if ( outline.isValid() )
+  {
+    // outline may be sub-pixel sized, which looks ugly without antialiasing.
+    const bool wasAntiAliased = painter->testRenderHint( QPainter::RenderHint::Antialiasing );
+    painter->setRenderHint( QPainter::RenderHint::Antialiasing );
+    QPen strokePen = QPen( outline, RECT_OUTLINE_SIZE );
+    strokePen.setJoinStyle( Qt::MiterJoin );
+    strokePen.setStyle( strokeStyle( state() ) );
+    painter->setPen( strokePen );
+    painter->setBrush( Qt::NoBrush );
+    const QRectF rect = itemRect();
+    painter->drawRect( rect );
+    painter->setRenderHint( QPainter::RenderHint::Antialiasing, wasAntiAliased );
+  }
+}
+
+void QgsModelComponentGraphicItem::paint( QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget )
+{
+  paintBackground( painter, option, widget );
+
+  const QRectF rect = itemRect();
+  QColor foreColor;
+  if ( mComponent->color().isValid() )
+  {
+    QColor color = mComponent->color();
+    switch ( state() )
+    {
+      case Selected:
+        color = color.darker( 110 );
+        break;
+      case Hover:
+        color = color.darker( 105 );
+        break;
+
+      case Normal:
+        break;
+    }
+    foreColor = color.lightness() > 150 ? QColor( 0, 0, 0 ) : QColor( 255, 255, 255 );
+  }
+  else
+  {
+    foreColor = textColor( state() );
+  }
   painter->setFont( font() );
   painter->setPen( QPen( foreColor ) );
 
@@ -401,7 +463,7 @@ void QgsModelComponentGraphicItem::paint( QPainter *painter, const QStyleOptionG
   {
     h = -( fm.height() * 1.2 );
     h = h - componentSize.height() / 2.0 + 5;
-    pt = QPointF( -componentSize.width() / 2 + 25, h );
+    pt = QPointF( -componentSize.width() / 2 + SOCKET_MARGIN, h );
     painter->drawText( pt, QObject::tr( "In" ) );
     int i = 1;
     if ( !mComponent->linksCollapsed( Qt::TopEdge ) )
@@ -411,7 +473,7 @@ void QgsModelComponentGraphicItem::paint( QPainter *painter, const QStyleOptionG
         text = linkPointText( Qt::TopEdge, idx );
         h = -( fm.height() * 1.2 ) * ( i + 1 );
         h = h - componentSize.height() / 2.0 + 5;
-        pt = QPointF( -componentSize.width() / 2 + 33, h );
+        pt = QPointF( -componentSize.width() / 2 + SOCKET_MARGIN + 10, h );
         painter->drawText( pt, text );
         i += 1;
       }
@@ -421,7 +483,8 @@ void QgsModelComponentGraphicItem::paint( QPainter *painter, const QStyleOptionG
   {
     h = fm.height() * 1.1;
     h = h + componentSize.height() / 2.0;
-    pt = QPointF( -componentSize.width() / 2 + 25, h );
+    const double w = fm.boundingRect( "Out" ).width(); // Only to know the width ot the text
+    pt = QPointF( componentSize.width() / 2 - SOCKET_MARGIN - w, h );
     painter->drawText( pt, QObject::tr( "Out" ) );
     if ( !mComponent->linksCollapsed( Qt::BottomEdge ) )
     {
@@ -430,8 +493,11 @@ void QgsModelComponentGraphicItem::paint( QPainter *painter, const QStyleOptionG
         text = linkPointText( Qt::BottomEdge, idx );
         h = fm.height() * 1.2 * ( idx + 2 );
         h = h + componentSize.height() / 2.0;
-        pt = QPointF( -componentSize.width() / 2 + 33, h );
-        painter->drawText( pt, text );
+        double w = fm.boundingRect( text ).width();
+
+        const double x = componentSize.width() / 2.0 - w - SOCKET_MARGIN - 10;
+
+        painter->drawText( QPointF( x, h ), text );
       }
     }
   }
@@ -465,13 +531,13 @@ QString QgsModelComponentGraphicItem::truncatedTextForItem( const QString &text 
 {
   const QFontMetricsF fm( mFont );
   double width = fm.boundingRect( text ).width();
-  if ( width < itemSize().width() - 25 - mButtonSize.width() )
+  if ( width < itemSize().width() - SOCKET_MARGIN - mButtonSize.width() )
     return text;
 
   QString t = text;
   t = t.left( t.length() - 3 ) + QChar( 0x2026 );
   width = fm.boundingRect( t ).width();
-  while ( width > itemSize().width() - 25 - mButtonSize.width() )
+  while ( width > itemSize().width() - SOCKET_MARGIN - mButtonSize.width() )
   {
     if ( t.length() < 5 )
       break;
@@ -630,19 +696,37 @@ QPointF QgsModelComponentGraphicItem::linkPoint( Qt::Edge edge, int index, bool 
     {
       if ( linkPointCount( Qt::BottomEdge ) )
       {
-        double offsetX = 25;
-        if ( mComponent->linksCollapsed( Qt::BottomEdge ) )
-        {
-          offsetX = 17;
-        }
         const int pointIndex = !mComponent->linksCollapsed( Qt::BottomEdge ) ? index : -1;
-        const QString text = truncatedTextForItem( linkPointText( Qt::BottomEdge, index ) );
         const QFontMetricsF fm( mFont );
-        const double w = fm.boundingRect( text ).width();
         const double h = fm.height() * 1.2 * ( pointIndex + 1 ) + fm.height() / 2.0;
         const double y = h + itemSize().height() / 2.0 + 6.4;
-        const double x = !mComponent->linksCollapsed( Qt::BottomEdge ) ? ( -itemSize().width() / 2 + 33 + w + 10 ) : 10.4;
-        return QPointF( incoming ? -itemSize().width() / 2 + offsetX : x, y );
+        double x;
+        if ( !mComponent->linksCollapsed( Qt::BottomEdge ) )
+        {
+          if ( !incoming )
+          {
+            x = itemSize().width() / 2 - SOCKET_MARGIN;
+          }
+          else
+          {
+            const QString text = truncatedTextForItem( linkPointText( Qt::BottomEdge, index ) );
+            const double w = fm.boundingRect( text ).width();
+            x = itemSize().width() / 2 - SOCKET_MARGIN - w - 14;
+          }
+        }
+        else // mComponent->linksCollapsed( Qt::BottomEdge )
+        {
+          if ( !incoming )
+          {
+            x = itemSize().width() / 2 - 17;
+          }
+          else
+          {
+            x = -14;
+          }
+        }
+
+        return QPointF( x, y );
       }
       break;
     }
@@ -651,7 +735,7 @@ QPointF QgsModelComponentGraphicItem::linkPoint( Qt::Edge edge, int index, bool 
     {
       if ( linkPointCount( Qt::TopEdge ) )
       {
-        double offsetX = 25;
+        double offsetX = SOCKET_MARGIN;
         int paramIndex = index;
         if ( mComponent->linksCollapsed( Qt::TopEdge ) )
         {
@@ -659,11 +743,10 @@ QPointF QgsModelComponentGraphicItem::linkPoint( Qt::Edge edge, int index, bool 
           offsetX = 17;
         }
         const QFontMetricsF fm( mFont );
-        const QString text = truncatedTextForItem( linkPointText( Qt::TopEdge, index ) );
-        const double w = fm.boundingRect( text ).width();
-        double h = -( fm.height() * 1.2 ) * ( paramIndex + 2 ) - fm.height() / 2.0 + 8;
-        h = h - itemSize().height() / 2.0;
-        return QPointF( incoming ? -itemSize().width() / 2 + offsetX : ( !mComponent->linksCollapsed( Qt::TopEdge ) ? ( -itemSize().width() / 2 + 33 + w + 5 ) : 10 ), h );
+        const double h = -( fm.height() * 1.2 ) * ( paramIndex + 2 ) - fm.height() / 2.0 + 8;
+        const double y = h - itemSize().height() / 2.0;
+        const double x = -itemSize().width() / 2 + offsetX;
+        return QPointF( x, y );
       }
       break;
     }
@@ -759,6 +842,54 @@ QgsModelDesignerSocketGraphicItem *QgsModelComponentGraphicItem::outSocketAt( in
     return nullptr;
   }
   return mOutSockets.at( index );
+}
+
+QList<QgsModelArrowItem *> QgsModelComponentGraphicItem::incomingArrows()
+{
+  const QList<QGraphicsItem *> allItems = scene()->items();
+  QList<QgsModelArrowItem *> arrows;
+  for ( QGraphicsItem *item : allItems )
+  {
+    if ( auto arrowItem = dynamic_cast< QgsModelArrowItem * >( item ) )
+    {
+      if ( arrowItem->endItem() == this )
+      {
+        arrows << arrowItem;
+      }
+    }
+  }
+  return arrows;
+}
+
+QList<QgsModelArrowItem *> QgsModelComponentGraphicItem::outgoingArrows()
+{
+  const QList<QGraphicsItem *> allItems = scene()->items();
+  QList<QgsModelArrowItem *> arrows;
+  for ( QGraphicsItem *item : allItems )
+  {
+    if ( auto arrowItem = dynamic_cast< QgsModelArrowItem * >( item ) )
+    {
+      if ( arrowItem->startItem() == this )
+      {
+        arrows << arrowItem;
+      }
+    }
+  }
+  return arrows;
+}
+
+void QgsModelComponentGraphicItem::registerWidgetContextGenerator( QgsProcessingWidgetContextGenerator *generator )
+{
+  mWidgetContextGenerator = generator;
+}
+
+QgsProcessingParameterWidgetContext QgsModelComponentGraphicItem::createWidgetContext()
+{
+  if ( mWidgetContextGenerator )
+  {
+    return mWidgetContextGenerator->createWidgetContext();
+  }
+  return QgsProcessingParameterWidgetContext();
 }
 
 QgsModelParameterGraphicItem::QgsModelParameterGraphicItem( QgsProcessingModelParameter *parameter, QgsProcessingModelAlgorithm *model, QGraphicsItem *parent )
@@ -889,6 +1020,51 @@ QColor QgsModelParameterGraphicItem::linkColor( Qt::Edge /* unused in this imple
   return FALLBACK_COLOR;
 }
 
+QString QgsModelParameterGraphicItem::applyEdit(
+  std::unique_ptr< QgsProcessingParameterDefinition > newParameter, const QString &oldDescription, const QString &oldName, const QString &comment, const QColor &commentColor
+)
+{
+  QgsProcessingModelParameter *paramComponent = dynamic_cast< QgsProcessingModelParameter * >( component() );
+  if ( !paramComponent )
+    return QString();
+
+  const QString undoCommandId = u"param:%1"_s.arg( paramComponent->parameterName() );
+  emit aboutToChange( tr( "Edit %1" ).arg( newParameter->description() ), undoCommandId );
+
+  model()->removeModelParameter( paramComponent->parameterName() );
+
+  if ( newParameter->description() != oldDescription )
+  {
+    // only update name if user has changed the description -- we don't force this, as it may cause
+    // unwanted name updates which could potentially break the model's API
+    QString name = newParameter->name();
+    const QString baseName = name;
+    int i = 2;
+    while ( model()->parameterDefinition( name ) )
+    {
+      name = u"%1%2"_s.arg( baseName ).arg( i );
+      i++;
+    }
+
+    newParameter->setName( name );
+    model()->changeParameterName( oldName, newParameter->name() );
+  }
+
+  paramComponent->setParameterName( newParameter->name() );
+  paramComponent->setDescription( newParameter->name() );
+  paramComponent->comment()->setDescription( comment );
+  paramComponent->comment()->setColor( commentColor );
+
+  const QString description = newParameter->description();
+  const QString name = newParameter->name();
+  model()->addModelParameter( newParameter.release(), *paramComponent );
+  setLabel( description );
+  emit requestModelRepaint();
+  emit changed();
+
+  return name;
+}
+
 void QgsModelParameterGraphicItem::updateStoredComponentPosition( const QPointF &pos, const QSizeF &size )
 {
   if ( QgsProcessingModelParameter *param = dynamic_cast<QgsProcessingModelParameter *>( component() ) )
@@ -916,6 +1092,16 @@ bool QgsModelParameterGraphicItem::canDeleteComponent()
     }
   }
   return false;
+}
+
+void QgsModelParameterGraphicItem::editComponent()
+{
+  edit( false );
+}
+
+void QgsModelParameterGraphicItem::editComment()
+{
+  edit( true );
 }
 
 void QgsModelParameterGraphicItem::deleteComponent()
@@ -950,6 +1136,52 @@ void QgsModelParameterGraphicItem::deleteComponent()
       model()->removeModelParameter( param->parameterName() );
       emit changed();
       emit requestModelRepaint();
+    }
+  }
+}
+
+void QgsModelParameterGraphicItem::edit( bool editComment )
+{
+  const QgsProcessingModelParameter *paramComponent = dynamic_cast< const QgsProcessingModelParameter * >( component() );
+  if ( !paramComponent )
+    return;
+
+  const QgsProcessingParameterDefinition *existingParam = model()->parameterDefinition( paramComponent->parameterName() );
+  if ( !existingParam )
+    return;
+
+  const QString oldName = existingParam->name();
+  const QString oldDescription = existingParam->description();
+
+  const QString comment = paramComponent->comment()->description();
+  const QColor commentColor = paramComponent->comment()->color();
+
+  QgsProcessingParameterWidgetContext widgetContext = createWidgetContext();
+  QgsProcessingContext *context = widgetContext.processingContextGenerator()->processingContext();
+
+  QgsProcessingParameterDefinitionDialog dlg( existingParam->type(), *context, widgetContext, existingParam, model(), this->scene()->views().at( 0 ) );
+
+  dlg.setComments( comment );
+  dlg.setCommentColor( commentColor );
+  if ( widgetContext.processingContextGenerator() )
+  {
+    dlg.registerProcessingContextGenerator( widgetContext.processingContextGenerator() );
+  }
+
+  if ( editComment )
+  {
+    dlg.switchToCommentTab();
+  }
+
+  if ( dlg.exec() )
+  {
+    std::unique_ptr< QgsProcessingParameterDefinition > newParam( dlg.createParameter( existingParam->name() ) );
+    if ( newParam )
+    {
+      const QString safeName = QgsProcessingModelAlgorithm::safeName( newParam->description() ).toLower();
+      newParam->setName( safeName );
+
+      applyEdit( std::move( newParam ), oldDescription, oldName, dlg.comments(), dlg.commentColor() );
     }
   }
 }
@@ -1000,7 +1232,7 @@ void QgsModelChildAlgorithmGraphicItem::contextMenuEvent( QGraphicsSceneContextM
   QAction *editAction = popupmenu->addAction( QObject::tr( "Edit…" ) );
   connect( editAction, &QAction::triggered, this, &QgsModelChildAlgorithmGraphicItem::editComponent );
   QAction *editCommentAction = popupmenu->addAction( component()->comment()->description().isEmpty() ? QObject::tr( "Add Comment…" ) : QObject::tr( "Edit Comment…" ) );
-  connect( editCommentAction, &QAction::triggered, this, &QgsModelParameterGraphicItem::editComment );
+  connect( editCommentAction, &QAction::triggered, this, &QgsModelChildAlgorithmGraphicItem::editComment );
   popupmenu->addSeparator();
 
   if ( const QgsProcessingModelChildAlgorithm *child = dynamic_cast<const QgsProcessingModelChildAlgorithm *>( component() ) )
@@ -1098,6 +1330,29 @@ QColor QgsModelChildAlgorithmGraphicItem::strokeColor( QgsModelComponentGraphicI
 QColor QgsModelChildAlgorithmGraphicItem::textColor( QgsModelComponentGraphicItem::State ) const
 {
   return mIsValid ? ( qgis::down_cast<const QgsProcessingModelChildAlgorithm *>( component() )->isActive() ? Qt::black : Qt::gray ) : QColor( 255, 255, 255 );
+}
+
+QColor QgsModelChildAlgorithmGraphicItem::outlineColor() const
+{
+  if ( mOutdated )
+  {
+    return QColor( 150, 150, 0 );
+  }
+
+  switch ( mResults.executionStatus() )
+  {
+    case Qgis::ProcessingModelChildAlgorithmExecutionStatus::NotExecuted:
+      if ( mStarted )
+      {
+        return QColor( 150, 150, 150 );
+      }
+      return QColor();
+    case Qgis::ProcessingModelChildAlgorithmExecutionStatus::Success:
+      return QColor( 55, 160, 55 );
+    case Qgis::ProcessingModelChildAlgorithmExecutionStatus::Failed:
+      return QColor( 208, 0, 0 );
+  }
+  BUILTIN_UNREACHABLE
 }
 
 QPixmap QgsModelChildAlgorithmGraphicItem::iconPixmap() const
@@ -1241,7 +1496,9 @@ QString QgsModelChildAlgorithmGraphicItem::linkPointText( Qt::Edge edge, int ind
               break;
 
             case Qgis::ProcessingModelChildParameterSource::ExpressionText:
+              Q_NOWARN_DEPRECATED_PUSH
               parameterValueAsString = u": %1"_s.arg( firstParameterSource.expressionText() );
+              Q_NOWARN_DEPRECATED_POP
               break;
 
             case Qgis::ProcessingModelChildParameterSource::ModelOutput:
@@ -1296,9 +1553,224 @@ void QgsModelChildAlgorithmGraphicItem::setResults( const QgsProcessingModelChil
   if ( mResults == results )
     return;
 
+  mOutdated = false;
+  const QList< QgsModelArrowItem * > arrows = outgoingArrows();
+  if ( results.executionStatus() == Qgis::ProcessingModelChildAlgorithmExecutionStatus::NotExecuted )
+  {
+    for ( QgsModelArrowItem *arrow : arrows )
+    {
+      arrow->setShowBadge( false );
+    }
+  }
+  else
+  {
+    if ( const QgsProcessingModelChildAlgorithm *child = dynamic_cast<const QgsProcessingModelChildAlgorithm *>( component() ) )
+    {
+      if ( const QgsProcessingAlgorithm *algorithm = child->algorithm() )
+      {
+        const QVariantMap outputs = results.outputs();
+        for ( auto it = outputs.constBegin(); it != outputs.constEnd(); ++it )
+        {
+          // don't show badges for output layers, these will just be the internal layer identifiers and we have logic elsewhere
+          // to show actually useful information in the badges (feature counts)
+          if ( const QgsProcessingOutputDefinition *outputDefinition = algorithm->outputDefinition( it.key() ); outputDefinition && outputDefinition->isMapLayer() )
+            continue;
+
+          const int index = indexForOutput( it.key() );
+          if ( index >= 0 )
+          {
+            for ( QgsModelArrowItem *arrow : arrows )
+            {
+              if ( arrow->startIndex() == index && arrow->startEdge() == Qt::BottomEdge )
+              {
+                arrow->setShowBadge( true );
+                arrow->badgeItem()->setValue( it.value() );
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+
   mResults = results;
+  mStarted = false;
   update();
   emit updateArrowPaths();
+}
+
+void QgsModelChildAlgorithmGraphicItem::setSourceFeatureCount( const QString &parameterName, long long featureCount )
+{
+  const int index = indexForInput( parameterName );
+  if ( index < 0 )
+    return;
+
+  const QList< QgsModelArrowItem * > arrows = incomingArrows();
+  for ( QgsModelArrowItem *arrow : arrows )
+  {
+    if ( arrow->endIndex() == index && arrow->endEdge() == Qt::TopEdge )
+    {
+      arrow->setShowBadge( true );
+      arrow->badgeItem()->setValue( featureCount );
+    }
+  }
+}
+
+void QgsModelChildAlgorithmGraphicItem::setSinkFeatureCount( const QString &outputName, long long featureCount )
+{
+  const int index = indexForOutput( outputName );
+  if ( index < 0 )
+    return;
+
+  const QList< QgsModelArrowItem * > arrows = outgoingArrows();
+  for ( QgsModelArrowItem *arrow : arrows )
+  {
+    if ( arrow->startIndex() == index && arrow->startEdge() == Qt::BottomEdge )
+    {
+      arrow->setShowBadge( true );
+      arrow->badgeItem()->setValue( featureCount );
+    }
+  }
+}
+
+void QgsModelChildAlgorithmGraphicItem::setProgress( double progress )
+{
+  if ( mProgress == progress )
+    return;
+
+  mProgress = progress;
+  update();
+}
+
+void QgsModelChildAlgorithmGraphicItem::setStarted()
+{
+  mStarted = true;
+  update();
+}
+
+void QgsModelChildAlgorithmGraphicItem::setOutdated()
+{
+  mOutdated = true;
+  update();
+}
+
+int QgsModelChildAlgorithmGraphicItem::indexForInput( const QString &parameterName ) const
+{
+  if ( const QgsProcessingModelChildAlgorithm *child = dynamic_cast<const QgsProcessingModelChildAlgorithm *>( component() ) )
+  {
+    if ( const QgsProcessingAlgorithm *algorithm = child->algorithm() )
+    {
+      return QgsProcessingUtils::parameterDefinitionIndex( algorithm, parameterName );
+    }
+  }
+  return -1;
+}
+
+int QgsModelChildAlgorithmGraphicItem::indexForOutput( const QString &output ) const
+{
+  if ( const QgsProcessingModelChildAlgorithm *child = dynamic_cast<const QgsProcessingModelChildAlgorithm *>( component() ) )
+  {
+    if ( const QgsProcessingAlgorithm *algorithm = child->algorithm() )
+    {
+      return QgsProcessingUtils::outputDefinitionIndex( algorithm, output );
+    }
+  }
+  return -1;
+}
+
+void QgsModelChildAlgorithmGraphicItem::editComponent()
+{
+  edit( false );
+}
+
+void QgsModelChildAlgorithmGraphicItem::editComment()
+{
+  edit( true );
+}
+
+void QgsModelChildAlgorithmGraphicItem::applyEdit( const QgsProcessingModelChildAlgorithm &algorithm )
+{
+  const QgsProcessingModelChildAlgorithm *child = dynamic_cast< const QgsProcessingModelChildAlgorithm * >( component() );
+  if ( !child )
+    return;
+
+  QgsProcessingModelChildAlgorithm newAlgorithm = algorithm;
+  newAlgorithm.setChildId( child->childId() );
+  newAlgorithm.copyNonDefinitionPropertiesFromModel( model() );
+  if ( newAlgorithm.toVariant() == child->toVariant() )
+  {
+    // nothing changed, treat as cancel was pressed
+    return;
+  }
+
+  const QString undoCommandId = u"alg:%1"_s.arg( child->childId() );
+  emit aboutToChange( tr( "Edit %1" ).arg( newAlgorithm.description() ), undoCommandId );
+  model()->setChildAlgorithm( newAlgorithm );
+  emit requestModelRepaint();
+  emit changed();
+}
+
+void QgsModelChildAlgorithmGraphicItem::paintBackground( QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget )
+{
+  if ( mProgress < 0 )
+  {
+    QgsModelComponentGraphicItem::paintBackground( painter, option, widget );
+    return;
+  }
+
+  paintOutline( painter, option, widget );
+
+  const QRectF rect = itemRect();
+  QColor color;
+  QColor stroke;
+  if ( component()->color().isValid() )
+  {
+    color = component()->color();
+    switch ( state() )
+    {
+      case Selected:
+        color = color.darker( 110 );
+        break;
+      case Hover:
+        color = color.darker( 105 );
+        break;
+
+      case Normal:
+        break;
+    }
+    stroke = color.darker( 110 );
+  }
+  else
+  {
+    color = fillColor( state() );
+    stroke = strokeColor( state() );
+  }
+
+  QPen strokePen = QPen( stroke, 0 );
+  strokePen.setStyle( strokeStyle( state() ) );
+  painter->setPen( strokePen );
+
+  const QColor colorLeft = color.darker( 120 );
+  QColor colorRight = color;
+
+  constexpr double fadeSize = 5;
+  const double fadeSizeProportionRect = fadeSize / rect.width();
+
+  if ( mProgress < 98 )
+  {
+    QLinearGradient gradient( rect.topLeft(), rect.topRight() );
+    gradient.setColorAt( 0.0, colorLeft );
+    gradient.setColorAt( std::max( 0.0, mProgress / 100 - fadeSizeProportionRect / 2 ), colorLeft );
+    gradient.setColorAt( std::min( 1.0, mProgress / 100 + fadeSizeProportionRect / 2 ), colorRight );
+    gradient.setColorAt( 1.0, colorRight );
+
+    painter->setBrush( QBrush( gradient ) );
+  }
+  else
+  {
+    painter->setBrush( QBrush( colorLeft ) );
+  }
+  painter->drawRect( rect );
 }
 
 void QgsModelChildAlgorithmGraphicItem::deleteComponent()
@@ -1352,6 +1824,38 @@ void QgsModelChildAlgorithmGraphicItem::activateAlgorithm()
           "Activate them them before trying to activate it.."
         )
       );
+    }
+  }
+}
+
+void QgsModelChildAlgorithmGraphicItem::edit( bool editComment )
+{
+  const QgsProcessingModelChildAlgorithm *child = dynamic_cast< const QgsProcessingModelChildAlgorithm * >( component() );
+  if ( !child )
+    return;
+
+  QgsProcessingParameterWidgetContext widgetContext = createWidgetContext();
+  widgetContext.setModelChildAlgorithmId( child->childId() );
+  QgsProcessingContext *context = widgetContext.processingContextGenerator()->processingContext();
+
+  const QgsProcessingAlgorithm *algorithm = child->algorithm();
+  QgsProcessingModelerParametersDialog dlg( algorithm, model(), *context, child->childId(), child->configuration(), this->scene()->views().at( 0 ) );
+  dlg.setModal( true );
+  dlg.setComments( child->comment()->description() );
+  dlg.setCommentColor( child->comment()->color() );
+  dlg.setWidgetContext( widgetContext );
+  if ( editComment )
+  {
+    dlg.switchToCommentTab();
+  }
+
+  if ( dlg.exec() )
+  {
+    std::unique_ptr< QgsProcessingModelChildAlgorithm > alg = dlg.createAlgorithm();
+    if ( alg )
+    {
+      applyEdit( *alg );
+      emit rebuildConfigurationDockWidget();
     }
   }
 }
@@ -1426,6 +1930,49 @@ bool QgsModelOutputGraphicItem::canDeleteComponent()
   return false;
 }
 
+void QgsModelOutputGraphicItem::editComponent()
+{
+  edit( false );
+}
+
+void QgsModelOutputGraphicItem::editComment()
+{
+  edit( true );
+}
+
+void QgsModelOutputGraphicItem::applyEdit( const QString &name, const QString &description, const QVariant &defaultValue, bool mandatory, const QString &comment, const QColor &commentColor )
+{
+  const QgsProcessingModelOutput *outputComponent = dynamic_cast< const QgsProcessingModelOutput * >( component() );
+  if ( !outputComponent )
+    return;
+
+  QgsProcessingModelChildAlgorithm childAlg = model()->childAlgorithm( outputComponent->childId() );
+  QMap< QString, QgsProcessingModelOutput > modelOutputs = childAlg.modelOutputs();
+
+  if ( !modelOutputs.contains( outputComponent->name() ) )
+    return;
+
+  QgsProcessingModelOutput modelOutput = modelOutputs.take( outputComponent->name() );
+
+  modelOutput.setName( name );
+  modelOutput.setDescription( description );
+  modelOutput.setDefaultValue( defaultValue );
+  modelOutput.setMandatory( mandatory );
+  modelOutput.comment()->setDescription( comment );
+  modelOutput.comment()->setColor( commentColor );
+  modelOutputs.insert( modelOutput.name(), modelOutput );
+
+  childAlg.setModelOutputs( modelOutputs );
+  model()->setChildAlgorithm( childAlg );
+
+  const QString undoCommandId = u"output:%1"_s.arg( name );
+  emit aboutToChange( tr( "Edit %1" ).arg( modelOutput.description() ), undoCommandId );
+
+  model()->updateDestinationParameters();
+  emit requestModelRepaint();
+  emit changed();
+}
+
 void QgsModelOutputGraphicItem::deleteComponent()
 {
   if ( const QgsProcessingModelOutput *output = dynamic_cast<const QgsProcessingModelOutput *>( component() ) )
@@ -1435,6 +1982,47 @@ void QgsModelOutputGraphicItem::deleteComponent()
     model()->updateDestinationParameters();
     emit changed();
     emit requestModelRepaint();
+  }
+}
+
+void QgsModelOutputGraphicItem::edit( bool editComment )
+{
+  const QgsProcessingModelOutput *outputComponent = dynamic_cast< const QgsProcessingModelOutput * >( component() );
+  if ( !outputComponent )
+    return;
+
+  const QgsProcessingParameterDefinition *existingParam = model()->modelParameterFromChildIdAndOutputName( outputComponent->childId(), outputComponent->name() );
+  if ( !existingParam )
+    return;
+
+  const QString comment = outputComponent->comment()->description();
+  const QColor commentColor = outputComponent->comment()->color();
+
+  QgsProcessingParameterWidgetContext widgetContext = createWidgetContext();
+  widgetContext.setModelChildAlgorithmId( outputComponent->childId() );
+  QgsProcessingContext *context = widgetContext.processingContextGenerator()->processingContext();
+
+  QgsProcessingParameterDefinitionDialog dlg( existingParam->type(), *context, widgetContext, existingParam, model(), scene()->views().at( 0 ) );
+
+  dlg.setComments( comment );
+  dlg.setCommentColor( commentColor );
+  if ( widgetContext.processingContextGenerator() )
+  {
+    dlg.registerProcessingContextGenerator( widgetContext.processingContextGenerator() );
+  }
+
+  if ( editComment )
+  {
+    dlg.switchToCommentTab();
+  }
+
+  if ( dlg.exec() )
+  {
+    std::unique_ptr< QgsProcessingParameterDefinition > newParam( dlg.createParameter( existingParam->name() ) );
+    if ( newParam )
+    {
+      applyEdit( newParam->description(), newParam->description(), newParam->defaultValue(), !newParam->flags().testFlag( Qgis::ProcessingParameterFlag::Optional ), dlg.comments(), dlg.commentColor() );
+    }
   }
 }
 
@@ -1534,9 +2122,22 @@ bool QgsModelGroupBoxGraphicItem::canDeleteComponent()
 
 void QgsModelGroupBoxGraphicItem::applyEdit( const QgsProcessingModelGroupBox &groupBox )
 {
-  const QString commandId = u"groupbox:%1"_s.arg( groupBox.uuid() );
+  QgsProcessingModelGroupBox newGroupBox = groupBox;
+  const QList<QgsProcessingModelGroupBox> existingGroupBoxes = model()->groupBoxes();
+  for ( const QgsProcessingModelGroupBox &existingGroupBox : existingGroupBoxes )
+  {
+    if ( existingGroupBox.uuid() == newGroupBox.uuid() )
+    {
+      // copy position and size from existing group box
+      newGroupBox.setPosition( existingGroupBox.position() );
+      newGroupBox.setSize( existingGroupBox.size() );
+    }
+  }
+
+  const QString commandId = u"groupbox:%1"_s.arg( newGroupBox.uuid() );
   emit aboutToChange( tr( "Edit Group Box" ), commandId );
-  model()->addGroupBox( groupBox );
+
+  model()->addGroupBox( newGroupBox );
   emit changed();
   emit requestModelRepaint();
 }

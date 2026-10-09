@@ -24,7 +24,7 @@
 QgsMapToolExtent::QgsMapToolExtent( QgsMapCanvas *canvas )
   : QgsMapTool( canvas )
 {
-  mRubberBand.reset( new QgsRubberBand( canvas, Qgis::GeometryType::Polygon ) );
+  mRubberBand = make_qobject_unique<QgsRubberBand>( canvas, Qgis::GeometryType::Polygon );
 }
 
 void QgsMapToolExtent::activate()

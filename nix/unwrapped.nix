@@ -5,7 +5,6 @@
   fetchFromGitHub,
   lndir,
   makeWrapper,
-  replaceVars,
   wrapGAppsHook3,
   wrapQtAppsHook,
 
@@ -119,13 +118,12 @@ let
     numpy
     owslib
     psycopg2
-    pygments
     pyqt6
     pyqt-builder
     python-dateutil
     pytz
     pyyaml
-    qscintilla-qt6
+    pyqt6-qscintilla
     requests
     setuptools
     sip
@@ -145,6 +143,12 @@ stdenv.mkDerivation {
     root = ../.;
     fileset = qgisSourceFiles;
   };
+
+  postPatch = ''
+    substituteInPlace python/utils.py \
+      --replace-fail '("mod_spatialite", "sqlite3_modspatialite_init")' \
+        '("${libspatialite}/lib/mod_spatialite${stdenv.hostPlatform.extensions.sharedLibrary}", "sqlite3_modspatialite_init")'
+  '';
 
   nativeBuildInputs = [
     makeWrapper
@@ -201,16 +205,6 @@ stdenv.mkDerivation {
   ]
   ++ pythonBuildInputs;
 
-  patches = [
-    (replaceVars ./set-pyqt6-package-dirs.patch {
-      pyQt6PackageDir = "${py.pkgs.pyqt6}/${py.pkgs.python.sitePackages}";
-      qsciPackageDir = "${py.pkgs.qscintilla-qt6}/${py.pkgs.python.sitePackages}";
-    })
-    (replaceVars ./spatialite-path.patch {
-      spatialiteLib = "${libspatialite}/lib/mod_spatialite${stdenv.hostPlatform.extensions.sharedLibrary}";
-    })
-  ];
-
   # Add path to Qt platform plugins
   # (offscreen is needed by "${APIS_SRC_DIR}/generate_console_pap.py")
   env.QT_QPA_PLATFORM_PLUGIN_PATH = "${qtbase}/${qtbase.qtPluginPrefix}/platforms";
@@ -222,6 +216,9 @@ stdenv.mkDerivation {
     "-DWITH_PDAL=True"
     "-DENABLE_TESTS=False"
     "-DQT_PLUGINS_DIR=${qtbase}/${qtbase.qtPluginPrefix}"
+    "-DQSCI_SIP_DIR=${py.pkgs.pyqt6-qscintilla}/${py.sitePackages}/PyQt6/bindings"
+    "-DQSCI_DIST_INFO=${py.pkgs.pyqt6-qscintilla}/${py.sitePackages}/pyqt6_qscintilla-${py.pkgs.pyqt6-qscintilla.version}.dist-info"
+    "-DPYQT6_DIST_INFO=${py.pkgs.pyqt6}/${py.sitePackages}/pyqt6-${py.pkgs.pyqt6.version}.dist-info"
   ]
   ++ lib.optionals stdenv.hostPlatform.isDarwin [
     "-DQGIS_MACAPP_BUNDLE=0"

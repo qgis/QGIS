@@ -96,6 +96,15 @@ class CORE_EXPORT QgsCurvePolygon : public QgsSurface
 
       return true;
     }
+
+    /**
+     * Removes the ring with the specified \a ringId
+     *
+     * If \a ringId is 0 the exterior ring is removed, promoting the first
+     * interior ring (if any) to be the new exterior ring. Otherwise the
+     * interior ring at index \a ringId - 1 is removed.
+     */
+    void removeRing( int ringId );
 #endif
   public:
     // clang-format off
@@ -133,7 +142,7 @@ class CORE_EXPORT QgsCurvePolygon : public QgsSurface
     QString asWkt( int precision = 17 ) const override;
     QDomElement asGml2( QDomDocument &doc, int precision = 17, const QString &ns = "gml", QgsAbstractGeometry::AxisOrder axisOrder = QgsAbstractGeometry::AxisOrder::XY ) const override;
     QDomElement asGml3( QDomDocument &doc, int precision = 17, const QString &ns = "gml", QgsAbstractGeometry::AxisOrder axisOrder = QgsAbstractGeometry::AxisOrder::XY ) const override;
-    json asJsonObject( int precision = 17 ) const override SIP_SKIP;
+    json asJsonObject( int precision = 17, Qgis::GeoJsonProfile profile = Qgis::GeoJsonProfile::Legacy ) const override SIP_SKIP;
     QString asKml( int precision = 17 ) const override;
     void normalize() final SIP_HOLDGIL;
 
@@ -374,6 +383,8 @@ class CORE_EXPORT QgsCurvePolygon : public QgsSurface
     bool insertVertex( QgsVertexId position, const QgsPoint &vertex ) override;
     bool moveVertex( QgsVertexId position, const QgsPoint &newPos ) override;
     bool deleteVertex( QgsVertexId position ) override;
+    bool deleteVertices( const QSet<QgsVertexId> &positions ) override;
+    bool hasVertex( QgsVertexId position ) const override;
 
     QgsCoordinateSequence coordinateSequence() const override;
     int nCoordinates() const override;

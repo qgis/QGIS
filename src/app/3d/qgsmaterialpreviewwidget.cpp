@@ -156,7 +156,7 @@ void QgsMaterialPreview3DWindow::setupFrameGraph()
   Qt3DRender::QRenderTarget *renderTarget = new Qt3DRender::QRenderTarget( rtSelector );
 
   m_colorTexture = new Qt3DRender::QTexture2D( renderTarget );
-  m_colorTexture->setFormat( Qt3DRender::QAbstractTexture::RGBA8_UNorm );
+  m_colorTexture->setFormat( Qt3DRender::QAbstractTexture::RGBA16F );
   m_colorTexture->setGenerateMipMaps( false );
   m_colorTexture->setWidth( 1 );
   m_colorTexture->setHeight( 1 );
@@ -313,6 +313,7 @@ void QgsMaterialPreviewWidget::updatePreview( const QgsAbstractMaterialSettings 
     return;
 
   QgsMaterialContext context;
+  context.setIsPreview( true );
   context.setTextureFilterQuality( Qgs3D::settingTextureFilterQuality->value() );
   if ( !mPreviewScene )
   {

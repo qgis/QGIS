@@ -204,7 +204,7 @@ Constructor for QgsSimpleMarkerSymbolLayer.
     ~QgsSimpleMarkerSymbolLayer();
 
 
-    static QgsSymbolLayer *create( const QVariantMap &properties = QVariantMap() ) /Factory/;
+    static std::unique_ptr<QgsSymbolLayer> create( const QVariantMap &properties = QVariantMap() );
 %Docstring
 Creates a new QgsSimpleMarkerSymbolLayer.
 
@@ -214,7 +214,7 @@ Creates a new QgsSimpleMarkerSymbolLayer.
 :return: new QgsSimpleMarkerSymbolLayer
 %End
 
-    static QgsSymbolLayer *createFromSld( QDomElement &element ) /Factory/;
+    static std::unique_ptr<QgsSymbolLayer> createFromSld( QDomElement &element );
 %Docstring
 Creates a new QgsSimpleMarkerSymbolLayer from an SLD XML element.
 
@@ -505,7 +505,7 @@ Constructor for QgsFilledMarkerSymbolLayer.
 
     ~QgsFilledMarkerSymbolLayer();
 
-    static QgsSymbolLayer *create( const QVariantMap &properties = QVariantMap() ) /Factory/;
+    static std::unique_ptr<QgsSymbolLayer> create( const QVariantMap &properties = QVariantMap() );
 %Docstring
 Creates a new QgsFilledMarkerSymbolLayer.
 
@@ -575,11 +575,11 @@ to a SVG file
     ~QgsSvgMarkerSymbolLayer();
 
 
-    static QgsSymbolLayer *create( const QVariantMap &properties = QVariantMap() ) /Factory/;
+    static std::unique_ptr<QgsSymbolLayer> create( const QVariantMap &properties = QVariantMap() );
 %Docstring
 Creates the symbol
 %End
-    static QgsSymbolLayer *createFromSld( QDomElement &element ) /Factory/;
+    static std::unique_ptr<QgsSymbolLayer> createFromSld( QDomElement &element );
 
     static void resolvePaths( QVariantMap &properties, const QgsPathResolver &pathResolver, bool saving );
 %Docstring
@@ -794,14 +794,14 @@ path to a raster image file
     ~QgsRasterMarkerSymbolLayer();
 
 
-    static QgsSymbolLayer *create( const QVariantMap &properties = QVariantMap() ) /Factory/;
+    static std::unique_ptr<QgsSymbolLayer> create( const QVariantMap &properties = QVariantMap() );
 %Docstring
 Creates a raster marker symbol layer from a string map of properties.
 
 :param properties: QVariantMap properties object
 %End
 
-    static QgsSymbolLayer *createFromSld( QDomElement &element ) /Factory/;
+    static std::unique_ptr<QgsSymbolLayer> createFromSld( QDomElement &element );
 %Docstring
 Creates a new QgsRasterMarkerSymbolLayer from an SLD XML element.
 
@@ -1000,13 +1000,13 @@ Constructs a font marker symbol layer.
     ~QgsFontMarkerSymbolLayer();
 
 
-    static QgsSymbolLayer *create( const QVariantMap &properties = QVariantMap() ) /Factory/;
+    static std::unique_ptr<QgsSymbolLayer> create( const QVariantMap &properties = QVariantMap() );
 %Docstring
 Creates a new QgsFontMarkerSymbolLayer from a property map (see
 :py:func:`~QgsFontMarkerSymbolLayer.properties`)
 %End
 
-    static QgsSymbolLayer *createFromSld( QDomElement &element ) /Factory/;
+    static std::unique_ptr<QgsSymbolLayer> createFromSld( QDomElement &element );
 %Docstring
 Creates a new QgsFontMarkerSymbolLayer from an SLD XML ``element``.
 %End
@@ -1220,7 +1220,7 @@ image ``path``.
     ~QgsAnimatedMarkerSymbolLayer();
 
 
-    static QgsSymbolLayer *create( const QVariantMap &properties = QVariantMap() ) /Factory/;
+    static std::unique_ptr<QgsSymbolLayer> create( const QVariantMap &properties = QVariantMap() );
 %Docstring
 Creates an animated marker symbol layer from a string map of
 ``properties``.

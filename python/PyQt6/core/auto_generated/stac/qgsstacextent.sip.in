@@ -11,7 +11,7 @@
 class QgsStacExtent
 {
 %Docstring(signature="appended")
-Class for storing a STAC SpatioTemporal extent.
+Stores a STAC SpatioTemporal extent.
 
 :py:class:`QgsStacExtent` contains one overall spatial extent and one
 overall temporal extent It is possible to add further refined sub

@@ -47,7 +47,7 @@ class CORE_EXPORT QgsAnnotationRectangleTextItem : public QgsAnnotationRectItem
     /**
      * Creates a new rectangle text annotation item.
      */
-    static QgsAnnotationRectangleTextItem *create() SIP_FACTORY;
+    static std::unique_ptr<QgsAnnotationRectangleTextItem> create();
 
     bool readXml( const QDomElement &element, const QgsReadWriteContext &context ) override;
     QgsAnnotationRectangleTextItem *clone() const override SIP_FACTORY;

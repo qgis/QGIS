@@ -55,19 +55,13 @@ class QgsVectorTileBasicRendererWidget;
 class QgsVectorTileBasicLabelingWidget;
 class QgsAnnotationLayer;
 class QgsLayerTreeGroup;
-
-class APP_EXPORT QgsLayerStyleManagerWidgetFactory : public QgsMapLayerConfigWidgetFactory
-{
-  public:
-    QgsLayerStyleManagerWidgetFactory();
-    bool supportsStyleDock() const override { return true; }
-    QgsMapLayerConfigWidget *createWidget( QgsMapLayer *layer, QgsMapCanvas *canvas, bool dockMode, QWidget *parent ) const override;
-    bool supportsLayer( QgsMapLayer *layer ) const override;
-};
+class QgsSettingsEntryInteger;
 
 class APP_EXPORT QgsMapLayerStyleCommand : public QUndoCommand
 {
   public:
+    static const QgsSettingsEntryInteger *settingsStyleUndoMergeTimeout SIP_SKIP;
+
     QgsMapLayerStyleCommand( QgsMapLayer *layer, const QString &text, const QDomNode &current, const QDomNode &last, bool triggerRepaint = true );
 
     /**
@@ -94,17 +88,36 @@ class APP_EXPORT QgsLayerStylingWidget : public QWidget, private Ui::QgsLayerSty
 {
     Q_OBJECT
   public:
-    enum Page
+    enum class Page
     {
-      Symbology = 1,
+      VectorRenderer,
       VectorLabeling,
+      VectorMasks,
+      Vector3D,
+      VectorDiagrams,
+      RasterRenderer,
       RasterTransparency,
+      RasterLabeling,
       RasterHistogram,
+      RasterAttributeTable,
+      MeshRenderer,
+      MeshLabeling,
+      Mesh3D,
+      VectorTileRenderer,
+      VectorTileLabeling,
+      StyleManager,
       History,
-      Symbology3D,
-      RasterAttributeTables, //!< Raster attribute tables, since QGIS 3.30
-      VectorDiagram,         //!< Vector diagram, since QGIS 3.40
+      Custom,
+      Invalid
     };
+    Q_ENUM( Page )
+
+    enum class CustomRole : int
+    {
+      PageEnum = Qt::UserRole,
+      PageFactoryPointer
+    };
+    Q_ENUM( CustomRole )
 
     QgsLayerStylingWidget( QgsMapCanvas *canvas, QgsMessageBar *messageBar, const QList<const QgsMapLayerConfigWidgetFactory *> &pages, QWidget *parent = nullptr );
     ~QgsLayerStylingWidget() override;
@@ -135,8 +148,10 @@ class APP_EXPORT QgsLayerStylingWidget : public QWidget, private Ui::QgsLayerSty
     /**
      * Sets the current visible page in the widget.
      * \param page standard page to display
+     *
+     * \returns TRUE if the page could be set to the matching page, or FALSE if that page does not exist (e.g. mismatched layer type)
      */
-    void setCurrentPage( QgsLayerStylingWidget::Page page );
+    bool setCurrentPage( Page page );
 
     /**
      * Sets an annotation item to show in the widget.
@@ -159,6 +174,7 @@ class APP_EXPORT QgsLayerStylingWidget : public QWidget, private Ui::QgsLayerSty
     void liveApplyToggled( bool liveUpdateEnabled );
 
   private:
+    void rebuildWidgetForLayer( QgsMapLayer *layer );
     void pushUndoItem( const QString &name, bool triggerRepaint = true );
     void emitLayerStyleChanged( const QString &currentStyleName ) { emit layerStyleChanged( currentStyleName ); };
     void emitLayerStyleRenamed();
@@ -169,26 +185,19 @@ class APP_EXPORT QgsLayerStylingWidget : public QWidget, private Ui::QgsLayerSty
     QgsMapCanvas *mMapCanvas = nullptr;
     QgsMessageBar *mMessageBar = nullptr;
     bool mBlockAutoApply = false;
-    QgsUndoWidget *mUndoWidget = nullptr;
+    QPointer< QgsUndoWidget > mUndoWidget;
+    QPointer< QgsMapLayerStyleManagerWidget > mStyleManagerWidget;
     QgsMapLayer *mCurrentLayer = nullptr;
-    QgsLabelingWidget *mLabelingWidget = nullptr;
-    QgsMeshLabelingWidget *mMeshLabelingWidget = nullptr;
+    QPointer< QgsLabelingWidget > mLabelingWidget;
     QPointer<QgsRasterLabelingWidget> mRasterLabelingWidget;
-    QgsMaskingWidget *mMaskingWidget = nullptr;
+    QPointer< QgsMaskingWidget > mMaskingWidget;
 #ifdef HAVE_3D
-    QgsVectorLayer3DRendererWidget *mVector3DWidget = nullptr;
-    QgsMeshLayer3DRendererWidget *mMesh3DWidget = nullptr;
+    QPointer< QgsVectorLayer3DRendererWidget > mVector3DWidget;
+    QPointer< QgsMeshLayer3DRendererWidget > mMesh3DWidget;
 #endif
-    QgsDiagramWidget *mDiagramWidget = nullptr;
-    QgsRendererRasterPropertiesWidget *mRasterStyleWidget = nullptr;
-    QgsRasterAttributeTableWidget *mRasterAttributeTableWidget = nullptr;
-    QgsPanelWidget *mRasterAttributeTableDisabledWidget = nullptr;
-    QgsRendererMeshPropertiesWidget *mMeshStyleWidget = nullptr;
-    QgsVectorTileBasicRendererWidget *mVectorTileStyleWidget = nullptr;
-    QgsVectorTileBasicLabelingWidget *mVectorTileLabelingWidget = nullptr;
+    QPointer< QgsRendererRasterPropertiesWidget > mRasterStyleWidget;
+    QPointer< QgsRasterAttributeTableWidget > mRasterAttributeTableWidget;
     QList<const QgsMapLayerConfigWidgetFactory *> mPageFactories;
-    QMap<int, const QgsMapLayerConfigWidgetFactory *> mUserPages;
-    QgsLayerStyleManagerWidgetFactory *mStyleManagerFactory = nullptr;
     QgsMapLayerConfigWidgetContext mContext;
 };
 

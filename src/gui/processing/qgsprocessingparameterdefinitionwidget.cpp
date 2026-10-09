@@ -186,7 +186,7 @@ QgsProcessingParameterDefinitionPanelWidget::QgsProcessingParameterDefinitionPan
   QVBoxLayout *vLayout2 = new QVBoxLayout();
   mWidget = new QgsProcessingParameterDefinitionWidget( type, context, widgetContext, definition, algorithm );
 
-  connect( mWidget, &QgsProcessingParameterDefinitionWidget::changed, this, &QgsProcessingParameterDefinitionPanelWidget::widgetChanged );
+  connect( mWidget, &QgsProcessingParameterDefinitionWidget::changed, this, &QgsProcessingParameterDefinitionPanelWidget::changed );
 
   vLayout2->addWidget( mWidget );
   QWidget *w = new QWidget();
@@ -198,7 +198,7 @@ QgsProcessingParameterDefinitionPanelWidget::QgsProcessingParameterDefinitionPan
   mCommentEdit->setAcceptRichText( false );
   commentLayout->addWidget( mCommentEdit, 1 );
 
-  connect( mCommentEdit, &QTextEdit::textChanged, this, &QgsProcessingParameterDefinitionPanelWidget::widgetChanged );
+  connect( mCommentEdit, &QTextEdit::textChanged, this, &QgsProcessingParameterDefinitionPanelWidget::changed );
 
   QHBoxLayout *hl = new QHBoxLayout();
   hl->setContentsMargins( 0, 0, 0, 0 );
@@ -210,7 +210,7 @@ QgsProcessingParameterDefinitionPanelWidget::QgsProcessingParameterDefinitionPan
   hl->addWidget( mCommentColorButton );
   commentLayout->addLayout( hl );
 
-  connect( mCommentColorButton, &QgsColorButton::colorChanged, this, &QgsProcessingParameterDefinitionPanelWidget::widgetChanged );
+  connect( mCommentColorButton, &QgsColorButton::colorChanged, this, &QgsProcessingParameterDefinitionPanelWidget::changed );
 
   QWidget *w2 = new QWidget();
   w2->setLayout( commentLayout );

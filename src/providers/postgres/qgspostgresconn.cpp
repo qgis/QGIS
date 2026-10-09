@@ -31,6 +31,7 @@
 #include "qgsmessagelog.h"
 #include "qgspostgresconnpool.h"
 #include "qgspostgresstringutils.h"
+#include "qgspostgresutils.h"
 #include "qgssettings.h"
 #include "qgsvariantutils.h"
 #include "qgsvectordataprovider.h"
@@ -331,7 +332,10 @@ QgsPostgresConn::QgsPostgresConn( const QString &conninfo, bool readOnly, bool s
         mUri.setPassword( password );
 
       QgsDebugMsgLevel( "Connecting to " + QgsPostgresConn::connectionInfo( mUri, false ), 2 );
-      QString connectString = QgsPostgresConn::connectionInfo( mUri );
+
+      // We don't use QgsPostgresConn::connectionInfo() here because it would add session_role parameter
+      // which is not a valid parameter to PQConnectdb()
+      QString connectString = mUri.connectionInfo();
       addDefaultTimeoutAndClientEncoding( connectString );
       // use conninfo for log, connectString - can contain clear text username & password
       logWrapper = std::make_unique<QgsDatabaseQueryLogWrapper>( u"libpq::PQconnectdb()"_s, conninfo, u"postgres"_s, u"QgsPostgresConn"_s, QGS_QUERY_LOG_ORIGIN_PG_CON );
@@ -1080,9 +1084,34 @@ bool QgsPostgresConn::getSchemas( QList<QgsPostgresSchemaProperty> &schemas, con
     additionalFilter = u"nspname IN (%1)"_s.arg( schemaIn.join( ',' ) );
   }
 
-  const QString sql = u"SELECT nspname, pg_get_userbyid(nspowner), pg_catalog.obj_description(oid) FROM pg_namespace WHERE nspname !~ '^pg_' AND nspname != 'information_schema' %1ORDER BY nspname"_s.arg(
-    !additionalFilter.isEmpty() ? u"AND (%1) "_s.arg( additionalFilter ) : QString()
-  );
+  // Note: it's not a typo but an unfortunate naming of the table and trigger in the database.
+  // qgis_projects_versions : table
+  // qgis_project_versions : trigger
+
+  const QString sql = uR"sql(
+      SELECT
+          n.nspname,
+          pg_get_userbyid(n.nspowner),
+          pg_catalog.obj_description(n.oid),
+          COALESCE(obj.has_both, false) AS table_and_trigger_exist
+      FROM pg_catalog.pg_namespace n
+      LEFT JOIN (
+          SELECT
+              c.relnamespace,
+              (
+                  BOOL_OR(c.relname = 'qgis_projects_versions' AND c.relkind = 'r')
+                  AND
+                  BOOL_OR(t.tgname = 'qgis_project_versions' AND NOT t.tgisinternal)
+              ) AS has_both
+          FROM pg_catalog.pg_class c
+          LEFT JOIN pg_catalog.pg_trigger t ON t.tgrelid = c.oid
+          WHERE (c.relname = 'qgis_projects_versions' AND c.relkind = 'r')
+             OR (t.tgname = 'qgis_project_versions' AND NOT t.tgisinternal)
+          GROUP BY c.relnamespace
+      ) obj ON n.oid = obj.relnamespace
+      WHERE n.nspname !~ '^pg_'
+        AND n.nspname != 'information_schema' %1
+      ORDER BY n.nspname)sql"_s.arg( !additionalFilter.isEmpty() ? u"AND (%1) "_s.arg( additionalFilter ) : QString() );
 
   result = LoggedPQexec( u"QgsPostgresConn"_s, sql );
   if ( result.PQresultStatus() != PGRES_TUPLES_OK )
@@ -1099,6 +1128,7 @@ bool QgsPostgresConn::getSchemas( QList<QgsPostgresSchemaProperty> &schemas, con
     schema.name = result.PQgetvalue( idx, 0 );
     schema.owner = result.PQgetvalue( idx, 1 );
     schema.description = result.PQgetvalue( idx, 2 );
+    schema.hasProjectVersioning = result.PQgetvalue( idx, 3 ) == u"t";
     schemas << schema;
   }
   return true;
@@ -1143,6 +1173,7 @@ bool QgsPostgresConn::hasRaster() const
   postgisVersion();
   return mRasterAvailable;
 }
+
 /* Functions for determining available features in postGIS */
 QString QgsPostgresConn::postgisVersion() const
 {
@@ -2015,7 +2046,9 @@ void QgsPostgresConn::deduceEndian()
     if ( resOID.PQresultStatus() == PGRES_FATAL_ERROR )
     {
       errorCounter++;
+#ifdef QGISDEBUG
       QgsDebugMsgLevel( u"QUERY #%1 PGRES_FATAL_ERROR %2"_s.arg( queryCounter ).arg( PQerrorMessage().trimmed() ), 2 );
+#endif
       continue;
     }
 
@@ -2040,7 +2073,9 @@ void QgsPostgresConn::deduceEndian()
     return;
   }
 
+#ifdef QGISDEBUG
   QgsDebugMsgLevel( u"Back to old deduceEndian(): PQstatus() - %1, queryCounter = %2, errorCounter = %3"_s.arg( PQstatus() ).arg( queryCounter ).arg( errorCounter ), 2 );
+#endif
 
   QgsPostgresResult res( LoggedPQexec( u"QgsPostgresConn"_s, u"select regclass('pg_class')::oid"_s ) );
   QString oidValue = res.PQgetvalue( 0, 0 );
@@ -2511,6 +2546,10 @@ void QgsPostgresConn::postgisWkbType( Qgis::WkbType wkbType, QString &geometryTy
       geometryType = u"TIN"_s;
       break;
 
+    case Qgis::WkbType::NurbsCurve:
+      geometryType = u"NURBSCURVE"_s;
+      break;
+
     case Qgis::WkbType::Unknown:
       geometryType = u"GEOMETRY"_s;
       break;
@@ -2564,7 +2603,7 @@ QString QgsPostgresConn::postgisTypeFilter( QString geomCol, Qgis::WkbType wkbTy
     case Qgis::GeometryType::Point:
       return u"upper(geometrytype(%1)) IN ('POINT','POINTZ','POINTM','POINTZM','MULTIPOINT','MULTIPOINTZ','MULTIPOINTM','MULTIPOINTZM')"_s.arg( geomCol );
     case Qgis::GeometryType::Line:
-      return u"upper(geometrytype(%1)) IN ('LINESTRING','LINESTRINGZ','LINESTRINGM','LINESTRINGZM','CIRCULARSTRING','CIRCULARSTRINGZ','CIRCULARSTRINGM','CIRCULARSTRINGZM','COMPOUNDCURVE','COMPOUNDCURVEZ','COMPOUNDCURVEM','COMPOUNDCURVEZM','MULTILINESTRING','MULTILINESTRINGZ','MULTILINESTRINGM','MULTILINESTRINGZM','MULTICURVE','MULTICURVEZ','MULTICURVEM','MULTICURVEZM')"_s
+      return u"upper(geometrytype(%1)) IN ('LINESTRING','LINESTRINGZ','LINESTRINGM','LINESTRINGZM','CIRCULARSTRING','CIRCULARSTRINGZ','CIRCULARSTRINGM','CIRCULARSTRINGZM','COMPOUNDCURVE','COMPOUNDCURVEZ','COMPOUNDCURVEM','COMPOUNDCURVEZM','NURBSCURVE','NURBSCURVEZ','NURBSCURVEM','NURBSCURVEZM','MULTILINESTRING','MULTILINESTRINGZ','MULTILINESTRINGM','MULTILINESTRINGZM','MULTICURVE','MULTICURVEZ','MULTICURVEM','MULTICURVEZM')"_s
         .arg( geomCol );
     case Qgis::GeometryType::Polygon:
       return u"upper(geometrytype(%1)) IN ('POLYGON','POLYGONZ','POLYGONM','POLYGONZM','CURVEPOLYGON','CURVEPOLYGONZ','CURVEPOLYGONM','CURVEPOLYGONZM','MULTIPOLYGON','MULTIPOLYGONZ','MULTIPOLYGONM','MULTIPOLYGONZM','MULTIPOLYGONM','MULTISURFACE','MULTISURFACEZ','MULTISURFACEM','MULTISURFACEZM','TRIANGLE','TRIANGLEZ','TRIANGLEM','TRIANGLEZM','POLYHEDRALSURFACE','POLYHEDRALSURFACEZ','POLYHEDRALSURFACEM','POLYHEDRALSURFACEZM','TIN','TINZ','TINM','TINZM')"_s

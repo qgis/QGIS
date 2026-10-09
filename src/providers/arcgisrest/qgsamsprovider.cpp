@@ -545,7 +545,11 @@ QImage QgsAmsProvider::draw( const QgsRectangle &viewExtent, int pixelWidth, int
     }
 
     auto getRequests = [&levelToResMap, &viewExtent, tileWidth, tileHeight, ox, oy, targetRes, &dataSource]( int level, TileRequests &requests ) {
-      const double resolution = levelToResMap.value( level );
+      const auto resolutionIt = levelToResMap.constFind( level );
+      if ( resolutionIt == levelToResMap.constEnd() || resolutionIt.value() <= 0 || targetRes <= 0 )
+        return;
+
+      const double resolution = resolutionIt.value();
 
       // Get necessary tiles to fill extent
       // tile_x = ox + i * (resolution * tileWidth)
@@ -1235,8 +1239,10 @@ void QgsAmsTiledImageDownloadHandler::repeatTileRequest( QNetworkRequest const &
     QgsMessageLog::logMessage( error, tr( "Network" ) );
     return;
   }
+#ifdef QGISDEBUG
   QgsDebugMsgLevel( u"repeat tileRequest %1 %2(retry %3) for url: %4"_s.arg( tileReqNo ).arg( tileNo ).arg( retry ).arg( url ), 2 );
   request.setAttribute( static_cast<QNetworkRequest::Attribute>( TileRetry ), retry );
+#endif
 
   QNetworkReply *reply = QgsNetworkAccessManager::instance()->get( request );
   mReplies << reply;

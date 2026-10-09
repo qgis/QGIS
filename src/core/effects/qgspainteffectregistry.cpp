@@ -27,6 +27,11 @@
 
 using namespace Qt::StringLiterals;
 
+QgsPaintEffect *QgsPaintEffectMetadata::createPaintEffect( const QVariantMap &map )
+{
+  return mCreateFunc ? mCreateFunc( map ).release() : nullptr;
+}
+
 QgsPaintEffectAbstractMetadata::QgsPaintEffectAbstractMetadata( const QString &name, const QString &visibleName )
   : mName( name )
   , mVisibleName( visibleName )
@@ -68,16 +73,16 @@ bool QgsPaintEffectRegistry::addEffectType( QgsPaintEffectAbstractMetadata *meta
   return true;
 }
 
-QgsPaintEffect *QgsPaintEffectRegistry::createEffect( const QString &name, const QVariantMap &properties ) const
+std::unique_ptr<QgsPaintEffect> QgsPaintEffectRegistry::createEffect( const QString &name, const QVariantMap &properties ) const
 {
   if ( !mMetadata.contains( name ) )
     return nullptr;
 
-  QgsPaintEffect *effect = mMetadata[name]->createPaintEffect( properties );
+  std::unique_ptr<QgsPaintEffect> effect( mMetadata[name]->createPaintEffect( properties ) );
   return effect;
 }
 
-QgsPaintEffect *QgsPaintEffectRegistry::createEffect( const QDomElement &element ) const
+std::unique_ptr<QgsPaintEffect> QgsPaintEffectRegistry::createEffect( const QDomElement &element ) const
 {
   if ( element.isNull() )
   {
@@ -86,7 +91,7 @@ QgsPaintEffect *QgsPaintEffectRegistry::createEffect( const QDomElement &element
 
   const QString type = element.attribute( u"type"_s );
 
-  QgsPaintEffect *effect = QgsApplication::paintEffectRegistry()->createEffect( type );
+  std::unique_ptr<QgsPaintEffect> effect( QgsApplication::paintEffectRegistry()->createEffect( type ) );
   if ( !effect )
     return nullptr;
 
@@ -105,10 +110,10 @@ QStringList QgsPaintEffectRegistry::effects() const
   return lst;
 }
 
-QgsPaintEffect *QgsPaintEffectRegistry::defaultStack()
+std::unique_ptr<QgsPaintEffect> QgsPaintEffectRegistry::defaultStack()
 {
   //NOTE - also remember to update isDefaultStack below if making changes to this list
-  QgsEffectStack *stack = new QgsEffectStack();
+  auto stack = std::make_unique<QgsEffectStack>();
   QgsDropShadowEffect *dropShadow = new QgsDropShadowEffect();
   dropShadow->setEnabled( false );
   stack->appendEffect( dropShadow );

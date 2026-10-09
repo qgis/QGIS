@@ -1,0 +1,255 @@
+# r.* modules
+
+tests:
+
+  - algorithm: grass7:r.cost
+    name: GRASS7 r.cost.coordinates
+    params:
+      -k: false
+      -n: true
+      GRASS_REGION_CELLSIZE_PARAMETER: 0.0
+      GRASS_REGION_PARAMETER: 344500.0,358400.0,6682800.0,6693700.0
+      input:
+        name: raster_6class.tif
+        type: raster
+      max_cost: 0
+      memory: 300
+      null_cost: 0
+      start_coordinates: 346371,6690604
+      stop_coordinates: 356300,6688453
+    results:
+      output:
+        hash: ed392f88d156af060917cec8e3fd69cd5b962cd82a67274861682ea1
+        type: rasterhash
+
+  - algorithm: grass7:r.cost
+    name: GRASS7 r.cost.raster
+    params:
+      -k: false
+      -n: true
+      GRASS_REGION_CELLSIZE_PARAMETER: 0.0
+      GRASS_REGION_PARAMETER: 344500.0,358400.0,6682800.0,6693700.0
+      input:
+        name: raster_6class.tif
+        type: raster
+      max_cost: 0
+      memory: 300
+      null_cost: 0
+      start_raster:
+        name: raster_1class.tif
+        type: raster
+    results:
+      output:
+        hash: ae9b2f9ddc60b57e1dbb7a0f989cbcf732fd339e80b450bbdfe48f20
+        type: rasterhash
+
+  - algorithm: grass7:r.cost
+    name: GRASS7 r.cost.points
+    params:
+      -k: false
+      -n: true
+      GRASS_MIN_AREA_PARAMETER: 0.0001
+      GRASS_REGION_CELLSIZE_PARAMETER: 0.0
+      GRASS_REGION_PARAMETER: 344500.0,358400.0,6682800.0,6693700.0
+      GRASS_SNAP_TOLERANCE_PARAMETER: -1.0
+      input:
+        name: raster_6class.tif
+        type: raster
+      start_points:
+        name: points.shp
+        type: vector
+      stop_points:
+        name: points2.shp
+        type: vector
+    results:
+      output:
+        hash: d08b86dbf86d283f642381dd38ef62e0d6ec2ec905fcbee66fe631cd
+        type: rasterhash
+
+  - algorithm: grass7:r.covar
+    name: GRASS7 r.covar
+    params:
+      -r: true
+      GRASS_REGION_CELLSIZE_PARAMETER: 0.0
+      map:
+        params:
+        - name: raster_6class.tif
+          type: raster
+        - name: raster_5class.tif
+          type: raster
+        - name: raster_4class.tif
+          type: raster
+        type: multi
+    results:
+      html:
+        name: expected/r_covar.html
+        type: regex
+        rules:
+          - '1.000000 0.018635 -0.000101'
+          - '0.018635 1.000000 -0.012230'
+          - '-0.000101 -0.012230 1.000000'
+
+  - algorithm: grass7:r.cross
+    name: GRASS7 r.cross
+    params:
+      -z: true
+      GRASS_REGION_CELLSIZE_PARAMETER: 0.0
+      GRASS_REGION_PARAMETER: 344500.0,358400.0,6682800.0,6693700.0
+      input:
+        params:
+        - name: raster_6class.tif
+          type: raster
+        - name: raster_5class.tif
+          type: raster
+        - name: raster_4class.tif
+          type: raster
+        type: multi
+    results:
+      output:
+        hash: 1eccafaa5b459c8a57e72d449f1586a4088bda82fe891f8687dbd94b
+        type: rasterhash
+
+  - algorithm: grass7:r.describe
+    name: GRASS7 r.describe
+    params:
+      -d: false
+      -i: false
+      -n: false
+      -r: false
+      GRASS_REGION_CELLSIZE_PARAMETER: 0.0
+      map:
+        name: raster_6class.tif
+        type: raster
+      nsteps: 255
+      null_value: '0'
+    results:
+      html:
+        name: expected/r_describe.html
+        type: regex
+        rules:
+          - '0 1-6'
+
+  - algorithm: grass7:r.fill.dir
+    name: GRASS7 r.fill.dir
+    params:
+      GRASS_REGION_CELLSIZE_PARAMETER: 0.0
+      GRASS_REGION_PARAMETER: 344500.0,358400.0,6682800.0,6693700.0
+      format: '0'
+      input:
+        name: float_raster.tif
+        type: raster
+    results:
+      areas:
+        hash: 5edf01dbbe2d08fd89a52f662373bbe6acfa4bbc86f002697ecd9dcc
+        type: rasterhash
+      direction:
+        hash:
+        - 093995e21463d59ccd17b9e432a3a10cd2c1c25e8e415d3770578384
+        - b520141a25df8fcc84c682fe7b7c4b5e7ee68d1589d573bd19f85b0b
+        type: rasterhash
+      output:
+        hash:
+        - c9b138bce89dbb17dfc3995c8338380e480ac5a1736981c73f146160
+        - 47adbab553eded8dac2a222974a590007e32e83900b415402a595c86
+        type: rasterhash
+
+  - algorithm: grass7:r.fillnulls
+    name: GRASS7 r.fillnulls
+    params:
+      GRASS_REGION_CELLSIZE_PARAMETER: 0.0
+      GRASS_REGION_PARAMETER: 344500.0,358400.0,6682800.0,6693700.0
+      edge: 4
+      input:
+        name: raster_6class.tif
+        type: raster
+      method: '0'
+      npmin: 20
+      segmax: 10
+      smooth: 1.1
+      tension: 20.0
+    results:
+      output:
+        hash: 04e780c464528fc411f1531175a6ba78a44ce5f429e7b5f67f935b9f
+        type: rasterhash
+
+  - algorithm: grass7:r.flow
+    name: GRASS7 r.flow
+    params:
+      '-3': false
+      -m: false
+      -u: false
+      GRASS_OUTPUT_TYPE_PARAMETER: '0'
+      GRASS_REGION_CELLSIZE_PARAMETER: 0.0
+      GRASS_REGION_PARAMETER: 344500.0,358400.0,6682800.0,6693700.0
+      bound: 1609
+      elevation:
+        name: float_raster.tif
+        type: raster
+      skip: 7
+    results:
+      flowaccumulation:
+        hash: f9ac137eba82ffb462f2ee92ef6f51a27138d3aa3e2b59ad318884b7
+        type: rasterhash
+      flowlength:
+        hash: 1396f17f7a5afbffdc3c31704029a0f826f56bc39a2c2a4a5a7d6efd
+        type: rasterhash
+
+  - algorithm: grass7:r.flow
+    name: GRASS7 r.flow.aspect
+    params:
+      '-3': false
+      -m: false
+      -u: false
+      GRASS_OUTPUT_TYPE_PARAMETER: '0'
+      GRASS_REGION_CELLSIZE_PARAMETER: 0.0
+      GRASS_REGION_PARAMETER: 344500.0,358400.0,6682800.0,6693700.0
+      aspect:
+        name: raster_6class.tif
+        type: raster
+      bound: 1609
+      elevation:
+        name: float_raster.tif
+        type: raster
+      skip: 7
+    results:
+      flowaccumulation:
+        hash: cea321bb920029ebac058ac56b0052c1e7745d1e0ecc89fb00dc76d1
+        type: rasterhash
+      flowlength:
+        hash: a9bd95b064f0ad585a2e71bee3c36cc32c4bf8010e35401074b9cdd0
+        type: rasterhash
+
+  - algorithm: grass7:r.his
+    name: GRASS7 r.his
+    params:
+      -c: true
+      GRASS_REGION_CELLSIZE_PARAMETER: 0.0
+      GRASS_REGION_PARAMETER: 344500.0,358400.0,6682800.0,6693700.0
+      hue:
+        name: float_raster.tif
+        type: raster
+      intensity:
+        name: raster_4class.tif
+        type: raster
+      saturation:
+        name: raster_5class.tif
+        type: raster
+    results:
+      blue:
+        hash:
+        - 144242915491497a375db9818189a9ed228b678afe81afdf52f88e5f
+        - 6ffe41469e35fcca748f4947da527a7163cd06fb3b9a916f35083d12
+        - 7fab6db4c0517dbd4a3d61181874ad0544383896ba5f4292c9418be2
+        type: rasterhash
+      green:
+        hash:
+        - 7fab6db4c0517dbd4a3d61181874ad0544383896ba5f4292c9418be2
+        - 6ffe41469e35fcca748f4947da527a7163cd06fb3b9a916f35083d12
+        - 144242915491497a375db9818189a9ed228b678afe81afdf52f88e5f
+        type: rasterhash
+      red:
+        hash:
+        - 144242915491497a375db9818189a9ed228b678afe81afdf52f88e5f
+        - 7fab6db4c0517dbd4a3d61181874ad0544383896ba5f4292c9418be2
+        - f4dc73815e63b99ae80656d2fea8596ea3feb5ee1876b85f4fab0273
+        type: rasterhash

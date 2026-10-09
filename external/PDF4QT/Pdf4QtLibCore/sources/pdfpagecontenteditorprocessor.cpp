@@ -45,6 +45,11 @@ PDFPageContentEditorProcessor::PDFPageContentEditorProcessor(const PDFPage* page
     {
         m_content.setXObjectDictionary(*xObjectDictionary);
     }
+
+    if (auto graphicStateDictionary = getExtendedGraphicStateDictionary())
+    {
+        m_content.setGraphicStateDictionary(*graphicStateDictionary);
+    }
 }
 
 const PDFEditedPageContent& PDFPageContentEditorProcessor::getEditedPageContent() const
@@ -68,6 +73,7 @@ void PDFPageContentEditorProcessor::performInterceptInstruction(Operator current
         if (currentOperator == Operator::TextBegin && !isTextProcessing())
         {
             m_contentElementText.reset(new PDFEditedPageContentElementText(*getGraphicState(), getGraphicState()->getCurrentTransformationMatrix()));
+            m_contentElementText->setClipPath(getCurrentClipPathInElementSpace(m_contentElementText->getTransform()));
         }
     }
     else
@@ -107,6 +113,10 @@ void PDFPageContentEditorProcessor::performPathPainting(const QPainterPath& path
     else
     {
         m_content.addContentPath(*getGraphicState(), path, stroke, fill);
+        if (PDFEditedPageContentElement* backElement = m_content.getBackElement())
+        {
+            backElement->setClipPath(getCurrentClipPathInElementSpace(backElement->getTransform()));
+        }
     }
 }
 
@@ -128,7 +138,7 @@ void PDFPageContentEditorProcessor::performProcessTextSequence(const TextSequenc
 {
     BaseClass::performProcessTextSequence(textSequence, order);
 
-    if (order == ProcessOrder::BeforeOperation)
+    if (order == ProcessOrder::BeforeOperation && m_contentElementText)
     {
         PDFEditedPageContentElementText::Item item;
         item.isText = true;
@@ -138,12 +148,16 @@ void PDFPageContentEditorProcessor::performProcessTextSequence(const TextSequenc
     }
 }
 
-bool PDFPageContentEditorProcessor::performOriginalImagePainting(const PDFImage& image, const PDFStream* stream)
+bool PDFPageContentEditorProcessor::performOriginalImagePainting(const PDFImage& image, const PDFStream* stream, PDFObjectReference reference)
 {
-    BaseClass::performOriginalImagePainting(image, stream);
+    BaseClass::performOriginalImagePainting(image, stream, reference);
 
     PDFObject imageObject = PDFObject::createStream(std::make_shared<PDFStream>(*stream));
     m_content.addContentImage(*getGraphicState(), std::move(imageObject), QImage());
+    if (PDFEditedPageContentElement* backElement = m_content.getBackElement())
+    {
+        backElement->setClipPath(getCurrentClipPathInElementSpace(backElement->getTransform()));
+    }
 
     return false;
 }
@@ -153,10 +167,15 @@ void PDFPageContentEditorProcessor::performImagePainting(const QImage& image)
     BaseClass::performImagePainting(image);
 
     PDFEditedPageContentElement* backElement = m_content.getBackElement();
-    Q_ASSERT(backElement);
+    if (!backElement)
+    {
+        return;
+    }
 
-    PDFEditedPageContentElementImage* imageElement = backElement->asImage();
-    imageElement->setImage(image);
+    if (PDFEditedPageContentElementImage* imageElement = backElement->asImage())
+    {
+        imageElement->setImage(image);
+    }
 }
 
 void PDFPageContentEditorProcessor::performSaveGraphicState(ProcessOrder order)
@@ -173,7 +192,7 @@ void PDFPageContentEditorProcessor::performRestoreGraphicState(ProcessOrder orde
 {
     BaseClass::performRestoreGraphicState(order);
 
-    if (order == ProcessOrder::AfterOperation)
+    if (order == ProcessOrder::AfterOperation && m_clippingPaths.size() > 1)
     {
         m_clippingPaths.pop();
     }
@@ -183,14 +202,49 @@ void PDFPageContentEditorProcessor::performClipping(const QPainterPath& path, Qt
 {
     BaseClass::performClipping(path, fillRule);
 
-    if (m_clippingPaths.top().isEmpty())
+    // Clip paths are combined in the page coordinate space. Each clip path
+    // is expressed in the user space active at the time of the clip operator,
+    // so it must be mapped by the current transformation matrix before
+    // it is intersected with the previous clip path.
+    QPainterPath pageClipPath = path;
+    pageClipPath.setFillRule(fillRule);
+    pageClipPath = getGraphicState()->getCurrentTransformationMatrix().map(pageClipPath);
+
+    QPainterPath& currentClipPath = m_clippingPaths.top();
+    if (currentClipPath.isEmpty())
     {
-        m_clippingPaths.top() = path;
+        currentClipPath = pageClipPath;
     }
     else
     {
-        m_clippingPaths.top() = m_clippingPaths.top().intersected(path);
+        currentClipPath = currentClipPath.intersected(pageClipPath);
+
+        if (currentClipPath.isEmpty())
+        {
+            // The intersection has zero area, but an empty path means
+            // "no clipping" in this container. Store a degenerate path
+            // with zero fill area instead, which clips away all content.
+            currentClipPath.moveTo(0, 0);
+            currentClipPath.lineTo(1, 0);
+        }
     }
+}
+
+QPainterPath PDFPageContentEditorProcessor::getCurrentClipPathInElementSpace(const QTransform& elementTransform) const
+{
+    const QPainterPath& clipPath = m_clippingPaths.top();
+    if (clipPath.isEmpty())
+    {
+        return QPainterPath();
+    }
+
+    if (!elementTransform.isInvertible())
+    {
+        // Degenerate transformation matrix - the element is not visible anyway
+        return QPainterPath();
+    }
+
+    return elementTransform.inverted().map(clipPath);
 }
 
 bool PDFPageContentEditorProcessor::isContentKindSuppressed(ContentKind kind) const
@@ -487,6 +541,16 @@ void PDFEditedPageContent::setXObjectDictionary(const PDFDictionary& newXobjectD
     m_xobjectDictionary = newXobjectDictionary;
 }
 
+PDFDictionary PDFEditedPageContent::getGraphicStateDictionary() const
+{
+    return m_graphicStateDictionary;
+}
+
+void PDFEditedPageContent::setGraphicStateDictionary(const PDFDictionary& newGraphicStateDictionary)
+{
+    m_graphicStateDictionary = newGraphicStateDictionary;
+}
+
 PDFEditedPageContentElement::PDFEditedPageContentElement(PDFPageContentProcessorState state, QTransform transform) :
     m_state(std::move(state)),
     m_transform(transform)
@@ -514,6 +578,16 @@ void PDFEditedPageContentElement::setTransform(const QTransform& newTransform)
     m_transform = newTransform;
 }
 
+const QPainterPath& PDFEditedPageContentElement::getClipPath() const
+{
+    return m_clipPath;
+}
+
+void PDFEditedPageContentElement::setClipPath(const QPainterPath& clipPath)
+{
+    m_clipPath = clipPath;
+}
+
 PDFEditedPageContentElementPath::PDFEditedPageContentElementPath(PDFPageContentProcessorState state, QPainterPath path, bool strokePath, bool fillPath, QTransform transform) :
     PDFEditedPageContentElement(std::move(state), transform),
     m_path(std::move(path)),
@@ -530,13 +604,22 @@ PDFEditedPageContentElement::Type PDFEditedPageContentElementPath::getType() con
 
 PDFEditedPageContentElementPath* PDFEditedPageContentElementPath::clone() const
 {
-    return new PDFEditedPageContentElementPath(getState(), getPath(), getStrokePath(), getFillPath(), getTransform());
+    PDFEditedPageContentElementPath* copy = new PDFEditedPageContentElementPath(getState(), getPath(), getStrokePath(), getFillPath(), getTransform());
+    copy->setClipPath(getClipPath());
+    return copy;
 }
 
 QRectF PDFEditedPageContentElementPath::getBoundingBox() const
 {
     QPainterPath mappedPath = getTransform().map(m_path);
-    return mappedPath.boundingRect();
+    QRectF boundingBox = mappedPath.boundingRect();
+
+    if (!m_clipPath.isEmpty())
+    {
+        boundingBox = boundingBox.intersected(getTransform().mapRect(m_clipPath.boundingRect()));
+    }
+
+    return boundingBox;
 }
 
 QPainterPath PDFEditedPageContentElementPath::getPath() const
@@ -584,12 +667,21 @@ PDFEditedPageContentElement::Type PDFEditedPageContentElementImage::getType() co
 
 PDFEditedPageContentElementImage* PDFEditedPageContentElementImage::clone() const
 {
-    return new PDFEditedPageContentElementImage(getState(), getImageObject(), getImage(), getTransform());
+    PDFEditedPageContentElementImage* copy = new PDFEditedPageContentElementImage(getState(), getImageObject(), getImage(), getTransform());
+    copy->setClipPath(getClipPath());
+    return copy;
 }
 
 QRectF PDFEditedPageContentElementImage::getBoundingBox() const
 {
-    return getTransform().mapRect(QRectF(0, 0, 1, 1));
+    QRectF boundingBox = getTransform().mapRect(QRectF(0, 0, 1, 1));
+
+    if (!m_clipPath.isEmpty())
+    {
+        boundingBox = boundingBox.intersected(getTransform().mapRect(m_clipPath.boundingRect()));
+    }
+
+    return boundingBox;
 }
 
 PDFObject PDFEditedPageContentElementImage::getImageObject() const
@@ -638,7 +730,9 @@ PDFEditedPageContentElement::Type PDFEditedPageContentElementText::getType() con
 
 PDFEditedPageContentElementText* PDFEditedPageContentElementText::clone() const
 {
-    return new PDFEditedPageContentElementText(getState(), getItems(), getTextPath(), getTransform(), getItemsAsText());
+    PDFEditedPageContentElementText* copy = new PDFEditedPageContentElementText(getState(), getItems(), getTextPath(), getTransform(), getItemsAsText());
+    copy->setClipPath(getClipPath());
+    return copy;
 }
 
 void PDFEditedPageContentElementText::addItem(Item item)
@@ -658,7 +752,14 @@ void PDFEditedPageContentElementText::setItems(const std::vector<Item>& newItems
 
 QRectF PDFEditedPageContentElementText::getBoundingBox() const
 {
-    return getTransform().mapRect(m_textPath.boundingRect());
+    QRectF boundingBox = getTransform().mapRect(m_textPath.boundingRect());
+
+    if (!m_clipPath.isEmpty())
+    {
+        boundingBox = boundingBox.intersected(getTransform().mapRect(m_clipPath.boundingRect()));
+    }
+
+    return boundingBox;
 }
 
 QPainterPath PDFEditedPageContentElementText::getTextPath() const
@@ -685,20 +786,24 @@ QString PDFEditedPageContentElementText::createItemsAsText(const PDFPageContentP
         {
             for (const TextSequenceItem& textItem : item.textSequence.items)
             {
-                if (textItem.isCharacter())
+                if (textItem.isCharacter() || textItem.isContentStream())
                 {
                     if (!textItem.character.isNull())
                     {
                         text += QString(textItem.character).toHtmlEscaped();
                     }
-                    else if (textItem.isAdvance())
-                    {
-                        text += QString("<space advance=\"%1\"/>").arg(textItem.advance);
-                    }
                     else if (textItem.cid != 0)
                     {
                         text += QString("<character cid=\"%1\"/>").arg(textItem.cid);
                     }
+                    else if (textItem.isAdvance())
+                    {
+                        text += QString("<space advance=\"%1\"/>").arg(textItem.advance);
+                    }
+                }
+                else if (textItem.isAdvance())
+                {
+                    text += QString("<space advance=\"%1\"/>").arg(textItem.advance);
                 }
             }
         }
@@ -748,7 +853,10 @@ QString PDFEditedPageContentElementText::createItemsAsText(const PDFPageContentP
             if (flags.testFlag(PDFPageContentProcessorState::StateTextFont) ||
                 flags.testFlag(PDFPageContentProcessorState::StateTextFontSize))
             {
-                text += QString("<tf font=\"%1\" size=\"%2\"/>").arg(newState.getTextFont()->getFontId()).arg(newState.getTextFontSize());
+                if (const PDFFontPointer& font = newState.getTextFont())
+                {
+                    text += QString("<tf font=\"%1\" size=\"%2\"/>").arg(QString::fromLatin1(font->getFontId())).arg(newState.getTextFontSize());
+                }
             }
 
             if (flags.testFlag(PDFPageContentProcessorState::StateTextMatrix))
@@ -758,7 +866,10 @@ QString PDFEditedPageContentElementText::createItemsAsText(const PDFPageContentP
                 qreal x = transform.dx();
                 qreal y = transform.dy();
 
-                if (transform.isTranslating())
+                // Position can be serialized alone only for a pure translation matrix.
+                // QTransform::isTranslating() returns true also for rotated/scaled
+                // matrices, which would discard rotation, scale or mirroring of the text.
+                if (transform.type() <= QTransform::TxTranslate)
                 {
                     text += QString("<tpos x=\"%1\" y=\"%2\"/>").arg(x).arg(y);
                 }

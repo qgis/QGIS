@@ -51,7 +51,11 @@ class QgsCheckValidityAlgorithm : public QgsProcessingAlgorithm
     QgsCheckValidityAlgorithm *createInstance() const override SIP_FACTORY;
 
   protected:
+    bool prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
     QVariantMap processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
+
+  private:
+    int mValidationMethod = 0;
 };
 
 ///@endcond PRIVATE

@@ -77,6 +77,8 @@ void QgsRenameLayerAlgorithm::initAlgorithm( const QVariantMap & )
 
 QVariantMap QgsRenameLayerAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback * )
 {
+  QGS_MARK_ALGORITHM_SOURCE
+
   QgsMapLayer *layer = parameterAsLayer( parameters, u"INPUT"_s, context );
   const QString name = parameterAsString( parameters, u"NAME"_s, context );
 

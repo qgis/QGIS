@@ -19,6 +19,7 @@ import unittest
 
 from qgis.core import (
     Qgis,
+    QgsCompoundCurve,
     QgsCoordinateReferenceSystem,
     QgsCoordinateTransformContext,
     QgsDefaultValue,
@@ -56,6 +57,10 @@ def createEmptyPolygonLayer():
 
 def createEmptyMultiPolygonLayer():
     return createEmptyLayer("MultiPolygon")
+
+
+def createEmptyCurvePolygonLayer():
+    return createEmptyLayer("CurvePolygon")
 
 
 class TestQgsVectorLayerEditUtils(QgisTestCase):
@@ -540,6 +545,150 @@ class TestQgsVectorLayerEditUtils(QgisTestCase):
         self.assertEqual(f2.geometry().constGet().z(), 5)
         self.assertEqual(f2.geometry().constGet().m(), 6)
 
+    def testSplitPolygonFeaturesWithSegment(self):
+        layer = createEmptyMultiPolygonLayer()
+        self.assertTrue(layer.startEditing())
+
+        # Add one Polygon feature
+        f = QgsFeature(layer.fields(), 1)
+        f.setGeometry(QgsGeometry.fromWkt("Polygon ((0 0, 4 0, 4 4, 0 4, 0 0)"))
+        assert layer.addFeatures([f])
+        layer.commitChanges(stopEditing=False)
+
+        self.assertEqual(layer.featureCount(), 1)
+
+        vle = QgsVectorLayerEditUtils(layer)
+
+        split_curve = QgsLineString()
+        split_curve.fromWkt("LineString (1 5, 3 -1)")
+
+        result, _ = vle.splitFeatures(
+            split_curve, preserveCircular=True, topologicalEditing=False
+        )
+        self.assertEqual(result, Qgis.GeometryOperationResult.Success)
+
+        self.assertEqual(layer.featureCount(), 2)
+
+        # Check that no curves are present in the split geometries
+        for feature in layer.getFeatures():
+            self.assertFalse(feature.geometry().constGet().hasCurvedSegments())
+
+        layer.rollBack()
+
+    def testSplitPolygonFeaturesWithCurve(self):
+        layer = createEmptyMultiPolygonLayer()
+        self.assertTrue(layer.startEditing())
+
+        # Add one Polygon feature (same polygon used in the split with segment test)
+        f = QgsFeature(layer.fields(), 1)
+        f.setGeometry(QgsGeometry.fromWkt("Polygon ((0 0, 4 0, 4 4, 0 4, 0 0)"))
+        assert layer.addFeatures([f])
+        layer.commitChanges(stopEditing=False)
+
+        self.assertEqual(layer.featureCount(), 1)
+
+        vle = QgsVectorLayerEditUtils(layer)
+
+        split_curve = QgsCompoundCurve()
+        split_curve.fromWkt("CompoundCurve (CircularString (1 5, 3 2, 3 -1))")
+
+        result, _ = vle.splitFeatures(
+            split_curve, preserveCircular=True, topologicalEditing=False
+        )
+        self.assertEqual(result, Qgis.GeometryOperationResult.Success)
+
+        self.assertEqual(layer.featureCount(), 2)
+
+        # Check that curves ARE present in the split geometries
+        any_curve = False
+        for feature in layer.getFeatures():
+            if feature.geometry().constGet().hasCurvedSegments():
+                any_curve = True
+                break
+
+        self.assertTrue(any_curve)
+        layer.rollBack()
+        # NOTE: we test the result of the split operation, not the final geometry
+        # stored in the layer when committing changes. This because GeoPackage and
+        # memory layers behave differently when saving: GeoPackage converts to non-curve,
+        # whereas memory layers CAN store compound curves in a QgsPolygon!!!
+
+    def testSplitCurvePolygonFeaturesWithSegment(self):
+        layer = createEmptyCurvePolygonLayer()
+        self.assertTrue(layer.startEditing())
+
+        # Add one CurvePolygon feature
+        f = QgsFeature(layer.fields(), 1)
+        f.setGeometry(
+            QgsGeometry.fromWkt(
+                "CurvePolygon (CompoundCurve ((0 0, 4 0),CircularString (4 0, 5 2, 4 4),(4 4, 0 0)))"
+            )
+        )
+        assert layer.addFeatures([f])
+        layer.commitChanges(stopEditing=False)
+
+        self.assertEqual(layer.featureCount(), 1)
+
+        vle = QgsVectorLayerEditUtils(layer)
+
+        split_curve = QgsLineString()
+        split_curve.fromWkt("LineString (1 5, 3 -1)")
+
+        result, _ = vle.splitFeatures(
+            split_curve, preserveCircular=True, topologicalEditing=False
+        )
+        self.assertEqual(result, Qgis.GeometryOperationResult.Success)
+
+        self.assertEqual(layer.featureCount(), 2)
+
+        # Check that curves ARE present in the split geometries
+        any_curve = False
+        for feature in layer.getFeatures():
+            if feature.geometry().constGet().hasCurvedSegments():
+                any_curve = True
+                break
+
+        self.assertTrue(any_curve)
+        layer.rollBack()
+
+    def testSplitCurvePolygonFeaturesWithCurve(self):
+        layer = createEmptyCurvePolygonLayer()
+        self.assertTrue(layer.startEditing())
+
+        # Add one CurvePolygon feature (same geom used in the split with segment case)
+        f = QgsFeature(layer.fields(), 1)
+        f.setGeometry(
+            QgsGeometry.fromWkt(
+                "CurvePolygon (CompoundCurve ((0 0, 4 0),CircularString (4 0, 5 2, 4 4),(4 4, 0 0)))"
+            )
+        )
+        assert layer.addFeatures([f])
+        layer.commitChanges(stopEditing=False)
+
+        self.assertEqual(layer.featureCount(), 1)
+
+        vle = QgsVectorLayerEditUtils(layer)
+
+        split_curve = QgsCompoundCurve()
+        split_curve.fromWkt("CompoundCurve (CircularString (1 5, 3 2, 3 -1))")
+
+        result, _ = vle.splitFeatures(
+            split_curve, preserveCircular=True, topologicalEditing=False
+        )
+        self.assertEqual(result, Qgis.GeometryOperationResult.Success)
+
+        self.assertEqual(layer.featureCount(), 2)
+
+        # Check that curves ARE present in the split geometries
+        any_curve = False
+        for feature in layer.getFeatures():
+            if feature.geometry().constGet().hasCurvedSegments():
+                any_curve = True
+                break
+
+        self.assertTrue(any_curve)
+        layer.rollBack()
+
     def testSplitParts(self):
         layer = createEmptyMultiPolygonLayer()
         self.assertTrue(layer.startEditing())
@@ -589,18 +738,23 @@ class TestQgsVectorLayerEditUtils(QgisTestCase):
 
         layer.commitChanges()
 
+        geom = layer.getFeature(1).geometry()
+        geom.normalize()
         self.assertEqual(
-            layer.getFeature(1).geometry().asWkt(),
-            "MultiPolygon (((2 0, 2 2, 4 2, 4 0, 2 0)),((2 2, 2 0, 0 0, 0 2, 2 2)),((2 2, 2 4, 4 4, 4 2, 2 2)),((2 4, 2 2, 0 2, 0 4, 2 4)),((6 2, 10 2, 10 0, 6 0, 6 2)),((10 2, 6 2, 6 4, 10 4, 10 2)))",
+            geom.asWkt(),
+            "MultiPolygon (((6 2, 6 4, 10 4, 10 2, 6 2)),((6 0, 6 2, 10 2, 10 0, 6 0)),((2 2, 2 4, 4 4, 4 2, 2 2)),((2 0, 2 2, 4 2, 4 0, 2 0)),((0 2, 0 4, 2 4, 2 2, 0 2)),((0 0, 0 2, 2 2, 2 0, 0 0)))",
         )
+        geom = layer.getFeature(2).geometry()
+        geom.normalize()
         self.assertEqual(
-            layer.getFeature(2).geometry().asWkt(),
-            "MultiPolygon (((2 6, 2 10, 4 10, 4 6, 2 6)),((2 10, 2 6, 0 6, 0 10, 2 10)),((6 6, 10 6, 10 10, 6 10, 6 6)))",
+            geom.asWkt(),
+            "MultiPolygon (((6 6, 6 10, 10 10, 10 6, 6 6)),((2 6, 2 10, 4 10, 4 6, 2 6)),((0 6, 0 10, 2 10, 2 6, 0 6)))",
         )
-
+        geom = layer.getFeature(3).geometry()
+        geom.normalize()
         self.assertEqual(
-            layer.getFeature(3).geometry().asWkt(),
-            "MultiPolygon (((2 12, 2 16, 4 16, 4 12, 2 12)),((2 16, 2 12, 0 12, 0 16, 2 16)),((6 12, 10 12, 10 16, 6 16, 6 12)))",
+            geom.asWkt(),
+            "MultiPolygon (((6 12, 6 16, 10 16, 10 12, 6 12)),((2 12, 2 16, 4 16, 4 12, 2 12)),((0 12, 0 16, 2 16, 2 12, 0 12)))",
         )
 
     def testMergeFeatures(self):
@@ -638,9 +792,11 @@ class TestQgsVectorLayerEditUtils(QgisTestCase):
 
         self.assertEqual(layer.featureCount(), 1)
         mergedFeature = next(layer.getFeatures())
+        mergedGeom = mergedFeature.geometry()
+        mergedGeom.normalize()
         self.assertEqual(
-            mergedFeature.geometry().asWkt(),
-            "Polygon ((5 0, 0 0, 0 5, 3 5, 3 8, 8 8, 8 3, 5 3, 5 0))",
+            mergedGeom.asWkt(),
+            "Polygon ((0 0, 0 5, 3 5, 3 8, 8 8, 8 3, 5 3, 5 0, 0 0))",
         )
         self.assertEqual(mergedFeature.attribute("name"), "tre")
 
@@ -696,9 +852,11 @@ class TestQgsVectorLayerEditUtils(QgisTestCase):
 
         self.assertEqual(layer.featureCount(), 1)
         mergedFeature = layer.getFeature(2)
+        mergedGeom = mergedFeature.geometry()
+        mergedGeom.normalize()
         self.assertEqual(
-            mergedFeature.geometry().asWkt(),
-            "Polygon ((5 0, 0 0, 0 5, 3 5, 3 8, 8 8, 8 3, 5 3, 5 0))",
+            mergedGeom.asWkt(),
+            "Polygon ((0 0, 0 5, 3 5, 3 8, 8 8, 8 3, 5 3, 5 0, 0 0))",
         )
         self.assertEqual(mergedFeature.attribute("name"), "tre")
 

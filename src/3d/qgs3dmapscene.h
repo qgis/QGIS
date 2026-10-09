@@ -60,7 +60,7 @@ class QgsChunkNode;
 class QgsDoubleRange;
 class Qgs3DMapSceneEntity;
 class QgsCameraController;
-
+class QgsEnvironmentLight;
 
 /**
  * \ingroup qgis_3d
@@ -348,6 +348,7 @@ class _3D_EXPORT Qgs3DMapScene : public QObject
 
   private slots:
     void onCameraChanged();
+    void onViewed2DExtentFrom3DChanged();
     void onFrameTriggered( float dt );
     void createTerrain();
     void onLayerRenderer3DChanged();
@@ -360,6 +361,7 @@ class _3D_EXPORT Qgs3DMapScene : public QObject
     void onShadowSettingsChanged();
     void onAmbientOcclusionSettingsChanged();
     void onBloomSettingsChanged();
+    void onColorGradingSettingsChanged();
     void onEyeDomeShadingSettingsChanged();
     void onMsaaEnabledChanged();
     void onDebugDepthMapSettingsChanged();
@@ -418,6 +420,7 @@ class _3D_EXPORT Qgs3DMapScene : public QObject
     QList<Qt3DCore::QEntity *> mLightEntities;
     QList<QgsMapLayer *> mModelVectorLayers;
     Qt3DCore::QEntity *mBackgroundEntity = nullptr; // used for skybox and gradient background
+    QgsEnvironmentLight *mEnvironmentLight = nullptr;
     //! Entity that shows rotation center = useful for debugging camera issues
     Qt3DCore::QEntity *mEntityRotationCenter = nullptr;
 
@@ -433,6 +436,10 @@ class _3D_EXPORT Qgs3DMapScene : public QObject
     //! 2d map overlay
     QObjectUniquePtr<QgsMapOverlayEntity> mMapOverlayEntity = nullptr;
     QTimer *mOverlayUpdateTimer = nullptr;
+
+    //! Last sampled depth at the screen center, used as fallback when there is no data at the center point
+    double mLastCenterDepth = 0.5;
+    QTimer *mDepthBufferRefreshTimer = nullptr;
 
     friend class TestQgs3DRendering;
 };

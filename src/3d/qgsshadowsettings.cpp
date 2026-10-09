@@ -25,7 +25,7 @@ using namespace Qt::StringLiterals;
 
 QgsShadowSettings::QgsShadowSettings( const QgsShadowSettings &other )
   : mRenderShadows( other.mRenderShadows )
-  , mSelectedDirectionalLight( other.mSelectedDirectionalLight )
+  , mLightSourceId( other.mLightSourceId )
   , mMaximumShadowRenderingDistance( other.mMaximumShadowRenderingDistance )
   , mShadowBias( other.mShadowBias )
   , mShadowQuality( other.mShadowQuality )
@@ -38,7 +38,7 @@ QgsShadowSettings &QgsShadowSettings::operator=( QgsShadowSettings const &rhs )
     return *this;
 
   this->mRenderShadows = rhs.mRenderShadows;
-  this->mSelectedDirectionalLight = rhs.mSelectedDirectionalLight;
+  this->mLightSourceId = rhs.mLightSourceId;
   this->mMaximumShadowRenderingDistance = rhs.mMaximumShadowRenderingDistance;
   this->mShadowBias = rhs.mShadowBias;
   this->mShadowQuality = rhs.mShadowQuality;
@@ -50,7 +50,7 @@ void QgsShadowSettings::readXml( const QDomElement &element, const QgsReadWriteC
 {
   Q_UNUSED( context );
   mRenderShadows = element.attribute( u"shadow-rendering-enabled"_s, u"0"_s ).toInt();
-  mSelectedDirectionalLight = element.attribute( u"selected-directional-light"_s, u"-1"_s ).toInt();
+  mLightSourceId = element.attribute( u"light-source"_s );
   mMaximumShadowRenderingDistance = element.attribute( u"max-shadow-rendering-distance"_s, u"1500"_s ).toInt();
   mShadowBias = element.attribute( u"shadow-bias"_s, u"0.00001"_s ).toFloat();
 }
@@ -59,7 +59,7 @@ void QgsShadowSettings::writeXml( QDomElement &element, const QgsReadWriteContex
 {
   Q_UNUSED( context );
   element.setAttribute( u"shadow-rendering-enabled"_s, mRenderShadows );
-  element.setAttribute( u"selected-directional-light"_s, mSelectedDirectionalLight );
+  element.setAttribute( u"light-source"_s, mLightSourceId );
   element.setAttribute( u"max-shadow-rendering-distance"_s, mMaximumShadowRenderingDistance );
   element.setAttribute( u"shadow-bias"_s, mShadowBias );
 }

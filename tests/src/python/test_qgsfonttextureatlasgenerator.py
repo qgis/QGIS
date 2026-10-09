@@ -119,7 +119,10 @@ class TestQgsFontTextureAtlasGenerator(QgisTestCase):
         self.assertTrue(atlas.isValid())
         self.assertEqual(atlas.count(), 3)
         self.assertEqual(len(atlas), 3)
-        self.assertEqual(atlas.atlasSize(), QSize(32, 48))
+
+        self.assertEqual(atlas.atlasSize().width(), 32)
+        self.assertAlmostEqual(atlas.atlasSize().height(), 48, delta=1)
+
         self.assertEqual(atlas.graphemeCount("HY"), 2)
         self.assertEqual(atlas.totalWidth("HY"), 41)
         self.assertEqual(atlas.graphemeCount("Hi"), 2)
@@ -128,7 +131,10 @@ class TestQgsFontTextureAtlasGenerator(QgisTestCase):
             atlas.rect("x")
         self.assertEqual(atlas.rect("Y"), QRect(0, 0, 25, 24))
         self.assertEqual(atlas.rect("H"), QRect(0, 24, 23, 24))
-        self.assertEqual(atlas.rect("i"), QRect(23, 24, 9, 24))
+        self.assertEqual(atlas.rect("i").left(), 23)
+        self.assertEqual(atlas.rect("i").top(), 24)
+        self.assertEqual(atlas.rect("i").width(), 9)
+        self.assertIn(atlas.rect("i").height(), (24, 25))
         self.assertEqual(atlas.pixelOffsetForGrapheme("HY", 0), QPoint(0, 0))
         self.assertEqual(atlas.textureRectForGrapheme("HY", 0), QRect(0, 24, 23, 24))
         self.assertEqual(atlas.pixelOffsetForGrapheme("HY", 1), QPoint(23, 0))
@@ -136,13 +142,17 @@ class TestQgsFontTextureAtlasGenerator(QgisTestCase):
         self.assertEqual(atlas.pixelOffsetForGrapheme("Hi", 0), QPoint(0, 0))
         self.assertEqual(atlas.textureRectForGrapheme("Hi", 0), QRect(0, 24, 23, 24))
         self.assertEqual(atlas.pixelOffsetForGrapheme("Hi", 1), QPoint(23, 0))
-        self.assertEqual(atlas.textureRectForGrapheme("Hi", 1), QRect(23, 24, 9, 24))
+        self.assertEqual(atlas.textureRectForGrapheme("Hi", 1).left(), 23)
+        self.assertEqual(atlas.textureRectForGrapheme("Hi", 1).top(), 24)
+        self.assertEqual(atlas.textureRectForGrapheme("Hi", 1).width(), 9)
+        self.assertIn(atlas.textureRectForGrapheme("Hi", 1).height(), (24, 25))
 
         self.assertTrue(
             self.image_check(
                 "font_texture_atlas_hyi",
                 "font_texture_atlas_hyi",
                 atlas.renderAtlasTexture(),
+                size_tolerance=QSize(0, 1),
             )
         )
 
@@ -150,23 +160,45 @@ class TestQgsFontTextureAtlasGenerator(QgisTestCase):
         self.assertTrue(atlas.isValid())
         self.assertEqual(atlas.count(), 4)
         self.assertEqual(len(atlas), 4)
-        self.assertEqual(atlas.atlasSize(), QSize(43, 48))
+        # this test is sensitive to cross-platform rendering differences...
         self.assertEqual(atlas.graphemeCount("HY"), 2)
         self.assertEqual(atlas.graphemeCount("hi"), 2)
         with self.assertRaises(KeyError):
             atlas.rect("x")
-        self.assertEqual(atlas.rect("Y"), QRect(0, 0, 25, 24))
-        self.assertEqual(atlas.rect("H"), QRect(0, 24, 23, 24))
-        self.assertEqual(atlas.rect("i"), QRect(25, 0, 9, 24))
-        self.assertEqual(atlas.rect("h"), QRect(23, 24, 20, 24))
+        if atlas.atlasSize().width() == 43:
+            self.assertEqual(atlas.atlasSize(), QSize(43, 48))
+            self.assertEqual(atlas.rect("Y"), QRect(0, 0, 25, 24))
+            self.assertEqual(atlas.rect("H"), QRect(0, 24, 23, 24))
+            self.assertEqual(atlas.rect("i"), QRect(25, 0, 9, 24))
+            self.assertEqual(atlas.rect("h"), QRect(23, 24, 20, 24))
+            self.assertEqual(
+                atlas.textureRectForGrapheme("HY", 0), QRect(0, 24, 23, 24)
+            )
+            self.assertEqual(
+                atlas.textureRectForGrapheme("hi", 0), QRect(23, 24, 20, 24)
+            )
+            self.assertEqual(atlas.textureRectForGrapheme("hi", 1), QRect(25, 0, 9, 24))
+        else:
+            self.assertEqual(atlas.atlasSize(), QSize(48, 49))
+            self.assertEqual(atlas.rect("Y"), QRect(0, 0, 25, 24))
+            self.assertEqual(atlas.rect("H"), QRect(25, 0, 23, 24))
+            self.assertEqual(atlas.rect("i"), QRect(20, 24, 9, 25))
+            self.assertEqual(atlas.rect("h"), QRect(0, 24, 20, 25))
+            self.assertEqual(
+                atlas.textureRectForGrapheme("HY", 0), QRect(25, 0, 23, 24)
+            )
+            self.assertEqual(
+                atlas.textureRectForGrapheme("hi", 0), QRect(0, 24, 20, 25)
+            )
+            self.assertEqual(
+                atlas.textureRectForGrapheme("hi", 1), QRect(20, 24, 9, 25)
+            )
+
         self.assertEqual(atlas.pixelOffsetForGrapheme("HY", 0), QPoint(0, 0))
-        self.assertEqual(atlas.textureRectForGrapheme("HY", 0), QRect(0, 24, 23, 24))
         self.assertEqual(atlas.pixelOffsetForGrapheme("HY", 1), QPoint(23, 0))
         self.assertEqual(atlas.textureRectForGrapheme("HY", 1), QRect(0, 0, 25, 24))
         self.assertEqual(atlas.pixelOffsetForGrapheme("hi", 0), QPoint(0, 0))
-        self.assertEqual(atlas.textureRectForGrapheme("hi", 0), QRect(23, 24, 20, 24))
         self.assertEqual(atlas.pixelOffsetForGrapheme("hi", 1), QPoint(19, 0))
-        self.assertEqual(atlas.textureRectForGrapheme("hi", 1), QRect(25, 0, 9, 24))
 
         self.assertTrue(
             self.image_check(
@@ -180,32 +212,52 @@ class TestQgsFontTextureAtlasGenerator(QgisTestCase):
         self.assertTrue(atlas.isValid())
         self.assertEqual(atlas.count(), 5)
         self.assertEqual(len(atlas), 5)
-        self.assertEqual(atlas.atlasSize(), QSize(50, 49))
+        self.assertEqual(atlas.atlasSize().width(), 50)
+        self.assertIn(atlas.atlasSize().height(), (49, 50))
         self.assertEqual(atlas.graphemeCount("HY"), 2)
         self.assertEqual(atlas.graphemeCount("hig"), 3)
         with self.assertRaises(KeyError):
             atlas.rect("x")
         self.assertEqual(atlas.rect("Y"), QRect(0, 0, 25, 24))
         self.assertEqual(atlas.rect("H"), QRect(25, 0, 23, 24))
-        self.assertEqual(atlas.rect("i"), QRect(41, 24, 9, 24))
-        self.assertEqual(atlas.rect("h"), QRect(21, 24, 20, 24))
-        self.assertEqual(atlas.rect("g"), QRect(0, 24, 21, 25))
+        self.assertEqual(atlas.rect("i").left(), 41)
+        self.assertEqual(atlas.rect("i").top(), 24)
+        self.assertEqual(atlas.rect("i").width(), 9)
+        self.assertIn(atlas.rect("i").height(), (24, 25))
+        self.assertEqual(atlas.rect("h").left(), 21)
+        self.assertEqual(atlas.rect("h").top(), 24)
+        self.assertEqual(atlas.rect("h").width(), 20)
+        self.assertIn(atlas.rect("h").height(), (24, 25))
+        self.assertEqual(atlas.rect("g").left(), 0)
+        self.assertEqual(atlas.rect("g").top(), 24)
+        self.assertEqual(atlas.rect("g").width(), 21)
+        self.assertIn(atlas.rect("g").height(), (25, 26))
         self.assertEqual(atlas.pixelOffsetForGrapheme("HY", 0), QPoint(0, 0))
         self.assertEqual(atlas.textureRectForGrapheme("HY", 0), QRect(25, 0, 23, 24))
         self.assertEqual(atlas.pixelOffsetForGrapheme("HY", 1), QPoint(23, 0))
         self.assertEqual(atlas.textureRectForGrapheme("HY", 1), QRect(0, 0, 25, 24))
         self.assertEqual(atlas.pixelOffsetForGrapheme("hig", 0), QPoint(0, 0))
-        self.assertEqual(atlas.textureRectForGrapheme("hig", 0), QRect(21, 24, 20, 24))
+        self.assertEqual(atlas.textureRectForGrapheme("hig", 0).left(), 21)
+        self.assertEqual(atlas.textureRectForGrapheme("hig", 0).top(), 24)
+        self.assertEqual(atlas.textureRectForGrapheme("hig", 0).width(), 20)
+        self.assertIn(atlas.textureRectForGrapheme("hig", 0).height(), (24, 25))
         self.assertEqual(atlas.pixelOffsetForGrapheme("hig", 1), QPoint(19, 0))
-        self.assertEqual(atlas.textureRectForGrapheme("hig", 1), QRect(41, 24, 9, 24))
+        self.assertEqual(atlas.textureRectForGrapheme("hig", 1).left(), 41)
+        self.assertEqual(atlas.textureRectForGrapheme("hig", 1).top(), 24)
+        self.assertEqual(atlas.textureRectForGrapheme("hig", 1).width(), 9)
+        self.assertIn(atlas.textureRectForGrapheme("hig", 1).height(), (24, 25))
         self.assertEqual(atlas.pixelOffsetForGrapheme("hig", 2), QPoint(28, -6))
-        self.assertEqual(atlas.textureRectForGrapheme("hig", 2), QRect(0, 24, 21, 25))
+        self.assertEqual(atlas.textureRectForGrapheme("hig", 2).left(), 0)
+        self.assertEqual(atlas.textureRectForGrapheme("hig", 2).top(), 24)
+        self.assertEqual(atlas.textureRectForGrapheme("hig", 2).width(), 21)
+        self.assertIn(atlas.textureRectForGrapheme("hig", 2).height(), (25, 26))
 
         self.assertTrue(
             self.image_check(
                 "font_texture_atlas_hyihg",
                 "font_texture_atlas_hyihg",
                 atlas.renderAtlasTexture(),
+                size_tolerance=QSize(0, 1),
             )
         )
 

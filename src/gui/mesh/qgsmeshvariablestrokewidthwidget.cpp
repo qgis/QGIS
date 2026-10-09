@@ -44,12 +44,12 @@ QgsMeshVariableStrokeWidthWidget::QgsMeshVariableStrokeWidthWidget( const QgsInt
 
   connect( mDefaultMinMaxButton, &QPushButton::clicked, this, &QgsMeshVariableStrokeWidthWidget::defaultMinMax );
 
-  connect( mValueMinimumSpinBox, &QgsDoubleSpinBox::editingFinished, this, &QgsMeshVariableStrokeWidthWidget::widgetChanged );
-  connect( mValueMaximumSpinBox, &QgsDoubleSpinBox::editingFinished, this, &QgsMeshVariableStrokeWidthWidget::widgetChanged );
-  connect( mWidthMinimumSpinBox, &QgsDoubleSpinBox::editingFinished, this, &QgsMeshVariableStrokeWidthWidget::widgetChanged );
-  connect( mWidthMaximumSpinBox, &QgsDoubleSpinBox::editingFinished, this, &QgsMeshVariableStrokeWidthWidget::widgetChanged );
-  connect( mIgnoreOutOfRangecheckBox, &QCheckBox::toggled, this, &QgsMeshVariableStrokeWidthWidget::widgetChanged );
-  connect( mUseAbsoluteValueCheckBox, &QCheckBox::toggled, this, &QgsMeshVariableStrokeWidthWidget::widgetChanged );
+  connect( mValueMinimumSpinBox, &QgsDoubleSpinBox::editingFinished, this, &QgsMeshVariableStrokeWidthWidget::changed );
+  connect( mValueMaximumSpinBox, &QgsDoubleSpinBox::editingFinished, this, &QgsMeshVariableStrokeWidthWidget::changed );
+  connect( mWidthMinimumSpinBox, &QgsDoubleSpinBox::editingFinished, this, &QgsMeshVariableStrokeWidthWidget::changed );
+  connect( mWidthMaximumSpinBox, &QgsDoubleSpinBox::editingFinished, this, &QgsMeshVariableStrokeWidthWidget::changed );
+  connect( mIgnoreOutOfRangecheckBox, &QCheckBox::toggled, this, &QgsMeshVariableStrokeWidthWidget::changed );
+  connect( mUseAbsoluteValueCheckBox, &QCheckBox::toggled, this, &QgsMeshVariableStrokeWidthWidget::changed );
 }
 
 void QgsMeshVariableStrokeWidthWidget::setVariableStrokeWidth( const QgsInterpolatedLineWidth &variableStrokeWidth )
@@ -84,7 +84,7 @@ void QgsMeshVariableStrokeWidthWidget::defaultMinMax()
 {
   whileBlocking( mValueMinimumSpinBox )->setValue( mDefaultMinimumValue );
   whileBlocking( mValueMaximumSpinBox )->setValue( mDefaultMaximumValue );
-  emit widgetChanged();
+  emit changed();
 }
 
 QgsMeshVariableStrokeWidthButton::QgsMeshVariableStrokeWidthButton( QWidget *parent )
@@ -112,7 +112,7 @@ void QgsMeshVariableStrokeWidthButton::openWidget()
 
   if ( panel && panel->dockMode() )
   {
-    connect( widget, &QgsMeshVariableStrokeWidthWidget::widgetChanged, this, [this, widget] {
+    connect( widget, &QgsMeshVariableStrokeWidthWidget::changed, this, [this, widget] {
       // Update strokeWidth toward button
       this->setVariableStrokeWidth( widget->variableStrokeWidth() );
       this->emit widgetChanged();

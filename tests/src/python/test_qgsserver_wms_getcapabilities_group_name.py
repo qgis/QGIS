@@ -43,6 +43,12 @@ class TestQgsServerWMSGetCapabilities(QgsServerTestBase):
             "attribute <name> should be specified for a layer group",
         )
 
+        self.assertIn(
+            b"<Name>title</Name>",
+            r,
+            "attribute <name> should be specified for project root group",
+        )
+
     def test_wms_getmap_with(self):
         r = make_map_request(self, self.project_with_name)
         self.assertNotIn(
@@ -57,6 +63,12 @@ class TestQgsServerWMSGetCapabilities(QgsServerTestBase):
             b"<Name>layer_group</Name>",
             r,
             "attribute <name> should NOT be specified for a layer group",
+        )
+
+        self.assertNotIn(
+            b"<Name>title</Name>",
+            r,
+            "attribute <name> should NOT be specified for project root group",
         )
 
     def test_wms_getmap_without(self):

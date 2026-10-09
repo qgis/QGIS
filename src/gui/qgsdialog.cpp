@@ -17,6 +17,10 @@
 
 #include "qgsdialog.h"
 
+#include <QInputDialog>
+#include <QPlainTextEdit>
+#include <QSyntaxHighlighter>
+
 #include "moc_qgsdialog.cpp"
 
 QgsDialog::QgsDialog( QWidget *parent, Qt::WindowFlags fl, QDialogButtonBox::StandardButtons buttons, Qt::Orientation orientation )
@@ -37,4 +41,34 @@ QgsDialog::QgsDialog( QWidget *parent, Qt::WindowFlags fl, QDialogButtonBox::Sta
   layout->addLayout( mLayout );
   layout->addWidget( mButtonBox );
   setLayout( layout );
+}
+
+QString QgsDialog::getMultiLineText( QWidget *, const QString &title, const QString &label, const QString &text, bool *ok, Qt::WindowFlags flags, Qt::InputMethodHints inputMethodHints )
+{
+  auto dialog = std::make_unique<QInputDialog>( nullptr, flags );
+
+  dialog->setOptions( QInputDialog::UsePlainTextEditForTextInput );
+  dialog->setWindowTitle( title );
+  dialog->setLabelText( label );
+  dialog->setTextValue( text );
+  dialog->setInputMethodHints( inputMethodHints );
+
+  if ( QPlainTextEdit *textEdit = dialog->findChild<QPlainTextEdit *>() )
+  {
+    textEdit->setLineWrapMode( QPlainTextEdit::WidgetWidth );
+  }
+
+  const bool accepted = dialog->exec() == QDialog::Accepted;
+
+  if ( ok )
+    *ok = accepted;
+
+  if ( accepted )
+  {
+    return dialog->textValue();
+  }
+  else
+  {
+    return QString();
+  }
 }

@@ -9,7 +9,7 @@ sys.path.append(
 )
 
 cpp = open(sys.argv[1], "w", encoding="utf-8")
-cpp.write('#include "qgsexpression.h"\n\nvoid QgsExpression::buildFunctionHelp()\n{\n')
+cpp.write('#include "qgsexpression.h"\n\n')
 
 
 def quote(v):
@@ -36,7 +36,23 @@ def safe_tr(string: str) -> str:
     """
     if not string:
         return "QString()"
-    return f'tr( "{string}" )'
+    return f'QgsExpression::tr( "{string}" )'
+
+
+N = 20
+i0 = 0
+i1 = 0
+
+
+def next():
+    global i0, i1, N
+
+    if i0 % N == 0:
+        if i0 > 0:
+            cpp.write("\n\n}\n\n")
+        cpp.write(f"static void buildFunctionHelp{i1}(HelpTextHash &hth)\n{{")
+        i1 += 1
+    i0 += 1
 
 
 for f in sorted(glob.glob("resources/function_help/json/*")):
@@ -85,8 +101,10 @@ for f in sorted(glob.glob("resources/function_help/json/*")):
                     % (f, len(a_list))
                 )
 
+    next()
+
     cpp.write(
-        "\n\n  QgsExpression::functionHelpTexts().insert( QStringLiteral( {0} ),\n    Help( QStringLiteral( {0} ), {1}, {2},\n      QList<HelpVariant>()".format(
+        "\n\n  hth.insert( QStringLiteral( {0} ),\n    Help( QStringLiteral( {0} ), {1}, {2},\n      QList<HelpVariant>()".format(
             name, safe_tr(json_params["type"]), safe_tr(json_params["description"])
         )
     )
@@ -150,8 +168,10 @@ for f in sorted(glob.glob("resources/function_help/text/*")):
     n = os.path.basename(f)
 
     with open(f) as content:
+        next()
+
         cpp.write(
-            '\n\n  QgsExpression::functionHelpTexts().insert( "{0}",\n  Help( tr( "{0}" ), tr( "group" ), {1}, QList<HelpVariant>() ) );\n'.format(
+            '\n\n  hth.insert( "{0}",\n  Help( tr( "{0}" ), tr( "group" ), {1}, QList<HelpVariant>() ) );\n'.format(
                 n,
                 safe_tr(
                     content.read()
@@ -163,6 +183,12 @@ for f in sorted(glob.glob("resources/function_help/text/*")):
             )
         )
 
-cpp.write("\n}\n\n")
+cpp.write("\n\n}\n\n")
+
+cpp.write(
+    "void QgsExpression::buildFunctionHelp()\n{\n  HelpTextHash &hth = QgsExpression::functionHelpTexts();\n\n"
+)
+cpp.write("\n".join([f"  buildFunctionHelp{i}(hth);" for i in range(i1)]))
+cpp.write("\n}\n")
 
 cpp.close()

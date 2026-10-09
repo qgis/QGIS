@@ -84,7 +84,7 @@ QgsSymbolBufferSettings QgsSymbolBufferSettingsWidget::bufferSettings() const
 void QgsSymbolBufferSettingsWidget::onWidgetChanged()
 {
   if ( !mBlockUpdates )
-    emit widgetChanged();
+    emit changed();
 }
 
 

@@ -57,7 +57,7 @@ class QgsMesh3DGeometryBuilder : public QObject
 {
     Q_OBJECT
   public:
-    QgsMesh3DGeometryBuilder( const QgsTriangularMesh &mesh, const QgsVector3D &origin, const QgsRectangle &extent, float vertScale, QObject *parent );
+    QgsMesh3DGeometryBuilder( const QgsTriangularMesh &mesh, const QgsVector3D &origin, const QgsRectangle &extent, float vertScale, bool wireframeEnabled, QObject *parent );
 
     virtual void start();
 
@@ -81,6 +81,7 @@ class QgsMesh3DGeometryBuilder : public QObject
     QgsVector3D mOrigin;
     QgsRectangle mExtent;
     float mVertScale;
+    bool mWireframeEnabled;
 
     mutable QMutex mMutex;
     bool mVertexFinished = false;
@@ -91,13 +92,16 @@ class QgsMesh3DGeometryBuilder : public QObject
 
 /**
 * Base class for creating attributes and vertex/index buffers for a mesh layer
+*
+* When wireframe rendering is enabled, the geometry is built with duplicated vertices and no index buffer.
+* Otherwise, vertices are shared between triangles and referenced by an index buffer.
 */
 class QgsMesh3DGeometry : public Qt3DCore::QGeometry
 {
     Q_OBJECT
   protected:
     //! Constructor
-    explicit QgsMesh3DGeometry( const QgsTriangularMesh &triangularMesh, const QgsVector3D &origin, const QgsRectangle &extent, double verticalScale, QNode *parent );
+    explicit QgsMesh3DGeometry( const QgsTriangularMesh &triangularMesh, const QgsVector3D &origin, const QgsRectangle &extent, double verticalScale, bool wireframeEnabled, QNode *parent );
 
     ~QgsMesh3DGeometry() override = default;
 
@@ -109,6 +113,7 @@ class QgsMesh3DGeometry : public Qt3DCore::QGeometry
     QgsRectangle mExtent;
     float mVertScale;
     QgsTriangularMesh mTriangulaMesh;
+    bool mWireframeEnabled = false;
 
     Qt3DCore::QBuffer *mVertexBuffer = nullptr;
     Qt3DCore::QBuffer *mIndexBuffer = nullptr;
@@ -162,7 +167,7 @@ class QgsMeshDataset3DGeometry : public QgsMesh3DGeometry
     void prepareData();
 
     //! Returns the number of active faces
-    int extractDataset( QVector<double> &verticaleMagnitude, QVector<double> &scalarMagnitude, QgsMeshDataBlock &verticalActiveFaceFlagValues );
+    int extractDataset( QVector<double> &verticalMagnitude, QVector<double> &scalarMagnitude, QgsMeshDataBlock &verticalActiveFaceFlagValues );
     void prepareVerticesDatasetAttribute( Qt3DCore::QBuffer *buffer, int stride, int offset );
 
     bool mIsVerticalMagnitudeRelative;
@@ -181,7 +186,14 @@ class QgsMeshDataset3DGeometryBuilder : public QgsMesh3DGeometryBuilder
 
   public:
     QgsMeshDataset3DGeometryBuilder(
-      const QgsTriangularMesh &mesh, const QgsMesh &nativeMesh, const QgsVector3D &origin, const QgsRectangle &extent, float vertScale, const QgsMeshDataset3DGeometry::VertexData &vertexData, QObject *parent
+      const QgsTriangularMesh &mesh,
+      const QgsMesh &nativeMesh,
+      const QgsVector3D &origin,
+      const QgsRectangle &extent,
+      float vertScale,
+      const QgsMeshDataset3DGeometry::VertexData &vertexData,
+      bool wireframeEnabled,
+      QObject *parent
     );
     void start() override;
 
@@ -201,7 +213,7 @@ class QgsMeshTerrain3DGeometry : public QgsMesh3DGeometry
     Q_OBJECT
   public:
     //! Constructs a mesh layer geometry from triangular mesh.
-    explicit QgsMeshTerrain3DGeometry( const QgsTriangularMesh &triangularMesh, const QgsVector3D &origin, const QgsRectangle &extent, double verticalScale, QNode *parent );
+    explicit QgsMeshTerrain3DGeometry( const QgsTriangularMesh &triangularMesh, const QgsVector3D &origin, const QgsRectangle &extent, double verticalScale, bool wireframeEnabled, QNode *parent );
 };
 
 

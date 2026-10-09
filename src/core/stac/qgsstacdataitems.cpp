@@ -33,6 +33,8 @@ using namespace Qt::StringLiterals;
 
 constexpr int MAX_DISPLAYED_ITEMS = 20;
 
+///@cond PRIVATE
+
 
 //
 // QgsStacAssetItem
@@ -128,6 +130,8 @@ QgsStacAssetLayerItem::QgsStacAssetLayerItem(
 {
   updateToolTip();
   setState( Qgis::BrowserItemState::Populated );
+
+  mCapabilities.setFlag( Qgis::BrowserItemCapability::ReadOnly, true );
 }
 
 bool QgsStacAssetLayerItem::hasDragEnabled() const
@@ -762,3 +766,5 @@ QgsDataItem *QgsStacDataItemProvider::createDataItem( const QString &path, QgsDa
     return new QgsStacRootItem( parentItem, QObject::tr( "STAC" ), u"stac:"_s );
   return nullptr;
 }
+
+///@endcond

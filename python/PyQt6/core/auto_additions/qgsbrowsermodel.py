@@ -20,7 +20,7 @@ QgsBrowserModel.ProviderKeyRole.__doc__ = "Data item provider key that created t
 QgsBrowserModel.LayerMetadataRole = QgsBrowserModel.CustomRole.LayerMetadata
 QgsBrowserModel.ItemDataRole.LayerMetadataRole = QgsBrowserModel.CustomRole.LayerMetadata
 QgsBrowserModel.LayerMetadataRole.is_monkey_patched = True
-QgsBrowserModel.LayerMetadataRole.__doc__ = ""
+QgsBrowserModel.LayerMetadataRole.__doc__ = "Data item layer metadata for layer items"
 QgsBrowserModel.CustomRole.__doc__ = """Custom model roles.
 
 .. note::
@@ -48,7 +48,7 @@ QgsBrowserModel.CustomRole.__doc__ = """Custom model roles.
 
   Available as ``QgsBrowserModel.ProviderKeyRole`` in older QGIS releases.
 
-* ``LayerMetadata``: 
+* ``LayerMetadata``: Data item layer metadata for layer items
 
   Available as ``QgsBrowserModel.LayerMetadataRole`` in older QGIS releases.
 

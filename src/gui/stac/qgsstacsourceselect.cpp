@@ -524,7 +524,7 @@ void QgsStacSourceSelect::showItemsContextMenu( QPoint point )
     {
       if ( asset.isCloudOptimized() )
       {
-        QAction *loadAssetAction = new QAction( asset.title(), assetsMenu );
+        QAction *loadAssetAction = new QAction( asset.title().isEmpty() ? QUrl( asset.href() ).fileName() : asset.title(), assetsMenu );
         connect( loadAssetAction, &QAction::triggered, this, [this, uri = asset.uri()] {
           QgsTemporaryCursorOverride cursorOverride( Qt::WaitCursor );
           loadUri( uri );
@@ -590,7 +590,7 @@ void QgsStacSourceSelect::highlightFootprint( const QModelIndex &index )
   QgsGeometry geom = index.data( QgsStacItemListModel::Role::Geometry ).value<QgsGeometry>();
   if ( QgsMapCanvas *map = mapCanvas() )
   {
-    mCurrentItemBand.reset( new QgsRubberBand( map, Qgis::GeometryType::Polygon ) );
+    mCurrentItemBand = make_qobject_unique<QgsRubberBand>( map, Qgis::GeometryType::Polygon );
     mCurrentItemBand->setFillColor( QColor::fromRgb( 255, 0, 0, 128 ) );
     mCurrentItemBand->setToGeometry( geom, QgsCoordinateReferenceSystem::fromEpsgId( 4326 ) );
   }

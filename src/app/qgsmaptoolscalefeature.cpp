@@ -269,22 +269,26 @@ void QgsMapToolScaleFeature::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
       mScaledFeatures << cf.id(); //todo: take the closest feature, not the first one...
       mOriginalGeometries << cf.geometry();
 
-      mRubberBand = createRubberBand( vlayer->geometryType() );
+      mRubberBand = createRubberBandForLayer( vlayer, { cf.id() } );
       mRubberBand->setToGeometry( cf.geometry(), vlayer );
     }
     else
     {
       mScaledFeatures = vlayer->selectedFeatureIds();
 
-      mRubberBand = createRubberBand( vlayer->geometryType() );
-
       QgsFeature feat;
       QgsFeatureIterator it = vlayer->getSelectedFeatures();
+      QList< QgsFeatureId > ids;
+      QVector< QgsGeometry > selectedGeometries;
       while ( it.nextFeature( feat ) )
       {
-        mRubberBand->addGeometry( feat.geometry(), vlayer, false );
         mOriginalGeometries << feat.geometry();
+        selectedGeometries << feat.geometry();
+        ids << feat.id();
       }
+      mRubberBand = createRubberBandForLayer( vlayer, ids );
+      mRubberBand->setToGeometry( QgsGeometry::collectGeometry( selectedGeometries ), vlayer );
+
       mRubberBand->updatePosition();
       mRubberBand->update();
     }

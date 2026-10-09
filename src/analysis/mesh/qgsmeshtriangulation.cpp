@@ -251,7 +251,7 @@ void QgsMeshTriangulation::addBreakLinesFromFeature( const QgsFeature &feature, 
         }
       }
 
-    mTriangulation->addLine( linePoints, QgsInterpolator::SourceType::BreakLines );
+    mTriangulation->addLine( linePoints, Qgis::InterpolationSourceType::BreakLines );
   }
 }
 

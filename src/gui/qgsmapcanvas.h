@@ -56,6 +56,7 @@ class QgsMapToPixel;
 class QgsMapLayer;
 class QgsHighlight;
 class QgsSettingsEntryString;
+class QgsSettingsEntryBool;
 class QgsVectorLayer;
 
 class QgsLabelingResults;
@@ -107,6 +108,9 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView, public QgsExpressionContex
     Q_PROPERTY( bool previewJobsEnabled READ previewJobsEnabled WRITE setPreviewJobsEnabled )
 
   public:
+    static const QgsSettingsEntryBool *settingsMainCanvasPreviewJobs SIP_SKIP;
+    static const QgsSettingsEntryBool *settingsEnableRenderCaching SIP_SKIP;
+
     //! Constructor
     QgsMapCanvas( QWidget *parent SIP_TRANSFERTHIS = nullptr );
 
@@ -627,7 +631,7 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView, public QgsExpressionContex
     QString theme() const { return mTheme; }
 
     //! Gets the current coordinate transform
-    const QgsMapToPixel *getCoordinateTransform();
+    const QgsMapToPixel *getCoordinateTransform() SIP_DISALLOWNONE;
 
     //! Find out whether rendering is in progress
     bool isDrawing();
@@ -742,7 +746,7 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView, public QgsExpressionContex
      *
      * Main canvas in QGIS returns an instance which is always up-to-date with the project's snapping configuration.
      */
-    QgsSnappingUtils *snappingUtils() const;
+    QgsSnappingUtils *snappingUtils() const SIP_DISALLOWNONE;
 
     /**
      * Assign an instance of snapping utils to the map canvas.

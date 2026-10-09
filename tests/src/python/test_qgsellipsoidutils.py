@@ -13,7 +13,14 @@ __copyright__ = "Copyright 2017, The QGIS Project"
 
 import unittest
 
-from qgis.core import QgsEllipsoidUtils
+from qgis.core import (
+    QgsCoordinateReferenceSystem,
+    QgsCoordinateTransform,
+    QgsCoordinateTransformContext,
+    QgsEllipsoidUtils,
+    QgsVector3D,
+)
+from qgis.PyQt.QtGui import QQuaternion, QVector3D
 from qgis.testing import QgisTestCase, start_app
 
 app = start_app()
@@ -258,6 +265,94 @@ class TestQgsEllipsoidUtils(QgisTestCase):
             self.assertTrue(
                 QgsEllipsoidUtils.ellipsoidParameters(o).valid, f"no defs for {o}"
             )
+
+    def testQuaternionFromNormalUpRight(self):
+        q = QgsEllipsoidUtils.quaternionFromNormalUpRight(
+            QVector3D(0, 0, 0), QVector3D(0, 0, 0)
+        )
+        self.assertEqual(q, QQuaternion(0.0, 0.5, 0.0, 0.0))
+
+        q = QgsEllipsoidUtils.quaternionFromNormalUpRight(
+            QVector3D(1, 0, 0), QVector3D(0, 0, 0)
+        )
+        self.assertEqual(q, QQuaternion(0.0, 0.5, 0.0, 0.5))
+
+        q = QgsEllipsoidUtils.quaternionFromNormalUpRight(
+            QVector3D(0, 0, 0), QVector3D(1, 0, 0)
+        )
+        self.assertEqual(q, QQuaternion(0.7071067690849304, 0.0, 0.0, 0.0))
+
+        q = QgsEllipsoidUtils.quaternionFromNormalUpRight(
+            QVector3D(1, 0, 1), QVector3D(0, 0, 0)
+        )
+        self.assertEqual(
+            q, QQuaternion(0.6532815098762512, 0.0, 0.27059802412986755, 0.0)
+        )
+
+        q = QgsEllipsoidUtils.quaternionFromNormalUpRight(
+            QVector3D(1, 0, 1), QVector3D(1, 0, 1)
+        )
+        self.assertEqual(q, QQuaternion(0.7768869996070862, 0.0, 0.0, 0.0))
+
+        q = QgsEllipsoidUtils.quaternionFromNormalUpRight(
+            QVector3D(0, 0.5, 1), QVector3D(1, 0, 0)
+        )
+        self.assertEqual(
+            q, QQuaternion(0.9732489585876465, -0.22975292801856995, 0.0, 0.0)
+        )
+
+    def testENURotation(self):
+        params = QgsEllipsoidUtils.ellipsoidParameters("WGS84")
+
+        ct = QgsCoordinateTransform(
+            QgsCoordinateReferenceSystem("EPSG:4979"),
+            QgsCoordinateReferenceSystem("EPSG:4978"),
+            QgsCoordinateTransformContext(),
+        )
+
+        pos = ct.transform(QgsVector3D(0, 90, 0.0))
+        q = QgsEllipsoidUtils.ellipsoidEastNorthUpRotation(
+            pos, params.semiMajor, params.semiMinor
+        )
+        self.assertEqual(q, QQuaternion(1.0, 0.0, 1.5308085657314598e-17, 0.0))
+
+        pos = ct.transform(QgsVector3D(0, -90, 0.0))
+        q = QgsEllipsoidUtils.ellipsoidEastNorthUpRotation(
+            pos, params.semiMajor, params.semiMinor
+        )
+        self.assertEqual(q, QQuaternion(0.0, 1.0, 0.0, 1.5308085657314598e-17))
+
+        pos = ct.transform(QgsVector3D(0, 0, 0.0))
+        q = QgsEllipsoidUtils.ellipsoidEastNorthUpRotation(
+            pos, params.semiMajor, params.semiMinor
+        )
+        self.assertEqual(q, QQuaternion(0.5, 0.5, 0.5, 0.5))
+
+        pos = ct.transform(QgsVector3D(180, 0, 0.0))
+        q = QgsEllipsoidUtils.ellipsoidEastNorthUpRotation(
+            pos, params.semiMajor, params.semiMinor
+        )
+        self.assertEqual(q, QQuaternion(-0.5, -0.5, 0.5, 0.5))
+
+        pos = ct.transform(QgsVector3D(-180, 0, 0.0))
+        q = QgsEllipsoidUtils.ellipsoidEastNorthUpRotation(
+            pos, params.semiMajor, params.semiMinor
+        )
+        self.assertEqual(q, QQuaternion(0.5, 0.5, -0.5, -0.5))
+
+        pos = ct.transform(QgsVector3D(18.8048, 45.2881, 0.0))
+        q = QgsEllipsoidUtils.ellipsoidEastNorthUpRotation(
+            pos, params.semiMajor, params.semiMinor
+        )
+        self.assertEqual(
+            q,
+            QQuaternion(
+                0.5383383631706238,
+                0.22140301764011383,
+                0.30927982926368713,
+                0.7520096302032471,
+            ),
+        )
 
 
 if __name__ == "__main__":

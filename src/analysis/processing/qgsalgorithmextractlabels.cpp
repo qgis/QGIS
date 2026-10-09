@@ -226,7 +226,7 @@ class ExtractLabelSink : public QgsLabelSink
           break;
       }
 
-      const double labelRotation = !qgsDoubleNear( label->getAlpha(), 0.0 ) ? -( label->getAlpha() * 180 / M_PI ) + 360 : 0.0;
+      const double labelRotation = !qgsDoubleNear( label->angleRadians(), 0.0 ) ? -( label->angleRadians() * 180 / M_PI ) + 360 : 0.0;
 
       const QFont font = labelFeature->definedFont();
       const QString fontFamily = font.family();
@@ -338,6 +338,8 @@ class ExtractLabelSink : public QgsLabelSink
 
 QVariantMap QgsExtractLabelsAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
+  QGS_MARK_ALGORITHM_SOURCE
+
   const QgsRectangle extent = parameterAsExtent( parameters, u"EXTENT"_s, context );
   const double scale = parameterAsDouble( parameters, u"SCALE"_s, context );
   if ( qgsDoubleNear( scale, 0.0 ) )
@@ -397,6 +399,7 @@ QVariantMap QgsExtractLabelsAlgorithm::processAlgorithm( const QVariantMap &para
   mapSettings.setLayerStyleOverrides( mMapThemeStyleOverrides );
   mapSettings.setLabelingEngineSettings( mLabelSettings );
   mapSettings.setScaleMethod( mScaleMethod );
+  mapSettings.setEllipsoid( context.ellipsoid() );
 
   //build the expression context
   QgsExpressionContext expressionContext;
@@ -494,8 +497,11 @@ QVariantMap QgsExtractLabelsAlgorithm::processAlgorithm( const QVariantMap &para
 
     if ( !sink->addFeature( feature, QgsFeatureSink::FastInsert ) )
       throw QgsProcessingException( writeFeatureError( sink.get(), parameters, u"OUTPUT"_s ) );
+    else
+      feedback->featureAddedToSink( u"OUTPUT"_s );
   }
   sink->finalize();
+  feedback->featureSinkFinalized( u"OUTPUT"_s );
   sink.reset();
 
   if ( QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( QgsProcessingUtils::mapLayerFromString( dest, context ) ) )

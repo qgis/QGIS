@@ -24,6 +24,7 @@
 #include "qgs3dutils.h"
 #include "qgsapplication.h"
 #include "qgscameracontroller.h"
+#include "qgseventtracing.h"
 #include "qgsflatterrainsettings.h"
 #include "qgsgui.h"
 #include "qgshelp.h"
@@ -44,6 +45,11 @@
 #include <QScreen>
 #include <QString>
 #include <QToolBar>
+#include <qlogging.h>
+
+#ifdef HAVE_TRACY
+#include <tracy/Tracy.hpp>
+#endif
 
 using namespace Qt::StringLiterals;
 
@@ -151,9 +157,9 @@ void initCanvas3D( Qgs3DMapCanvas *canvas, bool isGlobe, QString viewIdxStr )
     }
   }
 
-  QObject::connect( canvas->scene(), &Qgs3DMapScene::totalPendingJobsCountChanged, canvas, [canvas] { qDebug() << "pending jobs:" << canvas->scene()->totalPendingJobsCount(); } );
+  QObject::connect( canvas->scene(), &Qgs3DMapScene::totalPendingJobsCountChanged, canvas, [canvas] { QgsEventTracing::setIntVariable( "Pending jobs", canvas->scene()->totalPendingJobsCount() ); } );
 
-  qDebug() << "pending jobs:" << canvas->scene()->totalPendingJobsCount();
+  QgsEventTracing::setIntVariable( "Pending jobs", canvas->scene()->totalPendingJobsCount() );
 }
 
 QDialog *createConfigDialog( Qgs3DMapCanvas *canvas )
@@ -212,6 +218,33 @@ int main( int argc, char *argv[] )
 {
   QgsApplication myApp( argc, argv, true, QString(), u"desktop"_s );
 
+#ifdef HAVE_TRACY
+  // Forward log messages to Tracy
+  qInstallMessageHandler( []( QtMsgType type, const QMessageLogContext &, const QString &msg ) {
+    const auto encodedMsg = msg.toLocal8Bit();
+    uint32_t color = 0xFFFFFF;
+    switch ( type )
+    {
+      case QtDebugMsg:
+        color = 0xEEEEEE;
+        break;
+      case QtCriticalMsg:
+        color = 0xFF0000;
+        break;
+      case QtWarningMsg:
+        color = 0xEEEE00;
+        break;
+      case QtFatalMsg:
+        color = 0xEE0000;
+        break;
+      default:
+        color = 0xFFFFFF;
+        break;
+    }
+    TracyMessageC( encodedMsg.constData(), encodedMsg.size(), color );
+  } );
+#endif
+
   // init QGIS's paths - true means that all path will be inited from prefix
   QgsApplication::init();
   QgsApplication::initQgis();
@@ -255,7 +288,7 @@ int main( int argc, char *argv[] )
   QWidget *windowWidget = new QWidget;
 
   QToolBar *toolBar = new QToolBar( windowWidget );
-  toolBar->setIconSize( QgsGuiUtils::iconSize() );
+  toolBar->setIconSize( QgsGui::iconSize( Qgis::UserInterfaceIconType::MainWindowToolbar ) );
   toolBar->addAction( QIcon( QgsApplication::iconPath( "mActionZoomFullExtent.svg" ) ), u"Reset camera to default position"_s, windowWidget, [canvas] { canvas->resetView(); } );
   QAction *toggleDebugPanel = toolBar->addAction( QgsApplication::getThemeIcon( u"/propertyicons/general.svg"_s ), u"Toggle on-screen Debug panel"_s );
   toggleDebugPanel->setCheckable( true );

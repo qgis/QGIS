@@ -85,6 +85,8 @@ QgsAddUniqueValueIndexAlgorithm *QgsAddUniqueValueIndexAlgorithm::createInstance
 
 QVariantMap QgsAddUniqueValueIndexAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
+  QGS_MARK_ALGORITHM_SOURCE
+
   std::unique_ptr<QgsProcessingFeatureSource> source( parameterAsSource( parameters, u"INPUT"_s, context ) );
   if ( !source )
     throw QgsProcessingException( invalidSourceError( parameters, u"INPUT"_s ) );
@@ -145,6 +147,8 @@ QVariantMap QgsAddUniqueValueIndexAlgorithm::processAlgorithm( const QVariantMap
       feature.setAttributes( attributes );
       if ( !sink->addFeature( feature, QgsFeatureSink::FastInsert ) )
         throw QgsProcessingException( writeFeatureError( sink.get(), parameters, u"OUTPUT"_s ) );
+      else
+        feedback->featureAddedToSink( u"OUTPUT"_s );
     }
 
     feedback->setProgress( current * step );
@@ -166,6 +170,7 @@ QVariantMap QgsAddUniqueValueIndexAlgorithm::processAlgorithm( const QVariantMap
       f.setAttributes( QgsAttributes() << sortedIt.key() << sortedIt.value() );
       if ( !summarySink->addFeature( f, QgsFeatureSink::FastInsert ) )
         throw QgsProcessingException( writeFeatureError( summarySink.get(), parameters, u"SUMMARY_OUTPUT"_s ) );
+      feedback->featureAddedToSink( u"SUMMARY_OUTPUT"_s );
     }
   }
 
@@ -173,11 +178,13 @@ QVariantMap QgsAddUniqueValueIndexAlgorithm::processAlgorithm( const QVariantMap
   if ( sink )
   {
     sink->finalize();
+    feedback->featureSinkFinalized( u"OUTPUT"_s );
     results.insert( u"OUTPUT"_s, dest );
   }
   if ( summarySink )
   {
     summarySink->finalize();
+    feedback->featureSinkFinalized( u"SUMMARY_OUTPUT"_s );
     results.insert( u"SUMMARY_OUTPUT"_s, summaryDest );
   }
   return results;

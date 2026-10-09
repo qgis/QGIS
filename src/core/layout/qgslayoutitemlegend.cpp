@@ -39,6 +39,7 @@
 #include "qgsmaplayerlegend.h"
 #include "qgsmapsettings.h"
 #include "qgsmeshlayer.h"
+#include "qgspainting.h"
 #include "qgsproject.h"
 #include "qgsrasterlayer.h"
 #include "qgsrasterrenderer.h"
@@ -247,10 +248,9 @@ void QgsLayoutItemLegend::paint( QPainter *painter, const QStyleOptionGraphicsIt
   // between oldPos and newPos
   // the issue doesn't appear in desktop rendering but only in export because in the first one,
   // Qt triggers a redraw on position change
-  painter->save();
+  QgsScopedQPainterState painterState( painter );
   painter->translate( pos() - oldPos );
   QgsLayoutItem::paint( painter, itemStyle, pWidget );
-  painter->restore();
 }
 
 void QgsLayoutItemLegend::finalizeRestoreFromXml()

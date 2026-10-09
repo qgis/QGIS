@@ -32,7 +32,7 @@ class DummyRenderer : public QgsTiledSceneRenderer
     DummyRenderer() = default;
     QString type() const override { return u"dummy"_s; }
     QgsTiledSceneRenderer *clone() const override { return new DummyRenderer(); }
-    static QgsTiledSceneRenderer *create( QDomElement &, const QgsReadWriteContext & ) { return new DummyRenderer(); }
+    static std::unique_ptr<QgsTiledSceneRenderer> create( QDomElement &, const QgsReadWriteContext & ) { return std::make_unique<DummyRenderer>(); }
     QDomElement save( QDomDocument &doc, const QgsReadWriteContext & ) const override { return doc.createElement( u"test"_s ); }
     void renderTriangle( QgsTiledSceneRenderContext &, const QPolygonF & ) override {};
     void renderLine( QgsTiledSceneRenderContext &, const QPolygonF & ) override {};

@@ -38,6 +38,7 @@
 #include "qgsextentwidget.h"
 #include "qgsfieldcombobox.h"
 #include "qgsfieldexpressionwidget.h"
+#include "qgsfileutils.h"
 #include "qgsfilewidget.h"
 #include "qgsfilterlineedit.h"
 #include "qgsgeometrywidget.h"
@@ -48,6 +49,7 @@
 #include "qgsmaplayercombobox.h"
 #include "qgsmapmouseevent.h"
 #include "qgsmapthemecollection.h"
+#include "qgsmaptoolextent.h"
 #include "qgsmessagebar.h"
 #include "qgspointcloudattributecombobox.h"
 #include "qgspointcloudlayer.h"
@@ -61,9 +63,14 @@
 #include "qgsprocessingmultipleselectiondialog.h"
 #include "qgsprocessingoutputdestinationwidget.h"
 #include "qgsprocessingoutputs.h"
+#include "qgsprocessingparameterheatmappixelsize.h"
+#include "qgsprocessingparameterinterpolationpixelsize.h"
+#include "qgsprocessingparameterinterpolationsource.h"
+#include "qgsprocessingparameterreliefcolors.h"
 #include "qgsprocessingparameters.h"
 #include "qgsprocessingpointcloudexpressionlineedit.h"
 #include "qgsprocessingrastercalculatorexpressionlineedit.h"
+#include "qgsprocessingregistry.h"
 #include "qgsproject.h"
 #include "qgsprojectionselectionwidget.h"
 #include "qgsproviderconnectioncombobox.h"
@@ -79,9 +86,11 @@
 #include <QComboBox>
 #include <QFileDialog>
 #include <QHBoxLayout>
+#include <QInputDialog>
 #include <QLabel>
 #include <QLineEdit>
 #include <QMenu>
+#include <QMessageBox>
 #include <QPlainTextEdit>
 #include <QRadioButton>
 #include <QString>
@@ -4011,9 +4020,9 @@ void QgsProcessingPointPanel::updateRubberBand()
 
   if ( !mMapPointRubberBand )
   {
-    mMapPointRubberBand.reset( new QgsRubberBand( mCanvas, Qgis::GeometryType::Point ) );
+    mMapPointRubberBand = make_qobject_unique<QgsRubberBand>( mCanvas, Qgis::GeometryType::Point );
     mMapPointRubberBand->setZValue( 1000 );
-    mMapPointRubberBand->setIcon( QgsRubberBand::ICON_X );
+    mMapPointRubberBand->setIcon( Qgis::RubberBandIconType::CrossX );
 
     const double scaleFactor = mCanvas->fontMetrics().xHeight() * .4;
     mMapPointRubberBand->setWidth( scaleFactor );
@@ -8268,6 +8277,60 @@ QgsProcessingAbstractParameterDefinitionWidget *QgsProcessingPointCloudAttribute
   return new QgsProcessingPointCloudAttributeParameterDefinitionWidget( context, widgetContext, definition, algorithm );
 }
 
+//
+// QgsProcessingDestinationParameterDefinitionWidget
+//
+
+QgsProcessingDestinationParameterDefinitionWidget::QgsProcessingDestinationParameterDefinitionWidget(
+  const QString &type,
+  QgsProcessingContext &context,
+  const QgsProcessingParameterWidgetContext &widgetContext,
+  const QgsProcessingDestinationParameter *definition,
+  const QgsProcessingAlgorithm *algorithm,
+  QWidget *parent
+)
+  : QgsProcessingAbstractParameterDefinitionWidget( context, widgetContext, definition, algorithm, parent )
+{
+  if ( definition )
+  {
+    mType = definition->type();
+    mExistingDestinationParameter.reset( qgis::down_cast< QgsProcessingDestinationParameter * >( definition->clone() ) );
+  }
+  else
+  {
+    mType = type;
+    const QgsProcessingParameterType *parameterTypeMetadata = QgsApplication::processingRegistry()->parameterType( mType );
+    Q_ASSERT( parameterTypeMetadata );
+    mExistingDestinationParameter.reset( qgis::down_cast< QgsProcessingDestinationParameter * >( parameterTypeMetadata->create( u"OUTPUT"_s ) ) );
+  }
+
+  // TODO this:
+  // # If child algorithm output is mandatory, disable checkbox
+
+  QVBoxLayout *vlayout = new QVBoxLayout();
+  vlayout->setContentsMargins( 0, 0, 0, 0 );
+
+  vlayout->addWidget( new QLabel( tr( "Default value" ) ) );
+
+  mDestinationWidget = new QgsProcessingLayerOutputDestinationWidget( mExistingDestinationParameter.get(), true );
+  vlayout->addWidget( mDestinationWidget );
+
+  connect( mDestinationWidget, &QgsProcessingLayerOutputDestinationWidget::destinationChanged, this, &QgsProcessingAbstractParameterDefinitionWidget::changed );
+
+  setLayout( vlayout );
+}
+
+QgsProcessingParameterDefinition *QgsProcessingDestinationParameterDefinitionWidget::createParameter( const QString &name, const QString &description, Qgis::ProcessingParameterFlags flags ) const
+{
+  // clone existing definition to retain specific destination properties
+  std::unique_ptr< QgsProcessingParameterDefinition > param( mExistingDestinationParameter->clone() );
+  param->setName( name );
+  param->setDescription( description );
+  param->setFlags( flags );
+  param->setDefaultValue( mDestinationWidget->value() );
+
+  return param.release();
+}
 
 //
 // QgsProcessingOutputWidgetWrapper
@@ -8334,6 +8397,14 @@ QVariantMap QgsProcessingOutputWidgetWrapper::customProperties() const
     res.insert( u"OPEN_AFTER_RUNNING"_s, mOutputWidget->openAfterRunning() );
   return res;
 }
+
+QgsProcessingAbstractParameterDefinitionWidget *QgsProcessingOutputWidgetWrapper::createParameterDefinitionWidget(
+  QgsProcessingContext &context, const QgsProcessingParameterWidgetContext &widgetContext, const QgsProcessingParameterDefinition *definition, const QgsProcessingAlgorithm *algorithm
+)
+{
+  return new QgsProcessingDestinationParameterDefinitionWidget( parameterType(), context, widgetContext, qgis::down_cast< const QgsProcessingDestinationParameter * >( definition ), algorithm );
+}
+
 
 //
 // QgsProcessingFeatureSinkWidgetWrapper
@@ -8497,5 +8568,1604 @@ QString QgsProcessingVectorTileDestinationWidgetWrapper::modelerExpressionFormat
 {
   return tr( "path to layer destination" );
 }
+
+
+//
+// QgsHeatmapPixelSizeWidget
+//
+
+QgsHeatmapPixelSizeWidget::QgsHeatmapPixelSizeWidget( QWidget *parent )
+  : QgsPanelWidget( parent )
+{
+  setupUi( this );
+
+  mCellXSpinBox->setShowClearButton( false );
+  mCellYSpinBox->setShowClearButton( false );
+  mRowsSpinBox->setShowClearButton( false );
+  mColumnsSpinBox->setShowClearButton( false );
+
+  connect( mCellYSpinBox, qOverload<double>( &QgsDoubleSpinBox::valueChanged ), mCellXSpinBox, &QgsDoubleSpinBox::setValue );
+  connect( mCellXSpinBox, qOverload<double>( &QgsDoubleSpinBox::valueChanged ), this, &QgsHeatmapPixelSizeWidget::pixelSizeChanged );
+  connect( mRowsSpinBox, qOverload<int>( &QgsSpinBox::valueChanged ), this, &QgsHeatmapPixelSizeWidget::rowsChanged );
+  connect( mColumnsSpinBox, qOverload<int>( &QgsSpinBox::valueChanged ), this, &QgsHeatmapPixelSizeWidget::columnsChanged );
+}
+
+void QgsHeatmapPixelSizeWidget::setLayer( QgsVectorLayer *layer )
+{
+  mLayer = layer;
+  if ( mLayer )
+    mLayerBounds = mLayer->extent();
+  else
+    mLayerBounds = QgsRectangle();
+
+  recalculateBounds();
+}
+
+QgsVectorLayer *QgsHeatmapPixelSizeWidget::layer()
+{
+  return mLayer;
+}
+
+void QgsHeatmapPixelSizeWidget::setRadius( double radius )
+{
+  mRadius = radius;
+  recalculateBounds();
+}
+
+void QgsHeatmapPixelSizeWidget::setRadiusField( const QString &radiusField )
+{
+  mRadiusField = radiusField;
+  recalculateBounds();
+}
+
+void QgsHeatmapPixelSizeWidget::recalculateBounds()
+{
+  mRasterBounds = mLayerBounds;
+  if ( !mLayer )
+    return;
+
+  double maxRadius = mRadius;
+  if ( !mRadiusField.isEmpty() )
+  {
+    const int idx = mLayer->fields().lookupField( mRadiusField );
+    if ( idx >= 0 )
+      maxRadius = mLayer->maximumValue( idx ).toDouble();
+  }
+
+  mRasterBounds.setXMinimum( mRasterBounds.xMinimum() - maxRadius );
+  mRasterBounds.setYMinimum( mRasterBounds.yMinimum() - maxRadius );
+  mRasterBounds.setXMaximum( mRasterBounds.xMaximum() + maxRadius );
+  mRasterBounds.setYMaximum( mRasterBounds.yMaximum() + maxRadius );
+
+  pixelSizeChanged();
+}
+
+void QgsHeatmapPixelSizeWidget::pixelSizeChanged()
+{
+  const double prevValue = value();
+  const double cellSize = mCellXSpinBox->value();
+  if ( cellSize <= 0 || mRasterBounds.isNull() )
+  {
+    emit valueChanged();
+    return;
+  }
+
+  whileBlocking( mCellYSpinBox )->setValue( cellSize );
+
+  const int rows = std::max( static_cast<int>( std::round( mRasterBounds.height() / cellSize ) ) + 1, 1 );
+  const int cols = std::max( static_cast<int>( std::round( mRasterBounds.width() / cellSize ) ) + 1, 1 );
+
+  whileBlocking( mRowsSpinBox )->setValue( rows );
+  whileBlocking( mColumnsSpinBox )->setValue( cols );
+
+  if ( !qgsDoubleNear( prevValue, value() ) )
+  {
+    emit valueChanged();
+  }
+}
+
+void QgsHeatmapPixelSizeWidget::rowsChanged()
+{
+  const int rows = mRowsSpinBox->value();
+  if ( rows <= 0 || mRasterBounds.isNull() )
+    return;
+
+  const double cellSize = mRasterBounds.height() / rows;
+  if ( cellSize == 0 )
+    return;
+
+  const int cols = std::max( static_cast<int>( std::round( mRasterBounds.width() / cellSize ) ) + 1, 1 );
+
+  whileBlocking( mColumnsSpinBox )->setValue( cols );
+  whileBlocking( mCellXSpinBox )->setValue( cellSize );
+  whileBlocking( mCellYSpinBox )->setValue( cellSize );
+
+  emit valueChanged();
+}
+
+void QgsHeatmapPixelSizeWidget::columnsChanged()
+{
+  const int cols = mColumnsSpinBox->value();
+  if ( cols < 2 || mRasterBounds.isNull() )
+    return;
+
+  const double cellSize = mRasterBounds.width() / ( cols - 1 );
+  if ( cellSize == 0 )
+    return;
+
+  const int rows = std::max( static_cast<int>( std::round( mRasterBounds.height() / cellSize ) ), 1 );
+
+  whileBlocking( mRowsSpinBox )->setValue( rows );
+  whileBlocking( mCellXSpinBox )->setValue( cellSize );
+  whileBlocking( mCellYSpinBox )->setValue( cellSize );
+
+  emit valueChanged();
+}
+
+double QgsHeatmapPixelSizeWidget::value() const
+{
+  return mCellXSpinBox->value();
+}
+
+void QgsHeatmapPixelSizeWidget::setValue( double value )
+{
+  mCellXSpinBox->setValue( value );
+  mCellYSpinBox->setValue( value );
+}
+
+//
+// QgsProcessingHeatmapPixelSizeWidgetWrapper
+//
+
+QgsProcessingHeatmapPixelSizeWidgetWrapper::QgsProcessingHeatmapPixelSizeWidgetWrapper( const QgsProcessingParameterDefinition *parameter, Qgis::ProcessingMode type, QWidget *parent )
+  : QgsAbstractProcessingParameterWidgetWrapper( parameter, type, parent )
+{}
+
+QString QgsProcessingHeatmapPixelSizeWidgetWrapper::parameterType() const
+{
+  return QgsProcessingParameterHeatmapPixelSize::typeName();
+}
+
+QgsAbstractProcessingParameterWidgetWrapper *QgsProcessingHeatmapPixelSizeWidgetWrapper::createWidgetWrapper( const QgsProcessingParameterDefinition *parameter, Qgis::ProcessingMode type )
+{
+  return new QgsProcessingHeatmapPixelSizeWidgetWrapper( parameter, type );
+}
+
+QgsProcessingAbstractParameterDefinitionWidget *QgsProcessingHeatmapPixelSizeWidgetWrapper::createParameterDefinitionWidget(
+  QgsProcessingContext &, const QgsProcessingParameterWidgetContext &, const QgsProcessingParameterDefinition *, const QgsProcessingAlgorithm *
+)
+{
+  return nullptr;
+}
+
+QWidget *QgsProcessingHeatmapPixelSizeWidgetWrapper::createWidget()
+{
+  switch ( type() )
+  {
+    case Qgis::ProcessingMode::Standard:
+    {
+      mWidget = new QgsHeatmapPixelSizeWidget();
+      connect( mWidget, &QgsHeatmapPixelSizeWidget::valueChanged, this, [this] { emit widgetValueHasChanged( this ); } );
+      return mWidget;
+    }
+
+    case Qgis::ProcessingMode::Batch:
+    case Qgis::ProcessingMode::Modeler:
+    {
+      mFallbackSpinBox = new QgsDoubleSpinBox();
+      mFallbackSpinBox->setShowClearButton( false );
+      mFallbackSpinBox->setMinimum( 0.0 );
+      mFallbackSpinBox->setMaximum( 99999999999.0 );
+      mFallbackSpinBox->setDecimals( 6 );
+      mFallbackSpinBox->setToolTip( tr( "Resolution of each pixel in output raster, in layer units" ) );
+      connect( mFallbackSpinBox, qOverload<double>( &QgsDoubleSpinBox::valueChanged ), this, [this] { emit widgetValueHasChanged( this ); } );
+      return mFallbackSpinBox;
+    }
+  }
+  return nullptr;
+}
+
+void QgsProcessingHeatmapPixelSizeWidgetWrapper::postInitialize( const QList<QgsAbstractProcessingParameterWidgetWrapper *> &wrappers )
+{
+  QgsAbstractProcessingParameterWidgetWrapper::postInitialize( wrappers );
+
+  switch ( type() )
+  {
+    case Qgis::ProcessingMode::Standard:
+    {
+      auto param = dynamic_cast<const QgsProcessingParameterHeatmapPixelSize *>( parameterDefinition() );
+      if ( !param || !mWidget )
+        return;
+
+      for ( QgsAbstractProcessingParameterWidgetWrapper *wrapper : std::as_const( wrappers ) )
+      {
+        if ( wrapper->parameterDefinition()->name() == param->parentLayerParameter() )
+        {
+          setParentLayerWrapperValue( wrapper );
+          connect( wrapper, &QgsAbstractProcessingParameterWidgetWrapper::widgetValueHasChanged, this, [this, wrapper] { setParentLayerWrapperValue( wrapper ); } );
+        }
+        else if ( wrapper->parameterDefinition()->name() == param->radiusParameter() )
+        {
+          mWidget->setRadius( wrapper->parameterValue().toDouble() );
+          connect( wrapper, &QgsAbstractProcessingParameterWidgetWrapper::widgetValueHasChanged, this, &QgsProcessingHeatmapPixelSizeWidgetWrapper::radiusChanged );
+        }
+        else if ( wrapper->parameterDefinition()->name() == param->radiusFieldParameter() )
+        {
+          mWidget->setRadiusField( wrapper->parameterValue().toString() );
+          connect( wrapper, &QgsAbstractProcessingParameterWidgetWrapper::widgetValueHasChanged, this, &QgsProcessingHeatmapPixelSizeWidgetWrapper::radiusFieldChanged );
+        }
+      }
+      break;
+    }
+    case Qgis::ProcessingMode::Batch:
+    case Qgis::ProcessingMode::Modeler:
+      break;
+  }
+}
+
+void QgsProcessingHeatmapPixelSizeWidgetWrapper::setParentLayerWrapperValue( const QgsAbstractProcessingParameterWidgetWrapper *parentWrapper )
+{
+  if ( !mWidget )
+    return;
+
+  // evaluate value to layer
+  QgsProcessingContext *context = nullptr;
+  std::unique_ptr<QgsProcessingContext> tmpContext;
+  if ( mProcessingContextGenerator )
+    context = mProcessingContextGenerator->processingContext();
+
+  if ( !context )
+  {
+    tmpContext = std::make_unique<QgsProcessingContext>();
+    context = tmpContext.get();
+  }
+
+  QVariant value = parentWrapper->parameterValue();
+  if ( value.userType() == qMetaTypeId<QgsProcessingFeatureSourceDefinition>() )
+  {
+    // input is a QgsProcessingFeatureSourceDefinition - get extra properties from it
+    QgsProcessingFeatureSourceDefinition fromVar = qvariant_cast<QgsProcessingFeatureSourceDefinition>( value );
+    value = fromVar.source;
+  }
+
+  QgsVectorLayer *layer = QgsProcessingParameters::parameterAsVectorLayer( parentWrapper->parameterDefinition(), value, *context );
+  if ( !layer )
+  {
+    mWidget->setLayer( nullptr );
+    return;
+  }
+
+  // need to grab ownership of layer if required - otherwise layer may be deleted when context
+  // goes out of scope
+  std::unique_ptr<QgsMapLayer> ownedLayer( context->takeResultLayer( layer->id() ) );
+  if ( ownedLayer && ownedLayer->type() == Qgis::LayerType::Vector )
+  {
+    mParentLayer = std::move( ownedLayer );
+    layer = static_cast<QgsVectorLayer *>( mParentLayer.get() );
+  }
+  else
+  {
+    // don't need ownership of this layer - it wasn't owned by context (so e.g. is owned by the project)
+  }
+
+  mWidget->setLayer( layer );
+}
+
+void QgsProcessingHeatmapPixelSizeWidgetWrapper::setWidgetValue( const QVariant &value, QgsProcessingContext & )
+{
+  if ( mWidget )
+    mWidget->setValue( value.toDouble() );
+  else if ( mFallbackSpinBox )
+    mFallbackSpinBox->setValue( value.toDouble() );
+}
+
+QVariant QgsProcessingHeatmapPixelSizeWidgetWrapper::widgetValue() const
+{
+  if ( mWidget )
+    return mWidget->value();
+  else if ( mFallbackSpinBox )
+    return mFallbackSpinBox->value();
+  return QVariant();
+}
+
+const QgsVectorLayer *QgsProcessingHeatmapPixelSizeWidgetWrapper::linkedVectorLayer() const
+{
+  if ( mWidget && mWidget->layer() )
+    return mWidget->layer();
+
+  return QgsAbstractProcessingParameterWidgetWrapper::linkedVectorLayer();
+}
+
+void QgsProcessingHeatmapPixelSizeWidgetWrapper::radiusChanged( QgsAbstractProcessingParameterWidgetWrapper *wrapper )
+{
+  if ( mWidget )
+    mWidget->setRadius( wrapper->parameterValue().toDouble() );
+}
+
+void QgsProcessingHeatmapPixelSizeWidgetWrapper::radiusFieldChanged( QgsAbstractProcessingParameterWidgetWrapper *wrapper )
+{
+  if ( mWidget )
+    mWidget->setRadiusField( wrapper->parameterValue().toString() );
+}
+
+//
+// QgsReliefColorsWidget
+//
+
+QgsReliefColorsWidget::QgsReliefColorsWidget( QWidget *parent )
+  : QgsPanelWidget( parent )
+{
+  setupUi( this );
+
+  connect( mButtonAdd, &QToolButton::clicked, this, &QgsReliefColorsWidget::addClicked );
+  connect( mButtonRemove, &QToolButton::clicked, this, &QgsReliefColorsWidget::removeClicked );
+  connect( mButtonUp, &QToolButton::clicked, this, &QgsReliefColorsWidget::upClicked );
+  connect( mButtonDown, &QToolButton::clicked, this, &QgsReliefColorsWidget::downClicked );
+  connect( mButtonLoad, &QToolButton::clicked, this, &QgsReliefColorsWidget::loadClicked );
+  connect( mButtonSave, &QToolButton::clicked, this, &QgsReliefColorsWidget::saveClicked );
+  connect( mButtonAuto, &QToolButton::clicked, this, &QgsReliefColorsWidget::autoCalculate );
+  connect( mReliefColorsWidget, &QTreeWidget::itemDoubleClicked, this, &QgsReliefColorsWidget::itemDoubleClicked );
+}
+
+void QgsReliefColorsWidget::setLayer( QgsRasterLayer *layer )
+{
+  mLayer = layer;
+}
+
+QgsRasterLayer *QgsReliefColorsWidget::layer()
+{
+  return mLayer.data();
+}
+
+void QgsReliefColorsWidget::addClicked()
+{
+  auto item = new QTreeWidgetItem();
+  item->setText( 0, u"0.00"_s );
+  item->setText( 1, u"0.00"_s );
+  item->setBackground( 2, QBrush( QColor( 127, 127, 127 ) ) );
+  mReliefColorsWidget->addTopLevelItem( item );
+  emit valueChanged();
+}
+
+void QgsReliefColorsWidget::removeClicked()
+{
+  const QList<QTreeWidgetItem *> selectedItems = mReliefColorsWidget->selectedItems();
+  for ( QTreeWidgetItem *item : std::as_const( selectedItems ) )
+  {
+    delete item;
+  }
+  emit valueChanged();
+}
+
+void QgsReliefColorsWidget::downClicked()
+{
+  const QList<QTreeWidgetItem *> selectedItems = mReliefColorsWidget->selectedItems();
+  for ( QTreeWidgetItem *item : std::as_const( selectedItems ) )
+  {
+    const int currentIndex = mReliefColorsWidget->indexOfTopLevelItem( item );
+    if ( currentIndex >= 0 && currentIndex < mReliefColorsWidget->topLevelItemCount() - 1 )
+    {
+      mReliefColorsWidget->takeTopLevelItem( currentIndex );
+      mReliefColorsWidget->insertTopLevelItem( currentIndex + 1, item );
+      mReliefColorsWidget->setCurrentItem( item );
+    }
+  }
+  emit valueChanged();
+}
+
+void QgsReliefColorsWidget::upClicked()
+{
+  const QList<QTreeWidgetItem *> selectedItems = mReliefColorsWidget->selectedItems();
+  for ( QTreeWidgetItem *item : std::as_const( selectedItems ) )
+  {
+    const int currentIndex = mReliefColorsWidget->indexOfTopLevelItem( item );
+    if ( currentIndex > 0 )
+    {
+      mReliefColorsWidget->takeTopLevelItem( currentIndex );
+      mReliefColorsWidget->insertTopLevelItem( currentIndex - 1, item );
+      mReliefColorsWidget->setCurrentItem( item );
+    }
+  }
+  emit valueChanged();
+}
+
+void QgsReliefColorsWidget::loadClicked()
+{
+  const QString fileName = QFileDialog::getOpenFileName( this, tr( "Import Colors from XML" ), QDir::homePath(), tr( "XML files (*.xml *.XML)" ) );
+  if ( fileName.isEmpty() )
+    return;
+
+  QFile file( fileName );
+  if ( !file.open( QIODevice::ReadOnly | QIODevice::Text ) )
+    return;
+
+  QDomDocument doc;
+  if ( !doc.setContent( &file ) )
+  {
+    QMessageBox::critical( this, tr( "Import Colors from XML" ), tr( "The XML file could not be loaded" ) );
+    return;
+  }
+
+  mReliefColorsWidget->clear();
+  const QDomNodeList reliefColorList = doc.elementsByTagName( u"ReliefColor"_s );
+  for ( int i = 0; i < reliefColorList.length(); ++i )
+  {
+    const QDomElement elem = reliefColorList.at( i ).toElement();
+    auto item = new QTreeWidgetItem();
+    item->setText( 0, elem.attribute( u"MinElevation"_s ) );
+    item->setText( 1, elem.attribute( u"MaxElevation"_s ) );
+    item->setBackground( 2, QBrush( QColor( elem.attribute( u"red"_s ).toInt(), elem.attribute( u"green"_s ).toInt(), elem.attribute( u"blue"_s ).toInt() ) ) );
+    mReliefColorsWidget->addTopLevelItem( item );
+  }
+  emit valueChanged();
+}
+
+void QgsReliefColorsWidget::saveClicked()
+{
+  QString fileName = QFileDialog::getSaveFileName( this, tr( "Export Colors as XML" ), QDir::homePath(), tr( "XML files (*.xml *.XML)" ) );
+  if ( fileName.isEmpty() )
+    return;
+
+  fileName = QgsFileUtils::ensureFileNameHasExtension( fileName, { u"xml"_s } );
+
+  QDomDocument doc;
+  QDomElement colorsElem = doc.createElement( u"ReliefColors"_s );
+  doc.appendChild( colorsElem );
+
+  const QList<QgsRasterReliefColor> currentColors = colors();
+  for ( const QgsRasterReliefColor &c : currentColors )
+  {
+    QDomElement elem = doc.createElement( u"ReliefColor"_s );
+    elem.setAttribute( u"MinElevation"_s, qgsDoubleToString( c.minElevation ) );
+    elem.setAttribute( u"MaxElevation"_s, qgsDoubleToString( c.maxElevation ) );
+    elem.setAttribute( u"red"_s, QString::number( c.color.red() ) );
+    elem.setAttribute( u"green"_s, QString::number( c.color.green() ) );
+    elem.setAttribute( u"blue"_s, QString::number( c.color.blue() ) );
+    colorsElem.appendChild( elem );
+  }
+
+  QFile file( fileName );
+  if ( file.open( QIODevice::WriteOnly | QIODevice::Text | QIODevice::Truncate ) )
+  {
+    QTextStream out( &file );
+    out << doc.toString( 2 );
+  }
+}
+
+void QgsReliefColorsWidget::autoCalculate()
+{
+  if ( !mLayer || !mLayer->isValid() )
+    return;
+
+  const QList< QgsRasterReliefColor > autoColors = QgsRasterLayerUtils::calculateOptimizedReliefClasses( mLayer->dataProvider(), 1 );
+  setColors( autoColors );
+  emit valueChanged();
+}
+
+void QgsReliefColorsWidget::itemDoubleClicked( QTreeWidgetItem *item, int column )
+{
+  if ( !item )
+    return;
+
+  bool ok = false;
+  if ( column == 0 )
+  {
+    const double d = QInputDialog::getDouble( this, tr( "Enter lower elevation class bound" ), tr( "Elevation" ), item->text( 0 ).toDouble(), -2147483647, 2147483647, 2, &ok );
+    if ( ok )
+    {
+      item->setText( 0, QString::number( d ) );
+      emit valueChanged();
+    }
+  }
+  else if ( column == 1 )
+  {
+    const double d = QInputDialog::getDouble( this, tr( "Enter upper elevation class bound" ), tr( "Elevation" ), item->text( 1 ).toDouble(), -2147483647, 2147483647, 2, &ok );
+    if ( ok )
+    {
+      item->setText( 1, QString::number( d ) );
+      emit valueChanged();
+    }
+  }
+  else if ( column == 2 )
+  {
+    const QColor c = QColorDialog::getColor( item->background( 2 ).color(), this, tr( "Select color for relief class" ) );
+    if ( c.isValid() )
+    {
+      item->setBackground( 2, QBrush( c ) );
+      emit valueChanged();
+    }
+  }
+}
+
+QList<QgsRasterReliefColor> QgsReliefColorsWidget::colors() const
+{
+  QList<QgsRasterReliefColor> colors;
+  for ( int i = 0; i < mReliefColorsWidget->topLevelItemCount(); ++i )
+  {
+    if ( QTreeWidgetItem *item = mReliefColorsWidget->topLevelItem( i ) )
+    {
+      colors.append( QgsRasterReliefColor( item->background( 2 ).color(), item->text( 0 ).toDouble(), item->text( 1 ).toDouble() ) );
+    }
+  }
+  return colors;
+}
+
+void QgsReliefColorsWidget::setColors( const QList<QgsRasterReliefColor> &colors )
+{
+  mReliefColorsWidget->clear();
+  for ( const QgsRasterReliefColor &c : colors )
+  {
+    auto item = new QTreeWidgetItem();
+    item->setText( 0, qgsDoubleToString( c.minElevation ) );
+    item->setText( 1, qgsDoubleToString( c.maxElevation ) );
+    item->setBackground( 2, QBrush( c.color ) );
+    mReliefColorsWidget->addTopLevelItem( item );
+  }
+  emit valueChanged();
+}
+
+//
+// QgsProcessingReliefColorsWidgetWrapper
+//
+
+QgsProcessingReliefColorsWidgetWrapper::QgsProcessingReliefColorsWidgetWrapper( const QgsProcessingParameterDefinition *parameter, Qgis::ProcessingMode type, QWidget *parent )
+  : QgsAbstractProcessingParameterWidgetWrapper( parameter, type, parent )
+{}
+
+QString QgsProcessingReliefColorsWidgetWrapper::parameterType() const
+{
+  return QgsProcessingParameterReliefColors::typeName();
+}
+
+QgsAbstractProcessingParameterWidgetWrapper *QgsProcessingReliefColorsWidgetWrapper::createWidgetWrapper( const QgsProcessingParameterDefinition *parameter, Qgis::ProcessingMode type )
+{
+  return new QgsProcessingReliefColorsWidgetWrapper( parameter, type );
+}
+
+QgsProcessingAbstractParameterDefinitionWidget *QgsProcessingReliefColorsWidgetWrapper::createParameterDefinitionWidget(
+  QgsProcessingContext &, const QgsProcessingParameterWidgetContext &, const QgsProcessingParameterDefinition *, const QgsProcessingAlgorithm *
+)
+{
+  return nullptr;
+}
+
+QWidget *QgsProcessingReliefColorsWidgetWrapper::createWidget()
+{
+  switch ( type() )
+  {
+    case Qgis::ProcessingMode::Standard:
+    {
+      mWidget = new QgsReliefColorsWidget();
+      connect( mWidget, &QgsReliefColorsWidget::valueChanged, this, [this] { emit widgetValueHasChanged( this ); } );
+      return mWidget;
+    }
+
+    case Qgis::ProcessingMode::Batch:
+    case Qgis::ProcessingMode::Modeler:
+    {
+      mFallbackLineEdit = new QLineEdit();
+      mFallbackLineEdit->setPlaceholderText( tr( "Relief colors definition" ) );
+      connect( mFallbackLineEdit, &QLineEdit::textChanged, this, [this] { emit widgetValueHasChanged( this ); } );
+      return mFallbackLineEdit;
+    }
+  }
+  return nullptr;
+}
+
+void QgsProcessingReliefColorsWidgetWrapper::postInitialize( const QList<QgsAbstractProcessingParameterWidgetWrapper *> &wrappers )
+{
+  QgsAbstractProcessingParameterWidgetWrapper::postInitialize( wrappers );
+
+  switch ( type() )
+  {
+    case Qgis::ProcessingMode::Standard:
+    {
+      auto param = dynamic_cast<const QgsProcessingParameterReliefColors *>( parameterDefinition() );
+      if ( !param || !mWidget )
+        return;
+
+      for ( QgsAbstractProcessingParameterWidgetWrapper *wrapper : std::as_const( wrappers ) )
+      {
+        if ( wrapper->parameterDefinition()->name() == param->parentLayerParameter() )
+        {
+          setParentLayerWrapperValue( wrapper );
+          connect( wrapper, &QgsAbstractProcessingParameterWidgetWrapper::widgetValueHasChanged, this, [this, wrapper] { setParentLayerWrapperValue( wrapper ); } );
+        }
+      }
+      break;
+    }
+    case Qgis::ProcessingMode::Batch:
+    case Qgis::ProcessingMode::Modeler:
+      break;
+  }
+}
+
+void QgsProcessingReliefColorsWidgetWrapper::setParentLayerWrapperValue( const QgsAbstractProcessingParameterWidgetWrapper *parentWrapper )
+{
+  if ( !mWidget )
+    return;
+
+  // evaluate value to layer
+  QgsProcessingContext *context = nullptr;
+  std::unique_ptr<QgsProcessingContext> tmpContext;
+  if ( mProcessingContextGenerator )
+    context = mProcessingContextGenerator->processingContext();
+
+  if ( !context )
+  {
+    tmpContext = std::make_unique<QgsProcessingContext>();
+    context = tmpContext.get();
+  }
+
+  QVariant value = parentWrapper->parameterValue();
+  QgsRasterLayer *layer = QgsProcessingParameters::parameterAsRasterLayer( parentWrapper->parameterDefinition(), value, *context );
+  if ( layer && layer->isValid() )
+  {
+    // need to grab ownership of layer if required - otherwise layer may be deleted when context
+    // goes out of scope
+    std::unique_ptr<QgsMapLayer> ownedLayer( context->takeResultLayer( layer->id() ) );
+    if ( ownedLayer && ownedLayer->type() == Qgis::LayerType::Raster )
+    {
+      mParentLayer.reset( qobject_cast<QgsRasterLayer *>( ownedLayer.release() ) );
+      layer = mParentLayer.get();
+    }
+    else
+    {
+      // don't need ownership of this layer - it wasn't owned by context (so e.g. is owned by the project)
+    }
+
+    if ( mWidget )
+      mWidget->setLayer( layer );
+  }
+  else
+  {
+    if ( mWidget )
+      mWidget->setLayer( nullptr );
+  }
+}
+
+void QgsProcessingReliefColorsWidgetWrapper::setWidgetValue( const QVariant &value, QgsProcessingContext &context )
+{
+  auto param = dynamic_cast<const QgsProcessingParameterReliefColors *>( parameterDefinition() );
+
+  if ( mWidget && param )
+  {
+    mWidget->setColors( param->valueAsReliefColors( value, context ) );
+  }
+  else if ( mFallbackLineEdit )
+    mFallbackLineEdit->setText( value.toString() );
+}
+
+QVariant QgsProcessingReliefColorsWidgetWrapper::widgetValue() const
+{
+  if ( mWidget )
+    return QgsProcessingParameterReliefColors::colorsAsVariant( mWidget->colors() );
+  else if ( mFallbackLineEdit )
+    return mFallbackLineEdit->text();
+  return QVariant();
+}
+
+QString QgsProcessingReliefColorsWidgetWrapper::modelerExpressionFormatString() const
+{
+  return tr( "string of the format 'min,max,red,green,blue' for each relief color, joined by a ; delimiter" );
+}
+
+
+//
+// QgsExecuteSqlWidget
+//
+
+QgsExecuteSqlWidget::QgsExecuteSqlWidget( QWidget *parent )
+  : QWidget( parent )
+{
+  QVBoxLayout *mainLayout = new QVBoxLayout( this );
+  mainLayout->setContentsMargins( 0, 0, 0, 0 );
+
+  mTextEdit = new QPlainTextEdit( this );
+  mainLayout->addWidget( mTextEdit, 1 );
+
+  QHBoxLayout *bottomLayout = new QHBoxLayout();
+  bottomLayout->setContentsMargins( 0, 0, 0, 0 );
+
+  mExpressionWidget = new QgsFieldExpressionWidget( this );
+  bottomLayout->addWidget( mExpressionWidget, 1 );
+
+  mInsertButton = new QPushButton( tr( "Insert" ), this );
+  bottomLayout->addWidget( mInsertButton );
+
+  mainLayout->addLayout( bottomLayout );
+
+  connect( mInsertButton, &QPushButton::clicked, this, &QgsExecuteSqlWidget::insertExpression );
+  connect( mTextEdit, &QPlainTextEdit::textChanged, this, &QgsExecuteSqlWidget::changed );
+}
+
+void QgsExecuteSqlWidget::insertExpression()
+{
+  if ( !mExpressionWidget->currentText().isEmpty() )
+  {
+    const QString formattedExpression = u"[% %1 %]"_s.arg( mExpressionWidget->currentText() );
+    mTextEdit->insertPlainText( formattedExpression );
+  }
+}
+
+void QgsExecuteSqlWidget::setValue( const QString &text )
+{
+  if ( text == value() )
+    return;
+
+  mTextEdit->setPlainText( text );
+}
+
+QString QgsExecuteSqlWidget::value() const
+{
+  return mTextEdit->toPlainText();
+}
+
+//
+// QgsProcessingExecuteSqlWidgetWrapper
+//
+
+QgsProcessingExecuteSqlWidgetWrapper::QgsProcessingExecuteSqlWidgetWrapper( const QgsProcessingParameterDefinition *parameter, Qgis::ProcessingMode type, QObject *parent )
+  : QgsAbstractProcessingParameterWidgetWrapper( parameter, type, parent )
+{}
+
+QString QgsProcessingExecuteSqlWidgetWrapper::parameterType() const
+{
+  return u"executesql"_s;
+}
+
+QgsAbstractProcessingParameterWidgetWrapper *QgsProcessingExecuteSqlWidgetWrapper::createWidgetWrapper( const QgsProcessingParameterDefinition *parameter, Qgis::ProcessingMode type )
+{
+  return new QgsProcessingExecuteSqlWidgetWrapper( parameter, type );
+}
+
+QWidget *QgsProcessingExecuteSqlWidgetWrapper::createWidget()
+{
+  mExecuteSqlWidget = new QgsExecuteSqlWidget();
+  mExecuteSqlWidget->expressionWidget()->registerExpressionContextGenerator( this );
+
+  if ( parameterDefinition() )
+  {
+    mExecuteSqlWidget->setToolTip( parameterDefinition()->toolTip() );
+  }
+
+  connect( mExecuteSqlWidget, &QgsExecuteSqlWidget::changed, this, [this] { emit widgetValueHasChanged( this ); } );
+
+  return mExecuteSqlWidget;
+}
+
+void QgsProcessingExecuteSqlWidgetWrapper::setWidgetValue( const QVariant &value, QgsProcessingContext &context )
+{
+  if ( !mExecuteSqlWidget )
+  {
+    return;
+  }
+
+  const QString sqlText = QgsProcessingParameters::parameterAsString( parameterDefinition(), value, context );
+  mExecuteSqlWidget->setValue( sqlText );
+}
+
+QVariant QgsProcessingExecuteSqlWidgetWrapper::widgetValue() const
+{
+  if ( !mExecuteSqlWidget )
+  {
+    return QVariant();
+  }
+
+  return mExecuteSqlWidget->value();
+}
+
+//
+// QgsInterpolationSourceWidget
+//
+
+QgsInterpolationSourceWidget::QgsInterpolationSourceWidget( QWidget *parent )
+  : QWidget( parent )
+{
+  setupUi( this );
+
+  btnAdd->setIcon( QgsApplication::getThemeIcon( u"/symbologyAdd.svg"_s ) );
+  btnRemove->setIcon( QgsApplication::getThemeIcon( u"/symbologyRemove.svg"_s ) );
+
+  connect( btnAdd, &QToolButton::clicked, this, &QgsInterpolationSourceWidget::addLayer );
+  connect( btnRemove, &QToolButton::clicked, this, &QgsInterpolationSourceWidget::removeLayer );
+
+  cmbLayers->setFilters( Qgis::LayerFilter::VectorLayer );
+  cmbFields->setFilters( QgsFieldProxyModel::Filter::Numeric );
+
+  connect( cmbLayers, &QgsMapLayerComboBox::layerChanged, this, [this]( QgsMapLayer *layer ) { layerChanged( qobject_cast<QgsVectorLayer *>( layer ) ); } );
+
+  layerChanged( qobject_cast< QgsVectorLayer * >( cmbLayers->currentLayer() ) );
+}
+
+void QgsInterpolationSourceWidget::addLayer()
+{
+  QgsVectorLayer *layer = qobject_cast< QgsVectorLayer * >( cmbLayers->currentLayer() );
+  if ( !layer )
+  {
+    return;
+  }
+
+  const QString attribute = chkUseZCoordinate->isChecked() ? u"Z_COORD"_s : cmbFields->currentField();
+  addLayerData( layer, attribute );
+  emit changed();
+}
+
+void QgsInterpolationSourceWidget::removeLayer()
+{
+  QTreeWidgetItem *item = layersTree->currentItem();
+  if ( !item )
+  {
+    return;
+  }
+  delete item;
+  emit changed();
+}
+
+void QgsInterpolationSourceWidget::layerChanged( QgsVectorLayer *layer )
+{
+  chkUseZCoordinate->setEnabled( false );
+  chkUseZCoordinate->setChecked( false );
+
+  if ( !layer || !layer->isValid() )
+  {
+    return;
+  }
+
+  if ( QgsWkbTypes::hasZ( layer->wkbType() ) )
+  {
+    chkUseZCoordinate->setEnabled( true );
+  }
+
+  cmbFields->setLayer( layer );
+}
+
+void QgsInterpolationSourceWidget::addLayerData( QgsVectorLayer *layer, const QString &attribute )
+{
+  QTreeWidgetItem *item = new QTreeWidgetItem();
+  item->setText( 0, layer->name() );
+  item->setText( 1, attribute );
+  item->setData( 0, Qt::UserRole, layer->source() );
+  layersTree->addTopLevelItem( item );
+
+  QComboBox *comboBox = new QComboBox();
+  comboBox->addItem( tr( "Points" ), QVariant::fromValue( Qgis::InterpolationSourceType::Points ) );
+  comboBox->addItem( tr( "Structure Lines" ), QVariant::fromValue( Qgis::InterpolationSourceType::StructureLines ) );
+  comboBox->addItem( tr( "Break Lines" ), QVariant::fromValue( Qgis::InterpolationSourceType::BreakLines ) );
+  comboBox->setCurrentIndex( 0 );
+  layersTree->setItemWidget( item, 2, comboBox );
+}
+
+void QgsInterpolationSourceWidget::setValue( const QVariant &value, QgsProcessingContext &context )
+{
+  layersTree->clear();
+  const QStringList rows = value.toString().split( "::|::"_L1, Qt::SkipEmptyParts );
+  int itemIndex = 0;
+  for ( const QString &row : rows )
+  {
+    const QStringList tokens = row.split( "::~::"_L1 );
+    if ( tokens.size() < 4 )
+    {
+      continue;
+    }
+
+    const QString layerSource = tokens.at( 0 );
+    auto layer = qobject_cast< QgsVectorLayer * >( QgsProcessingUtils::mapLayerFromString( layerSource, context, true, QgsProcessingUtils::LayerHint::Vector ) );
+    if ( !layer || !layer->isValid() )
+      continue;
+
+    bool isInt = false;
+    const int fieldIndexInt = tokens.at( 2 ).toInt( &isInt );
+    if ( isInt && fieldIndexInt == -1 )
+    {
+      addLayerData( layer, u"Z_COORD"_s );
+    }
+    else if ( isInt )
+    {
+      addLayerData( layer, layer->fields().at( fieldIndexInt ).name() );
+    }
+    else
+    {
+      addLayerData( layer, tokens.at( 2 ) );
+    }
+
+    const Qgis::InterpolationSourceType sourceType = static_cast< Qgis::InterpolationSourceType >( tokens.at( 3 ).toInt() );
+    QComboBox *comboBox = qobject_cast<QComboBox *>( layersTree->itemWidget( layersTree->topLevelItem( itemIndex ), 2 ) );
+    if ( comboBox )
+    {
+      comboBox->setCurrentIndex( comboBox->findData( QVariant::fromValue( sourceType ) ) );
+    }
+    itemIndex++;
+  }
+  emit changed();
+}
+
+QVariant QgsInterpolationSourceWidget::value() const
+{
+  QStringList result;
+  for ( int index = 0; index < layersTree->topLevelItemCount(); ++index )
+  {
+    QTreeWidgetItem *item = layersTree->topLevelItem( index );
+    if ( !item )
+    {
+      continue;
+    }
+
+    const QString layerSource = item->data( 0, Qt::UserRole ).toString();
+    QString interpolationAttribute = item->text( 1 );
+
+    int valueSource = static_cast<int>( Qgis::InterpolationValueSource::Attribute );
+    if ( interpolationAttribute == "Z_COORD"_L1 )
+    {
+      valueSource = static_cast<int>( Qgis::InterpolationValueSource::Z );
+      interpolationAttribute = u"-1"_s;
+    }
+
+    QComboBox *comboBox = qobject_cast<QComboBox *>( layersTree->itemWidget( item, 2 ) );
+    const int inputType = comboBox ? static_cast< int >( comboBox->currentData().value< Qgis::InterpolationSourceType >() ) : 0;
+
+    result << u"%1::~::%2::~::%3::~::%4"_s.arg( layerSource ).arg( valueSource ).arg( interpolationAttribute ).arg( inputType );
+  }
+
+  if ( result.isEmpty() )
+    return QVariant();
+
+  return result.join( "::|::"_L1 );
+}
+
+
+//
+// QgsProcessingInterpolationSourceWidgetWrapper
+//
+
+QgsProcessingInterpolationSourceWidgetWrapper::QgsProcessingInterpolationSourceWidgetWrapper( const QgsProcessingParameterDefinition *parameter, Qgis::ProcessingMode type, QObject *parent )
+  : QgsAbstractProcessingParameterWidgetWrapper( parameter, type, parent )
+{}
+
+QString QgsProcessingInterpolationSourceWidgetWrapper::parameterType() const
+{
+  return QgsProcessingParameterInterpolationSource::typeName();
+}
+
+QgsAbstractProcessingParameterWidgetWrapper *QgsProcessingInterpolationSourceWidgetWrapper::createWidgetWrapper( const QgsProcessingParameterDefinition *parameter, Qgis::ProcessingMode type )
+{
+  return new QgsProcessingInterpolationSourceWidgetWrapper( parameter, type );
+}
+
+QgsProcessingAbstractParameterDefinitionWidget *QgsProcessingInterpolationSourceWidgetWrapper::createParameterDefinitionWidget(
+  QgsProcessingContext &, const QgsProcessingParameterWidgetContext &, const QgsProcessingParameterDefinition *, const QgsProcessingAlgorithm *
+)
+{
+  return nullptr;
+}
+
+QWidget *QgsProcessingInterpolationSourceWidgetWrapper::createWidget()
+{
+  mWidget = new QgsInterpolationSourceWidget();
+  if ( parameterDefinition() )
+  {
+    mWidget->setToolTip( parameterDefinition()->toolTip() );
+  }
+
+  connect( mWidget, &QgsInterpolationSourceWidget::changed, this, [this] { emit widgetValueHasChanged( this ); } );
+  return mWidget;
+}
+
+void QgsProcessingInterpolationSourceWidgetWrapper::setWidgetValue( const QVariant &value, QgsProcessingContext &context )
+{
+  if ( mWidget )
+  {
+    mWidget->setValue( value, context );
+  }
+}
+
+QVariant QgsProcessingInterpolationSourceWidgetWrapper::widgetValue() const
+{
+  return mWidget ? mWidget->value() : QVariant();
+}
+
+
+//
+// QgsInterpolationPixelSizeWidget
+//
+
+QgsInterpolationPixelSizeWidget::QgsInterpolationPixelSizeWidget( QWidget *parent )
+  : QgsPanelWidget( parent )
+{
+  setupUi( this );
+
+  mCellXSpinBox->setShowClearButton( false );
+  mCellYSpinBox->setShowClearButton( false );
+  mRowsSpinBox->setShowClearButton( false );
+  mColumnsSpinBox->setShowClearButton( false );
+
+  connect( mCellYSpinBox, qOverload<double>( &QgsDoubleSpinBox::valueChanged ), mCellXSpinBox, &QgsDoubleSpinBox::setValue );
+  connect( mCellXSpinBox, qOverload<double>( &QgsDoubleSpinBox::valueChanged ), this, &QgsInterpolationPixelSizeWidget::pixelSizeChanged );
+  connect( mRowsSpinBox, qOverload<int>( &QgsSpinBox::valueChanged ), this, &QgsInterpolationPixelSizeWidget::rowsChanged );
+  connect( mColumnsSpinBox, qOverload<int>( &QgsSpinBox::valueChanged ), this, &QgsInterpolationPixelSizeWidget::columnsChanged );
+}
+
+void QgsInterpolationPixelSizeWidget::setSourceData( const QString &sourceData, QgsProcessingContext &context )
+{
+  mExtent.setNull();
+  const QStringList rows = sourceData.split( "::|::"_L1, Qt::SkipEmptyParts );
+  for ( const QString &row : rows )
+  {
+    const QStringList tokens = row.split( "::~::"_L1 );
+    if ( tokens.isEmpty() )
+    {
+      continue;
+    }
+
+    std::unique_ptr<QgsFeatureSource> source( QgsProcessingUtils::variantToSource( tokens.at( 0 ), context ) );
+    if ( source )
+    {
+      mExtent.combineExtentWith( source->sourceExtent() );
+    }
+  }
+
+  pixelSizeChanged();
+}
+
+void QgsInterpolationPixelSizeWidget::setExtent( const QgsRectangle &extent )
+{
+  mExtent = extent;
+  pixelSizeChanged();
+}
+
+void QgsInterpolationPixelSizeWidget::pixelSizeChanged()
+{
+  const double prevValue = value();
+  const double cellSize = mCellXSpinBox->value();
+  if ( qgsDoubleLessThanOrNear( cellSize, 0 ) || mExtent.isNull() )
+  {
+    emit valueChanged();
+    return;
+  }
+
+  whileBlocking( mCellYSpinBox )->setValue( cellSize );
+
+  const int rows = std::max( static_cast<int>( std::round( mExtent.height() / cellSize ) ) + 1, 1 );
+  const int cols = std::max( static_cast<int>( std::round( mExtent.width() / cellSize ) ) + 1, 1 );
+
+  whileBlocking( mRowsSpinBox )->setValue( rows );
+  whileBlocking( mColumnsSpinBox )->setValue( cols );
+
+  if ( !qgsDoubleNear( prevValue, value() ) )
+  {
+    emit valueChanged();
+  }
+}
+
+void QgsInterpolationPixelSizeWidget::rowsChanged()
+{
+  const int rows = mRowsSpinBox->value();
+  if ( rows <= 0 || mExtent.isNull() )
+    return;
+
+  const double cellSize = mExtent.height() / rows;
+  if ( qgsDoubleNear( cellSize, 0.0 ) )
+    return;
+
+  const int cols = std::max( static_cast<int>( std::round( mExtent.width() / cellSize ) ) + 1, 1 );
+
+  whileBlocking( mColumnsSpinBox )->setValue( cols );
+  whileBlocking( mCellXSpinBox )->setValue( cellSize );
+  whileBlocking( mCellYSpinBox )->setValue( cellSize );
+
+  emit valueChanged();
+}
+
+void QgsInterpolationPixelSizeWidget::columnsChanged()
+{
+  const int cols = mColumnsSpinBox->value();
+  if ( cols < 2 || mExtent.isNull() )
+    return;
+
+  const double cellSize = mExtent.width() / ( cols - 1 );
+  if ( qgsDoubleNear( cellSize, 0.0 ) )
+    return;
+
+  const int rows = std::max( static_cast<int>( std::round( mExtent.height() / cellSize ) ), 1 );
+
+  whileBlocking( mRowsSpinBox )->setValue( rows );
+  whileBlocking( mCellXSpinBox )->setValue( cellSize );
+  whileBlocking( mCellYSpinBox )->setValue( cellSize );
+
+  emit valueChanged();
+}
+
+double QgsInterpolationPixelSizeWidget::value() const
+{
+  return mCellXSpinBox->value();
+}
+
+void QgsInterpolationPixelSizeWidget::setValue( double value )
+{
+  mCellXSpinBox->setValue( value );
+  mCellYSpinBox->setValue( value );
+}
+
+
+//
+// QgsProcessingInterpolationPixelSizeWidgetWrapper
+//
+
+QgsProcessingInterpolationPixelSizeWidgetWrapper::QgsProcessingInterpolationPixelSizeWidgetWrapper( const QgsProcessingParameterDefinition *parameter, Qgis::ProcessingMode type, QWidget *parent )
+  : QgsAbstractProcessingParameterWidgetWrapper( parameter, type, parent )
+{}
+
+QString QgsProcessingInterpolationPixelSizeWidgetWrapper::parameterType() const
+{
+  return QgsProcessingParameterInterpolationPixelSize::typeName();
+}
+
+QgsAbstractProcessingParameterWidgetWrapper *QgsProcessingInterpolationPixelSizeWidgetWrapper::createWidgetWrapper( const QgsProcessingParameterDefinition *parameter, Qgis::ProcessingMode type )
+{
+  return new QgsProcessingInterpolationPixelSizeWidgetWrapper( parameter, type );
+}
+
+QgsProcessingAbstractParameterDefinitionWidget *QgsProcessingInterpolationPixelSizeWidgetWrapper::createParameterDefinitionWidget(
+  QgsProcessingContext &, const QgsProcessingParameterWidgetContext &, const QgsProcessingParameterDefinition *, const QgsProcessingAlgorithm *
+)
+{
+  return nullptr;
+}
+
+QWidget *QgsProcessingInterpolationPixelSizeWidgetWrapper::createWidget()
+{
+  switch ( type() )
+  {
+    case Qgis::ProcessingMode::Standard:
+    {
+      mWidget = new QgsInterpolationPixelSizeWidget();
+      connect( mWidget, &QgsInterpolationPixelSizeWidget::valueChanged, this, [this] { emit widgetValueHasChanged( this ); } );
+      return mWidget;
+    }
+
+    case Qgis::ProcessingMode::Batch:
+    case Qgis::ProcessingMode::Modeler:
+    {
+      mFallbackSpinBox = new QgsDoubleSpinBox();
+      mFallbackSpinBox->setShowClearButton( false );
+      mFallbackSpinBox->setMinimum( 0.0 );
+      mFallbackSpinBox->setMaximum( 99999999999.0 );
+      mFallbackSpinBox->setDecimals( 6 );
+      mFallbackSpinBox->setToolTip( tr( "Resolution of each pixel in output raster" ) );
+      connect( mFallbackSpinBox, qOverload<double>( &QgsDoubleSpinBox::valueChanged ), this, [this] { emit widgetValueHasChanged( this ); } );
+      return mFallbackSpinBox;
+    }
+  }
+  return nullptr;
+}
+
+void QgsProcessingInterpolationPixelSizeWidgetWrapper::postInitialize( const QList<QgsAbstractProcessingParameterWidgetWrapper *> &wrappers )
+{
+  QgsAbstractProcessingParameterWidgetWrapper::postInitialize( wrappers );
+
+  switch ( type() )
+  {
+    case Qgis::ProcessingMode::Standard:
+    {
+      auto param = dynamic_cast<const QgsProcessingParameterInterpolationPixelSize *>( parameterDefinition() );
+      if ( !param || !mWidget )
+        return;
+
+      for ( QgsAbstractProcessingParameterWidgetWrapper *wrapper : std::as_const( wrappers ) )
+      {
+        if ( wrapper->parameterDefinition()->name() == param->interpolationSourceParameter() )
+        {
+          sourceChanged( wrapper );
+          connect( wrapper, &QgsAbstractProcessingParameterWidgetWrapper::widgetValueHasChanged, this, [this, wrapper] { sourceChanged( wrapper ); } );
+        }
+        else if ( wrapper->parameterDefinition()->name() == param->extentParameter() )
+        {
+          extentChanged( wrapper );
+          connect( wrapper, &QgsAbstractProcessingParameterWidgetWrapper::widgetValueHasChanged, this, [this, wrapper] { extentChanged( wrapper ); } );
+        }
+      }
+      break;
+    }
+    case Qgis::ProcessingMode::Batch:
+    case Qgis::ProcessingMode::Modeler:
+      break;
+  }
+}
+
+void QgsProcessingInterpolationPixelSizeWidgetWrapper::setWidgetValue( const QVariant &value, QgsProcessingContext & )
+{
+  if ( mWidget )
+    mWidget->setValue( value.toDouble() );
+  else if ( mFallbackSpinBox )
+    mFallbackSpinBox->setValue( value.toDouble() );
+}
+
+QVariant QgsProcessingInterpolationPixelSizeWidgetWrapper::widgetValue() const
+{
+  if ( mWidget )
+    return mWidget->value();
+  else if ( mFallbackSpinBox )
+    return mFallbackSpinBox->value();
+  return QVariant();
+}
+
+void QgsProcessingInterpolationPixelSizeWidgetWrapper::sourceChanged( QgsAbstractProcessingParameterWidgetWrapper *wrapper )
+{
+  if ( mWidget )
+  {
+    QgsProcessingContext *context = nullptr;
+    std::unique_ptr<QgsProcessingContext> tmpContext;
+    if ( mProcessingContextGenerator )
+      context = mProcessingContextGenerator->processingContext();
+
+    if ( !context )
+    {
+      tmpContext = std::make_unique<QgsProcessingContext>();
+      context = tmpContext.get();
+    }
+
+    mWidget->setSourceData( wrapper->parameterValue().toString(), *context );
+  }
+}
+
+void QgsProcessingInterpolationPixelSizeWidgetWrapper::extentChanged( QgsAbstractProcessingParameterWidgetWrapper *wrapper )
+{
+  if ( mWidget )
+  {
+    QgsProcessingContext *context = nullptr;
+    std::unique_ptr<QgsProcessingContext> tmpContext;
+    if ( mProcessingContextGenerator )
+      context = mProcessingContextGenerator->processingContext();
+
+    if ( !context )
+    {
+      tmpContext = std::make_unique<QgsProcessingContext>();
+      context = tmpContext.get();
+    }
+
+    const QgsRectangle extent = QgsProcessingParameters::parameterAsExtent( wrapper->parameterDefinition(), wrapper->parameterValue(), *context );
+
+    mWidget->setExtent( extent );
+  }
+}
+
+
+//
+// QgsTileExtentMaxZoomWidget
+//
+
+QgsTileExtentMaxZoomWidget::QgsTileExtentMaxZoomWidget( const QgsProcessingParameterTileExtentMaxZoomList *param )
+  : QgsPanelWidget()
+  , mParam( param )
+{
+  setupUi( this );
+
+  QFontMetrics fm( font() );
+  mRegionsWidget->setColumnWidth( 0, fm.horizontalAdvance( 'X' ) * 20 );
+  mRegionsWidget->header()->setStretchLastSection( true );
+
+  connect( mButtonAdd, &QToolButton::clicked, this, &QgsTileExtentMaxZoomWidget::addClicked );
+  connect( mButtonRemove, &QToolButton::clicked, this, &QgsTileExtentMaxZoomWidget::removeClicked );
+  connect( mRegionsWidget, &QTreeWidget::itemDoubleClicked, this, &QgsTileExtentMaxZoomWidget::itemDoubleClicked );
+}
+
+QgsTileExtentMaxZoomWidget::~QgsTileExtentMaxZoomWidget() = default;
+
+void QgsTileExtentMaxZoomWidget::addClicked()
+{
+  if ( mMapCanvas )
+  {
+    mMapToolPrevious = mMapCanvas->mapTool();
+    if ( !mMapToolExtent )
+    {
+      mMapToolExtent = std::make_unique<QgsMapToolExtent>( mMapCanvas );
+      connect( mMapToolExtent.get(), &QgsMapToolExtent::extentChanged, this, &QgsTileExtentMaxZoomWidget::extentDrawn );
+      connect( mMapToolExtent.get(), &QgsMapTool::deactivated, this, &QgsTileExtentMaxZoomWidget::mapToolDeactivated );
+    }
+    mMapCanvas->setMapTool( mMapToolExtent.get() );
+
+    emit toggleDialogVisibility( false );
+  }
+}
+
+void QgsTileExtentMaxZoomWidget::extentDrawn( const QgsRectangle &extent )
+{
+  const QgsReferencedRectangle newExtent( extent, mMapCanvas->mapSettings().destinationCrs() );
+
+  mMapCanvas->setMapTool( mMapToolPrevious );
+  emit toggleDialogVisibility( true );
+  mMapToolPrevious = nullptr;
+
+  auto item = new QTreeWidgetItem();
+  item->setText( 0, u"15"_s );
+  item->setText( 1, regionToString( newExtent ) );
+  mRegionsWidget->addTopLevelItem( item );
+  emit valueChanged();
+}
+
+void QgsTileExtentMaxZoomWidget::mapToolDeactivated()
+{
+  emit toggleDialogVisibility( true );
+  mMapToolPrevious = nullptr;
+}
+
+QString QgsTileExtentMaxZoomWidget::regionToString( const QgsReferencedRectangle &region )
+{
+  return u"%1,%3,%2,%4 [%5]"_s
+    .arg( qgsDoubleToString( region.xMinimum() ), qgsDoubleToString( region.yMinimum() ), qgsDoubleToString( region.xMaximum() ), qgsDoubleToString( region.yMaximum() ), region.crs().authid() );
+}
+
+void QgsTileExtentMaxZoomWidget::removeClicked()
+{
+  const QList<QTreeWidgetItem *> selectedItems = mRegionsWidget->selectedItems();
+  for ( QTreeWidgetItem *item : std::as_const( selectedItems ) )
+  {
+    delete item;
+  }
+  emit valueChanged();
+}
+
+void QgsTileExtentMaxZoomWidget::itemDoubleClicked( QTreeWidgetItem *item, int column )
+{
+  if ( !item )
+    return;
+
+  bool ok = false;
+  if ( column == 0 )
+  {
+    const int d = QInputDialog::getInt( this, tr( "Maximum Zoom Level" ), tr( "Enter maximum zoom level for region" ), item->text( 0 ).toInt(), 0, 20, 1, &ok );
+    if ( ok )
+    {
+      item->setText( 0, QString::number( d ) );
+      emit valueChanged();
+    }
+  }
+}
+
+QList<QgsTileExtentMaxZoomRegion> QgsTileExtentMaxZoomWidget::regions() const
+{
+  QList<QgsTileExtentMaxZoomRegion> regions;
+  QgsProcessingContext context;
+  for ( int i = 0; i < mRegionsWidget->topLevelItemCount(); ++i )
+  {
+    if ( QTreeWidgetItem *item = mRegionsWidget->topLevelItem( i ) )
+    {
+      const QgsTileExtentMaxZoomRegion region = mParam->regionFromVariant( u"%1:%2"_s.arg( item->text( 0 ), item->text( 1 ) ), context );
+      if ( region.extent.isNull() )
+        continue;
+
+      regions.append( region );
+    }
+  }
+  return regions;
+}
+
+void QgsTileExtentMaxZoomWidget::setRegions( const QList<QgsTileExtentMaxZoomRegion> &regions )
+{
+  mRegionsWidget->clear();
+  for ( const QgsTileExtentMaxZoomRegion &r : regions )
+  {
+    auto item = new QTreeWidgetItem();
+    item->setText( 0, QString::number( r.maxZoom ) );
+    item->setText( 1, regionToString( r.extent ) );
+    mRegionsWidget->addTopLevelItem( item );
+  }
+  emit valueChanged();
+}
+
+void QgsTileExtentMaxZoomWidget::setMapCanvas( QgsMapCanvas *canvas )
+{
+  mMapCanvas = canvas;
+}
+
+
+//
+// QgsProcessingTileExtentMaxZoomParameterPanel
+//
+
+QgsProcessingTileExtentMaxZoomParameterPanel::QgsProcessingTileExtentMaxZoomParameterPanel( const QgsProcessingParameterTileExtentMaxZoomList *param )
+  : QWidget( nullptr )
+  , mParam( param )
+{
+  QHBoxLayout *hl = new QHBoxLayout();
+  hl->setContentsMargins( 0, 0, 0, 0 );
+
+  mLineEdit = new QLineEdit();
+  mLineEdit->setEnabled( false );
+  hl->addWidget( mLineEdit, 1 );
+
+  mToolButton = new QToolButton();
+  mToolButton->setText( QString( QChar( 0x2026 ) ) );
+  hl->addWidget( mToolButton );
+
+  setLayout( hl );
+
+  mLineEdit->setText( tr( "No regions defined" ) );
+
+  connect( mToolButton, &QToolButton::clicked, this, &QgsProcessingTileExtentMaxZoomParameterPanel::showDialog );
+}
+
+QVariant QgsProcessingTileExtentMaxZoomParameterPanel::value() const
+{
+  // if editing widget is still open, use the value currently shown in that widget
+  if ( mPanelWidget )
+    return QgsProcessingParameterTileExtentMaxZoomList::toVariant( mPanelWidget->regions() );
+
+  return QgsProcessingParameterTileExtentMaxZoomList::toVariant( mRegions );
+}
+
+void QgsProcessingTileExtentMaxZoomParameterPanel::setValue( const QVariant &value, QgsProcessingContext &context )
+{
+  const QList<QgsTileExtentMaxZoomRegion> regions = mParam->parameterAsRegionList( value, context );
+  setRegions( regions );
+}
+
+void QgsProcessingTileExtentMaxZoomParameterPanel::setRegions( const QList<QgsTileExtentMaxZoomRegion> &regions )
+{
+  mRegions = regions;
+  if ( mPanelWidget )
+  {
+    mPanelWidget->setRegions( regions );
+  }
+
+  updateSummaryText();
+  emit changed();
+}
+
+void QgsProcessingTileExtentMaxZoomParameterPanel::setMapCanvas( QgsMapCanvas *canvas )
+{
+  mMapCanvas = canvas;
+  if ( mPanelWidget )
+  {
+    mPanelWidget->setMapCanvas( mMapCanvas );
+  }
+}
+
+void QgsProcessingTileExtentMaxZoomParameterPanel::showDialog()
+{
+  if ( QgsPanelWidget *panel = QgsPanelWidget::findParentPanel( this ) )
+  {
+    mPanelWidget = new QgsTileExtentMaxZoomWidget( mParam );
+
+    mPanelWidget->setPanelTitle( mParam->description() );
+    mPanelWidget->setRegions( mRegions );
+    mPanelWidget->setMapCanvas( mMapCanvas );
+
+    panel->openPanel( mPanelWidget );
+
+    connect( mPanelWidget, &QgsTileExtentMaxZoomWidget::toggleDialogVisibility, this, &QgsProcessingTileExtentMaxZoomParameterPanel::toggleDialogVisibility );
+
+    connect( mPanelWidget, &QgsTileExtentMaxZoomWidget::valueChanged, this, [this] {
+      mRegions = mPanelWidget->regions();
+      updateSummaryText();
+      emit changed();
+    } );
+  }
+}
+
+void QgsProcessingTileExtentMaxZoomParameterPanel::updateSummaryText()
+{
+  mLineEdit->setText( tr( "%1 regions defined" ).arg( mRegions.count() ) );
+}
+
+
+//
+// QgsProcessingTileExtentMaxZoomWidgetWrapper
+//
+
+QgsProcessingTileExtentMaxZoomWidgetWrapper::QgsProcessingTileExtentMaxZoomWidgetWrapper( const QgsProcessingParameterDefinition *parameter, Qgis::ProcessingMode type, QWidget *parent )
+  : QgsAbstractProcessingParameterWidgetWrapper( parameter, type, parent )
+{}
+
+QString QgsProcessingTileExtentMaxZoomWidgetWrapper::parameterType() const
+{
+  return QgsProcessingParameterTileExtentMaxZoomList::typeName();
+}
+
+QgsAbstractProcessingParameterWidgetWrapper *QgsProcessingTileExtentMaxZoomWidgetWrapper::createWidgetWrapper( const QgsProcessingParameterDefinition *parameter, Qgis::ProcessingMode type )
+{
+  return new QgsProcessingTileExtentMaxZoomWidgetWrapper( parameter, type );
+}
+
+QgsProcessingAbstractParameterDefinitionWidget *QgsProcessingTileExtentMaxZoomWidgetWrapper::createParameterDefinitionWidget(
+  QgsProcessingContext &, const QgsProcessingParameterWidgetContext &, const QgsProcessingParameterDefinition *, const QgsProcessingAlgorithm *
+)
+{
+  return nullptr;
+}
+
+QWidget *QgsProcessingTileExtentMaxZoomWidgetWrapper::createWidget()
+{
+  switch ( type() )
+  {
+    case Qgis::ProcessingMode::Standard:
+    {
+      auto param = dynamic_cast<const QgsProcessingParameterTileExtentMaxZoomList *>( parameterDefinition() );
+      mWidget = new QgsProcessingTileExtentMaxZoomParameterPanel( param );
+
+      if ( widgetContext().mapCanvas() )
+        mWidget->setMapCanvas( widgetContext().mapCanvas() );
+
+      connect( mWidget, &QgsProcessingTileExtentMaxZoomParameterPanel::changed, this, [this] { emit widgetValueHasChanged( this ); } );
+
+      if ( mDialog && type() != Qgis::ProcessingMode::Modeler )
+        setDialog( mDialog ); // setup connections to panel - dialog was previously set before the widget was created
+
+      return mWidget;
+    }
+
+    case Qgis::ProcessingMode::Batch:
+    case Qgis::ProcessingMode::Modeler:
+    {
+      mFallbackLineEdit = new QLineEdit();
+      mFallbackLineEdit->setPlaceholderText( tr( "Tile extent max zoom level definition" ) );
+      connect( mFallbackLineEdit, &QLineEdit::textChanged, this, [this] { emit widgetValueHasChanged( this ); } );
+      return mFallbackLineEdit;
+    }
+  }
+  return nullptr;
+}
+
+void QgsProcessingTileExtentMaxZoomWidgetWrapper::setWidgetContext( const QgsProcessingParameterWidgetContext &context )
+{
+  QgsAbstractProcessingParameterWidgetWrapper::setWidgetContext( context );
+  if ( mWidget && context.mapCanvas() && type() != Qgis::ProcessingMode::Modeler )
+    mWidget->setMapCanvas( context.mapCanvas() );
+}
+
+void QgsProcessingTileExtentMaxZoomWidgetWrapper::setDialog( QWidget *dialog )
+{
+  mDialog = dialog;
+  if ( mWidget && mDialog && type() != Qgis::ProcessingMode::Modeler )
+  {
+    connect( mWidget, &QgsProcessingTileExtentMaxZoomParameterPanel::toggleDialogVisibility, mDialog, [this]( bool visible ) {
+      if ( !visible )
+      {
+        mDialog->showMinimized();
+      }
+      else
+      {
+        mDialog->showNormal();
+        mDialog->raise();
+        mDialog->activateWindow();
+      }
+    } );
+  }
+  QgsAbstractProcessingParameterWidgetWrapper::setDialog( dialog );
+}
+
+void QgsProcessingTileExtentMaxZoomWidgetWrapper::setWidgetValue( const QVariant &value, QgsProcessingContext &context )
+{
+  auto param = dynamic_cast<const QgsProcessingParameterTileExtentMaxZoomList *>( parameterDefinition() );
+
+  if ( mWidget && param )
+  {
+    mWidget->setValue( value, context );
+  }
+  else if ( mFallbackLineEdit )
+  {
+    bool ok = false;
+    mFallbackLineEdit->setText( param->valueAsString( value, context, ok ) );
+  }
+}
+
+QVariant QgsProcessingTileExtentMaxZoomWidgetWrapper::widgetValue() const
+{
+  if ( mWidget )
+  {
+    return mWidget->value();
+  }
+  else if ( mFallbackLineEdit )
+  {
+    return mFallbackLineEdit->text();
+  }
+  return QVariant();
+}
+
+QString QgsProcessingTileExtentMaxZoomWidgetWrapper::modelerExpressionFormatString() const
+{
+  return tr( "string of the format 'zoom:xmin,ymin,xmax,ymax [crs]', joined by a '::|::' delimiter" );
+}
+
 
 ///@endcond PRIVATE

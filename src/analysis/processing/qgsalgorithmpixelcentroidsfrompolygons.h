@@ -45,7 +45,14 @@ class QgsPixelCentroidsFromPolygonsAlgorithm : public QgsProcessingAlgorithm
     QgsPixelCentroidsFromPolygonsAlgorithm *createInstance() const override SIP_FACTORY;
 
   protected:
+    bool prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
     QVariantMap processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
+
+  private:
+    QgsCoordinateReferenceSystem mCrs;
+    double mRasterUnitsPerPixelX = 0;
+    double mRasterUnitsPerPixelY = 0;
+    QgsRectangle mExtent;
 };
 
 ///@endcond PRIVATE

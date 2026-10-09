@@ -17,14 +17,21 @@
 
 #include "qgsprocessingregistry.h"
 
+#include "qgsprocessingdefaultstyleregistry.h"
 #include "qgsprocessingparameteraggregate.h"
 #include "qgsprocessingparameteralignrasterlayers.h"
 #include "qgsprocessingparameterdxflayers.h"
 #include "qgsprocessingparameterfieldmap.h"
+#include "qgsprocessingparameterheatmappixelsize.h"
+#include "qgsprocessingparameterinterpolationpixelsize.h"
+#include "qgsprocessingparameterinterpolationsource.h"
 #include "qgsprocessingparametermeshdataset.h"
+#include "qgsprocessingparameterreliefcolors.h"
+#include "qgsprocessingparametertileextentmaxzoomlist.h"
 #include "qgsprocessingparametertininputlayers.h"
 #include "qgsprocessingparametertypeimpl.h"
 #include "qgsprocessingparametervectortilewriterlayers.h"
+#include "qgsprocessingpostprocessor.h"
 #include "qgsvectorfilewriter.h"
 
 #include <QString>
@@ -35,6 +42,9 @@ using namespace Qt::StringLiterals;
 
 QgsProcessingRegistry::QgsProcessingRegistry( QObject *parent SIP_TRANSFERTHIS )
   : QObject( parent )
+  , mDefaultStyleRegistry( new QgsProcessingDefaultStyleRegistry( this ) )
+  , mLayerPostProcessor( std::make_unique< QgsProcessingLayerPostProcessor >() )
+  , mResultsHandler( std::make_unique< QgsProcessingResultsHandler >() )
 {
   addParameterType( new QgsProcessingParameterTypeRasterLayer() );
   addParameterType( new QgsProcessingParameterTypeVectorLayer() );
@@ -89,6 +99,11 @@ QgsProcessingRegistry::QgsProcessingRegistry( QObject *parent SIP_TRANSFERTHIS )
   addParameterType( new QgsProcessingParameterTypePointCloudAttribute() );
   addParameterType( new QgsProcessingParameterTypeVectorTileDestination() );
   addParameterType( new QgsProcessingParameterTypeAlignRasterLayers() );
+  addParameterType( new QgsProcessingParameterTypeHeatmapPixelSize() );
+  addParameterType( new QgsProcessingParameterTypeReliefColors() );
+  addParameterType( new QgsProcessingParameterTypeInterpolationSource() );
+  addParameterType( new QgsProcessingParameterTypeInterpolationPixelSize() );
+  addParameterType( new QgsProcessingParameterTypeTileExtentMaxZoomList() );
 }
 
 QgsProcessingRegistry::~QgsProcessingRegistry()
@@ -297,4 +312,29 @@ QgsProcessingParameterType *QgsProcessingRegistry::parameterType( const QString 
 QList<QgsProcessingParameterType *> QgsProcessingRegistry::parameterTypes() const
 {
   return mParameterTypes.values();
+}
+
+QgsProcessingDefaultStyleRegistry *QgsProcessingRegistry::defaultStyleRegistry() const
+{
+  return mDefaultStyleRegistry;
+}
+
+void QgsProcessingRegistry::setLayerPostProcessor( std::unique_ptr< QgsProcessingLayerPostProcessor > processor )
+{
+  mLayerPostProcessor = std::move( processor );
+}
+
+QgsProcessingLayerPostProcessor *QgsProcessingRegistry::layerPostProcessor()
+{
+  return mLayerPostProcessor.get();
+}
+
+void QgsProcessingRegistry::setResultsHandler( std::unique_ptr<QgsProcessingResultsHandler> handler )
+{
+  mResultsHandler = std::move( handler );
+}
+
+bool QgsProcessingRegistry::handleAlgorithmResults( const QgsProcessingAlgorithm *algorithm, QgsProcessingContext &context, const QVariantMap &parameters, QgsProcessingFeedback *feedback )
+{
+  return mResultsHandler->handleAlgorithmResults( algorithm, context, parameters, feedback );
 }

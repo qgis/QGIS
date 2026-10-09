@@ -32,6 +32,11 @@
 
 using namespace Qt::StringLiterals;
 
+QgsAnnotationItem *QgsAnnotationItemMetadata::createItem()
+{
+  return mCreateFunc ? mCreateFunc().release() : nullptr;
+}
+
 QgsAnnotationItemRegistry::QgsAnnotationItemRegistry( QObject *parent )
   : QObject( parent )
 {}
@@ -71,12 +76,12 @@ bool QgsAnnotationItemRegistry::addItemType( QgsAnnotationItemAbstractMetadata *
   return true;
 }
 
-QgsAnnotationItem *QgsAnnotationItemRegistry::createItem( const QString &type ) const
+std::unique_ptr<QgsAnnotationItem> QgsAnnotationItemRegistry::createItem( const QString &type ) const
 {
   if ( !mMetadata.contains( type ) )
     return nullptr;
 
-  return mMetadata[type]->createItem();
+  return std::unique_ptr<QgsAnnotationItem>( mMetadata[type]->createItem() );
 }
 
 QMap<QString, QString> QgsAnnotationItemRegistry::itemTypes() const

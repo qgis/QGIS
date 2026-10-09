@@ -63,48 +63,48 @@ void QgsAttributeEditorElement::setLabelStyle( const QgsAttributeEditorElement::
   mLabelStyle = labelStyle;
 }
 
-QgsAttributeEditorElement *QgsAttributeEditorElement::create(
+std::unique_ptr<QgsAttributeEditorElement> QgsAttributeEditorElement::create(
   const QDomElement &element, const QString &layerId, const QgsFields &fields, const QgsReadWriteContext &context, QgsAttributeEditorElement *parent
 )
 {
-  QgsAttributeEditorElement *newElement = nullptr;
+  std::unique_ptr<QgsAttributeEditorElement> newElement;
 
   const QString name = element.attribute( u"name"_s );
 
   if ( element.tagName() == "attributeEditorContainer"_L1 )
   {
-    newElement = new QgsAttributeEditorContainer( context.projectTranslator()->translate( u"project:layers:%1:formcontainers"_s.arg( layerId ), name ), parent );
+    newElement = std::make_unique<QgsAttributeEditorContainer>( context.projectTranslator()->translate( u"project:layers:%1:formcontainers"_s.arg( layerId ), name ), parent );
   }
   else if ( element.tagName() == "attributeEditorField"_L1 )
   {
     const int idx = fields.lookupField( name );
-    newElement = new QgsAttributeEditorField( name, idx, parent );
+    newElement = std::make_unique<QgsAttributeEditorField>( name, idx, parent );
   }
   else if ( element.tagName() == "attributeEditorRelation"_L1 )
   {
     // At this time, the relations are not loaded
     // So we only grab the id and delegate the rest to onRelationsLoaded()
-    newElement = new QgsAttributeEditorRelation( element.attribute( u"relation"_s, u"[None]"_s ), parent );
+    newElement = std::make_unique<QgsAttributeEditorRelation>( element.attribute( u"relation"_s, u"[None]"_s ), parent );
   }
   else if ( element.tagName() == "attributeEditorQmlElement"_L1 )
   {
-    newElement = new QgsAttributeEditorQmlElement( element.attribute( u"name"_s ), parent );
+    newElement = std::make_unique<QgsAttributeEditorQmlElement>( element.attribute( u"name"_s ), parent );
   }
   else if ( element.tagName() == "attributeEditorHtmlElement"_L1 )
   {
-    newElement = new QgsAttributeEditorHtmlElement( element.attribute( u"name"_s ), parent );
+    newElement = std::make_unique<QgsAttributeEditorHtmlElement>( element.attribute( u"name"_s ), parent );
   }
   else if ( element.tagName() == "attributeEditorTextElement"_L1 )
   {
-    newElement = new QgsAttributeEditorTextElement( element.attribute( u"name"_s ), parent );
+    newElement = std::make_unique<QgsAttributeEditorTextElement>( element.attribute( u"name"_s ), parent );
   }
   else if ( element.tagName() == "attributeEditorSpacerElement"_L1 )
   {
-    newElement = new QgsAttributeEditorSpacerElement( element.attribute( u"name"_s ), parent );
+    newElement = std::make_unique<QgsAttributeEditorSpacerElement>( element.attribute( u"name"_s ), parent );
   }
   else if ( element.tagName() == "attributeEditorAction"_L1 )
   {
-    newElement = new QgsAttributeEditorAction( QUuid( element.attribute( u"name"_s ) ), parent );
+    newElement = std::make_unique<QgsAttributeEditorAction>( QUuid( element.attribute( u"name"_s ) ), parent );
   }
 
   if ( newElement )

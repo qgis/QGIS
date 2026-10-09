@@ -475,7 +475,7 @@ QString QgsExpression::replaceExpressionText( const QString &action, const QgsEx
   int index = 0;
   while ( index < action.size() )
   {
-    static const QRegularExpression sRegEx { u"\\[%(.*?)%\\]"_s, QRegularExpression::MultilineOption | QRegularExpression::DotMatchesEverythingOption };
+    const thread_local QRegularExpression sRegEx { u"\\[%(.*?)%\\]"_s, QRegularExpression::MultilineOption | QRegularExpression::DotMatchesEverythingOption };
 
     const QRegularExpressionMatch match = sRegEx.match( action, index );
     if ( !match.hasMatch() )
@@ -1483,6 +1483,17 @@ bool QgsExpression::attemptReduceToInClause( const QStringList &expressions, QSt
   }
   result = u"%1 IN (%2)"_s.arg( quotedColumnRef( inField ), values.join( ',' ) );
   return true;
+}
+
+QgsExpression QgsExpression::simplified() const
+{
+  if ( !d->mRootNode )
+    return QgsExpression();
+
+  QgsExpression res = *this;
+  res.detach();
+  res.d->mRootNode.reset( d->mRootNode->simplifiedNode() );
+  return res;
 }
 
 const QgsExpressionNode *QgsExpression::rootNode() const

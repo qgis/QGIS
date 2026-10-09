@@ -17,6 +17,7 @@
 #include "qgsgrassselect.h"
 
 #include "qgsgrass.h"
+#include "qgshelp.h"
 #include "qgslogger.h"
 #include "qgssettings.h"
 
@@ -48,6 +49,7 @@ QgsGrassSelect::QgsGrassSelect( QWidget *parent, int type )
   connect( emap, static_cast<void ( QComboBox::* )( int )>( &QComboBox::activated ), this, &QgsGrassSelect::emap_activated );
   connect( buttonBox, &QDialogButtonBox::accepted, this, &QgsGrassSelect::accept );
   connect( buttonBox, &QDialogButtonBox::rejected, this, &QDialog::reject );
+  connect( buttonBox, &QDialogButtonBox::helpRequested, this, [] { QgsHelp::openHelp( u"grass_integration/grass_integration.html#grass-plugin"_s ); } );
 
   if ( sFirst )
   {

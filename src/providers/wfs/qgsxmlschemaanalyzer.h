@@ -19,6 +19,8 @@
 #ifndef QGSXMLSCHEMAANALYSER_H
 #define QGSXMLSCHEMAANALYSER_H
 
+#include <gdal.h>
+
 #include "qgis.h"
 #include "qgsfields.h"
 
@@ -76,6 +78,8 @@ class QgsXmlSchemaAnalyzer
       QString &errorMsg,
       bool &mayTryWithGMLAS
     );
+
+    static QList<QPair<QString, Qgis::WkbType>> geometryInfoFromReferencingLayers( GDALDatasetH dataset, const QString &layerName );
 };
 
 #endif

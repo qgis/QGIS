@@ -128,7 +128,7 @@ void QgsSymbolLevelsWidget::populateTable()
 void QgsSymbolLevelsWidget::updateUi()
 {
   tableLevels->setEnabled( chkEnable->isChecked() );
-  emit widgetChanged();
+  emit changed();
 }
 
 void QgsSymbolLevelsWidget::apply()
@@ -179,7 +179,7 @@ void QgsSymbolLevelsWidget::renderingPassChanged( int row, int column )
     return;
   sym->symbolLayer( column - 1 )->setRenderingPass( tableLevels->item( row, column )->text().toInt() );
 
-  emit widgetChanged();
+  emit changed();
 }
 
 void QgsSymbolLevelsWidget::setForceOrderingEnabled( bool enabled )

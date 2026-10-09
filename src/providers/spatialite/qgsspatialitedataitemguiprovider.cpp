@@ -22,6 +22,7 @@
 #include "qgsmessagebar.h"
 #include "qgsmessageoutput.h"
 #include "qgsmimedatautils.h"
+#include "qgsproject.h"
 #include "qgsprovidermetadata.h"
 #include "qgsproviderregistry.h"
 #include "qgssettings.h"
@@ -182,7 +183,7 @@ bool QgsSpatiaLiteDataItemGuiProvider::handleDropConnectionItem( QgsSLConnection
     // open the source layer
     bool owner;
     QString error;
-    QgsVectorLayer *srcLayer = u.vectorLayer( owner, error );
+    QgsVectorLayer *srcLayer = u.vectorLayer( owner, error, QgsProject::instance() );
     if ( !srcLayer )
     {
       importResults.append( tr( "%1: %2" ).arg( u.name, error ) );

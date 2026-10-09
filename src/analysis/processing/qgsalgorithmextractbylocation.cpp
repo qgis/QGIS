@@ -176,31 +176,31 @@ void QgsLocationBasedAlgorithm::processByIteratingOverTargetSource(
         switch ( static_cast<Predicate>( predicate ) )
         {
           case Intersects:
-            isMatch = engine->intersects( testFeature.geometry().constGet() );
+            isMatch = engine->intersects( testFeature.geometry().constGet(), nullptr, feedback );
             break;
           case Contains:
-            isMatch = engine->contains( testFeature.geometry().constGet() );
+            isMatch = engine->contains( testFeature.geometry().constGet(), nullptr, feedback );
             break;
           case Disjoint:
-            if ( engine->intersects( testFeature.geometry().constGet() ) )
+            if ( engine->intersects( testFeature.geometry().constGet(), nullptr, feedback ) )
             {
               isDisjoint = false;
             }
             break;
           case IsEqual:
-            isMatch = engine->isEqual( testFeature.geometry().constGet() );
+            isMatch = engine->isEqual( testFeature.geometry().constGet(), nullptr, feedback );
             break;
           case Touches:
-            isMatch = engine->touches( testFeature.geometry().constGet() );
+            isMatch = engine->touches( testFeature.geometry().constGet(), nullptr, feedback );
             break;
           case Overlaps:
-            isMatch = engine->overlaps( testFeature.geometry().constGet() );
+            isMatch = engine->overlaps( testFeature.geometry().constGet(), nullptr, feedback );
             break;
           case Within:
-            isMatch = engine->within( testFeature.geometry().constGet() );
+            isMatch = engine->within( testFeature.geometry().constGet(), nullptr, feedback );
             break;
           case Crosses:
-            isMatch = engine->crosses( testFeature.geometry().constGet() );
+            isMatch = engine->crosses( testFeature.geometry().constGet(), nullptr, feedback );
             break;
         }
 
@@ -312,31 +312,31 @@ void QgsLocationBasedAlgorithm::processByIteratingOverIntersectSource(
         switch ( predicate )
         {
           case Intersects:
-            isMatch = engine->intersects( testFeature.geometry().constGet() );
+            isMatch = engine->intersects( testFeature.geometry().constGet(), nullptr, feedback );
             break;
           case Contains:
-            isMatch = engine->contains( testFeature.geometry().constGet() );
+            isMatch = engine->contains( testFeature.geometry().constGet(), nullptr, feedback );
             break;
           case Disjoint:
-            if ( engine->intersects( testFeature.geometry().constGet() ) )
+            if ( engine->intersects( testFeature.geometry().constGet(), nullptr, feedback ) )
             {
               disjointSet.remove( testFeature.id() );
             }
             break;
           case IsEqual:
-            isMatch = engine->isEqual( testFeature.geometry().constGet() );
+            isMatch = engine->isEqual( testFeature.geometry().constGet(), nullptr, feedback );
             break;
           case Touches:
-            isMatch = engine->touches( testFeature.geometry().constGet() );
+            isMatch = engine->touches( testFeature.geometry().constGet(), nullptr, feedback );
             break;
           case Overlaps:
-            isMatch = engine->overlaps( testFeature.geometry().constGet() );
+            isMatch = engine->overlaps( testFeature.geometry().constGet(), nullptr, feedback );
             break;
           case Within:
-            isMatch = engine->within( testFeature.geometry().constGet() );
+            isMatch = engine->within( testFeature.geometry().constGet(), nullptr, feedback );
             break;
           case Crosses:
-            isMatch = engine->crosses( testFeature.geometry().constGet() );
+            isMatch = engine->crosses( testFeature.geometry().constGet(), nullptr, feedback );
             break;
         }
         if ( isMatch )
@@ -441,6 +441,8 @@ QgsSelectByLocationAlgorithm *QgsSelectByLocationAlgorithm::createInstance() con
 
 QVariantMap QgsSelectByLocationAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
+  QGS_MARK_ALGORITHM_SOURCE
+
   QgsVectorLayer *selectLayer = parameterAsVectorLayer( parameters, u"INPUT"_s, context );
   if ( !selectLayer )
     throw QgsProcessingException( QObject::tr( "Could not load source layer for INPUT" ) );
@@ -564,6 +566,8 @@ bool QgsExtractByLocationAlgorithm::prepareAlgorithm( const QVariantMap &paramet
 
 QVariantMap QgsExtractByLocationAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
+  QGS_MARK_ALGORITHM_SOURCE
+
   std::unique_ptr<QgsFeatureSource> input( parameterAsSource( parameters, u"INPUT"_s, context ) );
   if ( !input )
     throw QgsProcessingException( invalidSourceError( parameters, u"INPUT"_s ) );
@@ -586,6 +590,7 @@ QVariantMap QgsExtractByLocationAlgorithm::processAlgorithm( const QVariantMap &
   process( context, input.get(), intersectSource.get(), selectedPredicates, addToSink, false, feedback );
 
   sink->finalize();
+  feedback->featureSinkFinalized( u"OUTPUT"_s );
 
   QVariantMap results;
   results.insert( u"OUTPUT"_s, dest );

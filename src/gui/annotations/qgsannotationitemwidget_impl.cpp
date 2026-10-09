@@ -14,6 +14,7 @@
  ***************************************************************************/
 #include "qgsannotationitemwidget_impl.h"
 
+#include "qgsannotationlayer.h"
 #include "qgsannotationlineitem.h"
 #include "qgsannotationlinetextitem.h"
 #include "qgsannotationmarkeritem.h"
@@ -325,8 +326,7 @@ QgsAnnotationPointTextItemWidget::QgsAnnotationPointTextItemWidget( QWidget *par
 
   mSpinTextAngle->setClearValue( 0 );
 
-  mRotationModeCombo->addItem( tr( "Ignore Map Rotation" ), QVariant::fromValue( Qgis::SymbolRotationMode::IgnoreMapRotation ) );
-  mRotationModeCombo->addItem( tr( "Rotate With Map" ), QVariant::fromValue( Qgis::SymbolRotationMode::RespectMapRotation ) );
+  populateRotationModeComboBox( mRotationModeCombo );
 
   mAlignmentComboBox->setAvailableAlignments( Qt::AlignLeft | Qt::AlignHCenter | Qt::AlignRight );
 
@@ -461,6 +461,10 @@ QgsAnnotationLineTextItemWidget::QgsAnnotationLineTextItemWidget( QWidget *paren
 
   mTextEdit->setMode( QgsRichTextEditor::Mode::QgsTextRenderer );
 
+  mAlignmentCombo->addItem( tr( "Start of Line" ), QVariant::fromValue( Qgis::TextAnchorPoint::StartOfText ) );
+  mAlignmentCombo->addItem( tr( "Center of Line" ), QVariant::fromValue( Qgis::TextAnchorPoint::CenterOfText ) );
+  mAlignmentCombo->addItem( tr( "End of Line" ), QVariant::fromValue( Qgis::TextAnchorPoint::EndOfText ) );
+
   connect( mTextFormatButton, &QgsFontButton::changed, this, [this] {
     mTextEdit->setMode( mTextFormatButton->textFormat().allowHtmlFormatting() ? QgsRichTextEditor::Mode::QgsTextRenderer : QgsRichTextEditor::Mode::PlainText );
 
@@ -490,6 +494,11 @@ QgsAnnotationLineTextItemWidget::QgsAnnotationLineTextItemWidget( QWidget *paren
     if ( !mBlockChangedSignal )
       emit itemChanged();
   } );
+
+  connect( mAlignmentCombo, qOverload< int >( &QComboBox::currentIndexChanged ), this, [this] {
+    if ( !mBlockChangedSignal )
+      emit itemChanged();
+  } );
 }
 
 QgsAnnotationLineTextItemWidget::~QgsAnnotationLineTextItemWidget() = default;
@@ -512,6 +521,8 @@ void QgsAnnotationLineTextItemWidget::updateItem( QgsAnnotationItem *item )
     lineTextItem->setOffsetFromLine( mSpinOffset->value() );
     lineTextItem->setOffsetFromLineUnit( mOffsetUnitWidget->unit() );
     lineTextItem->setOffsetFromLineMapUnitScale( mOffsetUnitWidget->getMapUnitScale() );
+
+    lineTextItem->setTextAnchor( mAlignmentCombo->currentData().value< Qgis::TextAnchorPoint >() );
 
     mBlockChangedSignal = false;
     mPropertiesWidget->updateItem( lineTextItem );
@@ -552,6 +563,8 @@ bool QgsAnnotationLineTextItemWidget::setNewItem( QgsAnnotationItem *item )
   mSpinOffset->setValue( mItem->offsetFromLine() );
   mOffsetUnitWidget->setUnit( mItem->offsetFromLineUnit() );
   mOffsetUnitWidget->setMapUnitScale( mItem->offsetFromLineMapUnitScale() );
+
+  mAlignmentCombo->setCurrentIndex( mAlignmentCombo->findData( QVariant::fromValue( mItem->textAnchor() ) ) );
 
   mBlockChangedSignal = false;
 
@@ -594,6 +607,8 @@ QgsAnnotationRectangleTextItemWidget::QgsAnnotationRectangleTextItemWidget( QWid
   mSizeModeCombo->addItem( tr( "Scale Dependent Size" ), QVariant::fromValue( Qgis::AnnotationPlacementMode::SpatialBounds ) );
   mSizeModeCombo->addItem( tr( "Fixed Size" ), QVariant::fromValue( Qgis::AnnotationPlacementMode::FixedSize ) );
   mSizeModeCombo->addItem( tr( "Relative to Map" ), QVariant::fromValue( Qgis::AnnotationPlacementMode::RelativeToMapFrame ) );
+
+  populateRotationModeComboBox( mRotationModeCombo );
 
   mSizeUnitWidget->setUnits(
     QgsUnitTypes::RenderUnitList() << Qgis::RenderUnit::Pixels << Qgis::RenderUnit::Millimeters << Qgis::RenderUnit::Points << Qgis::RenderUnit::Inches << Qgis::RenderUnit::Percentage
@@ -647,6 +662,9 @@ QgsAnnotationRectangleTextItemWidget::QgsAnnotationRectangleTextItemWidget( QWid
   connect( mHeightSpinBox, qOverload<double>( &QDoubleSpinBox::valueChanged ), this, &QgsAnnotationRectangleTextItemWidget::setHeight );
 
   connect( mSizeModeCombo, qOverload<int>( &QComboBox::currentIndexChanged ), this, &QgsAnnotationRectangleTextItemWidget::sizeModeChanged );
+  connect( mRotationModeCombo, qOverload<int>( &QComboBox::currentIndexChanged ), this, &QgsAnnotationRectangleTextItemWidget::onWidgetChanged );
+  mSpinAngle->setClearValue( 0 );
+  connect( mSpinAngle, qOverload<double>( &QgsDoubleSpinBox::valueChanged ), this, &QgsAnnotationRectangleTextItemWidget::onWidgetChanged );
   mWidgetFixedSize->hide();
   sizeModeChanged();
 }
@@ -671,6 +689,9 @@ void QgsAnnotationRectangleTextItemWidget::updateItem( QgsAnnotationItem *item )
 
     rectTextItem->setFixedSize( QSizeF( mWidthSpinBox->value(), mHeightSpinBox->value() ) );
     rectTextItem->setFixedSizeUnit( mSizeUnitWidget->unit() );
+
+    rectTextItem->setRotation( mSpinAngle->value() );
+    rectTextItem->setRotationMode( mRotationModeCombo->currentData().value<Qgis::SymbolRotationMode>() );
 
     rectTextItem->setBackgroundEnabled( mBackgroundCheckbox->isChecked() );
     rectTextItem->setFrameEnabled( mFrameCheckbox->isChecked() );
@@ -759,6 +780,8 @@ bool QgsAnnotationRectangleTextItemWidget::setNewItem( QgsAnnotationItem *item )
   mHeightSpinBox->setValue( textItem->fixedSize().height() );
   mSizeUnitWidget->setUnit( textItem->fixedSizeUnit() );
   mSizeModeCombo->setCurrentIndex( mSizeModeCombo->findData( QVariant::fromValue( textItem->placementMode() ) ) );
+  mRotationModeCombo->setCurrentIndex( mRotationModeCombo->findData( QVariant::fromValue( textItem->rotationMode() ) ) );
+  mSpinAngle->setValue( textItem->rotation() );
 
   mBlockChangedSignal = false;
 
@@ -874,6 +897,11 @@ QgsAnnotationPictureItemWidget::QgsAnnotationPictureItemWidget( QWidget *parent 
   mSizeModeCombo->addItem( tr( "Fixed Size" ), QVariant::fromValue( Qgis::AnnotationPlacementMode::FixedSize ) );
   mSizeModeCombo->addItem( tr( "Relative to Map" ), QVariant::fromValue( Qgis::AnnotationPlacementMode::RelativeToMapFrame ) );
 
+  m3DSizeModeCombo->addItem( tr( "View Independent" ), QVariant::fromValue( Qgis::BillboardScaleMode::ViewIndependent ) );
+  m3DSizeModeCombo->addItem( tr( "Perspective Scaled" ), QVariant::fromValue( Qgis::BillboardScaleMode::Perspective ) );
+
+  populateRotationModeComboBox( mRotationModeCombo );
+
   mSizeUnitWidget->setUnits(
     QgsUnitTypes::RenderUnitList() << Qgis::RenderUnit::Pixels << Qgis::RenderUnit::Millimeters << Qgis::RenderUnit::Points << Qgis::RenderUnit::Inches << Qgis::RenderUnit::Percentage
   );
@@ -885,12 +913,25 @@ QgsAnnotationPictureItemWidget::QgsAnnotationPictureItemWidget( QWidget *parent 
   mFrameSymbolButton->setDialogTitle( tr( "Frame" ) );
   mFrameSymbolButton->registerExpressionContextGenerator( this );
 
+  mHeight3DSpinBox->setClearValue( 0, tr( "Default" ) );
+  mWidth3DSpinBox->setClearValue( 0, tr( "Default" ) );
+
   connect( mPropertiesWidget, &QgsAnnotationItemCommonPropertiesWidget::itemChanged, this, [this] {
     if ( !mBlockChangedSignal )
       emit itemChanged();
   } );
 
   connect( mSizeModeCombo, qOverload<int>( &QComboBox::currentIndexChanged ), this, &QgsAnnotationPictureItemWidget::sizeModeChanged );
+
+  connect( m3DSizeModeCombo, qOverload<int>( &QComboBox::currentIndexChanged ), this, &QgsAnnotationPictureItemWidget::onWidgetChanged );
+
+  connect( mRotationModeCombo, qOverload<int>( &QComboBox::currentIndexChanged ), this, &QgsAnnotationPictureItemWidget::onWidgetChanged );
+
+  mSpinAngle->setClearValue( 0 );
+  connect( mSpinAngle, qOverload<double>( &QDoubleSpinBox::valueChanged ), this, &QgsAnnotationPictureItemWidget::onWidgetChanged );
+
+  connect( mHeight3DSpinBox, qOverload<double>( &QDoubleSpinBox::valueChanged ), this, &QgsAnnotationPictureItemWidget::onWidgetChanged );
+  connect( mWidth3DSpinBox, qOverload<double>( &QDoubleSpinBox::valueChanged ), this, &QgsAnnotationPictureItemWidget::onWidgetChanged );
 
   connect( mRadioSVG, &QRadioButton::toggled, this, &QgsAnnotationPictureItemWidget::modeChanged );
   connect( mRadioRaster, &QRadioButton::toggled, this, &QgsAnnotationPictureItemWidget::modeChanged );
@@ -948,10 +989,23 @@ void QgsAnnotationPictureItemWidget::updateItem( QgsAnnotationItem *item )
     pictureItem->setFixedSize( QSizeF( mWidthSpinBox->value(), mHeightSpinBox->value() ) );
     pictureItem->setFixedSizeUnit( mSizeUnitWidget->unit() );
 
+    pictureItem->setRotation( mSpinAngle->value() );
+    pictureItem->setRotationMode( mRotationModeCombo->currentData().value<Qgis::SymbolRotationMode>() );
+
     pictureItem->setBackgroundEnabled( mBackgroundCheckbox->isChecked() );
     pictureItem->setFrameEnabled( mFrameCheckbox->isChecked() );
     pictureItem->setBackgroundSymbol( mBackgroundSymbolButton->clonedSymbol<QgsFillSymbol>() );
     pictureItem->setFrameSymbol( mFrameSymbolButton->clonedSymbol<QgsFillSymbol>() );
+
+    pictureItem->setBillboard3DScaleMode( m3DSizeModeCombo->currentData().value< Qgis::BillboardScaleMode >() );
+    if ( mWidth3DSpinBox->value() > 0 && mHeight3DSpinBox->value() > 0 )
+    {
+      pictureItem->setBillboard3DSize( QSizeF( mWidth3DSpinBox->value(), mHeight3DSpinBox->value() ) );
+    }
+    else
+    {
+      pictureItem->setBillboard3DSize( QSizeF() );
+    }
 
     if ( mUpdateItemPosition )
     {
@@ -1031,11 +1085,27 @@ bool QgsAnnotationPictureItemWidget::setNewItem( QgsAnnotationItem *item )
   mWidthSpinBox->setValue( pictureItem->fixedSize().width() );
   mHeightSpinBox->setValue( pictureItem->fixedSize().height() );
   mSizeModeCombo->setCurrentIndex( mSizeModeCombo->findData( QVariant::fromValue( pictureItem->placementMode() ) ) );
+  mSpinAngle->setValue( pictureItem->rotation() );
+  mRotationModeCombo->setCurrentIndex( mRotationModeCombo->findData( QVariant::fromValue( pictureItem->rotationMode() ) ) );
+
+  mWidth3DSpinBox->setValue( pictureItem->billboard3DSize().width() );
+  mHeight3DSpinBox->setValue( pictureItem->billboard3DSize().height() );
+
+  m3DSizeModeCombo->setCurrentIndex( m3DSizeModeCombo->findData( QVariant::fromValue( pictureItem->billboard3DScaleMode() ) ) );
   sizeModeChanged();
 
   mBlockChangedSignal = false;
 
   return true;
+}
+
+void QgsAnnotationPictureItemWidget::showEvent( QShowEvent *event )
+{
+  QgsAnnotationLayer *layer = QgsAnnotationPictureItemWidget::layer();
+  // show 3d settings only when layer has a 3d renderer
+  mGroupAppearance3D->setVisible( !layer || layer->renderer3D() );
+
+  QgsAnnotationItemBaseWidget::showEvent( event );
 }
 
 void QgsAnnotationPictureItemWidget::onWidgetChanged()

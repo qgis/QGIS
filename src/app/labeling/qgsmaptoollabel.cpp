@@ -1400,7 +1400,7 @@ void QgsMapToolLabel::updateHoveredLabel( QgsMapMouseEvent *e )
     mHoverRubberBand->setWidth( 2 );
     mHoverRubberBand->setSecondaryStrokeColor( QColor( 255, 255, 255, 100 ) );
     mHoverRubberBand->setColor( QColor( 200, 0, 120, 255 ) );
-    mHoverRubberBand->setIcon( QgsRubberBand::ICON_BOX );
+    mHoverRubberBand->setIcon( Qgis::RubberBandIconType::Box );
 
     double scaleFactor = mCanvas->fontMetrics().xHeight();
     mHoverRubberBand->setIconSize( scaleFactor );
@@ -1416,7 +1416,7 @@ void QgsMapToolLabel::updateHoveredLabel( QgsMapMouseEvent *e )
       mCalloutOtherPointsRubberBand->setWidth( 2 );
       mCalloutOtherPointsRubberBand->setSecondaryStrokeColor( QColor( 255, 255, 255, 100 ) );
       mCalloutOtherPointsRubberBand->setColor( QColor( 200, 0, 120, 255 ) );
-      mCalloutOtherPointsRubberBand->setIcon( QgsRubberBand::ICON_X );
+      mCalloutOtherPointsRubberBand->setIcon( Qgis::RubberBandIconType::CrossX );
       double scaleFactor = mCanvas->fontMetrics().xHeight();
       mCalloutOtherPointsRubberBand->setIconSize( scaleFactor );
     }

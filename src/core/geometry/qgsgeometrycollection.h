@@ -281,7 +281,7 @@ class CORE_EXPORT QgsGeometryCollection : public QgsAbstractGeometry
     QString asWkt( int precision = 17 ) const override;
     QDomElement asGml2( QDomDocument &doc, int precision = 17, const QString &ns = "gml", QgsAbstractGeometry::AxisOrder axisOrder = QgsAbstractGeometry::AxisOrder::XY ) const override;
     QDomElement asGml3( QDomDocument &doc, int precision = 17, const QString &ns = "gml", QgsAbstractGeometry::AxisOrder axisOrder = QgsAbstractGeometry::AxisOrder::XY ) const override;
-    json asJsonObject( int precision = 17 ) const override SIP_SKIP;
+    json asJsonObject( int precision = 17, Qgis::GeoJsonProfile profile = Qgis::GeoJsonProfile::Legacy ) const override SIP_SKIP;
     QString asKml( int precision = 17 ) const override;
 
     QgsBox3D boundingBox3D() const override;
@@ -296,6 +296,8 @@ class CORE_EXPORT QgsGeometryCollection : public QgsAbstractGeometry
     bool insertVertex( QgsVertexId position, const QgsPoint &vertex ) override;
     bool moveVertex( QgsVertexId position, const QgsPoint &newPos ) override;
     bool deleteVertex( QgsVertexId position ) override;
+    bool deleteVertices( const QSet<QgsVertexId> &positions ) override;
+    bool hasVertex( QgsVertexId position ) const override;
 
     double length() const override SIP_HOLDGIL;
     double area() const override SIP_HOLDGIL;

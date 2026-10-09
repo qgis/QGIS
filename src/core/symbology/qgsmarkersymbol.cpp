@@ -25,12 +25,12 @@
 
 std::unique_ptr< QgsMarkerSymbol > QgsMarkerSymbol::createSimple( const QVariantMap &properties )
 {
-  QgsSymbolLayer *sl = QgsSimpleMarkerSymbolLayer::create( properties );
+  std::unique_ptr<QgsSymbolLayer> sl = QgsSimpleMarkerSymbolLayer::create( properties );
   if ( !sl )
     return nullptr;
 
   QgsSymbolLayerList layers;
-  layers.append( sl );
+  layers.append( sl.release() );
   return std::make_unique< QgsMarkerSymbol >( layers );
 }
 

@@ -23,9 +23,13 @@
 #include "moc_qgsmaplayerproxymodel.cpp"
 
 QgsMapLayerProxyModel::QgsMapLayerProxyModel( QObject *parent )
+  : QgsMapLayerProxyModel( QgsProject::instance(), parent ) // skip-keyword-check
+{}
+
+QgsMapLayerProxyModel::QgsMapLayerProxyModel( QgsProject *project, QObject *parent )
   : QSortFilterProxyModel( parent )
   , mFilters( Qgis::LayerFilter::All )
-  , mModel( new QgsMapLayerModel( parent ) )
+  , mModel( new QgsMapLayerModel( project, parent ) )
 {
   setSourceModel( mModel );
   setDynamicSortFilter( true );
@@ -120,7 +124,7 @@ void QgsMapLayerProxyModel::setExceptedLayerIds( const QStringList &ids )
   const auto constIds = ids;
   for ( const QString &id : constIds )
   {
-    QgsMapLayer *l = QgsProject::instance()->mapLayer( id ); // skip-keyword-check
+    QgsMapLayer *l = mModel->project()->mapLayer( id );
     if ( l )
       mExceptList << l;
   }

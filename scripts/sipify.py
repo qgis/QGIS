@@ -381,9 +381,6 @@ ALLOWED_NON_CLASS_ENUMS = [
     "QgsMeshDatasetGroupMetadata::DataType",
     "QgsMeshDriverMetadata::MeshDriverCapability",
     "QgsMeshRendererScalarSettings::DataResamplingMethod",
-    "QgsMeshRendererVectorArrowSettings::ArrowScalingMethod",
-    "QgsMeshRendererVectorSettings::Symbology",
-    "QgsMeshRendererVectorStreamlineSettings::SeedingStartPointsMethod",
     "QgsMeshTimeSettings::TimeUnit",
     "QgsMessageOutput::MessageType",
     "QgsMetadataWidget::Mode",
@@ -1618,6 +1615,11 @@ def fix_annotations(line):
     if py_name_match:
         CONTEXT.method_py_name = py_name_match.group(1)
 
+    if "std.unique_ptr" in CONTEXT.return_type and "SIP_FACTORY" in line:
+        exit_with_error(
+            "Don't specify SIP_FACTORY if the return type is std::unique_ptr"
+        )
+
     # Printed annotations
     replacements = {
         r"//\s*SIP_ABSTRACT\b": "/Abstract/",
@@ -1626,6 +1628,7 @@ def fix_annotations(line):
         r"\bSIP_ARRAY\b": "/Array/",
         r"\bSIP_ARRAYSIZE\b": "/ArraySize/",
         r"\bSIP_CONSTRAINED\b": "/Constrained/",
+        r"\bSIP_DISALLOWNONE\b": "/DisallowNone/",
         r"\bSIP_EXTERNAL\b": "/External/",
         r"\bSIP_FACTORY\b": "/Factory/",
         r"\bSIP_IN\b": "/In/",
@@ -3420,7 +3423,7 @@ def process_comments():
         r"^\s*typedef\s+\w+\s*<\s*\w+\s*>\s+\w+\s+.*SIP_DOC_TEMPLATE",
         CONTEXT.current_line,
     ):
-        # support Docstring for template based classes in SIP 4.19.7+
+        # support Docstring for template based classes
         CONTEXT.comment_template_docstring = True
     elif CONTEXT.multiline_definition == MultiLineType.NotMultiline and (
         re.search(r"//", CONTEXT.current_line)
@@ -3587,10 +3590,7 @@ def try_write_comments():
             if CONTEXT.comment.strip():
                 validate_docstring(CONTEXT.comment)
                 dbg_info("comment non-empty")
-                doc_prepend = (
-                    "@DOCSTRINGSTEMPLATE@" if CONTEXT.comment_template_docstring else ""
-                )
-                write_output("CM1", f"{doc_prepend}%Docstring\n")
+                write_output("CM1", "%Docstring\n")
 
                 doc_string = ""
                 comment_lines = CONTEXT.comment.split("\n")
@@ -3628,12 +3628,12 @@ def try_write_comments():
                         dbg_info("out style parameters remain to flush!")
                         # member has /Out/ parameters, but no return type, so flush out out_params docs now
                         first_out_param = out_params.pop(0)
-                        doc_string += f"{doc_prepend}:return: - {first_out_param}\n"
+                        doc_string += f":return: - {first_out_param}\n"
 
                         for out_param in out_params:
-                            doc_string += f"{doc_prepend}         - {out_param}\n"
+                            doc_string += f"         - {out_param}\n"
 
-                        doc_string += f"{doc_prepend}\n"
+                        doc_string += "\n"
                         out_params = []
 
                     param_match = re.match(r"^:param\s+(\w+)", comment_line)
@@ -3678,7 +3678,7 @@ def try_write_comments():
                     if ":return:" in comment_line and out_params:
                         waiting_for_return_to_end = True
                         comment_line = comment_line.replace(":return:", ":return: -")
-                        doc_string += f"{doc_prepend}{comment_line}\n"
+                        doc_string += f"{comment_line}\n"
 
                         # scan forward to find end of return description
                         scan_forward_idx = comment_line_idx
@@ -3705,17 +3705,17 @@ def try_write_comments():
                             ):
                                 break
 
-                            doc_string += f"{doc_prepend}  {scan_forward_line}\n"
+                            doc_string += f"  {scan_forward_line}\n"
                             comment_line_idx += 1
 
                         if needs_blank_line_after_return:
                             doc_string += "\n"
 
                         for out_param in out_params:
-                            doc_string += f"{doc_prepend}         - {out_param}\n"
+                            doc_string += f"         - {out_param}\n"
                         out_params = []
                     else:
-                        doc_string += f"{doc_prepend}{comment_line}\n"
+                        doc_string += f"{comment_line}\n"
 
                     if waiting_for_return_to_end:
                         if re.match(r"^(:.*|\.\..*|\s*)$", comment_line):
@@ -3743,7 +3743,7 @@ def try_write_comments():
                                         f":return: {arg_name_match.group(2)}\n"
                                     )
                             else:
-                                doc_string += f"{doc_prepend}         - {out_param}\n"
+                                doc_string += f"         - {out_param}\n"
 
                 dbg_info(f"doc_string is {doc_string}")
 
@@ -3762,7 +3762,7 @@ def try_write_comments():
                     CONTEXT.attribute_docstrings[class_name][
                         CONTEXT.current_method_name
                     ] = doc_string
-                write_output("CM4", f"{doc_prepend}%End\n")
+                write_output("CM4", "%End\n")
 
         CONTEXT.reset_method_state()
         if CONTEXT.is_override_or_make_private == PrependType.MakePrivate:

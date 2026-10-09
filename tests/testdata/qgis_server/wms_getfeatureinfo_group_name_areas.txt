@@ -31,6 +31,7 @@ Content-Type: application/json; charset=utf-8
         "umrisstyp": "durchgezogen",
         "veranstaltung": ""
       },
+      "qgis:requestedWmsName": "areas and symbols",
       "type": "Feature"
     }
   ],

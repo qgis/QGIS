@@ -523,9 +523,9 @@ class CORE_EXPORT QgsProcessingModelAlgorithm : public QgsProcessingAlgorithm
      * Creates a new expression context scope for a child algorithm within the model.
      * \see variablesForChildAlgorithm()
      */
-    QgsExpressionContextScope *createExpressionContextScopeForChildAlgorithm(
+    std::unique_ptr<QgsExpressionContextScope> createExpressionContextScopeForChildAlgorithm(
       const QString &childId, QgsProcessingContext &context, const QVariantMap &modelParameters = QVariantMap(), const QVariantMap &results = QVariantMap()
-    ) const SIP_FACTORY;
+    ) const;
 
     /**
      * Returns the map of custom expression context variables defined for this model.

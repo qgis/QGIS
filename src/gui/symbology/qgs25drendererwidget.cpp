@@ -66,7 +66,7 @@ Qgs25DRendererWidget::Qgs25DRendererWidget( QgsVectorLayer *layer, QgsStyle *sty
 
   if ( renderer )
   {
-    mRenderer.reset( Qgs25DRenderer::convertFromRenderer( renderer ) );
+    mRenderer = Qgs25DRenderer::convertFromRenderer( renderer );
   }
 
   mHeightWidget->setLayer( layer );
@@ -112,7 +112,7 @@ void Qgs25DRendererWidget::updateRenderer()
   mRenderer->setShadowEnabled( mShadowEnabledWidget->isChecked() );
   mRenderer->setShadowSpread( mShadowSizeWidget->value() );
   mRenderer->setWallShadingEnabled( mWallExpositionShading->isChecked() );
-  emit widgetChanged();
+  emit changed();
 }
 
 void Qgs25DRendererWidget::apply()

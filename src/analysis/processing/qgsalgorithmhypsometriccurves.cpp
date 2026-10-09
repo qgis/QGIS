@@ -112,6 +112,8 @@ bool QgsHypsometricCurvesAlgorithm::prepareAlgorithm( const QVariantMap &paramet
 
 QVariantMap QgsHypsometricCurvesAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
+  QGS_MARK_ALGORITHM_SOURCE
+
   std::unique_ptr<QgsFeatureSource> source( parameterAsSource( parameters, u"BOUNDARY_LAYER"_s, context ) );
   if ( !source )
   {
@@ -206,6 +208,10 @@ QVariantMap QgsHypsometricCurvesAlgorithm::processAlgorithm( const QVariantMap &
       {
         return;
       }
+      if ( std::isnan( value ) )
+      {
+        return;
+      }
       elevations.append( value );
     };
 
@@ -265,6 +271,10 @@ QVariantMap QgsHypsometricCurvesAlgorithm::processAlgorithm( const QVariantMap &
         {
           throw QgsProcessingException( writeFeatureError( sink.get(), parameters, u"OUTPUT"_s ) );
         }
+        else
+        {
+          feedback->featureAddedToSink( u"OUTPUT"_s );
+        }
       }
     }
 
@@ -278,6 +288,8 @@ QVariantMap QgsHypsometricCurvesAlgorithm::processAlgorithm( const QVariantMap &
   }
   if ( sink )
   {
+    sink->finalize();
+    feedback->featureSinkFinalized( u"OUTPUT"_s );
     results.insert( u"OUTPUT"_s, destId );
   }
   return results;

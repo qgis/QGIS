@@ -364,6 +364,28 @@
         "year": 2025
       },
       "geometry": null
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "country": "DZ",
+        "name": "QGIS Algeria User Group",
+        "logo_url": "https:\/\/dz.qgis.org\/img\/QGIS_DZ.png",
+        "website": "https:\/\/dz.qgis.org",
+        "year": 2026
+      },
+      "geometry": null
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "country": "CA",
+        "name": "QGIS Canada User Group",
+        "logo_url": "https:\/\/qgis.ca\/images\/qgis-ca-icon128.png",
+        "website": "https:\/\/qgis.ca",
+        "year": 2026
+      },
+      "geometry": null
     }
   ]
 }

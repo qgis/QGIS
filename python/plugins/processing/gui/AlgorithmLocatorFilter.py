@@ -20,6 +20,7 @@ __date__ = "May 2017"
 __copyright__ = "(C) 2017, Nyall Dawson"
 
 from qgis.core import (
+    Qgis,
     QgsApplication,
     QgsFields,
     QgsLocatorFilter,
@@ -31,13 +32,13 @@ from qgis.core import (
     QgsStringUtils,
     QgsWkbTypes,
 )
+from qgis.gui import QgsMessageViewer
 from qgis.utils import iface
 
 from processing.core.ProcessingConfig import ProcessingConfig
 from processing.gui.algorithm_widget import AlgorithmWidget
 from processing.gui.AlgorithmExecutor import execute_in_place
 from processing.gui.MessageBarProgress import MessageBarProgress
-from processing.gui.MessageDialog import MessageDialog
 
 
 class AlgorithmLocatorFilter(QgsLocatorFilter):
@@ -119,9 +120,9 @@ class AlgorithmLocatorFilter(QgsLocatorFilter):
 
         ok, message = alg.canExecute()
         if not ok:
-            dlg = MessageDialog()
-            dlg.setTitle(self.tr("Missing dependency"))
-            dlg.setMessage(message)
+            dlg = QgsMessageViewer()
+            dlg.setTitle(self.tr("Missing Dependency"))
+            dlg.setMessage(message, Qgis.StringFormat.PlainText)
             dlg.exec()
             return
         widget = alg.createCustomParametersWidget(parent=iface.mainWindow())
@@ -215,9 +216,9 @@ class InPlaceAlgorithmLocatorFilter(QgsLocatorFilter):
 
         ok, message = alg.canExecute()
         if not ok:
-            dlg = MessageDialog()
-            dlg.setTitle(self.tr("Missing dependency"))
-            dlg.setMessage(message)
+            dlg = QgsMessageViewer()
+            dlg.setTitle(self.tr("Missing Dependency"))
+            dlg.setMessage(message, Qgis.StringFormat.PlainText)
             dlg.exec()
             return
 

@@ -80,6 +80,8 @@ void QgsSetLayerEncodingAlgorithm::initAlgorithm( const QVariantMap & )
 
 bool QgsSetLayerEncodingAlgorithm::prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
+  QGS_MARK_ALGORITHM_SOURCE
+
   QgsVectorLayer *layer = parameterAsVectorLayer( parameters, u"INPUT"_s, context );
 
   if ( !layer )

@@ -48,9 +48,13 @@ another vertex ID (i.e. the part, ring number and vertex number are
 equal).
 %End
 
-  bool isValid( const QgsAbstractGeometry *geom ) const /HoldGIL/;
+ bool isValid( const QgsAbstractGeometry *geom ) const /HoldGIL,Deprecated="Since 4.4. Use QgsAbstractGeometry.hasVertex() instead."/;
 %Docstring
 Returns ``True`` if this vertex ID is valid for the specified ``geom``.
+
+.. deprecated:: 4.4
+
+   Use :py:func:`QgsAbstractGeometry.hasVertex()` instead.
 %End
 
   int part;
@@ -68,6 +72,7 @@ Returns ``True`` if this vertex ID is valid for the specified ``geom``.
 %End
 
 };
+
 
 /************************************************************************
  * This file has been generated automatically from                      *

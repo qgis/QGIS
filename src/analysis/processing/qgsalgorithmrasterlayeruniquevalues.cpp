@@ -112,6 +112,8 @@ bool QgsRasterLayerUniqueValuesReportAlgorithm::prepareAlgorithm( const QVariant
 
 QVariantMap QgsRasterLayerUniqueValuesReportAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
+  QGS_MARK_ALGORITHM_SOURCE
+
   const QString outputFile = parameterAsFileOutput( parameters, u"OUTPUT_HTML_FILE"_s, context );
 
   QString areaUnit = QgsUnitTypes::toAbbreviatedString( QgsUnitTypes::distanceToAreaUnit( mCrs.mapUnits() ) );
@@ -221,8 +223,11 @@ QVariantMap QgsRasterLayerUniqueValuesReportAlgorithm::processAlgorithm( const Q
       f.setAttributes( QgsAttributes() << it.key() << it.value() << area );
       if ( !sink->addFeature( f, QgsFeatureSink::FastInsert ) )
         throw QgsProcessingException( writeFeatureError( sink.get(), parameters, u"OUTPUT_TABLE"_s ) );
+      else
+        feedback->featureAddedToSink( u"OUTPUT_TABLE"_s );
     }
     sink->finalize();
+    feedback->featureSinkFinalized( u"OUTPUT_TABLE"_s );
     outputs.insert( u"OUTPUT_TABLE"_s, tableDest );
   }
 

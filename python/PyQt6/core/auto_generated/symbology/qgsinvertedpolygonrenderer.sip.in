@@ -44,7 +44,7 @@ Constructor
     virtual QString dump() const;
 
 
-    static QgsFeatureRenderer *create( QDomElement &element, const QgsReadWriteContext &context ) /Factory/;
+    static std::unique_ptr<QgsFeatureRenderer> create( QDomElement &element, const QgsReadWriteContext &context );
 %Docstring
 Creates a renderer out of an XML, for loading
 %End
@@ -74,7 +74,7 @@ computations and is thus disabled by default.
 .. seealso:: :py:func:`preprocessingEnabled`
 %End
 
-    static QgsInvertedPolygonRenderer *convertFromRenderer( const QgsFeatureRenderer *renderer ) /Factory/;
+    static std::unique_ptr<QgsInvertedPolygonRenderer> convertFromRenderer( const QgsFeatureRenderer *renderer );
 %Docstring
 Creates a QgsInvertedPolygonRenderer by a conversion from an existing
 renderer.

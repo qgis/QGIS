@@ -28,6 +28,7 @@
 #include <QQuickWidget>
 
 class QgsWelcomeScreen;
+class QgsSettingsEntryBool;
 
 
 class QgsWelcomeScreenController : public QObject
@@ -67,6 +68,8 @@ class QgsWelcomeScreen : public QQuickWidget
     Q_OBJECT
 
   public:
+    static const QgsSettingsEntryBool *settingsCheckVersion SIP_SKIP;
+
     QgsWelcomeScreen( bool skipVersionCheck = false, QWidget *parent = nullptr );
     ~QgsWelcomeScreen() override = default;
 
@@ -133,7 +136,7 @@ class QgsWelcomeScreen : public QQuickWidget
     QgsNewsFeedParser *mNewsFeedParser = nullptr;
     QgsNewsFeedProxyModel *mNewsFeedModel = nullptr;
 
-    QgsVersionInfo *mVersionInfo = nullptr;
+    QPointer< QgsVersionInfo > mVersionInfo;
 
     int mOriginalWidth = 0;
     int mOriginalHeight = 0;

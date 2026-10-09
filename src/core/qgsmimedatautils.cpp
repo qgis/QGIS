@@ -105,6 +105,11 @@ QString QgsMimeDataUtils::Uri::data() const
 
 QgsVectorLayer *QgsMimeDataUtils::Uri::vectorLayer( bool &owner, QString &error ) const
 {
+  return vectorLayer( owner, error, QgsProject::instance() ); // skip-keyword-check
+}
+
+QgsVectorLayer *QgsMimeDataUtils::Uri::vectorLayer( bool &owner, QString &error, QgsProject *project ) const
+{
   owner = false;
   error.clear();
   if ( layerType != "vector"_L1 )
@@ -115,7 +120,7 @@ QgsVectorLayer *QgsMimeDataUtils::Uri::vectorLayer( bool &owner, QString &error 
 
   if ( !layerId.isEmpty() && QgsMimeDataUtils::hasOriginatedFromCurrentAppInstance( *this ) )
   {
-    if ( QgsVectorLayer *vectorLayer = QgsProject::instance()->mapLayer<QgsVectorLayer *>( layerId ) ) // skip-keyword-check
+    if ( QgsVectorLayer *vectorLayer = project->mapLayer<QgsVectorLayer *>( layerId ) )
     {
       return vectorLayer;
     }
@@ -127,11 +132,16 @@ QgsVectorLayer *QgsMimeDataUtils::Uri::vectorLayer( bool &owner, QString &error 
   }
 
   owner = true;
-  const QgsVectorLayer::LayerOptions options { QgsProject::instance()->transformContext() }; // skip-keyword-check
+  const QgsVectorLayer::LayerOptions options { project->transformContext() };
   return new QgsVectorLayer( uri, name, providerKey, options );
 }
 
 QgsRasterLayer *QgsMimeDataUtils::Uri::rasterLayer( bool &owner, QString &error ) const
+{
+  return rasterLayer( owner, error, QgsProject::instance() ); // skip-keyword-check
+}
+
+QgsRasterLayer *QgsMimeDataUtils::Uri::rasterLayer( bool &owner, QString &error, QgsProject *project ) const
 {
   owner = false;
   error.clear();
@@ -143,7 +153,7 @@ QgsRasterLayer *QgsMimeDataUtils::Uri::rasterLayer( bool &owner, QString &error 
 
   if ( !layerId.isEmpty() && QgsMimeDataUtils::hasOriginatedFromCurrentAppInstance( *this ) )
   {
-    if ( QgsRasterLayer *rasterLayer = QgsProject::instance()->mapLayer<QgsRasterLayer *>( layerId ) ) // skip-keyword-check
+    if ( QgsRasterLayer *rasterLayer = project->mapLayer<QgsRasterLayer *>( layerId ) )
     {
       return rasterLayer;
     }
@@ -155,6 +165,11 @@ QgsRasterLayer *QgsMimeDataUtils::Uri::rasterLayer( bool &owner, QString &error 
 
 QgsMeshLayer *QgsMimeDataUtils::Uri::meshLayer( bool &owner, QString &error ) const
 {
+  return meshLayer( owner, error, QgsProject::instance() ); // skip-keyword-check
+}
+
+QgsMeshLayer *QgsMimeDataUtils::Uri::meshLayer( bool &owner, QString &error, QgsProject *project ) const
+{
   owner = false;
   error.clear();
   if ( layerType != "mesh"_L1 )
@@ -165,7 +180,7 @@ QgsMeshLayer *QgsMimeDataUtils::Uri::meshLayer( bool &owner, QString &error ) co
 
   if ( !layerId.isEmpty() && QgsMimeDataUtils::hasOriginatedFromCurrentAppInstance( *this ) )
   {
-    if ( QgsMeshLayer *meshLayer = QgsProject::instance()->mapLayer<QgsMeshLayer *>( layerId ) ) // skip-keyword-check
+    if ( QgsMeshLayer *meshLayer = project->mapLayer<QgsMeshLayer *>( layerId ) )
     {
       return meshLayer;
     }
@@ -177,9 +192,14 @@ QgsMeshLayer *QgsMimeDataUtils::Uri::meshLayer( bool &owner, QString &error ) co
 
 QgsMapLayer *QgsMimeDataUtils::Uri::mapLayer() const
 {
+  return mapLayer( QgsProject::instance() ); // skip-keyword-check
+}
+
+QgsMapLayer *QgsMimeDataUtils::Uri::mapLayer( QgsProject *project ) const
+{
   if ( !layerId.isEmpty() && QgsMimeDataUtils::hasOriginatedFromCurrentAppInstance( *this ) )
   {
-    return QgsProject::instance()->mapLayer( layerId ); // skip-keyword-check
+    return project->mapLayer( layerId );
   }
   return nullptr;
 }

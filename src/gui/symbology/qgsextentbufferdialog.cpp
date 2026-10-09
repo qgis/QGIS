@@ -48,9 +48,9 @@ QgsExtentBufferWidget::QgsExtentBufferWidget( QgsSymbol *symbol, QgsVectorLayer 
   );
   mExtentBufferUnitSelectionWidget->setUnit( mSymbol->extentBufferSizeUnit() );
 
-  connect( mExtentBufferSpinBox, static_cast<void ( QgsDoubleSpinBox::* )( double )>( &QgsDoubleSpinBox::valueChanged ), this, [this]() { emit widgetChanged(); } );
+  connect( mExtentBufferSpinBox, static_cast<void ( QgsDoubleSpinBox::* )( double )>( &QgsDoubleSpinBox::valueChanged ), this, [this]() { emit changed(); } );
 
-  connect( mExtentBufferUnitSelectionWidget, &QgsUnitSelectionWidget::changed, this, [this]() { emit widgetChanged(); } );
+  connect( mExtentBufferUnitSelectionWidget, &QgsUnitSelectionWidget::changed, this, [this]() { emit changed(); } );
 
   registerDataDefinedButton( mExtentBufferDDButton, QgsSymbol::Property::ExtentBuffer );
 }
@@ -70,7 +70,7 @@ void QgsExtentBufferWidget::registerDataDefinedButton( QgsPropertyOverrideButton
   // pass in nullptr to avoid id, feature and geometry variables being added
   // since the buffer is not evaluated per-feature
   button->init( static_cast<int>( key ), mSymbol->dataDefinedProperties(), QgsSymbol::propertyDefinitions(), nullptr );
-  connect( button, &QgsPropertyOverrideButton::changed, this, [this]() { emit widgetChanged(); } );
+  connect( button, &QgsPropertyOverrideButton::changed, this, [this]() { emit changed(); } );
 
   button->registerExpressionContextGenerator( this );
 }

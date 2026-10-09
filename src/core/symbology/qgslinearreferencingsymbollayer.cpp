@@ -97,7 +97,7 @@ class QgsLinearReferencingSymbolLayerLabelProvider final : public QgsAbstractLab
       const QPointF outPt = context.mapToPixel().transform( label->getX(), label->getY() ).toQPointF();
 
       QgsTextLabelFeatureWithFormat *lf = qgis::down_cast<QgsTextLabelFeatureWithFormat *>( label->getFeaturePart()->feature() );
-      QgsTextRenderer::drawDocument( outPt, lf->mFormat, lf->document(), lf->documentMetrics(), context, Qgis::TextHorizontalAlignment::Left, label->getAlpha() );
+      QgsTextRenderer::drawDocument( outPt, lf->mFormat, lf->document(), lf->documentMetrics(), context, Qgis::TextHorizontalAlignment::Left, label->angleRadians() );
     }
 
   private:
@@ -113,7 +113,7 @@ QgsLinearReferencingSymbolLayer::QgsLinearReferencingSymbolLayer()
 
 QgsLinearReferencingSymbolLayer::~QgsLinearReferencingSymbolLayer() = default;
 
-QgsSymbolLayer *QgsLinearReferencingSymbolLayer::create( const QVariantMap &properties )
+std::unique_ptr<QgsSymbolLayer> QgsLinearReferencingSymbolLayer::create( const QVariantMap &properties )
 {
   auto res = std::make_unique< QgsLinearReferencingSymbolLayer >();
   res->setPlacement( qgsEnumKeyToValue( properties.value( u"placement"_s ).toString(), Qgis::LinearReferencingPlacement::IntervalCartesian2D ) );
@@ -179,7 +179,7 @@ QgsSymbolLayer *QgsLinearReferencingSymbolLayer::create( const QVariantMap &prop
     res->setAverageAngleMapUnitScale( QgsSymbolLayerUtils::decodeMapUnitScale( properties[u"average_angle_map_unit_scale"_s].toString() ) );
   }
 
-  return res.release();
+  return res;
 }
 
 QgsLinearReferencingSymbolLayer *QgsLinearReferencingSymbolLayer::clone() const

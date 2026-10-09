@@ -37,6 +37,7 @@ class QgsAbstractAnnotationItemEditOperation;
 class QgsAnnotationItemEditOperationTransientResults;
 class QgsRenderContext;
 class QgsReadWriteContext;
+class QPainter;
 
 /**
  * \ingroup core

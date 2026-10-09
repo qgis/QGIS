@@ -62,18 +62,18 @@ QgsStackedDiagramProperties::QgsStackedDiagramProperties( QgsVectorLayer *layer,
     { Qgis::RenderUnit::Millimeters, Qgis::RenderUnit::MetersInMapUnits, Qgis::RenderUnit::MapUnits, Qgis::RenderUnit::Pixels, Qgis::RenderUnit::Points, Qgis::RenderUnit::Inches }
   );
 
-  connect( mStackedDiagramModeComboBox, qOverload<int>( &QComboBox::currentIndexChanged ), this, &QgsStackedDiagramProperties::widgetChanged );
-  connect( mStackedDiagramSpacingSpinBox, qOverload<double>( &QgsDoubleSpinBox::valueChanged ), this, &QgsStackedDiagramProperties::widgetChanged );
-  connect( mStackedDiagramSpacingUnitComboBox, &QgsUnitSelectionWidget::changed, this, &QgsStackedDiagramProperties::widgetChanged );
+  connect( mStackedDiagramModeComboBox, qOverload<int>( &QComboBox::currentIndexChanged ), this, &QgsStackedDiagramProperties::changed );
+  connect( mStackedDiagramSpacingSpinBox, qOverload<double>( &QgsDoubleSpinBox::valueChanged ), this, &QgsStackedDiagramProperties::changed );
+  connect( mStackedDiagramSpacingUnitComboBox, &QgsUnitSelectionWidget::changed, this, &QgsStackedDiagramProperties::changed );
 
   mModel = new QgsStackedDiagramPropertiesModel();
   mSubDiagramsView->setModel( mModel );
 
   mSubDiagramsView->setStyle( new QgsStackedDiagramsViewStyle( mSubDiagramsView ) );
 
-  connect( mModel, &QAbstractItemModel::dataChanged, this, &QgsStackedDiagramProperties::widgetChanged );
-  connect( mModel, &QAbstractItemModel::rowsInserted, this, &QgsStackedDiagramProperties::widgetChanged );
-  connect( mModel, &QAbstractItemModel::rowsRemoved, this, &QgsStackedDiagramProperties::widgetChanged );
+  connect( mModel, &QAbstractItemModel::dataChanged, this, &QgsStackedDiagramProperties::changed );
+  connect( mModel, &QAbstractItemModel::rowsInserted, this, &QgsStackedDiagramProperties::changed );
+  connect( mModel, &QAbstractItemModel::rowsRemoved, this, &QgsStackedDiagramProperties::changed );
 
   connect( mModel, &QgsStackedDiagramPropertiesModel::subDiagramsMoved, this, &QgsStackedDiagramProperties::clearCurrentIndex );
 
@@ -142,7 +142,7 @@ void QgsStackedDiagramProperties::editSubDiagramRenderer( const QModelIndex &ind
 
     connect( widget, &QgsDiagramProperties::auxiliaryFieldCreated, this, &QgsStackedDiagramProperties::auxiliaryFieldCreated );
     connect( widget, &QgsPanelWidget::panelAccepted, this, &QgsStackedDiagramProperties::subDiagramWidgetPanelAccepted );
-    connect( widget, &QgsDiagramProperties::widgetChanged, this, &QgsStackedDiagramProperties::liveUpdateSubDiagramFromPanel );
+    connect( widget, &QgsDiagramProperties::changed, this, &QgsStackedDiagramProperties::liveUpdateSubDiagramFromPanel );
     openPanel( widget );
     return;
   }
@@ -161,7 +161,7 @@ void QgsStackedDiagramProperties::editSubDiagramRenderer( const QModelIndex &ind
     if ( dlg.isAllowedToEditDiagramLayerSettings() )
       mModel->updateDiagramLayerSettings( dlg.diagramLayerSettings() );
 
-    // This call will emit dataChanged, which in turns triggers widgetChanged()
+    // This call will emit dataChanged, which in turns triggers changed()
     mModel->updateSubDiagram( index, dlg.renderer() );
   }
 }

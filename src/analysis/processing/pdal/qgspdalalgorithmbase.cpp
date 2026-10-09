@@ -77,7 +77,7 @@ void QgsPdalAlgorithmBase::createCommonParameters()
 void QgsPdalAlgorithmBase::createVpcOutputFormatParameter()
 {
   const QStringList outputFormats { u"COPC"_s, u"LAZ"_s, u"LAS"_s };
-  auto paramVpcOutputFormat = std::make_unique<QgsProcessingParameterEnum>( u"VPC_OUTPUT_FORMAT"_s, QObject::tr( "VPC Output Format" ), outputFormats, false, u"COPC"_s );
+  auto paramVpcOutputFormat = std::make_unique<QgsProcessingParameterEnum>( u"VPC_OUTPUT_FORMAT"_s, QObject::tr( "VPC Output Format" ), outputFormats, false, outputFormats.at( 0 ), false, true );
   paramVpcOutputFormat->setHelp(
     QObject::tr(
       "Specify the underlying format in which data are stored for VPC output.\nSelect COPC if you need to render the output VPC in QGIS. LAZ/LAS may be faster to process, however only allow "

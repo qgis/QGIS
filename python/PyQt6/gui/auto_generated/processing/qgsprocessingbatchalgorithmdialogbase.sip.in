@@ -68,12 +68,6 @@ Creates a new Processing context.
 (Each step in the batch processing will use a new Processing context)
 %End
 
-    virtual void handleAlgorithmResults( QgsProcessingAlgorithm *algorithm, QgsProcessingContext &context, QgsProcessingFeedback *feedback, const QVariantMap &parameters ) = 0;
-%Docstring
-Called when the dialog should handle the results of an algorithm, e.g.
-by loading layers into the current project.
-%End
-
     virtual void loadHtmlResults( const QVariantMap &results, int index ) = 0;
 %Docstring
 Populates the HTML results dialog as a result of a successful algorithm

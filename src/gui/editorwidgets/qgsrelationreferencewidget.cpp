@@ -344,12 +344,12 @@ void QgsRelationReferenceWidget::setEditorContext( const QgsAttributeEditorConte
   mCanvas = canvas;
   mMessageBar = messageBar;
 
-  mMapToolIdentify.reset( new QgsMapToolIdentifyFeature( mCanvas ) );
+  mMapToolIdentify = make_qobject_unique<QgsMapToolIdentifyFeature>( mCanvas );
   mMapToolIdentify->setButton( mMapIdentificationButton );
 
   if ( mEditorContext.cadDockWidget() )
   {
-    mMapToolDigitize.reset( new QgsMapToolDigitizeFeature( mCanvas, mEditorContext.cadDockWidget() ) );
+    mMapToolDigitize = make_qobject_unique<QgsMapToolDigitizeFeature>( mCanvas, mEditorContext.cadDockWidget() );
     mMapToolDigitize->setButton( mAddEntryButton );
     updateAddEntryButton();
   }

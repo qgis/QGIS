@@ -43,7 +43,7 @@ class CORE_EXPORT QgsArrowSymbolLayer : public QgsLineSymbolLayer
      *
      * \returns A new QgsArrowSymbolLayer
      */
-    static QgsSymbolLayer *create( const QVariantMap &properties = QVariantMap() ) SIP_FACTORY;
+    static std::unique_ptr<QgsSymbolLayer> create( const QVariantMap &properties = QVariantMap() );
 
     QgsArrowSymbolLayer *clone() const override SIP_FACTORY;
     QgsSymbol *subSymbol() override;
@@ -118,9 +118,9 @@ class CORE_EXPORT QgsArrowSymbolLayer : public QgsLineSymbolLayer
     //! Possible head types
     enum HeadType
     {
-      HeadSingle,   //< One single head at the end
-      HeadReversed, //< One single head at the beginning
-      HeadDouble    //< Two heads
+      HeadSingle,   //!< One single head at the end
+      HeadReversed, //!< One single head at the beginning
+      HeadDouble    //!< Two heads
     };
 
     //! Gets the current head type
@@ -131,9 +131,9 @@ class CORE_EXPORT QgsArrowSymbolLayer : public QgsLineSymbolLayer
     //! Possible arrow types
     enum ArrowType
     {
-      ArrowPlain,    //< Regular arrow
-      ArrowLeftHalf, //< Halved arrow, only the left side of the arrow is rendered (for straight arrows) or the side toward the exterior (for curved arrows)
-      ArrowRightHalf //< Halved arrow, only the right side of the arrow is rendered (for straight arrows) or the side toward the interior (for curved arrows)
+      ArrowPlain,    //!< Regular arrow
+      ArrowLeftHalf, //!< Halved arrow, only the left side of the arrow is rendered (for straight arrows) or the side toward the exterior (for curved arrows)
+      ArrowRightHalf //!< Halved arrow, only the right side of the arrow is rendered (for straight arrows) or the side toward the interior (for curved arrows)
     };
 
     //! Gets the current arrow type

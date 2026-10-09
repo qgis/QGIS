@@ -109,23 +109,20 @@ bool QgsMeshLayer::hasSimplifiedMeshes() const
 }
 
 QgsMeshLayer::~QgsMeshLayer()
-{
-  delete mLabeling;
-  delete mDataProvider;
-}
+{}
 
 QgsMeshDataProvider *QgsMeshLayer::dataProvider()
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
-  return mDataProvider;
+  return mDataProvider.get();
 }
 
 const QgsMeshDataProvider *QgsMeshLayer::dataProvider() const
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
-  return mDataProvider;
+  return mDataProvider.get();
 }
 
 QgsMeshLayer *QgsMeshLayer::clone() const
@@ -433,6 +430,7 @@ void QgsMeshLayer::setRendererSettings( const QgsMeshRendererSettings &settings,
     emit activeVectorDatasetGroupChanged( mRendererSettings.activeVectorDatasetGroup() );
 
   emit rendererChanged();
+  emitStyleChanged();
 
   if ( repaint )
   {
@@ -863,7 +861,7 @@ void QgsMeshLayer::onMeshEdited()
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
-  mRendererCache = std::make_unique<QgsMeshLayerRendererCache>();
+  invalidateRendererCache();
   emit layerModified();
   triggerRepaint();
   trigger3DUpdate();
@@ -1013,7 +1011,7 @@ int QgsMeshLayer::closestFace( const QgsPointXY &point, double searchRadius, Qgs
   for ( const int faceIndex : faceIndexes )
   {
     const int nativefaceIndex = mesh->trianglesToNativeFaces().at( faceIndex );
-    if ( nativefaceIndex < 0 && nativefaceIndex >= mesh->faceCentroids().count() )
+    if ( nativefaceIndex < 0 || nativefaceIndex >= mesh->faceCentroids().count() )
       continue;
     const QgsPointXY centroid = mesh->faceCentroids()[nativefaceIndex];
     const double dist = point.distance( centroid );
@@ -1135,7 +1133,7 @@ bool QgsMeshLayer::startFrameEditing( const QgsCoordinateTransform &transform, Q
 
   if ( fixErrors )
   {
-    mRendererCache.reset(); // fixing errors could lead to remove faces/vertices
+    invalidateRendererCache(); // fixing errors could lead to remove faces/vertices
     error = mMeshEditor->initializeWithErrorsFix();
   }
   else
@@ -1213,7 +1211,7 @@ bool QgsMeshLayer::commitFrameEditing( const QgsCoordinateTransform &transform, 
   mDataProvider->reloadData();
   mDataProvider->populateMesh( mNativeMesh.get() );
   mDatasetGroupStore = std::make_unique<QgsMeshDatasetGroupStore>( this );
-  mDatasetGroupStore->setPersistentProvider( mDataProvider, QStringList() );
+  mDatasetGroupStore->setPersistentProvider( mDataProvider.get(), QStringList() );
   resetDatasetGroupTreeItem();
   return true;
 }
@@ -1231,7 +1229,7 @@ bool QgsMeshLayer::rollBackFrameEditing( const QgsCoordinateTransform &transform
   mDataProvider->reloadData();
   mDataProvider->populateMesh( mNativeMesh.get() );
   updateTriangularMesh( transform );
-  mRendererCache = std::make_unique<QgsMeshLayerRendererCache>();
+  invalidateRendererCache();
   trigger3DUpdate();
 
   if ( continueEditing )
@@ -1246,7 +1244,7 @@ bool QgsMeshLayer::rollBackFrameEditing( const QgsCoordinateTransform &transform
     emit editingStopped();
 
     mDatasetGroupStore = std::make_unique<QgsMeshDatasetGroupStore>( this );
-    mDatasetGroupStore->setPersistentProvider( mDataProvider, QStringList() );
+    mDatasetGroupStore->setPersistentProvider( mDataProvider.get(), QStringList() );
     resetDatasetGroupTreeItem();
     emit dataChanged();
     return true;
@@ -1262,7 +1260,7 @@ void QgsMeshLayer::stopFrameEditing( const QgsCoordinateTransform &transform )
 
   mMeshEditor->stopEditing();
   mTriangularMeshes.at( 0 )->update( mNativeMesh.get(), transform );
-  mRendererCache = std::make_unique<QgsMeshLayerRendererCache>();
+  invalidateRendererCache();
 }
 
 bool QgsMeshLayer::reindex( const QgsCoordinateTransform &transform, bool renumber )
@@ -1278,7 +1276,7 @@ bool QgsMeshLayer::reindex( const QgsCoordinateTransform &transform, bool renumb
   mTriangularMeshes.clear();
   mTriangularMeshes.emplace_back( new QgsTriangularMesh );
   mTriangularMeshes.at( 0 )->update( mNativeMesh.get(), transform );
-  mRendererCache = std::make_unique<QgsMeshLayerRendererCache>();
+  invalidateRendererCache();
   mMeshEditor->resetTriangularMesh( mTriangularMeshes.at( 0 ).get() );
 
   return true;
@@ -1420,7 +1418,7 @@ QgsMeshRendererSettings QgsMeshLayer::accordSymbologyWithGroupName( const QgsMes
       consistentSettings.setScalarSettings( globalIndex, scalarSettings );
       if ( settings.hasVectorSettings( it.value() ) && mDatasetGroupStore->datasetGroupMetadata( globalIndex ).isVector() )
       {
-        QgsMeshRendererVectorSettings vectorSettings = settings.vectorSettings( index );
+        QgsVectorFieldSettings vectorSettings = settings.vectorSettings( index );
         consistentSettings.setVectorSettings( globalIndex, vectorSettings );
       }
     }
@@ -1609,9 +1607,9 @@ void QgsMeshLayer::setMeshSimplificationSettings( const QgsMeshSimplificationSet
   mSimplificationSettings = simplifySettings;
 }
 
-static QgsColorRamp *_createDefaultColorRamp()
+static std::unique_ptr<QgsColorRamp> _createDefaultColorRamp()
 {
-  QgsColorRamp *ramp = QgsStyle::defaultStyle()->colorRamp( u"Plasma"_s );
+  std::unique_ptr<QgsColorRamp> ramp = QgsStyle::defaultStyle()->colorRamp( u"Plasma"_s );
   if ( ramp )
     return ramp;
 
@@ -1640,7 +1638,7 @@ void QgsMeshLayer::assignDefaultStyleToDatasetGroup( int groupIndex )
   const double groupMin = metadata.minimum();
   const double groupMax = metadata.maximum();
 
-  QgsColorRampShader fcn( groupMin, groupMax, _createDefaultColorRamp() );
+  QgsColorRampShader fcn( groupMin, groupMax, _createDefaultColorRamp().release() );
   fcn.classifyColorRamp( 5, -1, QgsRectangle(), nullptr );
 
   QgsMeshRendererScalarSettings scalarSettings;
@@ -1656,7 +1654,7 @@ void QgsMeshLayer::assignDefaultStyleToDatasetGroup( int groupIndex )
 
   if ( metadata.isVector() )
   {
-    QgsMeshRendererVectorSettings vectorSettings;
+    QgsVectorFieldSettings vectorSettings;
     vectorSettings.setColorRampShader( fcn );
     mRendererSettings.setVectorSettings( groupIndex, vectorSettings );
   }
@@ -2091,7 +2089,7 @@ void QgsMeshLayer::reload()
   if ( !mMeshEditor && mDataProvider && mDataProvider->isValid() )
   {
     mDataProvider->reloadData();
-    mDatasetGroupStore->setPersistentProvider( mDataProvider, QStringList() ); //extra dataset are already loaded
+    mDatasetGroupStore->setPersistentProvider( mDataProvider.get(), QStringList() ); //extra dataset are already loaded
 
     //reload the mesh structure
     if ( !mNativeMesh )
@@ -2105,13 +2103,19 @@ void QgsMeshLayer::reload()
     //clear the TriangularMeshes
     mTriangularMeshes.clear();
 
-    //clear the rendererCache
-    mRendererCache = std::make_unique<QgsMeshLayerRendererCache>();
+    invalidateRendererCache();
 
     checkSymbologyConsistency();
 
     emit reloaded();
   }
+}
+
+void QgsMeshLayer::invalidateRendererCache()
+{
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
+  mRendererCache = std::make_unique<QgsMeshLayerRendererCache>();
 }
 
 QStringList QgsMeshLayer::subLayers() const
@@ -2208,13 +2212,13 @@ bool QgsMeshLayer::setDataProvider( QString const &provider, const QgsDataProvid
 
   mDatasetGroupStore->setPersistentProvider( nullptr, QStringList() );
 
-  delete mDataProvider;
+  mDataProvider.reset();
   mProviderKey = provider;
   const QString dataSource = mDataSource;
 
   if ( mPreloadedProvider )
   {
-    mDataProvider = qobject_cast< QgsMeshDataProvider * >( mPreloadedProvider.release() );
+    mDataProvider.reset( qobject_cast< QgsMeshDataProvider * >( mPreloadedProvider.release() ) );
   }
   else
   {
@@ -2222,7 +2226,7 @@ bool QgsMeshLayer::setDataProvider( QString const &provider, const QgsDataProvid
     if ( QgsApplication::profiler()->groupIsActive( u"projectload"_s ) )
       profile = std::make_unique< QgsScopedRuntimeProfile >( tr( "Create %1 provider" ).arg( provider ), u"projectload"_s );
 
-    mDataProvider = qobject_cast<QgsMeshDataProvider *>( QgsProviderRegistry::instance()->createProvider( provider, dataSource, options, flags ) );
+    mDataProvider.reset( qobject_cast<QgsMeshDataProvider *>( QgsProviderRegistry::instance()->createProvider( provider, dataSource, options, flags ) ) );
   }
 
   if ( !mDataProvider )
@@ -2248,7 +2252,7 @@ bool QgsMeshLayer::setDataProvider( QString const &provider, const QgsDataProvid
 
   mDataProvider->setTemporalUnit( mTemporalUnit );
 
-  mDatasetGroupStore->setPersistentProvider( mDataProvider, mExtraDatasetUri );
+  mDatasetGroupStore->setPersistentProvider( mDataProvider.get(), mExtraDatasetUri );
 
   setCrs( mDataProvider->crs() );
 
@@ -2261,7 +2265,7 @@ bool QgsMeshLayer::setDataProvider( QString const &provider, const QgsDataProvid
   // set default style if required by flags or if the dataset group does not has a style yet
   for ( int i = 0; i < mDataProvider->datasetGroupCount(); ++i )
   {
-    int globalIndex = mDatasetGroupStore->globalDatasetGroupIndexInSource( mDataProvider, i );
+    int globalIndex = mDatasetGroupStore->globalDatasetGroupIndexInSource( mDataProvider.get(), i );
     if ( globalIndex != -1 && ( !mRendererSettings.hasSettings( globalIndex ) || ( flags & Qgis::DataProviderReadFlag::LoadDefaultStyle ) ) )
       assignDefaultStyleToDatasetGroup( globalIndex );
   }
@@ -2269,7 +2273,7 @@ bool QgsMeshLayer::setDataProvider( QString const &provider, const QgsDataProvid
   emit rendererChanged();
   emitStyleChanged();
 
-  connect( mDataProvider, &QgsMeshDataProvider::dataChanged, this, &QgsMeshLayer::dataChanged );
+  connect( mDataProvider.get(), &QgsMeshDataProvider::dataChanged, this, &QgsMeshLayer::dataChanged );
 
   return true;
 }
@@ -2306,11 +2310,11 @@ void QgsMeshLayer::setLabeling( QgsAbstractMeshLayerLabeling *labeling )
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
-  if ( mLabeling == labeling )
+  if ( mLabeling.get() == labeling )
     return;
 
-  delete mLabeling;
-  mLabeling = labeling;
+  mLabeling.reset( labeling );
+
   triggerRepaint();
 }
 

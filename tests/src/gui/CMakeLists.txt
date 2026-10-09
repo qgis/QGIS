@@ -49,8 +49,10 @@ set(TESTS
   testprojectionissues.cpp
   testqgsgui.cpp
   testqgsgdalguiutils.cpp
+  testqgsprocessingmodelgui.cpp
   testprocessinggui.cpp
   testqgsprocessingmodel.cpp
+  testqgssymbollayermodel.cpp
   testqgsrubberband.cpp
   testqgsscalecombobox.cpp
   testqgsscalerangewidget.cpp
@@ -62,6 +64,7 @@ set(TESTS
   testqgsfiledownloader.cpp
   testqgsfileuploader.cpp
   testqgslayoutgui.cpp
+  testqgslayoutitemlistview.cpp
   testqgslayoutview.cpp
   testqgsmaptooleditblanksegments.cpp
   testqgsmaptoolextraitem.cpp

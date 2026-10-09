@@ -25,10 +25,13 @@ email                : marco.hugentobler at sourcepole dot com
 #include "qgsgeometry.h"
 #include "qgsgeometryengine.h"
 
+class QgsCircularString;
+class QgsCurvePolygon;
 class QgsLineString;
 class QgsPolygon;
 class QgsGeometry;
 class QgsGeometryCollection;
+class QgsSettingsEntryBool;
 
 #if !defined( USE_THREAD_LOCAL ) || defined( Q_OS_WIN )
 #include <QThreadStorage>
@@ -38,7 +41,7 @@ class QgsGeometryCollection;
 /**
    * \class QgsGeosContext
    * \ingroup core
-   * \brief Used to create and store a proj context object, correctly freeing the context upon destruction.
+   * \brief Used to create and store a GEOS context object, correctly freeing the context upon destruction.
    * \note Not available in Python bindings
    * \since QGIS 3.38
    */
@@ -174,6 +177,13 @@ namespace geos
 class CORE_EXPORT QgsGeos : public QgsGeometryEngine
 {
   public:
+    /**
+     * Settings entry - Whether to convert any linear output of a GEOS
+     * method to a curved type, if the inputs were converted to curves.
+     * \since QGIS 4.4
+     */
+    static const QgsSettingsEntryBool *settingLineToCurveParam SIP_SKIP;
+
     /**
      * GEOS geometry engine constructor
      * \param geometry The geometry
@@ -454,6 +464,10 @@ class CORE_EXPORT QgsGeos : public QgsGeometryEngine
 
     bool isEmpty( QString *errorMsg = nullptr ) const override;
     bool isSimple( QString *errorMsg = nullptr ) const override;
+
+    QgsGeometryEngine::EngineOperationResult splitGeometry(
+      const QgsAbstractGeometry &splitGeom, QVector<QgsGeometry > &newGeometries SIP_OUT, bool topological, QgsPointSequence &topologyTestPoints SIP_OUT, QString *errorMsg SIP_OUT = nullptr
+    ) const override;
 
     EngineOperationResult splitGeometry(
       const QgsLineString &splitLine, QVector<QgsGeometry> &newGeometries, bool topological, QgsPointSequence &topologyTestPoints, QString *errorMsg = nullptr, bool skipIntersectionCheck = false
@@ -988,11 +1002,39 @@ class CORE_EXPORT QgsGeos : public QgsGeometryEngine
     std::unique_ptr< QgsAbstractGeometry > unionCoverage( QString *errorMsg SIP_OUT = nullptr, QgsFeedback *feedback = nullptr ) const;
 
     /**
+     * Operates on a coverage (represented as a list of polygonal geometry),
+     * to fix cases where the geometry does not in fact exactly match.
+     *
+     * The input is a collection of polygons, and the output is a collection
+     * with the same number of cleaned polygons, in the same order as
+     * the input. Polygons that have collapsed during cleaning will be returned
+     * as empty polygons.
+     *
+     * The optional \a feedback argument supports early cancellation of the operation.
+     *
+     * This method requires a QGIS build based on GEOS 3.14 or later.
+     *
+     * \throws QgsNotSupportedException on QGIS builds based on GEOS 3.13 or earlier.
+     * \see validateCoverage()
+     * \since QGIS 4.4
+     */
+    std::unique_ptr< QgsAbstractGeometry > cleanCoverage( const QgsCoverageCleanParameters &parameters, QString *errorMsg SIP_OUT = nullptr, QgsFeedback *feedback = nullptr ) const SIP_THROW(
+      QgsNotSupportedException
+    );
+
+    /**
      * Create a geometry from a GEOSGeometry
      * \param geos GEOSGeometry. Ownership is NOT transferred.
      * \note Not available in Python bindings
      */
     SIP_SKIP static std::unique_ptr< QgsAbstractGeometry > fromGeos( const GEOSGeometry *geos );
+
+#if GEOS_VERSION_MAJOR > 3 || ( GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR >= 15 )
+    /**
+     * \note Not available in Python bindings
+     */
+    SIP_SKIP static std::unique_ptr< QgsCurvePolygon > fromGeosCurvePolygon( const GEOSGeometry *geos );
+#endif
 
     /**
      * \note Not available in Python bindings
@@ -1067,6 +1109,10 @@ class CORE_EXPORT QgsGeos : public QgsGeometryEngine
     ) const;
     bool relation( const QgsAbstractGeometry *geom, Relation r, QString *errorMsg = nullptr, QgsFeedback *feedback = nullptr ) const;
     static GEOSCoordSequence *createCoordinateSequence( const QgsCurve *curve, double precision, bool forceClose = false );
+    static std::unique_ptr< QgsSimpleCurve > sequenceToSimpleCurve( const GEOSGeometry *geos, bool hasZ, bool hasM );
+#if GEOS_VERSION_MAJOR > 3 || ( GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR >= 15 )
+    static std::unique_ptr< QgsCircularString > sequenceToCircularString( const GEOSGeometry *geos, bool hasZ, bool hasM );
+#endif
     static std::unique_ptr< QgsLineString > sequenceToLinestring( const GEOSGeometry *geos, bool hasZ, bool hasM );
     static int numberOfGeometries( GEOSGeometry *g );
     static geos::unique_ptr nodeGeometries( const GEOSGeometry *splitLine, const GEOSGeometry *geom );
@@ -1079,8 +1125,19 @@ class CORE_EXPORT QgsGeos : public QgsGeometryEngine
 
     static geos::unique_ptr createGeosPointXY( double x, double y, bool hasZ, double z, bool hasM, double m, int coordDims, double precision, Qgis::GeosCreationFlags flags = Qgis::GeosCreationFlags() );
     static geos::unique_ptr createGeosPoint( const QgsAbstractGeometry *point, int coordDims, double precision, Qgis::GeosCreationFlags flags = Qgis::GeosCreationFlags() );
+
+    /**
+     * \note For GEOS 3.15+, use createGeosSimpleCurve() instead.
+     */
     static geos::unique_ptr createGeosLinestring( const QgsAbstractGeometry *curve, double precision, Qgis::GeosCreationFlags flags = Qgis::GeosCreationFlags() );
+
     static geos::unique_ptr createGeosPolygon( const QgsAbstractGeometry *poly, double precision, Qgis::GeosCreationFlags flags = Qgis::GeosCreationFlags() );
+
+#if GEOS_VERSION_MAJOR > 3 || ( GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR >= 15 )
+    static geos::unique_ptr createGeosSimpleCurve( const QgsAbstractGeometry *curve, double precision, Qgis::GeosCreationFlags flags = Qgis::GeosCreationFlags() );
+    static geos::unique_ptr createGeosCompoundCurve( const QgsAbstractGeometry *curve, double precision, Qgis::GeosCreationFlags flags = Qgis::GeosCreationFlags() );
+    static geos::unique_ptr createGeosCurvePolygon( const QgsAbstractGeometry *poly, double precision, Qgis::GeosCreationFlags flags = Qgis::GeosCreationFlags() );
+#endif
 
     //utils for geometry split
     bool topologicalTestPointsSplit( const GEOSGeometry *splitLine, QgsPointSequence &testPoints, QString *errorMsg = nullptr ) const;

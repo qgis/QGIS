@@ -100,6 +100,7 @@ scene renderer and its widget.
 
 
 
+
   protected:
 
   private:
@@ -159,7 +160,7 @@ matching renderer was not found in the registry.
 Returns a list of available renderers.
 %End
 
-    static QgsTiledSceneRenderer *defaultRenderer( const QgsTiledSceneLayer *layer ) /Factory/;
+    static std::unique_ptr<QgsTiledSceneRenderer> defaultRenderer( const QgsTiledSceneLayer *layer );
 %Docstring
 Returns a new default tiled scene renderer for a specified ``layer``.
 

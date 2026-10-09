@@ -90,16 +90,29 @@ QFileInfo QgsServer::defaultAdminSLD()
 
 void QgsServer::setupNetworkAccessManager()
 {
-  const QSettings settings;
   QgsNetworkAccessManager *nam = QgsNetworkAccessManager::instance();
-  QNetworkDiskCache *cache = new QNetworkDiskCache( nullptr );
-  const QString cacheDirectory = sSettings()->cacheDirectory();
-  cache->setCacheDirectory( cacheDirectory );
-  qint64 cacheSize = sSettings()->cacheSize();
-  cache->setMaximumCacheSize( cacheSize );
-  QgsMessageLog::logMessage( u"cacheDirectory: %1"_s.arg( cache->cacheDirectory() ), u"Server"_s, Qgis::MessageLevel::Info );
-  QgsMessageLog::logMessage( u"maximumCacheSize: %1"_s.arg( cache->maximumCacheSize() ), u"Server"_s, Qgis::MessageLevel::Info );
-  nam->setCache( cache );
+  // Note: at this point NAM is already initialized with cache settings from QGIS application,
+  //       so we need to update it with server settings
+  if ( QgsNetworkDiskCache *cache = dynamic_cast<QgsNetworkDiskCache *>( nam->cache() ) )
+  {
+    const QString cacheDirectory = sSettings()->cacheDirectory();
+    if ( cacheDirectory.isEmpty() )
+    {
+      QgsMessageLog::logMessage( u"Cache directory is not set, using default."_s, u"Server"_s, Qgis::MessageLevel::Info );
+    }
+    else
+    {
+      cache->setCacheDirectory( cacheDirectory );
+    }
+    const qint64 cacheSize = sSettings()->cacheSize();
+    cache->setMaximumCacheSize( cacheSize );
+    QgsMessageLog::logMessage( u"cacheDirectory: %1"_s.arg( cache->cacheDirectory() ), u"Server"_s, Qgis::MessageLevel::Info );
+    QgsMessageLog::logMessage( u"maximumCacheSize: %1"_s.arg( cache->maximumCacheSize() ), u"Server"_s, Qgis::MessageLevel::Info );
+  }
+  else
+  {
+    QgsMessageLog::logMessage( u"Network access manager cache is not a QgsNetworkDiskCache, cannot set cache directory and size."_s, u"Server"_s, Qgis::MessageLevel::Warning );
+  }
 }
 
 QFileInfo QgsServer::defaultProjectFile()

@@ -149,6 +149,8 @@ bool QgsZonalMinimumMaximumPointAlgorithm::prepareAlgorithm( const QVariantMap &
 
 QgsFeatureList QgsZonalMinimumMaximumPointAlgorithm::processFeature( const QgsFeature &feature, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
+  QGS_MARK_ALGORITHM_SOURCE
+
   if ( !mCreatedTransform )
   {
     mCreatedTransform = true;

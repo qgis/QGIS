@@ -432,7 +432,12 @@ QString QgsField::displayString( const QVariant &v ) const
   else if ( d->typeName.compare( "json"_L1, Qt::CaseInsensitive ) == 0 || d->typeName == "jsonb"_L1 )
   {
     const QJsonDocument doc = QJsonDocument::fromVariant( v );
-    return QString::fromUtf8( doc.toJson().constData() );
+    if ( !doc.isNull() )
+    {
+      return QString::fromUtf8( doc.toJson().constData() );
+    }
+    //on invalid json or primitive values (like string, number, boolean or null) it does not return it as parsed json but the raw value instead
+    return v.toString();
   }
   else if ( d->type == QMetaType::Type::QByteArray )
   {

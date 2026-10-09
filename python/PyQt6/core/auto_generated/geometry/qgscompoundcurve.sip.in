@@ -72,6 +72,8 @@ Compound curve geometry type.
     virtual bool isValid( QString &error /Out/, Qgis::GeometryValidityFlags flags = Qgis::GeometryValidityFlags() ) const;
 
     int indexOf( const QgsPoint &point ) const final;
+    virtual bool isSimpleCurve() const /HoldGIL/;
+
 
     virtual QgsLineString *curveToLine( double tolerance = M_PI_2 / 90, SegmentationToleranceType toleranceType = MaximumAngle ) const /Factory/;
 
@@ -168,6 +170,8 @@ Converts the vertex at the given position from/to circular
     virtual bool moveVertex( QgsVertexId position, const QgsPoint &newPos );
 
     virtual bool deleteVertex( QgsVertexId position );
+
+    virtual bool deleteVertices( const QSet<QgsVertexId> &positions );
 
     virtual double closestSegment( const QgsPoint &pt, QgsPoint &segmentPt /Out/, QgsVertexId &vertexAfter /Out/, int *leftOf /Out/ = 0, double epsilon = 4 * DBL_EPSILON ) const;
 

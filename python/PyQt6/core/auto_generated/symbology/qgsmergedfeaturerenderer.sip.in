@@ -36,7 +36,7 @@ Constructor for QgsMergedFeatureRenderer.
 %End
 
 
-    static QgsFeatureRenderer *create( QDomElement &element, const QgsReadWriteContext &context ) /Factory/;
+    static std::unique_ptr<QgsFeatureRenderer> create( QDomElement &element, const QgsReadWriteContext &context );
 %Docstring
 Creates a renderer out of an XML, for loading
 %End
@@ -117,7 +117,7 @@ the embedded feature renderer
     virtual bool accept( QgsStyleEntityVisitorInterface *visitor ) const;
 
 
-    static QgsMergedFeatureRenderer *convertFromRenderer( const QgsFeatureRenderer *renderer ) /Factory/;
+    static std::unique_ptr<QgsMergedFeatureRenderer> convertFromRenderer( const QgsFeatureRenderer *renderer );
 %Docstring
 Creates a QgsMergedFeatureRenderer by a conversion from an existing
 renderer.

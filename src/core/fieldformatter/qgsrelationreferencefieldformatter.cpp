@@ -41,7 +41,24 @@ QString QgsRelationReferenceFieldFormatter::representValue( QgsVectorLayer *laye
 {
   if ( cache.isValid() )
   {
-    return cache.value<QMap<QVariant, QString>>().value( value );
+    // See regression #66339: the value type should be converted to the type of the key in the cache,
+    // otherwise we might not find the value in the cache, even if it is there, because of type mismatch.
+    // This can happen for example when the value is a int and the key in the cache is a long long.
+    const QMap<QVariant, QString> cacheMap = cache.value<QMap<QVariant, QString>>();
+    if ( cacheMap.size() > 0 )
+    {
+      const QMetaType keyType = value.metaType();
+      const QMetaType cacheKeyType = cacheMap.firstKey().metaType();
+      if ( keyType != cacheKeyType && value.canConvert( cacheKeyType ) )
+      {
+        QVariant key = value;
+        if ( key.convert( cacheKeyType ) )
+        {
+          return cacheMap.value( key );
+        }
+      }
+    }
+    return cacheMap.value( value );
   }
 
   const QString fieldName = fieldIndex < layer->fields().size() ? layer->fields().at( fieldIndex ).name() : QObject::tr( "<unknown>" );
@@ -54,7 +71,18 @@ QString QgsRelationReferenceFieldFormatter::representValue( QgsVectorLayer *laye
   }
 
   const QString relationName = config[u"Relation"_s].toString();
-  const QgsRelation relation = QgsProject::instance()->relationManager()->relation( relationName ); // skip-keyword-check
+
+  QgsRelation relation;
+  if ( QgsProject *project = layer->project() )
+  {
+    relation = project->relationManager()->relation( relationName );
+  }
+  // TODO QGIS 5.0 -- remove this fallback for layers without an associated project
+  else
+  {
+    relation = QgsProject::instance()->relationManager()->relation( relationName ); // skip-keyword-check
+  }
+
   if ( !relation.isValid() )
   {
     QgsMessageLog::logMessage( QObject::tr( "Layer %1, field %2: Invalid relation %3" ).arg( layer->name(), fieldName, relationName ) );
@@ -112,6 +140,11 @@ QVariant QgsRelationReferenceFieldFormatter::createCache( QgsVectorLayer *layer,
   Q_UNUSED( fieldIndex )
   QMap<QVariant, QString> cache;
 
+  if ( !layer )
+  {
+    return QVariant();
+  }
+
   const QString fieldName = fieldIndex < layer->fields().size() ? layer->fields().at( fieldIndex ).name() : QObject::tr( "<unknown>" );
 
   // Some sanity checks
@@ -121,7 +154,19 @@ QVariant QgsRelationReferenceFieldFormatter::createCache( QgsVectorLayer *layer,
     return QVariant();
   }
   const QString relationName = config[u"Relation"_s].toString();
-  const QgsRelation relation = QgsProject::instance()->relationManager()->relation( config[u"Relation"_s].toString() ); // skip-keyword-check
+
+  QgsRelation relation;
+  if ( QgsProject *project = layer->project() )
+  {
+    relation = project->relationManager()->relation( config[u"Relation"_s].toString() ); // skip-keyword-check
+  }
+  // TODO QGIS 5.0 -- remove this fallback for layers without an associated project
+  else
+  {
+    relation = QgsProject::instance()->relationManager()->relation( relationName ); // skip-keyword-check
+  }
+
+
   if ( !relation.isValid() )
   {
     QgsMessageLog::logMessage( QObject::tr( "Layer %1, field %2: Invalid relation %3" ).arg( layer->name(), fieldName, relationName ) );

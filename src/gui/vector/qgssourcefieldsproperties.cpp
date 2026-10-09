@@ -16,6 +16,7 @@
 
 #include "qgssourcefieldsproperties.h"
 
+#include "qgsabstractdatabaseproviderconnection.h"
 #include "qgsaddattrdialog.h"
 #include "qgsapplication.h"
 #include "qgscheckablecombobox.h"
@@ -23,6 +24,8 @@
 #include "qgsgui.h"
 #include "qgsnative.h"
 #include "qgsproject.h"
+#include "qgsprovidermetadata.h"
+#include "qgsproviderregistry.h"
 #include "qgsvectorlayer.h"
 
 #include <QString>
@@ -76,6 +79,9 @@ QgsSourceFieldsProperties::QgsSourceFieldsProperties( QgsVectorLayer *layer, QWi
   configurationFlagsWi->setToolTip( tr( "Configures the field" ) );
   mFieldsList->setHorizontalHeaderItem( AttrConfigurationFlagsCol, configurationFlagsWi );
   mFieldsList->setHorizontalHeaderItem( AttrAliasCol, new QTableWidgetItem( tr( "Alias" ) ) );
+  const auto fieldDomainWidget = new QTableWidgetItem( tr( "Field Domain" ) );
+  fieldDomainWidget->setToolTip( tr( "Field domain associated with the field" ) );
+  mFieldsList->setHorizontalHeaderItem( AttrFieldDomainCol, fieldDomainWidget );
 
   mFieldsList->setSortingEnabled( true );
   mFieldsList->sortByColumn( 0, Qt::AscendingOrder );
@@ -103,6 +109,11 @@ void QgsSourceFieldsProperties::loadRows()
 
   for ( int i = 0; i < fields.count(); ++i )
     attributeAdded( i );
+
+  if ( mLayer->dataProvider() )
+  {
+    mFieldsList->setColumnHidden( AttrFieldDomainCol, !mLayer->dataProvider()->capabilities().testFlag( Qgis::VectorProviderCapability::ReadFieldDomains ) );
+  }
 
   mFieldsList->resizeColumnsToContents();
   connect( mFieldsList, &QTableWidget::cellChanged, this, &QgsSourceFieldsProperties::attributesListCellChanged );
@@ -171,7 +182,7 @@ void QgsSourceFieldsProperties::attributeAdded( int idx )
     switch ( mLayer->fields().fieldOrigin( idx ) )
     {
       case Qgis::FieldOrigin::Expression:
-        if ( i == 7 )
+        if ( i == AttrCommentCol )
           continue;
         mFieldsList->item( row, i )->setBackground( expressionColor );
         break;
@@ -189,6 +200,11 @@ void QgsSourceFieldsProperties::attributeAdded( int idx )
 
   if ( sorted )
     mFieldsList->setSortingEnabled( true );
+
+  if ( mLayer->dataProvider() )
+  {
+    mFieldsList->setColumnHidden( AttrFieldDomainCol, !mLayer->dataProvider()->capabilities().testFlag( Qgis::VectorProviderCapability::ReadFieldDomains ) );
+  }
 }
 
 
@@ -240,14 +256,13 @@ void QgsSourceFieldsProperties::setRow( int row, int idx, const QgsField &field 
     mFieldsList->setItem( row, AttrCommentCol, new QTableWidgetItem( field.comment() ) );
   }
 
-  QList<int> notEditableCols = QList<int>() << AttrIdCol << AttrNameCol << AttrAliasCol << AttrTypeCol << AttrTypeNameCol << AttrLengthCol << AttrPrecCol << AttrCommentCol;
+  mFieldsList->setItem( row, AttrFieldDomainCol, new QTableWidgetItem( field.constraints().domainName() ) );
 
-  const auto constNotEditableCols = notEditableCols;
-  for ( const int i : constNotEditableCols )
+  for ( const int i : { AttrIdCol, AttrNameCol, AttrAliasCol, AttrTypeCol, AttrTypeNameCol, AttrLengthCol, AttrPrecCol, AttrCommentCol, AttrFieldDomainCol } )
   {
-    if ( notEditableCols[i] != AttrCommentCol || mLayer->fields().fieldOrigin( idx ) != Qgis::FieldOrigin::Expression )
+    if ( i != AttrCommentCol || mLayer->fields().fieldOrigin( idx ) != Qgis::FieldOrigin::Expression )
       mFieldsList->item( row, i )->setFlags( mFieldsList->item( row, i )->flags() & ~Qt::ItemIsEditable );
-    if ( notEditableCols[i] == AttrAliasCol )
+    if ( i == AttrAliasCol )
       mFieldsList->item( row, i )->setToolTip( tr( "Edit alias in the Form config tab" ) );
   }
   const bool canRenameFields = mLayer->isEditable() && ( mLayer->dataProvider()->capabilities() & Qgis::VectorProviderCapability::RenameAttributes ) && !mLayer->readOnly();

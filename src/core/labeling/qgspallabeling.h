@@ -48,6 +48,7 @@
 
 class QgsTextDocument;
 class QgsTextDocumentMetrics;
+class QgsLabelFeatureDetails;
 
 namespace pal SIP_SKIP
 {
@@ -676,20 +677,14 @@ class CORE_EXPORT QgsPalLayerSettings
      * \param feature feature to label
      * \param context render context. The QgsExpressionContext contained within the render context
      * must have already had the feature and fields set prior to calling this method.
-     * \param obstacleGeometry optional obstacle geometry, if a different geometry to the feature's geometry
-     * should be used as an obstacle for labels (e.g., if the feature has been rendered with an offset point
-     * symbol, the obstacle geometry should represent the bounds of the offset symbol). If not set,
-     * the feature's original geometry will be used as an obstacle for labels.
-     * \param symbol feature symbol to label (ownership is not transferred, and \a symbol must exist until the labeling is complete)
+     * \param details label details
      *
      * \returns QgsLabelFeature representing the registered feature, or NULLPTR if the feature will not be labeled
      * in this context.
      *
      * \note Not available in Python bindings
      */
-    std::vector< std::unique_ptr< QgsLabelFeature > > registerFeatureWithDetails(
-      const QgsFeature &feature, QgsRenderContext &context, QgsGeometry obstacleGeometry = QgsGeometry(), const QgsSymbol *symbol = nullptr
-    );
+    std::vector< std::unique_ptr< QgsLabelFeature > > registerFeatureWithDetails( const QgsFeature &feature, QgsRenderContext &context, const QgsLabelFeatureDetails &details );
 
 #endif
 

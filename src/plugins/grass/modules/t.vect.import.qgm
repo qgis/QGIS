@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE qgisgrassmodule SYSTEM "http://mrcc.com/qgisgrassmodule.dtd">
 
-<qgisgrassmodule label="Imports a space time vector dataset from a GRASS GIS specific archive file" module="t.vect.import">
+<qgisgrassmodule label="Imports a space time vector dataset from a GRASS specific archive file" module="t.vect.import">
 	<option key="input"/>
 	<option key="output"/>
 	<option key="basename"/>

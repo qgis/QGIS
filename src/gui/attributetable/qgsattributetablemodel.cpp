@@ -434,8 +434,6 @@ void QgsAttributeTableModel::loadAttributes()
 
   QgsAttributeList attributes;
 
-  mWidgetDatas.clear();
-
   for ( int idx = 0; idx < fields.count(); ++idx )
   {
     attributes << idx;
@@ -454,6 +452,7 @@ void QgsAttributeTableModel::loadAttributes()
 
   mFieldCount = attributes.size();
   mAttributes = attributes;
+  mWidgetDatas.clear();
   mWidgetDatas.resize( mFieldCount );
 
   for ( SortCache &cache : mSortCaches )

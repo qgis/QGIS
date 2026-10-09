@@ -18,11 +18,11 @@
 
 #include "qgis_gui.h"
 #include "qgis_sip.h"
+#include "qgsmaplayer.h"
 #include "qgsmaplayerproxymodel.h"
 
 #include <QComboBox>
 
-class QgsMapLayer;
 class QgsVectorLayer;
 
 /**

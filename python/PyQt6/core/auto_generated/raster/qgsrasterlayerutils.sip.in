@@ -10,6 +10,48 @@
 
 
 
+
+
+class QgsRasterReliefColor
+{
+%Docstring(signature="appended")
+Defines elevation range and color for raster relief coloring.
+
+.. note::
+
+   Prior to 4.2 this was available as :py:class:`QgsRelief`.ReliefColor.
+
+.. versionadded:: 4.2
+%End
+
+%TypeHeaderCode
+#include "qgsrasterlayerutils.h"
+%End
+  public:
+    QgsRasterReliefColor( const QColor &c, double min, double max );
+%Docstring
+Constructor for QgsRasterReliefColor.
+
+:param c: color
+:param min: elevation range minimum
+:param max: elevation range maximum
+%End
+
+    QColor color;
+    double minElevation;
+    double maxElevation;
+
+    bool operator==( const QgsRasterReliefColor &other ) const;
+
+    bool operator!=( const QgsRasterReliefColor &other ) const;
+
+    SIP_PYOBJECT __repr__();
+%MethodCode
+    QString str = QStringLiteral( "<QgsRasterReliefColor: %1-%2 (%3)>" ).arg( qgsDoubleToString( sipCpp->minElevation ), qgsDoubleToString( sipCpp->maxElevation ), sipCpp->color.name() );
+    sipRes = PyUnicode_FromString( str.toUtf8().constData() );
+%End
+};
+
 class QgsRasterLayerUtils
 {
 %Docstring(signature="appended")
@@ -63,6 +105,15 @@ corners fall on pixel boundaries defined by the origin and pixel sizes.
 
 .. versionadded:: 4.0
 %End
+
+    static QList<QgsRasterReliefColor> calculateOptimizedReliefClasses( QgsRasterDataProvider *provider, int band );
+%Docstring
+Calculates optimized relief class breaks according with the method of
+Buenzli (2011) using an iterative algorithm for segmented regression.
+
+.. versionadded:: 4.2
+%End
+
 };
 
 /************************************************************************

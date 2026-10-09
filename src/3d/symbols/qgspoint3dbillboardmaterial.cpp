@@ -36,9 +36,9 @@
 
 using namespace Qt::StringLiterals;
 
-QgsPoint3DBillboardMaterial::QgsPoint3DBillboardMaterial( Mode mode )
+QgsPoint3DBillboardMaterial::QgsPoint3DBillboardMaterial( ExtraAttributes attributes, Qgis::BillboardScaleMode scaleMode )
   : mSize( new Qt3DRender::QParameter( "BB_SIZE", QSizeF( 100, 100 ), this ) )
-  , mViewportSize( new Qt3DRender::QParameter( "WIN_SCALE", QSizeF( 800, 600 ), this ) )
+  , mScaleMode( scaleMode )
 {
   // billboard materials should not cast shadows -- this causes weird unnatural effects,
   // as the size and orientation of the billboard seen by the light camera
@@ -46,7 +46,19 @@ QgsPoint3DBillboardMaterial::QgsPoint3DBillboardMaterial( Mode mode )
   setCastsShadows( false );
 
   addParameter( mSize );
-  addParameter( mViewportSize );
+
+  switch ( mScaleMode )
+  {
+    case Qgis::BillboardScaleMode::ViewIndependent:
+    {
+      mViewportSize = new Qt3DRender::QParameter( "WIN_SCALE", QSizeF( 800, 600 ), this );
+      addParameter( mViewportSize );
+      break;
+    }
+
+    case Qgis::BillboardScaleMode::Perspective:
+      break;
+  }
 
   // Initialize with empty parameter.
   mTexture2D = new Qt3DRender::QParameter( "tex0", QVariant(), this );
@@ -64,39 +76,43 @@ QgsPoint3DBillboardMaterial::QgsPoint3DBillboardMaterial( Mode mode )
   Qt3DRender::QShaderProgram *shaderProgram = new Qt3DRender::QShaderProgram( this );
 
   const QUrl urlVert( u"qrc:/shaders/billboards.vert"_s );
-  const QUrl urlGeom( u"qrc:/shaders/billboards.geom"_s );
+  QStringList vertexShaderDefines;
 
-  switch ( mode )
+  if ( attributes.testFlag( ExtraAttribute::TextureData ) )
   {
-    case Mode::SingleTexture:
-    {
-      shaderProgram->setVertexShaderCode( Qt3DRender::QShaderProgram::loadSource( urlVert ) );
-      shaderProgram->setGeometryShaderCode( Qt3DRender::QShaderProgram::loadSource( urlGeom ) );
-      break;
-    }
-    case Mode::AtlasTexture:
-    {
-      const QByteArray vertexShaderCode = Qt3DRender::QShaderProgram::loadSource( urlVert );
-      const QByteArray finalVertexShaderCode = Qgs3DUtils::addDefinesToShaderCode( vertexShaderCode, QStringList( { "TEXTURE_ATLAS" } ) );
-      shaderProgram->setVertexShaderCode( finalVertexShaderCode );
-
-      const QByteArray geomShaderCode = Qt3DRender::QShaderProgram::loadSource( urlGeom );
-      const QByteArray finalGeomShaderCode = Qgs3DUtils::addDefinesToShaderCode( geomShaderCode, QStringList( { "TEXTURE_ATLAS" } ) );
-      shaderProgram->setGeometryShaderCode( finalGeomShaderCode );
-      break;
-    }
-    case Mode::AtlasTextureWithPixelOffsets:
-    {
-      const QByteArray vertexShaderCode = Qt3DRender::QShaderProgram::loadSource( urlVert );
-      const QByteArray finalVertexShaderCode = Qgs3DUtils::addDefinesToShaderCode( vertexShaderCode, QStringList( { "TEXTURE_ATLAS", "TEXTURE_ATLAS_PIXEL_OFFSETS" } ) );
-      shaderProgram->setVertexShaderCode( finalVertexShaderCode );
-
-      const QByteArray geomShaderCode = Qt3DRender::QShaderProgram::loadSource( urlGeom );
-      const QByteArray finalGeomShaderCode = Qgs3DUtils::addDefinesToShaderCode( geomShaderCode, QStringList( { "TEXTURE_ATLAS", "TEXTURE_ATLAS_PIXEL_OFFSETS" } ) );
-      shaderProgram->setGeometryShaderCode( finalGeomShaderCode );
-      break;
-    }
+    vertexShaderDefines << u"TEXTURE_ATLAS"_s;
   }
+
+  if ( attributes.testFlag( ExtraAttribute::PixelOffsets ) )
+  {
+    vertexShaderDefines << u"TEXTURE_ATLAS_PIXEL_OFFSETS"_s;
+  }
+
+  if ( attributes.testFlag( ExtraAttribute::Size ) )
+  {
+    vertexShaderDefines << u"PER_INSTANCE_SIZE"_s;
+  }
+
+  if ( attributes.testFlag( ExtraAttribute::VerticalOffset ) )
+  {
+    vertexShaderDefines << u"VERTICAL_OFFSET"_s;
+    mVerticalOffset = new Qt3DRender::QParameter( "VERT_OFFSET", 0.0, this );
+    addParameter( mVerticalOffset );
+  }
+
+  switch ( mScaleMode )
+  {
+    case Qgis::BillboardScaleMode::ViewIndependent:
+      break;
+    case Qgis::BillboardScaleMode::Perspective:
+      vertexShaderDefines << u"PERSPECTIVE_SCALE"_s;
+      break;
+  }
+
+  const QByteArray vertexShaderCode = Qt3DRender::QShaderProgram::loadSource( urlVert );
+  const QByteArray finalVertexShaderCode = Qgs3DUtils::addDefinesToShaderCode( vertexShaderCode, vertexShaderDefines );
+  shaderProgram->setVertexShaderCode( finalVertexShaderCode );
+
   shaderProgram->setFragmentShaderCode( Qt3DRender::QShaderProgram::loadSource( QUrl( u"qrc:/shaders/billboards.frag"_s ) ) );
 
   // Render Pass
@@ -138,14 +154,32 @@ QSizeF QgsPoint3DBillboardMaterial::size() const
   return mSize->value().value<QSizeF>();
 }
 
+void QgsPoint3DBillboardMaterial::setVerticalOffset( float offset )
+{
+  if ( mVerticalOffset )
+  {
+    mVerticalOffset->setValue( offset );
+  }
+}
+
 void QgsPoint3DBillboardMaterial::setViewportSize( const QSizeF size )
 {
-  mViewportSize->setValue( size );
+  if ( mViewportSize )
+  {
+    mViewportSize->setValue( size );
+  }
 }
 
 QSizeF QgsPoint3DBillboardMaterial::windowSize() const
 {
-  return mViewportSize->value().value<QSizeF>();
+  if ( mViewportSize )
+  {
+    return mViewportSize->value().value<QSizeF>();
+  }
+  else
+  {
+    return QSizeF();
+  }
 }
 
 void QgsPoint3DBillboardMaterial::setTexture2DFromImage( const QImage &image )
@@ -160,8 +194,8 @@ void QgsPoint3DBillboardMaterial::setTexture2DFromImage( const QImage &image )
 void QgsPoint3DBillboardMaterial::useDefaultSymbol( const Qgs3DRenderContext &context, bool selected )
 {
   // Default texture
-  const std::unique_ptr<QgsMarkerSymbol> defaultSymbol( static_cast<QgsMarkerSymbol *>( QgsSymbol::defaultSymbol( Qgis::GeometryType::Point ) ) );
-  setTexture2DFromSymbol( defaultSymbol.get(), context, selected );
+  std::unique_ptr<QgsSymbol> defaultSymbol = QgsSymbol::defaultSymbol( Qgis::GeometryType::Point );
+  setTexture2DFromSymbol( static_cast<QgsMarkerSymbol *>( defaultSymbol.get() ), context, selected );
 }
 
 QImage QgsPoint3DBillboardMaterial::renderSymbolToImage( const QgsMarkerSymbol *markerSymbol, const Qgs3DRenderContext &context, bool selected )

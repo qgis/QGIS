@@ -2737,13 +2737,22 @@ QgsAttributeForm::WidgetInfo QgsAttributeForm::createWidgetFromDef( const QgsAtt
         newWidgetInfo.widget->setObjectName( fields.at( fldIdx ).name() );
         const QString customComment = fields.at( fldIdx ).customComment();
         newWidgetInfo.hint = customComment.isNull() ? fields.at( fldIdx ).comment() : customComment;
+
+        newWidgetInfo.labelOnTop = mLayer->editFormConfig().labelOnTop( fldIdx );
+        newWidgetInfo.labelText = mLayer->attributeDisplayName( fldIdx );
+        newWidgetInfo.labelText.replace( '&', "&&"_L1 ); // need to escape '&' or they'll be replace by _ in the label text
+
+        newWidgetInfo.toolTip = ( QgsFieldModel::fieldToolTipExtended( fields.at( fldIdx ), mLayer ) );
+      }
+      else
+      {
+        QgsDebugError( u"Attribute form references unknown field '%1' on layer '%2' - skipping widget"_s.arg( fieldDef->name(), mLayer ? mLayer->name() : QString() ) );
+        newWidgetInfo.labelOnTop = false;
+        newWidgetInfo.labelText = fieldDef->name();
+        newWidgetInfo.labelText.replace( '&', "&&"_L1 );
+        newWidgetInfo.toolTip.clear();
       }
 
-      newWidgetInfo.labelOnTop = mLayer->editFormConfig().labelOnTop( fldIdx );
-      newWidgetInfo.labelText = mLayer->attributeDisplayName( fldIdx );
-      newWidgetInfo.labelText.replace( '&', "&&"_L1 ); // need to escape '&' or they'll be replace by _ in the label text
-
-      newWidgetInfo.toolTip = ( QgsFieldModel::fieldToolTipExtended( fields.at( fldIdx ), mLayer ) );
       newWidgetInfo.showLabel = widgetDef->showLabel();
 
       break;

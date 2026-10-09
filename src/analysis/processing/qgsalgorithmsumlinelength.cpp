@@ -197,6 +197,8 @@ bool QgsSumLineLengthAlgorithm::supportInPlaceEdit( const QgsMapLayer *layer ) c
 
 QgsFeatureList QgsSumLineLengthAlgorithm::processFeature( const QgsFeature &feature, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
+  QGS_MARK_ALGORITHM_SOURCE
+
   QgsFeature outputFeature = feature;
   if ( !feature.hasGeometry() )
   {
@@ -233,7 +235,7 @@ QgsFeatureList QgsSumLineLengthAlgorithm::processFeature( const QgsFeature &feat
       if ( feedback->isCanceled() )
         break;
 
-      if ( engine->intersects( lineFeature.geometry().constGet() ) )
+      if ( engine->intersects( lineFeature.geometry().constGet(), nullptr, feedback ) )
       {
         const QgsGeometry outGeom = polyGeom.intersection( lineFeature.geometry(), QgsGeometryParameters(), feedback );
         try

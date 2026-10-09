@@ -113,6 +113,8 @@ bool QgsBookmarksToLayerAlgorithm::prepareAlgorithm( const QVariantMap &paramete
 
 QVariantMap QgsBookmarksToLayerAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
+  QGS_MARK_ALGORITHM_SOURCE
+
   const QgsCoordinateReferenceSystem crs = parameterAsCrs( parameters, u"CRS"_s, context );
   QgsFields fields;
   fields.append( QgsField( u"name"_s, QMetaType::Type::QString ) );
@@ -157,11 +159,14 @@ QVariantMap QgsBookmarksToLayerAlgorithm::processAlgorithm( const QVariantMap &p
 
     if ( !sink->addFeature( feat, QgsFeatureSink::FastInsert ) )
       throw QgsProcessingException( writeFeatureError( sink.get(), parameters, u"OUTPUT"_s ) );
+    else
+      feedback->featureAddedToSink( u"OUTPUT"_s );
 
     feedback->setProgress( current++ * step );
   }
 
   sink->finalize();
+  feedback->featureSinkFinalized( u"OUTPUT"_s );
 
   QVariantMap outputs;
   outputs.insert( u"OUTPUT"_s, dest );
@@ -241,6 +246,8 @@ QgsLayerToBookmarksAlgorithm *QgsLayerToBookmarksAlgorithm::createInstance() con
 
 QVariantMap QgsLayerToBookmarksAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
+  QGS_MARK_ALGORITHM_SOURCE
+
   mDest = parameterAsEnum( parameters, u"DESTINATION"_s, context );
   std::unique_ptr<QgsProcessingFeatureSource> source( parameterAsSource( parameters, u"INPUT"_s, context ) );
   if ( !source )

@@ -36,7 +36,6 @@ const QgsSettingsEntryVariant *QgsDockableWidgetHelper::sSettingsDialogGeometry 
 const QgsSettingsEntryEnumFlag<Qt::DockWidgetArea> *QgsDockableWidgetHelper::sSettingsDockArea
   = new QgsSettingsEntryEnumFlag<Qt::DockWidgetArea>( u"dock-area"_s, QgsDockableWidgetHelper::sTtreeDockConfigs, Qt::RightDockWidgetArea );
 
-std::function<QString()> QgsDockableWidgetHelper::sAppStylesheetFunction = [] { return QString(); };
 QMainWindow *QgsDockableWidgetHelper::sOwnerWindow = nullptr;
 
 QgsDockableWidgetHelper::QgsDockableWidgetHelper(
@@ -319,7 +318,8 @@ void QgsDockableWidgetHelper::toggleDockMode( bool docked )
       mDialog = new QgsNonRejectableDialog( nullptr, Qt::Window );
     else
       mDialog = new QDialog( nullptr, Qt::Window );
-    mDialog->setStyleSheet( sAppStylesheetFunction() );
+    mDialog->setStyleSheet( QgsGui::applicationStyleSheet() );
+    connect( QgsGui::instance(), &QgsGui::applicationStyleSheetChanged, mDialog, &QDialog::setStyleSheet );
 
     mDialog->setWindowTitle( mWindowTitle );
     mDialog->setObjectName( mObjectName );

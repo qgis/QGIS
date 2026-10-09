@@ -1,7 +1,7 @@
 %Module(name=qgis._core,
         keyword_arguments="All")
 
-${DEFAULTDOCSTRINGSIGNATURE}
+%DefaultDocstringSignature "prepended"
 
 %ModuleCode
 

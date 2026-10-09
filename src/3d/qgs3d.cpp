@@ -20,6 +20,7 @@
 #include "qgs3drendererregistry.h"
 #include "qgs3dsymbolregistry.h"
 #include "qgs3dterrainregistry.h"
+#include "qgsabstractmaterialsettings.h"
 #include "qgsannotationlayer3drenderer.h"
 #include "qgsapplication.h"
 #include "qgscategorized3drenderer.h"
@@ -45,6 +46,8 @@
 #include "qgssimplelinematerial3dhandler.h"
 #include "qgsstyle.h"
 #include "qgstiledscenelayer3drenderer.h"
+#include "qgsunlitmaterial.h"
+#include "qgsunlitmaterial3dhandler.h"
 #include "qgsvectorlayer3drenderer.h"
 
 #include <QString>
@@ -72,6 +75,7 @@ Qgs3D::~Qgs3D()
   qgis::down_cast< QgsMaterialSettingsMetadata * >( materialRegistry->materialSettingsMetadata( u"simpleline"_s ) )->setHandler( nullptr );
   qgis::down_cast< QgsMaterialSettingsMetadata * >( materialRegistry->materialSettingsMetadata( u"gooch"_s ) )->setHandler( nullptr );
   qgis::down_cast< QgsMaterialSettingsMetadata * >( materialRegistry->materialSettingsMetadata( u"metalrough"_s ) )->setHandler( nullptr );
+  qgis::down_cast< QgsMaterialSettingsMetadata * >( materialRegistry->materialSettingsMetadata( u"unlit"_s ) )->setHandler( nullptr );
 }
 
 void Qgs3D::initialize()
@@ -103,6 +107,9 @@ void Qgs3D::initialize()
 
   instance()->mMetalRoughTexturedMaterialHandler = std::make_unique< QgsMetalRoughTexturedMaterial3DHandler >();
   qgis::down_cast< QgsMaterialSettingsMetadata * >( materialRegistry->materialSettingsMetadata( u"metalroughtextured"_s ) )->setHandler( instance()->mMetalRoughTexturedMaterialHandler.get() );
+
+  instance()->mUnlitMaterialHandler = std::make_unique< QgsUnlitMaterial3DHandler >();
+  qgis::down_cast< QgsMaterialSettingsMetadata * >( materialRegistry->materialSettingsMetadata( u"unlit"_s ) )->setHandler( instance()->mUnlitMaterialHandler.get() );
 
   QgsApplication::renderer3DRegistry()->addRenderer( new QgsVectorLayer3DRendererMetadata );
   QgsApplication::renderer3DRegistry()->addRenderer( new QgsRuleBased3DRendererMetadata );
@@ -158,47 +165,17 @@ QgsMaterial *Qgs3D::toMaterial( const QgsAbstractMaterialSettings *settings, Qgi
   return nullptr;
 }
 
-QMap<QString, QString> Qgs3D::toMaterialExportParameters( const QgsAbstractMaterialSettings *settings )
+QgsUnlitMaterial *Qgs3D::createHighlightMaterial()
 {
-  if ( const QgsAbstractMaterial3DHandler *handler = handlerForMaterialSettings( settings ) )
-  {
-    return handler->toExportParameters( settings );
-  }
-  return {};
-}
+  auto highlightMaterial = new QgsUnlitMaterial();
 
-void Qgs3D::addMaterialParametersToEffect( Qt3DRender::QEffect *effect, const QgsAbstractMaterialSettings *settings, const QgsMaterialContext &materialContext )
-{
-  if ( const QgsAbstractMaterial3DHandler *handler = handlerForMaterialSettings( settings ) )
-  {
-    handler->addParametersToEffect( effect, settings, materialContext );
-  }
-}
+  const QgsSettings settings;
+  const float alpha = settings.value( u"Map/highlight/colorAlpha"_s, Qgis::DEFAULT_HIGHLIGHT_COLOR.alpha() ).toFloat() / 255.f;
+  QColor color = QColor( settings.value( u"Map/highlight/color"_s, Qgis::DEFAULT_HIGHLIGHT_COLOR.name() ).toString() );
+  color.setAlphaF( alpha );
+  highlightMaterial->setColor( color );
 
-void Qgs3D::applyMaterialDataDefinedToGeometry( const QgsAbstractMaterialSettings *settings, Qt3DCore::QGeometry *geometry, int vertexCount, const QByteArray &dataDefinedBytes )
-{
-  if ( const QgsAbstractMaterial3DHandler *handler = handlerForMaterialSettings( settings ) )
-  {
-    handler->applyDataDefinedToGeometry( settings, geometry, vertexCount, dataDefinedBytes );
-  }
-}
-
-QByteArray Qgs3D::materialDataDefinedVertexColorsAsByte( const QgsAbstractMaterialSettings *settings, const QgsExpressionContext &expressionContext )
-{
-  if ( const QgsAbstractMaterial3DHandler *handler = handlerForMaterialSettings( settings ) )
-  {
-    return handler->dataDefinedVertexColorsAsByte( settings, expressionContext );
-  }
-  return QByteArray();
-}
-
-int Qgs3D::materialDataDefinedByteStride( const QgsAbstractMaterialSettings *settings )
-{
-  if ( const QgsAbstractMaterial3DHandler *handler = handlerForMaterialSettings( settings ) )
-  {
-    return handler->dataDefinedByteStride( settings );
-  }
-  return 0;
+  return highlightMaterial;
 }
 
 Qgs3D::Qgs3D()

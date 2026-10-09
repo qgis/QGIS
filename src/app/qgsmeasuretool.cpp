@@ -130,7 +130,7 @@ void QgsMeasureTool::updateSettings()
   const QColor measureColor = QgsSettingsRegistryGui::settingsDefaultMeasureColor->value();
   mRubberBand->setColor( QColor( measureColor.red(), measureColor.green(), measureColor.blue(), 100 ) );
   mRubberBand->setWidth( 3 );
-  mRubberBandPoints->setIcon( QgsRubberBand::ICON_CIRCLE );
+  mRubberBandPoints->setIcon( Qgis::RubberBandIconType::Circle );
   mRubberBandPoints->setIconSize( 10 );
   mRubberBandPoints->setColor( QColor( measureColor.red(), measureColor.green(), measureColor.blue(), 150 ) );
 

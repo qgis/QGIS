@@ -53,6 +53,23 @@ class APP_EXPORT QgsAttributeTableDialog : public QDialog, private Ui::QgsAttrib
     static const QgsSettingsEntryBool *settingsAttributeTableDefaultDocked SIP_SKIP;
 
     /**
+     * Initial attribute table view used when opening the dialog.
+     *
+     * Mirrors QgsDualView::ViewMode but adds a sentinel value to
+     * mean "reuse the view last used in the dialog".
+     */
+    enum InitialView
+    {
+      RememberLast = -1,                              //!< Reuse the view last used in the dialog
+      AttributeTable = QgsDualView::AttributeTable,   //!< Table layout
+      AttributeEditor = QgsDualView::AttributeEditor, //!< Form layout
+    };
+    Q_ENUM( InitialView )
+
+    //! Settings entry for the initial attribute table view (table, form or remember last)
+    static const QgsSettingsEntryEnumFlag<QgsAttributeTableDialog::InitialView> *settingsAttributeTableInitialView SIP_SKIP;
+
+    /**
      * Constructor
      * \param layer layer pointer
      * \param initialMode initial filter for dialog

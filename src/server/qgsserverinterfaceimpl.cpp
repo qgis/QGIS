@@ -29,8 +29,8 @@ QgsServerInterfaceImpl::QgsServerInterfaceImpl( QgsCapabilitiesCache *capCache, 
 {
   mRequestHandler = nullptr;
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
-  mAccessControls = new QgsAccessControl();
-  mCacheManager = new QgsServerCacheManager( *settings );
+  mAccessControls = std::make_unique<QgsAccessControl>();
+  mCacheManager = std::make_unique<QgsServerCacheManager>( *settings );
 #endif
 }
 
@@ -41,12 +41,7 @@ QString QgsServerInterfaceImpl::getEnv( const QString &name ) const
 
 
 QgsServerInterfaceImpl::~QgsServerInterfaceImpl()
-{
-#ifdef HAVE_SERVER_PYTHON_PLUGINS
-  delete mAccessControls;
-  delete mCacheManager;
-#endif
-}
+{}
 
 
 void QgsServerInterfaceImpl::clearRequestHandler()
@@ -98,7 +93,7 @@ void QgsServerInterfaceImpl::registerServerCache( QgsServerCacheFilter *serverCa
 
 QgsServerCacheManager *QgsServerInterfaceImpl::cacheManager() const
 {
-  return mCacheManager;
+  return mCacheManager.get();
 }
 
 void QgsServerInterfaceImpl::removeConfigCacheEntry( const QString &path )

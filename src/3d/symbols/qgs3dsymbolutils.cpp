@@ -19,8 +19,10 @@
 #include "qgsabstractmaterialsettings.h"
 #include "qgsline3dsymbol.h"
 #include "qgslogger.h"
+#include "qgspainting.h"
 #include "qgspoint3dsymbol.h"
 #include "qgspolygon3dsymbol.h"
+#include "qgsrendercontext.h"
 
 #include <QColor>
 #include <QPainter>
@@ -188,10 +190,9 @@ QIcon Qgs3DSymbolUtils::vectorSymbolPreviewIcon( const QgsAbstract3DSymbol *symb
         painter.drawEllipse( QPointF( centerX, centerY ), radius, radius );
 
         // Interior ellipse
-        painter.save();
+        QgsScopedQPainterState painterState( &painter );
         painter.setCompositionMode( QPainter::CompositionMode_Clear );
         painter.drawEllipse( QPointF( centerX, centerY ), minorRadius, minorRadius );
-        painter.restore();
         break;
       }
       case Qgis::Point3DShape::Billboard:

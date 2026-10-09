@@ -97,6 +97,11 @@ class CORE_EXPORT QgsProcessingOutputDefinition
     virtual QColor modelColor() const;
 
     /**
+     * Creates a clone of the output definition.
+     */
+    virtual QgsProcessingOutputDefinition *clone() const = 0 SIP_FACTORY;
+
+    /**
      * Unique output type name.
      */
     virtual QString type() const = 0;
@@ -174,6 +179,13 @@ class CORE_EXPORT QgsProcessingOutputDefinition
      */
     virtual QString valueAsFormattedString( const QVariant &value, QgsProcessingContext &context, bool &ok SIP_OUT ) const;
 
+    /**
+     * Returns TRUE if the output is a map layer type.
+     *
+     * \since QGIS 4.2
+     */
+    virtual bool isMapLayer() const;
+
   protected:
     //! Output name
     QString mName;
@@ -205,13 +217,14 @@ class CORE_EXPORT QgsProcessingOutputMapLayer : public QgsProcessingOutputDefini
     QgsProcessingOutputMapLayer( const QString &name, const QString &description = QString() );
 
     QColor modelColor() const override;
-
     /**
      * Returns the type name for the output class.
      */
     static QString typeName() { return u"outputLayer"_s; }
 
+    QgsProcessingOutputDefinition *clone() const override SIP_FACTORY;
     QString type() const override;
+    bool isMapLayer() const override;
 };
 
 /**
@@ -233,7 +246,9 @@ class CORE_EXPORT QgsProcessingOutputVectorLayer : public QgsProcessingOutputDef
      * Returns the type name for the output class.
      */
     static QString typeName() { return u"outputVector"_s; }
+    QgsProcessingOutputDefinition *clone() const override SIP_FACTORY;
     QString type() const override { return typeName(); }
+    bool isMapLayer() const override;
 
     /**
      * Returns the layer type for the output layer.
@@ -270,7 +285,10 @@ class CORE_EXPORT QgsProcessingOutputRasterLayer : public QgsProcessingOutputDef
     static QString typeName() { return u"outputRaster"_s; }
 
     QColor modelColor() const override;
+
+    QgsProcessingOutputDefinition *clone() const override SIP_FACTORY;
     QString type() const override { return typeName(); }
+    bool isMapLayer() const override;
 };
 
 /**
@@ -291,7 +309,9 @@ class CORE_EXPORT QgsProcessingOutputPointCloudLayer : public QgsProcessingOutpu
      * Returns the type name for the output class.
      */
     static QString typeName() { return u"outputPointCloud"_s; }
+    QgsProcessingOutputDefinition *clone() const override SIP_FACTORY;
     QString type() const override { return typeName(); }
+    bool isMapLayer() const override;
 };
 
 /**
@@ -318,10 +338,12 @@ class CORE_EXPORT QgsProcessingOutputMultipleLayers : public QgsProcessingOutput
      * Returns the type name for the output class.
      */
     static QString typeName() { return u"outputMultilayer"_s; }
+    QgsProcessingOutputDefinition *clone() const override SIP_FACTORY;
     QString type() const override;
 
     QColor modelColor() const override;
     QString valueAsString( const QVariant &value, QgsProcessingContext &context, bool &ok SIP_OUT ) const override;
+    bool isMapLayer() const override;
 };
 
 /**
@@ -341,6 +363,7 @@ class CORE_EXPORT QgsProcessingOutputHtml : public QgsProcessingOutputDefinition
      * Returns the type name for the output class.
      */
     static QString typeName() { return u"outputHtml"_s; }
+    QgsProcessingOutputDefinition *clone() const override SIP_FACTORY;
     QString type() const override { return typeName(); }
 
     QColor modelColor() const override;
@@ -367,6 +390,7 @@ class CORE_EXPORT QgsProcessingOutputVariant : public QgsProcessingOutputDefinit
      */
     static QString typeName() { return u"outputVariant"_s; }
 
+    QgsProcessingOutputDefinition *clone() const override SIP_FACTORY;
     QString type() const override;
     QString valueAsString( const QVariant &value, QgsProcessingContext &context, bool &ok SIP_OUT ) const override;
 };
@@ -390,6 +414,7 @@ class CORE_EXPORT QgsProcessingOutputNumber : public QgsProcessingOutputDefiniti
      * Returns the type name for the output class.
      */
     static QString typeName() { return u"outputNumber"_s; }
+    QgsProcessingOutputDefinition *clone() const override SIP_FACTORY;
     QString type() const override { return typeName(); }
     QString valueAsString( const QVariant &value, QgsProcessingContext &context, bool &ok SIP_OUT ) const override;
 };
@@ -406,6 +431,8 @@ class CORE_EXPORT QgsProcessingOutputString : public QgsProcessingOutputDefiniti
      * Constructor for QgsProcessingOutputString.
      */
     QgsProcessingOutputString( const QString &name, const QString &description = QString() );
+
+    QgsProcessingOutputDefinition *clone() const override SIP_FACTORY;
 
     /**
      * Returns the type name for the output class.
@@ -436,6 +463,7 @@ class CORE_EXPORT QgsProcessingOutputBoolean : public QgsProcessingOutputDefinit
      * Returns the type name for the output class.
      */
     static QString typeName() { return u"outputBoolean"_s; }
+    QgsProcessingOutputDefinition *clone() const override SIP_FACTORY;
     QString type() const override { return typeName(); }
     QString valueAsString( const QVariant &value, QgsProcessingContext &context, bool &ok SIP_OUT ) const override;
 };
@@ -458,6 +486,7 @@ class CORE_EXPORT QgsProcessingOutputFolder : public QgsProcessingOutputDefiniti
      * Returns the type name for the output class.
      */
     static QString typeName() { return u"outputFolder"_s; }
+    QgsProcessingOutputDefinition *clone() const override SIP_FACTORY;
     QString type() const override { return typeName(); }
 
     QColor modelColor() const override;
@@ -481,6 +510,7 @@ class CORE_EXPORT QgsProcessingOutputFile : public QgsProcessingOutputDefinition
      * Returns the type name for the output class.
      */
     static QString typeName() { return u"outputFile"_s; }
+    QgsProcessingOutputDefinition *clone() const override SIP_FACTORY;
     QString type() const override { return typeName(); }
 
     QColor modelColor() const override;
@@ -506,6 +536,7 @@ class CORE_EXPORT QgsProcessingOutputConditionalBranch : public QgsProcessingOut
      * Returns the type name for the output class.
      */
     static QString typeName() { return u"outputBranch"_s; }
+    QgsProcessingOutputDefinition *clone() const override SIP_FACTORY;
     QString type() const override { return typeName(); }
 };
 
@@ -529,7 +560,9 @@ class CORE_EXPORT QgsProcessingOutputVectorTileLayer : public QgsProcessingOutpu
     static QString typeName() { return u"outputVectorTile"_s; }
 
     QColor modelColor() const override;
+    QgsProcessingOutputDefinition *clone() const override SIP_FACTORY;
     QString type() const override { return typeName(); }
+    bool isMapLayer() const override;
 };
 
 #endif // QGSPROCESSINGOUTPUTS_H

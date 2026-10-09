@@ -116,6 +116,56 @@ Returns the maximum number of vertices per face supported by the driver
 QFlags<QgsMeshDriverMetadata::MeshDriverCapability> operator|(QgsMeshDriverMetadata::MeshDriverCapability f1, QFlags<QgsMeshDriverMetadata::MeshDriverCapability> f2);
 
 
+
+class QgsEmptyLayerCreationResult
+{
+%Docstring(signature="appended")
+Encapsulates the details of a newly created empty layer.
+
+.. versionadded:: 4.2
+%End
+
+%TypeHeaderCode
+#include "qgsprovidermetadata.h"
+%End
+  public:
+    QgsEmptyLayerCreationResult();
+
+
+    Qgis::VectorExportResult result() const;
+%Docstring
+Returns the result code of the layer creation.
+%End
+
+    QString createdLayerUri() const;
+%Docstring
+Returns the created layer URI.
+
+This will be set to the actual URI of the layer created.
+
+In some circumstances this may differ from the original requested uri,
+eg when the provider has had to automatically launder a layer name.
+%End
+
+    QString errorMessage() const;
+%Docstring
+Returns any user-friendly error messages obtained if the creation fails.
+%End
+
+    QMap<int, int> createdAttributeIndexMap() const;
+%Docstring
+Returns a map of the original requested field index to the actual
+created field index.
+
+In some cases the provider may re-arrange fields from their original
+requested order. It's not always possible to directly determine this
+mapping from the output layer alone, as the provider may have changed
+requested fields as part of the layer creation process (eg when the
+provider has had to automatically launder them).
+%End
+
+};
+
 class QgsProviderMetadata : QObject
 {
 %Docstring(signature="appended")
@@ -434,6 +484,28 @@ value will be returned as ``True``, 0 will be returned as ``False``
 .. versionadded:: 3.14
 %End
 
+    virtual QgsEmptyLayerCreationResult createEmptyLayer(
+      const QString &uri,
+      const QgsFields &fields,
+      Qgis::WkbType wkbType = Qgis::WkbType::NoGeometry,
+      const QgsCoordinateReferenceSystem &crs = QgsCoordinateReferenceSystem(),
+      Qgis::CreateLayerActionOnExisting actionOnExisting = Qgis::CreateLayerActionOnExisting::Abort
+    );
+%Docstring
+Creates new empty vector layer.
+
+:param uri: Destination for new layer
+:param fields: New layer fields
+:param wkbType: New layer geometry WKB type
+:param crs: New layer coordinate reference system
+:param actionOnExisting: Action to take when attempting to overwrite any
+                         existing layer in the same location
+
+:return: An object encapsulating the properties of the newly created
+         layer.
+
+.. versionadded:: 4.2
+%End
 
 
     virtual bool createDatabase( const QString &uri, QString &errorMessage /Out/ );

@@ -17,6 +17,7 @@
 
 #include "qgsalgorithmdetectdatasetchanges.h"
 
+#include "qgsgeometryfactory.h"
 #include "qgsspatialindex.h"
 #include "qgsvectorlayer.h"
 
@@ -174,6 +175,8 @@ bool QgsDetectVectorChangesAlgorithm::prepareAlgorithm( const QVariantMap &param
 
 QVariantMap QgsDetectVectorChangesAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
+  QGS_MARK_ALGORITHM_SOURCE
+
   QString unchangedDestId;
   std::unique_ptr<QgsFeatureSink> unchangedSink( parameterAsSink( parameters, u"UNCHANGED"_s, context, unchangedDestId, mOriginal->fields(), mOriginal->wkbType(), mOriginal->sourceCrs() ) );
   if ( !unchangedSink && parameters.value( u"UNCHANGED"_s ).isValid() )
@@ -200,6 +203,7 @@ QVariantMap QgsDetectVectorChangesAlgorithm::processAlgorithm( const QVariantMap
   QHash<QgsFeatureId, QgsGeometry> originalGeometries;
   QHash<QgsFeatureId, QgsAttributes> originalAttributes;
   QHash<QgsAttributes, QgsFeatureId> originalNullGeometryAttributes;
+  QHash<QgsAttributes, QgsFeatureId> originalEmptyGeometryAttributes;
   long current = 0;
 
   QgsAttributes attrs;
@@ -208,11 +212,6 @@ QVariantMap QgsDetectVectorChangesAlgorithm::processAlgorithm( const QVariantMap
   const QgsSpatialIndex index( it, [&]( const QgsFeature &f ) -> bool {
     if ( feedback->isCanceled() )
       return false;
-
-    if ( f.hasGeometry() )
-    {
-      originalGeometries.insert( f.id(), f.geometry() );
-    }
 
     if ( !mFieldsToCompare.empty() )
     {
@@ -224,7 +223,30 @@ QVariantMap QgsDetectVectorChangesAlgorithm::processAlgorithm( const QVariantMap
       originalAttributes.insert( f.id(), attrs );
     }
 
-    if ( !f.hasGeometry() )
+    if ( f.hasGeometry() && !f.geometry().isEmpty() )
+    {
+      originalGeometries.insert( f.id(), f.geometry() );
+    }
+    else if ( f.hasGeometry() && f.geometry().isEmpty() )
+    {
+      auto emptyGeomIt = originalEmptyGeometryAttributes.constFind( attrs );
+      if ( emptyGeomIt != originalEmptyGeometryAttributes.constEnd() )
+      {
+        feedback->reportError(
+          QObject::tr(
+            "A non-unique set of comparison attributes was found for "
+            "one or more features with EMPTY geometries - results may be misleading (features %1 and %2)"
+          )
+            .arg( f.id() )
+            .arg( emptyGeomIt.value() )
+        );
+      }
+      else
+      {
+        originalEmptyGeometryAttributes.insert( attrs, f.id() );
+      }
+    }
+    else // no geometry
     {
       if ( originalNullGeometryAttributes.contains( attrs ) )
       {
@@ -282,7 +304,17 @@ QVariantMap QgsDetectVectorChangesAlgorithm::processAlgorithm( const QVariantMap
         matched = true;
       }
     }
-    else
+    else if ( revisedFeature.hasGeometry() && revisedFeature.geometry().isEmpty() )
+    {
+      auto emptyIt = originalEmptyGeometryAttributes.constFind( attrs );
+      if ( emptyIt != originalEmptyGeometryAttributes.constEnd() )
+      {
+        // found a match for feature
+        unchangedOriginalIds.insert( emptyIt.value() );
+        matched = true;
+      }
+    }
+    else // revised feature has non-empty geometry
     {
       // can we match this feature?
       const QList<QgsFeatureId> candidates = index.intersects( revisedFeature.geometry().boundingBox() );
@@ -374,13 +406,21 @@ QVariantMap QgsDetectVectorChangesAlgorithm::processAlgorithm( const QVariantMap
   current = 0;
   long deleted = 0;
   QgsFeature f;
+  QgsGeometry g;
+  QList<QgsFeatureId> emptyGeometryIds = originalEmptyGeometryAttributes.values();
+
   while ( it.nextFeature( f ) )
   {
     if ( feedback->isCanceled() )
       break;
 
-    // use already fetched geometry
-    f.setGeometry( originalGeometries.value( f.id(), QgsGeometry() ) );
+    // attempt to use already fetched geometry or use Null/Empty geometry
+    g = originalGeometries.value( f.id(), QgsGeometry() );
+    if ( g.isNull() && emptyGeometryIds.contains( f.id() ) )
+    {
+      g = QgsGeometry( QgsGeometryFactory::geomFromWkbType( mOriginal->wkbType() ) );
+    }
+    f.setGeometry( g );
 
     if ( unchangedOriginalIds.contains( f.id() ) )
     {
@@ -389,6 +429,8 @@ QVariantMap QgsDetectVectorChangesAlgorithm::processAlgorithm( const QVariantMap
       {
         if ( !unchangedSink->addFeature( f, QgsFeatureSink::FastInsert ) )
           throw QgsProcessingException( writeFeatureError( unchangedSink.get(), parameters, u"UNCHANGED"_s ) );
+        else
+          feedback->featureAddedToSink( u"UNCHANGED"_s );
       }
     }
     else
@@ -398,6 +440,8 @@ QVariantMap QgsDetectVectorChangesAlgorithm::processAlgorithm( const QVariantMap
       {
         if ( !deletedSink->addFeature( f, QgsFeatureSink::FastInsert ) )
           throw QgsProcessingException( writeFeatureError( deletedSink.get(), parameters, u"DELETED"_s ) );
+        else
+          feedback->featureAddedToSink( u"DELETED"_s );
       }
       deleted++;
     }
@@ -425,6 +469,8 @@ QVariantMap QgsDetectVectorChangesAlgorithm::processAlgorithm( const QVariantMap
       // added feature
       if ( !addedSink->addFeature( f, QgsFeatureSink::FastInsert ) )
         throw QgsProcessingException( writeFeatureError( addedSink.get(), parameters, u"ADDED"_s ) );
+      else
+        feedback->featureAddedToSink( u"ADDED"_s );
 
       current++;
       feedback->setProgress( 0.10 * current * step + 90 ); // takes about 10% of time
@@ -437,11 +483,20 @@ QVariantMap QgsDetectVectorChangesAlgorithm::processAlgorithm( const QVariantMap
   feedback->pushInfo( QObject::tr( "%n feature(s) deleted", nullptr, deleted ) );
 
   if ( unchangedSink )
+  {
     unchangedSink->finalize();
+    feedback->featureSinkFinalized( u"UNCHANGED"_s );
+  }
   if ( addedSink )
+  {
     addedSink->finalize();
+    feedback->featureSinkFinalized( u"ADDED"_s );
+  }
   if ( deletedSink )
+  {
     deletedSink->finalize();
+    feedback->featureSinkFinalized( u"DELETED"_s );
+  }
 
   QVariantMap outputs;
   outputs.insert( u"UNCHANGED"_s, unchangedDestId );

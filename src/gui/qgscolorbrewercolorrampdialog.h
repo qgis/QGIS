@@ -59,11 +59,6 @@ class GUI_EXPORT QgsColorBrewerColorRampWidget : public QgsPanelWidget, private 
      */
     void setRamp( const QgsColorBrewerColorRamp &ramp );
 
-  signals:
-
-    //! Emitted when the dialog settings change
-    void changed();
-
   private slots:
     void setSchemeName();
     void setColors();

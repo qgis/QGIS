@@ -184,7 +184,7 @@ QVariant decodeExifData( const QString &key, Exiv2::ExifData::const_iterator &it
   {
     val = QVariant::fromValue( QDate::fromString( QString::fromStdString( it->toString() ), "yyyy:MM:dd"_L1 ) );
   }
-  else if ( key == "Exif.Image.DateTime"_L1 || key == "Exif.Image.DateTime"_L1 || key == "Exif.Photo.DateTimeDigitized"_L1 || key == "Exif.Photo.DateTimeOriginal"_L1 )
+  else if ( key == "Exif.Image.DateTime"_L1 || key == "Exif.Image.DateTimeOriginal"_L1 || key == "Exif.Photo.DateTimeDigitized"_L1 || key == "Exif.Photo.DateTimeOriginal"_L1 )
   {
     val = QVariant::fromValue( QDateTime::fromString( QString::fromStdString( it->toString() ), "yyyy:MM:dd hh:mm:ss"_L1 ) );
   }
@@ -539,7 +539,7 @@ bool QgsExifTools::tagImage( const QString &imagePath, const QString &tag, const
     else if ( value.userType() == QMetaType::Type::QDateTime )
     {
       const QDateTime dateTime = value.toDateTime();
-      if ( tag == "Exif.Image.DateTime"_L1 || tag == "Exif.Image.DateTime"_L1 || tag == "Exif.Photo.DateTimeDigitized"_L1 || tag == "Exif.Photo.DateTimeOriginal"_L1 )
+      if ( tag == "Exif.Image.DateTime"_L1 || tag == "Exif.Image.DateTimeOriginal"_L1 || tag == "Exif.Photo.DateTimeDigitized"_L1 || tag == "Exif.Photo.DateTimeOriginal"_L1 )
       {
         actualValue = dateTime.toString( u"yyyy:MM:dd hh:mm:ss"_s );
       }

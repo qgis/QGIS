@@ -91,11 +91,6 @@ class GUI_EXPORT QgsLabelSettingsWidgetBase : public QgsPanelWidget, public QgsE
   signals:
 
     /**
-     * Emitted when any of the settings described by the widget are changed.
-     */
-    void changed();
-
-    /**
      * Emitted when an auxiliary field is created in the widget.
      */
     void auxiliaryFieldCreated();

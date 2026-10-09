@@ -18,6 +18,8 @@
 #include <cmath>
 
 #include "qgsguiutils.h"
+#include "qgspainting.h"
+#include "qgsrendercontext.h"
 
 #include <QLocale>
 #include <QPainter>
@@ -44,7 +46,7 @@ void QgsPointRotationItem::paint( QPainter *painter )
     return;
   }
   painter->setRenderHint( QPainter::Antialiasing, true );
-  painter->save();
+  QgsScopedQPainterState painterState( painter );
 
   //do a bit of trigonometry to find out how to transform a rotated item such that the center point is at the point feature
   double x = 0;
@@ -72,10 +74,10 @@ void QgsPointRotationItem::paint( QPainter *painter )
   pen.setColor( QColor( Qt::red ) );
   painter->setPen( pen );
   painter->drawPath( mArrowPath );
-  painter->restore();
+  painterState.restore();
 
   //draw numeric value beside the symbol
-  painter->save();
+  painterState.save();
 
   QPen bufferPen;
   bufferPen.setColor( Qt::white );
@@ -90,8 +92,6 @@ void QgsPointRotationItem::paint( QPainter *painter )
   painter->setPen( Qt::NoPen );
   painter->setBrush( QBrush( Qt::black ) );
   painter->drawPath( label );
-
-  painter->restore();
 }
 
 void QgsPointRotationItem::setPointLocation( const QgsPointXY &p )

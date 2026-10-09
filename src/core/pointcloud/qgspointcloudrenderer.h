@@ -22,6 +22,7 @@
 #include "qgis_sip.h"
 #include "qgspointcloudattribute.h"
 #include "qgspropertycollection.h"
+#include "qgsrange.h"
 #include "qgsrendercontext.h"
 #include "qgsstyle.h"
 #include "qgsvector3d.h"
@@ -176,6 +177,25 @@ class CORE_EXPORT QgsPointCloudRenderContext
      */
     QgsFeedback *feedback() const { return mFeedback; }
 
+    /**
+     * Sets the allowed range of Z values.
+     *
+     * Points which Z value is not in \a range after transformation will be discarded from rendering.
+     * If both bounds are set to infinite, no filtering is applied.
+     *
+     * \see mapCrsZFilter()
+     * \since QGIS 4.4
+     */
+    void setMapCrsZFilter( const QgsDoubleRange &range ) { mMapCrsZFilter = range; }
+
+    /**
+     * Returns the allowable range of z values in the map (destination) CRS.
+     *
+     * \see setMapCrsZFilter()
+     * \since QGIS 4.4
+     */
+    QgsDoubleRange mapCrsZFilter() const { return mMapCrsZFilter; }
+
 #ifndef SIP_RUN
 
     /**
@@ -264,6 +284,8 @@ class CORE_EXPORT QgsPointCloudRenderContext
     int mZOffset = 0;
     double mZValueScale = 1.0;
     double mZValueFixedOffset = 0;
+
+    QgsDoubleRange mMapCrsZFilter;
 
     QgsFeedback *mFeedback = nullptr;
 

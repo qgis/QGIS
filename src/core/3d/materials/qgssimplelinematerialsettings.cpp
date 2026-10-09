@@ -46,9 +46,9 @@ bool QgsSimpleLineMaterialSettings::supportsTechnique( Qgis::MaterialRenderingTe
   return false;
 }
 
-QgsAbstractMaterialSettings *QgsSimpleLineMaterialSettings::create()
+std::unique_ptr<QgsAbstractMaterialSettings> QgsSimpleLineMaterialSettings::create()
 {
-  return new QgsSimpleLineMaterialSettings();
+  return std::make_unique<QgsSimpleLineMaterialSettings>();
 }
 
 QgsSimpleLineMaterialSettings *QgsSimpleLineMaterialSettings::clone() const
@@ -63,6 +63,11 @@ bool QgsSimpleLineMaterialSettings::equals( const QgsAbstractMaterialSettings *o
     return false;
 
   return *this == *otherLine;
+}
+
+QSet<QgsAbstractMaterialSettings::Property> QgsSimpleLineMaterialSettings::supportedProperties() const
+{
+  return { QgsAbstractMaterialSettings::Property::Ambient };
 }
 
 void QgsSimpleLineMaterialSettings::readXml( const QDomElement &elem, const QgsReadWriteContext &context )

@@ -102,6 +102,8 @@ bool QgsClipAlgorithm::supportInPlaceEdit( const QgsMapLayer *l ) const
 
 QVariantMap QgsClipAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
+  QGS_MARK_ALGORITHM_SOURCE
+
   std::unique_ptr<QgsFeatureSource> featureSource( parameterAsSource( parameters, u"INPUT"_s, context ) );
   if ( !featureSource )
     throw QgsProcessingException( invalidSourceError( parameters, u"INPUT"_s ) );
@@ -203,7 +205,7 @@ QVariantMap QgsClipAlgorithm::processAlgorithm( const QVariantMap &parameters, Q
       }
       testedFeatureIds.insert( inputFeature.id() );
 
-      if ( !engine->intersects( inputFeature.geometry().constGet() ) )
+      if ( !engine->intersects( inputFeature.geometry().constGet(), nullptr, feedback ) )
         continue;
 
       QgsGeometry newGeometry;
@@ -232,7 +234,8 @@ QVariantMap QgsClipAlgorithm::processAlgorithm( const QVariantMap &parameters, Q
       outputFeature.setAttributes( inputFeature.attributes() );
       if ( !sink->addFeature( outputFeature, QgsFeatureSink::FastInsert ) )
         throw QgsProcessingException( writeFeatureError( sink.get(), parameters, u"OUTPUT"_s ) );
-
+      else
+        feedback->featureAddedToSink( u"OUTPUT"_s );
 
       if ( singleClipFeature )
         feedback->setProgress( current * step );
@@ -246,6 +249,7 @@ QVariantMap QgsClipAlgorithm::processAlgorithm( const QVariantMap &parameters, Q
   }
 
   sink->finalize();
+  feedback->featureSinkFinalized( u"OUTPUT"_s );
 
   return outputs;
 }

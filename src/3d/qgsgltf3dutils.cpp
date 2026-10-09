@@ -30,7 +30,9 @@
 
 #include <QFile>
 #include <QFileInfo>
+#include <QHash>
 #include <QMatrix4x4>
+#include <QSet>
 #include <QString>
 #include <Qt3DCore/QAttribute>
 #include <Qt3DCore/QBuffer>
@@ -303,6 +305,7 @@ static std::unique_ptr<QgsMaterial> parseMaterial( tinygltf::Model &model, int m
   {
     // material unspecified - using default
     auto defaultMaterial = std::make_unique<QgsMetalRoughMaterial>();
+    defaultMaterial->setEnvironmentalLightingEnabled( true );
     defaultMaterial->setMetalness( 1 );
     defaultMaterial->setRoughness( 1 );
     defaultMaterial->setBaseColor( QColor::fromRgbF( 1, 1, 1 ) );
@@ -320,6 +323,7 @@ static std::unique_ptr<QgsMaterial> parseMaterial( tinygltf::Model &model, int m
     if ( tex.source < 0 )
     {
       auto pbrMaterial = std::make_unique<QgsMetalRoughMaterial>();
+      pbrMaterial->setEnvironmentalLightingEnabled( true );
       pbrMaterial->setMetalness( pbr.metallicFactor ); // [0..1] or texture
       pbrMaterial->setRoughness( pbr.roughnessFactor );
       pbrMaterial->setBaseColor( QColor::fromRgbF( pbr.baseColorFactor[0], pbr.baseColorFactor[1], pbr.baseColorFactor[2], pbr.baseColorFactor[3] ) );
@@ -346,6 +350,7 @@ static std::unique_ptr<QgsMaterial> parseMaterial( tinygltf::Model &model, int m
     if ( img.image.empty() )
     {
       auto pbrMaterial = std::make_unique<QgsMetalRoughMaterial>();
+      pbrMaterial->setEnvironmentalLightingEnabled( true );
       pbrMaterial->setMetalness( pbr.metallicFactor ); // [0..1] or texture
       pbrMaterial->setRoughness( pbr.roughnessFactor );
       pbrMaterial->setBaseColor( QColor::fromRgbF( pbr.baseColorFactor[0], pbr.baseColorFactor[1], pbr.baseColorFactor[2], pbr.baseColorFactor[3] ) );
@@ -386,6 +391,7 @@ static std::unique_ptr<QgsMaterial> parseMaterial( tinygltf::Model &model, int m
     return nullptr; // completely transparent primitive, just skip it
 
   auto pbrMaterial = std::make_unique<QgsMetalRoughMaterial>();
+  pbrMaterial->setEnvironmentalLightingEnabled( true );
   pbrMaterial->setMetalness( pbr.metallicFactor ); // [0..1] or texture
   pbrMaterial->setRoughness( pbr.roughnessFactor );
   pbrMaterial->setBaseColor( QColor::fromRgbF( pbr.baseColorFactor[0], pbr.baseColorFactor[1], pbr.baseColorFactor[2], pbr.baseColorFactor[3] ) );
@@ -849,9 +855,9 @@ QVector<Qt3DCore::QEntity *> QgsGltf3DUtils::createInstancedEntities(
 
     // Enable instancing on the material
     if ( QgsMetalRoughMaterial *pbrMat = qobject_cast<QgsMetalRoughMaterial *>( material.get() ) )
-      pbrMat->setInstancingEnabled( true );
+      pbrMat->setInstancingEnabled( true, Qgis::InstancedMaterialFlag::DataDefinedScale | Qgis::InstancedMaterialFlag::DataDefinedRotation );
     else if ( QgsTextureMaterial *texMat = qobject_cast<QgsTextureMaterial *>( material.get() ) )
-      texMat->setInstancingEnabled( true );
+      texMat->setInstancingEnabled( true, Qgis::InstancedMaterialFlag::DataDefinedScale | Qgis::InstancedMaterialFlag::DataDefinedRotation );
 
     // Build geometry with raw positions (no transform, no axis flip)
     auto geom = std::make_unique<Qt3DCore::QGeometry>();
@@ -977,6 +983,171 @@ Qt3DCore::QEntity *QgsGltf3DUtils::gltfToEntity( const QByteArray &data, const Q
 
   return parsedGltfToEntity( model, transform, baseUri, context, errors );
 }
+
+static Qt3DCore::QAttribute *parseAttributeCached( tinygltf::Model &model, int accessorIndex, QHash<int, Qt3DCore::QBuffer *> &bufferViewCache, Qt3DCore::QNode *bufferParent )
+{
+  tinygltf::Accessor &accessor = model.accessors[accessorIndex];
+  tinygltf::BufferView &bv = model.bufferViews[accessor.bufferView];
+  tinygltf::Buffer &b = model.buffers[bv.buffer];
+
+  Qt3DCore::QBuffer *&buffer = bufferViewCache[accessor.bufferView];
+  if ( !buffer )
+  {
+    const std::size_t len = bv.byteLength > 0 ? bv.byteLength : b.data.size() - bv.byteOffset;
+    const QByteArray data( reinterpret_cast<const char *>( b.data.data() + bv.byteOffset ), static_cast<int>( len ) );
+    buffer = new Qt3DCore::QBuffer( bufferParent );
+    buffer->setData( data );
+  }
+
+  Qt3DCore::QAttribute *attribute = new Qt3DCore::QAttribute();
+  if ( bv.target == TINYGLTF_TARGET_ARRAY_BUFFER )
+    attribute->setAttributeType( Qt3DCore::QAttribute::VertexAttribute );
+  else if ( bv.target == TINYGLTF_TARGET_ELEMENT_ARRAY_BUFFER )
+    attribute->setAttributeType( Qt3DCore::QAttribute::IndexAttribute );
+
+  attribute->setBuffer( buffer );
+  attribute->setByteOffset( static_cast<uint>( accessor.byteOffset ) );
+  attribute->setByteStride( bv.byteStride );
+  attribute->setCount( static_cast<uint>( accessor.count ) );
+  attribute->setVertexBaseType( parseVertexBaseType( accessor.componentType ) );
+  attribute->setVertexSize( tinygltf::GetNumComponentsInType( accessor.type ) );
+  return attribute;
+}
+
+
+static void collectGltfPrimitives(
+  tinygltf::Model &model,
+  int nodeIndex,
+  const QMatrix4x4 &parentTransform,
+  const QString &baseUri,
+  const QgsMaterialContext &context,
+  std::vector<QgsMeshNodeData> &result,
+  QStringList *errors,
+  QHash<int, Qt3DCore::QBuffer *> &bufferViewCache,
+  Qt3DCore::QNode *bufferParent
+)
+{
+  if ( nodeIndex < 0 || static_cast<std::size_t>( nodeIndex ) >= model.nodes.size() )
+    return;
+
+  tinygltf::Node &node = model.nodes[nodeIndex];
+
+  std::unique_ptr<QMatrix4x4> matrix = QgsGltfUtils::parseNodeTransform( node );
+  if ( !parentTransform.isIdentity() )
+  {
+    if ( matrix )
+      *matrix = parentTransform * *matrix;
+    else
+      matrix = std::make_unique<QMatrix4x4>( parentTransform );
+  }
+  const QMatrix4x4 &currentTransform = matrix ? *matrix : parentTransform;
+
+  if ( node.mesh >= 0 )
+  {
+    const tinygltf::Mesh &mesh = model.meshes[node.mesh];
+    for ( const tinygltf::Primitive &primitive : mesh.primitives )
+    {
+      if ( primitive.mode != TINYGLTF_MODE_TRIANGLES )
+      {
+        if ( errors )
+          *errors << u"Unsupported primitive mode: %1"_s.arg( primitive.mode );
+        continue;
+      }
+
+      auto posIt = primitive.attributes.find( "POSITION" );
+      if ( posIt == primitive.attributes.end() )
+        continue;
+
+      std::unique_ptr<QgsMaterial> material = parseMaterial( model, primitive.material, baseUri, errors, context );
+      if ( !material )
+        continue;
+
+      auto geom = std::make_unique<Qt3DCore::QGeometry>();
+
+      Qt3DCore::QAttribute *posAttr = parseAttributeCached( model, posIt->second, bufferViewCache, bufferParent );
+      if ( !posAttr )
+        continue;
+      posAttr->setName( Qt3DCore::QAttribute::defaultPositionAttributeName() );
+      geom->addAttribute( posAttr );
+
+      auto normalIt = primitive.attributes.find( "NORMAL" );
+      if ( normalIt != primitive.attributes.end() )
+      {
+        Qt3DCore::QAttribute *normalAttr = parseAttributeCached( model, normalIt->second, bufferViewCache, bufferParent );
+        normalAttr->setName( Qt3DCore::QAttribute::defaultNormalAttributeName() );
+        geom->addAttribute( normalAttr );
+      }
+      else
+      {
+        if ( QgsMetalRoughMaterial *pbrMat = qobject_cast<QgsMetalRoughMaterial *>( material.get() ) )
+          pbrMat->setFlatShadingEnabled( true );
+      }
+
+      auto texIt = primitive.attributes.find( "TEXCOORD_0" );
+      if ( texIt != primitive.attributes.end() )
+      {
+        Qt3DCore::QAttribute *texAttr = parseAttributeCached( model, texIt->second, bufferViewCache, bufferParent );
+        texAttr->setName( Qt3DCore::QAttribute::defaultTextureCoordinateAttributeName() );
+        geom->addAttribute( texAttr );
+      }
+
+      Qt3DCore::QAttribute *indexAttribute = nullptr;
+      if ( primitive.indices != -1 )
+      {
+        indexAttribute = parseAttributeCached( model, primitive.indices, bufferViewCache, bufferParent );
+        geom->addAttribute( indexAttribute );
+      }
+
+      result.push_back( { std::move( geom ), std::move( material ), currentTransform } );
+    }
+  }
+
+  for ( int childIndex : node.children )
+    collectGltfPrimitives( model, childIndex, currentTransform, baseUri, context, result, errors, bufferViewCache, bufferParent );
+}
+
+std::vector<QgsMeshNodeData> QgsGltf3DUtils::buildGltfGeometries( const QString &filePath, const QgsMaterialContext &context, QStringList *errors, Qt3DCore::QNode *bufferParent )
+{
+  QFile f( filePath );
+  if ( !f.open( QIODevice::ReadOnly ) )
+  {
+    if ( errors )
+      *errors << u"Cannot open GLTF file: %1"_s.arg( filePath );
+    return {};
+  }
+  const QByteArray data = f.readAll();
+
+  tinygltf::Model model;
+  QString gltfErrors, gltfWarnings;
+  const QString baseDir = QFileInfo( filePath ).absolutePath();
+  if ( !QgsGltfUtils::loadGltfModel( data, model, &gltfErrors, &gltfWarnings, baseDir ) )
+  {
+    QgsDebugError( u"Failed to load GLTF model '%1': %2"_s.arg( filePath, gltfErrors ) );
+    if ( errors )
+      *errors << u"GLTF load error: "_s + gltfErrors;
+    return {};
+  }
+  if ( !gltfWarnings.isEmpty() )
+    QgsDebugMsgLevel( u"GLTF warnings for '%1': %2"_s.arg( filePath, gltfWarnings ), 2 );
+
+  bool sceneOk = false;
+  const std::size_t sceneIndex = QgsGltfUtils::sourceSceneForModel( model, sceneOk );
+  if ( !sceneOk )
+  {
+    QgsDebugError( u"No valid scene in GLTF model '%1'"_s.arg( filePath ) );
+    return {};
+  }
+
+  const QString baseUri = QUrl::fromLocalFile( filePath ).toString();
+  std::vector<QgsMeshNodeData> result;
+
+  QHash<int, Qt3DCore::QBuffer *> bufferViewCache;
+  for ( const int nodeIndex : model.scenes[sceneIndex].nodes )
+    collectGltfPrimitives( model, nodeIndex, QMatrix4x4(), baseUri, context, result, errors, bufferViewCache, bufferParent );
+
+  return result;
+}
+
 
 // For TinyGltfTextureImage
 #include "qgsgltf3dutils.moc"

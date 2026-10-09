@@ -29,8 +29,10 @@ from qgis.core import (
 )
 from qgis.PyQt import QtCore
 from qgis.server import (
+    QgsAccessControlFilter,
     QgsBufferServerRequest,
     QgsBufferServerResponse,
+    QgsServer,
 )
 from qgis.testing import unittest
 from test_qgsserver_api import QgsServerAPITestBase
@@ -41,7 +43,7 @@ class QgsServerLandingPageTest(QgsServerAPITestBase):
     """QGIS Server Landing Page tests"""
 
     # Set to True in child classes to re-generate reference files for this class
-    # regeregenerate_api_reference = True
+    regenerate_api_reference = False
 
     @classmethod
     def setUpClass(cls):
@@ -120,7 +122,7 @@ class QgsServerLandingPageTest(QgsServerAPITestBase):
         actual_projects = {p["title"]: p for p in actual_j["projects"]}
         expected_projects = {p["title"]: p for p in expected_j["projects"]}
 
-        if self.regeregenerate_api_reference:
+        if self.regenerate_api_reference:
             # Try to change timestamp
             try:
                 content = actual.split("\n")
@@ -145,6 +147,33 @@ class QgsServerLandingPageTest(QgsServerAPITestBase):
                 json.dumps(expected_projects[title], indent=4),
                 expected_path.encode("utf8"),
             )
+
+    @staticmethod
+    def _layer_ids_from_toc(node):
+        layer_ids = set()
+        if isinstance(node, dict):
+            layer_id = node.get("id")
+            if layer_id:
+                layer_ids.add(layer_id)
+            for child in node.get("children", []):
+                layer_ids |= QgsServerLandingPageTest._layer_ids_from_toc(child)
+        elif isinstance(node, list):
+            for child in node:
+                layer_ids |= QgsServerLandingPageTest._layer_ids_from_toc(child)
+        return layer_ids
+
+    class _RestrictedLayerAccessControl(QgsAccessControlFilter):
+        def __init__(self, server_iface, excluded_layer_ids):
+            self._excluded_layer_ids = set(excluded_layer_ids)
+            super().__init__(server_iface)
+
+        def layerPermissions(self, layer):
+            rights = QgsAccessControlFilter.LayerPermissions()
+            rights.canRead = layer.id() not in self._excluded_layer_ids
+            rights.canUpdate = rights.canRead
+            rights.canInsert = rights.canRead
+            rights.canDelete = rights.canRead
+            return rights
 
     def test_landing_page_json(self):
         """Test landing page in JSON format"""
@@ -314,6 +343,123 @@ class QgsServerLandingPageTest(QgsServerAPITestBase):
 
         finally:
             os.environ["QGIS_SERVER_LANDING_PAGE_PROJECTS_DIRECTORIES"] = original_dirs
+
+    def test_landing_page_json_omits_acl_denied_layers(self):
+        server = QgsServer()
+        request = QgsBufferServerRequest("http://server.qgis.org/index.json")
+        request.setHeader("Accept", "application/json")
+        response = QgsBufferServerResponse()
+        server.handleRequest(request, response)
+        initial_index = json.loads(bytes(response.body()))
+
+        projects_with_layers = [
+            p for p in initial_index["projects"] if p.get("wms_layers")
+        ]
+        self.assertTrue(projects_with_layers)
+        target_project = projects_with_layers[0]
+        denied_layer_id = next(iter(target_project["wms_layers"].keys()))
+
+        iface = server.serverInterface()
+        acl_filter = self._RestrictedLayerAccessControl(iface, [denied_layer_id])
+        iface.registerAccessControl(acl_filter, 100)
+
+        response = QgsBufferServerResponse()
+        server.handleRequest(request, response)
+        filtered_index = json.loads(bytes(response.body()))
+
+        filtered_target_project = next(
+            (
+                p
+                for p in filtered_index["projects"]
+                if p.get("id") == target_project["id"]
+            ),
+            None,
+        )
+        self.assertIsNotNone(filtered_target_project)
+        filtered_target_project = filtered_target_project or {}
+
+        self.assertNotIn(
+            denied_layer_id, filtered_target_project.get("wms_layers") or {}
+        )
+        self.assertNotIn(
+            denied_layer_id, filtered_target_project.get("wms_layers_queryable") or []
+        )
+        self.assertNotIn(
+            denied_layer_id, filtered_target_project.get("wms_layers_searchable") or []
+        )
+        self.assertNotIn(
+            denied_layer_id,
+            (filtered_target_project.get("wms_layers_typename_id_map") or {}).values(),
+        )
+        self.assertNotIn(
+            denied_layer_id,
+            (filtered_target_project.get("capabilities") or {}).get("wfsLayerIds", []),
+        )
+        self.assertNotIn(
+            denied_layer_id,
+            self._layer_ids_from_toc(filtered_target_project.get("toc") or {}),
+        )
+
+    def test_project_json_omits_acl_denied_layers(self):
+        server = QgsServer()
+        request = QgsBufferServerRequest("http://server.qgis.org/index.json")
+        request.setHeader("Accept", "application/json")
+        response = QgsBufferServerResponse()
+        server.handleRequest(request, response)
+        index_data = json.loads(bytes(response.body()))
+
+        projects_with_layers = [
+            p for p in index_data["projects"] if p.get("wms_layers")
+        ]
+        self.assertTrue(projects_with_layers)
+        target_project = projects_with_layers[0]
+        self.assertTrue(target_project["wms_layers"])
+        project_id = target_project["id"]
+        denied_layer_id = next(iter(target_project["wms_layers"].keys()))
+        denied_layer_identifier = next(
+            (
+                name
+                for name, layer_id in target_project[
+                    "wms_layers_typename_id_map"
+                ].items()
+                if layer_id == denied_layer_id
+            ),
+            denied_layer_id,
+        )
+
+        iface = server.serverInterface()
+        acl_filter = self._RestrictedLayerAccessControl(iface, [denied_layer_id])
+        iface.registerAccessControl(acl_filter, 100)
+
+        request = QgsBufferServerRequest(f"http://server.qgis.org/map/{project_id}")
+        request.setHeader("Accept", "application/json")
+        response = QgsBufferServerResponse()
+        server.handleRequest(request, response)
+        project_data = json.loads(bytes(response.body()))["project"]
+
+        self.assertNotIn(denied_layer_id, project_data.get("wms_layers") or {})
+        self.assertNotIn(
+            denied_layer_id, project_data.get("wms_layers_queryable") or []
+        )
+        self.assertNotIn(
+            denied_layer_id, project_data.get("wms_layers_searchable") or []
+        )
+        self.assertNotIn(
+            denied_layer_id,
+            (project_data.get("wms_layers_typename_id_map") or {}).values(),
+        )
+        self.assertNotIn(
+            denied_layer_identifier,
+            (project_data.get("wms_layers_map") or {}).values(),
+        )
+        self.assertNotIn(
+            denied_layer_id,
+            (project_data.get("capabilities") or {}).get("wfsLayerIds", []),
+        )
+        self.assertNotIn(
+            denied_layer_id,
+            self._layer_ids_from_toc(project_data.get("toc") or {}),
+        )
 
 
 if __name__ == "__main__":

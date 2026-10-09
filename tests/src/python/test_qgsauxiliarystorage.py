@@ -52,7 +52,7 @@ def tmpPath():
 
 def createLayer():
     vl = QgsVectorLayer(
-        "Point?crs=epsg:4326&field=pk:integer&field=cnt:integer&field=name:string(0)&field=name2:string(0)&field=num_char:string&key=pk",
+        "Point?crs=epsg:4326&field=pk:integer&field=cnt:integer&field=name:string(0)&field=name2:string(0)&field=num_char:string",
         "test",
         "memory",
     )
@@ -807,9 +807,7 @@ class TestQgsAuxiliaryStorage(QgisTestCase):
 
     def testInvalidPrimaryKey(self):
         # create layer
-        vl = QgsVectorLayer(
-            "Point?crs=epsg:4326&field=pk:integer&key=pk", "test", "memory"
-        )
+        vl = QgsVectorLayer("Point?crs=epsg:4326&field=pk:integer", "test", "memory")
         assert vl.isValid()
 
         # add a field with an invalid typename

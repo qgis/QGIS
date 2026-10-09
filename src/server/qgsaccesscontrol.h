@@ -41,26 +41,26 @@ class SERVER_EXPORT QgsAccessControl : public QgsFeatureFilterProvider
     //! Constructor
     QgsAccessControl()
     {
-      mPluginsAccessControls = new QgsAccessControlFilterMap();
+      mPluginsAccessControls = std::make_unique<QgsAccessControlFilterMap>();
       mResolved = false;
     }
 
     QgsAccessControl( const QgsAccessControl &copy )
     {
-      mPluginsAccessControls = new QgsAccessControlFilterMap( *copy.mPluginsAccessControls );
+      mPluginsAccessControls = std::make_unique<QgsAccessControlFilterMap>( *copy.mPluginsAccessControls );
       mFilterFeaturesExpressions = copy.mFilterFeaturesExpressions;
       mResolved = copy.mResolved;
     }
 
 
-    ~QgsAccessControl() override { delete mPluginsAccessControls; }
+    ~QgsAccessControl() override {}
 
     QgsAccessControl &operator=( const QgsAccessControl &other )
     {
       if ( this != &other )
       {
-        delete mPluginsAccessControls;
-        mPluginsAccessControls = new QgsAccessControlFilterMap( *other.mPluginsAccessControls );
+        mPluginsAccessControls = std::make_unique<QgsAccessControlFilterMap>( *other.mPluginsAccessControls );
+
         mFilterFeaturesExpressions = other.mFilterFeaturesExpressions;
         mResolved = other.mResolved;
       }
@@ -150,7 +150,7 @@ class SERVER_EXPORT QgsAccessControl : public QgsFeatureFilterProvider
     QString resolveFilterFeatures( const QgsVectorLayer *layer ) const;
 
     //! The AccessControl plugins registry
-    QgsAccessControlFilterMap *mPluginsAccessControls = nullptr;
+    std::unique_ptr<QgsAccessControlFilterMap> mPluginsAccessControls;
 
     QMap<QString, QString> mFilterFeaturesExpressions;
     bool mResolved;

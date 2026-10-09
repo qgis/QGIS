@@ -44,6 +44,9 @@ against the native QGIS metadata schema can be performed using
 %TypeHeaderCode
 #include "qgsabstractmetadatabase.h"
 %End
+  public:
+    static const QMetaObject staticMetaObject;
+
 %ConvertToSubClassCode
     if ( dynamic_cast< QgsLayerMetadata * >( sipCpp ) != NULL )
       sipType = sipType_QgsLayerMetadata;
@@ -53,7 +56,6 @@ against the native QGIS metadata schema can be performed using
       sipType = NULL;
 %End
   public:
-
 
     typedef QMap< QString, QStringList > KeywordMap;
 

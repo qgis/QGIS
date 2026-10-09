@@ -357,8 +357,24 @@ QgsDoubleRange QgsRasterLayerElevationProperties::calculateZRange( QgsMapLayer *
     }
 
     case Qgis::RasterElevationMode::RepresentsElevationSurface:
-      // TODO -- determine actual z range from raster statistics
+    {
+      if ( QgsRasterLayer *rl = qobject_cast< QgsRasterLayer * >( layer ) )
+      {
+        if ( QgsRasterDataProvider *provider = rl->dataProvider() )
+        {
+          if ( mBandNumber > 0 && mBandNumber <= provider->bandCount() )
+          {
+            const QgsRasterBandStats stats
+              = provider->bandStatistics( mBandNumber, Qgis::RasterBandStatistic::Min | Qgis::RasterBandStatistic::Max, provider->extent(), static_cast< int >( QgsRasterLayer::SAMPLE_SIZE ) );
+            if ( stats.statsGathered.testFlags( Qgis::RasterBandStatistic::Min | Qgis::RasterBandStatistic::Max ) && stats.minimumValue <= stats.maximumValue )
+            {
+              return QgsDoubleRange( stats.minimumValue * mZScale + mZOffset, stats.maximumValue * mZScale + mZOffset );
+            }
+          }
+        }
+      }
       return QgsDoubleRange();
+    }
   }
   BUILTIN_UNREACHABLE
 }

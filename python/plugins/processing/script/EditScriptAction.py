@@ -22,34 +22,32 @@ __copyright__ = "(C) 2012, Victor Olaya"
 import inspect
 
 from qgis.core import QgsMessageLog, QgsProcessingAlgorithm
+from qgis.gui import QgsProcessingToolboxContextAction
 from qgis.PyQt.QtCore import QCoreApplication
 from qgis.PyQt.QtWidgets import QMessageBox
 from qgis.utils import iface
 
-from processing.gui.ContextAction import ContextAction
 from processing.script import ScriptUtils
 from processing.script.ScriptEditorDialog import ScriptEditorDialog
 
 
-class EditScriptAction(ContextAction):
+class EditScriptAction(QgsProcessingToolboxContextAction):
     def __init__(self):
-        super().__init__()
-        self.name = QCoreApplication.translate("EditScriptAction", "Edit Script…")
+        super().__init__(QCoreApplication.translate("EditScriptAction", "Edit Script…"))
 
-    def isEnabled(self):
-        return (
-            isinstance(self.itemData, QgsProcessingAlgorithm)
-            and self.itemData.provider().id() == "script"
-        )
+    def isCompatibleWithAlgorithm(self, provider_id: str, algorithm_name: str):
+        return provider_id == "script"
 
-    def execute(self):
-        filePath = ScriptUtils.findAlgorithmSource(self.itemData.name())
+    def trigger(self, context):
+        filePath = ScriptUtils.findAlgorithmSource(context.algorithmName())
         if filePath is not None:
             dlg = ScriptEditorDialog(filePath, parent=iface.mainWindow())
             dlg.show()
         else:
             QMessageBox.warning(
                 None,
-                self.tr("Edit Script"),
-                self.tr("Can not find corresponding script file."),
+                QCoreApplication.translate("EditScriptAction", "Edit Script"),
+                QCoreApplication.translate(
+                    "EditScriptAction", "Can not find corresponding script file."
+                ),
             )

@@ -30,6 +30,7 @@ class QgsAbstractMaterial3DHandler;
 class QgsAbstractMaterialSettings;
 class QgsMaterial;
 class QgsMaterialContext;
+class QgsUnlitMaterial;
 class QgsExpressionContext;
 class QgsSettingsEntryBool;
 template<class T> class QgsSettingsEntryEnumFlag;
@@ -95,35 +96,12 @@ class _3D_EXPORT Qgs3D
     static QgsMaterial *toMaterial( const QgsAbstractMaterialSettings *settings, Qgis::MaterialRenderingTechnique technique, const QgsMaterialContext &context );
 
     /**
-     * Returns the parameters to be exported to .mtl file
+     * Creates a new highlight material, consisting of an unlit material respecting
+     * the user's map highlight color.
+     *
      * \since QGIS 4.2
      */
-    static QMap<QString, QString> toMaterialExportParameters( const QgsAbstractMaterialSettings *settings );
-
-    /**
-     * Adds parameters from the material \a settings to a destination \a effect.
-     * \since QGIS 4.2
-     */
-    static void addMaterialParametersToEffect( Qt3DRender::QEffect *effect, const QgsAbstractMaterialSettings *settings, const QgsMaterialContext &materialContext );
-
-    /**
-     * Applies the data defined bytes, \a dataDefinedBytes, on the \a geometry by filling a specific vertex buffer that will be used by the shader.
-     * \since QGIS 4.2
-     */
-    static void applyMaterialDataDefinedToGeometry( const QgsAbstractMaterialSettings *settings, Qt3DCore::QGeometry *geometry, int vertexCount, const QByteArray &dataDefinedBytes );
-
-    /**
-     * Returns byte array corresponding to the data defined colors depending of the \a expressionContext,
-     * used to fill the specific vertex buffer used for rendering the geometry
-     * \since QGIS 4.2
-     */
-    static QByteArray materialDataDefinedVertexColorsAsByte( const QgsAbstractMaterialSettings *settings, const QgsExpressionContext &expressionContext );
-
-    /**
-     * Returns byte stride of the data defined colors,used to fill the vertex colors data defined buffer for rendering
-     * \since QGIS 4.2
-     */
-    static int materialDataDefinedByteStride( const QgsAbstractMaterialSettings *settings );
+    static QgsUnlitMaterial *createHighlightMaterial();
 
     /**
      * Returns the handler to use for a material \a settings.
@@ -153,6 +131,7 @@ class _3D_EXPORT Qgs3D
     std::unique_ptr< QgsAbstractMaterial3DHandler > mGoochMaterialHandler;
     std::unique_ptr< QgsAbstractMaterial3DHandler > mMetalRoughMaterialHandler;
     std::unique_ptr< QgsAbstractMaterial3DHandler > mMetalRoughTexturedMaterialHandler;
+    std::unique_ptr< QgsAbstractMaterial3DHandler > mUnlitMaterialHandler;
 };
 
 #endif // QGS3D_H

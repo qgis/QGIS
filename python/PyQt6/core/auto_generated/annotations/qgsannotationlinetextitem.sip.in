@@ -44,7 +44,7 @@ and ``text``.
     virtual QgsAnnotationItemEditOperationTransientResults *transientEditResultsV2( QgsAbstractAnnotationItemEditOperation *operation, const QgsAnnotationItemEditContext &context ) /Factory/;
 
 
-    static QgsAnnotationLineTextItem *create() /Factory/;
+    static std::unique_ptr<QgsAnnotationLineTextItem> create();
 %Docstring
 Creates a new linestring annotation item.
 %End
@@ -174,6 +174,26 @@ Returns the map unit scale for the offset from line
 .. seealso:: :py:func:`offsetFromLineUnit`
 
 .. seealso:: :py:func:`offsetFromLine`
+%End
+
+    Qgis::TextAnchorPoint textAnchor() const;
+%Docstring
+Returns the text anchor, which dictates where the text will be placed on
+the line.
+
+.. seealso:: :py:func:`setTextAnchor`
+
+.. versionadded:: 4.4
+%End
+
+    void setTextAnchor( Qgis::TextAnchorPoint anchor );
+%Docstring
+Sets the text ``anchor``, which dictates where the text will be placed
+on the line.
+
+.. seealso:: :py:func:`textAnchor`
+
+.. versionadded:: 4.4
 %End
 
   private:

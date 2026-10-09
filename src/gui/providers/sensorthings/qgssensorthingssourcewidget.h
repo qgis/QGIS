@@ -32,6 +32,7 @@
 
 class QgsExtentWidget;
 class QgsSensorThingsConnectionPropertiesTask;
+class QgsSensorThingsConnectionCapabilitiesTask;
 class QTableView;
 
 ///@cond PRIVATE
@@ -155,8 +156,10 @@ class QgsSensorThingsSourceWidget : public QgsProviderSourceWidget, private Ui::
 
     void entityTypeChanged();
     void validate();
+    void retrieveEntities();
     void retrieveTypes();
     void connectionPropertiesTaskCompleted();
+    void connectionCapabilitiesTaskCompleted();
 
   private:
     void setCurrentEntityType( Qgis::SensorThingsEntity type );
@@ -168,6 +171,7 @@ class QgsSensorThingsSourceWidget : public QgsProviderSourceWidget, private Ui::
     QVariantMap mSourceParts;
     bool mIsValid = false;
     QPointer<QgsSensorThingsConnectionPropertiesTask> mPropertiesTask;
+    QPointer<QgsSensorThingsConnectionCapabilitiesTask> mCapabilitiesTask;
 };
 
 ///@endcond

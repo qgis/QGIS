@@ -119,6 +119,8 @@ QgsFields QgsGeometryCheckDegeneratePolygonAlgorithm::outputFields()
 
 QVariantMap QgsGeometryCheckDegeneratePolygonAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
+  QGS_MARK_ALGORITHM_SOURCE
+
   QString dest_output;
   QString dest_errors;
   const std::unique_ptr<QgsProcessingFeatureSource> input( parameterAsSource( parameters, u"INPUT"_s, context ) );
@@ -206,10 +208,14 @@ QVariantMap QgsGeometryCheckDegeneratePolygonAlgorithm::processAlgorithm( const 
     f.setGeometry( error->geometry() );
     if ( sink_output && !sink_output->addFeature( f, QgsFeatureSink::FastInsert ) )
       throw QgsProcessingException( writeFeatureError( sink_output.get(), parameters, u"OUTPUT"_s ) );
+    else if ( sink_output )
+      feedback->featureAddedToSink( u"OUTPUT"_s );
 
     f.setGeometry( error->geometry().centroid() );
     if ( !sink_errors->addFeature( f, QgsFeatureSink::FastInsert ) )
       throw QgsProcessingException( writeFeatureError( sink_errors.get(), parameters, u"ERRORS"_s ) );
+    else
+      feedback->featureAddedToSink( u"ERRORS"_s );
 
     i++;
     feedback->setProgress( 100.0 * step * static_cast<double>( i ) );
@@ -227,6 +233,14 @@ QVariantMap QgsGeometryCheckDegeneratePolygonAlgorithm::processAlgorithm( const 
   {
     delete error;
   }
+
+  if ( sink_output )
+  {
+    sink_output->finalize();
+    feedback->featureSinkFinalized( u"OUTPUT"_s );
+  }
+  sink_errors->finalize();
+  feedback->featureSinkFinalized( u"ERRORS"_s );
 
   QVariantMap outputs;
   if ( sink_output )

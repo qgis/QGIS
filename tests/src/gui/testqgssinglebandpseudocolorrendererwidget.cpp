@@ -103,9 +103,9 @@ void TestQgsSingleBandPseudoColorRendererWidget::testEditLabel()
   // it should not triggers classification and we should get the initial ramp item
   widget.loadMinMax( 1, min, max );
 
-  QgsSingleBandPseudoColorRenderer *newRasterRenderer = dynamic_cast<QgsSingleBandPseudoColorRenderer *>( widget.renderer() );
+  std::unique_ptr< QgsSingleBandPseudoColorRenderer > newRasterRenderer( dynamic_cast<QgsSingleBandPseudoColorRenderer *>( widget.renderer() ) );
   QVERIFY( newRasterRenderer );
-  QVERIFY( rasterRenderer->shader() );
+  QVERIFY( newRasterRenderer->shader() );
 
   QgsColorRampShader *newColorRampShader = dynamic_cast<QgsColorRampShader *>( newRasterRenderer->shader()->rasterShaderFunction() );
   QVERIFY( newColorRampShader );

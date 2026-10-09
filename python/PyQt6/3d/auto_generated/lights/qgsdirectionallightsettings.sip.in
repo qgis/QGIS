@@ -53,11 +53,11 @@ Returns color of the light
 Sets color of the light
 %End
 
-    float intensity() const;
+    double intensity() const;
 %Docstring
 Returns intensity of the light
 %End
-    void setIntensity( float intensity );
+    void setIntensity( double intensity );
 %Docstring
 Sets intensity of the light
 %End

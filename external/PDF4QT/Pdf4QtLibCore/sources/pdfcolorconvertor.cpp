@@ -74,7 +74,7 @@ QColor PDFColorConvertor::convert(QColor color, bool background, bool foreground
         {
             const int lightness = color.lightness();
             QColor bitonalColor = (lightness >= m_bitonalThreshold) ? QColor(Qt::white) : QColor(Qt::black);
-            bitonalColor.setAlpha(bitonalColor.alpha());
+            bitonalColor.setAlphaF(color.alphaF());
             return bitonalColor;
         }
 
@@ -82,20 +82,15 @@ QColor PDFColorConvertor::convert(QColor color, bool background, bool foreground
         {
             if (background)
             {
-                return m_backgroundColor;
+                return applySourceAlpha(m_backgroundColor, color);
             }
 
             if (foreground)
             {
-                return m_foregroundColor;
+                return applySourceAlpha(m_foregroundColor, color);
             }
 
-            const float lightness = color.lightnessF();
-            QColor convertedColor = m_foregroundColor;
-            convertedColor.setRedF(convertedColor.redF() * lightness);
-            convertedColor.setGreenF(convertedColor.greenF() * lightness);
-            convertedColor.setBlueF(convertedColor.blueF() * lightness);
-            return convertedColor;
+            return mixCustomColors(color, m_foregroundColor, m_backgroundColor);
         }
 
         default:
@@ -165,12 +160,7 @@ QImage PDFColorConvertor::convert(QImage image) const
                 for (int column = 0; column < image.width(); ++column)
                 {
                     QColor color = image.pixelColor(column, row);
-                    const float lightness = 1.0f - color.lightnessF();
-                    QColor convertedColor = m_foregroundColor;
-                    convertedColor.setRedF(convertedColor.redF() * lightness);
-                    convertedColor.setGreenF(convertedColor.greenF() * lightness);
-                    convertedColor.setBlueF(convertedColor.blueF() * lightness);
-                    image.setPixelColor(column, row, convertedColor);
+                    image.setPixelColor(column, row, mixCustomColors(color, m_foregroundColor, m_backgroundColor));
                 }
             }
 
@@ -267,6 +257,26 @@ int PDFColorConvertor::getBitonalThreshold() const
 void PDFColorConvertor::setBitonalThreshold(int newBitonalThreshold)
 {
     m_bitonalThreshold = newBitonalThreshold;
+}
+
+QColor PDFColorConvertor::applySourceAlpha(QColor color, QColor sourceColor)
+{
+    color.setAlphaF(color.alphaF() * sourceColor.alphaF());
+    return color;
+}
+
+QColor PDFColorConvertor::mixCustomColors(QColor sourceColor, QColor foregroundColor, QColor backgroundColor)
+{
+    const float foregroundWeight = 1.0f - sourceColor.lightnessF();
+    const float backgroundWeight = 1.0f - foregroundWeight;
+
+    QColor convertedColor;
+    convertedColor.setRedF(foregroundColor.redF() * foregroundWeight + backgroundColor.redF() * backgroundWeight);
+    convertedColor.setGreenF(foregroundColor.greenF() * foregroundWeight + backgroundColor.greenF() * backgroundWeight);
+    convertedColor.setBlueF(foregroundColor.blueF() * foregroundWeight + backgroundColor.blueF() * backgroundWeight);
+    convertedColor.setAlphaF((foregroundColor.alphaF() * foregroundWeight + backgroundColor.alphaF() * backgroundWeight) * sourceColor.alphaF());
+
+    return convertedColor;
 }
 
 }   // namespace pdf

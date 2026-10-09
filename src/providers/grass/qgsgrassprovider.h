@@ -458,7 +458,7 @@ class GRASS_LIB_EXPORT QgsGrassProvider : public QgsVectorDataProvider
     /**
      * Gets attribute by category(key) and attribute number.
      *  \param layerId
-     *  \param category (key)
+     *  \param cat (key)
      *  \param column column number ( < nColumns )
      *  \returns pointer to string representation of the value or NULL, this value must not be changed
      */

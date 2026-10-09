@@ -213,7 +213,10 @@ void QgsMapLayerLegendUtils::setLegendNodeCustomSymbol( QgsLayerTreeLayer *nodeL
   {
     QDomDocument doc;
     QgsReadWriteContext rwContext;
-    rwContext.setPathResolver( QgsProject::instance()->pathResolver() ); // skip-keyword-check
+    if ( nodeLayer->layer() && nodeLayer->layer()->project() )
+    {
+      rwContext.setPathResolver( nodeLayer->layer()->project()->pathResolver() );
+    }
     const QDomElement elem = QgsSymbolLayerUtils::saveSymbol( u"custom symbol"_s, symbol, doc, rwContext );
     doc.appendChild( elem );
     nodeLayer->setCustomProperty( "legend/custom-symbol-" + QString::number( originalIndex ), doc.toString() );
@@ -233,7 +236,10 @@ std::unique_ptr< QgsSymbol > QgsMapLayerLegendUtils::legendNodeCustomSymbol( Qgs
   const QDomElement elem = doc.documentElement();
 
   QgsReadWriteContext rwContext;
-  rwContext.setPathResolver( QgsProject::instance()->pathResolver() ); // skip-keyword-check
+  if ( nodeLayer->layer() && nodeLayer->layer()->project() )
+  {
+    rwContext.setPathResolver( nodeLayer->layer()->project()->pathResolver() );
+  }
 
   return QgsSymbolLayerUtils::loadSymbol( elem, rwContext );
 }
@@ -244,7 +250,10 @@ void QgsMapLayerLegendUtils::setLegendNodeColorRampSettings( QgsLayerTreeLayer *
   {
     QDomDocument doc;
     QgsReadWriteContext rwContext;
-    rwContext.setPathResolver( QgsProject::instance()->pathResolver() ); // skip-keyword-check
+    if ( nodeLayer->layer() && nodeLayer->layer()->project() )
+    {
+      rwContext.setPathResolver( nodeLayer->layer()->project()->pathResolver() );
+    }
     QDomElement elem = doc.createElement( u"rampSettings"_s );
     settings->writeXml( doc, elem, rwContext );
     doc.appendChild( elem );
@@ -265,7 +274,10 @@ QgsColorRampLegendNodeSettings *QgsMapLayerLegendUtils::legendNodeColorRampSetti
   const QDomElement elem = doc.documentElement();
 
   QgsReadWriteContext rwContext;
-  rwContext.setPathResolver( QgsProject::instance()->pathResolver() ); // skip-keyword-check
+  if ( nodeLayer->layer() && nodeLayer->layer()->project() )
+  {
+    rwContext.setPathResolver( nodeLayer->layer()->project()->pathResolver() );
+  }
 
   QgsColorRampLegendNodeSettings settings;
   settings.readXml( elem, rwContext );
@@ -363,6 +375,7 @@ QgsDefaultVectorLayerLegend::QgsDefaultVectorLayerLegend( QgsVectorLayer *vl )
 {
   connect( mLayer, &QgsMapLayer::rendererChanged, this, &QgsMapLayerLegend::itemsChanged );
   connect( mLayer, &QgsMapLayer::nameChanged, this, &QgsMapLayerLegend::itemsChanged );
+  mTextOnSymbolTextFormat = QgsStyle::defaultStyle()->defaultTextFormat();
 }
 
 QList<QgsLayerTreeModelLegendNode *> QgsDefaultVectorLayerLegend::createLayerTreeModelLegendNodes( QgsLayerTreeLayer *nodeLayer )
@@ -576,8 +589,16 @@ QList<QgsLayerTreeModelLegendNode *> QgsDefaultMeshLayerLegend::createLayerTreeM
           // for interpolated shaders we use a ramp legend node
           if ( !shader.colorRampItemList().isEmpty() )
           {
-            nodes
-              << new QgsColorRampLegendNode( nodeLayer, shader.createColorRamp(), shader.legendSettings() ? *shader.legendSettings() : QgsColorRampLegendNodeSettings(), shader.minimumValue(), shader.maximumValue(), nullptr, u"scalarLegend"_s, scalarNameKey );
+            nodes << new QgsColorRampLegendNode(
+              nodeLayer,
+              shader.createColorRamp().release(),
+              shader.legendSettings() ? *shader.legendSettings() : QgsColorRampLegendNodeSettings(),
+              shader.minimumValue(),
+              shader.maximumValue(),
+              nullptr,
+              u"scalarLegend"_s,
+              scalarNameKey
+            );
           }
           break;
         }
@@ -599,7 +620,7 @@ QList<QgsLayerTreeModelLegendNode *> QgsDefaultMeshLayerLegend::createLayerTreeM
 
   if ( indexVector > -1 )
   {
-    const QgsMeshRendererVectorSettings settings = rendererSettings.vectorSettings( indexVector );
+    const QgsVectorFieldSettings settings = rendererSettings.vectorSettings( indexVector );
     const QString vectorNameKey = u"vectorName"_s;
     switch ( settings.coloringMethod() )
     {
@@ -625,7 +646,7 @@ QList<QgsLayerTreeModelLegendNode *> QgsDefaultMeshLayerLegend::createLayerTreeM
               {
                 nodes << new QgsColorRampLegendNode(
                   nodeLayer,
-                  shader.createColorRamp(),
+                  shader.createColorRamp().release(),
                   shader.legendSettings() ? *shader.legendSettings() : QgsColorRampLegendNodeSettings(),
                   shader.minimumValue(),
                   shader.maximumValue(),

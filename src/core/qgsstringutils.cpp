@@ -23,6 +23,7 @@
 #include <QString>
 #include <QStringList>
 #include <QTextBoundaryFinder>
+#include <QUuid>
 #include <QVector>
 
 using namespace Qt::StringLiterals;
@@ -69,6 +70,19 @@ QString QgsStringUtils::unaccent( const QString &input )
   return out;
 }
 
+QString QgsStringUtils::createUniqueId( const QString &base )
+{
+  // A random UUID guarantees uniqueness; the base is a human-readable prefix.
+  const QString uuid = QUuid::createUuid().toString( QUuid::StringFormat::WithoutBraces );
+  QString id = base.isEmpty() ? uuid : base + '_' + uuid;
+  // Tidy the id up to avoid characters that may cause problems elsewhere (e.g.
+  // in some parts of XML). Replaces every non-word character (word characters
+  // are the alphabet, numbers and underscore) with an underscore.
+  const thread_local QRegularExpression idRx( uR"([\W])"_s );
+  id.replace( idRx, u"_"_s );
+  return id;
+}
+
 QString QgsStringUtils::capitalize( const QString &string, Qgis::Capitalization capitalization )
 {
   if ( string.isEmpty() )
@@ -111,15 +125,9 @@ QString QgsStringUtils::capitalize( const QString &string, Qgis::Capitalization 
     {
       // yes, this is MASSIVELY simplifying the problem!!
 
-      static QStringList smallWords;
-      static QStringList newPhraseSeparators;
-      static QRegularExpression splitWords;
-      if ( smallWords.empty() )
-      {
-        smallWords = QObject::tr( "a|an|and|as|at|but|by|en|for|if|in|nor|of|on|or|per|s|the|to|vs.|vs|via" ).split( '|' );
-        newPhraseSeparators = QObject::tr( ".|:" ).split( '|' );
-        splitWords = QRegularExpression( u"\\b"_s, QRegularExpression::UseUnicodePropertiesOption );
-      }
+      const thread_local QStringList smallWords = QObject::tr( "a|an|and|as|at|but|by|en|for|if|in|nor|of|on|or|per|s|the|to|vs.|vs|via" ).split( '|' );
+      const thread_local QStringList newPhraseSeparators = QObject::tr( ".|:" ).split( '|' );
+      const thread_local QRegularExpression splitWords = QRegularExpression( u"\\b"_s, QRegularExpression::UseUnicodePropertiesOption );
 
       const bool allSameCase = string.toLower() == string || string.toUpper() == string;
       const QStringList parts = ( allSameCase ? string.toLower() : string ).split( splitWords, Qt::SkipEmptyParts );

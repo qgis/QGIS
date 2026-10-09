@@ -11,7 +11,7 @@
 
 
 
-class QgsCircularString : QgsCurve
+class QgsCircularString : QgsSimpleCurve
 {
 %Docstring(signature="appended")
 Circular string geometry type.
@@ -75,80 +75,22 @@ winding the other way around the circle).
 .. versionadded:: 3.2
 %End
 
-
-  public:
-    virtual bool fuzzyEqual( const QgsAbstractGeometry &other, double epsilon = 1e-8 ) const /HoldGIL/;
-
-    virtual bool fuzzyDistanceEqual( const QgsAbstractGeometry &other, double epsilon = 1e-8 ) const /HoldGIL/;
-
-    virtual bool equals( const QgsCurve &other ) const;
-
-
     virtual QString geometryType() const /HoldGIL/;
-
-    virtual int dimension() const /HoldGIL/;
 
     virtual QgsCircularString *clone() const /Factory/;
 
     virtual void clear();
 
 
-    virtual bool fromWkb( QgsConstWkbPtr &wkb );
-
-    virtual bool fromWkt( const QString &wkt );
-
-
-    virtual int wkbSize( QgsAbstractGeometry::WkbFlags flags = QgsAbstractGeometry::WkbFlags() ) const;
-
-    virtual QByteArray asWkb( QgsAbstractGeometry::WkbFlags flags = QgsAbstractGeometry::WkbFlags() ) const;
-
-    virtual QString asWkt( int precision = 17 ) const;
-
     virtual QDomElement asGml2( QDomDocument &doc, int precision = 17, const QString &ns = "gml", QgsAbstractGeometry::AxisOrder axisOrder = QgsAbstractGeometry::AxisOrder::XY ) const;
 
     virtual QDomElement asGml3( QDomDocument &doc, int precision = 17, const QString &ns = "gml", QgsAbstractGeometry::AxisOrder axisOrder = QgsAbstractGeometry::AxisOrder::XY ) const;
 
-    virtual bool isEmpty() const /HoldGIL/;
-
     virtual bool isValid( QString &error /Out/, Qgis::GeometryValidityFlags flags = Qgis::GeometryValidityFlags() ) const;
-
-    virtual int numPoints() const /HoldGIL/;
 
     int indexOf( const QgsPoint &point ) const final;
 
-    QgsPoint pointN( int i ) const /HoldGIL/;
-%Docstring
-Returns the point at index i within the circular string.
-%End
-
-    virtual void points( QgsPointSequence &pts /Out/ ) const;
-
-
-    void setPoints( const QgsPointSequence &points );
-%Docstring
-Sets the circular string's points
-%End
-
-    void append( const QgsCircularString *string );
-%Docstring
-Appends the contents of another circular ``string`` to the end of this
-circular string.
-
-:param string: circular string to append. Ownership is not transferred.
-
-.. warning::
-
-   It is the caller's responsibility to ensure that the first point in the appended
-   ``string`` matches the last point in the existing curve, or the result will be undefined.
-
-.. versionadded:: 3.20
-%End
-
     virtual double length() const;
-
-    virtual QgsPoint startPoint() const /HoldGIL/;
-
-    virtual QgsPoint endPoint() const /HoldGIL/;
 
     virtual QgsLineString *curveToLine( double tolerance = M_PI_2 / 90, SegmentationToleranceType toleranceType = MaximumAngle ) const /Factory/;
 
@@ -161,19 +103,15 @@ circular string.
 
     virtual void draw( QPainter &p ) const;
 
-    virtual void transform( const QgsCoordinateTransform &ct, Qgis::TransformDirection d = Qgis::TransformDirection::Forward, bool transformZ = false );
-
-    virtual void transform( const QTransform &t, double zTranslate = 0.0, double zScale = 1.0, double mTranslate = 0.0, double mScale = 1.0 );
-
     virtual void addToPainterPath( QPainterPath &path ) const;
 
     virtual void drawAsPolygon( QPainter &p ) const;
 
     virtual bool insertVertex( QgsVertexId position, const QgsPoint &vertex );
 
-    virtual bool moveVertex( QgsVertexId position, const QgsPoint &newPos );
-
     virtual bool deleteVertex( QgsVertexId position );
+
+    virtual bool deleteVertices( const QSet<QgsVertexId> &positions );
 
     virtual double closestSegment( const QgsPoint &pt, QgsPoint &segmentPt /Out/, QgsVertexId &vertexAfter /Out/, int *leftOf /Out/ = 0, double epsilon = 4 * DBL_EPSILON ) const;
 
@@ -191,34 +129,12 @@ circular string.
 
     virtual double distanceBetweenVertices( QgsVertexId fromVertex, QgsVertexId toVertex ) const;
 
-    virtual QgsCircularString *reversed() const  /Factory/;
+    virtual QgsCircularString *reversed() const /Factory/;
 
     virtual QgsPoint *interpolatePoint( double distance ) const /Factory/;
 
     virtual QgsCircularString *curveSubstring( double startDistance, double endDistance ) const /Factory/;
 
-    virtual bool addZValue( double zValue = 0 );
-
-    virtual bool addMValue( double mValue = 0 );
-
-    virtual bool dropZValue();
-
-    virtual bool dropMValue();
-
-    virtual void swapXy();
-
-    virtual double xAt( int index ) const /HoldGIL/;
-
-    virtual double yAt( int index ) const /HoldGIL/;
-
-    virtual double zAt( int index ) const /HoldGIL/;
-
-    virtual double mAt( int index ) const /HoldGIL/;
-
-
-    virtual bool transform( QgsAbstractGeometryTransformer *transformer, QgsFeedback *feedback = 0 );
-
-    void scroll( int firstVertexIndex ) final;
 
 
     virtual QgsCircularString *createEmptyWithSameType() const /Factory/;
@@ -234,8 +150,6 @@ circular string.
 %End
 
   protected:
-
-    int compareToSameClass( const QgsAbstractGeometry *other ) const final;
     virtual QgsBox3D calculateBoundingBox3D() const;
 
 

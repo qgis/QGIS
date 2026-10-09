@@ -92,6 +92,8 @@ QgsMergeVectorAlgorithm *QgsMergeVectorAlgorithm::createInstance() const
 
 QVariantMap QgsMergeVectorAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
+  QGS_MARK_ALGORITHM_SOURCE
+
   const QList<QgsMapLayer *> layers = parameterAsLayerList( parameters, u"LAYERS"_s, context );
 
   const bool addSourceFields = parameterAsBool( parameters, u"ADD_SOURCE_FIELDS"_s, context );
@@ -326,6 +328,8 @@ QVariantMap QgsMergeVectorAlgorithm::processAlgorithm( const QVariantMap &parame
 
       if ( !sink->addFeature( f, QgsFeatureSink::FastInsert ) )
         throw QgsProcessingException( writeFeatureError( sink.get(), parameters, u"OUTPUT"_s ) );
+      else
+        feedback->featureAddedToSink( u"OUTPUT"_s );
       i += 1;
       feedback->setProgress( i * step );
     }
@@ -335,6 +339,7 @@ QVariantMap QgsMergeVectorAlgorithm::processAlgorithm( const QVariantMap &parame
     throw QgsProcessingException( QObject::tr( "Error obtained while merging one or more layers." ) );
 
   sink->finalize();
+  feedback->featureSinkFinalized( u"OUTPUT"_s );
 
   QVariantMap outputs;
   outputs.insert( u"OUTPUT"_s, dest );

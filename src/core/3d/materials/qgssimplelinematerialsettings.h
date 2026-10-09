@@ -49,10 +49,11 @@ class CORE_EXPORT QgsSimpleLineMaterialSettings : public QgsAbstractMaterialSett
     /**
      * Returns a new instance of QgsSimpleLineMaterialSettings.
      */
-    static QgsAbstractMaterialSettings *create() SIP_FACTORY;
+    static std::unique_ptr<QgsAbstractMaterialSettings> create();
 
     QgsSimpleLineMaterialSettings *clone() const override SIP_FACTORY;
     bool equals( const QgsAbstractMaterialSettings *other ) const override;
+    QSet< QgsAbstractMaterialSettings::Property > supportedProperties() const override;
 
     /**
      * Returns the ambient color component.

@@ -702,6 +702,24 @@ Sets the horizontal ``placement`` of text labels.
 .. versionadded:: 3.10
 %End
 
+    Qgis::ScaleBarUnitLabelPlacements unitLabelPlacements() const;
+%Docstring
+Returns the placements for unit labels.
+
+.. seealso:: :py:func:`setUnitLabelPlacements`
+
+.. versionadded:: 4.4
+%End
+
+    void setUnitLabelPlacements( Qgis::ScaleBarUnitLabelPlacements placements );
+%Docstring
+Sets the ``placements`` for unit labels.
+
+.. seealso:: :py:func:`unitLabelPlacements`
+
+.. versionadded:: 4.4
+%End
+
     double boxContentSpace() const;
 %Docstring
 Returns the spacing (margin) between the scalebar box and content in

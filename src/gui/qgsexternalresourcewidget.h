@@ -74,8 +74,8 @@ class GUI_EXPORT QgsExternalResourceWidget : public QWidget
       NoContent,
       Image,
       Web,
-      Audio, // since QGIS 3.30
-      Video, // since QGIS 3.30
+      Audio, //!< Since QGIS 3.30
+      Video, //!< Since QGIS 3.30
     };
 
     /**

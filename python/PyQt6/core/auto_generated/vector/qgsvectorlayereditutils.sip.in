@@ -57,6 +57,16 @@ Deletes a vertex from a feature.
 :param vertex: index of vertex to delete
 %End
 
+    Qgis::VectorEditResult deleteVertices( QgsFeatureId featureId, const QSet<int> &vertices );
+%Docstring
+Deletes a set of vertices from a feature.
+
+:param featureId: ID of feature to remove vertices from
+:param vertices: set of vertex indices to delete
+
+.. versionadded:: 4.2
+%End
+
  Qgis::GeometryOperationResult addRing( const QVector<QgsPointXY> &ring, const QgsFeatureIds &targetFeatureIds = QgsFeatureIds(), QgsFeatureId *modifiedFeatureId = 0 ) /Deprecated="Since 3.12. Will be removed in QGIS 5.0. Use the variant which accepts QgsPoint objects instead of QgsPointXY."/;
 %Docstring
 Adds a ring to polygon/multipolygon features
@@ -159,7 +169,8 @@ Adds a new part polygon to a multipart feature
 
     Qgis::GeometryOperationResult addPart( QgsCurve *ring /Transfer/, QgsFeatureId featureId ) /PyName=addCurvedPart/;
 %Docstring
-Adds a new part polygon to a multipart feature
+Adds a new polygon part consisting of an exterior ``ring`` only to a
+multipart or geometryless feature
 
 :return: - :py:class:`QgsGeometry`.Success
 
@@ -169,6 +180,22 @@ Adds a new part polygon to a multipart feature
          - :py:class:`QgsGeometry`.InvalidInput
 
 
+%End
+
+    Qgis::GeometryOperationResult addPart( QgsCurvePolygon *polygon /Transfer/, QgsFeatureId featureId ) /PyName=addPolygonPart/;
+%Docstring
+Adds a new polygon part to a multipart or geometryless feature
+
+:return: - :py:class:`QgsGeometry`.Success
+
+         - :py:class:`QgsGeometry`.AddPartSelectedGeometryNotFound
+         - :py:class:`QgsGeometry`.AddPartNotMultiGeometry
+         - :py:class:`QgsGeometry`.InvalidBaseGeometry
+         - :py:class:`QgsGeometry`.InvalidInput
+
+
+
+.. versionadded:: 4.4
 %End
 
     int translateFeature( QgsFeatureId featureId, double dx, double dy );
@@ -249,13 +276,16 @@ Splits features cut by the given line
 Splits features cut by the given curve
 
 :param curve: line that splits the layer features
-:param preserveCircular: whether circular strings are preserved after
-                         splitting
+:param preserveCircular: whether if circular strings are reconstructed
+                         from segmentized geometries after splitting.
+                         From GEOS 3.15 on, this parameter is unused,
+                         and circular strings are preserved.
 :param topologicalEditing: ``True`` if topological editing is enabled
 
 :return: - :py:class:`QgsGeometry`.OperationResult
          - topologyTestPoints: topological points to be tested against
-           other layers
+           other layers. Points from curve geometries are not yet fully
+           supported.
 
 .. versionadded:: 3.16
 %End

@@ -327,9 +327,7 @@ class TcpServerWorker : public QObject
                 clientConnection->write( "\r\n" );
                 clientConnection->write( ex.message().toUtf8() );
 
-                std::cout
-                  << u"\033[1;31m%1 [%2] \"%3\" - - 500\033[0m"_s.arg( clientConnection->peerAddress().toString() ).arg( QDateTime::currentDateTime().toString() ).arg( ex.message() ).toStdString()
-                  << std::endl;
+                std::cout << u"\033[1;31m%1 [%2] \"%3\" - - 500\033[0m"_s.arg( clientConnection->peerAddress().toString(), QDateTime::currentDateTime().toString(), ex.message() ).toStdString() << std::endl;
 
                 clientConnection->disconnectFromHost();
               }
@@ -369,10 +367,11 @@ class TcpServerWorker : public QObject
       }
 
       clientConnection->write( u"Server: QGIS\r\n"_s.toUtf8() );
-      const auto responseHeaders { response.headers() };
+      const auto responseHeaders { response.fullHeaders() };
       for ( auto it = responseHeaders.constBegin(); it != responseHeaders.constEnd(); ++it )
       {
-        clientConnection->write( u"%1: %2\r\n"_s.arg( it.key(), it.value() ).toUtf8() );
+        for ( const QString &headerValue : std::as_const( it.value() ) )
+          clientConnection->write( u"%1: %2\r\n"_s.arg( it.key(), headerValue ).toUtf8() );
       }
       clientConnection->write( "\r\n" );
       const QByteArray body { response.body() };

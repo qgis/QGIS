@@ -72,6 +72,8 @@ public:
         ColorAdjust_HighContrast    = 0x2000,   ///< Convert colors to high constrast colors
         ColorAdjust_Bitonal         = 0x4000,   ///< Convert colors to bitonal (monochromatic)
         ColorAdjust_CustomColors    = 0x8000,   ///< Convert colors to custom color settings
+
+        RealText                    = 0x10000,  ///< Draw text using QPainter::drawText instead of vector paths, where possible
     };
 
     Q_DECLARE_FLAGS(Features, Feature)

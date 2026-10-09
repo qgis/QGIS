@@ -58,7 +58,7 @@ QgsExtentWidget::QgsExtentWidget( QWidget *parent, WidgetStyle style )
   mLayerMenu = new QMenu( tr( "Calculate from Layer" ), this );
   mButtonCalcFromLayer->setMenu( mLayerMenu );
   connect( mLayerMenu, &QMenu::aboutToShow, this, &QgsExtentWidget::layerMenuAboutToShow );
-  mMapLayerModel = new QgsMapLayerProxyModel( this );
+  mMapLayerModel = new QgsMapLayerProxyModel( QgsProject::instance(), this ); // skip-keyword-check
   mMapLayerModel->setFilters( Qgis::LayerFilter::SpatialLayer );
 
   mLayoutMenu = new QMenu( tr( "Calculate from Layout Map" ), this );
@@ -510,7 +510,7 @@ QgsMapLayer *QgsExtentWidget::mapLayerFromMimeData( const QMimeData *data ) cons
   for ( const QgsMimeDataUtils::Uri &u : uriList )
   {
     // is this uri from the current project?
-    if ( QgsMapLayer *layer = u.mapLayer() )
+    if ( QgsMapLayer *layer = u.mapLayer( QgsProject::instance() ) )
     {
       return layer;
     }

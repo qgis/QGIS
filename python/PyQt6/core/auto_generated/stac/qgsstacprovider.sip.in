@@ -12,7 +12,7 @@
 class QgsStacProvider
 {
 %Docstring(signature="appended")
-Class for storing a STAC collection's provider data.
+Stores data related to a STAC provider.
 
 The object provides information about a provider. A provider is any of
 the organizations that captures or processes the content of the

@@ -29,10 +29,10 @@
       </se:Font>
       <se:LabelPlacement>
        <se:PointPlacement>
-        <se:AnchorPoint>
-          <se:AnchorPointX>1</se:AnchorPointX>
-          <se:AnchorPointY>0</se:AnchorPointY>
-        </se:AnchorPoint>
+        <se:Displacement>
+          <se:DisplacementX>1</se:DisplacementX>
+          <se:DisplacementY>0</se:DisplacementY>
+        </se:Displacement>
        </se:PointPlacement>
       </se:LabelPlacement>
       <se:Fill>

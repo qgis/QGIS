@@ -278,7 +278,7 @@
             </widget>
            </item>
            <item>
-            <widget class="QFontComboBox" name="mFontComboBox">
+            <widget class="QgsFontComboBox" name="mFontComboBox">
              <property name="insertPolicy">
               <enum>QComboBox::NoInsert</enum>
              </property>
@@ -861,6 +861,11 @@
    <extends>QToolButton</extends>
    <header>qgscolorbutton.h</header>
    <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsFontComboBox</class>
+   <extends>QFontComboBox</extends>
+   <header>qgsfontcombobox.h</header>
   </customwidget>
   <customwidget>
    <class>QgsSpinBox</class>

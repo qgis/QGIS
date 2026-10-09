@@ -608,10 +608,10 @@ QString qgsVsiPrefix( const QString &path )
   return QgsGdalUtils::vsiPrefixForPath( path );
 }
 
-uint qHash( const QVariant &variant )
+size_t qHash( const QVariant &variant )
 {
   if ( !variant.isValid() || variant.isNull() )
-    return std::numeric_limits<uint>::max();
+    return std::numeric_limits<size_t>::max();
 
   switch ( variant.userType() )
   {
@@ -651,7 +651,7 @@ uint qHash( const QVariant &variant )
       break;
   }
 
-  return std::numeric_limits<uint>::max();
+  return std::numeric_limits<size_t>::max();
 }
 
 bool qgsVariantEqual( const QVariant &lhs, const QVariant &rhs )

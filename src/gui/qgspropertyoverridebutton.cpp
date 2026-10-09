@@ -708,7 +708,7 @@ void QgsPropertyOverrideButton::showAssistant()
 
   if ( panel && panel->dockMode() )
   {
-    connect( widget, &QgsPropertyAssistantWidget::widgetChanged, this, [this, widget] {
+    connect( widget, &QgsPropertyAssistantWidget::changed, this, [this, widget] {
       widget->updateProperty( this->mProperty );
       mExpressionString = this->mProperty.asExpression();
       mFieldName = this->mProperty.field();

@@ -379,6 +379,18 @@ class CORE_EXPORT QgsStringUtils
      * \since QGIS 4.0
      */
     static QString unaccent( const QString &input );
+
+    /**
+     * Generates a unique identifier by appending a random UUID to \a base.
+     *
+     * Every non-word character (anything outside letters, digits and underscore)
+     * is replaced with an underscore, so the result is safe to use as an id in
+     * contexts such as XML. When \a base is empty the id is just the sanitized
+     * UUID; otherwise it is \a base followed by an underscore and the UUID.
+     *
+     * \since QGIS 4.4
+     */
+    static QString createUniqueId( const QString &base = QString() );
 };
 
 #endif //QGSSTRINGUTILS_H

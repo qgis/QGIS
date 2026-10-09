@@ -468,9 +468,6 @@ class GUI_EXPORT QgsExpressionBuilderWidget : public QWidget, private Ui::QgsExp
      */
     void parserErrorChanged();
 
-  protected:
-    void showEvent( QShowEvent *e ) override;
-
   private:
     class ExpressionTreeMenuProvider : public QgsExpressionTreeView::MenuProvider
     {

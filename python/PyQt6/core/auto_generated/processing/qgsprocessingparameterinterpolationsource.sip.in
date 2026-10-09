@@ -1,0 +1,53 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/processing/qgsprocessingparameterinterpolationsource.h      *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
+ ************************************************************************/
+
+
+
+
+
+
+class QgsProcessingParameterInterpolationSource : QgsProcessingParameterDefinition
+{
+%Docstring(signature="appended")
+A parameter for specifying interpolation source layers and their
+properties.
+
+.. versionadded:: 4.4
+%End
+
+%TypeHeaderCode
+#include "qgsprocessingparameterinterpolationsource.h"
+%End
+  public:
+    QgsProcessingParameterInterpolationSource( const QString &name, const QString &description = QString() );
+%Docstring
+Constructor for QgsProcessingParameterInterpolationSource.
+%End
+
+    virtual QgsProcessingParameterInterpolationSource *clone() const;
+
+    virtual QString type() const;
+
+    static QString typeName();
+%Docstring
+Returns the type name for the parameter class.
+%End
+    virtual QString asPythonString( QgsProcessing::PythonOutputType outputType = QgsProcessing::PythonOutputType::PythonQgsProcessingAlgorithmSubclass ) const;
+
+    virtual bool checkValueIsAcceptable( const QVariant &input, QgsProcessingContext *context = 0 ) const;
+
+};
+
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/processing/qgsprocessingparameterinterpolationsource.h      *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
+ ************************************************************************/

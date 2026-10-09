@@ -362,7 +362,7 @@ class CORE_EXPORT QgsLabelingEngine
 {
   public:
     //! Construct the labeling engine with default settings
-    QgsLabelingEngine();
+    QgsLabelingEngine( const QgsMapSettings &mapSettings );
     //! Clean up everything (especially the registered providers)
     virtual ~QgsLabelingEngine();
 
@@ -522,7 +522,7 @@ class CORE_EXPORT QgsDefaultLabelingEngine : public QgsLabelingEngine
 {
   public:
     //! Construct the labeling engine with default settings
-    QgsDefaultLabelingEngine();
+    QgsDefaultLabelingEngine( const QgsMapSettings &mapSettings );
 
     QgsDefaultLabelingEngine( const QgsDefaultLabelingEngine &rh ) = delete;
     QgsDefaultLabelingEngine &operator=( const QgsDefaultLabelingEngine &rh ) = delete;
@@ -545,7 +545,7 @@ class CORE_EXPORT QgsStagedRenderLabelingEngine : public QgsLabelingEngine
 {
   public:
     //! Construct the labeling engine with default settings
-    QgsStagedRenderLabelingEngine();
+    QgsStagedRenderLabelingEngine( const QgsMapSettings &mapSettings );
 
     QgsStagedRenderLabelingEngine( const QgsStagedRenderLabelingEngine &rh ) = delete;
     QgsStagedRenderLabelingEngine &operator=( const QgsStagedRenderLabelingEngine &rh ) = delete;

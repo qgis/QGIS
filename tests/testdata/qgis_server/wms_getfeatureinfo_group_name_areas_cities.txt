@@ -31,6 +31,7 @@ Content-Type: application/json; charset=utf-8
         "umrisstyp": "durchgezogen",
         "veranstaltung": ""
       },
+      "qgis:requestedWmsName": "areas and symbols",
       "type": "Feature"
     },
     {
@@ -45,6 +46,7 @@ Content-Type: application/json; charset=utf-8
         "ortsrat": "Fallersleben/Sülfeld",
         "typ": "Ortsteil"
       },
+      "qgis:requestedWmsName": "city and district boundaries",
       "type": "Feature"
     }
   ],

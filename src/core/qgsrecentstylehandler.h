@@ -94,15 +94,7 @@ class CORE_EXPORT QgsRecentStyleHandler
     template<class SymbolType> std::unique_ptr< SymbolType > recentSymbol( const QString &identifier ) const SIP_SKIP
     {
       std::unique_ptr< QgsSymbol > tmpSymbol( recentSymbol( identifier ) );
-      if ( SymbolType *symbolCastToType = dynamic_cast<SymbolType *>( tmpSymbol.get() ) )
-      {
-        return std::unique_ptr< SymbolType >( dynamic_cast<SymbolType *>( tmpSymbol.release() ) );
-      }
-      else
-      {
-        //could not cast
-        return nullptr;
-      }
+      return qgis::unique_ptr_dynamic_cast<SymbolType>( std::move( tmpSymbol ) );
     }
 
   private:

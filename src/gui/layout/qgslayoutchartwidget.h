@@ -72,6 +72,8 @@ class GUI_EXPORT QgsLayoutChartWidget : public QgsLayoutItemBaseWidget, private 
     void mFilterOnlyVisibleFeaturesCheckBox_stateChanged( int state );
     void mIntersectAtlasCheckBox_stateChanged( int state );
 
+    void layoutAtlasToggled( bool atlasEnabled );
+
   private:
     //! Sets the GUI elements to the values of mChartItem
     void setGuiElementValues();

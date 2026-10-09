@@ -40,6 +40,23 @@ parent.
 Returns the button box.
 %End
 
+    static QString getMultiLineText(
+      QWidget *parent,
+      const QString &title,
+      const QString &label,
+      const QString &text = QString(),
+      bool *ok = 0,
+      Qt::WindowFlags flags = Qt::WindowFlags(),
+      Qt::InputMethodHints inputMethodHints = Qt::ImhNone
+    );
+%Docstring
+Static method to display a multi-line text input dialog with word
+wrapping. Drop-in replacement for QInputDialog.getMultiLineText() which
+does not word wrap.
+
+.. versionadded:: 4.4
+%End
+
   protected:
 };
 

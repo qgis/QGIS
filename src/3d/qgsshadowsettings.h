@@ -47,8 +47,14 @@ class _3D_EXPORT QgsShadowSettings
 
     //! Returns whether shadow rendering is enabled
     bool renderShadows() const { return mRenderShadows; }
-    //! Returns the selected direcctional light used to cast shadows
-    int selectedDirectionalLight() const { return mSelectedDirectionalLight; }
+
+    /**
+     * Returns the ID of the light source casting shadows.
+     *
+     * \see setLightSource()
+     * \since QGIS 4.2
+     */
+    QString lightSource() const { return mLightSourceId; }
 
     /**
      * Returns the maximum shadow rendering distance accounted for when rendering shadows
@@ -75,8 +81,14 @@ class _3D_EXPORT QgsShadowSettings
 
     //! Sets whether shadow rendering is enabled
     void setRenderShadows( bool enabled ) { mRenderShadows = enabled; }
-    //! Sets which directional light is used to generate shadows
-    void setSelectedDirectionalLight( int selectedLight ) { mSelectedDirectionalLight = selectedLight; }
+
+    /**
+     * Sets the \a id of the light source casting shadows.
+     *
+     * \see lightSource()
+     * \since QGIS 4.2
+     */
+    void setLightSource( const QString &id ) { mLightSourceId = id; }
 
     /**
      * Sets the maximum shadow rendering distance accounted for when rendering shadows
@@ -129,7 +141,7 @@ class _3D_EXPORT QgsShadowSettings
 
   private:
     bool mRenderShadows = false;
-    int mSelectedDirectionalLight = 0;
+    QString mLightSourceId;
     double mMaximumShadowRenderingDistance = 1500.0;
     double mShadowBias = 0.00001;
     Qgis::ShadowQuality mShadowQuality = Qgis::ShadowQuality::High;

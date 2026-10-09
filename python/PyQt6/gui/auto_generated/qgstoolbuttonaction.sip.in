@@ -1,0 +1,109 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/qgstoolbuttonaction.h                                        *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
+ ************************************************************************/
+
+
+
+
+
+
+class QgsToolButtonAction : QWidgetAction
+{
+%Docstring(signature="appended")
+QWidgetAction for adding toolbuttons/actions to the toolbars which are
+not children of QMainWindow.
+
+:py:class:`QgsToolButtonAction` should be used to add buttons with
+dropdown menus to make them available in the toolbar extension popup.
+
+.. versionadded:: 4.4
+%End
+
+%TypeHeaderCode
+#include "qgstoolbuttonaction.h"
+%End
+  public:
+    explicit QgsToolButtonAction( QObject *parent = 0 );
+%Docstring
+Constructor for QgsToolButtonAction
+
+:param parent: parent widget
+%End
+
+    void setAutoRaise( bool autoRaise );
+%Docstring
+Sets whether auto-raise is enabled.
+%End
+
+    void setPopupMode( QToolButton::ToolButtonPopupMode mode );
+%Docstring
+Sets the popup mode to use for button's popup menu.
+
+.. seealso:: :py:func:`setMenu`
+
+.. seealso:: :py:func:`addActions`
+%End
+
+    void setToolButtonStyle( Qt::ToolButtonStyle style );
+%Docstring
+Sets the toolbutton style, e.g. icon only, text only, or text
+beside/below the icon.
+%End
+
+    void setMenu( QMenu *menu );
+%Docstring
+Associates a ``menu`` with this tool button. The menu will be shown
+according to the button's popup mode. Ownership of the menu is not
+transferred.
+
+.. seealso:: :py:func:`setPopupMode`
+
+.. seealso:: :py:func:`addActions`
+%End
+
+    void addActions( const QList<QAction *> &actions );
+%Docstring
+Appends ``actions`` to the button's list of actions. This is an
+alternative to :py:func:`~QgsToolButtonAction.setMenu`, the buttons
+build their popup menu from these actions. If a menu was set with
+:py:func:`~QgsToolButtonAction.setMenu` it takes precedence.
+
+.. seealso:: :py:func:`setMenu`
+%End
+
+    void setDefaultAction( QAction *action );
+%Docstring
+Sets the default action to ``action``
+
+The buttons mirror the default action's icon, text, tooltip and state,
+and clicking a button triggers it.
+
+Ownership of the action is not transferred.
+
+.. seealso:: :py:func:`defaultAction`
+%End
+
+    QAction *defaultAction() const;
+%Docstring
+Returns the default action.
+
+.. seealso:: :py:func:`setDefaultAction`
+%End
+
+  protected:
+    virtual QWidget *createWidget( QWidget *parent );
+
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/qgstoolbuttonaction.h                                        *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
+ ************************************************************************/

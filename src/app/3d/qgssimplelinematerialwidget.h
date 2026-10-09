@@ -36,6 +36,9 @@ class QgsSimpleLineMaterialWidget : public QgsMaterialSettingsWidget, private Ui
 
   private slots:
     void updatePreview();
+
+  protected:
+    void updateWidgetVisibility() final;
 };
 
 #endif // QGSSIMPLELINEMATERIALWIDGET_H

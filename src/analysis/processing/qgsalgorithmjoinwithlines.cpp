@@ -115,6 +115,8 @@ QgsJoinWithLinesAlgorithm *QgsJoinWithLinesAlgorithm::createInstance() const
 
 QVariantMap QgsJoinWithLinesAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
+  QGS_MARK_ALGORITHM_SOURCE
+
   if ( parameters.value( u"SPOKES"_s ) == parameters.value( u"HUBS"_s ) )
     throw QgsProcessingException( QObject::tr( "Same layer given for both hubs and spokes" ) );
 
@@ -351,9 +353,12 @@ QVariantMap QgsJoinWithLinesAlgorithm::processAlgorithm( const QVariantMap &para
       outFeature.setGeometry( line );
       if ( !sink->addFeature( outFeature, QgsFeatureSink::FastInsert ) )
         throw QgsProcessingException( writeFeatureError( sink.get(), parameters, u"OUTPUT"_s ) );
+      else
+        feedback->featureAddedToSink( u"OUTPUT"_s );
     }
   }
   sink->finalize();
+  feedback->featureSinkFinalized( u"OUTPUT"_s );
 
   QVariantMap outputs;
   outputs.insert( u"OUTPUT"_s, dest );

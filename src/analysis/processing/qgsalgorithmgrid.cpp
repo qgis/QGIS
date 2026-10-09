@@ -117,6 +117,8 @@ bool QgsGridAlgorithm::prepareAlgorithm( const QVariantMap &parameters, QgsProce
 
 QVariantMap QgsGridAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
+  QGS_MARK_ALGORITHM_SOURCE
+
   if ( mHSpacing <= 0 || mVSpacing <= 0 )
     throw QgsProcessingException( QObject::tr( "Invalid grid spacing. horizontal: '%1', vertical: '%2'" ).arg( mHSpacing ).arg( mVSpacing ) );
 
@@ -187,6 +189,7 @@ QVariantMap QgsGridAlgorithm::processAlgorithm( const QVariantMap &parameters, Q
   }
 
   sink->finalize();
+  feedback->featureSinkFinalized( u"OUTPUT"_s );
   QVariantMap outputs;
   outputs.insert( u"OUTPUT"_s, dest );
   return outputs;
@@ -218,6 +221,8 @@ void QgsGridAlgorithm::createPointGrid( std::unique_ptr<QgsFeatureSink> &sink, Q
       f.setAttributes( QgsAttributes() << id << x << y << x + mHSpacing << y + mVSpacing << row << col );
       if ( !sink->addFeature( f, QgsFeatureSink::FastInsert ) )
         throw QgsProcessingException( writeFeatureError( sink.get(), QVariantMap(), u"OUTPUT"_s ) );
+      else
+        feedback->featureAddedToSink( u"OUTPUT"_s );
 
       id++;
       cnt++;
@@ -288,6 +293,8 @@ void QgsGridAlgorithm::createLineGrid( std::unique_ptr<QgsFeatureSink> &sink, Qg
     f.setAttributes( QgsAttributes() << id << mGridExtent.xMinimum() << y << mGridExtent.xMaximum() << y );
     if ( !sink->addFeature( f, QgsFeatureSink::FastInsert ) )
       throw QgsProcessingException( writeFeatureError( sink.get(), QVariantMap(), u"OUTPUT"_s ) );
+    else
+      feedback->featureAddedToSink( u"OUTPUT"_s );
     y = y - vSpace[cnt % 2];
 
     id++;
@@ -326,6 +333,8 @@ void QgsGridAlgorithm::createLineGrid( std::unique_ptr<QgsFeatureSink> &sink, Qg
     f.setAttributes( QgsAttributes() << id << x << mGridExtent.yMaximum() << x << mGridExtent.yMinimum() );
     if ( !sink->addFeature( f, QgsFeatureSink::FastInsert ) )
       throw QgsProcessingException( writeFeatureError( sink.get(), QVariantMap(), u"OUTPUT"_s ) );
+    else
+      feedback->featureAddedToSink( u"OUTPUT"_s );
     x = x + hSpace[cnt % 2];
 
     id++;
@@ -379,6 +388,8 @@ void QgsGridAlgorithm::createRectangleGrid( std::unique_ptr<QgsFeatureSink> &sin
       f.setAttributes( QgsAttributes() << id << x1 << y1 << x2 << y2 << row << col );
       if ( !sink->addFeature( f, QgsFeatureSink::FastInsert ) )
         throw QgsProcessingException( writeFeatureError( sink.get(), QVariantMap(), u"OUTPUT"_s ) );
+      else
+        feedback->featureAddedToSink( u"OUTPUT"_s );
 
       id++;
       cnt++;
@@ -457,6 +468,8 @@ void QgsGridAlgorithm::createDiamondGrid( std::unique_ptr<QgsFeatureSink> &sink,
       f.setAttributes( QgsAttributes() << id << x1 << y1 << x3 << y3 );
       if ( !sink->addFeature( f, QgsFeatureSink::FastInsert ) )
         throw QgsProcessingException( writeFeatureError( sink.get(), QVariantMap(), u"OUTPUT"_s ) );
+      else
+        feedback->featureAddedToSink( u"OUTPUT"_s );
 
       id++;
       cnt++;
@@ -550,6 +563,8 @@ void QgsGridAlgorithm::createHexagonGrid( std::unique_ptr<QgsFeatureSink> &sink,
       f.setAttributes( QgsAttributes() << id << x1 << y1 << x4 << y3 << row << col );
       if ( !sink->addFeature( f, QgsFeatureSink::FastInsert ) )
         throw QgsProcessingException( writeFeatureError( sink.get(), QVariantMap(), u"OUTPUT"_s ) );
+      else
+        feedback->featureAddedToSink( u"OUTPUT"_s );
 
       id++;
       cnt++;

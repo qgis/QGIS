@@ -114,6 +114,8 @@ bool QgsShortestLineAlgorithm::prepareAlgorithm( const QVariantMap &parameters, 
 
 QVariantMap QgsShortestLineAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
+  QGS_MARK_ALGORITHM_SOURCE
+
   if ( mKNeighbors > mDestination->featureCount() )
     mKNeighbors = mDestination->featureCount();
 
@@ -190,6 +192,8 @@ QVariantMap QgsShortestLineAlgorithm::processAlgorithm( const QVariantMap &param
       f.setGeometry( shortestLine );
       if ( !sink->addFeature( f, QgsFeatureSink::FastInsert ) )
         throw QgsProcessingException( writeFeatureError( sink.get(), parameters, u"OUTPUT"_s ) );
+      else
+        feedback->featureAddedToSink( u"OUTPUT"_s );
     }
 
     i++;
@@ -197,6 +201,7 @@ QVariantMap QgsShortestLineAlgorithm::processAlgorithm( const QVariantMap &param
   }
 
   sink->finalize();
+  feedback->featureSinkFinalized( u"OUTPUT"_s );
 
   QVariantMap outputs;
   outputs.insert( u"OUTPUT"_s, dest );

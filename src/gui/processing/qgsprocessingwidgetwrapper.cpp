@@ -34,101 +34,6 @@
 #include "moc_qgsprocessingwidgetwrapper.cpp"
 
 //
-// QgsProcessingParameterWidgetContext
-//
-
-void QgsProcessingParameterWidgetContext::setMapCanvas( QgsMapCanvas *canvas )
-{
-  mMapCanvas = canvas;
-}
-
-QgsMapCanvas *QgsProcessingParameterWidgetContext::mapCanvas() const
-{
-  return mMapCanvas;
-}
-
-void QgsProcessingParameterWidgetContext::setMessageBar( QgsMessageBar *bar )
-{
-  mMessageBar = bar;
-}
-
-QgsMessageBar *QgsProcessingParameterWidgetContext::messageBar() const
-{
-  return mMessageBar;
-}
-
-void QgsProcessingParameterWidgetContext::setBrowserModel( QgsBrowserGuiModel *model )
-{
-  mBrowserModel = model;
-}
-
-QgsBrowserGuiModel *QgsProcessingParameterWidgetContext::browserModel() const
-{
-  return mBrowserModel;
-}
-
-void QgsProcessingParameterWidgetContext::setProject( QgsProject *project )
-{
-  mProject = project;
-}
-
-QgsProject *QgsProcessingParameterWidgetContext::project() const
-{
-  return mProject;
-}
-
-QString QgsProcessingParameterWidgetContext::modelChildAlgorithmId() const
-{
-  return mModelChildAlgorithmId;
-}
-
-void QgsProcessingParameterWidgetContext::setModelChildAlgorithmId( const QString &modelChildAlgorithmId )
-{
-  mModelChildAlgorithmId = modelChildAlgorithmId;
-}
-
-QgsMapLayer *QgsProcessingParameterWidgetContext::activeLayer() const
-{
-  return mActiveLayer;
-}
-
-void QgsProcessingParameterWidgetContext::setActiveLayer( QgsMapLayer *activeLayer )
-{
-  mActiveLayer = activeLayer;
-}
-
-void QgsProcessingParameterWidgetContext::registerProcessingContextGenerator( QgsProcessingContextGenerator *generator )
-{
-  mProcessingContextGenerator = generator;
-}
-
-QgsProcessingContextGenerator *QgsProcessingParameterWidgetContext::processingContextGenerator()
-{
-  return mProcessingContextGenerator;
-}
-
-QgsModelDesignerDialog *QgsProcessingParameterWidgetContext::modelDesignerDialog() const
-{
-  return mModelDialog;
-}
-
-void QgsProcessingParameterWidgetContext::setModelDesignerDialog( QgsModelDesignerDialog *dialog )
-{
-  mModelDialog = dialog;
-}
-
-QgsProcessingModelAlgorithm *QgsProcessingParameterWidgetContext::model() const
-{
-  return mModel;
-}
-
-void QgsProcessingParameterWidgetContext::setModel( QgsProcessingModelAlgorithm *model )
-{
-  mModel = model;
-}
-
-
-//
 // QgsAbstractProcessingParameterWidgetWrapper
 //
 
@@ -478,7 +383,7 @@ QgsExpressionContext QgsProcessingWidgetWrapperUtils::createExpressionContext(
 
     QgsExpressionContextScope *algorithmScope = QgsExpressionContextUtils::processingAlgorithmScope( alg ? alg : algorithm, QVariantMap(), *context );
     c << algorithmScope;
-    QgsExpressionContextScope *childScope = lModel->createExpressionContextScopeForChildAlgorithm( widgetContext.modelChildAlgorithmId(), *context, QVariantMap(), QVariantMap() );
+    QgsExpressionContextScope *childScope = lModel->createExpressionContextScopeForChildAlgorithm( widgetContext.modelChildAlgorithmId(), *context, QVariantMap(), QVariantMap() ).release();
     c << childScope;
 
     QStringList highlightedVariables = childScope->variableNames();

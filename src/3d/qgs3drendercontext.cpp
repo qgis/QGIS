@@ -66,11 +66,18 @@ Qgs3DRenderContext Qgs3DRenderContext::fromMapSettings( const Qgs3DMapSettings *
   res.mCrs = mapSettings->crs();
   res.mTransformContext = mapSettings->transformContext();
   res.mOrigin = mapSettings->origin();
-  res.mExtent = mapSettings->extent();
+
+  if ( mapSettings->crs().type() != Qgis::CrsType::Geocentric )
+  {
+    // we do not update extent in globe, it should return invalid on request
+    // and we avoid the warnings in console
+    res.mExtent = mapSettings->extent();
+  }
+
   res.mTemporalRange = mapSettings->temporalRange();
   res.mSelectionColor = mapSettings->selectionColor();
   res.mDpi = mapSettings->outputDpi();
-  res.mFieldOfView = mapSettings->fieldOfView();
+  res.mFieldOfView = static_cast< float >( mapSettings->fieldOfView() );
   res.mTerrainRenderingEnabled = mapSettings->terrainRenderingEnabled();
   res.mTerrainSettings = std::unique_ptr<QgsAbstractTerrainSettings>( mapSettings->terrainSettings()->clone() );
   res.mTerrainGenerator = mapSettings->terrainGenerator();

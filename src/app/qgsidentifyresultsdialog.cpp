@@ -104,6 +104,7 @@ using namespace Qt::StringLiterals;
 #include "qgssettingsentryimpl.h"
 #include "qgssettingstree.h"
 #include "qgsmessagebar.h"
+#include "qgstoolbuttonaction.h"
 
 #include <nlohmann/json.hpp>
 
@@ -286,7 +287,7 @@ QSize QgsIdentifyResultsWebView::sizeHint() const
   {
     // It can probably happen that parent is available but it does not have yet
     // correct size, see #9377.
-    const int max = widget->size().height() * 0.9;
+    const int max = static_cast<int>( widget->size().height() * 0.9 );
     QgsDebugMsgLevel( u"parent widget height = %1 max height = %2"_s.arg( widget->size().height() ).arg( max ), 2 );
     height = std::min( height, max );
   }
@@ -477,13 +478,14 @@ QgsIdentifyResultsDialog::QgsIdentifyResultsDialog( QgsMapCanvas *canvas, QWidge
   initSelectionModes();
 
   QMenu *settingsMenu = new QMenu( this );
-  QToolButton *settingsButton = new QToolButton();
-  settingsButton->setAutoRaise( true );
-  settingsButton->setToolTip( tr( "Identify Settings" ) );
-  settingsButton->setMenu( settingsMenu );
-  settingsButton->setPopupMode( QToolButton::InstantPopup );
-  settingsButton->setIcon( QgsApplication::getThemeIcon( u"/mActionOptions.svg"_s ) );
-  mIdentifyToolbar->addWidget( settingsButton );
+  QgsToolButtonAction *settingsAction = new QgsToolButtonAction();
+  settingsAction->setAutoRaise( true );
+  settingsAction->setText( tr( "Settings" ) );
+  settingsAction->setToolTip( tr( "Identify Settings" ) );
+  settingsAction->setMenu( settingsMenu );
+  settingsAction->setPopupMode( QToolButton::InstantPopup );
+  settingsAction->setIcon( QgsApplication::getThemeIcon( u"/mActionOptions.svg"_s ) );
+  mIdentifyToolbar->addAction( settingsAction );
   mIdentifyToolbar->addSeparator();
   mIdentifyToolbar->addAction( mHelpToolAction );
 
@@ -510,8 +512,9 @@ QgsIdentifyResultsDialog::~QgsIdentifyResultsDialog()
 
 void QgsIdentifyResultsDialog::initSelectionModes()
 {
-  mSelectModeButton = new QToolButton( mIdentifyToolbar );
-  mSelectModeButton->setPopupMode( QToolButton::MenuButtonPopup );
+  mSelectModeButtonAction = new QgsToolButtonAction( mIdentifyToolbar );
+  mSelectModeButtonAction->setPopupMode( QToolButton::MenuButtonPopup );
+  mSelectModeButtonAction->setAutoRaise( true );
   QList<QAction *> selectActions;
   selectActions << mActionSelectFeatures << mActionSelectFeaturesOnMouseOver << mActionSelectPolygon << mActionSelectFreehand << mActionSelectRadius;
 
@@ -522,11 +525,10 @@ void QgsIdentifyResultsDialog::initSelectionModes()
   group->addAction( mActionSelectFreehand );
   group->addAction( mActionSelectRadius );
 
-  mSelectModeButton->addActions( selectActions );
-  mSelectModeButton->setDefaultAction( mActionSelectFeatures );
+  mSelectModeButtonAction->addActions( selectActions );
+  mSelectModeButtonAction->setDefaultAction( mActionSelectFeatures );
 
-
-  mIdentifyToolbar->addWidget( mSelectModeButton );
+  mIdentifyToolbar->addAction( mSelectModeButtonAction );
 
   connect( mActionSelectFeatures, &QAction::triggered, this, &QgsIdentifyResultsDialog::setSelectionMode );
   connect( mActionSelectFeaturesOnMouseOver, &QAction::triggered, this, &QgsIdentifyResultsDialog::setSelectionMode );
@@ -875,7 +877,7 @@ QgsIdentifyResultsFeatureItem *QgsIdentifyResultsDialog::createFeatureItem( QgsV
           italicFont.setItalic( true );
           relationItem->setFont( 0, italicFont );
           relationItem->setData( 0, Qt::UserRole, QVariant::fromValue( qobject_cast<QObject *>( relation.referencingLayer() ) ) );
-          relationItem->setText( 0, tr( "%1 through %2 [%3]" ).arg( relation.referencingLayer()->name() ).arg( relation.name() ).arg( childIt.nextFeature( childFeature ) ? "…" : "1" ) );
+          relationItem->setText( 0, tr( "%1 through %2 [%3]" ).arg( relation.referencingLayer()->name(), relation.name() ).arg( childIt.nextFeature( childFeature ) ? "…" : "1" ) );
           relationItem->setChildIndicatorPolicy( QTreeWidgetItem::ShowIndicator );
           featItem->addChild( relationItem );
           // setFirstColumnSpanned() to be done after addChild() to be effective
@@ -903,7 +905,7 @@ QgsIdentifyResultsFeatureItem *QgsIdentifyResultsDialog::createFeatureItem( QgsV
           italicFont.setItalic( true );
           relationItem->setFont( 0, italicFont );
           relationItem->setData( 0, Qt::UserRole, QVariant::fromValue( qobject_cast<QObject *>( relation.referencedLayer() ) ) );
-          relationItem->setText( 0, tr( "%1 through %2 [%3]" ).arg( relation.referencedLayer()->name() ).arg( relation.name() ).arg( 1 ) );
+          relationItem->setText( 0, tr( "%1 through %2 [%3]" ).arg( relation.referencedLayer()->name(), relation.name() ).arg( 1 ) );
           relationItem->setChildIndicatorPolicy( QTreeWidgetItem::ShowIndicator );
           featItem->addChild( relationItem );
           // setFirstColumnSpanned() to be done after addChild() to be effective
@@ -1109,7 +1111,7 @@ void QgsIdentifyResultsDialog::addFeature(
             }
             else
             {
-              precision = strVal.length() - dotPosition - 1;
+              precision = static_cast<int>( strVal.length() - dotPosition - 1 );
             }
             formattedValue = QLocale().toString( val, 'f', precision );
           }
@@ -1202,7 +1204,7 @@ void QgsIdentifyResultsDialog::addFeature(
   // table
   int i = 0;
   int j = tblResults->rowCount();
-  tblResults->setRowCount( j + attributes.count() );
+  tblResults->setRowCount( static_cast<int>( j + attributes.count() ) );
 
   for ( QMap<QString, QString>::const_iterator it = attributes.begin(); it != attributes.end(); ++it )
   {
@@ -1619,7 +1621,7 @@ void QgsIdentifyResultsDialog::itemExpanded( QTreeWidgetItem *item )
 
       if ( relationItem->childCount() > 1 )
       {
-        relationItem->setText( 0, tr( "%1 through %2 [%3]" ).arg( relation.referencingLayer()->name() ).arg( relation.name() ).arg( relationItem->childCount() ) );
+        relationItem->setText( 0, tr( "%1 through %2 [%3]" ).arg( relation.referencingLayer()->name(), relation.name() ).arg( relationItem->childCount() ) );
       }
     }
     else
@@ -2699,10 +2701,10 @@ void QgsIdentifyResultsDialog::mActionAutoFeatureForm_toggled( bool checked )
 {
   settingIdentifyAutoFeatureForm->setValue( checked );
   mActionSelectFeaturesOnMouseOver->setEnabled( !checked );
-  if ( mSelectModeButton->defaultAction() == mActionSelectFeaturesOnMouseOver )
+  if ( mSelectModeButtonAction->defaultAction() == mActionSelectFeaturesOnMouseOver )
   {
     mSelectionMode = QgsMapToolSelectionHandler::SelectSimple;
-    mSelectModeButton->setDefaultAction( mActionSelectFeatures );
+    mSelectModeButtonAction->setDefaultAction( mActionSelectFeatures );
     emit selectionModeChanged();
   }
 }
@@ -2846,27 +2848,27 @@ void QgsIdentifyResultsDialog::setSelectionMode()
   const QgsMapToolSelectionHandler::SelectionMode oldMode = mSelectionMode;
   if ( obj == mActionSelectFeatures )
   {
-    mSelectModeButton->setDefaultAction( mActionSelectFeatures );
+    mSelectModeButtonAction->setDefaultAction( mActionSelectFeatures );
     mSelectionMode = QgsMapToolSelectionHandler::SelectSimple;
   }
   else if ( obj == mActionSelectPolygon )
   {
-    mSelectModeButton->setDefaultAction( mActionSelectPolygon );
+    mSelectModeButtonAction->setDefaultAction( mActionSelectPolygon );
     mSelectionMode = QgsMapToolSelectionHandler::SelectPolygon;
   }
   else if ( obj == mActionSelectFeaturesOnMouseOver )
   {
-    mSelectModeButton->setDefaultAction( mActionSelectFeaturesOnMouseOver );
+    mSelectModeButtonAction->setDefaultAction( mActionSelectFeaturesOnMouseOver );
     mSelectionMode = QgsMapToolSelectionHandler::SelectOnMouseOver;
   }
   else if ( obj == mActionSelectFreehand )
   {
-    mSelectModeButton->setDefaultAction( mActionSelectFreehand );
+    mSelectModeButtonAction->setDefaultAction( mActionSelectFreehand );
     mSelectionMode = QgsMapToolSelectionHandler::SelectFreehand;
   }
   else if ( obj == mActionSelectRadius )
   {
-    mSelectModeButton->setDefaultAction( mActionSelectRadius );
+    mSelectModeButtonAction->setDefaultAction( mActionSelectRadius );
     mSelectionMode = QgsMapToolSelectionHandler::SelectRadius;
   }
 

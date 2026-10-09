@@ -96,12 +96,14 @@ if(WITH_APIDOC)
       ${CMAKE_SOURCE_DIR}/src/core/scalebar
       ${CMAKE_SOURCE_DIR}/src/core/sensor
       ${CMAKE_SOURCE_DIR}/src/core/settings
+      ${CMAKE_SOURCE_DIR}/src/core/stac
       ${CMAKE_SOURCE_DIR}/src/core/symbology
       ${CMAKE_SOURCE_DIR}/src/core/symbology/converters
       ${CMAKE_SOURCE_DIR}/src/core/textrenderer
       ${CMAKE_SOURCE_DIR}/src/core/tiledscene
       ${CMAKE_SOURCE_DIR}/src/core/validity
       ${CMAKE_SOURCE_DIR}/src/core/vector
+      ${CMAKE_SOURCE_DIR}/src/core/vectorfield
       ${CMAKE_SOURCE_DIR}/src/core/vectortile
       ${CMAKE_SOURCE_DIR}/src/core/web
       ${CMAKE_SOURCE_DIR}/src/gui
@@ -139,6 +141,7 @@ if(WITH_APIDOC)
       ${CMAKE_SOURCE_DIR}/src/gui/tableeditor
       ${CMAKE_SOURCE_DIR}/src/gui/tiledscene
       ${CMAKE_SOURCE_DIR}/src/gui/vector
+      ${CMAKE_SOURCE_DIR}/src/gui/vectorfield
       ${CMAKE_SOURCE_DIR}/src/gui/vectortile
       ${CMAKE_SOURCE_DIR}/src/analysis
       ${CMAKE_SOURCE_DIR}/src/analysis/georeferencing

@@ -181,7 +181,7 @@ QgsRuleBased3DRenderer::Rule *QgsRuleBased3DRenderer::Rule::clone() const
 
 QgsRuleBased3DRenderer::Rule *QgsRuleBased3DRenderer::Rule::create( const QDomElement &ruleElem, const QgsReadWriteContext &context )
 {
-  QgsAbstract3DSymbol *symbol = nullptr;
+  std::unique_ptr<QgsAbstract3DSymbol> symbol;
   QDomElement elemSymbol = ruleElem.firstChildElement( u"symbol"_s );
   if ( !elemSymbol.isNull() )
   {
@@ -194,7 +194,7 @@ QgsRuleBased3DRenderer::Rule *QgsRuleBased3DRenderer::Rule::create( const QDomEl
   QString filterExp = ruleElem.attribute( u"filter"_s );
   QString description = ruleElem.attribute( u"description"_s );
   QString ruleKey = ruleElem.attribute( u"key"_s );
-  Rule *rule = new Rule( symbol, filterExp, description );
+  Rule *rule = new Rule( symbol.release(), filterExp, description );
 
   if ( !ruleKey.isEmpty() )
     rule->mRuleKey = ruleKey;
@@ -362,9 +362,7 @@ QgsRuleBased3DRenderer::QgsRuleBased3DRenderer( QgsRuleBased3DRenderer::Rule *ro
 {}
 
 QgsRuleBased3DRenderer::~QgsRuleBased3DRenderer()
-{
-  delete mRootRule;
-}
+{}
 
 QgsRuleBased3DRenderer *QgsRuleBased3DRenderer::clone() const
 {
@@ -391,7 +389,7 @@ Qt3DCore::QEntity *QgsRuleBased3DRenderer::createEntity( Qgs3DMapSettings *map )
   if ( !vl )
     return nullptr;
 
-  return new QgsRuleBasedChunkedEntity( map, vl, Qgs3DUtils::MINIMUM_VECTOR_Z_ESTIMATE, Qgs3DUtils::MAXIMUM_VECTOR_Z_ESTIMATE, tilingSettings(), mRootRule );
+  return new QgsRuleBasedChunkedEntity( map, vl, Qgs3DUtils::MINIMUM_VECTOR_Z_ESTIMATE, Qgs3DUtils::MAXIMUM_VECTOR_Z_ESTIMATE, tilingSettings(), mRootRule.get() );
 }
 
 void QgsRuleBased3DRenderer::writeXml( QDomElement &elem, const QgsReadWriteContext &context ) const

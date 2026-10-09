@@ -78,6 +78,8 @@ class CORE_EXPORT QgsLayerTreeLayer : public QgsLayerTreeNode
       return mRef.layerId;
     }
 
+    QString id() const override { return layerId(); }
+
     /**
      * Returns the map layer associated with this node.
      *

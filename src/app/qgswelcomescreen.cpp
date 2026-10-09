@@ -21,6 +21,8 @@
 #include "qgsapplication.h"
 #include "qgspluginmanager.h"
 #include "qgssettings.h"
+#include "qgssettingsentryimpl.h"
+#include "qgssettingstree.h"
 
 #include <QAbstractButton>
 #include <QMessageBox>
@@ -117,6 +119,9 @@ void QgsWelcomeScreenController::forwardDrop( const QString &text, const QString
 }
 
 
+const QgsSettingsEntryBool *QgsWelcomeScreen::settingsCheckVersion
+  = new QgsSettingsEntryBool( u"check-version"_s, QgsSettingsTree::sTreeApp, true, u"Whether the welcome screen should check for a newer QGIS version online"_s );
+
 QgsWelcomeScreen::QgsWelcomeScreen( bool skipVersionCheck, QWidget *parent )
   : QQuickWidget( parent )
 {
@@ -151,8 +156,8 @@ QgsWelcomeScreen::QgsWelcomeScreen( bool skipVersionCheck, QWidget *parent )
   }
 
   QgsSettings settings;
-  mVersionInfo = new QgsVersionInfo();
-  if ( !QgsApplication::isRunningFromBuildDir() && settings.value( u"/qgis/allowVersionCheck"_s, true ).toBool() && settings.value( u"qgis/checkVersion"_s, true ).toBool() && !skipVersionCheck )
+  mVersionInfo = new QgsVersionInfo( this );
+  if ( !QgsApplication::isRunningFromBuildDir() && settings.value( u"/qgis/allowVersionCheck"_s, true ).toBool() && settingsCheckVersion->value() && !skipVersionCheck )
   {
     connect( mVersionInfo, &QgsVersionInfo::versionInfoAvailable, this, &QgsWelcomeScreen::versionInfoReceived );
     mVersionInfo->checkVersion();
@@ -283,13 +288,12 @@ void QgsWelcomeScreen::versionInfoReceived()
     return;
   }
 
-  QgsVersionInfo *versionInfo = qobject_cast<QgsVersionInfo *>( sender() );
-  Q_ASSERT( versionInfo );
+  Q_ASSERT( mVersionInfo );
 
-  if ( versionInfo->newVersionAvailable() )
+  if ( mVersionInfo->newVersionAvailable() )
   {
     QString latestVersion;
-    const QString latestVersionCode = QString::number( versionInfo->latestVersionCode() );
+    const QString latestVersionCode = QString::number( mVersionInfo->latestVersionCode() );
     if ( latestVersionCode.size() >= 5 )
     {
       int major = latestVersionCode.mid( 0, latestVersionCode.size() - 4 ).toInt();
@@ -300,6 +304,8 @@ void QgsWelcomeScreen::versionInfoReceived()
     }
     emit mWelcomeScreenController->newVersionAvailable( latestVersion );
   }
+  mVersionInfo->deleteLater();
+  mVersionInfo = nullptr;
 }
 
 void QgsWelcomeScreen::pluginUpdatesAvailableReceived( const QStringList &plugins )

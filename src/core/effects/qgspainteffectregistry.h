@@ -82,7 +82,7 @@ class CORE_EXPORT QgsPaintEffectAbstractMetadata
     QString mVisibleName;
 };
 
-typedef QgsPaintEffect *( *QgsPaintEffectCreateFunc )( const QVariantMap & ) SIP_SKIP;
+typedef std::unique_ptr<QgsPaintEffect> ( *QgsPaintEffectCreateFunc )( const QVariantMap & ) SIP_SKIP;
 typedef QgsPaintEffectWidget *( *QgsPaintEffectWidgetFunc )() SIP_SKIP;
 
 /**
@@ -139,7 +139,7 @@ class CORE_EXPORT QgsPaintEffectMetadata : public QgsPaintEffectAbstractMetadata
      * \note not available in Python bindings
      * \see createWidget
      */
-    QgsPaintEffect *createPaintEffect( const QVariantMap &map ) override SIP_SKIP { return mCreateFunc ? mCreateFunc( map ) : nullptr; }
+    QgsPaintEffect *createPaintEffect( const QVariantMap &map ) override SIP_SKIP;
 
     /**
      * Creates a new paint effect properties widget for the metadata's effect class
@@ -194,7 +194,7 @@ class CORE_EXPORT QgsPaintEffectRegistry
      * \returns new paint effect of specified class, or NULLPTR if matching
      * paint effect could not be created
      */
-    QgsPaintEffect *createEffect( const QString &name, const QVariantMap &properties = QVariantMap() ) const SIP_FACTORY;
+    std::unique_ptr<QgsPaintEffect> createEffect( const QString &name, const QVariantMap &properties = QVariantMap() ) const;
 
     /**
      * Creates a new paint effect given a DOM element storing paint effect
@@ -203,7 +203,7 @@ class CORE_EXPORT QgsPaintEffectRegistry
      * \returns new paint effect, or NULLPTR if matching
      * paint effect could not be created
      */
-    QgsPaintEffect *createEffect( const QDomElement &element ) const SIP_FACTORY;
+    std::unique_ptr<QgsPaintEffect> createEffect( const QDomElement &element ) const;
 
     /**
      * Returns a list of known paint effects.
@@ -218,7 +218,7 @@ class CORE_EXPORT QgsPaintEffectRegistry
      * \returns default effects stack
      * \see isDefaultStack()
      */
-    static QgsPaintEffect *defaultStack() SIP_FACTORY;
+    static std::unique_ptr<QgsPaintEffect> defaultStack();
 
     /**
      * Tests whether a paint effect matches the default effects stack.

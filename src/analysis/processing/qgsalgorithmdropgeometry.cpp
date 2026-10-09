@@ -97,6 +97,8 @@ QgsFeatureRequest QgsDropGeometryAlgorithm::request() const
 
 QgsFeatureList QgsDropGeometryAlgorithm::processFeature( const QgsFeature &feature, QgsProcessingContext &, QgsProcessingFeedback * )
 {
+  QGS_MARK_ALGORITHM_SOURCE
+
   QgsFeature f = feature;
   f.clearGeometry();
   return QgsFeatureList() << f;

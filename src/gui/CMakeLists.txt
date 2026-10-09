@@ -92,6 +92,7 @@ set(QGIS_GUI_SRCS
   symbology/qgsextentbufferdialog.cpp
   symbology/qgssymbolslistwidget.cpp
   symbology/qgssymbolselectordialog.cpp
+  symbology/qgssymbollayermodel.cpp
   symbology/qgssymbolwidgetcontext.cpp
   symbology/qgsvectorfieldsymbollayerwidget.cpp
 
@@ -389,7 +390,6 @@ set(QGIS_GUI_SRCS
   mesh/qgsmeshrenderer3daveragingwidget.cpp
   mesh/qgsmeshrenderermeshsettingswidget.cpp
   mesh/qgsmeshrendererscalarsettingswidget.cpp
-  mesh/qgsmeshrenderervectorsettingswidget.cpp
   mesh/qgsmeshrendereractivedatasetwidget.cpp
   mesh/qgsmeshdatasetgrouptreeview.cpp
   mesh/qgsmeshstaticdatasetwidget.cpp
@@ -430,6 +430,7 @@ set(QGIS_GUI_SRCS
   processing/qgsprocessingalignrasterlayerswidgetwrapper.cpp
   processing/qgsprocessingbatchalgorithmdialogbase.cpp
   processing/qgsprocessingconfigurationwidgets.cpp
+  processing/qgsprocessingdefaultstyledialog.cpp
   processing/qgsprocessingdxflayerswidgetwrapper.cpp
   processing/qgsprocessingenummodelerwidget.cpp
   processing/qgsprocessingfavoritealgorithmmanager.cpp
@@ -450,18 +451,22 @@ set(QGIS_GUI_SRCS
   processing/qgsprocessingparameterdefinitionwidget.cpp
   processing/qgsprocessingparameterswidget.cpp
   processing/qgsprocessingpointcloudexpressionlineedit.cpp
+  processing/qgsprocessingprovideractions.cpp
   processing/qgsprocessingrastercalculatorexpressionlineedit.cpp
   processing/qgsprocessingrasteroptionswidgetwrapper.cpp
   processing/qgsprocessingrastersourceoptionswidget.cpp
   processing/qgsprocessingrecentalgorithmlog.cpp
+  processing/qgsprocessingscripteditordialog.cpp
   processing/qgsprocessingtininputlayerswidget.cpp
   processing/qgsprocessingtoolboxmodel.cpp
   processing/qgsprocessingtoolboxtreeview.cpp
   processing/qgsprocessingvectortilewriterlayerswidgetwrapper.cpp
+  processing/qgsprocessingwidgetcontext.cpp
   processing/qgsprocessingwidgetwrapper.cpp
   processing/qgsprocessingwidgetwrapperimpl.cpp
 
   processing/models/qgsmodelarrowitem.cpp
+  processing/models/qgsmodelchildalgorithmwidgets.cpp
   processing/models/qgsmodelcomponentgraphicitem.cpp
   processing/models/qgsmodeldesignerconfigdockwidget.cpp
   processing/models/qgsmodeldesignerconfigwidget.cpp
@@ -566,6 +571,8 @@ set(QGIS_GUI_SRCS
   tiledscene/qgstiledscenesourceselect.cpp
   tiledscene/qgstiledscenetexturerendererwidget.cpp
   tiledscene/qgstiledscenewireframerendererwidget.cpp
+
+  vectorfield/qgsvectorfieldsettingswidget.cpp
 
   vectortile/qgsarcgisvectortileconnectiondialog.cpp
   vectortile/qgsvectortilebasiclabelingwidget.cpp
@@ -676,6 +683,7 @@ set(QGIS_GUI_SRCS
   qgsfocuswatcher.cpp
   qgsformlabelformatwidget.cpp
   qgsfontbutton.cpp
+  qgsfontcombobox.cpp
   qgsformannotation.cpp
   qgsgeocoderlocatorfilter.cpp
   qgsgeometryrubberband.cpp
@@ -762,6 +770,7 @@ set(QGIS_GUI_SRCS
   qgspanelwidgetstack.cpp
   qgspasswordlineedit.cpp
   qgspercentagewidget.cpp
+  qgspersistentmenu.cpp
   qgspixmaplabel.cpp
   qgsplaybackcontrollerwidget.cpp
   qgspluginmanagerinterface.cpp
@@ -792,6 +801,7 @@ set(QGIS_GUI_SRCS
   qgsrelationwidgetregistry.cpp
   qgsrichtexteditor.cpp
   qgsrubberband.cpp
+  qgsrubberband_impl.cpp
   qgsscalecombobox.cpp
   qgsscalemethodwidget.cpp
   qgsscalerangewidget.cpp
@@ -826,6 +836,7 @@ set(QGIS_GUI_SRCS
   qgstemporalcontrollerwidget.cpp
   qgstextformatwidget.cpp
   qgstextpreview.cpp
+  qgstoolbuttonaction.cpp
   qgstooltipcombobox.cpp
   qgstreewidgetitem.cpp
   qgsunitselectionwidget.cpp
@@ -948,6 +959,7 @@ set(QGIS_GUI_HDRS
   qgsfocuskeeper.h
   qgsfocuswatcher.h
   qgsfontbutton.h
+  qgsfontcombobox.h
   qgsformannotation.h
   qgsformlabelformatwidget.h
   qgsgeocoderlocatorfilter.h
@@ -1036,6 +1048,7 @@ set(QGIS_GUI_HDRS
   qgspanelwidgetstack.h
   qgspasswordlineedit.h
   qgspercentagewidget.h
+  qgspersistentmenu.h
   qgspixmaplabel.h
   qgsplaybackcontrollerwidget.h
   qgspluginmanagerinterface.h
@@ -1068,6 +1081,7 @@ set(QGIS_GUI_HDRS
   qgsrelationwidgetregistry.h
   qgsrichtexteditor.h
   qgsrubberband.h
+  qgsrubberband_impl.h
   qgsscalecombobox.h
   qgsscalemethodwidget.h
   qgsscalerangewidget.h
@@ -1104,6 +1118,7 @@ set(QGIS_GUI_HDRS
   qgstemporalcontrollerwidget.h
   qgstextformatwidget.h
   qgstextpreview.h
+  qgstoolbuttonaction.h
   qgstooltipcombobox.h
   qgstreewidgetitem.h
   qgsunitselectionwidget.h
@@ -1417,7 +1432,6 @@ set(QGIS_GUI_HDRS
   mesh/qgsmeshrenderer3daveragingwidget.h
   mesh/qgsmeshrenderermeshsettingswidget.h
   mesh/qgsmeshrendererscalarsettingswidget.h
-  mesh/qgsmeshrenderervectorsettingswidget.h
   mesh/qgsmeshrendereractivedatasetwidget.h
   mesh/qgsmeshstaticdatasetwidget.h
   mesh/qgsmeshvariablestrokewidthwidget.h
@@ -1456,6 +1470,7 @@ set(QGIS_GUI_HDRS
   processing/qgsprocessingalgorithmwidgetbase.h
   processing/qgsprocessingbatchalgorithmdialogbase.h
   processing/qgsprocessingconfigurationwidgets.h
+  processing/qgsprocessingdefaultstyledialog.h
   processing/qgsprocessingdxflayerswidgetwrapper.h
   processing/qgsprocessingenummodelerwidget.h
   processing/qgsprocessingfavoritealgorithmmanager.h
@@ -1477,18 +1492,22 @@ set(QGIS_GUI_HDRS
   processing/qgsprocessingparameterdefinitionwidget.h
   processing/qgsprocessingparameterswidget.h
   processing/qgsprocessingpointcloudexpressionlineedit.h
+  processing/qgsprocessingprovideractions.h
   processing/qgsprocessingrastercalculatorexpressionlineedit.h
   processing/qgsprocessingrasteroptionswidgetwrapper.h
   processing/qgsprocessingrastersourceoptionswidget.h
   processing/qgsprocessingrecentalgorithmlog.h
+  processing/qgsprocessingscripteditordialog.h
   processing/qgsprocessingtininputlayerswidget.h
   processing/qgsprocessingtoolboxmodel.h
   processing/qgsprocessingtoolboxtreeview.h
   processing/qgsprocessingvectortilewriterlayerswidgetwrapper.h
+  processing/qgsprocessingwidgetcontext.h
   processing/qgsprocessingwidgetwrapper.h
   processing/qgsprocessingwidgetwrapperimpl.h
 
   processing/models/qgsmodelarrowitem.h
+  processing/models/qgsmodelchildalgorithmwidgets.h
   processing/models/qgsmodelcomponentgraphicitem.h
   processing/models/qgsmodeldesignerconfigdockwidget.h
   processing/models/qgsmodeldesignerconfigwidget.h
@@ -1645,6 +1664,7 @@ set(QGIS_GUI_HDRS
   symbology/qgssymbollevelsdialog.h
   symbology/qgsextentbufferdialog.h
   symbology/qgssymbolselectordialog.h
+  symbology/qgssymbollayermodel.h
   symbology/qgssymbolslistwidget.h
   symbology/qgssymbolwidgetcontext.h
   symbology/qgstemplatedcategorizedrendererwidget_p.h
@@ -1683,6 +1703,8 @@ set(QGIS_GUI_HDRS
   tiledscene/qgstiledscenesourceselect.h
   tiledscene/qgstiledscenetexturerendererwidget.h
   tiledscene/qgstiledscenewireframerendererwidget.h
+
+  vectorfield/qgsvectorfieldsettingswidget.h
 
   vectortile/qgsarcgisvectortileconnectiondialog.h
   vectortile/qgsvectortilebasiclabelingwidget.h
@@ -1981,6 +2003,7 @@ target_include_directories(qgis_gui PUBLIC
   ${CMAKE_SOURCE_DIR}/src/gui/tableeditor
   ${CMAKE_SOURCE_DIR}/src/gui/tiledscene
   ${CMAKE_SOURCE_DIR}/src/gui/vector
+  ${CMAKE_SOURCE_DIR}/src/gui/vectorfield
   ${CMAKE_SOURCE_DIR}/src/gui/vectortile
 
   ${CMAKE_BINARY_DIR}/src/gui
@@ -2052,8 +2075,9 @@ if (WITH_QTWEBENGINE)
 endif()
 
 if (WITH_QTGAMEPAD)
+    # QtGamepadLegacy from https://github.com/pumphaus/qtgamepadlegacy must be used for Qt6 builds
     target_link_libraries(qgis_gui
-      Qt::Gamepad
+      Qt::GamepadLegacy
     )
 endif()
 

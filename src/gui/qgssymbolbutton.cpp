@@ -38,6 +38,7 @@
 #include <QClipboard>
 #include <QDrag>
 #include <QMenu>
+#include <QMimeData>
 #include <QString>
 
 #include "moc_qgssymbolbutton.cpp"
@@ -163,13 +164,13 @@ void QgsSymbolButton::showSettingsDialog()
     switch ( mType )
     {
       case Qgis::SymbolType::Marker:
-        newSymbol.reset( QgsSymbol::defaultSymbol( Qgis::GeometryType::Point ) );
+        newSymbol = QgsSymbol::defaultSymbol( Qgis::GeometryType::Point );
         break;
       case Qgis::SymbolType::Line:
-        newSymbol.reset( QgsSymbol::defaultSymbol( Qgis::GeometryType::Line ) );
+        newSymbol = QgsSymbol::defaultSymbol( Qgis::GeometryType::Line );
         break;
       case Qgis::SymbolType::Fill:
-        newSymbol.reset( QgsSymbol::defaultSymbol( Qgis::GeometryType::Polygon ) );
+        newSymbol = QgsSymbol::defaultSymbol( Qgis::GeometryType::Polygon );
         break;
       case Qgis::SymbolType::Hybrid:
         break;
@@ -187,7 +188,7 @@ void QgsSymbolButton::showSettingsDialog()
     QgsSymbolSelectorWidget *widget = QgsSymbolSelectorWidget::createWidgetWithSymbolOwnership( std::move( newSymbol ), QgsStyle::defaultStyle(), mLayer, panel );
     widget->setPanelTitle( mDialogTitle );
     widget->setContext( symbolContext );
-    connect( widget, &QgsPanelWidget::widgetChanged, this, [this, widget] { updateSymbolFromWidget( widget ); } );
+    connect( widget, &QgsPanelWidget::changed, this, [this, widget] { updateSymbolFromWidget( widget ); } );
     panel->openPanel( widget );
   }
   else
@@ -281,7 +282,7 @@ void QgsSymbolButton::setColor( const QColor &color )
 
 void QgsSymbolButton::copySymbol()
 {
-  QApplication::clipboard()->setMimeData( QgsSymbolLayerUtils::symbolToMimeData( mSymbol.get() ) );
+  QApplication::clipboard()->setMimeData( QgsSymbolLayerUtils::symbolToMimeData( mSymbol.get() ).release() );
 }
 
 void QgsSymbolButton::pasteSymbol()
@@ -293,7 +294,7 @@ void QgsSymbolButton::pasteSymbol()
 
 void QgsSymbolButton::copyColor()
 {
-  QApplication::clipboard()->setMimeData( QgsSymbolLayerUtils::colorToMimeData( mSymbol->color() ) );
+  QApplication::clipboard()->setMimeData( QgsSymbolLayerUtils::colorToMimeData( mSymbol->color() ).release() );
 }
 
 void QgsSymbolButton::pasteColor()
@@ -356,7 +357,7 @@ void QgsSymbolButton::mouseMoveEvent( QMouseEvent *e )
 
   //user is dragging
   QDrag *drag = new QDrag( this );
-  drag->setMimeData( QgsSymbolLayerUtils::colorToMimeData( mSymbol->color() ) );
+  drag->setMimeData( QgsSymbolLayerUtils::colorToMimeData( mSymbol->color() ).release() );
   drag->setPixmap( QgsColorWidget::createDragIcon( mSymbol->color() ) );
   drag->exec( Qt::CopyAction );
   setDown( false );

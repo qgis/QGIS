@@ -83,13 +83,13 @@ void QgsLabelLineSettings::updateDataDefinedProperties( const QgsPropertyCollect
     if ( ok )
     {
       if ( value.compare( "follow"_L1, Qt::CaseInsensitive ) == 0 )
-        mAnchorTextPoint = AnchorTextPoint::FollowPlacement;
+        mAnchorTextPoint = Qgis::TextAnchorPoint::FollowPlacement;
       else if ( value.compare( "start"_L1, Qt::CaseInsensitive ) == 0 )
-        mAnchorTextPoint = AnchorTextPoint::StartOfText;
+        mAnchorTextPoint = Qgis::TextAnchorPoint::StartOfText;
       else if ( value.compare( "center"_L1, Qt::CaseInsensitive ) == 0 )
-        mAnchorTextPoint = AnchorTextPoint::CenterOfText;
+        mAnchorTextPoint = Qgis::TextAnchorPoint::CenterOfText;
       else if ( value.compare( "end"_L1, Qt::CaseInsensitive ) == 0 )
-        mAnchorTextPoint = AnchorTextPoint::EndOfText;
+        mAnchorTextPoint = Qgis::TextAnchorPoint::EndOfText;
     }
   }
 

@@ -21,6 +21,7 @@
 #include "qgsfillsymbol.h"
 #include "qgslinestring.h"
 #include "qgslinesymbol.h"
+#include "qgspainting.h"
 #include "qgsprofilerequest.h"
 #include "qgsprofilesnapping.h"
 

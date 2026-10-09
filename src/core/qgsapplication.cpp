@@ -69,6 +69,7 @@
 #include "qgsplotregistry.h"
 #include "qgspluginlayerregistry.h"
 #include "qgspointcloudrendererregistry.h"
+#include "qgsprocessingdefaultstyleregistry.h"
 #include "qgsprofilesourceregistry.h"
 #include "qgsproject.h"
 #include "qgsprojectstorageregistry.h"
@@ -353,6 +354,7 @@ void registerMetaTypes()
   qRegisterMetaType<QgsProcessingModelChildParameterSource>( "QgsProcessingModelChildParameterSource" );
   qRegisterMetaType<QgsRemappingSinkDefinition>( "QgsRemappingSinkDefinition" );
   qRegisterMetaType<QgsProcessingModelChildDependency>( "QgsProcessingModelChildDependency" );
+  qRegisterMetaType<QgsProcessingModelChildAlgorithmResult>( "QgsProcessingModelChildAlgorithmResult" );
   qRegisterMetaType<QgsTextFormat>( "QgsTextFormat" );
   qRegisterMetaType<QPainter::CompositionMode>( "QPainter::CompositionMode" );
   qRegisterMetaType<QgsDateTimeRange>( "QgsDateTimeRange" );
@@ -573,6 +575,8 @@ void QgsApplication::init( QString profileFolder )
   QgsStyle *defaultStyle = QgsStyle::defaultStyle( false );
   if ( !members()->mStyleModel )
     members()->mStyleModel = std::make_unique<QgsStyleModel>( defaultStyle );
+
+  QgsApplication::processingRegistry()->defaultStyleRegistry()->loadStyles();
 
   ABISYM( mInitialized ) = true;
 }
@@ -1101,7 +1105,11 @@ QString QgsApplication::resolvePkgPath()
     prefixPath = dir.absolutePath();
 #else
 
-#if defined( Q_OS_MACOS )
+#if defined( Q_OS_MACOS ) && defined( QGIS_MAC_BUNDLE )
+    // Go from QGIS.app/Contents/MacOS to the bundle root, like QgsApplication::init() does
+    QDir dir( appPath + "/../.."_L1 );
+    prefixPath = dir.absolutePath();
+#elif defined( Q_OS_MACOS )
     prefixPath = appPath;
 #elif defined( Q_OS_WIN )
     prefixPath = appPath;
@@ -1201,7 +1209,7 @@ void QgsApplication::setUITheme( const QString &themeName )
   {
     // apply OS-specific UI scale factor to stylesheet's em values
     int index = 0;
-    const static QRegularExpression regex( u"(?<=[\\s:])([0-9\\.]+)(?=em)"_s );
+    const thread_local QRegularExpression regex( u"(?<=[\\s:])([0-9\\.]+)(?=em)"_s );
     QRegularExpressionMatch match = regex.match( styledata, index );
     while ( match.hasMatch() )
     {
@@ -1309,11 +1317,11 @@ QString QgsApplication::srsDatabaseFilePath()
 {
   if ( ABISYM( mRunningFromBuildDir ) )
   {
-    QString tempCopy = QDir::tempPath() + "/srs6.db";
+    QString tempCopy = QDir::tempPath() + "/srs.db";
 
     if ( !QFile( tempCopy ).exists() )
     {
-      QFile f( buildSourcePath() + "/resources/srs6.db" );
+      QFile f( buildSourcePath() + "/resources/srs.db" );
       if ( !f.copy( tempCopy ) )
       {
         qFatal( "Could not create temporary copy" );

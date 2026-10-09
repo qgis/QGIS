@@ -133,6 +133,8 @@ QgsLayoutToPdfAlgorithm *QgsLayoutToPdfAlgorithm::createInstance() const
 
 QVariantMap QgsLayoutToPdfAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
+  QGS_MARK_ALGORITHM_SOURCE
+
   // this needs to be done in main thread, layouts are not thread safe
   QgsPrintLayout *l = parameterAsLayout( parameters, u"LAYOUT"_s, context );
   if ( !l )

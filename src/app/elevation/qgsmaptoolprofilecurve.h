@@ -38,7 +38,7 @@ class QgsMapToolProfileCurve : public QgsMapToolCapture
   signals:
 
     void captureStarted();
-    void captureCanceled();
+    void captureFinished();
     void curveCaptured( const QgsGeometry &curve );
 
   private:

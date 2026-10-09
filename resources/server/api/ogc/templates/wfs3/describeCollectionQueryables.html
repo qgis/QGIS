@@ -1,0 +1,23 @@
+<!-- template for the WFS3 API collection queryables page -->
+
+{% include "header.html" %}
+
+<div class="row">
+    <div class="col-md-6">
+        <h1>Queryables of: {{ title }}</h1>
+
+	<ul>
+        {% for name, values in properties %}
+            <li>{{ name }}:
+		<ul>
+		{% for k, v in values %}
+		  <li>{{ k }}: {{ v }}</li>
+		{% endfor %}
+		</ul>
+            </li>
+        {% endfor %}
+        </ul>
+    </div>
+</div>
+
+{% include "footer.html" %}

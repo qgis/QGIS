@@ -64,7 +64,8 @@ const QgsSettingsEntryInteger *Pal::settingsRenderingLabelCandidatesLimitLines =
 const QgsSettingsEntryInteger *Pal::settingsRenderingLabelCandidatesLimitPolygons = new QgsSettingsEntryInteger( u"label-candidates-limit-polygons"_s, sTreePal, 0 );
 
 
-Pal::Pal()
+Pal::Pal( Qgis::LabelingFlags flags )
+  : mFlags( flags )
 {
   mGlobalCandidatesLimitPoint = Pal::settingsRenderingLabelCandidatesLimitPoints->value();
   mGlobalCandidatesLimitLine = Pal::settingsRenderingLabelCandidatesLimitLines->value();
@@ -326,16 +327,19 @@ std::unique_ptr<Problem> Pal::extractProblem( const QgsRectangle &extent, const 
     if ( isCanceled() )
       return nullptr;
 
-    // collate all layer obstacles
-    for ( FeaturePart *obstaclePart : std::as_const( layer->mObstacleParts ) )
+    if ( !mFlags.testFlag( Qgis::LabelingFlag::IgnoreObstacles ) )
     {
-      if ( isCanceled() )
-        break; // do not continue searching
+      // collate all layer obstacles
+      for ( FeaturePart *obstaclePart : std::as_const( layer->mObstacleParts ) )
+      {
+        if ( isCanceled() )
+          break; // do not continue searching
 
-      // insert into obstacles
-      obstacles.insert( obstaclePart, obstaclePart->boundingBox() );
-      allObstacleParts.emplace_back( obstaclePart );
-      obstacleCount++;
+        // insert into obstacles
+        obstacles.insert( obstaclePart, obstaclePart->boundingBox() );
+        allObstacleParts.emplace_back( obstaclePart );
+        obstacleCount++;
+      }
     }
 
     if ( isCanceled() )
@@ -372,62 +376,64 @@ std::unique_ptr<Problem> Pal::extractProblem( const QgsRectangle &extent, const 
 
   if ( !features.empty() )
   {
-    if ( feedback )
-      feedback->emit obstacleCostingAboutToBegin();
-
-    std::unique_ptr< QgsScopedRuntimeProfile > costingProfile;
-    if ( context.flags() & Qgis::RenderContextFlag::RecordProfile )
+    if ( !mFlags.testFlag( Qgis::LabelingFlag::IgnoreObstacles ) )
     {
-      costingProfile = std::make_unique< QgsScopedRuntimeProfile >( QObject::tr( "Assigning label costs" ), u"rendering"_s );
-    }
+      if ( feedback )
+        feedback->emit obstacleCostingAboutToBegin();
 
-    // allow rules to alter candidate costs
-    for ( const auto &feature : features )
-    {
-      for ( auto &candidate : feature->candidates )
+      std::unique_ptr< QgsScopedRuntimeProfile > costingProfile;
+      if ( context.flags() & Qgis::RenderContextFlag::RecordProfile )
       {
-        for ( QgsAbstractLabelingEngineRule *rule : std::as_const( mRules ) )
+        costingProfile = std::make_unique< QgsScopedRuntimeProfile >( QObject::tr( "Assigning label costs" ), u"rendering"_s );
+      }
+
+      // allow rules to alter candidate costs
+      for ( const auto &feature : features )
+      {
+        for ( auto &candidate : feature->candidates )
         {
-          rule->alterCandidateCost( candidate.get(), labelContext );
+          for ( QgsAbstractLabelingEngineRule *rule : std::as_const( mRules ) )
+          {
+            rule->alterCandidateCost( candidate.get(), labelContext );
+          }
         }
       }
-    }
 
-    // Filtering label positions against obstacles
-    index = -1;
-    step = !allObstacleParts.empty() ? 100.0 / allObstacleParts.size() : 1;
+      // Filtering label positions against obstacles
+      index = -1;
+      step = !allObstacleParts.empty() ? 100.0 / allObstacleParts.size() : 1;
 
-    for ( FeaturePart *obstaclePart : allObstacleParts )
-    {
-      index++;
-      if ( feedback )
-        feedback->setProgress( step * index );
+      for ( FeaturePart *obstaclePart : allObstacleParts )
+      {
+        index++;
+        if ( feedback )
+          feedback->setProgress( step * index );
 
-      if ( isCanceled() )
-        break; // do not continue searching
+        if ( isCanceled() )
+          break; // do not continue searching
 
-      allCandidatesFirstRound.intersects( obstaclePart->boundingBox(), [obstaclePart, this]( const LabelPosition *candidatePosition ) -> bool {
-        // test whether we should ignore this obstacle for the candidate. We do this if:
-        // 1. it's not a hole, and the obstacle belongs to the same label feature as the candidate (e.g.,
-        // features aren't obstacles for their own labels)
-        // 2. it IS a hole, and the hole belongs to a different label feature to the candidate (e.g., holes
-        // are ONLY obstacles for the labels of the feature they belong to)
-        // 3. The label is set to "Always Allow" overlap mode
-        if ( candidatePosition->getFeaturePart()->feature()->overlapHandling() == Qgis::LabelOverlapHandling::AllowOverlapAtNoCost
-             || ( !obstaclePart->getHoleOf() && candidatePosition->getFeaturePart()->hasSameLabelFeatureAs( obstaclePart ) )
-             || ( obstaclePart->getHoleOf() && !candidatePosition->getFeaturePart()->hasSameLabelFeatureAs( dynamic_cast< FeaturePart * >( obstaclePart->getHoleOf() ) ) ) )
-        {
+        allCandidatesFirstRound.intersects( obstaclePart->boundingBox(), [obstaclePart, this]( const LabelPosition *candidatePosition ) -> bool {
+          // test whether we should ignore this obstacle for the candidate. We do this if:
+          // 1. it's not a hole, and the obstacle belongs to the same label feature as the candidate (e.g.,
+          // features aren't obstacles for their own labels)
+          // 2. it IS a hole, and the hole belongs to a different label feature to the candidate (e.g., holes
+          // are ONLY obstacles for the labels of the feature they belong to)
+          // 3. The label is set to "Always Allow" overlap mode
+          if ( candidatePosition->getFeaturePart()->feature()->overlapHandling() == Qgis::LabelOverlapHandling::AllowOverlapAtNoCost
+               || ( !obstaclePart->getHoleOf() && candidatePosition->getFeaturePart()->hasSameLabelFeatureAs( obstaclePart ) )
+               || ( obstaclePart->getHoleOf() && !candidatePosition->getFeaturePart()->hasSameLabelFeatureAs( dynamic_cast< FeaturePart * >( obstaclePart->getHoleOf() ) ) ) )
+          {
+            return true;
+          }
+
+          CostCalculator::addObstacleCostPenalty( const_cast< LabelPosition * >( candidatePosition ), obstaclePart, this );
           return true;
-        }
+        } );
+      }
 
-        CostCalculator::addObstacleCostPenalty( const_cast< LabelPosition * >( candidatePosition ), obstaclePart, this );
-        return true;
-      } );
+      if ( feedback )
+        feedback->emit obstacleCostingFinished();
     }
-
-    if ( feedback )
-      feedback->emit obstacleCostingFinished();
-    costingProfile.reset();
 
     if ( isCanceled() )
     {
@@ -533,7 +539,10 @@ std::unique_ptr<Problem> Pal::extractProblem( const QgsRectangle &extent, const 
       switch ( feat->feature->feature()->overlapHandling() )
       {
         case Qgis::LabelOverlapHandling::PreventOverlap:
-          pruneHardConflicts();
+          if ( !mFlags.testFlag( Qgis::LabelingFlag::IgnoreOverlaps ) )
+          {
+            pruneHardConflicts();
+          }
           break;
 
         case Qgis::LabelOverlapHandling::AllowOverlapIfRequired:
@@ -560,7 +569,10 @@ std::unique_ptr<Problem> Pal::extractProblem( const QgsRectangle &extent, const 
           break;
         case Qgis::LabelOverlapHandling::AllowOverlapIfRequired:
         case Qgis::LabelOverlapHandling::AllowOverlapAtNoCost:
-          pruneHardConflicts();
+          if ( !mFlags.testFlag( Qgis::LabelingFlag::IgnoreOverlaps ) )
+          {
+            pruneHardConflicts();
+          }
           break;
       }
 
@@ -628,17 +640,20 @@ std::unique_ptr<Problem> Pal::extractProblem( const QgsRectangle &extent, const 
         //prob->feat[idlp] = j;
 
         // lookup for overlapping candidate
-        const QgsRectangle searchBounds = lp->boundingBoxForCandidateConflicts( this );
-        prob->allCandidatesIndex().intersects( searchBounds, [&lp, this]( const LabelPosition *lp2 ) -> bool {
-          if ( candidatesAreConflicting( lp.get(), lp2 ) )
-          {
-            lp->incrementNumOverlaps();
-          }
+        if ( !mFlags.testFlag( Qgis::LabelingFlag::IgnoreOverlaps ) )
+        {
+          const QgsRectangle searchBounds = lp->boundingBoxForCandidateConflicts( this );
+          prob->allCandidatesIndex().intersects( searchBounds, [&lp, this]( const LabelPosition *lp2 ) -> bool {
+            if ( candidatesAreConflicting( lp.get(), lp2 ) )
+            {
+              lp->incrementNumOverlaps();
+            }
 
-          return true;
-        } );
+            return true;
+          } );
 
-        nbOverlaps += lp->getNumOverlaps();
+          nbOverlaps += lp->getNumOverlaps();
+        }
 
         prob->addCandidatePosition( std::move( lp ) );
 

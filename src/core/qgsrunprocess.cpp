@@ -220,6 +220,10 @@ int QgsBlockingProcess::run( QgsFeedback *feedback )
     QProcess p;
     const QProcessEnvironment env = QProcessEnvironment::systemEnvironment();
     p.setProcessEnvironment( env );
+    if ( !mWorkingDir.isEmpty() )
+    {
+      p.setWorkingDirectory( mWorkingDir );
+    }
 
     QEventLoop loop;
     // connecting to aboutToQuit avoids an on-going process to remain stalled
@@ -290,6 +294,16 @@ int QgsBlockingProcess::run( QgsFeedback *feedback )
   mProcessError = error;
   return result;
 }
+
+QString QgsBlockingProcess::workingDirectory() const
+{
+  return mWorkingDir;
+}
+
+void QgsBlockingProcess::setWorkingDirectory( const QString &directory )
+{
+  mWorkingDir = directory;
+};
 
 QProcess::ExitStatus QgsBlockingProcess::exitStatus() const
 {

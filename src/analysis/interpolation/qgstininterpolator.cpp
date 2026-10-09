@@ -114,12 +114,12 @@ void QgsTinInterpolator::initialize()
       QgsAttributeList attList;
       switch ( layer.valueSource )
       {
-        case QgsInterpolator::ValueSource::Attribute:
+        case Qgis::InterpolationValueSource::Attribute:
           attList.push_back( layer.interpolationAttribute );
           break;
 
-        case QgsInterpolator::ValueSource::M:
-        case QgsInterpolator::ValueSource::Z:
+        case Qgis::InterpolationValueSource::M:
+        case Qgis::InterpolationValueSource::Z:
           break;
       }
 
@@ -167,7 +167,7 @@ void QgsTinInterpolator::initialize()
   }
 }
 
-int QgsTinInterpolator::insertData( const QgsFeature &f, QgsInterpolator::ValueSource source, int attr, QgsInterpolator::SourceType type )
+int QgsTinInterpolator::insertData( const QgsFeature &f, Qgis::InterpolationValueSource source, int attr, Qgis::InterpolationSourceType type )
 {
   QgsGeometry g = f.geometry();
   if ( g.isNull() || g.isEmpty() )
@@ -180,7 +180,7 @@ int QgsTinInterpolator::insertData( const QgsFeature &f, QgsInterpolator::ValueS
   bool attributeConversionOk = false;
   switch ( source )
   {
-    case QgsInterpolator::ValueSource::Attribute:
+    case Qgis::InterpolationValueSource::Attribute:
     {
       QVariant attributeVariant = f.attribute( attr );
       if ( QgsVariantUtils::isNull( attributeVariant ) ) //attribute not found, something must be wrong (e.g. NULL value)
@@ -195,13 +195,13 @@ int QgsTinInterpolator::insertData( const QgsFeature &f, QgsInterpolator::ValueS
       break;
     }
 
-    case QgsInterpolator::ValueSource::M:
+    case Qgis::InterpolationValueSource::M:
       if ( !g.constGet()->isMeasure() )
         return 3;
       else
         break;
 
-    case QgsInterpolator::ValueSource::Z:
+    case Qgis::InterpolationValueSource::Z:
       if ( !g.constGet()->is3D() )
         return 3;
       else
@@ -210,15 +210,15 @@ int QgsTinInterpolator::insertData( const QgsFeature &f, QgsInterpolator::ValueS
 
   switch ( type )
   {
-    case QgsInterpolator::SourceType::Points:
+    case Qgis::InterpolationSourceType::Points:
     {
       if ( addPointsFromGeometry( g, source, attributeValue ) != 0 )
         return -1;
       break;
     }
 
-    case QgsInterpolator::SourceType::BreakLines:
-    case QgsInterpolator::SourceType::StructureLines:
+    case Qgis::InterpolationSourceType::BreakLines:
+    case Qgis::InterpolationSourceType::StructureLines:
     {
       switch ( QgsWkbTypes::geometryType( g.wkbType() ) )
       {
@@ -291,21 +291,21 @@ int QgsTinInterpolator::insertData( const QgsFeature &f, QgsInterpolator::ValueS
             {
               switch ( source )
               {
-                case QgsInterpolator::ValueSource::Attribute:
+                case Qgis::InterpolationValueSource::Attribute:
                   if ( point.is3D() )
                     point.setZ( attributeValue );
                   else
                     point.addZValue( attributeValue );
                   break;
 
-                case QgsInterpolator::ValueSource::M:
+                case Qgis::InterpolationValueSource::M:
                   if ( point.is3D() )
                     point.setZ( point.m() );
                   else
                     point.addZValue( point.m() );
                   break;
 
-                case QgsInterpolator::ValueSource::Z:
+                case Qgis::InterpolationValueSource::Z:
                   break;
               }
             }
@@ -325,7 +325,7 @@ int QgsTinInterpolator::insertData( const QgsFeature &f, QgsInterpolator::ValueS
 }
 
 
-int QgsTinInterpolator::addPointsFromGeometry( const QgsGeometry &g, QgsInterpolator::ValueSource source, double attributeValue )
+int QgsTinInterpolator::addPointsFromGeometry( const QgsGeometry &g, Qgis::InterpolationValueSource source, double attributeValue )
 {
   // loop through all vertices and add to triangulation
   for ( auto point = g.vertices_begin(); point != g.vertices_end(); ++point )
@@ -334,15 +334,15 @@ int QgsTinInterpolator::addPointsFromGeometry( const QgsGeometry &g, QgsInterpol
     double z = 0;
     switch ( source )
     {
-      case QgsInterpolator::ValueSource::Attribute:
+      case Qgis::InterpolationValueSource::Attribute:
         z = attributeValue;
         break;
 
-      case QgsInterpolator::ValueSource::Z:
+      case Qgis::InterpolationValueSource::Z:
         z = p.z();
         break;
 
-      case QgsInterpolator::ValueSource::M:
+      case Qgis::InterpolationValueSource::M:
         z = p.m();
         break;
     }

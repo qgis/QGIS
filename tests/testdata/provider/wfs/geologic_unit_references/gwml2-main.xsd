@@ -1,0 +1,839 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schema xmlns="http://www.w3.org/2001/XMLSchema" xmlns:gml="http://www.opengis.net/gml/3.2" xmlns:gwml2="http://www.opengis.net/gwml-main/2.2" xmlns:swe="http://www.opengis.net/swe/2.0" xmlns:gwml2f="http://www.opengis.net/gwml-flow/2.2" xmlns:gwml2c="http://www.opengis.net/gwml-constituent/2.2" xmlns:gco="http://www.isotc211.org/2005/gco" xmlns:gsml="http://www.opengis.net/gsml/4.1/GeoSciML-Basic" xmlns:om="http://www.opengis.net/om/2.0" xmlns:gmd="http://www.isotc211.org/2005/gmd" targetNamespace="http://www.opengis.net/gwml-main/2.2" elementFormDefault="qualified" attributeFormDefault="unqualified" version="2.2.1">
+	<annotation>
+		<documentation>Logical Model for GroundWaterML version 2.0 containing the core elements required for groundwater data. Other GWML2 application schema import this schema.
+
+        OGC WaterML 2.2 Part 4 - GroundWaterML 2 is an OGC Standard.
+        Copyright (c) 2016 Open Geospatial Consortium.
+        To obtain additional rights of use, visit http://www.opengeospatial.org/legal/ .
+		</documentation>
+	</annotation>
+	<import namespace="http://www.opengis.net/gml/3.2" schemaLocation="http://schemas.opengis.net/gml/3.2.1/gml.xsd"/>
+	<import namespace="http://www.opengis.net/gsml/4.1/GeoSciML-Basic" schemaLocation="http://schemas.opengis.net/gsml/4.1/geoSciMLBasic.xsd"/>
+	<import namespace="http://www.isotc211.org/2005/gmd" schemaLocation="http://schemas.opengis.net/iso/19139/20070417/gmd/gmd.xsd"/>
+	<import namespace="http://www.isotc211.org/2005/gco" schemaLocation="http://schemas.opengis.net/iso/19139/20070417/gco/gco.xsd"/>
+	<import namespace="http://www.opengis.net/om/2.0" schemaLocation="http://schemas.opengis.net/om/2.0/observation.xsd"/>
+	<import namespace="http://www.opengis.net/gwml-constituent/2.2" schemaLocation="http://schemas.opengis.net/gwml/2.2/gwml2-constituent.xsd"/>
+	<import namespace="http://www.opengis.net/swe/2.0" schemaLocation="http://schemas.opengis.net/sweCommon/2.0/swe.xsd"/>
+	<import namespace="http://www.opengis.net/gwml-flow/2.2" schemaLocation="http://schemas.opengis.net/gwml/2.2/gwml2-flow.xsd"/>
+	<element name="GW_Basin" type="gwml2:GW_BasinType" substitutionGroup="gwml2:GW_HydrogeoUnit">
+		<annotation>
+			<documentation>A large hydrogeologically defined body of ground typically consisting of hydraulically connected hydrogeological units, whose waters are flowing to a common or multiple outlets, and which is delimited by a groundwater divide.</documentation>
+		</annotation>
+	</element>
+	<complexType name="GW_BasinType">
+		<complexContent>
+			<extension base="gwml2:GW_HydrogeoUnitType">
+				<sequence>
+					<element name="gwDivide" type="gwml2:GW_DividePropertyType" nillable="true" minOccurs="0" maxOccurs="unbounded">
+						<annotation>
+							<documentation>Line on a water table or piezometric surface on either side of which the groundwater flow diverges. IGH0556.</documentation>
+						</annotation>
+					</element>
+					<element name="gwBasinUnit" type="gwml2:GW_HydrogeoUnitPropertyType" nillable="true" minOccurs="0" maxOccurs="unbounded">
+						<annotation>
+							<documentation>Relates hydrogeologic units and the basins that contain them, in full or part.</documentation>
+						</annotation>
+					</element>
+				</sequence>
+			</extension>
+		</complexContent>
+	</complexType>
+	<complexType name="GW_BasinPropertyType">
+		<sequence minOccurs="0">
+			<element ref="gwml2:GW_Basin"/>
+		</sequence>
+		<attributeGroup ref="gml:AssociationAttributeGroup"/>
+		<attributeGroup ref="gml:OwnershipAttributeGroup"/>
+	</complexType>
+	<element name="GW_AquiferUnit" type="gwml2:GW_AquiferUnitType" abstract="true" substitutionGroup="gwml2:GW_HydrogeoUnit">
+		<annotation>
+			<documentation>Denotes aquifer-related hydrogeologic units: aquifer systems, aquifers, or confining beds.</documentation>
+		</annotation>
+	</element>
+	<complexType name="GW_AquiferUnitType" abstract="true">
+		<complexContent>
+			<extension base="gwml2:GW_HydrogeoUnitType">
+				<sequence>
+					<element name="gwAquiferSystem" type="gwml2:GW_AquiferSystemPropertyType" nillable="true" minOccurs="0" maxOccurs="unbounded">
+						<annotation>
+							<documentation>Relates an aquifer system to an aquifer unit </documentation>
+						</annotation>
+					</element>
+				</sequence>
+			</extension>
+		</complexContent>
+	</complexType>
+	<complexType name="GW_AquiferUnitPropertyType">
+		<sequence minOccurs="0">
+			<element ref="gwml2:GW_AquiferUnit"/>
+		</sequence>
+		<attributeGroup ref="gml:AssociationAttributeGroup"/>
+		<attributeGroup ref="gml:OwnershipAttributeGroup"/>
+	</complexType>
+	<element name="GW_ManagementArea" type="gwml2:GW_ManagementAreaType" substitutionGroup="gml:AbstractFeature">
+		<annotation>
+			<documentation>The GW_ManagementArea class defines properties associated with areas identified for management purposes. These can be delineated by human factors such as policy or regulation concerns, as well as domain (in this case hydrogeologic or hydrologic) concerns. The management area does not necessarily align exactly with the associated hydrogeologic feature boundaries.
+
+A placeholder (stub) to associated  legislative and reference documentation is provided, as a description of the properties of the associated classes is considered out of scope for GroundWaterML2. The INSPIRE Generic Conceptual Model 'Legislation References' and 'DocumentCitation' classes, created also to cover EU Directives reporting, provides possible candidates for these end association classes.
+
+The GW_ManagementArea class identifies properties associated with managing a human defined area over real world features, in this case groundwater related features. As such, this class could provide a pattern for a more generic OGC 'trans-domain' feature management class."
+This class is equivalent to Inspire AM:ManagementRestrictionOrRegulationZone.</documentation>
+		</annotation>
+	</element>
+	<complexType name="GW_ManagementAreaType">
+		<complexContent>
+			<extension base="gml:AbstractFeatureType">
+				<sequence>
+					<element name="gwAreaCompetentAuthority" nillable="true" minOccurs="0" maxOccurs="unbounded">
+						<annotation>
+							<documentation>Description of the organisation(s) responsible for managing, restricting or regulating measures or activities within the management area.</documentation>
+						</annotation>
+						<complexType>
+							<complexContent>
+								<extension base="gmd:CI_ResponsibleParty_PropertyType">
+									<attribute name="nilReason" type="gml:NilReasonType"/>
+								</extension>
+							</complexContent>
+						</complexType>
+					</element>
+					<element name="gwAreaDesignationPeriod" type="gml:TimePeriodPropertyType" nillable="true" minOccurs="0" maxOccurs="1">
+						<annotation>
+							<documentation>Time period defining when the management area was legally designated or became effective in the real world.</documentation>
+						</annotation>
+					</element>
+					<element name="gwAreaSpecialisedAreaType" type="gml:ReferenceType" nillable="true" minOccurs="0" maxOccurs="1">
+						<annotation>
+							<documentation>Additional classification value which further specialises the gwAreaType.</documentation>
+						</annotation>
+					</element>
+					<element name="gwAreaEnvironmentalDomain" type="gml:ReferenceType" nillable="false" minOccurs="0" maxOccurs="unbounded">
+						<annotation>
+							<documentation>Classification of the environment domain(s) for which, through the establishment of the management area, certain environmental objectives shall be reached.
+A management area may be established within one environmental domain (e.g. water) or may to cover a wide range of environmental objectives that cross-cut several domains.
+(owl:sameAs environmentalDomain in INSPIRE AM v3.0).</documentation>
+						</annotation>
+					</element>
+					<element name="gwAreaShape" type="gml:GeometryPropertyType" nillable="false" minOccurs="0" maxOccurs="1">
+						<annotation>
+							<documentation>Geometric shape and position of management area.</documentation>
+						</annotation>
+					</element>
+					<element name="gwAreaType" type="gwml2:ManagementAreaTypeTermType" nillable="false" minOccurs="0" maxOccurs="unbounded">
+						<annotation>
+							<documentation>High level classification defining the type of management area (e.g. restricted use zone, irrigation area, consumption area, etc.)
+(owl:sameAs zoneType in INSPIRE AM v3.0).</documentation>
+						</annotation>
+					</element>
+					<element name="gwAreaFeature" type="gml:FeaturePropertyType" nillable="true" minOccurs="0" maxOccurs="unbounded">
+						<annotation>
+							<documentation>Other features that are associated with the management area (watershed, ecological zones, etc) that are not hydrogeologicUnits.</documentation>
+						</annotation>
+					</element>
+					<element name="gwAreaBody" type="gwml2:GW_FluidBodyPropertyType" nillable="true" minOccurs="0" maxOccurs="unbounded">
+						<annotation>
+							<documentation>Relates a management area to the fluid bodies contained within the area. As with units, the spatial boundaries of management areas do not necessarily coincide with the spatial boundaries of fluid bodies.</documentation>
+						</annotation>
+					</element>
+					<element name="gwAreaWaterBudget" nillable="true" minOccurs="0" maxOccurs="unbounded">
+						<annotation>
+							<documentation>Water budget associated with the management area.</documentation>
+						</annotation>
+						<complexType>
+							<complexContent>
+								<extension base="gwml2f:GW_WaterBudgetPropertyType">
+									<attribute name="nilReason" type="gml:NilReasonType"/>
+								</extension>
+							</complexContent>
+						</complexType>
+					</element>
+					<element name="gwAreaYield" type="om:OM_ObservationPropertyType" nillable="true" minOccurs="0" maxOccurs="unbounded">
+						<annotation>
+							<documentation>Yield associated with the management area.</documentation>
+						</annotation>
+					</element>
+					<element name="relatedManagementArea" type="gwml2:GW_ManagementAreaPropertyType" nillable="false" minOccurs="0" maxOccurs="unbounded">
+						<annotation>
+							<documentation>Relates a management area part to a management area whole.</documentation>
+						</annotation>
+					</element>
+					<element name="gwManagedUnit" type="gwml2:GW_HydrogeoUnitPropertyType" nillable="false" minOccurs="1" maxOccurs="unbounded">
+						<annotation>
+							<documentation>Relates a hydrogeologic unit to a groundwater management area</documentation>
+						</annotation>
+					</element>
+					<element name="documentation" type="anyType" nillable="true" minOccurs="0" maxOccurs="unbounded">
+						<annotation>
+							<documentation>It serves as the base class to unambiguously associate legislative and reference documentation to the management area.
+Legislative documentation refers to the legal instrument or document that required the establishment of the management area.
+Reference documentation might describe the environmental objectives and measures that shall be undertaken in the management area to protect the environment (reference to a management or action plan).
+
+Description of the properties of the associated documents is considered out of scope for GroundWaterML2. The INSPIRE Generic Conceptual Model 'Legislation References' classes, created also to cover EU Directives reporting, provides possible candidates for these end association classes.</documentation>
+						</annotation>
+					</element>
+				</sequence>
+			</extension>
+		</complexContent>
+	</complexType>
+	<complexType name="GW_ManagementAreaPropertyType">
+		<sequence minOccurs="0">
+			<element ref="gwml2:GW_ManagementArea"/>
+		</sequence>
+		<attributeGroup ref="gml:AssociationAttributeGroup"/>
+		<attributeGroup ref="gml:OwnershipAttributeGroup"/>
+	</complexType>
+	<element name="GW_HydrogeoVoid" type="gwml2:GW_HydrogeoVoidType" substitutionGroup="gml:AbstractFeature">
+		<annotation>
+			<documentation>Voids represent the spaces inside (hosted by) a unit or its material. E.g. the pores in an aquifer, or in the sandstone of an aquifer. Voids are hosted by a container (e.g. an aquifer), and can contain water bodies. Voids are differentiated from 'porosity' in that porosity is the proportion of void volume to total volume (i.e. container + voids), while voids are the spaces themselves. Their delineation as a distinct entity is necessary, for example, to capture the volume of fractures in an aquifer.</documentation>
+		</annotation>
+	</element>
+	<complexType name="GW_HydrogeoVoidType">
+		<complexContent>
+			<extension base="gml:AbstractFeatureType">
+				<sequence>
+					<element name="gwVoidHostMaterial" nillable="true" minOccurs="0" maxOccurs="unbounded">
+						<annotation>
+							<documentation>The material that hosts the void, if specified. Note voids can be hosted by a unit (an aquifer) or its material (e.g. sandstone).</documentation>
+						</annotation>
+						<complexType>
+							<sequence>
+								<element ref="gsml:EarthMaterial"/>
+							</sequence>
+							<attribute name="nilReason" type="gml:NilReasonType"/>
+						</complexType>
+					</element>
+					<element name="gwVoidMetadata" nillable="true" minOccurs="0" maxOccurs="1">
+						<annotation>
+							<documentation>Metadata for the void.</documentation>
+						</annotation>
+						<complexType>
+							<complexContent>
+								<extension base="gmd:MD_Metadata_PropertyType">
+									<attribute name="nilReason" type="gml:NilReasonType"/>
+								</extension>
+							</complexContent>
+						</complexType>
+					</element>
+					<element name="gwVoidShape" type="gml:GeometryPropertyType" nillable="true" minOccurs="0" maxOccurs="1">
+						<annotation>
+							<documentation>Shape and position of the void.</documentation>
+						</annotation>
+					</element>
+					<element name="gwVoidType" type="gml:ReferenceType" nillable="true" minOccurs="0" maxOccurs="1">
+						<annotation>
+							<documentation>Type of void e.g. fractured, intergranular, etc.</documentation>
+						</annotation>
+					</element>
+					<element name="gwVoidVolume" type="om:OM_ObservationPropertyType" nillable="true" minOccurs="0" maxOccurs="1">
+						<annotation>
+							<documentation>Volume of the void.</documentation>
+						</annotation>
+					</element>
+					<element name="gwVoidFluidBody" type="gwml2:GW_FluidBodyPropertyType" nillable="true" minOccurs="0" maxOccurs="1">
+						<annotation>
+							<documentation>Relates to a fluid body found in a hydrogeologic void</documentation>
+						</annotation>
+					</element>
+					<element name="gwVoidUnit" type="gwml2:GW_UnitVoidPropertyPropertyType" nillable="true" minOccurs="0" maxOccurs="unbounded">
+						<annotation>
+							<documentation>Relates to the hydrogeologic unit hosting the void</documentation>
+						</annotation>
+					</element>
+					<element name="gwVoidPartOf" type="gwml2:GW_HydrogeoVoidPropertyType" nillable="true" minOccurs="0" maxOccurs="unbounded">
+						<annotation>
+							<documentation>Relates which voids are parts of a whole void.</documentation>
+						</annotation>
+					</element>
+					<element name="gwPartOfVoid" type="gwml2:GW_HydrogeoVoidPropertyType" nillable="true" minOccurs="0" maxOccurs="1">
+						<annotation>
+							<documentation>Relates a void part to a whole void.</documentation>
+						</annotation>
+					</element>
+				</sequence>
+			</extension>
+		</complexContent>
+	</complexType>
+	<complexType name="GW_HydrogeoVoidPropertyType">
+		<sequence minOccurs="0">
+			<element ref="gwml2:GW_HydrogeoVoid"/>
+		</sequence>
+		<attributeGroup ref="gml:AssociationAttributeGroup"/>
+		<attributeGroup ref="gml:OwnershipAttributeGroup"/>
+	</complexType>
+	<element name="GW_FluidBody" type="gwml2:GW_FluidBodyType" substitutionGroup="gml:AbstractFeature">
+		<annotation>
+			<documentation>A distinct body of some fluid (liquid, gas) that fills the voids of a container such as an aquifer, system of aquifers, water well, etc; in hydrogeology this body is usually constituted from groundwater, but the model allows for other types of fillers e.g. petroleum.</documentation>
+		</annotation>
+	</element>
+	<complexType name="GW_FluidBodyType">
+		<complexContent>
+			<extension base="gml:AbstractFeatureType">
+				<sequence>
+					<element name="gwBodyFlow" type="gwml2f:GW_FlowPropertyType" nillable="true" minOccurs="0" maxOccurs="unbounded">
+						<annotation>
+							<documentation>Flows associated with the fluid body.</documentation>
+						</annotation>
+					</element>
+					<element name="gwBodyMetadata" nillable="true" minOccurs="0" maxOccurs="unbounded">
+						<annotation>
+							<documentation>Metadata about the fluid body.</documentation>
+						</annotation>
+						<complexType>
+							<complexContent>
+								<extension base="gmd:MD_Metadata_PropertyType">
+									<attribute name="nilReason" type="gml:NilReasonType"/>
+								</extension>
+							</complexContent>
+						</complexType>
+					</element>
+					<element name="gwBodyProperty" type="om:OM_ObservationPropertyType" nillable="true" minOccurs="0" maxOccurs="unbounded">
+						<annotation>
+							<documentation>Properties that characterize the groundwater body.
+Observations of properties, e.g. age, temperature, density, viscosity, turbidity, color, hardness, acidity, etc. are OM_Observations</documentation>
+						</annotation>
+					</element>
+					<element name="gwBodyQuality" type="gml:ReferenceType" nillable="true" minOccurs="0" maxOccurs="unbounded">
+						<annotation>
+							<documentation>Categorical assessment of fluid quality: e.g. saline, brackish, fresh, turbide, sulfurous, mixed, ... 1000-3000mg/l tds, etc.
+
+A normative quality description is an assessment based upon some guideline edited by a government or a quality standard</documentation>
+						</annotation>
+					</element>
+					<element name="gwBodyShape" type="gml:GeometryPropertyType" nillable="true" minOccurs="0" maxOccurs="1">
+						<annotation>
+							<documentation>Shape and position of the groundwater body.</documentation>
+						</annotation>
+					</element>
+					<element name="gwBodyVolume" type="om:OM_ObservationPropertyType" nillable="true" minOccurs="0" maxOccurs="1">
+						<annotation>
+							<documentation>Description of the volume/quantity of water present in a container at a certain time.</documentation>
+						</annotation>
+					</element>
+					<element name="gwBodyVulnerability" type="om:OM_ObservationPropertyType" nillable="true" minOccurs="0" maxOccurs="unbounded">
+						<annotation>
+							<documentation>The susceptibility of the fluid body to specific threats such as surface contamination, etc.</documentation>
+						</annotation>
+					</element>
+					<element name="gwFluidBodyUnit" type="gwml2:GW_UnitFluidPropertyPropertyType" nillable="true" minOccurs="0" maxOccurs="unbounded">
+						<annotation>
+							<documentation>Relates to the hydrogeologic unit containing the fluid body.</documentation>
+						</annotation>
+					</element>
+					<element name="gwFluidBodyVoid" type="gwml2:GW_HydrogeoVoidPropertyType" nillable="true" minOccurs="0" maxOccurs="1">
+						<annotation>
+							<documentation>Relates a fluid body to a void.</documentation>
+						</annotation>
+					</element>
+					<element name="gwBodyPartOf" type="gwml2:GW_FluidBodyPropertyType" nillable="true" minOccurs="0" maxOccurs="unbounded">
+						<annotation>
+							<documentation>Relates which body are parts of a whole body.</documentation>
+						</annotation>
+					</element>
+					<element name="gwBodySurface" type="gwml2:GW_BodySurfacePropertyType" nillable="true" minOccurs="0" maxOccurs="unbounded">
+						<annotation>
+							<documentation>Relates a fluid body to a surface hosted by the body.</documentation>
+						</annotation>
+					</element>
+					<element name="gwBodyConstituent" type="gwml2:GW_MixturePropertyType" nillable="true" minOccurs="0" maxOccurs="unbounded">
+						<annotation>
+							<documentation>Relates a fluid body to typical background constituent values for that body.</documentation>
+						</annotation>
+					</element>
+					<element name="gwBackgroundConstituent" type="gwml2c:GW_ConstituentPropertyType" nillable="true" minOccurs="0" maxOccurs="unbounded">
+						<annotation>
+							<documentation>Relates a fluid body to its chemical, biologic, or material constituents, and specifies the nature of the mixture of the constituent within the body, e.g. solution, suspension.</documentation>
+						</annotation>
+					</element>
+					<element name="gwPartOfBody" type="gwml2:GW_FluidBodyPropertyType" nillable="true" minOccurs="0" maxOccurs="1">
+						<annotation>
+							<documentation>Relates a body part to a whole body.</documentation>
+						</annotation>
+					</element>
+				</sequence>
+			</extension>
+		</complexContent>
+	</complexType>
+	<complexType name="GW_FluidBodyPropertyType">
+		<sequence minOccurs="0">
+			<element ref="gwml2:GW_FluidBody"/>
+		</sequence>
+		<attributeGroup ref="gml:AssociationAttributeGroup"/>
+		<attributeGroup ref="gml:OwnershipAttributeGroup"/>
+	</complexType>
+	<element name="GW_BodySurface" type="gwml2:GW_BodySurfaceType" substitutionGroup="gml:AbstractFeature">
+		<annotation>
+			<documentation>A surface on a body of groundwater, for a local or regional area, e.g. piezometric, potentiometric, water table, salt wedge, etc.</documentation>
+		</annotation>
+	</element>
+	<complexType name="GW_BodySurfaceType">
+		<complexContent>
+			<extension base="gml:AbstractFeatureType">
+				<sequence>
+					<element name="gwSurfaceShapeMetadata" type="om:OM_ObservationPropertyType" nillable="true" minOccurs="0" maxOccurs="1">
+						<annotation>
+							<documentation>Date, time, method, etc., of the observation of the surface.</documentation>
+						</annotation>
+					</element>
+					<element name="gwSurfaceShape" type="gml:SurfacePropertyType" nillable="false" minOccurs="0" maxOccurs="1">
+						<annotation>
+							<documentation>Geometry and position of the surface.</documentation>
+						</annotation>
+					</element>
+					<element name="gwSurfaceType" type="gml:CodeType" nillable="false" minOccurs="0" maxOccurs="1">
+						<annotation>
+							<documentation>Type of groundwater body surface, e.g. piezometric, potentiometric, water table, salt wedge, etc.</documentation>
+						</annotation>
+					</element>
+					<element name="gwSurfaceDivide" type="gwml2:GW_DividePropertyType" nillable="true" minOccurs="0" maxOccurs="unbounded">
+						<annotation>
+							<documentation>Relates to a groundwater divide linked to the fluid body surface.</documentation>
+						</annotation>
+					</element>
+					<element name="gwSurfaceBody" type="gwml2:GW_FluidBodyPropertyType" nillable="true" minOccurs="0" maxOccurs="1">
+						<annotation>
+							<documentation>Relates to the fluid body bounded by the surface.</documentation>
+						</annotation>
+					</element>
+				</sequence>
+			</extension>
+		</complexContent>
+	</complexType>
+	<complexType name="GW_BodySurfacePropertyType">
+		<sequence minOccurs="0">
+			<element ref="gwml2:GW_BodySurface"/>
+		</sequence>
+		<attributeGroup ref="gml:AssociationAttributeGroup"/>
+		<attributeGroup ref="gml:OwnershipAttributeGroup"/>
+	</complexType>
+	<element name="GW_HydrogeoUnit" type="gwml2:GW_HydrogeoUnitType" abstract="true" substitutionGroup="gsml:GeologicUnit">
+		<annotation>
+			<documentation>Any soil or rock unit or zone which by virtue of its hydraulic properties has a distinct influence on the storage or movement of groundwater (after ANS, 1980).</documentation>
+		</annotation>
+	</element>
+	<complexType name="GW_HydrogeoUnitType" abstract="true">
+		<complexContent>
+			<extension base="gsml:GeologicUnitType">
+				<sequence>
+					<element name="gwUnitProperty" type="om:OM_ObservationPropertyType" nillable="false" minOccurs="0" maxOccurs="unbounded">
+						<annotation>
+							<documentation>Additional properties of an hydrogeologic unit not included in the model.</documentation>
+						</annotation>
+					</element>
+					<element name="gwUnitMedia" type="gml:ReferenceType" nillable="true" minOccurs="0" maxOccurs="1">
+						<annotation>
+							<documentation>Type of material or, by proximity, type of voids (e.g. granular, fracture, karstic, or mixed).</documentation>
+						</annotation>
+					</element>
+					<element name="gwUnitWaterBudget" nillable="true" minOccurs="0" maxOccurs="1">
+						<annotation>
+							<documentation>Sum of water input and output of a hydrogeologic unit, at a particular point in time, with a description of inflows and outflows.</documentation>
+						</annotation>
+						<complexType>
+							<complexContent>
+								<extension base="gwml2f:GW_WaterBudgetPropertyType">
+									<attribute name="nilReason" type="gml:NilReasonType"/>
+								</extension>
+							</complexContent>
+						</complexType>
+					</element>
+					<element name="gwUnitRecharge" type="gwml2f:GW_RechargePropertyType" nillable="true" minOccurs="0" maxOccurs="unbounded">
+						<annotation>
+							<documentation>Volumetric flow rate of water that enters an hydrogeologic unit, at potentially multiple locations.</documentation>
+						</annotation>
+					</element>
+					<element name="gwUnitDischarge" type="gwml2f:GW_DischargePropertyType" nillable="true" minOccurs="0" maxOccurs="unbounded">
+						<annotation>
+							<documentation>Volumetric flow rate of water that goes out of an hydrogeologic unit, at potentially multiple locations.</documentation>
+						</annotation>
+					</element>
+					<element name="gwUnitVulnerability" type="om:OM_ObservationPropertyType" nillable="false" minOccurs="0" maxOccurs="unbounded">
+						<annotation>
+							<documentation>The susceptibility of the aquifer to specific threats such as various physical events (earthquakes), human processes (depletion), etc.</documentation>
+						</annotation>
+					</element>
+					<element name="gwUnitFluidBody" type="gwml2:GW_UnitFluidPropertyPropertyType" nillable="true" minOccurs="0" maxOccurs="unbounded">
+						<annotation>
+							<documentation>Relates to the fluid body contained by the hydrogeologic unit.</documentation>
+						</annotation>
+					</element>
+					<element name="gwUnitVoid" type="gwml2:GW_UnitVoidPropertyPropertyType" nillable="true" minOccurs="0" maxOccurs="1">
+						<annotation>
+							<documentation>Relates hydrogeologic units with a void hosted by the units.</documentation>
+						</annotation>
+					</element>
+					<element name="gwManagementArea" type="gwml2:GW_ManagementAreaPropertyType" nillable="true" minOccurs="0" maxOccurs="unbounded">
+						<annotation>
+							<documentation>Relates to the management area(s) linked to a hydrogeologic unit.</documentation>
+						</annotation>
+					</element>
+				</sequence>
+			</extension>
+		</complexContent>
+	</complexType>
+	<complexType name="GW_HydrogeoUnitPropertyType">
+		<sequence minOccurs="0">
+			<element ref="gwml2:GW_HydrogeoUnit"/>
+		</sequence>
+		<attributeGroup ref="gml:AssociationAttributeGroup"/>
+		<attributeGroup ref="gml:OwnershipAttributeGroup"/>
+	</complexType>
+	<element name="GW_Aquifer" type="gwml2:GW_AquiferType" substitutionGroup="gwml2:GW_AquiferUnit">
+		<annotation>
+			<documentation>A body of ground that contains, potentially contains or potentially contained sufficient saturated permeable material to yield significant quantities of water to wells and springs (after Lohman and others, 1972).</documentation>
+		</annotation>
+	</element>
+	<complexType name="GW_AquiferType">
+		<complexContent>
+			<extension base="gwml2:GW_AquiferUnitType">
+				<sequence>
+					<element name="gwAquiferType" type="gml:ReferenceType" nillable="false" minOccurs="0" maxOccurs="1">
+						<annotation>
+							<documentation>Water in an Aquifer is, or is not, under pressure. Based on that, several aquifer types can be distinguished: unconfined, confined, artesian, subartesian, or aquitard (after INSPIRE 2013).</documentation>
+						</annotation>
+					</element>
+					<element name="gwAquiferIsExploited" type="boolean" nillable="false" minOccurs="0" maxOccurs="1">
+						<annotation>
+							<documentation>Denotes whether groundwater from the hydrogeologic unit is being exploited by wells or other intakes (after INSPIRE 2013).</documentation>
+						</annotation>
+					</element>
+					<element name="gwAquiferIsMain" type="boolean" nillable="false" minOccurs="0" maxOccurs="1">
+						<annotation>
+							<documentation>Denotes whether the unit is primary in the aquifer system (after INSPIRE 2013).</documentation>
+						</annotation>
+					</element>
+					<element name="gwConfiningBed" type="gwml2:GW_ConfiningBedPropertyType" minOccurs="0" maxOccurs="unbounded">
+						<annotation>
+							<documentation>Relates confining bed to an aquifer</documentation>
+						</annotation>
+					</element>
+				</sequence>
+			</extension>
+		</complexContent>
+	</complexType>
+	<complexType name="GW_AquiferPropertyType">
+		<sequence minOccurs="0">
+			<element ref="gwml2:GW_Aquifer"/>
+		</sequence>
+		<attributeGroup ref="gml:AssociationAttributeGroup"/>
+		<attributeGroup ref="gml:OwnershipAttributeGroup"/>
+	</complexType>
+	<element name="GW_Divide" type="gwml2:GW_DivideType" substitutionGroup="gml:AbstractFeature">
+		<annotation>
+			<documentation>Line on a water table or piezometric surface on either side of which the groundwater flow diverges. IGH0556</documentation>
+		</annotation>
+	</element>
+	<complexType name="GW_DivideType">
+		<complexContent>
+			<extension base="gml:AbstractFeatureType">
+				<sequence>
+					<element name="gwDivideShape" nillable="true" minOccurs="0" maxOccurs="1">
+						<annotation>
+							<documentation>Shape and position of the divide (line, plane or point)... intersecting a groundwater surface.</documentation>
+						</annotation>
+						<complexType>
+							<sequence>
+								<element ref="gml:AbstractGeometry"/>
+							</sequence>
+						</complexType>
+					</element>
+					<element name="gwDivideSurface" type="gwml2:GW_BodySurfacePropertyType" nillable="true" minOccurs="0" maxOccurs="1">
+						<annotation>
+							<documentation>Relates to a surface linked to a groundwater divide</documentation>
+						</annotation>
+					</element>
+					<element name="gwDivideFlow" type="gwml2:GW_FlowSystemPropertyType" nillable="true" minOccurs="2" maxOccurs="unbounded">
+						<annotation/>
+					</element>
+				</sequence>
+			</extension>
+		</complexContent>
+	</complexType>
+	<complexType name="GW_DividePropertyType">
+		<sequence minOccurs="0">
+			<element ref="gwml2:GW_Divide"/>
+		</sequence>
+		<attributeGroup ref="gml:AssociationAttributeGroup"/>
+		<attributeGroup ref="gml:OwnershipAttributeGroup"/>
+	</complexType>
+	<element name="GW_FlowSystem" type="gwml2:GW_FlowSystemType" substitutionGroup="gml:AbstractFeature">
+		<annotation>
+			<documentation>Flow path from recharge to discharge location, through hydrogeologic units, and related to a groundwater body. It is a collection or aggregation of specific flows.</documentation>
+		</annotation>
+	</element>
+	<complexType name="GW_FlowSystemType">
+		<complexContent>
+			<extension base="gml:AbstractFeatureType">
+				<sequence>
+					<element name="gwFlowPath" type="gml:GeometryPropertyType" nillable="true" minOccurs="0" maxOccurs="unbounded">
+						<annotation>
+							<documentation>The path of flow of a fluid through a container.</documentation>
+						</annotation>
+					</element>
+					<element name="gwFlowSystemPart" type="gwml2:GW_FlowSystemPropertyType" nillable="true" minOccurs="0" maxOccurs="unbounded">
+						<annotation>
+							<documentation>Relates the parts of a flow system to the whole flow system</documentation>
+						</annotation>
+					</element>
+					<element name="gwPartOfSystemFlow" type="gwml2:GW_FlowSystemPropertyType" nillable="true" minOccurs="0" maxOccurs="1">
+						<annotation>
+							<documentation>Relates a flow system part to a flow system whole.	</documentation>
+						</annotation>
+					</element>
+					<element name="gwFlow" type="gwml2f:GW_FlowPropertyType" nillable="true" minOccurs="2" maxOccurs="unbounded">
+						<annotation>
+							<documentation>Relates a flow system to the individual flows that comprise the system. Flows are atomic entities that cannot have parts, but which form parts of flow systems.</documentation>
+						</annotation>
+					</element>
+				</sequence>
+			</extension>
+		</complexContent>
+	</complexType>
+	<complexType name="GW_FlowSystemPropertyType">
+		<sequence minOccurs="0">
+			<element ref="gwml2:GW_FlowSystem"/>
+		</sequence>
+		<attributeGroup ref="gml:AssociationAttributeGroup"/>
+		<attributeGroup ref="gml:OwnershipAttributeGroup"/>
+	</complexType>
+	<element name="GW_AquiferSystem" type="gwml2:GW_AquiferSystemType" substitutionGroup="gwml2:GW_AquiferUnit">
+		<annotation>
+			<documentation>Aquifer system - A body of permeable and poorly permeable material that functions regionally as a water-yielding unit; it comprises two or more permeable beds separated at least locally by confining beds that impede groundwater movement but do not greatly affect the regional hydraulic continuity of the system; includes both saturated and unsaturated parts of permeable material (after ASCE, 1985).</documentation>
+		</annotation>
+	</element>
+	<complexType name="GW_AquiferSystemType">
+		<complexContent>
+			<extension base="gwml2:GW_AquiferUnitType">
+				<sequence>
+					<element name="gwAquiferSystemIsLayered" nillable="false" minOccurs="0" maxOccurs="1">
+						<annotation>
+							<documentation>True if this aquifer system is a layered system (after INSPIRE 2013).</documentation>
+						</annotation>
+						<complexType>
+							<simpleContent>
+								<extension base="boolean">
+									<attribute name="nilReason" type="gml:NilReasonType"/>
+								</extension>
+							</simpleContent>
+						</complexType>
+					</element>
+					<element name="gwAquiferSystemPart" type="gwml2:GW_AquiferUnitPropertyType" nillable="true" minOccurs="0" maxOccurs="unbounded">
+						<annotation>
+							<documentation>Relates to the parts of an aquifer system.</documentation>
+						</annotation>
+					</element>
+				</sequence>
+			</extension>
+		</complexContent>
+	</complexType>
+	<complexType name="GW_AquiferSystemPropertyType">
+		<sequence minOccurs="0">
+			<element ref="gwml2:GW_AquiferSystem"/>
+		</sequence>
+		<attributeGroup ref="gml:AssociationAttributeGroup"/>
+		<attributeGroup ref="gml:OwnershipAttributeGroup"/>
+	</complexType>
+	<element name="GW_ConfiningBed" type="gwml2:GW_ConfiningBedType" substitutionGroup="gwml2:GW_AquiferUnit">
+		<annotation>
+			<documentation>A layer of rock having very low porosity and in consequence hydraulic conductivity that hampers the movement of water into and out of an aquifer (Heath 1983)</documentation>
+		</annotation>
+	</element>
+	<complexType name="GW_ConfiningBedType">
+		<complexContent>
+			<extension base="gwml2:GW_AquiferUnitType">
+				<sequence>
+					<element name="gwSpatialConfinement" type="gml:ReferenceType" nillable="false" minOccurs="0" maxOccurs="1">
+						<annotation>
+							<documentation>Degree of spatial confinement (typically: "Unconfined-Confined", "Partially Confined").</documentation>
+						</annotation>
+					</element>
+					<element name="gwConductivityConfinement" type="gml:ReferenceType" nillable="false" minOccurs="0" maxOccurs="1">
+						<annotation>
+							<documentation>Degree of hydraulic confinement (e.g. aquiclude).</documentation>
+						</annotation>
+					</element>
+					<element name="gwConfinedAquifer" type="gwml2:GW_AquiferUnitPropertyType" nillable="true" minOccurs="0" maxOccurs="unbounded">
+						<annotation>
+							<documentation>Relates aquifers to a confining bed</documentation>
+						</annotation>
+					</element>
+				</sequence>
+			</extension>
+		</complexContent>
+	</complexType>
+	<complexType name="GW_ConfiningBedPropertyType">
+		<sequence minOccurs="0">
+			<element ref="gwml2:GW_ConfiningBed"/>
+		</sequence>
+		<attributeGroup ref="gml:AssociationAttributeGroup"/>
+		<attributeGroup ref="gml:OwnershipAttributeGroup"/>
+	</complexType>
+	<element name="GW_UnitVoidProperty" type="gwml2:GW_UnitVoidPropertyType" substitutionGroup="gml:AbstractGML">
+		<annotation>
+			<documentation>A measured or calculated physical or hydraulic property that can be inherent in either an aquifer or its material, and some fluid body, e.g. hydraulic conductivity, transmissivity, storativity, permeability, porosity.</documentation>
+		</annotation>
+	</element>
+	<complexType name="GW_UnitVoidPropertyType">
+		<complexContent>
+			<extension base="gml:AbstractGMLType">
+				<sequence>
+					<element name="gwPermeability" type="om:OM_ObservationPropertyType" nillable="true" minOccurs="0" maxOccurs="unbounded">
+						<annotation>
+							<documentation>Refers to intrinsic permeability: a measure of a material's ability to allow fluid flow that is independent of fluid properties, and based on connectivity of pores and size of their openings. Not hydraulic conductivity.</documentation>
+						</annotation>
+					</element>
+					<element name="gwPorosity" type="om:OM_ObservationPropertyType" nillable="true" minOccurs="0" maxOccurs="unbounded">
+						<annotation>
+							<documentation>Porosity or void fraction is a measure of the void (i.e. "empty") spaces in a material, and is a fraction of the volume of voids over the total volume (i.e. material plus voids)" (after Wikipedia)  Types of porosity include: specific, effective, etc.
+
+Voids are differentiated from 'porosity' in that porosity is the proportion of void volume to total volume (i.e. container + voids), while voids are the spaces themselves.
+Measure of the proportion of volume occupied by a void over the the total volume of material, plus  voids (e.g. the material of an aquifer, plus its pores).</documentation>
+						</annotation>
+					</element>
+					<element name="gwVoidUnit" type="gwml2:GW_HydrogeoUnitPropertyType" nillable="true" minOccurs="1" maxOccurs="1">
+						<annotation>
+							<documentation>Relates to the hydrogeologic unit hosting the void</documentation>
+						</annotation>
+					</element>
+					<element name="gwUnitVoid" type="gwml2:GW_HydrogeoVoidPropertyType" nillable="true" minOccurs="1" maxOccurs="1">
+						<annotation>
+							<documentation>Relates hydrogeologic units with a void hosted by the units</documentation>
+						</annotation>
+					</element>
+				</sequence>
+			</extension>
+		</complexContent>
+	</complexType>
+	<complexType name="GW_UnitVoidPropertyPropertyType">
+		<sequence minOccurs="0">
+			<element ref="gwml2:GW_UnitVoidProperty"/>
+		</sequence>
+		<attributeGroup ref="gml:AssociationAttributeGroup"/>
+		<attributeGroup ref="gml:OwnershipAttributeGroup"/>
+	</complexType>
+	<element name="GW_Mixture" type="gwml2:GW_MixtureType" substitutionGroup="gml:AbstractGML">
+		<annotation>
+			<documentation>The nature of the inclusion of the constituent in the fluid body, e.g. suspension, emulsion, etc.</documentation>
+		</annotation>
+	</element>
+	<complexType name="GW_MixtureType">
+		<complexContent>
+			<extension base="gml:AbstractGMLType">
+				<sequence>
+					<element name="gwMixture" type="gwml2:MixtureType" nillable="false">
+						<annotation>
+							<documentation>E.g. solution, suspension, emulsion, precipitate</documentation>
+						</annotation>
+					</element>
+					<element name="gwBodyConstituent" type="gwml2c:GW_ConstituentPropertyType" nillable="true" minOccurs="1" maxOccurs="unbounded">
+						<annotation>
+							<documentation>Relates a fluid body to its chemical, biologic, or material constituents, and specifies the nature of the mixture of the constituent within the body, e.g. solution, suspension.</documentation>
+						</annotation>
+					</element>
+				</sequence>
+			</extension>
+		</complexContent>
+	</complexType>
+	<!-- manual edits to set the vocabulary as a local vocabulary -->
+	<!-- added manually to handle local vocabulary -->
+	<simpleType name="MixtureType">
+		<annotation>
+			<documentation>The manner in which a constituent is within a fluid body, e.g. solution, suspension, emulsion, precipitate, colloidal.</documentation>
+		</annotation>
+		<union memberTypes="gwml2:MixtureTypeEnumerationType"/>
+	</simpleType>
+	<simpleType name="MixtureTypeEnumerationType">
+		<annotation>
+			<documentation>The manner in which a constituent is within a fluid body, e.g. solution, suspension, emulsion, precipitate, colloidal.</documentation>
+		</annotation>
+		<restriction base="string">
+			<enumeration value="suspension">
+				<annotation>
+					<documentation/>
+				</annotation>
+			</enumeration>
+			<enumeration value="precipitate">
+				<annotation>
+					<documentation/>
+				</annotation>
+			</enumeration>
+			<enumeration value="colloidal">
+				<annotation>
+					<documentation/>
+				</annotation>
+			</enumeration>
+			<enumeration value="solution">
+				<annotation>
+					<documentation/>
+				</annotation>
+			</enumeration>
+		</restriction>
+	</simpleType>
+	<complexType name="GW_MixturePropertyType">
+		<sequence minOccurs="0">
+			<element ref="gwml2:GW_Mixture"/>
+		</sequence>
+		<attributeGroup ref="gml:AssociationAttributeGroup"/>
+		<attributeGroup ref="gml:OwnershipAttributeGroup"/>
+	</complexType>
+	<element name="GW_UnitFluidProperty" type="gwml2:GW_UnitFluidPropertyType" substitutionGroup="gml:AbstractGML">
+		<annotation>
+			<documentation>A measured or calculated physical or hydraulic property that can be inherent in either an aquifer or its material, and some fluid body, e.g. hydraulic conductivity, transmissivity, storativity, permeability, porosity.</documentation>
+		</annotation>
+	</element>
+	<complexType name="GW_UnitFluidPropertyType">
+		<complexContent>
+			<extension base="gml:AbstractGMLType">
+				<sequence>
+					<element name="gwHydraulicConductivity" type="om:OM_ObservationPropertyType" nillable="true" minOccurs="0" maxOccurs="unbounded">
+						<annotation>
+							<documentation>Hydraulic conductivity measures how easily a fluid can move through the voids in a material.</documentation>
+						</annotation>
+					</element>
+					<element name="gwStorativity" type="om:OM_ObservationPropertyType" nillable="true" minOccurs="0" maxOccurs="unbounded">
+						<annotation>
+							<documentation>Storativity is the volume of water released from storage per unit decline in hydraulic head in the aquifer, per unit area of the aquifer. (gwml1)</documentation>
+						</annotation>
+					</element>
+					<element name="gwTransmissivity" type="om:OM_ObservationPropertyType" nillable="true" minOccurs="0" maxOccurs="unbounded">
+						<annotation>
+							<documentation>he rate of groundwater flow laterally through an aquifer, determined by hydraulic conductivity and container thickness.</documentation>
+						</annotation>
+					</element>
+					<element name="gwYield" type="om:OM_ObservationPropertyType" nillable="true" minOccurs="0" maxOccurs="unbounded">
+						<annotation>
+							<documentation>Yield is the rate of fluid withdrawal associated with a unit, well, etc. Expressed as m3. There are several types of yield that can be considered: specific yield, sustainable yield, safe yield, aquifer yield, etc.</documentation>
+						</annotation>
+					</element>
+					<element name="gwUnitFluidBody" type="gwml2:GW_FluidBodyPropertyType" nillable="true" minOccurs="1" maxOccurs="1">
+						<annotation>
+							<documentation>Relates to the fluid body contained by the hydrogeologic unit.</documentation>
+						</annotation>
+					</element>
+					<element name="gwFluidBodyUnit" type="gwml2:GW_HydrogeoUnitPropertyType" nillable="true" minOccurs="1" maxOccurs="1">
+						<annotation>
+							<documentation>Relates to the hydrogeologic unit containing the fluid body.</documentation>
+						</annotation>
+					</element>
+				</sequence>
+			</extension>
+		</complexContent>
+	</complexType>
+	<complexType name="GW_UnitFluidPropertyPropertyType">
+		<sequence minOccurs="0">
+			<element ref="gwml2:GW_UnitFluidProperty"/>
+		</sequence>
+		<attributeGroup ref="gml:AssociationAttributeGroup"/>
+		<attributeGroup ref="gml:OwnershipAttributeGroup"/>
+	</complexType>
+	<simpleType name="ManagementAreaTypeTermType">
+		<union memberTypes="gwml2:ManagementAreaTypeTermEnumerationType gwml2:ManagementAreaTypeTermOtherType"/>
+	</simpleType>
+	<simpleType name="ManagementAreaTypeTermEnumerationType">
+		<restriction base="string"/>
+	</simpleType>
+	<simpleType name="ManagementAreaTypeTermOtherType">
+		<restriction base="string">
+			<pattern value="other: \w{2,}"/>
+		</restriction>
+	</simpleType>
+</schema>

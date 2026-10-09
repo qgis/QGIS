@@ -204,7 +204,7 @@ QDomElement QgsMultiPoint::asGml3( QDomDocument &doc, int precision, const QStri
   return elemMultiPoint;
 }
 
-json QgsMultiPoint::asJsonObject( int precision ) const
+json QgsMultiPoint::asJsonObject( int precision, Qgis::GeoJsonProfile profile ) const
 {
   json j {
     { "type", "MultiPoint" },
@@ -213,10 +213,16 @@ json QgsMultiPoint::asJsonObject( int precision ) const
   for ( const QgsAbstractGeometry *geom : std::as_const( mGeometries ) )
   {
     const QgsPoint *point = static_cast<const QgsPoint *>( geom );
+    json coords = { qgsRound( point->x(), precision ), qgsRound( point->y(), precision ) };
     if ( point->is3D() )
-      j["coordinates"].push_back( { qgsRound( point->x(), precision ), qgsRound( point->y(), precision ), qgsRound( point->z(), precision ) } );
-    else
-      j["coordinates"].push_back( { qgsRound( point->x(), precision ), qgsRound( point->y(), precision ) } );
+    {
+      coords.push_back( qgsRound( point->z(), precision ) );
+    }
+    if ( isMeasure() && ( profile == Qgis::GeoJsonProfile::JsonFg || profile == Qgis::GeoJsonProfile::JsonFgPlus ) )
+    {
+      coords.push_back( qgsRound( point->m(), precision ) );
+    }
+    j["coordinates"].push_back( coords );
   }
   return j;
 }

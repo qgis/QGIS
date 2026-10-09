@@ -45,7 +45,7 @@ Constructor for QgsTiledSceneWireframeRenderer.
     virtual Qgis::TiledSceneRendererFlags flags() const;
 
 
-    static QgsTiledSceneRenderer *create( QDomElement &element, const QgsReadWriteContext &context ) /Factory/;
+    static std::unique_ptr<QgsTiledSceneRenderer> create( QDomElement &element, const QgsReadWriteContext &context );
 %Docstring
 Creates a textured renderer from an XML ``element``.
 %End

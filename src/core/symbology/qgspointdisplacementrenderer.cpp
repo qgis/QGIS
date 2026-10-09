@@ -167,9 +167,9 @@ void QgsPointDisplacementRenderer::stopRender( QgsRenderContext &context )
   }
 }
 
-QgsFeatureRenderer *QgsPointDisplacementRenderer::create( QDomElement &symbologyElem, const QgsReadWriteContext &context )
+std::unique_ptr<QgsFeatureRenderer> QgsPointDisplacementRenderer::create( QDomElement &symbologyElem, const QgsReadWriteContext &context )
 {
-  QgsPointDisplacementRenderer *r = new QgsPointDisplacementRenderer();
+  auto r = std::make_unique<QgsPointDisplacementRenderer>();
   r->setLabelAttributeName( symbologyElem.attribute( u"labelAttributeName"_s ) );
   QFont labelFont;
   if ( !QgsFontUtils::setFromXmlChildNode( labelFont, symbologyElem, u"labelFontProperties"_s ) )
@@ -192,7 +192,7 @@ QgsFeatureRenderer *QgsPointDisplacementRenderer::create( QDomElement &symbology
   QDomElement embeddedRendererElem = symbologyElem.firstChildElement( u"renderer-v2"_s );
   if ( !embeddedRendererElem.isNull() )
   {
-    r->setEmbeddedRenderer( QgsFeatureRenderer::load( embeddedRendererElem, context ) );
+    r->setEmbeddedRenderer( QgsFeatureRenderer::load( embeddedRendererElem, context ).release() );
   }
 
   //center symbol
@@ -489,29 +489,29 @@ void QgsPointDisplacementRenderer::drawSymbols( const ClusteredGroup &group, Qgs
   }
 }
 
-QgsPointDisplacementRenderer *QgsPointDisplacementRenderer::convertFromRenderer( const QgsFeatureRenderer *renderer )
+std::unique_ptr<QgsPointDisplacementRenderer> QgsPointDisplacementRenderer::convertFromRenderer( const QgsFeatureRenderer *renderer )
 {
   if ( renderer->type() == "pointDisplacement"_L1 )
   {
-    return dynamic_cast<QgsPointDisplacementRenderer *>( renderer->clone() );
+    return std::unique_ptr<QgsPointDisplacementRenderer>( dynamic_cast<QgsPointDisplacementRenderer *>( renderer->clone() ) );
   }
   else if ( renderer->type() == "singleSymbol"_L1 || renderer->type() == "categorizedSymbol"_L1 || renderer->type() == "graduatedSymbol"_L1 || renderer->type() == "RuleRenderer"_L1 )
   {
-    QgsPointDisplacementRenderer *pointRenderer = new QgsPointDisplacementRenderer();
+    auto pointRenderer = std::make_unique<QgsPointDisplacementRenderer>();
     pointRenderer->setEmbeddedRenderer( renderer->clone() );
-    renderer->copyRendererData( pointRenderer );
+    renderer->copyRendererData( pointRenderer.get() );
     return pointRenderer;
   }
   else if ( renderer->type() == "pointCluster"_L1 )
   {
-    QgsPointDisplacementRenderer *pointRenderer = new QgsPointDisplacementRenderer();
+    auto pointRenderer = std::make_unique<QgsPointDisplacementRenderer>();
     const QgsPointClusterRenderer *clusterRenderer = static_cast< const QgsPointClusterRenderer * >( renderer );
     if ( clusterRenderer->embeddedRenderer() )
       pointRenderer->setEmbeddedRenderer( clusterRenderer->embeddedRenderer()->clone() );
     pointRenderer->setTolerance( clusterRenderer->tolerance() );
     pointRenderer->setToleranceUnit( clusterRenderer->toleranceUnit() );
     pointRenderer->setToleranceMapUnitScale( clusterRenderer->toleranceMapUnitScale() );
-    renderer->copyRendererData( pointRenderer );
+    renderer->copyRendererData( pointRenderer.get() );
     return pointRenderer;
   }
   else

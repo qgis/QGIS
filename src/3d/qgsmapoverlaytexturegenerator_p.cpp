@@ -19,6 +19,7 @@
 #include "qgseventtracing.h"
 #include "qgsmaprendererparalleljob.h"
 #include "qgsmapsettings.h"
+#include "qgsproject.h"
 
 #include <QString>
 

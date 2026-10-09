@@ -47,6 +47,12 @@ email                : morb at ozemail dot com dot au
 #include "qgstriangulatedsurface.h"
 #include "qgsvectorlayer.h"
 
+#include <QString>
+
+#ifdef WITH_SFCGAL
+#include "qgssfcgalgeometry.h"
+#endif
+
 #include <QCache>
 #include <QString>
 
@@ -667,6 +673,47 @@ bool QgsGeometry::deleteVertex( int atVertex )
   return d->geometry->deleteVertex( id );
 }
 
+bool QgsGeometry::deleteVertices( const QSet<int> &atVertices )
+{
+  if ( !d->geometry )
+  {
+    return false;
+  }
+
+  // if it is a point, set the geometry to nullptr
+  if ( QgsWkbTypes::flatType( d->geometry->wkbType() ) == Qgis::WkbType::Point )
+  {
+    if ( atVertices.size() != 1 && !atVertices.contains( 0 ) )
+      return false;
+
+    reset( nullptr );
+    return true;
+  }
+
+  QSet<QgsVertexId> vertexIds;
+  for ( int vertex : atVertices )
+  {
+    QgsVertexId id;
+    if ( !vertexIdFromVertexNr( vertex, id ) )
+      return false;
+
+    vertexIds.insert( id );
+  }
+
+  // create a copy of the original geometry to restore it in case of failure
+  std::unique_ptr< QgsAbstractGeometry > originalGeometry( d->geometry->clone() );
+
+  detach();
+
+  if ( !d->geometry->deleteVertices( vertexIds ) )
+  {
+    reset( std::move( originalGeometry ) );
+    return false;
+  }
+
+  return true;
+}
+
 bool QgsGeometry::toggleCircularAtVertex( int atVertex )
 {
   if ( !d->geometry )
@@ -1159,6 +1206,8 @@ Qgis::GeometryOperationResult QgsGeometry::rotate( double rotation, const QgsPoi
   return Qgis::GeometryOperationResult::Success;
 }
 
+// TODO: Remove this method when reshape() no longer calls it.
+// i.e., when adapted to GEOS 3.15, since GEOS does the right thing.
 static void removeDuplicateAdjacentPointsAt( QgsAbstractGeometry *geom, const QgsPointSequence &points )
 {
   // this is a workaround for removing duplicated points introduced by GEOS when splitting 3d geometries
@@ -1203,14 +1252,50 @@ Qgis::GeometryOperationResult QgsGeometry::splitGeometry(
   const QgsPointSequence &splitLine, QVector<QgsGeometry> &newGeometries, bool topological, QgsPointSequence &topologyTestPoints, bool splitFeature, bool skipIntersectionTest
 )
 {
+#if GEOS_VERSION_MAJOR > 3 || ( GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR >= 15 )
+  Q_UNUSED( skipIntersectionTest )
+#endif
   if ( !d->geometry )
   {
     return Qgis::GeometryOperationResult::InvalidBaseGeometry;
+  }
+  if ( splitLine.isEmpty() )
+  {
+    return Qgis::GeometryOperationResult::InvalidInputGeometryType;
   }
 
   // We're trying adding the split line's vertices to the geometry so that
   // snap to segment always produces a valid split (see https://github.com/qgis/QGIS/issues/29270)
   QgsGeometry tmpGeom( *this );
+  QVector<QgsGeometry > newGeomsTemp;
+
+#if GEOS_VERSION_MAJOR > 3 || ( GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR >= 15 )
+  for ( const QgsPoint &v : splitLine )
+  {
+    tmpGeom.addTopologicalPoint( v );
+  }
+
+  std::unique_ptr< QgsAbstractGeometry > splitGeom;
+  if ( splitLine.size() > 1 )
+  {
+    splitGeom = std::make_unique< QgsLineString >( splitLine );
+    splitGeom->dropZValue();
+    splitGeom->dropMValue();
+  }
+  else if ( splitLine.size() == 1 )
+  {
+    splitGeom = std::make_unique< QgsPoint >( splitLine[0].x(), splitLine[0].y() );
+  }
+  QgsGeos geos( tmpGeom.get() );
+  mLastError.clear();
+  QgsGeometryEngine::EngineOperationResult result = geos.splitGeometry( *splitGeom.get(), newGeomsTemp, topological, topologyTestPoints, &mLastError );
+
+  switch ( result )
+  {
+    case QgsGeometryEngine::Success:
+    {
+      newGeometries = collectSplitGeometries( newGeomsTemp, splitFeature );
+#else
   QgsPointSequence addedTopologicalPoints;
   for ( const QgsPoint &v : splitLine )
   {
@@ -1235,34 +1320,33 @@ Qgis::GeometryOperationResult QgsGeometry::splitGeometry(
     }
   }
 
-  QVector<QgsGeometry > newGeoms;
   QgsLineString splitLineString( splitLine );
   splitLineString.dropZValue();
   splitLineString.dropMValue();
 
   QgsGeos geos( tmpGeom.get() );
   mLastError.clear();
-  QgsGeometryEngine::EngineOperationResult result = geos.splitGeometry( splitLineString, newGeoms, topological, topologyTestPoints, &mLastError, skipIntersectionTest );
-
-  if ( result == QgsGeometryEngine::Success )
-  {
-    if ( !addedTopologicalPoints.isEmpty() )
-    {
-      for ( int i = 0; i < newGeoms.size(); ++i )
-      {
-        QgsAbstractGeometry *geom = newGeoms[i].get();
-        removeDuplicateAdjacentPointsAt( geom, addedTopologicalPoints );
-      }
-    }
-    if ( splitFeature )
-      *this = newGeoms.takeAt( 0 );
-    newGeometries = newGeoms;
-  }
+  QgsGeometryEngine::EngineOperationResult result = geos.splitGeometry( splitLineString, newGeomsTemp, topological, topologyTestPoints, &mLastError, skipIntersectionTest );
 
   switch ( result )
   {
     case QgsGeometryEngine::Success:
+    {
+      if ( !addedTopologicalPoints.isEmpty() )
+      {
+        for ( int i = 0; i < newGeomsTemp.size(); ++i )
+        {
+          QgsAbstractGeometry *geom = newGeomsTemp[i].get();
+          removeDuplicateAdjacentPointsAt( geom, addedTopologicalPoints );
+        }
+      }
+      if ( splitFeature && !newGeomsTemp.isEmpty() )
+        *this = newGeomsTemp.takeAt( 0 );
+
+      newGeometries = newGeomsTemp;
+#endif
       return Qgis::GeometryOperationResult::Success;
+    }
     case QgsGeometryEngine::MethodNotImplemented:
     case QgsGeometryEngine::EngineError:
     case QgsGeometryEngine::NodedGeometryError:
@@ -1287,6 +1371,57 @@ Qgis::GeometryOperationResult QgsGeometry::splitGeometry(
   const QgsCurve *curve, QVector<QgsGeometry> &newGeometries, bool preserveCircular, bool topological, QgsPointSequence &topologyTestPoints, bool splitFeature
 )
 {
+#if GEOS_VERSION_MAJOR > 3 || ( GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR >= 15 )
+  Q_UNUSED( preserveCircular );
+
+  if ( !d->geometry )
+  {
+    return Qgis::GeometryOperationResult::InvalidBaseGeometry;
+  }
+  if ( curve->isEmpty() )
+  {
+    return Qgis::GeometryOperationResult::InvalidInputGeometryType;
+  }
+
+  // We're trying adding the split line's vertices to the geometry so that
+  // snap to segment always produces a valid split (see https://github.com/qgis/QGIS/issues/29270)
+  QgsGeometry tmpGeom( *this );
+  QgsPointSequence curvePoints;
+  curve->points( curvePoints );
+
+  for ( const QgsPoint &v : std::as_const( curvePoints ) )
+  {
+    tmpGeom.addTopologicalPoint( v );
+  }
+
+  QVector< QgsGeometry> newGeomsTemp;
+
+  QgsGeos geos( tmpGeom.get() );
+  mLastError.clear();
+  QgsGeometryEngine::EngineOperationResult result = geos.splitGeometry( *curve, newGeomsTemp, topological, topologyTestPoints, &mLastError );
+
+  switch ( result )
+  {
+    case QgsGeometryEngine::Success:
+    {
+      newGeometries = collectSplitGeometries( newGeomsTemp, splitFeature );
+      return Qgis::GeometryOperationResult::Success;
+    }
+    case QgsGeometryEngine::MethodNotImplemented:
+    case QgsGeometryEngine::EngineError:
+    case QgsGeometryEngine::NodedGeometryError:
+      return Qgis::GeometryOperationResult::GeometryEngineError;
+    case QgsGeometryEngine::InvalidBaseGeometry:
+      return Qgis::GeometryOperationResult::InvalidBaseGeometry;
+    case QgsGeometryEngine::InvalidInput:
+      return Qgis::GeometryOperationResult::InvalidInputGeometryType;
+    case QgsGeometryEngine::SplitCannotSplitPoint:
+      return Qgis::GeometryOperationResult::SplitCannotSplitPoint;
+    case QgsGeometryEngine::NothingHappened:
+      return Qgis::GeometryOperationResult::NothingHappened;
+      //default: do not implement default to handle properly all cases
+  }
+#else
   std::unique_ptr<QgsLineString> segmentizedLine( curve->curveToLine() );
   QgsPointSequence points;
   segmentizedLine->points( points );
@@ -1301,8 +1436,8 @@ Qgis::GeometryOperationResult QgsGeometry::splitGeometry(
       *this = convertToCurves();
     }
   }
-
   return result;
+#endif
 }
 
 Qgis::GeometryOperationResult QgsGeometry::reshapeGeometry( const QgsLineString &reshapeLineString )
@@ -1320,6 +1455,8 @@ Qgis::GeometryOperationResult QgsGeometry::reshapeGeometry( const QgsLineString 
   QgsPointSequence addedTopologicalPoints;
   for ( const QgsPoint &v : std::as_const( reshapePoints ) )
   {
+    // TODO: Remove this if block when reshape gets curve support, i.e.,
+    // when adapted to GEOS 3.15, since GEOS does the right thing.
     if ( tmpGeom.addTopologicalPoint( v ) )
     {
       // When reshaping 3D lines or polygons we want to make sure that any topological points added
@@ -1341,6 +1478,8 @@ Qgis::GeometryOperationResult QgsGeometry::reshapeGeometry( const QgsLineString 
   std::unique_ptr< QgsAbstractGeometry > geom( geos.reshapeGeometry( reshapeLineString, &errorCode, &mLastError ) );
   if ( errorCode == QgsGeometryEngine::Success && geom )
   {
+    // TODO: Remove this inner if block when reshape gets curve support,
+    // i.e., when adapted to GEOS 3.15, since GEOS does the right thing.
     if ( !addedTopologicalPoints.isEmpty() )
     {
       removeDuplicateAdjacentPointsAt( geom.get(), addedTopologicalPoints );
@@ -1381,7 +1520,7 @@ int QgsGeometry::makeDifferenceInPlace( const QgsGeometry &other, QgsFeedback *f
   QgsGeos geos( d->geometry.get() );
 
   mLastError.clear();
-  std::unique_ptr< QgsAbstractGeometry > diffGeom( geos.intersection( other.constGet(), &mLastError, QgsGeometryParameters(), feedback ) );
+  std::unique_ptr< QgsAbstractGeometry > diffGeom( geos.difference( other.constGet(), &mLastError, QgsGeometryParameters(), feedback ) );
   if ( !diffGeom )
   {
     return 1;
@@ -1393,23 +1532,7 @@ int QgsGeometry::makeDifferenceInPlace( const QgsGeometry &other, QgsFeedback *f
 
 QgsGeometry QgsGeometry::makeDifference( const QgsGeometry &other, QgsFeedback *feedback ) const
 {
-  if ( !d->geometry || other.isNull() )
-  {
-    return QgsGeometry();
-  }
-
-  QgsGeos geos( d->geometry.get() );
-
-  mLastError.clear();
-  std::unique_ptr< QgsAbstractGeometry > diffGeom( geos.intersection( other.constGet(), &mLastError, QgsGeometryParameters(), feedback ) );
-  if ( !diffGeom )
-  {
-    QgsGeometry result;
-    result.mLastError = mLastError;
-    return result;
-  }
-
-  return QgsGeometry( diffGeom.release() );
+  return difference( other, QgsGeometryParameters(), feedback );
 }
 
 QgsRectangle QgsGeometry::boundingBox() const
@@ -1781,16 +1904,21 @@ QString QgsGeometry::asWkt( int precision ) const
 
 QString QgsGeometry::asJson( int precision ) const
 {
-  return QString::fromStdString( asJsonObject( precision ).dump() );
+  return asGeoJson( precision, Qgis::GeoJsonProfile::Rfc7946 );
 }
 
-json QgsGeometry::asJsonObject( int precision ) const
+QString QgsGeometry::asGeoJson( int precision, Qgis::GeoJsonProfile profile ) const
+{
+  return QString::fromStdString( asJsonObject( precision, profile ).dump() );
+}
+
+json QgsGeometry::asJsonObject( int precision, Qgis::GeoJsonProfile profile ) const
 {
   if ( !d->geometry )
   {
     return nullptr;
   }
-  return d->geometry->asJsonObject( precision );
+  return d->geometry->asJsonObject( precision, profile );
 }
 
 QVector<QgsGeometry> QgsGeometry::coerceToType( const Qgis::WkbType type, double defaultZ, double defaultM, bool avoidDuplicates ) const
@@ -2806,7 +2934,7 @@ QgsGeometry QgsGeometry::variableWidthBufferByM( int segments ) const
   return engine.variableWidthBufferByM( segments );
 }
 
-QgsGeometry QgsGeometry::extendLine( double startDistance, double endDistance ) const
+QgsGeometry QgsGeometry::extendLine( double startDistance, double endDistance, double startDeflection, double endDeflection ) const
 {
   if ( !d->geometry || type() != Qgis::GeometryType::Line )
   {
@@ -2820,7 +2948,7 @@ QgsGeometry QgsGeometry::extendLine( double startDistance, double endDistance ) 
     results.reserve( parts.count() );
     for ( const QgsGeometry &part : parts )
     {
-      QgsGeometry result = part.extendLine( startDistance, endDistance );
+      QgsGeometry result = part.extendLine( startDistance, endDistance, startDeflection, endDeflection );
       if ( !result.isNull() )
         results << result;
     }
@@ -2841,7 +2969,7 @@ QgsGeometry QgsGeometry::extendLine( double startDistance, double endDistance ) 
       return QgsGeometry();
 
     std::unique_ptr< QgsLineString > newLine( line->clone() );
-    newLine->extend( startDistance, endDistance );
+    newLine->extend( startDistance, endDistance, startDeflection, endDeflection );
     return QgsGeometry( std::move( newLine ) );
   }
 }
@@ -3142,6 +3270,25 @@ QgsGeometry QgsGeometry::simplifyCoverageVW( double tolerance, bool preserveBoun
   QgsGeos geos( d->geometry.get() );
   mLastError.clear();
   QgsGeometry result( geos.simplifyCoverageVW( tolerance, preserveBoundary, &mLastError ) );
+  result.mLastError = mLastError;
+  return result;
+}
+
+QgsGeometry QgsGeometry::cleanCoverage( const QgsCoverageCleanParameters &parameters, QgsFeedback *feedback ) const
+{
+  if ( !d->geometry )
+  {
+    return QgsGeometry();
+  }
+
+  if ( QgsWkbTypes::flatType( d->geometry->wkbType() ) != Qgis::WkbType::GeometryCollection
+       && QgsWkbTypes::flatType( d->geometry->wkbType() ) != Qgis::WkbType::MultiPolygon
+       && QgsWkbTypes::flatType( d->geometry->wkbType() ) != Qgis::WkbType::Polygon )
+    return QgsGeometry();
+
+  QgsGeos geos( d->geometry.get() );
+  mLastError.clear();
+  const QgsGeometry result( geos.cleanCoverage( parameters, &mLastError, feedback ) );
   result.mLastError = mLastError;
   return result;
 }
@@ -3780,6 +3927,30 @@ void QgsGeometry::validateGeometry( QVector<QgsGeometry::Error> &errors, const Q
         }
         return;
       }
+      break;
+    }
+    case Qgis::GeometryValidationEngine::Sfcgal:
+    {
+#ifdef WITH_SFCGAL
+      QString errorMsg;
+      QgsGeometry errorLoc;
+      const QgsSfcgalGeometry sfcgalGeom( d->geometry.get() );
+      if ( !QgsSfcgalEngine::isValid( sfcgalGeom.sfcgalGeometry().get(), nullptr, &errorMsg, &errorLoc ) )
+      {
+        if ( errorLoc.isNull() )
+        {
+          errors.append( QgsGeometry::Error( errorMsg ) );
+        }
+        else
+        {
+          const QgsPointXY point = errorLoc.asPoint();
+          errors.append( QgsGeometry::Error( errorMsg, point ) );
+        }
+        return;
+      }
+#else
+      throw QgsNotSupportedException( u"This operation requires a QGIS installation with SFCGAL support enabled. Please use a version of QGIS that includes SFCGAL."_s );
+#endif
     }
   }
 }
@@ -5068,7 +5239,7 @@ QgsGeometry QgsGeometry::doChamferFillet( ChamferFilletOperationType op, int ver
         }
         partIndex++;
       }
-      finalGeom.reset( dynamic_cast<QgsAbstractGeometry *>( newMultiPoly.release() ) );
+      finalGeom = std::move( newMultiPoly );
     }
     else
     {
@@ -5117,4 +5288,73 @@ QgsGeometry QgsGeometry::fillet( const QgsPoint &segment1Start, const QgsPoint &
   }
 
   return QgsGeometry( std::move( result ) );
+}
+
+QVector< QgsGeometry > QgsGeometry::collectSplitFeatures( const QVector< QgsGeometry> newGeoms ) const
+{
+  QVector< QgsGeometry> collectedNewGeoms;
+  QVector< QgsGeometry> unchangedParts;
+
+  for ( QgsGeometry newGeom : newGeoms )
+  {
+    bool inOriginalCollection = false;
+    QVector< QgsGeometry > originalGeoms = this->asGeometryCollection();
+    for ( QgsGeometry &originalPart : originalGeoms )
+    {
+      if ( newGeom.isExactlyEqual( originalPart ) )
+      {
+        inOriginalCollection = true;
+        break;
+      }
+    }
+    if ( inOriginalCollection )
+    {
+      unchangedParts.append( newGeom );
+    }
+    else
+    {
+      // Parts that were split are added to a single multi-part geometry.
+      newGeom.convertToMultiType();
+      collectedNewGeoms.append( newGeom );
+    }
+  }
+
+  // All unchanged parts are added to the same multi-geometry.
+  if ( !unchangedParts.empty() )
+  {
+    collectedNewGeoms.prepend( QgsGeometry::collectGeometry( unchangedParts ) );
+  }
+  return collectedNewGeoms;
+}
+
+QVector< QgsGeometry > QgsGeometry::collectSplitParts( const QVector< QgsGeometry> newGeoms ) const
+{
+  QVector< QgsGeometry> collectedNewGeoms;
+  for ( const QgsGeometry &newGeom : newGeoms )
+  {
+    collectedNewGeoms.append( QgsGeometry::collectGeometry( QVector< QgsGeometry>() << newGeom ) );
+  }
+  return collectedNewGeoms;
+}
+
+QVector< QgsGeometry > QgsGeometry::collectSplitGeometries( const QVector< QgsGeometry> newGeomsTemp, const bool splitFeature )
+{
+  QVector< QgsGeometry> newGeoms;
+  if ( !newGeomsTemp.isEmpty() )
+  {
+    if ( this->isMultipart() && QgsWkbTypes::geometryType( this->wkbType() ) != Qgis::GeometryType::Unknown )
+    {
+      newGeoms = splitFeature ? collectSplitFeatures( newGeomsTemp ) : collectSplitParts( newGeomsTemp );
+    }
+    else
+    {
+      newGeoms = newGeomsTemp;
+    }
+
+    if ( splitFeature && !newGeoms.isEmpty() )
+    {
+      *this = newGeoms.takeAt( 0 );
+    }
+  }
+  return newGeoms;
 }

@@ -271,6 +271,46 @@ if [ $# -eq 0 ] || [ $1 = "ALL_BUT_PROVIDERS" ] || [ $1 = "ALL" ] ; then
   echo "::endgroup::"
 fi
 
+########################################################
+# Wait for badssl container to be ready and copy ca.crt
+########################################################
+
+if [ $# -eq 0 ] || [ $1 = "ALL_BUT_PROVIDERS" ] || [ $1 = "ALL" ] ; then
+
+  echo "::group::Setup Badssl ca.crt"
+
+  echo "Wait for Badssl container to be ready..."
+  COUNT=0
+  while ! curl -f -X GET $QGIS_BADSSL_URL_CA -o /tmp/ca.crt;
+  do
+    printf "."
+    sleep 5
+    if [[ $(( COUNT++ )) -eq 40 ]]; then
+      break
+    fi
+  done
+  if [[ ${COUNT} -eq 41 ]]; then
+    echo "Error: Badssl docker timeout!!!"
+  else
+    echo "done"
+  fi
+
+  if command -v update-ca-certificates &>/dev/null; then
+    # Debian/Ubuntu
+    cp /tmp/ca.crt /usr/local/share/ca-certificates/
+    update-ca-certificates
+  elif command -v update-ca-trust &>/dev/null; then
+    # Fedora/RHEL
+    cp /tmp/ca.crt /etc/pki/ca-trust/source/anchors/
+    update-ca-trust
+  else
+    echo "Unsupported distro"
+    exit 1
+  fi
+
+  echo "::endgroup::"
+fi
+
 ###########
 # Run tests
 ###########

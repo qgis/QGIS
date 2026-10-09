@@ -73,6 +73,7 @@ class GUI_EXPORT QgsLayoutScaleBarWidget : public QgsLayoutItemBaseWidget, publi
     void mUnitsComboBox_currentIndexChanged( int index );
     void mMinWidthSpinBox_valueChanged( double d );
     void mMaxWidthSpinBox_valueChanged( double d );
+    void labelUnitPlacementChanged();
 
   private slots:
     void setGuiElements();

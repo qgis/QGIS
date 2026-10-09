@@ -101,6 +101,8 @@ void QgsUnionAlgorithm::initAlgorithm( const QVariantMap & )
 
 QVariantMap QgsUnionAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
+  QGS_MARK_ALGORITHM_SOURCE
+
   std::unique_ptr<QgsFeatureSource> sourceA( parameterAsSource( parameters, u"INPUT"_s, context ) );
   if ( !sourceA )
     throw QgsProcessingException( invalidSourceError( parameters, u"INPUT"_s ) );
@@ -125,7 +127,7 @@ QVariantMap QgsUnionAlgorithm::processAlgorithm( const QVariantMap &parameters, 
   if ( !sourceB )
   {
     // we are doing single layer union
-    QgsOverlayUtils::resolveOverlaps( *sourceA, *sink, feedback );
+    QgsOverlayUtils::resolveOverlaps( *sourceA, *sink, u"OUTPUT"_s, feedback );
     return outputs;
   }
 
@@ -141,17 +143,18 @@ QVariantMap QgsUnionAlgorithm::processAlgorithm( const QVariantMap &parameters, 
     geometryParameters.setGridSize( parameterAsDouble( parameters, u"GRID_SIZE"_s, context ) );
   }
 
-  QgsOverlayUtils::intersection( *sourceA, *sourceB, *sink, context, feedback, count, total, fieldIndicesA, fieldIndicesB, geometryParameters );
+  QgsOverlayUtils::intersection( *sourceA, *sourceB, *sink, u"OUTPUT"_s, context, feedback, count, total, fieldIndicesA, fieldIndicesB, geometryParameters );
   if ( feedback->isCanceled() )
     return outputs;
 
-  QgsOverlayUtils::difference( *sourceA, *sourceB, *sink, context, feedback, count, total, QgsOverlayUtils::OutputAB, geometryParameters );
+  QgsOverlayUtils::difference( *sourceA, *sourceB, *sink, u"OUTPUT"_s, context, feedback, count, total, QgsOverlayUtils::OutputAB, geometryParameters );
   if ( feedback->isCanceled() )
     return outputs;
 
-  QgsOverlayUtils::difference( *sourceB, *sourceA, *sink, context, feedback, count, total, QgsOverlayUtils::OutputBA, geometryParameters );
+  QgsOverlayUtils::difference( *sourceB, *sourceA, *sink, u"OUTPUT"_s, context, feedback, count, total, QgsOverlayUtils::OutputBA, geometryParameters );
 
   sink->finalize();
+  feedback->featureSinkFinalized( u"OUTPUT"_s );
 
   return outputs;
 }

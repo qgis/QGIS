@@ -12,13 +12,22 @@ services:
       - /tmp/webdav_tests:/tmp/webdav_tests_root/webdav_tests
 
   minio:
-    image: minio/minio
+    image: alpine/minio:latest-release
     volumes:
       - /tmp/minio_tests:/data
     environment:
       - MINIO_ROOT_USER=minioadmin
       - MINIO_ROOT_PASSWORD=adminio€
     command: server /data
+
+  badssl:
+    build:
+      context: ./badssl
+      dockerfile: Dockerfile
+    ports:
+      - "4442:4442"
+      - "4443:4443"
+      - "4444:4444"
 
   qgis-deps:
     tty: true
@@ -30,6 +39,7 @@ services:
       - webdav
       - minio
       - httpbin
+      - badssl
     env_file:
       - docker-variables.env
     environment:

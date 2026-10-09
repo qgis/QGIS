@@ -273,7 +273,7 @@ void QgsAbstractFileContentSourceLineEdit::mFileLineEdit_textEdited( const QStri
 
 QString QgsAbstractFileContentSourceLineEdit::defaultPath() const
 {
-  if ( QFileInfo::exists( source() ) )
+  if ( QFileInfo( source() ).isNativePath() && QFileInfo::exists( source() ) )
     return source();
 
   return QgsSettings().value( settingsKey(), QDir::homePath() ).toString();

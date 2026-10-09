@@ -1,4 +1,4 @@
-# GRASS GIS Processing provider
+# GRASS Processing provider
 
 In order for a GRASS command to be executed within QGIS, a plain text description file is required to define the command's inputs, outputs, and parameters. Each GRASS command is described in a separate text file. However, some commands can be split into several algorithms using more than one description file, resulting in multiple entries in the algorithms list.
 
@@ -62,7 +62,7 @@ The following parameters are supported:
 
 - A file
   ```
-  QgsProcessingParameterFile|[name of GRASS parameter]|[description of parameter to show]|QgsProcessingParameterFile.File|[file extension|[Default value, or None]|[True/False, indicating if the parameter is optional or not]
+  QgsProcessingParameterFile|[name of GRASS parameter]|[description of parameter to show]|QgsProcessingParameterFile.File|[file extension]|[Default value, or None]|[True/False, indicating if the parameter is optional or not]
   ```
   Example: `QgsProcessingParameterFile|input|Name of input E00 file|QgsProcessingParameterFile.File|e00|None|False`
 
@@ -84,7 +84,7 @@ The following parameters are supported:
 
 - A string
   ```
-  QgsProcessingParameterString|[name of GRASS parameter]|[description of parameter to show]|[default value]|[True/False, indicating if the parameter is optional or not]
+  QgsProcessingParameterString|[name of GRASS parameter]|[description of parameter to show]|[default value]|[True/False, indicating whether a multiline string is accepted]|[True/False, indicating if the parameter is optional or not]
   ```
   Example: `QgsProcessingParameterString|config_txt|Landscape structure configuration|None|True|True`
 
@@ -96,9 +96,9 @@ The following parameters are supported:
   
 - A boolean
   ```  
-  QgsProcessingParameterBoolean|[GRASS flag]|[description of parameter to show]|[default value]|[True/False, indicating if the parameter is optional or not]
+  QgsProcessingParameterBoolean|[GRASS flag]|[description of parameter to show]|[default value]
   ```
-  Example: `QgsProcessingParameterBoolean|-p|Output values as percentages|False|True`
+  Example: `QgsProcessingParameterBoolean|-p|Output values as percentages|False`
 
 - A pair of coordinates
   ```

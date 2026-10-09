@@ -595,19 +595,52 @@ the same key will be overwritten.
 write as DXF
 %End
 
-    virtual double dxfWidth( const QgsDxfExport &e, QgsSymbolRenderContext &context ) const;
+ virtual double dxfWidth( const QgsDxfExport &e, QgsSymbolRenderContext &context ) const /Deprecated="Since 4.2. Use the overload without the ``e`` parameter instead."/;
 %Docstring
-Gets line width
+Gets line width.
+
+.. deprecated:: 4.2
+
+   Use the overload without the ``e`` parameter instead.
 %End
 
-    virtual double dxfSize( const QgsDxfExport &e, QgsSymbolRenderContext &context ) const;
+    virtual double dxfWidth( QgsSymbolRenderContext &context ) const;
 %Docstring
-Gets marker size
+Gets line width.
+
+.. versionadded:: 4.2
 %End
 
-    virtual double dxfOffset( const QgsDxfExport &e, QgsSymbolRenderContext &context ) const;
+ virtual double dxfSize( const QgsDxfExport &e, QgsSymbolRenderContext &context ) const /Deprecated="Since 4.2. Use the overload without the ``e`` parameter instead."/;
 %Docstring
-Gets offset
+Gets marker size.
+
+.. deprecated:: 4.2
+
+   Use the overload without the ``e`` parameter instead.
+%End
+
+    virtual double dxfSize( QgsSymbolRenderContext &context ) const;
+%Docstring
+Gets marker size.
+
+.. versionadded:: 4.2
+%End
+
+ virtual double dxfOffset( const QgsDxfExport &e, QgsSymbolRenderContext &context ) const /Deprecated="Since 4.2. Use the overload without the ``e`` parameter instead."/;
+%Docstring
+Gets offset.
+
+.. deprecated:: 4.2
+
+   Use the overload without the ``e`` parameter instead.
+%End
+
+    virtual double dxfOffset( QgsSymbolRenderContext &context ) const;
+%Docstring
+Gets offset.
+
+.. versionadded:: 4.2
 %End
 
     virtual QColor dxfColor( QgsSymbolRenderContext &context ) const;
@@ -758,26 +791,6 @@ Returns symbol layer identifier This id is unique in the whole project
 .. versionadded:: 3.30
 %End
 
-    bool installMasks( QgsRenderContext &context, bool recursive, const QRectF &rect = QRectF() );
-%Docstring
-When rendering, install masks on ``context`` painter.
-
-If ``recursive`` is ``True`` masks are installed recursively for all
-children symbol layers.
-
-Since QGIS 3.38 the ``rect`` argument can be used to specify a target
-bounds (in painter coordinates) for mask geometries. Only mask
-geometries which intersect ``rect`` will be installed.
-
-:return: ``True`` if any masks were installed (since QGIS 3.38)
-
-.. seealso:: :py:func:`prepareMasks`
-
-.. seealso:: :py:func:`removeMasks`
-
-.. versionadded:: 3.30
-%End
-
   protected:
 
     QgsSymbolLayer( Qgis::SymbolType type, bool locked = false );
@@ -829,6 +842,26 @@ Copies paint effect of this layer to another symbol layer
 :param destLayer: destination layer
 
 .. seealso:: :py:func:`copyCommonProperties`
+%End
+
+    bool installMasks( QgsRenderContext &context, bool recursive, const QRectF &rect = QRectF() );
+%Docstring
+When rendering, install masks on ``context`` painter.
+
+If ``recursive`` is ``True`` masks are installed recursively for all
+children symbol layers.
+
+Since QGIS 3.38 the ``rect`` argument can be used to specify a target
+bounds (in painter coordinates) for mask geometries. Only mask
+geometries which intersect ``rect`` will be installed.
+
+:return: ``True`` if any masks were installed (since QGIS 3.38)
+
+.. seealso:: :py:func:`prepareMasks`
+
+.. seealso:: :py:func:`removeMasks`
+
+.. versionadded:: 3.30
 %End
 
     void removeMasks( QgsRenderContext &context, bool recursive );
@@ -1170,7 +1203,7 @@ Writes the symbol layer definition as a SLD XML element.
 
     virtual QgsMapUnitScale mapUnitScale() const;
 
-    virtual double dxfSize( const QgsDxfExport &e, QgsSymbolRenderContext &context ) const;
+    virtual double dxfSize( QgsSymbolRenderContext &context ) const;
 
     virtual double dxfAngle( QgsSymbolRenderContext &context ) const;
 
@@ -1292,7 +1325,7 @@ Abstract base class for line symbol layers.
 
     virtual void drawPreviewIcon( QgsSymbolRenderContext &context, QSize size );
 
-    virtual double dxfWidth( const QgsDxfExport &e, QgsSymbolRenderContext &context ) const;
+    virtual double dxfWidth( QgsSymbolRenderContext &context ) const;
 
 
     virtual void renderPolyline( const QPolygonF &points, QgsSymbolRenderContext &context ) = 0;

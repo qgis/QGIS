@@ -17,14 +17,23 @@
 
 #include "qgswfs3handlers.h"
 
+#include <optional>
+
+#include "qgsattributeeditorcontainer.h"
+#include "qgsattributeeditorfield.h"
+#include "qgsattributeeditorrelation.h"
 #include "qgsbufferserverrequest.h"
+#include "qgsexpression.h"
 #include "qgsexpressioncontext.h"
 #include "qgsexpressioncontextutils.h"
+#include "qgsexpressionfunction.h"
+#include "qgsexpressionnodeimpl.h"
 #include "qgsfeaturerequest.h"
 #include "qgsjsonutils.h"
 #include "qgslogger.h"
 #include "qgsmessagelog.h"
 #include "qgsogrutils.h"
+#include "qgsreferencedgeometry.h"
 #include "qgsserverapicontext.h"
 #include "qgsserverapiutils.h"
 #include "qgsserverfeatureid.h"
@@ -33,7 +42,10 @@
 #include "qgsserverprojectutils.h"
 #include "qgsserverrequest.h"
 #include "qgsserverresponse.h"
+#include "qgsvaluemapfieldformatter.h"
+#include "qgsvectorfilewriter.h"
 #include "qgsvectorlayer.h"
+#include "qgsvectorlayertemporalproperties.h"
 #include "qgsvectorlayerutils.h"
 
 #include <QString>
@@ -126,6 +138,7 @@ void QgsWfs3APIHandler::handleRequest( const QgsServerApiContext &context ) cons
   }
   schema["components"]["parameters"]["bbox-crs"]["schema"]["enum"] = crss;
   schema["components"]["parameters"]["crs"]["schema"]["enum"] = crss;
+  schema["components"]["parameters"]["filter-crs"]["schema"]["enum"] = crss;
   data["components"] = schema["components"];
 
   // Add schema refs
@@ -154,7 +167,89 @@ json QgsWfs3APIHandler::schema( const QgsServerApiContext &context ) const
   return data;
 }
 
-void QgsWfs3AbstractItemsHandler::checkLayerIsAccessible( QgsVectorLayer *mapLayer, const QgsServerApiContext &context ) const
+const QString QgsWfs3AbstractHandler::templatePath( const QgsServerApiContext &context ) const
+{
+  // resources/server/api + /ogc/templates/wfs3/ + operationId() + .html
+  QString path { context.serverInterface()->serverSettings()->apiResourcesDirectory() };
+  path += "/ogc/templates/wfs3/"_L1;
+  path += QString::fromStdString( operationId() );
+  path += ".html"_L1;
+  return path;
+}
+
+QString QgsWfs3AbstractItemsHandler::referencedLayerIdentifier( const QgsVectorLayer *mapLayer, int fieldIdx, const QgsServerApiContext &context, QString *referencedLayerTitle ) const
+{
+  const QgsEditorWidgetSetup widgetSetup { mapLayer->editorWidgetSetup( fieldIdx ) };
+  const QVariantMap widgetConfig = widgetSetup.config();
+  const QgsMapLayer *referencedLayer = nullptr;
+  QString referencedLayerId;
+  if ( widgetSetup.type() == "ValueRelation"_L1 )
+  {
+    referencedLayerId = widgetConfig.value( u"Layer"_s ).toString();
+    referencedLayer = context.project()->mapLayer( referencedLayerId );
+  }
+  else if ( widgetSetup.type() == "RelationReference"_L1 )
+  {
+    const QgsRelation relation { context.project()->relationManager()->relation( widgetConfig.value( u"Relation"_s ).toString() ) };
+    // NOTE: WMS might be configured to use layerIDs instead of name (see entry: "WMSUseLayerIDs"), WFS doesn't support this,
+    //       so we take the layer name as the collectionId in that case
+    referencedLayerId = relation.referencedLayerId();
+    // Get the layer from the project, don't check if it's published or not (we don't care at this point)
+    referencedLayer = context.project()->mapLayer( referencedLayerId );
+  }
+  else
+  {
+    // not a relation
+    return QString();
+  }
+
+  if ( referencedLayer )
+  {
+    // NOTE: WMS might be configured to use layerIDs instead of name (see entry: "WMSUseLayerIDs"), WFS doesn't support this,
+    //       so we take the layer name as the collectionId in that case
+    if ( referencedLayerTitle )
+      *referencedLayerTitle = referencedLayer->serverProperties()->wfsTitle().isEmpty() ? referencedLayer->name() : referencedLayer->serverProperties()->wfsTitle();
+    return referencedLayer->serverProperties()->shortName().isEmpty() ? referencedLayer->name() : referencedLayer->serverProperties()->shortName();
+  }
+  else
+  {
+    throw QgsServerApiImproperlyConfiguredException(
+      u"Referenced layer with id '%1' not found for %2 field '%3'"_s.arg( referencedLayerId, widgetSetup.type(), mapLayer->fields().field( fieldIdx ).displayName() )
+    );
+  }
+}
+
+json QgsWfs3AbstractItemsHandler::relatedFeatureReference(
+  const QVariant &referencedFeatureValue, const ReferencedLayerInfo &referencedInfo, QgsServerOgcApi::Profile relAs, const QgsServerApiContext &context
+) const
+{
+  switch ( relAs )
+  {
+    case QgsServerOgcApi::Profile::RelAsUri:
+    case QgsServerOgcApi::Profile::RelAsLink:
+    {
+      // Build the URI calling uri()
+      const QMap<QString, QVariant> fieldValueMap { { referencedInfo.referencedFieldOapifIdentifier, referencedFeatureValue } };
+      const std::string uriStr = uri( referencedInfo.referencedLayerOapifIdentifier, fieldValueMap, context ).toStdString();
+
+      if ( relAs == QgsServerOgcApi::Profile::RelAsLink )
+      {
+        return { { "title", "Related feature from layer '" + referencedInfo.referencedLayerOapifIdentifier.toStdString() + "'" }, { "href", uriStr } };
+      }
+      else
+      {
+        return uriStr;
+      }
+    }
+    case QgsServerOgcApi::Profile::RelAsKey:
+    default:
+      return QgsJsonUtils::jsonFromVariant( referencedFeatureValue );
+  }
+  return json();
+}
+
+
+void QgsWfs3AbstractItemsHandler::checkLayerIsAccessible( QgsVectorLayer *mapLayer, const QgsServerApiContext &context )
 {
   const QVector<QgsVectorLayer *> publishedLayers = QgsServerApiUtils::publishedWfsLayers<QgsVectorLayer *>( context );
   if ( !publishedLayers.contains( mapLayer ) )
@@ -193,7 +288,7 @@ QgsFeatureRequest QgsWfs3AbstractItemsHandler::filteredRequest( const QgsVectorL
   return featureRequest;
 }
 
-QgsFields QgsWfs3AbstractItemsHandler::publishedFields( const QgsVectorLayer *vLayer, const QgsServerApiContext &context ) const
+QgsFields QgsWfs3AbstractItemsHandler::publishedFields( const QgsVectorLayer *vLayer, const QgsServerApiContext &context )
 {
   QStringList publishedAttributes = QStringList();
   // Removed attributes
@@ -229,14 +324,564 @@ QgsFields QgsWfs3AbstractItemsHandler::publishedFields( const QgsVectorLayer *vL
   return publishedFields;
 }
 
-const QString QgsWfs3AbstractItemsHandler::templatePath( const QgsServerApiContext &context ) const
+void QgsWfs3AbstractItemsHandler::gatherLayerFieldsInfo( json &data, const QgsVectorLayer *mapLayer, const QgsServerApiContext &context ) const
 {
-  // resources/server/api + /ogc/templates/wfs3 + operationId + .html
-  QString path { context.serverInterface()->serverSettings()->apiResourcesDirectory() };
-  path += "/ogc/templates/wfs3/"_L1;
-  path += QString::fromStdString( operationId() );
-  path += ".html"_L1;
-  return path;
+  struct CodelistInline
+  {
+      std::optional<std::string> title;
+      std::optional<std::string> description;
+      std::optional<QVariantMap> values;
+  };
+
+  struct FieldInfo
+  {
+      FieldInfo( int seq, const std::string &identifier )
+        : seq( seq )
+        , identifier( identifier )
+      {}
+      int seq;
+      std::string identifier;
+      std::optional<std::string> type;
+      std::optional<bool> readOnly;
+      std::optional<bool> nullable;    // unused for now!
+      std::optional<std::string> role; // x-ogc-role
+      std::optional<std::string> title;
+      std::optional<std::string> format;
+      std::optional<std::string> unit;
+      std::optional<json> minimum; // range (can be int or double)
+      std::optional<json> maximum; // range (can be int or double)
+      std::optional<CodelistInline> codelist;
+      // min length (unused for now)
+      // std::optional<int> minLength;  // string length
+      std::optional<int> maxLength;            // string length
+      std::optional<json> enumValues;          // enum values
+      std::optional<std::string> collectionId; // x-ogc-collectionId
+      std::optional<std::string> pattern;      // regex pattern for string values
+  };
+
+  auto fieldTypeFormat = []( const QgsField &field, FieldInfo &fInfo ) -> void {
+    switch ( field.type() )
+    {
+      // This is usually a JSON field
+      case QMetaType::Type::QVariantMap:
+      {
+        fInfo.type = "string";
+        fInfo.format = "json";
+        break;
+      }
+      case QMetaType::Type::QString:
+      {
+        if ( field.typeName().toLower() == "json" )
+          fInfo.format = "json";
+        else if ( field.typeName().toLower() == "xml" )
+          fInfo.format = "xml";
+        else if ( field.typeName().toLower() == "html" )
+          fInfo.format = "html";
+        else if ( field.typeName().toLower() == "uuid" )
+          fInfo.format = "uuid";
+        fInfo.type = "string";
+        if ( field.length() > 0 )
+        {
+          fInfo.maxLength = field.length();
+        }
+        break;
+      }
+      case QMetaType::Type::Bool:
+      {
+        fInfo.type = "boolean";
+        break;
+      }
+      case QMetaType::Type::QUuid:
+      {
+        fInfo.format = "uuid";
+        fInfo.type = "string";
+        break;
+      }
+      case QMetaType::Type::Int:
+      {
+        fInfo.format = "int32";
+        fInfo.type = "integer";
+        break;
+      }
+      case QMetaType::Type::UInt:
+      {
+        fInfo.format = "uint32";
+        fInfo.type = "integer";
+        break;
+      }
+      case QMetaType::Type::Short:
+      {
+        fInfo.format = "int16";
+        fInfo.type = "integer";
+        break;
+      }
+      case QMetaType::Type::UShort:
+      {
+        fInfo.format = "uint16";
+        fInfo.type = "integer";
+        break;
+      }
+      case QMetaType::Type::ULong:
+      {
+        fInfo.format = "uint64";
+        fInfo.type = "integer";
+        break;
+      }
+      case QMetaType::Type::ULongLong:
+      {
+        fInfo.format = "uint64";
+        fInfo.type = "integer";
+        break;
+      }
+      case QMetaType::Type::LongLong:
+      {
+        fInfo.format = "int64";
+        fInfo.type = "integer";
+        break;
+      }
+      case QMetaType::Type::Float:
+      {
+        fInfo.format = "float";
+        fInfo.type = "number";
+        break;
+      }
+      case QMetaType::Type::Double:
+      {
+        fInfo.format = "double";
+        fInfo.type = "number";
+        break;
+      }
+      case QMetaType::Type::QDate:
+      {
+        fInfo.format = "date";
+        fInfo.type = "string";
+        break;
+      }
+      case QMetaType::Type::QDateTime:
+      {
+        fInfo.format = "date-time";
+        fInfo.type = "string";
+        break;
+      }
+      case QMetaType::Type::QTime:
+      {
+        fInfo.format = "time";
+        fInfo.type = "string";
+        break;
+      }
+      case QMetaType::Type::QByteArray:
+      {
+        fInfo.type = "binary";
+        break;
+      }
+      case QMetaType::Type::User:
+      {
+        if ( field.typeName().toLower() == "geometry" )
+        {
+          // no format: we do not have the information about the geometry type
+          fInfo.format = "geometry-any";
+          fInfo.type = "string";
+        }
+        break;
+      }
+      default:
+      {
+        QgsDebugMsgLevel( u"Field '%1' has unsupported  meta type '%2', defaulting to string"_s.arg( field.name() ).arg( field.type() ), 2 );
+        break;
+      }
+    }
+  };
+
+  const QgsFields constPublishedFields { publishedFields( mapLayer, context ) };
+  json fieldsInfo = json::object();
+  std::vector<FieldInfo> availableFieldInformation;
+  std::vector<std::string> requiredFields;
+
+  int seq = 0;
+
+  // "id" is always present, read-only and must be the first field
+  // NOTE: this appears as a top-level field (and not in the properties) in the collection item
+  //       response and is used as the unique identifier for the feature but is returned
+  //       as a regular field in the collection schema response (with the other attributes)
+  {
+    FieldInfo fInfo { seq++, "id" };
+    fInfo.type = "integer";
+    fInfo.readOnly = true;
+    fInfo.role = "id";
+    availableFieldInformation.push_back( fInfo );
+  }
+
+  QList<QString> publishedFieldNames;
+  QgsAttributeList publishedAttributeIds;
+  for ( const QgsField &f : std::as_const( constPublishedFields ) )
+  {
+    publishedFieldNames.push_back( f.name() );
+    publishedAttributeIds.push_back( mapLayer->fields().lookupField( f.name() ) );
+  }
+
+  // Cannot be const :/
+  QgsEditFormConfig config { mapLayer->editFormConfig() };
+
+  // See: https://docs.ogc.org/is/21-045r1/21-045r1.html#_temporal_information
+  QString temporalInstantField;
+  QString temporalStartField;
+  QString temporalEndField;
+  bool isDateTimeField = false;
+
+  exposedTimeDimensions( temporalInstantField, temporalStartField, temporalEndField, isDateTimeField, mapLayer, publishedAttributeIds );
+
+  std::function< void( QgsAttributeEditorElement * )> traverseTab;
+  traverseTab = [&]( QgsAttributeEditorElement *element ) -> void {
+    switch ( element->type() )
+    {
+      case Qgis::AttributeEditorType::Field:
+      {
+        const QgsAttributeEditorField *fieldElement = static_cast<const QgsAttributeEditorField *>( element );
+        // It should never happen that the field element references a non-existing field
+        Q_ASSERT( mapLayer->fields().exists( fieldElement->idx() ) );
+        const QgsField field = mapLayer->fields().field( fieldElement->idx() );
+        const QString fieldIdentifier = field.displayName();
+
+        // Early exit to skip non-published fields and avoid unnecessary processing
+        if ( !publishedFieldNames.contains( field.name() ) )
+        {
+          break;
+        }
+
+        // Skip primary key
+        if ( fieldIdentifier == "id"_L1 || ( mapLayer->isSpatial() && fieldIdentifier == "geometry" ) )
+        {
+          break;
+        }
+
+        if ( field.constraints().constraintStrength( QgsFieldConstraints::Constraint::ConstraintNotNull ) == QgsFieldConstraints::ConstraintStrength::ConstraintStrengthHard )
+        {
+          requiredFields.push_back( fieldIdentifier.toStdString() );
+        }
+
+        FieldInfo fInfo { seq++, fieldIdentifier.toStdString() };
+
+        if ( config.readOnly( fieldElement->idx() ) )
+        {
+          fInfo.readOnly = true;
+        }
+
+        if ( !field.comment().isEmpty() )
+        {
+          fInfo.title = field.comment().toStdString();
+        }
+
+        fieldTypeFormat( field, fInfo );
+
+        // Get the widget configuration
+        const QgsEditorWidgetSetup widgetSetup { mapLayer->editorWidgetSetup( fieldElement->idx() ) };
+        const QString widgetType { widgetSetup.type() };
+        const QVariantMap widgetConfig = widgetSetup.config();
+
+        // NOTE: unused for now!
+        if ( widgetConfig.contains( u"AllowNull"_s ) )
+        {
+          fInfo.nullable = widgetConfig.value( u"AllowNull"_s ).toBool();
+        }
+
+        // /////////////////////////////////////////////////////////
+        // Process specific widget types for additional information
+
+        // Check for value map
+        if ( widgetType == "ValueMap"_L1 )
+        {
+          const QList<QVariant> valueList = widgetConfig.value( u"map"_s ).toList();
+          QVariantMap listValues;
+          if ( !valueList.empty() )
+          {
+            for ( const QVariant &value : std::as_const( valueList ) )
+            {
+              const QVariantMap valueMap = value.toMap();
+
+              if ( valueMap.constBegin().value() == QgsValueMapFieldFormatter::NULL_VALUE )
+              {
+                listValues.insert( valueMap.constBegin().key(), QVariant() );
+              }
+              else
+              {
+                listValues.insert( valueMap.constBegin().key(), valueMap.constBegin().value() );
+              }
+            }
+          }
+          else
+          {
+            const QVariantMap map = widgetConfig.value( u"map"_s ).toMap();
+            for ( auto it = map.constBegin(); it != map.constEnd(); ++it )
+            {
+              if ( it.value() == QgsValueMapFieldFormatter::NULL_VALUE )
+              {
+                listValues.insert( it.key(), QVariant() );
+              }
+              else
+              {
+                listValues.insert( it.key(), it.value() );
+              }
+            }
+          }
+
+          CodelistInline codelist;
+          codelist.values = listValues;
+
+          // TODO: take it from label?
+          if ( !field.comment().isEmpty() )
+          {
+            codelist.description = field.comment().toStdString();
+          }
+          codelist.title = fieldIdentifier.toStdString();
+          fInfo.codelist = codelist;
+        }
+        else if ( widgetType == "Range"_L1 )
+        {
+          if ( widgetConfig.value( u"Min"_s ).isValid() )
+          {
+            fInfo.minimum = QgsJsonUtils::jsonFromVariant( widgetConfig.value( u"Min"_s ) );
+          }
+          if ( widgetConfig.value( u"Max"_s ).isValid() )
+          {
+            fInfo.maximum = QgsJsonUtils::jsonFromVariant( widgetConfig.value( u"Max"_s ) );
+          }
+        }
+        else if ( widgetType == "UuidGenerator"_L1 )
+        {
+          fInfo.format = "uuid";
+          fInfo.type = "string";
+        }
+        else if ( widgetType == "CheckBox"_L1 )
+        {
+          fInfo.format = "boolean";
+        }
+        else if ( widgetType == "Enumeration" )
+        {
+          const QList<QPair<QString, QString>> enumValues = mapLayer->dataProvider()->codedValues( fieldElement->idx() );
+          fInfo.enumValues = json::array();
+          for ( const QPair<QString, QString> &value : enumValues )
+          {
+            fInfo.enumValues->push_back( value.first.toStdString() );
+          }
+        }
+        else if ( widgetType == "Geometry"_L1 )
+        {
+          fInfo.format = "geometry-any";
+          fInfo.type = "string";
+        }
+        else if ( widgetType == "ValueRelation"_L1 )
+        {
+          QString referencedLayerTitle;
+          const QString referencedLayerId = referencedLayerIdentifier( mapLayer, fieldElement->idx(), context, &referencedLayerTitle );
+
+          fInfo.role = "reference";
+          fInfo.collectionId = referencedLayerId.toStdString();
+          if ( !fInfo.title.has_value() && !referencedLayerTitle.isEmpty() )
+          {
+            fInfo.title = referencedLayerTitle.toStdString();
+          }
+        }
+        else if ( widgetType == "RelationReference"_L1 )
+        {
+          QString referencedLayerTitle;
+          const QString referencedLayerId = referencedLayerIdentifier( mapLayer, fieldElement->idx(), context, &referencedLayerTitle );
+          fInfo.role = "reference";
+          fInfo.collectionId = referencedLayerId.toStdString();
+          if ( !fInfo.title.has_value() && !referencedLayerTitle.isEmpty() )
+          {
+            fInfo.title = referencedLayerTitle.toStdString();
+          }
+        }
+        else if ( widgetType == "DateTime"_L1 )
+        {
+          fInfo.format = "date-time";
+        }
+        else if ( widgetType == "Date"_L1 )
+        {
+          fInfo.format = "date";
+        }
+        else
+        {
+          // TODO: if the widget type is unknown, should we skip the field or include it with best effort?
+          //         For instance, if a relation is set, we could still include the reference information even
+          //         if the widget type is unknown.
+          //         For now, we skip and warn (info level) assuming that if the widget is not set this is intentional.
+          QgsMessageLog::logMessage( u"Unhandled widget type '%1' for field '%2'"_s.arg( widgetType, fieldIdentifier ), u"Server"_s, Qgis::MessageLevel::Info );
+        }
+        // ////////////////////////////////////////////////////
+        // Generic code that may apply to several widget types
+
+        // Extract the pattern
+        const QgsFieldConstraints constraints = field.constraints();
+        if ( field.constraints().constraintStrength( QgsFieldConstraints::Constraint::ConstraintExpression ) == QgsFieldConstraints::ConstraintStrength::ConstraintStrengthHard )
+        {
+          const QgsExpression expression( constraints.constraintExpression() );
+          if ( expression.isValid() && expression.rootNode()->dump().startsWith( "regexp_match("_L1 ) )
+          {
+            if ( const QgsExpressionNodeFunction *functionNode = dynamic_cast<const QgsExpressionNodeFunction *>( expression.rootNode() ) )
+            {
+              QgsExpressionNode::NodeList *functionArgs = functionNode->args();
+              if ( functionArgs->count() == 2 )
+              {
+                if ( const QgsExpressionNodeColumnRef *columnNode = dynamic_cast<const QgsExpressionNodeColumnRef *>( functionArgs->at( 0 ) ); columnNode->name() == field.name() )
+                {
+                  if ( const QgsExpressionNodeLiteral *patternNode = dynamic_cast<const QgsExpressionNodeLiteral *>( functionArgs->at( 1 ) ) )
+                  {
+                    fInfo.pattern = patternNode->value().toString().toStdString();
+                  }
+                }
+              }
+            }
+          }
+        }
+
+        // Check for std::numeric_limits max/min(lowest for double) and reset if found
+        if ( fInfo.maximum.has_value() )
+        {
+          const json &maxValue = fInfo.maximum.value();
+          if ( maxValue.is_number_integer() && ( maxValue.get<int64_t>() == std::numeric_limits<int64_t>::min() || maxValue.get<int64_t>() == std::numeric_limits<int64_t>::max() ) )
+          {
+            fInfo.maximum.reset();
+          }
+          else if ( maxValue.is_number_float() && ( maxValue.get<double>() == std::numeric_limits<double>::lowest() || maxValue.get<double>() == std::numeric_limits<double>::max() ) )
+          {
+            fInfo.maximum.reset();
+          }
+        }
+        if ( fInfo.minimum.has_value() )
+        {
+          const json &minValue = fInfo.minimum.value();
+          if ( minValue.is_number_integer() && ( minValue.get<int64_t>() == std::numeric_limits<int64_t>::min() || minValue.get<int64_t>() == std::numeric_limits<int64_t>::max() ) )
+          {
+            fInfo.minimum.reset();
+          }
+          else if ( minValue.is_number_float() && ( minValue.get<double>() == std::numeric_limits<double>::lowest() || minValue.get<double>() == std::numeric_limits<double>::max() ) )
+          {
+            fInfo.minimum.reset();
+          }
+        }
+
+        if ( const QString suffix = widgetConfig.value( u"Suffix"_s ).toString(); !suffix.isEmpty() )
+        {
+          fInfo.unit = suffix.toStdString();
+        }
+
+        // Time dimension
+        // FIXME: It isn't clear if a date can be used as an instant or as a start/end of an interval.
+        // For now, we assume it doesn't
+        if ( isDateTimeField )
+        {
+          if ( field.name() == temporalInstantField )
+          {
+            fInfo.role = "primary-instant";
+          }
+          else if ( field.name() == temporalStartField )
+          {
+            fInfo.role = "primary-interval-start";
+          }
+          else if ( field.name() == temporalEndField )
+          {
+            fInfo.role = "primary-interval-end";
+          }
+        }
+
+        availableFieldInformation.push_back( fInfo );
+
+        break;
+      }
+      case Qgis::AttributeEditorType::Relation:
+      {
+        // This is not handled because the field doesn't belong to the referenced layer
+        break;
+      }
+      case Qgis::AttributeEditorType::Container:
+      {
+        const QgsAttributeEditorContainer *containerElement = qgis::down_cast<const QgsAttributeEditorContainer *>( element );
+        const QList<QgsAttributeEditorElement *> children = containerElement->children();
+        for ( const auto &child : std::as_const( children ) )
+        {
+          traverseTab( child );
+        }
+        break;
+      }
+      default:
+        break;
+    }
+  };
+
+  traverseTab( config.invisibleRootContainer() );
+
+  // If the layer is spatial add geometry as last field
+  if ( mapLayer->isSpatial() )
+  {
+    requiredFields.push_back( "geometry" );
+    FieldInfo fInfo {
+      seq++,
+      "geometry",
+    };
+    fInfo.role = "primary-geometry";
+    fInfo.format = "geometry-" + QgsWkbTypes::displayString( QgsWkbTypes::flatType( mapLayer->wkbType() ) ).toLower().toStdString();
+    availableFieldInformation.push_back( fInfo );
+  }
+
+  // END of field processing
+
+  if ( !requiredFields.empty() )
+  {
+    data["required"] = requiredFields;
+  }
+
+  for ( const auto &fInfo : availableFieldInformation )
+  {
+    const std::string fieldName = fInfo.identifier;
+    fieldsInfo[fieldName] = json::object();
+    fieldsInfo[fieldName]["x-ogc-propertySeq"] = fInfo.seq;
+    // Optional info
+    if ( fInfo.type.has_value() )
+      fieldsInfo[fieldName]["type"] = fInfo.type.value();
+    if ( fInfo.title.has_value() )
+      fieldsInfo[fieldName]["title"] = fInfo.title.value();
+    if ( fInfo.readOnly.has_value() )
+      fieldsInfo[fieldName]["readOnly"] = fInfo.readOnly.value();
+    if ( fInfo.role.has_value() )
+      fieldsInfo[fieldName]["x-ogc-role"] = fInfo.role.value();
+    if ( fInfo.format.has_value() )
+      fieldsInfo[fieldName]["format"] = fInfo.format.value();
+    if ( fInfo.collectionId.has_value() )
+      fieldsInfo[fieldName]["x-ogc-collectionId"] = fInfo.collectionId.value();
+    if ( fInfo.unit.has_value() )
+      fieldsInfo[fieldName]["x-ogc-unit"] = fInfo.unit.value();
+    if ( fInfo.minimum.has_value() )
+      fieldsInfo[fieldName]["minimum"] = fInfo.minimum.value();
+    if ( fInfo.maximum.has_value() )
+      fieldsInfo[fieldName]["maximum"] = fInfo.maximum.value();
+    if ( fInfo.maxLength.has_value() )
+      fieldsInfo[fieldName]["maxLength"] = fInfo.maxLength.value();
+    if ( fInfo.enumValues.has_value() )
+      fieldsInfo[fieldName]["enum"] = fInfo.enumValues.value();
+    if ( fInfo.pattern.has_value() )
+      fieldsInfo[fieldName]["pattern"] = fInfo.pattern.value();
+    if ( fInfo.codelist.has_value() )
+    {
+      json codelistJson = json::array();
+      const CodelistInline &codelistInfo = fInfo.codelist.value();
+      const QVariantMap values = codelistInfo.values.value();
+      for ( auto it = values.constBegin(); it != values.constEnd(); ++it )
+      {
+        if ( it.value().isValid() )
+        {
+          codelistJson.push_back( { { "title", it.key().toStdString() }, { "const", QgsJsonUtils::jsonFromVariant( it.value() ) } } );
+        }
+        else
+        {
+          codelistJson.push_back( { { "title", it.key().toStdString() }, { "const", json() } } );
+          fieldsInfo[fieldName]["x-ogc-nullValues"] = json::array( { json() } );
+        }
+      }
+      fieldsInfo[fieldName]["oneOf"] = codelistJson;
+    }
+  }
+  data["properties"] = fieldsInfo;
 }
 
 bool QgsWfs3AbstractItemsHandler::canInsertFeatures( const QgsVectorLayer *mapLayer, const QgsServerApiContext &context ) const
@@ -291,6 +936,137 @@ bool QgsWfs3AbstractItemsHandler::canUpdateFeatures( const QgsVectorLayer *mapLa
   return false;
 }
 
+QUrlQuery QgsWfs3AbstractItemsHandler::removeOffsetAndLimit( const QUrlQuery &urlQuery, bool removeProfile )
+{
+  // Since headers are stored in a case sensitive map,
+  // make sure we are clearing the correct case if any
+  QUrlQuery query( urlQuery );
+  const QList<std::pair<QString, QString>> items = query.queryItems();
+  for ( const auto &pair : std::as_const( items ) )
+  {
+    if ( pair.first.compare( "offset"_L1, Qt::CaseInsensitive ) == 0 )
+    {
+      query.removeAllQueryItems( pair.first );
+    }
+    else if ( pair.first.compare( "limit"_L1, Qt::CaseInsensitive ) == 0 )
+    {
+      query.removeAllQueryItems( pair.first );
+    }
+    else if ( removeProfile && pair.first.compare( "profile"_L1, Qt::CaseInsensitive ) == 0 )
+    {
+      query.removeAllQueryItems( pair.first );
+    }
+  }
+  return query;
+}
+
+bool QgsWfs3AbstractItemsHandler::crsIsPublished( const QgsCoordinateReferenceSystem &crs, const QgsServerApiContext &context )
+{
+  const QStringList publishedCrsList = QgsServerApiUtils::publishedCrsList( context.project() );
+  const QString crsOgcUri = crs.toOgcUri();
+  for ( const QString &pubCrs : std::as_const( publishedCrsList ) )
+  {
+    // Technically we should test case sensitive but let's be tolerant
+    if ( pubCrs.compare( crsOgcUri, Qt::CaseInsensitive ) == 0 )
+    {
+      return true;
+    }
+  }
+  return false;
+}
+
+QMap<int, QgsWfs3AbstractItemsHandler::ReferencedLayerInfo> QgsWfs3AbstractItemsHandler::gatherReferencedLayerInfo( const QgsVectorLayer *mapLayer, const QgsServerApiContext &context ) const
+{
+  QMap<int, ReferencedLayerInfo> refInfo;
+
+  const QVector<QgsVectorLayer *> publishedLayers = QgsServerApiUtils::publishedWfsLayers<QgsVectorLayer *>( context );
+  const QgsFields published { publishedFields( mapLayer, context ) };
+  for ( const QgsField &referencingField : std::as_const( published ) )
+  {
+    const int referencingFieldIdx = mapLayer->fields().lookupField( referencingField.name() );
+    if ( referencingFieldIdx < 0 )
+    {
+      throw QgsServerApiImproperlyConfiguredException( u"Field '%1' not found in layer '%2'"_s.arg( referencingField.name() ).arg( mapLayer->name() ) );
+    }
+    const QgsEditorWidgetSetup editorSetup = mapLayer->editorWidgetSetup( referencingFieldIdx );
+    if ( editorSetup.type() == "RelationReference"_L1 )
+    {
+      const QVariantMap widgetConfig = editorSetup.config();
+      const QgsRelation relation { context.project()->relationManager()->relation( widgetConfig.value( u"Relation"_s ).toString() ) };
+      if ( !relation.isValid() )
+      {
+        QgsMessageLog::logMessage( u"RelationReference with relation id '%1' is not valid"_s.arg( relation.id() ), u"Server"_s, Qgis::MessageLevel::Warning );
+        continue;
+      }
+      // NOTE: WMS might be configured to use layerIDs instead of name (see entry: "WMSUseLayerIDs"), WFS doesn't support this,
+      //       so we take the layer name as the collectionId in that case
+      // Get the layer from the project, don't check if it's published or not (we don't care at this point)
+      const QgsVectorLayer *referencedLayer = context.project()->mapLayer<const QgsVectorLayer *>( relation.referencedLayerId() );
+      if ( referencedLayer && publishedLayers.contains( referencedLayer ) )
+      {
+        if ( relation.referencedFields().size() > 1 )
+        {
+          QgsMessageLog::logMessage( u"RelationReference relations with id '%1' has multiple field pairs, this is not supported"_s.arg( relation.id() ), u"Server"_s, Qgis::MessageLevel::Warning );
+          continue;
+        }
+        if ( referencedLayer->type() != Qgis::LayerType::Vector )
+        {
+          continue;
+        }
+        if ( referencedLayer->primaryKeyAttributes().size() > 1 )
+        {
+          QgsMessageLog::
+            logMessage( u"RelationReference relations with id '%1' has a referenced layer with composite primary key, this is not supported"_s.arg( relation.id() ), u"Server"_s, Qgis::MessageLevel::Warning );
+          continue;
+        }
+        const int referencedFieldIdx = relation.referencedFields().first();
+        const QgsField referencedField = referencedLayer->fields().field( referencedFieldIdx );
+        ReferencedLayerInfo info;
+        info.referencingFieldIdx = referencingFieldIdx;
+        info.referencedLayer = referencedLayer;
+        info.referencedLayerOapifIdentifier = referencedLayer->serverProperties()->shortName().isEmpty() ? referencedLayer->name() : referencedLayer->serverProperties()->shortName();
+        info.referencedFieldOapifIdentifier = referencedField.displayName();
+        info.referencingFieldOapifIdentifier = referencingField.displayName();
+        info.referencingFieldComment = referencedField.comment();
+        info.valueIsPk = referencedLayer->primaryKeyAttributes().contains( referencedFieldIdx );
+        refInfo.insert( referencingFieldIdx, info );
+      }
+    }
+    else if ( editorSetup.type() == "ValueRelation"_L1 )
+    {
+      const QVariantMap widgetConfig = editorSetup.config();
+      const QgsVectorLayer *referencedLayer = context.project()->mapLayer<const QgsVectorLayer *>( widgetConfig.value( u"Layer"_s ).toString() );
+      if ( referencedLayer && publishedLayers.contains( referencedLayer ) )
+      {
+        if ( referencedLayer->type() != Qgis::LayerType::Vector )
+        {
+          continue;
+        }
+        if ( referencedLayer->primaryKeyAttributes().size() > 1 )
+        {
+          const QgsField field = mapLayer->fields().field( referencingFieldIdx );
+          QgsMessageLog::
+            logMessage( u"ValueRelation %1' has a referenced layer '%2' with composite primary key, this is not supported"_s.arg( field.name(), referencedLayer->id() ), u"Server"_s, Qgis::MessageLevel::Warning );
+          continue;
+        }
+        const QString referencedFieldName = widgetConfig.value( u"Key"_s ).toString();
+        const int fieldIdx = referencedLayer->fields().lookupField( referencedFieldName );
+        const QgsField referencedField = referencedLayer->fields().field( fieldIdx );
+        ReferencedLayerInfo info;
+        info.referencingFieldIdx = referencingFieldIdx;
+        info.referencedLayer = referencedLayer;
+        info.referencedFieldOapifIdentifier = referencedLayer->fields().at( fieldIdx ).displayName();
+        info.referencingFieldOapifIdentifier = referencingField.displayName();
+        info.referencedLayerOapifIdentifier = referencedLayer->serverProperties()->shortName().isEmpty() ? referencedLayer->name() : referencedLayer->serverProperties()->shortName();
+        info.valueIsPk = referencedLayer->primaryKeyAttributes().contains( referencedLayer->fields().lookupField( referencedFieldName ) );
+        info.referencingFieldComment = referencedField.comment();
+        refInfo.insert( referencingFieldIdx, info );
+      }
+    }
+  }
+  return refInfo;
+}
+
 QgsWfs3LandingPageHandler::QgsWfs3LandingPageHandler()
 {}
 
@@ -316,6 +1092,12 @@ void QgsWfs3LandingPageHandler::handleRequest( const QgsServerApiContext &contex
     { "type", QgsServerOgcApi::mimeType( QgsServerOgcApi::ContentType::OPENAPI3 ) },
     { "title", "API description" },
   } );
+  data["links"].push_back( {
+    { "href", href( context, "/functions" ) },
+    { "rel", QgsServerOgcApi::relToString( QgsServerOgcApi::Rel::functions ) },
+    { "type", QgsServerOgcApi::mimeType( QgsServerOgcApi::ContentType::OPENAPI3 ) },
+    { "title", "Custom functions" },
+  } );
   write( data, context, { { "pageTitle", linkTitle() }, { "navigation", json::array() } } );
 }
 
@@ -339,17 +1121,6 @@ json QgsWfs3LandingPageHandler::schema( const QgsServerApiContext &context ) con
   return data;
 }
 
-const QString QgsWfs3LandingPageHandler::templatePath( const QgsServerApiContext &context ) const
-{
-  // resources/server/api + /ogc/templates/wfs3/ + operationId() + .html
-  QString path { context.serverInterface()->serverSettings()->apiResourcesDirectory() };
-  path += "/ogc/templates/wfs3/"_L1;
-  path += QString::fromStdString( operationId() );
-  path += ".html"_L1;
-  return path;
-}
-
-
 QgsWfs3ConformanceHandler::QgsWfs3ConformanceHandler()
 {}
 
@@ -358,10 +1129,59 @@ void QgsWfs3ConformanceHandler::handleRequest( const QgsServerApiContext &contex
   json data {
     { "links", links( context ) },
     { "conformsTo",
-      { "http://www.opengis.net/spec/ogcapi-features-1/1.0/conf/core",
+      {
+        // From https://docs.ogc.org/is/19-072/19-072.html
+        "http://www.opengis.net/spec/ogcapi-common-1/1.0/req/landing-page",
+        "http://www.opengis.net/spec/ogcapi-common-1/1.0/req/oas30",
+        "http://www.opengis.net/spec/ogcapi-common-1/1.0/req/html",
+        "http://www.opengis.net/spec/ogcapi-common-1/1.0/req/json",
+
+        // From https://docs.ogc.org/is/23-058r2/23-058r2.html
+        "http://www.opengis.net/spec/ogcapi-common-3/1.0/conf/schemas",
+        "http://www.opengis.net/spec/ogcapi-common-3/1.0/conf/profile-parameter",
+        "http://www.opengis.net/spec/ogcapi-common-3/1.0/conf/profile-references",
+        "http://www.opengis.net/spec/ogcapi-common-3/1.0/conf/profile-codelists",
+        "http://www.opengis.net/spec/ogcapi-common-3/1.0/conf/advanced-property-roles",
+        "http://www.opengis.net/spec/ogcapi-common-3/1.0/conf/references",
+        "http://www.opengis.net/spec/ogcapi-common-3/1.0/conf/returnables-and-receivables",
+
+        // From: https://docs.ogc.org/is/18-058r1/18-058r1.html
+        "http://www.opengis.net/spec/ogcapi-features-2/1.0/conf/crs",
+
+        // From: https://docs.ogc.org/is/17-069r4/17-069r4.html
+        "http://www.opengis.net/spec/ogcapi-features-1/1.0/conf/core",
         "http://www.opengis.net/spec/ogcapi-features-1/1.0/conf/oas30",
         "http://www.opengis.net/spec/ogcapi-features-1/1.0/conf/html",
-        "http://www.opengis.net/spec/ogcapi-features-1/1.0/conf/geojson" } }
+        "http://www.opengis.net/spec/ogcapi-features-1/1.0/conf/geojson",
+
+        // Draft? Now approved as part 3 https://docs.ogc.org/is/23-058r2/23-058r2.html
+        "http://www.opengis.net/spec/ogcapi-features-5/1.0/conf/schemas",
+        "http://www.opengis.net/spec/ogcapi-features-5/1.0/conf/profile-codelists",
+        "http://www.opengis.net/spec/ogcapi-features-5/1.0/conf/profile-parameter",
+        "http://www.opengis.net/spec/ogcapi-features-5/1.0/conf/feature-references",
+
+        "http://www.opengis.net/spec/ogcapi-features-3/1.0/conf/queryables",
+        "http://www.opengis.net/spec/ogcapi-features-3/1.0/conf/queryables-query-parameters",
+        "http://www.opengis.net/spec/ogcapi-features-3/1.0/conf/filter",
+        "http://www.opengis.net/spec/ogcapi-features-3/1.0/conf/features-filter",
+
+        "http://www.opengis.net/spec/cql2/1.0/conf/basic-cql2",
+        "http://www.opengis.net/spec/cql2/1.0/conf/advanced-comparison-operators",
+        "http://www.opengis.net/spec/cql2/1.0/conf/basic-spatial-functions",
+        "http://www.opengis.net/spec/cql2/1.0/conf/basic-spatial-functions-plus",
+        "http://www.opengis.net/spec/cql2/1.0/conf/spatial-functions",
+        "http://www.opengis.net/spec/cql2/1.0/conf/property-property",
+        "http://www.opengis.net/spec/cql2/1.0/conf/functions",
+        "http://www.opengis.net/spec/cql2/1.0/conf/arithmetic",
+        "http://www.opengis.net/spec/cql2/1.0/conf/cql2-text",
+
+        // NYI
+        // "http://www.opengis.net/spec/cql2/1.0/conf/case-insensitive-comparison",
+        // "http://www.opengis.net/spec/cql2/1.0/conf/accent-insensitive-comparison",
+        // "http://www.opengis.net/spec/cql2/1.0/conf/temporal-functions",
+        // "http://www.opengis.net/spec/cql2/1.0/conf/array-functions",
+        // "http://www.opengis.net/spec/cql2/1.0/conf/cql2-json",
+      } }
   };
   json navigation = json::array();
   const QUrl url { context.request()->url() };
@@ -437,7 +1257,6 @@ void QgsWfs3CollectionsHandler::handleRequest( const QgsServerApiContext &contex
           // a description of the features in the collection
           { "description", layer->serverProperties()->abstract().toStdString() },
           { "crs", crss },
-          // TODO: "relations" ?
           { "extent",
             { {
                 "spatial",
@@ -460,7 +1279,20 @@ void QgsWfs3CollectionsHandler::handleRequest( const QgsServerApiContext &contex
               { { "href", href( context, u"/%1/items"_s.arg( shortName ), QgsServerOgcApi::contentTypeToExtension( QgsServerOgcApi::ContentType::HTML ) ) },
                 { "rel", QgsServerOgcApi::relToString( QgsServerOgcApi::Rel::items ) },
                 { "type", QgsServerOgcApi::mimeType( QgsServerOgcApi::ContentType::HTML ) },
-                { "title", title + " as HTML" } } /* TODO: not sure what these "concepts" are about, neither if they are mandatory
+                { "title", title + " as HTML" } },
+              { { "href", href( context, u"/%1/items"_s.arg( shortName ), QgsServerOgcApi::contentTypeToExtension( QgsServerOgcApi::ContentType::FLATGEOBUF ) ) },
+                { "rel", QgsServerOgcApi::relToString( QgsServerOgcApi::Rel::items ) },
+                { "type", QgsServerOgcApi::mimeType( QgsServerOgcApi::ContentType::FLATGEOBUF ) },
+                { "title", title + " as FlatGeobuf" } },
+              { { "href", href( context, u"/%1/queryables"_s.arg( shortName ), QgsServerOgcApi::contentTypeToExtension( QgsServerOgcApi::ContentType::HTML ) ) },
+                { "rel", QgsServerOgcApi::relToString( QgsServerOgcApi::Rel::queryables ) },
+                { "type", QgsServerOgcApi::mimeType( QgsServerOgcApi::ContentType::HTML ) },
+                { "title", "Queryables of " + title + " as HTML" } },
+              { { "href", href( context, u"/%1/queryables"_s.arg( shortName ), QgsServerOgcApi::contentTypeToExtension( QgsServerOgcApi::ContentType::JSON ) ) },
+                { "rel", QgsServerOgcApi::relToString( QgsServerOgcApi::Rel::queryables ) },
+                { "type", QgsServerOgcApi::mimeType( QgsServerOgcApi::ContentType::JSON ) },
+                { "title", "Queryables of " + title + " as JSON" } },
+              /* TODO: not sure what these "concepts" are about, neither if they are mandatory
             {
               { "href", href( api, context.request(), u"/%1/concepts"_s.arg( shortName ) )  },
               { "rel", QgsServerOgcApi::relToString( QgsServerOgcApi::Rel::item ) },
@@ -523,7 +1355,6 @@ void QgsWfs3DescribeCollectionHandler::handleRequest( const QgsServerApiContext 
   QgsVectorLayer *mapLayer { layerFromCollectionId( context, collectionId ) };
   Q_ASSERT( mapLayer );
 
-
   const QgsProject *project = context.project();
   const QStringList wfsLayerIds = QgsServerProjectUtils::wfsLayerIds( *project );
   if ( !wfsLayerIds.contains( mapLayer->id() ) )
@@ -536,23 +1367,44 @@ void QgsWfs3DescribeCollectionHandler::handleRequest( const QgsServerApiContext 
 
   const std::string title { mapLayer->serverProperties()->wfsTitle().isEmpty() ? mapLayer->name().toStdString() : mapLayer->serverProperties()->wfsTitle().toStdString() };
   const std::string itemsTitle { title + " items" };
+  const std::string queryablesTitle { title + " queryables" };
   const QString shortName { mapLayer->serverProperties()->shortName().isEmpty() ? mapLayer->name() : mapLayer->serverProperties()->shortName() };
-  const QString typeName { mapLayer->serverProperties()->wfsTypeName() };
   json linksList = links( context );
-  linksList.push_back(
-    { { "href", href( context, u"/items"_s, QgsServerOgcApi::contentTypeToExtension( QgsServerOgcApi::ContentType::GEOJSON ) ) },
-      { "rel", QgsServerOgcApi::relToString( QgsServerOgcApi::Rel::items ) },
-      { "type", QgsServerOgcApi::mimeType( QgsServerOgcApi::ContentType::GEOJSON ) },
-      { "title", itemsTitle + " as " + QgsServerOgcApi::contentTypeToStdString( QgsServerOgcApi::ContentType::GEOJSON ) } }
-  );
 
-  linksList.push_back(
-    { { "href", href( context, u"/items"_s, QgsServerOgcApi::contentTypeToExtension( QgsServerOgcApi::ContentType::HTML ) ) },
-      { "rel", QgsServerOgcApi::relToString( QgsServerOgcApi::Rel::items ) },
-      { "type", QgsServerOgcApi::mimeType( QgsServerOgcApi::ContentType::HTML ) },
-      { "title", itemsTitle + " as " + QgsServerOgcApi::contentTypeToStdString( QgsServerOgcApi::ContentType::HTML ) } }
-  );
+  for ( const auto ct : { QgsServerOgcApi::ContentType::GEOJSON, QgsServerOgcApi::ContentType::HTML, QgsServerOgcApi::ContentType::FLATGEOBUF } )
+  {
+    linksList.push_back(
+      { { "href", href( context, u"/items"_s, QgsServerOgcApi::contentTypeToExtension( ct ) ) },
+        { "rel", QgsServerOgcApi::relToString( QgsServerOgcApi::Rel::items ) },
+        { "type", QgsServerOgcApi::mimeType( ct ) },
+        { "title", itemsTitle + " as " + QgsServerOgcApi::contentTypeToStdString( ct ) } }
+    );
+  }
 
+  // Add schemas
+  for ( const auto ct : { QgsServerOgcApi::ContentType::SCHEMA_JSON, QgsServerOgcApi::ContentType::HTML } )
+  {
+    linksList.push_back(
+      { { "href", href( context, u"/schema"_s, QgsServerOgcApi::contentTypeToExtension( ct ) ) },
+        { "rel", QgsServerOgcApi::relToString( QgsServerOgcApi::Rel::schema ) },
+        { "type", QgsServerOgcApi::mimeType( ct ) },
+        { "title", "Schema of features in '" + title + "' as " + QgsServerOgcApi::contentTypeToStdString( ct ) } }
+    );
+  }
+
+  for ( const auto ct : { QgsServerOgcApi::ContentType::JSON, QgsServerOgcApi::ContentType::HTML } )
+  {
+    linksList.push_back(
+      { { "href", href( context, u"/queryables"_s, QgsServerOgcApi::contentTypeToExtension( ct ) ) },
+        { "rel", QgsServerOgcApi::relToString( QgsServerOgcApi::Rel::queryables ) },
+        { "type", QgsServerOgcApi::mimeType( ct ) },
+        { "title", queryablesTitle + " as " + QgsServerOgcApi::contentTypeToStdString( ct ) } }
+    );
+  }
+
+#if 0
+  const QString typeName { mapLayer->serverProperties()->wfsTypeName() };
+  // Unsure we want to keep this after "schema" has been implemented
   linksList.push_back(
     { { "href",
         parentLink( context.request()->url(), 3 ).toStdString() + "?request=DescribeFeatureType&typename=" + QUrlQuery( typeName ).toString( QUrl::EncodeSpaces ).toStdString() + "&service=WFS&version=2.0" },
@@ -560,6 +1412,9 @@ void QgsWfs3DescribeCollectionHandler::handleRequest( const QgsServerApiContext 
       { "type", QgsServerOgcApi::mimeType( QgsServerOgcApi::ContentType::XML ) },
       { "title", "Schema for " + title } }
   );
+#endif
+
+  // TODO: add JSONFG and JSONFG-PLUS
 
   json crss = json::array();
   for ( const auto &crs : QgsServerApiUtils::publishedCrsList( context.project() ) )
@@ -572,7 +1427,7 @@ void QgsWfs3DescribeCollectionHandler::handleRequest( const QgsServerApiContext 
     { "title", title },
     // TODO: check if we need to expose other advertised CRS here
     { "crs", crss },
-    // TODO: "relations" ?
+    { "storageCrs", mapLayer->crs().toOgcUri().toStdString() },
     { "extent",
       { { "spatial",
           {
@@ -586,6 +1441,11 @@ void QgsWfs3DescribeCollectionHandler::handleRequest( const QgsServerApiContext 
           } } } },
     { "links", linksList }
   };
+  // Add storageCrsCoordinateEpoch if not NaN
+  if ( !std::isnan( mapLayer->crs().coordinateEpoch() ) )
+  {
+    data["storageCrsCoordinateEpoch"] = mapLayer->crs().coordinateEpoch();
+  }
   json navigation = json::array();
   const QUrl url { context.request()->url() };
   navigation.push_back( { { "title", "Landing page" }, { "href", parentLink( url, 2 ).toStdString() } } );
@@ -624,9 +1484,276 @@ json QgsWfs3DescribeCollectionHandler::schema( const QgsServerApiContext &contex
   return data;
 }
 
+QgsWfs3DescribeCollectionQueryablesHandler::QgsWfs3DescribeCollectionQueryablesHandler()
+{}
+
+void QgsWfs3DescribeCollectionQueryablesHandler::handleRequest( const QgsServerApiContext &context ) const
+{
+  if ( !context.project() )
+  {
+    throw QgsServerApiImproperlyConfiguredException( u"Project is invalid or undefined"_s );
+  }
+  // Check collectionId
+  const QRegularExpressionMatch match { path().match( context.request()->url().path() ) };
+  if ( !match.hasMatch() )
+  {
+    throw QgsServerApiNotFoundError( u"Collection was not found"_s );
+  }
+  const QString collectionId { match.captured( u"collectionId"_s ) };
+  // May throw if not found
+  QgsVectorLayer *mapLayer { layerFromCollectionId( context, collectionId ) };
+  Q_ASSERT( mapLayer );
+
+  const QgsProject *project = context.project();
+  const QStringList wfsLayerIds = QgsServerProjectUtils::wfsLayerIds( *project );
+  if ( !wfsLayerIds.contains( mapLayer->id() ) )
+  {
+    throw QgsServerApiNotFoundError( u"Collection was not found"_s );
+  }
+
+  // Check if the layer is published, raise not found if it is not
+  checkLayerIsAccessible( mapLayer, context );
+
+  const std::string title { mapLayer->serverProperties()->wfsTitle().isEmpty() ? mapLayer->name().toStdString() : mapLayer->serverProperties()->wfsTitle().toStdString() };
+  const std::string queryablesTitle { title + " queryables" };
+  const std::string description { mapLayer->serverProperties()->abstract().toStdString() };
+
+  const QgsFields constFields { publishedFields( mapLayer, context ) };
+
+  json properties;
+
+  if ( mapLayer->wkbType() != Qgis::WkbType::NoGeometry )
+  {
+    std::string geometryFormat { "geometry-" };
+    QString geometryName { mapLayer->dataProvider()->geometryColumnName() };
+
+    if ( geometryName.isEmpty() )
+    {
+      geometryName = u"geom"_s;
+      while ( constFields.indexOf( geometryName ) > -1 )
+      {
+        geometryName += "_";
+      }
+    }
+
+    switch ( QgsWkbTypes::linearType( QgsWkbTypes::flatType( mapLayer->wkbType() ) ) )
+    {
+      case Qgis::WkbType::Point:
+        geometryFormat += "point";
+        break;
+
+      case Qgis::WkbType::MultiPoint:
+        geometryFormat += "multipoint";
+        break;
+
+      case Qgis::WkbType::LineString:
+        geometryFormat += "linestring";
+        break;
+
+      case Qgis::WkbType::MultiLineString:
+        geometryFormat += "multilinestring";
+        break;
+
+      case Qgis::WkbType::Polygon:
+        geometryFormat += "polygon";
+        break;
+
+      case Qgis::WkbType::MultiPolygon:
+        geometryFormat += "multipolygon";
+        break;
+
+      case Qgis::WkbType::GeometryCollection:
+        geometryFormat += "geometrycollection";
+        break;
+
+      default:
+        geometryFormat += "any";
+        break;
+    }
+
+    properties[geometryName.toStdString()] = { { "x-ogc-role", "primary-geometry" }, { "format", geometryFormat } };
+  }
+
+  for ( const auto &f : constFields )
+  {
+    json property;
+
+    // TODO: strip down to what is actually used
+    switch ( f.type() )
+    {
+      case QMetaType::Type::QString:
+      case QMetaType::Type::QVariant:
+        property["type"] = "string";
+        if ( f.length() > 0 )
+          property["maxLength"] = f.length();
+        break;
+
+      case QMetaType::Type::QDate:
+        property["type"] = "string";
+        property["format"] = "date";
+        break;
+
+      case QMetaType::Type::QTime:
+        property["type"] = "string";
+        property["format"] = "time";
+        break;
+
+      case QMetaType::Type::QDateTime:
+        property["type"] = "string";
+        property["format"] = "date-time";
+        break;
+
+      case QMetaType::Type::QUrl:
+        property["type"] = "string";
+        property["format"] = "uri";
+        break;
+
+      case QMetaType::Type::QUuid:
+        property["type"] = "string";
+        property["format"] = "uuid";
+        break;
+
+      case QMetaType::Type::QChar:
+      case QMetaType::Type::Char:
+      case QMetaType::Type::SChar:
+      case QMetaType::Type::UChar:
+      case QMetaType::Type::Char16:
+      case QMetaType::Type::Char32:
+        property["type"] = "string";
+        property["maxLength"] = 1;
+        break;
+
+      case QMetaType::Type::Bool:
+        property["type"] = "boolean";
+        break;
+
+      case QMetaType::Type::Short:
+      case QMetaType::Type::UShort:
+      case QMetaType::Type::Int:
+      case QMetaType::Type::UInt:
+      case QMetaType::Type::Long:
+      case QMetaType::Type::ULong:
+      case QMetaType::Type::LongLong:
+      case QMetaType::Type::ULongLong:
+        property["type"] = "integer";
+        break;
+
+      case QMetaType::Type::Float:
+      case QMetaType::Type::Float16:
+      case QMetaType::Type::Double:
+        property["type"] = "number";
+        break;
+
+      case QMetaType::Type::QStringList:
+      case QMetaType::Type::QVariantList:
+      case QMetaType::Type::QJsonArray:
+        property["type"] = "array";
+        break;
+
+      case QMetaType::Type::QJsonValue:
+      case QMetaType::Type::QJsonObject:
+      case QMetaType::Type::QJsonDocument:
+      case QMetaType::Type::QVariantHash:
+      case QMetaType::Type::QVariantPair:
+      case QMetaType::Type::QByteArrayList:
+      case QMetaType::Type::QVariantMap:
+        // TODO property["type"] = "object";
+        break;
+
+      case QMetaType::Type::QByteArray:
+      case QMetaType::Type::QBitArray:
+      case QMetaType::Type::QLocale:
+      case QMetaType::Type::QRect:
+      case QMetaType::Type::QSize:
+      case QMetaType::Type::QPoint:
+      case QMetaType::Type::QLine:
+      case QMetaType::Type::QRectF:
+      case QMetaType::Type::QSizeF:
+      case QMetaType::Type::QPointF:
+      case QMetaType::Type::QLineF:
+      case QMetaType::Type::QEasingCurve:
+      case QMetaType::Type::Nullptr:
+      case QMetaType::Type::Void:
+      case QMetaType::Type::VoidStar:
+      case QMetaType::Type::QCborValue:
+      case QMetaType::Type::UnknownType:
+      case QMetaType::Type::QCborSimpleType:
+      case QMetaType::Type::QRegularExpression:
+      case QMetaType::Type::QCborArray:
+      case QMetaType::Type::QCborMap:
+      case QMetaType::Type::QModelIndex:
+      case QMetaType::Type::QPersistentModelIndex:
+      case QMetaType::Type::QObjectStar:
+      case QMetaType::Type::QFont:
+      case QMetaType::Type::QPixmap:
+      case QMetaType::Type::QBrush:
+      case QMetaType::Type::QColor:
+      case QMetaType::Type::QPalette:
+      case QMetaType::Type::QIcon:
+      case QMetaType::Type::QImage:
+      case QMetaType::Type::QPolygon:
+      case QMetaType::Type::QRegion:
+      case QMetaType::Type::QBitmap:
+      case QMetaType::Type::QCursor:
+      case QMetaType::Type::QKeySequence:
+      case QMetaType::Type::QPen:
+      case QMetaType::Type::QTextLength:
+      case QMetaType::Type::QTextFormat:
+      case QMetaType::Type::QTransform:
+      case QMetaType::Type::QMatrix4x4:
+      case QMetaType::Type::QVector2D:
+      case QMetaType::Type::QVector3D:
+      case QMetaType::Type::QVector4D:
+      case QMetaType::Type::QQuaternion:
+      case QMetaType::Type::QPolygonF:
+      case QMetaType::Type::QColorSpace:
+      case QMetaType::Type::QSizePolicy:
+      case QMetaType::Type::User:
+        break;
+    }
+
+    if ( !property.contains( "type" ) )
+      continue;
+
+    if ( !f.comment().isEmpty() )
+      property["title"] = f.comment().toStdString();
+
+    properties[f.name().toStdString()] = property;
+  }
+
+  json data { { "type", "object" }, { "title", title }, { "description", description }, { "properties", properties }, { "additionalProperties", false }, { "links", links( context ) } };
+
+  json navigation = json::array();
+  const QUrl url { context.request()->url() };
+  navigation.push_back( { { "title", "Landing page" }, { "href", parentLink( url, 3 ).toStdString() } } );
+  navigation.push_back( { { "title", "Collections" }, { "href", parentLink( url, 2 ).toStdString() } } );
+  navigation.push_back( { { "title", title }, { "href", parentLink( url, 1 ).toStdString() } } );
+  write( data, context, { { "pageTitle", queryablesTitle }, { "navigation", navigation } } );
+}
+
+json QgsWfs3DescribeCollectionQueryablesHandler::schema( const QgsServerApiContext &context ) const
+{
+  json data;
+  const std::string path { QgsServerApiUtils::appendMapParameter( context.apiRootPath(), context.request()->url() ).toStdString() };
+
+  data[path] = {
+    { "get",
+      { { "tags", jsonTags() },
+        { "summary", summary() },
+        { "description", description() },
+        { "operationId", operationId() },
+        { "responses",
+          { { "200",
+              { { "description", description() },
+                { "content", { { "application/json", { { "schema", { { "$ref", "#/components/schemas/root" } } } } }, { "text/html", { { "schema", { { "type", "string" } } } } } } } } },
+            { "default", defaultResponse() } } } } }
+  };
+  return data;
+}
+
 QgsWfs3CollectionsItemsHandler::QgsWfs3CollectionsItemsHandler()
 {
-  setContentTypes( { QgsServerOgcApi::ContentType::GEOJSON, QgsServerOgcApi::ContentType::HTML } );
+  setContentTypes( { QgsServerOgcApi::ContentType::GEOJSON, QgsServerOgcApi::ContentType::HTML, QgsServerOgcApi::ContentType::FLATGEOBUF } );
 }
 
 QList<QgsServerQueryStringParameter> QgsWfs3CollectionsItemsHandler::parameters( const QgsServerApiContext &context ) const
@@ -773,9 +1900,9 @@ QList<QgsServerQueryStringParameter> QgsWfs3CollectionsItemsHandler::parameters(
 
   // CRS
   QgsServerQueryStringParameter
-    crs { u"crs"_s, false, QgsServerQueryStringParameter::Type::String, u"The coordinate reference system of the response geometries."_s, u"http://www.opengis.net/def/crs/OGC/1.3/CRS84"_s };
-  crs.setCustomValidator( crsValidator );
-  params.push_back( crs );
+    requestedCrs { u"crs"_s, false, QgsServerQueryStringParameter::Type::String, u"The coordinate reference system of the response geometries."_s, u"http://www.opengis.net/def/crs/OGC/1.3/CRS84"_s };
+  requestedCrs.setCustomValidator( crsValidator );
+  params.push_back( requestedCrs );
 
   // Result type
   const QgsServerQueryStringParameter resultType { u"resultType"_s, false, QgsServerQueryStringParameter::Type::String, u"Type of returned result: 'results' (default) or 'hits'"_s, u"results"_s };
@@ -789,6 +1916,20 @@ QList<QgsServerQueryStringParameter> QgsWfs3CollectionsItemsHandler::parameters(
   const QgsServerQueryStringParameter
     sortDesc { u"sortdesc"_s, false, QgsServerQueryStringParameter::Type::Boolean, u"Sort results in descending order, field name must be specified with 'sortby' parameter"_s, false };
   params.push_back( sortDesc );
+
+  // filter
+  const QgsServerQueryStringParameter filter { u"filter"_s, false, QgsServerQueryStringParameter::Type::String, u"The filter expression"_s, u""_s };
+  params.push_back( filter );
+
+  // filter-lang
+  const QgsServerQueryStringParameter filterLang { u"filter-lang"_s, false, QgsServerQueryStringParameter::Type::String, u"The language of the filter expression"_s, u"qgis"_s };
+  params.push_back( filterLang );
+
+  // filter-crs
+  QgsServerQueryStringParameter
+    filterCrs { u"filter-crs"_s, false, QgsServerQueryStringParameter::Type::String, u"The coordinate references system of the geometry values in the filter expression"_s, u"http://www.opengis.net/def/crs/OGC/1.3/CRS84"_s };
+  filterCrs.setCustomValidator( crsValidator );
+  params.push_back( filterCrs );
 
   return params;
 }
@@ -818,6 +1959,9 @@ json QgsWfs3CollectionsItemsHandler::schema( const QgsServerApiContext &context 
       u"datetime"_s,
       u"sortby"_s,
       u"sortdesc"_s,
+      u"filter"_s,
+      u"filter-lang"_s,
+      u"filter-crs"_s,
     };
 
     json componentParameters = json::array();
@@ -879,6 +2023,121 @@ json QgsWfs3CollectionsItemsHandler::schema( const QgsServerApiContext &context 
   return data;
 }
 
+void QgsWfs3AbstractItemsHandler::exposedTimeDimensions(
+  QString &temporalInstantField, QString &temporalStartField, QString &temporalEndField, bool &isDateTime, const QgsVectorLayer *mapLayer, const QgsAttributeList &requestedAttributes
+) const
+{
+  const QgsMapLayerServerProperties *serverProperties = mapLayer->serverProperties();
+  QList<QgsMapLayerServerProperties::WmsDimensionInfo> dimensions { serverProperties->wmsDimensions() };
+  isDateTime = false;
+
+  for ( const QgsMapLayerServerProperties::WmsDimensionInfo &dimension : std::as_const( dimensions ) )
+  {
+    if ( dimension.name == "time" || dimension.name == "date" )
+    {
+      if ( dimension.fieldName.isEmpty() )
+      {
+        continue;
+      }
+      else if ( dimension.endFieldName.isEmpty() )
+      {
+        if ( !requestedAttributes.contains( mapLayer->fields().indexOf( dimension.fieldName ) ) )
+        {
+          continue;
+        }
+        temporalInstantField = dimension.fieldName;
+      }
+      else
+      {
+        if ( !requestedAttributes.contains( mapLayer->fields().indexOf( dimension.fieldName ) ) || !requestedAttributes.contains( mapLayer->fields().indexOf( dimension.endFieldName ) ) )
+        {
+          continue;
+        }
+        temporalStartField = dimension.fieldName;
+        temporalEndField = dimension.endFieldName;
+      }
+      isDateTime = dimension.name == "time";
+    }
+  }
+}
+
+json QgsWfs3AbstractItemsHandler::timeDimensionInfo( const QgsFeature &feature, const QString &temporalInstantField, const QString &temporalStartField, const QString &temporalEndField, bool isDateTime ) const
+{
+  json data = json::object();
+
+  if ( !temporalInstantField.isEmpty() )
+  {
+    if ( isDateTime )
+    {
+      data["time"] = { { "timestamp", feature.attribute( temporalInstantField ).toDateTime().toUTC().toString( Qt::ISODate ).toStdString() } };
+    }
+    else
+    {
+      data["time"] = { { "date", feature.attribute( temporalInstantField ).toDate().toString( Qt::ISODate ).toStdString() } };
+    }
+  }
+  else if ( !temporalStartField.isEmpty() && !temporalEndField.isEmpty() )
+  {
+    if ( isDateTime )
+    {
+      data["time"] = {
+        { "interval",
+          { feature.attribute( temporalStartField ).toDateTime().toUTC().toString( Qt::ISODate ).toStdString(),
+            feature.attribute( temporalEndField ).toDateTime().toUTC().toString( Qt::ISODate ).toStdString() } }
+      };
+    }
+    else
+    {
+      data["time"] = {
+        { "interval", { feature.attribute( temporalStartField ).toDate().toString( Qt::ISODate ).toStdString(), feature.attribute( temporalEndField ).toDate().toString( Qt::ISODate ).toStdString() } }
+      };
+    }
+  }
+  else if ( !temporalStartField.isEmpty() )
+  {
+    if ( isDateTime )
+    {
+      data["time"] = { { "interval", { feature.attribute( temporalStartField ).toDateTime().toUTC().toString( Qt::ISODate ).toStdString(), ".." } } };
+    }
+    else
+    {
+      data["time"] = { { "interval", { feature.attribute( temporalStartField ).toDate().toString( Qt::ISODate ).toStdString(), ".." } } };
+    }
+  }
+  else if ( !temporalEndField.isEmpty() )
+  {
+    if ( isDateTime )
+    {
+      data["time"] = { { "interval", { "..", feature.attribute( temporalEndField ).toDateTime().toUTC().toString( Qt::ISODate ).toStdString() } } };
+    }
+    else
+    {
+      data["time"] = { { "interval", { "..", feature.attribute( temporalEndField ).toDate().toString( Qt::ISODate ).toStdString() } } };
+    }
+  }
+  return data;
+}
+
+Qgis::GeoJsonProfile QgsWfs3AbstractItemsHandler::jsonProfileFromRequest( const QgsServerApiContext &context ) const
+{
+  const QList<QgsServerOgcApi::Profile> requestedProfiles = profilesFromRequest( context.request() );
+
+  if ( requestedProfiles.contains( QgsServerOgcApi::Profile::JsonFg ) )
+  {
+    return Qgis::GeoJsonProfile::JsonFg;
+  }
+  else if ( requestedProfiles.contains( QgsServerOgcApi::Profile::JsonFgPlus ) )
+  {
+    return Qgis::GeoJsonProfile::JsonFgPlus;
+  }
+  else if ( requestedProfiles.contains( QgsServerOgcApi::Profile::Rfc7946 ) )
+  {
+    return Qgis::GeoJsonProfile::Rfc7946;
+  }
+
+  return Qgis::GeoJsonProfile::Legacy;
+}
+
 const QList<QgsServerQueryStringParameter> QgsWfs3CollectionsItemsHandler::fieldParameters( const QgsVectorLayer *mapLayer, const QgsServerApiContext &context ) const
 {
   QList<QgsServerQueryStringParameter> params;
@@ -919,6 +2178,520 @@ const QList<QgsServerQueryStringParameter> QgsWfs3CollectionsItemsHandler::field
   return params;
 }
 
+void QgsWfs3CollectionsItemsHandler::writeJsonOutput( const QgsVectorLayer *mapLayer, QgsFeatureRequest &featureRequest, const QgsServerApiContext &context, const ExportContext &exportContext ) const
+{
+  const std::string title { mapLayer->serverProperties()->wfsTitle().isEmpty() ? mapLayer->name().toStdString() : mapLayer->serverProperties()->wfsTitle().toStdString() };
+  const QList<QgsServerOgcApi::Profile> requestedProfiles = profilesFromRequest( context.request() );
+
+  // If the layer has any related objects, we need to process the related objects in the output
+  // if the client requested the a "rel-as-uri" or "rel-as-link" profile
+
+  const QgsAttributeList requestedAttributes = featureRequest.subsetOfAttributes();
+  QMap<int, ReferencedLayerInfo> referencedInfo = gatherReferencedLayerInfo( mapLayer, context );
+  // remove if attributes are not requested
+  referencedInfo.erase(
+    std::remove_if( referencedInfo.begin(), referencedInfo.end(), [&requestedAttributes]( const auto &info ) { return !requestedAttributes.contains( info.referencingFieldIdx ); } ), referencedInfo.end()
+  );
+
+  QgsServerOgcApi::Profile relAs = QgsServerOgcApi::Profile::Unset;
+
+  bool hasReferencedObjects = !referencedInfo.isEmpty();
+
+  if ( hasReferencedObjects )
+  {
+    if ( requestedProfiles.contains( QgsServerOgcApi::Profile::RelAsUri ) )
+      relAs = QgsServerOgcApi::Profile::RelAsUri;
+    else if ( requestedProfiles.contains( QgsServerOgcApi::Profile::RelAsLink ) )
+      relAs = QgsServerOgcApi::Profile::RelAsLink;
+    else if ( requestedProfiles.contains( QgsServerOgcApi::Profile::RelAsKey ) )
+      relAs = QgsServerOgcApi::Profile::RelAsKey;
+  }
+
+  const Qgis::GeoJsonProfile currentProfile { jsonProfileFromRequest( context ) };
+
+  // Exporter for JSON output
+  QgsJsonExporter exporter { const_cast<QgsVectorLayer *>( mapLayer ) };
+  exporter.setAttributes( featureRequest.subsetOfAttributes() );
+  exporter.setAttributeDisplayName( true );
+  // Geometries are already transformed by the feature request
+  exporter.setTransformGeometries( false );
+  // Note: the feature geometry is already in the requested CRS
+  exporter.setSourceCrs( featureRequest.destinationCrs() );
+  exporter.setDestinationCrs( featureRequest.destinationCrs() );
+  exporter.setGeoJsonProfile( currentProfile );
+
+  QgsFeatureList featureList;
+  QgsFeatureIterator features { mapLayer->getFeatures( featureRequest ) };
+  QgsFeature feat;
+  long i { 0 };
+  QMap<QgsFeatureId, QString> fidMap;
+
+  while ( features.nextFeature( feat ) )
+  {
+    // Ignore records before offset
+    if ( i >= exportContext.offset )
+    {
+      fidMap.insert( feat.id(), QgsServerFeatureId::getServerFid( feat, mapLayer->dataProvider()->pkAttributeIndexes() ) );
+      featureList << feat;
+    }
+    i++;
+  }
+
+  // Count features
+  long matchedFeaturesCount = 0;
+  if ( exportContext.attrFilters.isEmpty() && exportContext.filterRect.isNull() )
+  {
+    matchedFeaturesCount = mapLayer->featureCount();
+  }
+  else
+  {
+    if ( exportContext.filterExpression.isEmpty() )
+    {
+      featureRequest.setNoAttributes();
+    }
+
+    featureRequest.setFlags( Qgis::FeatureRequestFlag::NoGeometry );
+    featureRequest.setLimit( -1 );
+    features = mapLayer->getFeatures( featureRequest );
+
+    while ( features.nextFeature( feat ) )
+    {
+      matchedFeaturesCount++;
+    }
+  }
+
+  json data = exporter.exportFeaturesToJsonObject( featureList );
+
+  QMap<int, QString> extraGeomFields;
+  const QList<int> requestedAttrs = featureRequest.subsetOfAttributes();
+  for ( const int idx : std::as_const( requestedAttrs ) )
+  {
+    if ( mapLayer->fields().field( idx ).type() == QMetaType::Type::User && mapLayer->fields().field( idx ).typeName().compare( "geometry"_L1 ) == 0 )
+    {
+      extraGeomFields.insert( idx, mapLayer->fields().field( idx ).displayName() );
+    }
+  }
+
+  // See: https://docs.ogc.org/is/21-045r1/21-045r1.html#_temporal_information
+  QString temporalInstantField;
+  QString temporalStartField;
+  QString temporalEndField;
+  bool isDateTimeField = false;
+
+  if ( currentProfile == Qgis::GeoJsonProfile::JsonFg || currentProfile == Qgis::GeoJsonProfile::JsonFgPlus )
+  {
+    exposedTimeDimensions( temporalInstantField, temporalStartField, temporalEndField, isDateTimeField, mapLayer, requestedAttributes );
+  }
+
+  // Patch features
+  //  - IDs with server feature IDs
+  //  - add references
+  //  - format extra geometries
+  //  - add "time" if needed
+
+  for ( int i = 0; i < featureList.length(); i++ )
+  {
+    data["features"][i]["id"] = fidMap.value( data["features"][i]["id"] ).toStdString();
+
+    // Temporal
+    if ( currentProfile == Qgis::GeoJsonProfile::JsonFg || currentProfile == Qgis::GeoJsonProfile::JsonFgPlus )
+    {
+      const json timeData = timeDimensionInfo( featureList[i], temporalInstantField, temporalStartField, temporalEndField, isDateTimeField );
+      if ( timeData.contains( "time" ) )
+      {
+        data["features"][i].update( timeData );
+      }
+    }
+
+    // Add referenced objects
+    if ( hasReferencedObjects && relAs != QgsServerOgcApi::Profile::Unset )
+    {
+      for ( const auto &[fieldIdx, referencedInfo] : referencedInfo.toStdMap() )
+      {
+        const QgsField field = mapLayer->fields().field( fieldIdx );
+        const QString fieldIdentifier = field.alias().isEmpty() ? field.name() : field.alias();
+        const QVariant rawValue = featureList[i].attribute( fieldIdx );
+        data["features"][i]["properties"][fieldIdentifier.toStdString()] = relatedFeatureReference( rawValue, referencedInfo, relAs, context );
+      }
+    }
+
+    // Add extra geometries as WKT
+    for ( const auto &[fieldIdx, fieldIdentifier] : extraGeomFields.toStdMap() )
+    {
+      const QgsReferencedGeometry &refGeom = featureList[i].attribute( fieldIdx ).value<QgsReferencedGeometry>();
+      if ( refGeom.crs() != featureRequest.destinationCrs() )
+      {
+        QgsReferencedGeometry transformedRefGeom = refGeom;
+        const QgsCoordinateTransform ct( refGeom.crs(), featureRequest.destinationCrs(), featureRequest.coordinateTransform().context() );
+        transformedRefGeom.transform( ct );
+        data["features"][i]["properties"][fieldIdentifier.toStdString()] = transformedRefGeom.asWkt().toStdString();
+      }
+      else
+      {
+        data["features"][i]["properties"][fieldIdentifier.toStdString()] = refGeom.asWkt().toStdString();
+      }
+    }
+  }
+
+  // Add some metadata
+  data["numberMatched"] = matchedFeaturesCount;
+  data["numberReturned"] = featureList.count();
+  data["links"] = links( context );
+
+  // Current url
+  const QUrl url { context.request()->url() };
+
+  // Url without offset and limit
+  QUrl cleanedUrl { url };
+  cleanedUrl.setQuery( removeOffsetAndLimit( QUrlQuery( url.query() ) ) );
+
+  QString cleanedUrlAsString { cleanedUrl.toString() };
+
+  if ( !cleanedUrl.hasQuery() )
+  {
+    cleanedUrlAsString += '?';
+  }
+  else
+  {
+    cleanedUrlAsString += '&';
+  }
+
+  // Pagesize metadata
+  json pagesize = json::array();
+  const qlonglong maxLimit { context.serverInterface()->serverSettings()->apiWfs3MaxLimit() };
+  if ( matchedFeaturesCount > 1 && maxLimit > 1 )
+  {
+    const std::string pageSizeOneLink { cleanedUrlAsString.toStdString() + u"offset=0&limit=1"_s.toStdString() };
+    pagesize.push_back( { { "title", "1" }, { "href", pageSizeOneLink } } );
+    if ( matchedFeaturesCount > 10 && maxLimit > 10 )
+    {
+      const std::string pageSizeTenLink { cleanedUrlAsString.toStdString() + u"offset=0&limit=10"_s.toStdString() };
+      pagesize.push_back( { { "title", "10" }, { "href", pageSizeTenLink } } );
+    }
+    if ( matchedFeaturesCount > 20 && maxLimit > 20 )
+    {
+      const std::string pageSizeTwentyLink { cleanedUrlAsString.toStdString() + u"offset=0&limit=20"_s.toStdString() };
+      pagesize.push_back( { { "title", "20" }, { "href", pageSizeTwentyLink } } );
+    }
+    if ( matchedFeaturesCount > 50 && maxLimit > 50 )
+    {
+      const std::string pageSizeFiftyLink { cleanedUrlAsString.toStdString() + u"offset=0&limit=50"_s.toStdString() };
+      pagesize.push_back( { { "title", "50" }, { "href", pageSizeFiftyLink } } );
+    }
+    if ( matchedFeaturesCount > 100 && maxLimit > 100 )
+    {
+      const std::string pageSizeHundredLink { cleanedUrlAsString.toStdString() + u"offset=0&limit=100"_s.toStdString() };
+      pagesize.push_back( { { "title", "100" }, { "href", pageSizeHundredLink } } );
+    }
+    if ( matchedFeaturesCount > 1000 && maxLimit > 1000 )
+    {
+      const std::string pageSizeThousandLink { cleanedUrlAsString.toStdString() + u"offset=0&limit=1000"_s.toStdString() };
+      pagesize.push_back( { { "title", "1000" }, { "href", pageSizeThousandLink } } );
+    }
+    std::string maxTitle = "All";
+    if ( maxLimit < matchedFeaturesCount )
+    {
+      maxTitle = "Maximum";
+    }
+    const std::string pageSizeMaxLink { cleanedUrlAsString.toStdString() + u"offset=0&limit=%1"_s.arg( maxLimit ).toStdString() };
+    pagesize.push_back( { { "title", maxTitle }, { "href", pageSizeMaxLink } } );
+  }
+
+  // Get the self link
+  json selfLink;
+  for ( const auto &l : data["links"] )
+  {
+    if ( l["rel"] == "self" )
+    {
+      selfLink = l;
+      break;
+    }
+  }
+
+  // Pagination metadata
+  json pagination = json::array();
+
+  if ( exportContext.limit != 0 )
+  {
+    // Add prev - next links
+    json prevLink;
+    if ( exportContext.offset != 0 )
+    {
+      prevLink = selfLink;
+      prevLink["href"] = cleanedUrlAsString.toStdString() + u"offset=%1&limit=%2"_s.arg( std::max<long>( 0, exportContext.offset - exportContext.limit ) ).arg( exportContext.limit ).toStdString();
+      prevLink["rel"] = "prev";
+      prevLink["title"] = "Previous page";
+      data["links"].push_back( prevLink );
+    }
+
+    json nextLink;
+    if ( exportContext.limit + exportContext.offset < matchedFeaturesCount )
+    {
+      nextLink = selfLink;
+      nextLink["href"] = cleanedUrlAsString.toStdString()
+                         + u"offset=%1&limit=%2"_s.arg( std::min<long>( matchedFeaturesCount, exportContext.limit + exportContext.offset ) ).arg( exportContext.limit ).toStdString();
+      nextLink["rel"] = "next";
+      nextLink["title"] = "Next page";
+      data["links"].push_back( nextLink );
+    }
+
+    // Pagination
+    if ( matchedFeaturesCount - exportContext.limit > 0 )
+    {
+      const int totalPages { static_cast<int>( std::ceil( static_cast<float>( matchedFeaturesCount ) / static_cast<float>( exportContext.limit ) ) ) };
+      const int currentPage { static_cast<int>( exportContext.offset / exportContext.limit + 1 ) };
+      const std::string currentPageLink { selfLink["href"] };
+
+      std::string prevPageLink;
+      if ( prevLink.contains( std::string { "href" } ) )
+      {
+        prevPageLink = prevLink["href"];
+      }
+
+      std::string nextPageLink;
+      if ( nextLink.contains( std::string { "href" } ) )
+      {
+        nextPageLink = nextLink["href"];
+      }
+
+      const std::string firstPageLink { cleanedUrlAsString.toStdString() + u"offset=0&limit=%1"_s.arg( exportContext.limit ).toStdString() };
+      const std::string lastPageLink { cleanedUrlAsString.toStdString() + u"offset=%1&limit=%2"_s.arg( totalPages * exportContext.limit - exportContext.limit ).arg( exportContext.limit ).toStdString() };
+
+      if ( currentPage != 1 )
+      {
+        pagination.push_back( { { "title", "1" }, { "href", firstPageLink }, { "class", "page-item" } } );
+      }
+      if ( currentPage > 3 )
+      {
+        pagination.push_back( { { "title", "\u2026" }, { "class", "page-item disabled" } } );
+      }
+      if ( currentPage > 2 )
+      {
+        pagination.push_back( { { "title", std::to_string( currentPage - 1 ) }, { "href", prevPageLink }, { "class", "page-item" } } );
+      }
+      pagination.push_back( { { "title", std::to_string( currentPage ) }, { "href", currentPageLink }, { "class", "page-item active" } } );
+      if ( currentPage < totalPages - 1 )
+      {
+        pagination.push_back( { { "title", std::to_string( currentPage + 1 ) }, { "href", nextPageLink }, { "class", "page-item" } } );
+      }
+      if ( currentPage < totalPages - 2 )
+      {
+        pagination.push_back( { { "title", "\u2026" }, { "class", "page-item disabled" } } );
+      }
+      if ( currentPage != totalPages )
+      {
+        pagination.push_back( { { "title", std::to_string( totalPages ) }, { "href", lastPageLink }, { "class", "page-item" } } );
+      }
+
+      // Add first - last links
+      // Since we are having them ready, not mandatory by the spec but allowed
+      json firstLink = selfLink;
+      firstLink["href"] = firstPageLink;
+      firstLink["rel"] = "first";
+      firstLink["title"] = "First page";
+      data["links"].push_back( firstLink );
+
+      json lastLink = selfLink;
+      lastLink["href"] = lastPageLink;
+      lastLink["rel"] = "last";
+      lastLink["title"] = "Last page";
+      data["links"].push_back( lastLink );
+    }
+  }
+
+  // Add rel-as- links based on requested profile
+  // Note: for Unset profile we don't add any rel-as- link
+  if ( relAs != QgsServerOgcApi::Profile::Unset )
+  {
+    const std::string profileStr { QgsServerOgcApi::profileToString( relAs ).toStdString() };
+    data["links"].push_back(
+      { { "rel", QgsServerOgcApi::relToString( QgsServerOgcApi::Rel::profile ) },
+        { "href", "http://www.opengis.net/def/profile/ogc/0/" + profileStr },
+        { "title", "Profile '" + profileStr + "' is used in the response" } }
+    );
+  }
+
+  json navigation = json::array();
+  navigation.push_back( { { "title", "Landing page" }, { "href", parentLink( url, 3 ).toStdString() } } );
+  navigation.push_back( { { "title", "Collections" }, { "href", parentLink( url, 2 ).toStdString() } } );
+  navigation.push_back( { { "title", title }, { "href", parentLink( url, 1 ).toStdString() } } );
+
+  const json htmlMetadata {
+    { "pageTitle", "Features in layer " + title },
+    { "layerTitle", title },
+    { "geojsonUrl", href( context, "/", QgsServerOgcApi::contentTypeToExtension( QgsServerOgcApi::ContentType::GEOJSON ) ) },
+    { "pagesize", pagesize },
+    { "pagination", pagination },
+    { "navigation", navigation }
+  };
+
+  write( data, context, htmlMetadata );
+}
+
+void QgsWfs3CollectionsItemsHandler::writeFlatGeobufOutput( const QgsVectorLayer *mapLayer, QgsFeatureRequest &featureRequest, const QgsServerApiContext &apiContext, const ExportContext &exportContext ) const
+{
+  const QString destination = VSIMemGenerateHiddenFilename( "data.fgb" );
+  // RIIA deleter for generated file
+  QObject obj;
+  obj.connect( &obj, &QObject::destroyed, [destination]() { VSIUnlink( destination.toStdString().c_str() ); } );
+
+  const auto attributes { featureRequest.subsetOfAttributes() };
+  QgsFields exportedFields;
+  // Server FID is required if the layer has a compound primary key and doesn't already have a field named "qgs_fid"
+  const bool addQgsFid { mapLayer->dataProvider()->pkAttributeIndexes().count() > 1 && mapLayer->fields().lookupField( u"qgs_fid"_s ) == -1 };
+  if ( addQgsFid )
+  {
+    exportedFields.append( QgsField( u"qgs_fid"_s, QMetaType::Type::QString ) );
+  }
+
+  for ( int i = 0; i < mapLayer->fields().count(); i++ )
+  {
+    if ( !attributes.isEmpty() && !attributes.contains( i ) )
+    {
+      continue;
+    }
+    exportedFields.append( mapLayer->fields().field( i ) );
+  }
+
+  QgsVectorFileWriter::SaveVectorOptions saveOptions;
+  saveOptions.driverName = u"FlatGeobuf"_s;
+  if ( !mapLayer->isSpatial() )
+  {
+    saveOptions.layerOptions.append( u"SPATIAL_INDEX=NO"_s );
+  }
+
+  if ( featureRequest.destinationCrs() != mapLayer->crs() )
+  {
+    saveOptions.ct = QgsCoordinateTransform( mapLayer->crs(), featureRequest.destinationCrs(), featureRequest.transformContext() );
+  }
+
+  std::unique_ptr<QgsVectorFileWriter> writer(
+    QgsVectorFileWriter::create( destination, exportedFields, mapLayer->wkbType(), featureRequest.destinationCrs(), featureRequest.transformContext(), saveOptions )
+  );
+  if ( writer->hasError() )
+  {
+    throw QgsServerApiInternalServerError( u"Could not export layer %1 to FlatGeobuf: %2"_s.arg( mapLayer->name(), writer->errorMessage() ) );
+  }
+
+  QgsFeatureList featureList;
+  QgsFeatureIterator features { mapLayer->getFeatures( featureRequest ) };
+  QgsFeature feat;
+  qlonglong i { 0 };
+
+  while ( features.nextFeature( feat ) )
+  {
+    // Ignore records before offset
+    if ( i >= exportContext.offset )
+    {
+      // Patch feature to add the server feature id
+      if ( addQgsFid )
+      {
+        const QString newFid { QgsServerFeatureId::getServerFid( feat, mapLayer->dataProvider()->pkAttributeIndexes() ) };
+        QgsAttributes attributes = feat.attributes();
+        attributes.insert( 0, newFid );
+        feat.setAttributes( attributes );
+        feat.setFields( exportedFields );
+      }
+      featureList << feat;
+    }
+    i++;
+  }
+
+  // Count features
+  long matchedFeaturesCount = 0;
+  if ( exportContext.attrFilters.isEmpty() && exportContext.filterRect.isNull() )
+  {
+    matchedFeaturesCount = mapLayer->featureCount();
+  }
+  else
+  {
+    if ( exportContext.filterExpression.isEmpty() )
+    {
+      featureRequest.setNoAttributes();
+    }
+
+    featureRequest.setFlags( Qgis::FeatureRequestFlag::NoGeometry );
+    featureRequest.setLimit( -1 );
+    features = mapLayer->getFeatures( featureRequest );
+
+    while ( features.nextFeature( feat ) )
+    {
+      matchedFeaturesCount++;
+    }
+  }
+
+  // cannot be const:
+  for ( QgsFeature &f : featureList )
+  {
+    if ( !writer->addFeature( f ) )
+    {
+      throw QgsServerApiInternalServerError( u"Error adding feature with id %1 to FlatGeobuf export: %2"_s.arg( f.id() ).arg( writer->errorMessage() ) );
+    }
+  }
+
+  writer->finalize();
+
+  if ( writer->hasError() )
+  {
+    throw QgsServerApiInternalServerError( u"Error finalizing FlatGeobuf export: %1"_s.arg( writer->errorMessage() ) );
+  }
+
+  writer.reset();
+
+  apiContext.response()->setStatusCode( 200 );
+
+
+  QDateTime time { QDateTime::currentDateTime() };
+  time.setTimeSpec( Qt::TimeSpec::UTC );
+  apiContext.response()->setHeader( u"Date"_s, time.toString( Qt::DateFormat::ISODate ) );
+  apiContext.response()->setHeader( u"Content-Type"_s, u"application/flatgeobuf"_s );
+  apiContext.response()->setHeader( u"Content-Disposition"_s, u"inline; filename=\"%1.fgb\""_s.arg( mapLayer->name() ) );
+  apiContext.response()->setHeader( u"Content-Crs"_s, featureRequest.destinationCrs().toOgcUri() );
+  apiContext.response()->setHeader( u"OGC-NumberReturned"_s, QString::number( featureList.count() ) );
+
+  // Add self link
+  apiContext.response()->addHeader( u"Link"_s, headerLink( apiContext, QgsServerOgcApi::Rel::self, QgsServerOgcApi::ContentType::FLATGEOBUF, QgsServerOgcApi::Profile::Unset, u"This document as FlatGeobuf"_s ) );
+
+  // Add alternate links
+  apiContext.response()->addHeader( u"Link"_s, headerLink( apiContext, QgsServerOgcApi::Rel::alternate, QgsServerOgcApi::ContentType::GEOJSON, QgsServerOgcApi::Profile::Rfc7946, u"This document as GEOJSON"_s ) );
+  apiContext.response()->addHeader( u"Link"_s, headerLink( apiContext, QgsServerOgcApi::Rel::alternate, QgsServerOgcApi::ContentType::HTML, QgsServerOgcApi::Profile::Unset, u"This document as HTML"_s ) );
+  apiContext.response()->setHeader( u"link"_s, headerLink( apiContext, QgsServerOgcApi::Rel::alternate, QgsServerOgcApi::ContentType::GEOJSON, QgsServerOgcApi::Profile::JsonFg, u"This document as JSONFG"_s ) );
+  apiContext.response()
+    ->setHeader( u"link"_s, headerLink( apiContext, QgsServerOgcApi::Rel::alternate, QgsServerOgcApi::ContentType::GEOJSON, QgsServerOgcApi::Profile::JsonFgPlus, u"This document as JSONFG-PLUS"_s ) );
+
+  // Add next link
+  if ( exportContext.limit + exportContext.offset < matchedFeaturesCount )
+  {
+    // Current url
+    const QUrl url { apiContext.request()->url() };
+
+    // Url without offset and limit
+    QUrl cleanedUrl { url };
+    cleanedUrl.setQuery( removeOffsetAndLimit( QUrlQuery( url.query() ), /* removeProfile */ true ) );
+    QString cleanedUrlAsString { cleanedUrl.toString() };
+
+    if ( !cleanedUrl.hasQuery() )
+    {
+      cleanedUrlAsString += '?';
+    }
+    else
+    {
+      cleanedUrlAsString += '&';
+    }
+    const QString nextHref = cleanedUrlAsString + u"offset=%1&limit=%2"_s.arg( std::min<long>( matchedFeaturesCount, exportContext.limit + exportContext.offset ) ).arg( exportContext.limit );
+    apiContext.response()->addHeader( u"Link"_s, u"<%1>; rel=\"next\"; title=\"Next page\"; type=\"application/flatgeobuf\""_s.arg( nextHref ) );
+  }
+
+  // Retrieve data from the buffer and send it
+  vsi_l_offset nDataLength = 0;
+  const char *dataPtr = reinterpret_cast<char *>( VSIGetMemFileBuffer( destination.toStdString().c_str(), &nDataLength, false ) );
+
+  Q_ASSERT( nDataLength <= std::numeric_limits<qsizetype>::max() );
+
+  const QByteArray data { QByteArray::fromRawData( dataPtr, static_cast<qsizetype>( nDataLength ) ) };
+  apiContext.response()->write( data );
+}
+
 void QgsWfs3CollectionsItemsHandler::handleRequest( const QgsServerApiContext &context ) const
 {
   if ( !context.project() )
@@ -930,8 +2703,6 @@ void QgsWfs3CollectionsItemsHandler::handleRequest( const QgsServerApiContext &c
 
   // Check if the layer is published, raise not found if it is not
   checkLayerIsAccessible( mapLayer, context );
-
-  const std::string title { mapLayer->serverProperties()->wfsTitle().isEmpty() ? mapLayer->name().toStdString() : mapLayer->serverProperties()->wfsTitle().toStdString() };
 
   // Get parameters
   QVariantMap params = values( context );
@@ -961,10 +2732,17 @@ void QgsWfs3CollectionsItemsHandler::handleRequest( const QgsServerApiContext &c
       }
 
       // CRS
-      const QgsCoordinateReferenceSystem crs { QgsServerApiUtils::parseCrs( params[u"crs"_s].toString() ) };
-      if ( !crs.isValid() )
+      const QgsCoordinateReferenceSystem requestedCrs { QgsServerApiUtils::parseCrs( params[u"crs"_s].toString() ) };
+      if ( !requestedCrs.isValid() )
       {
-        throw QgsServerApiBadRequestException( u"CRS is not valid"_s );
+        throw QgsServerApiBadRequestException( u"Requested CRS is not valid"_s );
+      }
+
+      // Check if requested profile is Rfc7946, if so, the requested CRS must be OGC:CRS84
+      const Qgis::GeoJsonProfile requestedProfile { jsonProfileFromRequest( context ) };
+      if ( requestedProfile == Qgis::GeoJsonProfile::Rfc7946 && requestedCrs.authid() != "OGC:CRS84"_L1 )
+      {
+        throw QgsServerApiBadRequestException( u"Requested CRS must be OGC:CRS84 when requested profile is Rfc7946"_s );
       }
 
       // resultType
@@ -1004,8 +2782,44 @@ void QgsWfs3CollectionsItemsHandler::handleRequest( const QgsServerApiContext &c
 
       const qlonglong limit { params.value( u"limit"_s ).toLongLong( &ok ) };
 
-      QString filterExpression;
       QStringList expressions;
+
+      // filter-lang / filter-crs / filter
+      const QString filter { params.value( u"filter"_s ).toString() };
+      const QString filterLang { params.value( u"filter-lang"_s ).toString() };
+      if ( !filter.isEmpty() )
+      {
+        if ( filterLang == "qgis"_L1 )
+        {
+          expressions += filter;
+        }
+        else if ( filterLang == "cql2-text"_L1 )
+        {
+          QString layerCrs;
+          QString filterCrs = params[u"filter-crs"_s].toString();
+          if ( !filterCrs.isEmpty() )
+          {
+            const QgsCoordinateReferenceSystem crs { QgsServerApiUtils::parseCrs( filterCrs ) };
+            filterCrs = crs.authid();
+            layerCrs = mapLayer->crs().authid();
+          }
+
+          QString parserErrorMsg;
+          QList<QgsExpression::ParserError> parserErrors;
+
+          extern QgsExpressionNode *parseCql2Expression( const QString &str, QString &filterCrs, QString &layerCrs, QString &parserErrorMsg, QList<QgsExpression::ParserError> &parserErrors );
+          std::unique_ptr<QgsExpressionNode> node( parseCql2Expression( filter, filterCrs, layerCrs, parserErrorMsg, parserErrors ) );
+          if ( !node )
+          {
+            throw QgsServerApiBadRequestException( u"Invalid filter: %1: %2"_s.arg( filter, parserErrorMsg ) );
+          }
+          expressions.push_back( node->dump() );
+        }
+        else
+        {
+          throw QgsServerApiBadRequestException( u"Invalid filter language: %1"_s.arg( filterLang ) );
+        }
+      }
 
       //  datetime
       const QString datetime { params.value( u"datetime"_s ).toString() };
@@ -1064,7 +2878,7 @@ void QgsWfs3CollectionsItemsHandler::handleRequest( const QgsServerApiContext &c
 
       if ( !filterRect.isNull() )
       {
-        const QgsCoordinateTransform ct( bboxCrs, crs, context.project()->transformContext() );
+        const QgsCoordinateTransform ct( bboxCrs, requestedCrs, context.project()->transformContext() );
         try
         {
           featureRequest.setFilterRect( ct.transform( filterRect ) );
@@ -1084,7 +2898,7 @@ void QgsWfs3CollectionsItemsHandler::handleRequest( const QgsServerApiContext &c
         for ( auto it = attrFilters.constBegin(); it != attrFilters.constEnd(); it++ )
         {
           // Handle star
-          static const QRegularExpression re2( R"raw([^\\]\*)raw" );
+          const thread_local QRegularExpression re2( R"raw([^\\]\*)raw" );
           if ( re2.match( it.value() ).hasMatch() )
           {
             QString val { it.value() };
@@ -1098,6 +2912,7 @@ void QgsWfs3CollectionsItemsHandler::handleRequest( const QgsServerApiContext &c
       }
 
       // Join all expression filters
+      QString filterExpression;
       if ( !expressions.isEmpty() )
       {
         filterExpression = expressions.join( " AND "_L1 );
@@ -1105,246 +2920,30 @@ void QgsWfs3CollectionsItemsHandler::handleRequest( const QgsServerApiContext &c
         QgsDebugMsgLevel( u"Filter expression: %1"_s.arg( featureRequest.filterExpression()->expression() ), 4 );
       }
 
-      // WFS3 core specs only serves 4326
-      featureRequest.setDestinationCrs( crs, context.project()->transformContext() );
+      // WFS3 initial core specs only serves CRS84 but we support transformations with new profiles
+      // unless requested profile is Rfc 7946 (CRS84) then we transform to the requested CRS
+      featureRequest.setDestinationCrs( requestedCrs, context.project()->transformContext() );
+
       // Add offset to limit because paging is not supported by QgsFeatureRequest
       featureRequest.setLimit( limit + offset );
-      QgsJsonExporter exporter { mapLayer };
-      exporter.setAttributes( featureRequest.subsetOfAttributes() );
-      exporter.setAttributeDisplayName( true );
-      exporter.setSourceCrs( mapLayer->crs() );
-      exporter.setTransformGeometries( false );
-      QgsFeatureList featureList;
-      QgsFeatureIterator features { mapLayer->getFeatures( featureRequest ) };
-      QgsFeature feat;
-      long i { 0 };
-      QMap<QgsFeatureId, QString> fidMap;
 
-      while ( features.nextFeature( feat ) )
+      const ExportContext exportContext { limit, offset, attrFilters, filterExpression, filterRect };
+
+      const QgsServerOgcApi::ContentType contentType { contentTypeFromRequest( context.request() ) };
+      switch ( contentType )
       {
-        // Ignore records before offset
-        if ( i >= offset )
-        {
-          fidMap.insert( feat.id(), QgsServerFeatureId::getServerFid( feat, mapLayer->dataProvider()->pkAttributeIndexes() ) );
-          featureList << feat;
-        }
-        i++;
-      }
-
-      // Count features
-      long matchedFeaturesCount = 0;
-      if ( attrFilters.isEmpty() && filterRect.isNull() )
-      {
-        matchedFeaturesCount = mapLayer->featureCount();
-      }
-      else
-      {
-        if ( filterExpression.isEmpty() )
-        {
-          featureRequest.setNoAttributes();
-        }
-
-        featureRequest.setFlags( Qgis::FeatureRequestFlag::NoGeometry );
-        featureRequest.setLimit( -1 );
-        features = mapLayer->getFeatures( featureRequest );
-
-        while ( features.nextFeature( feat ) )
-        {
-          matchedFeaturesCount++;
-        }
-      }
-
-      json data = exporter.exportFeaturesToJsonObject( featureList );
-
-      // Patch feature IDs with server feature IDs
-      for ( int i = 0; i < featureList.length(); i++ )
-      {
-        data["features"][i]["id"] = fidMap.value( data["features"][i]["id"] ).toStdString();
-      }
-
-      // Add some metadata
-      data["numberMatched"] = matchedFeaturesCount;
-      data["numberReturned"] = featureList.count();
-      data["links"] = links( context );
-
-      // Current url
-      const QUrl url { context.request()->url() };
-
-      // Url without offset and limit
-      QUrl cleanedUrl { url };
-      QUrlQuery query( cleanedUrl );
-      query.removeQueryItem( u"limit"_s );
-      query.removeQueryItem( u"offset"_s );
-      cleanedUrl.setQuery( query );
-
-      QString cleanedUrlAsString { cleanedUrl.toString() };
-
-      if ( !cleanedUrl.hasQuery() )
-      {
-        cleanedUrlAsString += '?';
-      }
-      else
-      {
-        cleanedUrlAsString += '&';
-      }
-
-      // Pagesize metadata
-      json pagesize = json::array();
-      const qlonglong maxLimit { context.serverInterface()->serverSettings()->apiWfs3MaxLimit() };
-      if ( matchedFeaturesCount > 1 && maxLimit > 1 )
-      {
-        const std::string pageSizeOneLink { cleanedUrlAsString.toStdString() + u"offset=0&limit=1"_s.toStdString() };
-        pagesize.push_back( { { "title", "1" }, { "href", pageSizeOneLink } } );
-        if ( matchedFeaturesCount > 10 && maxLimit > 10 )
-        {
-          const std::string pageSizeTenLink { cleanedUrlAsString.toStdString() + u"offset=0&limit=10"_s.toStdString() };
-          pagesize.push_back( { { "title", "10" }, { "href", pageSizeTenLink } } );
-        }
-        if ( matchedFeaturesCount > 20 && maxLimit > 20 )
-        {
-          const std::string pageSizeTwentyLink { cleanedUrlAsString.toStdString() + u"offset=0&limit=20"_s.toStdString() };
-          pagesize.push_back( { { "title", "20" }, { "href", pageSizeTwentyLink } } );
-        }
-        if ( matchedFeaturesCount > 50 && maxLimit > 50 )
-        {
-          const std::string pageSizeFiftyLink { cleanedUrlAsString.toStdString() + u"offset=0&limit=50"_s.toStdString() };
-          pagesize.push_back( { { "title", "50" }, { "href", pageSizeFiftyLink } } );
-        }
-        if ( matchedFeaturesCount > 100 && maxLimit > 100 )
-        {
-          const std::string pageSizeHundredLink { cleanedUrlAsString.toStdString() + u"offset=0&limit=100"_s.toStdString() };
-          pagesize.push_back( { { "title", "100" }, { "href", pageSizeHundredLink } } );
-        }
-        if ( matchedFeaturesCount > 1000 && maxLimit > 1000 )
-        {
-          const std::string pageSizeThousandLink { cleanedUrlAsString.toStdString() + u"offset=0&limit=1000"_s.toStdString() };
-          pagesize.push_back( { { "title", "1000" }, { "href", pageSizeThousandLink } } );
-        }
-        std::string maxTitle = "All";
-        if ( maxLimit < matchedFeaturesCount )
-        {
-          maxTitle = "Maximum";
-        }
-        const std::string pageSizeMaxLink { cleanedUrlAsString.toStdString() + u"offset=0&limit=%1"_s.arg( maxLimit ).toStdString() };
-        pagesize.push_back( { { "title", maxTitle }, { "href", pageSizeMaxLink } } );
-      }
-
-      // Get the self link
-      json selfLink;
-      for ( const auto &l : data["links"] )
-      {
-        if ( l["rel"] == "self" )
-        {
-          selfLink = l;
+        case QgsServerOgcApi::ContentType::JSON:
+        case QgsServerOgcApi::ContentType::GEOJSON:
+        case QgsServerOgcApi::ContentType::HTML:
+          writeJsonOutput( mapLayer, featureRequest, context, exportContext );
           break;
-        }
+        case QgsServerOgcApi::ContentType::FLATGEOBUF:
+          writeFlatGeobufOutput( mapLayer, featureRequest, context, exportContext );
+          break;
+        default:
+          throw QgsServerApiInternalServerError( u"Unsupported content type"_s );
       }
 
-      // Pagination metadata
-      json pagination = json::array();
-
-      if ( limit != 0 )
-      {
-        // Add prev - next links
-        json prevLink;
-        if ( offset != 0 )
-        {
-          prevLink = selfLink;
-          prevLink["href"] = cleanedUrlAsString.toStdString() + u"offset=%1&limit=%2"_s.arg( std::max<long>( 0, offset - limit ) ).arg( limit ).toStdString();
-          prevLink["rel"] = "prev";
-          prevLink["title"] = "Previous page";
-          data["links"].push_back( prevLink );
-        }
-
-        json nextLink;
-        if ( limit + offset < matchedFeaturesCount )
-        {
-          nextLink = selfLink;
-          nextLink["href"] = cleanedUrlAsString.toStdString() + u"offset=%1&limit=%2"_s.arg( std::min<long>( matchedFeaturesCount, limit + offset ) ).arg( limit ).toStdString();
-          nextLink["rel"] = "next";
-          nextLink["title"] = "Next page";
-          data["links"].push_back( nextLink );
-        }
-
-        // Pagination
-        if ( matchedFeaturesCount - limit > 0 )
-        {
-          const int totalPages { static_cast<int>( std::ceil( static_cast<float>( matchedFeaturesCount ) / static_cast<float>( limit ) ) ) };
-          const int currentPage { static_cast<int>( offset / limit + 1 ) };
-          const std::string currentPageLink { selfLink["href"] };
-
-          std::string prevPageLink;
-          if ( prevLink.contains( std::string { "href" } ) )
-          {
-            prevPageLink = prevLink["href"];
-          }
-
-          std::string nextPageLink;
-          if ( nextLink.contains( std::string { "href" } ) )
-          {
-            nextPageLink = nextLink["href"];
-          }
-
-          const std::string firstPageLink { cleanedUrlAsString.toStdString() + u"offset=0&limit=%1"_s.arg( limit ).toStdString() };
-          const std::string lastPageLink { cleanedUrlAsString.toStdString() + u"offset=%1&limit=%2"_s.arg( totalPages * limit - limit ).arg( limit ).toStdString() };
-
-          if ( currentPage != 1 )
-          {
-            pagination.push_back( { { "title", "1" }, { "href", firstPageLink }, { "class", "page-item" } } );
-          }
-          if ( currentPage > 3 )
-          {
-            pagination.push_back( { { "title", "\u2026" }, { "class", "page-item disabled" } } );
-          }
-          if ( currentPage > 2 )
-          {
-            pagination.push_back( { { "title", std::to_string( currentPage - 1 ) }, { "href", prevPageLink }, { "class", "page-item" } } );
-          }
-          pagination.push_back( { { "title", std::to_string( currentPage ) }, { "href", currentPageLink }, { "class", "page-item active" } } );
-          if ( currentPage < totalPages - 1 )
-          {
-            pagination.push_back( { { "title", std::to_string( currentPage + 1 ) }, { "href", nextPageLink }, { "class", "page-item" } } );
-          }
-          if ( currentPage < totalPages - 2 )
-          {
-            pagination.push_back( { { "title", "\u2026" }, { "class", "page-item disabled" } } );
-          }
-          if ( currentPage != totalPages )
-          {
-            pagination.push_back( { { "title", std::to_string( totalPages ) }, { "href", lastPageLink }, { "class", "page-item" } } );
-          }
-
-          // Add first - last links
-          // Since we are having them ready, not mandatory by the spec but allowed
-          json firstLink = selfLink;
-          firstLink["href"] = firstPageLink;
-          firstLink["rel"] = "first";
-          firstLink["title"] = "First page";
-          data["links"].push_back( firstLink );
-
-          json lastLink = selfLink;
-          lastLink["href"] = lastPageLink;
-          lastLink["rel"] = "last";
-          lastLink["title"] = "Last page";
-          data["links"].push_back( lastLink );
-        }
-      }
-
-      json navigation = json::array();
-      navigation.push_back( { { "title", "Landing page" }, { "href", parentLink( url, 3 ).toStdString() } } );
-      navigation.push_back( { { "title", "Collections" }, { "href", parentLink( url, 2 ).toStdString() } } );
-      navigation.push_back( { { "title", title }, { "href", parentLink( url, 1 ).toStdString() } } );
-
-      const json htmlMetadata {
-        { "pageTitle", "Features in layer " + title },
-        { "layerTitle", title },
-        { "geojsonUrl", href( context, "/", QgsServerOgcApi::contentTypeToExtension( QgsServerOgcApi::ContentType::GEOJSON ) ) },
-        { "pagesize", pagesize },
-        { "pagination", pagination },
-        { "navigation", navigation }
-      };
-
-      write( data, context, htmlMetadata );
       break;
     }
     // //////////////////////////////////////////////////////////////
@@ -1375,6 +2974,13 @@ void QgsWfs3CollectionsItemsHandler::handleRequest( const QgsServerApiContext &c
         QgsOWSServerFilterRestorer::applyAccessControlLayerFilters( accessControl, mapLayer, filterRestorer->originalFilters() );
       }
 
+      // CRS
+      const QgsCoordinateReferenceSystem requestedCrs { QgsServerApiUtils::parseCrs( params[u"crs"_s].toString() ) };
+      if ( !requestedCrs.isValid() )
+      {
+        throw QgsServerApiBadRequestException( u"Requested CRS is not valid"_s );
+      }
+
 #endif
       try
       {
@@ -1395,13 +3001,16 @@ void QgsWfs3CollectionsItemsHandler::handleRequest( const QgsServerApiContext &c
           throw QgsServerApiInternalServerError( u"Feature is not valid"_s );
         }
 
+        // FIXME: in JSON-FG we might have a different CRS than CRS84,
+        // we should check for a crs member in the JSON and use it if present
+
         // Transform geometry
-        if ( mapLayer->crs() != QgsCoordinateReferenceSystem::fromEpsgId( 4326 ) )
+        if ( mapLayer->crs() != requestedCrs )
         {
           QgsGeometry geom { feat.geometry() };
           try
           {
-            geom.transform( QgsCoordinateTransform( QgsCoordinateReferenceSystem::fromEpsgId( 4326 ), mapLayer->crs(), context.project()->transformContext() ) );
+            geom.transform( QgsCoordinateTransform( requestedCrs, mapLayer->crs(), context.project()->transformContext() ) );
           }
           catch ( QgsCsException & )
           {
@@ -1522,7 +3131,7 @@ void QgsWfs3CollectionsItemsHandler::handleRequest( const QgsServerApiContext &c
 
 QgsWfs3CollectionsFeatureHandler::QgsWfs3CollectionsFeatureHandler()
 {
-  setContentTypes( { QgsServerOgcApi::ContentType::GEOJSON, QgsServerOgcApi::ContentType::HTML } );
+  setContentTypes( { QgsServerOgcApi::ContentType::GEOJSON, QgsServerOgcApi::ContentType::HTML, QgsServerOgcApi::ContentType::FLATGEOBUF } );
 }
 
 void QgsWfs3CollectionsFeatureHandler::handleRequest( const QgsServerApiContext &context ) const
@@ -1531,12 +3140,28 @@ void QgsWfs3CollectionsFeatureHandler::handleRequest( const QgsServerApiContext 
   {
     throw QgsServerApiImproperlyConfiguredException( u"Project is invalid or undefined"_s );
   }
+  // Get parameters
+  const QVariantMap params = values( context );
 
   // Check collectionId
   const QRegularExpressionMatch match { path().match( context.request()->url().path() ) };
   if ( !match.hasMatch() )
   {
     throw QgsServerApiNotFoundError( u"Collection was not found"_s );
+  }
+
+  // CRS
+  const QgsCoordinateReferenceSystem requestedCrs { QgsServerApiUtils::parseCrs( params[u"crs"_s].toString() ) };
+  if ( !requestedCrs.isValid() )
+  {
+    throw QgsServerApiBadRequestException( u"Requested CRS is not valid"_s );
+  }
+
+  // Check if requested profile is Rfc7946, if so, the requested CRS must be OGC:CRS84
+  const Qgis::GeoJsonProfile requestedProfile { jsonProfileFromRequest( context ) };
+  if ( requestedProfile == Qgis::GeoJsonProfile::Rfc7946 && requestedCrs.authid() != "OGC:CRS84"_L1 )
+  {
+    throw QgsServerApiBadRequestException( u"Requested CRS must be OGC:CRS84 when requested profile is Rfc7946"_s );
   }
 
   const QString collectionId { match.captured( u"collectionId"_s ) };
@@ -1552,6 +3177,10 @@ void QgsWfs3CollectionsFeatureHandler::handleRequest( const QgsServerApiContext 
   // Retrieve feature from storage
   const QString featureId { match.captured( u"featureId"_s ) };
   QgsFeatureRequest featureRequest = filteredRequest( mapLayer, context );
+
+  // Set destination CRS
+  featureRequest.setDestinationCrs( requestedCrs, context.project()->transformContext() );
+
   const QString fidExpression { QgsServerFeatureId::getExpressionFromServerFid( featureId, mapLayer->dataProvider() ) };
   if ( !fidExpression.isEmpty() )
   {
@@ -1593,12 +3222,100 @@ void QgsWfs3CollectionsFeatureHandler::handleRequest( const QgsServerApiContext 
     }
 #endif
 
+    const QgsAttributeList requestedAttributes = featureRequest.subsetOfAttributes();
+
+    // Note: the feature geometry is already in the requested CRS
     QgsJsonExporter exporter { mapLayer };
-    exporter.setAttributes( featureRequest.subsetOfAttributes() );
+    exporter.setAttributes( requestedAttributes );
     exporter.setAttributeDisplayName( true );
+    exporter.setTransformGeometries( false );
+    // Set CRS info so that the exporter can handle the transformation to CRS84 if the profile requires it
+    exporter.setSourceCrs( requestedCrs );
+    exporter.setDestinationCrs( requestedCrs );
+    exporter.setGeoJsonProfile( requestedProfile );
+
     json data = exporter.exportFeatureToJsonObject( feature );
-    // Patch feature ID
+
+    QMap<int, ReferencedLayerInfo> referencedInfo = gatherReferencedLayerInfo( mapLayer, context );
+    // remove if attributes are not requested
+    referencedInfo.erase(
+      std::remove_if( referencedInfo.begin(), referencedInfo.end(), [&requestedAttributes]( const auto &info ) { return !requestedAttributes.contains( info.referencingFieldIdx ); } ),
+      referencedInfo.end()
+    );
+    QgsServerOgcApi::Profile relAs = QgsServerOgcApi::Profile::Unset;
+    bool hasReferencedObjects = !referencedInfo.isEmpty();
+
+    // Temporal
+    if ( requestedProfile == Qgis::GeoJsonProfile::JsonFg || requestedProfile == Qgis::GeoJsonProfile::JsonFgPlus )
+    {
+      QString temporalInstantField;
+      QString temporalStartField;
+      QString temporalEndField;
+      bool isDateTime( false );
+      exposedTimeDimensions( temporalInstantField, temporalStartField, temporalEndField, isDateTime, mapLayer, requestedAttributes );
+      const json timeData = timeDimensionInfo( feature, temporalInstantField, temporalStartField, temporalEndField, isDateTime );
+      if ( timeData.contains( "time" ) )
+      {
+        data.update( timeData );
+      }
+    }
+
+    // Patch feature
+    //  - IDs with server feature IDs
+    //  - add references
+    //  - format extra geometries
     data["id"] = featureId.toStdString();
+
+    if ( hasReferencedObjects )
+    {
+      const QList<QgsServerOgcApi::Profile> requestedProfiles = profilesFromRequest( context.request() );
+      if ( requestedProfiles.contains( QgsServerOgcApi::Profile::RelAsUri ) )
+        relAs = QgsServerOgcApi::Profile::RelAsUri;
+      else if ( requestedProfiles.contains( QgsServerOgcApi::Profile::RelAsLink ) )
+        relAs = QgsServerOgcApi::Profile::RelAsLink;
+      else if ( requestedProfiles.contains( QgsServerOgcApi::Profile::RelAsKey ) )
+        relAs = QgsServerOgcApi::Profile::RelAsKey;
+
+      if ( relAs != QgsServerOgcApi::Profile::Unset )
+      {
+        for ( const auto &[fieldIdx, referencedInfo] : referencedInfo.toStdMap() )
+        {
+          const QgsField field = mapLayer->fields().field( fieldIdx );
+          const QString fieldIdentifier = field.alias().isEmpty() ? field.name() : field.alias();
+          const QVariant rawValue = feature.attribute( fieldIdx );
+          data["properties"][fieldIdentifier.toStdString()] = relatedFeatureReference( rawValue, referencedInfo, relAs, context );
+        }
+      }
+    }
+
+    QMap<int, QString> extraGeomFields;
+    const QList<int> requestedAttrs = featureRequest.subsetOfAttributes();
+    for ( const int idx : std::as_const( requestedAttrs ) )
+    {
+      if ( mapLayer->fields().field( idx ).type() == QMetaType::Type::User && mapLayer->fields().field( idx ).typeName().compare( "geometry"_L1 ) == 0 )
+      {
+        extraGeomFields.insert( idx, mapLayer->fields().field( idx ).displayName() );
+      }
+    }
+
+    // Add extra geometries as WKT
+    for ( const auto &[fieldIdx, fieldIdentifier] : extraGeomFields.toStdMap() )
+    {
+      const QgsReferencedGeometry &refGeom = feature.attribute( fieldIdx ).value<QgsReferencedGeometry>();
+      if ( refGeom.crs() != requestedCrs )
+      {
+        QgsReferencedGeometry transformedRefGeom = refGeom;
+        const QgsCoordinateTransform ct( refGeom.crs(), requestedCrs, featureRequest.coordinateTransform().context() );
+        transformedRefGeom.transform( ct );
+        data["properties"][fieldIdentifier.toStdString()] = transformedRefGeom.asWkt().toStdString();
+      }
+      else
+      {
+        data["properties"][fieldIdentifier.toStdString()] = refGeom.asWkt().toStdString();
+      }
+    }
+
+    // Add links
     data["links"] = links( context );
     json navigation = json::array();
     const QUrl url { context.request()->url() };
@@ -1608,6 +3325,7 @@ void QgsWfs3CollectionsFeatureHandler::handleRequest( const QgsServerApiContext 
     navigation.push_back( { { "title", "Items of " + title }, { "href", parentLink( url ).toStdString() } } );
     const json
       htmlMetadata { { "pageTitle", title + " - feature " + featureId.toStdString() }, { "geojsonUrl", href( context, "", QgsServerOgcApi::contentTypeToExtension( QgsServerOgcApi::ContentType::GEOJSON ) ) }, { "navigation", navigation } };
+
     write( data, context, htmlMetadata );
   };
 
@@ -1678,12 +3396,12 @@ void QgsWfs3CollectionsFeatureHandler::handleRequest( const QgsServerApiContext 
         QgsGeometryMap changedGeometries;
 
         // Transform geometry
-        if ( mapLayer->crs() != QgsCoordinateReferenceSystem::fromEpsgId( 4326 ) )
+        if ( mapLayer->crs() != requestedCrs )
         {
           QgsGeometry geom { feat.geometry() };
           try
           {
-            geom.transform( QgsCoordinateTransform( QgsCoordinateReferenceSystem::fromEpsgId( 4326 ), mapLayer->crs(), context.project()->transformContext() ) );
+            geom.transform( QgsCoordinateTransform( requestedCrs, mapLayer->crs(), context.project()->transformContext() ) );
           }
           catch ( QgsCsException & )
           {
@@ -1749,6 +3467,20 @@ void QgsWfs3CollectionsFeatureHandler::handleRequest( const QgsServerApiContext 
 
         // Now we need to send the updated feature to the client
         feature = mapLayer->getFeature( feature.id() );
+        // Transform the geometry to the requested CRS because that's what doGet expects
+        if ( mapLayer->crs() != requestedCrs )
+        {
+          QgsGeometry geom { feature.geometry() };
+          try
+          {
+            geom.transform( QgsCoordinateTransform( mapLayer->crs(), requestedCrs, context.project()->transformContext() ) );
+          }
+          catch ( QgsCsException & )
+          {
+            throw QgsServerApiInternalServerError( u"Geometry could not be transformed to requested CRS"_s );
+          }
+          feature.setGeometry( geom );
+        }
         doGet();
       }
       catch ( json::exception &ex )
@@ -1872,6 +3604,20 @@ void QgsWfs3CollectionsFeatureHandler::handleRequest( const QgsServerApiContext 
 
       // Now we need to send the updated feature to the client
       feature = mapLayer->getFeature( feature.id() );
+      // Transform the geometry to the requested CRS because that's what doGet expects
+      if ( mapLayer->crs() != requestedCrs )
+      {
+        QgsGeometry geom { feature.geometry() };
+        try
+        {
+          geom.transform( QgsCoordinateTransform( mapLayer->crs(), requestedCrs, context.project()->transformContext() ) );
+        }
+        catch ( QgsCsException & )
+        {
+          throw QgsServerApiInternalServerError( u"Geometry could not be transformed to requested CRS"_s );
+        }
+        feature.setGeometry( geom );
+      }
       doGet();
 
       break;
@@ -2053,12 +3799,375 @@ json QgsWfs3CollectionsFeatureHandler::schema( const QgsServerApiContext &contex
   return data;
 }
 
-const QString QgsWfs3ConformanceHandler::templatePath( const QgsServerApiContext &context ) const
+QString QgsWfs3AbstractItemsHandler::uri( const QString &collectionId, const QMap<QString, QVariant> &fieldValueMap, const QgsServerApiContext &context, QgsServerOgcApi::ContentType contentType )
 {
-  // resources/server/api + /ogc/templates/wfs3/ + operationId() + .html
-  QString path { context.serverInterface()->serverSettings()->apiResourcesDirectory() };
-  path += "/ogc/templates/wfs3/"_L1;
-  path += QString::fromStdString( operationId() );
-  path += ".html"_L1;
-  return path;
+  // Retrieve the layer from the collection ID
+  if ( !context.project() )
+  {
+    throw QgsServerApiImproperlyConfiguredException( u"Project is invalid or undefined"_s );
+  }
+  // May throw not found exception if the collectionId is invalid
+  QgsVectorLayer *mapLayer { layerFromCollectionId( context, collectionId ) };
+
+  // This will never happen (it's just a hint for reviewers)
+  Q_ASSERT( mapLayer );
+
+  // Check if the layer is published, raise not found if it is not
+  checkLayerIsAccessible( mapLayer, context );
+
+  // Collect info about pks from the layer and the fieldValueMap
+  const QList<int> pkList = mapLayer->primaryKeyAttributes();
+  QSet<QString> pkFieldNames;
+  QString firstPkFieldName;
+  for ( const int &pkIdx : std::as_const( pkList ) )
+  {
+    const QgsField field = mapLayer->fields().field( pkIdx );
+    const QString fieldNameOrAlias = field.alias().isEmpty() ? field.name() : field.alias();
+    pkFieldNames.insert( fieldNameOrAlias );
+    if ( firstPkFieldName.isEmpty() )
+    {
+      firstPkFieldName = fieldNameOrAlias;
+    }
+  }
+
+  const bool providerHasPk { pkList.size() > 0 };
+
+  // Note: if "id" is the only field in the fieldValueMap and it is not a pk field of the provider,
+  // we can still use it as featureId as long as the provider does not have any pk field.
+  // In that case, we will assume that "id" is a unique identifier for features in that layer.
+  const bool valueMapHasSinglePkId = ( fieldValueMap.size() == 1 )
+                                     && ( ( providerHasPk && fieldValueMap.contains( firstPkFieldName ) ) || ( !providerHasPk && fieldValueMap.firstKey() == "id"_L1 && !pkFieldNames.contains( "id"_L1 ) ) );
+
+  const QStringList fieldValueMapKeys = fieldValueMap.keys();
+  const bool valueMapsHasMultiplePkIds = pkFieldNames == QSet<QString>( fieldValueMapKeys.constBegin(), fieldValueMapKeys.constEnd() );
+
+  QUrl cleanedUrl { context.request()->url() };
+  cleanedUrl.setQuery( removeOffsetAndLimit( QUrlQuery( cleanedUrl.query() ) ) );
+
+  // 1 - Simple case: fieldValueMap contains a single entry with the field that is used as featureId (e.g. primary key)
+  if ( valueMapHasSinglePkId )
+  {
+    const QString featureId { fieldValueMap.first().toString() };
+    cleanedUrl.setPath( context.matchedPath() + u"/collections/%1/items/%2"_s.arg( collectionId ).arg( featureId ) );
+  }
+  // 2 - Complex case: fieldValueMap contains multiple entries that are only and all PKs
+  else if ( valueMapsHasMultiplePkIds )
+  {
+    // Build the ID
+    QgsFeature feature( mapLayer->fields() );
+    for ( auto it = fieldValueMap.constBegin(); it != fieldValueMap.constEnd(); ++it )
+    {
+      const QString fieldName { it.key() };
+      // Retrieve the field index from the exposed name/alias
+      int fieldIdx = -1;
+      for ( int idx = 0; idx < mapLayer->fields().count(); ++idx )
+      {
+        if ( mapLayer->fields().field( idx ).displayName() == fieldName )
+        {
+          fieldIdx = idx;
+          break;
+        }
+      }
+      if ( fieldIdx == -1 )
+      {
+        throw QgsServerApiImproperlyConfiguredException( u"Field '%1' does not exist in layer '%2'"_s.arg( fieldName ).arg( mapLayer->name() ) );
+      }
+      feature.setAttribute( fieldIdx, it.value() );
+    }
+    const QString featureId { QgsServerFeatureId::getServerFid( feature, pkList ) };
+    cleanedUrl.setPath( context.matchedPath() + u"/collections/%1/items/%2"_s.arg( collectionId ).arg( featureId ) );
+  }
+  // 3 - Wild case: fieldValueMap contains multiple entries that are not all and only PKs, we cannot be sure about the featureId
+  //     so we build an URI that retrieve the features by filtering by all the field values, but we cannot be sure that it will
+  //     return a single feature, so this is a fallback solution
+  else if ( !fieldValueMap.isEmpty() )
+  {
+    const QgsFields availableFields { publishedFields( mapLayer, context ) };
+    cleanedUrl.setPath( context.matchedPath() + u"/collections/%1/items.json"_s.arg( collectionId ) );
+    QUrlQuery query { cleanedUrl.query() };
+    for ( auto it = fieldValueMap.constBegin(); it != fieldValueMap.constEnd(); ++it )
+    {
+      const QString fieldName { it.key() };
+      // Throw if the field is not part of the published fields, as it means that we cannot use it for filtering
+      if ( availableFields.lookupField( fieldName ) < 0 )
+      {
+        throw QgsServerApiImproperlyConfiguredException( u"Field '%1' is not part of the published fields for layer '%2', cannot be used for filtering"_s.arg( fieldName ).arg( mapLayer->name() ) );
+      }
+      const QVariant fieldValue( it.value() );
+      query.addQueryItem( fieldName, fieldValue.toString() );
+    }
+    cleanedUrl.setQuery( query );
+  }
+
+  // Add extension from contentType if not already present in the url path
+  // Remove any existing extension
+  const auto suffixLength { QFileInfo( cleanedUrl.path() ).suffix().length() };
+  if ( suffixLength > 0 )
+  {
+    auto path { cleanedUrl.path() };
+    path.truncate( path.length() - ( suffixLength + 1 ) );
+    cleanedUrl.setPath( path );
+  }
+
+  const QString extension { QgsServerOgcApi::contentTypeToExtension( contentType ) };
+
+  // (re-)add extension
+  // JSON is the default anyway so we don't need to add it
+  if ( !extension.isEmpty() )
+  {
+    // Remove trailing slashes if any.
+    QString path { cleanedUrl.path() };
+    while ( path.endsWith( '/' ) )
+    {
+      path.chop( 1 );
+    }
+    cleanedUrl.setPath( path + '.' + extension );
+  }
+  return QgsServerOgcApi::sanitizeUrl( cleanedUrl ).toString( QUrl::FullyEncoded );
+}
+
+QgsWfs3CollectionsSchemaHandler::QgsWfs3CollectionsSchemaHandler()
+{
+  setContentTypes( { QgsServerOgcApi::ContentType::SCHEMA_JSON, QgsServerOgcApi::ContentType::HTML } );
+}
+
+void QgsWfs3CollectionsSchemaHandler::handleRequest( const QgsServerApiContext &context ) const
+{
+  switch ( context.request()->method() )
+  {
+    case QgsServerRequest::Method::GetMethod:
+    {
+      if ( !context.project() )
+      {
+        throw QgsServerApiImproperlyConfiguredException( u"Project is invalid or undefined"_s );
+      }
+      // Check collectionId
+      const QRegularExpressionMatch match { path().match( context.request()->url().path() ) };
+      if ( !match.hasMatch() )
+      {
+        throw QgsServerApiNotFoundError( u"Collection was not found"_s );
+      }
+      const QString collectionId { match.captured( u"collectionId"_s ) };
+      // May throw if not found
+      QgsVectorLayer *mapLayer { layerFromCollectionId( context, collectionId ) };
+      Q_ASSERT( mapLayer );
+
+      const QgsProject *project = context.project();
+      const QStringList wfsLayerIds = QgsServerProjectUtils::wfsLayerIds( *project );
+      if ( !wfsLayerIds.contains( mapLayer->id() ) )
+      {
+        throw QgsServerApiNotFoundError( u"Collection was not found"_s );
+      }
+
+      // Check if the layer is published, raise not found if it is not
+      checkLayerIsAccessible( mapLayer, context );
+
+      const std::string title { mapLayer->serverProperties()->wfsTitle().isEmpty() ? mapLayer->name().toStdString() : mapLayer->serverProperties()->wfsTitle().toStdString() };
+
+      QUrl idUrl { context.request()->baseUrl() };
+      // Remove query and fragment from URL
+      idUrl.setQuery( QString() );
+      idUrl.setFragment( QString() );
+
+      json data {
+        { "$schema", "https://json-schema.org/draft/2020-12/schema" },
+        { "$id", idUrl.toDisplayString().toStdString() },
+        { "title", title },
+        { "type", "object" },
+        // List of required fields
+        { "required", json::array() },
+        // Object of fields with title, type x-ogc-role and x-ogc-propertySeq
+        { "properties", {} }
+      };
+
+      if ( !mapLayer->serverProperties()->abstract().isEmpty() )
+      {
+        data["description"] = mapLayer->serverProperties()->abstract().toStdString();
+      }
+
+      gatherLayerFieldsInfo( data, mapLayer, context );
+
+      // Add links if content type is not schema json to avoid validation issues with the schema
+      if ( QgsServerOgcApiHandler::contentTypeFromRequest( context.request() ) != QgsServerOgcApi::ContentType::SCHEMA_JSON )
+      {
+        data["links"] = links( context );
+      }
+
+      json navigation = json::array();
+      const QUrl url { context.request()->url() };
+      navigation.push_back( { { "title", "Landing page" }, { "href", parentLink( url, 3 ).toStdString() } } );
+      navigation.push_back( { { "title", "Collections" }, { "href", parentLink( url, 2 ).toStdString() } } );
+      navigation.push_back( { { "title", title }, { "href", parentLink( url, 1 ).toStdString() } } );
+      write( data, context, { { "pageTitle", linkTitle() + " of feature in '" + mapLayer->name().toStdString() + "'" }, { "navigation", navigation } } );
+      break;
+    }
+    default:
+      throw QgsServerApiNotImplementedException( u"%1 method is not implemented."_s.arg( QgsServerRequest::methodToString( context.request()->method() ) ) );
+  }
+}
+
+json QgsWfs3CollectionsSchemaHandler::schema( const QgsServerApiContext &context ) const
+{
+  json data;
+  Q_ASSERT( context.project() );
+
+  const QVector<QgsVectorLayer *> layers { QgsServerApiUtils::publishedWfsLayers<QgsVectorLayer *>( context ) };
+  for ( const auto &mapLayer : layers )
+  {
+    const QString shortName { mapLayer->serverProperties()->shortName().isEmpty() ? mapLayer->name() : mapLayer->serverProperties()->shortName() };
+    // Use layer id for operationId
+    const QString layerId { mapLayer->id() };
+    const std::string title { mapLayer->serverProperties()->wfsTitle().isEmpty() ? mapLayer->name().toStdString() : mapLayer->serverProperties()->wfsTitle().toStdString() };
+    const std::string path { QgsServerApiUtils::appendMapParameter( context.apiRootPath() + u"/collections/%1/schema"_s.arg( shortName ), context.request()->url() ).toStdString() };
+
+    data[path] = {
+      { "get",
+        { { "tags", jsonTags() },
+          { "summary", "Retrieve the schema of the '" + title + "' feature collection" },
+          { "description", description() },
+          { "operationId", operationId() + '_' + layerId.toStdString() + '_' + "GET" },
+          { "responses",
+            { { "200",
+                { { "description", "Retrieve the schema of the '" + title + "' feature collection." },
+                  { "content", { { "application/schema+json", { { "schema", { { "$ref", "#/components/schemas/anyObject" } } } } } } } } },
+              { "default", defaultResponse() } } } } }
+    };
+  }
+  return data;
+}
+
+
+QList<QgsServerQueryStringParameter> QgsWfs3CollectionsFeatureHandler::parameters( const QgsServerApiContext &context ) const
+{
+  QList<QgsServerQueryStringParameter> params;
+  // CRS
+  QgsServerQueryStringParameter
+    requestedCrs { u"crs"_s, false, QgsServerQueryStringParameter::Type::String, u"The coordinate reference system of the response geometries."_s, u"http://www.opengis.net/def/crs/OGC/1.3/CRS84"_s };
+  auto crsValidator = [context]( const QgsServerApiContext &, QVariant &value ) -> bool { return QgsServerApiUtils::publishedCrsList( context.project() ).contains( value.toString() ); };
+  requestedCrs.setCustomValidator( crsValidator );
+  params.push_back( requestedCrs );
+  return params;
+}
+
+QgsWfs3FunctionsHandler::QgsWfs3FunctionsHandler()
+{}
+
+// CQL2 standard function names (from all declared conformance classes).
+// These are NOT reported in /functions — that endpoint only reports
+// custom functions beyond the CQL2 spec.
+static const QSet<QString> cql2StandardFunctions {
+  u"s_contains"_s,
+  u"s_crosses"_s,
+  u"s_disjoint"_s,
+  u"s_equals"_s,
+  u"s_intersects"_s,
+  u"s_overlaps"_s,
+  u"s_touches"_s,
+  u"s_within"_s,
+};
+
+// Map QGIS expression parameter default value type to CQL2 value types.
+// The CQL2 spec uses: string, number, boolean, date, datetime, time, geometry.
+// QGIS parameters don't carry explicit type info, so we infer from defaultValue.
+static QString cql2TypeFromParameter( const QgsExpressionFunction::Parameter &param )
+{
+  switch ( param.defaultValue().userType() )
+  {
+    case QMetaType::Type::Double:
+    case QMetaType::Type::Int:
+    case QMetaType::Type::LongLong:
+    case QMetaType::Type::Float:
+    case QMetaType::Type::UInt:
+    case QMetaType::Type::ULongLong:
+      return u"number"_s;
+
+    case QMetaType::Type::Bool:
+      return u"boolean"_s;
+
+    case QMetaType::Type::QDate:
+      return u"date"_s;
+
+    case QMetaType::Type::QDateTime:
+      return u"datetime"_s;
+
+    case QMetaType::Type::QTime:
+      return u"time"_s;
+
+    default:
+      return u"string"_s;
+  }
+}
+
+void QgsWfs3FunctionsHandler::handleRequest( const QgsServerApiContext &context ) const
+{
+  // Collect all QGIS expression functions that are NOT CQL2 standard functions.
+  // The /functions endpoint reports "custom" functions — i.e., functions beyond
+  // the CQL2 standard set (as per OGC CQL2 §7.7 conf/functions).
+  json functionsArray = json::array();
+
+  const QList<QgsExpressionFunction *> &functions = QgsExpression::Functions();
+  for ( QgsExpressionFunction *func : functions )
+  {
+    const QString name = func->name();
+    if ( cql2StandardFunctions.contains( name ) )
+      continue;
+
+    json funcObj;
+    funcObj["name"] = name.toStdString();
+
+    // Arguments
+    json argsArray = json::array();
+    const QgsExpressionFunction::ParameterList &params = func->parameters();
+    for ( const QgsExpressionFunction::Parameter &param : params )
+    {
+      json argObj;
+      argObj["name"] = param.name().toStdString();
+      argObj["type"] = json::array();
+      argObj["type"].push_back( cql2TypeFromParameter( param ).toStdString() );
+      argsArray.push_back( argObj );
+    }
+    funcObj["arguments"] = argsArray;
+
+    // Return type (best-effort from group/category hints)
+    funcObj["returns"] = json::array();
+    funcObj["returns"].push_back( u"string"_s.toStdString() ); // conservative default
+
+    // Description
+    if ( !func->helpText().isEmpty() )
+    {
+      // Use helpText as description, truncating if excessively long
+      QString desc = func->helpText();
+      if ( desc.length() > 2000 )
+        desc = desc.left( 2000 );
+      funcObj["description"] = desc.toStdString();
+    }
+
+    functionsArray.push_back( funcObj );
+  }
+
+  json data { { "links", links( context ) }, { "functions", functionsArray } };
+
+  json navigation = json::array();
+  const QUrl url { context.request()->url() };
+  navigation.push_back( { { "title", "Landing page" }, { "href", parentLink( url, 1 ).toStdString() } } );
+  write( data, context, { { "pageTitle", linkTitle() }, { "navigation", navigation } } );
+}
+
+json QgsWfs3FunctionsHandler::schema( const QgsServerApiContext &context ) const
+{
+  json data;
+  const std::string path { QgsServerApiUtils::appendMapParameter( context.apiRootPath() + u"/functions"_s, context.request()->url() ).toStdString() };
+  data[path] = {
+    { "get",
+      { { "tags", jsonTags() },
+        { "summary", summary() },
+        { "description", description() },
+        { "operationId", operationId() },
+        { "responses",
+          { { "200",
+              { { "description", description() },
+                { "content", { { "application/json", { { "schema", { { "$ref", "#/components/schemas/root" } } } } }, { "text/html", { { "schema", { { "type", "string" } } } } } } } } },
+            { "default", defaultResponse() } } } } }
+  };
+  return data;
 }

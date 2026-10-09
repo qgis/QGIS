@@ -30,6 +30,7 @@
 #include "qgslayoutpagecollection.h"
 #include "qgslayoutrendercontext.h"
 #include "qgslayoutundostack.h"
+#include "qgspainting.h"
 #include "qgsproject.h"
 #include "qgsreadwritecontext.h"
 #include "qgstest.h"
@@ -65,12 +66,11 @@ class TestItem : public QgsLayoutItem
     void draw( QgsLayoutItemRenderContext &context ) override
     {
       QPainter *painter = context.renderContext().painter();
-      painter->save();
+      QgsScopedQPainterState painterState( painter );
       painter->setRenderHint( QPainter::Antialiasing, false );
       painter->setPen( Qt::NoPen );
       painter->setBrush( QColor( 255, 100, 100, 200 ) );
       painter->drawRect( rect() );
-      painter->restore();
     }
 
     QSizeF applyItemSizeConstraint( QSizeF targetSize ) override

@@ -71,6 +71,15 @@ class CORE_EXPORT QgsVectorLayerEditUtils
     Qgis::VectorEditResult deleteVertex( QgsFeatureId featureId, int vertex );
 
     /**
+     * Deletes a set of vertices from a feature.
+     * \param featureId ID of feature to remove vertices from
+     * \param vertices set of vertex indices to delete
+     *
+     * \since QGIS 4.2
+     */
+    Qgis::VectorEditResult deleteVertices( QgsFeatureId featureId, const QSet<int> &vertices );
+
+    /**
      * Adds a ring to polygon/multipolygon features
      * \param ring ring to add
      * \param targetFeatureIds if specified, only these features will be the candidates for adding a ring. Otherwise
@@ -142,7 +151,7 @@ class CORE_EXPORT QgsVectorLayerEditUtils
     Qgis::GeometryOperationResult addPart( const QgsPointSequence &ring, QgsFeatureId featureId );
 
     /**
-     * Adds a new part polygon to a multipart feature
+     * Adds a new polygon part consisting of an exterior \a ring only to a multipart or geometryless feature
      *
      * \returns - QgsGeometry::Success
      *
@@ -154,6 +163,21 @@ class CORE_EXPORT QgsVectorLayerEditUtils
      * \note available in python bindings as addCurvedPart
      */
     Qgis::GeometryOperationResult addPart( QgsCurve *ring SIP_TRANSFER, QgsFeatureId featureId ) SIP_PYNAME( addCurvedPart );
+
+    /**
+     * Adds a new polygon part to a multipart or geometryless feature
+     *
+     * \returns - QgsGeometry::Success
+     *
+     * - QgsGeometry::AddPartSelectedGeometryNotFound
+     * - QgsGeometry::AddPartNotMultiGeometry
+     * - QgsGeometry::InvalidBaseGeometry
+     * - QgsGeometry::InvalidInput
+     *
+     * \note available in python bindings as addPolygonPart
+     * \since QGIS 4.4
+     */
+    Qgis::GeometryOperationResult addPart( QgsCurvePolygon *polygon SIP_TRANSFER, QgsFeatureId featureId ) SIP_PYNAME( addPolygonPart );
 
     /**
      * Translates feature by dx, dy
@@ -216,8 +240,8 @@ class CORE_EXPORT QgsVectorLayerEditUtils
     /**
      * Splits features cut by the given curve
      * \param curve line that splits the layer features
-     * \param[out] topologyTestPoints topological points to be tested against other layers
-     * \param preserveCircular whether circular strings are preserved after splitting
+     * \param[out] topologyTestPoints topological points to be tested against other layers. Points from curve geometries are not yet fully supported.
+     * \param preserveCircular whether if circular strings are reconstructed from segmentized geometries after splitting. From GEOS 3.15 on, this parameter is unused, and circular strings are preserved.
      * \param topologicalEditing TRUE if topological editing is enabled
      * \returns QgsGeometry::OperationResult
      * \since QGIS 3.16

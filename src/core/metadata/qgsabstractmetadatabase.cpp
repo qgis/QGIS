@@ -22,6 +22,8 @@
 
 #include <QString>
 
+#include "moc_qgsabstractmetadatabase.cpp"
+
 using namespace Qt::StringLiterals;
 
 QString QgsAbstractMetadataBase::identifier() const

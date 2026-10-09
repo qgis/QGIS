@@ -83,6 +83,8 @@ QgsRemoveNullGeometryAlgorithm *QgsRemoveNullGeometryAlgorithm::createInstance()
 
 QVariantMap QgsRemoveNullGeometryAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
+  QGS_MARK_ALGORITHM_SOURCE
+
   std::unique_ptr<QgsProcessingFeatureSource> source( parameterAsSource( parameters, u"INPUT"_s, context ) );
   if ( !source )
     throw QgsProcessingException( invalidSourceError( parameters, u"INPUT"_s ) );
@@ -113,11 +115,14 @@ QVariantMap QgsRemoveNullGeometryAlgorithm::processAlgorithm( const QVariantMap 
     {
       if ( !nonNullSink->addFeature( f, QgsFeatureSink::FastInsert ) )
         throw QgsProcessingException( writeFeatureError( nonNullSink.get(), parameters, u"OUTPUT"_s ) );
+      else
+        feedback->featureAddedToSink( u"OUTPUT"_s );
     }
     else if ( ( ( !removeEmpty && !f.hasGeometry() ) || ( removeEmpty && f.geometry().isEmpty() ) ) && nullSink )
     {
       if ( !nullSink->addFeature( f, QgsFeatureSink::FastInsert ) )
         throw QgsProcessingException( writeFeatureError( nullSink.get(), parameters, u"NULL_OUTPUT"_s ) );
+      feedback->featureAddedToSink( u"NULL_OUTPUT"_s );
     }
 
     feedback->setProgress( current * step );
@@ -128,11 +133,14 @@ QVariantMap QgsRemoveNullGeometryAlgorithm::processAlgorithm( const QVariantMap 
   if ( nonNullSink )
   {
     nonNullSink->finalize();
+    feedback->featureSinkFinalized( u"OUTPUT"_s );
+
     outputs.insert( u"OUTPUT"_s, nonNullSinkId );
   }
   if ( nullSink )
   {
     nullSink->finalize();
+    feedback->featureSinkFinalized( u"NULL_OUTPUT"_s );
     outputs.insert( u"NULL_OUTPUT"_s, nullSinkId );
   }
   return outputs;

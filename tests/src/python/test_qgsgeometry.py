@@ -26,6 +26,7 @@ from qgis.core import (
     QgsCompoundCurve,
     QgsCoordinateReferenceSystem,
     QgsCoordinateTransform,
+    QgsCoverageCleanParameters,
     QgsCurvePolygon,
     QgsFeature,
     QgsGeometry,
@@ -37,9 +38,11 @@ from qgis.core import (
     QgsMultiPoint,
     QgsMultiPolygon,
     QgsMultiSurface,
+    QgsNurbsCurve,
     QgsPoint,
     QgsPointXY,
     QgsPolygon,
+    QgsPolyhedralSurface,
     QgsProject,
     QgsRectangle,
     QgsTriangle,
@@ -74,6 +77,7 @@ class TestQgsGeometry(QgisTestCase):
         self.geos311 = 31100
         self.geos312 = 31200
         self.geos314 = 31400
+        self.geos315 = 31500
 
     def testBool(self):
         """Test boolean evaluation of QgsGeometry"""
@@ -2804,6 +2808,721 @@ class TestQgsGeometry(QgisTestCase):
 
         expwkt = "Polygon ((1 1, 2 1, 2 2, 1 2, 1 1))"
         wkt = polygon.asWkt()
+        assert compareWkt(expwkt, wkt), f"Expected:\n{expwkt}\nGot:\n{wkt}\n"
+
+    def testDeleteVertices(self):
+        # 2-+-+-+-+-3
+        # |         |
+        # + 6-+-+-7 +
+        # | |     | |
+        # + + 9-+-8 +
+        # | |       |
+        # ! 5-+-+-+-4
+        # |
+        # 1-+-+-+-+-0
+
+        linestringwkt = "LineString (5 0, 0 0, 0 4, 5 4, 5 1, 1 1, 1 3, 4 3, 4 2, 2 2)"
+        linestring = QgsGeometry.fromWkt(linestringwkt)
+
+        # test invalid range
+        assert not linestring.deleteVertices([-5]), (
+            "Delete vertices [-5] unexpectedly succeeded"
+        )
+        assert not linestring.deleteVertices([100]), (
+            "Delete vertices 100 unexpectedly succeeded"
+        )
+        # single invalid value should fail
+        assert not linestring.deleteVertices([1, 10]), (
+            "Delete vertices [1, 10] unexpectedly succeeded"
+        )
+
+        # test deletion of single vertex
+        assert linestring.deleteVertices([3]), "Delete vertices [5 4] failed"
+        expwkt = "LineString (5 0, 0 0, 0 4, 5 1, 1 1, 1 3, 4 3, 4 2, 2 2)"
+        wkt = linestring.asWkt()
+        assert compareWkt(expwkt, wkt), f"Expected:\n{expwkt}\nGot:\n{wkt}\n"
+
+        # test deletion of multiple vertices
+        linestring = QgsGeometry.fromWkt(linestringwkt)
+
+        assert linestring.deleteVertices([0, 1, 8, 9]), (
+            "Delete vertices 5 0, 0 0, 4 2, 2 2 failed"
+        )
+        expwkt = "LineString (0 4, 5 4, 5 1, 1 1, 1 3, 4 3)"
+        wkt = linestring.asWkt()
+        assert compareWkt(expwkt, wkt), f"Expected:\n{expwkt}\nGot:\n{wkt}\n"
+
+        # test deletion of entire geometry (remove all but one in linestring)
+        linestring = QgsGeometry.fromWkt(linestringwkt)
+
+        assert linestring.deleteVertices([1, 2, 3, 4, 5, 6, 7, 8, 9]), (
+            "Delete vertices [1, 2, 3, 4, 5, 7, 8, 9, 9] failed"
+        )
+        expwkt = "LineString EMPTY"
+        wkt = linestring.asWkt()
+        assert compareWkt(expwkt, wkt), f"Expected:\n{expwkt}\nGot:\n{wkt}\n"
+
+        # test deletion of entire geometry (list all vertices)
+        linestring = QgsGeometry.fromWkt(linestringwkt)
+
+        assert linestring.deleteVertices([0, 1, 2, 3, 4, 5, 6, 7, 8, 9]), (
+            "Delete vertices [0, 1, 2, 3, 4, 5, 6, 7, 8, 9] failed"
+        )
+        expwkt = "LineString EMPTY"
+        wkt = linestring.asWkt()
+        assert compareWkt(expwkt, wkt), f"Expected:\n{expwkt}\nGot:\n{wkt}\n"
+
+        #   2-3 6-+-7
+        #   | | |   |
+        # 0-1 4 5   8-9
+
+        multilinestringwkt = (
+            "MultiLineString ((0 0, 1 0, 1 1, 2 1, 2 0), (3 0, 3 1, 5 1, 5 0, 6 0))"
+        )
+        multilinestring = QgsGeometry.fromWkt(multilinestringwkt)
+
+        # test invalid range
+        assert not multilinestring.deleteVertices([-5]), (
+            "Delete vertices [-5] unexpectedly succeeded"
+        )
+        assert not multilinestring.deleteVertices([100]), (
+            "Delete vertices 100 unexpectedly succeeded"
+        )
+        # single invalid value should fail
+        assert not multilinestring.deleteVertices([1, 10]), (
+            "Delete vertices [1, 10] unexpectedly succeeded"
+        )
+
+        # test deletion of single vertex
+        assert multilinestring.deleteVertices([0]), "Delete vertex [0] failed"
+        expwkt = "MultiLineString ((1 0, 1 1, 2 1, 2 0), (3 0, 3 1, 5 1, 5 0, 6 0))"
+        wkt = multilinestring.asWkt()
+        assert compareWkt(expwkt, wkt), f"Expected:\n{expwkt}\nGot:\n{wkt}\n"
+
+        # test deletion of multiple vertices
+        multilinestring = QgsGeometry.fromWkt(multilinestringwkt)
+
+        assert multilinestring.deleteVertices([0, 1, 8, 9]), (
+            "Delete vertices [0, 1, 8, 9] failed"
+        )
+        expwkt = "MultiLineString ((1 1, 2 1, 2 0), (3 0, 3 1, 5 1))"
+        wkt = multilinestring.asWkt()
+        assert compareWkt(expwkt, wkt), f"Expected:\n{expwkt}\nGot:\n{wkt}\n"
+
+        # test deletion of a part of multilinestring (list all but one)
+        multilinestring = QgsGeometry.fromWkt(multilinestringwkt)
+
+        assert multilinestring.deleteVertices([6, 7, 8, 9]), (
+            "Delete vertices [6, 7, 8, 9] failed"
+        )
+        expwkt = "MultiLineString ((0 0, 1 0, 1 1, 2 1, 2 0))"
+        wkt = multilinestring.asWkt()
+        assert compareWkt(expwkt, wkt), f"Expected:\n{expwkt}\nGot:\n{wkt}\n"
+
+        # test deletion of a part of multilinestring (list all)
+        multilinestring = QgsGeometry.fromWkt(multilinestringwkt)
+
+        assert multilinestring.deleteVertices([5, 6, 7, 8, 9]), (
+            "Delete vertices [5, 6, 7, 8, 9] failed"
+        )
+        expwkt = "MultiLineString ((0 0, 1 0, 1 1, 2 1, 2 0))"
+        wkt = multilinestring.asWkt()
+        assert compareWkt(expwkt, wkt), f"Expected:\n{expwkt}\nGot:\n{wkt}\n"
+
+        # test deletion of entire geometry (remove all but one in multilinestring)
+        multilinestring = QgsGeometry.fromWkt(multilinestringwkt)
+
+        assert multilinestring.deleteVertices([1, 2, 3, 4, 5, 6, 7, 8, 9]), (
+            "Delete vertices [1, 2, 3, 4, 5, 6, 7, 8, 9] failed"
+        )
+        expwkt = "MultiLineString EMPTY"
+        wkt = multilinestring.asWkt()
+        assert compareWkt(expwkt, wkt), f"Expected:\n{expwkt}\nGot:\n{wkt}\n"
+
+        # test deletion of entire geometry (list all vertices)
+        multilinestring = QgsGeometry.fromWkt(multilinestringwkt)
+
+        assert multilinestring.deleteVertices([0, 1, 2, 3, 4, 5, 6, 7, 8, 9]), (
+            "Delete vertices [0, 1, 2, 3, 4, 5, 6, 7, 8, 9] failed"
+        )
+        expwkt = "MultiLineString EMPTY"
+        wkt = multilinestring.asWkt()
+        assert compareWkt(expwkt, wkt), f"Expected:\n{expwkt}\nGot:\n{wkt}\n"
+
+        # 5---4
+        # |   |
+        # | 2-3
+        # | |
+        # 0-1
+
+        polygonwkt = "Polygon ((0 0, 1 0, 1 1, 2 1, 2 2, 0 2, 0 0))"
+        polygon = QgsGeometry.fromWkt(polygonwkt)
+
+        # test invalid range
+        assert not polygon.deleteVertices([-5]), (
+            "Delete vertices -5 unexpectedly succeeded"
+        )
+        assert not polygon.deleteVertices([100]), (
+            "Delete vertices 100 unexpectedly succeeded"
+        )
+        # single invalid value should fail
+        assert not polygon.deleteVertices([1, 10]), (
+            "Delete vertices [1, 10] unexpectedly succeeded"
+        )
+
+        # test deletion of single vertex
+        assert polygon.deleteVertices([0]), "Delete vertices [0] failed"
+        expwkt = "Polygon ((1 0, 1 1, 2 1, 2 2, 0 2, 1 0))"
+        wkt = polygon.asWkt()
+        assert compareWkt(expwkt, wkt), f"Expected:\n{expwkt}\nGot:\n{wkt}\n"
+
+        # test deletion of start and endpoint (same point)
+        polygon = QgsGeometry.fromWkt(polygonwkt)
+
+        assert polygon.deleteVertices([0, 6]), "Delete vertices [0, 6] failed"
+        expwkt = "Polygon ((0 2, 1 0, 1 1, 2 1, 2 2, 0 2))"
+        wkt = polygon.asWkt()
+        assert compareWkt(expwkt, wkt), f"Expected:\n{expwkt}\nGot:\n{wkt}\n"
+
+        # test deletion of multiple vertices
+        polygon = QgsGeometry.fromWkt(polygonwkt)
+
+        assert polygon.deleteVertices([0, 4, 5]), "Delete vertices [0, 4, 5] failed"
+        expwkt = "Polygon ((1 0, 1 1, 2 1, 1 0))"
+        wkt = polygon.asWkt()
+        assert compareWkt(expwkt, wkt), f"Expected:\n{expwkt}\nGot:\n{wkt}\n"
+
+        # test deletion of entire geometry (list all but two)
+        polygon = QgsGeometry.fromWkt(polygonwkt)
+
+        assert polygon.deleteVertices([2, 3, 4, 5]), (
+            "Delete vertices [2, 3, 4, 5] failed"
+        )
+        expwkt = "Polygon EMPTY"
+        wkt = polygon.asWkt()
+        assert compareWkt(expwkt, wkt), f"Expected:\n{expwkt}\nGot:\n{wkt}\n"
+
+        # test deletion of entire geometry (list all but one)
+        polygon = QgsGeometry.fromWkt(polygonwkt)
+
+        assert polygon.deleteVertices([1, 2, 3, 4, 5]), (
+            "Delete vertices [1, 2, 3, 4, 5] failed"
+        )
+        expwkt = "Polygon EMPTY"
+        wkt = polygon.asWkt()
+        assert compareWkt(expwkt, wkt), f"Expected:\n{expwkt}\nGot:\n{wkt}\n"
+
+        # test deletion of entire geometry (list all)
+        polygon = QgsGeometry.fromWkt(polygonwkt)
+
+        assert polygon.deleteVertices([0, 1, 2, 3, 4, 5]), (
+            "Delete vertices [0, 1, 2, 3, 4, 5] failed"
+        )
+        expwkt = "Polygon EMPTY"
+        wkt = polygon.asWkt()
+        assert compareWkt(expwkt, wkt), f"Expected:\n{expwkt}\nGot:\n{wkt}\n"
+
+        # 3 - + - + - + - + - 2
+        # |                   |
+        # +   5 - + - + - 6   +
+        # |   |           |   |
+        # +   8 - + - + - 7   +
+        # |                   |
+        # +   10- + - + -11   +
+        # |   |           |   |
+        # +   13- + - + -12   +
+        # |                   |
+        # +   18- + - + -17   +
+        # |   |           |   |
+        # +   15- + - + -16   +
+        # |                   |
+        # 0 - + - + - + - + - 1
+
+        # polygon with interior rings
+        polygonwkt = "Polygon ((0 0, 5 0, 5 7, 0 7, 0 0), (1 6, 4 6, 4 5, 1 5, 1 6), (1 4, 4 4, 4 3, 1 3, 1 4), (1 2, 4 2, 4 1, 1 1, 1 2))"
+        polygon = QgsGeometry.fromWkt(polygonwkt)
+
+        # test deletion of single vertex (we don't care if the polygon becomes invalid)
+        assert polygon.deleteVertices([0]), "Delete vertex [0] failed"
+        expwkt = "Polygon ((5 0, 5 7, 0 7, 5 0), (1 6, 4 6, 4 5, 1 5, 1 6), (1 4, 4 4, 4 3, 1 3, 1 4), (1 2, 4 2, 4 1, 1 1, 1 2))"
+        wkt = polygon.asWkt()
+        assert compareWkt(expwkt, wkt), f"Expected:\n{expwkt}\nGot:\n{wkt}\n"
+
+        # test deletion of single vertex in all rings (start and end point)
+        polygon = QgsGeometry.fromWkt(polygonwkt)
+
+        assert polygon.deleteVertices([0, 4, 5, 9, 10, 14, 15, 19])
+        expwkt = "Polygon ((0 7, 5 0, 5 7, 0 7), (1 5, 4 6, 4 5, 1 5), (1 3, 4 4, 4 3, 1 3), (1 1, 4 2, 4 1, 1 1))"
+        wkt = polygon.asWkt()
+        assert compareWkt(expwkt, wkt), f"Expected:\n{expwkt}\nGot:\n{wkt}\n"
+
+        # test deletion of exterior ring
+        polygon = QgsGeometry.fromWkt(polygonwkt)
+
+        assert polygon.deleteVertices([0, 1]), "Delete vertices [0, 1] failed"
+        expwkt = "Polygon ((1 6, 4 6, 4 5, 1 5, 1 6), (1 4, 4 4, 4 3, 1 3, 1 4), (1 2, 4 2, 4 1, 1 1, 1 2))"
+        wkt = polygon.asWkt()
+        assert compareWkt(expwkt, wkt), f"Expected:\n{expwkt}\nGot:\n{wkt}\n"
+
+        # test deletion of interior ring
+        polygon = QgsGeometry.fromWkt(polygonwkt)
+
+        assert polygon.deleteVertices([5, 6, 9]), "Delete vertices [5, 6, 9] failed"
+        expwkt = "Polygon ((0 0, 5 0, 5 7, 0 7, 0 0), (1 4, 4 4, 4 3, 1 3, 1 4), (1 2, 4 2, 4 1, 1 1, 1 2))"
+        wkt = polygon.asWkt()
+        assert compareWkt(expwkt, wkt), f"Expected:\n{expwkt}\nGot:\n{wkt}\n"
+
+        # test deletion of multiple interior rings
+        polygon = QgsGeometry.fromWkt(polygonwkt)
+
+        assert polygon.deleteVertices([5, 6, 9, 15, 16]), (
+            "Delete vertices [5, 6, 9, 15, 16] failed"
+        )
+        expwkt = "Polygon ((0 0, 5 0, 5 7, 0 7, 0 0), (1 4, 4 4, 4 3, 1 3, 1 4))"
+        wkt = polygon.asWkt()
+        assert compareWkt(expwkt, wkt), f"Expected:\n{expwkt}\nGot:\n{wkt}\n"
+
+        # 5 - + - 4   10- + -  9
+        # |       |   |        |
+        # +   2 - 3   11- 12   +
+        # |   |            |   |
+        # 0 - 1            7 - 8
+
+        multipolygonwkt = "MultiPolygon (((0 0, 1 0, 1 1, 2 1, 2 2, 0 2, 0 0)), ((4 0, 5 0, 5 2, 3 2, 3 1, 4 1, 4 0)))"
+        multipolygon = QgsGeometry.fromWkt(multipolygonwkt)
+
+        # test single vertex deletion
+        assert multipolygon.deleteVertices([0]), "Delete vertices [0] failed"
+        expwkt = "MultiPolygon (((1 0, 1 1, 2 1, 2 2, 0 2, 1 0)), ((4 0, 5 0, 5 2, 3 2, 3 1, 4 1, 4 0)))"
+        wkt = multipolygon.asWkt()
+        assert compareWkt(expwkt, wkt), f"Expected:\n{expwkt}\nGot:\n{wkt}\n"
+
+        assert multipolygon.deleteVertices([4]), "Delete vertices [4] failed"
+        expwkt = "MultiPolygon (((1 0, 1 1, 2 1, 2 2, 1 0)), ((4 0, 5 0, 5 2, 3 2, 3 1, 4 1, 4 0)))"
+        wkt = multipolygon.asWkt()
+        assert compareWkt(expwkt, wkt), f"Expected:\n{expwkt}\nGot:\n{wkt}\n"
+
+        # test deletion of start and endpoint
+        multipolygon = QgsGeometry.fromWkt(multipolygonwkt)
+
+        assert multipolygon.deleteVertices([0, 6]), "Delete vertices [0, 6] failed"
+        expwkt = "MultiPolygon (((0 2, 1 0, 1 1, 2 1, 2 2, 0 2)), ((4 0, 5 0, 5 2, 3 2, 3 1, 4 1, 4 0)))"
+        wkt = multipolygon.asWkt()
+        assert compareWkt(expwkt, wkt), f"Expected:\n{expwkt}\nGot:\n{wkt}\n"
+
+        # test multiple deletion
+        multipolygon = QgsGeometry.fromWkt(multipolygonwkt)
+
+        assert multipolygon.deleteVertices([0, 1, 11, 12]), (
+            "Delete vertices [0, 1, 10, 11] failed"
+        )
+        expwkt = (
+            "MultiPolygon (((1 1, 2 1, 2 2, 0 2, 1 1)), ((4 0, 5 0, 5 2, 3 2, 4 0)))"
+        )
+        wkt = multipolygon.asWkt()
+        assert compareWkt(expwkt, wkt), f"Expected:\n{expwkt}\nGot:\n{wkt}\n"
+
+        # 3 - + - + - + - + - 2    23- + - + - + - + -22
+        # |                   |    |                   |
+        # +   5 - + - + - 6   +    +   25- + - + -26   +
+        # |   |           |   |    |   |           |   |
+        # +   8 - + - + - 7   +    +   28- + - + -27   +
+        # |                   |    |                   |
+        # +   10- + - + -11   +    +   30- + - + -31   +
+        # |   |           |   |    |   |           |   |
+        # +   13- + - + -12   +    +   33- + - + -32   +
+        # |                   |    |                   |
+        # +   18- + - + -17   +    +   38- + - + -37   +
+        # |   |           |   |    |   |           |   |
+        # +   15- + - + -16   +    +   35- + - + -36   +
+        # |                   |    |                   |
+        # 0 - + - + - + - + - 1    20- + - + - + - + -21
+
+        # multipolygon with interior rings
+        multipolygonwkt = "MultiPolygon (((0 0, 5 0, 5 7, 0 7, 0 0), (1 6, 4 6, 4 5, 1 5, 1 6), (1 4, 4 4, 4 3, 1 3, 1 4), (1 2, 4 2, 4 1, 1 1, 1 2)), ((6 0, 11 0, 11 7, 6 7, 6 0), (7 6, 10 6, 10 5, 7 5, 7 6), (7 4, 10 4, 10 3, 7 3, 7 4), (7 2, 10 2, 10 1, 7 1, 7 2)))"
+        multipolygon = QgsGeometry.fromWkt(multipolygonwkt)
+
+        # test deletion of start and endpoint of exterior and interior rings
+        assert multipolygon.deleteVertices([0, 4, 5, 9, 20, 24, 25, 29]), (
+            "Delete vertices [0, 4, 5, 9, 20, 24, 25, 29] failed"
+        )
+        expwkt = "MultiPolygon (((0 7, 5 0, 5 7, 0 7), (1 5, 4 6, 4 5, 1 5), (1 4, 4 4, 4 3, 1 3, 1 4), (1 2, 4 2, 4 1, 1 1, 1 2)), ((6 7, 11 0, 11 7, 6 7), (7 5, 10 6, 10 5, 7 5), (7 4, 10 4, 10 3, 7 3, 7 4), (7 2, 10 2, 10 1, 7 1, 7 2)))"
+        wkt = multipolygon.asWkt()
+        assert compareWkt(expwkt, wkt), f"Expected:\n{expwkt}\nGot:\n{wkt}\n"
+
+        # test deletion of multiple interior rings of both polygons
+        multipolygon = QgsGeometry.fromWkt(multipolygonwkt)
+
+        assert multipolygon.deleteVertices([10, 13, 15, 18, 30, 33, 35, 38]), (
+            "Delete vertices [10, 13, 15, 18, 30, 33, 35, 38] failed"
+        )
+        expwkt = "MultiPolygon (((0 0, 5 0, 5 7, 0 7, 0 0), (1 6, 4 6, 4 5, 1 5, 1 6)), ((6 0, 11 0, 11 7, 6 7, 6 0), (7 6, 10 6, 10 5, 7 5, 7 6)))"
+        wkt = multipolygon.asWkt()
+        assert compareWkt(expwkt, wkt), f"Expected:\n{expwkt}\nGot:\n{wkt}\n"
+
+        # test deletion of entire part
+        multipolygon = QgsGeometry.fromWkt(multipolygonwkt)
+
+        assert multipolygon.deleteVertices([0, 1, 5, 6, 10, 11, 17, 18]), (
+            "Delete vertices [0, 1, 5, 6, 10, 11, 17, 18] failed"
+        )
+        expwkt = "MultiPolygon (((6 0, 11 0, 11 7, 6 7, 6 0), (7 6, 10 6, 10 5, 7 5, 7 6), (7 4, 10 4, 10 3, 7 3, 7 4), (7 2, 10 2, 10 1, 7 1, 7 2)))"
+        wkt = multipolygon.asWkt()
+        assert compareWkt(expwkt, wkt), f"Expected:\n{expwkt}\nGot:\n{wkt}\n"
+
+        #     1
+        #     |
+        # 0 - + - 2
+        #     |
+        #     3
+
+        # closed circle (first and last point are the same)
+        circularstringwkt = "CircularString (0 1, 1 2, 2 1, 1 0, 0 1)"
+        circularstring = QgsGeometry.fromWkt(circularstringwkt)
+
+        # test invalid range
+        assert not circularstring.deleteVertices([-5]), (
+            "Delete vertices -5 unexpectedly succeeded"
+        )
+        assert not circularstring.deleteVertices([100]), (
+            "Delete vertices 100 unexpectedly succeeded"
+        )
+        # single invalid value should fail
+        assert not circularstring.deleteVertices([1, 10]), (
+            "Delete vertices [1, 10] unexpectedly succeeded"
+        )
+
+        # test single vertex deletion
+        assert circularstring.deleteVertices([1]), "Delete vertices [1] failed"
+        expwkt = "CircularString (0 1, 1 0, 0 1)"
+        wkt = circularstring.asWkt()
+        assert compareWkt(expwkt, wkt), f"Expected:\n{expwkt}\nGot:\n{wkt}\n"
+
+        # test consecutive vertex deletion
+        circularstring = QgsGeometry.fromWkt(circularstringwkt)
+        assert circularstring.deleteVertices([3, 4]), "Delete vertices [3, 4] failed"
+        expwkt = "CircularString (0 1, 1 2, 2 1)"
+        wkt = circularstring.asWkt()
+        assert compareWkt(expwkt, wkt), f"Expected:\n{expwkt}\nGot:\n{wkt}\n"
+
+        circularstring = QgsGeometry.fromWkt(circularstringwkt)
+        assert circularstring.deleteVertices([2, 3]), "Delete vertices [2, 3] failed"
+        expwkt = "CircularString (0 1, 1 2, 0 1)"
+        wkt = circularstring.asWkt()
+        assert compareWkt(expwkt, wkt), f"Expected:\n{expwkt}\nGot:\n{wkt}\n"
+
+        circularstring = QgsGeometry.fromWkt(circularstringwkt)
+        assert circularstring.deleteVertices([1, 2]), "Delete vertices [1, 2] failed"
+        expwkt = "CircularString (0 1, 1 0, 0 1)"
+        wkt = circularstring.asWkt()
+        assert compareWkt(expwkt, wkt), f"Expected:\n{expwkt}\nGot:\n{wkt}\n"
+
+        # delete entire circle
+        circularstring = QgsGeometry.fromWkt(circularstringwkt)
+        assert circularstring.deleteVertices([0, 1, 2, 3, 4]), (
+            "Delete vertices [0, 1, 2, 3, 4] failed"
+        )
+        expwkt = "CircularString EMPTY"
+        wkt = circularstring.asWkt()
+        assert compareWkt(expwkt, wkt), f"Expected:\n{expwkt}\nGot:\n{wkt}\n"
+
+        # compoundcurve
+        compoundcurvewkt = (
+            "CompoundCurve ( (0 1, 1 2, 2 1, 1 0, 0 1), (0 1, 0 2, 0 3) )"
+        )
+        compoundcurve = QgsGeometry.fromWkt(compoundcurvewkt)
+
+        # test invalid range
+        assert not compoundcurve.deleteVertices([-5]), (
+            "Delete vertices -5 unexpectedly succeeded"
+        )
+        assert not compoundcurve.deleteVertices([100]), (
+            "Delete vertices 100 unexpectedly succeeded"
+        )
+        # single invalid value should fail
+        assert not compoundcurve.deleteVertices([1, 10]), (
+            "Delete vertices [1, 10] unexpectedly succeeded"
+        )
+
+        # test single vertex deletion
+        assert compoundcurve.deleteVertices([6]), "Delete vertices [6] failed"
+        expwkt = "CompoundCurve ((0 1, 1 2, 2 1, 1 0, 0 1), (0 1, 0 2))"
+        wkt = compoundcurve.asWkt()
+        assert compareWkt(expwkt, wkt), f"Expected:\n{expwkt}\nGot:\n{wkt}\n"
+
+        assert compoundcurve.deleteVertices([1]), "Delete vertices [1] failed"
+        expwkt = "CompoundCurve ((0 1, 2 1, 1 0, 0 1), (0 1, 0 2))"
+        wkt = compoundcurve.asWkt()
+        assert compareWkt(expwkt, wkt), f"Expected:\n{expwkt}\nGot:\n{wkt}\n"
+
+        # test single vertex belonging to both strings
+        compoundcurve = QgsGeometry.fromWkt(compoundcurvewkt)
+        assert compoundcurve.deleteVertices([4]), "Delete vertices [4] failed"
+        expwkt = "CompoundCurve ((0 1, 1 2, 2 1, 1 0), (1 0, 0 3))"
+        wkt = compoundcurve.asWkt()
+        assert compareWkt(expwkt, wkt), f"Expected:\n{expwkt}\nGot:\n{wkt}\n"
+
+        # remove one linestring from compoundcurve
+        compoundcurve = QgsGeometry.fromWkt(compoundcurvewkt)
+        assert compoundcurve.deleteVertices([5, 6]), "Delete vertices [5, 6] failed"
+        expwkt = "CompoundCurve ( (0 1, 1 2, 2 1, 1 0, 0 1 ) )"
+        wkt = compoundcurve.asWkt()
+        assert compareWkt(expwkt, wkt), f"Expected:\n{expwkt}\nGot:\n{wkt}\n"
+
+        compoundcurve = QgsGeometry.fromWkt(compoundcurvewkt)
+        assert compoundcurve.deleteVertices([0, 1, 2, 3]), (
+            "Delete vertices [0, 1, 2, 3] failed"
+        )
+        expwkt = "CompoundCurve ( (0 1, 0 2, 0 3) )"
+        wkt = compoundcurve.asWkt()
+        assert compareWkt(expwkt, wkt), f"Expected:\n{expwkt}\nGot:\n{wkt}\n"
+
+        # remove all strings
+        compoundcurve = QgsGeometry.fromWkt(compoundcurvewkt)
+        assert compoundcurve.deleteVertices([0, 1, 2, 3, 4, 5, 6]), (
+            "Delete vertices [0, 1, 2, 3, 4, 5, 6] failed"
+        )
+        expwkt = "CompoundCurve EMPTY"
+        wkt = compoundcurve.asWkt()
+        assert compareWkt(expwkt, wkt), f"Expected:\n{expwkt}\nGot:\n{wkt}\n"
+
+        compoundcurve = QgsGeometry.fromWkt(compoundcurvewkt)
+        assert compoundcurve.deleteVertices([1, 2, 3, 4, 5]), (
+            "Delete vertices [1, 2, 3, 4, 5] failed"
+        )
+        expwkt = "CompoundCurve ( (0 1, 0 3) )"
+        wkt = compoundcurve.asWkt()
+        assert compareWkt(expwkt, wkt), f"Expected:\n{expwkt}\nGot:\n{wkt}\n"
+
+        compoundcurve = QgsGeometry.fromWkt(compoundcurvewkt)
+        assert compoundcurve.deleteVertices([0, 2, 3, 4, 6]), (
+            "Delete vertices [0, 2, 3, 4, 6] failed"
+        )
+        expwkt = "CompoundCurve ( (1 2, 0 2) )"
+        wkt = compoundcurve.asWkt()
+        assert compareWkt(expwkt, wkt), f"Expected:\n{expwkt}\nGot:\n{wkt}\n"
+
+        compoundcurve = QgsGeometry.fromWkt(compoundcurvewkt)
+        assert compoundcurve.deleteVertices([0, 1, 2, 3, 5, 6]), (
+            "Delete vertices [0, 1, 2, 3, 5, 6] failed"
+        )
+        expwkt = "CompoundCurve EMPTY"
+        wkt = compoundcurve.asWkt()
+        assert compareWkt(expwkt, wkt), f"Expected:\n{expwkt}\nGot:\n{wkt}\n"
+
+        # compoundcurve with circularstring
+        compoundcurvewkt = "CompoundCurve (CircularString(-1 -1, -1.5 -0.5, -2 0, -1 1, 0 0), CircularString(0 0, 1 1, 2 0, 1.5 -0.5, 1 -1))"
+
+        compoundcurve = QgsGeometry.fromWkt(compoundcurvewkt)
+        assert compoundcurve.deleteVertices([4]), "Delete vertices [4] failed"
+        expwkt = "CompoundCurve (CircularString (-1 -1, -1.5 -0.5, -2 0), (-2 0, 2 0), CircularString (2 0, 1.5 -0.5, 1 -1))"
+        wkt = compoundcurve.asWkt()
+        assert compareWkt(expwkt, wkt), f"Expected:\n{expwkt}\nGot:\n{wkt}\n"
+
+        compoundcurve = QgsGeometry.fromWkt(compoundcurvewkt)
+        assert compoundcurve.deleteVertices([0]), "Delete vertices [0] failed"
+        expwkt = "CompoundCurve (CircularString (-2 0, -1 1, 0 0), CircularString (0 0, 1 1, 2 0, 1.5 -0.5, 1 -1))"
+        wkt = compoundcurve.asWkt()
+        assert compareWkt(expwkt, wkt), f"Expected:\n{expwkt}\nGot:\n{wkt}\n"
+
+        compoundcurve = QgsGeometry.fromWkt(compoundcurvewkt)
+        assert compoundcurve.deleteVertices([0, 1]), "Delete vertices [0, 1] failed"
+        expwkt = "CompoundCurve (CircularString (-2 0, -1 1, 0 0), CircularString (0 0, 1 1, 2 0, 1.5 -0.5, 1 -1))"
+        wkt = compoundcurve.asWkt()
+        assert compareWkt(expwkt, wkt), f"Expected:\n{expwkt}\nGot:\n{wkt}\n"
+
+        compoundcurve = QgsGeometry.fromWkt(compoundcurvewkt)
+        assert compoundcurve.deleteVertices([7, 8]), "Delete vertices [7, 8] failed"
+        expwkt = "CompoundCurve (CircularString (-1 -1, -1.5 -0.5, -2 0, -1 1, 0 0), CircularString (0 0, 1 1, 2 0))"
+        wkt = compoundcurve.asWkt()
+        assert compareWkt(expwkt, wkt), f"Expected:\n{expwkt}\nGot:\n{wkt}\n"
+
+        # curvepolygon1
+        curvepolygonwkt = (
+            "CurvePolygon( CompoundCurve( CircularString(0 0, 1 1, 2 0), (2 0, 0 0) ) )"
+        )
+
+        curvepolygon = QgsGeometry.fromWkt(curvepolygonwkt)
+        assert curvepolygon.deleteVertices([0]), "Delete vertices [0] failed"
+        expwkt = "CurvePolygon EMPTY"
+        wkt = curvepolygon.asWkt()
+        assert compareWkt(expwkt, wkt), f"Expected:\n{expwkt}\nGot:\n{wkt}\n"
+
+        curvepolygon = QgsGeometry.fromWkt(curvepolygonwkt)
+        assert curvepolygon.deleteVertices([0, 1, 2, 3]), (
+            "Delete vertices [0, 1, 2, 3] failed"
+        )
+        expwkt = "CurvePolygon EMPTY"
+        wkt = curvepolygon.asWkt()
+        assert compareWkt(expwkt, wkt), f"Expected:\n{expwkt}\nGot:\n{wkt}\n"
+
+        # curvepolygon2
+        curvepolygonwkt = "CurvePolygon( CompoundCurve( CircularString (0 0, 1 1, 2 0, 1.5 -0.5, 1 -1), (1 -1, 0 0)))"
+
+        curvepolygon = QgsGeometry.fromWkt(curvepolygonwkt)
+        assert curvepolygon.deleteVertices([0]), "Delete vertices [0] failed"
+        expwkt = "CurvePolygon( CompoundCurve( CircularString(2 0, 1.5 -0.5, 1 -1), (1 -1, 2 0) ) )"
+        wkt = curvepolygon.asWkt()
+        assert compareWkt(expwkt, wkt), f"Expected:\n{expwkt}\nGot:\n{wkt}\n"
+
+        curvepolygon = QgsGeometry.fromWkt(curvepolygonwkt)
+        assert curvepolygon.deleteVertices([1]), "Delete vertices [1] failed"
+        expwkt = "CurvePolygon( CompoundCurve( (0 0, 2 0), CircularString(2 0, 1.5 -0.5, 1 -1), (1 -1, 0 0) ) )"
+        wkt = curvepolygon.asWkt()
+        assert compareWkt(expwkt, wkt), f"Expected:\n{expwkt}\nGot:\n{wkt}\n"
+
+        curvepolygon = QgsGeometry.fromWkt(curvepolygonwkt)
+        assert curvepolygon.deleteVertices([0, 1]), "Delete vertices [0, 1] failed"
+        expwkt = "CurvePolygon( CompoundCurve( CircularString (2 0, 1.5 -0.5, 1 -1), (1 -1, 2 0)))"
+        wkt = curvepolygon.asWkt()
+        assert compareWkt(expwkt, wkt), f"Expected:\n{expwkt}\nGot:\n{wkt}\n"
+
+        curvepolygon = QgsGeometry.fromWkt(curvepolygonwkt)
+        assert curvepolygon.deleteVertices([0, 1, 2, 3]), (
+            "Delete vertices [0, 1, 2, 3] failed"
+        )
+        expwkt = "CurvePolygon EMPTY"
+        wkt = curvepolygon.asWkt()
+        assert compareWkt(expwkt, wkt), f"Expected:\n{expwkt}\nGot:\n{wkt}\n"
+
+        # curvepolygon3
+        curvepolygonwkt = "CurvePolygon (CompoundCurve (CircularString (3 19, 0 22, 3 25, 6 28, 9 25),( 9 25, 14 20, 19 25 ),CircularString (19 25, 22 28, 25 25, 28 22, 25 19),(25 19, 20 14, 25 9),CircularString (25 9, 28 6, 25 3, 22 0, 19 3),(19 3, 14 8, 9 3),CircularString (9 3, 6 0, 3 3, 0 6, 3 9),(3 9, 8 14, 3 19) ))))"
+
+        # passing all the vertices should not crash and the entire geometry should be cleared
+        curvepolygon = QgsGeometry.fromWkt(curvepolygonwkt)
+        assert curvepolygon.deleteVertices(
+            [
+                0,
+                1,
+                2,
+                3,
+                4,
+                5,
+                6,
+                7,
+                8,
+                9,
+                10,
+                11,
+                12,
+                13,
+                14,
+                15,
+                16,
+                17,
+                18,
+                19,
+                20,
+                21,
+                22,
+                23,
+                24,
+            ]
+        ), "Delete vertices [0, 1, 2, 3, 4] failed"
+        expwkt = "CurvePolygon EMPTY"
+        wkt = curvepolygon.asWkt()
+        assert compareWkt(expwkt, wkt), f"Expected:\n{expwkt}\nGot:\n{wkt}\n"
+
+        # test deleting single circularstring
+        curvepolygon = QgsGeometry.fromWkt(curvepolygonwkt)
+        assert curvepolygon.deleteVertices([0, 1, 2, 3, 4]), (
+            "Delete vertices [0, 1, 2, 3, 4] failed"
+        )
+        expwkt = "CurvePolygon (CompoundCurve ((14 20, 19 25),CircularString (19 25, 22 28, 25 25, 28 22, 25 19),(25 19, 20 14, 25 9),CircularString (25 9, 28 6, 25 3, 22 0, 19 3),(19 3, 14 8, 9 3),CircularString (9 3, 6 0, 3 3, 0 6, 3 9),(3 9, 8 14, 14 20)))"
+        wkt = curvepolygon.asWkt()
+        assert compareWkt(expwkt, wkt), f"Expected:\n{expwkt}\nGot:\n{wkt}\n"
+
+        # test deleting circularstrings on opposing sides
+        curvepolygon = QgsGeometry.fromWkt(curvepolygonwkt)
+        assert curvepolygon.deleteVertices([0, 1, 2, 3, 4, 12, 13, 14, 15, 16]), (
+            "Delete vertices [0, 1, 2, 3, 4, 12, 13, 14, 15, 16] failed"
+        )
+        expwkt = "CurvePolygon (CompoundCurve ((14 20, 19 25),CircularString (19 25, 22 28, 25 25, 28 22, 25 19),(25 19, 20 14),(20 14, 9 3),CircularString (9 3, 6 0, 3 3, 0 6, 3 9),(3 9, 8 14, 14 20)))"
+        wkt = curvepolygon.asWkt()
+        assert compareWkt(expwkt, wkt), f"Expected:\n{expwkt}\nGot:\n{wkt}\n"
+
+        # delete all but first circularstring
+        curvepolygon = QgsGeometry.fromWkt(curvepolygonwkt)
+        assert curvepolygon.deleteVertices(
+            [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16]
+        ), (
+            "Delete vertices [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16] failed"
+        )
+        expwkt = "CurvePolygon (CompoundCurve ((14 8, 9 3),CircularString (9 3, 6 0, 3 3, 0 6, 3 9),(3 9, 8 14, 14 8)))"
+        wkt = curvepolygon.asWkt()
+        assert compareWkt(expwkt, wkt), f"Expected:\n{expwkt}\nGot:\n{wkt}\n"
+
+        # test deleting all but last arm
+        curvepolygon = QgsGeometry.fromWkt(curvepolygonwkt)
+        assert curvepolygon.deleteVertices(
+            [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16]
+        ), "Delete vertices [0, 1, 2, 3, 4, 12, 13, 14, 15, 16] failed"
+        expwkt = "CurvePolygon (CompoundCurve ((14 8, 9 3),CircularString (9 3, 6 0, 3 3, 0 6, 3 9),(3 9, 8 14, 14 8)))"
+        wkt = curvepolygon.asWkt()
+        assert compareWkt(expwkt, wkt), f"Expected:\n{expwkt}\nGot:\n{wkt}\n"
+
+        # test deleting first and last circularstring along with their connecting lines
+        # we are checking if the ring is properly closed after vertices are deleted
+        curvepolygon = QgsGeometry.fromWkt(curvepolygonwkt)
+        assert curvepolygon.deleteVertices(
+            [0, 1, 2, 3, 4, 18, 19, 20, 21, 22, 23, 24]
+        ), "Delete vertices [0, 1, 2, 3, 4, 18, 19, 20, 21, 22, 23, 24] failed"
+        expwkt = "CurvePolygon (CompoundCurve ((14 20, 19 25),CircularString (19 25, 22 28, 25 25, 28 22, 25 19),(25 19, 20 14, 25 9),CircularString (25 9, 28 6, 25 3, 22 0, 19 3),(19 3, 14 8, 14 20)))"
+        wkt = curvepolygon.asWkt()
+        assert compareWkt(expwkt, wkt), f"Expected:\n{expwkt}\nGot:\n{wkt}\n"
+
+        # deletion of first/last point works differently if compound curve, the ring should be properly closed
+        curvepolygon = QgsGeometry.fromWkt(curvepolygonwkt)
+        assert curvepolygon.deleteVertices([0, 24]), "Delete vertices [0, 24] failed"
+        expwkt = "CurvePolygon (CompoundCurve (CircularString (3 25, 6 28, 9 25),( 9 25, 14 20, 19 25 ),CircularString (19 25, 22 28, 25 25, 28 22, 25 19),(25 19, 20 14, 25 9),CircularString (25 9, 28 6, 25 3, 22 0, 19 3),(19 3, 14 8, 9 3),CircularString (9 3, 6 0, 3 3, 0 6, 3 9),(3 9, 8 14, 3 25)))"
+        wkt = curvepolygon.asWkt()
+        assert compareWkt(expwkt, wkt), f"Expected:\n{expwkt}\nGot:\n{wkt}\n"
+
+        # test deletion of line connection between first and last circularstrings
+        # connecting line is made out of 3 points, after removing 2 of them
+        # circularstrings should not merge, but be joined with a line connecting the start/end points
+        curvepolygon = QgsGeometry.fromWkt(curvepolygonwkt)
+        assert curvepolygon.deleteVertices([24, 23]), "Delete vertices [24, 23] failed"
+        expwkt = "CurvePolygon (CompoundCurve (CircularString (3 25, 6 28, 9 25),(9 25, 14 20, 19 25),CircularString (19 25, 22 28, 25 25, 28 22, 25 19),(25 19, 20 14, 25 9),CircularString (25 9, 28 6, 25 3, 22 0, 19 3),(19 3, 14 8, 9 3),CircularString (9 3, 6 0, 3 3, 0 6, 3 9),(3 9, 3 25)))"
+        wkt = curvepolygon.asWkt()
+        assert compareWkt(expwkt, wkt), f"Expected:\n{expwkt}\nGot:\n{wkt}\n"
+
+        # geometry collection
+        collectionwkt = "GeometryCollection( Point(0 1), Point(0 2), Point(0 3), LineString(0 0, 1 1, 2 2), Polygon((0 0, 1 1, 1 2, 2 2, 0 0)) )"
+        collection = QgsGeometry.fromWkt(collectionwkt)
+
+        assert not collection.deleteVertices([-1]), (
+            "Delete vertices -1 unexpectedly succeeded"
+        )
+        assert not collection.deleteVertices([100]), (
+            "Delete vertices 100 unexpectedly succeeded"
+        )
+
+        # test deletion of point in collection
+        assert collection.deleteVertices([1]), "Delete vertices [1] failed"
+        expwkt = "GeometryCollection( Point (0 1), Point (0 3), LineString (0 0, 1 1, 2 2), Polygon ((0 0, 1 1, 1 2, 2 2, 0 0)) )"
+        wkt = collection.asWkt()
+        assert compareWkt(expwkt, wkt), f"Expected:\n{expwkt}\nGot:\n{wkt}\n"
+
+        # test deletion of vertex in linestring in collection
+        collection = QgsGeometry.fromWkt(collectionwkt)
+        assert collection.deleteVertices([5]), "Delete vertices [5] failed"
+        expwkt = "GeometryCollection( Point (0 1), Point (0 2), Point (0 3), LineString (0 0, 1 1), Polygon ((0 0, 1 1, 1 2, 2 2, 0 0)) )"
+        wkt = collection.asWkt()
+        assert compareWkt(expwkt, wkt), f"Expected:\n{expwkt}\nGot:\n{wkt}\n"
+
+        # test deletion of vertex in polygon in collection
+        collection = QgsGeometry.fromWkt(collectionwkt)
+        assert collection.deleteVertices([8]), "Delete vertices [8] failed"
+        expwkt = "GeometryCollection( Point (0 1), Point (0 2), Point (0 3), LineString (0 0, 1 1, 2 2), Polygon ((0 0, 1 1, 2 2, 0 0)) )"
+        wkt = collection.asWkt()
+        assert compareWkt(expwkt, wkt), f"Expected:\n{expwkt}\nGot:\n{wkt}\n"
+
+        # test deletion of multiple vertices in different geometries in collection
+        collection = QgsGeometry.fromWkt(collectionwkt)
+        assert collection.deleteVertices([0, 4, 7]), "Delete vertices [0, 4, 7] failed"
+        expwkt = "GeometryCollection( Point (0 2), Point (0 3), LineString (0 0, 2 2), Polygon((0 0, 1 2, 2 2, 0 0)) )"
+        wkt = collection.asWkt()
         assert compareWkt(expwkt, wkt), f"Expected:\n{expwkt}\nGot:\n{wkt}\n"
 
     def testInsertVertex(self):
@@ -9780,6 +10499,21 @@ class TestQgsGeometry(QgisTestCase):
         assert not geom.deleteVertex(-1)
         assert not geom.deleteVertex(5)
 
+        # test invalid range deletion on abstract geometry
+        p1 = QgsPoint(0, 0)
+        p2 = QgsPoint(1, 1)
+        p3 = QgsPoint(2, 0)
+
+        c = QgsCircularString()
+
+        c.setPoints([p1, p2, p3])
+
+        invalidVertex1 = QgsVertexId(0, 0, -1)
+        invalidVertex2 = QgsVertexId(0, 0, 3)
+
+        self.assertFalse(c.deleteVertex(invalidVertex1))
+        self.assertFalse(c.deleteVertex(invalidVertex2))
+
     def testDeleteVertexCompoundCurve(self):
 
         wkt = "CompoundCurve ((0 0,1 1))"
@@ -10378,6 +11112,13 @@ class TestQgsGeometry(QgisTestCase):
             expbb,
             bb,
             f"Extend multiline: bbox Expected:\n{expbb.toString()}\nGot:\n{bb.toString()}\n",
+        )
+
+        # with deflection angle
+        line = QgsGeometry(QgsLineString([QgsPoint(0, 0), QgsPoint(10, 0)]))
+        res = line.extendLine(5.0, 10.0, -10.0, 45.0)
+        self.assertEqual(
+            res.asWkt(5), "LineString (-4.92404 -0.86824, 0 0, 10 0, 17.07107 -7.07107)"
         )
 
     def testRemoveRings(self):
@@ -12028,13 +12769,14 @@ class TestQgsGeometry(QgisTestCase):
 
     def testValidateGeometry(self):
         tests = [
-            ["", [], [], []],
-            ["Point (100 100)", [], [], []],
-            ["MultiPoint (100 100, 100 200)", [], [], []],
-            ["LINESTRING (0 0, 0 100, 100 100)", [], [], []],
-            ["POLYGON((-1 -1, 4 0, 4 2, 0 2, -1 -1))", [], [], []],
+            ["", [], [], [], []],
+            ["Point (100 100)", [], [], [], []],
+            ["MultiPoint (100 100, 100 200)", [], [], [], []],
+            ["LINESTRING (0 0, 0 100, 100 100)", [], [], [], []],
+            ["POLYGON((-1 -1, 4 0, 4 2, 0 2, -1 -1))", [], [], [], []],
             [
                 "MULTIPOLYGON(Polygon((-1 -1, 4 0, 4 2, 0 2, -1 -1)),Polygon((100 100, 200 100, 200 200, 100 200, 100 100)))",
+                [],
                 [],
                 [],
                 [],
@@ -12044,6 +12786,7 @@ class TestQgsGeometry(QgisTestCase):
                 [QgsGeometry.Error("Ring self-intersection", QgsPointXY(300, 200))],
                 [],
                 [],
+                [QgsGeometry.Error("ring 0 self intersects")],
             ],
             [
                 "MultiPolygon (((159865.14786298031685874 6768656.31838363595306873, 159858.97975336571107619 6769211.44824895076453686, 160486.07089751763851382 6769211.44824895076453686, 160481.95882444124436006 6768658.37442017439752817, 160163.27316101978067309 6768658.37442017439752817, 160222.89822062765597366 6769116.87056819349527359, 160132.43261294672265649 6769120.98264127038419247, 160163.27316101978067309 6768658.37442017439752817, 159865.14786298031685874 6768656.31838363595306873)))",
@@ -12055,6 +12798,7 @@ class TestQgsGeometry(QgisTestCase):
                 ],
                 [],
                 [],
+                [QgsGeometry.Error("Polygon 0 is invalid: ring 0 self intersects")],
             ],
             [
                 "Polygon((0 3, 3 0, 3 3, 0 0, 0 3))",
@@ -12066,9 +12810,18 @@ class TestQgsGeometry(QgisTestCase):
                         QgsPointXY(1.5, 1.5),
                     )
                 ],
+                [QgsGeometry.Error("ring 0 self intersects")],
+            ],
+            [
+                "POLYGON Z ((0 0 0, 1 0 0, 1 1 0.001, 0 1 0, 0 0 0))",
+                [],
+                [],
+                [],
+                [QgsGeometry.Error("points don't lie in the same plane")],
             ],
         ]
         for t in tests:
+            # Geos
             g1 = QgsGeometry.fromWkt(t[0])
             res = g1.validateGeometry(QgsGeometry.ValidationMethod.ValidatorGeos)
             self.assertEqual(
@@ -12078,6 +12831,8 @@ class TestQgsGeometry(QgisTestCase):
                     t[0], t[1], res[0].where() if res else ""
                 ),
             )
+
+            # Geos - allows self touching holes
             res = g1.validateGeometry(
                 QgsGeometry.ValidationMethod.ValidatorGeos,
                 QgsGeometry.ValidityFlag.FlagAllowSelfTouchingHoles,
@@ -12089,6 +12844,8 @@ class TestQgsGeometry(QgisTestCase):
                     t[0], t[2], res[0].where() if res else ""
                 ),
             )
+
+            # QGIS
             res = g1.validateGeometry(
                 QgsGeometry.ValidationMethod.ValidatorQgisInternal
             )
@@ -12099,6 +12856,17 @@ class TestQgsGeometry(QgisTestCase):
                     t[0], t[3], res[0].where() if res else ""
                 ),
             )
+
+            # SFCGAL
+            if Qgis.hasSfcgal():
+                res = g1.validateGeometry(QgsGeometry.ValidationMethod.Sfcgal)
+                self.assertEqual(
+                    res,
+                    t[4],
+                    "mismatch for {}, expected:\n{}\nGot:\n{}\n".format(
+                        t[0], t[4], res[0].where() if res else ""
+                    ),
+                )
 
     def testCollectDuplicateNodes(self):
         g = QgsGeometry.fromWkt(
@@ -14142,18 +14910,33 @@ class TestQgsGeometry(QgisTestCase):
 
         r1 = QgsGeometry.fromWkt("Polygon ((1 2, 1 0, 0 0, 0 2, 1 2))")
         r2 = QgsGeometry.fromWkt("Polygon ((1 0, 1 2, 2 2, 2 0, 1 0))")
+        r1.normalize()
+        r2.normalize()
+        square.normalize()
 
         (result, parts, topo) = square.splitGeometry(lineXY, False)
         self.assertEqual(result, Qgis.GeometryOperationResult.Success)
-        self.assertGeometriesEqual(square, r2)
         self.assertEqual(len(parts), 1)
-        self.assertGeometriesEqual(parts[0], r1)
+        parts[0].normalize()
+        if Qgis.geosVersionInt() < self.geos315:
+            self.assertGeometriesEqual(square, r2)
+            self.assertGeometriesEqual(parts[0], r1)
+        else:
+            self.assertGeometriesEqual(square, r1)
+            self.assertGeometriesEqual(parts[0], r2)
 
         square = QgsGeometry.fromWkt("Polygon ((0 0, 0 2, 2 2, 2 0, 0 0))")
+        square.normalize()
         (result, parts, topo) = square.splitGeometry(line, False)
         self.assertEqual(result, Qgis.GeometryOperationResult.Success)
-        self.assertGeometriesEqual(square, r2)
-        self.assertGeometriesEqual(parts[0], r1)
+        self.assertEqual(len(parts), 1)
+        parts[0].normalize()
+        if Qgis.geosVersionInt() < self.geos315:
+            self.assertGeometriesEqual(square, r2)
+            self.assertGeometriesEqual(parts[0], r1)
+        else:
+            self.assertGeometriesEqual(square, r1)
+            self.assertGeometriesEqual(parts[0], r2)
 
         multilinestring = QgsGeometry.fromWkt("MultiLinestring((0 1, 1 0),(0 2, 2 0))")
         blade = QgsCompoundCurve()
@@ -14161,9 +14944,14 @@ class TestQgsGeometry(QgisTestCase):
         result, parts, _ = multilinestring.splitGeometry(blade, False, False, False)
         self.assertEqual(result, Qgis.GeometryOperationResult.Success)
         self.assertEqual(len(parts), 3)
-        self.assertTrue(compareWkt(parts[0].asWkt(), "MultiLineString ((0 2, 1 1))"))
-        self.assertTrue(compareWkt(parts[1].asWkt(), "MultiLineString ((1 1, 2 0))"))
-        self.assertTrue(compareWkt(parts[2].asWkt(), "MultiLineString ((0 1, 1 0))"))
+        wkts = [
+            parts[0].asWkt(),
+            parts[1].asWkt(),
+            parts[2].asWkt(),
+        ]
+        self.assertIn("MultiLineString ((0 2, 1 1))", wkts)
+        self.assertIn("MultiLineString ((1 1, 2 0))", wkts)
+        self.assertIn("MultiLineString ((0 1, 1 0))", wkts)
 
     @unittest.skipIf(Qgis.geosVersionInt() < 31200, "GEOS 3.12 required")
     def testCoverageValidate(self):
@@ -14250,6 +15038,61 @@ class TestQgsGeometry(QgisTestCase):
         self.assertEqual(
             res.asWkt(0),
             "GeometryCollection (Polygon ((10 0, 10 10, 0 10, 0 0, 10 0)),Polygon ((10 0, 20 0, 20 10, 10 10, 10 0)))",
+        )
+
+    @unittest.skipIf(Qgis.geosVersionInt() < 31400, "GEOS 3.14 required")
+    def testCoverageClean(self):
+        """
+        Test QgsGeometry.cleanCoverage
+        """
+        g1 = QgsGeometry()
+        params = QgsCoverageCleanParameters()
+        params.setSnappingDistance(0)
+        params.setMaximumGapWidth(0)
+        params.setOverlapMergeStrategy(
+            Qgis.CoverageCleanOverlapMergeStrategy.LongestBorder
+        )
+
+        res = g1.cleanCoverage(params)
+        self.assertTrue(res.isNull())
+
+        g1 = QgsGeometry.fromWkt("Point(1 2)")
+        res = g1.cleanCoverage(params)
+        self.assertTrue(res.isNull())
+
+        # overlap
+        g1 = QgsGeometry.fromWkt(
+            "GeometryCollection (Polygon ((0, 10, 10 10, 10 0, 0 0, 0 10)), Polygon ((9 10, 19 10, 19 0, 9 0, 9 10)))"
+        )
+        res = g1.cleanCoverage(params)
+        res.normalize()
+        self.assertEqual(
+            res.asWkt(0),
+            "GeometryCollection (Polygon ((0 0, 0 10, 9 10, 10 10, 10 0, 9 0, 0 0)),Polygon ((10 0, 10 10, 19 10, 19 0, 10 0)))",
+        )
+
+        # close gap
+        params.setMaximumGapWidth(1)
+        g1 = QgsGeometry.fromWkt(
+            "GeometryCollection (Polygon ((0 11, 10 11, 10 -1, 0 -1, 0 11)), Polygon ((10 10, 10 13, 20 13, 20 -2, 10 -2, 10 0, 10.5 1, 10.5 8.5, 10 10)))"
+        )
+        res = g1.cleanCoverage(params)
+        res.normalize()
+        self.assertEqual(
+            res.asWkt(0),
+            "GeometryCollection (Polygon ((10 -2, 10 -1, 10 0, 10 10, 10 11, 10 13, 20 13, 20 -2, 10 -2)),Polygon ((0 -1, 0 11, 10 11, 10 10, 10 0, 10 -1, 0 -1)))",
+        )
+
+        # GEOS test case
+        params.setMaximumGapWidth(2)
+        g1 = QgsGeometry.fromWkt(
+            "GEOMETRYCOLLECTION (POLYGON ((1 3, 9 3, 9 1, 1 1, 1 3)), POLYGON ((1 3, 1 9, 4 9, 4 3, 3 4, 1 3)), POLYGON ((4 9, 7 9, 7 3, 6 5, 5 5, 4 3, 4 9)), POLYGON ((7 9, 9 9, 9 3, 8 3.1, 7 3, 7 9)))"
+        )
+        res = g1.cleanCoverage(params)
+        res.normalize()
+        self.assertEqual(
+            res.asWkt(1),
+            "GeometryCollection (Polygon ((1 1, 1 3, 4 3, 7 3, 9 3, 9 1, 1 1)),Polygon ((7 3, 7 9, 9 9, 9 3, 7 3)),Polygon ((4 3, 4 9, 7 9, 7 3, 4 3)),Polygon ((1 3, 1 9, 4 9, 4 3, 1 3)))",
         )
 
     def testPolygonOrientation(self):
@@ -14909,6 +15752,309 @@ class TestQgsGeometry(QgisTestCase):
             g.constGet().simplifiedTypeRef().asWkt(),
             "Polygon ((1 0, 1 4, 1 5, 1 9, 5 9, 6 9, 8 9, 9 5, 8 0, 6 0, 5 0, 1 0))",
         )
+
+    def testHasVertex(self):
+        """Test hasVertex for geometry types"""
+
+        cs = QgsCircularString()
+        cs.fromWkt("CIRCULARSTRING(0 0, 2 2, 4 0)")
+
+        # invalid range
+        self.assertFalse(cs.hasVertex(QgsVertexId(0, 0, -1)))
+        self.assertFalse(cs.hasVertex(QgsVertexId(0, -1, 0)))
+        self.assertFalse(cs.hasVertex(QgsVertexId(-1, 0, 0)))
+
+        self.assertFalse(cs.hasVertex(QgsVertexId(0, 0, 3)))
+        self.assertFalse(cs.hasVertex(QgsVertexId(0, 1, 0)))
+        self.assertFalse(cs.hasVertex(QgsVertexId(1, 0, 0)))
+
+        # valid range
+        self.assertTrue(cs.hasVertex(QgsVertexId(0, 0, 0)))
+        self.assertTrue(cs.hasVertex(QgsVertexId(0, 0, 1)))
+        self.assertTrue(cs.hasVertex(QgsVertexId(0, 0, 2)))
+
+        ls = QgsLineString()
+        ls.fromWkt("LINESTRING(0 0, 2 2, 4 0)")
+
+        # invalid range
+        self.assertFalse(ls.hasVertex(QgsVertexId(0, 0, -1)))
+        self.assertFalse(ls.hasVertex(QgsVertexId(0, -1, 0)))
+        self.assertFalse(ls.hasVertex(QgsVertexId(-1, 0, 0)))
+
+        self.assertFalse(ls.hasVertex(QgsVertexId(0, 0, 3)))
+        self.assertFalse(ls.hasVertex(QgsVertexId(0, 1, 0)))
+        self.assertFalse(ls.hasVertex(QgsVertexId(1, 0, 0)))
+
+        # valid range
+        self.assertTrue(ls.hasVertex(QgsVertexId(0, 0, 0)))
+        self.assertTrue(ls.hasVertex(QgsVertexId(0, 0, 1)))
+        self.assertTrue(ls.hasVertex(QgsVertexId(0, 0, 2)))
+
+        # POLYGON
+        poly1 = QgsPolygon()
+        poly1.fromWkt("POLYGON((0 0, 2 2, 4 0, 0 0))")
+
+        # invalid range
+        self.assertFalse(poly1.hasVertex(QgsVertexId(0, 0, -1)))
+        self.assertFalse(poly1.hasVertex(QgsVertexId(0, -1, 0)))
+        self.assertFalse(poly1.hasVertex(QgsVertexId(-1, 0, 0)))
+
+        self.assertFalse(poly1.hasVertex(QgsVertexId(0, 0, 4)))
+        self.assertFalse(poly1.hasVertex(QgsVertexId(0, 1, 0)))
+        self.assertFalse(poly1.hasVertex(QgsVertexId(1, 0, 0)))
+
+        # valid range
+        self.assertTrue(poly1.hasVertex(QgsVertexId(0, 0, 0)))
+        self.assertTrue(poly1.hasVertex(QgsVertexId(0, 0, 1)))
+        self.assertTrue(poly1.hasVertex(QgsVertexId(0, 0, 2)))
+        self.assertTrue(poly1.hasVertex(QgsVertexId(0, 0, 3)))
+
+        # POLYGON with a hole
+        poly2 = QgsPolygon()
+        poly2.fromWkt("POLYGON((0 0, 0 7, 7 7, 7 0),(1 1, 1 6, 6 6, 6 1))")
+
+        # invalid range
+        self.assertFalse(poly2.hasVertex(QgsVertexId(0, 0, -1)))
+        self.assertFalse(poly2.hasVertex(QgsVertexId(0, -1, 0)))
+        self.assertFalse(poly2.hasVertex(QgsVertexId(-1, 0, 0)))
+
+        self.assertFalse(poly2.hasVertex(QgsVertexId(0, 0, 8)))
+        self.assertFalse(poly2.hasVertex(QgsVertexId(0, 2, 0)))
+        self.assertFalse(poly2.hasVertex(QgsVertexId(2, 0, 0)))
+
+        # valid range
+        self.assertTrue(poly2.hasVertex(QgsVertexId(0, 0, 0)))
+        self.assertTrue(poly2.hasVertex(QgsVertexId(0, 0, 1)))
+        self.assertTrue(poly2.hasVertex(QgsVertexId(0, 0, 2)))
+        self.assertTrue(poly2.hasVertex(QgsVertexId(0, 0, 3)))
+        self.assertTrue(poly2.hasVertex(QgsVertexId(0, 1, 0)))
+        self.assertTrue(poly2.hasVertex(QgsVertexId(0, 1, 1)))
+        self.assertTrue(poly2.hasVertex(QgsVertexId(0, 1, 2)))
+        self.assertTrue(poly2.hasVertex(QgsVertexId(0, 1, 3)))
+
+        # MultilineString
+        mc = QgsMultiCurve()
+        mc.fromWkt("MultiCurve((0 0, 1 1, 2 2),(3 3, 4 4, 5 5))")
+
+        # invalid range
+        self.assertFalse(mc.hasVertex(QgsVertexId(0, 0, -1)))
+        self.assertFalse(mc.hasVertex(QgsVertexId(0, -1, 0)))
+        self.assertFalse(mc.hasVertex(QgsVertexId(-1, 0, 0)))
+
+        self.assertFalse(mc.hasVertex(QgsVertexId(0, 0, 6)))
+        self.assertFalse(mc.hasVertex(QgsVertexId(0, 1, 0)))
+        self.assertFalse(mc.hasVertex(QgsVertexId(2, 0, 0)))
+
+        # valid range
+        self.assertTrue(mc.hasVertex(QgsVertexId(0, 0, 0)))
+        self.assertTrue(mc.hasVertex(QgsVertexId(0, 0, 1)))
+        self.assertTrue(mc.hasVertex(QgsVertexId(0, 0, 2)))
+        self.assertTrue(mc.hasVertex(QgsVertexId(1, 0, 0)))
+        self.assertTrue(mc.hasVertex(QgsVertexId(1, 0, 1)))
+        self.assertTrue(mc.hasVertex(QgsVertexId(1, 0, 2)))
+
+        # MultiPolygon
+        mpoly = QgsMultiPolygon()
+        mpoly.fromWkt(
+            "MULTIPOLYGON("
+            "((0 0, 0 7, 7 7, 7 0),(1 1, 1 6, 6 6, 6 1)),"
+            "((14 14, 14 21, 21 21, 21 14),(15 15, 16 21, 21 21, 21 15))"
+            ")"
+        )
+
+        # invalid range
+        self.assertFalse(mpoly.hasVertex(QgsVertexId(0, 0, -1)))
+        self.assertFalse(mpoly.hasVertex(QgsVertexId(0, -1, 0)))
+        self.assertFalse(mpoly.hasVertex(QgsVertexId(-1, 0, 0)))
+
+        self.assertFalse(mpoly.hasVertex(QgsVertexId(0, 2, 0)))
+        self.assertFalse(mpoly.hasVertex(QgsVertexId(2, 0, 0)))
+        self.assertFalse(mpoly.hasVertex(QgsVertexId(1, 2, 0)))
+
+        # valid range
+        self.assertTrue(mpoly.hasVertex(QgsVertexId(0, 0, 0)))
+        self.assertTrue(mpoly.hasVertex(QgsVertexId(0, 0, 1)))
+        self.assertTrue(mpoly.hasVertex(QgsVertexId(0, 0, 2)))
+        self.assertTrue(mpoly.hasVertex(QgsVertexId(0, 0, 3)))
+
+        self.assertTrue(mpoly.hasVertex(QgsVertexId(0, 1, 0)))
+        self.assertTrue(mpoly.hasVertex(QgsVertexId(0, 1, 1)))
+        self.assertTrue(mpoly.hasVertex(QgsVertexId(0, 1, 2)))
+        self.assertTrue(mpoly.hasVertex(QgsVertexId(0, 1, 3)))
+
+        self.assertTrue(mpoly.hasVertex(QgsVertexId(1, 0, 0)))
+        self.assertTrue(mpoly.hasVertex(QgsVertexId(1, 0, 1)))
+        self.assertTrue(mpoly.hasVertex(QgsVertexId(1, 0, 2)))
+        self.assertTrue(mpoly.hasVertex(QgsVertexId(1, 0, 3)))
+
+        self.assertTrue(mpoly.hasVertex(QgsVertexId(1, 1, 0)))
+        self.assertTrue(mpoly.hasVertex(QgsVertexId(1, 1, 1)))
+        self.assertTrue(mpoly.hasVertex(QgsVertexId(1, 1, 2)))
+        self.assertTrue(mpoly.hasVertex(QgsVertexId(1, 1, 3)))
+
+        # QgsPoint
+        pt = QgsPoint(1.0, 2.0)
+
+        # invalid range
+        self.assertFalse(pt.hasVertex(QgsVertexId(0, 0, -1)))
+        self.assertFalse(pt.hasVertex(QgsVertexId(0, -1, 0)))
+        self.assertFalse(pt.hasVertex(QgsVertexId(-1, 0, 0)))
+        self.assertFalse(pt.hasVertex(QgsVertexId(0, 0, 1)))
+        self.assertFalse(pt.hasVertex(QgsVertexId(0, 1, 0)))
+        self.assertFalse(pt.hasVertex(QgsVertexId(1, 0, 0)))
+
+        # valid range
+        self.assertTrue(pt.hasVertex(QgsVertexId(0, 0, 0)))
+
+        # CompoundCurve
+        cc = QgsCompoundCurve()
+        cc.fromWkt("CompoundCurve((0 0, 1 0, 2 0), CircularString(2 0, 3 1, 4 0))")
+
+        # invalid range
+        self.assertFalse(cc.hasVertex(QgsVertexId(0, 0, -1)))
+        self.assertFalse(cc.hasVertex(QgsVertexId(0, -1, 0)))
+        self.assertFalse(cc.hasVertex(QgsVertexId(-1, 0, 0)))
+        self.assertFalse(cc.hasVertex(QgsVertexId(0, 0, 5)))
+        self.assertFalse(cc.hasVertex(QgsVertexId(0, 1, 0)))
+        self.assertFalse(cc.hasVertex(QgsVertexId(1, 0, 0)))
+
+        # valid range
+        self.assertTrue(cc.hasVertex(QgsVertexId(0, 0, 0)))
+        self.assertTrue(cc.hasVertex(QgsVertexId(0, 0, 1)))
+        self.assertTrue(cc.hasVertex(QgsVertexId(0, 0, 2)))
+        self.assertTrue(cc.hasVertex(QgsVertexId(0, 0, 3)))
+        self.assertTrue(cc.hasVertex(QgsVertexId(0, 0, 4)))
+
+        # PolyhedralSurface
+        phs = QgsPolyhedralSurface()
+        phs.fromWkt(
+            "POLYHEDRALSURFACE(((0 0, 0 1, 1 1, 1 0, 0 0)),((1 0, 1 1, 2 1, 2 0, 1 0)))"
+        )
+
+        # invalid range
+        self.assertFalse(phs.hasVertex(QgsVertexId(0, 0, -1)))
+        self.assertFalse(phs.hasVertex(QgsVertexId(0, -1, 0)))
+        self.assertFalse(phs.hasVertex(QgsVertexId(-1, 0, 0)))
+        self.assertFalse(phs.hasVertex(QgsVertexId(2, 0, 0)))
+        self.assertFalse(phs.hasVertex(QgsVertexId(0, 1, 0)))
+
+        # valid range
+        self.assertTrue(phs.hasVertex(QgsVertexId(0, 0, 0)))
+        self.assertTrue(phs.hasVertex(QgsVertexId(0, 0, 1)))
+        self.assertTrue(phs.hasVertex(QgsVertexId(0, 0, 2)))
+        self.assertTrue(phs.hasVertex(QgsVertexId(0, 0, 3)))
+        self.assertTrue(phs.hasVertex(QgsVertexId(0, 0, 4)))
+
+        self.assertTrue(phs.hasVertex(QgsVertexId(1, 0, 0)))
+        self.assertTrue(phs.hasVertex(QgsVertexId(1, 0, 1)))
+        self.assertTrue(phs.hasVertex(QgsVertexId(1, 0, 2)))
+        self.assertTrue(phs.hasVertex(QgsVertexId(1, 0, 3)))
+        self.assertTrue(phs.hasVertex(QgsVertexId(1, 0, 4)))
+
+        # NurbsCurve
+        nc = QgsNurbsCurve()
+        nc.fromWkt("NURBSCURVE (3, (0 0, 1 2, 2 0, 3 2, 4 0))")
+
+        # invalid
+        self.assertFalse(nc.hasVertex(QgsVertexId(0, 0, -1)))
+        self.assertFalse(nc.hasVertex(QgsVertexId(0, -1, 0)))
+        self.assertFalse(nc.hasVertex(QgsVertexId(-1, 0, 0)))
+
+        self.assertFalse(nc.hasVertex(QgsVertexId(0, 0, 5)))
+        self.assertFalse(nc.hasVertex(QgsVertexId(0, 1, 0)))
+        self.assertFalse(nc.hasVertex(QgsVertexId(1, 0, 0)))
+
+        # valid
+        self.assertTrue(nc.hasVertex(QgsVertexId(0, 0, 0)))
+        self.assertTrue(nc.hasVertex(QgsVertexId(0, 0, 1)))
+        self.assertTrue(nc.hasVertex(QgsVertexId(0, 0, 2)))
+        self.assertTrue(nc.hasVertex(QgsVertexId(0, 0, 3)))
+        self.assertTrue(nc.hasVertex(QgsVertexId(0, 0, 4)))
+
+    @unittest.skipIf(Qgis.geosVersionInt() < 31500, "GEOS 3.15 required")
+    def testOverlayOperationsOnCurves(self):
+        """Test Overlay operations on curves (borrowed from GEOS' OverlayNGTest.cpp)"""
+
+        def run_test(name, data):
+            geom_a = QgsGeometry.fromWkt(data["wkt_a"])
+            geom_b = QgsGeometry.fromWkt(data["wkt_b"])
+
+            if data["op"] == "intersection":
+                res = geom_a.intersection(geom_b)
+            elif data["op"] == "difference":
+                res = geom_a.difference(geom_b)
+            elif data["op"] == "symdifference":
+                res = geom_a.symDifference(geom_b)
+            elif data["op"] == "union":
+                res = geom_a.combine(geom_b)
+
+            res.normalize()
+            exp = QgsGeometry.fromWkt(data["expected"])
+            exp.normalize()
+            equal = res.isExactlyEqual(exp)
+            if not equal:
+                msg = f"Test '{name}' failed!\nEXPECTED: {exp.asWkt()}\nOBTAINED: {res.asWkt()}"
+                return False, msg
+
+            return True, ""
+
+        # Tests from GEOS tests/unit/operation/overlayng/OverlayNGTest.cpp
+        # Overlay operations: Difference, SymDifference, Union, Intersection
+        # Let's select only a few tests to avoid too much duplication, but
+        # still be able to spot failures related to QGIS curve handling.
+        test_cases = {
+            "test_46": {
+                "wkt_a": "CURVEPOLYGON (COMPOUNDCURVE((10 0, 0 0, 0 10, 10 10), CIRCULARSTRING (10 10, 15 5, 10 0)))",
+                "wkt_b": "CURVEPOLYGON (COMPOUNDCURVE((10 10, 20 10, 20 0, 10 0), CIRCULARSTRING (10 0, 5 5, 10 10)))",
+                "expected": "CURVEPOLYGON (CIRCULARSTRING (10 10, 15 5, 10 0, 5 5, 10 10))",
+                "op": "intersection",
+            },
+            "test_47": {
+                "wkt_a": "CURVEPOLYGON (COMPOUNDCURVE((10 0, 0 0, 0 10, 10 10), CIRCULARSTRING (10 10, 15 5, 10 0)))",
+                "wkt_b": "CURVEPOLYGON (COMPOUNDCURVE((10 10, 20 10, 20 0, 10 0), CIRCULARSTRING (10 0, 5 5, 10 10)))",
+                "expected": "MULTISURFACE (CURVEPOLYGON (COMPOUNDCURVE ((10 0, 0 0, 0 10, 10 10), CIRCULARSTRING (10 10, 5 5, 10 0))), CURVEPOLYGON (COMPOUNDCURVE (CIRCULARSTRING (10 0, 15 5, 10 10), (10 10, 20 10, 20 0, 10 0))))",
+                "op": "symdifference",
+            },
+            "test_49": {
+                "wkt_a": "CIRCULARSTRING (-5 0, 0 5, 5 0)",
+                "wkt_b": "CIRCULARSTRING (-5 5, 0 0, 5 5)",
+                "expected": "MULTIPOINT ((4.330127018922194 2.5), (-4.330127018922194 2.5))",
+                "op": "intersection",
+            },
+            "test_50": {
+                "wkt_a": "CIRCULARSTRING (-5 0, 0 5, 5 0)",
+                "wkt_b": "CIRCULARSTRING (4 3, 0 -5, -4 3)",
+                "expected": "MULTICURVE (CIRCULARSTRING (-5 0, -4.743416490252569 1.58113883008419, -4 3), CIRCULARSTRING (4 3, 4.743416490252569 1.5811388300841898, 5 0))",
+                "op": "intersection",
+            },
+            "test_51": {
+                "wkt_a": "CIRCULARSTRING (-5 0, 0 5, 5 0)",
+                "wkt_b": "CIRCULARSTRING (4 3, 0 -5, -4 3)",
+                "expected": "CIRCULARSTRING (-4 3, 0 5, 4 3)",
+                "op": "difference",
+            },
+            "test_52": {
+                "wkt_a": "CIRCULARSTRING (-5 0, 0 5, 5 0)",
+                "wkt_b": "CIRCULARSTRING (4 3, 0 -5, -4 3)",
+                "expected": "MULTICURVE (CIRCULARSTRING (-4 3, 0 5, 4 3), CIRCULARSTRING (5 0, 0 -5, -5 0))",
+                "op": "symdifference",
+            },
+            "test_55": {
+                "wkt_a": "POLYGON ((0 0, 10 0, 10 10, 0 10, 0 0))",
+                "wkt_b": "CURVEPOLYGON (CIRCULARSTRING (4 5, 5 6, 6 5, 5 4, 4 5))",
+                "expected": "CURVEPOLYGON ((0 0, 10 0, 10 10, 0 10, 0 0), CIRCULARSTRING (4 5, 5 6, 6 5, 5 4, 4 5))",
+                "op": "difference",
+            },
+            "test_61": {
+                "wkt_a": "CURVEPOLYGON (CIRCULARSTRING (-5 0, 0 5, 5 0, 0 4, -5 0))",
+                "wkt_b": "CURVEPOLYGON (COMPOUNDCURVE((-5 0, 5 0), CIRCULARSTRING (5 0, 0 4, -5 0)))",
+                "expected": "CURVEPOLYGON (COMPOUNDCURVE (CIRCULARSTRING (-5 0, 0 5, 5 0), (5 0, -5 0)))",
+                "op": "union",
+            },
+        }
+        for name, data in test_cases.items():
+            res, msg = run_test(name, data)
+            self.assertTrue(res, msg)
 
 
 if __name__ == "__main__":

@@ -470,7 +470,7 @@ void QgsMapToolModifyExtraItems::canvasPressEvent( QgsMapMouseEvent *e )
   {
     case State::SelectFeature:
       selectFeature( e );
-      mMouseHandles.reset( new QgsMapToolModifyExtraItemMouseHandles( this, mCanvas ) );
+      mMouseHandles = make_qobject_unique<QgsMapToolModifyExtraItemMouseHandles>( this, mCanvas );
       break;
 
     case State::FeatureSelected:
@@ -547,7 +547,7 @@ void QgsMapToolModifyExtraItems::canvasMoveEvent( QgsMapMouseEvent *event )
           if ( !mDragging )
           {
             mDragging = true;
-            mSelectionRubberBand.reset( new QgsRubberBand( mCanvas, Qgis::GeometryType::Polygon ) );
+            mSelectionRubberBand = make_qobject_unique<QgsRubberBand>( mCanvas, Qgis::GeometryType::Polygon );
             QColor color( Qt::blue );
             color.setAlpha( 63 );
             mSelectionRubberBand->setColor( color );

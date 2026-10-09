@@ -27,6 +27,7 @@
 #include "pdfutils.h"
 
 #include <QImage>
+#include <QMarginsF>
 
 namespace pdf
 {
@@ -58,6 +59,9 @@ public:
         PDFInteger imageIndex = -1; ///< Source image index. If page is not from a image, value is -1.
         PDFInteger pageIndex = -1; ///< Source document page index. If page is not from a document, value is -1.
         QSizeF pageSize; ///< Unrotated page size
+        QSizeF sourcePageSize; ///< Source page size before item-specific crop, in millimeters.
+        QMarginsF cropMarginsMM; ///< Item-specific crop margins: left, top, right, bottom, in millimeters.
+        PageRotation sourcePageRotation = PageRotation::None; ///< Original source page rotation before item-specific rotation.
         PageRotation pageRotation = PageRotation::None; ///< Page rotation
 
         constexpr bool isDocumentPage() const { return documentIndex != -1; }
@@ -98,9 +102,9 @@ public:
 
     static AssembledPages createAllDocumentPages(int documentIndex, const PDFDocument* document);
 
-    static constexpr AssembledPage createDocumentPage(int documentIndex, int pageIndex, QSizeF pageSize, PageRotation pageRotation) { return AssembledPage{ documentIndex, -1, pageIndex, pageSize, pageRotation}; }
-    static constexpr AssembledPage createImagePage(int imageIndex, QSizeF pageSize, PageRotation pageRotation) { return AssembledPage{ -1, imageIndex, -1, pageSize, pageRotation}; }
-    static constexpr AssembledPage createBlankPage(QSizeF pageSize, PageRotation pageRotation) { return AssembledPage{ -1, -1, -1, pageSize, pageRotation}; }
+    static AssembledPage createDocumentPage(int documentIndex, int pageIndex, QSizeF pageSize, PageRotation pageRotation) { AssembledPage page{ documentIndex, -1, pageIndex, pageSize, pageSize, QMarginsF(), pageRotation, pageRotation}; return page; }
+    static AssembledPage createImagePage(int imageIndex, QSizeF pageSize, PageRotation pageRotation) { AssembledPage page{ -1, imageIndex, -1, pageSize, pageSize, QMarginsF(), PageRotation::None, pageRotation}; return page; }
+    static AssembledPage createBlankPage(QSizeF pageSize, PageRotation pageRotation) { AssembledPage page{ -1, -1, -1, pageSize, pageSize, QMarginsF(), PageRotation::None, pageRotation}; return page; }
 
     OutlineMode getOutlineMode() const;
     void setOutlineMode(OutlineMode outlineMode);

@@ -185,6 +185,7 @@ class QgsHanaProviderMetadata : public QgsProviderMetadata
 
     QgsHanaProvider *createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options, Qgis::DataProviderReadFlags flags = Qgis::DataProviderReadFlags() ) override;
 
+    using QgsProviderMetadata::createEmptyLayer;
     Qgis::VectorExportResult createEmptyLayer(
       const QString &uri,
       const QgsFields &fields,

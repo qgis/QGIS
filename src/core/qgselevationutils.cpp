@@ -22,15 +22,24 @@
 QgsDoubleRange QgsElevationUtils::calculateZRangeForProject( QgsProject *project )
 {
   const QMap<QString, QgsMapLayer *> &mapLayers = project->mapLayers();
-  QgsMapLayer *currentLayer = nullptr;
+  QList< QgsMapLayer * > layers;
+  layers.reserve( mapLayers.size() );
+  for ( QMap<QString, QgsMapLayer *>::const_iterator it = mapLayers.constBegin(); it != mapLayers.constEnd(); ++it )
+  {
+    if ( it.value() )
+      layers << it.value();
+  }
 
+  return calculateZRangeForLayers( layers );
+}
+
+QgsDoubleRange QgsElevationUtils::calculateZRangeForLayers( const QList< QgsMapLayer * > &layers )
+{
   double min = std::numeric_limits<double>::quiet_NaN();
   double max = std::numeric_limits<double>::quiet_NaN();
 
-  for ( QMap<QString, QgsMapLayer *>::const_iterator it = mapLayers.constBegin(); it != mapLayers.constEnd(); ++it )
+  for ( QgsMapLayer *currentLayer : layers )
   {
-    currentLayer = it.value();
-
     if ( !currentLayer->elevationProperties() || !currentLayer->elevationProperties()->hasElevation() )
       continue;
 

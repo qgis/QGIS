@@ -64,12 +64,15 @@ class TestQgsAnnotationLineTextItem(QgisTestCase):
         self.assertEqual(item.offsetFromLine(), 0)
         self.assertEqual(item.offsetFromLineUnit(), Qgis.RenderUnit.Millimeters)
 
+        self.assertEqual(item.textAnchor(), Qgis.TextAnchorPoint.StartOfText)
+
         item.setText("tttttt")
         item.setGeometry(QgsLineString(((12, 13), (13, 13.1))))
         item.setZIndex(11)
         item.setOffsetFromLine(3.4)
         item.setOffsetFromLineUnit(Qgis.RenderUnit.Inches)
         item.setOffsetFromLineMapUnitScale(QgsMapUnitScale(5, 15))
+        item.setTextAnchor(Qgis.TextAnchorPoint.EndOfText)
 
         format = QgsTextFormat()
         format.setSize(37)
@@ -83,6 +86,7 @@ class TestQgsAnnotationLineTextItem(QgisTestCase):
         self.assertEqual(item.offsetFromLineUnit(), Qgis.RenderUnit.Inches)
         self.assertEqual(item.offsetFromLineMapUnitScale().minScale, 5)
         self.assertEqual(item.offsetFromLineMapUnitScale().maxScale, 15)
+        self.assertEqual(item.textAnchor(), Qgis.TextAnchorPoint.EndOfText)
 
     def test_nodes(self):
         """
@@ -257,6 +261,7 @@ class TestQgsAnnotationLineTextItem(QgisTestCase):
         item.setOffsetFromLine(3.4)
         item.setOffsetFromLineUnit(Qgis.RenderUnit.Inches)
         item.setOffsetFromLineMapUnitScale(QgsMapUnitScale(5, 15))
+        item.setTextAnchor(Qgis.TextAnchorPoint.EndOfText)
 
         self.assertTrue(item.writeXml(elem, doc, QgsReadWriteContext()))
 
@@ -272,6 +277,7 @@ class TestQgsAnnotationLineTextItem(QgisTestCase):
         self.assertEqual(s2.offsetFromLineUnit(), Qgis.RenderUnit.Inches)
         self.assertEqual(s2.offsetFromLineMapUnitScale().minScale, 5)
         self.assertEqual(s2.offsetFromLineMapUnitScale().maxScale, 15)
+        self.assertEqual(s2.textAnchor(), Qgis.TextAnchorPoint.EndOfText)
 
     def testClone(self):
         item = QgsAnnotationLineTextItem(
@@ -286,6 +292,7 @@ class TestQgsAnnotationLineTextItem(QgisTestCase):
         item.setOffsetFromLine(3.4)
         item.setOffsetFromLineUnit(Qgis.RenderUnit.Inches)
         item.setOffsetFromLineMapUnitScale(QgsMapUnitScale(5, 15))
+        item.setTextAnchor(Qgis.TextAnchorPoint.EndOfText)
 
         item2 = item.clone()
         self.assertEqual(item2.text(), "my text")
@@ -300,6 +307,7 @@ class TestQgsAnnotationLineTextItem(QgisTestCase):
         self.assertEqual(item2.offsetFromLineUnit(), Qgis.RenderUnit.Inches)
         self.assertEqual(item2.offsetFromLineMapUnitScale().minScale, 5)
         self.assertEqual(item2.offsetFromLineMapUnitScale().maxScale, 15)
+        self.assertEqual(item2.textAnchor(), Qgis.TextAnchorPoint.EndOfText)
 
     def testRenderLine(self):
         item = QgsAnnotationLineTextItem(
@@ -449,6 +457,80 @@ class TestQgsAnnotationLineTextItem(QgisTestCase):
 
         self.assertTrue(
             self.image_check("linetext_item_truncate", "linetext_item_truncate", image)
+        )
+
+    def testRenderLineAlignEndOfLine(self):
+        item = QgsAnnotationLineTextItem(
+            "my item text", QgsLineString(((12, 13), (13, 13.1), (14, 12)))
+        )
+
+        format = QgsTextFormat.fromQFont(getTestFont("Bold"))
+        format.setColor(QColor(255, 0, 0))
+        format.setOpacity(150 / 255)
+        format.setSize(25)
+        item.setFormat(format)
+        item.setTextAnchor(Qgis.TextAnchorPoint.EndOfText)
+
+        settings = QgsMapSettings()
+        settings.setDestinationCrs(QgsCoordinateReferenceSystem("EPSG:4326"))
+        settings.setExtent(QgsRectangle(11.9, 11.9, 14.5, 14))
+        settings.setOutputSize(QSize(600, 300))
+
+        settings.setFlag(QgsMapSettings.Flag.Antialiasing, False)
+
+        rc = QgsRenderContext.fromMapSettings(settings)
+        rc.setScaleFactor(96 / 25.4)  # 96 DPI
+        image = QImage(600, 300, QImage.Format.Format_ARGB32)
+        image.setDotsPerMeterX(int(96 / 25.4 * 1000))
+        image.setDotsPerMeterY(int(96 / 25.4 * 1000))
+        image.fill(QColor(255, 255, 255))
+        painter = QPainter(image)
+        rc.setPainter(painter)
+
+        try:
+            item.render(rc, None)
+        finally:
+            painter.end()
+
+        self.assertTrue(
+            self.image_check("linetext_item_end", "linetext_item_end", image)
+        )
+
+    def testRenderLineAlignCenterOfLine(self):
+        item = QgsAnnotationLineTextItem(
+            "my item text", QgsLineString(((12, 13), (13, 13.1), (14, 12)))
+        )
+
+        format = QgsTextFormat.fromQFont(getTestFont("Bold"))
+        format.setColor(QColor(255, 0, 0))
+        format.setOpacity(150 / 255)
+        format.setSize(25)
+        item.setFormat(format)
+        item.setTextAnchor(Qgis.TextAnchorPoint.CenterOfText)
+
+        settings = QgsMapSettings()
+        settings.setDestinationCrs(QgsCoordinateReferenceSystem("EPSG:4326"))
+        settings.setExtent(QgsRectangle(11.9, 11.9, 14.5, 14))
+        settings.setOutputSize(QSize(600, 300))
+
+        settings.setFlag(QgsMapSettings.Flag.Antialiasing, False)
+
+        rc = QgsRenderContext.fromMapSettings(settings)
+        rc.setScaleFactor(96 / 25.4)  # 96 DPI
+        image = QImage(600, 300, QImage.Format.Format_ARGB32)
+        image.setDotsPerMeterX(int(96 / 25.4 * 1000))
+        image.setDotsPerMeterY(int(96 / 25.4 * 1000))
+        image.fill(QColor(255, 255, 255))
+        painter = QPainter(image)
+        rc.setPainter(painter)
+
+        try:
+            item.render(rc, None)
+        finally:
+            painter.end()
+
+        self.assertTrue(
+            self.image_check("linetext_item_center", "linetext_item_center", image)
         )
 
     def testRenderLineTextExpression(self):

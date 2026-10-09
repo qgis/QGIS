@@ -72,7 +72,7 @@ class CORE_EXPORT QgsTextRenderer
     /**
      * Draws text within a rectangle using the specified settings.
      * \param rect destination rectangle for text, in painter units
-     * \param rotation text rotation
+     * \param rotation text rotation in radians
      * \param alignment horizontal alignment
      * \param textLines list of lines of text to draw
      * \param context render context
@@ -116,7 +116,7 @@ class CORE_EXPORT QgsTextRenderer
      * \param context destination render context
      * \param horizontalAlignment horizontal alignment
      * \param verticalAlignment vertical alignment
-     * \param rotation text rotation
+     * \param rotation text rotation in radians
      * \param mode text layout mode. Only Qgis::TextLayoutMode::Rectangle, Qgis::TextLayoutMode::RectangleCapHeightBased and Qgis::TextLayoutMode::RectangleAscentBased are accepted.
      * \param flags text rendering flags
      *
@@ -138,7 +138,7 @@ class CORE_EXPORT QgsTextRenderer
     /**
      * Draws text at a point origin using the specified settings.
      * \param point origin of text, in painter units
-     * \param rotation text rotation
+     * \param rotation text rotation in radians
      * \param alignment horizontal alignment
      * \param textLines list of lines of text to draw
      * \param context render context
@@ -167,7 +167,7 @@ class CORE_EXPORT QgsTextRenderer
      * \param metrics precalculated text metrics
      * \param context destination render context
      * \param alignment horizontal alignment
-     * \param rotation text rotation
+     * \param rotation text rotation in radians
      * \param mode optional layout mode (since QGIS 3.42)
      *
      * \since QGIS 3.40
@@ -190,9 +190,11 @@ class CORE_EXPORT QgsTextRenderer
      * \param text text to draw
      * \param context render context
      * \param format text format
-     * \param offsetAlongLine offset along the line (in painter units) to start text at
+     * \param offsetAlongLine offset along the line (in painter units) to start text at. Only applies when \a textAnchor is Qgis::TextAnchorPoint::StartOfText.
      * \param offsetFromLine offset from the line (in painter units). Negative values will shift the text to the left of the line, positive values will shift the text to the right.
      * \param flags curved text behavior flags (since QGIS 4.0)
+     * \param textAnchor dictates where on the line the text should be anchored to. If the anchor point is the start of the text, the text will always start at the start of the line (and potential extend past the end of the line).
+     * If the anchor point is the end of the text, then the text will always end at the end of the line and potential extend past the start of the line. (since QGIS 4.4)
      *
      * \since QGIS 3.32
      */
@@ -203,7 +205,8 @@ class CORE_EXPORT QgsTextRenderer
       const QgsTextFormat &format,
       double offsetAlongLine = 0,
       double offsetFromLine = 0,
-      Qgis::CurvedTextFlags flags = Qgis::CurvedTextFlag::UseBaselinePlacement | Qgis::CurvedTextFlag::TruncateStringWhenLineIsTooShort
+      Qgis::CurvedTextFlags flags = Qgis::CurvedTextFlag::UseBaselinePlacement | Qgis::CurvedTextFlag::TruncateStringWhenLineIsTooShort,
+      Qgis::TextAnchorPoint textAnchor = Qgis::TextAnchorPoint::StartOfText
     );
 
     /**
@@ -213,9 +216,11 @@ class CORE_EXPORT QgsTextRenderer
      * \param format text format
      * \param document text document to draw
      * \param context render context
-     * \param offsetAlongLine offset along the line (in painter units) to start text at
+     * \param offsetAlongLine offset along the line (in painter units) to start text at. Only applies when \a textAnchor is Qgis::TextAnchorPoint::StartOfText.
      * \param offsetFromLine offset from the line (in painter units). Negative values will shift the text to the left of the line, positive values will shift the text to the right.
      * \param flags curved text behavior flags (since QGIS 4.0)
+     * \param textAnchor dictates where on the line the text should be anchored to. If the anchor point is the start of the text, the text will always start at the start of the line (and potential extend past the end of the line).
+     * If the anchor point is the end of the text, then the text will always end at the end of the line and potential extend past the start of the line. (since QGIS 4.4)
      *
      * \since QGIS 3.32
      */
@@ -226,13 +231,14 @@ class CORE_EXPORT QgsTextRenderer
       QgsRenderContext &context,
       double offsetAlongLine = 0,
       double offsetFromLine = 0,
-      Qgis::CurvedTextFlags flags = Qgis::CurvedTextFlag::UseBaselinePlacement | Qgis::CurvedTextFlag::TruncateStringWhenLineIsTooShort
+      Qgis::CurvedTextFlags flags = Qgis::CurvedTextFlag::UseBaselinePlacement | Qgis::CurvedTextFlag::TruncateStringWhenLineIsTooShort,
+      Qgis::TextAnchorPoint textAnchor = Qgis::TextAnchorPoint::StartOfText
     );
 
     /**
      * Draws a single component of rendered text using the specified settings.
      * \param rect destination rectangle for text, in painter units
-     * \param rotation text rotation
+     * \param rotation text rotation in radians
      * \param alignment horizontal alignment
      * \param textLines list of lines of text to draw
      * \param context render context
@@ -261,7 +267,7 @@ class CORE_EXPORT QgsTextRenderer
     /**
      * Draws a single component of rendered text using the specified settings.
      * \param origin origin for start of text, in painter units. Y coordinate will be used as baseline.
-     * \param rotation text rotation
+     * \param rotation text rotation in radians
      * \param alignment horizontal alignment
      * \param textLines list of lines of text to draw
      * \param context render context
@@ -407,9 +413,9 @@ class CORE_EXPORT QgsTextRenderer
         //! Whether to translate the painter to supplied origin
         bool useOrigin = false;
         //! Any rotation to be applied to painter (in radians)
-        double rotation = 0.0;
+        double rotationRadians = 0.0;
         //! Any rotation to be applied to painter (in radians) after initial rotation
-        double rotationOffset = 0.0;
+        double rotationOffsetRadians = 0.0;
         //! Current center point of label component, after rotation
         QPointF center;
         //! Width and height of label component, transformed and ready for painting
@@ -441,7 +447,7 @@ class CORE_EXPORT QgsTextRenderer
     /**
      * Draws components of rendered text using the specified settings.
      * \param rect destination rectangle for text
-     * \param rotation text rotation
+     * \param rotation text rotation in radians
      * \param alignment horizontal alignment
      * \param vAlignment vertical alignment
      * \param document text document to draw
@@ -471,7 +477,7 @@ class CORE_EXPORT QgsTextRenderer
     /**
      * Draws components of rendered text using the specified settings.
      * \param origin origin for start of text. Y coordinate will be used as baseline.
-     * \param rotation text rotation
+     * \param rotation text rotation in radians
      * \param alignment horizontal alignment
      * \param document document to draw
      * \param metrics precalculated document metrics
@@ -520,7 +526,7 @@ class CORE_EXPORT QgsTextRenderer
       Qgis::TextLayoutMode mode = Qgis::TextLayoutMode::Rectangle
     );
 
-    static Qgis::TextOrientation calculateRotationAndOrientationForComponent( const QgsTextFormat &format, const Component &component, double &rotation );
+    static Qgis::TextOrientation calculateRotationAndOrientationForComponent( const QgsTextFormat &format, const Component &component, double &rotationDegrees );
 
     static void calculateExtraSpacingForLineJustification( double spaceToDistribute, const QgsTextBlock &block, double &extraWordSpace, double &extraLetterSpace );
     static void applyExtraSpacingForLineJustification( QFont &font, double extraWordSpace, double extraLetterSpace );
@@ -536,7 +542,7 @@ class CORE_EXPORT QgsTextRenderer
       double fontScale,
       Qgis::TextHorizontalAlignment hAlignment,
       Qgis::TextVerticalAlignment vAlignment,
-      double rotation
+      double rotationDegrees
     );
 
     static void drawTextInternalVertical(
@@ -550,7 +556,7 @@ class CORE_EXPORT QgsTextRenderer
       double fontScale,
       Qgis::TextHorizontalAlignment hAlignment,
       Qgis::TextVerticalAlignment vAlignment,
-      double rotation
+      double rotationDegrees
     );
 
     struct DeferredRenderFragment
@@ -610,7 +616,7 @@ class CORE_EXPORT QgsTextRenderer
       const QVector< QgsTextRenderer::BlockMetrics > &blockMetrics,
       Qgis::TextLayoutMode mode,
       double verticalAlignOffset,
-      double rotation
+      double rotationDegrees
     );
     static void renderDeferredBlocks(
       QgsRenderContext &context,
@@ -620,15 +626,17 @@ class CORE_EXPORT QgsTextRenderer
       bool usePathsForText,
       double fontScale,
       const Component &component,
-      double rotation
+      double rotationDegrees
     );
     static void renderDeferredBuffer(
-      QgsRenderContext &context, const QgsTextFormat &format, Qgis::TextComponents components, const std::vector<DeferredRenderBlock> &deferredBlocks, double fontScale, const Component &component, double rotation
+      QgsRenderContext &context, const QgsTextFormat &format, Qgis::TextComponents components, const std::vector<DeferredRenderBlock> &deferredBlocks, double fontScale, const Component &component, double rotationDegrees
     );
     static void renderDeferredShadowForText(
-      QgsRenderContext &context, const QgsTextFormat &format, const std::vector<DeferredRenderBlock> &deferredBlocks, double fontScale, const Component &component, double rotation
+      QgsRenderContext &context, const QgsTextFormat &format, const std::vector<DeferredRenderBlock> &deferredBlocks, double fontScale, const Component &component, double rotationDegrees
     );
-    static void renderDeferredText( QgsRenderContext &context, const std::vector<DeferredRenderBlock> &deferredBlocks, bool usePathsForText, double fontScale, const Component &component, double rotation );
+    static void renderDeferredText(
+      QgsRenderContext &context, const std::vector<DeferredRenderBlock> &deferredBlocks, bool usePathsForText, double fontScale, const Component &component, double rotationDegrees
+    );
 
     friend class QgsVectorLayerLabelProvider;
     friend class QgsLabelPreview;

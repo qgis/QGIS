@@ -2,13 +2,13 @@
   "vcpkg-configuration": {
     "default-registry": {
       "kind": "git",
-      "baseline": "0b88aacde46a853151730fbe7d0b7ee45f4b6864",
+      "baseline": "b3ae22aef2b857af6e80d756c13f15db12be4e8a",
       "repository": "https://github.com/microsoft/vcpkg"
     },
     "registries": [
       {
         "kind": "git",
-        "baseline": "8302019ad51ba3495da18c5c35e66aeae94e80e6",
+        "baseline": "39b3b9007ac463a36375859943b0771737c5803b",
         "repository": "https://github.com/open-vcpkg/python-registry",
         "packages": [
           "arrow",
@@ -89,7 +89,10 @@
     {
       "name": "qtbase",
       "default-features": false,
-      "host": true
+      "host": true,
+      "features": [
+        "thread"
+      ]
     },
     {
       "name": "qtmultimedia",
@@ -103,6 +106,15 @@
     "qtsvg",
     "qt5compat",
     "qtkeychain-qt6",
+    {
+      "name": "tiff",
+      "features": [
+        "lerc",
+        "libdeflate",
+        "webp",
+        "zstd"
+      ]
+    },
     "zlib",
     "zstd"
   ],
@@ -201,6 +213,7 @@
           ]
         },
         "py-pysal",
+        "py-pysfcgal",
         "py-pytz",
         "py-pyyaml",
         "py-qscintilla",
@@ -226,6 +239,7 @@
           "name": "gdal",
           "default-features": true,
           "features": [
+            "archive",
             "arrow-adbc",
             "kea",
             "parquet",
@@ -248,7 +262,6 @@
           ]
         },
         "qtimageformats",
-        "qtquickcontrols2",
         "qttools",
         "qtpositioning"
       ]
@@ -269,6 +282,12 @@
       "dependencies": [
         "qscintilla",
         "qwt"
+      ]
+    },
+    "hana": {
+      "description": "Build with SAP HANA Spatial support",
+      "dependencies": [
+        "odbccpp"
       ]
     },
     "opencl": {
@@ -311,6 +330,18 @@
       "description": "Build with SFCGAL support",
       "dependencies": [
         "sfcgal"
+      ]
+    },
+    "tracy": {
+      "description": "Add Tracy profiler client support",
+      "dependencies": [
+        {
+          "name": "tracy",
+          "features": [
+            "fibers",
+            "on-demand"
+          ]
+        }
       ]
     }
   }

@@ -154,7 +154,7 @@ QgsLayerPropertiesWidget::QgsLayerPropertiesWidget( QgsSymbolLayer *layer, const
 
   if ( !mLayer->paintEffect() )
   {
-    mLayer->setPaintEffect( QgsPaintEffectRegistry::defaultStack() );
+    mLayer->setPaintEffect( QgsPaintEffectRegistry::defaultStack().release() );
     mLayer->paintEffect()->setEnabled( false );
   }
   mEffectWidget->setPaintEffect( mLayer->paintEffect() );
@@ -464,7 +464,7 @@ void QgsLayerPropertiesWidget::emitSignalChanged()
   {
     mLayer->paintEffect()->setEnabled( true );
   }
-  emit widgetChanged();
+  emit changed();
 }
 
 void QgsLayerPropertiesWidget::reloadLayer()

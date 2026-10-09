@@ -23,6 +23,8 @@
 #include <QDomNode>
 #include <QString>
 
+#include "moc_qgsprojectmetadata.cpp"
+
 using namespace Qt::StringLiterals;
 
 bool QgsProjectMetadata::readMetadataXml( const QDomElement &metadataElement, const QgsReadWriteContext &context )

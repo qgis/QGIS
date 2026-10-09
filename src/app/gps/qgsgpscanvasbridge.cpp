@@ -87,7 +87,17 @@ QgsGpsCanvasBridge::QgsGpsCanvasBridge( QgsAppGpsConnection *connection, QgsMapC
   } );
 
   connect( QgsProject::instance(), &QgsProject::transformContextChanged, this, [this] {
-    mCanvasToWgs84Transform = QgsCoordinateTransform( mCanvas->mapSettings().destinationCrs(), mWgs84CRS, QgsProject::instance() );
+    if ( mCanvas->mapSettings().destinationCrs().isEarthCrs() )
+    {
+      mCanvasToWgs84Transform = QgsCoordinateTransform( mCanvas->mapSettings().destinationCrs(), mWgs84CRS, QgsProject::instance() );
+    }
+    else
+    {
+      if ( mConnection->isConnected() )
+      {
+        mConnection->disconnectGps();
+      }
+    }
   } );
 
   mDistanceCalculator.setEllipsoid( QgsProject::instance()->ellipsoid() );

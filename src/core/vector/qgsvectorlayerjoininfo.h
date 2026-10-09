@@ -239,6 +239,7 @@ class CORE_EXPORT QgsVectorLayerJoinInfo
 
     friend class QgsVectorLayerJoinBuffer;
     friend class QgsVectorLayerFeatureIterator;
+    friend class TestVectorLayerJoinBuffer;
 
     //! True if the cached join attributes need to be updated
     bool cacheDirty = true;

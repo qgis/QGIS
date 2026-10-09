@@ -147,6 +147,24 @@ reported error.
 Returns QProcess.UnknownError if no error occurred.
 %End
 
+    QString workingDirectory() const;
+%Docstring
+Returns the process working directory.
+
+.. seealso:: :py:func:`setWorkingDirectory`
+
+.. versionadded:: 4.2
+%End
+
+    void setWorkingDirectory( const QString &directory );
+%Docstring
+Sets the process working ``directory``.
+
+.. seealso:: :py:func:`workingDirectory`
+
+.. versionadded:: 4.2
+%End
+
 };
 
 

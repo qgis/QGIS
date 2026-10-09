@@ -38,13 +38,13 @@ A renderer which draws points as a live heatmap.
 
     virtual QSet<QString> usedAttributes( const QgsRenderContext &context ) const;
 
-    static QgsFeatureRenderer *create( QDomElement &element, const QgsReadWriteContext &context ) /Factory/;
+    static std::unique_ptr<QgsFeatureRenderer> create( QDomElement &element, const QgsReadWriteContext &context );
 %Docstring
 Creates a new heatmap renderer instance from XML
 %End
     virtual QDomElement save( QDomDocument &doc, const QgsReadWriteContext &context );
 
-    static QgsHeatmapRenderer *convertFromRenderer( const QgsFeatureRenderer *renderer ) /Factory/;
+    static std::unique_ptr<QgsHeatmapRenderer> convertFromRenderer( const QgsFeatureRenderer *renderer );
     virtual bool accept( QgsStyleEntityVisitorInterface *visitor ) const;
 
     virtual QList<QgsLayerTreeModelLegendNode *> createLegendNodes( QgsLayerTreeLayer *nodeLayer ) const /Factory/;

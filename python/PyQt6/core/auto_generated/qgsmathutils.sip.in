@@ -38,6 +38,32 @@ Converts a double ``value`` to a rational fraction.
 :return: - numerator: calculated numerator
          - denominator: calculated denominator
 %End
+
+    static double roundingInterval( double span, int divisions = 10 );
+%Docstring
+Returns a round interval, a power of ten, which splits the given
+``span`` into at least ``divisions`` parts. E.g. a span of 2222 returns
+100 for 10 divisions and 10 for 100 divisions.
+
+Returns 0 if ``span`` is not finite or is not greater than 0, or if
+``divisions`` is lower than 1.
+
+.. versionadded:: 4.4
+%End
+
+    static QgsDoubleRange roundedRange( const QgsDoubleRange &range );
+%Docstring
+Expands a ``range`` outward to round values, e.g. a range of 1234.5 -
+3456.7 is expanded to 1200 - 3500.
+
+The bounds are rounded to a tenth of the order of magnitude of the
+range's size, so that the returned range stays close to the original
+one.
+
+Infinite and empty ranges are returned unchanged.
+
+.. versionadded:: 4.4
+%End
 };
 
 /************************************************************************

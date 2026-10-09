@@ -1,0 +1,134 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/processing/qgsprocessingpostprocessor.h                     *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
+ ************************************************************************/
+
+
+
+
+
+class QgsProcessingLayerPostProcessor
+{
+%Docstring(signature="appended")
+A post-processor for result layers created by Processing algorithms.
+
+.. warning::
+
+   This is not considered stable API, and is exposed to Python for internal use only.
+
+.. versionadded:: 4.4
+%End
+
+%TypeHeaderCode
+#include "qgsprocessingpostprocessor.h"
+%End
+  public:
+    QgsProcessingLayerPostProcessor();
+
+    virtual ~QgsProcessingLayerPostProcessor();
+
+    virtual void postProcessLayer( QgsMapLayer *layer, const QString &outputName, const QgsProcessingAlgorithm *algorithm );
+%Docstring
+Post-processes a layer, e.g. applying a default style to the layer.
+
+This method will be called for every new layer created as a result of
+running the specified Processing ``algorithm``.
+%End
+};
+
+
+class QgsProcessingResultsHandler
+{
+%Docstring(signature="appended")
+Handles results output by Processing algorithms.
+
+.. warning::
+
+   This is not considered stable API, and is exposed to Python for internal use only.
+
+.. versionadded:: 4.4
+%End
+
+%TypeHeaderCode
+#include "qgsprocessingpostprocessor.h"
+%End
+  public:
+    QgsProcessingResultsHandler();
+
+    virtual ~QgsProcessingResultsHandler();
+
+    class ResultLayerDetails
+    {
+%Docstring(signature="appended")
+Contains details of a layer result from running an algorithm.
+
+.. versionadded:: 4.4
+%End
+
+      public:
+        ResultLayerDetails( QgsMapLayer *layer /Transfer/ );
+%Docstring
+Constructor for ResultLayerDetails.
+
+Takes ownership of ``layer``.
+%End
+
+        QgsMapLayer *layer;
+
+        QgsLayerTreeGroup *targetLayerTreeGroup;
+
+        int sortKey;
+
+        QgsProject *destinationProject;
+    };
+
+    static QString determineOutputName(
+      const QString &destinationId, const QgsProcessingContext::LayerDetails &details, const QgsProcessingAlgorithm *algorithm, QgsProcessingContext &context, const QVariantMap &parameters
+    );
+%Docstring
+Determines the desired layer name for a map layer output.
+%End
+
+    static QgsLayerTreeGroup *layerTreeResultsGroup( const QgsProcessingContext::LayerDetails &layerDetails, const QgsProcessingContext &context );
+%Docstring
+Returns the destination layer tree group to store results in, or
+``None`` if there is no specific destination tree group associated with
+the layer.
+%End
+
+    static void configureResultLayerTreeLayer( QgsLayerTreeLayer *layerTreeLayer );
+%Docstring
+Applies post-processing steps to the :py:class:`QgsLayerTreeLayer`
+created for an algorithm's output.
+%End
+
+    static QgsMapLayer *addResultLayers( const QVector< QgsProcessingResultsHandler::ResultLayerDetails > &layers, const QgsProcessingContext &context, QgsLayerTreeNode *currentSelectedNode );
+%Docstring
+Responsible for adding layers created by an algorithm to a project and
+the project's layer tree in the correct location.
+
+Returns the map layer which should be set as the project's active layer
+after adding all the results.
+%End
+
+    bool handleAlgorithmResults( const QgsProcessingAlgorithm *algorithm, QgsProcessingContext &context, const QVariantMap &parameters, QgsProcessingFeedback *feedback = 0 );
+%Docstring
+Handles the results from running an algorithm.
+
+Returns ``True`` if all results could be successfully loaded.
+%End
+
+  protected:
+};
+
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/processing/qgsprocessingpostprocessor.h                     *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
+ ************************************************************************/

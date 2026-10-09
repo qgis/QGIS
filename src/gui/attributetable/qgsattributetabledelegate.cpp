@@ -23,6 +23,7 @@
 #include "qgseditorwidgetwrapper.h"
 #include "qgsfeatureselectionmodel.h"
 #include "qgsgui.h"
+#include "qgspainting.h"
 #include "qgsrendercontext.h"
 #include "qgsvectordataprovider.h"
 #include "qgsvectorlayerjoinbuffer.h"

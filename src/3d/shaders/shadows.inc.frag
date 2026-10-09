@@ -1,7 +1,10 @@
 uniform sampler2DArray shadowTexture;
 uniform float shadowBias;
 uniform float maxShadowDistance;
-uniform mat4 invertedCameraView;
+uniform vec3 eyePosition;
+
+uniform int renderShadows;
+uniform int shadowLightIndex;
 
 // if you change the number of cascades, you also need to update Qgs3D::NUM_SHADOW_CASCADES
 const int NUMBER_CASCADES = 4;
@@ -17,6 +20,37 @@ struct CascadeInfo {
 const float CASCADE_BLEND_BAND = 0.1;
 // band size to fade all shadows over as the max shadow distance is approached (as proportion of max shadow distance)
 const float MAX_SHADOW_DISTANCE_FADE_OVER = 0.05;
+
+// from https://github.com/Delt06/unity-pcf-poisson/blob/master/Assets/Shaders/LitPoissonSampling.shader
+const int POISSON_SAMPLES = 16;
+// how far to spread the shadow samples, can make shadows softer/sharper
+// values < 2 look pixelated!
+// We could potentially expose this if we want control over shadow softness
+const float filterRadius = 2.0;
+const vec2 poissonDisk[16] = vec2[](
+    vec2( -0.94201624, -0.39906216 ),
+    vec2( 0.94558609, -0.76890725 ),
+    vec2( -0.094184101, -0.92938870 ),
+    vec2( 0.34495938, 0.29387760 ),
+    vec2( -0.91588581, 0.45771432 ),
+    vec2( -0.81544232, -0.87912464 ),
+    vec2( -0.38277543, 0.27676845 ),
+    vec2( 0.97484398, 0.75648379 ),
+    vec2( 0.44323325, -0.97511554 ),
+    vec2( 0.53742981, -0.47373420 ),
+    vec2( -0.26496911, -0.41893023 ),
+    vec2( 0.79197514, 0.19090188 ),
+    vec2( -0.24188840, 0.99706507 ),
+    vec2( -0.81409955, 0.91437590 ),
+    vec2( 0.19984126, 0.78641367 ),
+    vec2( 0.14383161, -0.14100790 )
+);
+
+float rand(vec2 co)
+{
+  // https://stackoverflow.com/a/4275343
+  return fract(sin(dot(co.xy, vec2(12.9898, 78.233))) * 43758.5453);
+}
 
 CascadeInfo calcCascadeInfo(vec3 worldPosition)
 {
@@ -75,19 +109,24 @@ float calcSingleCascadeShadowFactor(int cascadeIndex, vec3 worldPosition)
     return 1.0;
   }
 
-  // percentage close filtering of the shadow map
   float shadow = 0.0;
-  int k = 1;
-  for(int x = -k; x <= k; ++x)
+
+  // random angle (in radians) based on the fragment's world position
+  float angle = rand(worldPosition.xy) * 6.28318530718;
+  float s = sin(angle);
+  float c = cos(angle);
+  mat2 rot = mat2(c, -s, s, c);
+
+  // Poisson disk filtering of the shadow map
+  for(int i = 0; i < POISSON_SAMPLES; ++i)
   {
-    for(int y = -k; y <= k; ++y)
-    {
-      vec3 arrayCoord = vec3(UVCoords + vec2(x, y) * texelSize, layerIndex);
-      float pcfDepth = texture(shadowTexture, arrayCoord).r;
-      shadow += z - shadowBias > pcfDepth ? 0.0 : 1.0;
-    }
+    vec2 offset = rot * poissonDisk[i] * filterRadius;
+    vec3 arrayCoord = vec3(UVCoords + offset * texelSize, layerIndex);
+
+    float pcfDepth = texture(shadowTexture, arrayCoord).r;
+    shadow += z - shadowBias > pcfDepth ? 0.0 : 1.0;
   }
-  return shadow / (2 * k + 1) / (2 * k + 1);
+  return shadow / float(POISSON_SAMPLES);
 }
 
 float calcVisibilityAfterShadowing(vec3 worldPosition)
@@ -107,8 +146,7 @@ float calcVisibilityAfterShadowing(vec3 worldPosition)
   }
 
   // fade off as global distance to shadow approaches maximum shadow rendering distance
-  vec3 cameraPos = invertedCameraView[3].xyz;
-  float distToCamera = length(worldPosition - cameraPos);
+  float distToCamera = length(worldPosition - eyePosition);
   float fadeStartDistance = maxShadowDistance * (1.0 - MAX_SHADOW_DISTANCE_FADE_OVER);
   float distanceFade = smoothstep(fadeStartDistance, maxShadowDistance, distToCamera);
 
@@ -133,7 +171,7 @@ vec3 cascadeTint(int cascadeIndex)
   return colors[clamp(cascadeIndex, 0, 8)];
 }
 
-vec3 calcCascadeTint(vec3 worldPosition) {
+vec3 calcCascadeTint(vec3 worldPosition, vec3 cameraPosition) {
   CascadeInfo info = calcCascadeInfo(worldPosition);
   if ( info.index1 < 0 )
   {
@@ -148,8 +186,7 @@ vec3 calcCascadeTint(vec3 worldPosition) {
   }
 
   // fade off as global distance to shadow approaches maximum shadow rendering distance
-  vec3 cameraPos = invertedCameraView[3].xyz;
-  float distToCamera = length(worldPosition - cameraPos);
+  float distToCamera = length(worldPosition - cameraPosition);
   float fadeStartDistance = maxShadowDistance * (1.0-MAX_SHADOW_DISTANCE_FADE_OVER);
   float distanceFade = smoothstep(fadeStartDistance, maxShadowDistance, distToCamera);
 

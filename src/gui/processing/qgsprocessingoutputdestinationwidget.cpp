@@ -428,6 +428,8 @@ void QgsProcessingLayerOutputDestinationWidget::selectFile()
     Q_ASSERT( dest );
     lastFormatPath = u"/Processing/LastRasterOutputFormat"_s;
     lastFormat = settings.value( lastFormatPath, dest->defaultFileFormat() ).toString();
+    lastExtPath = u"/Processing/LastRasterOutputExt"_s;
+    lastExt = settings.value( lastExtPath, u".%1"_s.arg( mParameter->defaultFileExtension() ) ).toString();
   }
   else if ( mParameter->type() == QgsProcessingParameterPointCloudDestination::typeName() )
   {
@@ -443,17 +445,40 @@ void QgsProcessingLayerOutputDestinationWidget::selectFile()
   // get default filter
   const QStringList filters = fileFilter.split( u";;"_s );
   QString lastFilter;
-  for ( const QString &f : filters )
+  if ( !lastFormat.isEmpty() && !lastExt.isEmpty() )
   {
-    if ( !lastFormat.isEmpty() && f.contains( lastFormat, Qt::CaseInsensitive ) )
+    // If we have both the format and extension, use in priority the filter
+    // that associates both, in case of multiple extensions per format.
+    for ( const QString &f : filters )
     {
-      lastFilter = f;
-      break;
+      // "%1 - %2 " pattern from QgsProcessingParameterRasterDestination::createFileFilter()
+      if ( f.contains( u"%1 - %2 "_s.arg( lastFormat, lastExt ), Qt::CaseInsensitive ) )
+      {
+        lastFilter = f;
+        break;
+      }
     }
-    else if ( !lastExt.isEmpty() && f.contains( u"*.%1"_s.arg( lastExt ), Qt::CaseInsensitive ) )
+  }
+  if ( lastFilter.isEmpty() && !lastFormat.isEmpty() )
+  {
+    for ( const QString &f : filters )
     {
-      lastFilter = f;
-      break;
+      if ( f.contains( lastFormat, Qt::CaseInsensitive ) )
+      {
+        lastFilter = f;
+        break;
+      }
+    }
+  }
+  if ( lastFilter.isEmpty() && !lastExt.isEmpty() )
+  {
+    for ( const QString &f : filters )
+    {
+      if ( f.contains( u"*.%1"_s.arg( lastExt ), Qt::CaseInsensitive ) )
+      {
+        lastFilter = f;
+        break;
+      }
     }
   }
 
@@ -494,7 +519,7 @@ void QgsProcessingLayerOutputDestinationWidget::selectFile()
     settings.setValue( u"/Processing/LastOutputPath"_s, QFileInfo( filename ).path() );
     if ( !lastFormatPath.isEmpty() && !mFormat.isEmpty() )
       settings.setValue( lastFormatPath, mFormat );
-    else if ( !lastExtPath.isEmpty() )
+    if ( !lastExtPath.isEmpty() )
       settings.setValue( lastExtPath, QFileInfo( filename ).suffix().toLower() );
 
     emit skipOutputChanged( false );

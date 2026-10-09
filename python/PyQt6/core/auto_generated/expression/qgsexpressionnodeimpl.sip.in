@@ -71,6 +71,7 @@ Returns the node the operator will operate upon.
 
     virtual QgsExpressionNode *clone() const /Factory/;
 
+    virtual QgsExpressionNode *simplifiedNode() const /Factory/;
 
     virtual bool isStatic( QgsExpression *parent, const QgsExpressionContext *context ) const;
 
@@ -180,6 +181,8 @@ Returns the node to the right of the operator.
     virtual QgsExpressionNode *clone() const /Factory/;
 
     virtual bool isStatic( QgsExpression *parent, const QgsExpressionContext *context ) const;
+
+    virtual QgsExpressionNode *simplifiedNode() const /Factory/;
 
 
     int precedence() const;
@@ -385,6 +388,8 @@ Returns the list of nodes to search for matching values within.
 
     virtual bool isStatic( QgsExpression *parent, const QgsExpressionContext *context ) const;
 
+    virtual QgsExpressionNode *simplifiedNode() const /Factory/;
+
 
   private:
     QgsExpressionNodeInOperator( const QgsExpressionNodeInOperator &other );
@@ -455,6 +460,8 @@ Returns a list of arguments specified for the function.
     virtual QgsExpressionNode *clone() const /Factory/;
 
     virtual bool isStatic( QgsExpression *parent, const QgsExpressionContext *context ) const;
+
+    virtual QgsExpressionNode *simplifiedNode() const /Factory/;
 
 
     static bool validateParams( int fnIndex, QgsExpressionNode::NodeList *args, QString &error );
@@ -676,6 +683,8 @@ The ELSE expression used for the condition.
     virtual QgsExpressionNode *clone() const /Factory/;
 
     virtual bool isStatic( QgsExpression *parent, const QgsExpressionContext *context ) const;
+
+    virtual QgsExpressionNode *simplifiedNode() const /Factory/;
 
 
   private:

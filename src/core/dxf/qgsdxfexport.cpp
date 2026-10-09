@@ -248,7 +248,7 @@ QgsDxfExport::ExportResult QgsDxfExport::writeToFile( QIODevice *d, const QStrin
   if ( mMapSettings.extent().isEmpty() )
     return ExportResult::EmptyExtentError;
 
-  Qgis::DistanceUnit mapUnits = mCrs.mapUnits();
+  Qgis::DistanceUnit mapUnits = mCrs.isValid() ? mCrs.mapUnits() : mMapSettings.destinationCrs().mapUnits();
 
   // Empty layer check to avoid adding those in the exported file
   QList<QgsMapLayer *> layers;
@@ -708,7 +708,7 @@ void QgsDxfExport::writeBlocks()
     writeSymbolLayerBlock( block, ml, ctx );
 
     mPointSymbolBlocks.insert( ml, block );
-    mPointSymbolBlockSizes.insert( ml, ml->dxfSize( *this, ctx ) );
+    mPointSymbolBlockSizes.insert( ml, ml->dxfSize( ctx ) );
     mPointSymbolBlockAngles.insert( ml, ml->dxfAngle( ctx ) );
   }
   endSection();
@@ -736,7 +736,7 @@ void QgsDxfExport::writeSymbolLayerBlock( const QString &blockName, const QgsMar
   writeGroup( 1, QString() );
 
   // maplayer 0 -> block receives layer from INSERT statement
-  ml->writeDxf( *this, mapUnitScaleFactor( mSymbologyScale, ml->sizeUnit(), mMapUnits, ctx.renderContext().mapToPixel().mapUnitsPerPixel() ), u"0"_s, ctx );
+  ml->writeDxf( *this, mapUnitScaleFactor( ctx.renderContext(), ml->sizeUnit() ), u"0"_s, ctx );
 
   writeGroup( 0, u"ENDBLK"_s );
   writeHandle();
@@ -817,6 +817,9 @@ void QgsDxfExport::writeEntities()
               if ( !symbolLayer )
                 continue;
 
+              if ( !isSymbolLayerEnabled( symbolLayer, sctx ) )
+                continue;
+
               bool isGeometryGenerator = ( symbolLayer->layerType() == "GeometryGenerator"_L1 );
               if ( isGeometryGenerator )
               {
@@ -838,6 +841,11 @@ void QgsDxfExport::writeEntities()
             continue;
           }
 
+          if ( !isSymbolLayerEnabled( s->symbolLayer( 0 ), sctx ) )
+          {
+            continue;
+          }
+
           if ( s->symbolLayer( 0 )->layerType() == "GeometryGenerator"_L1 )
           {
             addGeometryGeneratorSymbolLayer( sctx, ct, lName, s->symbolLayer( 0 ), false );
@@ -850,14 +858,14 @@ void QgsDxfExport::writeEntities()
 
         if ( job->labelProvider )
         {
-          job->labelProvider->registerFeature( fet, job->renderContext );
+          job->labelProvider->registerFeature( fet, job->renderContext, QgsLabelFeatureDetails() );
           Q_NOWARN_DEPRECATED_PUSH
           registerDxfLayer( job->featureSource.id(), fet.id(), lName );
           Q_NOWARN_DEPRECATED_POP
         }
         else if ( job->ruleBasedLabelProvider )
         {
-          job->ruleBasedLabelProvider->registerFeature( fet, job->renderContext );
+          job->ruleBasedLabelProvider->registerFeature( fet, job->renderContext, QgsLabelFeatureDetails() );
           Q_NOWARN_DEPRECATED_PUSH
           registerDxfLayer( job->featureSource.id(), fet.id(), lName );
           Q_NOWARN_DEPRECATED_POP
@@ -881,14 +889,8 @@ void QgsDxfExport::prepareRenderers()
 {
   Q_ASSERT( mJobs.empty() ); // If this fails, stopRenderers() was not called after the last job
 
-  mRenderContext = QgsRenderContext();
+  mRenderContext = QgsRenderContext::fromMapSettings( mMapSettings );
   mRenderContext.setRendererScale( mSymbologyScale );
-  mRenderContext.setExtent( mMapSettings.extent() );
-  QgsDistanceArea da;
-  da.setSourceCrs( mMapSettings.destinationCrs(), mMapSettings.transformContext() );
-  da.setEllipsoid( mMapSettings.ellipsoid() );
-  mRenderContext.setDistanceArea( da );
-  mRenderContext.setScaleFactor( 96.0 / 25.4 );
   mRenderContext.setMapToPixel(
     QgsMapToPixel( 1.0 / mFactor, mMapSettings.extent().center().x(), mMapSettings.extent().center().y(), std::floor( mMapSettings.extent().width() * mFactor ), std::floor( mMapSettings.extent().height() * mFactor ), 0 )
   );
@@ -897,8 +899,7 @@ void QgsDxfExport::prepareRenderers()
   mRenderContext.expressionContext().appendScope( QgsExpressionContextUtils::globalScope() );
   mRenderContext.expressionContext().appendScope( QgsExpressionContextUtils::mapSettingsScope( mMapSettings ) );
 
-  mLabelingEngine = std::make_unique<QgsDefaultLabelingEngine>();
-  mLabelingEngine->setMapSettings( mMapSettings );
+  mLabelingEngine = std::make_unique<QgsDefaultLabelingEngine>( mMapSettings );
   mRenderContext.setLabelingEngine( mLabelingEngine.get() );
 
   const QList< QgsMapLayer * > layers = mMapSettings.layers();
@@ -1004,10 +1005,14 @@ void QgsDxfExport::writeEntitiesSymbolLevels( DxfLayerJob *job )
 
       int llayer = item.layer();
       const QList<QgsFeature> &featureList = levelIt.value();
+      QgsSymbolLayer *symbolLayer = levelIt.key()->symbolLayer( llayer );
       for ( const QgsFeature &feature : featureList )
       {
         sctx.setFeature( &feature );
-        addFeature( sctx, ct, job->layerName, levelIt.key()->symbolLayer( llayer ), levelIt.key() );
+        sctx.renderContext().expressionContext().setFeature( feature );
+        if ( !isSymbolLayerEnabled( symbolLayer, sctx ) )
+          continue;
+        addFeature( sctx, ct, job->layerName, symbolLayer, levelIt.key() );
       }
     }
   }
@@ -1043,8 +1048,8 @@ void QgsDxfExport::writePoint( const QgsPoint &pt, const QString &layer, const Q
   const QgsMarkerSymbolLayer *msl = dynamic_cast< const QgsMarkerSymbolLayer * >( symbolLayer );
   if ( msl )
   {
-    double halfSize = msl->size() * mapUnitScaleFactor( mSymbologyScale,
-                      msl->sizeUnit(), mMapUnits ) / 2.0;
+    double halfSize = msl->size() * mapUnitScaleFactor( ctx.renderContext(),
+                      msl->sizeUnit() ) / 2.0;
     writeGroup( 0, "SOLID" );
     writeGroup( 8, layer );
     writeGroup( 62, 1 );
@@ -1071,7 +1076,7 @@ void QgsDxfExport::writePoint( const QgsPoint &pt, const QString &layer, const Q
 
     QgsPropertyCollection props = symbolLayer->dataDefinedProperties();
 
-    uint ddSymbolHash = dataDefinedSymbolClassHash( *( ctx.feature() ), props );
+    uint ddSymbolHash = dataDefinedSymbolClassHash( *( ctx.feature() ), props, ctx.renderContext().expressionContext() );
     if ( symbolLayerDDBlocks.contains( ddSymbolHash ) )
     {
       const DataDefinedBlockInfo &info = symbolLayerDDBlocks[ddSymbolHash];
@@ -1084,7 +1089,7 @@ void QgsDxfExport::writePoint( const QgsPoint &pt, const QString &layer, const Q
   const QgsMarkerSymbolLayer *msl = dynamic_cast< const QgsMarkerSymbolLayer * >( symbolLayer );
   if ( msl && symbol )
   {
-    if ( msl->writeDxf( *this, mapUnitScaleFactor( mSymbologyScale, msl->sizeUnit(), mMapUnits, ctx.renderContext().mapToPixel().mapUnitsPerPixel() ), layer, ctx, QPointF( pt.x(), pt.y() ) ) )
+    if ( msl->writeDxf( *this, mapUnitScaleFactor( ctx.renderContext(), msl->sizeUnit() ), layer, ctx, QPointF( pt.x(), pt.y() ) ) )
     {
       return;
     }
@@ -1096,7 +1101,7 @@ void QgsDxfExport::writePointBlockReference(
   const QgsPoint &pt, const QgsSymbolLayer *symbolLayer, QgsSymbolRenderContext &ctx, const QString &layer, double angle, const QString &blockName, double blockAngle, double blockSize
 )
 {
-  const double scale = symbolLayer->dxfSize( *this, ctx ) / blockSize;
+  const double scale = symbolLayer->dxfSize( ctx ) / blockSize;
 
   // insert block reference
   writeGroup( 0, u"INSERT"_s );
@@ -1114,26 +1119,31 @@ void QgsDxfExport::writePointBlockReference(
   writeGroup( 0, pt ); // Insertion point (in OCS)
 }
 
-uint QgsDxfExport::dataDefinedSymbolClassHash( const QgsFeature &fet, const QgsPropertyCollection &prop )
+uint QgsDxfExport::dataDefinedSymbolClassHash( const QgsFeature &fet, const QgsPropertyCollection &prop, const QgsExpressionContext &context )
 {
+  // Hash the evaluated result of each data-defined property that affects the
+  // BLOCK content, not only the source attribute values.
   uint hashValue = 0;
 
-  QgsPropertyCollection dxfProp = prop;
-  dxfProp.setProperty( QgsSymbolLayer::Property::Size, QgsProperty() );
-  dxfProp.setProperty( QgsSymbolLayer::Property::Angle, QgsProperty() );
-  QList< QString > fields = dxfProp.referencedFields().values();
-  std::sort( fields.begin(), fields.end() );
+  QgsExpressionContext ctx = context;
+  ctx.setFeature( fet );
+
+  QList<int> keys = prop.propertyKeys().values();
+  keys.removeAll( static_cast<int>( QgsSymbolLayer::Property::Size ) );
+  keys.removeAll( static_cast<int>( QgsSymbolLayer::Property::Angle ) );
+  std::sort( keys.begin(), keys.end() ); //ensure a stable order
+
   int i = 0;
-  for ( const auto &field : std::as_const( fields ) ) //convert set to list to have a well defined order
+  for ( int key : std::as_const( keys ) )
   {
-    QVariant attValue = fet.attribute( field );
+    const QVariant evaluated = prop.value( key, ctx );
     if ( i == 0 )
     {
-      hashValue = qHash( attValue );
+      hashValue = qHash( evaluated );
     }
     else
     {
-      hashValue = hashValue ^ qHash( attValue );
+      hashValue = hashValue ^ qHash( evaluated );
     }
     ++i;
   }
@@ -1592,7 +1602,7 @@ void QgsDxfExport::writeText( const QString &layer, const QString &text, pal::La
     }
   }
 
-  writeText( layer, text, QgsPoint( lblX, lblY ), label->getHeight(), label->getAlpha() * 180.0 / M_PI, layerSettings.format().color(), hali, vali );
+  writeText( layer, text, QgsPoint( lblX, lblY ), label->getHeight(), label->angleRadians() * 180.0 / M_PI, layerSettings.format().color(), hali, vali );
 }
 
 void QgsDxfExport::writePoint( const QString &layer, const QColor &color, const QgsPoint &pt )
@@ -1754,8 +1764,8 @@ void QgsDxfExport::addFeature( QgsSymbolRenderContext &ctx, const QgsCoordinateT
   double angle = 0.0;
   if ( mSymbologyExport != Qgis::FeatureSymbologyExport::NoSymbology && symbolLayer )
   {
-    width = symbolLayer->dxfWidth( *this, ctx );
-    offset = symbolLayer->dxfOffset( *this, ctx );
+    width = symbolLayer->dxfWidth( ctx );
+    offset = symbolLayer->dxfOffset( ctx );
     angle = symbolLayer->dxfAngle( ctx );
     penStyle = symbolLayer->dxfPenStyle();
     brushStyle = symbolLayer->dxfBrushStyle();
@@ -2001,19 +2011,37 @@ QgsRenderContext QgsDxfExport::renderContext() const
 
 double QgsDxfExport::mapUnitScaleFactor( double scale, Qgis::RenderUnit symbolUnits, Qgis::DistanceUnit mapUnits, double mapUnitsPerPixel )
 {
-  if ( symbolUnits == Qgis::RenderUnit::MapUnits )
+  switch ( symbolUnits )
   {
-    return 1.0;
-  }
-  else if ( symbolUnits == Qgis::RenderUnit::Millimeters )
-  {
-    return ( scale * QgsUnitTypes::fromUnitToUnitFactor( Qgis::DistanceUnit::Meters, mapUnits ) / 1000.0 );
-  }
-  else if ( symbolUnits == Qgis::RenderUnit::Pixels )
-  {
-    return mapUnitsPerPixel;
+    case Qgis::RenderUnit::MapUnits:
+      return 1.0;
+
+    case Qgis::RenderUnit::Millimeters:
+      return ( scale * QgsUnitTypes::fromUnitToUnitFactor( Qgis::DistanceUnit::Meters, mapUnits ) / 1000.0 );
+
+    case Qgis::RenderUnit::Points:
+      // 1 pt = 25.4/72 mm
+      return ( scale * QgsUnitTypes::fromUnitToUnitFactor( Qgis::DistanceUnit::Meters, mapUnits ) / 1000.0 * 25.4 / 72.0 );
+
+    case Qgis::RenderUnit::Inches:
+      return ( scale * QgsUnitTypes::fromUnitToUnitFactor( Qgis::DistanceUnit::Meters, mapUnits ) / 1000.0 * 25.4 );
+
+    case Qgis::RenderUnit::MetersInMapUnits:
+      return QgsUnitTypes::fromUnitToUnitFactor( Qgis::DistanceUnit::Meters, mapUnits );
+
+    case Qgis::RenderUnit::Pixels:
+      return mapUnitsPerPixel;
+
+    case Qgis::RenderUnit::Unknown:
+    case Qgis::RenderUnit::Percentage:
+      break;
   }
   return 1.0;
+}
+
+double QgsDxfExport::mapUnitScaleFactor( const QgsRenderContext &renderContext, Qgis::RenderUnit symbolUnits )
+{
+  return renderContext.convertToMapUnits( 1.0, symbolUnits );
 }
 
 void QgsDxfExport::clipValueToMapUnitScale( double &value, const QgsMapUnitScale &scale, double pixelToMMFactor ) const
@@ -2160,7 +2188,7 @@ void QgsDxfExport::writeLinetype( const QString &styleName, const QVector<qreal>
   double length = 0;
   for ( qreal size : pattern )
   {
-    length += ( size * mapUnitScaleFactor( mSymbologyScale, u, mMapUnits, mMapSettings.mapToPixel().mapUnitsPerPixel() ) );
+    length += ( size * mapUnitScaleFactor( mRenderContext, u ) );
   }
 
   writeGroup( 0, u"LTYPE"_s );
@@ -2180,7 +2208,7 @@ void QgsDxfExport::writeLinetype( const QString &styleName, const QVector<qreal>
   {
     // map units or mm?
     double segmentLength = ( isGap ? -size : size );
-    segmentLength *= mapUnitScaleFactor( mSymbologyScale, u, mMapUnits, mMapSettings.mapToPixel().mapUnitsPerPixel() );
+    segmentLength *= mapUnitScaleFactor( mRenderContext, u );
     writeGroup( 49, segmentLength );
     writeGroup( 74, 0 );
     isGap = !isGap;
@@ -2245,6 +2273,15 @@ bool QgsDxfExport::hasBlockBreakingDataDefinedProperties( const QgsSymbolLayer *
   }
 
   return blockBreak;
+}
+
+bool QgsDxfExport::isSymbolLayerEnabled( const QgsSymbolLayer *layer, QgsSymbolRenderContext &context )
+{
+  if ( !layer || !layer->enabled() )
+    return false;
+  if ( layer->dataDefinedProperties().hasActiveProperties() && !layer->dataDefinedProperties().valueAsBool( QgsSymbolLayer::Property::LayerEnabled, context.renderContext().expressionContext(), true ) )
+    return false;
+  return true;
 }
 
 double QgsDxfExport::dashSize() const
@@ -2557,7 +2594,7 @@ void QgsDxfExport::drawLabel( const QString &layerId, QgsRenderContext &context,
                    .arg( tmpLyr.format().font().italic() ? 1 : 0 )
                    .arg( tmpLyr.format().font().bold() ? 1 : 0 )
                    .arg( label->getHeight() / ( 1 + txt.count( u"\\P"_s ) ) * 0.75 ) );
-    writeMText( dxfLayer, txt, QgsPoint( label->getX(), label->getY() ), label->getWidth(), label->getAlpha() * 180.0 / M_PI, tmpLyr.format().color() );
+    writeMText( dxfLayer, txt, QgsPoint( label->getX(), label->getY() ), label->getWidth(), label->angleRadians() * 180.0 / M_PI, tmpLyr.format().color() );
   }
 }
 
@@ -2664,7 +2701,7 @@ void QgsDxfExport::createDDBlockInfo()
         QgsFeature fet;
         while ( featureIt.nextFeature( fet ) )
         {
-          uint symbolHash = dataDefinedSymbolClassHash( fet, properties );
+          uint symbolHash = dataDefinedSymbolClassHash( fet, properties, sctx.renderContext().expressionContext() );
           if ( blockSymbolMap.contains( symbolHash ) )
           {
             blockSymbolMap[symbolHash].first += 1;
@@ -2677,7 +2714,7 @@ void QgsDxfExport::createDDBlockInfo()
           DataDefinedBlockInfo blockInfo;
           blockInfo.blockName = u"symbolLayer%1class%2"_s.arg( symbolLayerNr ).arg( symbolHash );
           blockInfo.angle = sl->dxfAngle( sctx );
-          blockInfo.size = sl->dxfSize( *this, sctx );
+          blockInfo.size = sl->dxfSize( sctx );
           blockInfo.feature = fet;
 
           blockSymbolMap.insert( symbolHash, qMakePair( 1, blockInfo ) );

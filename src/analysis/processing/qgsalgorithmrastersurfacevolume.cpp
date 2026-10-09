@@ -129,6 +129,8 @@ bool QgsRasterSurfaceVolumeAlgorithm::prepareAlgorithm( const QVariantMap &param
 
 QVariantMap QgsRasterSurfaceVolumeAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
+  QGS_MARK_ALGORITHM_SOURCE
+
   const QString outputFile = parameterAsFileOutput( parameters, u"OUTPUT_HTML_FILE"_s, context );
   QString areaUnit = QgsUnitTypes::toAbbreviatedString( QgsUnitTypes::distanceToAreaUnit( mCrs.mapUnits() ) );
 
@@ -232,7 +234,10 @@ QVariantMap QgsRasterSurfaceVolumeAlgorithm::processAlgorithm( const QVariantMap
     f.setAttributes( QgsAttributes() << volume << area << count );
     if ( !sink->addFeature( f, QgsFeatureSink::FastInsert ) )
       throw QgsProcessingException( writeFeatureError( sink.get(), parameters, u"OUTPUT_TABLE"_s ) );
+    else
+      feedback->featureAddedToSink( u"OUTPUT_TABLE"_s );
     sink->finalize();
+    feedback->featureSinkFinalized( u"OUTPUT_TABLE"_s );
     outputs.insert( u"OUTPUT_TABLE"_s, tableDest );
   }
   outputs.insert( u"VOLUME"_s, volume );

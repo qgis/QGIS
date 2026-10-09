@@ -102,19 +102,19 @@ QgsRendererRasterPropertiesWidget::QgsRendererRasterPropertiesWidget( QgsMapLaye
   connect( mColorizeCheck, &QAbstractButton::toggled, this, &QgsRendererRasterPropertiesWidget::toggleColorizeControls );
 
   // Just connect the spin boxes because the sliders update the spinners
-  connect( mBrightnessSpinBox, static_cast<void ( QSpinBox::* )( int )>( &QSpinBox::valueChanged ), this, &QgsPanelWidget::widgetChanged );
-  connect( mContrastSpinBox, static_cast<void ( QSpinBox::* )( int )>( &QSpinBox::valueChanged ), this, &QgsPanelWidget::widgetChanged );
-  connect( mGammaSpinBox, static_cast<void ( QDoubleSpinBox::* )( double )>( &QDoubleSpinBox::valueChanged ), this, &QgsPanelWidget::widgetChanged );
-  connect( spinBoxSaturation, static_cast<void ( QSpinBox::* )( int )>( &QSpinBox::valueChanged ), this, &QgsPanelWidget::widgetChanged );
-  connect( spinColorizeStrength, static_cast<void ( QSpinBox::* )( int )>( &QSpinBox::valueChanged ), this, &QgsPanelWidget::widgetChanged );
-  connect( btnColorizeColor, &QgsColorButton::colorChanged, this, &QgsPanelWidget::widgetChanged );
-  connect( mInvertColorsCheck, &QAbstractButton::toggled, this, &QgsPanelWidget::widgetChanged );
+  connect( mBrightnessSpinBox, static_cast<void ( QSpinBox::* )( int )>( &QSpinBox::valueChanged ), this, &QgsPanelWidget::changed );
+  connect( mContrastSpinBox, static_cast<void ( QSpinBox::* )( int )>( &QSpinBox::valueChanged ), this, &QgsPanelWidget::changed );
+  connect( mGammaSpinBox, static_cast<void ( QDoubleSpinBox::* )( double )>( &QDoubleSpinBox::valueChanged ), this, &QgsPanelWidget::changed );
+  connect( spinBoxSaturation, static_cast<void ( QSpinBox::* )( int )>( &QSpinBox::valueChanged ), this, &QgsPanelWidget::changed );
+  connect( spinColorizeStrength, static_cast<void ( QSpinBox::* )( int )>( &QSpinBox::valueChanged ), this, &QgsPanelWidget::changed );
+  connect( btnColorizeColor, &QgsColorButton::colorChanged, this, &QgsPanelWidget::changed );
+  connect( mInvertColorsCheck, &QAbstractButton::toggled, this, &QgsPanelWidget::changed );
 
-  connect( mBlendModeComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsPanelWidget::widgetChanged );
-  connect( mZoomedInResamplingComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsPanelWidget::widgetChanged );
-  connect( mZoomedOutResamplingComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsPanelWidget::widgetChanged );
-  connect( mMaximumOversamplingSpinBox, static_cast<void ( QDoubleSpinBox::* )( double )>( &QDoubleSpinBox::valueChanged ), this, &QgsPanelWidget::widgetChanged );
-  connect( mCbEarlyResampling, &QAbstractButton::toggled, this, &QgsPanelWidget::widgetChanged );
+  connect( mBlendModeComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsPanelWidget::changed );
+  connect( mZoomedInResamplingComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsPanelWidget::changed );
+  connect( mZoomedOutResamplingComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsPanelWidget::changed );
+  connect( mMaximumOversamplingSpinBox, static_cast<void ( QDoubleSpinBox::* )( double )>( &QDoubleSpinBox::valueChanged ), this, &QgsPanelWidget::changed );
+  connect( mCbEarlyResampling, &QAbstractButton::toggled, this, &QgsPanelWidget::changed );
 
   // finally sync to the layer - even though some actions may emit widgetChanged signal,
   // this is not a problem - nobody is listening to our signals yet
@@ -132,7 +132,7 @@ void QgsRendererRasterPropertiesWidget::rendererChanged()
 {
   const QString rendererName = cboRenderers->currentData().toString();
   setRendererWidget( rendererName );
-  emit widgetChanged();
+  emit changed();
 }
 
 void QgsRendererRasterPropertiesWidget::apply()
@@ -148,13 +148,14 @@ void QgsRendererRasterPropertiesWidget::apply()
   {
     rendererWidget->doComputations();
 
-    if ( QgsRasterRenderer *newRenderer = rendererWidget->renderer() )
+    std::unique_ptr< QgsRasterRenderer > newRenderer( rendererWidget->renderer() );
+    if ( newRenderer )
     {
       // there are transparency related data stored in renderer instances, but they
       // are not configured in the widget, so we need to copy them over from existing renderer
       if ( QgsRasterRenderer *oldRenderer = mRasterLayer->renderer() )
         newRenderer->copyCommonProperties( oldRenderer, false );
-      mRasterLayer->setRenderer( newRenderer );
+      mRasterLayer->setRenderer( newRenderer.release() );
     }
   }
 
@@ -264,7 +265,7 @@ void QgsRendererRasterPropertiesWidget::toggleSaturationControls( int grayscaleM
     sliderSaturation->setEnabled( false );
     spinBoxSaturation->setEnabled( false );
   }
-  emit widgetChanged();
+  emit changed();
 }
 
 void QgsRendererRasterPropertiesWidget::toggleColorizeControls( bool colorizeEnabled )
@@ -273,7 +274,7 @@ void QgsRendererRasterPropertiesWidget::toggleColorizeControls( bool colorizeEna
   btnColorizeColor->setEnabled( colorizeEnabled );
   sliderColorizeStrength->setEnabled( colorizeEnabled );
   spinColorizeStrength->setEnabled( colorizeEnabled );
-  emit widgetChanged();
+  emit changed();
 }
 
 void QgsRendererRasterPropertiesWidget::setRendererWidget( const QString &rendererName )
@@ -309,12 +310,14 @@ void QgsRendererRasterPropertiesWidget::setRendererWidget( const QString &render
         {
           if ( rendererName == "singlebandgray"_L1 )
           {
-            whileBlocking( mRasterLayer )->setRenderer( QgsApplication::rasterRendererRegistry()->defaultRendererForDrawingStyle( Qgis::RasterDrawingStyle::SingleBandGray, mRasterLayer->dataProvider() ) );
+            whileBlocking( mRasterLayer )
+              ->setRenderer( QgsApplication::rasterRendererRegistry()->defaultRendererForDrawingStyle( Qgis::RasterDrawingStyle::SingleBandGray, mRasterLayer->dataProvider() ).release() );
             whileBlocking( mRasterLayer )->setDefaultContrastEnhancement();
           }
           else if ( rendererName == "multibandcolor"_L1 )
           {
-            whileBlocking( mRasterLayer )->setRenderer( QgsApplication::rasterRendererRegistry()->defaultRendererForDrawingStyle( Qgis::RasterDrawingStyle::MultiBandColor, mRasterLayer->dataProvider() ) );
+            whileBlocking( mRasterLayer )
+              ->setRenderer( QgsApplication::rasterRendererRegistry()->defaultRendererForDrawingStyle( Qgis::RasterDrawingStyle::MultiBandColor, mRasterLayer->dataProvider() ).release() );
             whileBlocking( mRasterLayer )->setDefaultContrastEnhancement();
           }
         }
@@ -324,15 +327,15 @@ void QgsRendererRasterPropertiesWidget::setRendererWidget( const QString &render
       mRasterLayer->renderer()->setNodataColor( nodataColor );
       mRendererWidget = rendererEntry.widgetCreateFunction( mRasterLayer, myExtent );
       mRendererWidget->setMapCanvas( mMapCanvas );
-      connect( mRendererWidget, &QgsRasterRendererWidget::widgetChanged, this, &QgsPanelWidget::widgetChanged );
+      connect( mRendererWidget, &QgsRasterRendererWidget::widgetChanged, this, &QgsPanelWidget::changed );
       stackedWidget->addWidget( mRendererWidget );
       stackedWidget->setCurrentWidget( mRendererWidget );
+#if 0
       if ( oldWidget )
       {
         // Compare used bands in new and old renderer and reset transparency dialog if different
-        QgsRasterRenderer *oldRenderer = oldWidget->renderer();
-        QgsRasterRenderer *newRenderer = mRendererWidget->renderer();
-#if 0
+        std::unique_ptr< QgsRasterRenderer > oldRenderer( oldWidget->renderer() );
+        std::unique_ptr< QgsRasterRenderer > newRenderer( mRendererWidget->renderer() );
         QList<int> oldBands = oldRenderer->usesBands();
         QList<int> newBands = newRenderer->usesBands();
 
@@ -340,11 +343,8 @@ void QgsRendererRasterPropertiesWidget::setRendererWidget( const QString &render
         {
           populateTransparencyTable( newRenderer );
         }
-#endif
-
-        delete oldRenderer;
-        delete newRenderer;
       }
+#endif
     }
   }
 

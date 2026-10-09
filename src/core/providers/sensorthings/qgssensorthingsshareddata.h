@@ -24,6 +24,7 @@
 #include "qgsspatialindex.h"
 
 #include <QReadWriteLock>
+#include <QVersionNumber>
 
 #define SIP_NO_FILE
 
@@ -78,6 +79,7 @@ class QgsSensorThingsSharedData
 
     mutable QString mError;
 
+    QVersionNumber mVersion = QVersionNumber( 1, 1 );
     QString mEntityBaseUri;
     QString mSubsetString;
     QString mExpandQueryString;

@@ -33,6 +33,12 @@ Content-Type: application/geo+json
       "type": "text/html"
     },
     {
+      "href": "http://server.qgis.org/wfs3/collections/testlayer%20%C3%A8%C3%A9/items.fgb?limit=1&offset=1",
+      "rel": "alternate",
+      "title": "Retrieve the features of the collection as FLATGEOBUF",
+      "type": "application/flatgeobuf"
+    },
+    {
       "href": "http://server.qgis.org/wfs3/collections/testlayer èé/items?offset=0&limit=1",
       "rel": "prev",
       "title": "Previous page",

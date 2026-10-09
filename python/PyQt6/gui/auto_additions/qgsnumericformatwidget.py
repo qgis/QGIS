@@ -1,6 +1,5 @@
 # The following has been generated automatically from src/gui/numericformats/qgsnumericformatwidget.h
 try:
-    QgsNumericFormatWidget.__attribute_docs__ = {'changed': 'Emitted whenever the configuration of the numeric format is changed.\n'}
     QgsNumericFormatWidget.__abstract_methods__ = ['setFormat', 'format']
     QgsNumericFormatWidget.__overridden_methods__ = ['createExpressionContext']
     QgsNumericFormatWidget.__group__ = ['numericformats']

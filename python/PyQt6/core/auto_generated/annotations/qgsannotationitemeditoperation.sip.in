@@ -74,6 +74,7 @@ Abstract base class for annotation item edit operations.
       AddNode,
       TranslateItem,
       RotateItem,
+      SetItemBounds,
     };
 
     QgsAbstractAnnotationItemEditOperation( const QString &itemId );
@@ -322,6 +323,37 @@ with the specified ``itemId`` and rotation ``angle`` (in degrees)
     double angle() const;
 %Docstring
 Returns the rotation angle value (in degrees clockwise).
+%End
+
+};
+
+
+class QgsAnnotationItemEditOperationSetItemBounds : QgsAbstractAnnotationItemEditOperation
+{
+%Docstring(signature="appended")
+Annotation item edit operation consisting of setting the bounds of an
+item.
+
+.. versionadded:: 4.4
+%End
+
+%TypeHeaderCode
+#include "qgsannotationitemeditoperation.h"
+%End
+  public:
+    QgsAnnotationItemEditOperationSetItemBounds( const QString &itemId, const QgsRectangle &bounds );
+%Docstring
+Constructor for QgsAnnotationItemEditOperationSetItemBounds, setting the
+item with the specified ``itemId`` to the given ``bounds`` (in the
+annotation layer's CRS).
+%End
+
+    virtual Type type() const;
+
+
+    QgsRectangle bounds() const;
+%Docstring
+Returns the new item bounds (in the annotation layer's CRS).
 %End
 
 };

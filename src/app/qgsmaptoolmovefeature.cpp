@@ -104,6 +104,12 @@ void QgsMapToolMoveFeature::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
 
   if ( !mRubberBand )
   {
+    if ( e->button() != Qt::LeftButton )
+    {
+      // only a left-click can start the move operation
+      return;
+    }
+
     //find first geometry under mouse cursor and store iterator to it
     const QgsPointXY layerCoords = toLayerCoordinates( vlayer, e->mapPoint() );
     const double searchRadius = QgsTolerance::vertexSearchRadius( mCanvas->currentLayer(), mCanvas->mapSettings() );
@@ -147,7 +153,7 @@ void QgsMapToolMoveFeature::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
       mMovedFeatures.clear();
       mMovedFeatures << cf.id(); //todo: take the closest feature, not the first one...
 
-      mRubberBand = createRubberBand( vlayer->geometryType() );
+      mRubberBand = createRubberBandForLayer( vlayer, { cf.id() } );
       mGeom = cf.geometry();
       mRubberBand->setToGeometry( mGeom, vlayer );
     }
@@ -155,7 +161,6 @@ void QgsMapToolMoveFeature::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
     {
       mMovedFeatures = vlayer->selectedFeatureIds();
 
-      mRubberBand = createRubberBand( vlayer->geometryType() );
       QgsFeature feat;
       QgsFeatureIterator it = vlayer->getSelectedFeatures( QgsFeatureRequest().setNoAttributes() );
 
@@ -163,14 +168,17 @@ void QgsMapToolMoveFeature::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
       const QgsRectangle viewRect = mCanvas->mapSettings().mapToLayerCoordinates( vlayer, mCanvas->extent() );
 
       QVector<QgsGeometry> selectedGeometries;
+      QList< QgsFeatureId > fids;
       while ( it.nextFeature( feat ) )
       {
         selectedGeometries << feat.geometry();
+        fids << feat.id();
 
         if ( allFeaturesInView && !viewRect.intersects( feat.geometry().boundingBox() ) )
           allFeaturesInView = false;
       }
       mGeom = QgsGeometry::collectGeometry( selectedGeometries );
+      mRubberBand = createRubberBandForLayer( vlayer, fids );
       mRubberBand->setToGeometry( mGeom, vlayer );
 
       if ( !allFeaturesInView )

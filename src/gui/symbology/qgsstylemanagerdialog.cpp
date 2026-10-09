@@ -740,14 +740,14 @@ void QgsStyleManagerDialog::copyItem()
       std::unique_ptr<QgsSymbol> symbol( mStyle->symbol( details.name ) );
       if ( !symbol )
         return;
-      QApplication::clipboard()->setMimeData( QgsSymbolLayerUtils::symbolToMimeData( symbol.get() ) );
+      QApplication::clipboard()->setMimeData( QgsSymbolLayerUtils::symbolToMimeData( symbol.get() ).release() );
       break;
     }
 
     case QgsStyle::TextFormatEntity:
     {
       const QgsTextFormat format( mStyle->textFormat( details.name ) );
-      QApplication::clipboard()->setMimeData( format.toMimeData() );
+      QApplication::clipboard()->setMimeData( format.toMimeData().release() );
       break;
     }
 

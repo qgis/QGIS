@@ -159,7 +159,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     // *INDENT-ON*
 
     //! Returns the QgsProject singleton instance
-    static QgsProject *instance();
+    static QgsProject *instance() SIP_DISALLOWNONE;
 
     /**
      * Set the current project singleton instance to \a project
@@ -849,7 +849,10 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     */
     QString presetHomePath() const;
 
-    QgsRelationManager *relationManager() const;
+    /**
+     * Returns the project's relation manager.
+     */
+    QgsRelationManager *relationManager() const SIP_DISALLOWNONE;
 
     /**
      * Returns the project's layout manager, which manages print layouts, atlases and reports within
@@ -862,7 +865,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      * Returns the project's layout manager, which manages print layouts, atlases and reports within
      * the project.
      */
-    QgsLayoutManager *layoutManager();
+    QgsLayoutManager *layoutManager() SIP_DISALLOWNONE;
 
     /**
      * Returns the project's elevation profile manager, which manages elevation profiles within
@@ -877,7 +880,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      * the project.
      * \since QGIS 4.0
      */
-    QgsElevationProfileManager *elevationProfileManager();
+    QgsElevationProfileManager *elevationProfileManager() SIP_DISALLOWNONE;
 
     /**
      * Returns the project's selective masking set manager, which manages storage of a set of selective masking source sets within
@@ -892,7 +895,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      * the project.
      * \since QGIS 4.0
      */
-    QgsSelectiveMaskingSourceSetManager *selectiveMaskingSourceSetManager();
+    QgsSelectiveMaskingSourceSetManager *selectiveMaskingSourceSetManager() SIP_DISALLOWNONE;
 
     /**
      * Returns the project's views manager, which manages map views (including 3d maps)
@@ -907,7 +910,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      * in the project.
      * \since QGIS 3.24
      */
-    QgsMapViewsManager *viewsManager();
+    QgsMapViewsManager *viewsManager() SIP_DISALLOWNONE;
 
     /**
      * Returns the project's bookmark manager, which manages bookmarks within
@@ -922,7 +925,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      * the project.
      * \since QGIS 3.10
      */
-    QgsBookmarkManager *bookmarkManager();
+    QgsBookmarkManager *bookmarkManager() SIP_DISALLOWNONE;
 
     /**
      * Returns the project's sensor manager, which manages sensors within
@@ -937,7 +940,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      * the project.
      * \since QGIS 3.32
      */
-    QgsSensorManager *sensorManager();
+    QgsSensorManager *sensorManager() SIP_DISALLOWNONE;
 
     /**
      * Returns the project's view settings, which contains settings and properties
@@ -954,7 +957,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      * (e.g. map scales and default view extent)
      * \since QGIS 3.10.1
      */
-    QgsProjectViewSettings *viewSettings();
+    QgsProjectViewSettings *viewSettings() SIP_DISALLOWNONE;
 
     /**
      * Returns the project's style settings, which contains settings and properties
@@ -971,7 +974,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      * (e.g. styling of a newly added vector layer)
      * \since QGIS 3.26
      */
-    QgsProjectStyleSettings *styleSettings();
+    QgsProjectStyleSettings *styleSettings() SIP_DISALLOWNONE;
 
     /**
      * Returns the project's time settings, which contains the project's temporal range and other
@@ -988,7 +991,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      *
      * \since QGIS 3.14
      */
-    QgsProjectTimeSettings *timeSettings();
+    QgsProjectTimeSettings *timeSettings() SIP_DISALLOWNONE;
 
     /**
      * Returns the project's elevation properties, which contains the project's elevation related settings.
@@ -1003,7 +1006,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      *
      * \since QGIS 3.26
      */
-    QgsProjectElevationProperties *elevationProperties();
+    QgsProjectElevationProperties *elevationProperties() SIP_DISALLOWNONE;
 
     /**
      * Returns the project's display settings, which contains settings and properties relating
@@ -1018,7 +1021,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      * to how a QgsProject should display values such as map coordinates and bearings.
      * \since QGIS 3.12
      */
-    QgsProjectDisplaySettings *displaySettings();
+    QgsProjectDisplaySettings *displaySettings() SIP_DISALLOWNONE;
 
     /**
      * Returns the project's GPS settings, which contains settings and properties relating
@@ -1033,28 +1036,28 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      * to how a QgsProject should interact with a GPS device.
      * \since QGIS 3.30
      */
-    QgsProjectGpsSettings *gpsSettings();
+    QgsProjectGpsSettings *gpsSettings() SIP_DISALLOWNONE;
 
     /**
      * Returns pointer to the root (invisible) node of the project's layer tree
      */
-    QgsLayerTree *layerTreeRoot() const;
+    QgsLayerTree *layerTreeRoot() const SIP_DISALLOWNONE;
 
     /**
      * Returns pointer to the helper class that synchronizes map layer registry with layer tree
      */
-    QgsLayerTreeRegistryBridge *layerTreeRegistryBridge() const { return mLayerTreeRegistryBridge.get(); }
+    QgsLayerTreeRegistryBridge *layerTreeRegistryBridge() const SIP_DISALLOWNONE { return mLayerTreeRegistryBridge.get(); }
 
     /**
      * Returns pointer to the project's map theme collection.
      * \note renamed in QGIS 3.0, formerly QgsVisibilityPresetCollection
      */
-    QgsMapThemeCollection *mapThemeCollection();
+    QgsMapThemeCollection *mapThemeCollection() SIP_DISALLOWNONE;
 
     /**
      * Returns pointer to the project's annotation manager.
      */
-    QgsAnnotationManager *annotationManager();
+    QgsAnnotationManager *annotationManager() SIP_DISALLOWNONE;
 
     /**
      * Returns a const pointer to the project's annotation manager.
@@ -1224,7 +1227,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     /**
      * Returns a pointer to the project's internal layer store.
      */
-    QgsMapLayerStore *layerStore();
+    QgsMapLayerStore *layerStore() SIP_DISALLOWNONE;
 
     /**
      * Returns a pointer to the project's internal layer store.
@@ -1543,7 +1546,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      *
      * \since QGIS 3.16
      */
-    QgsAnnotationLayer *mainAnnotationLayer();
+    QgsAnnotationLayer *mainAnnotationLayer() SIP_DISALLOWNONE;
 
     /**
      * Removes all registered layers. If the registry has ownership
@@ -1605,7 +1608,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      * Returns the current auxiliary storage.
      *
      */
-    QgsAuxiliaryStorage *auxiliaryStorage();
+    QgsAuxiliaryStorage *auxiliaryStorage() SIP_DISALLOWNONE;
 
     /**
      * Attaches a file to the project

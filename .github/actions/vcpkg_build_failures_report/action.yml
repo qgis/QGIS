@@ -1,0 +1,312 @@
+name: Vcpkg build failures report
+description: >-
+  Scans a vcpkg buildtrees directory for failed port builds and surfaces a
+  curated summary into the GitHub Actions step summary, as workflow
+  annotations, and (optionally) as a sticky PR comment section.
+
+inputs:
+  buildtrees-dir:
+    description: Path to the vcpkg buildtrees directory.
+    required: true
+    type: string
+  triplet:
+    description: Triplet label used in headings, marker, and emoji selection.
+    required: true
+    type: string
+  pr:
+    description: >-
+      Pull request number. If set, a sticky-comment artifact is uploaded so the
+      build_artifact_comment workflow can update the sticky comment with this
+      section (marker `vcpkg-failures-<triplet>`).
+    required: false
+    default: ''
+    type: string
+  artifact-url:
+    description: Optional URL to the uploaded build-logs-<triplet> artifact.
+    required: false
+    default: ''
+    type: string
+  diff-report-json:
+    description: >-
+      Optional path to a JSON file with `added`/`updated` port lists used to
+      tag each failure as updated/unchanged in this PR.
+    required: false
+    default: ''
+    type: string
+  build-status:
+    description: >-
+      Outcome of the upstream vcpkg/configure step. Callers should pass the
+      job status expression (job.status) or a step's outcome. When set to
+      'failure' and no per-port failures are parsed (e.g. portfile-execute
+      aborts before buildtrees exist), the report shows a 'vcpkg failed
+      before producing per-port logs' banner instead of a misleading 'all
+      ports built' line.
+    required: false
+    default: ''
+    type: string
+  manifest-install-log:
+    description: >-
+      Optional path to vcpkg-manifest-install.log (typically
+      `<build-dir>/vcpkg-manifest-install.log`). Scanned for portfile-execute
+      aborts (e.g. `find_library` REQUIRED failures) that abort before vcpkg
+      ever creates a buildtree directory.
+    required: false
+    default: ''
+    type: string
+  commit-sha:
+    description: >-
+      Optional commit SHA the report is for (typically the head SHA of the
+      pull request, or github.sha for push events). When set, the report
+      links the SHA to a commit URL so reviewers know which revision the
+      sticky comment reflects.
+    required: false
+    default: ''
+    type: string
+
+outputs:
+  failed-ports:
+    description: Comma-separated list of port names that failed.
+    value: ${{ steps.parse.outputs.failed-ports }}
+  failure-count:
+    description: Number of failing ports detected.
+    value: ${{ steps.parse.outputs.failure-count }}
+
+runs:
+  using: composite
+  steps:
+    - name: Parse vcpkg buildtrees for failures
+      id: parse
+      shell: bash
+      env:
+        BUILDTREES_DIR: ${{ inputs.buildtrees-dir }}
+        MANIFEST_INSTALL_LOG: ${{ inputs.manifest-install-log }}
+      run: |
+        set -euo pipefail
+        # Use $RUNNER_TEMP rather than /tmp because Git Bash on Windows can
+        # map /tmp differently between separate `shell: bash` invocations.
+        out_json="${RUNNER_TEMP//\\//}/vcpkg-failures.json"
+        echo "json-path=${out_json}" >> "$GITHUB_OUTPUT"
+
+        echo "Scanning buildtrees: ${BUILDTREES_DIR}"
+        ls -1 "${BUILDTREES_DIR}" 2>/dev/null | head -20 || \
+          echo "(buildtrees directory does not exist or is empty)"
+
+        args=( "${BUILDTREES_DIR}" --output "${out_json}" )
+        if [ -n "${MANIFEST_INSTALL_LOG}" ] && [ -f "${MANIFEST_INSTALL_LOG}" ]; then
+          echo "Including manifest-install log: ${MANIFEST_INSTALL_LOG}"
+          args+=( --manifest-install-log "${MANIFEST_INSTALL_LOG}" )
+        elif [ -n "${MANIFEST_INSTALL_LOG}" ]; then
+          echo "::warning::manifest-install-log not found at ${MANIFEST_INSTALL_LOG}"
+        fi
+
+        python3 "${GITHUB_ACTION_PATH}/parse_failures.py" "${args[@]}"
+
+        count=$(python3 -c "import json,sys; print(len(json.load(open(sys.argv[1]))))" "${out_json}")
+        ports=$(python3 -c "import json,sys; print(','.join(f['port'] for f in json.load(open(sys.argv[1]))))" "${out_json}")
+        echo "failure-count=${count}" >> "$GITHUB_OUTPUT"
+        echo "failed-ports=${ports}" >> "$GITHUB_OUTPUT"
+        echo "Detected ${count} vcpkg port build failure(s): ${ports:-<none>}"
+
+    # Echo each failing port's key error lines inside a ::group:: block so the
+    # workflow log itself becomes browsable evidence (no artifact download
+    # needed). The deep link to this step is captured below and surfaced in
+    # the report footer.
+    - name: 📜 Inline failing-port logs
+      id: inline-logs
+      if: steps.parse.outputs.failure-count != '0'
+      shell: bash
+      env:
+        FAILURES_JSON: ${{ steps.parse.outputs.json-path }}
+      run: |
+        set -euo pipefail
+        python3 - <<'PY'
+        import json, os
+        failures = json.load(open(os.environ["FAILURES_JSON"], encoding="utf-8"))
+        for f in failures:
+            print(f"::group::{f['port']} ({f.get('triplet', '?')})")
+            for ex in f.get("excerpts", []):
+                print(f"---- {ex['source']} ----")
+                for line in ex.get("lines", []):
+                    print(line)
+            print("::endgroup::")
+        PY
+
+    # Stage one subdirectory per failing port containing only its *.log files,
+    # then upload as a single artifact. Smaller and more navigable than the
+    # full build-logs-<triplet> artifact, which still contains everything.
+    - name: 📦 Package failing-port logs
+      id: package-port-logs
+      if: steps.parse.outputs.failure-count != '0'
+      shell: bash
+      env:
+        BUILDTREES_DIR: ${{ inputs.buildtrees-dir }}
+        FAILURES_JSON: ${{ steps.parse.outputs.json-path }}
+      run: |
+        set -euo pipefail
+        pkg_root="${RUNNER_TEMP//\\//}/failing-port-logs"
+        rm -rf "${pkg_root}"
+        mkdir -p "${pkg_root}"
+        echo "path=${pkg_root}" >> "$GITHUB_OUTPUT"
+        python3 - "$FAILURES_JSON" "$BUILDTREES_DIR" "$pkg_root" <<'PY'
+        import json, shutil, sys
+        from pathlib import Path
+        failures_json, src_root, dst_root = sys.argv[1:]
+        src = Path(src_root)
+        dst = Path(dst_root)
+        for f in json.load(open(failures_json, encoding="utf-8")):
+            port_src = src / f["port"]
+            if not port_src.is_dir():
+                continue
+            port_dst = dst / f["port"]
+            port_dst.mkdir(parents=True, exist_ok=True)
+            for log in port_src.glob("*.log"):
+                shutil.copy2(log, port_dst / log.name)
+        PY
+
+    - name: 📤 Upload failing-port logs artifact
+      id: upload-port-logs
+      if: steps.parse.outputs.failure-count != '0'
+      uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+      with:
+        name: failing-port-logs-${{ inputs.triplet }}
+        path: ${{ steps.package-port-logs.outputs.path }}
+        if-no-files-found: ignore
+
+    # Resolve a deep link to the "Inline failing-port logs" step so the
+    # report can point users straight at the step in the workflow log.
+    # GitHub collapses ::group:: blocks by default and line-precise anchors
+    # don't auto-expand them, so we only aim for the step-top anchor.
+    - name: 🔗 Resolve inline-logs deep link
+      id: inline-link
+      if: steps.parse.outputs.failure-count != '0'
+      shell: bash
+      env:
+        GH_TOKEN: ${{ github.token }}
+        INLINE_STEP_NAME: 📜 Inline failing-port logs
+      run: |
+        set -euo pipefail
+        jobs_json="${RUNNER_TEMP//\\//}/vcpkg-failures-jobs.json"
+        if ! gh api -H "Accept: application/vnd.github+json" \
+            "/repos/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}/jobs?per_page=100" \
+            > "${jobs_json}"; then
+          echo "::warning::Could not query jobs for inline-logs deep link"
+          echo "url=" >> "$GITHUB_OUTPUT"
+          exit 0
+        fi
+        url=$(JOBS_JSON="${jobs_json}" python3 - <<'PY'
+        import json, os
+        data = json.loads(open(os.environ["JOBS_JSON"], encoding="utf-8").read())
+        runner = os.environ.get("RUNNER_NAME", "")
+        step_name = os.environ["INLINE_STEP_NAME"]
+        server = os.environ["GITHUB_SERVER_URL"]
+        repo = os.environ["GITHUB_REPOSITORY"]
+        run_id = os.environ["GITHUB_RUN_ID"]
+        # Our own job is the in-progress one running on this runner.
+        candidates = [j for j in data.get("jobs", [])
+                      if j.get("runner_name") == runner
+                      and j.get("status") == "in_progress"]
+        # Fall back to any job on this runner if the API hasn't flipped our
+        # status yet.
+        if not candidates:
+            candidates = [j for j in data.get("jobs", [])
+                          if j.get("runner_name") == runner]
+        for job in candidates:
+            for step in job.get("steps", []):
+                if step.get("name") == step_name and step.get("number"):
+                    print(f"{server}/{repo}/actions/runs/{run_id}"
+                          f"/job/{job['id']}#step:{step['number']}:1")
+                    raise SystemExit(0)
+        PY
+        )
+        echo "url=${url}" >> "$GITHUB_OUTPUT"
+        if [ -n "${url}" ]; then
+          echo "Inline-logs deep link: ${url}"
+        else
+          echo "::warning::Could not resolve inline-logs deep link"
+        fi
+
+    - name: Render markdown report
+      id: render
+      shell: bash
+      env:
+        TRIPLET: ${{ inputs.triplet }}
+        ARTIFACT_URL: ${{ inputs.artifact-url }}
+        PORT_LOGS_URL: ${{ steps.upload-port-logs.outputs.artifact-url }}
+        INLINE_LOGS_URL: ${{ steps.inline-link.outputs.url }}
+        DIFF_REPORT: ${{ inputs.diff-report-json }}
+        RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        FAILURES_JSON: ${{ steps.parse.outputs.json-path }}
+        BUILD_STATUS: ${{ inputs.build-status }}
+        COMMIT_SHA: ${{ inputs.commit-sha }}
+        COMMIT_URL_BASE: ${{ github.server_url }}/${{ github.repository }}/commit
+      run: |
+        set -euo pipefail
+        out_md="${RUNNER_TEMP//\\//}/vcpkg-failures.md"
+        echo "md-path=${out_md}" >> "$GITHUB_OUTPUT"
+
+        args=( "${FAILURES_JSON}" --triplet "${TRIPLET}" --run-url "${RUN_URL}" --output "${out_md}" )
+        if [ -n "${ARTIFACT_URL}" ]; then
+          args+=( --artifact-url "${ARTIFACT_URL}" )
+        fi
+        if [ -n "${PORT_LOGS_URL}" ]; then
+          args+=( --per-port-artifact-url "${PORT_LOGS_URL}" )
+        fi
+        if [ -n "${INLINE_LOGS_URL}" ]; then
+          args+=( --inline-logs-url "${INLINE_LOGS_URL}" )
+        fi
+        if [ -n "${BUILD_STATUS}" ]; then
+          args+=( --build-status "${BUILD_STATUS}" )
+        fi
+        if [ -n "${COMMIT_SHA}" ]; then
+          args+=( --commit-sha "${COMMIT_SHA}" --commit-url "${COMMIT_URL_BASE}/${COMMIT_SHA}" )
+        fi
+        if [ -n "${DIFF_REPORT}" ] && [ -f "${DIFF_REPORT}" ]; then
+          args+=( --diff-report "${DIFF_REPORT}" )
+        fi
+        python3 "${GITHUB_ACTION_PATH}/format_report.py" "${args[@]}"
+
+        # Expose the rendered markdown as a multi-line step output so the
+        # post_sticky_comment step can consume it.
+        {
+          echo "body<<__VCPKG_FAILURES_EOF__"
+          cat "${out_md}"
+          echo "__VCPKG_FAILURES_EOF__"
+        } >> "$GITHUB_OUTPUT"
+
+    - name: Append report to step summary
+      shell: bash
+      env:
+        MD_PATH: ${{ steps.render.outputs.md-path }}
+      run: |
+        {
+          echo ""
+          echo "## 🧮 vcpkg build failures"
+          echo ""
+          cat "${MD_PATH}"
+        } >> "$GITHUB_STEP_SUMMARY"
+
+    - name: Emit workflow annotations for failing ports
+      if: steps.parse.outputs.failure-count != '0'
+      shell: bash
+      env:
+        TRIPLET: ${{ inputs.triplet }}
+        FAILURES_JSON: ${{ steps.parse.outputs.json-path }}
+      run: |
+        set -euo pipefail
+        python3 - <<'PY'
+        import json, os
+        triplet = os.environ["TRIPLET"]
+        path = os.environ["FAILURES_JSON"]
+        for f in json.load(open(path)):
+            print(f"::error file=vcpkg/vcpkg.json,title=vcpkg port build failure::"
+                  f"{f['port']} failed on {triplet}")
+        PY
+
+    - name: Schedule sticky comment update
+      if: inputs.pr != ''
+      uses: ./.github/actions/post_sticky_comment
+      with:
+        marker: vcpkg-failures-${{ inputs.triplet }}
+        body: ${{ steps.render.outputs.body }}
+        pr: ${{ inputs.pr }}
+        key: vcpkg-failures-${{ inputs.triplet }}

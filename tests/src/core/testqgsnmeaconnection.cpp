@@ -90,6 +90,7 @@ class TestQgsNmeaConnection : public QgsTest
     void testComponent_data();
     void testComponent();
     void testIncompleteMessage();
+    void testGgaRcmRTKDivergence();
 };
 
 void TestQgsNmeaConnection::initTestCase()
@@ -561,6 +562,27 @@ void TestQgsNmeaConnection::testIncompleteMessage()
   QCOMPARE( info.componentValue( Qgis::GpsInformationComponent::Altitude ).toDouble(), 35 );
   QCOMPARE( info.componentValue( Qgis::GpsInformationComponent::GroundSpeed ).toDouble(), 0 );
   QCOMPARE( info.componentValue( Qgis::GpsInformationComponent::Bearing ).toDouble(), 0 );
+}
+
+void TestQgsNmeaConnection::testGgaRcmRTKDivergence()
+{
+  ReplayNmeaConnection connection;
+
+  QgsGpsInformation info = connection.push( u"$GPGGA,225651.00,3617.56130011,N,09718.50567350,W,4,03,4.4,322.480,M,-25.964,M,,*56"_s );
+  QCOMPARE( info.quality, 4 );
+  QCOMPARE( info.qualityIndicator, Qgis::GpsQualityIndicator::RTK );
+
+  info = connection.push( u"$GPRMC,225651.00,A,3617.56130011,N,09718.50567350,W,0.065,231.147,100316,999.9000,E,D,V"_s );
+  QCOMPARE( info.quality, 4 );
+  QCOMPARE( info.qualityIndicator, Qgis::GpsQualityIndicator::RTK );
+
+  info = connection.push( u"$GPGGA,225651.00,3617.56130011,N,09718.50567350,W,2,03,4.4,322.480,M,-25.964,M,,*56"_s );
+  QCOMPARE( info.quality, 2 );
+  QCOMPARE( info.qualityIndicator, Qgis::GpsQualityIndicator::DGPS );
+
+  info = connection.push( u"$GPRMC,225651.00,A,3617.56130011,N,09718.50567350,W,0.065,231.147,100316,999.9000,E,F,V"_s );
+  QCOMPARE( info.quality, 5 );
+  QCOMPARE( info.qualityIndicator, Qgis::GpsQualityIndicator::FloatRTK );
 }
 
 QGSTEST_MAIN( TestQgsNmeaConnection )

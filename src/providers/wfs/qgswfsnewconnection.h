@@ -53,6 +53,7 @@ class QgsWFSNewConnection : public QgsNewHttpConnection
     QString mOAPIFCollectionsUrl;
     QString mOAPIFApiUrl;
     bool mDetectFormatInProgress = false;
+    bool mDetectVersionInProgress = false;
 };
 
 #endif //QGSWFSNEWCONNECTION_H

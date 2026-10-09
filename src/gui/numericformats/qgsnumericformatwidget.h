@@ -70,13 +70,6 @@ class GUI_EXPORT QgsNumericFormatWidget : public QgsPanelWidget, public QgsExpre
 
     QgsExpressionContext createExpressionContext() const override;
 
-  signals:
-
-    /**
-     * Emitted whenever the configuration of the numeric format is changed.
-     */
-    void changed();
-
   private:
     QgsExpressionContextGenerator *mExpressionContextGenerator = nullptr;
 };

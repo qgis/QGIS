@@ -195,13 +195,6 @@ Register an expression context ``generator`` class that will be used to
 retrieve an expression context for the widget.
 %End
 
-  signals:
-
-    void changed();
-%Docstring
-Emitted when the aggregates defined in the widget are changed.
-%End
-
   public slots:
 
     void appendField( const QgsField &field, const QString &source = QString(), const QString &aggregate = QString() );

@@ -106,7 +106,7 @@ public:
     /// Get token expiration time (seconds from Epoch).
     qint64 expires();
 
-public Q_SLOTS:
+public slots:
     /// Authenticate.
     Q_INVOKABLE void link() override;
 
@@ -119,7 +119,7 @@ public Q_SLOTS:
     /// Handle situation where reply server has opted to close its connection
     void serverHasClosed(bool paramsfound = false);
 
-Q_SIGNALS:
+signals:
     /// Emitted when a token refresh has been completed or failed.
     void refreshFinished(QNetworkReply::NetworkError error);
 
@@ -137,11 +137,11 @@ Q_SIGNALS:
     void ignoreSslErrorsChanged(bool ignore);
     void grantTypeChanged(const QString& type);
 
-public Q_SLOTS:
+public slots:
     /// Handle verification response.
     virtual void onVerificationReceived(QMap<QString, QString>);
 
-protected Q_SLOTS:
+protected slots:
     /// Handle completion of a token request.
     virtual void onTokenReplyFinished();
 

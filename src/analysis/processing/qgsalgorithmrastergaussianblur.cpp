@@ -114,6 +114,8 @@ bool QgsRasterGaussianBlurAlgorithm::prepareAlgorithm( const QVariantMap &parame
 
 QVariantMap QgsRasterGaussianBlurAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
+  QGS_MARK_ALGORITHM_SOURCE
+
   const int radius = parameterAsInt( parameters, u"RADIUS"_s, context );
 
   const QString creationOptions = parameterAsString( parameters, u"CREATION_OPTIONS"_s, context ).trimmed();
