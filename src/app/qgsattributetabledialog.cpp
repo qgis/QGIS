@@ -39,6 +39,7 @@
 #include "qgsfields.h"
 #include "qgsgui.h"
 #include "qgsguiutils.h"
+#include "qgshelp.h"
 #include "qgslogger.h"
 #include "qgsmapcanvas.h"
 #include "qgsmessagebar.h"
@@ -132,6 +133,7 @@ QgsAttributeTableDialog::QgsAttributeTableDialog(
   setupUi( this );
 
   connect( mMainViewButtonGroup, &QButtonGroup::idClicked, mMainView, &QgsDualView::setCurrentIndex );
+  connect( mHelpButtonBox, &QDialogButtonBox::clicked, this, &QgsAttributeTableDialog::showHelp );
   connect( mActionToggleEditing, &QAction::toggled, mActionSaveEdits, &QAction::setEnabled );
   connect( mActionToggleEditing, &QAction::toggled, mActionReload, &QAction::setDisabled );
 
@@ -1225,4 +1227,9 @@ void QgsAttributeTableDialog::toggleShortcuts( bool enable )
     mActionPanMapToSelectedRows->setShortcut( u"Ctrl+P"_s );
     mActionSearchForm->setShortcut( u"Ctrl+F"_s );
   }
+}
+
+void QgsAttributeTableDialog::showHelp( QAbstractButton * )
+{
+  QgsHelp::openHelp( u"working_with_vector/attribute_table.html#introducing-the-attribute-table-interface"_s );
 }

@@ -32,6 +32,7 @@ class QPushButton;
 class QLineEdit;
 class QComboBox;
 class QMenu;
+class QAbstractButton;
 class QgsAttributeTableModel;
 class QgsAttributeTableFilterModel;
 class QgsRubberBand;
@@ -258,6 +259,7 @@ class APP_EXPORT QgsAttributeTableDialog : public QDialog, private Ui::QgsAttrib
     void showContextMenu( QgsActionMenu *menu, QgsFeatureId fid );
     void updateLayerModifiedActions();
     void zoomToFeature( QgsFeatureId fid );
+    void showHelp( QAbstractButton *button );
 
   private:
     QMenu *mMenuActions = nullptr;
