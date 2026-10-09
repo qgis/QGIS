@@ -30,9 +30,10 @@ Rectangle {
     }
 
     RoundButton {
-      radius: 20
-      Layout.preferredHeight: 50
       Layout.preferredWidth: implicitWidth * 1.2
+      radius: implicitHeight / 2
+      rightInset: 0
+      leftInset: 0
       highlighted: true
       Material.accent: "#589632"
       text: qsTr("Support QGIS")
@@ -47,9 +48,10 @@ Rectangle {
     }
 
     RoundButton {
-      radius: 20
-      Layout.preferredHeight: 50
       Layout.preferredWidth: implicitWidth * 1.2
+      radius: implicitHeight / 2
+      rightInset: 0
+      leftInset: 0
       visible: root.width >= 310
       highlighted: true
       Material.accent: "#8c8c8c"

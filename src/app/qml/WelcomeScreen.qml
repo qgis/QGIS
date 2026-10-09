@@ -17,8 +17,8 @@ Item {
   property real titleFontSize: Application.font.pointSize * 1.3 * layoutSizeFactor
   property real largeFontSize: Application.font.pointSize * 1.1 * layoutSizeFactor
   property real normalFontSize: Application.font.pointSize * layoutSizeFactor
-  property real smallFontSize: Application.font.pointSize * 0.925 * layoutSizeFactor
-  property real tinyFontSize: Application.font.pointSize * 0.875 * layoutSizeFactor
+  property real smallFontSize: Application.font.pointSize * 0.95 * layoutSizeFactor
+  property real tinyFontSize: Application.font.pointSize * 0.925 * layoutSizeFactor
 
   width: 2100
   height: 1420
@@ -486,7 +486,7 @@ Item {
                   anchors.fill: parent
                   anchors.margins: 16
                   text: qsTr("The free and open-source geographic information system that empowers users worldwide to create, edit, visualize, analyze, and share geospatial data. Whether you're a beginner or a seasoned GIS expert, QGIS gives you the tools to turn spatial data into impactful maps and insights. Join our vibrant global community and start exploring the world through the power of open-source geospatial technology.")
-                  font.pointSize: tinyFontSize
+                  font.pointSize: smallFontSize
                   color: "black"
                   wrapMode: Text.WordWrap
                   lineHeight: 1.3
@@ -516,7 +516,7 @@ Item {
                   Text {
                     Layout.fillWidth: true
                     text: qsTr("Would you like to enable the QGIS news feed to stay updated on new features, releases, and community highlights?")
-                    font.pointSize: tinyFontSize
+                    font.pointSize: smallFontSize
                     color: "black"
                     wrapMode: Text.WordWrap
                   }
@@ -668,10 +668,10 @@ Item {
     UpdateNotificationBar {
       id: pluginsUpdateBar
       Layout.fillWidth: true
-      Layout.preferredHeight: 50
-      radius: 16
+      Layout.preferredHeight: 54
+      radius: mainCard.radius
       visible: false
-      color: mainCard.color
+      color: "#ed7913"
 
       onInstallClicked: {
         visible = false;
@@ -682,8 +682,8 @@ Item {
     UpdateNotificationBar {
       id: qgisUpdateBar
       Layout.fillWidth: true
-      Layout.preferredHeight: 50
-      radius: 16
+      Layout.preferredHeight: 54
+      radius: mainCard.radius
       visible: false
       color: mainCard.color
 
