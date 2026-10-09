@@ -473,7 +473,11 @@ bool QgsGmlStreamingParser::processData( const QByteArray &pdata, bool atEnd, QS
       }
     }
 
+#if ( XML_MAJOR_VERSION > 2 || ( XML_MAJOR_VERSION == 2 && XML_MINOR_VERSION >= 9 ) )
+    errorMsg = QObject::tr( "Error: %1 on line %2, column %3" ).arg( XML_ErrorString( errorCode ) ).arg( XML_GetCurrentLineNumber64( mParser ) ).arg( XML_GetCurrentColumnNumber64( mParser ) );
+#else
     errorMsg = QObject::tr( "Error: %1 on line %2, column %3" ).arg( XML_ErrorString( errorCode ) ).arg( XML_GetCurrentLineNumber( mParser ) ).arg( XML_GetCurrentColumnNumber( mParser ) );
+#endif
 
     return false;
   }
