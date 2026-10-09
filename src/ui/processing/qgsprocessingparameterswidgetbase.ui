@@ -71,6 +71,17 @@
         </widget>
        </item>
        <item>
+        <widget class="QgsCollapsibleGroupBox" name="grpOutputs">
+         <property name="title">
+          <string>Outputs</string>
+         </property>
+         <property name="collapsed" stdset="0">
+          <bool>false</bool>
+         </property>
+         <layout class="QVBoxLayout" name="mOutputGroupLayout"/>
+        </widget>
+       </item>
+       <item>
         <spacer name="verticalSpacer">
          <property name="orientation">
           <enum>Qt::Vertical</enum>
