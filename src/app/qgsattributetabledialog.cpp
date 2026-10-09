@@ -156,6 +156,7 @@ QgsAttributeTableDialog::QgsAttributeTableDialog(
   connect( mActionAddFeature, &QAction::triggered, this, &QgsAttributeTableDialog::mActionAddFeatureViaAttributeTable_triggered );
   connect( mActionAddFeatureViaAttributeForm, &QAction::triggered, this, &QgsAttributeTableDialog::mActionAddFeatureViaAttributeForm_triggered );
   connect( mActionExpressionSelect, &QAction::triggered, this, &QgsAttributeTableDialog::mActionExpressionSelect_triggered );
+  connect( mActionHelp, &QAction::triggered, this, &QgsAttributeTableDialog::mActionHelp_triggered );
   connect( mMainView, &QgsDualView::showContextMenuExternally, this, &QgsAttributeTableDialog::showContextMenu );
 
   // Connect double-click zoom functionality
@@ -823,6 +824,11 @@ void QgsAttributeTableDialog::mActionExpressionSelect_triggered()
   dlg->setMessageBar( QgisApp::instance()->messageBar() );
   dlg->setAttribute( Qt::WA_DeleteOnClose );
   dlg->show();
+}
+
+void QgsAttributeTableDialog::mActionHelp_triggered()
+{
+  QgsHelp::openHelp( u"working_with_vector/attribute_table.html#introducing-the-attribute-table-interface"_s );
 }
 
 void QgsAttributeTableDialog::mActionCutSelectedRows_triggered()
