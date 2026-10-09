@@ -386,6 +386,17 @@
         "year": 2026
       },
       "geometry": null
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "country": "HR",
+        "name": "QGIS Croatia User Group",
+        "logo_url": "https:\/\/hr.qgis.org\/img\/qgishr_logo.svg",
+        "website": "https:\/\/qgis.hr",
+        "year": 2026
+      },
+      "geometry": null
     }
   ]
 }
