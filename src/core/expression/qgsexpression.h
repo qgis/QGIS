@@ -610,6 +610,17 @@ class CORE_EXPORT QgsExpression
     static bool registerFunction( QgsExpressionFunction *function, bool transferOwnership = false );
 
     /**
+     * Registers a function to the expression engine. This is required to allow expressions to utilize the function.
+     *
+     * \warning This is an unsafe method which bypasses the internal thread safety protection and name uniqueness checks.
+     *
+     * \note Not available in Python bindings
+     *
+     * \since QGIS 4.4
+     */
+    SIP_SKIP static bool registerFunctionUnsafe( QgsExpressionFunction *function, bool transferOwnership = false );
+
+    /**
      * Unregisters a function from the expression engine. The function will no longer be usable in expressions.
      * \param name function name
      * \see registerFunction

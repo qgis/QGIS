@@ -522,6 +522,7 @@ expressions to utilize the function.
 .. seealso:: :py:func:`unregisterFunction`
 %End
 
+
     static bool unregisterFunction( const QString &name );
 %Docstring
 Unregisters a function from the expression engine. The function will no

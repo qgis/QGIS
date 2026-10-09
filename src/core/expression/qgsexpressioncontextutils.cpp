@@ -1008,16 +1008,16 @@ QgsExpressionContextScope *QgsExpressionContextUtils::notificationScope( const Q
 
 void QgsExpressionContextUtils::registerContextFunctions()
 {
-  QgsExpression::registerFunction( new GetNamedProjectColor( nullptr ) );
-  QgsExpression::registerFunction( new GetNamedProjectColorObject( nullptr ) );
-  QgsExpression::registerFunction( new GetSensorData() );
-  QgsExpression::registerFunction( new GetLayoutItemVariables( nullptr ) );
-  QgsExpression::registerFunction( new GetLayoutMapLayerCredits( nullptr ) );
-  QgsExpression::registerFunction( new GetLayerVisibility( QList<QgsMapLayer *>(), 0.0 ) );
-  QgsExpression::registerFunction( new GetProcessingParameterValue( QVariantMap() ) );
-  QgsExpression::registerFunction( new GetCurrentFormFieldValue() );
-  QgsExpression::registerFunction( new GetCurrentParentFormFieldValue() );
-  QgsExpression::registerFunction( new LoadLayerFunction() );
+  QgsExpression::registerFunctionUnsafe( new GetNamedProjectColor( nullptr ) );
+  QgsExpression::registerFunctionUnsafe( new GetNamedProjectColorObject( nullptr ) );
+  QgsExpression::registerFunctionUnsafe( new GetSensorData() );
+  QgsExpression::registerFunctionUnsafe( new GetLayoutItemVariables( nullptr ) );
+  QgsExpression::registerFunctionUnsafe( new GetLayoutMapLayerCredits( nullptr ) );
+  QgsExpression::registerFunctionUnsafe( new GetLayerVisibility( QList<QgsMapLayer *>(), 0.0 ) );
+  QgsExpression::registerFunctionUnsafe( new GetProcessingParameterValue( QVariantMap() ) );
+  QgsExpression::registerFunctionUnsafe( new GetCurrentFormFieldValue() );
+  QgsExpression::registerFunctionUnsafe( new GetCurrentParentFormFieldValue() );
+  QgsExpression::registerFunctionUnsafe( new LoadLayerFunction() );
 }
 
 bool QgsScopedExpressionFunction::usesGeometry( const QgsExpressionNodeFunction *node ) const
