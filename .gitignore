@@ -23,6 +23,7 @@
 .*.swp
 .DS_Store
 .cache/
+.env
 .gdb_history
 .idea
 .kdev4/
