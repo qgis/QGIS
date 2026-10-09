@@ -80,8 +80,7 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private
     {
       ReturnPressed,
       FocusOut,
-      TextEdited,
-      TextEditedInteractive
+      TextEdited
     };
 
 
