@@ -123,9 +123,10 @@ QgsFeatureList QgsExtendLinesAlgorithm::processFeature( const QgsFeature &featur
   QGS_MARK_ALGORITHM_SOURCE
 
   QgsFeature f = feature;
-  if ( f.hasGeometry() )
+
+  const QgsGeometry geometry = f.geometry();
+  if ( !geometry.isNull() && !geometry.isEmpty() )
   {
-    const QgsGeometry geometry = f.geometry();
     double startDistance = mStartDistance;
     if ( mDynamicStartDistance )
       startDistance = mStartDistanceProperty.valueAsDouble( context.expressionContext(), startDistance );
