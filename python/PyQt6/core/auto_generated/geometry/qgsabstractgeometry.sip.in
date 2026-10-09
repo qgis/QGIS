@@ -519,7 +519,7 @@ Moves a vertex within the geometry
 .. seealso:: :py:func:`deleteVertex`
 %End
 
-    virtual bool deleteVertex( QgsVertexId position ) = 0;
+    virtual bool deleteVertex( QgsVertexId position );
 %Docstring
 Deletes a vertex within the geometry
 

@@ -2,7 +2,7 @@
 try:
     QgsLineString.fromBezierCurve = staticmethod(QgsLineString.fromBezierCurve)
     QgsLineString.fromQPolygonF = staticmethod(QgsLineString.fromQPolygonF)
-    QgsLineString.__overridden_methods__ = ['toCurveType', 'geometryType', 'clone', 'clear', 'indexOf', 'isValid', 'snappedToGrid', 'removeDuplicateNodes', 'isClosed', 'isClosed2D', 'boundingBoxIntersects', 'asQPolygonF', 'simplifyByDistance', 'asGml2', 'asGml3', 'asKml', 'length', 'curveToLine', 'draw', 'addToPainterPath', 'drawAsPolygon', 'insertVertex', 'deleteVertex', 'deleteVertices', 'reversed', 'interpolatePoint', 'curveSubstring', 'closestSegment', 'pointAt', 'centroid', 'sumUpArea', 'sumUpArea3D', 'vertexAngle', 'segmentLength', 'distanceBetweenVertices', 'convertTo', 'createEmptyWithSameType', 'calculateBoundingBox3D']
+    QgsLineString.__overridden_methods__ = ['toCurveType', 'geometryType', 'clone', 'clear', 'indexOf', 'isValid', 'snappedToGrid', 'removeDuplicateNodes', 'isClosed', 'isClosed2D', 'boundingBoxIntersects', 'asQPolygonF', 'simplifyByDistance', 'asGml2', 'asGml3', 'asKml', 'length', 'curveToLine', 'draw', 'addToPainterPath', 'drawAsPolygon', 'insertVertex', 'deleteVertices', 'reversed', 'interpolatePoint', 'curveSubstring', 'closestSegment', 'pointAt', 'centroid', 'sumUpArea', 'sumUpArea3D', 'vertexAngle', 'segmentLength', 'distanceBetweenVertices', 'convertTo', 'createEmptyWithSameType', 'calculateBoundingBox3D']
     QgsLineString.__group__ = ['geometry']
 except (NameError, AttributeError):
     pass

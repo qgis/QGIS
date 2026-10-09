@@ -22,6 +22,7 @@ email                : marco.hugentobler at sourcepole dot com
 
 #include "qgis.h"
 #include "qgis_core.h"
+#include "qgsvertexid.h"
 #include "qgswkbptr.h"
 #include "qgswkbtypes.h"
 
@@ -38,7 +39,6 @@ class QgsCurve;
 class QgsMultiCurve;
 class QgsMultiPoint;
 
-struct QgsVertexId;
 class QgsVertexIterator;
 class QPainter;
 class QDomDocument;
@@ -543,7 +543,7 @@ class CORE_EXPORT QgsAbstractGeometry
      * \see insertVertex
      * \see moveVertex
      */
-    virtual bool deleteVertex( QgsVertexId position ) = 0;
+    virtual bool deleteVertex( QgsVertexId position ) { return deleteVertices( { position } ); }
 
     /**
      * Deletes vertices within the geometry.

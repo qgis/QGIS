@@ -739,28 +739,6 @@ bool QgsPolyhedralSurface::moveVertex( QgsVertexId vId, const QgsPoint &newPos )
   return success;
 }
 
-bool QgsPolyhedralSurface::deleteVertex( QgsVertexId vId )
-{
-  if ( vId.part < 0 || vId.part >= partCount() )
-  {
-    return false;
-  }
-
-  QgsPolygon *patch = mPatches.at( vId.part );
-  bool success = patch->deleteVertex( QgsVertexId( 0, vId.ring, vId.vertex ) );
-  if ( success )
-  {
-    // if the patch has lost its exterior ring, remove it
-    if ( !patch->exteriorRing() )
-    {
-      delete mPatches.takeAt( vId.part );
-    }
-    clearCache();
-  }
-
-  return success;
-}
-
 bool QgsPolyhedralSurface::deleteVertices( const QSet<QgsVertexId> &positions )
 {
   QMap<int, QSet<QgsVertexId>> partVertices;
