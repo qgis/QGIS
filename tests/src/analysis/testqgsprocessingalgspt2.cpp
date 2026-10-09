@@ -139,6 +139,8 @@ class TestQgsProcessingAlgsPt2 : public QgsTest
     void xyzTilesGpkgWebMercator();
     void xyzTilesGpkgCustomCrs();
 
+    void extendLineAlg();
+
   private:
     QString mPointLayerPath;
     QgsVectorLayer *mPointsLayer = nullptr;
@@ -2714,6 +2716,49 @@ void TestQgsProcessingAlgsPt2::xyzTilesGpkgCustomCrs()
   QGSCOMPARENEAR( layer->extent().yMinimum(), 24.577735, 2 );
   QGSCOMPARENEAR( layer->extent().xMaximum(), -83.766612, 2 );
   QGSCOMPARENEAR( layer->extent().yMaximum(), 46.7261726, 2 );
+}
+
+void TestQgsProcessingAlgsPt2::extendLineAlg()
+{
+  std::unique_ptr<QgsProcessingAlgorithm> alg( QgsApplication::processingRegistry()->createAlgorithmById( u"native:extendlines"_s ) );
+  QVERIFY( alg );
+
+  auto layer = std::make_unique<QgsVectorLayer>( u"LineString?crs=EPSG:4326"_s, u"test"_s, u"memory"_s );
+  QVERIFY( layer->isValid() );
+
+  QgsFeature f;
+  f.setGeometry( QgsGeometry::fromWkt( "LineString( 0 0, 10 0, 10 10 )" ) );
+  QVERIFY( layer->dataProvider()->addFeature( f ) );
+
+  f.setGeometry( QgsGeometry::fromWkt( "LineString EMPTY" ) );
+  QVERIFY( layer->dataProvider()->addFeature( f ) );
+
+  QVariantMap parameters;
+  parameters.insert( u"INPUT"_s, QVariant::fromValue( layer.get() ) );
+  parameters.insert( u"OUTPUT"_s, u"memory:"_s );
+  parameters.insert( u"START_DISTANCE"_s, 1 );
+  parameters.insert( u"END_DISTANCE"_s, 1 );
+
+  QgsProcessingFeedback feedback;
+  QVariantMap results;
+  auto context = std::make_unique<QgsProcessingContext>();
+  bool ok = false;
+  results = alg->run( parameters, *context, &feedback, &ok );
+  QVERIFY( ok );
+
+  QgsVectorLayer *outputLayer = qobject_cast<QgsVectorLayer *>( context->getMapLayer( results.value( u"OUTPUT"_s ).toString() ) );
+  QVERIFY( outputLayer->isValid() );
+  QCOMPARE( outputLayer->featureCount(), 2 );
+
+  QgsFeatureIterator it = outputLayer->getFeatures();
+
+  QgsFeature f1;
+  QVERIFY( it.nextFeature( f1 ) );
+  QCOMPARE( f1.geometry().asWkt(), "LineString (-1 0, 10 0, 10 11)" );
+
+  QgsFeature f2;
+  QVERIFY( it.nextFeature( f2 ) );
+  QCOMPARE( f2.geometry().asWkt(), "LineString EMPTY" );
 }
 
 QGSTEST_MAIN( TestQgsProcessingAlgsPt2 )
