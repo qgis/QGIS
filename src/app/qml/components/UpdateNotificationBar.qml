@@ -44,30 +44,26 @@ Rectangle {
       elide: Text.ElideRight
     }
     
-    Rectangle {
-      Layout.preferredWidth: installButtonText.implicitWidth + 32
-      Layout.preferredHeight: 38
-      Layout.alignment: Qt.AlignVCenter
-      radius: 20
-      color: "transparent"
-      border.color: "#f0e64a"
-
-      Text {
-        id: installButtonText
-        anchors.centerIn: parent
-        text: root.buttonText
-        font.pointSize: tinyFontSize
-        font.bold: true
-        color: "#ffffff"
+    RoundButton {
+      id: installButtonText
+      Layout.preferredWidth: implicitWidth * 1.2
+      radius: implicitHeight / 2
+      rightInset: 0
+      leftInset: 0
+      highlighted: true
+      font.pointSize: tinyFontSize
+      font.bold: true
+      text: root.buttonText
+      
+      background: Rectangle {      
+        implicitWidth: parent.Material.buttonHeight
+        implicitHeight: parent.Material.buttonHeight
+        radius: parent.radius
+        color: "transparent"
+        border.color: "#f0e64a"
       }
-
-      MouseArea {
-        id: installMouseArea
-        anchors.fill: parent
-        hoverEnabled: true
-        cursorShape: Qt.PointingHandCursor
-        onClicked: root.installClicked()
-      }
+      
+      onClicked: root.installClicked()
     }
   }
 }
