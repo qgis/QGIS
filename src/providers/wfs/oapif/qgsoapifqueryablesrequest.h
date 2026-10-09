@@ -35,6 +35,9 @@ class QgsOapifQueryablesRequest : public QgsBaseNetworkRequest
         //! whether the parameter is a geometry
         bool mIsGeometry = false;
 
+        //! whether the parameter is the primary geometry ("x-ogc-role": "primary-geometry")
+        bool mIsPrimaryGeometry = false;
+
         //! type as in a JSON schema: "string", "integer", "number", etc.
         QString mType;
 
