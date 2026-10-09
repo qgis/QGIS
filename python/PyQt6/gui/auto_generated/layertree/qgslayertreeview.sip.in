@@ -639,6 +639,8 @@ Allows customization of the menu.
     virtual void contextMenuEvent( QContextMenuEvent *event );
 
 
+    virtual void mousePressEvent( QMouseEvent *event );
+
     virtual void mouseReleaseEvent( QMouseEvent *event );
 
     virtual void keyPressEvent( QKeyEvent *event );

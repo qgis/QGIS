@@ -836,6 +836,19 @@ void QgsLayerTreeView::keyPressEvent( QKeyEvent *event )
   layerModel->setFlags( oldFlags );
 }
 
+void QgsLayerTreeView::mousePressEvent( QMouseEvent *event )
+{
+  if ( event->button() == Qt::LeftButton || event->button() == Qt::RightButton )
+  {
+    QTreeView::mousePressEvent( event );
+  }
+  else
+  {
+    event->accept();
+    return;
+  }
+}
+
 void QgsLayerTreeView::dragEnterEvent( QDragEnterEvent *event )
 {
   if ( event->mimeData()->hasUrls() || event->mimeData()->hasFormat( u"application/x-vnd.qgis.qgis.uri"_s ) )
@@ -847,7 +860,8 @@ void QgsLayerTreeView::dragEnterEvent( QDragEnterEvent *event )
       return;
     }
   }
-  QTreeView::dragEnterEvent( event );
+  if ( event->buttons() == Qt::LeftButton )
+    QTreeView::dragEnterEvent( event );
 }
 
 void QgsLayerTreeView::dragMoveEvent( QDragMoveEvent *event )
