@@ -231,6 +231,12 @@ void QgsModelDesignerSocketGraphicItem::paint( QPainter *painter, const QStyleOp
 #endif
 }
 
+QRectF QgsModelDesignerSocketGraphicItem::boundingRect() const
+{
+  constexpr float HEIGHT = 16;
+  constexpr float WIDTH = 48;
+  return QRectF( position().x() - WIDTH / 2, position().y() - HEIGHT / 2, WIDTH, HEIGHT );
+}
 
 QColor QgsModelDesignerSocketGraphicItem::socketColor() const
 {
