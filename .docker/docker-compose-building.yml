@@ -1,0 +1,56 @@
+# setup to build and run QGIS locally.
+# refer to INSTALL.md for usage instructions
+
+x-base: &base
+  image: qgis-localdev
+  build:
+    dockerfile_inline: |
+      FROM qgis/qgis3-build-deps-ubuntu-qt6:master
+      RUN apt-get install -y pre-commit git
+      RUN mkdir -p /BUILD /CONFIG /tmp/ccache /tmp/pre-commit
+      RUN chown ${UID:-0}:${GID:-0} /BUILD /CONFIG /tmp/ccache /tmp/pre-commit
+      USER ${UID:-0}:${GID:-0}
+  environment:
+    DISPLAY: ${DISPLAY-:0}
+    CCACHE_DIR: /tmp/ccache
+    PRE_COMMIT_HOME: /tmp/pre-commit
+    QGIS_CUSTOM_CONFIG_PATH: /CONFIG
+  volumes:
+    - /tmp/.X11-unix:/tmp/.X11-unix
+    - profile:/CONFIG
+    - ccache:/tmp/ccache
+    - precommit-cache:/tmp/pre-commit
+    - build:/BUILD
+    - ..:/QGIS
+  working_dir: /BUILD
+
+services:
+  cmake:
+    <<: *base
+    entrypoint: ["cmake"]
+    command: -GNinja -DUSE_CCACHE=ON -DCMAKE_BUILD_TYPE=Debug -DCMAKE_INSTALL_PREFIX=/usr -DWITH_DESKTOP=ON -DWITH_SERVER=ON -DWITH_3D=OFF -DWITH_BINDINGS=ON -DWITH_CUSTOM_WIDGETS=ON -DBINDINGS_GLOBAL_INSTALL=ON -DWITH_STAGED_PLUGINS=ON -DWITH_GRASS=OFF -DDISABLE_DEPRECATED=ON -DENABLE_TESTS=ON -DWITH_QSPATIALITE=ON -DWITH_APIDOC=OFF -DWITH_ASTYLE=ON -DWITH_INTERNAL_SPATIALINDEX=ON -DWITH_PDAL=OFF /QGIS
+
+  ninja:
+    <<: *base
+    entrypoint: ["ninja"]
+
+  qgis:
+    <<: *base
+    entrypoint: ["/BUILD/output/bin/qgis"]
+
+  ctest:
+    <<: *base
+    profiles: ["tools"]
+    entrypoint: ["ctest"]
+
+  pre-commit:
+    <<: *base
+    working_dir: /QGIS
+    profiles: ["tools"]
+    entrypoint: ["pre-commit", "run"]
+
+volumes:
+  profile:
+  ccache:
+  precommit-cache:
+  build:
