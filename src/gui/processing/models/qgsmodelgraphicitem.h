@@ -199,6 +199,12 @@ class GUI_EXPORT QgsModelDesignerSocketGraphicItem : public QgsModelDesignerFlat
     QgsProcessingModelComponent *component() { return mComponent; };
 
     /**
+     * Return the component associated to the socket.
+     * \note Not available in Python bindings.
+     */
+    const QgsProcessingModelComponent *component() const SIP_SKIP { return mComponent; };
+
+    /**
      * Return the parent graphic item associated to the socket.
      */
     QgsModelComponentGraphicItem *componentItem() { return mComponentItem; };

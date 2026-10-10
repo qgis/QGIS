@@ -2802,6 +2802,8 @@ def try_process_enum_decl():
                 CONTEXT.current_line = read_line()
                 if detect_comment_block():
                     continue
+                if re.search(r"SIP_SKIP", CONTEXT.current_line):
+                    continue
                 if re.search(r"};", CONTEXT.current_line):
                     break
                 if re.match(
