@@ -24,7 +24,6 @@
 #include "qgsprocessingalgorithm.h"
 #include "qgsprocessingmodelchildalgorithm.h"
 #include "qgsprocessingmodelcomponent.h"
-#include "qgsprocessingoutputs.h"
 #include "qgsprocessingparameters.h"
 
 #include <QGraphicsSceneMouseEvent>
@@ -297,5 +296,26 @@ bool QgsModelDesignerSocketGraphicItem::isDefaultParameterValue() const
   return isDefaultValue;
 }
 
+QgsModelDesignerDataViewerButtonGraphicItem::QgsModelDesignerDataViewerButtonGraphicItem( QgsModelArrowItem *link )
+  : QgsModelDesignerFlatButtonGraphicItem( link, QPicture(), QPointF() )
+{
+  QSvgRenderer svg( QgsApplication::iconPath( u"mActionNewMap.svg"_s ) );
+  QPicture openDataViewerPicture;
+  QPainter painter( &openDataViewerPicture );
+  constexpr int iconSize = 16;
+  svg.render( &painter, QRectF( 0, 0, iconSize, iconSize ) );
+  painter.end();
+
+  setPicture( openDataViewerPicture );
+}
+
+void QgsModelDesignerDataViewerButtonGraphicItem::setPosition( QPainterPath path )
+{
+  QPointF middlePos = path.pointAtPercent( 0.5 );
+  QRectF rect = boundingRect();
+  QPointF offset = rect.center() + QPointF( 0, -25 );
+  setPos( middlePos - offset );
+  update();
+}
 
 ///@endcond

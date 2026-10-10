@@ -303,6 +303,29 @@ void QgsModelArrowItem::setShowBadge( bool visible )
   }
 }
 
+void QgsModelArrowItem::setDataViewerButton( const QString &childId, const QString &paramOrOutputName )
+{
+  removeDataViewerButton();
+
+  mDataViewerButton = new QgsModelDesignerDataViewerButtonGraphicItem( this );
+  mDataViewerButton->setPosition( path() );
+  connect( mDataViewerButton, &QgsModelDesignerDataViewerButtonGraphicItem::clicked, this, [this, childId = childId, paramOrOutputName = paramOrOutputName] {
+    emit showDataViewerDock( childId, paramOrOutputName );
+  } );
+}
+
+
+void QgsModelArrowItem::removeDataViewerButton()
+{
+  if ( mDataViewerButton )
+  {
+    scene()->removeItem( mDataViewerButton );
+    delete mDataViewerButton;
+    mDataViewerButton = nullptr;
+  }
+}
+
+
 void QgsModelArrowItem::updatePath()
 {
   QList<QPointF> controlPoints;
@@ -385,6 +408,11 @@ void QgsModelArrowItem::updatePath()
   if ( mBadgeItem )
   {
     mBadgeItem->setCenter( path.pointAtPercent( 0.5 ) );
+  }
+
+  if ( mDataViewerButton )
+  {
+    mDataViewerButton->setPosition( path );
   }
 }
 
