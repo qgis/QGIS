@@ -61,7 +61,7 @@ void QgsSettingsLocatorFilter::fetchResults( const QString &string, const QgsLoc
     QgsLocatorResult result;
     result.filter = this;
     result.displayString = title;
-    result.userData().setValue( settingsPage );
+    result.setUserData( QVariant::fromValue( settingsPage ) );
 
     if ( context.usingPrefix && string.isEmpty() )
     {
