@@ -386,6 +386,17 @@
         "year": 2026
       },
       "geometry": null
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "country": "AM",
+        "name": "QGIS Armenia",
+        "logo_url": "https:\/\/qgis.am\/logo.png",
+        "website": "https:\/\/qgis.am",
+        "year": 2026
+      },
+      "geometry": null
     }
   ]
 }
