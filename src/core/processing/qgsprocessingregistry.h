@@ -113,8 +113,8 @@ class CORE_EXPORT QgsProcessingRegistry : public QObject
     QList< const QgsProcessingAlgorithm *> algorithms() const;
 
     /**
-     *  Returns TRUE if the \a parameterDefinitionTarget accepts \a parameterDefinitionSource as
-     *  compatible Processing parameter types for parameter type of \a parameterDefinitionTarget.
+     *  Returns TRUE if the \a targetDefinition accepts \a candidateDefinition as
+     *  compatible Processing parameter types for parameter type of \a targetDefinition.
      *
      * ### Example
      *
@@ -124,19 +124,19 @@ class CORE_EXPORT QgsProcessingRegistry : public QObject
      *
      *   # Parameter source and parameter target are compatible
      *   QgsApplication.processingRegistry().isCompatibleDefinition( vectorLayerParam, vectorLayerParam ) # -> return True
-     *   QgsApplication.processingRegistry().isCompatibleDefinition( vectorLayerParam, boolParam ) # -> return True
+     *   QgsApplication.processingRegistry().isCompatibleDefinition( boolParam, vectorLayerParam ) # -> return True
      *
      *   # Parameter source and parameter target are incompatible
-     *   QgsApplication.processingRegistry().isCompatibleDefinition( boolParam, vectorLayerParam ) # -> return False
+     *   QgsApplication.processingRegistry().isCompatibleDefinition( vectorLayerParam, boolParam ) # -> return False
      * \endcode
      *
      *  \since QGIS 4.4
      */
-    bool isCompatibleDefinition(const QgsProcessingParameterDefinition* parameterDefinitionSource, const QgsProcessingParameterDefinition* parameterDefinitionTarget);
+    bool isCompatibleDefinition( const QgsProcessingParameterDefinition* targetDefinition, const QgsProcessingParameterDefinition* candidateDefinition );
 
     /**
-     *  Returns TRUE if the \a parameterDefinitionTarget accepts \a outputDefinitionSource as
-     *  compatible Processing output types for parameter type of \a parameterDefinitionTarget.
+     *  Returns TRUE if the \a targetDefinition accepts \a candidateOutput as
+     *  compatible Processing output types for parameter type of \a targetDefinition.
      *
      * - ### Example
      *
@@ -148,16 +148,16 @@ class CORE_EXPORT QgsProcessingRegistry : public QObject
      *   vectorLayerOutput = QgsProcessingOutputVectorLayer( "dummyname" )
      *
      *   # Output source and parameter target are compatible
-     *   QgsApplication.processingRegistry().isCompatibleDefinition( stringOutput, vectorLayerParam ) # -> return True
-     *   QgsApplication.processingRegistry().isCompatibleDefinition( vectorLayerOutput, vectorLayerParam ) # -> return True
+     *   QgsApplication.processingRegistry().isCompatibleOutput( vectorLayerParam, stringOutput ) # -> return True
+     *   QgsApplication.processingRegistry().isCompatibleOutput( vectorLayerParam, vectorLayerOutput ) # -> return True
      *
      *
      *   # Output source and parameter target are incompatible
-     *   QgsApplication.processingRegistry().isCompatibleDefinition( boolOutput, vectorLayerParam ) # -> return False
+     *   QgsApplication.processingRegistry().isCompatibleOutput( vectorLayerParam, boolOutput ) # -> return False
      * \endcode
      *  \since QGIS 4.4
      */
-    bool isCompatibleDefinition(const QgsProcessingOutputDefinition* outputDefinitionSource, const QgsProcessingParameterDefinition* parameterDefinitionTarget);
+    bool isCompatibleOutput(const QgsProcessingParameterDefinition* targetDefinition, const QgsProcessingOutputDefinition* candidateOutput);
 
     /**
      * Returns basic algorithm information for the algorithm with matching ID.
