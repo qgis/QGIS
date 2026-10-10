@@ -155,7 +155,7 @@ Returns the field definition.
 Sets the domain for the field. The item will take ownership of the
 domain.
 
-.. versionadded:: 4.2
+.. versionadded:: 4.4
 %End
 
 };

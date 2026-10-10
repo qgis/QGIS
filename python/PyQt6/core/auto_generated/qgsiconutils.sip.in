@@ -117,7 +117,7 @@ file at ``overlayPath``.
 :param size: The requested size of the resultant icon. Default value is
              the standard small icon size 16x16 pixels.
 
-.. versionadded:: 4.2
+.. versionadded:: 4.4
 %End
 };
 
