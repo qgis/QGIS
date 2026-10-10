@@ -150,9 +150,53 @@ class CliAdapter:
         if process is None or process.poll() is not None:
             return
         try:
-            os.killpg(process.pid, signal.SIGTERM)
-        except ProcessLookupError:
+            self.terminate_process(process)
+        except (ProcessLookupError, OSError):
             pass
+
+    @staticmethod
+    def popen_platform_options():
+        if os.name == "nt":
+            return {
+                "creationflags": subprocess.CREATE_NEW_PROCESS_GROUP,
+            }
+        return {
+            "start_new_session": True,
+        }
+
+    @staticmethod
+    def terminate_process(process):
+        if process is None or process.poll() is not None:
+            return
+        if os.name == "nt":
+            try:
+                process.send_signal(signal.CTRL_BREAK_EVENT)
+                process.wait(timeout=1.5)
+                return
+            except (OSError, subprocess.TimeoutExpired):
+                pass
+            subprocess.run(
+                ["taskkill", "/PID", str(process.pid), "/T", "/F"],
+                stdin=subprocess.DEVNULL,
+                stdout=subprocess.DEVNULL,
+                stderr=subprocess.DEVNULL,
+                check=False,
+            )
+            return
+        os.killpg(process.pid, signal.SIGTERM)
+
+    @staticmethod
+    def windows_wrapped_command(command):
+        if os.name != "nt" or not command:
+            return command
+        executable = str(command[0])
+        if not executable.lower().endswith((".cmd", ".bat")):
+            return command
+        system_root = os.environ.get("SystemRoot", r"C:\Windows").rstrip("\\/")
+        command_interpreter = os.environ.get("COMSPEC") or (
+            system_root + r"\System32\cmd.exe"
+        )
+        return [command_interpreter, "/d", "/s", "/c", "call", *command]
 
     def run_turn(self, turn_id, prompt):
         answer_id = f"answer-{turn_id}"
@@ -162,6 +206,7 @@ class CliAdapter:
         stderr_lines = []
         try:
             command, environment = self.provider_command(prompt)
+            command = self.windows_wrapped_command(command)
             process = subprocess.Popen(
                 command,
                 cwd=self.workspace,
@@ -171,13 +216,13 @@ class CliAdapter:
                 stderr=subprocess.PIPE,
                 text=True,
                 bufsize=1,
-                start_new_session=True,
+                **self.popen_platform_options(),
             )
             with self.lock:
                 self.current_process = process
                 interrupted_before_start = self.interrupted
             if interrupted_before_start:
-                os.killpg(process.pid, signal.SIGTERM)
+                self.terminate_process(process)
 
             stderr_thread = threading.Thread(
                 target=self.collect_stderr,
@@ -252,8 +297,33 @@ class CliAdapter:
             qgis_tools = (
                 "mcp__qgis_agent__project_summary,"
                 "mcp__qgis_agent__inspect_layer,"
+                "mcp__qgis_agent__list_data_source_layers,"
+                "mcp__qgis_agent__load_layer,"
+                "mcp__qgis_agent__export_layer,"
+                "mcp__qgis_agent__export_map_layout,"
+                "mcp__qgis_agent__save_project,"
+                "mcp__qgis_agent__query_features,"
+                "mcp__qgis_agent__field_statistics,"
+                "mcp__qgis_agent__validate_expression,"
+                "mcp__qgis_agent__select_features,"
+                "mcp__qgis_agent__clear_selection,"
+                "mcp__qgis_agent__map_canvas_state,"
+                "mcp__qgis_agent__zoom_to_layer,"
+                "mcp__qgis_agent__inspect_raster,"
+                "mcp__qgis_agent__suggest_raster_threshold,"
+                "mcp__qgis_agent__quality_check,"
+                "mcp__qgis_agent__edit_vector_layer,"
+                "mcp__qgis_agent__save_workflow,"
+                "mcp__qgis_agent__list_workflows,"
+                "mcp__qgis_agent__run_workflow,"
+                "mcp__qgis_agent__run_batch_workflow,"
                 "mcp__qgis_agent__list_processing_algorithms,"
-                "mcp__qgis_agent__run_processing_algorithm"
+                "mcp__qgis_agent__run_processing_algorithm,"
+                "mcp__qgis_agent__recent_diagnostics,"
+                "mcp__qgis_agent__geocode_place,"
+                "mcp__qgis_agent__query_overpass,"
+                "mcp__qgis_agent__search_stac,"
+                "mcp__qgis_agent__download_remote_file"
             )
             mcp_config.write_text(
                 json.dumps(

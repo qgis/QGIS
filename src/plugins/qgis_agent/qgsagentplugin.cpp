@@ -6,7 +6,11 @@
 #include "qgsfield.h"
 #include "qgsfields.h"
 #include "qgslayertreeview.h"
+#include "qgsmapcanvas.h"
 #include "qgsmaplayer.h"
+#include "qgsmessagebar.h"
+#include "qgsmessagebaritem.h"
+#include "qgsmessagelog.h"
 #include "qgsprocessing.h"
 #include "qgsprocessingalgorithm.h"
 #include "qgsprocessingcontext.h"
@@ -24,10 +28,13 @@
 #include <QComboBox>
 #include <QCoreApplication>
 #include <QDesktopServices>
+#include <QDateTime>
 #include <QDir>
 #include <QEvent>
 #include <QFile>
 #include <QFileInfo>
+#include <QFrame>
+#include <QGridLayout>
 #include <QHBoxLayout>
 #include <QJsonArray>
 #include <QJsonDocument>
@@ -41,6 +48,7 @@
 #include <QRandomGenerator>
 #include <QRegularExpression>
 #include <QScrollBar>
+#include <QScopedValueRollback>
 #include <QStandardPaths>
 #include <QTcpServer>
 #include <QTcpSocket>
@@ -118,16 +126,92 @@ namespace
     return QString::fromUtf8( QJsonDocument( object ).toJson( QJsonDocument::Compact ) );
   }
 
+  QString messageLevelName( Qgis::MessageLevel level )
+  {
+    switch ( level )
+    {
+      case Qgis::MessageLevel::Info:
+        return u"info"_s;
+      case Qgis::MessageLevel::Warning:
+        return u"warning"_s;
+      case Qgis::MessageLevel::Critical:
+        return u"critical"_s;
+      case Qgis::MessageLevel::Success:
+        return u"success"_s;
+      case Qgis::MessageLevel::NoLevel:
+        return u"none"_s;
+    }
+    return u"unknown"_s;
+  }
+
   QString tomlString( const QString &value )
   {
     const QByteArray encoded = QJsonDocument( QJsonArray{ value } ).toJson( QJsonDocument::Compact );
     return QString::fromUtf8( encoded.mid( 1, encoded.size() - 2 ) );
   }
 
-  QString htmlBlock( const QString &role, const QString &message, const QString &extra = QString() )
+  QString executableInDirectory( const QString &directory, const QString &command )
   {
-    return u"<p><b>%1</b><br>%2%3</p>"_s.arg(
-      role.toHtmlEscaped(),
+    if ( directory.isEmpty() )
+      return QString();
+
+#ifdef Q_OS_WIN
+    const QStringList names{
+      command + u".exe"_s,
+      command + u".cmd"_s,
+      command + u".bat"_s,
+      command,
+    };
+#else
+    const QStringList names{ command };
+#endif
+    for ( const QString &name : names )
+    {
+      const QFileInfo candidate( QDir( directory ).filePath( name ) );
+      if ( candidate.exists() && candidate.isFile()
+#ifndef Q_OS_WIN
+           && candidate.isExecutable()
+#endif
+      )
+        return candidate.absoluteFilePath();
+    }
+    return QString();
+  }
+
+  void configureProcessCommand( QProcess *process, const QString &executable, QStringList &arguments )
+  {
+#ifdef Q_OS_WIN
+    const QString suffix = QFileInfo( executable ).suffix().toLower();
+    if ( suffix == u"cmd"_s || suffix == u"bat"_s )
+    {
+      QString commandInterpreter = qEnvironmentVariable( "COMSPEC" );
+      if ( commandInterpreter.isEmpty() )
+        commandInterpreter = QDir( qEnvironmentVariable( "SystemRoot", u"C:\\Windows"_s ) ).filePath( u"System32/cmd.exe"_s );
+      arguments.prepend( QDir::toNativeSeparators( executable ) );
+      arguments.prepend( u"call"_s );
+      arguments.prepend( u"/c"_s );
+      arguments.prepend( u"/d"_s );
+      process->setProgram( commandInterpreter );
+      return;
+    }
+#else
+    Q_UNUSED( arguments )
+#endif
+    process->setProgram( executable );
+  }
+
+  QString messageBubble( const QString &message, bool userMessage, const QString &extra = QString() )
+  {
+    const QString alignment = userMessage ? u"right"_s : u"left"_s;
+    const QString background = userMessage ? u"#dbeafe"_s : u"#f3f4f6"_s;
+    const QString border = userMessage ? u"#bfdbfe"_s : u"#e5e7eb"_s;
+    return u"<table width=\"100%\" cellspacing=\"0\" cellpadding=\"0\"><tr><td align=\"%1\">"
+           "<table width=\"88%\" cellspacing=\"0\" cellpadding=\"0\"><tr><td style=\"background:%2;border:1px solid %3;"
+           "padding:8px 10px;border-radius:8px;color:#111827\">%4%5</td></tr></table>"
+           "</td></tr></table>"_s.arg(
+      alignment,
+      background,
+      border,
       message.toHtmlEscaped().replace( QLatin1Char( '\n' ), u"<br>"_s ),
       extra
     );
@@ -143,6 +227,38 @@ QgsAgentServer::QgsAgentServer( QgisInterface *interface, QObject *parent )
   const quint64 second = QRandomGenerator::global()->generate64();
   mToken = u"%1%2"_s.arg( first, 16, 16, QLatin1Char( '0' ) ).arg( second, 16, 16, QLatin1Char( '0' ) );
   connect( mServer, &QTcpServer::newConnection, this, &QgsAgentServer::acceptConnection );
+  connect(
+    QgsApplication::messageLog(),
+    &QgsMessageLog::messageReceivedWithFormat,
+    this,
+    [this]( const QString &message, const QString &tag, Qgis::MessageLevel level, Qgis::StringFormat ) {
+      mRecentQgisMessages.append( QJsonObject{
+        { u"timestamp"_s, QDateTime::currentDateTime().toString( Qt::ISODateWithMs ) },
+        { u"source"_s, u"message_log"_s },
+        { u"level"_s, messageLevelName( level ) },
+        { u"tag"_s, tag },
+        { u"message"_s, message.left( 12000 ) },
+      } );
+      while ( mRecentQgisMessages.size() > 200 )
+        mRecentQgisMessages.removeAt( 0 );
+    }
+  );
+  connect( mInterface->messageBar(), &QgsMessageBar::widgetAdded, this, [this]( QgsMessageBarItem *item ) {
+    if ( !item )
+      return;
+    const QString message = item->text();
+    if ( message.isEmpty() )
+      return;
+    mRecentQgisMessages.append( QJsonObject{
+      { u"timestamp"_s, QDateTime::currentDateTime().toString( Qt::ISODateWithMs ) },
+      { u"source"_s, u"message_bar"_s },
+      { u"level"_s, messageLevelName( item->level() ) },
+      { u"tag"_s, item->title() },
+      { u"message"_s, message.left( 12000 ) },
+    } );
+    while ( mRecentQgisMessages.size() > 200 )
+      mRecentQgisMessages.removeAt( 0 );
+  } );
 }
 
 bool QgsAgentServer::start()
@@ -227,8 +343,22 @@ void QgsAgentServer::readRequest()
   const QJsonObject request = requestDocument.object();
   const QString tool = request.value( u"tool"_s ).toString();
   const QJsonObject arguments = request.value( u"arguments"_s ).toObject();
+  if ( mToolRequestActive )
+  {
+    const QJsonObject result{
+      { u"ok"_s, false },
+      { u"error"_s, tr( "Another QGIS tool request is still in progress. Wait for it to finish before retrying." ) },
+    };
+    recordToolDiagnostic( tool, arguments, result );
+    sendResponse( socket, 409, result );
+    return;
+  }
+
+  QScopedValueRollback<bool> requestGuard( mToolRequestActive, true );
   emit activity( tr( "Tool: %1" ).arg( tool ) );
-  sendResponse( socket, 200, executeTool( tool, arguments ) );
+  const QJsonObject result = executeTool( tool, arguments );
+  recordToolDiagnostic( tool, arguments, result );
+  sendResponse( socket, 200, result );
 }
 
 QJsonObject QgsAgentServer::executeTool( const QString &tool, const QJsonObject &arguments )
@@ -237,10 +367,60 @@ QJsonObject QgsAgentServer::executeTool( const QString &tool, const QJsonObject 
     return projectSummary();
   if ( tool == u"inspect_layer"_s )
     return inspectLayer( arguments );
+  if ( tool == u"list_data_source_layers"_s )
+    return listDataSourceLayers( arguments );
+  if ( tool == u"load_layer"_s )
+    return loadLayer( arguments );
+  if ( tool == u"export_layer"_s )
+    return exportLayer( arguments );
+  if ( tool == u"export_map_layout"_s )
+    return exportMapLayout( arguments );
+  if ( tool == u"save_project"_s )
+    return saveProject( arguments );
+  if ( tool == u"query_features"_s )
+    return queryFeatures( arguments );
+  if ( tool == u"field_statistics"_s )
+    return fieldStatistics( arguments );
+  if ( tool == u"validate_expression"_s )
+    return validateExpression( arguments );
+  if ( tool == u"select_features"_s )
+    return selectFeatures( arguments );
+  if ( tool == u"clear_selection"_s )
+    return clearSelection( arguments );
+  if ( tool == u"map_canvas_state"_s )
+    return mapCanvasState();
+  if ( tool == u"zoom_to_layer"_s )
+    return zoomToLayer( arguments );
+  if ( tool == u"inspect_raster"_s )
+    return inspectRaster( arguments );
+  if ( tool == u"suggest_raster_threshold"_s )
+    return suggestRasterThreshold( arguments );
+  if ( tool == u"quality_check"_s )
+    return qualityCheck( arguments );
+  if ( tool == u"edit_vector_layer"_s )
+    return editVectorLayer( arguments );
+  if ( tool == u"save_workflow"_s )
+    return saveWorkflow( arguments );
+  if ( tool == u"list_workflows"_s )
+    return listWorkflows();
+  if ( tool == u"run_workflow"_s )
+    return runWorkflow( arguments );
+  if ( tool == u"run_batch_workflow"_s )
+    return runBatchWorkflow( arguments );
   if ( tool == u"list_processing_algorithms"_s )
     return listProcessingAlgorithms( arguments );
   if ( tool == u"run_processing_algorithm"_s )
     return runProcessingAlgorithm( arguments );
+  if ( tool == u"recent_diagnostics"_s )
+    return recentDiagnostics( arguments );
+  if ( tool == u"download_remote_file"_s )
+    return downloadRemoteFile( arguments );
+  if ( tool == u"geocode_place"_s )
+    return geocodePlace( arguments );
+  if ( tool == u"query_overpass"_s )
+    return queryOverpass( arguments );
+  if ( tool == u"search_stac"_s )
+    return searchStac( arguments );
 
   return QJsonObject{ { u"ok"_s, false }, { u"error"_s, tr( "Unknown tool: %1" ).arg( tool ) } };
 }
@@ -529,6 +709,8 @@ QgsAgentDockWidget::QgsAgentDockWidget( QgisInterface *interface, QWidget *paren
   mTranscript = new QTextBrowser( content );
   mTranscript->setOpenExternalLinks( false );
   mTranscript->setOpenLinks( false );
+  mTranscript->setFrameShape( QFrame::NoFrame );
+  mTranscript->setStyleSheet( u"QTextBrowser { background: #ffffff; border: none; }"_s );
   mTranscript->document()->addResource(
     QTextDocument::ImageResource,
     QUrl( u"qgis-agent-icon:withdraw"_s ),
@@ -548,11 +730,28 @@ QgsAgentDockWidget::QgsAgentDockWidget( QgisInterface *interface, QWidget *paren
   mTranscript->setPlaceholderText( tr( "Describe a GIS goal. The agent can inspect the active project, plan a workflow, and run QGIS Processing tools." ) );
   layout->addWidget( mTranscript, 1 );
 
+  mExecutionToggle = new QToolButton( content );
+  mExecutionToggle->setText( tr( "Execution log" ) );
+  mExecutionToggle->setCheckable( true );
+  mExecutionToggle->setChecked( false );
+  mExecutionToggle->setToolButtonStyle( Qt::ToolButtonTextBesideIcon );
+  mExecutionToggle->setArrowType( Qt::RightArrow );
+  mExecutionToggle->setAutoRaise( true );
+  layout->addWidget( mExecutionToggle );
+
+  mExecutionLog = new QTextBrowser( content );
+  mExecutionLog->setOpenLinks( false );
+  mExecutionLog->setMaximumHeight( 120 );
+  mExecutionLog->setVisible( false );
+  mExecutionLog->setStyleSheet( u"QTextBrowser { background: #f8fafc; border: 1px solid #e5e7eb; color: #4b5563; padding: 4px; }"_s );
+  layout->addWidget( mExecutionLog );
+
   QgsAgentTaskInputEdit *taskInput = new QgsAgentTaskInputEdit( content );
   mTaskInput = taskInput;
   mTaskInput->setPlaceholderText( tr( "Example: Buffer the active roads layer by 500 meters, dissolve the result, and add it to the project." ) );
-  mTaskInput->setMaximumHeight( 110 );
-  taskInput->setRightOverlayMargin( 40 );
+  mTaskInput->setFixedHeight( 68 );
+  mTaskInput->setStyleSheet( u"QTextEdit { border: 1px solid #cbd5e1; border-radius: 8px; padding: 8px; background: #ffffff; }"_s );
+  taskInput->setRightOverlayMargin( 36 );
   mTaskInput->installEventFilter( this );
   layout->addWidget( mTaskInput );
 
@@ -560,36 +759,52 @@ QgsAgentDockWidget::QgsAgentDockWidget( QgisInterface *interface, QWidget *paren
   mActionButton->setToolButtonStyle( Qt::ToolButtonIconOnly );
   mActionButton->setToolTip( tr( "Send" ) );
   mActionButton->setEnabled( false );
-  mActionButton->setFixedSize( 32, 32 );
+  mActionButton->setFixedSize( 28, 28 );
+  mActionButton->setStyleSheet( u"QToolButton { border: none; border-radius: 6px; } QToolButton:hover { background: #e2e8f0; }"_s );
   positionActionButton();
   updateActionButton();
 
-  QHBoxLayout *providerLayout = new QHBoxLayout();
-  providerLayout->addWidget( new QLabel( tr( "Provider" ), content ) );
-  mProviderCombo = new QComboBox( content );
-  populateProviderOptions();
-  providerLayout->addWidget( mProviderCombo, 1 );
-  layout->addLayout( providerLayout );
+  QFrame *settingsPanel = new QFrame( content );
+  settingsPanel->setFixedHeight( 130 );
+  settingsPanel->setStyleSheet( u"QFrame { background: #f8fafc; border: 1px solid #e5e7eb; border-radius: 8px; } "
+                                "QLabel, QCheckBox { border: none; background: transparent; } "
+                                "QComboBox { min-height: 24px; }"_s );
+  QGridLayout *settingsLayout = new QGridLayout( settingsPanel );
+  settingsLayout->setContentsMargins( 10, 8, 10, 8 );
+  settingsLayout->setHorizontalSpacing( 8 );
+  settingsLayout->setVerticalSpacing( 6 );
 
-  QHBoxLayout *modelLayout = new QHBoxLayout();
-  modelLayout->addWidget( new QLabel( tr( "Model" ), content ) );
-  mModelCombo = new QComboBox( content );
+  QLabel *providerLabel = new QLabel( tr( "Provider" ), settingsPanel );
+  mProviderCombo = new QComboBox( settingsPanel );
+  populateProviderOptions();
+  settingsLayout->addWidget( providerLabel, 0, 0 );
+  settingsLayout->addWidget( mProviderCombo, 0, 1 );
+
+  QLabel *modelLabel = new QLabel( tr( "Model" ), settingsPanel );
+  mModelCombo = new QComboBox( settingsPanel );
   mModelCombo->setEditable( true );
   mModelCombo->setInsertPolicy( QComboBox::NoInsert );
-  modelLayout->addWidget( mModelCombo, 1 );
-  layout->addLayout( modelLayout );
+  settingsLayout->addWidget( modelLabel, 1, 0 );
+  settingsLayout->addWidget( mModelCombo, 1, 1 );
   populateModelOptions();
 
-  mConfirmActions = new QCheckBox( tr( "Confirm write actions" ), content );
+  mConfirmActions = new QCheckBox( tr( "Confirm write actions" ), settingsPanel );
   mConfirmActions->setChecked( true );
-  layout->addWidget( mConfirmActions );
+  settingsLayout->addWidget( mConfirmActions, 2, 0, 1, 2 );
 
-  mStatusLabel = new QLabel( tr( "Starting local QGIS tools..." ), content );
+  mStatusLabel = new QLabel( tr( "Starting local QGIS tools..." ), settingsPanel );
   mStatusLabel->setWordWrap( true );
-  layout->addWidget( mStatusLabel );
+  mStatusLabel->setStyleSheet( u"QLabel { color: #475569; font-size: 11px; }"_s );
+  settingsLayout->addWidget( mStatusLabel, 3, 0, 1, 2 );
+  settingsLayout->setColumnStretch( 1, 1 );
+  layout->addWidget( settingsPanel );
 
   setWidget( content );
 
+  connect( mExecutionToggle, &QToolButton::toggled, this, [this]( bool expanded ) {
+    mExecutionToggle->setArrowType( expanded ? Qt::DownArrow : Qt::RightArrow );
+    mExecutionLog->setVisible( expanded );
+  } );
   connect( mActionButton, &QToolButton::clicked, this, &QgsAgentDockWidget::primaryActionTriggered );
   connect( mTranscript, &QTextBrowser::anchorClicked, this, &QgsAgentDockWidget::handleTranscriptLink );
   connect( mProviderCombo, &QComboBox::currentIndexChanged, this, &QgsAgentDockWidget::switchProvider );
@@ -598,6 +813,10 @@ QgsAgentDockWidget::QgsAgentDockWidget( QgisInterface *interface, QWidget *paren
   connect( mConfirmActions, &QCheckBox::toggled, mServer, &QgsAgentServer::setConfirmActions );
   connect( mServer, &QgsAgentServer::activity, this, &QgsAgentDockWidget::showServerActivity );
   connect( mServer, &QgsAgentServer::layersLoaded, this, &QgsAgentDockWidget::recordLoadedLayers );
+  connect( mServer, &QgsAgentServer::selectionChanged, this, &QgsAgentDockWidget::recordSelectionChange );
+  connect( mServer, &QgsAgentServer::canvasExtentChanged, this, &QgsAgentDockWidget::recordCanvasExtentChange );
+  connect( mServer, &QgsAgentServer::layerEdited, this, &QgsAgentDockWidget::recordLayerEdit );
+  connect( mServer, &QgsAgentServer::fileCreated, this, &QgsAgentDockWidget::recordCreatedFile );
   connect( mProcess, &QProcess::started, this, &QgsAgentDockWidget::agentStarted );
   connect( mProcess, &QProcess::readyReadStandardOutput, this, &QgsAgentDockWidget::readAgentOutput );
   connect( mProcess, &QProcess::readyReadStandardError, this, &QgsAgentDockWidget::readAgentError );
@@ -725,7 +944,6 @@ void QgsAgentDockWidget::startAgentSession()
   QStringList arguments;
   if ( provider == u"traex"_s || provider == u"codex"_s )
   {
-    mProcess->setProgram( executable );
     arguments = {
       u"-c"_s,
       u"model_reasoning_effort=\"low\""_s,
@@ -753,6 +971,7 @@ void QgsAgentDockWidget::startAgentSession()
                 << u"-c"_s << u"mcp_servers.Bits-DevOps.enabled=false"_s;
     }
     arguments << u"app-server"_s;
+    configureProcessCommand( mProcess, executable, arguments );
   }
   else
   {
@@ -776,6 +995,8 @@ void QgsAgentDockWidget::startAgentSession()
   mProcess->setArguments( arguments );
   mOutputBuffer.clear();
   mPendingRequests.clear();
+  mTurnIndexes.clear();
+  mCommittedAgentMessageIds.clear();
   mNextRequestId = 1;
   mShuttingDown = false;
   mProcess->start();
@@ -791,12 +1012,72 @@ void QgsAgentDockWidget::shutdownAgentSession()
     mProcess->closeWriteChannel();
     if ( !mProcess->waitForFinished( 1500 ) )
     {
+#ifdef Q_OS_WIN
+      const qint64 processId = mProcess->processId();
+      if ( processId > 0 )
+        QProcess::execute( u"taskkill"_s, QStringList{ u"/PID"_s, QString::number( processId ), u"/T"_s, u"/F"_s } );
+#else
       mProcess->terminate();
       if ( !mProcess->waitForFinished( 1000 ) )
         mProcess->kill();
+#endif
     }
   }
   QFile::remove( connectionFilePath() );
+}
+
+void QgsAgentDockWidget::startAgentThread()
+{
+  sendRequest( u"thread/start"_s, QJsonObject{
+    { u"cwd"_s, agentWorkspace() },
+    { u"ephemeral"_s, true },
+    { u"approvalPolicy"_s, u"on-request"_s },
+    { u"approvalsReviewer"_s, u"auto_review"_s },
+    { u"sandbox"_s, u"read-only"_s },
+    { u"developerInstructions"_s, agentInstructions() },
+    { u"threadSource"_s, u"user"_s },
+  } );
+}
+
+void QgsAgentDockWidget::startCurrentTurnRequest()
+{
+  if ( !mTurnActive || mCurrentTaskText.isEmpty() || mThreadId.isEmpty() )
+    return;
+
+  sendRequest( u"turn/start"_s, QJsonObject{
+    { u"threadId"_s, mThreadId },
+    { u"clientUserMessageId"_s, QUuid::createUuid().toString( QUuid::WithoutBraces ) },
+    { u"input"_s, QJsonArray{ QJsonObject{ { u"type"_s, u"text"_s }, { u"text"_s, mCurrentTaskText } } } },
+    { u"effort"_s, u"low"_s },
+    { u"summary"_s, u"concise"_s },
+    { u"approvalPolicy"_s, u"on-request"_s },
+    { u"approvalsReviewer"_s, u"auto_review"_s },
+    { u"sandboxPolicy"_s, QJsonObject{ { u"type"_s, u"readOnly"_s }, { u"networkAccess"_s, false } } },
+  } );
+}
+
+bool QgsAgentDockWidget::recoverMissingThread( const QString &message )
+{
+  if ( !mTurnActive || mCurrentTurnRetryCount > 0 || !message.contains( u"thread not found"_s, Qt::CaseInsensitive ) )
+    return false;
+
+  ++mCurrentTurnRetryCount;
+  mRecoveringThread = true;
+  mAgentReady = false;
+  mThreadId.clear();
+  mTurnId.clear();
+  mStreamingAnswer.clear();
+  mStreamingAnswerItemId.clear();
+  mStreamingAnswerTurnIndex = -1;
+  mStreamingReasoning.clear();
+  mStreamingReasoningItemId.clear();
+  mPlanSteps.clear();
+  mRunningToolActivities.clear();
+  mCompletedToolActivities.clear();
+  mStatusLabel->setText( tr( "Reconnecting" ) );
+  renderTranscript();
+  startAgentThread();
+  return true;
 }
 
 qint64 QgsAgentDockWidget::sendRequest( const QString &method, const QJsonObject &params )
@@ -862,9 +1143,16 @@ void QgsAgentDockWidget::handleAgentResponse( const QJsonObject &frame )
   if ( frame.contains( u"error"_s ) )
   {
     const QJsonObject error = frame.value( u"error"_s ).toObject();
-    appendMessage( tr( "Error" ), error.value( u"message"_s ).toString( compactJson( error ) ) );
+    const QString errorMessage = error.value( u"message"_s ).toString( compactJson( error ) );
+    if ( method == u"turn/start"_s && recoverMissingThread( errorMessage ) )
+      return;
+    appendMessage( tr( "Error" ), errorMessage );
     if ( method == u"initialize"_s || method == u"thread/start"_s )
+    {
+      if ( mTurnActive )
+        finishTurn( u"failed"_s );
       shutdownAgentSession();
+    }
     else if ( method == u"turn/start"_s )
       finishTurn( u"failed"_s );
     return;
@@ -874,25 +1162,26 @@ void QgsAgentDockWidget::handleAgentResponse( const QJsonObject &frame )
   if ( method == u"initialize"_s )
   {
     sendNotification( u"initialized"_s );
-    sendRequest( u"thread/start"_s, QJsonObject{
-      { u"cwd"_s, agentWorkspace() },
-      { u"ephemeral"_s, true },
-      { u"approvalPolicy"_s, u"on-request"_s },
-      { u"approvalsReviewer"_s, u"auto_review"_s },
-      { u"sandbox"_s, u"read-only"_s },
-      { u"developerInstructions"_s, agentInstructions() },
-      { u"threadSource"_s, u"user"_s },
-    } );
+    startAgentThread();
   }
   else if ( method == u"thread/start"_s )
   {
     setAgentReady( result.value( u"thread"_s ).toObject().value( u"id"_s ).toString() );
+    if ( mRecoveringThread && mTurnActive )
+    {
+      mRecoveringThread = false;
+      mStatusLabel->setText( tr( "Retrying" ) );
+      startCurrentTurnRequest();
+    }
   }
   else if ( method == u"turn/start"_s )
   {
     const QString turnId = result.value( u"turn"_s ).toObject().value( u"id"_s ).toString();
     if ( !turnId.isEmpty() )
+    {
       mTurnId = turnId;
+      mTurnIndexes.insert( turnId, mCurrentTurnIndex );
+    }
   }
 }
 
@@ -901,11 +1190,19 @@ void QgsAgentDockWidget::handleAgentNotification( const QString &method, const Q
   const QString notificationThreadId = params.value( u"threadId"_s ).toString();
   if ( !notificationThreadId.isEmpty() && notificationThreadId != mThreadId )
     return;
+  const QString notificationTurnId = params.contains( u"turnId"_s )
+                                       ? params.value( u"turnId"_s ).toString()
+                                       : params.value( u"turn"_s ).toObject().value( u"id"_s ).toString();
+  const int notificationTurnIndex = notificationTurnId.isEmpty() ? mCurrentTurnIndex
+                                                                  : mTurnIndexes.value( notificationTurnId, notificationTurnId == mTurnId ? mCurrentTurnIndex : -1 );
+  const bool belongsToCurrentTurn = notificationTurnId.isEmpty() || notificationTurnIndex == mCurrentTurnIndex;
 
   if ( method == u"turn/started"_s )
   {
     mTurnId = params.value( u"turn"_s ).toObject().value( u"id"_s ).toString();
-    mStatusLabel->setText( tr( "Thinking..." ) );
+    if ( !mTurnId.isEmpty() )
+      mTurnIndexes.insert( mTurnId, mCurrentTurnIndex );
+    mStatusLabel->setText( tr( "Thinking" ) );
     if ( mWithdrawnTurnIndexes.contains( mCurrentTurnIndex ) )
       stopTask();
     return;
@@ -916,7 +1213,7 @@ void QgsAgentDockWidget::handleAgentNotification( const QString &method, const Q
     const QString state = params.value( u"state"_s ).toString();
     const int position = params.value( u"position"_s ).toInt( -1 );
     if ( state == u"ready"_s )
-      mStatusLabel->setText( tr( "Thinking..." ) );
+      mStatusLabel->setText( tr( "Thinking" ) );
     else if ( position >= 0 )
       mStatusLabel->setText( tr( "TraeX is busy. Queue position: %1" ).arg( position ) );
     else
@@ -926,10 +1223,14 @@ void QgsAgentDockWidget::handleAgentNotification( const QString &method, const Q
 
   if ( method == u"item/agentMessage/delta"_s )
   {
+    if ( !belongsToCurrentTurn )
+      return;
     const QString itemId = params.value( u"itemId"_s ).toString();
     if ( !mStreamingAnswerItemId.isEmpty() && mStreamingAnswerItemId != itemId )
       commitStreamingAnswer();
     mStreamingAnswerItemId = itemId;
+    const QString turnId = params.value( u"turnId"_s ).toString();
+    mStreamingAnswerTurnIndex = turnId.isEmpty() ? mCurrentTurnIndex : mTurnIndexes.value( turnId, mCurrentTurnIndex );
     mStreamingAnswer += params.value( u"delta"_s ).toString();
     renderTranscript();
     return;
@@ -937,6 +1238,8 @@ void QgsAgentDockWidget::handleAgentNotification( const QString &method, const Q
 
   if ( method == u"item/reasoning/summaryPartAdded"_s )
   {
+    if ( !belongsToCurrentTurn )
+      return;
     const QString itemId = params.value( u"itemId"_s ).toString();
     if ( !mStreamingReasoningItemId.isEmpty() && mStreamingReasoningItemId != itemId )
       commitStreamingReasoning();
@@ -949,6 +1252,8 @@ void QgsAgentDockWidget::handleAgentNotification( const QString &method, const Q
 
   if ( method == u"item/reasoning/summaryTextDelta"_s )
   {
+    if ( !belongsToCurrentTurn )
+      return;
     const QString itemId = params.value( u"itemId"_s ).toString();
     if ( !mStreamingReasoningItemId.isEmpty() && mStreamingReasoningItemId != itemId )
       commitStreamingReasoning();
@@ -960,6 +1265,8 @@ void QgsAgentDockWidget::handleAgentNotification( const QString &method, const Q
 
   if ( method == u"turn/plan/updated"_s )
   {
+    if ( !belongsToCurrentTurn )
+      return;
     mPlanSteps.clear();
     const QJsonArray plan = params.value( u"plan"_s ).toArray();
     for ( const QJsonValue &stepValue : plan )
@@ -976,6 +1283,8 @@ void QgsAgentDockWidget::handleAgentNotification( const QString &method, const Q
 
   if ( method == u"item/mcpToolCall/progress"_s )
   {
+    if ( !belongsToCurrentTurn )
+      return;
     const QString itemId = params.value( u"itemId"_s ).toString();
     const QString message = params.value( u"message"_s ).toString();
     if ( !itemId.isEmpty() && !message.isEmpty() )
@@ -990,6 +1299,8 @@ void QgsAgentDockWidget::handleAgentNotification( const QString &method, const Q
     const QString itemType = item.value( u"type"_s ).toString();
     if ( itemType == u"mcpToolCall"_s )
     {
+      if ( !belongsToCurrentTurn )
+        return;
       const QString itemId = item.value( u"id"_s ).toString();
       const QString tool = item.value( u"tool"_s ).toString();
       const QString label = tr( "%1.%2" ).arg( item.value( u"server"_s ).toString(), tool );
@@ -1003,7 +1314,7 @@ void QgsAgentDockWidget::handleAgentNotification( const QString &method, const Q
         mRunningToolActivities.remove( itemId );
         const QString status = item.value( u"status"_s ).toString();
         mCompletedToolActivities.append( tr( "%1: %2" ).arg( label, status ) );
-        mStatusLabel->setText( tr( "Thinking..." ) );
+        mStatusLabel->setText( tr( "Thinking" ) );
       }
       renderTranscript();
     }
@@ -1011,14 +1322,19 @@ void QgsAgentDockWidget::handleAgentNotification( const QString &method, const Q
     {
       const QString itemId = item.value( u"id"_s ).toString();
       const QString text = item.value( u"text"_s ).toString();
+      const int turnIndex = notificationTurnIndex;
       if ( itemId == mStreamingAnswerItemId )
       {
         if ( !text.isEmpty() )
           mStreamingAnswer = text;
         commitStreamingAnswer();
       }
-      else if ( !text.isEmpty() )
-        appendMessage( tr( "Agent" ), text );
+      else if ( !text.isEmpty() && !mCommittedAgentMessageIds.contains( itemId ) )
+      {
+        mTranscriptBlocks.append( TranscriptBlock{ tr( "Agent" ), text, QStringList(), false, turnIndex, false, false } );
+        mCommittedAgentMessageIds.insert( itemId );
+        renderTranscript();
+      }
     }
     else if ( method == u"item/completed"_s && itemType == u"reasoning"_s
               && item.value( u"id"_s ).toString() == mStreamingReasoningItemId )
@@ -1038,6 +1354,9 @@ void QgsAgentDockWidget::handleAgentNotification( const QString &method, const Q
     if ( mTurnActive && matchesThread && matchesTurn )
     {
       const QJsonObject error = turn.value( u"error"_s ).toObject();
+      const QString errorMessage = error.value( u"message"_s ).toString();
+      if ( !errorMessage.isEmpty() && recoverMissingThread( errorMessage ) )
+        return;
       const QString status = turn.value( u"status"_s ).toString();
       finishTurn( status.isEmpty() ? u"completed"_s : status );
       if ( !error.isEmpty() )
@@ -1083,7 +1402,7 @@ void QgsAgentDockWidget::setAgentReady( const QString &threadId )
   mThreadId = threadId;
   mAgentReady = true;
   updateActionButton();
-  mStatusLabel->setText( tr( "Ready. Agent session is active." ) );
+  mStatusLabel->setText( tr( "Ready" ) );
   appendMessage( tr( "System" ), tr( "Agent session is ready. It will decide when QGIS tools are needed." ) );
 }
 
@@ -1105,17 +1424,33 @@ void QgsAgentDockWidget::finishTurn( const QString &status )
   commitStreamingAnswer();
   if ( !mCurrentTurnUndoLayerIds.isEmpty() && mCurrentTurnUserBlockIndex >= 0 && mCurrentTurnUserBlockIndex < mTranscriptBlocks.size() )
     mTranscriptBlocks[mCurrentTurnUserBlockIndex].undoLayerIds = mCurrentTurnUndoLayerIds;
+  if ( mCurrentTurnUserBlockIndex >= 0 && mCurrentTurnUserBlockIndex < mTranscriptBlocks.size() )
+  {
+    mTranscriptBlocks[mCurrentTurnUserBlockIndex].undoSelections = mCurrentTurnUndoSelections;
+    mTranscriptBlocks[mCurrentTurnUserBlockIndex].undoEditCounts = mCurrentTurnUndoEditCounts;
+    mTranscriptBlocks[mCurrentTurnUserBlockIndex].undoFiles = mCurrentTurnUndoFiles;
+    mTranscriptBlocks[mCurrentTurnUserBlockIndex].undoCanvasExtent = mCurrentTurnUndoCanvasExtent;
+    mTranscriptBlocks[mCurrentTurnUserBlockIndex].hasUndoCanvasExtent = mCurrentTurnHasUndoCanvasExtent;
+  }
   mPlanSteps.clear();
   mCompletedToolActivities.clear();
   mCurrentTurnUndoLayerIds.clear();
   mCurrentTurnUndoDescriptions.clear();
+  mCurrentTurnUndoSelections.clear();
+  mCurrentTurnUndoEditCounts.clear();
+  mCurrentTurnUndoFiles.clear();
+  mCurrentTurnUndoCanvasExtent = QRectF();
+  mCurrentTurnHasUndoCanvasExtent = false;
   mCurrentTurnUserBlockIndex = -1;
   mCurrentTurnIndex = -1;
   mRunningToolActivities.clear();
   mTurnActive = false;
   mTurnId.clear();
+  mCurrentTaskText.clear();
+  mCurrentTurnRetryCount = 0;
+  mRecoveringThread = false;
   updateActionButton();
-  mStatusLabel->setText( status == u"completed"_s ? tr( "Task finished." ) : tr( "Task ended: %1" ).arg( status ) );
+  mStatusLabel->setText( status == u"completed"_s ? tr( "Done" ) : tr( "Ended: %1" ).arg( status ) );
   renderTranscript();
 }
 
@@ -1167,6 +1502,9 @@ void QgsAgentDockWidget::submitTask()
     return;
 
   mCurrentTurnIndex = mNextTurnIndex++;
+  mCurrentTaskText = task;
+  mCurrentTurnRetryCount = 0;
+  mRecoveringThread = false;
   appendMessage( tr( "You" ), task, QStringList(), mCurrentTurnIndex, true );
   mCurrentTurnUserBlockIndex = mTranscriptBlocks.size() - 1;
   mTaskInput->clear();
@@ -1175,18 +1513,9 @@ void QgsAgentDockWidget::submitTask()
   mTurnId.clear();
   updateActionButton();
   renderTranscript();
-  mStatusLabel->setText( tr( "Agent is thinking..." ) );
+  mStatusLabel->setText( tr( "Thinking" ) );
 
-  sendRequest( u"turn/start"_s, QJsonObject{
-    { u"threadId"_s, mThreadId },
-    { u"clientUserMessageId"_s, QUuid::createUuid().toString( QUuid::WithoutBraces ) },
-    { u"input"_s, QJsonArray{ QJsonObject{ { u"type"_s, u"text"_s }, { u"text"_s, task } } } },
-    { u"effort"_s, u"low"_s },
-    { u"summary"_s, u"concise"_s },
-    { u"approvalPolicy"_s, u"on-request"_s },
-    { u"approvalsReviewer"_s, u"auto_review"_s },
-    { u"sandboxPolicy"_s, QJsonObject{ { u"type"_s, u"readOnly"_s }, { u"networkAccess"_s, false } } },
-  } );
+  startCurrentTurnRequest();
   mTimeoutTimer->start( 5 * 60 * 1000 );
 }
 
@@ -1269,11 +1598,14 @@ void QgsAgentDockWidget::agentFinished( int exitCode, QProcess::ExitStatus statu
 
 void QgsAgentDockWidget::showServerActivity( const QString &message )
 {
-  mStatusLabel->setText( message );
+  if ( mTurnActive )
+    mStatusLabel->setText( message );
 }
 
 void QgsAgentDockWidget::recordLoadedLayers( const QStringList &layerIds, const QString &description )
 {
+  if ( mCurrentTurnIndex < 0 )
+    return;
   for ( const QString &layerId : layerIds )
   {
     if ( !mCurrentTurnUndoLayerIds.contains( layerId ) )
@@ -1281,6 +1613,33 @@ void QgsAgentDockWidget::recordLoadedLayers( const QStringList &layerIds, const 
   }
   if ( !description.isEmpty() )
     mCurrentTurnUndoDescriptions.append( description );
+}
+
+void QgsAgentDockWidget::recordSelectionChange( const QString &layerId, const QStringList &previousFeatureIds )
+{
+  if ( mCurrentTurnIndex >= 0 && !mCurrentTurnUndoSelections.contains( layerId ) )
+    mCurrentTurnUndoSelections.insert( layerId, previousFeatureIds );
+}
+
+void QgsAgentDockWidget::recordCanvasExtentChange( double xMinimum, double yMinimum, double xMaximum, double yMaximum )
+{
+  if ( mCurrentTurnIndex >= 0 && !mCurrentTurnHasUndoCanvasExtent )
+  {
+    mCurrentTurnUndoCanvasExtent = QRectF( QPointF( xMinimum, yMinimum ), QPointF( xMaximum, yMaximum ) );
+    mCurrentTurnHasUndoCanvasExtent = true;
+  }
+}
+
+void QgsAgentDockWidget::recordLayerEdit( const QString &layerId )
+{
+  if ( mCurrentTurnIndex >= 0 )
+    mCurrentTurnUndoEditCounts[layerId] += 1;
+}
+
+void QgsAgentDockWidget::recordCreatedFile( const QString &path )
+{
+  if ( mCurrentTurnIndex >= 0 && !path.isEmpty() && !mCurrentTurnUndoFiles.contains( path ) )
+    mCurrentTurnUndoFiles.append( path );
 }
 
 void QgsAgentDockWidget::handleTranscriptLink( const QUrl &url )
@@ -1332,18 +1691,88 @@ void QgsAgentDockWidget::withdrawTurn( int turnIndex )
 
   QStringList removedLayerIds;
   QgsProject *project = QgsProject::instance();
+  if ( mTurnActive && turnIndex == mCurrentTurnIndex )
+  {
+    for ( auto it = mCurrentTurnUndoEditCounts.constBegin(); it != mCurrentTurnUndoEditCounts.constEnd(); ++it )
+    {
+      if ( QgsVectorLayer *layer = qobject_cast<QgsVectorLayer *>( project->mapLayer( it.key() ) ) )
+      {
+        for ( int count = 0; count < it.value() && layer->undoStack()->canUndo(); ++count )
+          layer->undoStack()->undo();
+        layer->triggerRepaint();
+      }
+    }
+    for ( auto it = mCurrentTurnUndoSelections.constBegin(); it != mCurrentTurnUndoSelections.constEnd(); ++it )
+    {
+      if ( QgsVectorLayer *layer = qobject_cast<QgsVectorLayer *>( project->mapLayer( it.key() ) ) )
+      {
+        QgsFeatureIds ids;
+        for ( const QString &id : it.value() )
+          ids.insert( id.toLongLong() );
+        layer->selectByIds( ids );
+      }
+    }
+    if ( mCurrentTurnHasUndoCanvasExtent )
+    {
+      mInterface->mapCanvas()->setExtent( QgsRectangle(
+        mCurrentTurnUndoCanvasExtent.left(),
+        mCurrentTurnUndoCanvasExtent.top(),
+        mCurrentTurnUndoCanvasExtent.right(),
+        mCurrentTurnUndoCanvasExtent.bottom()
+      ) );
+      mInterface->mapCanvas()->refresh();
+    }
+    removedLayerIds.append( mCurrentTurnUndoLayerIds );
+  }
+  QStringList removedFiles = mTurnActive && turnIndex == mCurrentTurnIndex ? mCurrentTurnUndoFiles : QStringList();
   for ( const TranscriptBlock &block : std::as_const( mTranscriptBlocks ) )
   {
     if ( block.turnIndex != turnIndex )
       continue;
+    for ( auto it = block.undoEditCounts.constBegin(); it != block.undoEditCounts.constEnd(); ++it )
+    {
+      if ( QgsVectorLayer *layer = qobject_cast<QgsVectorLayer *>( project->mapLayer( it.key() ) ) )
+      {
+        for ( int count = 0; count < it.value() && layer->undoStack()->canUndo(); ++count )
+          layer->undoStack()->undo();
+        layer->triggerRepaint();
+      }
+    }
+    for ( auto it = block.undoSelections.constBegin(); it != block.undoSelections.constEnd(); ++it )
+    {
+      if ( QgsVectorLayer *layer = qobject_cast<QgsVectorLayer *>( project->mapLayer( it.key() ) ) )
+      {
+        QgsFeatureIds ids;
+        for ( const QString &id : it.value() )
+          ids.insert( id.toLongLong() );
+        layer->selectByIds( ids );
+      }
+    }
+    if ( block.hasUndoCanvasExtent )
+    {
+      mInterface->mapCanvas()->setExtent( QgsRectangle(
+        block.undoCanvasExtent.left(),
+        block.undoCanvasExtent.top(),
+        block.undoCanvasExtent.right(),
+        block.undoCanvasExtent.bottom()
+      ) );
+      mInterface->mapCanvas()->refresh();
+    }
     for ( const QString &layerId : block.undoLayerIds )
     {
       if ( !removedLayerIds.contains( layerId ) && project->mapLayer( layerId ) )
         removedLayerIds.append( layerId );
     }
+    for ( const QString &path : block.undoFiles )
+    {
+      if ( !removedFiles.contains( path ) )
+        removedFiles.append( path );
+    }
   }
   if ( !removedLayerIds.isEmpty() )
     project->removeMapLayers( removedLayerIds );
+  for ( const QString &path : std::as_const( removedFiles ) )
+    QFile::remove( path );
 
   mWithdrawnTurnIndexes.insert( turnIndex );
   for ( TranscriptBlock &block : mTranscriptBlocks )
@@ -1410,13 +1839,18 @@ void QgsAgentDockWidget::renderTranscript()
       continue;
     if ( turnWithdrawn && block.userBlock )
     {
-      blocks.append( htmlBlock( block.role, tr( "Conversation withdrawn" ) ) );
+      blocks.append( messageBubble( tr( "Conversation withdrawn" ), true ) );
       continue;
     }
+    const bool agentBlock = block.role == tr( "Agent" );
+    const bool errorBlock = block.role == tr( "Error" );
+    if ( !block.userBlock && !agentBlock && !errorBlock )
+      continue;
+
     QString extra;
     if ( block.userBlock && block.turnIndex >= 0 )
     {
-      extra = u"<br><a href=\"qgis-agent://withdraw/%1\" title=\"%2\"><img src=\"qgis-agent-icon:withdraw\" width=\"16\" height=\"16\" alt=\"%2\"></a>"_s.arg(
+      extra = u"<div style=\"margin-top:6px\"><a href=\"qgis-agent://withdraw/%1\" title=\"%2\"><img src=\"qgis-agent-icon:withdraw\" width=\"14\" height=\"14\" alt=\"%2\"></a></div>"_s.arg(
         QString::number( block.turnIndex ),
         tr( "Withdraw" ).toHtmlEscaped()
       );
@@ -1427,21 +1861,64 @@ void QgsAgentDockWidget::renderTranscript()
                 ? u"<br><span style=\"color:#6b7280\">%1</span>"_s.arg( tr( "Changes undone" ).toHtmlEscaped() )
                 : u"<br><a href=\"qgis-agent://undo/%1\">%2</a>"_s.arg( QString::number( i ), tr( "Undo changes" ).toHtmlEscaped() );
     }
-    blocks.append( htmlBlock( block.role, block.message, extra ) );
+    if ( errorBlock )
+    {
+      blocks.append( u"<div style=\"margin:8px 4px;padding:8px 10px;background:#fef2f2;border:1px solid #fecaca;border-radius:8px;color:#991b1b\">%1</div>"_s.arg(
+        block.message.toHtmlEscaped().replace( QLatin1Char( '\n' ), u"<br>"_s )
+      ) );
+    }
+    else
+    {
+      blocks.append( messageBubble( block.message, block.userBlock, extra ) );
+    }
   }
+  if ( !currentTurnWithdrawn && !mStreamingAnswer.isEmpty() )
+    blocks.append( messageBubble( mStreamingAnswer, false ) );
+  if ( mTurnActive && !currentTurnWithdrawn )
+    blocks.append( u"<table width=\"100%\"><tr><td align=\"left\"><img src=\"qgis-agent-icon:loading\" width=\"16\" height=\"16\"></td></tr></table>"_s );
+  mTranscript->setHtml( blocks.join( QLatin1Char( '\n' ) ) );
+  mTranscript->verticalScrollBar()->setValue( mTranscript->verticalScrollBar()->maximum() );
+  renderExecutionLog();
+}
+
+void QgsAgentDockWidget::renderExecutionLog()
+{
+  if ( !mExecutionLog || !mExecutionToggle )
+    return;
+
+  QStringList sections;
+  int entryCount = 0;
+  for ( const TranscriptBlock &block : std::as_const( mTranscriptBlocks ) )
+  {
+    const bool withdrawn = block.withdrawn || ( block.turnIndex >= 0 && mWithdrawnTurnIndexes.contains( block.turnIndex ) );
+    if ( withdrawn || block.userBlock || block.role == tr( "Agent" ) || block.role == tr( "Error" ) )
+      continue;
+    sections.append( u"<div style=\"margin:5px 0\"><b>%1</b><br>%2</div>"_s.arg(
+      block.role.toHtmlEscaped(),
+      block.message.toHtmlEscaped().replace( QLatin1Char( '\n' ), u"<br>"_s )
+    ) );
+    ++entryCount;
+  }
+
+  const bool currentTurnWithdrawn = mCurrentTurnIndex >= 0 && mWithdrawnTurnIndexes.contains( mCurrentTurnIndex );
   if ( !currentTurnWithdrawn && !mStreamingReasoning.isEmpty() )
   {
-    blocks.append( u"<div style=\"color:#6b7280;margin:6px 0\"><b>%1</b><br>%2</div>"_s.arg(
+    sections.append( u"<div style=\"margin:5px 0\"><b>%1</b><br>%2</div>"_s.arg(
       tr( "Thinking summary" ).toHtmlEscaped(),
       mStreamingReasoning.toHtmlEscaped().replace( QLatin1Char( '\n' ), u"<br>"_s )
     ) );
+    ++entryCount;
   }
   if ( !currentTurnWithdrawn && !mPlanSteps.isEmpty() )
   {
-    QStringList escapedSteps;
+    QStringList steps;
     for ( const QString &step : std::as_const( mPlanSteps ) )
-      escapedSteps.append( step.toHtmlEscaped() );
-    blocks.append( u"<div style=\"color:#4b5563;margin:6px 0\"><b>%1</b><br>%2</div>"_s.arg( tr( "Plan" ).toHtmlEscaped(), escapedSteps.join( u"<br>"_s ) ) );
+      steps.append( step.toHtmlEscaped() );
+    sections.append( u"<div style=\"margin:5px 0\"><b>%1</b><br>%2</div>"_s.arg(
+      tr( "Plan" ).toHtmlEscaped(),
+      steps.join( u"<br>"_s )
+    ) );
+    ++entryCount;
   }
   if ( !currentTurnWithdrawn && ( !mCompletedToolActivities.isEmpty() || !mRunningToolActivities.isEmpty() ) )
   {
@@ -1452,19 +1929,17 @@ void QgsAgentDockWidget::renderTranscript()
     running.sort();
     for ( const QString &activity : std::as_const( running ) )
       activities.append( activity.toHtmlEscaped() );
-    blocks.append( u"<div style=\"color:#4b5563;margin:6px 0\"><b>%1</b><br>%2</div>"_s.arg( tr( "Activity" ).toHtmlEscaped(), activities.join( u"<br>"_s ) ) );
-  }
-  if ( !currentTurnWithdrawn && !mStreamingAnswer.isEmpty() )
-  {
-    blocks.append( u"<p><b>%1</b><br>%2</p>"_s.arg(
-      tr( "Agent" ).toHtmlEscaped(),
-      mStreamingAnswer.toHtmlEscaped().replace( QLatin1Char( '\n' ), u"<br>"_s )
+    sections.append( u"<div style=\"margin:5px 0\"><b>%1</b><br>%2</div>"_s.arg(
+      tr( "Activity" ).toHtmlEscaped(),
+      activities.join( u"<br>"_s )
     ) );
+    ++entryCount;
   }
-  if ( mTurnActive && !currentTurnWithdrawn )
-    blocks.append( u"<div style=\"margin:6px 0\"><img src=\"qgis-agent-icon:loading\" width=\"16\" height=\"16\"></div>"_s );
-  mTranscript->setHtml( blocks.join( QLatin1Char( '\n' ) ) );
-  mTranscript->verticalScrollBar()->setValue( mTranscript->verticalScrollBar()->maximum() );
+
+  mExecutionToggle->setText( entryCount > 0 ? tr( "Execution log (%1)" ).arg( entryCount ) : tr( "Execution log" ) );
+  mExecutionLog->setHtml( sections.isEmpty() ? u"<span style=\"color:#94a3b8\">%1</span>"_s.arg( tr( "No execution activity yet." ).toHtmlEscaped() )
+                                              : sections.join( QLatin1Char( '\n' ) ) );
+  mExecutionLog->verticalScrollBar()->setValue( mExecutionLog->verticalScrollBar()->maximum() );
 }
 
 void QgsAgentDockWidget::resetTurnStreaming()
@@ -1478,15 +1953,26 @@ void QgsAgentDockWidget::resetTurnStreaming()
   mRunningToolActivities.clear();
   mCurrentTurnUndoLayerIds.clear();
   mCurrentTurnUndoDescriptions.clear();
+  mCurrentTurnUndoSelections.clear();
+  mCurrentTurnUndoEditCounts.clear();
+  mCurrentTurnUndoFiles.clear();
+  mCurrentTurnUndoCanvasExtent = QRectF();
+  mCurrentTurnHasUndoCanvasExtent = false;
   renderTranscript();
 }
 
 void QgsAgentDockWidget::commitStreamingAnswer()
 {
-  if ( !mStreamingAnswer.isEmpty() && !mWithdrawnTurnIndexes.contains( mCurrentTurnIndex ) )
-    mTranscriptBlocks.append( TranscriptBlock{ tr( "Agent" ), mStreamingAnswer, QStringList(), false, mCurrentTurnIndex, false, false } );
+  const int turnIndex = mStreamingAnswerTurnIndex >= 0 ? mStreamingAnswerTurnIndex : mCurrentTurnIndex;
+  if ( !mStreamingAnswer.isEmpty() && !mWithdrawnTurnIndexes.contains( turnIndex ) )
+  {
+    mTranscriptBlocks.append( TranscriptBlock{ tr( "Agent" ), mStreamingAnswer, QStringList(), false, turnIndex, false, false } );
+    if ( !mStreamingAnswerItemId.isEmpty() )
+      mCommittedAgentMessageIds.insert( mStreamingAnswerItemId );
+  }
   mStreamingAnswer.clear();
   mStreamingAnswerItemId.clear();
+  mStreamingAnswerTurnIndex = -1;
 }
 
 void QgsAgentDockWidget::commitStreamingReasoning()
@@ -1613,12 +2099,22 @@ QString QgsAgentDockWidget::agentExecutable( const QString &provider ) const
 
   const QString configured = qEnvironmentVariable( environmentName.toUtf8().constData() );
   if ( !configured.isEmpty() && QFileInfo::exists( configured ) )
-    return configured;
+    return QFileInfo( configured ).absoluteFilePath();
+
+#ifdef Q_OS_WIN
+  for ( const QString &name : { command + u".exe"_s, command + u".cmd"_s, command + u".bat"_s, command } )
+  {
+    const QString executable = QStandardPaths::findExecutable( name );
+    if ( !executable.isEmpty() )
+      return executable;
+  }
+#else
   const QString executable = QStandardPaths::findExecutable( command );
   if ( !executable.isEmpty() )
     return executable;
+#endif
 
-  const QStringList fallbackDirectories{
+  QStringList fallbackDirectories{
     QDir::home().filePath( u".local/bin"_s ),
     QDir::home().filePath( u".local/share/pnpm"_s ),
     QDir::home().filePath( u".volta/bin"_s ),
@@ -1627,15 +2123,42 @@ QString QgsAgentDockWidget::agentExecutable( const QString &provider ) const
     u"/usr/local/bin"_s,
     qEnvironmentVariable( "NVM_BIN" ),
   };
+#ifdef Q_OS_WIN
+  const QString appData = qEnvironmentVariable( "APPDATA" );
+  const QString localAppData = qEnvironmentVariable( "LOCALAPPDATA" );
+  const QString programFiles = qEnvironmentVariable( "ProgramFiles" );
+  const QString programFilesX86 = qEnvironmentVariable( "ProgramFiles(x86)" );
+  const QString userProfile = qEnvironmentVariable( "USERPROFILE", QDir::homePath() );
+  QStringList windowsDirectories;
+  const auto appendDirectory = [&windowsDirectories]( const QString &base, const QString &relative = QString() ) {
+    if ( base.isEmpty() )
+      return;
+    windowsDirectories.append( relative.isEmpty() ? base : QDir( base ).filePath( relative ) );
+  };
+  appendDirectory( appData, u"npm"_s );
+  appendDirectory( localAppData, u"Microsoft/WinGet/Links"_s );
+  appendDirectory( localAppData, u"Microsoft/WindowsApps"_s );
+  appendDirectory( localAppData, u"Programs/nodejs"_s );
+  appendDirectory( localAppData, u"pnpm"_s );
+  appendDirectory( userProfile, u"scoop/shims"_s );
+  appendDirectory( programFiles, u"nodejs"_s );
+  appendDirectory( programFilesX86, u"nodejs"_s );
+  appendDirectory( qEnvironmentVariable( "ChocolateyInstall" ), u"bin"_s );
+  appendDirectory( qEnvironmentVariable( "PNPM_HOME" ) );
+  appendDirectory( qEnvironmentVariable( "NVM_SYMLINK" ) );
+  appendDirectory( qEnvironmentVariable( "NVM_HOME" ) );
+  appendDirectory( qEnvironmentVariable( "VOLTA_HOME" ), u"bin"_s );
+  appendDirectory( qEnvironmentVariable( "BUN_INSTALL" ), u"bin"_s );
+  fallbackDirectories = windowsDirectories + fallbackDirectories;
+#endif
   for ( const QString &directory : fallbackDirectories )
   {
-    if ( directory.isEmpty() )
-      continue;
-    const QString candidate = QDir( directory ).filePath( command );
-    if ( QFileInfo::exists( candidate ) && QFileInfo( candidate ).isExecutable() )
+    const QString candidate = executableInDirectory( directory, command );
+    if ( !candidate.isEmpty() )
       return candidate;
   }
 
+#ifndef Q_OS_WIN
   QDir nodeVersions( QDir::home().filePath( u".nvm/versions/node"_s ) );
   const QStringList versions = nodeVersions.entryList( QDir::Dirs | QDir::NoDotAndDotDot, QDir::Name | QDir::Reversed );
   for ( const QString &version : versions )
@@ -1644,6 +2167,7 @@ QString QgsAgentDockWidget::agentExecutable( const QString &provider ) const
     if ( QFileInfo::exists( candidate ) && QFileInfo( candidate ).isExecutable() )
       return candidate;
   }
+#endif
   return QString();
 }
 
@@ -1693,7 +2217,48 @@ QString QgsAgentDockWidget::pythonExecutable() const
 {
   const QString configured = qEnvironmentVariable( "QGIS_AGENT_PYTHON" );
   if ( !configured.isEmpty() && QFileInfo::exists( configured ) )
-    return configured;
+    return QFileInfo( configured ).absoluteFilePath();
+
+#ifdef Q_OS_WIN
+  QStringList directories{
+    QCoreApplication::applicationDirPath(),
+    QDir( QCoreApplication::applicationDirPath() ).absoluteFilePath( u"../../../bin"_s ),
+    QDir( QgsApplication::prefixPath() ).filePath( u"bin"_s ),
+    QDir( QgsApplication::prefixPath() ).absoluteFilePath( u"../../bin"_s ),
+  };
+  const auto appendDirectory = [&directories]( const QString &base, const QString &relative = QString() ) {
+    if ( base.isEmpty() )
+      return;
+    directories.append( relative.isEmpty() ? base : QDir( base ).filePath( relative ) );
+  };
+  appendDirectory( qEnvironmentVariable( "OSGEO4W_ROOT" ), u"bin"_s );
+  appendDirectory( qEnvironmentVariable( "PYTHONHOME" ) );
+  appendDirectory( qEnvironmentVariable( "VIRTUAL_ENV" ), u"Scripts"_s );
+  appendDirectory( qEnvironmentVariable( "CONDA_PREFIX" ) );
+  const QString localAppData = qEnvironmentVariable( "LOCALAPPDATA" );
+  if ( !localAppData.isEmpty() )
+  {
+    QDir localPythonVersions( QDir( localAppData ).filePath( u"Programs/Python"_s ) );
+    for ( const QString &version : localPythonVersions.entryList( QStringList{ u"Python*"_s }, QDir::Dirs | QDir::NoDotAndDotDot, QDir::Name | QDir::Reversed ) )
+      directories.append( localPythonVersions.filePath( version ) );
+  }
+  QDir bundledPythonVersions( QDir( QgsApplication::prefixPath() ).absoluteFilePath( u"../"_s ) );
+  for ( const QString &version : bundledPythonVersions.entryList( QStringList{ u"Python*"_s }, QDir::Dirs | QDir::NoDotAndDotDot, QDir::Name | QDir::Reversed ) )
+    directories.append( bundledPythonVersions.filePath( version ) );
+  const QDir pyenvVersions( QDir( qEnvironmentVariable( "USERPROFILE", QDir::homePath() ) ).filePath( u".pyenv/pyenv-win/versions"_s ) );
+  for ( const QString &version : pyenvVersions.entryList( QDir::Dirs | QDir::NoDotAndDotDot, QDir::Name | QDir::Reversed ) )
+    directories.append( pyenvVersions.filePath( version ) );
+
+  for ( const QString &directory : std::as_const( directories ) )
+  {
+    for ( const QString &name : { u"python3.exe"_s, u"python.exe"_s } )
+    {
+      const QFileInfo candidate( QDir( directory ).filePath( name ) );
+      if ( candidate.exists() && candidate.isFile() )
+        return candidate.absoluteFilePath();
+    }
+  }
+#endif
   for ( const QString &candidate : { u"python3"_s, u"python"_s } )
   {
     const QString executable = QStandardPaths::findExecutable( candidate );
@@ -1730,6 +2295,17 @@ QString QgsAgentDockWidget::agentInstructions() const
     "Answer greetings, identity questions, and general explanations directly without calling tools. "
     "For tasks that depend on the live project, inspect the project and relevant layers before planning or acting. "
     "Search Processing algorithms before execution, use exact layer IDs, account for CRS and distance units, and validate results. "
+    "Inspect raster bands before spectral-index, DEM, or DSM work. For NDVI, NDWI, and MNDWI, confirm the sensor band mapping before calculating. "
+    "Treat automatic thresholds as suggestions that require map review. Prefer creating new output layers over modifying source data. "
+    "Use saved or batch workflows for repeated Processing pipelines and include a report path when durable recovery records are needed. "
+    "Use export_map_layout, not export_layer, when the user asks for a finished map sheet, print layout, PDF map, scale bar, north arrow, legend, or layout note. "
+    "For online data acquisition, use geocode_place to resolve place names, query_overpass for OpenStreetMap roads and POIs, "
+    "search_stac for catalog discovery, and download_remote_file only for a selected public asset. Keep requests spatially bounded, "
+    "preserve source and license attribution, inspect downloaded layers, and never invent population, traffic, rent, or business data. "
+    "When the user pastes a QGIS or Processing error, or asks why an operation failed, call recent_diagnostics before proposing a fix. "
+    "Correlate the pasted error with the current project, recent tool arguments and Processing logs. Explain the likely cause briefly, "
+    "then make the smallest safe correction and retry when enough information is available. Inspect the corrected output before reporting success. "
+    "Do not repeat the same failed call unchanged, do not hide failures, and do not claim a fix unless the retry or validation succeeds. "
     "Use only qgis_agent MCP tools for QGIS actions. Do not use shell or file-editing tools. "
     "Destructive QGIS actions are confirmed in the application. If essential information is missing, explain the exact blocker."
   );

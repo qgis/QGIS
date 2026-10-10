@@ -1,5 +1,11 @@
 set(qgis_agent_SRCS
   qgsagentplugin.cpp
+  qgsagentdiagnostics.cpp
+  qgsagentedit.cpp
+  qgsagentlayout.cpp
+  qgsagentnetwork.cpp
+  qgsagenttools.cpp
+  qgsagentworkflow.cpp
 )
 
 add_library(plugin_qgis_agent MODULE ${qgis_agent_SRCS})
