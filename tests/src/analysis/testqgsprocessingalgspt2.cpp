@@ -139,6 +139,8 @@ class TestQgsProcessingAlgsPt2 : public QgsTest
     void xyzTilesGpkgWebMercator();
     void xyzTilesGpkgCustomCrs();
 
+    void singleSidedBufferEmptyGeometry();
+
   private:
     QString mPointLayerPath;
     QgsVectorLayer *mPointsLayer = nullptr;
@@ -2714,6 +2716,77 @@ void TestQgsProcessingAlgsPt2::xyzTilesGpkgCustomCrs()
   QGSCOMPARENEAR( layer->extent().yMinimum(), 24.577735, 2 );
   QGSCOMPARENEAR( layer->extent().xMaximum(), -83.766612, 2 );
   QGSCOMPARENEAR( layer->extent().yMaximum(), 46.7261726, 2 );
+}
+
+void TestQgsProcessingAlgsPt2::singleSidedBufferEmptyGeometry()
+{
+  auto lineLayer = std::make_unique<QgsVectorLayer>( u"LineString?crs=EPSG:4326"_s, u"test"_s, u"memory"_s );
+  QVERIFY( lineLayer->isValid() );
+
+  const QStringList wktLines { u"LineString(0 0, 10 0, 10 10)"_s, u"LineString EMPTY"_s };
+  QgsFeatureList featureList;
+  for ( const QString &wkt : wktLines )
+  {
+    QgsFeature f;
+    f.setGeometry( QgsGeometry::fromWkt( wkt ) );
+    featureList << f;
+  }
+  lineLayer->dataProvider()->addFeatures( featureList );
+
+  std::unique_ptr<QgsProcessingAlgorithm> alg( QgsApplication::processingRegistry()->createAlgorithmById( u"native:singlesidedbuffer"_s ) );
+  QVERIFY( alg );
+
+  QVariantMap parameters;
+  parameters.insert( u"INPUT"_s, QVariant::fromValue( lineLayer.get() ) );
+  parameters.insert( u"DISTANCE"_s, 1 );
+  parameters.insert( u"OUTPUT"_s, u"memory:"_s );
+
+  auto context = std::make_unique<QgsProcessingContext>();
+  QgsProcessingFeedback feedback;
+
+  QVariantMap results;
+  bool ok = false;
+  results = alg->run( parameters, *context, &feedback, &ok );
+  QVERIFY( ok );
+
+  std::unique_ptr<QgsVectorLayer> outputLayer( qobject_cast<QgsVectorLayer *>( context->getMapLayer( results.value( u"OUTPUT"_s ).toString() ) ) );
+  QVERIFY( outputLayer->isValid() );
+  QCOMPARE( outputLayer->featureCount(), 1 );
+
+  QgsFeatureIterator it = outputLayer->getFeatures();
+  QgsFeature f;
+  QVERIFY( it.nextFeature( f ) );
+  QCOMPARE( f.geometry().asWkt(), u"Polygon ((10 10, 10 0, 0 0, 0 1, 9 1, 9 10, 10 10))"_s );
+
+  auto multiLineLayer = std::make_unique<QgsVectorLayer>( u"MultiLineString?crs=EPSG:4326"_s, u"test"_s, u"memory"_s );
+  QVERIFY( lineLayer->isValid() );
+
+  const QStringList wktMultiLines { u"MultiLineString((0 0, 10 0, 10 10))"_s, u"MultiLineString EMPTY"_s };
+  featureList.clear();
+  for ( const QString &wkt : wktMultiLines )
+  {
+    QgsFeature f;
+    f.setGeometry( QgsGeometry::fromWkt( wkt ) );
+    featureList << f;
+  }
+  multiLineLayer->dataProvider()->addFeatures( featureList );
+
+  parameters.clear();
+  parameters.insert( u"INPUT"_s, QVariant::fromValue( multiLineLayer.get() ) );
+  parameters.insert( u"DISTANCE"_s, 1 );
+  parameters.insert( u"OUTPUT"_s, u"memory:"_s );
+
+  ok = false;
+  results = alg->run( parameters, *context, &feedback, &ok );
+  QVERIFY( ok );
+
+  outputLayer.reset( qobject_cast<QgsVectorLayer *>( context->getMapLayer( results.value( u"OUTPUT"_s ).toString() ) ) );
+  QVERIFY( outputLayer->isValid() );
+  QCOMPARE( outputLayer->featureCount(), 1 );
+
+  it = outputLayer->getFeatures();
+  QVERIFY( it.nextFeature( f ) );
+  QCOMPARE( f.geometry().asWkt(), u"Polygon ((10 10, 10 0, 0 0, 0 1, 9 1, 9 10, 10 10))"_s );
 }
 
 QGSTEST_MAIN( TestQgsProcessingAlgsPt2 )
