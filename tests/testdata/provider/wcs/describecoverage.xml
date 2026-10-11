@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CoverageDescriptions xmlns="http://www.opengis.net/wcs/1.1.1"
+    xmlns:gml="http://www.opengis.net/gml" xmlns:ows="http://www.opengis.net/ows/1.1"
+    xmlns:ogc="http://www.opengis.net/ogc" xmlns:xlink="http://www.w3.org/1999/xlink"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <CoverageDescription>
+    <ows:Title>Test DTM</ows:Title>
+    <Identifier>dtm</Identifier>
+    <wcs:Domain>
+      <wcs:SpatialDomain>
+        <wcs:GridCRS>
+          <wcs:GridBaseCRS>urn:ogc:def:crs:EPSG::4326</wcs:GridBaseCRS>
+          <wcs:GridType>urn:ogc:def:method:WCS:1.1:2dSimpleGrid</wcs:GridType>
+          <wcs:GridOrigin>46.0 10.0</wcs:GridOrigin>
+          <wcs:GridOffsets>-0.01 0.01</wcs:GridOffsets>
+          <wcs:GridCS>urn:ogc:def:cs:OGC:0.0:Grid2dSquareCS</wcs:GridCS>
+        </wcs:GridCRS>
+      </wcs:SpatialDomain>
+    </wcs:Domain>
+    <wcs:SupportedCRS>urn:ogc:def:crs:EPSG::4326</wcs:SupportedCRS>
+    <wcs:SupportedFormat>image/tiff</wcs:SupportedFormat>
+  </CoverageDescription>
+</CoverageDescriptions>
