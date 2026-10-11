@@ -2497,8 +2497,7 @@ static bool isGeometryColumn( const QgsExpressionNode *node )
     return false;
 
   const QgsExpressionNodeFunction *fn = static_cast<const QgsExpressionNodeFunction *>( node );
-  const QgsExpression::FunctionListSnapshot functions = QgsExpression::getFunctionsSnapshot();
-  const QgsExpression::SharedFunctionPtr fd = functions->getFunction( fn->fnIndex() );
+  const QgsExpression::SharedFunctionPtr fd = fn->function();
 
   return fd->name() == "$geometry"_L1 || ( fd->name() == "var"_L1 && fn->referencedVariables().contains( "geometry"_L1 ) );
 }
@@ -2511,9 +2510,7 @@ static QgsGeometry geometryFromConstExpr( const QgsExpressionNode *node )
   if ( node->nodeType() == QgsExpressionNode::ntFunction )
   {
     const QgsExpressionNodeFunction *fnNode = static_cast<const QgsExpressionNodeFunction *>( node );
-
-    const QgsExpression::FunctionListSnapshot functions = QgsExpression::getFunctionsSnapshot();
-    const QgsExpression::SharedFunctionPtr fd = functions->getFunction( fnNode->fnIndex() );
+    const QgsExpression::SharedFunctionPtr fd = fnNode->function();
     if ( fd->name() == "geom_from_wkt"_L1 )
     {
       const QList<QgsExpressionNode *> &args = fnNode->args()->list();
@@ -2530,8 +2527,7 @@ static QgsGeometry geometryFromConstExpr( const QgsExpressionNode *node )
 
 QDomElement QgsOgcUtilsExprToFilter::expressionFunctionToOgcFilter( const QgsExpressionNodeFunction *node, QgsExpression *expression, const QgsExpressionContext *context )
 {
-  const QgsExpression::FunctionListSnapshot functions = QgsExpression::getFunctionsSnapshot();
-  const QgsExpression::SharedFunctionPtr fd = functions->getFunction( node->fnIndex() );
+  const QgsExpression::SharedFunctionPtr fd = node->function();
 
   if ( fd->name() == "intersects_bbox"_L1 )
   {
@@ -2597,7 +2593,7 @@ QDomElement QgsOgcUtilsExprToFilter::expressionFunctionToOgcFilter( const QgsExp
     }
 
     const QgsExpressionNodeFunction *otherFn = static_cast<const QgsExpressionNodeFunction *>( otherNode );
-    const QgsExpression::SharedFunctionPtr otherFnDef = functions->getFunction( otherFn->fnIndex() );
+    const QgsExpression::SharedFunctionPtr otherFnDef = otherFn->function();
     if ( otherFnDef->name() == "geom_from_wkt"_L1 )
     {
       QgsExpressionNode *firstFnArg = otherFn->args()->list()[0];

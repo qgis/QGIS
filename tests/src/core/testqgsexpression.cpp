@@ -4337,12 +4337,10 @@ class TestQgsExpression : public QObject
       QCOMPARE( functionNodes.size(), 5 );
       QSet<QString> actualFunctions;
 
-      const QgsExpression::FunctionListSnapshot functions = QgsExpression::getFunctionsSnapshot();
-
       for ( const QgsExpressionNodeFunction *f : std::as_const( functionNodes ) )
       {
         QCOMPARE( f->nodeType(), QgsExpressionNode::NodeType::ntFunction );
-        const QgsExpression::SharedFunctionPtr fd = functions->getFunction( f->fnIndex() );
+        const QgsExpression::SharedFunctionPtr fd = f->function();
         actualFunctions << fd->name();
       }
       QCOMPARE( actualFunctions, expectedFunctions );
@@ -4367,7 +4365,7 @@ class TestQgsExpression : public QObject
       {
         QCOMPARE( f->nodeType(), QgsExpressionNode::NodeType::ntFunction );
 
-        const QgsExpression::SharedFunctionPtr fd = functions->getFunction( f->fnIndex() );
+        const QgsExpression::SharedFunctionPtr fd = f->function();
         actualFunctions << fd->name();
       }
       expectedFunctions.clear();

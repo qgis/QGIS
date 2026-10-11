@@ -473,8 +473,7 @@ QgsSqlExpressionCompiler::Result QgsSqlExpressionCompiler::compileNode( const Qg
     {
       const QgsExpressionNodeFunction *n = static_cast<const QgsExpressionNodeFunction *>( node );
 
-      const QgsExpression::FunctionListSnapshot functions = QgsExpression::getFunctionsSnapshot();
-      const QgsExpression::SharedFunctionPtr fd = functions->getFunction( n->fnIndex() );
+      const QgsExpression::SharedFunctionPtr fd = n->function();
 
       // get sql function to compile node expression
       const QString nd = sqlFunctionFromFunctionName( fd->name() );

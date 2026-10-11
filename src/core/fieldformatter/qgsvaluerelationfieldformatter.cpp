@@ -360,11 +360,9 @@ QSet<QString> QgsValueRelationFieldFormatter::expressionParentFormAttributes( co
   const QList<const QgsExpressionNodeFunction *> expFunctions( exp.findNodes<QgsExpressionNodeFunction>() );
   QgsExpressionContext context;
 
-  const QgsExpression::FunctionListSnapshot functions = QgsExpression::getFunctionsSnapshot();
-
   for ( const auto &f : expFunctions )
   {
-    const QgsExpression::SharedFunctionPtr fd = functions->getFunction( f->fnIndex() );
+    const QgsExpression::SharedFunctionPtr fd = f->function();
     if ( formFunctions.contains( fd->name() ) )
     {
       const QList<QgsExpressionNode *> cExpressionNodes { f->args()->list() };
@@ -387,11 +385,9 @@ QSet<QString> QgsValueRelationFieldFormatter::expressionFormAttributes( const QS
   const QList<const QgsExpressionNodeFunction *> expFunctions( exp.findNodes<QgsExpressionNodeFunction>() );
   QgsExpressionContext context;
 
-  const QgsExpression::FunctionListSnapshot functions = QgsExpression::getFunctionsSnapshot();
-
   for ( const auto &f : expFunctions )
   {
-    const QgsExpression::SharedFunctionPtr fd = functions->getFunction( f->fnIndex() );
+    const QgsExpression::SharedFunctionPtr fd = f->function();
     if ( formFunctions.contains( fd->name() ) )
     {
       const QList<QgsExpressionNode *> cExpressionNodes { f->args()->list() };

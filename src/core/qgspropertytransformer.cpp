@@ -253,14 +253,14 @@ QgsGenericNumericTransformer *QgsGenericNumericTransformer::fromExpression( cons
   // the scale function may be enclosed in a coalesce(expr, 0) to avoid NULL value
   // to be drawn with the default size
 
-  const QgsExpression::FunctionListSnapshot functions = QgsExpression::getFunctionsSnapshot();
-  const QgsExpression::SharedFunctionPtr fd = functions->getFunction( f->fnIndex() );
+  QgsExpression::SharedFunctionPtr fd = f->function();
 
   if ( "coalesce" == fd->name() )
   {
     f = dynamic_cast<const QgsExpressionNodeFunction *>( args[0] );
     if ( !f )
       return nullptr;
+    fd = f->function();
     nullValue = QgsExpression( args[1]->dump() ).evaluate().toDouble( &ok );
     if ( !ok )
       return nullptr;
@@ -463,8 +463,7 @@ QgsSizeScaleTransformer *QgsSizeScaleTransformer::fromExpression( const QString 
 
   QList<QgsExpressionNode *> args = f->args()->list();
 
-  const QgsExpression::FunctionListSnapshot functions = QgsExpression::getFunctionsSnapshot();
-  const QgsExpression::SharedFunctionPtr fd = functions->getFunction( f->fnIndex() );
+  QgsExpression::SharedFunctionPtr fd = f->function();
 
   // the scale function may be enclosed in a coalesce(expr, 0) to avoid NULL value
   // to be drawn with the default size
@@ -473,6 +472,7 @@ QgsSizeScaleTransformer *QgsSizeScaleTransformer::fromExpression( const QString 
     f = dynamic_cast<const QgsExpressionNodeFunction *>( args[0] );
     if ( !f )
       return nullptr;
+    fd = f->function();
     nullSize = QgsExpression( args[1]->dump() ).evaluate().toDouble( &ok );
     if ( !ok )
       return nullptr;
