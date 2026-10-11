@@ -210,7 +210,7 @@ input parameter.
 
     void featureAddedToSink( const QString &output );
 %Docstring
-Reports that a feature was added to the the sink associated with the
+Reports that a feature was added to the sink associated with the
 specified algorithm ``output``.
 
 .. seealso:: :py:func:`sinkFeatureCountChanged`

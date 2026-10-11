@@ -837,7 +837,7 @@ bool QgsPostgresProvider::loadFields()
         identityMap[attrelid][attnum] = attIdentity.isEmpty() ? " " : attIdentity;
         generatedMap[attrelid][attnum] = attGenerated.isEmpty() ? QString() : defVal;
 
-        // Also include atttype oid from pg_attribute, because PQnfields only returns basic type for for domains
+        // Also include atttype oid from pg_attribute, because PQnfields only returns basic type for domains
         attroids.insert( attType );
       }
     }

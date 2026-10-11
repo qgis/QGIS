@@ -335,7 +335,7 @@ QgsWcsProvider::QgsWcsProvider( const QString &uri, const ProviderOptions &optio
 
   clearCache();
 
-  // Block size is used for for statistics
+  // Block size is used for statistics
   // TODO: How to find maximum block size supported by server?
   if ( mHasSize )
   {

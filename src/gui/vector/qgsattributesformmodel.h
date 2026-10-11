@@ -319,7 +319,7 @@ class GUI_EXPORT QgsAttributesFormData
         SpacerElementEditorConfiguration spacerElementEditorConfiguration() const;
 
         /**
-         * Sets the the spacer element configuration to \a spacerElementEditorConfiguration
+         * Sets the spacer element configuration to \a spacerElementEditorConfiguration
          * \since QGIS 3.30
          */
         void setSpacerElementEditorConfiguration( SpacerElementEditorConfiguration spacerElementEditorConfiguration );

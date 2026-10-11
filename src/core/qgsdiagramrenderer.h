@@ -153,7 +153,7 @@ class CORE_EXPORT QgsDiagramLayerSettings
     LinePlacementFlags linePlacementFlags() const { return mPlacementFlags; }
 
     /**
-     * Sets the the diagram placement flags. These are only used if the diagram placement
+     * Sets the diagram placement flags. These are only used if the diagram placement
      * is set to a line type.
      * \param flags placement value
      * \see linePlacementFlags()

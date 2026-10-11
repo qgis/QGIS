@@ -150,7 +150,7 @@ class CORE_EXPORT QgsLayoutItemPolyline : public QgsLayoutNodesItem
     QString endSvgMarkerPath() const { return mEndMarkerFile; }
 
     /**
-     * Returns the color used to draw the stroke around the the arrow head.
+     * Returns the color used to draw the stroke around the arrow head.
      * \see arrowHeadFillColor()
      * \see setArrowHeadStrokeColor()
      */

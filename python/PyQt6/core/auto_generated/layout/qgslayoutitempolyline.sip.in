@@ -165,7 +165,7 @@ Returns the path the an SVG marker drawn at the end of the line.
 
     QColor arrowHeadStrokeColor() const;
 %Docstring
-Returns the color used to draw the stroke around the the arrow head.
+Returns the color used to draw the stroke around the arrow head.
 
 .. seealso:: :py:func:`arrowHeadFillColor`
 

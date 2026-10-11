@@ -810,12 +810,12 @@ placements.
 
     void setOffsetAlongLine( double offsetAlongLine );
 %Docstring
-Sets the the offset along the line for the symbol placement. For
-Interval placements, this is the distance between the start of the line
-and the first symbol. For FirstVertex and LastVertex placements, this is
-the distance between the symbol and the start of the line or the end of
-the line respectively. This setting has no effect for Vertex or
-CentralPoint placements.
+Sets the offset along the line for the symbol placement. For Interval
+placements, this is the distance between the start of the line and the
+first symbol. For FirstVertex and LastVertex placements, this is the
+distance between the symbol and the start of the line or the end of the
+line respectively. This setting has no effect for Vertex or CentralPoint
+placements.
 
 :param offsetAlongLine: Distance to offset markers along the line. The
                         offset unit is set via setOffsetAlongLineUnit.
@@ -957,7 +957,7 @@ Sets the ``unit`` for blank segments start and end distances
 
     Qgis::RenderUnit blankSegmentsUnit() const;
 %Docstring
-Returns the unit for for blank segments start and end distances
+Returns the unit for blank segments start and end distances
 
 .. seealso:: :py:func:`setBlankSegmentsUnit`
 

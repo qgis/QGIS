@@ -108,7 +108,7 @@ placement is set to a line type.
 
     void setLinePlacementFlags( LinePlacementFlags flags );
 %Docstring
-Sets the the diagram placement flags. These are only used if the diagram
+Sets the diagram placement flags. These are only used if the diagram
 placement is set to a line type.
 
 :param flags: placement value

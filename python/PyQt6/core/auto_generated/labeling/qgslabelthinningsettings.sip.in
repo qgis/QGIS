@@ -34,8 +34,7 @@ limited.
 
     void setLimitNumberLabelsEnabled( bool enabled );
 %Docstring
-Sets whether the the number of labels drawn for the layer should be
-limited.
+Sets whether the number of labels drawn for the layer should be limited.
 
 .. seealso:: :py:func:`setMaximumNumberLabels`
 

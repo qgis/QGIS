@@ -286,7 +286,7 @@ class GUI_EXPORT QgsShortcutsManager : public QObject
     QString objectSettingKey( QObject *object ) const;
 
     /**
-     * Returns the QShortcut or QAction matching the the full setting key
+     * Returns the QShortcut or QAction matching the full setting key
      * Return nullptr if the key was not found
      *
      * \since QGIS 3.30

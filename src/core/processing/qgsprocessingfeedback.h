@@ -187,7 +187,7 @@ class CORE_EXPORT QgsProcessingFeedback : public QgsFeedback
     void reportSourceLoaded( const QString &parameterName, long long featureCount );
 
     /**
-     * Reports that a feature was added to the the sink associated with the specified algorithm \a output.
+     * Reports that a feature was added to the sink associated with the specified algorithm \a output.
      *
      * \see sinkFeatureCountChanged()
      * \see featureSinkFinalized()

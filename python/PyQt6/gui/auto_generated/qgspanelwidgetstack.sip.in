@@ -119,7 +119,7 @@ Accepts all panel widgets open in the stack in turn until only the
     void showPanel( QgsPanelWidget *panel );
 %Docstring
 Show a panel in the stack widget. Will connect to the panels showPanel
-event to handle nested panels. Auto switches the the given panel for the
+event to handle nested panels. Auto switches the given panel for the
 user.
 
 :param panel: The panel to show.

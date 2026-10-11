@@ -132,7 +132,7 @@ QgsBackgroundCachedFeatureIterator::QgsBackgroundCachedFeatureIterator(
       {
         mCachedFeatures << f;
       }
-      // Are are the requested fids actually in the cache ?
+      // Are the requested fids actually in the cache ?
       if ( mCachedFeatures.size() == dbIds.size() )
       {
         // Yes, no need to download anything.

@@ -222,7 +222,7 @@ the possibility to dynamically adjust it.
 
     const QgsFeatureRequest &request() const;
 %Docstring
-Gets the the feature request
+Gets the feature request
 %End
 
     void setEditorContext( const QgsAttributeEditorContext &context );

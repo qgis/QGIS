@@ -49,7 +49,7 @@ class QgsBezierMarker;
  * Base class for map tools capable of capturing point, lines and polygons.
  *
  * The tool supports different techniques: straight segments, curves, streaming and shapes
- * Once the the geometry is captured the virtual private handler geometryCaptured is called
+ * Once the geometry is captured the virtual private handler geometryCaptured is called
  * as well as a more specific handler (pointCaptured, lineCaptured or polygonCaptured)
  */
 class GUI_EXPORT QgsMapToolCapture : public QgsMapToolAdvancedDigitizing

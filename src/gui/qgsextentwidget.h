@@ -123,7 +123,7 @@ class GUI_EXPORT QgsExtentWidget : public QWidget, private Ui::QgsExtentGroupBox
 
     /**
      * Sets the output CRS - may need to be used for transformation from original/current extent.
-     * Should be called as part of initialization and whenever the the output CRS is changed.
+     * Should be called as part of initialization and whenever the output CRS is changed.
      * The current extent will be reprojected into the new output CRS.
      */
     void setOutputCrs( const QgsCoordinateReferenceSystem &outputCrs );

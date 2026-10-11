@@ -94,7 +94,7 @@ class GUI_EXPORT QgsPanelWidget : public QWidget
     bool dockMode() const { return mDockMode; }
 
     /**
-     * The the auto delete property on the widget. TRUE by default.
+     * The auto delete property on the widget. TRUE by default.
      * When auto delete is enabled when a panel is removed from the stack
      * it will be deleted.
      * \param autoDelete Enable or disable auto delete on the panel.
@@ -102,7 +102,7 @@ class GUI_EXPORT QgsPanelWidget : public QWidget
     void setAutoDelete( bool autoDelete ) { mAutoDelete = autoDelete; }
 
     /**
-     * The the auto delete property on the widget. TRUE by default.
+     * The auto delete property on the widget. TRUE by default.
      * When auto delete is enabled when a panel is removed from the stack
      * it will be deleted.
      * \returns The auto delete value for the widget.

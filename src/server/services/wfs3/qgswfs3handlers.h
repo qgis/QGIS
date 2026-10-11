@@ -93,21 +93,21 @@ class QgsWfs3AbstractItemsHandler : public QgsWfs3AbstractHandler
     void gatherLayerFieldsInfo( json &data, const QgsVectorLayer *layer, const QgsServerApiContext &context ) const;
 
     /**
-     * Returns TRUE if features can be added to the the \a mapLayer in the given \a context, FALSE otherwise.
+     * Returns TRUE if features can be added to the \a mapLayer in the given \a context, FALSE otherwise.
      * Note: this method only checks if the provider supports editing and the WFS flag for adding features is set,
      * but does not check if the user has permissions to edit the layer, as this is expected to be handled by plugins.
      */
     bool canInsertFeatures( const QgsVectorLayer *mapLayer, const QgsServerApiContext &context ) const;
 
     /**
-     * Returns TRUE if features can be deleted in the the \a mapLayer in the given \a context, FALSE otherwise.
+     * Returns TRUE if features can be deleted in the \a mapLayer in the given \a context, FALSE otherwise.
      * Note: this method only checks if the provider supports editing and the WFS flag for deleting features is set,
      * but does not check if the user has permissions to edit the layer, as this is expected to be handled by plugins.
      */
     bool canDeleteFeatures( const QgsVectorLayer *mapLayer, const QgsServerApiContext &context ) const;
 
     /**
-     * Returns TRUE if features can be updated (attributes or geometry changed) from the the \a mapLayer in the given \a context, FALSE otherwise.
+     * Returns TRUE if features can be updated (attributes or geometry changed) from the \a mapLayer in the given \a context, FALSE otherwise.
      * Note: this method only checks if the provider supports editing and the WFS flag for changing features is set,
      * but does not check if the user has permissions to edit the layer, as this is expected to be handled by plugins.
      */

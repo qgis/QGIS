@@ -43,7 +43,7 @@ class CORE_EXPORT QgsLabelThinningSettings
     bool limitNumberOfLabelsEnabled() const { return mLimitNumLabels; }
 
     /**
-     * Sets whether the the number of labels drawn for the layer should be limited.
+     * Sets whether the number of labels drawn for the layer should be limited.
      * \see setMaximumNumberLabels()
      * \see limitNumberOfLabelsEnabled()
      */

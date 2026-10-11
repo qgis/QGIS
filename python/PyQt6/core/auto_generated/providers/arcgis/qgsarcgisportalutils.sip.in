@@ -180,7 +180,7 @@ details will be retrieved
       bool forceRefresh = false
     );
 %Docstring
-Retrieves JSON definitions for all items which belong the the specified
+Retrieves JSON definitions for all items which belong the specified
 ``groupId``.
 
 :param contentUrl: should be set to the Portal's content URL, e.g.
@@ -215,7 +215,7 @@ Retrieves JSON definitions for all items which belong the the specified
       const QString &urlPrefix = QString()
     ) /Deprecated="Since 3.24. Use the version with QgsHttpHeaders instead."/;
 %Docstring
-Retrieves JSON definitions for all items which belong the the specified
+Retrieves JSON definitions for all items which belong the specified
 ``groupId``. Only to avoid API break.
 
 :param contentUrl: should be set to the Portal's content URL, e.g.
@@ -251,7 +251,7 @@ Retrieves JSON definitions for all items which belong the the specified
       bool forceRefresh = false
     );
 %Docstring
-Retrieves JSON definitions for all items which belong the the specified
+Retrieves JSON definitions for all items which belong the specified
 ``groupId``.
 
 :param contentUrl: should be set to the Portal's content URL, e.g.
@@ -289,7 +289,7 @@ Retrieves JSON definitions for all items which belong the the specified
       const QString &urlPrefix = QString()
     ) /Deprecated="Since 3.24. Use the version with QgsHttpHeaders instead."/;
 %Docstring
-Retrieves JSON definitions for all items which belong the the specified
+Retrieves JSON definitions for all items which belong the specified
 ``groupId``. Only to avoid API break.
 
 :param contentUrl: should be set to the Portal's content URL, e.g.

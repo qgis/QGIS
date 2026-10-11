@@ -381,7 +381,7 @@ Qgis::VectorExportResult QgsOgrProvider::createEmptyLayer(
           firstFieldIsFid = !( EQUAL( OGR_L_GetFIDColumn( hLayer ), "" ) )
                             && OGR_FD_GetFieldIndex( OGR_L_GetLayerDefn( hLayer ), ogrFidColumnName.toUtf8() ) < 0
                             && cleanedFields.indexFromName( ogrFidColumnName.toUtf8() ) < 0;
-          // At this point we must check if there is a real FID field in the the fields argument,
+          // At this point we must check if there is a real FID field in the fields argument,
           // because in that case we don't want to shift all fields (see issue GH #34333)
           // Check for unique values should be performed in client code.
           for ( const auto &f : std::as_const( fields ) )

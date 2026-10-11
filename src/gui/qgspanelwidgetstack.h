@@ -114,7 +114,7 @@ class GUI_EXPORT QgsPanelWidgetStack : public QWidget, private Ui::QgsRendererWi
 
     /**
      * Show a panel in the stack widget. Will connect to the panels showPanel event to handle
-     * nested panels. Auto switches the the given panel for the user.
+     * nested panels. Auto switches the given panel for the user.
      * \param panel The panel to show.
      */
     void showPanel( QgsPanelWidget *panel );

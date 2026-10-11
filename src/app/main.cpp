@@ -591,7 +591,7 @@ void myMessageOutput( QtMsgType type, const QMessageLogContext &, const QString 
 #endif
 
 #if defined( ANDROID ) || defined( Q_OS_WIN )
-// On Android, there there is a libqgis.so instead of a qgis executable.
+// On Android, there is a libqgis.so instead of a qgis executable.
 // The main method symbol of this library needs to be exported so it can be called by java
 // On Windows this main is included in qgis_app and called from mainwin.cpp
 APP_EXPORT

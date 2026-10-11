@@ -152,7 +152,7 @@ class GUI_EXPORT QgsLayoutItemBaseWidget : public QgsPanelWidget
     virtual void setReportTypeString( const QString &string );
 
     /**
-     * Sets the the layout designer interface in which the widget is
+     * Sets the layout designer interface in which the widget is
      * being shown.
      *
      * \since QGIS 3.6

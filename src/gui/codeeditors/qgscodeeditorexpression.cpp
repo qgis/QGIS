@@ -78,7 +78,7 @@ void QgsCodeEditorExpression::setExpressionContext( const QgsExpressionContext &
       continue;
     if ( func->isContextual() )
     {
-      //don't show contextual functions by default - it's up the the QgsExpressionContext
+      //don't show contextual functions by default - it's up to the QgsExpressionContext
       //object to provide them if supported
       continue;
     }

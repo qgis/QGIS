@@ -1036,7 +1036,7 @@ QgsPointLocator::Match QgsVertexTool::snapToEditableLayer( QgsMapMouseEvent *e )
   {
     OneFeatureFilter filterLast( mLastSnap->layer(), mLastSnap->featureId() );
     QgsPointLocator::Match lastMatch = snapUtils->snapToMap( mapPoint, &filterLast, true );
-    // but skip the the previously used feature if it would only snap to segment, while now we have snap to vertex
+    // but skip the previously used feature if it would only snap to segment, while now we have snap to vertex
     // so that if there is a point on a line, it gets priority (as is usual with combined vertex+segment snapping)
     bool matchHasVertexLastHasEdge = m.hasVertex() && lastMatch.hasEdge();
     if ( lastMatch.isValid() && lastMatch.distance() <= m.distance() && !matchHasVertexLastHasEdge )
@@ -2508,7 +2508,7 @@ void QgsVertexTool::moveVertex( const QgsPointXY &mapPoint, const QgsPointLocato
         if ( !( vectorLayer->geometryType() == Qgis::GeometryType::Polygon || vectorLayer->geometryType() == Qgis::GeometryType::Line ) )
           continue;
 
-        // layer's CRS need to be the the same (otherwise we would need to reproject the point and it will not be coincident)
+        // layer's CRS need to be the same (otherwise we would need to reproject the point and it will not be coincident)
         if ( vectorLayer->crs() != itLayerEdits.key()->crs() )
           continue;
 

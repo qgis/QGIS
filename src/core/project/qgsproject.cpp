@@ -1032,8 +1032,8 @@ void QgsProject::setCrs( const QgsCoordinateReferenceSystem &crs, bool adjustEll
   {
     // if new crs is set that is not on the same celestial body as previous one and ellipsoid is to be adjusted,
     // there is a need to first set ellipsoid to NONE without raising signal
-    // this prevents various classes that listen to crsChanged() to try to convert the the new crs to the older ellipsoid
-    // that is only updated after the crs signals are raised (end of the this function)
+    // this prevents various classes that listen to crsChanged() to try to convert the new crs to the older ellipsoid
+    // that is only updated after the crs signals are raised (end of this function)
     // setting the ellipsoid to none prevents that as conversions do not make sense when change not only crs but also celestial body
     if ( adjustEllipsoid && !mCrs.isSameCelestialBody( crs ) )
     {

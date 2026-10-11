@@ -191,7 +191,7 @@ class CORE_EXPORT QgsLegendSettings
     /**
      * Sets whether all columns should have equal widths.
      *
-     * If FALSE, then then columns will be individually resized to their minimum possible width.
+     * If FALSE, then columns will be individually resized to their minimum possible width.
      *
      * \see equalColumnWidth()
      */

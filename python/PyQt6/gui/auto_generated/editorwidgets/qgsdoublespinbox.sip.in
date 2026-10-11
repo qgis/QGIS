@@ -197,7 +197,7 @@ Emitted when the Return or Enter key is used in the line edit.
 
     void textEdited( const QString &text );
 %Docstring
-Emitted when the the value has been manually edited via line edit.
+Emitted when the value has been manually edited via line edit.
 
 .. versionadded:: 3.40
 %End

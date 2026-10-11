@@ -161,7 +161,7 @@ class CORE_EXPORT QgsPointDistanceRenderer : public QgsFeatureRenderer
     double minimumLabelScale() const { return mMinLabelScale; }
 
     /**
-     * Sets the color to use for for labeling points.
+     * Sets the color to use for labeling points.
      * \param color label color
      * \see labelColor()
      * \see setLabelAttributeName()
@@ -170,7 +170,7 @@ class CORE_EXPORT QgsPointDistanceRenderer : public QgsFeatureRenderer
     void setLabelColor( const QColor &color ) { mLabelColor = color; }
 
     /**
-     * Returns the color used for for labeling points.
+     * Returns the color used for labeling points.
      * \see setLabelColor()
      * \see labelAttributeName()
      * \see labelFont()

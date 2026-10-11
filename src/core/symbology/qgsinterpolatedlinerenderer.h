@@ -237,7 +237,7 @@ class CORE_EXPORT QgsInterpolatedLineRenderer
 
     /**
      * Renders a line in the \a context between \a point1 and \a point2
-     * with color that varies depending on \a valueColor1 and \a valueColor2 and and width that varies between \a valueWidth1 and \a valueWidth2
+     * with color that varies depending on \a valueColor1 and \a valueColor2 and width that varies between \a valueWidth1 and \a valueWidth2
      *
      * This method assumes that \a point1 and \a point2 are in map units. See renderInDeviceCoordinates() for an equivalent
      * method which renders lines in painter coordinates.
@@ -248,7 +248,7 @@ class CORE_EXPORT QgsInterpolatedLineRenderer
 
     /**
      * Renders a line in the \a context between \a point1 and \a point2 in device (painter) coordinates
-     * with color that varies depending on \a valueColor1 and \a valueColor2 and and width that varies between \a valueWidth1 and \a valueWidth2.
+     * with color that varies depending on \a valueColor1 and \a valueColor2 and width that varies between \a valueWidth1 and \a valueWidth2.
      *
      * \since QGIS 3.22
      */

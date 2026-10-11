@@ -37,7 +37,7 @@ algorithm ID.
 
     void copyNonDefinitionPropertiesFromModel( QgsProcessingModelAlgorithm *model );
 %Docstring
-Copies all non-specific definition properties from the the matching
+Copies all non-specific definition properties from the matching
 component from a ``model``.
 
 This includes properties like the size and position of the component,

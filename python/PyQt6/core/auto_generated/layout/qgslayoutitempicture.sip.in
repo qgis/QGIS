@@ -357,8 +357,8 @@ Sets whether the picture item should by clipped to the associated item.
 
     QgsLayoutItem *clippingItem() const;
 %Docstring
-Returns the item that will will provide the clipping path for the
-picture, or ``None`` if no item is set.
+Returns the item that will provide the clipping path for the picture, or
+``None`` if no item is set.
 
 .. seealso:: :py:func:`setClippingItem`
 
@@ -369,8 +369,7 @@ picture, or ``None`` if no item is set.
 
     void setClippingItem( QgsLayoutItem *item );
 %Docstring
-Sets the ``item`` that will will provide the clipping path for the
-picture.
+Sets the ``item`` that will provide the clipping path for the picture.
 
 .. note::
 
