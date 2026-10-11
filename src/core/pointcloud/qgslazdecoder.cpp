@@ -547,7 +547,7 @@ std::unique_ptr<QgsPointCloudBlock> decompressLaz_( FileType &file, const QgsPoi
       return nullptr;
     }
 
-    const size_t count = f.header().point_count;
+    const size_t count = static_cast<size_t>( f.pointCount() );
     const QgsVector3D scale( f.header().scale.x, f.header().scale.y, f.header().scale.z );
     const QgsVector3D offset( f.header().offset.x, f.header().offset.y, f.header().offset.z );
 
