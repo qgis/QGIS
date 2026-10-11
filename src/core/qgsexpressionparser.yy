@@ -274,7 +274,7 @@ expression_non_logical:
             YYERROR;
           }
 
-          $$ = new QgsExpressionNodeFunction(fnIndex, $3);
+          $$ = new QgsExpressionNodeFunction(func, $3);
           addParserLocation(&@1, $$);
         }
 
@@ -301,7 +301,7 @@ expression_non_logical:
             exp_error(&yyloc, parser_ctx, QObject::tr( "%1 function is called with wrong number of arguments" ).arg( func->name() ).toLocal8Bit().constData() );
             YYERROR;
           }
-          $$ = new QgsExpressionNodeFunction(fnIndex, new QgsExpressionNode::NodeList());
+          $$ = new QgsExpressionNodeFunction(functions->getFunction( fnIndex ), new QgsExpressionNode::NodeList());
           addParserLocation(&@1, $$);
         }
 
@@ -326,7 +326,7 @@ expression_non_logical:
           delete $1;
           if (fnIndex >= 0)
           {
-            $$ = new QgsExpressionNodeFunction( fnIndex, nullptr );
+            $$ = new QgsExpressionNodeFunction( functions->getFunction( fnIndex ), nullptr );
           }
           else
           {
@@ -346,7 +346,7 @@ expression_non_logical:
           args->append( literal );
           const QgsExpression::FunctionListSnapshot functions = QgsExpression::getFunctionsSnapshot();
           const int fnIndex = functions->functionIndex("var");
-          $$ = new QgsExpressionNodeFunction( fnIndex, args );
+          $$ = new QgsExpressionNodeFunction( functions->getFunction( fnIndex ), args );
           delete $1;
         }
 

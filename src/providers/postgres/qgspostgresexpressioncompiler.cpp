@@ -187,9 +187,7 @@ QgsSqlExpressionCompiler::Result QgsPostgresExpressionCompiler::compileNode( con
     case QgsExpressionNode::ntFunction:
     {
       const QgsExpressionNodeFunction *n = static_cast<const QgsExpressionNodeFunction *>( node );
-
-      const QgsExpression::FunctionListSnapshot functions = QgsExpression::getFunctionsSnapshot();
-      const QgsExpression::SharedFunctionPtr fd = functions->getFunction( n->fnIndex() );
+      const QgsExpression::SharedFunctionPtr fd = n->function();
       if ( fd->name() == "$geometry"_L1 )
       {
         result = quotedIdentifier( mGeometryColumn );

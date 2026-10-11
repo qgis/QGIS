@@ -11,6 +11,7 @@
 
 
 
+
 class QgsExpressionNodeUnaryOperator : QgsExpressionNode
 {
 %Docstring(signature="appended")
@@ -411,6 +412,7 @@ A function node consists of an index of the function in the global
 function array and a list of arguments that will be passed to it.
 %End
 
+
     ~QgsExpressionNodeFunction();
 
     SIP_PYOBJECT __repr__();
@@ -433,6 +435,7 @@ QString function;
 %Docstring
 Returns the index of the node's function.
 %End
+
 
     QgsExpressionNode::NodeList *args() const;
 %Docstring
