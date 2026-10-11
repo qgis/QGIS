@@ -31,7 +31,7 @@
 
 using namespace Qt::StringLiterals;
 
-QgsZonalStatistics::QgsZonalStatistics( QgsVectorLayer *polygonLayer, QgsRasterLayer *rasterLayer, const QString &attributePrefix, int rasterBand, Qgis::ZonalStatistics stats )
+QgsZonalStatistics::QgsZonalStatistics( QgsVectorLayer *polygonLayer, QgsRasterLayer *rasterLayer, const QString &attributePrefix, int rasterBand, Qgis::ZonalStatistics stats, bool overwriteExisting )
   : QgsZonalStatistics(
       polygonLayer,
       rasterLayer ? rasterLayer->dataProvider() : nullptr,
@@ -40,7 +40,8 @@ QgsZonalStatistics::QgsZonalStatistics( QgsVectorLayer *polygonLayer, QgsRasterL
       rasterLayer ? rasterLayer->rasterUnitsPerPixelY() : 0,
       attributePrefix,
       rasterBand,
-      stats
+      stats,
+      overwriteExisting
     )
 {}
 
@@ -52,7 +53,8 @@ QgsZonalStatistics::QgsZonalStatistics(
   double rasterUnitsPerPixelY,
   const QString &attributePrefix,
   int rasterBand,
-  Qgis::ZonalStatistics stats
+  Qgis::ZonalStatistics stats,
+  bool overwriteExisting
 )
   : mRasterInterface( rasterInterface )
   , mRasterCrs( rasterCrs )
@@ -62,6 +64,7 @@ QgsZonalStatistics::QgsZonalStatistics(
   , mPolygonLayer( polygonLayer )
   , mAttributePrefix( attributePrefix )
   , mStatistics( stats )
+  , mOverwriteExisting( overwriteExisting )
 {}
 
 Qgis::ZonalStatisticResult QgsZonalStatistics::calculateStatistics( QgsFeedback *feedback )
@@ -108,10 +111,20 @@ Qgis::ZonalStatisticResult QgsZonalStatistics::calculateStatistics( QgsFeedback 
   {
     if ( mStatistics & stat )
     {
-      QString fieldName = getUniqueFieldName( mAttributePrefix + QgsZonalStatistics::shortName( stat ), newFieldList );
-      QgsField field( fieldName, QMetaType::Type::Double, u"double precision"_s );
-      newFieldList.push_back( field );
-      statFieldIndexes.insert( stat, oldFieldCount + newFieldList.count() - 1 );
+      QString targetFieldName = mAttributePrefix + QgsZonalStatistics::shortName( stat );
+      int targetIndex = vectorProvider->fields().indexFromName( targetFieldName );
+
+      if ( mOverwriteExisting && targetIndex != -1 )
+      {
+        statFieldIndexes.insert( stat, targetIndex );
+      }
+      else
+      {
+        QString fieldName = getUniqueFieldName( targetFieldName, newFieldList );
+        QgsField field( fieldName, QMetaType::Type::Double, u"double precision"_s );
+        newFieldList.push_back( field );
+        statFieldIndexes.insert( stat, oldFieldCount + newFieldList.count() - 1 );
+      }
     }
   }
 
