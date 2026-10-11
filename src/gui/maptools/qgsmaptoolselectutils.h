@@ -133,7 +133,7 @@ namespace QgsMapToolSelectUtils
     public:
       /**
       * Constructor
-      * \param canvas The map canvas where where are the selected features
+      * \param canvas The map canvas where are the selected features
       * \param vectorLayer The target layer
       * \param behavior behavior of select
       * \param selectionGeometry the geometry used to select the feature

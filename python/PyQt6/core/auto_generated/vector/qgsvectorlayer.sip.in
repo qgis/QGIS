@@ -2388,8 +2388,7 @@ be removed.
 
     QString constraintExpression( int index ) const;
 %Docstring
-Returns the constraint expression for for a specified field index, if
-set.
+Returns the constraint expression for a specified field index, if set.
 
 .. seealso:: :py:func:`fieldConstraints`
 

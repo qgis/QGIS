@@ -179,8 +179,8 @@ their minimum possible width.
 %Docstring
 Sets whether all columns should have equal widths.
 
-If ``False``, then then columns will be individually resized to their
-minimum possible width.
+If ``False``, then columns will be individually resized to their minimum
+possible width.
 
 .. seealso:: :py:func:`equalColumnWidth`
 %End

@@ -302,7 +302,7 @@ class GUI_EXPORT QgisInterface : public QObject
     virtual void addProjectExportAction( QAction *action ) = 0;
 
     /**
-     * Removes an \a action from the the QGIS "Export project" menu.
+     * Removes an \a action from the QGIS "Export project" menu.
      *
      * \see addProjectExportAction()
      * \see removeProjectImportAction()

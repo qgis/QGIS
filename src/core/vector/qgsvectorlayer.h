@@ -2229,7 +2229,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer,
     void removeFieldConstraint( int index, QgsFieldConstraints::Constraint constraint );
 
     /**
-     * Returns the constraint expression for for a specified field index, if set.
+     * Returns the constraint expression for a specified field index, if set.
      * \see fieldConstraints()
      * \see constraintDescription()
      * \see setConstraintExpression()

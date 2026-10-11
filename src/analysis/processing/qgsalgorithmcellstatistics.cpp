@@ -742,7 +742,7 @@ QString QgsCellStatisticsPercentRankFromRasterAlgorithm::shortHelpString() const
     "This algorithm generates a raster containing the cell-wise percent rank value of a stack of input rasters "
     "based on an input value raster.\n\n"
     "At each cell location, the current value of the value raster is used ranked among the respective values in the stack of all overlaid and sorted cell values of the input rasters. "
-    "For values outside of the the stack value distribution, the algorithm returns NoData because the value cannot be ranked among the cell values.\n\n"
+    "For values outside of the stack value distribution, the algorithm returns NoData because the value cannot be ranked among the cell values.\n\n"
     "There are two methods for percentile calculation:"
     "<ul> "
     "   <li>Inclusive linearly interpolated percent rank (PERCENTRANK.INC)</li>"

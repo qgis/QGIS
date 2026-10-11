@@ -52,7 +52,7 @@ class CORE_EXPORT QgsProcessingModelChildAlgorithm : public QgsProcessingModelCo
     QgsProcessingModelChildAlgorithm *clone() const override SIP_FACTORY;
 
     /**
-     * Copies all non-specific definition properties from the the matching component from a \a model.
+     * Copies all non-specific definition properties from the matching component from a \a model.
      *
      * This includes properties like the size and position of the component, but not properties
      * like the specific algorithm or input details.

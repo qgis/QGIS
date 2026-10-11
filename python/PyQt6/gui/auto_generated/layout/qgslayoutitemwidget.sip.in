@@ -102,8 +102,7 @@ override this and update their widget labels accordingly.
 
     virtual void setDesignerInterface( QgsLayoutDesignerInterface *iface );
 %Docstring
-Sets the the layout designer interface in which the widget is being
-shown.
+Sets the layout designer interface in which the widget is being shown.
 
 .. versionadded:: 3.6
 %End

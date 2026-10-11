@@ -440,7 +440,7 @@ bool QgsPostgresRasterProvider::readBlock( int bandNo, const QgsRectangle &viewE
     //qDebug() << "Overview desired: " << desiredOverviewFactor << "found:" << overviewFactor << tableToQuery;
     //qDebug() << "View extent" << viewExtent.toString( 1 ) << width << height << minPixelSize;
 
-    // Get the the tiles we need to build the block
+    // Get the tiles we need to build the block
     const QgsPostgresRasterSharedData::TilesRequest tilesRequest {
       bandNo,
       rasterExtent,

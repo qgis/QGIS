@@ -85,7 +85,7 @@ const QgsSettingsEntryDouble *QgsElevationProfileWidget::settingTolerance
 const QgsSettingsEntryBool *QgsElevationProfileWidget::settingShowLayerTree
   = new QgsSettingsEntryBool( u"show-layer-tree"_s, QgsSettingsTree::sTreeElevationProfile, true, u"Whether the layer tree should be shown for elevation profile plots"_s );
 const QgsSettingsEntryBool *QgsElevationProfileWidget::settingLockAxis
-  = new QgsSettingsEntryBool( u"lock-axis-ratio"_s, QgsSettingsTree::sTreeElevationProfile, false, u"Whether the the distance and elevation axis scales are locked to each other"_s );
+  = new QgsSettingsEntryBool( u"lock-axis-ratio"_s, QgsSettingsTree::sTreeElevationProfile, false, u"Whether the distance and elevation axis scales are locked to each other"_s );
 const QgsSettingsEntryString *QgsElevationProfileWidget::settingLastExportDir
   = new QgsSettingsEntryString( u"last-export-dir"_s, QgsSettingsTree::sTreeElevationProfile, QString(), u"Last elevation profile export directory"_s );
 const QgsSettingsEntryColor *QgsElevationProfileWidget::settingBackgroundColor

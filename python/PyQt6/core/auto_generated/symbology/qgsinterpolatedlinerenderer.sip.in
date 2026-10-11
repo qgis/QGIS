@@ -275,7 +275,7 @@ equivalent method which renders lines in painter coordinates.
 %Docstring
 Renders a line in the ``context`` between ``point1`` and ``point2`` with
 color that varies depending on ``valueColor1`` and ``valueColor2`` and
-and width that varies between ``valueWidth1`` and ``valueWidth2``
+width that varies between ``valueWidth1`` and ``valueWidth2``
 
 This method assumes that ``point1`` and ``point2`` are in map units. See
 :py:func:`~QgsInterpolatedLineRenderer.renderInDeviceCoordinates` for an
@@ -288,7 +288,7 @@ equivalent method which renders lines in painter coordinates.
 %Docstring
 Renders a line in the ``context`` between ``point1`` and ``point2`` in
 device (painter) coordinates with color that varies depending on
-``valueColor1`` and ``valueColor2`` and and width that varies between
+``valueColor1`` and ``valueColor2`` and width that varies between
 ``valueWidth1`` and ``valueWidth2``.
 
 .. versionadded:: 3.22

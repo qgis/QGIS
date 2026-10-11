@@ -355,8 +355,8 @@ an empty string if the QObject is not registered
 
     QObject *objectForSettingKey( const QString &name ) const;
 %Docstring
-Returns the QShortcut or QAction matching the the full setting key
-Return None if the key was not found
+Returns the QShortcut or QAction matching the full setting key Return
+None if the key was not found
 
 .. versionadded:: 3.30
 %End

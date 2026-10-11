@@ -43,7 +43,7 @@ class QgsExpressionContext;
  *
  * In its most simple form, the referencing layer will just insert the layer name of the referenced layer into this field.
  * To be more precise, a polymorphic relation is a set of normal relations having the same referencing layer but having the referenced layer dynamically defined.
- * The polymorphic setting of the layer is solved by using an expression which has to match some properties of the the referenced layer like the table name, schema, uri, layer id, ...
+ * The polymorphic setting of the layer is solved by using an expression which has to match some properties of the referenced layer like the table name, schema, uri, layer id, ...
  * \ingroup core
  * \class QgsPolymorphicRelation
  * \since QGIS 3.18

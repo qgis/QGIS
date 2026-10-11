@@ -97,7 +97,7 @@ class GUI_EXPORT QgsFileWidget : public QWidget
     QString filePath() const;
 
     /**
-     * \brief Split the the quoted and space separated \a path and returns a list of strings.
+     * \brief Split the quoted and space separated \a path and returns a list of strings.
      *
      * \see filePath()
      */

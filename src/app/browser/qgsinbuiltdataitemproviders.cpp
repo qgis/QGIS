@@ -1666,7 +1666,7 @@ void QgsDatabaseItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *
 {
   Q_UNUSED( selectedItems )
 
-  // Add create new table for collection items but not not if it is a root item
+  // Add create new table for collection items but not if it is a root item
   if ( !qobject_cast<QgsConnectionsRootItem *>( item ) )
   {
     std::unique_ptr<QgsAbstractDatabaseProviderConnection> conn( item->databaseConnection() );

@@ -174,7 +174,7 @@ class GUI_EXPORT QgsFeaturePickerWidget : public QWidget
 
     /**
      * The display expression will be used to display features as well as
-     * the the value to match the typed text against.
+     * the value to match the typed text against.
      */
     void displayExpressionChanged();
 

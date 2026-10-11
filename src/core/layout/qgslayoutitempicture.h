@@ -307,7 +307,7 @@ class CORE_EXPORT QgsLayoutItemPicture : public QgsLayoutItem
     void setClipToItem( bool clipToItem );
 
     /**
-     * Returns the item that will will provide the clipping path for the picture, or
+     * Returns the item that will provide the clipping path for the picture, or
      * NULLPTR if no item is set.
      *
      * \see setClippingItem
@@ -317,7 +317,7 @@ class CORE_EXPORT QgsLayoutItemPicture : public QgsLayoutItem
     QgsLayoutItem *clippingItem() const;
 
     /**
-     * Sets the \a item that will will provide the clipping path for the picture.
+     * Sets the \a item that will provide the clipping path for the picture.
      *
      * \note The specified item must return the QgsLayoutItem::FlagProvidesClipPath flag.
      * \see clippingItem

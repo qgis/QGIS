@@ -276,7 +276,7 @@ The layer from which features should be listed.
     void displayExpressionChanged();
 %Docstring
 The display expression will be used to display features as well as the
-the value to match the typed text against.
+value to match the typed text against.
 %End
 
     void filterExpressionChanged();

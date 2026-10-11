@@ -250,8 +250,8 @@ Emitted when the filtering of the features has been done
 
     void visibleReloaded();
 %Docstring
-Emitted when the the visible features on extend are reloaded (the list
-is created)
+Emitted when the visible features on extend are reloaded (the list is
+created)
 %End
 
     void filterError( const QString &errorMessage );

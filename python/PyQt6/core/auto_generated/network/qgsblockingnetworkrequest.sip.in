@@ -274,7 +274,7 @@ Aborts the network request immediately.
 
     void downloadProgress( qint64 bytesReceived, qint64 bytesTotal );
 %Docstring
-Emitted when when data arrives during a request.
+Emitted when data arrives during a request.
 %End
 
  void downloadFinished() /Deprecated="Since 3.40. Use the finished() signal instead."/;
@@ -288,7 +288,7 @@ Emitted once a request has finished downloading.
 
     void uploadProgress( qint64 bytesReceived, qint64 bytesTotal );
 %Docstring
-Emitted when when data are sent during a request.
+Emitted when data are sent during a request.
 
 .. versionadded:: 3.22
 %End

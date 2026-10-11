@@ -225,7 +225,7 @@ class QgsOracleConn : public QObject
     QString getSpatialIndexName( const QString &ownerName, const QString &tableName, const QString &geometryColumn, bool &isValid );
 
     /**
-     * Create a spatial index for for column \a geometryColumn in table \a tableName from
+     * Create a spatial index for column \a geometryColumn in table \a tableName from
      * schema/user \a ownerName.
      * Returns created index name. An empty string is returned if the creation has failed.
      * \note We assume that the sdo_geom_metadata table is already correctly populated before creating

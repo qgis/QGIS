@@ -173,7 +173,7 @@ class GUI_EXPORT QgsSpinBox : public QSpinBox
     void returnPressed();
 
     /**
-     * Emitted when the the value has been manually edited via line edit.
+     * Emitted when the value has been manually edited via line edit.
      * \since QGIS 3.40
      */
     void textEdited( const QString &text );

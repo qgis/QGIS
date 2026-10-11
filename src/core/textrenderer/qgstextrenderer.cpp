@@ -2215,7 +2215,7 @@ void QgsTextRenderer::renderDeferredBlocks(
     // TODO: there's an optimisation opportunity here -- if we are ALSO rendering the text component,
     // we could move the actual text rendering into renderDeferredShadowForText and use the same
     // QPicture as we used for the shadow. But we'd need to ensure that all the settings
-    // which control whether text is rendered as text or paths also also considered.
+    // which control whether text is rendered as text or paths also considered.
   }
 
   if ( components & Qgis::TextComponent::Text )

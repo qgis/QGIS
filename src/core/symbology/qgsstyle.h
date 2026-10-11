@@ -1384,7 +1384,7 @@ class CORE_EXPORT QgsStyle : public QObject
     static QString tagmapTableName( StyleEntity type );
 
     /**
-     * Returns the entity ID field name for for the tag map table for the specified entity \a type.
+     * Returns the entity ID field name for the tag map table for the specified entity \a type.
      */
     static QString tagmapEntityIdFieldName( StyleEntity type );
 

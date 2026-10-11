@@ -278,7 +278,7 @@ class GUI_EXPORT QgsAttributeTableFilterModel : public QSortFilterProxyModel, pu
     void featuresFiltered();
 
     /**
-     * Emitted when the the visible features on extend are reloaded (the list is created)
+     * Emitted when the visible features on extend are reloaded (the list is created)
      */
     void visibleReloaded();
 

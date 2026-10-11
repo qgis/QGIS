@@ -696,7 +696,7 @@ class CORE_EXPORT QgsTemplatedLineSymbolLayerBase : public QgsLineSymbolLayer
     double offsetAlongLine() const { return mOffsetAlongLine; }
 
     /**
-     * Sets the the offset along the line for the symbol placement. For Interval placements, this is the distance
+     * Sets the offset along the line for the symbol placement. For Interval placements, this is the distance
      * between the start of the line and the first symbol. For FirstVertex and LastVertex placements, this is the
      * distance between the symbol and the start of the line or the end of the line respectively.
      * This setting has no effect for Vertex or CentralPoint placements.
@@ -810,7 +810,7 @@ class CORE_EXPORT QgsTemplatedLineSymbolLayerBase : public QgsLineSymbolLayer
     void setBlankSegmentsUnit( Qgis::RenderUnit unit ) { mBlankSegmentsUnit = unit; }
 
     /**
-     * Returns the unit for for blank segments start and end distances
+     * Returns the unit for blank segments start and end distances
      *
      * \see setBlankSegmentsUnit()
      * \since QGIS 4.0

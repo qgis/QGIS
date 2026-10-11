@@ -153,7 +153,7 @@ class CORE_EXPORT QgsArcGisPortalUtils
     ) SIP_DEPRECATED;
 
     /**
-     * Retrieves JSON definitions for all items which belong the the specified \a groupId.
+     * Retrieves JSON definitions for all items which belong the specified \a groupId.
      *
      * \param contentUrl should be set to the Portal's content URL, e.g. https://mysite.com/portal/sharing/rest/content/
      * \param groupId ID of group to query
@@ -183,7 +183,7 @@ class CORE_EXPORT QgsArcGisPortalUtils
     );
 
     /**
-     * Retrieves JSON definitions for all items which belong the the specified \a groupId. Only to avoid API break.
+     * Retrieves JSON definitions for all items which belong the specified \a groupId. Only to avoid API break.
      *
      * \param contentUrl should be set to the Portal's content URL, e.g. https://mysite.com/portal/sharing/rest/content/
      * \param groupId ID of group to query
@@ -211,7 +211,7 @@ class CORE_EXPORT QgsArcGisPortalUtils
     ) SIP_DEPRECATED;
 
     /**
-     * Retrieves JSON definitions for all items which belong the the specified \a groupId.
+     * Retrieves JSON definitions for all items which belong the specified \a groupId.
      *
      * \param contentUrl should be set to the Portal's content URL, e.g. https://mysite.com/portal/sharing/rest/content/
      * \param groupId ID of group to query
@@ -243,7 +243,7 @@ class CORE_EXPORT QgsArcGisPortalUtils
     );
 
     /**
-     * Retrieves JSON definitions for all items which belong the the specified \a groupId. Only to avoid API break.
+     * Retrieves JSON definitions for all items which belong the specified \a groupId. Only to avoid API break.
      *
      * \param contentUrl should be set to the Portal's content URL, e.g. https://mysite.com/portal/sharing/rest/content/
      * \param groupId ID of group to query

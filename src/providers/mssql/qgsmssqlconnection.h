@@ -161,7 +161,7 @@ class QgsMssqlConnection
     static bool isInvalidGeometryHandlingDisabled( const QString &name );
 
     /**
-     * Sets whether the the connection with matching \a name should
+     * Sets whether the connection with matching \a name should
      * skip all handling of records with invalid geometry.
      *
      * This speeds up the provider, however, if any invalid geometries

@@ -195,7 +195,7 @@ denominator, e.g. 1000.0 for a 1:1000 map.
 
     void setLabelColor( const QColor &color );
 %Docstring
-Sets the color to use for for labeling points.
+Sets the color to use for labeling points.
 
 :param color: label color
 
@@ -208,7 +208,7 @@ Sets the color to use for for labeling points.
 
     QColor labelColor() const;
 %Docstring
-Returns the color used for for labeling points.
+Returns the color used for labeling points.
 
 .. seealso:: :py:func:`setLabelColor`
 

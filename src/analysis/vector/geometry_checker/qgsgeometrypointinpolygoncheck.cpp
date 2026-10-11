@@ -74,7 +74,7 @@ QgsGeometryCheck::Result QgsGeometryPointInPolygonCheck::collectErrors(
         }
 
         // if the point is inside the polygon, it's ok, we incremented nInside to match nTested
-        // and we go the the next polygon.
+        // and we go to the next polygon.
         if ( testGeomEngine->contains( point, nullptr, feedback ) )
         {
           ++nInside;

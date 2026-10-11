@@ -279,7 +279,7 @@ Adds an ``action`` to the QGIS "Export project" menu.
 
     virtual void removeProjectExportAction( QAction *action ) = 0;
 %Docstring
-Removes an ``action`` from the the QGIS "Export project" menu.
+Removes an ``action`` from the QGIS "Export project" menu.
 
 .. seealso:: :py:func:`addProjectExportAction`
 

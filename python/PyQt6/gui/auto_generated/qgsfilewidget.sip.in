@@ -60,7 +60,7 @@ single space (for example: '"/path/foo" "path/bar"')
 
     static QStringList splitFilePaths( const QString &path );
 %Docstring
-Split the the quoted and space separated ``path`` and returns a list of
+Split the quoted and space separated ``path`` and returns a list of
 strings.
 
 .. seealso:: :py:func:`filePath`

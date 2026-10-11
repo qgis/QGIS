@@ -92,8 +92,8 @@ Returns the dock mode state.
 
     void setAutoDelete( bool autoDelete );
 %Docstring
-The the auto delete property on the widget. ``True`` by default. When
-auto delete is enabled when a panel is removed from the stack it will be
+The auto delete property on the widget. ``True`` by default. When auto
+delete is enabled when a panel is removed from the stack it will be
 deleted.
 
 :param autoDelete: Enable or disable auto delete on the panel.
@@ -101,8 +101,8 @@ deleted.
 
     bool autoDelete() const;
 %Docstring
-The the auto delete property on the widget. ``True`` by default. When
-auto delete is enabled when a panel is removed from the stack it will be
+The auto delete property on the widget. ``True`` by default. When auto
+delete is enabled when a panel is removed from the stack it will be
 deleted.
 
 :return: The auto delete value for the widget.
