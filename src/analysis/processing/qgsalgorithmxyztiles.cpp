@@ -77,7 +77,7 @@ namespace
     int metaTileSize,
     const QList<QgsTileExtentMaxZoomRegion> &maxZoomRegions,
     int defaultMaxZoom,
-    QgsFeedback *feedback
+    QgsProcessingFeedback *feedback
   )
   {
     const QgsTileMatrix targetZoomMatrix = QgsTileMatrix::fromTileMatrix( zoom, z0Matrix );
@@ -104,6 +104,7 @@ namespace
     const int totalMetaRows = static_cast<int>( std::ceil( static_cast<double>( maxY - minY + 1 ) / metaTileSize ) );
     tileCount = 0;
     QList<MetaTile> metaTiles;
+    bool hasWarnedForManyTiles = false;
     for ( int metaTileColumn = 0; metaTileColumn < totalMetaColumns; ++metaTileColumn )
     {
       if ( feedback->isCanceled() )
@@ -163,6 +164,16 @@ namespace
         if ( !metaTile.tiles.isEmpty() )
         {
           metaTiles.append( metaTile );
+          constexpr qsizetype MAX_METATILES_BEFORE_WARNING = 1'000'000;
+          if ( !hasWarnedForManyTiles && metaTiles.size() >= MAX_METATILES_BEFORE_WARNING )
+          {
+            feedback->pushWarning(
+              QObject::tr( "A large number of tiles (more than %1 metatiles) will be created for zoom level %2. This will take some time. Please check the tile matrix settings and extent to confirm these parameters are correct." )
+                .arg( MAX_METATILES_BEFORE_WARNING )
+                .arg( zoom )
+            );
+            hasWarnedForManyTiles = true;
+          }
         }
       }
     }
