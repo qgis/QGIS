@@ -2733,6 +2733,10 @@ void TestQgsProcessingAlgsPt2::extendLineAlg()
   f.setGeometry( QgsGeometry::fromWkt( "LineString EMPTY" ) );
   QVERIFY( layer->dataProvider()->addFeature( f ) );
 
+  f.setGeometry( QgsGeometry::fromWkt( "MultiLineString EMPTY" ) );
+  layer->dataProvider()->addFeature( f );
+
+
   QVariantMap parameters;
   parameters.insert( u"INPUT"_s, QVariant::fromValue( layer.get() ) );
   parameters.insert( u"OUTPUT"_s, u"memory:"_s );
@@ -2748,7 +2752,7 @@ void TestQgsProcessingAlgsPt2::extendLineAlg()
 
   QgsVectorLayer *outputLayer = qobject_cast<QgsVectorLayer *>( context->getMapLayer( results.value( u"OUTPUT"_s ).toString() ) );
   QVERIFY( outputLayer->isValid() );
-  QCOMPARE( outputLayer->featureCount(), 2 );
+  QCOMPARE( outputLayer->featureCount(), 3 );
 
   QgsFeatureIterator it = outputLayer->getFeatures();
 
@@ -2759,6 +2763,10 @@ void TestQgsProcessingAlgsPt2::extendLineAlg()
   QgsFeature f2;
   QVERIFY( it.nextFeature( f2 ) );
   QCOMPARE( f2.geometry().asWkt(), "LineString EMPTY" );
+
+  QgsFeature f3;
+  QVERIFY( it.nextFeature( f3 ) );
+  QCOMPARE( f3.geometry().asWkt(), "MultiLineString EMPTY" );
 }
 
 QGSTEST_MAIN( TestQgsProcessingAlgsPt2 )
