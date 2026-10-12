@@ -136,16 +136,12 @@ static void _parseAndEvalExprWithCustomFunctionRegisterNoOwnership( int arg )
 
     // using the custom function registered once on the main thread in advance
     QgsExpression exp2( u"get_test_value(%1)"_s.arg( arg ) );
-    const int result = exp2.evaluate().toInt();
+    int result = exp2.evaluate().toInt();
     Q_ASSERT_X( result == arg, "", u"Expected %1 got %2"_s.arg( arg ).arg( result ).toLocal8Bit().constData() );
 
-// TODO: the expected result isn't returned, as the stored function indices will be continually pointing to
-// different functions as the other threads modify the registered functions
-#if 0
     QgsExpression expCustom( u"%1()"_s.arg( functionName ) );
-    const int result = expCustom.evaluate().toInt();
-    Q_ASSERT_X(result == arg, "", u"Expected %1 got %2"_s.arg( arg ).arg( result ).toLocal8Bit().constData());
-#endif
+    result = expCustom.evaluate().toInt();
+    Q_ASSERT_X( result == arg, "", u"Expected %1 got %2"_s.arg( arg ).arg( result ).toLocal8Bit().constData() );
   }
 
   QgsExpression::unregisterFunction( functionName );
