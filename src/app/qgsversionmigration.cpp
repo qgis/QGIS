@@ -391,19 +391,37 @@ QgsError Qgs3To4Migration::runMigration( const QString &oldProfilePath, const QS
 
   // for each ini file properties, replace the old profiles path to the new path
   // use QFileInfo.absoluteFilePath() to avoid mix up of / and \ on Windows
+  // Don't use canonicalFilePath() or test if file exists because it may not be existing and we still
+  // want to replace it
   QSettings iniFile( newProfileDir.filePath( u"QGIS/QGIS4.ini"_s ), QSettings::IniFormat );
   for ( const QString &key : iniFile.allKeys() )
   {
     const QVariant value = iniFile.value( key );
-    if ( value.isNull() || value.userType() != QMetaType::Type::QString )
+    if ( value.isNull() )
       continue;
 
-    QFileInfo fileInfo( value.toString() );
-    if ( !fileInfo.exists() )
-      continue;
+    switch ( value.userType() )
+    {
+      case QMetaType::Type::QString:
+      {
+        const QString strValue = QFileInfo( value.toString() ).canonicalFilePath().replace( oldCleanProfilePath, newCleanProfilePath );
+        iniFile.setValue( key, strValue );
+        break;
+      }
 
-    const QString newValue = fileInfo.absoluteFilePath().replace( oldCleanProfilePath, newCleanProfilePath );
-    iniFile.setValue( key, newValue );
+      case QMetaType::Type::QStringList:
+      {
+        QStringList strValues = value.toStringList();
+        for ( QString &strValue : strValues )
+        {
+          strValue = QFileInfo( strValue ).absoluteFilePath().replace( oldCleanProfilePath, newCleanProfilePath );
+        }
+        iniFile.setValue( key, strValues );
+        break;
+      }
+      default:
+        continue;
+    }
   }
 
   QgsSettings newSettings;
