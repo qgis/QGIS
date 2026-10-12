@@ -946,7 +946,6 @@ void QgsXyzTilesDirectoryAlgorithm::doExport( QgsProcessingFeedback *feedback )
   for ( auto it = mRendererJobs.constBegin(); it != mRendererJobs.constEnd(); it++ )
   {
     it.key()->cancel();
-    it.key()->deleteLater();
   }
   mRendererJobs.clear();
 
@@ -1191,7 +1190,6 @@ void QgsXyzTilesMbtilesAlgorithm::doExport( QgsProcessingFeedback *feedback )
   for ( auto it = mRendererJobs.constBegin(); it != mRendererJobs.constEnd(); it++ )
   {
     it.key()->cancel();
-    it.key()->deleteLater();
   }
   mRendererJobs.clear();
 
@@ -1445,7 +1443,6 @@ void QgsXyzTilesGpkgAlgorithm::doExport( QgsProcessingFeedback *feedback )
   for ( auto it = mRendererJobs.constBegin(); it != mRendererJobs.constEnd(); it++ )
   {
     it.key()->cancel();
-    it.key()->deleteLater();
   }
   mRendererJobs.clear();
 
