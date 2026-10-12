@@ -604,7 +604,6 @@ void Qgs3DMapCanvasWidget::updateLayerRelatedActions( QgsMapLayer *layer )
   if ( !layer || layer == mLayer )
     return;
 
-  qDebug() << __FUNCTION__ << __LINE__ << "for layer:" << layer;
   // toggle previous layer if editable and not modified
   if ( mLayer && mLayer->isEditable() && !mLayer->isModified() )
     QgisApp::instance()->toggleEditing( mLayer );
