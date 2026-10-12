@@ -2371,6 +2371,8 @@ bool QgsPalLayerSettings::evaluateLabelContent( const QgsFeature &feature, QgsRe
     labelText = substitutions.process( labelText );
   }
 
+  // TODO -- this is in the wrong place. We should be formatting numbers AFTER converting HTML to documents
+
   // format number if label text is coercible to a number
   bool evalFormatNumbers = formatNumbers;
   if ( mDataDefinedProperties.isActive( QgsPalLayerSettings::Property::NumFormat ) )
