@@ -376,7 +376,7 @@ bool QgsXyzTilesBaseAlgorithm::prepareAlgorithm( const QVariantMap &parameters, 
     {
       QgsMapLayer *clonedLayer = layer->clone();
       clonedLayer->moveToThread( nullptr );
-      mLayers << clonedLayer;
+      mLayers.emplace_back( std::unique_ptr< QgsMapLayer >( clonedLayer ) );
     }
   }
 
@@ -531,19 +531,23 @@ void QgsXyzTilesBaseAlgorithm::checkLayersUsagePolicy( QgsProcessingFeedback *fe
 {
   if ( mTotalMetaTiles > MAXIMUM_OPENSTREETMAP_TILES_FETCH )
   {
-    for ( QgsMapLayer *layer : std::as_const( mLayers ) )
+    auto it = mLayers.begin();
+    while ( it != mLayers.end() )
     {
-      if ( QgsMapLayerUtils::isOpenStreetMapLayer( layer ) )
+      if ( QgsMapLayerUtils::isOpenStreetMapLayer( it->get() ) )
       {
         // Prevent bulk downloading of tiles from openstreetmap.org as per OSMF tile usage policy
         feedback->pushFormattedMessage(
           QObject::tr( "Layer %1 will be skipped as the algorithm leads to bulk downloading behavior which is prohibited by the %2OpenStreetMap Foundation tile usage policy%3" )
-            .arg( layer->name(), u"<a href=\"https://operations.osmfoundation.org/policies/tiles/\">"_s, u"</a>"_s ),
+            .arg( it->get()->name(), u"<a href=\"https://operations.osmfoundation.org/policies/tiles/\">"_s, u"</a>"_s ),
           QObject::tr( "Layer %1 will be skipped as the algorithm leads to bulk downloading behavior which is prohibited by the %2OpenStreetMap Foundation tile usage policy%3" )
-            .arg( layer->name(), QString(), QString() )
+            .arg( it->get()->name(), QString(), QString() )
         );
-        mLayers.removeAll( layer );
-        delete layer;
+        it = mLayers.erase( it );
+      }
+      else
+      {
+        it++;
       }
     }
   }
@@ -558,7 +562,12 @@ std::optional< QgsMapSettings > QgsXyzTilesBaseAlgorithm::mapSettingsForTile( co
   settings.setOutputImageFormat( QImage::Format_ARGB32_Premultiplied );
   settings.setTransformContext( mTransformContext );
   settings.setEllipsoid( mEllipsoid );
-  settings.setLayers( mLayers );
+  QList< QgsMapLayer * > layers;
+  for ( const std::unique_ptr< QgsMapLayer > &layer : std::as_const( mLayers ) )
+  {
+    layers << layer.get();
+  }
+  settings.setLayers( layers );
   settings.setOutputDpi( mDpi );
   settings.setFlag( Qgis::MapSettingsFlag::Antialiasing, mAntialias );
   settings.setFlag( Qgis::MapSettingsFlag::RenderMapTile, true );
@@ -737,7 +746,10 @@ QVariantMap QgsXyzTilesDirectoryAlgorithm::processAlgorithm( const QVariantMap &
   for ( int z = mMinZoom; z <= mMaxZoomLimitIncludingOverrides; z++ )
   {
     if ( feedback->isCanceled() )
-      break;
+    {
+      mLayers.clear();
+      return {};
+    }
 
     long long tileCount = 0;
     mMetaTiles += getMetatiles( mZ0matrix, mTileGenerationRegion, z, tileCount, mMetaTileSize, mMaxZoomRegions, mMaxZoom );
@@ -754,14 +766,13 @@ QVariantMap QgsXyzTilesDirectoryAlgorithm::processAlgorithm( const QVariantMap &
 
   checkLayersUsagePolicy( feedback );
 
-  for ( QgsMapLayer *layer : std::as_const( mLayers ) )
+  for ( const std::unique_ptr< QgsMapLayer > &layer : std::as_const( mLayers ) )
   {
     layer->moveToThread( QThread::currentThread() );
   }
 
   doExport( feedback );
 
-  qDeleteAll( mLayers );
   mLayers.clear();
 
   if ( mSkipEmptyTiles )
@@ -1019,14 +1030,13 @@ QVariantMap QgsXyzTilesMbtilesAlgorithm::processAlgorithm( const QVariantMap &pa
 
   checkLayersUsagePolicy( feedback );
 
-  for ( QgsMapLayer *layer : std::as_const( mLayers ) )
+  for ( const std::unique_ptr< QgsMapLayer > &layer : std::as_const( mLayers ) )
   {
     layer->moveToThread( QThread::currentThread() );
   }
 
   doExport( feedback );
 
-  qDeleteAll( mLayers );
   mLayers.clear();
 
   if ( !feedback->isCanceled() )
@@ -1257,7 +1267,7 @@ QVariantMap QgsXyzTilesGpkgAlgorithm::processAlgorithm( const QVariantMap &param
 
   checkLayersUsagePolicy( feedback );
 
-  for ( QgsMapLayer *layer : std::as_const( mLayers ) )
+  for ( const std::unique_ptr< QgsMapLayer > &layer : std::as_const( mLayers ) )
   {
     layer->moveToThread( QThread::currentThread() );
   }
@@ -1265,7 +1275,6 @@ QVariantMap QgsXyzTilesGpkgAlgorithm::processAlgorithm( const QVariantMap &param
 
   doExport( feedback );
 
-  qDeleteAll( mLayers );
   mLayers.clear();
 
   if ( !feedback->isCanceled() )
