@@ -2338,6 +2338,8 @@ QgsTextFormat QgsPalLayerSettings::evaluateTextFormat( QgsRenderContext &context
 
 bool QgsPalLayerSettings::evaluateLabelContent( const QgsFeature &feature, QgsRenderContext &context, bool allowMultipleLines, QString &labelText, QgsTextDocument &document, const QgsTextFormat &format ) const
 {
+  QgsTextFormat formatEvaluated = format;
+
   // Check to see if we are using an expression string.
   if ( isExpression )
   {
@@ -2404,7 +2406,14 @@ bool QgsPalLayerSettings::evaluateLabelContent( const QgsFeature &feature, QgsRe
     }
   }
 
+  // maintain API - capitalization may have been set in textFont
+  if ( formatEvaluated.capitalization() == Qgis::Capitalization::MixedCase && mFormat.font().capitalization() != QFont::MixedCase )
+  {
+    formatEvaluated.setCapitalization( static_cast< Qgis::Capitalization >( mFormat.font().capitalization() ) );
+  }
+
   QString wrapchr = wrapChar;
+  QString wrapchrCopy = wrapChar;
   int evalAutoWrapLength = autoWrapLength;
   if ( allowMultipleLines )
   {
@@ -2417,11 +2426,14 @@ bool QgsPalLayerSettings::evaluateLabelContent( const QgsFeature &feature, QgsRe
       evalAutoWrapLength = dataDefinedValues.value( QgsPalLayerSettings::Property::AutoWrapLength, evalAutoWrapLength ).toInt();
     }
 
+    wrapchrCopy = wrapchr;
+
     if ( wrapchr.isEmpty() )
     {
       wrapchr = u"\n"_s; // default to new line delimiter
+      wrapchrCopy = wrapchr;
     }
-    else if ( format.capitalization() != Qgis::Capitalization::MixedCase )
+    else if ( formatEvaluated.capitalization() != Qgis::Capitalization::MixedCase )
     {
       // Change wrapchr to a non printable character to avoid issues with capitalization.
       while ( labelText.contains( wrapchr ) )
@@ -2433,7 +2445,8 @@ bool QgsPalLayerSettings::evaluateLabelContent( const QgsFeature &feature, QgsRe
     }
   }
 
-  document = QgsTextDocument::fromTextAndFormat( { labelText }, format );
+  document = QgsTextDocument::fromTextAndFormat( { labelText }, formatEvaluated );
+  labelText = document.toPlainText().join( wrapchrCopy );
 
   if ( allowMultipleLines )
   {
