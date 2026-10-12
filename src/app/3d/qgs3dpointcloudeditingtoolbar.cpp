@@ -46,6 +46,7 @@ using namespace Qt::StringLiterals;
 Qgs3DPointCloudEditingToolBar::Qgs3DPointCloudEditingToolBar( Qgs3DMapCanvasWidget *parent )
   : Qgs3DEditingToolBar( u"Point cloud editing"_s, parent )
 {
+  mParentWidget = parent;
   setObjectName( u"3DPointCloudEditingToolBar"_s );
 
   mEditingToolsMenu = new QMenu( this );
@@ -228,7 +229,7 @@ void Qgs3DPointCloudEditingToolBar::deactivate()
   mEditingToolsAction->setEnabled( false );
   setEnabled( false );
 
-  if ( mapCanvas3D()->mapTool() && mapCanvas3D()->mapTool() == mMapToolChangeAttribute )
+  if ( mapCanvas3D() && mapCanvas3D()->mapTool() && mapCanvas3D()->mapTool() == mMapToolChangeAttribute )
     mapCanvas3D()->setMapTool( nullptr );
 }
 
@@ -424,4 +425,12 @@ void Qgs3DPointCloudEditingToolBar::onPointCloudChangeAttributeSettingsChanged()
 QList<QAction *> Qgs3DPointCloudEditingToolBar::groupActions() const
 {
   return mGroupActions;
+}
+
+
+Qgs3DMapCanvas *Qgs3DPointCloudEditingToolBar::mapCanvas3D()
+{
+  if ( mParentWidget )
+    return mParentWidget->mapCanvas3D();
+  return nullptr;
 }

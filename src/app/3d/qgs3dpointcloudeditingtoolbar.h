@@ -60,7 +60,9 @@ class Qgs3DPointCloudEditingToolBar : public Qgs3DEditingToolBar
 
     QList<QAction *> mGroupActions;
 
-    Qgs3DMapCanvas *mapCanvas3D() { return dynamic_cast<Qgs3DMapCanvasWidget *>( parentWidget() )->mapCanvas3D(); }
+    Qgs3DMapCanvasWidget *mParentWidget = nullptr;
+
+    Qgs3DMapCanvas *mapCanvas3D();
 
   private slots:
     void changePointCloudAttributeByPaintbrush();
