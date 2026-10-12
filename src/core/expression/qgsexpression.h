@@ -649,6 +649,7 @@ class CORE_EXPORT QgsExpression
      * Returns a list of all registered functions.
      *
      * \warning This is not thread safe, and should not be called from outside the main thread.
+     * \deprecated QGIS 4.4. For use in Python code only, not thread safe.
      */
     Q_DECL_DEPRECATED static QList<QgsExpressionFunction *> Functions();
 
@@ -688,6 +689,7 @@ class CORE_EXPORT QgsExpression
      * Returns index of the function in Functions array.
      *
      * \warning This is not thread safe, and should not be called from outside the main thread.
+     * \deprecated QGIS 4.4. For use in Python code only, not thread safe.
      */
     Q_DECL_DEPRECATED static int functionIndex( const QString &name );
 
