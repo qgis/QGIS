@@ -42,7 +42,7 @@ class _3D_EXPORT QgsLateralPanelWidget : public QTabWidget
     QgsLateralPanelWidget( QAction *toggleAction, QWidget *parent = nullptr );
 
     /**
-     * Adds a widget to the panel by its name.
+     * Adds a widget to the panel by its name. Ownership of widget is passed on to this class.
      * \param widget the widget to add
      * \param name widget display name
      * \return the widget index inside the panel
