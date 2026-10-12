@@ -513,6 +513,10 @@ Returns a list of all registered functions.
 .. warning::
 
    This is not thread safe, and should not be called from outside the main thread.
+
+.. deprecated:: 4.4
+
+   For use in Python code only, not thread safe.
 %End
 
     static QStringList BuiltinFunctions();
@@ -564,6 +568,10 @@ Returns index of the function in Functions array.
 .. warning::
 
    This is not thread safe, and should not be called from outside the main thread.
+
+.. deprecated:: 4.4
+
+   For use in Python code only, not thread safe.
 %End
 
     static int functionCount();
