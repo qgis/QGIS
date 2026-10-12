@@ -276,6 +276,16 @@ Replacement is case-sensitive.
 
 .. versionadded:: 4.0
 %End
+
+    static bool replaceRegularExpressionInFile( const QString &path, const QString &regularExpression, const QString &replacement );
+%Docstring
+Replaces all occurrences of a ``regularExpression`` with ``replacement``
+in a file located at ``path``.
+
+Returns ``True`` if the replacement was successful and the file updated.
+
+.. versionadded:: 4.4
+%End
 };
 
 QFlags<QgsFileUtils::CopyFlag> operator|(QgsFileUtils::CopyFlag f1, QFlags<QgsFileUtils::CopyFlag> f2);

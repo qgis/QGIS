@@ -762,3 +762,36 @@ bool QgsFileUtils::replaceTextInFile( const QString &path, const QString &search
 
   return true;
 }
+
+bool QgsFileUtils::replaceRegularExpressionInFile( const QString &path, const QString &regularExpression, const QString &replacement )
+{
+  QFile file( path );
+  if ( !file.open( QIODevice::ReadOnly | QIODevice::Text ) )
+  {
+    QgsDebugError( u"Could not open file for reading: %1"_s.arg( file.errorString() ) );
+    return false;
+  }
+
+  QTextStream in( &file );
+  const QString originalFileContent = in.readAll();
+  file.close();
+
+  QRegularExpression re( regularExpression );
+
+  QString fileContent = originalFileContent;
+  fileContent.replace( re, replacement );
+  if ( fileContent == originalFileContent )
+    return true;
+
+  if ( !file.open( QIODevice::WriteOnly | QIODevice::Text | QIODevice::Truncate ) )
+  {
+    QgsDebugError( u"Could not open file for writing: %1"_s.arg( file.errorString() ) );
+    return false;
+  }
+
+  QTextStream out( &file );
+  out << fileContent;
+  file.close();
+
+  return true;
+}
