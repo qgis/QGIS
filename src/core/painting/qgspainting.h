@@ -147,4 +147,100 @@ class CORE_EXPORT QgsPainting
     static void rotatePainterAroundPoint( QPainter *painter, const QPointF &point, double angle );
 };
 
+#ifndef SIP_RUN
+
+// TODO - this can be replaced by QPainterStateGuard when we require Qt 6.9 +
+/**
+ * \ingroup core
+ *
+ * \brief Scoped object for saving and restoring a QPainter object's state.
+ *
+ * Temporarily saves the QPainter state for the lifetime of the object, before restoring it
+ * on destruction.
+ *
+ * Since QGIS 4.4 this class supports multiple saved states, and early restoration of state.
+ *
+ * \note Not available in Python bindings
+ * \since QGIS 3.16
+ */
+class QgsScopedQPainterState
+{
+  public:
+    /**
+     * Initial action to take when constructing the scoped object.
+     */
+    enum class InitialState
+    {
+      Save,   //!< Immediately save the current painter state
+      NoSave, //!< Do not save the current painter state
+    };
+
+    /**
+     * Constructor for QgsScopedQPainterState.
+     *
+     * Saves the specified \a painter state.
+     */
+    QgsScopedQPainterState( QPainter *painter, InitialState initialState = InitialState::Save )
+      : mPainter( painter )
+    {
+      if ( mPainter && initialState == InitialState::Save )
+      {
+        mPainter->save();
+        mSavedStates++;
+      }
+    }
+
+    /**
+     * Restores the painter back to its original state.
+     */
+    ~QgsScopedQPainterState()
+    {
+      while ( mPainter && mSavedStates > 0 )
+      {
+        mPainter->restore();
+        mSavedStates--;
+      }
+    }
+
+    QgsScopedQPainterState( const QgsScopedQPainterState & ) = delete;
+    QgsScopedQPainterState &operator=( const QgsScopedQPainterState & ) = delete;
+    QgsScopedQPainterState( QgsScopedQPainterState && ) = delete;
+    QgsScopedQPainterState &operator=( QgsScopedQPainterState && ) = delete;
+
+    /**
+     * Performs a manual restore on the painter state, popping the latest state from the painter.
+     *
+     * \see save()
+     * \since QGIS 4.4
+     */
+    void restore()
+    {
+      if ( mPainter && mSavedStates > 0 )
+      {
+        mPainter->restore();
+        mSavedStates--;
+      }
+    }
+    /**
+     * Performs a manual save on the painter state, pushing another saved state to the painter.
+     *
+     * \see restore()
+     * \since QGIS 4.4
+     */
+    void save()
+    {
+      if ( mPainter )
+      {
+        mPainter->save();
+        mSavedStates++;
+      }
+    }
+
+  private:
+    int mSavedStates = 0;
+    QPainter *mPainter = nullptr;
+};
+
+#endif
+
 #endif // QGSPAINTING_H

@@ -20,6 +20,7 @@
 #include "qgis.h"
 #include "qgis_core.h"
 #include "qgis_sip.h"
+#include "qgspainting.h"
 
 #include <QDomDocument>
 #include <QDomElement>
@@ -413,6 +414,11 @@ class CORE_EXPORT QgsEffectPainter
     QgsEffectPainter( QgsRenderContext &renderContext, QgsPaintEffect *effect );
     ~QgsEffectPainter();
 
+    QgsEffectPainter( const QgsEffectPainter & ) = delete;
+    QgsEffectPainter &operator=( const QgsEffectPainter & ) = delete;
+    QgsEffectPainter( QgsEffectPainter && ) = delete;
+    QgsEffectPainter &operator=( QgsEffectPainter && ) = delete;
+
     /**
      * Sets the effect to be painted
      *
@@ -431,11 +437,13 @@ class CORE_EXPORT QgsEffectPainter
 
   private:
 #ifdef SIP_RUN
+    QgsEffectPainter( const QgsEffectPainter & );
     const QgsEffectPainter &operator=( const QgsEffectPainter & );
 #endif
 
     QgsRenderContext &mRenderContext;
     QPainter *mPainter = nullptr;
+    QgsScopedQPainterState mPainterState;
     QgsPaintEffect *mEffect = nullptr;
 };
 

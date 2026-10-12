@@ -226,6 +226,7 @@
 %Include auto_generated/qgstemporalcontrollerwidget.sip
 %Include auto_generated/qgstextformatwidget.sip
 %Include auto_generated/qgstextpreview.sip
+%Include auto_generated/qgstoolbuttonaction.sip
 %Include auto_generated/qgstooltipcombobox.sip
 %Include auto_generated/qgstreewidgetitem.sip
 %Include auto_generated/qgsunitselectionwidget.sip

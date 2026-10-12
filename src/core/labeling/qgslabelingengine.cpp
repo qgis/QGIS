@@ -27,6 +27,7 @@
 #include "qgslabelingresults.h"
 #include "qgslogger.h"
 #include "qgsmaplayer.h"
+#include "qgspainting.h"
 #include "qgsrendercontext.h"
 #include "qgsruntimeprofiler.h"
 #include "qgssymbol.h"
@@ -523,7 +524,7 @@ void QgsLabelingEngine::drawLabels( QgsRenderContext &context, const QString &la
 
       QgsPointXY outPt2 = xform.transform( label->getX() + label->getWidth(), label->getY() + label->getHeight() );
       QRectF rect( 0, 0, outPt2.x() - outPt.x(), outPt2.y() - outPt.y() );
-      painter->save();
+      QgsScopedQPainterState painterState( painter );
       painter->setRenderHint( QPainter::Antialiasing, false );
       painter->translate( QPointF( outPt.x(), outPt.y() ) );
       painter->rotate( -label->angleRadians() * 180 / M_PI );
@@ -540,7 +541,7 @@ void QgsLabelingEngine::drawLabels( QgsRenderContext &context, const QString &la
       }
 
       painter->drawRect( rect );
-      painter->restore();
+      painterState.restore();
 
       if ( pal::LabelPosition *nextPart = label->nextPart() )
         drawLabelRect( nextPart );
@@ -681,7 +682,7 @@ void QgsLabelingEngine::drawLabelCandidateRect( pal::LabelPosition *lp, QgsRende
 
   QgsPointXY outPt = xform->transform( lp->getX(), lp->getY() );
 
-  painter->save();
+  QgsScopedQPainterState painterState( painter );
 
   QgsPointXY outPt2 = xform->transform( lp->getX() + lp->getWidth(), lp->getY() + lp->getHeight() );
   QRectF rect( 0, 0, outPt2.x() - outPt.x(), outPt2.y() - outPt.y() );
@@ -697,7 +698,7 @@ void QgsLabelingEngine::drawLabelCandidateRect( pal::LabelPosition *lp, QgsRende
     painter->setPen( QColor( 0, 0, 0, 64 ) );
   }
   painter->drawRect( rect );
-  painter->restore();
+  painterState.restore();
 
   // save the rect
   rect.moveTo( outPt.x(), outPt.y() );
@@ -717,7 +718,7 @@ void QgsLabelingEngine::drawLabelMetrics( pal::LabelPosition *label, const QgsMa
 
   QgsPointXY outPt2 = xform.transform( label->getX() + label->getWidth(), label->getY() + label->getHeight() );
   QRectF rect( 0, 0, outPt2.x() - renderPoint.x(), outPt2.y() - renderPoint.y() );
-  painter->save();
+  QgsScopedQPainterState painterState( painter );
   painter->setRenderHint( QPainter::Antialiasing, false );
   painter->translate( QPointF( renderPoint.x(), renderPoint.y() ) );
   painter->rotate( -label->angleRadians() * 180 / M_PI );
@@ -796,8 +797,6 @@ void QgsLabelingEngine::drawLabelMetrics( pal::LabelPosition *label, const QgsMa
       prevBlockBaseline = blockBaseLine;
     }
   }
-
-  painter->restore();
 }
 
 

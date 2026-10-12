@@ -17,6 +17,7 @@
 
 #include "qgstransformeffect.h"
 
+#include "qgspainting.h"
 #include "qgssymbollayerutils.h"
 #include "qgsunittypes.h"
 

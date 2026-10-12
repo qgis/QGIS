@@ -16,6 +16,7 @@
 #include "qgsgradientstopeditor.h"
 
 #include "qgsapplication.h"
+#include "qgspainting.h"
 #include "qgssymbollayerutils.h"
 
 #include <QMouseEvent>

@@ -77,6 +77,7 @@ class TestQgsGeometry(QgisTestCase):
         self.geos311 = 31100
         self.geos312 = 31200
         self.geos314 = 31400
+        self.geos315 = 31500
 
     def testBool(self):
         """Test boolean evaluation of QgsGeometry"""
@@ -3245,19 +3246,19 @@ class TestQgsGeometry(QgisTestCase):
 
         # test single vertex deletion
         assert compoundcurve.deleteVertices([6]), "Delete vertices [6] failed"
-        expwkt = "CompoundCurve ( (0 1, 1 2, 2 1, 1 0, 0 1, 0 2) )"
+        expwkt = "CompoundCurve ((0 1, 1 2, 2 1, 1 0, 0 1), (0 1, 0 2))"
         wkt = compoundcurve.asWkt()
         assert compareWkt(expwkt, wkt), f"Expected:\n{expwkt}\nGot:\n{wkt}\n"
 
         assert compoundcurve.deleteVertices([1]), "Delete vertices [1] failed"
-        expwkt = "CompoundCurve ((0 1, 2 1, 1 0, 0 1, 0 2))"
+        expwkt = "CompoundCurve ((0 1, 2 1, 1 0, 0 1), (0 1, 0 2))"
         wkt = compoundcurve.asWkt()
         assert compareWkt(expwkt, wkt), f"Expected:\n{expwkt}\nGot:\n{wkt}\n"
 
         # test single vertex belonging to both strings
         compoundcurve = QgsGeometry.fromWkt(compoundcurvewkt)
-        assert compoundcurve.deleteVertices([4]), "Delete vertices [5, 6] failed"
-        expwkt = "CompoundCurve ( (0 1, 1 2, 2 1, 1 0, 0 2, 0 3) )"
+        assert compoundcurve.deleteVertices([4]), "Delete vertices [4] failed"
+        expwkt = "CompoundCurve ((0 1, 1 2, 2 1, 1 0), (1 0, 0 3))"
         wkt = compoundcurve.asWkt()
         assert compareWkt(expwkt, wkt), f"Expected:\n{expwkt}\nGot:\n{wkt}\n"
 
@@ -3320,19 +3321,19 @@ class TestQgsGeometry(QgisTestCase):
 
         compoundcurve = QgsGeometry.fromWkt(compoundcurvewkt)
         assert compoundcurve.deleteVertices([0]), "Delete vertices [0] failed"
-        expwkt = "CompoundCurve ( CircularString( -2 0, -1 1, 0 0, 1 1, 2 0, 1.5 -0.5, 1 -1) )"
+        expwkt = "CompoundCurve (CircularString (-2 0, -1 1, 0 0), CircularString (0 0, 1 1, 2 0, 1.5 -0.5, 1 -1))"
         wkt = compoundcurve.asWkt()
         assert compareWkt(expwkt, wkt), f"Expected:\n{expwkt}\nGot:\n{wkt}\n"
 
         compoundcurve = QgsGeometry.fromWkt(compoundcurvewkt)
         assert compoundcurve.deleteVertices([0, 1]), "Delete vertices [0, 1] failed"
-        expwkt = "CompoundCurve ( CircularString(-2 0, -1 1, 0 0, 1 1, 2 0, 1.5 -0.5, 1 -1) )"
+        expwkt = "CompoundCurve (CircularString (-2 0, -1 1, 0 0), CircularString (0 0, 1 1, 2 0, 1.5 -0.5, 1 -1))"
         wkt = compoundcurve.asWkt()
         assert compareWkt(expwkt, wkt), f"Expected:\n{expwkt}\nGot:\n{wkt}\n"
 
         compoundcurve = QgsGeometry.fromWkt(compoundcurvewkt)
         assert compoundcurve.deleteVertices([7, 8]), "Delete vertices [7, 8] failed"
-        expwkt = "CompoundCurve (CircularString(-1 -1, -1.5 -0.5, -2 0, -1 1, 0 0, 1 1, 2 0) )"
+        expwkt = "CompoundCurve (CircularString (-1 -1, -1.5 -0.5, -2 0, -1 1, 0 0), CircularString (0 0, 1 1, 2 0))"
         wkt = compoundcurve.asWkt()
         assert compareWkt(expwkt, wkt), f"Expected:\n{expwkt}\nGot:\n{wkt}\n"
 
@@ -3436,7 +3437,7 @@ class TestQgsGeometry(QgisTestCase):
         assert curvepolygon.deleteVertices([0, 1, 2, 3, 4, 12, 13, 14, 15, 16]), (
             "Delete vertices [0, 1, 2, 3, 4, 12, 13, 14, 15, 16] failed"
         )
-        expwkt = "CurvePolygon (CompoundCurve ((14 20, 19 25),CircularString (19 25, 22 28, 25 25, 28 22, 25 19),(25 19, 20 14, 14 8, 9 3),CircularString (9 3, 6 0, 3 3, 0 6, 3 9),(3 9, 8 14, 14 20)))"
+        expwkt = "CurvePolygon (CompoundCurve ((14 20, 19 25),CircularString (19 25, 22 28, 25 25, 28 22, 25 19),(25 19, 20 14),(20 14, 9 3),CircularString (9 3, 6 0, 3 3, 0 6, 3 9),(3 9, 8 14, 14 20)))"
         wkt = curvepolygon.asWkt()
         assert compareWkt(expwkt, wkt), f"Expected:\n{expwkt}\nGot:\n{wkt}\n"
 
@@ -14909,18 +14910,33 @@ class TestQgsGeometry(QgisTestCase):
 
         r1 = QgsGeometry.fromWkt("Polygon ((1 2, 1 0, 0 0, 0 2, 1 2))")
         r2 = QgsGeometry.fromWkt("Polygon ((1 0, 1 2, 2 2, 2 0, 1 0))")
+        r1.normalize()
+        r2.normalize()
+        square.normalize()
 
         (result, parts, topo) = square.splitGeometry(lineXY, False)
         self.assertEqual(result, Qgis.GeometryOperationResult.Success)
-        self.assertGeometriesEqual(square, r2)
         self.assertEqual(len(parts), 1)
-        self.assertGeometriesEqual(parts[0], r1)
+        parts[0].normalize()
+        if Qgis.geosVersionInt() < self.geos315:
+            self.assertGeometriesEqual(square, r2)
+            self.assertGeometriesEqual(parts[0], r1)
+        else:
+            self.assertGeometriesEqual(square, r1)
+            self.assertGeometriesEqual(parts[0], r2)
 
         square = QgsGeometry.fromWkt("Polygon ((0 0, 0 2, 2 2, 2 0, 0 0))")
+        square.normalize()
         (result, parts, topo) = square.splitGeometry(line, False)
         self.assertEqual(result, Qgis.GeometryOperationResult.Success)
-        self.assertGeometriesEqual(square, r2)
-        self.assertGeometriesEqual(parts[0], r1)
+        self.assertEqual(len(parts), 1)
+        parts[0].normalize()
+        if Qgis.geosVersionInt() < self.geos315:
+            self.assertGeometriesEqual(square, r2)
+            self.assertGeometriesEqual(parts[0], r1)
+        else:
+            self.assertGeometriesEqual(square, r1)
+            self.assertGeometriesEqual(parts[0], r2)
 
         multilinestring = QgsGeometry.fromWkt("MultiLinestring((0 1, 1 0),(0 2, 2 0))")
         blade = QgsCompoundCurve()
@@ -14928,9 +14944,14 @@ class TestQgsGeometry(QgisTestCase):
         result, parts, _ = multilinestring.splitGeometry(blade, False, False, False)
         self.assertEqual(result, Qgis.GeometryOperationResult.Success)
         self.assertEqual(len(parts), 3)
-        self.assertTrue(compareWkt(parts[0].asWkt(), "MultiLineString ((0 2, 1 1))"))
-        self.assertTrue(compareWkt(parts[1].asWkt(), "MultiLineString ((1 1, 2 0))"))
-        self.assertTrue(compareWkt(parts[2].asWkt(), "MultiLineString ((0 1, 1 0))"))
+        wkts = [
+            parts[0].asWkt(),
+            parts[1].asWkt(),
+            parts[2].asWkt(),
+        ]
+        self.assertIn("MultiLineString ((0 2, 1 1))", wkts)
+        self.assertIn("MultiLineString ((1 1, 2 0))", wkts)
+        self.assertIn("MultiLineString ((0 1, 1 0))", wkts)
 
     @unittest.skipIf(Qgis.geosVersionInt() < 31200, "GEOS 3.12 required")
     def testCoverageValidate(self):

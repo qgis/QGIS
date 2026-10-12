@@ -277,18 +277,16 @@ void QgsDrawSourceEffect::readProperties( const QVariantMap &props )
 
 QgsEffectPainter::QgsEffectPainter( QgsRenderContext &renderContext )
   : mRenderContext( renderContext )
-
-{
-  mPainter = renderContext.painter();
-  mPainter->save();
-}
+  , mPainter( renderContext.painter() )
+  , mPainterState( mPainter )
+{}
 
 QgsEffectPainter::QgsEffectPainter( QgsRenderContext &renderContext, QgsPaintEffect *effect )
   : mRenderContext( renderContext )
+  , mPainter( renderContext.painter() )
+  , mPainterState( mPainter )
   , mEffect( effect )
 {
-  mPainter = mRenderContext.painter();
-  mPainter->save();
   mEffect->begin( mRenderContext );
 }
 
@@ -305,5 +303,4 @@ QgsEffectPainter::~QgsEffectPainter()
   Q_ASSERT( mEffect );
 
   mEffect->end( mRenderContext );
-  mPainter->restore();
 }

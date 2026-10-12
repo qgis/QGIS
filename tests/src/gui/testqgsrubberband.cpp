@@ -20,6 +20,7 @@
 #include "qgslinesymbol.h"
 #include "qgslogger.h"
 #include "qgsmapcanvas.h"
+#include "qgspainting.h"
 #include "qgspallabeling.h"
 #include "qgsrenderchecker.h"
 #include "qgsrubberband.h"

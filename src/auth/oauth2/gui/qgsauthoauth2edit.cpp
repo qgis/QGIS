@@ -745,17 +745,16 @@ void QgsAuthOAuth2Edit::updateGrantFlow( int indx )
   lblRedirectUrl->setVisible( !resowner && !ccredentials );
   frameRedirectUrl->setVisible( !resowner && !ccredentials );
 
-  lblClientSecret->setVisible( !implicit );
-  leClientSecret->setVisible( !implicit );
+  lblClientSecret->setVisible( !implicit && !pkce );
+  leClientSecret->setVisible( !implicit && !pkce );
   if ( implicit )
     leClientSecret->setText( QString() );
 
   leClientId->setPlaceholderText( resowner ? tr( "Optional" ) : tr( "Required" ) );
 
-  // No client secret with PKCE
-  lblClientSecret->setVisible( !pkce );
-  leClientSecret->setVisible( !pkce );
-  leClientSecret->setPlaceholderText( resowner ? tr( "Optional" ) : tr( "Required" ) );
+  // Client secret is only mandatory for the client credentials flow (RFC 6749 sec. 2.3.1)
+  // otherwise an empty string is allowed
+  leClientSecret->setPlaceholderText( ccredentials ? tr( "Required" ) : tr( "Optional" ) );
 
   lblUsername->setVisible( resowner );
   leUsername->setVisible( resowner );

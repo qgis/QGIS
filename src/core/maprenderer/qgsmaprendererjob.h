@@ -78,29 +78,33 @@ class LayerRenderJob
     QgsRenderContext *context() { return mContext.get(); }
 
     /**
-     * Pointer to destination image.
+     * Destination image for render.
      *
      * May be NULLPTR if it is not necessary to draw to separate image (e.g. sequential rendering).
      */
-    QImage *img = nullptr;
+    std::unique_ptr< QImage > destinationImage;
+
+    std::unique_ptr< QPainter > destinationPainter;
 
     /**
-     * Pointer to destination elevation map.
+     * Destination elevation map.
      *
-     * May be nullptr if it is not necessary
+     * May be NULLPTR if it is not necessary
      *
      * \since QGIS 3.30
      */
-    QgsElevationMap *elevationMap = nullptr;
+    std::unique_ptr< QgsElevationMap > elevationMap;
 
     /**
-     * Pointer to destination image for in-progress preview renders.
+     * Destination image for in-progress preview renders.
      *
      * May be NULLPTR if it is not necessary to draw in-progress preview renders.
      *
      * \since QGIS 3.34
      */
-    QImage *previewRenderImage = nullptr;
+    std::unique_ptr< QImage > previewRenderImage;
+
+    std::unique_ptr< QPainter > previewRenderPainter;
 
     //! TRUE when img has been initialized (filled with transparent pixels)
     bool imageInitialized = false;
@@ -114,7 +118,8 @@ class LayerRenderJob
 
     bool imageCanBeComposed() const;
 
-    QgsMapLayerRenderer *renderer = nullptr; // must be deleted
+    //! Layer renderer
+    std::unique_ptr< QgsMapLayerRenderer > renderer;
 
     QPainter::CompositionMode blendMode = QPainter::CompositionMode_SourceOver;
 
@@ -177,12 +182,11 @@ class LayerRenderJob
      *   pass by another job. We then need to know which first pass image and which masks correspond.
      */
 
-    //! painter used to draw mask
-    std::unique_ptr<QPainter> maskPainter;
-
-
     //! Mask paint device, needed during the first pass to render the mask
     std::unique_ptr<QPaintDevice> maskPaintDevice;
+
+    //! Painter used to draw mask
+    std::unique_ptr<QPainter> maskPainter;
 
     /**
      * If effects are involved in masking we need to rasterize the layer rendering even if
@@ -201,13 +205,19 @@ class LayerRenderJob
      */
     std::unique_ptr<QPicture> picture;
 
+    struct MaskJob
+    {
+        //! Pointer to the layer render job, if the mask is sourced from another layer's symbols
+        LayerRenderJob *layerRenderJob = nullptr;
+
+        //! Label mask paint device ID, if the mask is not being sourced from a layer render job
+        int maskPaintDeviceId = -1;
+    };
+
     /**
-     * Pointer to first pass jobs that carry a mask image, needed during the second pass.
-     * This can be either a LayerRenderJob, in which case the second element of the QPair is ignored.
-     * Or this can be a LabelRenderJob if the first element is nullptr.
-     * In this latter case, the second element of the QPair gives the label mask id.
+     * Contains the first pass jobs that carry a mask image, needed during the second pass.
      */
-    QList<QPair<LayerRenderJob *, int>> maskJobs;
+    std::vector<MaskJob> maskJobs;
 
   private:
     std::unique_ptr< QgsRenderContext > mContext;
@@ -225,7 +235,7 @@ struct LabelRenderJob
    * May be NULLPTR if it is not necessary to draw to separate image (e.g. using composition modes which prevent "flattening" the layer).
    * Note that if complete is FALSE then img will be uninitialized and contain random data!.
    */
-    QImage *img = nullptr;
+    std::unique_ptr< QImage > img;
 
     //! QPicture representation of rendered labels. Used only for vector layer content when required for layer masking.
     std::unique_ptr<QPicture> picture;
@@ -687,13 +697,13 @@ class CORE_EXPORT QgsMapRendererJob : public QObject SIP_ABSTRACT
     QHash<QgsMapLayer *, QgsDateTimeRange> mPerLayerTemporalRange;
 
     //! Convenient method to allocate a new image and stack an error if not enough memory is available
-    QImage *allocateImage( QString layerId );
+    std::unique_ptr< QImage > allocateImage( const QString &layerId );
 
     //! Convenient method to allocate a new elevation map and stack an error if not enough memory is available
-    QgsElevationMap *allocateElevationMap( QString layerId );
+    std::unique_ptr< QgsElevationMap > allocateElevationMap( const QString &layerId );
 
     //! Convenient method to allocate a new image and a new QPainter on this image
-    QPainter *allocateImageAndPainter( QString layerId, QImage *&image, const QgsRenderContext *context );
+    std::tuple< std::unique_ptr< QImage >, std::unique_ptr< QPainter > > allocateImageAndPainter( const QString &layerId, const QgsRenderContext &context );
 
     /**
      *  This pure virtual method has to be implemented in derived class for starting the rendering.
@@ -705,10 +715,8 @@ class CORE_EXPORT QgsMapRendererJob : public QObject SIP_ABSTRACT
     QgsLabelSink *mLabelSink = nullptr;
     QgsLabelingEngineFeedback *mLabelingEngineFeedback = nullptr;
 
-    typedef std::pair<std::unique_ptr<QPicture>, QPainter * > PictureAndPainter;
-
     //! Convenient method to allocate a new qpicture and associated qpainter
-    PictureAndPainter allocatePictureAndPainter( const QgsRenderContext *context );
+    std::tuple<std::unique_ptr<QPicture>, std::unique_ptr< QPainter > > allocatePictureAndPainter( const QgsRenderContext &context );
 };
 
 

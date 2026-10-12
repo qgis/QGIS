@@ -58,6 +58,7 @@
 #include "qgsmeshlayer.h"
 #include "qgsmeshlayertemporalproperties.h"
 #include "qgsmessagelog.h"
+#include "qgspainting.h"
 #include "qgspallabeling.h"
 #include "qgsproject.h"
 #include "qgsrasteridentifyresult.h"
@@ -4191,10 +4192,9 @@ namespace QgsWms
         offsetY = mapSettings.outputSize().height() * relativePos.y();
       }
 
-      painter->save();
+      QgsScopedQPainterState painterState( painter );
       painter->translate( offsetX, offsetY );
       annotation->render( renderContext );
-      painter->restore();
     }
   }
 

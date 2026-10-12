@@ -33,6 +33,7 @@
 #include "qgsmeshlayerlabelprovider.h"
 #include "qgsmeshlayerutils.h"
 #include "qgsmeshvectorrenderer.h"
+#include "qgspainting.h"
 #include "qgspointxy.h"
 #include "qgsrastershader.h"
 #include "qgsrenderedlayerstatistics.h"
@@ -482,7 +483,6 @@ static QPainter *_painterForMeshFrame( QgsRenderContext &context, const QgsMeshR
   // Set up the render configuration options
   QPainter *painter = context.painter();
 
-  painter->save();
   context.setPainterFlagsUsingContext( painter );
 
   QPen pen = painter->pen();
@@ -504,6 +504,8 @@ void QgsMeshLayerRenderer::renderEdgeMesh( const QgsMeshRendererMeshSettings &se
     return;
 
   QgsRenderContext &context = *renderContext();
+
+  QgsScopedQPainterState painterState( context.painter() );
   QPainter *painter = _painterForMeshFrame( context, settings );
 
   const QVector<QgsMeshEdge> edges = mTriangularMesh.edges();
@@ -530,7 +532,6 @@ void QgsMeshLayerRenderer::renderEdgeMesh( const QgsMeshRendererMeshSettings &se
     const QgsPointXY lineEnd = context.mapToPixel().transform( endVertex.x(), endVertex.y() );
     painter->drawLine( lineStart.toQPointF(), lineEnd.toQPointF() );
   }
-  painter->restore();
 };
 
 void QgsMeshLayerRenderer::renderFaceMesh( const QgsMeshRendererMeshSettings &settings, const QVector<QgsMeshFace> &faces, const QList<int> &facesInExtent )
@@ -541,6 +542,7 @@ void QgsMeshLayerRenderer::renderFaceMesh( const QgsMeshRendererMeshSettings &se
     return;
 
   QgsRenderContext &context = *renderContext();
+  QgsScopedQPainterState painterState( context.painter() );
   QPainter *painter = _painterForMeshFrame( context, settings );
 
   const QVector<QgsMeshVertex> &vertices = mTriangularMesh.vertices(); //Triangular mesh vertices contains also native mesh vertices
@@ -576,8 +578,6 @@ void QgsMeshLayerRenderer::renderFaceMesh( const QgsMeshRendererMeshSettings &se
       painter->drawLine( lineStart.toQPointF(), lineEnd.toQPointF() );
     }
   }
-
-  painter->restore();
 }
 
 void QgsMeshLayerRenderer::renderScalarDataset()

@@ -148,13 +148,14 @@ void QgsRendererRasterPropertiesWidget::apply()
   {
     rendererWidget->doComputations();
 
-    if ( QgsRasterRenderer *newRenderer = rendererWidget->renderer() )
+    std::unique_ptr< QgsRasterRenderer > newRenderer( rendererWidget->renderer() );
+    if ( newRenderer )
     {
       // there are transparency related data stored in renderer instances, but they
       // are not configured in the widget, so we need to copy them over from existing renderer
       if ( QgsRasterRenderer *oldRenderer = mRasterLayer->renderer() )
         newRenderer->copyCommonProperties( oldRenderer, false );
-      mRasterLayer->setRenderer( newRenderer );
+      mRasterLayer->setRenderer( newRenderer.release() );
     }
   }
 
@@ -329,12 +330,12 @@ void QgsRendererRasterPropertiesWidget::setRendererWidget( const QString &render
       connect( mRendererWidget, &QgsRasterRendererWidget::widgetChanged, this, &QgsPanelWidget::changed );
       stackedWidget->addWidget( mRendererWidget );
       stackedWidget->setCurrentWidget( mRendererWidget );
+#if 0
       if ( oldWidget )
       {
         // Compare used bands in new and old renderer and reset transparency dialog if different
-        QgsRasterRenderer *oldRenderer = oldWidget->renderer();
-        QgsRasterRenderer *newRenderer = mRendererWidget->renderer();
-#if 0
+        std::unique_ptr< QgsRasterRenderer > oldRenderer( oldWidget->renderer() );
+        std::unique_ptr< QgsRasterRenderer > newRenderer( mRendererWidget->renderer() );
         QList<int> oldBands = oldRenderer->usesBands();
         QList<int> newBands = newRenderer->usesBands();
 
@@ -342,11 +343,8 @@ void QgsRendererRasterPropertiesWidget::setRendererWidget( const QString &render
         {
           populateTransparencyTable( newRenderer );
         }
-#endif
-
-        delete oldRenderer;
-        delete newRenderer;
       }
+#endif
     }
   }
 

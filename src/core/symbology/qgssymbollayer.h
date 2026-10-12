@@ -43,6 +43,7 @@ class QgsRenderContext;
 class QgsPaintEffect;
 class QgsSymbolLayerReference;
 class QgsSldExportContext;
+class QgsScopedQPainterState;
 
 #ifndef SIP_RUN
 typedef QMap<QString, QString> QgsStringMap;
@@ -744,23 +745,6 @@ class CORE_EXPORT QgsSymbolLayer
      */
     QString id() const;
 
-    /**
-     * When rendering, install masks on \a context painter.
-     *
-     * If \a recursive is TRUE masks are installed recursively for all children symbol layers.
-     *
-     * Since QGIS 3.38 the \a rect argument can be used to specify a target bounds (in painter coordinates)
-     * for mask geometries. Only mask geometries which intersect ``rect`` will be installed.
-     *
-     * \returns TRUE if any masks were installed (since QGIS 3.38)
-     *
-     * \see prepareMasks()
-     * \see removeMasks()
-     *
-     * \since QGIS 3.30
-     */
-    bool installMasks( QgsRenderContext &context, bool recursive, const QRectF &rect = QRectF() );
-
   protected:
     QgsSymbolLayer( const QgsSymbolLayer &other ) SIP_SKIP;
 
@@ -792,6 +776,7 @@ class CORE_EXPORT QgsSymbolLayer
 
     // clip path to be used during rendering
     QPainterPath mClipPath;
+    std::unique_ptr< QgsScopedQPainterState > mStateBeforeInstallingMaskClipPaths;
 
     // Configuration of selected symbology implementation
     //! Whether styles for selected features ignore symbol alpha
@@ -832,6 +817,23 @@ class CORE_EXPORT QgsSymbolLayer
     void copyPaintEffect( QgsSymbolLayer *destLayer ) const;
 
     /**
+     * When rendering, install masks on \a context painter.
+     *
+     * If \a recursive is TRUE masks are installed recursively for all children symbol layers.
+     *
+     * Since QGIS 3.38 the \a rect argument can be used to specify a target bounds (in painter coordinates)
+     * for mask geometries. Only mask geometries which intersect ``rect`` will be installed.
+     *
+     * \returns TRUE if any masks were installed (since QGIS 3.38)
+     *
+     * \see prepareMasks()
+     * \see removeMasks()
+     *
+     * \since QGIS 3.30
+     */
+    bool installMasks( QgsRenderContext &context, bool recursive, const QRectF &rect = QRectF() );
+
+    /**
      * When rendering, remove previously installed masks from \a context painter
      * if \a recursive is TRUE masks are removed recursively for all children symbol layers
      * \see prepareMasks()
@@ -857,6 +859,8 @@ class CORE_EXPORT QgsSymbolLayer
 #ifdef SIP_RUN
     QgsSymbolLayer( const QgsSymbolLayer &other );
 #endif
+
+    friend class QgsSymbol;
 };
 
 //////////////////////

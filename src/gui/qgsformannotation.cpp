@@ -27,6 +27,7 @@
 #include "qgslogger.h"
 #include "qgsmapcanvas.h"
 #include "qgsmaptool.h"
+#include "qgspainting.h"
 #include "qgsproject.h"
 #include "qgsvectorlayer.h"
 

@@ -444,6 +444,7 @@ needed
 %End
     ~QgsEffectPainter();
 
+
     void setEffect( QgsPaintEffect *effect );
 %Docstring
 Sets the effect to be painted
@@ -454,6 +455,7 @@ Sets the effect to be painted
 
 
   private:
+    QgsEffectPainter( const QgsEffectPainter & );
     const QgsEffectPainter &operator=( const QgsEffectPainter & );
 };
 

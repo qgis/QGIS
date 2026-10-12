@@ -34,6 +34,7 @@
 #include "qgslinesymbollayer.h"
 #include "qgsmarkersymbol.h"
 #include "qgsmessagelog.h"
+#include "qgspainting.h"
 #include "qgspolygon.h"
 #include "qgsproject.h"
 #include "qgsrendercontext.h"
@@ -3308,7 +3309,7 @@ void QgsLinePatternFillSymbolLayer::renderPolygon( const QPolygonF &points, cons
   // Clip distance to a reasonable distance to avoid app freezes
   outputPixelDistance = std::max( ( context.renderContext().flags() & Qgis::RenderContextFlag::RenderLayerTree ) ? 0.1 : 0.025, outputPixelDistance );
 
-  p->save();
+  QgsScopedQPainterState painterState( p );
 
   Qgis::LineClipMode clipMode = mClipMode;
   if ( mDataDefinedProperties.isActive( QgsSymbolLayer::Property::LineClipping ) )
@@ -3443,8 +3444,6 @@ void QgsLinePatternFillSymbolLayer::renderPolygon( const QPolygonF &points, cons
       mFillLineSymbol->renderPolyline( QPolygonF() << QPointF( x1, y1 ) << QPointF( x2, y2 ), context.feature(), context.renderContext(), -1, useSelectedColor );
     }
   }
-
-  p->restore();
 
   context.renderContext().setFlag( Qgis::RenderContextFlag::RenderingSubSymbol, prevIsSubsymbol );
 }
@@ -4158,7 +4157,7 @@ void QgsPointPatternFillSymbolLayer::renderPolygon( const QPolygonF &points, con
   width = std::max( ( context.renderContext().flags() & Qgis::RenderContextFlag::RenderLayerTree ) ? 0.1 : 0.025, width );
   height = std::max( ( context.renderContext().flags() & Qgis::RenderContextFlag::RenderLayerTree ) ? 0.1 : 0.025, height );
 
-  p->save();
+  QgsScopedQPainterState painterState( p );
 
   Qgis::MarkerClipMode clipMode = mClipMode;
   if ( mDataDefinedProperties.isActive( QgsSymbolLayer::Property::MarkerClipping ) )
@@ -4395,8 +4394,6 @@ void QgsPointPatternFillSymbolLayer::renderPolygon( const QPolygonF &points, con
   }
 
   mMarkerSymbol->setOpacity( prevOpacity );
-
-  p->restore();
 
   context.renderContext().setFlag( Qgis::RenderContextFlag::RenderingSubSymbol, prevIsSubsymbol );
 }
@@ -4985,6 +4982,7 @@ void QgsCentroidFillSymbolLayer::render( QgsRenderContext &context, const QVecto
 
     const Part part = parts[i];
 
+    QgsScopedQPainterState painterState( context.painter(), QgsScopedQPainterState::InitialState::NoSave );
     if ( clipPoints )
     {
       QPainterPath path;
@@ -5002,7 +5000,7 @@ void QgsCentroidFillSymbolLayer::render( QgsRenderContext &context, const QVecto
         path = globalPath;
       }
 
-      context.painter()->save();
+      painterState.save();
       context.painter()->setClipPath( path );
     }
 
@@ -5012,11 +5010,6 @@ void QgsCentroidFillSymbolLayer::render( QgsRenderContext &context, const QVecto
     context.setFlag( Qgis::RenderContextFlag::RenderingSubSymbol );
     mMarker->renderPoint( centroid, feature.isValid() ? &feature : nullptr, context, -1, selected );
     context.setFlag( Qgis::RenderContextFlag::RenderingSubSymbol, prevIsSubsymbol );
-
-    if ( clipPoints )
-    {
-      context.painter()->restore();
-    }
   }
 }
 
@@ -5710,9 +5703,10 @@ void QgsRandomMarkerFillSymbolLayer::render( QgsRenderContext &context, const QV
 
   const QgsGeometry geom = geometryParts.count() != 1 ? QgsGeometry::unaryUnion( geometryParts, QgsGeometryParameters(), context.feedback() ) : geometryParts.at( 0 );
 
+  QgsScopedQPainterState painterState( context.painter(), QgsScopedQPainterState::InitialState::NoSave );
   if ( clipPoints )
   {
-    context.painter()->save();
+    painterState.save();
     context.painter()->setClipPath( path );
   }
 
@@ -5775,11 +5769,6 @@ void QgsRandomMarkerFillSymbolLayer::render( QgsRenderContext &context, const QV
   }
 
   context.setFlag( Qgis::RenderContextFlag::RenderingSubSymbol, prevIsSubsymbol );
-
-  if ( clipPoints )
-  {
-    context.painter()->restore();
-  }
 }
 
 QVariantMap QgsRandomMarkerFillSymbolLayer::properties() const

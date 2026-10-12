@@ -113,6 +113,8 @@ QgsPointCloudRendererPropertiesWidget::QgsPointCloudRendererPropertiesWidget( Qg
   );
 
   connect( mPointSizeSpinBox, qOverload<double>( &QgsDoubleSpinBox::valueChanged ), this, &QgsPointCloudRendererPropertiesWidget::emitWidgetChanged );
+  mPointSizeSpinBox->setClearValue( 1.0 );
+
   connect( mPointSizeUnitWidget, &QgsUnitSelectionWidget::changed, this, &QgsPointCloudRendererPropertiesWidget::emitWidgetChanged );
 
   mDrawOrderComboBox->addItem( tr( "Default" ), QVariant::fromValue( Qgis::PointCloudDrawOrder::Default ) );

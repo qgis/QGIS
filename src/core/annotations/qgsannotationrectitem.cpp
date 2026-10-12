@@ -217,18 +217,19 @@ void QgsAnnotationRectItem::render( QgsRenderContext &context, QgsFeedback *feed
   const bool rotated = !qgsDoubleNear( angle, 0 );
   const QPointF rotationCenter = painterBounds.center();
 
+  QgsScopedQPainterState painterState( painter, QgsScopedQPainterState::InitialState::NoSave );
   if ( mDrawBackground && mBackgroundSymbol )
   {
     if ( rotated )
     {
-      painter->save();
+      painterState.save();
       QgsPainting::rotatePainterAroundPoint( painter, rotationCenter, angle );
     }
     mBackgroundSymbol->startRender( context );
     mBackgroundSymbol->renderPolygon( painterBounds, nullptr, nullptr, context );
     mBackgroundSymbol->stopRender( context );
     if ( rotated )
-      painter->restore();
+      painterState.restore();
   }
 
   if ( mPlacementMode != Qgis::AnnotationPlacementMode::RelativeToMapFrame && callout() )
@@ -239,7 +240,7 @@ void QgsAnnotationRectItem::render( QgsRenderContext &context, QgsFeedback *feed
 
   if ( rotated )
   {
-    painter->save();
+    painterState.save();
     QgsPainting::rotatePainterAroundPoint( painter, rotationCenter, angle );
   }
 
@@ -251,9 +252,6 @@ void QgsAnnotationRectItem::render( QgsRenderContext &context, QgsFeedback *feed
     mFrameSymbol->renderPolygon( painterBounds, nullptr, nullptr, context );
     mFrameSymbol->stopRender( context );
   }
-
-  if ( rotated )
-    painter->restore();
 }
 
 QList<QgsAnnotationItemNode> QgsAnnotationRectItem::nodesV2( const QgsAnnotationItemEditContext &context ) const
