@@ -52,7 +52,16 @@ class DummyAlgorithm : public QgsProcessingAlgorithm
       , mShortDescription( shortDescription )
     {}
 
-    void initAlgorithm( const QVariantMap & = QVariantMap() ) override {}
+    void initAlgorithm( const QVariantMap & = QVariantMap() ) override
+    {
+      addParameter( new QgsProcessingParameterVectorLayer( u"INPUT_VECTOR"_s, QObject::tr( "Input layer" ), QList<int> { static_cast<int>( Qgis::ProcessingSourceType::Vector ) } ) );
+      addParameter( new QgsProcessingParameterField( u"INPUT_FIELD"_s, QObject::tr( "Attribute to index" ), QVariant(), u"INPUT"_s ) );
+      addParameter( new QgsProcessingParameterFeatureSink( u"OUTPUT_SINK"_s, QObject::tr( "Aggregated" ) ) );
+
+
+      addOutput( new QgsProcessingOutputVectorLayer( u"OUTPUT_VECTOR"_s, QObject::tr( "Indexed layer" ) ) );
+      addOutput( new QgsProcessingOutputBoolean( u"OUTPUT_BOOL"_s, QObject::tr( "Coverage is valid" ) ) );
+    }
     Qgis::ProcessingAlgorithmFlags flags() const override { return mFlags; }
     QString name() const override { return mName; }
     QString displayName() const override { return mDisplayName.isEmpty() ? mName : mDisplayName; }
@@ -682,6 +691,57 @@ void TestQgsProcessingModel::testView()
   group2Index = view.model()->index( 0, 0, provider1Index );
   QCOMPARE( view.model()->rowCount( group2Index ), 1 );
   QCOMPARE( view.algorithmForIndex( view.model()->index( 0, 0, group2Index ) )->id(), u"p1:a2"_s );
+
+
+  // test filter on output sockets
+  view.setFilters( QgsProcessingToolboxProxyModel::Filter::ForSocketOutput );
+  QCOMPARE( view.filters(), QgsProcessingToolboxProxyModel::Filter::ForSocketOutput );
+
+  // test filter on output sockets with parameters
+  auto vectorLayerTestParam = std::make_unique<QgsProcessingParameterVectorLayer>( "dummyname" );
+  view.setFilterParameter( vectorLayerTestParam.get() );
+  QCOMPARE( view.model()->rowCount(), 2 );
+  QVERIFY( view.model()->index( 0, 0, QModelIndex() ).isValid() );
+  QVERIFY( view.model()->index( 1, 0, QModelIndex() ).isValid() );
+  provider1Index = view.model()->index( 0, 0, QModelIndex() );
+  QVERIFY( !view.algorithmForIndex( provider1Index ) );
+  group2Index = view.model()->index( 0, 0, provider1Index );
+  QVERIFY( group2Index.isValid() );
+  QCOMPARE( view.model()->data( group2Index, Qt::DisplayRole ).toString(), u"group2"_s );
+  alg2Index = view.model()->index( 0, 0, group2Index );
+  QCOMPARE( view.algorithmForIndex( alg2Index )->id(), u"p1:a2"_s );
+  auto boolTestParam = std::make_unique<QgsProcessingParameterBoolean>( "dummyname" );
+  view.setFilterParameter( boolTestParam.get() );
+  QCOMPARE( view.model()->rowCount(), 0 );
+
+  // test filter on output sockets with outputs
+  auto vectorLayerTestOutput = std::make_unique<QgsProcessingOutputVectorLayer>( "dummyname" );
+  view.setFilterOutput( vectorLayerTestOutput.get() );
+  QCOMPARE( view.model()->rowCount(), 2 );
+  provider1Index = view.model()->index( 0, 0, QModelIndex() );
+  QVERIFY( !view.algorithmForIndex( provider1Index ) );
+  group2Index = view.model()->index( 0, 0, provider1Index );
+  QVERIFY( group2Index.isValid() );
+  QCOMPARE( view.model()->data( group2Index, Qt::DisplayRole ).toString(), u"group2"_s );
+  alg2Index = view.model()->index( 0, 0, group2Index );
+  QCOMPARE( view.algorithmForIndex( alg2Index )->id(), u"p1:a2"_s );
+  auto boolTestOutput = std::make_unique<QgsProcessingOutputBoolean>( "dummyname" );
+  view.setFilterOutput( boolTestOutput.get() );
+  QCOMPARE( view.model()->rowCount(), 0 );
+
+
+  // test filter on inputs sockets
+  view.setFilters( QgsProcessingToolboxProxyModel::Filter::ForSocketInput );
+  QCOMPARE( view.filters(), QgsProcessingToolboxProxyModel::Filter::ForSocketInput );
+
+  view.setFilterParameter( vectorLayerTestParam.get() );
+  QCOMPARE( view.model()->rowCount(), 3 ); // our two dummy algorithms +  node group that holds all the parameters
+  view.setFilterParameter( boolTestParam.get() );
+  QCOMPARE( view.model()->rowCount(), 3 ); // our two dummy algorithms +  node group that holds all the parameters
+
+  auto multiLayerTestParam = std::make_unique<QgsProcessingParameterField>( "dummyname" );
+  view.setFilterParameter( multiLayerTestParam.get() );
+  QCOMPARE( view.model()->rowCount(), 1 ); // node group that holds all the parameters
 
   view.setFilters( QgsProcessingToolboxProxyModel::Filters() );
   QCOMPARE( view.filters(), QgsProcessingToolboxProxyModel::Filters() );

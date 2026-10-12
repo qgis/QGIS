@@ -2966,6 +2966,8 @@ QgsExpressionContextScope *QgsProject::createExpressionContextScope() const
     // neither this function
     projectScope->addFunction( u"sensor_data"_s, new GetSensorData( sensorManager()->sensorsData() ) );
 
+    projectScope->addLayerStore( mLayerStore.get() );
+
     return projectScope.release();
   }
 
