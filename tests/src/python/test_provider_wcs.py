@@ -20,6 +20,7 @@ import mockedwebserver
 from osgeo import gdal
 from qgis.core import QgsDataSourceUri, QgsRasterLayer
 from qgis.testing import QgisTestCase, start_app
+from raster_provider_test_base import RasterProviderTestCase
 from utilities import unitTestDataPath
 
 start_app()
@@ -56,7 +57,7 @@ class WcsTestHandler(BaseHTTPRequestHandler):
             self.end_headers()
 
 
-class PyQgsWCSProvider(QgisTestCase):
+class PyQgsWCSProvider(QgisTestCase, RasterProviderTestCase):
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
@@ -83,61 +84,68 @@ class PyQgsWCSProvider(QgisTestCase):
         with open(file_path, "rb") as f:
             cls.describecoverage_xml = f.read()
 
+        cls.server, cls.port = mockedwebserver.launch(WcsTestHandler)
+        cls.server.server.capabilities_xml = cls.capabilities_xml.replace(
+            b"$$PORT$$", bytes(str(cls.port), "ascii")
+        )
+        cls.server.server.describecoverage_xml = cls.describecoverage_xml
+        cls.server.server.dummy_tiff = cls.dummy_tiff
+        cls.server.server.coverage_requests = []
+
+    @classmethod
+    def tearDownClass(cls):
+        if cls.server:
+            cls.server.stop()
+
+            super().tearDownClass()
+
+    def setUp(self):
+        # cleanup recorded requests
+        self.server.server.coverage_requests = []
+
+    def get_layer(self, test_id: str) -> QgsRasterLayer:
+        uri = QgsDataSourceUri()
+        uri.setParam("identifier", "dtm")
+        uri.setParam("crs", "EPSG:4326")
+        uri.setParam("format", "image/tiff")
+        uri.setParam("url", f"http://localhost:{self.port}/wcs")
+        uri.setParam("IgnoreGetMapUrl", "1")
+        return QgsRasterLayer(uri.encodedUri().data().decode(), test_id, "wcs")
+
     def test_getcache_grid_parameters(self):
         # Ensure that GRIDORIGIN parameter uses correctly swapped extent
         # when using CRS with inverted axis order.
         # See https://github.com/qgis/QGIS/issues/59445
-        server, port = mockedwebserver.launch(WcsTestHandler)
-        server.server.capabilities_xml = self.capabilities_xml.replace(
-            b"$$PORT$$", bytes(str(port), "ascii")
-        )
-        server.server.describecoverage_xml = self.describecoverage_xml
-        server.server.dummy_tiff = self.dummy_tiff
-        server.server.coverage_requests = []
 
-        try:
-            uri = QgsDataSourceUri()
-            uri.setParam("identifier", "dtm")
-            uri.setParam("crs", "EPSG:4326")
-            uri.setParam("format", "image/tiff")
-            uri.setParam("url", f"http://localhost:{port}/wcs")
-            uri.setParam("IgnoreGetMapUrl", "1")
-            layer = QgsRasterLayer(uri.encodedUri().data().decode(), "test", "wcs")
-            self.assertTrue(layer.isValid())
-            provider = layer.dataProvider()
-
-            request_width = 100
-            request_height = 100
-            extent = provider.extent()
-            block = provider.block(1, extent, request_width, request_height)
-            self.assertTrue(block.isValid())
-
-            requests = server.server.coverage_requests
-            block_request = requests[-1]
-            self.assertIn("GRIDORIGIN", block_request)
-            self.assertIn("GRIDOFFSETS", block_request)
-            self.assertIn("BOUNDINGBOX", block_request)
-
-            parts = block_request["BOUNDINGBOX"].split(",")
-            self.assertGreaterEqual(len(parts), 4)
-            bbox_xmin, bbox_ymin, bbox_xmax, bbox_ymax = (float(i) for i in parts[:4])
-            self.assertLess(bbox_xmin, bbox_xmax)
-            self.assertLess(bbox_ymin, bbox_ymax)
-
-            parts = block_request["GRIDORIGIN"].split(",")
-            self.assertEqual(len(parts), 2)
-            grid_origin_x, grid_origin_y = (float(i) for i in parts)
-            self.assertAlmostEqual(grid_origin_x, bbox_xmax, places=6)
-            self.assertAlmostEqual(grid_origin_y, bbox_ymin, places=6)
-
-            x_res = extent.width() / request_width
-            y_res = extent.height() / request_height
-            parts = [float(i) for i in block_request["GRIDOFFSETS"].split(",")]
-            self.assertEqual(len(parts), 2)
-            self.assertAlmostEqual(parts[0], -y_res, places=6)
-            self.assertAlmostEqual(parts[1], x_res, places=6)
-        finally:
-            server.stop()
+        layer = self.get_layer("test")
+        self.assertTrue(layer.isValid())
+        provider = layer.dataProvider()
+        request_width = 100
+        request_height = 100
+        extent = provider.extent()
+        block = provider.block(1, extent, request_width, request_height)
+        self.assertTrue(block.isValid())
+        requests = self.server.server.coverage_requests
+        block_request = requests[-1]
+        self.assertIn("GRIDORIGIN", block_request)
+        self.assertIn("GRIDOFFSETS", block_request)
+        self.assertIn("BOUNDINGBOX", block_request)
+        parts = block_request["BOUNDINGBOX"].split(",")
+        self.assertGreaterEqual(len(parts), 4)
+        bbox_xmin, bbox_ymin, bbox_xmax, bbox_ymax = (float(i) for i in parts[:4])
+        self.assertLess(bbox_xmin, bbox_xmax)
+        self.assertLess(bbox_ymin, bbox_ymax)
+        parts = block_request["GRIDORIGIN"].split(",")
+        self.assertEqual(len(parts), 2)
+        grid_origin_x, grid_origin_y = (float(i) for i in parts)
+        self.assertAlmostEqual(grid_origin_x, bbox_xmax, places=6)
+        self.assertAlmostEqual(grid_origin_y, bbox_ymin, places=6)
+        x_res = extent.width() / request_width
+        y_res = extent.height() / request_height
+        parts = [float(i) for i in block_request["GRIDOFFSETS"].split(",")]
+        self.assertEqual(len(parts), 2)
+        self.assertAlmostEqual(parts[0], -y_res, places=6)
+        self.assertAlmostEqual(parts[1], x_res, places=6)
 
 
 if __name__ == "__main__":
