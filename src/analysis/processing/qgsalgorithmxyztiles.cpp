@@ -455,6 +455,7 @@ bool QgsXyzTilesBaseAlgorithm::prepareAlgorithm( const QVariantMap &parameters, 
 
       const QgsPointXY center = z0Extent.center();
       z0Extent = QgsRectangle( center.x() - requiredWidth / 2.0, center.y() - requiredHeight / 2.0, center.x() + requiredWidth / 2.0, center.y() + requiredHeight / 2.0 );
+      feedback->pushWarning( QObject::tr( "The manual zoom 0 extent does not result in square pixels. This has been automatically adjusted to %1." ).arg( z0Extent.toString() ) );
     }
   }
 
