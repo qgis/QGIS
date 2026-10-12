@@ -5752,6 +5752,25 @@ class TestQgsExpression : public QObject
       delete function;
     }
 
+    void testReplaceCustomFunction()
+    {
+      const QString functionName = u"get_test_value"_s;
+      auto newFunction = new GetTestValueFunction2( 13, functionName );
+      QVERIFY( QgsExpression::registerFunction( newFunction, true ) );
+
+      QgsExpression exp( u"get_test_value()"_s );
+      int result = exp.evaluate().toInt();
+      QCOMPARE( result, 13 );
+
+      // unregister function while expression still exists
+      QgsExpression exp2( u"get_test_value()"_s );
+      QgsExpression::unregisterFunction( u"get_test_value"_s );
+
+      // should still be ok -- the expression will have held a reference to the function
+      result = exp2.evaluate().toInt();
+      QCOMPARE( result, 13 );
+    }
+
     void evaluateToDouble()
     {
       QCOMPARE( QgsExpression::evaluateToDouble( QString( "5" ), 0.0 ), 5.0 );
