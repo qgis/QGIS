@@ -114,13 +114,9 @@ static void _parseAndEvalExprWithCustomFunctionRegister( int arg )
     const int result = exp2.evaluate().toInt();
     Q_ASSERT_X( result == arg, "", u"Expected %1 got %2"_s.arg( arg ).arg( result ).toLocal8Bit().constData() );
 
-// TODO: the expected result isn't returned, as the stored function indices will be continually pointing to
-// different functions as the other threads modify the registered functions
-#if 0
     QgsExpression expCustom( u"%1()"_s.arg( functionName ) );
-    const int result = expCustom.evaluate().toInt();
-    Q_ASSERT_X(result == arg, "", u"Expected %1 got %2"_s.arg( arg ).arg( result ).toLocal8Bit().constData());
-#endif
+    const int result2 = expCustom.evaluate().toInt();
+    Q_ASSERT_X( result2 == arg, "", u"Expected %1 got %2"_s.arg( arg ).arg( result2 ).toLocal8Bit().constData() );
   }
 
   QgsExpression::unregisterFunction( functionName );
