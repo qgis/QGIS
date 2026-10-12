@@ -458,13 +458,14 @@ class CORE_EXPORT QgsExpressionNodeFunction : public QgsExpressionNode
 #ifdef SIP_RUN
     SIP_PYOBJECT __repr__();
     % MethodCode QString function;
-    if ( QgsExpressionFunction *fd = QgsExpression::QgsExpression::Functions()[sipCpp->fnIndex()] )
+    std::shared_ptr<QgsExpressionFunction> fd = sipCpp->function();
+    if ( fd )
     {
       function = fd->name();
     }
     else
     {
-      function = QString::number( sipCpp->fnIndex() );
+      function = u"invalid"_s;
     }
 
     QString str = u"<QgsExpressionNodeFunction: %1>"_s.arg( function );
