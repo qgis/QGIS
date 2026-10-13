@@ -763,7 +763,7 @@ bool QgsFileUtils::replaceTextInFile( const QString &path, const QString &search
   return true;
 }
 
-bool QgsFileUtils::replaceRegularExpressionInFile( const QString &path, const QString &regularExpression, const QString &replacement )
+bool QgsFileUtils::replaceInFile( const QString &path, const QRegularExpression &regularExpression, const QString &replacement )
 {
   QFile file( path );
   if ( !file.open( QIODevice::ReadOnly | QIODevice::Text ) )
@@ -776,10 +776,8 @@ bool QgsFileUtils::replaceRegularExpressionInFile( const QString &path, const QS
   const QString originalFileContent = in.readAll();
   file.close();
 
-  QRegularExpression re( regularExpression );
-
   QString fileContent = originalFileContent;
-  fileContent.replace( re, replacement );
+  fileContent.replace( regularExpression, replacement );
   if ( fileContent == originalFileContent )
     return true;
 

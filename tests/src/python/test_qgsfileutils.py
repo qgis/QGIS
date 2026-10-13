@@ -616,7 +616,7 @@ class TestQgsFileUtils(unittest.TestCase):
 
     def test_replace_regular_expression_in_file(self):
         """
-        Test QgsFileUtils.replaceRegularExpressionInFile
+        Test QgsFileUtils.replaceInFile
         """
 
         file_content = (
@@ -632,23 +632,27 @@ class TestQgsFileUtils(unittest.TestCase):
 
             # file does not exist
             self.assertFalse(
-                QgsFileUtils.replaceRegularExpressionInFile(path + "xxx", "abc", "def")
+                QgsFileUtils.replaceInFile(
+                    path + "xxx", QRegularExpression("abc"), "def"
+                )
             )
 
             # string not present, should return True still
             self.assertTrue(
-                QgsFileUtils.replaceRegularExpressionInFile(path, "abc", "def")
+                QgsFileUtils.replaceInFile(path, QRegularExpression("abc"), "def")
             )
 
             with open(path) as f:
                 new_content = f.read()
             self.assertEqual(new_content, file_content)
 
-            # string which IS present
+            # regular expression which IS present
             self.assertTrue(
-                QgsFileUtils.replaceRegularExpressionInFile(
+                QgsFileUtils.replaceInFile(
                     path,
-                    "C:(\\\\|/)Windows(\\\\|/)painful(\\\\|/)Ridiculus(\\\\|/)path(\\\\|/)",
+                    QRegularExpression(
+                        "C:(\\\\|/)Windows(\\\\|/)painful(\\\\|/)Ridiculus(\\\\|/)path(\\\\|/)"
+                    ),
                     "C:/Windows/much/better/path/",
                 )
             )

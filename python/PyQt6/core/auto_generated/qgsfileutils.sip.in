@@ -277,10 +277,10 @@ Replacement is case-sensitive.
 .. versionadded:: 4.0
 %End
 
-    static bool replaceRegularExpressionInFile( const QString &path, const QString &regularExpression, const QString &replacement );
+    static bool replaceInFile( const QString &path, const QRegularExpression &regularExpression, const QString &replacement );
 %Docstring
-Replaces all occurrences of a ``regularExpression`` with ``replacement``
-in a file located at ``path``.
+Replaces all occurrences of a content found by ``regularExpression``
+with ``replacement`` in a file located at ``path``.
 
 Returns ``True`` if the replacement was successful and the file updated.
 

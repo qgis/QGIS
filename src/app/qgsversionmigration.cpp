@@ -390,7 +390,7 @@ QgsError Qgs3To4Migration::runMigration( const QString &oldProfilePath, const QS
   const QString newCleanProfilePath = QFileInfo( newProfilePath ).absoluteFilePath();
 
   // do a one-time search and replace for the old profiles path in the ini file to the new path
-  QgsFileUtils::replaceRegularExpressionInFile( newProfileDir.filePath( u"QGIS/QGIS4.ini"_s ), oldCleanProfilePath, newCleanProfilePath );
+  QgsFileUtils::replaceInFile( newProfileDir.filePath( u"QGIS/QGIS4.ini"_s ), QRegularExpression( oldCleanProfilePath ), newCleanProfilePath );
 
   QgsSettings newSettings;
   newSettings.setValue( u"migration/migrated_from_3"_s, true );

@@ -288,13 +288,13 @@ class CORE_EXPORT QgsFileUtils
     static bool replaceTextInFile( const QString &path, const QString &searchString, const QString &replacement );
 
     /**
-     * Replaces all occurrences of a \a regularExpression with \a replacement in a file located at \a path.
+     * Replaces all occurrences of a content found by \a regularExpression with \a replacement in a file located at \a path.
      *
      * Returns TRUE if the replacement was successful and the file updated.
      *
      * \since QGIS 4.4
      */
-    static bool replaceRegularExpressionInFile( const QString &path, const QString &regularExpression, const QString &replacement );
+    static bool replaceInFile( const QString &path, const QRegularExpression &regularExpression, const QString &replacement );
 };
 
 Q_DECLARE_OPERATORS_FOR_FLAGS( QgsFileUtils::CopyFlags )
