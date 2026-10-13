@@ -113,7 +113,7 @@ void QgsActionLocatorFilter::searchActions( const QString &string, QWidget *pare
     result.displayString = searchText;
     result.setUserData( QVariant::fromValue( action ) );
     result.icon = action->icon();
-    result.score = fuzzyScore( QgsStringUtils::unaccent( result.displayString ), QgsStringUtils::unaccent( string ) );
+    result.score = fuzzyScore( result.displayString, string );
 
     if ( result.score > 0 )
     {
