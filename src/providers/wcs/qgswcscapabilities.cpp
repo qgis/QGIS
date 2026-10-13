@@ -40,6 +40,7 @@
 #include <QNetworkRequest>
 #include <QSet>
 #include <QString>
+#include <QUrlQuery>
 
 #include "moc_qgswcscapabilities.cpp"
 
@@ -86,7 +87,6 @@ QgsWcsCapabilities::QgsWcsCapabilities( const QgsWcsCapabilities &other )
   , mCacheLoadControl( other.mCacheLoadControl )
 {}
 
-
 void QgsWcsCapabilities::parseUri()
 {
   mCacheLoadControl = QNetworkRequest::PreferNetwork;
@@ -113,20 +113,6 @@ void QgsWcsCapabilities::setUri( QgsDataSourceUri const &uri )
   retrieveServerCapabilities();
 }
 
-QString QgsWcsCapabilities::prepareUri( QString uri )
-{
-  if ( !uri.contains( '?' ) )
-  {
-    uri.append( '?' );
-  }
-  else if ( uri.right( 1 ) != "?"_L1 && uri.right( 1 ) != "&"_L1 )
-  {
-    uri.append( '&' );
-  }
-
-  return uri;
-}
-
 const QgsWcsCapabilitiesProperty &QgsWcsCapabilities::capabilities() const
 {
   return mCapabilities;
@@ -150,7 +136,7 @@ QString QgsWcsCapabilities::getCoverageUrl() const
   {
     url = mUri.param( u"url"_s );
   }
-  return url;
+  return requestUrl( url ).toString();
 }
 
 bool QgsWcsCapabilities::sendRequest( QString const &url )
@@ -216,7 +202,11 @@ void QgsWcsCapabilities::clear()
 
 QString QgsWcsCapabilities::getCapabilitiesUrl( const QString &version ) const
 {
-  QString url = prepareUri( mUri.param( u"url"_s ) ) + "SERVICE=WCS&REQUEST=GetCapabilities";
+  QUrl url = requestUrl( mUri.param( u"url"_s ) );
+  QUrlQuery query( url );
+
+  query.addQueryItem( u"SERVICE"_s, u"WCS"_s );
+  query.addQueryItem( u"REQUEST"_s, u"GetCapabilities"_s );
 
   if ( !version.isEmpty() )
   {
@@ -224,15 +214,16 @@ QString QgsWcsCapabilities::getCapabilitiesUrl( const QString &version ) const
     // 1.1.0 - AcceptVersions (not supported by UMN Mapserver 6.0.3 - defaults to latest 1.1
     if ( version.startsWith( "1.0"_L1 ) )
     {
-      url += "&VERSION=" + version;
+      query.addQueryItem( u"VERSION"_s, version );
     }
     else if ( version.startsWith( "1.1"_L1 ) )
     {
       // Ignored by UMN Mapserver 6.0.3, see below
-      url += "&AcceptVersions=" + version;
+      query.addQueryItem( u"AcceptVersions"_s, version );
     }
   }
-  return url;
+  url.setQuery( query );
+  return url.toString();
 }
 
 QString QgsWcsCapabilities::getCapabilitiesUrl() const
@@ -305,19 +296,25 @@ bool QgsWcsCapabilities::retrieveServerCapabilities( const QString &preferredVer
 
 QString QgsWcsCapabilities::getDescribeCoverageUrl( QString const &identifier ) const
 {
-  QString url = prepareUri( mUri.param( u"url"_s ) ) + "SERVICE=WCS&REQUEST=DescribeCoverage&VERSION=" + mVersion;
+  QUrl url = requestUrl( mUri.param( u"url"_s ) );
+  QUrlQuery query( url );
+
+  query.addQueryItem( u"SERVICE"_s, u"WCS"_s );
+  query.addQueryItem( u"REQUEST"_s, u"DescribeCoverage"_s );
+  query.addQueryItem( u"VERSION"_s, mVersion );
 
   if ( mVersion.startsWith( "1.0"_L1 ) )
   {
-    url += "&COVERAGE=" + identifier;
+    query.addQueryItem( u"COVERAGE"_s, identifier );
   }
   else if ( mVersion.startsWith( "1.1"_L1 ) )
   {
     // in 1.1.0, 1.1.1, 1.1.2 the name of param is 'identifier'
     // but in KVP 'identifiers'
-    url += "&IDENTIFIERS=" + identifier;
+    query.addQueryItem( u"IDENTIFIERS"_s, identifier );
   }
-  return url;
+  url.setQuery( query );
+  return url.toString();
 }
 
 bool QgsWcsCapabilities::describeCoverage( QString const &identifier, bool forceRefresh )
@@ -705,8 +702,35 @@ QString QgsWcsCapabilities::crsUrnToAuthId( const QString &text )
   return authid;
 }
 
-// ------------------------ 1.0 ----------------------------------------------
+QUrl QgsWcsCapabilities::requestUrl( const QString &serverUrl ) const
+{
+  const QUrl defaultUrl( mUri.param( u"url"_s ) );
+  QUrl url( serverUrl.isEmpty() ? defaultUrl : serverUrl );
+  QUrlQuery urlQuery( url );
 
+  QSet<QString> queryKeys;
+  const QList<QPair<QString, QString>> queryItems { urlQuery.queryItems() };
+  for ( const QPair<QString, QString> &qi : queryItems )
+  {
+    queryKeys.insert( qi.first.toUpper() );
+  }
+
+  const QUrlQuery defaultUrlQuery( defaultUrl );
+  const QList<QPair<QString, QString>> defaultQueryItems( defaultUrlQuery.queryItems() );
+  for ( const QPair<QString, QString> &item : defaultQueryItems )
+  {
+    if ( !queryKeys.contains( item.first.toUpper() ) )
+    {
+      urlQuery.addQueryItem( item.first, item.second );
+      queryKeys.insert( item.first.toUpper() );
+    }
+  }
+
+  url.setQuery( urlQuery );
+  return url;
+}
+
+// ------------------------ 1.0 ----------------------------------------------
 
 void QgsWcsCapabilities::parseContentMetadata( const QDomElement &element, QgsWcsCoverageSummary &coverageSummary )
 {
@@ -1001,7 +1025,9 @@ bool QgsWcsCapabilities::parseDescribeCoverageDom10( QByteArray const &xml, QgsW
 
   return true;
 }
+
 // ------------------------ 1.1 ----------------------------------------------
+
 bool QgsWcsCapabilities::parseDescribeCoverageDom11( QByteArray const &xml, QgsWcsCoverageSummary *coverage )
 {
   QgsDebugMsgLevel( "coverage->identifier = " + coverage->identifier, 2 );
@@ -1139,7 +1165,6 @@ bool QgsWcsCapabilities::parseDescribeCoverageDom11( QByteArray const &xml, QgsW
 
   return true;
 }
-
 
 void QgsWcsCapabilities::parseCoverageSummary( const QDomElement &element, QgsWcsCoverageSummary &coverageSummary, QgsWcsCoverageSummary *parent )
 {
