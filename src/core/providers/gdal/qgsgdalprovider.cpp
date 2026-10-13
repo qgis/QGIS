@@ -2272,12 +2272,12 @@ QString QgsGdalProvider::buildPyramids(
       GDALClose( mGdalDataset );
       //mGdalBaseDataset = GDALOpen( QFile::encodeName( dataSourceUri() ).constData(), GA_Update );
 
-      mGdalBaseDataset = gdalOpen( dataSourceUri( true ), GDAL_OF_UPDATE );
+      mGdalBaseDataset = gdalOpen( dataSourceUri( true ), GDAL_OF_UPDATE | GDAL_OF_RASTER );
 
       // if the dataset couldn't be opened in read / write mode, tell the user
       if ( !mGdalBaseDataset )
       {
-        mGdalBaseDataset = gdalOpen( dataSourceUri( true ), GDAL_OF_READONLY );
+        mGdalBaseDataset = gdalOpen( dataSourceUri( true ), GDAL_OF_READONLY | GDAL_OF_RASTER );
         //Since we are not a virtual warped dataset, mGdalDataSet and mGdalBaseDataset are supposed to be the same
         mGdalDataset = mGdalBaseDataset;
         return u"ERROR_WRITE_FORMAT"_s;
@@ -2382,7 +2382,7 @@ QString QgsGdalProvider::buildPyramids(
       //something bad happenend
       //QString myString = QString (CPLGetLastError());
       GDALClose( mGdalBaseDataset );
-      mGdalBaseDataset = gdalOpen( dataSourceUri( true ), mUpdate ? GDAL_OF_UPDATE : GDAL_OF_READONLY );
+      mGdalBaseDataset = gdalOpen( dataSourceUri( true ), mUpdate ? GDAL_OF_UPDATE | GDAL_OF_RASTER : GDAL_OF_READONLY | GDAL_OF_RASTER );
       //Since we are not a virtual warped dataset, mGdalDataSet and mGdalBaseDataset are supposed to be the same
       mGdalDataset = mGdalBaseDataset;
 
@@ -2432,7 +2432,7 @@ QString QgsGdalProvider::buildPyramids(
     QgsDebugMsgLevel( u"Reopening dataset ..."_s, 2 );
     //close the gdal dataset and reopen it in read only mode
     GDALClose( mGdalBaseDataset );
-    mGdalBaseDataset = gdalOpen( dataSourceUri( true ), mUpdate ? GDAL_OF_UPDATE : GDAL_OF_READONLY );
+    mGdalBaseDataset = gdalOpen( dataSourceUri( true ), mUpdate ? GDAL_OF_UPDATE | GDAL_OF_RASTER : GDAL_OF_READONLY | GDAL_OF_RASTER );
     //Since we are not a virtual warped dataset, mGdalDataSet and mGdalBaseDataset are supposed to be the same
     mGdalDataset = mGdalBaseDataset;
   }
@@ -3045,7 +3045,7 @@ bool QgsGdalProvider::isValidRasterFileName( QString const &fileNameQString, QSt
 
   //open the file using gdal making sure we have handled locale properly
   //myDataset = GDALOpen( QFile::encodeName( fileNameQString ).constData(), GA_ReadOnly );
-  myDataset.reset( QgsGdalProviderBase::gdalOpen( fileName, GDAL_OF_READONLY ) );
+  myDataset.reset( QgsGdalProviderBase::gdalOpen( fileName, GDAL_OF_READONLY | GDAL_OF_RASTER ) );
   if ( !myDataset )
   {
     if ( CPLGetLastErrorNo() != CPLE_OpenFailed )
@@ -3401,7 +3401,7 @@ bool QgsGdalProvider::initIfNeeded()
   sanitizeVRTFile( gdalUri );
 
   CPLErrorReset();
-  mGdalBaseDataset = gdalOpen( gdalUri, mUpdate ? GDAL_OF_UPDATE : GDAL_OF_READONLY );
+  mGdalBaseDataset = gdalOpen( gdalUri, mUpdate ? GDAL_OF_UPDATE | GDAL_OF_RASTER : GDAL_OF_READONLY | GDAL_OF_RASTER );
 
 
   if ( !mGdalBaseDataset )
@@ -3434,7 +3434,7 @@ bool QgsGdalProvider::initIfNeeded()
       parts[u"openOptions"_s] = openOptions;
       gdalUri = encodeGdalUri( parts );
       setUri( gdalUri );
-      mGdalBaseDataset = gdalOpen( gdalUri, mUpdate ? GDAL_OF_UPDATE : GDAL_OF_READONLY );
+      mGdalBaseDataset = gdalOpen( gdalUri, mUpdate ? GDAL_OF_UPDATE | GDAL_OF_RASTER : GDAL_OF_READONLY | GDAL_OF_RASTER );
     }
   }
 #endif
@@ -4422,7 +4422,7 @@ bool QgsGdalProvider::setEditable( bool enabled )
 
   // reopen the dataset
 
-  mGdalBaseDataset = gdalOpen( dataSourceUri( true ), mUpdate ? GDAL_OF_UPDATE : GDAL_OF_READONLY );
+  mGdalBaseDataset = gdalOpen( dataSourceUri( true ), mUpdate ? GDAL_OF_UPDATE | GDAL_OF_RASTER : GDAL_OF_READONLY | GDAL_OF_RASTER );
   if ( !mGdalBaseDataset )
   {
     QString msg = u"Cannot reopen GDAL dataset %1:\n%2"_s.arg( dataSourceUri(), QString::fromUtf8( CPLGetLastErrorMsg() ) );
@@ -4607,7 +4607,7 @@ QList<QgsProviderSublayerDetails> QgsGdalProviderMetadata::querySublayers( const
   // individual files inside a compressed file.
   CPLPushErrorHandler( CPLQuietErrorHandler );
   CPLErrorReset();
-  dataset.reset( QgsGdalProviderBase::gdalOpen( npGdalUri, GDAL_OF_READONLY ) );
+  dataset.reset( QgsGdalProviderBase::gdalOpen( npGdalUri, GDAL_OF_READONLY | GDAL_OF_RASTER ) );
   CPLPopErrorHandler();
 
   if ( dataset )
@@ -4795,7 +4795,7 @@ QList<QgsDataItemProvider *> QgsGdalProviderMetadata::dataItemProviders() const
 int QgsGdalProviderMetadata::listStyles( const QString &uri, QStringList &ids, QStringList &names, QStringList &descriptions, QString &errCause )
 {
   gdal::dataset_unique_ptr ds;
-  ds.reset( QgsGdalProviderBase::gdalOpen( uri, GDAL_OF_READONLY ) );
+  ds.reset( QgsGdalProviderBase::gdalOpen( uri, GDAL_OF_READONLY | GDAL_OF_VECTOR ) );
   if ( !ds )
   {
     errCause = QObject::tr( "Cannot open %1." ).arg( uri );
@@ -4809,7 +4809,7 @@ int QgsGdalProviderMetadata::listStyles( const QString &uri, QStringList &ids, Q
 bool QgsGdalProviderMetadata::styleExists( const QString &uri, const QString &styleId, QString &errCause )
 {
   gdal::dataset_unique_ptr ds;
-  ds.reset( QgsGdalProviderBase::gdalOpen( uri, GDAL_OF_READONLY ) );
+  ds.reset( QgsGdalProviderBase::gdalOpen( uri, GDAL_OF_READONLY | GDAL_OF_VECTOR ) );
   if ( !ds )
   {
     errCause = QObject::tr( "Cannot open %1." ).arg( uri );
@@ -4823,7 +4823,7 @@ bool QgsGdalProviderMetadata::styleExists( const QString &uri, const QString &st
 QString QgsGdalProviderMetadata::getStyleById( const QString &uri, const QString &styleId, QString &errCause )
 {
   gdal::dataset_unique_ptr ds;
-  ds.reset( QgsGdalProviderBase::gdalOpen( uri, GDAL_OF_READONLY ) );
+  ds.reset( QgsGdalProviderBase::gdalOpen( uri, GDAL_OF_READONLY | GDAL_OF_VECTOR ) );
   if ( !ds )
   {
     errCause = QObject::tr( "Cannot open %1." ).arg( uri );
@@ -4835,7 +4835,7 @@ QString QgsGdalProviderMetadata::getStyleById( const QString &uri, const QString
 bool QgsGdalProviderMetadata::deleteStyleById( const QString &uri, const QString &styleId, QString &errCause )
 {
   gdal::dataset_unique_ptr ds;
-  ds.reset( QgsGdalProviderBase::gdalOpen( uri, GDAL_OF_UPDATE ) );
+  ds.reset( QgsGdalProviderBase::gdalOpen( uri, GDAL_OF_UPDATE | GDAL_OF_VECTOR ) );
   if ( !ds )
   {
     errCause = QObject::tr( "Cannot open %1." ).arg( uri );
@@ -4849,7 +4849,7 @@ bool QgsGdalProviderMetadata::saveStyle(
 )
 {
   gdal::dataset_unique_ptr ds;
-  ds.reset( QgsGdalProviderBase::gdalOpen( uri, GDAL_OF_UPDATE ) );
+  ds.reset( QgsGdalProviderBase::gdalOpen( uri, GDAL_OF_UPDATE | GDAL_OF_VECTOR ) );
   if ( !ds )
   {
     errCause = QObject::tr( "Cannot open %1." ).arg( uri );
@@ -4869,7 +4869,7 @@ QString QgsGdalProviderMetadata::loadStyle( const QString &uri, QString &errCaus
 QString QgsGdalProviderMetadata::loadStoredStyle( const QString &uri, QString &styleName, QString &errCause )
 {
   gdal::dataset_unique_ptr ds;
-  ds.reset( QgsGdalProviderBase::gdalOpen( uri, GDAL_OF_READONLY ) );
+  ds.reset( QgsGdalProviderBase::gdalOpen( uri, GDAL_OF_READONLY | GDAL_OF_VECTOR ) );
   if ( !ds )
   {
     errCause = QObject::tr( "Cannot open %1." ).arg( uri );
