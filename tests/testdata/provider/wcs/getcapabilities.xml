@@ -26,14 +26,14 @@
     <ows:Operation name="DescribeCoverage">
       <ows:DCP>
         <ows:HTTP>
-          <ows:Get xlink:href="http://localhost::$$PORT$$/wcs?"/>
+          <ows:Get xlink:href="http://localhost:$$PORT$$/wcs?"/>
         </ows:HTTP>
       </ows:DCP>
     </ows:Operation>
     <ows:Operation name="GetCoverage">
       <ows:DCP>
         <ows:HTTP>
-          <ows:Get xlink:href="http://localhost::$$PORT$$/wcs?"/>
+          <ows:Get xlink:href="http://localhost:$$PORT$$/wcs?"/>
         </ows:HTTP>
       </ows:DCP>
     </ows:Operation>
@@ -51,5 +51,4 @@
       <wcs:SupportedFormat>image/tiff</wcs:SupportedFormat>
     </wcs:CoverageSummary>
   </wcs:Contents>
-
 </wcs:Capabilities>
