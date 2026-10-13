@@ -786,6 +786,19 @@ bool QgsLayerTreeView::hideValidLayers() const
   return mHideValidLayers;
 }
 
+void QgsLayerTreeView::mousePressEvent( QMouseEvent *event )
+{
+  if ( event->button() == Qt::LeftButton || event->button() == Qt::RightButton )
+  {
+    QTreeView::mousePressEvent( event );
+  }
+  else
+  {
+    event->accept();
+    return;
+  }
+}
+
 void QgsLayerTreeView::mouseReleaseEvent( QMouseEvent *event )
 {
   QgsLayerTreeModel *layerModel = layerTreeModel();
@@ -834,19 +847,6 @@ void QgsLayerTreeView::keyPressEvent( QKeyEvent *event )
     layerModel->setFlags( oldFlags & ~QgsLayerTreeModel::ActionHierarchical );
   QTreeView::keyPressEvent( event );
   layerModel->setFlags( oldFlags );
-}
-
-void QgsLayerTreeView::mousePressEvent( QMouseEvent *event )
-{
-  if ( event->button() == Qt::LeftButton || event->button() == Qt::RightButton )
-  {
-    QTreeView::mousePressEvent( event );
-  }
-  else
-  {
-    event->accept();
-    return;
-  }
 }
 
 void QgsLayerTreeView::dragEnterEvent( QDragEnterEvent *event )
