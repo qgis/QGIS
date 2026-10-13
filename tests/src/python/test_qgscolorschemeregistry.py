@@ -110,16 +110,25 @@ class TestQgsColorSchemeRegistry(QgisTestCase):
 
     def testSetProject(self):
         """Test that the project colors scheme follows setProject()"""
-        registry = QgsApplication.colorSchemeRegistry()
-        # other tests rely on the registry being bound to QgsProject.instance(), so restore that after
-        self.addCleanup(registry.setProject, QgsProject.instance())
-
         project1 = QgsProject()
         project1.setProjectColors([[QColor(255, 0, 0), "red"]])
         project2 = QgsProject()
         project2.setProjectColors([[QColor(0, 255, 0), "green"]])
 
+        # without a project, default schemes do not include project colors
+        registry = QgsColorSchemeRegistry()
+        registry.addDefaultSchemes()
+        self.assertFalse(
+            [s for s in registry.schemes() if isinstance(s, QgsProjectColorScheme)]
+        )
+
+        # setting a project on an empty registry does not add any scheme by itself
+        registry = QgsColorSchemeRegistry()
         registry.setProject(project1)
+        self.assertEqual(len(registry.schemes()), 0)
+
+        # default schemes include the project colors scheme once a project is set
+        registry.addDefaultSchemes()
         schemes = [
             s for s in registry.schemes() if isinstance(s, QgsProjectColorScheme)
         ]
