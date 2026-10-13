@@ -161,15 +161,15 @@ void TestQgsCustomization::init()
   // Random crashes if this is is visible
   mQgisApp->mLayerTreeView->setVisible( false );
 
-  mQgisApp->show();
-
-  QVERIFY( findQWidget<QMenu>( "Menus/mHelpMenu" ) );
-  QVERIFY( findQWidget<QToolBar>( "ToolBars/mHelpToolBar" ) );
-
   mCustomizationFile = std::make_unique<QTemporaryFile>();
   QVERIFY( mCustomizationFile->open() ); // fileName is not available until open
   auto customization = std::make_unique<QgsCustomization>( mCustomizationFile->fileName() );
   mQgisApp->setCustomization( std::move( customization ) );
+
+  mQgisApp->show();
+
+  QVERIFY( findQWidget<QMenu>( "Menus/mHelpMenu" ) );
+  QVERIFY( findQWidget<QToolBar>( "ToolBars/mHelpToolBar" ) );
 }
 
 void TestQgsCustomization::cleanup()
@@ -205,6 +205,10 @@ void TestQgsCustomization::testLoadApply()
     QVERIFY( getItem<QgsCustomization::QgsActionItem>( "ToolBars/testToolBar/testToolBarToolButton/testToolBarMenuAction1" ) );
     getItem<QgsCustomization::QgsActionItem>( "ToolBars/testToolBar/testToolBarToolButton/testToolBarMenuAction1" )->setVisible( visible );
   };
+
+  // test that status bar widgets are visible at startup
+  QVERIFY( getItem<QgsCustomization::QgsStatusBarWidgetItem>( "StatusBarWidgets/mScaleWidget" ) );
+  QVERIFY( getItem<QgsCustomization::QgsStatusBarWidgetItem>( "StatusBarWidgets/mScaleWidget" )->isVisible() );
 
   setAllVisible( false );
 
@@ -252,6 +256,9 @@ void TestQgsCustomization::testLoadApply()
   QVERIFY( getItem<QgsCustomization::QgsActionItem>( "ToolBars/testToolBar/testToolBarToolButton/testToolBarMenuAction2" ) );
   QVERIFY( getItem<QgsCustomization::QgsActionItem>( "ToolBars/testToolBar/testToolBarToolButton/testToolBarMenuAction2" )->isVisible() );
 
+  QVERIFY( getItem<QgsCustomization::QgsStatusBarWidgetItem>( "StatusBarWidgets/mScaleWidget" ) );
+  QVERIFY( getItem<QgsCustomization::QgsStatusBarWidgetItem>( "StatusBarWidgets/mScaleWidget" )->isVisible() );
+
   // test initial situation
   QVERIFY( findQWidget<QMenu>( "Menus/mHelpMenu" ) );
   QVERIFY( findQAction( "Menus/mEditMenu/mActionUndo" ) );
@@ -269,6 +276,7 @@ void TestQgsCustomization::testLoadApply()
   QVERIFY( findQWidget<QDockWidget>( "Docks/QgsAdvancedDigitizingDockWidgetBase" )->isVisible() );
   QVERIFY( findQWidget<QWidget>( "StatusBarWidgets/LocatorWidget" ) );
   QVERIFY( findQWidget<QWidget>( "StatusBarWidgets/LocatorWidget" )->isVisible() );
+  QVERIFY( findQWidget<QWidget>( "StatusBarWidgets/mScaleWidget" )->isVisible() );
   QVERIFY( findQAction( "ToolBars/testToolBar/testToolBarToolButton/testToolBarMenuAction1" ) );
   QVERIFY( findQAction( "ToolBars/testToolBar/testToolBarToolButton/testToolBarMenuAction1" )->isVisible() );
 
@@ -288,6 +296,7 @@ void TestQgsCustomization::testLoadApply()
   QVERIFY( !findQWidget<QDockWidget>( "Docks/QgsAdvancedDigitizingDockWidgetBase" )->isVisible() );
   QVERIFY( findQWidget<QWidget>( "StatusBarWidgets/LocatorWidget" ) );
   QVERIFY( !findQWidget<QWidget>( "StatusBarWidgets/LocatorWidget" )->isVisible() );
+  QVERIFY( findQWidget<QWidget>( "StatusBarWidgets/mScaleWidget" )->isVisible() );
   QVERIFY( !findQAction( "ToolBars/testToolBar/testToolBarToolButton/testToolBarMenuAction1" ) );
   QVERIFY( mQgisApp->browserWidget()->browserWidget()->mDisabledDataItemsKeys.contains( "special:Home" ) );
 
@@ -313,6 +322,7 @@ void TestQgsCustomization::testLoadApply()
   QVERIFY( findQWidget<QDockWidget>( "Docks/QgsAdvancedDigitizingDockWidgetBase" )->isVisible() );
   QVERIFY( findQWidget<QWidget>( "StatusBarWidgets/LocatorWidget" ) );
   QVERIFY( findQWidget<QWidget>( "StatusBarWidgets/LocatorWidget" )->isVisible() );
+  QVERIFY( findQWidget<QWidget>( "StatusBarWidgets/mScaleWidget" )->isVisible() );
   QVERIFY( findQAction( "ToolBars/testToolBar/testToolBarToolButton/testToolBarMenuAction1" ) );
   QVERIFY( findQAction( "ToolBars/testToolBar/testToolBarToolButton/testToolBarMenuAction1" )->isVisible() );
 }
@@ -446,7 +456,7 @@ void TestQgsCustomization::testBackwardCompatibility()
     settings.setValue( "Customization/Menus/mViewMenu/mMenuMeasure/mActionMeasureAngle", false );
 
     settings.setValue( "Customization/Docks/AdvancedDigitizingTools", true );
-    settings.setValue( "Customization/Docks/BookmarksDockWidget", false );
+    settings.setValue( "Customization/Docks/Browser", false );
 
     settings.setValue( "Customization/StatusBar", false );
     settings.setValue( "Customization/StatusBar/LocatorWidget", true );
@@ -454,6 +464,7 @@ void TestQgsCustomization::testBackwardCompatibility()
 
     settings.setValue( "Customization/Browser/GPKG", true );
     settings.setValue( "Customization/Browser/MSSQL", false );
+    settings.setValue( "Customization/Browser/special:Home", false );
   }
 
   auto customization = std::make_unique<QgsCustomization>( ( QString() ) );
@@ -486,8 +497,8 @@ void TestQgsCustomization::testBackwardCompatibility()
 
   QVERIFY( getItem<QgsCustomization::QgsDockItem>( customization.get(), "Docks/AdvancedDigitizingTools" ) );
   QVERIFY( getItem<QgsCustomization::QgsDockItem>( customization.get(), "Docks/AdvancedDigitizingTools" )->isVisible() );
-  QVERIFY( getItem<QgsCustomization::QgsDockItem>( customization.get(), "Docks/BookmarksDockWidget" ) );
-  QVERIFY( !getItem<QgsCustomization::QgsDockItem>( customization.get(), "Docks/BookmarksDockWidget" )->isVisible() );
+  QVERIFY( getItem<QgsCustomization::QgsDockItem>( customization.get(), "Docks/Browser" ) );
+  QVERIFY( !getItem<QgsCustomization::QgsDockItem>( customization.get(), "Docks/Browser" )->isVisible() );
 
   QVERIFY( !customization->statusBarWidgetsItem()->isVisible() );
   QVERIFY( getItem<QgsCustomization::QgsStatusBarWidgetItem>( customization.get(), "StatusBarWidgets/LocatorWidget" ) );
@@ -499,6 +510,30 @@ void TestQgsCustomization::testBackwardCompatibility()
   QVERIFY( getItem<QgsCustomization::QgsBrowserElementItem>( customization.get(), "BrowserItems/GPKG" )->isVisible() );
   QVERIFY( getItem<QgsCustomization::QgsBrowserElementItem>( customization.get(), "BrowserItems/MSSQL" ) );
   QVERIFY( !getItem<QgsCustomization::QgsBrowserElementItem>( customization.get(), "BrowserItems/MSSQL" )->isVisible() );
+  QVERIFY( getItem<QgsCustomization::QgsBrowserElementItem>( customization.get(), "BrowserItems/special:Home" ) );
+  QVERIFY( !getItem<QgsCustomization::QgsBrowserElementItem>( customization.get(), "BrowserItems/special:Home" )->isVisible() );
+
+  // set loaded customization
+  mQgisApp->setCustomization( std::move( customization ) );
+
+  // check that title are now restored
+  QVERIFY( getItem<QgsCustomization::QgsToolBarItem>( "ToolBars/mAttributesToolBar" ) );
+  QVERIFY( !getItem<QgsCustomization::QgsToolBarItem>( "ToolBars/mAttributesToolBar" )->title().isEmpty() );
+
+  QVERIFY( getItem<QgsCustomization::QgsActionItem>( "Menus/mViewMenu/mMenuMeasure" ) );
+  QVERIFY( !getItem<QgsCustomization::QgsActionItem>( "Menus/mViewMenu/mMenuMeasure" )->title().isEmpty() );
+
+  QVERIFY( getItem<QgsCustomization::QgsActionItem>( "Menus/mEditMenu/mActionCopyFeatures" ) );
+  QVERIFY( !getItem<QgsCustomization::QgsActionItem>( "Menus/mEditMenu/mActionCopyFeatures" )->title().isEmpty() );
+
+  QVERIFY( getItem<QgsCustomization::QgsBrowserElementItem>( "BrowserItems/GPKG" ) );
+  QVERIFY( !getItem<QgsCustomization::QgsBrowserElementItem>( "BrowserItems/GPKG" )->title().isEmpty() );
+
+  QVERIFY( getItem<QgsCustomization::QgsBrowserElementItem>( "BrowserItems/special:Home" ) );
+  QVERIFY( !getItem<QgsCustomization::QgsBrowserElementItem>( "BrowserItems/special:Home" )->title().isEmpty() );
+
+  QVERIFY( getItem<QgsCustomization::QgsDockItem>( "Docks/Browser" ) );
+  QVERIFY( !getItem<QgsCustomization::QgsDockItem>( "Docks/Browser" )->title().isEmpty() );
 }
 
 void TestQgsCustomization::testClone()

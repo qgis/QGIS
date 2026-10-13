@@ -64,6 +64,7 @@ set(TESTS
   testqgsfiledownloader.cpp
   testqgsfileuploader.cpp
   testqgslayoutgui.cpp
+  testqgslayoutitemlistview.cpp
   testqgslayoutview.cpp
   testqgsmaptooleditblanksegments.cpp
   testqgsmaptoolextraitem.cpp

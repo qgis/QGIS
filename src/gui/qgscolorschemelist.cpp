@@ -18,6 +18,7 @@
 #include "qgsapplication.h"
 #include "qgscolordialog.h"
 #include "qgslogger.h"
+#include "qgspainting.h"
 #include "qgssettings.h"
 #include "qgssymbollayerutils.h"
 

@@ -1123,10 +1123,10 @@ def start_app(cleanup=True):
         QGISAPP.initQgis()
         print(QGISAPP.showSettings())
 
-        def debug_log_message(message, tag, level):
+        def debug_log_message(message, tag, level, format):
             print(f"{tag}({level}): {message}")
 
-        QgsApplication.instance().messageLog().messageReceived.connect(
+        QgsApplication.instance().messageLog().messageReceivedWithFormat.connect(
             debug_log_message
         )
 

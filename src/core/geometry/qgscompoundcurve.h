@@ -116,6 +116,7 @@ class CORE_EXPORT QgsCompoundCurve : public QgsCurve
     bool isEmpty() const override SIP_HOLDGIL;
     bool isValid( QString &error SIP_OUT, Qgis::GeometryValidityFlags flags = Qgis::GeometryValidityFlags() ) const override;
     int indexOf( const QgsPoint &point ) const final;
+    bool isSimpleCurve() const override SIP_HOLDGIL;
 
     /**
      * Returns a new line string geometry corresponding to a segmentized approximation

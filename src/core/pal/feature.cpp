@@ -2008,7 +2008,7 @@ std::size_t FeaturePart::createDefaultCurvedCandidatesAlongLine( std::vector<std
         LabelPosition *currentPos = p.get();
         while ( within && currentPos )
         {
-          within = GeomFunction::containsCandidate( mLF->permissibleZonePrepared(), currentPos->getX(), currentPos->getY(), currentPos->getWidth(), currentPos->getHeight(), currentPos->getAlpha() );
+          within = GeomFunction::containsCandidate( mLF->permissibleZonePrepared(), currentPos->getX(), currentPos->getY(), currentPos->getWidth(), currentPos->getHeight(), currentPos->angleRadians() );
           currentPos = currentPos->nextPart();
         }
         if ( !within )
@@ -2119,7 +2119,7 @@ std::size_t FeaturePart::createCurvedCandidateWithCharactersAtVertices( std::vec
     LabelPosition *currentPos = firstPosition.get();
     while ( within && currentPos )
     {
-      within = GeomFunction::containsCandidate( mLF->permissibleZonePrepared(), currentPos->getX(), currentPos->getY(), currentPos->getWidth(), currentPos->getHeight(), currentPos->getAlpha() );
+      within = GeomFunction::containsCandidate( mLF->permissibleZonePrepared(), currentPos->getX(), currentPos->getY(), currentPos->getWidth(), currentPos->getHeight(), currentPos->angleRadians() );
       currentPos = currentPos->nextPart();
     }
     if ( !within )

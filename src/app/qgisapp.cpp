@@ -491,6 +491,7 @@ using namespace Qt::StringLiterals;
 #include "qgsbearingnumericformat.h"
 #include "qgsprojectdisplaysettings.h"
 #include "qgstemporalcontrollerdockwidget.h"
+#include "qgstoolbuttonaction.h"
 #include "qgsuserprofilemanager.h"
 #include "qgsuserprofile.h"
 #include "devtools/networklogger/qgsnetworklogger.h"
@@ -5032,21 +5033,23 @@ void QgisApp::initLayerTreeView()
   connect( actionAddGroup, &QAction::triggered, mLayerTreeView->defaultActions(), &QgsLayerTreeViewDefaultActions::addGroup );
 
   // visibility groups tool button
-  QToolButton *btnVisibilityPresets = new QToolButton;
-  btnVisibilityPresets->setAutoRaise( true );
-  btnVisibilityPresets->setToolTip( tr( "Manage Map Themes" ) );
-  btnVisibilityPresets->setIcon( QgsApplication::getThemeIcon( u"/mActionShowAllLayers.svg"_s ) );
-  btnVisibilityPresets->setPopupMode( QToolButton::InstantPopup );
-  btnVisibilityPresets->setMenu( QgsMapThemes::instance()->menu() );
+  QgsToolButtonAction *actionVisibilityPresets = new QgsToolButtonAction();
+  actionVisibilityPresets->setAutoRaise( true );
+  actionVisibilityPresets->setText( tr( "Manage Map Themes" ) );
+  actionVisibilityPresets->setToolTip( tr( "Manage Map Themes" ) );
+  actionVisibilityPresets->setIcon( QgsApplication::getThemeIcon( u"/mActionShowAllLayers.svg"_s ) );
+  actionVisibilityPresets->setPopupMode( QToolButton::InstantPopup );
+  actionVisibilityPresets->setMenu( QgsMapThemes::instance()->menu() );
 
   // filter legend actions
-  mFilterLegendToolButton = new QToolButton( this );
-  mFilterLegendToolButton->setAutoRaise( true );
-  mFilterLegendToolButton->setToolTip( tr( "Filter Legend" ) );
-  mFilterLegendToolButton->setIcon( QgsApplication::getThemeIcon( u"/mActionFilter2.svg"_s ) );
-  mFilterLegendToolButton->setPopupMode( QToolButton::InstantPopup );
+  mFilterLegendToolButtonAction = new QgsToolButtonAction( this );
+  mFilterLegendToolButtonAction->setAutoRaise( true );
+  mFilterLegendToolButtonAction->setText( tr( "Filter Legend" ) );
+  mFilterLegendToolButtonAction->setToolTip( tr( "Filter Legend" ) );
+  mFilterLegendToolButtonAction->setIcon( QgsApplication::getThemeIcon( u"/mActionFilter2.svg"_s ) );
+  mFilterLegendToolButtonAction->setPopupMode( QToolButton::InstantPopup );
   QMenu *filterLegendMenu = new QMenu( this );
-  mFilterLegendToolButton->setMenu( filterLegendMenu );
+  mFilterLegendToolButtonAction->setMenu( filterLegendMenu );
   mFilterLegendByMapContentAction = new QAction( tr( "Filter Legend by Map Content" ), this );
   mFilterLegendByMapContentAction->setCheckable( true );
   connect( mFilterLegendByMapContentAction, &QAction::toggled, this, &QgisApp::updateFilterLegend );
@@ -5087,8 +5090,8 @@ void QgisApp::initLayerTreeView()
   toolbar->setIconSize( QgsGui::iconSize( Qgis::UserInterfaceIconType::DockedToolbar ) );
   toolbar->addAction( mActionStyleDock );
   toolbar->addAction( actionAddGroup );
-  toolbar->addWidget( btnVisibilityPresets );
-  toolbar->addWidget( mFilterLegendToolButton );
+  toolbar->addAction( actionVisibilityPresets );
+  toolbar->addAction( mFilterLegendToolButtonAction );
   toolbar->addWidget( mLegendExpressionFilterButton );
   toolbar->addAction( actionExpandAll );
   toolbar->addAction( actionCollapseAll );
@@ -8109,7 +8112,7 @@ void QgisApp::labeling()
   }
 
   mapStyleDock( true );
-  mMapStyleWidget->setCurrentPage( QgsLayerStylingWidget::VectorLabeling );
+  mMapStyleWidget->setCurrentPage( QgsLayerStylingWidget::Page::VectorLabeling );
 }
 
 void QgisApp::setMapStyleDockLayer( QgsMapLayer *layer )
@@ -8158,7 +8161,7 @@ void QgisApp::diagramProperties()
   }
 
   mapStyleDock( true );
-  mMapStyleWidget->setCurrentPage( QgsLayerStylingWidget::VectorDiagram );
+  mMapStyleWidget->setCurrentPage( QgsLayerStylingWidget::Page::VectorDiagrams );
 }
 
 void QgisApp::createAnnotationLayer()
@@ -12495,7 +12498,6 @@ void QgisApp::legendGroupSetWmsData()
     QgsProject::instance()->setDirty( true );
 
     dlg.serverProperties()->copyTo( currentGroup->serverProperties() );
-    currentGroup->setHasWmsTimeDimension( dlg.hasTimeDimension() );
     currentGroup->setWmsGroupRequestMode( dlg.groupRequestMode() );
   }
 }

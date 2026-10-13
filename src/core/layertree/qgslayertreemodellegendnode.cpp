@@ -30,6 +30,7 @@
 #include "qgslayertreemodel.h"
 #include "qgslegendsettings.h"
 #include "qgsmarkersymbol.h"
+#include "qgspainting.h"
 #include "qgspointcloudlayer.h"
 #include "qgspointcloudrenderer.h"
 #include "qgsrasterlayer.h"
@@ -834,10 +835,9 @@ QSizeF QgsSymbolLegendNode::drawSymbol( const QgsLegendSettings &settings, ItemC
       const int maxBleed = static_cast< int >( std::ceil( QgsSymbolLayerUtils::estimateMaxSymbolBleed( s, *context ) ) );
       const QSize symbolSize( static_cast< int >( std::round( width * dotsPerMM ) ), static_cast<int >( std::round( height * dotsPerMM ) ) );
       const QSize maxSize( symbolSize.width() + maxBleed * 2, symbolSize.height() + maxBleed * 2 );
-      p->save();
+      QgsScopedQPainterState painterState( p );
       p->setClipRect( -maxBleed, -maxBleed, maxSize.width(), maxSize.height(), Qt::IntersectClip );
       s->drawPreviewIcon( p, symbolSize, context, false, nullptr, &patchShape, ctx->screenProperties );
-      p->restore();
     }
     else
     {
@@ -1560,9 +1560,9 @@ QgsLayerTreeModelLegendNode::ItemMetrics QgsDataDefinedSizeLegendNode::draw( con
     context = tempRenderContext.get();
   }
 
+  QgsScopedQPainterState painterState( context->painter() );
   if ( context->painter() )
   {
-    context->painter()->save();
     context->painter()->translate( ctx.columnLeft, ctx.top );
 
     // scale to pixels
@@ -1576,9 +1576,6 @@ QgsLayerTreeModelLegendNode::ItemMetrics QgsDataDefinedSizeLegendNode::draw( con
   QSizeF contentSize;
   double labelXOffset;
   ddsLegend.drawCollapsedLegend( *context, &contentSize, &labelXOffset );
-
-  if ( context->painter() )
-    context->painter()->restore();
 
   ItemMetrics im;
   im.symbolSize = QSizeF( ( contentSize.width() - labelXOffset ) / context->scaleFactor(), contentSize.height() / context->scaleFactor() );

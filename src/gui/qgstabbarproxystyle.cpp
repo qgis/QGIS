@@ -14,6 +14,8 @@
  ***************************************************************************/
 #include "qgstabbarproxystyle.h"
 
+#include "qgspainting.h"
+
 #include <QDebug>
 #include <QPainter>
 #include <QStyleOption>
@@ -36,7 +38,7 @@ void QgsTabBarProxyStyle::drawControl( ControlElement element, const QStyleOptio
     {
       if ( const QStyleOptionTab *tab = qstyleoption_cast<const QStyleOptionTab *>( option ) )
       {
-        painter->save();
+        QgsScopedQPainterState painterState( painter );
         const QgsAttributeEditorElement::LabelStyle &style { mTabStyles.value( tabBar->tabAt( option->rect.center() ) ) };
         if ( style.overrideFont )
         {
@@ -48,7 +50,6 @@ void QgsTabBarProxyStyle::drawControl( ControlElement element, const QStyleOptio
           opt.palette.setBrush( QPalette::WindowText, style.color );
         }
         QProxyStyle::drawControl( element, &opt, painter, widget );
-        painter->restore();
         return;
       }
     }

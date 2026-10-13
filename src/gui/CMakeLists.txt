@@ -836,6 +836,7 @@ set(QGIS_GUI_SRCS
   qgstemporalcontrollerwidget.cpp
   qgstextformatwidget.cpp
   qgstextpreview.cpp
+  qgstoolbuttonaction.cpp
   qgstooltipcombobox.cpp
   qgstreewidgetitem.cpp
   qgsunitselectionwidget.cpp
@@ -1117,6 +1118,7 @@ set(QGIS_GUI_HDRS
   qgstemporalcontrollerwidget.h
   qgstextformatwidget.h
   qgstextpreview.h
+  qgstoolbuttonaction.h
   qgstooltipcombobox.h
   qgstreewidgetitem.h
   qgsunitselectionwidget.h

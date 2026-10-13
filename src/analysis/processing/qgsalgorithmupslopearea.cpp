@@ -836,8 +836,6 @@ QString QgsUpslopeAreaLayerAlgorithm::shortDescription() const
 
 QString QgsUpslopeAreaLayerAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "This algorithm calculates the combined upslope contributing catchment area for target points provided in an input vector point layer." );
-
   return QObject::tr(
     "This algorithm calculates the combined upslope contributing area (catchments) for all target point locations provided in an input vector layer.\n\n"
     "Each output raster cell value represents the percentage (0% to 100%) of surface flow originating at that cell that reaches at least one of the target points in the input vector layer.\n\n"

@@ -37,13 +37,12 @@ static bool sSettingsInitialized = false;
 
 static QSettings &sUserSettings()
 {
-  thread_local QSettings *sSettings = nullptr;
+  thread_local std::unique_ptr<QSettings> sSettings;
   thread_local bool sCreatedBeforeInit = true;
 
   if ( !sSettings || ( sCreatedBeforeInit && sSettingsInitialized ) )
   {
-    delete sSettings;
-    sSettings = new QSettings();
+    sSettings = std::make_unique< QSettings >();
     sCreatedBeforeInit = !sSettingsInitialized;
   }
   return *sSettings;

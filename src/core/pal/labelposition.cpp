@@ -464,7 +464,7 @@ double LabelPosition::getY( int i ) const
   return ( i >= 0 && i < 4 ? y[i] : -1 );
 }
 
-double LabelPosition::getAlpha() const
+double LabelPosition::angleRadians() const
 {
   return alpha;
 }
@@ -933,14 +933,14 @@ double LabelPosition::angleDifferential()
   {
     if ( tmp != this ) // not first?
     {
-      double diff = std::fabs( tmp->getAlpha() - angleLast );
+      double diff = std::fabs( tmp->angleRadians() - angleLast );
       if ( diff > 2 * M_PI )
         diff -= 2 * M_PI;
       diff = std::min( diff, 2 * M_PI - diff ); // difference 350 deg is actually just 10 deg...
       angleDiff += diff;
     }
 
-    angleLast = tmp->getAlpha();
+    angleLast = tmp->angleRadians();
     tmp = tmp->nextPart();
   }
   return angleDiff;

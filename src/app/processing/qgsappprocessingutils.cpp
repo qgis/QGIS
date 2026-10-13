@@ -13,6 +13,7 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "qgsconfig.h"
 #include "qgsappprocessingutils.h"
 
 #include "qgisapp.h"
@@ -20,6 +21,7 @@
 #include "qgscodeeditorpython.h"
 #include "qgsexpressioncontextutils.h"
 #include "qgsgui.h"
+#include "qgslayertreeview.h"
 #include "qgsmapcanvas.h"
 #include "qgsmodeldesignerdialog.h"
 #include "qgsprocessingdefaultstyledialog.h"
@@ -33,6 +35,13 @@
 #include "qgsprocessingregistry.h"
 #include "qgsprocessingscripteditordialog.h"
 #include "qgsprocessingtoolboxdock.h"
+
+#include <QString>
+
+#ifdef HAVE_3D
+#include "qgspointcloudlayer.h"
+#include "qgspointcloudlayer3drenderer.h"
+#endif
 
 #include <QFileDialog>
 #include <QMessageBox>
@@ -371,8 +380,6 @@ class DeleteModelContextAction : public QgsProcessingToolboxContextAction
 
     void trigger( const QgsProcessingActionContext &context ) override
     {
-      const QString algorithmName = context.algorithmName();
-
       const bool isProjectProvider = context.providerId() == QgsProcessing::PROJECT_PROVIDER_ID;
       QgsProcessingProvider *provider = QgsApplication::processingRegistry()->providerById( context.providerId() );
 
@@ -449,6 +456,84 @@ class ExportModelAsPythonScriptAction : public QgsProcessingToolboxContextAction
     }
 };
 
+//
+// QgsAppProcessingLayerPostProcessor
+//
+
+void QgsAppProcessingLayerPostProcessor::postProcessLayer( QgsMapLayer *layer, const QString &outputName, const QgsProcessingAlgorithm *algorithm )
+{
+  if ( !layer )
+    return;
+
+  // base class loads the default style for the layer
+  QgsProcessingLayerPostProcessor::postProcessLayer( layer, outputName, algorithm );
+
+  // app-only specific logic:
+  switch ( layer->type() )
+  {
+    case Qgis::LayerType::PointCloud:
+    {
+#ifdef HAVE_3D
+      auto pointCloudLayer = qobject_cast< QgsPointCloudLayer * >( layer );
+      if ( !pointCloudLayer->renderer3D() )
+      {
+        // If the layer has no 3D renderer and syncing 3D to 2D
+        // renderer is enabled, we create a renderer and set it up
+        // with the 2D renderer
+        if ( pointCloudLayer->sync3DRendererTo2DRenderer() )
+        {
+          auto renderer3D = new QgsPointCloudLayer3DRenderer();
+          renderer3D->convertFrom2DRenderer( pointCloudLayer->renderer() );
+          pointCloudLayer->setRenderer3D( renderer3D );
+        }
+      }
+#endif
+      break;
+    }
+    case Qgis::LayerType::Vector:
+    case Qgis::LayerType::Raster:
+    case Qgis::LayerType::Plugin:
+    case Qgis::LayerType::Mesh:
+    case Qgis::LayerType::VectorTile:
+    case Qgis::LayerType::Annotation:
+    case Qgis::LayerType::Group:
+    case Qgis::LayerType::TiledScene:
+      break;
+  }
+}
+
+//
+// QgsAppProcessingResultsHandler
+//
+
+QgsAppProcessingResultsHandler::QgsAppProcessingResultsHandler( QgisApp *app )
+  : mQgisApp( app )
+{}
+
+QgsProcessingResultsHandler::ResultDetails QgsAppProcessingResultsHandler::handleAlgorithmResultsProtected(
+  const QgsProcessingAlgorithm *algorithm, QgsProcessingContext &context, const QVariantMap &parameters, QgsProcessingFeedback *feedback
+)
+{
+  mQgisApp->layerTreeView()->setUpdatesEnabled( false );
+  mCurrentSelectedNode = mQgisApp->layerTreeView()->currentNode();
+
+  QgsProcessingResultsHandler::ResultDetails results = QgsProcessingResultsHandler::handleAlgorithmResultsProtected( algorithm, context, parameters, feedback );
+
+  mQgisApp->layerTreeView()->setUpdatesEnabled( true );
+
+  return results;
+}
+
+QgsMapLayer *QgsAppProcessingResultsHandler::handleAddResultLayers( const ResultDetails &details, const QgsProcessingContext &context )
+{
+  return addResultLayers( details.addedLayers, context, mCurrentSelectedNode );
+}
+
+void QgsAppProcessingResultsHandler::setNewActiveLayer( QgsMapLayer *layer )
+{
+  mQgisApp->setActiveLayer( layer );
+}
+
 
 //
 // QgsAppProcessingUtils
@@ -467,6 +552,9 @@ QgsAppProcessingUtils::QgsAppProcessingUtils( QgisApp *app )
     // when the remainder of processing is ported to c++ this can be replaced
     QgsApplication::instance()->setProperty( u"_processing_legacy_menu_key_%1"_s.arg( idx ).toLatin1().constData(), legacyTitle );
   }
+
+  QgsApplication::processingRegistry()->setLayerPostProcessor( std::make_unique< QgsAppProcessingLayerPostProcessor >() );
+  QgsApplication::processingRegistry()->setResultsHandler( std::make_unique< QgsAppProcessingResultsHandler >( mQgisApp ) );
 }
 
 void QgsAppProcessingUtils::registerActions()
@@ -755,7 +843,6 @@ QList< QAction * > QgsAppProcessingUtils::createAlgorithmActionsForProvider( con
   const QList< const QgsProcessingAlgorithm * > allAlgorithms = provider->algorithms();
   const QMap< int, QStringList > defaultProcessingMenuEntries = QgsProcessingGuiUtils::defaultProcessingMenuEntries();
 
-  QList< QAction * > actions;
   for ( const QgsProcessingAlgorithm *algorithm : allAlgorithms )
   {
     const QString id = algorithm->id();
@@ -805,8 +892,6 @@ QList< QAction * > QgsAppProcessingUtils::createAlgorithmActionsForProvider( con
     }
 
     const bool addToToolbar = settings.value( u"Processing/Configuration/BUTTON_%1"_s.arg( id ) ).toBool();
-    const QString iconPathSetting = settings.value( u"Processing/Configuration/ICON_%1"_s.arg( id ) ).toString();
-
     if ( menu || addToToolbar )
     {
       QAction *algorithmAction = createActionForAlgorithm( algorithm );

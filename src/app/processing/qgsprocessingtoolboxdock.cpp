@@ -295,7 +295,7 @@ void QgsProcessingToolboxDockWidget::addProviderActions( QgsProcessingProvider *
 
     auto action = new QAction( toolboxAction->actionName(), menu );
     action->setObjectName( toolboxAction->actionName() );
-    connect( action, &QAction::triggered, [this, toolboxAction] {
+    connect( action, &QAction::triggered, this, [this, toolboxAction] {
       QgsProcessingActionContext context;
       context.setParentWidget( this );
       toolboxAction->trigger( context );

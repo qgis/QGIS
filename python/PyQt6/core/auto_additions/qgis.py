@@ -3,7 +3,7 @@
 Qgis.AuthConfigurationStorageCapability.ClearStorage.__doc__ = "Can clear all configurations from storage"
 Qgis.AuthConfigurationStorageCapability.ReadConfiguration.__doc__ = "Can read an authentication configuration"
 Qgis.AuthConfigurationStorageCapability.UpdateConfiguration.__doc__ = "Can update an authentication configuration"
-Qgis.AuthConfigurationStorageCapability.DeleteConfiguration.__doc__ = "Can deleet an authentication configuration"
+Qgis.AuthConfigurationStorageCapability.DeleteConfiguration.__doc__ = "Can delete an authentication configuration"
 Qgis.AuthConfigurationStorageCapability.CreateConfiguration.__doc__ = "Can create a new authentication configuration"
 Qgis.AuthConfigurationStorageCapability.ReadCertificateIdentity.__doc__ = "Can read a certificate identity"
 Qgis.AuthConfigurationStorageCapability.UpdateCertificateIdentity.__doc__ = "Can update a certificate identity"
@@ -36,7 +36,7 @@ Qgis.AuthConfigurationStorageCapability.__doc__ = """Authentication configuratio
 * ``ClearStorage``: Can clear all configurations from storage
 * ``ReadConfiguration``: Can read an authentication configuration
 * ``UpdateConfiguration``: Can update an authentication configuration
-* ``DeleteConfiguration``: Can deleet an authentication configuration
+* ``DeleteConfiguration``: Can delete an authentication configuration
 * ``CreateConfiguration``: Can create a new authentication configuration
 * ``ReadCertificateIdentity``: Can read a certificate identity
 * ``UpdateCertificateIdentity``: Can update a certificate identity
@@ -287,6 +287,20 @@ Qgis.LayerFilter.__doc__ = """Filter for layers
 Qgis.LayerFilters = lambda flags=0: Qgis.LayerFilter(flags)
 Qgis.LayerFilters.baseClass = Qgis
 LayerFilters = Qgis  # dirty hack since SIP seems to introduce the flags in module
+# monkey patching scoped based enum
+Qgis.LayerItemCapability.AddComments.__doc__ = "Comments can be added to the layer item"
+Qgis.LayerItemCapability.__doc__ = """Flags for layer item capabilities
+
+.. versionadded:: 4.40
+
+* ``AddComments``: Comments can be added to the layer item
+
+"""
+# --
+Qgis.LayerItemCapability.baseClass = Qgis
+Qgis.LayerItemCapabilities = lambda flags=0: Qgis.LayerItemCapability(flags)
+Qgis.LayerItemCapabilities.baseClass = Qgis
+LayerItemCapabilities = Qgis  # dirty hack since SIP seems to introduce the flags in module
 # monkey patching scoped based enum
 Qgis.LoadStyleFlag.IgnoreMissingStyleErrors.__doc__ = "If the style is missing, then don't flag it as an error. This flag can be used when the caller is not certain that a style exists, and accordingly a failure to find the style does not indicate an issue with loading the style itself."
 Qgis.LoadStyleFlag.__doc__ = """Flags for loading layer styles.

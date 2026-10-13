@@ -97,7 +97,7 @@ QgsAnnotationLayer::QgsAnnotationLayer( const QString &name, const LayerOptions 
   providerOptions.transformContext = options.transformContext;
   mDataProvider = std::make_unique<QgsAnnotationLayerDataProvider>( providerOptions, Qgis::DataProviderReadFlags() );
 
-  mPaintEffect.reset( QgsPaintEffectRegistry::defaultStack() );
+  mPaintEffect = QgsPaintEffectRegistry::defaultStack();
   mPaintEffect->setEnabled( false );
 }
 
@@ -491,7 +491,7 @@ bool QgsAnnotationLayer::readSymbology( const QDomNode &node, QString &, QgsRead
       const QDomElement effectElem = paintEffectNode.firstChildElement( u"effect"_s );
       if ( !effectElem.isNull() )
       {
-        setPaintEffect( QgsApplication::paintEffectRegistry()->createEffect( effectElem ) );
+        setPaintEffect( QgsApplication::paintEffectRegistry()->createEffect( effectElem ).release() );
       }
     }
   }

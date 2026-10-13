@@ -65,13 +65,6 @@ class GUI_EXPORT QgsLabelingEngineRuleWidget : public QgsPanelWidget
      * \see setRule()
      */
     virtual QgsAbstractLabelingEngineRule *rule() = 0 SIP_TRANSFERBACK;
-
-  signals:
-
-    /**
-     * Emitted whenever the configuration of the rule is changed.
-     */
-    void changed();
 };
 
 #ifndef SIP_RUN

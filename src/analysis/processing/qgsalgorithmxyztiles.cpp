@@ -1381,10 +1381,10 @@ void QgsXyzTilesGpkgAlgorithm::doExport( QgsProcessingFeedback *feedback )
     loop.exec();
   }
 
-  for ( auto *j : mRendererJobs.keys() )
+  for ( auto it = mRendererJobs.constBegin(); it != mRendererJobs.constEnd(); it++ )
   {
-    j->cancel();
-    j->deleteLater();
+    it.key()->cancel();
+    it.key()->deleteLater();
   }
   mRendererJobs.clear();
 

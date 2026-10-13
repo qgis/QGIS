@@ -301,14 +301,17 @@ double QgsTileMatrixSet::scaleToZoom( double scale ) const
 int QgsTileMatrixSet::scaleToZoomLevel( double scale, bool clamp ) const
 {
   int tileZoom = 0;
-  switch ( mScaleToTileZoomMethod )
+  if ( std::isfinite( scale ) )
   {
-    case Qgis::ScaleToTileZoomLevelMethod::MapBox:
-      tileZoom = static_cast<int>( round( scaleToZoom( scale ) ) );
-      break;
-    case Qgis::ScaleToTileZoomLevelMethod::Esri:
-      tileZoom = static_cast<int>( floor( scaleToZoom( scale ) ) );
-      break;
+    switch ( mScaleToTileZoomMethod )
+    {
+      case Qgis::ScaleToTileZoomLevelMethod::MapBox:
+        tileZoom = static_cast<int>( round( scaleToZoom( scale ) ) );
+        break;
+      case Qgis::ScaleToTileZoomLevelMethod::Esri:
+        tileZoom = static_cast<int>( floor( scaleToZoom( scale ) ) );
+        break;
+    }
   }
 
   return clamp ? std::clamp( tileZoom, minimumZoom(), maximumZoom() ) : tileZoom;

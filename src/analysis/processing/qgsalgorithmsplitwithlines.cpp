@@ -184,7 +184,7 @@ QVariantMap QgsSplitWithLinesAlgorithm::processAlgorithm( const QVariantMap &par
           originalGeometryEngine->prepareGeometry();
         }
 
-        if ( originalGeometryEngine->intersects( splitFeatureCandidate.constGet() ) )
+        if ( originalGeometryEngine->intersects( splitFeatureCandidate.constGet(), nullptr, feedback ) )
         {
           QVector<QgsGeometry> splitGeomParts = splitFeatureCandidate.convertToType( Qgis::GeometryType::Line, true ).asGeometryCollection();
           splittingLines.append( splitGeomParts );
@@ -212,7 +212,7 @@ QVariantMap QgsSplitWithLinesAlgorithm::processAlgorithm( const QVariantMap &par
             if ( inGeom.isNull() )
               continue;
 
-            if ( splitGeomEngine->intersects( inGeom.constGet() ) )
+            if ( splitGeomEngine->intersects( inGeom.constGet(), nullptr, feedback ) )
             {
               QgsGeometry before = inGeom;
               if ( splitterPList.empty() )

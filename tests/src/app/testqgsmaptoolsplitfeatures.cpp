@@ -15,6 +15,7 @@
 
 #include "qgisapp.h"
 #include "qgsgeometry.h"
+#include "qgsgeos.h"
 #include "qgsmapcanvas.h"
 #include "qgsmaptoolsplitfeatures.h"
 #include "qgssnappingutils.h"
@@ -159,8 +160,17 @@ void TestQgsMapToolSplitFeatures::testSplitPolygon()
 
   QCOMPARE( mPolygonLayer->undoStack()->index(), 1 );
   QCOMPARE( mPolygonLayer->featureCount(), 3 );
-  QCOMPARE( mPolygonLayer->getFeature( newFid ).geometry().asWkt(), u"Polygon Z ((4 10 24, 4 5 14, 0 5 10, 0 10 20, 4 10 24))"_s );
-  QCOMPARE( mPolygonLayer->getFeature( 2 ).geometry().asWkt(), u"Polygon Z ((0 0 10, 0 5 20, 10 5 30, 0 0 10))"_s );
+  QgsGeometry geom = mPolygonLayer->getFeature( newFid ).geometry();
+  geom.normalize();
+  QCOMPARE( geom.asWkt(), u"Polygon Z ((0 5 10, 0 10 20, 4 10 24, 4 5 14, 0 5 10))"_s );
+  geom = mPolygonLayer->getFeature( 2 ).geometry();
+  geom.normalize();
+#if GEOS_VERSION_MAJOR > 3 || ( GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR >= 15 )
+  // In GEOS 3.15, the result is already "topological", adding a new vertex to the boundary
+  QCOMPARE( geom.asWkt(), u"Polygon Z ((0 0 10, 0 5 20, 4 5 24, 10 5 30, 0 0 10))"_s );
+#else
+  QCOMPARE( geom.asWkt(), u"Polygon Z ((0 0 10, 0 5 20, 10 5 30, 0 0 10))"_s );
+#endif
 
   // no change to other layers
   QCOMPARE( mMultiLineStringLayer->undoStack()->index(), 0 );
@@ -182,8 +192,12 @@ void TestQgsMapToolSplitFeatures::testSplitPolygonTopologicalEditing()
 
   QCOMPARE( mPolygonLayer->undoStack()->index(), 1 );
   QCOMPARE( mPolygonLayer->featureCount(), 3 );
-  QCOMPARE( mPolygonLayer->getFeature( newFid ).geometry().asWkt(), u"Polygon Z ((4 10 24, 4 5 14, 0 5 10, 0 10 20, 4 10 24))"_s );
-  QCOMPARE( mPolygonLayer->getFeature( 2 ).geometry().asWkt(), u"Polygon Z ((0 0 10, 0 5 20, 4 5 24, 10 5 30, 0 0 10))"_s );
+  QgsGeometry geom = mPolygonLayer->getFeature( newFid ).geometry();
+  geom.normalize();
+  QCOMPARE( geom.asWkt(), u"Polygon Z ((0 5 10, 0 10 20, 4 10 24, 4 5 14, 0 5 10))"_s );
+  geom = mPolygonLayer->getFeature( 2 ).geometry();
+  geom.normalize();
+  QCOMPARE( geom.asWkt(), u"Polygon Z ((0 0 10, 0 5 20, 4 5 24, 10 5 30, 0 0 10))"_s );
 
   QCOMPARE( mMultiLineStringLayer->undoStack()->index(), 1 );
   QCOMPARE( mMultiLineStringLayer->getFeature( 2 ).geometry().asWkt(), u"MultiLineString ((0 5, 4 5, 10 5),(10 5, 15 5))"_s );
@@ -253,8 +267,15 @@ void TestQgsMapToolSplitFeatures::testSplitPolygonSnapToSegment()
   QCOMPARE( mPolygonLayer->undoStack()->index(), 1 );
   QCOMPARE( mPolygonLayer->featureCount(), 12 );
 
+#if GEOS_VERSION_MAJOR > 3 || ( GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR >= 15 )
+  // In GEOS 3.15, polygon boundaries are split by points that lie on them
+  // or by lines that touch them. In this test, the snapped line vertices
+  // touch the other polygon, so it gets new vertices in the bottom boundary edge.
+  QCOMPARE( mPolygonLayer->getFeature( 1 ).geometry().asWkt( 2 ), u"Polygon Z ((0 5 10, 0 10 20, 10 10 30, 10 5 20, 5 5 15, 4 5 14, 3 5 13, 2 5 12, 1 5 11, 0 5 10))"_s );
+#else
   // No change to the other feature in the layer
   QCOMPARE( mPolygonLayer->getFeature( 1 ).geometry().asWkt( 2 ), u"Polygon Z ((0 5 10, 0 10 20, 10 10 30, 10 5 20, 0 5 10))"_s );
+#endif
 
   // No change to other layers
   QCOMPARE( mMultiLineStringLayer->undoStack()->index(), 0 );
@@ -281,10 +302,14 @@ void TestQgsMapToolSplitFeatures::testLargestGeometryToOriginalFeaturePolygon()
   QgsFeature newFeat = mPolygonLayer->getFeature( newFid );
 
   //larger
-  QCOMPARE( oldFeat.geometry().asWkt( 1 ), u"Polygon Z ((1 5 11, 1 10 21, 10 10 30, 10 5 20, 1 5 11))"_s );
+  QgsGeometry geom = oldFeat.geometry();
+  geom.normalize();
+  QCOMPARE( geom.asWkt( 1 ), u"Polygon Z ((1 5 11, 1 10 21, 10 10 30, 10 5 20, 1 5 11))"_s );
 
   //smaller
-  QCOMPARE( newFeat.geometry().asWkt( 1 ), u"Polygon Z ((1 10 21, 1 5 11, 0 5 10, 0 10 20, 1 10 21))"_s );
+  geom = newFeat.geometry();
+  geom.normalize();
+  QCOMPARE( geom.asWkt( 1 ), u"Polygon Z ((0 5 10, 0 10 20, 1 10 21, 1 5 11, 0 5 10))"_s );
 }
 
 void TestQgsMapToolSplitFeatures::testLargestGeometryToOriginalFeatureLine()

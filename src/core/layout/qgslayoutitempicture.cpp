@@ -29,6 +29,7 @@
 #include "qgslogger.h"
 #include "qgsmessagelog.h"
 #include "qgsnetworkcontentfetcher.h"
+#include "qgspainting.h"
 #include "qgspathresolver.h"
 #include "qgsproperty.h"
 #include "qgsreadwritecontext.h"

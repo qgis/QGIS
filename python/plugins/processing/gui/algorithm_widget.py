@@ -52,7 +52,6 @@ from processing.core.ProcessingConfig import ProcessingConfig
 from processing.core.ProcessingResults import resultsList
 from processing.gui.AlgorithmExecutor import execute, execute_in_place, executeIterating
 from processing.gui.BatchAlgorithmDialog import BatchAlgorithmDialog
-from processing.gui.Postprocessing import handleAlgorithmResults
 from processing.tools import dataobjects
 
 
@@ -414,7 +413,9 @@ class AlgorithmWidget(QgsProcessingAlgorithmWidget):
                         result=result[out.name()],
                     )
                     generated_html_outputs = True
-            if not handleAlgorithmResults(self.algorithm(), context, feedback, result):
+            if not QgsApplication.processingRegistry().handleAlgorithmResults(
+                self.algorithm(), context, result, feedback
+            ):
                 self.resetGui()
                 return
 

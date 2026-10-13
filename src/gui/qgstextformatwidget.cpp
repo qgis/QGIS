@@ -524,15 +524,15 @@ void QgsTextFormatWidget::initWidget()
 
   mLabelingOptionsListWidget->setCurrentRow( settings.value( u"Windows/Labeling/Tab"_s, 0 ).toInt() );
 
-  mBufferEffect.reset( QgsPaintEffectRegistry::defaultStack() );
+  mBufferEffect = QgsPaintEffectRegistry::defaultStack();
   connect( mBufferEffectWidget, &QgsEffectStackCompactWidget::changed, this, &QgsTextFormatWidget::updatePreview );
   mBufferEffectWidget->setPaintEffect( mBufferEffect.get() );
 
-  mMaskEffect.reset( QgsPaintEffectRegistry::defaultStack() );
+  mMaskEffect = QgsPaintEffectRegistry::defaultStack();
   connect( mMaskEffectWidget, &QgsEffectStackCompactWidget::changed, this, &QgsTextFormatWidget::updatePreview );
   mMaskEffectWidget->setPaintEffect( mMaskEffect.get() );
 
-  mBackgroundEffect.reset( QgsPaintEffectRegistry::defaultStack() );
+  mBackgroundEffect = QgsPaintEffectRegistry::defaultStack();
   connect( mBackgroundEffectWidget, &QgsEffectStackCompactWidget::changed, this, &QgsTextFormatWidget::updatePreview );
   mBackgroundEffectWidget->setPaintEffect( mBackgroundEffect.get() );
 
@@ -1119,7 +1119,7 @@ void QgsTextFormatWidget::updateWidgetForFormat( const QgsTextFormat &format )
     mBufferEffect.reset( lPaintEffect->clone() );
   else
   {
-    mBufferEffect.reset( QgsPaintEffectRegistry::defaultStack() );
+    mBufferEffect = QgsPaintEffectRegistry::defaultStack();
     mBufferEffect->setEnabled( false );
   }
   mBufferEffectWidget->setPaintEffect( mBufferEffect.get() );
@@ -1136,7 +1136,7 @@ void QgsTextFormatWidget::updateWidgetForFormat( const QgsTextFormat &format )
     mMaskEffect.reset( lPaintEffect->clone() );
   else
   {
-    mMaskEffect.reset( QgsPaintEffectRegistry::defaultStack() );
+    mMaskEffect = QgsPaintEffectRegistry::defaultStack();
     mMaskEffect->setEnabled( false );
   }
   mMaskEffectWidget->setPaintEffect( mMaskEffect.get() );
@@ -1226,7 +1226,7 @@ void QgsTextFormatWidget::updateWidgetForFormat( const QgsTextFormat &format )
     mBackgroundEffect.reset( lPaintEffect->clone() );
   else
   {
-    mBackgroundEffect.reset( QgsPaintEffectRegistry::defaultStack() );
+    mBackgroundEffect = QgsPaintEffectRegistry::defaultStack();
     mBackgroundEffect->setEnabled( false );
   }
   mBackgroundEffectWidget->setPaintEffect( mBackgroundEffect.get() );

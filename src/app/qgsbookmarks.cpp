@@ -30,6 +30,7 @@
 #include "qgsmessagelog.h"
 #include "qgsproject.h"
 #include "qgssettings.h"
+#include "qgstoolbuttonaction.h"
 
 #include <QAbstractTableModel>
 #include <QDoubleSpinBox>
@@ -61,16 +62,16 @@ QgsBookmarks::QgsBookmarks( QWidget *parent )
   bookmarksDockContents->layout()->setContentsMargins( 0, 0, 0, 0 );
   static_cast<QGridLayout *>( bookmarksDockContents->layout() )->setVerticalSpacing( 0 );
 
-  QToolButton *btnImpExp = new QToolButton;
-  btnImpExp->setAutoRaise( true );
-  btnImpExp->setToolTip( tr( "Import/Export Bookmarks" ) );
-  btnImpExp->setIcon( QgsApplication::getThemeIcon( u"/mActionSharing.svg"_s ) );
-  btnImpExp->setPopupMode( QToolButton::InstantPopup );
+  QgsToolButtonAction *actionImportExport = new QgsToolButtonAction();
+  actionImportExport->setAutoRaise( true );
+  actionImportExport->setToolTip( tr( "Import/Export Bookmarks" ) );
+  actionImportExport->setIcon( QgsApplication::getThemeIcon( u"/mActionSharing.svg"_s ) );
+  actionImportExport->setPopupMode( QToolButton::InstantPopup );
 
   QMenu *share = new QMenu( this );
   share->addAction( actionExport );
   share->addAction( actionImport );
-  btnImpExp->setMenu( share );
+  actionImportExport->setMenu( share );
 
   connect( actionAdd, &QAction::triggered, this, &QgsBookmarks::addClicked );
   connect( actionDelete, &QAction::triggered, this, &QgsBookmarks::deleteClicked );
@@ -78,7 +79,7 @@ QgsBookmarks::QgsBookmarks( QWidget *parent )
   connect( actionExport, &QAction::triggered, this, &QgsBookmarks::exportToXml );
   connect( actionImport, &QAction::triggered, this, &QgsBookmarks::importFromXml );
 
-  mBookmarkToolbar->addWidget( btnImpExp );
+  mBookmarkToolbar->addAction( actionImportExport );
 
   mBookmarkModel = new QgsBookmarkManagerProxyModel( QgsApplication::bookmarkManager(), QgsProject::instance()->bookmarkManager(), this );
 

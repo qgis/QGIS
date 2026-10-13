@@ -952,12 +952,22 @@ static QVariant fcnAggregateRelation( const QVariantList &values, const QgsExpre
   QVariant value = node->eval( parent, context );
   ENSURE_NO_EVAL_ERROR
   QString relationId = value.toString();
+
+  // get project from layer
+  QgsProject *project = vl->project();
+  if ( !project )
+  {
+    parent->setEvalErrorString( QObject::tr( "Cannot use relation aggregate function in this context" ) );
+    return QVariant();
+  }
+
   // check relation exists
-  QgsRelation relation = QgsProject::instance()->relationManager()->relation( relationId ); // skip-keyword-check
+  QgsRelation relation = project->relationManager()->relation( relationId );
+
   if ( !relation.isValid() || relation.referencedLayer() != vl )
   {
     // check for relations by name
-    QList< QgsRelation > relations = QgsProject::instance()->relationManager()->relationsByName( relationId ); // skip-keyword-check
+    QList< QgsRelation > relations = project->relationManager()->relationsByName( relationId );
     if ( relations.isEmpty() || relations.at( 0 ).referencedLayer() != vl )
     {
       parent->setEvalErrorString( QObject::tr( "Cannot find relation with id '%1'" ).arg( relationId ) );

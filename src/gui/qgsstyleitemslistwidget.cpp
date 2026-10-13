@@ -17,6 +17,7 @@
 #include "qgsstyleitemslistwidget.h"
 
 #include "qgsgui.h"
+#include "qgspainting.h"
 #include "qgspanelwidget.h"
 #include "qgsproject.h"
 #include "qgsprojectstylesettings.h"
@@ -121,7 +122,7 @@ void QgsStyleModelDelegate::paint( QPainter *painter, const QStyleOptionViewItem
       titleOption.font.setBold( true );
       titleOption.font.setPointSizeF( titleOption.font.pointSizeF() * 1.4 );
 
-      painter->save();
+      QgsScopedQPainterState painterState( painter );
       painter->setBrush( titleOption.palette.windowText() );
       painter->setFont( titleOption.font );
       const QRect rect = QRect( titleOption.rect.left(), titleOption.rect.top(), titleOption.rect.width(), titleOption.rect.height() );
@@ -132,12 +133,11 @@ void QgsStyleModelDelegate::paint( QPainter *painter, const QStyleOptionViewItem
       lineColor.setAlpha( 100 );
       painter->setPen( QPen( lineColor, 1 ) );
       painter->drawLine( titleOption.rect.left(), titleOption.rect.bottom(), titleOption.rect.right(), titleOption.rect.bottom() );
-      painter->restore();
       return;
     }
     else if ( qobject_cast<const QTreeView *>( option.widget ) )
     {
-      painter->save();
+      QgsScopedQPainterState painterState( painter );
       QColor lineColor = option.palette.windowText().color();
       lineColor.setAlpha( 100 );
       painter->setPen( QPen( lineColor, 1 ) );
@@ -149,7 +149,7 @@ void QgsStyleModelDelegate::paint( QPainter *painter, const QStyleOptionViewItem
       titleOption.fontMetrics = QFontMetrics( titleOption.font );
 
       painter->drawLine( index.column() == 0 ? 0 : option.rect.left(), option.rect.bottom(), index.column() == 0 ? option.rect.right() : option.widget->width(), option.rect.bottom() );
-      painter->restore();
+      painterState.restore();
 
       titleOption.state |= QStyle::State_Enabled;
       QStyledItemDelegate::paint( painter, titleOption, index );

@@ -170,6 +170,15 @@ The development version
     typedef QFlags<Qgis::LayerFilter> LayerFilters;
 
 
+
+    enum class LayerItemCapability /BaseType=IntFlag/
+    {
+      AddComments,
+    };
+
+    typedef QFlags<Qgis::LayerItemCapability> LayerItemCapabilities;
+
+
     enum class LoadStyleFlag /BaseType=IntFlag/
     {
       IgnoreMissingStyleErrors,

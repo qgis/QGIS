@@ -154,6 +154,8 @@ n-1 condition).
 
     virtual double mAt( int index ) const;
 
+    virtual bool isSimpleCurve() const /HoldGIL/;
+
 
     virtual QPolygonF asQPolygonF() const;
 

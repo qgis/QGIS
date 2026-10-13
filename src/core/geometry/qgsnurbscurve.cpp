@@ -1889,3 +1889,8 @@ bool QgsNurbsCurve::isAnchorVertex( int localIndex ) const
 
   return ( localIndex % mDegree ) == 0;
 }
+
+bool QgsNurbsCurve::isSimpleCurve() const
+{
+  return false;
+}

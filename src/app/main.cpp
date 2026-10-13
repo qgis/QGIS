@@ -1242,6 +1242,41 @@ int main( int argc, char *argv[] )
   profileName = profile->name();
   profile.reset();
 
+  const QDir qgisConfigRootPath = QDir( configLocalStorageLocation );
+  const QDir qgis3ProfilePath = QDir( QDir::cleanPath( qgisConfigRootPath.filePath( u"../QGIS3/profiles/%1"_s.arg( profileName ) ) ) );
+  const QDir qgis4ProfilePath = QDir( QDir::cleanPath( qgisConfigRootPath.filePath( u"../QGIS4/profiles/%1"_s.arg( profileName ) ) ) );
+  if ( !preventSettingsMigration && qgis3ProfilePath.exists() )
+  {
+    QgsDebugMsgLevel( u"Considering migration from %1 to %2"_s.arg( qgis3ProfilePath.path(), qgis4ProfilePath.path() ), 2 );
+    QgsSettings migSettings;
+    // don't show dialog for settings migration from 3->4
+#if 0
+    const int firstRunVersion = migSettings.value( u"migration/firstRunVersionFlag"_s, 0 ).toInt();
+    const bool showWelcome = ( firstRunVersion == 0 || Qgis::versionInt() > firstRunVersion );
+#else
+    constexpr bool showWelcome = false;
+#endif
+    std::unique_ptr<QgsVersionMigration> migration( QgsVersionMigration::canMigrate( 30000, Qgis::versionInt() ) );
+    if ( migration && ( settingsMigrationForce || migration->requiresMigration() ) )
+    {
+      QgsDebugMsgLevel( u"Migration required!"_s, 2 );
+      bool runMigration = true;
+      if ( !settingsMigrationForce && showWelcome )
+      {
+        QgsFirstRunDialog dlg;
+        dlg.exec();
+        runMigration = dlg.migrateSettings();
+        migSettings.setValue( u"migration/firstRunVersionFlag"_s, Qgis::versionInt() );
+      }
+
+      if ( runMigration )
+      {
+        QgsDebugMsgLevel( u"RUNNING MIGRATION"_s, 2 );
+        migration->runMigration( qgis3ProfilePath.path(), qgis4ProfilePath.path() );
+      }
+    }
+  }
+
   {
     // The profile is selected, we can now set up the translation file for QGIS.
     QString myUserTranslation = QgsApplication::settingsLocaleUserLocale->value();
@@ -1317,41 +1352,6 @@ int main( int argc, char *argv[] )
 
   for ( const QString &preApplicationLogMessage : std::as_const( preApplicationLogMessages ) )
     QgsMessageLog::logMessage( preApplicationLogMessage, QString(), Qgis::MessageLevel::Info );
-
-  const QDir qgisConfigRootPath = QDir( configLocalStorageLocation );
-  const QDir qgis3ProfilePath = QDir( QDir::cleanPath( qgisConfigRootPath.filePath( u"../QGIS3/profiles/%1"_s.arg( profileName ) ) ) );
-  const QDir qgis4ProfilePath = QDir( QDir::cleanPath( qgisConfigRootPath.filePath( u"../QGIS4/profiles/%1"_s.arg( profileName ) ) ) );
-  if ( !preventSettingsMigration && qgis3ProfilePath.exists() )
-  {
-    QgsDebugMsgLevel( u"Considering migration from %1 to %2"_s.arg( qgis3ProfilePath.path(), qgis4ProfilePath.path() ), 2 );
-    QgsSettings migSettings;
-    // don't show dialog for settings migration from 3->4
-#if 0
-    const int firstRunVersion = migSettings.value( u"migration/firstRunVersionFlag"_s, 0 ).toInt();
-    const bool showWelcome = ( firstRunVersion == 0 || Qgis::versionInt() > firstRunVersion );
-#else
-    constexpr bool showWelcome = false;
-#endif
-    std::unique_ptr<QgsVersionMigration> migration( QgsVersionMigration::canMigrate( 30000, Qgis::versionInt() ) );
-    if ( migration && ( settingsMigrationForce || migration->requiresMigration() ) )
-    {
-      QgsDebugMsgLevel( u"Migration required!"_s, 2 );
-      bool runMigration = true;
-      if ( !settingsMigrationForce && showWelcome )
-      {
-        QgsFirstRunDialog dlg;
-        dlg.exec();
-        runMigration = dlg.migrateSettings();
-        migSettings.setValue( u"migration/firstRunVersionFlag"_s, Qgis::versionInt() );
-      }
-
-      if ( runMigration )
-      {
-        QgsDebugMsgLevel( u"RUNNING MIGRATION"_s, 2 );
-        migration->runMigration( qgis3ProfilePath.path(), qgis4ProfilePath.path() );
-      }
-    }
-  }
 
   // We can't use QgsSettings until this point because the format and
   // folder isn't set until profile is fetch.

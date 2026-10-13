@@ -152,6 +152,7 @@ class CORE_EXPORT QgsNurbsCurve : public QgsCurve
     double yAt( int index ) const override;
     double zAt( int index ) const override;
     double mAt( int index ) const override;
+    bool isSimpleCurve() const override SIP_HOLDGIL;
 
     QPolygonF asQPolygonF() const override;
 
