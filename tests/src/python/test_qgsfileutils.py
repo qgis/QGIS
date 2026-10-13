@@ -15,7 +15,7 @@ import shutil
 import tempfile
 
 from qgis.core import Qgis, QgsFileUtils
-from qgis.PyQt.QtCore import QTemporaryDir
+from qgis.PyQt.QtCore import QRegularExpression, QTemporaryDir
 from qgis.testing import unittest
 from utilities import unitTestDataPath
 
