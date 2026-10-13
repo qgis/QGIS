@@ -3141,19 +3141,32 @@ geos::unique_ptr QgsGeos::createGeosPointXY( double x, double y, bool hasZ, doub
       return geosPoint;
     }
 
+#if GEOS_VERSION_MAJOR > 3 || ( GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR > 15 ) || ( GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR == 15 && GEOS_VERSION_PATCH >= 1 )
+    GEOSCoordSequence *coordSeq = GEOSCoordSeq_createWithDimensions_r( context, 1, hasZ ? 1 : 0, hasM ? 1 : 0 );
+    if ( !coordSeq )
+    {
+      QgsDebugError( u"GEOS Exception: Could not create coordinate sequence for point with %1 dimensions"_s.arg( coordDims ) );
+      return nullptr;
+    }
+#else
     GEOSCoordSequence *coordSeq = GEOSCoordSeq_create_r( context, 1, coordDims );
     if ( !coordSeq )
     {
       QgsDebugError( u"GEOS Exception: Could not create coordinate sequence for point with %1 dimensions"_s.arg( coordDims ) );
       return nullptr;
     }
+#endif
     if ( precision > 0. )
     {
       GEOSCoordSeq_setX_r( context, coordSeq, 0, std::round( x / precision ) * precision );
       GEOSCoordSeq_setY_r( context, coordSeq, 0, std::round( y / precision ) * precision );
       if ( hasZ )
       {
+#if GEOS_VERSION_MAJOR > 3 || ( GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR > 15 ) || ( GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR == 15 && GEOS_VERSION_PATCH >= 1 )
+        GEOSCoordSeq_setZ_r( context, coordSeq, 0, z );
+#else
         GEOSCoordSeq_setOrdinate_r( context, coordSeq, 0, 2, std::round( z / precision ) * precision );
+#endif
       }
     }
     else
@@ -3162,13 +3175,17 @@ geos::unique_ptr QgsGeos::createGeosPointXY( double x, double y, bool hasZ, doub
       GEOSCoordSeq_setY_r( context, coordSeq, 0, y );
       if ( hasZ )
       {
+#if GEOS_VERSION_MAJOR > 3 || ( GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR > 15 ) || ( GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR == 15 && GEOS_VERSION_PATCH >= 1 )
+        GEOSCoordSeq_setZ_r( context, coordSeq, 0, z );
+#else
         GEOSCoordSeq_setOrdinate_r( context, coordSeq, 0, 2, z );
+#endif
       }
     }
 #if GEOS_VERSION_MAJOR > 3 || ( GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR >= 15 )
     if ( hasM )
     {
-      GEOSCoordSeq_setOrdinate_r( context, coordSeq, 0, 3, m );
+      GEOSCoordSeq_setM_r( context, coordSeq, 0, m );
     }
 #endif
     geosPoint.reset( GEOSGeom_createPoint_r( context, coordSeq ) );
