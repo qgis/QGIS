@@ -183,13 +183,14 @@ void QgsColorSchemeRegistry::setProject( QgsProject *project )
 
   QList< QgsProjectColorScheme * > existingSchemes;
   schemes( existingSchemes );
+  const bool hadScheme = !existingSchemes.isEmpty();
   for ( QgsProjectColorScheme *scheme : existingSchemes )
   {
     removeColorScheme( scheme );
     delete scheme;
   }
 
-  if ( mProject )
+  if ( mProject && hadScheme )
     addColorScheme( new QgsProjectColorScheme( mProject ) );
 }
 

@@ -588,6 +588,10 @@ void QgsApplication::init( QString profileFolder )
 
   QgsApplication::processingRegistry()->defaultStyleRegistry()->loadStyles();
 
+  QgsColorSchemeRegistry *registry = members()->mColorSchemeRegistry.get();
+  // TODO QGIS 5.0 - remove the default inclusion of the project instance
+  registry->setProject( QgsProject::instance() ); // skip-keyword-check
+
   ABISYM( mInitialized ) = true;
 }
 
@@ -2553,11 +2557,7 @@ QgsSettingsRegistryCore *QgsApplication::settingsRegistryCore()
 
 QgsColorSchemeRegistry *QgsApplication::colorSchemeRegistry()
 {
-  QgsColorSchemeRegistry *registry = members()->mColorSchemeRegistry.get();
-  // TODO QGIS 5.0 - remove the default inclusion of the project instance
-  registry->setProject( QgsProject::instance() ); // skip-keyword-check
-  registry->addDefaultSchemes();
-  return registry;
+  return members()->mColorSchemeRegistry.get();
 }
 
 QgsPaintEffectRegistry *QgsApplication::paintEffectRegistry()
