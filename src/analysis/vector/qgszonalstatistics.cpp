@@ -31,7 +31,7 @@
 
 using namespace Qt::StringLiterals;
 
-QgsZonalStatistics::QgsZonalStatistics( QgsVectorLayer *polygonLayer, QgsRasterLayer *rasterLayer, const QString &attributePrefix, int rasterBand, Qgis::ZonalStatistics stats, bool overwriteExisting )
+QgsZonalStatistics::QgsZonalStatistics( QgsVectorLayer *polygonLayer, QgsRasterLayer *rasterLayer, const QString &attributePrefix, int rasterBand, Qgis::ZonalStatistics stats, bool overwriteExistingFields )
   : QgsZonalStatistics(
       polygonLayer,
       rasterLayer ? rasterLayer->dataProvider() : nullptr,
@@ -41,7 +41,7 @@ QgsZonalStatistics::QgsZonalStatistics( QgsVectorLayer *polygonLayer, QgsRasterL
       attributePrefix,
       rasterBand,
       stats,
-      overwriteExisting
+      overwriteExistingFields
     )
 {}
 
@@ -54,7 +54,7 @@ QgsZonalStatistics::QgsZonalStatistics(
   const QString &attributePrefix,
   int rasterBand,
   Qgis::ZonalStatistics stats,
-  bool overwriteExisting
+  bool overwriteExistingFields
 )
   : mRasterInterface( rasterInterface )
   , mRasterCrs( rasterCrs )
@@ -64,7 +64,7 @@ QgsZonalStatistics::QgsZonalStatistics(
   , mPolygonLayer( polygonLayer )
   , mAttributePrefix( attributePrefix )
   , mStatistics( stats )
-  , mOverwriteExisting( overwriteExisting )
+  , mOverwriteExistingFields( overwriteExistingFields )
 {}
 
 Qgis::ZonalStatisticResult QgsZonalStatistics::calculateStatistics( QgsFeedback *feedback )
@@ -114,7 +114,7 @@ Qgis::ZonalStatisticResult QgsZonalStatistics::calculateStatistics( QgsFeedback 
       QString targetFieldName = mAttributePrefix + QgsZonalStatistics::shortName( stat );
       int targetIndex = vectorProvider->fields().indexFromName( targetFieldName );
 
-      if ( mOverwriteExisting && targetIndex != -1 )
+      if ( mOverwriteExistingFields && targetIndex != -1 )
       {
         statFieldIndexes.insert( stat, targetIndex );
       }
