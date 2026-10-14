@@ -1053,7 +1053,7 @@ QSizeF QgsLegendRenderer::drawLayerTitle( QgsLayerTreeLayer *nodeLayer, QgsRende
 
   size.rheight() += mSettings.style( nodeLegendStyle( nodeLayer ) ).margin( QgsLegendStyle::Side::Bottom );
 
-  if ( layerScope )
+  if ( nodeLayer->layer() )
     delete context.expressionContext().popScope();
 
   return size;
