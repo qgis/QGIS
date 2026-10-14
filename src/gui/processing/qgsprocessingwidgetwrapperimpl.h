@@ -1712,7 +1712,10 @@ class GUI_EXPORT QgsProcessingMapLayerParameterDefinitionWidget : public QgsProc
     QgsProcessingParameterDefinition *createParameter( const QString &name, const QString &description, Qgis::ProcessingParameterFlags flags ) const override;
 
   private:
+    QList<int> dataTypes() const;
+
     QgsCheckableComboBox *mLayerTypeComboBox = nullptr;
+    QgsProcessingLayerDefaultValueWidget *mDefaultWidget = nullptr;
 };
 
 class GUI_EXPORT QgsProcessingMapLayerWidgetWrapper : public QgsAbstractProcessingParameterWidgetWrapper, public QgsProcessingParameterWidgetFactoryInterface
@@ -1741,6 +1744,12 @@ class GUI_EXPORT QgsProcessingMapLayerWidgetWrapper : public QgsAbstractProcessi
     Qgis::ProcessingModelChildParameterSource defaultModelSource( const QgsProcessingParameterDefinition *parameter ) const override;
 
   private:
+    /**
+     * Returns TRUE if \a value is the default value of a model parameter, which refers to a layer
+     * which is neither available in the current project nor an existing file.
+     */
+    bool isMissingModelDefaultLayer( const QVariant &value, QgsProcessingContext &context ) const;
+
     QPointer<QgsProcessingMapLayerComboBox> mComboBox;
     int mBlockSignals = 0;
 
@@ -1781,7 +1790,10 @@ class GUI_EXPORT QgsProcessingVectorLayerParameterDefinitionWidget : public QgsP
     QgsProcessingParameterDefinition *createParameter( const QString &name, const QString &description, Qgis::ProcessingParameterFlags flags ) const override;
 
   private:
+    QList<int> dataTypes() const;
+
     QgsCheckableComboBox *mGeometryTypeComboBox = nullptr;
+    QgsProcessingLayerDefaultValueWidget *mDefaultWidget = nullptr;
 };
 
 class GUI_EXPORT QgsProcessingVectorLayerWidgetWrapper : public QgsProcessingMapLayerWidgetWrapper
@@ -1817,7 +1829,10 @@ class GUI_EXPORT QgsProcessingFeatureSourceParameterDefinitionWidget : public Qg
     QgsProcessingParameterDefinition *createParameter( const QString &name, const QString &description, Qgis::ProcessingParameterFlags flags ) const override;
 
   private:
+    QList<int> dataTypes() const;
+
     QgsCheckableComboBox *mGeometryTypeComboBox = nullptr;
+    QgsProcessingLayerDefaultValueWidget *mDefaultWidget = nullptr;
 };
 
 class GUI_EXPORT QgsProcessingFeatureSourceWidgetWrapper : public QgsProcessingMapLayerWidgetWrapper
@@ -2022,6 +2037,7 @@ class GUI_EXPORT QgsProcessingMultipleLayerParameterDefinitionWidget : public Qg
 
   private:
     QComboBox *mLayerTypeComboBox = nullptr;
+    QgsProcessingLayerDefaultValueWidget *mDefaultWidget = nullptr;
 };
 
 class GUI_EXPORT QgsProcessingMultipleLayerWidgetWrapper : public QgsAbstractProcessingParameterWidgetWrapper, public QgsProcessingParameterWidgetFactoryInterface
