@@ -396,6 +396,15 @@ class CORE_EXPORT QgsProcessingModelAlgorithm : public QgsProcessingAlgorithm
     bool loadVariant( const QVariant &variant );
 
     /**
+     * Returns the QGIS version the model was originally created (or last saved) in.
+     *
+     * If the model was saved in QGIS versions prior to 4.4, this version will default to 0.0.0.
+     *
+     * \since QGIS 4.4
+     */
+    QString &modelQgisVersion() { return mModelQgisVersion; }
+
+    /**
      * Returns the model's help contents (a free-form map of values describing the algorithm's
      * use and metadata).
      * \see setHelpContent()
@@ -591,6 +600,7 @@ class CORE_EXPORT QgsProcessingModelAlgorithm : public QgsProcessingAlgorithm
      */
     static QString safeName( const QString &name, bool capitalize = false );
 
+
 #ifndef SIP_RUN
 
     //! Internal model versions
@@ -603,6 +613,22 @@ class CORE_EXPORT QgsProcessingModelAlgorithm : public QgsProcessingAlgorithm
 
 #endif
 
+    // signals :
+
+
+    /**
+     * Emitted when a model is read and the version of QGIS used to save
+     * the model differs from the current QGIS version.
+     *
+     * The \a fileVersion argument indicates the version of QGIS used to save
+     * the model.
+     *
+     * \note Not available in Python bindings
+     * \since QGIS 4.4
+     */
+    // void versionMismatch( const QString &fileVersion );
+
+
   protected:
     QgsProcessingAlgorithm *createInstance() const override SIP_FACTORY;
 
@@ -614,6 +640,7 @@ class CORE_EXPORT QgsProcessingModelAlgorithm : public QgsProcessingAlgorithm
     QString mModelName;
     QString mModelGroup;
     QString mModelGroupId;
+    QString mModelQgisVersion;
 
     QMap< QString, QgsProcessingModelChildAlgorithm > mChildAlgorithms;
 
