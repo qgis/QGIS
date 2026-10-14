@@ -4204,6 +4204,7 @@ bool QgsVectorLayer::commitChanges( bool stopEditing )
 
   bool success = false;
   if ( mEditBuffer->editBufferGroup() )
+    // is this ever called? Because on BufferedGroups we return above
     success = mEditBuffer->editBufferGroup()->commitChanges( mCommitErrors, stopEditing );
   else
     success = mEditBuffer->commitChanges( mCommitErrors );
