@@ -960,10 +960,9 @@ bool QgsVectorLayerEditBuffer::commitChangesAddFeatures( bool &featuresAdded, QS
     else
     {
       commitErrors << tr( "ERROR: %n feature(s) not added.", "not added features count", mAddedFeatures.size() );
-      const QString lastProviderError = L->dataProvider()->lastError().isEmpty() ? QString() : QString( " (%1)" ).arg( L->dataProvider()->lastError() );
-      if ( !lastProviderError.isEmpty() )
+      if( !L->dataProvider()->lastError().isEmpty() )
       {
-        commitErrors << tr( "Last error reported from data provider:\n%1" ).arg( lastProviderError );
+        commitErrors << tr( "Last error reported from data provider:\n%1" ).arg( L->dataProvider()->lastError() );
       }
 #if 0
       QString list = "ERROR: pending adds:";
