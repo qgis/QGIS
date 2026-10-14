@@ -7525,10 +7525,12 @@ void TestProcessingGui::testLayerDefinitionWidgetDefaultValue()
   const QString pointsFile = TEST_DATA_DIR + u"/points.shp"_s;
 
   std::unique_ptr<QgsProcessingParameterDefinitionWidget> widget;
+
   auto createWidget = [&]( const QString &type, const QgsProcessingParameterDefinition *param ) -> QgsProcessingMapLayerComboBox * {
     widget = std::make_unique<QgsProcessingParameterDefinitionWidget>( type, context, widgetContext, param );
     return widget->findChild<QgsProcessingMapLayerComboBox *>();
   };
+
   auto defaultValue = [&]() -> QVariant {
     std::unique_ptr<QgsProcessingParameterDefinition> def( widget->createParameter( u"param_name"_s ) );
     return def->defaultValue();
