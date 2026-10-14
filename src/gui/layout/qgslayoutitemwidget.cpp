@@ -69,6 +69,10 @@ void QgsLayoutConfigObject::updateDataDefinedProperty()
 
   const bool propertyAssociatesWithMultiFrame = QgsLayoutObject::propertyAssociatesWithParentMultiframe( key );
 
+  auto undoLayoutObject = dynamic_cast<QgsLayoutUndoObjectInterface *>( mLayoutObject.data() );
+  if ( undoLayoutObject )
+    mLayoutObject->layout()->undoStack()->beginCommand( undoLayoutObject, tr( "Change Data Defined Property" ) );
+
   //set the data defined property and refresh the item
   if ( propertyAssociatesWithMultiFrame )
   {
@@ -91,6 +95,9 @@ void QgsLayoutConfigObject::updateDataDefinedProperty()
     mLayoutObject->dataDefinedProperties().setProperty( key, ddButton->toProperty() );
     mLayoutObject->refresh();
   }
+
+  if ( undoLayoutObject )
+    mLayoutObject->layout()->undoStack()->endCommand();
 }
 
 void QgsLayoutConfigObject::updateDataDefinedButtons()
