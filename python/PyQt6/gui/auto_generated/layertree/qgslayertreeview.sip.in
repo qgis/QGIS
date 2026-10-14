@@ -115,6 +115,8 @@ Constructor for QgsLayerTreeViewBase
 %End
     ~QgsLayerTreeViewBase();
 
+    virtual void mousePressEvent( QMouseEvent *event );
+
     virtual void mouseDoubleClickEvent( QMouseEvent *event );
 
 
@@ -638,8 +640,6 @@ Allows customization of the menu.
   protected:
     virtual void contextMenuEvent( QContextMenuEvent *event );
 
-
-    virtual void mousePressEvent( QMouseEvent *event );
 
     virtual void mouseReleaseEvent( QMouseEvent *event );
 

@@ -78,11 +78,24 @@ QgsLayerTreeViewBase::QgsLayerTreeViewBase( QWidget *parent )
 QgsLayerTreeViewBase::~QgsLayerTreeViewBase()
 {}
 
+void QgsLayerTreeViewBase::mousePressEvent( QMouseEvent *event )
+{
+  if ( event->button() == Qt::LeftButton || event->button() == Qt::RightButton )
+  {
+    QTreeView::mousePressEvent( event );
+  }
+  else
+  {
+    event->accept();
+    return;
+  }
+}
+
 void QgsLayerTreeViewBase::mouseDoubleClickEvent( QMouseEvent *event )
 {
   if ( mBlockDoubleClickTimer->isActive() )
     event->accept();
-  else
+  else if ( event->button() == Qt::LeftButton )
     QTreeView::mouseDoubleClickEvent( event );
 }
 
@@ -786,19 +799,6 @@ bool QgsLayerTreeView::hideValidLayers() const
   return mHideValidLayers;
 }
 
-void QgsLayerTreeView::mousePressEvent( QMouseEvent *event )
-{
-  if ( event->button() == Qt::LeftButton || event->button() == Qt::RightButton )
-  {
-    QTreeView::mousePressEvent( event );
-  }
-  else
-  {
-    event->accept();
-    return;
-  }
-}
-
 void QgsLayerTreeView::mouseReleaseEvent( QMouseEvent *event )
 {
   QgsLayerTreeModel *layerModel = layerTreeModel();
@@ -860,8 +860,7 @@ void QgsLayerTreeView::dragEnterEvent( QDragEnterEvent *event )
       return;
     }
   }
-  if ( event->buttons() == Qt::LeftButton )
-    QTreeView::dragEnterEvent( event );
+  QTreeView::dragEnterEvent( event );
 }
 
 void QgsLayerTreeView::dragMoveEvent( QDragMoveEvent *event )
