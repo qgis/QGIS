@@ -245,12 +245,12 @@ void TestQgsLayout::scope()
   // no crash
   std::unique_ptr<QgsExpressionContextScope> scope( QgsExpressionContextUtils::layoutScope( nullptr ) );
   l.setName( u"test"_s );
-  scope.reset( QgsExpressionContextUtils::layoutScope( &l ) );
+  scope = QgsExpressionContextUtils::layoutScope( &l );
   QCOMPARE( scope->variable( "layout_name" ).toString(), u"test"_s );
 
   QgsExpressionContextUtils::setLayoutVariable( &l, u"new_var"_s, 5 );
   QgsExpressionContextUtils::setLayoutVariable( &l, u"new_var2"_s, 15 );
-  scope.reset( QgsExpressionContextUtils::layoutScope( &l ) );
+  scope = QgsExpressionContextUtils::layoutScope( &l );
   QCOMPARE( scope->variable( "layout_name" ).toString(), u"test"_s );
   QCOMPARE( scope->variable( "new_var" ).toInt(), 5 );
   QCOMPARE( scope->variable( "new_var2" ).toInt(), 15 );
@@ -258,7 +258,7 @@ void TestQgsLayout::scope()
   QVariantMap newVars;
   newVars.insert( u"new_var3"_s, 17 );
   QgsExpressionContextUtils::setLayoutVariables( &l, newVars );
-  scope.reset( QgsExpressionContextUtils::layoutScope( &l ) );
+  scope = QgsExpressionContextUtils::layoutScope( &l );
   QCOMPARE( scope->variable( "layout_name" ).toString(), u"test"_s );
   QVERIFY( !scope->hasVariable( "new_var" ) );
   QVERIFY( !scope->hasVariable( "new_var2" ) );

@@ -927,11 +927,11 @@ QgsLegendRenderer::LegendComponent QgsLegendRenderer::drawSymbolItem( QgsLayerTr
   ctx.context = &context;
 
   // add a layer expression context scope
-  QgsExpressionContextScope *layerScope = nullptr;
+  std::unique_ptr<QgsExpressionContextScope> layerScope;
   if ( symbolItem->layerNode()->layer() )
   {
     layerScope = QgsExpressionContextUtils::layerScope( symbolItem->layerNode()->layer() );
-    context.expressionContext().appendScope( layerScope );
+    context.expressionContext().appendScope( std::move( layerScope ) );
   }
 
   ctx.painter = context.painter();
@@ -1009,11 +1009,11 @@ QSizeF QgsLegendRenderer::drawLayerTitle( QgsLayerTreeLayer *nodeLayer, QgsRende
 
   const QgsTextFormat layerFormat = mSettings.style( nodeLegendStyle( nodeLayer ) ).textFormat();
 
-  QgsExpressionContextScope *layerScope = nullptr;
+  std::unique_ptr<QgsExpressionContextScope> layerScope;
   if ( nodeLayer->layer() )
   {
     layerScope = QgsExpressionContextUtils::layerScope( nodeLayer->layer() );
-    context.expressionContext().appendScope( layerScope );
+    context.expressionContext().appendScope( std::move( layerScope ) );
   }
 
   const QStringList lines = mSettings.evaluateItemText( titleString, context.expressionContext() );
