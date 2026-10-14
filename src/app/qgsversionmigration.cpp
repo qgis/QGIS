@@ -386,7 +386,7 @@ QgsError Qgs3To4Migration::runMigration( const QString &oldProfilePath, const QS
   newProfileDir.remove( u"QGIS/QGIS4.ini"_s );
   newProfileDir.rename( u"QGIS/QGIS3.ini"_s, u"QGIS/QGIS4.ini"_s );
 
-  const QString oldCleanProfilePath = QFileInfo( oldProfilePath ).absoluteFilePath().replace( "/", "(\\\\|/)" );
+  const QString oldCleanProfilePath = QFileInfo( oldProfilePath ).absoluteFilePath().replace( "/"_L1, "(\\\\|/)"_L1 ).replace( "\\"_L1, "(\\\\|/)"_L1 );
   const QString newCleanProfilePath = QFileInfo( newProfilePath ).absoluteFilePath();
 
   // do a one-time search and replace for the old profiles path in the ini file to the new path
