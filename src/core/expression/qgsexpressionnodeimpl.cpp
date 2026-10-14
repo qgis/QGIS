@@ -293,6 +293,130 @@ QVariant QgsExpressionNodeBinaryOperator::compareNonNullValues( QgsExpression *p
 
     return compareOp<qint64>( dR.msecsTo( dL ), op ) ? TVL_True : TVL_False;
   }
+  else if ( ( vL.userType() == QMetaType::Type::QDateTime && vR.userType() == QMetaType::Type::QString ) || ( vL.userType() == QMetaType::Type::QString && vR.userType() == QMetaType::Type::QDateTime ) )
+  {
+    // left operand is a datetime, right is a string (or vice versa) -- here we try to implicitly cast the string operand to a datetime.
+    QDateTime dL;
+    if ( vL.userType() == QMetaType::Type::QDateTime )
+    {
+      dL = QgsExpressionUtils::getDateTimeValue( vL, parent );
+    }
+    else
+    {
+      dL = QDateTime::fromString( vL.toString(), Qt::ISODate );
+      if ( !dL.isValid() )
+      {
+        if ( parent )
+          parent->setEvalErrorString( QObject::tr( "Cannot convert '%1' to DateTime" ).arg( vL.toString() ) );
+        return QVariant();
+      }
+    }
+    ENSURE_NO_EVAL_ERROR
+
+    QDateTime dR;
+    if ( vR.userType() == QMetaType::Type::QDateTime )
+    {
+      dR = QgsExpressionUtils::getDateTimeValue( vR, parent );
+    }
+    else
+    {
+      dR = QDateTime::fromString( vR.toString(), Qt::ISODate );
+      if ( !dR.isValid() )
+      {
+        if ( parent )
+          parent->setEvalErrorString( QObject::tr( "Cannot convert '%1' to DateTime" ).arg( vR.toString() ) );
+        return QVariant();
+      }
+    }
+    ENSURE_NO_EVAL_ERROR
+
+    // while QDateTime has innate handling of timezones, we don't expose these ANYWHERE
+    // in QGIS. So to avoid confusion where seemingly equal datetime values give unexpected
+    // results (due to different hidden timezones), we force all datetime comparisons to treat
+    // all datetime values as having the same time zone
+    dL.setTimeSpec( Qt::UTC );
+    dR.setTimeSpec( Qt::UTC );
+
+    return compareOp<qint64>( dR.msecsTo( dL ), op ) ? TVL_True : TVL_False;
+  }
+  else if ( ( vL.userType() == QMetaType::Type::QDate && vR.userType() == QMetaType::Type::QString ) || ( vL.userType() == QMetaType::Type::QString && vR.userType() == QMetaType::Type::QDate ) )
+  {
+    // left operand is a date, right is a string (or vice versa) -- here we try to implicitly cast the string operand to a date.
+    QDate dL;
+    if ( vL.userType() == QMetaType::Type::QDate )
+    {
+      dL = QgsExpressionUtils::getDateValue( vL, parent );
+    }
+    else
+    {
+      dL = QDate::fromString( vL.toString(), Qt::ISODate );
+      if ( !dL.isValid() )
+      {
+        if ( parent )
+          parent->setEvalErrorString( QObject::tr( "Cannot convert '%1' to Date" ).arg( vL.toString() ) );
+        return QVariant();
+      }
+    }
+    ENSURE_NO_EVAL_ERROR
+
+    QDate dR;
+    if ( vR.userType() == QMetaType::Type::QDate )
+    {
+      dR = QgsExpressionUtils::getDateValue( vR, parent );
+    }
+    else
+    {
+      dR = QDate::fromString( vR.toString(), Qt::ISODate );
+      if ( !dR.isValid() )
+      {
+        if ( parent )
+          parent->setEvalErrorString( QObject::tr( "Cannot convert '%1' to Date" ).arg( vR.toString() ) );
+        return QVariant();
+      }
+    }
+    ENSURE_NO_EVAL_ERROR
+
+    return compareOp<qint64>( dR.daysTo( dL ), op ) ? TVL_True : TVL_False;
+  }
+  else if ( ( vL.userType() == QMetaType::Type::QTime && vR.userType() == QMetaType::Type::QString ) || ( vL.userType() == QMetaType::Type::QString && vR.userType() == QMetaType::Type::QTime ) )
+  {
+    // left operand is a time, right is a string (or vice versa) -- here we try to implicitly cast the string operand to a time.
+    QTime dL;
+    if ( vL.userType() == QMetaType::Type::QTime )
+    {
+      dL = QgsExpressionUtils::getTimeValue( vL, parent );
+    }
+    else
+    {
+      dL = QTime::fromString( vL.toString(), Qt::ISODate );
+      if ( !dL.isValid() )
+      {
+        if ( parent )
+          parent->setEvalErrorString( QObject::tr( "Cannot convert '%1' to Time" ).arg( vL.toString() ) );
+        return QVariant();
+      }
+    }
+    ENSURE_NO_EVAL_ERROR
+
+    QTime dR;
+    if ( vR.userType() == QMetaType::Type::QTime )
+    {
+      dR = QgsExpressionUtils::getTimeValue( vR, parent );
+    }
+    else
+    {
+      dR = QTime::fromString( vR.toString(), Qt::ISODate );
+      if ( !dR.isValid() )
+      {
+        if ( parent )
+          parent->setEvalErrorString( QObject::tr( "Cannot convert '%1' to Time" ).arg( vR.toString() ) );
+        return QVariant();
+      }
+    }
+    ENSURE_NO_EVAL_ERROR
+
+    return compareOp<int>( dR.msecsTo( dL ), op ) ? TVL_True : TVL_False;
+  }
   else if ( ( vL.userType() == QMetaType::Type::QDate && vR.userType() == QMetaType::Type::QDate ) )
   {
     const QDate dL = QgsExpressionUtils::getDateValue( vL, parent );
