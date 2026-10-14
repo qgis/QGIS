@@ -439,11 +439,14 @@ class QgsScopedThreadName
 /**
  * An atomic shared_ptr, for use in LLVM/clang builds (temporarily, until LLVM adds support for c++20 atomic shared_ptr)
  * \ingroup core
+ * \since QGIS 4.4
  */
 template<typename T> class AtomicSharedPtr
 {
   public:
     AtomicSharedPtr() = default;
+
+    //! Constructor for an atomic shared pointer.
     explicit AtomicSharedPtr( T p )
       : p_( std::move( p ) )
     {}

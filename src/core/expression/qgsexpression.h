@@ -203,6 +203,8 @@ class CORE_EXPORT QgsExpression
     /**
      * \ingroup core
      * A thread-safe container of shared pointers to registered functions.
+     *
+     * \since QGIS 4.4
      */
     class CORE_EXPORT SharedFunctionPtrList : public QList< SharedFunctionPtr >
     {
