@@ -10168,4 +10168,237 @@ QString QgsProcessingTileExtentMaxZoomWidgetWrapper::modelerExpressionFormatStri
 }
 
 
+//
+// QgsProcessingLayerDefaultValueWidget
+//
+
+bool QgsProcessingLayerDefaultValueWidget::isAvailableLayerSource( const QString &source, const QgsProject *project )
+{
+  if ( source.isEmpty() )
+    return false;
+
+  if ( project && ( project->mapLayer( source ) || !project->mapLayersByName( source ).isEmpty() ) )
+    return true;
+
+  // file based sources may include additional parts, e.g. "|layername=..."
+  return QFileInfo::exists( source.section( '|', 0, 0 ) );
+}
+
+QgsProcessingLayerDefaultValueWidget::QgsProcessingLayerDefaultValueWidget(
+  QgsProcessingContext &context, const QgsProcessingParameterWidgetContext &widgetContext, const QVariant &defaultValue, QWidget *parent
+)
+  : QWidget( parent )
+  , mContext( context )
+  , mWidgetContext( widgetContext )
+  , mValue( defaultValue )
+{
+  // the default value of a model parameter cannot be linked to other model components, so
+  // the widget must behave as it does in a standalone algorithm dialog
+  mWidgetContext.setModel( nullptr );
+  mWidgetContext.setModelChildAlgorithmId( QString() );
+
+  QVBoxLayout *vlayout = new QVBoxLayout();
+  vlayout->setContentsMargins( 0, 0, 0, 0 );
+  vlayout->addWidget( new QLabel( tr( "Default value" ) ) );
+  setLayout( vlayout );
+}
+
+QgsProcessingLayerDefaultValueWidget::~QgsProcessingLayerDefaultValueWidget()
+{
+  clearWidget();
+}
+
+void QgsProcessingLayerDefaultValueWidget::setParameter( const QgsProcessingParameterDefinition *parameter )
+{
+  clearWidget();
+  if ( !parameter )
+    return;
+
+  mParameter.reset( parameter->clone() );
+  mParameter->setDescription( tr( "Default value" ) );
+  // mandatory parameter can still have no default value
+  mParameter->setFlags( mParameter->flags() | Qgis::ProcessingParameterFlag::Optional );
+  mParameter->setIsDynamic( false );
+  // the widget is only prefilled with layers from the current project or existing files,
+  // values which do not match (a layer name from another project, non-existing file) are not shown
+  mParameter->setDefaultValue( availableLayersOnly( mValue ) );
+
+  mWrapper.reset( QgsGui::processingGuiRegistry()->createParameterWidgetWrapper( mParameter.get(), Qgis::ProcessingMode::Standard ) );
+  if ( !mWrapper )
+    return;
+
+  mWrapper->setWidgetContext( mWidgetContext );
+  // the widget is initialized to the parameter's default value
+  mWidget = mWrapper->createWrappedWidget( mContext );
+  mWrapper->postInitialize( { mWrapper.get() } );
+  if ( mWidget )
+    layout()->addWidget( mWidget );
+
+  connect( mWrapper.get(), &QgsAbstractProcessingParameterWidgetWrapper::widgetValueHasChanged, this, [this] {
+    mValue = layerIdsToNames( mWrapper->parameterValue() );
+    emit changed();
+  } );
+}
+
+QVariant QgsProcessingLayerDefaultValueWidget::availableLayersOnly( const QVariant &value ) const
+{
+  // no default value
+  if ( !value.isValid() )
+    return QVariant();
+
+  const QgsProject *project = mContext.project() ? mContext.project() : mWidgetContext.project();
+  auto isAvailable = [project]( const QString &string ) -> bool { return isAvailableLayerSource( string, project ); };
+
+  if ( value.userType() == qMetaTypeId<QgsProcessingFeatureSourceDefinition>() )
+  {
+    const QgsProcessingFeatureSourceDefinition definition = value.value<QgsProcessingFeatureSourceDefinition>();
+    if ( definition.source.propertyType() == Qgis::PropertyType::Static && isAvailable( definition.source.staticValue().toString() ) )
+      return value;
+  }
+  else if ( value.userType() == qMetaTypeId<QgsProcessingRasterLayerDefinition>() )
+  {
+    const QgsProcessingRasterLayerDefinition definition = value.value<QgsProcessingRasterLayerDefinition>();
+    if ( definition.source.propertyType() == Qgis::PropertyType::Static && isAvailable( definition.source.staticValue().toString() ) )
+      return value;
+  }
+  else if ( value.userType() == QMetaType::Type::QVariantList )
+  {
+    QVariantList layers;
+    const QVariantList values = value.toList();
+    for ( const QVariant &v : values )
+    {
+      const QVariant layer = availableLayersOnly( v );
+      if ( layer.isValid() )
+        layers << layer;
+    }
+    return layers.isEmpty() ? QVariant() : QVariant( layers );
+  }
+  else if ( value.userType() == QMetaType::Type::QStringList )
+  {
+    QStringList layers;
+    const QStringList values = value.toStringList();
+    for ( const QString &v : values )
+    {
+      if ( isAvailable( v ) )
+        layers << v;
+    }
+    return layers.isEmpty() ? QVariant() : QVariant( layers );
+  }
+  else if ( value.userType() == QMetaType::Type::QString )
+  {
+    if ( isAvailable( value.toString() ) )
+      return value;
+  }
+
+  return QVariant();
+}
+
+QVariant QgsProcessingLayerDefaultValueWidget::layerIdsToNames( const QVariant &value ) const
+{
+  // no default value
+  if ( !value.isValid() )
+    return value;
+
+  QgsProject *project = mContext.project() ? mContext.project() : mWidgetContext.project();
+  if ( !project )
+    return value;
+
+  // layer names are resolved when the model is run, in the same way as layer IDs
+  auto layerIdToLayerName = [project]( const QString &string ) -> QString {
+    if ( const QgsMapLayer *layer = project->mapLayer( string ) )
+      return layer->name();
+    return string;
+  };
+
+  if ( value.userType() == qMetaTypeId<QgsProcessingFeatureSourceDefinition>() )
+  {
+    QgsProcessingFeatureSourceDefinition definition = value.value<QgsProcessingFeatureSourceDefinition>();
+    if ( definition.source.propertyType() == Qgis::PropertyType::Static )
+      definition.source = QgsProperty::fromValue( layerIdToLayerName( definition.source.staticValue().toString() ) );
+    return QVariant::fromValue( definition );
+  }
+  else if ( value.userType() == qMetaTypeId<QgsProcessingRasterLayerDefinition>() )
+  {
+    QgsProcessingRasterLayerDefinition definition = value.value<QgsProcessingRasterLayerDefinition>();
+    if ( definition.source.propertyType() == Qgis::PropertyType::Static )
+      definition.source = QgsProperty::fromValue( layerIdToLayerName( definition.source.staticValue().toString() ) );
+    return QVariant::fromValue( definition );
+  }
+  else if ( value.userType() == QMetaType::Type::QVariantList )
+  {
+    // multiple layers
+    QVariantList names;
+    const QVariantList values = value.toList();
+    for ( const QVariant &v : values )
+      names << layerIdsToNames( v );
+    return names;
+  }
+  else if ( value.userType() == QMetaType::Type::QStringList )
+  {
+    QStringList names;
+    const QStringList values = value.toStringList();
+    for ( const QString &v : values )
+      names << layerIdToLayerName( v );
+    return names;
+  }
+  else if ( value.userType() == QMetaType::Type::QString )
+  {
+    return layerIdToLayerName( value.toString() );
+  }
+
+  return value;
+}
+
+void QgsProcessingLayerDefaultValueWidget::clearWidget()
+{
+  mWrapper.reset();
+  delete mWidget;
+  mWidget = nullptr;
+  mParameter.reset();
+}
+
+
+//
+// QgsProcessingLayerParameterDefinitionWidget
+//
+
+QgsProcessingLayerParameterDefinitionWidget::QgsProcessingLayerParameterDefinitionWidget(
+  const QString &type,
+  QgsProcessingContext &context,
+  const QgsProcessingParameterWidgetContext &widgetContext,
+  const QgsProcessingParameterDefinition *definition,
+  const QgsProcessingAlgorithm *algorithm,
+  QWidget *parent
+)
+  : QgsProcessingAbstractParameterDefinitionWidget( context, widgetContext, definition, algorithm, parent )
+  , mType( type )
+{
+  QVBoxLayout *vlayout = new QVBoxLayout();
+  vlayout->setContentsMargins( 0, 0, 0, 0 );
+
+  mDefaultWidget = new QgsProcessingLayerDefaultValueWidget( context, widgetContext, definition ? definition->defaultValue() : QVariant() );
+  if ( const QgsProcessingParameterType *paramType = QgsApplication::processingRegistry()->parameterType( mType ) )
+  {
+    std::unique_ptr<QgsProcessingParameterDefinition> param( paramType->create( u"DEFAULT_VALUE"_s ) );
+    mDefaultWidget->setParameter( param.get() );
+  }
+  vlayout->addWidget( mDefaultWidget );
+  connect( mDefaultWidget, &QgsProcessingLayerDefaultValueWidget::changed, this, &QgsProcessingAbstractParameterDefinitionWidget::changed );
+
+  setLayout( vlayout );
+}
+
+QgsProcessingParameterDefinition *QgsProcessingLayerParameterDefinitionWidget::createParameter( const QString &name, const QString &description, Qgis::ProcessingParameterFlags flags ) const
+{
+  const QgsProcessingParameterType *paramType = QgsApplication::processingRegistry()->parameterType( mType );
+  if ( !paramType )
+    return nullptr;
+
+  std::unique_ptr<QgsProcessingParameterDefinition> param( paramType->create( name ) );
+  param->setDescription( description );
+  param->setDefaultValue( mDefaultWidget->value() );
+  param->setFlags( flags );
+  return param.release();
+}
+
 ///@endcond PRIVATE
