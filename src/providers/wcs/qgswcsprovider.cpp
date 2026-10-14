@@ -1668,8 +1668,6 @@ QgsWcsProvider *QgsWcsProviderMetadata::createProvider( const QString &uri, cons
 /// QgsWcsDownloadHandler
 ///
 
-int QgsWcsDownloadHandler::sErrors = 0;
-
 QgsWcsDownloadHandler::QgsWcsDownloadHandler(
   const QUrl &url, QgsAuthorizationSettings &auth, QNetworkRequest::CacheLoadControl cacheLoadControl, QByteArray &cachedData, const QString &wcsVersion, QgsError &cachedError, QgsRasterBlockFeedback *feedback
 )
@@ -1927,12 +1925,12 @@ void QgsWcsDownloadHandler::cacheReplyFinished()
         return;
       }
 
-      sErrors++;
-      if ( sErrors < 100 )
+      mErrors++;
+      if ( mErrors < 100 )
       {
         QgsMessageLog::logMessage( tr( "Map request failed [error: %1 url: %2]" ).arg( mCacheReply->errorString(), mCacheReply->url().toString() ), tr( "WCS" ) );
       }
-      else if ( sErrors == 100 )
+      else if ( mErrors == 100 )
       {
         QgsMessageLog::logMessage( tr( "Not logging more than 100 request errors." ), tr( "WCS" ) );
       }
