@@ -375,7 +375,7 @@ class QgsWcsDownloadHandler : public QObject
 
     QgsRasterBlockFeedback *mFeedback = nullptr;
 
-    static int sErrors; // this should be ideally per-provider...?
+    int mErrors = 0;
 };
 
 ///
