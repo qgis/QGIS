@@ -1627,9 +1627,9 @@ void QgsVectorLayerProperties::updateVariableEditor()
 {
   QgsExpressionContext context;
   mVariableEditor->setContext( &context );
-  mVariableEditor->context()->appendScope( QgsExpressionContextUtils::globalScope() );
-  mVariableEditor->context()->appendScope( QgsExpressionContextUtils::projectScope( QgsProject::instance() ) );
-  mVariableEditor->context()->appendScope( QgsExpressionContextUtils::layerScope( mLayer ) );
+  mVariableEditor->context()->appendScope( QgsExpressionContextUtils::globalScope().release() );
+  mVariableEditor->context()->appendScope( QgsExpressionContextUtils::projectScope( QgsProject::instance() ).release() );
+  mVariableEditor->context()->appendScope( QgsExpressionContextUtils::layerScope( mLayer ).release() );
   mVariableEditor->reloadContext();
   mVariableEditor->setEditableScopeIndex( 2 );
 }

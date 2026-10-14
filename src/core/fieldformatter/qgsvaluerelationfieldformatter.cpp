@@ -166,9 +166,9 @@ QgsValueRelationFieldFormatter::ValueRelationCache QgsValueRelationFieldFormatte
   {
     QgsExpressionContext filterContext = context;
     if ( formFeature.isValid() && QgsValueRelationFieldFormatter::expressionRequiresFormScope( filterExpression ) )
-      filterContext.appendScope( QgsExpressionContextUtils::formScope( formFeature ) );
+      filterContext.appendScope( QgsExpressionContextUtils::formScope( formFeature ).release() );
     if ( parentFormFeature.isValid() && QgsValueRelationFieldFormatter::expressionRequiresParentFormScope( filterExpression ) )
-      filterContext.appendScope( QgsExpressionContextUtils::parentFormScope( parentFormFeature ) );
+      filterContext.appendScope( QgsExpressionContextUtils::parentFormScope( parentFormFeature ).release() );
     request.setExpressionContext( filterContext );
     request.setFilterExpression( filterExpression );
   }

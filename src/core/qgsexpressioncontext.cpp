@@ -676,6 +676,12 @@ QgsExpressionContext &QgsExpressionContext::operator<<( QgsExpressionContextScop
   return *this;
 }
 
+QgsExpressionContext &QgsExpressionContext::operator<<( std::unique_ptr< QgsExpressionContextScope > scope )
+{
+  mStack.append( scope.release() );
+  return *this;
+}
+
 void QgsExpressionContext::setFeature( const QgsFeature &feature )
 {
   if ( mStack.isEmpty() )

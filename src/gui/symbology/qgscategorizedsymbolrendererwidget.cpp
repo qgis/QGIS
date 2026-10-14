@@ -185,8 +185,8 @@ QWidget *QgsCategorizedRendererViewItemDelegate::createEditor( QWidget *parent, 
       if ( mFieldExpressionWidget->layer()->getFeatures().nextFeature( feat ) )
       {
         QgsExpressionContext expressionContext;
-        expressionContext.appendScope( QgsExpressionContextUtils::globalScope() );
-        expressionContext.appendScope( QgsExpressionContextUtils::projectScope( QgsProject::instance() ) );
+        expressionContext.appendScope( QgsExpressionContextUtils::globalScope().release() );
+        expressionContext.appendScope( QgsExpressionContextUtils::projectScope( QgsProject::instance() ).release() );
         expressionContext.appendScope( mFieldExpressionWidget->layer()->createExpressionContextScope() );
         expressionContext.setFeature( feat );
         QgsExpression exp { mFieldExpressionWidget->expression() };

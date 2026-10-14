@@ -128,14 +128,14 @@ QgsProcessingContext *QgsAppProcessingContextFactory::createContext( QgsProcessi
 QgsExpressionContext QgsAppProcessingContextFactory::createExpressionContext() const
 {
   QgsExpressionContext context;
-  context.appendScope( QgsExpressionContextUtils::globalScope() );
-  context.appendScope( QgsExpressionContextUtils::projectScope( QgsProject::instance() ) );
+  context.appendScope( QgsExpressionContextUtils::globalScope().release() );
+  context.appendScope( QgsExpressionContextUtils::projectScope( QgsProject::instance() ).release() );
 
   if ( QgsMapCanvas *canvas = mQgisApp->mapCanvas() )
   {
     if ( canvas->mapSettings().isTemporal() )
     {
-      context.appendScope( QgsExpressionContextUtils::mapSettingsScope( canvas->mapSettings() ) );
+      context.appendScope( QgsExpressionContextUtils::mapSettingsScope( canvas->mapSettings() ).release() );
     }
   }
 

@@ -930,7 +930,7 @@ QgsLegendRenderer::LegendComponent QgsLegendRenderer::drawSymbolItem( QgsLayerTr
   QgsExpressionContextScope *layerScope = nullptr;
   if ( symbolItem->layerNode()->layer() )
   {
-    layerScope = QgsExpressionContextUtils::layerScope( symbolItem->layerNode()->layer() );
+    layerScope = QgsExpressionContextUtils::layerScope( symbolItem->layerNode()->layer() ).release();
     context.expressionContext().appendScope( layerScope );
   }
 
@@ -1012,7 +1012,7 @@ QSizeF QgsLegendRenderer::drawLayerTitle( QgsLayerTreeLayer *nodeLayer, QgsRende
   QgsExpressionContextScope *layerScope = nullptr;
   if ( nodeLayer->layer() )
   {
-    layerScope = QgsExpressionContextUtils::layerScope( nodeLayer->layer() );
+    layerScope = QgsExpressionContextUtils::layerScope( nodeLayer->layer() ).release();
     context.expressionContext().appendScope( layerScope );
   }
 

@@ -338,10 +338,10 @@ void QgsExternalResourceWidgetWrapper::updateFileWidgetExpressionContext()
 
   QgsExpressionContext expressionContext( layer()->createExpressionContext() );
   expressionContext.setFeature( formFeature() );
-  expressionContext.appendScope( QgsExpressionContextUtils::formScope( formFeature() ) );
+  expressionContext.appendScope( QgsExpressionContextUtils::formScope( formFeature() ).release() );
   if ( context().parentFormFeature().isValid() )
   {
-    expressionContext.appendScope( QgsExpressionContextUtils::parentFormScope( context().parentFormFeature() ) );
+    expressionContext.appendScope( QgsExpressionContextUtils::parentFormScope( context().parentFormFeature() ).release() );
   }
 
   mQgsWidget->fileWidget()->setExpressionContext( expressionContext );

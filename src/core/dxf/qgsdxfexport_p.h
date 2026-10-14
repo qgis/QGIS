@@ -50,7 +50,7 @@ struct DxfLayerJob
       fields = vl->fields();
       selectedFeatureIds = vl->selectedFeatureIds();
       renderer.reset( vl->renderer()->clone() );
-      renderContext.expressionContext().appendScope( QgsExpressionContextUtils::layerScope( vl ) );
+      renderContext.expressionContext().appendScope( QgsExpressionContextUtils::layerScope( vl ).release() );
 
       labeling.reset( vl->labelsEnabled() ? vl->labeling()->clone() : nullptr );
 

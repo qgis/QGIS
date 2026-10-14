@@ -1203,8 +1203,8 @@ void QgsElevationProfileWidget::exportResults( Qgis::ProfileExportType type )
   request.setTransformContext( QgsProject::instance()->transformContext() );
   request.setTerrainProvider( QgsProject::instance()->elevationProperties()->terrainProvider() ? QgsProject::instance()->elevationProperties()->terrainProvider()->clone() : nullptr );
   QgsExpressionContext context;
-  context.appendScope( QgsExpressionContextUtils::globalScope() );
-  context.appendScope( QgsExpressionContextUtils::projectScope( QgsProject::instance() ) );
+  context.appendScope( QgsExpressionContextUtils::globalScope().release() );
+  context.appendScope( QgsExpressionContextUtils::projectScope( QgsProject::instance() ).release() );
   request.setExpressionContext( context );
 
   QgsProfileExporterTask *exportTask = new QgsProfileExporterTask( mCanvas->sources(), request, type, file, QgsProject::instance()->transformContext() );

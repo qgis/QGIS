@@ -144,7 +144,7 @@ void TestQgsOverlayExpression::testOverlay()
   QFETCH( bool, expectedResult );
 
   QgsExpressionContext context;
-  context.appendScope( QgsExpressionContextUtils::projectScope( QgsProject::instance() ) );
+  context.appendScope( QgsExpressionContextUtils::projectScope( QgsProject::instance() ).release() );
 
   QgsFeature feat;
   feat.setGeometry( QgsGeometry::fromWkt( geometry ) );
@@ -312,7 +312,7 @@ void TestQgsOverlayExpression::testOverlayMeasure()
   QFETCH( QVariantList, expectedResult );
 
   QgsExpressionContext context;
-  context.appendScope( QgsExpressionContextUtils::projectScope( QgsProject::instance() ) );
+  context.appendScope( QgsExpressionContextUtils::projectScope( QgsProject::instance() ).release() );
 
   QgsFeature feat;
   feat.setGeometry( QgsGeometry::fromWkt( geometry ) );
@@ -569,7 +569,7 @@ void TestQgsOverlayExpression::testOverlayIntersectsDetails()
   QgsFeature feat;
   feat.setGeometry( QgsGeometry::fromWkt( u"Polygon ((6 0, 6 2, 4 2, 4 4, 6 4, 6 6, 12 6, 12 0, 6 0))"_s ) );
   context.setFeature( feat );
-  context.appendScope( QgsExpressionContextUtils::projectScope( QgsProject::instance() ) );
+  context.appendScope( QgsExpressionContextUtils::projectScope( QgsProject::instance() ).release() );
 
   QgsExpression exp( u"overlay_intersects('poly_details', return_details:=true, expression:=$id)"_s );
   QVERIFY2( exp.prepare( &context ), exp.parserErrorString().toUtf8().constData() );
@@ -613,7 +613,7 @@ void TestQgsOverlayExpression::testOverlayExpression()
   QFETCH( QVariantList, expectedResult );
 
   QgsExpressionContext context;
-  context.appendScope( QgsExpressionContextUtils::projectScope( QgsProject::instance() ) );
+  context.appendScope( QgsExpressionContextUtils::projectScope( QgsProject::instance() ).release() );
 
   QgsFeature feat;
   feat.setGeometry( QgsGeometry::fromWkt( geometry ) );
@@ -691,8 +691,8 @@ void TestQgsOverlayExpression::testOverlayExpression_data()
 void TestQgsOverlayExpression::testOverlaySelf()
 {
   QgsExpressionContext context;
-  context.appendScope( QgsExpressionContextUtils::projectScope( QgsProject::instance() ) );
-  context.appendScope( QgsExpressionContextUtils::layerScope( mPolyLayer ) );
+  context.appendScope( QgsExpressionContextUtils::projectScope( QgsProject::instance() ).release() );
+  context.appendScope( QgsExpressionContextUtils::layerScope( mPolyLayer ).release() );
 
   QgsExpression exp( "overlay_intersects('polys')" );
   QVERIFY2( exp.prepare( &context ), exp.parserErrorString().toUtf8().constData() );

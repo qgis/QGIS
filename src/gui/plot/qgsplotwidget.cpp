@@ -46,7 +46,7 @@ QgsExpressionContext QgsPlotWidget::createExpressionContext() const
   }
   else
   {
-    context.appendScope( QgsExpressionContextUtils::globalScope() );
+    context.appendScope( QgsExpressionContextUtils::globalScope().release() );
   }
 
   auto plotScope = std::make_unique<QgsExpressionContextScope>( u"plot"_s );

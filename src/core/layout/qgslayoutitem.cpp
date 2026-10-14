@@ -1175,7 +1175,7 @@ bool QgsLayoutItem::isRefreshing() const
 QgsExpressionContext QgsLayoutItem::createExpressionContext() const
 {
   QgsExpressionContext context = QgsLayoutObject::createExpressionContext();
-  context.appendScope( QgsExpressionContextUtils::layoutItemScope( this ) );
+  context.appendScope( QgsExpressionContextUtils::layoutItemScope( this ).release() );
   return context;
 }
 

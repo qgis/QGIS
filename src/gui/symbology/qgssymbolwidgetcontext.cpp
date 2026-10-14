@@ -100,10 +100,13 @@ QList<QgsExpressionContextScope> QgsSymbolWidgetContext::additionalExpressionCon
 QList<QgsExpressionContextScope *> QgsSymbolWidgetContext::globalProjectAtlasMapLayerScopes( const QgsMapLayer *layer ) const
 {
   QList<QgsExpressionContextScope *> scopes;
-  scopes << QgsExpressionContextUtils::globalScope() << QgsExpressionContextUtils::projectScope( QgsProject::instance() ) << QgsExpressionContextUtils::atlasScope( nullptr );
+  scopes << QgsExpressionContextUtils::globalScope().release() << QgsExpressionContextUtils::projectScope( QgsProject::instance() ).release() << QgsExpressionContextUtils::atlasScope( nullptr ).release();
   if ( mMapCanvas )
   {
-    scopes << QgsExpressionContextUtils::mapSettingsScope( mMapCanvas->mapSettings() ) << mMapCanvas->defaultExpressionContextScope() << new QgsExpressionContextScope( mMapCanvas->expressionContextScope() );
+    scopes
+      << QgsExpressionContextUtils::mapSettingsScope( mMapCanvas->mapSettings() ).release()
+      << mMapCanvas->defaultExpressionContextScope()
+      << new QgsExpressionContextScope( mMapCanvas->expressionContextScope() );
 
     if ( const QgsExpressionContextScopeGenerator *generator = dynamic_cast<const QgsExpressionContextScopeGenerator *>( mMapCanvas->temporalController() ) )
     {
@@ -112,10 +115,10 @@ QList<QgsExpressionContextScope *> QgsSymbolWidgetContext::globalProjectAtlasMap
   }
   else
   {
-    scopes << QgsExpressionContextUtils::mapSettingsScope( QgsMapSettings() );
+    scopes << QgsExpressionContextUtils::mapSettingsScope( QgsMapSettings() ).release();
   }
   if ( layer )
-    scopes << QgsExpressionContextUtils::layerScope( layer );
+    scopes << QgsExpressionContextUtils::layerScope( layer ).release();
   return scopes;
 }
 

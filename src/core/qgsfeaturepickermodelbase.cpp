@@ -476,11 +476,11 @@ void QgsFeaturePickerModelBase::scheduledReload()
       {
         if ( mFormFeature.isValid() && QgsValueRelationFieldFormatter::expressionRequiresFormScope( mFilterExpression ) )
         {
-          request.expressionContext()->appendScope( QgsExpressionContextUtils::formScope( mFormFeature ) );
+          request.expressionContext()->appendScope( QgsExpressionContextUtils::formScope( mFormFeature ).release() );
         }
         if ( mParentFormFeature.isValid() && QgsValueRelationFieldFormatter::expressionRequiresParentFormScope( mFilterExpression ) )
         {
-          request.expressionContext()->appendScope( QgsExpressionContextUtils::parentFormScope( mParentFormFeature ) );
+          request.expressionContext()->appendScope( QgsExpressionContextUtils::parentFormScope( mParentFormFeature ).release() );
         }
       }
     }

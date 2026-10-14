@@ -658,7 +658,7 @@ QgsExpressionContext QgsFieldMappingModel::ExpressionContextGenerator::createExp
   else
   {
     QgsExpressionContext ctx;
-    ctx.appendScope( QgsExpressionContextUtils::globalScope() );
+    ctx.appendScope( QgsExpressionContextUtils::globalScope().release() );
     ctx.setFields( mSourceFields );
     QgsFeature feature { mSourceFields };
     feature.setValid( true );

@@ -70,7 +70,7 @@ QgsExpressionContext QgsAttributesFormBaseView::createExpressionContext() const
   if ( mLayer )
     expContext << QgsExpressionContextUtils::layerScope( mLayer );
 
-  expContext.appendScope( QgsExpressionContextUtils::formScope() );
+  expContext.appendScope( QgsExpressionContextUtils::formScope().release() );
   return expContext;
 }
 

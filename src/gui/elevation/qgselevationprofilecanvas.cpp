@@ -259,8 +259,8 @@ class QgsElevationProfilePlotItem : public Qgs2DXyPlot, public QgsPlotCanvasItem
         const double mapUnitsPerPixel = ( xMaximum() - xMinimum() ) * mXScaleFactor / plotArea().width();
         rc.setMapToPixel( QgsMapToPixel( mapUnitsPerPixel ) );
 
-        rc.expressionContext().appendScope( QgsExpressionContextUtils::globalScope() );
-        rc.expressionContext().appendScope( QgsExpressionContextUtils::projectScope( mProject ) );
+        rc.expressionContext().appendScope( QgsExpressionContextUtils::globalScope().release() );
+        rc.expressionContext().appendScope( QgsExpressionContextUtils::projectScope( mProject ).release() );
 
         QgsPlotRenderContext plotContext;
         calculateOptimisedIntervals( rc, plotContext );
@@ -914,8 +914,8 @@ void QgsElevationProfileCanvas::refresh()
   request.setTransformContext( mProject->transformContext() );
   request.setTerrainProvider( mProject->elevationProperties()->terrainProvider() ? mProject->elevationProperties()->terrainProvider()->clone() : nullptr );
   QgsExpressionContext context;
-  context.appendScope( QgsExpressionContextUtils::globalScope() );
-  context.appendScope( QgsExpressionContextUtils::projectScope( mProject ) );
+  context.appendScope( QgsExpressionContextUtils::globalScope().release() );
+  context.appendScope( QgsExpressionContextUtils::projectScope( mProject ).release() );
   request.setExpressionContext( context );
 
   QList< QgsAbstractProfileSource *> sourcesToRender = sources();
@@ -1482,8 +1482,8 @@ void QgsElevationProfileCanvas::render( QgsRenderContext &context, double width,
   if ( !mCurrentJob )
     return;
 
-  context.expressionContext().appendScope( QgsExpressionContextUtils::globalScope() );
-  context.expressionContext().appendScope( QgsExpressionContextUtils::projectScope( mProject ) );
+  context.expressionContext().appendScope( QgsExpressionContextUtils::globalScope().release() );
+  context.expressionContext().appendScope( QgsExpressionContextUtils::projectScope( mProject ).release() );
 
   QgsElevationProfilePlot profilePlot( mCurrentJob );
 

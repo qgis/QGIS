@@ -434,12 +434,12 @@ const QgsLayoutGuideCollection &QgsLayout::guides() const
 QgsExpressionContext QgsLayout::createExpressionContext() const
 {
   QgsExpressionContext context = QgsExpressionContext();
-  context.appendScope( QgsExpressionContextUtils::globalScope() );
-  context.appendScope( QgsExpressionContextUtils::projectScope( mProject ) );
+  context.appendScope( QgsExpressionContextUtils::globalScope().release() );
+  context.appendScope( QgsExpressionContextUtils::projectScope( mProject ).release() );
   if ( mReportContext->layer() )
-    context.appendScope( QgsExpressionContextUtils::layerScope( mReportContext->layer() ) );
+    context.appendScope( QgsExpressionContextUtils::layerScope( mReportContext->layer() ).release() );
 
-  context.appendScope( QgsExpressionContextUtils::layoutScope( this ) );
+  context.appendScope( QgsExpressionContextUtils::layoutScope( this ).release() );
   return context;
 }
 

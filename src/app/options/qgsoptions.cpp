@@ -1220,7 +1220,7 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
   // load gdal driver list only when gdal tab is first opened
   mLoadedGdalDriverList = false;
 
-  mVariableEditor->context()->appendScope( QgsExpressionContextUtils::globalScope() );
+  mVariableEditor->context()->appendScope( QgsExpressionContextUtils::globalScope().release() );
   mVariableEditor->reloadContext();
   mVariableEditor->setEditableScopeIndex( 0 );
   connect( mAddCustomVarBtn, &QAbstractButton::clicked, this, &QgsOptions::addCustomVariable );

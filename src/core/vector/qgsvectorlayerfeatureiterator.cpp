@@ -1336,8 +1336,8 @@ void QgsVectorLayerFeatureIterator::updateFeatureGeometry( QgsFeature &f )
 void QgsVectorLayerFeatureIterator::createExpressionContext()
 {
   mExpressionContext = std::make_unique< QgsExpressionContext >();
-  mExpressionContext->appendScope( QgsExpressionContextUtils::globalScope() );
-  mExpressionContext->appendScope( QgsExpressionContextUtils::projectScope( QgsProject::instance() ) ); // skip-keyword-check
+  mExpressionContext->appendScope( QgsExpressionContextUtils::globalScope().release() );
+  mExpressionContext->appendScope( QgsExpressionContextUtils::projectScope( QgsProject::instance() ).release() ); // skip-keyword-check
   mExpressionContext->appendScope( new QgsExpressionContextScope( mSource->mLayerScope ) );
   mExpressionContext->setFeedback( mRequest.feedback() );
 }

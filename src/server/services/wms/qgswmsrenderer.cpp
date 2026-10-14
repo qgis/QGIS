@@ -2087,7 +2087,7 @@ namespace QgsWms
           QDomElement maptipElem = infoDocument.createElement( u"Attribute"_s );
           maptipElem.setAttribute( u"name"_s, u"maptip"_s );
           QgsExpressionContext context { renderContext.expressionContext() };
-          context.appendScope( QgsExpressionContextUtils::layerScope( layer ) );
+          context.appendScope( QgsExpressionContextUtils::layerScope( layer ).release() );
           maptipElem.setAttribute( u"value"_s, QgsExpression::replaceExpressionText( mapTip, &context ) );
           featureElement.appendChild( maptipElem );
         }
@@ -2098,7 +2098,7 @@ namespace QgsWms
           QDomElement displayElem = infoDocument.createElement( u"Attribute"_s );
           displayElem.setAttribute( u"name"_s, u"displayName"_s );
           QgsExpressionContext context { renderContext.expressionContext() };
-          context.appendScope( QgsExpressionContextUtils::layerScope( layer ) );
+          context.appendScope( QgsExpressionContextUtils::layerScope( layer ).release() );
           displayExpression.prepare( &context );
           displayElem.setAttribute( u"value"_s, displayExpression.evaluate( &context ).toString() );
           featureElement.appendChild( displayElem );
@@ -2551,9 +2551,9 @@ namespace QgsWms
         QDomElement maptipElem = infoDocument.createElement( u"Attribute"_s );
         maptipElem.setAttribute( u"name"_s, u"maptip"_s );
         QgsExpressionContext context { renderContext.expressionContext() };
-        QgsExpressionContextScope *scope = QgsExpressionContextUtils::layerScope( layer );
+        std::unique_ptr< QgsExpressionContextScope > scope = QgsExpressionContextUtils::layerScope( layer );
         scope->addVariable( QgsExpressionContextScope::StaticVariable( u"layer_cursor_point"_s, QVariant::fromValue( QgsGeometry::fromPointXY( QgsPointXY( infoPoint->x(), infoPoint->y() ) ) ) ) );
-        context.appendScope( scope );
+        context.appendScope( scope.release() );
         maptipElem.setAttribute( u"value"_s, QgsExpression::replaceExpressionText( mapTip, &context ) );
         layerElement.appendChild( maptipElem );
       }

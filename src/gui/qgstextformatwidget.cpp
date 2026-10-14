@@ -1462,7 +1462,7 @@ void QgsTextFormatWidget::setContext( const QgsSymbolWidgetContext &context )
   {
     mPreviewExpressionContext = *lExpressionContext;
     if ( mLayer )
-      mPreviewExpressionContext.appendScope( QgsExpressionContextUtils::layerScope( mLayer ) );
+      mPreviewExpressionContext.appendScope( QgsExpressionContextUtils::layerScope( mLayer ).release() );
   }
 
   const auto symbolButtonWidgets = findChildren<QgsSymbolButton *>();

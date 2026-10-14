@@ -381,8 +381,8 @@ QgsExpressionContext QgsProcessingWidgetWrapperUtils::createExpressionContext(
     if ( lModel->childAlgorithms().contains( widgetContext.modelChildAlgorithmId() ) )
       alg = lModel->childAlgorithm( widgetContext.modelChildAlgorithmId() ).algorithm();
 
-    QgsExpressionContextScope *algorithmScope = QgsExpressionContextUtils::processingAlgorithmScope( alg ? alg : algorithm, QVariantMap(), *context );
-    c << algorithmScope;
+    std::unique_ptr< QgsExpressionContextScope > algorithmScope = QgsExpressionContextUtils::processingAlgorithmScope( alg ? alg : algorithm, QVariantMap(), *context );
+    c << algorithmScope.release();
     QgsExpressionContextScope *childScope = lModel->createExpressionContextScopeForChildAlgorithm( widgetContext.modelChildAlgorithmId(), *context, QVariantMap(), QVariantMap() ).release();
     c << childScope;
 

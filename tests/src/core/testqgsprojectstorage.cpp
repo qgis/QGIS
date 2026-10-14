@@ -197,7 +197,7 @@ void TestQgsProjectStorage::testMemoryStorage()
 
   // test project-related variables for project storage
   QgsExpressionContext expressionContext;
-  expressionContext.appendScope( QgsExpressionContextUtils::projectScope( &prj2 ) );
+  expressionContext.appendScope( QgsExpressionContextUtils::projectScope( &prj2 ).release() );
   QCOMPARE( QgsExpression( "@project_path" ).evaluate( &expressionContext ).toString(), QString( "memory:project1" ) );
   QCOMPARE( QgsExpression( "@project_basename" ).evaluate( &expressionContext ).toString(), QString( "project1" ) );
 

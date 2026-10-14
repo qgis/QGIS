@@ -116,7 +116,7 @@ QgsExpressionContext QgsLayoutChartSeriesDetailsWidget::createExpressionContext(
   }
   else
   {
-    context.appendScope( QgsExpressionContextUtils::globalScope() );
+    context.appendScope( QgsExpressionContextUtils::globalScope().release() );
   }
 
   return context;

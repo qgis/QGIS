@@ -1069,14 +1069,14 @@ QgsExpressionContext QgsAttributeForm::createExpressionContext( const QgsFeature
 {
   QgsExpressionContext context;
   context.appendScopes( QgsExpressionContextUtils::globalProjectLayerScopes( mLayer ) );
-  context.appendScope( QgsExpressionContextUtils::formScope( feature, mContext.attributeFormModeString() ) );
+  context.appendScope( QgsExpressionContextUtils::formScope( feature, mContext.attributeFormModeString() ).release() );
   if ( mExtraContextScope )
   {
     context.appendScope( new QgsExpressionContextScope( *mExtraContextScope.get() ) );
   }
   if ( mContext.parentFormFeature().isValid() )
   {
-    context.appendScope( QgsExpressionContextUtils::parentFormScope( mContext.parentFormFeature() ) );
+    context.appendScope( QgsExpressionContextUtils::parentFormScope( mContext.parentFormFeature() ).release() );
   }
   context.setFeature( feature );
   return context;

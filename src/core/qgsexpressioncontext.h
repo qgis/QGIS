@@ -738,6 +738,13 @@ class CORE_EXPORT QgsExpressionContext
     QgsExpressionContext &operator<<( QgsExpressionContextScope *scope SIP_TRANSFER );
 
     /**
+     * Appends a scope to the end of the context. This scope will override
+     * any matching variables or functions provided by existing scopes within the
+     * context. Ownership of the scope is transferred to the stack.
+     */
+    SIP_SKIP QgsExpressionContext &operator<<( std::unique_ptr< QgsExpressionContextScope > scope );
+
+    /**
      * Convenience function for setting a feature for the context. The feature
      * will be set within the last scope of the context, so will override any
      * existing features within the context.

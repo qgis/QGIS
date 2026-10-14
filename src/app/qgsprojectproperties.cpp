@@ -1104,8 +1104,8 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas *mapCanvas, QWidget *pa
   mCheckBoxRememberAttributeTables->setChecked( QgsProject::instance()->flags() & Qgis::ProjectFlag::RememberAttributeTableWindowsBetweenSessions );
 
   // Variables editor
-  mVariableEditor->context()->appendScope( QgsExpressionContextUtils::globalScope() );
-  mVariableEditor->context()->appendScope( QgsExpressionContextUtils::projectScope( QgsProject::instance() ) );
+  mVariableEditor->context()->appendScope( QgsExpressionContextUtils::globalScope().release() );
+  mVariableEditor->context()->appendScope( QgsExpressionContextUtils::projectScope( QgsProject::instance() ).release() );
   mVariableEditor->reloadContext();
   mVariableEditor->setEditableScopeIndex( 1 );
 

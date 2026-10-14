@@ -132,7 +132,7 @@ bool QgsTemporalUtils::exportAnimation( const QgsMapSettings &mapSettings, const
 
     QgsExpressionContext frameContext = context;
     frameContext.appendScope( navigator.createExpressionContextScope() );
-    frameContext.appendScope( QgsExpressionContextUtils::mapSettingsScope( ms ) );
+    frameContext.appendScope( QgsExpressionContextUtils::mapSettingsScope( ms ).release() );
     ms.setExpressionContext( frameContext );
 
     QString fileName( settings.fileNameTemplate );

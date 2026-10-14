@@ -283,10 +283,10 @@ QgsExpressionContext QgsProcessingModelerParameterWidget::createExpressionContex
     const QgsProcessingAlgorithm *alg = nullptr;
     if ( mModel->childAlgorithms().contains( mChildId ) )
       alg = mModel->childAlgorithm( mChildId ).algorithm();
-    QgsExpressionContextScope *algorithmScope = QgsExpressionContextUtils::processingAlgorithmScope( alg, QVariantMap(), mContext );
-    c << algorithmScope;
-    QgsExpressionContextScope *modelScope = QgsExpressionContextUtils::processingModelAlgorithmScope( mModel, QVariantMap(), mContext );
-    c << modelScope;
+    std::unique_ptr< QgsExpressionContextScope > algorithmScope = QgsExpressionContextUtils::processingAlgorithmScope( alg, QVariantMap(), mContext );
+    c << algorithmScope.release();
+    std::unique_ptr< QgsExpressionContextScope > modelScope = QgsExpressionContextUtils::processingModelAlgorithmScope( mModel, QVariantMap(), mContext );
+    c << modelScope.release();
     QgsExpressionContextScope *childScope = mModel->createExpressionContextScopeForChildAlgorithm( mChildId, mContext, QVariantMap(), QVariantMap() ).release();
     c << childScope;
 

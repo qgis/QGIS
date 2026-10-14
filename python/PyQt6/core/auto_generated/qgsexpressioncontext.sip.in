@@ -781,6 +781,7 @@ Removes the last scope from the expression context and return it.
 
 
 
+
     void setFeature( const QgsFeature &feature );
 %Docstring
 Convenience function for setting a feature for the context. The feature

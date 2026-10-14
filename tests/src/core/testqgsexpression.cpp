@@ -314,7 +314,7 @@ class TestQgsExpression : public QObject
     void evalMeshElement()
     {
       QgsExpressionContext context;
-      context.appendScope( QgsExpressionContextUtils::meshExpressionScope( QgsMesh::Vertex ) );
+      context.appendScope( QgsExpressionContextUtils::meshExpressionScope( QgsMesh::Vertex ).release() );
       context.lastScope()->setVariable( u"_mesh_vertex_index"_s, 2 );
       const QgsMesh mesh = *mMeshLayer->nativeMesh();
       context.lastScope()->setVariable( u"_native_mesh"_s, QVariant::fromValue( mesh ) );
@@ -337,7 +337,7 @@ class TestQgsExpression : public QObject
       QgsGeometry geom( new QgsPoint( 2500, 2500, 800 ) );
       QCOMPARE( geom.isExactlyEqual( outGeom ), true );
 
-      context.appendScope( QgsExpressionContextUtils::meshExpressionScope( QgsMesh::Face ) );
+      context.appendScope( QgsExpressionContextUtils::meshExpressionScope( QgsMesh::Face ).release() );
       context.lastScope()->setVariable( u"_mesh_face_index"_s, 2 );
       expression = QgsExpression( u"$face_area"_s );
       QCOMPARE( expression.evaluate( &context ).toDouble(), 250000 );
@@ -593,7 +593,7 @@ class TestQgsExpression : public QObject
       config.insert( u"map"_s, map );
       layer.setEditorWidgetSetup( 0, QgsEditorWidgetSetup( u"ValueMap"_s, config ) );
 
-      QgsExpressionContext context( { QgsExpressionContextUtils::layerScope( &layer ) } );
+      QgsExpressionContext context( { QgsExpressionContextUtils::layerScope( &layer ).release() } );
       context.setFeature( f2 );
       QgsExpression expression( "represent_attributes()" );
 
@@ -608,7 +608,7 @@ class TestQgsExpression : public QObject
       QCOMPARE( result.value( u"col1"_s ).toString(), u"two"_s );
       QCOMPARE( result.value( u"col2"_s ).toString(), u"test2"_s );
 
-      QgsExpressionContext context2( { QgsExpressionContextUtils::layerScope( &layer ) } );
+      QgsExpressionContext context2( { QgsExpressionContextUtils::layerScope( &layer ).release() } );
       context2.setFeature( f2 );
       expression = QgsExpression( "represent_attributes($currentfeature)" );
 
@@ -620,7 +620,7 @@ class TestQgsExpression : public QObject
       QCOMPARE( result.value( u"col2"_s ).toString(), u"test2"_s );
 
       QgsProject::instance()->addMapLayer( &layer, false, false );
-      QgsExpressionContext context3( { QgsExpressionContextUtils::projectScope( QgsProject::instance() ) } );
+      QgsExpressionContext context3( { QgsExpressionContextUtils::projectScope( QgsProject::instance() ).release() } );
       context3.setFeature( f2 );
       expression = QgsExpression( "represent_attributes('test_represent_attributes', $currentfeature)" );
 
@@ -637,7 +637,7 @@ class TestQgsExpression : public QObject
       // Test errors
       QgsProject::instance()->removeMapLayer( layer.id() );
       expression = QgsExpression( "represent_attributes('test_represent_attributes', $currentfeature)" );
-      QgsExpressionContext context4( { QgsExpressionContextUtils::projectScope( QgsProject::instance() ) } );
+      QgsExpressionContext context4( { QgsExpressionContextUtils::projectScope( QgsProject::instance() ).release() } );
       result = expression.evaluate( &context4 ).toMap();
       QVERIFY( expression.hasEvalError() );
     };
@@ -3108,7 +3108,7 @@ class TestQgsExpression : public QObject
 
       // project scope is needed so that layers can be resolved by name or id
       QgsExpressionContext context;
-      context.appendScope( QgsExpressionContextUtils::projectScope( QgsProject::instance() ) );
+      context.appendScope( QgsExpressionContextUtils::projectScope( QgsProject::instance() ).release() );
 
       QVariant result = exp.evaluate( &context );
       if ( exp.hasEvalError() )
@@ -3290,7 +3290,7 @@ class TestQgsExpression : public QObject
       QCOMPARE( exp.hasParserError(), false );
 
       // project scope is needed so that layers can be resolved by name or id
-      QgsExpressionContext context( { QgsExpressionContextUtils::projectScope( QgsProject::instance() ) } );
+      QgsExpressionContext context( { QgsExpressionContextUtils::projectScope( QgsProject::instance() ).release() } );
 
       QVariant result = exp.evaluate( &context );
       if ( exp.hasEvalError() )
@@ -3540,7 +3540,7 @@ class TestQgsExpression : public QObject
         qDebug() << exp.parserErrorString();
 
       // project scope is needed so that layers can be resolved by name or id
-      QgsExpressionContext context( { QgsExpressionContextUtils::projectScope( QgsProject::instance() ) } );
+      QgsExpressionContext context( { QgsExpressionContextUtils::projectScope( QgsProject::instance() ).release() } );
 
       QVariant res = exp.evaluate( &context );
       if ( exp.hasEvalError() )
@@ -3687,7 +3687,7 @@ class TestQgsExpression : public QObject
     void aggregate()
     {
       // project scope is needed so that layers can be resolved by name or id
-      QgsExpressionContext context( { QgsExpressionContextUtils::projectScope( QgsProject::instance() ) } );
+      QgsExpressionContext context( { QgsExpressionContextUtils::projectScope( QgsProject::instance() ).release() } );
       QgsExpressionContextScope *scope = new QgsExpressionContextScope();
       scope->setVariable( u"test_var"_s, 10 );
       context << scope;
@@ -3709,7 +3709,7 @@ class TestQgsExpression : public QObject
       //try evaluating once with only the project scope (only if variables aren't required)
       if ( !string.contains( "@"_L1 ) )
       {
-        QgsExpressionContext projectContext( { QgsExpressionContextUtils::projectScope( QgsProject::instance() ) } );
+        QgsExpressionContext projectContext( { QgsExpressionContextUtils::projectScope( QgsProject::instance() ).release() } );
         res = exp.evaluate( &projectContext );
         if ( exp.hasEvalError() )
           qDebug() << exp.evalErrorString();
@@ -3829,12 +3829,12 @@ class TestQgsExpression : public QObject
       QFETCH( QVariant, result );
 
       QgsExpressionContext context;
-      context.appendScope( QgsExpressionContextUtils::globalScope() );
-      context.appendScope( QgsExpressionContextUtils::projectScope( QgsProject::instance() ) );
+      context.appendScope( QgsExpressionContextUtils::globalScope().release() );
+      context.appendScope( QgsExpressionContextUtils::projectScope( QgsProject::instance() ).release() );
       if ( layer )
       {
         //layer->setDisplayExpression( u"Display expression with class = ' || Class"_s );
-        context.appendScope( QgsExpressionContextUtils::layerScope( layer ) );
+        context.appendScope( QgsExpressionContextUtils::layerScope( layer ).release() );
       }
       context.setFeature( feature );
 
@@ -3858,9 +3858,9 @@ class TestQgsExpression : public QObject
       QFETCH( QgsVectorLayer *, layer );
 
       // project scope is needed so that layers can be resolved by name or id
-      QgsExpressionContext context( { QgsExpressionContextUtils::projectScope( QgsProject::instance() ) } );
+      QgsExpressionContext context( { QgsExpressionContextUtils::projectScope( QgsProject::instance() ).release() } );
       if ( layer )
-        context.appendScope( QgsExpressionContextUtils::layerScope( layer ) );
+        context.appendScope( QgsExpressionContextUtils::layerScope( layer ).release() );
 
       QgsFeatureIds backupSelection = mMemoryLayer->selectedFeatureIds();
       context.setFeature( feature );
@@ -3913,7 +3913,7 @@ class TestQgsExpression : public QObject
 
       QgsExpressionContext context;
       if ( layer )
-        context.appendScope( QgsExpressionContextUtils::layerScope( layer ) );
+        context.appendScope( QgsExpressionContextUtils::layerScope( layer ).release() );
 
       context.setFeature( feature );
 
@@ -3955,7 +3955,7 @@ class TestQgsExpression : public QObject
     void layerAggregates()
     {
       QgsExpressionContext context;
-      context.appendScope( QgsExpressionContextUtils::layerScope( mAggregatesLayer ) );
+      context.appendScope( QgsExpressionContextUtils::layerScope( mAggregatesLayer ).release() );
 
       QgsFeature af1( mAggregatesLayer->dataProvider()->fields(), 1 );
       af1.setAttribute( u"col1"_s, 4 );
@@ -4036,7 +4036,7 @@ class TestQgsExpression : public QObject
       QFETCH( QVariant, result );
 
       QgsExpressionContext context;
-      context.appendScope( QgsExpressionContextUtils::layerScope( mAggregatesLayer ) );
+      context.appendScope( QgsExpressionContextUtils::layerScope( mAggregatesLayer ).release() );
 
       QgsFeature af1( mAggregatesLayer->dataProvider()->fields(), 1 );
       QVariantMap::const_iterator it = fields.constBegin();
@@ -4076,7 +4076,7 @@ class TestQgsExpression : public QObject
         qDebug() << exp.parserErrorString();
 
       // project scope is needed so that layers can be resolved by name or id
-      QgsExpressionContext context( { QgsExpressionContextUtils::projectScope( QgsProject::instance() ) } );
+      QgsExpressionContext context( { QgsExpressionContextUtils::projectScope( QgsProject::instance() ).release() } );
 
       QVariant res = exp.evaluate( &context );
       if ( exp.hasEvalError() )
@@ -5831,10 +5831,10 @@ class TestQgsExpression : public QObject
       const QString pointsLayerId = mPointsLayer->id();
       const QString pointsLayerName = mPointsLayer->name();
 
-      const QgsExpressionContextScope *projectScopeTemplate = QgsExpressionContextUtils::projectScope( QgsProject::instance() );
+      std::unique_ptr< QgsExpressionContextScope > projectScopeTemplate = QgsExpressionContextUtils::projectScope( QgsProject::instance() );
 
       bool testOk = false;
-      auto runTest = [weakPointer, rawPointer, pointsLayerId, pointsLayerName, projectScopeTemplate, this, &testOk] {
+      auto runTest = [weakPointer, rawPointer, pointsLayerId, pointsLayerName, &projectScopeTemplate, this, &testOk] {
         testOk = false;
         QgsExpression exp;
         // NULL value

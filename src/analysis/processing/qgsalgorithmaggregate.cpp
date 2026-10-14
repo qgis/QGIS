@@ -231,7 +231,7 @@ QVariantMap QgsAggregateAlgorithm::processAlgorithm( const QVariantMap &paramete
     const Group &group = groups[key];
 
     QgsExpressionContext exprContext = createExpressionContext( parameters, context );
-    exprContext.appendScope( QgsExpressionContextUtils::layerScope( group.layer ) );
+    exprContext.appendScope( QgsExpressionContextUtils::layerScope( group.layer ).release() );
     exprContext.setFeature( group.firstFeature );
 
     QgsGeometry geometry = mGeometryExpression.evaluate( &exprContext ).value<QgsGeometry>();

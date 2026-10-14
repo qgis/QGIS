@@ -541,7 +541,7 @@ void QgsVectorLayer::selectByExpression( const QString &expression, Qgis::Select
   }
   else
   {
-    context->appendScope( QgsExpressionContextUtils::layerScope( this ) );
+    context->appendScope( QgsExpressionContextUtils::layerScope( this ).release() );
   }
 
   QgsExpression exp( expression );
@@ -6106,7 +6106,7 @@ QgsExpressionContextScope *QgsVectorLayer::createExpressionContextScope() const
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
-  return QgsExpressionContextUtils::layerScope( this );
+  return QgsExpressionContextUtils::layerScope( this ).release();
 }
 
 void QgsVectorLayer::setDiagramLayerSettings( const QgsDiagramLayerSettings &s )

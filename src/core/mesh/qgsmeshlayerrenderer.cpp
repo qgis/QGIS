@@ -745,7 +745,7 @@ void QgsMeshLayerRenderer::prepareLabeling( QgsMeshLayer *layer, QSet<QString> &
       {
         auto c = context.expressionContext();
 
-        c.appendScope( QgsExpressionContextUtils::meshExpressionScope( mLabelProvider->labelFaces() ? QgsMesh::Face : QgsMesh::Vertex ) );
+        c.appendScope( QgsExpressionContextUtils::meshExpressionScope( mLabelProvider->labelFaces() ? QgsMesh::Face : QgsMesh::Vertex ).release() );
         c.lastScope()->setVariable( u"_native_mesh"_s, QVariant::fromValue( mNativeMesh ) );
         context.setExpressionContext( c );
 

@@ -546,7 +546,7 @@ QgsExpressionContext QgsLayoutAtlas::createExpressionContext() const
   if ( mLayout )
     expressionContext << QgsExpressionContextUtils::projectScope( mLayout->project() ) << QgsExpressionContextUtils::layoutScope( mLayout );
 
-  expressionContext.appendScope( QgsExpressionContextUtils::atlasScope( this ) );
+  expressionContext.appendScope( QgsExpressionContextUtils::atlasScope( this ).release() );
 
   if ( mCoverageLayer )
     expressionContext.appendScope( mCoverageLayer->createExpressionContextScope() );

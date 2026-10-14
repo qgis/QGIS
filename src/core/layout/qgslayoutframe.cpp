@@ -136,7 +136,7 @@ QgsExpressionContext QgsLayoutFrame::createExpressionContext() const
   QgsExpressionContext context = mMultiFrame->createExpressionContext();
 
   //add frame's individual context
-  context.appendScope( QgsExpressionContextUtils::layoutItemScope( this ) );
+  context.appendScope( QgsExpressionContextUtils::layoutItemScope( this ).release() );
 
   return context;
 }

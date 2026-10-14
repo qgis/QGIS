@@ -739,7 +739,7 @@ QgsExpressionContext QgsLayoutItemAttributeTable::createExpressionContext() cons
 
   if ( mSource == LayerAttributes )
   {
-    context.appendScope( QgsExpressionContextUtils::layerScope( mVectorLayer.get() ) );
+    context.appendScope( QgsExpressionContextUtils::layerScope( mVectorLayer.get() ).release() );
   }
 
   return context;

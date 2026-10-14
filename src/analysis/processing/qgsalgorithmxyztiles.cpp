@@ -578,7 +578,7 @@ std::optional< QgsMapSettings > QgsXyzTilesBaseAlgorithm::mapSettingsForTile( co
   settings.setLabelingEngineSettings( labelingSettings );
 
   QgsExpressionContext exprContext = mExpressionContext;
-  exprContext.appendScope( QgsExpressionContextUtils::mapSettingsScope( settings ) );
+  exprContext.appendScope( QgsExpressionContextUtils::mapSettingsScope( settings ).release() );
   settings.setExpressionContext( exprContext );
 
   return settings;

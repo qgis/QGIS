@@ -630,7 +630,7 @@ std::vector<LayerRenderJob> QgsMapRendererJob::prepareJobs( QPainter *painter, Q
 
     job.setContext( std::make_unique< QgsRenderContext >( QgsRenderContext::fromMapSettings( mSettings ) ) );
     if ( !ml->customProperty( u"_noset_layer_expression_context"_s ).toBool() )
-      job.context()->expressionContext().appendScope( QgsExpressionContextUtils::layerScope( ml ) );
+      job.context()->expressionContext().appendScope( QgsExpressionContextUtils::layerScope( ml ).release() );
     job.context()->setPainter( painter );
     job.context()->setLabelingEngine( labelingEngine2 );
     job.context()->setLabelSink( labelSink() );

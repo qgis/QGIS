@@ -110,7 +110,7 @@ QgsExpressionContext QgsPrintLayout::createExpressionContext() const
 
   if ( mAtlas->enabled() )
   {
-    context.appendScope( QgsExpressionContextUtils::atlasScope( mAtlas ) );
+    context.appendScope( QgsExpressionContextUtils::atlasScope( mAtlas ).release() );
   }
 
   return context;

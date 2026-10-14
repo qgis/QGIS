@@ -643,7 +643,7 @@ void TestQgsExternalStorageFileWidget::testStoringChangeFeature()
   w.setStorageUrlExpression( "'http://test.url.com/' || attribute( @current_feature, 'myfield' )" );
 
   QgsExpressionContext expressionContext;
-  expressionContext.appendScope( QgsExpressionContextUtils::formScope( f1 ) );
+  expressionContext.appendScope( QgsExpressionContextUtils::formScope( f1 ).release() );
   w.setExpressionContext( expressionContext );
 
   w.setUseLink( false );
@@ -659,7 +659,7 @@ void TestQgsExternalStorageFileWidget::testStoringChangeFeature()
   f2.setAttribute( u"myfield"_s, u"val2"_s );
 
   QgsExpressionContext expressionContext2;
-  expressionContext2.appendScope( QgsExpressionContextUtils::formScope( f2 ) );
+  expressionContext2.appendScope( QgsExpressionContextUtils::formScope( f2 ).release() );
   w.setExpressionContext( expressionContext2 );
 
   w.setSelectedFileNames( QStringList() << u"blank"_s );

@@ -285,8 +285,8 @@ QString QgsMapTip::fetchFeature( QgsMapLayer *layer, QgsPointXY &mapPosition, Qg
   r = mapCanvas->mapSettings().mapToLayerCoordinates( layer, r );
 
   QgsExpressionContext context( QgsExpressionContextUtils::globalProjectLayerScopes( vlayer ) );
-  context.appendScope( QgsExpressionContextUtils::mapSettingsScope( mapCanvas->mapSettings() ) );
-  context.appendScope( QgsExpressionContextUtils::mapLayerPositionScope( r.center() ) );
+  context.appendScope( QgsExpressionContextUtils::mapSettingsScope( mapCanvas->mapSettings() ).release() );
+  context.appendScope( QgsExpressionContextUtils::mapLayerPositionScope( r.center() ).release() );
 
   const QString canvasFilter = QgsMapCanvasUtils::filterForLayer( mapCanvas, vlayer );
   if ( canvasFilter == "FALSE"_L1 )
@@ -395,8 +395,8 @@ QString QgsMapTip::fetchRaster( QgsMapLayer *layer, QgsPointXY &mapPosition, Qgs
   }
 
   QgsExpressionContext context( QgsExpressionContextUtils::globalProjectLayerScopes( layer ) );
-  context.appendScope( QgsExpressionContextUtils::mapSettingsScope( mapCanvas->mapSettings() ) );
-  context.appendScope( QgsExpressionContextUtils::mapLayerPositionScope( mappedPosition ) );
+  context.appendScope( QgsExpressionContextUtils::mapSettingsScope( mapCanvas->mapSettings() ).release() );
+  context.appendScope( QgsExpressionContextUtils::mapLayerPositionScope( mappedPosition ).release() );
   return QgsExpression::replaceExpressionText( rlayer->mapTipTemplate(), &context );
 }
 
@@ -432,7 +432,7 @@ QString QgsMapTip::vectorMapTipPreviewText( QgsMapLayer *layer, QgsMapCanvas *ma
 
   // Create an expression context
   QgsExpressionContext context( QgsExpressionContextUtils::globalProjectLayerScopes( vlayer ) );
-  context.appendScope( QgsExpressionContextUtils::mapSettingsScope( mapCanvas->mapSettings() ) );
+  context.appendScope( QgsExpressionContextUtils::mapSettingsScope( mapCanvas->mapSettings() ).release() );
 
   // Get the first feature if any, and add it to the expression context
   QgsFeature previewFeature;
@@ -474,11 +474,11 @@ QString QgsMapTip::rasterMapTipPreviewText( QgsMapLayer *layer, QgsMapCanvas *ma
 
   // Create an expression context
   QgsExpressionContext context( QgsExpressionContextUtils::globalProjectLayerScopes( layer ) );
-  context.appendScope( QgsExpressionContextUtils::mapSettingsScope( mapCanvas->mapSettings() ) );
+  context.appendScope( QgsExpressionContextUtils::mapSettingsScope( mapCanvas->mapSettings() ).release() );
 
   // Get the position of the center of the layer, and add it to the expression context
   const QgsPointXY mappedPosition { layer->extent().center() };
-  context.appendScope( QgsExpressionContextUtils::mapLayerPositionScope( mappedPosition ) );
+  context.appendScope( QgsExpressionContextUtils::mapLayerPositionScope( mappedPosition ).release() );
 
   // Generate the map tip text from the context and the mapTipTemplate
   const QString tipText = QgsExpression::replaceExpressionText( mapTemplate, &context );

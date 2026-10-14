@@ -293,7 +293,7 @@ void QgsSymbolSelectorWidget::setContext( const QgsSymbolWidgetContext &context 
   {
     mPreviewExpressionContext = *lExpressionContext;
     if ( mVectorLayer )
-      mPreviewExpressionContext.appendScope( QgsExpressionContextUtils::layerScope( mVectorLayer ) );
+      mPreviewExpressionContext.appendScope( QgsExpressionContextUtils::layerScope( mVectorLayer ).release() );
 
     mPreviewExpressionContext.setFeature( mPreviewFeature );
   }

@@ -283,7 +283,7 @@ QgsAbstractLayoutUndoCommand *QgsLayoutMultiFrame::createCommand( const QString 
 QgsExpressionContext QgsLayoutMultiFrame::createExpressionContext() const
 {
   QgsExpressionContext context = QgsLayoutObject::createExpressionContext();
-  context.appendScope( QgsExpressionContextUtils::multiFrameScope( this ) );
+  context.appendScope( QgsExpressionContextUtils::multiFrameScope( this ).release() );
   return context;
 }
 

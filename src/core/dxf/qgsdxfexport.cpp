@@ -895,9 +895,9 @@ void QgsDxfExport::prepareRenderers()
     QgsMapToPixel( 1.0 / mFactor, mMapSettings.extent().center().x(), mMapSettings.extent().center().y(), std::floor( mMapSettings.extent().width() * mFactor ), std::floor( mMapSettings.extent().height() * mFactor ), 0 )
   );
 
-  mRenderContext.expressionContext().appendScope( QgsExpressionContextUtils::projectScope( QgsProject::instance() ) ); // skip-keyword-check
-  mRenderContext.expressionContext().appendScope( QgsExpressionContextUtils::globalScope() );
-  mRenderContext.expressionContext().appendScope( QgsExpressionContextUtils::mapSettingsScope( mMapSettings ) );
+  mRenderContext.expressionContext().appendScope( QgsExpressionContextUtils::projectScope( QgsProject::instance() ).release() ); // skip-keyword-check
+  mRenderContext.expressionContext().appendScope( QgsExpressionContextUtils::globalScope().release() );
+  mRenderContext.expressionContext().appendScope( QgsExpressionContextUtils::mapSettingsScope( mMapSettings ).release() );
 
   mLabelingEngine = std::make_unique<QgsDefaultLabelingEngine>( mMapSettings );
   mRenderContext.setLabelingEngine( mLabelingEngine.get() );

@@ -98,7 +98,7 @@ void QgsMeshSelectByExpressionDialog::onElementTypeChanged() const
   QgsSettings settings;
   settings.setValue( u"/meshSelection/elementType"_s, elementType );
 
-  QgsExpressionContext expressionContext( { QgsExpressionContextUtils::meshExpressionScope( elementType ) } );
+  QgsExpressionContext expressionContext( { QgsExpressionContextUtils::meshExpressionScope( elementType ).release() } );
   mExpressionBuilder->init( expressionContext, u"mesh_vertex_selection"_s, QgsExpressionBuilderWidget::LoadAll );
 }
 
