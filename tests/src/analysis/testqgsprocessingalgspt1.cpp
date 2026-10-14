@@ -5736,7 +5736,7 @@ void TestQgsProcessingAlgsPt1::setProjectVariable()
   parameters.insert( u"VALUE"_s, 13 );
   results = alg->run( parameters, *context, &feedback, &ok );
   QVERIFY( ok );
-  scope.reset( QgsExpressionContextUtils::projectScope( &p ) );
+  scope = QgsExpressionContextUtils::projectScope( &p );
   QCOMPARE( scope->variable( u"my_var"_s ).toInt(), 13 );
 }
 
