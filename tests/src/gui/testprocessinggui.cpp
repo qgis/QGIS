@@ -7526,11 +7526,13 @@ void TestProcessingGui::testLayerDefinitionWidgetDefaultValue()
 
   std::unique_ptr<QgsProcessingParameterDefinitionWidget> widget;
 
+  // lambda simplifier to recreate the widget get the QgsProcessingMapLayerComboBox from the widget
   auto createWidget = [&]( const QString &type, const QgsProcessingParameterDefinition *param ) -> QgsProcessingMapLayerComboBox * {
     widget = std::make_unique<QgsProcessingParameterDefinitionWidget>( type, context, widgetContext, param );
     return widget->findChild<QgsProcessingMapLayerComboBox *>();
   };
 
+  // lambda simplifier to get default value from the widget
   auto defaultValue = [&]() -> QVariant {
     std::unique_ptr<QgsProcessingParameterDefinition> def( widget->createParameter( u"param_name"_s ) );
     return def->defaultValue();
