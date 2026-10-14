@@ -26,6 +26,7 @@
 #include "qgsannotationlayer.h"
 #include "qgsauthconfigselect.h"
 #include "qgsauthmanager.h"
+#include "qgscheckablecombobox.h"
 #include "qgscolorbutton.h"
 #include "qgscoordinateoperationwidget.h"
 #include "qgsdatabaseschemacombobox.h"
@@ -298,6 +299,7 @@ class TestProcessingGui : public QgsTest
     void testMapLayerWrapper();
     void testRasterLayerWrapper();
     void testVectorLayerWrapper();
+    void testLayerDefinitionWidgetDefaultValue();
     void testFeatureSourceWrapper();
     void testMeshLayerWrapper();
     void paramConfigWidget();
@@ -7509,6 +7511,104 @@ void TestProcessingGui::testRasterLayerWrapper()
 
   // modeler wrapper
   testWrapper( Qgis::ProcessingMode::Modeler );
+}
+
+void TestProcessingGui::testLayerDefinitionWidgetDefaultValue()
+{
+  QgsProcessingParameterWidgetContext widgetContext;
+  QgsProcessingContext context;
+  context.setProject( QgsProject::instance() );
+
+  QgsVectorLayer *pointLayer = new QgsVectorLayer( u"Point"_s, u"point"_s, u"memory"_s );
+  QgsVectorLayer *lineLayer = new QgsVectorLayer( u"LineString"_s, u"line"_s, u"memory"_s );
+  QgsProject::instance()->addMapLayers( { pointLayer, lineLayer } );
+  const QString pointsFile = TEST_DATA_DIR + u"/points.shp"_s;
+
+  std::unique_ptr<QgsProcessingParameterDefinitionWidget> widget;
+  auto createWidget = [&]( const QString &type, const QgsProcessingParameterDefinition *param ) -> QgsProcessingMapLayerComboBox * {
+    widget = std::make_unique<QgsProcessingParameterDefinitionWidget>( type, context, widgetContext, param );
+    return widget->findChild<QgsProcessingMapLayerComboBox *>();
+  };
+  auto defaultValue = [&]() -> QVariant {
+    std::unique_ptr<QgsProcessingParameterDefinition> def( widget->createParameter( u"param_name"_s ) );
+    return def->defaultValue();
+  };
+
+  // a project layer selected as default value is stored by its name
+  QgsProcessingParameterVectorLayer vectorParam( u"n"_s, u"test desc"_s, QList<int>() << static_cast<int>( Qgis::ProcessingSourceType::VectorPoint ) );
+  QgsProcessingMapLayerComboBox *layerComboBox = createWidget( u"vector"_s, &vectorParam );
+  QVERIFY( layerComboBox );
+  QVERIFY( !defaultValue().isValid() );
+  QSignalSpy spy( widget.get(), &QgsProcessingParameterDefinitionWidget::changed );
+  layerComboBox->setLayer( pointLayer );
+  QCOMPARE( spy.count(), 1 );
+  QCOMPARE( defaultValue().toString(), u"point"_s );
+
+  // the default value stays if types are extended
+  QgsCheckableComboBox *geometryTypeComboBox = widget->findChild<QgsCheckableComboBox *>();
+  QVERIFY( geometryTypeComboBox );
+  geometryTypeComboBox->toggleItemCheckState( geometryTypeComboBox->findData( static_cast<int>( Qgis::ProcessingSourceType::VectorLine ) ) );
+  QCOMPARE( widget->findChild<QgsProcessingMapLayerComboBox *>()->currentLayer(), pointLayer );
+  QCOMPARE( defaultValue().toString(), u"point"_s );
+
+  // a stored layer name is prefilled
+  vectorParam.setDefaultValue( u"point"_s );
+  layerComboBox = createWidget( u"vector"_s, &vectorParam );
+  QCOMPARE( layerComboBox->currentLayer(), pointLayer );
+
+  // a default which is not available is not prefilled, but kept
+  vectorParam.setDefaultValue( u"layer not existing in project"_s );
+  layerComboBox = createWidget( u"vector"_s, &vectorParam );
+  QVERIFY( !layerComboBox->value().isValid() );
+  QCOMPARE( defaultValue().toString(), u"layer not existing in project"_s );
+
+  // an existing file is prefilled
+  vectorParam.setDefaultValue( pointsFile );
+  layerComboBox = createWidget( u"vector"_s, &vectorParam );
+  QCOMPARE( layerComboBox->value().toString(), pointsFile );
+  QCOMPARE( defaultValue().toString(), pointsFile );
+
+  // a layer ID from older models is prefilled, and kept until the user changes it
+  QgsProcessingParameterFeatureSource sourceParam( u"n"_s, u"test desc"_s, QList<int>(), lineLayer->id() );
+  layerComboBox = createWidget( u"source"_s, &sourceParam );
+  QCOMPARE( layerComboBox->currentLayer(), lineLayer );
+  QCOMPARE( defaultValue().toString(), lineLayer->id() );
+
+  // the layer name is also stored in feature source definitions
+  pointLayer->dataProvider()->addFeature( *std::make_unique<QgsFeature>() );
+  pointLayer->selectAll();
+  layerComboBox->setValue( QgsProcessingFeatureSourceDefinition( pointLayer->id(), true ), context );
+  const QgsProcessingFeatureSourceDefinition sourceDefinition = defaultValue().value<QgsProcessingFeatureSourceDefinition>();
+  QCOMPARE( sourceDefinition.source.staticValue().toString(), u"point"_s );
+  QVERIFY( sourceDefinition.selectedFeaturesOnly );
+  pointLayer->removeSelection();
+
+  // map layer
+  QgsProcessingParameterMapLayer mapLayerParam( u"n"_s, u"test desc"_s );
+  layerComboBox = createWidget( u"layer"_s, &mapLayerParam );
+  QVERIFY( layerComboBox );
+  layerComboBox->setLayer( lineLayer );
+  QCOMPARE( defaultValue().toString(), u"line"_s );
+
+  // raster layer
+  QgsProcessingParameterRasterLayer rasterParam( u"n"_s, u"test desc"_s, u"layer from other project"_s );
+  layerComboBox = createWidget( u"raster"_s, &rasterParam );
+  QVERIFY( layerComboBox );
+  QVERIFY( !layerComboBox->value().isValid() );
+  QCOMPARE( defaultValue().toString(), u"layer from other project"_s );
+
+  // multiple layers
+  QgsProcessingParameterMultipleLayers multiParam( u"n"_s, u"test desc"_s, Qgis::ProcessingSourceType::VectorAnyGeometry, QVariantList() << u"point"_s << u"layer from other project"_s );
+  createWidget( u"multilayer"_s, &multiParam );
+  QgsProcessingMultipleLayerPanelWidget *multiPanel = widget->findChild<QgsProcessingMultipleLayerPanelWidget *>();
+  QVERIFY( multiPanel );
+  QCOMPARE( multiPanel->value().toList(), QVariantList() << pointLayer->source() );
+  QCOMPARE( defaultValue().toList(), QVariantList() << u"point"_s << u"layer from other project"_s );
+  multiPanel->setValue( QVariantList() << pointLayer->id() << lineLayer->id() );
+  QCOMPARE( defaultValue().toList(), QVariantList() << u"point"_s << u"line"_s );
+  widget.reset();
+
+  QgsProject::instance()->removeMapLayers( { pointLayer->id(), lineLayer->id() } );
 }
 
 void TestProcessingGui::testVectorLayerWrapper()
