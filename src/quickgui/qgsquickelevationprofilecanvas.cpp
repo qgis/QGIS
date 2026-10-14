@@ -258,8 +258,8 @@ void QgsQuickElevationProfileCanvas::refresh()
   request.setTerrainProvider( mProject->elevationProperties()->terrainProvider() ? mProject->elevationProperties()->terrainProvider()->clone() : nullptr );
 
   QgsExpressionContext context;
-  context.appendScope( QgsExpressionContextUtils::globalScope() );
-  context.appendScope( QgsExpressionContextUtils::projectScope( mProject ) );
+  context.appendScope( QgsExpressionContextUtils::globalScope().release() );
+  context.appendScope( QgsExpressionContextUtils::projectScope( mProject ).release() );
   request.setExpressionContext( context );
 
   const QList<QgsMapLayer *> layersToGenerate = layers();
@@ -312,8 +312,8 @@ void QgsQuickElevationProfileCanvas::generationFinished()
   QgsRenderContext rc = QgsRenderContext::fromQPainter( &imagePainter );
   rc.setDevicePixelRatio( devicePixelRatio );
 
-  rc.expressionContext().appendScope( QgsExpressionContextUtils::globalScope() );
-  rc.expressionContext().appendScope( QgsExpressionContextUtils::projectScope( mProject ) );
+  rc.expressionContext().appendScope( QgsExpressionContextUtils::globalScope().release() );
+  rc.expressionContext().appendScope( QgsExpressionContextUtils::projectScope( mProject ).release() );
 
   QgsPlotRenderContext plotContext;
   mPlotItem->calculateOptimisedIntervals( rc, plotContext );
