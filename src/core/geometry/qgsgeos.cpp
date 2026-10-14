@@ -3143,19 +3143,14 @@ geos::unique_ptr QgsGeos::createGeosPointXY( double x, double y, bool hasZ, doub
 
 #if GEOS_VERSION_MAJOR > 3 || ( GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR > 15 ) || ( GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR == 15 && GEOS_VERSION_PATCH >= 1 )
     GEOSCoordSequence *coordSeq = GEOSCoordSeq_createWithDimensions_r( context, 1, hasZ ? 1 : 0, hasM ? 1 : 0 );
-    if ( !coordSeq )
-    {
-      QgsDebugError( u"GEOS Exception: Could not create coordinate sequence for point with %1 dimensions"_s.arg( coordDims ) );
-      return nullptr;
-    }
 #else
     GEOSCoordSequence *coordSeq = GEOSCoordSeq_create_r( context, 1, coordDims );
+#endif
     if ( !coordSeq )
     {
       QgsDebugError( u"GEOS Exception: Could not create coordinate sequence for point with %1 dimensions"_s.arg( coordDims ) );
       return nullptr;
     }
-#endif
     if ( precision > 0. )
     {
       GEOSCoordSeq_setX_r( context, coordSeq, 0, std::round( x / precision ) * precision );
