@@ -95,24 +95,24 @@ QVariant QgsExpressionFunction::run( QgsExpressionNode::NodeList *args, const Qg
   {
     int arg = 0;
     const QList< QgsExpressionNode * > argList = args->list();
-    argValues.reserve( argList.size() );
+    argValues.resize( argList.size() );
+    QVariant *outArg = argValues.data();
     for ( QgsExpressionNode *n : argList )
     {
-      QVariant v;
       if ( lazyEval() )
       {
         // Pass in the node for the function to eval as it needs.
-        v = QVariant::fromValue( n );
+        *outArg = QVariant::fromValue( n );
       }
       else
       {
-        v = n->eval( parent, context );
+        *outArg = n->eval( parent, context );
         ENSURE_NO_EVAL_ERROR
         bool defaultParamIsNull = mParameterList.count() > arg && mParameterList.at( arg ).optional() && !mParameterList.at( arg ).defaultValue().isValid();
-        if ( QgsExpressionUtils::isNull( v ) && !defaultParamIsNull && !handlesNull() )
+        if ( QgsExpressionUtils::isNull( *outArg ) && !defaultParamIsNull && !handlesNull() )
           return QVariant(); // all "normal" functions return NULL, when any QgsExpressionFunction::Parameter is NULL (so coalesce is abnormal)
       }
-      argValues.append( v );
+      outArg++;
       arg++;
     }
   }
