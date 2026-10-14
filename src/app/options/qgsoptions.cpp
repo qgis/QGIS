@@ -1496,11 +1496,11 @@ void QgsOptions::uiThemeChanged( const QString &theme )
   QgisApp::instance()->setTheme( theme );
 }
 
-void QgsOptions::mProjectOnLaunchCmbBx_currentIndexChanged( int indx )
+void QgsOptions::mProjectOnLaunchCmbBx_currentIndexChanged( int idx )
 {
-  const bool specific = ( indx == 2 );
-  mProjectOnLaunchLineEdit->setEnabled( specific );
-  mProjectOnLaunchPushBtn->setEnabled( specific );
+  const bool specificProject = ( idx == 2 );
+  mProjectOnLaunchLineEdit->setEnabled( specificProject );
+  mProjectOnLaunchPushBtn->setEnabled( specificProject );
 }
 
 void QgsOptions::selectProjectOnLaunch()
