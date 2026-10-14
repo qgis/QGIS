@@ -462,14 +462,14 @@ void TestQgsLayoutMultiFrame::variables()
   const int before = scope->variableCount();
 
   QgsExpressionContextUtils::setLayoutMultiFrameVariable( html, u"var"_s, 5 );
-  scope.reset( QgsExpressionContextUtils::multiFrameScope( html ) );
+  scope = QgsExpressionContextUtils::multiFrameScope( html );
   QCOMPARE( scope->variableCount(), before + 1 );
   QCOMPARE( scope->variable( u"var"_s ).toInt(), 5 );
 
   QVariantMap vars;
   vars.insert( u"var2"_s, 7 );
   QgsExpressionContextUtils::setLayoutMultiFrameVariables( html, vars );
-  scope.reset( QgsExpressionContextUtils::multiFrameScope( html ) );
+  scope = QgsExpressionContextUtils::multiFrameScope( html );
   QCOMPARE( scope->variableCount(), before + 1 );
   QVERIFY( !scope->hasVariable( u"var"_s ) );
   QCOMPARE( scope->variable( u"var2"_s ).toInt(), 7 );

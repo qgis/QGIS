@@ -791,7 +791,7 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView, public QgsExpressionContex
      * \see setExpressionContextScope()
      * \since QGIS 3.4
      */
-    QgsExpressionContextScope *defaultExpressionContextScope() const SIP_FACTORY;
+    std::unique_ptr<QgsExpressionContextScope> defaultExpressionContextScope() const;
 
     QgsExpressionContext createExpressionContext() const override;
 

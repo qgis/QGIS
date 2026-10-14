@@ -632,7 +632,7 @@ class CORE_EXPORT QgsExpressionNodeCondition : public QgsExpressionNode
         /**
          * Gets a deep copy of this WhenThen combination.
          */
-        QgsExpressionNodeCondition::WhenThen *clone() const SIP_FACTORY;
+        std::unique_ptr<QgsExpressionNodeCondition::WhenThen> clone() const;
 
         /**
          * The expression that makes the WHEN part of the condition.

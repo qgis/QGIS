@@ -6106,7 +6106,7 @@ QgsExpressionContextScope *QgsVectorLayer::createExpressionContextScope() const
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
-  return QgsExpressionContextUtils::layerScope( this );
+  return QgsExpressionContextUtils::layerScope( this ).release();
 }
 
 void QgsVectorLayer::setDiagramLayerSettings( const QgsDiagramLayerSettings &s )

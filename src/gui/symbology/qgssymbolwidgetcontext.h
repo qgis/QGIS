@@ -102,7 +102,7 @@ class GUI_EXPORT QgsSymbolWidgetContext // clazy:exclude=rule-of-three
      * Returns list of scopes: global, project, atlas, map, layer.
      * Ownership is transferred to the caller.
      */
-    QList<QgsExpressionContextScope *> globalProjectAtlasMapLayerScopes( const QgsMapLayer *layer ) const SIP_FACTORY;
+    std::vector<std::unique_ptr<QgsExpressionContextScope>> globalProjectAtlasMapLayerScopes( const QgsMapLayer *layer ) const;
 
     /**
      * Returns the associated symbol type, if the widget is being shown as a subcomponent

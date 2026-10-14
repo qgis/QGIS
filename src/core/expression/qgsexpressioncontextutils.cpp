@@ -49,9 +49,9 @@
 
 using namespace Qt::StringLiterals;
 
-QgsExpressionContextScope *QgsExpressionContextUtils::globalScope()
+std::unique_ptr<QgsExpressionContextScope> QgsExpressionContextUtils::globalScope()
 {
-  QgsExpressionContextScope *scope = new QgsExpressionContextScope( QObject::tr( "Global" ) );
+  auto scope = std::make_unique<QgsExpressionContextScope>( QObject::tr( "Global" ) );
 
   const QVariantMap customVariables = QgsApplication::customVariables();
 
@@ -269,9 +269,9 @@ class GetProcessingParameterValue : public QgsScopedExpressionFunction
 ///@endcond
 
 
-QgsExpressionContextScope *QgsExpressionContextUtils::formScope( const QgsFeature &formFeature, const QString &formMode )
+std::unique_ptr<QgsExpressionContextScope> QgsExpressionContextUtils::formScope( const QgsFeature &formFeature, const QString &formMode )
 {
-  QgsExpressionContextScope *scope = new QgsExpressionContextScope( QObject::tr( "Form" ) );
+  auto scope = std::make_unique<QgsExpressionContextScope>( QObject::tr( "Form" ) );
   scope->addFunction( u"current_value"_s, new GetCurrentFormFieldValue() );
   scope->setVariable( u"current_geometry"_s, formFeature.geometry(), true );
   scope->setVariable( u"current_feature"_s, formFeature, true );
@@ -280,9 +280,9 @@ QgsExpressionContextScope *QgsExpressionContextUtils::formScope( const QgsFeatur
 }
 
 
-QgsExpressionContextScope *QgsExpressionContextUtils::parentFormScope( const QgsFeature &parentFormFeature, const QString &parentFormMode )
+std::unique_ptr<QgsExpressionContextScope> QgsExpressionContextUtils::parentFormScope( const QgsFeature &parentFormFeature, const QString &parentFormMode )
 {
-  QgsExpressionContextScope *scope = new QgsExpressionContextScope( QObject::tr( "Parent Form" ) );
+  auto scope = std::make_unique<QgsExpressionContextScope>( QObject::tr( "Parent Form" ) );
   scope->addFunction( u"current_parent_value"_s, new GetCurrentParentFormFieldValue() );
   scope->setVariable( u"current_parent_geometry"_s, parentFormFeature.geometry(), true );
   scope->setVariable( u"current_parent_feature"_s, parentFormFeature, true );
@@ -290,15 +290,15 @@ QgsExpressionContextScope *QgsExpressionContextUtils::parentFormScope( const Qgs
   return scope;
 }
 
-QgsExpressionContextScope *QgsExpressionContextUtils::projectScope( const QgsProject *project )
+std::unique_ptr<QgsExpressionContextScope> QgsExpressionContextUtils::projectScope( const QgsProject *project )
 {
   if ( !project )
   {
-    QgsExpressionContextScope *scope = new QgsExpressionContextScope( QObject::tr( "Project" ) );
+    auto scope = std::make_unique<QgsExpressionContextScope>( QObject::tr( "Project" ) );
     return scope;
   }
   else
-    return project->createExpressionContextScope();
+    return std::unique_ptr<QgsExpressionContextScope>( project->createExpressionContextScope() );
 }
 
 void QgsExpressionContextUtils::setProjectVariable( QgsProject *project, const QString &name, const QVariant &value )
@@ -333,9 +333,9 @@ void QgsExpressionContextUtils::removeProjectVariable( QgsProject *project, cons
     project->setCustomVariables( vars );
 }
 
-QgsExpressionContextScope *QgsExpressionContextUtils::layerScope( const QgsMapLayer *layer )
+std::unique_ptr<QgsExpressionContextScope> QgsExpressionContextUtils::layerScope( const QgsMapLayer *layer )
 {
-  QgsExpressionContextScope *scope = new QgsExpressionContextScope( QObject::tr( "Layer" ) );
+  auto scope = std::make_unique<QgsExpressionContextScope>( QObject::tr( "Layer" ) );
 
   if ( !layer )
     return scope;
@@ -416,17 +416,17 @@ QgsExpressionContextScope *QgsExpressionContextUtils::layerScope( const QgsMapLa
   return scope;
 }
 
-QList<QgsExpressionContextScope *> QgsExpressionContextUtils::globalProjectLayerScopes( const QgsMapLayer *layer )
+std::vector<std::unique_ptr<QgsExpressionContextScope>> QgsExpressionContextUtils::globalProjectLayerScopes( const QgsMapLayer *layer )
 {
-  QList<QgsExpressionContextScope *> scopes;
-  scopes << globalScope();
+  std::vector<std::unique_ptr<QgsExpressionContextScope>> scopes;
+  scopes.push_back( globalScope() );
 
   QgsProject *project = layer && layer->project() ? layer->project() : QgsProject::instance(); // skip-keyword-check
   if ( project )
-    scopes << projectScope( project );
+    scopes.push_back( projectScope( project ) );
 
   if ( layer )
-    scopes << layerScope( layer );
+    scopes.push_back( layerScope( layer ) );
   return scopes;
 }
 
@@ -476,14 +476,14 @@ void QgsExpressionContextUtils::setLayerVariables( QgsMapLayer *layer, const QVa
   layer->setCustomProperty( u"variableValues"_s, variableValues );
 }
 
-QgsExpressionContextScope *QgsExpressionContextUtils::mapSettingsScope( const QgsMapSettings &mapSettings )
+std::unique_ptr<QgsExpressionContextScope> QgsExpressionContextUtils::mapSettingsScope( const QgsMapSettings &mapSettings )
 {
   // IMPORTANT: ANY CHANGES HERE ALSO NEED TO BE MADE TO QgsLayoutItemMap::createExpressionContext()
   // (rationale is described in QgsLayoutItemMap::createExpressionContext() )
 
   // and because people don't read that ^^, I'm going to blast it all over this function
 
-  QgsExpressionContextScope *scope = new QgsExpressionContextScope( QObject::tr( "Map Settings" ) );
+  auto scope = std::make_unique<QgsExpressionContextScope>( QObject::tr( "Map Settings" ) );
 
   //add known map settings context variables
   scope->addVariable( QgsExpressionContextScope::StaticVariable( u"map_id"_s, "canvas", true ) );
@@ -572,9 +572,9 @@ QgsExpressionContextScope *QgsExpressionContextUtils::mapSettingsScope( const Qg
   return scope;
 }
 
-QgsExpressionContextScope *QgsExpressionContextUtils::mapToolCaptureScope( const QList<QgsPointLocator::Match> &matches )
+std::unique_ptr<QgsExpressionContextScope> QgsExpressionContextUtils::mapToolCaptureScope( const QList<QgsPointLocator::Match> &matches )
 {
-  QgsExpressionContextScope *scope = new QgsExpressionContextScope( QObject::tr( "Map Tool Capture" ) );
+  auto scope = std::make_unique<QgsExpressionContextScope>( QObject::tr( "Map Tool Capture" ) );
 
   QVariantList matchList;
 
@@ -596,9 +596,9 @@ QgsExpressionContextScope *QgsExpressionContextUtils::mapToolCaptureScope( const
   return scope;
 }
 
-QgsExpressionContextScope *QgsExpressionContextUtils::mapLayerPositionScope( const QgsPointXY &position )
+std::unique_ptr<QgsExpressionContextScope> QgsExpressionContextUtils::mapLayerPositionScope( const QgsPointXY &position )
 {
-  QgsExpressionContextScope *scope = new QgsExpressionContextScope( QObject::tr( "Map Layer Position" ) );
+  auto scope = std::make_unique<QgsExpressionContextScope>( QObject::tr( "Map Layer Position" ) );
   scope->addVariable( QgsExpressionContextScope::StaticVariable( u"layer_cursor_point"_s, QVariant::fromValue( QgsGeometry::fromPointXY( position ) ) ) );
   return scope;
 }
@@ -621,11 +621,11 @@ QgsExpressionContextScope *QgsExpressionContextUtils::updateSymbolScope( const Q
   return symbolScope;
 }
 
-QgsExpressionContextScope *QgsExpressionContextUtils::layoutScope( const QgsLayout *layout )
+std::unique_ptr<QgsExpressionContextScope> QgsExpressionContextUtils::layoutScope( const QgsLayout *layout )
 {
   auto scope = std::make_unique<QgsExpressionContextScope>( QObject::tr( "Layout" ) );
   if ( !layout )
-    return scope.release();
+    return scope;
 
   //add variables defined in layout properties
   const QStringList variableNames = layout->customProperty( u"variableNames"_s ).toStringList();
@@ -700,7 +700,7 @@ QgsExpressionContextScope *QgsExpressionContextUtils::layoutScope( const QgsLayo
     scope->addVariable( QgsExpressionContextScope::StaticVariable( u"atlas_geometry"_s, QVariant::fromValue( atlasFeature.geometry() ), true ) );
   }
 
-  return scope.release();
+  return scope;
 }
 
 void QgsExpressionContextUtils::setLayoutVariable( QgsLayout *layout, const QString &name, const QVariant &value )
@@ -738,9 +738,9 @@ void QgsExpressionContextUtils::setLayoutVariables( QgsLayout *layout, const QVa
   layout->setCustomProperty( u"variableValues"_s, variableValues );
 }
 
-QgsExpressionContextScope *QgsExpressionContextUtils::atlasScope( const QgsLayoutAtlas *atlas )
+std::unique_ptr<QgsExpressionContextScope> QgsExpressionContextUtils::atlasScope( const QgsLayoutAtlas *atlas )
 {
-  QgsExpressionContextScope *scope = new QgsExpressionContextScope( QObject::tr( "Atlas" ) );
+  auto scope = std::make_unique<QgsExpressionContextScope>( QObject::tr( "Atlas" ) );
   if ( !atlas )
   {
     //add some dummy atlas variables. This is done so that as in certain contexts we want to show
@@ -777,9 +777,9 @@ QgsExpressionContextScope *QgsExpressionContextUtils::atlasScope( const QgsLayou
   return scope;
 }
 
-QgsExpressionContextScope *QgsExpressionContextUtils::layoutItemScope( const QgsLayoutItem *item )
+std::unique_ptr<QgsExpressionContextScope> QgsExpressionContextUtils::layoutItemScope( const QgsLayoutItem *item )
 {
-  QgsExpressionContextScope *scope = new QgsExpressionContextScope( QObject::tr( "Layout Item" ) );
+  auto scope = std::make_unique<QgsExpressionContextScope>( QObject::tr( "Layout Item" ) );
   if ( !item )
     return scope;
 
@@ -882,9 +882,9 @@ void QgsExpressionContextUtils::setLayoutItemVariables( QgsLayoutItem *item, con
   item->setCustomProperty( u"variableValues"_s, variableValues );
 }
 
-QgsExpressionContextScope *QgsExpressionContextUtils::multiFrameScope( const QgsLayoutMultiFrame *frame )
+std::unique_ptr<QgsExpressionContextScope> QgsExpressionContextUtils::multiFrameScope( const QgsLayoutMultiFrame *frame )
 {
-  QgsExpressionContextScope *scope = new QgsExpressionContextScope( QObject::tr( "Multiframe Item" ) );
+  auto scope = std::make_unique<QgsExpressionContextScope>( QObject::tr( "Multiframe Item" ) );
   if ( !frame )
     return scope;
 
@@ -945,13 +945,13 @@ void QgsExpressionContextUtils::setLayoutMultiFrameVariables( QgsLayoutMultiFram
 
 QgsExpressionContext QgsExpressionContextUtils::createFeatureBasedContext( const QgsFeature &feature, const QgsFields &fields )
 {
-  QgsExpressionContextScope *scope = new QgsExpressionContextScope();
+  auto scope = std::make_unique<QgsExpressionContextScope>();
   scope->setFeature( feature );
   scope->setFields( fields );
-  return QgsExpressionContext() << scope;
+  return QgsExpressionContext() << std::move( scope );
 }
 
-QgsExpressionContextScope *QgsExpressionContextUtils::processingAlgorithmScope( const QgsProcessingAlgorithm *algorithm, const QVariantMap &parameters, QgsProcessingContext &context )
+std::unique_ptr<QgsExpressionContextScope> QgsExpressionContextUtils::processingAlgorithmScope( const QgsProcessingAlgorithm *algorithm, const QVariantMap &parameters, QgsProcessingContext &context )
 {
   // set aside for future use
   Q_UNUSED( context )
@@ -960,15 +960,15 @@ QgsExpressionContextScope *QgsExpressionContextUtils::processingAlgorithmScope( 
   scope->addFunction( u"parameter"_s, new GetProcessingParameterValue( parameters ) );
 
   if ( !algorithm )
-    return scope.release();
+    return scope;
 
   //add standard algorithm variables
   scope->addVariable( QgsExpressionContextScope::StaticVariable( u"algorithm_id"_s, algorithm->id(), true ) );
 
-  return scope.release();
+  return scope;
 }
 
-QgsExpressionContextScope *QgsExpressionContextUtils::processingModelAlgorithmScope( const QgsProcessingModelAlgorithm *model, const QVariantMap &, QgsProcessingContext &context )
+std::unique_ptr<QgsExpressionContextScope> QgsExpressionContextUtils::processingModelAlgorithmScope( const QgsProcessingModelAlgorithm *model, const QVariantMap &, QgsProcessingContext &context )
 {
   auto modelScope = std::make_unique<QgsExpressionContextScope>( QObject::tr( "Model" ) );
   QString modelPath;
@@ -996,14 +996,14 @@ QgsExpressionContextScope *QgsExpressionContextUtils::processingModelAlgorithmSc
     modelScope->addVariable( QgsExpressionContextScope::StaticVariable( it.key(), it.value(), true ) );
   }
 
-  return modelScope.release();
+  return modelScope;
 }
 
-QgsExpressionContextScope *QgsExpressionContextUtils::notificationScope( const QString &message )
+std::unique_ptr<QgsExpressionContextScope> QgsExpressionContextUtils::notificationScope( const QString &message )
 {
   auto scope = std::make_unique<QgsExpressionContextScope>();
   scope->addVariable( QgsExpressionContextScope::StaticVariable( u"notification_message"_s, message, true ) );
-  return scope.release();
+  return scope;
 }
 
 void QgsExpressionContextUtils::registerContextFunctions()
@@ -1299,7 +1299,7 @@ class CurrentFaceIndexExpressionFunction : public QgsScopedExpressionFunction
 };
 
 
-QgsExpressionContextScope *QgsExpressionContextUtils::meshExpressionScope( QgsMesh::ElementType elementType )
+std::unique_ptr<QgsExpressionContextScope> QgsExpressionContextUtils::meshExpressionScope( QgsMesh::ElementType elementType )
 {
   auto scope = std::make_unique<QgsExpressionContextScope>();
 
@@ -1331,7 +1331,7 @@ QgsExpressionContextScope *QgsExpressionContextUtils::meshExpressionScope( QgsMe
       break;
   }
 
-  return scope.release();
+  return scope;
 }
 
 

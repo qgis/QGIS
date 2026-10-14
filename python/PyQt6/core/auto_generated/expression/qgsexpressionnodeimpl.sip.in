@@ -611,7 +611,7 @@ A combination of when and then. Simple as that.
         ~WhenThen();
 
 
-        QgsExpressionNodeCondition::WhenThen *clone() const /Factory/;
+        std::unique_ptr<QgsExpressionNodeCondition::WhenThen> clone() const;
 %Docstring
 Gets a deep copy of this WhenThen combination.
 %End
