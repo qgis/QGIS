@@ -204,7 +204,7 @@ class CORE_EXPORT QgsExpression
      * \ingroup core
      * A thread-safe container of shared pointers to registered functions.
      */
-    class SharedFunctionPtrList : public QList< SharedFunctionPtr >
+    class CORE_EXPORT SharedFunctionPtrList : public QList< SharedFunctionPtr >
     {
       public:
         /**
