@@ -44,7 +44,12 @@ Q_GLOBAL_STATIC( QgsStringMap, sGroups )
 
 HelpTextHash QgsExpression::sFunctionHelpTexts;
 QMutex QgsExpression::sFunctionWriteMutex;
+#if defined( __clang__ )
+AtomicSharedPtr<QgsExpression::FunctionListSnapshot> QgsExpression::sFunctions {};
+#else
 std::atomic<QgsExpression::FunctionListSnapshot> QgsExpression::sFunctions;
+#endif
+
 QStringList QgsExpression::sBuiltinFunctionNames;
 
 ///@cond PRIVATE

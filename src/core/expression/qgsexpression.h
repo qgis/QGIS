@@ -22,6 +22,7 @@
 #include "qgis_core.h"
 #include "qgsexpressionnode.h"
 #include "qgsinterval.h"
+#include "qgsthreadingutils.h"
 
 #include <QCoreApplication>
 #include <QDomDocument>
@@ -911,7 +912,11 @@ class CORE_EXPORT QgsExpression
 
     friend class QgsExpressionNodeFunction;
 
+#if defined( __clang__ )
+    static AtomicSharedPtr<FunctionListSnapshot> sFunctions;
+#else
     static std::atomic<FunctionListSnapshot> sFunctions;
+#endif
     static QMutex sFunctionWriteMutex;
 
     static QStringList sBuiltinFunctionNames;
