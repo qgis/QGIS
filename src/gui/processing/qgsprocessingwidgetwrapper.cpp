@@ -298,7 +298,7 @@ QgsProcessingModelerParameterWidget *QgsProcessingParameterWidgetFactoryInterfac
 )
 {
   auto widget = std::make_unique<QgsProcessingModelerParameterWidget>( model, childId, parameter, context );
-  widget->populateSources( compatibleParameterTypes(), compatibleOutputTypes(), compatibleDataTypes( parameter ) );
+  widget->populateSources( compatibleParameterTypes( parameter ), compatibleOutputTypes( parameter ), compatibleDataTypes( parameter ) );
   widget->setExpressionHelpText( modelerExpressionFormatString() );
 
   if ( parameter->isDestination() )
@@ -318,6 +318,32 @@ QgsProcessingAbstractParameterDefinitionWidget *QgsProcessingParameterWidgetFact
 
 QStringList QgsProcessingParameterWidgetFactoryInterface::compatibleParameterTypes() const
 {
+  if ( !mPreventRecursion )
+  {
+    mPreventRecursion = true;
+    const QStringList res = compatibleParameterTypes( nullptr );
+    mPreventRecursion = false;
+    return res;
+  }
+
+  const QgsProcessingParameterType *paramType = QgsApplication::processingRegistry()->parameterType( parameterType() );
+  if ( !paramType )
+    return QStringList();
+  return paramType->acceptedParameterTypes();
+}
+
+QStringList QgsProcessingParameterWidgetFactoryInterface::compatibleParameterTypes( const QgsProcessingParameterDefinition * ) const
+{
+  if ( !mPreventRecursion )
+  {
+    mPreventRecursion = true;
+    Q_NOWARN_DEPRECATED_PUSH
+    const QStringList res = compatibleParameterTypes();
+    Q_NOWARN_DEPRECATED_POP
+    mPreventRecursion = false;
+    return res;
+  }
+
   const QgsProcessingParameterType *paramType = QgsApplication::processingRegistry()->parameterType( parameterType() );
   if ( !paramType )
     return QStringList();
@@ -326,6 +352,30 @@ QStringList QgsProcessingParameterWidgetFactoryInterface::compatibleParameterTyp
 
 QStringList QgsProcessingParameterWidgetFactoryInterface::compatibleOutputTypes() const
 {
+  if ( !mPreventRecursion )
+  {
+    mPreventRecursion = true;
+    const QStringList res = compatibleOutputTypes( nullptr );
+    mPreventRecursion = false;
+    return res;
+  }
+  const QgsProcessingParameterType *paramType = QgsApplication::processingRegistry()->parameterType( parameterType() );
+  if ( !paramType )
+    return QStringList();
+  return paramType->acceptedOutputTypes();
+}
+
+QStringList QgsProcessingParameterWidgetFactoryInterface::compatibleOutputTypes( const QgsProcessingParameterDefinition * ) const
+{
+  if ( !mPreventRecursion )
+  {
+    mPreventRecursion = true;
+    Q_NOWARN_DEPRECATED_PUSH
+    const QStringList res = compatibleOutputTypes();
+    Q_NOWARN_DEPRECATED_POP
+    mPreventRecursion = false;
+    return res;
+  }
   const QgsProcessingParameterType *paramType = QgsApplication::processingRegistry()->parameterType( parameterType() );
   if ( !paramType )
     return QStringList();

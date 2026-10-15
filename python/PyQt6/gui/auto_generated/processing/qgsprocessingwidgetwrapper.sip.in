@@ -431,7 +431,7 @@ configurable when users add it as an input to their graphical models.
 %End
 
   protected:
-    virtual QStringList compatibleParameterTypes() const;
+ virtual QStringList compatibleParameterTypes() const /Deprecated="Since 4.4. Use the version with QgsProcessingParameterDefinition argument instead."/;
 %Docstring
 Returns a list of compatible Processing parameter types for inputs for
 this parameter.
@@ -448,9 +448,34 @@ used as input values for the parameter.
 .. seealso:: :py:func:`compatibleOutputTypes`
 
 .. seealso:: :py:func:`compatibleDataTypes`
+
+.. deprecated:: 4.4
+
+   Use the version with :py:class:`QgsProcessingParameterDefinition` argument instead.
 %End
 
-    virtual QStringList compatibleOutputTypes() const;
+    virtual QStringList compatibleParameterTypes( const QgsProcessingParameterDefinition *parameter ) const;
+%Docstring
+Returns a list of compatible Processing parameter types for inputs for
+this parameter.
+
+In order to determine the available sources for the parameter in a model
+the types returned by this method are checked. The returned list
+corresponds to the various available values for
+:py:func:`QgsProcessingParameterDefinition.type()`.
+
+Subclasses should return a list of all
+:py:func:`QgsProcessingParameterDefinition.type()` values which can be
+used as input values for the parameter.
+
+.. seealso:: :py:func:`compatibleOutputTypes`
+
+.. seealso:: :py:func:`compatibleDataTypes`
+
+.. versionadded:: 4.4
+%End
+
+ virtual QStringList compatibleOutputTypes() const /Deprecated="Since 4.4. Use the version with QgsProcessingParameterDefinition argument instead."/;
 %Docstring
 Returns a list of compatible Processing output types for inputs for this
 parameter.
@@ -467,6 +492,31 @@ as values for the parameter.
 .. seealso:: :py:func:`compatibleParameterTypes`
 
 .. seealso:: :py:func:`compatibleDataTypes`
+
+.. deprecated:: 4.4
+
+   Use the version with :py:class:`QgsProcessingParameterDefinition` argument instead.
+%End
+
+    virtual QStringList compatibleOutputTypes( const QgsProcessingParameterDefinition *parameter ) const;
+%Docstring
+Returns a list of compatible Processing output types for inputs for this
+parameter.
+
+In order to determine the available sources for the parameter in a model
+the types returned by this method are checked. The returned list
+corresponds to the various available values for
+:py:func:`QgsProcessingOutputDefinition.type()`.
+
+Subclasses should return a list of all
+:py:func:`QgsProcessingOutputDefinition.type()` values which can be used
+as values for the parameter.
+
+.. seealso:: :py:func:`compatibleParameterTypes`
+
+.. seealso:: :py:func:`compatibleDataTypes`
+
+.. versionadded:: 4.4
 %End
 
     virtual QList<int> compatibleDataTypes( const QgsProcessingParameterDefinition *parameter ) const;
@@ -508,6 +558,7 @@ Returns the default source type to use for the widget for the specified
 
 .. versionadded:: 3.24
 %End
+
 };
 
 class QgsProcessingHiddenWidgetWrapper : QgsAbstractProcessingParameterWidgetWrapper
