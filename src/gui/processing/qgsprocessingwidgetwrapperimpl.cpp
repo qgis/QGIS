@@ -9485,6 +9485,7 @@ QgsInterpolationSourceWidget::QgsInterpolationSourceWidget( QWidget *parent )
   cmbFields->setFilters( QgsFieldProxyModel::Filter::Numeric );
 
   connect( cmbLayers, &QgsMapLayerComboBox::layerChanged, this, [this]( QgsMapLayer *layer ) { layerChanged( qobject_cast<QgsVectorLayer *>( layer ) ); } );
+  connect( chkUseZCoordinate, &QCheckBox::toggled, this, [this]( bool checked ) { cmbFields->setEnabled( !checked ); } );
 
   layerChanged( qobject_cast< QgsVectorLayer * >( cmbLayers->currentLayer() ) );
 }
