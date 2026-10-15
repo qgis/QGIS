@@ -31,5 +31,6 @@ try:
     QgsFileUtils.uniquePath = staticmethod(QgsFileUtils.uniquePath)
     QgsFileUtils.copyDirectory = staticmethod(QgsFileUtils.copyDirectory)
     QgsFileUtils.replaceTextInFile = staticmethod(QgsFileUtils.replaceTextInFile)
+    QgsFileUtils.replaceInFile = staticmethod(QgsFileUtils.replaceInFile)
 except (NameError, AttributeError):
     pass
