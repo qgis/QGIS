@@ -9485,15 +9485,24 @@ QgsInterpolationSourceWidget::QgsInterpolationSourceWidget( QWidget *parent )
   cmbFields->setFilters( QgsFieldProxyModel::Filter::Numeric );
 
   connect( cmbLayers, &QgsMapLayerComboBox::layerChanged, this, [this]( QgsMapLayer *layer ) { layerChanged( qobject_cast<QgsVectorLayer *>( layer ) ); } );
-  connect( chkUseZCoordinate, &QCheckBox::toggled, this, [this]( bool checked ) { cmbFields->setEnabled( !checked ); } );
+  connect( cmbFields, &QgsFieldComboBox::fieldChanged, this, &QgsInterpolationSourceWidget::updateAddButtonState );
+  connect( chkUseZCoordinate, &QCheckBox::toggled, this, [this]( bool checked ) {
+    cmbFields->setEnabled( !checked );
+    updateAddButtonState();
+  } );
 
   layerChanged( qobject_cast< QgsVectorLayer * >( cmbLayers->currentLayer() ) );
+}
+
+bool QgsInterpolationSourceWidget::canAddLayer() const
+{
+  return chkUseZCoordinate->isChecked() || !cmbFields->currentField().isEmpty();
 }
 
 void QgsInterpolationSourceWidget::addLayer()
 {
   QgsVectorLayer *layer = qobject_cast< QgsVectorLayer * >( cmbLayers->currentLayer() );
-  if ( !layer )
+  if ( !layer || !canAddLayer() )
   {
     return;
   }
@@ -9521,6 +9530,8 @@ void QgsInterpolationSourceWidget::layerChanged( QgsVectorLayer *layer )
 
   if ( !layer || !layer->isValid() )
   {
+    cmbFields->setLayer( nullptr );
+    updateAddButtonState();
     return;
   }
 
@@ -9530,6 +9541,17 @@ void QgsInterpolationSourceWidget::layerChanged( QgsVectorLayer *layer )
   }
 
   cmbFields->setLayer( layer );
+  updateAddButtonState();
+}
+
+void QgsInterpolationSourceWidget::updateAddButtonState()
+{
+  const bool hasLayer = cmbFields->layer();
+  const bool layerValid = hasLayer && canAddLayer();
+
+  btnAdd->setEnabled( layerValid );
+  const QString toolTip = layerValid ? QString() : tr( "Select a numeric attribute or use the Z coordinate." );
+  btnAdd->setToolTip( toolTip );
 }
 
 void QgsInterpolationSourceWidget::addLayerData( QgsVectorLayer *layer, const QString &attribute )
