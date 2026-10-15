@@ -2519,9 +2519,11 @@ class GUI_EXPORT QgsInterpolationSourceWidget : public QWidget, private Ui::QgsI
     void addLayer();
     void removeLayer();
     void layerChanged( QgsVectorLayer *layer );
+    void updateAddButtonState();
 
   private:
     void addLayerData( QgsVectorLayer *layer, const QString &attribute );
+    bool canAddLayer() const;
 
     friend class TestProcessingGui;
 };
