@@ -1552,12 +1552,21 @@ class TestQgsExpression : public QObject
       QTest::newRow( "buffer_by_m point" ) << "geom_to_wkt(buffer_by_m(geometry:=geom_from_wkt('POINT(1 2)'),segments:=10))" << true << QVariant();
       QTest::newRow( "buffer_by_m line" ) << "geom_to_wkt(buffer_by_m(geometry:=geom_from_wkt('LineString(0 0, 10 0)'),segments:=3))" << false << QVariant( u"GeometryCollection EMPTY"_s );
 #if GEOS_VERSION_MAJOR > 3 || ( GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR >= 15 )
+#if GEOS_VERSION_MAJOR > 3 || ( GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR > 15 ) || ( GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR == 15 && GEOS_VERSION_PATCH >= 1 )
+      QTest::newRow( "buffer_by_m linem" )
+        << "geom_to_wkt(buffer_by_m(geometry:=geom_from_wkt('LineStringM(0 0 1, 10 0 2)'),segments:=3))"
+        << false
+        << QVariant(
+             u"MultiPolygon M (((0 -0.5 1, -0.25 -0.4330127 1, -0.4330127 -0.25 1, -0.5 0 1, -0.4330127 0.25 1, -0.25 0.4330127 1, 0 0.5 1, 10 1 2, 10.5 0.8660254 2, 10.8660254 0.5 2, 11 0 2, 10.8660254 -0.5 2, 10.5 -0.8660254 2, 10 -1 2, 0 -0.5 1)))"_s
+           );
+#else
       QTest::newRow( "buffer_by_m linem" )
         << "geom_to_wkt(buffer_by_m(geometry:=geom_from_wkt('LineStringM(0 0 1, 10 0 2)'),segments:=3))"
         << false
         << QVariant(
              u"MultiPolygon (((0 -0.5, -0.25 -0.4330127, -0.4330127 -0.25, -0.5 0, -0.4330127 0.25, -0.25 0.4330127, 0 0.5, 10 1, 10.5 0.8660254, 10.8660254 0.5, 11 0, 10.8660254 -0.5, 10.5 -0.8660254, 10 -1, 0 -0.5)))"_s
            );
+#endif
 #else
       QTest::newRow( "buffer_by_m linem" )
         << "geom_to_wkt(buffer_by_m(geometry:=geom_from_wkt('LineStringM(0 0 1, 10 0 2)'),segments:=3))"
