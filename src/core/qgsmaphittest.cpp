@@ -474,7 +474,7 @@ void QgsMapHitTestTask::prepare()
       layerData.renderer.reset( vl->renderer()->clone() );
       layerData.transform = mapSettings.layerTransform( vl );
       layerData.extent = extent;
-      layerData.layerScope.reset( QgsExpressionContextUtils::layerScope( vl ) );
+      layerData.layerScope = QgsExpressionContextUtils::layerScope( vl );
 
       mPreparedData.emplace_back( std::move( layerData ) );
     }

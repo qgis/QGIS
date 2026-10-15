@@ -2551,9 +2551,9 @@ namespace QgsWms
         QDomElement maptipElem = infoDocument.createElement( u"Attribute"_s );
         maptipElem.setAttribute( u"name"_s, u"maptip"_s );
         QgsExpressionContext context { renderContext.expressionContext() };
-        QgsExpressionContextScope *scope = QgsExpressionContextUtils::layerScope( layer );
+        std::unique_ptr<QgsExpressionContextScope> scope = QgsExpressionContextUtils::layerScope( layer );
         scope->addVariable( QgsExpressionContextScope::StaticVariable( u"layer_cursor_point"_s, QVariant::fromValue( QgsGeometry::fromPointXY( QgsPointXY( infoPoint->x(), infoPoint->y() ) ) ) ) );
-        context.appendScope( scope );
+        context.appendScope( std::move( scope ) );
         maptipElem.setAttribute( u"value"_s, QgsExpression::replaceExpressionText( mapTip, &context ) );
         layerElement.appendChild( maptipElem );
       }
