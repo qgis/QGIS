@@ -1653,8 +1653,11 @@ void QgsMapRendererJob::composeSecondPass( std::vector<LayerRenderJob> &secondPa
         }
 
         QImage *firstMaskImage = dynamic_cast<QImage *>( firstMaskPaintDevice );
-        Q_ASSERT_X( firstMaskImage, "QgsMapRendererJob::composeSecondPass", "FORMAT MISMATCH -- expected a raster mask format, but mask paint device is not a QImage!!" );
-        Q_ASSERT( firstMaskPainter );
+        if ( !firstMaskImage )
+        {
+          QgsDebugError( u"FORMAT MISMATCH -- expected a raster mask format, but mask paint device is not a QImage!!"_s );
+          continue;
+        }
 
         // Merge all mask images into the first one if we have more than one mask image
         for ( size_t i = 1; i < job.maskJobs.size(); ++i )
@@ -1673,7 +1676,12 @@ void QgsMapRendererJob::composeSecondPass( std::vector<LayerRenderJob> &secondPa
           Q_ASSERT( nextJobPaintDevice );
 
           QImage *nextJobImage = dynamic_cast<QImage *>( nextJobPaintDevice );
-          Q_ASSERT_X( nextJobImage, "QgsMapRendererJob::composeSecondPass", "FORMAT MISMATCH -- expected a raster mask format, but mask paint device is not a QImage!!" );
+          if ( !nextJobImage )
+          {
+            QgsDebugError( u"FORMAT MISMATCH -- expected a raster mask format, but mask paint device is not a QImage!!"_s );
+            continue;
+          }
+
           firstMaskPainter->drawImage( 0, 0, *nextJobImage );
         }
 
