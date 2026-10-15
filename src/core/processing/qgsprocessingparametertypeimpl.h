@@ -1097,6 +1097,7 @@ class CORE_EXPORT QgsProcessingParameterTypeMultipleLayers : public QgsProcessin
              << QgsProcessingOutputMapLayer::typeName()
              << QgsProcessingOutputRasterLayer::typeName()
              << QgsProcessingOutputVectorLayer::typeName()
+             << QgsProcessingOutputVectorTileLayer::typeName()
              << QgsProcessingOutputPointCloudLayer::typeName()
              << QgsProcessingOutputMultipleLayers::typeName()
              << QgsProcessingOutputFile::typeName()
