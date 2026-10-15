@@ -4973,6 +4973,7 @@ QgsFileUtils.findClosestExistingPath: src/core/qgsfileutils.h#L110
 QgsFileUtils.findFile: src/core/qgsfileutils.h#L122
 QgsFileUtils.pathIsSlowDevice: src/core/qgsfileutils.h#L139
 QgsFileUtils.renameDataset: src/core/qgsfileutils.h#L182
+QgsFileUtils.replaceInFile: src/core/qgsfileutils.h#L297
 QgsFileUtils.replaceTextInFile: src/core/qgsfileutils.h#L288
 QgsFileUtils.representFileSize: src/core/qgsfileutils.h#L40
 QgsFileUtils.splitPathToComponents: src/core/qgsfileutils.h#L229
