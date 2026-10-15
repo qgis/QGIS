@@ -7643,6 +7643,115 @@ void QgsProcessingMultipleLayerWidgetWrapper::setWidgetContext( const QgsProcess
   }
 }
 
+QStringList QgsProcessingMultipleLayerWidgetWrapper::compatibleParameterTypes( const QgsProcessingParameterDefinition *definition ) const
+{
+  if ( auto layerParam = dynamic_cast<const QgsProcessingParameterMultipleLayers *>( definition ) )
+  {
+    // we always allow linking to generic parameters, since we don't know what they are referring to
+    QStringList result = { QgsProcessingParameterMultipleLayers::typeName(), QgsProcessingParameterMapLayer::typeName(), QgsProcessingParameterFile::typeName(), QgsProcessingParameterString::typeName() };
+
+    // then we check the accepted layer types, permissively expose other parameter types which MAY be compatible
+    switch ( layerParam->layerType() )
+    {
+      case Qgis::ProcessingSourceType::MapLayer:
+        result
+          << QgsProcessingParameterVectorLayer::typeName()
+          << QgsProcessingParameterMeshLayer::typeName()
+          << QgsProcessingParameterFeatureSource::typeName()
+          << QgsProcessingParameterRasterLayer::typeName()
+          << QgsProcessingParameterPointCloudLayer::typeName()
+          << QgsProcessingParameterAnnotationLayer::typeName();
+        break;
+
+      case Qgis::ProcessingSourceType::Vector:
+      case Qgis::ProcessingSourceType::VectorAnyGeometry:
+      case Qgis::ProcessingSourceType::VectorPoint:
+      case Qgis::ProcessingSourceType::VectorLine:
+      case Qgis::ProcessingSourceType::VectorPolygon:
+        result << QgsProcessingParameterVectorLayer::typeName();
+        break;
+
+      case Qgis::ProcessingSourceType::Raster:
+        result << QgsProcessingParameterRasterLayer::typeName();
+        break;
+
+      case Qgis::ProcessingSourceType::Mesh:
+        result << QgsProcessingParameterMeshLayer::typeName();
+        break;
+
+      case Qgis::ProcessingSourceType::PointCloud:
+        result << QgsProcessingParameterPointCloudLayer::typeName();
+        break;
+
+      case Qgis::ProcessingSourceType::Annotation:
+        result << QgsProcessingParameterAnnotationLayer::typeName();
+        break;
+
+      case Qgis::ProcessingSourceType::TiledScene:
+      case Qgis::ProcessingSourceType::VectorTile:
+      case Qgis::ProcessingSourceType::Plugin:
+      case Qgis::ProcessingSourceType::File:
+        break;
+    }
+    return result;
+  }
+  else
+  {
+    return QgsProcessingParameterWidgetFactoryInterface::compatibleParameterTypes( definition );
+  }
+}
+
+QStringList QgsProcessingMultipleLayerWidgetWrapper::compatibleOutputTypes( const QgsProcessingParameterDefinition *definition ) const
+{
+  if ( auto layerParam = dynamic_cast<const QgsProcessingParameterMultipleLayers *>( definition ) )
+  {
+    // we always allow linking to generic outputs, since we don't know what they are referring to
+    QStringList result
+      = { QgsProcessingOutputMapLayer::typeName(), QgsProcessingOutputMultipleLayers::typeName(), QgsProcessingOutputFile::typeName(), QgsProcessingOutputString::typeName(), QgsProcessingOutputVariant::typeName() };
+
+    // then we check the accepted layer types, permissively expose other output types which MAY be compatible
+    switch ( layerParam->layerType() )
+    {
+      case Qgis::ProcessingSourceType::MapLayer:
+        result << QgsProcessingOutputRasterLayer::typeName() << QgsProcessingOutputVectorLayer::typeName() << QgsProcessingOutputVectorTileLayer::typeName() << QgsProcessingOutputPointCloudLayer::typeName();
+        break;
+
+      case Qgis::ProcessingSourceType::Vector:
+      case Qgis::ProcessingSourceType::VectorAnyGeometry:
+      case Qgis::ProcessingSourceType::VectorPoint:
+      case Qgis::ProcessingSourceType::VectorLine:
+      case Qgis::ProcessingSourceType::VectorPolygon:
+        result << QgsProcessingOutputVectorLayer::typeName();
+        break;
+
+      case Qgis::ProcessingSourceType::Raster:
+        result << QgsProcessingOutputRasterLayer::typeName();
+        break;
+
+      case Qgis::ProcessingSourceType::VectorTile:
+        result << QgsProcessingOutputVectorTileLayer::typeName();
+        break;
+
+      case Qgis::ProcessingSourceType::PointCloud:
+        result << QgsProcessingOutputPointCloudLayer::typeName();
+        break;
+
+      case Qgis::ProcessingSourceType::File:
+      case Qgis::ProcessingSourceType::Mesh:
+      case Qgis::ProcessingSourceType::Plugin:
+      case Qgis::ProcessingSourceType::Annotation:
+      case Qgis::ProcessingSourceType::TiledScene:
+        break;
+    }
+
+    return result;
+  }
+  else
+  {
+    return QgsProcessingParameterWidgetFactoryInterface::compatibleOutputTypes( definition );
+  }
+}
+
 void QgsProcessingMultipleLayerWidgetWrapper::setWidgetValue( const QVariant &value, QgsProcessingContext &context )
 {
   if ( mPanel )
