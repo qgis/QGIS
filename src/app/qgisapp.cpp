@@ -5028,7 +5028,7 @@ void QgisApp::initLayerTreeView()
   connect( actionAddGroup, &QAction::triggered, mLayerTreeView->defaultActions(), &QgsLayerTreeViewDefaultActions::addGroup );
 
   // visibility groups tool button
-  QgsToolButtonAction *actionVisibilityPresets = new QgsToolButtonAction();
+  QgsToolButtonAction *actionVisibilityPresets = new QgsToolButtonAction( this );
   actionVisibilityPresets->setAutoRaise( true );
   actionVisibilityPresets->setText( tr( "Manage Map Themes" ) );
   actionVisibilityPresets->setToolTip( tr( "Manage Map Themes" ) );
