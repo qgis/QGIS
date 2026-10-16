@@ -78,11 +78,24 @@ QgsLayerTreeViewBase::QgsLayerTreeViewBase( QWidget *parent )
 QgsLayerTreeViewBase::~QgsLayerTreeViewBase()
 {}
 
+void QgsLayerTreeViewBase::mousePressEvent( QMouseEvent *event )
+{
+  if ( event->button() == Qt::LeftButton || event->button() == Qt::RightButton )
+  {
+    QTreeView::mousePressEvent( event );
+  }
+  else
+  {
+    event->accept();
+    return;
+  }
+}
+
 void QgsLayerTreeViewBase::mouseDoubleClickEvent( QMouseEvent *event )
 {
   if ( mBlockDoubleClickTimer->isActive() )
     event->accept();
-  else
+  else if ( event->button() == Qt::LeftButton )
     QTreeView::mouseDoubleClickEvent( event );
 }
 
