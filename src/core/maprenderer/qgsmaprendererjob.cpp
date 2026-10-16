@@ -1007,7 +1007,7 @@ std::vector< LayerRenderJob > QgsMapRendererJob::prepareSecondPassJobs( std::vec
 
     case Qgis::RasterizedRenderingPolicy::PreferVector:
     case Qgis::RasterizedRenderingPolicy::ForceVector:
-      labelJobRenderFormat = Qgis::RenderFormat::Vector;
+      labelJobRenderFormat = !mapSettings().testFlag( Qgis::MapSettingsFlag::ForceRasterMasks ) ? Qgis::RenderFormat::Vector : Qgis::RenderFormat::Raster;
       break;
   }
 
@@ -1127,7 +1127,7 @@ std::vector< LayerRenderJob > QgsMapRendererJob::prepareSecondPassJobs( std::vec
           job.maskRenderFormat = mapSettings().testFlag( Qgis::MapSettingsFlag::ForceRasterMasks ) || maskLayerHasEffects[job.layerId] ? Qgis::RenderFormat::Raster : Qgis::RenderFormat::Vector;
           break;
         case Qgis::RasterizedRenderingPolicy::ForceVector:
-          job.maskRenderFormat = Qgis::RenderFormat::Vector;
+          job.maskRenderFormat = mapSettings().testFlag( Qgis::MapSettingsFlag::ForceRasterMasks ) ? Qgis::RenderFormat::Raster : Qgis::RenderFormat::Vector;
           break;
       }
 
