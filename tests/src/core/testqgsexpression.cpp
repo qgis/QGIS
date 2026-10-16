@@ -29,6 +29,7 @@ using namespace Qt::StringLiterals;
 #include "qgsfeatureiterator.h"
 #include "qgsfeaturerequest.h"
 #include "qgsgeometry.h"
+#include "qgsgeos.h"
 #include "qgsrenderchecker.h"
 #include "qgsexpressioncontext.h"
 #include "qgsrelationmanager.h"
@@ -42,7 +43,6 @@ using namespace Qt::StringLiterals;
 #include "qgsexpressioncontextutils.h"
 #include "qgsexpressionutils.h"
 #include "qgsmeshlayer.h"
-#include <geos_c.h>
 
 static void _parseAndEvalExpr( int arg )
 {
@@ -1472,7 +1472,7 @@ class TestQgsExpression : public QObject
       QTest::newRow( "shared_paths null 2" ) << "shared_paths(geom_from_wkt('LineString(0 0, 10 10)'), NULL)" << false << QVariant();
       QTest::newRow( "shared_paths point 1" ) << "shared_paths(make_point(1,2), geom_from_wkt('LineString(0 0, 10 10)'))" << false << QVariant();
       QTest::newRow( "shared_paths point 2" ) << "shared_paths(geom_from_wkt('LineString(0 0, 10 10)'), make_point(1,2))" << false << QVariant();
-#if GEOS_VERSION_MAJOR > 3 || ( GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR >= 15 )
+#if GEOS_VERSION_NUM >= GEOS_MAKE_VERSION( 3, 15, 0 )
       QTest::newRow( "shared_paths lines 1" )
         << "geom_to_wkt(shared_paths(geometry1:=geom_from_wkt('MULTILINESTRING((26 125,26 200,126 200,126 125,26 125),(51 150,101 150,76 175,51 150))'), geometry2:=geom_from_wkt('LINESTRING(151 "
            "100,126 156.25,126 125,90 161, 76 175)')))"
@@ -1485,7 +1485,7 @@ class TestQgsExpression : public QObject
         << false
         << QVariant( "GeometryCollection (MultiLineString ((126 156.25, 126 125),(101 150, 90 161),(90 161, 76 175)),MultiLineString EMPTY)" );
 #endif
-#if GEOS_VERSION_MAJOR > 3 || ( GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR >= 15 )
+#if GEOS_VERSION_NUM >= GEOS_MAKE_VERSION( 3, 15, 0 )
       QTest::newRow( "shared_paths lines 2" )
         << "geom_to_wkt(shared_paths(geometry1:=geom_from_wkt('MULTILINESTRING((26 125,26 200,126 200,126 125,26 125),(51 150,101 150,76 175,51 150))'), "
            "geometry2:=reverse(geom_from_wkt('LINESTRING(151 100,126 156.25,126 125,90 161, 76 175)'))))"
@@ -1517,7 +1517,7 @@ class TestQgsExpression : public QObject
       QTest::newRow( "tapered_buffer not geom" ) << "tapered_buffer('g', 1, 2, 8)" << true << QVariant();
       QTest::newRow( "tapered_buffer null" ) << "tapered_buffer(NULL, 1, 2, 8)" << false << QVariant();
       QTest::newRow( "tapered_buffer point" ) << "geom_to_wkt(tapered_buffer(geometry:=geom_from_wkt('POINT(1 2)'),start_width:=1,end_width:=2,segments:=10))" << true << QVariant();
-#if GEOS_VERSION_MAJOR > 3 || ( GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR >= 15 )
+#if GEOS_VERSION_NUM >= GEOS_MAKE_VERSION( 3, 15, 0 )
       QTest::newRow( "tapered_buffer line" )
         << "geom_to_wkt(tapered_buffer(geometry:=geom_from_wkt('LineString(0 0, 10 0)'),start_width:=1,end_width:=2,segments:=3))"
         << false
@@ -1532,7 +1532,7 @@ class TestQgsExpression : public QObject
              u"MultiPolygon (((-0.25 -0.4330127, -0.4330127 -0.25, -0.5 0, -0.4330127 0.25, -0.25 0.4330127, 0 0.5, 10 1, 10.5 0.8660254, 10.8660254 0.5, 11 0, 10.8660254 -0.5, 10.5 -0.8660254, 10 -1, 0 -0.5, -0.25 -0.4330127)))"_s
            );
 #endif
-#if GEOS_VERSION_MAJOR > 3 || ( GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR >= 15 )
+#if GEOS_VERSION_NUM >= GEOS_MAKE_VERSION( 3, 15, 0 )
       QTest::newRow( "tapered_buffer line 2" )
         << "geom_to_wkt(tapered_buffer(geometry:=geom_from_wkt('LineString(0 0, 10 0)'),start_width:=2,end_width:=1,segments:=3))"
         << false
@@ -1551,8 +1551,8 @@ class TestQgsExpression : public QObject
       QTest::newRow( "buffer_by_m null" ) << "buffer_by_m(NULL, 8)" << false << QVariant();
       QTest::newRow( "buffer_by_m point" ) << "geom_to_wkt(buffer_by_m(geometry:=geom_from_wkt('POINT(1 2)'),segments:=10))" << true << QVariant();
       QTest::newRow( "buffer_by_m line" ) << "geom_to_wkt(buffer_by_m(geometry:=geom_from_wkt('LineString(0 0, 10 0)'),segments:=3))" << false << QVariant( u"GeometryCollection EMPTY"_s );
-#if GEOS_VERSION_MAJOR > 3 || ( GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR >= 15 )
-#if GEOS_VERSION_MAJOR > 3 || ( GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR > 15 ) || ( GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR == 15 && GEOS_VERSION_PATCH >= 1 )
+#if GEOS_VERSION_NUM >= GEOS_MAKE_VERSION( 3, 15, 0 )
+#ifdef GEOS_SUPPORTS_ZM
       QTest::newRow( "buffer_by_m linem" )
         << "geom_to_wkt(buffer_by_m(geometry:=geom_from_wkt('LineStringM(0 0 1, 10 0 2)'),segments:=3))"
         << false
@@ -1765,7 +1765,7 @@ class TestQgsExpression : public QObject
         << "geom_to_wkt(make_rectangle_3points(make_point(0, 0), make_point(0,5), make_point(5, 3), 1))"
         << false
         << QVariant( "Polygon ((0 0, 0 5, 5 5, 5 0, 0 0))" );
-#if GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR < 10
+#if GEOS_VERSION_NUM < GEOS_MAKE_VERSION( 3, 10, 0 )
       QTest::newRow( "make_valid_extravert" )
         << "geom_to_wkt(make_valid(geom_from_wkt('POLYGON((3 2, 4 1, 5 8, 3 2, 4 2))')))"
         << false
@@ -1773,7 +1773,7 @@ class TestQgsExpression : public QObject
 #else
       QTest::newRow( "make_valid_extravert" ) << "geom_to_wkt(make_valid(geom_from_wkt('POLYGON((3 2, 4 1, 5 8, 3 2, 4 2))')))" << false << QVariant( "Polygon ((3 2, 5 8, 4 1, 3 2))" );
 #endif
-#if GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR < 10
+#if GEOS_VERSION_NUM < GEOS_MAKE_VERSION( 3, 10, 0 )
       QTest::newRow( "make_valid_missingEnd" ) << "geom_to_wkt(make_valid(geom_from_wkt('POLYGON((3 2, 4 1, 5 8))')))" << false << QVariant( "Polygon ((3 2, 4 1, 5 8, 3 2))" );
 #else
       QTest::newRow( "make_valid_missingEnd" ) << "geom_to_wkt(make_valid(geom_from_wkt('POLYGON((3 2, 4 1, 5 8))')))" << false << QVariant( "Polygon ((3 2, 5 8, 4 1, 3 2))" );
@@ -2169,7 +2169,7 @@ class TestQgsExpression : public QObject
         << QVariant( "Polygon ((5 5, 10 10, 10 0, 5 5))" );
       QTest::newRow( "geometries_to_array_emptygeom" ) << "array_length(geometries_to_array(geom_from_wkt('LINESTRING EMPTY')))" << false << QVariant( 1 );
       QTest::newRow( "geometries_to_array_nongeom" ) << "geometries_to_array('just a string')" << true << QVariant();
-#if GEOS_VERSION_MAJOR > 3 || ( GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR >= 11 )
+#if GEOS_VERSION_NUM >= GEOS_MAKE_VERSION( 3, 11, 0 )
       QTest::newRow( "concave_hull not geom" ) << "concave_hull('r', 1)" << true << QVariant();
       QTest::newRow( "concave_hull null" ) << "concave_hull(NULL, 1)" << false << QVariant();
       QTest::newRow( "concave_hull point" ) << "geom_to_wkt(concave_hull(geom_from_wkt('Point(0 0)'), 0.99))" << false << QVariant( "Point (0 0)" );
@@ -2179,7 +2179,7 @@ class TestQgsExpression : public QObject
            "158,36 150,62 150,76 128,88 118))'), 0.99))"
         << false
         << QVariant( "Polygon ((30 112, 36 150, 92 182, 132 186, 176 184, 190 122, 190 100, 186 52, 178 34, 168 18, 132 10, 66 28, 22 64, 30 112))" );
-#if GEOS_VERSION_MAJOR > 3 || ( GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR >= 12 )
+#if GEOS_VERSION_NUM >= GEOS_MAKE_VERSION( 3, 12, 0 )
       QTest::newRow( "concave_hull multipoint" )
         << "geom_to_wkt(concave_hull(geom_from_wkt('MultiPoint ((6.3 8.4),(7.6 8.8),(6.8 7.3),(5.3 1.8),(9.1 5),(8.1 7),(8.8 2.9),(2.4 8.2),(3.2 5.1),(3.7 2.3),(2.7 5.4),(8.4 1.9),(7.5 8.7),(4.4 "
            "4.2),(7.7 6.7),(9 3),(3.6 6.1),(3.2 6.5),(8.1 4.7),(8.8 5.8),(6.8 7.3),(4.9 9.5),(8.1 6),(8.7 5),(7.8 1.6),(7.9 2.1),(3 2.2),(7.8 4.3),(2.6 8.5),(4.8 3.4),(3.5 3.5),(3.6 4),(3.1 "
@@ -2198,7 +2198,7 @@ class TestQgsExpression : public QObject
         << false
         << QVariant( "Polygon ((2.3 6, 2.4 8.2, 2.6 8.5, 5.2 9.8, 6.4 9.7, 7.2 9.5, 7.6 8.8, 8.5 7.1, 9.1 5, 9 3, 8.4 1.9, 7.8 1.6, 7.3 1.6, 6.5 1.6, 4.3 1.9, 3 2.2, 2.3 3.6, 2.3 6))" );
 #endif
-#if GEOS_VERSION_MAJOR > 3 || ( GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR >= 15 )
+#if GEOS_VERSION_NUM >= GEOS_MAKE_VERSION( 3, 15, 0 )
       QTest::newRow( "concave_hull multipoint allow holes" )
         << "geom_to_wkt(concave_hull(geom_from_wkt('MultiPoint ((6.3 8.4),(7.6 8.8),(6.8 7.3),(5.3 1.8),(9.1 5),(8.1 7),(8.8 2.9),(2.4 8.2),(3.2 5.1),(3.7 2.3),(2.7 5.4),(8.4 1.9),(7.5 8.7),(4.4 "
            "4.2),(7.7 6.7),(9 3),(3.6 6.1),(3.2 6.5),(8.1 4.7),(8.8 5.8),(6.8 7.3),(4.9 9.5),(8.1 6),(8.7 5),(7.8 1.6),(7.9 2.1),(3 2.2),(7.8 4.3),(2.6 8.5),(4.8 3.4),(3.5 3.5),(3.6 4),(3.1 "
@@ -2210,7 +2210,7 @@ class TestQgsExpression : public QObject
              "Polygon ((2.4 8.2, 2.6 8.5, 5.2 9.8, 6.4 9.7, 7.2 9.5, 7.6 8.8, 8.5 7.1, 9.1 5, 9 3, 8.4 1.9, 7.8 1.6, 7.3 1.6, 6.5 1.6, 4.3 1.9, 3 2.2, 2.3 3.6, 2.3 6, 2.4 8.2),(6.8 7.3, 3.6 6.1, 4.4 "
              "4.2, 7.8 4.3, 6.8 7.3))"
            );
-#elif GEOS_VERSION_MAJOR > 3 || ( GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR >= 12 )
+#elif GEOS_VERSION_NUM >= GEOS_MAKE_VERSION( 3, 12, 0 )
       QTest::newRow( "concave_hull multipoint allow holes" )
         << "geom_to_wkt(concave_hull(geom_from_wkt('MultiPoint ((6.3 8.4),(7.6 8.8),(6.8 7.3),(5.3 1.8),(9.1 5),(8.1 7),(8.8 2.9),(2.4 8.2),(3.2 5.1),(3.7 2.3),(2.7 5.4),(8.4 1.9),(7.5 8.7),(4.4 "
            "4.2),(7.7 6.7),(9 3),(3.6 6.1),(3.2 6.5),(8.1 4.7),(8.8 5.8),(6.8 7.3),(4.9 9.5),(8.1 6),(8.7 5),(7.8 1.6),(7.9 2.1),(3 2.2),(7.8 4.3),(2.6 8.5),(4.8 3.4),(3.5 3.5),(3.6 4),(3.1 "
@@ -7050,7 +7050,7 @@ class TestQgsExpression : public QObject
       const HelpTextHash &functionHelp = QgsExpression::functionHelpTexts();
       for ( auto helpIt = functionHelp.constBegin(); helpIt != functionHelp.constEnd(); ++helpIt )
       {
-#if GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR < 11
+#if GEOS_VERSION_NUM < GEOS_MAKE_VERSION( 3, 11, 0 )
         if ( helpIt->mName == "concave_hull"_L1 )
           continue;
 #endif
