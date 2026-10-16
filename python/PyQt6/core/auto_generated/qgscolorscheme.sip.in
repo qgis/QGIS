@@ -288,7 +288,23 @@ project properties dialog.
 #include "qgscolorscheme.h"
 %End
   public:
-    QgsProjectColorScheme();
+ QgsProjectColorScheme() /Deprecated/;
+%Docstring
+Constructor for a project color scheme bound to the current
+:py:class:`QgsProject` :py:func:`~QgsProjectColorScheme.instance`.
+
+.. note::
+
+   Will be removed in QGIS 5.0. Use the constructor which requires an explicit project instead.
+%End
+
+    QgsProjectColorScheme( QgsProject *project );
+%Docstring
+Constructor for a project color scheme bound to the specified
+``project``.
+
+.. versionadded:: 4.4
+%End
 
     virtual QString schemeName() const;
 
@@ -303,6 +319,7 @@ project properties dialog.
 
 
     virtual QgsProjectColorScheme *clone() const /Factory/;
+
 
 };
 

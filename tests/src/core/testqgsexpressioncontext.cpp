@@ -816,14 +816,15 @@ void TestQgsExpressionContext::projectScope()
   //test project scope functions
 
   //project_color function
-  QgsProjectColorScheme s;
+  QgsProject *project1 = QgsProject::instance();
+  QgsProjectColorScheme s( project1 );
   QgsNamedColorList colorList;
   colorList << qMakePair( QColor( 200, 255, 0 ), u"vomit yellow"_s );
   colorList << qMakePair( QColor( 30, 60, 20 ), u"murky depths of hades"_s );
   colorList << qMakePair( QColor::fromCmykF( 1., 0.9, 0.8, 0.7 ), u"cmyk colors"_s );
   s.setColors( colorList );
   QgsExpressionContext contextColors;
-  contextColors << QgsExpressionContextUtils::projectScope( QgsProject::instance() );
+  contextColors << QgsExpressionContextUtils::projectScope( project1 );
 
   QgsExpression expProjectColor( u"project_color('murky depths of hades')"_s );
   QCOMPARE( expProjectColor.evaluate( &contextColors ).toString(), QString( "30,60,20" ) );
