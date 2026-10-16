@@ -109,7 +109,7 @@ int QgisEvent = QEvent::User + 1;
 
       ReadConfiguration = 1 << 1,   //!< Can read an authentication configuration
       UpdateConfiguration = 1 << 2, //!< Can update an authentication configuration
-      DeleteConfiguration = 1 << 3, //!< Can deleet an authentication configuration
+      DeleteConfiguration = 1 << 3, //!< Can delete an authentication configuration
       CreateConfiguration = 1 << 4, //!< Can create a new authentication configuration
 
       ReadCertificateIdentity = 1 << 5,   //!< Can read a certificate identity
@@ -242,6 +242,26 @@ int QgisEvent = QEvent::User + 1;
     };
     Q_DECLARE_FLAGS( LayerFilters, LayerFilter )
     Q_FLAG( LayerFilters )
+
+
+    /**
+     * Flags for layer item capabilities
+     *
+     *  \since QGIS 4.40
+     */
+    enum class LayerItemCapability : int SIP_ENUM_BASETYPE( IntFlag )
+    {
+      AddComments = 1 << 0, //!< Comments can be added to the layer item
+    };
+    Q_ENUM( LayerItemCapability )
+
+    /**
+     * Flags for layer item capabilities
+     *
+     * \since QGIS 4.40
+     */
+    Q_DECLARE_FLAGS( LayerItemCapabilities, LayerItemCapability )
+    Q_FLAG( LayerItemCapabilities )
 
     /**
      * Flags for loading layer styles.
@@ -3895,6 +3915,28 @@ int QgisEvent = QEvent::User + 1;
     Q_ENUM( ProcessingMode )
 
     /**
+     * Standard menu groups for Processing tools
+     *
+     * \since QGIS 4.4
+     */
+    enum class ProcessingMenu
+    {
+      VectorAnalysis,       //!< Vector Analysis menu
+      VectorResearch,       //!< Vector Research menu
+      VectorGeoprocessing,  //!< Vector Geoprocessing menu
+      VectorGeometry,       //!< Vector Geometry menu
+      VectorDataManagement, //!< Vector Data Management menu
+      VectorGeneral,        //!< Vector (top-level) menu
+      RasterProjections,    //!< Raster Projections menu
+      RasterConversion,     //!< Raster Conversion menu
+      RasterExtraction,     //!< Raster Extraction menu
+      RasterAnalysis,       //!< Raster Analysis menu
+      RasterMiscellaneous,  //!< Raster Miscellaneous menu
+      RasterGeneral,        //!< Raster (top-level) menu
+    };
+    Q_ENUM( ProcessingMenu )
+
+    /**
      * Flags which control behavior for a Processing feature source.
      *
      * \note Prior to QGIS 3.36 this was available as QgsProcessingFeatureSourceDefinition::Flag
@@ -6113,6 +6155,18 @@ int QgisEvent = QEvent::User + 1;
       Latitude //!< Coordinate is a latitude value
     };
     Q_ENUM( MapGridAnnotationType )
+
+    /**
+     * Elevation profile range calculation methods.
+     *
+     * \since QGIS 4.4
+     */
+    enum class ElevationProfileRangeMethod : int
+    {
+      ManualRange = 0, //!< Distance/elevation ranges are manually set
+      FixedScale       //!< Distance and elevation ranges are calculated from fixed scales.
+    };
+    Q_ENUM( ElevationProfileRangeMethod )
 
     /**
      * Input controller types.

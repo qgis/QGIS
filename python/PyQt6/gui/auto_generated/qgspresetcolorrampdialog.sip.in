@@ -46,13 +46,6 @@ Sets the color ramp to show in the dialog.
 .. seealso:: :py:func:`ramp`
 %End
 
-  signals:
-
-    void changed();
-%Docstring
-Emitted when the dialog settings change
-%End
-
 };
 
 class QgsPresetColorRampDialog : QDialog

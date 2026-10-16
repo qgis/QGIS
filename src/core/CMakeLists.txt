@@ -11,6 +11,11 @@ BISON_TARGET(QgsMeshCalcParser mesh/qgsmeshcalcparser.yy ${CMAKE_CURRENT_BINARY_
 FLEX_TARGET(QgsMeshCalcLexer mesh/qgsmeshcalclexer.ll ${CMAKE_CURRENT_BINARY_DIR}/qgsmeshcalclexer.cpp)
 ADD_FLEX_BISON_DEPENDENCY(QgsMeshCalcLexer QgsMeshCalcParser)
 
+# LAZPerf-priority
+if(WITH_INTERNAL_LAZPERF)
+  include_directories(BEFORE SYSTEM ${CMAKE_SOURCE_DIR}/external/lazperf)
+endif()
+
 if (WITH_PDF4QT)
   SET(PDF4QT_BUILD_ONLY_CORE_LIBRARY TRUE)
   SET(PDF4QT_ENABLE_OPENGL FALSE)
@@ -285,6 +290,7 @@ set(QGIS_CORE_SRCS
   processing/qgsprocessingalgrunnertask.cpp
   processing/qgsprocessingbatch.cpp
   processing/qgsprocessingcontext.cpp
+  processing/qgsprocessingdefaultstyleregistry.cpp
   processing/qgsprocessingfeedback.cpp
   processing/qgsprocessingoutputs.cpp
   processing/qgsprocessingmodelprovider.cpp
@@ -299,8 +305,10 @@ set(QGIS_CORE_SRCS
   processing/qgsprocessingparameterreliefcolors.cpp
   processing/qgsprocessingparametertininputlayers.cpp
   processing/qgsprocessingparametertype.cpp
+  processing/qgsprocessingparametertileextentmaxzoomlist.cpp
   processing/qgsprocessingparametervectortilewriterlayers.cpp
   processing/qgsprocessingparameteralignrasterlayers.cpp
+  processing/qgsprocessingpostprocessor.cpp
   processing/qgsprocessingprojectmodelprovider.cpp
   processing/qgsprocessingprovider.cpp
   processing/qgsprocessingregistry.cpp
@@ -1938,6 +1946,7 @@ set(QGIS_CORE_HDRS
   processing/qgsprocessingalgrunnertask.h
   processing/qgsprocessingbatch.h
   processing/qgsprocessingcontext.h
+  processing/qgsprocessingdefaultstyleregistry.h
   processing/qgsprocessingfeedback.h
   processing/qgsprocessingoutputs.h
   processing/qgsprocessingmodelprovider.h
@@ -1950,11 +1959,13 @@ set(QGIS_CORE_HDRS
   processing/qgsprocessingparametermeshdataset.h
   processing/qgsprocessingparameterreliefcolors.h
   processing/qgsprocessingparameters.h
+  processing/qgsprocessingparametertileextentmaxzoomlist.h
   processing/qgsprocessingparametertininputlayers.h
   processing/qgsprocessingparametertype.h
   processing/qgsprocessingparametertypeimpl.h
   processing/qgsprocessingparametervectortilewriterlayers.h
   processing/qgsprocessingparameteralignrasterlayers.h
+  processing/qgsprocessingpostprocessor.h
   processing/qgsprocessingprojectmodelprovider.h
   processing/qgsprocessingprovider.h
   processing/qgsprocessingregistry.h

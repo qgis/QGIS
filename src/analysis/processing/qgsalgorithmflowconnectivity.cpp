@@ -98,7 +98,7 @@ void QgsFlowConnectivityD8Algorithm::initAlgorithm( const QVariantMap & )
   creationOptsParam->setFlags( creationOptsParam->flags() | Qgis::ProcessingParameterFlag::Advanced );
   addParameter( creationOptsParam.release() );
 
-  auto outputParam = std::make_unique<QgsProcessingParameterRasterDestination>( u"OUTPUT"_s, QObject::tr( "Flow direction" ) );
+  auto outputParam = std::make_unique<QgsProcessingParameterRasterDestination>( u"OUTPUT"_s, QObject::tr( "Flow connectivity" ) );
   addParameter( outputParam.release() );
 }
 

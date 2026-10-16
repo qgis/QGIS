@@ -222,7 +222,7 @@ void QgsTiledSceneRendererPropertiesWidget::rendererChanged()
       mActiveWidget->setContext( context );
     }
 
-    connect( mActiveWidget, &QgsPanelWidget::widgetChanged, this, &QgsTiledSceneRendererPropertiesWidget::widgetChanged );
+    connect( mActiveWidget, &QgsPanelWidget::changed, this, &QgsTiledSceneRendererPropertiesWidget::changed );
     connect( mActiveWidget, &QgsPanelWidget::showPanel, this, &QgsTiledSceneRendererPropertiesWidget::openPanel );
     widget->setDockMode( dockMode() );
   }
@@ -237,5 +237,5 @@ void QgsTiledSceneRendererPropertiesWidget::rendererChanged()
 void QgsTiledSceneRendererPropertiesWidget::emitWidgetChanged()
 {
   if ( !mBlockChangedSignal )
-    emit widgetChanged();
+    emit changed();
 }

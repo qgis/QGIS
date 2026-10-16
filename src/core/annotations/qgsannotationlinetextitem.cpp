@@ -221,9 +221,9 @@ QgsAnnotationItemEditOperationTransientResults *QgsAnnotationLineTextItem::trans
   return nullptr;
 }
 
-QgsAnnotationLineTextItem *QgsAnnotationLineTextItem::create()
+std::unique_ptr<QgsAnnotationLineTextItem> QgsAnnotationLineTextItem::create()
 {
-  return new QgsAnnotationLineTextItem( QString(), new QgsLineString() );
+  return std::make_unique<QgsAnnotationLineTextItem>( QString(), new QgsLineString() );
 }
 
 bool QgsAnnotationLineTextItem::readXml( const QDomElement &element, const QgsReadWriteContext &context )

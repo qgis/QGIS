@@ -151,9 +151,9 @@ QgsAnnotationItemEditOperationTransientResults *QgsAnnotationMarkerItem::transie
   return nullptr;
 }
 
-QgsAnnotationMarkerItem *QgsAnnotationMarkerItem::create()
+std::unique_ptr<QgsAnnotationMarkerItem> QgsAnnotationMarkerItem::create()
 {
-  return new QgsAnnotationMarkerItem( QgsPoint() );
+  return std::make_unique<QgsAnnotationMarkerItem>( QgsPoint() );
 }
 
 bool QgsAnnotationMarkerItem::readXml( const QDomElement &element, const QgsReadWriteContext &context )

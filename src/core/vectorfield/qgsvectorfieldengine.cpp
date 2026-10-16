@@ -19,6 +19,7 @@
 #include <cmath>
 
 #include "qgsfeedback.h"
+#include "qgspainting.h"
 #include "qgsrendercontext.h"
 #include "qgsvectorfieldstreamfield.h"
 #include "qgsvectorfieldvaluesource.h"

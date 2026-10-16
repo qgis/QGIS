@@ -64,7 +64,7 @@ void QgsBookmarkLocatorFilter::fetchResults( const QString &string, const QgsLoc
       continue;
     }
 
-    result.score = fuzzyScore( QgsStringUtils::unaccent( result.displayString ), QgsStringUtils::unaccent( string ) );
+    result.score = fuzzyScore( result.displayString, string );
 
     if ( result.score > 0 )
       emit resultFetched( result );

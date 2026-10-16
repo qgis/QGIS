@@ -872,6 +872,23 @@ void QgsProcessingToolboxProxyModel::setFilterString( const QString &filter )
   invalidateFilter();
 }
 
+void QgsProcessingToolboxProxyModel::setFilterParameter( const QgsProcessingParameterDefinition *parameterDefinition )
+{
+  mFilterParameterDefinition.reset( parameterDefinition->clone() );
+  mFilterOutputDefinition.reset();
+
+  invalidateFilter();
+}
+
+void QgsProcessingToolboxProxyModel::setFilterOutput( const QgsProcessingOutputDefinition *outputDefinition )
+{
+  mFilterParameterDefinition.reset();
+  mFilterOutputDefinition.reset( outputDefinition->clone() );
+
+  invalidateFilter();
+}
+
+
 bool QgsProcessingToolboxProxyModel::filterAcceptsRow( int sourceRow, const QModelIndex &sourceParent ) const
 {
   QModelIndex sourceIndex = mModel->index( sourceRow, 0, sourceParent );
@@ -911,10 +928,9 @@ bool QgsProcessingToolboxProxyModel::filterAcceptsRow( int sourceRow, const QMod
       for ( const QString &part : partsToMatch )
       {
         bool found = false;
-        const QString unaccentedPart = QgsStringUtils::unaccent( part );
         for ( const QString &partToSearch : std::as_const( partsToSearch ) )
         {
-          if ( QgsStringUtils::unaccent( partToSearch ).contains( unaccentedPart, Qt::CaseInsensitive ) )
+          if ( partToSearch.contains( part, Qt::CaseInsensitive ) )
           {
             found = true;
             break;
@@ -938,6 +954,63 @@ bool QgsProcessingToolboxProxyModel::filterAcceptsRow( int sourceRow, const QMod
         return false;
       }
     }
+
+    if ( mFilters & Filter::ForSocketInput )
+    {
+      const QgsProcessingAlgorithm *alg = mModel->algorithmForIndex( sourceIndex );
+      if ( mFilterParameterDefinition )
+      {
+        bool found = false;
+        const QList<const QgsProcessingOutputDefinition *> outputs = alg->outputDefinitions();
+        for ( const QgsProcessingOutputDefinition *output : outputs )
+        {
+          if ( QgsApplication::processingRegistry()->isCompatibleOutput( mFilterParameterDefinition.get(), output ) )
+          {
+            found = true;
+            break;
+          }
+        }
+        if ( !found )
+          return false;
+      }
+    }
+
+    if ( mFilters & Filter::ForSocketOutput )
+    {
+      const QgsProcessingAlgorithm *alg = mModel->algorithmForIndex( sourceIndex );
+      bool found = false;
+      if ( mFilterOutputDefinition )
+      {
+        for ( const QgsProcessingParameterDefinition *def : alg->parameterDefinitions() )
+        {
+          if ( def->flags() & Qgis::ProcessingParameterFlag::Hidden )
+            continue;
+
+          if ( QgsApplication::processingRegistry()->isCompatibleOutput( def, mFilterOutputDefinition.get() ) )
+          {
+            found = true;
+            break;
+          }
+        }
+      }
+      if ( mFilterParameterDefinition )
+      {
+        for ( const QgsProcessingParameterDefinition *def : alg->parameterDefinitions() )
+        {
+          if ( def->flags() & Qgis::ProcessingParameterFlag::Hidden )
+            continue;
+
+          if ( QgsApplication::processingRegistry()->isCompatibleDefinition( def, mFilterParameterDefinition.get() ) )
+          {
+            found = true;
+            break;
+          }
+        }
+      }
+      if ( !found )
+        return false;
+    }
+
     if ( mFilters & Filter::Modeler )
     {
       bool isHiddenFromModeler = sourceModel()->data( sourceIndex, static_cast<int>( QgsProcessingToolboxModel::CustomRole::AlgorithmFlags ) ).toInt()
@@ -960,6 +1033,11 @@ bool QgsProcessingToolboxProxyModel::filterAcceptsRow( int sourceRow, const QMod
       return false;
     }
 
+    if ( mFilters & Filter::ForSocketOutput )
+    {
+      // Parameter items aren't compatible with outputs
+      return false;
+    }
     if ( !mFilterString.trimmed().isEmpty() )
     {
       QStringList partsToSearch;
@@ -970,10 +1048,9 @@ bool QgsProcessingToolboxProxyModel::filterAcceptsRow( int sourceRow, const QMod
       for ( const QString &part : partsToMatch )
       {
         bool found = false;
-        const QString unaccentedPart = QgsStringUtils::unaccent( part );
         for ( const QString &partToSearch : std::as_const( partsToSearch ) )
         {
-          if ( QgsStringUtils::unaccent( partToSearch ).contains( unaccentedPart, Qt::CaseInsensitive ) )
+          if ( partToSearch.contains( part, Qt::CaseInsensitive ) )
           {
             found = true;
             break;
@@ -981,6 +1058,17 @@ bool QgsProcessingToolboxProxyModel::filterAcceptsRow( int sourceRow, const QMod
         }
         if ( !found )
           return false; // couldn't find a match for this word, so hide algorithm
+      }
+    }
+
+    if ( mFilters & Filter::ForSocketInput )
+    {
+      if ( mFilterParameterDefinition )
+      {
+        const QgsProcessingParameterType *paramType = QgsApplication::processingRegistry()->parameterType( mFilterParameterDefinition->type() );
+        const QString paramId = sourceModel()->data( sourceIndex, static_cast<int>( QgsProcessingToolboxModel::CustomRole::ParameterTypeId ) ).toString();
+        if ( !paramType->acceptedParameterTypes().contains( paramId ) )
+          return false;
       }
     }
 

@@ -46,7 +46,7 @@ class CORE_EXPORT QgsAnnotationPictureItem : public QgsAnnotationRectItem
     /**
      * Creates a new polygon annotation item.
      */
-    static QgsAnnotationPictureItem *create() SIP_FACTORY;
+    static std::unique_ptr<QgsAnnotationPictureItem> create();
 
     /**
      * Returns the path of the image used to render the item.

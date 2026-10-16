@@ -239,7 +239,7 @@ class GUI_EXPORT QgsModelDesignerDialog : public QMainWindow,
     void addAlgorithm( const QString &algorithmId, const QPointF &pos );
     void addInput( const QString &parameterType, const QPointF &pos );
 
-    QgsProcessingAlgorithmWidgetBase *createExecutionWidget();
+    QgsProcessingAlgorithmWidget *createExecutionWidget();
 
     void exportAsScriptAlgorithm();
 
@@ -252,9 +252,9 @@ class GUI_EXPORT QgsModelDesignerDialog : public QMainWindow,
     QgsMessageBar *mMessageBar = nullptr;
     QgsModelerToolboxModel *mAlgorithmsModel = nullptr;
 
-    QPointer<QgsProcessingAlgorithmWidgetBase> mAlgorithmWidget;
+    QPointer<QgsProcessingAlgorithmWidget> mAlgorithmWidget;
 
-    QVector<QPointer<QgsProcessingAlgorithmWidgetBase>> mAlgorithmWidgetsToCleanUp;
+    QVector<QPointer<QgsProcessingAlgorithmWidget>> mAlgorithmWidgetsToCleanUp;
 
     QActionGroup *mToolsActionGroup = nullptr;
 

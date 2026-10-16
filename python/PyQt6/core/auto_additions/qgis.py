@@ -3,7 +3,7 @@
 Qgis.AuthConfigurationStorageCapability.ClearStorage.__doc__ = "Can clear all configurations from storage"
 Qgis.AuthConfigurationStorageCapability.ReadConfiguration.__doc__ = "Can read an authentication configuration"
 Qgis.AuthConfigurationStorageCapability.UpdateConfiguration.__doc__ = "Can update an authentication configuration"
-Qgis.AuthConfigurationStorageCapability.DeleteConfiguration.__doc__ = "Can deleet an authentication configuration"
+Qgis.AuthConfigurationStorageCapability.DeleteConfiguration.__doc__ = "Can delete an authentication configuration"
 Qgis.AuthConfigurationStorageCapability.CreateConfiguration.__doc__ = "Can create a new authentication configuration"
 Qgis.AuthConfigurationStorageCapability.ReadCertificateIdentity.__doc__ = "Can read a certificate identity"
 Qgis.AuthConfigurationStorageCapability.UpdateCertificateIdentity.__doc__ = "Can update a certificate identity"
@@ -36,7 +36,7 @@ Qgis.AuthConfigurationStorageCapability.__doc__ = """Authentication configuratio
 * ``ClearStorage``: Can clear all configurations from storage
 * ``ReadConfiguration``: Can read an authentication configuration
 * ``UpdateConfiguration``: Can update an authentication configuration
-* ``DeleteConfiguration``: Can deleet an authentication configuration
+* ``DeleteConfiguration``: Can delete an authentication configuration
 * ``CreateConfiguration``: Can create a new authentication configuration
 * ``ReadCertificateIdentity``: Can read a certificate identity
 * ``UpdateCertificateIdentity``: Can update a certificate identity
@@ -287,6 +287,20 @@ Qgis.LayerFilter.__doc__ = """Filter for layers
 Qgis.LayerFilters = lambda flags=0: Qgis.LayerFilter(flags)
 Qgis.LayerFilters.baseClass = Qgis
 LayerFilters = Qgis  # dirty hack since SIP seems to introduce the flags in module
+# monkey patching scoped based enum
+Qgis.LayerItemCapability.AddComments.__doc__ = "Comments can be added to the layer item"
+Qgis.LayerItemCapability.__doc__ = """Flags for layer item capabilities
+
+.. versionadded:: 4.40
+
+* ``AddComments``: Comments can be added to the layer item
+
+"""
+# --
+Qgis.LayerItemCapability.baseClass = Qgis
+Qgis.LayerItemCapabilities = lambda flags=0: Qgis.LayerItemCapability(flags)
+Qgis.LayerItemCapabilities.baseClass = Qgis
+LayerItemCapabilities = Qgis  # dirty hack since SIP seems to introduce the flags in module
 # monkey patching scoped based enum
 Qgis.LoadStyleFlag.IgnoreMissingStyleErrors.__doc__ = "If the style is missing, then don't flag it as an error. This flag can be used when the caller is not certain that a style exists, and accordingly a failure to find the style does not indicate an issue with loading the style itself."
 Qgis.LoadStyleFlag.__doc__ = """Flags for loading layer styles.
@@ -7202,6 +7216,39 @@ Qgis.ProcessingMode.__doc__ = """Types of modes which Processing widgets can be 
 """
 # --
 Qgis.ProcessingMode.baseClass = Qgis
+# monkey patching scoped based enum
+Qgis.ProcessingMenu.VectorAnalysis.__doc__ = "Vector Analysis menu"
+Qgis.ProcessingMenu.VectorResearch.__doc__ = "Vector Research menu"
+Qgis.ProcessingMenu.VectorGeoprocessing.__doc__ = "Vector Geoprocessing menu"
+Qgis.ProcessingMenu.VectorGeometry.__doc__ = "Vector Geometry menu"
+Qgis.ProcessingMenu.VectorDataManagement.__doc__ = "Vector Data Management menu"
+Qgis.ProcessingMenu.VectorGeneral.__doc__ = "Vector (top-level) menu"
+Qgis.ProcessingMenu.RasterProjections.__doc__ = "Raster Projections menu"
+Qgis.ProcessingMenu.RasterConversion.__doc__ = "Raster Conversion menu"
+Qgis.ProcessingMenu.RasterExtraction.__doc__ = "Raster Extraction menu"
+Qgis.ProcessingMenu.RasterAnalysis.__doc__ = "Raster Analysis menu"
+Qgis.ProcessingMenu.RasterMiscellaneous.__doc__ = "Raster Miscellaneous menu"
+Qgis.ProcessingMenu.RasterGeneral.__doc__ = "Raster (top-level) menu"
+Qgis.ProcessingMenu.__doc__ = """Standard menu groups for Processing tools
+
+.. versionadded:: 4.4
+
+* ``VectorAnalysis``: Vector Analysis menu
+* ``VectorResearch``: Vector Research menu
+* ``VectorGeoprocessing``: Vector Geoprocessing menu
+* ``VectorGeometry``: Vector Geometry menu
+* ``VectorDataManagement``: Vector Data Management menu
+* ``VectorGeneral``: Vector (top-level) menu
+* ``RasterProjections``: Raster Projections menu
+* ``RasterConversion``: Raster Conversion menu
+* ``RasterExtraction``: Raster Extraction menu
+* ``RasterAnalysis``: Raster Analysis menu
+* ``RasterMiscellaneous``: Raster Miscellaneous menu
+* ``RasterGeneral``: Raster (top-level) menu
+
+"""
+# --
+Qgis.ProcessingMenu.baseClass = Qgis
 QgsProcessingFeatureSourceDefinition.Flag = Qgis.ProcessingFeatureSourceDefinitionFlag
 # monkey patching scoped based enum
 QgsProcessingFeatureSourceDefinition.FlagOverrideDefaultGeometryCheck = Qgis.ProcessingFeatureSourceDefinitionFlag.OverrideDefaultGeometryCheck
@@ -11727,6 +11774,19 @@ Qgis.MapGridAnnotationType.__doc__ = """Annotation coordinate type.
 """
 # --
 Qgis.MapGridAnnotationType.baseClass = Qgis
+# monkey patching scoped based enum
+Qgis.ElevationProfileRangeMethod.ManualRange.__doc__ = "Distance/elevation ranges are manually set"
+Qgis.ElevationProfileRangeMethod.FixedScale.__doc__ = "Distance and elevation ranges are calculated from fixed scales."
+Qgis.ElevationProfileRangeMethod.__doc__ = """Elevation profile range calculation methods.
+
+.. versionadded:: 4.4
+
+* ``ManualRange``: Distance/elevation ranges are manually set
+* ``FixedScale``: Distance and elevation ranges are calculated from fixed scales.
+
+"""
+# --
+Qgis.ElevationProfileRangeMethod.baseClass = Qgis
 # monkey patching scoped based enum
 Qgis.InputControllerType.Map2D.__doc__ = "2D map controller"
 Qgis.InputControllerType.Map3D.__doc__ = "3D map controller"

@@ -781,7 +781,13 @@ void QgsWcsProvider::getCache( int bandNo, QgsRectangle const &viewExtent, int p
     // does not work with Mapserver 6.0.3
     // Mapserver 6.0.3 does not work with origin on yMinimum (lower left)
     // Geoserver works OK with yMinimum (lower left)
-    const QString gridOrigin = QString( changeXY ? "%2,%1" : "%1,%2" ).arg( qgsDoubleToString( extent.xMinimum() ), qgsDoubleToString( extent.yMaximum() ) );
+
+    // Extent coordinates already swapped to match GRIDBASECRS, see the
+    // "if ( changeXY )" block above.
+    // So we do not need to swap order of coordinates here, it is enough to
+    // pick correct corner (gridOrigin) depending on the axis order.
+    const QString gridOrigin = changeXY ? QString( "%1,%2" ).arg( qgsDoubleToString( extent.xMaximum() ), qgsDoubleToString( extent.yMinimum() ) )
+                                        : QString( "%1,%2" ).arg( qgsDoubleToString( extent.xMinimum() ), qgsDoubleToString( extent.yMaximum() ) );
     setQueryItem( url, u"GRIDORIGIN"_s, gridOrigin );
 
     // GridOffsets WCS 1.1:

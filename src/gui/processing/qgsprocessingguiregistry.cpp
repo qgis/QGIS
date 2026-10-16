@@ -130,6 +130,7 @@ QgsProcessingGuiRegistry::QgsProcessingGuiRegistry()
   addParameterWidgetFactory( new QgsProcessingExecuteSqlWidgetWrapper() );
   addParameterWidgetFactory( new QgsProcessingInterpolationPixelSizeWidgetWrapper() );
   addParameterWidgetFactory( new QgsProcessingInterpolationSourceWidgetWrapper() );
+  addParameterWidgetFactory( new QgsProcessingTileExtentMaxZoomWidgetWrapper() );
 
   mModelConfigWidgetFactory = std::make_unique< QgsProcessingGuiInternalModelConfigWidgetFactory >();
   registerModelConfigWidgetFactory( mModelConfigWidgetFactory.get() );
@@ -402,7 +403,7 @@ QgsProcessingModelConfigWidget *QgsProcessingGuiInternalModelConfigWidgetFactory
     const QString boxUuid = groupBox->uuid();
 
     auto widget = new QgsModelGroupBoxDefinitionPanelWidget( *groupBox );
-    connect( widget, &QgsModelGroupBoxDefinitionPanelWidget::widgetChanged, this, [dialog, boxUuid, widget] {
+    connect( widget, &QgsModelGroupBoxDefinitionPanelWidget::changed, this, [dialog, boxUuid, widget] {
       QgsModelGraphicsScene *modelScene = dialog->modelScene();
       QgsModelGroupBoxGraphicItem *graphicItem = dynamic_cast< QgsModelGroupBoxGraphicItem * >( modelScene->groupBoxItem( boxUuid ) );
       if ( !graphicItem )
@@ -427,7 +428,7 @@ QgsProcessingModelConfigWidget *QgsProcessingGuiInternalModelConfigWidgetFactory
     widgetContextCopy.setModelChildAlgorithmId( childId );
     widget->setWidgetContext( widgetContextCopy );
 
-    connect( widget, &QgsProcessingModelConfigWidget::widgetChanged, this, [dialog, childId, widget] {
+    connect( widget, &QgsProcessingModelConfigWidget::changed, this, [dialog, childId, widget] {
       QgsModelGraphicsScene *modelScene = dialog->modelScene();
       QgsModelChildAlgorithmGraphicItem *graphicItem = modelScene->childAlgorithmItem( childId );
       if ( !graphicItem )
@@ -467,7 +468,7 @@ QgsProcessingModelConfigWidget *QgsProcessingGuiInternalModelConfigWidgetFactory
 
     auto existingParamName = std::make_shared< QString >( existingParam->name() );
 
-    connect( widget, &QgsProcessingParameterDefinitionPanelWidget::widgetChanged, this, [dialog, componentName, oldDescription, oldName, existingParamName, widget] {
+    connect( widget, &QgsProcessingParameterDefinitionPanelWidget::changed, this, [dialog, componentName, oldDescription, oldName, existingParamName, widget] {
       QgsModelGraphicsScene *modelScene = dialog->modelScene();
       if ( !modelScene )
         return;
@@ -510,7 +511,7 @@ QgsProcessingModelConfigWidget *QgsProcessingGuiInternalModelConfigWidgetFactory
       widget->registerProcessingContextGenerator( widgetContext.processingContextGenerator() );
     }
 
-    connect( widget, &QgsProcessingParameterDefinitionPanelWidget::widgetChanged, this, [dialog, childId, childOutputName, widget] {
+    connect( widget, &QgsProcessingParameterDefinitionPanelWidget::changed, this, [dialog, childId, childOutputName, widget] {
       QgsModelGraphicsScene *modelScene = dialog->modelScene();
       if ( !modelScene )
         return;

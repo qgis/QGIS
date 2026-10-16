@@ -20,6 +20,7 @@
 #include "qgslayoututils.h"
 #include "qgslinesymbol.h"
 #include "qgsnumericformat.h"
+#include "qgspainting.h"
 #include "qgsscalebarsettings.h"
 #include "qgssymbol.h"
 #include "qgssymbollayerutils.h"
@@ -40,7 +41,7 @@ void QgsScaleBarRenderer::drawDefaultLabels( QgsRenderContext &context, const Qg
 
   QPainter *painter = context.painter();
 
-  painter->save();
+  QgsScopedQPainterState painterState( painter );
 
   const QgsTextFormat format = settings.textFormat();
 
@@ -326,8 +327,6 @@ void QgsScaleBarRenderer::drawDefaultLabels( QgsRenderContext &context, const Qg
       QgsTextRenderer::drawText( pos, 0, Qgis::TextHorizontalAlignment::Center, QStringList() << unitLabel, context, format );
     }
   }
-
-  painter->restore();
 }
 
 QgsScaleBarRenderer::Flags QgsScaleBarRenderer::flags() const

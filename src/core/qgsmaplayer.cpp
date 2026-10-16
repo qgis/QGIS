@@ -95,7 +95,7 @@ QgsMapLayer::QgsMapLayer( Qgis::LayerType type, const QString &lyrname, const QS
   , mServerProperties( std::make_unique<QgsMapLayerServerProperties>( this ) )
   , mUndoStack( new QUndoStack( this ) )
   , mUndoStackStyles( new QUndoStack( this ) )
-  , mStyleManager( std::make_unique<QgsMapLayerStyleManager>( this ) )
+  , mStyleManager( new QgsMapLayerStyleManager( this ) )
   , mRefreshTimer( new QTimer( this ) )
 {
   mID = generateId( lyrname );
@@ -1643,12 +1643,6 @@ QString QgsMapLayer::loadNamedProperty( const QString &uri, QgsMapLayer::Propert
     {
       projectFileName = lProject->fileName();
     }
-    // TODO QGIS 5.0 -- Remove the else branch with fallback to current QGIS project, the code will work but if the MapLayer is not associated with project it will not provide result
-    else
-    {
-      QgsDebugError( "QgsMapLayer is not associated with QGIS project. Using current QGIS project as fallback. This will stop working in QGIS 5.0." );
-      projectFileName = QgsProject::instance()->fileName(); // skip-keyword-check
-    }
 
     const QFileInfo project( projectFileName );
     QgsDebugMsgLevel( u"project fileName: %1"_s.arg( project.absoluteFilePath() ), 4 );
@@ -2788,11 +2782,18 @@ bool QgsMapLayer::isTemporary() const
   if ( path.isEmpty() )
     return false;
 
+  const QFileInfo fileInfo( path );
+  const QString cleanedPath = QDir::cleanPath( fileInfo.canonicalFilePath() );
+
   // check if layer path is inside one of the standard temporary file locations for this platform
   const QStringList tempPaths = QStandardPaths::standardLocations( QStandardPaths::TempLocation );
-  for ( const QString &tempPath : tempPaths )
+  for ( const QString &tempPath : std::as_const( tempPaths ) )
   {
-    if ( path.startsWith( tempPath ) )
+#if defined( Q_OS_WIN )
+    if ( cleanedPath.startsWith( tempPath, Qt::CaseSensitivity::CaseInsensitive ) )
+#else
+    if ( cleanedPath.startsWith( tempPath, Qt::CaseSensitivity::CaseSensitive ) )
+#endif
       return true;
   }
 
@@ -2814,16 +2815,16 @@ void QgsMapLayer::setLegend( QgsMapLayerLegend *legend )
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
-  if ( legend == mLegend.get() )
+  if ( legend == mLegend )
     return;
 
-  mLegend.reset( legend );
-
+  delete mLegend;
+  mLegend = legend;
 
   if ( mLegend )
   {
     mLegend->setParent( this );
-    connect( mLegend.get(), &QgsMapLayerLegend::itemsChanged, this, &QgsMapLayer::legendChanged, Qt::UniqueConnection );
+    connect( mLegend, &QgsMapLayerLegend::itemsChanged, this, &QgsMapLayer::legendChanged, Qt::UniqueConnection );
   }
 
   emit legendChanged();
@@ -2833,14 +2834,14 @@ QgsMapLayerLegend *QgsMapLayer::legend() const
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
-  return mLegend.get();
+  return mLegend;
 }
 
 QgsMapLayerStyleManager *QgsMapLayer::styleManager() const
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
-  return mStyleManager.get();
+  return mStyleManager;
 }
 
 void QgsMapLayer::setRenderer3D( QgsAbstract3DRenderer *renderer )
@@ -2947,7 +2948,14 @@ void QgsMapLayer::setOriginalXmlProperties( const QString &originalXmlProperties
 
 QString QgsMapLayer::generateId( const QString &layerName )
 {
-  return QgsStringUtils::createUniqueId( layerName );
+  constexpr int UUID_SUFFIX_LENGTH = 36 + 1;
+  constexpr int MAX_ID_LENGTH = 100;
+  constexpr int MAX_PREFIX_LENGTH = MAX_ID_LENGTH - UUID_SUFFIX_LENGTH;
+
+  // cap length of layer name to avoid potentially huge names
+  const QString prefix = layerName.left( MAX_PREFIX_LENGTH );
+
+  return QgsStringUtils::createUniqueId( prefix );
 }
 
 bool QgsMapLayer::accept( QgsStyleEntityVisitorInterface * ) const

@@ -42,7 +42,7 @@ QgsPointCloudLayer3DRendererWidget::QgsPointCloudLayer3DRendererWidget( QgsPoint
 
   mWidgetPointCloudSymbol->connectChildPanels( this );
 
-  connect( mWidgetPointCloudSymbol, &QgsPointCloud3DSymbolWidget::changed, this, &QgsPointCloudLayer3DRendererWidget::widgetChanged );
+  connect( mWidgetPointCloudSymbol, &QgsPointCloud3DSymbolWidget::changed, this, &QgsPointCloudLayer3DRendererWidget::changed );
   setProperty( "helpPage", u"working_with_point_clouds/point_clouds.html#d-view-properties"_s );
 }
 

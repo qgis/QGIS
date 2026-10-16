@@ -274,9 +274,9 @@ QDomElement QgsPointCloudRgbRenderer::save( QDomDocument &doc, const QgsReadWrit
   return rendererElem;
 }
 
-QSet<QString> QgsPointCloudRgbRenderer::usedAttributes( const QgsPointCloudRenderContext & ) const
+QSet<QString> QgsPointCloudRgbRenderer::usedAttributes( const QgsPointCloudRenderContext &context ) const
 {
-  QSet<QString> res;
+  QSet<QString> res = QgsPointCloudRenderer::usedAttributes( context );
   res << mRedAttribute << mGreenAttribute << mBlueAttribute;
   return res;
 }

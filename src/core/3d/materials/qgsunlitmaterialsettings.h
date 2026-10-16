@@ -50,7 +50,7 @@ class CORE_EXPORT QgsUnlitMaterialSettings : public QgsAbstractMaterialSettings
     /**
      * Returns a new instance of QgsUnlitMaterialSettings.
      */
-    static QgsAbstractMaterialSettings *create() SIP_FACTORY;
+    static std::unique_ptr<QgsAbstractMaterialSettings> create();
 
     QgsUnlitMaterialSettings *clone() const override SIP_FACTORY;
     bool equals( const QgsAbstractMaterialSettings *other ) const override;

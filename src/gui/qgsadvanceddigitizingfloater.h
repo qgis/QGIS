@@ -216,6 +216,9 @@ class GUI_EXPORT QgsAdvancedDigitizingFloater : public QWidget, private Ui::QgsA
     //! Whether the floater is enabled.
     bool mActive = false;
 
+    //! Whether the textfield is being edited. This guards against superfluous cursor resetting
+    bool mEditing = false;
+
     FloaterItems mItemsVisibility;
 };
 

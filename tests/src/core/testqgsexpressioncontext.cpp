@@ -1102,6 +1102,14 @@ void TestQgsExpressionContext::layerStores()
   QgsExpressionContext c3;
   c3 = context;
   QCOMPARE( c3.loadedLayerStore(), &store4 );
+
+  QgsProject project;
+  std::unique_ptr<QgsExpressionContextScope> projectScope( QgsExpressionContextUtils::projectScope( &project ) );
+  QCOMPARE( projectScope->layerStores(), QList<QgsMapLayerStore *>( { project.layerStore() } ) );
+
+  QgsExpressionContext projectContext;
+  projectContext.appendScope( projectScope.release() );
+  QCOMPARE( projectContext.layerStores(), QList<QgsMapLayerStore *>( { project.layerStore() } ) );
 }
 
 void TestQgsExpressionContext::uniqueHash()

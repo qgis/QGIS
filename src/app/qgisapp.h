@@ -79,6 +79,7 @@ class QgsPluginLayer;
 class QgsPointCloudLayer;
 class QgsPointXY;
 class QgsPrintLayout;
+class QgsProcessingToolboxDockWidget;
 class QgsProviderRegistry;
 class QgsProviderSublayerDetails;
 class QgsPythonUtils;
@@ -171,6 +172,7 @@ class QgsCustomizationDialog;
 class QgsTopocentricWidget;
 class QgsProcessingWidgetContextGenerator;
 class QgsAppProcessingUtils;
+class QgsToolButtonAction;
 
 #include "qgsconfig.h"
 #include "ui_qgisapp.h"
@@ -259,6 +261,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     static const QgsSettingsEntryInteger *settingsMapTipsDelay SIP_SKIP;
     static const QgsSettingsEntryBool *settingsAskToSaveProjectChanges SIP_SKIP;
     static const QgsSettingsEntryBool *settingsWarnOldProjectVersion SIP_SKIP;
+    static const QgsSettingsEntryBool *settingsShowWelcomePage SIP_SKIP;
     static const QgsSettingsEntryBool *settingsNewProjectDefault SIP_SKIP;
     static const QgsSettingsEntryInteger *settingsProjOpenAtLaunch SIP_SKIP;
     static const QgsSettingsEntryString *settingsProjOpenAtLaunchPath SIP_SKIP;
@@ -738,6 +741,8 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     QAction *actionCheckQgisVersion() { return mActionCheckQgisVersion; }
     QAction *actionAbout() { return mActionAbout; }
     QAction *actionSponsors() { return mActionSponsors; }
+    QAction *actionEditFeaturesInPlace() { return mActionEditFeaturesInPlace; }
+    QAction *actionProcessingHistory() { return mProcessingHistoryAction; }
 
     QAction *actionShowPinnedLabels() { return mActionShowPinnedLabels; }
 
@@ -757,6 +762,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     QMenu *rasterMenu() { return mRasterMenu; }
     QMenu *vectorMenu() { return mVectorMenu; }
     QMenu *meshMenu() { return mMeshMenu; }
+    QMenu *processingMenu() { return mProcessingMenu; }
     QMenu *webMenu() { return mWebMenu; }
 #ifdef Q_OS_MAC
     QMenu *firstRightStandardMenu() { return mWindowMenu; }
@@ -846,8 +852,6 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
 
     //! A a map decoration \a item
     void addDecorationItem( QgsDecorationItem *item ) { mDecorationItems.append( item ); }
-
-    static QString normalizedMenuName( const QString &name );
 
     void parseVersionInfo( QNetworkReply *reply, int &latestVersion, QStringList &versionInfo );
 
@@ -1677,8 +1681,6 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     void addPluginToMenu( const QString &name, QAction *action );
     //! Remove the action to the submenu with the given name under the plugin menu
     void removePluginMenu( const QString &name, QAction *action );
-    //! Find the QMenu with the given name within the Database menu (ie the user visible text on the menu item)
-    QMenu *getDatabaseMenu( const QString &menuName );
     //! Add the action to the submenu with the given name under the Database menu
     void addPluginToDatabaseMenu( const QString &name, QAction *action );
     //! Remove the action to the submenu with the given name under the Database menu
@@ -1689,24 +1691,22 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     void addPluginToRasterMenu( const QString &name, QAction *action );
     //! Remove the action to the submenu with the given name under the Raster menu
     void removePluginRasterMenu( const QString &name, QAction *action );
-    //! Find the QMenu with the given name within the Vector menu (ie the user visible text on the menu item)
-    QMenu *getVectorMenu( const QString &menuName );
     //! Add the action to the submenu with the given name under the Vector menu
     void addPluginToVectorMenu( const QString &name, QAction *action );
     //! Remove the action to the submenu with the given name under the Vector menu
     void removePluginVectorMenu( const QString &name, QAction *action );
-    //! Find the QMenu with the given name within the Web menu (ie the user visible text on the menu item)
-    QMenu *getWebMenu( const QString &menuName );
     //! Add the action to the submenu with the given name under the Web menu
     void addPluginToWebMenu( const QString &name, QAction *action );
     //! Remove the action to the submenu with the given name under the Web menu
     void removePluginWebMenu( const QString &name, QAction *action );
-    //! Find the QMenu with the given name within the Mesh menu (ie the user visible text on the menu item)
-    QMenu *getMeshMenu( const QString &menuName );
     //! Add the action to the submenu with the given name under the Mesh menu
     void addPluginToMeshMenu( const QString &name, QAction *action );
     //! Remove the action to the submenu with the given name under the Mesh menu
     void removePluginMeshMenu( const QString &name, QAction *action );
+    //! Add the action to the submenu with the given name under the Processing menu
+    void addPluginToProcessingMenu( const QString &name, QAction *action );
+    //! Remove the action to the submenu with the given name under the Processing menu
+    void removePluginProcessingMenu( const QString &name, QAction *action );
     //! Add "add layer" action to layer menu
     void insertAddLayerAction( QAction *action );
     //! Remove "add layer" action to layer menu
@@ -1793,6 +1793,8 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     void dxfExport();
     //! Import layers in dwg format
     void dwgImport();
+
+    QToolBar *processingToolboxToolBar();
 
     /**
      * Open the project file corresponding to the
@@ -2775,6 +2777,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     QgsAdvancedDigitizingDockWidget *mAdvancedDigitizingDockWidget = nullptr;
     QgsStatisticalSummaryDockWidget *mStatisticalSummaryDockWidget = nullptr;
     QgsBookmarks *mBookMarksDockWidget = nullptr;
+    QgsProcessingToolboxDockWidget *mProcessingToolboxDockWidget = nullptr;
 
     //! Data Source Manager
     QgsDataSourceManagerDialog *mDataSourceManagerDialog = nullptr;
@@ -2830,7 +2833,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     //! A class that facilitates tracing of features
     QgsMapCanvasTracer *mTracer = nullptr;
 
-    QToolButton *mFilterLegendToolButton = nullptr;
+    QgsToolButtonAction *mFilterLegendToolButtonAction = nullptr;
     QAction *mFilterLegendByMapContentAction = nullptr;
     QAction *mFilterLegendToggleShowPrivateLayersAction = nullptr;
     QAction *mFilterLegendToggleHideValidLayersAction = nullptr;

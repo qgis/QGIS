@@ -121,7 +121,7 @@ void QgsSingleSymbolRendererWidget::setSymbolLevels( const QList<QgsLegendSymbol
   mRenderer->setSymbol( mSingleSymbol->clone() );
   mRenderer->setUsingSymbolLevels( enabled );
   mSelector->loadSymbol( mSingleSymbol.get() );
-  emit widgetChanged();
+  emit changed();
 }
 
 void QgsSingleSymbolRendererWidget::changeSingleSymbol()
@@ -132,7 +132,7 @@ void QgsSingleSymbolRendererWidget::changeSingleSymbol()
   if ( mSingleSymbol->flags() & Qgis::SymbolFlag::RendererShouldUseSymbolLevels )
     mRenderer->setUsingSymbolLevels( true );
 
-  emit widgetChanged();
+  emit changed();
 }
 
 void QgsSingleSymbolRendererWidget::showSymbolLevels()
@@ -146,9 +146,9 @@ void QgsSingleSymbolRendererWidget::dataDefinedSizeLegend()
   QgsDataDefinedSizeLegendWidget *panel = createDataDefinedSizeLegendWidget( s, mRenderer->dataDefinedSizeLegend() );
   if ( panel )
   {
-    connect( panel, &QgsPanelWidget::widgetChanged, this, [this, panel] {
+    connect( panel, &QgsPanelWidget::changed, this, [this, panel] {
       mRenderer->setDataDefinedSizeLegend( panel->dataDefinedSizeLegend() );
-      emit widgetChanged();
+      emit changed();
     } );
     openPanel( panel ); // takes ownership of the panel
   }

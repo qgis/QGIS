@@ -113,6 +113,13 @@ A panel widget that can be shown in the map style dock
    Keep the loading light as possible for speed in the UI.
 %End
 
+    QgsMapLayer *layer();
+%Docstring
+Returns the layer the widget is associated with.
+
+.. versionadded:: 4.4
+%End
+
     virtual bool shouldTriggerLayerRepaint() const;
 %Docstring
 Whether this config widget changes map layer properties in a way that

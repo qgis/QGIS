@@ -618,6 +618,7 @@
 %Include auto_generated/processing/qgsprocessingalgrunnertask.sip
 %Include auto_generated/processing/qgsprocessingbatch.sip
 %Include auto_generated/processing/qgsprocessingcontext.sip
+%Include auto_generated/processing/qgsprocessingdefaultstyleregistry.sip
 %Include auto_generated/processing/qgsprocessingfeedback.sip
 %Include auto_generated/processing/qgsprocessingoutputs.sip
 %Include auto_generated/processing/qgsprocessingmodelprovider.sip
@@ -630,10 +631,12 @@
 %Include auto_generated/processing/qgsprocessingparametermeshdataset.sip
 %Include auto_generated/processing/qgsprocessingparameterreliefcolors.sip
 %Include auto_generated/processing/qgsprocessingparameters.sip
+%Include auto_generated/processing/qgsprocessingparametertileextentmaxzoomlist.sip
 %Include auto_generated/processing/qgsprocessingparametertininputlayers.sip
 %Include auto_generated/processing/qgsprocessingparametertype.sip
 %Include auto_generated/processing/qgsprocessingparametervectortilewriterlayers.sip
 %Include auto_generated/processing/qgsprocessingparameteralignrasterlayers.sip
+%Include auto_generated/processing/qgsprocessingpostprocessor.sip
 %Include auto_generated/processing/qgsprocessingprojectmodelprovider.sip
 %Include auto_generated/processing/qgsprocessingprovider.sip
 %Include auto_generated/processing/qgsprocessingregistry.sip

@@ -1330,28 +1330,18 @@ void QgsPluginManager::setCurrentTab( int idx )
     {
       tabInfoHTML += "<style>"
                      "  body, p {"
-                     "      color: "
-                     + palette().color( QPalette::ColorRole::Text ).name()
-                     + ";"
-                       "      background-color:"
-                     + palette().color( QPalette::ColorRole::Base ).name()
-                     + ";"
-                       "      margin: 2px;"
-                       "      font-family: Verdana, Sans-serif;"
-                       "      font-size: 10pt;"
-                       "  }"
-                       "  a, a:hover {"
-                       "      color: "
-                     + palette().color( QPalette::ColorRole::Link ).name()
-                     + ";"
-                       "  }"
-                       "  a:visited {"
-                       "      color: "
-                     + palette().color( QPalette::ColorRole::LinkVisited ).name()
-                     + ";"
-                       "  }"
-                       "</style>";
-      // tabInfoHTML += "<style>" + QgsApplication::reportStyleSheet() + "</style>";
+                     "      color: palette(text);"
+                     "      margin: 2px;"
+                     "      font-family: Verdana, Sans-serif;"
+                     "      font-size: 10pt;"
+                     "  }"
+                     "  a, a:hover {"
+                     "      color: palette(link);"
+                     "  }"
+                     "  a:visited {"
+                     "      color: palette(link);"
+                     "  }"
+                     "</style>";
       tabInfoHTML += it.value();
     }
     wvDetails->setHtml( tabInfoHTML );
@@ -1753,6 +1743,10 @@ void QgsPluginManager::showEvent( QShowEvent *e )
   if ( mInit )
   {
     updateOptionsListVerticalTabs();
+    if ( mCurrentlyDisplayedPlugin.isEmpty() )
+    {
+      setCurrentTab( mOptionsListWidget->currentRow() );
+    }
   }
   else
   {

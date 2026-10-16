@@ -431,6 +431,7 @@ set(QGIS_GUI_SRCS
   processing/qgsprocessingalignrasterlayerswidgetwrapper.cpp
   processing/qgsprocessingbatchalgorithmdialogbase.cpp
   processing/qgsprocessingconfigurationwidgets.cpp
+  processing/qgsprocessingdefaultstyledialog.cpp
   processing/qgsprocessingdxflayerswidgetwrapper.cpp
   processing/qgsprocessingenummodelerwidget.cpp
   processing/qgsprocessingfavoritealgorithmmanager.cpp
@@ -836,6 +837,7 @@ set(QGIS_GUI_SRCS
   qgstemporalcontrollerwidget.cpp
   qgstextformatwidget.cpp
   qgstextpreview.cpp
+  qgstoolbuttonaction.cpp
   qgstooltipcombobox.cpp
   qgstreewidgetitem.cpp
   qgsunitselectionwidget.cpp
@@ -1117,6 +1119,7 @@ set(QGIS_GUI_HDRS
   qgstemporalcontrollerwidget.h
   qgstextformatwidget.h
   qgstextpreview.h
+  qgstoolbuttonaction.h
   qgstooltipcombobox.h
   qgstreewidgetitem.h
   qgsunitselectionwidget.h
@@ -1468,6 +1471,7 @@ set(QGIS_GUI_HDRS
   processing/qgsprocessingalgorithmwidgetbase.h
   processing/qgsprocessingbatchalgorithmdialogbase.h
   processing/qgsprocessingconfigurationwidgets.h
+  processing/qgsprocessingdefaultstyledialog.h
   processing/qgsprocessingdxflayerswidgetwrapper.h
   processing/qgsprocessingenummodelerwidget.h
   processing/qgsprocessingfavoritealgorithmmanager.h

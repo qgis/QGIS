@@ -57,10 +57,10 @@ QgsProcessingVectorTileWriteLayerDetailsWidget::QgsProcessingVectorTileWriteLaye
   mEditLayerName->setPlaceholderText( mLayer->name() );
   mEditFilterExpression->setExpression( layer.filterExpression() );
 
-  connect( mSpinMinZoom, qOverload<int>( &QSpinBox::valueChanged ), this, &QgsPanelWidget::widgetChanged );
-  connect( mSpinMaxZoom, qOverload<int>( &QSpinBox::valueChanged ), this, &QgsPanelWidget::widgetChanged );
-  connect( mEditLayerName, &QLineEdit::textChanged, this, &QgsPanelWidget::widgetChanged );
-  connect( mEditFilterExpression, &QgsExpressionLineEdit::expressionChanged, this, &QgsPanelWidget::widgetChanged );
+  connect( mSpinMinZoom, qOverload<int>( &QSpinBox::valueChanged ), this, &QgsPanelWidget::changed );
+  connect( mSpinMaxZoom, qOverload<int>( &QSpinBox::valueChanged ), this, &QgsPanelWidget::changed );
+  connect( mEditLayerName, &QLineEdit::textChanged, this, &QgsPanelWidget::changed );
+  connect( mEditFilterExpression, &QgsExpressionLineEdit::expressionChanged, this, &QgsPanelWidget::changed );
 }
 
 QVariant QgsProcessingVectorTileWriteLayerDetailsWidget::value() const
@@ -142,7 +142,7 @@ void QgsProcessingVectorTileWriterLayersPanelWidget::configureLayer()
     widget->setPanelTitle( tr( "Configure Layer" ) );
     widget->buttonBox()->hide();
 
-    connect( widget, &QgsProcessingVectorTileWriteLayerDetailsWidget::widgetChanged, this, [this, item, widget]() { setItemValue( item, widget->value() ); } );
+    connect( widget, &QgsProcessingVectorTileWriteLayerDetailsWidget::changed, this, [this, item, widget]() { setItemValue( item, widget->value() ); } );
     panel->openPanel( widget );
   }
   else

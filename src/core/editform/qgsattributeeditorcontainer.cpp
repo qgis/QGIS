@@ -217,9 +217,9 @@ void QgsAttributeEditorContainer::loadConfiguration( const QDomElement &element,
   {
     const QDomElement childElem = childNodeList.at( i ).toElement();
 
-    QgsAttributeEditorElement *myElem = create( childElem, layerId, fields, context, this );
+    std::unique_ptr<QgsAttributeEditorElement> myElem = create( childElem, layerId, fields, context, this );
     if ( myElem )
-      addChildElement( myElem );
+      addChildElement( myElem.release() );
   }
 }
 

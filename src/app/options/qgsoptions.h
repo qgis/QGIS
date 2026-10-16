@@ -90,7 +90,7 @@ class APP_EXPORT QgsOptions : public QgsOptionsDialogBase, private Ui::QgsOption
     /**
      * Slot to handle when type of project to open after launch is changed
      */
-    void mProjectOnLaunchCmbBx_currentIndexChanged( int indx );
+    void mProjectOnLaunchCmbBx_currentIndexChanged( int idx );
 
     //! Slot to choose path to project to open after launch
     void selectProjectOnLaunch();

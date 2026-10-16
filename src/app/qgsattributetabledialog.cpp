@@ -156,6 +156,7 @@ QgsAttributeTableDialog::QgsAttributeTableDialog(
   connect( mActionAddFeature, &QAction::triggered, this, &QgsAttributeTableDialog::mActionAddFeatureViaAttributeTable_triggered );
   connect( mActionAddFeatureViaAttributeForm, &QAction::triggered, this, &QgsAttributeTableDialog::mActionAddFeatureViaAttributeForm_triggered );
   connect( mActionExpressionSelect, &QAction::triggered, this, &QgsAttributeTableDialog::mActionExpressionSelect_triggered );
+  connect( mActionHelp, &QAction::triggered, this, &QgsAttributeTableDialog::mActionHelp_triggered );
   connect( mMainView, &QgsDualView::showContextMenuExternally, this, &QgsAttributeTableDialog::showContextMenu );
 
   // Connect double-click zoom functionality
@@ -312,11 +313,17 @@ QgsAttributeTableDialog::QgsAttributeTableDialog(
   // info from table to application
   connect( this, &QgsAttributeTableDialog::saveEdits, this, [] { QgisApp::instance()->saveEdits(); } );
 
+  QgsDockableWidgetHelper::Options dockableOptions;
   Qgis::DockableWidgetInitialState openingMode = QgsAttributeTableDialog::settingsAttributeTableDefaultDocked->value() ? Qgis::DockableWidgetInitialState::ForceDocked
                                                                                                                        : Qgis::DockableWidgetInitialState::ForceDialog;
   if ( initiallyDocked )
     openingMode = *initiallyDocked ? Qgis::DockableWidgetInitialState::ForceDocked : Qgis::DockableWidgetInitialState::ForceDialog;
-  mDockableWidgetHelper = new QgsDockableWidgetHelper( windowTitle(), this, QgisApp::instance(), u"attribute-table"_s, QStringList(), openingMode, false, Qt::BottomDockWidgetArea );
+
+  if ( openingMode == Qgis::DockableWidgetInitialState::ForceDocked )
+  {
+    dockableOptions.setFlag( QgsDockableWidgetHelper::Option::RaiseTab );
+  }
+  mDockableWidgetHelper = new QgsDockableWidgetHelper( windowTitle(), this, QgisApp::instance(), u"attribute-table"_s, QStringList(), openingMode, false, Qt::BottomDockWidgetArea, dockableOptions );
   toggleShortcuts( !mDockableWidgetHelper->isDocked() );
   connect( mDockableWidgetHelper, &QgsDockableWidgetHelper::closed, this, [this]() { close(); } );
   connect( mDockableWidgetHelper, &QgsDockableWidgetHelper::dockModeToggled, this, [this]( bool docked ) {
@@ -817,6 +824,11 @@ void QgsAttributeTableDialog::mActionExpressionSelect_triggered()
   dlg->setMessageBar( QgisApp::instance()->messageBar() );
   dlg->setAttribute( Qt::WA_DeleteOnClose );
   dlg->show();
+}
+
+void QgsAttributeTableDialog::mActionHelp_triggered()
+{
+  QgsHelp::openHelp( u"working_with_vector/attribute_table.html#introducing-the-attribute-table-interface"_s );
 }
 
 void QgsAttributeTableDialog::mActionCutSelectedRows_triggered()

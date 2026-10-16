@@ -77,6 +77,7 @@ QVector<QgsDataItem *> QgsPGConnectionItem::createChildren()
     {
       schemaItem->setToolTip( schema.description );
     }
+    schemaItem->setProjectVersioningEnabled( schema.hasProjectVersioning );
     items.append( schemaItem );
   }
 
@@ -186,14 +187,6 @@ QgsPGSchemaItem::QgsPGSchemaItem( QgsDataItem *parent, const QString &connection
   , mConnectionName( connectionName )
 {
   mIconName = u"mIconDbSchema.svg"_s;
-
-  const QgsDataSourceUri uri = QgsPostgresConn::connUri( mConnectionName );
-  QgsPostgresConn *conn = QgsPostgresConn::connectDb( uri, false );
-  if ( conn )
-  {
-    mProjectVersioningEnabled = QgsPostgresUtils::qgisProjectVersioningEnabled( conn, mName );
-  }
-  conn->unref();
 }
 
 QVector<QgsDataItem *> QgsPGSchemaItem::createChildren()
@@ -394,6 +387,18 @@ QVector<QgsDataItem *> QgsPGLayerItem::createChildren()
   QVector<QgsDataItem *> children;
   children.push_back( new QgsFieldsItem( this, uri() + u"/columns/ "_s, createUri(), providerKey(), mLayerProperty.schemaName, mLayerProperty.tableName ) );
   return children;
+}
+
+Qgis::LayerItemCapabilities QgsPGLayerItem::layerCapabilities() const
+{
+  if ( mLayerProperty.relKind == Qgis::PostgresRelKind::OrdinaryTable )
+  {
+    return Qgis::LayerItemCapability::AddComments;
+  }
+  else
+  {
+    return Qgis::LayerItemCapabilities();
+  }
 }
 
 // ---------------------------------------------------------------------------

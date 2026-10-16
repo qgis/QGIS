@@ -143,8 +143,8 @@ void QgsSingleBandPseudoColorRendererWidget::setMapCanvas( QgsMapCanvas *canvas 
 
 void QgsSingleBandPseudoColorRendererWidget::setFromRenderer( const QgsRasterRenderer *r )
 {
-  const QgsSingleBandPseudoColorRenderer *pr = dynamic_cast<const QgsSingleBandPseudoColorRenderer *>( r );
-  if ( pr )
+  bool hasSetColorRampShader = false;
+  if ( const QgsSingleBandPseudoColorRenderer *pr = dynamic_cast<const QgsSingleBandPseudoColorRenderer *>( r ) )
   {
     mBandComboBox->setBand( pr->inputBand() );
     mMinMaxWidget->setBands( QList<int>() << pr->inputBand() );
@@ -156,13 +156,12 @@ void QgsSingleBandPseudoColorRendererWidget::setFromRenderer( const QgsRasterRen
     setLineEditValue( mMaxLineEdit, pr->classificationMax() );
     mMinMaxWidget->setFromMinMaxOrigin( pr->minMaxOrigin() );
 
-    const QgsRasterShader *rasterShader = pr->shader();
-    if ( rasterShader )
+    if ( const QgsRasterShader *rasterShader = pr->shader() )
     {
-      const QgsColorRampShader *colorRampShader = dynamic_cast<const QgsColorRampShader *>( rasterShader->rasterShaderFunction() );
-      if ( colorRampShader )
+      if ( const auto *colorRampShader = dynamic_cast<const QgsColorRampShader *>( rasterShader->rasterShaderFunction() ) )
       {
         mColorRampShaderWidget->setFromShader( *colorRampShader );
+        hasSetColorRampShader = true;
       }
     }
   }
@@ -170,6 +169,13 @@ void QgsSingleBandPseudoColorRendererWidget::setFromRenderer( const QgsRasterRen
   {
     mMinMaxWidget->setBands( QList<int>() << mBandComboBox->currentBand() );
     mColorRampShaderWidget->setRasterBand( mBandComboBox->currentBand() );
+  }
+
+  if ( !hasSetColorRampShader )
+  {
+    // set a default color ramp shader for the widget, so that the widget is nicely populated with a
+    // usable state to begin with
+    mColorRampShaderWidget->setFromShader( QgsColorRampShader() );
   }
 }
 

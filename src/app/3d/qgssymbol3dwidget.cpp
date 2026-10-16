@@ -151,7 +151,7 @@ void QgsSymbol3DWidget::setSymbolFromStyle( const QString &name, QgsStyle::Style
         return;
 
       setSymbol( s.get(), mLayer );
-      emit widgetChanged();
+      emit changed();
       break;
     }
     case QgsStyle::MaterialSettingsEntity:
@@ -176,7 +176,7 @@ void QgsSymbol3DWidget::setSymbolFromStyle( const QString &name, QgsStyle::Style
       }
 
       setSymbol( newSymbol.get(), mLayer );
-      emit widgetChanged();
+      emit changed();
       break;
     }
   }
@@ -278,7 +278,7 @@ void QgsSymbol3DWidget::updateSymbolWidget( const QgsAbstract3DSymbol *newSymbol
   {
     // stop updating from the original widget
     if ( Qgs3DSymbolWidget *w = qobject_cast<Qgs3DSymbolWidget *>( widgetStack->currentWidget() ) )
-      disconnect( w, &Qgs3DSymbolWidget::changed, this, &QgsSymbol3DWidget::widgetChanged );
+      disconnect( w, &Qgs3DSymbolWidget::changed, this, &QgsSymbol3DWidget::changed );
     widgetStack->removeWidget( widgetStack->currentWidget() );
   }
 
@@ -293,7 +293,7 @@ void QgsSymbol3DWidget::updateSymbolWidget( const QgsAbstract3DSymbol *newSymbol
       widgetStack->setCurrentWidget( w );
       w->setDockMode( dockMode() );
       // start receiving updates from widget
-      connect( w, &Qgs3DSymbolWidget::changed, this, &QgsSymbol3DWidget::widgetChanged );
+      connect( w, &Qgs3DSymbolWidget::changed, this, &QgsSymbol3DWidget::changed );
       connect( w, &Qgs3DSymbolWidget::showPanel, this, &QgsSymbol3DWidget::openPanel );
 
       connect( w, &Qgs3DSymbolWidget::renderingTechniqueChanged, this, [w, this] {
@@ -325,7 +325,7 @@ void QgsSymbol3DWidget::showAdvancedSymbolSettings()
       std::unique_ptr<QgsAbstract3DSymbol> newSymbol = symbol();
       newSymbol->setMaterialSettings( panelWidget->settings().release() );
       setSymbol( newSymbol.get(), mLayer );
-      emit widgetChanged();
+      emit changed();
     } );
     panel->openPanel( panelWidget );
   }
@@ -339,7 +339,7 @@ void QgsSymbol3DWidget::showAdvancedSymbolSettings()
       std::unique_ptr<QgsAbstract3DSymbol> newSymbol = symbol();
       newSymbol->setMaterialSettings( dialog.settings().release() );
       setSymbol( newSymbol.get(), mLayer );
-      emit widgetChanged();
+      emit changed();
     }
   }
 }

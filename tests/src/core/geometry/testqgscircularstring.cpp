@@ -98,6 +98,7 @@ class TestQgsCircularString : public QObject
     void exportImport();
     void addToPainterPath();
     void cast();
+    void isSimpleCurve();
 };
 
 void TestQgsCircularString::emptyConstructor()
@@ -2644,6 +2645,12 @@ void TestQgsCircularString::appendZM()
   QCOMPARE( cs.pointN( 2 ), QgsPoint( Qgis::WkbType::PointZM, 51, 52, 13, 23 ) );
   QCOMPARE( cs.pointN( 3 ), QgsPoint( Qgis::WkbType::PointZM, 141, 142 ) );
   QCOMPARE( cs.pointN( 4 ), QgsPoint( Qgis::WkbType::PointZM, 151, 152 ) );
+}
+
+void TestQgsCircularString::isSimpleCurve()
+{
+  QgsCircularString curve;
+  QVERIFY( curve.isSimpleCurve() );
 }
 
 QGSTEST_MAIN( TestQgsCircularString )

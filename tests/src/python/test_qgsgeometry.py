@@ -77,6 +77,8 @@ class TestQgsGeometry(QgisTestCase):
         self.geos311 = 31100
         self.geos312 = 31200
         self.geos314 = 31400
+        self.geos315 = 31500
+        self.geos315_1 = 31501
 
     def testBool(self):
         """Test boolean evaluation of QgsGeometry"""
@@ -3245,19 +3247,19 @@ class TestQgsGeometry(QgisTestCase):
 
         # test single vertex deletion
         assert compoundcurve.deleteVertices([6]), "Delete vertices [6] failed"
-        expwkt = "CompoundCurve ( (0 1, 1 2, 2 1, 1 0, 0 1, 0 2) )"
+        expwkt = "CompoundCurve ((0 1, 1 2, 2 1, 1 0, 0 1), (0 1, 0 2))"
         wkt = compoundcurve.asWkt()
         assert compareWkt(expwkt, wkt), f"Expected:\n{expwkt}\nGot:\n{wkt}\n"
 
         assert compoundcurve.deleteVertices([1]), "Delete vertices [1] failed"
-        expwkt = "CompoundCurve ((0 1, 2 1, 1 0, 0 1, 0 2))"
+        expwkt = "CompoundCurve ((0 1, 2 1, 1 0, 0 1), (0 1, 0 2))"
         wkt = compoundcurve.asWkt()
         assert compareWkt(expwkt, wkt), f"Expected:\n{expwkt}\nGot:\n{wkt}\n"
 
         # test single vertex belonging to both strings
         compoundcurve = QgsGeometry.fromWkt(compoundcurvewkt)
-        assert compoundcurve.deleteVertices([4]), "Delete vertices [5, 6] failed"
-        expwkt = "CompoundCurve ( (0 1, 1 2, 2 1, 1 0, 0 2, 0 3) )"
+        assert compoundcurve.deleteVertices([4]), "Delete vertices [4] failed"
+        expwkt = "CompoundCurve ((0 1, 1 2, 2 1, 1 0), (1 0, 0 3))"
         wkt = compoundcurve.asWkt()
         assert compareWkt(expwkt, wkt), f"Expected:\n{expwkt}\nGot:\n{wkt}\n"
 
@@ -3320,19 +3322,19 @@ class TestQgsGeometry(QgisTestCase):
 
         compoundcurve = QgsGeometry.fromWkt(compoundcurvewkt)
         assert compoundcurve.deleteVertices([0]), "Delete vertices [0] failed"
-        expwkt = "CompoundCurve ( CircularString( -2 0, -1 1, 0 0, 1 1, 2 0, 1.5 -0.5, 1 -1) )"
+        expwkt = "CompoundCurve (CircularString (-2 0, -1 1, 0 0), CircularString (0 0, 1 1, 2 0, 1.5 -0.5, 1 -1))"
         wkt = compoundcurve.asWkt()
         assert compareWkt(expwkt, wkt), f"Expected:\n{expwkt}\nGot:\n{wkt}\n"
 
         compoundcurve = QgsGeometry.fromWkt(compoundcurvewkt)
         assert compoundcurve.deleteVertices([0, 1]), "Delete vertices [0, 1] failed"
-        expwkt = "CompoundCurve ( CircularString(-2 0, -1 1, 0 0, 1 1, 2 0, 1.5 -0.5, 1 -1) )"
+        expwkt = "CompoundCurve (CircularString (-2 0, -1 1, 0 0), CircularString (0 0, 1 1, 2 0, 1.5 -0.5, 1 -1))"
         wkt = compoundcurve.asWkt()
         assert compareWkt(expwkt, wkt), f"Expected:\n{expwkt}\nGot:\n{wkt}\n"
 
         compoundcurve = QgsGeometry.fromWkt(compoundcurvewkt)
         assert compoundcurve.deleteVertices([7, 8]), "Delete vertices [7, 8] failed"
-        expwkt = "CompoundCurve (CircularString(-1 -1, -1.5 -0.5, -2 0, -1 1, 0 0, 1 1, 2 0) )"
+        expwkt = "CompoundCurve (CircularString (-1 -1, -1.5 -0.5, -2 0, -1 1, 0 0), CircularString (0 0, 1 1, 2 0))"
         wkt = compoundcurve.asWkt()
         assert compareWkt(expwkt, wkt), f"Expected:\n{expwkt}\nGot:\n{wkt}\n"
 
@@ -3436,7 +3438,7 @@ class TestQgsGeometry(QgisTestCase):
         assert curvepolygon.deleteVertices([0, 1, 2, 3, 4, 12, 13, 14, 15, 16]), (
             "Delete vertices [0, 1, 2, 3, 4, 12, 13, 14, 15, 16] failed"
         )
-        expwkt = "CurvePolygon (CompoundCurve ((14 20, 19 25),CircularString (19 25, 22 28, 25 25, 28 22, 25 19),(25 19, 20 14, 14 8, 9 3),CircularString (9 3, 6 0, 3 3, 0 6, 3 9),(3 9, 8 14, 14 20)))"
+        expwkt = "CurvePolygon (CompoundCurve ((14 20, 19 25),CircularString (19 25, 22 28, 25 25, 28 22, 25 19),(25 19, 20 14),(20 14, 9 3),CircularString (9 3, 6 0, 3 3, 0 6, 3 9),(3 9, 8 14, 14 20)))"
         wkt = curvepolygon.asWkt()
         assert compareWkt(expwkt, wkt), f"Expected:\n{expwkt}\nGot:\n{wkt}\n"
 
@@ -12285,31 +12287,60 @@ class TestQgsGeometry(QgisTestCase):
             self.assertEqual(result[:50], t[4])
 
     def testVariableWidthBufferByM(self):
-        tests = [
-            ["LineString (6 2, 9 2, 9 3, 11 5)", 3, "GeometryCollection EMPTY"],
-            [
-                "LineStringM (6 2 1, 9 2 1.5, 9 3 0.5, 11 5 2)",
-                3,
-                "MultiPolygon (((5.5 2, 5.56698729810778037 2.24999999999999956, 5.75 2.43301270189221919, 6 2.5, 8.54510095773215994 2.71209174647768014, 8.78349364905388974 3.125, 10.13397459621556074 5.49999999999999911, 10.5 5.86602540378443837, 11 6, 11.5 5.86602540378443837, 11.86602540378443926 5.5, 12 5, 11.86602540378443926 4.5, 11.5 4.13397459621556163, 9.34232758349701164 2.90707123255090094, 9.649519052838329 2.375, 9.75 1.99999999999999978, 9.649519052838329 1.62500000000000022, 9.375 1.350480947161671, 9 1.25, 6 1.5, 5.75 1.56698729810778059, 5.56698729810778037 1.75, 5.5 2)))",
-            ],
-            [
-                "MultiLineStringM ((6 2 1, 9 2 1.5, 9 3 0.5, 11 5 2),(1 2 0.5, 3 2 0.2))",
-                3,
-                "MultiPolygon (((5.5 2, 5.56698729810778037 2.24999999999999956, 5.75 2.43301270189221919, 6 2.5, 8.54510095773215994 2.71209174647768014, 8.78349364905388974 3.125, 10.13397459621556074 5.49999999999999911, 10.5 5.86602540378443837, 11 6, 11.5 5.86602540378443837, 11.86602540378443926 5.5, 12 5, 11.86602540378443926 4.5, 11.5 4.13397459621556163, 9.34232758349701164 2.90707123255090094, 9.649519052838329 2.375, 9.75 1.99999999999999978, 9.649519052838329 1.62500000000000022, 9.375 1.350480947161671, 9 1.25, 6 1.5, 5.75 1.56698729810778059, 5.56698729810778037 1.75, 5.5 2)),((0.875 1.78349364905389041, 0.78349364905389041 1.875, 0.75 2, 0.7834936490538903 2.125, 0.875 2.21650635094610982, 1 2.25, 3 2.10000000000000009, 3.04999999999999982 2.08660254037844384, 3.08660254037844384 2.04999999999999982, 3.10000000000000009 2, 3.08660254037844384 1.94999999999999996, 3.04999999999999982 1.91339745962155616, 3 1.89999999999999991, 1 1.75, 0.875 1.78349364905389041)))",
-            ],
-        ]
+        tests = [["LineString (6 2, 9 2, 9 3, 11 5)", 3, "GeometryCollection EMPTY"]]
+        if Qgis.geosVersionInt() >= self.geos315_1:
+            tests.append(
+                [
+                    "LineStringM (6 2 1, 9 2 1.5, 9 3 0.5, 11 5 2)",
+                    3,
+                    "MultiPolygon M (((5.5 2 1, 5.56698729810778037 2.24999999999999956 1, 5.75 2.43301270189221919 1, 6 2.5 1, 8.54510095773215994 2.71209174647768014 0.96209174647767992, 8.78349364905388974 3.125 0.5, 10.13397459621556074 5.49999999999999911 2, 10.5 5.86602540378443837 2, 11 6 2, 11.5 5.86602540378443837 2, 11.86602540378443926 5.5 2, 12 5 2, 11.86602540378443926 4.5 2, 11.5 4.13397459621556163 2, 9.34232758349701164 2.90707123255090094 1.25, 9.649519052838329 2.375 nan, 9.75 1.99999999999999978 1.5, 9.649519052838329 1.62500000000000022 1.5, 9.375 1.350480947161671 1.5, 9 1.25 1.5, 6 1.5 1, 5.75 1.56698729810778059 1, 5.56698729810778037 1.75 1, 5.5 2 1)))",
+                ]
+            )
+            tests.append(
+                [
+                    "MultiLineStringM ((6 2 1, 9 2 1.5, 9 3 0.5, 11 5 2),(1 2 0.5, 3 2 0.2))",
+                    3,
+                    "MultiPolygon M (((5.5 2 1, 5.56698729810778037 2.24999999999999956 1, 5.75 2.43301270189221919 1, 6 2.5 1, 8.54510095773215994 2.71209174647768014 0.96209174647767992, 8.78349364905388974 3.125 0.5, 10.13397459621556074 5.49999999999999911 2, 10.5 5.86602540378443837 2, 11 6 2, 11.5 5.86602540378443837 2, 11.86602540378443926 5.5 2, 12 5 2, 11.86602540378443926 4.5 2, 11.5 4.13397459621556163 2, 9.34232758349701164 2.90707123255090094 1.25, 9.649519052838329 2.375 nan, 9.75 1.99999999999999978 1.5, 9.649519052838329 1.62500000000000022 1.5, 9.375 1.350480947161671 1.5, 9 1.25 1.5, 6 1.5 1, 5.75 1.56698729810778059 1, 5.56698729810778037 1.75 1, 5.5 2 1)),((0.75 2 0.5, 0.7834936490538903 2.125 0.5, 0.875 2.21650635094610982 0.5, 1 2.25 0.5, 3 2.10000000000000009 0.20000000000000001, 3.04999999999999982 2.08660254037844384 0.20000000000000001, 3.08660254037844384 2.04999999999999982 0.20000000000000001, 3.10000000000000009 2 0.20000000000000001, 3.08660254037844384 1.94999999999999996 0.20000000000000001, 3.04999999999999982 1.91339745962155616 0.20000000000000001, 3 1.89999999999999991 0.20000000000000001, 1 1.75 0.5, 0.875 1.78349364905389041 0.5, 0.78349364905389041 1.875 0.5, 0.75 2 0.5)))",
+                ]
+            )
+        else:
+            tests.append(
+                [
+                    "LineStringM (6 2 1, 9 2 1.5, 9 3 0.5, 11 5 2)",
+                    3,
+                    "MultiPolygon (((5.5 2, 5.56698729810778037 2.24999999999999956, 5.75 2.43301270189221919, 6 2.5, 8.54510095773215994 2.71209174647768014, 8.78349364905388974 3.125, 10.13397459621556074 5.49999999999999911, 10.5 5.86602540378443837, 11 6, 11.5 5.86602540378443837, 11.86602540378443926 5.5, 12 5, 11.86602540378443926 4.5, 11.5 4.13397459621556163, 9.34232758349701164 2.90707123255090094, 9.649519052838329 2.375, 9.75 1.99999999999999978, 9.649519052838329 1.62500000000000022, 9.375 1.350480947161671, 9 1.25, 6 1.5, 5.75 1.56698729810778059, 5.56698729810778037 1.75, 5.5 2)))",
+                ]
+            )
+            tests.append(
+                [
+                    "MultiLineStringM ((6 2 1, 9 2 1.5, 9 3 0.5, 11 5 2),(1 2 0.5, 3 2 0.2))",
+                    3,
+                    "MultiPolygon (((5.5 2, 5.56698729810778037 2.24999999999999956, 5.75 2.43301270189221919, 6 2.5, 8.54510095773215994 2.71209174647768014, 8.78349364905388974 3.125, 10.13397459621556074 5.49999999999999911, 10.5 5.86602540378443837, 11 6, 11.5 5.86602540378443837, 11.86602540378443926 5.5, 12 5, 11.86602540378443926 4.5, 11.5 4.13397459621556163, 9.34232758349701164 2.90707123255090094, 9.649519052838329 2.375, 9.75 1.99999999999999978, 9.649519052838329 1.62500000000000022, 9.375 1.350480947161671, 9 1.25, 6 1.5, 5.75 1.56698729810778059, 5.56698729810778037 1.75, 5.5 2)),((0.875 1.78349364905389041, 0.78349364905389041 1.875, 0.75 2, 0.7834936490538903 2.125, 0.875 2.21650635094610982, 1 2.25, 3 2.10000000000000009, 3.04999999999999982 2.08660254037844384, 3.08660254037844384 2.04999999999999982, 3.10000000000000009 2, 3.08660254037844384 1.94999999999999996, 3.04999999999999982 1.91339745962155616, 3 1.89999999999999991, 1 1.75, 0.875 1.78349364905389041)))",
+                ]
+            )
+
         for t in tests:
             input = QgsGeometry.fromWkt(t[0])
             segments = t[1]
             o = QgsGeometry.variableWidthBufferByM(input, segments)
             o.normalize()
-            exp = QgsGeometry.fromWkt(t[2])
-            exp.normalize()
             result = o.asWkt()
-            self.assertTrue(
-                compareWkt(result, exp.asWkt(), 0.01),
-                f"tapered buffer: mismatch Expected:\n{exp.asWkt()}\nGot:\n{result}\n",
-            )
+
+            if Qgis.geosVersionInt() >= self.geos315_1:
+                # We get nan coordinates, and parsing from WKT produces null geometries.
+                # Skip geometry parsing (at least for now) and compare WKTs.
+                self.assertTrue(
+                    compareWkt(result, t[2], 0.01),
+                    f"tapered buffer: mismatch Expected:\n{t[2]}\nGot:\n{result}\n",
+                )
+            else:
+                exp = QgsGeometry.fromWkt(t[2])
+                exp.normalize()
+                result = o.asWkt()
+                self.assertTrue(
+                    compareWkt(result, exp.asWkt(), 0.01),
+                    f"tapered buffer: mismatch Expected:\n{exp.asWkt()}\nGot:\n{result}\n",
+                )
 
     def testHausdorff(self):
         tests = [
@@ -14909,18 +14940,33 @@ class TestQgsGeometry(QgisTestCase):
 
         r1 = QgsGeometry.fromWkt("Polygon ((1 2, 1 0, 0 0, 0 2, 1 2))")
         r2 = QgsGeometry.fromWkt("Polygon ((1 0, 1 2, 2 2, 2 0, 1 0))")
+        r1.normalize()
+        r2.normalize()
+        square.normalize()
 
         (result, parts, topo) = square.splitGeometry(lineXY, False)
         self.assertEqual(result, Qgis.GeometryOperationResult.Success)
-        self.assertGeometriesEqual(square, r2)
         self.assertEqual(len(parts), 1)
-        self.assertGeometriesEqual(parts[0], r1)
+        parts[0].normalize()
+        if Qgis.geosVersionInt() < self.geos315:
+            self.assertGeometriesEqual(square, r2)
+            self.assertGeometriesEqual(parts[0], r1)
+        else:
+            self.assertGeometriesEqual(square, r1)
+            self.assertGeometriesEqual(parts[0], r2)
 
         square = QgsGeometry.fromWkt("Polygon ((0 0, 0 2, 2 2, 2 0, 0 0))")
+        square.normalize()
         (result, parts, topo) = square.splitGeometry(line, False)
         self.assertEqual(result, Qgis.GeometryOperationResult.Success)
-        self.assertGeometriesEqual(square, r2)
-        self.assertGeometriesEqual(parts[0], r1)
+        self.assertEqual(len(parts), 1)
+        parts[0].normalize()
+        if Qgis.geosVersionInt() < self.geos315:
+            self.assertGeometriesEqual(square, r2)
+            self.assertGeometriesEqual(parts[0], r1)
+        else:
+            self.assertGeometriesEqual(square, r1)
+            self.assertGeometriesEqual(parts[0], r2)
 
         multilinestring = QgsGeometry.fromWkt("MultiLinestring((0 1, 1 0),(0 2, 2 0))")
         blade = QgsCompoundCurve()
@@ -14928,9 +14974,14 @@ class TestQgsGeometry(QgisTestCase):
         result, parts, _ = multilinestring.splitGeometry(blade, False, False, False)
         self.assertEqual(result, Qgis.GeometryOperationResult.Success)
         self.assertEqual(len(parts), 3)
-        self.assertTrue(compareWkt(parts[0].asWkt(), "MultiLineString ((0 2, 1 1))"))
-        self.assertTrue(compareWkt(parts[1].asWkt(), "MultiLineString ((1 1, 2 0))"))
-        self.assertTrue(compareWkt(parts[2].asWkt(), "MultiLineString ((0 1, 1 0))"))
+        wkts = [
+            parts[0].asWkt(),
+            parts[1].asWkt(),
+            parts[2].asWkt(),
+        ]
+        self.assertIn("MultiLineString ((0 2, 1 1))", wkts)
+        self.assertIn("MultiLineString ((1 1, 2 0))", wkts)
+        self.assertIn("MultiLineString ((0 1, 1 0))", wkts)
 
     @unittest.skipIf(Qgis.geosVersionInt() < 31200, "GEOS 3.12 required")
     def testCoverageValidate(self):
@@ -15949,6 +16000,91 @@ class TestQgsGeometry(QgisTestCase):
         self.assertTrue(nc.hasVertex(QgsVertexId(0, 0, 2)))
         self.assertTrue(nc.hasVertex(QgsVertexId(0, 0, 3)))
         self.assertTrue(nc.hasVertex(QgsVertexId(0, 0, 4)))
+
+    @unittest.skipIf(Qgis.geosVersionInt() < 31500, "GEOS 3.15 required")
+    def testOverlayOperationsOnCurves(self):
+        """Test Overlay operations on curves (borrowed from GEOS' OverlayNGTest.cpp)"""
+
+        def run_test(name, data):
+            geom_a = QgsGeometry.fromWkt(data["wkt_a"])
+            geom_b = QgsGeometry.fromWkt(data["wkt_b"])
+
+            if data["op"] == "intersection":
+                res = geom_a.intersection(geom_b)
+            elif data["op"] == "difference":
+                res = geom_a.difference(geom_b)
+            elif data["op"] == "symdifference":
+                res = geom_a.symDifference(geom_b)
+            elif data["op"] == "union":
+                res = geom_a.combine(geom_b)
+
+            res.normalize()
+            exp = QgsGeometry.fromWkt(data["expected"])
+            exp.normalize()
+            equal = res.isExactlyEqual(exp)
+            if not equal:
+                msg = f"Test '{name}' failed!\nEXPECTED: {exp.asWkt()}\nOBTAINED: {res.asWkt()}"
+                return False, msg
+
+            return True, ""
+
+        # Tests from GEOS tests/unit/operation/overlayng/OverlayNGTest.cpp
+        # Overlay operations: Difference, SymDifference, Union, Intersection
+        # Let's select only a few tests to avoid too much duplication, but
+        # still be able to spot failures related to QGIS curve handling.
+        test_cases = {
+            "test_46": {
+                "wkt_a": "CURVEPOLYGON (COMPOUNDCURVE((10 0, 0 0, 0 10, 10 10), CIRCULARSTRING (10 10, 15 5, 10 0)))",
+                "wkt_b": "CURVEPOLYGON (COMPOUNDCURVE((10 10, 20 10, 20 0, 10 0), CIRCULARSTRING (10 0, 5 5, 10 10)))",
+                "expected": "CURVEPOLYGON (CIRCULARSTRING (10 10, 15 5, 10 0, 5 5, 10 10))",
+                "op": "intersection",
+            },
+            "test_47": {
+                "wkt_a": "CURVEPOLYGON (COMPOUNDCURVE((10 0, 0 0, 0 10, 10 10), CIRCULARSTRING (10 10, 15 5, 10 0)))",
+                "wkt_b": "CURVEPOLYGON (COMPOUNDCURVE((10 10, 20 10, 20 0, 10 0), CIRCULARSTRING (10 0, 5 5, 10 10)))",
+                "expected": "MULTISURFACE (CURVEPOLYGON (COMPOUNDCURVE ((10 0, 0 0, 0 10, 10 10), CIRCULARSTRING (10 10, 5 5, 10 0))), CURVEPOLYGON (COMPOUNDCURVE (CIRCULARSTRING (10 0, 15 5, 10 10), (10 10, 20 10, 20 0, 10 0))))",
+                "op": "symdifference",
+            },
+            "test_49": {
+                "wkt_a": "CIRCULARSTRING (-5 0, 0 5, 5 0)",
+                "wkt_b": "CIRCULARSTRING (-5 5, 0 0, 5 5)",
+                "expected": "MULTIPOINT ((4.330127018922194 2.5), (-4.330127018922194 2.5))",
+                "op": "intersection",
+            },
+            "test_50": {
+                "wkt_a": "CIRCULARSTRING (-5 0, 0 5, 5 0)",
+                "wkt_b": "CIRCULARSTRING (4 3, 0 -5, -4 3)",
+                "expected": "MULTICURVE (CIRCULARSTRING (-5 0, -4.743416490252569 1.58113883008419, -4 3), CIRCULARSTRING (4 3, 4.743416490252569 1.5811388300841898, 5 0))",
+                "op": "intersection",
+            },
+            "test_51": {
+                "wkt_a": "CIRCULARSTRING (-5 0, 0 5, 5 0)",
+                "wkt_b": "CIRCULARSTRING (4 3, 0 -5, -4 3)",
+                "expected": "CIRCULARSTRING (-4 3, 0 5, 4 3)",
+                "op": "difference",
+            },
+            "test_52": {
+                "wkt_a": "CIRCULARSTRING (-5 0, 0 5, 5 0)",
+                "wkt_b": "CIRCULARSTRING (4 3, 0 -5, -4 3)",
+                "expected": "MULTICURVE (CIRCULARSTRING (-4 3, 0 5, 4 3), CIRCULARSTRING (5 0, 0 -5, -5 0))",
+                "op": "symdifference",
+            },
+            "test_55": {
+                "wkt_a": "POLYGON ((0 0, 10 0, 10 10, 0 10, 0 0))",
+                "wkt_b": "CURVEPOLYGON (CIRCULARSTRING (4 5, 5 6, 6 5, 5 4, 4 5))",
+                "expected": "CURVEPOLYGON ((0 0, 10 0, 10 10, 0 10, 0 0), CIRCULARSTRING (4 5, 5 6, 6 5, 5 4, 4 5))",
+                "op": "difference",
+            },
+            "test_61": {
+                "wkt_a": "CURVEPOLYGON (CIRCULARSTRING (-5 0, 0 5, 5 0, 0 4, -5 0))",
+                "wkt_b": "CURVEPOLYGON (COMPOUNDCURVE((-5 0, 5 0), CIRCULARSTRING (5 0, 0 4, -5 0)))",
+                "expected": "CURVEPOLYGON (COMPOUNDCURVE (CIRCULARSTRING (-5 0, 0 5, 5 0), (5 0, -5 0)))",
+                "op": "union",
+            },
+        }
+        for name, data in test_cases.items():
+            res, msg = run_test(name, data)
+            self.assertTrue(res, msg)
 
 
 if __name__ == "__main__":

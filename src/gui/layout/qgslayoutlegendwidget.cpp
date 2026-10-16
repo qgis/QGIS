@@ -1769,7 +1769,7 @@ QgsLayoutLegendNodeWidget::QgsLayoutLegendNodeWidget( QgsLayoutItemLegend *legen
 
   connect( mColumnSplitBehaviorComboBox, qOverload<int>( &QComboBox::currentIndexChanged ), this, &QgsLayoutLegendNodeWidget::columnSplitChanged );
 
-  connect( mColorRampLegendWidget, &QgsColorRampLegendNodeWidget::widgetChanged, this, &QgsLayoutLegendNodeWidget::colorRampLegendChanged );
+  connect( mColorRampLegendWidget, &QgsColorRampLegendNodeWidget::changed, this, &QgsLayoutLegendNodeWidget::colorRampLegendChanged );
 
   connectChildPanel( mColorRampLegendWidget );
 }

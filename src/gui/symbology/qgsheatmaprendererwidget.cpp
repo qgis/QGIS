@@ -175,7 +175,7 @@ void QgsHeatmapRendererWidget::applyColorRamp()
     return;
 
   mRenderer->setColorRamp( ramp );
-  emit widgetChanged();
+  emit changed();
 }
 
 void QgsHeatmapRendererWidget::showLegendSettings()
@@ -187,9 +187,9 @@ void QgsHeatmapRendererWidget::showLegendSettings()
     legendPanel->setUseContinuousRampCheckBoxVisibility( false );
     legendPanel->setPanelTitle( tr( "Legend Settings" ) );
     legendPanel->setSettings( mRenderer->legendSettings() );
-    connect( legendPanel, &QgsColorRampLegendNodeWidget::widgetChanged, this, [this, legendPanel] {
+    connect( legendPanel, &QgsColorRampLegendNodeWidget::changed, this, [this, legendPanel] {
       mRenderer->setLegendSettings( legendPanel->settings() );
-      emit widgetChanged();
+      emit changed();
     } );
     panel->openPanel( legendPanel );
   }
@@ -201,7 +201,7 @@ void QgsHeatmapRendererWidget::showLegendSettings()
     if ( dialog.exec() )
     {
       mRenderer->setLegendSettings( dialog.settings() );
-      emit widgetChanged();
+      emit changed();
     }
   }
 }
@@ -215,7 +215,7 @@ void QgsHeatmapRendererWidget::mRadiusUnitWidget_changed()
 
   mRenderer->setRadiusUnit( mRadiusUnitWidget->unit() );
   mRenderer->setRadiusMapUnitScale( mRadiusUnitWidget->getMapUnitScale() );
-  emit widgetChanged();
+  emit changed();
 }
 
 void QgsHeatmapRendererWidget::mRadiusSpinBox_valueChanged( double d )
@@ -226,7 +226,7 @@ void QgsHeatmapRendererWidget::mRadiusSpinBox_valueChanged( double d )
   }
 
   mRenderer->setRadius( d );
-  emit widgetChanged();
+  emit changed();
 }
 
 void QgsHeatmapRendererWidget::mMaxSpinBox_valueChanged( double d )
@@ -237,7 +237,7 @@ void QgsHeatmapRendererWidget::mMaxSpinBox_valueChanged( double d )
   }
 
   mRenderer->setMaximumValue( d );
-  emit widgetChanged();
+  emit changed();
 }
 
 void QgsHeatmapRendererWidget::mQualitySlider_valueChanged( int v )
@@ -248,11 +248,11 @@ void QgsHeatmapRendererWidget::mQualitySlider_valueChanged( int v )
   }
 
   mRenderer->setRenderQuality( v );
-  emit widgetChanged();
+  emit changed();
 }
 
 void QgsHeatmapRendererWidget::weightExpressionChanged( const QString &expression )
 {
   mRenderer->setWeightExpression( expression );
-  emit widgetChanged();
+  emit changed();
 }

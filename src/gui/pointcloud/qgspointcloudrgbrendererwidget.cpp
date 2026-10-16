@@ -208,7 +208,7 @@ void QgsPointCloudRgbRendererWidget::mBlueMaxLineEdit_textChanged( const QString
 void QgsPointCloudRgbRendererWidget::emitWidgetChanged()
 {
   if ( !mBlockChangedSignal )
-    emit widgetChanged();
+    emit changed();
 }
 
 void QgsPointCloudRgbRendererWidget::redAttributeChanged()

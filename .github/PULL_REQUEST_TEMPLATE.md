@@ -2,9 +2,9 @@
 
 [Replace this with some text explaining the rationale and details about this pull request]
 
-## THE QGIS PROJECT IS CURRENTLY EVALUATING WHETHER USE OF LLM/AI/AGENTS IS APPROPRIATE. Currently NO pull requests involving code written in any part by AI/LLM/automated agents will be accepted in any form.
+- [ ] I certify that no AI tool(s) (Copilot, Claude, or something similar), LLMs, or agent based workflows were used or supported my development of this PR. See our [policy about AI tool use](https://github.com/qgis/QGIS-Enhancement-Proposals/blob/master/qep-408-ai-tool-policy.md).
 
-Failure to abide by this policy will result in immediate bans from the QGIS project repositories.
+**No LLM, AI or agent assisted code contributions are allowed in the QGIS repository. If we subsequently discover that you have used an AI, LLM, or any agent-based workflow for your contribution, you will be subject to code reversion and contributor rights sanctioning. See [QEP 408](https://github.com/qgis/QGIS-Enhancement-Proposals/blob/master/qep-408-ai-tool-policy.md) for details.**
 
 <!--
   BEFORE HITTING SUBMIT -- Please BUILD AND TEST your changes thoroughly. This is YOUR responsibility! Do NOT rely on the QGIS code maintainers to do this for you!!

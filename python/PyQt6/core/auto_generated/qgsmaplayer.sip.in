@@ -1887,8 +1887,11 @@ The storage format for the XML is qlr
 
     static QString generateId( const QString &layerName );
 %Docstring
-Generates an unique identifier for this layer, the generate ID is
-prefixed by ``layerName``
+Generates an unique identifier for the layer with the specified
+``layerName``.
+
+The generated ID is prefixed by the (possibly truncated) ``layerName``
+string.
 
 .. versionadded:: 3.8
 %End

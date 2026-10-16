@@ -71,7 +71,6 @@ class QgsFillSinksWangLiuAlgorithm : public QgsProcessingAlgorithm
     bool mHasNoDataValue = false;
     double mNoData = 0;
     int mBand = 1;
-    Qgis::DataType mDataType = Qgis::DataType::UnknownDataType;
     int mLayerWidth = 0;
     int mLayerHeight = 0;
     QgsRectangle mExtent;

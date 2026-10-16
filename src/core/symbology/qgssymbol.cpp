@@ -2088,18 +2088,9 @@ void QgsSymbol::renderFeature(
       constexpr double BOUNDS_MARGIN = 0.05;
       maximalBounds.adjust( -maximalBounds.width() * BOUNDS_MARGIN, -maximalBounds.height() * BOUNDS_MARGIN, maximalBounds.width() * BOUNDS_MARGIN, maximalBounds.height() * BOUNDS_MARGIN );
 
-      const bool hadClipping = context.painter()->hasClipping();
-      const QPainterPath oldClipPath = hadClipping ? context.painter()->clipPath() : QPainterPath();
-
-      const bool isMasked = symbolLayer->installMasks( context, false, maximalBounds );
-
+      symbolLayer->installMasks( context, false, maximalBounds );
       context.painter()->drawPicture( QPointF( 0, 0 ), *renderedPicture );
-
-      if ( isMasked )
-      {
-        context.painter()->setClipPath( oldClipPath );
-        context.painter()->setClipping( hadClipping );
-      }
+      symbolLayer->removeMasks( context, false );
     }
   }
 

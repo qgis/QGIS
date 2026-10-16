@@ -986,17 +986,15 @@ bool QgsExpressionNodeBinaryOperator::prepareNode( QgsExpression *parent, const 
           }
         }
 
-        if ( !orValuesMap.contains( fieldName ) )
+        auto orValuesMapIt = orValuesMap.find( fieldName );
+        if ( orValuesMapIt == orValuesMap.end() )
         {
           orFieldNames.append( fieldName );
-          orValuesMap.insert( fieldName, *inOp->list()->clone() );
+          orValuesMapIt = orValuesMap.insert( fieldName, QgsExpressionNode::NodeList() );
         }
-        else
+        for ( const auto &valueNode : std::as_const( nodes ) )
         {
-          for ( const auto &valueNode : std::as_const( nodes ) )
-          {
-            orValuesMap[fieldName].append( valueNode->clone() );
-          }
+          orValuesMapIt->append( valueNode->clone() );
         }
 
         return true;

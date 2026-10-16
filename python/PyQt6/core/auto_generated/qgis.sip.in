@@ -170,6 +170,15 @@ The development version
     typedef QFlags<Qgis::LayerFilter> LayerFilters;
 
 
+
+    enum class LayerItemCapability /BaseType=IntFlag/
+    {
+      AddComments,
+    };
+
+    typedef QFlags<Qgis::LayerItemCapability> LayerItemCapabilities;
+
+
     enum class LoadStyleFlag /BaseType=IntFlag/
     {
       IgnoreMissingStyleErrors,
@@ -2214,6 +2223,22 @@ The development version
       Modeler,
     };
 
+    enum class ProcessingMenu
+    {
+      VectorAnalysis,
+      VectorResearch,
+      VectorGeoprocessing,
+      VectorGeometry,
+      VectorDataManagement,
+      VectorGeneral,
+      RasterProjections,
+      RasterConversion,
+      RasterExtraction,
+      RasterAnalysis,
+      RasterMiscellaneous,
+      RasterGeneral,
+    };
+
     enum class ProcessingFeatureSourceDefinitionFlag /BaseType=IntFlag/
     {
       OverrideDefaultGeometryCheck,
@@ -3414,6 +3439,12 @@ The development version
       {
       Longitude,
       Latitude
+    };
+
+    enum class ElevationProfileRangeMethod /BaseType=IntEnum/
+    {
+      ManualRange,
+      FixedScale
     };
 
     enum class InputControllerType /BaseType=IntEnum/

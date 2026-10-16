@@ -397,6 +397,13 @@ class GUI_EXPORT QgisInterface : public QObject
     virtual QMenu *meshMenu() = 0 SIP_DISALLOWNONE;
 
     /**
+     * Returns a reference to the main window "Processing" menu.
+     *
+     * \since QGIS 4.4
+     */
+    virtual QMenu *processingMenu() = 0 SIP_DISALLOWNONE;
+
+    /**
      * Returns a reference to the right most standard menu, which is
      * usually the last menu item before the "Help" menu.
      *
@@ -502,6 +509,13 @@ class GUI_EXPORT QgisInterface : public QObject
      * Returns a reference to the main window "Web" toolbar.
      */
     virtual QToolBar *webToolBar() = 0 SIP_DISALLOWNONE;
+
+    /**
+     * Returns a reference to the Processing toolbox dock widget toolbar.
+     *
+     * \since QGIS 4.4
+     */
+    virtual QToolBar *processingToolboxToolBar() = 0 SIP_DISALLOWNONE;
 
     // Project menu actions
     //! Returns the native New Project action.
@@ -844,6 +858,14 @@ class GUI_EXPORT QgisInterface : public QObject
     virtual QAction *actionQgisHomePage() = 0 SIP_DISALLOWNONE;
     virtual QAction *actionCheckQgisVersion() = 0 SIP_DISALLOWNONE;
     virtual QAction *actionAbout() = 0 SIP_DISALLOWNONE;
+
+    // Processing actions
+    /**
+     * Returns the Processing "Edit Features in Place" action.
+     *
+     * \since QGIS 4.4
+     */
+    virtual QAction *actionEditFeaturesInPlace() = 0 SIP_DISALLOWNONE;
 
     // Shape digitize actions
 
@@ -1337,6 +1359,20 @@ class GUI_EXPORT QgisInterface : public QObject
      * \since QGIS 3.24
      */
     virtual void removePluginMeshMenu( const QString &name, QAction *action ) = 0;
+
+    /**
+     * Adds an \a action to the Processing menu.
+     *
+     * \since QGIS 4.4
+     */
+    virtual void addPluginToProcessingMenu( const QString &name, QAction *action ) = 0;
+
+    /**
+     * Removes \a action from the Processing menu.
+     *
+     * \since QGIS 4.4
+     */
+    virtual void removePluginProcessingMenu( const QString &name, QAction *action ) = 0;
 
     /**
      * Adds a \a dock widget to the main window, in the specified dock \a area.

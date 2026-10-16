@@ -20,6 +20,7 @@ email                : marco.hugentobler at sourcepole dot com
 #include <memory>
 
 #include "qgsabstractgeometry.h"
+#include "qgscircularstring.h"
 #include "qgsfeedback.h"
 #include "qgsgeometrycollection.h"
 #include "qgsgeometryeditutils.h"
@@ -33,6 +34,8 @@ email                : marco.hugentobler at sourcepole dot com
 #include "qgsmultipolygon.h"
 #include "qgspolygon.h"
 #include "qgspolyhedralsurface.h"
+#include "qgssettingsentryimpl.h"
+#include "qgssettingstree.h"
 
 #include <QString>
 
@@ -124,6 +127,25 @@ QgsGeosContext::QgsGeosContext()
   mContext = GEOS_init_r();
   GEOSContext_setNoticeHandler_r( mContext, printGEOSNotice );
   GEOSContext_setErrorHandler_r( mContext, throwQgsGeosException );
+
+#if GEOS_VERSION_MAJOR > 3 || ( GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR >= 15 )
+  // Set CurveToLine and LineToCurve default params to the context.
+  // This ensures that if a GEOS method does not support curves, it will linearize
+  // any curve geometry input if needed, and will also convert any linear output
+  // to a curved type, if the inputs were converted to curves.
+  GEOSCurveToLineParams *curveToLineParams = GEOSCurveToLineParams_create();
+  GEOSContext_setCurveToLineParams_r( mContext, curveToLineParams );
+  GEOSCurveToLineParams_destroy( curveToLineParams );
+
+  // The second part of the conversion is managed by a hidden setting, so that
+  // we can enable/disable it at will to spot missing curve support in GEOS.
+  if ( QgsGeos::settingLineToCurveParam->value() )
+  {
+    GEOSLineToCurveParams *lineToCurveParams = GEOSLineToCurveParams_create();
+    GEOSContext_setLineToCurveParams_r( mContext, lineToCurveParams );
+    GEOSLineToCurveParams_destroy( lineToCurveParams );
+  }
+#endif
 }
 
 QgsGeosContext::~QgsGeosContext()
@@ -174,9 +196,11 @@ void geos::GeosDeleter::operator()( GEOSCoordSequence *sequence ) const
   GEOSCoordSeq_destroy_r( QgsGeosContext::get(), sequence );
 }
 
-
 ///@endcond
 
+
+const QgsSettingsEntryBool *QgsGeos::settingLineToCurveParam
+  = new QgsSettingsEntryBool( u"line-to-curve-param"_s, QgsSettingsTree::sTreeGeos, false, u"Whether to convert any linear output of a GEOS method to a curved type, if the inputs were converted to curves."_s );
 
 QgsGeos::QgsGeos( const QgsAbstractGeometry *geometry, double precision, Qgis::GeosCreationFlags flags )
   : QgsGeometryEngine( geometry )
@@ -298,7 +322,20 @@ void QgsGeos::prepareGeometry()
   }
   if ( mGeos )
   {
-    mGeosPrepared.reset( GEOSPrepare_r( QgsGeosContext::get(), mGeos.get() ) );
+#if GEOS_VERSION_MAJOR > 3 || ( GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR >= 15 )
+    if ( mGeometry->hasCurvedSegments() )
+    {
+      // Segmentize the input until GEOSPrepare_r accepts curves
+      std::unique_ptr< QgsAbstractGeometry > segmentized( mGeometry->segmentize() );
+      mGeosPrepared.reset( GEOSPrepare_r( QgsGeosContext::get(), asGeos( segmentized.release() ).release() ) );
+    }
+    else
+    {
+#endif
+      mGeosPrepared.reset( GEOSPrepare_r( QgsGeosContext::get(), mGeos.get() ) );
+#if GEOS_VERSION_MAJOR > 3 || ( GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR >= 15 )
+    }
+#endif
   }
 }
 
@@ -1061,6 +1098,92 @@ double QgsGeos::length( QString *errorMsg ) const
   return length;
 }
 
+
+QgsGeometryEngine::EngineOperationResult QgsGeos::splitGeometry(
+  const QgsAbstractGeometry &splitGeom, QVector<QgsGeometry > &newGeometries, bool topological, QgsPointSequence &topologyTestPoints, QString *errorMsg
+) const
+{
+#if GEOS_VERSION_MAJOR > 3 || ( GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR >= 15 )
+  if ( !mGeos || !mGeometry )
+  {
+    return InvalidBaseGeometry;
+  }
+
+  if ( mGeometry->dimension() == 0 && QgsWkbTypes::flatType( mGeometry->wkbType() ) != Qgis::WkbType::GeometryCollection )
+  {
+    return SplitCannotSplitPoint; //cannot split points
+  }
+
+  GEOSContextHandle_t context = QgsGeosContext::get();
+  EngineOperationResult returnCode = Success;
+
+  try
+  {
+    if ( !GEOSisValid_r( context, mGeos.get() ) )
+      return InvalidBaseGeometry;
+
+    geos::unique_ptr splitGeosGeom = asGeos( &splitGeom, mPrecision );
+    if ( !splitGeosGeom || !GEOSisValid_r( context, splitGeosGeom.get() ) || !GEOSisSimple_r( context, splitGeosGeom.get() ) )
+    {
+      return InvalidInput;
+    }
+
+    // TODO: Currently, points cannot split polygons, but it could change in the
+    // future in GEOS. Remove this block when that happens. (See GEOS issue #1481)
+    if ( QgsWkbTypes::geometryType( splitGeom.wkbType() ) == Qgis::GeometryType::Point && QgsWkbTypes::geometryType( mGeometry->wkbType() ) == Qgis::GeometryType::Polygon )
+    {
+      return EngineError;
+    }
+
+    if ( topological )
+    {
+      //find out candidate points for topological corrections
+      if ( !topologicalTestPointsSplit( splitGeosGeom.get(), topologyTestPoints, errorMsg ) )
+      {
+        return InvalidInput; // TODO: is it really an invalid input?
+      }
+    }
+
+    newGeometries.clear();
+
+    geos::unique_ptr split( GEOSSplit_r( context, mGeos.get(), splitGeosGeom.get() ) );
+    if ( !split )
+    {
+      returnCode = EngineError;
+    }
+    else
+    {
+      int nParts = GEOSGetNumGeometries_r( context, split.get() );
+      for ( int i = 0; i < nParts; ++i )
+      {
+        newGeometries << QgsGeometry( fromGeos( GEOSGetGeometryN_r( context, split.get(), i ) ) );
+      }
+      returnCode = Success;
+    }
+  }
+  CATCH_GEOS_WITH_ERRMSG( EngineError )
+
+  return returnCode;
+#else
+  if ( QgsWkbTypes::flatType( splitGeom.wkbType() ) == Qgis::WkbType::LineString )
+  {
+    const QgsLineString *splitLine = qgis::down_cast< const QgsLineString * >( &splitGeom );
+    if ( splitLine )
+    {
+      return splitGeometry( *splitLine, newGeometries, topological, topologyTestPoints, errorMsg, false );
+    }
+    else
+    {
+      return InvalidInput;
+    }
+  }
+  else
+  {
+    return MethodNotImplemented;
+  }
+#endif
+}
+
 QgsGeometryEngine::EngineOperationResult QgsGeos::splitGeometry(
   const QgsLineString &splitLine, QVector<QgsGeometry> &newGeometries, bool topological, QgsPointSequence &topologyTestPoints, QString *errorMsg, bool skipIntersectionCheck
 ) const
@@ -1111,7 +1234,7 @@ QgsGeometryEngine::EngineOperationResult QgsGeos::splitGeometry(
     if ( topological )
     {
       //find out candidate points for topological corrections
-      if ( !topologicalTestPointsSplit( splitLineGeos.get(), topologyTestPoints ) )
+      if ( !topologicalTestPointsSplit( splitLineGeos.get(), topologyTestPoints, errorMsg ) )
       {
         return InvalidInput; // TODO: is it really an invalid input?
       }
@@ -1155,6 +1278,20 @@ bool QgsGeos::topologicalTestPointsSplit( const GEOSGeometry *splitLine, QgsPoin
     geos::unique_ptr intersectionGeom( GEOSIntersection_r( context, mGeos.get(), splitLine ) );
     if ( !intersectionGeom )
       return false;
+
+    // TODO: Remove this if block when this method has curve support (e.g., CircularString or CoumpoundCurve).
+    // That is, when we extract vertices from curve intersections.
+    if ( !( GEOSGeomTypeId_r( context, intersectionGeom.get() ) == GEOS_POINT
+            || GEOSGeomTypeId_r( context, intersectionGeom.get() ) == GEOS_LINESTRING
+            || GEOSGeomTypeId_r( context, intersectionGeom.get() ) == GEOS_MULTIPOINT
+            || GEOSGeomTypeId_r( context, intersectionGeom.get() ) == GEOS_MULTILINESTRING ) )
+    {
+      if ( errorMsg )
+      {
+        *errorMsg = u"Extracting topological points from curves or polygons is not yet supported."_s;
+      }
+      return false;
+    }
 
     bool simple = false;
     int nIntersectGeoms = 1;
@@ -1590,10 +1727,15 @@ std::unique_ptr<QgsAbstractGeometry> QgsGeos::fromGeos( const GEOSGeometry *geos
   }
 
   GEOSContextHandle_t context = QgsGeosContext::get();
+#ifdef GEOS_SUPPORTS_ZM
+  bool hasZ = GEOSHasZ_r( context, geos );
+  bool hasM = GEOSHasM_r( context, geos );
+#else
   int nCoordDims = GEOSGeom_getCoordinateDimension_r( context, geos );
   int nDims = GEOSGeom_getDimensions_r( context, geos );
   bool hasZ = ( nCoordDims == 3 );
   bool hasM = ( ( nDims - nCoordDims ) == 1 );
+#endif
 
   switch ( GEOSGeomTypeId_r( context, geos ) )
   {
@@ -1619,10 +1761,33 @@ std::unique_ptr<QgsAbstractGeometry> QgsGeos::fromGeos( const GEOSGeometry *geos
     {
       return sequenceToLinestring( geos, hasZ, hasM );
     }
+#if GEOS_VERSION_MAJOR > 3 || ( GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR >= 15 )
+    case GEOS_CIRCULARSTRING:
+    {
+      return sequenceToCircularString( geos, hasZ, hasM );
+    }
+    case GEOS_COMPOUNDCURVE:
+    {
+      auto compoundCurve = std::make_unique< QgsCompoundCurve >();
+      const int nCurves = GEOSGetNumCurves_r( context, geos );
+      for ( int i = 0; i < nCurves; i++ )
+      {
+        std::unique_ptr< QgsSimpleCurve > curve = sequenceToSimpleCurve( GEOSGetCurveN_r( context, geos, i ), hasZ, hasM );
+        compoundCurve->addCurve( curve.release(), true );
+      }
+      return std::move( compoundCurve );
+    }
+#endif
     case GEOS_POLYGON:
     {
       return fromGeosPolygon( geos );
     }
+#if GEOS_VERSION_MAJOR > 3 || ( GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR >= 15 )
+    case GEOS_CURVEPOLYGON:
+    {
+      return fromGeosCurvePolygon( geos );
+    }
+#endif
     case GEOS_MULTIPOINT:
     {
       auto multiPoint = std::make_unique<QgsMultiPoint>();
@@ -1656,6 +1821,20 @@ std::unique_ptr<QgsAbstractGeometry> QgsGeos::fromGeos( const GEOSGeometry *geos
       }
       return std::move( multiLineString );
     }
+#if GEOS_VERSION_MAJOR > 3 || ( GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR >= 15 )
+    case GEOS_MULTICURVE:
+    {
+      auto multiCurve = std::make_unique<QgsMultiCurve>();
+      int nParts = GEOSGetNumGeometries_r( context, geos );
+      multiCurve->reserve( nParts );
+      for ( int i = 0; i < nParts; ++i )
+      {
+        std::unique_ptr< QgsAbstractGeometry > curve( fromGeos( GEOSGetGeometryN_r( context, geos, i ) ) );
+        multiCurve->addGeometry( curve.release() );
+      }
+      return std::move( multiCurve );
+    }
+#endif
     case GEOS_MULTIPOLYGON:
     {
       auto multiPolygon = std::make_unique<QgsMultiPolygon>();
@@ -1672,6 +1851,20 @@ std::unique_ptr<QgsAbstractGeometry> QgsGeos::fromGeos( const GEOSGeometry *geos
       }
       return std::move( multiPolygon );
     }
+#if GEOS_VERSION_MAJOR > 3 || ( GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR >= 15 )
+    case GEOS_MULTISURFACE:
+    {
+      auto multiSurface = std::make_unique<QgsMultiSurface>();
+      int nParts = GEOSGetNumGeometries_r( context, geos );
+      multiSurface->reserve( nParts );
+      for ( int i = 0; i < nParts; ++i )
+      {
+        std::unique_ptr< QgsAbstractGeometry > polygon( fromGeos( GEOSGetGeometryN_r( context, geos, i ) ) );
+        multiSurface->addGeometry( polygon.release() );
+      }
+      return std::move( multiSurface );
+    }
+#endif
     case GEOS_GEOMETRYCOLLECTION:
     {
       auto geomCollection = std::make_unique<QgsGeometryCollection>();
@@ -1691,6 +1884,64 @@ std::unique_ptr<QgsAbstractGeometry> QgsGeos::fromGeos( const GEOSGeometry *geos
   return nullptr;
 }
 
+#if GEOS_VERSION_MAJOR > 3 || ( GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR >= 15 )
+std::unique_ptr<QgsCurvePolygon> QgsGeos::fromGeosCurvePolygon( const GEOSGeometry *geos )
+{
+  GEOSContextHandle_t context = QgsGeosContext::get();
+  if ( GEOSGeomTypeId_r( context, geos ) != GEOS_CURVEPOLYGON )
+  {
+    return nullptr;
+  }
+
+#ifdef GEOS_SUPPORTS_ZM
+  bool hasZ = GEOSHasZ_r( context, geos );
+  bool hasM = GEOSHasM_r( context, geos );
+#else
+  int nCoordDims = GEOSGeom_getCoordinateDimension_r( context, geos );
+  int nDims = GEOSGeom_getDimensions_r( context, geos );
+  bool hasZ = ( nCoordDims == 3 );
+  bool hasM = ( ( nDims - nCoordDims ) == 1 );
+#endif
+
+  auto curvePolygon = std::make_unique<QgsCurvePolygon>();
+
+  const GEOSGeometry *ring = GEOSGetExteriorRing_r( context, geos );
+  if ( ring )
+  {
+    if ( GEOSGeomTypeId_r( context, ring ) == GEOS_COMPOUNDCURVE )
+    {
+      curvePolygon->setExteriorRing( qgis::down_cast< QgsCompoundCurve *>( fromGeos( ring ).release() ) );
+    }
+    else
+    {
+      curvePolygon->setExteriorRing( sequenceToSimpleCurve( ring, hasZ, hasM ).release() );
+    }
+  }
+
+  QVector<QgsCurve *> interiorRings;
+  const int ringCount = GEOSGetNumInteriorRings_r( context, geos );
+  interiorRings.reserve( ringCount );
+  for ( int i = 0; i < ringCount; ++i )
+  {
+    ring = GEOSGetInteriorRingN_r( context, geos, i );
+    if ( ring )
+    {
+      if ( GEOSGeomTypeId_r( context, ring ) == GEOS_COMPOUNDCURVE )
+      {
+        interiorRings.push_back( qgis::down_cast< QgsCompoundCurve *>( fromGeos( ring ).release() ) );
+      }
+      else
+      {
+        interiorRings.push_back( sequenceToSimpleCurve( ring, hasZ, hasM ).release() );
+      }
+    }
+  }
+  curvePolygon->setInteriorRings( interiorRings );
+
+  return curvePolygon;
+}
+#endif
+
 std::unique_ptr<QgsPolygon> QgsGeos::fromGeosPolygon( const GEOSGeometry *geos )
 {
   GEOSContextHandle_t context = QgsGeosContext::get();
@@ -1699,10 +1950,15 @@ std::unique_ptr<QgsPolygon> QgsGeos::fromGeosPolygon( const GEOSGeometry *geos )
     return nullptr;
   }
 
+#ifdef GEOS_SUPPORTS_ZM
+  bool hasZ = GEOSHasZ_r( context, geos );
+  bool hasM = GEOSHasM_r( context, geos );
+#else
   int nCoordDims = GEOSGeom_getCoordinateDimension_r( context, geos );
   int nDims = GEOSGeom_getDimensions_r( context, geos );
   bool hasZ = ( nCoordDims == 3 );
   bool hasM = ( ( nDims - nCoordDims ) == 1 );
+#endif
 
   auto polygon = std::make_unique<QgsPolygon>();
 
@@ -1728,9 +1984,14 @@ std::unique_ptr<QgsPolygon> QgsGeos::fromGeosPolygon( const GEOSGeometry *geos )
   return polygon;
 }
 
-std::unique_ptr<QgsLineString> QgsGeos::sequenceToLinestring( const GEOSGeometry *geos, bool hasZ, bool hasM )
+std::unique_ptr<QgsSimpleCurve> QgsGeos::sequenceToSimpleCurve( const GEOSGeometry *geos, bool hasZ, bool hasM )
 {
   GEOSContextHandle_t context = QgsGeosContext::get();
+
+  const int geometryType = GEOSGeomTypeId_r( context, geos );
+  if ( !( geometryType == GEOS_LINESTRING || geometryType == GEOS_LINEARRING || geometryType == GEOS_CIRCULARSTRING ) )
+    return nullptr;
+
   const GEOSCoordSequence *cs = GEOSGeom_getCoordSeq_r( context, geos );
 
   unsigned int nPoints;
@@ -1765,9 +2026,30 @@ std::unique_ptr<QgsLineString> QgsGeos::sequenceToLinestring( const GEOSGeometry
     }
   }
 #endif
-  auto line = std::make_unique<QgsLineString>( xOut, yOut, zOut, mOut );
-  return line;
+
+  std::unique_ptr< QgsSimpleCurve > simpleCurve;
+  if ( geometryType == GEOS_LINESTRING || geometryType == GEOS_LINEARRING )
+  {
+    simpleCurve = std::make_unique<QgsLineString>( xOut, yOut, zOut, mOut );
+  }
+  else if ( geometryType == GEOS_CIRCULARSTRING )
+  {
+    simpleCurve = std::make_unique<QgsCircularString>( xOut, yOut, zOut, mOut );
+  }
+  return simpleCurve;
 }
+
+std::unique_ptr<QgsLineString> QgsGeos::sequenceToLinestring( const GEOSGeometry *geos, bool hasZ, bool hasM )
+{
+  return std::unique_ptr<QgsLineString>( qgis::down_cast<QgsLineString *>( sequenceToSimpleCurve( geos, hasZ, hasM ).release() ) );
+}
+
+#if GEOS_VERSION_MAJOR > 3 || ( GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR >= 15 )
+std::unique_ptr<QgsCircularString> QgsGeos::sequenceToCircularString( const GEOSGeometry *geos, bool hasZ, bool hasM )
+{
+  return std::unique_ptr<QgsCircularString>( qgis::down_cast<QgsCircularString *>( sequenceToSimpleCurve( geos, hasZ, hasM ).release() ) );
+}
+#endif
 
 int QgsGeos::numberOfGeometries( GEOSGeometry *g )
 {
@@ -1837,30 +2119,46 @@ geos::unique_ptr QgsGeos::asGeos( const QgsAbstractGeometry *geom, double precis
 
   if ( QgsWkbTypes::isMultiType( geom->wkbType() ) || QgsWkbTypes::flatType( geom->wkbType() ) == Qgis::WkbType::GeometryCollection )
   {
-    int geosType = GEOS_GEOMETRYCOLLECTION;
-
-    if ( QgsWkbTypes::flatType( geom->wkbType() ) != Qgis::WkbType::GeometryCollection )
+    int geosType;
+    switch ( QgsWkbTypes::flatType( geom->wkbType() ) )
     {
-      switch ( QgsWkbTypes::geometryType( geom->wkbType() ) )
-      {
-        case Qgis::GeometryType::Point:
-          geosType = GEOS_MULTIPOINT;
-          break;
+      case Qgis::WkbType::MultiPoint:
+        geosType = GEOS_MULTIPOINT;
+        break;
 
-        case Qgis::GeometryType::Line:
-          geosType = GEOS_MULTILINESTRING;
-          break;
+      case Qgis::WkbType::MultiLineString:
+#if !( GEOS_VERSION_MAJOR > 3 || ( GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR >= 15 ) )
+      case Qgis::WkbType::MultiCurve:
+#endif
+        geosType = GEOS_MULTILINESTRING;
+        break;
 
-        case Qgis::GeometryType::Polygon:
-          geosType = GEOS_MULTIPOLYGON;
-          break;
+      case Qgis::WkbType::MultiPolygon:
+#if !( GEOS_VERSION_MAJOR > 3 || ( GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR >= 15 ) )
+      case Qgis::WkbType::MultiSurface:
+#endif
+        geosType = GEOS_MULTIPOLYGON;
+        break;
 
-        case Qgis::GeometryType::Unknown:
-        case Qgis::GeometryType::Null:
-          return nullptr;
-      }
+#if GEOS_VERSION_MAJOR > 3 || ( GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR >= 15 )
+      case Qgis::WkbType::MultiCurve:
+        geosType = GEOS_MULTICURVE;
+        break;
+
+      case Qgis::WkbType::MultiSurface:
+        geosType = GEOS_MULTISURFACE;
+        break;
+#endif
+
+      case Qgis::WkbType::GeometryCollection:
+        geosType = GEOS_GEOMETRYCOLLECTION;
+        break;
+
+      case Qgis::WkbType::Unknown:
+      case Qgis::WkbType::NoGeometry:
+      default:
+        return nullptr;
     }
-
 
     const QgsGeometryCollection *c = qgsgeometry_cast<const QgsGeometryCollection *>( geom );
 
@@ -1880,43 +2178,65 @@ geos::unique_ptr QgsGeos::asGeos( const QgsAbstractGeometry *geom, double precis
     }
     return createGeosCollection( geosType, geomVector );
   }
-  else if ( QgsWkbTypes::flatType( geom->wkbType() ) == Qgis::WkbType::PolyhedralSurface || QgsWkbTypes::flatType( geom->wkbType() ) == Qgis::WkbType::TIN )
-  {
-    // PolyhedralSurface and TIN support
-    // convert it to a geos MultiPolygon
-    const QgsPolyhedralSurface *polyhedralSurface = qgsgeometry_cast<const QgsPolyhedralSurface *>( geom );
-    if ( !polyhedralSurface )
-      return nullptr;
-
-    std::vector<geos::unique_ptr> geomVector;
-    geomVector.reserve( polyhedralSurface->numPatches() );
-    for ( int i = 0; i < polyhedralSurface->numPatches(); ++i )
-    {
-      geos::unique_ptr geosPolygon = createGeosPolygon( polyhedralSurface->patchN( i ), precision );
-      if ( flags & Qgis::GeosCreationFlag::RejectOnInvalidSubGeometry && !geosPolygon )
-      {
-        return nullptr;
-      }
-      geomVector.emplace_back( std::move( geosPolygon ) );
-    }
-
-    return createGeosCollection( GEOS_MULTIPOLYGON, geomVector );
-  }
   else
   {
-    switch ( QgsWkbTypes::geometryType( geom->wkbType() ) )
+    switch ( QgsWkbTypes::flatType( geom->wkbType() ) )
     {
-      case Qgis::GeometryType::Point:
-        return createGeosPoint( static_cast<const QgsPoint *>( geom ), coordDims, precision, flags );
+      case Qgis::WkbType::Point:
+        return createGeosPoint( geom, coordDims, precision, flags );
 
-      case Qgis::GeometryType::Line:
-        return createGeosLinestring( static_cast<const QgsLineString *>( geom ), precision, flags );
+      case Qgis::WkbType::LineString:
+      case Qgis::WkbType::CircularString:
+      case Qgis::WkbType::NurbsCurve:
+#if !( GEOS_VERSION_MAJOR > 3 || ( GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR >= 15 ) )
+      case Qgis::WkbType::CompoundCurve:
+        return createGeosLinestring( geom, precision, flags );
+#else // GEOS >= 3.15
+        return createGeosSimpleCurve( geom, precision, flags );
 
-      case Qgis::GeometryType::Polygon:
-        return createGeosPolygon( static_cast<const QgsPolygon *>( geom ), precision, flags );
+      case Qgis::WkbType::CompoundCurve:
+        return createGeosCompoundCurve( geom, precision, flags );
+#endif
 
-      case Qgis::GeometryType::Unknown:
-      case Qgis::GeometryType::Null:
+      case Qgis::WkbType::Polygon:
+      case Qgis::WkbType::Triangle:
+#if !( GEOS_VERSION_MAJOR > 3 || ( GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR >= 15 ) )
+      case Qgis::WkbType::CurvePolygon:
+#endif
+        return createGeosPolygon( geom, precision, flags );
+
+#if GEOS_VERSION_MAJOR > 3 || ( GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR >= 15 )
+      case Qgis::WkbType::CurvePolygon:
+        return createGeosCurvePolygon( geom, precision, flags );
+#endif
+
+      case Qgis::WkbType::TIN:
+      case Qgis::WkbType::PolyhedralSurface:
+      {
+        // PolyhedralSurface and TIN support
+        // convert it to a geos MultiPolygon
+        const QgsPolyhedralSurface *polyhedralSurface = qgsgeometry_cast<const QgsPolyhedralSurface *>( geom );
+        if ( !polyhedralSurface )
+          return nullptr;
+
+        std::vector<geos::unique_ptr> geomVector;
+        geomVector.reserve( polyhedralSurface->numPatches() );
+        for ( int i = 0; i < polyhedralSurface->numPatches(); ++i )
+        {
+          geos::unique_ptr geosPolygon = createGeosPolygon( polyhedralSurface->patchN( i ), precision );
+          if ( flags & Qgis::GeosCreationFlag::RejectOnInvalidSubGeometry && !geosPolygon )
+          {
+            return nullptr;
+          }
+          geomVector.emplace_back( std::move( geosPolygon ) );
+        }
+
+        return createGeosCollection( GEOS_MULTIPOLYGON, geomVector );
+      }
+
+      case Qgis::WkbType::Unknown:
+      case Qgis::WkbType::NoGeometry:
+      default:
         return nullptr;
     }
   }
@@ -1980,6 +2300,7 @@ std::unique_ptr<QgsAbstractGeometry> QgsGeos::overlay( const QgsAbstractGeometry
           unionGeometry.reset( GEOSUnion_r( context, mGeos.get(), geosGeom.get() ) );
         }
 
+#if !( GEOS_VERSION_MAJOR > 3 || ( GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR >= 15 ) )
         if ( unionGeometry && GEOSGeomTypeId_r( context, unionGeometry.get() ) == GEOS_MULTILINESTRING )
         {
           geos::unique_ptr mergedLines( GEOSLineMerge_r( context, unionGeometry.get() ) );
@@ -1988,6 +2309,7 @@ std::unique_ptr<QgsAbstractGeometry> QgsGeos::overlay( const QgsAbstractGeometry
             unionGeometry = std::move( mergedLines );
           }
         }
+#endif
 
         opGeom = std::move( unionGeometry );
       }
@@ -2487,7 +2809,6 @@ bool QgsGeos::isValid( QString *errorMsg, const bool allowSelfTouchingHoles, Qgs
 
   GEOSContextHandle_t context = QgsGeosContext::get();
   QgsScopedGeosContextRegisterFeedback interrupt( feedback );
-
   try
   {
     GEOSGeometry *g1 = nullptr;
@@ -2614,35 +2935,56 @@ bool QgsGeos::isSimple( QString *errorMsg ) const
 GEOSCoordSequence *QgsGeos::createCoordinateSequence( const QgsCurve *curve, double precision, bool forceClose )
 {
   GEOSContextHandle_t context = QgsGeosContext::get();
+  const QgsSimpleCurve *simpleCurve;
 
-  std::unique_ptr< QgsLineString > segmentized;
-  const QgsLineString *line = qgsgeometry_cast<const QgsLineString *>( curve );
-
-  if ( !line )
+#if GEOS_VERSION_MAJOR > 3 || ( GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR >= 15 )
+  if ( QgsWkbTypes::flatType( curve->wkbType() ) == Qgis::WkbType::CircularString )
   {
-    segmentized.reset( curve->curveToLine() );
-    line = segmentized.get();
+    simpleCurve = qgsgeometry_cast< const QgsCircularString * >( curve );
   }
+  else
+  {
+#endif
+    simpleCurve = qgsgeometry_cast< const QgsLineString *>( curve );
 
-  if ( !line )
+    std::unique_ptr< QgsLineString > segmentized;
+    if ( !simpleCurve )
+    {
+      segmentized.reset( curve->curveToLine() );
+      simpleCurve = segmentized.get();
+    }
+#if GEOS_VERSION_MAJOR > 3 || ( GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR >= 15 )
+  }
+#endif
+
+  if ( !simpleCurve )
   {
     return nullptr;
   }
   GEOSCoordSequence *coordSeq = nullptr;
 
-  const int numPoints = line->numPoints();
+  const int numPoints = simpleCurve->numPoints();
 
-  const bool hasZ = line->is3D();
+  const bool hasZ = simpleCurve->is3D();
+#ifdef GEOS_SUPPORTS_ZM
+  const bool hasM = simpleCurve->isMeasure();
+#else
+  const bool hasM = false; //disabled until geos supports m-coordinates
+#endif
 
 #if GEOS_VERSION_MAJOR > 3 || ( GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR >= 10 )
   if ( qgsDoubleNear( precision, 0 ) )
   {
-    if ( !forceClose || ( line->pointN( 0 ) == line->pointN( numPoints - 1 ) ) )
+    if ( !forceClose || ( simpleCurve->pointN( 0 ) == simpleCurve->pointN( numPoints - 1 ) ) )
     {
       // use optimised method if we don't have to force close an open ring
       try
       {
-        coordSeq = GEOSCoordSeq_copyFromArrays_r( context, line->xData(), line->yData(), line->zData(), nullptr, numPoints );
+#ifdef GEOS_SUPPORTS_ZM
+        coordSeq = GEOSCoordSeq_copyFromArrays_r( context, simpleCurve->xData(), simpleCurve->yData(), simpleCurve->zData(), simpleCurve->mData(), numPoints );
+#else
+        coordSeq = GEOSCoordSeq_copyFromArrays_r( context, simpleCurve->xData(), simpleCurve->yData(), simpleCurve->zData(), nullptr, numPoints );
+#endif
         if ( !coordSeq )
         {
           QgsDebugError( u"GEOS Exception: Could not create coordinate sequence for %1 points"_s.arg( numPoints ) );
@@ -2653,18 +2995,21 @@ GEOSCoordSequence *QgsGeos::createCoordinateSequence( const QgsCurve *curve, dou
     }
     else
     {
-      QVector< double > x = line->xVector();
+      QVector< double > x = simpleCurve->xVector();
       if ( numPoints > 0 )
         x.append( x.at( 0 ) );
-      QVector< double > y = line->yVector();
+      QVector< double > y = simpleCurve->yVector();
       if ( numPoints > 0 )
         y.append( y.at( 0 ) );
-      QVector< double > z = line->zVector();
+      QVector< double > z = simpleCurve->zVector();
       if ( hasZ && numPoints > 0 )
         z.append( z.at( 0 ) );
+      QVector< double > m = simpleCurve->mVector();
+      if ( hasM && numPoints > 0 )
+        m.append( m.at( 0 ) );
       try
       {
-        coordSeq = GEOSCoordSeq_copyFromArrays_r( context, x.constData(), y.constData(), !hasZ ? nullptr : z.constData(), nullptr, numPoints + 1 );
+        coordSeq = GEOSCoordSeq_copyFromArrays_r( context, x.constData(), y.constData(), !hasZ ? nullptr : z.constData(), !hasM ? nullptr : m.constData(), numPoints + 1 );
         if ( !coordSeq )
         {
           QgsDebugError( u"GEOS Exception: Could not create closed coordinate sequence for %1 points"_s.arg( numPoints + 1 ) );
@@ -2678,7 +3023,6 @@ GEOSCoordSequence *QgsGeos::createCoordinateSequence( const QgsCurve *curve, dou
 #endif
 
   int coordDims = 2;
-  const bool hasM = false; //line->isMeasure(); //disabled until geos supports m-coordinates
 
   if ( hasZ )
   {
@@ -2690,7 +3034,7 @@ GEOSCoordSequence *QgsGeos::createCoordinateSequence( const QgsCurve *curve, dou
   }
 
   int numOutPoints = numPoints;
-  if ( forceClose && ( line->pointN( 0 ) != line->pointN( numPoints - 1 ) ) )
+  if ( forceClose && ( simpleCurve->pointN( 0 ) != simpleCurve->pointN( numPoints - 1 ) ) )
   {
     ++numOutPoints;
   }
@@ -2704,10 +3048,10 @@ GEOSCoordSequence *QgsGeos::createCoordinateSequence( const QgsCurve *curve, dou
       return nullptr;
     }
 
-    const double *xData = line->xData();
-    const double *yData = line->yData();
-    const double *zData = hasZ ? line->zData() : nullptr;
-    const double *mData = hasM ? line->mData() : nullptr;
+    const double *xData = simpleCurve->xData();
+    const double *yData = simpleCurve->yData();
+    const double *zData = hasZ ? simpleCurve->zData() : nullptr;
+    const double *mData = hasM ? simpleCurve->mData() : nullptr;
 
     if ( precision > 0. )
     {
@@ -2716,10 +3060,10 @@ GEOSCoordSequence *QgsGeos::createCoordinateSequence( const QgsCurve *curve, dou
         if ( i >= numPoints )
         {
           // start reading back from start of line
-          xData = line->xData();
-          yData = line->yData();
-          zData = hasZ ? line->zData() : nullptr;
-          mData = hasM ? line->mData() : nullptr;
+          xData = simpleCurve->xData();
+          yData = simpleCurve->yData();
+          zData = hasZ ? simpleCurve->zData() : nullptr;
+          mData = hasM ? simpleCurve->mData() : nullptr;
         }
         if ( hasZ )
         {
@@ -2742,10 +3086,10 @@ GEOSCoordSequence *QgsGeos::createCoordinateSequence( const QgsCurve *curve, dou
         if ( i >= numPoints )
         {
           // start reading back from start of line
-          xData = line->xData();
-          yData = line->yData();
-          zData = hasZ ? line->zData() : nullptr;
-          mData = hasM ? line->mData() : nullptr;
+          xData = simpleCurve->xData();
+          yData = simpleCurve->yData();
+          zData = hasZ ? simpleCurve->zData() : nullptr;
+          mData = hasM ? simpleCurve->mData() : nullptr;
         }
         if ( hasZ )
         {
@@ -2778,8 +3122,10 @@ geos::unique_ptr QgsGeos::createGeosPoint( const QgsAbstractGeometry *point, int
 
 geos::unique_ptr QgsGeos::createGeosPointXY( double x, double y, bool hasZ, double z, bool hasM, double m, int coordDims, double precision, Qgis::GeosCreationFlags )
 {
+#ifndef GEOS_SUPPORTS_ZM
   Q_UNUSED( hasM )
   Q_UNUSED( m )
+#endif
 
   geos::unique_ptr geosPoint;
   GEOSContextHandle_t context = QgsGeosContext::get();
@@ -2795,7 +3141,11 @@ geos::unique_ptr QgsGeos::createGeosPointXY( double x, double y, bool hasZ, doub
       return geosPoint;
     }
 
+#ifdef GEOS_SUPPORTS_ZM
+    GEOSCoordSequence *coordSeq = GEOSCoordSeq_createWithDimensions_r( context, 1, hasZ ? 1 : 0, hasM ? 1 : 0 );
+#else
     GEOSCoordSequence *coordSeq = GEOSCoordSeq_create_r( context, 1, coordDims );
+#endif
     if ( !coordSeq )
     {
       QgsDebugError( u"GEOS Exception: Could not create coordinate sequence for point with %1 dimensions"_s.arg( coordDims ) );
@@ -2807,7 +3157,11 @@ geos::unique_ptr QgsGeos::createGeosPointXY( double x, double y, bool hasZ, doub
       GEOSCoordSeq_setY_r( context, coordSeq, 0, std::round( y / precision ) * precision );
       if ( hasZ )
       {
+#ifdef GEOS_SUPPORTS_ZM
+        GEOSCoordSeq_setZ_r( context, coordSeq, 0, z );
+#else
         GEOSCoordSeq_setOrdinate_r( context, coordSeq, 0, 2, std::round( z / precision ) * precision );
+#endif
       }
     }
     else
@@ -2816,13 +3170,17 @@ geos::unique_ptr QgsGeos::createGeosPointXY( double x, double y, bool hasZ, doub
       GEOSCoordSeq_setY_r( context, coordSeq, 0, y );
       if ( hasZ )
       {
+#ifdef GEOS_SUPPORTS_ZM
+        GEOSCoordSeq_setZ_r( context, coordSeq, 0, z );
+#else
         GEOSCoordSeq_setOrdinate_r( context, coordSeq, 0, 2, z );
+#endif
       }
     }
-#if 0 //disabled until geos supports m-coordinates
+#ifdef GEOS_SUPPORTS_ZM
     if ( hasM )
     {
-      GEOSCoordSeq_setOrdinate_r( context, coordSeq, 0, 3, m );
+      GEOSCoordSeq_setM_r( context, coordSeq, 0, m );
     }
 #endif
     geosPoint.reset( GEOSGeom_createPoint_r( context, coordSeq ) );
@@ -2849,6 +3207,128 @@ geos::unique_ptr QgsGeos::createGeosLinestring( const QgsAbstractGeometry *curve
   CATCH_GEOS( nullptr )
   return geosGeom;
 }
+
+#if GEOS_VERSION_MAJOR > 3 || ( GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR >= 15 )
+geos::unique_ptr QgsGeos::createGeosSimpleCurve( const QgsAbstractGeometry *curve, double precision, Qgis::GeosCreationFlags )
+{
+  const QgsCurve *c = qgsgeometry_cast<const QgsCurve *>( curve );
+  if ( !c )
+    return nullptr;
+
+  if ( !c->isSimpleCurve() )
+    return nullptr;
+
+  GEOSCoordSequence *coordSeq = createCoordinateSequence( c, precision );
+  if ( !coordSeq )
+    return nullptr;
+
+  geos::unique_ptr geosGeom;
+  try
+  {
+    if ( !c->hasCurvedSegments() )
+    {
+      geosGeom.reset( GEOSGeom_createLineString_r( QgsGeosContext::get(), coordSeq ) );
+    }
+    else
+    {
+      geosGeom.reset( GEOSGeom_createCircularString_r( QgsGeosContext::get(), coordSeq ) );
+    }
+  }
+  CATCH_GEOS( nullptr )
+  return geosGeom;
+}
+
+geos::unique_ptr QgsGeos::createGeosCompoundCurve( const QgsAbstractGeometry *curve, double precision, Qgis::GeosCreationFlags flags )
+{
+  const QgsCompoundCurve *c = qgsgeometry_cast<const QgsCompoundCurve *>( curve );
+  if ( !c )
+    return nullptr;
+
+  GEOSContextHandle_t context = QgsGeosContext::get();
+  geos::unique_ptr geosCurve;
+
+  try
+  {
+    const int nCurves = c->nCurves();
+    GEOSGeometry **curves = new GEOSGeometry *[nCurves];
+
+    for ( int i = 0; i < nCurves; i++ )
+    {
+      if ( c->curveAt( i )->isSimpleCurve() )
+      {
+        curves[i] = createGeosSimpleCurve( c->curveAt( i ), precision, flags ).release();
+      }
+    }
+    geosCurve.reset( GEOSGeom_createCompoundCurve_r( context, curves, nCurves ) );
+    delete[] curves;
+  }
+  CATCH_GEOS( nullptr )
+  return geosCurve;
+}
+
+geos::unique_ptr QgsGeos::createGeosCurvePolygon( const QgsAbstractGeometry *poly, double precision, Qgis::GeosCreationFlags flags )
+{
+  const QgsCurvePolygon *polygon = qgsgeometry_cast<const QgsCurvePolygon *>( poly );
+  if ( !polygon )
+    return nullptr;
+
+  const QgsCurve *exteriorRing = polygon->exteriorRing();
+  if ( !exteriorRing )
+  {
+    return nullptr;
+  }
+
+  GEOSContextHandle_t context = QgsGeosContext::get();
+  geos::unique_ptr geosCurvePolygon;
+  try
+  {
+    geos::unique_ptr exteriorRingGeos;
+    if ( exteriorRing->isSimpleCurve() )
+    {
+      exteriorRingGeos.reset( createGeosSimpleCurve( exteriorRing, precision, flags ).release() );
+    }
+    else
+    {
+      exteriorRingGeos.reset( createGeosCompoundCurve( exteriorRing, precision, flags ).release() );
+    }
+
+    const int nInteriorRings = polygon->numInteriorRings();
+    QList< const QgsCurve * > holesToExport;
+    holesToExport.reserve( nInteriorRings );
+    for ( int i = 0; i < nInteriorRings; ++i )
+    {
+      const QgsCurve *interiorRing = polygon->interiorRing( i );
+      if ( !( flags & Qgis::GeosCreationFlag::SkipEmptyInteriorRings ) || !interiorRing->isEmpty() )
+      {
+        holesToExport << interiorRing;
+      }
+    }
+
+    GEOSGeometry **holes = nullptr;
+    if ( !holesToExport.empty() )
+    {
+      holes = new GEOSGeometry *[holesToExport.size()];
+      for ( int i = 0; i < holesToExport.size(); ++i )
+      {
+        if ( holesToExport[i]->isSimpleCurve() )
+        {
+          holes[i] = createGeosSimpleCurve( holesToExport[i], precision, flags ).release();
+        }
+        else
+        {
+          holes[i] = createGeosCompoundCurve( holesToExport[i], precision, flags ).release();
+        }
+      }
+    }
+
+    geosCurvePolygon.reset( GEOSGeom_createCurvePolygon_r( context, exteriorRingGeos.release(), holes, holesToExport.size() ) );
+    delete[] holes;
+  }
+  CATCH_GEOS( nullptr )
+
+  return geosCurvePolygon;
+}
+#endif
 
 geos::unique_ptr QgsGeos::createGeosPolygon( const QgsAbstractGeometry *poly, double precision, Qgis::GeosCreationFlags flags )
 {

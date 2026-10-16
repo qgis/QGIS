@@ -19,6 +19,7 @@
 
 #include "qgscolorutils.h"
 #include "qgsgeometryutils_base.h"
+#include "qgspainting.h"
 #include "qgsstyle.h"
 #include "qgssymbollayerutils.h"
 #include "qgsunittypes.h"

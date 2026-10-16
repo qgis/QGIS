@@ -336,11 +336,7 @@ void QgsAuthOAuth2Config::validateConfigId( bool needsId )
 {
   const bool oldvalid = mValid;
 
-  if ( mGrantFlow == GrantFlow::AuthCode || mGrantFlow == GrantFlow::Implicit )
-  {
-    mValid = ( !requestUrl().isEmpty() && !tokenUrl().isEmpty() && !clientId().isEmpty() && ( ( mGrantFlow == GrantFlow::AuthCode || mGrantFlow == GrantFlow::Pkce ) ? !clientSecret().isEmpty() : true ) && redirectPort() > 0 && ( needsId ? !id().isEmpty() : true ) );
-  }
-  else if ( mGrantFlow == GrantFlow::Pkce ) // No client secret for PKCE
+  if ( mGrantFlow == GrantFlow::AuthCode || mGrantFlow == GrantFlow::Implicit || mGrantFlow == GrantFlow::Pkce )
   {
     mValid = ( !requestUrl().isEmpty() && !tokenUrl().isEmpty() && !clientId().isEmpty() && redirectPort() > 0 && ( needsId ? !id().isEmpty() : true ) );
   }

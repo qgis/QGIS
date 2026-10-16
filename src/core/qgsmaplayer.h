@@ -1771,7 +1771,10 @@ class CORE_EXPORT QgsMapLayer : public QObject
     void setOriginalXmlProperties( const QString &originalXmlProperties );
 
     /**
-     * Generates an unique identifier for this layer, the generate ID is prefixed by \a layerName
+     * Generates an unique identifier for the layer with the specified \a layerName.
+     *
+     * The generated ID is prefixed by the (possibly truncated) \a layerName string.
+     *
      * \since QGIS 3.8
      */
     static QString generateId( const QString &layerName );
@@ -2523,10 +2526,10 @@ class CORE_EXPORT QgsMapLayer : public QObject
     QgsObjectCustomProperties mCustomProperties;
 
     //! Controller of legend items of this layer
-    std::unique_ptr<QgsMapLayerLegend> mLegend;
+    QgsMapLayerLegend *mLegend = nullptr;
 
     //! Manager of multiple styles available for a layer (may be NULLPTR)
-    std::unique_ptr<QgsMapLayerStyleManager> mStyleManager;
+    QgsMapLayerStyleManager *mStyleManager = nullptr;
 
     Qgis::AutoRefreshMode mAutoRefreshMode = Qgis::AutoRefreshMode::Disabled;
 

@@ -152,6 +152,7 @@ class CORE_EXPORT QgsNurbsCurve : public QgsCurve
     double yAt( int index ) const override;
     double zAt( int index ) const override;
     double mAt( int index ) const override;
+    bool isSimpleCurve() const override SIP_HOLDGIL;
 
     QPolygonF asQPolygonF() const override;
 
@@ -193,7 +194,6 @@ class CORE_EXPORT QgsNurbsCurve : public QgsCurve
     bool addMValue( double mValue = 0 ) override;
     bool dropZValue() override;
     bool dropMValue() override;
-    bool deleteVertex( QgsVertexId position ) override;
     bool deleteVertices( const QSet<QgsVertexId> &positions ) override;
 #ifndef SIP_RUN
     void filterVertices( const std::function<bool( const QgsPoint & )> &filter ) override;

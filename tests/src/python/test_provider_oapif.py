@@ -2681,6 +2681,18 @@ class TestPyQgsOapifProvider(QgisTestCase, ProviderTestCase):
         got = got_f[0].geometry().constGet()
         self.assertEqual((got.x(), got.y()), (3.0, 50.0))
 
+        # A null geometry has no axes to swap
+        with open(
+            sanitize(
+                endpoint,
+                '/collections/mycollection/items/feat.1?PATCHDATA={"geometry":null}&Content-Crs=http://www.opengis.net/def/crs/EPSG/0/4326&Content-Type=application_merge-patch+json',
+            ),
+            "wb",
+        ) as f:
+            f.write(b"")
+
+        self.assertTrue(vl.dataProvider().changeGeometryValues({1: QgsGeometry()}))
+
     def testFeatureAttributeChange(self):
 
         endpoint = (

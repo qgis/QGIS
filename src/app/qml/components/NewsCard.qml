@@ -50,7 +50,7 @@ Rectangle {
       Layout.fillWidth: true
       textFormat: Text.RichText
       text: '<style type="text/css">p:last-child { background-color:"red";margin:0; }</style>' + root.description
-      font.pointSize: tinyFontSize
+      font.pointSize: smallFontSize
       color: "#4a5568"
       wrapMode: Text.WordWrap
       lineHeight: 1.3
@@ -65,7 +65,7 @@ Rectangle {
       Layout.fillWidth: true
       visible: root.showLink
       text: root.linkText
-      font.pointSize: tinyFontSize
+      font.pointSize: smallFontSize
       font.underline: mouseArea.containsMouse
       color: "#2b6cb0"
 

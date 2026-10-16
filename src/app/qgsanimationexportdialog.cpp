@@ -114,11 +114,25 @@ QgsAnimationExportDialog::QgsAnimationExportDialog( QWidget *parent, QgsMapCanva
   {
     mStartDateTime->setDateTime( controller->temporalExtents().begin() );
     mEndDateTime->setDateTime( controller->temporalExtents().end() );
+    mMode = controller->navigationMode();
+    mTotalMovieFrames = controller->totalMovieFrames();
   }
   mFrameDurationSpinBox->setClearValue( 1 );
   mFrameDurationSpinBox->setValue( QgsProject::instance()->timeSettings()->timeStep() );
   mTimeStepsComboBox->setCurrentIndex( mTimeStepsComboBox->findData( static_cast<int>( QgsProject::instance()->timeSettings()->timeStepUnit() ) ) );
   mCumulativeTemporalRange->setChecked( QgsProject::instance()->timeSettings()->isTemporalRangeCumulative() );
+
+  switch ( mMode )
+  {
+    case Qgis::TemporalNavigationMode::Disabled:
+    case Qgis::TemporalNavigationMode::Animated:
+    case Qgis::TemporalNavigationMode::FixedRange:
+      break;
+
+    case Qgis::TemporalNavigationMode::Movie:
+      mTemporalSettingsGroupBox->hide();
+      break;
+  }
 
   connect( mOutputWidthSpinBox, &QSpinBox::editingFinished, this, [this] { updateOutputWidth( mOutputWidthSpinBox->value() ); } );
   connect( mOutputHeightSpinBox, &QSpinBox::editingFinished, this, [this] { updateOutputHeight( mOutputHeightSpinBox->value() ); } );
@@ -236,6 +250,11 @@ QgsDateTimeRange QgsAnimationExportDialog::animationRange() const
 QgsInterval QgsAnimationExportDialog::frameInterval() const
 {
   return QgsInterval( mFrameDurationSpinBox->value(), static_cast<Qgis::TemporalUnit>( mTimeStepsComboBox->currentData().toInt() ) );
+}
+
+Qgis::TemporalNavigationMode QgsAnimationExportDialog::mode() const
+{
+  return mMode;
 }
 
 bool QgsAnimationExportDialog::temporalRangeCumulative() const

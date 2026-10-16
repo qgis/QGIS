@@ -59,7 +59,7 @@ class GUI_EXPORT QgsProcessingDialogFactory
     /**
    * Creates a new widget for executing the specified algorithm.
    */
-    virtual QgsProcessingAlgorithmWidgetBase *createWidget(
+    virtual QgsProcessingAlgorithmWidget *createWidget(
       QgsProcessingAlgorithm *algorithm SIP_TRANSFER,
       bool inPlace = false,
       QMainWindow *parent = nullptr,

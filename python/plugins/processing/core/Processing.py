@@ -51,7 +51,6 @@ import processing
 from processing.core.ProcessingConfig import ProcessingConfig
 from processing.gui.AlgorithmExecutor import execute
 from processing.gui.MessageBarProgress import MessageBarProgress
-from processing.gui.RenderingStyles import RenderingStyles
 from processing.script import ScriptUtils
 from processing.tools import dataobjects
 
@@ -181,7 +180,6 @@ class Processing:
             # And initialize
             ProcessingConfig.initialize()
             ProcessingConfig.readSettings()
-            RenderingStyles.loadStyles()
 
     @staticmethod
     def deinitialize():

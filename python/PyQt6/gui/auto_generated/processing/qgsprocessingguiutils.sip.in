@@ -25,48 +25,14 @@ Contains utility functions relating to Processing GUI components.
 #include "qgsprocessingguiutils.h"
 %End
   public:
-    class ResultLayerDetails
-    {
-%Docstring(signature="appended")
-Contains details of a layer result from running an algorithm.
-
-.. versionadded:: 3.44
-%End
-
-      public:
-        ResultLayerDetails( QgsMapLayer *layer /Transfer/ );
+    static QMap< int, QStringList > defaultProcessingMenuEntries();
 %Docstring
-Constructor for ResultLayerDetails.
+Returns the map of Processing menus to a list of algorithm IDs to
+include by default in that menu.
 
-Takes ownership of ``layer``.
-%End
+Map keys correspond to :py:class:`Qgis`.ProcessingMenu values.
 
-        QgsMapLayer *layer;
-
-        QgsLayerTreeGroup *targetLayerTreeGroup;
-
-        int sortKey;
-
-        QgsProject *destinationProject;
-    };
-
-    static void configureResultLayerTreeLayer( QgsLayerTreeLayer *layerTreeLayer );
-%Docstring
-Applies post-processing steps to the :py:class:`QgsLayerTreeLayer`
-created for an algorithm's output.
-%End
-
-    static QgsLayerTreeGroup *layerTreeResultsGroup( const QgsProcessingContext::LayerDetails &layerDetails, const QgsProcessingContext &context );
-%Docstring
-Returns the destination layer tree group to store results in, or
-``None`` if there is no specific destination tree group associated with
-the layer.
-%End
-
-    static void addResultLayers( const QVector< QgsProcessingGuiUtils::ResultLayerDetails > &layers, const QgsProcessingContext &context, QgsLayerTreeView *view = 0 );
-%Docstring
-Responsible for adding layers created by an algorithm to a project and
-the project's layer tree in the correct location.
+.. versionadded:: 4.4
 %End
 };
 

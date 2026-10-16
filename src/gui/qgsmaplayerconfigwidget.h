@@ -123,6 +123,13 @@ class GUI_EXPORT QgsMapLayerConfigWidget : public QgsPanelWidget
     QgsMapLayerConfigWidget( QgsMapLayer *layer, QgsMapCanvas *canvas, QWidget *parent = nullptr );
 
     /**
+     * Returns the layer the widget is associated with.
+     *
+     * \since QGIS 4.4
+     */
+    QgsMapLayer *layer();
+
+    /**
      * Whether this config widget changes map layer properties in a way that triggerRepaint() should
      * be called for the layer after applying changes. This is TRUE by default, but some config widgets
      * (for example 3D rendering config) do not need layer repaint as they do not modify 2D map rendering.
@@ -181,7 +188,7 @@ class GUI_EXPORT QgsMapLayerConfigWidget : public QgsPanelWidget
 #endif
 
   protected:
-    QgsMapLayer *mLayer = nullptr;
+    QPointer< QgsMapLayer > mLayer;
     QgsMapCanvas *mMapCanvas = nullptr;
     QgsMapLayerConfigWidgetContext mMapLayerConfigWidgetContext;
 };

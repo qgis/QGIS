@@ -16,6 +16,7 @@ set(QGIS_APP_SRCS
   qgsappcoordinateoperationhandlers.cpp
   qgsappdbutils.cpp
   qgsapplayertreeviewmenuprovider.cpp
+  qgsappmenuutils.cpp
   qgsappwindowmanager.cpp
   qgsappscreenshots.cpp
   qgsanimationexportdialog.cpp
@@ -302,6 +303,7 @@ set(QGIS_APP_SRCS
   mesh/qgsmeshselectbyexpressiondialog.cpp
 
   processing/qgsappprocessingutils.cpp
+  processing/qgsprocessingtoolboxdock.cpp
 
   vector/qgsvectorelevationpropertieswidget.cpp
 )

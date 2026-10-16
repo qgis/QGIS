@@ -111,7 +111,7 @@ void TestQgsLayerDefinition::testLoadTopOfTree()
 void TestQgsLayerDefinition::testExportDoesNotCrash()
 {
   QString errorMessage;
-  QVERIFY( QgsLayerDefinition::exportLayerDefinition( mTempFile->fileName(), QgsProject::instance()->layerTreeRoot()->children(), errorMessage ) );
+  QVERIFY( QgsLayerDefinition::exportLayerDefinition( mTempFile->fileName(), QgsProject::instance()->layerTreeRoot()->children(), QgsProject::instance()->filePathStorage(), errorMessage ) );
   QVERIFY( errorMessage.isEmpty() );
   // Reload
   QgsProject::instance()->removeAllMapLayers();

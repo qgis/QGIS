@@ -431,6 +431,15 @@
     </property>
     <addaction name="mActionQueryHistory"/>
    </widget>
+   <widget class="QMenu" name="mProcessingMenu">
+    <property name="title">
+     <string>Pro&amp;cessing</string>
+    </property>
+    <addaction name="mActionShowProcessingToolbox"/>
+    <addaction name="mActionModelDesigner"/>
+    <addaction name="mProcessingHistoryAction"/>
+    <addaction name="mActionEditFeaturesInPlace"/>
+   </widget>
    <addaction name="mProjectMenu"/>
    <addaction name="mEditMenu"/>
    <addaction name="mViewMenu"/>
@@ -439,8 +448,9 @@
    <addaction name="mPluginMenu"/>
    <addaction name="mVectorMenu"/>
    <addaction name="mRasterMenu"/>
-   <addaction name="mDatabaseMenu"/>
    <addaction name="mMeshMenu"/>
+   <addaction name="mProcessingMenu"/>
+   <addaction name="mDatabaseMenu"/>
    <addaction name="mHelpMenu"/>
   </widget>
   <widget class="QStatusBar" name="statusbar">
@@ -594,6 +604,7 @@
    <addaction name="mActionIdentify"/>
    <addaction name="mActionOpenFieldCalc"/>
    <addaction name="mActionStatisticalSummary"/>
+   <addaction name="mActionShowProcessingToolbox"/>
    <addaction name="mActionMapTips"/>
   </widget>
   <widget class="QToolBar" name="mPluginToolBar">
@@ -921,7 +932,7 @@
     <string>Ctrl+Q</string>
    </property>
    <property name="menuRole">
-    <enum>QAction::QuitRole</enum>
+    <enum>QAction::MenuRole::QuitRole</enum>
    </property>
   </action>
   <action name="mActionUndo">
@@ -1912,7 +1923,7 @@ Shift+O to turn segments into straight or curve lines.</string>
     <string>&amp;Options…</string>
    </property>
    <property name="menuRole">
-    <enum>QAction::NoRole</enum>
+    <enum>QAction::MenuRole::NoRole</enum>
    </property>
   </action>
   <action name="mActionCustomProjection">
@@ -1933,7 +1944,7 @@ Shift+O to turn segments into straight or curve lines.</string>
     <string>Keyboard Shortcuts…</string>
    </property>
    <property name="menuRole">
-    <enum>QAction::NoRole</enum>
+    <enum>QAction::MenuRole::NoRole</enum>
    </property>
   </action>
   <action name="mActionLocalHistogramStretch">
@@ -2003,7 +2014,7 @@ Shift+O to turn segments into straight or curve lines.</string>
     <string>About</string>
    </property>
    <property name="menuRole">
-    <enum>QAction::AboutRole</enum>
+    <enum>QAction::MenuRole::AboutRole</enum>
    </property>
   </action>
   <action name="mActionSponsors">
@@ -3486,7 +3497,7 @@ Shows placeholders for labels which could not be placed, e.g. due to overlaps wi
     <string>Database Query History</string>
    </property>
    <property name="menuRole">
-    <enum>QAction::NoRole</enum>
+    <enum>QAction::MenuRole::NoRole</enum>
    </property>
   </action>
   <action name="mActionManageElevationProfiles">
@@ -3506,6 +3517,60 @@ Shows placeholders for labels which could not be placed, e.g. due to overlaps wi
    </property>
    <property name="toolTip">
     <string>Copies a feature and distributes the copies at regular intervals along a reference line</string>
+   </property>
+  </action>
+  <action name="mActionModelDesigner">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/processingModel.svg</normaloff>:/images/themes/default/processingModel.svg</iconset>
+   </property>
+   <property name="text">
+    <string>&amp;Model Designer…</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Alt+G</string>
+   </property>
+  </action>
+  <action name="mActionShowProcessingToolbox">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/processingAlgorithm.svg</normaloff>:/images/themes/default/processingAlgorithm.svg</iconset>
+   </property>
+   <property name="text">
+    <string>&amp;Toolbox</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Alt+T</string>
+   </property>
+  </action>
+  <action name="mProcessingHistoryAction">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mIconHistory.svg</normaloff>:/images/themes/default/mIconHistory.svg</iconset>
+   </property>
+   <property name="text">
+    <string>&amp;History…</string>
+   </property>
+   <property name="toolTip">
+    <string>Processing history</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Alt+H</string>
+   </property>
+  </action>
+  <action name="mActionEditFeaturesInPlace">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionProcessSelected.svg</normaloff>:/images/themes/default/mActionProcessSelected.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Edit Features In-Place</string>
    </property>
   </action>
  </widget>

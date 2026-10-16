@@ -77,13 +77,6 @@ class GUI_EXPORT QgsMaterialSettingsWidget : public QgsPanelWidget
      */
     virtual void setPreviewVisible( bool visible ) = 0;
 
-  signals:
-
-    /**
-     * Emitted when the material definition is changed.
-     */
-    void changed();
-
   protected:
     /**
      * Updates the visibility of widget controls to reflect the current

@@ -21,6 +21,7 @@
 #include "qgsfeatureiterator.h"
 #include "qgsfeedback.h"
 #include "qgsgeometry.h"
+#include "qgsmessagelog.h"
 #include "qgsproject.h"
 #include "qgsrasterlayer.h"
 #include "qgsvectordataprovider.h"
@@ -31,7 +32,7 @@
 
 using namespace Qt::StringLiterals;
 
-QgsZonalStatistics::QgsZonalStatistics( QgsVectorLayer *polygonLayer, QgsRasterLayer *rasterLayer, const QString &attributePrefix, int rasterBand, Qgis::ZonalStatistics stats )
+QgsZonalStatistics::QgsZonalStatistics( QgsVectorLayer *polygonLayer, QgsRasterLayer *rasterLayer, const QString &attributePrefix, int rasterBand, Qgis::ZonalStatistics stats, bool overwriteExistingFields )
   : QgsZonalStatistics(
       polygonLayer,
       rasterLayer ? rasterLayer->dataProvider() : nullptr,
@@ -40,7 +41,8 @@ QgsZonalStatistics::QgsZonalStatistics( QgsVectorLayer *polygonLayer, QgsRasterL
       rasterLayer ? rasterLayer->rasterUnitsPerPixelY() : 0,
       attributePrefix,
       rasterBand,
-      stats
+      stats,
+      overwriteExistingFields
     )
 {}
 
@@ -52,7 +54,8 @@ QgsZonalStatistics::QgsZonalStatistics(
   double rasterUnitsPerPixelY,
   const QString &attributePrefix,
   int rasterBand,
-  Qgis::ZonalStatistics stats
+  Qgis::ZonalStatistics stats,
+  bool overwriteExistingFields
 )
   : mRasterInterface( rasterInterface )
   , mRasterCrs( rasterCrs )
@@ -62,6 +65,7 @@ QgsZonalStatistics::QgsZonalStatistics(
   , mPolygonLayer( polygonLayer )
   , mAttributePrefix( attributePrefix )
   , mStatistics( stats )
+  , mOverwriteExistingFields( overwriteExistingFields )
 {}
 
 Qgis::ZonalStatisticResult QgsZonalStatistics::calculateStatistics( QgsFeedback *feedback )
@@ -108,10 +112,25 @@ Qgis::ZonalStatisticResult QgsZonalStatistics::calculateStatistics( QgsFeedback 
   {
     if ( mStatistics & stat )
     {
-      QString fieldName = getUniqueFieldName( mAttributePrefix + QgsZonalStatistics::shortName( stat ), newFieldList );
-      QgsField field( fieldName, QMetaType::Type::Double, u"double precision"_s );
-      newFieldList.push_back( field );
-      statFieldIndexes.insert( stat, oldFieldCount + newFieldList.count() - 1 );
+      QString targetFieldName = mAttributePrefix + QgsZonalStatistics::shortName( stat );
+      int targetIndex = vectorProvider->fields().indexFromName( targetFieldName );
+
+      if ( mOverwriteExistingFields && targetIndex != -1 )
+      {
+        statFieldIndexes.insert( stat, targetIndex );
+      }
+      else
+      {
+        if ( mOverwriteExistingFields && targetIndex == -1 )
+        {
+          QgsMessageLog::logMessage( QObject::tr( "Could not find field '%1'. A new field will be created instead." ).arg( targetFieldName ), QObject::tr( "Zonal Statistics" ), Qgis::MessageLevel::Warning );
+        }
+
+        QString fieldName = getUniqueFieldName( targetFieldName, newFieldList );
+        QgsField field( fieldName, QMetaType::Type::Double, u"double precision"_s );
+        newFieldList.push_back( field );
+        statFieldIndexes.insert( stat, oldFieldCount + newFieldList.count() - 1 );
+      }
     }
   }
 
@@ -174,56 +193,48 @@ Qgis::ZonalStatisticResult QgsZonalStatistics::calculateStatistics( QgsFeedback 
 
 QString QgsZonalStatistics::getUniqueFieldName( const QString &fieldName, const QList<QgsField> &newFields )
 {
-  QgsVectorDataProvider *dp = mPolygonLayer->dataProvider();
+  QgsVectorDataProvider *provider = mPolygonLayer->dataProvider();
+  const bool isShapefile = provider->storageType().contains( "ESRI Shapefile"_L1 );
 
-  if ( !dp->storageType().contains( "ESRI Shapefile"_L1 ) )
-  {
-    return fieldName;
-  }
-
-  QList<QgsField> allFields = dp->fields().toList();
+  QList<QgsField> allFields = provider->fields().toList();
   allFields.append( newFields );
-  QString shortName = fieldName.mid( 0, 10 );
 
-  bool found = false;
-  for ( const QgsField &field : std::as_const( allFields ) )
-  {
-    if ( shortName == field.name() )
+  QString baseName = isShapefile ? fieldName.mid( 0, 10 ) : fieldName;
+
+  auto fieldExists = [&allFields]( const QString &name ) -> bool {
+    for ( const QgsField &field : std::as_const( allFields ) )
     {
-      found = true;
-      break;
+      if ( field.name().compare( name, Qt::CaseSensitivity::CaseSensitive ) == 0 )
+      {
+        return true;
+      }
     }
-  }
+    return false;
+  };
 
-  if ( !found )
+  if ( !fieldExists( baseName ) )
   {
-    return shortName;
+    return baseName;
   }
 
   int n = 1;
-  shortName = u"%1_%2"_s.arg( fieldName.mid( 0, 8 ) ).arg( n );
-  found = true;
-  while ( found )
+  QString newName;
+  while ( true )
   {
-    found = false;
-    for ( const QgsField &field : std::as_const( allFields ) )
+    if ( isShapefile )
     {
-      if ( shortName == field.name() )
-      {
-        n += 1;
-        if ( n < 9 )
-        {
-          shortName = u"%1_%2"_s.arg( fieldName.mid( 0, 8 ) ).arg( n );
-        }
-        else
-        {
-          shortName = u"%1_%2"_s.arg( fieldName.mid( 0, 7 ) ).arg( n );
-        }
-        found = true;
-      }
+      newName = u"%1_%2"_s.arg( fieldName.mid( 0, n < 9 ? 8 : 7 ) ).arg( n );
     }
+    else
+    {
+      newName = u"%1_%2"_s.arg( fieldName ).arg( n );
+    }
+
+    if ( !fieldExists( newName ) )
+      return newName;
+
+    n++;
   }
-  return shortName;
 }
 
 QString QgsZonalStatistics::displayName( Qgis::ZonalStatistic statistic )

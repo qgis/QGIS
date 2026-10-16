@@ -278,7 +278,7 @@ void QgsVectorElevationPropertiesWidget::apply()
 void QgsVectorElevationPropertiesWidget::onChanged()
 {
   if ( !mBlockUpdates )
-    emit widgetChanged();
+    emit changed();
 }
 
 void QgsVectorElevationPropertiesWidget::clampingChanged()

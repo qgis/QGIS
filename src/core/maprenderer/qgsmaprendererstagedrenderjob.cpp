@@ -122,19 +122,19 @@ bool QgsMapRendererStagedRenderJob::renderCurrentPart( QPainter *painter )
       job.previewRenderImageInitialized = true;
     }
 
-    if ( job.img )
+    if ( job.destinationImage )
     {
-      job.img->fill( 0 );
+      job.destinationImage->fill( 0 );
       job.imageInitialized = true;
     }
 
     job.completed = job.renderer->render();
 
-    if ( job.img )
+    if ( job.destinationImage )
     {
       // If we flattened this layer for alternate blend modes, composite it now
       painter->setOpacity( job.opacity );
-      painter->drawImage( 0, 0, *job.img );
+      painter->drawImage( 0, 0, *job.destinationImage );
       painter->setOpacity( 1.0 );
     }
     job.context()->setPainter( nullptr );

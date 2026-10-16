@@ -380,7 +380,9 @@ class TestLayerDependencies(QgisTestCase):
 
         self.pointsLayer.setDependencies([QgsMapLayerDependency(self.linesLayer.id())])
 
-        QgsLayerDefinition.exportLayerDefinition(tmpfile, [ltr])
+        QgsLayerDefinition.exportLayerDefinition(
+            tmpfile, [ltr], QgsProject.instance().filePathStorage()
+        )
 
         grp = ltr.addGroup("imported")
         QgsLayerDefinition.loadLayerDefinition(tmpfile, QgsProject.instance(), grp)

@@ -67,7 +67,7 @@ void QgsSettingsLocatorFilter::fetchResults( const QString &string, const QgsLoc
     QgsLocatorResult result;
     result.filter = this;
     result.displayString = title;
-    result.userData().setValue( settingsPage );
+    result.setUserData( QVariant::fromValue( settingsPage ) );
 
     if ( context.usingPrefix && string.isEmpty() )
     {
@@ -75,7 +75,7 @@ void QgsSettingsLocatorFilter::fetchResults( const QString &string, const QgsLoc
       continue;
     }
 
-    result.score = fuzzyScore( QgsStringUtils::unaccent( result.displayString ), QgsStringUtils::unaccent( string ) );
+    result.score = fuzzyScore( result.displayString, string );
 
     if ( result.score > 0 )
       emit resultFetched( result );

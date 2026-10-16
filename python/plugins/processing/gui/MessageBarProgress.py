@@ -20,11 +20,10 @@ __date__ = "April 2013"
 __copyright__ = "(C) 2013, Victor Olaya"
 
 from qgis.core import Qgis, QgsProcessingFeedback
+from qgis.gui import QgsMessageViewer
 from qgis.PyQt.QtCore import QCoreApplication, Qt
 from qgis.PyQt.QtWidgets import QProgressBar
 from qgis.utils import iface
-
-from processing.gui.MessageDialog import MessageDialog
 
 
 class MessageBarProgress(QgsProcessingFeedback):
@@ -58,13 +57,13 @@ class MessageBarProgress(QgsProcessingFeedback):
 
     def close(self):
         if self.msg:
-            dlg = MessageDialog()
+            dlg = QgsMessageViewer()
             dlg.setTitle(
                 QCoreApplication.translate(
-                    "MessageBarProgress", "Problem executing algorithm"
+                    "MessageBarProgress", "Error Executing Algorithm"
                 )
             )
-            dlg.setMessage("<br>".join(self.msg))
+            dlg.setMessage("<br>".join(self.msg), Qgis.StringFormat.Html)
             dlg.exec()
         iface.messageBar().popWidget(self.message_bar_item)
 

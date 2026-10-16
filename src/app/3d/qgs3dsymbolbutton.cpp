@@ -113,7 +113,7 @@ void Qgs3DSymbolButton::showSettingsDialog()
   if ( panel && panel->dockMode() )
   {
     widget->setDockMode( true );
-    connect( widget, &QgsPanelWidget::widgetChanged, this, [this, widget] { updateSymbolFromWidget( widget ); } );
+    connect( widget, &QgsPanelWidget::changed, this, [this, widget] { updateSymbolFromWidget( widget ); } );
     panel->openPanel( widget );
   }
   else

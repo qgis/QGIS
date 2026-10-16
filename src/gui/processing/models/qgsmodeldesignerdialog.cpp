@@ -396,10 +396,10 @@ QgsModelDesignerDialog::~QgsModelDesignerDialog()
   {
     delete mAlgorithmWidget;
   }
-  for ( const QPointer<QgsProcessingAlgorithmWidgetBase> &widget : std::as_const( mAlgorithmWidgetsToCleanUp ) )
+  for ( const QPointer<QgsProcessingAlgorithmWidget> &widget : std::as_const( mAlgorithmWidgetsToCleanUp ) )
   {
     // this is a work around for the MESSY ownership issues associated with the python subclass
-    // of QgsProcessingAlgorithmWidgetBase. We have to FORCE all widgets to be deleted prior
+    // of QgsProcessingAlgorithmWidget. We have to FORCE all widgets to be deleted prior
     // to destruction of this window, and we can't be sure that python will have actually
     // deleted the widget when we asked...
     if ( widget )
@@ -965,13 +965,13 @@ void QgsModelDesignerDialog::addInput( const QString &parameterType, const QPoin
   endUndoCommand();
 }
 
-QgsProcessingAlgorithmWidgetBase *QgsModelDesignerDialog::createExecutionWidget()
+QgsProcessingAlgorithmWidget *QgsModelDesignerDialog::createExecutionWidget()
 {
   QgsProcessingDialogFactory *dialogFactory = QgsGui::processingGuiRegistry()->dialogFactory();
   if ( !dialogFactory )
     return nullptr; // should never happen
 
-  QgsProcessingAlgorithmWidgetBase *widget = dialogFactory->createWidget( mModel->create(), false, this, QgsProcessingAlgorithmWidgetBase::WidgetFlags(), Qgis::DockableWidgetInitialState::ForceDocked );
+  QgsProcessingAlgorithmWidget *widget = dialogFactory->createWidget( mModel->create(), false, this, QgsProcessingAlgorithmWidgetBase::WidgetFlags(), Qgis::DockableWidgetInitialState::ForceDocked );
   if ( !widget )
     return nullptr; // should never happen
 
@@ -1476,7 +1476,7 @@ void QgsModelDesignerDialog::cancelRunningModel()
   if ( mAlgorithmWidget )
   {
     // this is a work around for the MESSY ownership issues associated with the python subclass
-    // of QgsProcessingAlgorithmWidgetBase. We have to FORCE all widgets to be deleted prior
+    // of QgsProcessingAlgorithmWidget. We have to FORCE all widgets to be deleted prior
     // to destruction of this window, and we can't be sure that python will have actually
     // deleted the widget when we asked...
     mAlgorithmWidgetsToCleanUp << mAlgorithmWidget;
@@ -1570,7 +1570,7 @@ void QgsModelDesignerDialog::run( const QSet<QString> &childAlgorithmSubset )
     if ( mAlgorithmWidget )
     {
       // this is a work around for the MESSY ownership issues associated with the python subclass
-      // of QgsProcessingAlgorithmWidgetBase. We have to FORCE all widgets to be deleted prior
+      // of QgsProcessingAlgorithmWidget. We have to FORCE all widgets to be deleted prior
       // to destruction of this window, and we can't be sure that python will have actually
       // deleted the widget when we asked...
       mAlgorithmWidgetsToCleanUp << mAlgorithmWidget;
