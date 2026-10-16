@@ -355,9 +355,10 @@ class EditModelContextAction : public QgsProcessingToolboxContextAction
         return;
 
       std::unique_ptr< QgsProcessingModelAlgorithm > newModel( qgis::down_cast< QgsProcessingModelAlgorithm * >( modelAlgorithm->create() ) );
+      newModel->setSourceFilePath( modelAlgorithm->sourceFilePath() );
 
       auto dlg = new QgsModelDesignerDialog();
-      dlg->loadModel( modelAlgorithm->sourceFilePath() );
+      dlg->setModel( newModel.release() );
 
       QObject::connect( dlg, &QgsModelDesignerDialog::modelUpdated, dlg, [] { QgsApplication::processingRegistry()->providerById( QgsProcessing::MODEL_PROVIDER_ID )->refreshAlgorithms(); } );
       dlg->show();
