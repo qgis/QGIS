@@ -7048,6 +7048,10 @@ void QgisApp::dxfExport()
       case QgsDxfExport::ExportResult::EmptyExtentError:
         visibleMessageBar()->pushMessage( tr( "DXF export" ), tr( "DXF export failed, the extent could not be determined" ), Qgis::MessageLevel::Critical );
         break;
+
+      case QgsDxfExport::ExportResult::InvalidEncodingError:
+        visibleMessageBar()->pushMessage( tr( "DXF export" ), tr( "DXF export failed, the encoding \"%1\" is not supported" ).arg( d.encoding() ), Qgis::MessageLevel::Critical );
+        break;
     }
     QApplication::restoreOverrideCursor();
   }
