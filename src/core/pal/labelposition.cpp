@@ -289,7 +289,7 @@ bool LabelPosition::isInConflict( const LabelPosition *lp ) const
       {
         try
         {
-#if GEOS_VERSION_MAJOR > 3 || ( GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR >= 10 )
+#if GEOS_VERSION_NUM >= GEOS_MAKE_VERSION( 3, 10, 0 )
           if ( GEOSPreparedDistanceWithin_r( geosctxt, lp->preparedOuterBoundsGeom() ? lp->preparedOuterBoundsGeom() : lp->preparedGeom(), mOuterBoundsGeos ? mOuterBoundsGeos.get() : mGeos, minDuplicateSeparation ) )
           {
             return true;
@@ -348,7 +348,7 @@ bool LabelPosition::isInConflictMultiPart( const LabelPosition *lp ) const
 
     try
     {
-#if GEOS_VERSION_MAJOR > 3 || ( GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR >= 10 )
+#if GEOS_VERSION_NUM >= GEOS_MAKE_VERSION( 3, 10, 0 )
       if ( GEOSPreparedDistanceWithin_r( geosctxt, preparedMultiPartGeom(), lp->multiPartGeom(), minSeparation ) )
       {
         return true;
@@ -418,7 +418,7 @@ void LabelPosition::createOuterBoundsGeom()
   mOuterBoundsY[4] = mOuterBoundsY[0];
 
   GEOSCoordSequence *coord = nullptr;
-#if GEOS_VERSION_MAJOR > 3 || ( GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR >= 10 )
+#if GEOS_VERSION_NUM >= GEOS_MAKE_VERSION( 3, 10, 0 )
   // use optimised method if we don't have to force close an open ring
   coord = GEOSCoordSeq_copyFromArrays_r( geosctxt, mOuterBoundsX.data(), mOuterBoundsY.data(), nullptr, nullptr, 5 );
 #else
