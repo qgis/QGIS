@@ -2189,6 +2189,23 @@ class CORE_EXPORT QgsGeometry
     QgsGeometry cleanCoverage( const QgsCoverageCleanParameters &parameters, QgsFeedback *feedback = nullptr ) const SIP_THROW( QgsNotSupportedException );
 
     /**
+     * Operates on a coverage (represented as a list of polygonal geometry with exactly matching edge geometry) to extract unique edges.
+     *
+     * The input is a collection of polygons, and the output is a multi linestring containing all unique edges from the polygonal coverage.
+     *
+     * The optional \a feedback argument supports early cancellation of the operation.
+     *
+     * This method requires a QGIS build based on GEOS 3.15 or later.
+     *
+     * \throws QgsNotSupportedException on QGIS builds based on GEOS 3.14 or earlier.
+     * \see validateCoverage()
+     * \since QGIS 4.4
+     */
+    QgsGeometry extractCoverageEdges(
+        Qgis::CoverageEdgeType edgeType = Qgis::CoverageEdgeType::AllEdges, QgsFeedback *feedback = nullptr
+        ) const SIP_THROW( QgsNotSupportedException );
+
+    /**
      * Returns a (Multi)LineString representing the fully noded version of a collection of linestrings.
      *
      * The noding preserves all of the input nodes, and introduces the least possible number of new nodes.
