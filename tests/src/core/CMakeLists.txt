@@ -79,6 +79,7 @@ set(TESTS
  testqgsfilledmarker.cpp
  testqgsfontmarker.cpp
  testqgsfontutils.cpp
+ testqgsfutureutils.cpp
  testqgsgdalcloudconnection.cpp
  testqgsgdalprovider.cpp
  testqgsgdalutils.cpp
