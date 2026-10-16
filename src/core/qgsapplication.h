@@ -396,6 +396,33 @@ class CORE_EXPORT QgsApplication : public QApplication
   static QStringList svgPaths();
 
   /**
+   * Sets the paths to project templates.
+   *
+   * \see projectTemplatePaths()
+   * \see defaultProjectTemplatePaths()
+   * \since QGIS 4.4
+   */
+  static void setProjectTemplatePaths(const QStringList &projectTemplatePaths);
+
+  /**
+   * Returns the paths to project templates.
+   *
+   * \see setProjectTemplatePaths()
+   * \see defaultProjectTemplatePaths()
+   * \since QGIS 4.4
+   */
+  static QStringList projectTemplatePaths();
+
+  /**
+   * Returns the default project template paths.
+   *
+   * \see setProjectTemplatePaths()
+   * \see projectTemplatePaths()
+   * \since QGIS 4.4
+   */
+  static QStringList defaultProjectTemplatePaths();
+
+  /**
    * Returns the paths to layout template directories.
    */
   static QStringList layoutTemplatePaths();
@@ -1287,6 +1314,8 @@ class CORE_EXPORT QgsApplication : public QApplication
   static const QgsSettingsEntryBool *settingsLocaleShowGroupSeparator;
   //! Settings entry search path for SVG
   static const QgsSettingsEntryStringList *settingsSearchPathsForSVG;
+  //! Settings entry search path for project templates
+  static const QgsSettingsEntryStringList *settingsProjectTemplatePaths;
 
   /**
    * Settings entry to configure the maximum number of concurrent connections
