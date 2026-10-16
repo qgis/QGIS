@@ -914,6 +914,7 @@ std::vector< LayerRenderJob > QgsMapRendererJob::prepareSecondPassJobs( std::vec
 
   // determine upfront if a label mask requires raster rendering
   QMap<int, bool> labelMaskRequiresRaster;
+  QMap<QString, bool> layerMaskRequiresRaster;
   for ( auto it = maskedSymbolLayers.constBegin(); it != maskedSymbolLayers.constEnd(); ++it )
   {
     const QString maskedLayerId = it.key();
@@ -928,6 +929,11 @@ std::vector< LayerRenderJob > QgsMapRendererJob::prepareSecondPassJobs( std::vec
       {
         if ( labelHasEffects[source.labelMaskId] || sourceRequiresRaster )
           labelMaskRequiresRaster[source.labelMaskId] = true;
+      }
+      else
+      {
+        if ( maskLayerHasEffects.value( source.layerId, false ) || sourceRequiresRaster )
+          layerMaskRequiresRaster[source.layerId] = true;
       }
     }
   }
@@ -1124,7 +1130,8 @@ std::vector< LayerRenderJob > QgsMapRendererJob::prepareSecondPassJobs( std::vec
           job.maskRenderFormat = Qgis::RenderFormat::Raster;
           break;
         case Qgis::RasterizedRenderingPolicy::PreferVector:
-          job.maskRenderFormat = mapSettings().testFlag( Qgis::MapSettingsFlag::ForceRasterMasks ) || maskLayerHasEffects[job.layerId] ? Qgis::RenderFormat::Raster : Qgis::RenderFormat::Vector;
+          job.maskRenderFormat = mapSettings().testFlag( Qgis::MapSettingsFlag::ForceRasterMasks ) || layerMaskRequiresRaster.value( job.layerId, false ) ? Qgis::RenderFormat::Raster
+                                                                                                                                                          : Qgis::RenderFormat::Vector;
           break;
         case Qgis::RasterizedRenderingPolicy::ForceVector:
           job.maskRenderFormat = mapSettings().testFlag( Qgis::MapSettingsFlag::ForceRasterMasks ) ? Qgis::RenderFormat::Raster : Qgis::RenderFormat::Vector;
