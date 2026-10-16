@@ -494,6 +494,9 @@ void QgsModelDesignerDialog::setModel( QgsProcessingModelAlgorithm *model )
   repaintModel( true );
   updateVariablesGui();
 
+  const QString modelQgisVersion = mModel->modelQgisVersion();
+  handleVersionMismatch( modelQgisVersion );
+
   setDirty( false );
 
   mIgnoreUndoStackChanges++;
@@ -515,10 +518,8 @@ void QgsModelDesignerDialog::loadModel( const QString &path )
     alg->setProvider( QgsApplication::processingRegistry()->providerById( QgsProcessing::MODEL_PROVIDER_ID ) );
     alg->setSourceFilePath( path );
 
-    const QString modelQgisVersion = alg->modelQgisVersion();
-    setModel( alg.release() );
 
-    handleVersionMismatch( modelQgisVersion );
+    setModel( alg.release() );
   }
   else
   {

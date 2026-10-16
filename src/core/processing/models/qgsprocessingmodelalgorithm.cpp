@@ -1814,7 +1814,7 @@ QVariant QgsProcessingModelAlgorithm::toVariant() const
   map.insert( u"model_group"_s, mModelGroup );
   map.insert( u"help"_s, mHelpContent );
   map.insert( u"internal_version"_s, qgsEnumValueToKey( mInternalVersion ) );
-  map.insert( u"qgis_version"_s, Qgis::version() );
+  map.insert( u"qgis_version"_s, mModelQgisVersion );
 
   QVariantMap childMap;
   QMap< QString, QgsProcessingModelChildAlgorithm >::const_iterator childIt = mChildAlgorithms.constBegin();
@@ -2001,7 +2001,9 @@ void QgsProcessingModelAlgorithm::reattachAlgorithms() const
 bool QgsProcessingModelAlgorithm::toFile( const QString &path ) const
 {
   QDomDocument doc = QDomDocument( u"model"_s );
-  QDomElement elem = QgsXmlUtils::writeVariant( toVariant(), doc );
+  QVariantMap map = toVariant().toMap();
+  map.insert( u"qgis_version"_s, Qgis::version() );
+  QDomElement elem = QgsXmlUtils::writeVariant( map, doc );
   doc.appendChild( elem );
 
   QFile file( path );
