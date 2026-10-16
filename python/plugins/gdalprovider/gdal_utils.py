@@ -76,13 +76,14 @@ class GdalConnectionDetails:
     credential_options: Optional[dict] = None
     geometry_column_name: Optional[str] = None
 
-    def open_options_as_arguments(self) -> list[str]:
+    def open_options_as_arguments(self, new_api: bool = False) -> list[str]:
         """
         Returns any open options as a list of arguments
         """
+        flag = "--oo" if new_api else "-oo"
         res = []
         for option in self.open_options:
-            res.append(f"-oo {option}")
+            res.append(f"{flag} {option}")
 
         return res
 
@@ -630,11 +631,15 @@ class GdalUtils:
         return name
 
     @staticmethod
-    def parseCreationOptions(value):
+    def parseCreationOptions(value, new_api: bool = False):
+        """
+        Parses a "|" separated list of creation options into a list of arguments.
+        """
+        flag = "--co" if new_api else "-co"
         parts = value.split("|")
         options = []
         for p in parts:
-            options.extend(["-co", p])
+            options.extend([flag, p])
         return options
 
     @staticmethod
