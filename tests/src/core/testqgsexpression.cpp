@@ -943,6 +943,7 @@ class TestQgsExpression : public QObject
       QTest::newRow( "make_time(12,9,8) = make_time(12,9,9)" ) << "make_time(12,9,8) = make_time(12,9,9)" << false << QVariant( 0 );
       QTest::newRow( "make_time(12,9,8) != make_time(12,9,9)" ) << "make_time(12,9,8) != make_time(12,9,9)" << false << QVariant( 1 );
       QTest::newRow( "make_time(12,9,8) != make_time(12,9,8)" ) << "make_time(12,9,8) != make_time(12,9,8)" << false << QVariant( 0 );
+
       QTest::newRow( "make_datetime(2012,3,4,12,9,8) < make_datetime(2012,3,4,12,9,9)" ) << "make_datetime(2012,3,4,12,9,8) < make_datetime(2012,3,4,12,9,9)" << false << QVariant( 1 );
       QTest::newRow( "make_datetime(2012,3,4,12,9,8) > make_datetime(2012,3,4,12,9,9)" ) << "make_datetime(2012,3,4,12,9,8) > make_datetime(2012,3,4,12,9,9)" << false << QVariant( 0 );
       QTest::newRow( "make_datetime(2012,3,4,12,9,9) > make_datetime(2012,3,4,12,9,8)" ) << "make_datetime(2012,3,4,12,9,9) > make_datetime(2012,3,4,12,9,8)" << false << QVariant( 1 );
@@ -951,6 +952,34 @@ class TestQgsExpression : public QObject
       QTest::newRow( "make_datetime(2012,3,4,12,9,8) = make_datetime(2012,3,4,12,9,9)" ) << "make_datetime(2012,3,4,12,9,8) = make_datetime(2012,3,4,12,9,9)" << false << QVariant( 0 );
       QTest::newRow( "make_datetime(2012,3,4,12,9,8) != make_datetime(2012,3,4,12,9,9)" ) << "make_datetime(2012,3,4,12,9,8) != make_datetime(2012,3,4,12,9,9)" << false << QVariant( 1 );
       QTest::newRow( "make_datetime(2012,3,4,12,9,8) != make_datetime(2012,3,4,12,9,8)" ) << "make_datetime(2012,3,4,12,9,8) != make_datetime(2012,3,4,12,9,8)" << false << QVariant( 0 );
+
+      // date / time / datetime comparisons with implicit string to date/time/datetime conversion
+      QTest::newRow( "make_datetime(2012,3,4,12,9,8) = '2012-03-04T12:09:08'" ) << "make_datetime(2012,3,4,12,9,8) = '2012-03-04T12:09:08'" << false << QVariant( 1 );
+      QTest::newRow( "make_datetime(2012,3,4,12,9,8) = '2012-03-05T12:09:08'" ) << "make_datetime(2012,3,4,12,9,8) = '2012-03-05T12:09:08'" << false << QVariant( 0 );
+      QTest::newRow( "make_datetime(2012,3,4,12,9,8) = 'not a date'" ) << "make_datetime(2012,3,4,12,9,8) = 'not a date'" << true << QVariant();
+      QTest::newRow( "'2012-03-04T12:09:08' = make_datetime(2012,3,4,12,9,8)" ) << "'2012-03-04T12:09:08' = make_datetime(2012,3,4,12,9,8)" << false << QVariant( 1 );
+      QTest::newRow( "'2012-03-05T12:09:08' = make_datetime(2012,3,4,12,9,8)" ) << "'2012-03-05T12:09:08' = make_datetime(2012,3,4,12,9,8)" << false << QVariant( 0 );
+      QTest::newRow( "'not a date' = make_datetime(2012,3,4,12,9,8)" ) << "'not a date' = make_datetime(2012,3,4,12,9,8)" << true << QVariant();
+
+      // string dates in ISO format without T to be tolerant
+      QTest::newRow( "make_datetime(2012,3,4,12,9,8) = '2012-03-04 12:09:08'" ) << "make_datetime(2012,3,4,12,9,8) = '2012-03-04 12:09:08'" << false << QVariant( 1 );
+      QTest::newRow( "make_datetime(2012,3,4,12,9,8) = '2012-03-05 12:09:08'" ) << "make_datetime(2012,3,4,12,9,8) = '2012-03-05 12:09:08'" << false << QVariant( 0 );
+      QTest::newRow( "'2012-03-04 12:09:08' = make_datetime(2012,3,4,12,9,8)" ) << "'2012-03-04 12:09:08' = make_datetime(2012,3,4,12,9,8)" << false << QVariant( 1 );
+      QTest::newRow( "'2012-03-05 12:09:08' = make_datetime(2012,3,4,12,9,8)" ) << "'2012-03-05 12:09:08' = make_datetime(2012,3,4,12,9,8)" << false << QVariant( 0 );
+
+      QTest::newRow( "make_date(2012,3,4) = '2012-03-04'" ) << "make_date(2012,3,4) = '2012-03-04'" << false << QVariant( 1 );
+      QTest::newRow( "make_date(2012,3,4) = '2012-03-05'" ) << "make_date(2012,3,4) = '2012-03-05'" << false << QVariant( 0 );
+      QTest::newRow( "make_date(2012,3,4) = 'not a date'" ) << "make_date(2012,3,4) = 'not a date'" << true << QVariant();
+      QTest::newRow( "'2012-03-04' = make_date(2012,3,4)" ) << "'2012-03-04' = make_date(2012,3,4)" << false << QVariant( 1 );
+      QTest::newRow( "'2012-03-05' = make_date(2012,3,4)" ) << "'2012-03-05' = make_date(2012,3,4)" << false << QVariant( 0 );
+      QTest::newRow( "'not a date' = make_date(2012,3,4)" ) << "'not a date' = make_date(2012,3,4)" << true << QVariant();
+
+      QTest::newRow( "make_time(12,9,8) = '12:09:08'" ) << "make_time(12,9,8) = '12:09:08'" << false << QVariant( 1 );
+      QTest::newRow( "make_time(12,9,8) = '12:09:09'" ) << "make_time(12,9,8) = '12:09:09'" << false << QVariant( 0 );
+      QTest::newRow( "make_time(12,9,8) = 'not a time'" ) << "make_time(12,9,8) = 'not a time'" << true << QVariant();
+      QTest::newRow( "'12:09:08' = make_time(12,9,8)" ) << "'12:09:08' = make_time(12,9,8)" << false << QVariant( 1 );
+      QTest::newRow( "'12:09:09' = make_time(12,9,8)" ) << "'12:09:09' = make_time(12,9,8)" << false << QVariant( 0 );
+      QTest::newRow( "'not a time' = make_time(12,9,8)" ) << "'not a time' = make_time(12,9,8)" << true << QVariant();
 
       // is, is not
       QTest::newRow( "is null,null" ) << "null is null" << false << QVariant( 1 );
