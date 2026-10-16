@@ -214,7 +214,7 @@ QgsRasterBlock *QgsRasterResampleFilter::block( int bandNo, QgsRectangle const &
   // limit the size of the resampled image to avoid excessive memory usage
   // this only applies to very small extents where ratio of bufferExtent to extent is large
   // if more then two times larger than the original size, skip oversampling and return the original block
-  constexpr double MAX_RESAMPLED_RATIO = 2.0;
+  constexpr double MAX_RESAMPLED_RATIO = 4.0;
   if ( resampleWidth > width * MAX_RESAMPLED_RATIO || resampleHeight > height * MAX_RESAMPLED_RATIO )
   {
     QgsDebugMsgLevel( u"Resampled image too large no oversampling."_s, 4 );
