@@ -19,6 +19,7 @@
 #include "qgspointcloudlayersaveasdialog.h"
 
 #include "qgsdatums.h"
+#include "qgsfileutils.h"
 #include "qgsgui.h"
 #include "qgsmapcanvas.h"
 #include "qgsmaplayerutils.h"
@@ -435,6 +436,14 @@ void QgsPointCloudLayerSaveAsDialog::mCrsSelector_crsChanged( const QgsCoordinat
 QString QgsPointCloudLayerSaveAsDialog::filename() const
 {
   return mFilename->filePath();
+}
+
+void QgsPointCloudLayerSaveAsDialog::setFilename( const QString &filename )
+{
+  if ( !mFilename->isEnabled() )
+    return;
+
+  mFilename->setFilePath( QgsFileUtils::ensureFileNameHasExtension( filename, QgsFileUtils::extensionsFromFilter( mFilename->filter() ) ) );
 }
 
 QString QgsPointCloudLayerSaveAsDialog::layername() const
