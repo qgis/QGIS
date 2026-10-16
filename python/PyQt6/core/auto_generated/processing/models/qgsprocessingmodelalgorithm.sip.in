@@ -471,6 +471,17 @@ document.
 .. versionadded:: 3.4
 %End
 
+    QString &modelQgisVersion();
+%Docstring
+Returns the QGIS version the model was originally created (or last
+saved) in.
+
+If the model was saved in QGIS versions prior to 4.4, this version will
+default to 0.0.0.
+
+.. versionadded:: 4.4
+%End
+
     QVariantMap &helpContent();
 %Docstring
 Returns the model's help contents (a free-form map of values describing
@@ -679,6 +690,11 @@ camel case string.
 
 .. versionadded:: 3.26
 %End
+
+
+
+
+
 
 
   protected:
