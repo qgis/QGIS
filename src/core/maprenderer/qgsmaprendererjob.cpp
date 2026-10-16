@@ -920,7 +920,7 @@ std::vector< LayerRenderJob > QgsMapRendererJob::prepareSecondPassJobs( std::vec
     LayerRenderJob *targetJob = layerJobMapping.value( maskedLayerId );
 
     // check if target layer itself forces rasterization
-    const bool targetForcesRaster = ( targetJob->renderer && targetJob->renderer->forceRasterRender() ) || ( targetJob->blendMode != QPainter::CompositionMode_SourceOver );
+    const bool targetForcesRaster = !targetJob || ( targetJob->renderer && targetJob->renderer->forceRasterRender() ) || ( targetJob->blendMode != QPainter::CompositionMode_SourceOver );
     for ( const MaskSource &source : it->maskSourceList )
     {
       bool sourceRequiresRaster = source.hasEffects || targetForcesRaster;
