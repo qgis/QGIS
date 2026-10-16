@@ -16,14 +16,15 @@
 #include "qgspointlocatorinittask.h"
 
 #include "qgspointlocator.h"
-#include "qgsvectorlayer.h"
+#include "qgspointlocatorsource.h"
 
 #include "moc_qgspointlocatorinittask.cpp"
 
 /// @cond PRIVATE
 
 QgsPointLocatorInitTask::QgsPointLocatorInitTask( QgsPointLocator *loc )
-  : QgsTask( tr( "Indexing %1" ).arg( loc->layer()->id() ), QgsTask::Silent )
+  // the source id (not loc->layer()->id(), which is null for a non-vector layer such as annotation)
+  : QgsTask( tr( "Indexing %1" ).arg( loc->source() ? loc->source()->id() : QString() ), QgsTask::Silent )
   , mLoc( loc )
 {}
 
