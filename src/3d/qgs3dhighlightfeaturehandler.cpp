@@ -20,15 +20,18 @@
 #include "qgs3dsymbolregistry.h"
 #include "qgsabstract3dengine.h"
 #include "qgsapplication.h"
+#include "qgscategorized3drenderer.h"
 #include "qgsexpressioncontextutils.h"
 #include "qgsfeature3dhandler_p.h"
 #include "qgsframegraph.h"
 #include "qgshighlightsrenderview.h"
 #include "qgspointcloudlayer3drenderer.h"
 #include "qgsrubberband3d.h"
+#include "qgsvariantutils.h"
 #include "qgsvectorlayer.h"
 #include "qgsvectorlayer3drenderer.h"
 
+#include <QSet>
 #include <QString>
 #include <QTimer>
 
@@ -46,6 +49,13 @@ Qgs3DHighlightFeatureHandler::~Qgs3DHighlightFeatureHandler()
   for ( auto it = mHighlightRuleBasedHandlers.constBegin(); it != mHighlightRuleBasedHandlers.constEnd(); ++it )
   {
     qDeleteAll( it.value() );
+  }
+  for ( auto it = mHighlightCategorizedHandlers.constBegin(); it != mHighlightCategorizedHandlers.constEnd(); ++it )
+  {
+    QSet<QgsFeature3DHandler *> uniqueHandlers;
+    for ( QgsFeature3DHandler *handler : it.value() )
+      uniqueHandlers.insert( handler );
+    qDeleteAll( uniqueHandlers );
   }
 }
 
@@ -145,9 +155,73 @@ void Qgs3DHighlightFeatureHandler::highlightFeature( QgsFeature feature, QgsMapL
 
         rootRule->registerFeature( feature, renderContext, mHighlightRuleBasedHandlers[layer] );
       }
+      else if ( renderer->type() == "categorized"_L1 )
+      {
+        QgsCategorized3DRenderer *categorizedRenderer = static_cast<QgsCategorized3DRenderer *>( renderer );
+        if ( !mHighlightCategorizedHandlers.contains( layer ) )
+        {
+          QHash<QString, QgsFeature3DHandler *> handlersHash;
+          const QgsGeometry geom = feature.geometry();
+          // We want to ignore the geometry's elevation and use a box with symmetric +Z/-Z extents so the chunk origin has Z == 0.
+          QgsBox3D box = geom.boundingBox().toBox3d( 0, 0 );
+          QSet<QString> attributeNames;
+
+          for ( const Qgs3DRendererCategory &category : categorizedRenderer->categories() )
+          {
+            if ( !category.renderState() || !category.symbol() )
+              continue;
+
+            std::unique_ptr<QgsFeature3DHandler> handler( QgsApplication::symbol3DRegistry()->createHandlerForSymbol( vLayer, category.symbol() ) );
+            if ( !handler )
+              continue;
+
+            handler->prepare( renderContext, attributeNames, box );
+
+            const QVariant value = category.value();
+            if ( value.userType() == QMetaType::Type::QVariantList )
+            {
+              const QVariantList variantList = value.toList();
+              if ( variantList.isEmpty() )
+                continue;
+
+              QgsFeature3DHandler *handlerPtr = handler.release();
+              for ( const QVariant &listElt : variantList )
+              {
+                handlersHash.insert( listElt.toString(), handlerPtr );
+              }
+            }
+            else
+            {
+              QgsFeature3DHandler *handlerPtr = handler.release();
+              handlersHash.insert( QgsVariantUtils::isNull( value ) ? QString() : value.toString(), handlerPtr );
+            }
+          }
+          mHighlightCategorizedHandlers[layer] = handlersHash;
+        }
+
+        QVariant value;
+        int attrIdx = vLayer->fields().lookupField( categorizedRenderer->classAttribute() );
+        if ( attrIdx == -1 )
+        {
+          QgsExpression expr( categorizedRenderer->classAttribute() );
+          expr.prepare( &exprContext );
+          value = expr.evaluate( &exprContext );
+        }
+        else
+        {
+          value = feature.attributes().value( attrIdx );
+        }
+
+        QString valueStr = QgsVariantUtils::isNull( value ) ? QString() : value.toString();
+        auto handlerIt = mHighlightCategorizedHandlers[layer].constFind( valueStr );
+        if ( handlerIt != mHighlightCategorizedHandlers[layer].constEnd() )
+        {
+          ( *handlerIt )->processFeature( feature, renderContext );
+        }
+      }
 
       // We'll use a singleshot timer to handle the entity creation, it will be served once we stop receiving highlighted features
-      if ( !mHighlightHandlerTimer && ( !mHighlightHandlers.isEmpty() || !mHighlightRuleBasedHandlers.isEmpty() ) )
+      if ( !mHighlightHandlerTimer && ( !mHighlightHandlers.isEmpty() || !mHighlightRuleBasedHandlers.isEmpty() || !mHighlightCategorizedHandlers.isEmpty() ) )
       {
         mHighlightHandlerTimer = std::make_unique<QTimer>();
         mHighlightHandlerTimer->setSingleShot( true );
@@ -172,6 +246,26 @@ void Qgs3DHighlightFeatureHandler::highlightFeature( QgsFeature feature, QgsMapL
             for ( auto handlersIt = rulesIt.value().constBegin(); handlersIt != rulesIt.value().constEnd(); ++handlersIt )
             {
               QgsFeature3DHandler *handler = handlersIt.value();
+              handler->setHighlightingEnabled( true );
+              handler->finalize( entity, renderContext );
+            }
+
+            finalizeAndAddToScene( entity );
+          }
+
+          for ( auto catIt = mHighlightCategorizedHandlers.constBegin(); catIt != mHighlightCategorizedHandlers.constEnd(); ++catIt )
+          {
+            Qgs3DMapSceneEntity *entity = new Qgs3DMapSceneEntity( mScene->mapSettings(), nullptr );
+            entity->setObjectName( u"%1_highlight"_s.arg( catIt.key()->name() ) );
+
+            QSet<QgsFeature3DHandler *> uniqueHandlers;
+            for ( QgsFeature3DHandler *handler : catIt.value() )
+            {
+              uniqueHandlers.insert( handler );
+            }
+
+            for ( QgsFeature3DHandler *handler : std::as_const( uniqueHandlers ) )
+            {
               handler->setHighlightingEnabled( true );
               handler->finalize( entity, renderContext );
             }
@@ -246,6 +340,14 @@ void Qgs3DHighlightFeatureHandler::clearHighlights()
     qDeleteAll( it.value() );
   }
   mHighlightRuleBasedHandlers.clear();
+  for ( auto it = mHighlightCategorizedHandlers.constBegin(); it != mHighlightCategorizedHandlers.constEnd(); ++it )
+  {
+    QSet<QgsFeature3DHandler *> uniqueHandlers;
+    for ( QgsFeature3DHandler *handler : it.value() )
+      uniqueHandlers.insert( handler );
+    qDeleteAll( uniqueHandlers );
+  }
+  mHighlightCategorizedHandlers.clear();
   // vector layer highlights
   for ( Qt3DCore::QEntity *e : std::as_const( mHighlightEntities ) )
   {
