@@ -1465,6 +1465,57 @@ class QgsServerAPITest(QgsServerAPITestBase):
             "MULTIPOINT ((806732 5592286))",
         )
 
+        # Valid request with a geometry not in OGC:CRS84 but in the same CRS as the source layer
+        data = b"""{
+        "geometry": {
+            "coordinates": [[
+            801010,
+            5592333
+            ]],
+            "type": "MultiPoint"
+        },
+        "properties": {
+            "text_1": "Text 1",
+            "text_2": "Text 2",
+            "int_1": 123,
+            "float_1": 12345.678,
+            "datetime_1": "2019-11-07T12:34:56",
+            "date_1": "2019-11-07",
+            "blob_1": "dGVzdA==",
+            "bool_1": true
+        },
+        "type": "Feature"
+        }"""
+
+        encoded_crs = parse.quote("http://www.opengis.net/def/crs/EPSG/0/3857", safe="")
+        request = QgsBufferServerRequest(
+            f"http://server.qgis.org/wfs3/collections/{insert_layer}/items?crs={encoded_crs}",
+            QgsBufferServerRequest.PostMethod,
+            {"Content-Type": "application/geo+json"},
+            data,
+        )
+        response = QgsBufferServerResponse()
+        self.server.handleRequest(request, response, project)
+        self.assertEqual(response.statusCode(), 201)
+        self.assertEqual(response.body(), '"string"')
+        # Get last feature
+        req = QgsFeatureRequest()
+        order_by_clause = QgsFeatureRequest.OrderByClause("$id", False)
+        req.setOrderBy(QgsFeatureRequest.OrderBy([order_by_clause]))
+        feature = next(
+            project.mapLayersByName("test layer èé 3857 published insert")[
+                0
+            ].getFeatures(req)
+        )
+        self.assertEqual(
+            response.headers()["Location"],
+            f"http://server.qgis.org/wfs3/collections/{insert_layer}/items/{feature.id()}",
+        )
+        self.assertEqual(
+            re.sub(r"\.\d+", "", feature.geometry().asWkt().upper()),
+            "MULTIPOINT ((801010 5592333))",
+        )
+
     def test_wfs3_collection_items_put(self):
         """Test WFS3 API items PUT"""
 
@@ -1617,6 +1668,40 @@ class QgsServerAPITest(QgsServerAPITestBase):
         self.assertEqual(
             re.sub(r"\.\d+", "", feature.geometry().asWkt().upper()),
             "MULTIPOINT ((918051 5750592))",
+        )
+
+        # Update feature with a modified geometry not in OGC:CRS84 but in the same CRS as the source layer
+        data = b"""{
+        "geometry": {
+            "coordinates": [[
+            902000,
+            5750592
+            ]],
+            "type": "MultiPoint"
+        },
+        "properties": {},
+        "type": "Feature"
+        }"""
+
+        encoded_crs = parse.quote("http://www.opengis.net/def/crs/EPSG/0/3857", safe="")
+        request = QgsBufferServerRequest(
+            f"http://server.qgis.org/wfs3/collections/{update_layer}/items/1?crs={encoded_crs}",
+            QgsBufferServerRequest.PutMethod,
+            {"Content-Type": "application/geo+json"},
+            data,
+        )
+        response = QgsBufferServerResponse()
+        self.server.handleRequest(request, response, project)
+        self.assertEqual(response.statusCode(), 200)
+        j = json.loads(bytes(response.body()).decode("utf8"))
+        self.assertEqual(j["geometry"]["coordinates"], [[902000, 5750592]])
+
+        feature = project.mapLayersByName("test layer èé 3857 published update")[
+            0
+        ].getFeature(1)
+        self.assertEqual(
+            re.sub(r"\.\d+", "", feature.geometry().asWkt().upper()),
+            "MULTIPOINT ((902000 5750592))",
         )
 
         # Try to update a forbidden (unpublished) field

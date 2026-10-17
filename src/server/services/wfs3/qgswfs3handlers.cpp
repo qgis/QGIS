@@ -3395,10 +3395,11 @@ void QgsWfs3CollectionsFeatureHandler::handleRequest( const QgsServerApiContext 
         QgsAttributeMap changedMap;
         QgsGeometryMap changedGeometries;
 
+        QgsGeometry geom { feat.geometry() };
+
         // Transform geometry
         if ( mapLayer->crs() != requestedCrs )
         {
-          QgsGeometry geom { feat.geometry() };
           try
           {
             geom.transform( QgsCoordinateTransform( requestedCrs, mapLayer->crs(), context.project()->transformContext() ) );
@@ -3407,8 +3408,8 @@ void QgsWfs3CollectionsFeatureHandler::handleRequest( const QgsServerApiContext 
           {
             throw QgsServerApiInternalServerError( u"Geometry could not be transformed to destination CRS"_s );
           }
-          changedGeometries.insert( feature.id(), geom );
         }
+        changedGeometries.insert( feature.id(), geom );
 
         // Process attributes
         try
