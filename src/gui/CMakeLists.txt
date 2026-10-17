@@ -635,6 +635,7 @@ set(QGIS_GUI_SRCS
   qgsdataitemguiproviderregistry.cpp
   qgsdataitemguiproviderutils.cpp
   qgsdatasourceselectdialog.cpp
+  qgsdatetimewithtimezonewidget.cpp
   qgsdbimportvectorlayerdialog.cpp
   qgsdbqueryhistoryprovider.cpp
   qgsdbrelationshipwidget.cpp
@@ -909,6 +910,7 @@ set(QGIS_GUI_HDRS
   qgsdataitemguiproviderutils.h
   qgsdatasourcemanagerdialog.h
   qgsdatasourceselectdialog.h
+  qgsdatetimewithtimezonewidget.h
   qgsdbimportvectorlayerdialog.h
   qgsdbqueryhistoryprovider.h
   qgsdbrelationshipwidget.h
