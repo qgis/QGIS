@@ -593,7 +593,7 @@ class TestQgsExpression : public QObject
       config.insert( u"map"_s, map );
       layer.setEditorWidgetSetup( 0, QgsEditorWidgetSetup( u"ValueMap"_s, config ) );
 
-      QgsExpressionContext context( { QgsExpressionContextUtils::layerScope( &layer ) } );
+      QgsExpressionContext context( QgsExpressionContextUtils::layerScope( &layer ) );
       context.setFeature( f2 );
       QgsExpression expression( "represent_attributes()" );
 
@@ -608,7 +608,7 @@ class TestQgsExpression : public QObject
       QCOMPARE( result.value( u"col1"_s ).toString(), u"two"_s );
       QCOMPARE( result.value( u"col2"_s ).toString(), u"test2"_s );
 
-      QgsExpressionContext context2( { QgsExpressionContextUtils::layerScope( &layer ) } );
+      QgsExpressionContext context2( QgsExpressionContextUtils::layerScope( &layer ) );
       context2.setFeature( f2 );
       expression = QgsExpression( "represent_attributes($currentfeature)" );
 
