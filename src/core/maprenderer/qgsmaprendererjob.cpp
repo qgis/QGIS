@@ -94,6 +94,7 @@ LayerRenderJob &LayerRenderJob::operator=( LayerRenderJob &&other )
   layerId = other.layerId;
 
   maskPaintDevice = std::move( other.maskPaintDevice );
+  maskRenderFormat = other.maskRenderFormat;
 
   firstPassJob = other.firstPassJob;
   other.firstPassJob = nullptr;
@@ -101,8 +102,6 @@ LayerRenderJob &LayerRenderJob::operator=( LayerRenderJob &&other )
   picture = std::move( other.picture );
 
   maskJobs = other.maskJobs;
-
-  maskRequiresLayerRasterization = other.maskRequiresLayerRasterization;
 
   elevationMap = std::move( other.elevationMap );
   maskPainter = std::move( other.maskPainter );
@@ -123,8 +122,8 @@ LayerRenderJob::LayerRenderJob( LayerRenderJob &&other )
   , estimatedRenderingTime( other.estimatedRenderingTime )
   , errors( other.errors )
   , layerId( other.layerId )
+  , maskRenderFormat( other.maskRenderFormat )
   , maskPainter( std::move( other.maskPainter ) )
-  , maskRequiresLayerRasterization( other.maskRequiresLayerRasterization )
   , maskJobs( other.maskJobs )
 {
   mContext = std::move( other.mContext );
@@ -486,8 +485,8 @@ std::unique_ptr<QImage> QgsMapRendererJob::allocateImage( const QString &layerId
 {
   auto image = std::make_unique< QImage >( mSettings.deviceOutputSize(), mSettings.outputImageFormat() );
   image->setDevicePixelRatio( static_cast<qreal>( mSettings.devicePixelRatio() ) );
-  image->setDotsPerMeterX( 1000 * mSettings.outputDpi() / 25.4 );
-  image->setDotsPerMeterY( 1000 * mSettings.outputDpi() / 25.4 );
+  image->setDotsPerMeterX( static_cast< int >( 1000 * mSettings.outputDpi() / 25.4 ) );
+  image->setDotsPerMeterY( static_cast< int >( 1000 * mSettings.outputDpi() / 25.4 ) );
   if ( image->isNull() )
   {
     QgsDebugError( u"Insufficient memory for image %1x%2"_s.arg( mSettings.outputSize().width() ).arg( mSettings.outputSize().height() ) );
@@ -760,7 +759,7 @@ std::vector<LayerRenderJob> QgsMapRendererJob::prepareJobs( QPainter *painter, Q
       }
     }
 
-    job.renderingTime = layerTime.elapsed(); // include job preparation time in layer rendering time
+    job.renderingTime = static_cast< int >( layerTime.elapsed() ); // include job preparation time in layer rendering time
   }
 
   return layerJobs;
@@ -801,8 +800,6 @@ std::vector< LayerRenderJob > QgsMapRendererJob::prepareSecondPassJobs( std::vec
   // and the list of source layers that have a mask
   // Hash keys are the layer ID of the layer that WILL be masked
   QHash<QString, MaskedSymbolLayers> maskedSymbolLayers;
-
-  const bool forceVector = mapSettings().testFlag( Qgis::MapSettingsFlag::ForceVectorOutput ) && !mapSettings().testFlag( Qgis::MapSettingsFlag::ForceRasterMasks );
 
   // First up, create a mapping of layer id to jobs. We need this to filter out any masking
   // which refers to layers which we aren't rendering as part of this map render
@@ -915,30 +912,76 @@ std::vector< LayerRenderJob > QgsMapRendererJob::prepareSecondPassJobs( std::vec
   if ( maskedSymbolLayers.isEmpty() )
     return secondPassJobs;
 
+  // determine upfront if a label mask requires raster rendering
+  QMap<int, bool> labelMaskRequiresRaster;
+  QMap<QString, bool> layerMaskRequiresRaster;
+  for ( auto it = maskedSymbolLayers.constBegin(); it != maskedSymbolLayers.constEnd(); ++it )
+  {
+    const QString maskedLayerId = it.key();
+    LayerRenderJob *targetJob = layerJobMapping.value( maskedLayerId );
+
+    // check if target layer itself forces rasterization
+    const bool targetForcesRaster = !targetJob || ( targetJob->renderer && targetJob->renderer->forceRasterRender() ) || ( targetJob->blendMode != QPainter::CompositionMode_SourceOver );
+    for ( const MaskSource &source : it->maskSourceList )
+    {
+      bool sourceRequiresRaster = source.hasEffects || targetForcesRaster;
+      if ( source.labelMaskId != -1 )
+      {
+        if ( labelHasEffects[source.labelMaskId] || sourceRequiresRaster )
+          labelMaskRequiresRaster[source.labelMaskId] = true;
+      }
+      else
+      {
+        if ( maskLayerHasEffects.value( source.layerId, false ) || sourceRequiresRaster )
+          layerMaskRequiresRaster[source.layerId] = true;
+      }
+    }
+  }
+
   // Prepare label mask images
   for ( int maskId = 0; maskId < labelJob.maskIdProvider.size(); maskId++ )
   {
     std::unique_ptr< QPaintDevice > maskPaintDevice;
     std::unique_ptr< QPainter > maskPainter;
-    if ( forceVector && !labelHasEffects[maskId] )
-    {
-      // set a painter to get all masking instruction in order to later clip masked symbol layer
-      auto geomPaintDevice = std::make_unique< QgsGeometryPaintDevice >( true );
-      geomPaintDevice->setStrokedPathSegments( 4 );
-      geomPaintDevice->setSimplificationTolerance( labelJob.context.maskSettings().simplifyTolerance() );
-      maskPaintDevice = std::move( geomPaintDevice );
-      maskPainter = std::make_unique< QPainter >( maskPaintDevice.get() );
-    }
-    else
-    {
-      // Note: we only need an alpha channel here, rather than a full RGBA image
-      auto [maskImage, painter] = allocateImageAndPainter( u"label mask"_s, labelJob.context );
 
-      // FIXME ? when maskImage is let to nullptr in case of out-of-memory
-      // cppcheck-suppress nullPointer
-      maskImage->fill( 0 );
-      maskPaintDevice = std::move( maskImage );
-      maskPainter = std::move( painter );
+    Qgis::RenderFormat renderFormat = Qgis::RenderFormat::Raster;
+    switch ( mapSettings().rasterizedRenderingPolicy() )
+    {
+      case Qgis::RasterizedRenderingPolicy::Default:
+        renderFormat = Qgis::RenderFormat::Raster;
+        break;
+      case Qgis::RasterizedRenderingPolicy::PreferVector:
+        renderFormat = !mapSettings().testFlag( Qgis::MapSettingsFlag::ForceRasterMasks ) && !labelMaskRequiresRaster.value( maskId, false ) ? Qgis::RenderFormat::Vector : Qgis::RenderFormat::Raster;
+        break;
+      case Qgis::RasterizedRenderingPolicy::ForceVector:
+        renderFormat = !mapSettings().testFlag( Qgis::MapSettingsFlag::ForceRasterMasks ) ? Qgis::RenderFormat::Vector : Qgis::RenderFormat::Raster;
+        break;
+    }
+
+    switch ( renderFormat )
+    {
+      case Qgis::RenderFormat::Vector:
+      {
+        // set a painter to get all masking instruction in order to later clip masked symbol layer
+        auto geomPaintDevice = std::make_unique< QgsGeometryPaintDevice >( true );
+        geomPaintDevice->setStrokedPathSegments( 4 );
+        geomPaintDevice->setSimplificationTolerance( labelJob.context.maskSettings().simplifyTolerance() );
+        maskPaintDevice = std::move( geomPaintDevice );
+        maskPainter = std::make_unique< QPainter >( maskPaintDevice.get() );
+        break;
+      }
+      case Qgis::RenderFormat::Raster:
+      {
+        // Note: we only need an alpha channel here, rather than a full RGBA image
+        auto [maskImage, painter] = allocateImageAndPainter( u"label mask"_s, labelJob.context );
+
+        // FIXME ? when maskImage is let to nullptr in case of out-of-memory
+        // cppcheck-suppress nullPointer
+        maskImage->fill( 0 );
+        maskPaintDevice = std::move( maskImage );
+        maskPainter = std::move( painter );
+        break;
+      }
     }
 
     labelJob.context.setMaskPainter( maskPainter.get(), maskId );
@@ -960,20 +1003,45 @@ std::vector< LayerRenderJob > QgsMapRendererJob::prepareSecondPassJobs( std::vec
   // Allocate an image or picture for labels, as suitable.
   // If we have some non-default label composition modes, we CAN'T render to an image as that
   // "flattens" composition modes and prevents them interacting with underlying layers.
-  const bool canUseImage = !forceVector && !hasNonDefaultComposition;
-  if ( !labelJob.img && canUseImage )
+
+  Qgis::RenderFormat labelJobRenderFormat = Qgis::RenderFormat::Raster;
+  switch ( mapSettings().rasterizedRenderingPolicy() )
   {
-    labelJob.img = allocateImage( u"labels"_s );
+    case Qgis::RasterizedRenderingPolicy::Default:
+      labelJobRenderFormat = hasNonDefaultComposition ? Qgis::RenderFormat::Vector : Qgis::RenderFormat::Raster;
+      break;
+
+    case Qgis::RasterizedRenderingPolicy::PreferVector:
+    case Qgis::RasterizedRenderingPolicy::ForceVector:
+      labelJobRenderFormat = !mapSettings().testFlag( Qgis::MapSettingsFlag::ForceRasterMasks ) ? Qgis::RenderFormat::Vector : Qgis::RenderFormat::Raster;
+      break;
   }
-  else if ( !labelJob.picture && !canUseImage )
+
+  switch ( labelJobRenderFormat )
   {
-    labelJob.picture = std::make_unique<QPicture>();
+    case Qgis::RenderFormat::Raster:
+    {
+      if ( !labelJob.img )
+      {
+        labelJob.img = allocateImage( u"labels"_s );
+      }
+      break;
+    }
+
+    case Qgis::RenderFormat::Vector:
+    {
+      if ( !labelJob.picture )
+      {
+        labelJob.picture = std::make_unique<QPicture>();
+      }
+      break;
+    }
   }
 
   // first we initialize painter and mask painter for all jobs
   for ( LayerRenderJob &job : firstPassJobs )
   {
-    job.maskRequiresLayerRasterization = false;
+    bool maskRequiresLayerRasterization = false;
 
     auto it = maskedSymbolLayers.find( job.layerId );
     if ( it != maskedSymbolLayers.end() )
@@ -981,40 +1049,73 @@ std::vector< LayerRenderJob > QgsMapRendererJob::prepareSecondPassJobs( std::vec
       const QList<MaskSource> &sourceList = it->maskSourceList;
       for ( const MaskSource &source : sourceList )
       {
-        job.maskRequiresLayerRasterization |= source.hasEffects;
+        maskRequiresLayerRasterization |= source.hasEffects;
       }
     }
 
     // update first pass job painter and device if needed
-    const bool isRasterRendering = !forceVector || job.maskRequiresLayerRasterization || ( job.renderer && job.renderer->forceRasterRender() );
-    if ( isRasterRendering && !job.destinationImage )
+    job.maskRenderFormat = Qgis::RenderFormat::Raster;
+    switch ( mapSettings().rasterizedRenderingPolicy() )
     {
-      auto [img, painter] = allocateImageAndPainter( job.layerId, *job.context() );
-      Q_ASSERT( !job.destinationPainter );
-      job.destinationPainter = std::move( painter );
-      job.context()->setPainter( job.destinationPainter.get() );
-      job.destinationImage = std::move( img );
-    }
-    else if ( !isRasterRendering && !job.picture )
-    {
-      auto [picture, painter] = allocatePictureAndPainter( *job.context() );
-      job.picture = std::move( picture );
-      if ( job.context()->painter()->hasClipping() )
+      case Qgis::RasterizedRenderingPolicy::Default:
+        job.maskRenderFormat = Qgis::RenderFormat::Raster;
+        break;
+      case Qgis::RasterizedRenderingPolicy::PreferVector:
       {
-        // need to copy clipping paths from original painter, so that e.g. the layout map bounds clipping path is respected
-        painter->setClipping( true );
-        painter->setClipPath( job.context()->painter()->clipPath() );
+        if ( mapSettings().testFlag( Qgis::MapSettingsFlag::ForceRasterMasks )
+             || maskRequiresLayerRasterization
+             || ( job.renderer && job.renderer->forceRasterRender() )
+             || ( job.blendMode != QPainter::CompositionMode_SourceOver ) )
+          job.maskRenderFormat = Qgis::RenderFormat::Raster;
+        else
+          job.maskRenderFormat = Qgis::RenderFormat::Vector;
+        break;
       }
-      Q_ASSERT( !job.destinationPainter );
-      job.destinationPainter = std::move( painter );
-      job.context()->setPainter( job.destinationPainter.get() );
-      // force recreation of layer renderer so it initialize correctly the renderer
-      // especially the RasterLayerRender that need logicalDpiX from painting device
-      job.context()->setFeedback( nullptr );
-      job.renderer.reset( job.layer->createMapRenderer( *( job.context() ) ) );
-      if ( job.renderer )
+      case Qgis::RasterizedRenderingPolicy::ForceVector:
+        job.maskRenderFormat = mapSettings().testFlag( Qgis::MapSettingsFlag::ForceRasterMasks ) ? Qgis::RenderFormat::Raster : Qgis::RenderFormat::Vector;
+        break;
+    }
+
+    switch ( job.maskRenderFormat )
+    {
+      case Qgis::RenderFormat::Raster:
       {
-        job.context()->setFeedback( job.renderer->feedback() );
+        if ( !job.destinationImage )
+        {
+          auto [img, painter] = allocateImageAndPainter( job.layerId, *job.context() );
+          Q_ASSERT( !job.destinationPainter );
+          job.destinationPainter = std::move( painter );
+          job.context()->setPainter( job.destinationPainter.get() );
+          job.destinationImage = std::move( img );
+        }
+        break;
+      }
+
+      case Qgis::RenderFormat::Vector:
+      {
+        if ( !job.picture )
+        {
+          auto [picture, painter] = allocatePictureAndPainter( *job.context() );
+          job.picture = std::move( picture );
+          if ( job.context()->painter()->hasClipping() )
+          {
+            // need to copy clipping paths from original painter, so that e.g. the layout map bounds clipping path is respected
+            painter->setClipping( true );
+            painter->setClipPath( job.context()->painter()->clipPath() );
+          }
+          Q_ASSERT( !job.destinationPainter );
+          job.destinationPainter = std::move( painter );
+          job.context()->setPainter( job.destinationPainter.get() );
+          // force recreation of layer renderer so it initialize correctly the renderer
+          // especially the RasterLayerRender that need logicalDpiX from painting device
+          job.context()->setFeedback( nullptr );
+          job.renderer.reset( job.layer->createMapRenderer( *( job.context() ) ) );
+          if ( job.renderer )
+          {
+            job.context()->setFeedback( job.renderer->feedback() );
+          }
+        }
+        break;
       }
     }
 
@@ -1023,22 +1124,42 @@ std::vector< LayerRenderJob > QgsMapRendererJob::prepareSecondPassJobs( std::vec
     {
       std::unique_ptr< QPaintDevice > maskPaintDevice;
       std::unique_ptr< QPainter > maskPainter;
-      if ( forceVector && !maskLayerHasEffects[job.layerId] )
+      switch ( mapSettings().rasterizedRenderingPolicy() )
       {
-        // set a painter to get all masking instruction in order to later clip masked symbol layer
-        auto geomPaintDevice = std::make_unique< QgsGeometryPaintDevice >();
-        geomPaintDevice->setStrokedPathSegments( 4 );
-        geomPaintDevice->setSimplificationTolerance( job.context()->maskSettings().simplifyTolerance() );
-        maskPaintDevice = std::move( geomPaintDevice );
-        maskPainter = std::make_unique< QPainter >( maskPaintDevice.get() );
+        case Qgis::RasterizedRenderingPolicy::Default:
+          job.maskRenderFormat = Qgis::RenderFormat::Raster;
+          break;
+        case Qgis::RasterizedRenderingPolicy::PreferVector:
+          job.maskRenderFormat = mapSettings().testFlag( Qgis::MapSettingsFlag::ForceRasterMasks ) || layerMaskRequiresRaster.value( job.layerId, false ) ? Qgis::RenderFormat::Raster
+                                                                                                                                                          : Qgis::RenderFormat::Vector;
+          break;
+        case Qgis::RasterizedRenderingPolicy::ForceVector:
+          job.maskRenderFormat = mapSettings().testFlag( Qgis::MapSettingsFlag::ForceRasterMasks ) ? Qgis::RenderFormat::Raster : Qgis::RenderFormat::Vector;
+          break;
       }
-      else
+
+      switch ( job.maskRenderFormat )
       {
-        // Note: we only need an alpha channel here, rather than a full RGBA image
-        auto [maskImage, painter] = allocateImageAndPainter( job.layerId, *job.context() );
-        maskImage->fill( 0 );
-        maskPaintDevice = std::move( maskImage );
-        maskPainter = std::move( painter );
+        case Qgis::RenderFormat::Vector:
+        {
+          // set a painter to get all masking instruction in order to later clip masked symbol layer
+          auto geomPaintDevice = std::make_unique< QgsGeometryPaintDevice >();
+          geomPaintDevice->setStrokedPathSegments( 4 );
+          geomPaintDevice->setSimplificationTolerance( job.context()->maskSettings().simplifyTolerance() );
+          maskPaintDevice = std::move( geomPaintDevice );
+          maskPainter = std::make_unique< QPainter >( maskPaintDevice.get() );
+          break;
+        }
+
+        case Qgis::RenderFormat::Raster:
+        {
+          // Note: we only need an alpha channel here, rather than a full RGBA image
+          auto [maskImage, painter] = allocateImageAndPainter( job.layerId, *job.context() );
+          maskImage->fill( 0 );
+          maskPaintDevice = std::move( maskImage );
+          maskPainter = std::move( painter );
+          break;
+        }
       }
 
       job.context()->setMaskPainter( maskPainter.get() );
@@ -1061,7 +1182,7 @@ std::vector< LayerRenderJob > QgsMapRendererJob::prepareSecondPassJobs( std::vec
     secondPassJobs.emplace_back( LayerRenderJob() );
     LayerRenderJob &job2 = secondPassJobs.back();
 
-    job2.maskRequiresLayerRasterization = job.maskRequiresLayerRasterization;
+    job2.maskRenderFormat = job.maskRenderFormat;
 
     // Points to the masking jobs. This will be needed during the second pass composition.
     for ( const MaskSource &source : maskedSourceList )
@@ -1089,28 +1210,34 @@ std::vector< LayerRenderJob > QgsMapRendererJob::prepareSecondPassJobs( std::vec
     // associate first pass job with second pass job
     job2.firstPassJob = &job;
 
-    if ( !forceVector || job2.maskRequiresLayerRasterization )
+    switch ( job2.maskRenderFormat )
     {
-      Q_ASSERT( !job2.destinationImage );
-      Q_ASSERT( !job2.destinationPainter );
-      auto [img, painter] = allocateImageAndPainter( job.layerId, *job2.context() );
-      job2.context()->setPainter( painter.get() );
-      job2.destinationImage = std::move( img );
-      job2.destinationPainter = std::move( painter );
-    }
-    else
-    {
-      auto [picture, painter] = allocatePictureAndPainter( *job2.context() );
-      if ( job.context()->painter()->hasClipping() )
+      case Qgis::RenderFormat::Raster:
       {
-        // need to copy clipping paths from original painter, so that e.g. the layout map bounds clipping path is respected
-        painter->setClipping( true );
-        painter->setClipPath( job.context()->painter()->clipPath() );
+        Q_ASSERT( !job2.destinationImage );
+        Q_ASSERT( !job2.destinationPainter );
+        auto [img, painter] = allocateImageAndPainter( job.layerId, *job2.context() );
+        job2.context()->setPainter( painter.get() );
+        job2.destinationImage = std::move( img );
+        job2.destinationPainter = std::move( painter );
+        break;
       }
-      job2.picture = std::move( picture );
-      Q_ASSERT( !job2.destinationPainter );
-      job2.destinationPainter = std::move( painter );
-      job2.context()->setPainter( job2.destinationPainter.get() );
+
+      case Qgis::RenderFormat::Vector:
+      {
+        auto [picture, painter] = allocatePictureAndPainter( *job2.context() );
+        if ( job.context()->painter()->hasClipping() )
+        {
+          // need to copy clipping paths from original painter, so that e.g. the layout map bounds clipping path is respected
+          painter->setClipping( true );
+          painter->setClipPath( job.context()->painter()->clipPath() );
+        }
+        job2.picture = std::move( picture );
+        Q_ASSERT( !job2.destinationPainter );
+        job2.destinationPainter = std::move( painter );
+        job2.context()->setPainter( job2.destinationPainter.get() );
+        break;
+      }
     }
 
     if ( !job2.destinationImage && !job2.picture )
@@ -1151,41 +1278,45 @@ QList<QPointer<QgsMapLayer> > QgsMapRendererJob::participatingLabelLayers( QgsLa
 
 void QgsMapRendererJob::initSecondPassJobs( std::vector< LayerRenderJob > &secondPassJobs, LabelRenderJob &labelJob ) const
 {
-  if ( !mapSettings().testFlag( Qgis::MapSettingsFlag::ForceVectorOutput ) || mapSettings().testFlag( Qgis::MapSettingsFlag::ForceRasterMasks ) )
-    return;
-
   for ( LayerRenderJob &job : secondPassJobs )
   {
-    if ( job.maskRequiresLayerRasterization )
-      continue;
-
-    // we draw disabled symbol layer but me mask them with clipping path produced during first pass job
-    // Resulting 2nd pass job picture will be the final rendering
-
-    for ( const LayerRenderJob::MaskJob &p : std::as_const( job.maskJobs ) )
+    switch ( job.maskRenderFormat )
     {
-      QPainter *maskPainter = p.layerRenderJob ? p.layerRenderJob->maskPainter.get() : labelJob.maskPainters[p.maskPaintDeviceId].get();
+      case Qgis::RenderFormat::Raster:
+        break;
 
-      const QSet<QString> layers = job.context()->disabledSymbolLayersV2();
-      if ( QgsGeometryPaintDevice *geometryDevice = dynamic_cast<QgsGeometryPaintDevice *>( maskPainter->device() ) )
+      case Qgis::RenderFormat::Vector:
       {
-        QgsGeometry geometry( geometryDevice->geometry().clone() );
+        // we draw disabled symbol layer but me mask them with clipping path produced during first pass job
+        // Resulting 2nd pass job picture will be the final rendering
+
+        for ( const LayerRenderJob::MaskJob &p : std::as_const( job.maskJobs ) )
+        {
+          QPainter *maskPainter = p.layerRenderJob ? p.layerRenderJob->maskPainter.get() : labelJob.maskPainters[p.maskPaintDeviceId].get();
+
+          const QSet<QString> layers = job.context()->disabledSymbolLayersV2();
+          if ( QgsGeometryPaintDevice *geometryDevice = dynamic_cast<QgsGeometryPaintDevice *>( maskPainter->device() ) )
+          {
+            QgsGeometry geometry( geometryDevice->geometry().clone() );
 
 #if GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR < 10
-        // structure would be better, but too old GEOS
-        geometry = geometry.makeValid( Qgis::MakeValidMethod::Linework );
+            // structure would be better, but too old GEOS
+            geometry = geometry.makeValid( Qgis::MakeValidMethod::Linework );
 #else
-        geometry = geometry.makeValid( Qgis::MakeValidMethod::Structure );
+            geometry = geometry.makeValid( Qgis::MakeValidMethod::Structure );
 #endif
 
-        for ( const QString &symbolLayerId : layers )
-        {
-          job.context()->addSymbolLayerClipGeometry( symbolLayerId, geometry );
+            for ( const QString &symbolLayerId : layers )
+            {
+              job.context()->addSymbolLayerClipGeometry( symbolLayerId, geometry );
+            }
+          }
         }
+
+        job.context()->setDisabledSymbolLayersV2( QSet<QString>() );
+        break;
       }
     }
-
-    job.context()->setDisabledSymbolLayersV2( QSet<QString>() );
   }
 }
 
@@ -1500,38 +1631,66 @@ QgsElevationMap QgsMapRendererJob::layerElevationToBeComposed( const QgsMapSetti
   }
 }
 
-void QgsMapRendererJob::composeSecondPass( std::vector<LayerRenderJob> &secondPassJobs, LabelRenderJob &labelJob, bool forceVector )
+void QgsMapRendererJob::composeSecondPass( std::vector<LayerRenderJob> &secondPassJobs, LabelRenderJob &labelJob )
 {
   // compose the second pass with the mask
   for ( LayerRenderJob &job : secondPassJobs )
   {
-    const bool isRasterRendering = !forceVector || job.maskRequiresLayerRasterization;
+    if ( job.maskJobs.empty() )
+      continue;
 
-    // Merge all mask images into the first one if we have more than one mask image
-    if ( isRasterRendering && job.maskJobs.size() > 1 )
+    switch ( job.maskRenderFormat )
     {
-      QPainter *maskPainter = nullptr;
-      for ( const LayerRenderJob::MaskJob &p : job.maskJobs )
+      case Qgis::RenderFormat::Raster:
       {
-        QImage *maskImage = static_cast<QImage *>( p.layerRenderJob ? p.layerRenderJob->maskPaintDevice.get() : labelJob.maskPaintDevices[p.maskPaintDeviceId].get() );
-        if ( !maskPainter )
+        // First find the primary mask image
+        LayerRenderJob::MaskJob firstJob = *job.maskJobs.begin();
+        QPaintDevice *firstMaskPaintDevice = nullptr;
+        QPainter *firstMaskPainter = nullptr;
+        if ( firstJob.layerRenderJob )
         {
-          maskPainter = p.layerRenderJob ? p.layerRenderJob->maskPainter.get() : labelJob.maskPainters[p.maskPaintDeviceId].get();
+          firstMaskPaintDevice = firstJob.layerRenderJob->maskPaintDevice.get();
+          firstMaskPainter = firstJob.layerRenderJob->maskPainter.get();
         }
         else
         {
-          maskPainter->drawImage( 0, 0, *maskImage );
+          Q_ASSERT( firstJob.maskPaintDeviceId >= 0 && firstJob.maskPaintDeviceId < static_cast< int >( labelJob.maskPaintDevices.size() ) );
+          firstMaskPaintDevice = labelJob.maskPaintDevices[firstJob.maskPaintDeviceId].get();
+          firstMaskPainter = labelJob.maskPainters[firstJob.maskPaintDeviceId].get();
         }
-      }
-    }
 
-    if ( !job.maskJobs.empty() )
-    {
-      // All have been merged into the first
-      LayerRenderJob::MaskJob p = *job.maskJobs.begin();
-      if ( isRasterRendering )
-      {
-        QImage *maskImage = static_cast<QImage *>( p.layerRenderJob ? p.layerRenderJob->maskPaintDevice.get() : labelJob.maskPaintDevices[p.maskPaintDeviceId].get() );
+        QImage *firstMaskImage = dynamic_cast<QImage *>( firstMaskPaintDevice );
+        if ( !firstMaskImage )
+        {
+          QgsDebugError( u"FORMAT MISMATCH -- expected a raster mask format, but mask paint device is not a QImage!!"_s );
+          continue;
+        }
+
+        // Merge all mask images into the first one if we have more than one mask image
+        for ( size_t i = 1; i < job.maskJobs.size(); ++i )
+        {
+          const LayerRenderJob::MaskJob &nextJob = job.maskJobs[i];
+          QPaintDevice *nextJobPaintDevice = nullptr;
+          if ( nextJob.layerRenderJob )
+          {
+            nextJobPaintDevice = nextJob.layerRenderJob->maskPaintDevice.get();
+          }
+          else
+          {
+            Q_ASSERT( nextJob.maskPaintDeviceId >= 0 && nextJob.maskPaintDeviceId < static_cast< int >( labelJob.maskPaintDevices.size() ) );
+            nextJobPaintDevice = labelJob.maskPaintDevices[nextJob.maskPaintDeviceId].get();
+          }
+          Q_ASSERT( nextJobPaintDevice );
+
+          QImage *nextJobImage = dynamic_cast<QImage *>( nextJobPaintDevice );
+          if ( !nextJobImage )
+          {
+            QgsDebugError( u"FORMAT MISMATCH -- expected a raster mask format, but mask paint device is not a QImage!!"_s );
+            continue;
+          }
+
+          firstMaskPainter->drawImage( 0, 0, *nextJobImage );
+        }
 
         // Only retain parts of the second rendering that are "inside" the mask image
         QPainter *painter = job.context()->painter();
@@ -1541,7 +1700,7 @@ void QgsMapRendererJob::composeSecondPass( std::vector<LayerRenderJob> &secondPa
         //Create an "alpha binarized" image of the maskImage to :
         //* Eliminate antialiasing artifact
         //* Avoid applying mask opacity to elements under the mask but not masked
-        QImage maskBinAlpha = maskImage->createMaskFromColor( 0 );
+        QImage maskBinAlpha = firstMaskImage->createMaskFromColor( 0 );
         QVector<QRgb> mswTable;
         mswTable.push_back( qRgba( 0, 0, 0, 255 ) );
         mswTable.push_back( qRgba( 0, 0, 0, 0 ) );
@@ -1562,17 +1721,20 @@ void QgsMapRendererJob::composeSecondPass( std::vector<LayerRenderJob> &secondPa
 
           // ... first retain parts that are "outside" the mask image
           painter1->setCompositionMode( QPainter::CompositionMode_DestinationOut );
-          painter1->drawImage( 0, 0, *maskImage );
+          painter1->drawImage( 0, 0, *firstMaskImage );
 
           // ... and overpaint the second pass' image on it
           painter1->setCompositionMode( QPainter::CompositionMode_DestinationOver );
           painter1->drawImage( 0, 0, *job.destinationImage );
         }
+        break;
       }
-      else
+
+      case Qgis::RenderFormat::Vector:
       {
         job.firstPassJob->picture = std::move( job.picture );
         job.picture = nullptr;
+        break;
       }
     }
   }
