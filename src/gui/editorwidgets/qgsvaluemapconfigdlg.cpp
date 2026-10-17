@@ -17,8 +17,8 @@
 
 #include "qgsapplication.h"
 #include "qgsattributetypeloaddialog.h"
+#include "qgsfieldformatter.h"
 #include "qgssettings.h"
-#include "qgsvaluemapfieldformatter.h"
 
 #include <QClipboard>
 #include <QFileDialog>
@@ -69,7 +69,7 @@ QVariantMap QgsValueMapConfigDlg::config()
 
     QString ks = ki->text();
     if ( ( ks == QgsApplication::nullRepresentation() ) && !( ki->flags() & Qt::ItemIsEditable ) )
-      ks = QgsValueMapFieldFormatter::NULL_VALUE;
+      ks = QgsFieldFormatter::NULL_VALUE;
 
     QVariantMap value;
 
@@ -134,7 +134,7 @@ void QgsValueMapConfigDlg::vCellChanged( int row, int column )
   {
     // check cell value
     QTableWidgetItem *item = tableWidget->item( row, 0 );
-    if ( item && item->data( Qt::ItemDataRole::UserRole ) != QgsValueMapFieldFormatter::NULL_VALUE )
+    if ( item && item->data( Qt::ItemDataRole::UserRole ) != QgsFieldFormatter::NULL_VALUE )
     {
       const QString validValue = checkValueLength( item->text() );
       if ( validValue.length() != item->text().length() )
@@ -200,7 +200,7 @@ void QgsValueMapConfigDlg::updateMap( const QList<QPair<QString, QVariant>> &lis
 
   if ( insertNull )
   {
-    setRow( row, QgsValueMapFieldFormatter::NULL_VALUE, u"<NULL>"_s );
+    setRow( row, QgsFieldFormatter::NULL_VALUE, u"<NULL>"_s );
     ++row;
   }
 
@@ -246,7 +246,7 @@ void QgsValueMapConfigDlg::updateMap( const QList<QPair<QString, QVariant>> &lis
 
 QString QgsValueMapConfigDlg::checkValueLength( const QString &value )
 {
-  if ( value == QgsValueMapFieldFormatter::NULL_VALUE || value == QgsApplication::nullRepresentation() )
+  if ( value == QgsFieldFormatter::NULL_VALUE || value == QgsApplication::nullRepresentation() )
   {
     return value;
   }
@@ -272,7 +272,7 @@ void QgsValueMapConfigDlg::populateComboBox( QComboBox *comboBox, const QVariant
     {
       const QVariantMap valueMap = value.toMap();
 
-      if ( skipNull && valueMap.constBegin().value() == QgsValueMapFieldFormatter::NULL_VALUE )
+      if ( skipNull && valueMap.constBegin().value() == QgsFieldFormatter::NULL_VALUE )
         continue;
 
       comboBox->addItem( valueMap.constBegin().key(), valueMap.constBegin().value() );
@@ -283,7 +283,7 @@ void QgsValueMapConfigDlg::populateComboBox( QComboBox *comboBox, const QVariant
     const QVariantMap map = config.value( u"map"_s ).toMap();
     for ( auto it = map.constBegin(); it != map.constEnd(); ++it )
     {
-      if ( skipNull && it.value() == QgsValueMapFieldFormatter::NULL_VALUE )
+      if ( skipNull && it.value() == QgsFieldFormatter::NULL_VALUE )
         continue;
 
       comboBox->addItem( it.key(), it.value() );
@@ -312,12 +312,12 @@ void QgsValueMapConfigDlg::setRow( int row, const QString &value, const QString 
   QTableWidgetItem *valueCell = nullptr;
   QTableWidgetItem *descriptionCell = new QTableWidgetItem( description );
   tableWidget->insertRow( row );
-  if ( value == QgsValueMapFieldFormatter::NULL_VALUE )
+  if ( value == QgsFieldFormatter::NULL_VALUE )
   {
     QFont cellFont;
     cellFont.setItalic( true );
     valueCell = new QTableWidgetItem( QgsApplication::nullRepresentation() );
-    valueCell->setData( Qt::ItemDataRole::UserRole, QgsValueMapFieldFormatter::NULL_VALUE );
+    valueCell->setData( Qt::ItemDataRole::UserRole, QgsFieldFormatter::NULL_VALUE );
     valueCell->setFont( cellFont );
     valueCell->setFlags( Qt::ItemIsSelectable | Qt::ItemIsEnabled );
     descriptionCell->setFont( cellFont );
@@ -359,7 +359,7 @@ void QgsValueMapConfigDlg::copySelectionToClipboard()
 
 void QgsValueMapConfigDlg::addNullButtonPushed()
 {
-  setRow( tableWidget->rowCount() - 1, QgsValueMapFieldFormatter::NULL_VALUE, u"<NULL>"_s );
+  setRow( tableWidget->rowCount() - 1, QgsFieldFormatter::NULL_VALUE, u"<NULL>"_s );
 }
 
 void QgsValueMapConfigDlg::loadFromLayerButtonPushed()
@@ -413,7 +413,7 @@ void QgsValueMapConfigDlg::loadMapFromCSV( const QString &filePath )
     QString key = ceils[0];
     QString val = ceils[1];
     if ( key == QgsApplication::nullRepresentation() )
-      key = QgsValueMapFieldFormatter::NULL_VALUE;
+      key = QgsFieldFormatter::NULL_VALUE;
     map.append( qMakePair( key, val ) );
   }
 
