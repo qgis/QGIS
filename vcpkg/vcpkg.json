@@ -343,6 +343,24 @@
           ]
         }
       ]
+    },
+    "qtwebengine": {
+      "description": "Build with Qt WebEngine support",
+      "dependencies": [
+        {
+          "name": "qtwebengine",
+          "default-features": false,
+          "features": [
+            "webengine"
+          ]
+        }
+      ]
+    },
+    "qtwebengine-bindings": {
+      "description": "Build Python bindings for Qt WebEngine",
+      "dependencies": [
+        "py-pyqt6-webengine"
+      ]
     }
   }
 }
