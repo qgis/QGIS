@@ -50,8 +50,102 @@ static void _parseAndEvalExpr( int arg )
   for ( int i = 0; i < 100; ++i )
   {
     QgsExpression exp( u"1 + 2 * 2"_s );
-    exp.evaluate();
+    Q_ASSERT( exp.evaluate().toInt() == 5 );
   }
+}
+
+static void _parseAndEvalExprWithFunction( int arg )
+{
+  Q_UNUSED( arg );
+  for ( int i = 0; i < 100; ++i )
+  {
+    QgsExpression exp( u"lower(upper(left('abc', 2)))"_s );
+    Q_ASSERT( exp.evaluate().toString() == "ab" );
+  }
+}
+
+class GetTestValueFunction : public QgsExpressionFunction
+{
+  public:
+    GetTestValueFunction()
+      : QgsExpressionFunction( u"get_test_value"_s, 1, u"test"_s )
+    {}
+
+    QVariant func( const QVariantList &args, const QgsExpressionContext *, QgsExpression *, const QgsExpressionNodeFunction * ) override { return args.at( 0 ); }
+};
+
+class GetTestValueFunction2 : public QgsExpressionFunction
+{
+  public:
+    GetTestValueFunction2( int value, const QString &name )
+      : QgsExpressionFunction( name, 0, u"test"_s )
+      , mValue( value )
+    {}
+
+    QVariant func( const QVariantList &, const QgsExpressionContext *, QgsExpression *, const QgsExpressionNodeFunction * ) override { return mValue; }
+
+  private:
+    int mValue = 0;
+};
+
+static void _parseAndEvalExprWithCustomFunction( int arg )
+{
+  for ( int i = 0; i < 100; ++i )
+  {
+    QgsExpression exp( u"get_test_value(%1)"_s.arg( arg ) );
+    const int result = exp.evaluate().toInt();
+    Q_ASSERT_X( result == arg, "", u"Expected %1 got %2"_s.arg( arg ).arg( result ).toLocal8Bit().constData() );
+  }
+}
+
+static void _parseAndEvalExprWithCustomFunctionRegister( int arg )
+{
+  const QString functionName = u"get_test_value%1"_s.arg( arg );
+  QgsExpression::registerFunction( new GetTestValueFunction2( arg, functionName ), true );
+
+  for ( int i = 0; i < 100; ++i )
+  {
+    // using builtin functions only
+    QgsExpression exp( u"lower(upper(left('abc', 2)))"_s );
+    Q_ASSERT( exp.evaluate().toString() == "ab" );
+
+    // using the custom function registered once on the main thread in advance
+    QgsExpression exp2( u"get_test_value(%1)"_s.arg( arg ) );
+    const int result = exp2.evaluate().toInt();
+    Q_ASSERT_X( result == arg, "", u"Expected %1 got %2"_s.arg( arg ).arg( result ).toLocal8Bit().constData() );
+
+    QgsExpression expCustom( u"%1()"_s.arg( functionName ) );
+    const int result2 = expCustom.evaluate().toInt();
+    Q_ASSERT_X( result2 == arg, "", u"Expected %1 got %2"_s.arg( arg ).arg( result2 ).toLocal8Bit().constData() );
+  }
+
+  QgsExpression::unregisterFunction( functionName );
+}
+
+static void _parseAndEvalExprWithCustomFunctionRegisterNoOwnership( int arg )
+{
+  const QString functionName = u"get_test_value%1"_s.arg( arg );
+  auto newFunction = new GetTestValueFunction2( arg, functionName );
+  QgsExpression::registerFunction( newFunction, false );
+
+  for ( int i = 0; i < 100; ++i )
+  {
+    // using builtin functions only
+    QgsExpression exp( u"lower(upper(left('abc', 2)))"_s );
+    Q_ASSERT( exp.evaluate().toString() == "ab" );
+
+    // using the custom function registered once on the main thread in advance
+    QgsExpression exp2( u"get_test_value(%1)"_s.arg( arg ) );
+    int result = exp2.evaluate().toInt();
+    Q_ASSERT_X( result == arg, "", u"Expected %1 got %2"_s.arg( arg ).arg( result ).toLocal8Bit().constData() );
+
+    QgsExpression expCustom( u"%1()"_s.arg( functionName ) );
+    result = expCustom.evaluate().toInt();
+    Q_ASSERT_X( result == arg, "", u"Expected %1 got %2"_s.arg( arg ).arg( result ).toLocal8Bit().constData() );
+  }
+
+  QgsExpression::unregisterFunction( functionName );
+  delete newFunction;
 }
 
 class RunLambdaInThread : public QThread
@@ -4242,12 +4336,12 @@ class TestQgsExpression : public QObject
       QgsExpression exp( u"current_value( 'FIELD_NAME' ) = 'A_VALUE' AND intersects(buffer($geometry, 10), @current_geometry)"_s );
       QList<const QgsExpressionNodeFunction *> functionNodes( exp.findNodes<QgsExpressionNodeFunction>() );
       QCOMPARE( functionNodes.size(), 5 );
-      QgsExpressionFunction *fd;
       QSet<QString> actualFunctions;
+
       for ( const QgsExpressionNodeFunction *f : std::as_const( functionNodes ) )
       {
         QCOMPARE( f->nodeType(), QgsExpressionNode::NodeType::ntFunction );
-        fd = QgsExpression::QgsExpression::Functions()[f->fnIndex()];
+        const QgsExpression::SharedFunctionPtr fd = f->function();
         actualFunctions << fd->name();
       }
       QCOMPARE( actualFunctions, expectedFunctions );
@@ -4271,7 +4365,8 @@ class TestQgsExpression : public QObject
       for ( const QgsExpressionNodeFunction *f : std::as_const( functionNodes ) )
       {
         QCOMPARE( f->nodeType(), QgsExpressionNode::NodeType::ntFunction );
-        fd = QgsExpression::QgsExpression::Functions()[f->fnIndex()];
+
+        const QgsExpression::SharedFunctionPtr fd = f->function();
         actualFunctions << fd->name();
       }
       expectedFunctions.clear();
@@ -5610,12 +5705,75 @@ class TestQgsExpression : public QObject
 
     void reentrant()
     {
-      // this simply should not crash
-
-      QList<int> lst;
-      for ( int i = 0; i < 10; ++i )
-        lst << i;
+      // tests that a simple expression can be evaluated across many threads simultaneously without issue
+      std::vector<int> lst( 100 );
+      std::iota( std::begin( lst ), std::end( lst ), 0 );
       QtConcurrent::blockingMap( lst, _parseAndEvalExpr );
+    }
+
+    void testReentrantBuiltInFunctions()
+    {
+      // tests that an expression using built-in functions can be evaluated across many threads simultaneously without issue
+      std::vector<int> lst( 100 );
+      std::iota( std::begin( lst ), std::end( lst ), 0 );
+
+      QtConcurrent::blockingMap( lst, _parseAndEvalExprWithFunction );
+    }
+
+    void testReentrantCustomFunctions()
+    {
+      // tests that an expression using a custom function, registered on the main thread, can be evaluated across many threads simultaneously without issue
+
+      std::vector<int> lst( 100 );
+      std::iota( std::begin( lst ), std::end( lst ), 0 );
+
+      QVERIFY( QgsExpression::registerFunction( new GetTestValueFunction(), true ) );
+      QtConcurrent::blockingMap( lst, _parseAndEvalExprWithCustomFunction );
+      QgsExpression::unregisterFunction( u"get_test_value"_s );
+    }
+
+    void testReentrantCustomFunctionRegister()
+    {
+      // tests that an expression using custom functions, registered WHILE other threads are evaluating expressions, can be evaluated across many threads simultaneously without issue
+      std::vector<int> lst( 100 );
+      std::iota( std::begin( lst ), std::end( lst ), 0 );
+
+      QVERIFY( QgsExpression::registerFunction( new GetTestValueFunction(), true ) );
+      QtConcurrent::blockingMap( lst, _parseAndEvalExprWithCustomFunctionRegister );
+      QgsExpression::unregisterFunction( u"get_test_value"_s );
+    }
+
+    void testReentrantCustomFunctionRegisterNoTransfer()
+    {
+      // tests that an expression using custom functions, registered WHILE other threads are evaluating expressions, can be evaluated across many threads simultaneously without issue
+      // this variant tests functions registered without transferring ownership
+      std::vector<int> lst( 100 );
+      std::iota( std::begin( lst ), std::end( lst ), 0 );
+
+      auto function = new GetTestValueFunction();
+      QVERIFY( QgsExpression::registerFunction( function, false ) );
+      QtConcurrent::blockingMap( lst, _parseAndEvalExprWithCustomFunctionRegisterNoOwnership );
+      QgsExpression::unregisterFunction( u"get_test_value"_s );
+      delete function;
+    }
+
+    void testReplaceCustomFunction()
+    {
+      const QString functionName = u"get_test_value"_s;
+      auto newFunction = new GetTestValueFunction2( 13, functionName );
+      QVERIFY( QgsExpression::registerFunction( newFunction, true ) );
+
+      QgsExpression exp( u"get_test_value()"_s );
+      int result = exp.evaluate().toInt();
+      QCOMPARE( result, 13 );
+
+      // unregister function while expression still exists
+      QgsExpression exp2( u"get_test_value()"_s );
+      QgsExpression::unregisterFunction( u"get_test_value"_s );
+
+      // should still be ok -- the expression will have held a reference to the function
+      result = exp2.evaluate().toInt();
+      QCOMPARE( result, 13 );
     }
 
     void evaluateToDouble()

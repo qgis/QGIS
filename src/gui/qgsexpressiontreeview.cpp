@@ -296,10 +296,12 @@ void QgsExpressionTreeView::updateFunctionTree()
   registerItem( u"String"_s, u"\\' (quote character)"_s, u"'\\''"_s, QString(), QgsExpressionItem::ExpressionNode, false, -1, QIcon(), QgsExpression::tags( u"\\'"_s ) );
 
   // Load the functions from the QgsExpression class
-  int count = QgsExpression::functionCount();
+  const QgsExpression::FunctionListSnapshot functions = QgsExpression::getFunctionsSnapshot();
+
+  int count = functions->count();
   for ( int i = 0; i < count; i++ )
   {
-    QgsExpressionFunction *func = QgsExpression::Functions()[i];
+    const QgsExpression::SharedFunctionPtr func = functions->getFunction( i );
     QString name = func->name();
     if ( name.startsWith( '_' ) ) // do not display private functions
       continue;
