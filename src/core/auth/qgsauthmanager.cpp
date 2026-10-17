@@ -1509,7 +1509,26 @@ bool QgsAuthManager::loadAuthenticationConfig( const QString &authcfg, QgsAuthMe
       {
         if ( storage->isEncrypted() )
         {
-          payload = QgsAuthCrypto::decrypt( mMasterPass, masterPasswordCiv(), payload );
+          QMap<QString, QVariant> storageSettings = storage->settings();
+          QString masterPassword;
+          QString masterPwCiv;
+          if ( storageSettings.contains( "masterPassword" ) )
+          {
+            masterPassword = storageSettings.value( "masterPassword" ).toString();
+          }
+          else
+          {
+            masterPassword = mMasterPass;
+          }
+          if ( storageSettings.contains( "masterPasswordCiv" ) )
+          {
+            masterPwCiv = storageSettings.value( "masterPasswordCiv" ).toString();
+          }
+          else
+          {
+            masterPwCiv = masterPasswordCiv();
+          }
+          payload = QgsAuthCrypto::decrypt( masterPassword, masterPwCiv, payload );
         }
         config.loadConfigString( payload );
       }
