@@ -2562,18 +2562,20 @@ Qgis::RasterInterfaceCapabilities QgsWmsCapabilities::identifyCapabilities() con
 
 // -----------------
 
-QgsWmsCapabilitiesDownload::QgsWmsCapabilitiesDownload( bool forceRefresh, QObject *parent )
+QgsWmsCapabilitiesDownload::QgsWmsCapabilitiesDownload( bool forceRefresh, bool disableDecompressedSafetyCheckThreshold, QObject *parent )
   : QObject( parent )
   , mIsAborted( false )
   , mForceRefresh( forceRefresh )
+  , mDisableDecompressedSafetyCheckThreshold( disableDecompressedSafetyCheckThreshold )
 {}
 
-QgsWmsCapabilitiesDownload::QgsWmsCapabilitiesDownload( const QString &baseUrl, const QgsAuthorizationSettings &auth, bool forceRefresh, QObject *parent )
+QgsWmsCapabilitiesDownload::QgsWmsCapabilitiesDownload( const QString &baseUrl, const QgsAuthorizationSettings &auth, bool forceRefresh, bool disableDecompressedSafetyCheckThreshold, QObject *parent )
   : QObject( parent )
   , mBaseUrl( baseUrl )
   , mAuth( auth )
   , mIsAborted( false )
   , mForceRefresh( forceRefresh )
+  , mDisableDecompressedSafetyCheckThreshold( disableDecompressedSafetyCheckThreshold )
 {}
 
 QgsWmsCapabilitiesDownload::~QgsWmsCapabilitiesDownload()
@@ -2628,6 +2630,9 @@ bool QgsWmsCapabilitiesDownload::downloadCapabilities()
   request.setAttribute( QNetworkRequest::RedirectPolicyAttribute, QNetworkRequest::ManualRedirectPolicy );
   request.setAttribute( QNetworkRequest::CacheLoadControlAttribute, mForceRefresh ? QNetworkRequest::AlwaysNetwork : QNetworkRequest::PreferCache );
   request.setAttribute( QNetworkRequest::CacheSaveControlAttribute, true );
+
+  if ( mDisableDecompressedSafetyCheckThreshold )
+    request.setDecompressedSafetyCheckThreshold( -1 );
 
   mCapabilitiesReply = QgsNetworkAccessManager::instance()->get( request );
   if ( !mAuth.setAuthorizationReply( mCapabilitiesReply ) )
@@ -2773,12 +2778,32 @@ void QgsWmsCapabilitiesDownload::capabilitiesReplyFinished()
 
       QString errorMessage;
       if ( contentType.startsWith( "text/plain"_L1 ) )
+      {
         errorMessage = mCapabilitiesReply->readAll();
+      }
       else
+      {
         errorMessage = mCapabilitiesReply->attribute( QNetworkRequest::HttpReasonPhraseAttribute ).toString();
+      }
 
-      if ( errorMessage.isEmpty() )
-        errorMessage = mCapabilitiesReply->errorString();
+      // Add some more details to fix issue #66979 if available
+      if ( const QString errorString = mCapabilitiesReply->errorString();
+           errorString.contains( u"The decompressed output exceeds the limits specified by QNetworkRequest::decompressedSafetyCheckThreshold"_s ) )
+      {
+        const QString compressErrorTip = tr(
+          "The server returned a compressed response that exceeds the maximum allowed size. "
+          "This is likely due to a large number of layers or complex capabilities. "
+          "If you trust this server you can disable this check in the WMS server connection settings."
+        );
+        if ( !errorMessage.isEmpty() )
+        {
+          errorMessage = tr( "%1 (%2)" ).arg( errorMessage ).arg( compressErrorTip );
+        }
+        else
+        {
+          errorMessage = compressErrorTip;
+        }
+      }
 
       mError = tr( "Download of capabilities failed:\n%1" ).arg( errorMessage );
       QgsMessageLog::logMessage( mError, tr( "WMS" ) );

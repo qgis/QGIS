@@ -1777,7 +1777,8 @@ bool QgsWmsProvider::retrieveServerCapabilities( bool forceRefresh )
 {
   if ( !mCaps.isValid() )
   {
-    QgsWmsCapabilitiesDownload downloadCaps( mSettings.baseUrl(), mSettings.authorization(), forceRefresh );
+    const bool disableDecompressedSafetyCheckThreshold { uri().hasParam( u"DisableDecompressedSafetyCheckThreshold"_s ) };
+    QgsWmsCapabilitiesDownload downloadCaps( mSettings.baseUrl(), mSettings.authorization(), forceRefresh, disableDecompressedSafetyCheckThreshold );
     if ( !downloadCaps.downloadCapabilities() )
     {
       mErrorFormat = u"text/plain"_s;
