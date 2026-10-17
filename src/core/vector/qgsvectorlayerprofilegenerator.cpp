@@ -1230,6 +1230,8 @@ void QgsVectorLayerProfileGenerator::processTriangleIntersectForLine(
   }
 
   QString lastError;
+  QVector< QPair< double, double > > segmentDistanceToHeight;
+  segmentDistanceToHeight.reserve( numPoints );
   for ( int i = 0; !mFeedback->isCanceled() && i < numPoints; ++i )
   {
     double x = *inX++;
@@ -1262,14 +1264,32 @@ void QgsVectorLayerProfileGenerator::processTriangleIntersectForLine(
     const double distance = mProfileCurveEngine->lineLocatePoint( interpolatedPoint, &lastError );
     *outDistance++ = distance;
 
-    mResults->mDistanceToHeightMap.insert( distance, interpolatedPoint.z() );
-    mResults->mDistanceToFeatureId.insert( distance, featureId );
+    segmentDistanceToHeight.append( { distance, interpolatedPoint.z() } );
     minDistanceAlongProfileCurve = std::min( distance, minDistanceAlongProfileCurve );
     maxDistanceAlongProfileCurve = std::max( distance, maxDistanceAlongProfileCurve );
   }
 
   if ( numPoints > 0 )
   {
+    // The end of a segment may be at the same distance as the start of the next one
+    // for adjacent parts, so one point would overwrite the other in mDistanceToHeightMap.
+    // Shift the segment ends slightly inwards to keep both points.
+    for ( const QPair< double, double > &point : std::as_const( segmentDistanceToHeight ) )
+    {
+      double distance = point.first;
+      if ( qgsDoubleNear( distance, minDistanceAlongProfileCurve, Qgis::DEFAULT_SEGMENT_EPSILON ) )
+      {
+        distance += Qgis::DEFAULT_SEGMENT_EPSILON;
+      }
+      else if ( qgsDoubleNear( distance, maxDistanceAlongProfileCurve, Qgis::DEFAULT_SEGMENT_EPSILON ) )
+      {
+        distance -= Qgis::DEFAULT_SEGMENT_EPSILON;
+      }
+
+      mResults->mDistanceToHeightMap.insert( distance, point.second );
+      mResults->mDistanceToFeatureId.insert( distance, featureId );
+    }
+
     // NaN separators are inserted by calling insertSurfaceSeparators()
     // once all features are processed.
     // This prevents splitting adjacent parts of the same surface.
