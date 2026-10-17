@@ -315,7 +315,7 @@ QVector<QgsPointXY> Qgs3DMapScene::viewFrustum2DExtent() const
 
   const QPoint center( size.width() / 2, size.height() / 2 );
 
-  const QVector3D centerWorldPos = Qgs3DUtils::screenPointToWorldPos( center, static_cast<float>( mLastCenterDepth ), size, camera );
+  const QVector3D centerWorldPos = Qgs3DUtils::screenPointToWorldPos( center, size, camera, mLastCenterDepth );
   const float centerZ = centerWorldPos.z();
   const QVector3D cameraPosition = camera->position();
 
@@ -324,7 +324,7 @@ QVector<QgsPointXY> Qgs3DMapScene::viewFrustum2DExtent() const
   {
     const QPoint p( ( ( i >> 0 ) & 1 ) ? 0 : size.width(), ( ( i >> 1 ) & 1 ) ? 0 : size.height() );
 
-    const QVector3D edgePoint = Qgs3DUtils::screenPointToWorldPos( p, static_cast<float>( mLastCenterDepth ), size, camera );
+    const QVector3D edgePoint = Qgs3DUtils::screenPointToWorldPos( p, size, camera, mLastCenterDepth );
     const QVector3D rayDir = ( edgePoint - cameraPosition ).normalized();
 
     QVector3D worldPos;
