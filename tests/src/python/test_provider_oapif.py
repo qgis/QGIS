@@ -1438,6 +1438,115 @@ class TestPyQgsOapifProvider(QgisTestCase, ProviderTestCase):
             os.unlink(filename)
             self.assertEqual(values, ["feat.1"], expr)
 
+    def _testCQL2TextFilteringGeometryQueryable(
+        self, endpoint_suffix, queryables, geometry_column
+    ):
+        endpoint = (
+            self.__class__.basetestpath
+            + "/fake_qgis_http_endpoint_encoded_query_"
+            + endpoint_suffix
+        )
+        additionalConformance = [
+            "http://www.opengis.net/spec/cql2/1.0/conf/basic-cql2",
+            "http://www.opengis.net/spec/cql2/1.0/conf/basic-spatial-functions",
+            "http://www.opengis.net/spec/cql2/1.0/conf/cql2-text",
+            "http://www.opengis.net/spec/ogcapi-features-3/1.0/conf/features-filter",
+            "http://www.opengis.net/spec/ogcapi-features-3/1.0/conf/filter",
+        ]
+
+        create_landing_page_api_collection(
+            endpoint, additionalConformance=additionalConformance
+        )
+
+        filename = sanitize(
+            endpoint, "/collections/mycollection/queryables?" + ACCEPT_QUERYABLES
+        )
+        with open(filename, "wb") as f:
+            f.write(json.dumps(queryables).encode("UTF-8"))
+
+        items = {
+            "type": "FeatureCollection",
+            "features": [
+                {
+                    "type": "Feature",
+                    "id": "feat.1",
+                    "properties": {},
+                    "geometry": {"type": "Point", "coordinates": [-70.5, 66.5]},
+                }
+            ],
+        }
+
+        filename = sanitize(
+            endpoint, "/collections/mycollection/items?limit=10&" + ACCEPT_ITEMS
+        )
+        with open(filename, "wb") as f:
+            f.write(json.dumps(items).encode("UTF-8"))
+
+        vl = QgsVectorLayer(
+            "url='http://" + endpoint + "' typename='mycollection'", "test", "OAPIF"
+        )
+        self.assertTrue(vl.isValid())
+        os.unlink(filename)
+
+        tests = [
+            (
+                """intersects_bbox($geometry, geomFromWkt('POLYGON((-180 -90,-180 90,180 90,180 -90,-180 -90))'))""",
+                f"""filter=S_INTERSECTS({geometry_column},BBOX(-180,-90,180,90))&filter-lang=cql2-text""",
+            ),
+            (
+                """intersects($geometry, geomFromWkt('POINT(-70.5 66.5)'))""",
+                f"""filter=S_INTERSECTS({geometry_column},POINT(-70.5%2066.5))&filter-lang=cql2-text""",
+            ),
+        ]
+        for expr, cql_filter in tests:
+            assert vl.setSubsetString(expr)
+
+            filename = sanitize(
+                endpoint,
+                "/collections/mycollection/items?limit=1000&"
+                + cql_filter
+                + "&"
+                + ACCEPT_ITEMS,
+            )
+            with open(filename, "wb") as f:
+                f.write(json.dumps(items).encode("UTF-8"))
+            values = [f["id"] for f in vl.getFeatures()]
+            os.unlink(filename)
+            self.assertEqual(values, ["feat.1"], expr)
+
+    def testCQL2TextFilteringPart5GeometryQueryable(self):
+        """Test a geometry queryable described as in Part 3 and Part 5, without a GeoJSON $ref"""
+
+        self._testCQL2TextFilteringGeometryQueryable(
+            "testCQL2TextFilteringPart5GeometryQueryable",
+            {
+                "properties": {
+                    "geometry": {
+                        "format": "geometry-point",
+                        "x-ogc-role": "primary-geometry",
+                    },
+                }
+            },
+            "geometry",
+        )
+
+    def testCQL2TextFilteringPrimaryGeometryQueryable(self):
+        """Test that the primary geometry queryable wins over one sorting before it"""
+
+        self._testCQL2TextFilteringGeometryQueryable(
+            "testCQL2TextFilteringPrimaryGeometryQueryable",
+            {
+                "properties": {
+                    "centroid": {"format": "geometry-point"},
+                    "geometry": {
+                        "format": "geometry-point",
+                        "x-ogc-role": "primary-geometry",
+                    },
+                }
+            },
+            "geometry",
+        )
+
     def testCQL2TextFilteringAndPart2(self):
 
         endpoint = (
