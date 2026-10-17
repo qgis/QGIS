@@ -382,7 +382,7 @@ void QgsAttributeTableModel::attributeValueChanged( QgsFeatureId fid, int idx, c
     {
       const QModelIndex modelIndex = index( idToRow( fid ), fieldCol( idx ) );
       setData( modelIndex, value, Qt::EditRole );
-      emit dataChanged( modelIndex, modelIndex, QVector<int>() << Qt::DisplayRole );
+      doDataChanged( modelIndex, modelIndex, QVector<int>() << Qt::DisplayRole );
     }
   }
   else
@@ -401,7 +401,7 @@ void QgsAttributeTableModel::attributeValueChanged( QgsFeatureId fid, int idx, c
           // Update representation
           const QModelIndex modelIndex = index( idToRow( fid ), fieldCol( idx ) );
           setData( modelIndex, value, Qt::EditRole );
-          emit dataChanged( modelIndex, modelIndex, QVector<int>() << Qt::DisplayRole );
+          doDataChanged( modelIndex, modelIndex, QVector<int>() << Qt::DisplayRole );
         }
       }
       else
@@ -471,6 +471,21 @@ void QgsAttributeTableModel::loadAttributes()
   }
 }
 
+void QgsAttributeTableModel::doDataChanged( const QModelIndex &topLeft, const QModelIndex &bottomRight, const QList<int> &roles )
+{
+  if ( rowCount() == 0 || columnCount() <= 1 || !topLeft.isValid() || !bottomRight.isValid() )
+  {
+    return;
+  }
+
+  if ( topLeft.row() < 0 || bottomRight.row() >= rowCount() || topLeft.column() < 0 || bottomRight.column() >= columnCount() )
+  {
+    return;
+  }
+
+  emit dataChanged( topLeft, bottomRight, roles );
+}
+
 void QgsAttributeTableModel::loadLayer()
 {
   // make sure attributes are properly updated before caching the data
@@ -530,7 +545,7 @@ void QgsAttributeTableModel::fieldConditionalStyleChanged( const QString &fieldN
   {
     mRowStylesMap.clear();
     mConstraintStylesMap.clear();
-    emit dataChanged( index( 0, 0 ), index( rowCount() - 1, columnCount() - 1 ) );
+    doDataChanged( index( 0, 0 ), index( rowCount() - 1, columnCount() - 1 ) );
     return;
   }
 
@@ -540,7 +555,7 @@ void QgsAttributeTableModel::fieldConditionalStyleChanged( const QString &fieldN
 
   //whole column has changed
   const int col = fieldCol( fieldIndex );
-  emit dataChanged( index( 0, col ), index( rowCount() - 1, col ) );
+  doDataChanged( index( 0, col ), index( rowCount() - 1, col ) );
 }
 
 void QgsAttributeTableModel::swapRows( QgsFeatureId a, QgsFeatureId b )
@@ -685,7 +700,7 @@ QVariant QgsAttributeTableModel::data( const QModelIndex &index, int role ) cons
   if ( role == static_cast<int>( CustomRole::FeatureId ) )
     return rowId;
 
-  if ( index.column() >= mFieldCount )
+  if ( index.column() > mFieldCount )
     return QVariant();
 
   const int fieldId = mAttributes.at( index.column() );
@@ -930,15 +945,15 @@ void QgsAttributeTableModel::bulkEditCommandEnded()
   {
     // Invalidates the cache (there is no API for doing this directly)
     emit mLayer->dataChanged();
-    emit dataChanged( createIndex( 0, 0 ), createIndex( rowCount() - 1, columnCount() - 1 ) );
+    doDataChanged( createIndex( 0, 0 ), createIndex( rowCount() - 1, columnCount() - 1 ) );
   }
   else
   {
-    int minRow = rowCount();
-    int minCol = columnCount();
-    int maxRow = 0;
-    int maxCol = 0;
     const auto keys = mAttributeValueChanges.keys();
+    int minRow = keys.isEmpty() ? 0 : rowCount();
+    int minCol = keys.isEmpty() ? 0 : columnCount();
+    int maxRow = keys.isEmpty() ? rowCount() : 0;
+    int maxCol = keys.isEmpty() ? columnCount() : 0;
     for ( const auto &key : keys )
     {
       attributeValueChanged( key.first, key.second, mAttributeValueChanges.value( key ) );
@@ -950,7 +965,7 @@ void QgsAttributeTableModel::bulkEditCommandEnded()
       maxCol = std::max<int>( col, maxCol );
     }
 
-    emit dataChanged( createIndex( minRow, minCol ), createIndex( maxRow, maxCol ) );
+    doDataChanged( createIndex( minRow, minCol ), createIndex( maxRow, maxCol ) );
   }
   mAttributeValueChanges.clear();
 }
@@ -958,7 +973,7 @@ void QgsAttributeTableModel::bulkEditCommandEnded()
 void QgsAttributeTableModel::reload( const QModelIndex &index1, const QModelIndex &index2 )
 {
   mFeat.setId( std::numeric_limits<int>::min() );
-  emit dataChanged( index1, index2 );
+  doDataChanged( index1, index2 );
 }
 
 

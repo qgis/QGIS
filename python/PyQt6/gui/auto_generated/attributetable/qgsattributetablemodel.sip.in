@@ -37,7 +37,6 @@ Model View Programming</a>
       Sort,
     };
 
-  public:
     QgsAttributeTableModel( QgsVectorLayerCache *layerCache, QObject *parent = 0 );
 %Docstring
 Constructor

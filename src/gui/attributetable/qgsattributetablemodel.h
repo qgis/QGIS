@@ -70,7 +70,6 @@ class GUI_EXPORT QgsAttributeTableModel : public QAbstractTableModel
     Q_ENUM( CustomRole )
     // *INDENT-ON*
 
-  public:
     /**
      * Constructor
      * \param layerCache  A layer cache to use as backend
@@ -389,6 +388,12 @@ class GUI_EXPORT QgsAttributeTableModel : public QAbstractTableModel
       * Gets mFieldCount, mAttributes
       */
     void loadAttributes();
+
+    /**
+     * Emits dataChanged.
+     * Prevents a crash deep inside QT, see issue GH #65025
+     */
+    void doDataChanged( const QModelIndex &topLeft, const QModelIndex &bottomRight, const QList<int> &roles = QList<int>() );
 
     /**
      * Load feature fid into local cache (mFeat)
