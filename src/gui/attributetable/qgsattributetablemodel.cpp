@@ -291,7 +291,12 @@ void QgsAttributeTableModel::featureAdded( QgsFeatureId fid )
       mRowIdMap.insert( n, fid );
       if ( !mResettingModel )
         endInsertRows();
-      reload( index( rowCount() - 1, 0 ), index( rowCount() - 1, columnCount() ) );
+
+      const int row = rowCount() - 1;
+      const QModelIndex first = index( row, 0 );
+      const int lastColumn = columnCount() - 1;
+      const QModelIndex last = index( row, lastColumn );
+      reload( first, last );
       if ( mBulkEditCommandRunning && !mResettingModel )
       {
         mInsertedRowsChanges.append( fid );
