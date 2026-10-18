@@ -26,6 +26,7 @@ using namespace nlohmann;
 #include "qgsoapifputfeaturerequest.h"
 #include "moc_qgsoapifputfeaturerequest.cpp"
 #include "qgsoapifshareddata.h"
+#include "qgsoapifutils.h"
 
 QgsOapifPutFeatureRequest::QgsOapifPutFeatureRequest( const QgsDataSourceUri &uri )
   : QgsBaseNetworkRequest( QgsAuthorizationSettings( uri.username(), uri.password(), QgsHttpHeaders(), uri.authConfigId() ), "OAPIF" )
@@ -58,6 +59,9 @@ bool QgsOapifPutFeatureRequest::putFeature( const QgsOapifSharedData *sharedData
         jProperties.erase( iterId );
     }
   }
+  const bool jsonFg = sharedData->shouldWriteJsonFg();
+  if ( jsonFg )
+    QgsOAPIFJson::writeJsonFgPlace( j, fModified.geometry(), sharedData->mWKBType, contentCrs, true );
   const QString jsonFeature = QString::fromStdString( j.dump() );
   QgsDebugMsgLevel( jsonFeature, 5 );
   mEmptyResponseIsValid = true;
@@ -65,6 +69,8 @@ bool QgsOapifPutFeatureRequest::putFeature( const QgsOapifSharedData *sharedData
   QList<QNetworkReply::RawHeaderPair> extraHeaders;
   if ( !contentCrs.isEmpty() )
     extraHeaders.append( QNetworkReply::RawHeaderPair( QByteArray( "Content-Crs" ), contentCrs.toUtf8() ) );
+  if ( jsonFg )
+    extraHeaders.append( QNetworkReply::RawHeaderPair( QByteArray( "Link" ), QByteArray( "<http://www.opengis.net/def/profile/OGC/0/jsonfg>; rel=profile" ) ) );
   QUrl url( sharedData->mItemsUrl + QString( u"/"_s + jsonId ) );
   return sendPUT( url, "application/geo+json", jsonFeature.toUtf8(), extraHeaders );
 }

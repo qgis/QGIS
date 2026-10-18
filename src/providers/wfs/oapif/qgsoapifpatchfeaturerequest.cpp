@@ -26,6 +26,7 @@ using namespace nlohmann;
 #include "qgsoapifpatchfeaturerequest.h"
 #include "moc_qgsoapifpatchfeaturerequest.cpp"
 #include "qgsoapifshareddata.h"
+#include "qgsoapifutils.h"
 
 QgsOapifPatchFeatureRequest::QgsOapifPatchFeatureRequest( const QgsDataSourceUri &uri )
   : QgsBaseNetworkRequest( QgsAuthorizationSettings( uri.username(), uri.password(), QgsHttpHeaders(), uri.authConfigId() ), "OAPIF" )
@@ -40,10 +41,16 @@ bool QgsOapifPatchFeatureRequest::patchFeature( const QgsOapifSharedData *shared
   }
 
   json j;
-  j["geometry"] = geomModified.asJsonObject();
+  const bool jsonFg = sharedData->shouldWriteJsonFg();
+  if ( jsonFg )
+    QgsOAPIFJson::writeJsonFgPlace( j, geomModified, sharedData->mWKBType, contentCrs, false );
+  else
+    j["geometry"] = geomModified.asJsonObject();
   QList<QNetworkReply::RawHeaderPair> extraHeaders;
   if ( !contentCrs.isEmpty() )
     extraHeaders.append( QNetworkReply::RawHeaderPair( QByteArray( "Content-Crs" ), contentCrs.toUtf8() ) );
+  if ( jsonFg )
+    extraHeaders.append( QNetworkReply::RawHeaderPair( QByteArray( "Link" ), QByteArray( "<http://www.opengis.net/def/profile/OGC/0/jsonfg>; rel=profile" ) ) );
   mEmptyResponseIsValid = true;
   mFakeURLIncludesContentType = true;
   QUrl url( sharedData->mItemsUrl + QString( u"/"_s + jsonId ) );

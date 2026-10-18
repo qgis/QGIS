@@ -17,6 +17,10 @@
 
 #include <limits>
 
+#include "qgsabstractgeometry.h"
+#include "qgsgeometry.h"
+#include "qgswkbtypes.h"
+
 #include <QRegularExpression>
 #include <QString>
 
@@ -286,4 +290,27 @@ QString QgsOAPIFGetNextLinkFromResponseHeader( const QList<QNetworkReply::RawHea
   }
 
   return nextUrl;
+}
+
+void QgsOAPIFJson::writeJsonFgPlace( json &feature, const QgsGeometry &geometry, Qgis::WkbType layerType, const QString &contentCrs, bool asDocument )
+{
+  if ( geometry.isNull() )
+  {
+    feature["geometry"] = nullptr;
+    feature["place"] = nullptr;
+    return;
+  }
+
+  const QVector<QgsGeometry> geometries = geometry.coerceToType( layerType );
+  const QgsGeometry coerced = geometries.size() == 1 ? geometries.at( 0 ) : geometry;
+  feature["place"] = coerced.constGet()->asJsonObject( 17, Qgis::GeoJsonProfile::JsonFg );
+
+  if ( !contentCrs.isEmpty() )
+    feature["coordRefSys"] = contentCrs.toStdString();
+
+  if ( asDocument )
+  {
+    feature["geometry"] = nullptr;
+    feature["conformsTo"] = { "http://www.opengis.net/spec/json-fg-1/1.0/conf/core", "http://www.opengis.net/spec/json-fg-1/1.0/conf/circular-arcs" };
+  }
 }

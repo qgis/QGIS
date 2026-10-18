@@ -25,6 +25,10 @@ using namespace nlohmann;
 #include <QString>
 #include <QStringList>
 
+#include "qgis.h"
+
+class QgsGeometry;
+
 /**
  * Utility class
 */
@@ -47,6 +51,9 @@ class QgsOAPIFJson
 
     //! Find among links the one that matches rel, by using an optional list of preferable types.
     static QString findLink( const std::vector<Link> &links, const QString &rel, const QStringList &preferableTypes = QStringList() );
+
+    //! Write the feature as JSON-FG
+    static void writeJsonFgPlace( json &feature, const QgsGeometry &geometry, Qgis::WkbType layerType, const QString &contentCrs, bool asDocument );
 };
 
 // Return the href for the next link from the response headers and the MIME type of the format

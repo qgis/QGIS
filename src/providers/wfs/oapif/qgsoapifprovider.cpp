@@ -196,6 +196,7 @@ bool QgsOapifProvider::init()
                                                       // Two below names are deprecated
                                                       conformanceClasses.contains( "http://www.opengis.net/spec/cql2/0.0/conf/basic-spatial-operators"_L1 ) || conformanceClasses.contains( "http://www.opengis.net/spec/cql2/1.0/conf/basic-spatial-operators"_L1 ) );
     implementsSchemas = conformanceClasses.contains( "http://www.opengis.net/spec/ogcapi-features-5/1.0/conf/schemas"_L1 );
+    mShared->mServerSupportsJsonFgWrites = conformanceClasses.contains( "http://www.opengis.net/spec/json-fg-1/1.0/conf/api"_L1 );
   }
 
   const QgsOapifCollection &collectionDesc = collectionRequest->collection();
@@ -587,6 +588,11 @@ void QgsOapifProvider::computeCapabilities( const QgsOapifItemsRequest &itemsReq
     {
       mSupportsPatch = true;
     }
+  }
+
+  if ( mShared->mServerSupportsJsonFgWrites )
+  {
+    mCapabilities |= Qgis::VectorProviderCapability::CircularGeometries;
   }
 }
 
