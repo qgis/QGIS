@@ -154,7 +154,9 @@ int QgsAttributeTableFilterModel::actionColumnIndex() const
 
 int QgsAttributeTableFilterModel::columnCount( const QModelIndex &parent ) const
 {
-  Q_UNUSED( parent )
+  if ( parent.isValid() )
+    return 0;
+
   return mColumnMapping.count();
 }
 
@@ -735,6 +737,9 @@ QModelIndex QgsAttributeTableFilterModel::mapFromSource( const QModelIndex &sour
 
 Qt::ItemFlags QgsAttributeTableFilterModel::flags( const QModelIndex &index ) const
 {
+  if ( !index.isValid() )
+    return Qt::ItemFlag::NoItemFlags;
+
   // Handle the action column flags here, the master model doesn't know it
   if ( mapColumnToSource( index.column() ) == -1 )
     return Qt::ItemIsEnabled | Qt::ItemIsSelectable;
