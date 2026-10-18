@@ -59,7 +59,7 @@ QgsLayerTreeViewBase::QgsLayerTreeViewBase( QWidget *parent )
   setAcceptDrops( true );
   setDropIndicatorShown( true );
   setEditTriggers( EditKeyPressed );
-  setExpandsOnDoubleClick( true ); // tough normally used for other actions, setting this to true is in line with expected behavior
+  setExpandsOnDoubleClick( false ); // normally used for other actions
 
   // Ensure legend graphics are scrollable
   header()->setStretchLastSection( false );
