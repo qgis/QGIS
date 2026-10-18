@@ -932,23 +932,39 @@ void QgsAttributeTableModel::bulkEditCommandEnded()
     emit mLayer->dataChanged();
     emit dataChanged( createIndex( 0, 0 ), createIndex( rowCount() - 1, columnCount() - 1 ) );
   }
-  else
+  else if ( !mAttributeValueChanges.empty() && !mInsertedRowsChanges.empty() )
   {
-    int minRow = rowCount();
-    int minCol = columnCount();
-    int maxRow = 0;
-    int maxCol = 0;
-    const auto keys = mAttributeValueChanges.keys();
-    for ( const auto &key : keys )
+    int minRow = std::numeric_limits< int >::max();
+    int minCol = std::numeric_limits< int >::max();
+    int maxRow = -1;
+    int maxCol = -1;
+    const int lastColumn = columnCount() - 1;
+    for ( auto it = mAttributeValueChanges.constBegin(); it != mAttributeValueChanges.constEnd(); ++it )
     {
-      attributeValueChanged( key.first, key.second, mAttributeValueChanges.value( key ) );
-      const int row( idToRow( key.first ) );
-      const int col( fieldCol( key.second ) );
+      attributeValueChanged( it.key().first, it.key().second, it.value() );
+      const int row( idToRow( it.key().first ) );
+      const int col( fieldCol( it.key().second ) );
       minRow = std::min<int>( row, minRow );
       minCol = std::min<int>( col, minCol );
       maxRow = std::max<int>( row, maxRow );
       maxCol = std::max<int>( col, maxCol );
     }
+
+    for ( QgsFeatureId fid : std::as_const( mInsertedRowsChanges ) )
+    {
+      const int row( idToRow( fid ) );
+      minRow = std::min<int>( row, minRow );
+      maxRow = std::max<int>( row, maxRow );
+      // the whole row has changed, so we need to expand the range to include ALL columns
+      minCol = 0;
+      maxCol = lastColumn;
+    }
+#ifdef QGISDEBUG
+    Q_ASSERT_X( minRow >= 0 && minRow < rowCount(), "QgsAttributeTableModel::bulkEditCommandEnded", u"Invalid minRow, got %1 expected >=0 && < %2"_s.arg( minRow ).arg( rowCount() ).toLocal8Bit().constData() );
+    Q_ASSERT_X( minCol >= 0 && minCol < columnCount(), "QgsAttributeTableModel::bulkEditCommandEnded", u"Invalid minCol, got %1 expected >=0 && < %2"_s.arg( minCol ).arg( columnCount() ).toLocal8Bit().constData() );
+    Q_ASSERT_X( maxRow >= 0 && maxRow < rowCount(), "QgsAttributeTableModel::bulkEditCommandEnded", u"Invalid maxRow, got %1 expected >=0 && < %2"_s.arg( maxRow ).arg( rowCount() ).toLocal8Bit().constData() );
+    Q_ASSERT_X( maxCol >= 0 && maxCol < columnCount(), "QgsAttributeTableModel::bulkEditCommandEnded", u"Invalid maxCol, got %1 expected >=0 && < %2"_s.arg( maxCol ).arg( columnCount() ).toLocal8Bit().constData() );
+#endif
 
     emit dataChanged( createIndex( minRow, minCol ), createIndex( maxRow, maxCol ) );
   }
