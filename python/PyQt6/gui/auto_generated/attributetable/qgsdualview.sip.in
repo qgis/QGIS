@@ -31,7 +31,6 @@ the currently selected feature are shown in a form.
   public:
 
 
-
     enum ViewMode /BaseType=IntEnum/
     {
 
