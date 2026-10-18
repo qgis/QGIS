@@ -983,6 +983,24 @@ void QgsAttributeTableModel::bulkEditCommandEnded()
 void QgsAttributeTableModel::reload( const QModelIndex &index1, const QModelIndex &index2 )
 {
   mFeat.setId( std::numeric_limits<int>::min() );
+
+#ifdef QGISDEBUG
+  Q_ASSERT_X( index1.row() >= 0 && index1.row() < rowCount(), "QgsAttributeTableModel::reload", u"Invalid min row, got %1 expected >=0 && < %2"_s.arg( index1.row() ).arg( rowCount() ).toLocal8Bit().constData() );
+  Q_ASSERT_X(
+    index1.column() >= 0 && index1.column() < columnCount(),
+    "QgsAttributeTableModel::reload",
+    u"Invalid min col, got %1 expected >=0 && < %2"_s.arg( index1.column() ).arg( columnCount() ).toLocal8Bit().constData()
+  );
+  Q_ASSERT_X( index2.row() >= 0 && index2.row() < rowCount(), "QgsAttributeTableModel::reload", u"Invalid max row, got %1 expected >=0 && < %2"_s.arg( index2.row() ).arg( rowCount() ).toLocal8Bit().constData() );
+  Q_ASSERT_X(
+    index2.column() >= 0 && index2.column() < columnCount(),
+    "QgsAttributeTableModel::reload",
+    u"Invalid max col, got %1 expected >=0 && < %2"_s.arg( index2.column() ).arg( columnCount() ).toLocal8Bit().constData()
+  );
+  Q_ASSERT_X( index2.row() >= index1.row(), "QgsAttributeTableModel::reload", u"Invalid max row, got %1 expected >= %2"_s.arg( index2.row() ).arg( index1.row() ).toLocal8Bit().constData() );
+  Q_ASSERT_X( index2.column() >= index1.column(), "QgsAttributeTableModel::reload", u"Invalid max column, got %1 expected >= %2"_s.arg( index2.column() ).arg( index1.column() ).toLocal8Bit().constData() );
+#endif
+
   emit dataChanged( index1, index2 );
 }
 
