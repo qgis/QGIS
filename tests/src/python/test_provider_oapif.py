@@ -3575,6 +3575,16 @@ class TestPyQgsOapifProvider(QgisTestCase, ProviderTestCase):
             "http://www.opengis.net/def/profile/ogc/0/jsonfg-plus"
         )
 
+    def testJsonFG_oapif1_1_OutputFormat_registered_profile_jsonfg(self):
+        self._testJsonFG_oapif1_1_OutputFormat(
+            "http://www.opengis.net/def/profile/OGC/0/jsonfg"
+        )
+
+    def testJsonFG_oapif1_1_OutputFormat_registered_profile_jsonfg_plus(self):
+        self._testJsonFG_oapif1_1_OutputFormat(
+            "http://www.opengis.net/def/profile/OGC/0/jsonfg-plus"
+        )
+
     def testGMLOutputFormat_no_xml_schema_paging(self):
 
         endpoint = (
