@@ -21,6 +21,7 @@
 #include "qgsoapifcql2textexpressioncompiler.h"
 #include "qgsoapiffeaturedownloaderimpl.h"
 #include "qgsoapifutils.h"
+#include "qgswkbtypes.h"
 
 #include <QString>
 #include <QUrl>
@@ -51,6 +52,11 @@ QString QgsOapifSharedData::appendExtraQueryParameters( const QString &url ) con
   if ( nPos < 0 )
     return url + '?' + mExtraQueryParameters;
   return url + '&' + mExtraQueryParameters;
+}
+
+bool QgsOapifSharedData::shouldWriteJsonFg() const
+{
+  return mServerSupportsJsonFgWrites && QgsWkbTypes::isCurvedType( mWKBType );
 }
 
 bool QgsOapifSharedData::isRestrictedToRequestBBOX() const
@@ -85,6 +91,7 @@ QgsOapifSharedData *QgsOapifSharedData::clone() const
   copy->mServerSupportsLikeBetweenIn = mServerSupportsLikeBetweenIn;
   copy->mServerSupportsCaseI = mServerSupportsCaseI;
   copy->mServerSupportsBasicSpatialFunctions = mServerSupportsBasicSpatialFunctions;
+  copy->mServerSupportsJsonFgWrites = mServerSupportsJsonFgWrites;
   copy->mQueryables = mQueryables;
   QgsBackgroundCachedSharedData::copyStateToClone( copy );
 

@@ -22,6 +22,7 @@ from osgeo import gdal, ogr
 from providertestbase import ProviderTestCase
 from qgis.core import (
     NULL,
+    Qgis,
     QgsApplication,
     QgsBox3d,
     QgsFeature,
@@ -54,6 +55,38 @@ ACCEPT_ITEMS = "Accept=application/geo+json, application/json"
 ACCEPT_QUERYABLES = "Accept=application/schema+json"
 ACCEPT_SCHEMA = "Accept=application/schema+json"
 
+JSONFG_PROFILE_LINK = (
+    "Link=<http://www.opengis.net/def/profile/OGC/0/jsonfg>; rel=profile"
+)
+JSONFG_CONFORMANCE = [
+    "http://www.opengis.net/spec/json-fg-1/1.0/conf/core",
+    "http://www.opengis.net/spec/json-fg-1/1.0/conf/circular-arcs",
+]
+
+CURVE_GEOM = QgsGeometry.fromWkt(
+    "CurvePolygon (CompoundCurve (CircularString (7 46, 8 47, 9 46), (9 46, 8 45, 7 46)))"
+)
+CURVE_GEOM_SWAPPED = QgsGeometry(CURVE_GEOM)
+CURVE_GEOM_SWAPPED.get().swapXy()
+CURVE_PLACE = {
+    "type": "CurvePolygon",
+    "geometries": [
+        {
+            "type": "CompoundCurve",
+            "geometries": [
+                {
+                    "type": "CircularString",
+                    "coordinates": [[7.0, 46.0], [8.0, 47.0], [9.0, 46.0]],
+                },
+                {
+                    "type": "LineString",
+                    "coordinates": [[9.0, 46.0], [8.0, 45.0], [7.0, 46.0]],
+                },
+            ],
+        }
+    ],
+}
+
 
 def mergeDict(d1, d2):
     res = copy.deepcopy(d1)
@@ -63,6 +96,10 @@ def mergeDict(d1, d2):
         else:
             res[k] = mergeDict(res[k], d2[k])
     return res
+
+
+def compactJson(value):
+    return json.dumps(value, sort_keys=True, separators=(",", ":"))
 
 
 def create_landing_page_api_collection(
@@ -3424,6 +3461,260 @@ class TestPyQgsOapifProvider(QgisTestCase, ProviderTestCase):
         f = next(it)
         self.assertEqual(f.geometry().wkbType(), QgsWkbTypes.Type.Point)
         self.assertEqual(f.geometry().asWkt().upper(), "POINT (-70.25 66.25)")
+
+    def _createJsonFgWriteLayer(
+        self,
+        name,
+        jsonFgConformance=True,
+        supportsPatch=True,
+        storageCrs=None,
+    ):
+        endpoint = self.__class__.basetestpath + "/fake_qgis_http_endpoint_" + name
+        additionalConformance = [
+            "http://www.opengis.net/spec/ogcapi-features-5/1.0/conf/schemas",
+        ]
+        if jsonFgConformance:
+            additionalConformance.append(
+                "http://www.opengis.net/spec/json-fg-1/1.0/conf/api"
+            )
+        collectionLinks = [
+            {
+                "type": "application/schema+json",
+                "rel": "[ogc-rel:schema]",
+                "title": "Schema of collection in JSON",
+                "href": "http://" + endpoint + "/collections/mycollection/schema",
+            }
+        ]
+        create_landing_page_api_collection(
+            endpoint,
+            storageCrs=storageCrs,
+            additionalConformance=additionalConformance,
+            collectionLinks=collectionLinks,
+        )
+
+        schema = {
+            "$schema": "https://json-schema.org/draft/2020-12/schema",
+            "$id": "http://" + endpoint + "/collections/mycollection/schema?f=json",
+            "type": "object",
+            "title": "Make Curved Collections Great Again",
+            "properties": {
+                "name": {"type": "string"},
+                "geometry": {
+                    "x-ogc-role": "primary-geometry",
+                    "format": "geometry-curvepolygon",
+                },
+            },
+        }
+        with open(
+            sanitize(endpoint, "/collections/mycollection/schema?" + ACCEPT_SCHEMA),
+            "wb",
+        ) as f:
+            f.write(json.dumps(schema).encode("UTF-8"))
+
+        ring = [[7, 46], [7, 47], [8, 47], [7, 46]]
+        crsParam = ""
+        if storageCrs:
+            crsParam = "&crs=" + storageCrs
+            ring = [[y, x] for x, y in ring]
+        items = {
+            "type": "FeatureCollection",
+            "features": [
+                {
+                    "type": "Feature",
+                    "id": "feat.1",
+                    "properties": {"name": "a"},
+                    "geometry": {"type": "Polygon", "coordinates": [ring]},
+                }
+            ],
+        }
+        for limit in (10, 1000):
+            with open(
+                sanitize(
+                    endpoint,
+                    f"/collections/mycollection/items?limit={limit}{crsParam}&"
+                    + ACCEPT_ITEMS,
+                ),
+                "wb",
+            ) as f:
+                f.write(json.dumps(items).encode("UTF-8"))
+
+        with open(
+            sanitize(endpoint, "/collections/mycollection/items?VERB=OPTIONS"), "wb"
+        ) as f:
+            f.write(b"HEAD, GET, POST")
+        with open(
+            sanitize(endpoint, "/collections/mycollection/items/feat.1?VERB=OPTIONS"),
+            "wb",
+        ) as f:
+            verbs = "HEAD, GET, PUT, PATCH, DELETE"
+            if not supportsPatch:
+                verbs = verbs.replace(", PATCH", "")
+            f.write(verbs.encode("UTF-8"))
+
+        vl = QgsVectorLayer(
+            f"url='http://{endpoint}' typename='mycollection' restrictToRequestBBOX=1",
+            "test",
+            "OAPIF",
+        )
+        self.assertTrue(vl.isValid())
+        self.assertEqual(vl.wkbType(), QgsWkbTypes.Type.CurvePolygon)
+        self.assertEqual([f.id() for f in vl.getFeatures()], [1])
+        return endpoint, vl
+
+    def _writePatchResponse(self, endpoint, patch, extraHeaders=()):
+        with open(
+            sanitize(
+                endpoint,
+                "/collections/mycollection/items/feat.1?PATCHDATA="
+                + compactJson(patch)
+                + "".join("&" + h for h in extraHeaders)
+                + "&Content-Type=application_merge-patch+json",
+            ),
+            "wb",
+        ) as f:
+            f.write(b"")
+
+    def testJsonFgWritesCapabilities(self):
+        _, vl = self._createJsonFgWriteLayer("testJsonFgWritesCapabilities")
+        self.assertTrue(
+            vl.dataProvider().capabilities()
+            & Qgis.VectorProviderCapability.CircularGeometries
+        )
+
+        _, vl = self._createJsonFgWriteLayer(
+            "testJsonFgWritesCapabilitiesWithoutConformance", jsonFgConformance=False
+        )
+        self.assertFalse(
+            vl.dataProvider().capabilities()
+            & Qgis.VectorProviderCapability.CircularGeometries
+        )
+
+    def testJsonFgPatchCurve(self):
+        endpoint, vl = self._createJsonFgWriteLayer("testJsonFgPatchCurve")
+        self._writePatchResponse(
+            endpoint,
+            patch={"place": CURVE_PLACE},
+            extraHeaders=[JSONFG_PROFILE_LINK],
+        )
+
+        self.assertTrue(vl.dataProvider().changeGeometryValues({1: CURVE_GEOM}))
+
+    def testJsonFgPatchStraightGeometry(self):
+        endpoint, vl = self._createJsonFgWriteLayer("testJsonFgPatchStraightGeometry")
+        place = {
+            "type": "CurvePolygon",
+            "geometries": [
+                {
+                    "type": "LineString",
+                    "coordinates": [[7.0, 46.0], [7.0, 47.0], [8.0, 47.0], [7.0, 46.0]],
+                }
+            ],
+        }
+        self._writePatchResponse(
+            endpoint, patch={"place": place}, extraHeaders=[JSONFG_PROFILE_LINK]
+        )
+
+        self.assertTrue(
+            vl.dataProvider().changeGeometryValues(
+                {1: QgsGeometry.fromWkt("Polygon ((7 46, 7 47, 8 47, 7 46))")}
+            )
+        )
+
+    def testJsonFgPatchNullGeometry(self):
+        endpoint, vl = self._createJsonFgWriteLayer("testJsonFgPatchNullGeometry")
+        self._writePatchResponse(
+            endpoint,
+            patch={"geometry": None, "place": None},
+            extraHeaders=[JSONFG_PROFILE_LINK],
+        )
+
+        self.assertTrue(vl.dataProvider().changeGeometryValues({1: QgsGeometry()}))
+
+    def testJsonFgPatchNonDefaultCrs(self):
+        crs = "http://www.opengis.net/def/crs/EPSG/0/4326"
+        endpoint, vl = self._createJsonFgWriteLayer(
+            "testJsonFgPatchNonDefaultCrs", storageCrs=crs
+        )
+
+        place = json.loads(CURVE_GEOM_SWAPPED.asGeoJson(17, Qgis.GeoJsonProfile.JsonFg))
+        self._writePatchResponse(
+            endpoint,
+            {"coordRefSys": crs, "place": place},
+            extraHeaders=(f"Content-Crs={crs}", JSONFG_PROFILE_LINK),
+        )
+
+        self.assertTrue(vl.dataProvider().changeGeometryValues({1: CURVE_GEOM}))
+
+    def testJsonFgPatchWithoutConformance(self):
+        endpoint, vl = self._createJsonFgWriteLayer(
+            "testJsonFgPatchWithoutConformance", jsonFgConformance=False
+        )
+        with open(
+            sanitize(
+                endpoint,
+                '/collections/mycollection/items/feat.1?PATCHDATA={"geometry":'
+                + CURVE_GEOM.asJson()
+                + "}&Content-Type=application_merge-patch+json",
+            ),
+            "wb",
+        ) as f:
+            f.write(b"")
+
+        self.assertTrue(vl.dataProvider().changeGeometryValues({1: CURVE_GEOM}))
+
+    def testJsonFgPut(self):
+        endpoint, vl = self._createJsonFgWriteLayer(
+            "testJsonFgPut", supportsPatch=False
+        )
+        feature = {
+            "type": "Feature",
+            "id": "feat.1",
+            "conformsTo": JSONFG_CONFORMANCE,
+            "geometry": None,
+            "place": CURVE_PLACE,
+            "properties": {"name": "a"},
+        }
+        with open(
+            sanitize(
+                endpoint,
+                "/collections/mycollection/items/feat.1?PUTDATA="
+                + compactJson(feature)
+                + "&"
+                + JSONFG_PROFILE_LINK,
+            ),
+            "wb",
+        ) as f:
+            f.write(b"")
+
+        self.assertTrue(vl.dataProvider().changeGeometryValues({1: CURVE_GEOM}))
+
+    def testJsonFgPost(self):
+        endpoint, vl = self._createJsonFgWriteLayer("testJsonFgPost")
+        feature = {
+            "type": "Feature",
+            "conformsTo": JSONFG_CONFORMANCE,
+            "geometry": None,
+            "place": CURVE_PLACE,
+            "properties": {"name": "b"},
+        }
+        with open(
+            sanitize(
+                endpoint,
+                "/collections/mycollection/items?POSTDATA="
+                + compactJson(feature)
+                + "&"
+                + JSONFG_PROFILE_LINK,
+            ),
+            "wb",
+        ) as f:
+            f.write(b"Location: /collections/mycollection/items/new_id\r\n")
+
+        f = QgsFeature(vl.fields())
+        f.setAttribute("name", "b")
+        f.setGeometry(CURVE_GEOM)
+        ok, created = vl.dataProvider().addFeatures([f])
+        self.assertTrue(ok)
+        self.assertEqual(len(created), 1)
 
     def _testJsonFG_oapif1_1_OutputFormat(self, profile, profile_in_next_link=True):
 
