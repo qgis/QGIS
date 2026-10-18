@@ -38,6 +38,7 @@ from qgis.core import (
     QgsRasterDemTerrainProvider,
     QgsRasterLayer,
     QgsRendererCategory,
+    QgsRuleBasedRenderer,
     QgsSymbolLayer,
     QgsVectorLayer,
     QgsWkbTypes,
@@ -2857,6 +2858,92 @@ class TestQgsVectorLayerProfileGenerator(QgisTestCase):
         self.assertTrue(
             self.image_check(
                 "vector_polygon_layer_symbology", "vector_polygon_layer_symbology", res
+            )
+        )
+
+    def testRenderLayerRuleBasedSymbology(self):
+        vl = QgsVectorLayer(
+            "PolygonZ?crs=EPSG:27700&field=value:int", "lines", "memory"
+        )
+        vl.setCrs(QgsCoordinateReferenceSystem())
+        self.assertTrue(vl.isValid())
+
+        for value, polygon in [
+            (
+                3,
+                "PolygonZ ((321829.48893365426920354 129991.38697145861806348 1, 321847.89668515208177269 129996.63588572069420479 1, 321848.97131609614007175 129979.22330882755341008 1, 321830.31725845142500475 129978.07136809575604275 1, 321829.48893365426920354 129991.38697145861806348 1))",
+            ),
+            (
+                2,
+                "PolygonZ ((321920.00953056826256216 129924.58260190498549491 2, 321924.65299345907988027 129908.43546159457764588 2, 321904.78543491888558492 129903.99811821122420952 2, 321900.80605239619035274 129931.39860145389684476 2, 321904.84799937985371798 129931.71552911199978553 2, 321908.93646715773502365 129912.90030360443051904 2, 321914.20495146053144708 129913.67693978428724222 2, 321911.30165811872575432 129923.01272751353099011 2, 321920.00953056826256216 129924.58260190498549491 2))",
+            ),
+            (
+                17,
+                "PolygonZ ((321923.10517279652412981 129919.61521573827485554 3, 321922.23537852568551898 129928.3598982143739704 3, 321928.60423935484141111 129934.22530528216157109 3, 321929.39881197665818036 129923.29054521876969375 3, 321930.55804549407912418 129916.53248518184409477 3, 321923.10517279652412981 129919.61521573827485554 3))",
+            ),
+            (
+                5,
+                "PolygonZ ((321990.47451346553862095 129909.63588680300745182 4, 321995.04325810901354998 129891.84052284323843196 4, 321989.66826330573530868 129890.5092018858413212 4, 321990.78512359503656626 129886.49917887404444627 4, 321987.37291929306229576 129885.64982962771318853 4, 321985.2254804756375961 129893.81317058412241749 4, 321987.63158903241856024 129894.41078495365218259 4, 321984.34022761805681512 129907.57450046355370432 4, 321990.47451346553862095 129909.63588680300745182 4))",
+            ),
+            (
+                4,
+                "PolygonZ ((322103.03910495212767273 129795.91051736124791205 5, 322108.25568856322206557 129804.76113295342656784 5, 322113.29666162584908307 129803.9285887333098799 5, 322117.78645010641776025 129794.48194090687320568 5, 322103.03910495212767273 129795.91051736124791205 5))",
+            ),
+        ]:
+            f = QgsFeature()
+            f.setAttributes([value])
+            f.setGeometry(QgsGeometry.fromWkt(polygon))
+            self.assertTrue(vl.dataProvider().addFeature(f))
+
+        vl.elevationProperties().setClamping(Qgis.AltitudeClamping.Absolute)
+        vl.elevationProperties().setExtrusionEnabled(True)
+        vl.elevationProperties().setExtrusionHeight(7)
+        fill_symbol = QgsFillSymbol.createSimple(
+            {"color": "#ff00ff", "outline_style": "no"}
+        )
+        vl.elevationProperties().setRespectLayerSymbology(True)
+        vl.elevationProperties().setProfileFillSymbol(fill_symbol)
+
+        root_rule = QgsRuleBasedRenderer.Rule(None)
+
+        marker_symbol = QgsFillSymbol.createSimple(
+            {"color": "#ff0000", "outline_style": "no"}
+        )
+        less_than_four_rule = QgsRuleBasedRenderer.Rule(
+            marker_symbol, filterExp='"value" <= 4', label="lessthanfour"
+        )
+        root_rule.appendChild(less_than_four_rule)
+
+        marker_symbol = QgsFillSymbol.createSimple(
+            {"color": "#00ffff", "outline_style": "no"}
+        )
+        more_than_four_rule = QgsRuleBasedRenderer.Rule(
+            marker_symbol, filterExp='"value" > 4', label="morethanfour"
+        )
+        root_rule.appendChild(more_than_four_rule)
+
+        renderer = QgsRuleBasedRenderer(root_rule)
+        vl.setRenderer(renderer)
+
+        curve = QgsLineString()
+        curve.fromWkt(
+            "LineString (321828.40177959465654567 130006.05467766037327237, 321928.87475151813123375 129888.40238929403130896, 321923.14831270382273942 129957.11965506551496219, 322016.85367511952063069 129880.593609092728002, 322123.57367120403796434 129786.36766133029595949)"
+        )
+        req = QgsProfileRequest(curve)
+        req.setTransformContext(self.create_transform_context())
+
+        req.setCrs(QgsCoordinateReferenceSystem())
+
+        plot_renderer = QgsProfilePlotRenderer([vl], req)
+        plot_renderer.startGeneration()
+        plot_renderer.waitForFinished()
+
+        res = plot_renderer.renderToImage(400, 400, 0, curve.length(), 0, 14)
+        self.assertTrue(
+            self.image_check(
+                "vector_polygon_layer_rule_based_symbology",
+                "vector_polygon_layer_rule_based_symbology",
+                res,
             )
         )
 
