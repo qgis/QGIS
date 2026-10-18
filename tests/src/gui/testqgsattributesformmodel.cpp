@@ -30,7 +30,7 @@
 using namespace Qt::StringLiterals;
 
 #ifdef ENABLE_MODELTEST
-#include "modeltest.h"
+#include <QAbstractItemModelTester>
 #endif
 
 #include <QMimeData>
@@ -245,7 +245,7 @@ void TestQgsAttributesFormModel::testAvailableWidgetsModel()
   QgsAttributesAvailableWidgetsModel availableWidgetsModel( mLayer, mProject );
 
 #ifdef ENABLE_MODELTEST
-  new ModelTest( &availableWidgetsModel, this ); // for model validity checking
+  new QAbstractItemModelTester( &availableWidgetsModel, QAbstractItemModelTester::FailureReportingMode::QtTest, this );
 #endif
 
   QCOMPARE( availableWidgetsModel.columnCount(), 1 );
@@ -349,7 +349,7 @@ void TestQgsAttributesFormModel::testAvailableWidgetsModelIndexOderInDragAndDrop
   QgsAttributesAvailableWidgetsModel availableWidgetsModel( mLayer, mProject );
 
 #ifdef ENABLE_MODELTEST
-  new ModelTest( &availableWidgetsModel, this ); // for model validity checking
+  new QAbstractItemModelTester( &availableWidgetsModel, QAbstractItemModelTester::FailureReportingMode::QtTest, this );
 #endif
 
   QCOMPARE( availableWidgetsModel.columnCount(), 1 );
@@ -439,7 +439,7 @@ void TestQgsAttributesFormModel::testFormLayoutModel()
   QModelIndex rootIndex = QModelIndex();
 
 #ifdef ENABLE_MODELTEST
-  new ModelTest( &formLayoutModel, this ); // for model validity checking
+  new QAbstractItemModelTester( &formLayoutModel, QAbstractItemModelTester::FailureReportingMode::QtTest, this );
 #endif
 
   QCOMPARE( formLayoutModel.columnCount(), 1 );
@@ -599,7 +599,7 @@ void TestQgsAttributesFormModel::testFormLayoutModelOrphanFields()
   QModelIndex rootIndex = QModelIndex();
 
 #ifdef ENABLE_MODELTEST
-  new ModelTest( &formLayoutModel, this ); // for model validity checking
+  new QAbstractItemModelTester( &formLayoutModel, QAbstractItemModelTester::FailureReportingMode::QtTest, this );
 #endif
 
   QCOMPARE( formLayoutModel.columnCount(), 1 );
@@ -886,7 +886,7 @@ void TestQgsAttributesFormModel::testInvalidRelationInAvailableWidgets()
   QgsAttributesAvailableWidgetsModel availableWidgetsModel( mLayer, mProject );
 
 #ifdef ENABLE_MODELTEST
-  new ModelTest( &availableWidgetsModel, this ); // for model validity checking
+  new QAbstractItemModelTester( &availableWidgetsModel, QAbstractItemModelTester::FailureReportingMode::QtTest, this );
 #endif
 
   QCOMPARE( availableWidgetsModel.columnCount(), 1 );
@@ -931,7 +931,7 @@ void TestQgsAttributesFormModel::testInvalidRelationInFormLayout()
   QModelIndex rootIndex = QModelIndex();
 
 #ifdef ENABLE_MODELTEST
-  new ModelTest( &formLayoutModel, this ); // for model validity checking
+  new QAbstractItemModelTester( &formLayoutModel, QAbstractItemModelTester::FailureReportingMode::QtTest, this );
 #endif
 
   QCOMPARE( formLayoutModel.columnCount(), 1 );

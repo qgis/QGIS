@@ -35,7 +35,7 @@
 using namespace Qt::StringLiterals;
 
 #ifdef ENABLE_MODELTEST
-#include "modeltest.h"
+#include <QAbstractItemModelTester>
 #endif
 
 QgsReportOrganizerWidget::QgsReportOrganizerWidget( QWidget *parent, QgsLayoutDesignerDialog *designer, QgsReport *report )
@@ -52,7 +52,7 @@ QgsReportOrganizerWidget::QgsReportOrganizerWidget( QWidget *parent, QgsLayoutDe
   mViewSections->expandAll();
 
 #ifdef ENABLE_MODELTEST
-  new ModelTest( mSectionModel, this );
+  new QAbstractItemModelTester( mSectionModel, QAbstractItemModelTester::FailureReportingMode::Fatal, this );
 #endif
 
   QVBoxLayout *vLayout = new QVBoxLayout();

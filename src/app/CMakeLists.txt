@@ -466,10 +466,6 @@ elseif(MINGW)
   )
 endif()
 
-if(ENABLE_MODELTEST)
-  include_directories(../../tests/qt_modeltest)
-endif()
-
 if (ANDROID)
   include_directories(SYSTEM ${ANDROID_NDK_TOOLCHAIN_ROOT}/sysroot/usr/include)
 endif()

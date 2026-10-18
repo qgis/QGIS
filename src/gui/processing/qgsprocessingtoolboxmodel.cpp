@@ -32,10 +32,6 @@
 
 using namespace Qt::StringLiterals;
 
-#ifdef ENABLE_MODELTEST
-#include "modeltest.h"
-#endif
-
 ///@cond PRIVATE
 
 //
