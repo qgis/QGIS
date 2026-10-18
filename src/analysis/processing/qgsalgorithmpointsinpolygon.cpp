@@ -84,7 +84,8 @@ QString QgsPointsInPolygonAlgorithm::shortHelpString() const
 {
   return QObject::tr(
     "This algorithm takes a points layer and a polygon layer and counts the number of points from "
-    "the first one in each polygons of the second one.\n\n"
+    "the first one in each polygons of the second one. "
+    "Points falling on polygons boundary are ignored.\n\n"
     "A new polygons layer is generated, with the exact same content as the input polygons layer, but "
     "containing an additional field with the points count corresponding to each polygon.\n\n"
     "An optional weight field can be used to assign weights to each point. If set, the count generated "
