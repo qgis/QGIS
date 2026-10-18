@@ -538,7 +538,7 @@ using namespace Qt::StringLiterals;
 #include "qgsmaptoolshaperegularpolygoncentercorner.h"
 
 #ifdef ENABLE_MODELTEST
-#include "modeltest.h"
+#include <QAbstractItemModelTester>
 #endif
 
 //
@@ -4996,7 +4996,7 @@ void QgisApp::initLayerTreeView()
 
   QgsLayerTreeModel *model = new QgsLayerTreeModel( QgsProject::instance()->layerTreeRoot(), this );
 #ifdef ENABLE_MODELTEST
-  new ModelTest( model, this );
+  new QAbstractItemModelTester( model, QAbstractItemModelTester::FailureReportingMode::Fatal, this );
 #endif
   model->setFlag( QgsLayerTreeModel::AllowNodeReorder );
   model->setFlag( QgsLayerTreeModel::AllowNodeRename );

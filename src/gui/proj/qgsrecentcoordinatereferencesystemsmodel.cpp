@@ -24,7 +24,7 @@
 #include "moc_qgsrecentcoordinatereferencesystemsmodel.cpp"
 
 #ifdef ENABLE_MODELTEST
-#include "modeltest.h"
+#include <QAbstractItemModelTester>
 #endif
 
 QgsRecentCoordinateReferenceSystemsModel::QgsRecentCoordinateReferenceSystemsModel( QObject *parent, int subclassColumnCount )
@@ -32,7 +32,7 @@ QgsRecentCoordinateReferenceSystemsModel::QgsRecentCoordinateReferenceSystemsMod
   , mColumnCount( subclassColumnCount )
 {
 #ifdef ENABLE_MODELTEST
-  new ModelTest( this, this );
+  new QAbstractItemModelTester( this, QAbstractItemModelTester::FailureReportingMode::Fatal, this );
 #endif
 
   mCrs = QgsApplication::coordinateReferenceSystemRegistry()->recentCrs();

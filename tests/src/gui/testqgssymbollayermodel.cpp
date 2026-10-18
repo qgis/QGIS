@@ -25,10 +25,6 @@
 
 using namespace Qt::StringLiterals;
 
-#ifdef ENABLE_MODELTEST
-#include "modeltest.h"
-#endif
-
 
 class TestQgsSymbolLayerModel : public QObject
 {

@@ -1887,10 +1887,6 @@ find_package(${QT_VERSION_BASE} COMPONENTS Multimedia MultimediaWidgets Qml Quic
 
 set_property(GLOBAL PROPERTY QGIS_GUI_HDRS ${QGIS_GUI_HDRS})
 
-if(ENABLE_MODELTEST)
-  include_directories(../../tests/qt_modeltest)
-endif()
-
 if (WITH_EPT)
   set(QGIS_GUI_SRCS ${QGIS_GUI_SRCS}
     providers/ept/qgseptproviderguimetadata.cpp

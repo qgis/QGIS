@@ -32,7 +32,7 @@
 using namespace Qt::StringLiterals;
 
 #ifdef ENABLE_MODELTEST
-#include "modeltest.h"
+#include <QAbstractItemModelTester>
 #endif
 
 
@@ -42,7 +42,7 @@ StandardCoordinateReferenceSystemsModel::StandardCoordinateReferenceSystemsModel
   , mProjectCrs( QgsProject::instance()->crs() )
 {
 #ifdef ENABLE_MODELTEST
-  new ModelTest( this, this );
+  new QAbstractItemModelTester( this, QAbstractItemModelTester::FailureReportingMode::Fatal, this );
 #endif
 
   const QgsSettings settings;

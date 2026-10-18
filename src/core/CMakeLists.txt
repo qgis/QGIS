@@ -1142,16 +1142,6 @@ add_custom_command(OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/qgsexpression_texts.cpp
   WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
 )
 
-if(ENABLE_MODELTEST)
-  set(MODELTEST_SRCS
-    ../../tests/qt_modeltest/modeltest.cpp
-    ../../tests/qt_modeltest/dynamictreemodel.cpp
-  )
-  set(QGIS_CORE_SRCS ${QGIS_CORE_SRCS}
-    ${MODELTEST_SRCS}
-  )
-endif()
-
 if (CMAKE_CXX_COMPILER_ID MATCHES "Clang")
   # spatialindex headers produce warnings
   set_source_files_properties(qgsspatialindex.cpp PROPERTIES COMPILE_FLAGS -Wno-overloaded-virtual)
