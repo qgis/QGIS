@@ -1174,8 +1174,6 @@ QgisApp::QgisApp(
 
   mInfoBar->raise();
 
-  connect( QgsProject::instance(), &QgsProject::layersAdded, this, &QgisApp::showMapCanvas );
-
   mCentralContainer->setCurrentIndex( 0 );
 
   startProfile( tr( "User input dock" ) );
@@ -4577,7 +4575,10 @@ void QgisApp::setupConnections()
   connect( QgsProject::instance(), static_cast<void ( QgsProject::* )( const QStringList & )>( &QgsProject::layersWillBeRemoved ), this, &QgisApp::removingLayers );
 
   // connect initialization signal
-  connect( this, &QgisApp::initializationCompleted, this, &QgisApp::fileOpenAfterLaunch );
+  connect( this, &QgisApp::initializationCompleted, this, [this] {
+    fileOpenAfterLaunch();
+    connect( QgsProject::instance(), &QgsProject::layersAdded, this, &QgisApp::showMapCanvas );
+  } );
 
   // Connect warning dialog from project reading
   connect( QgsProject::instance(), &QgsProject::readVersionMismatchOccurred, this, &QgisApp::projectVersionMismatchOccurred );
@@ -6162,6 +6163,7 @@ void QgisApp::fileOpenAfterLaunch()
   // check if a project is already loaded via command line or filesystem
   if ( !QgsProject::instance()->fileName().isNull() )
   {
+    mWelcomeScreen->hideScene();
     return;
   }
 
@@ -6169,6 +6171,7 @@ void QgisApp::fileOpenAfterLaunch()
   // empty project with layer loaded, but may not trigger a dirty project at this point
   if ( QgsProject::instance() && QgsProject::instance()->count() > 0 )
   {
+    mWelcomeScreen->hideScene();
     return;
   }
 
@@ -14725,6 +14728,7 @@ void QgisApp::showMapCanvas()
   if ( mCentralContainer )
   {
     mCentralContainer->setCurrentIndex( 0 );
+    mWelcomeScreen->hideScene();
   }
 }
 
