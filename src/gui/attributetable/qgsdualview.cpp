@@ -485,6 +485,10 @@ void QgsDualView::initLayerCache( bool cacheGeometry )
   }
 }
 
+#ifdef ENABLE_MODELTEST
+#include <QAbstractItemModelTester>
+#endif
+
 void QgsDualView::initModels( QgsMapCanvas *mapCanvas, const QgsFeatureRequest &request, bool loadFeatures )
 {
   delete mFeatureListModel;
@@ -492,6 +496,11 @@ void QgsDualView::initModels( QgsMapCanvas *mapCanvas, const QgsFeatureRequest &
   delete mMasterModel;
 
   mMasterModel = new QgsAttributeTableModel( mLayerCache, this );
+
+#ifdef ENABLE_MODELTEST
+  new QAbstractItemModelTester( mMasterModel, QAbstractItemModelTester::FailureReportingMode::Fatal, this );
+#endif
+
   mMasterModel->setRequest( request );
   mMasterModel->setEditorContext( mEditorContext );
   mMasterModel->setExtraColumns( 1 ); // Add one extra column which we can "abuse" as an action column
@@ -505,6 +514,9 @@ void QgsDualView::initModels( QgsMapCanvas *mapCanvas, const QgsFeatureRequest &
     mMasterModel->loadLayer();
 
   mFilterModel = new QgsAttributeTableFilterModel( mapCanvas, mMasterModel, mMasterModel );
+#ifdef ENABLE_MODELTEST
+  new QAbstractItemModelTester( mFilterModel, QAbstractItemModelTester::FailureReportingMode::Fatal, this );
+#endif
 
   // The following connections to invalidate() are necessary to keep the filter model in sync
   // see regression https://github.com/qgis/QGIS/issues/23890
