@@ -1881,6 +1881,7 @@ void QgsVectorLayerProperties::initMapTipPreview()
   mMapTipPreview = new QgsWebView( mMapTipPreviewContainer );
   mMapTipPreviewLayout->addWidget( mMapTipPreview );
 
+  mMapTipPreview->setOpenExternalLinks( true );
   mMapTipPreview->page()->settings()->setAttribute( QWebSettings::DeveloperExtrasEnabled, true );
   mMapTipPreview->page()->settings()->setAttribute( QWebSettings::JavascriptEnabled, true );
   mMapTipPreview->page()->settings()->setAttribute( QWebSettings::LocalStorageEnabled, true );
