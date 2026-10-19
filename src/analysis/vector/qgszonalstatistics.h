@@ -51,13 +51,13 @@ class ANALYSIS_EXPORT QgsZonalStatistics
      *
      * The raster layer must exist for the lifetime of the zonal statistics calculation.
      *
-     * The \a overwriteExisting argument controls whether existing fields should be updated instead of creating
-     * new fields with _1, _2, … _N appended to their names (since QGIS 4.4).
+     * The \a overwriteExistingFields argument controls whether existing fields should be
+     * updated instead of creating new fields with _1, _2, … _N appended to their names (since QGIS 4.4).
      *
      * \warning Constructing QgsZonalStatistics using this method is not thread safe, and
      * the constructor which accepts a QgsRasterInterface should be used instead.
      */
-    QgsZonalStatistics( QgsVectorLayer *polygonLayer, QgsRasterLayer *rasterLayer, const QString &attributePrefix = QString(), int rasterBand = 1, Qgis::ZonalStatistics stats = Qgis::ZonalStatistic::Default, bool overwriteExisting = false );
+    QgsZonalStatistics( QgsVectorLayer *polygonLayer, QgsRasterLayer *rasterLayer, const QString &attributePrefix = QString(), int rasterBand = 1, Qgis::ZonalStatistics stats = Qgis::ZonalStatistic::Default, bool overwriteExistingFields = false );
 
     /**
      * Constructor for QgsZonalStatistics, using a QgsRasterInterface.
@@ -80,15 +80,15 @@ class ANALYSIS_EXPORT QgsZonalStatistics
      * Finally, the calculated statistics can be set via the \a stats argument. A new field will be
      * added to \a polygonLayer for each statistic calculated.
      *
-     * The \a overwriteExisting argument controls whether existing fields should be updated instead of creating
-     * new fields with _1, _2, … _N appended to their names (since QGIS 4.4).
+     * The \a overwriteExistingFields argument controls whether existing fields should be updated instead of
+     * creating new fields with _1, _2, … _N appended to their names (since QGIS 4.4).
      *
      * \warning The raster interface must exist for the lifetime of the zonal statistics calculation. For thread
      * safe use, always use a cloned raster interface.
      *
      * \since QGIS 3.2
      */
-    QgsZonalStatistics( QgsVectorLayer *polygonLayer, QgsRasterInterface *rasterInterface, const QgsCoordinateReferenceSystem &rasterCrs, double rasterUnitsPerPixelX, double rasterUnitsPerPixelY, const QString &attributePrefix = QString(), int rasterBand = 1, Qgis::ZonalStatistics stats = Qgis::ZonalStatistic::Default, bool overwriteExisting = false );
+    QgsZonalStatistics( QgsVectorLayer *polygonLayer, QgsRasterInterface *rasterInterface, const QgsCoordinateReferenceSystem &rasterCrs, double rasterUnitsPerPixelX, double rasterUnitsPerPixelY, const QString &attributePrefix = QString(), int rasterBand = 1, Qgis::ZonalStatistics stats = Qgis::ZonalStatistic::Default, bool overwriteExistingFields = false );
 
     /**
      * Runs the calculation.
@@ -211,7 +211,7 @@ class ANALYSIS_EXPORT QgsZonalStatistics
     QgsVectorLayer *mPolygonLayer = nullptr;
     QString mAttributePrefix;
     Qgis::ZonalStatistics mStatistics = Qgis::ZonalStatistic::All;
-    bool mOverwriteExisting = false;
+    bool mOverwriteExistingFields = false;
 };
 
 // clazy:excludeall=qstring-allocations
