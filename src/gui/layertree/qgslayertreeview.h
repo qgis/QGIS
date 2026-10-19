@@ -608,7 +608,7 @@ class GUI_EXPORT QgsLayerTreeView : public QgsLayerTreeViewBase
 
     /**
      * Expands layer groups only.
-     * \since QGIS 4.44
+     * \since QGIS 4.4
      */
     void onDoubleClicked( const QModelIndex &index );
     void onCurrentChanged();

@@ -662,7 +662,7 @@ Allows customization of the menu.
 %Docstring
 Expands layer groups only.
 
-.. versionadded:: 4.44
+.. versionadded:: 4.4
 %End
     void onCurrentChanged();
 
