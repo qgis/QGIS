@@ -27,6 +27,7 @@
 #include "qgstemporalutils.h"
 #include "qgsunittypes.h"
 #include "qgswmsprovider.h"
+#include "qgsziputils.h"
 
 #include <QDir>
 #include <QFile>
@@ -673,17 +674,25 @@ bool QgsWmsCapabilities::parseCapabilitiesDom( const QByteArray &xml, QgsWmsCapa
 
   if ( !contentSuccess )
   {
-    mErrorCaption = QObject::tr( "Dom Exception" );
-    mErrorFormat = u"text/plain"_s;
-    mError = QObject::tr( "Could not get WMS capabilities: %1 at line %2 column %3\nThis is probably due to an incorrect WMS Server URL.\nResponse was:\n\n%4" )
-               .arg( errorMsg )
-               .arg( errorLine )
-               .arg( errorColumn )
-               .arg( QString( xml ) );
+    // Some misconfigured servers send gzipped content but set a wrong Content-Encoding header
+    // with multiple repeated strings e.g. (gzip, gzip, gzip) which causes QNetworkReply
+    // to not decompress the content. This is a workaround for that issue (GH #65418)
+    // Try gzip decode and parse again
+    QByteArray uncompressedXml;
+    if ( !( QgsZipUtils::decodeGzip( xml, xml.size(), uncompressedXml ) && capabilitiesDom.setContent( uncompressedXml, false, &errorMsg, &errorLine, &errorColumn ) ) )
+    {
+      mErrorCaption = QObject::tr( "Dom Exception" );
+      mErrorFormat = u"text/plain"_s;
+      mError = QObject::tr( "Could not get WMS capabilities: %1 at line %2 column %3\nThis is probably due to an incorrect WMS Server URL.\nResponse was:\n\n%4" )
+                 .arg( errorMsg )
+                 .arg( errorLine )
+                 .arg( errorColumn )
+                 .arg( QString( xml ) );
 
-    QgsLogger::debug( "Dom Exception: " + mError );
+      QgsLogger::debug( "Dom Exception: " + mError );
 
-    return false;
+      return false;
+    }
   }
 
   QDomElement docElement = capabilitiesDom.documentElement();
@@ -2761,7 +2770,7 @@ void QgsWmsCapabilitiesDownload::capabilitiesReplyFinished()
 
 #ifdef QGISDEBUG
         bool fromCache = mCapabilitiesReply->attribute( QNetworkRequest::SourceIsFromCacheAttribute ).toBool();
-        QgsDebugMsgLevel( u"Capabilities reply was cached:\n%1"_s.arg( fromCache ), 2 );
+        QgsDebugMsgLevel( u"Capabilities reply was cached:\n%1"_s.arg( fromCache ? u"true"_s : u"false"_s ), 2 );
 #endif
 
         mHttpCapabilitiesResponse = mCapabilitiesReply->readAll();
