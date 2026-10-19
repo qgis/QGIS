@@ -324,7 +324,7 @@ class CORE_EXPORT QgsStringUtils
      *
      * \since QGIS 4.0
      */
-    static QHash<QString, QString> createUnaccentMap();
+    SIP_SKIP static QHash<QString, QString> createUnaccentMap();
 
     /**
      * Lookup table used by unaccent(). Generated at build time from
@@ -339,7 +339,7 @@ class CORE_EXPORT QgsStringUtils
      * - Compatibility characters (℃→°C, ℗→(P), etc.)
      * - Full-width characters (＃→#, etc.)
      */
-    static QHash<QString, QString> UNACCENT_MAP;
+    SIP_SKIP static QHash<QString, QString> UNACCENT_MAP;
 
     /**
      * Removes accents and other diacritical marks from a string, replacing
