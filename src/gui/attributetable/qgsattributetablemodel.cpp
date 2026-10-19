@@ -113,24 +113,11 @@ bool QgsAttributeTableModel::loadFeatureAtId( QgsFeatureId fid, int fieldIdx ) c
 
 int QgsAttributeTableModel::extraColumns() const
 {
-  return mExtraColumns;
+  return 1;
 }
 
-void QgsAttributeTableModel::setExtraColumns( int extraColumns )
-{
-  if ( extraColumns > mExtraColumns )
-  {
-    beginInsertColumns( QModelIndex(), mFieldCount + mExtraColumns, mFieldCount + extraColumns - 1 );
-    mExtraColumns = extraColumns;
-    endInsertColumns();
-  }
-  else if ( extraColumns < mExtraColumns )
-  {
-    beginRemoveColumns( QModelIndex(), mFieldCount + extraColumns, mFieldCount + mExtraColumns - 1 );
-    mExtraColumns = extraColumns;
-    endRemoveColumns();
-  }
-}
+void QgsAttributeTableModel::setExtraColumns( int )
+{}
 
 void QgsAttributeTableModel::featuresDeleted( const QgsFeatureIds &fids )
 {
@@ -442,15 +429,15 @@ void QgsAttributeTableModel::loadAttributes()
     attributes << idx;
   }
 
-  if ( mFieldCount + mExtraColumns < attributes.size() + mExtraColumns )
+  if ( mFieldCount < attributes.size() )
   {
     ins = true;
-    beginInsertColumns( QModelIndex(), mFieldCount + mExtraColumns, attributes.size() - 1 );
+    beginInsertColumns( QModelIndex(), mFieldCount, attributes.size() - 1 );
   }
-  else if ( attributes.size() + mExtraColumns < mFieldCount + mExtraColumns )
+  else if ( attributes.size() < mFieldCount )
   {
     rm = true;
-    beginRemoveColumns( QModelIndex(), attributes.size(), mFieldCount + mExtraColumns - 1 );
+    beginRemoveColumns( QModelIndex(), attributes.size(), mFieldCount - 1 );
   }
 
   mFields = fields;
@@ -639,7 +626,7 @@ int QgsAttributeTableModel::columnCount( const QModelIndex &parent ) const
   if ( parent.isValid() )
     return 0;
 
-  return std::max( 1, mFieldCount + mExtraColumns ); // if there are zero columns all model indices will be considered invalid
+  return std::max( 1, mFieldCount + 1 ); // if there are zero columns all model indices will be considered invalid
 }
 
 QVariant QgsAttributeTableModel::headerData( int section, Qt::Orientation orientation, int role ) const
@@ -651,7 +638,7 @@ QVariant QgsAttributeTableModel::headerData( int section, Qt::Orientation orient
   {
     if ( orientation == Qt::Vertical ) //row
     {
-      return QVariant( section );
+      return QVariant( section + 1 );
     }
     else if ( section >= 0 && section < mFieldCount )
     {
@@ -660,7 +647,7 @@ QVariant QgsAttributeTableModel::headerData( int section, Qt::Orientation orient
     }
     else
     {
-      return tr( "extra column" );
+      return tr( "Actions" );
     }
   }
   else if ( role == Qt::ToolTipRole )
@@ -670,17 +657,17 @@ QVariant QgsAttributeTableModel::headerData( int section, Qt::Orientation orient
       // TODO show DisplayExpression
       return tr( "Feature ID: %1" ).arg( rowToId( section ) );
     }
-    else
+    else if ( section >= 0 && section < mFieldCount )
     {
       const QgsField field = mLayer->fields().at( mAttributes.at( section ) );
       return QgsFieldModel::fieldToolTipExtended( field, mLayer );
     }
   }
-  else
-  {
-    return QVariant();
-  }
+
+  return QVariant();
 }
+
+#include "qgsattributetablefiltermodel.h"
 
 QVariant QgsAttributeTableModel::data( const QModelIndex &index, int role ) const
 {
@@ -690,17 +677,10 @@ QVariant QgsAttributeTableModel::data( const QModelIndex &index, int role ) cons
   const QgsFeatureId rowId = rowToId( index.row() );
 
   if ( role == static_cast<int>( CustomRole::FeatureId ) )
+  {
     return rowId;
-
-  if ( index.column() >= mFieldCount )
-    return QVariant();
-
-  const int fieldId = mAttributes.at( index.column() );
-
-  if ( role == static_cast<int>( CustomRole::FieldIndex ) )
-    return fieldId;
-
-  if ( role >= static_cast<int>( CustomRole::Sort ) )
+  }
+  else if ( role == static_cast<int>( CustomRole::Sort ) )
   {
     const unsigned long cacheIndex = role - static_cast<int>( CustomRole::Sort );
     if ( cacheIndex < mSortCaches.size() )
@@ -712,6 +692,25 @@ QVariant QgsAttributeTableModel::data( const QModelIndex &index, int role ) cons
       return QVariant();
     }
   }
+  else if ( role == static_cast<int>( QgsAttributeTableFilterModel::CustomRole::Type ) )
+  {
+    if ( index.column() == mFieldCount ) // actions column
+    {
+      return QgsAttributeTableFilterModel::ColumnTypeActionButton;
+    }
+    else
+    {
+      return QgsAttributeTableFilterModel::ColumnTypeField;
+    }
+  }
+
+  if ( index.column() >= mFieldCount )
+    return QVariant();
+
+  const int fieldId = mAttributes.at( index.column() );
+
+  if ( role == static_cast<int>( CustomRole::FieldIndex ) )
+    return fieldId;
 
   const QgsField field = mFields.at( fieldId );
 
@@ -866,8 +865,13 @@ Qt::ItemFlags QgsAttributeTableModel::flags( const QModelIndex &index ) const
   if ( !index.isValid() )
     return Qt::NoItemFlags;
 
-  if ( index.column() >= mFieldCount || !mLayer )
+  if ( !mLayer )
     return Qt::NoItemFlags;
+
+  if ( index.column() >= mFieldCount + 1 )
+    return Qt::NoItemFlags;
+  else if ( index.column() == mFieldCount ) // actions column
+    return Qt::ItemIsEnabled | Qt::ItemIsSelectable;
 
   Qt::ItemFlags flags = QAbstractTableModel::flags( index );
 
