@@ -2491,6 +2491,38 @@ static QString tagNameForSpatialOperator( const QString &fnName )
   return BINARY_SPATIAL_OPS_MAP()->value( fnName );
 }
 
+Q_GLOBAL_STATIC_WITH_ARGS(
+  QgsStringMap,
+  OGC_FUNCTIONS_MAP,
+  (
+    { { "lower"_L1, "strToLowerCase"_L1 },
+      { "upper"_L1, "strToUpperCase"_L1 },
+      { "trim"_L1, "strTrim"_L1 },
+      { "if"_L1, "if_then_else"_L1 },
+      { "exp"_L1, "exp"_L1 },
+      { "floor"_L1, "floor"_L1 },
+      { "ceil"_L1, "ceil"_L1 },
+      { "round"_L1, "round"_L1 },
+      { "sin"_L1, "sin"_L1 },
+      { "cos"_L1, "cos"_L1 },
+      { "tan"_L1, "tan"_L1 },
+      { "asin"_L1, "asin"_L1 },
+      { "acos"_L1, "acos"_L1 },
+      { "atan"_L1, "atan"_L1 },
+      { "format_number"_L1, "numberFormat"_L1 } }
+  )
+)
+
+static bool isSupportedOgcFunction( const QString &fnName )
+{
+  return OGC_FUNCTIONS_MAP()->contains( fnName );
+}
+
+static QString ogcFunctionName( const QString &fnName )
+{
+  return OGC_FUNCTIONS_MAP()->value( fnName );
+}
+
 static bool isGeometryColumn( const QgsExpressionNode *node )
 {
   if ( node->nodeType() != QgsExpressionNode::ntFunction )
@@ -2677,20 +2709,24 @@ QDomElement QgsOgcUtilsExprToFilter::expressionFunctionToOgcFilter( const QgsExp
     return QDomElement();
   }
 
-  // this is somehow wrong - we are just hoping that the other side supports the same functions as we do...
-  QDomElement funcElem = mDoc.createElement( mFilterPrefix + ":Function" );
-  funcElem.setAttribute( u"name"_s, fd->name() );
-  const auto constList = node->args()->list();
-  for ( QgsExpressionNode *n : constList )
+  if ( isSupportedOgcFunction( fd->name() ) )
   {
-    const QDomElement childElem = expressionNodeToOgcFilter( n, expression, context );
-    if ( !mErrorMessage.isEmpty() )
-      return QDomElement();
+    QDomElement funcElem = mDoc.createElement( mFilterPrefix + ":Function" );
+    funcElem.setAttribute( u"name"_s, ogcFunctionName( fd->name() ) );
+    const auto constList = node->args()->list();
+    for ( QgsExpressionNode *n : constList )
+    {
+      const QDomElement childElem = expressionNodeToOgcFilter( n, expression, context );
+      if ( !mErrorMessage.isEmpty() )
+        return QDomElement();
 
-    funcElem.appendChild( childElem );
+      funcElem.appendChild( childElem );
+    }
+    return funcElem;
   }
 
-  return funcElem;
+  mErrorMessage = QObject::tr( "Function not supported." );
+  return QDomElement();
 }
 
 //
