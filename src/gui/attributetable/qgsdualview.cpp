@@ -503,7 +503,6 @@ void QgsDualView::initModels( QgsMapCanvas *mapCanvas, const QgsFeatureRequest &
 
   mMasterModel->setRequest( request );
   mMasterModel->setEditorContext( mEditorContext );
-  mMasterModel->setExtraColumns( 1 ); // Add one extra column which we can "abuse" as an action column
 
   connect( mMasterModel, &QgsAttributeTableModel::progress, this, &QgsDualView::progress );
   connect( mMasterModel, &QgsAttributeTableModel::finished, this, &QgsDualView::finished );
