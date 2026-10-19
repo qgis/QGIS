@@ -659,6 +659,11 @@ Allows customization of the menu.
     void modelRowsRemoved();
 
     void onDoubleClicked( const QModelIndex &index );
+%Docstring
+Expands layer groups only.
+
+.. versionadded:: 4.44
+%End
     void onCurrentChanged();
 
 

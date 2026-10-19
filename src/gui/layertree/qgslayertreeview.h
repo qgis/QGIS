@@ -606,6 +606,10 @@ class GUI_EXPORT QgsLayerTreeView : public QgsLayerTreeViewBase
     void modelRowsInserted( const QModelIndex &index, int start, int end );
     void modelRowsRemoved();
 
+    /**
+     * Expands layer groups only.
+     * \since QGIS 4.44
+     */
     void onDoubleClicked( const QModelIndex &index );
     void onCurrentChanged();
 
