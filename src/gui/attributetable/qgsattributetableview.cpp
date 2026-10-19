@@ -115,29 +115,55 @@ bool QgsAttributeTableView::eventFilter( QObject *object, QEvent *event )
 void QgsAttributeTableView::setAttributeTableConfig( const QgsAttributeTableConfig &config )
 {
   ScopedIntIncrementor blockSignals( &mBlockColumnUpdates );
-  int i = 0;
   const auto constColumns = config.columns();
   QMap<QString, int> columns;
+
+  QHeaderView *header = horizontalHeader();
+  header->reset();
+
+  QVector<int> logicalColumnOrder;
+
+  // we are iterating through columns by their visual index
   for ( const QgsAttributeTableConfig::ColumnConfig &columnConfig : constColumns )
   {
-    if ( columnConfig.hidden )
-      continue;
+    int logicalIndex = 0;
+    switch ( columnConfig.type )
+    {
+      case QgsAttributeTableConfig::Field:
+      {
+        logicalIndex = mFilterModel->layer()->fields().lookupField( columnConfig.name );
+        if ( logicalIndex < 0 )
+        {
+          // this should not be possible -- the config is synced to the actual fields already
+          continue;
+        }
+        break;
+      }
+      case QgsAttributeTableConfig::Action:
+      {
+        logicalIndex = mFilterModel->columnCount() - 1;
+        break;
+      }
+    }
+    logicalColumnOrder << logicalIndex;
+
+    header->setSectionHidden( logicalIndex, columnConfig.hidden );
 
     if ( columnConfig.width >= 0 )
     {
-      setColumnWidth( i, columnConfig.width );
+      header->resizeSection( logicalIndex, columnConfig.width );
     }
     else
     {
-      setColumnWidth( i, horizontalHeader()->defaultSectionSize() );
+      header->resizeSection( logicalIndex, header->defaultSectionSize() );
     }
-    columns.insert( columnConfig.name, i );
-    i++;
+    columns.insert( columnConfig.name, logicalIndex );
   }
   mConfig = config;
+
   if ( config.sortExpression().isEmpty() )
   {
-    horizontalHeader()->setSortIndicatorShown( false );
+    header->setSortIndicatorShown( false );
   }
   else
   {
@@ -147,16 +173,23 @@ void QgsAttributeTableView::setAttributeTableConfig( const QgsAttributeTableConf
       if ( sortExp.isField() )
       {
         const QStringList refCols { sortExp.referencedColumns().values() };
-        horizontalHeader()->setSortIndicatorShown( true );
-        horizontalHeader()->setSortIndicator( columns.value( refCols.constFirst() ), config.sortOrder() );
+        header->setSortIndicatorShown( true );
+        header->setSortIndicator( columns.value( refCols.constFirst() ), config.sortOrder() );
       }
       else
       {
-        horizontalHeader()->setSortIndicatorShown( false );
+        header->setSortIndicatorShown( false );
       }
     }
   }
   mSortExpression = config.sortExpression();
+
+  int visualColumn = 0;
+  for ( int logicalColumn : std::as_const( logicalColumnOrder ) )
+  {
+    header->moveSection( header->visualIndex( logicalColumn ), visualColumn );
+    visualColumn++;
+  }
 }
 
 QList<QgsFeatureId> QgsAttributeTableView::selectedFeaturesIds() const
@@ -530,13 +563,13 @@ void QgsAttributeTableView::actionTriggered()
   }
 }
 
-void QgsAttributeTableView::columnSizeChanged( int index, int oldWidth, int newWidth )
+void QgsAttributeTableView::columnSizeChanged( int logicalIndex, int oldWidth, int newWidth )
 {
   if ( mBlockColumnUpdates )
     return;
 
   Q_UNUSED( oldWidth )
-  emit columnResized( index, newWidth );
+  emit columnResized( horizontalHeader()->visualIndex( logicalIndex ), newWidth );
 }
 
 void QgsAttributeTableView::onActionColumnItemPainted( const QModelIndex &index )
