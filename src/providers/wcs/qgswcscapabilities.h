@@ -155,11 +155,9 @@ class QgsWcsCapabilities : public QObject
     QList<QgsWcsCoverageSummary> coverages() const;
 
     /**
-     * \brief Prepare the URI so that we can later simply append param=value
-     * \param uri uri to prepare
-     * \returns prepared uri
+     * Returns the request URL with query parameters from the base URI preserved.
      */
-    static QString prepareUri( QString uri );
+    QUrl requestUrl( const QString &serverUrl ) const;
 
     /**
      * \brief Returns the GetCoverage full url
