@@ -992,9 +992,11 @@ void QgsAttributeTableModel::reload( const QModelIndex &index1, const QModelInde
   Q_ASSERT_X( index2.column() >= index1.column(), "QgsAttributeTableModel::reload", u"Invalid max column, got %1 expected >= %2"_s.arg( index2.column() ).arg( index1.column() ).toLocal8Bit().constData() );
 #endif
 
-  emit dataChanged( index1, index2 );
+  if ( !mResettingModel )
+  {
+    emit dataChanged( index1, index2 );
+  }
 }
-
 
 void QgsAttributeTableModel::executeAction( QUuid action, const QModelIndex &idx ) const
 {
