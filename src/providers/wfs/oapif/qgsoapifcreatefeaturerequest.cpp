@@ -64,8 +64,8 @@ QString QgsOapifCreateFeatureRequest::createFeature( const QgsOapifSharedData *s
   if ( !contentCrs.isEmpty() )
     extraHeaders.append( QNetworkReply::RawHeaderPair( QByteArray( "Content-Crs" ), contentCrs.toUtf8() ) );
   if ( jsonFg )
-    extraHeaders.append( QNetworkReply::RawHeaderPair( QByteArray( "Link" ), QByteArray( "<http://www.opengis.net/def/profile/OGC/0/jsonfg>; rel=profile" ) ) );
-  if ( !sendPOST( sharedData->mItemsUrl, "application/geo+json", jsonFeature.toUtf8(), true /*synchronous*/, extraHeaders ) )
+    extraHeaders.append( QNetworkReply::RawHeaderPair( QByteArray( "Link" ), u"<%1>; rel=profile"_s.arg( QgsOapifUtils::PROFILE_JSONFG ).toUtf8() ) );
+  if ( !sendPOST( sharedData->mItemsUrl, QgsOapifUtils::MEDIA_TYPE_GEOJSON, jsonFeature.toUtf8(), true /*synchronous*/, extraHeaders ) )
     return QString();
 
   QString location;

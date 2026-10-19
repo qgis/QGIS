@@ -324,7 +324,7 @@ bool QgsOapifSharedData::computeFilter( const QgsExpression &expr, QgsOapifFilte
     serverSideParameters += "&filter-lang=cql2-text"_L1;
     if ( compiler.geometryLiteralUsed() )
     {
-      if ( mSourceCrs != QgsCoordinateReferenceSystem::fromOgcWmsCrs( OAPIF_PROVIDER_DEFAULT_CRS ) )
+      if ( mSourceCrs != QgsCoordinateReferenceSystem::fromOgcWmsCrs( QgsOapifUtils::DEFAULT_CRS ) )
       {
         serverSideParameters += u"&filter-crs=%1"_s.arg( mSourceCrs.toOgcUri() );
       }

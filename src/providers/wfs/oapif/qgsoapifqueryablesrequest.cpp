@@ -41,7 +41,7 @@ QgsOapifQueryablesRequest::QgsOapifQueryablesRequest( const QgsDataSourceUri &ur
 
 const QMap<QString, QgsOapifQueryablesRequest::Queryable> &QgsOapifQueryablesRequest::queryables( const QUrl &queryablesUrl )
 {
-  sendGET( queryablesUrl, QString( "application/schema+json" ), /*synchronous=*/true, /*forceRefresh=*/false );
+  sendGET( queryablesUrl, QgsOapifUtils::MEDIA_TYPE_SCHEMA_JSON, /*synchronous=*/true, /*forceRefresh=*/false );
   return mQueryables;
 }
 
