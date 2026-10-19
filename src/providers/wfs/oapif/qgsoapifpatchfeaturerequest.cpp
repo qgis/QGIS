@@ -50,11 +50,11 @@ bool QgsOapifPatchFeatureRequest::patchFeature( const QgsOapifSharedData *shared
   if ( !contentCrs.isEmpty() )
     extraHeaders.append( QNetworkReply::RawHeaderPair( QByteArray( "Content-Crs" ), contentCrs.toUtf8() ) );
   if ( jsonFg )
-    extraHeaders.append( QNetworkReply::RawHeaderPair( QByteArray( "Link" ), QByteArray( "<http://www.opengis.net/def/profile/OGC/0/jsonfg>; rel=profile" ) ) );
+    extraHeaders.append( QNetworkReply::RawHeaderPair( QByteArray( "Link" ), u"<%1>; rel=profile"_s.arg( QgsOapifUtils::PROFILE_JSONFG ).toUtf8() ) );
   mEmptyResponseIsValid = true;
   mFakeURLIncludesContentType = true;
   QUrl url( sharedData->mItemsUrl + QString( u"/"_s + jsonId ) );
-  return sendPATCH( url, "application/merge-patch+json", QString::fromStdString( j.dump() ).toUtf8(), extraHeaders );
+  return sendPATCH( url, QgsOapifUtils::MEDIA_TYPE_MERGE_PATCH_JSON, QString::fromStdString( j.dump() ).toUtf8(), extraHeaders );
 }
 
 bool QgsOapifPatchFeatureRequest::patchFeature( const QgsOapifSharedData *sharedData, const QString &jsonId, const QgsAttributeMap &attrMap )
@@ -71,7 +71,7 @@ bool QgsOapifPatchFeatureRequest::patchFeature( const QgsOapifSharedData *shared
   mEmptyResponseIsValid = true;
   mFakeURLIncludesContentType = true;
   QUrl url( sharedData->mItemsUrl + QString( u"/"_s + jsonId ) );
-  return sendPATCH( url, "application/merge-patch+json", QString::fromStdString( j.dump() ).toUtf8() );
+  return sendPATCH( url, QgsOapifUtils::MEDIA_TYPE_MERGE_PATCH_JSON, QString::fromStdString( j.dump() ).toUtf8() );
 }
 
 QString QgsOapifPatchFeatureRequest::errorMessageWithReason( const QString &reason )

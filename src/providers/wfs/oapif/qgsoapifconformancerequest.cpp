@@ -41,7 +41,7 @@ QgsOapifConformanceRequest::QgsOapifConformanceRequest( const QgsDataSourceUri &
 
 QStringList QgsOapifConformanceRequest::conformanceClasses( const QUrl &conformanceUrl )
 {
-  sendGET( conformanceUrl, QString( "application/json" ), /*synchronous=*/true, /*forceRefresh=*/false );
+  sendGET( conformanceUrl, QgsOapifUtils::MEDIA_TYPE_JSON, /*synchronous=*/true, /*forceRefresh=*/false );
   return mConformanceClasses;
 }
 

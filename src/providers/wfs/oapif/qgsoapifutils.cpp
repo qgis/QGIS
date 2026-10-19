@@ -26,10 +26,6 @@
 
 using namespace Qt::StringLiterals;
 
-const QString OAPIF_PROVIDER_DEFAULT_CRS = u"http://www.opengis.net/def/crs/OGC/1.3/CRS84"_s;
-
-const QString PSEUDO_JSONFG_MEDIA_TYPE = u"application/fg+json"_s;
-
 std::vector<QgsOAPIFJson::Link> QgsOAPIFJson::parseLinks( const json &jParent )
 {
   std::vector<Link> links;
@@ -253,14 +249,14 @@ QString QgsOAPIFGetNextLinkFromResponseHeader( const QList<QNetworkReply::RawHea
             nextUrl = href;
             break;
           }
-          else if ( type == "application/geo+json"_L1 && formatType == PSEUDO_JSONFG_MEDIA_TYPE )
+          else if ( type == QgsOapifUtils::MEDIA_TYPE_GEOJSON && formatType == QgsOapifUtils::MEDIA_TYPE_PSEUDO_JSONFG )
           {
-            if ( profile.compare( "http://www.opengis.net/def/profile/OGC/0/jsonfg"_L1, Qt::CaseInsensitive ) == 0 )
+            if ( profile.compare( QgsOapifUtils::PROFILE_JSONFG, Qt::CaseInsensitive ) == 0 )
             {
               nextUrl = href;
               break;
             }
-            else if ( profile.compare( "http://www.opengis.net/def/profile/OGC/0/jsonfg-plus"_L1, Qt::CaseInsensitive ) == 0 )
+            else if ( profile.compare( QgsOapifUtils::PROFILE_JSONFG_PLUS, Qt::CaseInsensitive ) == 0 )
             {
               nextUrlCandidateJsonFGPlus = href;
             }

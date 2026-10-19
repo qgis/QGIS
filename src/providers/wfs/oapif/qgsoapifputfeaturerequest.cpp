@@ -70,9 +70,9 @@ bool QgsOapifPutFeatureRequest::putFeature( const QgsOapifSharedData *sharedData
   if ( !contentCrs.isEmpty() )
     extraHeaders.append( QNetworkReply::RawHeaderPair( QByteArray( "Content-Crs" ), contentCrs.toUtf8() ) );
   if ( jsonFg )
-    extraHeaders.append( QNetworkReply::RawHeaderPair( QByteArray( "Link" ), QByteArray( "<http://www.opengis.net/def/profile/OGC/0/jsonfg>; rel=profile" ) ) );
+    extraHeaders.append( QNetworkReply::RawHeaderPair( QByteArray( "Link" ), u"<%1>; rel=profile"_s.arg( QgsOapifUtils::PROFILE_JSONFG ).toUtf8() ) );
   QUrl url( sharedData->mItemsUrl + QString( u"/"_s + jsonId ) );
-  return sendPUT( url, "application/geo+json", jsonFeature.toUtf8(), extraHeaders );
+  return sendPUT( url, QgsOapifUtils::MEDIA_TYPE_GEOJSON, jsonFeature.toUtf8(), extraHeaders );
 }
 
 QString QgsOapifPutFeatureRequest::errorMessageWithReason( const QString &reason )
