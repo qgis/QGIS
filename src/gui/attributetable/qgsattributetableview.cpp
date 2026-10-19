@@ -114,6 +114,7 @@ bool QgsAttributeTableView::eventFilter( QObject *object, QEvent *event )
 
 void QgsAttributeTableView::setAttributeTableConfig( const QgsAttributeTableConfig &config )
 {
+  ScopedIntIncrementor blockSignals( &mBlockColumnUpdates );
   int i = 0;
   const auto constColumns = config.columns();
   QMap<QString, int> columns;
@@ -531,6 +532,9 @@ void QgsAttributeTableView::actionTriggered()
 
 void QgsAttributeTableView::columnSizeChanged( int index, int oldWidth, int newWidth )
 {
+  if ( mBlockColumnUpdates )
+    return;
+
   Q_UNUSED( oldWidth )
   emit columnResized( index, newWidth );
 }
