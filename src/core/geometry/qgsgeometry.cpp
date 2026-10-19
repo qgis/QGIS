@@ -2179,7 +2179,11 @@ QVector<QgsGeometry> QgsGeometry::coerceToType( const Qgis::WkbType type, double
     res.reserve( parts->partCount() );
     for ( int i = 0; i < parts->partCount(); i++ )
     {
-      res << QgsGeometry( parts->geometryN( i )->clone() );
+      const QgsAbstractGeometry *part = parts->geometryN( i );
+      if ( QgsWkbTypes::isCurvedType( type ) && !QgsWkbTypes::isCurvedType( part->wkbType() ) )
+        res << QgsGeometry( part->toCurveType() );
+      else
+        res << QgsGeometry( part->clone() );
     }
   }
   // GeometryCollection (of Point/LineString/Polygon) -> MultiPoint/MultiLineString/MultiPolygon
