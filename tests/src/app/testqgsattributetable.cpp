@@ -636,7 +636,7 @@ void TestQgsAttributeTable::testOrderColumn()
   QgsAttributeTableFilterModel *filterModel = static_cast<QgsAttributeTableFilterModel *>( dlg->mMainView->mTableView->model() );
   filterModel->sort( 0, Qt::AscendingOrder );
 
-  QModelIndex index = filterModel->mapToSource( filterModel->sourceModel()->index( 0, 0 ) );
+  QModelIndex index = filterModel->mapToSource( filterModel->index( 0, 0 ) );
   QCOMPARE( index.row(), 0 );
   QCOMPARE( index.column(), 2 );
 
@@ -651,11 +651,11 @@ void TestQgsAttributeTable::testOrderColumn()
 
   // Assume an action column at the index 0,3
   // When we request the source index, it should be invalid (because there is no source of this column)
-  index = filterModel->mapToSource( filterModel->sourceModel()->index( 0, 3 ) );
+  index = filterModel->mapToSource( filterModel->index( 0, 3 ) );
   QVERIFY( !index.isValid() );
   // Then we request the source index by mapToMaster, there should be returned the source index of the first column
   // that's done to provide the feature
-  index = filterModel->mapToMaster( filterModel->sourceModel()->index( 0, 3 ) );
+  index = filterModel->mapToMaster( filterModel->index( 0, 3 ) );
   QCOMPARE( index.column(), 0 );
 }
 
