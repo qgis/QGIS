@@ -1045,7 +1045,6 @@ void QgsDualView::showViewHeaderMenu( QPoint point )
   connect( optimizeWidthAllColumns, &QAction::triggered, this, &QgsDualView::autosizeAllColumns );
   mHorizontalHeaderMenu->addAction( optimizeWidthAllColumns );
 
-
   mHorizontalHeaderMenu->addSeparator();
   QAction *organize = new QAction( tr( "&Organize Columns…" ), mHorizontalHeaderMenu );
   connect( organize, &QAction::triggered, this, &QgsDualView::organizeColumns );
@@ -1057,9 +1056,12 @@ void QgsDualView::showViewHeaderMenu( QPoint point )
   mConfig.update( mLayer->fields() );
   // get layer field index from column name
   int fieldIndex = -1;
-  if ( col != -1 )
-    fieldIndex = mLayer->fields().indexFromName( mConfig.columns().at( mConfig.mapVisibleColumnToIndex( col ) ).name );
-  const Qgis::FieldOrigin fieldOrigin = mLayer->fields().fieldOrigin( fieldIndex );
+  Qgis::FieldOrigin fieldOrigin = Qgis::FieldOrigin::Unknown;
+  if ( col < mLayer->fields().size() )
+  {
+    fieldIndex = col;
+    fieldOrigin = mLayer->fields().fieldOrigin( fieldIndex );
+  }
 
   mHorizontalHeaderMenu->addSeparator();
 
