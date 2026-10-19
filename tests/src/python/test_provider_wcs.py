@@ -35,6 +35,7 @@ class WcsTestHandler(BaseHTTPRequestHandler):
             k.upper(): v[0] for k, v in parse_qs(parsed_query.query).items()
         }
         request_type = query_string.get("REQUEST", "").upper()
+        self.server.coverage_requests.append(query_string)
 
         if request_type == "GETCAPABILITIES":
             self.send_response(200)
@@ -47,7 +48,6 @@ class WcsTestHandler(BaseHTTPRequestHandler):
             self.end_headers()
             self.wfile.write(self.server.describecoverage_xml)
         elif request_type == "GETCOVERAGE":
-            self.server.coverage_requests.append(query_string)
             self.send_response(200)
             self.send_header("Content-Type", "image/tiff")
             self.end_headers()
@@ -146,6 +146,28 @@ class PyQgsWCSProvider(QgisTestCase, RasterProviderTestCase):
         self.assertEqual(len(parts), 2)
         self.assertAlmostEqual(parts[0], -y_res, places=6)
         self.assertAlmostEqual(parts[1], x_res, places=6)
+
+    def test_url_query_string_preserved(self):
+        # Ensure that query string parameters passed via the server URL
+        # are preserved in all requests (GetCapabilities, DescribeCoverage, GetCoverage).
+        uri = QgsDataSourceUri()
+        uri.setParam("identifier", "dtm")
+        uri.setParam("crs", "EPSG:4326")
+        uri.setParam("format", "image/tiff")
+        uri.setParam(
+            "url", f"http://localhost:{self.port}/wcs?apikey=secret123&custom=val"
+        )
+
+        layer = QgsRasterLayer(uri.encodedUri().data().decode(), "test_query", "wcs")
+        self.assertTrue(layer.isValid())
+        provider = layer.dataProvider()
+        block = provider.block(1, provider.extent(), 10, 10)
+        self.assertTrue(block.isValid())
+        requests = self.server.server.coverage_requests
+        self.assertGreater(len(requests), 0)
+        for req in requests:
+            self.assertEqual(req.get("APIKEY"), "secret123")
+            self.assertEqual(req.get("CUSTOM"), "val")
 
 
 if __name__ == "__main__":
