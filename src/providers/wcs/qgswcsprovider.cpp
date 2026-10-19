@@ -535,7 +535,14 @@ void QgsWcsProvider::setCoverageCrs( QString const &crs )
 void QgsWcsProvider::setQueryItem( QUrl &url, const QString &item, const QString &value ) const
 {
   QUrlQuery query( url );
-  query.removeQueryItem( item );
+  const QList<QPair<QString, QString>> items = query.queryItems();
+  for ( const QPair<QString, QString> &pair : items )
+  {
+    if ( pair.first.compare( item, Qt::CaseInsensitive ) == 0 )
+    {
+      query.removeQueryItem( pair.first );
+    }
+  }
   query.addQueryItem( item, value );
   url.setQuery( query );
 }
