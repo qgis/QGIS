@@ -23,7 +23,7 @@ multipolygon layer and appends the results as attributes.
 #include "qgszonalstatistics.h"
 %End
   public:
-    QgsZonalStatistics( QgsVectorLayer *polygonLayer, QgsRasterLayer *rasterLayer, const QString &attributePrefix = QString(), int rasterBand = 1, Qgis::ZonalStatistics stats = Qgis::ZonalStatistic::Default, bool overwriteExisting = false );
+    QgsZonalStatistics( QgsVectorLayer *polygonLayer, QgsRasterLayer *rasterLayer, const QString &attributePrefix = QString(), int rasterBand = 1, Qgis::ZonalStatistics stats = Qgis::ZonalStatistic::Default, bool overwriteExistingFields = false );
 %Docstring
 Convenience constructor for QgsZonalStatistics, using an input raster
 layer.
@@ -31,9 +31,9 @@ layer.
 The raster layer must exist for the lifetime of the zonal statistics
 calculation.
 
-The ``overwriteExisting`` argument controls whether existing fields
-should be updated instead of creating new fields with _1, _2, … _N
-appended to their names (since QGIS 4.4).
+The ``overwriteExistingFields`` argument controls whether existing
+fields should be updated instead of creating new fields with _1, _2, …
+_N appended to their names (since QGIS 4.4).
 
 .. warning::
 
@@ -41,7 +41,7 @@ appended to their names (since QGIS 4.4).
    the constructor which accepts a :py:class:`QgsRasterInterface` should be used instead.
 %End
 
-    QgsZonalStatistics( QgsVectorLayer *polygonLayer, QgsRasterInterface *rasterInterface, const QgsCoordinateReferenceSystem &rasterCrs, double rasterUnitsPerPixelX, double rasterUnitsPerPixelY, const QString &attributePrefix = QString(), int rasterBand = 1, Qgis::ZonalStatistics stats = Qgis::ZonalStatistic::Default, bool overwriteExisting = false );
+    QgsZonalStatistics( QgsVectorLayer *polygonLayer, QgsRasterInterface *rasterInterface, const QgsCoordinateReferenceSystem &rasterCrs, double rasterUnitsPerPixelX, double rasterUnitsPerPixelY, const QString &attributePrefix = QString(), int rasterBand = 1, Qgis::ZonalStatistics stats = Qgis::ZonalStatistic::Default, bool overwriteExistingFields = false );
 %Docstring
 Constructor for QgsZonalStatistics, using a QgsRasterInterface.
 
@@ -68,9 +68,9 @@ Finally, the calculated statistics can be set via the ``stats``
 argument. A new field will be added to ``polygonLayer`` for each
 statistic calculated.
 
-The ``overwriteExisting`` argument controls whether existing fields
-should be updated instead of creating new fields with _1, _2, … _N
-appended to their names (since QGIS 4.4).
+The ``overwriteExistingFields`` argument controls whether existing
+fields should be updated instead of creating new fields with _1, _2, …
+_N appended to their names (since QGIS 4.4).
 
 .. warning::
 
