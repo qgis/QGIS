@@ -242,16 +242,24 @@ any editor widget created when editing data on this model.
 :return: The context
 %End
 
-    int extraColumns() const;
+ int extraColumns() const /Deprecated="Since 4.4. No longer allowed."/;
 %Docstring
 Empty extra columns to announce from this model. Any extra columns need
 to be implemented by proxy models in front of this model.
+
+.. deprecated:: 4.4
+
+   No longer allowed.
 %End
 
-    void setExtraColumns( int extraColumns );
+ void setExtraColumns( int extraColumns ) /Deprecated="Since 4.4. No longer allowed."/;
 %Docstring
 Empty extra columns to announce from this model. Any extra columns need
 to be implemented by proxy models in front of this model.
+
+.. deprecated:: 4.4
+
+   No longer allowed.
 %End
 
     bool showValidityState() const;

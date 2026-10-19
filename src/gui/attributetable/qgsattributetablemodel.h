@@ -257,14 +257,18 @@ class GUI_EXPORT QgsAttributeTableModel : public QAbstractTableModel
     /**
      * Empty extra columns to announce from this model.
      * Any extra columns need to be implemented by proxy models in front of this model.
+     *
+     * \deprecated QGIS 4.4. No longer allowed.
      */
-    int extraColumns() const;
+    Q_DECL_DEPRECATED int extraColumns() const SIP_DEPRECATED;
 
     /**
      * Empty extra columns to announce from this model.
      * Any extra columns need to be implemented by proxy models in front of this model.
+     *
+     * \deprecated QGIS 4.4. No longer allowed.
      */
-    void setExtraColumns( int extraColumns );
+    Q_DECL_DEPRECATED void setExtraColumns( int extraColumns ) SIP_DEPRECATED;
 
     /**
      * Returns whether the attribute table will add a visual feedback to cells when an attribute
@@ -428,8 +432,6 @@ class GUI_EXPORT QgsAttributeTableModel : public QAbstractTableModel
     std::vector<SortCache> mSortCaches;
 
     QgsAttributeEditorContext mEditorContext;
-
-    int mExtraColumns = 0;
 
     //! Flag for massive changes operations, set by edit command or rollback
     bool mBulkEditCommandRunning = false;
