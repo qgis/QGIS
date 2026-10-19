@@ -50,6 +50,7 @@ class TestQgsZonalStatistics : public QgsTest
     void testSmallPolygons();
     void testShortName();
     void testNonShapefileExistingFields();
+    void testOverwriteExistingFields();
 
   private:
     QgsVectorLayer *mVectorLayer = nullptr;
@@ -396,6 +397,41 @@ void TestQgsZonalStatistics::testNonShapefileExistingFields()
   QVERIFY( memoryLayer->getFeatures( request ).nextFeature( f ) );
   QCOMPARE( f.attribute( QStringLiteral( "count" ) ).toDouble(), 999.0 );
   QCOMPARE( f.attribute( QStringLiteral( "count_1" ) ).toDouble(), 12.0 );
+  QCOMPARE( f.attribute( QStringLiteral( "sum" ) ).toDouble(), 8.0 );
+}
+
+void TestQgsZonalStatistics::testOverwriteExistingFields()
+{
+  auto memoryLayer = std::make_unique<QgsVectorLayer>( QStringLiteral( "Polygon?crs=EPSG:4326&field=id:integer&field=count:double" ), QStringLiteral( "polygons" ), QStringLiteral( "memory" ) );
+  QVERIFY( memoryLayer->isValid() );
+
+  QgsFeature f;
+  QgsFeatureIterator it = mVectorLayer->getFeatures();
+  QgsFeatureList features;
+  while ( it.nextFeature( f ) )
+  {
+    QgsFeature newFeature( memoryLayer->fields() );
+    newFeature.setGeometry( f.geometry() );
+    newFeature.setAttribute( QStringLiteral( "id" ), f.id() );
+    newFeature.setAttribute( QStringLiteral( "count" ), 999.0 );
+    features << newFeature;
+  }
+  memoryLayer->dataProvider()->addFeatures( features );
+  QCOMPARE( memoryLayer->featureCount(), mVectorLayer->featureCount() );
+
+  int initialFieldCount = memoryLayer->fields().count();
+
+  QgsZonalStatistics zs( memoryLayer.get(), mRasterLayer, QString(), 1, Qgis::ZonalStatistic::Count | Qgis::ZonalStatistic::Sum, true );
+  QCOMPARE( zs.calculateStatistics( nullptr ), Qgis::ZonalStatisticResult::Success );
+
+  QCOMPARE( memoryLayer->fields().count(), initialFieldCount + 1 );
+  QCOMPARE( memoryLayer->fields().indexFromName( QStringLiteral( "count_1" ) ), -1 );
+  QVERIFY( memoryLayer->fields().indexFromName( QStringLiteral( "sum" ) ) != -1 );
+
+  QgsFeatureRequest request;
+  request.setFilterFid( 1 );
+  QVERIFY( memoryLayer->getFeatures( request ).nextFeature( f ) );
+  QCOMPARE( f.attribute( QStringLiteral( "count" ) ).toDouble(), 12.0 );
   QCOMPARE( f.attribute( QStringLiteral( "sum" ) ).toDouble(), 8.0 );
 }
 
