@@ -1017,7 +1017,7 @@ void QgsDualView::widgetWillShowContextMenu( QgsActionMenu *menu, const QModelIn
 
 void QgsDualView::showViewHeaderMenu( QPoint point )
 {
-  const int col = mTableView->columnAt( point.x() );
+  const int col = mTableView->horizontalHeader()->visualIndex( mTableView->horizontalHeader()->logicalIndexAt( point ) );
 
   delete mHorizontalHeaderMenu;
   mHorizontalHeaderMenu = new QMenu( this );
@@ -1124,13 +1124,12 @@ void QgsDualView::organizeColumns()
   }
 }
 
-void QgsDualView::tableColumnResized( int column, int width )
+void QgsDualView::tableColumnResized( int visualColumnIndex, int width )
 {
   QgsAttributeTableConfig config = mConfig;
-  const int sourceCol = config.mapVisibleColumnToIndex( column );
-  if ( sourceCol >= 0 && config.columnWidth( sourceCol ) != width )
+  if ( visualColumnIndex >= 0 && config.columnWidth( visualColumnIndex ) != width )
   {
-    config.setColumnWidth( sourceCol, width );
+    config.setColumnWidth( visualColumnIndex, width );
     setAttributeTableConfig( config );
   }
 }
@@ -1140,10 +1139,9 @@ void QgsDualView::hideColumn()
   QAction *action = qobject_cast<QAction *>( sender() );
   const int col = action->data().toInt();
   QgsAttributeTableConfig config = mConfig;
-  const int sourceCol = mConfig.mapVisibleColumnToIndex( col );
-  if ( sourceCol >= 0 )
+  if ( col >= 0 )
   {
-    config.setColumnHidden( sourceCol, true );
+    config.setColumnHidden( col, true );
     setAttributeTableConfig( config );
   }
 }
@@ -1171,16 +1169,13 @@ void QgsDualView::resizeColumn()
     return;
 
   QgsAttributeTableConfig config = mConfig;
-  const int sourceCol = config.mapVisibleColumnToIndex( col );
-  if ( sourceCol >= 0 )
+
+  bool ok = false;
+  const int width = QInputDialog::getInt( this, tr( "Set column width" ), tr( "Enter column width" ), mTableView->columnWidth( col ), 0, 1000, 10, &ok );
+  if ( ok )
   {
-    bool ok = false;
-    const int width = QInputDialog::getInt( this, tr( "Set column width" ), tr( "Enter column width" ), mTableView->columnWidth( col ), 0, 1000, 10, &ok );
-    if ( ok )
-    {
-      config.setColumnWidth( sourceCol, width );
-      setAttributeTableConfig( config );
-    }
+    config.setColumnWidth( col, width );
+    setAttributeTableConfig( config );
   }
 }
 
