@@ -157,56 +157,48 @@ Qgis::ZonalStatisticResult QgsZonalStatistics::calculateStatistics( QgsFeedback 
 
 QString QgsZonalStatistics::getUniqueFieldName( const QString &fieldName, const QList<QgsField> &newFields )
 {
-  QgsVectorDataProvider *dp = mPolygonLayer->dataProvider();
+  QgsVectorDataProvider *provider = mPolygonLayer->dataProvider();
+  const bool isShapefile = provider->storageType().contains( QLatin1String( "ESRI Shapefile" ) );
 
-  if ( !dp->storageType().contains( QLatin1String( "ESRI Shapefile" ) ) )
-  {
-    return fieldName;
-  }
-
-  QList<QgsField> allFields = dp->fields().toList();
+  QList<QgsField> allFields = provider->fields().toList();
   allFields.append( newFields );
-  QString shortName = fieldName.mid( 0, 10 );
 
-  bool found = false;
-  for ( const QgsField &field : std::as_const( allFields ) )
-  {
-    if ( shortName == field.name() )
+  QString baseName = isShapefile ? fieldName.mid( 0, 10 ) : fieldName;
+
+  auto fieldExists = [&allFields]( const QString &name ) -> bool {
+    for ( const QgsField &field : std::as_const( allFields ) )
     {
-      found = true;
-      break;
+      if ( field.name().compare( name, Qt::CaseSensitivity::CaseSensitive ) == 0 )
+      {
+        return true;
+      }
     }
-  }
+    return false;
+  };
 
-  if ( !found )
+  if ( !fieldExists( baseName ) )
   {
-    return shortName;
+    return baseName;
   }
 
   int n = 1;
-  shortName = QStringLiteral( "%1_%2" ).arg( fieldName.mid( 0, 8 ) ).arg( n );
-  found = true;
-  while ( found )
+  QString newName;
+  while ( true )
   {
-    found = false;
-    for ( const QgsField &field : std::as_const( allFields ) )
+    if ( isShapefile )
     {
-      if ( shortName == field.name() )
-      {
-        n += 1;
-        if ( n < 9 )
-        {
-          shortName = QStringLiteral( "%1_%2" ).arg( fieldName.mid( 0, 8 ) ).arg( n );
-        }
-        else
-        {
-          shortName = QStringLiteral( "%1_%2" ).arg( fieldName.mid( 0, 7 ) ).arg( n );
-        }
-        found = true;
-      }
+      newName = QStringLiteral( "%1_%2" ).arg( fieldName.mid( 0, n < 9 ? 8 : 7 ) ).arg( n );
     }
+    else
+    {
+      newName = QStringLiteral( "%1_%2" ).arg( fieldName ).arg( n );
+    }
+
+    if ( !fieldExists( newName ) )
+      return newName;
+
+    n++;
   }
-  return shortName;
 }
 
 QString QgsZonalStatistics::displayName( Qgis::ZonalStatistic statistic )
