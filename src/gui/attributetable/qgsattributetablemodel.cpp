@@ -939,7 +939,10 @@ void QgsAttributeTableModel::bulkEditCommandEnded()
   {
     // Invalidates the cache (there is no API for doing this directly)
     emit mLayer->dataChanged();
-    emit dataChanged( createIndex( 0, 0 ), createIndex( rowCount() - 1, columnCount() - 1 ) );
+    if ( rowCount() > 0 )
+    {
+      emit dataChanged( createIndex( 0, 0 ), createIndex( rowCount() - 1, columnCount() - 1 ) );
+    }
   }
   else if ( !mAttributeValueChanges.empty() && !mInsertedRowsChanges.empty() )
   {
