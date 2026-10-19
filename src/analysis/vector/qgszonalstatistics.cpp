@@ -20,6 +20,7 @@
 #include "qgsfeatureiterator.h"
 #include "qgsfeedback.h"
 #include "qgsgeometry.h"
+#include "qgsmessagelog.h"
 #include "qgsvectordataprovider.h"
 #include "qgsvectorlayer.h"
 #include "processing/qgsrasteranalysisutils.h"
@@ -101,6 +102,11 @@ Qgis::ZonalStatisticResult QgsZonalStatistics::calculateStatistics( QgsFeedback 
       }
       else
       {
+        if ( mOverwriteExistingFields && targetIndex == -1 )
+        {
+          QgsMessageLog::logMessage( QObject::tr( "Could not find field '%1'. A new field will be created instead." ).arg( targetFieldName ), QObject::tr( "Zonal Statistics" ), Qgis::MessageLevel::Warning );
+        }
+
         QString fieldName = getUniqueFieldName( targetFieldName, newFieldList );
         QgsField field( fieldName, QMetaType::Type::Double, QStringLiteral( "double precision" ) );
         newFieldList.push_back( field );
