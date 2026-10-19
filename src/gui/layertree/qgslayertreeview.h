@@ -383,7 +383,6 @@ class GUI_EXPORT QgsLayerTreeViewBase : public QTreeView
     QgsLayerTreeViewDefaultActions *mDefaultActions = nullptr;
 
   protected slots:
-
     /**
      * Stores the expanded state to a node with matching \a index.
      */
@@ -607,7 +606,9 @@ class GUI_EXPORT QgsLayerTreeView : public QgsLayerTreeViewBase
     void modelRowsInserted( const QModelIndex &index, int start, int end );
     void modelRowsRemoved();
 
+    void onDoubleClicked( const QModelIndex &index );
     void onCurrentChanged();
+
 
   private slots:
     void onCustomPropertyChanged( QgsLayerTreeNode *node, const QString &key );
