@@ -13,7 +13,6 @@ email                : morb at ozemail dot com dot au
  *                                                                         *
  ***************************************************************************/
 
-#include "qgscurvepolygon.h"
 #include "qgsgeometry.h"
 
 #include <cmath>
@@ -27,6 +26,7 @@ email                : morb at ozemail dot com dot au
 #include "qgsabstractgeometry.h"
 #include "qgscircle.h"
 #include "qgscurve.h"
+#include "qgscurvepolygon.h"
 #include "qgsgeometryeditutils.h"
 #include "qgsgeometryfactory.h"
 #include "qgsgeometryutils.h"
@@ -35,6 +35,7 @@ email                : morb at ozemail dot com dot au
 #include "qgsinternalgeometryengine.h"
 #include "qgslinestring.h"
 #include "qgsmaptopixel.h"
+#include "qgsmulticurve.h"
 #include "qgsmultilinestring.h"
 #include "qgsmultipoint.h"
 #include "qgsmultipolygon.h"
@@ -5174,6 +5175,9 @@ QgsGeometry QgsGeometry::doChamferFillet( ChamferFilletOperationType op, int ver
   // insert \a result geometry (obtain by the chamfer/fillet operation) back into original \a inputPoly polygon
   auto updatePolygon = []( const QgsCurvePolygon *inputPoly, QgsAbstractGeometry *result, int modifiedRing ) -> std::unique_ptr<QgsCurvePolygon> {
     auto newPoly = std::make_unique<QgsCurvePolygon>();
+    if ( qgsgeometry_cast<const QgsPolygon *>( inputPoly ) )
+      newPoly = std::make_unique<QgsPolygon>();
+
     for ( int ringIndex = 0; ringIndex < inputPoly->numInteriorRings() + 1; ++ringIndex )
     {
       if ( ringIndex == modifiedRing )
@@ -5203,6 +5207,9 @@ QgsGeometry QgsGeometry::doChamferFillet( ChamferFilletOperationType op, int ver
     if ( modifiedPart >= 0 )
     {
       auto newMultiCurve = std::make_unique<QgsMultiCurve>();
+      if ( qgsgeometry_cast<const QgsMultiLineString *>( inputMultiCurve ) )
+        newMultiCurve = std::make_unique<QgsMultiLineString>();
+
       int partIndex = 0;
       for ( QgsMultiCurve::part_iterator partIte = inputMultiCurve->parts_begin(); partIte != inputMultiCurve->parts_end(); ++partIte )
       {
@@ -5233,6 +5240,9 @@ QgsGeometry QgsGeometry::doChamferFillet( ChamferFilletOperationType op, int ver
     if ( modifiedPart >= 0 )
     {
       auto newMultiSurface = std::make_unique<QgsMultiSurface>();
+      if ( qgsgeometry_cast<const QgsMultiPolygon *>( inputMultiSurface ) )
+        newMultiSurface = std::make_unique<QgsMultiPolygon>();
+
       int partIndex = 0;
       for ( QgsAbstractGeometry::part_iterator partIte = inputMultiSurface->parts_begin(); partIte != inputMultiSurface->parts_end(); ++partIte )
       {
