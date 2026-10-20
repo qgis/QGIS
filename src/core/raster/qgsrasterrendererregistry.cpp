@@ -146,13 +146,10 @@ std::unique_ptr<QgsRasterRenderer> QgsRasterRendererRegistry::defaultRendererFor
       const int grayBand = 1; //reasonable default
 
       // first preference -- use attribute table to generate classes
-      if ( provider->attributeTable( grayBand ) )
+      const QgsRasterAttributeTable *attributeTable { provider->attributeTable( grayBand ) };
+      if ( attributeTable && attributeTable->hasColor() )
       {
         std::unique_ptr<QgsColorRamp> ramp;
-        if ( !provider->attributeTable( grayBand )->hasColor() )
-        {
-          ramp = std::make_unique< QgsRandomColorRamp >();
-        }
         const QgsPalettedRasterRenderer::MultiValueClassData classes = QgsPalettedRasterRenderer::rasterAttributeTableToClassData( provider->attributeTable( grayBand ), -1, ramp.get() );
         if ( !classes.empty() )
         {
@@ -163,9 +160,36 @@ std::unique_ptr<QgsRasterRenderer> QgsRasterRendererRegistry::defaultRendererFor
       // second preference -- use raster color table to generate classes
       if ( !renderer )
       {
-        const QgsPalettedRasterRenderer::ClassData classes = QgsPalettedRasterRenderer::colorTableToClassData( provider->colorTable( grayBand ) );
+        QgsPalettedRasterRenderer::ClassData classes = QgsPalettedRasterRenderer::colorTableToClassData( provider->colorTable( grayBand ) );
         if ( !classes.empty() )
         {
+          // If there is an attribute table (with no colors), try to get the labels for the colors
+          if ( attributeTable
+               && attributeTable->fieldsByUsage( Qgis::RasterAttributeTableFieldUsage::MinMax ).size() > 0
+               && attributeTable->fieldsByUsage( Qgis::RasterAttributeTableFieldUsage::Name ).size() > 0 )
+          {
+            const QgsRasterAttributeTable::Field minMaxFld = attributeTable->fieldsByUsage( Qgis::RasterAttributeTableFieldUsage::MinMax ).first();
+            const QgsRasterAttributeTable::Field nameFld = attributeTable->fieldsByUsage( Qgis::RasterAttributeTableFieldUsage::Name ).first();
+            const int fieldValueIndex = attributeTable->fields().indexOf( minMaxFld );
+            const int fieldNameIndex = attributeTable->fields().indexOf( nameFld );
+            QMap<double, QString> ratLabelsMap;
+            const QList<QList<QVariant>> constRatData = attributeTable->data();
+            for ( const auto &row : constRatData )
+            {
+              const double fieldValue = row.value( fieldValueIndex ).toDouble();
+              const QString fieldName = row.value( fieldNameIndex ).toString();
+              ratLabelsMap.insert( fieldValue, fieldName );
+            }
+
+            for ( size_t i = 0; i < classes.size(); ++i )
+            {
+              QgsPalettedRasterRenderer::Class &classData = classes[i];
+              if ( ratLabelsMap.contains( classData.value ) )
+              {
+                classData.label = ratLabelsMap.value( classData.value );
+              }
+            }
+          }
           renderer = std::make_unique< QgsPalettedRasterRenderer >( provider, grayBand, classes );
         }
       }
