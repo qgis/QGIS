@@ -433,8 +433,6 @@ void QgsAttributeTableModel::loadAttributes()
   if ( mFields == fields )
     return;
 
-  mFields = fields;
-
   bool ins = false, rm = false;
 
   QgsAttributeList attributes;
@@ -454,6 +452,8 @@ void QgsAttributeTableModel::loadAttributes()
     rm = true;
     beginRemoveColumns( QModelIndex(), attributes.size(), mFieldCount + mExtraColumns - 1 );
   }
+
+  mFields = fields;
 
   mFieldCount = attributes.size();
   mAttributes = attributes;
@@ -715,7 +715,7 @@ QVariant QgsAttributeTableModel::data( const QModelIndex &index, int role ) cons
     }
   }
 
-  const QgsField field = mLayer->fields().at( fieldId );
+  const QgsField field = mFields.at( fieldId );
 
   if ( role == Qt::TextAlignmentRole )
   {
