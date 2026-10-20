@@ -1555,7 +1555,7 @@ void TestQgsOgrUtils::testLoadStoredStyleCleanupsFilter()
   QString geomColumnA;
   QString geomColumnB;
   {
-    QgsVectorLayer layerA( u"%1|layername=layer_a"_s.arg( testFile ), u"layer_a"_s, u"ogr"_s );
+    QgsVectorLayer layerA( QStringLiteral( "%1|layername=layer_a" ).arg( testFile ), QStringLiteral( "layer_a" ), QStringLiteral( "ogr" ) );
     QVERIFY( layerA.isValid() );
 
     geomColumnA = layerA.dataProvider()->geometryColumnName();
