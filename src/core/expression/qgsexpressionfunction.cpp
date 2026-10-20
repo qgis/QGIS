@@ -7896,7 +7896,11 @@ static QVariant fcnArrayPrepend( const QVariantList &values, const QgsExpression
 static QVariant fcnArrayInsert( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
 {
   QVariantList list = QgsExpressionUtils::getListValue( values.at( 0 ), parent );
-  list.insert( QgsExpressionUtils::getNativeIntValue( values.at( 1 ), parent ), values.at( 2 ) );
+  int position = QgsExpressionUtils::getNativeIntValue( values.at( 1 ), parent );
+  if ( position < 0 )
+    position += list.size();
+
+  list.insert( std::clamp( position, 0, static_cast<int>( list.size() ) ), values.at( 2 ) );
   return convertToSameType( list, static_cast<QMetaType::Type>( values.at( 0 ).userType() ) );
 }
 
