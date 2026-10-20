@@ -72,7 +72,7 @@ bool QgsWmsSettings::parseUri( const QString &uriString )
     mTileMatrixSetId = u"tms0"_s;
     mMaxWidth = 0;
     mMaxHeight = 0;
-    mHttpUri = uri.param( u"url"_s );
+    mHttpUri = QUrl::fromPercentEncoding( uri.param( u"url"_s ).toUtf8() );
 
     // automatically replace outdated references to http OpenStreetMap tiles with correct https URI
     const thread_local QRegularExpression sRegExOSMTiles( u"^https?://(?:[a-z]\\.)?tile\\.openstreetmap\\.org"_s );
