@@ -1572,7 +1572,7 @@ void TestQgsOgrUtils::testLoadStoredStyleCleanupsFilter()
     rendererA->setSymbol( symbolA );
     layerA.saveStyleToDatabaseV2( "styleA2", "styleA2", true, QString(), error );
 
-    QgsVectorLayer layerB( u"%1|layername=layer_b"_s.arg( testFile ), u"layer_b"_s, u"ogr"_s );
+    QgsVectorLayer layerB( QStringLiteral( "%1|layername=layer_b" ).arg( testFile ), QStringLiteral( "layer_b" ),  QStringLiteral( "ogr" ) );
     QVERIFY( layerB.isValid() );
 
     geomColumnB = layerB.dataProvider()->geometryColumnName();
@@ -1588,18 +1588,18 @@ void TestQgsOgrUtils::testLoadStoredStyleCleanupsFilter()
   gdal::ogr_datasource_unique_ptr hDS( OGROpen( testFile.toUtf8().constData(), false, nullptr ) );
 
   QString styleName;
-  QgsOgrUtils::loadStoredStyle( hDS.get(), u"layer_a"_s, geomColumnA, styleName, error );
-  QCOMPARE( styleName, u"styleA2"_s );
+  QgsOgrUtils::loadStoredStyle( hDS.get(), QStringLiteral( "layer_a" ), geomColumnA, styleName, error );
+  QCOMPARE( styleName, QStringLiteral( "styleA2" ) );
 
   QStringList ids;
   QStringList names;
   QStringList descriptions;
-  const int count = QgsOgrUtils::listStyles( hDS.get(), u"layer_b"_s, geomColumnB, ids, names, descriptions, error );
+  const int count = QgsOgrUtils::listStyles( hDS.get(), QStringLiteral( "layer_b" ), geomColumnB, ids, names, descriptions, error );
   QCOMPARE( count, 1 );
   QCOMPARE( ids.size(), 3 );
   QCOMPARE( names.size(), 3 );
   QCOMPARE( descriptions.size(), 3 );
-  QCOMPARE( names.at( 0 ), u"styleB1"_s );
+  QCOMPARE( names.at( 0 ), QStringLiteral( "styleB1" ) );
 }
 
 QGSTEST_MAIN( TestQgsOgrUtils )
