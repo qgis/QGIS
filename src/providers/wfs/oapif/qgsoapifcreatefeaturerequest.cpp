@@ -55,6 +55,7 @@ QString QgsOapifCreateFeatureRequest::createFeature( const QgsOapifSharedData *s
   {
     j["properties"].erase( "id" );
   }
+  QgsOAPIFJson::removeReadOnlyProperties( j, sharedData->mFields );
   const bool jsonFg = sharedData->shouldWriteJsonFg();
   if ( jsonFg )
   {
