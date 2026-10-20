@@ -631,6 +631,7 @@ void TestQgsAttributeTable::testOrderColumn()
   columns.move( 2, 0 ); // col2, pk, col1
   config.setColumns( columns );
 
+  // note that this impacts the VIEW only now, not the model itself!
   dlg->mMainView->setAttributeTableConfig( config );
 
   QgsAttributeTableFilterModel *filterModel = static_cast<QgsAttributeTableFilterModel *>( dlg->mMainView->mTableView->model() );
@@ -638,25 +639,21 @@ void TestQgsAttributeTable::testOrderColumn()
 
   QModelIndex index = filterModel->mapToSource( filterModel->index( 0, 0 ) );
   QCOMPARE( index.row(), 0 );
-  QCOMPARE( index.column(), 2 );
-
-  index = filterModel->mapFromSource( filterModel->sourceModel()->index( 0, 0 ) );
-  QCOMPARE( index.row(), 0 );
-  QCOMPARE( index.column(), 1 );
-
-  qDebug() << filterModel->mapFromSource( filterModel->sourceModel()->index( 0, 0 ) );
-
-  // column 0 is indeed column 2 since we moved it
-  QCOMPARE( filterModel->sortColumn(), 2 );
-
-  // Assume an action column at the index 0,3
-  // When we request the source index, it should be invalid (because there is no source of this column)
-  index = filterModel->mapToSource( filterModel->index( 0, 3 ) );
-  QVERIFY( !index.isValid() );
-  // Then we request the source index by mapToMaster, there should be returned the source index of the first column
-  // that's done to provide the feature
-  index = filterModel->mapToMaster( filterModel->index( 0, 3 ) );
   QCOMPARE( index.column(), 0 );
+
+  QCOMPARE( filterModel->sortColumn(), 0 );
+
+  // check that view is using the reordered columns
+  QCOMPARE( dlg->mMainView->mTableView->horizontalHeader()->visualIndex( 0 ), 1 );
+  QCOMPARE( dlg->mMainView->mTableView->horizontalHeader()->visualIndex( 1 ), 2 );
+  QCOMPARE( dlg->mMainView->mTableView->horizontalHeader()->visualIndex( 2 ), 0 );
+
+  // Action column at the index 0,3
+  // When we request the source index, it MUST be valid (because all columns MUST exist in the base table model to satisfy Qt model requirements)
+  index = filterModel->mapToSource( filterModel->index( 0, 3 ) );
+  QVERIFY( index.isValid() );
+  index = filterModel->mapToMaster( filterModel->index( 0, 3 ) );
+  QCOMPARE( index.column(), 3 );
 }
 
 void TestQgsAttributeTable::testFilteredFeatures()
