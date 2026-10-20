@@ -59,9 +59,16 @@ QVariant QgsFieldFormatter::sortValue( QgsVectorLayer *layer, int fieldIndex, co
 
 Qt::AlignmentFlag QgsFieldFormatter::alignmentFlag( QgsVectorLayer *layer, int fieldIndex, const QVariantMap &config ) const
 {
-  Q_UNUSED( config )
+  Qt::AlignmentFlag res = Qt::AlignLeft;
+  if ( fieldIndex >= 0 && fieldIndex < layer->fields().count() )
+  {
+    res = alignmentFlag( layer->fields().at( fieldIndex ), config );
+  }
+  return res;
+}
 
-  const QgsField field = layer->fields().at( fieldIndex );
+Qt::AlignmentFlag QgsFieldFormatter::alignmentFlag( const QgsField &field, const QVariantMap & ) const
+{
   if ( field.isNumeric() || field.isDateOrTime() )
     return Qt::AlignRight;
   else
