@@ -117,7 +117,7 @@ void QgsOapifQueryablesRequest::processReply()
 
           // Part 3 and Part 5 describe a geometry with a "geometry-*" format and/or a "primary-geometry" role,
           // older servers with a $ref to a GeoJSON schema. Any of these wins over a "type".
-          queryable.mIsGeometry = hasGeoJsonRef || queryable.mFormat.startsWith( "geometry-"_L1 ) || queryable.mIsPrimaryGeometry;
+          queryable.mIsGeometry = hasGeoJsonRef || queryable.mFormat.startsWith( QLatin1String( "geometry-" ) ) || queryable.mIsPrimaryGeometry;
           if ( !queryable.mIsGeometry )
           {
             if ( !val.contains( "type" ) )
