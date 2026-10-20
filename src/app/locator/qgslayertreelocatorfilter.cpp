@@ -56,7 +56,7 @@ void QgsLayerTreeLocatorFilter::fetchResults( const QString &string, const QgsLo
       continue;
     }
 
-    result.score = fuzzyScore( result.displayString, string );
+    result.score = fuzzyScore( QgsStringUtils::unaccent( result.displayString ), QgsStringUtils::unaccent( string ) );
 
     if ( result.score > 0 )
       emit resultFetched( result );
