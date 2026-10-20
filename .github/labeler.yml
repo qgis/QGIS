@@ -176,6 +176,17 @@
             "src/ui/processing/**/*",
           ]
 
+"Modeller":
+  - changed-files:
+      - any-glob-to-any-file:
+          [
+            "src/gui/processing/models/**/*",
+            "src/core/processing/models/**/*",
+            "src/ui/processing/models/**/*",
+            "src/core/processing/qgsprocessingmodelprovider.*",
+            "src/core/processing/qgsprocessingprojectmodelprovider.*"
+          ]
+
 "Profile tool":
   - changed-files:
       - any-glob-to-any-file:
