@@ -354,8 +354,6 @@ their order.
 %End
 
 
-
-
     static QString unaccent( const QString &input );
 %Docstring
 Removes accents and other diacritical marks from a string, replacing
