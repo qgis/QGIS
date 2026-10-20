@@ -525,6 +525,9 @@ void QgsDualView::initModels( QgsMapCanvas *mapCanvas, const QgsFeatureRequest &
   connect( mFeatureListView, &QgsFeatureListView::displayExpressionChanged, this, &QgsDualView::displayExpressionChanged );
 
   mFeatureListModel = new QgsFeatureListModel( mFilterModel, mFilterModel );
+#ifdef ENABLE_MODELTEST
+  // new QAbstractItemModelTester( mFeatureListModel, QAbstractItemModelTester::FailureReportingMode::Fatal, this );
+#endif
 }
 
 void QgsDualView::restoreRecentDisplayExpressions()
