@@ -2509,7 +2509,8 @@ Q_GLOBAL_STATIC_WITH_ARGS(
       { "asin"_L1, "asin"_L1 },
       { "acos"_L1, "acos"_L1 },
       { "atan"_L1, "atan"_L1 },
-      { "format_number"_L1, "numberFormat"_L1 } }
+      { "attribute"_L1, "attribute"_L1 },
+      { "get_feature"_L1, "get_feature"_L1 } }
   )
 )
 
