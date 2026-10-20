@@ -1540,6 +1540,108 @@ void QgsFieldItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *men
           menu->addAction( setCommentAction );
         }
 
+        // skip the geometry column, as spatial indexes are handled by the dedicated "Create Spatial Index" entry
+        const bool isGeometryColumn = fieldsItem->tableProperty() && fieldsItem->tableProperty()->geometryColumn().compare( item->name(), Qt::CaseInsensitive ) == 0;
+
+        QMap<QString, QStringList> fieldIndexes;
+        bool hasIndex = false;
+        if ( conn && conn->capabilities2().testFlag( Qgis::DatabaseProviderConnectionCapability2::ListTableIndexes ) && !isGeometryColumn )
+        {
+          try
+          {
+            const QMap<QString, QStringList> tableIndexes = conn->tableIndexes( fieldsItem->schema(), fieldsItem->tableName() );
+            for ( auto it = tableIndexes.constBegin(); it != tableIndexes.constEnd(); ++it )
+            {
+              if ( it.value().contains( item->name(), Qt::CaseInsensitive ) )
+              {
+                fieldIndexes.insert( it.key(), it.value() );
+                if ( it.value().size() == 1 )
+                  hasIndex = true;
+              }
+            }
+          }
+          catch ( const QgsProviderConnectionException &ex )
+          {
+            QgsDebugError( u"Error getting indexes for %1.%2: %3"_s.arg( fieldsItem->schema(), fieldsItem->tableName(), ex.what() ) );
+          }
+        }
+
+        if ( conn && conn->capabilities2().testFlag( Qgis::DatabaseProviderConnectionCapability2::CreateIndex ) && !isGeometryColumn && !hasIndex )
+        {
+          QAction *createIndexAction = new QAction( tr( "Create Index…" ), menu );
+          const QString itemName { item->name() };
+
+          connect( createIndexAction, &QAction::triggered, fieldsItem, [md, fieldsItem, itemName, context] {
+            const QString defaultName = u"idx_%1_%2"_s.arg( fieldsItem->tableName(), itemName );
+            bool ok = false;
+
+            const QString indexName = QInputDialog::getText( QgisApp::instance(), tr( "Create Index On %1" ).arg( itemName ), tr( "Index name" ), QLineEdit::Normal, defaultName, &ok ).trimmed();
+            if ( !ok || indexName.isEmpty() )
+              return;
+
+            std::unique_ptr<QgsAbstractDatabaseProviderConnection> conn2 { static_cast<QgsAbstractDatabaseProviderConnection *>( md->createConnection( fieldsItem->connectionUri(), {} ) ) };
+            try
+            {
+              conn2->createIndex( fieldsItem->schema(), fieldsItem->tableName(), itemName, indexName );
+              if ( context.messageBar() )
+                context.messageBar()->pushMessage( tr( "Index '%1' created on %2" ).arg( indexName, itemName ), Qgis::MessageLevel::Success );
+            }
+            catch ( const QgsProviderConnectionException &ex )
+            {
+              notify( tr( "Create Index" ), tr( "Failed to create index on field '%1': %2" ).arg( itemName, ex.what() ), context, Qgis::MessageLevel::Critical );
+            }
+          } );
+
+          menu->addAction( createIndexAction );
+        }
+
+        if ( conn && conn->capabilities2().testFlag( Qgis::DatabaseProviderConnectionCapability2::DeleteIndex ) )
+        {
+          const QString itemName { item->name() };
+
+          if ( !fieldIndexes.isEmpty() )
+          {
+            QAction *deleteIndexAction = new QAction( fieldIndexes.size() == 1 ? tr( "Delete Index…" ) : tr( "Delete Indexes…" ), menu );
+
+            connect( deleteIndexAction, &QAction::triggered, fieldsItem, [md, fieldsItem, itemName, fieldIndexes, context] {
+              QStringList labels;
+              for ( auto it = fieldIndexes.constBegin(); it != fieldIndexes.constEnd(); ++it )
+                labels.append( it.value().size() > 1 ? u"%1 (%2)"_s.arg( it.key(), it.value().join( ", "_L1 ) ) : it.key() );
+
+              // from this simple menu action, there is no way to drop one specific index, so we drop all
+              // in the future: consider an index manager to work around this issue, or a menu for the user to select by name which index to delete
+              const QString message = tr( "Delete all indexes on field '%1' permanently?\n\n%2" ).arg( itemName, labels.join( '\n'_L1 ) );
+              if ( QMessageBox::question( QgisApp::instance(), tr( "Delete Index" ), message, QMessageBox::Yes | QMessageBox::No, QMessageBox::No ) != QMessageBox::Yes )
+                return;
+
+              std::unique_ptr<QgsAbstractDatabaseProviderConnection> conn2 { static_cast<QgsAbstractDatabaseProviderConnection *>( md->createConnection( fieldsItem->connectionUri(), {} ) ) };
+
+              // we are dropping all indexes on the column (there can be multiple)
+              QStringList deleted;
+              QStringList errors;
+              for ( auto it = fieldIndexes.constBegin(); it != fieldIndexes.constEnd(); ++it )
+              {
+                try
+                {
+                  conn2->deleteIndex( fieldsItem->schema(), fieldsItem->tableName(), it.key() );
+                  deleted.append( it.key() );
+                }
+                catch ( const QgsProviderConnectionException &ex )
+                {
+                  errors.append( u"%1: %2"_s.arg( it.key(), ex.what() ) );
+                }
+              }
+
+              if ( !errors.isEmpty() )
+                notify( tr( "Delete Index" ), tr( "Failed to delete indexes on field '%1':\n%2" ).arg( itemName, errors.join( '\n'_L1 ) ), context, Qgis::MessageLevel::Critical );
+              if ( !deleted.isEmpty() && context.messageBar() )
+                context.messageBar()->pushMessage( tr( "Deleted indexes on %1: %2" ).arg( itemName, deleted.join( ", "_L1 ) ), Qgis::MessageLevel::Success );
+            } );
+
+            menu->addAction( deleteIndexAction );
+          }
+        }
+
         if ( conn && conn->capabilities().testFlag( QgsAbstractDatabaseProviderConnection::Capability::DeleteField ) )
         {
           QAction *deleteFieldAction = new QAction( tr( "Delete Field…" ), menu );

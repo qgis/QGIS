@@ -3475,6 +3475,9 @@ The development version
       SetTableComment,
       EditFieldDomain,
       DeleteFieldDomain,
+      CreateIndex,
+      ListTableIndexes,
+      DeleteIndex,
     };
     typedef QFlags<Qgis::DatabaseProviderConnectionCapability2> DatabaseProviderConnectionCapabilities2;
 
