@@ -463,6 +463,8 @@ class GdalUtils:
                 path = parts["path"]
                 if "vsiPrefix" in parts:
                     path = parts["vsiPrefix"] + path
+                if "vsiSuffix" in parts:
+                    path += parts["vsiSuffix"]
 
                 _, ext = os.path.splitext(parts["path"])
                 format = QgsVectorFileWriter.driverForExtension(ext)
@@ -479,6 +481,8 @@ class GdalUtils:
                 path = parts["path"]
                 if "vsiPrefix" in parts:
                     path = parts["vsiPrefix"] + path
+                if "vsiSuffix" in parts:
+                    path += parts["vsiSuffix"]
 
                 return GdalConnectionDetails(
                     connection_string=path,
