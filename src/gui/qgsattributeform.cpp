@@ -453,16 +453,17 @@ bool QgsAttributeForm::saveEdits( QString *error )
           const QgsAttributes newValues = updatedFeature.attributes();
           const QVariant lastUsedValuesVariant = mLayer->property( "AttributeFormLastUsedValues" );
           QgsAttributeMap lastUsedValues = lastUsedValuesVariant.isValid() ? lastUsedValuesVariant.value<QgsAttributeMap>() : QgsAttributeMap();
+          const bool reuseAllLastValues = QgsSettingsRegistryCore::settingsDigitizingReuseLastValues->value();
           for ( int idx = 0; idx < fields.count(); ++idx )
           {
             const Qgis::AttributeFormReuseLastValuePolicy reusePolicy = mLayer->editFormConfig().reuseLastValuePolicy( idx );
-            if ( reusePolicy != Qgis::AttributeFormReuseLastValuePolicy::NotAllowed )
+            if ( reuseAllLastValues || reusePolicy != Qgis::AttributeFormReuseLastValuePolicy::NotAllowed )
             {
               const QVariant rememberLastUsedValuesVariant = mLayer->property( "AttributeFormRememberLastUsedValues" );
               QMap<int, bool> rememberLastUsedValues = rememberLastUsedValuesVariant.value<QMap<int, bool>>();
               if ( !rememberLastUsedValues.contains( idx ) )
               {
-                const bool remember = reusePolicy == Qgis::AttributeFormReuseLastValuePolicy::AllowedDefaultOn;
+                const bool remember = reuseAllLastValues || reusePolicy == Qgis::AttributeFormReuseLastValuePolicy::AllowedDefaultOn;
                 rememberLastUsedValues[idx] = remember;
                 mLayer->setProperty( "AttributeFormRememberLastUsedValues", QVariant::fromValue<QMap<int, bool>>( rememberLastUsedValues ) );
               }
@@ -3689,7 +3690,7 @@ QgsFeature QgsAttributeForm::createFeature( QgsVectorLayer *layer, const QgsGeom
     {
       initialAttributeValues.insert( idx, attributes.value( idx ) );
     }
-    else if ( ( reuseAllLastValues || layer->editFormConfig().reuseLastValuePolicy( idx ) != Qgis::AttributeFormReuseLastValuePolicy::NotAllowed ) )
+    else if ( reuseAllLastValues || layer->editFormConfig().reuseLastValuePolicy( idx ) != Qgis::AttributeFormReuseLastValuePolicy::NotAllowed )
     {
       const QVariant lastUsedValuesVariant = layer->property( "AttributeFormLastUsedValues" );
       const QgsAttributeMap lastUsedValues = lastUsedValuesVariant.isValid() ? lastUsedValuesVariant.value<QgsAttributeMap>() : QgsAttributeMap();
