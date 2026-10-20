@@ -13406,6 +13406,24 @@ class TestQgsGeometry(QgisTestCase):
             ["MultiCurve (LineString (0 0, 1 1))"],
         )
 
+        # Straight to single + curve
+        self.assertEqual(
+            coerce_to_wkt("LineString (0 0,1 1)", QgsWkbTypes.Type.CompoundCurve),
+            ["CompoundCurve ((0 0, 1 1))"],
+        )
+        self.assertEqual(
+            coerce_to_wkt(
+                "Polygon ((1 1, 2 2, 1 2, 1 1))", QgsWkbTypes.Type.CurvePolygon
+            ),
+            ["CurvePolygon ((1 1, 2 2, 1 2, 1 1))"],
+        )
+        self.assertEqual(
+            coerce_to_wkt(
+                "MultiPolygon (((1 1, 2 2, 1 2, 1 1)))", QgsWkbTypes.Type.CurvePolygon
+            ),
+            ["CurvePolygon ((1 1, 2 2, 1 2, 1 1))"],
+        )
+
         # Polygon to PolyhedralSurface
         self.assertEqual(
             coerce_to_wkt(
