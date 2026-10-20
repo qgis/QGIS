@@ -402,7 +402,7 @@ class CORE_EXPORT QgsProcessingModelAlgorithm : public QgsProcessingAlgorithm
      *
      * \since QGIS 4.4
      */
-    QString &modelQgisVersion() { return mModelQgisVersion; }
+    QString modelQgisVersion() const { return mModelQgisVersion; }
 
     /**
      * Returns the model's help contents (a free-form map of values describing the algorithm's
@@ -612,22 +612,6 @@ class CORE_EXPORT QgsProcessingModelAlgorithm : public QgsProcessingAlgorithm
     Q_ENUM( InternalVersion )
 
 #endif
-
-    // signals :
-
-
-    /**
-     * Emitted when a model is read and the version of QGIS used to save
-     * the model differs from the current QGIS version.
-     *
-     * The \a fileVersion argument indicates the version of QGIS used to save
-     * the model.
-     *
-     * \note Not available in Python bindings
-     * \since QGIS 4.4
-     */
-    // void versionMismatch( const QString &fileVersion );
-
 
   protected:
     QgsProcessingAlgorithm *createInstance() const override SIP_FACTORY;
