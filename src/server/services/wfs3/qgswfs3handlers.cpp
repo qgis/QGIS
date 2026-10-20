@@ -1154,6 +1154,10 @@ void QgsWfs3ConformanceHandler::handleRequest( const QgsServerApiContext &contex
         "http://www.opengis.net/spec/ogcapi-features-1/1.0/conf/html",
         "http://www.opengis.net/spec/ogcapi-features-1/1.0/conf/geojson",
 
+        // From: https://docs.ogc.org/DRAFTS/20-002r1.html
+        "http://www.opengis.net/spec/ogcapi-features-4/1.0/conf/create-replace-delete",
+        "http://www.opengis.net/spec/ogcapi-features-4/1.0/conf/update",
+
         // Draft? Now approved as part 3 https://docs.ogc.org/is/23-058r2/23-058r2.html
         "http://www.opengis.net/spec/ogcapi-features-5/1.0/conf/schemas",
         "http://www.opengis.net/spec/ogcapi-features-5/1.0/conf/profile-codelists",
