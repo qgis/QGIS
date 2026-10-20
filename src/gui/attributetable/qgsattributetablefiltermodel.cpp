@@ -324,14 +324,14 @@ bool QgsAttributeTableFilterModel::selectedOnTop()
 void QgsAttributeTableFilterModel::setFilteredFeatures( const QgsFeatureIds &ids )
 {
   mFilteredFeatures = ids;
-  if ( mFilterMode != ShowFilteredList && mFilterMode != ShowInvalid )
+  if ( mFilterMode != Qgis::AttributeTableFilterMode::ShowFilteredList && mFilterMode != Qgis::AttributeTableFilterMode::ShowInvalid )
   {
-    setFilterMode( ShowFilteredList );
+    setFilterMode( Qgis::AttributeTableFilterMode::ShowFilteredList );
   }
   invalidateFilter();
 }
 
-QgsFeatureIds QgsAttributeTableFilterModel::filteredFeatures()
+QgsFeatureIds QgsAttributeTableFilterModel::filteredFeatures() const
 {
   QgsFeatureIds ids;
   ids.reserve( rowCount() );
@@ -343,7 +343,7 @@ QgsFeatureIds QgsAttributeTableFilterModel::filteredFeatures()
   return ids;
 }
 
-void QgsAttributeTableFilterModel::setFilterMode( FilterMode filterMode )
+void QgsAttributeTableFilterModel::setFilterMode( Qgis::AttributeTableFilterMode filterMode )
 {
   if ( filterMode != mFilterMode )
   {
@@ -352,7 +352,7 @@ void QgsAttributeTableFilterModel::setFilterMode( FilterMode filterMode )
     mFilterMode = filterMode;
     invalidate();
 
-    if ( mFilterMode == QgsAttributeTableFilterModel::ShowInvalid )
+    if ( mFilterMode == Qgis::AttributeTableFilterMode::ShowInvalid )
     {
       filterFeatures();
     }
@@ -364,18 +364,18 @@ void QgsAttributeTableFilterModel::disconnectFilterModeConnections()
   // cleanup existing connections
   switch ( mFilterMode )
   {
-    case ShowVisible:
+    case Qgis::AttributeTableFilterMode::ShowVisible:
       disconnect( mCanvas, &QgsMapCanvas::extentsChanged, this, &QgsAttributeTableFilterModel::startTimedReloadVisible );
       disconnect( mCanvas, &QgsMapCanvas::temporalRangeChanged, this, &QgsAttributeTableFilterModel::startTimedReloadVisible );
       disconnect( layer(), &QgsVectorLayer::featureAdded, this, &QgsAttributeTableFilterModel::startTimedReloadVisible );
       disconnect( layer(), &QgsVectorLayer::geometryChanged, this, &QgsAttributeTableFilterModel::startTimedReloadVisible );
       break;
-    case ShowAll:
-    case ShowEdited:
-    case ShowSelected:
+    case Qgis::AttributeTableFilterMode::ShowAll:
+    case Qgis::AttributeTableFilterMode::ShowEdited:
+    case Qgis::AttributeTableFilterMode::ShowSelected:
       break;
-    case ShowFilteredList:
-    case ShowInvalid:
+    case Qgis::AttributeTableFilterMode::ShowFilteredList:
+    case Qgis::AttributeTableFilterMode::ShowInvalid:
       disconnect( layer(), &QgsVectorLayer::featureAdded, this, &QgsAttributeTableFilterModel::startTimedFilterFeatures );
       disconnect( layer(), &QgsVectorLayer::attributeValueChanged, this, &QgsAttributeTableFilterModel::onAttributeValueChanged );
       disconnect( layer(), &QgsVectorLayer::geometryChanged, this, &QgsAttributeTableFilterModel::onGeometryChanged );
@@ -383,24 +383,24 @@ void QgsAttributeTableFilterModel::disconnectFilterModeConnections()
   }
 }
 
-void QgsAttributeTableFilterModel::connectFilterModeConnections( QgsAttributeTableFilterModel::FilterMode filterMode )
+void QgsAttributeTableFilterModel::connectFilterModeConnections( Qgis::AttributeTableFilterMode filterMode )
 {
   // setup new connections
   switch ( filterMode )
   {
-    case ShowVisible:
+    case Qgis::AttributeTableFilterMode::ShowVisible:
       connect( mCanvas, &QgsMapCanvas::extentsChanged, this, &QgsAttributeTableFilterModel::startTimedReloadVisible );
       connect( mCanvas, &QgsMapCanvas::temporalRangeChanged, this, &QgsAttributeTableFilterModel::startTimedReloadVisible );
       connect( layer(), &QgsVectorLayer::featureAdded, this, &QgsAttributeTableFilterModel::startTimedReloadVisible );
       connect( layer(), &QgsVectorLayer::geometryChanged, this, &QgsAttributeTableFilterModel::startTimedReloadVisible );
       generateListOfVisibleFeatures();
       break;
-    case ShowAll:
-    case ShowEdited:
-    case ShowSelected:
+    case Qgis::AttributeTableFilterMode::ShowAll:
+    case Qgis::AttributeTableFilterMode::ShowEdited:
+    case Qgis::AttributeTableFilterMode::ShowSelected:
       break;
-    case ShowFilteredList:
-    case ShowInvalid:
+    case Qgis::AttributeTableFilterMode::ShowFilteredList:
+    case Qgis::AttributeTableFilterMode::ShowInvalid:
       connect( layer(), &QgsVectorLayer::featureAdded, this, &QgsAttributeTableFilterModel::startTimedFilterFeatures );
       connect( layer(), &QgsVectorLayer::attributeValueChanged, this, &QgsAttributeTableFilterModel::onAttributeValueChanged );
       connect( layer(), &QgsVectorLayer::geometryChanged, this, &QgsAttributeTableFilterModel::onGeometryChanged );
@@ -413,20 +413,20 @@ bool QgsAttributeTableFilterModel::filterAcceptsRow( int sourceRow, const QModel
   Q_UNUSED( sourceParent )
   switch ( mFilterMode )
   {
-    case ShowAll:
+    case Qgis::AttributeTableFilterMode::ShowAll:
       return true;
 
-    case ShowFilteredList:
-    case ShowInvalid:
+    case Qgis::AttributeTableFilterMode::ShowFilteredList:
+    case Qgis::AttributeTableFilterMode::ShowInvalid:
       return mFilteredFeatures.contains( masterModel()->rowToId( sourceRow ) );
 
-    case ShowSelected:
+    case Qgis::AttributeTableFilterMode::ShowSelected:
       return layer()->selectedFeatureIds().contains( masterModel()->rowToId( sourceRow ) );
 
-    case ShowVisible:
+    case Qgis::AttributeTableFilterMode::ShowVisible:
       return mFilteredFeatures.contains( masterModel()->rowToId( sourceRow ) );
 
-    case ShowEdited:
+    case Qgis::AttributeTableFilterMode::ShowEdited:
     {
       QgsVectorLayerEditBuffer *editBuffer = layer()->editBuffer();
       if ( editBuffer )
@@ -471,7 +471,7 @@ void QgsAttributeTableFilterModel::onAttributeValueChanged( QgsFeatureId fid, in
   Q_UNUSED( fid );
   Q_UNUSED( value );
 
-  if ( mFilterMode == QgsAttributeTableFilterModel::ShowInvalid || mFilterExpression.referencedAttributeIndexes( layer()->fields() ).contains( idx ) )
+  if ( mFilterMode == Qgis::AttributeTableFilterMode::ShowInvalid || mFilterExpression.referencedAttributeIndexes( layer()->fields() ).contains( idx ) )
   {
     startTimedFilterFeatures();
   }
@@ -479,7 +479,7 @@ void QgsAttributeTableFilterModel::onAttributeValueChanged( QgsFeatureId fid, in
 
 void QgsAttributeTableFilterModel::onGeometryChanged()
 {
-  if ( mFilterMode == QgsAttributeTableFilterModel::ShowInvalid || mFilterExpression.needsGeometry() )
+  if ( mFilterMode == Qgis::AttributeTableFilterMode::ShowInvalid || mFilterExpression.needsGeometry() )
   {
     startTimedFilterFeatures();
   }
@@ -561,7 +561,7 @@ void QgsAttributeTableFilterModel::filterFeatures()
 
 void QgsAttributeTableFilterModel::selectionChanged()
 {
-  if ( ShowSelected == mFilterMode )
+  if ( Qgis::AttributeTableFilterMode::ShowSelected == mFilterMode )
   {
     invalidateFilter();
   }
@@ -684,7 +684,7 @@ void QgsAttributeTableFilterModel::generateListOfVisibleFeatures()
   }
 }
 
-QgsFeatureId QgsAttributeTableFilterModel::rowToId( const QModelIndex &row )
+QgsFeatureId QgsAttributeTableFilterModel::rowToId( const QModelIndex &row ) const
 {
   return masterModel()->rowToId( mapToSource( row ).row() );
 }

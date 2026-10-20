@@ -95,14 +95,14 @@ Returns the current view mode.
 .. seealso:: :py:func:`setView`
 %End
 
-    void setFilterMode( QgsAttributeTableFilterModel::FilterMode filterMode );
+    void setFilterMode( Qgis::AttributeTableFilterMode filterMode );
 %Docstring
 Set the filter mode
 
 :param filterMode: 
 %End
 
-    QgsAttributeTableFilterModel::FilterMode filterMode();
+    Qgis::AttributeTableFilterMode filterMode() const;
 %Docstring
 Gets the filter mode
 
@@ -152,7 +152,7 @@ model. It is called when the filter expression changed.
 .. versionadded:: 3.10.3
 %End
 
-    QgsFeatureIds filteredFeatures();
+    QgsFeatureIds filteredFeatures() const;
 %Docstring
 Gets a list of currently visible feature ids.
 %End

@@ -129,5 +129,28 @@ QgsRubberBand.IconType.ICON_SVG = _Qgis.RubberBandIconType.SVG
 QgsRubberBand.ICON_SVG.is_monkey_patched = True
 QgsRubberBand.ICON_SVG.__doc__ = "An SVG image is used to highlight points"
 
+
+QgsAttributeTableFilterModel.FilterMode = _Qgis.AttributeTableFilterMode
+# monkey patching scoped based enum
+QgsAttributeTableFilterModel.ShowAll = _Qgis.AttributeTableFilterMode.ShowAll
+QgsAttributeTableFilterModel.ShowAll.is_monkey_patched = True
+QgsAttributeTableFilterModel.ShowAll.__doc__ = "Show all features"
+QgsAttributeTableFilterModel.ShowSelected = _Qgis.AttributeTableFilterMode.ShowSelected
+QgsAttributeTableFilterModel.ShowSelected.is_monkey_patched = True
+QgsAttributeTableFilterModel.ShowSelected.__doc__ = "Show only selected features"
+QgsAttributeTableFilterModel.ShowVisible = _Qgis.AttributeTableFilterMode.ShowVisible
+QgsAttributeTableFilterModel.ShowVisible.is_monkey_patched = True
+QgsAttributeTableFilterModel.ShowVisible.__doc__ = "Show only visible features (depends on the map canvas)"
+QgsAttributeTableFilterModel.ShowFilteredList = _Qgis.AttributeTableFilterMode.ShowFilteredList
+QgsAttributeTableFilterModel.ShowFilteredList.is_monkey_patched = True
+QgsAttributeTableFilterModel.ShowFilteredList.__doc__ = "Show only features whose ids are on the filter list"
+QgsAttributeTableFilterModel.ShowEdited = _Qgis.AttributeTableFilterMode.ShowEdited
+QgsAttributeTableFilterModel.ShowEdited.is_monkey_patched = True
+QgsAttributeTableFilterModel.ShowEdited.__doc__ = "Show only features which have unsaved changes"
+QgsAttributeTableFilterModel.ShowInvalid = _Qgis.AttributeTableFilterMode.ShowInvalid
+QgsAttributeTableFilterModel.ShowInvalid.is_monkey_patched = True
+QgsAttributeTableFilterModel.ShowInvalid.__doc__ = "Show only features not respecting constraints \n.. versionadded:: 3.30"
+
+
 # Classes patched
 QgsSettingsEnumEditorWidgetWrapper = PyQgsSettingsEnumEditorWidgetWrapper

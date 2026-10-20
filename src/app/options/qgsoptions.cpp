@@ -24,7 +24,6 @@
 #include "qgisappstylesheet.h"
 #include "qgsapplication.h"
 #include "qgsattributetabledialog.h"
-#include "qgsattributetablefiltermodel.h"
 #include "qgsbearingnumericformat.h"
 #include "qgsclipboard.h"
 #include "qgscolordialog.h"
@@ -546,10 +545,10 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
 
   // set the attribute table default filter
   cmbAttrTableBehavior->clear();
-  cmbAttrTableBehavior->addItem( tr( "Show All Features" ), QgsAttributeTableFilterModel::ShowAll );
-  cmbAttrTableBehavior->addItem( tr( "Show Selected Features" ), QgsAttributeTableFilterModel::ShowSelected );
-  cmbAttrTableBehavior->addItem( tr( "Show Features Visible on Map" ), QgsAttributeTableFilterModel::ShowVisible );
-  cmbAttrTableBehavior->setCurrentIndex( cmbAttrTableBehavior->findData( mSettings->enumValue( u"/qgis/attributeTableBehavior"_s, QgsAttributeTableFilterModel::ShowAll ) ) );
+  cmbAttrTableBehavior->addItem( tr( "Show All Features" ), QVariant::fromValue( Qgis::AttributeTableFilterMode::ShowAll ) );
+  cmbAttrTableBehavior->addItem( tr( "Show Selected Features" ), QVariant::fromValue( Qgis::AttributeTableFilterMode::ShowSelected ) );
+  cmbAttrTableBehavior->addItem( tr( "Show Features Visible on Map" ), QVariant::fromValue( Qgis::AttributeTableFilterMode::ShowVisible ) );
+  cmbAttrTableBehavior->setCurrentIndex( cmbAttrTableBehavior->findData( QVariant::fromValue( mSettings->enumValue( u"/qgis/attributeTableBehavior"_s, Qgis::AttributeTableFilterMode::ShowAll ) ) ) );
 
   mAttrTableViewComboBox->clear();
   mAttrTableViewComboBox->addItem( tr( "Remember Last View" ), QgsAttributeTableDialog::RememberLast );
@@ -1678,7 +1677,7 @@ void QgsOptions::saveOptions()
   QgsWelcomeScreen::settingsCheckVersion->setValue( cbxCheckVersion->isChecked() );
   QgsAttributeTableDialog::settingsAttributeTableDefaultDocked->setValue( cbxAttributeTableDocked->isChecked() );
   QgsAttributeTableDialog::settingsAutosizeAttributeTable->setValue( cbxAutosizeAttributeTable->isChecked() );
-  mSettings->setEnumValue( u"/qgis/attributeTableBehavior"_s, ( QgsAttributeTableFilterModel::FilterMode ) cmbAttrTableBehavior->currentData().toInt() );
+  mSettings->setEnumValue( u"/qgis/attributeTableBehavior"_s, cmbAttrTableBehavior->currentData().value< Qgis::AttributeTableFilterMode >() );
   QgsAttributeTableDialog::settingsAttributeTableInitialView->setValue( static_cast<QgsAttributeTableDialog::InitialView>( mAttrTableViewComboBox->currentData().toInt() ) );
   QgsDualView::settingsAttributeTableRowCache->setValue( spinBoxAttrTableRowCache->value() );
   mSettings->setEnumValue( u"/qgis/promptForSublayers"_s, static_cast<Qgis::SublayerPromptMode>( cmbPromptSublayers->currentData().toInt() ) );

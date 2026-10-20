@@ -21,6 +21,7 @@
 
 #include <ctime>
 
+#include "qgis.h"
 #include "qgis_app.h"
 #include "qgsattributetableconfig.h"
 
@@ -78,7 +79,7 @@ class APP_EXPORT QgsAttributeTableDialog : public QDialog, private Ui::QgsAttrib
      */
     QgsAttributeTableDialog(
       QgsVectorLayer *layer,
-      QgsAttributeTableFilterModel::FilterMode initialMode = QgsAttributeTableFilterModel::ShowAll,
+      Qgis::AttributeTableFilterMode initialMode = Qgis::AttributeTableFilterMode::ShowAll,
       QWidget *parent = nullptr,
       Qt::WindowFlags flags = Qt::Window,
       bool *initiallyDocked = nullptr,

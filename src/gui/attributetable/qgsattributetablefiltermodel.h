@@ -17,6 +17,7 @@
 #ifndef QGSATTRIBUTETABLEFILTERMODEL_H
 #define QGSATTRIBUTETABLEFILTERMODEL_H
 
+#include "qgis.h"
 #include "qgis_gui.h"
 #include "qgsattributetablemodel.h"
 #include "qgsfeaturemodel.h"
@@ -39,20 +40,6 @@ class GUI_EXPORT QgsAttributeTableFilterModel : public QSortFilterProxyModel, pu
     Q_OBJECT
 
   public:
-    /**
-     * The filter mode defines how the rows should be filtered.
-     */
-    enum FilterMode
-    {
-      ShowAll,          //!< Show all features
-      ShowSelected,     //!< Show only selected features
-      ShowVisible,      //!< Show only visible features (depends on the map canvas)
-      ShowFilteredList, //!< Show only features whose ids are on the filter list. {\see setFilteredFeatures}
-      ShowEdited,       //!< Show only features which have unsaved changes
-      ShowInvalid,      //!< Show only features not respecting constraints \since QGIS 3.30
-    };
-    Q_ENUM( FilterMode )
-
     /**
      * The type of a column.
      */
@@ -133,14 +120,14 @@ class GUI_EXPORT QgsAttributeTableFilterModel : public QSortFilterProxyModel, pu
      *
      * \returns A list of feature ids
      */
-    QgsFeatureIds filteredFeatures();
+    QgsFeatureIds filteredFeatures() const;
 
     /**
      * Set the filter mode the filter will use.
      *
      * \param filterMode Sets the current mode of the filter
      */
-    void setFilterMode( FilterMode filterMode );
+    void setFilterMode( Qgis::AttributeTableFilterMode filterMode );
 
     /**
      * Disconnect the connections set for the current filterMode
@@ -150,12 +137,12 @@ class GUI_EXPORT QgsAttributeTableFilterModel : public QSortFilterProxyModel, pu
     /**
      * Disconnect the connections set for the new \a filterMode
      */
-    void connectFilterModeConnections( FilterMode filterMode );
+    void connectFilterModeConnections( Qgis::AttributeTableFilterMode filterMode );
 
     /**
      * The current filterModel
      */
-    FilterMode filterMode() { return mFilterMode; }
+    Qgis::AttributeTableFilterMode filterMode() { return mFilterMode; }
 
     /**
      * Returns the layer this filter acts on.
@@ -185,7 +172,7 @@ class GUI_EXPORT QgsAttributeTableFilterModel : public QSortFilterProxyModel, pu
      *
      * \returns The feature id of the feature visible in the provided row
      */
-    QgsFeatureId rowToId( const QModelIndex &row );
+    QgsFeatureId rowToId( const QModelIndex &row ) const;
 
     QModelIndex fidToIndex( QgsFeatureId fid ) override;
 
@@ -337,7 +324,7 @@ class GUI_EXPORT QgsAttributeTableFilterModel : public QSortFilterProxyModel, pu
   private:
     QgsFeatureIds mFilteredFeatures;
     QgsMapCanvas *mCanvas = nullptr;
-    FilterMode mFilterMode = FilterMode::ShowAll;
+    Qgis::AttributeTableFilterMode mFilterMode = Qgis::AttributeTableFilterMode::ShowAll;
     bool mSelectedOnTop = false;
     QgsAttributeTableModel *mTableModel = nullptr;
 
