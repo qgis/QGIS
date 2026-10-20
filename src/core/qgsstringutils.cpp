@@ -30,6 +30,14 @@ using namespace Qt::StringLiterals;
 
 QString QgsStringUtils::unaccent( const QString &input )
 {
+  // do a cheap scan ahead first, if all characters are simple ascii characters then we don't have to
+  // do anything
+  constexpr char16_t MAX_SIMPLE_CHAR = 127;
+  if ( std::none_of( input.cbegin(), input.cend(), []( QChar c ) { return c.unicode() > MAX_SIMPLE_CHAR; } ) )
+  {
+    return input;
+  }
+
   static const QHash<char32_t, QString> UNACCENT_MAP = QgsStringUtils::createUnaccentMap();
 
   // Normalize input to NFC so that Unicode characters composed of base +
@@ -46,6 +54,15 @@ QString QgsStringUtils::unaccent( const QString &input )
   while ( i < n )
   {
     const QChar c = in.at( i );
+
+    if ( c.unicode() <= MAX_SIMPLE_CHAR )
+    {
+      // basic ascii character, just skip the costly logic entirely
+      out.append( c );
+      ++i;
+      continue;
+    }
+
     int len = 1;
 
     char32_t ucs4 = c.unicode();
