@@ -17,6 +17,7 @@
 
 #include <mutex>
 
+#include "qgsapplication.h"
 #include "qgsdatetimeedit.h"
 #include "qgsfilterlineedit.h"
 #include "qgsgui.h"
@@ -453,7 +454,7 @@ QgsTimeZoneComboBox::QgsTimeZoneComboBox( QWidget *parent )
   layout->addWidget( mComboBox, 1 );
 
   mButton = new QToolButton( this );
-  mButton->setText( "…" );
+  mButton->setIcon( QgsApplication::getThemeIcon( u"mActionSetTimeZone.svg"_s ) );
   mButton->setToolTip( tr( "Select Time Zone" ) );
   layout->addWidget( mButton );
 
