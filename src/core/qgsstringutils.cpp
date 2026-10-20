@@ -28,10 +28,10 @@
 
 using namespace Qt::StringLiterals;
 
-QHash<QString, QString> QgsStringUtils::UNACCENT_MAP = QgsStringUtils::createUnaccentMap();
-
 QString QgsStringUtils::unaccent( const QString &input )
 {
+  static const QHash<char32_t, QString> UNACCENT_MAP = QgsStringUtils::createUnaccentMap();
+
   // Normalize input to NFC so that Unicode characters composed of base +
   // combining marks are converted to their canonical composed form.
   // This ensures lookups match the keys in UNACCENT_MAP, which are stored
@@ -48,21 +48,32 @@ QString QgsStringUtils::unaccent( const QString &input )
     const QChar c = in.at( i );
     int len = 1;
 
+    char32_t ucs4 = c.unicode();
+
     // Detect surrogate pair (non-BMP)
     if ( c.isHighSurrogate() && i + 1 < n )
     {
       const QChar c2 = in.at( i + 1 );
       if ( c2.isLowSurrogate() )
+      {
+        ucs4 = QChar::surrogateToUcs4( c, c2 );
         len = 2;
+      }
     }
 
-    const QString key = in.mid( i, len ).normalized( QString::NormalizationForm_C );
-
-    auto it = UNACCENT_MAP.constFind( key );
+    auto it = UNACCENT_MAP.constFind( ucs4 );
     if ( it != UNACCENT_MAP.constEnd() )
+    {
       out.append( it.value() );
+    }
     else
-      out.append( key );
+    {
+      out.append( c );
+      if ( len == 2 )
+      {
+        out.append( in.at( i + 1 ) );
+      }
+    }
 
     i += len;
   }
