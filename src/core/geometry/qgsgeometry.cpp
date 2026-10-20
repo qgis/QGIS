@@ -13,6 +13,7 @@ email                : morb at ozemail dot com dot au
  *                                                                         *
  ***************************************************************************/
 
+#include "qgscurvepolygon.h"
 #include "qgsgeometry.h"
 
 #include <cmath>
@@ -37,6 +38,7 @@ email                : morb at ozemail dot com dot au
 #include "qgsmultilinestring.h"
 #include "qgsmultipoint.h"
 #include "qgsmultipolygon.h"
+#include "qgsmultisurface.h"
 #include "qgsnurbsutils.h"
 #include "qgspoint.h"
 #include "qgspointxy.h"
@@ -5087,8 +5089,8 @@ QgsGeometry QgsGeometry::doChamferFillet( ChamferFilletOperationType op, int ver
     return QgsGeometry();
   }
   int resolvedVertexIndex = vertexId.vertex;
-  QgsMultiLineString *inputMultiLine = nullptr;
-  QgsMultiPolygon *inputMultiPoly = nullptr;
+  QgsMultiCurve *inputMultiCurve = nullptr;
+  QgsMultiSurface *inputMultiSurface = nullptr;
   const Qgis::GeometryType geomType = QgsWkbTypes::geometryType( wkbType() );
 
   if ( geomType == Qgis::GeometryType::Line )
@@ -5097,8 +5099,8 @@ QgsGeometry QgsGeometry::doChamferFillet( ChamferFilletOperationType op, int ver
     {
       modifiedPart = vertexId.part;
 
-      inputMultiLine = qgsgeometry_cast<QgsMultiLineString *>( d->geometry.get() );
-      curve = dynamic_cast<QgsCurve *>( inputMultiLine->lineStringN( modifiedPart ) );
+      inputMultiCurve = qgsgeometry_cast<QgsMultiCurve *>( d->geometry.get() );
+      curve = dynamic_cast<QgsCurve *>( inputMultiCurve->curveN( modifiedPart ) );
     }
     else
     {
@@ -5107,17 +5109,17 @@ QgsGeometry QgsGeometry::doChamferFillet( ChamferFilletOperationType op, int ver
   }
   else if ( geomType == Qgis::GeometryType::Polygon )
   {
-    QgsPolygon *poly = nullptr;
+    QgsCurvePolygon *poly = nullptr;
     if ( isMultipart() )
     {
       modifiedPart = vertexId.part;
       // get part, get ring
-      inputMultiPoly = qgsgeometry_cast<QgsMultiPolygon *>( d->geometry.get() );
-      poly = inputMultiPoly->polygonN( modifiedPart );
+      inputMultiSurface = qgsgeometry_cast<QgsMultiSurface *>( d->geometry.get() );
+      poly = dynamic_cast<QgsCurvePolygon *>( inputMultiSurface->surfaceN( modifiedPart ) );
     }
     else
     {
-      poly = qgsgeometry_cast<QgsPolygon *>( d->geometry.get() );
+      poly = qgsgeometry_cast<QgsCurvePolygon *>( d->geometry.get() );
     }
     if ( !poly )
     {
@@ -5170,8 +5172,8 @@ QgsGeometry QgsGeometry::doChamferFillet( ChamferFilletOperationType op, int ver
     return QgsGeometry( std::move( result ) );
 
   // insert \a result geometry (obtain by the chamfer/fillet operation) back into original \a inputPoly polygon
-  auto updatePolygon = []( const QgsPolygon *inputPoly, QgsAbstractGeometry *result, int modifiedRing ) -> std::unique_ptr<QgsPolygon> {
-    auto newPoly = std::make_unique<QgsPolygon>();
+  auto updatePolygon = []( const QgsCurvePolygon *inputPoly, QgsAbstractGeometry *result, int modifiedRing ) -> std::unique_ptr<QgsCurvePolygon> {
+    auto newPoly = std::make_unique<QgsCurvePolygon>();
     for ( int ringIndex = 0; ringIndex < inputPoly->numInteriorRings() + 1; ++ringIndex )
     {
       if ( ringIndex == modifiedRing )
@@ -5200,24 +5202,24 @@ QgsGeometry QgsGeometry::doChamferFillet( ChamferFilletOperationType op, int ver
   {
     if ( modifiedPart >= 0 )
     {
-      auto newMultiLine = std::make_unique<QgsMultiLineString>();
+      auto newMultiCurve = std::make_unique<QgsMultiCurve>();
       int partIndex = 0;
-      for ( QgsMultiLineString::part_iterator partIte = inputMultiLine->parts_begin(); partIte != inputMultiLine->parts_end(); ++partIte )
+      for ( QgsMultiCurve::part_iterator partIte = inputMultiCurve->parts_begin(); partIte != inputMultiCurve->parts_end(); ++partIte )
       {
         if ( partIndex == modifiedPart )
         {
           for ( QgsAbstractGeometry::part_iterator resPartIte = result->parts_begin(); resPartIte != result->parts_end(); ++resPartIte )
           {
-            newMultiLine->addGeometry( ( *resPartIte )->clone() );
+            newMultiCurve->addGeometry( ( *resPartIte )->clone() );
           }
         }
         else
         {
-          newMultiLine->addGeometry( ( *partIte )->clone() );
+          newMultiCurve->addGeometry( ( *partIte )->clone() );
         }
         partIndex++;
       }
-      finalGeom = std::move( newMultiLine );
+      finalGeom = std::move( newMultiCurve );
     }
     else
     {
@@ -5230,27 +5232,27 @@ QgsGeometry QgsGeometry::doChamferFillet( ChamferFilletOperationType op, int ver
     // geomType == Qgis::GeometryType::Polygon
     if ( modifiedPart >= 0 )
     {
-      auto newMultiPoly = std::make_unique<QgsMultiPolygon>();
+      auto newMultiSurface = std::make_unique<QgsMultiSurface>();
       int partIndex = 0;
-      for ( QgsAbstractGeometry::part_iterator partIte = inputMultiPoly->parts_begin(); partIte != inputMultiPoly->parts_end(); ++partIte )
+      for ( QgsAbstractGeometry::part_iterator partIte = inputMultiSurface->parts_begin(); partIte != inputMultiSurface->parts_end(); ++partIte )
       {
         if ( partIndex == modifiedPart )
         {
-          std::unique_ptr<QgsPolygon> newPoly = updatePolygon( qgsgeometry_cast<const QgsPolygon *>( *partIte ), result.get(), modifiedRing );
-          newMultiPoly->addGeometry( newPoly.release() );
+          std::unique_ptr<QgsCurvePolygon> newCurvePoly = updatePolygon( qgsgeometry_cast<const QgsCurvePolygon *>( *partIte ), result.get(), modifiedRing );
+          newMultiSurface->addGeometry( newCurvePoly.release() );
         }
         else
         {
-          newMultiPoly->addGeometry( ( *partIte )->clone() );
+          newMultiSurface->addGeometry( ( *partIte )->clone() );
         }
         partIndex++;
       }
-      finalGeom = std::move( newMultiPoly );
+      finalGeom = std::move( newMultiSurface );
     }
     else
     {
-      std::unique_ptr<QgsPolygon> newPoly = updatePolygon( qgsgeometry_cast<const QgsPolygon *>( d->geometry.get() ), result.get(), modifiedRing );
-      finalGeom = std::move( newPoly );
+      std::unique_ptr<QgsCurvePolygon> newCurvePoly = updatePolygon( qgsgeometry_cast<const QgsCurvePolygon *>( d->geometry.get() ), result.get(), modifiedRing );
+      finalGeom = std::move( newCurvePoly );
     }
   }
 
