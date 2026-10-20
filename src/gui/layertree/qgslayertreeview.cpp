@@ -688,7 +688,7 @@ void QgsLayerTreeView::onDoubleClicked( const QModelIndex &index )
 {
   QgsLayerTreeNode *node = index2node( index );
 
-  if ( node->nodeType() != QgsLayerTreeNode::NodeGroup )
+  if ( !node || node->nodeType() != QgsLayerTreeNode::NodeGroup )
     return;
 
   node->setExpanded( !node->isExpanded() );
