@@ -1468,7 +1468,7 @@ QMimeData *QgsAttributesFormLayoutModel::mimeData( const QModelIndexList &indexe
       QDomDocument doc;
 
       QDomElement rootElem = doc.createElement( u"form_layout_mime"_s );
-      QgsAttributeEditorElement *editor = createAttributeEditorWidget( index, nullptr );
+      std::unique_ptr< QgsAttributeEditorElement > editor( createAttributeEditorWidget( index, nullptr ) );
       QDomElement editorElem = editor->toDomElement( doc );
       rootElem.appendChild( editorElem );
 
