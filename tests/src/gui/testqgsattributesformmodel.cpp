@@ -379,7 +379,7 @@ void TestQgsAttributesFormModel::testAvailableWidgetsModelIndexOderInDragAndDrop
     expectedItemIds << index.data( QgsAttributesFormModel::ItemIdRole ).toString();
   }
 
-  QMimeData *data = availableWidgetsModel.mimeData( indexes );
+  std::unique_ptr< QMimeData > data( availableWidgetsModel.mimeData( indexes ) );
   QByteArray itemData = data->data( u"application/x-qgsattributesformavailablewidgetsrelement"_s );
   QDataStream stream( &itemData, QIODevice::ReadOnly );
   QStringList obtainedItemIds;
@@ -413,7 +413,7 @@ void TestQgsAttributesFormModel::testAvailableWidgetsModelIndexOderInDragAndDrop
   // Fields item is above the relations one, so it is expected first
   expectedItemIds.insert( 0, tmpIndex.data( QgsAttributesFormModel::ItemIdRole ).toString() );
 
-  data = availableWidgetsModel.mimeData( indexes );
+  data.reset( availableWidgetsModel.mimeData( indexes ) );
   itemData = data->data( u"application/x-qgsattributesformavailablewidgetsrelement"_s );
   QDataStream stream2 = QDataStream( &itemData, QIODevice::ReadOnly );
 
@@ -700,12 +700,12 @@ void TestQgsAttributesFormModel::testFormLayoutModelDragAndDrop()
 
       // mimeData() records the dragged source item, so dropMimeData() performs a
       // true in-place move: the source is relocated, not copied and left behind.
-      QMimeData *mimeData = model.mimeData( QModelIndexList() << groupIndex );
+      std::unique_ptr< QMimeData > mimeData( model.mimeData( QModelIndexList() << groupIndex ) );
       QVERIFY( mimeData );
 
-      const bool dropped = model.dropMimeData( mimeData, Qt::MoveAction, targetRow, 0, tabIndex );
+      const bool dropped = model.dropMimeData( mimeData.get(), Qt::MoveAction, targetRow, 0, tabIndex );
       QVERIFY( dropped );
-      delete mimeData;
+      mimeData.reset();
       // The internal move is performed from a queued call (see dropMimeData)
       QCoreApplication::processEvents();
 
