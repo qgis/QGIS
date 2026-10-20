@@ -20,16 +20,6 @@ A proxy model for filtering an attribute table model.
 #include "qgsattributetablefiltermodel.h"
 %End
   public:
-    enum FilterMode /BaseType=IntEnum/
-    {
-      ShowAll,
-      ShowSelected,
-      ShowVisible,
-      ShowFilteredList,
-      ShowEdited,
-      ShowInvalid,
-    };
-
     enum ColumnType /BaseType=IntEnum/
     {
       ColumnTypeField,
@@ -88,14 +78,14 @@ mode will automatically be adjusted to show only these features
 :param ids: The list of feature ids which will be accepted by the filter
 %End
 
-    QgsFeatureIds filteredFeatures();
+    QgsFeatureIds filteredFeatures() const;
 %Docstring
 Gets a list of currently filtered feature ids
 
 :return: A list of feature ids
 %End
 
-    void setFilterMode( FilterMode filterMode );
+    void setFilterMode( Qgis::AttributeTableFilterMode filterMode );
 %Docstring
 Set the filter mode the filter will use.
 
@@ -107,12 +97,12 @@ Set the filter mode the filter will use.
 Disconnect the connections set for the current filterMode
 %End
 
-    void connectFilterModeConnections( FilterMode filterMode );
+    void connectFilterModeConnections( Qgis::AttributeTableFilterMode filterMode );
 %Docstring
 Disconnect the connections set for the new ``filterMode``
 %End
 
-    FilterMode filterMode();
+    Qgis::AttributeTableFilterMode filterMode();
 %Docstring
 The current filterModel
 %End
@@ -138,7 +128,7 @@ Returns the table model this filter is using
 :return: the table model in quesion
 %End
 
-    QgsFeatureId rowToId( const QModelIndex &row );
+    QgsFeatureId rowToId( const QModelIndex &row ) const;
 %Docstring
 Returns the feature id for a given model index.
 

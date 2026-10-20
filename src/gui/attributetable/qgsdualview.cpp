@@ -18,6 +18,7 @@
 #include "qgsactionmanager.h"
 #include "qgsactionmenu.h"
 #include "qgsapplication.h"
+#include "qgsattributetablefiltermodel.h"
 #include "qgsattributetablemodel.h"
 #include "qgseditorwidgetregistry.h"
 #include "qgsexpressionbuilderdialog.h"
@@ -330,38 +331,43 @@ void QgsDualView::setView( QgsDualView::ViewMode view )
   setCurrentIndex( view );
 }
 
+Qgis::AttributeTableFilterMode QgsDualView::filterMode() const
+{
+  return mFilterModel->filterMode();
+}
+
 QgsDualView::ViewMode QgsDualView::view() const
 {
   return static_cast<QgsDualView::ViewMode>( currentIndex() );
 }
 
-void QgsDualView::setFilterMode( QgsAttributeTableFilterModel::FilterMode filterMode )
+void QgsDualView::setFilterMode( Qgis::AttributeTableFilterMode filterMode )
 {
   // cleanup any existing connections
   switch ( mFilterModel->filterMode() )
   {
-    case QgsAttributeTableFilterModel::ShowVisible:
+    case Qgis::AttributeTableFilterMode::ShowVisible:
       disconnect( mFilterModel->mapCanvas(), &QgsMapCanvas::extentsChanged, this, &QgsDualView::extentChanged );
       disconnect( mFilterModel, &QgsAttributeTableFilterModel::visibleReloaded, this, &QgsDualView::filterChanged );
       break;
 
-    case QgsAttributeTableFilterModel::ShowAll:
-    case QgsAttributeTableFilterModel::ShowFilteredList:
+    case Qgis::AttributeTableFilterMode::ShowAll:
+    case Qgis::AttributeTableFilterMode::ShowFilteredList:
       disconnect( mFilterModel, &QgsAttributeTableFilterModel::featuresFiltered, this, &QgsDualView::filterChanged );
       disconnect( mFilterModel, &QgsAttributeTableFilterModel::filterError, this, &QgsDualView::filterError );
       break;
 
-    case QgsAttributeTableFilterModel::ShowEdited:
+    case Qgis::AttributeTableFilterMode::ShowEdited:
       disconnect( mFilterModel, &QgsAttributeTableFilterModel::featuresFiltered, this, &QgsDualView::filterChanged );
       disconnect( mFilterModel, &QgsAttributeTableFilterModel::filterError, this, &QgsDualView::filterError );
       disconnect( masterModel()->layer(), &QgsVectorLayer::layerModified, this, &QgsDualView::updateEditedAddedFeatures );
       break;
 
-    case QgsAttributeTableFilterModel::ShowSelected:
+    case Qgis::AttributeTableFilterMode::ShowSelected:
       disconnect( masterModel()->layer(), &QgsVectorLayer::selectionChanged, this, &QgsDualView::updateSelectedFeatures );
       break;
 
-    case QgsAttributeTableFilterModel::ShowInvalid:
+    case Qgis::AttributeTableFilterMode::ShowInvalid:
       mMasterModel->setShowValidityState( false );
       break;
   }
@@ -370,7 +376,7 @@ void QgsDualView::setFilterMode( QgsAttributeTableFilterModel::FilterMode filter
 
   // create an empty form to find out if it needs geometry or not
   const QgsAttributeForm emptyForm( mLayer, QgsFeature(), mEditorContext );
-  const bool needsGeometry = ( filterMode == QgsAttributeTableFilterModel::ShowVisible ) || emptyForm.needsGeometry() || QgsExpression( mConfig.sortExpression() ).needsGeometry();
+  const bool needsGeometry = ( filterMode == Qgis::AttributeTableFilterMode::ShowVisible ) || emptyForm.needsGeometry() || QgsExpression( mConfig.sortExpression() ).needsGeometry();
 
   const bool requiresTableReload = ( request.filterType() != Qgis::Qgis::FeatureRequestFilterType::NoFilter
                                      || request.spatialFilterType() != Qgis::SpatialFilterType::NoFilter )        // previous request was subset
@@ -385,7 +391,7 @@ void QgsDualView::setFilterMode( QgsAttributeTableFilterModel::FilterMode filter
   // setup new connections and filter request parameters
   switch ( filterMode )
   {
-    case QgsAttributeTableFilterModel::ShowVisible:
+    case Qgis::AttributeTableFilterMode::ShowVisible:
       connect( mFilterModel->mapCanvas(), &QgsMapCanvas::extentsChanged, this, &QgsDualView::extentChanged );
       if ( mFilterModel->mapCanvas() )
       {
@@ -395,14 +401,14 @@ void QgsDualView::setFilterMode( QgsAttributeTableFilterModel::FilterMode filter
       connect( mFilterModel, &QgsAttributeTableFilterModel::visibleReloaded, this, &QgsDualView::filterChanged );
       break;
 
-    case QgsAttributeTableFilterModel::ShowEdited:
+    case Qgis::AttributeTableFilterMode::ShowEdited:
       request.setFilterFids( masterModel()->layer()->editBuffer() ? masterModel()->layer()->editBuffer()->allAddedOrEditedFeatures() : QgsFeatureIds() );
       connect( mFilterModel, &QgsAttributeTableFilterModel::featuresFiltered, this, &QgsDualView::filterChanged );
       connect( mFilterModel, &QgsAttributeTableFilterModel::filterError, this, &QgsDualView::filterError );
       connect( masterModel()->layer(), &QgsVectorLayer::layerModified, this, &QgsDualView::updateEditedAddedFeatures );
       break;
 
-    case QgsAttributeTableFilterModel::ShowInvalid:
+    case Qgis::AttributeTableFilterMode::ShowInvalid:
     {
       mMasterModel->setShowValidityState( true );
       const QgsExpressionContext context( QgsExpressionContextUtils::globalProjectLayerScopes( mLayer ) );
@@ -412,10 +418,10 @@ void QgsDualView::setFilterMode( QgsAttributeTableFilterModel::FilterMode filter
       break;
     }
 
-    case QgsAttributeTableFilterModel::ShowAll:
-    case QgsAttributeTableFilterModel::ShowFilteredList:
+    case Qgis::AttributeTableFilterMode::ShowAll:
+    case Qgis::AttributeTableFilterMode::ShowFilteredList:
     {
-      const QString filterExpression = filterMode == QgsAttributeTableFilterModel::ShowFilteredList ? mFilterModel->filterExpression() : QString();
+      const QString filterExpression = filterMode == Qgis::AttributeTableFilterMode::ShowFilteredList ? mFilterModel->filterExpression() : QString();
       if ( !filterExpression.isEmpty() )
         request.setFilterExpression( mFilterModel->filterExpression() );
       connect( mFilterModel, &QgsAttributeTableFilterModel::featuresFiltered, this, &QgsDualView::filterChanged );
@@ -423,7 +429,7 @@ void QgsDualView::setFilterMode( QgsAttributeTableFilterModel::FilterMode filter
       break;
     }
 
-    case QgsAttributeTableFilterModel::ShowSelected:
+    case Qgis::AttributeTableFilterMode::ShowSelected:
       connect( masterModel()->layer(), &QgsVectorLayer::selectionChanged, this, &QgsDualView::updateSelectedFeatures );
       request.setFilterFids( masterModel()->layer()->selectedFeatureIds() );
       break;
@@ -432,15 +438,15 @@ void QgsDualView::setFilterMode( QgsAttributeTableFilterModel::FilterMode filter
   // disable the browsing auto pan/scale if the list only shows visible items
   switch ( filterMode )
   {
-    case QgsAttributeTableFilterModel::ShowVisible:
+    case Qgis::AttributeTableFilterMode::ShowVisible:
       setBrowsingAutoPanScaleAllowed( false );
       break;
 
-    case QgsAttributeTableFilterModel::ShowAll:
-    case QgsAttributeTableFilterModel::ShowEdited:
-    case QgsAttributeTableFilterModel::ShowFilteredList:
-    case QgsAttributeTableFilterModel::ShowInvalid:
-    case QgsAttributeTableFilterModel::ShowSelected:
+    case Qgis::AttributeTableFilterMode::ShowAll:
+    case Qgis::AttributeTableFilterMode::ShowEdited:
+    case Qgis::AttributeTableFilterMode::ShowFilteredList:
+    case Qgis::AttributeTableFilterMode::ShowInvalid:
+    case Qgis::AttributeTableFilterMode::ShowSelected:
       setBrowsingAutoPanScaleAllowed( true );
       break;
   }
@@ -1424,6 +1430,11 @@ void QgsDualView::filterFeatures( const QgsExpression &filterExpression, const Q
 {
   mFilterModel->setFilterExpression( filterExpression, context );
   mFilterModel->filterFeatures();
+}
+
+QgsFeatureIds QgsDualView::filteredFeatures() const
+{
+  return mFilterModel->filteredFeatures();
 }
 
 

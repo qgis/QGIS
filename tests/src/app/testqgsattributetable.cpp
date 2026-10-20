@@ -212,14 +212,14 @@ void TestQgsAttributeTable::testNoGeom()
   auto tempLayer = std::make_unique<QgsVectorLayer>( u"LineString?crs=epsg:3111&field=pk:int&field=col1:double"_s, u"vl"_s, u"memory"_s );
   QVERIFY( tempLayer->isValid() );
 
-  auto dlg = std::make_unique<QgsAttributeTableDialog>( tempLayer.get(), QgsAttributeTableFilterModel::ShowAll );
+  auto dlg = std::make_unique<QgsAttributeTableDialog>( tempLayer.get(), Qgis::AttributeTableFilterMode::ShowAll );
 
   QVERIFY( !dlg->mMainView->masterModel()->layerCache()->cacheGeometry() );
   QVERIFY( dlg->mMainView->masterModel()->request().flags() & Qgis::FeatureRequestFlag::NoGeometry );
 
   // but if we are requesting only visible features, then geometry must be fetched...
 
-  dlg = std::make_unique<QgsAttributeTableDialog>( tempLayer.get(), QgsAttributeTableFilterModel::ShowVisible );
+  dlg = std::make_unique<QgsAttributeTableDialog>( tempLayer.get(), Qgis::AttributeTableFilterMode::ShowVisible );
   QVERIFY( dlg->mMainView->masterModel()->layerCache()->cacheGeometry() );
   QVERIFY( !( dlg->mMainView->masterModel()->request().flags() & Qgis::FeatureRequestFlag::NoGeometry ) );
 
@@ -268,7 +268,7 @@ void TestQgsAttributeTable::testVisibleTemporal()
   mQgisApp->mapCanvas()->setExtent( QgsRectangle( -1, -1, 1, 1 ) );
   mQgisApp->mapCanvas()->setTemporalRange( QgsDateTimeRange( QDateTime( QDate( 2020, 1, 1 ), QTime( 0, 0, 0 ) ), QDateTime( QDate( 2020, 2, 1 ), QTime( 0, 0, 0 ) ) ) );
 
-  auto dlg = std::make_unique<QgsAttributeTableDialog>( tempLayer.get(), QgsAttributeTableFilterModel::ShowVisible );
+  auto dlg = std::make_unique<QgsAttributeTableDialog>( tempLayer.get(), Qgis::AttributeTableFilterMode::ShowVisible );
 
   // feature id 2 is filtered out due to being out of temporal range
   // feature id 3 is filtered out due to being out of visible extent
@@ -286,7 +286,7 @@ void TestQgsAttributeTable::testSelected()
   const QgsFeature f3( tempLayer->dataProvider()->fields(), 3 );
   QVERIFY( tempLayer->dataProvider()->addFeatures( QgsFeatureList() << f1 << f2 << f3 ) );
 
-  auto dlg = std::make_unique<QgsAttributeTableDialog>( tempLayer.get(), QgsAttributeTableFilterModel::ShowSelected );
+  auto dlg = std::make_unique<QgsAttributeTableDialog>( tempLayer.get(), Qgis::AttributeTableFilterMode::ShowSelected );
 
   QVERIFY( !dlg->mMainView->masterModel()->layerCache()->cacheGeometry() );
   //should be nothing - because no selection!
@@ -299,7 +299,7 @@ void TestQgsAttributeTable::testSelected()
   QCOMPARE( dlg->mMainView->masterModel()->request().filterFids(), QgsFeatureIds() << 1 << 3 );
 
   // another test - start with selection when dialog created
-  dlg = std::make_unique<QgsAttributeTableDialog>( tempLayer.get(), QgsAttributeTableFilterModel::ShowSelected );
+  dlg = std::make_unique<QgsAttributeTableDialog>( tempLayer.get(), Qgis::AttributeTableFilterMode::ShowSelected );
   QVERIFY( !dlg->mMainView->masterModel()->layerCache()->cacheGeometry() );
   QCOMPARE( dlg->mMainView->masterModel()->request().filterType(), Qgis::FeatureRequestFilterType::Fids );
   QCOMPARE( dlg->mMainView->masterModel()->request().filterFids(), QgsFeatureIds() << 1 << 3 );
@@ -320,7 +320,7 @@ void TestQgsAttributeTable::testEdited()
   const QgsFeature f3( tempLayer->dataProvider()->fields(), 3 );
   QVERIFY( tempLayer->dataProvider()->addFeatures( QgsFeatureList() << f1 << f2 << f3 ) );
 
-  auto dlg = std::make_unique<QgsAttributeTableDialog>( tempLayer.get(), QgsAttributeTableFilterModel::ShowEdited );
+  auto dlg = std::make_unique<QgsAttributeTableDialog>( tempLayer.get(), Qgis::AttributeTableFilterMode::ShowEdited );
 
   QVERIFY( !dlg->mMainView->masterModel()->layerCache()->cacheGeometry() );
   //should be nothing - because no edited features!
@@ -338,7 +338,7 @@ void TestQgsAttributeTable::testEdited()
   QCOMPARE( dlg->mMainView->masterModel()->request().filterFids(), QgsFeatureIds() << 1 << 3 );
 
   // another test - start with edited features when dialog created
-  dlg = std::make_unique<QgsAttributeTableDialog>( tempLayer.get(), QgsAttributeTableFilterModel::ShowEdited );
+  dlg = std::make_unique<QgsAttributeTableDialog>( tempLayer.get(), Qgis::AttributeTableFilterMode::ShowEdited );
   QVERIFY( !dlg->mMainView->masterModel()->layerCache()->cacheGeometry() );
   QCOMPARE( dlg->mMainView->masterModel()->request().filterType(), Qgis::FeatureRequestFilterType::Fids );
   QCOMPARE( dlg->mMainView->masterModel()->request().filterFids(), QgsFeatureIds() << 1 << 3 );
@@ -679,7 +679,7 @@ void TestQgsAttributeTable::testFilteredFeatures()
 
   QVERIFY( tempLayer->dataProvider()->addFeatures( QgsFeatureList() << f1 << f2 << f3 ) );
 
-  auto dlg = std::make_unique<QgsAttributeTableDialog>( tempLayer.get(), QgsAttributeTableFilterModel::ShowAll );
+  auto dlg = std::make_unique<QgsAttributeTableDialog>( tempLayer.get(), Qgis::AttributeTableFilterMode::ShowAll );
 
   QEventLoop loop;
   connect( qobject_cast<QgsAttributeTableFilterModel *>( dlg->mMainView->mFilterModel ), &QgsAttributeTableFilterModel::featuresFiltered, &loop, &QEventLoop::quit );
@@ -757,7 +757,7 @@ void TestQgsAttributeTable::testCopySelectedRows()
 
   QVERIFY( tempLayer->dataProvider()->addFeatures( QgsFeatureList() << f1 << f2 ) );
 
-  auto dlg = std::make_unique<QgsAttributeTableDialog>( tempLayer.get(), QgsAttributeTableFilterModel::ShowAll );
+  auto dlg = std::make_unique<QgsAttributeTableDialog>( tempLayer.get(), Qgis::AttributeTableFilterMode::ShowAll );
 
   tempLayer->selectByIds( QgsFeatureIds() << 1 << 2 );
 
@@ -808,7 +808,7 @@ void TestQgsAttributeTable::testOpenWithFilterExpression()
   QVERIFY( tempLayer->dataProvider()->addFeatures( QgsFeatureList() << f1 << f2 << f3 ) );
 
   const QString filterExpression = u"col1 < to_date('2020-02-03')"_s;
-  auto dlg = std::make_unique<QgsAttributeTableDialog>( tempLayer.get(), QgsAttributeTableFilterModel::ShowFilteredList, nullptr, Qt::Window, nullptr, filterExpression );
+  auto dlg = std::make_unique<QgsAttributeTableDialog>( tempLayer.get(), Qgis::AttributeTableFilterMode::ShowFilteredList, nullptr, Qt::Window, nullptr, filterExpression );
 
   // feature id 2 is filtered out due not matching the provided filter expression
   QCOMPARE( dlg->mMainView->filteredFeatures(), QgsFeatureIds() << 1 << 3 );
@@ -840,7 +840,7 @@ void TestQgsAttributeTable::testInvalidView()
   tempLayer->setConstraintExpression( 1, u"col1 >= to_date('2020-02-03')"_s );
   tempLayer->setFieldConstraint( 1, QgsFieldConstraints::ConstraintExpression, QgsFieldConstraints::ConstraintStrengthHard );
 
-  auto dlg = std::make_unique<QgsAttributeTableDialog>( tempLayer.get(), QgsAttributeTableFilterModel::ShowAll, nullptr, Qt::Window, nullptr, filterExpression );
+  auto dlg = std::make_unique<QgsAttributeTableDialog>( tempLayer.get(), Qgis::AttributeTableFilterMode::ShowAll, nullptr, Qt::Window, nullptr, filterExpression );
   dlg->mFeatureFilterWidget->filterInvalid();
 
   // feature id 2 is filtered out due not matching the provided filter expression
