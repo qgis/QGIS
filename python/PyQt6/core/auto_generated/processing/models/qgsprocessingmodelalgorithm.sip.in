@@ -471,7 +471,7 @@ document.
 .. versionadded:: 3.4
 %End
 
-    QString &modelQgisVersion();
+    QString modelQgisVersion() const;
 %Docstring
 Returns the QGIS version the model was originally created (or last
 saved) in.
@@ -690,10 +690,6 @@ camel case string.
 
 .. versionadded:: 3.26
 %End
-
-
-
-
 
 
 

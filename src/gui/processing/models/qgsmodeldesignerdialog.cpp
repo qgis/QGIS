@@ -517,8 +517,6 @@ void QgsModelDesignerDialog::loadModel( const QString &path )
   {
     alg->setProvider( QgsApplication::processingRegistry()->providerById( QgsProcessing::MODEL_PROVIDER_ID ) );
     alg->setSourceFilePath( path );
-
-
     setModel( alg.release() );
   }
   else
@@ -539,8 +537,7 @@ void QgsModelDesignerDialog::handleVersionMismatch( const QString &modelVersion 
 {
   const QgsProjectVersion thisVersion( Qgis::version() );
 
-  QgsProjectVersion fileVersion = ( modelVersion.isEmpty() ) ? QgsProjectVersion( 0, 0, 0, QString() ) : QgsProjectVersion( modelVersion );
-
+  const QgsProjectVersion fileVersion = ( modelVersion.isEmpty() ) ? QgsProjectVersion( 0, 0, 0, QString() ) : QgsProjectVersion( modelVersion );
 
   // Special case before 4.4 we didn't store the qgis version in the model so assume it's before 4.4
   if ( fileVersion == QgsProjectVersion( 0, 0, 0 ) )
