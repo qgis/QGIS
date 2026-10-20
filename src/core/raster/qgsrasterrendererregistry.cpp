@@ -181,7 +181,7 @@ std::unique_ptr<QgsRasterRenderer> QgsRasterRendererRegistry::defaultRendererFor
               ratLabelsMap.insert( fieldValue, fieldName );
             }
 
-            for ( size_t i = 0; i < classes.size(); ++i )
+            for ( qsizetype i = 0; i < classes.size(); ++i )
             {
               QgsPalettedRasterRenderer::Class &classData = classes[i];
               if ( ratLabelsMap.contains( classData.value ) )
