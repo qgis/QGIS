@@ -96,6 +96,8 @@ class TestQgs3DRendering : public QgsTest
     void testGlobePointsTRS();
     void testGlobeModels_data();
     void testGlobeModels();
+    void testGlobePolygons_data();
+    void testGlobePolygons();
     void testExtrudedPolygons();
     void testExtrudedPolygonsClipping();
 
@@ -2182,6 +2184,64 @@ void TestQgs3DRendering::testGlobeModels()
   delete scene;
   delete map;
   delete layerPoints;
+
+  QGSVERIFYIMAGECHECK( referenceImage, referenceImage, img, QString(), 150, QSize( 0, 0 ), 5 );
+}
+
+void TestQgs3DRendering::testGlobePolygons_data()
+{
+  QTest::addColumn<double>( "lat" );
+  QTest::addColumn<double>( "lon" );
+  QTest::addColumn<QString>( "referenceImage" );
+
+  QTest::newRow( "equator" ) << 0.0 << 0.0 << u"globe_polygons_equator"_s;
+  QTest::newRow( "north pole" ) << 90.0 << 0.0 << u"globe_polygons_north_pole"_s;
+  QTest::newRow( "south pole" ) << -90.0 << 0.0 << u"globe_polygons_south_pole"_s;
+}
+
+void TestQgs3DRendering::testGlobePolygons()
+{
+  QFETCH( double, lat );
+  QFETCH( double, lon );
+  QFETCH( QString, referenceImage );
+
+  QgsProject p;
+
+  QgsCoordinateReferenceSystem newCrs( u"EPSG:4978"_s );
+  p.setCrs( newCrs );
+
+  QgsVectorLayer *layerCountries = new QgsVectorLayer( QgsApplication::pkgDataPath() + u"/resources/data/world_map.gpkg|layername=countries"_s, u"countries"_s, u"ogr"_s );
+  QVERIFY( layerCountries->isValid() );
+
+  QgsPhongMaterialSettings materialSettings;
+  materialSettings.setAmbient( QColor( 34, 139, 34 ) );
+  QgsPolygon3DSymbol *symbol3d = new QgsPolygon3DSymbol;
+  symbol3d->setMaterialSettings( materialSettings.clone() );
+  symbol3d->setExtrusionHeight( 100000 );
+  layerCountries->setRenderer3D( new QgsVectorLayer3DRenderer( symbol3d ) );
+
+  Qgs3DMapSettings *map = new Qgs3DMapSettings;
+  map->setCrs( p.crs() );
+  map->setLayers( QList<QgsMapLayer *>() << layerCountries );
+  map->setBackgroundColor( QColor( 24, 88, 138 ) );
+
+  QgsOffscreen3DEngine engine;
+  Qgs3DMapScene *scene = new Qgs3DMapScene( *map, &engine );
+  engine.setRootEntity( scene );
+
+  scene->cameraController()->setCameraNavigationMode( Qgis::NavigationMode::GlobeTerrainBased );
+  scene->cameraController()->resetGlobe( 10'000'000, lat, lon );
+
+  // When running the test on Travis, it would initially return empty rendered image.
+  // Capturing the initial image and throwing it away fixes that. Hopefully we will
+  // find a better fix in the future.
+  Qgs3DUtils::captureSceneImage( engine, scene );
+
+  const QImage img = Qgs3DUtils::captureSceneImage( engine, scene );
+
+  delete scene;
+  delete map;
+  delete layerCountries;
 
   QGSVERIFYIMAGECHECK( referenceImage, referenceImage, img, QString(), 150, QSize( 0, 0 ), 5 );
 }
