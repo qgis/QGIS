@@ -100,7 +100,74 @@ class TestQgsAttributeTableModel(QgisTestCase):
 
     def testLoad(self):
         self.assertEqual(self.am.rowCount(), 10)
-        self.assertEqual(self.am.columnCount(), 2)
+        # model should have 3 columns, 2 for the fields + 1 for the actions column
+        self.assertEqual(self.am.columnCount(), 3)
+        # field columns
+        for row in range(0, 10):
+            for col in range(0, 2):
+                self.assertEqual(
+                    self.am.data(
+                        self.am.index(row, col),
+                        QgsAttributeTableModel.CustomRole.ColumnType,
+                    ),
+                    QgsAttributeTableModel.ColumnTypeValue.Field,
+                )
+                self.assertEqual(
+                    self.am.data(
+                        self.am.index(row, col),
+                        QgsAttributeTableModel.CustomRole.FieldIndex,
+                    ),
+                    col,
+                )
+                if col == 0:
+                    # string columns are left aligned
+                    self.assertEqual(
+                        self.am.data(
+                            self.am.index(row, col), Qt.ItemDataRole.TextAlignmentRole
+                        ),
+                        Qt.AlignmentFlag.AlignLeft | Qt.AlignmentFlag.AlignVCenter,
+                    )
+                else:
+                    # numeric columns are right aligned
+                    self.assertEqual(
+                        self.am.data(
+                            self.am.index(row, col), Qt.ItemDataRole.TextAlignmentRole
+                        ),
+                        Qt.AlignmentFlag.AlignRight | Qt.AlignmentFlag.AlignVCenter,
+                    )
+
+                self.assertEqual(
+                    self.am.data(
+                        self.am.index(row, col),
+                        QgsAttributeTableModel.CustomRole.FeatureId,
+                    ),
+                    self.am.rowToId(row),
+                )
+
+        # action button column
+        for row in range(0, 10):
+            self.assertEqual(
+                self.am.data(
+                    self.am.index(row, 2), QgsAttributeTableModel.CustomRole.ColumnType
+                ),
+                QgsAttributeTableModel.ColumnTypeValue.ActionButton,
+            )
+            self.assertEqual(
+                self.am.data(
+                    self.am.index(row, 2), QgsAttributeTableModel.CustomRole.FieldIndex
+                ),
+                None,
+            )
+            self.assertEqual(
+                self.am.data(self.am.index(row, 2), Qt.ItemDataRole.TextAlignmentRole),
+                Qt.AlignmentFlag.AlignLeft | Qt.AlignmentFlag.AlignVCenter,
+            )
+            self.assertEqual(
+                self.am.data(
+                    self.am.index(row, 2), QgsAttributeTableModel.CustomRole.FeatureId
+                ),
+                self.am.rowToId(row),
+            )
 
     def testRemove(self):
         self.layer.startEditing()
@@ -125,7 +192,8 @@ class TestQgsAttributeTableModel(QgisTestCase):
 
         self.assertTrue(self.layer.deleteAttribute(1))
 
-        self.assertEqual(self.am.columnCount(), 1)
+        # should be two remaining columns, one for the remaining field, and one for the action column
+        self.assertEqual(self.am.columnCount(), 2)
 
     def testEdit(self):
         fid = 2
@@ -347,10 +415,12 @@ class TestQgsAttributeTableModel(QgisTestCase):
                 super().__init__()
 
             def data(self, index, role):
+                column_type = super().data(
+                    index, QgsAttributeTableModel.CustomRole.ColumnType
+                )
                 if (
-                    role == Qt.ItemDataRole.DisplayRole
-                    and self.sourceModel().extraColumns() > 0
-                    and index.column() > 1
+                    column_type == QgsAttributeTableModel.ColumnTypeValue.ActionButton
+                    and role == Qt.ItemDataRole.DisplayRole
                 ):
                     return f"extra_{index.column()}"
 
@@ -361,18 +431,15 @@ class TestQgsAttributeTableModel(QgisTestCase):
 
         self.assertEqual(fm.data(fm.index(2, 0), Qt.ItemDataRole.DisplayRole), "test")
         self.assertEqual(fm.data(fm.index(2, 1), Qt.ItemDataRole.DisplayRole), "2")
-        self.assertEqual(fm.data(fm.index(2, 2), Qt.ItemDataRole.DisplayRole), None)
+        self.assertEqual(
+            fm.data(fm.index(2, 2), Qt.ItemDataRole.DisplayRole), "extra_2"
+        )
 
         # 2 columns have been loaded since we call data
         self.assertEqual(twf.widgetLoaded, 2)
         twf.widgetLoaded = 0
 
-        # only one column inserted, no widget loaded
-        self.am.setExtraColumns(1)
         self.assertEqual(twf.widgetLoaded, 0)
-        self.assertEqual(colsInserted, 1)
-        colsInserted = 0
-        self.assertEqual(colsRemoved, 0)
 
         self.assertEqual(fm.data(fm.index(2, 0), Qt.ItemDataRole.DisplayRole), "test")
         self.assertEqual(fm.data(fm.index(2, 1), Qt.ItemDataRole.DisplayRole), "2")
@@ -383,23 +450,22 @@ class TestQgsAttributeTableModel(QgisTestCase):
         self.assertEqual(twf.widgetLoaded, 0)
 
         # only one column removed, no widget loaded
-        self.am.setExtraColumns(0)
-        self.assertEqual(twf.widgetLoaded, 0)
-        self.assertEqual(colsInserted, 0)
-        self.assertEqual(colsRemoved, 1)
-        colsRemoved = 0
 
         self.assertEqual(fm.data(fm.index(2, 0), Qt.ItemDataRole.DisplayRole), "test")
         self.assertEqual(fm.data(fm.index(2, 1), Qt.ItemDataRole.DisplayRole), "2")
-        self.assertEqual(fm.data(fm.index(2, 2), Qt.ItemDataRole.DisplayRole), None)
+        self.assertEqual(
+            fm.data(fm.index(2, 2), Qt.ItemDataRole.DisplayRole), "extra_2"
+        )
 
         self.assertEqual(twf.widgetLoaded, 0)
 
-        # nothing has changed, nothing should happened
+        # nothing has changed, nothing should happen
         self.am.loadLayer()
         self.assertEqual(twf.widgetLoaded, 0)
         self.assertEqual(colsInserted, 0)
         self.assertEqual(colsRemoved, 0)
+
+        self.assertEqual(self.am.columnCount(), 3)
 
         # add field, widget will be reloaded when data will be called
         self.layer.addExpressionField(
@@ -411,10 +477,23 @@ class TestQgsAttributeTableModel(QgisTestCase):
         colsInserted = 0
         twf.widgetLoaded = 0
 
+        self.assertEqual(self.am.columnCount(), 4)
+        self.assertEqual(
+            [self.am.headerData(i, Qt.Orientation.Horizontal) for i in range(4)],
+            ["fldtxt", "fldint", "newfield", "Actions"],
+        )
+        self.assertEqual(
+            [fm.headerData(i, Qt.Orientation.Horizontal) for i in range(4)],
+            ["fldtxt", "fldint", "newfield", "Actions"],
+        )
+
         self.assertEqual(fm.data(fm.index(2, 0), Qt.ItemDataRole.DisplayRole), "test")
         self.assertEqual(fm.data(fm.index(2, 1), Qt.ItemDataRole.DisplayRole), "2")
         self.assertEqual(
             fm.data(fm.index(2, 2), Qt.ItemDataRole.DisplayRole), "newfield_test"
+        )
+        self.assertEqual(
+            fm.data(fm.index(2, 3), Qt.ItemDataRole.DisplayRole), "extra_3"
         )
         twf.widgetLoaded = 0
 
@@ -424,10 +503,21 @@ class TestQgsAttributeTableModel(QgisTestCase):
         self.assertEqual(colsInserted, 0)
         self.assertEqual(colsRemoved, 1)
         colsRemoved = 0
+        self.assertEqual(self.am.columnCount(), 3)
+        self.assertEqual(
+            [self.am.headerData(i, Qt.Orientation.Horizontal) for i in range(3)],
+            ["fldtxt", "fldint", "Actions"],
+        )
+        self.assertEqual(
+            [fm.headerData(i, Qt.Orientation.Horizontal) for i in range(3)],
+            ["fldtxt", "fldint", "Actions"],
+        )
 
         self.assertEqual(fm.data(fm.index(2, 0), Qt.ItemDataRole.DisplayRole), "test")
         self.assertEqual(fm.data(fm.index(2, 1), Qt.ItemDataRole.DisplayRole), "2")
-        self.assertEqual(fm.data(fm.index(2, 2), Qt.ItemDataRole.DisplayRole), None)
+        self.assertEqual(
+            fm.data(fm.index(2, 2), Qt.ItemDataRole.DisplayRole), "extra_2"
+        )
         self.assertEqual(twf.widgetLoaded, 2)
         twf.widgetLoaded = 0
 
