@@ -11,7 +11,7 @@ QgsAttributeTableModel.FieldIndexRole.is_monkey_patched = True
 QgsAttributeTableModel.FieldIndexRole.__doc__ = "Get the field index of this column"
 QgsAttributeTableModel.ColumnType = QgsAttributeTableModel.CustomRole.ColumnType
 QgsAttributeTableModel.ColumnType.is_monkey_patched = True
-QgsAttributeTableModel.ColumnType.__doc__ = "The type of a given column. \n.. versionadded:: 4.4"
+QgsAttributeTableModel.ColumnType.__doc__ = "The type of a given column. See ColumnType. \n.. versionadded:: 4.4"
 QgsAttributeTableModel.UserRole = QgsAttributeTableModel.CustomRole.User
 QgsAttributeTableModel.Role.UserRole = QgsAttributeTableModel.CustomRole.User
 QgsAttributeTableModel.UserRole.is_monkey_patched = True
@@ -36,7 +36,7 @@ QgsAttributeTableModel.CustomRole.__doc__ = """Custom model roles.
 
   Available as ``QgsAttributeTableModel.FieldIndexRole`` in older QGIS releases.
 
-* ``ColumnType``: The type of a given column.
+* ``ColumnType``: The type of a given column. See ColumnType.
 
   .. versionadded:: 4.4
 
@@ -52,6 +52,36 @@ QgsAttributeTableModel.CustomRole.__doc__ = """Custom model roles.
 """
 # --
 QgsAttributeTableModel.CustomRole.baseClass = QgsAttributeTableModel
+QgsAttributeTableFilterModel.ColumnType = QgsAttributeTableModel.ColumnTypeValue
+# monkey patching scoped based enum
+QgsAttributeTableFilterModel.ColumnTypeField = QgsAttributeTableModel.ColumnTypeValue.Field
+QgsAttributeTableFilterModel.ColumnType.ColumnTypeField = QgsAttributeTableModel.ColumnTypeValue.Field
+QgsAttributeTableFilterModel.ColumnTypeField.is_monkey_patched = True
+QgsAttributeTableFilterModel.ColumnTypeField.__doc__ = "This column shows a field"
+QgsAttributeTableFilterModel.ColumnTypeActionButton = QgsAttributeTableModel.ColumnTypeValue.ActionButton
+QgsAttributeTableFilterModel.ColumnType.ColumnTypeActionButton = QgsAttributeTableModel.ColumnTypeValue.ActionButton
+QgsAttributeTableFilterModel.ColumnTypeActionButton.is_monkey_patched = True
+QgsAttributeTableFilterModel.ColumnTypeActionButton.__doc__ = "This column shows action buttons"
+QgsAttributeTableModel.ColumnTypeValue.__doc__ = """The type of a column.
+
+.. note::
+
+   Prior to QGIS 3.36 this was available as :py:class:`QgsAttributeTableFilterModel`.ColumnTypeValue
+
+.. versionadded:: 4.4
+
+* ``Field``: This column shows a field
+
+  Available as ``QgsAttributeTableFilterModel.ColumnTypeField`` in older QGIS releases.
+
+* ``ActionButton``: This column shows action buttons
+
+  Available as ``QgsAttributeTableFilterModel.ColumnTypeActionButton`` in older QGIS releases.
+
+
+"""
+# --
+QgsAttributeTableModel.ColumnTypeValue.baseClass = QgsAttributeTableModel
 try:
     QgsAttributeTableModel.__attribute_docs__ = {'modelChanged': 'Emitted when the model has been changed.\n', 'finished': 'Emitted when the model has completely loaded all features.\n'}
     QgsAttributeTableModel.__virtual_methods__ = ['loadLayer']

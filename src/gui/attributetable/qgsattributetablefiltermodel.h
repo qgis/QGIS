@@ -41,16 +41,6 @@ class GUI_EXPORT QgsAttributeTableFilterModel : public QSortFilterProxyModel, pu
 
   public:
     /**
-     * The type of a column.
-     */
-    enum ColumnType
-    {
-      ColumnTypeField,       //!< This column shows a field
-      ColumnTypeActionButton //!< This column shows action buttons
-    };
-    Q_ENUM( ColumnType )
-
-    /**
      * Make sure, the master model is already loaded, so the selection will get synchronized.
      *
      * \param parent parent object (owner)

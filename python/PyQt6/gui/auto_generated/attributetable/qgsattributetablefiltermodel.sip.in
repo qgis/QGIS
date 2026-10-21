@@ -20,12 +20,6 @@ A proxy model for filtering an attribute table model.
 #include "qgsattributetablefiltermodel.h"
 %End
   public:
-    enum ColumnType /BaseType=IntEnum/
-    {
-      ColumnTypeField,
-      ColumnTypeActionButton
-    };
-
     QgsAttributeTableFilterModel( QgsMapCanvas *canvas, QgsAttributeTableModel *sourceModel, QObject *parent /TransferThis/ = 0 );
 %Docstring
 Make sure, the master model is already loaded, so the selection will get
