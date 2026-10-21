@@ -107,7 +107,7 @@ QVariantMap QgsConcaveHullAlgorithm::processAlgorithm( const QVariantMap &parame
   if ( !sink )
     throw QgsProcessingException( invalidSinkError( parameters, u"OUTPUT"_s ) );
 
-#if GEOS_VERSION_NUM < GEOS_MAKE_VERSION( 3, 11, 0 )
+#if GEOS_VERSION_NUM < GEOS_COMPUTE_VERSION( 3, 11, 0 )
   concaveHullQgis( sink, parameters, context, feedback );
 #else
   concaveHullGeos( sink, parameters, feedback );

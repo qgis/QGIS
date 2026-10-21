@@ -1255,7 +1255,7 @@ Qgis::GeometryOperationResult QgsGeometry::splitGeometry(
   const QgsPointSequence &splitLine, QVector<QgsGeometry> &newGeometries, bool topological, QgsPointSequence &topologyTestPoints, bool splitFeature, bool skipIntersectionTest
 )
 {
-#if GEOS_VERSION_NUM >= GEOS_MAKE_VERSION( 3, 15, 0 )
+#if GEOS_VERSION_NUM >= GEOS_COMPUTE_VERSION( 3, 15, 0 )
   Q_UNUSED( skipIntersectionTest )
 #endif
   if ( !d->geometry )
@@ -1272,7 +1272,7 @@ Qgis::GeometryOperationResult QgsGeometry::splitGeometry(
   QgsGeometry tmpGeom( *this );
   QVector<QgsGeometry > newGeomsTemp;
 
-#if GEOS_VERSION_NUM >= GEOS_MAKE_VERSION( 3, 15, 0 )
+#if GEOS_VERSION_NUM >= GEOS_COMPUTE_VERSION( 3, 15, 0 )
   for ( const QgsPoint &v : splitLine )
   {
     tmpGeom.addTopologicalPoint( v );
@@ -1374,7 +1374,7 @@ Qgis::GeometryOperationResult QgsGeometry::splitGeometry(
   const QgsCurve *curve, QVector<QgsGeometry> &newGeometries, bool preserveCircular, bool topological, QgsPointSequence &topologyTestPoints, bool splitFeature
 )
 {
-#if GEOS_VERSION_NUM >= GEOS_MAKE_VERSION( 3, 15, 0 )
+#if GEOS_VERSION_NUM >= GEOS_COMPUTE_VERSION( 3, 15, 0 )
   Q_UNUSED( preserveCircular );
 
   if ( !d->geometry )
@@ -1751,7 +1751,7 @@ bool QgsGeometry::intersects( const QgsRectangle &r ) const
     return true;
   }
 
-#if GEOS_VERSION_NUM < GEOS_MAKE_VERSION( 3, 12, 0 )
+#if GEOS_VERSION_NUM < GEOS_COMPUTE_VERSION( 3, 12, 0 )
   // Workaround for issue issue GH #51492
   // in case of multi polygon, intersection with an empty rect fails
   if ( flatType == Qgis::WkbType::MultiPolygon && r.isEmpty() )

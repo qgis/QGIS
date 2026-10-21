@@ -121,7 +121,7 @@ void QgsTextFormatWidget::initWidget()
   mRenderingItem->setIcon( QgsApplication::getThemeIcon( u"propertyicons/render.svg"_s ) );
   mRenderingItem->setToolTip( tr( "Rendering" ) );
 
-#if GEOS_VERSION_NUM < GEOS_MAKE_VERSION( 3, 10, 0 )
+#if GEOS_VERSION_NUM < GEOS_COMPUTE_VERSION( 3, 10, 0 )
   mDuplicatesStackedWidget->setCurrentWidget( mDuplicatesNotAvailableWidget );
   mLabelSpacingStackedWidget->setCurrentWidget( mLabelSpacingNotAvailableWidget );
 #endif

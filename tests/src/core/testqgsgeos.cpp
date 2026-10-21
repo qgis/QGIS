@@ -36,7 +36,7 @@ class TestQgsGeos : public QObject
     void geometryConversionMultiPoint();
     void geometryConversionLineString();
     void geometryConversionMultiLineString();
-#if GEOS_VERSION_NUM >= GEOS_MAKE_VERSION( 3, 15, 0 )
+#if GEOS_VERSION_NUM >= GEOS_COMPUTE_VERSION( 3, 15, 0 )
     void geometryConversionCircularString();
     void geometryConversionCompoundCurve();
     void geometryConversionMultiCurve();
@@ -44,7 +44,7 @@ class TestQgsGeos : public QObject
     void geometryConversionPolygon();
     void geometryConversionMultiPolygon();
     void geometryConversionTriangle();
-#if GEOS_VERSION_NUM >= GEOS_MAKE_VERSION( 3, 15, 0 )
+#if GEOS_VERSION_NUM >= GEOS_COMPUTE_VERSION( 3, 15, 0 )
     void geometryConversionCurvePolygon();
     void geometryConversionMultiSurface();
     void geometryConversionGeometryCollection();
@@ -57,7 +57,7 @@ class TestQgsGeos : public QObject
     void linestringGeometryFromGeos_data();
     void linestringGeometryFromGeos();
 
-#if GEOS_VERSION_NUM >= GEOS_MAKE_VERSION( 3, 15, 0 )
+#if GEOS_VERSION_NUM >= GEOS_COMPUTE_VERSION( 3, 15, 0 )
     void splitGeometry_data();
     void splitGeometry();
 #endif
@@ -157,7 +157,7 @@ void TestQgsGeos::geometryConversionMultiLineString()
 #endif
 }
 
-#if GEOS_VERSION_NUM >= GEOS_MAKE_VERSION( 3, 15, 0 )
+#if GEOS_VERSION_NUM >= GEOS_COMPUTE_VERSION( 3, 15, 0 )
 void TestQgsGeos::geometryConversionCircularString()
 {
   compareGeoms( std::make_unique< QgsCircularString >().get() );                                                                //Empty geometry
@@ -359,7 +359,7 @@ void TestQgsGeos::geometryConversionTriangle()
 #endif
 }
 
-#if GEOS_VERSION_NUM >= GEOS_MAKE_VERSION( 3, 15, 0 )
+#if GEOS_VERSION_NUM >= GEOS_COMPUTE_VERSION( 3, 15, 0 )
 void TestQgsGeos::geometryConversionCurvePolygon()
 {
   auto cp = std::make_unique< QgsCurvePolygon >();
@@ -619,7 +619,7 @@ void TestQgsGeos::linestringGeometryFromGeos()
   }
 }
 
-#if GEOS_VERSION_NUM >= GEOS_MAKE_VERSION( 3, 15, 0 )
+#if GEOS_VERSION_NUM >= GEOS_COMPUTE_VERSION( 3, 15, 0 )
 void TestQgsGeos::splitGeometry_data()
 {
   QTest::addColumn<QString>( "wktA" );

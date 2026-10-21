@@ -122,7 +122,7 @@ QgsCoverageCleanAlgorithm *QgsCoverageCleanAlgorithm::createInstance() const
 
 bool QgsCoverageCleanAlgorithm::prepareAlgorithm( const QVariantMap &, QgsProcessingContext &, QgsProcessingFeedback * )
 {
-#if GEOS_VERSION_NUM < GEOS_MAKE_VERSION( 3, 14, 0 )
+#if GEOS_VERSION_NUM < GEOS_COMPUTE_VERSION( 3, 14, 0 )
   throw QgsProcessingException( QObject::tr( "This algorithm requires a QGIS build based on GEOS 3.14 or later" ) );
 #endif
   return true;
