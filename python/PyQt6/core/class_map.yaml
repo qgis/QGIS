@@ -18136,7 +18136,7 @@ QgsStringStatisticalSummary: src/core/qgsstringstatisticalsummary.h#L43
 QgsStringUtils.ampersandEncode: src/core/qgsstringutils.h#L183
 QgsStringUtils.capitalize: src/core/qgsstringutils.h#L173
 QgsStringUtils.containsByWord: src/core/qgsstringutils.h#L312
-QgsStringUtils.createUniqueId: src/core/qgsstringutils.h#L393
+QgsStringUtils.createUniqueId: src/core/qgsstringutils.h#L377
 QgsStringUtils.fuzzyScore: src/core/qgsstringutils.h#L235
 QgsStringUtils.hammingDistance: src/core/qgsstringutils.h#L216
 QgsStringUtils.htmlToMarkdown: src/core/qgsstringutils.h#L282
@@ -18148,7 +18148,7 @@ QgsStringUtils.qRegExpEscape: src/core/qgsstringutils.h#L290
 QgsStringUtils.soundex: src/core/qgsstringutils.h#L224
 QgsStringUtils.substituteVerticalCharacters: src/core/qgsstringutils.h#L274
 QgsStringUtils.truncateMiddleOfString: src/core/qgsstringutils.h#L301
-QgsStringUtils.unaccent: src/core/qgsstringutils.h#L381
+QgsStringUtils.unaccent: src/core/qgsstringutils.h#L365
 QgsStringUtils.wordWrap: src/core/qgsstringutils.h#L266
 QgsStringUtils: src/core/qgsstringutils.h#L164
 QgsStyle.aboutToBeDestroyed: src/core/symbology/qgsstyle.h#L1102
