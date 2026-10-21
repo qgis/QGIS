@@ -5502,8 +5502,14 @@ void QgisApp::updateProjectFromTemplates()
 {
   // Remove existing entries
   mProjectFromTemplateMenu->clear();
-  mProjectTemplateWatcher.removePaths( mProjectTemplateWatcher.directories() );
-  mProjectTemplateWatcher.addPaths( QgsApplication::projectTemplatePaths() );
+  if ( !mProjectTemplateWatcher.directories().isEmpty() )
+  {
+    mProjectTemplateWatcher.removePaths( mProjectTemplateWatcher.directories() );
+  }
+  if ( !QgsApplication::projectTemplatePaths().isEmpty() )
+  {
+    mProjectTemplateWatcher.addPaths( QgsApplication::projectTemplatePaths() );
+  }
 
   const QFontMetrics fontMetrics = mProjectFromTemplateMenu->fontMetrics();
   const int maxLabelWidth = Qgis::UI_SCALE_FACTOR * fontMetrics.horizontalAdvance( 'X' ) * 35;
