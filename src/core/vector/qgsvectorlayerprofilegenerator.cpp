@@ -18,6 +18,7 @@
 
 #include <memory>
 
+#include "qgis.h"
 #include "qgsabstractgeometry.h"
 #include "qgscoordinatetransform.h"
 #include "qgscurve.h"
@@ -1029,7 +1030,7 @@ void QgsVectorLayerProfileGenerator::processIntersectionCurve( const QgsLineStri
       inZ++;
   }
 
-  mResults->mDistanceToHeightMap.insert( maxDistanceAlongProfileCurve + 0.000001, std::numeric_limits<double>::quiet_NaN() );
+  mResults->mDistanceToHeightMap.insert( maxDistanceAlongProfileCurve + Qgis::DEFAULT_SEGMENT_EPSILON, std::numeric_limits<double>::quiet_NaN() );
 
   if ( mFeedback->isCanceled() )
     return;
@@ -1266,7 +1267,7 @@ void QgsVectorLayerProfileGenerator::processTriangleIntersectForLine(
   }
 
   // insert nan point to end the line
-  mResults->mDistanceToHeightMap.insert( lastDistanceAlongProfileCurve + 0.000001, std::numeric_limits<double>::quiet_NaN() );
+  mResults->mDistanceToHeightMap.insert( lastDistanceAlongProfileCurve + Qgis::DEFAULT_SEGMENT_EPSILON, std::numeric_limits<double>::quiet_NaN() );
 
   if ( mFeedback->isCanceled() )
     return;
