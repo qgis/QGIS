@@ -38,8 +38,8 @@
 
 #include <QFileDialog>
 #include <QMessageBox>
-#include <QSet>
 #include <QRegularExpression>
+#include <QSet>
 #include <QSpinBox>
 #include <QString>
 #include <QTextCodec>
