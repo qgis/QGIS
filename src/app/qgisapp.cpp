@@ -8225,7 +8225,16 @@ void QgisApp::attributeTable( QgsAttributeTableFilterModel::FilterMode filter, c
   // the dialog will be deleted by itself on close
 }
 
-QString QgisApp::saveAsRasterFile( QgsRasterLayer *rasterLayer, const bool defaultAddToCanvas )
+//! Returns the output path (without extension) for saving \a layer into \a folder
+static QString suggestedOutputPath( const QString &folder, const QgsMapLayer *layer )
+{
+  QString baseName = QgsFileUtils::stringToSafeFilename( layer->name() ).trimmed();
+  if ( baseName.isEmpty() )
+    baseName = u"layer"_s;
+  return QDir( folder ).filePath( baseName );
+}
+
+QString QgisApp::saveAsRasterFile( QgsRasterLayer *rasterLayer, const bool defaultAddToCanvas, const QString &destinationFolder )
 {
   if ( !rasterLayer )
     rasterLayer = qobject_cast<QgsRasterLayer *>( activeLayer() );
@@ -8237,6 +8246,8 @@ QString QgisApp::saveAsRasterFile( QgsRasterLayer *rasterLayer, const bool defau
 
   QgsRasterLayerSaveAsDialog d( rasterLayer, rasterLayer->dataProvider(), mMapCanvas->extent(), rasterLayer->crs(), mMapCanvas->mapSettings().destinationCrs(), this );
   d.setAddToCanvas( defaultAddToCanvas );
+  if ( !destinationFolder.isEmpty() )
+    d.setOutputFileName( suggestedOutputPath( destinationFolder, rasterLayer ) );
   if ( d.exec() == QDialog::Rejected )
     return QString();
 
@@ -8382,7 +8393,7 @@ QString QgisApp::saveAsRasterFile( QgsRasterLayer *rasterLayer, const bool defau
 }
 
 
-QString QgisApp::saveAsFile( QgsMapLayer *layer, const bool onlySelected, const bool defaultToAddToMap )
+QString QgisApp::saveAsFile( QgsMapLayer *layer, const bool onlySelected, const bool defaultToAddToMap, const QString &destinationFolder )
 {
   if ( !layer )
     layer = activeLayer();
@@ -8394,13 +8405,13 @@ QString QgisApp::saveAsFile( QgsMapLayer *layer, const bool onlySelected, const 
   switch ( layerType )
   {
     case Qgis::LayerType::Raster:
-      return saveAsRasterFile( qobject_cast<QgsRasterLayer *>( layer ), defaultToAddToMap );
+      return saveAsRasterFile( qobject_cast<QgsRasterLayer *>( layer ), defaultToAddToMap, destinationFolder );
 
     case Qgis::LayerType::Vector:
-      return saveAsVectorFileGeneral( qobject_cast<QgsVectorLayer *>( layer ), true, onlySelected, defaultToAddToMap );
+      return saveAsVectorFileGeneral( qobject_cast<QgsVectorLayer *>( layer ), true, onlySelected, defaultToAddToMap, destinationFolder );
 
     case Qgis::LayerType::PointCloud:
-      return saveAsPointCloudLayer( qobject_cast<QgsPointCloudLayer *>( layer ) );
+      return saveAsPointCloudLayer( qobject_cast<QgsPointCloudLayer *>( layer ), destinationFolder );
 
     case Qgis::LayerType::Mesh:
     case Qgis::LayerType::VectorTile:
@@ -8593,7 +8604,7 @@ QgisAppFieldValueConverter *QgisAppFieldValueConverter::clone() const
 
 ///@endcond
 
-QString QgisApp::saveAsVectorFileGeneral( QgsVectorLayer *vlayer, bool symbologyOption, bool onlySelected, bool defaultToAddToMap )
+QString QgisApp::saveAsVectorFileGeneral( QgsVectorLayer *vlayer, bool symbologyOption, bool onlySelected, bool defaultToAddToMap, const QString &destinationFolder )
 {
   if ( !vlayer )
   {
@@ -8633,7 +8644,7 @@ QString QgisApp::saveAsVectorFileGeneral( QgsVectorLayer *vlayer, bool symbology
     }
   };
 
-  return saveAsVectorFileGeneral( vlayer, symbologyOption, onlySelected, defaultToAddToMap, onSuccess, onFailure );
+  return saveAsVectorFileGeneral( vlayer, symbologyOption, onlySelected, defaultToAddToMap, onSuccess, onFailure, QgsVectorLayerSaveAsDialog::Option::AllOptions, QString(), destinationFolder );
 }
 
 QString QgisApp::saveAsVectorFileGeneral(
@@ -8644,7 +8655,8 @@ QString QgisApp::saveAsVectorFileGeneral(
   const std::function<void( const QString &, bool, const QString &, const QString &, const QString & )> &onSuccess,
   const std::function<void( int, const QString &, const QString & )> &onFailure,
   QgsVectorLayerSaveAsDialog::Options options,
-  const QString &dialogTitle
+  const QString &dialogTitle,
+  const QString &destinationFolder
 )
 {
   QgsCoordinateReferenceSystem destCRS;
@@ -8662,6 +8674,8 @@ QString QgisApp::saveAsVectorFileGeneral(
   dialog->setIncludeZ( QgsWkbTypes::hasZ( vlayer->wkbType() ) );
   dialog->setOnlySelected( onlySelected );
   dialog->setAddToCanvas( defaultToAddToMap );
+  if ( !destinationFolder.isEmpty() )
+    dialog->setFileName( suggestedOutputPath( destinationFolder, vlayer ) );
 
   QString vectorFilename;
   if ( dialog->exec() == QDialog::Accepted )
@@ -8750,13 +8764,15 @@ QString QgisApp::saveAsVectorFileGeneral(
   return vectorFilename;
 }
 
-QString QgisApp::saveAsPointCloudLayer( QgsPointCloudLayer *pclayer )
+QString QgisApp::saveAsPointCloudLayer( QgsPointCloudLayer *pclayer, const QString &destinationFolder )
 {
   QgsPointCloudLayerSaveAsDialog dialog( pclayer, this );
 
   dialog.setMapCanvas( mMapCanvas );
 
   dialog.setAddToCanvas( true );
+  if ( !destinationFolder.isEmpty() )
+    dialog.setFilename( suggestedOutputPath( destinationFolder, pclayer ) );
 
   QString vectorFilename;
   if ( dialog.exec() == QDialog::Accepted )
