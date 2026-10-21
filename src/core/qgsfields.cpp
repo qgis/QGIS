@@ -242,6 +242,9 @@ Qgis::FieldOrigin QgsFields::fieldOrigin( int fieldIdx ) const
 
 int QgsFields::fieldOriginIndex( int fieldIdx ) const
 {
+  if ( !exists( fieldIdx ) )
+    return -1;
+
   return d->fields[fieldIdx].originIndex;
 }
 
@@ -320,6 +323,9 @@ QgsFields::iterator QgsFields::end()
 
 QIcon QgsFields::iconForField( int fieldIdx, bool considerOrigin ) const
 {
+  if ( !exists( fieldIdx ) )
+    return {};
+
   if ( considerOrigin )
   {
     switch ( fieldOrigin( fieldIdx ) )

@@ -4711,6 +4711,9 @@ void QgsVectorLayer::removeExpressionField( int index )
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
+  if ( mFields.fieldOrigin( index ) != Qgis::FieldOrigin::Expression )
+    return;
+
   emit beforeRemovingExpressionField( index );
   int oi = mFields.fieldOriginIndex( index );
   mExpressionFieldBuffer->removeExpression( oi );
@@ -4735,6 +4738,9 @@ QString QgsVectorLayer::expressionField( int index ) const
 void QgsVectorLayer::updateExpressionField( int index, const QString &exp )
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
+  if ( mFields.fieldOrigin( index ) != Qgis::FieldOrigin::Expression )
+    return;
 
   int oi = mFields.fieldOriginIndex( index );
   mExpressionFieldBuffer->updateExpression( oi, exp );
