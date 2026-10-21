@@ -1114,6 +1114,12 @@ void QgsAttributeTableModel::prefetchSortData( const QString &expressionString, 
       cache.sortCache.insert( f.id(), sortValue );
     }
   }
+  const int rows = rowCount();
+  if ( rows > 0 )
+  {
+    const int sortRole = static_cast< int >( CustomRole::Sort ) + static_cast< int >( cacheIndex );
+    emit dataChanged( index( 0, 0 ), index( rows - 1, columnCount() - 1 ), { sortRole } );
+  }
 }
 
 QString QgsAttributeTableModel::sortCacheExpression( unsigned long cacheIndex ) const
