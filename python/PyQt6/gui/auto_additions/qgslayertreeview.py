@@ -18,7 +18,7 @@ try:
 except (NameError, AttributeError):
     pass
 try:
-    QgsLayerTreeViewBase.__overridden_methods__ = ['mouseDoubleClickEvent']
+    QgsLayerTreeViewBase.__overridden_methods__ = ['mousePressEvent', 'mouseDoubleClickEvent']
     QgsLayerTreeViewBase.__group__ = ['layertree']
 except (NameError, AttributeError):
     pass
