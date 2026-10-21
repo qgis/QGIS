@@ -463,6 +463,15 @@ QString QgsFieldMappingModel::qgsFieldToTypeName( const QgsField &field ) const
 {
   for ( const QgsVectorDataProvider::NativeType &type : mNativeTypes )
   {
+    if ( type.mTypeName == field.typeName() )
+    {
+      return type.mTypeName;
+    }
+  }
+
+  // no exact type name matches, try to match metatype as a fallback
+  for ( const QgsVectorDataProvider::NativeType &type : mNativeTypes )
+  {
     if ( type.mType == field.type() && type.mSubType == field.subType() )
     {
       return type.mTypeName;
