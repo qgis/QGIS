@@ -16,6 +16,7 @@
 #include "qgsuniquevaluewidgetwrapper.h"
 
 #include "qgsapplication.h"
+#include "qgsfieldformatter.h"
 #include "qgsfilterlineedit.h"
 #include "qgsvectorlayer.h"
 
@@ -77,7 +78,10 @@ void QgsUniqueValuesWidgetWrapper::initWidget( QWidget *editor )
   {
     if ( mComboBox )
     {
-      mComboBox->addItem( v.toString(), v );
+      if ( v != QgsVariantUtils::createNullVariant( layer()->fields().at( fieldIdx() ).type() ) )
+      {
+        mComboBox->addItem( v.toString(), v );
+      }
     }
 
     if ( mLineEdit )
@@ -132,5 +136,12 @@ void QgsUniqueValuesWidgetWrapper::showIndeterminateState()
 
 void QgsUniqueValuesWidgetWrapper::updateValues( const QVariant &value, const QVariantList & )
 {
+  QSet<QVariant> uniqueValues = layer()->uniqueValues( fieldIdx() );
+  bool uniqueValuesContainNull = uniqueValues.contains( QgsVariantUtils::createNullVariant( layer()->fields().at( fieldIdx() ).type() ) );
+  // Add a null value when the layer was created in an older QGIS version, and the field contains a null value
+  if ( uniqueValuesContainNull && config( u"AllowNull"_s ).isNull() )
+  {
+    mComboBox->addItem( QgsApplication::nullRepresentation().prepend( '(' ).append( ')' ), QgsFieldFormatter::NULL_VALUE );
+  }
   updateComboBoxValues( value, mComboBox );
 }

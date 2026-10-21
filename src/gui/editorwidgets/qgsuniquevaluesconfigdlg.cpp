@@ -15,6 +15,8 @@
 
 #include "qgsuniquevaluesconfigdlg.h"
 
+#include "qgsproject.h"
+
 #include <QString>
 
 #include "moc_qgsuniquevaluesconfigdlg.cpp"
@@ -43,5 +45,13 @@ QVariantMap QgsUniqueValuesConfigDlg::config()
 void QgsUniqueValuesConfigDlg::setConfig( const QVariantMap &config )
 {
   editableUniqueValues->setChecked( config.value( u"Editable"_s, false ).toBool() );
-  allowNullCheckBox->setChecked( config.value( u"AllowNull"_s ).toBool() );
+
+  QSet<QVariant> uniqueValues = layer()->uniqueValues( field() );
+  if ( config.value( u"AllowNull"_s ).isNull() )
+  {
+    bool uniqueValuesContainNull = uniqueValues.contains( QVariant( QgsVariantUtils::createNullVariant( layer()->fields().at( field() ).type() ) ) );
+    allowNullCheckBox->setChecked( uniqueValuesContainNull );
+  }
+  else
+    allowNullCheckBox->setChecked( config.value( u"AllowNull"_s ).toBool() );
 }
