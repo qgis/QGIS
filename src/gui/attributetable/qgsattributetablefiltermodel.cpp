@@ -104,7 +104,7 @@ QVariant QgsAttributeTableFilterModel::data( const QModelIndex &index, int role 
 {
   if ( mapColumnToSource( index.column() ) == -1 ) // actions
   {
-    if ( role == static_cast<int>( CustomRole::Type ) )
+    if ( role == static_cast<int>( QgsAttributeTableModel::CustomRole::ColumnType ) )
       return ColumnTypeActionButton;
     else if ( role == static_cast<int>( QgsAttributeTableModel::CustomRole::FeatureId ) )
     {
@@ -117,7 +117,7 @@ QVariant QgsAttributeTableFilterModel::data( const QModelIndex &index, int role 
       return sourceModel()->data( fieldIndex, static_cast<int>( QgsAttributeTableModel::CustomRole::Sort ) );
     }
   }
-  else if ( role == static_cast<int>( CustomRole::Type ) )
+  else if ( role == static_cast<int>( QgsAttributeTableModel::CustomRole::ColumnType ) )
     return ColumnTypeField;
 
   return QSortFilterProxyModel::data( index, role );
