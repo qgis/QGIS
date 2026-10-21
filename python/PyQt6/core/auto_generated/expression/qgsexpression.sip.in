@@ -494,7 +494,7 @@ double value.
 .. deprecated:: 4.4
 %End
 
-    static double evaluateToDouble( const QString &text, double fallbackValue, QgsProject *project );
+    static double evaluateToDouble( const QString &text, double fallbackValue, const QgsExpressionContext *context );
 %Docstring
 Attempts to evaluate a text string as an expression to a resultant
 double value.
@@ -502,7 +502,7 @@ double value.
 :param text: text to evaluate as expression
 :param fallbackValue: value to return if text can not be evaluated as a
                       double
-:param project: project to use for evaluation context
+:param context: expression context to use for evaluation
 
 :return: evaluated double value, or fallback value
 

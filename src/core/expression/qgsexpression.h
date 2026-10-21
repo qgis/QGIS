@@ -617,7 +617,7 @@ class CORE_EXPORT QgsExpression
      */
     static QSet<QString> referencedVariables( const QString &text );
 
-    // TODO QGIS 5.0 -- remove this function in favour of version with explicit project parameter
+    // TODO QGIS 5.0 -- remove this function in favour of version with explicit context
     /**
      * Attempts to evaluate a text string as an expression to a resultant double
      * value.
@@ -636,14 +636,14 @@ class CORE_EXPORT QgsExpression
      * value.
      * \param text text to evaluate as expression
      * \param fallbackValue value to return if text can not be evaluated as a double
-     * \param project project to use for evaluation context
+     * \param context expression context to use for evaluation
      * \returns evaluated double value, or fallback value
      * \note this method is inefficient for bulk evaluation of expressions, it is intended
      * for one-off evaluations only.
      *
      * \since QGIS 4.4
      */
-    static double evaluateToDouble( const QString &text, double fallbackValue, QgsProject *project );
+    static double evaluateToDouble( const QString &text, double fallbackValue, const QgsExpressionContext *context );
 
     enum SpatialOperator
     {

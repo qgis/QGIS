@@ -17,9 +17,9 @@
 
 #include "qgsapplication.h"
 #include "qgsexpression.h"
+#include "qgsexpressioncontext.h"
 #include "qgsfilterlineedit.h"
 #include "qgslogger.h"
-#include "qgsproject.h"
 
 #include <QLineEdit>
 #include <QMouseEvent>
@@ -291,7 +291,10 @@ double QgsDoubleSpinBox::valueFromText( const QString &text ) const
     return mShowClearButton ? clearValue() : value();
   }
 
-  return QgsExpression::evaluateToDouble( trimmedText, value(), QgsProject::instance() );
+  QgsExpressionContext context;
+  context << QgsExpressionContextUtils::globalScope() << QgsExpressionContextUtils::projectScope( QgsProject::instance() );
+
+  return QgsExpression::evaluateToDouble( trimmedText, value(), &context );
 }
 
 QValidator::State QgsDoubleSpinBox::validate( QString &input, int &pos ) const
