@@ -79,7 +79,7 @@ QgsVectorLayerFeatureSource::QgsVectorLayerFeatureSource( const QgsVectorLayer *
   mTransformContext = project->transformContext();
   mEllipsoid = project->ellipsoid();
   mDistanceUnit = project->distanceUnits();
-  mArealUnit = project->areaUnits();
+  mAreaUnit = project->areaUnits();
 
   mHasEditBuffer = layer->editBuffer();
   if ( mHasEditBuffer )
@@ -871,7 +871,7 @@ void QgsVectorLayerFeatureIterator::prepareExpression( int fieldIdx )
   da.setEllipsoid( mSource->mEllipsoid );
   exp->setGeomCalculator( &da );
   exp->setDistanceUnits( mSource->mDistanceUnit );
-  exp->setAreaUnits( mSource->mArealUnit );
+  exp->setAreaUnits( mSource->mAreaUnit );
 
   if ( !mExpressionContext )
     createExpressionContext();
