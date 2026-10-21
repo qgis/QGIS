@@ -30,6 +30,7 @@
 #include "layer.h"
 #include "costcalculator.h"
 #include "feature.h"
+#include "qgsgeometryutils_base.h"
 #include "labelposition.h"
 #include "qgsgeos.h"
 #include "qgsgeometryutils_base.h"
@@ -44,7 +45,7 @@ LabelPosition::LabelPosition( int id, double x1, double y1, double w, double h, 
   , feature( feature )
   , probFeat( 0 )
   , nbOverlap( 0 )
-  , alpha( alpha )
+  , alpha( QgsGeometryUtilsBase::normalizedAngle( alpha ) )
   , w( w )
   , h( h )
   , partId( -1 )
@@ -59,13 +60,6 @@ LabelPosition::LabelPosition( int id, double x1, double y1, double w, double h, 
   nbPoints = 4;
   x.resize( nbPoints );
   y.resize( nbPoints );
-
-  // alpha take his value bw 0 and 2*pi rad
-  while ( this->alpha > 2 * M_PI )
-    this->alpha -= 2 * M_PI;
-
-  while ( this->alpha < 0 )
-    this->alpha += 2 * M_PI;
 
   const double beta = this->alpha + M_PI_2;
 
