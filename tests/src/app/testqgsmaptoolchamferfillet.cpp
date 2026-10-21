@@ -45,6 +45,7 @@ class TestQgsMapToolChamferFillet : public QObject
     void testChamfer();
     void testFillet();
     void testInvalidGeom();
+    void testFix67344CurvePolygon();
 
   private:
     bool compareGeom( const QgsGeometry &geom, const QString &wkt, double tolerance );
@@ -53,6 +54,7 @@ class TestQgsMapToolChamferFillet : public QObject
     QgsMapCanvas *mCanvas = nullptr;
     QgsMapToolChamferFillet *mChamferFilletTool = nullptr;
     QgsVectorLayer *mLayerBasePolygon = nullptr;
+    QgsVectorLayer *mLayerBaseCurvePolygon = nullptr;
 };
 
 TestQgsMapToolChamferFillet::TestQgsMapToolChamferFillet() = default;
@@ -89,7 +91,7 @@ void TestQgsMapToolChamferFillet::initTestCase()
   mCanvas->show(); // to make the canvas resize
   mCanvas->hide();
 
-  // make testing layers
+  // Polygon testing layer
   mLayerBasePolygon = new QgsVectorLayer( u"Polygon?crs=EPSG:3946"_s, u"LayerBasePolygon"_s, u"memory"_s );
   QVERIFY( mLayerBasePolygon->isValid() );
   QgsProject::instance()->addMapLayers( QList<QgsMapLayer *>() << mLayerBasePolygon );
@@ -109,7 +111,23 @@ void TestQgsMapToolChamferFillet::initTestCase()
   QVERIFY( compareGeom( mLayerBasePolygon->getFeature( 1 ).geometry(), wkt1, 0.05 ) );
   QVERIFY( compareGeom( mLayerBasePolygon->getFeature( 2 ).geometry(), wkt2, 0.05 ) );
 
-  mCanvas->setLayers( QList<QgsMapLayer *>() << mLayerBasePolygon );
+  // CurvePolygon testing layer
+  mLayerBaseCurvePolygon = new QgsVectorLayer( u"CurvePolygon?crs=EPSG:3946"_s, u"LayerBaseCurvePolygon"_s, u"memory"_s );
+  QVERIFY( mLayerBaseCurvePolygon->isValid() );
+  QgsProject::instance()->addMapLayers( QList<QgsMapLayer *>() << mLayerBaseCurvePolygon );
+
+  mLayerBaseCurvePolygon->startEditing();
+  const QString wktCurve1 = u"CurvePolygon(CompoundCurve((0 0, 1 0, 1 0.5),CircularString (1 0.5, 0.84 0.84, 0.5 1), (0.5 1, 0 1, 0 0))"_s;
+  QgsFeature fCurve1;
+  fCurve1.setGeometry( QgsGeometry::fromWkt( wktCurve1 ) );
+
+  QgsFeatureList fCurvelist;
+  fCurvelist << fCurve1;
+  mLayerBaseCurvePolygon->dataProvider()->addFeatures( fCurvelist );
+  QCOMPARE( mLayerBaseCurvePolygon->featureCount(), 1L );
+  QVERIFY( compareGeom( mLayerBaseCurvePolygon->getFeature( 1 ).geometry(), wktCurve1, 0.05 ) );
+
+  mCanvas->setLayers( QList<QgsMapLayer *>() << mLayerBasePolygon << mLayerBaseCurvePolygon );
   mCanvas->setCurrentLayer( mLayerBasePolygon );
 
   // create the tool
@@ -266,6 +284,22 @@ void TestQgsMapToolChamferFillet::testFillet()
   QVERIFY( compareGeom( mLayerBasePolygon->getFeature( 1 ).geometry(), wkt2, 0.05 ) );
 
   mLayerBasePolygon->undoStack()->undo();
+}
+
+void TestQgsMapToolChamferFillet::testFix67344CurvePolygon()
+{
+  TestQgsMapToolUtils utils( mChamferFilletTool );
+  mCanvas->setCurrentLayer( mLayerBaseCurvePolygon );
+
+  // fix https://github.com/qgis/QGIS/issues/67344, "get geometry"
+  utils.mouseClick( 0, 1, Qt::LeftButton, Qt::KeyboardModifiers(), true );
+  utils.mouseMove( 0.25, 0.75 );
+  utils.mouseClick( 0.25, 0.75, Qt::LeftButton, Qt::KeyboardModifiers(), true );
+
+  const QString wkt1 = "CurvePolygon (CompoundCurve ((0 0, 1 0, 1 0.5),CircularString (1 0.5, 0.84 0.84, 0.5 1),(0.5 1, 0.5 1),(0.5 1, 0 0.5),(0 0.5, 0 0)))";
+  QVERIFY( compareGeom( mLayerBaseCurvePolygon->getFeature( 1 ).geometry(), wkt1, 0.05 ) );
+
+  mLayerBaseCurvePolygon->undoStack()->undo();
 }
 
 QGSTEST_MAIN( TestQgsMapToolChamferFillet )
