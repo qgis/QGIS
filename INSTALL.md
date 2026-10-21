@@ -22,6 +22,7 @@ Building QGIS from source - step by step
       + [3.10.3. Additional tools for QGIS development](#3103-additional-tools-for-qgis-development)
    * [3.11. Building on Linux with vcpkg](#311-building-on-linux-with-vcpkg)
    * [3.12. Building and running with Nix](#312-building-and-running-with-nix)
+   * [3.13. Building and running with Docker](#313-building-and-running-with-docker)
 - [4. Building on Windows](#4-building-on-windows)
    * [4.1. Building with Microsoft Visual Studio](#41-building-with-microsoft-visual-studio)
       + [4.1.1. Visual Studio 2022 Community Edition](#411-visual-studio-2022-community-edition)
@@ -608,7 +609,53 @@ Run QGIS from PR:
 nix run github:qgis/QGIS/pull/<PR-NUMBER>/merge#qgis
 ```
 
+## 3.13. Building and running with Docker
+
+A docker-compose setup is provided which makes it easy to get started compiling
+and running QGIS on any system supporting Docker. It's not a full dev env (yet)
+so this reciepe is only applicable for getting started and small contributions.
+
+Note: on Windows, it's highly recommended to work in the WSL2 file system (from the
+Windows file system, builds are 10x slower or more).
+
+Install [Docker](https://docker.com). Then create a `.env` file at the root of your
+repository with this content to make docker find the docker-compose setup
+
+```
+COMPOSE_FILE=.docker/docker-compose-building.yml
+```
+
+On Linux (incl. if working in the WSL2 on Windows as recommended), run this to ensure
+the containers run with your current user to avoid permissions issues.
+
+```sh
+echo "UID=${UID}" >> .env
+```
+
+Now, from the root of the repo, you should be able to configure / build / run QGIS like this.
+
+```sh
+# configure the build (run once)
+docker compose run --rm cmake
+
+# recompile (run after every change)
+docker compose run --rm ninja
+
+# run qgis
+docker compose run --rm qgis
+
+# run tests (add --help to see how to run specific tests)
+docker compose run --rm ctest
+
+# run the pre-commit tasks (run before committing)
+docker compose run --rm pre-commit
+```
+
 # 4. Building on Windows
+
+Note: for a quick start, it can be easier to do Linux builds on Windows with Docker, which is supported
+including GUI thanks to WSL2. Refer to section about [Docker](#313-building-and-running-with-docker) for
+this approach.
 
 ## 4.1. Building with Microsoft Visual Studio
 
