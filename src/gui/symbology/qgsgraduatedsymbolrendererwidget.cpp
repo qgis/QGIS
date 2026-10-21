@@ -1077,6 +1077,10 @@ void QgsGraduatedSymbolRendererWidget::classifyGraduatedImpl()
     bool astride = cbxAstride->isChecked();
     mClassificationMethod->setSymmetricMode( true, symmetryPoint, astride );
   }
+  else
+  {
+    mClassificationMethod->setSymmetricMode( false );
+  }
 
   QVariantMap parameterValues;
   for ( const auto &ppww : std::as_const( mParameterWidgetWrappers ) )
