@@ -144,7 +144,7 @@ class QgsVectorLayerFeatureIterator;
     QString mEllipsoid;
     QgsCoordinateTransformContext mTransformContext;
     Qgis::DistanceUnit mDistanceUnit;
-    Qgis::AreaUnit mArealUnit;
+    Qgis::AreaUnit mAreaUnit;
 
   private:
 #ifdef SIP_RUN
