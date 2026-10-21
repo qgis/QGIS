@@ -638,7 +638,11 @@ void QgsBaseNetworkRequest::replyFinished()
         {
           QNetworkRequest request( toUrl );
           QgsSetRequestInitiatorClass( request, u"QgsBaseNetworkRequest"_s );
-          if ( !mAuth.setAuthorization( request ) )
+
+          // only use authcfg if redirecting to same host
+          const bool useAuthCfg( toUrl.host() == mReply->request().url().host() );
+
+          if ( useAuthCfg && !mAuth.setAuthorization( request ) )
           {
             mResponse.clear();
             mErrorMessage = errorMessageFailedAuth();
