@@ -358,7 +358,7 @@ class CORE_EXPORT QgsFields
 #ifndef SIP_RUN
 
     /**
-     * Returns the field's origin index (its meaning is specific to each type of origin).
+     * Returns the field's origin index (its meaning is specific to each type of origin) or -1 if no field exists at the specified index.
      *
      * - Qgis::FieldOrigin::Provider: The field's originIndex is the index in provider's fields.
      * - Qgis::FieldOrigin::Join: The field's originIndex / 1000 = index of the join, originIndex % 1000 = index within the join
