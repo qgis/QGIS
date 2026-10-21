@@ -46,7 +46,7 @@ QgsEditorConfigWidget *QgsKeyValueWidgetFactory::configWidget( QgsVectorLayer *v
 unsigned int QgsKeyValueWidgetFactory::fieldScore( const QgsVectorLayer *vl, int fieldIdx ) const
 {
   const QgsField field = vl->fields().field( fieldIdx );
-  // on json fields, we checkt the first features
+  // on json fields, we check the first features
   if ( field.typeName().compare( u"json"_s, Qt::CaseInsensitive ) == 0 || field.typeName().compare( u"jsonb"_s, Qt::CaseInsensitive ) == 0 )
   {
     // Look for the values in the first 20 features check if it contains only maps
