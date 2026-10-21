@@ -867,11 +867,11 @@ void QgsVectorLayerFeatureIterator::prepareExpression( int fieldIdx )
   auto exp = std::make_unique<QgsExpression>( exps[oi].cachedExpression );
 
   QgsDistanceArea da;
-  da.setSourceCrs( mSource->mCrs, QgsProject::instance()->transformContext() ); // skip-keyword-check
-  da.setEllipsoid( QgsProject::instance()->ellipsoid() );                       // skip-keyword-check
+  da.setSourceCrs( mSource->mCrs, mSource->mTransformContext );
+  da.setEllipsoid( mSource->mEllipsoid );
   exp->setGeomCalculator( &da );
-  exp->setDistanceUnits( QgsProject::instance()->distanceUnits() ); // skip-keyword-check
-  exp->setAreaUnits( QgsProject::instance()->areaUnits() );         // skip-keyword-check
+  exp->setDistanceUnits( mSource->mDistanceUnit );
+  exp->setAreaUnits( mSource->mArealUnit );
 
   if ( !mExpressionContext )
     createExpressionContext();
