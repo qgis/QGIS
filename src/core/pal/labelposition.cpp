@@ -48,7 +48,7 @@ using namespace pal;
 LabelPosition::LabelPosition( int id, double x1, double y1, double w, double h, double alpha, double cost, FeaturePart *feature, LabelDirectionToLine directionToLine, Qgis::LabelQuadrantPosition quadrant )
   : id( id )
   , feature( feature )
-  , alpha( alpha )
+  , alpha( QgsGeometryUtilsBase::normalizedAngle( alpha ) )
   , w( w )
   , h( h )
   , mQuadrant( quadrant )
@@ -59,13 +59,6 @@ LabelPosition::LabelPosition( int id, double x1, double y1, double w, double h, 
   nbPoints = 4;
   x.resize( nbPoints );
   y.resize( nbPoints );
-
-  // alpha take his value bw 0 and 2*pi rad
-  while ( this->alpha > 2 * M_PI )
-    this->alpha -= 2 * M_PI;
-
-  while ( this->alpha < 0 )
-    this->alpha += 2 * M_PI;
 
   const double beta = this->alpha + M_PI_2;
 
