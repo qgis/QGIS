@@ -101,11 +101,11 @@ void QgsLabelLineSettings::updateDataDefinedProperties( const QgsPropertyCollect
     {
       if ( value.compare( "Default"_L1, Qt::CaseInsensitive ) == 0 )
         mCurvedLabelMode = Qgis::CurvedLabelMode::Default;
-      else if ( value.compare( "CharactersAtVertices"_L1, Qt::CaseInsensitive ) == 0 )
+      else if ( value.compare( "CharactersAtVertices"_L1, Qt::CaseInsensitive ) == 0 || value.compare( "Characters_At_Vertices"_L1, Qt::CaseInsensitive ) == 0 )
         mCurvedLabelMode = Qgis::CurvedLabelMode::PlaceCharactersAtVertices;
-      else if ( value.compare( "StretchCharacterSpacingToFit"_L1, Qt::CaseInsensitive ) == 0 )
+      else if ( value.compare( "StretchCharacterSpacingToFit"_L1, Qt::CaseInsensitive ) == 0 || value.compare( "Stretch_Character_Spacing_To_Fit"_L1, Qt::CaseInsensitive ) == 0 )
         mCurvedLabelMode = Qgis::CurvedLabelMode::StretchCharacterSpacingToFitLine;
-      else if ( value.compare( "StretchWordSpacingToFit"_L1, Qt::CaseInsensitive ) == 0 )
+      else if ( value.compare( "StretchWordSpacingToFit"_L1, Qt::CaseInsensitive ) == 0 || value.compare( "Stretch_Word_Spacing_To_Fit"_L1, Qt::CaseInsensitive ) == 0 )
         mCurvedLabelMode = Qgis::CurvedLabelMode::StretchWordSpacingToFitLine;
     }
   }

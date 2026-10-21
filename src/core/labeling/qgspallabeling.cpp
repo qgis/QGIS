@@ -2256,7 +2256,7 @@ QgsTextFormat QgsPalLayerSettings::evaluateTextFormat( QgsRenderContext &context
 
       if ( !fcase.isEmpty() )
       {
-        if ( fcase.compare( "NoChange"_L1, Qt::CaseInsensitive ) == 0 )
+        if ( fcase.compare( "NoChange"_L1, Qt::CaseInsensitive ) == 0 || fcase.compare( "No_Change"_L1, Qt::CaseInsensitive ) == 0 )
         {
           evaluatedFormat.setCapitalization( Qgis::Capitalization::MixedCase );
         }
@@ -2276,11 +2276,11 @@ QgsTextFormat QgsPalLayerSettings::evaluateTextFormat( QgsRenderContext &context
         {
           evaluatedFormat.setCapitalization( Qgis::Capitalization::TitleCase );
         }
-        else if ( fcase.compare( "SmallCaps"_L1, Qt::CaseInsensitive ) == 0 )
+        else if ( fcase.compare( "SmallCaps"_L1, Qt::CaseInsensitive ) == 0 || fcase.compare( "Small_Caps"_L1, Qt::CaseInsensitive ) == 0 )
         {
           evaluatedFormat.setCapitalization( Qgis::Capitalization::SmallCaps );
         }
-        else if ( fcase.compare( "AllSmallCaps"_L1, Qt::CaseInsensitive ) == 0 )
+        else if ( fcase.compare( "AllSmallCaps"_L1, Qt::CaseInsensitive ) == 0 || fcase.compare( "All_Small_Caps"_L1, Qt::CaseInsensitive ) == 0 )
         {
           evaluatedFormat.setCapitalization( Qgis::Capitalization::AllSmallCaps );
         }
