@@ -37,9 +37,9 @@ void QgsLabelPlacementSettings::updateDataDefinedProperties( const QgsPropertyCo
     const QString cleanedString = handlingString.trimmed();
     if ( cleanedString.compare( "prevent"_L1, Qt::CaseInsensitive ) == 0 )
       mOverlapHandling = Qgis::LabelOverlapHandling::PreventOverlap;
-    else if ( cleanedString.compare( "allowifneeded"_L1, Qt::CaseInsensitive ) == 0 )
+    else if ( cleanedString.compare( "allowifneeded"_L1, Qt::CaseInsensitive ) == 0 || cleanedString.compare( "allow_if_needed"_L1, Qt::CaseInsensitive ) == 0 )
       mOverlapHandling = Qgis::LabelOverlapHandling::AllowOverlapIfRequired;
-    else if ( cleanedString.compare( "alwaysallow"_L1, Qt::CaseInsensitive ) == 0 )
+    else if ( cleanedString.compare( "alwaysallow"_L1, Qt::CaseInsensitive ) == 0 || cleanedString.compare( "always_allow"_L1, Qt::CaseInsensitive ) == 0 )
       mOverlapHandling = Qgis::LabelOverlapHandling::AllowOverlapAtNoCost;
   }
 
@@ -51,17 +51,17 @@ void QgsLabelPlacementSettings::updateDataDefinedProperties( const QgsPropertyCo
     if ( !stringValue.isEmpty() )
     {
       const QString cleanedString = stringValue.trimmed();
-      if ( cleanedString.compare( "LargestPartOnly"_L1, Qt::CaseInsensitive ) == 0 )
+      if ( cleanedString.compare( "LargestPartOnly"_L1, Qt::CaseInsensitive ) == 0 || cleanedString.compare( "Largest_Part_Only"_L1, Qt::CaseInsensitive ) == 0 )
       {
         handledAsString = true;
         mMultiPartBehavior = Qgis::MultiPartLabelingBehavior::LabelLargestPartOnly;
       }
-      else if ( cleanedString.compare( "LabelEveryPart"_L1, Qt::CaseInsensitive ) == 0 )
+      else if ( cleanedString.compare( "LabelEveryPart"_L1, Qt::CaseInsensitive ) == 0 || cleanedString.compare( "Label_Every_Part"_L1, Qt::CaseInsensitive ) == 0 )
       {
         handledAsString = true;
         mMultiPartBehavior = Qgis::MultiPartLabelingBehavior::LabelEveryPartWithEntireLabel;
       }
-      else if ( cleanedString.compare( "SplitLabelTextLinesOverParts"_L1, Qt::CaseInsensitive ) == 0 )
+      else if ( cleanedString.compare( "SplitLabelTextLinesOverParts"_L1, Qt::CaseInsensitive ) == 0 || cleanedString.compare( "Split_Label_Text_Lines_Over_Parts"_L1, Qt::CaseInsensitive ) == 0 )
       {
         handledAsString = true;
         mMultiPartBehavior = Qgis::MultiPartLabelingBehavior::SplitLabelTextLinesOverParts;
@@ -89,9 +89,9 @@ void QgsLabelPlacementSettings::updateDataDefinedProperties( const QgsPropertyCo
     const QString value = properties.valueAsString( QgsPalLayerSettings::Property::WhitespaceCollisionHandling, context, QString(), &ok ).trimmed();
     if ( ok )
     {
-      if ( value.compare( "TreatWhitespaceAsCollision"_L1, Qt::CaseInsensitive ) == 0 )
+      if ( value.compare( "TreatWhitespaceAsCollision"_L1, Qt::CaseInsensitive ) == 0 || value.compare( "Treat_Whitespace_As_Collision"_L1, Qt::CaseInsensitive ) == 0 )
         mWhitespaceCollisionHandling = Qgis::LabelWhitespaceCollisionHandling::TreatWhitespaceAsCollision;
-      else if ( value.compare( "IgnoreWhitespaceCollisions"_L1, Qt::CaseInsensitive ) == 0 )
+      else if ( value.compare( "IgnoreWhitespaceCollisions"_L1, Qt::CaseInsensitive ) == 0 || value.compare( "Ignore_Whitespace_Collisions"_L1, Qt::CaseInsensitive ) == 0 )
         mWhitespaceCollisionHandling = Qgis::LabelWhitespaceCollisionHandling::IgnoreWhitespaceCollisions;
     }
   }

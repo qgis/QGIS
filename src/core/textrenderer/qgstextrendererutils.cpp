@@ -120,13 +120,15 @@ Qgis::TextOrientation QgsTextRendererUtils::decodeTextOrientation( const QString
   if ( ok )
     *ok = true;
 
-  const QString cleaned = name.toLower().trimmed();
+  const QString cleaned = name.trimmed();
 
-  if ( cleaned == "horizontal"_L1 )
+  if ( cleaned.compare( "horizontal"_L1, Qt::CaseInsensitive ) == 0 )
     return Qgis::TextOrientation::Horizontal;
-  else if ( cleaned == "vertical"_L1 )
+  else if ( cleaned.compare( "vertical"_L1, Qt::CaseInsensitive ) == 0 )
     return Qgis::TextOrientation::Vertical;
-  else if ( cleaned == "rotation-based"_L1 )
+  else if ( cleaned.compare( "rotation-based"_L1, Qt::CaseInsensitive ) == 0
+            || cleaned.compare( "RotationBased"_L1, Qt::CaseInsensitive ) == 0
+            || cleaned.compare( "Rotation_Based"_L1, Qt::CaseInsensitive ) == 0 )
     return Qgis::TextOrientation::RotationBased;
 
   if ( ok )
