@@ -667,8 +667,6 @@ QVariant QgsAttributeTableModel::headerData( int section, Qt::Orientation orient
   return QVariant();
 }
 
-#include "qgsattributetablefiltermodel.h"
-
 QVariant QgsAttributeTableModel::data( const QModelIndex &index, int role ) const
 {
   if ( !index.isValid() || !mLayer )
@@ -683,11 +681,11 @@ QVariant QgsAttributeTableModel::data( const QModelIndex &index, int role ) cons
     {
       if ( isActionColumn )
       {
-        return QgsAttributeTableFilterModel::ColumnTypeActionButton;
+        return static_cast< int >( ColumnTypeValue::ActionButton );
       }
       else
       {
-        return QgsAttributeTableFilterModel::ColumnTypeField;
+        return static_cast< int >( ColumnTypeValue::Field );
       }
     }
 
