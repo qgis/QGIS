@@ -1638,8 +1638,7 @@ void QgsModelDesignerDialog::run( const QSet<QString> &childAlgorithmSubset )
       }
     } );
 
-    connect( mAlgorithmWidget, &QgsProcessingAlgorithmWidgetBase::algorithmFinished, this, [this]( bool, const QVariantMap & ) {
-      QgsProcessingContext *context = mAlgorithmWidget->processingContext();
+    connect( mAlgorithmWidget, &QgsProcessingAlgorithmWidgetBase::algorithmFinished, this, [this]( bool, const QVariantMap &, QgsProcessingContext *context ) {
       // take child output layers
       mLayerStore.temporaryLayerStore()->removeAllMapLayers();
       mLayerStore.takeResultsFrom( *context );
