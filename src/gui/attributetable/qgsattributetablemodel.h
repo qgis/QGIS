@@ -63,12 +63,26 @@ class GUI_EXPORT QgsAttributeTableModel : public QAbstractTableModel
     {
       FeatureId SIP_MONKEYPATCH_COMPAT_NAME( FeatureIdRole ) = Qt::UserRole, //!< Get the feature id of the feature in this row
       FieldIndex SIP_MONKEYPATCH_COMPAT_NAME( FieldIndexRole ),              //!< Get the field index of this column
-      ColumnType,                                                            //!< The type of a given column. \since QGIS 4.4
+      ColumnType,                                                            //!< The type of a given column. See ColumnType. \since QGIS 4.4
       User SIP_MONKEYPATCH_COMPAT_NAME( UserRole ),                          //!< Start further roles starting from this role
       // Insert new values here, SortRole needs to be the last one
       Sort SIP_MONKEYPATCH_COMPAT_NAME( SortRole ) = User + 1000, //!< Role used for sorting start here
     };
     Q_ENUM( CustomRole )
+
+    /**
+     * The type of a column.
+     *
+     * \note Prior to QGIS 3.36 this was available as QgsAttributeTableFilterModel::ColumnTypeValue
+     * \since QGIS 4.4
+     */
+    enum class ColumnTypeValue SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsAttributeTableFilterModel, ColumnType ) : int
+    {
+      Field SIP_MONKEYPATCH_COMPAT_NAME( ColumnTypeField ),              //!< This column shows a field
+      ActionButton SIP_MONKEYPATCH_COMPAT_NAME( ColumnTypeActionButton ) //!< This column shows action buttons
+    };
+    Q_ENUM( ColumnTypeValue )
+
     // *INDENT-ON*
 
   public:

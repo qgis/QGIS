@@ -38,6 +38,13 @@ Model View Programming</a>
       Sort,
     };
 
+    enum class ColumnTypeValue /BaseType=IntEnum/
+    {
+      Field,
+      ActionButton
+    };
+
+
   public:
     QgsAttributeTableModel( QgsVectorLayerCache *layerCache, QObject *parent = 0 );
 %Docstring
