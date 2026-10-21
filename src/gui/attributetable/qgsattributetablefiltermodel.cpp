@@ -95,7 +95,10 @@ void QgsAttributeTableFilterModel::sort( int column, Qt::SortOrder order )
   {
     const int myColumn = mColumnMapping.at( column );
     masterModel()->prefetchColumnData( myColumn );
-    QSortFilterProxyModel::sort( myColumn, order );
+    // it doesn't matter which column we pass to the base class method -- the sort data is always
+    // taken from the QgsAttributeTableModel::CustomRole::Sort role, which does not change depending
+    // on the column!
+    QSortFilterProxyModel::sort( 0, order );
   }
   emit sortColumnChanged( column, order );
 }
