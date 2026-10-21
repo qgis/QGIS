@@ -469,15 +469,6 @@ QString QgsFieldMappingModel::qgsFieldToTypeName( const QgsField &field ) const
     }
   }
 
-  // no exact type name matches, try to match metatype as a fallback
-  for ( const QgsVectorDataProvider::NativeType &type : mNativeTypes )
-  {
-    if ( type.mType == field.type() && type.mSubType == field.subType() )
-    {
-      return type.mTypeName;
-    }
-  }
-
   // next chance -- try promoting numeric types
 
   // promote int -> long long
