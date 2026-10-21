@@ -674,52 +674,71 @@ QVariant QgsAttributeTableModel::data( const QModelIndex &index, int role ) cons
   if ( !index.isValid() || !mLayer )
     return QVariant();
 
-  const QgsFeatureId rowId = rowToId( index.row() );
+  const bool isActionColumn = index.column() == mFieldCount;
 
+  // model roles which don't vary by row
+  switch ( role )
+  {
+    case static_cast<int>( QgsAttributeTableModel::CustomRole::ColumnType ):
+    {
+      if ( isActionColumn )
+      {
+        return QgsAttributeTableFilterModel::ColumnTypeActionButton;
+      }
+      else
+      {
+        return QgsAttributeTableFilterModel::ColumnTypeField;
+      }
+    }
+
+    case static_cast<int>( CustomRole::FieldIndex ):
+    {
+      return isActionColumn ? QVariant() : mAttributes.at( index.column() );
+    }
+
+    case Qt::TextAlignmentRole:
+    {
+      if ( isActionColumn )
+      {
+        return static_cast<Qt::Alignment::Int>( Qt::AlignLeft | Qt::AlignVCenter );
+      }
+      else
+      {
+        const int fieldId = mAttributes.at( index.column() );
+        const QgsField field = mFields.at( fieldId );
+        const WidgetData &widgetData = getWidgetData( index.column() );
+        return static_cast<Qt::Alignment::Int>( widgetData.fieldFormatter->alignmentFlag( field, widgetData.config ) | Qt::AlignVCenter );
+      }
+    }
+
+    default:
+      break;
+  }
+
+  // model roles which don't vary by column
   if ( role == static_cast<int>( CustomRole::FeatureId ) )
   {
-    return rowId;
+    return rowToId( index.row() );
   }
-  else if ( role == static_cast<int>( CustomRole::Sort ) )
+  else if ( role >= static_cast<int>( CustomRole::Sort ) )
   {
     const unsigned long cacheIndex = role - static_cast<int>( CustomRole::Sort );
     if ( cacheIndex < mSortCaches.size() )
     {
-      return mSortCaches.at( cacheIndex ).sortCache.value( rowId );
+      return mSortCaches.at( cacheIndex ).sortCache.value( rowToId( index.row() ) );
     }
     else
     {
       return QVariant();
     }
   }
-  else if ( role == static_cast<int>( QgsAttributeTableFilterModel::CustomRole::Type ) )
-  {
-    if ( index.column() == mFieldCount ) // actions column
-    {
-      return QgsAttributeTableFilterModel::ColumnTypeActionButton;
-    }
-    else
-    {
-      return QgsAttributeTableFilterModel::ColumnTypeField;
-    }
-  }
 
-  if ( index.column() >= mFieldCount )
+  if ( isActionColumn )
     return QVariant();
 
+  // the remaining roles vary per column and row, and require a feature
+  const QgsFeatureId rowId = rowToId( index.row() );
   const int fieldId = mAttributes.at( index.column() );
-
-  if ( role == static_cast<int>( CustomRole::FieldIndex ) )
-    return fieldId;
-
-  const QgsField field = mFields.at( fieldId );
-
-  if ( role == Qt::TextAlignmentRole )
-  {
-    const WidgetData &widgetData = getWidgetData( index.column() );
-    return static_cast<Qt::Alignment::Int>( widgetData.fieldFormatter->alignmentFlag( field, widgetData.config ) | Qt::AlignVCenter );
-  }
-
   if ( mFeat.id() != rowId || !mFeat.isValid() || !mLayerCache->cacheSubsetOfAttributes().contains( fieldId ) )
   {
     if ( !loadFeatureAtId( rowId, fieldId ) )
@@ -729,8 +748,8 @@ QVariant QgsAttributeTableModel::data( const QModelIndex &index, int role ) cons
       return QVariant( "ERROR" );
   }
 
-  QVariant val = mFeat.attribute( fieldId );
-
+  const QgsField field = mFields.at( fieldId );
+  const QVariant val = mFeat.attribute( fieldId );
   switch ( role )
   {
     case Qt::DisplayRole:
@@ -839,6 +858,9 @@ QVariant QgsAttributeTableModel::data( const QModelIndex &index, int role ) cons
 
       return QVariant();
     }
+
+    default:
+      break;
   }
 
   return QVariant();
