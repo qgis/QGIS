@@ -89,39 +89,50 @@ void QgsOapifQueryablesRequest::processReply()
       {
         for ( const auto &[key, val] : jProperties.items() )
         {
-          if ( val.is_object() && val.contains( "type" ) )
+          if ( !val.is_object() )
+            continue;
+
+          Queryable queryable;
+          if ( val.contains( "format" ) )
           {
-            const json jType = val["type"];
-            if ( jType.is_string() )
+            const json jFormat = val["format"];
+            if ( jFormat.is_string() )
             {
-              Queryable queryable;
-              queryable.mType = QString::fromStdString( jType.get<std::string>() );
-              if ( val.contains( "format" ) )
-              {
-                const json jFormat = val["format"];
-                if ( jFormat.is_string() )
-                {
-                  queryable.mFormat = QString::fromStdString( jFormat.get<std::string>() );
-                }
-              }
-              mQueryables[QString::fromStdString( key )] = queryable;
+              queryable.mFormat = QString::fromStdString( jFormat.get<std::string>() );
             }
           }
-          else if ( val.is_object() && val.contains( "$ref" ) )
+
+          if ( val.contains( "x-ogc-role" ) )
+          {
+            const json jOgcRole = val["x-ogc-role"];
+            queryable.mIsPrimaryGeometry = jOgcRole.is_string() && jOgcRole.get<std::string>() == "primary-geometry";
+          }
+
+          bool hasGeoJsonRef = false;
+          if ( val.contains( "$ref" ) )
           {
             const json jRef = val["$ref"];
             if ( jRef.is_string() )
             {
               const auto ref = jRef.get<std::string>();
               const char *prefix = "https://geojson.org/schema/";
-              if ( ref.size() > strlen( prefix ) && ref.compare( 0, strlen( prefix ), prefix ) == 0 )
-              {
-                Queryable queryable;
-                queryable.mIsGeometry = true;
-                mQueryables[QString::fromStdString( key )] = queryable;
-              }
+              hasGeoJsonRef = ref.size() > strlen( prefix ) && ref.compare( 0, strlen( prefix ), prefix ) == 0;
             }
           }
+
+          // Part 3 and Part 5 describe a geometry with a "geometry-*" format and/or a "primary-geometry" role,
+          // older servers with a $ref to a GeoJSON schema. Any of these wins over a "type".
+          queryable.mIsGeometry = hasGeoJsonRef || queryable.mFormat.startsWith( "geometry-"_L1 ) || queryable.mIsPrimaryGeometry;
+          if ( !queryable.mIsGeometry )
+          {
+            if ( !val.contains( "type" ) )
+              continue;
+            const json jType = val["type"];
+            if ( !jType.is_string() )
+              continue;
+            queryable.mType = QString::fromStdString( jType.get<std::string>() );
+          }
+          mQueryables[QString::fromStdString( key )] = queryable;
         }
       }
     }

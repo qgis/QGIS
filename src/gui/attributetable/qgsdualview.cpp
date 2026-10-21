@@ -308,6 +308,7 @@ void QgsDualView::columnBoxInit()
   mFeatureListPreviewButton->addAction( separator );
   restoreRecentDisplayExpressions();
 
+  mSkipDisplayExpressionChangedSignal = true;
   if ( defaultFieldAction )
   {
     mFeatureListPreviewButton->setDefaultAction( defaultFieldAction );
@@ -321,6 +322,7 @@ void QgsDualView::columnBoxInit()
     mFeatureListView->setDisplayExpression( displayExpression );
     setDisplayExpression( displayExpression.isEmpty() ? tr( "'[Please define preview text]'" ) : displayExpression );
   }
+  mSkipDisplayExpressionChangedSignal = false;
 }
 
 void QgsDualView::setView( QgsDualView::ViewMode view )
@@ -1348,7 +1350,10 @@ void QgsDualView::rebuildFullLayerCache()
 
 void QgsDualView::previewExpressionChanged( const QString &expression )
 {
-  mLayer->setDisplayExpression( expression );
+  if ( !mSkipDisplayExpressionChangedSignal )
+  {
+    mLayer->setDisplayExpression( expression );
+  }
 }
 
 void QgsDualView::onSortColumnChanged()

@@ -29,7 +29,7 @@
 using namespace Qt::StringLiterals;
 
 #ifdef ENABLE_MODELTEST
-#include "modeltest.h"
+#include <QAbstractItemModelTester>
 #endif
 
 
@@ -148,7 +148,7 @@ void TestQgsProcessingModel::testModel()
   QgsProcessingToolboxModel model( nullptr, &registry, &recentLog, &favoriteManager );
 
 #ifdef ENABLE_MODELTEST
-  new ModelTest( &model, this ); // for model validity checking
+  new QAbstractItemModelTester( &model, QAbstractItemModelTester::FailureReportingMode::QtTest, this );
 #endif
 
   QCOMPARE( model.columnCount(), 1 );
@@ -443,7 +443,7 @@ void TestQgsProcessingModel::testProxyModel()
   QgsProcessingToolboxProxyModel model( nullptr, &registry, &recentLog, &favoriteManager );
 
 #ifdef ENABLE_MODELTEST
-  new ModelTest( &model, this ); // for model validity checking
+  new QAbstractItemModelTester( &model, QAbstractItemModelTester::FailureReportingMode::QtTest, this );
 #endif
 
   // add a provider

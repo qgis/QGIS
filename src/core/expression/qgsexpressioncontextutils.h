@@ -321,8 +321,12 @@ class CORE_EXPORT QgsExpressionContextUtils
 
     /**
      * Registers all known core functions provided by QgsExpressionContextScope objects.
+     *
+     * \warning This should never be called manually -- it is an internal detail only, initialized automatically in the expression engine.
+     *
+     * \note Not available in Python bindings
      */
-    static void registerContextFunctions();
+    SIP_SKIP static void registerContextFunctions( QgsExpression::SharedFunctionPtrList &functions );
 
     /**
      * Creates a new scope which contains functions relating to mesh layer element \a elementType

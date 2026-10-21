@@ -195,6 +195,7 @@ void QgsProcessingToolboxDockWidget::showPopupMenu( const QPoint &pos )
   }
 
   menu->exec( mAlgorithmTree->mapToGlobal( pos ) );
+  delete menu;
 }
 
 void QgsProcessingToolboxDockWidget::executeCurrentAlgorithm()

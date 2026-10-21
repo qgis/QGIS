@@ -2979,6 +2979,17 @@ void TestQgsGeometry::splitGeometry()
   geom = newGeoms[1];
   geom.normalize();
   QCOMPARE( geom.asWkt( 0 ), u"Polygon Z ((1 5 11, 1 10 21, 10 10 30, 10 5 20, 1 5 11))"_s );
+
+#if GEOS_VERSION_MAJOR > 3 || ( GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR > 15 ) || ( GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR == 15 && GEOS_VERSION_PATCH >= 1 )
+  // Issue #40796: Loss of M values when splitting features
+  g2 = QgsGeometry::fromWkt( "LineString ZM (100 100 10 20, 110 110 11 21, 120 120 12 22)" );
+  testPoints.clear();
+  newGeoms.clear();
+  QCOMPARE( g2.splitGeometry( QgsPointSequence() << QgsPoint( 110, 110 ) << QgsPoint( 110, 110.5 ), newGeoms, false, testPoints, true ), Qgis::GeometryOperationResult::Success );
+  QCOMPARE( newGeoms.count(), 1 );
+  QCOMPARE( newGeoms[0].asWkt( 0 ), u"LineString ZM (110 110 11 21, 120 120 12 22)"_s );
+  QCOMPARE( g2.asWkt( 0 ), u"LineString ZM (100 100 10 20, 110 110 11 21)"_s );
+#endif
 }
 
 void TestQgsGeometry::splitGeometryByCurve()

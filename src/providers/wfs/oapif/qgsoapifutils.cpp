@@ -251,12 +251,12 @@ QString QgsOAPIFGetNextLinkFromResponseHeader( const QList<QNetworkReply::RawHea
           }
           else if ( type == "application/geo+json"_L1 && formatType == PSEUDO_JSONFG_MEDIA_TYPE )
           {
-            if ( profile == "http://www.opengis.net/def/profile/ogc/0/jsonfg"_L1 )
+            if ( profile.compare( "http://www.opengis.net/def/profile/OGC/0/jsonfg"_L1, Qt::CaseInsensitive ) == 0 )
             {
               nextUrl = href;
               break;
             }
-            else if ( profile == "http://www.opengis.net/def/profile/ogc/0/jsonfg-plus"_L1 )
+            else if ( profile.compare( "http://www.opengis.net/def/profile/OGC/0/jsonfg-plus"_L1, Qt::CaseInsensitive ) == 0 )
             {
               nextUrlCandidateJsonFGPlus = href;
             }

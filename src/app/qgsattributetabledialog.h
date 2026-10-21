@@ -216,6 +216,11 @@ class APP_EXPORT QgsAttributeTableDialog : public QDialog, private Ui::QgsAttrib
     void mMainView_currentChanged( int );
 
     /**
+     * Opens online help
+     */
+    void mActionHelp_triggered();
+
+    /**
      * add feature
      */
     void mActionAddFeatureViaAttributeTable_triggered();

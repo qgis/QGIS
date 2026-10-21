@@ -2882,6 +2882,7 @@ int QgsOgrUtils::listStyles( GDALDatasetH hDS, const QString &layerName, const Q
 
   OGRFeatureDefnH hLayerDefn = OGR_L_GetLayerDefn( hLayer );
 
+  OGR_L_SetAttributeFilter( hLayer, nullptr );
   OGR_L_ResetReading( hLayer );
 
   struct StyleInfo
@@ -2961,6 +2962,7 @@ bool QgsOgrUtils::styleExists( GDALDatasetH hDS, const QString &layerName, const
   OGR_L_SetAttributeFilter( hLayer, checkQuery.toUtf8().constData() );
   OGR_L_ResetReading( hLayer );
   gdal::ogr_feature_unique_ptr hFeature( OGR_L_GetNextFeature( hLayer ) );
+  OGR_L_SetAttributeFilter( hLayer, nullptr );
   OGR_L_ResetReading( hLayer );
 
   if ( hFeature )
@@ -3073,6 +3075,7 @@ QString QgsOgrUtils::loadStoredStyle( GDALDatasetH hDS, const QString &layerName
       styleName = QString::fromUtf8( OGR_F_GetFieldAsString( hFeat.get(), OGR_FD_GetFieldIndex( hLayerDefn, "styleName" ) ) );
     }
   }
+  OGR_L_SetAttributeFilter( hLayer, nullptr );
   OGR_L_ResetReading( hLayer );
 
   return styleQML;
@@ -3213,6 +3216,7 @@ bool QgsOgrUtils::saveStyle(
   OGR_L_SetAttributeFilter( hLayer, checkQuery.toUtf8().constData() );
   OGR_L_ResetReading( hLayer );
   gdal::ogr_feature_unique_ptr hFeature( OGR_L_GetNextFeature( hLayer ) );
+  OGR_L_SetAttributeFilter( hLayer, nullptr );
   OGR_L_ResetReading( hLayer );
   bool bNew = true;
 

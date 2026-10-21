@@ -16,7 +16,7 @@ __copyright__ = "Copyright 2019, The QGIS Project"
 
 import unittest
 
-from qgis.core import QgsField, QgsOgcUtils, QgsVectorLayer
+from qgis.core import QgsExpression, QgsField, QgsOgcUtils, QgsVectorLayer
 from qgis.PyQt.QtCore import QVariant
 from qgis.PyQt.QtXml import QDomDocument
 from qgis.testing import QgisTestCase, start_app
@@ -612,6 +612,32 @@ class TestQgsOgcUtils(QgisTestCase):
 
         e = QgsOgcUtils.expressionFromOgcFilter(d.documentElement(), vl)
         self.assertEqual(e.expression(), "time > '11:01:02' AND time < '12:03:04'")
+
+    def test_expressionToOgcFilterValidFunction(self):
+        """
+        Test expressionToOgcFilter with a valid function
+        """
+        expression = QgsExpression("lower(\"FIELD\") = 'one'")
+
+        document = QDomDocument()
+        element = QgsOgcUtils.expressionToOgcFilter(expression, document)
+        self.assertTrue(element)
+
+        document.appendChild(element)
+        self.assertEqual(
+            document.toString(),
+            '<ogc:Filter xmlns:ogc="http://www.opengis.net/ogc">\n <ogc:PropertyIsEqualTo>\n  <ogc:Function name="strToLowerCase">\n   <ogc:PropertyName>FIELD</ogc:PropertyName>\n  </ogc:Function>\n  <ogc:Literal>one</ogc:Literal>\n </ogc:PropertyIsEqualTo>\n</ogc:Filter>\n',
+        )
+
+    def test_expressionToOgcFilterInvalid(self):
+        """
+        Test expressionToOgcFilter with a valid function
+        """
+        expression = QgsExpression("unaccent(\"FIELD\") = 'one'")
+
+        document = QDomDocument()
+        element = QgsOgcUtils.expressionToOgcFilter(expression, document)
+        self.assertTrue(element.isNull())
 
 
 if __name__ == "__main__":

@@ -24,6 +24,7 @@
 
 #include <QJsonDocument>
 #include <QJsonObject>
+#include <QMutex>
 #include <QSet>
 #include <QString>
 #include <QVariant>

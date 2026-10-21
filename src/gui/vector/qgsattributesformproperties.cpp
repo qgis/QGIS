@@ -44,7 +44,7 @@
 using namespace Qt::StringLiterals;
 
 #ifdef ENABLE_MODELTEST
-#include "modeltest.h"
+#include <QAbstractItemModelTester>
 #endif
 
 const QgsSettingsEntryBool *QgsAttributesFormProperties::settingShowAliases
@@ -87,7 +87,7 @@ QgsAttributesFormProperties::QgsAttributesFormProperties( QgsVectorLayer *layer,
   mDefaultValueIndicatorProviderAvailableWidgets = new QgsFieldDefaultValueIndicatorProvider( mAvailableWidgetsView ); // gets parented to the available widgets view
 
 #ifdef ENABLE_MODELTEST
-  new ModelTest( mAvailableWidgetsProxyModel, this );
+  new QAbstractItemModelTester( mAvailableWidgetsProxyModel, QAbstractItemModelTester::FailureReportingMode::Fatal, this );
 #endif
 
   // form layout tree
@@ -111,7 +111,7 @@ QgsAttributesFormProperties::QgsAttributesFormProperties( QgsVectorLayer *layer,
   mDefaultValueIndicatorProviderFormLayout = new QgsFieldDefaultValueIndicatorProvider( mFormLayoutView ); // gets parented to the form layout view
 
 #ifdef ENABLE_MODELTEST
-  new ModelTest( mFormLayoutProxyModel, this );
+  new QAbstractItemModelTester( mFormLayoutProxyModel, QAbstractItemModelTester::FailureReportingMode::Fatal, this );
 #endif
 
   connect( mAvailableWidgetsView->selectionModel(), &QItemSelectionModel::selectionChanged, this, &QgsAttributesFormProperties::onAttributeSelectionChanged );

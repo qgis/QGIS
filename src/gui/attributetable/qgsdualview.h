@@ -50,7 +50,6 @@ class GUI_EXPORT QgsDualView : public QStackedWidget, private Ui::QgsDualViewBas
     Q_OBJECT
 
   public:
-
     static const QgsSettingsEntryBool *settingsFeatureListHighlightFeature SIP_SKIP;
 
     static const QgsSettingsEntryInteger *settingsAttributeTableRowCache SIP_SKIP;
@@ -462,6 +461,8 @@ class GUI_EXPORT QgsDualView : public QStackedWidget, private Ui::QgsDualViewBas
     QgsFeatureIds mLastFeatureSet;
     bool mBrowsingAutoPanScaleAllowed = true;
     ViewMode mPreviousView = AttributeTable;
+
+    bool mSkipDisplayExpressionChangedSignal = false;
 
     friend class TestQgsDualView;
     friend class TestQgsAttributeTable;

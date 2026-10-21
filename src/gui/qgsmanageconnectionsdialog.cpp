@@ -562,6 +562,7 @@ QDomDocument QgsManageConnectionsDialog::saveOWSConnections( const QStringList &
       el.setAttribute( u"invertAxisOrientation"_s, QgsOwsConnection::settingsInvertAxisOrientation->value( { service.toLower(), connections[i] } ) );
       el.setAttribute( u"smoothPixmapTransform"_s, QgsOwsConnection::settingsSmoothPixmapTransform->value( { service.toLower(), connections[i] } ) );
       el.setAttribute( u"dpiMode"_s, static_cast<int>( QgsOwsConnection::settingsDpiMode->value( { service.toLower(), connections[i] } ) ) );
+      el.setAttribute( u"disableDecompressedSafetyCheckThreshold"_s, QgsOwsConnection::settingsDisableDecompressedSafetyCheckThreshold->value( { service.toLower(), connections[i] } ) );
 
       QgsHttpHeaders httpHeader( QgsOwsConnection::settingsHeaders->value( { service.toLower(), connections[i] } ) );
       httpHeader.updateDomElement( el, namespaceDeclarations );
@@ -600,6 +601,7 @@ QDomDocument QgsManageConnectionsDialog::saveWfsConnections( const QStringList &
     el.setAttribute( u"password"_s, QgsOwsConnection::settingsPassword->value( { u"wfs"_s, connections[i] } ) );
     el.setAttribute( u"httpMethod"_s, QgsOwsConnection::settingsPreferredHttpMethod->value( { u"wfs"_s, connections[i] } ) == Qgis::HttpMethod::Post ? u"post"_s : u"get"_s );
     el.setAttribute( u"featureMode"_s, QgsOwsConnection::settingsWfsFeatureMode->value( { u"wfs"_s, connections[i] } ) );
+    el.setAttribute( u"disableDecompressedSafetyCheckThreshold"_s, QgsOwsConnection::settingsDisableDecompressedSafetyCheckThreshold->value( { u"wfs"_s, connections[i] } ) );
     root.appendChild( el );
   }
 
@@ -998,6 +1000,7 @@ void QgsManageConnectionsDialog::loadOWSConnections( const QDomDocument &doc, co
     QgsOwsConnection::settingsInvertAxisOrientation->setValue( child.attribute( u"invertAxisOrientation"_s ) == "true"_L1, { service.toLower(), connectionName } );
     QgsOwsConnection::settingsSmoothPixmapTransform->setValue( child.attribute( u"smoothPixmapTransform"_s ) == "true"_L1, { service.toLower(), connectionName } );
     QgsOwsConnection::settingsDpiMode->setValue( static_cast<Qgis::DpiMode>( child.attribute( u"dpiMode"_s, u"7"_s ).toInt() ), { service.toLower(), connectionName } );
+    QgsOwsConnection::settingsDisableDecompressedSafetyCheckThreshold->setValue( child.attribute( u"disableDecompressedSafetyCheckThreshold"_s ) == "true"_L1, { service.toLower(), connectionName } );
 
     QgsHttpHeaders httpHeader( child );
     QgsOwsConnection::settingsHeaders->setValue( httpHeader.headers(), { service.toLower(), connectionName } );
@@ -1064,6 +1067,7 @@ void QgsManageConnectionsDialog::loadWfsConnections( const QDomDocument &doc, co
     QgsOwsConnection::settingsPreferredHttpMethod
       ->setValue( child.attribute( u"httpMethod"_s ).compare( "post"_L1, Qt::CaseInsensitive ) == 0 ? Qgis::HttpMethod::Post : Qgis::HttpMethod::Get, { u"wfs"_s, connectionName } );
     QgsOwsConnection::settingsWfsFeatureMode->setValue( child.attribute( u"featureMode"_s ), { u"wfs"_s, connectionName } );
+    QgsOwsConnection::settingsDisableDecompressedSafetyCheckThreshold->setValue( child.attribute( u"disableDecompressedSafetyCheckThreshold"_s ) == "true"_L1, { u"wfs"_s, connectionName } );
 
     if ( !child.attribute( u"username"_s ).isEmpty() )
     {

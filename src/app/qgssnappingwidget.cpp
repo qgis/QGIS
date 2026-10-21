@@ -49,7 +49,7 @@
 using namespace Qt::StringLiterals;
 
 #ifdef ENABLE_MODELTEST
-#include "modeltest.h"
+#include <QAbstractItemModelTester>
 #endif
 
 QgsSnappingWidget::QgsSnappingWidget( QgsProject *project, QgsMapCanvas *canvas, QWidget *parent )
@@ -83,8 +83,8 @@ QgsSnappingWidget::QgsSnappingWidget( QgsProject *project, QgsMapCanvas *canvas,
   mLayerTreeView->installEventFilter( this );
 
 #ifdef ENABLE_MODELTEST
-  new ModelTest( model, this );
-  new ModelTest( model->layerTreeModel(), this );
+  new QAbstractItemModelTester( model, QAbstractItemModelTester::FailureReportingMode::Fatal, this );
+  new QAbstractItemModelTester( model->layerTreeModel(), QAbstractItemModelTester::FailureReportingMode::Fatal, this );
 #endif
 
   // connections

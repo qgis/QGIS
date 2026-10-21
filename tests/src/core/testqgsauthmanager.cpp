@@ -16,6 +16,8 @@
 
 #include "qgsapplication.h"
 #include "qgsauthconfig.h"
+#include "qgsauthconfigurationstoragedb.h"
+#include "qgsauthconfigurationstorageregistry.h"
 #include "qgsauthmanager.h"
 #include "qgsauthmethodmetadata.h"
 #include "qgssettings.h"
@@ -32,6 +34,20 @@
 #include <QtTest/QSignalSpy>
 
 using namespace Qt::StringLiterals;
+
+class TestAuthStorageDb : public QgsAuthConfigurationStorageDb
+{
+  public:
+    TestAuthStorageDb( const QMap<QString, QVariant> &settings )
+      : QgsAuthConfigurationStorageDb( settings )
+    {
+      Qgis::AuthConfigurationStorageCapabilities caps = Qgis::AuthConfigurationStorageCapability::ReadConfiguration;
+      setCapabilities( caps );
+      setEnabled( true );
+    }
+
+    virtual bool isReady() const override { return true; }
+};
 
 /**
  * \ingroup UnitTests
@@ -57,6 +73,7 @@ class TestQgsAuthManager : public QgsTest
     void testAuthConfigs();
     void testAuthMethods();
     void testPasswordHelper();
+    void testSecondPasswordStorage();
 
   private:
     void cleanupTempDir();
@@ -460,6 +477,30 @@ void TestQgsAuthManager::testPasswordHelper()
   authm->clearMasterPassword();
   QVERIFY( authm->setMasterPassword() );
   QVERIFY( authm->masterPasswordIsSet() );
+}
+
+void TestQgsAuthManager::testSecondPasswordStorage()
+{
+  QString dbPath = mTestDataDir.absoluteFilePath( u"second-auth.db"_s );
+  QMap<QString, QVariant> settings;
+  settings.insert( u"database"_s, dbPath );
+  settings.insert( u"driver"_s, u"QSQLITE"_s );
+  settings.insert( u"masterPassword"_s, u"the_secret_password"_s );
+  settings.insert( u"masterPasswordCiv"_s, u"f104b14e7b5f2d196748fa9d37463146e50e6a6920b1b12ac10072d2358dd32b"_s );
+  TestAuthStorageDb *storage = new TestAuthStorageDb( settings );
+
+  bool addStorageOk = QgsApplication::authManager()->authConfigurationStorageRegistry()->addStorage( storage );
+  QCOMPARE( addStorageOk, true );
+
+  //load password
+  QString authId( u"c5hqrwg"_s );
+  QgsAuthMethodConfig authConfig;
+  bool success = QgsApplication::authManager()->loadAuthenticationConfig( authId, authConfig, true );
+  QCOMPARE( success, true );
+
+  QgsStringMap configMap = authConfig.configMap();
+  QCOMPARE( configMap.contains( u"password"_s ), true );
+  QCOMPARE( configMap.value( u"password"_s ), u"admin"_s );
 }
 
 QGSTEST_MAIN( TestQgsAuthManager )

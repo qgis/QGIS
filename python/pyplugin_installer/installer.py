@@ -606,9 +606,7 @@ class QgsPluginInstaller(QObject):
         # add to settings
         settings.setValue(reposName + "/url", reposURL)
         settings.setValue(reposName + "/authcfg", dlg.configId().strip())
-        settings.setValue(
-            reposName + "/enabled", bool(dlg.checkBoxEnabled.checkState())
-        )
+        settings.setValue(reposName + "/enabled", dlg.checkBoxEnabled.isChecked())
         # refresh lists and populate widgets
         plugins.removeRepository(reposName)
         self.reloadAndExportData()
@@ -659,7 +657,7 @@ class QgsPluginInstaller(QObject):
             newName = newName + "(2)"
         settings.setValue(newName + "/url", dlg.editURL.text().strip())
         settings.setValue(newName + "/authcfg", dlg.configId().strip())
-        settings.setValue(newName + "/enabled", bool(dlg.checkBoxEnabled.checkState()))
+        settings.setValue(newName + "/enabled", dlg.checkBoxEnabled.isChecked())
         if (
             dlg.editAuthCfgWgt.configId().strip()
             != repositories.all()[reposName]["authcfg"]

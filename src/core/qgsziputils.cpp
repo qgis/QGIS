@@ -262,7 +262,7 @@ bool QgsZipUtils::decodeGzip( const char *bytesIn, std::size_t size, QByteArray 
   }
 
   inflateEnd( &strm );
-  return ret == Z_STREAM_END;
+  return ret == Z_STREAM_END || ( ret == Z_OK && bytesInLeft == 0 );
 }
 
 bool QgsZipUtils::encodeGzip( const QByteArray &bytesIn, QByteArray &bytesOut )

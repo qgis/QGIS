@@ -203,11 +203,11 @@ class TestQgsRasterLayerProfileGenerator(QgisTestCase):
         self.assertEqual(len(results), 63)
         first_point = min(results.keys())
         last_point = max(results.keys())
-        self.assertEqual(results[first_point], 120)
+        self.assertEqual(results[first_point], 121)
         self.assertEqual(results[last_point], 86)
 
         self.assertEqual(r.zRange().lower(), 74)
-        self.assertEqual(r.zRange().upper(), 120)
+        self.assertEqual(r.zRange().upper(), 121)
 
     def testGenerationWithHorizontalLine(self):
         rl = QgsRasterLayer(os.path.join(unitTestDataPath(), "3d", "dtm.tif"), "DTM")
@@ -316,6 +316,34 @@ class TestQgsRasterLayerProfileGenerator(QgisTestCase):
 
         res = r.identify(QgsProfilePoint(200, 85), context)
         self.assertFalse(res)
+
+    def testPixelAlignement(self):
+        """
+        4x1 raster. Resolution: 10 m. Values: 1, 2, 3, 4
+        Check that each sample reads the correct pixel
+        See: https://github.com/qgis/QGIS/issues/58236
+        """
+        rl = QgsRasterLayer(
+            os.path.join(unitTestDataPath(), "raster", "steps.tif"), "steps"
+        )
+        self.assertTrue(rl.isValid())
+        rl.elevationProperties().setEnabled(True)
+
+        curve = QgsLineString()
+        curve.fromWkt("LineString (0 5, 39.9 5)")
+        req = QgsProfileRequest(curve)
+        req.setCrs(QgsCoordinateReferenceSystem("EPSG:2154"))
+        req.setStepDistance(0.5)
+
+        generator = rl.createProfileGenerator(req)
+        self.assertTrue(generator.generateProfile())
+        res = generator.takeResults()
+        results = res.distanceToHeightMap()
+        self.assertEqual(len(results), 81)
+
+        for distance, height in results.items():
+            current_pixel = distance // 10 + 1
+            self.assertEqual(current_pixel, height)
 
 
 if __name__ == "__main__":

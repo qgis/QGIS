@@ -484,6 +484,21 @@ class TestQgsBox3d(unittest.TestCase):
         )
         self.assertTrue(box11.isNull())
 
+        box12 = QgsBox3d(
+            float("nan"), float("nan"), float("nan"), float("nan"), 13, float("nan")
+        )
+        self.assertFalse(box12.isNull())
+
+        box13 = QgsBox3d(
+            float("nan"),
+            float("nan"),
+            float("nan"),
+            float("nan"),
+            float("nan"),
+            float("nan"),
+        )
+        self.assertTrue(box13.isNull())
+
     def testIsEmpty(self):
         box1 = QgsBox3d()
         self.assertTrue(box1.isEmpty())

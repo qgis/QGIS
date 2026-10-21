@@ -1040,9 +1040,9 @@ class QgsWmsCapabilitiesDownload : public QObject
     Q_OBJECT
 
   public:
-    explicit QgsWmsCapabilitiesDownload( bool forceRefresh, QObject *parent = nullptr );
+    explicit QgsWmsCapabilitiesDownload( bool forceRefresh, bool disableDecompressedSafetyCheckThreshold = false, QObject *parent = nullptr );
 
-    QgsWmsCapabilitiesDownload( const QString &baseUrl, const QgsAuthorizationSettings &auth, bool forceRefresh, QObject *parent = nullptr );
+    QgsWmsCapabilitiesDownload( const QString &baseUrl, const QgsAuthorizationSettings &auth, bool forceRefresh, bool disableDecompressedSafetyCheckThreshold = false, QObject *parent = nullptr );
 
     ~QgsWmsCapabilitiesDownload() override;
 
@@ -1104,6 +1104,7 @@ class QgsWmsCapabilitiesDownload : public QObject
 
     bool mIsAborted;
     bool mForceRefresh;
+    bool mDisableDecompressedSafetyCheckThreshold = false;
 };
 
 

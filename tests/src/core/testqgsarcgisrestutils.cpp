@@ -78,6 +78,7 @@ class TestQgsArcGisRestUtils : public QObject
     void testVisualVariableRotationCategorizedRenderer();
     void testVisualVariableRotationGraduatedRenderer();
     void testParseLabeling();
+    void testParseLabelingRepeat();
     void testParseCompoundCurve();
     void testParsePolyline();
     void testParsePolylineZ();
@@ -1229,6 +1230,146 @@ void TestQgsArcGisRestUtils::testParseLabeling()
   QCOMPARE( textFormat.buffer().color(), QColor( 255, 255, 255 ) );
   QCOMPARE( textFormat.buffer().size(), 1.0 );
   QCOMPARE( textFormat.buffer().sizeUnit(), Qgis::RenderUnit::Points );
+}
+
+void TestQgsArcGisRestUtils::testParseLabelingRepeat()
+{
+  const QVariantMap map = jsonStringToMap(
+    "{"
+    "\"labelingInfo\": ["
+    "{"
+    "\"labelExpression\": \"[Hierarchy]\","
+    "\"labelPlacement\": \"esriServerLinePlacementCenterAlong\","
+    "\"textLayout\": \"straight\","
+    "\"deconflictionStrategy\": \"dynamic\","
+    "\"allowOverrun\": true,"
+    "\"repeatLabel\": true,"
+    "\"repeatLabelDistance\": 150,"
+    "\"lineConnection\": \"minimizeLabels\","
+    "\"useClippedGeometry\": true,"
+    "\"stackLabel\": true,"
+    "\"stackAlignment\": \"dynamic\","
+    "\"removeDuplicates\": \"none\","
+    "\"stackRowLength\": 24,"
+    "\"where\": \"(\\\"Hierarchy\\\"  = 'XX' )\","
+    "\"useCodedValues\": true,"
+    "\"maxScale\": 0,"
+    "\"minScale\": 0,"
+    "\"name\": \"XX\","
+    "\"priority\": 1,"
+    "\"symbol\": {"
+    "\"type\": \"esriTS\","
+    "\"color\": ["
+    "0,"
+    "92,"
+    "230,"
+    "255"
+    "],"
+    "\"backgroundColor\": null,"
+    "\"borderLineColor\": null,"
+    "\"borderLineSize\": null,"
+    "\"verticalAlignment\": \"baseline\","
+    "\"horizontalAlignment\": \"left\","
+    "\"rightToLeft\": false,"
+    "\"angle\": 0,"
+    "\"xoffset\": 0,"
+    "\"yoffset\": 0,"
+    "\"kerning\": true,"
+    "\"haloColor\": ["
+    "251,"
+    "251,"
+    "251,"
+    "255"
+    "],"
+    "\"haloSize\": 2,"
+    "\"font\": {"
+    "\"family\": \"Arial\","
+    "\"size\": 14,"
+    "\"style\": \"normal\","
+    "\"weight\": \"bold\","
+    "\"decoration\": \"none\""
+    "}"
+    "}"
+    "},"
+    "{"
+    "\"labelExpression\": \"[Hierarchy]\","
+    "\"labelPlacement\": \"esriServerLinePlacementCenterAlong\","
+    "\"textLayout\": \"straight\","
+    "\"deconflictionStrategy\": \"dynamic\","
+    "\"allowOverrun\": true,"
+    "\"repeatLabel\": true,"
+    "\"repeatLabelDistance\": 290,"
+    "\"lineConnection\": \"minimizeLabels\","
+    "\"useClippedGeometry\": true,"
+    "\"stackLabel\": true,"
+    "\"stackAlignment\": \"dynamic\","
+    "\"removeDuplicates\": \"none\","
+    "\"stackRowLength\": 24,"
+    "\"where\": \"(\\\"Hierarchy\\\"  = 'XXXX' )\","
+    "\"useCodedValues\": true,"
+    "\"maxScale\": 0,"
+    "\"minScale\": 0,"
+    "\"name\": \"XXXX\","
+    "\"priority\": 2,"
+    "\"symbol\": {"
+    "\"type\": \"esriTS\","
+    "\"color\": ["
+    "0,"
+    "92,"
+    "230,"
+    "255"
+    "],"
+    "\"backgroundColor\": null,"
+    "\"borderLineColor\": null,"
+    "\"borderLineSize\": null,"
+    "\"verticalAlignment\": \"baseline\","
+    "\"horizontalAlignment\": \"left\","
+    "\"rightToLeft\": false,"
+    "\"angle\": 0,"
+    "\"xoffset\": 0,"
+    "\"yoffset\": 0,"
+    "\"kerning\": true,"
+    "\"haloColor\": ["
+    "251,"
+    "251,"
+    "251,"
+    "255"
+    "],"
+    "\"haloSize\": 2,"
+    "\"font\": {"
+    "\"family\": \"Arial\","
+    "\"size\": 14,"
+    "\"style\": \"normal\","
+    "\"weight\": \"bold\","
+    "\"decoration\": \"none\""
+    "}"
+    "}"
+    "}"
+    "]"
+    "}"
+  );
+
+  const std::unique_ptr<QgsAbstractVectorLayerLabeling> labeling( QgsArcGisRestUtils::convertLabeling( map.value( u"labelingInfo"_s ).toList() ) );
+  QVERIFY( labeling );
+  QgsRuleBasedLabeling *rules = dynamic_cast<QgsRuleBasedLabeling *>( labeling.get() );
+  QVERIFY( rules );
+  QgsRuleBasedLabeling::Rule *root = rules->rootRule();
+  QVERIFY( root );
+
+  const QgsRuleBasedLabeling::RuleList children = root->children();
+  QCOMPARE( children.count(), 2 );
+
+  QgsPalLayerSettings *settings = children.at( 0 )->settings();
+  QVERIFY( settings );
+  QCOMPARE( settings->placement, Qgis::LabelPlacement::Line );
+  QCOMPARE( settings->repeatDistance, 150 );
+  QCOMPARE( settings->repeatDistanceUnit, Qgis::RenderUnit::Points );
+
+  settings = children.at( 1 )->settings();
+  QVERIFY( settings );
+  QCOMPARE( settings->placement, Qgis::LabelPlacement::Line );
+  QCOMPARE( settings->repeatDistance, 290 );
+  QCOMPARE( settings->repeatDistanceUnit, Qgis::RenderUnit::Points );
 }
 
 QVariantMap TestQgsArcGisRestUtils::jsonStringToMap( const QString &string ) const

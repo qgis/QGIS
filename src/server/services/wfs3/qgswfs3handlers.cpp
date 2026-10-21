@@ -1154,6 +1154,10 @@ void QgsWfs3ConformanceHandler::handleRequest( const QgsServerApiContext &contex
         "http://www.opengis.net/spec/ogcapi-features-1/1.0/conf/html",
         "http://www.opengis.net/spec/ogcapi-features-1/1.0/conf/geojson",
 
+        // From: https://docs.ogc.org/DRAFTS/20-002r1.html
+        "http://www.opengis.net/spec/ogcapi-features-4/1.0/conf/create-replace-delete",
+        "http://www.opengis.net/spec/ogcapi-features-4/1.0/conf/update",
+
         // Draft? Now approved as part 3 https://docs.ogc.org/is/23-058r2/23-058r2.html
         "http://www.opengis.net/spec/ogcapi-features-5/1.0/conf/schemas",
         "http://www.opengis.net/spec/ogcapi-features-5/1.0/conf/profile-codelists",
@@ -3395,10 +3399,11 @@ void QgsWfs3CollectionsFeatureHandler::handleRequest( const QgsServerApiContext 
         QgsAttributeMap changedMap;
         QgsGeometryMap changedGeometries;
 
+        QgsGeometry geom { feat.geometry() };
+
         // Transform geometry
         if ( mapLayer->crs() != requestedCrs )
         {
-          QgsGeometry geom { feat.geometry() };
           try
           {
             geom.transform( QgsCoordinateTransform( requestedCrs, mapLayer->crs(), context.project()->transformContext() ) );
@@ -3407,8 +3412,8 @@ void QgsWfs3CollectionsFeatureHandler::handleRequest( const QgsServerApiContext 
           {
             throw QgsServerApiInternalServerError( u"Geometry could not be transformed to destination CRS"_s );
           }
-          changedGeometries.insert( feature.id(), geom );
         }
+        changedGeometries.insert( feature.id(), geom );
 
         // Process attributes
         try
@@ -4105,8 +4110,8 @@ void QgsWfs3FunctionsHandler::handleRequest( const QgsServerApiContext &context 
   // the CQL2 standard set (as per OGC CQL2 §7.7 conf/functions).
   json functionsArray = json::array();
 
-  const QList<QgsExpressionFunction *> &functions = QgsExpression::Functions();
-  for ( QgsExpressionFunction *func : functions )
+  const QgsExpression::FunctionListSnapshot functions = QgsExpression::getFunctionsSnapshot();
+  for ( const QgsExpression::SharedFunctionPtr &func : *functions )
   {
     const QString name = func->name();
     if ( cql2StandardFunctions.contains( name ) )

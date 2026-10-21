@@ -527,8 +527,12 @@ void QgsAttributesFormModel::setShowAliases( bool show )
 
 void QgsAttributesFormModel::emitDataChangedRecursively( const QModelIndex &parent, const QVector<int> &roles )
 {
-  emit dataChanged( index( 0, 0, parent ), index( rowCount( parent ) - 1, 0, parent ), roles );
-  for ( int i = 0; i < rowCount( parent ); i++ )
+  const int childCount = rowCount( parent );
+  if ( childCount == 0 )
+    return;
+
+  emit dataChanged( index( 0, 0, parent ), index( childCount - 1, 0, parent ), roles );
+  for ( int i = 0; i < childCount; i++ )
   {
     const QModelIndex childIndex = index( i, 0, parent );
     if ( hasChildren( childIndex ) )
@@ -1468,7 +1472,7 @@ QMimeData *QgsAttributesFormLayoutModel::mimeData( const QModelIndexList &indexe
       QDomDocument doc;
 
       QDomElement rootElem = doc.createElement( u"form_layout_mime"_s );
-      QgsAttributeEditorElement *editor = createAttributeEditorWidget( index, nullptr );
+      std::unique_ptr< QgsAttributeEditorElement > editor( createAttributeEditorWidget( index, nullptr ) );
       QDomElement editorElem = editor->toDomElement( doc );
       rootElem.appendChild( editorElem );
 

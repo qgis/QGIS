@@ -404,6 +404,7 @@ void QgsNewHttpConnection::updateServiceSpecificSettings()
   cbxWmsInvertAxisOrientation->setChecked( QgsOwsConnection::settingsInvertAxisOrientation->value( detailsParameters ) );
   cbxIgnoreGetFeatureInfoURI->setChecked( QgsOwsConnection::settingsIgnoreGetFeatureInfoURI->value( detailsParameters ) );
   cbxSmoothPixmapTransform->setChecked( QgsOwsConnection::settingsSmoothPixmapTransform->value( detailsParameters ) );
+  cbxDisableDecompressedSafetyCheckThreshold->setChecked( QgsOwsConnection::settingsDisableDecompressedSafetyCheckThreshold->value( detailsParameters ) );
 
   Qgis::DpiMode dpiMode = QgsOwsConnection::settingsDpiMode->value( detailsParameters );
   cmbDpiMode->setCurrentIndex( cmbDpiMode->findData( static_cast<int>( dpiMode ) ) );
@@ -552,6 +553,9 @@ void QgsNewHttpConnection::accept()
   {
     QgsOwsConnection::settingsIgnoreGetFeatureInfoURI->setValue( cbxIgnoreGetFeatureInfoURI->isChecked(), detailsParameters );
     QgsOwsConnection::settingsFeatureCount->setValue( sbFeatureCount->value(), detailsParameters );
+    // This should really apply to all connection types and not only WMS
+    // TODO: adapt all OWS connection types to use QgsOwsConnection::settingsDisableDecompressedSafetyCheckThreshold
+    QgsOwsConnection::settingsDisableDecompressedSafetyCheckThreshold->setValue( cbxDisableDecompressedSafetyCheckThreshold->isChecked(), detailsParameters );
   }
   if ( mTypes & ConnectionWfs )
   {

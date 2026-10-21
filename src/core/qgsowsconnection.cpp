@@ -85,6 +85,7 @@ const QgsSettingsEntryString *QgsOwsConnection::settingsDefaultImageFormat = new
 const QgsSettingsEntryStringList *QgsOwsConnection::settingsAvailableImageFormats = new QgsSettingsEntryStringList( u"available-image-formats"_s, sTreeOwsConnections, {} );
 const QgsSettingsEntryBool *QgsOwsConnection::settingsIgnoreAxisOrientation = new QgsSettingsEntryBool( u"ignore-axis-orientation"_s, sTreeOwsConnections, false );
 const QgsSettingsEntryBool *QgsOwsConnection::settingsInvertAxisOrientation = new QgsSettingsEntryBool( u"invert-axis-orientation"_s, sTreeOwsConnections, false );
+const QgsSettingsEntryBool *QgsOwsConnection::settingsDisableDecompressedSafetyCheckThreshold = new QgsSettingsEntryBool( u"disable-decompressed-safety-check-threshold"_s, sTreeOwsConnections, false );
 const QgsSettingsEntryString *QgsOwsConnection::settingsUsername = new QgsSettingsEntryString( u"username"_s, sTreeOwsConnections );
 const QgsSettingsEntryString *QgsOwsConnection::settingsPassword = new QgsSettingsEntryString( u"password"_s, sTreeOwsConnections );
 const QgsSettingsEntryString *QgsOwsConnection::settingsAuthCfg = new QgsSettingsEntryString( u"authcfg"_s, sTreeOwsConnections );
@@ -322,6 +323,10 @@ void QgsOwsConnection::addCommonConnectionSettings( QgsDataSourceUri &uri, const
   {
     uri.setParam( u"InvertAxisOrientation"_s, u"1"_s );
   }
+  if ( settings.value( key + u"/disableDecompressedSafetyCheckThreshold"_s, false ).toBool() )
+  {
+    uri.setParam( u"DisableDecompressedSafetyCheckThreshold"_s, u"1"_s );
+  }
 }
 
 void QgsOwsConnection::addCommonConnectionSettings( QgsDataSourceUri &uri, const QString &service, const QString &connectionName )
@@ -333,6 +338,10 @@ void QgsOwsConnection::addCommonConnectionSettings( QgsDataSourceUri &uri, const
   if ( settingsInvertAxisOrientation->value( { service.toLower(), connectionName } ) )
   {
     uri.setParam( u"InvertAxisOrientation"_s, u"1"_s );
+  }
+  if ( settingsDisableDecompressedSafetyCheckThreshold->value( { service.toLower(), connectionName } ) )
+  {
+    uri.setParam( u"DisableDecompressedSafetyCheckThreshold"_s, u"1"_s );
   }
 }
 

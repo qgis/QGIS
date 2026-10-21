@@ -83,7 +83,7 @@ class PyQgsSettingsEntryEnumFlag(QgsSettingsEntryBase):
 
         :raises: IndexError if value is invalid
         """
-        return [e.name for e in self.setting.__enum_class if value == e.value][0]
+        return [e.name for e in self.__enum_class if value == e.value][0]
 
     def key_for_index(self, index: int):
         """
@@ -136,7 +136,7 @@ class PyQgsSettingsEntryEnumFlag(QgsSettingsEntryBase):
         :param defaultValueOverride: argument if valid is used instead of the normal default value.
         :param dynamicKeyPart: argument specifies the dynamic part of the settings key.
         """
-        if self.__metaEnum.isFlag():
+        if issubclass(self.__enum_class, (IntFlag, Flag)):
             return QgsSettings().flagValue(
                 self.key(dynamicKeyPart), defaultValueOverride
             )

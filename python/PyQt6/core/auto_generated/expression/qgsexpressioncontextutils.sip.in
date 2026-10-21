@@ -368,11 +368,6 @@ provider notifications
 :param message: the notification message
 %End
 
-    static void registerContextFunctions();
-%Docstring
-Registers all known core functions provided by
-:py:class:`QgsExpressionContextScope` objects.
-%End
 
     static QgsExpressionContextScope *meshExpressionScope( QgsMesh::ElementType elementType ) /Factory/;
 %Docstring
