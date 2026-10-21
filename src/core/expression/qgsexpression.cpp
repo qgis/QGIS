@@ -555,6 +555,11 @@ QSet<QString> QgsExpression::referencedVariables( const QString &text )
 
 double QgsExpression::evaluateToDouble( const QString &text, const double fallbackValue )
 {
+  return evaluateToDouble( text, fallbackValue, QgsProject::instance() ); // skip-keyword-check
+}
+
+double QgsExpression::evaluateToDouble( const QString &text, const double fallbackValue, QgsProject *project )
+{
   bool ok;
   //first test if text is directly convertible to double
   // use system locale: e.g. in German locale, user is presented with numbers "1,23" instead of "1.23" in C locale
@@ -569,7 +574,7 @@ double QgsExpression::evaluateToDouble( const QString &text, const double fallba
   QgsExpression expr( text );
 
   QgsExpressionContext context;
-  context << QgsExpressionContextUtils::globalScope() << QgsExpressionContextUtils::projectScope( QgsProject::instance() ); // skip-keyword-check
+  context << QgsExpressionContextUtils::globalScope() << QgsExpressionContextUtils::projectScope( project );
 
   QVariant result = expr.evaluate( &context );
   convertedValue = result.toDouble( &ok );

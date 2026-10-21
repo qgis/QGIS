@@ -475,7 +475,7 @@ This function returns variables in each expression between [% and %].
 .. versionadded:: 3.2
 %End
 
-    static double evaluateToDouble( const QString &text, double fallbackValue );
+ static double evaluateToDouble( const QString &text, double fallbackValue ) /Deprecated="Since 4.4. "/;
 %Docstring
 Attempts to evaluate a text string as an expression to a resultant
 double value.
@@ -490,6 +490,28 @@ double value.
 
    this method is inefficient for bulk evaluation of expressions, it is intended
    for one-off evaluations only.
+
+.. deprecated:: 4.4
+%End
+
+    static double evaluateToDouble( const QString &text, double fallbackValue, QgsProject *project );
+%Docstring
+Attempts to evaluate a text string as an expression to a resultant
+double value.
+
+:param text: text to evaluate as expression
+:param fallbackValue: value to return if text can not be evaluated as a
+                      double
+:param project: project to use for evaluation context
+
+:return: evaluated double value, or fallback value
+
+.. note::
+
+   this method is inefficient for bulk evaluation of expressions, it is intended
+   for one-off evaluations only.
+
+.. versionadded:: 4.4
 %End
 
     enum SpatialOperator /BaseType=IntEnum/
