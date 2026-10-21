@@ -231,14 +231,20 @@ bool QgsArcGisVectorTileServiceDataProvider::setupArcgisVectorTileServiceConnect
     const QString sourceUri = mArcgisLayerConfiguration.value( QStringLiteral( "sources" ) ).toMap().value( QStringLiteral( "esri" ) ).toMap().value( QStringLiteral( "url" ) ).toString();
     if ( !sourceUri.isEmpty() )
     {
-      QUrl url( sourceUri );
+      QUrl sourceUrl = url.resolved( sourceUri );
+      if ( sourceUrl.toString().endsWith( '/' ) )
+      {
+        const QString sourceUrlString = sourceUrl.toString();
+        sourceUrl = QUrl( sourceUrlString.left( sourceUrlString.size() - 1 ) );
+      }
+
       // some services don't default to json format, while others do... so let's explicitly request it!
       // (refs https://github.com/qgis/QGIS/issues/4231)
       QUrlQuery query;
       query.addQueryItem( QStringLiteral( "f" ), QStringLiteral( "pjson" ) );
-      url.setQuery( query );
+      sourceUrl.setQuery( query );
 
-      QNetworkRequest request = QNetworkRequest( url );
+      QNetworkRequest request = QNetworkRequest( sourceUrl );
 
       QgsSetRequestInitiatorClass( request, QStringLiteral( "QgsVectorTileLayer" ) )
 
@@ -265,7 +271,8 @@ bool QgsArcGisVectorTileServiceDataProvider::setupArcgisVectorTileServiceConnect
         return false;
       }
 
-      tileServiceUri = sourceUri;
+      sourceUrl.setQuery( QUrlQuery() );
+      tileServiceUri = sourceUrl.toString();
 
       // the resources/styles/root.json configuration is actually our style definition
       mArcgisStyleConfiguration = mArcgisLayerConfiguration;

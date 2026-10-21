@@ -359,6 +359,11 @@ void QgsVectorTileUtils::loadSprites( const QVariantMap &styleDefinition, QgsMap
         const QUrl url( styleUrl );
         return QStringLiteral( "%1://%2%3" ).arg( url.scheme(), url.host(), sprite );
       }
+      else if ( sprite.startsWith( '.' ) )
+      {
+        const QUrl url( styleUrl.endsWith( '/' ) ? styleUrl : ( styleUrl + '/' ) );
+        return url.resolved( sprite ).toString();
+      }
 
       return QStringLiteral( "%1/%2" ).arg( styleUrl, sprite );
     };
