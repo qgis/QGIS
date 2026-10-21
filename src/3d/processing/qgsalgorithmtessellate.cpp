@@ -101,7 +101,7 @@ QgsFeatureList QgsTessellateAlgorithm::processFeature( const QgsFeature &feature
     {
       const QgsGeometry inputGeometry = f.geometry();
       bool tessellationComplete = false;
-#if GEOS_VERSION_NUM >= GEOS_MAKE_VERSION( 3, 11, 0 )
+#if GEOS_VERSION_NUM >= GEOS_COMPUTE_VERSION( 3, 11, 0 )
       if ( !inputGeometry.constGet()->is3D() )
       {
         // on supported GEOS versions we prefer to use GEOS GEOSConstrainedDelaunayTriangulation
