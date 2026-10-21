@@ -2,7 +2,7 @@
   "name": "array_insert",
   "type": "function",
   "groups": ["Arrays"],
-  "description": "Returns an array with the given value added at the given position. Supports positive (0 for the first element) and negative (-1 inserts before the last element) positions. Positions equal or greater than array size will append value, smaller than -size will prepend value.",
+  "description": "Returns an array with the given value added at the given position.",
   "arguments": [{
     "arg": "array",
     "description": "an array"
@@ -16,9 +16,6 @@
   "examples": [{
     "expression": "array_insert(array(1,2,3),1,100)",
     "returns": "[ 1, 100, 2, 3 ]"
-  }, {
-    "expression": "array_insert(array(1,2,3),-1,100)",
-    "returns": "[ 1, 2, 100, 3 ]"
   }],
   "tags": ["array", "added", "position"]
 }

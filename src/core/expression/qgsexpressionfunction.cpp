@@ -7897,9 +7897,7 @@ static QVariant fcnArrayInsert( const QVariantList &values, const QgsExpressionC
 {
   QVariantList list = QgsExpressionUtils::getListValue( values.at( 0 ), parent );
   int position = QgsExpressionUtils::getNativeIntValue( values.at( 1 ), parent );
-  if ( position < 0 )
-    position += list.size();
-
+  // TODO QGIS 5: allow negative positions like fcnArrayRemoveAt
   list.insert( std::clamp( position, 0, static_cast<int>( list.size() ) ), values.at( 2 ) );
   return convertToSameType( list, static_cast<QMetaType::Type>( values.at( 0 ).userType() ) );
 }

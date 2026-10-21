@@ -5300,7 +5300,6 @@ class TestQgsExpression : public QObject
       QStringList insertExpected = array;
       insertExpected.insert( 1, u"one and a half"_s );
       QCOMPARE( QgsExpression( "array_insert(\"strings\", 1, 'one and a half')" ).evaluate( &context ), QVariant( insertExpected ) );
-      QCOMPARE( QgsExpression( "array_insert(\"strings\", -1, 'one and a half')" ).evaluate( &context ), QVariant( insertExpected ) );
 
       QCOMPARE( QgsExpression( "array_insert( array(), 0, 'one')" ).evaluate( &context ), QVariant( QVariantList() << u"one"_s ) );
       QCOMPARE( QgsExpression( "array_insert( array(), -1, 'one')" ).evaluate( &context ), QVariant( QVariantList() << u"one"_s ) );
@@ -5402,7 +5401,6 @@ class TestQgsExpression : public QObject
       QVariantList insertExpected = array;
       insertExpected.insert( 1, 2 );
       QCOMPARE( QgsExpression( "array_insert(\"ints\", 1, 2)" ).evaluate( &context ), QVariant( insertExpected ) );
-      QCOMPARE( QgsExpression( "array_insert(\"ints\", -1, 2)" ).evaluate( &context ), QVariant( insertExpected ) );
 
       QCOMPARE( QgsExpression( "array_insert( array(), 0, 1)" ).evaluate( &context ), QVariant( QVariantList() << 1 ) );
       QCOMPARE( QgsExpression( "array_insert( array(), -1, 1)" ).evaluate( &context ), QVariant( QVariantList() << 1 ) );
