@@ -523,35 +523,38 @@ void QgsVectorLayerProfileResults::renderResultsAsIndividualFeatures( QgsProfile
     while ( it.nextFeature( feature ) )
     {
       context.renderContext().expressionContext().setFeature( feature );
-      QgsSymbol *rendererSymbol = renderer->symbolForFeature( feature, context.renderContext() );
-      if ( !rendererSymbol )
-        continue;
-
-      marker->setColor( rendererSymbol->color() );
-      marker->setOpacity( rendererSymbol->opacity() );
-      line->setColor( rendererSymbol->color() );
-      line->setOpacity( rendererSymbol->opacity() );
-      fill->setColor( rendererSymbol->color() );
-      fill->setOpacity( rendererSymbol->opacity() );
-
-      marker->startRender( context.renderContext() );
-      line->startRender( context.renderContext() );
-      fill->startRender( context.renderContext() );
-
-      const QVector< Feature > profileFeatures = features.value( feature.id() );
-      for ( const Feature &profileFeature : profileFeatures )
+      const QgsSymbolList rendererSymbols = renderer->symbolsForFeature( feature, context.renderContext() );
+      for ( QgsSymbol *rendererSymbol : rendererSymbols )
       {
-        renderResult(
-          profileFeature,
-          rendererSymbol->type() == Qgis::SymbolType::Marker ? qgis::down_cast< QgsMarkerSymbol * >( rendererSymbol ) : marker.get(),
-          rendererSymbol->type() == Qgis::SymbolType::Line ? qgis::down_cast< QgsLineSymbol * >( rendererSymbol ) : line.get(),
-          rendererSymbol->type() == Qgis::SymbolType::Fill ? qgis::down_cast< QgsFillSymbol * >( rendererSymbol ) : fill.get()
-        );
-      }
+        if ( !rendererSymbol )
+          continue;
 
-      marker->stopRender( context.renderContext() );
-      line->stopRender( context.renderContext() );
-      fill->stopRender( context.renderContext() );
+        marker->setColor( rendererSymbol->color() );
+        marker->setOpacity( rendererSymbol->opacity() );
+        line->setColor( rendererSymbol->color() );
+        line->setOpacity( rendererSymbol->opacity() );
+        fill->setColor( rendererSymbol->color() );
+        fill->setOpacity( rendererSymbol->opacity() );
+
+        marker->startRender( context.renderContext() );
+        line->startRender( context.renderContext() );
+        fill->startRender( context.renderContext() );
+
+        const QVector< Feature > profileFeatures = features.value( feature.id() );
+        for ( const Feature &profileFeature : profileFeatures )
+        {
+          renderResult(
+            profileFeature,
+            rendererSymbol->type() == Qgis::SymbolType::Marker ? qgis::down_cast< QgsMarkerSymbol * >( rendererSymbol ) : marker.get(),
+            rendererSymbol->type() == Qgis::SymbolType::Line ? qgis::down_cast< QgsLineSymbol * >( rendererSymbol ) : line.get(),
+            rendererSymbol->type() == Qgis::SymbolType::Fill ? qgis::down_cast< QgsFillSymbol * >( rendererSymbol ) : fill.get()
+          );
+        }
+
+        marker->stopRender( context.renderContext() );
+        line->stopRender( context.renderContext() );
+        fill->stopRender( context.renderContext() );
+      }
     }
 
     renderer->stopRender( context.renderContext() );
