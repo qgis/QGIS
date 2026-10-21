@@ -37,6 +37,7 @@ class QgsVectorLayerEditBuffer;
 class QgsVectorLayerJoinBuffer;
 class QgsVectorLayerJoinInfo;
 class QgsExpressionContext;
+class QgsCoordinateTransformContext;
 
 class QgsVectorLayerFeatureIterator;
 
@@ -140,6 +141,10 @@ class QgsVectorLayerFeatureIterator;
     QgsAttributeList mDeletedAttributeIds;
 
     QgsCoordinateReferenceSystem mCrs;
+    QString mEllipsoid;
+    QgsCoordinateTransformContext mTransformContext;
+    Qgis::DistanceUnit mDistanceUnit;
+    Qgis::AreaUnit mArealUnit;
 
   private:
 #ifdef SIP_RUN

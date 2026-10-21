@@ -69,6 +69,18 @@ QgsVectorLayerFeatureSource::QgsVectorLayerFeatureSource( const QgsVectorLayer *
   mExpressionFieldBuffer = std::make_unique<QgsExpressionFieldBuffer>( *layer->mExpressionFieldBuffer );
   mCrs = layer->crs();
 
+  QgsProject *project = layer->project();
+  // TODO QGIS 5.0 -- remove fallback to QgsProject.instance()
+  if ( !project )
+  {
+    project = QgsProject::instance(); // skip-keyword-check
+  }
+
+  mTransformContext = project->transformContext();
+  mEllipsoid = project->ellipsoid();
+  mDistanceUnit = project->distanceUnits();
+  mArealUnit = project->areaUnits();
+
   mHasEditBuffer = layer->editBuffer();
   if ( mHasEditBuffer )
   {
