@@ -46,6 +46,7 @@ class TestQgsMapToolChamferFillet : public QObject
     void testFillet();
     void testInvalidGeom();
     void testFix67344CurvePolygon();
+    void testFix67344MultiSurface();
 
   private:
     bool compareGeom( const QgsGeometry &geom, const QString &wkt, double tolerance );
@@ -55,6 +56,7 @@ class TestQgsMapToolChamferFillet : public QObject
     QgsMapToolChamferFillet *mChamferFilletTool = nullptr;
     QgsVectorLayer *mLayerBasePolygon = nullptr;
     QgsVectorLayer *mLayerBaseCurvePolygon = nullptr;
+    QgsVectorLayer *mLayerBaseMultiSurface = nullptr;
 };
 
 TestQgsMapToolChamferFillet::TestQgsMapToolChamferFillet() = default;
@@ -127,7 +129,23 @@ void TestQgsMapToolChamferFillet::initTestCase()
   QCOMPARE( mLayerBaseCurvePolygon->featureCount(), 1L );
   QVERIFY( compareGeom( mLayerBaseCurvePolygon->getFeature( 1 ).geometry(), wktCurve1, 0.05 ) );
 
-  mCanvas->setLayers( QList<QgsMapLayer *>() << mLayerBasePolygon << mLayerBaseCurvePolygon );
+  // MultiSurface testing layer
+  mLayerBaseMultiSurface = new QgsVectorLayer( u"MultiSurface?crs=EPSG:3946"_s, u"mLayerBaseMultiSurface"_s, u"memory"_s );
+  QVERIFY( mLayerBaseMultiSurface->isValid() );
+  QgsProject::instance()->addMapLayers( QList<QgsMapLayer *>() << mLayerBaseMultiSurface );
+
+  mLayerBaseMultiSurface->startEditing();
+  const QString wktMultiSurface1 = u"MultiSurface (Polygon ((3 0, 3 1, 4 1, 4 0, 3 0)),CurvePolygon (CompoundCurve ((0 0, 1 0, 1 0.5),CircularString (1 0.5, 0.84 0.84, 0.5 1),(0.5 1, 0 1, 0 0))))"_s;
+  QgsFeature fMultiSurface1;
+  fMultiSurface1.setGeometry( QgsGeometry::fromWkt( wktMultiSurface1 ) );
+
+  QgsFeatureList fMultiSurfaceList;
+  fMultiSurfaceList << fMultiSurface1;
+  mLayerBaseMultiSurface->dataProvider()->addFeatures( fMultiSurfaceList );
+  QCOMPARE( mLayerBaseMultiSurface->featureCount(), 1L );
+  QVERIFY( compareGeom( mLayerBaseMultiSurface->getFeature( 1 ).geometry(), wktMultiSurface1, 0.05 ) );
+
+  mCanvas->setLayers( QList<QgsMapLayer *>() << mLayerBasePolygon << mLayerBaseCurvePolygon << mLayerBaseMultiSurface );
   mCanvas->setCurrentLayer( mLayerBasePolygon );
 
   // create the tool
@@ -302,5 +320,22 @@ void TestQgsMapToolChamferFillet::testFix67344CurvePolygon()
   mLayerBaseCurvePolygon->undoStack()->undo();
 }
 
+
+void TestQgsMapToolChamferFillet::testFix67344MultiSurface()
+{
+  TestQgsMapToolUtils utils( mChamferFilletTool );
+  mCanvas->setCurrentLayer( mLayerBaseMultiSurface );
+
+  // fix https://github.com/qgis/QGIS/issues/67344, "no crash"
+  utils.mouseClick( 0, 1, Qt::LeftButton, Qt::KeyboardModifiers(), true );
+  utils.mouseMove( 0.25, 0.75 );
+  utils.mouseClick( 0.25, 0.75, Qt::LeftButton, Qt::KeyboardModifiers(), true );
+
+  const QString wkt1
+    = "MultiSurface (Polygon ((3 0, 3 1, 4 1, 4 0, 3 0)),CurvePolygon (CompoundCurve ((0 0, 1 0, 1 0.5),CircularString (1 0.5, 0.84 0.84, 0.5 1),(0.5 1, 0.5 1),(0.5 1, 0 0.5),(0 0.5, 0 0))))";
+  QVERIFY( compareGeom( mLayerBaseMultiSurface->getFeature( 1 ).geometry(), wkt1, 0.05 ) );
+
+  mLayerBaseMultiSurface->undoStack()->undo();
+}
 QGSTEST_MAIN( TestQgsMapToolChamferFillet )
 #include "testqgsmaptoolchamferfillet.moc"
