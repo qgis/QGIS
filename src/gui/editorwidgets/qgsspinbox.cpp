@@ -19,6 +19,7 @@
 #include "qgsexpression.h"
 #include "qgsfilterlineedit.h"
 #include "qgslogger.h"
+#include "qgsproject.h"
 
 #include <QLineEdit>
 #include <QMouseEvent>
@@ -231,7 +232,7 @@ int QgsSpinBox::valueFromText( const QString &text ) const
     return mShowClearButton ? clearValue() : value();
   }
 
-  return std::round( QgsExpression::evaluateToDouble( trimmedText, value() ) );
+  return std::round( QgsExpression::evaluateToDouble( trimmedText, value(), QgsProject::instance() ) );
 }
 
 QValidator::State QgsSpinBox::validate( QString &input, int &pos ) const

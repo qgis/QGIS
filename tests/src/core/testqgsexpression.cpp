@@ -5807,11 +5807,11 @@ class TestQgsExpression : public QObject
 
     void evaluateToDouble()
     {
-      QCOMPARE( QgsExpression::evaluateToDouble( QString( "5" ), 0.0 ), 5.0 );
-      QCOMPARE( QgsExpression::evaluateToDouble( QString( "5+6" ), 0.0 ), 11.0 );
-      QCOMPARE( QgsExpression::evaluateToDouble( QString( "5*" ), 7.0 ), 7.0 );
-      QCOMPARE( QgsExpression::evaluateToDouble( QString( "a" ), 9.0 ), 9.0 );
-      QCOMPARE( QgsExpression::evaluateToDouble( QString(), 9.0 ), 9.0 );
+      QCOMPARE( QgsExpression::evaluateToDouble( QString( "5" ), 0.0, QgsProject::instance() ), 5.0 );
+      QCOMPARE( QgsExpression::evaluateToDouble( QString( "5+6" ), 0.0, QgsProject::instance() ), 11.0 );
+      QCOMPARE( QgsExpression::evaluateToDouble( QString( "5*" ), 7.0, QgsProject::instance() ), 7.0 );
+      QCOMPARE( QgsExpression::evaluateToDouble( QString( "a" ), 9.0, QgsProject::instance() ), 9.0 );
+      QCOMPARE( QgsExpression::evaluateToDouble( QString(), 9.0, QgsProject::instance() ), 9.0 );
     }
 
     void eval_isField()
