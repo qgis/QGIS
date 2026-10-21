@@ -39,7 +39,7 @@
 using namespace Qt::StringLiterals;
 
 #ifdef ENABLE_MODELTEST
-#include "modeltest.h"
+#include <QAbstractItemModelTester>
 #endif
 
 #include "qgslayertreeviewindicator.h"
@@ -515,7 +515,7 @@ void QgsLayerTreeView::setModel( QgsLayerTreeModel *treeModel, QgsLayerTreeProxy
   connect( mProxyModel, &QAbstractItemModel::rowsRemoved, this, &QgsLayerTreeView::modelRowsRemoved );
 
 #ifdef ENABLE_MODELTEST
-  new ModelTest( mProxyModel, this );
+  new QAbstractItemModelTester( mProxyModel, QAbstractItemModelTester::FailureReportingMode::Fatal, this );
 #endif
 
   QTreeView::setModel( mProxyModel );

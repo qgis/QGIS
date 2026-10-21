@@ -50,8 +50,102 @@ static void _parseAndEvalExpr( int arg )
   for ( int i = 0; i < 100; ++i )
   {
     QgsExpression exp( u"1 + 2 * 2"_s );
-    exp.evaluate();
+    Q_ASSERT( exp.evaluate().toInt() == 5 );
   }
+}
+
+static void _parseAndEvalExprWithFunction( int arg )
+{
+  Q_UNUSED( arg );
+  for ( int i = 0; i < 100; ++i )
+  {
+    QgsExpression exp( u"lower(upper(left('abc', 2)))"_s );
+    Q_ASSERT( exp.evaluate().toString() == "ab" );
+  }
+}
+
+class GetTestValueFunction : public QgsExpressionFunction
+{
+  public:
+    GetTestValueFunction()
+      : QgsExpressionFunction( u"get_test_value"_s, 1, u"test"_s )
+    {}
+
+    QVariant func( const QVariantList &args, const QgsExpressionContext *, QgsExpression *, const QgsExpressionNodeFunction * ) override { return args.at( 0 ); }
+};
+
+class GetTestValueFunction2 : public QgsExpressionFunction
+{
+  public:
+    GetTestValueFunction2( int value, const QString &name )
+      : QgsExpressionFunction( name, 0, u"test"_s )
+      , mValue( value )
+    {}
+
+    QVariant func( const QVariantList &, const QgsExpressionContext *, QgsExpression *, const QgsExpressionNodeFunction * ) override { return mValue; }
+
+  private:
+    int mValue = 0;
+};
+
+static void _parseAndEvalExprWithCustomFunction( int arg )
+{
+  for ( int i = 0; i < 100; ++i )
+  {
+    QgsExpression exp( u"get_test_value(%1)"_s.arg( arg ) );
+    const int result = exp.evaluate().toInt();
+    Q_ASSERT_X( result == arg, "", u"Expected %1 got %2"_s.arg( arg ).arg( result ).toLocal8Bit().constData() );
+  }
+}
+
+static void _parseAndEvalExprWithCustomFunctionRegister( int arg )
+{
+  const QString functionName = u"get_test_value%1"_s.arg( arg );
+  QgsExpression::registerFunction( new GetTestValueFunction2( arg, functionName ), true );
+
+  for ( int i = 0; i < 100; ++i )
+  {
+    // using builtin functions only
+    QgsExpression exp( u"lower(upper(left('abc', 2)))"_s );
+    Q_ASSERT( exp.evaluate().toString() == "ab" );
+
+    // using the custom function registered once on the main thread in advance
+    QgsExpression exp2( u"get_test_value(%1)"_s.arg( arg ) );
+    const int result = exp2.evaluate().toInt();
+    Q_ASSERT_X( result == arg, "", u"Expected %1 got %2"_s.arg( arg ).arg( result ).toLocal8Bit().constData() );
+
+    QgsExpression expCustom( u"%1()"_s.arg( functionName ) );
+    const int result2 = expCustom.evaluate().toInt();
+    Q_ASSERT_X( result2 == arg, "", u"Expected %1 got %2"_s.arg( arg ).arg( result2 ).toLocal8Bit().constData() );
+  }
+
+  QgsExpression::unregisterFunction( functionName );
+}
+
+static void _parseAndEvalExprWithCustomFunctionRegisterNoOwnership( int arg )
+{
+  const QString functionName = u"get_test_value%1"_s.arg( arg );
+  auto newFunction = new GetTestValueFunction2( arg, functionName );
+  QgsExpression::registerFunction( newFunction, false );
+
+  for ( int i = 0; i < 100; ++i )
+  {
+    // using builtin functions only
+    QgsExpression exp( u"lower(upper(left('abc', 2)))"_s );
+    Q_ASSERT( exp.evaluate().toString() == "ab" );
+
+    // using the custom function registered once on the main thread in advance
+    QgsExpression exp2( u"get_test_value(%1)"_s.arg( arg ) );
+    int result = exp2.evaluate().toInt();
+    Q_ASSERT_X( result == arg, "", u"Expected %1 got %2"_s.arg( arg ).arg( result ).toLocal8Bit().constData() );
+
+    QgsExpression expCustom( u"%1()"_s.arg( functionName ) );
+    result = expCustom.evaluate().toInt();
+    Q_ASSERT_X( result == arg, "", u"Expected %1 got %2"_s.arg( arg ).arg( result ).toLocal8Bit().constData() );
+  }
+
+  QgsExpression::unregisterFunction( functionName );
+  delete newFunction;
 }
 
 class RunLambdaInThread : public QThread
@@ -943,6 +1037,7 @@ class TestQgsExpression : public QObject
       QTest::newRow( "make_time(12,9,8) = make_time(12,9,9)" ) << "make_time(12,9,8) = make_time(12,9,9)" << false << QVariant( 0 );
       QTest::newRow( "make_time(12,9,8) != make_time(12,9,9)" ) << "make_time(12,9,8) != make_time(12,9,9)" << false << QVariant( 1 );
       QTest::newRow( "make_time(12,9,8) != make_time(12,9,8)" ) << "make_time(12,9,8) != make_time(12,9,8)" << false << QVariant( 0 );
+
       QTest::newRow( "make_datetime(2012,3,4,12,9,8) < make_datetime(2012,3,4,12,9,9)" ) << "make_datetime(2012,3,4,12,9,8) < make_datetime(2012,3,4,12,9,9)" << false << QVariant( 1 );
       QTest::newRow( "make_datetime(2012,3,4,12,9,8) > make_datetime(2012,3,4,12,9,9)" ) << "make_datetime(2012,3,4,12,9,8) > make_datetime(2012,3,4,12,9,9)" << false << QVariant( 0 );
       QTest::newRow( "make_datetime(2012,3,4,12,9,9) > make_datetime(2012,3,4,12,9,8)" ) << "make_datetime(2012,3,4,12,9,9) > make_datetime(2012,3,4,12,9,8)" << false << QVariant( 1 );
@@ -951,6 +1046,34 @@ class TestQgsExpression : public QObject
       QTest::newRow( "make_datetime(2012,3,4,12,9,8) = make_datetime(2012,3,4,12,9,9)" ) << "make_datetime(2012,3,4,12,9,8) = make_datetime(2012,3,4,12,9,9)" << false << QVariant( 0 );
       QTest::newRow( "make_datetime(2012,3,4,12,9,8) != make_datetime(2012,3,4,12,9,9)" ) << "make_datetime(2012,3,4,12,9,8) != make_datetime(2012,3,4,12,9,9)" << false << QVariant( 1 );
       QTest::newRow( "make_datetime(2012,3,4,12,9,8) != make_datetime(2012,3,4,12,9,8)" ) << "make_datetime(2012,3,4,12,9,8) != make_datetime(2012,3,4,12,9,8)" << false << QVariant( 0 );
+
+      // date / time / datetime comparisons with implicit string to date/time/datetime conversion
+      QTest::newRow( "make_datetime(2012,3,4,12,9,8) = '2012-03-04T12:09:08'" ) << "make_datetime(2012,3,4,12,9,8) = '2012-03-04T12:09:08'" << false << QVariant( 1 );
+      QTest::newRow( "make_datetime(2012,3,4,12,9,8) = '2012-03-05T12:09:08'" ) << "make_datetime(2012,3,4,12,9,8) = '2012-03-05T12:09:08'" << false << QVariant( 0 );
+      QTest::newRow( "make_datetime(2012,3,4,12,9,8) = 'not a date'" ) << "make_datetime(2012,3,4,12,9,8) = 'not a date'" << true << QVariant();
+      QTest::newRow( "'2012-03-04T12:09:08' = make_datetime(2012,3,4,12,9,8)" ) << "'2012-03-04T12:09:08' = make_datetime(2012,3,4,12,9,8)" << false << QVariant( 1 );
+      QTest::newRow( "'2012-03-05T12:09:08' = make_datetime(2012,3,4,12,9,8)" ) << "'2012-03-05T12:09:08' = make_datetime(2012,3,4,12,9,8)" << false << QVariant( 0 );
+      QTest::newRow( "'not a date' = make_datetime(2012,3,4,12,9,8)" ) << "'not a date' = make_datetime(2012,3,4,12,9,8)" << true << QVariant();
+
+      // string dates in ISO format without T to be tolerant
+      QTest::newRow( "make_datetime(2012,3,4,12,9,8) = '2012-03-04 12:09:08'" ) << "make_datetime(2012,3,4,12,9,8) = '2012-03-04 12:09:08'" << false << QVariant( 1 );
+      QTest::newRow( "make_datetime(2012,3,4,12,9,8) = '2012-03-05 12:09:08'" ) << "make_datetime(2012,3,4,12,9,8) = '2012-03-05 12:09:08'" << false << QVariant( 0 );
+      QTest::newRow( "'2012-03-04 12:09:08' = make_datetime(2012,3,4,12,9,8)" ) << "'2012-03-04 12:09:08' = make_datetime(2012,3,4,12,9,8)" << false << QVariant( 1 );
+      QTest::newRow( "'2012-03-05 12:09:08' = make_datetime(2012,3,4,12,9,8)" ) << "'2012-03-05 12:09:08' = make_datetime(2012,3,4,12,9,8)" << false << QVariant( 0 );
+
+      QTest::newRow( "make_date(2012,3,4) = '2012-03-04'" ) << "make_date(2012,3,4) = '2012-03-04'" << false << QVariant( 1 );
+      QTest::newRow( "make_date(2012,3,4) = '2012-03-05'" ) << "make_date(2012,3,4) = '2012-03-05'" << false << QVariant( 0 );
+      QTest::newRow( "make_date(2012,3,4) = 'not a date'" ) << "make_date(2012,3,4) = 'not a date'" << true << QVariant();
+      QTest::newRow( "'2012-03-04' = make_date(2012,3,4)" ) << "'2012-03-04' = make_date(2012,3,4)" << false << QVariant( 1 );
+      QTest::newRow( "'2012-03-05' = make_date(2012,3,4)" ) << "'2012-03-05' = make_date(2012,3,4)" << false << QVariant( 0 );
+      QTest::newRow( "'not a date' = make_date(2012,3,4)" ) << "'not a date' = make_date(2012,3,4)" << true << QVariant();
+
+      QTest::newRow( "make_time(12,9,8) = '12:09:08'" ) << "make_time(12,9,8) = '12:09:08'" << false << QVariant( 1 );
+      QTest::newRow( "make_time(12,9,8) = '12:09:09'" ) << "make_time(12,9,8) = '12:09:09'" << false << QVariant( 0 );
+      QTest::newRow( "make_time(12,9,8) = 'not a time'" ) << "make_time(12,9,8) = 'not a time'" << true << QVariant();
+      QTest::newRow( "'12:09:08' = make_time(12,9,8)" ) << "'12:09:08' = make_time(12,9,8)" << false << QVariant( 1 );
+      QTest::newRow( "'12:09:09' = make_time(12,9,8)" ) << "'12:09:09' = make_time(12,9,8)" << false << QVariant( 0 );
+      QTest::newRow( "'not a time' = make_time(12,9,8)" ) << "'not a time' = make_time(12,9,8)" << true << QVariant();
 
       // is, is not
       QTest::newRow( "is null,null" ) << "null is null" << false << QVariant( 1 );
@@ -1552,12 +1675,21 @@ class TestQgsExpression : public QObject
       QTest::newRow( "buffer_by_m point" ) << "geom_to_wkt(buffer_by_m(geometry:=geom_from_wkt('POINT(1 2)'),segments:=10))" << true << QVariant();
       QTest::newRow( "buffer_by_m line" ) << "geom_to_wkt(buffer_by_m(geometry:=geom_from_wkt('LineString(0 0, 10 0)'),segments:=3))" << false << QVariant( u"GeometryCollection EMPTY"_s );
 #if GEOS_VERSION_MAJOR > 3 || ( GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR >= 15 )
+#if GEOS_VERSION_MAJOR > 3 || ( GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR > 15 ) || ( GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR == 15 && GEOS_VERSION_PATCH >= 1 )
+      QTest::newRow( "buffer_by_m linem" )
+        << "geom_to_wkt(buffer_by_m(geometry:=geom_from_wkt('LineStringM(0 0 1, 10 0 2)'),segments:=3))"
+        << false
+        << QVariant(
+             u"MultiPolygon M (((0 -0.5 1, -0.25 -0.4330127 1, -0.4330127 -0.25 1, -0.5 0 1, -0.4330127 0.25 1, -0.25 0.4330127 1, 0 0.5 1, 10 1 2, 10.5 0.8660254 2, 10.8660254 0.5 2, 11 0 2, 10.8660254 -0.5 2, 10.5 -0.8660254 2, 10 -1 2, 0 -0.5 1)))"_s
+           );
+#else
       QTest::newRow( "buffer_by_m linem" )
         << "geom_to_wkt(buffer_by_m(geometry:=geom_from_wkt('LineStringM(0 0 1, 10 0 2)'),segments:=3))"
         << false
         << QVariant(
              u"MultiPolygon (((0 -0.5, -0.25 -0.4330127, -0.4330127 -0.25, -0.5 0, -0.4330127 0.25, -0.25 0.4330127, 0 0.5, 10 1, 10.5 0.8660254, 10.8660254 0.5, 11 0, 10.8660254 -0.5, 10.5 -0.8660254, 10 -1, 0 -0.5)))"_s
            );
+#endif
 #else
       QTest::newRow( "buffer_by_m linem" )
         << "geom_to_wkt(buffer_by_m(geometry:=geom_from_wkt('LineStringM(0 0 1, 10 0 2)'),segments:=3))"
@@ -4233,12 +4365,12 @@ class TestQgsExpression : public QObject
       QgsExpression exp( u"current_value( 'FIELD_NAME' ) = 'A_VALUE' AND intersects(buffer($geometry, 10), @current_geometry)"_s );
       QList<const QgsExpressionNodeFunction *> functionNodes( exp.findNodes<QgsExpressionNodeFunction>() );
       QCOMPARE( functionNodes.size(), 5 );
-      QgsExpressionFunction *fd;
       QSet<QString> actualFunctions;
+
       for ( const QgsExpressionNodeFunction *f : std::as_const( functionNodes ) )
       {
         QCOMPARE( f->nodeType(), QgsExpressionNode::NodeType::ntFunction );
-        fd = QgsExpression::QgsExpression::Functions()[f->fnIndex()];
+        const QgsExpression::SharedFunctionPtr fd = f->function();
         actualFunctions << fd->name();
       }
       QCOMPARE( actualFunctions, expectedFunctions );
@@ -4262,7 +4394,8 @@ class TestQgsExpression : public QObject
       for ( const QgsExpressionNodeFunction *f : std::as_const( functionNodes ) )
       {
         QCOMPARE( f->nodeType(), QgsExpressionNode::NodeType::ntFunction );
-        fd = QgsExpression::QgsExpression::Functions()[f->fnIndex()];
+
+        const QgsExpression::SharedFunctionPtr fd = f->function();
         actualFunctions << fd->name();
       }
       expectedFunctions.clear();
@@ -5601,12 +5734,75 @@ class TestQgsExpression : public QObject
 
     void reentrant()
     {
-      // this simply should not crash
-
-      QList<int> lst;
-      for ( int i = 0; i < 10; ++i )
-        lst << i;
+      // tests that a simple expression can be evaluated across many threads simultaneously without issue
+      std::vector<int> lst( 100 );
+      std::iota( std::begin( lst ), std::end( lst ), 0 );
       QtConcurrent::blockingMap( lst, _parseAndEvalExpr );
+    }
+
+    void testReentrantBuiltInFunctions()
+    {
+      // tests that an expression using built-in functions can be evaluated across many threads simultaneously without issue
+      std::vector<int> lst( 100 );
+      std::iota( std::begin( lst ), std::end( lst ), 0 );
+
+      QtConcurrent::blockingMap( lst, _parseAndEvalExprWithFunction );
+    }
+
+    void testReentrantCustomFunctions()
+    {
+      // tests that an expression using a custom function, registered on the main thread, can be evaluated across many threads simultaneously without issue
+
+      std::vector<int> lst( 100 );
+      std::iota( std::begin( lst ), std::end( lst ), 0 );
+
+      QVERIFY( QgsExpression::registerFunction( new GetTestValueFunction(), true ) );
+      QtConcurrent::blockingMap( lst, _parseAndEvalExprWithCustomFunction );
+      QgsExpression::unregisterFunction( u"get_test_value"_s );
+    }
+
+    void testReentrantCustomFunctionRegister()
+    {
+      // tests that an expression using custom functions, registered WHILE other threads are evaluating expressions, can be evaluated across many threads simultaneously without issue
+      std::vector<int> lst( 100 );
+      std::iota( std::begin( lst ), std::end( lst ), 0 );
+
+      QVERIFY( QgsExpression::registerFunction( new GetTestValueFunction(), true ) );
+      QtConcurrent::blockingMap( lst, _parseAndEvalExprWithCustomFunctionRegister );
+      QgsExpression::unregisterFunction( u"get_test_value"_s );
+    }
+
+    void testReentrantCustomFunctionRegisterNoTransfer()
+    {
+      // tests that an expression using custom functions, registered WHILE other threads are evaluating expressions, can be evaluated across many threads simultaneously without issue
+      // this variant tests functions registered without transferring ownership
+      std::vector<int> lst( 100 );
+      std::iota( std::begin( lst ), std::end( lst ), 0 );
+
+      auto function = new GetTestValueFunction();
+      QVERIFY( QgsExpression::registerFunction( function, false ) );
+      QtConcurrent::blockingMap( lst, _parseAndEvalExprWithCustomFunctionRegisterNoOwnership );
+      QgsExpression::unregisterFunction( u"get_test_value"_s );
+      delete function;
+    }
+
+    void testReplaceCustomFunction()
+    {
+      const QString functionName = u"get_test_value"_s;
+      auto newFunction = new GetTestValueFunction2( 13, functionName );
+      QVERIFY( QgsExpression::registerFunction( newFunction, true ) );
+
+      QgsExpression exp( u"get_test_value()"_s );
+      int result = exp.evaluate().toInt();
+      QCOMPARE( result, 13 );
+
+      // unregister function while expression still exists
+      QgsExpression exp2( u"get_test_value()"_s );
+      QgsExpression::unregisterFunction( u"get_test_value"_s );
+
+      // should still be ok -- the expression will have held a reference to the function
+      result = exp2.evaluate().toInt();
+      QCOMPARE( result, 13 );
     }
 
     void evaluateToDouble()

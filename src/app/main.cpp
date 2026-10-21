@@ -1887,6 +1887,10 @@ int main( int argc, char *argv[] )
       case QgsDxfExport::ExportResult::EmptyExtentError:
         std::cerr << "dxf output failed, the extent could not be determined" << std::endl;
         break;
+
+      case QgsDxfExport::ExportResult::InvalidEncodingError:
+        std::cerr << "dxf output failed, the encoding \"" << dxfEncoding.toStdString() << "\" is not supported" << std::endl;
+        break;
     }
 
     delete qgis;

@@ -157,6 +157,7 @@ set(QGIS_APP_SRCS
   qgsrelationmanagerdialog.cpp
   qgsrelationadddlg.cpp
   qgsrelationaddpolymorphicdialog.cpp
+  qgssaveprojecttemplatedialog.cpp
   qgsselectbyformdialog.cpp
   qgsstatisticalsummarydockwidget.cpp
   qgstextannotationdialog.cpp
@@ -463,10 +464,6 @@ elseif(MINGW)
     qgisapp.cpp
     PROPERTIES COMPILE_FLAGS "-Wa,-mbig-obj"
   )
-endif()
-
-if(ENABLE_MODELTEST)
-  include_directories(../../tests/qt_modeltest)
 endif()
 
 if (ANDROID)

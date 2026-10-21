@@ -150,6 +150,10 @@ const QgsSettingsEntryBool *QgsApplication::settingsLocaleShowGroupSeparator = n
 
 const QgsSettingsEntryStringList *QgsApplication::settingsSearchPathsForSVG = new QgsSettingsEntryStringList( u"searchPathsForSVG"_s, QgsSettingsTree::sTreeSvg, QStringList() );
 
+// The default template directory depends on the active profile, which is not known now, so we use an empty default,
+// and it will be handled later on by the getter QgsApplication::projectTemplatePaths.
+const QgsSettingsEntryStringList *QgsApplication::settingsProjectTemplatePaths = new QgsSettingsEntryStringList( u"projectTemplatePaths"_s, QgsSettingsTree::sTreeProject, QStringList() );
+
 const QgsSettingsEntryString *QgsApplication::settingsNullRepresentation = new QgsSettingsEntryString( u"null-value"_s, QgsSettingsTree::sTreeQgis, u"NULL"_s );
 
 const QgsSettingsEntryInteger *QgsApplication::settingsConnectionPoolMaximumConcurrentConnections
@@ -558,6 +562,12 @@ void QgsApplication::init( QString profileFolder )
   // this should be read from QgsSettings but we don't know where they are at this point
   // so we read actual value in main.cpp
   ABISYM( sMaxThreads ) = -1;
+
+  // initialize built in expression functions upfront. While the expression engine API is setup
+  // in such a way that these will be lazy loaded on first use, manually pre-loading them on the main
+  // thread while nothing else is happening avoids ANY potential thread-safety issues with the lazy loading.
+  // This is cheap to call anyway, so there's no harm in being overly vigilant...
+  ( void ) QgsExpression::getFunctionsSnapshot();
 
   {
     QgsScopedRuntimeProfile profile( tr( "Load color schemes" ) );
@@ -1334,6 +1344,31 @@ QString QgsApplication::srsDatabaseFilePath()
   {
     return pkgDataPath() + u"/resources/srs.db"_s;
   }
+}
+
+void QgsApplication::setProjectTemplatePaths( const QStringList &projectTemplatePaths )
+{
+  settingsProjectTemplatePaths->setValue( projectTemplatePaths );
+}
+
+QStringList QgsApplication::projectTemplatePaths()
+{
+  QStringList configuredPaths = settingsProjectTemplatePaths->value();
+
+  // Normalize the paths and avoid duplicates
+  QStringList paths;
+  for ( const QString &configuredPath : std::as_const( configuredPaths ) )
+  {
+    const QString path = QDir::cleanPath( QDir( configuredPath ).absolutePath() );
+    if ( !paths.contains( path ) )
+      paths.append( path );
+  }
+  return paths;
+}
+
+QStringList QgsApplication::defaultProjectTemplatePaths()
+{
+  return { qgisSettingsDirPath() + u"/project_templates"_s };
 }
 
 void QgsApplication::setSvgPaths( const QStringList &svgPaths )

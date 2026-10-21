@@ -1,7 +1,6 @@
 import QtQuick
 import QtQuick.Layouts
 import QtQuick.Controls
-import QtQuick.Effects
 import QtQuick.Controls.Material
 
 import org.qgis.app
@@ -309,6 +308,41 @@ Item {
               visible: tabBar.currentIndex === 1
 
               model: templateProjectsModel
+
+              // Group the templates by directory: a header is shown each time the
+              // section changes between two consecutive projects.
+              section.property: "Section"
+              section.criteria: ViewSection.FullString
+              section.delegate: Item {
+                id: sectionHeader
+                required property string section
+
+                width: templatesListView.width - 12
+                height: section === "" ? 24 : sectionTitle.implicitHeight + 20
+
+                Text {
+                  id: sectionTitle
+                  visible: sectionHeader.section !== ""
+                  anchors.left: parent.left
+                  anchors.right: parent.right
+                  anchors.top: parent.top
+                  anchors.topMargin: 8
+                  anchors.leftMargin: 4
+                  text: sectionHeader.section
+                  font.pointSize: smallFontSize
+                  font.bold: true
+                  color: "#ffffff"
+                  elide: Text.ElideMiddle
+                }
+
+                Rectangle {
+                  width: parent.width
+                  height: 1
+                  color: "#566775"
+                  anchors.bottom: parent.bottom
+                  anchors.bottomMargin: sectionHeader.section === "" ? 12 : 6
+                }
+              }
 
               delegate: ProjectCard {
                 width: templatesListView.width - 12

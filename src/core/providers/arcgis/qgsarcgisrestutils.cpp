@@ -720,6 +720,17 @@ std::unique_ptr<QgsAbstractVectorLayerLabeling > QgsArcGisRestUtils::convertLabe
       settings->placement = Qgis::LabelPlacement::Horizontal;
     }
 
+    const bool repeatLabel = labeling.value( u"repeatLabel"_s ).toBool();
+    if ( repeatLabel && settings->placement == Qgis::LabelPlacement::Line )
+    {
+      const double repeatLabelDistance = labeling.value( u"repeatLabelDistance"_s ).toDouble();
+      if ( repeatLabelDistance > 0.0 )
+      {
+        settings->repeatDistance = repeatLabelDistance;
+        settings->repeatDistanceUnit = Qgis::RenderUnit::Points;
+      }
+    }
+
     const double minScale = labeling.value( u"minScale"_s ).toDouble();
     const double maxScale = labeling.value( u"maxScale"_s ).toDouble();
 

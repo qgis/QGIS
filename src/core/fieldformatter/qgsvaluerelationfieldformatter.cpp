@@ -56,7 +56,13 @@ QString QgsValueRelationFieldFormatter::representValue( QgsVectorLayer *layer, i
   }
   else
   {
-    vrCache = QgsValueRelationFieldFormatter::createCache( config );
+    QgsProject *project = layer->project(); // skip-keyword-check
+    // TODO QGIS 5.0 -- remove the fallback to QgsProject.instance() return empty QString instead
+    if ( !project )
+    {
+      project = QgsProject::instance(); // skip-keyword-check
+    }
+    vrCache = QgsValueRelationFieldFormatter::createCache( config, project );
   }
 
   if ( config.value( u"AllowMulti"_s ).toBool() )
@@ -113,14 +119,29 @@ QVariant QgsValueRelationFieldFormatter::createCache( QgsVectorLayer *layer, int
 {
   Q_UNUSED( layer )
   Q_UNUSED( fieldIndex )
-  return QVariant::fromValue<ValueRelationCache>( createCache( config ) );
+  QgsProject *project = layer->project();
+
+  // TODO QGIS 5.0 -- remove the fallback to QgsProject.instance() when no project is associated, return empty QVariant instead
+  if ( !project )
+  {
+    project = QgsProject::instance(); // skip-keyword-check
+  }
+
+  return QVariant::fromValue<ValueRelationCache>( createCache( config, project ) );
 }
 
 QgsValueRelationFieldFormatter::ValueRelationCache QgsValueRelationFieldFormatter::createCache( const QVariantMap &config, const QgsFeature &formFeature, const QgsFeature &parentFormFeature )
 {
+  return createCache( config, QgsProject::instance(), formFeature, parentFormFeature ); // skip-keyword-check
+}
+
+QgsValueRelationFieldFormatter::ValueRelationCache QgsValueRelationFieldFormatter::createCache(
+  const QVariantMap &config, const QgsProject *project, const QgsFeature &formFeature, const QgsFeature &parentFormFeature
+)
+{
   ValueRelationCache cache;
 
-  const QgsVectorLayer *layer = resolveLayer( config, QgsProject::instance() ); // skip-keyword-check
+  const QgsVectorLayer *layer = resolveLayer( config, project );
 
   if ( !layer )
     return cache;
@@ -359,9 +380,10 @@ QSet<QString> QgsValueRelationFieldFormatter::expressionParentFormAttributes( co
   const QSet<QString> formFunctions( qgis::listToSet( scope->functionNames() ).intersect( exp.referencedFunctions() ) );
   const QList<const QgsExpressionNodeFunction *> expFunctions( exp.findNodes<QgsExpressionNodeFunction>() );
   QgsExpressionContext context;
+
   for ( const auto &f : expFunctions )
   {
-    QgsExpressionFunction *fd = QgsExpression::QgsExpression::Functions()[f->fnIndex()];
+    const QgsExpression::SharedFunctionPtr fd = f->function();
     if ( formFunctions.contains( fd->name() ) )
     {
       const QList<QgsExpressionNode *> cExpressionNodes { f->args()->list() };
@@ -383,9 +405,10 @@ QSet<QString> QgsValueRelationFieldFormatter::expressionFormAttributes( const QS
   const QSet<QString> formFunctions( qgis::listToSet( scope->functionNames() ).intersect( exp.referencedFunctions() ) );
   const QList<const QgsExpressionNodeFunction *> expFunctions( exp.findNodes<QgsExpressionNodeFunction>() );
   QgsExpressionContext context;
+
   for ( const auto &f : expFunctions )
   {
-    QgsExpressionFunction *fd = QgsExpression::QgsExpression::Functions()[f->fnIndex()];
+    const QgsExpression::SharedFunctionPtr fd = f->function();
     if ( formFunctions.contains( fd->name() ) )
     {
       const QList<QgsExpressionNode *> cExpressionNodes { f->args()->list() };
