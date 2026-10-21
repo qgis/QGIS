@@ -2145,17 +2145,24 @@ bool QgsProject::readProjectFile( const QString &filename, Qgis::ProjectReadFlag
   {
     projectFile.seek( 0 );
     QTextStream textStream( &projectFile );
-    QString projectString = textStream.readAll();
-    projectFile.close();
-
-    for ( int i = 0; i < 32; i++ )
+    QString projectString;
+    while ( true )
     {
-      if ( i == 9 || i == 10 || i == 13 )
+      QString part = textStream.read( 65536 );
+      if ( part.isEmpty() )
+        break;
+
+      for ( int i = 0; i < 32; i++ )
       {
-        continue;
+        if ( i == 9 || i == 10 || i == 13 )
+        {
+          continue;
+        }
+        part.replace( QChar( i ), u"%1%2%1"_s.arg( FONTMARKER_CHR_FIX, QString::number( i ) ) );
       }
-      projectString.replace( QChar( i ), u"%1%2%1"_s.arg( FONTMARKER_CHR_FIX, QString::number( i ) ) );
+      projectString.append( part );
     }
+    projectFile.close();
 
     int line, column;
     QString errorMsg;
