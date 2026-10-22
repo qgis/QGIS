@@ -5811,11 +5811,11 @@ class TestQgsExpression : public QObject
       QgsExpressionContext context;
       context << QgsExpressionContextUtils::globalScope() << QgsExpressionContextUtils::projectScope( QgsProject::instance() );
 
-      QCOMPARE( QgsExpression::evaluateToDouble( QString( "5" ), 0.0, context ), 5.0 );
-      QCOMPARE( QgsExpression::evaluateToDouble( QString( "5+6" ), 0.0, context ), 11.0 );
-      QCOMPARE( QgsExpression::evaluateToDouble( QString( "5*" ), 7.0, context ), 7.0 );
-      QCOMPARE( QgsExpression::evaluateToDouble( QString( "a" ), 9.0, context ), 9.0 );
-      QCOMPARE( QgsExpression::evaluateToDouble( QString(), 9.0, context ), 9.0 );
+      QCOMPARE( QgsExpression::evaluateToDouble( QString( "5" ), 0.0, &context ), 5.0 );
+      QCOMPARE( QgsExpression::evaluateToDouble( QString( "5+6" ), 0.0, &context ), 11.0 );
+      QCOMPARE( QgsExpression::evaluateToDouble( QString( "5*" ), 7.0, &context ), 7.0 );
+      QCOMPARE( QgsExpression::evaluateToDouble( QString( "a" ), 9.0, &context ), 9.0 );
+      QCOMPARE( QgsExpression::evaluateToDouble( QString(), 9.0, &context ), 9.0 );
     }
 
     void eval_isField()
