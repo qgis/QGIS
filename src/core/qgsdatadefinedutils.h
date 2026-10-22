@@ -68,6 +68,16 @@ template<typename V, size_t N> class QgsDataDefinedStringDecoder
 
         mLookupTable[i] = values[i];
       }
+
+      // sort entries alphabetically
+      std::sort( mLookupTable.begin(), mLookupTable.end(), []( const DataDefinedDecoderEntry<V> &a, const DataDefinedDecoderEntry<V> &b ) { return compareStringViews( a.first, b.first ) < 0; } );
+
+      // now our entries are sorted, lets make sure they are unique too...
+      for ( size_t i = 1; i < N; ++i )
+      {
+        if ( compareStringViews( mLookupTable[i - 1].first, mLookupTable[i].first ) == 0 )
+          throw "QgsDataDefinedStringDecoder: keys must be unique";
+      }
     }
 
     /**
@@ -95,6 +105,25 @@ template<typename V, size_t N> class QgsDataDefinedStringDecoder
 
   private:
     std::array<DataDefinedDecoderEntry<V>, N> mLookupTable {};
+
+    // dang, can't use Qt's QStringView comparison methods, they aren't constexpr :(
+    static constexpr int compareStringViews( QStringView a, QStringView b ) noexcept
+    {
+      for ( qsizetype i = 0; i < std::min( a.size(), b.size() ); ++i )
+      {
+        const char16_t aUnicode = a[i].unicode();
+        const char16_t bUnicode = b[i].unicode();
+        if ( aUnicode < bUnicode )
+          return -1;
+        if ( aUnicode > bUnicode )
+          return 1;
+      }
+      if ( a.size() < b.size() )
+        return -1;
+      if ( a.size() > b.size() )
+        return 1;
+      return 0;
+    }
 };
 
 /**
@@ -105,6 +134,7 @@ template<typename V, size_t N> class QgsDataDefinedStringDecoder
  * - be non-empty
  * - start with a letter character (a-z)
  * - be completely lower-case
+ * - be unique
  *
  * Usage:
  *
