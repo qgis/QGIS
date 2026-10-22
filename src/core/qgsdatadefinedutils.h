@@ -78,6 +78,25 @@ template<typename V, size_t N> class QgsDataDefinedStringDecoder
         if ( compareStringViews( mLookupTable[i - 1].first, mLookupTable[i].first ) == 0 )
           throw "QgsDataDefinedStringDecoder: keys must be unique";
       }
+
+      // this function may be called MANY MANY thousands of times per map render, and for some data-defined
+      // enums there are many keys to lookup. This adds up! We can optimize this a bit by pre-allocating
+      // the keys into alphabetical partitions, so that we only have to compare candidate values to keys
+      // with matching first letters
+      for ( size_t i = 0; i < N; ++i )
+      {
+        const int partitionIndex = getPartitionIndexForString( mLookupTable[i].first );
+        if ( partitionIndex < 0 )
+          throw "Something went wrong -- partition index < 0";
+        if ( partitionIndex >= 26 )
+          throw "Something went wrong -- partition index >= 26";
+
+        if ( mEntryPartitions[partitionIndex].count == 0 )
+        {
+          mEntryPartitions[partitionIndex].offset = static_cast<uint16_t>( i );
+        }
+        mEntryPartitions[partitionIndex].count++;
+      }
     }
 
     /**
@@ -92,11 +111,25 @@ template<typename V, size_t N> class QgsDataDefinedStringDecoder
       if ( trimmed.isEmpty() )
         return {};
 
-      for ( const DataDefinedDecoderEntry<V> &value : mLookupTable )
+      // find the corresponding partition
+      const int partitionIndex = getPartitionIndexForString( trimmed );
+      if ( partitionIndex < 0 )
       {
-        if ( value.first.compare( trimmed, Qt::CaseInsensitive ) == 0 )
+        // doesn't start with an a-z character, so cannot possibly match any key (since we have
+        // compile-time requirement that keys start with a-z)
+        return {};
+      }
+
+      const Partition &partition = mEntryPartitions[partitionIndex];
+      if ( partition.count == 0 )
+        return {}; // no keys match the start character of the string
+
+      const DataDefinedDecoderEntry<V> *partitionData = mLookupTable.data() + partition.offset;
+      for ( uint16_t i = 0; i < partition.count; ++i )
+      {
+        if ( partitionData[i].first.size() == trimmed.size() && partitionData[i].first.compare( trimmed, Qt::CaseInsensitive ) == 0 )
         {
-          return value.second;
+          return partitionData[i].second;
         }
       }
 
@@ -105,6 +138,15 @@ template<typename V, size_t N> class QgsDataDefinedStringDecoder
 
   private:
     std::array<DataDefinedDecoderEntry<V>, N> mLookupTable {};
+
+    // we have one partition per a-z character, allowing us to jump immediately to the
+    // candidates with the matching first letter
+    struct Partition
+    {
+        uint16_t offset = 0;
+        uint16_t count = 0;
+    };
+    std::array<Partition, 26> mEntryPartitions {};
 
     // dang, can't use Qt's QStringView comparison methods, they aren't constexpr :(
     static constexpr int compareStringViews( QStringView a, QStringView b ) noexcept
@@ -123,6 +165,22 @@ template<typename V, size_t N> class QgsDataDefinedStringDecoder
       if ( a.size() > b.size() )
         return 1;
       return 0;
+    }
+
+    static constexpr int getPartitionIndexForString( QStringView string )
+    {
+      // work out what partition this key falls into - the partition index is just the alphabetical index of the first letter
+      const char16_t firstCharUnicode = string[0].unicode();
+      if ( firstCharUnicode >= u'a' && firstCharUnicode <= u'z' )
+      {
+        return static_cast<size_t>( firstCharUnicode - u'a' );
+      }
+      else if ( firstCharUnicode >= u'A' && firstCharUnicode <= u'Z' )
+      {
+        return static_cast<size_t>( firstCharUnicode - u'A' );
+      }
+
+      return -1;
     }
 };
 

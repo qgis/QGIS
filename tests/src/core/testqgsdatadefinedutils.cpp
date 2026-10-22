@@ -54,8 +54,11 @@ void TestQgsDataDefinedUtils::testDataDefinedStringDecoder_data()
   QTest::newRow( "empty string" ) << "" << false << Qgis::LabelPredefinedPointPosition::OverPoint;
   QTest::newRow( "whitespace only string" ) << u"   "_s << false << Qgis::LabelPredefinedPointPosition::OverPoint;
 
-  QTest::newRow( "non matching string" ) << u"xxyyyzz"_s << false << Qgis::LabelPredefinedPointPosition::OverPoint;
-  QTest::newRow( "non matching string 2" ) << u"xxyyTopLeftyzz"_s << false << Qgis::LabelPredefinedPointPosition::OverPoint;
+  QTest::newRow( "xxyyyzz" ) << u"xxyyyzz"_s << false << Qgis::LabelPredefinedPointPosition::OverPoint;
+  QTest::newRow( "xxyyTopLeftyzz" ) << u"xxyyTopLeftyzz"_s << false << Qgis::LabelPredefinedPointPosition::OverPoint;
+  QTest::newRow( "2a33245" ) << u"2a33245"_s << false << Qgis::LabelPredefinedPointPosition::OverPoint;
+  QTest::newRow( "!@#@!#" ) << u"!@#@!#"_s << false << Qgis::LabelPredefinedPointPosition::OverPoint;
+  QTest::newRow( "unicode" ) << u"🄗"_s << false << Qgis::LabelPredefinedPointPosition::OverPoint;
 
   QTest::newRow( "topleft" ) << u"topleft"_s << true << Qgis::LabelPredefinedPointPosition::TopLeft;
   QTest::newRow( "Topleft" ) << u"Topleft"_s << true << Qgis::LabelPredefinedPointPosition::TopLeft;
