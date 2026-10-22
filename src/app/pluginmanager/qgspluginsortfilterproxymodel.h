@@ -28,10 +28,10 @@ const int PLUGIN_TAGS_ROLE = Qt::UserRole + 4;         // for filtering
 const int PLUGIN_ERROR_ROLE = Qt::UserRole + 5;        // for filtering
 const int PLUGIN_STATUS_ROLE = Qt::UserRole + 6;       // for filtering and sorting
 const int PLUGIN_DOWNLOADS_ROLE = Qt::UserRole + 7;    // for sorting
-const int PLUGIN_ISDEPRECATED_ROLE = Qt::UserRole + 9; // for styling
-const int PLUGIN_STATUSEXP_ROLE = Qt::UserRole + 10;   // for filtering and sorting
-const int PLUGIN_CREATE_DATE = Qt::UserRole + 11;      // for sorting
-const int PLUGIN_UPDATE_DATE = Qt::UserRole + 12;      // for sorting
+const int PLUGIN_ISDEPRECATED_ROLE = Qt::UserRole + 8; // for styling
+const int PLUGIN_STATUSEXP_ROLE = Qt::UserRole + 9;    // for filtering and sorting
+const int PLUGIN_CREATE_DATE = Qt::UserRole + 10;      // for sorting
+const int PLUGIN_UPDATE_DATE = Qt::UserRole + 11;      // for sorting
 const int SPACER_ROLE = Qt::UserRole + 20;             // for sorting
 
 
