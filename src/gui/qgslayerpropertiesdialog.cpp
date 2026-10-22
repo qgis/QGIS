@@ -22,6 +22,7 @@
 #include "qgsmaplayerconfigwidgetfactory.h"
 #include "qgsmaplayerloadstyledialog.h"
 #include "qgsmaplayersavestyledialog.h"
+#include "qgsmaplayerstyleguiutils.h"
 #include "qgsmaplayerstylemanager.h"
 #include "qgsmetadatawidget.h"
 #include "qgsnative.h"
@@ -33,7 +34,6 @@
 #include <QDir>
 #include <QFileDialog>
 #include <QMessageBox>
-#include <QPushButton>
 #include <QString>
 #include <qstackedwidget.h>
 
@@ -235,21 +235,8 @@ void QgsLayerPropertiesDialog::saveStyleAsDefault()
 
   apply(); // make sure the style to save is up-to-date
 
-  // a flag passed by reference
-  bool defaultSavedFlag = false;
-  // TODO Once the deprecated `saveDefaultStyle()` method is gone, just
-  // remove the NOWARN_DEPRECATED tags
-  Q_NOWARN_DEPRECATED_PUSH
-  // after calling this the above flag will be set true for success
-  // or false if the save operation failed
-  const QString message = mLayer->saveDefaultStyle( defaultSavedFlag );
-  Q_NOWARN_DEPRECATED_POP
-  if ( !defaultSavedFlag )
-  {
-    // let the user know what went wrong
-    QMessageBox::information( this, tr( "Default Style" ), message );
+  if ( !QgsMapLayerStyleGuiUtils::saveStyleAsDefault( mLayer ) )
     refocusDialog();
-  }
 }
 
 void QgsLayerPropertiesDialog::initialize()
@@ -283,113 +270,16 @@ void QgsLayerPropertiesDialog::addPropertiesPageFactory( const QgsMapLayerConfig
 
 void QgsLayerPropertiesDialog::loadDefaultStyle()
 {
-  QString msg;
-  bool defaultLoadedFlag = false;
-
-  const QgsDataProvider *provider = mLayer->dataProvider();
-  if ( !provider )
-    return;
-  if ( provider->styleStorageCapabilities().testFlag( Qgis::ProviderStyleStorageCapability::LoadFromDatabase ) )
+  if ( QgsMapLayerStyleGuiUtils::loadDefaultStyle( mLayer ) )
   {
-    QMessageBox askToUser;
-    askToUser.setText( tr( "Load default style from: " ) );
-    askToUser.setIcon( QMessageBox::Question );
-    askToUser.addButton( tr( "Cancel" ), QMessageBox::RejectRole );
-    askToUser.addButton( tr( "Local Database" ), QMessageBox::NoRole );
-    askToUser.addButton( tr( "Datasource Database" ), QMessageBox::YesRole );
-
-    switch ( askToUser.exec() )
-    {
-      case 0:
-        return;
-      case 2:
-        msg = mLayer->loadNamedStyle( mLayer->styleURI(), defaultLoadedFlag, false );
-        if ( !defaultLoadedFlag )
-        {
-          //something went wrong - let them know why
-          QMessageBox::information( this, tr( "Default Style" ), msg );
-        }
-        if ( msg.compare( tr( "Loaded from Provider" ) ) )
-        {
-          QMessageBox::information( this, tr( "Default Style" ), tr( "No default style was found for this layer." ) );
-        }
-        else
-        {
-          syncToLayer();
-          apply();
-        }
-
-        return;
-      default:
-        break;
-    }
-  }
-
-  QString myMessage = mLayer->loadNamedStyle( mLayer->styleURI(), defaultLoadedFlag, true );
-  //  QString myMessage = layer->loadDefaultStyle( defaultLoadedFlag );
-  //reset if the default style was loaded OK only
-  if ( defaultLoadedFlag )
-  {
-    // all worked OK so no need to inform user
     syncToLayer();
     apply();
-  }
-  else
-  {
-    //something went wrong - let them know why
-    QMessageBox::information( this, tr( "Default Style" ), myMessage );
   }
 }
 
 void QgsLayerPropertiesDialog::saveDefaultStyle()
 {
-  QString errorMsg;
-  const QgsDataProvider *provider = mLayer->dataProvider();
-  if ( !provider )
-    return;
-  if ( provider->styleStorageCapabilities().testFlag( Qgis::ProviderStyleStorageCapability::SaveToDatabase ) )
-  {
-    QMessageBox askToUser;
-    askToUser.setText( tr( "Save default style to: " ) );
-    askToUser.setIcon( QMessageBox::Question );
-    QPushButton *cancelButton = askToUser.addButton( tr( "Cancel" ), QMessageBox::RejectRole );
-    askToUser.addButton( tr( "Local Database" ), QMessageBox::NoRole );
-    QPushButton *datasourceButton = askToUser.addButton( tr( "Datasource Database" ), QMessageBox::YesRole );
-
-    askToUser.exec();
-
-    if ( askToUser.clickedButton() == cancelButton )
-    {
-      return;
-    }
-    else if ( askToUser.clickedButton() == datasourceButton )
-    {
-      apply();
-      QString errorMessage;
-      if ( QgsProviderRegistry::instance()->styleExists( mLayer->providerType(), mLayer->source(), QString(), errorMessage ) )
-      {
-        if ( QMessageBox::
-               question( nullptr, QObject::tr( "Save style in database" ), QObject::tr( "A matching style already exists in the database for this layer. Do you want to overwrite it?" ), QMessageBox::Yes | QMessageBox::No )
-             == QMessageBox::No )
-        {
-          return;
-        }
-      }
-      else if ( !errorMessage.isEmpty() )
-      {
-        QMessageBox::warning( nullptr, QObject::tr( "Save style in database" ), errorMessage );
-        return;
-      }
-
-      mLayer->saveStyleToDatabaseV2( QString(), QString(), true, QString(), errorMsg );
-      if ( errorMsg.isNull() )
-      {
-        return;
-      }
-    }
-  }
-
-  QgsLayerPropertiesDialog::saveStyleAsDefault();
+  saveStyleAsDefault();
 }
 
 void QgsLayerPropertiesDialog::saveStyleAs()

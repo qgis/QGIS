@@ -885,6 +885,29 @@ QMenu *QgsAppLayerTreeViewMenuProvider::createContextMenu()
         menuStyleManager->addAction( tr( "Load Style…" ), app, [layer] { QgsAppLayerHandling::loadStyleFromFile( layer ); } );
         menuStyleManager->addAction( tr( "Save Style…" ), app, [layer] { QgsAppLayerHandling::saveStyleFile( layer ); } );
 
+        switch ( layer->type() )
+        {
+          case Qgis::LayerType::Vector:
+          case Qgis::LayerType::Raster:
+          case Qgis::LayerType::Mesh:
+          case Qgis::LayerType::VectorTile:
+          case Qgis::LayerType::PointCloud:
+          case Qgis::LayerType::TiledScene:
+            if ( layer->dataProvider() )
+            {
+              menuStyleManager->addSeparator()->setObjectName( u"DefaultStyleSeparator"_s );
+              menuStyleManager->addAction( tr( "Save as Default" ), app, [layer] { QgsMapLayerStyleGuiUtils::saveStyleAsDefault( layer ); } );
+              menuStyleManager->addAction( tr( "Restore Default" ), app, [layer] { QgsMapLayerStyleGuiUtils::loadDefaultStyle( layer ); } );
+            }
+            break;
+
+          // Not available for these
+          case Qgis::LayerType::Annotation:
+          case Qgis::LayerType::Plugin:
+          case Qgis::LayerType::Group:
+            break;
+        }
+
         menu->addMenu( menuStyleManager );
       }
       else
