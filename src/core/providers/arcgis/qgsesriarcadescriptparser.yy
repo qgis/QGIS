@@ -83,7 +83,7 @@ struct arcadescript_parser_context
 %token <numberFloat> NUMBER_FLOAT
 %token <numberInt> NUMBER_INT
 %token <numberInt64> NUMBER_INT64
-%token <text> STRING_LITERAL IDENTIFIER
+%token <text> STRING_LITERAL IDENTIFIER PROFILE_VARIABLE
 
 // operators and separators
 %token ASSIGN
@@ -115,7 +115,7 @@ struct arcadescript_parser_context
 %left PLUS MINUS
 %left MUL DIV MOD
 %right NOT UMINUS
-%left '[' ']' '(' ')'
+%left '[' ']' '(' ')' '.'
 
 %%
 
@@ -425,6 +425,11 @@ postfix_expr:
     {
       $$ = $1;
     }
+  | postfix_expr '.' IDENTIFIER
+    {
+      $$ = new QgsEsriArcadeMemberAccessExpression( $1, *$3 );
+      delete $3;
+    }
   | postfix_expr '[' expr ']'
     {
       $$ = new QgsEsriArcadeIndexExpression( $1, $3 );
@@ -466,6 +471,11 @@ primary_expr:
   | IDENTIFIER
     {
       $$ = new QgsEsriArcadeVariableReferenceExpression( *$1 );
+      delete $1;
+    }
+  | PROFILE_VARIABLE
+    {
+      $$ = new QgsEsriArcadeProfileVariableReferenceExpression( *$1 );
       delete $1;
     }
   | '(' expr ')'

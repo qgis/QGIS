@@ -7,7 +7,9 @@ QgsEsriArcadeNode.NodeType.ntAssignmentStatement.__doc__ = "Variable assignment 
 QgsEsriArcadeNode.NodeType.ntFunctionDeclarationStatement.__doc__ = "Function declaration"
 QgsEsriArcadeNode.NodeType.ntExpressionStatement.__doc__ = "Expression"
 QgsEsriArcadeNode.NodeType.ntLiteralExpression.__doc__ = "Literal"
-QgsEsriArcadeNode.NodeType.ntVariableReferenceExpression.__doc__ = "Reference"
+QgsEsriArcadeNode.NodeType.ntVariableReferenceExpression.__doc__ = "Reference to a standard variable"
+QgsEsriArcadeNode.NodeType.ntProfileVariableReferenceExpression.__doc__ = "Reference to a profile variable (eg $feature.ATTRIBUTE)"
+QgsEsriArcadeNode.NodeType.ntMemberAccessExpression.__doc__ = "Member access via bracket notation (eg $feature[\"ATTRIBUTE\"])"
 QgsEsriArcadeNode.NodeType.ntBinaryOperatorExpression.__doc__ = "Binary Operator"
 QgsEsriArcadeNode.NodeType.ntUnaryOperatorExpression.__doc__ = "Operator"
 QgsEsriArcadeNode.NodeType.ntFunctionCallExpression.__doc__ = "Function call"
@@ -21,7 +23,9 @@ QgsEsriArcadeNode.NodeType.__doc__ = """Node type identifier.
 * ``ntFunctionDeclarationStatement``: Function declaration
 * ``ntExpressionStatement``: Expression
 * ``ntLiteralExpression``: Literal
-* ``ntVariableReferenceExpression``: Reference
+* ``ntVariableReferenceExpression``: Reference to a standard variable
+* ``ntProfileVariableReferenceExpression``: Reference to a profile variable (eg $feature.ATTRIBUTE)
+* ``ntMemberAccessExpression``: Member access via bracket notation (eg $feature[\"ATTRIBUTE\"])
 * ``ntBinaryOperatorExpression``: Binary Operator
 * ``ntUnaryOperatorExpression``: Operator
 * ``ntFunctionCallExpression``: Function call
@@ -126,6 +130,16 @@ except (NameError, AttributeError):
 try:
     QgsEsriArcadeVariableReferenceExpression.__overridden_methods__ = ['nodeType', 'dump', 'clone', 'accept']
     QgsEsriArcadeVariableReferenceExpression.__group__ = ['providers', 'arcgis']
+except (NameError, AttributeError):
+    pass
+try:
+    QgsEsriArcadeProfileVariableReferenceExpression.__overridden_methods__ = ['nodeType', 'dump', 'clone', 'accept']
+    QgsEsriArcadeProfileVariableReferenceExpression.__group__ = ['providers', 'arcgis']
+except (NameError, AttributeError):
+    pass
+try:
+    QgsEsriArcadeMemberAccessExpression.__overridden_methods__ = ['nodeType', 'dump', 'clone', 'accept']
+    QgsEsriArcadeMemberAccessExpression.__group__ = ['providers', 'arcgis']
 except (NameError, AttributeError):
     pass
 try:

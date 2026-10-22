@@ -99,6 +99,7 @@ num_int        {dig}+
 num_float      ({dig}+\.{dig}*|\.{dig}+)([eE][-+]?{dig}+)?|{dig}+[eE][-+]?{dig}+
 
 identifier     [A-Za-z_][A-Za-z0-9_]*
+profile_var    \$[A-Za-z_][A-Za-z0-9_]*
 
 string_double  \"([^\"\\]|\\.)*\"
 string_single  \'([^\'\\]|\\.)*\'
@@ -138,6 +139,7 @@ block_comment  \/\*([^*]|\*+[^/*])*\*+\/
 
 ";"              { return SEMICOLON; }
 ","              { return COMMA; }
+"."              { return '.'; }
 "("              { return '('; }
 ")"              { return ')'; }
 "{"              { return '{'; }
@@ -177,6 +179,11 @@ block_comment  \/\*([^*]|\*+[^/*])*\*+\/
 {identifier} {
   TEXT;
   return IDENTIFIER;
+}
+
+{profile_var} {
+  TEXT;
+  return PROFILE_VARIABLE;
 }
 
 . { return UNKNOWN_CHARACTER; }

@@ -50,6 +50,12 @@ Represents an abstract node for an Esri Arcade script.
       case QgsEsriArcadeNode::NodeType::ntVariableReferenceExpression:
         sipType = sipType_QgsEsriArcadeVariableReferenceExpression;
         break;
+      case QgsEsriArcadeNode::NodeType::ntProfileVariableReferenceExpression:
+        sipType = sipType_QgsEsriArcadeProfileVariableReferenceExpression;
+        break;
+      case QgsEsriArcadeNode::NodeType::ntMemberAccessExpression:
+        sipType = sipType_QgsEsriArcadeMemberAccessExpression;
+        break;
       case QgsEsriArcadeNode::NodeType::ntBinaryOperatorExpression:
         sipType = sipType_QgsEsriArcadeBinaryOperatorExpression;
         break;
@@ -78,6 +84,8 @@ Represents an abstract node for an Esri Arcade script.
       ntExpressionStatement,
       ntLiteralExpression,
       ntVariableReferenceExpression,
+      ntProfileVariableReferenceExpression,
+      ntMemberAccessExpression,
       ntBinaryOperatorExpression,
       ntUnaryOperatorExpression,
       ntFunctionCallExpression,
@@ -464,6 +472,80 @@ Returns the variable identifier name.
 
 };
 
+class QgsEsriArcadeProfileVariableReferenceExpression : QgsEsriArcadeExpression
+{
+%Docstring(signature="appended")
+Represents a reference to a profile variable (e.g. "$feature").
+
+.. versionadded:: 4.6
+%End
+
+%TypeHeaderCode
+#include "qgsesriarcadescript.h"
+%End
+  public:
+    explicit QgsEsriArcadeProfileVariableReferenceExpression( const QString &name );
+%Docstring
+Constructor for QgsEsriArcadeProfileVariableReferenceExpression.
+%End
+
+    virtual QgsEsriArcadeNode::NodeType nodeType() const;
+    virtual QString dump() const;
+
+    virtual QgsEsriArcadeNode *clone() const /Factory/;
+
+    virtual void accept( QgsEsriArcadeVisitor &visitor ) const;
+
+
+    QString name() const;
+%Docstring
+Returns the profile variable name, including the leading $ symbol.
+%End
+
+};
+
+class QgsEsriArcadeMemberAccessExpression : QgsEsriArcadeExpression
+{
+%Docstring(signature="appended")
+Represents a member access expression using dot notation (e.g.
+"$feature.ATTRIBUTE").
+
+.. versionadded:: 4.6
+%End
+
+%TypeHeaderCode
+#include "qgsesriarcadescript.h"
+%End
+  public:
+    QgsEsriArcadeMemberAccessExpression( QgsEsriArcadeExpression *containerExpression /Transfer/, const QString &memberName );
+%Docstring
+Constructor for QgsEsriArcadeMemberAccessExpression.
+
+Ownership of ``containerExpression`` is transferred to this expression.
+%End
+
+    virtual QgsEsriArcadeNode::NodeType nodeType() const;
+    virtual QString dump() const;
+
+    virtual QgsEsriArcadeNode *clone() const /Factory/;
+
+    virtual void accept( QgsEsriArcadeVisitor &visitor ) const;
+
+
+    QgsEsriArcadeExpression *containerExpression() const;
+%Docstring
+Returns the container expression being accessed.
+%End
+
+    QString memberName() const;
+%Docstring
+Returns the member attribute name.
+%End
+
+  private:
+    QgsEsriArcadeMemberAccessExpression( const QgsEsriArcadeMemberAccessExpression &other );
+};
+
 class QgsEsriArcadeBinaryOperatorExpression : QgsEsriArcadeExpression
 {
 %Docstring(signature="appended")
@@ -708,6 +790,8 @@ trees.
     virtual void visit( const QgsEsriArcadeExpressionStatement &node ) = 0;
     virtual void visit( const QgsEsriArcadeLiteralExpression &node ) = 0;
     virtual void visit( const QgsEsriArcadeVariableReferenceExpression &node ) = 0;
+    virtual void visit( const QgsEsriArcadeProfileVariableReferenceExpression &node ) = 0;
+    virtual void visit( const QgsEsriArcadeMemberAccessExpression &node ) = 0;
     virtual void visit( const QgsEsriArcadeBinaryOperatorExpression &node ) = 0;
     virtual void visit( const QgsEsriArcadeUnaryOperatorExpression &node ) = 0;
     virtual void visit( const QgsEsriArcadeFunctionCallExpression &node ) = 0;
@@ -744,6 +828,10 @@ Esri Arcade script.
     virtual void visit( const QgsEsriArcadeLiteralExpression &node );
 
     virtual void visit( const QgsEsriArcadeVariableReferenceExpression &node );
+
+    virtual void visit( const QgsEsriArcadeProfileVariableReferenceExpression &node );
+
+    virtual void visit( const QgsEsriArcadeMemberAccessExpression &node );
 
     virtual void visit( const QgsEsriArcadeBinaryOperatorExpression &node );
 

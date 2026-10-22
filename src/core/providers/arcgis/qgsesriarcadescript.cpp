@@ -283,6 +283,54 @@ void QgsEsriArcadeVariableReferenceExpression::accept( QgsEsriArcadeVisitor &vis
 }
 
 //
+// QgsEsriArcadeProfileVariableReferenceExpression
+//
+
+QgsEsriArcadeProfileVariableReferenceExpression::QgsEsriArcadeProfileVariableReferenceExpression( const QString &name )
+  : mName( name )
+{}
+
+QString QgsEsriArcadeProfileVariableReferenceExpression::dump() const
+{
+  return mName;
+}
+
+QgsEsriArcadeNode *QgsEsriArcadeProfileVariableReferenceExpression::clone() const
+{
+  return new QgsEsriArcadeProfileVariableReferenceExpression( mName );
+}
+
+void QgsEsriArcadeProfileVariableReferenceExpression::accept( QgsEsriArcadeVisitor &visitor ) const
+{
+  visitor.visit( *this );
+}
+
+//
+// QgsEsriArcadeMemberAccessExpression
+//
+
+QgsEsriArcadeMemberAccessExpression::QgsEsriArcadeMemberAccessExpression( QgsEsriArcadeExpression *containerExpression, const QString &memberName )
+  : mContainerExpression( containerExpression )
+  , mMemberName( memberName )
+{}
+
+QString QgsEsriArcadeMemberAccessExpression::dump() const
+{
+  return u"%1.%2"_s.arg( mContainerExpression ? mContainerExpression->dump() : QString(), mMemberName );
+}
+
+QgsEsriArcadeNode *QgsEsriArcadeMemberAccessExpression::clone() const
+{
+  QgsEsriArcadeExpression *clonedContainer = mContainerExpression ? dynamic_cast<QgsEsriArcadeExpression *>( mContainerExpression->clone() ) : nullptr;
+  return new QgsEsriArcadeMemberAccessExpression( clonedContainer, mMemberName );
+}
+
+void QgsEsriArcadeMemberAccessExpression::accept( QgsEsriArcadeVisitor &visitor ) const
+{
+  visitor.visit( *this );
+}
+
+//
 // QgsEsriArcadeBinaryOperatorExpression
 //
 
@@ -499,6 +547,15 @@ void QgsEsriArcadeRecursiveVisitor::visit( const QgsEsriArcadeLiteralExpression 
 
 void QgsEsriArcadeRecursiveVisitor::visit( const QgsEsriArcadeVariableReferenceExpression & )
 {}
+
+void QgsEsriArcadeRecursiveVisitor::visit( const QgsEsriArcadeProfileVariableReferenceExpression & )
+{}
+
+void QgsEsriArcadeRecursiveVisitor::visit( const QgsEsriArcadeMemberAccessExpression &node )
+{
+  if ( node.containerExpression() )
+    node.containerExpression()->accept( *this );
+}
 
 void QgsEsriArcadeRecursiveVisitor::visit( const QgsEsriArcadeBinaryOperatorExpression &node )
 {
