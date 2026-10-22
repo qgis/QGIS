@@ -1257,6 +1257,20 @@ class CORE_EXPORT QgsApplication : public QApplication
       const QStringList &untrustedProjectsFolders);
 
   /**
+   * Returns the temporary (session based) trust status of the currently open project.
+   *
+   * \since QGIS 4.4
+   */
+  static Qgis::ProjectTrustStatus currentProjectTemporaryTrustStatus();
+
+  /**
+   * Sets the temporary (session based) trust status of the currently open project.
+   *
+   * \since QGIS 4.4
+   */
+  static void setCurrentProjectTemporaryTrustStatus(Qgis::ProjectTrustStatus trustStatus);
+
+  /**
    * Scales an icon size to compensate for display pixel density, making the
    * icon size hi-dpi friendly, whilst still resulting in pixel-perfect sizes
    * for low-dpi displays.
@@ -1418,6 +1432,7 @@ private:
 
   QStringList mTemporarilyTrustedProjectFolders;
   QStringList mTemporarilyUntrustedProjectFolders;
+  Qgis::ProjectTrustStatus mCurrentProjectTemporaryTrustStatus{Qgis::ProjectTrustStatus::Undetermined};
 
   friend class TestQgsApplication;
 };

@@ -33,8 +33,14 @@ class GUI_EXPORT QgsProjectTrustDialog : public QDialog, private Ui::QgsProjectT
 {
     Q_OBJECT
   public:
+    enum TrustDialogType
+    {
+      Initial, //!< Opened when trying to execute embedded scripts in a project with undetermined trust status
+      AfterSaveToNewLocation, //!< Opened after saving a project to a new location, to ask the user if they want to trust the new location
+    };
+
     //! Constructor for QgsProjectTrustDialog using the specified \a project instance.
-    QgsProjectTrustDialog( QgsProject *project, QWidget *parent SIP_TRANSFERTHIS = nullptr, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags );
+    QgsProjectTrustDialog( QgsProject *project, QWidget *parent SIP_TRANSFERTHIS = nullptr, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags, TrustDialogType trustDialogType = Initial );
 
   private slots:
     void buttonBoxClicked( QAbstractButton *button );
