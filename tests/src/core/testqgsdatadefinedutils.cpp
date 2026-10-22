@@ -89,9 +89,7 @@ void TestQgsDataDefinedUtils::testDataDefinedStringDecoder()
 {
   static constexpr auto sPointPositionMap = makeDataDefinedStringDecoder<Qgis::LabelPredefinedPointPosition>(
     { { u"topleft", Qgis::LabelPredefinedPointPosition::TopLeft },
-      { u"top_left", Qgis::LabelPredefinedPointPosition::TopLeft },
       { u"topright", Qgis::LabelPredefinedPointPosition::TopRight },
-      { u"top_right", Qgis::LabelPredefinedPointPosition::TopRight },
       { u"bottom", Qgis::LabelPredefinedPointPosition::BottomMiddle } }
   );
 

@@ -67,6 +67,9 @@ template<typename V, size_t N> class QgsDataDefinedStringDecoder
         {
           if ( key[j].unicode() >= u'A' && key[j].unicode() <= u'Z' )
             throw "QgsDataDefinedStringDecoder: keys must be lowercase";
+
+          if ( shouldIgnoreCharacter( key[j].unicode() ) )
+            throw "QgsDataDefinedStringDecoder: keys must not contain spaces, hyphens, or underscores";
         }
 
         mLookupTable[i] = values[i];
@@ -186,6 +189,13 @@ template<typename V, size_t N> class QgsDataDefinedStringDecoder
 
       return -1;
     }
+
+    static constexpr bool shouldIgnoreCharacter( char16_t unicode ) noexcept
+    {
+      // when matching strings to keys, these characters will be completely ignored.
+      // this gives us tolerant matching, so e.g any of "top-right", "top right", "top_right" will match to the "topright" key
+      return unicode == u' ' || unicode == u'-' || unicode == u'_';
+    }
 };
 
 /**
@@ -197,6 +207,7 @@ template<typename V, size_t N> class QgsDataDefinedStringDecoder
  * - start with a letter character (a-z)
  * - be completely lower-case
  * - be unique
+ * - not contain spaces, hyphens or underscores
  *
  * Usage:
  *
