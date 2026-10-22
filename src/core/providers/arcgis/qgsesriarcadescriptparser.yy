@@ -10,7 +10,6 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-
 %{
 #include "qgsesriarcadescript.h"
 
@@ -96,8 +95,8 @@ struct arcadescript_parser_context
 
 // non-terminal type associations
 %type <blockStatement> statement_list block_statement
-%type <statement> statement var_declaration return_statement function_declaration expression_statement return_without_semicolon
-%type <expression> expr primary_expr postfix_expr unary_expr multiplicative_expr additive_expr relational_expr equality_expr logical_and_expr logical_or_expr assignment_expr opt_initializer opt_expr
+%type <statement> statement var_declaration assignment_statement return_statement function_declaration expression_statement return_without_semicolon
+%type <expression> expr primary_expr postfix_expr unary_expr multiplicative_expr additive_expr relational_expr equality_expr logical_and_expr logical_or_expr opt_initializer opt_expr
 %type <expressionList> opt_argument_list argument_list
 %type <identifierList> opt_parameter_list parameter_list
 
@@ -108,8 +107,7 @@ struct arcadescript_parser_context
 %destructor { qDeleteAll( *$$ ); delete $$; } <expressionList>
 %destructor { delete $$; } <identifierList>
 
-// precedence declarations
-%right ASSIGN
+// operator precedence and associativity
 %left LOGICAL_OR
 %left LOGICAL_AND
 %left EQ NE
@@ -129,6 +127,11 @@ root:
   | statement_list expr
     {
       $1->appendStatement( new QgsEsriArcadeExpressionStatement( $2 ) );
+      parserContext->rootBlock = $1;
+    }
+  | statement_list postfix_expr ASSIGN expr
+    {
+      $1->appendStatement( new QgsEsriArcadeAssignmentStatement( $2, $4 ) );
       parserContext->rootBlock = $1;
     }
   | statement_list return_without_semicolon
@@ -153,6 +156,10 @@ statement_list:
 
 statement:
     var_declaration
+    {
+      $$ = $1;
+    }
+  | assignment_statement
     {
       $$ = $1;
     }
@@ -188,6 +195,11 @@ block_statement:
       $2->appendStatement( new QgsEsriArcadeExpressionStatement( $3 ) );
       $$ = $2;
     }
+  | '{' statement_list postfix_expr ASSIGN expr '}'
+    {
+      $2->appendStatement( new QgsEsriArcadeAssignmentStatement( $3, $5 ) );
+      $$ = $2;
+    }
   | '{' statement_list return_without_semicolon '}'
     {
       $2->appendStatement( $3 );
@@ -211,6 +223,13 @@ opt_initializer:
   | /* empty */
     {
       $$ = nullptr;
+    }
+;
+
+assignment_statement:
+    postfix_expr ASSIGN expr SEMICOLON
+    {
+      $$ = new QgsEsriArcadeAssignmentStatement( $1, $3 );
     }
 ;
 
@@ -282,20 +301,9 @@ expression_statement:
 ;
 
 expr:
-    assignment_expr
-    {
-      $$ = $1;
-    }
-;
-
-assignment_expr:
     logical_or_expr
     {
       $$ = $1;
-    }
-  | postfix_expr ASSIGN assignment_expr
-    {
-      $$ = new QgsEsriArcadeBinaryOperatorExpression( QgsEsriArcadeBinaryOperatorExpression::BinaryOperator::boAssign, $1, $3 );
     }
 ;
 

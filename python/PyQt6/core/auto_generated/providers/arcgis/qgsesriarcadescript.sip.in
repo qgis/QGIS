@@ -32,6 +32,9 @@ Represents an abstract node for an Esri Arcade script.
       case QgsEsriArcadeNode::NodeType::ntVariableDeclarationStatement:
         sipType = sipType_QgsEsriArcadeVariableDeclarationStatement;
         break;
+      case QgsEsriArcadeNode::NodeType::ntAssignmentStatement:
+        sipType = sipType_QgsEsriArcadeAssignmentStatement;
+        break;
       case QgsEsriArcadeNode::NodeType::ntReturnStatement:
         sipType = sipType_QgsEsriArcadeReturnStatement;
         break;
@@ -70,6 +73,7 @@ Represents an abstract node for an Esri Arcade script.
       ntBlockStatement,
       ntVariableDeclarationStatement,
       ntReturnStatement,
+      ntAssignmentStatement,
       ntFunctionDeclarationStatement,
       ntExpressionStatement,
       ntLiteralExpression,
@@ -228,6 +232,47 @@ uninitialized.
 
   private:
     QgsEsriArcadeVariableDeclarationStatement( const QgsEsriArcadeVariableDeclarationStatement &other );
+};
+
+class QgsEsriArcadeAssignmentStatement : QgsEsriArcadeStatement
+{
+%Docstring(signature="appended")
+Represents a variable reassignment statement (e.g. age = "35 years";).
+
+.. versionadded:: 4.6
+%End
+
+%TypeHeaderCode
+#include "qgsesriarcadescript.h"
+%End
+  public:
+    QgsEsriArcadeAssignmentStatement( QgsEsriArcadeExpression *target /Transfer/, QgsEsriArcadeExpression *value /Transfer/ );
+%Docstring
+Constructor for QgsEsriArcadeAssignmentStatement.
+
+Ownership of ``target`` and ``value`` is transferred to this statement.
+%End
+
+    virtual QgsEsriArcadeNode::NodeType nodeType() const;
+    virtual QString dump() const;
+
+    virtual QgsEsriArcadeNode *clone() const /Factory/;
+
+    virtual void accept( QgsEsriArcadeVisitor &visitor ) const;
+
+
+    QgsEsriArcadeExpression *target() const;
+%Docstring
+Returns the target expression being assigned to.
+%End
+
+    QgsEsriArcadeExpression *value() const;
+%Docstring
+Returns the assigned value expression.
+%End
+
+  private:
+    QgsEsriArcadeAssignmentStatement( const QgsEsriArcadeAssignmentStatement &other );
 };
 
 class QgsEsriArcadeReturnStatement : QgsEsriArcadeStatement
@@ -438,7 +483,6 @@ Represents a binary operation expression.
       boMultiply,
       boDivide,
       boModulo,
-      boAssign,
       boEqual,
       boNotEqual,
       boLessThan,
@@ -658,6 +702,7 @@ trees.
 
     virtual void visit( const QgsEsriArcadeBlockStatement &node ) = 0;
     virtual void visit( const QgsEsriArcadeVariableDeclarationStatement &node ) = 0;
+    virtual void visit( const QgsEsriArcadeAssignmentStatement &node ) = 0;
     virtual void visit( const QgsEsriArcadeReturnStatement &node ) = 0;
     virtual void visit( const QgsEsriArcadeFunctionDeclarationStatement &node ) = 0;
     virtual void visit( const QgsEsriArcadeExpressionStatement &node ) = 0;
@@ -687,6 +732,8 @@ Esri Arcade script.
     virtual void visit( const QgsEsriArcadeBlockStatement &node );
 
     virtual void visit( const QgsEsriArcadeVariableDeclarationStatement &node );
+
+    virtual void visit( const QgsEsriArcadeAssignmentStatement &node );
 
     virtual void visit( const QgsEsriArcadeReturnStatement &node );
 

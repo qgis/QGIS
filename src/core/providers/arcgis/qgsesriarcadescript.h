@@ -33,6 +33,7 @@ using namespace Qt::StringLiterals;
 class QgsEsriArcadeVisitor;
 class QgsEsriArcadeStatement;
 class QgsEsriArcadeBlockStatement;
+class QgsEsriArcadeAssignmentStatement;
 
 /**
  * \ingroup core
@@ -51,6 +52,9 @@ class CORE_EXPORT QgsEsriArcadeNode
         break;
       case QgsEsriArcadeNode::NodeType::ntVariableDeclarationStatement:
         sipType = sipType_QgsEsriArcadeVariableDeclarationStatement;
+        break;
+      case QgsEsriArcadeNode::NodeType::ntAssignmentStatement:
+        sipType = sipType_QgsEsriArcadeAssignmentStatement;
         break;
       case QgsEsriArcadeNode::NodeType::ntReturnStatement:
         sipType = sipType_QgsEsriArcadeReturnStatement;
@@ -95,6 +99,7 @@ class CORE_EXPORT QgsEsriArcadeNode
       ntBlockStatement,               //!< Block statement (a list of statements grouped together in a block)
       ntVariableDeclarationStatement, //!< Variable declaration statement
       ntReturnStatement,              //!< Return statement
+      ntAssignmentStatement,          //!< Variable assignment statement
       ntFunctionDeclarationStatement, //!< Function declaration
       ntExpressionStatement,          //!< Expression
       ntLiteralExpression,            //!< Literal
@@ -248,6 +253,49 @@ class CORE_EXPORT QgsEsriArcadeVariableDeclarationStatement : public QgsEsriArca
 
     QString mVariableName;
     std::unique_ptr<QgsEsriArcadeExpression> mInitializer;
+};
+
+/**
+ * \ingroup core
+ * \brief Represents a variable reassignment statement (e.g. age = "35 years";).
+ *
+ * \since QGIS 4.6
+ */
+class CORE_EXPORT QgsEsriArcadeAssignmentStatement : public QgsEsriArcadeStatement
+{
+  public:
+    /**
+     * Constructor for QgsEsriArcadeAssignmentStatement.
+     *
+     * Ownership of \a target and \a value is transferred to this statement.
+     */
+    QgsEsriArcadeAssignmentStatement( QgsEsriArcadeExpression *target SIP_TRANSFER, QgsEsriArcadeExpression *value SIP_TRANSFER );
+
+    QgsEsriArcadeNode::NodeType nodeType() const override { return NodeType::ntAssignmentStatement; }
+    QString dump() const override;
+    QgsEsriArcadeNode *clone() const override SIP_FACTORY;
+    void accept( QgsEsriArcadeVisitor &visitor ) const override;
+
+    /**
+     * Returns the target expression being assigned to.
+     */
+    QgsEsriArcadeExpression *target() const { return mTarget.get(); }
+
+    /**
+     * Returns the assigned value expression.
+     */
+    QgsEsriArcadeExpression *value() const { return mValue.get(); }
+
+  private:
+    QgsEsriArcadeAssignmentStatement( const QgsEsriArcadeAssignmentStatement &other ) = delete;
+    QgsEsriArcadeAssignmentStatement &operator=( const QgsEsriArcadeAssignmentStatement &other ) = delete;
+
+#ifdef SIP_RUN
+    QgsEsriArcadeAssignmentStatement( const QgsEsriArcadeAssignmentStatement &other );
+#endif
+
+    std::unique_ptr<QgsEsriArcadeExpression> mTarget;
+    std::unique_ptr<QgsEsriArcadeExpression> mValue;
 };
 
 /**
@@ -453,7 +501,6 @@ class CORE_EXPORT QgsEsriArcadeBinaryOperatorExpression : public QgsEsriArcadeEx
       boMultiply,
       boDivide,
       boModulo,
-      boAssign,
       boEqual,
       boNotEqual,
       boLessThan,
@@ -684,6 +731,7 @@ class CORE_EXPORT QgsEsriArcadeVisitor
 
     virtual void visit( const QgsEsriArcadeBlockStatement &node ) = 0;
     virtual void visit( const QgsEsriArcadeVariableDeclarationStatement &node ) = 0;
+    virtual void visit( const QgsEsriArcadeAssignmentStatement &node ) = 0;
     virtual void visit( const QgsEsriArcadeReturnStatement &node ) = 0;
     virtual void visit( const QgsEsriArcadeFunctionDeclarationStatement &node ) = 0;
     virtual void visit( const QgsEsriArcadeExpressionStatement &node ) = 0;
@@ -708,6 +756,7 @@ class CORE_EXPORT QgsEsriArcadeRecursiveVisitor : public QgsEsriArcadeVisitor
 
     void visit( const QgsEsriArcadeBlockStatement &node ) override;
     void visit( const QgsEsriArcadeVariableDeclarationStatement &node ) override;
+    void visit( const QgsEsriArcadeAssignmentStatement &node ) override;
     void visit( const QgsEsriArcadeReturnStatement &node ) override;
     void visit( const QgsEsriArcadeFunctionDeclarationStatement &node ) override;
     void visit( const QgsEsriArcadeExpressionStatement &node ) override;
