@@ -404,21 +404,14 @@
                 </widget>
                </item>
                <item>
-                <layout class="QGridLayout" name="gridLayout">
-                 <property name="sizeConstraint">
-                  <enum>QLayout::SizeConstraint::SetMinimumSize</enum>
+                <widget class="QLabel" name="downloadCount">
+                 <property name="text">
+                  <string>Current downloads</string>
                  </property>
-                 <item row="0" column="0" colspan="2">
-                  <widget class="QLabel" name="downloadCount">
-                   <property name="text">
-                    <string>Current downloads</string>
-                   </property>
-                   <property name="alignment">
-                    <set>Qt::AlignmentFlag::AlignRight|Qt::AlignmentFlag::AlignTrailing|Qt::AlignmentFlag::AlignVCenter</set>
-                   </property>
-                  </widget>
-                 </item>
-                </layout>
+                 <property name="alignment">
+                  <set>Qt::AlignmentFlag::AlignRight|Qt::AlignmentFlag::AlignTrailing|Qt::AlignmentFlag::AlignVCenter</set>
+                 </property>
+                </widget>
                </item>
                <item>
                 <layout class="QHBoxLayout" name="horizontalLayout_6">
