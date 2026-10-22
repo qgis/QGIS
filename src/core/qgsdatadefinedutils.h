@@ -60,6 +60,9 @@ template<typename V, size_t N> class QgsDataDefinedStringDecoder
         if ( key[0].unicode() < u'a' || key[0].unicode() > u'z' )
           throw "QgsDataDefinedStringDecoder: keys must start with a lowercase letter";
 
+        if ( key.size() > MAX_KEY_SIZE )
+          throw "QgsDataDefinedStringDecoder: keys must be less than MAX_KEY_SIZE characters length";
+
         for ( int j = 0; j < key.size(); ++j )
         {
           if ( key[j].unicode() >= u'A' && key[j].unicode() <= u'Z' )
@@ -137,6 +140,7 @@ template<typename V, size_t N> class QgsDataDefinedStringDecoder
     }
 
   private:
+    static constexpr int MAX_KEY_SIZE = 32;
     std::array<DataDefinedDecoderEntry<V>, N> mLookupTable {};
 
     // we have one partition per a-z character, allowing us to jump immediately to the
@@ -217,7 +221,7 @@ template<typename V, size_t N> class QgsDataDefinedStringDecoder
  *
  * \since QGIS 4.4
  */
-template<typename V, size_t N> constexpr CORE_EXPORT QgsDataDefinedStringDecoder<V, N> makeDataDefinedStringDecoder( const DataDefinedDecoderEntry<V> ( &values )[N] )
+template<typename V, size_t N> constexpr QgsDataDefinedStringDecoder<V, N> makeDataDefinedStringDecoder( const DataDefinedDecoderEntry<V> ( &values )[N] )
 {
   return QgsDataDefinedStringDecoder<V, N>( values );
 }
