@@ -44,6 +44,9 @@ Represents an abstract node for an Esri Arcade script.
       case QgsEsriArcadeNode::NodeType::ntExpressionStatement:
         sipType = sipType_QgsEsriArcadeExpressionStatement;
         break;
+      case QgsEsriArcadeNode::NodeType::ntArrayLiteralExpression:
+        sipType = sipType_QgsEsriArcadeArrayLiteralExpression;
+        break;
       case QgsEsriArcadeNode::NodeType::ntLiteralExpression:
         sipType = sipType_QgsEsriArcadeLiteralExpression;
         break;
@@ -90,6 +93,7 @@ Represents an abstract node for an Esri Arcade script.
       ntUnaryOperatorExpression,
       ntFunctionCallExpression,
       ntIndexExpression,
+      ntArrayLiteralExpression,
     };
 
     virtual ~QgsEsriArcadeNode();
@@ -767,6 +771,47 @@ Returns the index expression.
     QgsEsriArcadeIndexExpression( const QgsEsriArcadeIndexExpression &other );
 };
 
+class QgsEsriArcadeArrayLiteralExpression : QgsEsriArcadeExpression
+{
+%Docstring(signature="appended")
+Represents an array literal expression (e.g. [1, 2, 3]).
+
+Array elements may be expressions themselves.
+
+.. versionadded:: 4.6
+%End
+
+%TypeHeaderCode
+#include "qgsesriarcadescript.h"
+%End
+  public:
+    explicit QgsEsriArcadeArrayLiteralExpression( const QList<QgsEsriArcadeExpression *> &elements /Transfer/ );
+%Docstring
+Constructor for QgsEsriArcadeArrayLiteralExpression.
+
+Ownership of all expressions in ``elements`` is transferred to this
+node.
+%End
+
+    ~QgsEsriArcadeArrayLiteralExpression();
+
+    virtual QgsEsriArcadeNode::NodeType nodeType() const;
+    virtual QString dump() const;
+
+    virtual QgsEsriArcadeNode *clone() const /Factory/;
+
+    virtual void accept( QgsEsriArcadeVisitor &visitor ) const;
+
+
+    QList<QgsEsriArcadeExpression *> elements() const;
+%Docstring
+Returns the list of element expressions.
+%End
+
+  private:
+    QgsEsriArcadeArrayLiteralExpression( const QgsEsriArcadeArrayLiteralExpression &other );
+};
+
 class QgsEsriArcadeVisitor
 {
 %Docstring(signature="appended")
@@ -796,6 +841,7 @@ trees.
     virtual void visit( const QgsEsriArcadeUnaryOperatorExpression &node ) = 0;
     virtual void visit( const QgsEsriArcadeFunctionCallExpression &node ) = 0;
     virtual void visit( const QgsEsriArcadeIndexExpression &node ) = 0;
+    virtual void visit( const QgsEsriArcadeArrayLiteralExpression &node ) = 0;
 };
 
 class QgsEsriArcadeRecursiveVisitor : QgsEsriArcadeVisitor
@@ -840,6 +886,8 @@ Esri Arcade script.
     virtual void visit( const QgsEsriArcadeFunctionCallExpression &node );
 
     virtual void visit( const QgsEsriArcadeIndexExpression &node );
+
+    virtual void visit( const QgsEsriArcadeArrayLiteralExpression &node );
 
 };
 

@@ -498,6 +498,47 @@ void QgsEsriArcadeIndexExpression::accept( QgsEsriArcadeVisitor &visitor ) const
 }
 
 //
+// QgsEsriArcadeArrayLiteralExpression
+//
+
+QgsEsriArcadeArrayLiteralExpression::QgsEsriArcadeArrayLiteralExpression( const QList<QgsEsriArcadeExpression *> &elements )
+  : mElements( elements )
+{}
+
+QgsEsriArcadeArrayLiteralExpression::~QgsEsriArcadeArrayLiteralExpression()
+{
+  qDeleteAll( mElements );
+}
+
+QString QgsEsriArcadeArrayLiteralExpression::dump() const
+{
+  QStringList elementStrings;
+  elementStrings.reserve( mElements.size() );
+  for ( QgsEsriArcadeExpression *element : std::as_const( mElements ) )
+  {
+    elementStrings.append( element->dump() );
+  }
+  return u"[%1]"_s.arg( elementStrings.join( ", "_L1 ) );
+}
+
+QgsEsriArcadeNode *QgsEsriArcadeArrayLiteralExpression::clone() const
+{
+  QList<QgsEsriArcadeExpression *> clonedElements;
+  clonedElements.reserve( mElements.size() );
+  for ( QgsEsriArcadeExpression *element : std::as_const( mElements ) )
+  {
+    clonedElements.append( dynamic_cast<QgsEsriArcadeExpression *>( element->clone() ) );
+  }
+  return new QgsEsriArcadeArrayLiteralExpression( clonedElements );
+}
+
+void QgsEsriArcadeArrayLiteralExpression::accept( QgsEsriArcadeVisitor &visitor ) const
+{
+  visitor.visit( *this );
+}
+
+
+//
 // QgsEsriArcadeRecursiveVisitor
 //
 
@@ -586,6 +627,15 @@ void QgsEsriArcadeRecursiveVisitor::visit( const QgsEsriArcadeIndexExpression &n
     node.containerExpression()->accept( *this );
   if ( node.indexExpression() )
     node.indexExpression()->accept( *this );
+}
+
+void QgsEsriArcadeRecursiveVisitor::visit( const QgsEsriArcadeArrayLiteralExpression &node )
+{
+  const QList<QgsEsriArcadeExpression *> elements = node.elements();
+  for ( QgsEsriArcadeExpression *element : elements )
+  {
+    element->accept( *this );
+  }
 }
 
 //
