@@ -276,6 +276,8 @@ class ClipRasterByMask(GdalAlgorithm):
             self.MASK, parameters, context, feedback, executing
         )
 
+        mask_layer = self.parameterAsVectorLayer(parameters, self.MASK, context)
+
         sourceCrs = self.parameterAsCrs(parameters, self.SOURCE_CRS, context)
         targetCrs = self.parameterAsCrs(parameters, self.TARGET_CRS, context)
 
@@ -397,6 +399,13 @@ class ClipRasterByMask(GdalAlgorithm):
         arguments.append(mask_details.connection_string)
         arguments.append("-cl")
         arguments.append(mask_details.layer_name)
+
+        if (
+            mask_layer.providerType() in ("ogr", "postgres")
+            and mask_layer.subsetString()
+        ):
+            arguments.append("-cwhere")
+            arguments.append(mask_layer.subsetString())
 
         if self.parameterAsBoolean(parameters, self.CROP_TO_CUTLINE, context):
             arguments.append("-crop_to_cutline")
