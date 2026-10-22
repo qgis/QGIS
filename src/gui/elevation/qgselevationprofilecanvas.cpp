@@ -1206,19 +1206,23 @@ QList<QgsMapLayer *> QgsElevationProfileCanvas::layers() const
   return _qgis_listQPointerToRaw( mLayers );
 }
 
-void QgsElevationProfileCanvas::setSources( const QList<QgsAbstractProfileSource *> &sources )
+void QgsElevationProfileCanvas::setSources( const QList< std::variant< QgsMapLayer *, QgsAbstractProfileSource * > > &sources )
 {
   mSources.clear();
   mSources.reserve( sources.count() );
-  for ( QgsAbstractProfileSource *profileSource : sources )
+
+  for ( const auto &source : sources )
   {
-    if ( auto layer = dynamic_cast<QgsMapLayer *>( profileSource ) )
+    if ( auto layer = std::get_if< QgsMapLayer * >( &source ) )
     {
-      mSources << QgsWeakMapLayerPointer( layer );
+      mSources << QgsWeakMapLayerPointer( *layer );
     }
-    else if ( QgsApplication::profileSourceRegistry()->findSourceById( profileSource->profileSourceId() ) )
+    else if ( auto profileSource = std::get_if< QgsAbstractProfileSource * >( &source ) )
     {
-      mSources << profileSource;
+      if ( QgsApplication::profileSourceRegistry()->findSourceById( ( *profileSource )->profileSourceId() ) )
+      {
+        mSources << *profileSource;
+      }
     }
   }
 }
