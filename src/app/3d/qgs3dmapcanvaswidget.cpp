@@ -560,6 +560,14 @@ Qgs3DMapCanvasWidget::Qgs3DMapCanvasWidget( const QString &name, bool isDocked )
   updateLayerRelatedActions( QgisApp::instance()->activeLayer() );
   mEditingToolBar->setVisible( setting.value( u"/3D/editingToolbar/visibility"_s, false, QgsSettings::Gui ).toBool() );
 
+  toolBar->addSeparator();
+
+  //  Help button
+  QAction *helpAction = new QAction( QgsApplication::getThemeIcon( u"mActionHelpContents.svg"_s ), tr( "Open Help" ), this );
+  helpAction->setObjectName( u"m3DActionHelp"_s );
+  connect( helpAction, &QAction::triggered, this, []() { QgsHelp::openHelp( u"map_views/3d_map_view.html"_s ); } );
+  toolBar->addAction( helpAction );
+
   QList<QAction *> toolbarMenuActions;
   // Set action names so that they can be used in customization
   for ( QToolBar *toolBar : { mEditingToolBar } )
