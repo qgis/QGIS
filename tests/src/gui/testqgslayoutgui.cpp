@@ -306,7 +306,7 @@ void TestQgsLayoutGui::testElevationProfileWidget()
 
   QgsLayoutItemElevationProfile profile( &layout );
   // sources will be rendered from vl3->vl1 from bottom to top
-  profile.setSources( { vl1, vl2, vl3 } );
+  profile.setSources( { static_cast< QgsMapLayer * >( vl1 ), static_cast< QgsMapLayer * >( vl2 ), static_cast< QgsMapLayer * >( vl3 ) } );
   QgsLayoutElevationProfileWidget widget( &profile );
 
   QCOMPARE( widget.mLayerTree->children().size(), 3 );
@@ -358,7 +358,7 @@ void TestQgsLayoutGui::testElevationProfileWidgetRemovingSources()
 
   QgsLayoutItemElevationProfile profile( &layout );
   // sources will be rendered from vl3->vl1 from bottom to top
-  profile.setSources( { vl1, vl2, vl3 } );
+  profile.setSources( { static_cast< QgsMapLayer * >( vl1 ), static_cast< QgsMapLayer * >( vl2 ), static_cast< QgsMapLayer * >( vl3 ) } );
   QgsLayoutElevationProfileWidget widget( &profile );
 
   QCOMPARE( widget.mLayerTree->children().size(), 3 );

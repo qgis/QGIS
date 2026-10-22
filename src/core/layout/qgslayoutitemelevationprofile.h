@@ -21,6 +21,10 @@
 #include "qgslayoutitem.h"
 #include "qgsmaplayerref.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 class QgsLayoutItemElevationProfilePlot;
 class Qgs2DXyPlot;
 class QgsProfileRequest;
@@ -93,12 +97,70 @@ class CORE_EXPORT QgsLayoutItemElevationProfile : public QgsLayoutItem
      */
     QList<QgsAbstractProfileSource *> sources() const;
 
+#ifndef SIP_RUN
     /**
      * Sets the list of \a sources participating in the elevation profile.
      *
      * \see sources()
      */
-    void setSources( const QList<QgsAbstractProfileSource *> &sources );
+    void setSources( const QList< std::variant< QgsMapLayer *, QgsAbstractProfileSource * > > &sources );
+#else
+    // clang-format off
+
+    /**
+     * Sets the list of \a sources participating in the elevation profile.
+     *
+     * \see sources()
+     */
+    void setSources( SIP_PYOBJECT sources SIP_TYPEHINT( List[Union[QgsMapLayer, QgsAbstractProfileSource]] ) );
+    % MethodCode
+        if ( PyList_Check( a0 ) && PyList_GET_SIZE( a0 ) )
+    {
+      QList< std::variant< QgsMapLayer *, QgsAbstractProfileSource * > > sourcesList;
+      for ( SIP_SSIZE_T i = 0; i < PyList_GET_SIZE( a0 ); ++i )
+      {
+        PyObject *p0 = PyList_GetItem( a0, i );
+        int state;
+        sipIsErr = 0;
+
+        const sipTypeDef *source_type = sipFindType( "QgsAbstractProfileSource" );
+
+        if ( sipCanConvertToType( p0, sipType_QgsMapLayer, SIP_NOT_NONE ) )
+        {
+          QgsMapLayer *layerSource = reinterpret_cast<QgsMapLayer *>( sipConvertToType( p0, sipType_QgsMapLayer, 0, SIP_NOT_NONE, &state, &sipIsErr ) );
+          if ( !sipIsErr )
+          {
+            sourcesList << layerSource;
+          }
+
+          sipReleaseType( layerSource, sipType_QgsMapLayer, state );
+        }
+        else if ( sipCanConvertToType( p0, source_type, SIP_NOT_NONE ) )
+        {
+          QgsAbstractProfileSource *profileSource = reinterpret_cast<QgsAbstractProfileSource *>( sipConvertToType( p0, source_type, 0, SIP_NOT_NONE, &state, &sipIsErr ) );
+          if ( !sipIsErr )
+          {
+            sourcesList << profileSource;
+          }
+
+          sipReleaseType( profileSource, source_type, state );
+        }
+        else
+        {
+          sipIsErr = 1;
+          PyErr_SetString( PyExc_TypeError, u"The input list contains an element with unexpected type!"_s.toUtf8().constData() );
+        }
+      }
+      sipCpp->setSources( sourcesList );
+    }
+    else
+    {
+      sipIsErr = 1;
+      PyErr_SetString( PyExc_TypeError, u"First argument is not a list or is empty."_s.toUtf8().constData() );
+    }
+    % End
+// clang-format on
+#endif
 
     /**
      * Sets the cross section profile \a curve, which represents the line along which the profile should be generated.
