@@ -145,6 +145,7 @@ class QgsVectorLayerFeatureIterator;
     QgsCoordinateTransformContext mTransformContext;
     Qgis::DistanceUnit mDistanceUnit;
     Qgis::AreaUnit mAreaUnit;
+    QgsExpressionContextScope *mProjectScope = nullptr;
 
   private:
 #ifdef SIP_RUN
