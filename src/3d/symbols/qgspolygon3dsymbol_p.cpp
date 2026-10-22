@@ -18,6 +18,7 @@
 #include "qgs3d.h"
 #include "qgs3drendercontext.h"
 #include "qgs3dutils.h"
+#include "qgsellipsoidutils.h"
 #include "qgsfeature3dhandler_p.h"
 #include "qgsgeotransform.h"
 #include "qgslinematerial_p.h"
@@ -118,6 +119,18 @@ bool QgsPolygon3DSymbolHandler::prepare( const Qgs3DRenderContext &context, QSet
   const bool requiresTextureCoordinates = materialSettings->requiresTextureCoordinates();
   const bool requiresTangents = materialSettings->requiresTangents();
 
+  double globeSemiMajorAxis = 0;
+  double globeSemiMinorAxis = 0;
+  if ( context.crs().type() == Qgis::CrsType::Geocentric )
+  {
+    const QgsEllipsoidUtils::EllipsoidParameters params = QgsEllipsoidUtils::ellipsoidParameters( context.crs().ellipsoidAcronym() );
+    if ( params.valid )
+    {
+      globeSemiMajorAxis = params.semiMajor;
+      globeSemiMinorAxis = params.semiMinor;
+    }
+  }
+
   auto tessellator = std::make_unique<QgsTessellator>();
   tessellator->setOrigin( mChunkOrigin );
   tessellator->setAddNormals( true );
@@ -127,6 +140,7 @@ bool QgsPolygon3DSymbolHandler::prepare( const Qgs3DRenderContext &context, QSet
   tessellator->setAddTextureUVs( requiresTextureCoordinates );
   tessellator->setAddTangents( requiresTangents );
   tessellator->setTriangulationAlgorithm( Qgis::TriangulationAlgorithm::Earcut );
+  tessellator->setGlobeEllipsoid( globeSemiMajorAxis, globeSemiMinorAxis );
 
   outNormal.tessellator = std::move( tessellator );
 
@@ -139,6 +153,7 @@ bool QgsPolygon3DSymbolHandler::prepare( const Qgs3DRenderContext &context, QSet
   tessellator->setAddTextureUVs( requiresTextureCoordinates );
   tessellator->setAddTangents( requiresTangents );
   tessellator->setTriangulationAlgorithm( Qgis::TriangulationAlgorithm::Earcut );
+  tessellator->setGlobeEllipsoid( globeSemiMajorAxis, globeSemiMinorAxis );
 
   outSelected.tessellator = std::move( tessellator );
 
