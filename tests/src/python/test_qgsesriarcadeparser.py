@@ -89,6 +89,53 @@ class TestQgsEsriArcadeScript(unittest.TestCase):
             script.rootBlock().statements()[0].expression().rightOperand().value(), 2
         )
 
+    def test_single_line_string_with_explicit_return(self):
+        script = QgsEsriArcadeScript('return "Hello world"')
+        self.assertFalse(script.hasParserError())
+
+        self.assertEqual(script.script(), 'return "Hello world"')
+        self.assertEqual(script.dump(), 'return "Hello world";')
+
+        self.assertIsInstance(script.rootBlock(), QgsEsriArcadeBlockStatement)
+        self.assertEqual(script.rootBlock().count(), 1)
+
+        self.assertIsInstance(
+            script.rootBlock().statements()[0],
+            QgsEsriArcadeReturnStatement,
+        )
+        self.assertIsInstance(
+            script.rootBlock().statements()[0].expression(),
+            QgsEsriArcadeLiteralExpression,
+        )
+        self.assertEqual(
+            script.rootBlock().statements()[0].expression().value(), "Hello world"
+        )
+
+    def test_single_line_string_with_explicit_return_complex(self):
+        script = QgsEsriArcadeScript(
+            "return ( ($feature.POP_2010 - $feature.POP_2000) / $feature.POP_2000) * 100;"
+        )
+        # TODO
+        self.assertFalse(script.hasParserError())
+
+        self.assertEqual(script.script(), 'return "Hello world"')
+        self.assertEqual(script.dump(), 'return "Hello world";')
+
+        self.assertIsInstance(script.rootBlock(), QgsEsriArcadeBlockStatement)
+        self.assertEqual(script.rootBlock().count(), 1)
+
+        self.assertIsInstance(
+            script.rootBlock().statements()[0],
+            QgsEsriArcadeReturnStatement,
+        )
+        self.assertIsInstance(
+            script.rootBlock().statements()[0].expression(),
+            QgsEsriArcadeLiteralExpression,
+        )
+        self.assertEqual(
+            script.rootBlock().statements()[0].expression().value(), "Hello world"
+        )
+
     def test_basic(self):
         script = QgsEsriArcadeScript("""var x = 3; var y = 4;
             return x + y;""")
@@ -311,6 +358,119 @@ return value / Sum(values);
         self.assertIsInstance(
             script.rootBlock().statements()[0],
             QgsEsriArcadeVariableDeclarationStatement,
+        )
+
+    def test_complex_assignment(self):
+        script = QgsEsriArcadeScript(
+            """
+var first = "Paul";
+var last = "Richard";
+var fullName = first + " " + last;
+"""
+        )
+        self.assertFalse(script.hasParserError())
+
+        self.assertIsInstance(script.rootBlock(), QgsEsriArcadeBlockStatement)
+        self.assertEqual(script.rootBlock().count(), 3)
+
+        self.assertIsInstance(
+            script.rootBlock().statements()[2],
+            QgsEsriArcadeVariableDeclarationStatement,
+        )
+        self.assertEqual(script.rootBlock().statements()[2].variableName(), "fullName")
+        self.assertIsInstance(
+            script.rootBlock().statements()[2].initializer(),
+            QgsEsriArcadeBinaryOperatorExpression,
+        )
+        self.assertEqual(
+            script.rootBlock().statements()[2].initializer().binaryOperator(),
+            QgsEsriArcadeBinaryOperatorExpression.BinaryOperator.boPlus,
+        )
+        self.assertIsInstance(
+            script.rootBlock().statements()[2].initializer().leftOperand(),
+            QgsEsriArcadeBinaryOperatorExpression,
+        )
+
+        self.assertEqual(
+            script.rootBlock()
+            .statements()[2]
+            .initializer()
+            .leftOperand()
+            .binaryOperator(),
+            QgsEsriArcadeBinaryOperatorExpression.BinaryOperator.boPlus,
+        )
+        self.assertIsInstance(
+            script.rootBlock()
+            .statements()[2]
+            .initializer()
+            .leftOperand()
+            .leftOperand(),
+            QgsEsriArcadeVariableReferenceExpression,
+        )
+        self.assertEqual(
+            script.rootBlock()
+            .statements()[2]
+            .initializer()
+            .leftOperand()
+            .leftOperand()
+            .name(),
+            "first",
+        )
+        self.assertIsInstance(
+            script.rootBlock()
+            .statements()[2]
+            .initializer()
+            .leftOperand()
+            .rightOperand(),
+            QgsEsriArcadeLiteralExpression,
+        )
+        self.assertEqual(
+            script.rootBlock()
+            .statements()[2]
+            .initializer()
+            .leftOperand()
+            .rightOperand()
+            .value(),
+            " ",
+        )
+
+        self.assertIsInstance(
+            script.rootBlock().statements()[2].initializer().rightOperand(),
+            QgsEsriArcadeVariableReferenceExpression,
+        )
+        self.assertEqual(
+            script.rootBlock().statements()[2].initializer().rightOperand().name(),
+            "last",
+        )
+
+    def test_reassignment(self):
+        script = QgsEsriArcadeScript(
+            """
+            var age = 35;
+// reassigned as text
+age = "35 years";
+            """
+        )
+        self.assertFalse(script.hasParserError())
+
+        self.assertIsInstance(script.rootBlock(), QgsEsriArcadeBlockStatement)
+        self.assertEqual(script.rootBlock().count(), 2)
+
+        self.assertIsInstance(
+            script.rootBlock().statements()[0],
+            QgsEsriArcadeVariableDeclarationStatement,
+        )
+
+        self.assertIsInstance(
+            script.rootBlock().statements()[1],
+            QgsEsriArcadeExpressionStatement,
+        )
+        self.assertIsInstance(
+            script.rootBlock().statements()[1].expression(),
+            QgsEsriArcadeLiteralExpression,
+        )
+        self.assertEqual(
+            script.rootBlock().statements()[1].expression().value(), "Hello world"
         )
 
 
