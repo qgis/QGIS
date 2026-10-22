@@ -6,7 +6,7 @@ the Free Software Foundation; either version 2 of the License, or
 (at your option) any later version.
 """
 
-import sys
+import math
 
 from qgis.core import (
     QgsEsriArcadeArrayLiteralExpression,
@@ -93,6 +93,132 @@ class TestQgsEsriArcadeScript(unittest.TestCase):
         )
         self.assertEqual(
             script.rootBlock().statements()[0].expression().rightOperand().value(), 2
+        )
+
+    def test_number_literals(self):
+        script = QgsEsriArcadeScript("10")
+        self.assertFalse(script.hasParserError())
+        self.assertIsInstance(script.rootBlock(), QgsEsriArcadeBlockStatement)
+        self.assertEqual(script.rootBlock().count(), 1)
+        self.assertEqual(script.rootBlock().statements()[0].expression().value(), 10)
+
+        script = QgsEsriArcadeScript("1.2 + 2.1")
+        self.assertFalse(script.hasParserError())
+        self.assertIsInstance(script.rootBlock(), QgsEsriArcadeBlockStatement)
+        self.assertEqual(script.rootBlock().count(), 1)
+        self.assertEqual(
+            script.rootBlock().statements()[0].expression().leftOperand().value(), 1.2
+        )
+        self.assertEqual(
+            script.rootBlock().statements()[0].expression().rightOperand().value(), 2.1
+        )
+
+        script = QgsEsriArcadeScript("0.0034 + 0.0071")
+        self.assertFalse(script.hasParserError())
+        self.assertIsInstance(script.rootBlock(), QgsEsriArcadeBlockStatement)
+        self.assertEqual(script.rootBlock().count(), 1)
+        self.assertEqual(
+            script.rootBlock().statements()[0].expression().leftOperand().value(),
+            0.0034,
+        )
+        self.assertEqual(
+            script.rootBlock().statements()[0].expression().rightOperand().value(),
+            0.0071,
+        )
+
+        script = QgsEsriArcadeScript("0.255e3 + 0.255e10")
+        self.assertFalse(script.hasParserError())
+        self.assertIsInstance(script.rootBlock(), QgsEsriArcadeBlockStatement)
+        self.assertEqual(script.rootBlock().count(), 1)
+        self.assertEqual(
+            script.rootBlock().statements()[0].expression().leftOperand().value(), 255.0
+        )
+        self.assertEqual(
+            script.rootBlock().statements()[0].expression().rightOperand().value(),
+            2550000000.0,
+        )
+
+        script = QgsEsriArcadeScript("0b11111111 + 0b01010101")
+        self.assertFalse(script.hasParserError())
+        self.assertIsInstance(script.rootBlock(), QgsEsriArcadeBlockStatement)
+        self.assertEqual(script.rootBlock().count(), 1)
+        self.assertEqual(
+            script.rootBlock().statements()[0].expression().leftOperand().value(), 255
+        )
+        self.assertEqual(
+            script.rootBlock().statements()[0].expression().rightOperand().value(), 85
+        )
+
+        script = QgsEsriArcadeScript("0o755 + 0o344")
+        self.assertFalse(script.hasParserError())
+        self.assertIsInstance(script.rootBlock(), QgsEsriArcadeBlockStatement)
+        self.assertEqual(script.rootBlock().count(), 1)
+        self.assertEqual(
+            script.rootBlock().statements()[0].expression().leftOperand().value(), 493
+        )
+        self.assertEqual(
+            script.rootBlock().statements()[0].expression().rightOperand().value(), 228
+        )
+
+        script = QgsEsriArcadeScript("0xff + 0x1a + 0x99")
+        self.assertFalse(script.hasParserError())
+        self.assertIsInstance(script.rootBlock(), QgsEsriArcadeBlockStatement)
+        self.assertEqual(script.rootBlock().count(), 1)
+        self.assertEqual(
+            script.rootBlock()
+            .statements()[0]
+            .expression()
+            .leftOperand()
+            .leftOperand()
+            .value(),
+            255,
+        )
+        self.assertEqual(
+            script.rootBlock()
+            .statements()[0]
+            .expression()
+            .leftOperand()
+            .rightOperand()
+            .value(),
+            26,
+        )
+        self.assertEqual(
+            script.rootBlock().statements()[0].expression().rightOperand().value(), 153
+        )
+
+        script = QgsEsriArcadeScript("PI + Infinity")
+        self.assertFalse(script.hasParserError())
+        self.assertIsInstance(script.rootBlock(), QgsEsriArcadeBlockStatement)
+        self.assertEqual(script.rootBlock().count(), 1)
+        self.assertAlmostEqual(
+            script.rootBlock().statements()[0].expression().leftOperand().value(),
+            3.141592,
+            places=3,
+        )
+        self.assertTrue(
+            math.isinf(
+                script.rootBlock().statements()[0].expression().rightOperand().value()
+            )
+        )
+
+        script = QgsEsriArcadeScript("NaN + -Infinity")
+        self.assertFalse(script.hasParserError())
+        self.assertIsInstance(script.rootBlock(), QgsEsriArcadeBlockStatement)
+        self.assertEqual(script.rootBlock().count(), 1)
+        self.assertTrue(
+            math.isnan(
+                script.rootBlock().statements()[0].expression().leftOperand().value()
+            )
+        )
+        self.assertTrue(
+            math.isinf(
+                script.rootBlock()
+                .statements()[0]
+                .expression()
+                .rightOperand()
+                .operand()
+                .value()
+            )
         )
 
     def test_single_line_string_with_explicit_return(self):
