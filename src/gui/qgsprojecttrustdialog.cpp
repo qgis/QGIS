@@ -35,7 +35,7 @@
 
 using namespace Qt::StringLiterals;
 
-QgsProjectTrustDialog::QgsProjectTrustDialog( QgsProject *project, QWidget *parent, Qt::WindowFlags fl )
+QgsProjectTrustDialog::QgsProjectTrustDialog( QgsProject *project, QWidget *parent, Qt::WindowFlags fl, TrustDialogType trustDialogType )
   : QDialog( parent, fl )
 {
   setupUi( this );
@@ -92,40 +92,65 @@ QgsProjectTrustDialog::QgsProjectTrustDialog( QgsProject *project, QWidget *pare
 
   if ( project )
   {
-    QgsProjectStorage *storage = QgsApplication::projectStorageRegistry()->projectStorageFromUri( project->fileName() );
-    if ( storage )
+    bool isUnsavedNewProject = project->fileName().isEmpty() && project->lastSaveDateTime().isNull(); 
+    if(isUnsavedNewProject)
     {
-      if ( !storage->filePath( project->fileName() ).isEmpty() )
+      mButtonBox->button( QDialogButtonBox::StandardButton::YesToAll )->setEnabled(false);
+      mButtonBox->button( QDialogButtonBox::StandardButton::NoToAll )->setEnabled(false);
+      mProjectDetailsLabel->setText( tr( "The current project is new and unsaved and can only be trusted for the duration of the session." ) );
+      mTrustProjectFolderCheckBox->setVisible( false );
+    }
+    else
+    {
+      QgsProjectStorage *storage = QgsApplication::projectStorageRegistry()->projectStorageFromUri( project->fileName() );
+      if ( storage )
       {
-        QFileInfo projectFileInfo( storage->filePath( project->fileName() ) );
+        if ( !storage->filePath( project->fileName() ).isEmpty() )
+        {
+          QFileInfo projectFileInfo( storage->filePath( project->fileName() ) );
+          mProjectAbsoluteFilePath = projectFileInfo.absoluteFilePath();
+          mProjectAbsolutePath = projectFileInfo.absolutePath();
+          mProjectIsFile = true;
+        }
+        else
+        {
+          mProjectAbsolutePath = project->fileName();
+          mProjectIsFile = false;
+        }
+      }
+      else
+      {
+        QFileInfo projectFileInfo( project->fileName() );
         mProjectAbsoluteFilePath = projectFileInfo.absoluteFilePath();
         mProjectAbsolutePath = projectFileInfo.absolutePath();
         mProjectIsFile = true;
       }
+
+      if ( mProjectIsFile )
+      {
+        if(trustDialogType == TrustDialogType::AfterSaveToNewLocation)
+        {
+          mProjectDetailsLabel->setText( tr( "The current project has been saved to a new file path ’%1’." ).arg( u"<b>%1</b>"_s.arg( mProjectAbsoluteFilePath ) ) );
+        }
+        else
+        {
+          mProjectDetailsLabel->setText( tr( "The current project file path is ’%1’." ).arg( u"<b>%1</b>"_s.arg( mProjectAbsoluteFilePath ) ) );
+        }
+        QDir dir( mProjectAbsolutePath );
+        mTrustProjectFolderCheckBox->setText( tr( "Apply decision to all projects in folder ’%1’" ).arg( u"%1"_s.arg( dir.dirName() ) ) );
+      }
       else
       {
-        mProjectAbsolutePath = project->fileName();
-        mProjectIsFile = false;
+        if(trustDialogType == TrustDialogType::AfterSaveToNewLocation)
+        {
+          mProjectDetailsLabel->setText( tr( "The current project has been saved to a new URI ’%1’." ).arg( u"<b>%1</b>"_s.arg( mProjectAbsoluteFilePath ) ) );
+        }
+        else
+        {
+          mProjectDetailsLabel->setText( tr( "The current project URI is ’%1’." ).arg( u"<b>%1</b>"_s.arg( mProjectAbsoluteFilePath ) ) );
+        }
+        mTrustProjectFolderCheckBox->setVisible( false );
       }
-    }
-    else
-    {
-      QFileInfo projectFileInfo( project->fileName() );
-      mProjectAbsoluteFilePath = projectFileInfo.absoluteFilePath();
-      mProjectAbsolutePath = projectFileInfo.absolutePath();
-      mProjectIsFile = true;
-    }
-
-    if ( mProjectIsFile )
-    {
-      mProjectDetailsLabel->setText( tr( "The current project file path is ’%1’." ).arg( u"<b>%1</b>"_s.arg( mProjectAbsoluteFilePath ) ) );
-      QDir dir( mProjectAbsolutePath );
-      mTrustProjectFolderCheckBox->setText( tr( "Apply decision to all projects in folder ’%1’" ).arg( u"%1"_s.arg( dir.dirName() ) ) );
-    }
-    else
-    {
-      mProjectDetailsLabel->setText( tr( "The current project URI is ’%1’." ).arg( u"<b>%1</b>"_s.arg( mProjectAbsoluteFilePath ) ) );
-      mTrustProjectFolderCheckBox->setVisible( false );
     }
 
     project->accept( &mEmbeddedScriptsVisitor, QgsObjectVisitorContext() );
@@ -156,6 +181,12 @@ QgsProjectTrustDialog::QgsProjectTrustDialog( QgsProject *project, QWidget *pare
     newItem->setFlags( Qt::ItemIsEnabled | Qt::ItemIsSelectable );
     mScriptPreviewList->addItem( newItem );
   }
+  
+  if(trustDialogType == TrustDialogType::AfterSaveToNewLocation)
+  {
+    mDescriptionLabel->setText( tr( "Do you want to trust this new location for the execution of embedded scripts?" ) );
+    mTitleLabel->setText( tr( "Trust new project location" ) );
+  }
 }
 
 void QgsProjectTrustDialog::buttonBoxClicked( QAbstractButton *button )
@@ -169,7 +200,21 @@ void QgsProjectTrustDialog::buttonBoxClicked( QAbstractButton *button )
 
   bool accepted = false;
   QString path = !mProjectIsFile || mTrustProjectFolderCheckBox->isChecked() ? mProjectAbsolutePath : mProjectAbsoluteFilePath;
-  if ( !path.isEmpty() )
+  if(QgsProject::instance()->fileName().isEmpty() && QgsProject::instance()->lastSaveDateTime().isNull()) 
+  {
+    // new, unsaved project
+    if ( buttonType == QDialogButtonBox::StandardButton::Yes || buttonType == QDialogButtonBox::StandardButton::YesToAll )
+    {
+      accepted = true;
+      QgsApplication::setCurrentProjectTemporaryTrustStatus(Qgis::ProjectTrustStatus::Trusted);
+    }
+    else if ( buttonType == QDialogButtonBox::StandardButton::No || buttonType == QDialogButtonBox::StandardButton::NoToAll )
+    {
+      accepted = false;
+      QgsApplication::setCurrentProjectTemporaryTrustStatus(Qgis::ProjectTrustStatus::Untrusted);
+    }
+  }
+  else if ( !path.isEmpty() )
   {
     QStringList trustedProjectsFolders = QgsSettingsRegistryCore::settingsCodeExecutionTrustedProjectsFolders->value();
     trustedProjectsFolders.removeAll( path );
@@ -201,7 +246,6 @@ void QgsProjectTrustDialog::buttonBoxClicked( QAbstractButton *button )
       temporarilyUntrustedProjectsFolders << path;
       accepted = false;
     }
-
     trustedProjectsFolders.sort();
     untrustedProjectsFolders.sort();
     temporarilyTrustedProjectsFolders.sort();

@@ -495,6 +495,8 @@ using namespace Qt::StringLiterals;
 #include "qgstoolbuttonaction.h"
 #include "qgsuserprofilemanager.h"
 #include "qgsuserprofile.h"
+#include "qgsprojectutils.h"
+#include "qgsprojecttrustdialog.h"
 #include "devtools/networklogger/qgsnetworklogger.h"
 #include "devtools/networklogger/qgsnetworkloggerwidgetfactory.h"
 #include "devtools/querylogger/qgsappquerylogger.h"
@@ -6908,6 +6910,9 @@ bool QgisApp::fileSave()
 
 void QgisApp::fileSaveAs()
 {
+  // get current project trust before saving since it depends on filepath
+  Qgis::ProjectTrustStatus previousProjectTrustStatus = QgsProjectUtils::checkUserTrust( QgsProject::instance() );
+
   QString defaultPath;
   QgsSettings settings;
   // First priority is to default to same path as existing file
@@ -6976,6 +6981,17 @@ void QgisApp::fileSaveAs()
     QMessageBox::critical( this, tr( "Unable to save project %1" ).arg( QDir::toNativeSeparators( QgsProject::instance()->fileName() ) ), QgsProject::instance()->error(), QMessageBox::Ok, Qt::NoButton );
   }
   mProjectLastModified = fullPath.lastModified();
+
+  const Qgis::EmbeddedScriptMode embeddedScriptMode = QgsSettingsRegistryCore::settingsCodeExecutionBehaviorUndeterminedProjects->value();
+  if(embeddedScriptMode != Qgis::EmbeddedScriptMode::Always
+    && embeddedScriptMode != Qgis::EmbeddedScriptMode::Never)
+  {
+    if( previousProjectTrustStatus != Qgis::ProjectTrustStatus::Undetermined )
+    {
+      QgsProjectTrustDialog dialog( QgsProject::instance(), nullptr, QgsGuiUtils::ModalDialogFlags, QgsProjectTrustDialog::TrustDialogType::AfterSaveToNewLocation );
+      dialog.exec();
+    }
+  }
 } // QgisApp::fileSaveAs
 
 void QgisApp::dxfExport()
@@ -14186,6 +14202,8 @@ void QgisApp::closeProject()
 
   if ( !mBlockActiveLayerChanged )
     onActiveLayerChanged( activeLayer() );
+
+  QgsApplication::setCurrentProjectTemporaryTrustStatus(Qgis::ProjectTrustStatus::Undetermined);
 }
 
 void QgisApp::changeEvent( QEvent *event )
