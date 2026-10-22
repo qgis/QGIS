@@ -65,7 +65,6 @@ bool QgsStacAsset::isCloudOptimized() const
          || format == "PMTiles"_L1
          || format == "TileDB"_L1
          || format == "VPC"_L1
-         || format == "VPZ"_L1
          || format == "VRT"_L1;
 }
 
@@ -85,10 +84,8 @@ QString QgsStacAsset::formatName() const
     return u"FGB"_s;
   else if ( mMediaType == "application/vnd.pmtiles"_L1 )
     return u"PMTiles"_s;
-  else if ( mMediaType == "application/vnd.vpc; profile=cloud-optimized"_L1 )
+  else if ( mMediaType == "application/vnd.vpc; profile=cloud-optimized"_L1 || mMediaType == "application/vnd.vpz; profile=cloud-optimized"_L1 )
     return u"VPC"_s;
-  else if ( mMediaType == "application/vnd.vpz; profile=cloud-optimized"_L1 )
-    return u"VPZ"_s;
   else if ( mMediaType == "application/vnd.vrt; profile=cloud-optimized"_L1 )
     return u"VRT"_s;
   else if ( mMediaType.contains( "tiledb"_L1, Qt::CaseInsensitive ) )
@@ -177,14 +174,6 @@ QgsMimeDataUtils::Uri QgsStacAsset::uri( const QString &authcfg ) const
   {
     uri.layerType = u"pointcloud"_s;
     uri.providerKey = u"vpc"_s;
-    uri.uri = href();
-    if ( !authcfg.isEmpty() )
-      uri.uri.append( u" authcfg='%1'"_s.arg( authcfg ) );
-  }
-  else if ( formatName() == "VPZ"_L1 )
-  {
-    uri.layerType = u"pointcloud"_s;
-    uri.providerKey = u"vpz"_s;
     uri.uri = href();
     if ( !authcfg.isEmpty() )
       uri.uri.append( u" authcfg='%1'"_s.arg( authcfg ) );
