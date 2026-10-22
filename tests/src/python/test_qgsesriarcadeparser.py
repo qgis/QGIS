@@ -16,6 +16,8 @@ from qgis.core import (
     QgsEsriArcadeFunctionDeclarationStatement,
     QgsEsriArcadeIndexExpression,
     QgsEsriArcadeLiteralExpression,
+    QgsEsriArcadeMemberAccessExpression,
+    QgsEsriArcadeProfileVariableReferenceExpression,
     QgsEsriArcadeReturnStatement,
     QgsEsriArcadeScript,
     QgsEsriArcadeVariableDeclarationStatement,
@@ -116,11 +118,12 @@ class TestQgsEsriArcadeScript(unittest.TestCase):
         script = QgsEsriArcadeScript(
             "return ( ($feature.POP_2010 - $feature.POP_2000) / $feature.POP_2000) * 100;"
         )
-        # TODO
         self.assertFalse(script.hasParserError())
 
-        self.assertEqual(script.script(), 'return "Hello world"')
-        self.assertEqual(script.dump(), 'return "Hello world";')
+        self.assertEqual(
+            script.dump(),
+            "return ($feature.POP_2010 - $feature.POP_2000) / $feature.POP_2000 * 100;",
+        )
 
         self.assertIsInstance(script.rootBlock(), QgsEsriArcadeBlockStatement)
         self.assertEqual(script.rootBlock().count(), 1)
@@ -131,10 +134,58 @@ class TestQgsEsriArcadeScript(unittest.TestCase):
         )
         self.assertIsInstance(
             script.rootBlock().statements()[0].expression(),
-            QgsEsriArcadeLiteralExpression,
+            QgsEsriArcadeBinaryOperatorExpression,
+        )
+        self.assertIsInstance(
+            script.rootBlock().statements()[0].expression().leftOperand(),
+            QgsEsriArcadeBinaryOperatorExpression,
+        )
+
+        self.assertIsInstance(
+            script.rootBlock().statements()[0].expression().leftOperand().leftOperand(),
+            QgsEsriArcadeBinaryOperatorExpression,
+        )
+
+        self.assertIsInstance(
+            script.rootBlock()
+            .statements()[0]
+            .expression()
+            .leftOperand()
+            .leftOperand()
+            .leftOperand(),
+            QgsEsriArcadeMemberAccessExpression,
+        )
+
+        self.assertEqual(
+            script.rootBlock()
+            .statements()[0]
+            .expression()
+            .leftOperand()
+            .leftOperand()
+            .leftOperand()
+            .memberName(),
+            "POP_2010",
+        )
+        self.assertIsInstance(
+            script.rootBlock()
+            .statements()[0]
+            .expression()
+            .leftOperand()
+            .leftOperand()
+            .leftOperand()
+            .containerExpression(),
+            QgsEsriArcadeProfileVariableReferenceExpression,
         )
         self.assertEqual(
-            script.rootBlock().statements()[0].expression().value(), "Hello world"
+            script.rootBlock()
+            .statements()[0]
+            .expression()
+            .leftOperand()
+            .leftOperand()
+            .leftOperand()
+            .containerExpression()
+            .name(),
+            "$feature",
         )
 
     def test_basic(self):
@@ -476,6 +527,156 @@ age = "35 years";
             QgsEsriArcadeLiteralExpression,
         )
         self.assertEqual(script.rootBlock().statements()[1].value().value(), "35 years")
+
+    def test_profile_variable(self):
+        script = QgsEsriArcadeScript(
+            """var percentCollege = $feature.COLLEGE / $feature.POPULATION;"""
+        )
+        self.assertFalse(script.hasParserError())
+
+        self.assertIsInstance(script.rootBlock(), QgsEsriArcadeBlockStatement)
+        self.assertEqual(script.rootBlock().count(), 1)
+
+        self.assertIsInstance(
+            script.rootBlock().statements()[0],
+            QgsEsriArcadeVariableDeclarationStatement,
+        )
+
+        self.assertIsInstance(
+            script.rootBlock().statements()[0].initializer(),
+            QgsEsriArcadeBinaryOperatorExpression,
+        )
+
+        self.assertIsInstance(
+            script.rootBlock().statements()[0].initializer().leftOperand(),
+            QgsEsriArcadeMemberAccessExpression,
+        )
+
+        self.assertEqual(
+            script.rootBlock().statements()[0].initializer().leftOperand().memberName(),
+            "COLLEGE",
+        )
+        self.assertIsInstance(
+            script.rootBlock()
+            .statements()[0]
+            .initializer()
+            .leftOperand()
+            .containerExpression(),
+            QgsEsriArcadeProfileVariableReferenceExpression,
+        )
+        self.assertEqual(
+            script.rootBlock()
+            .statements()[0]
+            .initializer()
+            .leftOperand()
+            .containerExpression()
+            .name(),
+            "$feature",
+        )
+
+        self.assertEqual(
+            script.rootBlock()
+            .statements()[0]
+            .initializer()
+            .rightOperand()
+            .memberName(),
+            "POPULATION",
+        )
+        self.assertIsInstance(
+            script.rootBlock()
+            .statements()[0]
+            .initializer()
+            .rightOperand()
+            .containerExpression(),
+            QgsEsriArcadeProfileVariableReferenceExpression,
+        )
+        self.assertEqual(
+            script.rootBlock()
+            .statements()[0]
+            .initializer()
+            .rightOperand()
+            .containerExpression()
+            .name(),
+            "$feature",
+        )
+
+    def test_profile_variable_bracket(self):
+        script = QgsEsriArcadeScript(
+            """var percentCollege = $feature["joinKey.fieldName"] / $feature["POPULATION"];"""
+        )
+        self.assertFalse(script.hasParserError())
+
+        self.assertIsInstance(script.rootBlock(), QgsEsriArcadeBlockStatement)
+        self.assertEqual(script.rootBlock().count(), 1)
+
+        self.assertIsInstance(
+            script.rootBlock().statements()[0],
+            QgsEsriArcadeVariableDeclarationStatement,
+        )
+
+        self.assertIsInstance(
+            script.rootBlock().statements()[0].initializer(),
+            QgsEsriArcadeBinaryOperatorExpression,
+        )
+
+        self.assertIsInstance(
+            script.rootBlock().statements()[0].initializer().leftOperand(),
+            QgsEsriArcadeIndexExpression,
+        )
+
+        self.assertEqual(
+            script.rootBlock()
+            .statements()[0]
+            .initializer()
+            .leftOperand()
+            .indexExpression()
+            .value(),
+            "joinKey.fieldName",
+        )
+        self.assertIsInstance(
+            script.rootBlock()
+            .statements()[0]
+            .initializer()
+            .leftOperand()
+            .containerExpression(),
+            QgsEsriArcadeProfileVariableReferenceExpression,
+        )
+        self.assertEqual(
+            script.rootBlock()
+            .statements()[0]
+            .initializer()
+            .leftOperand()
+            .containerExpression()
+            .name(),
+            "$feature",
+        )
+
+        self.assertEqual(
+            script.rootBlock()
+            .statements()[0]
+            .initializer()
+            .rightOperand()
+            .indexExpression()
+            .value(),
+            "POPULATION",
+        )
+        self.assertIsInstance(
+            script.rootBlock()
+            .statements()[0]
+            .initializer()
+            .rightOperand()
+            .containerExpression(),
+            QgsEsriArcadeProfileVariableReferenceExpression,
+        )
+        self.assertEqual(
+            script.rootBlock()
+            .statements()[0]
+            .initializer()
+            .rightOperand()
+            .containerExpression()
+            .name(),
+            "$feature",
+        )
 
 
 if __name__ == "__main__":

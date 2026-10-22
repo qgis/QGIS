@@ -71,6 +71,12 @@ class CORE_EXPORT QgsEsriArcadeNode
       case QgsEsriArcadeNode::NodeType::ntVariableReferenceExpression:
         sipType = sipType_QgsEsriArcadeVariableReferenceExpression;
         break;
+      case QgsEsriArcadeNode::NodeType::ntProfileVariableReferenceExpression:
+        sipType = sipType_QgsEsriArcadeProfileVariableReferenceExpression;
+        break;
+      case QgsEsriArcadeNode::NodeType::ntMemberAccessExpression:
+        sipType = sipType_QgsEsriArcadeMemberAccessExpression;
+        break;
       case QgsEsriArcadeNode::NodeType::ntBinaryOperatorExpression:
         sipType = sipType_QgsEsriArcadeBinaryOperatorExpression;
         break;
@@ -96,18 +102,20 @@ class CORE_EXPORT QgsEsriArcadeNode
      */
     enum class NodeType
     {
-      ntBlockStatement,               //!< Block statement (a list of statements grouped together in a block)
-      ntVariableDeclarationStatement, //!< Variable declaration statement
-      ntReturnStatement,              //!< Return statement
-      ntAssignmentStatement,          //!< Variable assignment statement
-      ntFunctionDeclarationStatement, //!< Function declaration
-      ntExpressionStatement,          //!< Expression
-      ntLiteralExpression,            //!< Literal
-      ntVariableReferenceExpression,  //!< Reference
-      ntBinaryOperatorExpression,     //!< Binary Operator
-      ntUnaryOperatorExpression,      //!< Operator
-      ntFunctionCallExpression,       //!< Function call
-      ntIndexExpression,              //!< Index operator
+      ntBlockStatement,                     //!< Block statement (a list of statements grouped together in a block)
+      ntVariableDeclarationStatement,       //!< Variable declaration statement
+      ntReturnStatement,                    //!< Return statement
+      ntAssignmentStatement,                //!< Variable assignment statement
+      ntFunctionDeclarationStatement,       //!< Function declaration
+      ntExpressionStatement,                //!< Expression
+      ntLiteralExpression,                  //!< Literal
+      ntVariableReferenceExpression,        //!< Reference to a standard variable
+      ntProfileVariableReferenceExpression, //!< Reference to a profile variable (eg $feature.ATTRIBUTE)
+      ntMemberAccessExpression,             //!< Member access via bracket notation (eg $feature["ATTRIBUTE"])
+      ntBinaryOperatorExpression,           //!< Binary Operator
+      ntUnaryOperatorExpression,            //!< Operator
+      ntFunctionCallExpression,             //!< Function call
+      ntIndexExpression,                    //!< Index operator
     };
 
     virtual ~QgsEsriArcadeNode() = default;
@@ -484,6 +492,77 @@ class CORE_EXPORT QgsEsriArcadeVariableReferenceExpression : public QgsEsriArcad
 
 /**
  * \ingroup core
+ * \brief Represents a reference to a profile variable (e.g. "$feature").
+ *
+ * \since QGIS 4.6
+ */
+class CORE_EXPORT QgsEsriArcadeProfileVariableReferenceExpression : public QgsEsriArcadeExpression
+{
+  public:
+    /**
+     * Constructor for QgsEsriArcadeProfileVariableReferenceExpression.
+     */
+    explicit QgsEsriArcadeProfileVariableReferenceExpression( const QString &name );
+
+    QgsEsriArcadeNode::NodeType nodeType() const override { return NodeType::ntProfileVariableReferenceExpression; }
+    QString dump() const override;
+    QgsEsriArcadeNode *clone() const override SIP_FACTORY;
+    void accept( QgsEsriArcadeVisitor &visitor ) const override;
+
+    /**
+     * Returns the profile variable name, including the leading $ symbol.
+     */
+    QString name() const { return mName; }
+
+  private:
+    QString mName;
+};
+
+/**
+ * \ingroup core
+ * \brief Represents a member access expression using dot notation (e.g. "$feature.ATTRIBUTE").
+ *
+ * \since QGIS 4.6
+ */
+class CORE_EXPORT QgsEsriArcadeMemberAccessExpression : public QgsEsriArcadeExpression
+{
+  public:
+    /**
+     * Constructor for QgsEsriArcadeMemberAccessExpression.
+     *
+     * Ownership of \a containerExpression is transferred to this expression.
+     */
+    QgsEsriArcadeMemberAccessExpression( QgsEsriArcadeExpression *containerExpression SIP_TRANSFER, const QString &memberName );
+
+    QgsEsriArcadeNode::NodeType nodeType() const override { return NodeType::ntMemberAccessExpression; }
+    QString dump() const override;
+    QgsEsriArcadeNode *clone() const override SIP_FACTORY;
+    void accept( QgsEsriArcadeVisitor &visitor ) const override;
+
+    /**
+     * Returns the container expression being accessed.
+     */
+    QgsEsriArcadeExpression *containerExpression() const { return mContainerExpression.get(); }
+
+    /**
+     * Returns the member attribute name.
+     */
+    QString memberName() const { return mMemberName; }
+
+  private:
+    QgsEsriArcadeMemberAccessExpression( const QgsEsriArcadeMemberAccessExpression &other ) = delete;
+    QgsEsriArcadeMemberAccessExpression &operator=( const QgsEsriArcadeMemberAccessExpression &other ) = delete;
+
+#ifdef SIP_RUN
+    QgsEsriArcadeMemberAccessExpression( const QgsEsriArcadeMemberAccessExpression &other );
+#endif
+
+    std::unique_ptr<QgsEsriArcadeExpression> mContainerExpression;
+    QString mMemberName;
+};
+
+/**
+ * \ingroup core
  * \brief Represents a binary operation expression.
  *
  * \since QGIS 4.6
@@ -737,6 +816,8 @@ class CORE_EXPORT QgsEsriArcadeVisitor
     virtual void visit( const QgsEsriArcadeExpressionStatement &node ) = 0;
     virtual void visit( const QgsEsriArcadeLiteralExpression &node ) = 0;
     virtual void visit( const QgsEsriArcadeVariableReferenceExpression &node ) = 0;
+    virtual void visit( const QgsEsriArcadeProfileVariableReferenceExpression &node ) = 0;
+    virtual void visit( const QgsEsriArcadeMemberAccessExpression &node ) = 0;
     virtual void visit( const QgsEsriArcadeBinaryOperatorExpression &node ) = 0;
     virtual void visit( const QgsEsriArcadeUnaryOperatorExpression &node ) = 0;
     virtual void visit( const QgsEsriArcadeFunctionCallExpression &node ) = 0;
@@ -762,6 +843,8 @@ class CORE_EXPORT QgsEsriArcadeRecursiveVisitor : public QgsEsriArcadeVisitor
     void visit( const QgsEsriArcadeExpressionStatement &node ) override;
     void visit( const QgsEsriArcadeLiteralExpression &node ) override;
     void visit( const QgsEsriArcadeVariableReferenceExpression &node ) override;
+    void visit( const QgsEsriArcadeProfileVariableReferenceExpression &node ) override;
+    void visit( const QgsEsriArcadeMemberAccessExpression &node ) override;
     void visit( const QgsEsriArcadeBinaryOperatorExpression &node ) override;
     void visit( const QgsEsriArcadeUnaryOperatorExpression &node ) override;
     void visit( const QgsEsriArcadeFunctionCallExpression &node ) override;
