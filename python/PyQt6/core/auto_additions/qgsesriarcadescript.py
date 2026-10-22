@@ -3,6 +3,7 @@
 QgsEsriArcadeNode.NodeType.ntBlockStatement.__doc__ = "Block statement (a list of statements grouped together in a block)"
 QgsEsriArcadeNode.NodeType.ntVariableDeclarationStatement.__doc__ = "Variable declaration statement"
 QgsEsriArcadeNode.NodeType.ntReturnStatement.__doc__ = "Return statement"
+QgsEsriArcadeNode.NodeType.ntAssignmentStatement.__doc__ = "Variable assignment statement"
 QgsEsriArcadeNode.NodeType.ntFunctionDeclarationStatement.__doc__ = "Function declaration"
 QgsEsriArcadeNode.NodeType.ntExpressionStatement.__doc__ = "Expression"
 QgsEsriArcadeNode.NodeType.ntLiteralExpression.__doc__ = "Literal"
@@ -16,6 +17,7 @@ QgsEsriArcadeNode.NodeType.__doc__ = """Node type identifier.
 * ``ntBlockStatement``: Block statement (a list of statements grouped together in a block)
 * ``ntVariableDeclarationStatement``: Variable declaration statement
 * ``ntReturnStatement``: Return statement
+* ``ntAssignmentStatement``: Variable assignment statement
 * ``ntFunctionDeclarationStatement``: Function declaration
 * ``ntExpressionStatement``: Expression
 * ``ntLiteralExpression``: Literal
@@ -33,7 +35,6 @@ QgsEsriArcadeBinaryOperatorExpression.BinaryOperator.boMinus.__doc__ = ""
 QgsEsriArcadeBinaryOperatorExpression.BinaryOperator.boMultiply.__doc__ = ""
 QgsEsriArcadeBinaryOperatorExpression.BinaryOperator.boDivide.__doc__ = ""
 QgsEsriArcadeBinaryOperatorExpression.BinaryOperator.boModulo.__doc__ = ""
-QgsEsriArcadeBinaryOperatorExpression.BinaryOperator.boAssign.__doc__ = ""
 QgsEsriArcadeBinaryOperatorExpression.BinaryOperator.boEqual.__doc__ = ""
 QgsEsriArcadeBinaryOperatorExpression.BinaryOperator.boNotEqual.__doc__ = ""
 QgsEsriArcadeBinaryOperatorExpression.BinaryOperator.boLessThan.__doc__ = ""
@@ -49,7 +50,6 @@ QgsEsriArcadeBinaryOperatorExpression.BinaryOperator.__doc__ = """Binary operato
 * ``boMultiply``: 
 * ``boDivide``: 
 * ``boModulo``: 
-* ``boAssign``: 
 * ``boEqual``: 
 * ``boNotEqual``: 
 * ``boLessThan``: 
@@ -96,6 +96,11 @@ except (NameError, AttributeError):
 try:
     QgsEsriArcadeVariableDeclarationStatement.__overridden_methods__ = ['nodeType', 'dump', 'clone', 'accept']
     QgsEsriArcadeVariableDeclarationStatement.__group__ = ['providers', 'arcgis']
+except (NameError, AttributeError):
+    pass
+try:
+    QgsEsriArcadeAssignmentStatement.__overridden_methods__ = ['nodeType', 'dump', 'clone', 'accept']
+    QgsEsriArcadeAssignmentStatement.__group__ = ['providers', 'arcgis']
 except (NameError, AttributeError):
     pass
 try:

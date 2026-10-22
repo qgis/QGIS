@@ -9,6 +9,7 @@ the Free Software Foundation; either version 2 of the License, or
 import sys
 
 from qgis.core import (
+    QgsEsriArcadeAssignmentStatement,
     QgsEsriArcadeBinaryOperatorExpression,
     QgsEsriArcadeBlockStatement,
     QgsEsriArcadeExpressionStatement,
@@ -463,15 +464,18 @@ age = "35 years";
 
         self.assertIsInstance(
             script.rootBlock().statements()[1],
-            QgsEsriArcadeExpressionStatement,
+            QgsEsriArcadeAssignmentStatement,
         )
         self.assertIsInstance(
-            script.rootBlock().statements()[1].expression(),
+            script.rootBlock().statements()[1].target(),
+            QgsEsriArcadeVariableReferenceExpression,
+        )
+        self.assertEqual(script.rootBlock().statements()[1].target().name(), "age")
+        self.assertIsInstance(
+            script.rootBlock().statements()[1].value(),
             QgsEsriArcadeLiteralExpression,
         )
-        self.assertEqual(
-            script.rootBlock().statements()[1].expression().value(), "Hello world"
-        )
+        self.assertEqual(script.rootBlock().statements()[1].value().value(), "35 years")
 
 
 if __name__ == "__main__":
