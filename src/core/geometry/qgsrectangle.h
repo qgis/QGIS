@@ -70,6 +70,9 @@ class CORE_EXPORT QgsRectangle
      *
      * The rectangle will be normalized after creation. Since QGIS 3.20, if \a normalize is FALSE then
      * the normalization step will not be applied automatically.
+     *
+     * If the the rectangle represents a portion of the globe in geographic coordinates where the extent
+     * wraps around the antimeridian then \a normalize must be set to FALSE.
      */
     explicit QgsRectangle( double xMin, double yMin = 0, double xMax = 0, double yMax = 0, bool normalize = true ) SIP_HOLDGIL
       // clang-format on
@@ -130,6 +133,18 @@ class CORE_EXPORT QgsRectangle
      * and \a width and \a height.
      */
     static QgsRectangle fromCenterAndSize( const QgsPointXY &center, double width, double height );
+
+    /**
+     * Creates a rectangle from the \a left, \a top, \a right and \a bottom edges.
+     *
+     * The rectangle will not be normalized, permitting situations where the left edge > right
+     * or top < bottom. E.g. for use when the rectangle
+     * represents a portion of the globe in geographic coordinates where the extent
+     * wraps around the antimeridian.
+     *
+     * \since QGIS 4.4
+     */
+    static QgsRectangle fromEdges( double left, double top, double right, double bottom );
 
     /**
      * Sets the rectangle from two QgsPoints.
@@ -211,24 +226,94 @@ class CORE_EXPORT QgsRectangle
     }
 
     /**
-     * Returns the x maximum value (right side of rectangle).
+     * Returns the x maximum value.
+     *
+     * This usually corresponds to the right side of the rectangle, unless the rectangle
+     * was created using non-normalized coordinates. E.g. when the rectangle
+     * represents a portion of the globe in geographic coordinates where the extent
+     * wraps around the antimeridian.
+     *
+     * \see right()
      */
     double xMaximum() const SIP_HOLDGIL { return mXmax; }
 
     /**
-     * Returns the x minimum value (left side of rectangle).
+     * Returns the x minimum value.
+     *
+     * This usually corresponds to the left side of the rectangle, unless the rectangle
+     * was created using non-normalized coordinates. E.g. when the rectangle
+     * represents a portion of the globe in geographic coordinates where the extent
+     * wraps around the antimeridian.
+     *
+     * \see left()
      */
     double xMinimum() const SIP_HOLDGIL { return mXmin; }
 
     /**
-     * Returns the y maximum value (top side of rectangle).
+     * Returns the y maximum value.
+     *
+     * This usually corresponds to the top of the rectangle, unless the rectangle
+     * was created using non-normalized coordinates.
+     *
+     * \see top()
      */
     double yMaximum() const SIP_HOLDGIL { return mYmax; }
 
     /**
-     * Returns the y minimum value (bottom side of rectangle).
+     * Returns the y minimum value.
+     *
+     * This usually corresponds to the bottom of the rectangle, unless the rectangle
+     * was created using non-normalized coordinates.
+     *
+     * \see top()
      */
     double yMinimum() const SIP_HOLDGIL { return mYmin; }
+
+    /**
+     * Returns the left side of the rectangle.
+     *
+     * This usually corresponds to the minimum x value, unless the rectangle
+     * represents a portion of the globe in geographic coordinates where the extent
+     * wraps around the antimeridian.
+     *
+     * \see xMinimum()
+     * \since QGIS 4.4
+     */
+    double left() const SIP_HOLDGIL { return mXmin; }
+
+    /**
+     * Returns the right side of the rectangle.
+     *
+     * This usually corresponds to the maximum x value, unless the rectangle
+     * represents a portion of the globe in geographic coordinates where the extent
+     * wraps around the antimeridian.
+     *
+     * \see xMaximum()
+     * \since QGIS 4.4
+     */
+    double right() const SIP_HOLDGIL { return mXmax; }
+
+    /**
+     * Returns the top side of the rectangle.
+     *
+     * This usually corresponds to the maximum y value, unless the rectangle
+     * was created using non-normalized coordinates.
+     *
+     * \see yMaximum()
+     * \since QGIS 4.4
+     */
+    double top() const SIP_HOLDGIL { return mYmax; }
+
+    /**
+     * Returns the bottom side of the rectangle.
+     *
+     * This usually corresponds to the minimum y value, unless the rectangle
+     * was created using non-normalized coordinates.
+     *
+     * \see yMinimum()
+     * \since QGIS 4.4
+     */
+    double bottom() const SIP_HOLDGIL { return mYmin; }
 
     /**
      * Normalize the rectangle so it has non-negative width/height.

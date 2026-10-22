@@ -65,6 +65,11 @@ QgsRectangle QgsRectangle::fromCenterAndSize( const QgsPointXY &center, double w
   return QgsRectangle( xMin, yMin, xMax, yMax );
 }
 
+QgsRectangle QgsRectangle::fromEdges( double left, double top, double right, double bottom )
+{
+  return QgsRectangle( left, bottom, right, top, false );
+}
+
 QgsRectangle QgsRectangle::scaled( double scaleFactor, const QgsPointXY *center ) const
 {
   QgsRectangle scaledRect = QgsRectangle( *this );
