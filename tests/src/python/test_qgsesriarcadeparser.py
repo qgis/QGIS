@@ -781,6 +781,39 @@ z[3] = 24;
         )
         self.assertEqual(script.rootBlock().statements()[4].value().value(), 23)
 
+    def test_boolean_literals(self):
+        script = QgsEsriArcadeScript(
+            """var x = true;
+var y = false;
+"""
+        )
+        self.assertFalse(script.hasParserError())
+
+        self.assertIsInstance(script.rootBlock(), QgsEsriArcadeBlockStatement)
+        self.assertEqual(script.rootBlock().count(), 2)
+
+        self.assertIsInstance(
+            script.rootBlock().statements()[0],
+            QgsEsriArcadeVariableDeclarationStatement,
+        )
+        self.assertIsInstance(
+            script.rootBlock().statements()[0].initializer(),
+            QgsEsriArcadeLiteralExpression,
+        )
+        self.assertEqual(script.rootBlock().statements()[0].initializer().value(), True)
+
+        self.assertIsInstance(
+            script.rootBlock().statements()[1],
+            QgsEsriArcadeVariableDeclarationStatement,
+        )
+        self.assertIsInstance(
+            script.rootBlock().statements()[1].initializer(),
+            QgsEsriArcadeLiteralExpression,
+        )
+        self.assertEqual(
+            script.rootBlock().statements()[1].initializer().value(), False
+        )
+
 
 if __name__ == "__main__":
     unittest.main()
