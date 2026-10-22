@@ -215,7 +215,7 @@ void QgsGeometryValidator::validatePolyline( int i, const QgsLineString *line, b
       double intersectionPointY = std::numeric_limits<double>::quiet_NaN();
       bool isIntersection = false;
       if ( QgsGeometryUtilsBase::
-             segmentIntersection( line->xAt( j ), line->yAt( j ), line->xAt( j + 1 ), line->yAt( j + 1 ), line->xAt( k ), line->yAt( k ), line->xAt( k + 1 ), line->yAt( k + 1 ), intersectionPointX, intersectionPointY, isIntersection ) )
+             segmentIntersection( line->xAt( j ), line->yAt( j ), line->xAt( j + 1 ), line->yAt( j + 1 ), line->xAt( k ), line->yAt( k ), line->xAt( k + 1 ), line->yAt( k + 1 ), intersectionPointX, intersectionPointY, isIntersection, 1e-8, ring ) )
       {
         const QString msg = QObject::tr( "segments %1 and %2 of line %3 intersect at %4, %5" ).arg( j ).arg( k ).arg( i ).arg( intersectionPointX ).arg( intersectionPointY );
         QgsDebugMsgLevel( msg, 2 );
