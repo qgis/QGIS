@@ -23,7 +23,9 @@ from providertestbase import ProviderTestCase
 from qgis.core import (
     NULL,
     QgsApplication,
+    QgsAuthMethodConfig,
     QgsBox3d,
+    QgsDataSourceUri,
     QgsFeature,
     QgsFeatureRequest,
     QgsGeometry,
@@ -1233,6 +1235,65 @@ class TestPyQgsOapifProvider(QgisTestCase, ProviderTestCase):
         values = [f["id"] for f in vl.getFeatures()]
         os.unlink(filename)
         self.assertEqual(values, [])
+
+    def testSetSubsetStringKeepsAuthcfg(self):
+        """Test that setSubsetString() keeps the authentication configuration (#67819)"""
+
+        endpoint = (
+            self.__class__.basetestpath
+            + "/fake_qgis_http_endpoint_set_subset_string_keeps_authcfg"
+        )
+        create_landing_page_api_collection(endpoint)
+
+        items = {
+            "type": "FeatureCollection",
+            "features": [
+                {
+                    "type": "Feature",
+                    "id": "feat.1",
+                    "properties": {"strfield": "foo"},
+                    "geometry": {"type": "Point", "coordinates": [-70.332, 66.33]},
+                }
+            ],
+        }
+
+        filename = sanitize(
+            endpoint, "/collections/mycollection/items?limit=10&" + ACCEPT_ITEMS
+        )
+        with open(filename, "wb") as f:
+            f.write(json.dumps(items).encode("UTF-8"))
+
+        authm = QgsApplication.authManager()
+        self.assertTrue(authm.setMasterPassword("masterpassword", True))
+        config = QgsAuthMethodConfig("APIHeader")
+        config.setName("set subset string keeps authcfg")
+        config.setConfigMap({"X-API-Key": "secret"})
+        ok, config = authm.storeAuthenticationConfig(config)
+        self.assertTrue(ok)
+        authcfg = config.id()
+
+        vl = QgsVectorLayer(
+            "url='http://"
+            + endpoint
+            + "' typename='mycollection' authcfg='"
+            + authcfg
+            + "'",
+            "test",
+            "OAPIF",
+        )
+        self.assertTrue(vl.isValid())
+        os.unlink(filename)
+        self.assertEqual(
+            QgsDataSourceUri(vl.dataProvider().dataSourceUri()).authConfigId(),
+            authcfg,
+        )
+
+        self.assertTrue(vl.setSubsetString(""""strfield" = 'foo'"""))
+
+        self.assertEqual(
+            QgsDataSourceUri(vl.dataProvider().dataSourceUri()).authConfigId(),
+            authcfg,
+        )
 
     def testCQL2TextFiltering(self):
         """Test Part 3 CQL2-Text filtering"""

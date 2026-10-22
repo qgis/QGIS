@@ -71,6 +71,8 @@ void QgsOapifSharedData::invalidateCacheBaseUnderLock()
 QgsOapifSharedData *QgsOapifSharedData::clone() const
 {
   QgsOapifSharedData *copy = new QgsOapifSharedData( mURI.uri( true ) );
+  // uri( true ) expands the authentication configuration away; keep the parsed URI, authcfg included, as the WFS clone does
+  copy->mURI = mURI;
   copy->mWKBType = mWKBType;
   copy->mPageSize = mPageSize;
   copy->mExtraQueryParameters = mExtraQueryParameters;
