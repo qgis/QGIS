@@ -15,6 +15,8 @@
 
 #include "qgsesriarcadescript.h"
 
+#include <cmath>
+
 #include "qgis.h"
 #include "qgsvariantutils.h"
 
@@ -229,7 +231,14 @@ QString QgsEsriArcadeLiteralExpression::valueAsString() const
     case QMetaType::Type::LongLong:
       return QString::number( mValue.toLongLong() );
     case QMetaType::Type::Double:
-      return qgsDoubleToString( mValue.toDouble() );
+    {
+      const double value = mValue.toDouble();
+      if ( std::isnan( value ) )
+        return u"NaN"_s;
+      if ( std::isinf( value ) )
+        return value < 0 ? u"-Infinity"_s : u"Infinity"_s;
+      return qgsDoubleToString( value );
+    }
     case QMetaType::Type::QString:
       return mValue.toString();
     case QMetaType::Type::Bool:
