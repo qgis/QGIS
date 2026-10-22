@@ -16,6 +16,7 @@ from qgis.core import (
     QgsEsriArcadeDictionaryElement,
     QgsEsriArcadeDictionaryLiteralExpression,
     QgsEsriArcadeExpressionStatement,
+    QgsEsriArcadeFunctionCallExpression,
     QgsEsriArcadeFunctionDeclarationStatement,
     QgsEsriArcadeIndexExpression,
     QgsEsriArcadeLiteralExpression,
@@ -1225,6 +1226,48 @@ var d = { field1, field2 };
         )
         self.assertTrue(
             script.rootBlock().statements()[2].initializer().elements()[1].isAutoKey()
+        )
+
+    def test_function_call(self):
+        script = QgsEsriArcadeScript(
+            """function calculateStuff(num) {
+var places = 2;
+return num/places;
+}
+
+calculateStuff(50);
+"""
+        )
+        self.assertFalse(script.hasParserError())
+
+        self.assertIsInstance(script.rootBlock(), QgsEsriArcadeBlockStatement)
+        self.assertEqual(script.rootBlock().count(), 2)
+
+        self.assertIsInstance(
+            script.rootBlock().statements()[0],
+            QgsEsriArcadeFunctionDeclarationStatement,
+        )
+
+        self.assertIsInstance(
+            script.rootBlock().statements()[1],
+            QgsEsriArcadeExpressionStatement,
+        )
+        self.assertIsInstance(
+            script.rootBlock().statements()[1].expression(),
+            QgsEsriArcadeFunctionCallExpression,
+        )
+
+        self.assertEqual(
+            script.rootBlock().statements()[1].expression().functionName(),
+            "calculateStuff",
+        )
+
+        self.assertEqual(
+            len(script.rootBlock().statements()[1].expression().arguments()), 1
+        )
+
+        self.assertEqual(
+            script.rootBlock().statements()[1].expression().arguments()[0].value(), 50
         )
 
 
