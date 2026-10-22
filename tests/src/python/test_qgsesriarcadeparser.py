@@ -9,6 +9,7 @@ the Free Software Foundation; either version 2 of the License, or
 import sys
 
 from qgis.core import (
+    QgsEsriArcadeArrayLiteralExpression,
     QgsEsriArcadeAssignmentStatement,
     QgsEsriArcadeBinaryOperatorExpression,
     QgsEsriArcadeBlockStatement,
@@ -677,6 +678,108 @@ age = "35 years";
             .name(),
             "$feature",
         )
+
+    def test_array(self):
+        script = QgsEsriArcadeScript(
+            """var a = [];
+a = [5,2,19];
+var z = [1,2,3];
+var k = [1,2,"hello"];
+z[0] = 23;
+z[3] = 24;
+"""
+        )
+        self.assertFalse(script.hasParserError())
+
+        self.assertIsInstance(script.rootBlock(), QgsEsriArcadeBlockStatement)
+        self.assertEqual(script.rootBlock().count(), 6)
+
+        self.assertIsInstance(
+            script.rootBlock().statements()[0],
+            QgsEsriArcadeVariableDeclarationStatement,
+        )
+        self.assertIsInstance(
+            script.rootBlock().statements()[0].initializer(),
+            QgsEsriArcadeArrayLiteralExpression,
+        )
+        self.assertEqual(
+            script.rootBlock().statements()[0].initializer().elements(), []
+        )
+
+        self.assertIsInstance(
+            script.rootBlock().statements()[1],
+            QgsEsriArcadeAssignmentStatement,
+        )
+        self.assertIsInstance(
+            script.rootBlock().statements()[1].value(),
+            QgsEsriArcadeArrayLiteralExpression,
+        )
+        self.assertEqual(
+            [l.value() for l in script.rootBlock().statements()[1].value().elements()],
+            [5, 2, 19],
+        )
+
+        self.assertIsInstance(
+            script.rootBlock().statements()[2],
+            QgsEsriArcadeVariableDeclarationStatement,
+        )
+        self.assertIsInstance(
+            script.rootBlock().statements()[2].initializer(),
+            QgsEsriArcadeArrayLiteralExpression,
+        )
+        self.assertEqual(
+            [
+                l.value()
+                for l in script.rootBlock().statements()[2].initializer().elements()
+            ],
+            [1, 2, 3],
+        )
+
+        self.assertIsInstance(
+            script.rootBlock().statements()[3],
+            QgsEsriArcadeVariableDeclarationStatement,
+        )
+        self.assertIsInstance(
+            script.rootBlock().statements()[3].initializer(),
+            QgsEsriArcadeArrayLiteralExpression,
+        )
+        self.assertEqual(
+            [
+                l.value()
+                for l in script.rootBlock().statements()[3].initializer().elements()
+            ],
+            [1, 2, "hello"],
+        )
+
+        self.assertIsInstance(
+            script.rootBlock().statements()[4],
+            QgsEsriArcadeAssignmentStatement,
+        )
+        self.assertIsInstance(
+            script.rootBlock().statements()[4].target(),
+            QgsEsriArcadeIndexExpression,
+        )
+        self.assertIsInstance(
+            script.rootBlock().statements()[4].target().containerExpression(),
+            QgsEsriArcadeVariableReferenceExpression,
+        )
+        self.assertEqual(
+            script.rootBlock().statements()[4].target().containerExpression().name(),
+            "z",
+        )
+        self.assertIsInstance(
+            script.rootBlock().statements()[4].target().indexExpression(),
+            QgsEsriArcadeLiteralExpression,
+        )
+        self.assertEqual(
+            script.rootBlock().statements()[4].target().indexExpression().value(), 0
+        )
+
+        self.assertIsInstance(
+            script.rootBlock().statements()[4].value(),
+            QgsEsriArcadeLiteralExpression,
+        )
+        self.assertEqual(script.rootBlock().statements()[4].value().value(), 23)
 
 
 if __name__ == "__main__":

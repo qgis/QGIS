@@ -14,6 +14,7 @@ QgsEsriArcadeNode.NodeType.ntBinaryOperatorExpression.__doc__ = "Binary Operator
 QgsEsriArcadeNode.NodeType.ntUnaryOperatorExpression.__doc__ = "Operator"
 QgsEsriArcadeNode.NodeType.ntFunctionCallExpression.__doc__ = "Function call"
 QgsEsriArcadeNode.NodeType.ntIndexExpression.__doc__ = "Index operator"
+QgsEsriArcadeNode.NodeType.ntArrayLiteralExpression.__doc__ = "A literal array, where the element values may be expressions themselves (eg [1, 2, 3/4])"
 QgsEsriArcadeNode.NodeType.__doc__ = """Node type identifier.
 
 * ``ntBlockStatement``: Block statement (a list of statements grouped together in a block)
@@ -30,6 +31,7 @@ QgsEsriArcadeNode.NodeType.__doc__ = """Node type identifier.
 * ``ntUnaryOperatorExpression``: Operator
 * ``ntFunctionCallExpression``: Function call
 * ``ntIndexExpression``: Index operator
+* ``ntArrayLiteralExpression``: A literal array, where the element values may be expressions themselves (eg [1, 2, 3/4])
 
 """
 # --
@@ -160,6 +162,11 @@ except (NameError, AttributeError):
 try:
     QgsEsriArcadeIndexExpression.__overridden_methods__ = ['nodeType', 'dump', 'clone', 'accept']
     QgsEsriArcadeIndexExpression.__group__ = ['providers', 'arcgis']
+except (NameError, AttributeError):
+    pass
+try:
+    QgsEsriArcadeArrayLiteralExpression.__overridden_methods__ = ['nodeType', 'dump', 'clone', 'accept']
+    QgsEsriArcadeArrayLiteralExpression.__group__ = ['providers', 'arcgis']
 except (NameError, AttributeError):
     pass
 try:

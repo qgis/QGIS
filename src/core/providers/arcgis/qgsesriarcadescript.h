@@ -34,6 +34,7 @@ class QgsEsriArcadeVisitor;
 class QgsEsriArcadeStatement;
 class QgsEsriArcadeBlockStatement;
 class QgsEsriArcadeAssignmentStatement;
+class QgsEsriArcadeArrayLiteralExpression;
 
 /**
  * \ingroup core
@@ -64,6 +65,9 @@ class CORE_EXPORT QgsEsriArcadeNode
         break;
       case QgsEsriArcadeNode::NodeType::ntExpressionStatement:
         sipType = sipType_QgsEsriArcadeExpressionStatement;
+        break;
+      case QgsEsriArcadeNode::NodeType::ntArrayLiteralExpression:
+        sipType = sipType_QgsEsriArcadeArrayLiteralExpression;
         break;
       case QgsEsriArcadeNode::NodeType::ntLiteralExpression:
         sipType = sipType_QgsEsriArcadeLiteralExpression;
@@ -116,6 +120,7 @@ class CORE_EXPORT QgsEsriArcadeNode
       ntUnaryOperatorExpression,            //!< Operator
       ntFunctionCallExpression,             //!< Function call
       ntIndexExpression,                    //!< Index operator
+      ntArrayLiteralExpression,             //!< A literal array, where the element values may be expressions themselves (eg [1, 2, 3/4])
     };
 
     virtual ~QgsEsriArcadeNode() = default;
@@ -799,6 +804,47 @@ class CORE_EXPORT QgsEsriArcadeIndexExpression : public QgsEsriArcadeExpression
 
 /**
  * \ingroup core
+ * \brief Represents an array literal expression (e.g. [1, 2, 3]).
+ *
+ * Array elements may be expressions themselves.
+ *
+ * \since QGIS 4.6
+ */
+class CORE_EXPORT QgsEsriArcadeArrayLiteralExpression : public QgsEsriArcadeExpression
+{
+  public:
+    /**
+      * Constructor for QgsEsriArcadeArrayLiteralExpression.
+      *
+      * Ownership of all expressions in \a elements is transferred to this node.
+      */
+    explicit QgsEsriArcadeArrayLiteralExpression( const QList<QgsEsriArcadeExpression *> &elements SIP_TRANSFER );
+
+    ~QgsEsriArcadeArrayLiteralExpression() override;
+
+    QgsEsriArcadeNode::NodeType nodeType() const override { return NodeType::ntArrayLiteralExpression; }
+    QString dump() const override;
+    QgsEsriArcadeNode *clone() const override SIP_FACTORY;
+    void accept( QgsEsriArcadeVisitor &visitor ) const override;
+
+    /**
+      * Returns the list of element expressions.
+     */
+    QList<QgsEsriArcadeExpression *> elements() const { return mElements; }
+
+  private:
+    QgsEsriArcadeArrayLiteralExpression( const QgsEsriArcadeArrayLiteralExpression &other ) = delete;
+    QgsEsriArcadeArrayLiteralExpression &operator=( const QgsEsriArcadeArrayLiteralExpression &other ) = delete;
+
+#ifdef SIP_RUN
+    QgsEsriArcadeArrayLiteralExpression( const QgsEsriArcadeArrayLiteralExpression &other );
+#endif
+
+    QList<QgsEsriArcadeExpression *> mElements;
+};
+
+/**
+ * \ingroup core
  * \brief Abstract visitor interface for traversing Esri Arcade abstract syntax trees.
  *
  * \since QGIS 4.6
@@ -822,6 +868,7 @@ class CORE_EXPORT QgsEsriArcadeVisitor
     virtual void visit( const QgsEsriArcadeUnaryOperatorExpression &node ) = 0;
     virtual void visit( const QgsEsriArcadeFunctionCallExpression &node ) = 0;
     virtual void visit( const QgsEsriArcadeIndexExpression &node ) = 0;
+    virtual void visit( const QgsEsriArcadeArrayLiteralExpression &node ) = 0;
 };
 
 /**
@@ -849,6 +896,7 @@ class CORE_EXPORT QgsEsriArcadeRecursiveVisitor : public QgsEsriArcadeVisitor
     void visit( const QgsEsriArcadeUnaryOperatorExpression &node ) override;
     void visit( const QgsEsriArcadeFunctionCallExpression &node ) override;
     void visit( const QgsEsriArcadeIndexExpression &node ) override;
+    void visit( const QgsEsriArcadeArrayLiteralExpression &node ) override;
 };
 
 /**

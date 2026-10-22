@@ -97,7 +97,7 @@ struct arcadescript_parser_context
 %type <blockStatement> statement_list block_statement
 %type <statement> statement var_declaration assignment_statement return_statement function_declaration expression_statement return_without_semicolon
 %type <expression> expr primary_expr postfix_expr unary_expr multiplicative_expr additive_expr relational_expr equality_expr logical_and_expr logical_or_expr opt_initializer opt_expr
-%type <expressionList> opt_argument_list argument_list
+%type <expressionList> opt_argument_list argument_list opt_element_list element_list
 %type <identifierList> opt_parameter_list parameter_list
 
 %destructor { delete $$; } <statement>
@@ -482,6 +482,12 @@ primary_expr:
     {
       $$ = $2;
     }
+  | '[' opt_element_list ']'
+    {
+      $$ = new QgsEsriArcadeArrayLiteralExpression( *$2 );
+      delete $2;
+    }
+
 ;
 
 opt_argument_list:
@@ -497,6 +503,30 @@ opt_argument_list:
 
 argument_list:
     argument_list COMMA expr
+    {
+      $$ = $1;
+      $$->append( $3 );
+    }
+  | expr
+    {
+      $$ = new QList<QgsEsriArcadeExpression *>();
+      $$->append( $1 );
+    }
+;
+
+opt_element_list:
+    element_list
+    {
+      $$ = $1;
+    }
+  | /* empty element list */
+    {
+      $$ = new QList<QgsEsriArcadeExpression *>();
+    }
+;
+
+element_list:
+    element_list COMMA expr
     {
       $$ = $1;
       $$->append( $3 );
