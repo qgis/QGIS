@@ -234,7 +234,7 @@ template<typename V, size_t N> class QgsDataDefinedStringDecoder
  *
  * \code{cpp}
  * // create a decoder once as a static object
- * static const auto sPointPositionMap = makeDataDefinedStringDecoder<Qgis::LabelPredefinedPointPosition>( {
+ * static constexpr auto sPointPositionMap = makeDataDefinedStringDecoder<Qgis::LabelPredefinedPointPosition>( {
  * { u"topleft", Qgis::LabelPredefinedPointPosition::TopLeft },
  * { u"topright", Qgis::LabelPredefinedPointPosition::TopRight }
  * } );

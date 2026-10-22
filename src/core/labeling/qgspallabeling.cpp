@@ -25,6 +25,7 @@
 #include "qgsapplication.h"
 #include "qgscolorutils.h"
 #include "qgscurvepolygon.h"
+#include "qgsdatadefinedutils.h"
 #include "qgsexception.h"
 #include "qgsexpression.h"
 #include "qgsfontmanager.h"
@@ -2251,39 +2252,21 @@ QgsTextFormat QgsPalLayerSettings::evaluateTextFormat( QgsRenderContext &context
     const QVariant exprVal = mDataDefinedProperties.value( QgsPalLayerSettings::Property::FontCase, context.expressionContext() );
     if ( !QgsVariantUtils::isNull( exprVal ) )
     {
-      QString fcase = exprVal.toString().trimmed();
-      QgsDebugMsgLevel( u"exprVal FontCase:%1"_s.arg( fcase ), 4 );
+      static constexpr auto FONT_CASE_MAP = makeDataDefinedStringDecoder<Qgis::Capitalization>( {
+        { u"nochange", Qgis::Capitalization::MixedCase },
+        { u"upper", Qgis::Capitalization::AllUppercase },
+        { u"lower", Qgis::Capitalization::AllLowercase },
+        { u"capitalize", Qgis::Capitalization::ForceFirstLetterToCapital },
+        { u"title", Qgis::Capitalization::TitleCase },
+        { u"smallcaps", Qgis::Capitalization::SmallCaps },
+        { u"allsmallcaps", Qgis::Capitalization::AllSmallCaps },
+      } );
 
-      if ( !fcase.isEmpty() )
+      const QString fcase = exprVal.toString();
+      auto evaluatedCase = FONT_CASE_MAP.lookup( fcase );
+      if ( evaluatedCase )
       {
-        if ( fcase.compare( "NoChange"_L1, Qt::CaseInsensitive ) == 0 || fcase.compare( "No_Change"_L1, Qt::CaseInsensitive ) == 0 )
-        {
-          evaluatedFormat.setCapitalization( Qgis::Capitalization::MixedCase );
-        }
-        else if ( fcase.compare( "Upper"_L1, Qt::CaseInsensitive ) == 0 )
-        {
-          evaluatedFormat.setCapitalization( Qgis::Capitalization::AllUppercase );
-        }
-        else if ( fcase.compare( "Lower"_L1, Qt::CaseInsensitive ) == 0 )
-        {
-          evaluatedFormat.setCapitalization( Qgis::Capitalization::AllLowercase );
-        }
-        else if ( fcase.compare( "Capitalize"_L1, Qt::CaseInsensitive ) == 0 )
-        {
-          evaluatedFormat.setCapitalization( Qgis::Capitalization::ForceFirstLetterToCapital );
-        }
-        else if ( fcase.compare( "Title"_L1, Qt::CaseInsensitive ) == 0 )
-        {
-          evaluatedFormat.setCapitalization( Qgis::Capitalization::TitleCase );
-        }
-        else if ( fcase.compare( "SmallCaps"_L1, Qt::CaseInsensitive ) == 0 || fcase.compare( "Small_Caps"_L1, Qt::CaseInsensitive ) == 0 )
-        {
-          evaluatedFormat.setCapitalization( Qgis::Capitalization::SmallCaps );
-        }
-        else if ( fcase.compare( "AllSmallCaps"_L1, Qt::CaseInsensitive ) == 0 || fcase.compare( "All_Small_Caps"_L1, Qt::CaseInsensitive ) == 0 )
-        {
-          evaluatedFormat.setCapitalization( Qgis::Capitalization::AllSmallCaps );
-        }
+        evaluatedFormat.setCapitalization( *evaluatedCase );
       }
     }
   }
@@ -4089,30 +4072,26 @@ void QgsPalLayerSettings::parseTextFormatting( QgsRenderContext &context )
     exprVal = mDataDefinedProperties.value( QgsPalLayerSettings::Property::MultiLineAlignment, context.expressionContext() );
     if ( !QgsVariantUtils::isNull( exprVal ) )
     {
-      QString str = exprVal.toString().trimmed();
+      const QString str = exprVal.toString();
       QgsDebugMsgLevel( u"exprVal MultiLineAlignment:%1"_s.arg( str ), 4 );
 
-      if ( !str.isEmpty() )
-      {
-        // "Left"
-        Qgis::LabelMultiLineAlignment aligntype = Qgis::LabelMultiLineAlignment::Left;
+      static constexpr auto MULTI_LINE_ALIGNMENT_MAP = makeDataDefinedStringDecoder<Qgis::LabelMultiLineAlignment>(
+        { { u"left", Qgis::LabelMultiLineAlignment::Left },
+          { u"center", Qgis::LabelMultiLineAlignment::Center },
+          { u"right", Qgis::LabelMultiLineAlignment::Right },
+          { u"follow", Qgis::LabelMultiLineAlignment::FollowPlacement },
+          { u"justify", Qgis::LabelMultiLineAlignment::Justify } }
+      );
 
-        if ( str.compare( "Center"_L1, Qt::CaseInsensitive ) == 0 )
-        {
-          aligntype = Qgis::LabelMultiLineAlignment::Center;
-        }
-        else if ( str.compare( "Right"_L1, Qt::CaseInsensitive ) == 0 )
-        {
-          aligntype = Qgis::LabelMultiLineAlignment::Right;
-        }
-        else if ( str.compare( "Follow"_L1, Qt::CaseInsensitive ) == 0 )
-        {
-          aligntype = Qgis::LabelMultiLineAlignment::FollowPlacement;
-        }
-        else if ( str.compare( "Justify"_L1, Qt::CaseInsensitive ) == 0 )
-        {
-          aligntype = Qgis::LabelMultiLineAlignment::Justify;
-        }
+      auto evaluatedAlignment = MULTI_LINE_ALIGNMENT_MAP.lookup( str );
+      if ( evaluatedAlignment )
+      {
+        dataDefinedValues.insert( QgsPalLayerSettings::Property::MultiLineAlignment, QVariant( static_cast< int >( *evaluatedAlignment ) ) );
+      }
+      else if ( !str.isEmpty() )
+      {
+        // for compatibility with old logic, non-matching strings get treated as "Left"
+        Qgis::LabelMultiLineAlignment aligntype = Qgis::LabelMultiLineAlignment::Left;
         dataDefinedValues.insert( QgsPalLayerSettings::Property::MultiLineAlignment, QVariant( static_cast< int >( aligntype ) ) );
       }
     }
@@ -4151,22 +4130,23 @@ void QgsPalLayerSettings::parseTextFormatting( QgsRenderContext &context )
     exprVal = mDataDefinedProperties.value( QgsPalLayerSettings::Property::DirSymbPlacement, context.expressionContext() );
     if ( !QgsVariantUtils::isNull( exprVal ) )
     {
-      QString str = exprVal.toString().trimmed();
-      QgsDebugMsgLevel( u"exprVal DirSymbPlacement:%1"_s.arg( str ), 4 );
+      const QString str = exprVal.toString();
 
-      if ( !str.isEmpty() )
+      static constexpr auto DIRECTION_MAP = makeDataDefinedStringDecoder<QgsLabelLineSettings::DirectionSymbolPlacement>(
+        { { u"above", QgsLabelLineSettings::DirectionSymbolPlacement::SymbolAbove },
+          { u"below", QgsLabelLineSettings::DirectionSymbolPlacement::SymbolBelow },
+          { u"leftright", QgsLabelLineSettings::DirectionSymbolPlacement::SymbolLeftRight } }
+      );
+
+      auto evaluatedDirection = DIRECTION_MAP.lookup( str );
+      if ( evaluatedDirection )
       {
-        // "LeftRight"
+        dataDefinedValues.insert( QgsPalLayerSettings::Property::DirSymbPlacement, QVariant( static_cast< int >( *evaluatedDirection ) ) );
+      }
+      else if ( !str.trimmed().isEmpty() )
+      {
+        // for compatibility with old logic non-empty strings fallback to LeftRight mode
         QgsLabelLineSettings::DirectionSymbolPlacement placetype = QgsLabelLineSettings::DirectionSymbolPlacement::SymbolLeftRight;
-
-        if ( str.compare( "Above"_L1, Qt::CaseInsensitive ) == 0 )
-        {
-          placetype = QgsLabelLineSettings::DirectionSymbolPlacement::SymbolAbove;
-        }
-        else if ( str.compare( "Below"_L1, Qt::CaseInsensitive ) == 0 )
-        {
-          placetype = QgsLabelLineSettings::DirectionSymbolPlacement::SymbolBelow;
-        }
         dataDefinedValues.insert( QgsPalLayerSettings::Property::DirSymbPlacement, QVariant( static_cast< int >( placetype ) ) );
       }
     }
