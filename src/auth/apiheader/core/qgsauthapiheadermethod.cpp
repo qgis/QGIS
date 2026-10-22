@@ -94,19 +94,27 @@ bool QgsAuthApiHeaderMethod::updateNetworkRequest( QNetworkRequest &request, con
   {
     i.next();
 
-    const QString headerKey = i.key();
-    const QString headerValue = i.value();
+    // Surrounding whitespace, including a line break left behind by a paste, is not part of the header
+    const QString headerKey = i.key().trimmed();
+    const QString headerValue = i.value().trimmed();
 
     QgsDebugMsgLevel( u"HTTP Header: %1=%2"_s.arg( headerKey ).arg( headerValue ), 2 );
 
-    if ( !headerKey.isEmpty() )
-    {
-      request.setRawHeader( u"%1"_s.arg( headerKey ).toLocal8Bit(), u"%1"_s.arg( headerValue ).toLocal8Bit() );
-    }
-    else
+    if ( headerKey.isEmpty() )
     {
       QgsDebugError( u"The header key was empty, we shouldn't have empty header keys at this point"_s );
+      continue;
     }
+
+    if ( headerValue.contains( '\n' ) || headerValue.contains( '\r' ) )
+    {
+      // QNetworkRequest::setRawHeader() drops a header whose value contains a line break, and the request
+      // would go out without it
+      QgsDebugError( u"Update request config FAILED for authcfg: %1: value of header %2 contains a line break"_s.arg( authcfg, headerKey ) );
+      return false;
+    }
+
+    request.setRawHeader( headerKey.toLocal8Bit(), headerValue.toLocal8Bit() );
   }
 
   return true;

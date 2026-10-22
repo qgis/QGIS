@@ -146,7 +146,7 @@ bool QgsAuthApiHeaderEdit::emptyHeadersKeysPresent()
 
   for ( int i = 0; i < rowCount; ++i )
   {
-    if ( tblwdgHeaderPairs->item( i, 0 )->text().isEmpty() )
+    if ( tblwdgHeaderPairs->item( i, 0 )->text().trimmed().isEmpty() )
     {
       return true;
     }
@@ -180,13 +180,13 @@ QgsStringMap QgsAuthApiHeaderEdit::headerPairs() const
   QgsStringMap headerPairs;
   for ( int i = 0; i < tblwdgHeaderPairs->rowCount(); ++i )
   {
-    if ( tblwdgHeaderPairs->item( i, 0 )->text().isEmpty() )
+    const QString headerKey = tblwdgHeaderPairs->item( i, 0 )->text().trimmed();
+    if ( headerKey.isEmpty() )
     {
       continue;
     }
 
-    const QString headerKey = tblwdgHeaderPairs->item( i, 0 )->text();
-    const QString headerValue = tblwdgHeaderPairs->item( i, 1 )->text();
+    const QString headerValue = tblwdgHeaderPairs->item( i, 1 )->text().trimmed();
     headerPairs.insert( headerKey, headerValue );
   }
   return headerPairs;
