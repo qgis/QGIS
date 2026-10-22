@@ -66,6 +66,8 @@ struct arcadescript_parser_context
   QgsEsriArcadeBlockStatement *blockStatement;
   QgsEsriArcadeExpression *expression;
   QList<QgsEsriArcadeExpression *> *expressionList;
+  QgsEsriArcadeDictionaryElement *dictionaryElement;
+  QList<QgsEsriArcadeDictionaryElement *> *dictionaryElementList;
   QStringList *identifierList;
   QString *text;
   double numberFloat;
@@ -91,7 +93,7 @@ struct arcadescript_parser_context
 %token LOGICAL_AND LOGICAL_OR NOT
 %token PLUS MINUS MUL DIV MOD
 %token SEMICOLON COMMA
-%token UNKNOWN_CHARACTER
+%token SAFE_DOT UNKNOWN_CHARACTER
 
 // non-terminal type associations
 %type <blockStatement> statement_list block_statement
@@ -99,6 +101,9 @@ struct arcadescript_parser_context
 %type <expression> expr primary_expr postfix_expr unary_expr multiplicative_expr additive_expr relational_expr equality_expr logical_and_expr logical_or_expr opt_initializer opt_expr
 %type <expressionList> opt_argument_list argument_list opt_element_list element_list
 %type <identifierList> opt_parameter_list parameter_list
+%type <dictionaryElement> property_entry
+%type <dictionaryElementList> opt_property_list property_list
+%type <text> property_name
 
 %destructor { delete $$; } <statement>
 %destructor { delete $$; } <blockStatement>
@@ -106,6 +111,8 @@ struct arcadescript_parser_context
 %destructor { delete $$; } <text>
 %destructor { qDeleteAll( *$$ ); delete $$; } <expressionList>
 %destructor { delete $$; } <identifierList>
+%destructor { delete $$; } <dictionaryElement>
+%destructor { qDeleteAll( *$$ ); delete $$; } <dictionaryElementList>
 
 // operator precedence and associativity
 %left LOGICAL_OR
@@ -115,7 +122,7 @@ struct arcadescript_parser_context
 %left PLUS MINUS
 %left MUL DIV MOD
 %right NOT UMINUS
-%left '[' ']' '(' ')' '.'
+%left '[' ']' '(' ')' '.' SAFE_DOT
 
 %%
 
@@ -172,10 +179,6 @@ statement:
       $$ = $1;
     }
   | expression_statement
-    {
-      $$ = $1;
-    }
-  | block_statement
     {
       $$ = $1;
     }
@@ -430,6 +433,11 @@ postfix_expr:
       $$ = new QgsEsriArcadeMemberAccessExpression( $1, *$3 );
       delete $3;
     }
+  | postfix_expr SAFE_DOT IDENTIFIER
+    {
+      $$ = new QgsEsriArcadeMemberAccessExpression( $1, *$3, true );
+      delete $3;
+    }
   | postfix_expr '[' expr ']'
     {
       $$ = new QgsEsriArcadeIndexExpression( $1, $3 );
@@ -487,7 +495,11 @@ primary_expr:
       $$ = new QgsEsriArcadeArrayLiteralExpression( *$2 );
       delete $2;
     }
-
+  | '{' opt_property_list '}'
+    {
+      $$ = new QgsEsriArcadeDictionaryLiteralExpression( *$2 );
+      delete $2;
+    }
 ;
 
 opt_argument_list:
@@ -538,6 +550,57 @@ element_list:
     }
 ;
 
+opt_property_list:
+    property_list
+    {
+      $$ = $1;
+    }
+  | property_list COMMA
+    {
+      $$ = $1;
+    }
+  | /* empty property list */
+    {
+      $$ = new QList<QgsEsriArcadeDictionaryElement *>();
+    }
+;
+
+property_list:
+    property_list COMMA property_entry
+    {
+      $$ = $1;
+      $$->append( $3 );
+    }
+  | property_entry
+    {
+      $$ = new QList<QgsEsriArcadeDictionaryElement *>();
+      $$->append( $1 );
+    }
+;
+
+property_entry:
+    property_name ':' expr
+    {
+      $$ = new QgsEsriArcadeDictionaryElement( *$1, $3, false );
+      delete $1;
+    }
+  | IDENTIFIER
+    {
+      $$ = new QgsEsriArcadeDictionaryElement( *$1, new QgsEsriArcadeVariableReferenceExpression( *$1 ), true );
+      delete $1;
+    }
+;
+
+property_name:
+    IDENTIFIER
+    {
+      $$ = $1;
+    }
+  | STRING_LITERAL
+    {
+      $$ = $1;
+    }
+;
 %%
 
 QgsEsriArcadeBlockStatement *parseArcadeScript( const QString &scriptText, QString &parserErrorMessage )

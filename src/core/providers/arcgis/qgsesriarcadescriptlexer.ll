@@ -139,6 +139,8 @@ block_comment  \/\*([^*]|\*+[^/*])*\*+\/
 
 ";"              { return SEMICOLON; }
 ","              { return COMMA; }
+":"              { return ':'; }
+"?."             { return SAFE_DOT; }
 "."              { return '.'; }
 "("              { return '('; }
 ")"              { return ')'; }

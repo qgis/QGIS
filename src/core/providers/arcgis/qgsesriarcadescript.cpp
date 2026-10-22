@@ -18,6 +18,7 @@
 #include "qgis.h"
 #include "qgsvariantutils.h"
 
+#include <QRegularExpression>
 #include <QString>
 
 using namespace Qt::StringLiterals;
@@ -309,20 +310,21 @@ void QgsEsriArcadeProfileVariableReferenceExpression::accept( QgsEsriArcadeVisit
 // QgsEsriArcadeMemberAccessExpression
 //
 
-QgsEsriArcadeMemberAccessExpression::QgsEsriArcadeMemberAccessExpression( QgsEsriArcadeExpression *containerExpression, const QString &memberName )
+QgsEsriArcadeMemberAccessExpression::QgsEsriArcadeMemberAccessExpression( QgsEsriArcadeExpression *containerExpression, const QString &memberName, bool isSafeAccess )
   : mContainerExpression( containerExpression )
   , mMemberName( memberName )
+  , mIsSafeAccess( isSafeAccess )
 {}
 
 QString QgsEsriArcadeMemberAccessExpression::dump() const
 {
-  return u"%1.%2"_s.arg( mContainerExpression ? mContainerExpression->dump() : QString(), mMemberName );
+  return u"%1%2%3"_s.arg( mContainerExpression ? mContainerExpression->dump() : QString(), mIsSafeAccess ? "?."_L1 : "."_L1, mMemberName );
 }
 
 QgsEsriArcadeNode *QgsEsriArcadeMemberAccessExpression::clone() const
 {
   QgsEsriArcadeExpression *clonedContainer = mContainerExpression ? dynamic_cast<QgsEsriArcadeExpression *>( mContainerExpression->clone() ) : nullptr;
-  return new QgsEsriArcadeMemberAccessExpression( clonedContainer, mMemberName );
+  return new QgsEsriArcadeMemberAccessExpression( clonedContainer, mMemberName, mIsSafeAccess );
 }
 
 void QgsEsriArcadeMemberAccessExpression::accept( QgsEsriArcadeVisitor &visitor ) const
@@ -537,6 +539,74 @@ void QgsEsriArcadeArrayLiteralExpression::accept( QgsEsriArcadeVisitor &visitor 
   visitor.visit( *this );
 }
 
+//
+// QgsEsriArcadeDictionaryElement
+//
+
+QgsEsriArcadeDictionaryElement::QgsEsriArcadeDictionaryElement( const QString &key, QgsEsriArcadeExpression *value, bool isAutoKey )
+  : mKey( key )
+  , mValue( value )
+  , mIsAutoKey( isAutoKey )
+{}
+
+QgsEsriArcadeDictionaryElement::~QgsEsriArcadeDictionaryElement() = default;
+
+QString QgsEsriArcadeDictionaryElement::dump() const
+{
+  if ( mIsAutoKey )
+    return mKey;
+
+  return u"%1: %2"_s.arg( QgsEsriArcadeScript::quotedString( mKey ), mValue ? mValue->dump() : QString() );
+}
+
+QgsEsriArcadeDictionaryElement *QgsEsriArcadeDictionaryElement::clone() const
+{
+  QgsEsriArcadeExpression *clonedValue = mValue ? dynamic_cast<QgsEsriArcadeExpression *>( mValue->clone() ) : nullptr;
+  return new QgsEsriArcadeDictionaryElement( mKey, clonedValue, mIsAutoKey );
+}
+
+//
+// QgsEsriArcadeDictionaryLiteralExpression
+//
+
+QgsEsriArcadeDictionaryLiteralExpression::QgsEsriArcadeDictionaryLiteralExpression( const QList<QgsEsriArcadeDictionaryElement *> &elements )
+  : mElements( elements )
+{}
+
+QgsEsriArcadeDictionaryLiteralExpression::~QgsEsriArcadeDictionaryLiteralExpression()
+{
+  qDeleteAll( mElements );
+}
+
+QString QgsEsriArcadeDictionaryLiteralExpression::dump() const
+{
+  if ( mElements.isEmpty() )
+    return u"{}"_s;
+
+  QStringList elementStrings;
+  elementStrings.reserve( mElements.size() );
+  for ( QgsEsriArcadeDictionaryElement *element : std::as_const( mElements ) )
+  {
+    elementStrings.append( element->dump() );
+  }
+  return u"{ %1 }"_s.arg( elementStrings.join( ", "_L1 ) );
+}
+
+QgsEsriArcadeNode *QgsEsriArcadeDictionaryLiteralExpression::clone() const
+{
+  QList<QgsEsriArcadeDictionaryElement *> clonedElements;
+  clonedElements.reserve( mElements.size() );
+  for ( QgsEsriArcadeDictionaryElement *element : std::as_const( mElements ) )
+  {
+    clonedElements.append( element->clone() );
+  }
+  return new QgsEsriArcadeDictionaryLiteralExpression( clonedElements );
+}
+
+void QgsEsriArcadeDictionaryLiteralExpression::accept( QgsEsriArcadeVisitor &visitor ) const
+{
+  visitor.visit( *this );
+}
 
 //
 // QgsEsriArcadeRecursiveVisitor
@@ -635,6 +705,16 @@ void QgsEsriArcadeRecursiveVisitor::visit( const QgsEsriArcadeArrayLiteralExpres
   for ( QgsEsriArcadeExpression *element : elements )
   {
     element->accept( *this );
+  }
+}
+
+void QgsEsriArcadeRecursiveVisitor::visit( const QgsEsriArcadeDictionaryLiteralExpression &node )
+{
+  const QList<QgsEsriArcadeDictionaryElement *> elements = node.elements();
+  for ( QgsEsriArcadeDictionaryElement *element : elements )
+  {
+    if ( element->value() )
+      element->value()->accept( *this );
   }
 }
 

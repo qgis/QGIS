@@ -35,6 +35,8 @@ class QgsEsriArcadeStatement;
 class QgsEsriArcadeBlockStatement;
 class QgsEsriArcadeAssignmentStatement;
 class QgsEsriArcadeArrayLiteralExpression;
+class QgsEsriArcadeDictionaryElement;
+class QgsEsriArcadeDictionaryLiteralExpression;
 
 /**
  * \ingroup core
@@ -93,6 +95,9 @@ class CORE_EXPORT QgsEsriArcadeNode
       case QgsEsriArcadeNode::NodeType::ntIndexExpression:
         sipType = sipType_QgsEsriArcadeIndexExpression;
         break;
+      case QgsEsriArcadeNode::NodeType::ntDictionaryLiteralExpression:
+        sipType = sipType_QgsEsriArcadeDictionaryLiteralExpression;
+        break;
       default:
         sipType = nullptr;
         break;
@@ -121,6 +126,7 @@ class CORE_EXPORT QgsEsriArcadeNode
       ntFunctionCallExpression,             //!< Function call
       ntIndexExpression,                    //!< Index operator
       ntArrayLiteralExpression,             //!< A literal array, where the element values may be expressions themselves (eg [1, 2, 3/4])
+      ntDictionaryLiteralExpression,        //!< A literal dictionary, eg {key: 1, other_key: 2}
     };
 
     virtual ~QgsEsriArcadeNode() = default;
@@ -537,7 +543,7 @@ class CORE_EXPORT QgsEsriArcadeMemberAccessExpression : public QgsEsriArcadeExpr
      *
      * Ownership of \a containerExpression is transferred to this expression.
      */
-    QgsEsriArcadeMemberAccessExpression( QgsEsriArcadeExpression *containerExpression SIP_TRANSFER, const QString &memberName );
+    QgsEsriArcadeMemberAccessExpression( QgsEsriArcadeExpression *containerExpression SIP_TRANSFER, const QString &memberName, bool isSafeAccess = false );
 
     QgsEsriArcadeNode::NodeType nodeType() const override { return NodeType::ntMemberAccessExpression; }
     QString dump() const override;
@@ -554,6 +560,16 @@ class CORE_EXPORT QgsEsriArcadeMemberAccessExpression : public QgsEsriArcadeExpr
      */
     QString memberName() const { return mMemberName; }
 
+    /**
+     * Returns TRUE if member access uses the safe access operator (?.).
+     */
+    bool isSafeAccess() const { return mIsSafeAccess; }
+
+    /**
+     * Sets whether member access uses the safe access operator (?.).
+     */
+    void setIsSafeAccess( bool isSafeAccess ) { mIsSafeAccess = isSafeAccess; }
+
   private:
     QgsEsriArcadeMemberAccessExpression( const QgsEsriArcadeMemberAccessExpression &other ) = delete;
     QgsEsriArcadeMemberAccessExpression &operator=( const QgsEsriArcadeMemberAccessExpression &other ) = delete;
@@ -564,6 +580,7 @@ class CORE_EXPORT QgsEsriArcadeMemberAccessExpression : public QgsEsriArcadeExpr
 
     std::unique_ptr<QgsEsriArcadeExpression> mContainerExpression;
     QString mMemberName;
+    bool mIsSafeAccess = false;
 };
 
 /**
@@ -845,6 +862,104 @@ class CORE_EXPORT QgsEsriArcadeArrayLiteralExpression : public QgsEsriArcadeExpr
 
 /**
  * \ingroup core
+ * \brief Represents a key-value entry in an Esri Arcade dictionary literal.
+ *
+ * Eg the "a: 5" part of the {a: 5, b: 6} dictionary literal.
+ *
+ * \since QGIS 4.6
+ */
+class CORE_EXPORT QgsEsriArcadeDictionaryElement
+{
+  public:
+    /**
+   * Constructor for QgsEsriArcadeDictionaryElement.
+   *
+   * Ownership of \a value is transferred to this element.
+   */
+    QgsEsriArcadeDictionaryElement( const QString &key, QgsEsriArcadeExpression *value SIP_TRANSFER, bool isAutoKey = false );
+
+    ~QgsEsriArcadeDictionaryElement();
+
+    /**
+   * Returns the entry key.
+   */
+    QString key() const { return mKey; }
+
+    /**
+   * Returns the entry value expression.
+   */
+    QgsEsriArcadeExpression *value() const { return mValue.get(); }
+
+    /**
+   * Returns TRUE if the entry was defined using auto-keys.
+   */
+    bool isAutoKey() const { return mIsAutoKey; }
+
+    /**
+   * Creates a deep copy of the element.
+   *
+   * Caller takes ownership of the returned object.
+   */
+    QgsEsriArcadeDictionaryElement *clone() const SIP_FACTORY;
+
+    /**
+   * Formats the element as string.
+   */
+    QString dump() const;
+
+  private:
+    QgsEsriArcadeDictionaryElement( const QgsEsriArcadeDictionaryElement &other ) = delete;
+    QgsEsriArcadeDictionaryElement &operator=( const QgsEsriArcadeDictionaryElement &other ) = delete;
+
+#ifdef SIP_RUN
+    QgsEsriArcadeDictionaryElement( const QgsEsriArcadeDictionaryElement &other );
+#endif
+
+    QString mKey;
+    std::unique_ptr<QgsEsriArcadeExpression> mValue;
+    bool mIsAutoKey = false;
+};
+
+/**
+ * \ingroup core
+ * \brief Represents a dictionary literal expression (e.g. { a: 1, "b": 2 }).
+ *
+ * \since QGIS 4.6
+ */
+class CORE_EXPORT QgsEsriArcadeDictionaryLiteralExpression : public QgsEsriArcadeExpression
+{
+  public:
+    /**
+   * Constructor for QgsEsriArcadeDictionaryLiteralExpression.
+   *
+   * Ownership of the \a elements is transferred to the expression.
+   */
+    explicit QgsEsriArcadeDictionaryLiteralExpression( const QList<QgsEsriArcadeDictionaryElement *> &elements SIP_TRANSFER );
+    ~QgsEsriArcadeDictionaryLiteralExpression() override;
+
+    QgsEsriArcadeNode::NodeType nodeType() const override { return NodeType::ntDictionaryLiteralExpression; }
+    QString dump() const override;
+    QgsEsriArcadeNode *clone() const override SIP_FACTORY;
+    void accept( QgsEsriArcadeVisitor &visitor ) const override;
+
+    /**
+   * Returns the dictionary elements.
+   */
+    QList<QgsEsriArcadeDictionaryElement *> elements() const { return mElements; }
+
+  private:
+    QgsEsriArcadeDictionaryLiteralExpression( const QgsEsriArcadeDictionaryLiteralExpression &other ) = delete;
+    QgsEsriArcadeDictionaryLiteralExpression &operator=( const QgsEsriArcadeDictionaryLiteralExpression &other ) = delete;
+
+#ifdef SIP_RUN
+    QgsEsriArcadeDictionaryLiteralExpression( const QgsEsriArcadeDictionaryLiteralExpression &other );
+#endif
+
+    QList<QgsEsriArcadeDictionaryElement *> mElements;
+};
+
+/**
+ * \ingroup core
  * \brief Abstract visitor interface for traversing Esri Arcade abstract syntax trees.
  *
  * \since QGIS 4.6
@@ -868,6 +983,7 @@ class CORE_EXPORT QgsEsriArcadeVisitor
     virtual void visit( const QgsEsriArcadeUnaryOperatorExpression &node ) = 0;
     virtual void visit( const QgsEsriArcadeFunctionCallExpression &node ) = 0;
     virtual void visit( const QgsEsriArcadeIndexExpression &node ) = 0;
+    virtual void visit( const QgsEsriArcadeDictionaryLiteralExpression &node ) = 0;
     virtual void visit( const QgsEsriArcadeArrayLiteralExpression &node ) = 0;
 };
 
@@ -897,6 +1013,7 @@ class CORE_EXPORT QgsEsriArcadeRecursiveVisitor : public QgsEsriArcadeVisitor
     void visit( const QgsEsriArcadeFunctionCallExpression &node ) override;
     void visit( const QgsEsriArcadeIndexExpression &node ) override;
     void visit( const QgsEsriArcadeArrayLiteralExpression &node ) override;
+    void visit( const QgsEsriArcadeDictionaryLiteralExpression &node ) override;
 };
 
 /**

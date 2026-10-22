@@ -13,6 +13,8 @@ from qgis.core import (
     QgsEsriArcadeAssignmentStatement,
     QgsEsriArcadeBinaryOperatorExpression,
     QgsEsriArcadeBlockStatement,
+    QgsEsriArcadeDictionaryElement,
+    QgsEsriArcadeDictionaryLiteralExpression,
     QgsEsriArcadeExpressionStatement,
     QgsEsriArcadeFunctionDeclarationStatement,
     QgsEsriArcadeIndexExpression,
@@ -812,6 +814,244 @@ var y = false;
         )
         self.assertEqual(
             script.rootBlock().statements()[1].initializer().value(), False
+        )
+
+    def test_dictionary_literals(self):
+        script = QgsEsriArcadeScript(
+            """var d = {
+  field1: 1,
+  field2: 2,
+  "full name": "Fred Barker"
+};
+"""
+        )
+        self.assertFalse(script.hasParserError())
+
+        self.assertIsInstance(script.rootBlock(), QgsEsriArcadeBlockStatement)
+        self.assertEqual(script.rootBlock().count(), 1)
+
+        self.assertIsInstance(
+            script.rootBlock().statements()[0],
+            QgsEsriArcadeVariableDeclarationStatement,
+        )
+        self.assertIsInstance(
+            script.rootBlock().statements()[0].initializer(),
+            QgsEsriArcadeDictionaryLiteralExpression,
+        )
+        self.assertEqual(
+            len(script.rootBlock().statements()[0].initializer().elements()), 3
+        )
+
+        self.assertIsInstance(
+            script.rootBlock().statements()[0].initializer().elements()[0],
+            QgsEsriArcadeDictionaryElement,
+        )
+        self.assertEqual(
+            script.rootBlock().statements()[0].initializer().elements()[0].key(),
+            "field1",
+        )
+        self.assertEqual(
+            script.rootBlock()
+            .statements()[0]
+            .initializer()
+            .elements()[0]
+            .value()
+            .value(),
+            1,
+        )
+        self.assertFalse(
+            script.rootBlock().statements()[0].initializer().elements()[0].isAutoKey()
+        )
+
+        self.assertEqual(
+            script.rootBlock().statements()[0].initializer().elements()[1].key(),
+            "field2",
+        )
+        self.assertEqual(
+            script.rootBlock()
+            .statements()[0]
+            .initializer()
+            .elements()[1]
+            .value()
+            .value(),
+            2,
+        )
+        self.assertFalse(
+            script.rootBlock().statements()[0].initializer().elements()[1].isAutoKey()
+        )
+
+        self.assertEqual(
+            script.rootBlock().statements()[0].initializer().elements()[2].key(),
+            "full name",
+        )
+        self.assertEqual(
+            script.rootBlock()
+            .statements()[0]
+            .initializer()
+            .elements()[2]
+            .value()
+            .value(),
+            "Fred Barker",
+        )
+        self.assertFalse(
+            script.rootBlock().statements()[0].initializer().elements()[2].isAutoKey()
+        )
+
+    def test_dictionary_access(self):
+        script = QgsEsriArcadeScript(
+            """var a = d.field1;
+            var b = d?.field2;
+            var c = d["field3"];
+            var e = d["field 4"];
+"""
+        )
+        self.assertFalse(script.hasParserError())
+
+        self.assertIsInstance(script.rootBlock(), QgsEsriArcadeBlockStatement)
+        self.assertEqual(script.rootBlock().count(), 4)
+
+        self.assertIsInstance(
+            script.rootBlock().statements()[0],
+            QgsEsriArcadeVariableDeclarationStatement,
+        )
+        self.assertIsInstance(
+            script.rootBlock().statements()[0].initializer(),
+            QgsEsriArcadeMemberAccessExpression,
+        )
+        self.assertEqual(
+            script.rootBlock().statements()[0].initializer().memberName(), "field1"
+        )
+        self.assertEqual(
+            script.rootBlock()
+            .statements()[0]
+            .initializer()
+            .containerExpression()
+            .name(),
+            "d",
+        )
+        self.assertFalse(
+            script.rootBlock().statements()[0].initializer().isSafeAccess()
+        )
+
+        self.assertIsInstance(
+            script.rootBlock().statements()[1],
+            QgsEsriArcadeVariableDeclarationStatement,
+        )
+        self.assertIsInstance(
+            script.rootBlock().statements()[1].initializer(),
+            QgsEsriArcadeMemberAccessExpression,
+        )
+        self.assertEqual(
+            script.rootBlock().statements()[1].initializer().memberName(), "field2"
+        )
+        self.assertEqual(
+            script.rootBlock()
+            .statements()[1]
+            .initializer()
+            .containerExpression()
+            .name(),
+            "d",
+        )
+        self.assertTrue(script.rootBlock().statements()[1].initializer().isSafeAccess())
+
+        self.assertIsInstance(
+            script.rootBlock().statements()[2],
+            QgsEsriArcadeVariableDeclarationStatement,
+        )
+        self.assertIsInstance(
+            script.rootBlock().statements()[2].initializer(),
+            QgsEsriArcadeIndexExpression,
+        )
+        self.assertEqual(
+            script.rootBlock().statements()[2].initializer().indexExpression().value(),
+            "field3",
+        )
+        self.assertEqual(
+            script.rootBlock()
+            .statements()[2]
+            .initializer()
+            .containerExpression()
+            .name(),
+            "d",
+        )
+
+        self.assertIsInstance(
+            script.rootBlock().statements()[3],
+            QgsEsriArcadeVariableDeclarationStatement,
+        )
+        self.assertIsInstance(
+            script.rootBlock().statements()[3].initializer(),
+            QgsEsriArcadeIndexExpression,
+        )
+        self.assertEqual(
+            script.rootBlock().statements()[3].initializer().indexExpression().value(),
+            "field 4",
+        )
+        self.assertEqual(
+            script.rootBlock()
+            .statements()[3]
+            .initializer()
+            .containerExpression()
+            .name(),
+            "d",
+        )
+
+    def test_dictionary_auto_keys(self):
+        script = QgsEsriArcadeScript(
+            """var field1 = 1;
+var field2 = 2;
+var d = { field1, field2 };
+"""
+        )
+        self.assertFalse(script.hasParserError())
+
+        self.assertIsInstance(script.rootBlock(), QgsEsriArcadeBlockStatement)
+        self.assertEqual(script.rootBlock().count(), 3)
+
+        self.assertIsInstance(
+            script.rootBlock().statements()[2].initializer(),
+            QgsEsriArcadeDictionaryLiteralExpression,
+        )
+        self.assertEqual(
+            len(script.rootBlock().statements()[2].initializer().elements()), 2
+        )
+
+        self.assertIsInstance(
+            script.rootBlock().statements()[2].initializer().elements()[0],
+            QgsEsriArcadeDictionaryElement,
+        )
+        self.assertEqual(
+            script.rootBlock().statements()[2].initializer().elements()[0].key(),
+            "field1",
+        )
+        self.assertEqual(
+            script.rootBlock()
+            .statements()[2]
+            .initializer()
+            .elements()[0]
+            .value()
+            .name(),
+            "field1",
+        )
+        self.assertTrue(
+            script.rootBlock().statements()[2].initializer().elements()[0].isAutoKey()
+        )
+
+        self.assertEqual(
+            script.rootBlock().statements()[2].initializer().elements()[1].key(),
+            "field2",
+        )
+        self.assertEqual(
+            script.rootBlock()
+            .statements()[2]
+            .initializer()
+            .elements()[1]
+            .value()
+            .name(),
+            "field2",
+        )
+        self.assertTrue(
+            script.rootBlock().statements()[2].initializer().elements()[1].isAutoKey()
         )
 
 

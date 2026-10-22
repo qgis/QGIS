@@ -71,6 +71,9 @@ Represents an abstract node for an Esri Arcade script.
       case QgsEsriArcadeNode::NodeType::ntIndexExpression:
         sipType = sipType_QgsEsriArcadeIndexExpression;
         break;
+      case QgsEsriArcadeNode::NodeType::ntDictionaryLiteralExpression:
+        sipType = sipType_QgsEsriArcadeDictionaryLiteralExpression;
+        break;
       default:
         sipType = nullptr;
         break;
@@ -94,6 +97,7 @@ Represents an abstract node for an Esri Arcade script.
       ntFunctionCallExpression,
       ntIndexExpression,
       ntArrayLiteralExpression,
+      ntDictionaryLiteralExpression,
     };
 
     virtual ~QgsEsriArcadeNode();
@@ -521,7 +525,7 @@ Represents a member access expression using dot notation (e.g.
 #include "qgsesriarcadescript.h"
 %End
   public:
-    QgsEsriArcadeMemberAccessExpression( QgsEsriArcadeExpression *containerExpression /Transfer/, const QString &memberName );
+    QgsEsriArcadeMemberAccessExpression( QgsEsriArcadeExpression *containerExpression /Transfer/, const QString &memberName, bool isSafeAccess = false );
 %Docstring
 Constructor for QgsEsriArcadeMemberAccessExpression.
 
@@ -544,6 +548,16 @@ Returns the container expression being accessed.
     QString memberName() const;
 %Docstring
 Returns the member attribute name.
+%End
+
+    bool isSafeAccess() const;
+%Docstring
+Returns ``True`` if member access uses the safe access operator (?.).
+%End
+
+    void setIsSafeAccess( bool isSafeAccess );
+%Docstring
+Sets whether member access uses the safe access operator (?.).
 %End
 
   private:
@@ -812,6 +826,97 @@ Returns the list of element expressions.
     QgsEsriArcadeArrayLiteralExpression( const QgsEsriArcadeArrayLiteralExpression &other );
 };
 
+class QgsEsriArcadeDictionaryElement
+{
+%Docstring(signature="appended")
+Represents a key-value entry in an Esri Arcade dictionary literal.
+
+Eg the "a: 5" part of the {a: 5, b: 6} dictionary literal.
+
+.. versionadded:: 4.6
+%End
+
+%TypeHeaderCode
+#include "qgsesriarcadescript.h"
+%End
+  public:
+    QgsEsriArcadeDictionaryElement( const QString &key, QgsEsriArcadeExpression *value /Transfer/, bool isAutoKey = false );
+%Docstring
+Constructor for QgsEsriArcadeDictionaryElement.
+
+Ownership of ``value`` is transferred to this element.
+%End
+
+    ~QgsEsriArcadeDictionaryElement();
+
+    QString key() const;
+%Docstring
+Returns the entry key.
+%End
+
+    QgsEsriArcadeExpression *value() const;
+%Docstring
+Returns the entry value expression.
+%End
+
+    bool isAutoKey() const;
+%Docstring
+Returns ``True`` if the entry was defined using auto-keys.
+%End
+
+    QgsEsriArcadeDictionaryElement *clone() const /Factory/;
+%Docstring
+Creates a deep copy of the element.
+
+Caller takes ownership of the returned object.
+%End
+
+    QString dump() const;
+%Docstring
+Formats the element as string.
+%End
+
+  private:
+    QgsEsriArcadeDictionaryElement( const QgsEsriArcadeDictionaryElement &other );
+};
+
+class QgsEsriArcadeDictionaryLiteralExpression : QgsEsriArcadeExpression
+{
+%Docstring(signature="appended")
+Represents a dictionary literal expression (e.g. { a: 1, "b": 2 }).
+
+.. versionadded:: 4.6
+%End
+
+%TypeHeaderCode
+#include "qgsesriarcadescript.h"
+%End
+  public:
+    explicit QgsEsriArcadeDictionaryLiteralExpression( const QList<QgsEsriArcadeDictionaryElement *> &elements /Transfer/ );
+%Docstring
+Constructor for QgsEsriArcadeDictionaryLiteralExpression.
+
+Ownership of the ``elements`` is transferred to the expression.
+%End
+    ~QgsEsriArcadeDictionaryLiteralExpression();
+
+    virtual QgsEsriArcadeNode::NodeType nodeType() const;
+    virtual QString dump() const;
+
+    virtual QgsEsriArcadeNode *clone() const /Factory/;
+
+    virtual void accept( QgsEsriArcadeVisitor &visitor ) const;
+
+
+    QList<QgsEsriArcadeDictionaryElement *> elements() const;
+%Docstring
+Returns the dictionary elements.
+%End
+
+  private:
+    QgsEsriArcadeDictionaryLiteralExpression( const QgsEsriArcadeDictionaryLiteralExpression &other );
+};
+
 class QgsEsriArcadeVisitor
 {
 %Docstring(signature="appended")
@@ -841,6 +946,7 @@ trees.
     virtual void visit( const QgsEsriArcadeUnaryOperatorExpression &node ) = 0;
     virtual void visit( const QgsEsriArcadeFunctionCallExpression &node ) = 0;
     virtual void visit( const QgsEsriArcadeIndexExpression &node ) = 0;
+    virtual void visit( const QgsEsriArcadeDictionaryLiteralExpression &node ) = 0;
     virtual void visit( const QgsEsriArcadeArrayLiteralExpression &node ) = 0;
 };
 
@@ -888,6 +994,8 @@ Esri Arcade script.
     virtual void visit( const QgsEsriArcadeIndexExpression &node );
 
     virtual void visit( const QgsEsriArcadeArrayLiteralExpression &node );
+
+    virtual void visit( const QgsEsriArcadeDictionaryLiteralExpression &node );
 
 };
 

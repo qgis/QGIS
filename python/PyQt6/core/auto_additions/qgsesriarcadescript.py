@@ -15,6 +15,7 @@ QgsEsriArcadeNode.NodeType.ntUnaryOperatorExpression.__doc__ = "Operator"
 QgsEsriArcadeNode.NodeType.ntFunctionCallExpression.__doc__ = "Function call"
 QgsEsriArcadeNode.NodeType.ntIndexExpression.__doc__ = "Index operator"
 QgsEsriArcadeNode.NodeType.ntArrayLiteralExpression.__doc__ = "A literal array, where the element values may be expressions themselves (eg [1, 2, 3/4])"
+QgsEsriArcadeNode.NodeType.ntDictionaryLiteralExpression.__doc__ = "A literal dictionary, eg {key: 1, other_key: 2}"
 QgsEsriArcadeNode.NodeType.__doc__ = """Node type identifier.
 
 * ``ntBlockStatement``: Block statement (a list of statements grouped together in a block)
@@ -32,6 +33,7 @@ QgsEsriArcadeNode.NodeType.__doc__ = """Node type identifier.
 * ``ntFunctionCallExpression``: Function call
 * ``ntIndexExpression``: Index operator
 * ``ntArrayLiteralExpression``: A literal array, where the element values may be expressions themselves (eg [1, 2, 3/4])
+* ``ntDictionaryLiteralExpression``: A literal dictionary, eg {key: 1, other_key: 2}
 
 """
 # --
@@ -170,6 +172,11 @@ try:
 except (NameError, AttributeError):
     pass
 try:
+    QgsEsriArcadeDictionaryLiteralExpression.__overridden_methods__ = ['nodeType', 'dump', 'clone', 'accept']
+    QgsEsriArcadeDictionaryLiteralExpression.__group__ = ['providers', 'arcgis']
+except (NameError, AttributeError):
+    pass
+try:
     QgsEsriArcadeRecursiveVisitor.__overridden_methods__ = ['visit']
     QgsEsriArcadeRecursiveVisitor.__group__ = ['providers', 'arcgis']
 except (NameError, AttributeError):
@@ -180,5 +187,9 @@ except (NameError, AttributeError):
     pass
 try:
     QgsEsriArcadeExpression.__group__ = ['providers', 'arcgis']
+except (NameError, AttributeError):
+    pass
+try:
+    QgsEsriArcadeDictionaryElement.__group__ = ['providers', 'arcgis']
 except (NameError, AttributeError):
     pass
