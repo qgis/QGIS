@@ -96,7 +96,7 @@ struct arcadescript_parser_context
 
 // non-terminal type associations
 %type <blockStatement> statement_list block_statement
-%type <statement> statement var_declaration return_statement function_declaration expression_statement
+%type <statement> statement var_declaration return_statement function_declaration expression_statement return_without_semicolon
 %type <expression> expr primary_expr postfix_expr unary_expr multiplicative_expr additive_expr relational_expr equality_expr logical_and_expr logical_or_expr assignment_expr opt_initializer opt_expr
 %type <expressionList> opt_argument_list argument_list
 %type <identifierList> opt_parameter_list parameter_list
@@ -124,6 +124,16 @@ struct arcadescript_parser_context
 root:
     statement_list
     {
+      parserContext->rootBlock = $1;
+    }
+  | statement_list expr
+    {
+      $1->appendStatement( new QgsEsriArcadeExpressionStatement( $2 ) );
+      parserContext->rootBlock = $1;
+    }
+  | statement_list return_without_semicolon
+    {
+      $1->appendStatement( $2 );
       parserContext->rootBlock = $1;
     }
 ;
@@ -173,6 +183,16 @@ block_statement:
     {
       $$ = $2;
     }
+  | '{' statement_list expr '}'
+    {
+      $2->appendStatement( new QgsEsriArcadeExpressionStatement( $3 ) );
+      $$ = $2;
+    }
+  | '{' statement_list return_without_semicolon '}'
+    {
+      $2->appendStatement( $3 );
+      $$ = $2;
+    }
 ;
 
 var_declaration:
@@ -196,6 +216,13 @@ opt_initializer:
 
 return_statement:
     RETURN opt_expr SEMICOLON
+    {
+      $$ = new QgsEsriArcadeReturnStatement( $2 );
+    }
+;
+
+return_without_semicolon:
+    RETURN opt_expr
     {
       $$ = new QgsEsriArcadeReturnStatement( $2 );
     }
