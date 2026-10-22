@@ -11,6 +11,7 @@ import sys
 from qgis.core import (
     QgsEsriArcadeBinaryOperatorExpression,
     QgsEsriArcadeBlockStatement,
+    QgsEsriArcadeExpressionStatement,
     QgsEsriArcadeFunctionDeclarationStatement,
     QgsEsriArcadeIndexExpression,
     QgsEsriArcadeLiteralExpression,
@@ -28,7 +29,67 @@ class TestQgsEsriArcadeScript(unittest.TestCase):
         self.assertTrue(script.hasParserError())
         self.assertEqual(script.parserErrorString(), "syntax error")
 
-    def test_a(self):
+    def test_single_line_string(self):
+        script = QgsEsriArcadeScript('"Hello world"')
+        self.assertFalse(script.hasParserError())
+
+        self.assertEqual(script.script(), '"Hello world"')
+        self.assertEqual(script.dump(), '"Hello world";')
+
+        self.assertIsInstance(script.rootBlock(), QgsEsriArcadeBlockStatement)
+        self.assertEqual(script.rootBlock().count(), 1)
+
+        self.assertIsInstance(
+            script.rootBlock().statements()[0],
+            QgsEsriArcadeExpressionStatement,
+        )
+        self.assertIsInstance(
+            script.rootBlock().statements()[0].expression(),
+            QgsEsriArcadeLiteralExpression,
+        )
+        self.assertEqual(
+            script.rootBlock().statements()[0].expression().value(), "Hello world"
+        )
+
+    def test_single_line_expression(self):
+        script = QgsEsriArcadeScript("1 + 2")
+        self.assertFalse(script.hasParserError())
+
+        self.assertEqual(script.script(), "1 + 2")
+        self.assertEqual(script.dump(), "1 + 2;")
+
+        self.assertIsInstance(script.rootBlock(), QgsEsriArcadeBlockStatement)
+        self.assertEqual(script.rootBlock().count(), 1)
+
+        self.assertIsInstance(
+            script.rootBlock().statements()[0],
+            QgsEsriArcadeExpressionStatement,
+        )
+        self.assertIsInstance(
+            script.rootBlock().statements()[0].expression(),
+            QgsEsriArcadeBinaryOperatorExpression,
+        )
+        self.assertEqual(
+            script.rootBlock().statements()[0].expression().binaryOperator(),
+            QgsEsriArcadeBinaryOperatorExpression.BinaryOperator.boPlus,
+        )
+        self.assertIsInstance(
+            script.rootBlock().statements()[0].expression().leftOperand(),
+            QgsEsriArcadeLiteralExpression,
+        )
+        self.assertEqual(
+            script.rootBlock().statements()[0].expression().leftOperand().value(), 1
+        )
+
+        self.assertIsInstance(
+            script.rootBlock().statements()[0].expression().rightOperand(),
+            QgsEsriArcadeLiteralExpression,
+        )
+        self.assertEqual(
+            script.rootBlock().statements()[0].expression().rightOperand().value(), 2
+        )
+
+    def test_basic(self):
         script = QgsEsriArcadeScript("""var x = 3; var y = 4;
             return x + y;""")
 
