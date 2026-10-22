@@ -1224,6 +1224,7 @@ set(QGIS_CORE_HDRS
   qgsdatabaseschemamodel.h
   qgsdatabasetablemodel.h
   qgsdatadefinedsizelegend.h
+  qgsdatadefinedutils.h
   qgsdataproviderelevationproperties.h
   qgsdataprovidertemporalcapabilities.h
   qgsdatasourceuri.h
