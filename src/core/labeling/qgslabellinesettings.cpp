@@ -15,6 +15,7 @@
 
 #include "qgslabellinesettings.h"
 
+#include "qgsdatadefinedutils.h"
 #include "qgsexpressioncontext.h"
 #include "qgslabelingengine.h"
 #include "qgspallabeling.h"
@@ -53,60 +54,79 @@ void QgsLabelLineSettings::updateDataDefinedProperties( const QgsPropertyCollect
   if ( properties.isActive( QgsPalLayerSettings::Property::LineAnchorClipping ) )
   {
     bool ok = false;
-    const QString value = properties.valueAsString( QgsPalLayerSettings::Property::LineAnchorClipping, context, QString(), &ok ).trimmed();
+    const QString value = properties.valueAsString( QgsPalLayerSettings::Property::LineAnchorClipping, context, QString(), &ok );
     if ( ok )
     {
-      if ( value.compare( "visible"_L1, Qt::CaseInsensitive ) == 0 )
-        mAnchorClipping = AnchorClipping::UseVisiblePartsOfLine;
-      else if ( value.compare( "entire"_L1, Qt::CaseInsensitive ) == 0 )
-        mAnchorClipping = AnchorClipping::UseEntireLine;
+      static constexpr auto CLIPPING_MAP = makeDataDefinedStringDecoder<AnchorClipping>( {
+        { u"visible", AnchorClipping::UseVisiblePartsOfLine },
+        { u"entire", AnchorClipping::UseEntireLine },
+      } );
+
+      auto evaluatedClipping = CLIPPING_MAP.lookup( value );
+      if ( evaluatedClipping )
+      {
+        mAnchorClipping = *evaluatedClipping;
+      }
     }
   }
 
   if ( properties.isActive( QgsPalLayerSettings::Property::LineAnchorType ) )
   {
     bool ok = false;
-    const QString value = properties.valueAsString( QgsPalLayerSettings::Property::LineAnchorType, context, QString(), &ok ).trimmed();
+    const QString value = properties.valueAsString( QgsPalLayerSettings::Property::LineAnchorType, context, QString(), &ok );
     if ( ok )
     {
-      if ( value.compare( "hint"_L1, Qt::CaseInsensitive ) == 0 )
-        mAnchorType = AnchorType::HintOnly;
-      else if ( value.compare( "strict"_L1, Qt::CaseInsensitive ) == 0 )
-        mAnchorType = AnchorType::Strict;
+      static constexpr auto ANCHOR_MAP = makeDataDefinedStringDecoder<AnchorType>( {
+        { u"hint", AnchorType::HintOnly },
+        { u"strict", AnchorType::Strict },
+      } );
+
+      auto evaluatedAnchor = ANCHOR_MAP.lookup( value );
+      if ( evaluatedAnchor )
+      {
+        mAnchorType = *evaluatedAnchor;
+      }
     }
   }
 
   if ( properties.isActive( QgsPalLayerSettings::Property::LineAnchorTextPoint ) )
   {
     bool ok = false;
-    const QString value = properties.valueAsString( QgsPalLayerSettings::Property::LineAnchorTextPoint, context, QString(), &ok ).trimmed();
+    const QString value = properties.valueAsString( QgsPalLayerSettings::Property::LineAnchorTextPoint, context, QString(), &ok );
     if ( ok )
     {
-      if ( value.compare( "follow"_L1, Qt::CaseInsensitive ) == 0 )
-        mAnchorTextPoint = Qgis::TextAnchorPoint::FollowPlacement;
-      else if ( value.compare( "start"_L1, Qt::CaseInsensitive ) == 0 )
-        mAnchorTextPoint = Qgis::TextAnchorPoint::StartOfText;
-      else if ( value.compare( "center"_L1, Qt::CaseInsensitive ) == 0 )
-        mAnchorTextPoint = Qgis::TextAnchorPoint::CenterOfText;
-      else if ( value.compare( "end"_L1, Qt::CaseInsensitive ) == 0 )
-        mAnchorTextPoint = Qgis::TextAnchorPoint::EndOfText;
+      static constexpr auto ANCHOR_TEXT_MAP = makeDataDefinedStringDecoder<Qgis::TextAnchorPoint>( {
+        { u"follow", Qgis::TextAnchorPoint::FollowPlacement },
+        { u"start", Qgis::TextAnchorPoint::StartOfText },
+        { u"center", Qgis::TextAnchorPoint::CenterOfText },
+        { u"end", Qgis::TextAnchorPoint::EndOfText },
+      } );
+      auto evaluatedAnchor = ANCHOR_TEXT_MAP.lookup( value );
+      if ( evaluatedAnchor )
+      {
+        mAnchorTextPoint = *evaluatedAnchor;
+      }
     }
   }
 
   if ( properties.isActive( QgsPalLayerSettings::Property::CurvedLabelMode ) )
   {
     bool ok = false;
-    const QString value = properties.valueAsString( QgsPalLayerSettings::Property::CurvedLabelMode, context, QString(), &ok ).trimmed();
+    const QString value = properties.valueAsString( QgsPalLayerSettings::Property::CurvedLabelMode, context, QString(), &ok );
     if ( ok )
     {
-      if ( value.compare( "Default"_L1, Qt::CaseInsensitive ) == 0 )
-        mCurvedLabelMode = Qgis::CurvedLabelMode::Default;
-      else if ( value.compare( "CharactersAtVertices"_L1, Qt::CaseInsensitive ) == 0 || value.compare( "Characters_At_Vertices"_L1, Qt::CaseInsensitive ) == 0 )
-        mCurvedLabelMode = Qgis::CurvedLabelMode::PlaceCharactersAtVertices;
-      else if ( value.compare( "StretchCharacterSpacingToFit"_L1, Qt::CaseInsensitive ) == 0 || value.compare( "Stretch_Character_Spacing_To_Fit"_L1, Qt::CaseInsensitive ) == 0 )
-        mCurvedLabelMode = Qgis::CurvedLabelMode::StretchCharacterSpacingToFitLine;
-      else if ( value.compare( "StretchWordSpacingToFit"_L1, Qt::CaseInsensitive ) == 0 || value.compare( "Stretch_Word_Spacing_To_Fit"_L1, Qt::CaseInsensitive ) == 0 )
-        mCurvedLabelMode = Qgis::CurvedLabelMode::StretchWordSpacingToFitLine;
+      static constexpr auto CURVED_LABEL_MODE_MAP = makeDataDefinedStringDecoder<Qgis::CurvedLabelMode>( {
+        { u"default", Qgis::CurvedLabelMode::Default },
+        { u"charactersatvertices", Qgis::CurvedLabelMode::PlaceCharactersAtVertices },
+        { u"stretchcharacterspacingtofit", Qgis::CurvedLabelMode::StretchCharacterSpacingToFitLine },
+        { u"stretchwordspacingtofit", Qgis::CurvedLabelMode::StretchWordSpacingToFitLine },
+      } );
+
+      auto evaluatedCurvedMode = CURVED_LABEL_MODE_MAP.lookup( value );
+      if ( evaluatedCurvedMode )
+      {
+        mCurvedLabelMode = *evaluatedCurvedMode;
+      }
     }
   }
 }
