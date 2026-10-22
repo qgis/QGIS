@@ -15,6 +15,7 @@
  ***************************************************************************/
 #include "qgsabstractdatabaseproviderconnection.h"
 
+#include "qgsdatasourceuri.h"
 #include "qgsexception.h"
 #include "qgsfeedback.h"
 #include "qgsprovidersqlquerybuilder.h"
@@ -68,6 +69,14 @@ QString QgsAbstractDatabaseProviderConnection::tableUri( const QString &schema, 
   Q_UNUSED( schema )
   Q_UNUSED( name )
   throw QgsProviderConnectionException( QObject::tr( "Operation 'tableUri' is not supported" ) );
+}
+
+QString QgsAbstractDatabaseProviderConnection::styleStorageUri( const QString &schema, const QString &tableName, const QString &geometryColumn, Qgis::WkbType wkbType ) const
+{
+  QgsDataSourceUri uri( tableUri( schema, tableName ) );
+  uri.setGeometryColumn( geometryColumn );
+  uri.setWkbType( wkbType );
+  return uri.uri( false );
 }
 
 
