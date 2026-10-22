@@ -221,6 +221,53 @@ class TestQgsEsriArcadeScript(unittest.TestCase):
             )
         )
 
+    def test_string_literals(self):
+        script = QgsEsriArcadeScript('''"This is a Text variable"''')
+        self.assertFalse(script.hasParserError())
+        self.assertIsInstance(script.rootBlock(), QgsEsriArcadeBlockStatement)
+        self.assertEqual(script.rootBlock().count(), 1)
+        self.assertEqual(
+            script.rootBlock().statements()[0].expression().value(),
+            """This is a Text variable""",
+        )
+
+        script = QgsEsriArcadeScript("""'This is a Text variable'""")
+        self.assertFalse(script.hasParserError())
+        self.assertIsInstance(script.rootBlock(), QgsEsriArcadeBlockStatement)
+        self.assertEqual(script.rootBlock().count(), 1)
+        self.assertEqual(
+            script.rootBlock().statements()[0].expression().value(),
+            """This is a Text variable""",
+        )
+
+        # stupid, not documented, but supported. wonder what other escape characters are supported?
+        script = QgsEsriArcadeScript("""'This is a \\'Text\\' variable'""")
+        self.assertFalse(script.hasParserError())
+        self.assertIsInstance(script.rootBlock(), QgsEsriArcadeBlockStatement)
+        self.assertEqual(script.rootBlock().count(), 1)
+        self.assertEqual(
+            script.rootBlock().statements()[0].expression().value(),
+            """This is a 'Text' variable""",
+        )
+
+        script = QgsEsriArcadeScript('''"This is a \\"Text\\" variable"''')
+        self.assertFalse(script.hasParserError())
+        self.assertIsInstance(script.rootBlock(), QgsEsriArcadeBlockStatement)
+        self.assertEqual(script.rootBlock().count(), 1)
+        self.assertEqual(
+            script.rootBlock().statements()[0].expression().value(),
+            """This is a "Text" variable""",
+        )
+
+        script = QgsEsriArcadeScript('''"This is a \\\\Text\\/ variable"''')
+        self.assertFalse(script.hasParserError())
+        self.assertIsInstance(script.rootBlock(), QgsEsriArcadeBlockStatement)
+        self.assertEqual(script.rootBlock().count(), 1)
+        self.assertEqual(
+            script.rootBlock().statements()[0].expression().value(),
+            """This is a \\Text/ variable""",
+        )
+
     def test_single_line_string_with_explicit_return(self):
         script = QgsEsriArcadeScript('return "Hello world"')
         self.assertFalse(script.hasParserError())
