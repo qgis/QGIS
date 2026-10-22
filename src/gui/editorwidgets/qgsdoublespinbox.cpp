@@ -18,6 +18,7 @@
 #include "qgsapplication.h"
 #include "qgsexpression.h"
 #include "qgsexpressioncontext.h"
+#include "qgsexpressioncontextutils.h"
 #include "qgsfilterlineedit.h"
 #include "qgslogger.h"
 
