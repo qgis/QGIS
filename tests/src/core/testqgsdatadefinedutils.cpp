@@ -66,9 +66,18 @@ void TestQgsDataDefinedUtils::testDataDefinedStringDecoder_data()
   QTest::newRow( "top_left" ) << u"top_left"_s << true << Qgis::LabelPredefinedPointPosition::TopLeft;
   QTest::newRow( "Top_left" ) << u"Top_left"_s << true << Qgis::LabelPredefinedPointPosition::TopLeft;
   QTest::newRow( "Top_Left" ) << u"Top_Left"_s << true << Qgis::LabelPredefinedPointPosition::TopLeft;
+  QTest::newRow( "top-left" ) << u"top-left"_s << true << Qgis::LabelPredefinedPointPosition::TopLeft;
+  QTest::newRow( "Top-left" ) << u"Top-left"_s << true << Qgis::LabelPredefinedPointPosition::TopLeft;
+  QTest::newRow( "Top-Left" ) << u"Top-Left"_s << true << Qgis::LabelPredefinedPointPosition::TopLeft;
+  QTest::newRow( "top - _left" ) << u"top - _left"_s << true << Qgis::LabelPredefinedPointPosition::TopLeft;
+  QTest::newRow( "Top - _left" ) << u"Top - _left"_s << true << Qgis::LabelPredefinedPointPosition::TopLeft;
+  QTest::newRow( "Top - _Left" ) << u"Top - _Left"_s << true << Qgis::LabelPredefinedPointPosition::TopLeft;
   QTest::newRow( "   topleft" ) << u"   topleft"_s << true << Qgis::LabelPredefinedPointPosition::TopLeft;
   QTest::newRow( "topleft   " ) << u"topleft   "_s << true << Qgis::LabelPredefinedPointPosition::TopLeft;
   QTest::newRow( "   topleft   " ) << u"   topleft   "_s << true << Qgis::LabelPredefinedPointPosition::TopLeft;
+  QTest::newRow( "tL" ) << u"tL"_s << true << Qgis::LabelPredefinedPointPosition::TopLeft;
+  QTest::newRow( "Tl" ) << u"Tl"_s << true << Qgis::LabelPredefinedPointPosition::TopLeft;
+  QTest::newRow( "tl" ) << u"tl"_s << true << Qgis::LabelPredefinedPointPosition::TopLeft;
 
   QTest::newRow( "topright" ) << u"topright"_s << true << Qgis::LabelPredefinedPointPosition::TopRight;
   QTest::newRow( "Topright" ) << u"Topright"_s << true << Qgis::LabelPredefinedPointPosition::TopRight;
@@ -89,6 +98,7 @@ void TestQgsDataDefinedUtils::testDataDefinedStringDecoder()
 {
   static constexpr auto sPointPositionMap = makeDataDefinedStringDecoder<Qgis::LabelPredefinedPointPosition>(
     { { u"topleft", Qgis::LabelPredefinedPointPosition::TopLeft },
+      { u"tl", Qgis::LabelPredefinedPointPosition::TopLeft },
       { u"topright", Qgis::LabelPredefinedPointPosition::TopRight },
       { u"bottom", Qgis::LabelPredefinedPointPosition::BottomMiddle } }
   );

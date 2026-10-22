@@ -91,7 +91,8 @@ template<typename V, size_t N> class QgsDataDefinedStringDecoder
       // with matching first letters
       for ( size_t i = 0; i < N; ++i )
       {
-        const int partitionIndex = getPartitionIndexForString( mLookupTable[i].first );
+        // work out what partition this key falls into - the partition index is just the alphabetical index of the first letter
+        const int partitionIndex = getPartitionIndexForChar( mLookupTable[i].first[0].unicode() );
         if ( partitionIndex < 0 )
           throw "Something went wrong -- partition index < 0";
         if ( partitionIndex >= 26 )
@@ -113,12 +114,32 @@ template<typename V, size_t N> class QgsDataDefinedStringDecoder
       if ( string.isEmpty() )
         return {};
 
-      const QStringView trimmed = string.trimmed();
-      if ( trimmed.isEmpty() )
+      // clean up the candidate string -- remove whitespace and other unwanted characters
+      std::array<char16_t, MAX_KEY_SIZE> cleanedString;
+      int cleanedStringLength = 0;
+      for ( qsizetype i = 0; i < string.size(); ++i )
+      {
+        char16_t unicode = string[i].unicode();
+        if ( shouldIgnoreCharacter( unicode ) )
+          continue;
+
+        // strings with more than MAX_KEY_SIZE non-ignored characters cannot possibly match anything,
+        // cos we have compile-time assertion that all valid keys are < this length...
+        if ( cleanedStringLength >= MAX_KEY_SIZE )
+          return {};
+
+        static constexpr int UPPER_TO_LOWER_CHAR_OFFSET = 32;
+        if ( unicode >= u'A' && unicode <= u'Z' )
+          unicode += UPPER_TO_LOWER_CHAR_OFFSET;
+
+        cleanedString[cleanedStringLength++] = unicode;
+      }
+
+      if ( cleanedStringLength == 0 )
         return {};
 
       // find the corresponding partition
-      const int partitionIndex = getPartitionIndexForString( trimmed );
+      const int partitionIndex = getPartitionIndexForChar( cleanedString[0] );
       if ( partitionIndex < 0 )
       {
         // doesn't start with an a-z character, so cannot possibly match any key (since we have
@@ -131,9 +152,10 @@ template<typename V, size_t N> class QgsDataDefinedStringDecoder
         return {}; // no keys match the start character of the string
 
       const DataDefinedDecoderEntry<V> *partitionData = mLookupTable.data() + partition.offset;
+      const QStringView cleanedStringView( cleanedString.data(), cleanedStringLength );
       for ( uint16_t i = 0; i < partition.count; ++i )
       {
-        if ( partitionData[i].first.size() == trimmed.size() && partitionData[i].first.compare( trimmed, Qt::CaseInsensitive ) == 0 )
+        if ( partitionData[i].first.size() == cleanedStringLength && partitionData[i].first.compare( cleanedStringView ) == 0 )
         {
           return partitionData[i].second;
         }
@@ -174,17 +196,16 @@ template<typename V, size_t N> class QgsDataDefinedStringDecoder
       return 0;
     }
 
-    static constexpr int getPartitionIndexForString( QStringView string )
+    static constexpr int getPartitionIndexForChar( char16_t c )
     {
-      // work out what partition this key falls into - the partition index is just the alphabetical index of the first letter
-      const char16_t firstCharUnicode = string[0].unicode();
-      if ( firstCharUnicode >= u'a' && firstCharUnicode <= u'z' )
+      // work out what partition this character falls into - the partition index is just the alphabetical index of the character
+      if ( c >= u'a' && c <= u'z' )
       {
-        return static_cast<size_t>( firstCharUnicode - u'a' );
+        return c - u'a';
       }
-      else if ( firstCharUnicode >= u'A' && firstCharUnicode <= u'Z' )
+      else if ( c >= u'A' && c <= u'Z' )
       {
-        return static_cast<size_t>( firstCharUnicode - u'A' );
+        return c - u'A';
       }
 
       return -1;
