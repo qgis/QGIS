@@ -13653,7 +13653,7 @@ Qgs3DMapCanvas *QgisApp::createNewMapCanvas3D( const QString &name, Qgis::SceneM
   switch ( sceneMode )
   {
     case Qgis::SceneMode::Local:
-      baseName = tr( "3D Map %1" );
+      baseName = tr( "3D Local Map %1" );
       break;
     case Qgis::SceneMode::Globe:
       baseName = tr( "3D Globe %1" );
