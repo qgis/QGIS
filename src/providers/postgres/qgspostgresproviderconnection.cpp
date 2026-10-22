@@ -427,9 +427,13 @@ void QgsPostgresProviderConnection::renameRasterTable( const QString &schema, co
 
   for ( const QgsPostgresRasterOverviewLayerProperty &overview : overviews )
   {
+    const QString newOverviewName = u"o_%1_%2"_s.arg( overview.overviewFactor, newName );
+    sql << u"ALTER TABLE %1.%2 RENAME TO %3"_s
+             .arg( QgsPostgresConn::quotedIdentifier( overview.schemaName ), QgsPostgresConn::quotedIdentifier( overview.tableName ), QgsPostgresConn::quotedIdentifier( newOverviewName ) );
+
     sql << u"SELECT AddOverviewConstraints(%1, %2, %3, %4, %5, %6, %7)"_s.arg(
       QgsPostgresConn::quotedValue( overview.schemaName ),
-      QgsPostgresConn::quotedValue( overview.tableName ),
+      QgsPostgresConn::quotedValue( newOverviewName ),
       QgsPostgresConn::quotedValue( overview.rasterColumn ),
       QgsPostgresConn::quotedValue( schema ),
       QgsPostgresConn::quotedValue( newName ),
