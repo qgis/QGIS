@@ -84,12 +84,12 @@ void TestQgsDataDefinedUtils::testDataDefinedStringDecoder_data()
 
 void TestQgsDataDefinedUtils::testDataDefinedStringDecoder()
 {
-  static const auto sPointPositionMap = makeDataDefinedStringDecoder<Qgis::LabelPredefinedPointPosition>(
-    { { u"TopLeft", Qgis::LabelPredefinedPointPosition::TopLeft },
-      { u"Top_Left", Qgis::LabelPredefinedPointPosition::TopLeft },
-      { u"TopRight", Qgis::LabelPredefinedPointPosition::TopRight },
-      { u"Top_Right", Qgis::LabelPredefinedPointPosition::TopRight },
-      { u"Bottom", Qgis::LabelPredefinedPointPosition::BottomMiddle } }
+  static constexpr auto sPointPositionMap = makeDataDefinedStringDecoder<Qgis::LabelPredefinedPointPosition>(
+    { { u"topleft", Qgis::LabelPredefinedPointPosition::TopLeft },
+      { u"top_left", Qgis::LabelPredefinedPointPosition::TopLeft },
+      { u"topright", Qgis::LabelPredefinedPointPosition::TopRight },
+      { u"top_right", Qgis::LabelPredefinedPointPosition::TopRight },
+      { u"bottom", Qgis::LabelPredefinedPointPosition::BottomMiddle } }
   );
 
   QFETCH( QString, candidate );

@@ -19,11 +19,18 @@
 #include <algorithm>
 #include <array>
 #include <optional>
-#include <utility>
 
 #include "qgis_core.h"
 
 #define SIP_NO_FILE
+
+///@cond PRIVATE
+template<typename V> struct DataDefinedDecoderEntry
+{
+    QStringView first;
+    V second;
+};
+///@endcond
 
 /**
  * \class QgsDataDefinedStringDecoder
@@ -40,11 +47,25 @@ template<typename V, size_t N> class QgsDataDefinedStringDecoder
     /**
      * Constructor for QgsDataDefinedStringDecoder.
      */
-    explicit QgsDataDefinedStringDecoder( const std::pair<QStringView, V> ( &values )[N] )
+    constexpr explicit QgsDataDefinedStringDecoder( const DataDefinedDecoderEntry<V> ( &values )[N] )
     {
       for ( size_t i = 0; i < N; ++i )
       {
-        Q_ASSERT( !values[i].first.isEmpty() );
+        const QStringView key = values[i].first;
+
+        // compile-time assumption checks
+        if ( key.isEmpty() )
+          throw "QgsDataDefinedStringDecoder: keys cannot be empty";
+
+        if ( key[0].unicode() < u'a' || key[0].unicode() > u'z' )
+          throw "QgsDataDefinedStringDecoder: keys must start with a lowercase letter";
+
+        for ( int j = 0; j < key.size(); ++j )
+        {
+          if ( key[j].unicode() >= u'A' && key[j].unicode() <= u'Z' )
+            throw "QgsDataDefinedStringDecoder: keys must be lowercase";
+        }
+
         mLookupTable[i] = values[i];
       }
     }
@@ -61,7 +82,7 @@ template<typename V, size_t N> class QgsDataDefinedStringDecoder
       if ( trimmed.isEmpty() )
         return {};
 
-      for ( const std::pair<QStringView, V> &value : mLookupTable )
+      for ( const DataDefinedDecoderEntry<V> &value : mLookupTable )
       {
         if ( value.first.compare( trimmed, Qt::CaseInsensitive ) == 0 )
         {
@@ -73,19 +94,25 @@ template<typename V, size_t N> class QgsDataDefinedStringDecoder
     }
 
   private:
-    std::array<std::pair<QStringView, V>, N> mLookupTable {};
+    std::array<DataDefinedDecoderEntry<V>, N> mLookupTable {};
 };
 
 /**
  * Creates a QgsDataDefinedStringDecoder from a hardcoded lookup table.
+ *
+ * String keys must:
+ *
+ * - be non-empty
+ * - start with a letter character (a-z)
+ * - be completely lower-case
  *
  * Usage:
  *
  * \code{cpp}
  * // create a decoder once as a static object
  * static const auto sPointPositionMap = makeDataDefinedStringDecoder<Qgis::LabelPredefinedPointPosition>( {
- * { u"TopLeft", Qgis::LabelPredefinedPointPosition::TopLeft },
- * { u"TopRight", Qgis::LabelPredefinedPointPosition::TopRight }
+ * { u"topleft", Qgis::LabelPredefinedPointPosition::TopLeft },
+ * { u"topright", Qgis::LabelPredefinedPointPosition::TopRight }
  * } );
  *
  * // use the static object to lookup candidate string values
@@ -102,7 +129,7 @@ template<typename V, size_t N> class QgsDataDefinedStringDecoder
  *
  * \since QGIS 4.4
  */
-template<typename V, size_t N> CORE_EXPORT QgsDataDefinedStringDecoder<V, N> makeDataDefinedStringDecoder( const std::pair<QStringView, V> ( &values )[N] )
+template<typename V, size_t N> constexpr CORE_EXPORT QgsDataDefinedStringDecoder<V, N> makeDataDefinedStringDecoder( const DataDefinedDecoderEntry<V> ( &values )[N] )
 {
   return QgsDataDefinedStringDecoder<V, N>( values );
 }
