@@ -1,0 +1,777 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/providers/arcgis/qgsesriarcadescript.h                      *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
+ ************************************************************************/
+
+
+
+
+
+
+
+class QgsEsriArcadeNode
+{
+%Docstring(signature="appended")
+Represents an abstract node for an Esri Arcade script.
+
+.. versionadded:: 4.6
+%End
+
+%TypeHeaderCode
+#include "qgsesriarcadescript.h"
+%End
+%ConvertToSubClassCode
+    switch ( sipCpp->nodeType() )
+    {
+      case QgsEsriArcadeNode::NodeType::ntBlockStatement:
+        sipType = sipType_QgsEsriArcadeBlockStatement;
+        break;
+      case QgsEsriArcadeNode::NodeType::ntVariableDeclarationStatement:
+        sipType = sipType_QgsEsriArcadeVariableDeclarationStatement;
+        break;
+      case QgsEsriArcadeNode::NodeType::ntReturnStatement:
+        sipType = sipType_QgsEsriArcadeReturnStatement;
+        break;
+      case QgsEsriArcadeNode::NodeType::ntFunctionDeclarationStatement:
+        sipType = sipType_QgsEsriArcadeFunctionDeclarationStatement;
+        break;
+      case QgsEsriArcadeNode::NodeType::ntExpressionStatement:
+        sipType = sipType_QgsEsriArcadeExpressionStatement;
+        break;
+      case QgsEsriArcadeNode::NodeType::ntLiteralExpression:
+        sipType = sipType_QgsEsriArcadeLiteralExpression;
+        break;
+      case QgsEsriArcadeNode::NodeType::ntVariableReferenceExpression:
+        sipType = sipType_QgsEsriArcadeVariableReferenceExpression;
+        break;
+      case QgsEsriArcadeNode::NodeType::ntBinaryOperatorExpression:
+        sipType = sipType_QgsEsriArcadeBinaryOperatorExpression;
+        break;
+      case QgsEsriArcadeNode::NodeType::ntUnaryOperatorExpression:
+        sipType = sipType_QgsEsriArcadeUnaryOperatorExpression;
+        break;
+      case QgsEsriArcadeNode::NodeType::ntFunctionCallExpression:
+        sipType = sipType_QgsEsriArcadeFunctionCallExpression;
+        break;
+      case QgsEsriArcadeNode::NodeType::ntIndexExpression:
+        sipType = sipType_QgsEsriArcadeIndexExpression;
+        break;
+      default:
+        sipType = nullptr;
+        break;
+    }
+%End
+  public:
+    enum class NodeType
+    {
+      ntBlockStatement,
+      ntVariableDeclarationStatement,
+      ntReturnStatement,
+      ntFunctionDeclarationStatement,
+      ntExpressionStatement,
+      ntLiteralExpression,
+      ntVariableReferenceExpression,
+      ntBinaryOperatorExpression,
+      ntUnaryOperatorExpression,
+      ntFunctionCallExpression,
+      ntIndexExpression,
+    };
+
+    virtual ~QgsEsriArcadeNode();
+
+    virtual QgsEsriArcadeNode::NodeType nodeType() const = 0;
+%Docstring
+Returns the node type.
+%End
+
+    virtual QString dump() const = 0;
+%Docstring
+Returns the formatted script representation of the node.
+%End
+
+    virtual QgsEsriArcadeNode *clone() const = 0 /Factory/;
+%Docstring
+Creates a copy of the node.
+
+Caller takes ownership of the returned object.
+%End
+
+    virtual void accept( QgsEsriArcadeVisitor &visitor ) const = 0;
+%Docstring
+Accepts a ``visitor`` to traverse the node.
+%End
+};
+
+class QgsEsriArcadeStatement : QgsEsriArcadeNode
+{
+%Docstring(signature="appended")
+Base class for statement nodes in an Esri Arcade script.
+
+.. versionadded:: 4.6
+%End
+
+%TypeHeaderCode
+#include "qgsesriarcadescript.h"
+%End
+  public:
+    ~QgsEsriArcadeStatement();
+};
+
+class QgsEsriArcadeExpression : QgsEsriArcadeNode
+{
+%Docstring(signature="appended")
+Base class for expression nodes in an Esri Arcade script.
+
+.. versionadded:: 4.6
+%End
+
+%TypeHeaderCode
+#include "qgsesriarcadescript.h"
+%End
+  public:
+    ~QgsEsriArcadeExpression();
+};
+
+class QgsEsriArcadeBlockStatement : QgsEsriArcadeStatement
+{
+%Docstring(signature="appended")
+Represents a sequence or block of statements enclosed in braces.
+
+.. versionadded:: 4.6
+%End
+
+%TypeHeaderCode
+#include "qgsesriarcadescript.h"
+%End
+  public:
+    QgsEsriArcadeBlockStatement();
+
+    explicit QgsEsriArcadeBlockStatement( const QList<QgsEsriArcadeStatement *> &statements /Transfer/ );
+%Docstring
+Constructor for QgsEsriArcadeBlockStatement with an existing statement
+list.
+
+Ownership of all ``statements`` is transferred to this block.
+%End
+
+    ~QgsEsriArcadeBlockStatement();
+
+    virtual QgsEsriArcadeNode::NodeType nodeType() const;
+    virtual QString dump() const;
+
+    virtual QgsEsriArcadeNode *clone() const /Factory/;
+
+    virtual void accept( QgsEsriArcadeVisitor &visitor ) const;
+
+
+    void appendStatement( QgsEsriArcadeStatement *statement /Transfer/ );
+%Docstring
+Appends a statement to the block.
+
+Ownership of ``statement`` is transferred to this block.
+%End
+
+    QList<QgsEsriArcadeStatement *> statements() const;
+%Docstring
+Returns the list of statements contained within this block.
+%End
+
+    int count() const;
+%Docstring
+Returns the number of statements in this block.
+%End
+
+  private:
+    QgsEsriArcadeBlockStatement( const QgsEsriArcadeBlockStatement &other );
+};
+
+class QgsEsriArcadeVariableDeclarationStatement : QgsEsriArcadeStatement
+{
+%Docstring(signature="appended")
+Represents a variable declaration statement (e.g. var x = 3;).
+
+.. versionadded:: 4.6
+%End
+
+%TypeHeaderCode
+#include "qgsesriarcadescript.h"
+%End
+  public:
+    explicit QgsEsriArcadeVariableDeclarationStatement( const QString &variableName, QgsEsriArcadeExpression *initializer /Transfer/ = 0 );
+%Docstring
+Constructor for QgsEsriArcadeVariableDeclarationStatement.
+
+Ownership of ``initializer`` is transferred to this statement.
+%End
+
+    virtual QgsEsriArcadeNode::NodeType nodeType() const;
+    virtual QString dump() const;
+
+    virtual QgsEsriArcadeNode *clone() const /Factory/;
+
+    virtual void accept( QgsEsriArcadeVisitor &visitor ) const;
+
+
+    QString variableName() const;
+%Docstring
+Returns the declared variable name.
+%End
+
+    QgsEsriArcadeExpression *initializer() const;
+%Docstring
+Returns the optional initializer expression, or ``None`` if
+uninitialized.
+%End
+
+  private:
+    QgsEsriArcadeVariableDeclarationStatement( const QgsEsriArcadeVariableDeclarationStatement &other );
+};
+
+class QgsEsriArcadeReturnStatement : QgsEsriArcadeStatement
+{
+%Docstring(signature="appended")
+Represents a return statement (e.g. return x + y;).
+
+.. versionadded:: 4.6
+%End
+
+%TypeHeaderCode
+#include "qgsesriarcadescript.h"
+%End
+  public:
+    explicit QgsEsriArcadeReturnStatement( QgsEsriArcadeExpression *expression /Transfer/ = 0 );
+%Docstring
+Constructor for QgsEsriArcadeReturnStatement.
+
+Ownership of ``expression`` is transferred to this statement.
+%End
+
+    virtual QgsEsriArcadeNode::NodeType nodeType() const;
+    virtual QString dump() const;
+
+    virtual QgsEsriArcadeNode *clone() const /Factory/;
+
+    virtual void accept( QgsEsriArcadeVisitor &visitor ) const;
+
+
+    QgsEsriArcadeExpression *expression() const;
+%Docstring
+Returns the expression returned by the statement, or ``None`` if void
+return.
+%End
+
+  private:
+    QgsEsriArcadeReturnStatement( const QgsEsriArcadeReturnStatement &other );
+};
+
+class QgsEsriArcadeFunctionDeclarationStatement : QgsEsriArcadeStatement
+{
+%Docstring(signature="appended")
+Represents a function declaration statement (e.g. function foo(a, b) {
+... }).
+
+.. versionadded:: 4.6
+%End
+
+%TypeHeaderCode
+#include "qgsesriarcadescript.h"
+%End
+  public:
+    QgsEsriArcadeFunctionDeclarationStatement( const QString &functionName, const QStringList &parameters, QgsEsriArcadeBlockStatement *body /Transfer/ );
+%Docstring
+Constructor for QgsEsriArcadeFunctionDeclarationStatement.
+
+Ownership of ``body`` is transferred to this statement.
+%End
+
+    virtual QgsEsriArcadeNode::NodeType nodeType() const;
+    virtual QString dump() const;
+
+    virtual QgsEsriArcadeNode *clone() const /Factory/;
+
+    virtual void accept( QgsEsriArcadeVisitor &visitor ) const;
+
+
+    QString functionName() const;
+%Docstring
+Returns the function name.
+%End
+
+    QStringList parameters() const;
+%Docstring
+Returns the parameter names.
+%End
+
+    QgsEsriArcadeBlockStatement *body() const;
+%Docstring
+Returns the function body block.
+%End
+
+  private:
+    QgsEsriArcadeFunctionDeclarationStatement( const QgsEsriArcadeFunctionDeclarationStatement &other );
+};
+
+class QgsEsriArcadeExpressionStatement : QgsEsriArcadeStatement
+{
+%Docstring(signature="appended")
+Represents an expression evaluated as a statement.
+
+.. versionadded:: 4.6
+%End
+
+%TypeHeaderCode
+#include "qgsesriarcadescript.h"
+%End
+  public:
+    explicit QgsEsriArcadeExpressionStatement( QgsEsriArcadeExpression *expression /Transfer/ );
+%Docstring
+Constructor for QgsEsriArcadeExpressionStatement.
+
+Ownership of ``expression`` is transferred to this statement.
+%End
+
+    virtual QgsEsriArcadeNode::NodeType nodeType() const;
+    virtual QString dump() const;
+
+    virtual QgsEsriArcadeNode *clone() const /Factory/;
+
+    virtual void accept( QgsEsriArcadeVisitor &visitor ) const;
+
+
+    QgsEsriArcadeExpression *expression() const;
+%Docstring
+Returns the underlying expression.
+%End
+
+  private:
+    QgsEsriArcadeExpressionStatement( const QgsEsriArcadeExpressionStatement &other );
+};
+
+class QgsEsriArcadeLiteralExpression : QgsEsriArcadeExpression
+{
+%Docstring(signature="appended")
+Represents a literal value (number, text string, boolean, or null).
+
+.. versionadded:: 4.6
+%End
+
+%TypeHeaderCode
+#include "qgsesriarcadescript.h"
+%End
+  public:
+    explicit QgsEsriArcadeLiteralExpression( const QVariant &value );
+%Docstring
+Constructor for QgsEsriArcadeLiteralExpression.
+%End
+
+    virtual QgsEsriArcadeNode::NodeType nodeType() const;
+    virtual QString dump() const;
+
+    virtual QgsEsriArcadeNode *clone() const /Factory/;
+
+    virtual void accept( QgsEsriArcadeVisitor &visitor ) const;
+
+
+    QVariant value() const;
+%Docstring
+Returns the literal value.
+%End
+
+    QString valueAsString() const;
+%Docstring
+Returns a string representation of the literal value.
+%End
+
+};
+
+class QgsEsriArcadeVariableReferenceExpression : QgsEsriArcadeExpression
+{
+%Docstring(signature="appended")
+Represents a reference to a variable identifier.
+
+.. versionadded:: 4.6
+%End
+
+%TypeHeaderCode
+#include "qgsesriarcadescript.h"
+%End
+  public:
+    explicit QgsEsriArcadeVariableReferenceExpression( const QString &name );
+%Docstring
+Constructor for QgsEsriArcadeVariableReferenceExpression.
+%End
+
+    virtual QgsEsriArcadeNode::NodeType nodeType() const;
+    virtual QString dump() const;
+
+    virtual QgsEsriArcadeNode *clone() const /Factory/;
+
+    virtual void accept( QgsEsriArcadeVisitor &visitor ) const;
+
+
+    QString name() const;
+%Docstring
+Returns the variable identifier name.
+%End
+
+};
+
+class QgsEsriArcadeBinaryOperatorExpression : QgsEsriArcadeExpression
+{
+%Docstring(signature="appended")
+Represents a binary operation expression.
+
+.. versionadded:: 4.6
+%End
+
+%TypeHeaderCode
+#include "qgsesriarcadescript.h"
+%End
+  public:
+    enum class BinaryOperator
+    {
+      boPlus,
+      boMinus,
+      boMultiply,
+      boDivide,
+      boModulo,
+      boAssign,
+      boEqual,
+      boNotEqual,
+      boLessThan,
+      boGreaterThan,
+      boLessThanOrEqual,
+      boGreaterThanOrEqual,
+      boLogicalAnd,
+      boLogicalOr,
+    };
+
+
+    QgsEsriArcadeBinaryOperatorExpression( BinaryOperator binaryOperator, QgsEsriArcadeExpression *leftOperand /Transfer/, QgsEsriArcadeExpression *rightOperand /Transfer/ );
+%Docstring
+Constructor for QgsEsriArcadeBinaryOperatorExpression.
+
+Ownership of ``leftOperand`` and ``rightOperand`` is transferred to this
+expression.
+%End
+
+    virtual QgsEsriArcadeNode::NodeType nodeType() const;
+    virtual QString dump() const;
+
+    virtual QgsEsriArcadeNode *clone() const /Factory/;
+
+    virtual void accept( QgsEsriArcadeVisitor &visitor ) const;
+
+
+    BinaryOperator binaryOperator() const;
+%Docstring
+Returns the binary operator.
+%End
+
+    QgsEsriArcadeExpression *leftOperand() const;
+%Docstring
+Returns the left-hand operand expression.
+%End
+
+    QgsEsriArcadeExpression *rightOperand() const;
+%Docstring
+Returns the right-hand operand expression.
+%End
+
+    int precedence() const;
+%Docstring
+Returns operator precedence value.
+%End
+
+    bool leftAssociative() const;
+%Docstring
+Returns ``True`` if operator is left-associative.
+%End
+
+    QString text() const;
+%Docstring
+Returns text representation of the operator.
+%End
+
+  private:
+    QgsEsriArcadeBinaryOperatorExpression( const QgsEsriArcadeBinaryOperatorExpression &other );
+};
+
+class QgsEsriArcadeUnaryOperatorExpression : QgsEsriArcadeExpression
+{
+%Docstring(signature="appended")
+Represents a unary operation expression.
+
+.. versionadded:: 4.6
+%End
+
+%TypeHeaderCode
+#include "qgsesriarcadescript.h"
+%End
+  public:
+    enum class UnaryOperator
+    {
+      uoNot,
+      uoMinus,
+      uoPlus,
+    };
+
+
+    QgsEsriArcadeUnaryOperatorExpression( UnaryOperator unaryOperator, QgsEsriArcadeExpression *operand /Transfer/ );
+%Docstring
+Constructor for QgsEsriArcadeUnaryOperatorExpression.
+
+Ownership of ``operand`` is transferred to this expression.
+%End
+
+    virtual QgsEsriArcadeNode::NodeType nodeType() const;
+    virtual QString dump() const;
+
+    virtual QgsEsriArcadeNode *clone() const /Factory/;
+
+    virtual void accept( QgsEsriArcadeVisitor &visitor ) const;
+
+
+    UnaryOperator unaryOperator() const;
+%Docstring
+Returns the unary operator.
+%End
+
+    QgsEsriArcadeExpression *operand() const;
+%Docstring
+Returns the operand expression.
+%End
+
+    QString text() const;
+%Docstring
+Returns text representation of the operator.
+%End
+
+  private:
+    QgsEsriArcadeUnaryOperatorExpression( const QgsEsriArcadeUnaryOperatorExpression &other );
+};
+
+class QgsEsriArcadeFunctionCallExpression : QgsEsriArcadeExpression
+{
+%Docstring(signature="appended")
+Represents a function call expression (e.g. Sum(values)).
+
+.. versionadded:: 4.6
+%End
+
+%TypeHeaderCode
+#include "qgsesriarcadescript.h"
+%End
+  public:
+    QgsEsriArcadeFunctionCallExpression( const QString &functionName, const QList<QgsEsriArcadeExpression *> &arguments /Transfer/ );
+%Docstring
+Constructor for QgsEsriArcadeFunctionCallExpression.
+
+Ownership of all expressions in ``arguments`` is transferred to this
+node.
+%End
+
+    ~QgsEsriArcadeFunctionCallExpression();
+
+    virtual QgsEsriArcadeNode::NodeType nodeType() const;
+    virtual QString dump() const;
+
+    virtual QgsEsriArcadeNode *clone() const /Factory/;
+
+    virtual void accept( QgsEsriArcadeVisitor &visitor ) const;
+
+
+    QString functionName() const;
+%Docstring
+Returns the function name.
+%End
+
+    QList<QgsEsriArcadeExpression *> arguments() const;
+%Docstring
+Returns the list of argument expressions.
+%End
+
+  private:
+    QgsEsriArcadeFunctionCallExpression( const QgsEsriArcadeFunctionCallExpression &other );
+};
+
+class QgsEsriArcadeIndexExpression : QgsEsriArcadeExpression
+{
+%Docstring(signature="appended")
+Represents an array or dictionary index subscript expression (e.g.
+values[index]).
+
+.. versionadded:: 4.6
+%End
+
+%TypeHeaderCode
+#include "qgsesriarcadescript.h"
+%End
+  public:
+    QgsEsriArcadeIndexExpression( QgsEsriArcadeExpression *containerExpression /Transfer/, QgsEsriArcadeExpression *indexExpression /Transfer/ );
+%Docstring
+Constructor for QgsEsriArcadeIndexExpression.
+
+Ownership of ``containerExpression`` and ``indexExpression`` is
+transferred to this expression.
+%End
+
+    virtual QgsEsriArcadeNode::NodeType nodeType() const;
+    virtual QString dump() const;
+
+    virtual QgsEsriArcadeNode *clone() const /Factory/;
+
+    virtual void accept( QgsEsriArcadeVisitor &visitor ) const;
+
+
+    QgsEsriArcadeExpression *containerExpression() const;
+%Docstring
+Returns the container expression being indexed.
+%End
+
+    QgsEsriArcadeExpression *indexExpression() const;
+%Docstring
+Returns the index expression.
+%End
+
+  private:
+    QgsEsriArcadeIndexExpression( const QgsEsriArcadeIndexExpression &other );
+};
+
+class QgsEsriArcadeVisitor
+{
+%Docstring(signature="appended")
+Abstract visitor interface for traversing Esri Arcade abstract syntax
+trees.
+
+.. versionadded:: 4.6
+%End
+
+%TypeHeaderCode
+#include "qgsesriarcadescript.h"
+%End
+  public:
+    virtual ~QgsEsriArcadeVisitor();
+
+    virtual void visit( const QgsEsriArcadeBlockStatement &node ) = 0;
+    virtual void visit( const QgsEsriArcadeVariableDeclarationStatement &node ) = 0;
+    virtual void visit( const QgsEsriArcadeReturnStatement &node ) = 0;
+    virtual void visit( const QgsEsriArcadeFunctionDeclarationStatement &node ) = 0;
+    virtual void visit( const QgsEsriArcadeExpressionStatement &node ) = 0;
+    virtual void visit( const QgsEsriArcadeLiteralExpression &node ) = 0;
+    virtual void visit( const QgsEsriArcadeVariableReferenceExpression &node ) = 0;
+    virtual void visit( const QgsEsriArcadeBinaryOperatorExpression &node ) = 0;
+    virtual void visit( const QgsEsriArcadeUnaryOperatorExpression &node ) = 0;
+    virtual void visit( const QgsEsriArcadeFunctionCallExpression &node ) = 0;
+    virtual void visit( const QgsEsriArcadeIndexExpression &node ) = 0;
+};
+
+class QgsEsriArcadeRecursiveVisitor : QgsEsriArcadeVisitor
+{
+%Docstring(signature="appended")
+Visitor implementation that recursively traverses all child nodes in an
+Esri Arcade script.
+
+.. versionadded:: 4.6
+%End
+
+%TypeHeaderCode
+#include "qgsesriarcadescript.h"
+%End
+  public:
+    QgsEsriArcadeRecursiveVisitor();
+
+    virtual void visit( const QgsEsriArcadeBlockStatement &node );
+
+    virtual void visit( const QgsEsriArcadeVariableDeclarationStatement &node );
+
+    virtual void visit( const QgsEsriArcadeReturnStatement &node );
+
+    virtual void visit( const QgsEsriArcadeFunctionDeclarationStatement &node );
+
+    virtual void visit( const QgsEsriArcadeExpressionStatement &node );
+
+    virtual void visit( const QgsEsriArcadeLiteralExpression &node );
+
+    virtual void visit( const QgsEsriArcadeVariableReferenceExpression &node );
+
+    virtual void visit( const QgsEsriArcadeBinaryOperatorExpression &node );
+
+    virtual void visit( const QgsEsriArcadeUnaryOperatorExpression &node );
+
+    virtual void visit( const QgsEsriArcadeFunctionCallExpression &node );
+
+    virtual void visit( const QgsEsriArcadeIndexExpression &node );
+
+};
+
+class QgsEsriArcadeScript
+{
+%Docstring(signature="appended")
+Parses and encapsulates an entire Esri Arcade script.
+
+.. versionadded:: 4.6
+%End
+
+%TypeHeaderCode
+#include "qgsesriarcadescript.h"
+%End
+  public:
+    explicit QgsEsriArcadeScript( const QString &scriptText = QString() );
+%Docstring
+Creates a new script from ``scriptText``.
+%End
+
+    QgsEsriArcadeScript( const QgsEsriArcadeScript &other );
+
+    ~QgsEsriArcadeScript();
+
+    bool hasParserError() const;
+%Docstring
+Returns ``True`` if a parsing error occurred.
+%End
+
+    QString parserErrorString() const;
+%Docstring
+Returns parser error description.
+%End
+
+    const QgsEsriArcadeBlockStatement *rootBlock() const;
+%Docstring
+Returns the root block statement node, or ``None`` if parsing failed.
+%End
+
+    QString script() const;
+%Docstring
+Returns the original script text.
+%End
+
+    QString dump() const;
+%Docstring
+Dumps the abstract syntax tree back into an Arcade script string.
+%End
+
+    void acceptVisitor( QgsEsriArcadeVisitor &visitor ) const;
+%Docstring
+Accepts a visitor to traverse the script abstract syntax tree.
+%End
+
+    static QString quotedString( const QString &text );
+%Docstring
+Returns a properly quoted string literal (enclosed in double quotes with
+escape sequences).
+%End
+
+  protected:
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/providers/arcgis/qgsesriarcadescript.h                      *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
+ ************************************************************************/
