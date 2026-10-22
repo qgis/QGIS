@@ -39,7 +39,8 @@ class QgsSettingsEntryBool;
 #endif
 /// compute current GEOS integer version
 #ifndef GEOS_VERSION_NUM
-#define GEOS_VERSION_NUM GEOS_COMPUTE_VERSION( GEOS_VERSION_MAJOR, GEOS_VERSION_MINOR, GEOS_VERSION_PATCH )
+const int QGIS_GEOS_VERSION_PATCH = Qgis::geosVersionPatch() SIP_SKIP;
+#define GEOS_VERSION_NUM GEOS_COMPUTE_VERSION( GEOS_VERSION_MAJOR, GEOS_VERSION_MINOR, QGIS_GEOS_VERSION_PATCH )
 #endif
 
 /// While GEOS 3.14 already supported M, GEOS 3.15.0 and 3.15.1 have got some important bug fixes.
