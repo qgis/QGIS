@@ -43,6 +43,7 @@ using namespace Qt::StringLiterals;
 #include "qgsexpressionutils.h"
 #include "qgsmeshlayer.h"
 #include <geos_c.h>
+#include "qgsexpressioncontext.h"
 
 static void _parseAndEvalExpr( int arg )
 {
@@ -5807,11 +5808,14 @@ class TestQgsExpression : public QObject
 
     void evaluateToDouble()
     {
-      QCOMPARE( QgsExpression::evaluateToDouble( QString( "5" ), 0.0 ), 5.0 );
-      QCOMPARE( QgsExpression::evaluateToDouble( QString( "5+6" ), 0.0 ), 11.0 );
-      QCOMPARE( QgsExpression::evaluateToDouble( QString( "5*" ), 7.0 ), 7.0 );
-      QCOMPARE( QgsExpression::evaluateToDouble( QString( "a" ), 9.0 ), 9.0 );
-      QCOMPARE( QgsExpression::evaluateToDouble( QString(), 9.0 ), 9.0 );
+      QgsExpressionContext context;
+      context << QgsExpressionContextUtils::globalScope() << QgsExpressionContextUtils::projectScope( QgsProject::instance() );
+
+      QCOMPARE( QgsExpression::evaluateToDouble( QString( "5" ), 0.0, context ), 5.0 );
+      QCOMPARE( QgsExpression::evaluateToDouble( QString( "5+6" ), 0.0, context ), 11.0 );
+      QCOMPARE( QgsExpression::evaluateToDouble( QString( "5*" ), 7.0, context ), 7.0 );
+      QCOMPARE( QgsExpression::evaluateToDouble( QString( "a" ), 9.0, context ), 9.0 );
+      QCOMPARE( QgsExpression::evaluateToDouble( QString(), 9.0, context ), 9.0 );
     }
 
     void eval_isField()
