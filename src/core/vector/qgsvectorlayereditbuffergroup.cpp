@@ -141,8 +141,8 @@ bool QgsVectorLayerEditBufferGroup::commitChanges( QStringList &commitErrors, bo
   {
     if ( !modifiedLayer->allowCommit() )
     {
-      // don't return false, because it's not failed (just blocked)
-      return success;
+      commitErrors << tr( "ERROR: Commit not allowed because of failed checks." );
+      return false;
     }
   }
 
