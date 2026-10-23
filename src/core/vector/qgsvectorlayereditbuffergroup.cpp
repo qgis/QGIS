@@ -133,10 +133,10 @@ bool QgsVectorLayerEditBufferGroup::commitChanges( QStringList &commitErrors, bo
   // trigger geometry checks for all the modified layers
   for ( QgsVectorLayer *modifiedLayer : constModifiedLayers )
   {
-    emit modifiedLayer->beforeCommitChanges( stopEditing );
+    emit modifiedLayer->beforeCommitChecks( stopEditing );
   }
 
-  // and if at least one does not allow commit, areturn
+  // and if at least one does not allow commit, return
   for ( const QgsVectorLayer *modifiedLayer : constModifiedLayers )
   {
     if ( !modifiedLayer->allowCommit() )
