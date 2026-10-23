@@ -1164,6 +1164,9 @@ void QgsGraduatedSymbolRenderer::addClass( const QgsRendererRange &range )
 
 void QgsGraduatedSymbolRenderer::deleteClass( int idx )
 {
+  if ( idx < 0 || idx >= mRanges.size() )
+    return;
+
   mRanges.removeAt( idx );
 }
 
