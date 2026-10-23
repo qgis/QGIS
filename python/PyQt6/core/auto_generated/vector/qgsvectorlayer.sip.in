@@ -2859,6 +2859,15 @@ additions.
 Emitted before editing on this layer is started.
 %End
 
+    void beforeCommitChecks( bool stopEditing );
+%Docstring
+Emitted to trigger (geometry) checks to determine whether commits are
+allowed.
+
+The ``stopEditing`` flag specifies if the editing mode shall be left
+after this commit.
+%End
+
     void beforeCommitChanges( bool stopEditing );
 %Docstring
 Emitted before changes are committed to the data provider.
