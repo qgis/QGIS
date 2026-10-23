@@ -52,21 +52,31 @@ QString QgsOapifCreateFeatureRequest::createFeature( const QgsOapifSharedData *s
   if ( iterBbox != j.end() )
     j.erase( iterBbox );
   if ( !sharedData->mFoundIdInProperties && j["properties"].contains( "id" ) )
+  {
     j["properties"].erase( "id" );
+  }
   const bool jsonFg = sharedData->shouldWriteJsonFg();
   if ( jsonFg )
+  {
     QgsOAPIFJson::writeJsonFgPlace( j, fModified.geometry(), sharedData->mWKBType, contentCrs, true );
+  }
   const QString jsonFeature = QString::fromStdString( j.dump() );
   QgsDebugMsgLevel( jsonFeature, 5 );
   mEmptyResponseIsValid = true;
   mFakeResponseHasHeaders = true;
   QList<QNetworkReply::RawHeaderPair> extraHeaders;
   if ( !contentCrs.isEmpty() )
+  {
     extraHeaders.append( QNetworkReply::RawHeaderPair( QByteArray( "Content-Crs" ), contentCrs.toUtf8() ) );
+  }
   if ( jsonFg )
+  {
     extraHeaders.append( QNetworkReply::RawHeaderPair( QByteArray( "Link" ), u"<%1>; rel=profile"_s.arg( QgsOapifUtils::PROFILE_JSONFG ).toUtf8() ) );
+  }
   if ( !sendPOST( sharedData->mItemsUrl, QgsOapifUtils::MEDIA_TYPE_GEOJSON, jsonFeature.toUtf8(), true /*synchronous*/, extraHeaders ) )
+  {
     return QString();
+  }
 
   QString location;
   for ( const auto &headerKeyValue : mResponseHeaders )
