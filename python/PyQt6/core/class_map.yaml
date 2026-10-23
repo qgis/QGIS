@@ -19080,8 +19080,9 @@ QgsTessellator.vertexBuffer: src/core/qgstessellator.h#L252
 QgsTessellator.zMaximum: src/core/qgstessellator.h#L281
 QgsTessellator.zMinimum: src/core/qgstessellator.h#L275
 QgsTessellator: src/core/qgstessellator.h#L40
-QgsTestUtils.compareDomElements: src/core/qgstestutils.h#L44
-QgsTestUtils.sanitizeFakeHttpEndpoint: src/core/qgstestutils.h#L49
+QgsTestUtils.compareDomElements: src/core/qgstestutils.h#L55
+QgsTestUtils.sanitizeFakeHttpEndpoint: src/core/qgstestutils.h#L60
+QgsTestUtils.testConcurrentLayerAccess: src/core/qgstestutils.h#L48
 QgsTestUtils.testProviderIteratorThreadSafety: src/core/qgstestutils.h#L37
 QgsTestUtils: src/core/qgstestutils.h#L28
 QgsTextAnnotation.clone: src/core/annotations/qgstextannotation.h#L41
