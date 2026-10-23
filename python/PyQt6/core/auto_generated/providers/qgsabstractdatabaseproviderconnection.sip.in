@@ -759,6 +759,42 @@ Deletes the existing spatial index for the database table with given
 .. versionadded:: 3.14
 %End
 
+    virtual void createIndex( const QString &schema, const QString &table, const QString &column, const QString &name ) const;
+%Docstring
+Creates an index named ``name`` on ``column`` of the table
+``schema``.``table`` (``schema`` is ignored if not supported by the
+backend).
+
+:raises QgsProviderConnectionException: if any errors are encountered.
+
+.. versionadded:: 4.6
+%End
+
+    virtual QMap<QString, QStringList> tableIndexes( const QString &schema, const QString &table ) const;
+%Docstring
+Returns a map of the indexes defined on the table ``schema``.``table``,
+keyed by index name and the columns as values. (``schema`` is ignored if
+not supported by the backend).
+
+Indexes backing a primary key or unique constraint are not reported, as
+they cannot be removed with
+:py:func:`~QgsAbstractDatabaseProviderConnection.deleteIndex`.
+
+:raises QgsProviderConnectionException: if any errors are encountered.
+
+.. versionadded:: 4.6
+%End
+
+    virtual void deleteIndex( const QString &schema, const QString &table, const QString &name ) const;
+%Docstring
+Deletes the index named ``name`` on the table ``schema``.``table``
+(``schema`` and \table are ignored if not supported by the backend).
+
+:raises QgsProviderConnectionException: if any errors are encountered.
+
+.. versionadded:: 4.6
+%End
+
 
     virtual QgsAbstractDatabaseProviderConnection::TableProperty table( const QString &schema, const QString &table, QgsFeedback *feedback = 0 ) const;
 %Docstring
