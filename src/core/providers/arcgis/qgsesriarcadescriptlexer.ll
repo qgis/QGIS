@@ -136,16 +136,29 @@ block_comment  \/\*([^*]|\*+[^/*])*\*+\/
   return NUMBER_FLOAT;
 }
 
+"++"             { return PLUS_PLUS; }
+"--"             { return MINUS_MINUS; }
+"+="             { return PLUS_ASSIGN; }
+"-="             { return MINUS_ASSIGN; }
+"*="             { return MUL_ASSIGN; }
+"/="             { return DIV_ASSIGN; }
 "="              { return ASSIGN; }
 "=="             { return EQ; }
 "!="             { return NE; }
 "<="             { return LE; }
 ">="             { return GE; }
+"<<"             { return LEFT_SHIFT; }
+">>>"            { return UNSIGNED_RIGHT_SHIFT; }
+">>"             { return SIGNED_RIGHT_SHIFT; }
 "<"              { return LT; }
 ">"              { return GT; }
 "&&"             { return LOGICAL_AND; }
 "||"             { return LOGICAL_OR; }
 "!"              { return NOT; }
+"~"              { return BITWISE_NOT; }
+"&"              { return BITWISE_AND; }
+"|"              { return BITWISE_OR; }
+"^"              { return BITWISE_XOR; }
 
 "+"              { return PLUS; }
 "-"              { return MINUS; }

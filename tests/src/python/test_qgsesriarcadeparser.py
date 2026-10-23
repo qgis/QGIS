@@ -24,6 +24,7 @@ from qgis.core import (
     QgsEsriArcadeProfileVariableReferenceExpression,
     QgsEsriArcadeReturnStatement,
     QgsEsriArcadeScript,
+    QgsEsriArcadeUnaryOperatorExpression,
     QgsEsriArcadeVariableDeclarationStatement,
     QgsEsriArcadeVariableReferenceExpression,
 )
@@ -1268,6 +1269,562 @@ calculateStuff(50);
 
         self.assertEqual(
             script.rootBlock().statements()[1].expression().arguments()[0].value(), 50
+        )
+
+    def test_binary_operators(self):
+        script = QgsEsriArcadeScript(
+            """var x = 10 + 20;
+            var y = 10 - 20;
+            var z = 10 * 20;
+            var a = 10 / 20;
+            var b = 10 % 20;
+"""
+        )
+        self.assertFalse(script.hasParserError())
+
+        self.assertIsInstance(script.rootBlock(), QgsEsriArcadeBlockStatement)
+        self.assertEqual(script.rootBlock().count(), 5)
+
+        self.assertIsInstance(
+            script.rootBlock().statements()[0].initializer(),
+            QgsEsriArcadeBinaryOperatorExpression,
+        )
+        self.assertEqual(
+            script.rootBlock().statements()[0].initializer().binaryOperator(),
+            QgsEsriArcadeBinaryOperatorExpression.BinaryOperator.boPlus,
+        )
+        self.assertEqual(
+            script.rootBlock().statements()[0].initializer().leftOperand().value(), 10
+        )
+        self.assertEqual(
+            script.rootBlock().statements()[0].initializer().rightOperand().value(), 20
+        )
+
+        self.assertEqual(
+            script.rootBlock().statements()[1].initializer().binaryOperator(),
+            QgsEsriArcadeBinaryOperatorExpression.BinaryOperator.boMinus,
+        )
+        self.assertEqual(
+            script.rootBlock().statements()[1].initializer().leftOperand().value(), 10
+        )
+        self.assertEqual(
+            script.rootBlock().statements()[1].initializer().rightOperand().value(), 20
+        )
+
+        self.assertEqual(
+            script.rootBlock().statements()[2].initializer().binaryOperator(),
+            QgsEsriArcadeBinaryOperatorExpression.BinaryOperator.boMultiply,
+        )
+        self.assertEqual(
+            script.rootBlock().statements()[2].initializer().leftOperand().value(), 10
+        )
+        self.assertEqual(
+            script.rootBlock().statements()[2].initializer().rightOperand().value(), 20
+        )
+
+        self.assertEqual(
+            script.rootBlock().statements()[3].initializer().binaryOperator(),
+            QgsEsriArcadeBinaryOperatorExpression.BinaryOperator.boDivide,
+        )
+        self.assertEqual(
+            script.rootBlock().statements()[3].initializer().leftOperand().value(), 10
+        )
+        self.assertEqual(
+            script.rootBlock().statements()[3].initializer().rightOperand().value(), 20
+        )
+
+        self.assertEqual(
+            script.rootBlock().statements()[4].initializer().binaryOperator(),
+            QgsEsriArcadeBinaryOperatorExpression.BinaryOperator.boModulo,
+        )
+        self.assertEqual(
+            script.rootBlock().statements()[4].initializer().leftOperand().value(), 10
+        )
+        self.assertEqual(
+            script.rootBlock().statements()[4].initializer().rightOperand().value(), 20
+        )
+
+    def test_binary_comparisons(self):
+        script = QgsEsriArcadeScript(
+            """10 == 20;
+            10 != 20;
+            10 > 20;
+            10 >= 20;
+            10 < 20;
+            10 <= 20;
+"""
+        )
+        self.assertFalse(script.hasParserError())
+
+        self.assertIsInstance(script.rootBlock(), QgsEsriArcadeBlockStatement)
+        self.assertEqual(script.rootBlock().count(), 6)
+
+        self.assertIsInstance(
+            script.rootBlock().statements()[0],
+            QgsEsriArcadeExpressionStatement,
+        )
+        self.assertIsInstance(
+            script.rootBlock().statements()[0].expression(),
+            QgsEsriArcadeBinaryOperatorExpression,
+        )
+        self.assertEqual(
+            script.rootBlock().statements()[0].expression().binaryOperator(),
+            QgsEsriArcadeBinaryOperatorExpression.BinaryOperator.boEqual,
+        )
+        self.assertEqual(
+            script.rootBlock().statements()[0].expression().leftOperand().value(), 10
+        )
+        self.assertEqual(
+            script.rootBlock().statements()[0].expression().rightOperand().value(), 20
+        )
+
+        self.assertIsInstance(
+            script.rootBlock().statements()[1].expression(),
+            QgsEsriArcadeBinaryOperatorExpression,
+        )
+        self.assertEqual(
+            script.rootBlock().statements()[1].expression().binaryOperator(),
+            QgsEsriArcadeBinaryOperatorExpression.BinaryOperator.boNotEqual,
+        )
+        self.assertEqual(
+            script.rootBlock().statements()[1].expression().leftOperand().value(), 10
+        )
+        self.assertEqual(
+            script.rootBlock().statements()[1].expression().rightOperand().value(), 20
+        )
+
+        self.assertIsInstance(
+            script.rootBlock().statements()[2].expression(),
+            QgsEsriArcadeBinaryOperatorExpression,
+        )
+        self.assertEqual(
+            script.rootBlock().statements()[2].expression().binaryOperator(),
+            QgsEsriArcadeBinaryOperatorExpression.BinaryOperator.boGreaterThan,
+        )
+        self.assertEqual(
+            script.rootBlock().statements()[2].expression().leftOperand().value(), 10
+        )
+        self.assertEqual(
+            script.rootBlock().statements()[2].expression().rightOperand().value(), 20
+        )
+
+        self.assertIsInstance(
+            script.rootBlock().statements()[3].expression(),
+            QgsEsriArcadeBinaryOperatorExpression,
+        )
+        self.assertEqual(
+            script.rootBlock().statements()[3].expression().binaryOperator(),
+            QgsEsriArcadeBinaryOperatorExpression.BinaryOperator.boGreaterThanOrEqual,
+        )
+        self.assertEqual(
+            script.rootBlock().statements()[3].expression().leftOperand().value(), 10
+        )
+        self.assertEqual(
+            script.rootBlock().statements()[3].expression().rightOperand().value(), 20
+        )
+
+        self.assertIsInstance(
+            script.rootBlock().statements()[4].expression(),
+            QgsEsriArcadeBinaryOperatorExpression,
+        )
+        self.assertEqual(
+            script.rootBlock().statements()[4].expression().binaryOperator(),
+            QgsEsriArcadeBinaryOperatorExpression.BinaryOperator.boLessThan,
+        )
+        self.assertEqual(
+            script.rootBlock().statements()[4].expression().leftOperand().value(), 10
+        )
+        self.assertEqual(
+            script.rootBlock().statements()[4].expression().rightOperand().value(), 20
+        )
+
+        self.assertIsInstance(
+            script.rootBlock().statements()[5].expression(),
+            QgsEsriArcadeBinaryOperatorExpression,
+        )
+        self.assertEqual(
+            script.rootBlock().statements()[5].expression().binaryOperator(),
+            QgsEsriArcadeBinaryOperatorExpression.BinaryOperator.boLessThanOrEqual,
+        )
+        self.assertEqual(
+            script.rootBlock().statements()[5].expression().leftOperand().value(), 10
+        )
+        self.assertEqual(
+            script.rootBlock().statements()[4].expression().rightOperand().value(), 20
+        )
+
+    def test_logical_operators(self):
+        script = QgsEsriArcadeScript(
+            """10 == 20 || y == 9;
+            10 == 20 && y == 9;
+            10 == 20 && !b;
+            10 == 20 && !(a==b);
+"""
+        )
+        self.assertFalse(script.hasParserError())
+
+        self.assertIsInstance(script.rootBlock(), QgsEsriArcadeBlockStatement)
+        self.assertEqual(script.rootBlock().count(), 4)
+
+        self.assertIsInstance(
+            script.rootBlock().statements()[0],
+            QgsEsriArcadeExpressionStatement,
+        )
+
+        self.assertIsInstance(
+            script.rootBlock().statements()[0].expression(),
+            QgsEsriArcadeBinaryOperatorExpression,
+        )
+
+        self.assertEqual(
+            script.rootBlock().statements()[0].expression().binaryOperator(),
+            QgsEsriArcadeBinaryOperatorExpression.BinaryOperator.boLogicalOr,
+        )
+        self.assertIsInstance(
+            script.rootBlock().statements()[0].expression().leftOperand(),
+            QgsEsriArcadeBinaryOperatorExpression,
+        )
+        self.assertIsInstance(
+            script.rootBlock().statements()[0].expression().rightOperand(),
+            QgsEsriArcadeBinaryOperatorExpression,
+        )
+
+        self.assertEqual(
+            script.rootBlock().statements()[1].expression().binaryOperator(),
+            QgsEsriArcadeBinaryOperatorExpression.BinaryOperator.boLogicalAnd,
+        )
+
+        self.assertEqual(
+            script.rootBlock().statements()[2].expression().binaryOperator(),
+            QgsEsriArcadeBinaryOperatorExpression.BinaryOperator.boLogicalAnd,
+        )
+        self.assertIsInstance(
+            script.rootBlock().statements()[2].expression().rightOperand(),
+            QgsEsriArcadeUnaryOperatorExpression,
+        )
+        self.assertEqual(
+            script.rootBlock()
+            .statements()[2]
+            .expression()
+            .rightOperand()
+            .unaryOperator(),
+            QgsEsriArcadeUnaryOperatorExpression.UnaryOperator.uoNot,
+        )
+        self.assertEqual(
+            script.rootBlock()
+            .statements()[2]
+            .expression()
+            .rightOperand()
+            .operand()
+            .name(),
+            "b",
+        )
+
+        self.assertEqual(
+            script.rootBlock().statements()[3].expression().binaryOperator(),
+            QgsEsriArcadeBinaryOperatorExpression.BinaryOperator.boLogicalAnd,
+        )
+        self.assertIsInstance(
+            script.rootBlock().statements()[3].expression().rightOperand(),
+            QgsEsriArcadeUnaryOperatorExpression,
+        )
+        self.assertEqual(
+            script.rootBlock()
+            .statements()[3]
+            .expression()
+            .rightOperand()
+            .unaryOperator(),
+            QgsEsriArcadeUnaryOperatorExpression.UnaryOperator.uoNot,
+        )
+        self.assertIsInstance(
+            script.rootBlock().statements()[3].expression().rightOperand().operand(),
+            QgsEsriArcadeBinaryOperatorExpression,
+        )
+
+    def test_unary_operators(self):
+        script = QgsEsriArcadeScript(
+            """var x = 10;
+            x++;
+            ++x;
+            x--;
+            --x;
+            var y = +10;
+            var z = -y;
+            var z = +y;
+"""
+        )
+        self.assertFalse(script.hasParserError())
+
+        self.assertIsInstance(script.rootBlock(), QgsEsriArcadeBlockStatement)
+        self.assertEqual(script.rootBlock().count(), 8)
+
+        self.assertIsInstance(
+            script.rootBlock().statements()[1],
+            QgsEsriArcadeExpressionStatement,
+        )
+        self.assertIsInstance(
+            script.rootBlock().statements()[1].expression(),
+            QgsEsriArcadeUnaryOperatorExpression,
+        )
+        self.assertEqual(
+            script.rootBlock().statements()[1].expression().unaryOperator(),
+            QgsEsriArcadeUnaryOperatorExpression.UnaryOperator.uoPostIncrement,
+        )
+        self.assertEqual(
+            script.rootBlock().statements()[1].expression().operand().name(),
+            "x",
+        )
+
+        self.assertIsInstance(
+            script.rootBlock().statements()[2].expression(),
+            QgsEsriArcadeUnaryOperatorExpression,
+        )
+        self.assertEqual(
+            script.rootBlock().statements()[2].expression().unaryOperator(),
+            QgsEsriArcadeUnaryOperatorExpression.UnaryOperator.uoPreIncrement,
+        )
+        self.assertEqual(
+            script.rootBlock().statements()[2].expression().operand().name(),
+            "x",
+        )
+
+        self.assertIsInstance(
+            script.rootBlock().statements()[3].expression(),
+            QgsEsriArcadeUnaryOperatorExpression,
+        )
+        self.assertEqual(
+            script.rootBlock().statements()[3].expression().unaryOperator(),
+            QgsEsriArcadeUnaryOperatorExpression.UnaryOperator.uoPostDecrement,
+        )
+        self.assertEqual(
+            script.rootBlock().statements()[3].expression().operand().name(),
+            "x",
+        )
+
+        self.assertIsInstance(
+            script.rootBlock().statements()[4].expression(),
+            QgsEsriArcadeUnaryOperatorExpression,
+        )
+        self.assertEqual(
+            script.rootBlock().statements()[4].expression().unaryOperator(),
+            QgsEsriArcadeUnaryOperatorExpression.UnaryOperator.uoPreDecrement,
+        )
+        self.assertEqual(
+            script.rootBlock().statements()[4].expression().operand().name(),
+            "x",
+        )
+
+        self.assertIsInstance(
+            script.rootBlock().statements()[5].initializer(),
+            QgsEsriArcadeUnaryOperatorExpression,
+        )
+        self.assertEqual(
+            script.rootBlock().statements()[5].initializer().unaryOperator(),
+            QgsEsriArcadeUnaryOperatorExpression.UnaryOperator.uoPlus,
+        )
+        self.assertEqual(
+            script.rootBlock().statements()[5].initializer().operand().value(), 10
+        )
+
+        self.assertIsInstance(
+            script.rootBlock().statements()[6].initializer(),
+            QgsEsriArcadeUnaryOperatorExpression,
+        )
+        self.assertEqual(
+            script.rootBlock().statements()[6].initializer().unaryOperator(),
+            QgsEsriArcadeUnaryOperatorExpression.UnaryOperator.uoMinus,
+        )
+        self.assertEqual(
+            script.rootBlock().statements()[6].initializer().operand().name(), "y"
+        )
+
+        self.assertIsInstance(
+            script.rootBlock().statements()[7].initializer(),
+            QgsEsriArcadeUnaryOperatorExpression,
+        )
+        self.assertEqual(
+            script.rootBlock().statements()[7].initializer().unaryOperator(),
+            QgsEsriArcadeUnaryOperatorExpression.UnaryOperator.uoPlus,
+        )
+        self.assertEqual(
+            script.rootBlock().statements()[7].initializer().operand().name(), "y"
+        )
+
+    def test_assignment_operators(self):
+        script = QgsEsriArcadeScript(
+            """var x = 10;
+            x += 5;
+            x -= 2;
+            x *= 3;
+            x /= 4;
+"""
+        )
+        self.assertFalse(script.hasParserError())
+
+        self.assertIsInstance(script.rootBlock(), QgsEsriArcadeBlockStatement)
+        self.assertEqual(script.rootBlock().count(), 5)
+
+        self.assertIsInstance(
+            script.rootBlock().statements()[1],
+            QgsEsriArcadeAssignmentStatement,
+        )
+        self.assertEqual(
+            script.rootBlock().statements()[1].target().name(),
+            "x",
+        )
+        self.assertEqual(
+            script.rootBlock().statements()[1].value().value(),
+            5,
+        )
+        self.assertEqual(
+            script.rootBlock().statements()[1].assignmentOperator(),
+            QgsEsriArcadeAssignmentStatement.AssignmentOperator.aoPlusAssign,
+        )
+
+        self.assertEqual(
+            script.rootBlock().statements()[2].target().name(),
+            "x",
+        )
+        self.assertEqual(
+            script.rootBlock().statements()[2].value().value(),
+            2,
+        )
+        self.assertEqual(
+            script.rootBlock().statements()[2].assignmentOperator(),
+            QgsEsriArcadeAssignmentStatement.AssignmentOperator.aoMinusAssign,
+        )
+
+        self.assertEqual(
+            script.rootBlock().statements()[3].target().name(),
+            "x",
+        )
+        self.assertEqual(
+            script.rootBlock().statements()[3].value().value(),
+            3,
+        )
+        self.assertEqual(
+            script.rootBlock().statements()[3].assignmentOperator(),
+            QgsEsriArcadeAssignmentStatement.AssignmentOperator.aoMultiplyAssign,
+        )
+
+        self.assertEqual(
+            script.rootBlock().statements()[4].target().name(),
+            "x",
+        )
+        self.assertEqual(
+            script.rootBlock().statements()[4].value().value(),
+            4,
+        )
+        self.assertEqual(
+            script.rootBlock().statements()[4].assignmentOperator(),
+            QgsEsriArcadeAssignmentStatement.AssignmentOperator.aoDivideAssign,
+        )
+
+    def test_bitwise_operators(self):
+        script = QgsEsriArcadeScript(
+            """7 & 14;
+            7 | 14;
+            7 ^ 14;
+            ~7;
+            7 << 2;
+            7 >> 2;
+            7 >>> 2;
+"""
+        )
+        self.assertFalse(script.hasParserError())
+
+        self.assertIsInstance(script.rootBlock(), QgsEsriArcadeBlockStatement)
+        self.assertEqual(script.rootBlock().count(), 7)
+
+        self.assertIsInstance(
+            script.rootBlock().statements()[0],
+            QgsEsriArcadeExpressionStatement,
+        )
+        self.assertIsInstance(
+            script.rootBlock().statements()[0].expression(),
+            QgsEsriArcadeBinaryOperatorExpression,
+        )
+        self.assertEqual(
+            script.rootBlock().statements()[0].expression().binaryOperator(),
+            QgsEsriArcadeBinaryOperatorExpression.BinaryOperator.boBitwiseAnd,
+        )
+
+        self.assertIsInstance(
+            script.rootBlock().statements()[1],
+            QgsEsriArcadeExpressionStatement,
+        )
+        self.assertIsInstance(
+            script.rootBlock().statements()[1].expression(),
+            QgsEsriArcadeBinaryOperatorExpression,
+        )
+        self.assertEqual(
+            script.rootBlock().statements()[1].expression().binaryOperator(),
+            QgsEsriArcadeBinaryOperatorExpression.BinaryOperator.boBitwiseOr,
+        )
+
+        self.assertIsInstance(
+            script.rootBlock().statements()[2],
+            QgsEsriArcadeExpressionStatement,
+        )
+        self.assertIsInstance(
+            script.rootBlock().statements()[2].expression(),
+            QgsEsriArcadeBinaryOperatorExpression,
+        )
+        self.assertEqual(
+            script.rootBlock().statements()[2].expression().binaryOperator(),
+            QgsEsriArcadeBinaryOperatorExpression.BinaryOperator.boBitwiseXor,
+        )
+
+        self.assertIsInstance(
+            script.rootBlock().statements()[3],
+            QgsEsriArcadeExpressionStatement,
+        )
+        self.assertIsInstance(
+            script.rootBlock().statements()[3].expression(),
+            QgsEsriArcadeUnaryOperatorExpression,
+        )
+        self.assertEqual(
+            script.rootBlock().statements()[3].expression().unaryOperator(),
+            QgsEsriArcadeUnaryOperatorExpression.UnaryOperator.uoBitwiseNot,
+        )
+
+        self.assertIsInstance(
+            script.rootBlock().statements()[4],
+            QgsEsriArcadeExpressionStatement,
+        )
+        self.assertIsInstance(
+            script.rootBlock().statements()[4].expression(),
+            QgsEsriArcadeBinaryOperatorExpression,
+        )
+        self.assertEqual(
+            script.rootBlock().statements()[4].expression().binaryOperator(),
+            QgsEsriArcadeBinaryOperatorExpression.BinaryOperator.boBitwiseLeftShift,
+        )
+
+        self.assertIsInstance(
+            script.rootBlock().statements()[5],
+            QgsEsriArcadeExpressionStatement,
+        )
+        self.assertIsInstance(
+            script.rootBlock().statements()[5].expression(),
+            QgsEsriArcadeBinaryOperatorExpression,
+        )
+        self.assertEqual(
+            script.rootBlock().statements()[5].expression().binaryOperator(),
+            QgsEsriArcadeBinaryOperatorExpression.BinaryOperator.boBitwiseSignedRightShift,
+        )
+
+        self.assertIsInstance(
+            script.rootBlock().statements()[6],
+            QgsEsriArcadeExpressionStatement,
+        )
+        self.assertIsInstance(
+            script.rootBlock().statements()[6].expression(),
+            QgsEsriArcadeBinaryOperatorExpression,
+        )
+        self.assertEqual(
+            script.rootBlock().statements()[6].expression().binaryOperator(),
+            QgsEsriArcadeBinaryOperatorExpression.BinaryOperator.boBitwiseUnsignedRightShift,
         )
 
 

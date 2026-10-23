@@ -262,7 +262,17 @@ Represents a variable reassignment statement (e.g. age = "35 years";).
 #include "qgsesriarcadescript.h"
 %End
   public:
-    QgsEsriArcadeAssignmentStatement( QgsEsriArcadeExpression *target /Transfer/, QgsEsriArcadeExpression *value /Transfer/ );
+    enum class AssignmentOperator
+    {
+      aoAssign,
+      aoPlusAssign,
+      aoMinusAssign,
+      aoMultiplyAssign,
+      aoDivideAssign,
+    };
+
+
+    QgsEsriArcadeAssignmentStatement( AssignmentOperator assignmentOperator, QgsEsriArcadeExpression *target /Transfer/, QgsEsriArcadeExpression *value /Transfer/ );
 %Docstring
 Constructor for QgsEsriArcadeAssignmentStatement.
 
@@ -285,6 +295,11 @@ Returns the target expression being assigned to.
     QgsEsriArcadeExpression *value() const;
 %Docstring
 Returns the assigned value expression.
+%End
+
+    AssignmentOperator assignmentOperator() const;
+%Docstring
+Returns the assignment operator.
 %End
 
   private:
@@ -591,6 +606,12 @@ Represents a binary operation expression.
       boGreaterThanOrEqual,
       boLogicalAnd,
       boLogicalOr,
+      boBitwiseAnd,
+      boBitwiseOr,
+      boBitwiseXor,
+      boBitwiseLeftShift,
+      boBitwiseSignedRightShift,
+      boBitwiseUnsignedRightShift,
     };
 
 
@@ -661,6 +682,11 @@ Represents a unary operation expression.
       uoNot,
       uoMinus,
       uoPlus,
+      uoBitwiseNot,
+      uoPreIncrement,
+      uoPreDecrement,
+      uoPostIncrement,
+      uoPostDecrement,
     };
 
 
