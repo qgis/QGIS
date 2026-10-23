@@ -367,18 +367,27 @@ QList<QgsRayCastHit> QgsPointCloudLayerChunkedEntity::rayIntersection( const Qgs
   // transform ray
   const QgsVector3D rayOriginMapCoords = loader->mRenderContext.worldToMapCoordinates( ray.origin() );
   const QgsVector3D pointMapCoords = loader->mRenderContext.worldToMapCoordinates( ray.point( ray.origin().length() ) );
-  QgsVector3D rayDirectionMapCoords = pointMapCoords - rayOriginMapCoords;
-  rayDirectionMapCoords.normalize();
+
+  QgsVector3D rayOriginLayerCoords, rayPointLayerCoords;
+  try
+  {
+    rayOriginLayerCoords = loader->mCoordinateTransform.transform( rayOriginMapCoords, Qgis::TransformDirection::Reverse );
+    rayPointLayerCoords = loader->mCoordinateTransform.transform( pointMapCoords, Qgis::TransformDirection::Reverse );
+  }
+  catch ( const QgsCsException & )
+  {
+    // If we can't reproject, we should not try to find hits
+    QgsDebugError( u"Transformation of ray coordinates to layer coordinates failed."_s );
+    return result;
+  }
+
+  QgsVector3D rayDirectionLayerCoords = rayPointLayerCoords - rayOriginLayerCoords;
+  rayDirectionLayerCoords.normalize();
 
   // We're using the angle as a tolerance, effectively meaning we're fetching points intersecting a cone.
   // This may be revisited to use a cylinder instead, if the balance between near/far points does not scale
   // well with different point sizes, screen sizes and fov values.
   const double limitAngle = context.angleThreshold() * M_PI / 180.;
-
-  // adjust ray to elevation properties
-  const QgsVector3D adjustedRayOrigin = QgsVector3D( rayOriginMapCoords.x(), rayOriginMapCoords.y(), ( rayOriginMapCoords.z() - loader->mZValueOffset ) / loader->mZValueScale );
-  QgsVector3D adjustedRayDirection = QgsVector3D( rayDirectionMapCoords.x(), rayDirectionMapCoords.y(), rayDirectionMapCoords.z() / loader->mZValueScale );
-  adjustedRayDirection.normalize();
 
   QgsPointCloudIndex index = loader->mPointCloudIndex;
 
@@ -418,27 +427,40 @@ QList<QgsRayCastHit> QgsPointCloudLayerChunkedEntity::rayIntersection( const Qgs
     {
       double x, y, z;
       QgsPointCloudAttribute::getPointXYZ( ptr, i, recordSize, xOffset, xType, yOffset, yType, zOffset, zType, blockScale, blockOffset, x, y, z );
-      const QgsVector3D point( x, y, z );
+      // adjust point to layer elevation properties
+      const QgsVector3D adjustedPoint( x, y, z * loader->mZValueScale + loader->mZValueOffset );
 
       // check whether point is in front of the ray
       // similar to QgsRay3D::isInFront(), but using doubles
-      QgsVector3D vectorToPoint = point - adjustedRayOrigin;
+      QgsVector3D vectorToPoint = adjustedPoint - rayOriginLayerCoords;
       vectorToPoint.normalize();
-      if ( QgsVector3D::dotProduct( vectorToPoint, adjustedRayDirection ) < 0.0 )
+      if ( QgsVector3D::dotProduct( vectorToPoint, rayDirectionLayerCoords ) < 0.0 )
         continue;
 
       // calculate the angle between the point and the projected point
       // similar to QgsRay3D::angleToPoint(), but using doubles
-      const QgsVector3D projPoint = adjustedRayOrigin + adjustedRayDirection * QgsVector3D::dotProduct( point - adjustedRayOrigin, adjustedRayDirection );
+      const QgsVector3D projPoint = rayOriginLayerCoords + rayDirectionLayerCoords * QgsVector3D::dotProduct( adjustedPoint - rayOriginLayerCoords, rayDirectionLayerCoords );
 
-      const double d1 = projPoint.distance( adjustedRayOrigin );
-      const double d2 = projPoint.distance( point );
+      const double d1 = projPoint.distance( rayOriginLayerCoords );
+      const double d2 = projPoint.distance( adjustedPoint );
       const double angle = std::atan2( d2, d1 );
 
       if ( angle > limitAngle )
         continue;
 
-      const double dist = rayOriginMapCoords.distance( point );
+      // transform the hit point to map coords
+      QgsVector3D hitMapCoords;
+      try
+      {
+        hitMapCoords = loader->mCoordinateTransform.transform( adjustedPoint );
+      }
+      catch ( const QgsCsException & )
+      {
+        QgsDebugError( u"Transformation of point cloud hit to map coordinates failed."_s );
+        continue;
+      }
+
+      const double dist = rayOriginLayerCoords.distance( adjustedPoint );
 
       if ( minDist < 0 || dist < minDist )
       {
@@ -457,7 +479,7 @@ QList<QgsRayCastHit> QgsPointCloudLayerChunkedEntity::rayIntersection( const Qgs
 
       QgsRayCastHit hit;
       hit.setDistance( dist );
-      hit.setMapCoordinates( point );
+      hit.setMapCoordinates( hitMapCoords );
       hit.setProperties( pointAttr );
       if ( context.singleResult() )
         result.clear();
