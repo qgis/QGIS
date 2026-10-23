@@ -38,6 +38,22 @@ QgsEsriArcadeNode.NodeType.__doc__ = """Node type identifier.
 """
 # --
 # monkey patching scoped based enum
+QgsEsriArcadeAssignmentStatement.AssignmentOperator.aoAssign.__doc__ = "Standard assignment \"a = 10\""
+QgsEsriArcadeAssignmentStatement.AssignmentOperator.aoPlusAssign.__doc__ = "Add and assign \"a += 10\""
+QgsEsriArcadeAssignmentStatement.AssignmentOperator.aoMinusAssign.__doc__ = "Subtract and assign \"a -= 10\""
+QgsEsriArcadeAssignmentStatement.AssignmentOperator.aoMultiplyAssign.__doc__ = "Multiply and assign \"a *= 10\""
+QgsEsriArcadeAssignmentStatement.AssignmentOperator.aoDivideAssign.__doc__ = "Divide and assign \"a /= 10\""
+QgsEsriArcadeAssignmentStatement.AssignmentOperator.__doc__ = """Assignment operator types.
+
+* ``aoAssign``: Standard assignment \"a = 10\"
+* ``aoPlusAssign``: Add and assign \"a += 10\"
+* ``aoMinusAssign``: Subtract and assign \"a -= 10\"
+* ``aoMultiplyAssign``: Multiply and assign \"a *= 10\"
+* ``aoDivideAssign``: Divide and assign \"a /= 10\"
+
+"""
+# --
+# monkey patching scoped based enum
 QgsEsriArcadeBinaryOperatorExpression.BinaryOperator.boPlus.__doc__ = ""
 QgsEsriArcadeBinaryOperatorExpression.BinaryOperator.boMinus.__doc__ = ""
 QgsEsriArcadeBinaryOperatorExpression.BinaryOperator.boMultiply.__doc__ = ""
@@ -51,6 +67,12 @@ QgsEsriArcadeBinaryOperatorExpression.BinaryOperator.boLessThanOrEqual.__doc__ =
 QgsEsriArcadeBinaryOperatorExpression.BinaryOperator.boGreaterThanOrEqual.__doc__ = ""
 QgsEsriArcadeBinaryOperatorExpression.BinaryOperator.boLogicalAnd.__doc__ = ""
 QgsEsriArcadeBinaryOperatorExpression.BinaryOperator.boLogicalOr.__doc__ = ""
+QgsEsriArcadeBinaryOperatorExpression.BinaryOperator.boBitwiseAnd.__doc__ = "Bitwise and, eg \"7 & 14\""
+QgsEsriArcadeBinaryOperatorExpression.BinaryOperator.boBitwiseOr.__doc__ = "Bitwise or, eg \"7 | 14\""
+QgsEsriArcadeBinaryOperatorExpression.BinaryOperator.boBitwiseXor.__doc__ = "Bitwise xor, eg \"7 ^ 14\""
+QgsEsriArcadeBinaryOperatorExpression.BinaryOperator.boBitwiseLeftShift.__doc__ = "Bitwise left shift, eg \"7 << 14\""
+QgsEsriArcadeBinaryOperatorExpression.BinaryOperator.boBitwiseSignedRightShift.__doc__ = "Bitwise right shift, eg \"7 >> 14\""
+QgsEsriArcadeBinaryOperatorExpression.BinaryOperator.boBitwiseUnsignedRightShift.__doc__ = "Bitwise unsigned right shift, eg \"7 >>> 14\""
 QgsEsriArcadeBinaryOperatorExpression.BinaryOperator.__doc__ = """Binary operator enumeration.
 
 * ``boPlus``: 
@@ -66,6 +88,12 @@ QgsEsriArcadeBinaryOperatorExpression.BinaryOperator.__doc__ = """Binary operato
 * ``boGreaterThanOrEqual``: 
 * ``boLogicalAnd``: 
 * ``boLogicalOr``: 
+* ``boBitwiseAnd``: Bitwise and, eg \"7 & 14\"
+* ``boBitwiseOr``: Bitwise or, eg \"7 | 14\"
+* ``boBitwiseXor``: Bitwise xor, eg \"7 ^ 14\"
+* ``boBitwiseLeftShift``: Bitwise left shift, eg \"7 << 14\"
+* ``boBitwiseSignedRightShift``: Bitwise right shift, eg \"7 >> 14\"
+* ``boBitwiseUnsignedRightShift``: Bitwise unsigned right shift, eg \"7 >>> 14\"
 
 """
 # --
@@ -73,11 +101,21 @@ QgsEsriArcadeBinaryOperatorExpression.BinaryOperator.__doc__ = """Binary operato
 QgsEsriArcadeUnaryOperatorExpression.UnaryOperator.uoNot.__doc__ = ""
 QgsEsriArcadeUnaryOperatorExpression.UnaryOperator.uoMinus.__doc__ = ""
 QgsEsriArcadeUnaryOperatorExpression.UnaryOperator.uoPlus.__doc__ = ""
+QgsEsriArcadeUnaryOperatorExpression.UnaryOperator.uoBitwiseNot.__doc__ = "Bitwise not, eg \"~7\""
+QgsEsriArcadeUnaryOperatorExpression.UnaryOperator.uoPreIncrement.__doc__ = "Preincrement operator, eg \"++x\""
+QgsEsriArcadeUnaryOperatorExpression.UnaryOperator.uoPreDecrement.__doc__ = "Prederement operator, eg \"--x\""
+QgsEsriArcadeUnaryOperatorExpression.UnaryOperator.uoPostIncrement.__doc__ = "Postincrement operator, eg \"x++\""
+QgsEsriArcadeUnaryOperatorExpression.UnaryOperator.uoPostDecrement.__doc__ = "Postdecrement operator, eg \"x--\""
 QgsEsriArcadeUnaryOperatorExpression.UnaryOperator.__doc__ = """Unary operator enumeration.
 
 * ``uoNot``: 
 * ``uoMinus``: 
 * ``uoPlus``: 
+* ``uoBitwiseNot``: Bitwise not, eg \"~7\"
+* ``uoPreIncrement``: Preincrement operator, eg \"++x\"
+* ``uoPreDecrement``: Prederement operator, eg \"--x\"
+* ``uoPostIncrement``: Postincrement operator, eg \"x++\"
+* ``uoPostDecrement``: Postdecrement operator, eg \"x--\"
 
 """
 # --

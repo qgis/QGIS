@@ -28,9 +28,11 @@ using namespace Qt::StringLiterals;
 // external parser entry point
 extern QgsEsriArcadeBlockStatement *parseArcadeScript( const QString &scriptText, QString &parserErrorMessage );
 
-const char *QgsEsriArcadeBinaryOperatorExpression::BINARY_OPERATOR_TEXT[] = { "+", "-", "*", "/", "%", "==", "!=", "<", ">", "<=", ">=", "&&", "||" };
+const char *QgsEsriArcadeBinaryOperatorExpression::BINARY_OPERATOR_TEXT[] = { "+", "-", "*", "/", "%", "==", "!=", "<", ">", "<=", ">=", "&&", "||", "&", "|", "^", "<<", ">>", ">>>" };
 
-const char *QgsEsriArcadeUnaryOperatorExpression::UNARY_OPERATOR_TEXT[] = { "!", "-", "+" };
+const char *QgsEsriArcadeUnaryOperatorExpression::UNARY_OPERATOR_TEXT[] = { "!", "-", "+", "~", "++", "--", "++", "--" };
+
+const char *QgsEsriArcadeAssignmentStatement::ASSIGNMENT_OPERATOR_TEXT[] = { "=", "+=", "-=", "*=", "/=" };
 
 //
 // QgsEsriArcadeBlockStatement
@@ -108,21 +110,22 @@ void QgsEsriArcadeVariableDeclarationStatement::accept( QgsEsriArcadeVisitor &vi
 // QgsEsriArcadeAssignmentStatement
 //
 
-QgsEsriArcadeAssignmentStatement::QgsEsriArcadeAssignmentStatement( QgsEsriArcadeExpression *target, QgsEsriArcadeExpression *value )
+QgsEsriArcadeAssignmentStatement::QgsEsriArcadeAssignmentStatement( AssignmentOperator assignmentOperator, QgsEsriArcadeExpression *target, QgsEsriArcadeExpression *value )
   : mTarget( target )
   , mValue( value )
+  , mAssignmentOperator( assignmentOperator )
 {}
 
 QString QgsEsriArcadeAssignmentStatement::dump() const
 {
-  return u"%1 = %2;"_s.arg( mTarget ? mTarget->dump() : QString(), mValue ? mValue->dump() : QString() );
+  return u"%1 %2 %3;"_s.arg( mTarget ? mTarget->dump() : QString(), ASSIGNMENT_OPERATOR_TEXT[static_cast<int>( mAssignmentOperator )], mValue ? mValue->dump() : QString() );
 }
 
 QgsEsriArcadeNode *QgsEsriArcadeAssignmentStatement::clone() const
 {
   QgsEsriArcadeExpression *clonedTarget = mTarget ? dynamic_cast<QgsEsriArcadeExpression *>( mTarget->clone() ) : nullptr;
   QgsEsriArcadeExpression *clonedValue = mValue ? dynamic_cast<QgsEsriArcadeExpression *>( mValue->clone() ) : nullptr;
-  return new QgsEsriArcadeAssignmentStatement( clonedTarget, clonedValue );
+  return new QgsEsriArcadeAssignmentStatement( mAssignmentOperator, clonedTarget, clonedValue );
 }
 
 void QgsEsriArcadeAssignmentStatement::accept( QgsEsriArcadeVisitor &visitor ) const
@@ -364,21 +367,31 @@ int QgsEsriArcadeBinaryOperatorExpression::precedence() const
       return 1;
     case BinaryOperator::boLogicalAnd:
       return 2;
+    case BinaryOperator::boBitwiseOr:
+      return 3;
+    case BinaryOperator::boBitwiseXor:
+      return 4;
+    case BinaryOperator::boBitwiseAnd:
+      return 5;
     case BinaryOperator::boEqual:
     case BinaryOperator::boNotEqual:
-      return 3;
+      return 6;
     case BinaryOperator::boLessThan:
     case BinaryOperator::boGreaterThan:
     case BinaryOperator::boLessThanOrEqual:
     case BinaryOperator::boGreaterThanOrEqual:
-      return 4;
+      return 7;
+    case BinaryOperator::boBitwiseLeftShift:
+    case BinaryOperator::boBitwiseSignedRightShift:
+    case BinaryOperator::boBitwiseUnsignedRightShift:
+      return 8;
     case BinaryOperator::boPlus:
     case BinaryOperator::boMinus:
-      return 5;
+      return 9;
     case BinaryOperator::boMultiply:
     case BinaryOperator::boDivide:
     case BinaryOperator::boModulo:
-      return 6;
+      return 10;
   }
   return -1;
 }
@@ -428,7 +441,10 @@ QString QgsEsriArcadeUnaryOperatorExpression::text() const
 
 QString QgsEsriArcadeUnaryOperatorExpression::dump() const
 {
-  return u"%1%2"_s.arg( text(), mOperand ? mOperand->dump() : QString() );
+  if ( mUnaryOperator == UnaryOperator::uoPostIncrement || mUnaryOperator == UnaryOperator::uoPostDecrement )
+    return u"%1%2"_s.arg( mOperand ? mOperand->dump() : QString(), text() );
+  else
+    return u"%1%2"_s.arg( text(), mOperand ? mOperand->dump() : QString() );
 }
 
 QgsEsriArcadeNode *QgsEsriArcadeUnaryOperatorExpression::clone() const

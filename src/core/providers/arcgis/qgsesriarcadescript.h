@@ -284,11 +284,26 @@ class CORE_EXPORT QgsEsriArcadeAssignmentStatement : public QgsEsriArcadeStateme
 {
   public:
     /**
+     * Assignment operator types.
+     */
+    enum class AssignmentOperator
+    {
+      aoAssign,         //!< Standard assignment "a = 10"
+      aoPlusAssign,     //!< Add and assign "a += 10"
+      aoMinusAssign,    //!< Subtract and assign "a -= 10"
+      aoMultiplyAssign, //!< Multiply and assign "a *= 10"
+      aoDivideAssign,   //!< Divide and assign "a /= 10"
+    };
+
+    //! \note not available in Python bindings
+    static const char *ASSIGNMENT_OPERATOR_TEXT[] SIP_SKIP;
+
+    /**
      * Constructor for QgsEsriArcadeAssignmentStatement.
      *
      * Ownership of \a target and \a value is transferred to this statement.
      */
-    QgsEsriArcadeAssignmentStatement( QgsEsriArcadeExpression *target SIP_TRANSFER, QgsEsriArcadeExpression *value SIP_TRANSFER );
+    QgsEsriArcadeAssignmentStatement( AssignmentOperator assignmentOperator, QgsEsriArcadeExpression *target SIP_TRANSFER, QgsEsriArcadeExpression *value SIP_TRANSFER );
 
     QgsEsriArcadeNode::NodeType nodeType() const override { return NodeType::ntAssignmentStatement; }
     QString dump() const override;
@@ -305,6 +320,11 @@ class CORE_EXPORT QgsEsriArcadeAssignmentStatement : public QgsEsriArcadeStateme
      */
     QgsEsriArcadeExpression *value() const { return mValue.get(); }
 
+    /**
+     * Returns the assignment operator.
+     */
+    AssignmentOperator assignmentOperator() const { return mAssignmentOperator; }
+
   private:
     QgsEsriArcadeAssignmentStatement( const QgsEsriArcadeAssignmentStatement &other ) = delete;
     QgsEsriArcadeAssignmentStatement &operator=( const QgsEsriArcadeAssignmentStatement &other ) = delete;
@@ -315,6 +335,7 @@ class CORE_EXPORT QgsEsriArcadeAssignmentStatement : public QgsEsriArcadeStateme
 
     std::unique_ptr<QgsEsriArcadeExpression> mTarget;
     std::unique_ptr<QgsEsriArcadeExpression> mValue;
+    AssignmentOperator mAssignmentOperator = AssignmentOperator::aoAssign;
 };
 
 /**
@@ -610,6 +631,12 @@ class CORE_EXPORT QgsEsriArcadeBinaryOperatorExpression : public QgsEsriArcadeEx
       boGreaterThanOrEqual,
       boLogicalAnd,
       boLogicalOr,
+      boBitwiseAnd,                //!< Bitwise and, eg "7 & 14"
+      boBitwiseOr,                 //!< Bitwise or, eg "7 | 14"
+      boBitwiseXor,                //!< Bitwise xor, eg "7 ^ 14"
+      boBitwiseLeftShift,          //!< Bitwise left shift, eg "7 << 14"
+      boBitwiseSignedRightShift,   //!< Bitwise right shift, eg "7 >> 14"
+      boBitwiseUnsignedRightShift, //!< Bitwise unsigned right shift, eg "7 >>> 14"
     };
 
     //! \note not available in Python bindings
@@ -687,6 +714,11 @@ class CORE_EXPORT QgsEsriArcadeUnaryOperatorExpression : public QgsEsriArcadeExp
       uoNot,
       uoMinus,
       uoPlus,
+      uoBitwiseNot,    //!< Bitwise not, eg "~7"
+      uoPreIncrement,  //!< Preincrement operator, eg "++x"
+      uoPreDecrement,  //!< Prederement operator, eg "--x"
+      uoPostIncrement, //!< Postincrement operator, eg "x++"
+      uoPostDecrement, //!< Postdecrement operator, eg "x--"
     };
 
     //! \note not available in Python bindings
