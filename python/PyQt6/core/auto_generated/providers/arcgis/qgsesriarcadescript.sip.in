@@ -74,6 +74,24 @@ Represents an abstract node for an Esri Arcade script.
       case QgsEsriArcadeNode::NodeType::ntDictionaryLiteralExpression:
         sipType = sipType_QgsEsriArcadeDictionaryLiteralExpression;
         break;
+      case QgsEsriArcadeNode::NodeType::ntIfStatement:
+        sipType = sipType_QgsEsriArcadeIfStatement;
+        break;
+      case QgsEsriArcadeNode::NodeType::ntForStatement:
+        sipType = sipType_QgsEsriArcadeForStatement;
+        break;
+      case QgsEsriArcadeNode::NodeType::ntForInStatement:
+        sipType = sipType_QgsEsriArcadeForInStatement;
+        break;
+      case QgsEsriArcadeNode::NodeType::ntWhileStatement:
+        sipType = sipType_QgsEsriArcadeWhileStatement;
+        break;
+      case QgsEsriArcadeNode::NodeType::ntBreakStatement:
+        sipType = sipType_QgsEsriArcadeBreakStatement;
+        break;
+      case QgsEsriArcadeNode::NodeType::ntContinueStatement:
+        sipType = sipType_QgsEsriArcadeContinueStatement;
+        break;
       default:
         sipType = nullptr;
         break;
@@ -98,6 +116,12 @@ Represents an abstract node for an Esri Arcade script.
       ntIndexExpression,
       ntArrayLiteralExpression,
       ntDictionaryLiteralExpression,
+      ntIfStatement,
+      ntForStatement,
+      ntForInStatement,
+      ntWhileStatement,
+      ntBreakStatement,
+      ntContinueStatement,
     };
 
     virtual ~QgsEsriArcadeNode();
@@ -943,6 +967,269 @@ Returns the dictionary elements.
     QgsEsriArcadeDictionaryLiteralExpression( const QgsEsriArcadeDictionaryLiteralExpression &other );
 };
 
+class QgsEsriArcadeIfStatement : QgsEsriArcadeStatement
+{
+%Docstring(signature="appended")
+Represents an if statement.
+
+.. versionadded:: 4.6
+%End
+
+%TypeHeaderCode
+#include "qgsesriarcadescript.h"
+%End
+  public:
+    QgsEsriArcadeIfStatement( QgsEsriArcadeExpression *condition /Transfer/, QgsEsriArcadeBlockStatement *trueBlock /Transfer/, QgsEsriArcadeBlockStatement *falseBlock /Transfer/ = 0 );
+%Docstring
+Constructor for QgsEsriArcadeIfStatement.
+
+Ownership of ``condition``, ``trueBlock``, and ``falseBlock`` is
+transferred to this statement.
+%End
+
+    virtual QgsEsriArcadeNode::NodeType nodeType() const;
+    virtual QString dump() const;
+
+    virtual QgsEsriArcadeNode *clone() const /Factory/;
+
+    virtual void accept( QgsEsriArcadeVisitor &visitor ) const;
+
+
+    QgsEsriArcadeExpression *condition() const;
+%Docstring
+Returns the condition expression.
+%End
+
+    QgsEsriArcadeBlockStatement *trueBlock() const;
+%Docstring
+Returns the statement block executed when the condition evaluates to
+true.
+%End
+
+    QgsEsriArcadeBlockStatement *falseBlock() const;
+%Docstring
+Returns the statement block executed when the condition evaluates to
+false, or ``None`` if none.
+%End
+
+  private:
+    QgsEsriArcadeIfStatement( const QgsEsriArcadeIfStatement &other );
+};
+
+class QgsEsriArcadeForStatement : QgsEsriArcadeStatement
+{
+%Docstring(signature="appended")
+Represents a standard counter-based for loop.
+
+.. versionadded:: 4.6
+%End
+
+%TypeHeaderCode
+#include "qgsesriarcadescript.h"
+%End
+  public:
+    QgsEsriArcadeForStatement(
+      QgsEsriArcadeStatement *initialization /Transfer/, QgsEsriArcadeExpression *condition /Transfer/, QgsEsriArcadeNode *step /Transfer/, QgsEsriArcadeBlockStatement *body /Transfer/
+    );
+%Docstring
+Constructor for QgsEsriArcadeForStatement.
+
+Ownership of ``initialization``, ``condition``, ``step``, and ``body``
+is transferred to this statement.
+%End
+
+    virtual QgsEsriArcadeNode::NodeType nodeType() const;
+    virtual QString dump() const;
+
+    virtual QgsEsriArcadeNode *clone() const /Factory/;
+
+    virtual void accept( QgsEsriArcadeVisitor &visitor ) const;
+
+
+    QgsEsriArcadeStatement *initialization() const;
+%Docstring
+Returns the initialization statement, or ``None`` if none.
+%End
+
+    QgsEsriArcadeExpression *condition() const;
+%Docstring
+Returns the loop condition expression, or ``None`` if none.
+%End
+
+    QgsEsriArcadeNode *step() const;
+%Docstring
+Returns the step expression or statement, or ``None`` if none.
+%End
+
+    QgsEsriArcadeBlockStatement *body() const;
+%Docstring
+Returns the loop body block statement.
+%End
+
+  private:
+    QgsEsriArcadeForStatement( const QgsEsriArcadeForStatement &other );
+};
+
+class QgsEsriArcadeForInStatement : QgsEsriArcadeStatement
+{
+%Docstring(signature="appended")
+Represents a range based for...in or for...of iteration statement.
+
+.. versionadded:: 4.6
+%End
+
+%TypeHeaderCode
+#include "qgsesriarcadescript.h"
+%End
+  public:
+    enum class IterationType
+    {
+      ForIn,
+      ForOf,
+    };
+
+    QgsEsriArcadeForInStatement(
+      IterationType iterationType, const QString &variableName, bool isVariableDeclaration, QgsEsriArcadeExpression *collection /Transfer/, QgsEsriArcadeBlockStatement *body /Transfer/
+    );
+%Docstring
+Constructor for QgsEsriArcadeForInStatement.
+
+Ownership of ``collection`` and ``body`` is transferred to this
+statement.
+%End
+
+    virtual QgsEsriArcadeNode::NodeType nodeType() const;
+    virtual QString dump() const;
+
+    virtual QgsEsriArcadeNode *clone() const /Factory/;
+
+    virtual void accept( QgsEsriArcadeVisitor &visitor ) const;
+
+
+    IterationType iterationType() const;
+%Docstring
+Returns the iteration type (for...in or for...of).
+%End
+
+    QString variableName() const;
+%Docstring
+Returns the loop variable identifier name.
+%End
+
+    bool isVariableDeclaration() const;
+%Docstring
+Returns ``True`` if the loop variable was declared with the var keyword.
+%End
+
+    QgsEsriArcadeExpression *collection() const;
+%Docstring
+Returns the collection expression being iterated over.
+%End
+
+    QgsEsriArcadeBlockStatement *body() const;
+%Docstring
+Returns the loop body block statement.
+%End
+
+  private:
+    QgsEsriArcadeForInStatement( const QgsEsriArcadeForInStatement &other );
+};
+
+class QgsEsriArcadeWhileStatement : QgsEsriArcadeStatement
+{
+%Docstring(signature="appended")
+Represents a while loop statement.
+
+.. versionadded:: 4.6
+%End
+
+%TypeHeaderCode
+#include "qgsesriarcadescript.h"
+%End
+  public:
+    QgsEsriArcadeWhileStatement( QgsEsriArcadeExpression *condition /Transfer/, QgsEsriArcadeBlockStatement *body /Transfer/ );
+%Docstring
+Constructor for QgsEsriArcadeWhileStatement.
+
+Ownership of ``condition`` and ``body`` is transferred to this
+statement.
+%End
+
+    virtual QgsEsriArcadeNode::NodeType nodeType() const;
+    virtual QString dump() const;
+
+    virtual QgsEsriArcadeNode *clone() const /Factory/;
+
+    virtual void accept( QgsEsriArcadeVisitor &visitor ) const;
+
+
+    QgsEsriArcadeExpression *condition() const;
+%Docstring
+Returns the loop condition expression.
+%End
+
+    QgsEsriArcadeBlockStatement *body() const;
+%Docstring
+Returns the loop body block statement.
+%End
+
+  private:
+    QgsEsriArcadeWhileStatement( const QgsEsriArcadeWhileStatement &other );
+};
+
+class QgsEsriArcadeBreakStatement : QgsEsriArcadeStatement
+{
+%Docstring(signature="appended")
+Represents a break loop control statement.
+
+.. versionadded:: 4.6
+%End
+
+%TypeHeaderCode
+#include "qgsesriarcadescript.h"
+%End
+  public:
+    QgsEsriArcadeBreakStatement();
+%Docstring
+Constructor for QgsEsriArcadeBreakStatement.
+%End
+
+    virtual QgsEsriArcadeNode::NodeType nodeType() const;
+    virtual QString dump() const;
+
+    virtual QgsEsriArcadeNode *clone() const /Factory/;
+
+    virtual void accept( QgsEsriArcadeVisitor &visitor ) const;
+
+};
+
+class QgsEsriArcadeContinueStatement : QgsEsriArcadeStatement
+{
+%Docstring(signature="appended")
+Represents a continue loop control statement.
+
+.. versionadded:: 4.6
+%End
+
+%TypeHeaderCode
+#include "qgsesriarcadescript.h"
+%End
+  public:
+    QgsEsriArcadeContinueStatement();
+%Docstring
+Constructor for QgsEsriArcadeContinueStatement.
+%End
+
+    virtual QgsEsriArcadeNode::NodeType nodeType() const;
+    virtual QString dump() const;
+
+    virtual QgsEsriArcadeNode *clone() const /Factory/;
+
+    virtual void accept( QgsEsriArcadeVisitor &visitor ) const;
+
+};
+
+
 class QgsEsriArcadeVisitor
 {
 %Docstring(signature="appended")
@@ -974,6 +1261,12 @@ trees.
     virtual void visit( const QgsEsriArcadeIndexExpression &node ) = 0;
     virtual void visit( const QgsEsriArcadeDictionaryLiteralExpression &node ) = 0;
     virtual void visit( const QgsEsriArcadeArrayLiteralExpression &node ) = 0;
+    virtual void visit( const QgsEsriArcadeIfStatement &node ) = 0;
+    virtual void visit( const QgsEsriArcadeForStatement &node ) = 0;
+    virtual void visit( const QgsEsriArcadeForInStatement &node ) = 0;
+    virtual void visit( const QgsEsriArcadeWhileStatement &node ) = 0;
+    virtual void visit( const QgsEsriArcadeBreakStatement &node ) = 0;
+    virtual void visit( const QgsEsriArcadeContinueStatement &node ) = 0;
 };
 
 class QgsEsriArcadeRecursiveVisitor : QgsEsriArcadeVisitor
@@ -1022,6 +1315,18 @@ Esri Arcade script.
     virtual void visit( const QgsEsriArcadeArrayLiteralExpression &node );
 
     virtual void visit( const QgsEsriArcadeDictionaryLiteralExpression &node );
+
+    virtual void visit( const QgsEsriArcadeIfStatement &node );
+
+    virtual void visit( const QgsEsriArcadeForStatement &node );
+
+    virtual void visit( const QgsEsriArcadeForInStatement &node );
+
+    virtual void visit( const QgsEsriArcadeWhileStatement &node );
+
+    virtual void visit( const QgsEsriArcadeBreakStatement &node );
+
+    virtual void visit( const QgsEsriArcadeContinueStatement &node );
 
 };
 

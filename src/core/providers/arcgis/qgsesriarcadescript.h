@@ -37,6 +37,12 @@ class QgsEsriArcadeAssignmentStatement;
 class QgsEsriArcadeArrayLiteralExpression;
 class QgsEsriArcadeDictionaryElement;
 class QgsEsriArcadeDictionaryLiteralExpression;
+class QgsEsriArcadeIfStatement;
+class QgsEsriArcadeForStatement;
+class QgsEsriArcadeForInStatement;
+class QgsEsriArcadeWhileStatement;
+class QgsEsriArcadeBreakStatement;
+class QgsEsriArcadeContinueStatement;
 
 /**
  * \ingroup core
@@ -98,6 +104,24 @@ class CORE_EXPORT QgsEsriArcadeNode
       case QgsEsriArcadeNode::NodeType::ntDictionaryLiteralExpression:
         sipType = sipType_QgsEsriArcadeDictionaryLiteralExpression;
         break;
+      case QgsEsriArcadeNode::NodeType::ntIfStatement:
+        sipType = sipType_QgsEsriArcadeIfStatement;
+        break;
+      case QgsEsriArcadeNode::NodeType::ntForStatement:
+        sipType = sipType_QgsEsriArcadeForStatement;
+        break;
+      case QgsEsriArcadeNode::NodeType::ntForInStatement:
+        sipType = sipType_QgsEsriArcadeForInStatement;
+        break;
+      case QgsEsriArcadeNode::NodeType::ntWhileStatement:
+        sipType = sipType_QgsEsriArcadeWhileStatement;
+        break;
+      case QgsEsriArcadeNode::NodeType::ntBreakStatement:
+        sipType = sipType_QgsEsriArcadeBreakStatement;
+        break;
+      case QgsEsriArcadeNode::NodeType::ntContinueStatement:
+        sipType = sipType_QgsEsriArcadeContinueStatement;
+        break;
       default:
         sipType = nullptr;
         break;
@@ -127,6 +151,12 @@ class CORE_EXPORT QgsEsriArcadeNode
       ntIndexExpression,                    //!< Index operator
       ntArrayLiteralExpression,             //!< A literal array, where the element values may be expressions themselves (eg [1, 2, 3/4])
       ntDictionaryLiteralExpression,        //!< A literal dictionary, eg {key: 1, other_key: 2}
+      ntIfStatement,                        //!< If statement
+      ntForStatement,                       //!< For loop
+      ntForInStatement,                     //!< For x in y loop
+      ntWhileStatement,                     //!< While loop
+      ntBreakStatement,                     //!< Break statement
+      ntContinueStatement,                  //!< Continue statement
     };
 
     virtual ~QgsEsriArcadeNode() = default;
@@ -992,6 +1022,268 @@ class CORE_EXPORT QgsEsriArcadeDictionaryLiteralExpression : public QgsEsriArcad
 
 /**
  * \ingroup core
+ * \brief Represents an if statement.
+ *
+ * \since QGIS 4.6
+ */
+class CORE_EXPORT QgsEsriArcadeIfStatement : public QgsEsriArcadeStatement
+{
+  public:
+    /**
+     * Constructor for QgsEsriArcadeIfStatement.
+     *
+     * Ownership of \a condition, \a trueBlock, and \a falseBlock is transferred to this statement.
+     */
+    QgsEsriArcadeIfStatement( QgsEsriArcadeExpression *condition SIP_TRANSFER, QgsEsriArcadeBlockStatement *trueBlock SIP_TRANSFER, QgsEsriArcadeBlockStatement *falseBlock SIP_TRANSFER = nullptr );
+
+    QgsEsriArcadeNode::NodeType nodeType() const override { return NodeType::ntIfStatement; }
+    QString dump() const override;
+    QgsEsriArcadeNode *clone() const override SIP_FACTORY;
+    void accept( QgsEsriArcadeVisitor &visitor ) const override;
+
+    /**
+     * Returns the condition expression.
+     */
+    QgsEsriArcadeExpression *condition() const { return mCondition.get(); }
+
+    /**
+     * Returns the statement block executed when the condition evaluates to true.
+     */
+    QgsEsriArcadeBlockStatement *trueBlock() const { return mTrueBlock.get(); }
+
+    /**
+     * Returns the statement block executed when the condition evaluates to false, or NULLPTR if none.
+     */
+    QgsEsriArcadeBlockStatement *falseBlock() const { return mFalseBlock.get(); }
+
+  private:
+    QgsEsriArcadeIfStatement( const QgsEsriArcadeIfStatement &other ) = delete;
+    QgsEsriArcadeIfStatement &operator=( const QgsEsriArcadeIfStatement &other ) = delete;
+
+#ifdef SIP_RUN
+    QgsEsriArcadeIfStatement( const QgsEsriArcadeIfStatement &other );
+#endif
+
+    std::unique_ptr<QgsEsriArcadeExpression> mCondition;
+    std::unique_ptr<QgsEsriArcadeBlockStatement> mTrueBlock;
+    std::unique_ptr<QgsEsriArcadeBlockStatement> mFalseBlock;
+};
+
+/**
+ * \ingroup core
+ * \brief Represents a standard counter-based for loop.
+ *
+ * \since QGIS 4.6
+ */
+class CORE_EXPORT QgsEsriArcadeForStatement : public QgsEsriArcadeStatement
+{
+  public:
+    /**
+     * Constructor for QgsEsriArcadeForStatement.
+     *
+     * Ownership of \a initialization, \a condition, \a step, and \a body is transferred to this statement.
+     */
+    QgsEsriArcadeForStatement(
+      QgsEsriArcadeStatement *initialization SIP_TRANSFER, QgsEsriArcadeExpression *condition SIP_TRANSFER, QgsEsriArcadeNode *step SIP_TRANSFER, QgsEsriArcadeBlockStatement *body SIP_TRANSFER
+    );
+
+    QgsEsriArcadeNode::NodeType nodeType() const override { return NodeType::ntForStatement; }
+    QString dump() const override;
+    QgsEsriArcadeNode *clone() const override SIP_FACTORY;
+    void accept( QgsEsriArcadeVisitor &visitor ) const override;
+
+    /**
+     * Returns the initialization statement, or NULLPTR if none.
+     */
+    QgsEsriArcadeStatement *initialization() const { return mInitialization.get(); }
+
+    /**
+     * Returns the loop condition expression, or NULLPTR if none.
+     */
+    QgsEsriArcadeExpression *condition() const { return mCondition.get(); }
+
+    /**
+     * Returns the step expression or statement, or NULLPTR if none.
+     */
+    QgsEsriArcadeNode *step() const { return mStep.get(); }
+
+    /**
+     * Returns the loop body block statement.
+     */
+    QgsEsriArcadeBlockStatement *body() const { return mBody.get(); }
+
+  private:
+    QgsEsriArcadeForStatement( const QgsEsriArcadeForStatement &other ) = delete;
+    QgsEsriArcadeForStatement &operator=( const QgsEsriArcadeForStatement &other ) = delete;
+
+#ifdef SIP_RUN
+    QgsEsriArcadeForStatement( const QgsEsriArcadeForStatement &other );
+#endif
+
+    std::unique_ptr<QgsEsriArcadeStatement> mInitialization;
+    std::unique_ptr<QgsEsriArcadeExpression> mCondition;
+    std::unique_ptr<QgsEsriArcadeNode> mStep;
+    std::unique_ptr<QgsEsriArcadeBlockStatement> mBody;
+};
+
+/**
+ * \ingroup core
+ * \brief Represents a range based for...in or for...of iteration statement.
+ *
+ * \since QGIS 4.6
+ */
+class CORE_EXPORT QgsEsriArcadeForInStatement : public QgsEsriArcadeStatement
+{
+  public:
+    /**
+     * Type of iteration loop.
+     */
+    enum class IterationType
+    {
+      ForIn, //!< For x in y loop
+      ForOf, //!< For x of y loop
+    };
+
+    /**
+     * Constructor for QgsEsriArcadeForInStatement.
+     *
+     * Ownership of \a collection and \a body is transferred to this statement.
+     */
+    QgsEsriArcadeForInStatement(
+      IterationType iterationType, const QString &variableName, bool isVariableDeclaration, QgsEsriArcadeExpression *collection SIP_TRANSFER, QgsEsriArcadeBlockStatement *body SIP_TRANSFER
+    );
+
+    QgsEsriArcadeNode::NodeType nodeType() const override { return NodeType::ntForInStatement; }
+    QString dump() const override;
+    QgsEsriArcadeNode *clone() const override SIP_FACTORY;
+    void accept( QgsEsriArcadeVisitor &visitor ) const override;
+
+    /**
+     * Returns the iteration type (for...in or for...of).
+     */
+    IterationType iterationType() const { return mIterationType; }
+
+    /**
+     * Returns the loop variable identifier name.
+     */
+    QString variableName() const { return mVariableName; }
+
+    /**
+     * Returns TRUE if the loop variable was declared with the var keyword.
+     */
+    bool isVariableDeclaration() const { return mIsVariableDeclaration; }
+
+    /**
+     * Returns the collection expression being iterated over.
+     */
+    QgsEsriArcadeExpression *collection() const { return mCollection.get(); }
+
+    /**
+     * Returns the loop body block statement.
+     */
+    QgsEsriArcadeBlockStatement *body() const { return mBody.get(); }
+
+  private:
+    QgsEsriArcadeForInStatement( const QgsEsriArcadeForInStatement &other ) = delete;
+    QgsEsriArcadeForInStatement &operator=( const QgsEsriArcadeForInStatement &other ) = delete;
+
+#ifdef SIP_RUN
+    QgsEsriArcadeForInStatement( const QgsEsriArcadeForInStatement &other );
+#endif
+
+    IterationType mIterationType = IterationType::ForIn;
+    QString mVariableName;
+    bool mIsVariableDeclaration = false;
+    std::unique_ptr<QgsEsriArcadeExpression> mCollection;
+    std::unique_ptr<QgsEsriArcadeBlockStatement> mBody;
+};
+
+/**
+ * \ingroup core
+ * \brief Represents a while loop statement.
+ *
+ * \since QGIS 4.6
+ */
+class CORE_EXPORT QgsEsriArcadeWhileStatement : public QgsEsriArcadeStatement
+{
+  public:
+    /**
+     * Constructor for QgsEsriArcadeWhileStatement.
+     *
+     * Ownership of \a condition and \a body is transferred to this statement.
+     */
+    QgsEsriArcadeWhileStatement( QgsEsriArcadeExpression *condition SIP_TRANSFER, QgsEsriArcadeBlockStatement *body SIP_TRANSFER );
+
+    QgsEsriArcadeNode::NodeType nodeType() const override { return NodeType::ntWhileStatement; }
+    QString dump() const override;
+    QgsEsriArcadeNode *clone() const override SIP_FACTORY;
+    void accept( QgsEsriArcadeVisitor &visitor ) const override;
+
+    /**
+     * Returns the loop condition expression.
+     */
+    QgsEsriArcadeExpression *condition() const { return mCondition.get(); }
+
+    /**
+     * Returns the loop body block statement.
+     */
+    QgsEsriArcadeBlockStatement *body() const { return mBody.get(); }
+
+  private:
+    QgsEsriArcadeWhileStatement( const QgsEsriArcadeWhileStatement &other ) = delete;
+    QgsEsriArcadeWhileStatement &operator=( const QgsEsriArcadeWhileStatement &other ) = delete;
+
+#ifdef SIP_RUN
+    QgsEsriArcadeWhileStatement( const QgsEsriArcadeWhileStatement &other );
+#endif
+
+    std::unique_ptr<QgsEsriArcadeExpression> mCondition;
+    std::unique_ptr<QgsEsriArcadeBlockStatement> mBody;
+};
+
+/**
+ * \ingroup core
+ * \brief Represents a break loop control statement.
+ *
+ * \since QGIS 4.6
+ */
+class CORE_EXPORT QgsEsriArcadeBreakStatement : public QgsEsriArcadeStatement
+{
+  public:
+    /**
+     * Constructor for QgsEsriArcadeBreakStatement.
+     */
+    QgsEsriArcadeBreakStatement() = default;
+
+    QgsEsriArcadeNode::NodeType nodeType() const override { return NodeType::ntBreakStatement; }
+    QString dump() const override;
+    QgsEsriArcadeNode *clone() const override SIP_FACTORY;
+    void accept( QgsEsriArcadeVisitor &visitor ) const override;
+};
+
+/**
+ * \ingroup core
+ * \brief Represents a continue loop control statement.
+ *
+ * \since QGIS 4.6
+ */
+class CORE_EXPORT QgsEsriArcadeContinueStatement : public QgsEsriArcadeStatement
+{
+  public:
+    /**
+     * Constructor for QgsEsriArcadeContinueStatement.
+     */
+    QgsEsriArcadeContinueStatement() = default;
+
+    QgsEsriArcadeNode::NodeType nodeType() const override { return NodeType::ntContinueStatement; }
+    QString dump() const override;
+    QgsEsriArcadeNode *clone() const override SIP_FACTORY;
+    void accept( QgsEsriArcadeVisitor &visitor ) const override;
+};
+
+
+/**
+ * \ingroup core
  * \brief Abstract visitor interface for traversing Esri Arcade abstract syntax trees.
  *
  * \since QGIS 4.6
@@ -1017,6 +1309,12 @@ class CORE_EXPORT QgsEsriArcadeVisitor
     virtual void visit( const QgsEsriArcadeIndexExpression &node ) = 0;
     virtual void visit( const QgsEsriArcadeDictionaryLiteralExpression &node ) = 0;
     virtual void visit( const QgsEsriArcadeArrayLiteralExpression &node ) = 0;
+    virtual void visit( const QgsEsriArcadeIfStatement &node ) = 0;
+    virtual void visit( const QgsEsriArcadeForStatement &node ) = 0;
+    virtual void visit( const QgsEsriArcadeForInStatement &node ) = 0;
+    virtual void visit( const QgsEsriArcadeWhileStatement &node ) = 0;
+    virtual void visit( const QgsEsriArcadeBreakStatement &node ) = 0;
+    virtual void visit( const QgsEsriArcadeContinueStatement &node ) = 0;
 };
 
 /**
@@ -1046,6 +1344,12 @@ class CORE_EXPORT QgsEsriArcadeRecursiveVisitor : public QgsEsriArcadeVisitor
     void visit( const QgsEsriArcadeIndexExpression &node ) override;
     void visit( const QgsEsriArcadeArrayLiteralExpression &node ) override;
     void visit( const QgsEsriArcadeDictionaryLiteralExpression &node ) override;
+    void visit( const QgsEsriArcadeIfStatement &node ) override;
+    void visit( const QgsEsriArcadeForStatement &node ) override;
+    void visit( const QgsEsriArcadeForInStatement &node ) override;
+    void visit( const QgsEsriArcadeWhileStatement &node ) override;
+    void visit( const QgsEsriArcadeBreakStatement &node ) override;
+    void visit( const QgsEsriArcadeContinueStatement &node ) override;
 };
 
 /**
