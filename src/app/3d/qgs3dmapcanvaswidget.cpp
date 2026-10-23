@@ -943,7 +943,7 @@ void Qgs3DMapCanvasWidget::configure()
 
   mConfigureDialog = new QDialog( this );
   mConfigureDialog->setAttribute( Qt::WA_DeleteOnClose );
-  mConfigureDialog->setWindowTitle( tr( "3D Configuration" ) );
+  mConfigureDialog->setWindowTitle( tr( "3D Configuration - %1" ).arg( mCanvasName ) );
   mConfigureDialog->setObjectName( u"3DConfigurationDialog"_s );
   mConfigureDialog->setMinimumSize( 600, 460 );
   QgsGui::enableAutoGeometryRestore( mConfigureDialog );
