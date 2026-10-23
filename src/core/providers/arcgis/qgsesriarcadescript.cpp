@@ -633,6 +633,178 @@ void QgsEsriArcadeDictionaryLiteralExpression::accept( QgsEsriArcadeVisitor &vis
   visitor.visit( *this );
 }
 
+
+//
+// QgsEsriArcadeIfStatement
+//
+
+QgsEsriArcadeIfStatement::QgsEsriArcadeIfStatement( QgsEsriArcadeExpression *condition, QgsEsriArcadeBlockStatement *trueBlock, QgsEsriArcadeBlockStatement *falseBlock )
+  : mCondition( condition )
+  , mTrueBlock( trueBlock )
+  , mFalseBlock( falseBlock )
+{}
+
+QString QgsEsriArcadeIfStatement::dump() const
+{
+  QString result = u"if (%1) {\n%2}"_s.arg( mCondition ? mCondition->dump() : QString(), mTrueBlock ? mTrueBlock->dump() : QString() );
+  if ( mFalseBlock )
+  {
+    if ( mFalseBlock->nodeType() == NodeType::ntIfStatement )
+      result += u" else %1"_s.arg( mFalseBlock->dump() );
+    else
+      result += u" else {\n%1}"_s.arg( mFalseBlock->dump() );
+  }
+  return result;
+}
+
+QgsEsriArcadeNode *QgsEsriArcadeIfStatement::clone() const
+{
+  QgsEsriArcadeExpression *clonedCondition = mCondition ? dynamic_cast<QgsEsriArcadeExpression *>( mCondition->clone() ) : nullptr;
+  QgsEsriArcadeBlockStatement *clonedTrueBlock = mTrueBlock ? dynamic_cast<QgsEsriArcadeBlockStatement *>( mTrueBlock->clone() ) : nullptr;
+  QgsEsriArcadeBlockStatement *clonedFalseBlock = mFalseBlock ? dynamic_cast<QgsEsriArcadeBlockStatement *>( mFalseBlock->clone() ) : nullptr;
+  return new QgsEsriArcadeIfStatement( clonedCondition, clonedTrueBlock, clonedFalseBlock );
+}
+
+void QgsEsriArcadeIfStatement::accept( QgsEsriArcadeVisitor &visitor ) const
+{
+  visitor.visit( *this );
+}
+
+//
+// QgsEsriArcadeForStatement
+//
+
+QgsEsriArcadeForStatement::QgsEsriArcadeForStatement( QgsEsriArcadeStatement *initialization, QgsEsriArcadeExpression *condition, QgsEsriArcadeNode *step, QgsEsriArcadeBlockStatement *body )
+  : mInitialization( initialization )
+  , mCondition( condition )
+  , mStep( step )
+  , mBody( body )
+{}
+
+QString QgsEsriArcadeForStatement::dump() const
+{
+  QString initDump;
+  if ( mInitialization )
+  {
+    initDump = mInitialization->dump().trimmed();
+    if ( initDump.endsWith( ';'_L1 ) )
+      initDump.chop( 1 );
+  }
+
+  return u"for (%1; %2; %3) {\n%4}"_s.arg( initDump, mCondition ? mCondition->dump() : QString(), mStep ? mStep->dump() : QString(), mBody ? mBody->dump() : QString() );
+}
+
+QgsEsriArcadeNode *QgsEsriArcadeForStatement::clone() const
+{
+  QgsEsriArcadeStatement *clonedInit = mInitialization ? dynamic_cast<QgsEsriArcadeStatement *>( mInitialization->clone() ) : nullptr;
+  QgsEsriArcadeExpression *clonedCondition = mCondition ? dynamic_cast<QgsEsriArcadeExpression *>( mCondition->clone() ) : nullptr;
+  QgsEsriArcadeNode *clonedStep = mStep ? mStep->clone() : nullptr;
+  QgsEsriArcadeBlockStatement *clonedBody = mBody ? dynamic_cast<QgsEsriArcadeBlockStatement *>( mBody->clone() ) : nullptr;
+  return new QgsEsriArcadeForStatement( clonedInit, clonedCondition, clonedStep, clonedBody );
+}
+
+void QgsEsriArcadeForStatement::accept( QgsEsriArcadeVisitor &visitor ) const
+{
+  visitor.visit( *this );
+}
+
+//
+// QgsEsriArcadeForInStatement
+//
+
+QgsEsriArcadeForInStatement::QgsEsriArcadeForInStatement(
+  IterationType iterationType, const QString &variableName, bool isVariableDeclaration, QgsEsriArcadeExpression *collection, QgsEsriArcadeBlockStatement *body
+)
+  : mIterationType( iterationType )
+  , mVariableName( variableName )
+  , mIsVariableDeclaration( isVariableDeclaration )
+  , mCollection( collection )
+  , mBody( body )
+{}
+
+QString QgsEsriArcadeForInStatement::dump() const
+{
+  const QString keyword = mIterationType == IterationType::ForIn ? u"in"_s : u"of"_s;
+  return u"for (%1%2 %3 %4) {\n%5}"_s.arg( mIsVariableDeclaration ? "var "_L1 : ""_L1, mVariableName, keyword, mCollection ? mCollection->dump() : QString(), mBody ? mBody->dump() : QString() );
+}
+
+QgsEsriArcadeNode *QgsEsriArcadeForInStatement::clone() const
+{
+  QgsEsriArcadeExpression *clonedCollection = mCollection ? dynamic_cast<QgsEsriArcadeExpression *>( mCollection->clone() ) : nullptr;
+  QgsEsriArcadeBlockStatement *clonedBody = mBody ? dynamic_cast<QgsEsriArcadeBlockStatement *>( mBody->clone() ) : nullptr;
+  return new QgsEsriArcadeForInStatement( mIterationType, mVariableName, mIsVariableDeclaration, clonedCollection, clonedBody );
+}
+
+void QgsEsriArcadeForInStatement::accept( QgsEsriArcadeVisitor &visitor ) const
+{
+  visitor.visit( *this );
+}
+
+//
+// QgsEsriArcadeWhileStatement
+//
+
+QgsEsriArcadeWhileStatement::QgsEsriArcadeWhileStatement( QgsEsriArcadeExpression *condition, QgsEsriArcadeBlockStatement *body )
+  : mCondition( condition )
+  , mBody( body )
+{}
+
+QString QgsEsriArcadeWhileStatement::dump() const
+{
+  return u"while (%1) {\n%2}"_s.arg( mCondition ? mCondition->dump() : QString(), mBody ? mBody->dump() : QString() );
+}
+
+QgsEsriArcadeNode *QgsEsriArcadeWhileStatement::clone() const
+{
+  QgsEsriArcadeExpression *clonedCondition = mCondition ? dynamic_cast<QgsEsriArcadeExpression *>( mCondition->clone() ) : nullptr;
+  QgsEsriArcadeBlockStatement *clonedBody = mBody ? dynamic_cast<QgsEsriArcadeBlockStatement *>( mBody->clone() ) : nullptr;
+  return new QgsEsriArcadeWhileStatement( clonedCondition, clonedBody );
+}
+
+void QgsEsriArcadeWhileStatement::accept( QgsEsriArcadeVisitor &visitor ) const
+{
+  visitor.visit( *this );
+}
+
+//
+// QgsEsriArcadeBreakStatement
+//
+
+QString QgsEsriArcadeBreakStatement::dump() const
+{
+  return u"break;"_s;
+}
+
+QgsEsriArcadeNode *QgsEsriArcadeBreakStatement::clone() const
+{
+  return new QgsEsriArcadeBreakStatement();
+}
+
+void QgsEsriArcadeBreakStatement::accept( QgsEsriArcadeVisitor &visitor ) const
+{
+  visitor.visit( *this );
+}
+
+//
+// QgsEsriArcadeContinueStatement
+//
+
+QString QgsEsriArcadeContinueStatement::dump() const
+{
+  return u"continue;"_s;
+}
+
+QgsEsriArcadeNode *QgsEsriArcadeContinueStatement::clone() const
+{
+  return new QgsEsriArcadeContinueStatement();
+}
+
+void QgsEsriArcadeContinueStatement::accept( QgsEsriArcadeVisitor &visitor ) const
+{
+  visitor.visit( *this );
+}
+
+
 //
 // QgsEsriArcadeRecursiveVisitor
 //
@@ -742,6 +914,50 @@ void QgsEsriArcadeRecursiveVisitor::visit( const QgsEsriArcadeDictionaryLiteralE
       element->value()->accept( *this );
   }
 }
+
+void QgsEsriArcadeRecursiveVisitor::visit( const QgsEsriArcadeIfStatement &node )
+{
+  if ( node.condition() )
+    node.condition()->accept( *this );
+  if ( node.trueBlock() )
+    node.trueBlock()->accept( *this );
+  if ( node.falseBlock() )
+    node.falseBlock()->accept( *this );
+}
+
+void QgsEsriArcadeRecursiveVisitor::visit( const QgsEsriArcadeForStatement &node )
+{
+  if ( node.initialization() )
+    node.initialization()->accept( *this );
+  if ( node.condition() )
+    node.condition()->accept( *this );
+  if ( node.step() )
+    node.step()->accept( *this );
+  if ( node.body() )
+    node.body()->accept( *this );
+}
+
+void QgsEsriArcadeRecursiveVisitor::visit( const QgsEsriArcadeForInStatement &node )
+{
+  if ( node.collection() )
+    node.collection()->accept( *this );
+  if ( node.body() )
+    node.body()->accept( *this );
+}
+
+void QgsEsriArcadeRecursiveVisitor::visit( const QgsEsriArcadeWhileStatement &node )
+{
+  if ( node.condition() )
+    node.condition()->accept( *this );
+  if ( node.body() )
+    node.body()->accept( *this );
+}
+
+void QgsEsriArcadeRecursiveVisitor::visit( const QgsEsriArcadeBreakStatement & )
+{}
+
+void QgsEsriArcadeRecursiveVisitor::visit( const QgsEsriArcadeContinueStatement & )
+{}
 
 //
 // QgsEsriArcadeScript

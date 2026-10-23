@@ -120,6 +120,14 @@ block_comment  \/\*([^*]|\*+[^/*])*\*+\/
 "var"            { return VAR; }
 "function"       { return FUNCTION; }
 "return"         { return RETURN; }
+"if"             { return IF; }
+"else"           { return ELSE; }
+"for"            { return FOR; }
+"while"          { return WHILE; }
+"break"          { return BREAK; }
+"continue"       { return CONTINUE; }
+"in"             { return IN; }
+"of"             { return OF; }
 "true"           { yylval->boolValue = true; return BOOLEAN_LITERAL; }
 "false"          { yylval->boolValue = false; return BOOLEAN_LITERAL; }
 "null"           { return NULL_LITERAL; }

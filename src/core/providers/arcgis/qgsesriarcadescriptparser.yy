@@ -62,6 +62,7 @@ struct arcadescript_parser_context
 
 %union
 {
+  QgsEsriArcadeNode *node;
   QgsEsriArcadeStatement *statement;
   QgsEsriArcadeBlockStatement *blockStatement;
   QgsEsriArcadeExpression *expression;
@@ -80,7 +81,7 @@ struct arcadescript_parser_context
 %start root
 
 // keywords
-%token VAR FUNCTION RETURN
+%token VAR FUNCTION RETURN IF ELSE FOR WHILE BREAK CONTINUE IN OF
 %token <boolValue> BOOLEAN_LITERAL
 %token NULL_LITERAL
 %token <numberFloat> NUMBER_FLOAT
@@ -100,8 +101,9 @@ struct arcadescript_parser_context
 %token SAFE_DOT UNKNOWN_CHARACTER
 
 // non-terminal type associations
-%type <blockStatement> statement_list block_statement
-%type <statement> statement var_declaration assignment_statement return_statement function_declaration expression_statement return_without_semicolon
+%type <blockStatement> statement_list block_statement opt_else
+%type <statement> statement var_declaration assignment_statement return_statement function_declaration expression_statement return_without_semicolon if_statement for_statement while_statement break_statement continue_statement for_init
+%type <node> for_step
 %type <expression> expr primary_expr postfix_expr unary_expr multiplicative_expr additive_expr shift_expr relational_expr equality_expr bitwise_and_expr bitwise_xor_expr bitwise_or_expr logical_and_expr logical_or_expr opt_initializer opt_expr
 %type <expressionList> opt_argument_list argument_list opt_element_list element_list
 %type <identifierList> opt_parameter_list parameter_list
@@ -110,6 +112,7 @@ struct arcadescript_parser_context
 %type <dictionaryElementList> opt_property_list property_list
 %type <text> property_name
 
+%destructor { delete $$; } <node>
 %destructor { delete $$; } <statement>
 %destructor { delete $$; } <blockStatement>
 %destructor { delete $$; } <expression>
@@ -156,6 +159,16 @@ root:
       $1->appendStatement( $2 );
       parserContext->rootBlock = $1;
     }
+  | statement_list BREAK
+    {
+      $1->appendStatement( new QgsEsriArcadeBreakStatement() );
+      parserContext->rootBlock = $1;
+    }
+  | statement_list CONTINUE
+    {
+      $1->appendStatement( new QgsEsriArcadeContinueStatement() );
+      parserContext->rootBlock = $1;
+    }
 ;
 
 statement_list:
@@ -188,6 +201,26 @@ statement:
     {
       $$ = $1;
     }
+  | if_statement
+    {
+      $$ = $1;
+    }
+  | for_statement
+    {
+      $$ = $1;
+    }
+  | while_statement
+    {
+      $$ = $1;
+    }
+  | break_statement
+    {
+      $$ = $1;
+    }
+  | continue_statement
+    {
+      $$ = $1;
+    }
   | expression_statement
     {
       $$ = $1;
@@ -216,6 +249,16 @@ block_statement:
   | '{' statement_list return_without_semicolon '}'
     {
       $2->appendStatement( $3 );
+      $$ = $2;
+    }
+  | '{' statement_list BREAK '}'
+    {
+      $2->appendStatement( new QgsEsriArcadeBreakStatement() );
+      $$ = $2;
+    }
+  | '{' statement_list CONTINUE '}'
+    {
+      $2->appendStatement( new QgsEsriArcadeContinueStatement() );
       $$ = $2;
     }
 ;
@@ -300,6 +343,103 @@ function_declaration:
       $$ = new QgsEsriArcadeFunctionDeclarationStatement( *$2, *$4, $6 );
       delete $2;
       delete $4;
+    }
+;
+
+if_statement:
+    IF '(' expr ')' block_statement opt_else
+    {
+      $$ = new QgsEsriArcadeIfStatement( $3, $5, $6 );
+    }
+;
+
+opt_else:
+    ELSE block_statement
+    {
+      $$ = $2;
+    }
+  | /* empty */
+    {
+      $$ = nullptr;
+    }
+;
+
+for_statement:
+    FOR '(' for_init opt_expr SEMICOLON for_step ')' block_statement
+    {
+      $$ = new QgsEsriArcadeForStatement( $3, $4, $6, $8 );
+    }
+  | FOR '(' VAR IDENTIFIER IN expr ')' block_statement
+    {
+      $$ = new QgsEsriArcadeForInStatement( QgsEsriArcadeForInStatement::IterationType::ForIn, *$4, true, $6, $8 );
+      delete $4;
+    }
+  | FOR '(' IDENTIFIER IN expr ')' block_statement
+    {
+      $$ = new QgsEsriArcadeForInStatement( QgsEsriArcadeForInStatement::IterationType::ForIn, *$3, false, $5, $7 );
+      delete $3;
+    }
+  | FOR '(' VAR IDENTIFIER OF expr ')' block_statement
+    {
+      $$ = new QgsEsriArcadeForInStatement( QgsEsriArcadeForInStatement::IterationType::ForOf, *$4, true, $6, $8 );
+      delete $4;
+    }
+  | FOR '(' IDENTIFIER OF expr ')' block_statement
+    {
+      $$ = new QgsEsriArcadeForInStatement( QgsEsriArcadeForInStatement::IterationType::ForOf, *$3, false, $5, $7 );
+      delete $3;
+    }
+;
+
+for_init:
+    VAR IDENTIFIER opt_initializer SEMICOLON
+    {
+      $$ = new QgsEsriArcadeVariableDeclarationStatement( *$2, $3 );
+      delete $2;
+    }
+  | postfix_expr assign_op expr SEMICOLON
+    {
+      $$ = new QgsEsriArcadeAssignmentStatement( $2, $1, $3 );
+    }
+  | opt_expr SEMICOLON
+    {
+      $$ = $1 ? new QgsEsriArcadeExpressionStatement( $1 ) : nullptr;
+    }
+;
+
+for_step:
+    postfix_expr assign_op expr
+    {
+      $$ = new QgsEsriArcadeAssignmentStatement( $2, $1, $3 );
+    }
+  | expr
+    {
+      $$ = $1;
+    }
+  | /* empty */
+    {
+      $$ = nullptr;
+    }
+;
+
+while_statement:
+    WHILE '(' expr ')' block_statement
+    {
+      $$ = new QgsEsriArcadeWhileStatement( $3, $5 );
+    }
+;
+
+break_statement:
+    BREAK SEMICOLON
+    {
+      $$ = new QgsEsriArcadeBreakStatement();
+    }
+;
+
+continue_statement:
+    CONTINUE SEMICOLON
+    {
+      $$ = new QgsEsriArcadeContinueStatement();
     }
 ;
 

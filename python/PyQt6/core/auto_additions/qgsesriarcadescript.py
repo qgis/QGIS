@@ -16,6 +16,12 @@ QgsEsriArcadeNode.NodeType.ntFunctionCallExpression.__doc__ = "Function call"
 QgsEsriArcadeNode.NodeType.ntIndexExpression.__doc__ = "Index operator"
 QgsEsriArcadeNode.NodeType.ntArrayLiteralExpression.__doc__ = "A literal array, where the element values may be expressions themselves (eg [1, 2, 3/4])"
 QgsEsriArcadeNode.NodeType.ntDictionaryLiteralExpression.__doc__ = "A literal dictionary, eg {key: 1, other_key: 2}"
+QgsEsriArcadeNode.NodeType.ntIfStatement.__doc__ = "If statement"
+QgsEsriArcadeNode.NodeType.ntForStatement.__doc__ = "For loop"
+QgsEsriArcadeNode.NodeType.ntForInStatement.__doc__ = "For x in y loop"
+QgsEsriArcadeNode.NodeType.ntWhileStatement.__doc__ = "While loop"
+QgsEsriArcadeNode.NodeType.ntBreakStatement.__doc__ = "Break statement"
+QgsEsriArcadeNode.NodeType.ntContinueStatement.__doc__ = "Continue statement"
 QgsEsriArcadeNode.NodeType.__doc__ = """Node type identifier.
 
 * ``ntBlockStatement``: Block statement (a list of statements grouped together in a block)
@@ -34,6 +40,12 @@ QgsEsriArcadeNode.NodeType.__doc__ = """Node type identifier.
 * ``ntIndexExpression``: Index operator
 * ``ntArrayLiteralExpression``: A literal array, where the element values may be expressions themselves (eg [1, 2, 3/4])
 * ``ntDictionaryLiteralExpression``: A literal dictionary, eg {key: 1, other_key: 2}
+* ``ntIfStatement``: If statement
+* ``ntForStatement``: For loop
+* ``ntForInStatement``: For x in y loop
+* ``ntWhileStatement``: While loop
+* ``ntBreakStatement``: Break statement
+* ``ntContinueStatement``: Continue statement
 
 """
 # --
@@ -116,6 +128,16 @@ QgsEsriArcadeUnaryOperatorExpression.UnaryOperator.__doc__ = """Unary operator e
 * ``uoPreDecrement``: Prederement operator, eg \"--x\"
 * ``uoPostIncrement``: Postincrement operator, eg \"x++\"
 * ``uoPostDecrement``: Postdecrement operator, eg \"x--\"
+
+"""
+# --
+# monkey patching scoped based enum
+QgsEsriArcadeForInStatement.IterationType.ForIn.__doc__ = "For x in y loop"
+QgsEsriArcadeForInStatement.IterationType.ForOf.__doc__ = "For x of y loop"
+QgsEsriArcadeForInStatement.IterationType.__doc__ = """Type of iteration loop.
+
+* ``ForIn``: For x in y loop
+* ``ForOf``: For x of y loop
 
 """
 # --
@@ -212,6 +234,36 @@ except (NameError, AttributeError):
 try:
     QgsEsriArcadeDictionaryLiteralExpression.__overridden_methods__ = ['nodeType', 'dump', 'clone', 'accept']
     QgsEsriArcadeDictionaryLiteralExpression.__group__ = ['providers', 'arcgis']
+except (NameError, AttributeError):
+    pass
+try:
+    QgsEsriArcadeIfStatement.__overridden_methods__ = ['nodeType', 'dump', 'clone', 'accept']
+    QgsEsriArcadeIfStatement.__group__ = ['providers', 'arcgis']
+except (NameError, AttributeError):
+    pass
+try:
+    QgsEsriArcadeForStatement.__overridden_methods__ = ['nodeType', 'dump', 'clone', 'accept']
+    QgsEsriArcadeForStatement.__group__ = ['providers', 'arcgis']
+except (NameError, AttributeError):
+    pass
+try:
+    QgsEsriArcadeForInStatement.__overridden_methods__ = ['nodeType', 'dump', 'clone', 'accept']
+    QgsEsriArcadeForInStatement.__group__ = ['providers', 'arcgis']
+except (NameError, AttributeError):
+    pass
+try:
+    QgsEsriArcadeWhileStatement.__overridden_methods__ = ['nodeType', 'dump', 'clone', 'accept']
+    QgsEsriArcadeWhileStatement.__group__ = ['providers', 'arcgis']
+except (NameError, AttributeError):
+    pass
+try:
+    QgsEsriArcadeBreakStatement.__overridden_methods__ = ['nodeType', 'dump', 'clone', 'accept']
+    QgsEsriArcadeBreakStatement.__group__ = ['providers', 'arcgis']
+except (NameError, AttributeError):
+    pass
+try:
+    QgsEsriArcadeContinueStatement.__overridden_methods__ = ['nodeType', 'dump', 'clone', 'accept']
+    QgsEsriArcadeContinueStatement.__group__ = ['providers', 'arcgis']
 except (NameError, AttributeError):
     pass
 try:

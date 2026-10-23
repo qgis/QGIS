@@ -13,11 +13,16 @@ from qgis.core import (
     QgsEsriArcadeAssignmentStatement,
     QgsEsriArcadeBinaryOperatorExpression,
     QgsEsriArcadeBlockStatement,
+    QgsEsriArcadeBreakStatement,
+    QgsEsriArcadeContinueStatement,
     QgsEsriArcadeDictionaryElement,
     QgsEsriArcadeDictionaryLiteralExpression,
     QgsEsriArcadeExpressionStatement,
+    QgsEsriArcadeForInStatement,
+    QgsEsriArcadeForStatement,
     QgsEsriArcadeFunctionCallExpression,
     QgsEsriArcadeFunctionDeclarationStatement,
+    QgsEsriArcadeIfStatement,
     QgsEsriArcadeIndexExpression,
     QgsEsriArcadeLiteralExpression,
     QgsEsriArcadeMemberAccessExpression,
@@ -27,6 +32,7 @@ from qgis.core import (
     QgsEsriArcadeUnaryOperatorExpression,
     QgsEsriArcadeVariableDeclarationStatement,
     QgsEsriArcadeVariableReferenceExpression,
+    QgsEsriArcadeWhileStatement,
 )
 from qgis.testing import unittest
 
@@ -1825,6 +1831,328 @@ calculateStuff(50);
         self.assertEqual(
             script.rootBlock().statements()[6].expression().binaryOperator(),
             QgsEsriArcadeBinaryOperatorExpression.BinaryOperator.boBitwiseUnsignedRightShift,
+        )
+
+    def test_if(self):
+        script = QgsEsriArcadeScript(
+            """if(x > 5){
+            x+= 5;
+  return x;
+}
+"""
+        )
+        self.assertFalse(script.hasParserError())
+
+        self.assertIsInstance(script.rootBlock(), QgsEsriArcadeBlockStatement)
+        self.assertEqual(script.rootBlock().count(), 1)
+
+        self.assertIsInstance(
+            script.rootBlock().statements()[0],
+            QgsEsriArcadeIfStatement,
+        )
+
+        self.assertIsInstance(
+            script.rootBlock().statements()[0].condition(),
+            QgsEsriArcadeBinaryOperatorExpression,
+        )
+
+        self.assertIsNone(script.rootBlock().statements()[0].falseBlock())
+
+        self.assertIsInstance(
+            script.rootBlock().statements()[0].trueBlock(),
+            QgsEsriArcadeBlockStatement,
+        )
+
+        self.assertEqual(script.rootBlock().statements()[0].trueBlock().count(), 2)
+
+        self.assertIsInstance(
+            script.rootBlock().statements()[0].trueBlock().statements()[0],
+            QgsEsriArcadeAssignmentStatement,
+        )
+
+        self.assertIsInstance(
+            script.rootBlock().statements()[0].trueBlock().statements()[1],
+            QgsEsriArcadeReturnStatement,
+        )
+
+    def test_if_else(self):
+        script = QgsEsriArcadeScript(
+            """if(x > 5){
+  return x;
+  } else {
+  return 5;
+}
+"""
+        )
+        self.assertFalse(script.hasParserError())
+
+        self.assertIsInstance(script.rootBlock(), QgsEsriArcadeBlockStatement)
+        self.assertEqual(script.rootBlock().count(), 1)
+
+        self.assertIsInstance(
+            script.rootBlock().statements()[0],
+            QgsEsriArcadeIfStatement,
+        )
+
+        self.assertIsInstance(
+            script.rootBlock().statements()[0].condition(),
+            QgsEsriArcadeBinaryOperatorExpression,
+        )
+
+        self.assertIsInstance(
+            script.rootBlock().statements()[0].trueBlock(),
+            QgsEsriArcadeBlockStatement,
+        )
+
+        self.assertEqual(script.rootBlock().statements()[0].trueBlock().count(), 1)
+
+        self.assertIsInstance(
+            script.rootBlock().statements()[0].trueBlock().statements()[0],
+            QgsEsriArcadeReturnStatement,
+        )
+
+        self.assertIsInstance(
+            script.rootBlock().statements()[0].falseBlock(),
+            QgsEsriArcadeBlockStatement,
+        )
+
+        self.assertEqual(script.rootBlock().statements()[0].falseBlock().count(), 1)
+
+        self.assertIsInstance(
+            script.rootBlock().statements()[0].falseBlock().statements()[0],
+            QgsEsriArcadeReturnStatement,
+        )
+
+        self.assertEqual(
+            script.rootBlock()
+            .statements()[0]
+            .falseBlock()
+            .statements()[0]
+            .expression()
+            .value(),
+            5,
+        )
+
+    def test_for(self):
+        script = QgsEsriArcadeScript(
+            """for(var z=0; z < 100; z++) {
+  result += z;
+}
+"""
+        )
+        self.assertFalse(script.hasParserError())
+
+        self.assertIsInstance(script.rootBlock(), QgsEsriArcadeBlockStatement)
+        self.assertEqual(script.rootBlock().count(), 1)
+
+        self.assertIsInstance(
+            script.rootBlock().statements()[0],
+            QgsEsriArcadeForStatement,
+        )
+
+        self.assertIsInstance(
+            script.rootBlock().statements()[0].initialization(),
+            QgsEsriArcadeVariableDeclarationStatement,
+        )
+
+        self.assertIsInstance(
+            script.rootBlock().statements()[0].condition(),
+            QgsEsriArcadeBinaryOperatorExpression,
+        )
+
+        self.assertIsInstance(
+            script.rootBlock().statements()[0].step(),
+            QgsEsriArcadeUnaryOperatorExpression,
+        )
+
+        self.assertIsInstance(
+            script.rootBlock().statements()[0].body(),
+            QgsEsriArcadeBlockStatement,
+        )
+
+        self.assertEqual(script.rootBlock().statements()[0].body().count(), 1)
+
+        self.assertIsInstance(
+            script.rootBlock().statements()[0].body().statements()[0],
+            QgsEsriArcadeAssignmentStatement,
+        )
+
+    def test_for_in(self):
+        script = QgsEsriArcadeScript(
+            """for(var index in myArray)
+            {
+  result += 2;
+}
+"""
+        )
+        self.assertFalse(script.hasParserError())
+
+        self.assertIsInstance(script.rootBlock(), QgsEsriArcadeBlockStatement)
+        self.assertEqual(script.rootBlock().count(), 1)
+
+        self.assertIsInstance(
+            script.rootBlock().statements()[0],
+            QgsEsriArcadeForInStatement,
+        )
+        self.assertEqual(
+            script.rootBlock().statements()[0].iterationType(),
+            QgsEsriArcadeForInStatement.IterationType.ForIn,
+        )
+        self.assertEqual(
+            script.rootBlock().statements()[0].variableName(),
+            "index",
+        )
+        self.assertTrue(script.rootBlock().statements()[0].isVariableDeclaration())
+        self.assertIsInstance(
+            script.rootBlock().statements()[0].collection(),
+            QgsEsriArcadeVariableReferenceExpression,
+        )
+        self.assertEqual(
+            script.rootBlock().statements()[0].collection().name(),
+            "myArray",
+        )
+
+        self.assertIsInstance(
+            script.rootBlock().statements()[0].body(),
+            QgsEsriArcadeBlockStatement,
+        )
+
+        self.assertEqual(script.rootBlock().statements()[0].body().count(), 1)
+
+        self.assertIsInstance(
+            script.rootBlock().statements()[0].body().statements()[0],
+            QgsEsriArcadeAssignmentStatement,
+        )
+
+    def test_for_in_no_declare(self):
+        script = QgsEsriArcadeScript(
+            """for(index in myArray)
+            {
+  result += 2;
+}
+"""
+        )
+        self.assertFalse(script.hasParserError())
+
+        self.assertIsInstance(script.rootBlock(), QgsEsriArcadeBlockStatement)
+        self.assertEqual(script.rootBlock().count(), 1)
+
+        self.assertIsInstance(
+            script.rootBlock().statements()[0],
+            QgsEsriArcadeForInStatement,
+        )
+        self.assertEqual(
+            script.rootBlock().statements()[0].iterationType(),
+            QgsEsriArcadeForInStatement.IterationType.ForIn,
+        )
+        self.assertEqual(
+            script.rootBlock().statements()[0].variableName(),
+            "index",
+        )
+        self.assertFalse(script.rootBlock().statements()[0].isVariableDeclaration())
+        self.assertIsInstance(
+            script.rootBlock().statements()[0].collection(),
+            QgsEsriArcadeVariableReferenceExpression,
+        )
+        self.assertEqual(
+            script.rootBlock().statements()[0].collection().name(),
+            "myArray",
+        )
+
+        self.assertIsInstance(
+            script.rootBlock().statements()[0].body(),
+            QgsEsriArcadeBlockStatement,
+        )
+
+        self.assertEqual(script.rootBlock().statements()[0].body().count(), 1)
+
+        self.assertIsInstance(
+            script.rootBlock().statements()[0].body().statements()[0],
+            QgsEsriArcadeAssignmentStatement,
+        )
+
+    def test_for_of(self):
+        script = QgsEsriArcadeScript(
+            """for(var value of myArray)
+            {
+  break;
+  continue;
+}
+"""
+        )
+        self.assertFalse(script.hasParserError())
+
+        self.assertIsInstance(script.rootBlock(), QgsEsriArcadeBlockStatement)
+        self.assertEqual(script.rootBlock().count(), 1)
+
+        self.assertIsInstance(
+            script.rootBlock().statements()[0],
+            QgsEsriArcadeForInStatement,
+        )
+        self.assertEqual(
+            script.rootBlock().statements()[0].iterationType(),
+            QgsEsriArcadeForInStatement.IterationType.ForOf,
+        )
+        self.assertEqual(
+            script.rootBlock().statements()[0].variableName(),
+            "value",
+        )
+        self.assertTrue(script.rootBlock().statements()[0].isVariableDeclaration())
+        self.assertIsInstance(
+            script.rootBlock().statements()[0].collection(),
+            QgsEsriArcadeVariableReferenceExpression,
+        )
+        self.assertEqual(
+            script.rootBlock().statements()[0].collection().name(),
+            "myArray",
+        )
+
+        self.assertIsInstance(
+            script.rootBlock().statements()[0].body(),
+            QgsEsriArcadeBlockStatement,
+        )
+
+        self.assertEqual(script.rootBlock().statements()[0].body().count(), 2)
+
+        self.assertIsInstance(
+            script.rootBlock().statements()[0].body().statements()[0],
+            QgsEsriArcadeBreakStatement,
+        )
+        self.assertIsInstance(
+            script.rootBlock().statements()[0].body().statements()[1],
+            QgsEsriArcadeContinueStatement,
+        )
+
+    def test_while(self):
+        script = QgsEsriArcadeScript(
+            """while(y <= 2020){
+  total += y;
+}
+"""
+        )
+        self.assertFalse(script.hasParserError())
+
+        self.assertIsInstance(script.rootBlock(), QgsEsriArcadeBlockStatement)
+        self.assertEqual(script.rootBlock().count(), 1)
+
+        self.assertIsInstance(
+            script.rootBlock().statements()[0],
+            QgsEsriArcadeWhileStatement,
+        )
+        self.assertIsInstance(
+            script.rootBlock().statements()[0].condition(),
+            QgsEsriArcadeBinaryOperatorExpression,
+        )
+        self.assertIsInstance(
+            script.rootBlock().statements()[0].body(),
+            QgsEsriArcadeBlockStatement,
+        )
+
+        self.assertEqual(script.rootBlock().statements()[0].body().count(), 1)
+
+        self.assertIsInstance(
+            script.rootBlock().statements()[0].body().statements()[0],
+            QgsEsriArcadeAssignmentStatement,
         )
 
 
