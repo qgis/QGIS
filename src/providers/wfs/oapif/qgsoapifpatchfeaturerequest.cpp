@@ -43,14 +43,22 @@ bool QgsOapifPatchFeatureRequest::patchFeature( const QgsOapifSharedData *shared
   json j;
   const bool jsonFg = sharedData->shouldWriteJsonFg();
   if ( jsonFg )
+  {
     QgsOAPIFJson::writeJsonFgPlace( j, geomModified, sharedData->mWKBType, contentCrs, false );
+  }
   else
+  {
     j["geometry"] = geomModified.asJsonObject();
+  }
   QList<QNetworkReply::RawHeaderPair> extraHeaders;
   if ( !contentCrs.isEmpty() )
+  {
     extraHeaders.append( QNetworkReply::RawHeaderPair( QByteArray( "Content-Crs" ), contentCrs.toUtf8() ) );
+  }
   if ( jsonFg )
+  {
     extraHeaders.append( QNetworkReply::RawHeaderPair( QByteArray( "Link" ), u"<%1>; rel=profile"_s.arg( QgsOapifUtils::PROFILE_JSONFG ).toUtf8() ) );
+  }
   mEmptyResponseIsValid = true;
   mFakeURLIncludesContentType = true;
   QUrl url( sharedData->mItemsUrl + QString( u"/"_s + jsonId ) );

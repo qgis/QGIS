@@ -150,11 +150,17 @@ void QgsOapifItemsRequest::processReply()
 
   QString extension;
   if ( mFeatureFormat == QgsOapifUtils::MEDIA_TYPE_FLATGEOBUF )
+  {
     extension = u"fgb"_s;
+  }
   else if ( isGML )
+  {
     extension = u"gml"_s;
+  }
   else
+  {
     extension = u"json"_s;
+  }
   const QString vsimemFilename = u"/vsimem/oaipf_%1.%2"_s.arg( reinterpret_cast<quintptr>( &buffer ), QT_POINTER_SIZE * 2, 16, '0'_L1 ).arg( extension );
 
   VSIFCloseL( VSIFileFromMemBuffer( vsimemFilename.toUtf8().constData(), const_cast<GByte *>( reinterpret_cast<const GByte *>( buffer.constData() ) ), buffer.size(), false ) );
