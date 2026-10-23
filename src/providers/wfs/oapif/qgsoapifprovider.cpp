@@ -196,6 +196,7 @@ bool QgsOapifProvider::init()
                                                       // Two below names are deprecated
                                                       conformanceClasses.contains( "http://www.opengis.net/spec/cql2/0.0/conf/basic-spatial-operators"_L1 ) || conformanceClasses.contains( "http://www.opengis.net/spec/cql2/1.0/conf/basic-spatial-operators"_L1 ) );
     implementsSchemas = conformanceClasses.contains( "http://www.opengis.net/spec/ogcapi-features-5/1.0/conf/schemas"_L1 );
+    mShared->mServerSupportsJsonFgWrites = conformanceClasses.contains( "http://www.opengis.net/spec/json-fg-1/1.0/conf/api"_L1 );
   }
 
   const QgsOapifCollection &collectionDesc = collectionRequest->collection();
@@ -221,7 +222,7 @@ bool QgsOapifProvider::init()
   }
   else
   {
-    mShared->mSourceCrs = QgsCoordinateReferenceSystem::fromOgcWmsCrs( OAPIF_PROVIDER_DEFAULT_CRS );
+    mShared->mSourceCrs = QgsCoordinateReferenceSystem::fromOgcWmsCrs( QgsOapifUtils::DEFAULT_CRS );
   }
   mShared->mCapabilityExtent = collectionDesc.mBbox;
 
@@ -269,7 +270,7 @@ bool QgsOapifProvider::init()
     {
       mShared->mItemsUrl = *it;
 
-      if ( mShared->mFeatureFormat.startsWith( "application/gml+xml"_L1 ) )
+      if ( mShared->mFeatureFormat.startsWith( QgsOapifUtils::MEDIA_TYPE_GML ) )
       {
         auto it2 = collectionDesc.mMapFeatureFormatToBulkDownloadUrl.find( mShared->mFeatureFormat );
         if ( it2 != collectionDesc.mMapFeatureFormatToBulkDownloadUrl.end() )
@@ -290,7 +291,7 @@ bool QgsOapifProvider::init()
   else
     tenFeaturesRequestUrl += '&'_L1;
   tenFeaturesRequestUrl += "limit=10"_L1;
-  if ( mShared->mSourceCrs != QgsCoordinateReferenceSystem::fromOgcWmsCrs( OAPIF_PROVIDER_DEFAULT_CRS ) )
+  if ( mShared->mSourceCrs != QgsCoordinateReferenceSystem::fromOgcWmsCrs( QgsOapifUtils::DEFAULT_CRS ) )
     tenFeaturesRequestUrl += u"&crs=%1"_s.arg( mShared->mSourceCrs.toOgcUri() );
 
   QgsOapifItemsRequest itemsRequest( mShared->mURI.uri(), mShared->appendExtraQueryParameters( tenFeaturesRequestUrl ), mShared->mFeatureFormat );
@@ -317,7 +318,7 @@ bool QgsOapifProvider::init()
     mShared->mCapabilityExtent = itemsRequest.bbox();
     if ( !mShared->mCapabilityExtent.isNull() )
     {
-      QgsCoordinateReferenceSystem defaultCrs = QgsCoordinateReferenceSystem::fromOgcWmsCrs( OAPIF_PROVIDER_DEFAULT_CRS );
+      QgsCoordinateReferenceSystem defaultCrs = QgsCoordinateReferenceSystem::fromOgcWmsCrs( QgsOapifUtils::DEFAULT_CRS );
       if ( defaultCrs != mShared->mSourceCrs )
       {
         QgsCoordinateTransform ct( defaultCrs, mShared->mSourceCrs, transformContext() );
@@ -349,7 +350,7 @@ bool QgsOapifProvider::init()
 
   // If we got a link to an XML schema and that the feature format is GML,
   // try to analyze this XML schema to get the fields
-  if ( !collectionDesc.mXmlSchemaUrl.isEmpty() && mShared->mFeatureFormat.startsWith( "application/gml+xml"_L1 ) )
+  if ( !collectionDesc.mXmlSchemaUrl.isEmpty() && mShared->mFeatureFormat.startsWith( QgsOapifUtils::MEDIA_TYPE_GML ) )
   {
     QgsWFSDescribeFeatureType describeFeatureType( mShared->mURI );
     if ( !describeFeatureType.sendGET( collectionDesc.mXmlSchemaUrl, QString(), true, false ) )
@@ -408,12 +409,12 @@ bool QgsOapifProvider::init()
     {
       if ( link.name == "http://www.opengis.net/def/rel/ogc/1.0/schema"_L1 || link.name == "[ogc-rel:schema]"_L1 )
       {
-        if ( link.mimeType == "application/schema+json" )
+        if ( link.mimeType == QgsOapifUtils::MEDIA_TYPE_SCHEMA_JSON )
         {
           schemaUrl = link.url;
           break;
         }
-        else if ( link.mimeType == "application/json" )
+        else if ( link.mimeType == QgsOapifUtils::MEDIA_TYPE_JSON )
         {
           schemaUrl = link.url;
           // Go on in case there is a later mimeType == "application/schema+json"
@@ -588,6 +589,11 @@ void QgsOapifProvider::computeCapabilities( const QgsOapifItemsRequest &itemsReq
       mSupportsPatch = true;
     }
   }
+
+  if ( mShared->mServerSupportsJsonFgWrites )
+  {
+    mCapabilities |= Qgis::VectorProviderCapability::CircularGeometries;
+  }
 }
 
 Qgis::VectorProviderCapabilities QgsOapifProvider::capabilities() const
@@ -720,7 +726,7 @@ bool QgsOapifProvider::addFeatures( QgsFeatureList &flist, Flags flags )
   QgsDataSourceUri uri( mShared->mURI.uri() );
   QStringList jsonIds;
   QString contentCrs;
-  if ( mShared->mSourceCrs != QgsCoordinateReferenceSystem::fromOgcWmsCrs( OAPIF_PROVIDER_DEFAULT_CRS ) )
+  if ( mShared->mSourceCrs != QgsCoordinateReferenceSystem::fromOgcWmsCrs( QgsOapifUtils::DEFAULT_CRS ) )
   {
     contentCrs = mShared->mSourceCrs.toOgcUri();
   }
@@ -803,7 +809,7 @@ bool QgsOapifProvider::changeGeometryValues( const QgsGeometryMap &geometry_map 
 {
   QgsDataSourceUri uri( mShared->mURI.uri() );
   QString contentCrs;
-  if ( mShared->mSourceCrs != QgsCoordinateReferenceSystem::fromOgcWmsCrs( OAPIF_PROVIDER_DEFAULT_CRS ) )
+  if ( mShared->mSourceCrs != QgsCoordinateReferenceSystem::fromOgcWmsCrs( QgsOapifUtils::DEFAULT_CRS ) )
   {
     contentCrs = mShared->mSourceCrs.toOgcUri();
   }
@@ -864,7 +870,7 @@ bool QgsOapifProvider::changeAttributeValues( const QgsChangedAttributesMap &att
 {
   QgsDataSourceUri uri( mShared->mURI.uri() );
   QString contentCrs;
-  if ( mShared->mSourceCrs != QgsCoordinateReferenceSystem::fromOgcWmsCrs( OAPIF_PROVIDER_DEFAULT_CRS ) )
+  if ( mShared->mSourceCrs != QgsCoordinateReferenceSystem::fromOgcWmsCrs( QgsOapifUtils::DEFAULT_CRS ) )
   {
     contentCrs = mShared->mSourceCrs.toOgcUri();
   }

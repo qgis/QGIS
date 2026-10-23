@@ -36,13 +36,13 @@ static QString translatedImageFormatFromMediaType( const QString &type )
 {
   static QMap<QString, QString> mapMimeTypeToTranslated {
     { u"default"_s, QObject::tr( "Default" ) },
-    { PSEUDO_JSONFG_MEDIA_TYPE, QObject::tr( "JSON-FG" ) },
-    { u"application/flatgeobuf"_s, QObject::tr( "FlatGeoBuf" ) },
-    { u"application/geo+json"_s, QObject::tr( "GeoJSON" ) },
-    { u"application/gml+xml"_s, QObject::tr( "GML" ) },
-    { u"application/gml+xml;version=3.2"_s, QObject::tr( "GML 3.2" ) },
-    { u"application/gml+xml;version=3.2;profile=\"http://www.opengis.net/def/profile/ogc/2.0/gml-sf0\""_s, QObject::tr( "GML 3.2, Simple Features 0 profile" ) },
-    { u"application/gml+xml;version=3.2;profile=\"http://www.opengis.net/def/profile/ogc/2.0/gml-sf2\""_s, QObject::tr( "GML 3.2, Simple Features 2 profile" ) },
+    { QgsOapifUtils::MEDIA_TYPE_PSEUDO_JSONFG, QObject::tr( "JSON-FG" ) },
+    { QgsOapifUtils::MEDIA_TYPE_FLATGEOBUF, QObject::tr( "FlatGeoBuf" ) },
+    { QgsOapifUtils::MEDIA_TYPE_GEOJSON, QObject::tr( "GeoJSON" ) },
+    { QgsOapifUtils::MEDIA_TYPE_GML, QObject::tr( "GML" ) },
+    { QgsOapifUtils::MEDIA_TYPE_GML_3_2, QObject::tr( "GML 3.2" ) },
+    { u"%1;profile=\"%2\""_s.arg( QgsOapifUtils::MEDIA_TYPE_GML_3_2, QgsOapifUtils::PROFILE_GML_SF0 ), QObject::tr( "GML 3.2, Simple Features 0 profile" ) },
+    { u"%1;profile=\"%2\""_s.arg( QgsOapifUtils::MEDIA_TYPE_GML_3_2, QgsOapifUtils::PROFILE_GML_SF2 ), QObject::tr( "GML 3.2, Simple Features 2 profile" ) },
   };
 
   const auto iter = mapMimeTypeToTranslated.constFind( type );

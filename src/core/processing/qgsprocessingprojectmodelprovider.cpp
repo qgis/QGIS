@@ -92,7 +92,8 @@ void QgsProcessingProjectModelProvider::clear()
 
 void QgsProcessingProjectModelProvider::addModel( const QgsProcessingModelAlgorithm &model )
 {
-  const QVariant definition = model.toVariant();
+  QVariantMap definition = model.toVariant().toMap();
+  definition.insert( u"qgis_version"_s, Qgis::version() );
   mModelDefinitions.insert( model.name(), definition );
   refreshAlgorithms();
 }

@@ -12815,7 +12815,20 @@ class TestQgsGeometry(QgisTestCase):
                 "POLYGON ((200 400, 400 400, 400 200, 300 200, 350 250, 250 250, 300 200, 200 200, 200 400))",
                 [QgsGeometry.Error("Ring self-intersection", QgsPointXY(300, 200))],
                 [],
-                [],
+                [
+                    QgsGeometry.Error(
+                        "segments 2 and 5 of line 0 intersect at 300, 200",
+                        QgsPointXY(300, 200),
+                    ),
+                    QgsGeometry.Error(
+                        "segments 3 and 5 of line 0 intersect at 300, 200",
+                        QgsPointXY(300, 200),
+                    ),
+                    QgsGeometry.Error(
+                        "segments 3 and 6 of line 0 intersect at 300, 200",
+                        QgsPointXY(300, 200),
+                    ),
+                ],
                 [QgsGeometry.Error("ring 0 self intersects")],
             ],
             [
@@ -12827,7 +12840,24 @@ class TestQgsGeometry(QgisTestCase):
                     )
                 ],
                 [],
-                [],
+                [
+                    QgsGeometry.Error(
+                        "segments 3 and 6 of line 0 intersect at 160163, 6.76866e+06",
+                        QgsPointXY(160163.27316101978067309, 6768658.37442017439752817),
+                    ),
+                    QgsGeometry.Error(
+                        "segments 3 and 7 of line 0 intersect at 160163, 6.76866e+06",
+                        QgsPointXY(160163.27316101978067309, 6768658.37442017439752817),
+                    ),
+                    QgsGeometry.Error(
+                        "segments 4 and 6 of line 0 intersect at 160163, 6.76866e+06",
+                        QgsPointXY(160163.27316101978067309, 6768658.37442017439752817),
+                    ),
+                    QgsGeometry.Error(
+                        "segments 4 and 7 of line 0 intersect at 160163, 6.76866e+06",
+                        QgsPointXY(160163.27316101978067309, 6768658.37442017439752817),
+                    ),
+                ],
                 [QgsGeometry.Error("Polygon 0 is invalid: ring 0 self intersects")],
             ],
             [

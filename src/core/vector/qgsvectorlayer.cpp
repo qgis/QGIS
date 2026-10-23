@@ -2365,7 +2365,8 @@ bool QgsVectorLayer::setDataProvider( QString const &provider, const QgsDataProv
       QStringList stuff = match.capturedTexts();
       QString lName = stuff[1];
 
-      const QMap<QString, QgsMapLayer *> &layers = QgsProject::instance()->mapLayers(); // skip-keyword-check
+      // TODO QGIS 5.0 -- if layer has not been added to project, return empty QMap here
+      const QMap<QString, QgsMapLayer *> &layers = this->project() ? this->project()->mapLayers() : QgsProject::instance()->mapLayers(); // skip-keyword-check
 
       QMap<QString, QgsMapLayer *>::const_iterator it;
       for ( it = layers.constBegin(); it != layers.constEnd() && ( *it )->name() != lName; ++it )

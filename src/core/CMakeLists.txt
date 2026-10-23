@@ -520,6 +520,7 @@ set(QGIS_CORE_SRCS
   qgsfields.cpp
   qgsfileutils.cpp
   qgsfontutils.cpp
+  qgsfutureutils.cpp
   qgsgdalutils.cpp
   qgsgeometrysimplifier.cpp
   qgsgeometryvalidator.cpp
@@ -1268,6 +1269,7 @@ set(QGIS_CORE_HDRS
   qgsfilefiltergenerator.h
   qgsfileutils.h
   qgsfontutils.h
+  qgsfutureutils.h
   qgsgdalutils.h
   qgsgenericspatialindex.h
   qgsgeometryoptions.h

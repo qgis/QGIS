@@ -237,6 +237,9 @@ class QgsPluginManager : public QgsOptionsDialogBase, private Ui::QgsPluginManag
     //! Returns true if there are invalid plugins in the metadata registry
     bool hasInvalidPlugins();
 
+    //! Refresh plugin list and their metadata
+    void refreshPluginList();
+
     QStandardItemModel *mModelPlugins = nullptr;
 
     QgsPluginSortFilterProxyModel *mModelProxy = nullptr;

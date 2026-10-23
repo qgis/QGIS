@@ -150,6 +150,29 @@ def createTestRasters(cls, path):
     dst_ds.FlushCache()  # write to disk
     dst_ds = None
 
+    # Create Byte 2x2 int raster with a color table
+    cls.uri_2x2_1_BANDS_BYTE_CT = os.path.join(cls.temp_path, "2x2_1_BANDS_BYTE_CT.tif")
+    dst_ds = gdal.GetDriverByName("GTiff").Create(
+        cls.uri_2x2_1_BANDS_BYTE_CT, ny, nx, 1, gdal.GDT_Byte
+    )
+
+    # Create a color table for band 1
+    ct = gdal.ColorTable()
+    ct.SetColorEntry(0, (0, 0, 0, 255))  # black
+    ct.SetColorEntry(1, (100, 0, 0, 255))  # dark red
+    ct.SetColorEntry(2, (0, 100, 0, 255))  # dark green
+    ct.SetColorEntry(3, (0, 0, 100, 255))  # dark blue
+    dst_ds.GetRasterBand(1).SetColorTable(ct)  # assign color table to band 1
+
+    dst_ds.SetGeoTransform(geotransform)  # specify coords
+    srs = osr.SpatialReference()  # establish encoding
+    srs.ImportFromEPSG(3857)  # WGS84 lat/long
+    dst_ds.SetProjection(srs.ExportToWkt())  # export coords to file
+    dst_ds.GetRasterBand(1).WriteArray(r_pixels)  # write r-band to the raster
+
+    dst_ds.FlushCache()  # write to disk
+    dst_ds = None
+
 
 class TestQgsRasterAttributeTable(QgisTestCase):
     def setUp(self):
@@ -1700,6 +1723,61 @@ class TestQgsRasterAttributeTable(QgisTestCase):
         self.assertEqual(fields[1].name, "Class")
         self.assertEqual(fields[1].usage, Qgis.RasterAttributeTableFieldUsage.Name)
         self.assertEqual(fields[1].type, QVariant.String)
+
+    def test_rat_with_ct(self):
+        """Test a RAT without color information"""
+
+        rat = QgsRasterAttributeTable()
+        rat.appendField(
+            QgsRasterAttributeTable.Field(
+                "Value", Qgis.RasterAttributeTableFieldUsage.MinMax, QVariant.Int
+            )
+        )
+        rat.appendField(
+            QgsRasterAttributeTable.Field(
+                "Class", Qgis.RasterAttributeTableFieldUsage.Name, QVariant.String
+            )
+        )
+
+        rat.appendRow([0, "zero"])
+        rat.appendRow([1, "one"])
+        rat.appendRow([2, "two"])
+        rat.appendRow([3, "three"])
+        rat.appendRow([4, "four"])
+        rat.appendRow([5, "five"])
+
+        raster = QgsRasterLayer(self.uri_2x2_1_BANDS_BYTE_CT)
+        self.assertTrue(raster.isValid())
+        raster.dataProvider().setAttributeTable(1, rat)
+        raster.dataProvider().writeNativeAttributeTable()  # spellok
+
+        # Re-read the raster and check the RAT is there and correct
+        raster = QgsRasterLayer(self.uri_2x2_1_BANDS_BYTE_CT)
+        self.assertTrue(raster.isValid())
+        rat = raster.attributeTable(1)
+        self.assertEqual(len(rat.data()), 6)
+        fields = rat.fields()
+        self.assertEqual(fields[0].name, "Value")
+        self.assertEqual(fields[0].usage, Qgis.RasterAttributeTableFieldUsage.MinMax)
+        self.assertEqual(fields[0].type, QVariant.Int)
+        self.assertEqual(fields[1].name, "Class")
+        self.assertEqual(fields[1].usage, Qgis.RasterAttributeTableFieldUsage.Name)
+        self.assertEqual(fields[1].type, QVariant.String)
+
+        # Check that the color table is still there and correct
+        ct = raster.dataProvider().colorTable(1)
+        self.assertEqual(len(ct), 256)
+        self.assertEqual(ct[0].color, QColor(0, 0, 0, 255))
+        self.assertEqual(ct[1].color, QColor(100, 0, 0, 255))
+
+        # Check that the labels has been applied to the renderer
+        renderer = raster.renderer()
+        cl1 = renderer.classes()[1]
+        self.assertEqual(cl1.label, "one")
+        self.assertEqual(cl1.color, QColor(100, 0, 0, 255))
+        cl3 = renderer.classes()[3]
+        self.assertEqual(cl3.label, "three")
+        self.assertEqual(cl3.color, QColor(0, 0, 100, 255))
 
 
 if __name__ == "__main__":
