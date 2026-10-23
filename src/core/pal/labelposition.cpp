@@ -30,7 +30,6 @@
 #include "layer.h"
 #include "costcalculator.h"
 #include "feature.h"
-#include "qgsgeometryutils_base.h"
 #include "labelposition.h"
 #include "qgsgeos.h"
 #include "qgsgeometryutils_base.h"
