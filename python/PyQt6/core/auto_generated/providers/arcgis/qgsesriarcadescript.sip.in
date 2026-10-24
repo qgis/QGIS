@@ -598,9 +598,9 @@ Represents a member access expression using dot or bracket notation.
 For example ``$feature.ATTRIBUTE.`` or ``my_dict["ATTRIBUTE"]`` for
 accessing members of a dictionary.
 
-Arcade also supports a ``?.`` accessor which performs a "safe access",
+Arcade also supports a "?." accessor which performs a "safe access",
 where null values are returned when the container itself is null. For
-these ``?.`` forms :py:func:`~isSafeAccess` will return ``True``.
+these "?." forms :py:func:`~isSafeAccess` will return ``True``.
 
 .. versionadded:: 4.4
 %End
@@ -641,7 +641,7 @@ Returns ``True`` if member access uses the safe access operator "?.".
 
     void setIsSafeAccess( bool isSafeAccess );
 %Docstring
-Sets whether member access uses the safe access operator ``?.``.
+Sets whether member access uses the safe access operator "?.".
 %End
 
   private:

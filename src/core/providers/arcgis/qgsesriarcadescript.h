@@ -623,8 +623,8 @@ class CORE_EXPORT QgsEsriArcadeProfileVariableReferenceExpression : public QgsEs
  * For example ``$feature.ATTRIBUTE.`` or ``my_dict["ATTRIBUTE"]`` for accessing
  * members of a dictionary.
  *
- * Arcade also supports a ``?.`` accessor which performs a "safe access", where null
- * values are returned when the container itself is null. For these ``?.`` forms
+ * Arcade also supports a "?." accessor which performs a "safe access", where null
+ * values are returned when the container itself is null. For these "?." forms
  * isSafeAccess() will return TRUE.
  *
  * \since QGIS 4.4
@@ -660,7 +660,7 @@ class CORE_EXPORT QgsEsriArcadeMemberAccessExpression : public QgsEsriArcadeExpr
     bool isSafeAccess() const { return mIsSafeAccess; }
 
     /**
-     * Sets whether member access uses the safe access operator ``?.``.
+     * Sets whether member access uses the safe access operator "?.".
      */
     void setIsSafeAccess( bool isSafeAccess ) { mIsSafeAccess = isSafeAccess; }
 
