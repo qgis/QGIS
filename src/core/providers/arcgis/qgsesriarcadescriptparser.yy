@@ -285,23 +285,23 @@ opt_initializer:
 assign_op:
     ASSIGN
     {
-      $$ = QgsEsriArcadeAssignmentStatement::AssignmentOperator::aoAssign;
+      $$ = QgsEsriArcadeAssignmentStatement::AssignmentOperator::Assign;
     }
   | PLUS_ASSIGN
     {
-      $$ = QgsEsriArcadeAssignmentStatement::AssignmentOperator::aoPlusAssign;
+      $$ = QgsEsriArcadeAssignmentStatement::AssignmentOperator::PlusAssign;
     }
   | MINUS_ASSIGN
     {
-      $$ = QgsEsriArcadeAssignmentStatement::AssignmentOperator::aoMinusAssign;
+      $$ = QgsEsriArcadeAssignmentStatement::AssignmentOperator::MinusAssign;
     }
   | MUL_ASSIGN
     {
-      $$ = QgsEsriArcadeAssignmentStatement::AssignmentOperator::aoMultiplyAssign;
+      $$ = QgsEsriArcadeAssignmentStatement::AssignmentOperator::MultiplyAssign;
     }
   | DIV_ASSIGN
     {
-      $$ = QgsEsriArcadeAssignmentStatement::AssignmentOperator::aoDivideAssign;
+      $$ = QgsEsriArcadeAssignmentStatement::AssignmentOperator::DivideAssign;
     }
 ;
 
@@ -490,7 +490,7 @@ logical_or_expr:
     }
   | logical_or_expr LOGICAL_OR logical_and_expr
     {
-      $$ = new QgsEsriArcadeBinaryOperatorExpression( QgsEsriArcadeBinaryOperatorExpression::BinaryOperator::boLogicalOr, $1, $3 );
+      $$ = new QgsEsriArcadeBinaryOperatorExpression( QgsEsriArcadeBinaryOperatorExpression::BinaryOperator::LogicalOr, $1, $3 );
     }
 ;
 
@@ -501,7 +501,7 @@ logical_and_expr:
     }
   | logical_and_expr LOGICAL_AND bitwise_or_expr
     {
-      $$ = new QgsEsriArcadeBinaryOperatorExpression( QgsEsriArcadeBinaryOperatorExpression::BinaryOperator::boLogicalAnd, $1, $3 );
+      $$ = new QgsEsriArcadeBinaryOperatorExpression( QgsEsriArcadeBinaryOperatorExpression::BinaryOperator::LogicalAnd, $1, $3 );
     }
 ;
 
@@ -512,7 +512,7 @@ bitwise_or_expr:
     }
   | bitwise_or_expr BITWISE_OR bitwise_xor_expr
     {
-      $$ = new QgsEsriArcadeBinaryOperatorExpression( QgsEsriArcadeBinaryOperatorExpression::BinaryOperator::boBitwiseOr, $1, $3 );
+      $$ = new QgsEsriArcadeBinaryOperatorExpression( QgsEsriArcadeBinaryOperatorExpression::BinaryOperator::BitwiseOr, $1, $3 );
     }
 ;
 
@@ -523,7 +523,7 @@ bitwise_xor_expr:
     }
   | bitwise_xor_expr BITWISE_XOR bitwise_and_expr
     {
-      $$ = new QgsEsriArcadeBinaryOperatorExpression( QgsEsriArcadeBinaryOperatorExpression::BinaryOperator::boBitwiseXor, $1, $3 );
+      $$ = new QgsEsriArcadeBinaryOperatorExpression( QgsEsriArcadeBinaryOperatorExpression::BinaryOperator::BitwiseXor, $1, $3 );
     }
 ;
 
@@ -534,7 +534,7 @@ bitwise_and_expr:
     }
   | bitwise_and_expr BITWISE_AND equality_expr
     {
-      $$ = new QgsEsriArcadeBinaryOperatorExpression( QgsEsriArcadeBinaryOperatorExpression::BinaryOperator::boBitwiseAnd, $1, $3 );
+      $$ = new QgsEsriArcadeBinaryOperatorExpression( QgsEsriArcadeBinaryOperatorExpression::BinaryOperator::BitwiseAnd, $1, $3 );
     }
 ;
 
@@ -545,11 +545,11 @@ equality_expr:
     }
   | equality_expr EQ relational_expr
     {
-      $$ = new QgsEsriArcadeBinaryOperatorExpression( QgsEsriArcadeBinaryOperatorExpression::BinaryOperator::boEqual, $1, $3 );
+      $$ = new QgsEsriArcadeBinaryOperatorExpression( QgsEsriArcadeBinaryOperatorExpression::BinaryOperator::Equal, $1, $3 );
     }
   | equality_expr NE relational_expr
     {
-      $$ = new QgsEsriArcadeBinaryOperatorExpression( QgsEsriArcadeBinaryOperatorExpression::BinaryOperator::boNotEqual, $1, $3 );
+      $$ = new QgsEsriArcadeBinaryOperatorExpression( QgsEsriArcadeBinaryOperatorExpression::BinaryOperator::NotEqual, $1, $3 );
     }
 ;
 
@@ -560,19 +560,19 @@ relational_expr:
     }
   | relational_expr LT shift_expr
     {
-      $$ = new QgsEsriArcadeBinaryOperatorExpression( QgsEsriArcadeBinaryOperatorExpression::BinaryOperator::boLessThan, $1, $3 );
+      $$ = new QgsEsriArcadeBinaryOperatorExpression( QgsEsriArcadeBinaryOperatorExpression::BinaryOperator::LessThan, $1, $3 );
     }
   | relational_expr GT shift_expr
     {
-      $$ = new QgsEsriArcadeBinaryOperatorExpression( QgsEsriArcadeBinaryOperatorExpression::BinaryOperator::boGreaterThan, $1, $3 );
+      $$ = new QgsEsriArcadeBinaryOperatorExpression( QgsEsriArcadeBinaryOperatorExpression::BinaryOperator::GreaterThan, $1, $3 );
     }
   | relational_expr LE shift_expr
     {
-      $$ = new QgsEsriArcadeBinaryOperatorExpression( QgsEsriArcadeBinaryOperatorExpression::BinaryOperator::boLessThanOrEqual, $1, $3 );
+      $$ = new QgsEsriArcadeBinaryOperatorExpression( QgsEsriArcadeBinaryOperatorExpression::BinaryOperator::LessThanOrEqual, $1, $3 );
     }
   | relational_expr GE shift_expr
     {
-      $$ = new QgsEsriArcadeBinaryOperatorExpression( QgsEsriArcadeBinaryOperatorExpression::BinaryOperator::boGreaterThanOrEqual, $1, $3 );
+      $$ = new QgsEsriArcadeBinaryOperatorExpression( QgsEsriArcadeBinaryOperatorExpression::BinaryOperator::GreaterThanOrEqual, $1, $3 );
     }
 ;
 
@@ -583,15 +583,15 @@ shift_expr:
     }
   | shift_expr LEFT_SHIFT additive_expr
     {
-      $$ = new QgsEsriArcadeBinaryOperatorExpression( QgsEsriArcadeBinaryOperatorExpression::BinaryOperator::boBitwiseLeftShift, $1, $3 );
+      $$ = new QgsEsriArcadeBinaryOperatorExpression( QgsEsriArcadeBinaryOperatorExpression::BinaryOperator::BitwiseLeftShift, $1, $3 );
     }
   | shift_expr SIGNED_RIGHT_SHIFT additive_expr
     {
-      $$ = new QgsEsriArcadeBinaryOperatorExpression( QgsEsriArcadeBinaryOperatorExpression::BinaryOperator::boBitwiseSignedRightShift, $1, $3 );
+      $$ = new QgsEsriArcadeBinaryOperatorExpression( QgsEsriArcadeBinaryOperatorExpression::BinaryOperator::BitwiseSignedRightShift, $1, $3 );
     }
   | shift_expr UNSIGNED_RIGHT_SHIFT additive_expr
     {
-      $$ = new QgsEsriArcadeBinaryOperatorExpression( QgsEsriArcadeBinaryOperatorExpression::BinaryOperator::boBitwiseUnsignedRightShift, $1, $3 );
+      $$ = new QgsEsriArcadeBinaryOperatorExpression( QgsEsriArcadeBinaryOperatorExpression::BinaryOperator::BitwiseUnsignedRightShift, $1, $3 );
     }
 ;
 
@@ -602,11 +602,11 @@ additive_expr:
     }
   | additive_expr PLUS multiplicative_expr
     {
-      $$ = new QgsEsriArcadeBinaryOperatorExpression( QgsEsriArcadeBinaryOperatorExpression::BinaryOperator::boPlus, $1, $3 );
+      $$ = new QgsEsriArcadeBinaryOperatorExpression( QgsEsriArcadeBinaryOperatorExpression::BinaryOperator::Plus, $1, $3 );
     }
   | additive_expr MINUS multiplicative_expr
     {
-      $$ = new QgsEsriArcadeBinaryOperatorExpression( QgsEsriArcadeBinaryOperatorExpression::BinaryOperator::boMinus, $1, $3 );
+      $$ = new QgsEsriArcadeBinaryOperatorExpression( QgsEsriArcadeBinaryOperatorExpression::BinaryOperator::Minus, $1, $3 );
     }
 ;
 
@@ -617,15 +617,15 @@ multiplicative_expr:
     }
   | multiplicative_expr MUL unary_expr
     {
-      $$ = new QgsEsriArcadeBinaryOperatorExpression( QgsEsriArcadeBinaryOperatorExpression::BinaryOperator::boMultiply, $1, $3 );
+      $$ = new QgsEsriArcadeBinaryOperatorExpression( QgsEsriArcadeBinaryOperatorExpression::BinaryOperator::Multiply, $1, $3 );
     }
   | multiplicative_expr DIV unary_expr
     {
-      $$ = new QgsEsriArcadeBinaryOperatorExpression( QgsEsriArcadeBinaryOperatorExpression::BinaryOperator::boDivide, $1, $3 );
+      $$ = new QgsEsriArcadeBinaryOperatorExpression( QgsEsriArcadeBinaryOperatorExpression::BinaryOperator::Divide, $1, $3 );
     }
   | multiplicative_expr MOD unary_expr
     {
-      $$ = new QgsEsriArcadeBinaryOperatorExpression( QgsEsriArcadeBinaryOperatorExpression::BinaryOperator::boModulo, $1, $3 );
+      $$ = new QgsEsriArcadeBinaryOperatorExpression( QgsEsriArcadeBinaryOperatorExpression::BinaryOperator::Modulo, $1, $3 );
     }
 ;
 
@@ -636,27 +636,27 @@ unary_expr:
     }
   | MINUS unary_expr %prec UMINUS
     {
-      $$ = new QgsEsriArcadeUnaryOperatorExpression( QgsEsriArcadeUnaryOperatorExpression::UnaryOperator::uoMinus, $2 );
+      $$ = new QgsEsriArcadeUnaryOperatorExpression( QgsEsriArcadeUnaryOperatorExpression::UnaryOperator::Minus, $2 );
     }
   | PLUS unary_expr %prec UPLUS
     {
-      $$ = new QgsEsriArcadeUnaryOperatorExpression( QgsEsriArcadeUnaryOperatorExpression::UnaryOperator::uoPlus, $2 );
+      $$ = new QgsEsriArcadeUnaryOperatorExpression( QgsEsriArcadeUnaryOperatorExpression::UnaryOperator::Plus, $2 );
     }
   | NOT unary_expr
     {
-      $$ = new QgsEsriArcadeUnaryOperatorExpression( QgsEsriArcadeUnaryOperatorExpression::UnaryOperator::uoNot, $2 );
+      $$ = new QgsEsriArcadeUnaryOperatorExpression( QgsEsriArcadeUnaryOperatorExpression::UnaryOperator::Not, $2 );
     }
   | BITWISE_NOT unary_expr
     {
-      $$ = new QgsEsriArcadeUnaryOperatorExpression( QgsEsriArcadeUnaryOperatorExpression::UnaryOperator::uoBitwiseNot, $2 );
+      $$ = new QgsEsriArcadeUnaryOperatorExpression( QgsEsriArcadeUnaryOperatorExpression::UnaryOperator::BitwiseNot, $2 );
     }
   | PLUS_PLUS unary_expr %prec PREFIX_INC
     {
-      $$ = new QgsEsriArcadeUnaryOperatorExpression( QgsEsriArcadeUnaryOperatorExpression::UnaryOperator::uoPreIncrement, $2 );
+      $$ = new QgsEsriArcadeUnaryOperatorExpression( QgsEsriArcadeUnaryOperatorExpression::UnaryOperator::PreIncrement, $2 );
     }
   | MINUS_MINUS unary_expr %prec PREFIX_DEC
     {
-      $$ = new QgsEsriArcadeUnaryOperatorExpression( QgsEsriArcadeUnaryOperatorExpression::UnaryOperator::uoPreDecrement, $2 );
+      $$ = new QgsEsriArcadeUnaryOperatorExpression( QgsEsriArcadeUnaryOperatorExpression::UnaryOperator::PreDecrement, $2 );
     }
 ;
 
@@ -667,11 +667,11 @@ postfix_expr:
     }
   | postfix_expr PLUS_PLUS %prec POSTFIX_INC
     {
-      $$ = new QgsEsriArcadeUnaryOperatorExpression( QgsEsriArcadeUnaryOperatorExpression::UnaryOperator::uoPostIncrement, $1 );
+      $$ = new QgsEsriArcadeUnaryOperatorExpression( QgsEsriArcadeUnaryOperatorExpression::UnaryOperator::PostIncrement, $1 );
     }
   | postfix_expr MINUS_MINUS %prec POSTFIX_DEC
     {
-      $$ = new QgsEsriArcadeUnaryOperatorExpression( QgsEsriArcadeUnaryOperatorExpression::UnaryOperator::uoPostDecrement, $1 );
+      $$ = new QgsEsriArcadeUnaryOperatorExpression( QgsEsriArcadeUnaryOperatorExpression::UnaryOperator::PostDecrement, $1 );
     }
   | postfix_expr '.' IDENTIFIER
     {
