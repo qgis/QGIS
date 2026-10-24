@@ -2497,6 +2497,93 @@ class TestPyQgsOapifProvider(QgisTestCase, ProviderTestCase):
 
         self.assertTrue(vl.dataProvider().deleteFeatures([1, 2]))
 
+    def testFeatureChangeWithoutInsertion(self):
+        """Editing features without insertion allowed"""
+
+        endpoint = (
+            self.__class__.basetestpath
+            + "/fake_qgis_http_endpoint_testFeatureChangeWithoutInsertion"
+        )
+        # /items takes HEAD and GET only
+        create_landing_page_api_collection(endpoint)
+
+        # first items
+        first_items = {
+            "type": "FeatureCollection",
+            "features": [
+                {
+                    "type": "Feature",
+                    "id": "feat.1",
+                    "properties": {"pk": 1, "cnt": 100},
+                    "geometry": {"type": "Point", "coordinates": [66.33, -70.332]},
+                }
+            ],
+        }
+        with open(
+            sanitize(
+                endpoint, "/collections/mycollection/items?limit=10&" + ACCEPT_ITEMS
+            ),
+            "wb",
+        ) as f:
+            f.write(json.dumps(first_items).encode("UTF-8"))
+
+        with open(
+            sanitize(endpoint, "/collections/mycollection/items/feat.1?VERB=OPTIONS"),
+            "wb",
+        ) as f:
+            f.write(b"HEAD, GET, PUT, PATCH")
+
+        vl = QgsVectorLayer(
+            "url='http://"
+            + endpoint
+            + "' typename='mycollection' restrictToRequestBBOX=1",
+            "test",
+            "OAPIF",
+        )
+        self.assertTrue(vl.isValid())
+        self.assertNotEqual(
+            vl.dataProvider().capabilities() & vl.dataProvider().ChangeAttributeValues,
+            vl.dataProvider().NoCapabilities,
+        )
+        self.assertNotEqual(
+            vl.dataProvider().capabilities() & vl.dataProvider().ChangeGeometries,
+            vl.dataProvider().NoCapabilities,
+        )
+        self.assertEqual(
+            vl.dataProvider().capabilities() & vl.dataProvider().AddFeatures,
+            vl.dataProvider().NoCapabilities,
+        )
+        self.assertEqual(
+            vl.dataProvider().capabilities() & vl.dataProvider().DeleteFeatures,
+            vl.dataProvider().NoCapabilities,
+        )
+
+        # real page
+        with open(
+            sanitize(
+                endpoint, "/collections/mycollection/items?limit=1000&" + ACCEPT_ITEMS
+            ),
+            "wb",
+        ) as f:
+            f.write(json.dumps(first_items).encode("UTF-8"))
+
+        values = [f.id() for f in vl.getFeatures()]
+        self.assertEqual(values, [1])
+
+        with open(
+            sanitize(
+                endpoint,
+                '/collections/mycollection/items/feat.1?PATCHDATA={"properties":{"cnt":200}}&Content-Type=application_merge-patch+json',
+            ),
+            "wb",
+        ) as f:
+            f.write(b"")
+
+        self.assertTrue(vl.dataProvider().changeAttributeValues({1: {2: 200}}))
+
+        values = [f["cnt"] for f in vl.getFeatures()]
+        self.assertEqual(values, [200])
+
     def testFeatureInsertionNonDefaultCrs(self):
 
         endpoint = (

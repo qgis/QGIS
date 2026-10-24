@@ -553,11 +553,17 @@ void QgsOapifProvider::computeCapabilities( const QgsOapifItemsRequest &itemsReq
   QgsDataSourceUri uri( mShared->mURI.uri() );
   QgsOapifOptionsRequest optionsItemsRequest( uri );
   QStringList supportedOptions = optionsItemsRequest.sendOPTIONS( mShared->mItemsUrl );
-  if ( supportedOptions.contains( "POST"_L1 ) )
+  const bool supportsPost = supportedOptions.contains( "POST"_L1 );
+  if ( supportsPost )
   {
     mCapabilities |= Qgis::VectorProviderCapability::AddFeatures;
+  }
 
-    const auto &features = itemsRequest.features();
+  // Even if adding is not allowed, editing might still be allowed.
+  // So we need to check the OPTIONS on a single item.
+  if ( !supportedOptions.isEmpty() )
+  {
+    const std::vector<QgsFeatureUniqueIdPair> &features = itemsRequest.features();
     QString testId;
     if ( !features.empty() )
     {
@@ -571,9 +577,8 @@ void QgsOapifProvider::computeCapabilities( const QgsOapifItemsRequest &itemsReq
       testId = u"unknown_id"_s;
     }
     QgsOapifOptionsRequest optionsOneItemRequest( uri );
-    QString url( mShared->mItemsUrl );
-    url += '/'_L1;
-    url += testId;
+    optionsOneItemRequest.setLogErrors( supportsPost );
+    QString url( u"%1/%2"_s.arg( mShared->mItemsUrl, testId ) );
     supportedOptions = optionsOneItemRequest.sendOPTIONS( url );
     if ( supportedOptions.contains( "PUT"_L1 ) )
     {
