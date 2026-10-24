@@ -110,7 +110,7 @@ struct arcadescript_parser_context
 %type <assignmentOperator> assign_op
 %type <dictionaryElement> property_entry
 %type <dictionaryElementList> opt_property_list property_list
-%type <text> property_name
+%type <text> property_name member_name_tolerant
 
 %destructor { delete $$; } <node>
 %destructor { delete $$; } <statement>
@@ -673,12 +673,12 @@ postfix_expr:
     {
       $$ = new QgsEsriArcadeUnaryOperatorExpression( QgsEsriArcadeUnaryOperatorExpression::UnaryOperator::PostDecrement, $1 );
     }
-  | postfix_expr '.' IDENTIFIER
+  | postfix_expr '.' member_name_tolerant
     {
       $$ = new QgsEsriArcadeMemberAccessExpression( $1, *$3 );
       delete $3;
     }
-  | postfix_expr SAFE_DOT IDENTIFIER
+  | postfix_expr SAFE_DOT member_name_tolerant
     {
       $$ = new QgsEsriArcadeMemberAccessExpression( $1, *$3, true );
       delete $3;
@@ -846,6 +846,21 @@ property_name:
       $$ = $1;
     }
 ;
+
+member_name_tolerant:
+    IDENTIFIER
+    {
+      $$ = $1;
+    }
+  | member_name_tolerant IDENTIFIER
+    {
+      $$ = $1;
+      $$->append( ' '_L1 );
+      $$->append( *$2 );
+      delete $2;
+    }
+;
+
 %%
 
 QgsEsriArcadeBlockStatement *parseArcadeScript( const QString &scriptText, QString &parserErrorMessage )
