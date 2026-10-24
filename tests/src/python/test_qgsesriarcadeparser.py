@@ -2155,6 +2155,125 @@ calculateStuff(50);
             QgsEsriArcadeAssignmentStatement,
         )
 
+    def test_string_constants(self):
+        script = QgsEsriArcadeScript(
+            """var a = TextFormatting.BackwardSlash +  'a' + TextFormatting.DoubleQuote + 'b' + TextFormatting.ForwardSlash + 'c' + TextFormatting.NewLine + 'd' + TextFormatting.SingleQuote;"""
+        )
+
+        self.assertFalse(script.hasParserError())
+
+        self.assertIsInstance(script.rootBlock(), QgsEsriArcadeBlockStatement)
+        self.assertEqual(script.rootBlock().count(), 1)
+
+        self.assertIsInstance(
+            script.rootBlock().statements()[0],
+            QgsEsriArcadeVariableDeclarationStatement,
+        )
+
+        self.assertEqual(
+            script.rootBlock()
+            .statements()[0]
+            .initializer()
+            .leftOperand()
+            .leftOperand()
+            .leftOperand()
+            .leftOperand()
+            .leftOperand()
+            .leftOperand()
+            .leftOperand()
+            .leftOperand()
+            .value(),
+            "\\",
+        )
+        self.assertEqual(
+            script.rootBlock()
+            .statements()[0]
+            .initializer()
+            .leftOperand()
+            .leftOperand()
+            .leftOperand()
+            .leftOperand()
+            .leftOperand()
+            .leftOperand()
+            .leftOperand()
+            .rightOperand()
+            .value(),
+            "a",
+        )
+        self.assertEqual(
+            script.rootBlock()
+            .statements()[0]
+            .initializer()
+            .leftOperand()
+            .leftOperand()
+            .leftOperand()
+            .leftOperand()
+            .leftOperand()
+            .leftOperand()
+            .rightOperand()
+            .value(),
+            '"',
+        )
+        self.assertEqual(
+            script.rootBlock()
+            .statements()[0]
+            .initializer()
+            .leftOperand()
+            .leftOperand()
+            .leftOperand()
+            .leftOperand()
+            .leftOperand()
+            .rightOperand()
+            .value(),
+            "b",
+        )
+        self.assertEqual(
+            script.rootBlock()
+            .statements()[0]
+            .initializer()
+            .leftOperand()
+            .leftOperand()
+            .leftOperand()
+            .leftOperand()
+            .rightOperand()
+            .value(),
+            "/",
+        )
+        self.assertEqual(
+            script.rootBlock()
+            .statements()[0]
+            .initializer()
+            .leftOperand()
+            .leftOperand()
+            .leftOperand()
+            .rightOperand()
+            .value(),
+            "c",
+        )
+        self.assertEqual(
+            script.rootBlock()
+            .statements()[0]
+            .initializer()
+            .leftOperand()
+            .leftOperand()
+            .rightOperand()
+            .value(),
+            "\n",
+        )
+        self.assertEqual(
+            script.rootBlock()
+            .statements()[0]
+            .initializer()
+            .leftOperand()
+            .rightOperand()
+            .value(),
+            "d",
+        )
+        self.assertEqual(
+            script.rootBlock().statements()[0].initializer().rightOperand().value(),
+            "'",
+        )
+
 
 if __name__ == "__main__":
     unittest.main()

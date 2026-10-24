@@ -143,6 +143,27 @@ block_comment  \/\*([^*]|\*+[^/*])*\*+\/
   yylval->numberFloat = std::numeric_limits<double>::quiet_NaN();
   return NUMBER_FLOAT;
 }
+"textformatting.backwardslash" {
+  yylval->text = new QString("\\");
+  return STRING_LITERAL;
+}
+"textformatting.doublequote" {
+  yylval->text = new QString("\"");
+  return STRING_LITERAL;
+}
+"textformatting.forwardslash" {
+  yylval->text = new QString("/");
+  return STRING_LITERAL;
+}
+"textformatting.newline" {
+  yylval->text = new QString("\n");
+  return STRING_LITERAL;
+}
+"textformatting.singlequote" {
+  yylval->text = new QString("'");
+  return STRING_LITERAL;
+}
+
 
 "++"             { return PLUS_PLUS; }
 "--"             { return MINUS_MINUS; }
