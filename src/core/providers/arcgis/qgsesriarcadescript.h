@@ -655,7 +655,7 @@ class CORE_EXPORT QgsEsriArcadeMemberAccessExpression : public QgsEsriArcadeExpr
     QString memberName() const { return mMemberName; }
 
     /**
-     * Returns TRUE if member access uses the safe access operator ``?.``.
+     * Returns TRUE if member access uses the safe access operator "?.".
      */
     bool isSafeAccess() const { return mIsSafeAccess; }
 

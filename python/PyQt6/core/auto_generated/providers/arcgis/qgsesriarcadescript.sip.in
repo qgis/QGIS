@@ -636,7 +636,7 @@ Returns the member attribute name.
 
     bool isSafeAccess() const;
 %Docstring
-Returns ``True`` if member access uses the safe access operator ``?.``.
+Returns ``True`` if member access uses the safe access operator "?.".
 %End
 
     void setIsSafeAccess( bool isSafeAccess );
