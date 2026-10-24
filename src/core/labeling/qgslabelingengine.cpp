@@ -21,6 +21,7 @@
 #include "layer.h"
 #include "pal.h"
 #include "problem.h"
+#include "qgsdatadefinedutils.h"
 #include "qgsexpressioncontextutils.h"
 #include "qgsfillsymbol.h"
 #include "qgslabelingenginerule.h"
@@ -978,33 +979,53 @@ QVector<Qgis::LabelPredefinedPointPosition> QgsLabelingUtils::decodePredefinedPo
   result.reserve( predefinedOrderList.size() );
   for ( const QString &position : predefinedOrderList )
   {
-    QString cleaned = position.trimmed().toUpper();
-    if ( cleaned == "TL"_L1 )
-      result << Qgis::LabelPredefinedPointPosition::TopLeft;
-    else if ( cleaned == "TSL"_L1 )
-      result << Qgis::LabelPredefinedPointPosition::TopSlightlyLeft;
-    else if ( cleaned == "T"_L1 )
-      result << Qgis::LabelPredefinedPointPosition::TopMiddle;
-    else if ( cleaned == "TSR"_L1 )
-      result << Qgis::LabelPredefinedPointPosition::TopSlightlyRight;
-    else if ( cleaned == "TR"_L1 )
-      result << Qgis::LabelPredefinedPointPosition::TopRight;
-    else if ( cleaned == "L"_L1 )
-      result << Qgis::LabelPredefinedPointPosition::MiddleLeft;
-    else if ( cleaned == "R"_L1 )
-      result << Qgis::LabelPredefinedPointPosition::MiddleRight;
-    else if ( cleaned == "BL"_L1 )
-      result << Qgis::LabelPredefinedPointPosition::BottomLeft;
-    else if ( cleaned == "BSL"_L1 )
-      result << Qgis::LabelPredefinedPointPosition::BottomSlightlyLeft;
-    else if ( cleaned == "B"_L1 )
-      result << Qgis::LabelPredefinedPointPosition::BottomMiddle;
-    else if ( cleaned == "BSR"_L1 )
-      result << Qgis::LabelPredefinedPointPosition::BottomSlightlyRight;
-    else if ( cleaned == "BR"_L1 )
-      result << Qgis::LabelPredefinedPointPosition::BottomRight;
-    else if ( cleaned == "O"_L1 )
-      result << Qgis::LabelPredefinedPointPosition::OverPoint;
+    static constexpr auto POINT_POSITION_MAP = makeDataDefinedStringDecoder<Qgis::LabelPredefinedPointPosition>( {
+      { u"tl", Qgis::LabelPredefinedPointPosition::TopLeft },
+      { u"topleft", Qgis::LabelPredefinedPointPosition::TopLeft },
+
+      { u"tsl", Qgis::LabelPredefinedPointPosition::TopSlightlyLeft },
+      { u"topslightlyleft", Qgis::LabelPredefinedPointPosition::TopSlightlyLeft },
+
+      { u"t", Qgis::LabelPredefinedPointPosition::TopMiddle },
+      { u"top", Qgis::LabelPredefinedPointPosition::TopMiddle },
+
+      { u"tsr", Qgis::LabelPredefinedPointPosition::TopSlightlyRight },
+      { u"topslightlyright", Qgis::LabelPredefinedPointPosition::TopSlightlyRight },
+
+      { u"tr", Qgis::LabelPredefinedPointPosition::TopRight },
+      { u"topright", Qgis::LabelPredefinedPointPosition::TopRight },
+
+      { u"l", Qgis::LabelPredefinedPointPosition::MiddleLeft },
+      { u"left", Qgis::LabelPredefinedPointPosition::MiddleLeft },
+
+      { u"r", Qgis::LabelPredefinedPointPosition::MiddleRight },
+      { u"right", Qgis::LabelPredefinedPointPosition::MiddleRight },
+
+      { u"bl", Qgis::LabelPredefinedPointPosition::BottomLeft },
+      { u"bottomleft", Qgis::LabelPredefinedPointPosition::BottomLeft },
+
+      { u"bsl", Qgis::LabelPredefinedPointPosition::BottomSlightlyLeft },
+      { u"bottomslightlyleft", Qgis::LabelPredefinedPointPosition::BottomSlightlyLeft },
+
+      { u"b", Qgis::LabelPredefinedPointPosition::BottomMiddle },
+      { u"bottom", Qgis::LabelPredefinedPointPosition::BottomMiddle },
+
+      { u"bsr", Qgis::LabelPredefinedPointPosition::BottomSlightlyRight },
+      { u"bottomslightlyright", Qgis::LabelPredefinedPointPosition::BottomSlightlyRight },
+
+      { u"br", Qgis::LabelPredefinedPointPosition::BottomRight },
+      { u"bottomright", Qgis::LabelPredefinedPointPosition::BottomRight },
+
+      { u"o", Qgis::LabelPredefinedPointPosition::OverPoint },
+      { u"overpoint", Qgis::LabelPredefinedPointPosition::OverPoint },
+
+    } );
+
+    auto evaluatedPosition = POINT_POSITION_MAP.lookup( position );
+    if ( evaluatedPosition )
+    {
+      result << *evaluatedPosition;
+    }
   }
   return result;
 }
@@ -1030,15 +1051,32 @@ Qgis::LabelLinePlacementFlags QgsLabelingUtils::decodeLinePlacementFlags( const 
   bool foundLineOrientationFlag = false;
   for ( const QString &flag : flagList )
   {
-    QString cleaned = flag.trimmed().toUpper();
-    if ( cleaned == "OL"_L1 )
-      flags |= Qgis::LabelLinePlacementFlag::OnLine;
-    else if ( cleaned == "AL"_L1 )
-      flags |= Qgis::LabelLinePlacementFlag::AboveLine;
-    else if ( cleaned == "BL"_L1 )
-      flags |= Qgis::LabelLinePlacementFlag::BelowLine;
-    else if ( cleaned == "LO"_L1 )
-      foundLineOrientationFlag = true;
+    static constexpr auto LINE_PLACEMENT_MAP = makeDataDefinedStringDecoder<Qgis::LabelLinePlacementFlag>(
+      { { u"ol", Qgis::LabelLinePlacementFlag::OnLine },
+        { u"online", Qgis::LabelLinePlacementFlag::OnLine },
+
+        { u"al", Qgis::LabelLinePlacementFlag::AboveLine },
+        { u"aboveline", Qgis::LabelLinePlacementFlag::AboveLine },
+
+        { u"bl", Qgis::LabelLinePlacementFlag::BelowLine },
+        { u"belowline", Qgis::LabelLinePlacementFlag::BelowLine },
+
+        { u"lo", Qgis::LabelLinePlacementFlag::MapOrientation },
+        { u"lineorientation", Qgis::LabelLinePlacementFlag::MapOrientation } }
+    );
+
+    auto evaluatedPlacement = LINE_PLACEMENT_MAP.lookup( flag );
+    if ( evaluatedPlacement )
+    {
+      if ( *evaluatedPlacement == Qgis::LabelLinePlacementFlag::MapOrientation )
+      {
+        foundLineOrientationFlag = true;
+      }
+      else
+      {
+        flags |= *evaluatedPlacement;
+      }
+    }
   }
   if ( !foundLineOrientationFlag )
     flags |= Qgis::LabelLinePlacementFlag::MapOrientation;

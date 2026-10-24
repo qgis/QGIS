@@ -63,6 +63,7 @@ set(TESTS
  testqgscredentials.cpp
  testqgscurve.cpp
  testqgsdatadefinedsizelegend.cpp
+ testqgsdatadefinedutils.cpp
  testqgsdataitem.cpp
  testqgsdatasourceuri.cpp
  testqgsdiagram.cpp
