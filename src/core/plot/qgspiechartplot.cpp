@@ -115,7 +115,6 @@ void QgsPieChartPlot::renderContent( QgsRenderContext &context, QgsPlotRenderCon
   }
 
   QgsNumericFormatContext numericContext;
-  QMap<QString, QColor> categoriesColor;
   int seriesIndex = 0;
   for ( const QgsAbstractPlotSeries *series : seriesList )
   {
@@ -128,6 +127,7 @@ void QgsPieChartPlot::renderContent( QgsRenderContext &context, QgsPlotRenderCon
     symbol->startRender( context );
     const double pieWidth = pieArea - QgsSymbolLayerUtils::estimateMaxSymbolBleed( symbol, context ) - maxLabelHeight * 3;
 
+    QMap<QString, QColor> categoriesColor;
     QgsColorRamp *ramp = colorRampAt( seriesIndex % mColorRamps.size() );
     if ( QgsRandomColorRamp *randomRamp = dynamic_cast<QgsRandomColorRamp *>( ramp ) )
     {
