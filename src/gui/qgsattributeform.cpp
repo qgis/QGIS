@@ -140,7 +140,28 @@ void QgsAttributeForm::addInterface( QgsAttributeFormInterface *iface )
 
 bool QgsAttributeForm::editable()
 {
-  return mFeature.isValid() && mLayer->isEditable();
+  bool isEditable = false;
+  switch ( mMode )
+  {
+    case QgsAttributeEditorContext::SingleEditMode:
+    case QgsAttributeEditorContext::IdentifyMode:
+    case QgsAttributeEditorContext::FixAttributeMode:
+    case QgsAttributeEditorContext::SearchMode:
+    case QgsAttributeEditorContext::AggregateSearchMode:
+    case QgsAttributeEditorContext::MultiEditMode:
+      isEditable = mFeature.isValid() && mLayer->isEditable();
+      break;
+
+    case QgsAttributeEditorContext::AddFeatureMode:
+      isEditable = mLayer->isEditable();
+      break;
+
+    case QgsAttributeEditorContext::PreviewMode:
+      isEditable = true;
+      break;
+  }
+
+  return isEditable;
 }
 
 void QgsAttributeForm::setMode( QgsAttributeEditorContext::Mode mode )
@@ -1679,26 +1700,7 @@ bool QgsAttributeForm::needsGeometry() const
 
 void QgsAttributeForm::synchronizeState()
 {
-  bool isEditable = false;
-  switch ( mMode )
-  {
-    case QgsAttributeEditorContext::SingleEditMode:
-    case QgsAttributeEditorContext::IdentifyMode:
-    case QgsAttributeEditorContext::FixAttributeMode:
-    case QgsAttributeEditorContext::SearchMode:
-    case QgsAttributeEditorContext::AggregateSearchMode:
-    case QgsAttributeEditorContext::MultiEditMode:
-      isEditable = mFeature.isValid() && mLayer->isEditable();
-      break;
-
-    case QgsAttributeEditorContext::AddFeatureMode:
-      isEditable = mLayer->isEditable();
-      break;
-
-    case QgsAttributeEditorContext::PreviewMode:
-      isEditable = true;
-      break;
-  }
+  bool isEditable = editable();
 
   for ( QgsWidgetWrapper *ww : std::as_const( mWidgets ) )
   {
@@ -1773,6 +1775,8 @@ void QgsAttributeForm::synchronizeState()
   {
     okButton->setEnabled( isEditable );
   }
+
+  emit editableChanged();
 }
 
 void QgsAttributeForm::init()

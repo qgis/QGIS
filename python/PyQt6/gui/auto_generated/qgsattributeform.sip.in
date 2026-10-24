@@ -275,6 +275,11 @@ filtered set of features.
 .. versionadded:: 3.24
 %End
 
+    void editableChanged();
+%Docstring
+Emitted when the editable state of the attribute form has changed.
+%End
+
   public slots:
 
     void changeAttribute( const QString &field, const QVariant &value, const QString &hintText = QString() );

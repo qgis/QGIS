@@ -291,6 +291,11 @@ class GUI_EXPORT QgsAttributeForm : public QWidget
      */
     void openFilteredFeaturesAttributeTable( const QString &filter );
 
+    /**
+     * Emitted when the editable state of the attribute form has changed.
+     */
+    void editableChanged();
+
   public slots:
 
     /**
