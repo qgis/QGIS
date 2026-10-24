@@ -365,8 +365,8 @@ QList<QgsRayCastHit> QgsPointCloudLayerChunkedEntity::rayIntersection( const Qgs
     return result;
 
   // transform ray
-  const QgsVector3D rayOriginMapCoords = loader->mRenderContext.worldToMapCoordinates( ray.origin() );
-  const QgsVector3D pointMapCoords = loader->mRenderContext.worldToMapCoordinates( ray.point( ray.origin().length() ) );
+  const QgsVector3D rayOriginMapCoords = mMapSettings->worldToMapCoordinates( ray.origin() );
+  const QgsVector3D pointMapCoords = mMapSettings->worldToMapCoordinates( ray.point( ray.origin().length() ) );
   QgsVector3D rayDirectionMapCoords = pointMapCoords - rayOriginMapCoords;
   rayDirectionMapCoords.normalize();
 
