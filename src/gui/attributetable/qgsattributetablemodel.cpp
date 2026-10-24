@@ -113,24 +113,11 @@ bool QgsAttributeTableModel::loadFeatureAtId( QgsFeatureId fid, int fieldIdx ) c
 
 int QgsAttributeTableModel::extraColumns() const
 {
-  return mExtraColumns;
+  return 1;
 }
 
-void QgsAttributeTableModel::setExtraColumns( int extraColumns )
-{
-  if ( extraColumns > mExtraColumns )
-  {
-    beginInsertColumns( QModelIndex(), mFieldCount + mExtraColumns, mFieldCount + extraColumns - 1 );
-    mExtraColumns = extraColumns;
-    endInsertColumns();
-  }
-  else if ( extraColumns < mExtraColumns )
-  {
-    beginRemoveColumns( QModelIndex(), mFieldCount + extraColumns, mFieldCount + mExtraColumns - 1 );
-    mExtraColumns = extraColumns;
-    endRemoveColumns();
-  }
-}
+void QgsAttributeTableModel::setExtraColumns( int )
+{}
 
 void QgsAttributeTableModel::featuresDeleted( const QgsFeatureIds &fids )
 {
@@ -442,15 +429,15 @@ void QgsAttributeTableModel::loadAttributes()
     attributes << idx;
   }
 
-  if ( mFieldCount + mExtraColumns < attributes.size() + mExtraColumns )
+  if ( mFieldCount < attributes.size() )
   {
     ins = true;
-    beginInsertColumns( QModelIndex(), mFieldCount + mExtraColumns, attributes.size() - 1 );
+    beginInsertColumns( QModelIndex(), mFieldCount, attributes.size() - 1 );
   }
-  else if ( attributes.size() + mExtraColumns < mFieldCount + mExtraColumns )
+  else if ( attributes.size() < mFieldCount )
   {
     rm = true;
-    beginRemoveColumns( QModelIndex(), attributes.size(), mFieldCount + mExtraColumns - 1 );
+    beginRemoveColumns( QModelIndex(), attributes.size(), mFieldCount - 1 );
   }
 
   mFields = fields;
@@ -639,7 +626,7 @@ int QgsAttributeTableModel::columnCount( const QModelIndex &parent ) const
   if ( parent.isValid() )
     return 0;
 
-  return std::max( 1, mFieldCount + mExtraColumns ); // if there are zero columns all model indices will be considered invalid
+  return std::max( 1, mFieldCount + 1 ); // if there are zero columns all model indices will be considered invalid
 }
 
 QVariant QgsAttributeTableModel::headerData( int section, Qt::Orientation orientation, int role ) const
@@ -651,7 +638,7 @@ QVariant QgsAttributeTableModel::headerData( int section, Qt::Orientation orient
   {
     if ( orientation == Qt::Vertical ) //row
     {
-      return QVariant( section );
+      return QVariant( section + 1 );
     }
     else if ( section >= 0 && section < mFieldCount )
     {
@@ -660,7 +647,7 @@ QVariant QgsAttributeTableModel::headerData( int section, Qt::Orientation orient
     }
     else
     {
-      return tr( "extra column" );
+      return tr( "Actions" );
     }
   }
   else if ( role == Qt::ToolTipRole )
@@ -670,44 +657,73 @@ QVariant QgsAttributeTableModel::headerData( int section, Qt::Orientation orient
       // TODO show DisplayExpression
       return tr( "Feature ID: %1" ).arg( rowToId( section ) );
     }
-    else
+    else if ( section >= 0 && section < mFieldCount )
     {
       const QgsField field = mLayer->fields().at( mAttributes.at( section ) );
       return QgsFieldModel::fieldToolTipExtended( field, mLayer );
     }
   }
-  else
-  {
-    return QVariant();
-  }
+
+  return QVariant();
 }
 
 QVariant QgsAttributeTableModel::data( const QModelIndex &index, int role ) const
 {
-  if ( !index.isValid()
-       || !mLayer
-       || ( role != Qt::TextAlignmentRole && role != Qt::DisplayRole && role != Qt::ToolTipRole && role != Qt::EditRole && role != static_cast<int>( CustomRole::FeatureId ) && role != static_cast<int>( CustomRole::FieldIndex ) && role != Qt::BackgroundRole && role != Qt::ForegroundRole && role != Qt::DecorationRole && role != Qt::FontRole && role < static_cast<int>( CustomRole::Sort ) ) )
+  if ( !index.isValid() || !mLayer )
     return QVariant();
 
-  const QgsFeatureId rowId = rowToId( index.row() );
+  const bool isActionColumn = index.column() == mFieldCount;
 
+  // model roles which don't vary by row
+  switch ( role )
+  {
+    case static_cast<int>( QgsAttributeTableModel::CustomRole::ColumnType ):
+    {
+      if ( isActionColumn )
+      {
+        return static_cast< int >( ColumnTypeValue::ActionButton );
+      }
+      else
+      {
+        return static_cast< int >( ColumnTypeValue::Field );
+      }
+    }
+
+    case static_cast<int>( CustomRole::FieldIndex ):
+    {
+      return isActionColumn ? QVariant() : mAttributes.at( index.column() );
+    }
+
+    case Qt::TextAlignmentRole:
+    {
+      if ( isActionColumn )
+      {
+        return static_cast<Qt::Alignment::Int>( Qt::AlignLeft | Qt::AlignVCenter );
+      }
+      else
+      {
+        const int fieldId = mAttributes.at( index.column() );
+        const QgsField field = mFields.at( fieldId );
+        const WidgetData &widgetData = getWidgetData( index.column() );
+        return static_cast<Qt::Alignment::Int>( widgetData.fieldFormatter->alignmentFlag( field, widgetData.config ) | Qt::AlignVCenter );
+      }
+    }
+
+    default:
+      break;
+  }
+
+  // model roles which don't vary by column
   if ( role == static_cast<int>( CustomRole::FeatureId ) )
-    return rowId;
-
-  if ( index.column() >= mFieldCount )
-    return QVariant();
-
-  const int fieldId = mAttributes.at( index.column() );
-
-  if ( role == static_cast<int>( CustomRole::FieldIndex ) )
-    return fieldId;
-
-  if ( role >= static_cast<int>( CustomRole::Sort ) )
+  {
+    return rowToId( index.row() );
+  }
+  else if ( role >= static_cast<int>( CustomRole::Sort ) )
   {
     const unsigned long cacheIndex = role - static_cast<int>( CustomRole::Sort );
     if ( cacheIndex < mSortCaches.size() )
     {
-      return mSortCaches.at( cacheIndex ).sortCache.value( rowId );
+      return mSortCaches.at( cacheIndex ).sortCache.value( rowToId( index.row() ) );
     }
     else
     {
@@ -715,14 +731,12 @@ QVariant QgsAttributeTableModel::data( const QModelIndex &index, int role ) cons
     }
   }
 
-  const QgsField field = mFields.at( fieldId );
+  if ( isActionColumn )
+    return QVariant();
 
-  if ( role == Qt::TextAlignmentRole )
-  {
-    const WidgetData &widgetData = getWidgetData( index.column() );
-    return static_cast<Qt::Alignment::Int>( widgetData.fieldFormatter->alignmentFlag( field, widgetData.config ) | Qt::AlignVCenter );
-  }
-
+  // the remaining roles vary per column and row, and require a feature
+  const QgsFeatureId rowId = rowToId( index.row() );
+  const int fieldId = mAttributes.at( index.column() );
   if ( mFeat.id() != rowId || !mFeat.isValid() || !mLayerCache->cacheSubsetOfAttributes().contains( fieldId ) )
   {
     if ( !loadFeatureAtId( rowId, fieldId ) )
@@ -732,8 +746,8 @@ QVariant QgsAttributeTableModel::data( const QModelIndex &index, int role ) cons
       return QVariant( "ERROR" );
   }
 
-  QVariant val = mFeat.attribute( fieldId );
-
+  const QgsField field = mFields.at( fieldId );
+  const QVariant val = mFeat.attribute( fieldId );
   switch ( role )
   {
     case Qt::DisplayRole:
@@ -842,6 +856,9 @@ QVariant QgsAttributeTableModel::data( const QModelIndex &index, int role ) cons
 
       return QVariant();
     }
+
+    default:
+      break;
   }
 
   return QVariant();
@@ -868,8 +885,13 @@ Qt::ItemFlags QgsAttributeTableModel::flags( const QModelIndex &index ) const
   if ( !index.isValid() )
     return Qt::NoItemFlags;
 
-  if ( index.column() >= mFieldCount || !mLayer )
+  if ( !mLayer )
     return Qt::NoItemFlags;
+
+  if ( index.column() >= mFieldCount + 1 )
+    return Qt::NoItemFlags;
+  else if ( index.column() == mFieldCount ) // actions column
+    return Qt::ItemIsEnabled | Qt::ItemIsSelectable;
 
   Qt::ItemFlags flags = QAbstractTableModel::flags( index );
 
@@ -1118,6 +1140,12 @@ void QgsAttributeTableModel::prefetchSortData( const QString &expressionString, 
       const QVariant sortValue = widgetData.fieldFormatter->sortValue( mLayer, cache.sortFieldIndex, widgetData.config, widgetData.cache, f.attribute( cache.sortFieldIndex ) );
       cache.sortCache.insert( f.id(), sortValue );
     }
+  }
+  const int rows = rowCount();
+  if ( rows > 0 )
+  {
+    const int sortRole = static_cast< int >( CustomRole::Sort ) + static_cast< int >( cacheIndex );
+    emit dataChanged( index( 0, 0 ), index( rows - 1, columnCount() - 1 ), { sortRole } );
   }
 }
 

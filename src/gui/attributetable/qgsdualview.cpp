@@ -485,6 +485,10 @@ void QgsDualView::initLayerCache( bool cacheGeometry )
   }
 }
 
+#ifdef ENABLE_MODELTEST
+#include <QAbstractItemModelTester>
+#endif
+
 void QgsDualView::initModels( QgsMapCanvas *mapCanvas, const QgsFeatureRequest &request, bool loadFeatures )
 {
   delete mFeatureListModel;
@@ -492,9 +496,13 @@ void QgsDualView::initModels( QgsMapCanvas *mapCanvas, const QgsFeatureRequest &
   delete mMasterModel;
 
   mMasterModel = new QgsAttributeTableModel( mLayerCache, this );
+
+#ifdef ENABLE_MODELTEST
+  new QAbstractItemModelTester( mMasterModel, QAbstractItemModelTester::FailureReportingMode::Fatal, this );
+#endif
+
   mMasterModel->setRequest( request );
   mMasterModel->setEditorContext( mEditorContext );
-  mMasterModel->setExtraColumns( 1 ); // Add one extra column which we can "abuse" as an action column
 
   connect( mMasterModel, &QgsAttributeTableModel::progress, this, &QgsDualView::progress );
   connect( mMasterModel, &QgsAttributeTableModel::finished, this, &QgsDualView::finished );
@@ -505,6 +513,9 @@ void QgsDualView::initModels( QgsMapCanvas *mapCanvas, const QgsFeatureRequest &
     mMasterModel->loadLayer();
 
   mFilterModel = new QgsAttributeTableFilterModel( mapCanvas, mMasterModel, mMasterModel );
+#ifdef ENABLE_MODELTEST
+  new QAbstractItemModelTester( mFilterModel, QAbstractItemModelTester::FailureReportingMode::Fatal, this );
+#endif
 
   // The following connections to invalidate() are necessary to keep the filter model in sync
   // see regression https://github.com/qgis/QGIS/issues/23890
@@ -514,6 +525,9 @@ void QgsDualView::initModels( QgsMapCanvas *mapCanvas, const QgsFeatureRequest &
   connect( mFeatureListView, &QgsFeatureListView::displayExpressionChanged, this, &QgsDualView::displayExpressionChanged );
 
   mFeatureListModel = new QgsFeatureListModel( mFilterModel, mFilterModel );
+#ifdef ENABLE_MODELTEST
+  // new QAbstractItemModelTester( mFeatureListModel, QAbstractItemModelTester::FailureReportingMode::Fatal, this );
+#endif
 }
 
 void QgsDualView::restoreRecentDisplayExpressions()
@@ -1006,7 +1020,7 @@ void QgsDualView::widgetWillShowContextMenu( QgsActionMenu *menu, const QModelIn
 
 void QgsDualView::showViewHeaderMenu( QPoint point )
 {
-  const int col = mTableView->columnAt( point.x() );
+  const int col = mTableView->horizontalHeader()->visualIndex( mTableView->horizontalHeader()->logicalIndexAt( point ) );
 
   delete mHorizontalHeaderMenu;
   mHorizontalHeaderMenu = new QMenu( this );
@@ -1034,7 +1048,6 @@ void QgsDualView::showViewHeaderMenu( QPoint point )
   connect( optimizeWidthAllColumns, &QAction::triggered, this, &QgsDualView::autosizeAllColumns );
   mHorizontalHeaderMenu->addAction( optimizeWidthAllColumns );
 
-
   mHorizontalHeaderMenu->addSeparator();
   QAction *organize = new QAction( tr( "&Organize Columns…" ), mHorizontalHeaderMenu );
   connect( organize, &QAction::triggered, this, &QgsDualView::organizeColumns );
@@ -1046,9 +1059,12 @@ void QgsDualView::showViewHeaderMenu( QPoint point )
   mConfig.update( mLayer->fields() );
   // get layer field index from column name
   int fieldIndex = -1;
-  if ( col != -1 )
-    fieldIndex = mLayer->fields().indexFromName( mConfig.columns().at( mConfig.mapVisibleColumnToIndex( col ) ).name );
-  const Qgis::FieldOrigin fieldOrigin = mLayer->fields().fieldOrigin( fieldIndex );
+  Qgis::FieldOrigin fieldOrigin = Qgis::FieldOrigin::Unknown;
+  if ( col < mLayer->fields().size() )
+  {
+    fieldIndex = col;
+    fieldOrigin = mLayer->fields().fieldOrigin( fieldIndex );
+  }
 
   mHorizontalHeaderMenu->addSeparator();
 
@@ -1111,13 +1127,12 @@ void QgsDualView::organizeColumns()
   }
 }
 
-void QgsDualView::tableColumnResized( int column, int width )
+void QgsDualView::tableColumnResized( int visualColumnIndex, int width )
 {
   QgsAttributeTableConfig config = mConfig;
-  const int sourceCol = config.mapVisibleColumnToIndex( column );
-  if ( sourceCol >= 0 && config.columnWidth( sourceCol ) != width )
+  if ( visualColumnIndex >= 0 && config.columnWidth( visualColumnIndex ) != width )
   {
-    config.setColumnWidth( sourceCol, width );
+    config.setColumnWidth( visualColumnIndex, width );
     setAttributeTableConfig( config );
   }
 }
@@ -1127,10 +1142,9 @@ void QgsDualView::hideColumn()
   QAction *action = qobject_cast<QAction *>( sender() );
   const int col = action->data().toInt();
   QgsAttributeTableConfig config = mConfig;
-  const int sourceCol = mConfig.mapVisibleColumnToIndex( col );
-  if ( sourceCol >= 0 )
+  if ( col >= 0 )
   {
-    config.setColumnHidden( sourceCol, true );
+    config.setColumnHidden( col, true );
     setAttributeTableConfig( config );
   }
 }
@@ -1158,16 +1172,13 @@ void QgsDualView::resizeColumn()
     return;
 
   QgsAttributeTableConfig config = mConfig;
-  const int sourceCol = config.mapVisibleColumnToIndex( col );
-  if ( sourceCol >= 0 )
+
+  bool ok = false;
+  const int width = QInputDialog::getInt( this, tr( "Set column width" ), tr( "Enter column width" ), mTableView->columnWidth( col ), 0, 1000, 10, &ok );
+  if ( ok )
   {
-    bool ok = false;
-    const int width = QInputDialog::getInt( this, tr( "Set column width" ), tr( "Enter column width" ), mTableView->columnWidth( col ), 0, 1000, 10, &ok );
-    if ( ok )
-    {
-      config.setColumnWidth( sourceCol, width );
-      setAttributeTableConfig( config );
-    }
+    config.setColumnWidth( col, width );
+    setAttributeTableConfig( config );
   }
 }
 

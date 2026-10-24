@@ -63,11 +63,26 @@ class GUI_EXPORT QgsAttributeTableModel : public QAbstractTableModel
     {
       FeatureId SIP_MONKEYPATCH_COMPAT_NAME( FeatureIdRole ) = Qt::UserRole, //!< Get the feature id of the feature in this row
       FieldIndex SIP_MONKEYPATCH_COMPAT_NAME( FieldIndexRole ),              //!< Get the field index of this column
+      ColumnType,                                                            //!< The type of a given column. See ColumnType. \since QGIS 4.4
       User SIP_MONKEYPATCH_COMPAT_NAME( UserRole ),                          //!< Start further roles starting from this role
       // Insert new values here, SortRole needs to be the last one
-      Sort SIP_MONKEYPATCH_COMPAT_NAME( SortRole ), //!< Role used for sorting start here
+      Sort SIP_MONKEYPATCH_COMPAT_NAME( SortRole ) = User + 1000, //!< Role used for sorting start here
     };
     Q_ENUM( CustomRole )
+
+    /**
+     * The type of a column.
+     *
+     * \note Prior to QGIS 3.36 this was available as QgsAttributeTableFilterModel::ColumnTypeValue
+     * \since QGIS 4.4
+     */
+    enum class ColumnTypeValue SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsAttributeTableFilterModel, ColumnType ) : int
+    {
+      Field SIP_MONKEYPATCH_COMPAT_NAME( ColumnTypeField ),              //!< This column shows a field
+      ActionButton SIP_MONKEYPATCH_COMPAT_NAME( ColumnTypeActionButton ) //!< This column shows action buttons
+    };
+    Q_ENUM( ColumnTypeValue )
+
     // *INDENT-ON*
 
   public:
@@ -256,14 +271,18 @@ class GUI_EXPORT QgsAttributeTableModel : public QAbstractTableModel
     /**
      * Empty extra columns to announce from this model.
      * Any extra columns need to be implemented by proxy models in front of this model.
+     *
+     * \deprecated QGIS 4.4. No longer allowed.
      */
-    int extraColumns() const;
+    Q_DECL_DEPRECATED int extraColumns() const SIP_DEPRECATED;
 
     /**
      * Empty extra columns to announce from this model.
      * Any extra columns need to be implemented by proxy models in front of this model.
+     *
+     * \deprecated QGIS 4.4. No longer allowed.
      */
-    void setExtraColumns( int extraColumns );
+    Q_DECL_DEPRECATED void setExtraColumns( int extraColumns ) SIP_DEPRECATED;
 
     /**
      * Returns whether the attribute table will add a visual feedback to cells when an attribute
@@ -427,8 +446,6 @@ class GUI_EXPORT QgsAttributeTableModel : public QAbstractTableModel
     std::vector<SortCache> mSortCaches;
 
     QgsAttributeEditorContext mEditorContext;
-
-    int mExtraColumns = 0;
 
     //! Flag for massive changes operations, set by edit command or rollback
     bool mBulkEditCommandRunning = false;

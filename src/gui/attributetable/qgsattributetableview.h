@@ -170,7 +170,7 @@ class GUI_EXPORT QgsAttributeTableView : public QgsTableView
 
     /**
      * Emitted when a column in the view has been resized.
-     * \param column column index (starts at 0)
+     * \param column visual column index (starts at 0)
      * \param width new width in pixel
      */
     void columnResized( int column, int width );
@@ -218,6 +218,7 @@ class GUI_EXPORT QgsAttributeTableView : public QgsTableView
     QMap<QModelIndex, QWidget *> mActionWidgets;
     QgsAttributeTableConfig mConfig;
     QString mSortExpression;
+    int mBlockColumnUpdates = 0;
 };
 
 #endif
