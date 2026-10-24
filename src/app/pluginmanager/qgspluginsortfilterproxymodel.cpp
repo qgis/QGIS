@@ -132,15 +132,6 @@ void QgsPluginSortFilterProxyModel::sortPluginsByDownloads()
   setSortRole( PLUGIN_DOWNLOADS_ROLE );
 }
 
-
-void QgsPluginSortFilterProxyModel::sortPluginsByVote()
-{
-  setAcceptedSpacers();
-  sort( 0, Qt::DescendingOrder );
-  setSortRole( PLUGIN_VOTE_ROLE );
-}
-
-
 void QgsPluginSortFilterProxyModel::sortPluginsByStatus()
 {
   setAcceptedSpacers( u"status"_s );
