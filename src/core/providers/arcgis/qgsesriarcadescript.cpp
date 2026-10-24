@@ -363,34 +363,34 @@ int QgsEsriArcadeBinaryOperatorExpression::precedence() const
 {
   switch ( mBinaryOperator )
   {
-    case BinaryOperator::boLogicalOr:
+    case BinaryOperator::LogicalOr:
       return 1;
-    case BinaryOperator::boLogicalAnd:
+    case BinaryOperator::LogicalAnd:
       return 2;
-    case BinaryOperator::boBitwiseOr:
+    case BinaryOperator::BitwiseOr:
       return 3;
-    case BinaryOperator::boBitwiseXor:
+    case BinaryOperator::BitwiseXor:
       return 4;
-    case BinaryOperator::boBitwiseAnd:
+    case BinaryOperator::BitwiseAnd:
       return 5;
-    case BinaryOperator::boEqual:
-    case BinaryOperator::boNotEqual:
+    case BinaryOperator::Equal:
+    case BinaryOperator::NotEqual:
       return 6;
-    case BinaryOperator::boLessThan:
-    case BinaryOperator::boGreaterThan:
-    case BinaryOperator::boLessThanOrEqual:
-    case BinaryOperator::boGreaterThanOrEqual:
+    case BinaryOperator::LessThan:
+    case BinaryOperator::GreaterThan:
+    case BinaryOperator::LessThanOrEqual:
+    case BinaryOperator::GreaterThanOrEqual:
       return 7;
-    case BinaryOperator::boBitwiseLeftShift:
-    case BinaryOperator::boBitwiseSignedRightShift:
-    case BinaryOperator::boBitwiseUnsignedRightShift:
+    case BinaryOperator::BitwiseLeftShift:
+    case BinaryOperator::BitwiseSignedRightShift:
+    case BinaryOperator::BitwiseUnsignedRightShift:
       return 8;
-    case BinaryOperator::boPlus:
-    case BinaryOperator::boMinus:
+    case BinaryOperator::Plus:
+    case BinaryOperator::Minus:
       return 9;
-    case BinaryOperator::boMultiply:
-    case BinaryOperator::boDivide:
-    case BinaryOperator::boModulo:
+    case BinaryOperator::Multiply:
+    case BinaryOperator::Divide:
+    case BinaryOperator::Modulo:
       return 10;
   }
   return -1;
@@ -441,7 +441,7 @@ QString QgsEsriArcadeUnaryOperatorExpression::text() const
 
 QString QgsEsriArcadeUnaryOperatorExpression::dump() const
 {
-  if ( mUnaryOperator == UnaryOperator::uoPostIncrement || mUnaryOperator == UnaryOperator::uoPostDecrement )
+  if ( mUnaryOperator == UnaryOperator::PostIncrement || mUnaryOperator == UnaryOperator::PostDecrement )
     return u"%1%2"_s.arg( mOperand ? mOperand->dump() : QString(), text() );
   else
     return u"%1%2"_s.arg( text(), mOperand ? mOperand->dump() : QString() );
@@ -649,7 +649,7 @@ QString QgsEsriArcadeIfStatement::dump() const
   QString result = u"if (%1) {\n%2}"_s.arg( mCondition ? mCondition->dump() : QString(), mTrueBlock ? mTrueBlock->dump() : QString() );
   if ( mFalseBlock )
   {
-    if ( mFalseBlock->nodeType() == NodeType::ntIfStatement )
+    if ( mFalseBlock->nodeType() == NodeType::IfStatement )
       result += u" else %1"_s.arg( mFalseBlock->dump() );
     else
       result += u" else {\n%1}"_s.arg( mFalseBlock->dump() );
