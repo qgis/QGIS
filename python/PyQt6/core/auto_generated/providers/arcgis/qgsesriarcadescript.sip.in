@@ -26,7 +26,7 @@ Arcade node subclasses are either:
   ``1+2``, ``Upper('A string')``, or literals like ``255`` or ``'a
   string'``.
 
-.. versionadded:: 4.6
+.. versionadded:: 4.4
 %End
 
 %TypeHeaderCode
@@ -169,7 +169,7 @@ Base class for statement nodes in an Esri Arcade script.
 Subclasses represent standalone statements, such as a variable
 declaration, if statement, for loop, etc.
 
-.. versionadded:: 4.6
+.. versionadded:: 4.4
 %End
 
 %TypeHeaderCode
@@ -190,7 +190,7 @@ representing an expression.
 For example ``1+2``, ``Upper('A string')``, or literals like ``255`` or
 ``'a string'``.
 
-.. versionadded:: 4.6
+.. versionadded:: 4.4
 %End
 
 %TypeHeaderCode
@@ -205,7 +205,7 @@ class QgsEsriArcadeBlockStatement : QgsEsriArcadeStatement
 %Docstring(signature="appended")
 Represents a sequence or block of statements enclosed in braces.
 
-.. versionadded:: 4.6
+.. versionadded:: 4.4
 %End
 
 %TypeHeaderCode
@@ -260,7 +260,7 @@ Represents a variable declaration statement.
 
 For example ``var x = 3;``.
 
-.. versionadded:: 4.6
+.. versionadded:: 4.4
 %End
 
 %TypeHeaderCode
@@ -309,7 +309,7 @@ Represents a variable reassignment statement.
 
 For example, ``age = "35 years";``.
 
-.. versionadded:: 4.6
+.. versionadded:: 4.4
 %End
 
 %TypeHeaderCode
@@ -367,7 +367,7 @@ Represents a return statement.
 
 For example ``return x + y;``.
 
-.. versionadded:: 4.6
+.. versionadded:: 4.4
 %End
 
 %TypeHeaderCode
@@ -406,7 +406,7 @@ Represents a function declaration statement.
 
 For example ``function foo(a, b) { ... })``.
 
-.. versionadded:: 4.6
+.. versionadded:: 4.4
 %End
 
 %TypeHeaderCode
@@ -456,7 +456,7 @@ For example, a standalone ``variable * 2 + 3`` expression. This is
 usually only used for simple single-line Arcade scripts, where the
 ``return`` and trailing ``;`` are implied.
 
-.. versionadded:: 4.6
+.. versionadded:: 4.4
 %End
 
 %TypeHeaderCode
@@ -492,7 +492,7 @@ class QgsEsriArcadeLiteralExpression : QgsEsriArcadeExpression
 %Docstring(signature="appended")
 Represents a literal value (number, text string, boolean, or null).
 
-.. versionadded:: 4.6
+.. versionadded:: 4.4
 %End
 
 %TypeHeaderCode
@@ -529,7 +529,7 @@ class QgsEsriArcadeVariableReferenceExpression : QgsEsriArcadeExpression
 %Docstring(signature="appended")
 Represents a reference to a variable identifier.
 
-.. versionadded:: 4.6
+.. versionadded:: 4.4
 %End
 
 %TypeHeaderCode
@@ -563,7 +563,7 @@ Represents a reference to a profile variable.
 
 For example ``$feature``.
 
-.. versionadded:: 4.6
+.. versionadded:: 4.4
 %End
 
 %TypeHeaderCode
@@ -602,7 +602,7 @@ Arcade also supports a ``?.`` accessor which performs a "safe access",
 where null values are returned when the container itself is null. For
 these ``?.`` forms :py:func:`~isSafeAccess` will return ``True``.
 
-.. versionadded:: 4.6
+.. versionadded:: 4.4
 %End
 
 %TypeHeaderCode
@@ -653,7 +653,7 @@ class QgsEsriArcadeBinaryOperatorExpression : QgsEsriArcadeExpression
 %Docstring(signature="appended")
 Represents a binary operation expression.
 
-.. versionadded:: 4.6
+.. versionadded:: 4.4
 %End
 
 %TypeHeaderCode
@@ -739,7 +739,7 @@ class QgsEsriArcadeUnaryOperatorExpression : QgsEsriArcadeExpression
 %Docstring(signature="appended")
 Represents a unary operation expression.
 
-.. versionadded:: 4.6
+.. versionadded:: 4.4
 %End
 
 %TypeHeaderCode
@@ -800,7 +800,7 @@ Represents a function call expression.
 
 For example ``Sum(values)``.
 
-.. versionadded:: 4.6
+.. versionadded:: 4.4
 %End
 
 %TypeHeaderCode
@@ -846,7 +846,7 @@ Represents an array or dictionary index subscript expression.
 
 For example ``values[index]``.
 
-.. versionadded:: 4.6
+.. versionadded:: 4.4
 %End
 
 %TypeHeaderCode
@@ -892,7 +892,7 @@ For example ``[1, 2, 3]``.
 
 Array elements may be expressions themselves.
 
-.. versionadded:: 4.6
+.. versionadded:: 4.4
 %End
 
 %TypeHeaderCode
@@ -933,7 +933,7 @@ Represents a key-value entry in an Esri Arcade dictionary literal.
 
 Eg the ``a: 5`` part of the ``{a: 5, b: 6}`` dictionary literal.
 
-.. versionadded:: 4.6
+.. versionadded:: 4.4
 %End
 
 %TypeHeaderCode
@@ -987,7 +987,7 @@ Represents a dictionary literal expression.
 
 For example ``{ a: 1, "b": 2 }``.
 
-.. versionadded:: 4.6
+.. versionadded:: 4.4
 %End
 
 %TypeHeaderCode
@@ -1024,7 +1024,7 @@ class QgsEsriArcadeIfStatement : QgsEsriArcadeStatement
 %Docstring(signature="appended")
 Represents an if statement.
 
-.. versionadded:: 4.6
+.. versionadded:: 4.4
 %End
 
 %TypeHeaderCode
@@ -1073,7 +1073,7 @@ class QgsEsriArcadeForStatement : QgsEsriArcadeStatement
 %Docstring(signature="appended")
 Represents a standard counter-based for loop.
 
-.. versionadded:: 4.6
+.. versionadded:: 4.4
 %End
 
 %TypeHeaderCode
@@ -1127,7 +1127,7 @@ class QgsEsriArcadeForInStatement : QgsEsriArcadeStatement
 %Docstring(signature="appended")
 Represents a range based for...in or for...of iteration statement.
 
-.. versionadded:: 4.6
+.. versionadded:: 4.4
 %End
 
 %TypeHeaderCode
@@ -1192,7 +1192,7 @@ class QgsEsriArcadeWhileStatement : QgsEsriArcadeStatement
 %Docstring(signature="appended")
 Represents a while loop statement.
 
-.. versionadded:: 4.6
+.. versionadded:: 4.4
 %End
 
 %TypeHeaderCode
@@ -1234,7 +1234,7 @@ class QgsEsriArcadeBreakStatement : QgsEsriArcadeStatement
 %Docstring(signature="appended")
 Represents a break loop control statement.
 
-.. versionadded:: 4.6
+.. versionadded:: 4.4
 %End
 
 %TypeHeaderCode
@@ -1260,7 +1260,7 @@ class QgsEsriArcadeContinueStatement : QgsEsriArcadeStatement
 %Docstring(signature="appended")
 Represents a continue loop control statement.
 
-.. versionadded:: 4.6
+.. versionadded:: 4.4
 %End
 
 %TypeHeaderCode
@@ -1288,7 +1288,7 @@ class QgsEsriArcadeVisitor
 Abstract visitor interface for traversing Esri Arcade abstract syntax
 trees.
 
-.. versionadded:: 4.6
+.. versionadded:: 4.4
 %End
 
 %TypeHeaderCode
@@ -1394,7 +1394,7 @@ class QgsEsriArcadeRecursiveVisitor : QgsEsriArcadeVisitor
 Visitor implementation that recursively traverses all child nodes in an
 Esri Arcade script.
 
-.. versionadded:: 4.6
+.. versionadded:: 4.4
 %End
 
 %TypeHeaderCode
@@ -1454,7 +1454,7 @@ class QgsEsriArcadeScript
 %Docstring(signature="appended")
 Parses and encapsulates an entire Esri Arcade script.
 
-.. versionadded:: 4.6
+.. versionadded:: 4.4
 %End
 
 %TypeHeaderCode
