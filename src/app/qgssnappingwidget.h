@@ -176,6 +176,8 @@ class APP_EXPORT QgsSnappingWidget : public QWidget
 
     bool mRequireLayerTreeViewUpdate = false;
 
+    int mBlockChangeUpdates = 0;
+
     void cleanGroup( QgsLayerTreeNode *node );
 };
 
