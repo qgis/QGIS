@@ -194,6 +194,18 @@ class GUI_EXPORT QgsElevationProfileCanvas : public QgsPlotCanvas
     QList<QgsAbstractProfileSource *> sources() const;
 
     /**
+     * Returns the list of raw sources included in the profile.
+     *
+     * It is different from sources(), because rawSources() allows callers to access the original
+     * QgsMapLayer objects (e.g., from QgsPluginLayer objects).
+     *
+     * \see sources()
+     * \note Not available in Python bindings
+     * \since QGIS 4.4
+     */
+    QList< std::variant< QgsMapLayer *, QgsAbstractProfileSource * > > rawSources() const SIP_SKIP;
+
+    /**
      * Sets the \a crs associated with the canvas' map coordinates.
      *
      * \see crs()

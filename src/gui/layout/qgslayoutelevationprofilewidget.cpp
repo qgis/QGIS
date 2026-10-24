@@ -725,13 +725,7 @@ void QgsLayoutElevationProfileWidget::copySettingsFromProfileCanvas( QgsElevatio
 
   QList<QgsMapLayer *> canvasLayers = canvas->layers();
   mProfile->setLayers( canvasLayers );
-
-  QList< std::variant< QgsMapLayer *, QgsAbstractProfileSource * > > canvasSources;
-  for ( const auto &canvasSource : canvas->sources() )
-  {
-    canvasSources << canvasSource;
-  }
-  mProfile->setSources( canvasSources );
+  mProfile->setSources( canvas->rawSources() );
 
   syncLayerTreeAndProfileItemSources();
 

@@ -1275,6 +1275,31 @@ QList<QgsAbstractProfileSource *> QgsElevationProfileCanvas::sources() const
   return sources;
 }
 
+QList< std::variant< QgsMapLayer *, QgsAbstractProfileSource * > > QgsElevationProfileCanvas::rawSources() const
+{
+  QList< std::variant< QgsMapLayer *, QgsAbstractProfileSource * > > sources;
+  sources.reserve( mSources.count() );
+  for ( const auto &source : mSources )
+  {
+    if ( const QgsWeakMapLayerPointer *weakLayerPointer = std::get_if< QgsWeakMapLayerPointer >( &source ) )
+    {
+      if ( QgsMapLayer *layer = weakLayerPointer->data() )
+      {
+        sources << layer;
+      }
+    }
+    else if ( auto profileSource = std::get_if< QgsAbstractProfileSource * >( &source ) )
+    {
+      if ( QgsApplication::profileSourceRegistry()->findSourceById( ( *profileSource )->profileSourceId() ) )
+      {
+        sources << *profileSource;
+      }
+    }
+  }
+
+  return sources;
+}
+
 void QgsElevationProfileCanvas::resizeEvent( QResizeEvent *event )
 {
   QgsPlotCanvas::resizeEvent( event );
