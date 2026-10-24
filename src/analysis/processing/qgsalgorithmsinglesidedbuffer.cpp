@@ -124,13 +124,13 @@ bool QgsSingleSidedBufferAlgorithm::prepareAlgorithm( const QVariantMap &paramet
   return true;
 }
 
-QgsFeatureList QgsSingleSidedBufferAlgorithm::processFeature( const QgsFeature &feature, QgsProcessingContext &context, QgsProcessingFeedback * )
+QgsFeatureList QgsSingleSidedBufferAlgorithm::processFeature( const QgsFeature &feature, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
   QGS_MARK_ALGORITHM_SOURCE
 
   QgsFeature f = feature;
 
-  if ( f.hasGeometry() )
+  if ( f.hasGeometry() && !f.geometry().isEmpty() )
   {
     double distance = mDistance;
     if ( mDynamicDistance )
@@ -141,6 +141,11 @@ QgsFeatureList QgsSingleSidedBufferAlgorithm::processFeature( const QgsFeature &
       throw QgsProcessingException( QObject::tr( "Error calculating single sided buffer" ) );
 
     f.setGeometry( outputGeometry );
+  }
+  else
+  {
+    feedback->pushWarning( QObject::tr( "Feature %1 has an empty or null geometry and cannot be buffered." ).arg( f.id() ) );
+    return {};
   }
 
   return QgsFeatureList() << f;
