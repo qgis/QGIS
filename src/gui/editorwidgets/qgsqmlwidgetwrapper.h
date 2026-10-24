@@ -18,9 +18,12 @@
 
 #include "qgis_gui.h"
 #include "qgis_sip.h"
+#include "qgsattributeform.h"
 #include "qgswidgetwrapper.h"
 
 #include <QQuickWidget>
+
+class QgsQmlAttributeFormBridge;
 
 /**
  * \ingroup gui
@@ -64,6 +67,7 @@ class GUI_EXPORT QgsQmlWidgetWrapper : public QgsWidgetWrapper
     QTemporaryFile mQmlFile;
     QString mQmlCode;
     QQuickWidget *mWidget = nullptr;
+    QgsQmlAttributeFormBridge *mWidgetBridge = nullptr;
     QgsFeature mFeature;
     QgsFeature mFormFeature;
     bool mRequiresFormScope = false;
@@ -92,6 +96,44 @@ class QmlExpression : public QObject
   private:
     QgsExpressionContext mExpressionContext;
 };
+
+
+class QgsQmlAttributeFormBridge : public QObject
+{
+    Q_OBJECT
+
+    Q_PROPERTY( QgsVectorLayer *layer READ layer )
+    Q_PROPERTY( bool editable READ editable NOTIFY editableChanged )
+    Q_PROPERTY( QgsAttributeEditorContext context READ context NOTIFY contextChanged )
+    Q_PROPERTY( QgsFeature currentFormFeature READ currentFormFeature NOTIFY currentFormFeatureChanged )
+
+  public:
+    QgsQmlAttributeFormBridge( QgsAttributeForm *form, QObject *parent = nullptr );
+    ~QgsQmlAttributeFormBridge() = default;
+
+    bool editable() const;
+
+    QgsVectorLayer *layer() const;
+
+    QgsAttributeEditorContext context() const;
+    void setContext( const QgsAttributeEditorContext &context );
+
+    QgsFeature currentFormFeature() const;
+
+    Q_INVOKABLE void changeGeometry( const QgsGeometry &geometry );
+    Q_INVOKABLE void changeAttribute( const QString &field, const QVariant &value );
+    Q_INVOKABLE QVariant attribute( const QString &field );
+
+  signals:
+    void editableChanged();
+    void contextChanged();
+    void currentFormFeatureChanged();
+
+  private:
+    QgsAttributeForm *mForm = nullptr;
+    QgsAttributeEditorContext mContext;
+};
+
 ///@endcond
 #endif //SIP_RUN
 
