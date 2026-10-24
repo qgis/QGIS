@@ -421,9 +421,20 @@ bool QgsGui::allowExecutionOfEmbeddedScripts( QgsProject *project, QgsMessageBar
   Qgis::ProjectTrustStatus trustStatus = QgsProjectUtils::checkUserTrust( project );
   if ( trustStatus == Qgis::ProjectTrustStatus::Undetermined && embeddedScriptMode == Qgis::EmbeddedScriptMode::Ask )
   {
-    QgsProjectTrustDialog dialog( project );
-    dialog.exec();
-    trustStatus = QgsProjectUtils::checkUserTrust( project );
+    if( QgsApplication::currentProjectTemporaryTrustStatus() == Qgis::ProjectTrustStatus::Trusted )
+    {
+      return true;
+    }
+    else if( QgsApplication::currentProjectTemporaryTrustStatus() == Qgis::ProjectTrustStatus::Untrusted )
+    {
+      return false;
+    }
+    else
+    {
+      QgsProjectTrustDialog dialog( project );
+      dialog.exec();
+      trustStatus = QgsProjectUtils::checkUserTrust( project );
+    }
   }
 
   if ( messageBar )
