@@ -1177,6 +1177,30 @@ personal qgis.db)
 .. seealso:: :py:func:`loadNamedStyle`
 %End
 
+    bool restoreDefaultStyle( QString &errorMessage /Out/, bool loadFromProvider = false );
+%Docstring
+Restores the default style for this layer and triggers a repaint.
+
+If ``loadFromProvider`` is ``True`` the default style is loaded from the
+data provider's style storage, otherwise it is loaded from the .qml file
+or qgis.db.
+
+If no default style could be restored the layer's current style is left
+unchanged.
+
+:param loadFromProvider: ``True`` to load the default style from
+                         theprovider's storage
+
+:return: - ``True`` if the default style was restored
+         - errorMessage: error message about what went wrong
+
+.. seealso:: :py:func:`loadDefaultStyle`
+
+.. seealso:: :py:func:`saveDefaultStyle`
+
+.. versionadded:: 4.6
+%End
+
 
     virtual QString loadNamedStyle(
       const QString &uri, bool &resultFlag /Out/, QgsMapLayer::StyleCategories categories = QgsMapLayer::AllStyleCategories, Qgis::LoadStyleFlags flags = Qgis::LoadStyleFlags()
