@@ -784,6 +784,43 @@ age = "35 years";
             "$feature",
         )
 
+    def test_profile_member_var_with_space(self):
+        # yes, this is valid arcade!
+        script = QgsEsriArcadeScript("""$feature.Sample Type Field""")
+        self.assertFalse(script.hasParserError())
+
+        self.assertIsInstance(script.rootBlock(), QgsEsriArcadeBlockStatement)
+        self.assertEqual(script.rootBlock().count(), 1)
+
+        self.assertIsInstance(
+            script.rootBlock().statements()[0],
+            QgsEsriArcadeExpressionStatement,
+        )
+
+        self.assertIsInstance(
+            script.rootBlock().statements()[0].expression(),
+            QgsEsriArcadeMemberAccessExpression,
+        )
+
+        self.assertIsInstance(
+            script.rootBlock().statements()[0].expression().containerExpression(),
+            QgsEsriArcadeProfileVariableReferenceExpression,
+        )
+
+        self.assertEqual(
+            script.rootBlock()
+            .statements()[0]
+            .expression()
+            .containerExpression()
+            .name(),
+            "$feature",
+        )
+
+        self.assertEqual(
+            script.rootBlock().statements()[0].expression().memberName(),
+            "Sample Type Field",
+        )
+
     def test_profile_variable_bracket(self):
         script = QgsEsriArcadeScript(
             """var percentCollege = $feature["joinKey.fieldName"] / $feature["POPULATION"];"""
