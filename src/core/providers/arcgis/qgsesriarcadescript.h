@@ -54,7 +54,7 @@ class QgsEsriArcadeContinueStatement;
  * - or expressions (inheriting QgsEsriArcadeExpression), which are a portion of a statement representing
  *   an expression. For example ``1+2``, ``Upper('A string')``, or literals like ``255`` or ``'a string'``.
  *
- * \since QGIS 4.6
+ * \since QGIS 4.4
  */
 class CORE_EXPORT QgsEsriArcadeNode
 {
@@ -199,7 +199,7 @@ class CORE_EXPORT QgsEsriArcadeNode
  * Subclasses represent standalone statements, such as a variable declaration, if
  * statement, for loop, etc.
  *
- * \since QGIS 4.6
+ * \since QGIS 4.4
  */
 class CORE_EXPORT QgsEsriArcadeStatement : public QgsEsriArcadeNode
 {
@@ -217,7 +217,7 @@ class CORE_EXPORT QgsEsriArcadeStatement : public QgsEsriArcadeNode
  * For example ``1+2``, ``Upper('A string')``, or literals like
  * ``255`` or ``'a string'``.
  *
- * \since QGIS 4.6
+ * \since QGIS 4.4
  */
 class CORE_EXPORT QgsEsriArcadeExpression : public QgsEsriArcadeNode
 {
@@ -229,7 +229,7 @@ class CORE_EXPORT QgsEsriArcadeExpression : public QgsEsriArcadeNode
  * \ingroup core
  * \brief Represents a sequence or block of statements enclosed in braces.
  *
- * \since QGIS 4.6
+ * \since QGIS 4.4
  */
 class CORE_EXPORT QgsEsriArcadeBlockStatement : public QgsEsriArcadeStatement
 {
@@ -284,7 +284,7 @@ class CORE_EXPORT QgsEsriArcadeBlockStatement : public QgsEsriArcadeStatement
  *
  * For example ``var x = 3;``.
  *
- * \since QGIS 4.6
+ * \since QGIS 4.4
  */
 class CORE_EXPORT QgsEsriArcadeVariableDeclarationStatement : public QgsEsriArcadeStatement
 {
@@ -334,7 +334,7 @@ class CORE_EXPORT QgsEsriArcadeVariableDeclarationStatement : public QgsEsriArca
  *
  * For example, ``age = "35 years";``.
  *
- * \since QGIS 4.6
+ * \since QGIS 4.4
  */
 class CORE_EXPORT QgsEsriArcadeAssignmentStatement : public QgsEsriArcadeStatement
 {
@@ -400,7 +400,7 @@ class CORE_EXPORT QgsEsriArcadeAssignmentStatement : public QgsEsriArcadeStateme
  *
  * For example ``return x + y;``.
  *
- * \since QGIS 4.6
+ * \since QGIS 4.4
  */
 class CORE_EXPORT QgsEsriArcadeReturnStatement : public QgsEsriArcadeStatement
 {
@@ -439,7 +439,7 @@ class CORE_EXPORT QgsEsriArcadeReturnStatement : public QgsEsriArcadeStatement
  *
  * For example ``function foo(a, b) { ... })``.
  *
- * \since QGIS 4.6
+ * \since QGIS 4.4
  */
 class CORE_EXPORT QgsEsriArcadeFunctionDeclarationStatement : public QgsEsriArcadeStatement
 {
@@ -492,7 +492,7 @@ class CORE_EXPORT QgsEsriArcadeFunctionDeclarationStatement : public QgsEsriArca
  * only used for simple single-line Arcade scripts, where the ``return``
  * and trailing ``;`` are implied.
  *
- * \since QGIS 4.6
+ * \since QGIS 4.4
  */
 class CORE_EXPORT QgsEsriArcadeExpressionStatement : public QgsEsriArcadeStatement
 {
@@ -529,7 +529,7 @@ class CORE_EXPORT QgsEsriArcadeExpressionStatement : public QgsEsriArcadeStateme
  * \ingroup core
  * \brief Represents a literal value (number, text string, boolean, or null).
  *
- * \since QGIS 4.6
+ * \since QGIS 4.4
  */
 class CORE_EXPORT QgsEsriArcadeLiteralExpression : public QgsEsriArcadeExpression
 {
@@ -562,7 +562,7 @@ class CORE_EXPORT QgsEsriArcadeLiteralExpression : public QgsEsriArcadeExpressio
  * \ingroup core
  * \brief Represents a reference to a variable identifier.
  *
- * \since QGIS 4.6
+ * \since QGIS 4.4
  */
 class CORE_EXPORT QgsEsriArcadeVariableReferenceExpression : public QgsEsriArcadeExpression
 {
@@ -592,7 +592,7 @@ class CORE_EXPORT QgsEsriArcadeVariableReferenceExpression : public QgsEsriArcad
  *
  * For example ``$feature``.
  *
- * \since QGIS 4.6
+ * \since QGIS 4.4
  */
 class CORE_EXPORT QgsEsriArcadeProfileVariableReferenceExpression : public QgsEsriArcadeExpression
 {
@@ -627,7 +627,7 @@ class CORE_EXPORT QgsEsriArcadeProfileVariableReferenceExpression : public QgsEs
  * values are returned when the container itself is null. For these ``?.`` forms
  * isSafeAccess() will return TRUE.
  *
- * \since QGIS 4.6
+ * \since QGIS 4.4
  */
 class CORE_EXPORT QgsEsriArcadeMemberAccessExpression : public QgsEsriArcadeExpression
 {
@@ -681,7 +681,7 @@ class CORE_EXPORT QgsEsriArcadeMemberAccessExpression : public QgsEsriArcadeExpr
  * \ingroup core
  * \brief Represents a binary operation expression.
  *
- * \since QGIS 4.6
+ * \since QGIS 4.4
  */
 class CORE_EXPORT QgsEsriArcadeBinaryOperatorExpression : public QgsEsriArcadeExpression
 {
@@ -774,7 +774,7 @@ class CORE_EXPORT QgsEsriArcadeBinaryOperatorExpression : public QgsEsriArcadeEx
  * \ingroup core
  * \brief Represents a unary operation expression.
  *
- * \since QGIS 4.6
+ * \since QGIS 4.4
  */
 class CORE_EXPORT QgsEsriArcadeUnaryOperatorExpression : public QgsEsriArcadeExpression
 {
@@ -842,7 +842,7 @@ class CORE_EXPORT QgsEsriArcadeUnaryOperatorExpression : public QgsEsriArcadeExp
  *
  * For example ``Sum(values)``.
  *
- * \since QGIS 4.6
+ * \since QGIS 4.4
  */
 class CORE_EXPORT QgsEsriArcadeFunctionCallExpression : public QgsEsriArcadeExpression
 {
@@ -889,7 +889,7 @@ class CORE_EXPORT QgsEsriArcadeFunctionCallExpression : public QgsEsriArcadeExpr
  *
  * For example ``values[index]``.
  *
- * \since QGIS 4.6
+ * \since QGIS 4.4
  */
 class CORE_EXPORT QgsEsriArcadeIndexExpression : public QgsEsriArcadeExpression
 {
@@ -936,7 +936,7 @@ class CORE_EXPORT QgsEsriArcadeIndexExpression : public QgsEsriArcadeExpression
  *
  * Array elements may be expressions themselves.
  *
- * \since QGIS 4.6
+ * \since QGIS 4.4
  */
 class CORE_EXPORT QgsEsriArcadeArrayLiteralExpression : public QgsEsriArcadeExpression
 {
@@ -977,7 +977,7 @@ class CORE_EXPORT QgsEsriArcadeArrayLiteralExpression : public QgsEsriArcadeExpr
  *
  * Eg the ``a: 5`` part of the ``{a: 5, b: 6}`` dictionary literal.
  *
- * \since QGIS 4.6
+ * \since QGIS 4.4
  */
 class CORE_EXPORT QgsEsriArcadeDictionaryElement
 {
@@ -1037,7 +1037,7 @@ class CORE_EXPORT QgsEsriArcadeDictionaryElement
  *
  * For example ``{ a: 1, "b": 2 }``.
  *
- * \since QGIS 4.6
+ * \since QGIS 4.4
  */
 class CORE_EXPORT QgsEsriArcadeDictionaryLiteralExpression : public QgsEsriArcadeExpression
 {
@@ -1075,7 +1075,7 @@ class CORE_EXPORT QgsEsriArcadeDictionaryLiteralExpression : public QgsEsriArcad
  * \ingroup core
  * \brief Represents an if statement.
  *
- * \since QGIS 4.6
+ * \since QGIS 4.4
  */
 class CORE_EXPORT QgsEsriArcadeIfStatement : public QgsEsriArcadeStatement
 {
@@ -1124,7 +1124,7 @@ class CORE_EXPORT QgsEsriArcadeIfStatement : public QgsEsriArcadeStatement
  * \ingroup core
  * \brief Represents a standard counter-based for loop.
  *
- * \since QGIS 4.6
+ * \since QGIS 4.4
  */
 class CORE_EXPORT QgsEsriArcadeForStatement : public QgsEsriArcadeStatement
 {
@@ -1181,7 +1181,7 @@ class CORE_EXPORT QgsEsriArcadeForStatement : public QgsEsriArcadeStatement
  * \ingroup core
  * \brief Represents a range based for...in or for...of iteration statement.
  *
- * \since QGIS 4.6
+ * \since QGIS 4.4
  */
 class CORE_EXPORT QgsEsriArcadeForInStatement : public QgsEsriArcadeStatement
 {
@@ -1253,7 +1253,7 @@ class CORE_EXPORT QgsEsriArcadeForInStatement : public QgsEsriArcadeStatement
  * \ingroup core
  * \brief Represents a while loop statement.
  *
- * \since QGIS 4.6
+ * \since QGIS 4.4
  */
 class CORE_EXPORT QgsEsriArcadeWhileStatement : public QgsEsriArcadeStatement
 {
@@ -1296,7 +1296,7 @@ class CORE_EXPORT QgsEsriArcadeWhileStatement : public QgsEsriArcadeStatement
  * \ingroup core
  * \brief Represents a break loop control statement.
  *
- * \since QGIS 4.6
+ * \since QGIS 4.4
  */
 class CORE_EXPORT QgsEsriArcadeBreakStatement : public QgsEsriArcadeStatement
 {
@@ -1316,7 +1316,7 @@ class CORE_EXPORT QgsEsriArcadeBreakStatement : public QgsEsriArcadeStatement
  * \ingroup core
  * \brief Represents a continue loop control statement.
  *
- * \since QGIS 4.6
+ * \since QGIS 4.4
  */
 class CORE_EXPORT QgsEsriArcadeContinueStatement : public QgsEsriArcadeStatement
 {
@@ -1337,7 +1337,7 @@ class CORE_EXPORT QgsEsriArcadeContinueStatement : public QgsEsriArcadeStatement
  * \ingroup core
  * \brief Abstract visitor interface for traversing Esri Arcade abstract syntax trees.
  *
- * \since QGIS 4.6
+ * \since QGIS 4.4
  */
 class CORE_EXPORT QgsEsriArcadeVisitor
 {
@@ -1394,7 +1394,7 @@ class CORE_EXPORT QgsEsriArcadeVisitor
  * \ingroup core
  * \brief Visitor implementation that recursively traverses all child nodes in an Esri Arcade script.
  *
- * \since QGIS 4.6
+ * \since QGIS 4.4
  */
 class CORE_EXPORT QgsEsriArcadeRecursiveVisitor : public QgsEsriArcadeVisitor
 {
@@ -1429,7 +1429,7 @@ class CORE_EXPORT QgsEsriArcadeRecursiveVisitor : public QgsEsriArcadeVisitor
  * \ingroup core
  * \brief Parses and encapsulates an entire Esri Arcade script.
  *
- * \since QGIS 4.6
+ * \since QGIS 4.4
  */
 class CORE_EXPORT QgsEsriArcadeScript
 {
