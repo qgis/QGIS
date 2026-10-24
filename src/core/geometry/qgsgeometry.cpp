@@ -425,7 +425,6 @@ QgsGeometry QgsGeometry::createWedgeBufferFromAngles( const QgsPoint &center, do
   const double RAD_TO_DEG = 180.0 / M_PI;
 
   const double angularWidth = endAngle - startAngle;
-  const bool useShortestArc = QgsGeometryUtilsBase::normalizedAngle( angularWidth * DEG_TO_RAD ) * RAD_TO_DEG <= 180.0;
 
   if ( std::abs( angularWidth ) >= 360.0 )
   {
@@ -450,17 +449,21 @@ QgsGeometry QgsGeometry::createWedgeBufferFromAngles( const QgsPoint &center, do
     return QgsGeometry( std::move( cp ) );
   }
 
+  const double midAngle = startAngle + QgsGeometryUtilsBase::normalizedAngle( angularWidth * DEG_TO_RAD ) * RAD_TO_DEG * 0.5;
+  
   const QgsPoint outerP1 = center.project( outerRadius, startAngle );
   const QgsPoint outerP2 = center.project( outerRadius, endAngle );
+  const QgsPoint outerMid = center.project( outerRadius, midAngle );
 
-  wedge->addCurve( new QgsCircularString( QgsCircularString::fromTwoPointsAndCenter( outerP1, outerP2, center, useShortestArc ) ) );
+  wedge->addCurve( new QgsCircularString( outerP1, outerMid, outerP2 ) );
 
   if ( !qgsDoubleNear( innerRadius, 0.0 ) && innerRadius > 0 )
   {
     const QgsPoint innerP1 = center.project( innerRadius, startAngle );
     const QgsPoint innerP2 = center.project( innerRadius, endAngle );
+    const QgsPoint innerMid = center.project( innerRadius, midAngle );
     wedge->addCurve( new QgsLineString( outerP2, innerP2 ) );
-    wedge->addCurve( new QgsCircularString( QgsCircularString::fromTwoPointsAndCenter( innerP2, innerP1, center, useShortestArc ) ) );
+    wedge->addCurve( new QgsCircularString( innerP2, innerMid, innerP1 ) );
     wedge->addCurve( new QgsLineString( innerP1, outerP1 ) );
   }
   else
