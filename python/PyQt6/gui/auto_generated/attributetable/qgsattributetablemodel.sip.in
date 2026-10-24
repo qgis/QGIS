@@ -32,6 +32,7 @@ Model View Programming</a>
     {
       FeatureId,
       FieldIndex,
+      ColumnType,
       User,
       // Insert new values here, SortRole needs to be the last one
       Sort,

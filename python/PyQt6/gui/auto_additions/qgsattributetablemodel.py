@@ -9,6 +9,9 @@ QgsAttributeTableModel.FieldIndexRole = QgsAttributeTableModel.CustomRole.FieldI
 QgsAttributeTableModel.Role.FieldIndexRole = QgsAttributeTableModel.CustomRole.FieldIndex
 QgsAttributeTableModel.FieldIndexRole.is_monkey_patched = True
 QgsAttributeTableModel.FieldIndexRole.__doc__ = "Get the field index of this column"
+QgsAttributeTableModel.ColumnType = QgsAttributeTableModel.CustomRole.ColumnType
+QgsAttributeTableModel.ColumnType.is_monkey_patched = True
+QgsAttributeTableModel.ColumnType.__doc__ = "The type of a given column. \n.. versionadded:: 4.4"
 QgsAttributeTableModel.UserRole = QgsAttributeTableModel.CustomRole.User
 QgsAttributeTableModel.Role.UserRole = QgsAttributeTableModel.CustomRole.User
 QgsAttributeTableModel.UserRole.is_monkey_patched = True
@@ -32,6 +35,10 @@ QgsAttributeTableModel.CustomRole.__doc__ = """Custom model roles.
 * ``FieldIndex``: Get the field index of this column
 
   Available as ``QgsAttributeTableModel.FieldIndexRole`` in older QGIS releases.
+
+* ``ColumnType``: The type of a given column.
+
+  .. versionadded:: 4.4
 
 * ``User``: Start further roles starting from this role
 
