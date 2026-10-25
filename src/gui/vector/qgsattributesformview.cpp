@@ -40,6 +40,7 @@
 #include <QMimeData>
 #include <QPlainTextEdit>
 #include <QPushButton>
+#include <QSpacerItem>
 #include <QSpinBox>
 #include <QString>
 #include <QTreeView>
@@ -582,10 +583,22 @@ void QgsAttributesFormLayoutView::onItemDoubleClicked( const QModelIndex &index 
         }
       } );
 
-      QScrollArea *qmlPreviewBox = new QgsScrollArea();
+      QScrollArea *qmlPreviewBox = new QScrollArea();
+      qmlPreviewBox->setWidgetResizable( true );
       qmlPreviewBox->setMinimumWidth( 200 );
-      qmlPreviewBox->setWidget( qmlWrapper->widget() );
-      //emit to load preview for the first time
+      qmlPreviewBox->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Expanding );
+
+      qmlWrapper->widget()->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Preferred );
+
+      QWidget *qmlContainerWidget = new QWidget( qmlPreviewBox );
+      qmlContainerWidget->setMinimumSize( 200, 0 );
+      qmlContainerWidget->setSizePolicy( QSizePolicy::MinimumExpanding, QSizePolicy::Preferred );
+      QVBoxLayout *qmlLayout = new QVBoxLayout( qmlContainerWidget );
+      qmlLayout->addWidget( qmlWrapper->widget() );
+      qmlLayout->addSpacerItem( new QSpacerItem( 20, 40, QSizePolicy::Expanding, QSizePolicy::Expanding ) );
+      qmlContainerWidget->setLayout( qmlLayout );
+      qmlPreviewBox->setWidget( qmlContainerWidget );
+
       emit qmlCode->editingTimeout();
       qmlSplitter->addWidget( qmlPreviewBox );
       qmlSplitter->setChildrenCollapsible( false );
