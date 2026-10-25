@@ -248,6 +248,7 @@ void QgsQmlAttributeFormBridge::changeGeometry( const QgsGeometry &geometry )
   if ( mForm )
   {
     mForm->changeGeometry( geometry );
+    emit currentFormFeatureChanged();
   }
 }
 
