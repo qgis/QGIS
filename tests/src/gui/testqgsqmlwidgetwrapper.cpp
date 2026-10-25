@@ -40,6 +40,7 @@ class TestQgsQmlWidgetWrapper : public QObject
     void init();            // will be called before each testfunction is executed.
     void cleanup();         // will be called after every testfunction.
 
+    void testExpression();
     void testAttributeFormBridge();
 };
 
@@ -61,6 +62,51 @@ void TestQgsQmlWidgetWrapper::init()
 void TestQgsQmlWidgetWrapper::cleanup()
 {}
 
+void TestQgsQmlWidgetWrapper::testExpression()
+{
+  auto layer = std::make_unique<QgsVectorLayer>( u"Point?crs=EPSG:4326&field=str_field:string"_s, u"test_layer"_s, u"memory"_s );
+
+  QgsFeature feature( layer->fields() );
+  feature.setAttribute( u"str_field"_s, u"str_value"_s );
+  feature.setGeometry( QgsGeometry::fromWkt( u"POINT(1 1)"_s ) );
+
+  layer->dataProvider()->addFeature( feature );
+
+  QgsAttributeForm form( layer.get() );
+  form.setFeature( feature );
+
+  QgsQmlWidgetWrapper *qmlWrapper = new QgsQmlWidgetWrapper( layer.get(), nullptr, &form );
+  QQuickWidget *qmlWidget = qobject_cast<QQuickWidget *>( qmlWrapper->widget() );
+  QVERIFY( qmlWidget );
+
+  qmlWrapper->setContext( form.mContext );
+  qmlWrapper->setFeature( feature );
+  qmlWrapper->setQmlCode( QStringLiteral(
+    "import QtQuick\n"
+    "Item {\n"
+    "  width: parent ? parent.width : 400\n"
+    "  height: 400\n"
+    "\n"
+    "  property var t_bindingExpression: expression.evaluate(\"current_value('str_field')\")\n"
+    "  property var t_staticExpression: expression.evaluate(\"str_field\")\n"
+    "}\n"
+  ) );
+  qmlWrapper->reinitWidget();
+
+  const QList<QQmlError> errors = qmlWidget->errors();
+  QCOMPARE( errors.count(), 0 );
+
+  QQuickItem *rootObject = qmlWidget->rootObject();
+  QVERIFY( rootObject );
+
+  QCOMPARE( rootObject->property( "t_staticExpression" ).toString(), u"str_value"_s );
+  QCOMPARE( rootObject->property( "t_bindingExpression" ).toString(), u"str_value"_s );
+
+  emit form.widgetValueChanged( u"str_field"_s, u"str_changed_value"_s, true );
+  QCOMPARE( rootObject->property( "t_staticExpression" ).toString(), u"str_value"_s );
+  QCOMPARE( rootObject->property( "t_bindingExpression" ).toString(), u"str_changed_value"_s );
+}
+
 void TestQgsQmlWidgetWrapper::testAttributeFormBridge()
 {
   auto layer = std::make_unique<QgsVectorLayer>( u"Point?crs=EPSG:4326&field=str_field:string"_s, u"test_layer"_s, u"memory"_s );
@@ -79,6 +125,7 @@ void TestQgsQmlWidgetWrapper::testAttributeFormBridge()
   QVERIFY( qmlWidget );
 
   qmlWrapper->setContext( form.mContext );
+  qmlWrapper->setFeature( feature );
   qmlWrapper->setQmlCode( QStringLiteral(
     "import QtQuick\n"
     "Item {\n"
