@@ -119,7 +119,7 @@ void QgsQmlWidgetWrapper::setQmlCode( const QString &qmlCode )
 
   bool ok = false;
   const thread_local QRegularExpression
-    expRe( QStringLiteral( R"re(expression.evaluate\s*\(\s*"(.*)"\))re" ), QRegularExpression::PatternOption::MultilineOption | QRegularExpression::PatternOption::DotMatchesEverythingOption );
+    expRe( QStringLiteral( R"re(expression.evaluate\s*\(\s*"(.*)"\s*\))re" ), QRegularExpression::PatternOption::MultilineOption | QRegularExpression::PatternOption::DotMatchesEverythingOption | QRegularExpression::InvertedGreedinessOption );
   QRegularExpressionMatchIterator matchIt = expRe.globalMatch( mQmlCode );
   while ( !ok && matchIt.hasNext() )
   {
