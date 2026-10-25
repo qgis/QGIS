@@ -20,6 +20,7 @@
 #include "qgsmessagelog.h"
 #include "qgsvaluerelationfieldformatter.h"
 
+#include <QDir>
 #include <QQmlContext>
 #include <QQmlEngine>
 #include <QString>
@@ -32,6 +33,7 @@ using namespace Qt::StringLiterals;
 QgsQmlWidgetWrapper::QgsQmlWidgetWrapper( QgsVectorLayer *layer, QWidget *editor, QWidget *parent )
   : QgsWidgetWrapper( layer, editor, parent )
 {
+  mQmlFile.setFileTemplate( u"%1%2QgsQmlWidgetWrapper-XXXXXX.qml"_s.arg( QDir::tempPath(), QDir::separator() ) );
   connect( this, &QgsWidgetWrapper::contextChanged, this, &QgsQmlWidgetWrapper::setQmlContext );
 }
 
