@@ -82,7 +82,7 @@ class GUI_EXPORT QgsQmlWidgetWrapper : public QgsWidgetWrapper
  * \brief To pass the QgsExpression functionality and it's context to the context of the QQuickWidget
  * \since QGIS 3.4
  */
-class QmlExpression : public QObject
+class QgsQmlExpression : public QObject
 {
     Q_OBJECT
 
