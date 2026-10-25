@@ -165,7 +165,7 @@ void QgsQmlWidgetWrapper::setQmlContext()
   }
   expressionContext.setFeature( mFeature );
 
-  QmlExpression *qmlExpression = new QmlExpression();
+  QgsQmlExpression *qmlExpression = new QgsQmlExpression();
   qmlExpression->setExpressionContext( expressionContext );
 
   mWidget->rootContext()->setContextProperty( "expression", qmlExpression );
@@ -187,12 +187,12 @@ void QgsQmlWidgetWrapper::setFeature( const QgsFeature &feature )
 }
 
 ///@cond PRIVATE
-void QmlExpression::setExpressionContext( const QgsExpressionContext &context )
+void QgsQmlExpression::setExpressionContext( const QgsExpressionContext &context )
 {
   mExpressionContext = context;
 }
 
-QVariant QmlExpression::evaluate( const QString &expression ) const
+QVariant QgsQmlExpression::evaluate( const QString &expression ) const
 {
   QgsExpression exp = QgsExpression( expression );
   exp.prepare( &mExpressionContext );
