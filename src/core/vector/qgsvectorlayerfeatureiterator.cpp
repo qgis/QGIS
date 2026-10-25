@@ -80,7 +80,7 @@ QgsVectorLayerFeatureSource::QgsVectorLayerFeatureSource( const QgsVectorLayer *
   mEllipsoid = project->ellipsoid();
   mDistanceUnit = project->distanceUnits();
   mAreaUnit = project->areaUnits();
-  mProjectScope = QgsExpressionContextUtils::projectScope( project );
+  mProjectScope = std::unique_ptr<QgsExpressionContextScope>( QgsExpressionContextUtils::projectScope( project ) );
 
   mHasEditBuffer = layer->editBuffer();
   if ( mHasEditBuffer )
@@ -1350,7 +1350,7 @@ void QgsVectorLayerFeatureIterator::createExpressionContext()
 {
   mExpressionContext = std::make_unique< QgsExpressionContext >();
   mExpressionContext->appendScope( QgsExpressionContextUtils::globalScope() );
-  mExpressionContext->appendScope( mSource->mProjectScope );
+  mExpressionContext->appendScope( mSource->mProjectScope.release() );
   mExpressionContext->appendScope( new QgsExpressionContextScope( mSource->mLayerScope ) );
   mExpressionContext->setFeedback( mRequest.feedback() );
 }
