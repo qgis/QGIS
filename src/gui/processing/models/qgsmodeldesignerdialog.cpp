@@ -494,6 +494,9 @@ void QgsModelDesignerDialog::setModel( QgsProcessingModelAlgorithm *model )
   repaintModel( true );
   updateVariablesGui();
 
+  const QString modelQgisVersion = mModel->modelQgisVersion();
+  handleVersionMismatch( modelQgisVersion );
+
   setDirty( false );
 
   mIgnoreUndoStackChanges++;
@@ -527,6 +530,49 @@ void QgsModelDesignerDialog::loadModel( const QString &path )
         "See the log for more information."
       )
     );
+  }
+}
+
+void QgsModelDesignerDialog::handleVersionMismatch( const QString &modelVersion ) const
+{
+  const QgsProjectVersion thisVersion( Qgis::version() );
+
+  const QgsProjectVersion fileVersion = ( modelVersion.isEmpty() ) ? QgsProjectVersion( 0, 0, 0, QString() ) : QgsProjectVersion( modelVersion );
+
+  // Special case before 4.4 we didn't store the qgis version in the model so assume it's before 4.4
+  if ( fileVersion == QgsProjectVersion( 0, 0, 0 ) )
+  {
+    const QString message = tr(
+                              "This model file was created in an older QGIS version."
+                              " When saving this model file, QGIS will update it to version %1, "
+                              "possibly rendering it unusable with older versions of QGIS."
+    )
+                              .arg( thisVersion.text() );
+    mMessageBar->pushInfo( QString(), message );
+  }
+  else if ( thisVersion > fileVersion )
+  {
+    const QString message = tr(
+                              "This model file was created in QGIS version %1."
+                              " When saving this model file, QGIS will update it to version %2, "
+                              "possibly rendering it unusable with older versions of QGIS."
+    )
+                              .arg( fileVersion.text(), thisVersion.text() );
+    mMessageBar->pushInfo( QString(), message );
+  }
+  else if ( thisVersion < fileVersion )
+  {
+    const QString message = tr(
+                              "This model was created by a newer version of QGIS (%1)."
+                              "The integrity of this model file may not be guaranteed."
+    )
+                              .arg( fileVersion.text() );
+
+    mMessageBar->pushWarning( QString(), message );
+  }
+  else
+  {
+    //All good model and qgis version match!
   }
 }
 
@@ -1638,8 +1684,7 @@ void QgsModelDesignerDialog::run( const QSet<QString> &childAlgorithmSubset )
       }
     } );
 
-    connect( mAlgorithmWidget, &QgsProcessingAlgorithmWidgetBase::algorithmFinished, this, [this]( bool, const QVariantMap & ) {
-      QgsProcessingContext *context = mAlgorithmWidget->processingContext();
+    connect( mAlgorithmWidget, &QgsProcessingAlgorithmWidgetBase::algorithmFinished, this, [this]( bool, const QVariantMap &, QgsProcessingContext *context ) {
       // take child output layers
       mLayerStore.temporaryLayerStore()->removeAllMapLayers();
       mLayerStore.takeResultsFrom( *context );

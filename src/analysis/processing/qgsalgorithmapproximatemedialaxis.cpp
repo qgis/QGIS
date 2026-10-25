@@ -120,7 +120,7 @@ bool QgsApproximateMedialAxisAlgorithm::prepareAlgorithm( const QVariantMap &par
 #ifdef WITH_SFCGAL
   mExtendToEdges = parameterAsBool( parameters, "EXTEND_TO_EDGES", context );
 
-#if SFCGAL_VERSION_NUM < SFCGAL_MAKE_VERSION( 2, 3, 0 )
+#if SFCGAL_VERSION_NUM < SFCGAL_COMPUTE_VERSION( 2, 3, 0 )
   if ( mExtendToEdges )
   {
     throw QgsProcessingException( QObject::tr( "The \"extend to the polygon boundary\" option requires a QGIS build based on SFCGAL 2.3 or later." ) );

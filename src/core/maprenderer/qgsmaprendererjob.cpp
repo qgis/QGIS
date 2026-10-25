@@ -1171,7 +1171,7 @@ void QgsMapRendererJob::initSecondPassJobs( std::vector< LayerRenderJob > &secon
       {
         QgsGeometry geometry( geometryDevice->geometry().clone() );
 
-#if GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR < 10
+#if GEOS_VERSION_NUM < GEOS_COMPUTE_VERSION( 3, 10, 0 )
         // structure would be better, but too old GEOS
         geometry = geometry.makeValid( Qgis::MakeValidMethod::Linework );
 #else

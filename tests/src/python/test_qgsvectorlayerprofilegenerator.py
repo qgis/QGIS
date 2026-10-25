@@ -24,6 +24,7 @@ from qgis.core import (
     QgsFeature,
     QgsFillSymbol,
     QgsGeometry,
+    QgsGradientFillSymbolLayer,
     QgsLineString,
     QgsLineSymbol,
     QgsMapLayerElevationProperties,
@@ -38,10 +39,12 @@ from qgis.core import (
     QgsRasterDemTerrainProvider,
     QgsRasterLayer,
     QgsRendererCategory,
+    QgsStyle,
     QgsSymbolLayer,
     QgsVectorLayer,
     QgsWkbTypes,
 )
+from qgis.PyQt.QtCore import QPointF
 from qgis.testing import QgisTestCase, start_app
 from utilities import compareWkt, unitTestDataPath
 
@@ -3612,6 +3615,63 @@ class TestQgsVectorLayerProfileGenerator(QgisTestCase):
             sources,
             [vl2.id(), vl.id()],
             "The order of the generators does not correspond to the order of the sources! (i.e., issue #62677)",
+        )
+
+    def testRenderProfilePolygonsAsSurfaceFillBelow(self):
+        vl = QgsVectorLayer("PolygonZ?crs=EPSG:31370", "lines", "memory")
+        vl.setCrs(QgsCoordinateReferenceSystem())
+        self.assertTrue(vl.isValid())
+
+        for polygon in [
+            "Polygon Z ((187580 166280 47, 187660 166280 47, 187660 166200 47, 187580 166200 47, 187580 166280 47))",
+            "Polygon Z ((187660 166280 44, 187740 166280 44, 187740 166200 44, 187660 166200 44, 187660 166280 44))",
+            "Polygon Z ((187740 166280 41, 187820 166280 41, 187820 166200 41, 187740 166200 41, 187740 166280 41))",
+            "Polygon Z ((187820 166280 39, 187900 166280 39, 187900 166200 39, 187820 166200 39, 187820 166280 39))",
+            "Polygon Z ((187900 166280 35, 187980 166280 35, 187980 166200 35, 187900 166200 35, 187900 166280 35))",
+            "Polygon Z ((187980 166280 30, 188060 166280 30, 188060 166200 30, 187980 166200 30, 187980 166280 30))",
+            "Polygon Z ((188060 166280 25, 188140 166280 25, 188140 166200 25, 188060 166200 25, 188060 166280 25))",
+            "Polygon Z ((188140 166280 20, 188220 166280 20, 188220 166200 20, 188140 166200 20, 188140 166280 20))",
+        ]:
+            f = QgsFeature()
+            f.setGeometry(QgsGeometry.fromWkt(polygon))
+            self.assertTrue(vl.dataProvider().addFeature(f))
+
+        vl.elevationProperties().setClamping(Qgis.AltitudeClamping.Absolute)
+        vl.elevationProperties().setType(Qgis.VectorProfileType.ContinuousSurface)
+        vl.elevationProperties().setProfileSymbology(
+            Qgis.ProfileSurfaceSymbology.FillBelow
+        )
+        fill_symbol = QgsFillSymbol.createSimple(
+            {"color": "0,0,0,0", "outline_color": "#000000", "outline_width": "0.26"}
+        )
+        gradient_fill_symbol = QgsGradientFillSymbolLayer()
+        gradient_fill_symbol.setGradientColorType(Qgis.GradientColorSource.ColorRamp)
+        gradient_fill_symbol.setColorRamp(QgsStyle.defaultStyle().colorRamp("Plasma"))
+        gradient_fill_symbol.setGradientType(Qgis.GradientType.Linear)
+        gradient_fill_symbol.setReferencePoint1(QPointF(0.5, 0))
+        gradient_fill_symbol.setReferencePoint2(QPointF(0.5, 1))
+        fill_symbol.appendSymbolLayer(gradient_fill_symbol)
+        vl.elevationProperties().setProfileFillSymbol(fill_symbol)
+
+        curve = QgsLineString()
+        curve.fromWkt("LineString (187601.39 166206.62, 188197.72 166260.46)")
+        req = QgsProfileRequest(curve)
+        req.setTransformContext(self.create_transform_context())
+
+        req.setCrs(QgsCoordinateReferenceSystem())
+        req.setTolerance(0.0)
+
+        plot_renderer = QgsProfilePlotRenderer([vl], req)
+        plot_renderer.startGeneration()
+        plot_renderer.waitForFinished()
+
+        res = plot_renderer.renderToImage(400, 400, 0, curve.length() + 5.0, 0, 48)
+        self.assertTrue(
+            self.image_check(
+                "vector_profile_polygons_as_surface_fill_below",
+                "vector_profile_polygons_as_surface_fill_below",
+                res,
+            )
         )
 
 

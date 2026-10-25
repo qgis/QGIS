@@ -34,16 +34,16 @@ class QgsGeometryCollection;
 class QgsSettingsEntryBool;
 
 /// compute GEOS integer version from major, minor and patch number
-#ifndef GEOS_MAKE_VERSION
-#define GEOS_MAKE_VERSION( major, minor, patch ) ( ( major ) * 10000 + ( minor ) * 100 + ( patch ) )
+#ifndef GEOS_COMPUTE_VERSION
+#define GEOS_COMPUTE_VERSION( major, minor, patch ) ( ( major ) * 10000 + ( minor ) * 100 + ( patch ) )
 #endif
 /// compute current GEOS integer version
 #ifndef GEOS_VERSION_NUM
-#define GEOS_VERSION_NUM GEOS_MAKE_VERSION( GEOS_VERSION_MAJOR, GEOS_VERSION_MINOR, GEOS_VERSION_PATCH )
+#define GEOS_VERSION_NUM GEOS_COMPUTE_VERSION( GEOS_VERSION_MAJOR, GEOS_VERSION_MINOR, GEOS_VERSION_PATCH )
 #endif
 
 /// While GEOS 3.14 already supported M, GEOS 3.15.0 and 3.15.1 have got some important bug fixes.
-#if GEOS_VERSION_NUM >= GEOS_MAKE_VERSION( 3, 15, 1 )
+#if GEOS_VERSION_NUM >= GEOS_COMPUTE_VERSION( 3, 15, 1 )
 #define GEOS_SUPPORTS_ZM
 #endif
 
@@ -115,7 +115,7 @@ class CORE_EXPORT QgsScopedGeosContextRegisterFeedback
     ~QgsScopedGeosContextRegisterFeedback();
 
   private:
-#if GEOS_VERSION_MAJOR > 3 || ( GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR >= 14 )
+#if GEOS_VERSION_NUM >= GEOS_COMPUTE_VERSION( 3, 14, 0 )
     static int callback( void *userData );
     QgsFeedback *mFeedback = nullptr;
 #endif
@@ -1043,7 +1043,7 @@ class CORE_EXPORT QgsGeos : public QgsGeometryEngine
      */
     SIP_SKIP static std::unique_ptr< QgsAbstractGeometry > fromGeos( const GEOSGeometry *geos );
 
-#if GEOS_VERSION_MAJOR > 3 || ( GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR >= 15 )
+#if GEOS_VERSION_NUM >= GEOS_COMPUTE_VERSION( 3, 15, 0 )
     /**
      * \note Not available in Python bindings
      */
@@ -1124,7 +1124,7 @@ class CORE_EXPORT QgsGeos : public QgsGeometryEngine
     bool relation( const QgsAbstractGeometry *geom, Relation r, QString *errorMsg = nullptr, QgsFeedback *feedback = nullptr ) const;
     static GEOSCoordSequence *createCoordinateSequence( const QgsCurve *curve, double precision, bool forceClose = false );
     static std::unique_ptr< QgsSimpleCurve > sequenceToSimpleCurve( const GEOSGeometry *geos, bool hasZ, bool hasM );
-#if GEOS_VERSION_MAJOR > 3 || ( GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR >= 15 )
+#if GEOS_VERSION_NUM >= GEOS_COMPUTE_VERSION( 3, 15, 0 )
     static std::unique_ptr< QgsCircularString > sequenceToCircularString( const GEOSGeometry *geos, bool hasZ, bool hasM );
 #endif
     static std::unique_ptr< QgsLineString > sequenceToLinestring( const GEOSGeometry *geos, bool hasZ, bool hasM );
@@ -1147,7 +1147,7 @@ class CORE_EXPORT QgsGeos : public QgsGeometryEngine
 
     static geos::unique_ptr createGeosPolygon( const QgsAbstractGeometry *poly, double precision, Qgis::GeosCreationFlags flags = Qgis::GeosCreationFlags() );
 
-#if GEOS_VERSION_MAJOR > 3 || ( GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR >= 15 )
+#if GEOS_VERSION_NUM >= GEOS_COMPUTE_VERSION( 3, 15, 0 )
     static geos::unique_ptr createGeosSimpleCurve( const QgsAbstractGeometry *curve, double precision, Qgis::GeosCreationFlags flags = Qgis::GeosCreationFlags() );
     static geos::unique_ptr createGeosCompoundCurve( const QgsAbstractGeometry *curve, double precision, Qgis::GeosCreationFlags flags = Qgis::GeosCreationFlags() );
     static geos::unique_ptr createGeosCurvePolygon( const QgsAbstractGeometry *poly, double precision, Qgis::GeosCreationFlags flags = Qgis::GeosCreationFlags() );

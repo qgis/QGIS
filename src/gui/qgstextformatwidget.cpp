@@ -21,6 +21,7 @@
 #include "qgsexpressioncontextutils.h"
 #include "qgsfillsymbol.h"
 #include "qgsfontutils.h"
+#include "qgsgeos.h"
 #include "qgsgui.h"
 #include "qgshelp.h"
 #include "qgsiconutils.h"
@@ -120,7 +121,7 @@ void QgsTextFormatWidget::initWidget()
   mRenderingItem->setIcon( QgsApplication::getThemeIcon( u"propertyicons/render.svg"_s ) );
   mRenderingItem->setToolTip( tr( "Rendering" ) );
 
-#if ( GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR < 10 )
+#if GEOS_VERSION_NUM < GEOS_COMPUTE_VERSION( 3, 10, 0 )
   mDuplicatesStackedWidget->setCurrentWidget( mDuplicatesNotAvailableWidget );
   mLabelSpacingStackedWidget->setCurrentWidget( mLabelSpacingNotAvailableWidget );
 #endif

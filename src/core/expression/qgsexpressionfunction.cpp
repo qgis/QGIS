@@ -3659,7 +3659,7 @@ static QVariant fcnGeomMakeValid( const QVariantList &values, const QgsExpressio
     return QVariant();
 
   const QString methodString = QgsExpressionUtils::getStringValue( values.at( 1 ), parent ).trimmed();
-#if GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR < 10
+#if GEOS_VERSION_NUM < GEOS_COMPUTE_VERSION( 3, 10, 0 )
   Qgis::MakeValidMethod method = Qgis::MakeValidMethod::Linework;
 #else
   Qgis::MakeValidMethod method = Qgis::MakeValidMethod::Structure;
@@ -5828,7 +5828,7 @@ static QVariant fcnConvexHull( const QVariantList &values, const QgsExpressionCo
   return result;
 }
 
-#if GEOS_VERSION_MAJOR > 3 || ( GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR >= 11 )
+#if GEOS_VERSION_NUM >= GEOS_COMPUTE_VERSION( 3, 11, 0 )
 static QVariant fcnConcaveHull( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
 {
   try
@@ -10087,7 +10087,7 @@ const QgsExpression::FunctionListSnapshot QgsExpression::getFunctionsSnapshot()
            u"make_valid"_s,
            QgsExpressionFunction::ParameterList {
              QgsExpressionFunction::Parameter( u"geometry"_s ),
-#if GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR < 10
+#if GEOS_VERSION_NUM < GEOS_COMPUTE_VERSION( 3, 10, 0 )
              QgsExpressionFunction::Parameter( u"method"_s, true, u"linework"_s ),
 #else
              QgsExpressionFunction::Parameter( u"method"_s, true, u"structure"_s ),
@@ -10435,7 +10435,7 @@ const QgsExpression::FunctionListSnapshot QgsExpression::getFunctionsSnapshot()
          )
       << std::make_shared<
            QgsStaticExpressionFunction >( u"convex_hull"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"geometry"_s ), fcnConvexHull, u"GeometryGroup"_s, QString(), false, QSet<QString>(), false, QStringList() << u"convexHull"_s )
-#if GEOS_VERSION_MAJOR > 3 || ( GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR >= 11 )
+#if GEOS_VERSION_NUM >= GEOS_COMPUTE_VERSION( 3, 11, 0 )
       << std::make_shared< QgsStaticExpressionFunction >(
            u"concave_hull"_s,
            QgsExpressionFunction::ParameterList()

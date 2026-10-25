@@ -911,51 +911,64 @@ QVariant QgsExpressionNodeBinaryOperator::evalNode( QgsExpression *parent, const
         return TVL_Unknown;
       else
       {
-        QString str = QgsExpressionUtils::getStringValue( vL, parent );
+        const QString str = QgsExpressionUtils::getStringValue( vL, parent );
         ENSURE_NO_EVAL_ERROR
-        QString regexp = QgsExpressionUtils::getStringValue( vR, parent );
+        const QString regexp = QgsExpressionUtils::getStringValue( vR, parent );
         ENSURE_NO_EVAL_ERROR
-        // TODO: cache QRegularExpression in case that regexp is a literal string (i.e. it will stay constant)
-        bool matches;
-        if ( mOp == boLike || mOp == boILike || mOp == boNotLike || mOp == boNotILike ) // change from LIKE syntax to regexp
-        {
-          QString esc_regexp = QgsStringUtils::qRegExpEscape( regexp );
-          // manage escape % and _
-          if ( esc_regexp.startsWith( '%' ) )
-          {
-            esc_regexp.replace( 0, 1, u".*"_s );
-          }
-          const thread_local QRegularExpression rx1( u"[^\\\\](%)"_s );
-          int pos = 0;
-          while ( ( pos = esc_regexp.indexOf( rx1, pos ) ) != -1 )
-          {
-            esc_regexp.replace( pos + 1, 1, u".*"_s );
-            pos += 1;
-          }
-          const thread_local QRegularExpression rx2( u"\\\\%"_s );
-          esc_regexp.replace( rx2, u"%"_s );
-          if ( esc_regexp.startsWith( '_' ) )
-          {
-            esc_regexp.replace( 0, 1, u"."_s );
-          }
-          const thread_local QRegularExpression rx3( u"[^\\\\](_)"_s );
-          pos = 0;
-          while ( ( pos = esc_regexp.indexOf( rx3, pos ) ) != -1 )
-          {
-            esc_regexp.replace( pos + 1, 1, '.' );
-            pos += 1;
-          }
-          esc_regexp.replace( "\\\\_"_L1, "_"_L1 );
 
-          matches
-            = QRegularExpression( QRegularExpression::anchoredPattern( esc_regexp ), mOp == boLike || mOp == boNotLike ? QRegularExpression::DotMatchesEverythingOption : QRegularExpression::DotMatchesEverythingOption | QRegularExpression::CaseInsensitiveOption )
-                .match( str )
-                .hasMatch();
-        }
-        else
+        QRegularExpression re;
+        const QString cachedRegExKey = u"re_bo_%1_%2"_s.arg( mOp ).arg( regexp );
+        if ( context )
         {
-          matches = QRegularExpression( regexp ).match( str ).hasMatch();
+          re = context->cachedValue( cachedRegExKey ).value< QRegularExpression >();
         }
+
+        bool matches = false;
+        if ( re.pattern().isEmpty() )
+        {
+          if ( mOp == boLike || mOp == boILike || mOp == boNotLike || mOp == boNotILike ) // change from LIKE syntax to regexp
+          {
+            QString esc_regexp = QgsStringUtils::qRegExpEscape( regexp );
+            // manage escape % and _
+            if ( esc_regexp.startsWith( '%' ) )
+            {
+              esc_regexp.replace( 0, 1, u".*"_s );
+            }
+            const thread_local QRegularExpression rx1( u"[^\\\\](%)"_s );
+            int pos = 0;
+            while ( ( pos = esc_regexp.indexOf( rx1, pos ) ) != -1 )
+            {
+              esc_regexp.replace( pos + 1, 1, u".*"_s );
+              pos += 1;
+            }
+            const thread_local QRegularExpression rx2( u"\\\\%"_s );
+            esc_regexp.replace( rx2, u"%"_s );
+            if ( esc_regexp.startsWith( '_' ) )
+            {
+              esc_regexp.replace( 0, 1, u"."_s );
+            }
+            const thread_local QRegularExpression rx3( u"[^\\\\](_)"_s );
+            pos = 0;
+            while ( ( pos = esc_regexp.indexOf( rx3, pos ) ) != -1 )
+            {
+              esc_regexp.replace( pos + 1, 1, '.' );
+              pos += 1;
+            }
+            esc_regexp.replace( "\\\\_"_L1, "_"_L1 );
+
+            re = QRegularExpression( QRegularExpression::anchoredPattern( esc_regexp ), mOp == boLike || mOp == boNotLike ? QRegularExpression::DotMatchesEverythingOption : QRegularExpression::DotMatchesEverythingOption | QRegularExpression::CaseInsensitiveOption );
+          }
+          else
+          {
+            re = QRegularExpression( regexp );
+          }
+          if ( context )
+          {
+            context->setCachedValue( cachedRegExKey, re );
+          }
+        }
+
+        matches = re.match( str ).hasMatch();
 
         if ( mOp == boNotLike || mOp == boNotILike )
         {

@@ -487,7 +487,7 @@ void TestQgsGeometry::isValid()
   curve.addCurve( line.clone() );
   QVERIFY( curve.isValid( error ) );
   curve.addCurve( circ.clone() );
-#if GEOS_VERSION_MAJOR > 3 || ( GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR >= 15 )
+#if GEOS_VERSION_NUM >= GEOS_COMPUTE_VERSION( 3, 15, 0 )
   // The curve at this point is no longer valid, as the circle's start coords differ from the line's end coors.
   // (From GEOS: Sections of CompoundCurve are not contiguous: curve 0 ends at 1 1 ; curve 1 begins at 0 0)
   QVERIFY( !curve.isValid( error ) );
@@ -2737,7 +2737,7 @@ void TestQgsGeometry::splitGeometry()
   QgsGeometry g1 = QgsGeometry::fromWkt(
     u"Polygon ((492980.38648063864093274 7082334.45244149677455425, 493082.65415841294452548 7082319.87918917648494244, 492980.38648063858272508 7082334.45244149677455425, 492980.38648063864093274 7082334.45244149677455425))"_s
   );
-#if GEOS_VERSION_MAJOR > 3 || ( GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR >= 15 )
+#if GEOS_VERSION_NUM >= GEOS_COMPUTE_VERSION( 3, 15, 0 )
   // This test was added back in the days for checking that a crash was no longer present.
   // Now, GEOS 3.15's geometry splitter returns an engine error ("Splitting polygonal geometry failed to preserve area").
   // Note that the base geometry is and has always been valid.
@@ -2891,13 +2891,13 @@ void TestQgsGeometry::splitGeometry()
 
   // Should not crash - https://github.com/qgis/QGIS/issues/50948
   g2 = QgsGeometry::fromWkt( "LineString ( -63294.10966012725839391 -79156.27234554117603693, -63290.25259721937618451 -79162.78533450335089583, -63290.25259721936890855 -79162.78533450335089583)" );
-#if GEOS_VERSION_MAJOR > 3 || ( GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR >= 15 )
+#if GEOS_VERSION_NUM >= GEOS_COMPUTE_VERSION( 3, 15, 0 )
   QString g2WktBefore = g2.asWkt( 17 );
 #endif
   testPoints.clear();
   newGeoms.clear();
   QCOMPARE( g2.splitGeometry( QgsPointSequence() << QgsPoint( -63290.25259721936890855, -79165.28533450335089583 ) << QgsPoint( -63290.25259721936890855, -79160.28533450335089583 ), newGeoms, false, testPoints ), Qgis::GeometryOperationResult::Success );
-#if GEOS_VERSION_MAJOR > 3 || ( GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR >= 15 )
+#if GEOS_VERSION_NUM >= GEOS_COMPUTE_VERSION( 3, 15, 0 )
   // The blade should not really cut the line, since the line's endpoint lies on the blade.
   QCOMPARE( newGeoms.count(), 0 );
   // Since split returned success and splitFeature param was implicitly true, the base geom was supposed to be split.
@@ -2914,7 +2914,7 @@ void TestQgsGeometry::splitGeometry()
   newGeoms.clear();
   QCOMPARE( g2.splitGeometry( QgsPointSequence() << QgsPoint( 0.8, 0.8 ) << QgsPoint( 1.2, 1.2 ), newGeoms, false, testPoints, false ), Qgis::GeometryOperationResult::Success );
   QCOMPARE( newGeoms.count(), 3 );
-#if GEOS_VERSION_MAJOR > 3 || ( GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR >= 15 )
+#if GEOS_VERSION_NUM >= GEOS_COMPUTE_VERSION( 3, 15, 0 )
   QStringList newGeomWkts;
   newGeomWkts << newGeoms[0].asWkt( 0 ) << newGeoms[1].asWkt( 0 ) << newGeoms[2].asWkt( 0 );
 
@@ -2980,7 +2980,7 @@ void TestQgsGeometry::splitGeometry()
   geom.normalize();
   QCOMPARE( geom.asWkt( 0 ), u"Polygon Z ((1 5 11, 1 10 21, 10 10 30, 10 5 20, 1 5 11))"_s );
 
-#if GEOS_VERSION_MAJOR > 3 || ( GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR > 15 ) || ( GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR == 15 && GEOS_VERSION_PATCH >= 1 )
+#ifdef GEOS_SUPPORTS_ZM
   // Issue #40796: Loss of M values when splitting features
   g2 = QgsGeometry::fromWkt( "LineString ZM (100 100 10 20, 110 110 11 21, 120 120 12 22)" );
   testPoints.clear();
@@ -2999,7 +2999,7 @@ void TestQgsGeometry::splitGeometryByCurve()
   QgsGeometry geom;
   QgsGeometry g2;
 
-#if GEOS_VERSION_MAJOR > 3 || ( GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR >= 15 )
+#if GEOS_VERSION_NUM >= GEOS_COMPUTE_VERSION( 3, 15, 0 )
   // Splitting 2d polygon with 2d circular string should return curved geometries
   g2 = QgsGeometry::fromWkt( "Polygon ((0 5, 0 10, 10 10, 10 5, 0 5))" );
   testPoints.clear();

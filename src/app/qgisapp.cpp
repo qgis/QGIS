@@ -748,7 +748,7 @@ void QgisApp::layerTreeViewDoubleClicked( const QModelIndex &index )
     case Qgis::LegendLayerDoubleClickAction::AttributeTable:
     {
       QgsSettings settings;
-      QgsAttributeTableFilterModel::FilterMode initialMode = settings.enumValue( u"qgis/attributeTableBehavior"_s, QgsAttributeTableFilterModel::ShowAll );
+      Qgis::AttributeTableFilterMode initialMode = settings.enumValue( u"qgis/attributeTableBehavior"_s, Qgis::AttributeTableFilterMode::ShowAll );
       QgisApp::instance()->attributeTable( initialMode );
       break;
     }
@@ -3171,12 +3171,12 @@ void QgisApp::createActions()
   connect( mActionAddVirtualLayer, &QAction::triggered, this, [this] { dataSourceManager( u"virtual"_s ); } );
   connect( mActionOpenTable, &QAction::triggered, this, [this] {
     QgsSettings settings;
-    QgsAttributeTableFilterModel::FilterMode initialMode = settings.enumValue( u"qgis/attributeTableBehavior"_s, QgsAttributeTableFilterModel::ShowAll );
+    Qgis::AttributeTableFilterMode initialMode = settings.enumValue( u"qgis/attributeTableBehavior"_s, Qgis::AttributeTableFilterMode::ShowAll );
     attributeTable( initialMode );
   } );
-  connect( mActionOpenTableSelected, &QAction::triggered, this, [this] { attributeTable( QgsAttributeTableFilterModel::ShowSelected ); } );
-  connect( mActionOpenTableVisible, &QAction::triggered, this, [this] { attributeTable( QgsAttributeTableFilterModel::ShowVisible ); } );
-  connect( mActionOpenTableEdited, &QAction::triggered, this, [this] { attributeTable( QgsAttributeTableFilterModel::ShowEdited ); } );
+  connect( mActionOpenTableSelected, &QAction::triggered, this, [this] { attributeTable( Qgis::AttributeTableFilterMode::ShowSelected ); } );
+  connect( mActionOpenTableVisible, &QAction::triggered, this, [this] { attributeTable( Qgis::AttributeTableFilterMode::ShowVisible ); } );
+  connect( mActionOpenTableEdited, &QAction::triggered, this, [this] { attributeTable( Qgis::AttributeTableFilterMode::ShowEdited ); } );
   connect( mActionOpenFieldCalc, &QAction::triggered, this, &QgisApp::fieldCalculator );
   connect( mActionToggleEditing, &QAction::triggered, this, [this] { toggleEditing(); } );
   connect( mActionSaveLayerEdits, &QAction::triggered, this, &QgisApp::saveActiveLayerEdits );
@@ -5502,8 +5502,14 @@ void QgisApp::updateProjectFromTemplates()
 {
   // Remove existing entries
   mProjectFromTemplateMenu->clear();
-  mProjectTemplateWatcher.removePaths( mProjectTemplateWatcher.directories() );
-  mProjectTemplateWatcher.addPaths( QgsApplication::projectTemplatePaths() );
+  if ( !mProjectTemplateWatcher.directories().isEmpty() )
+  {
+    mProjectTemplateWatcher.removePaths( mProjectTemplateWatcher.directories() );
+  }
+  if ( !QgsApplication::projectTemplatePaths().isEmpty() )
+  {
+    mProjectTemplateWatcher.addPaths( QgsApplication::projectTemplatePaths() );
+  }
 
   const QFontMetrics fontMetrics = mProjectFromTemplateMenu->fontMetrics();
   const int maxLabelWidth = Qgis::UI_SCALE_FACTOR * fontMetrics.horizontalAdvance( 'X' ) * 35;
@@ -8206,7 +8212,7 @@ void QgisApp::fieldCalculator()
   }
 }
 
-void QgisApp::attributeTable( QgsAttributeTableFilterModel::FilterMode filter, const QString &filterExpression )
+void QgisApp::attributeTable( Qgis::AttributeTableFilterMode filter, const QString &filterExpression )
 {
   QgsVectorLayer *myLayer = qobject_cast<QgsVectorLayer *>( activeLayer() );
   if ( !myLayer || !myLayer->dataProvider() )
@@ -10224,7 +10230,7 @@ void QgisApp::selectByForm()
       return;
     }
 
-    QgsAttributeTableDialog *dialog = new QgsAttributeTableDialog( vlayer, QgsAttributeTableFilterModel::FilterMode::ShowFilteredList );
+    QgsAttributeTableDialog *dialog = new QgsAttributeTableDialog( vlayer, Qgis::AttributeTableFilterMode::ShowFilteredList );
     dialog->setFilterExpression( filter );
     dialog->setView( QgsDualView::ViewMode::AttributeEditor );
     dialog->show();
@@ -16712,7 +16718,7 @@ void QgisApp::readProject( const QDomDocument &doc )
         if ( layer->isValid() )
         {
           bool initiallyDocked = attributeTableElement.attribute( u"isDocked"_s, u"0"_s ).toInt() == 1;
-          const QgsAttributeTableFilterModel::FilterMode filterMode = qgsEnumKeyToValue( attributeTableElement.attribute( u"filterMode"_s ), QgsAttributeTableFilterModel::ShowAll );
+          const Qgis::AttributeTableFilterMode filterMode = qgsEnumKeyToValue( attributeTableElement.attribute( u"filterMode"_s ), Qgis::AttributeTableFilterMode::ShowAll );
 
           QgsAttributeTableDialog *dialog = new QgsAttributeTableDialog( layer, filterMode, nullptr, Qt::Window, &initiallyDocked );
           dialog->readXml( attributeTableElement );

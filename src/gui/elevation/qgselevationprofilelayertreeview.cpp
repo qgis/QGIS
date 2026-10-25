@@ -482,7 +482,7 @@ void QgsElevationProfileLayerTreeView::setLayerTree( QgsLayerTree *rootNode )
   delete oldModel;
 }
 
-void QgsElevationProfileLayerTreeView::populateMissingLayers( QgsProject *project )
+void QgsElevationProfileLayerTreeView::populateMissingLayers( QgsProject *project, bool forceUnchecked )
 {
   const QList<QgsMapLayer *> layers = project->layers<QgsMapLayer *>().toList();
 
@@ -500,7 +500,11 @@ void QgsElevationProfileLayerTreeView::populateMissingLayers( QgsProject *projec
 
     QgsLayerTreeLayer *node = mLayerTree->addLayer( layer );
 
-    if ( layer->customProperty( u"_include_in_elevation_profiles"_s ).isValid() )
+    if ( forceUnchecked )
+    {
+      node->setItemVisibilityChecked( false );
+    }
+    else if ( layer->customProperty( u"_include_in_elevation_profiles"_s ).isValid() )
     {
       node->setItemVisibilityChecked( layer->customProperty( u"_include_in_elevation_profiles"_s ).toBool() );
     }
@@ -550,6 +554,21 @@ void QgsElevationProfileLayerTreeView::removeNodeForUnregisteredSource( const QS
 QgsElevationProfileLayerTreeProxyModel *QgsElevationProfileLayerTreeView::proxyModel()
 {
   return mProxyModel;
+}
+
+void QgsElevationProfileLayerTreeView::cleanupDeletedLayers( QgsProject *project )
+{
+  const QList<QgsLayerTreeLayer *> profileLayers = mLayerTree->findLayers();
+  const QMap<QString, QgsMapLayer *> projectLayers = project->mapLayers();
+
+  for ( QgsLayerTreeLayer *ltl : profileLayers )
+  {
+    if ( !projectLayers.contains( ltl->layerId() ) )
+    {
+      ltl->parent()->takeChild( ltl );
+      delete ltl;
+    }
+  }
 }
 
 void QgsElevationProfileLayerTreeView::resizeEvent( QResizeEvent *event )

@@ -53,7 +53,7 @@ void QgsLayoutLocatorFilter::fetchResults( const QString &string, const QgsLocat
       continue;
     }
 
-    result.score = fuzzyScore( result.displayString, string );
+    result.score = fuzzyScore( QgsStringUtils::unaccent( result.displayString ), QgsStringUtils::unaccent( string ) );
 
     if ( result.score > 0 )
       emit resultFetched( result );

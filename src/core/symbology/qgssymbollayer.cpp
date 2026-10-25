@@ -1117,7 +1117,7 @@ QPainterPath generateClipPath( const QgsRenderContext &renderContext, const QStr
       QgsGeos geos( mergedGeom.constGet() );
       mergedGeom = QgsGeometry( geos.simplify( renderContext.maskSettings().simplifyTolerance(), nullptr, renderContext.feedback() ) );
     }
-#if GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR < 10
+#if GEOS_VERSION_NUM < GEOS_COMPUTE_VERSION( 3, 10, 0 )
     // structure would be better, but too old GEOS
     mergedGeom = mergedGeom.makeValid( Qgis::MakeValidMethod::Linework, false, renderContext.feedback() );
 #else

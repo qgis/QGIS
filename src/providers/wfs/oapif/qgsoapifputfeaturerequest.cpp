@@ -26,6 +26,7 @@ using namespace nlohmann;
 #include "qgsoapifputfeaturerequest.h"
 #include "moc_qgsoapifputfeaturerequest.cpp"
 #include "qgsoapifshareddata.h"
+#include "qgsoapifutils.h"
 
 QgsOapifPutFeatureRequest::QgsOapifPutFeatureRequest( const QgsDataSourceUri &uri )
   : QgsBaseNetworkRequest( QgsAuthorizationSettings( uri.username(), uri.password(), QgsHttpHeaders(), uri.authConfigId() ), "OAPIF" )
@@ -58,15 +59,27 @@ bool QgsOapifPutFeatureRequest::putFeature( const QgsOapifSharedData *sharedData
         jProperties.erase( iterId );
     }
   }
+  QgsOAPIFJson::removeReadOnlyProperties( j, sharedData->mFields );
+  const bool jsonFg = sharedData->shouldWriteJsonFg();
+  if ( jsonFg )
+  {
+    QgsOAPIFJson::writeJsonFgPlace( j, fModified.geometry(), sharedData->mWKBType, contentCrs, true );
+  }
   const QString jsonFeature = QString::fromStdString( j.dump() );
   QgsDebugMsgLevel( jsonFeature, 5 );
   mEmptyResponseIsValid = true;
   mFakeResponseHasHeaders = true;
   QList<QNetworkReply::RawHeaderPair> extraHeaders;
   if ( !contentCrs.isEmpty() )
+  {
     extraHeaders.append( QNetworkReply::RawHeaderPair( QByteArray( "Content-Crs" ), contentCrs.toUtf8() ) );
+  }
+  if ( jsonFg )
+  {
+    extraHeaders.append( QNetworkReply::RawHeaderPair( QByteArray( "Link" ), u"<%1>; rel=profile"_s.arg( QgsOapifUtils::PROFILE_JSONFG ).toUtf8() ) );
+  }
   QUrl url( sharedData->mItemsUrl + QString( u"/"_s + jsonId ) );
-  return sendPUT( url, "application/geo+json", jsonFeature.toUtf8(), extraHeaders );
+  return sendPUT( url, QgsOapifUtils::MEDIA_TYPE_GEOJSON, jsonFeature.toUtf8(), extraHeaders );
 }
 
 QString QgsOapifPutFeatureRequest::errorMessageWithReason( const QString &reason )

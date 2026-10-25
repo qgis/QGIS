@@ -34,2672 +34,339 @@
 
 using namespace Qt::StringLiterals;
 
-QHash<QString, QString> QgsStringUtils::createUnaccentMap()
+QHash<char32_t, QString> QgsStringUtils::createUnaccentMap()
 {
-  QHash<QString, QString> map;
-  map.reserve( 2661 );
-
-  map.insert( u"¡"_s, u"!"_s );
-  map.insert( u"©"_s, u"(C)"_s );
-  map.insert( u"ª"_s, u"a"_s );
-  map.insert( u"«"_s, u"<<"_s );
-  map.insert( u"­"_s, u"-"_s );
-  map.insert( u"®"_s, u"(R)"_s );
-  map.insert( u"±"_s, u"+/-"_s );
-  map.insert( u"µ"_s, u"μ"_s );
-  map.insert( u"º"_s, u"o"_s );
-  map.insert( u"»"_s, u">>"_s );
-  map.insert( u"¼"_s, u" 1/4"_s );
-  map.insert( u"½"_s, u" 1/2"_s );
-  map.insert( u"¾"_s, u" 3/4"_s );
-  map.insert( u"¿"_s, u"?"_s );
-  map.insert( u"À"_s, u"A"_s );
-  map.insert( u"Á"_s, u"A"_s );
-  map.insert( u"Â"_s, u"A"_s );
-  map.insert( u"Ã"_s, u"A"_s );
-  map.insert( u"Ä"_s, u"A"_s );
-  map.insert( u"Å"_s, u"A"_s );
-  map.insert( u"Æ"_s, u"AE"_s );
-  map.insert( u"Ç"_s, u"C"_s );
-  map.insert( u"È"_s, u"E"_s );
-  map.insert( u"É"_s, u"E"_s );
-  map.insert( u"Ê"_s, u"E"_s );
-  map.insert( u"Ë"_s, u"E"_s );
-  map.insert( u"Ì"_s, u"I"_s );
-  map.insert( u"Í"_s, u"I"_s );
-  map.insert( u"Î"_s, u"I"_s );
-  map.insert( u"Ï"_s, u"I"_s );
-  map.insert( u"Ð"_s, u"D"_s );
-  map.insert( u"Ñ"_s, u"N"_s );
-  map.insert( u"Ò"_s, u"O"_s );
-  map.insert( u"Ó"_s, u"O"_s );
-  map.insert( u"Ô"_s, u"O"_s );
-  map.insert( u"Õ"_s, u"O"_s );
-  map.insert( u"Ö"_s, u"O"_s );
-  map.insert( u"×"_s, u"*"_s );
-  map.insert( u"Ø"_s, u"O"_s );
-  map.insert( u"Ù"_s, u"U"_s );
-  map.insert( u"Ú"_s, u"U"_s );
-  map.insert( u"Û"_s, u"U"_s );
-  map.insert( u"Ü"_s, u"U"_s );
-  map.insert( u"Ý"_s, u"Y"_s );
-  map.insert( u"Þ"_s, u"TH"_s );
-  map.insert( u"ß"_s, u"ss"_s );
-  map.insert( u"à"_s, u"a"_s );
-  map.insert( u"á"_s, u"a"_s );
-  map.insert( u"â"_s, u"a"_s );
-  map.insert( u"ã"_s, u"a"_s );
-  map.insert( u"ä"_s, u"a"_s );
-  map.insert( u"å"_s, u"a"_s );
-  map.insert( u"æ"_s, u"ae"_s );
-  map.insert( u"ç"_s, u"c"_s );
-  map.insert( u"è"_s, u"e"_s );
-  map.insert( u"é"_s, u"e"_s );
-  map.insert( u"ê"_s, u"e"_s );
-  map.insert( u"ë"_s, u"e"_s );
-  map.insert( u"ì"_s, u"i"_s );
-  map.insert( u"í"_s, u"i"_s );
-  map.insert( u"î"_s, u"i"_s );
-  map.insert( u"ï"_s, u"i"_s );
-  map.insert( u"ð"_s, u"d"_s );
-  map.insert( u"ñ"_s, u"n"_s );
-  map.insert( u"ò"_s, u"o"_s );
-  map.insert( u"ó"_s, u"o"_s );
-  map.insert( u"ô"_s, u"o"_s );
-  map.insert( u"õ"_s, u"o"_s );
-  map.insert( u"ö"_s, u"o"_s );
-  map.insert( u"÷"_s, u"/"_s );
-  map.insert( u"ø"_s, u"o"_s );
-  map.insert( u"ù"_s, u"u"_s );
-  map.insert( u"ú"_s, u"u"_s );
-  map.insert( u"û"_s, u"u"_s );
-  map.insert( u"ü"_s, u"u"_s );
-  map.insert( u"ý"_s, u"y"_s );
-  map.insert( u"þ"_s, u"th"_s );
-  map.insert( u"ÿ"_s, u"y"_s );
-  map.insert( u"Ā"_s, u"A"_s );
-  map.insert( u"ā"_s, u"a"_s );
-  map.insert( u"Ă"_s, u"A"_s );
-  map.insert( u"ă"_s, u"a"_s );
-  map.insert( u"Ą"_s, u"A"_s );
-  map.insert( u"ą"_s, u"a"_s );
-  map.insert( u"Ć"_s, u"C"_s );
-  map.insert( u"ć"_s, u"c"_s );
-  map.insert( u"Ĉ"_s, u"C"_s );
-  map.insert( u"ĉ"_s, u"c"_s );
-  map.insert( u"Ċ"_s, u"C"_s );
-  map.insert( u"ċ"_s, u"c"_s );
-  map.insert( u"Č"_s, u"C"_s );
-  map.insert( u"č"_s, u"c"_s );
-  map.insert( u"Ď"_s, u"D"_s );
-  map.insert( u"ď"_s, u"d"_s );
-  map.insert( u"Đ"_s, u"D"_s );
-  map.insert( u"đ"_s, u"d"_s );
-  map.insert( u"Ē"_s, u"E"_s );
-  map.insert( u"ē"_s, u"e"_s );
-  map.insert( u"Ĕ"_s, u"E"_s );
-  map.insert( u"ĕ"_s, u"e"_s );
-  map.insert( u"Ė"_s, u"E"_s );
-  map.insert( u"ė"_s, u"e"_s );
-  map.insert( u"Ę"_s, u"E"_s );
-  map.insert( u"ę"_s, u"e"_s );
-  map.insert( u"Ě"_s, u"E"_s );
-  map.insert( u"ě"_s, u"e"_s );
-  map.insert( u"Ĝ"_s, u"G"_s );
-  map.insert( u"ĝ"_s, u"g"_s );
-  map.insert( u"Ğ"_s, u"G"_s );
-  map.insert( u"ğ"_s, u"g"_s );
-  map.insert( u"Ġ"_s, u"G"_s );
-  map.insert( u"ġ"_s, u"g"_s );
-  map.insert( u"Ģ"_s, u"G"_s );
-  map.insert( u"ģ"_s, u"g"_s );
-  map.insert( u"Ĥ"_s, u"H"_s );
-  map.insert( u"ĥ"_s, u"h"_s );
-  map.insert( u"Ħ"_s, u"H"_s );
-  map.insert( u"ħ"_s, u"h"_s );
-  map.insert( u"Ĩ"_s, u"I"_s );
-  map.insert( u"ĩ"_s, u"i"_s );
-  map.insert( u"Ī"_s, u"I"_s );
-  map.insert( u"ī"_s, u"i"_s );
-  map.insert( u"Ĭ"_s, u"I"_s );
-  map.insert( u"ĭ"_s, u"i"_s );
-  map.insert( u"Į"_s, u"I"_s );
-  map.insert( u"į"_s, u"i"_s );
-  map.insert( u"İ"_s, u"I"_s );
-  map.insert( u"ı"_s, u"i"_s );
-  map.insert( u"Ĳ"_s, u"IJ"_s );
-  map.insert( u"ĳ"_s, u"ij"_s );
-  map.insert( u"Ĵ"_s, u"J"_s );
-  map.insert( u"ĵ"_s, u"j"_s );
-  map.insert( u"Ķ"_s, u"K"_s );
-  map.insert( u"ķ"_s, u"k"_s );
-  map.insert( u"ĸ"_s, u"q"_s );
-  map.insert( u"Ĺ"_s, u"L"_s );
-  map.insert( u"ĺ"_s, u"l"_s );
-  map.insert( u"Ļ"_s, u"L"_s );
-  map.insert( u"ļ"_s, u"l"_s );
-  map.insert( u"Ľ"_s, u"L"_s );
-  map.insert( u"ľ"_s, u"l"_s );
-  map.insert( u"Ŀ"_s, u"L"_s );
-  map.insert( u"ŀ"_s, u"l"_s );
-  map.insert( u"Ł"_s, u"L"_s );
-  map.insert( u"ł"_s, u"l"_s );
-  map.insert( u"Ń"_s, u"N"_s );
-  map.insert( u"ń"_s, u"n"_s );
-  map.insert( u"Ņ"_s, u"N"_s );
-  map.insert( u"ņ"_s, u"n"_s );
-  map.insert( u"Ň"_s, u"N"_s );
-  map.insert( u"ň"_s, u"n"_s );
-  map.insert( u"ŉ"_s, u"'n"_s );
-  map.insert( u"Ŋ"_s, u"N"_s );
-  map.insert( u"ŋ"_s, u"n"_s );
-  map.insert( u"Ō"_s, u"O"_s );
-  map.insert( u"ō"_s, u"o"_s );
-  map.insert( u"Ŏ"_s, u"O"_s );
-  map.insert( u"ŏ"_s, u"o"_s );
-  map.insert( u"Ő"_s, u"O"_s );
-  map.insert( u"ő"_s, u"o"_s );
-  map.insert( u"Œ"_s, u"OE"_s );
-  map.insert( u"œ"_s, u"oe"_s );
-  map.insert( u"Ŕ"_s, u"R"_s );
-  map.insert( u"ŕ"_s, u"r"_s );
-  map.insert( u"Ŗ"_s, u"R"_s );
-  map.insert( u"ŗ"_s, u"r"_s );
-  map.insert( u"Ř"_s, u"R"_s );
-  map.insert( u"ř"_s, u"r"_s );
-  map.insert( u"Ś"_s, u"S"_s );
-  map.insert( u"ś"_s, u"s"_s );
-  map.insert( u"Ŝ"_s, u"S"_s );
-  map.insert( u"ŝ"_s, u"s"_s );
-  map.insert( u"Ş"_s, u"S"_s );
-  map.insert( u"ş"_s, u"s"_s );
-  map.insert( u"Š"_s, u"S"_s );
-  map.insert( u"š"_s, u"s"_s );
-  map.insert( u"Ţ"_s, u"T"_s );
-  map.insert( u"ţ"_s, u"t"_s );
-  map.insert( u"Ť"_s, u"T"_s );
-  map.insert( u"ť"_s, u"t"_s );
-  map.insert( u"Ŧ"_s, u"T"_s );
-  map.insert( u"ŧ"_s, u"t"_s );
-  map.insert( u"Ũ"_s, u"U"_s );
-  map.insert( u"ũ"_s, u"u"_s );
-  map.insert( u"Ū"_s, u"U"_s );
-  map.insert( u"ū"_s, u"u"_s );
-  map.insert( u"Ŭ"_s, u"U"_s );
-  map.insert( u"ŭ"_s, u"u"_s );
-  map.insert( u"Ů"_s, u"U"_s );
-  map.insert( u"ů"_s, u"u"_s );
-  map.insert( u"Ű"_s, u"U"_s );
-  map.insert( u"ű"_s, u"u"_s );
-  map.insert( u"Ų"_s, u"U"_s );
-  map.insert( u"ų"_s, u"u"_s );
-  map.insert( u"Ŵ"_s, u"W"_s );
-  map.insert( u"ŵ"_s, u"w"_s );
-  map.insert( u"Ŷ"_s, u"Y"_s );
-  map.insert( u"ŷ"_s, u"y"_s );
-  map.insert( u"Ÿ"_s, u"Y"_s );
-  map.insert( u"Ź"_s, u"Z"_s );
-  map.insert( u"ź"_s, u"z"_s );
-  map.insert( u"Ż"_s, u"Z"_s );
-  map.insert( u"ż"_s, u"z"_s );
-  map.insert( u"Ž"_s, u"Z"_s );
-  map.insert( u"ž"_s, u"z"_s );
-  map.insert( u"ſ"_s, u"s"_s );
-  map.insert( u"ƀ"_s, u"b"_s );
-  map.insert( u"Ɓ"_s, u"B"_s );
-  map.insert( u"Ƃ"_s, u"B"_s );
-  map.insert( u"ƃ"_s, u"b"_s );
-  map.insert( u"Ƈ"_s, u"C"_s );
-  map.insert( u"ƈ"_s, u"c"_s );
-  map.insert( u"Ɖ"_s, u"D"_s );
-  map.insert( u"Ɗ"_s, u"D"_s );
-  map.insert( u"Ƌ"_s, u"D"_s );
-  map.insert( u"ƌ"_s, u"d"_s );
-  map.insert( u"Ɛ"_s, u"E"_s );
-  map.insert( u"Ƒ"_s, u"F"_s );
-  map.insert( u"ƒ"_s, u"f"_s );
-  map.insert( u"Ɠ"_s, u"G"_s );
-  map.insert( u"ƕ"_s, u"hv"_s );
-  map.insert( u"Ɩ"_s, u"I"_s );
-  map.insert( u"Ɨ"_s, u"I"_s );
-  map.insert( u"Ƙ"_s, u"K"_s );
-  map.insert( u"ƙ"_s, u"k"_s );
-  map.insert( u"ƚ"_s, u"l"_s );
-  map.insert( u"Ɲ"_s, u"N"_s );
-  map.insert( u"ƞ"_s, u"n"_s );
-  map.insert( u"Ơ"_s, u"O"_s );
-  map.insert( u"ơ"_s, u"o"_s );
-  map.insert( u"Ƣ"_s, u"OI"_s );
-  map.insert( u"ƣ"_s, u"oi"_s );
-  map.insert( u"Ƥ"_s, u"P"_s );
-  map.insert( u"ƥ"_s, u"p"_s );
-  map.insert( u"ƫ"_s, u"t"_s );
-  map.insert( u"Ƭ"_s, u"T"_s );
-  map.insert( u"ƭ"_s, u"t"_s );
-  map.insert( u"Ʈ"_s, u"T"_s );
-  map.insert( u"Ư"_s, u"U"_s );
-  map.insert( u"ư"_s, u"u"_s );
-  map.insert( u"Ʋ"_s, u"V"_s );
-  map.insert( u"Ƴ"_s, u"Y"_s );
-  map.insert( u"ƴ"_s, u"y"_s );
-  map.insert( u"Ƶ"_s, u"Z"_s );
-  map.insert( u"ƶ"_s, u"z"_s );
-  map.insert( u"Ǆ"_s, u"DZ"_s );
-  map.insert( u"ǅ"_s, u"Dz"_s );
-  map.insert( u"ǆ"_s, u"dz"_s );
-  map.insert( u"Ǉ"_s, u"LJ"_s );
-  map.insert( u"ǈ"_s, u"Lj"_s );
-  map.insert( u"ǉ"_s, u"lj"_s );
-  map.insert( u"Ǌ"_s, u"NJ"_s );
-  map.insert( u"ǋ"_s, u"Nj"_s );
-  map.insert( u"ǌ"_s, u"nj"_s );
-  map.insert( u"Ǎ"_s, u"A"_s );
-  map.insert( u"ǎ"_s, u"a"_s );
-  map.insert( u"Ǐ"_s, u"I"_s );
-  map.insert( u"ǐ"_s, u"i"_s );
-  map.insert( u"Ǒ"_s, u"O"_s );
-  map.insert( u"ǒ"_s, u"o"_s );
-  map.insert( u"Ǔ"_s, u"U"_s );
-  map.insert( u"ǔ"_s, u"u"_s );
-  map.insert( u"Ǖ"_s, u"U"_s );
-  map.insert( u"ǖ"_s, u"u"_s );
-  map.insert( u"Ǘ"_s, u"U"_s );
-  map.insert( u"ǘ"_s, u"u"_s );
-  map.insert( u"Ǚ"_s, u"U"_s );
-  map.insert( u"ǚ"_s, u"u"_s );
-  map.insert( u"Ǜ"_s, u"U"_s );
-  map.insert( u"ǜ"_s, u"u"_s );
-  map.insert( u"Ǟ"_s, u"A"_s );
-  map.insert( u"ǟ"_s, u"a"_s );
-  map.insert( u"Ǡ"_s, u"A"_s );
-  map.insert( u"ǡ"_s, u"a"_s );
-  map.insert( u"Ǥ"_s, u"G"_s );
-  map.insert( u"ǥ"_s, u"g"_s );
-  map.insert( u"Ǧ"_s, u"G"_s );
-  map.insert( u"ǧ"_s, u"g"_s );
-  map.insert( u"Ǩ"_s, u"K"_s );
-  map.insert( u"ǩ"_s, u"k"_s );
-  map.insert( u"Ǫ"_s, u"O"_s );
-  map.insert( u"ǫ"_s, u"o"_s );
-  map.insert( u"Ǭ"_s, u"O"_s );
-  map.insert( u"ǭ"_s, u"o"_s );
-  map.insert( u"ǰ"_s, u"j"_s );
-  map.insert( u"Ǳ"_s, u"DZ"_s );
-  map.insert( u"ǲ"_s, u"Dz"_s );
-  map.insert( u"ǳ"_s, u"dz"_s );
-  map.insert( u"Ǵ"_s, u"G"_s );
-  map.insert( u"ǵ"_s, u"g"_s );
-  map.insert( u"Ǹ"_s, u"N"_s );
-  map.insert( u"ǹ"_s, u"n"_s );
-  map.insert( u"Ǻ"_s, u"A"_s );
-  map.insert( u"ǻ"_s, u"a"_s );
-  map.insert( u"Ȁ"_s, u"A"_s );
-  map.insert( u"ȁ"_s, u"a"_s );
-  map.insert( u"Ȃ"_s, u"A"_s );
-  map.insert( u"ȃ"_s, u"a"_s );
-  map.insert( u"Ȅ"_s, u"E"_s );
-  map.insert( u"ȅ"_s, u"e"_s );
-  map.insert( u"Ȇ"_s, u"E"_s );
-  map.insert( u"ȇ"_s, u"e"_s );
-  map.insert( u"Ȉ"_s, u"I"_s );
-  map.insert( u"ȉ"_s, u"i"_s );
-  map.insert( u"Ȋ"_s, u"I"_s );
-  map.insert( u"ȋ"_s, u"i"_s );
-  map.insert( u"Ȍ"_s, u"O"_s );
-  map.insert( u"ȍ"_s, u"o"_s );
-  map.insert( u"Ȏ"_s, u"O"_s );
-  map.insert( u"ȏ"_s, u"o"_s );
-  map.insert( u"Ȑ"_s, u"R"_s );
-  map.insert( u"ȑ"_s, u"r"_s );
-  map.insert( u"Ȓ"_s, u"R"_s );
-  map.insert( u"ȓ"_s, u"r"_s );
-  map.insert( u"Ȕ"_s, u"U"_s );
-  map.insert( u"ȕ"_s, u"u"_s );
-  map.insert( u"Ȗ"_s, u"U"_s );
-  map.insert( u"ȗ"_s, u"u"_s );
-  map.insert( u"Ș"_s, u"S"_s );
-  map.insert( u"ș"_s, u"s"_s );
-  map.insert( u"Ț"_s, u"T"_s );
-  map.insert( u"ț"_s, u"t"_s );
-  map.insert( u"Ȟ"_s, u"H"_s );
-  map.insert( u"ȟ"_s, u"h"_s );
-  map.insert( u"ȡ"_s, u"d"_s );
-  map.insert( u"Ȥ"_s, u"Z"_s );
-  map.insert( u"ȥ"_s, u"z"_s );
-  map.insert( u"Ȧ"_s, u"A"_s );
-  map.insert( u"ȧ"_s, u"a"_s );
-  map.insert( u"Ȩ"_s, u"E"_s );
-  map.insert( u"ȩ"_s, u"e"_s );
-  map.insert( u"Ȫ"_s, u"O"_s );
-  map.insert( u"ȫ"_s, u"o"_s );
-  map.insert( u"Ȭ"_s, u"O"_s );
-  map.insert( u"ȭ"_s, u"o"_s );
-  map.insert( u"Ȯ"_s, u"O"_s );
-  map.insert( u"ȯ"_s, u"o"_s );
-  map.insert( u"Ȱ"_s, u"O"_s );
-  map.insert( u"ȱ"_s, u"o"_s );
-  map.insert( u"Ȳ"_s, u"Y"_s );
-  map.insert( u"ȳ"_s, u"y"_s );
-  map.insert( u"ȴ"_s, u"l"_s );
-  map.insert( u"ȵ"_s, u"n"_s );
-  map.insert( u"ȶ"_s, u"t"_s );
-  map.insert( u"ȷ"_s, u"j"_s );
-  map.insert( u"ȸ"_s, u"db"_s );
-  map.insert( u"ȹ"_s, u"qp"_s );
-  map.insert( u"Ⱥ"_s, u"A"_s );
-  map.insert( u"Ȼ"_s, u"C"_s );
-  map.insert( u"ȼ"_s, u"c"_s );
-  map.insert( u"Ƚ"_s, u"L"_s );
-  map.insert( u"Ⱦ"_s, u"T"_s );
-  map.insert( u"ȿ"_s, u"s"_s );
-  map.insert( u"ɀ"_s, u"z"_s );
-  map.insert( u"Ƀ"_s, u"B"_s );
-  map.insert( u"Ʉ"_s, u"U"_s );
-  map.insert( u"Ɇ"_s, u"E"_s );
-  map.insert( u"ɇ"_s, u"e"_s );
-  map.insert( u"Ɉ"_s, u"J"_s );
-  map.insert( u"ɉ"_s, u"j"_s );
-  map.insert( u"Ɍ"_s, u"R"_s );
-  map.insert( u"ɍ"_s, u"r"_s );
-  map.insert( u"Ɏ"_s, u"Y"_s );
-  map.insert( u"ɏ"_s, u"y"_s );
-  map.insert( u"ɓ"_s, u"b"_s );
-  map.insert( u"ɕ"_s, u"c"_s );
-  map.insert( u"ɖ"_s, u"d"_s );
-  map.insert( u"ɗ"_s, u"d"_s );
-  map.insert( u"ɛ"_s, u"e"_s );
-  map.insert( u"ɟ"_s, u"j"_s );
-  map.insert( u"ɠ"_s, u"g"_s );
-  map.insert( u"ɡ"_s, u"g"_s );
-  map.insert( u"ɢ"_s, u"G"_s );
-  map.insert( u"ɦ"_s, u"h"_s );
-  map.insert( u"ɧ"_s, u"h"_s );
-  map.insert( u"ɨ"_s, u"i"_s );
-  map.insert( u"ɪ"_s, u"I"_s );
-  map.insert( u"ɫ"_s, u"l"_s );
-  map.insert( u"ɬ"_s, u"l"_s );
-  map.insert( u"ɭ"_s, u"l"_s );
-  map.insert( u"ɱ"_s, u"m"_s );
-  map.insert( u"ɲ"_s, u"n"_s );
-  map.insert( u"ɳ"_s, u"n"_s );
-  map.insert( u"ɴ"_s, u"N"_s );
-  map.insert( u"ɶ"_s, u"OE"_s );
-  map.insert( u"ɼ"_s, u"r"_s );
-  map.insert( u"ɽ"_s, u"r"_s );
-  map.insert( u"ɾ"_s, u"r"_s );
-  map.insert( u"ʀ"_s, u"R"_s );
-  map.insert( u"ʂ"_s, u"s"_s );
-  map.insert( u"ʈ"_s, u"t"_s );
-  map.insert( u"ʉ"_s, u"u"_s );
-  map.insert( u"ʋ"_s, u"v"_s );
-  map.insert( u"ʏ"_s, u"Y"_s );
-  map.insert( u"ʐ"_s, u"z"_s );
-  map.insert( u"ʑ"_s, u"z"_s );
-  map.insert( u"ʙ"_s, u"B"_s );
-  map.insert( u"ʛ"_s, u"G"_s );
-  map.insert( u"ʜ"_s, u"H"_s );
-  map.insert( u"ʝ"_s, u"j"_s );
-  map.insert( u"ʟ"_s, u"L"_s );
-  map.insert( u"ʠ"_s, u"q"_s );
-  map.insert( u"ʣ"_s, u"dz"_s );
-  map.insert( u"ʥ"_s, u"dz"_s );
-  map.insert( u"ʦ"_s, u"ts"_s );
-  map.insert( u"ʪ"_s, u"ls"_s );
-  map.insert( u"ʫ"_s, u"lz"_s );
-  map.insert( u"ʰ"_s, u"h"_s );
-  map.insert( u"ʲ"_s, u"j"_s );
-  map.insert( u"ʳ"_s, u"r"_s );
-  map.insert( u"ʷ"_s, u"w"_s );
-  map.insert( u"ʸ"_s, u"y"_s );
-  map.insert( u"ʹ"_s, u"'"_s );
-  map.insert( u"ʺ"_s, u"\""_s );
-  map.insert( u"ʻ"_s, u"'"_s );
-  map.insert( u"ʼ"_s, u"'"_s );
-  map.insert( u"ʽ"_s, u"'"_s );
-  map.insert( u"˂"_s, u"<"_s );
-  map.insert( u"˃"_s, u">"_s );
-  map.insert( u"˄"_s, u"^"_s );
-  map.insert( u"ˆ"_s, u"^"_s );
-  map.insert( u"ˈ"_s, u"'"_s );
-  map.insert( u"ˋ"_s, u"`"_s );
-  map.insert( u"ː"_s, u":"_s );
-  map.insert( u"˖"_s, u"+"_s );
-  map.insert( u"˗"_s, u"-"_s );
-  map.insert( u"˜"_s, u"~"_s );
-  map.insert( u"ˡ"_s, u"l"_s );
-  map.insert( u"ˢ"_s, u"s"_s );
-  map.insert( u"ˣ"_s, u"x"_s );
-  map.insert( u"̀"_s, QString() );
-  map.insert( u"́"_s, QString() );
-  map.insert( u"̂"_s, QString() );
-  map.insert( u"̃"_s, QString() );
-  map.insert( u"̄"_s, QString() );
-  map.insert( u"̅"_s, QString() );
-  map.insert( u"̆"_s, QString() );
-  map.insert( u"̇"_s, QString() );
-  map.insert( u"̈"_s, QString() );
-  map.insert( u"̉"_s, QString() );
-  map.insert( u"̊"_s, QString() );
-  map.insert( u"̋"_s, QString() );
-  map.insert( u"̌"_s, QString() );
-  map.insert( u"̍"_s, QString() );
-  map.insert( u"̎"_s, QString() );
-  map.insert( u"̏"_s, QString() );
-  map.insert( u"̐"_s, QString() );
-  map.insert( u"̑"_s, QString() );
-  map.insert( u"̒"_s, QString() );
-  map.insert( u"̓"_s, QString() );
-  map.insert( u"̔"_s, QString() );
-  map.insert( u"̕"_s, QString() );
-  map.insert( u"̖"_s, QString() );
-  map.insert( u"̗"_s, QString() );
-  map.insert( u"̘"_s, QString() );
-  map.insert( u"̙"_s, QString() );
-  map.insert( u"̚"_s, QString() );
-  map.insert( u"̛"_s, QString() );
-  map.insert( u"̜"_s, QString() );
-  map.insert( u"̝"_s, QString() );
-  map.insert( u"̞"_s, QString() );
-  map.insert( u"̟"_s, QString() );
-  map.insert( u"̠"_s, QString() );
-  map.insert( u"̡"_s, QString() );
-  map.insert( u"̢"_s, QString() );
-  map.insert( u"̣"_s, QString() );
-  map.insert( u"̤"_s, QString() );
-  map.insert( u"̥"_s, QString() );
-  map.insert( u"̦"_s, QString() );
-  map.insert( u"̧"_s, QString() );
-  map.insert( u"̨"_s, QString() );
-  map.insert( u"̩"_s, QString() );
-  map.insert( u"̪"_s, QString() );
-  map.insert( u"̫"_s, QString() );
-  map.insert( u"̬"_s, QString() );
-  map.insert( u"̭"_s, QString() );
-  map.insert( u"̮"_s, QString() );
-  map.insert( u"̯"_s, QString() );
-  map.insert( u"̰"_s, QString() );
-  map.insert( u"̱"_s, QString() );
-  map.insert( u"̲"_s, QString() );
-  map.insert( u"̳"_s, QString() );
-  map.insert( u"̴"_s, QString() );
-  map.insert( u"̵"_s, QString() );
-  map.insert( u"̶"_s, QString() );
-  map.insert( u"̷"_s, QString() );
-  map.insert( u"̸"_s, QString() );
-  map.insert( u"̹"_s, QString() );
-  map.insert( u"̺"_s, QString() );
-  map.insert( u"̻"_s, QString() );
-  map.insert( u"̼"_s, QString() );
-  map.insert( u"̽"_s, QString() );
-  map.insert( u"̾"_s, QString() );
-  map.insert( u"̿"_s, QString() );
-  map.insert( u"̀"_s, QString() );
-  map.insert( u"́"_s, QString() );
-  map.insert( u"͂"_s, QString() );
-  map.insert( u"̓"_s, QString() );
-  map.insert( u"̈́"_s, QString() );
-  map.insert( u"ͅ"_s, QString() );
-  map.insert( u"͆"_s, QString() );
-  map.insert( u"͇"_s, QString() );
-  map.insert( u"͈"_s, QString() );
-  map.insert( u"͉"_s, QString() );
-  map.insert( u"͊"_s, QString() );
-  map.insert( u"͋"_s, QString() );
-  map.insert( u"͌"_s, QString() );
-  map.insert( u"͍"_s, QString() );
-  map.insert( u"͎"_s, QString() );
-  map.insert( u"͏"_s, QString() );
-  map.insert( u"͐"_s, QString() );
-  map.insert( u"͑"_s, QString() );
-  map.insert( u"͒"_s, QString() );
-  map.insert( u"͓"_s, QString() );
-  map.insert( u"͔"_s, QString() );
-  map.insert( u"͕"_s, QString() );
-  map.insert( u"͖"_s, QString() );
-  map.insert( u"͗"_s, QString() );
-  map.insert( u"͘"_s, QString() );
-  map.insert( u"͙"_s, QString() );
-  map.insert( u"͚"_s, QString() );
-  map.insert( u"͛"_s, QString() );
-  map.insert( u"͜"_s, QString() );
-  map.insert( u"͝"_s, QString() );
-  map.insert( u"͞"_s, QString() );
-  map.insert( u"͟"_s, QString() );
-  map.insert( u"͠"_s, QString() );
-  map.insert( u"͡"_s, QString() );
-  map.insert( u"͢"_s, QString() );
-  map.insert( u"Ά"_s, u"Α"_s );
-  map.insert( u"Έ"_s, u"Ε"_s );
-  map.insert( u"Ή"_s, u"Η"_s );
-  map.insert( u"Ί"_s, u"Ι"_s );
-  map.insert( u"Ό"_s, u"Ο"_s );
-  map.insert( u"Ύ"_s, u"Υ"_s );
-  map.insert( u"Ώ"_s, u"Ω"_s );
-  map.insert( u"ΐ"_s, u"ι"_s );
-  map.insert( u"Ϊ"_s, u"Ι"_s );
-  map.insert( u"Ϋ"_s, u"Υ"_s );
-  map.insert( u"ά"_s, u"α"_s );
-  map.insert( u"έ"_s, u"ε"_s );
-  map.insert( u"ή"_s, u"η"_s );
-  map.insert( u"ί"_s, u"ι"_s );
-  map.insert( u"ΰ"_s, u"υ"_s );
-  map.insert( u"ϊ"_s, u"ι"_s );
-  map.insert( u"ϋ"_s, u"υ"_s );
-  map.insert( u"ό"_s, u"ο"_s );
-  map.insert( u"ύ"_s, u"υ"_s );
-  map.insert( u"ώ"_s, u"ω"_s );
-  map.insert( u"ϐ"_s, u"β"_s );
-  map.insert( u"ϑ"_s, u"θ"_s );
-  map.insert( u"ϒ"_s, u"Υ"_s );
-  map.insert( u"ϕ"_s, u"φ"_s );
-  map.insert( u"ϖ"_s, u"π"_s );
-  map.insert( u"ϰ"_s, u"κ"_s );
-  map.insert( u"ϱ"_s, u"ρ"_s );
-  map.insert( u"ϲ"_s, u"ς"_s );
-  map.insert( u"ϴ"_s, u"Θ"_s );
-  map.insert( u"ϵ"_s, u"ε"_s );
-  map.insert( u"Ϲ"_s, u"Σ"_s );
-  map.insert( u"Ё"_s, u"Е"_s );
-  map.insert( u"ё"_s, u"е"_s );
-  map.insert( u"ᴀ"_s, u"A"_s );
-  map.insert( u"ᴁ"_s, u"AE"_s );
-  map.insert( u"ᴃ"_s, u"B"_s );
-  map.insert( u"ᴄ"_s, u"C"_s );
-  map.insert( u"ᴅ"_s, u"D"_s );
-  map.insert( u"ᴆ"_s, u"D"_s );
-  map.insert( u"ᴇ"_s, u"E"_s );
-  map.insert( u"ᴊ"_s, u"J"_s );
-  map.insert( u"ᴋ"_s, u"K"_s );
-  map.insert( u"ᴌ"_s, u"L"_s );
-  map.insert( u"ᴍ"_s, u"M"_s );
-  map.insert( u"ᴏ"_s, u"O"_s );
-  map.insert( u"ᴘ"_s, u"P"_s );
-  map.insert( u"ᴛ"_s, u"T"_s );
-  map.insert( u"ᴜ"_s, u"U"_s );
-  map.insert( u"ᴠ"_s, u"V"_s );
-  map.insert( u"ᴡ"_s, u"W"_s );
-  map.insert( u"ᴢ"_s, u"Z"_s );
-  map.insert( u"ᴬ"_s, u"A"_s );
-  map.insert( u"ᴮ"_s, u"B"_s );
-  map.insert( u"ᴰ"_s, u"D"_s );
-  map.insert( u"ᴱ"_s, u"E"_s );
-  map.insert( u"ᴳ"_s, u"G"_s );
-  map.insert( u"ᴴ"_s, u"H"_s );
-  map.insert( u"ᴵ"_s, u"I"_s );
-  map.insert( u"ᴶ"_s, u"J"_s );
-  map.insert( u"ᴷ"_s, u"K"_s );
-  map.insert( u"ᴸ"_s, u"L"_s );
-  map.insert( u"ᴹ"_s, u"M"_s );
-  map.insert( u"ᴺ"_s, u"N"_s );
-  map.insert( u"ᴼ"_s, u"O"_s );
-  map.insert( u"ᴾ"_s, u"P"_s );
-  map.insert( u"ᴿ"_s, u"R"_s );
-  map.insert( u"ᵀ"_s, u"T"_s );
-  map.insert( u"ᵁ"_s, u"U"_s );
-  map.insert( u"ᵂ"_s, u"W"_s );
-  map.insert( u"ᵃ"_s, u"a"_s );
-  map.insert( u"ᵇ"_s, u"b"_s );
-  map.insert( u"ᵈ"_s, u"d"_s );
-  map.insert( u"ᵉ"_s, u"e"_s );
-  map.insert( u"ᵍ"_s, u"g"_s );
-  map.insert( u"ᵏ"_s, u"k"_s );
-  map.insert( u"ᵐ"_s, u"m"_s );
-  map.insert( u"ᵒ"_s, u"o"_s );
-  map.insert( u"ᵖ"_s, u"p"_s );
-  map.insert( u"ᵗ"_s, u"t"_s );
-  map.insert( u"ᵘ"_s, u"u"_s );
-  map.insert( u"ᵛ"_s, u"v"_s );
-  map.insert( u"ᵝ"_s, u"β"_s );
-  map.insert( u"ᵞ"_s, u"γ"_s );
-  map.insert( u"ᵟ"_s, u"δ"_s );
-  map.insert( u"ᵠ"_s, u"φ"_s );
-  map.insert( u"ᵡ"_s, u"χ"_s );
-  map.insert( u"ᵢ"_s, u"i"_s );
-  map.insert( u"ᵣ"_s, u"r"_s );
-  map.insert( u"ᵤ"_s, u"u"_s );
-  map.insert( u"ᵥ"_s, u"v"_s );
-  map.insert( u"ᵦ"_s, u"β"_s );
-  map.insert( u"ᵧ"_s, u"γ"_s );
-  map.insert( u"ᵨ"_s, u"ρ"_s );
-  map.insert( u"ᵩ"_s, u"φ"_s );
-  map.insert( u"ᵪ"_s, u"χ"_s );
-  map.insert( u"ᵫ"_s, u"ue"_s );
-  map.insert( u"ᵬ"_s, u"b"_s );
-  map.insert( u"ᵭ"_s, u"d"_s );
-  map.insert( u"ᵮ"_s, u"f"_s );
-  map.insert( u"ᵯ"_s, u"m"_s );
-  map.insert( u"ᵰ"_s, u"n"_s );
-  map.insert( u"ᵱ"_s, u"p"_s );
-  map.insert( u"ᵲ"_s, u"r"_s );
-  map.insert( u"ᵳ"_s, u"r"_s );
-  map.insert( u"ᵴ"_s, u"s"_s );
-  map.insert( u"ᵵ"_s, u"t"_s );
-  map.insert( u"ᵶ"_s, u"z"_s );
-  map.insert( u"ᵺ"_s, u"th"_s );
-  map.insert( u"ᵻ"_s, u"I"_s );
-  map.insert( u"ᵽ"_s, u"p"_s );
-  map.insert( u"ᵾ"_s, u"U"_s );
-  map.insert( u"ᶀ"_s, u"b"_s );
-  map.insert( u"ᶁ"_s, u"d"_s );
-  map.insert( u"ᶂ"_s, u"f"_s );
-  map.insert( u"ᶃ"_s, u"g"_s );
-  map.insert( u"ᶄ"_s, u"k"_s );
-  map.insert( u"ᶅ"_s, u"l"_s );
-  map.insert( u"ᶆ"_s, u"m"_s );
-  map.insert( u"ᶇ"_s, u"n"_s );
-  map.insert( u"ᶈ"_s, u"p"_s );
-  map.insert( u"ᶉ"_s, u"r"_s );
-  map.insert( u"ᶊ"_s, u"s"_s );
-  map.insert( u"ᶌ"_s, u"v"_s );
-  map.insert( u"ᶍ"_s, u"x"_s );
-  map.insert( u"ᶎ"_s, u"z"_s );
-  map.insert( u"ᶏ"_s, u"a"_s );
-  map.insert( u"ᶑ"_s, u"d"_s );
-  map.insert( u"ᶒ"_s, u"e"_s );
-  map.insert( u"ᶓ"_s, u"e"_s );
-  map.insert( u"ᶖ"_s, u"i"_s );
-  map.insert( u"ᶙ"_s, u"u"_s );
-  map.insert( u"ᶜ"_s, u"c"_s );
-  map.insert( u"ᶠ"_s, u"f"_s );
-  map.insert( u"ᶻ"_s, u"z"_s );
-  map.insert( u"ᶿ"_s, u"θ"_s );
-  map.insert( u"Ḁ"_s, u"A"_s );
-  map.insert( u"ḁ"_s, u"a"_s );
-  map.insert( u"Ḃ"_s, u"B"_s );
-  map.insert( u"ḃ"_s, u"b"_s );
-  map.insert( u"Ḅ"_s, u"B"_s );
-  map.insert( u"ḅ"_s, u"b"_s );
-  map.insert( u"Ḇ"_s, u"B"_s );
-  map.insert( u"ḇ"_s, u"b"_s );
-  map.insert( u"Ḉ"_s, u"C"_s );
-  map.insert( u"ḉ"_s, u"c"_s );
-  map.insert( u"Ḋ"_s, u"D"_s );
-  map.insert( u"ḋ"_s, u"d"_s );
-  map.insert( u"Ḍ"_s, u"D"_s );
-  map.insert( u"ḍ"_s, u"d"_s );
-  map.insert( u"Ḏ"_s, u"D"_s );
-  map.insert( u"ḏ"_s, u"d"_s );
-  map.insert( u"Ḑ"_s, u"D"_s );
-  map.insert( u"ḑ"_s, u"d"_s );
-  map.insert( u"Ḓ"_s, u"D"_s );
-  map.insert( u"ḓ"_s, u"d"_s );
-  map.insert( u"Ḕ"_s, u"E"_s );
-  map.insert( u"ḕ"_s, u"e"_s );
-  map.insert( u"Ḗ"_s, u"E"_s );
-  map.insert( u"ḗ"_s, u"e"_s );
-  map.insert( u"Ḙ"_s, u"E"_s );
-  map.insert( u"ḙ"_s, u"e"_s );
-  map.insert( u"Ḛ"_s, u"E"_s );
-  map.insert( u"ḛ"_s, u"e"_s );
-  map.insert( u"Ḝ"_s, u"E"_s );
-  map.insert( u"ḝ"_s, u"e"_s );
-  map.insert( u"Ḟ"_s, u"F"_s );
-  map.insert( u"ḟ"_s, u"f"_s );
-  map.insert( u"Ḡ"_s, u"G"_s );
-  map.insert( u"ḡ"_s, u"g"_s );
-  map.insert( u"Ḣ"_s, u"H"_s );
-  map.insert( u"ḣ"_s, u"h"_s );
-  map.insert( u"Ḥ"_s, u"H"_s );
-  map.insert( u"ḥ"_s, u"h"_s );
-  map.insert( u"Ḧ"_s, u"H"_s );
-  map.insert( u"ḧ"_s, u"h"_s );
-  map.insert( u"Ḩ"_s, u"H"_s );
-  map.insert( u"ḩ"_s, u"h"_s );
-  map.insert( u"Ḫ"_s, u"H"_s );
-  map.insert( u"ḫ"_s, u"h"_s );
-  map.insert( u"Ḭ"_s, u"I"_s );
-  map.insert( u"ḭ"_s, u"i"_s );
-  map.insert( u"Ḯ"_s, u"I"_s );
-  map.insert( u"ḯ"_s, u"i"_s );
-  map.insert( u"Ḱ"_s, u"K"_s );
-  map.insert( u"ḱ"_s, u"k"_s );
-  map.insert( u"Ḳ"_s, u"K"_s );
-  map.insert( u"ḳ"_s, u"k"_s );
-  map.insert( u"Ḵ"_s, u"K"_s );
-  map.insert( u"ḵ"_s, u"k"_s );
-  map.insert( u"Ḷ"_s, u"L"_s );
-  map.insert( u"ḷ"_s, u"l"_s );
-  map.insert( u"Ḹ"_s, u"L"_s );
-  map.insert( u"ḹ"_s, u"l"_s );
-  map.insert( u"Ḻ"_s, u"L"_s );
-  map.insert( u"ḻ"_s, u"l"_s );
-  map.insert( u"Ḽ"_s, u"L"_s );
-  map.insert( u"ḽ"_s, u"l"_s );
-  map.insert( u"Ḿ"_s, u"M"_s );
-  map.insert( u"ḿ"_s, u"m"_s );
-  map.insert( u"Ṁ"_s, u"M"_s );
-  map.insert( u"ṁ"_s, u"m"_s );
-  map.insert( u"Ṃ"_s, u"M"_s );
-  map.insert( u"ṃ"_s, u"m"_s );
-  map.insert( u"Ṅ"_s, u"N"_s );
-  map.insert( u"ṅ"_s, u"n"_s );
-  map.insert( u"Ṇ"_s, u"N"_s );
-  map.insert( u"ṇ"_s, u"n"_s );
-  map.insert( u"Ṉ"_s, u"N"_s );
-  map.insert( u"ṉ"_s, u"n"_s );
-  map.insert( u"Ṋ"_s, u"N"_s );
-  map.insert( u"ṋ"_s, u"n"_s );
-  map.insert( u"Ṍ"_s, u"O"_s );
-  map.insert( u"ṍ"_s, u"o"_s );
-  map.insert( u"Ṏ"_s, u"O"_s );
-  map.insert( u"ṏ"_s, u"o"_s );
-  map.insert( u"Ṑ"_s, u"O"_s );
-  map.insert( u"ṑ"_s, u"o"_s );
-  map.insert( u"Ṓ"_s, u"O"_s );
-  map.insert( u"ṓ"_s, u"o"_s );
-  map.insert( u"Ṕ"_s, u"P"_s );
-  map.insert( u"ṕ"_s, u"p"_s );
-  map.insert( u"Ṗ"_s, u"P"_s );
-  map.insert( u"ṗ"_s, u"p"_s );
-  map.insert( u"Ṙ"_s, u"R"_s );
-  map.insert( u"ṙ"_s, u"r"_s );
-  map.insert( u"Ṛ"_s, u"R"_s );
-  map.insert( u"ṛ"_s, u"r"_s );
-  map.insert( u"Ṝ"_s, u"R"_s );
-  map.insert( u"ṝ"_s, u"r"_s );
-  map.insert( u"Ṟ"_s, u"R"_s );
-  map.insert( u"ṟ"_s, u"r"_s );
-  map.insert( u"Ṡ"_s, u"S"_s );
-  map.insert( u"ṡ"_s, u"s"_s );
-  map.insert( u"Ṣ"_s, u"S"_s );
-  map.insert( u"ṣ"_s, u"s"_s );
-  map.insert( u"Ṥ"_s, u"S"_s );
-  map.insert( u"ṥ"_s, u"s"_s );
-  map.insert( u"Ṧ"_s, u"S"_s );
-  map.insert( u"ṧ"_s, u"s"_s );
-  map.insert( u"Ṩ"_s, u"S"_s );
-  map.insert( u"ṩ"_s, u"s"_s );
-  map.insert( u"Ṫ"_s, u"T"_s );
-  map.insert( u"ṫ"_s, u"t"_s );
-  map.insert( u"Ṭ"_s, u"T"_s );
-  map.insert( u"ṭ"_s, u"t"_s );
-  map.insert( u"Ṯ"_s, u"T"_s );
-  map.insert( u"ṯ"_s, u"t"_s );
-  map.insert( u"Ṱ"_s, u"T"_s );
-  map.insert( u"ṱ"_s, u"t"_s );
-  map.insert( u"Ṳ"_s, u"U"_s );
-  map.insert( u"ṳ"_s, u"u"_s );
-  map.insert( u"Ṵ"_s, u"U"_s );
-  map.insert( u"ṵ"_s, u"u"_s );
-  map.insert( u"Ṷ"_s, u"U"_s );
-  map.insert( u"ṷ"_s, u"u"_s );
-  map.insert( u"Ṹ"_s, u"U"_s );
-  map.insert( u"ṹ"_s, u"u"_s );
-  map.insert( u"Ṻ"_s, u"U"_s );
-  map.insert( u"ṻ"_s, u"u"_s );
-  map.insert( u"Ṽ"_s, u"V"_s );
-  map.insert( u"ṽ"_s, u"v"_s );
-  map.insert( u"Ṿ"_s, u"V"_s );
-  map.insert( u"ṿ"_s, u"v"_s );
-  map.insert( u"Ẁ"_s, u"W"_s );
-  map.insert( u"ẁ"_s, u"w"_s );
-  map.insert( u"Ẃ"_s, u"W"_s );
-  map.insert( u"ẃ"_s, u"w"_s );
-  map.insert( u"Ẅ"_s, u"W"_s );
-  map.insert( u"ẅ"_s, u"w"_s );
-  map.insert( u"Ẇ"_s, u"W"_s );
-  map.insert( u"ẇ"_s, u"w"_s );
-  map.insert( u"Ẉ"_s, u"W"_s );
-  map.insert( u"ẉ"_s, u"w"_s );
-  map.insert( u"Ẋ"_s, u"X"_s );
-  map.insert( u"ẋ"_s, u"x"_s );
-  map.insert( u"Ẍ"_s, u"X"_s );
-  map.insert( u"ẍ"_s, u"x"_s );
-  map.insert( u"Ẏ"_s, u"Y"_s );
-  map.insert( u"ẏ"_s, u"y"_s );
-  map.insert( u"Ẑ"_s, u"Z"_s );
-  map.insert( u"ẑ"_s, u"z"_s );
-  map.insert( u"Ẓ"_s, u"Z"_s );
-  map.insert( u"ẓ"_s, u"z"_s );
-  map.insert( u"Ẕ"_s, u"Z"_s );
-  map.insert( u"ẕ"_s, u"z"_s );
-  map.insert( u"ẖ"_s, u"h"_s );
-  map.insert( u"ẗ"_s, u"t"_s );
-  map.insert( u"ẘ"_s, u"w"_s );
-  map.insert( u"ẙ"_s, u"y"_s );
-  map.insert( u"ẚ"_s, u"a"_s );
-  map.insert( u"ẜ"_s, u"s"_s );
-  map.insert( u"ẝ"_s, u"s"_s );
-  map.insert( u"ẞ"_s, u"SS"_s );
-  map.insert( u"Ạ"_s, u"A"_s );
-  map.insert( u"ạ"_s, u"a"_s );
-  map.insert( u"Ả"_s, u"A"_s );
-  map.insert( u"ả"_s, u"a"_s );
-  map.insert( u"Ấ"_s, u"A"_s );
-  map.insert( u"ấ"_s, u"a"_s );
-  map.insert( u"Ầ"_s, u"A"_s );
-  map.insert( u"ầ"_s, u"a"_s );
-  map.insert( u"Ẩ"_s, u"A"_s );
-  map.insert( u"ẩ"_s, u"a"_s );
-  map.insert( u"Ẫ"_s, u"A"_s );
-  map.insert( u"ẫ"_s, u"a"_s );
-  map.insert( u"Ậ"_s, u"A"_s );
-  map.insert( u"ậ"_s, u"a"_s );
-  map.insert( u"Ắ"_s, u"A"_s );
-  map.insert( u"ắ"_s, u"a"_s );
-  map.insert( u"Ằ"_s, u"A"_s );
-  map.insert( u"ằ"_s, u"a"_s );
-  map.insert( u"Ẳ"_s, u"A"_s );
-  map.insert( u"ẳ"_s, u"a"_s );
-  map.insert( u"Ẵ"_s, u"A"_s );
-  map.insert( u"ẵ"_s, u"a"_s );
-  map.insert( u"Ặ"_s, u"A"_s );
-  map.insert( u"ặ"_s, u"a"_s );
-  map.insert( u"Ẹ"_s, u"E"_s );
-  map.insert( u"ẹ"_s, u"e"_s );
-  map.insert( u"Ẻ"_s, u"E"_s );
-  map.insert( u"ẻ"_s, u"e"_s );
-  map.insert( u"Ẽ"_s, u"E"_s );
-  map.insert( u"ẽ"_s, u"e"_s );
-  map.insert( u"Ế"_s, u"E"_s );
-  map.insert( u"ế"_s, u"e"_s );
-  map.insert( u"Ề"_s, u"E"_s );
-  map.insert( u"ề"_s, u"e"_s );
-  map.insert( u"Ể"_s, u"E"_s );
-  map.insert( u"ể"_s, u"e"_s );
-  map.insert( u"Ễ"_s, u"E"_s );
-  map.insert( u"ễ"_s, u"e"_s );
-  map.insert( u"Ệ"_s, u"E"_s );
-  map.insert( u"ệ"_s, u"e"_s );
-  map.insert( u"Ỉ"_s, u"I"_s );
-  map.insert( u"ỉ"_s, u"i"_s );
-  map.insert( u"Ị"_s, u"I"_s );
-  map.insert( u"ị"_s, u"i"_s );
-  map.insert( u"Ọ"_s, u"O"_s );
-  map.insert( u"ọ"_s, u"o"_s );
-  map.insert( u"Ỏ"_s, u"O"_s );
-  map.insert( u"ỏ"_s, u"o"_s );
-  map.insert( u"Ố"_s, u"O"_s );
-  map.insert( u"ố"_s, u"o"_s );
-  map.insert( u"Ồ"_s, u"O"_s );
-  map.insert( u"ồ"_s, u"o"_s );
-  map.insert( u"Ổ"_s, u"O"_s );
-  map.insert( u"ổ"_s, u"o"_s );
-  map.insert( u"Ỗ"_s, u"O"_s );
-  map.insert( u"ỗ"_s, u"o"_s );
-  map.insert( u"Ộ"_s, u"O"_s );
-  map.insert( u"ộ"_s, u"o"_s );
-  map.insert( u"Ớ"_s, u"O"_s );
-  map.insert( u"ớ"_s, u"o"_s );
-  map.insert( u"Ờ"_s, u"O"_s );
-  map.insert( u"ờ"_s, u"o"_s );
-  map.insert( u"Ở"_s, u"O"_s );
-  map.insert( u"ở"_s, u"o"_s );
-  map.insert( u"Ỡ"_s, u"O"_s );
-  map.insert( u"ỡ"_s, u"o"_s );
-  map.insert( u"Ợ"_s, u"O"_s );
-  map.insert( u"ợ"_s, u"o"_s );
-  map.insert( u"Ụ"_s, u"U"_s );
-  map.insert( u"ụ"_s, u"u"_s );
-  map.insert( u"Ủ"_s, u"U"_s );
-  map.insert( u"ủ"_s, u"u"_s );
-  map.insert( u"Ứ"_s, u"U"_s );
-  map.insert( u"ứ"_s, u"u"_s );
-  map.insert( u"Ừ"_s, u"U"_s );
-  map.insert( u"ừ"_s, u"u"_s );
-  map.insert( u"Ử"_s, u"U"_s );
-  map.insert( u"ử"_s, u"u"_s );
-  map.insert( u"Ữ"_s, u"U"_s );
-  map.insert( u"ữ"_s, u"u"_s );
-  map.insert( u"Ự"_s, u"U"_s );
-  map.insert( u"ự"_s, u"u"_s );
-  map.insert( u"Ỳ"_s, u"Y"_s );
-  map.insert( u"ỳ"_s, u"y"_s );
-  map.insert( u"Ỵ"_s, u"Y"_s );
-  map.insert( u"ỵ"_s, u"y"_s );
-  map.insert( u"Ỷ"_s, u"Y"_s );
-  map.insert( u"ỷ"_s, u"y"_s );
-  map.insert( u"Ỹ"_s, u"Y"_s );
-  map.insert( u"ỹ"_s, u"y"_s );
-  map.insert( u"Ỻ"_s, u"LL"_s );
-  map.insert( u"ỻ"_s, u"ll"_s );
-  map.insert( u"Ỽ"_s, u"V"_s );
-  map.insert( u"ỽ"_s, u"v"_s );
-  map.insert( u"Ỿ"_s, u"Y"_s );
-  map.insert( u"ỿ"_s, u"y"_s );
-  map.insert( u"ἀ"_s, u"α"_s );
-  map.insert( u"ἁ"_s, u"α"_s );
-  map.insert( u"ἂ"_s, u"α"_s );
-  map.insert( u"ἃ"_s, u"α"_s );
-  map.insert( u"ἄ"_s, u"α"_s );
-  map.insert( u"ἅ"_s, u"α"_s );
-  map.insert( u"ἆ"_s, u"α"_s );
-  map.insert( u"ἇ"_s, u"α"_s );
-  map.insert( u"Ἀ"_s, u"Α"_s );
-  map.insert( u"Ἁ"_s, u"Α"_s );
-  map.insert( u"Ἂ"_s, u"Α"_s );
-  map.insert( u"Ἃ"_s, u"Α"_s );
-  map.insert( u"Ἄ"_s, u"Α"_s );
-  map.insert( u"Ἅ"_s, u"Α"_s );
-  map.insert( u"Ἆ"_s, u"Α"_s );
-  map.insert( u"Ἇ"_s, u"Α"_s );
-  map.insert( u"ἐ"_s, u"ε"_s );
-  map.insert( u"ἑ"_s, u"ε"_s );
-  map.insert( u"ἒ"_s, u"ε"_s );
-  map.insert( u"ἓ"_s, u"ε"_s );
-  map.insert( u"ἔ"_s, u"ε"_s );
-  map.insert( u"ἕ"_s, u"ε"_s );
-  map.insert( u"Ἐ"_s, u"Ε"_s );
-  map.insert( u"Ἑ"_s, u"Ε"_s );
-  map.insert( u"Ἒ"_s, u"Ε"_s );
-  map.insert( u"Ἓ"_s, u"Ε"_s );
-  map.insert( u"Ἔ"_s, u"Ε"_s );
-  map.insert( u"Ἕ"_s, u"Ε"_s );
-  map.insert( u"ἠ"_s, u"η"_s );
-  map.insert( u"ἡ"_s, u"η"_s );
-  map.insert( u"ἢ"_s, u"η"_s );
-  map.insert( u"ἣ"_s, u"η"_s );
-  map.insert( u"ἤ"_s, u"η"_s );
-  map.insert( u"ἥ"_s, u"η"_s );
-  map.insert( u"ἦ"_s, u"η"_s );
-  map.insert( u"ἧ"_s, u"η"_s );
-  map.insert( u"Ἠ"_s, u"Η"_s );
-  map.insert( u"Ἡ"_s, u"Η"_s );
-  map.insert( u"Ἢ"_s, u"Η"_s );
-  map.insert( u"Ἣ"_s, u"Η"_s );
-  map.insert( u"Ἤ"_s, u"Η"_s );
-  map.insert( u"Ἥ"_s, u"Η"_s );
-  map.insert( u"Ἦ"_s, u"Η"_s );
-  map.insert( u"Ἧ"_s, u"Η"_s );
-  map.insert( u"ἰ"_s, u"ι"_s );
-  map.insert( u"ἱ"_s, u"ι"_s );
-  map.insert( u"ἲ"_s, u"ι"_s );
-  map.insert( u"ἳ"_s, u"ι"_s );
-  map.insert( u"ἴ"_s, u"ι"_s );
-  map.insert( u"ἵ"_s, u"ι"_s );
-  map.insert( u"ἶ"_s, u"ι"_s );
-  map.insert( u"ἷ"_s, u"ι"_s );
-  map.insert( u"Ἰ"_s, u"Ι"_s );
-  map.insert( u"Ἱ"_s, u"Ι"_s );
-  map.insert( u"Ἲ"_s, u"Ι"_s );
-  map.insert( u"Ἳ"_s, u"Ι"_s );
-  map.insert( u"Ἴ"_s, u"Ι"_s );
-  map.insert( u"Ἵ"_s, u"Ι"_s );
-  map.insert( u"Ἶ"_s, u"Ι"_s );
-  map.insert( u"Ἷ"_s, u"Ι"_s );
-  map.insert( u"ὀ"_s, u"ο"_s );
-  map.insert( u"ὁ"_s, u"ο"_s );
-  map.insert( u"ὂ"_s, u"ο"_s );
-  map.insert( u"ὃ"_s, u"ο"_s );
-  map.insert( u"ὄ"_s, u"ο"_s );
-  map.insert( u"ὅ"_s, u"ο"_s );
-  map.insert( u"Ὀ"_s, u"Ο"_s );
-  map.insert( u"Ὁ"_s, u"Ο"_s );
-  map.insert( u"Ὂ"_s, u"Ο"_s );
-  map.insert( u"Ὃ"_s, u"Ο"_s );
-  map.insert( u"Ὄ"_s, u"Ο"_s );
-  map.insert( u"Ὅ"_s, u"Ο"_s );
-  map.insert( u"ὐ"_s, u"υ"_s );
-  map.insert( u"ὑ"_s, u"υ"_s );
-  map.insert( u"ὒ"_s, u"υ"_s );
-  map.insert( u"ὓ"_s, u"υ"_s );
-  map.insert( u"ὔ"_s, u"υ"_s );
-  map.insert( u"ὕ"_s, u"υ"_s );
-  map.insert( u"ὖ"_s, u"υ"_s );
-  map.insert( u"ὗ"_s, u"υ"_s );
-  map.insert( u"Ὑ"_s, u"Υ"_s );
-  map.insert( u"Ὓ"_s, u"Υ"_s );
-  map.insert( u"Ὕ"_s, u"Υ"_s );
-  map.insert( u"Ὗ"_s, u"Υ"_s );
-  map.insert( u"ὠ"_s, u"ω"_s );
-  map.insert( u"ὡ"_s, u"ω"_s );
-  map.insert( u"ὢ"_s, u"ω"_s );
-  map.insert( u"ὣ"_s, u"ω"_s );
-  map.insert( u"ὤ"_s, u"ω"_s );
-  map.insert( u"ὥ"_s, u"ω"_s );
-  map.insert( u"ὦ"_s, u"ω"_s );
-  map.insert( u"ὧ"_s, u"ω"_s );
-  map.insert( u"Ὠ"_s, u"Ω"_s );
-  map.insert( u"Ὡ"_s, u"Ω"_s );
-  map.insert( u"Ὢ"_s, u"Ω"_s );
-  map.insert( u"Ὣ"_s, u"Ω"_s );
-  map.insert( u"Ὤ"_s, u"Ω"_s );
-  map.insert( u"Ὥ"_s, u"Ω"_s );
-  map.insert( u"Ὦ"_s, u"Ω"_s );
-  map.insert( u"Ὧ"_s, u"Ω"_s );
-  map.insert( u"ὰ"_s, u"α"_s );
-  map.insert( u"ά"_s, u"α"_s );
-  map.insert( u"ὲ"_s, u"ε"_s );
-  map.insert( u"έ"_s, u"ε"_s );
-  map.insert( u"ὴ"_s, u"η"_s );
-  map.insert( u"ή"_s, u"η"_s );
-  map.insert( u"ὶ"_s, u"ι"_s );
-  map.insert( u"ί"_s, u"ι"_s );
-  map.insert( u"ὸ"_s, u"ο"_s );
-  map.insert( u"ό"_s, u"ο"_s );
-  map.insert( u"ὺ"_s, u"υ"_s );
-  map.insert( u"ύ"_s, u"υ"_s );
-  map.insert( u"ὼ"_s, u"ω"_s );
-  map.insert( u"ώ"_s, u"ω"_s );
-  map.insert( u"ᾀ"_s, u"α"_s );
-  map.insert( u"ᾁ"_s, u"α"_s );
-  map.insert( u"ᾂ"_s, u"α"_s );
-  map.insert( u"ᾃ"_s, u"α"_s );
-  map.insert( u"ᾄ"_s, u"α"_s );
-  map.insert( u"ᾅ"_s, u"α"_s );
-  map.insert( u"ᾆ"_s, u"α"_s );
-  map.insert( u"ᾇ"_s, u"α"_s );
-  map.insert( u"ᾈ"_s, u"Α"_s );
-  map.insert( u"ᾉ"_s, u"Α"_s );
-  map.insert( u"ᾊ"_s, u"Α"_s );
-  map.insert( u"ᾋ"_s, u"Α"_s );
-  map.insert( u"ᾌ"_s, u"Α"_s );
-  map.insert( u"ᾍ"_s, u"Α"_s );
-  map.insert( u"ᾎ"_s, u"Α"_s );
-  map.insert( u"ᾏ"_s, u"Α"_s );
-  map.insert( u"ᾐ"_s, u"η"_s );
-  map.insert( u"ᾑ"_s, u"η"_s );
-  map.insert( u"ᾒ"_s, u"η"_s );
-  map.insert( u"ᾓ"_s, u"η"_s );
-  map.insert( u"ᾔ"_s, u"η"_s );
-  map.insert( u"ᾕ"_s, u"η"_s );
-  map.insert( u"ᾖ"_s, u"η"_s );
-  map.insert( u"ᾗ"_s, u"η"_s );
-  map.insert( u"ᾘ"_s, u"Η"_s );
-  map.insert( u"ᾙ"_s, u"Η"_s );
-  map.insert( u"ᾚ"_s, u"Η"_s );
-  map.insert( u"ᾛ"_s, u"Η"_s );
-  map.insert( u"ᾜ"_s, u"Η"_s );
-  map.insert( u"ᾝ"_s, u"Η"_s );
-  map.insert( u"ᾞ"_s, u"Η"_s );
-  map.insert( u"ᾟ"_s, u"Η"_s );
-  map.insert( u"ᾠ"_s, u"ω"_s );
-  map.insert( u"ᾡ"_s, u"ω"_s );
-  map.insert( u"ᾢ"_s, u"ω"_s );
-  map.insert( u"ᾣ"_s, u"ω"_s );
-  map.insert( u"ᾤ"_s, u"ω"_s );
-  map.insert( u"ᾥ"_s, u"ω"_s );
-  map.insert( u"ᾦ"_s, u"ω"_s );
-  map.insert( u"ᾧ"_s, u"ω"_s );
-  map.insert( u"ᾨ"_s, u"Ω"_s );
-  map.insert( u"ᾩ"_s, u"Ω"_s );
-  map.insert( u"ᾪ"_s, u"Ω"_s );
-  map.insert( u"ᾫ"_s, u"Ω"_s );
-  map.insert( u"ᾬ"_s, u"Ω"_s );
-  map.insert( u"ᾭ"_s, u"Ω"_s );
-  map.insert( u"ᾮ"_s, u"Ω"_s );
-  map.insert( u"ᾯ"_s, u"Ω"_s );
-  map.insert( u"ᾰ"_s, u"α"_s );
-  map.insert( u"ᾱ"_s, u"α"_s );
-  map.insert( u"ᾲ"_s, u"α"_s );
-  map.insert( u"ᾳ"_s, u"α"_s );
-  map.insert( u"ᾴ"_s, u"α"_s );
-  map.insert( u"ᾶ"_s, u"α"_s );
-  map.insert( u"ᾷ"_s, u"α"_s );
-  map.insert( u"Ᾰ"_s, u"Α"_s );
-  map.insert( u"Ᾱ"_s, u"Α"_s );
-  map.insert( u"Ὰ"_s, u"Α"_s );
-  map.insert( u"Ά"_s, u"Α"_s );
-  map.insert( u"ᾼ"_s, u"Α"_s );
-  map.insert( u"ι"_s, u"ι"_s );
-  map.insert( u"ῂ"_s, u"η"_s );
-  map.insert( u"ῃ"_s, u"η"_s );
-  map.insert( u"ῄ"_s, u"η"_s );
-  map.insert( u"ῆ"_s, u"η"_s );
-  map.insert( u"ῇ"_s, u"η"_s );
-  map.insert( u"Ὲ"_s, u"Ε"_s );
-  map.insert( u"Έ"_s, u"Ε"_s );
-  map.insert( u"Ὴ"_s, u"Η"_s );
-  map.insert( u"Ή"_s, u"Η"_s );
-  map.insert( u"ῌ"_s, u"Η"_s );
-  map.insert( u"ῐ"_s, u"ι"_s );
-  map.insert( u"ῑ"_s, u"ι"_s );
-  map.insert( u"ῒ"_s, u"ι"_s );
-  map.insert( u"ΐ"_s, u"ι"_s );
-  map.insert( u"ῖ"_s, u"ι"_s );
-  map.insert( u"ῗ"_s, u"ι"_s );
-  map.insert( u"Ῐ"_s, u"Ι"_s );
-  map.insert( u"Ῑ"_s, u"Ι"_s );
-  map.insert( u"Ὶ"_s, u"Ι"_s );
-  map.insert( u"Ί"_s, u"Ι"_s );
-  map.insert( u"ῠ"_s, u"υ"_s );
-  map.insert( u"ῡ"_s, u"υ"_s );
-  map.insert( u"ῢ"_s, u"υ"_s );
-  map.insert( u"ΰ"_s, u"υ"_s );
-  map.insert( u"ῤ"_s, u"ρ"_s );
-  map.insert( u"ῥ"_s, u"ρ"_s );
-  map.insert( u"ῦ"_s, u"υ"_s );
-  map.insert( u"ῧ"_s, u"υ"_s );
-  map.insert( u"Ῠ"_s, u"Υ"_s );
-  map.insert( u"Ῡ"_s, u"Υ"_s );
-  map.insert( u"Ὺ"_s, u"Υ"_s );
-  map.insert( u"Ύ"_s, u"Υ"_s );
-  map.insert( u"Ῥ"_s, u"Ρ"_s );
-  map.insert( u"ῲ"_s, u"ω"_s );
-  map.insert( u"ῳ"_s, u"ω"_s );
-  map.insert( u"ῴ"_s, u"ω"_s );
-  map.insert( u"ῶ"_s, u"ω"_s );
-  map.insert( u"ῷ"_s, u"ω"_s );
-  map.insert( u"Ὸ"_s, u"Ο"_s );
-  map.insert( u"Ό"_s, u"Ο"_s );
-  map.insert( u"Ὼ"_s, u"Ω"_s );
-  map.insert( u"Ώ"_s, u"Ω"_s );
-  map.insert( u"ῼ"_s, u"Ω"_s );
-  map.insert( u"‐"_s, u"-"_s );
-  map.insert( u"‑"_s, u"-"_s );
-  map.insert( u"‒"_s, u"-"_s );
-  map.insert( u"–"_s, u"-"_s );
-  map.insert( u"—"_s, u"-"_s );
-  map.insert( u"―"_s, u"-"_s );
-  map.insert( u"‖"_s, u"||"_s );
-  map.insert( u"‘"_s, u"'"_s );
-  map.insert( u"’"_s, u"'"_s );
-  map.insert( u"‚"_s, u","_s );
-  map.insert( u"‛"_s, u"'"_s );
-  map.insert( u"“"_s, u"\""_s );
-  map.insert( u"”"_s, u"\""_s );
-  map.insert( u"„"_s, u",,"_s );
-  map.insert( u"‟"_s, u"\""_s );
-  map.insert( u"․"_s, u"."_s );
-  map.insert( u"‥"_s, u".."_s );
-  map.insert( u"…"_s, u"..."_s );
-  map.insert( u"′"_s, u"'"_s );
-  map.insert( u"″"_s, u"\""_s );
-  map.insert( u"‹"_s, u"<"_s );
-  map.insert( u"›"_s, u">"_s );
-  map.insert( u"‼"_s, u"!!"_s );
-  map.insert( u"⁄"_s, u"/"_s );
-  map.insert( u"⁅"_s, u"["_s );
-  map.insert( u"⁆"_s, u"]"_s );
-  map.insert( u"⁇"_s, u"??"_s );
-  map.insert( u"⁈"_s, u"?!"_s );
-  map.insert( u"⁉"_s, u"!?"_s );
-  map.insert( u"⁎"_s, u"*"_s );
-  map.insert( u"ⁱ"_s, u"i"_s );
-  map.insert( u"ⁿ"_s, u"n"_s );
-  map.insert( u"ₐ"_s, u"a"_s );
-  map.insert( u"ₑ"_s, u"e"_s );
-  map.insert( u"ₒ"_s, u"o"_s );
-  map.insert( u"ₓ"_s, u"x"_s );
-  map.insert( u"ₕ"_s, u"h"_s );
-  map.insert( u"ₖ"_s, u"k"_s );
-  map.insert( u"ₗ"_s, u"l"_s );
-  map.insert( u"ₘ"_s, u"m"_s );
-  map.insert( u"ₙ"_s, u"n"_s );
-  map.insert( u"ₚ"_s, u"p"_s );
-  map.insert( u"ₛ"_s, u"s"_s );
-  map.insert( u"ₜ"_s, u"t"_s );
-  map.insert( u"₠"_s, u"CE"_s );
-  map.insert( u"₢"_s, u"Cr"_s );
-  map.insert( u"₣"_s, u"Fr."_s );
-  map.insert( u"₤"_s, u"L."_s );
-  map.insert( u"₧"_s, u"Pts"_s );
-  map.insert( u"₹"_s, u"Rs"_s );
-  map.insert( u"₺"_s, u"TL"_s );
-  map.insert( u"⃝"_s, QString() );
-  map.insert( u"⃞"_s, QString() );
-  map.insert( u"⃟"_s, QString() );
-  map.insert( u"⃠"_s, QString() );
-  map.insert( u"⃢"_s, QString() );
-  map.insert( u"⃣"_s, QString() );
-  map.insert( u"⃤"_s, QString() );
-  map.insert( u"℀"_s, u"a/c"_s );
-  map.insert( u"℁"_s, u"a/s"_s );
-  map.insert( u"ℂ"_s, u"C"_s );
-  map.insert( u"℃"_s, u"°C"_s );
-  map.insert( u"℅"_s, u"c/o"_s );
-  map.insert( u"℆"_s, u"c/u"_s );
-  map.insert( u"℉"_s, u"°F"_s );
-  map.insert( u"ℊ"_s, u"g"_s );
-  map.insert( u"ℋ"_s, u"H"_s );
-  map.insert( u"ℌ"_s, u"H"_s );
-  map.insert( u"ℍ"_s, u"H"_s );
-  map.insert( u"ℎ"_s, u"h"_s );
-  map.insert( u"ℐ"_s, u"I"_s );
-  map.insert( u"ℑ"_s, u"I"_s );
-  map.insert( u"ℒ"_s, u"L"_s );
-  map.insert( u"ℓ"_s, u"l"_s );
-  map.insert( u"ℕ"_s, u"N"_s );
-  map.insert( u"№"_s, u"No"_s );
-  map.insert( u"℗"_s, u"(P)"_s );
-  map.insert( u"℘"_s, u"P"_s );
-  map.insert( u"ℙ"_s, u"P"_s );
-  map.insert( u"ℚ"_s, u"Q"_s );
-  map.insert( u"ℛ"_s, u"R"_s );
-  map.insert( u"ℜ"_s, u"R"_s );
-  map.insert( u"ℝ"_s, u"R"_s );
-  map.insert( u"℞"_s, u"Rx"_s );
-  map.insert( u"℡"_s, u"TEL"_s );
-  map.insert( u"ℤ"_s, u"Z"_s );
-  map.insert( u"Ω"_s, u"Ω"_s );
-  map.insert( u"ℨ"_s, u"Z"_s );
-  map.insert( u"K"_s, u"K"_s );
-  map.insert( u"Å"_s, u"A"_s );
-  map.insert( u"ℬ"_s, u"B"_s );
-  map.insert( u"ℭ"_s, u"C"_s );
-  map.insert( u"ℯ"_s, u"e"_s );
-  map.insert( u"ℰ"_s, u"E"_s );
-  map.insert( u"ℱ"_s, u"F"_s );
-  map.insert( u"ℳ"_s, u"M"_s );
-  map.insert( u"ℴ"_s, u"o"_s );
-  map.insert( u"ℹ"_s, u"i"_s );
-  map.insert( u"℻"_s, u"FAX"_s );
-  map.insert( u"ℼ"_s, u"π"_s );
-  map.insert( u"ℽ"_s, u"γ"_s );
-  map.insert( u"ℾ"_s, u"Γ"_s );
-  map.insert( u"ℿ"_s, u"Π"_s );
-  map.insert( u"ⅅ"_s, u"D"_s );
-  map.insert( u"ⅆ"_s, u"d"_s );
-  map.insert( u"ⅇ"_s, u"e"_s );
-  map.insert( u"ⅈ"_s, u"i"_s );
-  map.insert( u"ⅉ"_s, u"j"_s );
-  map.insert( u"⅐"_s, u" 1/7"_s );
-  map.insert( u"⅑"_s, u" 1/9"_s );
-  map.insert( u"⅒"_s, u" 1/10"_s );
-  map.insert( u"⅓"_s, u" 1/3"_s );
-  map.insert( u"⅔"_s, u" 2/3"_s );
-  map.insert( u"⅕"_s, u" 1/5"_s );
-  map.insert( u"⅖"_s, u" 2/5"_s );
-  map.insert( u"⅗"_s, u" 3/5"_s );
-  map.insert( u"⅘"_s, u" 4/5"_s );
-  map.insert( u"⅙"_s, u" 1/6"_s );
-  map.insert( u"⅚"_s, u" 5/6"_s );
-  map.insert( u"⅛"_s, u" 1/8"_s );
-  map.insert( u"⅜"_s, u" 3/8"_s );
-  map.insert( u"⅝"_s, u" 5/8"_s );
-  map.insert( u"⅞"_s, u" 7/8"_s );
-  map.insert( u"⅟"_s, u" 1/"_s );
-  map.insert( u"Ⅰ"_s, u"I"_s );
-  map.insert( u"Ⅱ"_s, u"II"_s );
-  map.insert( u"Ⅲ"_s, u"III"_s );
-  map.insert( u"Ⅳ"_s, u"IV"_s );
-  map.insert( u"Ⅴ"_s, u"V"_s );
-  map.insert( u"Ⅵ"_s, u"VI"_s );
-  map.insert( u"Ⅶ"_s, u"VII"_s );
-  map.insert( u"Ⅷ"_s, u"VIII"_s );
-  map.insert( u"Ⅸ"_s, u"IX"_s );
-  map.insert( u"Ⅹ"_s, u"X"_s );
-  map.insert( u"Ⅺ"_s, u"XI"_s );
-  map.insert( u"Ⅻ"_s, u"XII"_s );
-  map.insert( u"Ⅼ"_s, u"L"_s );
-  map.insert( u"Ⅽ"_s, u"C"_s );
-  map.insert( u"Ⅾ"_s, u"D"_s );
-  map.insert( u"Ⅿ"_s, u"M"_s );
-  map.insert( u"ⅰ"_s, u"i"_s );
-  map.insert( u"ⅱ"_s, u"ii"_s );
-  map.insert( u"ⅲ"_s, u"iii"_s );
-  map.insert( u"ⅳ"_s, u"iv"_s );
-  map.insert( u"ⅴ"_s, u"v"_s );
-  map.insert( u"ⅵ"_s, u"vi"_s );
-  map.insert( u"ⅶ"_s, u"vii"_s );
-  map.insert( u"ⅷ"_s, u"viii"_s );
-  map.insert( u"ⅸ"_s, u"ix"_s );
-  map.insert( u"ⅹ"_s, u"x"_s );
-  map.insert( u"ⅺ"_s, u"xi"_s );
-  map.insert( u"ⅻ"_s, u"xii"_s );
-  map.insert( u"ⅼ"_s, u"l"_s );
-  map.insert( u"ⅽ"_s, u"c"_s );
-  map.insert( u"ⅾ"_s, u"d"_s );
-  map.insert( u"ⅿ"_s, u"m"_s );
-  map.insert( u"↉"_s, u" 0/3"_s );
-  map.insert( u"−"_s, u"-"_s );
-  map.insert( u"∕"_s, u"/"_s );
-  map.insert( u"∖"_s, u"\\"_s );
-  map.insert( u"∣"_s, u"|"_s );
-  map.insert( u"∥"_s, u"||"_s );
-  map.insert( u"≪"_s, u"<<"_s );
-  map.insert( u"≫"_s, u">>"_s );
-  map.insert( u"⑴"_s, u"(1)"_s );
-  map.insert( u"⑵"_s, u"(2)"_s );
-  map.insert( u"⑶"_s, u"(3)"_s );
-  map.insert( u"⑷"_s, u"(4)"_s );
-  map.insert( u"⑸"_s, u"(5)"_s );
-  map.insert( u"⑹"_s, u"(6)"_s );
-  map.insert( u"⑺"_s, u"(7)"_s );
-  map.insert( u"⑻"_s, u"(8)"_s );
-  map.insert( u"⑼"_s, u"(9)"_s );
-  map.insert( u"⑽"_s, u"(10)"_s );
-  map.insert( u"⑾"_s, u"(11)"_s );
-  map.insert( u"⑿"_s, u"(12)"_s );
-  map.insert( u"⒀"_s, u"(13)"_s );
-  map.insert( u"⒁"_s, u"(14)"_s );
-  map.insert( u"⒂"_s, u"(15)"_s );
-  map.insert( u"⒃"_s, u"(16)"_s );
-  map.insert( u"⒄"_s, u"(17)"_s );
-  map.insert( u"⒅"_s, u"(18)"_s );
-  map.insert( u"⒆"_s, u"(19)"_s );
-  map.insert( u"⒇"_s, u"(20)"_s );
-  map.insert( u"⒈"_s, u"1."_s );
-  map.insert( u"⒉"_s, u"2."_s );
-  map.insert( u"⒊"_s, u"3."_s );
-  map.insert( u"⒋"_s, u"4."_s );
-  map.insert( u"⒌"_s, u"5."_s );
-  map.insert( u"⒍"_s, u"6."_s );
-  map.insert( u"⒎"_s, u"7."_s );
-  map.insert( u"⒏"_s, u"8."_s );
-  map.insert( u"⒐"_s, u"9."_s );
-  map.insert( u"⒑"_s, u"10."_s );
-  map.insert( u"⒒"_s, u"11."_s );
-  map.insert( u"⒓"_s, u"12."_s );
-  map.insert( u"⒔"_s, u"13."_s );
-  map.insert( u"⒕"_s, u"14."_s );
-  map.insert( u"⒖"_s, u"15."_s );
-  map.insert( u"⒗"_s, u"16."_s );
-  map.insert( u"⒘"_s, u"17."_s );
-  map.insert( u"⒙"_s, u"18."_s );
-  map.insert( u"⒚"_s, u"19."_s );
-  map.insert( u"⒛"_s, u"20."_s );
-  map.insert( u"⒜"_s, u"(a)"_s );
-  map.insert( u"⒝"_s, u"(b)"_s );
-  map.insert( u"⒞"_s, u"(c)"_s );
-  map.insert( u"⒟"_s, u"(d)"_s );
-  map.insert( u"⒠"_s, u"(e)"_s );
-  map.insert( u"⒡"_s, u"(f)"_s );
-  map.insert( u"⒢"_s, u"(g)"_s );
-  map.insert( u"⒣"_s, u"(h)"_s );
-  map.insert( u"⒤"_s, u"(i)"_s );
-  map.insert( u"⒥"_s, u"(j)"_s );
-  map.insert( u"⒦"_s, u"(k)"_s );
-  map.insert( u"⒧"_s, u"(l)"_s );
-  map.insert( u"⒨"_s, u"(m)"_s );
-  map.insert( u"⒩"_s, u"(n)"_s );
-  map.insert( u"⒪"_s, u"(o)"_s );
-  map.insert( u"⒫"_s, u"(p)"_s );
-  map.insert( u"⒬"_s, u"(q)"_s );
-  map.insert( u"⒭"_s, u"(r)"_s );
-  map.insert( u"⒮"_s, u"(s)"_s );
-  map.insert( u"⒯"_s, u"(t)"_s );
-  map.insert( u"⒰"_s, u"(u)"_s );
-  map.insert( u"⒱"_s, u"(v)"_s );
-  map.insert( u"⒲"_s, u"(w)"_s );
-  map.insert( u"⒳"_s, u"(x)"_s );
-  map.insert( u"⒴"_s, u"(y)"_s );
-  map.insert( u"⒵"_s, u"(z)"_s );
-  map.insert( u"⦅"_s, u"(("_s );
-  map.insert( u"⦆"_s, u"))"_s );
-  map.insert( u"⩴"_s, u"::="_s );
-  map.insert( u"⩵"_s, u"=="_s );
-  map.insert( u"⩶"_s, u"==="_s );
-  map.insert( u"Ⱡ"_s, u"L"_s );
-  map.insert( u"ⱡ"_s, u"l"_s );
-  map.insert( u"Ɫ"_s, u"L"_s );
-  map.insert( u"Ᵽ"_s, u"P"_s );
-  map.insert( u"Ɽ"_s, u"R"_s );
-  map.insert( u"ⱥ"_s, u"a"_s );
-  map.insert( u"ⱦ"_s, u"t"_s );
-  map.insert( u"Ⱨ"_s, u"H"_s );
-  map.insert( u"ⱨ"_s, u"h"_s );
-  map.insert( u"Ⱪ"_s, u"K"_s );
-  map.insert( u"ⱪ"_s, u"k"_s );
-  map.insert( u"Ⱬ"_s, u"Z"_s );
-  map.insert( u"ⱬ"_s, u"z"_s );
-  map.insert( u"Ɱ"_s, u"M"_s );
-  map.insert( u"ⱱ"_s, u"v"_s );
-  map.insert( u"Ⱳ"_s, u"W"_s );
-  map.insert( u"ⱳ"_s, u"w"_s );
-  map.insert( u"ⱴ"_s, u"v"_s );
-  map.insert( u"ⱸ"_s, u"e"_s );
-  map.insert( u"ⱺ"_s, u"o"_s );
-  map.insert( u"ⱼ"_s, u"j"_s );
-  map.insert( u"ⱽ"_s, u"V"_s );
-  map.insert( u"Ȿ"_s, u"S"_s );
-  map.insert( u"Ɀ"_s, u"Z"_s );
-  map.insert( u"、"_s, u","_s );
-  map.insert( u"。"_s, u"."_s );
-  map.insert( u"〇"_s, u"0"_s );
-  map.insert( u"〈"_s, u"<"_s );
-  map.insert( u"〉"_s, u">"_s );
-  map.insert( u"《"_s, u"<<"_s );
-  map.insert( u"》"_s, u">>"_s );
-  map.insert( u"〔"_s, u"["_s );
-  map.insert( u"〕"_s, u"]"_s );
-  map.insert( u"〘"_s, u"["_s );
-  map.insert( u"〙"_s, u"]"_s );
-  map.insert( u"〚"_s, u"["_s );
-  map.insert( u"〛"_s, u"]"_s );
-  map.insert( u"〝"_s, u"\""_s );
-  map.insert( u"〞"_s, u"\""_s );
-  map.insert( u"㍱"_s, u"hPa"_s );
-  map.insert( u"㍲"_s, u"da"_s );
-  map.insert( u"㍳"_s, u"AU"_s );
-  map.insert( u"㍴"_s, u"bar"_s );
-  map.insert( u"㍵"_s, u"oV"_s );
-  map.insert( u"㍶"_s, u"pc"_s );
-  map.insert( u"㍷"_s, u"dm"_s );
-  map.insert( u"㍺"_s, u"IU"_s );
-  map.insert( u"㎀"_s, u"pA"_s );
-  map.insert( u"㎁"_s, u"nA"_s );
-  map.insert( u"㎃"_s, u"mA"_s );
-  map.insert( u"㎄"_s, u"kA"_s );
-  map.insert( u"㎅"_s, u"KB"_s );
-  map.insert( u"㎆"_s, u"MB"_s );
-  map.insert( u"㎇"_s, u"GB"_s );
-  map.insert( u"㎈"_s, u"cal"_s );
-  map.insert( u"㎉"_s, u"kcal"_s );
-  map.insert( u"㎊"_s, u"pF"_s );
-  map.insert( u"㎋"_s, u"nF"_s );
-  map.insert( u"㎎"_s, u"mg"_s );
-  map.insert( u"㎏"_s, u"kg"_s );
-  map.insert( u"㎐"_s, u"Hz"_s );
-  map.insert( u"㎑"_s, u"kHz"_s );
-  map.insert( u"㎒"_s, u"MHz"_s );
-  map.insert( u"㎓"_s, u"GHz"_s );
-  map.insert( u"㎔"_s, u"THz"_s );
-  map.insert( u"㎙"_s, u"fm"_s );
-  map.insert( u"㎚"_s, u"nm"_s );
-  map.insert( u"㎜"_s, u"mm"_s );
-  map.insert( u"㎝"_s, u"cm"_s );
-  map.insert( u"㎞"_s, u"km"_s );
-  map.insert( u"㎧"_s, u"m/s"_s );
-  map.insert( u"㎩"_s, u"Pa"_s );
-  map.insert( u"㎪"_s, u"kPa"_s );
-  map.insert( u"㎫"_s, u"MPa"_s );
-  map.insert( u"㎬"_s, u"GPa"_s );
-  map.insert( u"㎭"_s, u"rad"_s );
-  map.insert( u"㎮"_s, u"rad/s"_s );
-  map.insert( u"㎰"_s, u"ps"_s );
-  map.insert( u"㎱"_s, u"ns"_s );
-  map.insert( u"㎳"_s, u"ms"_s );
-  map.insert( u"㎴"_s, u"pV"_s );
-  map.insert( u"㎵"_s, u"nV"_s );
-  map.insert( u"㎷"_s, u"mV"_s );
-  map.insert( u"㎸"_s, u"kV"_s );
-  map.insert( u"㎹"_s, u"MV"_s );
-  map.insert( u"㎺"_s, u"pW"_s );
-  map.insert( u"㎻"_s, u"nW"_s );
-  map.insert( u"㎽"_s, u"mW"_s );
-  map.insert( u"㎾"_s, u"kW"_s );
-  map.insert( u"㎿"_s, u"MW"_s );
-  map.insert( u"㏂"_s, u"a.m."_s );
-  map.insert( u"㏃"_s, u"Bq"_s );
-  map.insert( u"㏄"_s, u"cc"_s );
-  map.insert( u"㏅"_s, u"cd"_s );
-  map.insert( u"㏆"_s, u"C/kg"_s );
-  map.insert( u"㏇"_s, u"Co."_s );
-  map.insert( u"㏈"_s, u"dB"_s );
-  map.insert( u"㏉"_s, u"Gy"_s );
-  map.insert( u"㏊"_s, u"ha"_s );
-  map.insert( u"㏋"_s, u"HP"_s );
-  map.insert( u"㏌"_s, u"in"_s );
-  map.insert( u"㏍"_s, u"KK"_s );
-  map.insert( u"㏎"_s, u"KM"_s );
-  map.insert( u"㏏"_s, u"kt"_s );
-  map.insert( u"㏐"_s, u"lm"_s );
-  map.insert( u"㏑"_s, u"ln"_s );
-  map.insert( u"㏒"_s, u"log"_s );
-  map.insert( u"㏓"_s, u"lx"_s );
-  map.insert( u"㏔"_s, u"mb"_s );
-  map.insert( u"㏕"_s, u"mil"_s );
-  map.insert( u"㏖"_s, u"mol"_s );
-  map.insert( u"㏗"_s, u"pH"_s );
-  map.insert( u"㏘"_s, u"p.m."_s );
-  map.insert( u"㏙"_s, u"PPM"_s );
-  map.insert( u"㏚"_s, u"PR"_s );
-  map.insert( u"㏛"_s, u"sr"_s );
-  map.insert( u"㏜"_s, u"Sv"_s );
-  map.insert( u"㏝"_s, u"Wb"_s );
-  map.insert( u"㏞"_s, u"V/m"_s );
-  map.insert( u"㏟"_s, u"A/m"_s );
-  map.insert( u"ꜰ"_s, u"F"_s );
-  map.insert( u"ꜱ"_s, u"S"_s );
-  map.insert( u"Ꜳ"_s, u"AA"_s );
-  map.insert( u"ꜳ"_s, u"aa"_s );
-  map.insert( u"Ꜵ"_s, u"AO"_s );
-  map.insert( u"ꜵ"_s, u"ao"_s );
-  map.insert( u"Ꜷ"_s, u"AU"_s );
-  map.insert( u"ꜷ"_s, u"au"_s );
-  map.insert( u"Ꜹ"_s, u"AV"_s );
-  map.insert( u"ꜹ"_s, u"av"_s );
-  map.insert( u"Ꜻ"_s, u"AV"_s );
-  map.insert( u"ꜻ"_s, u"av"_s );
-  map.insert( u"Ꜽ"_s, u"AY"_s );
-  map.insert( u"ꜽ"_s, u"ay"_s );
-  map.insert( u"Ꝁ"_s, u"K"_s );
-  map.insert( u"ꝁ"_s, u"k"_s );
-  map.insert( u"Ꝃ"_s, u"K"_s );
-  map.insert( u"ꝃ"_s, u"k"_s );
-  map.insert( u"Ꝅ"_s, u"K"_s );
-  map.insert( u"ꝅ"_s, u"k"_s );
-  map.insert( u"Ꝇ"_s, u"L"_s );
-  map.insert( u"ꝇ"_s, u"l"_s );
-  map.insert( u"Ꝉ"_s, u"L"_s );
-  map.insert( u"ꝉ"_s, u"l"_s );
-  map.insert( u"Ꝋ"_s, u"O"_s );
-  map.insert( u"ꝋ"_s, u"o"_s );
-  map.insert( u"Ꝍ"_s, u"O"_s );
-  map.insert( u"ꝍ"_s, u"o"_s );
-  map.insert( u"Ꝏ"_s, u"OO"_s );
-  map.insert( u"ꝏ"_s, u"oo"_s );
-  map.insert( u"Ꝑ"_s, u"P"_s );
-  map.insert( u"ꝑ"_s, u"p"_s );
-  map.insert( u"Ꝓ"_s, u"P"_s );
-  map.insert( u"ꝓ"_s, u"p"_s );
-  map.insert( u"Ꝕ"_s, u"P"_s );
-  map.insert( u"ꝕ"_s, u"p"_s );
-  map.insert( u"Ꝗ"_s, u"Q"_s );
-  map.insert( u"ꝗ"_s, u"q"_s );
-  map.insert( u"Ꝙ"_s, u"Q"_s );
-  map.insert( u"ꝙ"_s, u"q"_s );
-  map.insert( u"Ꝟ"_s, u"V"_s );
-  map.insert( u"ꝟ"_s, u"v"_s );
-  map.insert( u"Ꝡ"_s, u"VY"_s );
-  map.insert( u"ꝡ"_s, u"vy"_s );
-  map.insert( u"Ꝥ"_s, u"TH"_s );
-  map.insert( u"ꝥ"_s, u"th"_s );
-  map.insert( u"Ꝧ"_s, u"TH"_s );
-  map.insert( u"ꝧ"_s, u"th"_s );
-  map.insert( u"ꝱ"_s, u"d"_s );
-  map.insert( u"ꝲ"_s, u"l"_s );
-  map.insert( u"ꝳ"_s, u"m"_s );
-  map.insert( u"ꝴ"_s, u"n"_s );
-  map.insert( u"ꝵ"_s, u"r"_s );
-  map.insert( u"ꝶ"_s, u"R"_s );
-  map.insert( u"ꝷ"_s, u"t"_s );
-  map.insert( u"Ꝺ"_s, u"D"_s );
-  map.insert( u"ꝺ"_s, u"d"_s );
-  map.insert( u"Ꝼ"_s, u"F"_s );
-  map.insert( u"ꝼ"_s, u"f"_s );
-  map.insert( u"Ꞇ"_s, u"T"_s );
-  map.insert( u"ꞇ"_s, u"t"_s );
-  map.insert( u"Ꞑ"_s, u"N"_s );
-  map.insert( u"ꞑ"_s, u"n"_s );
-  map.insert( u"Ꞓ"_s, u"C"_s );
-  map.insert( u"ꞓ"_s, u"c"_s );
-  map.insert( u"Ꞡ"_s, u"G"_s );
-  map.insert( u"ꞡ"_s, u"g"_s );
-  map.insert( u"Ꞣ"_s, u"K"_s );
-  map.insert( u"ꞣ"_s, u"k"_s );
-  map.insert( u"Ꞥ"_s, u"N"_s );
-  map.insert( u"ꞥ"_s, u"n"_s );
-  map.insert( u"Ꞧ"_s, u"R"_s );
-  map.insert( u"ꞧ"_s, u"r"_s );
-  map.insert( u"Ꞩ"_s, u"S"_s );
-  map.insert( u"ꞩ"_s, u"s"_s );
-  map.insert( u"Ɦ"_s, u"H"_s );
-  map.insert( u"ꟲ"_s, u"C"_s );
-  map.insert( u"ꟳ"_s, u"F"_s );
-  map.insert( u"ꟴ"_s, u"Q"_s );
-  map.insert( u"ﬀ"_s, u"ff"_s );
-  map.insert( u"ﬁ"_s, u"fi"_s );
-  map.insert( u"ﬂ"_s, u"fl"_s );
-  map.insert( u"ﬃ"_s, u"ffi"_s );
-  map.insert( u"ﬄ"_s, u"ffl"_s );
-  map.insert( u"ﬅ"_s, u"st"_s );
-  map.insert( u"ﬆ"_s, u"st"_s );
-  map.insert( u"︐"_s, u","_s );
-  map.insert( u"︑"_s, u","_s );
-  map.insert( u"︒"_s, u"."_s );
-  map.insert( u"︓"_s, u":"_s );
-  map.insert( u"︔"_s, u";"_s );
-  map.insert( u"︕"_s, u"!"_s );
-  map.insert( u"︖"_s, u"?"_s );
-  map.insert( u"︙"_s, u"..."_s );
-  map.insert( u"︰"_s, u".."_s );
-  map.insert( u"︱"_s, u"-"_s );
-  map.insert( u"︲"_s, u"-"_s );
-  map.insert( u"︵"_s, u"("_s );
-  map.insert( u"︶"_s, u")"_s );
-  map.insert( u"︷"_s, u"{"_s );
-  map.insert( u"︸"_s, u"}"_s );
-  map.insert( u"︹"_s, u"["_s );
-  map.insert( u"︺"_s, u"]"_s );
-  map.insert( u"︽"_s, u"<<"_s );
-  map.insert( u"︾"_s, u">>"_s );
-  map.insert( u"︿"_s, u"<"_s );
-  map.insert( u"﹀"_s, u">"_s );
-  map.insert( u"﹇"_s, u"["_s );
-  map.insert( u"﹈"_s, u"]"_s );
-  map.insert( u"﹐"_s, u","_s );
-  map.insert( u"﹑"_s, u","_s );
-  map.insert( u"﹒"_s, u"."_s );
-  map.insert( u"﹔"_s, u";"_s );
-  map.insert( u"﹕"_s, u":"_s );
-  map.insert( u"﹖"_s, u"?"_s );
-  map.insert( u"﹗"_s, u"!"_s );
-  map.insert( u"﹘"_s, u"-"_s );
-  map.insert( u"﹙"_s, u"("_s );
-  map.insert( u"﹚"_s, u")"_s );
-  map.insert( u"﹛"_s, u"{"_s );
-  map.insert( u"﹜"_s, u"}"_s );
-  map.insert( u"﹝"_s, u"["_s );
-  map.insert( u"﹞"_s, u"]"_s );
-  map.insert( u"﹟"_s, u"#"_s );
-  map.insert( u"﹠"_s, u"&"_s );
-  map.insert( u"﹡"_s, u"*"_s );
-  map.insert( u"﹢"_s, u"+"_s );
-  map.insert( u"﹣"_s, u"-"_s );
-  map.insert( u"﹤"_s, u"<"_s );
-  map.insert( u"﹥"_s, u">"_s );
-  map.insert( u"﹦"_s, u"="_s );
-  map.insert( u"﹨"_s, u"\\"_s );
-  map.insert( u"﹩"_s, u"$"_s );
-  map.insert( u"﹪"_s, u"%"_s );
-  map.insert( u"﹫"_s, u"@"_s );
-  map.insert( u"！"_s, u"!"_s );
-  map.insert( u"＂"_s, u"\""_s );
-  map.insert( u"＃"_s, u"#"_s );
-  map.insert( u"＄"_s, u"$"_s );
-  map.insert( u"％"_s, u"%"_s );
-  map.insert( u"＆"_s, u"&"_s );
-  map.insert( u"＇"_s, u"'"_s );
-  map.insert( u"（"_s, u"("_s );
-  map.insert( u"）"_s, u")"_s );
-  map.insert( u"＊"_s, u"*"_s );
-  map.insert( u"＋"_s, u"+"_s );
-  map.insert( u"，"_s, u","_s );
-  map.insert( u"－"_s, u"-"_s );
-  map.insert( u"．"_s, u"."_s );
-  map.insert( u"／"_s, u"/"_s );
-  map.insert( u"０"_s, u"0"_s );
-  map.insert( u"１"_s, u"1"_s );
-  map.insert( u"２"_s, u"2"_s );
-  map.insert( u"３"_s, u"3"_s );
-  map.insert( u"４"_s, u"4"_s );
-  map.insert( u"５"_s, u"5"_s );
-  map.insert( u"６"_s, u"6"_s );
-  map.insert( u"７"_s, u"7"_s );
-  map.insert( u"８"_s, u"8"_s );
-  map.insert( u"９"_s, u"9"_s );
-  map.insert( u"："_s, u":"_s );
-  map.insert( u"；"_s, u";"_s );
-  map.insert( u"＜"_s, u"<"_s );
-  map.insert( u"＝"_s, u"="_s );
-  map.insert( u"＞"_s, u">"_s );
-  map.insert( u"？"_s, u"?"_s );
-  map.insert( u"＠"_s, u"@"_s );
-  map.insert( u"Ａ"_s, u"A"_s );
-  map.insert( u"Ｂ"_s, u"B"_s );
-  map.insert( u"Ｃ"_s, u"C"_s );
-  map.insert( u"Ｄ"_s, u"D"_s );
-  map.insert( u"Ｅ"_s, u"E"_s );
-  map.insert( u"Ｆ"_s, u"F"_s );
-  map.insert( u"Ｇ"_s, u"G"_s );
-  map.insert( u"Ｈ"_s, u"H"_s );
-  map.insert( u"Ｉ"_s, u"I"_s );
-  map.insert( u"Ｊ"_s, u"J"_s );
-  map.insert( u"Ｋ"_s, u"K"_s );
-  map.insert( u"Ｌ"_s, u"L"_s );
-  map.insert( u"Ｍ"_s, u"M"_s );
-  map.insert( u"Ｎ"_s, u"N"_s );
-  map.insert( u"Ｏ"_s, u"O"_s );
-  map.insert( u"Ｐ"_s, u"P"_s );
-  map.insert( u"Ｑ"_s, u"Q"_s );
-  map.insert( u"Ｒ"_s, u"R"_s );
-  map.insert( u"Ｓ"_s, u"S"_s );
-  map.insert( u"Ｔ"_s, u"T"_s );
-  map.insert( u"Ｕ"_s, u"U"_s );
-  map.insert( u"Ｖ"_s, u"V"_s );
-  map.insert( u"Ｗ"_s, u"W"_s );
-  map.insert( u"Ｘ"_s, u"X"_s );
-  map.insert( u"Ｙ"_s, u"Y"_s );
-  map.insert( u"Ｚ"_s, u"Z"_s );
-  map.insert( u"［"_s, u"["_s );
-  map.insert( u"＼"_s, u"\\"_s );
-  map.insert( u"］"_s, u"]"_s );
-  map.insert( u"＾"_s, u"^"_s );
-  map.insert( u"＿"_s, u"_"_s );
-  map.insert( u"｀"_s, u"`"_s );
-  map.insert( u"ａ"_s, u"a"_s );
-  map.insert( u"ｂ"_s, u"b"_s );
-  map.insert( u"ｃ"_s, u"c"_s );
-  map.insert( u"ｄ"_s, u"d"_s );
-  map.insert( u"ｅ"_s, u"e"_s );
-  map.insert( u"ｆ"_s, u"f"_s );
-  map.insert( u"ｇ"_s, u"g"_s );
-  map.insert( u"ｈ"_s, u"h"_s );
-  map.insert( u"ｉ"_s, u"i"_s );
-  map.insert( u"ｊ"_s, u"j"_s );
-  map.insert( u"ｋ"_s, u"k"_s );
-  map.insert( u"ｌ"_s, u"l"_s );
-  map.insert( u"ｍ"_s, u"m"_s );
-  map.insert( u"ｎ"_s, u"n"_s );
-  map.insert( u"ｏ"_s, u"o"_s );
-  map.insert( u"ｐ"_s, u"p"_s );
-  map.insert( u"ｑ"_s, u"q"_s );
-  map.insert( u"ｒ"_s, u"r"_s );
-  map.insert( u"ｓ"_s, u"s"_s );
-  map.insert( u"ｔ"_s, u"t"_s );
-  map.insert( u"ｕ"_s, u"u"_s );
-  map.insert( u"ｖ"_s, u"v"_s );
-  map.insert( u"ｗ"_s, u"w"_s );
-  map.insert( u"ｘ"_s, u"x"_s );
-  map.insert( u"ｙ"_s, u"y"_s );
-  map.insert( u"ｚ"_s, u"z"_s );
-  map.insert( u"｛"_s, u"{"_s );
-  map.insert( u"｜"_s, u"|"_s );
-  map.insert( u"｝"_s, u"}"_s );
-  map.insert( u"～"_s, u"~"_s );
-  map.insert( u"｟"_s, u"(("_s );
-  map.insert( u"｠"_s, u"))"_s );
-  map.insert( u"｡"_s, u"."_s );
-  map.insert( u"､"_s, u","_s );
-  map.insert( u"￩"_s, u"<-"_s );
-  map.insert( u"￫"_s, u"->"_s );
-  map.insert( u"𐞥"_s, u"q"_s );
-  map.insert( u"𝐀"_s, u"A"_s );
-  map.insert( u"𝐁"_s, u"B"_s );
-  map.insert( u"𝐂"_s, u"C"_s );
-  map.insert( u"𝐃"_s, u"D"_s );
-  map.insert( u"𝐄"_s, u"E"_s );
-  map.insert( u"𝐅"_s, u"F"_s );
-  map.insert( u"𝐆"_s, u"G"_s );
-  map.insert( u"𝐇"_s, u"H"_s );
-  map.insert( u"𝐈"_s, u"I"_s );
-  map.insert( u"𝐉"_s, u"J"_s );
-  map.insert( u"𝐊"_s, u"K"_s );
-  map.insert( u"𝐋"_s, u"L"_s );
-  map.insert( u"𝐌"_s, u"M"_s );
-  map.insert( u"𝐍"_s, u"N"_s );
-  map.insert( u"𝐎"_s, u"O"_s );
-  map.insert( u"𝐏"_s, u"P"_s );
-  map.insert( u"𝐐"_s, u"Q"_s );
-  map.insert( u"𝐑"_s, u"R"_s );
-  map.insert( u"𝐒"_s, u"S"_s );
-  map.insert( u"𝐓"_s, u"T"_s );
-  map.insert( u"𝐔"_s, u"U"_s );
-  map.insert( u"𝐕"_s, u"V"_s );
-  map.insert( u"𝐖"_s, u"W"_s );
-  map.insert( u"𝐗"_s, u"X"_s );
-  map.insert( u"𝐘"_s, u"Y"_s );
-  map.insert( u"𝐙"_s, u"Z"_s );
-  map.insert( u"𝐚"_s, u"a"_s );
-  map.insert( u"𝐛"_s, u"b"_s );
-  map.insert( u"𝐜"_s, u"c"_s );
-  map.insert( u"𝐝"_s, u"d"_s );
-  map.insert( u"𝐞"_s, u"e"_s );
-  map.insert( u"𝐟"_s, u"f"_s );
-  map.insert( u"𝐠"_s, u"g"_s );
-  map.insert( u"𝐡"_s, u"h"_s );
-  map.insert( u"𝐢"_s, u"i"_s );
-  map.insert( u"𝐣"_s, u"j"_s );
-  map.insert( u"𝐤"_s, u"k"_s );
-  map.insert( u"𝐥"_s, u"l"_s );
-  map.insert( u"𝐦"_s, u"m"_s );
-  map.insert( u"𝐧"_s, u"n"_s );
-  map.insert( u"𝐨"_s, u"o"_s );
-  map.insert( u"𝐩"_s, u"p"_s );
-  map.insert( u"𝐪"_s, u"q"_s );
-  map.insert( u"𝐫"_s, u"r"_s );
-  map.insert( u"𝐬"_s, u"s"_s );
-  map.insert( u"𝐭"_s, u"t"_s );
-  map.insert( u"𝐮"_s, u"u"_s );
-  map.insert( u"𝐯"_s, u"v"_s );
-  map.insert( u"𝐰"_s, u"w"_s );
-  map.insert( u"𝐱"_s, u"x"_s );
-  map.insert( u"𝐲"_s, u"y"_s );
-  map.insert( u"𝐳"_s, u"z"_s );
-  map.insert( u"𝐴"_s, u"A"_s );
-  map.insert( u"𝐵"_s, u"B"_s );
-  map.insert( u"𝐶"_s, u"C"_s );
-  map.insert( u"𝐷"_s, u"D"_s );
-  map.insert( u"𝐸"_s, u"E"_s );
-  map.insert( u"𝐹"_s, u"F"_s );
-  map.insert( u"𝐺"_s, u"G"_s );
-  map.insert( u"𝐻"_s, u"H"_s );
-  map.insert( u"𝐼"_s, u"I"_s );
-  map.insert( u"𝐽"_s, u"J"_s );
-  map.insert( u"𝐾"_s, u"K"_s );
-  map.insert( u"𝐿"_s, u"L"_s );
-  map.insert( u"𝑀"_s, u"M"_s );
-  map.insert( u"𝑁"_s, u"N"_s );
-  map.insert( u"𝑂"_s, u"O"_s );
-  map.insert( u"𝑃"_s, u"P"_s );
-  map.insert( u"𝑄"_s, u"Q"_s );
-  map.insert( u"𝑅"_s, u"R"_s );
-  map.insert( u"𝑆"_s, u"S"_s );
-  map.insert( u"𝑇"_s, u"T"_s );
-  map.insert( u"𝑈"_s, u"U"_s );
-  map.insert( u"𝑉"_s, u"V"_s );
-  map.insert( u"𝑊"_s, u"W"_s );
-  map.insert( u"𝑋"_s, u"X"_s );
-  map.insert( u"𝑌"_s, u"Y"_s );
-  map.insert( u"𝑍"_s, u"Z"_s );
-  map.insert( u"𝑎"_s, u"a"_s );
-  map.insert( u"𝑏"_s, u"b"_s );
-  map.insert( u"𝑐"_s, u"c"_s );
-  map.insert( u"𝑑"_s, u"d"_s );
-  map.insert( u"𝑒"_s, u"e"_s );
-  map.insert( u"𝑓"_s, u"f"_s );
-  map.insert( u"𝑔"_s, u"g"_s );
-  map.insert( u"𝑖"_s, u"i"_s );
-  map.insert( u"𝑗"_s, u"j"_s );
-  map.insert( u"𝑘"_s, u"k"_s );
-  map.insert( u"𝑙"_s, u"l"_s );
-  map.insert( u"𝑚"_s, u"m"_s );
-  map.insert( u"𝑛"_s, u"n"_s );
-  map.insert( u"𝑜"_s, u"o"_s );
-  map.insert( u"𝑝"_s, u"p"_s );
-  map.insert( u"𝑞"_s, u"q"_s );
-  map.insert( u"𝑟"_s, u"r"_s );
-  map.insert( u"𝑠"_s, u"s"_s );
-  map.insert( u"𝑡"_s, u"t"_s );
-  map.insert( u"𝑢"_s, u"u"_s );
-  map.insert( u"𝑣"_s, u"v"_s );
-  map.insert( u"𝑤"_s, u"w"_s );
-  map.insert( u"𝑥"_s, u"x"_s );
-  map.insert( u"𝑦"_s, u"y"_s );
-  map.insert( u"𝑧"_s, u"z"_s );
-  map.insert( u"𝑨"_s, u"A"_s );
-  map.insert( u"𝑩"_s, u"B"_s );
-  map.insert( u"𝑪"_s, u"C"_s );
-  map.insert( u"𝑫"_s, u"D"_s );
-  map.insert( u"𝑬"_s, u"E"_s );
-  map.insert( u"𝑭"_s, u"F"_s );
-  map.insert( u"𝑮"_s, u"G"_s );
-  map.insert( u"𝑯"_s, u"H"_s );
-  map.insert( u"𝑰"_s, u"I"_s );
-  map.insert( u"𝑱"_s, u"J"_s );
-  map.insert( u"𝑲"_s, u"K"_s );
-  map.insert( u"𝑳"_s, u"L"_s );
-  map.insert( u"𝑴"_s, u"M"_s );
-  map.insert( u"𝑵"_s, u"N"_s );
-  map.insert( u"𝑶"_s, u"O"_s );
-  map.insert( u"𝑷"_s, u"P"_s );
-  map.insert( u"𝑸"_s, u"Q"_s );
-  map.insert( u"𝑹"_s, u"R"_s );
-  map.insert( u"𝑺"_s, u"S"_s );
-  map.insert( u"𝑻"_s, u"T"_s );
-  map.insert( u"𝑼"_s, u"U"_s );
-  map.insert( u"𝑽"_s, u"V"_s );
-  map.insert( u"𝑾"_s, u"W"_s );
-  map.insert( u"𝑿"_s, u"X"_s );
-  map.insert( u"𝒀"_s, u"Y"_s );
-  map.insert( u"𝒁"_s, u"Z"_s );
-  map.insert( u"𝒂"_s, u"a"_s );
-  map.insert( u"𝒃"_s, u"b"_s );
-  map.insert( u"𝒄"_s, u"c"_s );
-  map.insert( u"𝒅"_s, u"d"_s );
-  map.insert( u"𝒆"_s, u"e"_s );
-  map.insert( u"𝒇"_s, u"f"_s );
-  map.insert( u"𝒈"_s, u"g"_s );
-  map.insert( u"𝒉"_s, u"h"_s );
-  map.insert( u"𝒊"_s, u"i"_s );
-  map.insert( u"𝒋"_s, u"j"_s );
-  map.insert( u"𝒌"_s, u"k"_s );
-  map.insert( u"𝒍"_s, u"l"_s );
-  map.insert( u"𝒎"_s, u"m"_s );
-  map.insert( u"𝒏"_s, u"n"_s );
-  map.insert( u"𝒐"_s, u"o"_s );
-  map.insert( u"𝒑"_s, u"p"_s );
-  map.insert( u"𝒒"_s, u"q"_s );
-  map.insert( u"𝒓"_s, u"r"_s );
-  map.insert( u"𝒔"_s, u"s"_s );
-  map.insert( u"𝒕"_s, u"t"_s );
-  map.insert( u"𝒖"_s, u"u"_s );
-  map.insert( u"𝒗"_s, u"v"_s );
-  map.insert( u"𝒘"_s, u"w"_s );
-  map.insert( u"𝒙"_s, u"x"_s );
-  map.insert( u"𝒚"_s, u"y"_s );
-  map.insert( u"𝒛"_s, u"z"_s );
-  map.insert( u"𝒜"_s, u"A"_s );
-  map.insert( u"𝒞"_s, u"C"_s );
-  map.insert( u"𝒟"_s, u"D"_s );
-  map.insert( u"𝒢"_s, u"G"_s );
-  map.insert( u"𝒥"_s, u"J"_s );
-  map.insert( u"𝒦"_s, u"K"_s );
-  map.insert( u"𝒩"_s, u"N"_s );
-  map.insert( u"𝒪"_s, u"O"_s );
-  map.insert( u"𝒫"_s, u"P"_s );
-  map.insert( u"𝒬"_s, u"Q"_s );
-  map.insert( u"𝒮"_s, u"S"_s );
-  map.insert( u"𝒯"_s, u"T"_s );
-  map.insert( u"𝒰"_s, u"U"_s );
-  map.insert( u"𝒱"_s, u"V"_s );
-  map.insert( u"𝒲"_s, u"W"_s );
-  map.insert( u"𝒳"_s, u"X"_s );
-  map.insert( u"𝒴"_s, u"Y"_s );
-  map.insert( u"𝒵"_s, u"Z"_s );
-  map.insert( u"𝒶"_s, u"a"_s );
-  map.insert( u"𝒷"_s, u"b"_s );
-  map.insert( u"𝒸"_s, u"c"_s );
-  map.insert( u"𝒹"_s, u"d"_s );
-  map.insert( u"𝒻"_s, u"f"_s );
-  map.insert( u"𝒽"_s, u"h"_s );
-  map.insert( u"𝒾"_s, u"i"_s );
-  map.insert( u"𝒿"_s, u"j"_s );
-  map.insert( u"𝓀"_s, u"k"_s );
-  map.insert( u"𝓁"_s, u"l"_s );
-  map.insert( u"𝓂"_s, u"m"_s );
-  map.insert( u"𝓃"_s, u"n"_s );
-  map.insert( u"𝓅"_s, u"p"_s );
-  map.insert( u"𝓆"_s, u"q"_s );
-  map.insert( u"𝓇"_s, u"r"_s );
-  map.insert( u"𝓈"_s, u"s"_s );
-  map.insert( u"𝓉"_s, u"t"_s );
-  map.insert( u"𝓊"_s, u"u"_s );
-  map.insert( u"𝓋"_s, u"v"_s );
-  map.insert( u"𝓌"_s, u"w"_s );
-  map.insert( u"𝓍"_s, u"x"_s );
-  map.insert( u"𝓎"_s, u"y"_s );
-  map.insert( u"𝓏"_s, u"z"_s );
-  map.insert( u"𝓐"_s, u"A"_s );
-  map.insert( u"𝓑"_s, u"B"_s );
-  map.insert( u"𝓒"_s, u"C"_s );
-  map.insert( u"𝓓"_s, u"D"_s );
-  map.insert( u"𝓔"_s, u"E"_s );
-  map.insert( u"𝓕"_s, u"F"_s );
-  map.insert( u"𝓖"_s, u"G"_s );
-  map.insert( u"𝓗"_s, u"H"_s );
-  map.insert( u"𝓘"_s, u"I"_s );
-  map.insert( u"𝓙"_s, u"J"_s );
-  map.insert( u"𝓚"_s, u"K"_s );
-  map.insert( u"𝓛"_s, u"L"_s );
-  map.insert( u"𝓜"_s, u"M"_s );
-  map.insert( u"𝓝"_s, u"N"_s );
-  map.insert( u"𝓞"_s, u"O"_s );
-  map.insert( u"𝓟"_s, u"P"_s );
-  map.insert( u"𝓠"_s, u"Q"_s );
-  map.insert( u"𝓡"_s, u"R"_s );
-  map.insert( u"𝓢"_s, u"S"_s );
-  map.insert( u"𝓣"_s, u"T"_s );
-  map.insert( u"𝓤"_s, u"U"_s );
-  map.insert( u"𝓥"_s, u"V"_s );
-  map.insert( u"𝓦"_s, u"W"_s );
-  map.insert( u"𝓧"_s, u"X"_s );
-  map.insert( u"𝓨"_s, u"Y"_s );
-  map.insert( u"𝓩"_s, u"Z"_s );
-  map.insert( u"𝓪"_s, u"a"_s );
-  map.insert( u"𝓫"_s, u"b"_s );
-  map.insert( u"𝓬"_s, u"c"_s );
-  map.insert( u"𝓭"_s, u"d"_s );
-  map.insert( u"𝓮"_s, u"e"_s );
-  map.insert( u"𝓯"_s, u"f"_s );
-  map.insert( u"𝓰"_s, u"g"_s );
-  map.insert( u"𝓱"_s, u"h"_s );
-  map.insert( u"𝓲"_s, u"i"_s );
-  map.insert( u"𝓳"_s, u"j"_s );
-  map.insert( u"𝓴"_s, u"k"_s );
-  map.insert( u"𝓵"_s, u"l"_s );
-  map.insert( u"𝓶"_s, u"m"_s );
-  map.insert( u"𝓷"_s, u"n"_s );
-  map.insert( u"𝓸"_s, u"o"_s );
-  map.insert( u"𝓹"_s, u"p"_s );
-  map.insert( u"𝓺"_s, u"q"_s );
-  map.insert( u"𝓻"_s, u"r"_s );
-  map.insert( u"𝓼"_s, u"s"_s );
-  map.insert( u"𝓽"_s, u"t"_s );
-  map.insert( u"𝓾"_s, u"u"_s );
-  map.insert( u"𝓿"_s, u"v"_s );
-  map.insert( u"𝔀"_s, u"w"_s );
-  map.insert( u"𝔁"_s, u"x"_s );
-  map.insert( u"𝔂"_s, u"y"_s );
-  map.insert( u"𝔃"_s, u"z"_s );
-  map.insert( u"𝔄"_s, u"A"_s );
-  map.insert( u"𝔅"_s, u"B"_s );
-  map.insert( u"𝔇"_s, u"D"_s );
-  map.insert( u"𝔈"_s, u"E"_s );
-  map.insert( u"𝔉"_s, u"F"_s );
-  map.insert( u"𝔊"_s, u"G"_s );
-  map.insert( u"𝔍"_s, u"J"_s );
-  map.insert( u"𝔎"_s, u"K"_s );
-  map.insert( u"𝔏"_s, u"L"_s );
-  map.insert( u"𝔐"_s, u"M"_s );
-  map.insert( u"𝔑"_s, u"N"_s );
-  map.insert( u"𝔒"_s, u"O"_s );
-  map.insert( u"𝔓"_s, u"P"_s );
-  map.insert( u"𝔔"_s, u"Q"_s );
-  map.insert( u"𝔖"_s, u"S"_s );
-  map.insert( u"𝔗"_s, u"T"_s );
-  map.insert( u"𝔘"_s, u"U"_s );
-  map.insert( u"𝔙"_s, u"V"_s );
-  map.insert( u"𝔚"_s, u"W"_s );
-  map.insert( u"𝔛"_s, u"X"_s );
-  map.insert( u"𝔜"_s, u"Y"_s );
-  map.insert( u"𝔞"_s, u"a"_s );
-  map.insert( u"𝔟"_s, u"b"_s );
-  map.insert( u"𝔠"_s, u"c"_s );
-  map.insert( u"𝔡"_s, u"d"_s );
-  map.insert( u"𝔢"_s, u"e"_s );
-  map.insert( u"𝔣"_s, u"f"_s );
-  map.insert( u"𝔤"_s, u"g"_s );
-  map.insert( u"𝔥"_s, u"h"_s );
-  map.insert( u"𝔦"_s, u"i"_s );
-  map.insert( u"𝔧"_s, u"j"_s );
-  map.insert( u"𝔨"_s, u"k"_s );
-  map.insert( u"𝔩"_s, u"l"_s );
-  map.insert( u"𝔪"_s, u"m"_s );
-  map.insert( u"𝔫"_s, u"n"_s );
-  map.insert( u"𝔬"_s, u"o"_s );
-  map.insert( u"𝔭"_s, u"p"_s );
-  map.insert( u"𝔮"_s, u"q"_s );
-  map.insert( u"𝔯"_s, u"r"_s );
-  map.insert( u"𝔰"_s, u"s"_s );
-  map.insert( u"𝔱"_s, u"t"_s );
-  map.insert( u"𝔲"_s, u"u"_s );
-  map.insert( u"𝔳"_s, u"v"_s );
-  map.insert( u"𝔴"_s, u"w"_s );
-  map.insert( u"𝔵"_s, u"x"_s );
-  map.insert( u"𝔶"_s, u"y"_s );
-  map.insert( u"𝔷"_s, u"z"_s );
-  map.insert( u"𝔸"_s, u"A"_s );
-  map.insert( u"𝔹"_s, u"B"_s );
-  map.insert( u"𝔻"_s, u"D"_s );
-  map.insert( u"𝔼"_s, u"E"_s );
-  map.insert( u"𝔽"_s, u"F"_s );
-  map.insert( u"𝔾"_s, u"G"_s );
-  map.insert( u"𝕀"_s, u"I"_s );
-  map.insert( u"𝕁"_s, u"J"_s );
-  map.insert( u"𝕂"_s, u"K"_s );
-  map.insert( u"𝕃"_s, u"L"_s );
-  map.insert( u"𝕄"_s, u"M"_s );
-  map.insert( u"𝕆"_s, u"O"_s );
-  map.insert( u"𝕊"_s, u"S"_s );
-  map.insert( u"𝕋"_s, u"T"_s );
-  map.insert( u"𝕌"_s, u"U"_s );
-  map.insert( u"𝕍"_s, u"V"_s );
-  map.insert( u"𝕎"_s, u"W"_s );
-  map.insert( u"𝕏"_s, u"X"_s );
-  map.insert( u"𝕐"_s, u"Y"_s );
-  map.insert( u"𝕒"_s, u"a"_s );
-  map.insert( u"𝕓"_s, u"b"_s );
-  map.insert( u"𝕔"_s, u"c"_s );
-  map.insert( u"𝕕"_s, u"d"_s );
-  map.insert( u"𝕖"_s, u"e"_s );
-  map.insert( u"𝕗"_s, u"f"_s );
-  map.insert( u"𝕘"_s, u"g"_s );
-  map.insert( u"𝕙"_s, u"h"_s );
-  map.insert( u"𝕚"_s, u"i"_s );
-  map.insert( u"𝕛"_s, u"j"_s );
-  map.insert( u"𝕜"_s, u"k"_s );
-  map.insert( u"𝕝"_s, u"l"_s );
-  map.insert( u"𝕞"_s, u"m"_s );
-  map.insert( u"𝕟"_s, u"n"_s );
-  map.insert( u"𝕠"_s, u"o"_s );
-  map.insert( u"𝕡"_s, u"p"_s );
-  map.insert( u"𝕢"_s, u"q"_s );
-  map.insert( u"𝕣"_s, u"r"_s );
-  map.insert( u"𝕤"_s, u"s"_s );
-  map.insert( u"𝕥"_s, u"t"_s );
-  map.insert( u"𝕦"_s, u"u"_s );
-  map.insert( u"𝕧"_s, u"v"_s );
-  map.insert( u"𝕨"_s, u"w"_s );
-  map.insert( u"𝕩"_s, u"x"_s );
-  map.insert( u"𝕪"_s, u"y"_s );
-  map.insert( u"𝕫"_s, u"z"_s );
-  map.insert( u"𝕬"_s, u"A"_s );
-  map.insert( u"𝕭"_s, u"B"_s );
-  map.insert( u"𝕮"_s, u"C"_s );
-  map.insert( u"𝕯"_s, u"D"_s );
-  map.insert( u"𝕰"_s, u"E"_s );
-  map.insert( u"𝕱"_s, u"F"_s );
-  map.insert( u"𝕲"_s, u"G"_s );
-  map.insert( u"𝕳"_s, u"H"_s );
-  map.insert( u"𝕴"_s, u"I"_s );
-  map.insert( u"𝕵"_s, u"J"_s );
-  map.insert( u"𝕶"_s, u"K"_s );
-  map.insert( u"𝕷"_s, u"L"_s );
-  map.insert( u"𝕸"_s, u"M"_s );
-  map.insert( u"𝕹"_s, u"N"_s );
-  map.insert( u"𝕺"_s, u"O"_s );
-  map.insert( u"𝕻"_s, u"P"_s );
-  map.insert( u"𝕼"_s, u"Q"_s );
-  map.insert( u"𝕽"_s, u"R"_s );
-  map.insert( u"𝕾"_s, u"S"_s );
-  map.insert( u"𝕿"_s, u"T"_s );
-  map.insert( u"𝖀"_s, u"U"_s );
-  map.insert( u"𝖁"_s, u"V"_s );
-  map.insert( u"𝖂"_s, u"W"_s );
-  map.insert( u"𝖃"_s, u"X"_s );
-  map.insert( u"𝖄"_s, u"Y"_s );
-  map.insert( u"𝖅"_s, u"Z"_s );
-  map.insert( u"𝖆"_s, u"a"_s );
-  map.insert( u"𝖇"_s, u"b"_s );
-  map.insert( u"𝖈"_s, u"c"_s );
-  map.insert( u"𝖉"_s, u"d"_s );
-  map.insert( u"𝖊"_s, u"e"_s );
-  map.insert( u"𝖋"_s, u"f"_s );
-  map.insert( u"𝖌"_s, u"g"_s );
-  map.insert( u"𝖍"_s, u"h"_s );
-  map.insert( u"𝖎"_s, u"i"_s );
-  map.insert( u"𝖏"_s, u"j"_s );
-  map.insert( u"𝖐"_s, u"k"_s );
-  map.insert( u"𝖑"_s, u"l"_s );
-  map.insert( u"𝖒"_s, u"m"_s );
-  map.insert( u"𝖓"_s, u"n"_s );
-  map.insert( u"𝖔"_s, u"o"_s );
-  map.insert( u"𝖕"_s, u"p"_s );
-  map.insert( u"𝖖"_s, u"q"_s );
-  map.insert( u"𝖗"_s, u"r"_s );
-  map.insert( u"𝖘"_s, u"s"_s );
-  map.insert( u"𝖙"_s, u"t"_s );
-  map.insert( u"𝖚"_s, u"u"_s );
-  map.insert( u"𝖛"_s, u"v"_s );
-  map.insert( u"𝖜"_s, u"w"_s );
-  map.insert( u"𝖝"_s, u"x"_s );
-  map.insert( u"𝖞"_s, u"y"_s );
-  map.insert( u"𝖟"_s, u"z"_s );
-  map.insert( u"𝖠"_s, u"A"_s );
-  map.insert( u"𝖡"_s, u"B"_s );
-  map.insert( u"𝖢"_s, u"C"_s );
-  map.insert( u"𝖣"_s, u"D"_s );
-  map.insert( u"𝖤"_s, u"E"_s );
-  map.insert( u"𝖥"_s, u"F"_s );
-  map.insert( u"𝖦"_s, u"G"_s );
-  map.insert( u"𝖧"_s, u"H"_s );
-  map.insert( u"𝖨"_s, u"I"_s );
-  map.insert( u"𝖩"_s, u"J"_s );
-  map.insert( u"𝖪"_s, u"K"_s );
-  map.insert( u"𝖫"_s, u"L"_s );
-  map.insert( u"𝖬"_s, u"M"_s );
-  map.insert( u"𝖭"_s, u"N"_s );
-  map.insert( u"𝖮"_s, u"O"_s );
-  map.insert( u"𝖯"_s, u"P"_s );
-  map.insert( u"𝖰"_s, u"Q"_s );
-  map.insert( u"𝖱"_s, u"R"_s );
-  map.insert( u"𝖲"_s, u"S"_s );
-  map.insert( u"𝖳"_s, u"T"_s );
-  map.insert( u"𝖴"_s, u"U"_s );
-  map.insert( u"𝖵"_s, u"V"_s );
-  map.insert( u"𝖶"_s, u"W"_s );
-  map.insert( u"𝖷"_s, u"X"_s );
-  map.insert( u"𝖸"_s, u"Y"_s );
-  map.insert( u"𝖹"_s, u"Z"_s );
-  map.insert( u"𝖺"_s, u"a"_s );
-  map.insert( u"𝖻"_s, u"b"_s );
-  map.insert( u"𝖼"_s, u"c"_s );
-  map.insert( u"𝖽"_s, u"d"_s );
-  map.insert( u"𝖾"_s, u"e"_s );
-  map.insert( u"𝖿"_s, u"f"_s );
-  map.insert( u"𝗀"_s, u"g"_s );
-  map.insert( u"𝗁"_s, u"h"_s );
-  map.insert( u"𝗂"_s, u"i"_s );
-  map.insert( u"𝗃"_s, u"j"_s );
-  map.insert( u"𝗄"_s, u"k"_s );
-  map.insert( u"𝗅"_s, u"l"_s );
-  map.insert( u"𝗆"_s, u"m"_s );
-  map.insert( u"𝗇"_s, u"n"_s );
-  map.insert( u"𝗈"_s, u"o"_s );
-  map.insert( u"𝗉"_s, u"p"_s );
-  map.insert( u"𝗊"_s, u"q"_s );
-  map.insert( u"𝗋"_s, u"r"_s );
-  map.insert( u"𝗌"_s, u"s"_s );
-  map.insert( u"𝗍"_s, u"t"_s );
-  map.insert( u"𝗎"_s, u"u"_s );
-  map.insert( u"𝗏"_s, u"v"_s );
-  map.insert( u"𝗐"_s, u"w"_s );
-  map.insert( u"𝗑"_s, u"x"_s );
-  map.insert( u"𝗒"_s, u"y"_s );
-  map.insert( u"𝗓"_s, u"z"_s );
-  map.insert( u"𝗔"_s, u"A"_s );
-  map.insert( u"𝗕"_s, u"B"_s );
-  map.insert( u"𝗖"_s, u"C"_s );
-  map.insert( u"𝗗"_s, u"D"_s );
-  map.insert( u"𝗘"_s, u"E"_s );
-  map.insert( u"𝗙"_s, u"F"_s );
-  map.insert( u"𝗚"_s, u"G"_s );
-  map.insert( u"𝗛"_s, u"H"_s );
-  map.insert( u"𝗜"_s, u"I"_s );
-  map.insert( u"𝗝"_s, u"J"_s );
-  map.insert( u"𝗞"_s, u"K"_s );
-  map.insert( u"𝗟"_s, u"L"_s );
-  map.insert( u"𝗠"_s, u"M"_s );
-  map.insert( u"𝗡"_s, u"N"_s );
-  map.insert( u"𝗢"_s, u"O"_s );
-  map.insert( u"𝗣"_s, u"P"_s );
-  map.insert( u"𝗤"_s, u"Q"_s );
-  map.insert( u"𝗥"_s, u"R"_s );
-  map.insert( u"𝗦"_s, u"S"_s );
-  map.insert( u"𝗧"_s, u"T"_s );
-  map.insert( u"𝗨"_s, u"U"_s );
-  map.insert( u"𝗩"_s, u"V"_s );
-  map.insert( u"𝗪"_s, u"W"_s );
-  map.insert( u"𝗫"_s, u"X"_s );
-  map.insert( u"𝗬"_s, u"Y"_s );
-  map.insert( u"𝗭"_s, u"Z"_s );
-  map.insert( u"𝗮"_s, u"a"_s );
-  map.insert( u"𝗯"_s, u"b"_s );
-  map.insert( u"𝗰"_s, u"c"_s );
-  map.insert( u"𝗱"_s, u"d"_s );
-  map.insert( u"𝗲"_s, u"e"_s );
-  map.insert( u"𝗳"_s, u"f"_s );
-  map.insert( u"𝗴"_s, u"g"_s );
-  map.insert( u"𝗵"_s, u"h"_s );
-  map.insert( u"𝗶"_s, u"i"_s );
-  map.insert( u"𝗷"_s, u"j"_s );
-  map.insert( u"𝗸"_s, u"k"_s );
-  map.insert( u"𝗹"_s, u"l"_s );
-  map.insert( u"𝗺"_s, u"m"_s );
-  map.insert( u"𝗻"_s, u"n"_s );
-  map.insert( u"𝗼"_s, u"o"_s );
-  map.insert( u"𝗽"_s, u"p"_s );
-  map.insert( u"𝗾"_s, u"q"_s );
-  map.insert( u"𝗿"_s, u"r"_s );
-  map.insert( u"𝘀"_s, u"s"_s );
-  map.insert( u"𝘁"_s, u"t"_s );
-  map.insert( u"𝘂"_s, u"u"_s );
-  map.insert( u"𝘃"_s, u"v"_s );
-  map.insert( u"𝘄"_s, u"w"_s );
-  map.insert( u"𝘅"_s, u"x"_s );
-  map.insert( u"𝘆"_s, u"y"_s );
-  map.insert( u"𝘇"_s, u"z"_s );
-  map.insert( u"𝘈"_s, u"A"_s );
-  map.insert( u"𝘉"_s, u"B"_s );
-  map.insert( u"𝘊"_s, u"C"_s );
-  map.insert( u"𝘋"_s, u"D"_s );
-  map.insert( u"𝘌"_s, u"E"_s );
-  map.insert( u"𝘍"_s, u"F"_s );
-  map.insert( u"𝘎"_s, u"G"_s );
-  map.insert( u"𝘏"_s, u"H"_s );
-  map.insert( u"𝘐"_s, u"I"_s );
-  map.insert( u"𝘑"_s, u"J"_s );
-  map.insert( u"𝘒"_s, u"K"_s );
-  map.insert( u"𝘓"_s, u"L"_s );
-  map.insert( u"𝘔"_s, u"M"_s );
-  map.insert( u"𝘕"_s, u"N"_s );
-  map.insert( u"𝘖"_s, u"O"_s );
-  map.insert( u"𝘗"_s, u"P"_s );
-  map.insert( u"𝘘"_s, u"Q"_s );
-  map.insert( u"𝘙"_s, u"R"_s );
-  map.insert( u"𝘚"_s, u"S"_s );
-  map.insert( u"𝘛"_s, u"T"_s );
-  map.insert( u"𝘜"_s, u"U"_s );
-  map.insert( u"𝘝"_s, u"V"_s );
-  map.insert( u"𝘞"_s, u"W"_s );
-  map.insert( u"𝘟"_s, u"X"_s );
-  map.insert( u"𝘠"_s, u"Y"_s );
-  map.insert( u"𝘡"_s, u"Z"_s );
-  map.insert( u"𝘢"_s, u"a"_s );
-  map.insert( u"𝘣"_s, u"b"_s );
-  map.insert( u"𝘤"_s, u"c"_s );
-  map.insert( u"𝘥"_s, u"d"_s );
-  map.insert( u"𝘦"_s, u"e"_s );
-  map.insert( u"𝘧"_s, u"f"_s );
-  map.insert( u"𝘨"_s, u"g"_s );
-  map.insert( u"𝘩"_s, u"h"_s );
-  map.insert( u"𝘪"_s, u"i"_s );
-  map.insert( u"𝘫"_s, u"j"_s );
-  map.insert( u"𝘬"_s, u"k"_s );
-  map.insert( u"𝘭"_s, u"l"_s );
-  map.insert( u"𝘮"_s, u"m"_s );
-  map.insert( u"𝘯"_s, u"n"_s );
-  map.insert( u"𝘰"_s, u"o"_s );
-  map.insert( u"𝘱"_s, u"p"_s );
-  map.insert( u"𝘲"_s, u"q"_s );
-  map.insert( u"𝘳"_s, u"r"_s );
-  map.insert( u"𝘴"_s, u"s"_s );
-  map.insert( u"𝘵"_s, u"t"_s );
-  map.insert( u"𝘶"_s, u"u"_s );
-  map.insert( u"𝘷"_s, u"v"_s );
-  map.insert( u"𝘸"_s, u"w"_s );
-  map.insert( u"𝘹"_s, u"x"_s );
-  map.insert( u"𝘺"_s, u"y"_s );
-  map.insert( u"𝘻"_s, u"z"_s );
-  map.insert( u"𝘼"_s, u"A"_s );
-  map.insert( u"𝘽"_s, u"B"_s );
-  map.insert( u"𝘾"_s, u"C"_s );
-  map.insert( u"𝘿"_s, u"D"_s );
-  map.insert( u"𝙀"_s, u"E"_s );
-  map.insert( u"𝙁"_s, u"F"_s );
-  map.insert( u"𝙂"_s, u"G"_s );
-  map.insert( u"𝙃"_s, u"H"_s );
-  map.insert( u"𝙄"_s, u"I"_s );
-  map.insert( u"𝙅"_s, u"J"_s );
-  map.insert( u"𝙆"_s, u"K"_s );
-  map.insert( u"𝙇"_s, u"L"_s );
-  map.insert( u"𝙈"_s, u"M"_s );
-  map.insert( u"𝙉"_s, u"N"_s );
-  map.insert( u"𝙊"_s, u"O"_s );
-  map.insert( u"𝙋"_s, u"P"_s );
-  map.insert( u"𝙌"_s, u"Q"_s );
-  map.insert( u"𝙍"_s, u"R"_s );
-  map.insert( u"𝙎"_s, u"S"_s );
-  map.insert( u"𝙏"_s, u"T"_s );
-  map.insert( u"𝙐"_s, u"U"_s );
-  map.insert( u"𝙑"_s, u"V"_s );
-  map.insert( u"𝙒"_s, u"W"_s );
-  map.insert( u"𝙓"_s, u"X"_s );
-  map.insert( u"𝙔"_s, u"Y"_s );
-  map.insert( u"𝙕"_s, u"Z"_s );
-  map.insert( u"𝙖"_s, u"a"_s );
-  map.insert( u"𝙗"_s, u"b"_s );
-  map.insert( u"𝙘"_s, u"c"_s );
-  map.insert( u"𝙙"_s, u"d"_s );
-  map.insert( u"𝙚"_s, u"e"_s );
-  map.insert( u"𝙛"_s, u"f"_s );
-  map.insert( u"𝙜"_s, u"g"_s );
-  map.insert( u"𝙝"_s, u"h"_s );
-  map.insert( u"𝙞"_s, u"i"_s );
-  map.insert( u"𝙟"_s, u"j"_s );
-  map.insert( u"𝙠"_s, u"k"_s );
-  map.insert( u"𝙡"_s, u"l"_s );
-  map.insert( u"𝙢"_s, u"m"_s );
-  map.insert( u"𝙣"_s, u"n"_s );
-  map.insert( u"𝙤"_s, u"o"_s );
-  map.insert( u"𝙥"_s, u"p"_s );
-  map.insert( u"𝙦"_s, u"q"_s );
-  map.insert( u"𝙧"_s, u"r"_s );
-  map.insert( u"𝙨"_s, u"s"_s );
-  map.insert( u"𝙩"_s, u"t"_s );
-  map.insert( u"𝙪"_s, u"u"_s );
-  map.insert( u"𝙫"_s, u"v"_s );
-  map.insert( u"𝙬"_s, u"w"_s );
-  map.insert( u"𝙭"_s, u"x"_s );
-  map.insert( u"𝙮"_s, u"y"_s );
-  map.insert( u"𝙯"_s, u"z"_s );
-  map.insert( u"𝙰"_s, u"A"_s );
-  map.insert( u"𝙱"_s, u"B"_s );
-  map.insert( u"𝙲"_s, u"C"_s );
-  map.insert( u"𝙳"_s, u"D"_s );
-  map.insert( u"𝙴"_s, u"E"_s );
-  map.insert( u"𝙵"_s, u"F"_s );
-  map.insert( u"𝙶"_s, u"G"_s );
-  map.insert( u"𝙷"_s, u"H"_s );
-  map.insert( u"𝙸"_s, u"I"_s );
-  map.insert( u"𝙹"_s, u"J"_s );
-  map.insert( u"𝙺"_s, u"K"_s );
-  map.insert( u"𝙻"_s, u"L"_s );
-  map.insert( u"𝙼"_s, u"M"_s );
-  map.insert( u"𝙽"_s, u"N"_s );
-  map.insert( u"𝙾"_s, u"O"_s );
-  map.insert( u"𝙿"_s, u"P"_s );
-  map.insert( u"𝚀"_s, u"Q"_s );
-  map.insert( u"𝚁"_s, u"R"_s );
-  map.insert( u"𝚂"_s, u"S"_s );
-  map.insert( u"𝚃"_s, u"T"_s );
-  map.insert( u"𝚄"_s, u"U"_s );
-  map.insert( u"𝚅"_s, u"V"_s );
-  map.insert( u"𝚆"_s, u"W"_s );
-  map.insert( u"𝚇"_s, u"X"_s );
-  map.insert( u"𝚈"_s, u"Y"_s );
-  map.insert( u"𝚉"_s, u"Z"_s );
-  map.insert( u"𝚊"_s, u"a"_s );
-  map.insert( u"𝚋"_s, u"b"_s );
-  map.insert( u"𝚌"_s, u"c"_s );
-  map.insert( u"𝚍"_s, u"d"_s );
-  map.insert( u"𝚎"_s, u"e"_s );
-  map.insert( u"𝚏"_s, u"f"_s );
-  map.insert( u"𝚐"_s, u"g"_s );
-  map.insert( u"𝚑"_s, u"h"_s );
-  map.insert( u"𝚒"_s, u"i"_s );
-  map.insert( u"𝚓"_s, u"j"_s );
-  map.insert( u"𝚔"_s, u"k"_s );
-  map.insert( u"𝚕"_s, u"l"_s );
-  map.insert( u"𝚖"_s, u"m"_s );
-  map.insert( u"𝚗"_s, u"n"_s );
-  map.insert( u"𝚘"_s, u"o"_s );
-  map.insert( u"𝚙"_s, u"p"_s );
-  map.insert( u"𝚚"_s, u"q"_s );
-  map.insert( u"𝚛"_s, u"r"_s );
-  map.insert( u"𝚜"_s, u"s"_s );
-  map.insert( u"𝚝"_s, u"t"_s );
-  map.insert( u"𝚞"_s, u"u"_s );
-  map.insert( u"𝚟"_s, u"v"_s );
-  map.insert( u"𝚠"_s, u"w"_s );
-  map.insert( u"𝚡"_s, u"x"_s );
-  map.insert( u"𝚢"_s, u"y"_s );
-  map.insert( u"𝚣"_s, u"z"_s );
-  map.insert( u"𝚨"_s, u"Α"_s );
-  map.insert( u"𝚩"_s, u"Β"_s );
-  map.insert( u"𝚪"_s, u"Γ"_s );
-  map.insert( u"𝚫"_s, u"Δ"_s );
-  map.insert( u"𝚬"_s, u"Ε"_s );
-  map.insert( u"𝚭"_s, u"Ζ"_s );
-  map.insert( u"𝚮"_s, u"Η"_s );
-  map.insert( u"𝚯"_s, u"Θ"_s );
-  map.insert( u"𝚰"_s, u"Ι"_s );
-  map.insert( u"𝚱"_s, u"Κ"_s );
-  map.insert( u"𝚲"_s, u"Λ"_s );
-  map.insert( u"𝚳"_s, u"Μ"_s );
-  map.insert( u"𝚴"_s, u"Ν"_s );
-  map.insert( u"𝚵"_s, u"Ξ"_s );
-  map.insert( u"𝚶"_s, u"Ο"_s );
-  map.insert( u"𝚷"_s, u"Π"_s );
-  map.insert( u"𝚸"_s, u"Ρ"_s );
-  map.insert( u"𝚺"_s, u"Σ"_s );
-  map.insert( u"𝚻"_s, u"Τ"_s );
-  map.insert( u"𝚼"_s, u"Υ"_s );
-  map.insert( u"𝚽"_s, u"Φ"_s );
-  map.insert( u"𝚾"_s, u"Χ"_s );
-  map.insert( u"𝚿"_s, u"Ψ"_s );
-  map.insert( u"𝛀"_s, u"Ω"_s );
-  map.insert( u"𝛂"_s, u"α"_s );
-  map.insert( u"𝛃"_s, u"β"_s );
-  map.insert( u"𝛄"_s, u"γ"_s );
-  map.insert( u"𝛅"_s, u"δ"_s );
-  map.insert( u"𝛆"_s, u"ε"_s );
-  map.insert( u"𝛇"_s, u"ζ"_s );
-  map.insert( u"𝛈"_s, u"η"_s );
-  map.insert( u"𝛉"_s, u"θ"_s );
-  map.insert( u"𝛊"_s, u"ι"_s );
-  map.insert( u"𝛋"_s, u"κ"_s );
-  map.insert( u"𝛌"_s, u"λ"_s );
-  map.insert( u"𝛍"_s, u"μ"_s );
-  map.insert( u"𝛎"_s, u"ν"_s );
-  map.insert( u"𝛏"_s, u"ξ"_s );
-  map.insert( u"𝛐"_s, u"ο"_s );
-  map.insert( u"𝛑"_s, u"π"_s );
-  map.insert( u"𝛒"_s, u"ρ"_s );
-  map.insert( u"𝛓"_s, u"ς"_s );
-  map.insert( u"𝛔"_s, u"σ"_s );
-  map.insert( u"𝛕"_s, u"τ"_s );
-  map.insert( u"𝛖"_s, u"υ"_s );
-  map.insert( u"𝛗"_s, u"φ"_s );
-  map.insert( u"𝛘"_s, u"χ"_s );
-  map.insert( u"𝛙"_s, u"ψ"_s );
-  map.insert( u"𝛚"_s, u"ω"_s );
-  map.insert( u"𝛢"_s, u"Α"_s );
-  map.insert( u"𝛣"_s, u"Β"_s );
-  map.insert( u"𝛤"_s, u"Γ"_s );
-  map.insert( u"𝛥"_s, u"Δ"_s );
-  map.insert( u"𝛦"_s, u"Ε"_s );
-  map.insert( u"𝛧"_s, u"Ζ"_s );
-  map.insert( u"𝛨"_s, u"Η"_s );
-  map.insert( u"𝛩"_s, u"Θ"_s );
-  map.insert( u"𝛪"_s, u"Ι"_s );
-  map.insert( u"𝛫"_s, u"Κ"_s );
-  map.insert( u"𝛬"_s, u"Λ"_s );
-  map.insert( u"𝛭"_s, u"Μ"_s );
-  map.insert( u"𝛮"_s, u"Ν"_s );
-  map.insert( u"𝛯"_s, u"Ξ"_s );
-  map.insert( u"𝛰"_s, u"Ο"_s );
-  map.insert( u"𝛱"_s, u"Π"_s );
-  map.insert( u"𝛲"_s, u"Ρ"_s );
-  map.insert( u"𝛴"_s, u"Σ"_s );
-  map.insert( u"𝛵"_s, u"Τ"_s );
-  map.insert( u"𝛶"_s, u"Υ"_s );
-  map.insert( u"𝛷"_s, u"Φ"_s );
-  map.insert( u"𝛸"_s, u"Χ"_s );
-  map.insert( u"𝛹"_s, u"Ψ"_s );
-  map.insert( u"𝛺"_s, u"Ω"_s );
-  map.insert( u"𝛼"_s, u"α"_s );
-  map.insert( u"𝛽"_s, u"β"_s );
-  map.insert( u"𝛾"_s, u"γ"_s );
-  map.insert( u"𝛿"_s, u"δ"_s );
-  map.insert( u"𝜀"_s, u"ε"_s );
-  map.insert( u"𝜁"_s, u"ζ"_s );
-  map.insert( u"𝜂"_s, u"η"_s );
-  map.insert( u"𝜃"_s, u"θ"_s );
-  map.insert( u"𝜄"_s, u"ι"_s );
-  map.insert( u"𝜅"_s, u"κ"_s );
-  map.insert( u"𝜆"_s, u"λ"_s );
-  map.insert( u"𝜇"_s, u"μ"_s );
-  map.insert( u"𝜈"_s, u"ν"_s );
-  map.insert( u"𝜉"_s, u"ξ"_s );
-  map.insert( u"𝜊"_s, u"ο"_s );
-  map.insert( u"𝜋"_s, u"π"_s );
-  map.insert( u"𝜌"_s, u"ρ"_s );
-  map.insert( u"𝜍"_s, u"ς"_s );
-  map.insert( u"𝜎"_s, u"σ"_s );
-  map.insert( u"𝜏"_s, u"τ"_s );
-  map.insert( u"𝜐"_s, u"υ"_s );
-  map.insert( u"𝜑"_s, u"φ"_s );
-  map.insert( u"𝜒"_s, u"χ"_s );
-  map.insert( u"𝜓"_s, u"ψ"_s );
-  map.insert( u"𝜔"_s, u"ω"_s );
-  map.insert( u"𝜜"_s, u"Α"_s );
-  map.insert( u"𝜝"_s, u"Β"_s );
-  map.insert( u"𝜞"_s, u"Γ"_s );
-  map.insert( u"𝜟"_s, u"Δ"_s );
-  map.insert( u"𝜠"_s, u"Ε"_s );
-  map.insert( u"𝜡"_s, u"Ζ"_s );
-  map.insert( u"𝜢"_s, u"Η"_s );
-  map.insert( u"𝜣"_s, u"Θ"_s );
-  map.insert( u"𝜤"_s, u"Ι"_s );
-  map.insert( u"𝜥"_s, u"Κ"_s );
-  map.insert( u"𝜦"_s, u"Λ"_s );
-  map.insert( u"𝜧"_s, u"Μ"_s );
-  map.insert( u"𝜨"_s, u"Ν"_s );
-  map.insert( u"𝜩"_s, u"Ξ"_s );
-  map.insert( u"𝜪"_s, u"Ο"_s );
-  map.insert( u"𝜫"_s, u"Π"_s );
-  map.insert( u"𝜬"_s, u"Ρ"_s );
-  map.insert( u"𝜮"_s, u"Σ"_s );
-  map.insert( u"𝜯"_s, u"Τ"_s );
-  map.insert( u"𝜰"_s, u"Υ"_s );
-  map.insert( u"𝜱"_s, u"Φ"_s );
-  map.insert( u"𝜲"_s, u"Χ"_s );
-  map.insert( u"𝜳"_s, u"Ψ"_s );
-  map.insert( u"𝜴"_s, u"Ω"_s );
-  map.insert( u"𝜶"_s, u"α"_s );
-  map.insert( u"𝜷"_s, u"β"_s );
-  map.insert( u"𝜸"_s, u"γ"_s );
-  map.insert( u"𝜹"_s, u"δ"_s );
-  map.insert( u"𝜺"_s, u"ε"_s );
-  map.insert( u"𝜻"_s, u"ζ"_s );
-  map.insert( u"𝜼"_s, u"η"_s );
-  map.insert( u"𝜽"_s, u"θ"_s );
-  map.insert( u"𝜾"_s, u"ι"_s );
-  map.insert( u"𝜿"_s, u"κ"_s );
-  map.insert( u"𝝀"_s, u"λ"_s );
-  map.insert( u"𝝁"_s, u"μ"_s );
-  map.insert( u"𝝂"_s, u"ν"_s );
-  map.insert( u"𝝃"_s, u"ξ"_s );
-  map.insert( u"𝝄"_s, u"ο"_s );
-  map.insert( u"𝝅"_s, u"π"_s );
-  map.insert( u"𝝆"_s, u"ρ"_s );
-  map.insert( u"𝝇"_s, u"ς"_s );
-  map.insert( u"𝝈"_s, u"σ"_s );
-  map.insert( u"𝝉"_s, u"τ"_s );
-  map.insert( u"𝝊"_s, u"υ"_s );
-  map.insert( u"𝝋"_s, u"φ"_s );
-  map.insert( u"𝝌"_s, u"χ"_s );
-  map.insert( u"𝝍"_s, u"ψ"_s );
-  map.insert( u"𝝎"_s, u"ω"_s );
-  map.insert( u"𝝖"_s, u"Α"_s );
-  map.insert( u"𝝗"_s, u"Β"_s );
-  map.insert( u"𝝘"_s, u"Γ"_s );
-  map.insert( u"𝝙"_s, u"Δ"_s );
-  map.insert( u"𝝚"_s, u"Ε"_s );
-  map.insert( u"𝝛"_s, u"Ζ"_s );
-  map.insert( u"𝝜"_s, u"Η"_s );
-  map.insert( u"𝝝"_s, u"Θ"_s );
-  map.insert( u"𝝞"_s, u"Ι"_s );
-  map.insert( u"𝝟"_s, u"Κ"_s );
-  map.insert( u"𝝠"_s, u"Λ"_s );
-  map.insert( u"𝝡"_s, u"Μ"_s );
-  map.insert( u"𝝢"_s, u"Ν"_s );
-  map.insert( u"𝝣"_s, u"Ξ"_s );
-  map.insert( u"𝝤"_s, u"Ο"_s );
-  map.insert( u"𝝥"_s, u"Π"_s );
-  map.insert( u"𝝦"_s, u"Ρ"_s );
-  map.insert( u"𝝨"_s, u"Σ"_s );
-  map.insert( u"𝝩"_s, u"Τ"_s );
-  map.insert( u"𝝪"_s, u"Υ"_s );
-  map.insert( u"𝝫"_s, u"Φ"_s );
-  map.insert( u"𝝬"_s, u"Χ"_s );
-  map.insert( u"𝝭"_s, u"Ψ"_s );
-  map.insert( u"𝝮"_s, u"Ω"_s );
-  map.insert( u"𝝰"_s, u"α"_s );
-  map.insert( u"𝝱"_s, u"β"_s );
-  map.insert( u"𝝲"_s, u"γ"_s );
-  map.insert( u"𝝳"_s, u"δ"_s );
-  map.insert( u"𝝴"_s, u"ε"_s );
-  map.insert( u"𝝵"_s, u"ζ"_s );
-  map.insert( u"𝝶"_s, u"η"_s );
-  map.insert( u"𝝷"_s, u"θ"_s );
-  map.insert( u"𝝸"_s, u"ι"_s );
-  map.insert( u"𝝹"_s, u"κ"_s );
-  map.insert( u"𝝺"_s, u"λ"_s );
-  map.insert( u"𝝻"_s, u"μ"_s );
-  map.insert( u"𝝼"_s, u"ν"_s );
-  map.insert( u"𝝽"_s, u"ξ"_s );
-  map.insert( u"𝝾"_s, u"ο"_s );
-  map.insert( u"𝝿"_s, u"π"_s );
-  map.insert( u"𝞀"_s, u"ρ"_s );
-  map.insert( u"𝞁"_s, u"ς"_s );
-  map.insert( u"𝞂"_s, u"σ"_s );
-  map.insert( u"𝞃"_s, u"τ"_s );
-  map.insert( u"𝞄"_s, u"υ"_s );
-  map.insert( u"𝞅"_s, u"φ"_s );
-  map.insert( u"𝞆"_s, u"χ"_s );
-  map.insert( u"𝞇"_s, u"ψ"_s );
-  map.insert( u"𝞈"_s, u"ω"_s );
-  map.insert( u"𝞐"_s, u"Α"_s );
-  map.insert( u"𝞑"_s, u"Β"_s );
-  map.insert( u"𝞒"_s, u"Γ"_s );
-  map.insert( u"𝞓"_s, u"Δ"_s );
-  map.insert( u"𝞔"_s, u"Ε"_s );
-  map.insert( u"𝞕"_s, u"Ζ"_s );
-  map.insert( u"𝞖"_s, u"Η"_s );
-  map.insert( u"𝞗"_s, u"Θ"_s );
-  map.insert( u"𝞘"_s, u"Ι"_s );
-  map.insert( u"𝞙"_s, u"Κ"_s );
-  map.insert( u"𝞚"_s, u"Λ"_s );
-  map.insert( u"𝞛"_s, u"Μ"_s );
-  map.insert( u"𝞜"_s, u"Ν"_s );
-  map.insert( u"𝞝"_s, u"Ξ"_s );
-  map.insert( u"𝞞"_s, u"Ο"_s );
-  map.insert( u"𝞟"_s, u"Π"_s );
-  map.insert( u"𝞠"_s, u"Ρ"_s );
-  map.insert( u"𝞢"_s, u"Σ"_s );
-  map.insert( u"𝞣"_s, u"Τ"_s );
-  map.insert( u"𝞤"_s, u"Υ"_s );
-  map.insert( u"𝞥"_s, u"Φ"_s );
-  map.insert( u"𝞦"_s, u"Χ"_s );
-  map.insert( u"𝞧"_s, u"Ψ"_s );
-  map.insert( u"𝞨"_s, u"Ω"_s );
-  map.insert( u"𝞪"_s, u"α"_s );
-  map.insert( u"𝞫"_s, u"β"_s );
-  map.insert( u"𝞬"_s, u"γ"_s );
-  map.insert( u"𝞭"_s, u"δ"_s );
-  map.insert( u"𝞮"_s, u"ε"_s );
-  map.insert( u"𝞯"_s, u"ζ"_s );
-  map.insert( u"𝞰"_s, u"η"_s );
-  map.insert( u"𝞱"_s, u"θ"_s );
-  map.insert( u"𝞲"_s, u"ι"_s );
-  map.insert( u"𝞳"_s, u"κ"_s );
-  map.insert( u"𝞴"_s, u"λ"_s );
-  map.insert( u"𝞵"_s, u"μ"_s );
-  map.insert( u"𝞶"_s, u"ν"_s );
-  map.insert( u"𝞷"_s, u"ξ"_s );
-  map.insert( u"𝞸"_s, u"ο"_s );
-  map.insert( u"𝞹"_s, u"π"_s );
-  map.insert( u"𝞺"_s, u"ρ"_s );
-  map.insert( u"𝞻"_s, u"ς"_s );
-  map.insert( u"𝞼"_s, u"σ"_s );
-  map.insert( u"𝞽"_s, u"τ"_s );
-  map.insert( u"𝞾"_s, u"υ"_s );
-  map.insert( u"𝞿"_s, u"φ"_s );
-  map.insert( u"𝟀"_s, u"χ"_s );
-  map.insert( u"𝟁"_s, u"ψ"_s );
-  map.insert( u"𝟂"_s, u"ω"_s );
-  map.insert( u"🄀"_s, u"0."_s );
-  map.insert( u"🄁"_s, u"0,"_s );
-  map.insert( u"🄂"_s, u"1,"_s );
-  map.insert( u"🄃"_s, u"2,"_s );
-  map.insert( u"🄄"_s, u"3,"_s );
-  map.insert( u"🄅"_s, u"4,"_s );
-  map.insert( u"🄆"_s, u"5,"_s );
-  map.insert( u"🄇"_s, u"6,"_s );
-  map.insert( u"🄈"_s, u"7,"_s );
-  map.insert( u"🄉"_s, u"8,"_s );
-  map.insert( u"🄊"_s, u"9,"_s );
-  map.insert( u"🄐"_s, u"(A)"_s );
-  map.insert( u"🄑"_s, u"(B)"_s );
-  map.insert( u"🄒"_s, u"(C)"_s );
-  map.insert( u"🄓"_s, u"(D)"_s );
-  map.insert( u"🄔"_s, u"(E)"_s );
-  map.insert( u"🄕"_s, u"(F)"_s );
-  map.insert( u"🄖"_s, u"(G)"_s );
-  map.insert( u"🄗"_s, u"(H)"_s );
-  map.insert( u"🄘"_s, u"(I)"_s );
-  map.insert( u"🄙"_s, u"(J)"_s );
-  map.insert( u"🄚"_s, u"(K)"_s );
-  map.insert( u"🄛"_s, u"(L)"_s );
-  map.insert( u"🄜"_s, u"(M)"_s );
-  map.insert( u"🄝"_s, u"(N)"_s );
-  map.insert( u"🄞"_s, u"(O)"_s );
-  map.insert( u"🄟"_s, u"(P)"_s );
-  map.insert( u"🄠"_s, u"(Q)"_s );
-  map.insert( u"🄡"_s, u"(R)"_s );
-  map.insert( u"🄢"_s, u"(S)"_s );
-  map.insert( u"🄣"_s, u"(T)"_s );
-  map.insert( u"🄤"_s, u"(U)"_s );
-  map.insert( u"🄥"_s, u"(V)"_s );
-  map.insert( u"🄦"_s, u"(W)"_s );
-  map.insert( u"🄧"_s, u"(X)"_s );
-  map.insert( u"🄨"_s, u"(Y)"_s );
-  map.insert( u"🄩"_s, u"(Z)"_s );
-
-  return map;
+  return { { U'¡', u"!"_s },    { U'©', u"(C)"_s },   { U'ª', u"a"_s },     { U'«', u"<<"_s },    { U'­', u"-"_s },    { U'®', u"(R)"_s },   { U'±', u"+/-"_s },   { U'µ', u"μ"_s },
+           { U'º', u"o"_s },    { U'»', u">>"_s },    { U'¼', u" 1/4"_s },  { U'½', u" 1/2"_s },  { U'¾', u" 3/4"_s }, { U'¿', u"?"_s },     { U'À', u"A"_s },     { U'Á', u"A"_s },
+           { U'Â', u"A"_s },    { U'Ã', u"A"_s },     { U'Ä', u"A"_s },     { U'Å', u"A"_s },     { U'Æ', u"AE"_s },   { U'Ç', u"C"_s },     { U'È', u"E"_s },     { U'É', u"E"_s },
+           { U'Ê', u"E"_s },    { U'Ë', u"E"_s },     { U'Ì', u"I"_s },     { U'Í', u"I"_s },     { U'Î', u"I"_s },    { U'Ï', u"I"_s },     { U'Ð', u"D"_s },     { U'Ñ', u"N"_s },
+           { U'Ò', u"O"_s },    { U'Ó', u"O"_s },     { U'Ô', u"O"_s },     { U'Õ', u"O"_s },     { U'Ö', u"O"_s },    { U'×', u"*"_s },     { U'Ø', u"O"_s },     { U'Ù', u"U"_s },
+           { U'Ú', u"U"_s },    { U'Û', u"U"_s },     { U'Ü', u"U"_s },     { U'Ý', u"Y"_s },     { U'Þ', u"TH"_s },   { U'ß', u"ss"_s },    { U'à', u"a"_s },     { U'á', u"a"_s },
+           { U'â', u"a"_s },    { U'ã', u"a"_s },     { U'ä', u"a"_s },     { U'å', u"a"_s },     { U'æ', u"ae"_s },   { U'ç', u"c"_s },     { U'è', u"e"_s },     { U'é', u"e"_s },
+           { U'ê', u"e"_s },    { U'ë', u"e"_s },     { U'ì', u"i"_s },     { U'í', u"i"_s },     { U'î', u"i"_s },    { U'ï', u"i"_s },     { U'ð', u"d"_s },     { U'ñ', u"n"_s },
+           { U'ò', u"o"_s },    { U'ó', u"o"_s },     { U'ô', u"o"_s },     { U'õ', u"o"_s },     { U'ö', u"o"_s },    { U'÷', u"/"_s },     { U'ø', u"o"_s },     { U'ù', u"u"_s },
+           { U'ú', u"u"_s },    { U'û', u"u"_s },     { U'ü', u"u"_s },     { U'ý', u"y"_s },     { U'þ', u"th"_s },   { U'ÿ', u"y"_s },     { U'Ā', u"A"_s },     { U'ā', u"a"_s },
+           { U'Ă', u"A"_s },    { U'ă', u"a"_s },     { U'Ą', u"A"_s },     { U'ą', u"a"_s },     { U'Ć', u"C"_s },    { U'ć', u"c"_s },     { U'Ĉ', u"C"_s },     { U'ĉ', u"c"_s },
+           { U'Ċ', u"C"_s },    { U'ċ', u"c"_s },     { U'Č', u"C"_s },     { U'č', u"c"_s },     { U'Ď', u"D"_s },    { U'ď', u"d"_s },     { U'Đ', u"D"_s },     { U'đ', u"d"_s },
+           { U'Ē', u"E"_s },    { U'ē', u"e"_s },     { U'Ĕ', u"E"_s },     { U'ĕ', u"e"_s },     { U'Ė', u"E"_s },    { U'ė', u"e"_s },     { U'Ę', u"E"_s },     { U'ę', u"e"_s },
+           { U'Ě', u"E"_s },    { U'ě', u"e"_s },     { U'Ĝ', u"G"_s },     { U'ĝ', u"g"_s },     { U'Ğ', u"G"_s },    { U'ğ', u"g"_s },     { U'Ġ', u"G"_s },     { U'ġ', u"g"_s },
+           { U'Ģ', u"G"_s },    { U'ģ', u"g"_s },     { U'Ĥ', u"H"_s },     { U'ĥ', u"h"_s },     { U'Ħ', u"H"_s },    { U'ħ', u"h"_s },     { U'Ĩ', u"I"_s },     { U'ĩ', u"i"_s },
+           { U'Ī', u"I"_s },    { U'ī', u"i"_s },     { U'Ĭ', u"I"_s },     { U'ĭ', u"i"_s },     { U'Į', u"I"_s },    { U'į', u"i"_s },     { U'İ', u"I"_s },     { U'ı', u"i"_s },
+           { U'Ĳ', u"IJ"_s },   { U'ĳ', u"ij"_s },    { U'Ĵ', u"J"_s },     { U'ĵ', u"j"_s },     { U'Ķ', u"K"_s },    { U'ķ', u"k"_s },     { U'ĸ', u"q"_s },     { U'Ĺ', u"L"_s },
+           { U'ĺ', u"l"_s },    { U'Ļ', u"L"_s },     { U'ļ', u"l"_s },     { U'Ľ', u"L"_s },     { U'ľ', u"l"_s },    { U'Ŀ', u"L"_s },     { U'ŀ', u"l"_s },     { U'Ł', u"L"_s },
+           { U'ł', u"l"_s },    { U'Ń', u"N"_s },     { U'ń', u"n"_s },     { U'Ņ', u"N"_s },     { U'ņ', u"n"_s },    { U'Ň', u"N"_s },     { U'ň', u"n"_s },     { U'ŉ', u"'n"_s },
+           { U'Ŋ', u"N"_s },    { U'ŋ', u"n"_s },     { U'Ō', u"O"_s },     { U'ō', u"o"_s },     { U'Ŏ', u"O"_s },    { U'ŏ', u"o"_s },     { U'Ő', u"O"_s },     { U'ő', u"o"_s },
+           { U'Œ', u"OE"_s },   { U'œ', u"oe"_s },    { U'Ŕ', u"R"_s },     { U'ŕ', u"r"_s },     { U'Ŗ', u"R"_s },    { U'ŗ', u"r"_s },     { U'Ř', u"R"_s },     { U'ř', u"r"_s },
+           { U'Ś', u"S"_s },    { U'ś', u"s"_s },     { U'Ŝ', u"S"_s },     { U'ŝ', u"s"_s },     { U'Ş', u"S"_s },    { U'ş', u"s"_s },     { U'Š', u"S"_s },     { U'š', u"s"_s },
+           { U'Ţ', u"T"_s },    { U'ţ', u"t"_s },     { U'Ť', u"T"_s },     { U'ť', u"t"_s },     { U'Ŧ', u"T"_s },    { U'ŧ', u"t"_s },     { U'Ũ', u"U"_s },     { U'ũ', u"u"_s },
+           { U'Ū', u"U"_s },    { U'ū', u"u"_s },     { U'Ŭ', u"U"_s },     { U'ŭ', u"u"_s },     { U'Ů', u"U"_s },    { U'ů', u"u"_s },     { U'Ű', u"U"_s },     { U'ű', u"u"_s },
+           { U'Ų', u"U"_s },    { U'ų', u"u"_s },     { U'Ŵ', u"W"_s },     { U'ŵ', u"w"_s },     { U'Ŷ', u"Y"_s },    { U'ŷ', u"y"_s },     { U'Ÿ', u"Y"_s },     { U'Ź', u"Z"_s },
+           { U'ź', u"z"_s },    { U'Ż', u"Z"_s },     { U'ż', u"z"_s },     { U'Ž', u"Z"_s },     { U'ž', u"z"_s },    { U'ſ', u"s"_s },     { U'ƀ', u"b"_s },     { U'Ɓ', u"B"_s },
+           { U'Ƃ', u"B"_s },    { U'ƃ', u"b"_s },     { U'Ƈ', u"C"_s },     { U'ƈ', u"c"_s },     { U'Ɖ', u"D"_s },    { U'Ɗ', u"D"_s },     { U'Ƌ', u"D"_s },     { U'ƌ', u"d"_s },
+           { U'Ɛ', u"E"_s },    { U'Ƒ', u"F"_s },     { U'ƒ', u"f"_s },     { U'Ɠ', u"G"_s },     { U'ƕ', u"hv"_s },   { U'Ɩ', u"I"_s },     { U'Ɨ', u"I"_s },     { U'Ƙ', u"K"_s },
+           { U'ƙ', u"k"_s },    { U'ƚ', u"l"_s },     { U'Ɲ', u"N"_s },     { U'ƞ', u"n"_s },     { U'Ơ', u"O"_s },    { U'ơ', u"o"_s },     { U'Ƣ', u"OI"_s },    { U'ƣ', u"oi"_s },
+           { U'Ƥ', u"P"_s },    { U'ƥ', u"p"_s },     { U'ƫ', u"t"_s },     { U'Ƭ', u"T"_s },     { U'ƭ', u"t"_s },    { U'Ʈ', u"T"_s },     { U'Ư', u"U"_s },     { U'ư', u"u"_s },
+           { U'Ʋ', u"V"_s },    { U'Ƴ', u"Y"_s },     { U'ƴ', u"y"_s },     { U'Ƶ', u"Z"_s },     { U'ƶ', u"z"_s },    { U'Ǆ', u"DZ"_s },    { U'ǅ', u"Dz"_s },    { U'ǆ', u"dz"_s },
+           { U'Ǉ', u"LJ"_s },   { U'ǈ', u"Lj"_s },    { U'ǉ', u"lj"_s },    { U'Ǌ', u"NJ"_s },    { U'ǋ', u"Nj"_s },   { U'ǌ', u"nj"_s },    { U'Ǎ', u"A"_s },     { U'ǎ', u"a"_s },
+           { U'Ǐ', u"I"_s },    { U'ǐ', u"i"_s },     { U'Ǒ', u"O"_s },     { U'ǒ', u"o"_s },     { U'Ǔ', u"U"_s },    { U'ǔ', u"u"_s },     { U'Ǖ', u"U"_s },     { U'ǖ', u"u"_s },
+           { U'Ǘ', u"U"_s },    { U'ǘ', u"u"_s },     { U'Ǚ', u"U"_s },     { U'ǚ', u"u"_s },     { U'Ǜ', u"U"_s },    { U'ǜ', u"u"_s },     { U'Ǟ', u"A"_s },     { U'ǟ', u"a"_s },
+           { U'Ǡ', u"A"_s },    { U'ǡ', u"a"_s },     { U'Ǥ', u"G"_s },     { U'ǥ', u"g"_s },     { U'Ǧ', u"G"_s },    { U'ǧ', u"g"_s },     { U'Ǩ', u"K"_s },     { U'ǩ', u"k"_s },
+           { U'Ǫ', u"O"_s },    { U'ǫ', u"o"_s },     { U'Ǭ', u"O"_s },     { U'ǭ', u"o"_s },     { U'ǰ', u"j"_s },    { U'Ǳ', u"DZ"_s },    { U'ǲ', u"Dz"_s },    { U'ǳ', u"dz"_s },
+           { U'Ǵ', u"G"_s },    { U'ǵ', u"g"_s },     { U'Ǹ', u"N"_s },     { U'ǹ', u"n"_s },     { U'Ǻ', u"A"_s },    { U'ǻ', u"a"_s },     { U'Ȁ', u"A"_s },     { U'ȁ', u"a"_s },
+           { U'Ȃ', u"A"_s },    { U'ȃ', u"a"_s },     { U'Ȅ', u"E"_s },     { U'ȅ', u"e"_s },     { U'Ȇ', u"E"_s },    { U'ȇ', u"e"_s },     { U'Ȉ', u"I"_s },     { U'ȉ', u"i"_s },
+           { U'Ȋ', u"I"_s },    { U'ȋ', u"i"_s },     { U'Ȍ', u"O"_s },     { U'ȍ', u"o"_s },     { U'Ȏ', u"O"_s },    { U'ȏ', u"o"_s },     { U'Ȑ', u"R"_s },     { U'ȑ', u"r"_s },
+           { U'Ȓ', u"R"_s },    { U'ȓ', u"r"_s },     { U'Ȕ', u"U"_s },     { U'ȕ', u"u"_s },     { U'Ȗ', u"U"_s },    { U'ȗ', u"u"_s },     { U'Ș', u"S"_s },     { U'ș', u"s"_s },
+           { U'Ț', u"T"_s },    { U'ț', u"t"_s },     { U'Ȟ', u"H"_s },     { U'ȟ', u"h"_s },     { U'ȡ', u"d"_s },    { U'Ȥ', u"Z"_s },     { U'ȥ', u"z"_s },     { U'Ȧ', u"A"_s },
+           { U'ȧ', u"a"_s },    { U'Ȩ', u"E"_s },     { U'ȩ', u"e"_s },     { U'Ȫ', u"O"_s },     { U'ȫ', u"o"_s },    { U'Ȭ', u"O"_s },     { U'ȭ', u"o"_s },     { U'Ȯ', u"O"_s },
+           { U'ȯ', u"o"_s },    { U'Ȱ', u"O"_s },     { U'ȱ', u"o"_s },     { U'Ȳ', u"Y"_s },     { U'ȳ', u"y"_s },    { U'ȴ', u"l"_s },     { U'ȵ', u"n"_s },     { U'ȶ', u"t"_s },
+           { U'ȷ', u"j"_s },    { U'ȸ', u"db"_s },    { U'ȹ', u"qp"_s },    { U'Ⱥ', u"A"_s },     { U'Ȼ', u"C"_s },    { U'ȼ', u"c"_s },     { U'Ƚ', u"L"_s },     { U'Ⱦ', u"T"_s },
+           { U'ȿ', u"s"_s },    { U'ɀ', u"z"_s },     { U'Ƀ', u"B"_s },     { U'Ʉ', u"U"_s },     { U'Ɇ', u"E"_s },    { U'ɇ', u"e"_s },     { U'Ɉ', u"J"_s },     { U'ɉ', u"j"_s },
+           { U'Ɍ', u"R"_s },    { U'ɍ', u"r"_s },     { U'Ɏ', u"Y"_s },     { U'ɏ', u"y"_s },     { U'ɓ', u"b"_s },    { U'ɕ', u"c"_s },     { U'ɖ', u"d"_s },     { U'ɗ', u"d"_s },
+           { U'ɛ', u"e"_s },    { U'ɟ', u"j"_s },     { U'ɠ', u"g"_s },     { U'ɡ', u"g"_s },     { U'ɢ', u"G"_s },    { U'ɦ', u"h"_s },     { U'ɧ', u"h"_s },     { U'ɨ', u"i"_s },
+           { U'ɪ', u"I"_s },    { U'ɫ', u"l"_s },     { U'ɬ', u"l"_s },     { U'ɭ', u"l"_s },     { U'ɱ', u"m"_s },    { U'ɲ', u"n"_s },     { U'ɳ', u"n"_s },     { U'ɴ', u"N"_s },
+           { U'ɶ', u"OE"_s },   { U'ɼ', u"r"_s },     { U'ɽ', u"r"_s },     { U'ɾ', u"r"_s },     { U'ʀ', u"R"_s },    { U'ʂ', u"s"_s },     { U'ʈ', u"t"_s },     { U'ʉ', u"u"_s },
+           { U'ʋ', u"v"_s },    { U'ʏ', u"Y"_s },     { U'ʐ', u"z"_s },     { U'ʑ', u"z"_s },     { U'ʙ', u"B"_s },    { U'ʛ', u"G"_s },     { U'ʜ', u"H"_s },     { U'ʝ', u"j"_s },
+           { U'ʟ', u"L"_s },    { U'ʠ', u"q"_s },     { U'ʣ', u"dz"_s },    { U'ʥ', u"dz"_s },    { U'ʦ', u"ts"_s },   { U'ʪ', u"ls"_s },    { U'ʫ', u"lz"_s },    { U'ʰ', u"h"_s },
+           { U'ʲ', u"j"_s },    { U'ʳ', u"r"_s },     { U'ʷ', u"w"_s },     { U'ʸ', u"y"_s },     { U'ʹ', u"'"_s },    { U'ʺ', u"\""_s },    { U'ʻ', u"'"_s },     { U'ʼ', u"'"_s },
+           { U'ʽ', u"'"_s },    { U'˂', u"<"_s },     { U'˃', u">"_s },     { U'˄', u"^"_s },     { U'ˆ', u"^"_s },    { U'ˈ', u"'"_s },     { U'ˋ', u"`"_s },     { U'ː', u":"_s },
+           { U'˖', u"+"_s },    { U'˗', u"-"_s },     { U'˜', u"~"_s },     { U'ˡ', u"l"_s },     { U'ˢ', u"s"_s },    { U'ˣ', u"x"_s },     { U'̀', QString() },   { U'́', QString() },
+           { U'̂', QString() },  { U'̃', QString() },   { U'̄', QString() },   { U'̅', QString() },   { U'̆', QString() },  { U'̇', QString() },   { U'̈', QString() },   { U'̉', QString() },
+           { U'̊', QString() },  { U'̋', QString() },   { U'̌', QString() },   { U'̍', QString() },   { U'̎', QString() },  { U'̏', QString() },   { U'̐', QString() },   { U'̑', QString() },
+           { U'̒', QString() },  { U'̓', QString() },   { U'̔', QString() },   { U'̕', QString() },   { U'̖', QString() },  { U'̗', QString() },   { U'̘', QString() },   { U'̙', QString() },
+           { U'̚', QString() },  { U'̛', QString() },   { U'̜', QString() },   { U'̝', QString() },   { U'̞', QString() },  { U'̟', QString() },   { U'̠', QString() },   { U'̡', QString() },
+           { U'̢', QString() },  { U'̣', QString() },   { U'̤', QString() },   { U'̥', QString() },   { U'̦', QString() },  { U'̧', QString() },   { U'̨', QString() },   { U'̩', QString() },
+           { U'̪', QString() },  { U'̫', QString() },   { U'̬', QString() },   { U'̭', QString() },   { U'̮', QString() },  { U'̯', QString() },   { U'̰', QString() },   { U'̱', QString() },
+           { U'̲', QString() },  { U'̳', QString() },   { U'̴', QString() },   { U'̵', QString() },   { U'̶', QString() },  { U'̷', QString() },   { U'̸', QString() },   { U'̹', QString() },
+           { U'̺', QString() },  { U'̻', QString() },   { U'̼', QString() },   { U'̽', QString() },   { U'̾', QString() },  { U'̿', QString() },   { U'̀', QString() },   { U'́', QString() },
+           { U'͂', QString() },  { U'̓', QString() },   { U'̈́', QString() },   { U'ͅ', QString() },   { U'͆', QString() },  { U'͇', QString() },   { U'͈', QString() },   { U'͉', QString() },
+           { U'͊', QString() },  { U'͋', QString() },   { U'͌', QString() },   { U'͍', QString() },   { U'͎', QString() },  { U'͏', QString() },   { U'͐', QString() },   { U'͑', QString() },
+           { U'͒', QString() },  { U'͓', QString() },   { U'͔', QString() },   { U'͕', QString() },   { U'͖', QString() },  { U'͗', QString() },   { U'͘', QString() },   { U'͙', QString() },
+           { U'͚', QString() },  { U'͛', QString() },   { U'͜', QString() },   { U'͝', QString() },   { U'͞', QString() },  { U'͟', QString() },   { U'͠', QString() },   { U'͡', QString() },
+           { U'͢', QString() },  { U'Ά', u"Α"_s },     { U'Έ', u"Ε"_s },     { U'Ή', u"Η"_s },     { U'Ί', u"Ι"_s },    { U'Ό', u"Ο"_s },     { U'Ύ', u"Υ"_s },     { U'Ώ', u"Ω"_s },
+           { U'ΐ', u"ι"_s },    { U'Ϊ', u"Ι"_s },     { U'Ϋ', u"Υ"_s },     { U'ά', u"α"_s },     { U'έ', u"ε"_s },    { U'ή', u"η"_s },     { U'ί', u"ι"_s },     { U'ΰ', u"υ"_s },
+           { U'ϊ', u"ι"_s },    { U'ϋ', u"υ"_s },     { U'ό', u"ο"_s },     { U'ύ', u"υ"_s },     { U'ώ', u"ω"_s },    { U'ϐ', u"β"_s },     { U'ϑ', u"θ"_s },     { U'ϒ', u"Υ"_s },
+           { U'ϕ', u"φ"_s },    { U'ϖ', u"π"_s },     { U'ϰ', u"κ"_s },     { U'ϱ', u"ρ"_s },     { U'ϲ', u"ς"_s },    { U'ϴ', u"Θ"_s },     { U'ϵ', u"ε"_s },     { U'Ϲ', u"Σ"_s },
+           { U'Ё', u"Е"_s },    { U'ё', u"е"_s },     { U'ᴀ', u"A"_s },     { U'ᴁ', u"AE"_s },    { U'ᴃ', u"B"_s },    { U'ᴄ', u"C"_s },     { U'ᴅ', u"D"_s },     { U'ᴆ', u"D"_s },
+           { U'ᴇ', u"E"_s },    { U'ᴊ', u"J"_s },     { U'ᴋ', u"K"_s },     { U'ᴌ', u"L"_s },     { U'ᴍ', u"M"_s },    { U'ᴏ', u"O"_s },     { U'ᴘ', u"P"_s },     { U'ᴛ', u"T"_s },
+           { U'ᴜ', u"U"_s },    { U'ᴠ', u"V"_s },     { U'ᴡ', u"W"_s },     { U'ᴢ', u"Z"_s },     { U'ᴬ', u"A"_s },    { U'ᴮ', u"B"_s },     { U'ᴰ', u"D"_s },     { U'ᴱ', u"E"_s },
+           { U'ᴳ', u"G"_s },    { U'ᴴ', u"H"_s },     { U'ᴵ', u"I"_s },     { U'ᴶ', u"J"_s },     { U'ᴷ', u"K"_s },    { U'ᴸ', u"L"_s },     { U'ᴹ', u"M"_s },     { U'ᴺ', u"N"_s },
+           { U'ᴼ', u"O"_s },    { U'ᴾ', u"P"_s },     { U'ᴿ', u"R"_s },     { U'ᵀ', u"T"_s },     { U'ᵁ', u"U"_s },    { U'ᵂ', u"W"_s },     { U'ᵃ', u"a"_s },     { U'ᵇ', u"b"_s },
+           { U'ᵈ', u"d"_s },    { U'ᵉ', u"e"_s },     { U'ᵍ', u"g"_s },     { U'ᵏ', u"k"_s },     { U'ᵐ', u"m"_s },    { U'ᵒ', u"o"_s },     { U'ᵖ', u"p"_s },     { U'ᵗ', u"t"_s },
+           { U'ᵘ', u"u"_s },    { U'ᵛ', u"v"_s },     { U'ᵝ', u"β"_s },     { U'ᵞ', u"γ"_s },     { U'ᵟ', u"δ"_s },    { U'ᵠ', u"φ"_s },     { U'ᵡ', u"χ"_s },     { U'ᵢ', u"i"_s },
+           { U'ᵣ', u"r"_s },    { U'ᵤ', u"u"_s },     { U'ᵥ', u"v"_s },     { U'ᵦ', u"β"_s },     { U'ᵧ', u"γ"_s },    { U'ᵨ', u"ρ"_s },     { U'ᵩ', u"φ"_s },     { U'ᵪ', u"χ"_s },
+           { U'ᵫ', u"ue"_s },   { U'ᵬ', u"b"_s },     { U'ᵭ', u"d"_s },     { U'ᵮ', u"f"_s },     { U'ᵯ', u"m"_s },    { U'ᵰ', u"n"_s },     { U'ᵱ', u"p"_s },     { U'ᵲ', u"r"_s },
+           { U'ᵳ', u"r"_s },    { U'ᵴ', u"s"_s },     { U'ᵵ', u"t"_s },     { U'ᵶ', u"z"_s },     { U'ᵺ', u"th"_s },   { U'ᵻ', u"I"_s },     { U'ᵽ', u"p"_s },     { U'ᵾ', u"U"_s },
+           { U'ᶀ', u"b"_s },    { U'ᶁ', u"d"_s },     { U'ᶂ', u"f"_s },     { U'ᶃ', u"g"_s },     { U'ᶄ', u"k"_s },    { U'ᶅ', u"l"_s },     { U'ᶆ', u"m"_s },     { U'ᶇ', u"n"_s },
+           { U'ᶈ', u"p"_s },    { U'ᶉ', u"r"_s },     { U'ᶊ', u"s"_s },     { U'ᶌ', u"v"_s },     { U'ᶍ', u"x"_s },    { U'ᶎ', u"z"_s },     { U'ᶏ', u"a"_s },     { U'ᶑ', u"d"_s },
+           { U'ᶒ', u"e"_s },    { U'ᶓ', u"e"_s },     { U'ᶖ', u"i"_s },     { U'ᶙ', u"u"_s },     { U'ᶜ', u"c"_s },    { U'ᶠ', u"f"_s },     { U'ᶻ', u"z"_s },     { U'ᶿ', u"θ"_s },
+           { U'Ḁ', u"A"_s },    { U'ḁ', u"a"_s },     { U'Ḃ', u"B"_s },     { U'ḃ', u"b"_s },     { U'Ḅ', u"B"_s },    { U'ḅ', u"b"_s },     { U'Ḇ', u"B"_s },     { U'ḇ', u"b"_s },
+           { U'Ḉ', u"C"_s },    { U'ḉ', u"c"_s },     { U'Ḋ', u"D"_s },     { U'ḋ', u"d"_s },     { U'Ḍ', u"D"_s },    { U'ḍ', u"d"_s },     { U'Ḏ', u"D"_s },     { U'ḏ', u"d"_s },
+           { U'Ḑ', u"D"_s },    { U'ḑ', u"d"_s },     { U'Ḓ', u"D"_s },     { U'ḓ', u"d"_s },     { U'Ḕ', u"E"_s },    { U'ḕ', u"e"_s },     { U'Ḗ', u"E"_s },     { U'ḗ', u"e"_s },
+           { U'Ḙ', u"E"_s },    { U'ḙ', u"e"_s },     { U'Ḛ', u"E"_s },     { U'ḛ', u"e"_s },     { U'Ḝ', u"E"_s },    { U'ḝ', u"e"_s },     { U'Ḟ', u"F"_s },     { U'ḟ', u"f"_s },
+           { U'Ḡ', u"G"_s },    { U'ḡ', u"g"_s },     { U'Ḣ', u"H"_s },     { U'ḣ', u"h"_s },     { U'Ḥ', u"H"_s },    { U'ḥ', u"h"_s },     { U'Ḧ', u"H"_s },     { U'ḧ', u"h"_s },
+           { U'Ḩ', u"H"_s },    { U'ḩ', u"h"_s },     { U'Ḫ', u"H"_s },     { U'ḫ', u"h"_s },     { U'Ḭ', u"I"_s },    { U'ḭ', u"i"_s },     { U'Ḯ', u"I"_s },     { U'ḯ', u"i"_s },
+           { U'Ḱ', u"K"_s },    { U'ḱ', u"k"_s },     { U'Ḳ', u"K"_s },     { U'ḳ', u"k"_s },     { U'Ḵ', u"K"_s },    { U'ḵ', u"k"_s },     { U'Ḷ', u"L"_s },     { U'ḷ', u"l"_s },
+           { U'Ḹ', u"L"_s },    { U'ḹ', u"l"_s },     { U'Ḻ', u"L"_s },     { U'ḻ', u"l"_s },     { U'Ḽ', u"L"_s },    { U'ḽ', u"l"_s },     { U'Ḿ', u"M"_s },     { U'ḿ', u"m"_s },
+           { U'Ṁ', u"M"_s },    { U'ṁ', u"m"_s },     { U'Ṃ', u"M"_s },     { U'ṃ', u"m"_s },     { U'Ṅ', u"N"_s },    { U'ṅ', u"n"_s },     { U'Ṇ', u"N"_s },     { U'ṇ', u"n"_s },
+           { U'Ṉ', u"N"_s },    { U'ṉ', u"n"_s },     { U'Ṋ', u"N"_s },     { U'ṋ', u"n"_s },     { U'Ṍ', u"O"_s },    { U'ṍ', u"o"_s },     { U'Ṏ', u"O"_s },     { U'ṏ', u"o"_s },
+           { U'Ṑ', u"O"_s },    { U'ṑ', u"o"_s },     { U'Ṓ', u"O"_s },     { U'ṓ', u"o"_s },     { U'Ṕ', u"P"_s },    { U'ṕ', u"p"_s },     { U'Ṗ', u"P"_s },     { U'ṗ', u"p"_s },
+           { U'Ṙ', u"R"_s },    { U'ṙ', u"r"_s },     { U'Ṛ', u"R"_s },     { U'ṛ', u"r"_s },     { U'Ṝ', u"R"_s },    { U'ṝ', u"r"_s },     { U'Ṟ', u"R"_s },     { U'ṟ', u"r"_s },
+           { U'Ṡ', u"S"_s },    { U'ṡ', u"s"_s },     { U'Ṣ', u"S"_s },     { U'ṣ', u"s"_s },     { U'Ṥ', u"S"_s },    { U'ṥ', u"s"_s },     { U'Ṧ', u"S"_s },     { U'ṧ', u"s"_s },
+           { U'Ṩ', u"S"_s },    { U'ṩ', u"s"_s },     { U'Ṫ', u"T"_s },     { U'ṫ', u"t"_s },     { U'Ṭ', u"T"_s },    { U'ṭ', u"t"_s },     { U'Ṯ', u"T"_s },     { U'ṯ', u"t"_s },
+           { U'Ṱ', u"T"_s },    { U'ṱ', u"t"_s },     { U'Ṳ', u"U"_s },     { U'ṳ', u"u"_s },     { U'Ṵ', u"U"_s },    { U'ṵ', u"u"_s },     { U'Ṷ', u"U"_s },     { U'ṷ', u"u"_s },
+           { U'Ṹ', u"U"_s },    { U'ṹ', u"u"_s },     { U'Ṻ', u"U"_s },     { U'ṻ', u"u"_s },     { U'Ṽ', u"V"_s },    { U'ṽ', u"v"_s },     { U'Ṿ', u"V"_s },     { U'ṿ', u"v"_s },
+           { U'Ẁ', u"W"_s },    { U'ẁ', u"w"_s },     { U'Ẃ', u"W"_s },     { U'ẃ', u"w"_s },     { U'Ẅ', u"W"_s },    { U'ẅ', u"w"_s },     { U'Ẇ', u"W"_s },     { U'ẇ', u"w"_s },
+           { U'Ẉ', u"W"_s },    { U'ẉ', u"w"_s },     { U'Ẋ', u"X"_s },     { U'ẋ', u"x"_s },     { U'Ẍ', u"X"_s },    { U'ẍ', u"x"_s },     { U'Ẏ', u"Y"_s },     { U'ẏ', u"y"_s },
+           { U'Ẑ', u"Z"_s },    { U'ẑ', u"z"_s },     { U'Ẓ', u"Z"_s },     { U'ẓ', u"z"_s },     { U'Ẕ', u"Z"_s },    { U'ẕ', u"z"_s },     { U'ẖ', u"h"_s },     { U'ẗ', u"t"_s },
+           { U'ẘ', u"w"_s },    { U'ẙ', u"y"_s },     { U'ẚ', u"a"_s },     { U'ẜ', u"s"_s },     { U'ẝ', u"s"_s },    { U'ẞ', u"SS"_s },    { U'Ạ', u"A"_s },     { U'ạ', u"a"_s },
+           { U'Ả', u"A"_s },    { U'ả', u"a"_s },     { U'Ấ', u"A"_s },     { U'ấ', u"a"_s },     { U'Ầ', u"A"_s },    { U'ầ', u"a"_s },     { U'Ẩ', u"A"_s },     { U'ẩ', u"a"_s },
+           { U'Ẫ', u"A"_s },    { U'ẫ', u"a"_s },     { U'Ậ', u"A"_s },     { U'ậ', u"a"_s },     { U'Ắ', u"A"_s },    { U'ắ', u"a"_s },     { U'Ằ', u"A"_s },     { U'ằ', u"a"_s },
+           { U'Ẳ', u"A"_s },    { U'ẳ', u"a"_s },     { U'Ẵ', u"A"_s },     { U'ẵ', u"a"_s },     { U'Ặ', u"A"_s },    { U'ặ', u"a"_s },     { U'Ẹ', u"E"_s },     { U'ẹ', u"e"_s },
+           { U'Ẻ', u"E"_s },    { U'ẻ', u"e"_s },     { U'Ẽ', u"E"_s },     { U'ẽ', u"e"_s },     { U'Ế', u"E"_s },    { U'ế', u"e"_s },     { U'Ề', u"E"_s },     { U'ề', u"e"_s },
+           { U'Ể', u"E"_s },    { U'ể', u"e"_s },     { U'Ễ', u"E"_s },     { U'ễ', u"e"_s },     { U'Ệ', u"E"_s },    { U'ệ', u"e"_s },     { U'Ỉ', u"I"_s },     { U'ỉ', u"i"_s },
+           { U'Ị', u"I"_s },    { U'ị', u"i"_s },     { U'Ọ', u"O"_s },     { U'ọ', u"o"_s },     { U'Ỏ', u"O"_s },    { U'ỏ', u"o"_s },     { U'Ố', u"O"_s },     { U'ố', u"o"_s },
+           { U'Ồ', u"O"_s },    { U'ồ', u"o"_s },     { U'Ổ', u"O"_s },     { U'ổ', u"o"_s },     { U'Ỗ', u"O"_s },    { U'ỗ', u"o"_s },     { U'Ộ', u"O"_s },     { U'ộ', u"o"_s },
+           { U'Ớ', u"O"_s },    { U'ớ', u"o"_s },     { U'Ờ', u"O"_s },     { U'ờ', u"o"_s },     { U'Ở', u"O"_s },    { U'ở', u"o"_s },     { U'Ỡ', u"O"_s },     { U'ỡ', u"o"_s },
+           { U'Ợ', u"O"_s },    { U'ợ', u"o"_s },     { U'Ụ', u"U"_s },     { U'ụ', u"u"_s },     { U'Ủ', u"U"_s },    { U'ủ', u"u"_s },     { U'Ứ', u"U"_s },     { U'ứ', u"u"_s },
+           { U'Ừ', u"U"_s },    { U'ừ', u"u"_s },     { U'Ử', u"U"_s },     { U'ử', u"u"_s },     { U'Ữ', u"U"_s },    { U'ữ', u"u"_s },     { U'Ự', u"U"_s },     { U'ự', u"u"_s },
+           { U'Ỳ', u"Y"_s },    { U'ỳ', u"y"_s },     { U'Ỵ', u"Y"_s },     { U'ỵ', u"y"_s },     { U'Ỷ', u"Y"_s },    { U'ỷ', u"y"_s },     { U'Ỹ', u"Y"_s },     { U'ỹ', u"y"_s },
+           { U'Ỻ', u"LL"_s },   { U'ỻ', u"ll"_s },    { U'Ỽ', u"V"_s },     { U'ỽ', u"v"_s },     { U'Ỿ', u"Y"_s },    { U'ỿ', u"y"_s },     { U'ἀ', u"α"_s },     { U'ἁ', u"α"_s },
+           { U'ἂ', u"α"_s },    { U'ἃ', u"α"_s },     { U'ἄ', u"α"_s },     { U'ἅ', u"α"_s },     { U'ἆ', u"α"_s },    { U'ἇ', u"α"_s },     { U'Ἀ', u"Α"_s },     { U'Ἁ', u"Α"_s },
+           { U'Ἂ', u"Α"_s },    { U'Ἃ', u"Α"_s },     { U'Ἄ', u"Α"_s },     { U'Ἅ', u"Α"_s },     { U'Ἆ', u"Α"_s },    { U'Ἇ', u"Α"_s },     { U'ἐ', u"ε"_s },     { U'ἑ', u"ε"_s },
+           { U'ἒ', u"ε"_s },    { U'ἓ', u"ε"_s },     { U'ἔ', u"ε"_s },     { U'ἕ', u"ε"_s },     { U'Ἐ', u"Ε"_s },    { U'Ἑ', u"Ε"_s },     { U'Ἒ', u"Ε"_s },     { U'Ἓ', u"Ε"_s },
+           { U'Ἔ', u"Ε"_s },    { U'Ἕ', u"Ε"_s },     { U'ἠ', u"η"_s },     { U'ἡ', u"η"_s },     { U'ἢ', u"η"_s },    { U'ἣ', u"η"_s },     { U'ἤ', u"η"_s },     { U'ἥ', u"η"_s },
+           { U'ἦ', u"η"_s },    { U'ἧ', u"η"_s },     { U'Ἠ', u"Η"_s },     { U'Ἡ', u"Η"_s },     { U'Ἢ', u"Η"_s },    { U'Ἣ', u"Η"_s },     { U'Ἤ', u"Η"_s },     { U'Ἥ', u"Η"_s },
+           { U'Ἦ', u"Η"_s },    { U'Ἧ', u"Η"_s },     { U'ἰ', u"ι"_s },     { U'ἱ', u"ι"_s },     { U'ἲ', u"ι"_s },    { U'ἳ', u"ι"_s },     { U'ἴ', u"ι"_s },     { U'ἵ', u"ι"_s },
+           { U'ἶ', u"ι"_s },    { U'ἷ', u"ι"_s },     { U'Ἰ', u"Ι"_s },     { U'Ἱ', u"Ι"_s },     { U'Ἲ', u"Ι"_s },    { U'Ἳ', u"Ι"_s },     { U'Ἴ', u"Ι"_s },     { U'Ἵ', u"Ι"_s },
+           { U'Ἶ', u"Ι"_s },    { U'Ἷ', u"Ι"_s },     { U'ὀ', u"ο"_s },     { U'ὁ', u"ο"_s },     { U'ὂ', u"ο"_s },    { U'ὃ', u"ο"_s },     { U'ὄ', u"ο"_s },     { U'ὅ', u"ο"_s },
+           { U'Ὀ', u"Ο"_s },    { U'Ὁ', u"Ο"_s },     { U'Ὂ', u"Ο"_s },     { U'Ὃ', u"Ο"_s },     { U'Ὄ', u"Ο"_s },    { U'Ὅ', u"Ο"_s },     { U'ὐ', u"υ"_s },     { U'ὑ', u"υ"_s },
+           { U'ὒ', u"υ"_s },    { U'ὓ', u"υ"_s },     { U'ὔ', u"υ"_s },     { U'ὕ', u"υ"_s },     { U'ὖ', u"υ"_s },    { U'ὗ', u"υ"_s },     { U'Ὑ', u"Υ"_s },     { U'Ὓ', u"Υ"_s },
+           { U'Ὕ', u"Υ"_s },    { U'Ὗ', u"Υ"_s },     { U'ὠ', u"ω"_s },     { U'ὡ', u"ω"_s },     { U'ὢ', u"ω"_s },    { U'ὣ', u"ω"_s },     { U'ὤ', u"ω"_s },     { U'ὥ', u"ω"_s },
+           { U'ὦ', u"ω"_s },    { U'ὧ', u"ω"_s },     { U'Ὠ', u"Ω"_s },     { U'Ὡ', u"Ω"_s },     { U'Ὢ', u"Ω"_s },    { U'Ὣ', u"Ω"_s },     { U'Ὤ', u"Ω"_s },     { U'Ὥ', u"Ω"_s },
+           { U'Ὦ', u"Ω"_s },    { U'Ὧ', u"Ω"_s },     { U'ὰ', u"α"_s },     { U'ά', u"α"_s },     { U'ὲ', u"ε"_s },    { U'έ', u"ε"_s },     { U'ὴ', u"η"_s },     { U'ή', u"η"_s },
+           { U'ὶ', u"ι"_s },    { U'ί', u"ι"_s },     { U'ὸ', u"ο"_s },     { U'ό', u"ο"_s },     { U'ὺ', u"υ"_s },    { U'ύ', u"υ"_s },     { U'ὼ', u"ω"_s },     { U'ώ', u"ω"_s },
+           { U'ᾀ', u"α"_s },    { U'ᾁ', u"α"_s },     { U'ᾂ', u"α"_s },     { U'ᾃ', u"α"_s },     { U'ᾄ', u"α"_s },    { U'ᾅ', u"α"_s },     { U'ᾆ', u"α"_s },     { U'ᾇ', u"α"_s },
+           { U'ᾈ', u"Α"_s },    { U'ᾉ', u"Α"_s },     { U'ᾊ', u"Α"_s },     { U'ᾋ', u"Α"_s },     { U'ᾌ', u"Α"_s },    { U'ᾍ', u"Α"_s },     { U'ᾎ', u"Α"_s },     { U'ᾏ', u"Α"_s },
+           { U'ᾐ', u"η"_s },    { U'ᾑ', u"η"_s },     { U'ᾒ', u"η"_s },     { U'ᾓ', u"η"_s },     { U'ᾔ', u"η"_s },    { U'ᾕ', u"η"_s },     { U'ᾖ', u"η"_s },     { U'ᾗ', u"η"_s },
+           { U'ᾘ', u"Η"_s },    { U'ᾙ', u"Η"_s },     { U'ᾚ', u"Η"_s },     { U'ᾛ', u"Η"_s },     { U'ᾜ', u"Η"_s },    { U'ᾝ', u"Η"_s },     { U'ᾞ', u"Η"_s },     { U'ᾟ', u"Η"_s },
+           { U'ᾠ', u"ω"_s },    { U'ᾡ', u"ω"_s },     { U'ᾢ', u"ω"_s },     { U'ᾣ', u"ω"_s },     { U'ᾤ', u"ω"_s },    { U'ᾥ', u"ω"_s },     { U'ᾦ', u"ω"_s },     { U'ᾧ', u"ω"_s },
+           { U'ᾨ', u"Ω"_s },    { U'ᾩ', u"Ω"_s },     { U'ᾪ', u"Ω"_s },     { U'ᾫ', u"Ω"_s },     { U'ᾬ', u"Ω"_s },    { U'ᾭ', u"Ω"_s },     { U'ᾮ', u"Ω"_s },     { U'ᾯ', u"Ω"_s },
+           { U'ᾰ', u"α"_s },    { U'ᾱ', u"α"_s },     { U'ᾲ', u"α"_s },     { U'ᾳ', u"α"_s },     { U'ᾴ', u"α"_s },    { U'ᾶ', u"α"_s },     { U'ᾷ', u"α"_s },     { U'Ᾰ', u"Α"_s },
+           { U'Ᾱ', u"Α"_s },    { U'Ὰ', u"Α"_s },     { U'Ά', u"Α"_s },     { U'ᾼ', u"Α"_s },     { U'ι', u"ι"_s },    { U'ῂ', u"η"_s },     { U'ῃ', u"η"_s },     { U'ῄ', u"η"_s },
+           { U'ῆ', u"η"_s },    { U'ῇ', u"η"_s },     { U'Ὲ', u"Ε"_s },     { U'Έ', u"Ε"_s },     { U'Ὴ', u"Η"_s },    { U'Ή', u"Η"_s },     { U'ῌ', u"Η"_s },     { U'ῐ', u"ι"_s },
+           { U'ῑ', u"ι"_s },    { U'ῒ', u"ι"_s },     { U'ΐ', u"ι"_s },     { U'ῖ', u"ι"_s },     { U'ῗ', u"ι"_s },    { U'Ῐ', u"Ι"_s },     { U'Ῑ', u"Ι"_s },     { U'Ὶ', u"Ι"_s },
+           { U'Ί', u"Ι"_s },    { U'ῠ', u"υ"_s },     { U'ῡ', u"υ"_s },     { U'ῢ', u"υ"_s },     { U'ΰ', u"υ"_s },    { U'ῤ', u"ρ"_s },     { U'ῥ', u"ρ"_s },     { U'ῦ', u"υ"_s },
+           { U'ῧ', u"υ"_s },    { U'Ῠ', u"Υ"_s },     { U'Ῡ', u"Υ"_s },     { U'Ὺ', u"Υ"_s },     { U'Ύ', u"Υ"_s },    { U'Ῥ', u"Ρ"_s },     { U'ῲ', u"ω"_s },     { U'ῳ', u"ω"_s },
+           { U'ῴ', u"ω"_s },    { U'ῶ', u"ω"_s },     { U'ῷ', u"ω"_s },     { U'Ὸ', u"Ο"_s },     { U'Ό', u"Ο"_s },    { U'Ὼ', u"Ω"_s },     { U'Ώ', u"Ω"_s },     { U'ῼ', u"Ω"_s },
+           { U'‐', u"-"_s },    { U'‑', u"-"_s },     { U'‒', u"-"_s },     { U'–', u"-"_s },     { U'—', u"-"_s },    { U'―', u"-"_s },     { U'‖', u"||"_s },    { U'‘', u"'"_s },
+           { U'’', u"'"_s },    { U'‚', u","_s },     { U'‛', u"'"_s },     { U'“', u"\""_s },    { U'”', u"\""_s },   { U'„', u",,"_s },    { U'‟', u"\""_s },    { U'․', u"."_s },
+           { U'‥', u".."_s },   { U'…', u"..."_s },   { U'′', u"'"_s },     { U'″', u"\""_s },    { U'‹', u"<"_s },    { U'›', u">"_s },     { U'‼', u"!!"_s },    { U'⁄', u"/"_s },
+           { U'⁅', u"["_s },    { U'⁆', u"]"_s },     { U'⁇', u"??"_s },    { U'⁈', u"?!"_s },    { U'⁉', u"!?"_s },   { U'⁎', u"*"_s },     { U'ⁱ', u"i"_s },     { U'ⁿ', u"n"_s },
+           { U'ₐ', u"a"_s },    { U'ₑ', u"e"_s },     { U'ₒ', u"o"_s },     { U'ₓ', u"x"_s },     { U'ₕ', u"h"_s },    { U'ₖ', u"k"_s },     { U'ₗ', u"l"_s },     { U'ₘ', u"m"_s },
+           { U'ₙ', u"n"_s },    { U'ₚ', u"p"_s },     { U'ₛ', u"s"_s },     { U'ₜ', u"t"_s },     { U'₠', u"CE"_s },   { U'₢', u"Cr"_s },    { U'₣', u"Fr."_s },   { U'₤', u"L."_s },
+           { U'₧', u"Pts"_s },  { U'₹', u"Rs"_s },    { U'₺', u"TL"_s },    { U'⃝', QString() },   { U'⃞', QString() },  { U'⃟', QString() },   { U'⃠', QString() },   { U'⃢', QString() },
+           { U'⃣', QString() },  { U'⃤', QString() },   { U'℀', u"a/c"_s },   { U'℁', u"a/s"_s },   { U'ℂ', u"C"_s },    { U'℃', u"°C"_s },    { U'℅', u"c/o"_s },   { U'℆', u"c/u"_s },
+           { U'℉', u"°F"_s },   { U'ℊ', u"g"_s },     { U'ℋ', u"H"_s },     { U'ℌ', u"H"_s },     { U'ℍ', u"H"_s },    { U'ℎ', u"h"_s },     { U'ℐ', u"I"_s },     { U'ℑ', u"I"_s },
+           { U'ℒ', u"L"_s },    { U'ℓ', u"l"_s },     { U'ℕ', u"N"_s },     { U'№', u"No"_s },    { U'℗', u"(P)"_s },  { U'℘', u"P"_s },     { U'ℙ', u"P"_s },     { U'ℚ', u"Q"_s },
+           { U'ℛ', u"R"_s },    { U'ℜ', u"R"_s },     { U'ℝ', u"R"_s },     { U'℞', u"Rx"_s },    { U'℡', u"TEL"_s },  { U'ℤ', u"Z"_s },     { U'Ω', u"Ω"_s },     { U'ℨ', u"Z"_s },
+           { U'K', u"K"_s },    { U'Å', u"A"_s },     { U'ℬ', u"B"_s },     { U'ℭ', u"C"_s },     { U'ℯ', u"e"_s },    { U'ℰ', u"E"_s },     { U'ℱ', u"F"_s },     { U'ℳ', u"M"_s },
+           { U'ℴ', u"o"_s },    { U'ℹ', u"i"_s },     { U'℻', u"FAX"_s },   { U'ℼ', u"π"_s },     { U'ℽ', u"γ"_s },    { U'ℾ', u"Γ"_s },     { U'ℿ', u"Π"_s },     { U'ⅅ', u"D"_s },
+           { U'ⅆ', u"d"_s },    { U'ⅇ', u"e"_s },     { U'ⅈ', u"i"_s },     { U'ⅉ', u"j"_s },     { U'⅐', u" 1/7"_s }, { U'⅑', u" 1/9"_s },  { U'⅒', u" 1/10"_s }, { U'⅓', u" 1/3"_s },
+           { U'⅔', u" 2/3"_s }, { U'⅕', u" 1/5"_s },  { U'⅖', u" 2/5"_s },  { U'⅗', u" 3/5"_s },  { U'⅘', u" 4/5"_s }, { U'⅙', u" 1/6"_s },  { U'⅚', u" 5/6"_s },  { U'⅛', u" 1/8"_s },
+           { U'⅜', u" 3/8"_s }, { U'⅝', u" 5/8"_s },  { U'⅞', u" 7/8"_s },  { U'⅟', u" 1/"_s },   { U'Ⅰ', u"I"_s },    { U'Ⅱ', u"II"_s },    { U'Ⅲ', u"III"_s },   { U'Ⅳ', u"IV"_s },
+           { U'Ⅴ', u"V"_s },    { U'Ⅵ', u"VI"_s },    { U'Ⅶ', u"VII"_s },   { U'Ⅷ', u"VIII"_s },  { U'Ⅸ', u"IX"_s },   { U'Ⅹ', u"X"_s },     { U'Ⅺ', u"XI"_s },    { U'Ⅻ', u"XII"_s },
+           { U'Ⅼ', u"L"_s },    { U'Ⅽ', u"C"_s },     { U'Ⅾ', u"D"_s },     { U'Ⅿ', u"M"_s },     { U'ⅰ', u"i"_s },    { U'ⅱ', u"ii"_s },    { U'ⅲ', u"iii"_s },   { U'ⅳ', u"iv"_s },
+           { U'ⅴ', u"v"_s },    { U'ⅵ', u"vi"_s },    { U'ⅶ', u"vii"_s },   { U'ⅷ', u"viii"_s },  { U'ⅸ', u"ix"_s },   { U'ⅹ', u"x"_s },     { U'ⅺ', u"xi"_s },    { U'ⅻ', u"xii"_s },
+           { U'ⅼ', u"l"_s },    { U'ⅽ', u"c"_s },     { U'ⅾ', u"d"_s },     { U'ⅿ', u"m"_s },     { U'↉', u" 0/3"_s }, { U'−', u"-"_s },     { U'∕', u"/"_s },     { U'∖', u"\\"_s },
+           { U'∣', u"|"_s },    { U'∥', u"||"_s },    { U'≪', u"<<"_s },    { U'≫', u">>"_s },    { U'⑴', u"(1)"_s },  { U'⑵', u"(2)"_s },   { U'⑶', u"(3)"_s },   { U'⑷', u"(4)"_s },
+           { U'⑸', u"(5)"_s },  { U'⑹', u"(6)"_s },   { U'⑺', u"(7)"_s },   { U'⑻', u"(8)"_s },   { U'⑼', u"(9)"_s },  { U'⑽', u"(10)"_s },  { U'⑾', u"(11)"_s },  { U'⑿', u"(12)"_s },
+           { U'⒀', u"(13)"_s }, { U'⒁', u"(14)"_s },  { U'⒂', u"(15)"_s },  { U'⒃', u"(16)"_s },  { U'⒄', u"(17)"_s }, { U'⒅', u"(18)"_s },  { U'⒆', u"(19)"_s },  { U'⒇', u"(20)"_s },
+           { U'⒈', u"1."_s },   { U'⒉', u"2."_s },    { U'⒊', u"3."_s },    { U'⒋', u"4."_s },    { U'⒌', u"5."_s },   { U'⒍', u"6."_s },    { U'⒎', u"7."_s },    { U'⒏', u"8."_s },
+           { U'⒐', u"9."_s },   { U'⒑', u"10."_s },   { U'⒒', u"11."_s },   { U'⒓', u"12."_s },   { U'⒔', u"13."_s },  { U'⒕', u"14."_s },   { U'⒖', u"15."_s },   { U'⒗', u"16."_s },
+           { U'⒘', u"17."_s },  { U'⒙', u"18."_s },   { U'⒚', u"19."_s },   { U'⒛', u"20."_s },   { U'⒜', u"(a)"_s },  { U'⒝', u"(b)"_s },   { U'⒞', u"(c)"_s },   { U'⒟', u"(d)"_s },
+           { U'⒠', u"(e)"_s },  { U'⒡', u"(f)"_s },   { U'⒢', u"(g)"_s },   { U'⒣', u"(h)"_s },   { U'⒤', u"(i)"_s },  { U'⒥', u"(j)"_s },   { U'⒦', u"(k)"_s },   { U'⒧', u"(l)"_s },
+           { U'⒨', u"(m)"_s },  { U'⒩', u"(n)"_s },   { U'⒪', u"(o)"_s },   { U'⒫', u"(p)"_s },   { U'⒬', u"(q)"_s },  { U'⒭', u"(r)"_s },   { U'⒮', u"(s)"_s },   { U'⒯', u"(t)"_s },
+           { U'⒰', u"(u)"_s },  { U'⒱', u"(v)"_s },   { U'⒲', u"(w)"_s },   { U'⒳', u"(x)"_s },   { U'⒴', u"(y)"_s },  { U'⒵', u"(z)"_s },   { U'⦅', u"(("_s },    { U'⦆', u"))"_s },
+           { U'⩴', u"::="_s },  { U'⩵', u"=="_s },    { U'⩶', u"==="_s },   { U'Ⱡ', u"L"_s },     { U'ⱡ', u"l"_s },    { U'Ɫ', u"L"_s },     { U'Ᵽ', u"P"_s },     { U'Ɽ', u"R"_s },
+           { U'ⱥ', u"a"_s },    { U'ⱦ', u"t"_s },     { U'Ⱨ', u"H"_s },     { U'ⱨ', u"h"_s },     { U'Ⱪ', u"K"_s },    { U'ⱪ', u"k"_s },     { U'Ⱬ', u"Z"_s },     { U'ⱬ', u"z"_s },
+           { U'Ɱ', u"M"_s },    { U'ⱱ', u"v"_s },     { U'Ⱳ', u"W"_s },     { U'ⱳ', u"w"_s },     { U'ⱴ', u"v"_s },    { U'ⱸ', u"e"_s },     { U'ⱺ', u"o"_s },     { U'ⱼ', u"j"_s },
+           { U'ⱽ', u"V"_s },    { U'Ȿ', u"S"_s },     { U'Ɀ', u"Z"_s },     { U'、', u","_s },    { U'。', u"."_s },   { U'〇', u"0"_s },    { U'〈', u"<"_s },    { U'〉', u">"_s },
+           { U'《', u"<<"_s },  { U'》', u">>"_s },   { U'〔', u"["_s },    { U'〕', u"]"_s },    { U'〘', u"["_s },   { U'〙', u"]"_s },    { U'〚', u"["_s },    { U'〛', u"]"_s },
+           { U'〝', u"\""_s },  { U'〞', u"\""_s },   { U'㍱', u"hPa"_s },  { U'㍲', u"da"_s },   { U'㍳', u"AU"_s },  { U'㍴', u"bar"_s },  { U'㍵', u"oV"_s },   { U'㍶', u"pc"_s },
+           { U'㍷', u"dm"_s },  { U'㍺', u"IU"_s },   { U'㎀', u"pA"_s },   { U'㎁', u"nA"_s },   { U'㎃', u"mA"_s },  { U'㎄', u"kA"_s },   { U'㎅', u"KB"_s },   { U'㎆', u"MB"_s },
+           { U'㎇', u"GB"_s },  { U'㎈', u"cal"_s },  { U'㎉', u"kcal"_s }, { U'㎊', u"pF"_s },   { U'㎋', u"nF"_s },  { U'㎎', u"mg"_s },   { U'㎏', u"kg"_s },   { U'㎐', u"Hz"_s },
+           { U'㎑', u"kHz"_s }, { U'㎒', u"MHz"_s },  { U'㎓', u"GHz"_s },  { U'㎔', u"THz"_s },  { U'㎙', u"fm"_s },  { U'㎚', u"nm"_s },   { U'㎜', u"mm"_s },   { U'㎝', u"cm"_s },
+           { U'㎞', u"km"_s },  { U'㎧', u"m/s"_s },  { U'㎩', u"Pa"_s },   { U'㎪', u"kPa"_s },  { U'㎫', u"MPa"_s }, { U'㎬', u"GPa"_s },  { U'㎭', u"rad"_s },  { U'㎮', u"rad/s"_s },
+           { U'㎰', u"ps"_s },  { U'㎱', u"ns"_s },   { U'㎳', u"ms"_s },   { U'㎴', u"pV"_s },   { U'㎵', u"nV"_s },  { U'㎷', u"mV"_s },   { U'㎸', u"kV"_s },   { U'㎹', u"MV"_s },
+           { U'㎺', u"pW"_s },  { U'㎻', u"nW"_s },   { U'㎽', u"mW"_s },   { U'㎾', u"kW"_s },   { U'㎿', u"MW"_s },  { U'㏂', u"a.m."_s }, { U'㏃', u"Bq"_s },   { U'㏄', u"cc"_s },
+           { U'㏅', u"cd"_s },  { U'㏆', u"C/kg"_s }, { U'㏇', u"Co."_s },  { U'㏈', u"dB"_s },   { U'㏉', u"Gy"_s },  { U'㏊', u"ha"_s },   { U'㏋', u"HP"_s },   { U'㏌', u"in"_s },
+           { U'㏍', u"KK"_s },  { U'㏎', u"KM"_s },   { U'㏏', u"kt"_s },   { U'㏐', u"lm"_s },   { U'㏑', u"ln"_s },  { U'㏒', u"log"_s },  { U'㏓', u"lx"_s },   { U'㏔', u"mb"_s },
+           { U'㏕', u"mil"_s }, { U'㏖', u"mol"_s },  { U'㏗', u"pH"_s },   { U'㏘', u"p.m."_s }, { U'㏙', u"PPM"_s }, { U'㏚', u"PR"_s },   { U'㏛', u"sr"_s },   { U'㏜', u"Sv"_s },
+           { U'㏝', u"Wb"_s },  { U'㏞', u"V/m"_s },  { U'㏟', u"A/m"_s },  { U'ꜰ', u"F"_s },     { U'ꜱ', u"S"_s },    { U'Ꜳ', u"AA"_s },    { U'ꜳ', u"aa"_s },    { U'Ꜵ', u"AO"_s },
+           { U'ꜵ', u"ao"_s },   { U'Ꜷ', u"AU"_s },    { U'ꜷ', u"au"_s },    { U'Ꜹ', u"AV"_s },    { U'ꜹ', u"av"_s },   { U'Ꜻ', u"AV"_s },    { U'ꜻ', u"av"_s },    { U'Ꜽ', u"AY"_s },
+           { U'ꜽ', u"ay"_s },   { U'Ꝁ', u"K"_s },     { U'ꝁ', u"k"_s },     { U'Ꝃ', u"K"_s },     { U'ꝃ', u"k"_s },    { U'Ꝅ', u"K"_s },     { U'ꝅ', u"k"_s },     { U'Ꝇ', u"L"_s },
+           { U'ꝇ', u"l"_s },    { U'Ꝉ', u"L"_s },     { U'ꝉ', u"l"_s },     { U'Ꝋ', u"O"_s },     { U'ꝋ', u"o"_s },    { U'Ꝍ', u"O"_s },     { U'ꝍ', u"o"_s },     { U'Ꝏ', u"OO"_s },
+           { U'ꝏ', u"oo"_s },   { U'Ꝑ', u"P"_s },     { U'ꝑ', u"p"_s },     { U'Ꝓ', u"P"_s },     { U'ꝓ', u"p"_s },    { U'Ꝕ', u"P"_s },     { U'ꝕ', u"p"_s },     { U'Ꝗ', u"Q"_s },
+           { U'ꝗ', u"q"_s },    { U'Ꝙ', u"Q"_s },     { U'ꝙ', u"q"_s },     { U'Ꝟ', u"V"_s },     { U'ꝟ', u"v"_s },    { U'Ꝡ', u"VY"_s },    { U'ꝡ', u"vy"_s },    { U'Ꝥ', u"TH"_s },
+           { U'ꝥ', u"th"_s },   { U'Ꝧ', u"TH"_s },    { U'ꝧ', u"th"_s },    { U'ꝱ', u"d"_s },     { U'ꝲ', u"l"_s },    { U'ꝳ', u"m"_s },     { U'ꝴ', u"n"_s },     { U'ꝵ', u"r"_s },
+           { U'ꝶ', u"R"_s },    { U'ꝷ', u"t"_s },     { U'Ꝺ', u"D"_s },     { U'ꝺ', u"d"_s },     { U'Ꝼ', u"F"_s },    { U'ꝼ', u"f"_s },     { U'Ꞇ', u"T"_s },     { U'ꞇ', u"t"_s },
+           { U'Ꞑ', u"N"_s },    { U'ꞑ', u"n"_s },     { U'Ꞓ', u"C"_s },     { U'ꞓ', u"c"_s },     { U'Ꞡ', u"G"_s },    { U'ꞡ', u"g"_s },     { U'Ꞣ', u"K"_s },     { U'ꞣ', u"k"_s },
+           { U'Ꞥ', u"N"_s },    { U'ꞥ', u"n"_s },     { U'Ꞧ', u"R"_s },     { U'ꞧ', u"r"_s },     { U'Ꞩ', u"S"_s },    { U'ꞩ', u"s"_s },     { U'Ɦ', u"H"_s },     { U'ꟲ', u"C"_s },
+           { U'ꟳ', u"F"_s },    { U'ꟴ', u"Q"_s },     { U'ﬀ', u"ff"_s },    { U'ﬁ', u"fi"_s },    { U'ﬂ', u"fl"_s },   { U'ﬃ', u"ffi"_s },   { U'ﬄ', u"ffl"_s },   { U'ﬅ', u"st"_s },
+           { U'ﬆ', u"st"_s },   { U'︐', u","_s },    { U'︑', u","_s },    { U'︒', u"."_s },    { U'︓', u":"_s },   { U'︔', u";"_s },    { U'︕', u"!"_s },    { U'︖', u"?"_s },
+           { U'︙', u"..."_s }, { U'︰', u".."_s },   { U'︱', u"-"_s },    { U'︲', u"-"_s },    { U'︵', u"("_s },   { U'︶', u")"_s },    { U'︷', u"{"_s },    { U'︸', u"}"_s },
+           { U'︹', u"["_s },   { U'︺', u"]"_s },    { U'︽', u"<<"_s },   { U'︾', u">>"_s },   { U'︿', u"<"_s },   { U'﹀', u">"_s },    { U'﹇', u"["_s },    { U'﹈', u"]"_s },
+           { U'﹐', u","_s },   { U'﹑', u","_s },    { U'﹒', u"."_s },    { U'﹔', u";"_s },    { U'﹕', u":"_s },   { U'﹖', u"?"_s },    { U'﹗', u"!"_s },    { U'﹘', u"-"_s },
+           { U'﹙', u"("_s },   { U'﹚', u")"_s },    { U'﹛', u"{"_s },    { U'﹜', u"}"_s },    { U'﹝', u"["_s },   { U'﹞', u"]"_s },    { U'﹟', u"#"_s },    { U'﹠', u"&"_s },
+           { U'﹡', u"*"_s },   { U'﹢', u"+"_s },    { U'﹣', u"-"_s },    { U'﹤', u"<"_s },    { U'﹥', u">"_s },   { U'﹦', u"="_s },    { U'﹨', u"\\"_s },   { U'﹩', u"$"_s },
+           { U'﹪', u"%"_s },   { U'﹫', u"@"_s },    { U'！', u"!"_s },    { U'＂', u"\""_s },   { U'＃', u"#"_s },   { U'＄', u"$"_s },    { U'％', u"%"_s },    { U'＆', u"&"_s },
+           { U'＇', u"'"_s },   { U'（', u"("_s },    { U'）', u")"_s },    { U'＊', u"*"_s },    { U'＋', u"+"_s },   { U'，', u","_s },    { U'－', u"-"_s },    { U'．', u"."_s },
+           { U'／', u"/"_s },   { U'０', u"0"_s },    { U'１', u"1"_s },    { U'２', u"2"_s },    { U'３', u"3"_s },   { U'４', u"4"_s },    { U'５', u"5"_s },    { U'６', u"6"_s },
+           { U'７', u"7"_s },   { U'８', u"8"_s },    { U'９', u"9"_s },    { U'：', u":"_s },    { U'；', u";"_s },   { U'＜', u"<"_s },    { U'＝', u"="_s },    { U'＞', u">"_s },
+           { U'？', u"?"_s },   { U'＠', u"@"_s },    { U'Ａ', u"A"_s },    { U'Ｂ', u"B"_s },    { U'Ｃ', u"C"_s },   { U'Ｄ', u"D"_s },    { U'Ｅ', u"E"_s },    { U'Ｆ', u"F"_s },
+           { U'Ｇ', u"G"_s },   { U'Ｈ', u"H"_s },    { U'Ｉ', u"I"_s },    { U'Ｊ', u"J"_s },    { U'Ｋ', u"K"_s },   { U'Ｌ', u"L"_s },    { U'Ｍ', u"M"_s },    { U'Ｎ', u"N"_s },
+           { U'Ｏ', u"O"_s },   { U'Ｐ', u"P"_s },    { U'Ｑ', u"Q"_s },    { U'Ｒ', u"R"_s },    { U'Ｓ', u"S"_s },   { U'Ｔ', u"T"_s },    { U'Ｕ', u"U"_s },    { U'Ｖ', u"V"_s },
+           { U'Ｗ', u"W"_s },   { U'Ｘ', u"X"_s },    { U'Ｙ', u"Y"_s },    { U'Ｚ', u"Z"_s },    { U'［', u"["_s },   { U'＼', u"\\"_s },   { U'］', u"]"_s },    { U'＾', u"^"_s },
+           { U'＿', u"_"_s },   { U'｀', u"`"_s },    { U'ａ', u"a"_s },    { U'ｂ', u"b"_s },    { U'ｃ', u"c"_s },   { U'ｄ', u"d"_s },    { U'ｅ', u"e"_s },    { U'ｆ', u"f"_s },
+           { U'ｇ', u"g"_s },   { U'ｈ', u"h"_s },    { U'ｉ', u"i"_s },    { U'ｊ', u"j"_s },    { U'ｋ', u"k"_s },   { U'ｌ', u"l"_s },    { U'ｍ', u"m"_s },    { U'ｎ', u"n"_s },
+           { U'ｏ', u"o"_s },   { U'ｐ', u"p"_s },    { U'ｑ', u"q"_s },    { U'ｒ', u"r"_s },    { U'ｓ', u"s"_s },   { U'ｔ', u"t"_s },    { U'ｕ', u"u"_s },    { U'ｖ', u"v"_s },
+           { U'ｗ', u"w"_s },   { U'ｘ', u"x"_s },    { U'ｙ', u"y"_s },    { U'ｚ', u"z"_s },    { U'｛', u"{"_s },   { U'｜', u"|"_s },    { U'｝', u"}"_s },    { U'～', u"~"_s },
+           { U'｟', u"(("_s },  { U'｠', u"))"_s },   { U'｡', u"."_s },     { U'､', u","_s },     { U'￩', u"<-"_s },   { U'￫', u"->"_s },    { U'𐞥', u"q"_s },     { U'𝐀', u"A"_s },
+           { U'𝐁', u"B"_s },    { U'𝐂', u"C"_s },     { U'𝐃', u"D"_s },     { U'𝐄', u"E"_s },     { U'𝐅', u"F"_s },    { U'𝐆', u"G"_s },     { U'𝐇', u"H"_s },     { U'𝐈', u"I"_s },
+           { U'𝐉', u"J"_s },    { U'𝐊', u"K"_s },     { U'𝐋', u"L"_s },     { U'𝐌', u"M"_s },     { U'𝐍', u"N"_s },    { U'𝐎', u"O"_s },     { U'𝐏', u"P"_s },     { U'𝐐', u"Q"_s },
+           { U'𝐑', u"R"_s },    { U'𝐒', u"S"_s },     { U'𝐓', u"T"_s },     { U'𝐔', u"U"_s },     { U'𝐕', u"V"_s },    { U'𝐖', u"W"_s },     { U'𝐗', u"X"_s },     { U'𝐘', u"Y"_s },
+           { U'𝐙', u"Z"_s },    { U'𝐚', u"a"_s },     { U'𝐛', u"b"_s },     { U'𝐜', u"c"_s },     { U'𝐝', u"d"_s },    { U'𝐞', u"e"_s },     { U'𝐟', u"f"_s },     { U'𝐠', u"g"_s },
+           { U'𝐡', u"h"_s },    { U'𝐢', u"i"_s },     { U'𝐣', u"j"_s },     { U'𝐤', u"k"_s },     { U'𝐥', u"l"_s },    { U'𝐦', u"m"_s },     { U'𝐧', u"n"_s },     { U'𝐨', u"o"_s },
+           { U'𝐩', u"p"_s },    { U'𝐪', u"q"_s },     { U'𝐫', u"r"_s },     { U'𝐬', u"s"_s },     { U'𝐭', u"t"_s },    { U'𝐮', u"u"_s },     { U'𝐯', u"v"_s },     { U'𝐰', u"w"_s },
+           { U'𝐱', u"x"_s },    { U'𝐲', u"y"_s },     { U'𝐳', u"z"_s },     { U'𝐴', u"A"_s },     { U'𝐵', u"B"_s },    { U'𝐶', u"C"_s },     { U'𝐷', u"D"_s },     { U'𝐸', u"E"_s },
+           { U'𝐹', u"F"_s },    { U'𝐺', u"G"_s },     { U'𝐻', u"H"_s },     { U'𝐼', u"I"_s },     { U'𝐽', u"J"_s },    { U'𝐾', u"K"_s },     { U'𝐿', u"L"_s },     { U'𝑀', u"M"_s },
+           { U'𝑁', u"N"_s },    { U'𝑂', u"O"_s },     { U'𝑃', u"P"_s },     { U'𝑄', u"Q"_s },     { U'𝑅', u"R"_s },    { U'𝑆', u"S"_s },     { U'𝑇', u"T"_s },     { U'𝑈', u"U"_s },
+           { U'𝑉', u"V"_s },    { U'𝑊', u"W"_s },     { U'𝑋', u"X"_s },     { U'𝑌', u"Y"_s },     { U'𝑍', u"Z"_s },    { U'𝑎', u"a"_s },     { U'𝑏', u"b"_s },     { U'𝑐', u"c"_s },
+           { U'𝑑', u"d"_s },    { U'𝑒', u"e"_s },     { U'𝑓', u"f"_s },     { U'𝑔', u"g"_s },     { U'𝑖', u"i"_s },    { U'𝑗', u"j"_s },     { U'𝑘', u"k"_s },     { U'𝑙', u"l"_s },
+           { U'𝑚', u"m"_s },    { U'𝑛', u"n"_s },     { U'𝑜', u"o"_s },     { U'𝑝', u"p"_s },     { U'𝑞', u"q"_s },    { U'𝑟', u"r"_s },     { U'𝑠', u"s"_s },     { U'𝑡', u"t"_s },
+           { U'𝑢', u"u"_s },    { U'𝑣', u"v"_s },     { U'𝑤', u"w"_s },     { U'𝑥', u"x"_s },     { U'𝑦', u"y"_s },    { U'𝑧', u"z"_s },     { U'𝑨', u"A"_s },     { U'𝑩', u"B"_s },
+           { U'𝑪', u"C"_s },    { U'𝑫', u"D"_s },     { U'𝑬', u"E"_s },     { U'𝑭', u"F"_s },     { U'𝑮', u"G"_s },    { U'𝑯', u"H"_s },     { U'𝑰', u"I"_s },     { U'𝑱', u"J"_s },
+           { U'𝑲', u"K"_s },    { U'𝑳', u"L"_s },     { U'𝑴', u"M"_s },     { U'𝑵', u"N"_s },     { U'𝑶', u"O"_s },    { U'𝑷', u"P"_s },     { U'𝑸', u"Q"_s },     { U'𝑹', u"R"_s },
+           { U'𝑺', u"S"_s },    { U'𝑻', u"T"_s },     { U'𝑼', u"U"_s },     { U'𝑽', u"V"_s },     { U'𝑾', u"W"_s },    { U'𝑿', u"X"_s },     { U'𝒀', u"Y"_s },     { U'𝒁', u"Z"_s },
+           { U'𝒂', u"a"_s },    { U'𝒃', u"b"_s },     { U'𝒄', u"c"_s },     { U'𝒅', u"d"_s },     { U'𝒆', u"e"_s },    { U'𝒇', u"f"_s },     { U'𝒈', u"g"_s },     { U'𝒉', u"h"_s },
+           { U'𝒊', u"i"_s },    { U'𝒋', u"j"_s },     { U'𝒌', u"k"_s },     { U'𝒍', u"l"_s },     { U'𝒎', u"m"_s },    { U'𝒏', u"n"_s },     { U'𝒐', u"o"_s },     { U'𝒑', u"p"_s },
+           { U'𝒒', u"q"_s },    { U'𝒓', u"r"_s },     { U'𝒔', u"s"_s },     { U'𝒕', u"t"_s },     { U'𝒖', u"u"_s },    { U'𝒗', u"v"_s },     { U'𝒘', u"w"_s },     { U'𝒙', u"x"_s },
+           { U'𝒚', u"y"_s },    { U'𝒛', u"z"_s },     { U'𝒜', u"A"_s },     { U'𝒞', u"C"_s },     { U'𝒟', u"D"_s },    { U'𝒢', u"G"_s },     { U'𝒥', u"J"_s },     { U'𝒦', u"K"_s },
+           { U'𝒩', u"N"_s },    { U'𝒪', u"O"_s },     { U'𝒫', u"P"_s },     { U'𝒬', u"Q"_s },     { U'𝒮', u"S"_s },    { U'𝒯', u"T"_s },     { U'𝒰', u"U"_s },     { U'𝒱', u"V"_s },
+           { U'𝒲', u"W"_s },    { U'𝒳', u"X"_s },     { U'𝒴', u"Y"_s },     { U'𝒵', u"Z"_s },     { U'𝒶', u"a"_s },    { U'𝒷', u"b"_s },     { U'𝒸', u"c"_s },     { U'𝒹', u"d"_s },
+           { U'𝒻', u"f"_s },    { U'𝒽', u"h"_s },     { U'𝒾', u"i"_s },     { U'𝒿', u"j"_s },     { U'𝓀', u"k"_s },    { U'𝓁', u"l"_s },     { U'𝓂', u"m"_s },     { U'𝓃', u"n"_s },
+           { U'𝓅', u"p"_s },    { U'𝓆', u"q"_s },     { U'𝓇', u"r"_s },     { U'𝓈', u"s"_s },     { U'𝓉', u"t"_s },    { U'𝓊', u"u"_s },     { U'𝓋', u"v"_s },     { U'𝓌', u"w"_s },
+           { U'𝓍', u"x"_s },    { U'𝓎', u"y"_s },     { U'𝓏', u"z"_s },     { U'𝓐', u"A"_s },     { U'𝓑', u"B"_s },    { U'𝓒', u"C"_s },     { U'𝓓', u"D"_s },     { U'𝓔', u"E"_s },
+           { U'𝓕', u"F"_s },    { U'𝓖', u"G"_s },     { U'𝓗', u"H"_s },     { U'𝓘', u"I"_s },     { U'𝓙', u"J"_s },    { U'𝓚', u"K"_s },     { U'𝓛', u"L"_s },     { U'𝓜', u"M"_s },
+           { U'𝓝', u"N"_s },    { U'𝓞', u"O"_s },     { U'𝓟', u"P"_s },     { U'𝓠', u"Q"_s },     { U'𝓡', u"R"_s },    { U'𝓢', u"S"_s },     { U'𝓣', u"T"_s },     { U'𝓤', u"U"_s },
+           { U'𝓥', u"V"_s },    { U'𝓦', u"W"_s },     { U'𝓧', u"X"_s },     { U'𝓨', u"Y"_s },     { U'𝓩', u"Z"_s },    { U'𝓪', u"a"_s },     { U'𝓫', u"b"_s },     { U'𝓬', u"c"_s },
+           { U'𝓭', u"d"_s },    { U'𝓮', u"e"_s },     { U'𝓯', u"f"_s },     { U'𝓰', u"g"_s },     { U'𝓱', u"h"_s },    { U'𝓲', u"i"_s },     { U'𝓳', u"j"_s },     { U'𝓴', u"k"_s },
+           { U'𝓵', u"l"_s },    { U'𝓶', u"m"_s },     { U'𝓷', u"n"_s },     { U'𝓸', u"o"_s },     { U'𝓹', u"p"_s },    { U'𝓺', u"q"_s },     { U'𝓻', u"r"_s },     { U'𝓼', u"s"_s },
+           { U'𝓽', u"t"_s },    { U'𝓾', u"u"_s },     { U'𝓿', u"v"_s },     { U'𝔀', u"w"_s },     { U'𝔁', u"x"_s },    { U'𝔂', u"y"_s },     { U'𝔃', u"z"_s },     { U'𝔄', u"A"_s },
+           { U'𝔅', u"B"_s },    { U'𝔇', u"D"_s },     { U'𝔈', u"E"_s },     { U'𝔉', u"F"_s },     { U'𝔊', u"G"_s },    { U'𝔍', u"J"_s },     { U'𝔎', u"K"_s },     { U'𝔏', u"L"_s },
+           { U'𝔐', u"M"_s },    { U'𝔑', u"N"_s },     { U'𝔒', u"O"_s },     { U'𝔓', u"P"_s },     { U'𝔔', u"Q"_s },    { U'𝔖', u"S"_s },     { U'𝔗', u"T"_s },     { U'𝔘', u"U"_s },
+           { U'𝔙', u"V"_s },    { U'𝔚', u"W"_s },     { U'𝔛', u"X"_s },     { U'𝔜', u"Y"_s },     { U'𝔞', u"a"_s },    { U'𝔟', u"b"_s },     { U'𝔠', u"c"_s },     { U'𝔡', u"d"_s },
+           { U'𝔢', u"e"_s },    { U'𝔣', u"f"_s },     { U'𝔤', u"g"_s },     { U'𝔥', u"h"_s },     { U'𝔦', u"i"_s },    { U'𝔧', u"j"_s },     { U'𝔨', u"k"_s },     { U'𝔩', u"l"_s },
+           { U'𝔪', u"m"_s },    { U'𝔫', u"n"_s },     { U'𝔬', u"o"_s },     { U'𝔭', u"p"_s },     { U'𝔮', u"q"_s },    { U'𝔯', u"r"_s },     { U'𝔰', u"s"_s },     { U'𝔱', u"t"_s },
+           { U'𝔲', u"u"_s },    { U'𝔳', u"v"_s },     { U'𝔴', u"w"_s },     { U'𝔵', u"x"_s },     { U'𝔶', u"y"_s },    { U'𝔷', u"z"_s },     { U'𝔸', u"A"_s },     { U'𝔹', u"B"_s },
+           { U'𝔻', u"D"_s },    { U'𝔼', u"E"_s },     { U'𝔽', u"F"_s },     { U'𝔾', u"G"_s },     { U'𝕀', u"I"_s },    { U'𝕁', u"J"_s },     { U'𝕂', u"K"_s },     { U'𝕃', u"L"_s },
+           { U'𝕄', u"M"_s },    { U'𝕆', u"O"_s },     { U'𝕊', u"S"_s },     { U'𝕋', u"T"_s },     { U'𝕌', u"U"_s },    { U'𝕍', u"V"_s },     { U'𝕎', u"W"_s },     { U'𝕏', u"X"_s },
+           { U'𝕐', u"Y"_s },    { U'𝕒', u"a"_s },     { U'𝕓', u"b"_s },     { U'𝕔', u"c"_s },     { U'𝕕', u"d"_s },    { U'𝕖', u"e"_s },     { U'𝕗', u"f"_s },     { U'𝕘', u"g"_s },
+           { U'𝕙', u"h"_s },    { U'𝕚', u"i"_s },     { U'𝕛', u"j"_s },     { U'𝕜', u"k"_s },     { U'𝕝', u"l"_s },    { U'𝕞', u"m"_s },     { U'𝕟', u"n"_s },     { U'𝕠', u"o"_s },
+           { U'𝕡', u"p"_s },    { U'𝕢', u"q"_s },     { U'𝕣', u"r"_s },     { U'𝕤', u"s"_s },     { U'𝕥', u"t"_s },    { U'𝕦', u"u"_s },     { U'𝕧', u"v"_s },     { U'𝕨', u"w"_s },
+           { U'𝕩', u"x"_s },    { U'𝕪', u"y"_s },     { U'𝕫', u"z"_s },     { U'𝕬', u"A"_s },     { U'𝕭', u"B"_s },    { U'𝕮', u"C"_s },     { U'𝕯', u"D"_s },     { U'𝕰', u"E"_s },
+           { U'𝕱', u"F"_s },    { U'𝕲', u"G"_s },     { U'𝕳', u"H"_s },     { U'𝕴', u"I"_s },     { U'𝕵', u"J"_s },    { U'𝕶', u"K"_s },     { U'𝕷', u"L"_s },     { U'𝕸', u"M"_s },
+           { U'𝕹', u"N"_s },    { U'𝕺', u"O"_s },     { U'𝕻', u"P"_s },     { U'𝕼', u"Q"_s },     { U'𝕽', u"R"_s },    { U'𝕾', u"S"_s },     { U'𝕿', u"T"_s },     { U'𝖀', u"U"_s },
+           { U'𝖁', u"V"_s },    { U'𝖂', u"W"_s },     { U'𝖃', u"X"_s },     { U'𝖄', u"Y"_s },     { U'𝖅', u"Z"_s },    { U'𝖆', u"a"_s },     { U'𝖇', u"b"_s },     { U'𝖈', u"c"_s },
+           { U'𝖉', u"d"_s },    { U'𝖊', u"e"_s },     { U'𝖋', u"f"_s },     { U'𝖌', u"g"_s },     { U'𝖍', u"h"_s },    { U'𝖎', u"i"_s },     { U'𝖏', u"j"_s },     { U'𝖐', u"k"_s },
+           { U'𝖑', u"l"_s },    { U'𝖒', u"m"_s },     { U'𝖓', u"n"_s },     { U'𝖔', u"o"_s },     { U'𝖕', u"p"_s },    { U'𝖖', u"q"_s },     { U'𝖗', u"r"_s },     { U'𝖘', u"s"_s },
+           { U'𝖙', u"t"_s },    { U'𝖚', u"u"_s },     { U'𝖛', u"v"_s },     { U'𝖜', u"w"_s },     { U'𝖝', u"x"_s },    { U'𝖞', u"y"_s },     { U'𝖟', u"z"_s },     { U'𝖠', u"A"_s },
+           { U'𝖡', u"B"_s },    { U'𝖢', u"C"_s },     { U'𝖣', u"D"_s },     { U'𝖤', u"E"_s },     { U'𝖥', u"F"_s },    { U'𝖦', u"G"_s },     { U'𝖧', u"H"_s },     { U'𝖨', u"I"_s },
+           { U'𝖩', u"J"_s },    { U'𝖪', u"K"_s },     { U'𝖫', u"L"_s },     { U'𝖬', u"M"_s },     { U'𝖭', u"N"_s },    { U'𝖮', u"O"_s },     { U'𝖯', u"P"_s },     { U'𝖰', u"Q"_s },
+           { U'𝖱', u"R"_s },    { U'𝖲', u"S"_s },     { U'𝖳', u"T"_s },     { U'𝖴', u"U"_s },     { U'𝖵', u"V"_s },    { U'𝖶', u"W"_s },     { U'𝖷', u"X"_s },     { U'𝖸', u"Y"_s },
+           { U'𝖹', u"Z"_s },    { U'𝖺', u"a"_s },     { U'𝖻', u"b"_s },     { U'𝖼', u"c"_s },     { U'𝖽', u"d"_s },    { U'𝖾', u"e"_s },     { U'𝖿', u"f"_s },     { U'𝗀', u"g"_s },
+           { U'𝗁', u"h"_s },    { U'𝗂', u"i"_s },     { U'𝗃', u"j"_s },     { U'𝗄', u"k"_s },     { U'𝗅', u"l"_s },    { U'𝗆', u"m"_s },     { U'𝗇', u"n"_s },     { U'𝗈', u"o"_s },
+           { U'𝗉', u"p"_s },    { U'𝗊', u"q"_s },     { U'𝗋', u"r"_s },     { U'𝗌', u"s"_s },     { U'𝗍', u"t"_s },    { U'𝗎', u"u"_s },     { U'𝗏', u"v"_s },     { U'𝗐', u"w"_s },
+           { U'𝗑', u"x"_s },    { U'𝗒', u"y"_s },     { U'𝗓', u"z"_s },     { U'𝗔', u"A"_s },     { U'𝗕', u"B"_s },    { U'𝗖', u"C"_s },     { U'𝗗', u"D"_s },     { U'𝗘', u"E"_s },
+           { U'𝗙', u"F"_s },    { U'𝗚', u"G"_s },     { U'𝗛', u"H"_s },     { U'𝗜', u"I"_s },     { U'𝗝', u"J"_s },    { U'𝗞', u"K"_s },     { U'𝗟', u"L"_s },     { U'𝗠', u"M"_s },
+           { U'𝗡', u"N"_s },    { U'𝗢', u"O"_s },     { U'𝗣', u"P"_s },     { U'𝗤', u"Q"_s },     { U'𝗥', u"R"_s },    { U'𝗦', u"S"_s },     { U'𝗧', u"T"_s },     { U'𝗨', u"U"_s },
+           { U'𝗩', u"V"_s },    { U'𝗪', u"W"_s },     { U'𝗫', u"X"_s },     { U'𝗬', u"Y"_s },     { U'𝗭', u"Z"_s },    { U'𝗮', u"a"_s },     { U'𝗯', u"b"_s },     { U'𝗰', u"c"_s },
+           { U'𝗱', u"d"_s },    { U'𝗲', u"e"_s },     { U'𝗳', u"f"_s },     { U'𝗴', u"g"_s },     { U'𝗵', u"h"_s },    { U'𝗶', u"i"_s },     { U'𝗷', u"j"_s },     { U'𝗸', u"k"_s },
+           { U'𝗹', u"l"_s },    { U'𝗺', u"m"_s },     { U'𝗻', u"n"_s },     { U'𝗼', u"o"_s },     { U'𝗽', u"p"_s },    { U'𝗾', u"q"_s },     { U'𝗿', u"r"_s },     { U'𝘀', u"s"_s },
+           { U'𝘁', u"t"_s },    { U'𝘂', u"u"_s },     { U'𝘃', u"v"_s },     { U'𝘄', u"w"_s },     { U'𝘅', u"x"_s },    { U'𝘆', u"y"_s },     { U'𝘇', u"z"_s },     { U'𝘈', u"A"_s },
+           { U'𝘉', u"B"_s },    { U'𝘊', u"C"_s },     { U'𝘋', u"D"_s },     { U'𝘌', u"E"_s },     { U'𝘍', u"F"_s },    { U'𝘎', u"G"_s },     { U'𝘏', u"H"_s },     { U'𝘐', u"I"_s },
+           { U'𝘑', u"J"_s },    { U'𝘒', u"K"_s },     { U'𝘓', u"L"_s },     { U'𝘔', u"M"_s },     { U'𝘕', u"N"_s },    { U'𝘖', u"O"_s },     { U'𝘗', u"P"_s },     { U'𝘘', u"Q"_s },
+           { U'𝘙', u"R"_s },    { U'𝘚', u"S"_s },     { U'𝘛', u"T"_s },     { U'𝘜', u"U"_s },     { U'𝘝', u"V"_s },    { U'𝘞', u"W"_s },     { U'𝘟', u"X"_s },     { U'𝘠', u"Y"_s },
+           { U'𝘡', u"Z"_s },    { U'𝘢', u"a"_s },     { U'𝘣', u"b"_s },     { U'𝘤', u"c"_s },     { U'𝘥', u"d"_s },    { U'𝘦', u"e"_s },     { U'𝘧', u"f"_s },     { U'𝘨', u"g"_s },
+           { U'𝘩', u"h"_s },    { U'𝘪', u"i"_s },     { U'𝘫', u"j"_s },     { U'𝘬', u"k"_s },     { U'𝘭', u"l"_s },    { U'𝘮', u"m"_s },     { U'𝘯', u"n"_s },     { U'𝘰', u"o"_s },
+           { U'𝘱', u"p"_s },    { U'𝘲', u"q"_s },     { U'𝘳', u"r"_s },     { U'𝘴', u"s"_s },     { U'𝘵', u"t"_s },    { U'𝘶', u"u"_s },     { U'𝘷', u"v"_s },     { U'𝘸', u"w"_s },
+           { U'𝘹', u"x"_s },    { U'𝘺', u"y"_s },     { U'𝘻', u"z"_s },     { U'𝘼', u"A"_s },     { U'𝘽', u"B"_s },    { U'𝘾', u"C"_s },     { U'𝘿', u"D"_s },     { U'𝙀', u"E"_s },
+           { U'𝙁', u"F"_s },    { U'𝙂', u"G"_s },     { U'𝙃', u"H"_s },     { U'𝙄', u"I"_s },     { U'𝙅', u"J"_s },    { U'𝙆', u"K"_s },     { U'𝙇', u"L"_s },     { U'𝙈', u"M"_s },
+           { U'𝙉', u"N"_s },    { U'𝙊', u"O"_s },     { U'𝙋', u"P"_s },     { U'𝙌', u"Q"_s },     { U'𝙍', u"R"_s },    { U'𝙎', u"S"_s },     { U'𝙏', u"T"_s },     { U'𝙐', u"U"_s },
+           { U'𝙑', u"V"_s },    { U'𝙒', u"W"_s },     { U'𝙓', u"X"_s },     { U'𝙔', u"Y"_s },     { U'𝙕', u"Z"_s },    { U'𝙖', u"a"_s },     { U'𝙗', u"b"_s },     { U'𝙘', u"c"_s },
+           { U'𝙙', u"d"_s },    { U'𝙚', u"e"_s },     { U'𝙛', u"f"_s },     { U'𝙜', u"g"_s },     { U'𝙝', u"h"_s },    { U'𝙞', u"i"_s },     { U'𝙟', u"j"_s },     { U'𝙠', u"k"_s },
+           { U'𝙡', u"l"_s },    { U'𝙢', u"m"_s },     { U'𝙣', u"n"_s },     { U'𝙤', u"o"_s },     { U'𝙥', u"p"_s },    { U'𝙦', u"q"_s },     { U'𝙧', u"r"_s },     { U'𝙨', u"s"_s },
+           { U'𝙩', u"t"_s },    { U'𝙪', u"u"_s },     { U'𝙫', u"v"_s },     { U'𝙬', u"w"_s },     { U'𝙭', u"x"_s },    { U'𝙮', u"y"_s },     { U'𝙯', u"z"_s },     { U'𝙰', u"A"_s },
+           { U'𝙱', u"B"_s },    { U'𝙲', u"C"_s },     { U'𝙳', u"D"_s },     { U'𝙴', u"E"_s },     { U'𝙵', u"F"_s },    { U'𝙶', u"G"_s },     { U'𝙷', u"H"_s },     { U'𝙸', u"I"_s },
+           { U'𝙹', u"J"_s },    { U'𝙺', u"K"_s },     { U'𝙻', u"L"_s },     { U'𝙼', u"M"_s },     { U'𝙽', u"N"_s },    { U'𝙾', u"O"_s },     { U'𝙿', u"P"_s },     { U'𝚀', u"Q"_s },
+           { U'𝚁', u"R"_s },    { U'𝚂', u"S"_s },     { U'𝚃', u"T"_s },     { U'𝚄', u"U"_s },     { U'𝚅', u"V"_s },    { U'𝚆', u"W"_s },     { U'𝚇', u"X"_s },     { U'𝚈', u"Y"_s },
+           { U'𝚉', u"Z"_s },    { U'𝚊', u"a"_s },     { U'𝚋', u"b"_s },     { U'𝚌', u"c"_s },     { U'𝚍', u"d"_s },    { U'𝚎', u"e"_s },     { U'𝚏', u"f"_s },     { U'𝚐', u"g"_s },
+           { U'𝚑', u"h"_s },    { U'𝚒', u"i"_s },     { U'𝚓', u"j"_s },     { U'𝚔', u"k"_s },     { U'𝚕', u"l"_s },    { U'𝚖', u"m"_s },     { U'𝚗', u"n"_s },     { U'𝚘', u"o"_s },
+           { U'𝚙', u"p"_s },    { U'𝚚', u"q"_s },     { U'𝚛', u"r"_s },     { U'𝚜', u"s"_s },     { U'𝚝', u"t"_s },    { U'𝚞', u"u"_s },     { U'𝚟', u"v"_s },     { U'𝚠', u"w"_s },
+           { U'𝚡', u"x"_s },    { U'𝚢', u"y"_s },     { U'𝚣', u"z"_s },     { U'𝚨', u"Α"_s },     { U'𝚩', u"Β"_s },    { U'𝚪', u"Γ"_s },     { U'𝚫', u"Δ"_s },     { U'𝚬', u"Ε"_s },
+           { U'𝚭', u"Ζ"_s },    { U'𝚮', u"Η"_s },     { U'𝚯', u"Θ"_s },     { U'𝚰', u"Ι"_s },     { U'𝚱', u"Κ"_s },    { U'𝚲', u"Λ"_s },     { U'𝚳', u"Μ"_s },     { U'𝚴', u"Ν"_s },
+           { U'𝚵', u"Ξ"_s },    { U'𝚶', u"Ο"_s },     { U'𝚷', u"Π"_s },     { U'𝚸', u"Ρ"_s },     { U'𝚺', u"Σ"_s },    { U'𝚻', u"Τ"_s },     { U'𝚼', u"Υ"_s },     { U'𝚽', u"Φ"_s },
+           { U'𝚾', u"Χ"_s },    { U'𝚿', u"Ψ"_s },     { U'𝛀', u"Ω"_s },     { U'𝛂', u"α"_s },     { U'𝛃', u"β"_s },    { U'𝛄', u"γ"_s },     { U'𝛅', u"δ"_s },     { U'𝛆', u"ε"_s },
+           { U'𝛇', u"ζ"_s },    { U'𝛈', u"η"_s },     { U'𝛉', u"θ"_s },     { U'𝛊', u"ι"_s },     { U'𝛋', u"κ"_s },    { U'𝛌', u"λ"_s },     { U'𝛍', u"μ"_s },     { U'𝛎', u"ν"_s },
+           { U'𝛏', u"ξ"_s },    { U'𝛐', u"ο"_s },     { U'𝛑', u"π"_s },     { U'𝛒', u"ρ"_s },     { U'𝛓', u"ς"_s },    { U'𝛔', u"σ"_s },     { U'𝛕', u"τ"_s },     { U'𝛖', u"υ"_s },
+           { U'𝛗', u"φ"_s },    { U'𝛘', u"χ"_s },     { U'𝛙', u"ψ"_s },     { U'𝛚', u"ω"_s },     { U'𝛢', u"Α"_s },    { U'𝛣', u"Β"_s },     { U'𝛤', u"Γ"_s },     { U'𝛥', u"Δ"_s },
+           { U'𝛦', u"Ε"_s },    { U'𝛧', u"Ζ"_s },     { U'𝛨', u"Η"_s },     { U'𝛩', u"Θ"_s },     { U'𝛪', u"Ι"_s },    { U'𝛫', u"Κ"_s },     { U'𝛬', u"Λ"_s },     { U'𝛭', u"Μ"_s },
+           { U'𝛮', u"Ν"_s },    { U'𝛯', u"Ξ"_s },     { U'𝛰', u"Ο"_s },     { U'𝛱', u"Π"_s },     { U'𝛲', u"Ρ"_s },    { U'𝛴', u"Σ"_s },     { U'𝛵', u"Τ"_s },     { U'𝛶', u"Υ"_s },
+           { U'𝛷', u"Φ"_s },    { U'𝛸', u"Χ"_s },     { U'𝛹', u"Ψ"_s },     { U'𝛺', u"Ω"_s },     { U'𝛼', u"α"_s },    { U'𝛽', u"β"_s },     { U'𝛾', u"γ"_s },     { U'𝛿', u"δ"_s },
+           { U'𝜀', u"ε"_s },    { U'𝜁', u"ζ"_s },     { U'𝜂', u"η"_s },     { U'𝜃', u"θ"_s },     { U'𝜄', u"ι"_s },    { U'𝜅', u"κ"_s },     { U'𝜆', u"λ"_s },     { U'𝜇', u"μ"_s },
+           { U'𝜈', u"ν"_s },    { U'𝜉', u"ξ"_s },     { U'𝜊', u"ο"_s },     { U'𝜋', u"π"_s },     { U'𝜌', u"ρ"_s },    { U'𝜍', u"ς"_s },     { U'𝜎', u"σ"_s },     { U'𝜏', u"τ"_s },
+           { U'𝜐', u"υ"_s },    { U'𝜑', u"φ"_s },     { U'𝜒', u"χ"_s },     { U'𝜓', u"ψ"_s },     { U'𝜔', u"ω"_s },    { U'𝜜', u"Α"_s },     { U'𝜝', u"Β"_s },     { U'𝜞', u"Γ"_s },
+           { U'𝜟', u"Δ"_s },    { U'𝜠', u"Ε"_s },     { U'𝜡', u"Ζ"_s },     { U'𝜢', u"Η"_s },     { U'𝜣', u"Θ"_s },    { U'𝜤', u"Ι"_s },     { U'𝜥', u"Κ"_s },     { U'𝜦', u"Λ"_s },
+           { U'𝜧', u"Μ"_s },    { U'𝜨', u"Ν"_s },     { U'𝜩', u"Ξ"_s },     { U'𝜪', u"Ο"_s },     { U'𝜫', u"Π"_s },    { U'𝜬', u"Ρ"_s },     { U'𝜮', u"Σ"_s },     { U'𝜯', u"Τ"_s },
+           { U'𝜰', u"Υ"_s },    { U'𝜱', u"Φ"_s },     { U'𝜲', u"Χ"_s },     { U'𝜳', u"Ψ"_s },     { U'𝜴', u"Ω"_s },    { U'𝜶', u"α"_s },     { U'𝜷', u"β"_s },     { U'𝜸', u"γ"_s },
+           { U'𝜹', u"δ"_s },    { U'𝜺', u"ε"_s },     { U'𝜻', u"ζ"_s },     { U'𝜼', u"η"_s },     { U'𝜽', u"θ"_s },    { U'𝜾', u"ι"_s },     { U'𝜿', u"κ"_s },     { U'𝝀', u"λ"_s },
+           { U'𝝁', u"μ"_s },    { U'𝝂', u"ν"_s },     { U'𝝃', u"ξ"_s },     { U'𝝄', u"ο"_s },     { U'𝝅', u"π"_s },    { U'𝝆', u"ρ"_s },     { U'𝝇', u"ς"_s },     { U'𝝈', u"σ"_s },
+           { U'𝝉', u"τ"_s },    { U'𝝊', u"υ"_s },     { U'𝝋', u"φ"_s },     { U'𝝌', u"χ"_s },     { U'𝝍', u"ψ"_s },    { U'𝝎', u"ω"_s },     { U'𝝖', u"Α"_s },     { U'𝝗', u"Β"_s },
+           { U'𝝘', u"Γ"_s },    { U'𝝙', u"Δ"_s },     { U'𝝚', u"Ε"_s },     { U'𝝛', u"Ζ"_s },     { U'𝝜', u"Η"_s },    { U'𝝝', u"Θ"_s },     { U'𝝞', u"Ι"_s },     { U'𝝟', u"Κ"_s },
+           { U'𝝠', u"Λ"_s },    { U'𝝡', u"Μ"_s },     { U'𝝢', u"Ν"_s },     { U'𝝣', u"Ξ"_s },     { U'𝝤', u"Ο"_s },    { U'𝝥', u"Π"_s },     { U'𝝦', u"Ρ"_s },     { U'𝝨', u"Σ"_s },
+           { U'𝝩', u"Τ"_s },    { U'𝝪', u"Υ"_s },     { U'𝝫', u"Φ"_s },     { U'𝝬', u"Χ"_s },     { U'𝝭', u"Ψ"_s },    { U'𝝮', u"Ω"_s },     { U'𝝰', u"α"_s },     { U'𝝱', u"β"_s },
+           { U'𝝲', u"γ"_s },    { U'𝝳', u"δ"_s },     { U'𝝴', u"ε"_s },     { U'𝝵', u"ζ"_s },     { U'𝝶', u"η"_s },    { U'𝝷', u"θ"_s },     { U'𝝸', u"ι"_s },     { U'𝝹', u"κ"_s },
+           { U'𝝺', u"λ"_s },    { U'𝝻', u"μ"_s },     { U'𝝼', u"ν"_s },     { U'𝝽', u"ξ"_s },     { U'𝝾', u"ο"_s },    { U'𝝿', u"π"_s },     { U'𝞀', u"ρ"_s },     { U'𝞁', u"ς"_s },
+           { U'𝞂', u"σ"_s },    { U'𝞃', u"τ"_s },     { U'𝞄', u"υ"_s },     { U'𝞅', u"φ"_s },     { U'𝞆', u"χ"_s },    { U'𝞇', u"ψ"_s },     { U'𝞈', u"ω"_s },     { U'𝞐', u"Α"_s },
+           { U'𝞑', u"Β"_s },    { U'𝞒', u"Γ"_s },     { U'𝞓', u"Δ"_s },     { U'𝞔', u"Ε"_s },     { U'𝞕', u"Ζ"_s },    { U'𝞖', u"Η"_s },     { U'𝞗', u"Θ"_s },     { U'𝞘', u"Ι"_s },
+           { U'𝞙', u"Κ"_s },    { U'𝞚', u"Λ"_s },     { U'𝞛', u"Μ"_s },     { U'𝞜', u"Ν"_s },     { U'𝞝', u"Ξ"_s },    { U'𝞞', u"Ο"_s },     { U'𝞟', u"Π"_s },     { U'𝞠', u"Ρ"_s },
+           { U'𝞢', u"Σ"_s },    { U'𝞣', u"Τ"_s },     { U'𝞤', u"Υ"_s },     { U'𝞥', u"Φ"_s },     { U'𝞦', u"Χ"_s },    { U'𝞧', u"Ψ"_s },     { U'𝞨', u"Ω"_s },     { U'𝞪', u"α"_s },
+           { U'𝞫', u"β"_s },    { U'𝞬', u"γ"_s },     { U'𝞭', u"δ"_s },     { U'𝞮', u"ε"_s },     { U'𝞯', u"ζ"_s },    { U'𝞰', u"η"_s },     { U'𝞱', u"θ"_s },     { U'𝞲', u"ι"_s },
+           { U'𝞳', u"κ"_s },    { U'𝞴', u"λ"_s },     { U'𝞵', u"μ"_s },     { U'𝞶', u"ν"_s },     { U'𝞷', u"ξ"_s },    { U'𝞸', u"ο"_s },     { U'𝞹', u"π"_s },     { U'𝞺', u"ρ"_s },
+           { U'𝞻', u"ς"_s },    { U'𝞼', u"σ"_s },     { U'𝞽', u"τ"_s },     { U'𝞾', u"υ"_s },     { U'𝞿', u"φ"_s },    { U'𝟀', u"χ"_s },     { U'𝟁', u"ψ"_s },     { U'𝟂', u"ω"_s },
+           { U'🄀', u"0."_s },   { U'🄁', u"0,"_s },    { U'🄂', u"1,"_s },    { U'🄃', u"2,"_s },    { U'🄄', u"3,"_s },   { U'🄅', u"4,"_s },    { U'🄆', u"5,"_s },    { U'🄇', u"6,"_s },
+           { U'🄈', u"7,"_s },   { U'🄉', u"8,"_s },    { U'🄊', u"9,"_s },    { U'🄐', u"(A)"_s },   { U'🄑', u"(B)"_s },  { U'🄒', u"(C)"_s },   { U'🄓', u"(D)"_s },   { U'🄔', u"(E)"_s },
+           { U'🄕', u"(F)"_s },  { U'🄖', u"(G)"_s },   { U'🄗', u"(H)"_s },   { U'🄘', u"(I)"_s },   { U'🄙', u"(J)"_s },  { U'🄚', u"(K)"_s },   { U'🄛', u"(L)"_s },   { U'🄜', u"(M)"_s },
+           { U'🄝', u"(N)"_s },  { U'🄞', u"(O)"_s },   { U'🄟', u"(P)"_s },   { U'🄠', u"(Q)"_s },   { U'🄡', u"(R)"_s },  { U'🄢', u"(S)"_s },   { U'🄣', u"(T)"_s },   { U'🄤', u"(U)"_s },
+           { U'🄥', u"(V)"_s },  { U'🄦', u"(W)"_s },   { U'🄧', u"(X)"_s },   { U'🄨', u"(Y)"_s },   { U'🄩', u"(Z)"_s } };
 }

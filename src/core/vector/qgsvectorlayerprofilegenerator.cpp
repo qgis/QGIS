@@ -18,6 +18,7 @@
 
 #include <memory>
 
+#include "qgis.h"
 #include "qgsabstractgeometry.h"
 #include "qgscoordinatetransform.h"
 #include "qgscurve.h"
@@ -1029,7 +1030,7 @@ void QgsVectorLayerProfileGenerator::processIntersectionCurve( const QgsLineStri
       inZ++;
   }
 
-  mResults->mDistanceToHeightMap.insert( maxDistanceAlongProfileCurve + 0.000001, std::numeric_limits<double>::quiet_NaN() );
+  mResults->mDistanceToHeightMap.insert( maxDistanceAlongProfileCurve + Qgis::DEFAULT_SEGMENT_EPSILON, std::numeric_limits<double>::quiet_NaN() );
 
   if ( mFeedback->isCanceled() )
     return;
@@ -1214,7 +1215,8 @@ void QgsVectorLayerProfileGenerator::processTriangleIntersectForLine(
   double *outZ = newZ.data();
   double *outDistance = newDistance.data();
 
-  double lastDistanceAlongProfileCurve = 0.0;
+  double minDistanceAlongProfileCurve = std::numeric_limits< double >::max();
+  double maxDistanceAlongProfileCurve = std::numeric_limits< double >::lowest();
   QVector< double > extrudedZ;
   double *extZOut = nullptr;
   double extrusion = 0;
@@ -1228,6 +1230,8 @@ void QgsVectorLayerProfileGenerator::processTriangleIntersectForLine(
   }
 
   QString lastError;
+  QVector< QPair< double, double > > segmentDistanceToHeight;
+  segmentDistanceToHeight.reserve( numPoints );
   for ( int i = 0; !mFeedback->isCanceled() && i < numPoints; ++i )
   {
     double x = *inX++;
@@ -1260,13 +1264,37 @@ void QgsVectorLayerProfileGenerator::processTriangleIntersectForLine(
     const double distance = mProfileCurveEngine->lineLocatePoint( interpolatedPoint, &lastError );
     *outDistance++ = distance;
 
-    mResults->mDistanceToHeightMap.insert( distance, interpolatedPoint.z() );
-    mResults->mDistanceToFeatureId.insert( distance, featureId );
-    lastDistanceAlongProfileCurve = distance;
+    segmentDistanceToHeight.append( { distance, interpolatedPoint.z() } );
+    minDistanceAlongProfileCurve = std::min( distance, minDistanceAlongProfileCurve );
+    maxDistanceAlongProfileCurve = std::max( distance, maxDistanceAlongProfileCurve );
   }
 
-  // insert nan point to end the line
-  mResults->mDistanceToHeightMap.insert( lastDistanceAlongProfileCurve + 0.000001, std::numeric_limits<double>::quiet_NaN() );
+  if ( numPoints > 0 )
+  {
+    // The end of a segment may be at the same distance as the start of the next one
+    // for adjacent parts, so one point would overwrite the other in mDistanceToHeightMap.
+    // Shift the segment ends slightly inwards to keep both points.
+    for ( const QPair< double, double > &point : std::as_const( segmentDistanceToHeight ) )
+    {
+      double distance = point.first;
+      if ( qgsDoubleNear( distance, minDistanceAlongProfileCurve, Qgis::DEFAULT_SEGMENT_EPSILON ) )
+      {
+        distance += Qgis::DEFAULT_SEGMENT_EPSILON;
+      }
+      else if ( qgsDoubleNear( distance, maxDistanceAlongProfileCurve, Qgis::DEFAULT_SEGMENT_EPSILON ) )
+      {
+        distance -= Qgis::DEFAULT_SEGMENT_EPSILON;
+      }
+
+      mResults->mDistanceToHeightMap.insert( distance, point.second );
+      mResults->mDistanceToFeatureId.insert( distance, featureId );
+    }
+
+    // NaN separators are inserted by calling insertSurfaceSeparators()
+    // once all features are processed.
+    // This prevents splitting adjacent parts of the same surface.
+    mSurfaceIntervals.append( { minDistanceAlongProfileCurve, maxDistanceAlongProfileCurve } );
+  }
 
   if ( mFeedback->isCanceled() )
     return;
@@ -1679,6 +1707,8 @@ bool QgsVectorLayerProfileGenerator::generateProfileForPolygons()
     }
     mResults->features[resultFeature.featureId].append( resultFeature );
   }
+
+  insertSurfaceSeparators();
   return true;
 }
 
@@ -1831,4 +1861,28 @@ bool QgsVectorLayerProfileGenerator::clampAltitudes( QgsPolygon *polygon, double
     clampAltitudes( lineString, centroid, offset );
   }
   return true;
+}
+
+void QgsVectorLayerProfileGenerator::insertSurfaceSeparators()
+{
+  // Insert a NaN separator only when there is a real gap between two parts of the surface
+  if ( mSurfaceIntervals.size() <= 1 )
+  {
+    mSurfaceIntervals.clear();
+    return;
+  }
+
+  std::sort( mSurfaceIntervals.begin(), mSurfaceIntervals.end() );
+  double currentEnd = mSurfaceIntervals[0].second;
+  for ( auto intervalIt = mSurfaceIntervals.cbegin() + 1; intervalIt != mSurfaceIntervals.cend(); ++intervalIt )
+  {
+    const double newStart = intervalIt->first;
+    if ( newStart > currentEnd + Qgis::DEFAULT_SEGMENT_EPSILON )
+    {
+      mResults->mDistanceToHeightMap.insert( currentEnd + Qgis::DEFAULT_SEGMENT_EPSILON, std::numeric_limits<double>::quiet_NaN() );
+    }
+    currentEnd = std::max( currentEnd, intervalIt->second );
+  }
+
+  mSurfaceIntervals.clear();
 }

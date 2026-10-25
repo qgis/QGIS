@@ -402,8 +402,11 @@ QList<QgsVectorLayer *> QgsVectorLayerEditBufferGroup::orderLayersParentsToChild
     QSet<QgsVectorLayer *>::iterator unorderedLayerIterator = unorderedLayers.begin();
     while ( unorderedLayerIterator != unorderedLayers.end() )
     {
+      // TODO QGIS 5.0 -- if layer has no associated project, return empty list of referencing relations insted of getting it from project instance
       // Get referencing relation to find referenced layers
-      const QList<QgsRelation> referencingRelations = QgsProject::instance()->relationManager()->referencingRelations( *unorderedLayerIterator ); // skip-keyword-check
+      const QList<QgsRelation> referencingRelations = !layers.empty() && *layers.constBegin()
+                                                        ? ( *layers.constBegin() )->project()->relationManager()->referencingRelations( *unorderedLayerIterator )
+                                                        : QgsProject::instance()->relationManager()->referencingRelations( *unorderedLayerIterator ); // skip-keyword-check
 
       // If this layer references at least one modified layer continue
       bool layerReferencingModifiedLayer = false;

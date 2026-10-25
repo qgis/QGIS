@@ -43,7 +43,7 @@ QgsOapifSingleItemRequest::QgsOapifSingleItemRequest( const QgsDataSourceUri &ba
 bool QgsOapifSingleItemRequest::request( bool synchronous, bool forceRefresh )
 {
   QgsDebugMsgLevel( u" QgsOapifSingleItemRequest::request() start time: %1"_s.arg( time( nullptr ) ), 5 );
-  if ( !sendGET( QUrl::fromEncoded( mUrl.toLatin1() ), QString( "application/geo+json, application/json" ), synchronous, forceRefresh ) )
+  if ( !sendGET( QUrl::fromEncoded( mUrl.toLatin1() ), QString( "%1, %2" ).arg( QgsOapifUtils::MEDIA_TYPE_GEOJSON, QgsOapifUtils::MEDIA_TYPE_JSON ), synchronous, forceRefresh ) )
   {
     emit gotResponse();
     return false;

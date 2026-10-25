@@ -15,6 +15,7 @@
 
 #pragma once
 
+#include "qgs3drendercontext.h"
 #include "qgschunknode.h"
 #include "qgscoordinatetransform.h"
 #include "qgsquantizedmeshdataprovider.h"
@@ -55,11 +56,11 @@ class _3D_EXPORT QgsQuantizedMeshTerrainGenerator : public QgsTerrainGenerator
     float rootChunkError( const Qgs3DMapSettings &map ) const override;
     void rootChunkHeightRange( float &hMin, float &hMax ) const override;
     float heightAt( double x, double y, const Qgs3DRenderContext &context ) const override;
-    QgsChunkLoader *createChunkLoader( QgsChunkNode *node ) const override;
+    QFuture<QgsChunkLoaderResult> loadChunk( QgsChunkNode *node ) override;
     // Root node has zoom=0, x=0, y=0.
     // It corresponds to a fake zoom=-1 tile for QgsTileMatrix
     QgsChunkNode *createRootNode() const override;
-    QVector<QgsChunkNode *> createChildren( QgsChunkNode *node ) const override;
+    QFuture<QVector<QgsChunkNode *>> createChildren( QgsChunkNode *node ) override;
 
     /**
      * Set layer to take tiles from
@@ -76,4 +77,8 @@ class _3D_EXPORT QgsQuantizedMeshTerrainGenerator : public QgsTerrainGenerator
     QgsTiledSceneIndex mIndex;
     QgsRectangle mMapExtent;
     QgsTileXYZ nodeIdToTile( QgsChunkNodeId nodeId ) const;
+    static QgsTerrainTileEntity *loadEntityInWorker(
+      QgsChunkNode *node, Qgs3DRenderContext renderCtx, QgsTiledSceneIndex index, QgsCoordinateTransform tileCrsToMapCrs, double vertScale, bool shadingEnabled, long long tileId, QgsVector3D chunkOrigin
+    );
+    Qt3DCore::QEntity *finishEntity( QgsTerrainTileEntity *entity, QgsTerrainGenerator::TerrainTextureResources textureResources, Qt3DCore::QEntity *parent );
 };

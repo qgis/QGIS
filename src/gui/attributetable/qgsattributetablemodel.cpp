@@ -433,8 +433,6 @@ void QgsAttributeTableModel::loadAttributes()
   if ( mFields == fields )
     return;
 
-  mFields = fields;
-
   bool ins = false, rm = false;
 
   QgsAttributeList attributes;
@@ -454,6 +452,8 @@ void QgsAttributeTableModel::loadAttributes()
     rm = true;
     beginRemoveColumns( QModelIndex(), attributes.size(), mFieldCount + mExtraColumns - 1 );
   }
+
+  mFields = fields;
 
   mFieldCount = attributes.size();
   mAttributes = attributes;
@@ -715,12 +715,12 @@ QVariant QgsAttributeTableModel::data( const QModelIndex &index, int role ) cons
     }
   }
 
-  const QgsField field = mLayer->fields().at( fieldId );
+  const QgsField field = mFields.at( fieldId );
 
   if ( role == Qt::TextAlignmentRole )
   {
     const WidgetData &widgetData = getWidgetData( index.column() );
-    return static_cast<Qt::Alignment::Int>( widgetData.fieldFormatter->alignmentFlag( mLayer, fieldId, widgetData.config ) | Qt::AlignVCenter );
+    return static_cast<Qt::Alignment::Int>( widgetData.fieldFormatter->alignmentFlag( field, widgetData.config ) | Qt::AlignVCenter );
   }
 
   if ( mFeat.id() != rowId || !mFeat.isValid() || !mLayerCache->cacheSubsetOfAttributes().contains( fieldId ) )
@@ -939,7 +939,10 @@ void QgsAttributeTableModel::bulkEditCommandEnded()
   {
     // Invalidates the cache (there is no API for doing this directly)
     emit mLayer->dataChanged();
-    emit dataChanged( createIndex( 0, 0 ), createIndex( rowCount() - 1, columnCount() - 1 ) );
+    if ( rowCount() > 0 )
+    {
+      emit dataChanged( createIndex( 0, 0 ), createIndex( rowCount() - 1, columnCount() - 1 ) );
+    }
   }
   else if ( !mAttributeValueChanges.empty() && !mInsertedRowsChanges.empty() )
   {

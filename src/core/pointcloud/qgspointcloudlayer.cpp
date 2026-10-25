@@ -85,6 +85,7 @@ QgsPointCloudLayer::~QgsPointCloudLayer()
     task->cancel();
     task->waitForFinished();
   }
+  emit willBeDeleted();
 }
 
 QgsPointCloudLayer *QgsPointCloudLayer::clone() const
