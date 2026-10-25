@@ -47,6 +47,7 @@
 #include "qgsmaptip.h"
 #include "qgsmaskingwidget.h"
 #include "qgsmessagebar.h"
+#include "qgsmessagebaritem.h"
 #include "qgsmetadatawidget.h"
 #include "qgsnative.h"
 #include "qgsnewauxiliaryfielddialog.h"
@@ -751,6 +752,17 @@ void QgsVectorLayerProperties::apply()
 
   mAttributesFormPropertiesDialog->apply();
   mSourceFieldsPropertiesDialog->apply();
+
+  // Clean up QML-related errors that might have been thrown at the user
+  // while configuring a QML editor widget
+  QList<QgsMessageBarItem *> messageBarItems = mMessageBar->items();
+  for ( QgsMessageBarItem *messageBarItem : messageBarItems )
+  {
+    if ( messageBarItem->text().contains( u"QgsQmlWidgetWrapper"_s ) )
+    {
+      mMessageBar->popWidget( messageBarItem );
+    }
+  }
 
   // Update temporal properties
   mTemporalWidget->saveTemporalProperties();
