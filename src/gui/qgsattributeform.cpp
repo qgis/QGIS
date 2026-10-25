@@ -336,7 +336,7 @@ void QgsAttributeForm::changeAttribute( const QString &field, const QVariant &va
 
 void QgsAttributeForm::changeGeometry( const QgsGeometry &geometry )
 {
-  mFeature.setGeometry( geometry );
+  mCurrentFormFeature.setGeometry( geometry );
 }
 
 void QgsAttributeForm::setFeature( const QgsFeature &feature )
@@ -388,6 +388,12 @@ bool QgsAttributeForm::saveEdits( QString *error )
   bool changedLayer = false;
 
   QgsFeature updatedFeature = QgsFeature( mFeature );
+  const bool updatedFeatureChangedGeometry = !mFeature.geometry().isExactlyEqual( mCurrentFormFeature.geometry() );
+  if ( updatedFeatureChangedGeometry )
+  {
+    mFeature.setGeometry( mCurrentFormFeature.geometry() );
+  }
+
   if ( mFeature.isValid() || mMode == QgsAttributeEditorContext::AddFeatureMode )
   {
     bool doUpdate = false;
@@ -535,12 +541,25 @@ bool QgsAttributeForm::saveEdits( QString *error )
         auto context = std::make_unique<QgsVectorLayerToolsContext>();
         QgsExpressionContext expressionContext = createExpressionContext( updatedFeature );
         context->setExpressionContext( &expressionContext );
-        success = mLayer->changeAttributeValues( mFeature.id(), newValues, oldValues, false, context.get() );
+        success = mLayer->changeAttributeValues( mFeature.id(), newValues, oldValues, false, context.get() ) && n > 0;
+        if ( success )
+        {
+          mFeature.setAttributes( dst );
+        }
 
-        if ( success && n > 0 )
+        if ( updatedFeatureChangedGeometry && ( success || n == 0 ) )
+        {
+          QgsGeometry geometry = updatedFeature.geometry();
+          success = success || mLayer->changeGeometry( mFeature.id(), geometry, false );
+          if ( success )
+          {
+            mFeature.setGeometry( geometry );
+          }
+        }
+
+        if ( success )
         {
           mLayer->endEditCommand();
-          mFeature.setAttributes( dst );
           changedLayer = true;
         }
         else
