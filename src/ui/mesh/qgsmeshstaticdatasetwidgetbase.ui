@@ -17,7 +17,7 @@
    <item row="0" column="3">
     <spacer name="horizontalSpacer">
      <property name="orientation">
-      <enum>Qt::Horizontal</enum>
+      <enum>Qt::Orientation::Horizontal</enum>
      </property>
      <property name="sizeHint" stdset="0">
       <size>
@@ -29,6 +29,12 @@
    </item>
    <item row="3" column="2">
     <widget class="QComboBox" name="mVectorDatasetComboBox">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
      <property name="toolTip">
       <string>Select the timestamp to use for the vector dataset group display</string>
      </property>
@@ -50,6 +56,12 @@
    </item>
    <item row="3" column="0">
     <widget class="QComboBox" name="mScalarDatasetComboBox">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
      <property name="toolTip">
       <string>Select the timestamp to use for the scalar dataset group display</string>
      </property>
@@ -64,7 +76,7 @@
       </size>
      </property>
      <property name="orientation">
-      <enum>Qt::Vertical</enum>
+      <enum>Qt::Orientation::Vertical</enum>
      </property>
     </widget>
    </item>

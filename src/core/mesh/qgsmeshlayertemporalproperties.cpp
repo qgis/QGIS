@@ -103,13 +103,22 @@ QDateTime QgsMeshLayerTemporalProperties::referenceTime() const
 void QgsMeshLayerTemporalProperties::setReferenceTime( const QDateTime &referenceTime, const QgsDataProviderTemporalCapabilities *capabilities )
 {
   mReferenceTime = referenceTime;
-  if ( capabilities )
+  const QgsMeshDataProviderTemporalCapabilities *tempCap = static_cast<const QgsMeshDataProviderTemporalCapabilities *>( capabilities );
+
+#if QT_FEATURE_timezone > 0
+  if ( !mReferenceTime.timeZone().isValid() )
   {
-    const QgsMeshDataProviderTemporalCapabilities *tempCap = static_cast<const QgsMeshDataProviderTemporalCapabilities *>( capabilities );
-    mTimeExtent = tempCap->timeExtent( referenceTime );
+    if ( tempCap && tempCap->referenceTime().timeZone().isValid() )
+      mReferenceTime.setTimeZone( tempCap->referenceTime().timeZone() );
+    else
+      mReferenceTime.setTimeZone( QTimeZone::UTC );
   }
+#endif
+
+  if ( tempCap )
+    mTimeExtent = tempCap->timeExtent( mReferenceTime );
   else
-    mTimeExtent = QgsDateTimeRange( referenceTime, referenceTime );
+    mTimeExtent = QgsDateTimeRange( mReferenceTime, mReferenceTime );
 }
 
 QgsMeshDataProviderTemporalCapabilities::MatchingTemporalDatasetMethod QgsMeshLayerTemporalProperties::matchingMethod() const

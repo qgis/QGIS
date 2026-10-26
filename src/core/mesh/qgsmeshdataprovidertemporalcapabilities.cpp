@@ -141,8 +141,11 @@ QgsDateTimeRange QgsMeshDataProviderTemporalCapabilities::timeExtent( const QDat
   }
 
 #if QT_FEATURE_timezone > 0
-  begin = begin.toTimeZone( reference.timeZone() );
-  end = end.toTimeZone( reference.timeZone() );
+  if ( reference.timeZone().isValid() )
+  {
+    begin = begin.toTimeZone( reference.timeZone() );
+    end = end.toTimeZone( reference.timeZone() );
+  }
 #else
   QgsDebugError( u"Qt is built without timezone support, reference timezone not transmitted to the time extent"_s );
 #endif
