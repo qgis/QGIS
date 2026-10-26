@@ -539,6 +539,10 @@ QList<QgsAbstractProfileSource *> QgsLayoutItemElevationProfile::sources() const
       {
         sources << *profileSource;
       }
+      else
+      {
+        QgsMessageLog::logMessage( tr( "Could not find profile source with id '%1' in the registry. Skipping..." ).arg( ( *profileSource )->profileSourceId() ) );
+      }
     }
   }
 
@@ -561,6 +565,10 @@ void QgsLayoutItemElevationProfile::setSources( const QList< std::variant< QgsMa
       if ( QgsApplication::profileSourceRegistry()->findSourceById( ( *profileSource )->profileSourceId() ) )
       {
         mSources << *profileSource;
+      }
+      else
+      {
+        QgsMessageLog::logMessage( tr( "Could not find profile source with id '%1' in the registry. Skipping..." ).arg( ( *profileSource )->profileSourceId() ) );
       }
     }
   }
@@ -949,6 +957,10 @@ bool QgsLayoutItemElevationProfile::writePropertiesToElement( QDomElement &layou
           sourceElement.setAttribute( u"id"_s, ( *profileSource )->profileSourceId() );
           sourcesElement.appendChild( sourceElement );
         }
+        else
+        {
+          QgsMessageLog::logMessage( tr( "Could not find profile source with id '%1' in the registry. Skipping..." ).arg( ( *profileSource )->profileSourceId() ) );
+        }
       }
     }
 
@@ -1035,6 +1047,10 @@ bool QgsLayoutItemElevationProfile::readPropertiesFromElement( const QDomElement
         if ( QgsAbstractProfileSource *profileSource = QgsApplication::profileSourceRegistry()->findSourceById( sourceId ) )
         {
           mSources << profileSource;
+        }
+        else
+        {
+          QgsMessageLog::logMessage( tr( "Could not find profile source with id '%1' in the registry. Skipping..." ).arg( sourceId ) );
         }
       }
       else if ( sourceElement.tagName() == "profileLayerSource"_L1 )

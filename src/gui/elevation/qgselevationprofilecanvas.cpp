@@ -27,6 +27,7 @@
 #include "qgsgeos.h"
 #include "qgsmaplayerelevationproperties.h"
 #include "qgsmaplayerlistutils_p.h"
+#include "qgsmessagelog.h"
 #include "qgsnumericformat.h"
 #include "qgspainting.h"
 #include "qgsplot.h"
@@ -1223,6 +1224,10 @@ void QgsElevationProfileCanvas::setSources( const QList< std::variant< QgsMapLay
       {
         mSources << *profileSource;
       }
+      else
+      {
+        QgsMessageLog::logMessage( tr( "Could not find profile source with id '%1' in the registry. Skipping..." ).arg( ( *profileSource )->profileSourceId() ) );
+      }
     }
   }
 }
@@ -1269,6 +1274,10 @@ QList<QgsAbstractProfileSource *> QgsElevationProfileCanvas::sources() const
       {
         sources << *profileSource;
       }
+      else
+      {
+        QgsMessageLog::logMessage( tr( "Could not find profile source with id '%1' in the registry. Skipping..." ).arg( ( *profileSource )->profileSourceId() ) );
+      }
     }
   }
 
@@ -1293,6 +1302,10 @@ QList< std::variant< QgsMapLayer *, QgsAbstractProfileSource * > > QgsElevationP
       if ( QgsApplication::profileSourceRegistry()->findSourceById( ( *profileSource )->profileSourceId() ) )
       {
         sources << *profileSource;
+      }
+      else
+      {
+        QgsMessageLog::logMessage( tr( "Could not find profile source with id '%1' in the registry. Skipping..." ).arg( ( *profileSource )->profileSourceId() ) );
       }
     }
   }
