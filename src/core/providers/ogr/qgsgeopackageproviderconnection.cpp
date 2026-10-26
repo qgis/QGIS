@@ -231,8 +231,12 @@ QMap<QString, QStringList> QgsGeoPackageProviderConnection::tableIndexes( const 
   }
 
   // we only care about the user created indexes, pk and uniques not, as those are created automatically
-  const QList<QVariantList> rows
-    = executeGdalSqlPrivate( u"SELECT il.name, ii.name FROM pragma_index_list(%1) il LEFT JOIN pragma_index_info(il.name) ii WHERE il.origin = 'c'"_s.arg( QgsSqliteUtils::quotedString( table ) ) ).rows();
+  const QList<QVariantList> rows = executeGdalSqlPrivate(
+                                     u"SELECT il.name AS index_name, ii.name AS column_name FROM pragma_index_list(%1) il LEFT JOIN pragma_index_info(il.name) ii WHERE il.origin = 'c'"_s.arg(
+                                       QgsSqliteUtils::quotedString( table )
+                                     )
+  )
+                                     .rows();
 
   QMap<QString, QStringList> result;
   for ( const QVariantList &row : rows )
