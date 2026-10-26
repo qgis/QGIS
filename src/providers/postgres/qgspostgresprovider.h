@@ -259,6 +259,14 @@ class QgsPostgresProvider final : public QgsVectorDataProvider
     QString geomParam( int offset ) const;
 
 
+    bool addFeaturesInsert( QgsPostgresConn *conn, QgsFeatureList &flist, QgsFeatureSink::Flags flags );
+    bool addFeaturesCopy( QgsPostgresConn *conn, QgsFeatureList &flist );
+
+    QString featureAttributeParams( QgsFeature &feature, int attrIdx, const QString &defaultValue ) const;
+
+    static QString geomCopyValue( const QgsGeometry &geom, Qgis::WkbType providerType, int srid, bool withSrid );
+
+
     static QString getNextString( const QString &txt, int &i, const QString &sep );
     static QVariant parseHstore( const QString &txt );
     static QVariant parseJson( const QString &txt );

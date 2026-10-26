@@ -1661,6 +1661,16 @@ PGresult *QgsPostgresConn::PQgetResult()
   return ::PQgetResult( mConn );
 }
 
+int QgsPostgresConn::PQputCopyData( const QByteArray &buffer )
+{
+  return ::PQputCopyData( mConn, buffer.constData(), static_cast<int>( buffer.size() ) );
+}
+
+int QgsPostgresConn::PQputCopyEnd()
+{
+  return ::PQputCopyEnd( mConn, nullptr );
+}
+
 PGresult *QgsPostgresConn::PQprepare( const QString &stmtName, const QString &query, int nParams, const Oid *paramTypes, const QString &originatorClass, const QString &queryOrigin )
 {
   QMutexLocker locker( &mLock );

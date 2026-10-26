@@ -346,6 +346,18 @@ class QgsPostgresConn : public QObject
      */
     PGresult *PQgetResult();
 
+    /**
+     * PQputCopyData sends data to the server during a COPY FROM STDIN operation.
+     * Thread safety must be ensured by the caller by calling QgsPostgresConn::lock() and QgsPostgresConn::unlock()
+     */
+    int PQputCopyData( const QByteArray &buffer );
+
+    /**
+     * PQputCopyEnd ends a COPY FROM STDIN operation.
+     * Thread safety must be ensured by the caller by calling QgsPostgresConn::lock() and QgsPostgresConn::unlock()
+     */
+    int PQputCopyEnd();
+
     bool begin();
     bool commit();
     bool rollback();

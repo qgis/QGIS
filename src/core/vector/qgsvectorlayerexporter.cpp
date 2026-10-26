@@ -230,6 +230,8 @@ QgsVectorLayerExporter::QgsVectorLayerExporter(
     }
   }
 
+  mBulkInsert = options.value( u"bulkInsert"_s, false ).toBool();
+
   mProvider = std::move( vectorProvider );
   mError = Qgis::VectorExportResult::Success;
 }
@@ -314,7 +316,11 @@ bool QgsVectorLayerExporter::flushBuffer()
   if ( mFeatureBuffer.count() <= 0 )
     return true;
 
-  if ( !mProvider->addFeatures( mFeatureBuffer, QgsFeatureSink::FastInsert ) )
+  QgsFeatureSink::Flags flags = QgsFeatureSink::FastInsert;
+  if ( mBulkInsert )
+    flags |= QgsFeatureSink::BulkLoad;
+
+  if ( !mProvider->addFeatures( mFeatureBuffer, flags ) )
   {
     const QStringList errors = mProvider->errors();
     mProvider->clearErrors();

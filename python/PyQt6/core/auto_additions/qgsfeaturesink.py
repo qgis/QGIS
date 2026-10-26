@@ -3,6 +3,7 @@ QgsFeatureSink.RegeneratePrimaryKey = QgsFeatureSink.SinkFlag.RegeneratePrimaryK
 QgsFeatureSink.SinkFlags = lambda flags=0: QgsFeatureSink.SinkFlag(flags)
 QgsFeatureSink.FastInsert = QgsFeatureSink.Flag.FastInsert
 QgsFeatureSink.RollBackOnErrors = QgsFeatureSink.Flag.RollBackOnErrors
+QgsFeatureSink.BulkLoad = QgsFeatureSink.Flag.BulkLoad
 QgsFeatureSink.Flags = lambda flags=0: QgsFeatureSink.Flag(flags)
 from enum import Enum
 

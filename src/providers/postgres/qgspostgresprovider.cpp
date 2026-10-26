@@ -2329,8 +2329,16 @@ bool QgsPostgresProvider::addFeatures( QgsFeatureList &flist, Flags flags )
   {
     return false;
   }
-  conn->lock();
 
+  conn->lock();
+  const bool returnvalue = flags.testFlag( QgsFeatureSink::BulkLoad ) ? addFeaturesCopy( conn, flist ) : addFeaturesInsert( conn, flist, flags );
+  conn->unlock();
+
+  return returnvalue;
+}
+
+bool QgsPostgresProvider::addFeaturesInsert( QgsPostgresConn *conn, QgsFeatureList &flist, Flags flags )
+{
   bool returnvalue = true;
 
   try
@@ -2534,8 +2542,6 @@ bool QgsPostgresProvider::addFeatures( QgsFeatureList &flist, Flags flags )
 
     for ( QgsFeatureList::iterator feature = flist.begin(); feature != flist.end(); ++feature )
     {
-      QgsAttributes attrs = feature->attributes();
-
       QStringList params;
       if ( !mGeometryColumn.isNull() )
       {
@@ -2545,55 +2551,7 @@ bool QgsPostgresProvider::addFeatures( QgsFeatureList &flist, Flags flags )
       params.reserve( fieldId.size() );
       for ( int i = 0; i < fieldId.size(); i++ )
       {
-        int attrIdx = fieldId[i];
-        QVariant value = attrIdx < attrs.length() ? attrs.at( attrIdx ) : QgsVariantUtils::createNullVariant( QMetaType::Type::Int );
-
-        QString v;
-        if ( QgsVariantUtils::isNull( value ) || QgsVariantUtils::isUnsetAttributeValue( value ) )
-        {
-          const QgsField fld = field( attrIdx );
-          v = paramValue( defaultValues[i], defaultValues[i] );
-          feature->setAttribute( attrIdx, convertValue( fld.type(), fld.subType(), v, fld.typeName() ) );
-        }
-        else
-        {
-          const QgsField fld = field( attrIdx );
-          const QString fieldTypeName = fld.typeName();
-          // the conversion functions expects the list as a string, so convert it according to the field type
-          if ( fieldTypeName == "json"_L1 || fieldTypeName == "jsonb"_L1 )
-          {
-            v = QString::fromStdString( QgsJsonUtils::jsonFromVariant( value ).dump() );
-          }
-          else if ( fieldTypeName == "bytea"_L1 )
-          {
-            v = "\\x" + value.toByteArray().toHex();
-          }
-          else if ( value.userType() == QMetaType::Type::QStringList )
-          {
-            QStringList list_vals = value.toStringList();
-            // all strings need to be double quoted to allow special postgres
-            // array characters such as {, or whitespace in the string
-            // but we need to escape all double quotes and backslashes
-            list_vals.replaceInStrings( "\\", "\\\\" );
-            list_vals.replaceInStrings( "\"", "\\\"" );
-            v = u"{\""_s + value.toStringList().join( "\",\""_L1 ) + u"\"}"_s;
-          }
-          else if ( value.userType() == QMetaType::Type::QVariantList )
-          {
-            v = "{" + value.toStringList().join( "," ) + "}";
-          }
-          else
-          {
-            v = paramValue( value.toString(), defaultValues[i] );
-          }
-
-          if ( v != value.toString() && fieldTypeName != "json"_L1 && fieldTypeName != "jsonb"_L1 && fieldTypeName != "bytea"_L1 )
-          {
-            feature->setAttribute( attrIdx, convertValue( fld.type(), fld.subType(), v, fld.typeName() ) );
-          }
-        }
-
-        params << v;
+        params << featureAttributeParams( *feature, fieldId[i], defaultValues[i] );
       }
 
       QgsPostgresResult result( conn->PQexecPrepared( u"addfeatures"_s, params, u"QgsPostgresProvider"_s, QGS_QUERY_LOG_ORIGIN ) );
@@ -2663,7 +2621,232 @@ bool QgsPostgresProvider::addFeatures( QgsFeatureList &flist, Flags flags )
     returnvalue = false;
   }
 
-  conn->unlock();
+  return returnvalue;
+}
+
+QString QgsPostgresProvider::featureAttributeParams( QgsFeature &feature, int attrIdx, const QString &defaultValue ) const
+{
+  const QgsAttributes attrs = feature.attributes();
+  QVariant value = attrIdx < attrs.length() ? attrs.at( attrIdx ) : QgsVariantUtils::createNullVariant( QMetaType::Type::Int );
+
+  QString v;
+  if ( QgsVariantUtils::isNull( value ) || QgsVariantUtils::isUnsetAttributeValue( value ) )
+  {
+    const QgsField fld = field( attrIdx );
+    v = paramValue( defaultValue, defaultValue );
+    feature.setAttribute( attrIdx, convertValue( fld.type(), fld.subType(), v, fld.typeName() ) );
+  }
+  else
+  {
+    const QgsField fld = field( attrIdx );
+    const QString fieldTypeName = fld.typeName();
+    // the conversion functions expects the list as a string, so convert it according to the field type
+    if ( fieldTypeName == "json"_L1 || fieldTypeName == "jsonb"_L1 )
+    {
+      v = QString::fromStdString( QgsJsonUtils::jsonFromVariant( value ).dump() );
+    }
+    else if ( fieldTypeName == "bytea"_L1 )
+    {
+      v = "\\x" + value.toByteArray().toHex();
+    }
+    else if ( value.userType() == QMetaType::Type::QStringList )
+    {
+      QStringList list_vals = value.toStringList();
+      // all strings need to be double quoted to allow special postgres
+      // array characters such as {, or whitespace in the string
+      // but we need to escape all double quotes and backslashes
+      list_vals.replaceInStrings( "\\", "\\\\" );
+      list_vals.replaceInStrings( "\"", "\\\"" );
+      v = u"{\""_s + value.toStringList().join( "\",\""_L1 ) + u"\"}"_s;
+    }
+    else if ( value.userType() == QMetaType::Type::QVariantList )
+    {
+      v = "{" + value.toStringList().join( "," ) + "}";
+    }
+    else
+    {
+      v = paramValue( value.toString(), defaultValue );
+    }
+
+    if ( v != value.toString() && fieldTypeName != "json"_L1 && fieldTypeName != "jsonb"_L1 && fieldTypeName != "bytea"_L1 )
+    {
+      feature.setAttribute( attrIdx, convertValue( fld.type(), fld.subType(), v, fld.typeName() ) );
+    }
+  }
+  return v;
+}
+
+static void appendCopyValue( QByteArray &buffer, const QString &value )
+{
+  if ( value.isNull() )
+  {
+    buffer += "\\N";
+    return;
+  }
+
+  const QByteArray utf8 = value.toUtf8();
+  for ( const char c : utf8 )
+  {
+    switch ( c )
+    {
+      case '\\':
+        buffer += "\\\\";
+        break;
+      case '\t':
+        buffer += "\\t";
+        break;
+      case '\n':
+        buffer += "\\n";
+        break;
+      case '\r':
+        buffer += "\\r";
+        break;
+      default:
+        buffer += c;
+    }
+  }
+}
+
+QString QgsPostgresProvider::geomCopyValue( const QgsGeometry &geom, Qgis::WkbType providerType, int srid, bool withSrid )
+{
+  if ( geom.isNull() )
+    return QString();
+
+  const QgsGeometry convertedGeom( convertToProviderType( geom, providerType ) );
+  const QString hexWkb = QString::fromLatin1( ( !convertedGeom.isNull() ? convertedGeom : geom ).asWkb().toHex() );
+
+  if ( withSrid && srid > 0 )
+    return u"SRID=%1;%2"_s.arg( srid ).arg( hexWkb );
+
+  return hexWkb;
+}
+
+bool QgsPostgresProvider::addFeaturesCopy( QgsPostgresConn *conn, QgsFeatureList &flist )
+{
+  QStringList columns;
+  QList<int> fieldId;
+  QStringList defaultValues;
+
+  if ( !mGeometryColumn.isNull() )
+  {
+    columns << quotedIdentifier( mGeometryColumn );
+  }
+
+  for ( int idx = 0; idx < mAttributeFields.count(); ++idx )
+  {
+    const QString fieldName = mAttributeFields.at( idx ).name();
+    if ( fieldName.isEmpty() || fieldName == mGeometryColumn )
+      continue;
+
+    if ( !mGeneratedValues.value( idx, QString() ).isEmpty() )
+    {
+      QgsDebugMsgLevel( u"Skipping field %1 (idx %2) which is GENERATED."_s.arg( fieldName, QString::number( idx ) ), 2 );
+      continue;
+    }
+
+    const QString defVal = defaultValueClause( idx );
+    bool hasValue = false;
+    for ( const QgsFeature &feature : std::as_const( flist ) )
+    {
+      const QVariant value = feature.attributes().value( idx, QgsVariantUtils::createNullVariant( QMetaType::Type::Int ) );
+      if ( !QgsVariantUtils::isNull( value ) && !QgsVariantUtils::isUnsetAttributeValue( value ) && ( defVal.isNull() || value.toString() != defVal ) )
+      {
+        hasValue = true;
+        break;
+      }
+    }
+    if ( !hasValue )
+      continue;
+
+    columns << quotedIdentifier( fieldName );
+    fieldId << idx;
+    defaultValues << defVal;
+  }
+
+  if ( columns.isEmpty() )
+  {
+    pushError( tr( "PostGIS error while adding features: COPY requires at least one column with values" ) );
+    return false;
+  }
+
+  bool returnvalue = true;
+
+  try
+  {
+    conn->begin();
+
+    const Qgis::WkbType providerType = wkbType();
+    const int srid = ( mRequestedSrid.isEmpty() ? mDetectedSrid : mRequestedSrid ).toInt();
+    const bool withSrid = mSpatialColType == SctGeometry;
+
+    QByteArray copyData;
+    for ( QgsFeature &feature : flist )
+    {
+      bool first = true;
+      if ( !mGeometryColumn.isNull() )
+      {
+        appendCopyValue( copyData, geomCopyValue( feature.geometry(), providerType, srid, withSrid ) );
+        first = false;
+      }
+
+      for ( int i = 0; i < fieldId.size(); i++ )
+      {
+        if ( !first )
+          copyData += '\t';
+        first = false;
+
+        const int attrIdx = fieldId[i];
+        QString v;
+        if ( mAttributeFields.at( attrIdx ).typeName() == "geometry"_L1 )
+        {
+          const QVariant value = feature.attributes().value( attrIdx );
+          if ( !QgsVariantUtils::isNull( value ) && !QgsVariantUtils::isUnsetAttributeValue( value ) )
+            v = geomAttrToString( value, connectionRO() );
+          else
+            v = paramValue( defaultValues[i], defaultValues[i] );
+        }
+        else
+        {
+          v = featureAttributeParams( feature, attrIdx, defaultValues[i] );
+        }
+        appendCopyValue( copyData, v );
+      }
+      copyData += '\n';
+    }
+
+    const QString copySql = u"COPY %1(%2) FROM STDIN"_s.arg( mQuery, columns.join( ',' ) );
+    QgsDebugMsgLevel( u"addfeatures using: %1"_s.arg( copySql ), 2 );
+
+    conn->PQsendQuery( copySql );
+    QgsPostgresResult copyStart( conn->PQgetResult() );
+    if ( copyStart.PQresultStatus() != PGRES_COPY_IN )
+      throw PGException( copyStart );
+
+    conn->PQputCopyData( copyData );
+    conn->PQputCopyEnd();
+
+    QgsPostgresResult copyResult( conn->PQgetResult() );
+    if ( copyResult.PQresultStatus() != PGRES_COMMAND_OK )
+      throw PGException( copyResult );
+
+    while ( PGresult *res = conn->PQgetResult() )
+      QgsPostgresResult result( res );
+
+    returnvalue &= conn->commit();
+    if ( mTransaction )
+      mTransaction->dirtyLastSavePoint();
+
+    mShared->addFeaturesCounted( flist.size() );
+  }
+  catch ( PGException &e )
+  {
+    pushError( tr( "PostGIS error while adding features: %1" ).arg( e.errorMessage() ) );
+    while ( PGresult *res = conn->PQgetResult() )
+      QgsPostgresResult result( res );
+    conn->rollback();
+    returnvalue = false;
+  }
+
   return returnvalue;
 }
 

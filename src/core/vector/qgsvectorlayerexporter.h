@@ -367,6 +367,8 @@ class CORE_EXPORT QgsVectorLayerExporter : public QgsFeatureSink
 
     bool mCreateSpatialIndex = true;
 
+    bool mBulkInsert = false;
+
 #ifdef SIP_RUN
     QgsVectorLayerExporter( const QgsVectorLayerExporter &rh );
 #endif

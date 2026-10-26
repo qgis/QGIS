@@ -67,6 +67,7 @@ void QgsExportToPostgresqlAlgorithm::initAlgorithm( const QVariantMap & )
   addParameter( new QgsProcessingParameterBoolean( u"LOWERCASE_NAMES"_s, QObject::tr( "Convert field names to lowercase" ), true ) );
   addParameter( new QgsProcessingParameterBoolean( u"DROP_STRING_LENGTH"_s, QObject::tr( "Drop length constraints on character fields" ), false ) );
   addParameter( new QgsProcessingParameterBoolean( u"FORCE_SINGLEPART"_s, QObject::tr( "Create single-part geometries instead of multipart" ), false ) );
+  addParameter( new QgsProcessingParameterBoolean( u"BULK_INSERT"_s, QObject::tr( "Use bulk insert (COPY) for faster export" ), true ) );
 }
 
 QString QgsExportToPostgresqlAlgorithm::shortHelpString() const
@@ -139,6 +140,8 @@ bool QgsExportToPostgresqlAlgorithm::prepareAlgorithm( const QVariantMap &parame
     mOptions[u"dropStringConstraints"_s] = true;
   if ( parameterAsBoolean( parameters, u"FORCE_SINGLEPART"_s, context ) )
     mOptions[u"forceSinglePartGeometryType"_s] = true;
+  if ( parameterAsBoolean( parameters, u"BULK_INSERT"_s, context ) )
+    mOptions[u"bulkInsert"_s] = true;
   if ( !mEncoding.isEmpty() )
     mOptions[u"fileEncoding"_s] = mEncoding;
 
