@@ -20,10 +20,13 @@
 #include "qgsapplication.h"
 #include "qgsauthconfig.h"
 #include "qgsauthconfigedit.h"
+#include "qgsauthconfigurationstorage.h"
+#include "qgsauthconfigurationstorageregistry.h"
 #include "qgsauthguiutils.h"
 #include "qgsauthmanager.h"
 #include "qgsauthmethodmetadata.h"
 #include "qgslogger.h"
+#include "qgssettings.h"
 
 #include <QHash>
 #include <QMessageBox>
@@ -125,8 +128,8 @@ void QgsAuthConfigSelect::loadConfig()
                                    "<li><b>Configuration ID:</b> %2</li></ul>"
     )
                                    .arg( methoddesc, config.id() ) );
-    btnConfigEdit->setEnabled( true );
-    btnConfigRemove->setEnabled( true );
+    btnConfigEdit->setEnabled( authCfgDetailsDisplayed() );
+    btnConfigRemove->setEnabled( authCfgDetailsDisplayed() );
   }
   emit selectedConfigIdChanged( mAuthCfg );
 }
@@ -232,6 +235,11 @@ void QgsAuthConfigSelect::btnConfigEdit_clicked()
   if ( !QgsApplication::authManager()->setMasterPassword( true ) )
     return;
 
+  if ( !authCfgDetailsDisplayed() )
+  {
+    return;
+  }
+
   QgsAuthConfigEdit *ace = new QgsAuthConfigEdit( this, mAuthCfg, mDataProvider );
   ace->setWindowModality( Qt::WindowModal );
   if ( ace->exec() )
@@ -242,8 +250,31 @@ void QgsAuthConfigSelect::btnConfigEdit_clicked()
   ace->deleteLater();
 }
 
+bool QgsAuthConfigSelect::authCfgDetailsDisplayed() const
+{
+  QgsSettings s;
+  QStringList nonEditableAuthStores = s.value( u"qgis/detailsNotDisplayedAuthStores"_s ).toStringList();
+  for ( auto it = nonEditableAuthStores.constBegin(); it != nonEditableAuthStores.constEnd(); ++it )
+  {
+    QgsAuthConfigurationStorage *authCfgStorage = QgsApplication::authManager()->authConfigurationStorageRegistry()->storage( *it );
+    if ( authCfgStorage )
+    {
+      if ( authCfgStorage->methodConfigExists( mAuthCfg ) )
+      {
+        return false;
+      }
+    }
+  }
+  return true;
+}
+
 void QgsAuthConfigSelect::btnConfigRemove_clicked()
 {
+  if ( !authCfgDetailsDisplayed() )
+  {
+    return;
+  }
+
   if ( QMessageBox::warning(
          this,
          tr( "Remove Authentication" ),

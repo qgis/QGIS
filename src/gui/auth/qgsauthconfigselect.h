@@ -84,6 +84,8 @@ class GUI_EXPORT QgsAuthConfigSelect : public QWidget, private Ui::QgsAuthConfig
 
   private:
     void loadAvailableConfigs();
+    //! Returns true if the details of mAuthCfg should be displayed
+    bool authCfgDetailsDisplayed() const;
 
     QString mAuthCfg;
     QString mDataProvider;
