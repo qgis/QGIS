@@ -66,6 +66,18 @@ will be used for camera manipulation.
 .. versionadded:: 4.0
 %End
 
+    void unsetMapTool( Qgs3DMapTool *tool );
+%Docstring
+Unsets the map ``tool`` if it is the active map tool. Does nothing
+otherwise.
+
+This is called from destructor of map tools to make sure that this map
+tool won't be used any more. You don't have to call it manually,
+Qgs3DMapTool takes care of it.
+
+.. versionadded:: 4.4
+%End
+
     Qgs3DMapTool *mapTool() const;
 %Docstring
 Returns the active map tool that will receive events from the 3D canvas.
