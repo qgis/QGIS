@@ -45,12 +45,13 @@ class QgsPointLocatorInitTask : public QgsTask
      * Returns TRUE when the task has finished and the index build was ok
      */
     bool isBuildOK() const;
-
+    void cancel() override;
     bool run() override;
 
   private:
     QgsPointLocator *mLoc = nullptr;
     bool mBuildOK = false;
+    std::unique_ptr< QgsFeedback> mFeedback;
 };
 
 /// @endcond
