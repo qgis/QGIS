@@ -597,8 +597,9 @@ class CORE_EXPORT QgsRectangle
      * spatial information (e.g. bounding box of a point or of a vertical
      * or horizontal segment).
      *
-     * \note The isPoint() test is more suitable to use to determine if the
-     * rectangle represents the bounding box of a point.
+     * \warning Do not use this method to determine if the rectangle
+     * represents the bounding box of a point. The isPoint() method
+     * should be used instead.
      *
      * \see isNull()
      * \see isPoint()
