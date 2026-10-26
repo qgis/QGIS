@@ -76,6 +76,7 @@ set(TESTS
   testqgsfeaturelistcombobox.cpp
   testqgstexteditwrapper.cpp
   testqgstableeditor.cpp
+  testqgstemporalcontrollerwidget.cpp
   testqgsnewdatabasetablewidget.cpp
   testqgsogrprovidergui.cpp
   testqgssinglebandpseudocolorrendererwidget.cpp
