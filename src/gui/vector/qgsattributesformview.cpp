@@ -645,7 +645,7 @@ void QgsAttributesFormLayoutView::onItemDoubleClicked( const QModelIndex &index 
         }
       } );
 
-      QScrollArea *qmlPreviewBox = new QScrollArea();
+      QScrollArea *qmlPreviewBox = new QgsScrollArea();
       qmlPreviewBox->setWidgetResizable( true );
       qmlPreviewBox->setMinimumWidth( 200 );
       qmlPreviewBox->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Expanding );
