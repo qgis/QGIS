@@ -2734,7 +2734,7 @@ void TestQgsProcessingAlgsPt2::extendLineAlg()
   QVERIFY( layer->dataProvider()->addFeature( f ) );
 
   f.setGeometry( QgsGeometry::fromWkt( "MultiLineString EMPTY" ) );
-  layer->dataProvider()->addFeature( f );
+  QVERIFY( layer->dataProvider()->addFeature( f ) );
 
 
   QVariantMap parameters;
