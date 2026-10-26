@@ -19,6 +19,7 @@
 #include "qgis_3d.h"
 
 #include <QObject>
+#include <QPointer>
 
 class Qgs3DMapCanvas;
 class QMouseEvent;
@@ -38,6 +39,9 @@ class _3D_EXPORT Qgs3DMapTool : public QObject
   public:
     //! Base constructor for a Qgs3DMapTool for the specified \a canvas
     Qgs3DMapTool( Qgs3DMapCanvas *canvas );
+
+    //! Destructor
+    ~Qgs3DMapTool() override;
 
     //! Reimplement to handle mouse \a event forwarded by the parent Qgs3DMapCanvas
     virtual void mousePressEvent( QMouseEvent *event );
@@ -69,7 +73,7 @@ class _3D_EXPORT Qgs3DMapTool : public QObject
     virtual void onMapSettingsChanged();
 
   protected:
-    Qgs3DMapCanvas *mCanvas = nullptr;
+    QPointer<Qgs3DMapCanvas> mCanvas;
 };
 
 #endif // QGS3DMAPTOOL_H
