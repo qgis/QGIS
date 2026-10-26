@@ -542,7 +542,7 @@ bool QgsCameraController::screenPointToWorldPos( QPoint position, double &depth,
     depth = depthBufferNonVoidAverage();
   }
 
-  worldPosition = Qgs3DUtils::screenPointToWorldPos( position, depth, mScene->engine()->size(), mDepthBufferCamera.get() );
+  worldPosition = Qgs3DUtils::screenPointToWorldPos( position, mScene->engine()->size(), mDepthBufferCamera.get(), depth );
   if ( !std::isfinite( worldPosition.x() ) || !std::isfinite( worldPosition.y() ) || !std::isfinite( worldPosition.z() ) )
   {
     QgsDebugMsgLevel( u"screenPointToWorldPos: position is NaN or Inf. This should not happen."_s, 2 );
@@ -631,7 +631,7 @@ void QgsCameraController::onPositionChangedTerrainNavigation( Qt3DInput::QMouseE
     }
 
     QVector3D cameraBeforeDragPos = mCameraBefore->position();
-    QVector3D moveToPosition = Qgs3DUtils::screenPointToWorldPos( { mouse->x(), mouse->y() }, mDragDepth, mScene->engine()->size(), mCameraBefore.get() );
+    QVector3D moveToPosition = Qgs3DUtils::screenPointToWorldPos( { mouse->x(), mouse->y() }, mScene->engine()->size(), mCameraBefore.get(), mDragDepth );
 
     QVector3D shiftVector;
     // Compute angle of camera's view vector to ground and decide if moving
