@@ -602,9 +602,9 @@ class CORE_EXPORT QgsRectangle
     /**
      * Returns TRUE if the rectangle has no area.
      *
-     * An empty rectangle may still be non-null if it contains valid
-     * spatial information (e.g. bounding box of a point or of a vertical
-     * or horizontal segment).
+     * While a null rectangle is always considered empty, an empty rectangle
+     * may still be non-null if it contains valid spatial information (e.g. the
+     * bounding box of a point or of a vertical or horizontal segment).
      *
      * \warning Do not use this method to determine if the rectangle
      * represents the bounding box of a point. The isPoint() method
@@ -615,7 +615,7 @@ class CORE_EXPORT QgsRectangle
      */
     bool isEmpty() const
     {
-      return isNull() || mXmax <= mXmin || mYmax <= mYmin || qgsDoubleNear( mXmax, mXmin ) || qgsDoubleNear( mYmax, mYmin );
+      return isNull() || qgsDoubleNear( mXmax, mXmin ) || qgsDoubleNear( mYmax, mYmin );
     }
 
     /**

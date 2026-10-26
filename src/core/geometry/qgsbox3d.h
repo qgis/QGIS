@@ -440,7 +440,8 @@ class CORE_EXPORT QgsBox3D
     bool isNull() const SIP_HOLDGIL;
 
     /**
-     * Returns TRUE if the box is empty.
+     * Returns TRUE if the box is empty, i.e. it has no volume.
+     *
      * An empty box may still be non-null if it contains valid
      * spatial information (e.g. bounding box of a point or of a vertical
      * or horizontal segment).
