@@ -363,10 +363,13 @@ bool QgsMeshEditor::faceCanBeAddedWithNewVertices( const QList<int> &verticesInd
 
 void QgsMeshEditor::applyEdit( QgsMeshEditor::Edit &edit )
 {
+  if ( !mMesh )
+    return;
+
   mTopologicalMesh.applyChanges( edit.topologicalChanges );
   mTriangularMesh->applyChanges( edit.triangularMeshChanges );
 
-  if ( mMesh && ( !edit.topologicalChanges.newVerticesZValues().isEmpty() || !edit.topologicalChanges.verticesToRemoveIndexes().isEmpty() || !edit.topologicalChanges.addedVertices().isEmpty() ) )
+  if ( !edit.topologicalChanges.newVerticesZValues().isEmpty() || !edit.topologicalChanges.verticesToRemoveIndexes().isEmpty() || !edit.topologicalChanges.addedVertices().isEmpty() )
     mMesh->invalidateZMinMax();
 
   updateElementsCount( edit.topologicalChanges );
@@ -374,10 +377,13 @@ void QgsMeshEditor::applyEdit( QgsMeshEditor::Edit &edit )
 
 void QgsMeshEditor::reverseEdit( QgsMeshEditor::Edit &edit )
 {
+  if ( !mMesh )
+    return;
+
   mTopologicalMesh.reverseChanges( edit.topologicalChanges );
   mTriangularMesh->reverseChanges( edit.triangularMeshChanges, *mMesh );
 
-  if ( mMesh && ( !edit.topologicalChanges.newVerticesZValues().isEmpty() || !edit.topologicalChanges.verticesToRemoveIndexes().isEmpty() || !edit.topologicalChanges.addedVertices().isEmpty() ) )
+  if ( !edit.topologicalChanges.newVerticesZValues().isEmpty() || !edit.topologicalChanges.verticesToRemoveIndexes().isEmpty() || !edit.topologicalChanges.addedVertices().isEmpty() )
     mMesh->invalidateZMinMax();
 
   updateElementsCount( edit.topologicalChanges, false );

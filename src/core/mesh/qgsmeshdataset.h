@@ -801,13 +801,13 @@ class QgsMeshVerticesElevationDataset : public QgsMeshDataset
      *  Returns the minimum elevation value of all vertices
      *  \since QGIS 4.4
      */
-    double zMinimum();
+    double zMinimum() const;
 
     /**
      *  Returns the maximum elevation value of all vertices
      *  \since QGIS 4.4
      */
-    double zMaximum();
+    double zMaximum() const;
 
   private:
     QgsMesh *mMesh;
