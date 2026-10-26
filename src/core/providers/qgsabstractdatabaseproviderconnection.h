@@ -879,7 +879,7 @@ class CORE_EXPORT QgsAbstractDatabaseProviderConnection : public QgsAbstractProv
 
     /**
      * Deletes the index named \a name on the table \a schema.\a table
-     * (\a schema and \table are ignored if not supported by the backend).
+     * (\a schema and \a table are ignored if not supported by the backend).
      *
      * \throws QgsProviderConnectionException if any errors are encountered.
      * \since QGIS 4.6

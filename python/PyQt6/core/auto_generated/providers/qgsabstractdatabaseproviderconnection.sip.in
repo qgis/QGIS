@@ -788,7 +788,7 @@ they cannot be removed with
     virtual void deleteIndex( const QString &schema, const QString &table, const QString &name ) const;
 %Docstring
 Deletes the index named ``name`` on the table ``schema``.``table``
-(``schema`` and \table are ignored if not supported by the backend).
+(``schema`` and ``table`` are ignored if not supported by the backend).
 
 :raises QgsProviderConnectionException: if any errors are encountered.
 
