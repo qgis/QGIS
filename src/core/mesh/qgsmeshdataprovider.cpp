@@ -196,6 +196,50 @@ bool QgsMesh::compareFaces( const QgsMeshFace &face1, const QgsMeshFace &face2 )
   return true;
 }
 
+void QgsMesh::calculateZMinMax() const
+{
+  mZMin = std::numeric_limits<double>::max();
+  mZMax = -std::numeric_limits<double>::max();
+
+  for ( qsizetype i = 0; i < vertices.size(); ++i )
+  {
+    const double z = vertices[i].z();
+    if ( std::isnan( z ) )
+      continue;
+    if ( z < mZMin )
+      mZMin = z;
+    if ( z > mZMax )
+      mZMax = z;
+  }
+}
+
+double QgsMesh::zMinimun() const
+{
+  if ( !zMinMaxIsValid() )
+    calculateZMinMax();
+
+  return mZMin;
+}
+
+double QgsMesh::zMaximum() const
+{
+  if ( !zMinMaxIsValid() )
+    calculateZMinMax();
+
+  return mZMax;
+}
+
+void QgsMesh::invalidateZMinMax()
+{
+  mZMin = std::numeric_limits<double>::quiet_NaN();
+  mZMax = std::numeric_limits<double>::quiet_NaN();
+}
+
+bool QgsMesh::zMinMaxIsValid() const
+{
+  return !std::isnan( mZMin ) && !std::isnan( mZMax );
+}
+
 bool QgsMesh::contains( const QgsMesh::ElementType &type ) const
 {
   switch ( type )

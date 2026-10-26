@@ -803,12 +803,7 @@ void TestQgsMeshEditor::badTopologicMesh()
 
 void TestQgsMeshEditor::meshEditorSimpleEdition()
 {
-  const QUndoStack undoStack;
-
-  const QgsCoordinateTransform transform;
   QgsMeshEditingError error;
-  QVERIFY( meshLayerQuadTriangle->startFrameEditing( transform, error, false ) );
-
   QgsMesh mesh;
   QgsTriangularMesh triangularMesh;
   triangularMesh.update( &mesh, QgsCoordinateTransform() );
@@ -824,10 +819,19 @@ void TestQgsMeshEditor::meshEditorSimpleEdition()
       QgsPoint() }
   ); // 4
 
+  std::unique_ptr<QgsMeshDatasetGroup> zValueDatasetGroup = meshEditor.createZValueDatasetGroup();
+  QVERIFY( zValueDatasetGroup );
+
   meshEditor.addVertices( vertices, 0.01 );
 
   for ( int i = 0; i < 5; ++i )
     QCOMPARE( meshEditor.mTopologicalMesh.facesAroundVertex( i ), QList<int>() );
+
+  double minZ = zValueDatasetGroup->minimum();
+  double maxZ = zValueDatasetGroup->maximum();
+
+  QGSCOMPARENEAR( minZ, 0.0, 0.0001 );
+  QGSCOMPARENEAR( maxZ, 0.0, 0.0001 );
 
   // add bad face
   QVERIFY( meshEditor.addFaces( { { 0, 1, 3, 2 } } ).errorType == Qgis::MeshEditingErrorType::InvalidFace );     //unordered vertex index
@@ -1416,6 +1420,13 @@ void TestQgsMeshEditor::meshEditorFromMeshLayer_quadTriangle()
 
   QgsMeshEditor *editor = meshLayerQuadTriangle->meshEditor();
 
+  QList<int> groupIndexes = meshLayerQuadTriangle->datasetGroupsIndexes();
+  QCOMPARE( groupIndexes.size(), 1 );
+  QgsMeshDatasetIndex elevationIndex( groupIndexes.at( 0 ) );
+  QgsMeshDatasetGroupMetadata elevationDatasetGroupMeta = meshLayerQuadTriangle->datasetGroupMetadata( elevationIndex );
+  QGSCOMPARENEAR( elevationDatasetGroupMeta.minimum(), 10., 0.0001 );
+  QGSCOMPARENEAR( elevationDatasetGroupMeta.maximum(), 50., 0.0001 );
+
   editor->addVertices( { { 4000, 2000, 0 } }, 10 );
   QCOMPARE( meshLayerQuadTriangle->meshVertexCount(), 6 );
   QCOMPARE( meshLayerQuadTriangle->meshEditor()->freeVerticesIndexes().count(), 1 );
@@ -1439,9 +1450,17 @@ void TestQgsMeshEditor::meshEditorFromMeshLayer_quadTriangle()
 
   QCOMPARE( meshLayerQuadTriangle->meshVertexCount(), 7 );
 
+  elevationDatasetGroupMeta = meshLayerQuadTriangle->datasetGroupMetadata( elevationIndex );
+  QGSCOMPARENEAR( elevationDatasetGroupMeta.minimum(), 0., 0.0001 );
+  QGSCOMPARENEAR( elevationDatasetGroupMeta.maximum(), 50., 0.0001 );
+
   meshLayerQuadTriangle->undoStack()->undo();
   QCOMPARE( meshLayerQuadTriangle->meshVertexCount(), 5 );
   QCOMPARE( meshLayerQuadTriangle->meshEditor()->freeVerticesIndexes().count(), 0 );
+
+  elevationDatasetGroupMeta = meshLayerQuadTriangle->datasetGroupMetadata( elevationIndex );
+  QGSCOMPARENEAR( elevationDatasetGroupMeta.minimum(), 10., 0.0001 );
+  QGSCOMPARENEAR( elevationDatasetGroupMeta.maximum(), 50., 0.0001 );
 
   meshLayerQuadTriangle->undoStack()->redo();
   QCOMPARE( meshLayerQuadTriangle->meshVertexCount(), 7 );
@@ -1449,11 +1468,18 @@ void TestQgsMeshEditor::meshEditorFromMeshLayer_quadTriangle()
   QVERIFY( meshLayerQuadTriangle->meshEditor()->freeVerticesIndexes().contains( 5 ) );
   QVERIFY( meshLayerQuadTriangle->meshEditor()->freeVerticesIndexes().contains( 6 ) );
 
+  elevationDatasetGroupMeta = meshLayerQuadTriangle->datasetGroupMetadata( elevationIndex );
+  QGSCOMPARENEAR( elevationDatasetGroupMeta.minimum(), 0., 0.0001 );
+  QGSCOMPARENEAR( elevationDatasetGroupMeta.maximum(), 50., 0.0001 );
+
   // Add vertices under the tolerance from the edge inside the face
-  editor->addVertices( { { 2500, 2002, 0 } }, 10 );
+  editor->addVertices( { { 2500, 2002, 60 } }, 10 );
   QCOMPARE( meshLayerQuadTriangle->meshVertexCount(), 8 );
   QCOMPARE( meshLayerQuadTriangle->meshFaceCount(), 3 );
   QCOMPARE( meshLayerQuadTriangle->meshEditor()->freeVerticesIndexes().count(), 2 );
+  elevationDatasetGroupMeta = meshLayerQuadTriangle->datasetGroupMetadata( elevationIndex );
+  QGSCOMPARENEAR( elevationDatasetGroupMeta.minimum(), 0., 0.0001 );
+  QGSCOMPARENEAR( elevationDatasetGroupMeta.maximum(), 60., 0.0001 );
   meshLayerQuadTriangle->undoStack()->undo();
 
   // Add vertices under the tolerance from the edge outside the face
@@ -1573,7 +1599,7 @@ void TestQgsMeshEditor::meshEditorFromMeshLayer_quadTriangle()
   QCOMPARE( meshLayerQuadTriangle->meshEditor()->freeVerticesIndexes().count(), 0 );
 
   //Add a vertex on a face and one external
-  editor->addVertices( { { 1500, 2800, 0 }, { 3000, 3500, 0 } }, 10 );
+  editor->addVertices( { { 1500, 2800, -10 }, { 3000, 3500, 1000 } }, 10 );
 
   QCOMPARE( meshLayerQuadTriangle->meshVertexCount(), 9 );
   QCOMPARE( meshLayerQuadTriangle->meshFaceCount(), 7 ); // vertex on a quad face : 4 faces created, 1 removed, removed are still present but void and not counted
@@ -1585,6 +1611,9 @@ void TestQgsMeshEditor::meshEditorFromMeshLayer_quadTriangle()
 
   QCOMPARE( meshLayerQuadTriangle->meshEditor()->freeVerticesIndexes().count(), 1 );
   QVERIFY( meshLayerQuadTriangle->meshEditor()->freeVerticesIndexes().contains( 8 ) );
+  elevationDatasetGroupMeta = meshLayerQuadTriangle->datasetGroupMetadata( elevationIndex );
+  QGSCOMPARENEAR( elevationDatasetGroupMeta.minimum(), -10., 0.0001 );
+  QGSCOMPARENEAR( elevationDatasetGroupMeta.maximum(), 100., 0.0001 );
 
   QgsPointXY snappedPoint = meshLayerQuadTriangle->snapOnElement( QgsMesh::Vertex, QgsPoint( 1498, 2805, 0 ), 10 );
   QVERIFY( snappedPoint.compare( QgsPointXY( 1500, 2800 ), 1e-6 ) );
