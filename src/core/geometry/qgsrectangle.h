@@ -597,11 +597,29 @@ class CORE_EXPORT QgsRectangle
      * spatial information (e.g. bounding box of a point or of a vertical
      * or horizontal segment).
      *
+     * \note The isPoint() test is more suitable to use to determine if the
+     * rectangle represents the bounding box of a point.
+     *
      * \see isNull()
+     * \see isPoint()
      */
     bool isEmpty() const
     {
       return isNull() || mXmax <= mXmin || mYmax <= mYmin || qgsDoubleNear( mXmax, mXmin ) || qgsDoubleNear( mYmax, mYmin );
+    }
+
+    /**
+     * Returns TRUE if the rectangle represents a point.
+     *
+     * A rectangle represents a point if both the x coordinates are an exact match and the y coordinates are
+     * an exact match.
+     *
+     * \see isNull()
+     * \since QGIS 4.4
+     */
+    bool isPoint() const
+    {
+      return qgsDoubleNear( mXmax, mXmin ) && qgsDoubleNear( mYmax, mYmin ) && !isNull();
     }
 
     /**
