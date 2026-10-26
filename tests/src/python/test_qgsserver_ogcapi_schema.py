@@ -121,6 +121,7 @@ class QgsServerOgcApiSchemaTest(QgsServerAPITestBase):
         ds = driver.CreateDataSource(temp_db_path)
         layer = ds.CreateLayer("layer1", geom_type=ogr.wkbPoint, srs=None)
         field_defn = ogr.FieldDefn("field1_string", ogr.OFTString)
+        field_defn.SetComment("A test string field")
         layer.CreateField(field_defn)
 
         # Add a feature to the layer
@@ -155,6 +156,9 @@ class QgsServerOgcApiSchemaTest(QgsServerAPITestBase):
         self.assertEqual(j["properties"]["fid"]["format"], "int64")
         self.assertEqual(j["properties"]["fid"]["x-ogc-propertySeq"], 1)
         self.assertEqual(j["properties"]["field1_string"]["type"], "string")
+        self.assertEqual(
+            j["properties"]["field1_string"]["description"], "A test string field"
+        )
         self.assertEqual(j["properties"]["field1_string"]["x-ogc-propertySeq"], 2)
         self.assertEqual(j["properties"]["geometry"]["format"], "geometry-point")
         self.assertEqual(j["properties"]["geometry"]["x-ogc-propertySeq"], 3)

@@ -346,6 +346,7 @@ void QgsWfs3AbstractItemsHandler::gatherLayerFieldsInfo( json &data, const QgsVe
       std::optional<bool> nullable;    // unused for now!
       std::optional<std::string> role; // x-ogc-role
       std::optional<std::string> title;
+      std::optional<std::string> description;
       std::optional<std::string> format;
       std::optional<std::string> unit;
       std::optional<json> minimum; // range (can be int or double)
@@ -568,7 +569,7 @@ void QgsWfs3AbstractItemsHandler::gatherLayerFieldsInfo( json &data, const QgsVe
 
         if ( !field.comment().isEmpty() )
         {
-          fInfo.title = field.comment().toStdString();
+          fInfo.description = field.comment().toStdString();
         }
 
         fieldTypeFormat( field, fInfo );
@@ -841,6 +842,8 @@ void QgsWfs3AbstractItemsHandler::gatherLayerFieldsInfo( json &data, const QgsVe
       fieldsInfo[fieldName]["type"] = fInfo.type.value();
     if ( fInfo.title.has_value() )
       fieldsInfo[fieldName]["title"] = fInfo.title.value();
+    if ( fInfo.description.has_value() )
+      fieldsInfo[fieldName]["description"] = fInfo.description.value();
     if ( fInfo.readOnly.has_value() )
       fieldsInfo[fieldName]["readOnly"] = fInfo.readOnly.value();
     if ( fInfo.role.has_value() )
