@@ -2311,6 +2311,251 @@ calculateStuff(50);
             "'",
         )
 
+    def test_if_single_line_blocks(self):
+        script = QgsEsriArcadeScript(
+            """
+if (1)
+$feature.LABEL_OLD;
+"""
+        )
+
+        self.assertFalse(script.hasParserError())
+
+        self.assertIsInstance(script.rootBlock(), QgsEsriArcadeBlockStatement)
+        self.assertEqual(script.rootBlock().count(), 1)
+
+        self.assertIsInstance(
+            script.rootBlock().statements()[0],
+            QgsEsriArcadeIfStatement,
+        )
+
+        self.assertIsInstance(
+            script.rootBlock().statements()[0].condition(),
+            QgsEsriArcadeLiteralExpression,
+        )
+
+        self.assertIsInstance(
+            script.rootBlock().statements()[0].trueBlock(), QgsEsriArcadeBlockStatement
+        )
+        self.assertEqual(
+            len(script.rootBlock().statements()[0].trueBlock().statements()), 1
+        )
+        self.assertIsInstance(
+            script.rootBlock().statements()[0].trueBlock().statements()[0],
+            QgsEsriArcadeExpressionStatement,
+        )
+
+        self.assertIsNone(script.rootBlock().statements()[0].falseBlock())
+
+        script = QgsEsriArcadeScript(
+            """
+if($feature.color == 2)
+return $feature.TEXT
+"""
+        )
+
+        self.assertFalse(script.hasParserError())
+
+        self.assertIsInstance(script.rootBlock(), QgsEsriArcadeBlockStatement)
+        self.assertEqual(script.rootBlock().count(), 1)
+
+        self.assertIsInstance(
+            script.rootBlock().statements()[0],
+            QgsEsriArcadeIfStatement,
+        )
+
+    def test_if_else_single_line_blocks(self):
+        script = QgsEsriArcadeScript(
+            """
+if (1)
+$feature.LABEL_OLD;
+else
+$feature.LABELTEXT;
+"""
+        )
+
+        self.assertFalse(script.hasParserError())
+
+        self.assertIsInstance(script.rootBlock(), QgsEsriArcadeBlockStatement)
+        self.assertEqual(script.rootBlock().count(), 1)
+
+        self.assertIsInstance(
+            script.rootBlock().statements()[0],
+            QgsEsriArcadeIfStatement,
+        )
+
+        self.assertIsInstance(
+            script.rootBlock().statements()[0].condition(),
+            QgsEsriArcadeLiteralExpression,
+        )
+
+        self.assertIsInstance(
+            script.rootBlock().statements()[0].trueBlock(), QgsEsriArcadeBlockStatement
+        )
+        self.assertEqual(
+            len(script.rootBlock().statements()[0].trueBlock().statements()), 1
+        )
+        self.assertIsInstance(
+            script.rootBlock().statements()[0].trueBlock().statements()[0],
+            QgsEsriArcadeExpressionStatement,
+        )
+
+        self.assertIsInstance(
+            script.rootBlock().statements()[0].falseBlock(), QgsEsriArcadeBlockStatement
+        )
+        self.assertEqual(
+            len(script.rootBlock().statements()[0].falseBlock().statements()), 1
+        )
+        self.assertIsInstance(
+            script.rootBlock().statements()[0].falseBlock().statements()[0],
+            QgsEsriArcadeExpressionStatement,
+        )
+
+        script = QgsEsriArcadeScript(
+            """
+if($feature.color == 2)
+$feature.TEXT
+else
+$feature.OTHER_TEXT
+"""
+        )
+
+        self.assertFalse(script.hasParserError())
+
+        self.assertIsInstance(script.rootBlock(), QgsEsriArcadeBlockStatement)
+        self.assertEqual(script.rootBlock().count(), 1)
+
+        self.assertIsInstance(
+            script.rootBlock().statements()[0],
+            QgsEsriArcadeIfStatement,
+        )
+
+    def test_for_single_line_blocks(self):
+        script = QgsEsriArcadeScript(
+            """
+for( i in y)
+$feature.LABEL_OLD;
+"""
+        )
+
+        self.assertFalse(script.hasParserError())
+
+        self.assertIsInstance(script.rootBlock(), QgsEsriArcadeBlockStatement)
+        self.assertEqual(script.rootBlock().count(), 1)
+
+        self.assertIsInstance(
+            script.rootBlock().statements()[0],
+            QgsEsriArcadeForInStatement,
+        )
+
+        self.assertIsInstance(
+            script.rootBlock().statements()[0].body(), QgsEsriArcadeBlockStatement
+        )
+        self.assertEqual(len(script.rootBlock().statements()[0].body().statements()), 1)
+        self.assertIsInstance(
+            script.rootBlock().statements()[0].body().statements()[0],
+            QgsEsriArcadeExpressionStatement,
+        )
+
+        script = QgsEsriArcadeScript(
+            """
+for(var z=0; z < 100; z++)
+y++;
+"""
+        )
+
+        self.assertFalse(script.hasParserError())
+
+        self.assertIsInstance(script.rootBlock(), QgsEsriArcadeBlockStatement)
+        self.assertEqual(script.rootBlock().count(), 1)
+
+        self.assertIsInstance(
+            script.rootBlock().statements()[0],
+            QgsEsriArcadeForStatement,
+        )
+
+        self.assertIsInstance(
+            script.rootBlock().statements()[0].body(), QgsEsriArcadeBlockStatement
+        )
+        self.assertEqual(len(script.rootBlock().statements()[0].body().statements()), 1)
+        self.assertIsInstance(
+            script.rootBlock().statements()[0].body().statements()[0],
+            QgsEsriArcadeExpressionStatement,
+        )
+
+    def test_while_single_line_blocks(self):
+        script = QgsEsriArcadeScript(
+            """
+while( 1 )
+$feature.LABEL_OLD;
+"""
+        )
+
+        self.assertFalse(script.hasParserError())
+
+        self.assertIsInstance(script.rootBlock(), QgsEsriArcadeBlockStatement)
+        self.assertEqual(script.rootBlock().count(), 1)
+
+        self.assertIsInstance(
+            script.rootBlock().statements()[0],
+            QgsEsriArcadeWhileStatement,
+        )
+
+        self.assertIsInstance(
+            script.rootBlock().statements()[0].body(), QgsEsriArcadeBlockStatement
+        )
+        self.assertEqual(len(script.rootBlock().statements()[0].body().statements()), 1)
+        self.assertIsInstance(
+            script.rootBlock().statements()[0].body().statements()[0],
+            QgsEsriArcadeExpressionStatement,
+        )
+
+    def test_implicit_line_end(self):
+        script = QgsEsriArcadeScript(
+            """
+var v = $feature.UNFALL TYP_CODE
+
+if (v > 0 && v < 100) {
+return 1; // green
+}
+"""
+        )
+
+        self.assertFalse(script.hasParserError())
+
+        self.assertIsInstance(script.rootBlock(), QgsEsriArcadeBlockStatement)
+        self.assertEqual(script.rootBlock().count(), 2)
+
+        self.assertIsInstance(
+            script.rootBlock().statements()[0],
+            QgsEsriArcadeVariableDeclarationStatement,
+        )
+        self.assertEqual(
+            script.rootBlock().statements()[0].variableName(),
+            "v",
+        )
+
+        self.assertIsInstance(
+            script.rootBlock().statements()[0].initializer(),
+            QgsEsriArcadeMemberAccessExpression,
+        )
+        self.assertEqual(
+            script.rootBlock().statements()[0].initializer().memberName(),
+            "UNFALL TYP_CODE",
+        )
+
+        self.assertIsInstance(
+            script.rootBlock().statements()[1], QgsEsriArcadeIfStatement
+        )
+
+        self.assertEqual(
+            len(script.rootBlock().statements()[1].trueBlock().statements()), 1
+        )
+        self.assertIsInstance(
+            script.rootBlock().statements()[1].trueBlock().statements()[0],
+            QgsEsriArcadeReturnStatement,
+        )
+
 
 if __name__ == "__main__":
     unittest.main()
