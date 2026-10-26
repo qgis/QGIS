@@ -691,6 +691,86 @@ class TestPyQgsProviderConnectionBase:
             names,
         )
 
+    def test_create_delete_index(self):
+        """Test index creation, listing and deletion"""
+
+        md = QgsProviderRegistry.instance().providerMetadata(self.providerKey)
+        conn = md.createConnection(self.uri, {})
+        if not (
+            conn.capabilities2()
+            & Qgis.DatabaseProviderConnectionCapability2.CreateIndex
+        ):
+            self.skipTest("Provider does not support index operations")
+
+        capabilities = conn.capabilities()
+        schema = None
+        if capabilities & QgsAbstractDatabaseProviderConnection.Capability.CreateSchema:
+            schema = self.getUniqueSchemaName("myNewSchema")
+            if schema in conn.schemas():
+                conn.dropSchema(schema, True)
+            conn.createSchema(schema)
+        elif capabilities & QgsAbstractDatabaseProviderConnection.Capability.Schemas:
+            schema = self.getUniqueSchemaName(self.defaultSchema)
+
+        table = "myIndexTable"
+        if table in self._table_names(conn.tables(schema)):
+            conn.dropVectorTable(schema, table)
+
+        fields = QgsFields()
+        fields.append(QgsField("a", QVariant.Int))
+        fields.append(QgsField("b", QVariant.String))
+        fields.append(QgsField("c", QVariant.Int))
+        conn.createVectorTable(
+            schema,
+            table,
+            fields,
+            QgsWkbTypes.Type.NoGeometry,
+            QgsCoordinateReferenceSystem(),
+            True,
+            {},
+        )
+
+        qualified_table = f'"{schema}"."{table}"' if schema else f'"{table}"'
+
+        conn.createIndex(schema, table, "a", "idx_a")
+        conn.createIndex(schema, table, "b", "idx_b")
+        conn.createIndex(schema, table, "c", "idx_c")
+        self.assertEqual(
+            conn.tableIndexes(schema, table),
+            {"idx_a": ["a"], "idx_b": ["b"], "idx_c": ["c"]},
+        )
+
+        conn.executeSql(f'CREATE INDEX "idx_c_a" ON {qualified_table} ("c", "a")')
+        self.assertCountEqual(conn.tableIndexes(schema, table)["idx_c_a"], ["c", "a"])
+
+        with self.assertRaises(QgsProviderConnectionException):
+            conn.createIndex(schema, table, "a", "idx_a")
+        with self.assertRaises(QgsProviderConnectionException):
+            conn.createIndex(schema, table, "notExists", "idx_not_exists")
+        with self.assertRaises(QgsProviderConnectionException):
+            conn.createIndex(schema, table, "a", "")
+        with self.assertRaises(QgsProviderConnectionException):
+            conn.deleteIndex(schema, table, "notExists")
+        with self.assertRaises(QgsProviderConnectionException):
+            conn.deleteIndex(schema, table, "")
+
+        conn.deleteIndex(schema, table, "idx_b")
+        indexes = conn.tableIndexes(schema, table)
+        self.assertCountEqual(indexes.keys(), ["idx_a", "idx_c", "idx_c_a"])
+        self.assertCountEqual(indexes["idx_c_a"], ["c", "a"])
+
+        for name, columns in conn.tableIndexes(schema, table).items():
+            if "a" in columns:
+                conn.deleteIndex(schema, table, name)
+        self.assertEqual(conn.tableIndexes(schema, table), {"idx_c": ["c"]})
+
+        conn.deleteIndex(schema, table, "idx_c")
+        self.assertEqual(conn.tableIndexes(schema, table), {})
+
+        conn.dropVectorTable(schema, table)
+        if capabilities & QgsAbstractDatabaseProviderConnection.Capability.CreateSchema:
+            conn.dropSchema(schema, True)
+
     def testExecuteSqlCancel(self):
         """Test that feedback can cancel an executeSql query"""
 
