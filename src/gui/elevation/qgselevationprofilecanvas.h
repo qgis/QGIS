@@ -138,12 +138,12 @@ class GUI_EXPORT QgsElevationProfileCanvas : public QgsPlotCanvas
     % MethodCode
       if ( PyList_Check( a0 ) && PyList_GET_SIZE( a0 ) )
       {
+        sipIsErr = 0;
         QList< std::variant< QgsMapLayer *, QgsAbstractProfileSource * > > sourcesList;
         for ( SIP_SSIZE_T i = 0; i < PyList_GET_SIZE( a0 ); ++i )
         {
           PyObject *p0 = PyList_GetItem( a0, i );
           int state;
-          sipIsErr = 0;
 
           const sipTypeDef *source_type = sipFindType( "QgsAbstractProfileSource" );
 
@@ -173,7 +173,10 @@ class GUI_EXPORT QgsElevationProfileCanvas : public QgsPlotCanvas
             PyErr_SetString( PyExc_TypeError, u"The input list contains an element with unexpected type!"_s.toUtf8().constData() );
           }
         }
-        sipCpp->setSources( sourcesList );
+        if ( !sipIsErr )
+        {
+          sipCpp->setSources( sourcesList );
+        }
       }
       else
       {

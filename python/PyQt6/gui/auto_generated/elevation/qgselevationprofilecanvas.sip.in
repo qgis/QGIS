@@ -115,12 +115,12 @@ Sets the list of ``sources`` to include in the profile.
 %MethodCode
       if ( PyList_Check( a0 ) && PyList_GET_SIZE( a0 ) )
       {
+        sipIsErr = 0;
         QList< std::variant< QgsMapLayer *, QgsAbstractProfileSource * > > sourcesList;
         for ( Py_ssize_t i = 0; i < PyList_GET_SIZE( a0 ); ++i )
         {
           PyObject *p0 = PyList_GetItem( a0, i );
           int state;
-          sipIsErr = 0;
 
           const sipTypeDef *source_type = sipFindType( "QgsAbstractProfileSource" );
 
@@ -150,7 +150,10 @@ Sets the list of ``sources`` to include in the profile.
             PyErr_SetString( PyExc_TypeError, QStringLiteral( "The input list contains an element with unexpected type!" ).toUtf8().constData() );
           }
         }
-        sipCpp->setSources( sourcesList );
+        if ( !sipIsErr )
+        {
+          sipCpp->setSources( sourcesList );
+        }
       }
       else
       {
