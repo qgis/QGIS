@@ -790,6 +790,8 @@ Sets the reference time of the dataset group
   protected:
 
 
+    virtual void updateStatistic() const;
+
 };
 
 

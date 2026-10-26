@@ -55,15 +55,7 @@ QgsMeshEditor::QgsMeshEditor( QgsMesh *nativeMesh, QgsTriangularMesh *triangular
 
 std::unique_ptr< QgsMeshDatasetGroup > QgsMeshEditor::createZValueDatasetGroup()
 {
-  std::unique_ptr<QgsMeshDatasetGroup> zValueDatasetGroup = std::make_unique<QgsMeshVerticesElevationDatasetGroup>( tr( "vertices Z value" ), mMesh );
-
-  // this DOES look very dangerous!
-  // TODO rework to avoid this danger
-
-  // cppcheck-suppress danglingLifetime
-  mZValueDatasetGroup = zValueDatasetGroup.get();
-
-  return zValueDatasetGroup;
+  return std::make_unique<QgsMeshVerticesElevationDatasetGroup>( tr( "vertices Z value" ), mMesh );
 }
 
 QgsMeshEditor::~QgsMeshEditor() = default;
@@ -374,9 +366,8 @@ void QgsMeshEditor::applyEdit( QgsMeshEditor::Edit &edit )
   mTopologicalMesh.applyChanges( edit.topologicalChanges );
   mTriangularMesh->applyChanges( edit.triangularMeshChanges );
 
-  if ( mZValueDatasetGroup
-       && ( !edit.topologicalChanges.newVerticesZValues().isEmpty() || !edit.topologicalChanges.verticesToRemoveIndexes().isEmpty() || !edit.topologicalChanges.addedVertices().isEmpty() ) )
-    mZValueDatasetGroup->setStatisticObsolete();
+  if ( mMesh && ( !edit.topologicalChanges.newVerticesZValues().isEmpty() || !edit.topologicalChanges.verticesToRemoveIndexes().isEmpty() || !edit.topologicalChanges.addedVertices().isEmpty() ) )
+    mMesh->invalidateZMinMax();
 
   updateElementsCount( edit.topologicalChanges );
 }
@@ -386,9 +377,8 @@ void QgsMeshEditor::reverseEdit( QgsMeshEditor::Edit &edit )
   mTopologicalMesh.reverseChanges( edit.topologicalChanges );
   mTriangularMesh->reverseChanges( edit.triangularMeshChanges, *mMesh );
 
-  if ( mZValueDatasetGroup
-       && ( !edit.topologicalChanges.newVerticesZValues().isEmpty() || !edit.topologicalChanges.verticesToRemoveIndexes().isEmpty() || !edit.topologicalChanges.addedVertices().isEmpty() ) )
-    mZValueDatasetGroup->setStatisticObsolete();
+  if ( mMesh && ( !edit.topologicalChanges.newVerticesZValues().isEmpty() || !edit.topologicalChanges.verticesToRemoveIndexes().isEmpty() || !edit.topologicalChanges.addedVertices().isEmpty() ) )
+    mMesh->invalidateZMinMax();
 
   updateElementsCount( edit.topologicalChanges, false );
 }
@@ -419,8 +409,8 @@ void QgsMeshEditor::applyAddVertex( QgsMeshEditor::Edit &edit, const QgsMeshVert
 
   applyEditOnTriangularMesh( edit, topologicChanges );
 
-  if ( mZValueDatasetGroup )
-    mZValueDatasetGroup->setStatisticObsolete();
+  if ( mMesh )
+    mMesh->invalidateZMinMax();
 
   updateElementsCount( edit.topologicalChanges );
 }
@@ -433,8 +423,8 @@ bool QgsMeshEditor::applyRemoveVertexFillHole( QgsMeshEditor::Edit &edit, int ve
   {
     applyEditOnTriangularMesh( edit, changes );
 
-    if ( mZValueDatasetGroup )
-      mZValueDatasetGroup->setStatisticObsolete();
+    if ( mMesh )
+      mMesh->invalidateZMinMax();
 
     updateElementsCount( edit.topologicalChanges );
     return true;
@@ -447,8 +437,8 @@ void QgsMeshEditor::applyRemoveVerticesWithoutFillHole( QgsMeshEditor::Edit &edi
 {
   applyEditOnTriangularMesh( edit, mTopologicalMesh.removeVertices( verticesIndexes ) );
 
-  if ( mZValueDatasetGroup )
-    mZValueDatasetGroup->setStatisticObsolete();
+  if ( mMesh )
+    mMesh->invalidateZMinMax();
 
   updateElementsCount( edit.topologicalChanges );
 }
@@ -471,8 +461,8 @@ void QgsMeshEditor::applyChangeZValue( QgsMeshEditor::Edit &edit, const QList<in
 {
   applyEditOnTriangularMesh( edit, mTopologicalMesh.changeZValue( verticesIndexes, newValues ) );
 
-  if ( mZValueDatasetGroup )
-    mZValueDatasetGroup->setStatisticObsolete();
+  if ( mMesh )
+    mMesh->invalidateZMinMax();
 }
 
 void QgsMeshEditor::applyChangeXYValue( QgsMeshEditor::Edit &edit, const QList<int> &verticesIndexes, const QList<QgsPointXY> &newValues )
@@ -507,8 +497,8 @@ void QgsMeshEditor::applyAdvancedEdit( QgsMeshEditor::Edit &edit, QgsMeshAdvance
 
   updateElementsCount( edit.topologicalChanges );
 
-  if ( mZValueDatasetGroup )
-    mZValueDatasetGroup->setStatisticObsolete();
+  if ( mMesh )
+    mMesh->invalidateZMinMax();
 }
 
 void QgsMeshEditor::applyEditOnTriangularMesh( QgsMeshEditor::Edit &edit, const QgsTopologicalMesh::Changes &topologicChanges )

@@ -692,12 +692,13 @@ class CORE_EXPORT QgsMeshDatasetGroup
     QMap<QString, QString> mMetadata;
     bool mIsScalar = true;
 
+    virtual void updateStatistic() const;
+
   private:
     mutable double mMinimum = std::numeric_limits<double>::quiet_NaN();
     mutable double mMaximum = std::numeric_limits<double>::quiet_NaN();
     mutable bool mIsStatisticObsolete = true;
 
-    void updateStatistic() const;
 
     QDateTime mReferenceTime;
 };
@@ -791,13 +792,22 @@ class QgsMeshVerticesElevationDataset : public QgsMeshDataset
 
     QgsMeshDatasetValue datasetValue( int valueIndex ) const override;
     QgsMeshDataBlock datasetValues( bool isScalar, int valueIndex, int count ) const override;
-    ;
     QgsMeshDataBlock areFacesActive( int faceIndex, int count ) const override;
-    ;
     bool isActive( int ) const override { return true; };
     QgsMeshDatasetMetadata metadata() const override;
-    ;
     int valuesCount() const override;
+
+    /**
+     *  Returns the minimum elevation value of all vertices
+     *  \since QGIS 4.4
+     */
+    double zMinimum();
+
+    /**
+     *  Returns the maximum elevation value of all vertices
+     *  \since QGIS 4.4
+     */
+    double zMaximum();
 
   private:
     QgsMesh *mMesh;
@@ -820,13 +830,13 @@ class CORE_EXPORT QgsMeshVerticesElevationDatasetGroup : public QgsMeshDatasetGr
 
     void initialize() override;
     QgsMeshDatasetMetadata datasetMetadata( int datasetIndex ) const override;
-    ;
     int datasetCount() const override;
-    ;
     QgsMeshDataset *dataset( int index ) const override;
-    ;
     QgsMeshDatasetGroup::Type type() const override;
     QDomElement writeXml( QDomDocument &, const QgsReadWriteContext & ) const override { return QDomElement(); };
+
+  protected:
+    void updateStatistic() const override;
 
   private:
     std::unique_ptr<QgsMeshVerticesElevationDataset> mDataset;

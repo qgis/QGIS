@@ -82,6 +82,32 @@ and same clock wise
 .. versionadded:: 3.16
 %End
 
+
+    double zMinimun() const;
+%Docstring
+Returns the minimum elevation value of all vertices of the mesh.
+
+.. versionadded:: 4.4
+
+\note
+%End
+
+    double zMaximum() const;
+%Docstring
+Returns the maximum elevation value of all vertices of the mesh.
+
+.. versionadded:: 4.4
+%End
+
+    void invalidateZMinMax();
+%Docstring
+Invalidates the minimum and maximum elevation values, therefoe when
+querying :py:func:`~QgsMesh.zMinimum` or :py:func:`~QgsMesh.zMaximum`,
+the minimum and maximum are recalculated before returning the value.
+
+.. versionadded:: 4.4
+%End
+
 };
 
 

@@ -105,6 +105,34 @@ struct CORE_EXPORT QgsMesh
     QVector<QgsMeshVertex> vertices SIP_SKIP;
     QVector<QgsMeshEdge> edges SIP_SKIP;
     QVector<QgsMeshFace> faces SIP_SKIP;
+
+    /**
+     *  Returns the minimum elevation value of all vertices of the mesh.
+     *  \since QGIS 4.4
+     *
+     *  \note
+     */
+    double zMinimun() const;
+
+    /**
+     *  Returns the maximum elevation value of all vertices of the mesh.
+     *  \since QGIS 4.4
+     */
+    double zMaximum() const;
+
+    /**
+     *  Invalidates the minimum and maximum elevation values, therefoe when querying zMinimum() or zMaximum(),
+     *  the minimum and maximum are recalculated before returning the value.
+     *  \since QGIS 4.4
+     */
+    void invalidateZMinMax();
+
+  private:
+    mutable double mZMin = std::numeric_limits<double>::quiet_NaN();
+    mutable double mZMax = std::numeric_limits<double>::quiet_NaN();
+
+    bool zMinMaxIsValid() const;
+    void calculateZMinMax() const;
 };
 
 // we need to declare metatype so QgsMesh can be passed as QVariant for expressions

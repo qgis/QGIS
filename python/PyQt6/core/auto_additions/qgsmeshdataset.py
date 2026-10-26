@@ -11,7 +11,7 @@ QgsMeshDatasetGroup.Persistent = QgsMeshDatasetGroup.Type.Persistent
 QgsMeshDatasetGroup.Memory = QgsMeshDatasetGroup.Type.Memory
 QgsMeshDatasetGroup.Virtual = QgsMeshDatasetGroup.Type.Virtual
 try:
-    QgsMeshDatasetGroup.__virtual_methods__ = ['datasetGroupNamesDependentOn', 'description']
+    QgsMeshDatasetGroup.__virtual_methods__ = ['datasetGroupNamesDependentOn', 'description', 'updateStatistic']
     QgsMeshDatasetGroup.__abstract_methods__ = ['initialize', 'datasetMetadata', 'datasetCount', 'dataset', 'type', 'writeXml']
     QgsMeshDatasetGroup.__group__ = ['mesh']
 except (NameError, AttributeError):
