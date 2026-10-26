@@ -38,6 +38,7 @@ from qgis.core import (
     QgsMarkerSymbol,
     QgsPluginLayer,
     QgsPluginLayerType,
+    QgsPoint,
     QgsPrintLayout,
     QgsProfileRenderContext,
     QgsProfileRequest,
@@ -1636,6 +1637,69 @@ class TestQgsLayoutItemElevationProfile(QgisTestCase, LayoutItemTestCase):
                 [m.profileSourceId() for m in profile2.sources()],
                 [source_id, layer2.id(), layer3.id()],
             )
+
+        res = QgsApplication.profileSourceRegistry().unregisterProfileSource(source_id)
+        self.assertTrue(res)
+
+    def test_sources_getters_setters(self):
+        project = QgsProject()
+        layout = QgsPrintLayout(project)
+        profile = QgsLayoutItemElevationProfile(layout)
+        layout.addLayoutItem(profile)
+
+        self.assertFalse(profile.layers())
+        self.assertFalse(profile.sources())
+
+        layer1 = QgsVectorLayer(
+            os.path.join(unitTestDataPath(), "france_parts.shp"), "france", "ogr"
+        )
+        self.assertTrue(layer1.isValid())
+        project.addMapLayers([layer1])
+
+        layer2 = QgsRasterLayer(
+            os.path.join(unitTestDataPath(), "landsat.tif"), "landsat", "gdal"
+        )
+        self.assertTrue(layer2.isValid())
+        project.addMapLayers([layer2])
+
+        layer3 = MyPluginLayer()
+        self.assertTrue(layer3.isValid())
+        project.addMapLayers([layer3])
+
+        source = MyDummyProfileSource()
+        source_id = source.profileSourceId()
+
+        # Not allowed types
+        def _source_tests(sources):
+            with self.assertRaises(TypeError):
+                profile.setSources(sources)
+            self.assertEqual(len(profile.sources()), 0)
+
+        _source_tests(3)
+        _source_tests([3])
+        _source_tests([])
+        _source_tests([None])
+        _source_tests([QgsPoint(0, 0)])
+        _source_tests(layer1)
+        _source_tests([layer1, 3])
+        _source_tests([layer1, QgsPoint(0, 0)])
+
+        # Allowed types
+        profile.setSources([layer1])
+        self.assertEqual(len(profile.sources()), 1)
+
+        profile.setSources([layer1, layer2])
+        self.assertEqual(len(profile.sources()), 2)
+
+        profile.setSources([layer1, layer2, layer3])
+        self.assertEqual(len(profile.sources()), 3)
+
+        QgsApplication.profileSourceRegistry().registerProfileSource(source)
+
+        profile.setSources([layer1, layer2, layer3, source])
+        self.assertEqual(len(profile.sources()), 4)
+
+        project.layoutManager().addLayout(layout)
 
         res = QgsApplication.profileSourceRegistry().unregisterProfileSource(source_id)
         self.assertTrue(res)
