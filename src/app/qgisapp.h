@@ -79,6 +79,7 @@ class QgsPluginLayer;
 class QgsPointCloudLayer;
 class QgsPointXY;
 class QgsPrintLayout;
+class QgsProcessingToolboxDockWidget;
 class QgsProviderRegistry;
 class QgsProviderSublayerDetails;
 class QgsPythonUtils;
@@ -171,6 +172,7 @@ class QgsCustomizationDialog;
 class QgsTopocentricWidget;
 class QgsProcessingWidgetContextGenerator;
 class QgsAppProcessingUtils;
+class QgsToolButtonAction;
 
 #include "qgsconfig.h"
 #include "ui_qgisapp.h"
@@ -203,6 +205,7 @@ class QgsAppProcessingUtils;
 
 #include <QAbstractSocket>
 #include <QDateTime>
+#include <QFileSystemWatcher>
 #include <QGestureEvent>
 #include <QMainWindow>
 #include <QPointer>
@@ -259,6 +262,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     static const QgsSettingsEntryInteger *settingsMapTipsDelay SIP_SKIP;
     static const QgsSettingsEntryBool *settingsAskToSaveProjectChanges SIP_SKIP;
     static const QgsSettingsEntryBool *settingsWarnOldProjectVersion SIP_SKIP;
+    static const QgsSettingsEntryBool *settingsShowWelcomePage SIP_SKIP;
     static const QgsSettingsEntryBool *settingsNewProjectDefault SIP_SKIP;
     static const QgsSettingsEntryInteger *settingsProjOpenAtLaunch SIP_SKIP;
     static const QgsSettingsEntryString *settingsProjOpenAtLaunchPath SIP_SKIP;
@@ -738,6 +742,8 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     QAction *actionCheckQgisVersion() { return mActionCheckQgisVersion; }
     QAction *actionAbout() { return mActionAbout; }
     QAction *actionSponsors() { return mActionSponsors; }
+    QAction *actionEditFeaturesInPlace() { return mActionEditFeaturesInPlace; }
+    QAction *actionProcessingHistory() { return mProcessingHistoryAction; }
 
     QAction *actionShowPinnedLabels() { return mActionShowPinnedLabels; }
 
@@ -1075,7 +1081,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     void layerProperties();
 
     //! show the attribute table for the currently selected layer
-    void attributeTable( QgsAttributeTableFilterModel::FilterMode filter = QgsAttributeTableFilterModel::ShowAll, const QString &filterExpression = QString() );
+    void attributeTable( Qgis::AttributeTableFilterMode filter = Qgis::AttributeTableFilterMode::ShowAll, const QString &filterExpression = QString() );
 
     void fieldCalculator();
 
@@ -1789,6 +1795,8 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     //! Import layers in dwg format
     void dwgImport();
 
+    QToolBar *processingToolboxToolBar();
+
     /**
      * Open the project file corresponding to the
      * text)= of the given action.
@@ -1818,7 +1826,6 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     void fileOpenAfterLaunch();
     //! After project read, set any auto-opened project as successful
     void fileOpenedOKAfterLaunch();
-    void fileNewFromTemplateAction( QAction *qAction );
     void fileNewFromDefaultTemplate();
     //! Calculate new rasters from existing ones
     void showRasterCalculator();
@@ -2770,6 +2777,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     QgsAdvancedDigitizingDockWidget *mAdvancedDigitizingDockWidget = nullptr;
     QgsStatisticalSummaryDockWidget *mStatisticalSummaryDockWidget = nullptr;
     QgsBookmarks *mBookMarksDockWidget = nullptr;
+    QgsProcessingToolboxDockWidget *mProcessingToolboxDockWidget = nullptr;
 
     //! Data Source Manager
     QgsDataSourceManagerDialog *mDataSourceManagerDialog = nullptr;
@@ -2825,7 +2833,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     //! A class that facilitates tracing of features
     QgsMapCanvasTracer *mTracer = nullptr;
 
-    QToolButton *mFilterLegendToolButton = nullptr;
+    QgsToolButtonAction *mFilterLegendToolButtonAction = nullptr;
     QAction *mFilterLegendByMapContentAction = nullptr;
     QAction *mFilterLegendToggleShowPrivateLayersAction = nullptr;
     QAction *mFilterLegendToggleHideValidLayersAction = nullptr;
@@ -2937,6 +2945,9 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     QObjectUniquePtr<QgsCustomizationDialog> mCustomizationDialog;
 
     std::unique_ptr< QgsProcessingWidgetContextGenerator > mProcessingWidgetContextGenerator;
+
+    //! Project template directories to watch
+    QFileSystemWatcher mProjectTemplateWatcher;
 
     friend class QgsCanvasRefreshBlocker;
     friend class QgsMapToolsDigitizingTechniqueManager;

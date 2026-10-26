@@ -218,6 +218,7 @@ class GUI_EXPORT QgsAttributeTableView : public QgsTableView
     QMap<QModelIndex, QWidget *> mActionWidgets;
     QgsAttributeTableConfig mConfig;
     QString mSortExpression;
+    int mBlockColumnUpdates = 0;
 };
 
 #endif

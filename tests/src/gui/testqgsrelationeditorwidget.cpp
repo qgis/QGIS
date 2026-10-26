@@ -17,7 +17,7 @@
 
 #include "editorwidgets/core/qgseditorwidgetregistry.h"
 #include "qgsapplication.h"
-#include "qgsattributeform.h"
+#include "qgsattributetablemodel.h"
 #include "qgsgui.h"
 #include "qgsproject.h"
 #include "qgsrelationeditorwidget.h"

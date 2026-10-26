@@ -124,9 +124,22 @@ bool setBoundingRect(
   return true;
 }
 
-// ===================================
-// Get wms layer infos
-// ===================================
+
+QMap<QString, QgsWmsLayerInfos> QgsWmsLayerInfos::buildWmsLayerInfos( QgsServerInterface *serverIface, const QgsProject *project )
+{
+  auto outputCrsList = QList<QgsCoordinateReferenceSystem>();
+  for ( const QString &crsDef : QgsServerProjectUtils::wmsOutputCrsList( *project ) )
+  {
+    const auto crs = QgsCoordinateReferenceSystem::fromOgcWmsCrs( crsDef );
+    if ( crs.isValid() )
+    {
+      outputCrsList.append( crs );
+    }
+  }
+
+  return buildWmsLayerInfos( serverIface, project, outputCrsList );
+}
+
 QMap<QString, QgsWmsLayerInfos> QgsWmsLayerInfos::buildWmsLayerInfos( QgsServerInterface *serverIface, const QgsProject *project, const QList<QgsCoordinateReferenceSystem> &outputCrsList )
 {
   QMap<QString, QgsWmsLayerInfos> wmsLayers;

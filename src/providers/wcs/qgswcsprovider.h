@@ -149,7 +149,7 @@ class QgsWcsProvider final : public QgsRasterDataProvider, QgsGdalProviderBase
     static QMap<QString, QString> supportedMimes();
 
     /**
-     * \brief parse the full WCS ServiceExceptionReport XML document
+     * Parses the full WCS ServiceExceptionReport XML document
      *
      * \note errorTitle and errorText are updated to suit the results of this function.
      */
@@ -159,25 +159,21 @@ class QgsWcsProvider final : public QgsRasterDataProvider, QgsGdalProviderBase
     // case insensitive attribute value lookup
     static QString nodeAttribute( const QDomElement &e, const QString &name, const QString &defValue = QString() );
 
-    //! parse the WCS ServiceException XML element
+    //! Parses the WCS ServiceException XML element
     static void parseServiceException( QDomElement const &e, const QString &wcsVersion, QString &errorTitle, QString &errorText );
 
     /**
-     * \brief Calculates the combined extent of the layers selected by layersDrawn
+     * Calculates the combined extent of the layers selected by layersDrawn
      *
-     * \returns false if the capabilities document could not be retrieved or parsed -
-     *         see lastError() for more info
+     * \returns FALSE if the capabilities document could not be retrieved or parsed.
      */
     bool calculateExtent() const;
 
     /**
-     * \brief Check for parameters in the uri,
-     * stripping and saving them if present.
+     * Checks for parameters in the uri, stripping and saving them if present.
      *
      * \param uri uri to check
-     *
      */
-
     bool parseUri( const QString &uri );
 
     /**
@@ -189,16 +185,16 @@ class QgsWcsProvider final : public QgsRasterDataProvider, QgsGdalProviderBase
 
     QString coverageMetadata( const QgsWcsCoverageSummary &c ) const;
 
-    //! remove query item and replace it with a new value
+    //! Removes query item and replace it with a new value
     void setQueryItem( QUrl &url, const QString &key, const QString &value ) const;
 
-    //! Release cache resources
+    //! Releases cache resources
     void clearCache() const;
 
-    //! Create html cell (used by metadata)
+    //! Creates HTML cell (used by metadata)
     static QString htmlCell( const QString &text );
 
-    //! Create html row with 2 cells (used by metadata)
+    //! Creates HTML row with 2 cells (used by metadata)
     static QString htmlRow( const QString &text1, const QString &text2 );
 
     //! Data source URI of the WCS for this layer
@@ -219,9 +215,7 @@ class QgsWcsProvider final : public QgsRasterDataProvider, QgsGdalProviderBase
     //! Format of coverage to be used in request
     QString mFormat;
 
-    /**
-     * Flag indicating if the layer data source is a valid WCS layer
-     */
+    //! Flag indicating if the layer data source is a valid WCS layer
     bool mValid;
 
     //! Server capabilities
@@ -252,36 +246,25 @@ class QgsWcsProvider final : public QgsRasterDataProvider, QgsGdalProviderBase
     //! Number of bands
     int mBandCount = 0;
 
-    /**
-     * \brief Gdal data types used to represent data in in QGIS,
-     *          may be longer than source data type to keep nulls
-     *          indexed from 0.
-     */
+    //! GDAL data types used to represent data in in QGIS, may be longer than source data type to keep nulls indexed from 0.
     QList<GDALDataType> mGdalDataType;
 
     //! GDAL source data types, indexed from 0
     QList<GDALDataType> mSrcGdalDataType;
 
-    //! \brief Cell value representing no data. e.g. -9999, indexed from 0
+    //! Cell value representing no data. e.g. -9999, indexed from 0
     //QList<double> mNoDataValue;
 
     //! Color tables indexed from 0
     QList<QList<QgsColorRampShader::ColorRampItem>> mColorTables;
 
-    /**
-     * extents per layer (in WCS CRS:84 datum)
-     */
+    //! Extents per layer (in WCS CRS:84 datum)
     QMap<QString, QgsRectangle> mExtentForLayer;
 
-    /**
-     * available CRSs per layer
-     */
+    //! Available CRSs per layer
     QMap<QString, QStringList> mCrsForLayer;
 
-    /**
-     * WCS "queryable" per layer
-     * Used in determining if the Identify map tool can be useful on the rendered WCS map layer.
-     */
+    //! WCS "queryable" per layer, Used in determining if the Identify map tool can be useful on the rendered WCS map layer.
     QMap<QString, bool> mQueryableForLayer;
 
     //! Coverage CRS used for requests in Auth
@@ -317,7 +300,6 @@ class QgsWcsProvider final : public QgsRasterDataProvider, QgsGdalProviderBase
     //! The error message associated with the last WCS error.
     QString mError;
 
-
     //! The mime type of the message
     QString mErrorFormat;
 
@@ -331,16 +313,15 @@ class QgsWcsProvider final : public QgsRasterDataProvider, QgsGdalProviderBase
     QString mGetFeatureInfoUrlBase;
     QString mServiceMetadataURL;
 
-    //! number of layers and parents
+    //! Number of layers and parents
     //int mLayerCount;
     //QMap<int, int> mLayerParents;
     //QMap<int, QStringList> mLayerParentNames;
 
-    //! http authorization details
+    //! HTTP authorization details
     mutable QgsAuthorizationSettings mAuth;
 
-    //! whether to use hrefs from GetCapabilities (default) or
-    // the given base urls for GetMap and GetFeatureInfo
+    //! Whether to use hrefs from GetCapabilities (default) or the given base urls for GetMap and GetFeatureInfo
     bool mIgnoreGetCoverageUrl;
     bool mIgnoreAxisOrientation;
     bool mInvertAxisOrientation;
@@ -355,11 +336,13 @@ class QgsWcsProvider final : public QgsRasterDataProvider, QgsGdalProviderBase
 
     QNetworkRequest::CacheLoadControl mCacheLoadControl = QNetworkRequest::PreferNetwork;
 
-    /**
-     * Clears cache
-    */
+    //! Clears cache
     void reloadProviderData() override;
 };
+
+///
+/// QgsWcsDownloadHandler
+///
 
 //! Handler for downloading of coverage data - output is written to mCachedData
 class QgsWcsDownloadHandler : public QObject
@@ -392,8 +375,13 @@ class QgsWcsDownloadHandler : public QObject
 
     QgsRasterBlockFeedback *mFeedback = nullptr;
 
-    static int sErrors; // this should be ideally per-provider...?
+    int mErrors = 0;
 };
+
+///
+/// QgsWcsProviderMetadata
+///
+
 
 class QgsWcsProviderMetadata final : public QgsProviderMetadata
 {
@@ -408,6 +396,4 @@ class QgsWcsProviderMetadata final : public QgsProviderMetadata
     QList<Qgis::LayerType> supportedLayerTypes() const override;
 };
 
-#endif
-
-// ENDS
+#endif // QGSWCSPROVIDER_H

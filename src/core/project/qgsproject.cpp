@@ -2141,32 +2141,44 @@ bool QgsProject::readProjectFile( const QString &filename, Qgis::ProjectReadFlag
     return false;
   }
 
-  QTextStream textStream( &projectFile );
-  QString projectString = textStream.readAll();
-  projectFile.close();
-
-  for ( int i = 0; i < 32; i++ )
+  if ( !doc->setContent( &projectFile ) )
   {
-    if ( i == 9 || i == 10 || i == 13 )
+    projectFile.seek( 0 );
+    QTextStream textStream( &projectFile );
+    QString projectString;
+    while ( true )
     {
-      continue;
+      QString part = textStream.read( 65536 );
+      if ( part.isEmpty() )
+        break;
+
+      for ( int i = 0; i < 32; i++ )
+      {
+        if ( i == 9 || i == 10 || i == 13 )
+        {
+          continue;
+        }
+        part.replace( QChar( i ), u"%1%2%1"_s.arg( FONTMARKER_CHR_FIX, QString::number( i ) ) );
+      }
+      projectString.append( part );
     }
-    projectString.replace( QChar( i ), u"%1%2%1"_s.arg( FONTMARKER_CHR_FIX, QString::number( i ) ) );
-  }
+    projectFile.close();
 
-  // location of problem associated with errorMsg
-  int line, column;
-  QString errorMsg;
-  if ( !doc->setContent( projectString, &errorMsg, &line, &column ) )
+    int line, column;
+    QString errorMsg;
+    if ( !doc->setContent( projectString, &errorMsg, &line, &column ) )
+    {
+      const QString errorString = tr( "Project file read error in file %1: %2 at line %3 column %4" ).arg( projectFile.fileName(), errorMsg ).arg( line ).arg( column );
+      QgsDebugError( errorString );
+      setError( errorString );
+
+      return false;
+    }
+  }
+  else
   {
-    const QString errorString = tr( "Project file read error in file %1: %2 at line %3 column %4" ).arg( projectFile.fileName(), errorMsg ).arg( line ).arg( column );
-    QgsDebugError( errorString );
-    setError( errorString );
-
-    return false;
+    projectFile.close();
   }
-
-  projectFile.close();
 
   QgsDebugMsgLevel( "Opened document " + projectFile.fileName(), 2 );
 
@@ -2965,6 +2977,8 @@ QgsExpressionContextScope *QgsProject::createExpressionContextScope() const
 
     // neither this function
     projectScope->addFunction( u"sensor_data"_s, new GetSensorData( sensorManager()->sensorsData() ) );
+
+    projectScope->addLayerStore( mLayerStore.get() );
 
     return projectScope.release();
   }

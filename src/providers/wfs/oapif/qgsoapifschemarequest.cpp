@@ -46,7 +46,7 @@ QgsOapifSchemaRequest::QgsOapifSchemaRequest( const QgsDataSourceUri &uri )
 const QgsOapifSchemaRequest::Schema &QgsOapifSchemaRequest::schema( const QUrl &schemaUrl )
 {
   mUrl = schemaUrl;
-  sendGET( schemaUrl, QString( "application/schema+json" ), /*synchronous=*/true, /*forceRefresh=*/false );
+  sendGET( schemaUrl, QgsOapifUtils::MEDIA_TYPE_SCHEMA_JSON, /*synchronous=*/true, /*forceRefresh=*/false );
   return mSchema;
 }
 

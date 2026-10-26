@@ -227,6 +227,98 @@ transferred.
 .. versionadded:: 3.44
 %End
 
+    Qgis::ElevationProfileRangeMethod rangeMethod() const;
+%Docstring
+Returns the method used to determine the elevation/distance ranges on
+the profile.
+
+.. seealso:: :py:func:`setRangeMethod`
+
+.. versionadded:: 4.4
+%End
+
+    void setRangeMethod( Qgis::ElevationProfileRangeMethod method );
+%Docstring
+Sets the ``method`` used to determine the elevation/distance ranges on
+the profile.
+
+.. seealso:: :py:func:`rangeMethod`
+
+.. versionadded:: 4.4
+%End
+
+    double elevationScale() const;
+%Docstring
+Returns the denominator of the elevation scale.
+
+This represents the desired scale denominator for the elevation axis, eg
+1000.0 for a 1:1000 axis.
+
+.. note::
+
+   This is only used when :py:func:`~QgsLayoutItemElevationProfile.rangeMethod` is :py:class:`Qgis`.ElevationProfileRangeMethod.FixedScale.
+
+.. seealso:: :py:func:`distanceScale`
+
+.. seealso:: :py:func:`setElevationScale`
+
+.. versionadded:: 4.4
+%End
+
+    void setElevationScale( double scale );
+%Docstring
+Sets the denominator of the elevation ``scale``.
+
+This represents the desired scale denominator for the elevation axis, eg
+1000.0 for a 1:1000 axis.
+
+.. note::
+
+   This is only used when :py:func:`~QgsLayoutItemElevationProfile.rangeMethod` is :py:class:`Qgis`.ElevationProfileRangeMethod.FixedScale.
+
+.. seealso:: :py:func:`setDistanceScale`
+
+.. seealso:: :py:func:`elevationScale`
+
+.. versionadded:: 4.4
+%End
+
+    double distanceScale() const;
+%Docstring
+Returns the denominator of the distance scale.
+
+This represents the desired scale denominator for the distance axis, eg
+1000.0 for a 1:1000 axis.
+
+.. note::
+
+   This is only used when :py:func:`~QgsLayoutItemElevationProfile.rangeMethod` is :py:class:`Qgis`.ElevationProfileRangeMethod.FixedScale.
+
+.. seealso:: :py:func:`elevationScale`
+
+.. seealso:: :py:func:`setDistanceScale`
+
+.. versionadded:: 4.4
+%End
+
+    void setDistanceScale( double scale );
+%Docstring
+Sets the denominator of the distance ``scale``.
+
+This represents the desired scale denominator for the distance axis, eg
+1000.0 for a 1:1000 axis.
+
+.. note::
+
+   This is only used when :py:func:`~QgsLayoutItemElevationProfile.rangeMethod` is :py:class:`Qgis`.ElevationProfileRangeMethod.FixedScale.
+
+.. seealso:: :py:func:`setElevationScale`
+
+.. seealso:: :py:func:`distanceScale`
+
+.. versionadded:: 4.4
+%End
+
   public slots:
 
     virtual void refresh();

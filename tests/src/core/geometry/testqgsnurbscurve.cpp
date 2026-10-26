@@ -41,6 +41,7 @@ class TestQgsNurbsCurve : public QObject
     void constructorDegree5();
     void clone();
     void geometryType();
+    void isSimpleCurve();
     void dimension();
     void properties();
     void isBSpline();
@@ -210,6 +211,12 @@ void TestQgsNurbsCurve::geometryType()
 {
   QgsNurbsCurve curve;
   QCOMPARE( curve.geometryType(), QString( "NurbsCurve" ) );
+}
+
+void TestQgsNurbsCurve::isSimpleCurve()
+{
+  QgsNurbsCurve curve;
+  QVERIFY( !curve.isSimpleCurve() );
 }
 
 void TestQgsNurbsCurve::dimension()

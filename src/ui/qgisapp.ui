@@ -41,6 +41,10 @@
      <property name="title">
       <string>New from Template</string>
      </property>
+     <property name="icon">
+      <iconset resource="../../images/images.qrc">
+       <normaloff>:/images/themes/default/mActionFileNewFromTemplate.svg</normaloff>:/images/themes/default/mActionFileNewFromTemplate.svg</iconset>
+     </property>
     </widget>
     <widget class="QMenu" name="mProjectToStorageMenu">
      <property name="title">
@@ -435,7 +439,10 @@
     <property name="title">
      <string>Pro&amp;cessing</string>
     </property>
+    <addaction name="mActionShowProcessingToolbox"/>
     <addaction name="mActionModelDesigner"/>
+    <addaction name="mProcessingHistoryAction"/>
+    <addaction name="mActionEditFeaturesInPlace"/>
    </widget>
    <addaction name="mProjectMenu"/>
    <addaction name="mEditMenu"/>
@@ -469,6 +476,7 @@
     <bool>false</bool>
    </attribute>
    <addaction name="mActionNewProject"/>
+   <addaction name="mProjectFromTemplateMenu"/>
    <addaction name="mActionOpenProject"/>
    <addaction name="mActionSaveProject"/>
    <addaction name="mActionNewPrintLayout"/>
@@ -601,6 +609,7 @@
    <addaction name="mActionIdentify"/>
    <addaction name="mActionOpenFieldCalc"/>
    <addaction name="mActionStatisticalSummary"/>
+   <addaction name="mActionShowProcessingToolbox"/>
    <addaction name="mActionMapTips"/>
   </widget>
   <widget class="QToolBar" name="mPluginToolBar">
@@ -3525,6 +3534,48 @@ Shows placeholders for labels which could not be placed, e.g. due to overlaps wi
    </property>
    <property name="shortcut">
     <string>Ctrl+Alt+G</string>
+   </property>
+  </action>
+  <action name="mActionShowProcessingToolbox">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/processingAlgorithm.svg</normaloff>:/images/themes/default/processingAlgorithm.svg</iconset>
+   </property>
+   <property name="text">
+    <string>&amp;Toolbox</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Alt+T</string>
+   </property>
+  </action>
+  <action name="mProcessingHistoryAction">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mIconHistory.svg</normaloff>:/images/themes/default/mIconHistory.svg</iconset>
+   </property>
+   <property name="text">
+    <string>&amp;History…</string>
+   </property>
+   <property name="toolTip">
+    <string>Processing history</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Alt+H</string>
+   </property>
+  </action>
+  <action name="mActionEditFeaturesInPlace">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionProcessSelected.svg</normaloff>:/images/themes/default/mActionProcessSelected.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Edit Features In-Place</string>
    </property>
   </action>
  </widget>

@@ -109,7 +109,7 @@ int QgisEvent = QEvent::User + 1;
 
       ReadConfiguration = 1 << 1,   //!< Can read an authentication configuration
       UpdateConfiguration = 1 << 2, //!< Can update an authentication configuration
-      DeleteConfiguration = 1 << 3, //!< Can deleet an authentication configuration
+      DeleteConfiguration = 1 << 3, //!< Can delete an authentication configuration
       CreateConfiguration = 1 << 4, //!< Can create a new authentication configuration
 
       ReadCertificateIdentity = 1 << 5,   //!< Can read a certificate identity
@@ -242,6 +242,26 @@ int QgisEvent = QEvent::User + 1;
     };
     Q_DECLARE_FLAGS( LayerFilters, LayerFilter )
     Q_FLAG( LayerFilters )
+
+
+    /**
+     * Flags for layer item capabilities
+     *
+     *  \since QGIS 4.40
+     */
+    enum class LayerItemCapability : int SIP_ENUM_BASETYPE( IntFlag )
+    {
+      AddComments = 1 << 0, //!< Comments can be added to the layer item
+    };
+    Q_ENUM( LayerItemCapability )
+
+    /**
+     * Flags for layer item capabilities
+     *
+     * \since QGIS 4.40
+     */
+    Q_DECLARE_FLAGS( LayerItemCapabilities, LayerItemCapability )
+    Q_FLAG( LayerItemCapabilities )
 
     /**
      * Flags for loading layer styles.
@@ -6137,6 +6157,18 @@ int QgisEvent = QEvent::User + 1;
     Q_ENUM( MapGridAnnotationType )
 
     /**
+     * Elevation profile range calculation methods.
+     *
+     * \since QGIS 4.4
+     */
+    enum class ElevationProfileRangeMethod : int
+    {
+      ManualRange = 0, //!< Distance/elevation ranges are manually set
+      FixedScale       //!< Distance and elevation ranges are calculated from fixed scales.
+    };
+    Q_ENUM( ElevationProfileRangeMethod )
+
+    /**
      * Input controller types.
      *
      * \since QGIS 3.34
@@ -7233,6 +7265,24 @@ int QgisEvent = QEvent::User + 1;
       LuWithSvdFallback = 2 //!< Try LU first; fallback to SVD on singularity
     };
     Q_ENUM( LinearMatrixMethod )
+
+    /**
+     * Defines how rows in attribute tables should be filtered.
+     *
+     * \note Prior to QGIS 4.4 this was available as QgsAttributeTableFilterModel::FilterMode.
+     *
+     * \since QGIS 4.4
+     */
+    enum class AttributeTableFilterMode : int
+    {
+      ShowAll,          //!< Show all features
+      ShowSelected,     //!< Show only selected features
+      ShowVisible,      //!< Show only visible features (depends on the map canvas)
+      ShowFilteredList, //!< Show only features whose IDs are on the filter list
+      ShowEdited,       //!< Show only features which have unsaved changes
+      ShowInvalid,      //!< Show only features not respecting constraints \since QGIS 3.30
+    };
+    Q_ENUM( AttributeTableFilterMode )
 
     /**
      * Identify search radius in mm

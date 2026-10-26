@@ -19,6 +19,7 @@
 #include "qgsfillsymbol.h"
 #include "qgsfillsymbollayer.h"
 #include "qgslinesymbol.h"
+#include "qgspainting.h"
 #include "qgsscalebarsettings.h"
 #include "qgssymbol.h"
 #include "qgstextrenderer.h"
@@ -74,7 +75,7 @@ void QgsDoubleBoxScaleBarRenderer::draw( QgsRenderContext &context, const QgsSca
   const double barTopPosition = verticalOffset( context, settings );
   const double segmentHeight = context.convertToPainterUnits( settings.height() / 2, Qgis::RenderUnit::Millimeters );
 
-  painter->save();
+  QgsScopedQPainterState painterState( painter );
   context.setPainterFlagsUsingContext( painter );
 
   std::unique_ptr< QgsLineSymbol > lineSymbol( settings.lineSymbol()->clone() );
@@ -177,7 +178,7 @@ void QgsDoubleBoxScaleBarRenderer::draw( QgsRenderContext &context, const QgsSca
   fillSymbol1->stopRender( context );
   fillSymbol2->stopRender( context );
 
-  painter->restore();
+  painterState.restore();
 
   //draw labels using the default method
   drawDefaultLabels( context, settings, scaleContext );

@@ -25,6 +25,7 @@
 #include "qgsattributeeditorfield.h"
 #include "qgsattributeform.h"
 #include "qgsattributeformeditorwidget.h"
+#include "qgsattributetablefiltermodel.h"
 #include "qgsfeature.h"
 #include "qgsfeatureiterator.h"
 #include "qgsfeaturelistmodel.h"
@@ -160,7 +161,7 @@ void TestQgsDualView::testFilterSelected()
   selected << ids.at( 1 ) << ids.at( 3 );
   mPointsLayer->selectByIds( qgis::listToSet( selected ) );
 
-  mDualView->setFilterMode( QgsAttributeTableFilterModel::ShowSelected );
+  mDualView->setFilterMode( Qgis::AttributeTableFilterMode::ShowSelected );
   QCOMPARE( mDualView->tableView()->model()->rowCount(), 2 );
 
   const int headingIdx = mPointsLayer->fields().lookupField( u"Heading"_s );
@@ -181,7 +182,7 @@ void TestQgsDualView::testSelectAll()
 {
   QEventLoop loop;
   connect( qobject_cast<QgsAttributeTableFilterModel *>( mDualView->mFilterModel ), &QgsAttributeTableFilterModel::visibleReloaded, &loop, &QEventLoop::quit );
-  mDualView->setFilterMode( QgsAttributeTableFilterModel::ShowVisible );
+  mDualView->setFilterMode( Qgis::AttributeTableFilterMode::ShowVisible );
   // Only show parts of the canvas, so only one selected feature is visible
   mCanvas->setExtent( QgsRectangle( -139, 23, -100, 48 ) );
   loop.exec();

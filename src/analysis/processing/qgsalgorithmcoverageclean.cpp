@@ -20,6 +20,7 @@
 
 #include "qgsgeometrycollection.h"
 #include "qgsgeos.h"
+#include "qgsvectorlayer.h"
 
 #include <QString>
 
@@ -121,7 +122,7 @@ QgsCoverageCleanAlgorithm *QgsCoverageCleanAlgorithm::createInstance() const
 
 bool QgsCoverageCleanAlgorithm::prepareAlgorithm( const QVariantMap &, QgsProcessingContext &, QgsProcessingFeedback * )
 {
-#if GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR < 14
+#if GEOS_VERSION_NUM < GEOS_COMPUTE_VERSION( 3, 14, 0 )
   throw QgsProcessingException( QObject::tr( "This algorithm requires a QGIS build based on GEOS 3.14 or later" ) );
 #endif
   return true;
@@ -258,6 +259,23 @@ QVariantMap QgsCoverageCleanAlgorithm::processAlgorithm( const QVariantMap &para
   QVariantMap outputs;
   outputs.insert( u"OUTPUT"_s, sinkId );
   return outputs;
+}
+
+bool QgsCoverageCleanAlgorithm::supportInPlaceEdit( const QgsMapLayer *layer ) const
+{
+  const QgsVectorLayer *vlayer = qobject_cast<const QgsVectorLayer *>( layer );
+
+  if ( !vlayer )
+    return false;
+
+  return vlayer->geometryType() == Qgis::GeometryType::Polygon;
+}
+
+Qgis::ProcessingAlgorithmFlags QgsCoverageCleanAlgorithm::flags() const
+{
+  Qgis::ProcessingAlgorithmFlags f = QgsProcessingAlgorithm::flags();
+  f |= Qgis::ProcessingAlgorithmFlag::SupportsInPlaceEdits;
+  return f;
 }
 
 ///@endcond

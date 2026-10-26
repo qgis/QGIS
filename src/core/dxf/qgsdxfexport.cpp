@@ -175,12 +175,12 @@ void QgsDxfExport::writeGroup( const QColor &color, int exactMatchCode, int rgbC
 
 void QgsDxfExport::writeGroupCode( int code )
 {
-  mTextStream << u"%1\n"_s.arg( code, 3, 10, QChar( ' ' ) );
+  mDevice->write( mCodec->fromUnicode( u"%1\n"_s.arg( code, 3, 10, QChar( ' ' ) ) ) );
 }
 
 void QgsDxfExport::writeInt( int i )
 {
-  mTextStream << u"%1\n"_s.arg( i, 6, 10, QChar( ' ' ) );
+  mDevice->write( mCodec->fromUnicode( u"%1\n"_s.arg( i, 6, 10, QChar( ' ' ) ) ) );
 }
 
 void QgsDxfExport::writeDouble( double d )
@@ -188,12 +188,12 @@ void QgsDxfExport::writeDouble( double d )
   QString s( qgsDoubleToString( d ) );
   if ( !s.contains( '.' ) )
     s += ".0"_L1;
-  mTextStream << s << '\n';
+  writeString( s );
 }
 
 void QgsDxfExport::writeString( const QString &s )
 {
-  mTextStream << s << '\n';
+  mDevice->write( mCodec->fromUnicode( s + '\n' ) );
 }
 
 QgsDxfExport::ExportResult QgsDxfExport::writeToFile( QIODevice *d, const QString &encoding )
@@ -208,8 +208,12 @@ QgsDxfExport::ExportResult QgsDxfExport::writeToFile( QIODevice *d, const QStrin
     return ExportResult::DeviceNotWritableError;
   }
 
-  mTextStream.setDevice( d );
-  mTextStream.setEncoding( QStringConverter::encodingForName( encoding.toLocal8Bit() ).value_or( QStringConverter::Utf8 ) );
+  mDevice = d;
+  mCodec = QTextCodec::codecForName( encoding.toLocal8Bit() );
+  if ( !mCodec )
+  {
+    return ExportResult::InvalidEncodingError;
+  }
 
   if ( mCrs.isValid() )
     mMapSettings.setDestinationCrs( mCrs );
@@ -1026,7 +1030,7 @@ void QgsDxfExport::stopRenderers()
 
 void QgsDxfExport::writeEndFile()
 {
-  mTextStream << DXF_TRAILER;
+  mDevice->write( mCodec->fromUnicode( DXF_TRAILER ) );
 
   writeGroup( 0, u"EOF"_s );
 }
@@ -1602,7 +1606,7 @@ void QgsDxfExport::writeText( const QString &layer, const QString &text, pal::La
     }
   }
 
-  writeText( layer, text, QgsPoint( lblX, lblY ), label->getHeight(), label->getAlpha() * 180.0 / M_PI, layerSettings.format().color(), hali, vali );
+  writeText( layer, text, QgsPoint( lblX, lblY ), label->getHeight(), label->angleRadians() * 180.0 / M_PI, layerSettings.format().color(), hali, vali );
 }
 
 void QgsDxfExport::writePoint( const QString &layer, const QColor &color, const QgsPoint &pt )
@@ -2594,7 +2598,7 @@ void QgsDxfExport::drawLabel( const QString &layerId, QgsRenderContext &context,
                    .arg( tmpLyr.format().font().italic() ? 1 : 0 )
                    .arg( tmpLyr.format().font().bold() ? 1 : 0 )
                    .arg( label->getHeight() / ( 1 + txt.count( u"\\P"_s ) ) * 0.75 ) );
-    writeMText( dxfLayer, txt, QgsPoint( label->getX(), label->getY() ), label->getWidth(), label->getAlpha() * 180.0 / M_PI, tmpLyr.format().color() );
+    writeMText( dxfLayer, txt, QgsPoint( label->getX(), label->getY() ), label->getWidth(), label->angleRadians() * 180.0 / M_PI, tmpLyr.format().color() );
   }
 }
 

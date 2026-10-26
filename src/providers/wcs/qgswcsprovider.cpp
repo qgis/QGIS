@@ -412,7 +412,6 @@ QgsWcsProvider::QgsWcsProvider( const QgsWcsProvider &other, const QgsDataProvid
   mCachedMemFilename = u"/vsimem/qgis/wcs/%0.dat"_s.arg( reinterpret_cast<std::uintptr_t>( this ) );
 }
 
-
 bool QgsWcsProvider::parseUri( const QString &uriString )
 {
   QgsDebugMsgLevel( "uriString = " + uriString, 2 );
@@ -513,7 +512,6 @@ void QgsWcsProvider::setFormat( QString const &format )
   mFormat = format;
 }
 
-
 void QgsWcsProvider::setCoverageCrs( QString const &crs )
 {
   QgsDebugMsgLevel( "Setting coverage CRS to " + crs + '.', 2 );
@@ -534,7 +532,14 @@ void QgsWcsProvider::setCoverageCrs( QString const &crs )
 void QgsWcsProvider::setQueryItem( QUrl &url, const QString &item, const QString &value ) const
 {
   QUrlQuery query( url );
-  query.removeQueryItem( item );
+  const QList<QPair<QString, QString>> items = query.queryItems();
+  for ( const QPair<QString, QString> &pair : items )
+  {
+    if ( pair.first.compare( item, Qt::CaseInsensitive ) == 0 )
+    {
+      query.removeQueryItem( pair.first );
+    }
+  }
   query.addQueryItem( item, value );
   url.setQuery( query );
 }
@@ -781,7 +786,13 @@ void QgsWcsProvider::getCache( int bandNo, QgsRectangle const &viewExtent, int p
     // does not work with Mapserver 6.0.3
     // Mapserver 6.0.3 does not work with origin on yMinimum (lower left)
     // Geoserver works OK with yMinimum (lower left)
-    const QString gridOrigin = QString( changeXY ? "%2,%1" : "%1,%2" ).arg( qgsDoubleToString( extent.xMinimum() ), qgsDoubleToString( extent.yMaximum() ) );
+
+    // Extent coordinates already swapped to match GRIDBASECRS, see the
+    // "if ( changeXY )" block above.
+    // So we do not need to swap order of coordinates here, it is enough to
+    // pick correct corner (gridOrigin) depending on the axis order.
+    const QString gridOrigin = changeXY ? QString( "%1,%2" ).arg( qgsDoubleToString( extent.xMaximum() ), qgsDoubleToString( extent.yMinimum() ) )
+                                        : QString( "%1,%2" ).arg( qgsDoubleToString( extent.xMinimum() ), qgsDoubleToString( extent.yMaximum() ) );
     setQueryItem( url, u"GRIDORIGIN"_s, gridOrigin );
 
     // GridOffsets WCS 1.1:
@@ -880,7 +891,6 @@ bool QgsWcsProvider::readBlock( int bandNo, int xBlock, int yBlock, void *block 
   return readBlock( bandNo, extent, mXBlockSize, mYBlockSize, block, nullptr );
 }
 
-
 // This could be shared with GDAL provider
 Qgis::DataType QgsWcsProvider::sourceDataType( int bandNo ) const
 {
@@ -913,6 +923,7 @@ int QgsWcsProvider::xBlockSize() const
 {
   return mXBlockSize;
 }
+
 int QgsWcsProvider::yBlockSize() const
 {
   return mYBlockSize;
@@ -922,6 +933,7 @@ int QgsWcsProvider::xSize() const
 {
   return mWidth;
 }
+
 int QgsWcsProvider::ySize() const
 {
   return mHeight;
@@ -1077,7 +1089,6 @@ void QgsWcsProvider::parseServiceException( QDomElement const &e, const QString 
   QgsDebugMsgLevel( u"exiting."_s, 2 );
 }
 
-
 QgsRectangle QgsWcsProvider::extent() const
 {
   if ( mExtentDirty )
@@ -1095,7 +1106,6 @@ bool QgsWcsProvider::isValid() const
 {
   return mValid;
 }
-
 
 QString QgsWcsProvider::wcsVersion()
 {
@@ -1216,7 +1226,6 @@ bool QgsWcsProvider::calculateExtent() const
 
   return true;
 }
-
 
 Qgis::RasterInterfaceCapabilities QgsWcsProvider::capabilities() const
 {
@@ -1655,9 +1664,9 @@ QgsWcsProvider *QgsWcsProviderMetadata::createProvider( const QString &uri, cons
   return new QgsWcsProvider( uri, options, flags );
 }
 
-// ----------
-
-int QgsWcsDownloadHandler::sErrors = 0;
+///
+/// QgsWcsDownloadHandler
+///
 
 QgsWcsDownloadHandler::QgsWcsDownloadHandler(
   const QUrl &url, QgsAuthorizationSettings &auth, QNetworkRequest::CacheLoadControl cacheLoadControl, QByteArray &cachedData, const QString &wcsVersion, QgsError &cachedError, QgsRasterBlockFeedback *feedback
@@ -1916,12 +1925,12 @@ void QgsWcsDownloadHandler::cacheReplyFinished()
         return;
       }
 
-      sErrors++;
-      if ( sErrors < 100 )
+      mErrors++;
+      if ( mErrors < 100 )
       {
         QgsMessageLog::logMessage( tr( "Map request failed [error: %1 url: %2]" ).arg( mCacheReply->errorString(), mCacheReply->url().toString() ), tr( "WCS" ) );
       }
-      else if ( sErrors == 100 )
+      else if ( mErrors == 100 )
       {
         QgsMessageLog::logMessage( tr( "Not logging more than 100 request errors." ), tr( "WCS" ) );
       }
@@ -1951,6 +1960,9 @@ void QgsWcsDownloadHandler::canceled()
   }
 }
 
+///
+/// QgsWcsProviderMetadata
+///
 
 QList<QgsDataItemProvider *> QgsWcsProviderMetadata::dataItemProviders() const
 {
@@ -2018,7 +2030,6 @@ QList<Qgis::LayerType> QgsWcsProviderMetadata::supportedLayerTypes() const
 {
   return { Qgis::LayerType::Raster };
 }
-
 
 #ifndef HAVE_STATIC_PROVIDERS
 QGISEXTERN QgsProviderMetadata *providerMetadataFactory()

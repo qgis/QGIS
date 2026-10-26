@@ -79,12 +79,14 @@ set(TESTS
  testqgsfilledmarker.cpp
  testqgsfontmarker.cpp
  testqgsfontutils.cpp
+ testqgsfutureutils.cpp
  testqgsgdalcloudconnection.cpp
  testqgsgdalprovider.cpp
  testqgsgdalutils.cpp
  testqgsgenericspatialindex.cpp
  testqgsgeometryimport.cpp
  testqgsgeopdfexport.cpp
+ testqgsgeos.cpp
  testqgsgltfutils.cpp
  testqgsgml.cpp
  testqgsgpkgtiles.cpp
@@ -153,6 +155,7 @@ set(TESTS
  testqgsofflineediting.cpp
  testqgsogcutils.cpp
  testqgsogrprovider.cpp
+ testqgsogrproviderdeadlock.cpp
  testqgsogrutils.cpp
  testqgsoverlayexpression.cpp
  testqgspagesizeregistry.cpp

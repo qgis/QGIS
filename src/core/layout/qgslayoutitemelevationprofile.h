@@ -218,6 +218,78 @@ class CORE_EXPORT QgsLayoutItemElevationProfile : public QgsLayoutItem
      */
     void setSubsectionsSymbol( QgsLineSymbol *symbol SIP_TRANSFER );
 
+    /**
+     * Returns the method used to determine the elevation/distance ranges on the profile.
+     *
+     * \see setRangeMethod()
+     * \since QGIS 4.4
+     */
+    Qgis::ElevationProfileRangeMethod rangeMethod() const;
+
+    /**
+     * Sets the \a method used to determine the elevation/distance ranges on the profile.
+     *
+     * \see rangeMethod()
+     * \since QGIS 4.4
+     */
+    void setRangeMethod( Qgis::ElevationProfileRangeMethod method );
+
+    /**
+     * Returns the denominator of the elevation scale.
+     *
+     * This represents the desired scale denominator for the elevation axis, eg 1000.0 for a 1:1000 axis.
+     *
+     * \note This is only used when rangeMethod() is Qgis::ElevationProfileRangeMethod::FixedScale.
+     *
+     * \see distanceScale()
+     * \see setElevationScale()
+     *
+     * \since QGIS 4.4
+     */
+    double elevationScale() const;
+
+    /**
+     * Sets the denominator of the elevation \a scale.
+     *
+     * This represents the desired scale denominator for the elevation axis, eg 1000.0 for a 1:1000 axis.
+     *
+     * \note This is only used when rangeMethod() is Qgis::ElevationProfileRangeMethod::FixedScale.
+     *
+     * \see setDistanceScale()
+     * \see elevationScale()
+     *
+     * \since QGIS 4.4
+     */
+    void setElevationScale( double scale );
+
+    /**
+     * Returns the denominator of the distance scale.
+     *
+     * This represents the desired scale denominator for the distance axis, eg 1000.0 for a 1:1000 axis.
+     *
+     * \note This is only used when rangeMethod() is Qgis::ElevationProfileRangeMethod::FixedScale.
+     *
+     * \see elevationScale()
+     * \see setDistanceScale()
+     *
+     * \since QGIS 4.4
+     */
+    double distanceScale() const;
+
+    /**
+     * Sets the denominator of the distance \a scale.
+     *
+     * This represents the desired scale denominator for the distance axis, eg 1000.0 for a 1:1000 axis.
+     *
+     * \note This is only used when rangeMethod() is Qgis::ElevationProfileRangeMethod::FixedScale.
+     *
+     * \see setElevationScale()
+     * \see distanceScale()
+     *
+     * \since QGIS 4.4
+     */
+    void setDistanceScale( double scale );
+
   public slots:
 
     void refresh() override;
@@ -244,10 +316,16 @@ class CORE_EXPORT QgsLayoutItemElevationProfile : public QgsLayoutItem
     void setSourcesPrivate();
 
   private:
+    void calculateAxisRanges( QgsRenderContext &context );
+
     std::unique_ptr< QgsLayoutItemElevationProfilePlot > mPlot;
 
     QList< QgsMapLayerRef > mLayers;
     QList< std::variant< QgsMapLayerRef, QgsAbstractProfileSource * > > mSources;
+
+    Qgis::ElevationProfileRangeMethod mRangeMethod = Qgis::ElevationProfileRangeMethod::ManualRange;
+    double mElevationScale = 10;
+    double mDistanceScale = 1000;
 
     QgsCoordinateReferenceSystem mCrs;
     Qgis::DistanceUnit mDistanceUnit = Qgis::DistanceUnit::Unknown;

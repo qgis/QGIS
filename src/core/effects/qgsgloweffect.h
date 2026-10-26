@@ -303,7 +303,7 @@ class CORE_EXPORT QgsOuterGlowEffect : public QgsGlowEffect
      * \param map encoded properties string map
      * \returns new QgsOuterGlowEffect
      */
-    static QgsPaintEffect *create( const QVariantMap &map ) SIP_FACTORY;
+    static std::unique_ptr<QgsPaintEffect> create( const QVariantMap &map );
 
     QgsOuterGlowEffect();
 
@@ -330,7 +330,7 @@ class CORE_EXPORT QgsInnerGlowEffect : public QgsGlowEffect
      * \param map encoded properties string map
      * \returns new QgsInnerGlowEffect
      */
-    static QgsPaintEffect *create( const QVariantMap &map ) SIP_FACTORY;
+    static std::unique_ptr<QgsPaintEffect> create( const QVariantMap &map );
 
     QgsInnerGlowEffect();
 

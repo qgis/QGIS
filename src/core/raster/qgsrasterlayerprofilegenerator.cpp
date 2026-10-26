@@ -272,13 +272,13 @@ bool QgsRasterLayerProfileGenerator::generateProfile( const QgsProfileGeneration
           int row, col;
           if ( zeroXYSize )
           {
-            row = std::clamp( static_cast< int >( std::round( ( blockExtent.yMaximum() - it->y() ) * blockRows / blockExtent.height() ) ), 0, blockRows - 1 );
-            col = std::clamp( static_cast< int >( std::round( ( it->x() - blockExtent.xMinimum() ) * blockColumns / blockExtent.width() ) ), 0, blockColumns - 1 );
+            row = std::clamp( static_cast< int >( std::floor( ( blockExtent.yMaximum() - it->y() ) * blockRows / blockExtent.height() ) ), 0, blockRows - 1 );
+            col = std::clamp( static_cast< int >( std::floor( ( it->x() - blockExtent.xMinimum() ) * blockColumns / blockExtent.width() ) ), 0, blockColumns - 1 );
           }
           else
           {
-            row = std::clamp( static_cast< int >( std::round( ( blockExtent.yMaximum() - it->y() ) / mRasterUnitsPerPixelY ) ), 0, blockRows - 1 );
-            col = std::clamp( static_cast< int >( std::round( ( it->x() - blockExtent.xMinimum() ) / mRasterUnitsPerPixelX ) ), 0, blockColumns - 1 );
+            row = std::clamp( static_cast< int >( std::floor( ( blockExtent.yMaximum() - it->y() ) / mRasterUnitsPerPixelY ) ), 0, blockRows - 1 );
+            col = std::clamp( static_cast< int >( std::floor( ( it->x() - blockExtent.xMinimum() ) / mRasterUnitsPerPixelX ) ), 0, blockColumns - 1 );
           }
           double val = block->valueAndNoData( row, col, isNoData );
           if ( !isNoData )

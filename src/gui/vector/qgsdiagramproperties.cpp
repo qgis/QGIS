@@ -255,7 +255,7 @@ QgsDiagramProperties::QgsDiagramProperties( QgsVectorLayer *layer, QWidget *pare
     newItem->setFlags( newItem->flags() & ~Qt::ItemIsDropEnabled );
   }
 
-  mPaintEffect.reset( QgsPaintEffectRegistry::defaultStack() );
+  mPaintEffect = QgsPaintEffectRegistry::defaultStack();
   mPaintEffect->setEnabled( false );
 
   mOrientationLeftButton->setProperty( "direction", QgsDiagramSettings::Left );

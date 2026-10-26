@@ -67,8 +67,9 @@ class APP_EXPORT QgsOptions : public QgsOptionsDialogBase, private Ui::QgsOption
     void cbxProjectDefaultNew_toggled( bool checked );
     void setCurrentProjectDefault();
     void resetProjectDefault();
-    void browseTemplateFolder();
-    void resetTemplateFolder();
+    void addProjectTemplatePath();
+    void removeProjectTemplatePath();
+    void resetProjectTemplatePath();
     //! Slot called when user chooses to change the default 'on the fly' projection.
     void leLayerGlobalCrs_crsChanged( const QgsCoordinateReferenceSystem &crs );
     void lstRasterDrivers_itemDoubleClicked( QTreeWidgetItem *item, int column );
@@ -90,7 +91,7 @@ class APP_EXPORT QgsOptions : public QgsOptionsDialogBase, private Ui::QgsOption
     /**
      * Slot to handle when type of project to open after launch is changed
      */
-    void mProjectOnLaunchCmbBx_currentIndexChanged( int indx );
+    void mProjectOnLaunchCmbBx_currentIndexChanged( int idx );
 
     //! Slot to choose path to project to open after launch
     void selectProjectOnLaunch();
@@ -234,8 +235,6 @@ class APP_EXPORT QgsOptions : public QgsOptionsDialogBase, private Ui::QgsOption
   private slots:
     void removeLocalizedDataPath();
     void addLocalizedDataPath();
-    void moveLocalizedDataPathUp();
-    void moveLocalizedDataPathDown();
     void alwaysUseDecimalPointChanged( bool checked );
     void addTrustedProject();
     void removeTrustedProject();

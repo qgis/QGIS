@@ -252,22 +252,26 @@ QgsGenericNumericTransformer *QgsGenericNumericTransformer::fromExpression( cons
 
   // the scale function may be enclosed in a coalesce(expr, 0) to avoid NULL value
   // to be drawn with the default size
-  if ( "coalesce" == QgsExpression::Functions()[f->fnIndex()]->name() )
+
+  QgsExpression::SharedFunctionPtr fd = f->function();
+
+  if ( "coalesce" == fd->name() )
   {
     f = dynamic_cast<const QgsExpressionNodeFunction *>( args[0] );
     if ( !f )
       return nullptr;
+    fd = f->function();
     nullValue = QgsExpression( args[1]->dump() ).evaluate().toDouble( &ok );
     if ( !ok )
       return nullptr;
     args = f->args()->list();
   }
 
-  if ( "scale_linear" == QgsExpression::Functions()[f->fnIndex()]->name() )
+  if ( "scale_linear" == fd->name() )
   {
     exponent = 1.0;
   }
-  else if ( "scale_polynomial" == QgsExpression::Functions()[f->fnIndex()]->name() )
+  else if ( "scale_polynomial" == fd->name() )
   {
     exponent = QgsExpression( args[5]->dump() ).evaluate().toDouble( &ok );
   }
@@ -459,24 +463,27 @@ QgsSizeScaleTransformer *QgsSizeScaleTransformer::fromExpression( const QString 
 
   QList<QgsExpressionNode *> args = f->args()->list();
 
+  QgsExpression::SharedFunctionPtr fd = f->function();
+
   // the scale function may be enclosed in a coalesce(expr, 0) to avoid NULL value
   // to be drawn with the default size
-  if ( "coalesce" == QgsExpression::Functions()[f->fnIndex()]->name() )
+  if ( "coalesce" == fd->name() )
   {
     f = dynamic_cast<const QgsExpressionNodeFunction *>( args[0] );
     if ( !f )
       return nullptr;
+    fd = f->function();
     nullSize = QgsExpression( args[1]->dump() ).evaluate().toDouble( &ok );
     if ( !ok )
       return nullptr;
     args = f->args()->list();
   }
 
-  if ( "scale_linear" == QgsExpression::Functions()[f->fnIndex()]->name() )
+  if ( "scale_linear" == fd->name() )
   {
     type = Linear;
   }
-  else if ( "scale_polynomial" == QgsExpression::Functions()[f->fnIndex()]->name() )
+  else if ( "scale_polynomial" == fd->name() )
   {
     exponent = QgsExpression( args[5]->dump() ).evaluate().toDouble( &ok );
     if ( !ok )

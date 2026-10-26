@@ -133,12 +133,12 @@ QVariantMap QgsHubDistanceAlgorithm::processAlgorithm( const QVariantMap &parame
 
   QString linesDest;
   std::unique_ptr<QgsFeatureSink> linesSink( parameterAsSink( parameters, u"OUTPUT_LINES"_s, context, linesDest, fields, Qgis::WkbType::LineString, hubSource->sourceCrs() ) );
-  if ( !linesSink )
+  if ( parameters.value( u"OUTPUT_LINES"_s ).isValid() && !linesSink )
     throw QgsProcessingException( invalidSinkError( parameters, u"OUTPUT_LINES"_s ) );
 
   QString pointsDest;
   std::unique_ptr<QgsFeatureSink> pointsSink( parameterAsSink( parameters, u"OUTPUT_POINTS"_s, context, pointsDest, fields, Qgis::WkbType::Point, hubSource->sourceCrs() ) );
-  if ( !pointsSink )
+  if ( parameters.value( u"OUTPUT_POINTS"_s ).isValid() && !pointsSink )
     throw QgsProcessingException( invalidSinkError( parameters, u"OUTPUT_POINTS"_s ) );
 
   QgsFeatureRequest request;

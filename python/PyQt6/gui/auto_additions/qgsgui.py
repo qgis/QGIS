@@ -52,6 +52,6 @@ try:
     QgsGui.hasWebEngine = staticmethod(QgsGui.hasWebEngine)
     QgsGui.iconSize = staticmethod(QgsGui.iconSize)
     QgsGui.applicationStyleSheet = staticmethod(QgsGui.applicationStyleSheet)
-    QgsGui.__signal_arguments__ = {'applicationStyleSheetChanged': ['styleSheet: str'], 'executeAlgorithm': ['algorithmId: str']}
+    QgsGui.__signal_arguments__ = {'applicationStyleSheetChanged': ['styleSheet: str'], 'executeAlgorithm': ['algorithmId: str', 'useInPlaceMode: bool', 'useBatchMode: bool']}
 except (NameError, AttributeError):
     pass

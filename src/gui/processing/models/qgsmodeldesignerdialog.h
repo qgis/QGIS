@@ -89,6 +89,13 @@ class GUI_EXPORT QgsModelDesignerDialog : public QMainWindow,
      */
     void loadModel( const QString &path );
 
+    /**
+     * Handles a version mismatch between the model file \a modelVersion and the current QGIS version.
+     *
+     * \since QGIS 4.4
+     */
+    void handleVersionMismatch( const QString &modelVersion ) const SIP_SKIP;
+
 #ifndef SIP_RUN
     /**
      * Sets the related \a scene.
@@ -239,7 +246,7 @@ class GUI_EXPORT QgsModelDesignerDialog : public QMainWindow,
     void addAlgorithm( const QString &algorithmId, const QPointF &pos );
     void addInput( const QString &parameterType, const QPointF &pos );
 
-    QgsProcessingAlgorithmWidgetBase *createExecutionWidget();
+    QgsProcessingAlgorithmWidget *createExecutionWidget();
 
     void exportAsScriptAlgorithm();
 
@@ -252,9 +259,9 @@ class GUI_EXPORT QgsModelDesignerDialog : public QMainWindow,
     QgsMessageBar *mMessageBar = nullptr;
     QgsModelerToolboxModel *mAlgorithmsModel = nullptr;
 
-    QPointer<QgsProcessingAlgorithmWidgetBase> mAlgorithmWidget;
+    QPointer<QgsProcessingAlgorithmWidget> mAlgorithmWidget;
 
-    QVector<QPointer<QgsProcessingAlgorithmWidgetBase>> mAlgorithmWidgetsToCleanUp;
+    QVector<QPointer<QgsProcessingAlgorithmWidget>> mAlgorithmWidgetsToCleanUp;
 
     QActionGroup *mToolsActionGroup = nullptr;
 

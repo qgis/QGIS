@@ -386,7 +386,13 @@ json QgsJsonExporter::exportFeatureToJsonObject( const QgsFeature &feature, cons
     // related attributes
     if ( mLayer && mIncludeRelatedAttributes )
     {
-      QList< QgsRelation > relations = QgsProject::instance()->relationManager()->referencedRelations( mLayer.data() ); // skip-keyword-check
+      QList< QgsRelation > relations;
+
+      if ( QgsProject *project = mLayer->project() )
+      {
+        relations = project->relationManager()->referencedRelations( mLayer.data() );
+      }
+
       for ( const auto &relation : std::as_const( relations ) )
       {
         QgsFeatureRequest req = relation.getRelatedFeaturesRequest( feature );

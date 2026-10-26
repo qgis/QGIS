@@ -3,7 +3,7 @@
 Qgis.AuthConfigurationStorageCapability.ClearStorage.__doc__ = "Can clear all configurations from storage"
 Qgis.AuthConfigurationStorageCapability.ReadConfiguration.__doc__ = "Can read an authentication configuration"
 Qgis.AuthConfigurationStorageCapability.UpdateConfiguration.__doc__ = "Can update an authentication configuration"
-Qgis.AuthConfigurationStorageCapability.DeleteConfiguration.__doc__ = "Can deleet an authentication configuration"
+Qgis.AuthConfigurationStorageCapability.DeleteConfiguration.__doc__ = "Can delete an authentication configuration"
 Qgis.AuthConfigurationStorageCapability.CreateConfiguration.__doc__ = "Can create a new authentication configuration"
 Qgis.AuthConfigurationStorageCapability.ReadCertificateIdentity.__doc__ = "Can read a certificate identity"
 Qgis.AuthConfigurationStorageCapability.UpdateCertificateIdentity.__doc__ = "Can update a certificate identity"
@@ -36,7 +36,7 @@ Qgis.AuthConfigurationStorageCapability.__doc__ = """Authentication configuratio
 * ``ClearStorage``: Can clear all configurations from storage
 * ``ReadConfiguration``: Can read an authentication configuration
 * ``UpdateConfiguration``: Can update an authentication configuration
-* ``DeleteConfiguration``: Can deleet an authentication configuration
+* ``DeleteConfiguration``: Can delete an authentication configuration
 * ``CreateConfiguration``: Can create a new authentication configuration
 * ``ReadCertificateIdentity``: Can read a certificate identity
 * ``UpdateCertificateIdentity``: Can update a certificate identity
@@ -287,6 +287,20 @@ Qgis.LayerFilter.__doc__ = """Filter for layers
 Qgis.LayerFilters = lambda flags=0: Qgis.LayerFilter(flags)
 Qgis.LayerFilters.baseClass = Qgis
 LayerFilters = Qgis  # dirty hack since SIP seems to introduce the flags in module
+# monkey patching scoped based enum
+Qgis.LayerItemCapability.AddComments.__doc__ = "Comments can be added to the layer item"
+Qgis.LayerItemCapability.__doc__ = """Flags for layer item capabilities
+
+.. versionadded:: 4.40
+
+* ``AddComments``: Comments can be added to the layer item
+
+"""
+# --
+Qgis.LayerItemCapability.baseClass = Qgis
+Qgis.LayerItemCapabilities = lambda flags=0: Qgis.LayerItemCapability(flags)
+Qgis.LayerItemCapabilities.baseClass = Qgis
+LayerItemCapabilities = Qgis  # dirty hack since SIP seems to introduce the flags in module
 # monkey patching scoped based enum
 Qgis.LoadStyleFlag.IgnoreMissingStyleErrors.__doc__ = "If the style is missing, then don't flag it as an error. This flag can be used when the caller is not certain that a style exists, and accordingly a failure to find the style does not indicate an issue with loading the style itself."
 Qgis.LoadStyleFlag.__doc__ = """Flags for loading layer styles.
@@ -11761,6 +11775,19 @@ Qgis.MapGridAnnotationType.__doc__ = """Annotation coordinate type.
 # --
 Qgis.MapGridAnnotationType.baseClass = Qgis
 # monkey patching scoped based enum
+Qgis.ElevationProfileRangeMethod.ManualRange.__doc__ = "Distance/elevation ranges are manually set"
+Qgis.ElevationProfileRangeMethod.FixedScale.__doc__ = "Distance and elevation ranges are calculated from fixed scales."
+Qgis.ElevationProfileRangeMethod.__doc__ = """Elevation profile range calculation methods.
+
+.. versionadded:: 4.4
+
+* ``ManualRange``: Distance/elevation ranges are manually set
+* ``FixedScale``: Distance and elevation ranges are calculated from fixed scales.
+
+"""
+# --
+Qgis.ElevationProfileRangeMethod.baseClass = Qgis
+# monkey patching scoped based enum
 Qgis.InputControllerType.Map2D.__doc__ = "2D map controller"
 Qgis.InputControllerType.Map3D.__doc__ = "3D map controller"
 Qgis.InputControllerType.__doc__ = """Input controller types.
@@ -13460,6 +13487,34 @@ Qgis.LinearMatrixMethod.__doc__ = """Mathematical methods to use for solving lin
 """
 # --
 Qgis.LinearMatrixMethod.baseClass = Qgis
+# monkey patching scoped based enum
+Qgis.AttributeTableFilterMode.ShowAll.__doc__ = "Show all features"
+Qgis.AttributeTableFilterMode.ShowSelected.__doc__ = "Show only selected features"
+Qgis.AttributeTableFilterMode.ShowVisible.__doc__ = "Show only visible features (depends on the map canvas)"
+Qgis.AttributeTableFilterMode.ShowFilteredList.__doc__ = "Show only features whose IDs are on the filter list"
+Qgis.AttributeTableFilterMode.ShowEdited.__doc__ = "Show only features which have unsaved changes"
+Qgis.AttributeTableFilterMode.ShowInvalid.__doc__ = "Show only features not respecting constraints \n.. versionadded:: 3.30"
+Qgis.AttributeTableFilterMode.__doc__ = """Defines how rows in attribute tables should be filtered.
+
+.. note::
+
+   Prior to QGIS 4.4 this was available as :py:class:`QgsAttributeTableFilterModel`.FilterMode.
+
+.. versionadded:: 4.4
+
+* ``ShowAll``: Show all features
+* ``ShowSelected``: Show only selected features
+* ``ShowVisible``: Show only visible features (depends on the map canvas)
+* ``ShowFilteredList``: Show only features whose IDs are on the filter list
+* ``ShowEdited``: Show only features which have unsaved changes
+* ``ShowInvalid``: Show only features not respecting constraints
+
+  .. versionadded:: 3.30
+
+
+"""
+# --
+Qgis.AttributeTableFilterMode.baseClass = Qgis
 try:
     Qgis.__attribute_docs__ = {'QGIS_DEV_VERSION': 'The development version', 'DEFAULT_SEARCH_RADIUS_MM': 'Identify search radius in mm', 'DEFAULT_MAPTOPIXEL_THRESHOLD': 'Default threshold between map coordinates and device coordinates for map2pixel simplification', 'DEFAULT_HIGHLIGHT_COLOR': 'Default highlight color.  The transparency is expected to only be applied to polygon\nfill. Lines and outlines are rendered opaque.', 'DEFAULT_HIGHLIGHT_BUFFER_MM': 'Default highlight buffer in mm.', 'DEFAULT_HIGHLIGHT_MIN_WIDTH_MM': 'Default highlight line/stroke minimum width in mm.', 'SCALE_PRECISION': 'Fudge factor used to compare two scales. The code is often going from scale to scale\ndenominator. So it looses precision and, when a limit is inclusive, can lead to errors.\nTo avoid that, use this factor instead of using <= or >=.\n\n.. deprecated:: 3.40\n\n   No longer used by QGIS and will be removed in QGIS 5.0.', 'DEFAULT_Z_COORDINATE': 'Default Z coordinate value.\nThis value have to be assigned to the Z coordinate for the vertex.', 'DEFAULT_M_COORDINATE': 'Default M coordinate value.\nThis value have to be assigned to the M coordinate for the vertex.\n\n.. versionadded:: 3.20', 'UI_SCALE_FACTOR': 'UI scaling factor. This should be applied to all widget sizes obtained from font metrics,\nto account for differences in the default font sizes across different platforms.', 'DEFAULT_SNAP_TOLERANCE': 'Default snapping distance tolerance.', 'DEFAULT_SNAP_UNITS': 'Default snapping distance units.', 'USER_CRS_START_ID': 'Minimum ID number for a user-defined projection.', 'DEFAULT_POINT_SIZE': 'The default size (in millimeters) for point marker symbols', 'DEFAULT_LINE_WIDTH': 'The default width (in millimeters) for line symbols', 'DEFAULT_SEGMENT_EPSILON': 'Default snapping tolerance for segments'}
     Qgis.__annotations__ = {'QGIS_DEV_VERSION': str, 'DEFAULT_SEARCH_RADIUS_MM': float, 'DEFAULT_MAPTOPIXEL_THRESHOLD': float, 'DEFAULT_HIGHLIGHT_COLOR': 'QColor', 'DEFAULT_HIGHLIGHT_BUFFER_MM': float, 'DEFAULT_HIGHLIGHT_MIN_WIDTH_MM': float, 'SCALE_PRECISION': float, 'DEFAULT_Z_COORDINATE': float, 'DEFAULT_M_COORDINATE': float, 'UI_SCALE_FACTOR': float, 'DEFAULT_SNAP_TOLERANCE': float, 'DEFAULT_SNAP_UNITS': 'Qgis.MapToolUnit', 'USER_CRS_START_ID': int, 'DEFAULT_POINT_SIZE': float, 'DEFAULT_LINE_WIDTH': float, 'DEFAULT_SEGMENT_EPSILON': float}

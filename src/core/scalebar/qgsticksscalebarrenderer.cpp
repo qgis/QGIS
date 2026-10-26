@@ -17,6 +17,7 @@
 #include "qgsticksscalebarrenderer.h"
 
 #include "qgslinesymbol.h"
+#include "qgspainting.h"
 #include "qgsscalebarsettings.h"
 #include "qgssymbol.h"
 #include "qgstextrenderer.h"
@@ -109,7 +110,7 @@ void QgsTicksScaleBarRenderer::draw( QgsRenderContext &context, const QgsScaleBa
 
   const double xOffset = firstLabelXOffset( settings, context, scaleContext );
 
-  painter->save();
+  QgsScopedQPainterState painterState( painter );
   context.setPainterFlagsUsingContext( painter );
 
   std::unique_ptr< QgsLineSymbol > symbol( settings.lineSymbol()->clone() );
@@ -209,7 +210,7 @@ void QgsTicksScaleBarRenderer::draw( QgsRenderContext &context, const QgsScaleBa
   divisionSymbol->stopRender( context );
   subdivisionSymbol->stopRender( context );
 
-  painter->restore();
+  painterState.restore();
 
   //draw labels using the default method
   drawDefaultLabels( context, settings, scaleContext );

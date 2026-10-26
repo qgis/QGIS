@@ -11,6 +11,11 @@ BISON_TARGET(QgsMeshCalcParser mesh/qgsmeshcalcparser.yy ${CMAKE_CURRENT_BINARY_
 FLEX_TARGET(QgsMeshCalcLexer mesh/qgsmeshcalclexer.ll ${CMAKE_CURRENT_BINARY_DIR}/qgsmeshcalclexer.cpp)
 ADD_FLEX_BISON_DEPENDENCY(QgsMeshCalcLexer QgsMeshCalcParser)
 
+# LAZPerf-priority
+if(WITH_INTERNAL_LAZPERF)
+  include_directories(BEFORE SYSTEM ${CMAKE_SOURCE_DIR}/external/lazperf)
+endif()
+
 if (WITH_PDF4QT)
   SET(PDF4QT_BUILD_ONLY_CORE_LIBRARY TRUE)
   SET(PDF4QT_ENABLE_OPENGL FALSE)
@@ -300,8 +305,10 @@ set(QGIS_CORE_SRCS
   processing/qgsprocessingparameterreliefcolors.cpp
   processing/qgsprocessingparametertininputlayers.cpp
   processing/qgsprocessingparametertype.cpp
+  processing/qgsprocessingparametertileextentmaxzoomlist.cpp
   processing/qgsprocessingparametervectortilewriterlayers.cpp
   processing/qgsprocessingparameteralignrasterlayers.cpp
+  processing/qgsprocessingpostprocessor.cpp
   processing/qgsprocessingprojectmodelprovider.cpp
   processing/qgsprocessingprovider.cpp
   processing/qgsprocessingregistry.cpp
@@ -513,6 +520,7 @@ set(QGIS_CORE_SRCS
   qgsfields.cpp
   qgsfileutils.cpp
   qgsfontutils.cpp
+  qgsfutureutils.cpp
   qgsgdalutils.cpp
   qgsgeometrysimplifier.cpp
   qgsgeometryvalidator.cpp
@@ -1135,16 +1143,6 @@ add_custom_command(OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/qgsexpression_texts.cpp
   WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
 )
 
-if(ENABLE_MODELTEST)
-  set(MODELTEST_SRCS
-    ../../tests/qt_modeltest/modeltest.cpp
-    ../../tests/qt_modeltest/dynamictreemodel.cpp
-  )
-  set(QGIS_CORE_SRCS ${QGIS_CORE_SRCS}
-    ${MODELTEST_SRCS}
-  )
-endif()
-
 if (CMAKE_CXX_COMPILER_ID MATCHES "Clang")
   # spatialindex headers produce warnings
   set_source_files_properties(qgsspatialindex.cpp PROPERTIES COMPILE_FLAGS -Wno-overloaded-virtual)
@@ -1271,6 +1269,7 @@ set(QGIS_CORE_HDRS
   qgsfilefiltergenerator.h
   qgsfileutils.h
   qgsfontutils.h
+  qgsfutureutils.h
   qgsgdalutils.h
   qgsgenericspatialindex.h
   qgsgeometryoptions.h
@@ -1950,11 +1949,13 @@ set(QGIS_CORE_HDRS
   processing/qgsprocessingparametermeshdataset.h
   processing/qgsprocessingparameterreliefcolors.h
   processing/qgsprocessingparameters.h
+  processing/qgsprocessingparametertileextentmaxzoomlist.h
   processing/qgsprocessingparametertininputlayers.h
   processing/qgsprocessingparametertype.h
   processing/qgsprocessingparametertypeimpl.h
   processing/qgsprocessingparametervectortilewriterlayers.h
   processing/qgsprocessingparameteralignrasterlayers.h
+  processing/qgsprocessingpostprocessor.h
   processing/qgsprocessingprojectmodelprovider.h
   processing/qgsprocessingprovider.h
   processing/qgsprocessingregistry.h

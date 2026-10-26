@@ -29,6 +29,7 @@ using namespace Qt::StringLiterals;
 #include "qgsfeatureiterator.h"
 #include "qgsfeaturerequest.h"
 #include "qgsgeometry.h"
+#include "qgsgeos.h"
 #include "qgsrenderchecker.h"
 #include "qgsexpressioncontext.h"
 #include "qgsrelationmanager.h"
@@ -42,7 +43,6 @@ using namespace Qt::StringLiterals;
 #include "qgsexpressioncontextutils.h"
 #include "qgsexpressionutils.h"
 #include "qgsmeshlayer.h"
-#include <geos_c.h>
 
 static void _parseAndEvalExpr( int arg )
 {
@@ -50,8 +50,102 @@ static void _parseAndEvalExpr( int arg )
   for ( int i = 0; i < 100; ++i )
   {
     QgsExpression exp( u"1 + 2 * 2"_s );
-    exp.evaluate();
+    Q_ASSERT( exp.evaluate().toInt() == 5 );
   }
+}
+
+static void _parseAndEvalExprWithFunction( int arg )
+{
+  Q_UNUSED( arg );
+  for ( int i = 0; i < 100; ++i )
+  {
+    QgsExpression exp( u"lower(upper(left('abc', 2)))"_s );
+    Q_ASSERT( exp.evaluate().toString() == "ab" );
+  }
+}
+
+class GetTestValueFunction : public QgsExpressionFunction
+{
+  public:
+    GetTestValueFunction()
+      : QgsExpressionFunction( u"get_test_value"_s, 1, u"test"_s )
+    {}
+
+    QVariant func( const QVariantList &args, const QgsExpressionContext *, QgsExpression *, const QgsExpressionNodeFunction * ) override { return args.at( 0 ); }
+};
+
+class GetTestValueFunction2 : public QgsExpressionFunction
+{
+  public:
+    GetTestValueFunction2( int value, const QString &name )
+      : QgsExpressionFunction( name, 0, u"test"_s )
+      , mValue( value )
+    {}
+
+    QVariant func( const QVariantList &, const QgsExpressionContext *, QgsExpression *, const QgsExpressionNodeFunction * ) override { return mValue; }
+
+  private:
+    int mValue = 0;
+};
+
+static void _parseAndEvalExprWithCustomFunction( int arg )
+{
+  for ( int i = 0; i < 100; ++i )
+  {
+    QgsExpression exp( u"get_test_value(%1)"_s.arg( arg ) );
+    const int result = exp.evaluate().toInt();
+    Q_ASSERT_X( result == arg, "", u"Expected %1 got %2"_s.arg( arg ).arg( result ).toLocal8Bit().constData() );
+  }
+}
+
+static void _parseAndEvalExprWithCustomFunctionRegister( int arg )
+{
+  const QString functionName = u"get_test_value%1"_s.arg( arg );
+  QgsExpression::registerFunction( new GetTestValueFunction2( arg, functionName ), true );
+
+  for ( int i = 0; i < 100; ++i )
+  {
+    // using builtin functions only
+    QgsExpression exp( u"lower(upper(left('abc', 2)))"_s );
+    Q_ASSERT( exp.evaluate().toString() == "ab" );
+
+    // using the custom function registered once on the main thread in advance
+    QgsExpression exp2( u"get_test_value(%1)"_s.arg( arg ) );
+    const int result = exp2.evaluate().toInt();
+    Q_ASSERT_X( result == arg, "", u"Expected %1 got %2"_s.arg( arg ).arg( result ).toLocal8Bit().constData() );
+
+    QgsExpression expCustom( u"%1()"_s.arg( functionName ) );
+    const int result2 = expCustom.evaluate().toInt();
+    Q_ASSERT_X( result2 == arg, "", u"Expected %1 got %2"_s.arg( arg ).arg( result2 ).toLocal8Bit().constData() );
+  }
+
+  QgsExpression::unregisterFunction( functionName );
+}
+
+static void _parseAndEvalExprWithCustomFunctionRegisterNoOwnership( int arg )
+{
+  const QString functionName = u"get_test_value%1"_s.arg( arg );
+  auto newFunction = new GetTestValueFunction2( arg, functionName );
+  QgsExpression::registerFunction( newFunction, false );
+
+  for ( int i = 0; i < 100; ++i )
+  {
+    // using builtin functions only
+    QgsExpression exp( u"lower(upper(left('abc', 2)))"_s );
+    Q_ASSERT( exp.evaluate().toString() == "ab" );
+
+    // using the custom function registered once on the main thread in advance
+    QgsExpression exp2( u"get_test_value(%1)"_s.arg( arg ) );
+    int result = exp2.evaluate().toInt();
+    Q_ASSERT_X( result == arg, "", u"Expected %1 got %2"_s.arg( arg ).arg( result ).toLocal8Bit().constData() );
+
+    QgsExpression expCustom( u"%1()"_s.arg( functionName ) );
+    result = expCustom.evaluate().toInt();
+    Q_ASSERT_X( result == arg, "", u"Expected %1 got %2"_s.arg( arg ).arg( result ).toLocal8Bit().constData() );
+  }
+
+  QgsExpression::unregisterFunction( functionName );
+  delete newFunction;
 }
 
 class RunLambdaInThread : public QThread
@@ -620,7 +714,7 @@ class TestQgsExpression : public QObject
       QCOMPARE( result.value( u"col2"_s ).toString(), u"test2"_s );
 
       QgsProject::instance()->addMapLayer( &layer, false, false );
-      QgsExpressionContext context3;
+      QgsExpressionContext context3( { QgsExpressionContextUtils::projectScope( QgsProject::instance() ) } );
       context3.setFeature( f2 );
       expression = QgsExpression( "represent_attributes('test_represent_attributes', $currentfeature)" );
 
@@ -637,7 +731,7 @@ class TestQgsExpression : public QObject
       // Test errors
       QgsProject::instance()->removeMapLayer( layer.id() );
       expression = QgsExpression( "represent_attributes('test_represent_attributes', $currentfeature)" );
-      QgsExpressionContext context4;
+      QgsExpressionContext context4( { QgsExpressionContextUtils::projectScope( QgsProject::instance() ) } );
       result = expression.evaluate( &context4 ).toMap();
       QVERIFY( expression.hasEvalError() );
     };
@@ -943,6 +1037,7 @@ class TestQgsExpression : public QObject
       QTest::newRow( "make_time(12,9,8) = make_time(12,9,9)" ) << "make_time(12,9,8) = make_time(12,9,9)" << false << QVariant( 0 );
       QTest::newRow( "make_time(12,9,8) != make_time(12,9,9)" ) << "make_time(12,9,8) != make_time(12,9,9)" << false << QVariant( 1 );
       QTest::newRow( "make_time(12,9,8) != make_time(12,9,8)" ) << "make_time(12,9,8) != make_time(12,9,8)" << false << QVariant( 0 );
+
       QTest::newRow( "make_datetime(2012,3,4,12,9,8) < make_datetime(2012,3,4,12,9,9)" ) << "make_datetime(2012,3,4,12,9,8) < make_datetime(2012,3,4,12,9,9)" << false << QVariant( 1 );
       QTest::newRow( "make_datetime(2012,3,4,12,9,8) > make_datetime(2012,3,4,12,9,9)" ) << "make_datetime(2012,3,4,12,9,8) > make_datetime(2012,3,4,12,9,9)" << false << QVariant( 0 );
       QTest::newRow( "make_datetime(2012,3,4,12,9,9) > make_datetime(2012,3,4,12,9,8)" ) << "make_datetime(2012,3,4,12,9,9) > make_datetime(2012,3,4,12,9,8)" << false << QVariant( 1 );
@@ -951,6 +1046,34 @@ class TestQgsExpression : public QObject
       QTest::newRow( "make_datetime(2012,3,4,12,9,8) = make_datetime(2012,3,4,12,9,9)" ) << "make_datetime(2012,3,4,12,9,8) = make_datetime(2012,3,4,12,9,9)" << false << QVariant( 0 );
       QTest::newRow( "make_datetime(2012,3,4,12,9,8) != make_datetime(2012,3,4,12,9,9)" ) << "make_datetime(2012,3,4,12,9,8) != make_datetime(2012,3,4,12,9,9)" << false << QVariant( 1 );
       QTest::newRow( "make_datetime(2012,3,4,12,9,8) != make_datetime(2012,3,4,12,9,8)" ) << "make_datetime(2012,3,4,12,9,8) != make_datetime(2012,3,4,12,9,8)" << false << QVariant( 0 );
+
+      // date / time / datetime comparisons with implicit string to date/time/datetime conversion
+      QTest::newRow( "make_datetime(2012,3,4,12,9,8) = '2012-03-04T12:09:08'" ) << "make_datetime(2012,3,4,12,9,8) = '2012-03-04T12:09:08'" << false << QVariant( 1 );
+      QTest::newRow( "make_datetime(2012,3,4,12,9,8) = '2012-03-05T12:09:08'" ) << "make_datetime(2012,3,4,12,9,8) = '2012-03-05T12:09:08'" << false << QVariant( 0 );
+      QTest::newRow( "make_datetime(2012,3,4,12,9,8) = 'not a date'" ) << "make_datetime(2012,3,4,12,9,8) = 'not a date'" << true << QVariant();
+      QTest::newRow( "'2012-03-04T12:09:08' = make_datetime(2012,3,4,12,9,8)" ) << "'2012-03-04T12:09:08' = make_datetime(2012,3,4,12,9,8)" << false << QVariant( 1 );
+      QTest::newRow( "'2012-03-05T12:09:08' = make_datetime(2012,3,4,12,9,8)" ) << "'2012-03-05T12:09:08' = make_datetime(2012,3,4,12,9,8)" << false << QVariant( 0 );
+      QTest::newRow( "'not a date' = make_datetime(2012,3,4,12,9,8)" ) << "'not a date' = make_datetime(2012,3,4,12,9,8)" << true << QVariant();
+
+      // string dates in ISO format without T to be tolerant
+      QTest::newRow( "make_datetime(2012,3,4,12,9,8) = '2012-03-04 12:09:08'" ) << "make_datetime(2012,3,4,12,9,8) = '2012-03-04 12:09:08'" << false << QVariant( 1 );
+      QTest::newRow( "make_datetime(2012,3,4,12,9,8) = '2012-03-05 12:09:08'" ) << "make_datetime(2012,3,4,12,9,8) = '2012-03-05 12:09:08'" << false << QVariant( 0 );
+      QTest::newRow( "'2012-03-04 12:09:08' = make_datetime(2012,3,4,12,9,8)" ) << "'2012-03-04 12:09:08' = make_datetime(2012,3,4,12,9,8)" << false << QVariant( 1 );
+      QTest::newRow( "'2012-03-05 12:09:08' = make_datetime(2012,3,4,12,9,8)" ) << "'2012-03-05 12:09:08' = make_datetime(2012,3,4,12,9,8)" << false << QVariant( 0 );
+
+      QTest::newRow( "make_date(2012,3,4) = '2012-03-04'" ) << "make_date(2012,3,4) = '2012-03-04'" << false << QVariant( 1 );
+      QTest::newRow( "make_date(2012,3,4) = '2012-03-05'" ) << "make_date(2012,3,4) = '2012-03-05'" << false << QVariant( 0 );
+      QTest::newRow( "make_date(2012,3,4) = 'not a date'" ) << "make_date(2012,3,4) = 'not a date'" << true << QVariant();
+      QTest::newRow( "'2012-03-04' = make_date(2012,3,4)" ) << "'2012-03-04' = make_date(2012,3,4)" << false << QVariant( 1 );
+      QTest::newRow( "'2012-03-05' = make_date(2012,3,4)" ) << "'2012-03-05' = make_date(2012,3,4)" << false << QVariant( 0 );
+      QTest::newRow( "'not a date' = make_date(2012,3,4)" ) << "'not a date' = make_date(2012,3,4)" << true << QVariant();
+
+      QTest::newRow( "make_time(12,9,8) = '12:09:08'" ) << "make_time(12,9,8) = '12:09:08'" << false << QVariant( 1 );
+      QTest::newRow( "make_time(12,9,8) = '12:09:09'" ) << "make_time(12,9,8) = '12:09:09'" << false << QVariant( 0 );
+      QTest::newRow( "make_time(12,9,8) = 'not a time'" ) << "make_time(12,9,8) = 'not a time'" << true << QVariant();
+      QTest::newRow( "'12:09:08' = make_time(12,9,8)" ) << "'12:09:08' = make_time(12,9,8)" << false << QVariant( 1 );
+      QTest::newRow( "'12:09:09' = make_time(12,9,8)" ) << "'12:09:09' = make_time(12,9,8)" << false << QVariant( 0 );
+      QTest::newRow( "'not a time' = make_time(12,9,8)" ) << "'not a time' = make_time(12,9,8)" << true << QVariant();
 
       // is, is not
       QTest::newRow( "is null,null" ) << "null is null" << false << QVariant( 1 );
@@ -1472,16 +1595,32 @@ class TestQgsExpression : public QObject
       QTest::newRow( "shared_paths null 2" ) << "shared_paths(geom_from_wkt('LineString(0 0, 10 10)'), NULL)" << false << QVariant();
       QTest::newRow( "shared_paths point 1" ) << "shared_paths(make_point(1,2), geom_from_wkt('LineString(0 0, 10 10)'))" << false << QVariant();
       QTest::newRow( "shared_paths point 2" ) << "shared_paths(geom_from_wkt('LineString(0 0, 10 10)'), make_point(1,2))" << false << QVariant();
+#if GEOS_VERSION_NUM >= GEOS_COMPUTE_VERSION( 3, 15, 0 )
+      QTest::newRow( "shared_paths lines 1" )
+        << "geom_to_wkt(shared_paths(geometry1:=geom_from_wkt('MULTILINESTRING((26 125,26 200,126 200,126 125,26 125),(51 150,101 150,76 175,51 150))'), geometry2:=geom_from_wkt('LINESTRING(151 "
+           "100,126 156.25,126 125,90 161, 76 175)')))"
+        << false
+        << QVariant( "GeometryCollection (MultiLineString ((126 156.25, 126 125),(101 150, 90 161, 76 175)),MultiLineString EMPTY)" );
+#else
       QTest::newRow( "shared_paths lines 1" )
         << "geom_to_wkt(shared_paths(geometry1:=geom_from_wkt('MULTILINESTRING((26 125,26 200,126 200,126 125,26 125),(51 150,101 150,76 175,51 150))'), geometry2:=geom_from_wkt('LINESTRING(151 "
            "100,126 156.25,126 125,90 161, 76 175)')))"
         << false
         << QVariant( "GeometryCollection (MultiLineString ((126 156.25, 126 125),(101 150, 90 161),(90 161, 76 175)),MultiLineString EMPTY)" );
+#endif
+#if GEOS_VERSION_NUM >= GEOS_COMPUTE_VERSION( 3, 15, 0 )
+      QTest::newRow( "shared_paths lines 2" )
+        << "geom_to_wkt(shared_paths(geometry1:=geom_from_wkt('MULTILINESTRING((26 125,26 200,126 200,126 125,26 125),(51 150,101 150,76 175,51 150))'), "
+           "geometry2:=reverse(geom_from_wkt('LINESTRING(151 100,126 156.25,126 125,90 161, 76 175)'))))"
+        << false
+        << QVariant( "GeometryCollection (MultiLineString EMPTY,MultiLineString ((126 156.25, 126 125),(101 150, 90 161, 76 175)))" );
+#else
       QTest::newRow( "shared_paths lines 2" )
         << "geom_to_wkt(shared_paths(geometry1:=geom_from_wkt('MULTILINESTRING((26 125,26 200,126 200,126 125,26 125),(51 150,101 150,76 175,51 150))'), "
            "geometry2:=reverse(geom_from_wkt('LINESTRING(151 100,126 156.25,126 125,90 161, 76 175)'))))"
         << false
         << QVariant( "GeometryCollection (MultiLineString EMPTY,MultiLineString ((126 156.25, 126 125),(101 150, 90 161),(90 161, 76 175)))" );
+#endif
       QTest::newRow( "offset_curve not geom" ) << "offset_curve('g', 5)" << true << QVariant();
       QTest::newRow( "offset_curve null" ) << "offset_curve(NULL, 5)" << false << QVariant();
       QTest::newRow( "offset_curve point" ) << "offset_curve(geom_from_wkt('POINT(1 2)'),5)" << false << QVariant();
@@ -1501,28 +1640,64 @@ class TestQgsExpression : public QObject
       QTest::newRow( "tapered_buffer not geom" ) << "tapered_buffer('g', 1, 2, 8)" << true << QVariant();
       QTest::newRow( "tapered_buffer null" ) << "tapered_buffer(NULL, 1, 2, 8)" << false << QVariant();
       QTest::newRow( "tapered_buffer point" ) << "geom_to_wkt(tapered_buffer(geometry:=geom_from_wkt('POINT(1 2)'),start_width:=1,end_width:=2,segments:=10))" << true << QVariant();
+#if GEOS_VERSION_NUM >= GEOS_COMPUTE_VERSION( 3, 15, 0 )
+      QTest::newRow( "tapered_buffer line" )
+        << "geom_to_wkt(tapered_buffer(geometry:=geom_from_wkt('LineString(0 0, 10 0)'),start_width:=1,end_width:=2,segments:=3))"
+        << false
+        << QVariant(
+             u"MultiPolygon (((0 -0.5, -0.25 -0.4330127, -0.4330127 -0.25, -0.5 0, -0.4330127 0.25, -0.25 0.4330127, 0 0.5, 10 1, 10.5 0.8660254, 10.8660254 0.5, 11 0, 10.8660254 -0.5, 10.5 -0.8660254, 10 -1, 0 -0.5)))"_s
+           );
+#else
       QTest::newRow( "tapered_buffer line" )
         << "geom_to_wkt(tapered_buffer(geometry:=geom_from_wkt('LineString(0 0, 10 0)'),start_width:=1,end_width:=2,segments:=3))"
         << false
         << QVariant(
              u"MultiPolygon (((-0.25 -0.4330127, -0.4330127 -0.25, -0.5 0, -0.4330127 0.25, -0.25 0.4330127, 0 0.5, 10 1, 10.5 0.8660254, 10.8660254 0.5, 11 0, 10.8660254 -0.5, 10.5 -0.8660254, 10 -1, 0 -0.5, -0.25 -0.4330127)))"_s
            );
+#endif
+#if GEOS_VERSION_NUM >= GEOS_COMPUTE_VERSION( 3, 15, 0 )
+      QTest::newRow( "tapered_buffer line 2" )
+        << "geom_to_wkt(tapered_buffer(geometry:=geom_from_wkt('LineString(0 0, 10 0)'),start_width:=2,end_width:=1,segments:=3))"
+        << false
+        << QVariant(
+             u"MultiPolygon (((0 -1, -0.5 -0.8660254, -0.8660254 -0.5, -1 0, -0.8660254 0.5, -0.5 0.8660254, 0 1, 10 0.5, 10.25 0.4330127, 10.4330127 0.25, 10.5 0, 10.4330127 -0.25, 10.25 -0.4330127, 10 -0.5, 0 -1)))"_s
+           );
+#else
       QTest::newRow( "tapered_buffer line 2" )
         << "geom_to_wkt(tapered_buffer(geometry:=geom_from_wkt('LineString(0 0, 10 0)'),start_width:=2,end_width:=1,segments:=3))"
         << false
         << QVariant(
              u"MultiPolygon (((-0.5 -0.8660254, -0.8660254 -0.5, -1 0, -0.8660254 0.5, -0.5 0.8660254, 0 1, 10 0.5, 10.25 0.4330127, 10.4330127 0.25, 10.5 0, 10.4330127 -0.25, 10.25 -0.4330127, 10 -0.5, 0 -1, -0.5 -0.8660254)))"_s
            );
+#endif
       QTest::newRow( "buffer_by_m not geom" ) << "buffer_by_m('g', 8)" << true << QVariant();
       QTest::newRow( "buffer_by_m null" ) << "buffer_by_m(NULL, 8)" << false << QVariant();
       QTest::newRow( "buffer_by_m point" ) << "geom_to_wkt(buffer_by_m(geometry:=geom_from_wkt('POINT(1 2)'),segments:=10))" << true << QVariant();
       QTest::newRow( "buffer_by_m line" ) << "geom_to_wkt(buffer_by_m(geometry:=geom_from_wkt('LineString(0 0, 10 0)'),segments:=3))" << false << QVariant( u"GeometryCollection EMPTY"_s );
+#if GEOS_VERSION_NUM >= GEOS_COMPUTE_VERSION( 3, 15, 0 )
+#ifdef GEOS_SUPPORTS_ZM
+      QTest::newRow( "buffer_by_m linem" )
+        << "geom_to_wkt(buffer_by_m(geometry:=geom_from_wkt('LineStringM(0 0 1, 10 0 2)'),segments:=3))"
+        << false
+        << QVariant(
+             u"MultiPolygon M (((0 -0.5 1, -0.25 -0.4330127 1, -0.4330127 -0.25 1, -0.5 0 1, -0.4330127 0.25 1, -0.25 0.4330127 1, 0 0.5 1, 10 1 2, 10.5 0.8660254 2, 10.8660254 0.5 2, 11 0 2, 10.8660254 -0.5 2, 10.5 -0.8660254 2, 10 -1 2, 0 -0.5 1)))"_s
+           );
+#else
+      QTest::newRow( "buffer_by_m linem" )
+        << "geom_to_wkt(buffer_by_m(geometry:=geom_from_wkt('LineStringM(0 0 1, 10 0 2)'),segments:=3))"
+        << false
+        << QVariant(
+             u"MultiPolygon (((0 -0.5, -0.25 -0.4330127, -0.4330127 -0.25, -0.5 0, -0.4330127 0.25, -0.25 0.4330127, 0 0.5, 10 1, 10.5 0.8660254, 10.8660254 0.5, 11 0, 10.8660254 -0.5, 10.5 -0.8660254, 10 -1, 0 -0.5)))"_s
+           );
+#endif
+#else
       QTest::newRow( "buffer_by_m linem" )
         << "geom_to_wkt(buffer_by_m(geometry:=geom_from_wkt('LineStringM(0 0 1, 10 0 2)'),segments:=3))"
         << false
         << QVariant(
              u"MultiPolygon (((-0.25 -0.4330127, -0.4330127 -0.25, -0.5 0, -0.4330127 0.25, -0.25 0.4330127, 0 0.5, 10 1, 10.5 0.8660254, 10.8660254 0.5, 11 0, 10.8660254 -0.5, 10.5 -0.8660254, 10 -1, 0 -0.5, -0.25 -0.4330127)))"_s
            );
+#endif
       QTest::newRow( "single_sided_buffer not geom" ) << "single_sided_buffer('g', 5)" << true << QVariant();
       QTest::newRow( "single_sided_buffer null" ) << "single_sided_buffer(NULL, 5)" << false << QVariant();
       QTest::newRow( "single_sided_buffer point" ) << "single_sided_buffer(geom_from_wkt('POINT(1 2)'),5)" << false << QVariant();
@@ -1713,7 +1888,7 @@ class TestQgsExpression : public QObject
         << "geom_to_wkt(make_rectangle_3points(make_point(0, 0), make_point(0,5), make_point(5, 3), 1))"
         << false
         << QVariant( "Polygon ((0 0, 0 5, 5 5, 5 0, 0 0))" );
-#if GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR < 10
+#if GEOS_VERSION_NUM < GEOS_COMPUTE_VERSION( 3, 10, 0 )
       QTest::newRow( "make_valid_extravert" )
         << "geom_to_wkt(make_valid(geom_from_wkt('POLYGON((3 2, 4 1, 5 8, 3 2, 4 2))')))"
         << false
@@ -1721,7 +1896,7 @@ class TestQgsExpression : public QObject
 #else
       QTest::newRow( "make_valid_extravert" ) << "geom_to_wkt(make_valid(geom_from_wkt('POLYGON((3 2, 4 1, 5 8, 3 2, 4 2))')))" << false << QVariant( "Polygon ((3 2, 5 8, 4 1, 3 2))" );
 #endif
-#if GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR < 10
+#if GEOS_VERSION_NUM < GEOS_COMPUTE_VERSION( 3, 10, 0 )
       QTest::newRow( "make_valid_missingEnd" ) << "geom_to_wkt(make_valid(geom_from_wkt('POLYGON((3 2, 4 1, 5 8))')))" << false << QVariant( "Polygon ((3 2, 4 1, 5 8, 3 2))" );
 #else
       QTest::newRow( "make_valid_missingEnd" ) << "geom_to_wkt(make_valid(geom_from_wkt('POLYGON((3 2, 4 1, 5 8))')))" << false << QVariant( "Polygon ((3 2, 5 8, 4 1, 3 2))" );
@@ -2117,7 +2292,7 @@ class TestQgsExpression : public QObject
         << QVariant( "Polygon ((5 5, 10 10, 10 0, 5 5))" );
       QTest::newRow( "geometries_to_array_emptygeom" ) << "array_length(geometries_to_array(geom_from_wkt('LINESTRING EMPTY')))" << false << QVariant( 1 );
       QTest::newRow( "geometries_to_array_nongeom" ) << "geometries_to_array('just a string')" << true << QVariant();
-#if GEOS_VERSION_MAJOR > 3 || ( GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR >= 11 )
+#if GEOS_VERSION_NUM >= GEOS_COMPUTE_VERSION( 3, 11, 0 )
       QTest::newRow( "concave_hull not geom" ) << "concave_hull('r', 1)" << true << QVariant();
       QTest::newRow( "concave_hull null" ) << "concave_hull(NULL, 1)" << false << QVariant();
       QTest::newRow( "concave_hull point" ) << "geom_to_wkt(concave_hull(geom_from_wkt('Point(0 0)'), 0.99))" << false << QVariant( "Point (0 0)" );
@@ -2127,7 +2302,7 @@ class TestQgsExpression : public QObject
            "158,36 150,62 150,76 128,88 118))'), 0.99))"
         << false
         << QVariant( "Polygon ((30 112, 36 150, 92 182, 132 186, 176 184, 190 122, 190 100, 186 52, 178 34, 168 18, 132 10, 66 28, 22 64, 30 112))" );
-#if GEOS_VERSION_MAJOR > 3 || ( GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR >= 12 )
+#if GEOS_VERSION_NUM >= GEOS_COMPUTE_VERSION( 3, 12, 0 )
       QTest::newRow( "concave_hull multipoint" )
         << "geom_to_wkt(concave_hull(geom_from_wkt('MultiPoint ((6.3 8.4),(7.6 8.8),(6.8 7.3),(5.3 1.8),(9.1 5),(8.1 7),(8.8 2.9),(2.4 8.2),(3.2 5.1),(3.7 2.3),(2.7 5.4),(8.4 1.9),(7.5 8.7),(4.4 "
            "4.2),(7.7 6.7),(9 3),(3.6 6.1),(3.2 6.5),(8.1 4.7),(8.8 5.8),(6.8 7.3),(4.9 9.5),(8.1 6),(8.7 5),(7.8 1.6),(7.9 2.1),(3 2.2),(7.8 4.3),(2.6 8.5),(4.8 3.4),(3.5 3.5),(3.6 4),(3.1 "
@@ -2146,7 +2321,19 @@ class TestQgsExpression : public QObject
         << false
         << QVariant( "Polygon ((2.3 6, 2.4 8.2, 2.6 8.5, 5.2 9.8, 6.4 9.7, 7.2 9.5, 7.6 8.8, 8.5 7.1, 9.1 5, 9 3, 8.4 1.9, 7.8 1.6, 7.3 1.6, 6.5 1.6, 4.3 1.9, 3 2.2, 2.3 3.6, 2.3 6))" );
 #endif
-#if GEOS_VERSION_MAJOR > 3 || ( GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR >= 12 )
+#if GEOS_VERSION_NUM >= GEOS_COMPUTE_VERSION( 3, 15, 0 )
+      QTest::newRow( "concave_hull multipoint allow holes" )
+        << "geom_to_wkt(concave_hull(geom_from_wkt('MultiPoint ((6.3 8.4),(7.6 8.8),(6.8 7.3),(5.3 1.8),(9.1 5),(8.1 7),(8.8 2.9),(2.4 8.2),(3.2 5.1),(3.7 2.3),(2.7 5.4),(8.4 1.9),(7.5 8.7),(4.4 "
+           "4.2),(7.7 6.7),(9 3),(3.6 6.1),(3.2 6.5),(8.1 4.7),(8.8 5.8),(6.8 7.3),(4.9 9.5),(8.1 6),(8.7 5),(7.8 1.6),(7.9 2.1),(3 2.2),(7.8 4.3),(2.6 8.5),(4.8 3.4),(3.5 3.5),(3.6 4),(3.1 "
+           "7.9),(8.3 2.9),(2.7 8.4),(5.2 9.8),(7.2 9.5),(8.5 7.1),(7.5 8.4),(7.5 7.7),(8.1 2.9),(7.7 7.3),(4.1 4.2),(8.3 7.2),(2.3 3.6),(8.9 5.3),(2.7 5.7),(5.7 9.7),(2.7 7.7),(3.9 8.8),(6 8.1),(8 "
+           "7.2),(5.4 3.2),(5.5 2.6),(6.2 2.2),(7 2),(7.6 2.7),(8.4 3.5),(8.7 4.2),(8.2 5.4),(8.3 6.4),(6.9 8.6),(6 9),(5 8.6),(4.3 8),(3.6 7.3),(3.6 6.8),(4 7.5),(2.4 6.7),(2.3 6),(2.6 4.4),(2.8 "
+           "3.3),(4 3.2),(4.3 1.9),(6.5 1.6),(7.3 1.6),(3.8 4.6),(3.1 5.9),(3.4 8.6),(4.5 9),(6.4 9.7))'), 0.99, true),2)"
+        << false
+        << QVariant(
+             "Polygon ((2.4 8.2, 2.6 8.5, 5.2 9.8, 6.4 9.7, 7.2 9.5, 7.6 8.8, 8.5 7.1, 9.1 5, 9 3, 8.4 1.9, 7.8 1.6, 7.3 1.6, 6.5 1.6, 4.3 1.9, 3 2.2, 2.3 3.6, 2.3 6, 2.4 8.2),(6.8 7.3, 3.6 6.1, 4.4 "
+             "4.2, 7.8 4.3, 6.8 7.3))"
+           );
+#elif GEOS_VERSION_NUM >= GEOS_COMPUTE_VERSION( 3, 12, 0 )
       QTest::newRow( "concave_hull multipoint allow holes" )
         << "geom_to_wkt(concave_hull(geom_from_wkt('MultiPoint ((6.3 8.4),(7.6 8.8),(6.8 7.3),(5.3 1.8),(9.1 5),(8.1 7),(8.8 2.9),(2.4 8.2),(3.2 5.1),(3.7 2.3),(2.7 5.4),(8.4 1.9),(7.5 8.7),(4.4 "
            "4.2),(7.7 6.7),(9 3),(3.6 6.1),(3.2 6.5),(8.1 4.7),(8.8 5.8),(6.8 7.3),(4.9 9.5),(8.1 6),(8.7 5),(7.8 1.6),(7.9 2.1),(3 2.2),(7.8 4.3),(2.6 8.5),(4.8 3.4),(3.5 3.5),(3.6 4),(3.1 "
@@ -3051,7 +3238,11 @@ class TestQgsExpression : public QObject
         qDebug() << exp.parserErrorString();
       QCOMPARE( exp.hasParserError(), false );
 
-      QVariant result = exp.evaluate();
+      // project scope is needed so that layers can be resolved by name or id
+      QgsExpressionContext context;
+      context.appendScope( QgsExpressionContextUtils::projectScope( QgsProject::instance() ) );
+
+      QVariant result = exp.evaluate( &context );
       if ( exp.hasEvalError() )
         qDebug() << exp.evalErrorString();
       if ( result.userType() != expected.userType() )
@@ -3070,8 +3261,6 @@ class TestQgsExpression : public QObject
       //qDebug() << res.type() << " " << result.type();
       //qDebug() << "type " << res.typeName();
       QCOMPARE( exp.hasEvalError(), evalError );
-
-      QgsExpressionContext context;
 
       QVERIFY( exp.prepare( &context ) );
 
@@ -3232,7 +3421,10 @@ class TestQgsExpression : public QObject
       }
       QCOMPARE( exp.hasParserError(), false );
 
-      QVariant result = exp.evaluate();
+      // project scope is needed so that layers can be resolved by name or id
+      QgsExpressionContext context( { QgsExpressionContextUtils::projectScope( QgsProject::instance() ) } );
+
+      QVariant result = exp.evaluate( &context );
       if ( exp.hasEvalError() )
       {
         qDebug() << exp.evalErrorString();
@@ -3479,7 +3671,10 @@ class TestQgsExpression : public QObject
       if ( exp.hasParserError() )
         qDebug() << exp.parserErrorString();
 
-      QVariant res = exp.evaluate();
+      // project scope is needed so that layers can be resolved by name or id
+      QgsExpressionContext context( { QgsExpressionContextUtils::projectScope( QgsProject::instance() ) } );
+
+      QVariant res = exp.evaluate( &context );
       if ( exp.hasEvalError() )
         qDebug() << exp.evalErrorString();
 
@@ -3491,7 +3686,7 @@ class TestQgsExpression : public QObject
         QCOMPARE( feat.id(), static_cast<QgsFeatureId>( featureId ) );
 
         QgsExpression featureIdExp( u"feature_id(%1)"_s.arg( string ) );
-        const QVariant idRes = featureIdExp.evaluate();
+        const QVariant idRes = featureIdExp.evaluate( &context );
         QCOMPARE( idRes.toInt(), featureId );
       }
     }
@@ -3545,8 +3740,7 @@ class TestQgsExpression : public QObject
     {
       // this checks that a variable can be non static in a aggregate, i.e. the result will change across the fetched features
       // see https://github.com/qgis/QGIS/issues/33382
-      QgsExpressionContext context;
-      context.appendScope( QgsExpressionContextUtils::layerScope( mAggregatesLayer ) );
+      QgsExpressionContext context( QgsExpressionContextUtils::globalProjectLayerScopes( mAggregatesLayer ) );
       QgsFeature f;
 
       QgsFeatureIterator it = mAggregatesLayer->getFeatures();
@@ -3569,8 +3763,7 @@ class TestQgsExpression : public QObject
     {
       // this checks that a variable can be non static in a aggregate, i.e. the result will change across the fetched features
       // see https://github.com/qgis/QGIS/issues/58221
-      QgsExpressionContext context;
-      context.appendScope( QgsExpressionContextUtils::layerScope( mAggregatesLayer ) );
+      QgsExpressionContext context( QgsExpressionContextUtils::globalProjectLayerScopes( mAggregatesLayer ) );
       context.lastScope()->setVariable( u"my_var"_s, u"3"_s );
 
       QgsExpression exp( QString( "aggregate(layer:='aggregate_layer', aggregate:='concatenate_unique', expression:=\"col2\", filter:=\"col1\"=@my_var)" ) );
@@ -3625,7 +3818,8 @@ class TestQgsExpression : public QObject
 
     void aggregate()
     {
-      QgsExpressionContext context;
+      // project scope is needed so that layers can be resolved by name or id
+      QgsExpressionContext context( { QgsExpressionContextUtils::projectScope( QgsProject::instance() ) } );
       QgsExpressionContextScope *scope = new QgsExpressionContextScope();
       scope->setVariable( u"test_var"_s, 10 );
       context << scope;
@@ -3644,10 +3838,11 @@ class TestQgsExpression : public QObject
 
       QVariant res;
 
-      //try evaluating once without context (only if variables aren't required)
+      //try evaluating once with only the project scope (only if variables aren't required)
       if ( !string.contains( "@"_L1 ) )
       {
-        res = exp.evaluate();
+        QgsExpressionContext projectContext( { QgsExpressionContextUtils::projectScope( QgsProject::instance() ) } );
+        res = exp.evaluate( &projectContext );
         if ( exp.hasEvalError() )
           qDebug() << exp.evalErrorString();
 
@@ -3794,7 +3989,8 @@ class TestQgsExpression : public QObject
       QFETCH( QgsFeature, feature );
       QFETCH( QgsVectorLayer *, layer );
 
-      QgsExpressionContext context;
+      // project scope is needed so that layers can be resolved by name or id
+      QgsExpressionContext context( { QgsExpressionContextUtils::projectScope( QgsProject::instance() ) } );
       if ( layer )
         context.appendScope( QgsExpressionContextUtils::layerScope( layer ) );
 
@@ -4011,7 +4207,10 @@ class TestQgsExpression : public QObject
       if ( exp.hasParserError() )
         qDebug() << exp.parserErrorString();
 
-      QVariant res = exp.evaluate();
+      // project scope is needed so that layers can be resolved by name or id
+      QgsExpressionContext context( { QgsExpressionContextUtils::projectScope( QgsProject::instance() ) } );
+
+      QVariant res = exp.evaluate( &context );
       if ( exp.hasEvalError() )
         qDebug() << exp.evalErrorString();
 
@@ -4166,12 +4365,12 @@ class TestQgsExpression : public QObject
       QgsExpression exp( u"current_value( 'FIELD_NAME' ) = 'A_VALUE' AND intersects(buffer($geometry, 10), @current_geometry)"_s );
       QList<const QgsExpressionNodeFunction *> functionNodes( exp.findNodes<QgsExpressionNodeFunction>() );
       QCOMPARE( functionNodes.size(), 5 );
-      QgsExpressionFunction *fd;
       QSet<QString> actualFunctions;
+
       for ( const QgsExpressionNodeFunction *f : std::as_const( functionNodes ) )
       {
         QCOMPARE( f->nodeType(), QgsExpressionNode::NodeType::ntFunction );
-        fd = QgsExpression::QgsExpression::Functions()[f->fnIndex()];
+        const QgsExpression::SharedFunctionPtr fd = f->function();
         actualFunctions << fd->name();
       }
       QCOMPARE( actualFunctions, expectedFunctions );
@@ -4195,7 +4394,8 @@ class TestQgsExpression : public QObject
       for ( const QgsExpressionNodeFunction *f : std::as_const( functionNodes ) )
       {
         QCOMPARE( f->nodeType(), QgsExpressionNode::NodeType::ntFunction );
-        fd = QgsExpression::QgsExpression::Functions()[f->fnIndex()];
+
+        const QgsExpression::SharedFunctionPtr fd = f->function();
         actualFunctions << fd->name();
       }
       expectedFunctions.clear();
@@ -5534,12 +5734,75 @@ class TestQgsExpression : public QObject
 
     void reentrant()
     {
-      // this simply should not crash
-
-      QList<int> lst;
-      for ( int i = 0; i < 10; ++i )
-        lst << i;
+      // tests that a simple expression can be evaluated across many threads simultaneously without issue
+      std::vector<int> lst( 100 );
+      std::iota( std::begin( lst ), std::end( lst ), 0 );
       QtConcurrent::blockingMap( lst, _parseAndEvalExpr );
+    }
+
+    void testReentrantBuiltInFunctions()
+    {
+      // tests that an expression using built-in functions can be evaluated across many threads simultaneously without issue
+      std::vector<int> lst( 100 );
+      std::iota( std::begin( lst ), std::end( lst ), 0 );
+
+      QtConcurrent::blockingMap( lst, _parseAndEvalExprWithFunction );
+    }
+
+    void testReentrantCustomFunctions()
+    {
+      // tests that an expression using a custom function, registered on the main thread, can be evaluated across many threads simultaneously without issue
+
+      std::vector<int> lst( 100 );
+      std::iota( std::begin( lst ), std::end( lst ), 0 );
+
+      QVERIFY( QgsExpression::registerFunction( new GetTestValueFunction(), true ) );
+      QtConcurrent::blockingMap( lst, _parseAndEvalExprWithCustomFunction );
+      QgsExpression::unregisterFunction( u"get_test_value"_s );
+    }
+
+    void testReentrantCustomFunctionRegister()
+    {
+      // tests that an expression using custom functions, registered WHILE other threads are evaluating expressions, can be evaluated across many threads simultaneously without issue
+      std::vector<int> lst( 100 );
+      std::iota( std::begin( lst ), std::end( lst ), 0 );
+
+      QVERIFY( QgsExpression::registerFunction( new GetTestValueFunction(), true ) );
+      QtConcurrent::blockingMap( lst, _parseAndEvalExprWithCustomFunctionRegister );
+      QgsExpression::unregisterFunction( u"get_test_value"_s );
+    }
+
+    void testReentrantCustomFunctionRegisterNoTransfer()
+    {
+      // tests that an expression using custom functions, registered WHILE other threads are evaluating expressions, can be evaluated across many threads simultaneously without issue
+      // this variant tests functions registered without transferring ownership
+      std::vector<int> lst( 100 );
+      std::iota( std::begin( lst ), std::end( lst ), 0 );
+
+      auto function = new GetTestValueFunction();
+      QVERIFY( QgsExpression::registerFunction( function, false ) );
+      QtConcurrent::blockingMap( lst, _parseAndEvalExprWithCustomFunctionRegisterNoOwnership );
+      QgsExpression::unregisterFunction( u"get_test_value"_s );
+      delete function;
+    }
+
+    void testReplaceCustomFunction()
+    {
+      const QString functionName = u"get_test_value"_s;
+      auto newFunction = new GetTestValueFunction2( 13, functionName );
+      QVERIFY( QgsExpression::registerFunction( newFunction, true ) );
+
+      QgsExpression exp( u"get_test_value()"_s );
+      int result = exp.evaluate().toInt();
+      QCOMPARE( result, 13 );
+
+      // unregister function while expression still exists
+      QgsExpression exp2( u"get_test_value()"_s );
+      QgsExpression::unregisterFunction( u"get_test_value"_s );
+
+      // should still be ok -- the expression will have held a reference to the function
+      result = exp2.evaluate().toInt();
+      QCOMPARE( result, 13 );
     }
 
     void evaluateToDouble()
@@ -5764,8 +6027,10 @@ class TestQgsExpression : public QObject
       const QString pointsLayerId = mPointsLayer->id();
       const QString pointsLayerName = mPointsLayer->name();
 
+      const QgsExpressionContextScope *projectScopeTemplate = QgsExpressionContextUtils::projectScope( QgsProject::instance() );
+
       bool testOk = false;
-      auto runTest = [weakPointer, rawPointer, pointsLayerId, pointsLayerName, this, &testOk] {
+      auto runTest = [weakPointer, rawPointer, pointsLayerId, pointsLayerName, projectScopeTemplate, this, &testOk] {
         testOk = false;
         QgsExpression exp;
         // NULL value
@@ -5794,6 +6059,12 @@ class TestQgsExpression : public QObject
         res = QgsExpressionUtils::getMapLayer( rawPointer, &context, &exp );
         QCOMPARE( res, mPointsLayer );
         QVERIFY( !exp.hasEvalError() );
+
+        // TODO QGIS 5.0 -- once the QgsProject.instance() fallback is removed, check that layers can't be resolved
+        // by id or name without a project scope in the context
+
+        // add project scope, which carries the project's layer store
+        context.appendScope( new QgsExpressionContextScope( *projectScopeTemplate ) );
 
         // with layer id
         exp = QgsExpression();
@@ -5908,6 +6179,28 @@ class TestQgsExpression : public QObject
         exp = QgsExpression( u"layer_property('%1', 'id')"_s.arg( pointsLayerName ) );
         QCOMPARE( exp.evaluate( &context ).toString(), pointsLayerId );
 
+        // a layer with the same name in a higher scope's store takes precedence over the project layer
+        QgsExpressionContextScope *scope3 = new QgsExpressionContextScope();
+        context.appendScope( scope3 );
+
+        QgsMapLayerStore store3;
+        QgsVectorLayer *layer4 = new QgsVectorLayer( u"Point?field=col1:integer"_s, pointsLayerName, u"memory"_s );
+        store3.addMapLayer( layer4 );
+        scope3->addLayerStore( &store3 );
+
+        exp = QgsExpression();
+        res = QgsExpressionUtils::getMapLayer( pointsLayerName, &context, &exp );
+        QCOMPARE( res, layer4 );
+        QVERIFY( !exp.hasEvalError() );
+
+        exp = QgsExpression( u"layer_property('%1', 'id')"_s.arg( pointsLayerName ) );
+        QCOMPARE( exp.evaluate( &context ).toString(), layer4->id() );
+
+        // project layer is still reachable by id
+        exp = QgsExpression();
+        res = QgsExpressionUtils::getMapLayer( pointsLayerId, &context, &exp );
+        QCOMPARE( res, mPointsLayer );
+
 #if 0
         // TODO -- probably should flag an error here?
         QVERIFY( !exp.hasEvalError() );
@@ -5938,8 +6231,12 @@ class TestQgsExpression : public QObject
       const QString pointsLayerId = mPointsLayer->id();
       const QString pointsLayerName = mPointsLayer->name();
 
+      // project scope is created on the main thread, and copied into the contexts used by the test
+      std::unique_ptr< QgsExpressionContextScope > projectScope( QgsExpressionContextUtils::projectScope( QgsProject::instance() ) );
+      const QgsExpressionContextScope *projectScopeTemplate = projectScope.get();
+
       bool testOk = false;
-      auto runTest = [weakPointer, rawPointer, pointsLayerId, pointsLayerName, &testOk] {
+      auto runTest = [weakPointer, rawPointer, pointsLayerId, pointsLayerName, projectScopeTemplate, &testOk] {
         testOk = false;
         QString gotLayerId;
 
@@ -5975,6 +6272,12 @@ class TestQgsExpression : public QObject
         QgsExpressionUtils::executeLambdaForMapLayer( rawPointer, &context, &exp, lambda, foundLayer );
         QVERIFY( foundLayer );
         QCOMPARE( gotLayerId, pointsLayerId );
+
+        // TODO QGIS 5.0 -- once the QgsProject.instance() fallback is removed, check that layers can't be resolved
+        // by id or name without a project scope in the context
+
+        // add project scope, which carries the project's layer store
+        context.appendScope( new QgsExpressionContextScope( *projectScopeTemplate ) );
 
         // with layer id
         foundLayer = false;
@@ -6934,7 +7237,7 @@ class TestQgsExpression : public QObject
       const HelpTextHash &functionHelp = QgsExpression::functionHelpTexts();
       for ( auto helpIt = functionHelp.constBegin(); helpIt != functionHelp.constEnd(); ++helpIt )
       {
-#if GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR < 11
+#if GEOS_VERSION_NUM < GEOS_COMPUTE_VERSION( 3, 11, 0 )
         if ( helpIt->mName == "concave_hull"_L1 )
           continue;
 #endif

@@ -1499,6 +1499,7 @@ template<typename T> QList<T *> QgsAppLayerHandling::addLayerPrivate( Qgis::Laye
     // contain at most one single layer
     QgsMapLayerFactory::LayerOptions options( QgsProject::instance()->transformContext() );
     options.loadDefaultStyle = false;
+    options.loadAllStoredStyles = true;
     result.push_back( qobject_cast<T *>( QgsMapLayerFactory::createLayer( uri, name, type, options, providerKey ) ) );
     if ( !result.isEmpty() )
     {

@@ -49,6 +49,7 @@
 #include "qgsmaplayercombobox.h"
 #include "qgsmapmouseevent.h"
 #include "qgsmapthemecollection.h"
+#include "qgsmaptoolextent.h"
 #include "qgsmessagebar.h"
 #include "qgspointcloudattributecombobox.h"
 #include "qgspointcloudlayer.h"
@@ -7408,7 +7409,7 @@ void QgsProcessingMultipleLayerPanelWidget::setModel( QgsProcessingModelAlgorith
       mModelSources = model->availableSourcesForChild(
         modelChildAlgorithmID,
         QStringList() << QgsProcessingParameterPointCloudLayer::typeName() << QgsProcessingParameterMultipleLayers::typeName() << QgsProcessingParameterFile::typeName(),
-        QStringList() << QgsProcessingOutputFile::typeName() << QgsProcessingOutputMapLayer::typeName() << QgsProcessingOutputMultipleLayers::typeName()
+        QStringList() << QgsProcessingOutputFile::typeName() << QgsProcessingOutputPointCloudLayer::typeName() << QgsProcessingOutputMapLayer::typeName() << QgsProcessingOutputMultipleLayers::typeName()
       );
       break;
     }
@@ -7428,7 +7429,7 @@ void QgsProcessingMultipleLayerPanelWidget::setModel( QgsProcessingModelAlgorith
       mModelSources = model->availableSourcesForChild(
         modelChildAlgorithmID,
         QStringList() << QgsProcessingParameterMapLayer::typeName() << QgsProcessingParameterMultipleLayers::typeName(),
-        QStringList() << QgsProcessingOutputMapLayer::typeName() << QgsProcessingOutputMultipleLayers::typeName()
+        QStringList() << QgsProcessingOutputMapLayer::typeName() << QgsProcessingOutputVectorTileLayer::typeName() << QgsProcessingOutputMapLayer::typeName() << QgsProcessingOutputMultipleLayers::typeName()
       );
       break;
     }
@@ -7532,6 +7533,8 @@ void QgsProcessingMultipleLayerPanelWidget::setModel( QgsProcessingModelAlgorith
           << QgsProcessingOutputFile::typeName()
           << QgsProcessingOutputMapLayer::typeName()
           << QgsProcessingOutputVectorLayer::typeName()
+          << QgsProcessingOutputVectorTileLayer::typeName()
+          << QgsProcessingOutputPointCloudLayer::typeName()
           << QgsProcessingOutputRasterLayer::typeName()
           // << QgsProcessingOutputMeshLayer::typeName()
           << QgsProcessingOutputMultipleLayers::typeName()
@@ -7637,6 +7640,115 @@ void QgsProcessingMultipleLayerWidgetWrapper::setWidgetContext( const QgsProcess
     mPanel->setProject( context.project() );
     if ( type() == Qgis::ProcessingMode::Modeler )
       mPanel->setModel( widgetContext().model(), widgetContext().modelChildAlgorithmId() );
+  }
+}
+
+QStringList QgsProcessingMultipleLayerWidgetWrapper::compatibleParameterTypes( const QgsProcessingParameterDefinition *definition ) const
+{
+  if ( auto layerParam = dynamic_cast<const QgsProcessingParameterMultipleLayers *>( definition ) )
+  {
+    // we always allow linking to generic parameters, since we don't know what they are referring to
+    QStringList result = { QgsProcessingParameterMultipleLayers::typeName(), QgsProcessingParameterMapLayer::typeName(), QgsProcessingParameterFile::typeName(), QgsProcessingParameterString::typeName() };
+
+    // then we check the accepted layer types, permissively expose other parameter types which MAY be compatible
+    switch ( layerParam->layerType() )
+    {
+      case Qgis::ProcessingSourceType::MapLayer:
+        result
+          << QgsProcessingParameterVectorLayer::typeName()
+          << QgsProcessingParameterMeshLayer::typeName()
+          << QgsProcessingParameterFeatureSource::typeName()
+          << QgsProcessingParameterRasterLayer::typeName()
+          << QgsProcessingParameterPointCloudLayer::typeName()
+          << QgsProcessingParameterAnnotationLayer::typeName();
+        break;
+
+      case Qgis::ProcessingSourceType::Vector:
+      case Qgis::ProcessingSourceType::VectorAnyGeometry:
+      case Qgis::ProcessingSourceType::VectorPoint:
+      case Qgis::ProcessingSourceType::VectorLine:
+      case Qgis::ProcessingSourceType::VectorPolygon:
+        result << QgsProcessingParameterVectorLayer::typeName();
+        break;
+
+      case Qgis::ProcessingSourceType::Raster:
+        result << QgsProcessingParameterRasterLayer::typeName();
+        break;
+
+      case Qgis::ProcessingSourceType::Mesh:
+        result << QgsProcessingParameterMeshLayer::typeName();
+        break;
+
+      case Qgis::ProcessingSourceType::PointCloud:
+        result << QgsProcessingParameterPointCloudLayer::typeName();
+        break;
+
+      case Qgis::ProcessingSourceType::Annotation:
+        result << QgsProcessingParameterAnnotationLayer::typeName();
+        break;
+
+      case Qgis::ProcessingSourceType::TiledScene:
+      case Qgis::ProcessingSourceType::VectorTile:
+      case Qgis::ProcessingSourceType::Plugin:
+      case Qgis::ProcessingSourceType::File:
+        break;
+    }
+    return result;
+  }
+  else
+  {
+    return QgsProcessingParameterWidgetFactoryInterface::compatibleParameterTypes( definition );
+  }
+}
+
+QStringList QgsProcessingMultipleLayerWidgetWrapper::compatibleOutputTypes( const QgsProcessingParameterDefinition *definition ) const
+{
+  if ( auto layerParam = dynamic_cast<const QgsProcessingParameterMultipleLayers *>( definition ) )
+  {
+    // we always allow linking to generic outputs, since we don't know what they are referring to
+    QStringList result
+      = { QgsProcessingOutputMapLayer::typeName(), QgsProcessingOutputMultipleLayers::typeName(), QgsProcessingOutputFile::typeName(), QgsProcessingOutputString::typeName(), QgsProcessingOutputVariant::typeName() };
+
+    // then we check the accepted layer types, permissively expose other output types which MAY be compatible
+    switch ( layerParam->layerType() )
+    {
+      case Qgis::ProcessingSourceType::MapLayer:
+        result << QgsProcessingOutputRasterLayer::typeName() << QgsProcessingOutputVectorLayer::typeName() << QgsProcessingOutputVectorTileLayer::typeName() << QgsProcessingOutputPointCloudLayer::typeName();
+        break;
+
+      case Qgis::ProcessingSourceType::Vector:
+      case Qgis::ProcessingSourceType::VectorAnyGeometry:
+      case Qgis::ProcessingSourceType::VectorPoint:
+      case Qgis::ProcessingSourceType::VectorLine:
+      case Qgis::ProcessingSourceType::VectorPolygon:
+        result << QgsProcessingOutputVectorLayer::typeName();
+        break;
+
+      case Qgis::ProcessingSourceType::Raster:
+        result << QgsProcessingOutputRasterLayer::typeName();
+        break;
+
+      case Qgis::ProcessingSourceType::VectorTile:
+        result << QgsProcessingOutputVectorTileLayer::typeName();
+        break;
+
+      case Qgis::ProcessingSourceType::PointCloud:
+        result << QgsProcessingOutputPointCloudLayer::typeName();
+        break;
+
+      case Qgis::ProcessingSourceType::File:
+      case Qgis::ProcessingSourceType::Mesh:
+      case Qgis::ProcessingSourceType::Plugin:
+      case Qgis::ProcessingSourceType::Annotation:
+      case Qgis::ProcessingSourceType::TiledScene:
+        break;
+    }
+
+    return result;
+  }
+  else
+  {
+    return QgsProcessingParameterWidgetFactoryInterface::compatibleOutputTypes( definition );
   }
 }
 
@@ -9373,14 +9485,24 @@ QgsInterpolationSourceWidget::QgsInterpolationSourceWidget( QWidget *parent )
   cmbFields->setFilters( QgsFieldProxyModel::Filter::Numeric );
 
   connect( cmbLayers, &QgsMapLayerComboBox::layerChanged, this, [this]( QgsMapLayer *layer ) { layerChanged( qobject_cast<QgsVectorLayer *>( layer ) ); } );
+  connect( cmbFields, &QgsFieldComboBox::fieldChanged, this, &QgsInterpolationSourceWidget::updateAddButtonState );
+  connect( chkUseZCoordinate, &QCheckBox::toggled, this, [this]( bool checked ) {
+    cmbFields->setEnabled( !checked );
+    updateAddButtonState();
+  } );
 
   layerChanged( qobject_cast< QgsVectorLayer * >( cmbLayers->currentLayer() ) );
+}
+
+bool QgsInterpolationSourceWidget::canAddLayer() const
+{
+  return chkUseZCoordinate->isChecked() || !cmbFields->currentField().isEmpty();
 }
 
 void QgsInterpolationSourceWidget::addLayer()
 {
   QgsVectorLayer *layer = qobject_cast< QgsVectorLayer * >( cmbLayers->currentLayer() );
-  if ( !layer )
+  if ( !layer || !canAddLayer() )
   {
     return;
   }
@@ -9408,6 +9530,8 @@ void QgsInterpolationSourceWidget::layerChanged( QgsVectorLayer *layer )
 
   if ( !layer || !layer->isValid() )
   {
+    cmbFields->setLayer( nullptr );
+    updateAddButtonState();
     return;
   }
 
@@ -9417,6 +9541,17 @@ void QgsInterpolationSourceWidget::layerChanged( QgsVectorLayer *layer )
   }
 
   cmbFields->setLayer( layer );
+  updateAddButtonState();
+}
+
+void QgsInterpolationSourceWidget::updateAddButtonState()
+{
+  const bool hasLayer = cmbFields->layer();
+  const bool layerValid = hasLayer && canAddLayer();
+
+  btnAdd->setEnabled( layerValid );
+  const QString toolTip = layerValid ? QString() : tr( "Select a numeric attribute or use the Z coordinate." );
+  btnAdd->setToolTip( toolTip );
 }
 
 void QgsInterpolationSourceWidget::addLayerData( QgsVectorLayer *layer, const QString &attribute )
@@ -9826,6 +9961,344 @@ void QgsProcessingInterpolationPixelSizeWidgetWrapper::extentChanged( QgsAbstrac
 
     mWidget->setExtent( extent );
   }
+}
+
+
+//
+// QgsTileExtentMaxZoomWidget
+//
+
+QgsTileExtentMaxZoomWidget::QgsTileExtentMaxZoomWidget( const QgsProcessingParameterTileExtentMaxZoomList *param )
+  : QgsPanelWidget()
+  , mParam( param )
+{
+  setupUi( this );
+
+  QFontMetrics fm( font() );
+  mRegionsWidget->setColumnWidth( 0, fm.horizontalAdvance( 'X' ) * 20 );
+  mRegionsWidget->header()->setStretchLastSection( true );
+
+  connect( mButtonAdd, &QToolButton::clicked, this, &QgsTileExtentMaxZoomWidget::addClicked );
+  connect( mButtonRemove, &QToolButton::clicked, this, &QgsTileExtentMaxZoomWidget::removeClicked );
+  connect( mRegionsWidget, &QTreeWidget::itemDoubleClicked, this, &QgsTileExtentMaxZoomWidget::itemDoubleClicked );
+}
+
+QgsTileExtentMaxZoomWidget::~QgsTileExtentMaxZoomWidget() = default;
+
+void QgsTileExtentMaxZoomWidget::addClicked()
+{
+  if ( mMapCanvas )
+  {
+    mMapToolPrevious = mMapCanvas->mapTool();
+    if ( !mMapToolExtent )
+    {
+      mMapToolExtent = std::make_unique<QgsMapToolExtent>( mMapCanvas );
+      connect( mMapToolExtent.get(), &QgsMapToolExtent::extentChanged, this, &QgsTileExtentMaxZoomWidget::extentDrawn );
+      connect( mMapToolExtent.get(), &QgsMapTool::deactivated, this, &QgsTileExtentMaxZoomWidget::mapToolDeactivated );
+    }
+    mMapCanvas->setMapTool( mMapToolExtent.get() );
+
+    emit toggleDialogVisibility( false );
+  }
+}
+
+void QgsTileExtentMaxZoomWidget::extentDrawn( const QgsRectangle &extent )
+{
+  const QgsReferencedRectangle newExtent( extent, mMapCanvas->mapSettings().destinationCrs() );
+
+  mMapCanvas->setMapTool( mMapToolPrevious );
+  emit toggleDialogVisibility( true );
+  mMapToolPrevious = nullptr;
+
+  auto item = new QTreeWidgetItem();
+  item->setText( 0, u"15"_s );
+  item->setText( 1, regionToString( newExtent ) );
+  mRegionsWidget->addTopLevelItem( item );
+  emit valueChanged();
+}
+
+void QgsTileExtentMaxZoomWidget::mapToolDeactivated()
+{
+  emit toggleDialogVisibility( true );
+  mMapToolPrevious = nullptr;
+}
+
+QString QgsTileExtentMaxZoomWidget::regionToString( const QgsReferencedRectangle &region )
+{
+  return u"%1,%3,%2,%4 [%5]"_s
+    .arg( qgsDoubleToString( region.xMinimum() ), qgsDoubleToString( region.yMinimum() ), qgsDoubleToString( region.xMaximum() ), qgsDoubleToString( region.yMaximum() ), region.crs().authid() );
+}
+
+void QgsTileExtentMaxZoomWidget::removeClicked()
+{
+  const QList<QTreeWidgetItem *> selectedItems = mRegionsWidget->selectedItems();
+  for ( QTreeWidgetItem *item : std::as_const( selectedItems ) )
+  {
+    delete item;
+  }
+  emit valueChanged();
+}
+
+void QgsTileExtentMaxZoomWidget::itemDoubleClicked( QTreeWidgetItem *item, int column )
+{
+  if ( !item )
+    return;
+
+  bool ok = false;
+  if ( column == 0 )
+  {
+    const int d = QInputDialog::getInt( this, tr( "Maximum Zoom Level" ), tr( "Enter maximum zoom level for region" ), item->text( 0 ).toInt(), 0, 20, 1, &ok );
+    if ( ok )
+    {
+      item->setText( 0, QString::number( d ) );
+      emit valueChanged();
+    }
+  }
+}
+
+QList<QgsTileExtentMaxZoomRegion> QgsTileExtentMaxZoomWidget::regions() const
+{
+  QList<QgsTileExtentMaxZoomRegion> regions;
+  QgsProcessingContext context;
+  for ( int i = 0; i < mRegionsWidget->topLevelItemCount(); ++i )
+  {
+    if ( QTreeWidgetItem *item = mRegionsWidget->topLevelItem( i ) )
+    {
+      const QgsTileExtentMaxZoomRegion region = mParam->regionFromVariant( u"%1:%2"_s.arg( item->text( 0 ), item->text( 1 ) ), context );
+      if ( region.extent.isNull() )
+        continue;
+
+      regions.append( region );
+    }
+  }
+  return regions;
+}
+
+void QgsTileExtentMaxZoomWidget::setRegions( const QList<QgsTileExtentMaxZoomRegion> &regions )
+{
+  mRegionsWidget->clear();
+  for ( const QgsTileExtentMaxZoomRegion &r : regions )
+  {
+    auto item = new QTreeWidgetItem();
+    item->setText( 0, QString::number( r.maxZoom ) );
+    item->setText( 1, regionToString( r.extent ) );
+    mRegionsWidget->addTopLevelItem( item );
+  }
+  emit valueChanged();
+}
+
+void QgsTileExtentMaxZoomWidget::setMapCanvas( QgsMapCanvas *canvas )
+{
+  mMapCanvas = canvas;
+}
+
+
+//
+// QgsProcessingTileExtentMaxZoomParameterPanel
+//
+
+QgsProcessingTileExtentMaxZoomParameterPanel::QgsProcessingTileExtentMaxZoomParameterPanel( const QgsProcessingParameterTileExtentMaxZoomList *param )
+  : QWidget( nullptr )
+  , mParam( param )
+{
+  QHBoxLayout *hl = new QHBoxLayout();
+  hl->setContentsMargins( 0, 0, 0, 0 );
+
+  mLineEdit = new QLineEdit();
+  mLineEdit->setEnabled( false );
+  hl->addWidget( mLineEdit, 1 );
+
+  mToolButton = new QToolButton();
+  mToolButton->setText( QString( QChar( 0x2026 ) ) );
+  hl->addWidget( mToolButton );
+
+  setLayout( hl );
+
+  mLineEdit->setText( tr( "No regions defined" ) );
+
+  connect( mToolButton, &QToolButton::clicked, this, &QgsProcessingTileExtentMaxZoomParameterPanel::showDialog );
+}
+
+QVariant QgsProcessingTileExtentMaxZoomParameterPanel::value() const
+{
+  // if editing widget is still open, use the value currently shown in that widget
+  if ( mPanelWidget )
+    return QgsProcessingParameterTileExtentMaxZoomList::toVariant( mPanelWidget->regions() );
+
+  return QgsProcessingParameterTileExtentMaxZoomList::toVariant( mRegions );
+}
+
+void QgsProcessingTileExtentMaxZoomParameterPanel::setValue( const QVariant &value, QgsProcessingContext &context )
+{
+  const QList<QgsTileExtentMaxZoomRegion> regions = mParam->parameterAsRegionList( value, context );
+  setRegions( regions );
+}
+
+void QgsProcessingTileExtentMaxZoomParameterPanel::setRegions( const QList<QgsTileExtentMaxZoomRegion> &regions )
+{
+  mRegions = regions;
+  if ( mPanelWidget )
+  {
+    mPanelWidget->setRegions( regions );
+  }
+
+  updateSummaryText();
+  emit changed();
+}
+
+void QgsProcessingTileExtentMaxZoomParameterPanel::setMapCanvas( QgsMapCanvas *canvas )
+{
+  mMapCanvas = canvas;
+  if ( mPanelWidget )
+  {
+    mPanelWidget->setMapCanvas( mMapCanvas );
+  }
+}
+
+void QgsProcessingTileExtentMaxZoomParameterPanel::showDialog()
+{
+  if ( QgsPanelWidget *panel = QgsPanelWidget::findParentPanel( this ) )
+  {
+    mPanelWidget = new QgsTileExtentMaxZoomWidget( mParam );
+
+    mPanelWidget->setPanelTitle( mParam->description() );
+    mPanelWidget->setRegions( mRegions );
+    mPanelWidget->setMapCanvas( mMapCanvas );
+
+    panel->openPanel( mPanelWidget );
+
+    connect( mPanelWidget, &QgsTileExtentMaxZoomWidget::toggleDialogVisibility, this, &QgsProcessingTileExtentMaxZoomParameterPanel::toggleDialogVisibility );
+
+    connect( mPanelWidget, &QgsTileExtentMaxZoomWidget::valueChanged, this, [this] {
+      mRegions = mPanelWidget->regions();
+      updateSummaryText();
+      emit changed();
+    } );
+  }
+}
+
+void QgsProcessingTileExtentMaxZoomParameterPanel::updateSummaryText()
+{
+  mLineEdit->setText( tr( "%1 regions defined" ).arg( mRegions.count() ) );
+}
+
+
+//
+// QgsProcessingTileExtentMaxZoomWidgetWrapper
+//
+
+QgsProcessingTileExtentMaxZoomWidgetWrapper::QgsProcessingTileExtentMaxZoomWidgetWrapper( const QgsProcessingParameterDefinition *parameter, Qgis::ProcessingMode type, QWidget *parent )
+  : QgsAbstractProcessingParameterWidgetWrapper( parameter, type, parent )
+{}
+
+QString QgsProcessingTileExtentMaxZoomWidgetWrapper::parameterType() const
+{
+  return QgsProcessingParameterTileExtentMaxZoomList::typeName();
+}
+
+QgsAbstractProcessingParameterWidgetWrapper *QgsProcessingTileExtentMaxZoomWidgetWrapper::createWidgetWrapper( const QgsProcessingParameterDefinition *parameter, Qgis::ProcessingMode type )
+{
+  return new QgsProcessingTileExtentMaxZoomWidgetWrapper( parameter, type );
+}
+
+QgsProcessingAbstractParameterDefinitionWidget *QgsProcessingTileExtentMaxZoomWidgetWrapper::createParameterDefinitionWidget(
+  QgsProcessingContext &, const QgsProcessingParameterWidgetContext &, const QgsProcessingParameterDefinition *, const QgsProcessingAlgorithm *
+)
+{
+  return nullptr;
+}
+
+QWidget *QgsProcessingTileExtentMaxZoomWidgetWrapper::createWidget()
+{
+  switch ( type() )
+  {
+    case Qgis::ProcessingMode::Standard:
+    {
+      auto param = dynamic_cast<const QgsProcessingParameterTileExtentMaxZoomList *>( parameterDefinition() );
+      mWidget = new QgsProcessingTileExtentMaxZoomParameterPanel( param );
+
+      if ( widgetContext().mapCanvas() )
+        mWidget->setMapCanvas( widgetContext().mapCanvas() );
+
+      connect( mWidget, &QgsProcessingTileExtentMaxZoomParameterPanel::changed, this, [this] { emit widgetValueHasChanged( this ); } );
+
+      if ( mDialog && type() != Qgis::ProcessingMode::Modeler )
+        setDialog( mDialog ); // setup connections to panel - dialog was previously set before the widget was created
+
+      return mWidget;
+    }
+
+    case Qgis::ProcessingMode::Batch:
+    case Qgis::ProcessingMode::Modeler:
+    {
+      mFallbackLineEdit = new QLineEdit();
+      mFallbackLineEdit->setPlaceholderText( tr( "Tile extent max zoom level definition" ) );
+      connect( mFallbackLineEdit, &QLineEdit::textChanged, this, [this] { emit widgetValueHasChanged( this ); } );
+      return mFallbackLineEdit;
+    }
+  }
+  return nullptr;
+}
+
+void QgsProcessingTileExtentMaxZoomWidgetWrapper::setWidgetContext( const QgsProcessingParameterWidgetContext &context )
+{
+  QgsAbstractProcessingParameterWidgetWrapper::setWidgetContext( context );
+  if ( mWidget && context.mapCanvas() && type() != Qgis::ProcessingMode::Modeler )
+    mWidget->setMapCanvas( context.mapCanvas() );
+}
+
+void QgsProcessingTileExtentMaxZoomWidgetWrapper::setDialog( QWidget *dialog )
+{
+  mDialog = dialog;
+  if ( mWidget && mDialog && type() != Qgis::ProcessingMode::Modeler )
+  {
+    connect( mWidget, &QgsProcessingTileExtentMaxZoomParameterPanel::toggleDialogVisibility, mDialog, [this]( bool visible ) {
+      if ( !visible )
+      {
+        mDialog->showMinimized();
+      }
+      else
+      {
+        mDialog->showNormal();
+        mDialog->raise();
+        mDialog->activateWindow();
+      }
+    } );
+  }
+  QgsAbstractProcessingParameterWidgetWrapper::setDialog( dialog );
+}
+
+void QgsProcessingTileExtentMaxZoomWidgetWrapper::setWidgetValue( const QVariant &value, QgsProcessingContext &context )
+{
+  auto param = dynamic_cast<const QgsProcessingParameterTileExtentMaxZoomList *>( parameterDefinition() );
+
+  if ( mWidget && param )
+  {
+    mWidget->setValue( value, context );
+  }
+  else if ( mFallbackLineEdit )
+  {
+    bool ok = false;
+    mFallbackLineEdit->setText( param->valueAsString( value, context, ok ) );
+  }
+}
+
+QVariant QgsProcessingTileExtentMaxZoomWidgetWrapper::widgetValue() const
+{
+  if ( mWidget )
+  {
+    return mWidget->value();
+  }
+  else if ( mFallbackLineEdit )
+  {
+    return mFallbackLineEdit->text();
+  }
+  return QVariant();
+}
+
+QString QgsProcessingTileExtentMaxZoomWidgetWrapper::modelerExpressionFormatString() const
+{
+  return tr( "string of the format 'zoom:xmin,ymin,xmax,ymax [crs]', joined by a '::|::' delimiter" );
 }
 
 

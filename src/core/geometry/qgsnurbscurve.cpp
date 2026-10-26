@@ -637,29 +637,6 @@ bool QgsNurbsCurve::dropMValue()
   return true;
 }
 
-bool QgsNurbsCurve::deleteVertex( QgsVertexId position )
-{
-  if ( position.part != 0 || position.ring != 0 )
-  {
-    return false;
-  }
-  const int idx = position.vertex;
-  if ( idx < 0 || idx >= mControlPoints.size() )
-  {
-    return false;
-  }
-  mControlPoints.remove( idx );
-  if ( idx < mWeights.size() )
-  {
-    mWeights.remove( idx );
-  }
-
-  generateUniformKnots();
-
-  clearCache();
-  return true;
-}
-
 bool QgsNurbsCurve::deleteVertices( const QSet<QgsVertexId> &positions )
 {
   if ( positions.isEmpty() )
@@ -1888,4 +1865,9 @@ bool QgsNurbsCurve::isAnchorVertex( int localIndex ) const
     return false;
 
   return ( localIndex % mDegree ) == 0;
+}
+
+bool QgsNurbsCurve::isSimpleCurve() const
+{
+  return false;
 }

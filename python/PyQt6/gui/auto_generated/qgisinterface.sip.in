@@ -492,6 +492,13 @@ Returns a reference to the main window "Database" toolbar.
 Returns a reference to the main window "Web" toolbar.
 %End
 
+    virtual QToolBar *processingToolboxToolBar() = 0 /DisallowNone/;
+%Docstring
+Returns a reference to the Processing toolbox dock widget toolbar.
+
+.. versionadded:: 4.4
+%End
+
     virtual QAction *actionNewProject() = 0 /DisallowNone/;
 %Docstring
 Returns the native New Project action.
@@ -906,6 +913,13 @@ Returns the Hide Deselected Layers action.
     virtual QAction *actionQgisHomePage() = 0 /DisallowNone/;
     virtual QAction *actionCheckQgisVersion() = 0 /DisallowNone/;
     virtual QAction *actionAbout() = 0 /DisallowNone/;
+
+    virtual QAction *actionEditFeaturesInPlace() = 0 /DisallowNone/;
+%Docstring
+Returns the Processing "Edit Features in Place" action.
+
+.. versionadded:: 4.4
+%End
 
 
  virtual QAction *actionCircle2Points() /Deprecated="Since 3.26. Shape digitizing is now part of the add feature tool. To enable the shape tool, use QgsMapToolCapture.setCurrentCaptureTechnique() and then QgsMapToolCapture.setCurrentShapeMapTool()."/;

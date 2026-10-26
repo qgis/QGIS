@@ -285,10 +285,19 @@ namespace QgsWms
        */
       QgsFeedback *socketFeedback() const;
 
+      QHash<QgsMapLayer *, QgsDateTimeRange> perLayerTemporalRange() const { return mPerLayerTemporalRange; }
+
     private:
       void initNicknameLayers();
       void initRestrictedLayers();
       void initLayerGroupsRecursive( const QgsLayerTreeGroup *group, const QString &groupName );
+
+      /**
+       * Initialize per layer temporal range for \a group with its \a groupName using group
+       * default display type value when different from Qgis::WmsDimensionDefaultDisplay::AllValues
+       * and if TIME WMS parameter has not been set.
+       */
+      void initPerLayerTemporalRange( const QgsLayerTreeGroup *group, const QString &groupName );
 
       void searchLayersToRender();
       void searchLayersToRenderSld();
@@ -324,6 +333,8 @@ namespace QgsWms
 
       // map of layers that can be rendered and for each a list of the layer names, group names, etc. requesting it
       QHash<const QgsMapLayer *, QStringList> mAcceptableLayersToRender;
+
+      QHash<QgsMapLayer *, QgsDateTimeRange> mPerLayerTemporalRange;
 
       // list of layers which are not usable
       QStringList mRestrictedLayers;

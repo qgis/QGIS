@@ -212,6 +212,13 @@ class QgsPostgresUtils
      * \since QGIS 4.0
      */
     static QStringList projectNamesInSchema( QgsPostgresConn *conn, const QString &schema );
+
+    /**
+     * Returns raster overviews.
+     *
+     * \since QGIS 4.4
+     */
+    static QList<QgsPostgresRasterOverviewLayerProperty> rasterOverviews( QgsPostgresConn *conn, const QString &schema, const QString &table );
 };
 
 #endif

@@ -126,15 +126,35 @@ QgsAdvancedDigitizingFloater::QgsAdvancedDigitizingFloater( QgsMapCanvas *canvas
     whileBlocking( mDistanceLineEdit )->setText( cleanedInputValue );
   } );
 
-  connect( mXLineEdit, &QLineEdit::textEdited, cadDockWidget, [this, cadDockWidget]() { cadDockWidget->setX( mXLineEdit->text(), QgsAdvancedDigitizingDockWidget::WidgetSetMode::TextEdited ); } );
-  connect( mYLineEdit, &QLineEdit::textEdited, cadDockWidget, [this, cadDockWidget]() { cadDockWidget->setY( mYLineEdit->text(), QgsAdvancedDigitizingDockWidget::WidgetSetMode::TextEdited ); } );
-  connect( mZLineEdit, &QLineEdit::textEdited, cadDockWidget, [this, cadDockWidget]() { cadDockWidget->setZ( mZLineEdit->text(), QgsAdvancedDigitizingDockWidget::WidgetSetMode::TextEdited ); } );
-  connect( mMLineEdit, &QLineEdit::textEdited, cadDockWidget, [this, cadDockWidget]() { cadDockWidget->setM( mMLineEdit->text(), QgsAdvancedDigitizingDockWidget::WidgetSetMode::TextEdited ); } );
+  connect( mXLineEdit, &QLineEdit::textEdited, cadDockWidget, [this, cadDockWidget]() {
+    this->mEditing = true;
+    cadDockWidget->setX( mXLineEdit->text(), QgsAdvancedDigitizingDockWidget::WidgetSetMode::TextEdited );
+    this->mEditing = false;
+  } );
+  connect( mYLineEdit, &QLineEdit::textEdited, cadDockWidget, [this, cadDockWidget]() {
+    this->mEditing = true;
+    cadDockWidget->setY( mYLineEdit->text(), QgsAdvancedDigitizingDockWidget::WidgetSetMode::TextEdited );
+    this->mEditing = false;
+  } );
+  connect( mZLineEdit, &QLineEdit::textEdited, cadDockWidget, [this, cadDockWidget]() {
+    this->mEditing = true;
+    cadDockWidget->setZ( mZLineEdit->text(), QgsAdvancedDigitizingDockWidget::WidgetSetMode::TextEdited );
+    this->mEditing = false;
+  } );
+  connect( mMLineEdit, &QLineEdit::textEdited, cadDockWidget, [this, cadDockWidget]() {
+    this->mEditing = true;
+    cadDockWidget->setM( mMLineEdit->text(), QgsAdvancedDigitizingDockWidget::WidgetSetMode::TextEdited );
+    this->mEditing = false;
+  } );
   connect( mAngleLineEdit, &QLineEdit::textEdited, cadDockWidget, [this, cadDockWidget]() {
+    this->mEditing = true;
     cadDockWidget->setAngle( mAngleLineEdit->text(), QgsAdvancedDigitizingDockWidget::WidgetSetMode::TextEdited );
+    this->mEditing = false;
   } );
   connect( mDistanceLineEdit, &QLineEdit::textEdited, cadDockWidget, [this, cadDockWidget]() {
+    this->mEditing = true;
     cadDockWidget->setDistance( mDistanceLineEdit->text(), QgsAdvancedDigitizingDockWidget::WidgetSetMode::TextEdited );
+    this->mEditing = false;
   } );
 
   QgsFocusWatcher *xWatcher = new QgsFocusWatcher( mXLineEdit );
@@ -378,25 +398,37 @@ void QgsAdvancedDigitizingFloater::hideIfDisabled()
 void QgsAdvancedDigitizingFloater::changeX( const QString &text )
 {
   mXLineEdit->setText( text );
-  mXLineEdit->setCursorPosition( 0 );
+  if ( !this->mEditing )
+  {
+    mXLineEdit->setCursorPosition( 0 );
+  }
 }
 
 void QgsAdvancedDigitizingFloater::changeY( const QString &text )
 {
   mYLineEdit->setText( text );
-  mYLineEdit->setCursorPosition( 0 );
+  if ( !this->mEditing )
+  {
+    mYLineEdit->setCursorPosition( 0 );
+  }
 }
 
 void QgsAdvancedDigitizingFloater::changeZ( const QString &text )
 {
   mZLineEdit->setText( text );
-  mZLineEdit->setCursorPosition( 0 );
+  if ( !this->mEditing )
+  {
+    mZLineEdit->setCursorPosition( 0 );
+  }
 }
 
 void QgsAdvancedDigitizingFloater::changeM( const QString &text )
 {
   mMLineEdit->setText( text );
-  mMLineEdit->setCursorPosition( 0 );
+  if ( !this->mEditing )
+  {
+    mMLineEdit->setCursorPosition( 0 );
+  }
 }
 
 void QgsAdvancedDigitizingFloater::changeCommonAngleSnapping( double angle )
@@ -407,13 +439,19 @@ void QgsAdvancedDigitizingFloater::changeCommonAngleSnapping( double angle )
 void QgsAdvancedDigitizingFloater::changeDistance( const QString &text )
 {
   mDistanceLineEdit->setText( text );
-  mDistanceLineEdit->setCursorPosition( 0 );
+  if ( !this->mEditing )
+  {
+    mDistanceLineEdit->setCursorPosition( 0 );
+  }
 }
 
 void QgsAdvancedDigitizingFloater::changeAngle( const QString &text )
 {
   mAngleLineEdit->setText( text );
-  mAngleLineEdit->setCursorPosition( 0 );
+  if ( !this->mEditing )
+  {
+    mAngleLineEdit->setCursorPosition( 0 );
+  }
 }
 
 void QgsAdvancedDigitizingFloater::changeBearing( const QString &text )

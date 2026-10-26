@@ -15,18 +15,23 @@
 
 #include "qgsrulebased3drendererwidget.h"
 
+#include "qgisapp.h"
 #include "qgs3dsymbolregistry.h"
+#include "qgs3dsymbolutils.h"
 #include "qgs3dutils.h"
 #include "qgsapplication.h"
 #include "qgsexpressionbuilderdialog.h"
 #include "qgsexpressioncontextutils.h"
 #include "qgslogger.h"
+#include "qgsmapcanvas.h"
 #include "qgsrulebased3drenderer.h"
+#include "qgsrulebasedrenderer.h"
 #include "qgssymbol3dwidget.h"
 #include "qgsvectorlayer.h"
 
 #include <QAction>
 #include <QClipboard>
+#include <QMenu>
 #include <QMessageBox>
 #include <QMimeData>
 #include <QString>
@@ -63,6 +68,12 @@ QgsRuleBased3DRendererWidget::QgsRuleBased3DRendererWidget( QWidget *parent )
   connect( mCopyAction, &QAction::triggered, this, &QgsRuleBased3DRendererWidget::copy );
   connect( mPasteAction, &QAction::triggered, this, &QgsRuleBased3DRendererWidget::paste );
   connect( mDeleteAction, &QAction::triggered, this, &QgsRuleBased3DRendererWidget::removeRule );
+
+  // Advanced menu
+  QMenu *advancedMenu = new QMenu( this );
+  advancedMenu->setToolTipsVisible( true );
+  mRulesFrom2DAction = advancedMenu->addAction( tr( "Update Rules from 2D Rule-based Renderer" ), this, &QgsRuleBased3DRendererWidget::updateRulesFrom2D );
+  mBtnAdvanced->setMenu( advancedMenu );
 }
 
 void QgsRuleBased3DRendererWidget::setLayer( QgsVectorLayer *layer )
@@ -94,6 +105,16 @@ void QgsRuleBased3DRendererWidget::setLayer( QgsVectorLayer *layer )
   connect( mModel, &QAbstractItemModel::dataChanged, this, &QgsRuleBased3DRendererWidget::changed );
   connect( mModel, &QAbstractItemModel::rowsInserted, this, &QgsRuleBased3DRendererWidget::changed );
   connect( mModel, &QAbstractItemModel::rowsRemoved, this, &QgsRuleBased3DRendererWidget::changed );
+
+  if ( mLayer )
+  {
+    QgsFeatureRenderer *renderer2D = mLayer->renderer();
+    const bool hasRuleBasedSymbol2D = renderer2D && renderer2D->type() == "RuleRenderer"_L1;
+
+    mRulesFrom2DAction->setEnabled( hasRuleBasedSymbol2D );
+    const QString toolTip = hasRuleBasedSymbol2D ? QString() : tr( "Requires a rule-based 2D symbology on the layer" );
+    mRulesFrom2DAction->setToolTip( toolTip );
+  }
 }
 
 void QgsRuleBased3DRendererWidget::setDockMode( bool dockMode )
@@ -111,6 +132,88 @@ void QgsRuleBased3DRendererWidget::setDockMode( bool dockMode )
   QgsPanelWidget::setDockMode( dockMode );
 }
 
+void QgsRuleBased3DRendererWidget::updateRulesFrom2D()
+{
+  QgsFeatureRenderer *renderer2D = mLayer->renderer();
+  if ( !renderer2D || renderer2D->type() != "RuleRenderer"_L1 )
+  {
+    return;
+  }
+  const QgsRuleBasedRenderer *ruleRenderer2D = qgis::down_cast<const QgsRuleBasedRenderer *>( renderer2D );
+  syncChildrenRulesFrom2D( ruleRenderer2D->rootRule(), mRootRule.get(), QModelIndex() );
+}
+
+void QgsRuleBased3DRendererWidget::syncChildrenRulesFrom2D( const QgsRuleBasedRenderer::Rule *rule2D, QgsRuleBased3DRenderer::Rule *rule3D, const QModelIndex &rule3DIndex )
+{
+  if ( !rule2D || !rule3D )
+  {
+    return;
+  }
+
+  const auto ruleKey = []( const auto *rule ) { return ( rule->isElse() ? u"ELSE|"_s : u"RULE|"_s ) + rule->filterExpression(); };
+
+  // Store existing 3D rules
+  QHash<QString, QList<QgsRuleBased3DRenderer::Rule *>> existingRules3D;
+  for ( QgsRuleBased3DRenderer::Rule *child3D : rule3D->children() )
+  {
+    existingRules3D[ruleKey( child3D )].append( child3D );
+  }
+
+  // Detect 2D rules which have a 3D match
+  const QgsRuleBasedRenderer::RuleList children2D = rule2D->children();
+  QList<QgsRuleBased3DRenderer::Rule *> rules3DWith2DMatch;
+  rules3DWith2DMatch.reserve( children2D.size() );
+  for ( const QgsRuleBasedRenderer::Rule *child2D : children2D )
+  {
+    QList<QgsRuleBased3DRenderer::Rule *> &rules3D = existingRules3D[ruleKey( child2D )];
+    rules3DWith2DMatch.append( rules3D.isEmpty() ? nullptr : rules3D.takeFirst() );
+  }
+
+  // Remove the 3D rules which do not have a 2D counterpart
+  QList<int> rowsToRemove;
+  for ( auto it = existingRules3D.cbegin(); it != existingRules3D.cend(); ++it )
+  {
+    for ( QgsRuleBased3DRenderer::Rule *unmatchedRule3D : it.value() )
+    {
+      rowsToRemove.append( static_cast<int>( rule3D->children().indexOf( unmatchedRule3D ) ) );
+    }
+  }
+  std::sort( rowsToRemove.begin(), rowsToRemove.end(), std::greater<int>() );
+  for ( int row : rowsToRemove )
+  {
+    mModel->removeRows( row, 1, rule3DIndex );
+  }
+
+  // Sync matched rules recursively and insert missing ones
+  int insertRow = 0;
+  for ( int i = 0; i < children2D.size(); ++i )
+  {
+    if ( QgsRuleBased3DRenderer::Rule *rule3DMatched = rules3DWith2DMatch[i] )
+    {
+      const int row = static_cast<int>( rule3D->children().indexOf( rule3DMatched ) );
+      syncChildrenRulesFrom2D( children2D.at( i ), rule3DMatched, mModel->index( row, 0, rule3DIndex ) );
+      insertRow = row + 1;
+    }
+    else
+    {
+      std::unique_ptr<QgsRuleBased3DRenderer::Rule> newRule3D = create3DRuleFrom2D( mLayer, children2D.at( i ) );
+      mModel->insertRule( rule3DIndex, insertRow, newRule3D.release() );
+      ++insertRow;
+    }
+  }
+}
+
+std::unique_ptr<QgsRuleBased3DRenderer::Rule> QgsRuleBased3DRendererWidget::create3DRuleFrom2D( QgsVectorLayer *vLayer, const QgsRuleBasedRenderer::Rule *rule2D )
+{
+  std::unique_ptr<QgsAbstract3DSymbol> symbol3D = Qgs3DSymbolUtils::create3DSymbolFrom2D( vLayer, rule2D->symbol() );
+  auto rule3D = std::make_unique<QgsRuleBased3DRenderer::Rule>( symbol3D.release(), rule2D->filterExpression(), rule2D->label(), rule2D->isElse() );
+  rule3D->setActive( rule2D->active() );
+  for ( const QgsRuleBasedRenderer::Rule *child2D : rule2D->children() )
+  {
+    rule3D->appendChild( create3DRuleFrom2D( vLayer, child2D ).release() );
+  }
+  return rule3D;
+}
 
 void QgsRuleBased3DRendererWidget::addRule()
 {
@@ -577,7 +680,7 @@ Qgs3DRendererRulePropsWidget::Qgs3DRendererRulePropsWidget( QgsRuleBased3DRender
   else
   {
     groupSymbol->setChecked( false );
-    mSymbol.reset( QgsApplication::symbol3DRegistry()->defaultSymbolForGeometryType( layer->geometryType() ) );
+    mSymbol = QgsApplication::symbol3DRegistry()->defaultSymbolForGeometryType( layer->geometryType() );
     mSymbol->setDefaultPropertiesFromLayer( layer );
   }
 

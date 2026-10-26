@@ -375,6 +375,39 @@
         "year": 2026
       },
       "geometry": null
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "country": "CA",
+        "name": "QGIS Canada User Group",
+        "logo_url": "https:\/\/qgis.ca\/images\/qgis-ca-icon128.png",
+        "website": "https:\/\/qgis.ca",
+        "year": 2026
+      },
+      "geometry": null
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "country": "AM",
+        "name": "QGIS Armenia",
+        "logo_url": "https:\/\/qgis.am\/logo.png",
+        "website": "https:\/\/qgis.am",
+        "year": 2026
+      },
+      "geometry": null
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "country": "HR",
+        "name": "QGIS Croatia User Group",
+        "logo_url": "https:\/\/hr.qgis.org\/img\/qgishr_logo.svg",
+        "website": "https:\/\/qgis.hr",
+        "year": 2026
+      },
+      "geometry": null
     }
   ]
 }

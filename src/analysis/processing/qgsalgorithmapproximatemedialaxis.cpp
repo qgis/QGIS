@@ -120,7 +120,7 @@ bool QgsApproximateMedialAxisAlgorithm::prepareAlgorithm( const QVariantMap &par
 #ifdef WITH_SFCGAL
   mExtendToEdges = parameterAsBool( parameters, "EXTEND_TO_EDGES", context );
 
-#if SFCGAL_VERSION_NUM < SFCGAL_MAKE_VERSION( 2, 3, 0 )
+#if SFCGAL_VERSION_NUM < SFCGAL_COMPUTE_VERSION( 2, 3, 0 )
   if ( mExtendToEdges )
   {
     throw QgsProcessingException( QObject::tr( "The \"extend to the polygon boundary\" option requires a QGIS build based on SFCGAL 2.3 or later." ) );
@@ -145,6 +145,22 @@ QgsFeatureList QgsApproximateMedialAxisAlgorithm::processFeature( const QgsFeatu
   {
     QgsGeometry outputGeometry;
     QgsSfcgalGeometry inputSfcgalGeometry;
+    bool constructorSuccess = true;
+
+    if ( QgsWkbTypes::isCurvedType( modifiedFeature.geometry().wkbType() ) )
+    {
+      feedback->reportError(
+        QObject::tr(
+          "Cannot calculate approximate medial axis for feature %1 because the geometry contains curved segments. "
+          "A feature without a geometry will be returned. "
+          "Consider segmentizing the geometry if an approximation is acceptable."
+        )
+          .arg( feature.id() )
+      );
+      modifiedFeature.clearGeometry();
+      constructorSuccess = false;
+    }
+
     try
     {
       inputSfcgalGeometry = QgsSfcgalGeometry( modifiedFeature.geometry() );
@@ -153,9 +169,10 @@ QgsFeatureList QgsApproximateMedialAxisAlgorithm::processFeature( const QgsFeatu
     {
       feedback->reportError( QObject::tr( "Cannot calculate approximate medial axis for feature %1: %2" ).arg( feature.id() ).arg( exception.what() ) );
       modifiedFeature.clearGeometry();
+      constructorSuccess = false;
     }
 
-    if ( !inputSfcgalGeometry.isEmpty() )
+    if ( constructorSuccess && !inputSfcgalGeometry.isEmpty() )
     {
       try
       {

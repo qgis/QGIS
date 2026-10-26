@@ -443,6 +443,7 @@ class CORE_EXPORT QgsProcessingParameterDefinition
 #include "qgsprocessingparametervectortilewriterlayers.h"
 #include "qgsprocessingparametermeshdataset.h"
 #include "qgsprocessingparameterinterpolationpixelsize.h"
+#include "qgsprocessingparametertileextentmaxzoomlist.h"
     % End
     SIP_CONVERT_TO_SUBCLASS_CODE
     if ( sipCpp->type() == QgsProcessingParameterBoolean::typeName() )
@@ -549,6 +550,8 @@ class CORE_EXPORT QgsProcessingParameterDefinition
       sipType = sipType_QgsProcessingParameterVectorTileDestination;
     else if ( sipCpp->type() == QgsProcessingParameterInterpolationPixelSize::typeName() )
       sipType = sipType_QgsProcessingParameterInterpolationPixelSize;
+    else if ( sipCpp->type() == QgsProcessingParameterTileExtentMaxZoomList::typeName() )
+      sipType = sipType_QgsProcessingParameterTileExtentMaxZoomList;
     else
       sipType = nullptr;
     SIP_END

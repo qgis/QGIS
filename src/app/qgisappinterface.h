@@ -213,6 +213,7 @@ class APP_EXPORT QgisAppInterface : public QgisInterface
     QToolBar *vectorToolBar() override;
     QToolBar *databaseToolBar() override;
     QToolBar *webToolBar() override;
+    QToolBar *processingToolboxToolBar() override;
     QActionGroup *mapToolActionGroup() override;
     QAction *actionNewProject() override;
     QAction *actionOpenProject() override;
@@ -310,6 +311,7 @@ class APP_EXPORT QgisAppInterface : public QgisInterface
     QAction *actionQgisHomePage() override;
     QAction *actionCheckQgisVersion() override;
     QAction *actionAbout() override;
+    QAction *actionEditFeaturesInPlace() override;
 
     bool openFeatureForm( QgsVectorLayer *l, QgsFeature &f, bool updateFeatureOnly = false, bool showModal = true ) override;
     QgsAttributeDialog *getFeatureForm( QgsVectorLayer *layer, QgsFeature &feature ) override;

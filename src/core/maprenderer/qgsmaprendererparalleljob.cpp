@@ -368,9 +368,9 @@ void QgsMapRendererParallelJob::renderLayerStatic( LayerRenderJob &job )
     job.previewRenderImageInitialized = true;
   }
 
-  if ( job.img )
+  if ( job.destinationImage )
   {
-    job.img->fill( 0 );
+    job.destinationImage->fill( 0 );
     job.imageInitialized = true;
   }
 
@@ -418,7 +418,7 @@ void QgsMapRendererParallelJob::renderLabelsStatic( QgsMapRendererParallelJob *s
     if ( job.img )
     {
       job.img->fill( 0 );
-      painter.begin( job.img );
+      painter.begin( job.img.get() );
     }
     else if ( job.picture )
     {

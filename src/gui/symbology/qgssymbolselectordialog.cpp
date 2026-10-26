@@ -178,10 +178,13 @@ QgsSymbolSelectorWidget::QgsSymbolSelectorWidget( QgsSymbol *symbol, QgsStyle *s
   btnDown->setIcon( QIcon( QgsApplication::iconPath( "mActionArrowDown.svg" ) ) );
 
   mSymbolLayersModel = new QgsSymbolLayerModel( mVectorLayer, layersTree, screen() );
+  connect( mSymbolLayersModel, &QAbstractItemModel::dataChanged, this, &QgsSymbolSelectorWidget::modelDataChanged );
 
   // Set the symbol
   layersTree->setModel( mSymbolLayersModel );
   layersTree->setHeaderHidden( true );
+  // Hide partially checked checkbox, see thread https://github.com/qgis/QGIS/pull/67099#issuecomment-5729627430
+  layersTree->setStyleSheet( u"QTreeView::indicator:indeterminate {background: transparent; border: none; }"_s );
 
   //get first feature from layer for previews
   if ( mVectorLayer )
@@ -371,7 +374,7 @@ void QgsSymbolSelectorWidget::updateLayerPreview()
 
   QgsSymbolLayerModelNode *node = currentLayerNode();
   if ( node )
-    mSymbolLayersModel->updatePreview( node );
+    mSymbolLayersModel->updatePreviewIcons( node );
   // update also preview of the whole symbol
   updatePreview();
 }
@@ -785,6 +788,16 @@ void QgsSymbolSelectorWidget::projectDataChanged()
   symbolChanged();
   updatePreview();
   mBlockModified = false;
+}
+
+void QgsSymbolSelectorWidget::modelDataChanged( const QModelIndex &, const QModelIndex &, const QList<int> &roles )
+{
+  if ( roles.contains( Qt::CheckStateRole ) )
+  {
+    emitSymbolModified();
+    layerChanged();
+    updatePreview();
+  }
 }
 
 void QgsSymbolSelectorWidget::layersAboutToBeRemoved( const QList<QgsMapLayer *> &layers )

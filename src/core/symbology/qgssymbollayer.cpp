@@ -296,6 +296,7 @@ QgsSymbolLayer::QgsSymbolLayer( const QgsSymbolLayer &other )
   , mPaintEffect( other.mPaintEffect ? other.mPaintEffect->clone() : nullptr )
   , mFields( other.mFields )
   , mClipPath( other.mClipPath )
+  , mStateBeforeInstallingMaskClipPaths( nullptr ) // we intentionally do not copy this, it will only be set in between start/end render calls of a the same symbol layer instance
 {}
 
 QgsSymbolLayer::QgsSymbolLayer( Qgis::SymbolType type, bool locked )
@@ -1116,7 +1117,7 @@ QPainterPath generateClipPath( const QgsRenderContext &renderContext, const QStr
       QgsGeos geos( mergedGeom.constGet() );
       mergedGeom = QgsGeometry( geos.simplify( renderContext.maskSettings().simplifyTolerance(), nullptr, renderContext.feedback() ) );
     }
-#if GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR < 10
+#if GEOS_VERSION_NUM < GEOS_COMPUTE_VERSION( 3, 10, 0 )
     // structure would be better, but too old GEOS
     mergedGeom = mergedGeom.makeValid( Qgis::MakeValidMethod::Linework, false, renderContext.feedback() );
 #else
@@ -1157,7 +1158,7 @@ bool QgsSymbolLayer::installMasks( QgsRenderContext &context, bool recursive, co
   bool res = false;
   if ( !mClipPath.isEmpty() )
   {
-    context.painter()->save();
+    mStateBeforeInstallingMaskClipPaths = std::make_unique< QgsScopedQPainterState >( context.painter() );
     context.painter()->setClipPath( mClipPath, Qt::IntersectClip );
     res = true;
   }
@@ -1168,6 +1169,7 @@ bool QgsSymbolLayer::installMasks( QgsRenderContext &context, bool recursive, co
     const QPainterPath clipPath = generateClipPath( context, id(), &rect, foundGeometries );
     if ( !clipPath.isEmpty() )
     {
+      mStateBeforeInstallingMaskClipPaths = std::make_unique< QgsScopedQPainterState >( context.painter() );
       context.painter()->setClipPath( clipPath, context.painter()->clipPath().isEmpty() ? Qt::ReplaceClip : Qt::IntersectClip );
       res = true;
     }
@@ -1185,10 +1187,8 @@ bool QgsSymbolLayer::installMasks( QgsRenderContext &context, bool recursive, co
 
 void QgsSymbolLayer::removeMasks( QgsRenderContext &context, bool recursive )
 {
-  if ( !mClipPath.isEmpty() )
-  {
-    context.painter()->restore();
-  }
+  // restore painter state to before the clip paths were installed
+  mStateBeforeInstallingMaskClipPaths.reset();
 
   if ( QgsSymbol *lSubSymbol = recursive ? subSymbol() : nullptr )
   {

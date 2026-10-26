@@ -25,10 +25,6 @@
 
 using namespace Qt::StringLiterals;
 
-#ifdef ENABLE_MODELTEST
-#include "modeltest.h"
-#endif
-
 QgsReportSectionModel::QgsReportSectionModel( QgsReport *report, QObject *parent )
   : QAbstractItemModel( parent )
   , mReport( report )

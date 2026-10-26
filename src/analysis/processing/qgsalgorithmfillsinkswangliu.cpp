@@ -147,7 +147,6 @@ bool QgsFillSinksWangLiuAlgorithm::prepareAlgorithm( const QVariantMap &paramete
   mRasterUnitsPerPixelX = layer->rasterUnitsPerPixelX();
   mRasterUnitsPerPixelY = layer->rasterUnitsPerPixelY();
   mRasterDiagonal = std::sqrt( mRasterUnitsPerPixelX * mRasterUnitsPerPixelX + mRasterUnitsPerPixelY * mRasterUnitsPerPixelY );
-  mDataType = layer->dataProvider()->dataType( mBand );
   mNoData = layer->dataProvider()->sourceNoDataValue( mBand );
   mDirectionalLengths = { mRasterUnitsPerPixelY, mRasterDiagonal, mRasterUnitsPerPixelX, mRasterDiagonal, mRasterUnitsPerPixelY, mRasterDiagonal, mRasterUnitsPerPixelX, mRasterDiagonal };
   return true;
@@ -231,7 +230,7 @@ QVariantMap QgsFillSinksWangLiuAlgorithm::processAlgorithm( const QVariantMap &p
     }
     filledDemWriter->setOutputFormat( outputFormat );
 
-    filledDemDestProvider.reset( filledDemWriter->createOneBandRaster( mDataType, mLayerWidth, mLayerHeight, mExtent, mCrs ) );
+    filledDemDestProvider.reset( filledDemWriter->createOneBandRaster( Qgis::DataType::Float32, mLayerWidth, mLayerHeight, mExtent, mCrs ) );
 
     if ( !filledDemDestProvider )
       throw QgsProcessingException( QObject::tr( "Could not create raster output: %1" ).arg( filledDemOutputFile ) );
@@ -292,7 +291,7 @@ QVariantMap QgsFillSinksWangLiuAlgorithm::processAlgorithm( const QVariantMap &p
     throw QgsProcessingException( QObject::tr( "Could not read DEM raster" ) );
   }
 
-  auto filledDemData = std::make_unique<QgsRasterBlock>( mDataType, mLayerWidth, mLayerHeight );
+  auto filledDemData = std::make_unique<QgsRasterBlock>( Qgis::DataType::Float32, mLayerWidth, mLayerHeight );
   filledDemData->setNoDataValue( mNoData );
   filledDemData->setIsNoData();
 

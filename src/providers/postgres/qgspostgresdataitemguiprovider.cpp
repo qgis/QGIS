@@ -489,7 +489,6 @@ void QgsPostgresDataItemGuiProvider::deleteSchema( QgsPGSchemaItem *schemaItem, 
   for ( int idx = 0; idx < result.PQntuples(); idx++ )
   {
     childObjects << result.PQgetvalue( idx, 0 );
-    const QgsPostgresSchemaProperty schema;
     if ( idx == maxListed - 1 )
       break;
   }
@@ -773,7 +772,7 @@ bool QgsPostgresDataItemGuiProvider::handleDrop( QgsPGConnectionItem *connection
     // open the source layer
     bool owner;
     QString error;
-    QgsVectorLayer *srcLayer = u.vectorLayer( owner, error );
+    QgsVectorLayer *srcLayer = u.vectorLayer( owner, error, QgsProject::instance() );
     if ( !srcLayer )
     {
       importResults.append( tr( "%1: %2" ).arg( u.name, error ) );
@@ -1169,7 +1168,7 @@ void QgsPostgresDataItemGuiProvider::setProjectComment( QgsPGProjectItem *projec
   const QString comment = QgsPostgresUtils::projectComment( conn, projectItem->schemaName(), projectItem->name() );
   bool ok = false;
 
-  const QString newComment = QInputDialog::getMultiLineText( nullptr, tr( "Set Comment For Project %1" ).arg( projectItem->name() ), tr( "Comment" ), comment, &ok );
+  const QString newComment = QgsDialog::getMultiLineText( nullptr, tr( "Set Comment For Project %1" ).arg( projectItem->name() ), tr( "Comment" ), comment, &ok );
   if ( ok && newComment != comment )
   {
     const bool res = QgsPostgresUtils::setProjectComment( conn, projectItem->name(), projectItem->schemaName(), newComment );
@@ -1268,13 +1267,13 @@ void QgsPostgresDataItemGuiProvider::saveProjects( QgsPGSchemaItem *schemaItem, 
   QgsPostgresImportProjectDialog dlg( schemaItem->connectionName(), schemaItem->name() );
   if ( dlg.exec() == QDialog::Accepted )
   {
-    QList<QPair<QString, QString>> projectsWithNames = dlg.projectsToSave();
+    const QList<QPair<QString, QString>> projectsWithNames = dlg.projectsToSave();
 
     int projectsSaved = 0;
     int projectsNotSaved = 0;
     QStringList unsavedProjects;
 
-    for ( const QPair<QString, QString> &projectWithName : projectsWithNames )
+    for ( const QPair<QString, QString> &projectWithName : std::as_const( projectsWithNames ) )
     {
       QgsPostgresProjectUri pgProjectUri;
       pgProjectUri.connInfo = QgsDataSourceUri( conn->uri() );

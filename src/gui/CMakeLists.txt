@@ -635,6 +635,7 @@ set(QGIS_GUI_SRCS
   qgsdataitemguiproviderregistry.cpp
   qgsdataitemguiproviderutils.cpp
   qgsdatasourceselectdialog.cpp
+  qgsdatetimewithtimezonewidget.cpp
   qgsdbimportvectorlayerdialog.cpp
   qgsdbqueryhistoryprovider.cpp
   qgsdbrelationshipwidget.cpp
@@ -836,6 +837,7 @@ set(QGIS_GUI_SRCS
   qgstemporalcontrollerwidget.cpp
   qgstextformatwidget.cpp
   qgstextpreview.cpp
+  qgstoolbuttonaction.cpp
   qgstooltipcombobox.cpp
   qgstreewidgetitem.cpp
   qgsunitselectionwidget.cpp
@@ -908,6 +910,7 @@ set(QGIS_GUI_HDRS
   qgsdataitemguiproviderutils.h
   qgsdatasourcemanagerdialog.h
   qgsdatasourceselectdialog.h
+  qgsdatetimewithtimezonewidget.h
   qgsdbimportvectorlayerdialog.h
   qgsdbqueryhistoryprovider.h
   qgsdbrelationshipwidget.h
@@ -1117,6 +1120,7 @@ set(QGIS_GUI_HDRS
   qgstemporalcontrollerwidget.h
   qgstextformatwidget.h
   qgstextpreview.h
+  qgstoolbuttonaction.h
   qgstooltipcombobox.h
   qgstreewidgetitem.h
   qgsunitselectionwidget.h
@@ -1884,10 +1888,6 @@ find_package(${QT_VERSION_BASE} COMPONENTS Multimedia MultimediaWidgets Qml Quic
 # for installing headers
 
 set_property(GLOBAL PROPERTY QGIS_GUI_HDRS ${QGIS_GUI_HDRS})
-
-if(ENABLE_MODELTEST)
-  include_directories(../../tests/qt_modeltest)
-endif()
 
 if (WITH_EPT)
   set(QGIS_GUI_SRCS ${QGIS_GUI_SRCS}

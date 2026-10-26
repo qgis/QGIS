@@ -306,12 +306,6 @@ bool QgsTriangulatedSurface::insertVertex( QgsVertexId vId, const QgsPoint &vert
   return false;
 }
 
-bool QgsTriangulatedSurface::deleteVertex( QgsVertexId vId )
-{
-  Q_UNUSED( vId )
-  return false;
-}
-
 bool QgsTriangulatedSurface::deleteVertices( const QSet<QgsVertexId> &positions )
 {
   Q_UNUSED( positions )

@@ -26,6 +26,7 @@ using namespace nlohmann;
 #include "qgsoapifpatchfeaturerequest.h"
 #include "moc_qgsoapifpatchfeaturerequest.cpp"
 #include "qgsoapifshareddata.h"
+#include "qgsoapifutils.h"
 
 QgsOapifPatchFeatureRequest::QgsOapifPatchFeatureRequest( const QgsDataSourceUri &uri )
   : QgsBaseNetworkRequest( QgsAuthorizationSettings( uri.username(), uri.password(), QgsHttpHeaders(), uri.authConfigId() ), "OAPIF" )
@@ -34,20 +35,34 @@ QgsOapifPatchFeatureRequest::QgsOapifPatchFeatureRequest( const QgsDataSourceUri
 bool QgsOapifPatchFeatureRequest::patchFeature( const QgsOapifSharedData *sharedData, const QString &jsonId, const QgsGeometry &geom, const QString &contentCrs, bool hasAxisInverted )
 {
   QgsGeometry geomModified( geom );
-  if ( hasAxisInverted )
+  if ( hasAxisInverted && !geomModified.isNull() )
   {
     geomModified.get()->swapXy();
   }
 
   json j;
-  j["geometry"] = geomModified.asJsonObject();
+  const bool jsonFg = sharedData->shouldWriteJsonFg();
+  if ( jsonFg )
+  {
+    QgsOAPIFJson::writeJsonFgPlace( j, geomModified, sharedData->mWKBType, contentCrs, false );
+  }
+  else
+  {
+    j["geometry"] = geomModified.asJsonObject();
+  }
   QList<QNetworkReply::RawHeaderPair> extraHeaders;
   if ( !contentCrs.isEmpty() )
+  {
     extraHeaders.append( QNetworkReply::RawHeaderPair( QByteArray( "Content-Crs" ), contentCrs.toUtf8() ) );
+  }
+  if ( jsonFg )
+  {
+    extraHeaders.append( QNetworkReply::RawHeaderPair( QByteArray( "Link" ), u"<%1>; rel=profile"_s.arg( QgsOapifUtils::PROFILE_JSONFG ).toUtf8() ) );
+  }
   mEmptyResponseIsValid = true;
   mFakeURLIncludesContentType = true;
   QUrl url( sharedData->mItemsUrl + QString( u"/"_s + jsonId ) );
-  return sendPATCH( url, "application/merge-patch+json", QString::fromStdString( j.dump() ).toUtf8(), extraHeaders );
+  return sendPATCH( url, QgsOapifUtils::MEDIA_TYPE_MERGE_PATCH_JSON, QString::fromStdString( j.dump() ).toUtf8(), extraHeaders );
 }
 
 bool QgsOapifPatchFeatureRequest::patchFeature( const QgsOapifSharedData *sharedData, const QString &jsonId, const QgsAttributeMap &attrMap )
@@ -64,7 +79,7 @@ bool QgsOapifPatchFeatureRequest::patchFeature( const QgsOapifSharedData *shared
   mEmptyResponseIsValid = true;
   mFakeURLIncludesContentType = true;
   QUrl url( sharedData->mItemsUrl + QString( u"/"_s + jsonId ) );
-  return sendPATCH( url, "application/merge-patch+json", QString::fromStdString( j.dump() ).toUtf8() );
+  return sendPATCH( url, QgsOapifUtils::MEDIA_TYPE_MERGE_PATCH_JSON, QString::fromStdString( j.dump() ).toUtf8() );
 }
 
 QString QgsOapifPatchFeatureRequest::errorMessageWithReason( const QString &reason )

@@ -256,7 +256,7 @@ class CORE_EXPORT QgsDropShadowEffect : public QgsShadowEffect SIP_NODEFAULTCTOR
      * \param map encoded properties string map
      * \returns new QgsDropShadowEffect
      */
-    static QgsPaintEffect *create( const QVariantMap &map ) SIP_FACTORY;
+    static std::unique_ptr<QgsPaintEffect> create( const QVariantMap &map );
 
     QgsDropShadowEffect();
 
@@ -282,7 +282,7 @@ class CORE_EXPORT QgsInnerShadowEffect : public QgsShadowEffect SIP_NODEFAULTCTO
      * \param map encoded properties string map
      * \returns new QgsInnerShadowEffect
      */
-    static QgsPaintEffect *create( const QVariantMap &map ) SIP_FACTORY;
+    static std::unique_ptr<QgsPaintEffect> create( const QVariantMap &map );
 
     QgsInnerShadowEffect();
 

@@ -181,7 +181,7 @@ QgsRuleBased3DRenderer::Rule *QgsRuleBased3DRenderer::Rule::clone() const
 
 QgsRuleBased3DRenderer::Rule *QgsRuleBased3DRenderer::Rule::create( const QDomElement &ruleElem, const QgsReadWriteContext &context )
 {
-  QgsAbstract3DSymbol *symbol = nullptr;
+  std::unique_ptr<QgsAbstract3DSymbol> symbol;
   QDomElement elemSymbol = ruleElem.firstChildElement( u"symbol"_s );
   if ( !elemSymbol.isNull() )
   {
@@ -194,7 +194,7 @@ QgsRuleBased3DRenderer::Rule *QgsRuleBased3DRenderer::Rule::create( const QDomEl
   QString filterExp = ruleElem.attribute( u"filter"_s );
   QString description = ruleElem.attribute( u"description"_s );
   QString ruleKey = ruleElem.attribute( u"key"_s );
-  Rule *rule = new Rule( symbol, filterExp, description );
+  Rule *rule = new Rule( symbol.release(), filterExp, description );
 
   if ( !ruleKey.isEmpty() )
     rule->mRuleKey = ruleKey;

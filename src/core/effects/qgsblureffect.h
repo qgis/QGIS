@@ -51,7 +51,7 @@ class CORE_EXPORT QgsBlurEffect : public QgsPaintEffect SIP_NODEFAULTCTORS
      * \param map encoded properties string map
      * \returns new QgsBlurEffect
      */
-    static QgsPaintEffect *create( const QVariantMap &map ) SIP_FACTORY;
+    static std::unique_ptr<QgsPaintEffect> create( const QVariantMap &map );
 
     QgsBlurEffect() = default;
 

@@ -28,6 +28,7 @@ email                : tim@linfiniti.com
 #include "qgsexpression.h"
 #include "qgsexpressioncontext.h"
 #include "qgslogger.h"
+#include "qgspainting.h"
 #include "qgsproject.h"
 #include "qgsreadwritecontext.h"
 #include "qgssymbollayerutils.h"

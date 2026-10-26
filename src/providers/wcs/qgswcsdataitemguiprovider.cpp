@@ -125,6 +125,7 @@ void QgsWcsDataItemGuiProvider::duplicateConnection( QgsDataItem *item )
   QgsOwsConnection::settingsUsername->setValue( QgsOwsConnection::settingsUsername->value( detailsParameters ), newDetailsParameters );
   QgsOwsConnection::settingsPassword->setValue( QgsOwsConnection::settingsPassword->value( detailsParameters ), newDetailsParameters );
   QgsOwsConnection::settingsAuthCfg->setValue( QgsOwsConnection::settingsAuthCfg->value( detailsParameters ), newDetailsParameters );
+  QgsOwsConnection::settingsDisableDecompressedSafetyCheckThreshold->setValue( QgsOwsConnection::settingsDisableDecompressedSafetyCheckThreshold->value( detailsParameters ), newDetailsParameters );
 
   item->parent()->refreshConnections();
 }

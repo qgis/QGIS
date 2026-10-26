@@ -16,9 +16,11 @@
 #define QGSAPPPROCESSINGUTILS_H
 
 #include "qgsprocessingguiregistry.h"
+#include "qgsprocessingpostprocessor.h"
 #include "qgsprocessingwidgetcontext.h"
 
 #include <QObject>
+#include <QPointer>
 
 class QgisApp;
 class QToolBar;
@@ -47,6 +49,34 @@ class QgsAppProcessingContextFactory : public QgsProcessingContextFactory
     QgisApp *mQgisApp = nullptr;
 };
 
+
+class QgsAppProcessingLayerPostProcessor : public QgsProcessingLayerPostProcessor
+{
+  public:
+    QgsAppProcessingLayerPostProcessor() = default;
+
+    void postProcessLayer( QgsMapLayer *layer, const QString &outputName, const QgsProcessingAlgorithm *algorithm ) final;
+};
+
+
+class QgsAppProcessingResultsHandler : public QgsProcessingResultsHandler
+{
+  public:
+    QgsAppProcessingResultsHandler( QgisApp *app );
+
+  protected:
+    QgsProcessingResultsHandler::ResultDetails handleAlgorithmResultsProtected(
+      const QgsProcessingAlgorithm *algorithm, QgsProcessingContext &context, const QVariantMap &parameters, QgsProcessingFeedback *feedback
+    ) final;
+    QgsMapLayer *handleAddResultLayers( const QgsProcessingResultsHandler::ResultDetails &details, const QgsProcessingContext &context ) final;
+    void setNewActiveLayer( QgsMapLayer *layer ) final;
+
+  private:
+    QgisApp *mQgisApp = nullptr;
+    QPointer< QgsLayerTreeNode > mCurrentSelectedNode;
+};
+
+
 class QgsAppProcessingUtils : public QObject
 {
     Q_OBJECT
@@ -57,7 +87,9 @@ class QgsAppProcessingUtils : public QObject
 
     void openModelDesigner();
 
-    static void initProjectModelProvider();
+    void openHistory();
+
+    void initProjectModelProvider();
 
     /**
      * Returns the toolbar for algorithms, creating it if it does not yet exist.
@@ -85,6 +117,9 @@ class QgsAppProcessingUtils : public QObject
   private slots:
 
     void updateModels();
+
+    //! Adds projects models to menu
+    void updateProjectModelMenu();
 
   private:
     QList< QAction * > createAlgorithmActionsForProvider( const QgsProcessingProvider *provider );

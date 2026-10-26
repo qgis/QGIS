@@ -19,6 +19,7 @@ email                : marco dot hugentobler at hugis dot net
 
 #include <memory>
 
+#include "qgspainting.h"
 #include "qgsrendercontext.h"
 
 #include <QDomDocument>

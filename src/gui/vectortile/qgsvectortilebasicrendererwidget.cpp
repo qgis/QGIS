@@ -349,10 +349,17 @@ QgsVectorTileBasicRendererWidget::QgsVectorTileBasicRendererWidget( QgsVectorTil
         = mVTLayer
             ? mVTLayer->tileMatrixSet().calculateTileScaleForMap( mMapCanvas->scale(), mapSettings.destinationCrs(), mapSettings.visibleExtent(), mapSettings.outputSize(), mapSettings.outputDpi() )
             : scale;
-      const int zoom = mVTLayer ? mVTLayer->tileMatrixSet().scaleToZoomLevel( tileScale ) : QgsVectorTileUtils::scaleToZoomLevel( tileScale, 0, 99 );
-      mLabelCurrentZoom->setText( tr( "Current zoom: %1" ).arg( zoom ) );
-      if ( mProxyModel )
-        mProxyModel->setCurrentZoom( zoom );
+      if ( std::isfinite( tileScale ) )
+      {
+        const int zoom = mVTLayer ? mVTLayer->tileMatrixSet().scaleToZoomLevel( tileScale ) : QgsVectorTileUtils::scaleToZoomLevel( tileScale, 0, 99 );
+        mLabelCurrentZoom->setText( tr( "Current zoom: %1" ).arg( zoom ) );
+        if ( mProxyModel )
+          mProxyModel->setCurrentZoom( zoom );
+      }
+      else if ( mProxyModel )
+      {
+        mProxyModel->setCurrentZoom( -1 );
+      }
     } );
 
     const QgsMapSettings &mapSettings = mMapCanvas->mapSettings();
@@ -399,8 +406,15 @@ void QgsVectorTileBasicRendererWidget::syncToLayer( QgsMapLayer *layer )
     const double tileScale
       = mVTLayer ? mVTLayer->tileMatrixSet().calculateTileScaleForMap( mMapCanvas->scale(), mapSettings.destinationCrs(), mapSettings.visibleExtent(), mapSettings.outputSize(), mapSettings.outputDpi() )
                  : mMapCanvas->scale();
-    const int zoom = mVTLayer ? mVTLayer->tileMatrixSet().scaleToZoomLevel( tileScale ) : QgsVectorTileUtils::scaleToZoomLevel( tileScale, 0, 99 );
-    mProxyModel->setCurrentZoom( zoom );
+    if ( std::isfinite( tileScale ) )
+    {
+      const int zoom = mVTLayer ? mVTLayer->tileMatrixSet().scaleToZoomLevel( tileScale ) : QgsVectorTileUtils::scaleToZoomLevel( tileScale, 0, 99 );
+      mProxyModel->setCurrentZoom( zoom );
+    }
+    else
+    {
+      mProxyModel->setCurrentZoom( -1 );
+    }
   }
 
   connect( mModel, &QAbstractItemModel::dataChanged, this, &QgsPanelWidget::changed );

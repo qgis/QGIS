@@ -52,7 +52,7 @@ class CORE_EXPORT QgsAnnotationLineTextItem : public QgsAnnotationItem
     /**
      * Creates a new linestring annotation item.
      */
-    static QgsAnnotationLineTextItem *create() SIP_FACTORY;
+    static std::unique_ptr<QgsAnnotationLineTextItem> create();
 
     bool readXml( const QDomElement &element, const QgsReadWriteContext &context ) override;
     QgsRectangle boundingBox() const override;

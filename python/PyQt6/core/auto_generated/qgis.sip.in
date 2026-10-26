@@ -170,6 +170,15 @@ The development version
     typedef QFlags<Qgis::LayerFilter> LayerFilters;
 
 
+
+    enum class LayerItemCapability /BaseType=IntFlag/
+    {
+      AddComments,
+    };
+
+    typedef QFlags<Qgis::LayerItemCapability> LayerItemCapabilities;
+
+
     enum class LoadStyleFlag /BaseType=IntFlag/
     {
       IgnoreMissingStyleErrors,
@@ -3432,6 +3441,12 @@ The development version
       Latitude
     };
 
+    enum class ElevationProfileRangeMethod /BaseType=IntEnum/
+    {
+      ManualRange,
+      FixedScale
+    };
+
     enum class InputControllerType /BaseType=IntEnum/
     {
       Map2D,
@@ -4052,6 +4067,16 @@ The development version
       Lu,
       Svd,
       LuWithSvdFallback
+    };
+
+    enum class AttributeTableFilterMode /BaseType=IntEnum/
+    {
+      ShowAll,
+      ShowSelected,
+      ShowVisible,
+      ShowFilteredList,
+      ShowEdited,
+      ShowInvalid,
     };
 
     static const double DEFAULT_SEARCH_RADIUS_MM;

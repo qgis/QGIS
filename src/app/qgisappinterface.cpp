@@ -586,7 +586,7 @@ QDialog *QgisAppInterface::showAttributeTable( QgsVectorLayer *l, const QString 
 {
   if ( l && l->dataProvider() )
   {
-    QgsAttributeTableDialog *dialog = new QgsAttributeTableDialog( l, QgsAttributeTableFilterModel::ShowFilteredList );
+    QgsAttributeTableDialog *dialog = new QgsAttributeTableDialog( l, Qgis::AttributeTableFilterMode::ShowFilteredList );
     dialog->setFilterExpression( filterExpression );
     dialog->show();
     return dialog;
@@ -911,6 +911,10 @@ QToolBar *QgisAppInterface::databaseToolBar()
 QToolBar *QgisAppInterface::webToolBar()
 {
   return qgis->webToolBar();
+}
+QToolBar *QgisAppInterface::processingToolboxToolBar()
+{
+  return qgis->processingToolboxToolBar();
 }
 QActionGroup *QgisAppInterface::mapToolActionGroup()
 {
@@ -1305,6 +1309,10 @@ QAction *QgisAppInterface::actionCheckQgisVersion()
 QAction *QgisAppInterface::actionAbout()
 {
   return qgis->actionAbout();
+}
+QAction *QgisAppInterface::actionEditFeaturesInPlace()
+{
+  return qgis->actionEditFeaturesInPlace();
 }
 
 bool QgisAppInterface::openFeatureForm( QgsVectorLayer *vlayer, QgsFeature &f, bool updateFeatureOnly, bool showModal )

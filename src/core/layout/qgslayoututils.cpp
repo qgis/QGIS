@@ -23,6 +23,7 @@
 #include "qgslayoutitemmap.h"
 #include "qgslayoutitempicture.h"
 #include "qgslayoutrendercontext.h"
+#include "qgspainting.h"
 #include "qgsprojectviewsettings.h"
 #include "qgsrendercontext.h"
 #include "qgssettingsregistrycore.h"

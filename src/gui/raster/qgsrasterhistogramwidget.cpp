@@ -247,6 +247,12 @@ QgsRasterHistogramWidget::QgsRasterHistogramWidget( QgsRasterLayer *lyr, QWidget
     menu->addAction( action );
   }
 
+  // remove frame/shadow from the plot area, see https://github.com/qgis/QGIS/issues/41113
+  QwtPlotCanvas *canvas = qobject_cast<QwtPlotCanvas *>( mpPlot->canvas() );
+  if ( canvas )
+  {
+    canvas->setFrameStyle( QFrame::NoFrame );
+  }
 } // QgsRasterHistogramWidget ctor
 
 void QgsRasterHistogramWidget::setRendererWidget( const QString &name, QgsRasterRendererWidget *rendererWidget )
@@ -401,9 +407,11 @@ void QgsRasterHistogramWidget::refreshHistogram()
   mpPlot->setAxisAutoScale( QwtPlot::yLeft );
 
   // x axis scale only set after computing global min/max across bands (see below)
-  // add a grid
-  QwtPlotGrid *myGrid = new QwtPlotGrid();
-  myGrid->attach( mpPlot );
+  // add a grid, use dotted line and WindowText color from palette for better
+  // look on both light and dark themes
+  QwtPlotGrid *plotGrid = new QwtPlotGrid();
+  plotGrid->setMajorPen( palette().color( QPalette::WindowText ), 1, Qt::PenStyle::DotLine );
+  plotGrid->attach( mpPlot );
 
   // make colors list
   mHistoColors.clear();

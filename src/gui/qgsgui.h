@@ -378,7 +378,7 @@ class GUI_EXPORT QgsGui : public QObject
      *
      * \warning This is private API, to be removed after Processing GUI has been fully ported to c++.
      */
-    void emitExecuteAlgorithm( const QString &algorithmId ) SIP_SKIP;
+    void emitExecuteAlgorithm( const QString &algorithmId, bool useInPlaceMode = false, bool useBatchMode = false ) SIP_SKIP;
 
   signals:
 
@@ -407,7 +407,7 @@ class GUI_EXPORT QgsGui : public QObject
      *
      * \warning This is private API, exposed for use in the Processing plugin only.
      */
-    void executeAlgorithm( const QString &algorithmId );
+    void executeAlgorithm( const QString &algorithmId, bool useInPlaceMode, bool useBatchMode );
 
   private:
     QgsGui();

@@ -37,6 +37,7 @@
 #include "qgslogger.h"
 #include "qgsmarkersymbol.h"
 #include "qgsmultipolygon.h"
+#include "qgspainting.h"
 #include "qgspolygon.h"
 #include "qgsproperty.h"
 #include "qgsrendercontext.h"
@@ -311,8 +312,11 @@ void QgsSimpleLineSymbolLayer::renderPolygonStroke( const QPolygonF &points, con
     scopePopper = std::make_unique< QgsExpressionContextScopePopper >( context.renderContext().expressionContext(), scope );
   }
 
+  QgsScopedQPainterState painterState( p, QgsScopedQPainterState::InitialState::NoSave );
   if ( mDrawInsidePolygon )
-    p->save();
+  {
+    painterState.save();
+  }
 
   switch ( mRingFilter )
   {
@@ -373,12 +377,6 @@ void QgsSimpleLineSymbolLayer::renderPolygonStroke( const QPolygonF &points, con
       case ExteriorRingOnly:
         break;
     }
-  }
-
-  if ( mDrawInsidePolygon )
-  {
-    //restore painter to reset clip path
-    p->restore();
   }
 }
 
@@ -478,13 +476,13 @@ void QgsSimpleLineSymbolLayer::renderPolyline( const QPolygonF &pts, QgsSymbolRe
   p->setBrush( Qt::NoBrush );
 
   // Disable 'Antialiasing' if the geometry was generalized in the current RenderContext (We known that it must have least #2 points).
-  std::unique_ptr< QgsScopedQPainterState > painterState;
+  QgsScopedQPainterState painterState( p, QgsScopedQPainterState::InitialState::NoSave );
   if ( points.size() <= 2
        && ( context.renderContext().vectorSimplifyMethod().simplifyHints() & Qgis::VectorRenderingSimplificationFlag::AntialiasingSimplification )
        && QgsAbstractGeometrySimplifier::isGeneralizableByDeviceBoundingBox( points, context.renderContext().vectorSimplifyMethod().threshold() )
        && ( p->renderHints() & QPainter::Antialiasing ) )
   {
-    painterState = std::make_unique< QgsScopedQPainterState >( p );
+    painterState.save();
     p->setRenderHint( QPainter::Antialiasing, false );
   }
 
