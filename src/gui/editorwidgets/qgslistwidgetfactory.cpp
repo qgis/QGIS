@@ -45,7 +45,7 @@ QgsEditorConfigWidget *QgsListWidgetFactory::configWidget( QgsVectorLayer *vl, i
 unsigned int QgsListWidgetFactory::fieldScore( const QgsVectorLayer *vl, int fieldIdx ) const
 {
   const QgsField field = vl->fields().field( fieldIdx );
-  // on json fields, we checkt the first features
+  // on json fields, we check the first features
   if ( field.typeName().compare( u"json"_s, Qt::CaseInsensitive ) == 0 || field.typeName().compare( u"jsonb"_s, Qt::CaseInsensitive ) == 0 )
   {
     // Look the first not-null value (limiting to the first 20 features) and check if it is really an array
