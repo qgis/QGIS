@@ -20,6 +20,10 @@
 #include "qgslogger.h"
 #include "qgsunittypes.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 QgsMeshDataProviderTemporalCapabilities::QgsMeshDataProviderTemporalCapabilities()
   : QgsDataProviderTemporalCapabilities()
 {}
