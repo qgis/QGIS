@@ -1213,11 +1213,11 @@ void QgsElevationProfileCanvas::setSources( const QList< std::variant< QgsMapLay
 
   for ( const auto &source : sources )
   {
-    if ( auto layer = std::get_if< QgsMapLayer * >( &source ) )
+    if ( auto *layer = std::get_if< QgsMapLayer * >( &source ) )
     {
       mSources << QgsWeakMapLayerPointer( *layer );
     }
-    else if ( auto profileSource = std::get_if< QgsAbstractProfileSource * >( &source ) )
+    else if ( auto *profileSource = std::get_if< QgsAbstractProfileSource * >( &source ) )
     {
       if ( QgsApplication::profileSourceRegistry()->findSourceById( ( *profileSource )->profileSourceId() ) )
       {
@@ -1263,7 +1263,7 @@ QList<QgsAbstractProfileSource *> QgsElevationProfileCanvas::sources() const
         sources << layer->profileSource();
       }
     }
-    else if ( auto profileSource = std::get_if< QgsAbstractProfileSource * >( &source ) )
+    else if ( auto *profileSource = std::get_if< QgsAbstractProfileSource * >( &source ) )
     {
       if ( QgsApplication::profileSourceRegistry()->findSourceById( ( *profileSource )->profileSourceId() ) )
       {
@@ -1288,7 +1288,7 @@ QList< std::variant< QgsMapLayer *, QgsAbstractProfileSource * > > QgsElevationP
         sources << layer;
       }
     }
-    else if ( auto profileSource = std::get_if< QgsAbstractProfileSource * >( &source ) )
+    else if ( auto *profileSource = std::get_if< QgsAbstractProfileSource * >( &source ) )
     {
       if ( QgsApplication::profileSourceRegistry()->findSourceById( ( *profileSource )->profileSourceId() ) )
       {

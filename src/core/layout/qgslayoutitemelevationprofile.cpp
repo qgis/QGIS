@@ -533,7 +533,7 @@ QList<QgsAbstractProfileSource *> QgsLayoutItemElevationProfile::sources() const
         sources << layer->profileSource();
       }
     }
-    else if ( auto profileSource = std::get_if< QgsAbstractProfileSource * >( &source ) )
+    else if ( auto *profileSource = std::get_if< QgsAbstractProfileSource * >( &source ) )
     {
       if ( QgsApplication::profileSourceRegistry()->findSourceById( ( *profileSource )->profileSourceId() ) )
       {
@@ -552,11 +552,11 @@ void QgsLayoutItemElevationProfile::setSources( const QList< std::variant< QgsMa
 
   for ( const auto &source : sources )
   {
-    if ( auto layer = std::get_if< QgsMapLayer * >( &source ) )
+    if ( auto *layer = std::get_if< QgsMapLayer * >( &source ) )
     {
       mSources << QgsMapLayerRef( *layer );
     }
-    else if ( auto profileSource = std::get_if< QgsAbstractProfileSource * >( &source ) )
+    else if ( auto *profileSource = std::get_if< QgsAbstractProfileSource * >( &source ) )
     {
       if ( QgsApplication::profileSourceRegistry()->findSourceById( ( *profileSource )->profileSourceId() ) )
       {
@@ -941,7 +941,7 @@ bool QgsLayoutItemElevationProfile::writePropertiesToElement( QDomElement &layou
           sourcesElement.appendChild( sourceElement );
         }
       }
-      else if ( auto profileSource = std::get_if< QgsAbstractProfileSource * >( &source ) )
+      else if ( auto *profileSource = std::get_if< QgsAbstractProfileSource * >( &source ) )
       {
         if ( QgsApplication::profileSourceRegistry()->findSourceById( ( *profileSource )->profileSourceId() ) )
         {
