@@ -17,6 +17,7 @@
 
 #include "qgsmeshdataprovidertemporalcapabilities.h"
 
+#include "qgslogger.h"
 #include "qgsunittypes.h"
 
 QgsMeshDataProviderTemporalCapabilities::QgsMeshDataProviderTemporalCapabilities()
@@ -138,6 +139,13 @@ QgsDateTimeRange QgsMeshDataProviderTemporalCapabilities::timeExtent( const QDat
     if ( !begin.isValid() || groupReference.addMSecs( durationSinceFirst ) > begin )
       begin = groupReference.addMSecs( durationSinceFirst );
   }
+
+#if QT_FEATURE_timezone > 0
+  begin = begin.toTimeZone( reference.timeZone() );
+  end = end.toTimeZone( reference.timeZone() );
+#else
+  QgsDebugError( u"Qt is built without timezone support, reference timezone not transmitted to the time extent"_s );
+#endif
 
   return QgsDateTimeRange( begin, end );
 }

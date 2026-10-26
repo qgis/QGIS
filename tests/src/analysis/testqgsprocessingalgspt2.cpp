@@ -1006,22 +1006,22 @@ void TestQgsProcessingAlgsPt2::exportMeshContours()
   featIt.nextFeature( feat );
   QCOMPARE( u"LineString Z (1250 3000 20, 1250 2250 27.5, 1250 2000 22.5)"_s, feat.geometry().asWkt() );
   QCOMPARE( feat.attributes().at( 0 ).toString(), u"VertexScalarDataset"_s );
-  QCOMPARE( feat.attributes().at( 1 ).toString(), u"1950-01-01 01:00:00"_s );
+  QCOMPARE( feat.attributes().at( 1 ).toString(), u"1950-01-01 01:00:00 +00:00"_s );
   QCOMPARE( feat.attributes().at( 2 ).toDouble(), 2.25 );
   featIt.nextFeature( feat );
   QCOMPARE( u"LineString Z (1006.94319345290614365 3000 10.27772773811624596, 1000 2976.48044676110157525 10.23519553238898538)"_s, feat.geometry().asWkt() );
   QCOMPARE( feat.attributes().at( 0 ).toString(), u"VertexVectorDataset"_s );
-  QCOMPARE( feat.attributes().at( 1 ).toString(), u"1950-01-01 01:00:00"_s );
+  QCOMPARE( feat.attributes().at( 1 ).toString(), u"1950-01-01 01:00:00 +00:00"_s );
   QCOMPARE( feat.attributes().at( 2 ).toDouble(), 2.25 );
   featIt.nextFeature( feat );
   QCOMPARE( u"LineString Z (2009.71706923721990279 2990.28293076277986984 49.90282930762779756, 2462.15304528350043256 2000 34.62153045283500319)"_s, feat.geometry().asWkt() );
   QCOMPARE( feat.attributes().at( 0 ).toString(), u"VertexVectorDataset"_s );
-  QCOMPARE( feat.attributes().at( 1 ).toString(), u"1950-01-01 01:00:00"_s );
+  QCOMPARE( feat.attributes().at( 1 ).toString(), u"1950-01-01 01:00:00 +00:00"_s );
   QCOMPARE( feat.attributes().at( 2 ).toDouble(), 4.25 );
   featIt.nextFeature( feat );
   QCOMPARE( u"LineString Z (1500 3000 30, 1500 2500 35, 1500 2000 25)"_s, feat.geometry().asWkt() );
   QCOMPARE( feat.attributes().at( 0 ).toString(), u"FaceScalarDataset"_s );
-  QCOMPARE( feat.attributes().at( 1 ).toString(), u"1950-01-01 01:00:00"_s );
+  QCOMPARE( feat.attributes().at( 1 ).toString(), u"1950-01-01 01:00:00 +00:00"_s );
   QCOMPARE( feat.attributes().at( 2 ).toDouble(), 2.25 );
 
   QgsVectorLayer *resultpolygonLayer = qobject_cast<QgsVectorLayer *>( context->getMapLayer( results.value( u"OUTPUT_POLYGONS"_s ).toString() ) );
@@ -1041,7 +1041,7 @@ void TestQgsProcessingAlgsPt2::exportMeshContours()
   geom.normalize();
   QCOMPARE( geom.asWkt(), u"Polygon Z ((1000 2000 20, 1000 3000 10, 1250 3000 20, 1250 2250 27.5, 1250 2000 22.5, 1000 2000 20))"_s );
   QCOMPARE( feat.attributes().at( 0 ).toString(), u"VertexScalarDataset"_s );
-  QCOMPARE( feat.attributes().at( 1 ).toString(), u"1950-01-01 01:00:00"_s );
+  QCOMPARE( feat.attributes().at( 1 ).toString(), u"1950-01-01 01:00:00 +00:00"_s );
   QCOMPARE( feat.attributes().at( 2 ).toDouble(), 0.25 );
   QCOMPARE( feat.attributes().at( 3 ).toDouble(), 2.25 );
   featIt.nextFeature( feat );
@@ -1049,7 +1049,7 @@ void TestQgsProcessingAlgsPt2::exportMeshContours()
   geom.normalize();
   QCOMPARE( geom.asWkt(), u"Polygon Z ((1250 2000 22.5, 1250 2250 27.5, 1250 3000 20, 2000 3000 50, 3000 2000 40, 2000 2000 30, 1250 2000 22.5))"_s );
   QCOMPARE( feat.attributes().at( 0 ).toString(), u"VertexScalarDataset"_s );
-  QCOMPARE( feat.attributes().at( 1 ).toString(), u"1950-01-01 01:00:00"_s );
+  QCOMPARE( feat.attributes().at( 1 ).toString(), u"1950-01-01 01:00:00 +00:00"_s );
   QCOMPARE( feat.attributes().at( 2 ).toDouble(), 2.25 );
   QCOMPARE( feat.attributes().at( 3 ).toDouble(), 4.25 );
   featIt.nextFeature( feat );
@@ -1057,7 +1057,7 @@ void TestQgsProcessingAlgsPt2::exportMeshContours()
   geom.normalize();
   QCOMPARE( geom.asWkt( 2 ), u"Polygon Z ((1000 2976.48 10.24, 1000 3000 10, 1006.94 3000 10.28, 1000 2976.48 10.24))"_s );
   QCOMPARE( feat.attributes().at( 0 ).toString(), u"VertexVectorDataset"_s );
-  QCOMPARE( feat.attributes().at( 1 ).toString(), u"1950-01-01 01:00:00"_s );
+  QCOMPARE( feat.attributes().at( 1 ).toString(), u"1950-01-01 01:00:00 +00:00"_s );
   QCOMPARE( feat.attributes().at( 2 ).toDouble(), 0.25 );
   QCOMPARE( feat.attributes().at( 3 ).toDouble(), 2.25 );
   featIt.nextFeature( feat );
@@ -1066,7 +1066,7 @@ void TestQgsProcessingAlgsPt2::exportMeshContours()
   geom.normalize();
   QCOMPARE( geom.asWkt(), u"Polygon Z ((1000 2000 20, 1000 3000 10, 1500 3000 30, 1500 2500 35, 1500 2000 25, 1000 2000 20))"_s );
   QCOMPARE( feat.attributes().at( 0 ).toString(), u"FaceScalarDataset"_s );
-  QCOMPARE( feat.attributes().at( 1 ).toString(), u"1950-01-01 01:00:00"_s );
+  QCOMPARE( feat.attributes().at( 1 ).toString(), u"1950-01-01 01:00:00 +00:00"_s );
   QCOMPARE( feat.attributes().at( 2 ).toDouble(), 0.25 );
   QCOMPARE( feat.attributes().at( 3 ).toDouble(), 2.25 );
   featIt.nextFeature( feat );
@@ -1074,7 +1074,7 @@ void TestQgsProcessingAlgsPt2::exportMeshContours()
   geom.normalize();
   QCOMPARE( geom.asWkt(), u"Polygon Z ((1500 2000 25, 1500 2500 35, 1500 3000 30, 2000 3000 50, 3000 2000 40, 2000 2000 30, 1500 2000 25))"_s );
   QCOMPARE( feat.attributes().at( 0 ).toString(), u"FaceScalarDataset"_s );
-  QCOMPARE( feat.attributes().at( 1 ).toString(), u"1950-01-01 01:00:00"_s );
+  QCOMPARE( feat.attributes().at( 1 ).toString(), u"1950-01-01 01:00:00 +00:00"_s );
   QCOMPARE( feat.attributes().at( 2 ).toDouble(), 2.25 );
   QCOMPARE( feat.attributes().at( 3 ).toDouble(), 4.25 );
 
@@ -1540,10 +1540,10 @@ void TestQgsProcessingAlgsPt2::exportMeshTimeSeries()
 
   QStringList expectedLines;
   expectedLines
-    << u"1,1500.00,2200.00,1950-01-01 00:00:00,1.50,1.92,1.00"_s
-    << u"1,1500.00,2200.00,1950-01-01 01:00:00,2.50,3.33,2.00"_s
-    << u"3,2500.00,2100.00,1950-01-01 00:00:00,2.50,2.97,2.00"_s
-    << u"3,2500.00,2100.00,1950-01-01 01:00:00,3.50,4.36,3.00"_s;
+    << u"1,1500.00,2200.00,1950-01-01 00:00:00 +00:00,1.50,1.92,1.00"_s
+    << u"1,1500.00,2200.00,1950-01-01 01:00:00 +00:00,2.50,3.33,2.00"_s
+    << u"3,2500.00,2100.00,1950-01-01 00:00:00 +00:00,2.50,2.97,2.00"_s
+    << u"3,2500.00,2100.00,1950-01-01 01:00:00 +00:00,3.50,4.36,3.00"_s;
 
   QString line = textStream.readLine();
   int i = 0;
@@ -1568,28 +1568,28 @@ void TestQgsProcessingAlgsPt2::exportMeshTimeSeries()
 
   expectedLines.clear();
   expectedLines
-    << u"1,1500.00,2200.00,1950-01-01 00:00:00,1.50,1.92,1.00"_s
-    << u"1,1500.00,2200.00,1950-01-01 00:06:00,1.50,1.92,1.00"_s
-    << u"1,1500.00,2200.00,1950-01-01 00:12:00,1.50,1.92,1.00"_s
-    << u"1,1500.00,2200.00,1950-01-01 00:18:00,1.50,1.92,1.00"_s
-    << u"1,1500.00,2200.00,1950-01-01 00:24:00,1.50,1.92,1.00"_s
-    << u"1,1500.00,2200.00,1950-01-01 00:30:00,1.50,1.92,1.00"_s
-    << u"1,1500.00,2200.00,1950-01-01 00:36:00,1.50,1.92,1.00"_s
-    << u"1,1500.00,2200.00,1950-01-01 00:42:00,1.50,1.92,1.00"_s
-    << u"1,1500.00,2200.00,1950-01-01 00:48:00,1.50,1.92,1.00"_s
-    << u"1,1500.00,2200.00,1950-01-01 00:54:00,1.50,1.92,1.00"_s
-    << u"1,1500.00,2200.00,1950-01-01 01:00:00,2.50,3.33,2.00"_s
-    << u"3,2500.00,2100.00,1950-01-01 00:00:00,2.50,2.97,2.00"_s
-    << u"3,2500.00,2100.00,1950-01-01 00:06:00,2.50,2.97,2.00"_s
-    << u"3,2500.00,2100.00,1950-01-01 00:12:00,2.50,2.97,2.00"_s
-    << u"3,2500.00,2100.00,1950-01-01 00:18:00,2.50,2.97,2.00"_s
-    << u"3,2500.00,2100.00,1950-01-01 00:24:00,2.50,2.97,2.00"_s
-    << u"3,2500.00,2100.00,1950-01-01 00:30:00,2.50,2.97,2.00"_s
-    << u"3,2500.00,2100.00,1950-01-01 00:36:00,2.50,2.97,2.00"_s
-    << u"3,2500.00,2100.00,1950-01-01 00:42:00,2.50,2.97,2.00"_s
-    << u"3,2500.00,2100.00,1950-01-01 00:48:00,2.50,2.97,2.00"_s
-    << u"3,2500.00,2100.00,1950-01-01 00:54:00,2.50,2.97,2.00"_s
-    << u"3,2500.00,2100.00,1950-01-01 01:00:00,3.50,4.36,3.00"_s;
+    << u"1,1500.00,2200.00,1950-01-01 00:00:00 +00:00,1.50,1.92,1.00"_s
+    << u"1,1500.00,2200.00,1950-01-01 00:06:00 +00:00,1.50,1.92,1.00"_s
+    << u"1,1500.00,2200.00,1950-01-01 00:12:00 +00:00,1.50,1.92,1.00"_s
+    << u"1,1500.00,2200.00,1950-01-01 00:18:00 +00:00,1.50,1.92,1.00"_s
+    << u"1,1500.00,2200.00,1950-01-01 00:24:00 +00:00,1.50,1.92,1.00"_s
+    << u"1,1500.00,2200.00,1950-01-01 00:30:00 +00:00,1.50,1.92,1.00"_s
+    << u"1,1500.00,2200.00,1950-01-01 00:36:00 +00:00,1.50,1.92,1.00"_s
+    << u"1,1500.00,2200.00,1950-01-01 00:42:00 +00:00,1.50,1.92,1.00"_s
+    << u"1,1500.00,2200.00,1950-01-01 00:48:00 +00:00,1.50,1.92,1.00"_s
+    << u"1,1500.00,2200.00,1950-01-01 00:54:00 +00:00,1.50,1.92,1.00"_s
+    << u"1,1500.00,2200.00,1950-01-01 01:00:00 +00:00,2.50,3.33,2.00"_s
+    << u"3,2500.00,2100.00,1950-01-01 00:00:00 +00:00,2.50,2.97,2.00"_s
+    << u"3,2500.00,2100.00,1950-01-01 00:06:00 +00:00,2.50,2.97,2.00"_s
+    << u"3,2500.00,2100.00,1950-01-01 00:12:00 +00:00,2.50,2.97,2.00"_s
+    << u"3,2500.00,2100.00,1950-01-01 00:18:00 +00:00,2.50,2.97,2.00"_s
+    << u"3,2500.00,2100.00,1950-01-01 00:24:00 +00:00,2.50,2.97,2.00"_s
+    << u"3,2500.00,2100.00,1950-01-01 00:30:00 +00:00,2.50,2.97,2.00"_s
+    << u"3,2500.00,2100.00,1950-01-01 00:36:00 +00:00,2.50,2.97,2.00"_s
+    << u"3,2500.00,2100.00,1950-01-01 00:42:00 +00:00,2.50,2.97,2.00"_s
+    << u"3,2500.00,2100.00,1950-01-01 00:48:00 +00:00,2.50,2.97,2.00"_s
+    << u"3,2500.00,2100.00,1950-01-01 00:54:00 +00:00,2.50,2.97,2.00"_s
+    << u"3,2500.00,2100.00,1950-01-01 01:00:00 +00:00,3.50,4.36,3.00"_s;
 
   line = textStream.readLine();
   i = 0;
