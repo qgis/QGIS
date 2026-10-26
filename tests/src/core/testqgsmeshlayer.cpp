@@ -163,7 +163,7 @@ void TestQgsMeshLayer::initTestCase()
   QVERIFY( mMemoryLayer->dataProvider()->temporalCapabilities()->hasTemporalCapabilities() );
   QVERIFY( mMemoryLayer->temporalProperties()->isActive() );
   QDateTime referenceTime = mMemoryLayer->dataProvider()->temporalCapabilities()->referenceTime();
-  QCOMPARE( referenceTime, QDateTime( QDate( 2017, 2, 27 ), QTime( 1, 2, 3 ), Qt::UTC ) );
+  QCOMPARE( referenceTime, QDateTime( QDate( 2017, 2, 27 ), QTime( 1, 2, 3 ), QTimeZone::UTC ) );
   QVERIFY( !mMemoryLayer->supportsEditing() );
   QgsProject::instance()->addMapLayers( QList<QgsMapLayer *>() << mMemoryLayer );
 
@@ -2357,11 +2357,25 @@ void TestQgsMeshLayer::test_temporal()
   //Mesh MDAL provider with reference time
   tempCap = mMdal3DLayer->dataProvider()->temporalCapabilities();
   QCOMPARE( tempCap->datasetIndexClosestBeforeRelativeTime( 0, relativeTime_0 ).dataset(), 0 );
-  const QDateTime begin = QDateTime( QDate( 1990, 1, 1 ), QTime( 0, 0, 0 ), Qt::UTC );
-  const QDateTime end = QDateTime( QDate( 1990, 1, 1 ), QTime( 6, 0, 1, 938 ), Qt::UTC );
+  QDateTime begin = QDateTime( QDate( 1990, 1, 1 ), QTime( 0, 0, 0 ), QTimeZone::UTC );
+  QDateTime end = QDateTime( QDate( 1990, 1, 1 ), QTime( 6, 0, 1, 938 ), QTimeZone::UTC );
+  QgsDateTimeRange timeExtent = tempCap->timeExtent();
   QCOMPARE( tempCap->timeExtent(), QgsDateTimeRange( begin, end ) );
+  QCOMPARE( timeExtent.begin().timeZone(), QTimeZone( "UTC" ) );
+  QCOMPARE( timeExtent.end().timeZone(), QTimeZone( "UTC" ) );
 
-  QDateTime time_1 = QDateTime( QDate( 1990, 1, 1 ), QTime( 3, 0, 0 ), Qt::UTC );
+  QString timestepString = mMdal3DLayer->formatTime( 1.0 );
+  QCOMPARE( u"1990-01-01 01:00:00 +00:00", timestepString );
+
+  const QDateTime newReference = QDateTime( QDate( 2010, 2, 1 ), QTime( 10, 0, 0 ), QTimeZone( "UTC+02:00" ) );
+  begin = QDateTime( QDate( 2010, 2, 1 ), QTime( 8, 0, 0 ), QTimeZone::UTC );
+  end = QDateTime( QDate( 2010, 2, 1 ), QTime( 14, 0, 1, 938 ), QTimeZone::UTC );
+  timeExtent = tempCap->timeExtent( newReference );
+  QCOMPARE( timeExtent, QgsDateTimeRange( begin, end ) );
+  QCOMPARE( timeExtent.begin().timeZone(), QTimeZone( "UTC+02:00" ) );
+  QCOMPARE( timeExtent.end().timeZone(), QTimeZone( "UTC+02:00" ) );
+
+  QDateTime time_1 = QDateTime( QDate( 1990, 1, 1 ), QTime( 3, 0, 0 ), QTimeZone::UTC );
   QDateTime time_2 = time_1.addSecs( 300 );
   QgsMeshRendererSettings settings = mMdal3DLayer->rendererSettings();
   // Static dataset (bed elevation)
@@ -2387,20 +2401,33 @@ void TestQgsMeshLayer::test_temporal()
 
   // change reference time
   QgsMeshLayerTemporalProperties *tempProp = static_cast<QgsMeshLayerTemporalProperties *>( mMdal3DLayer->temporalProperties() );
-  tempProp->setReferenceTime( QDateTime( QDate( 1980, 1, 1 ), QTime( 0, 0, 0 ), Qt::UTC ), mMdal3DLayer->dataProvider()->temporalCapabilities() );
+  tempProp->setReferenceTime( QDateTime( QDate( 1980, 1, 1 ), QTime( 0, 0, 0 ), QTimeZone::UTC ), mMdal3DLayer->dataProvider()->temporalCapabilities() );
   QCOMPARE( mMdal3DLayer->activeScalarDatasetAtTime( QgsDateTimeRange( time_1, time_2 ) ).dataset(), -1 );
   QCOMPARE( mMdal3DLayer->datasetIndexAtRelativeTime( QgsInterval( 3, Qgis::TemporalUnit::Hours ), 1 ), QgsMeshDatasetIndex( 1, 18 ) );
-  time_1 = QDateTime( QDate( 1980, 1, 1 ), QTime( 3, 0, 0 ), Qt::UTC );
+  time_1 = QDateTime( QDate( 1980, 1, 1 ), QTime( 3, 0, 0 ), QTimeZone::UTC );
   time_2 = time_1.addSecs( 300 );
   QCOMPARE( mMdal3DLayer->activeScalarDatasetAtTime( QgsDateTimeRange( time_1, time_2 ) ).dataset(), 18 );
   QCOMPARE( mMdal3DLayer->datasetIndexAtRelativeTime( QgsInterval( 3, Qgis::TemporalUnit::Hours ), 1 ), QgsMeshDatasetIndex( 1, 18 ) );
 
-  tempProp->setReferenceTime( QDateTime( QDate( 1995, 1, 1 ), QTime( 0, 0, 0 ), Qt::UTC ), mMdal3DLayer->dataProvider()->temporalCapabilities() );
+  tempProp->setReferenceTime( QDateTime( QDate( 1995, 1, 1 ), QTime( 0, 0, 0 ), QTimeZone::UTC ), mMdal3DLayer->dataProvider()->temporalCapabilities() );
   QCOMPARE( mMdal3DLayer->activeScalarDatasetAtTime( QgsDateTimeRange( time_1, time_2 ) ).dataset(), -1 );
-  time_1 = QDateTime( QDate( 1995, 1, 1 ), QTime( 3, 0, 0 ), Qt::UTC );
+  time_1 = QDateTime( QDate( 1995, 1, 1 ), QTime( 3, 0, 0 ), QTimeZone::UTC );
   time_2 = time_1.addSecs( 300 );
   QCOMPARE( mMdal3DLayer->activeScalarDatasetAtTime( QgsDateTimeRange( time_1, time_2 ) ).dataset(), 18 );
   QCOMPARE( mMdal3DLayer->datasetIndexAtRelativeTime( QgsInterval( 3, Qgis::TemporalUnit::Hours ), 1 ), QgsMeshDatasetIndex( 1, 18 ) );
+
+
+  // change time zone of the reference time, request dataset from different time zone
+  mMdal3DLayer->setReferenceTime( QDateTime( QDate( 2010, 2, 1 ), QTime( 10, 0, 0 ), QTimeZone( "UTC+05:00" ) ) );
+  time_1 = QDateTime( QDate( 1995, 1, 1 ), QTime( 11, 0, 0 ), QTimeZone( "UTC+01:00" ) );
+  time_2 = time_1.addSecs( 300 );
+  QCOMPARE( mMdal3DLayer->activeScalarDatasetAtTime( QgsDateTimeRange( time_1, time_2 ) ).dataset(), -1 );
+  time_1 = QDateTime( QDate( 2010, 2, 1 ), QTime( 11, 0, 0 ), QTimeZone( "UTC+03:00" ) );
+  time_2 = time_1.addSecs( 300 );
+  QCOMPARE( mMdal3DLayer->activeScalarDatasetAtTime( QgsDateTimeRange( time_1, time_2 ) ).dataset(), 18 );
+  QCOMPARE( mMdal3DLayer->datasetIndexAtRelativeTime( QgsInterval( 3, Qgis::TemporalUnit::Hours ), 1 ), QgsMeshDatasetIndex( 1, 18 ) );
+  timestepString = mMdal3DLayer->formatTime( 1.0 );
+  QCOMPARE( u"2010-02-01 11:00:00 +05:00", timestepString );
 }
 
 
