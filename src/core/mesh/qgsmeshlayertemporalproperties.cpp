@@ -91,8 +91,10 @@ void QgsMeshLayerTemporalProperties::setDefaultsFromDataProviderTemporalCapabili
   setIsActive( temporalCapabilities->hasTemporalCapabilities() );
   mReferenceTime = temporalCapabilities->referenceTime();
 
+#if QT_FEATURE_timezone > 0
   if ( !mReferenceTime.timeZone().isValid() )
     mReferenceTime.setTimeZone( QTimeZone::UTC );
+#endif
 
   if ( mReferenceTime.isValid() )
     mTimeExtent = temporalCapabilities->timeExtent();
