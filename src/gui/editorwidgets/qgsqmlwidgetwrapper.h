@@ -129,7 +129,7 @@ class QgsQmlAttributeFormBridge : public QObject
      * \param form The attribute form used for interactions and properties
      */
     QgsQmlAttributeFormBridge( QgsAttributeForm *form, QObject *parent = nullptr );
-    ~QgsQmlAttributeFormBridge() = default;
+    ~QgsQmlAttributeFormBridge() override = default;
 
     //! Returns TRUE if the attribute form is in an editable state.
     bool editable() const;
