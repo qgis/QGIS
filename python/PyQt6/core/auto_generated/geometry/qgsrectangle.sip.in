@@ -406,7 +406,26 @@ An empty rectangle may still be non-null if it contains valid spatial
 information (e.g. bounding box of a point or of a vertical or horizontal
 segment).
 
+.. note::
+
+   The :py:func:`~QgsRectangle.isPoint` test is more suitable to use to determine if the
+   rectangle represents the bounding box of a point.
+
 .. seealso:: :py:func:`isNull`
+
+.. seealso:: :py:func:`isPoint`
+%End
+
+    bool isPoint() const;
+%Docstring
+Returns ``True`` if the rectangle represents a point.
+
+A rectangle represents a point if both the x coordinates are an exact
+match and the y coordinates are an exact match.
+
+.. seealso:: :py:func:`isNull`
+
+.. versionadded:: 4.4
 %End
 
     bool isNull() const;
