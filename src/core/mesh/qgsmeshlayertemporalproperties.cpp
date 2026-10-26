@@ -37,9 +37,9 @@ QDomElement QgsMeshLayerTemporalProperties::writeXml( QDomElement &element, QDom
 
   QDomElement temporalElement = doc.createElement( u"temporal"_s );
   temporalElement.setAttribute( u"temporal-active"_s, isActive() ? true : false );
-  temporalElement.setAttribute( u"reference-time"_s, mReferenceTime.toTimeSpec( Qt::UTC ).toString( Qt::ISODate ) );
-  temporalElement.setAttribute( u"start-time-extent"_s, mTimeExtent.begin().toTimeSpec( Qt::UTC ).toString( Qt::ISODate ) );
-  temporalElement.setAttribute( u"end-time-extent"_s, mTimeExtent.end().toTimeSpec( Qt::UTC ).toString( Qt::ISODate ) );
+  temporalElement.setAttribute( u"reference-time"_s, mReferenceTime.toString( Qt::ISODate ) );
+  temporalElement.setAttribute( u"start-time-extent"_s, mTimeExtent.begin().toString( Qt::ISODate ) );
+  temporalElement.setAttribute( u"end-time-extent"_s, mTimeExtent.end().toString( Qt::ISODate ) );
   temporalElement.setAttribute( u"matching-method"_s, mMatchingMethod );
   temporalElement.setAttribute( u"always-load-reference-time-from-source"_s, mAlwaysLoadReferenceTimeFromSource ? 1 : 0 );
   element.appendChild( temporalElement );
@@ -59,10 +59,22 @@ bool QgsMeshLayerTemporalProperties::readXml( const QDomElement &element, const 
 
   mReferenceTime = QDateTime::fromString( temporalElement.attribute( u"reference-time"_s ), Qt::ISODate );
 
+#if QT_FEATURE_timezone > 0
+  if ( !mReferenceTime.timeZone().isValid() )
+    mReferenceTime.setTimeZone( QTimeZone::UTC );
+#endif
+
   if ( temporalElement.hasAttribute( u"start-time-extent"_s ) && temporalElement.hasAttribute( u"end-time-extent"_s ) )
   {
-    const QDateTime start = QDateTime::fromString( temporalElement.attribute( u"start-time-extent"_s ), Qt::ISODate );
-    const QDateTime end = QDateTime::fromString( temporalElement.attribute( u"end-time-extent"_s ), Qt::ISODate );
+    QDateTime start = QDateTime::fromString( temporalElement.attribute( u"start-time-extent"_s ), Qt::ISODate );
+    QDateTime end = QDateTime::fromString( temporalElement.attribute( u"end-time-extent"_s ), Qt::ISODate );
+#if QT_FEATURE_timezone > 0
+    if ( !start.timeZone().isValid() )
+      start.setTimeZone( QTimeZone::UTC );
+    if ( !end.timeZone().isValid() )
+      end.setTimeZone( QTimeZone::UTC );
+#endif
+
     mTimeExtent = QgsDateTimeRange( start, end );
   }
 
@@ -78,6 +90,9 @@ void QgsMeshLayerTemporalProperties::setDefaultsFromDataProviderTemporalCapabili
 
   setIsActive( temporalCapabilities->hasTemporalCapabilities() );
   mReferenceTime = temporalCapabilities->referenceTime();
+
+  if ( !mReferenceTime.timeZone().isValid() )
+    mReferenceTime.setTimeZone( QTimeZone::UTC );
 
   if ( mReferenceTime.isValid() )
     mTimeExtent = temporalCapabilities->timeExtent();
