@@ -2063,7 +2063,7 @@ class QgsServerAPITest(QgsServerAPITestBase):
         self.server.handleRequest(request, response, project)
         self.assertEqual(
             bytes(response.body()).decode("utf-8"),
-            '[{"code":"Internal server error","description":"Invalid feature [123456]"}]',
+            '[{"code":"API not found error","description":"Feature [123456] not found"}]',
         )
 
         request = QgsBufferServerRequest(

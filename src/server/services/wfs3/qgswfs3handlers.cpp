@@ -3211,7 +3211,7 @@ void QgsWfs3CollectionsFeatureHandler::handleRequest( const QgsServerApiContext 
   QgsFeatureIterator it { mapLayer->getFeatures( featureRequest ) };
   if ( !it.nextFeature( feature ) || !feature.isValid() )
   {
-    throw QgsServerApiInternalServerError( u"Invalid feature [%1]"_s.arg( featureId ) );
+    throw QgsServerApiNotFoundError( u"Feature [%1] not found"_s.arg( featureId ) );
   }
 
   auto doGet = [&]() {
