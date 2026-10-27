@@ -3432,17 +3432,19 @@ void QgsWfs3CollectionsFeatureHandler::handleRequest( const QgsServerApiContext 
           int fieldIndex = 0;
           for ( const auto &field : fields )
           {
-            if ( !QgsVariantUtils::isNull( properties.value( field.name() ) ) )
+            const QString fieldIdentifier = field.alias().isEmpty() ? field.name() : field.alias();
+
+            if ( !QgsVariantUtils::isNull( properties.value( fieldIdentifier ) ) )
             {
               if ( !authorizedFieldNames.contains( field.name() ) )
               {
-                throw QgsServerApiPermissionDeniedException( u"Feature field '%1' change is not allowed"_s.arg( field.name() ) );
+                throw QgsServerApiPermissionDeniedException( u"Feature field '%1' change is not allowed"_s.arg( fieldIdentifier ) );
               }
               else
               {
-                QVariant value = properties.value( field.name() );
+                QVariant value = properties.value( fieldIdentifier );
                 // Convert blobs
-                if ( !QgsVariantUtils::isNull( properties.value( field.name() ) ) && static_cast<QMetaType::Type>( field.type() ) == QMetaType::QByteArray )
+                if ( !QgsVariantUtils::isNull( properties.value( fieldIdentifier ) ) && static_cast<QMetaType::Type>( field.type() ) == QMetaType::QByteArray )
                 {
                   value = QByteArray::fromBase64( value.toByteArray() );
                 }
@@ -3562,17 +3564,19 @@ void QgsWfs3CollectionsFeatureHandler::handleRequest( const QgsServerApiContext 
           int fieldIndex = 0;
           for ( const auto &field : fields )
           {
-            if ( !QgsVariantUtils::isNull( properties.value( field.name() ) ) )
+            const QString fieldIdentifier = field.alias().isEmpty() ? field.name() : field.alias();
+
+            if ( !QgsVariantUtils::isNull( properties.value( fieldIdentifier ) ) )
             {
               if ( !authorizedFieldNames.contains( field.name() ) )
               {
-                throw QgsServerApiPermissionDeniedException( u"Feature field '%1' change is not allowed"_s.arg( field.name() ) );
+                throw QgsServerApiPermissionDeniedException( u"Feature field '%1' change is not allowed"_s.arg( fieldIdentifier ) );
               }
               else
               {
-                QVariant value = properties.value( field.name() );
+                QVariant value = properties.value( fieldIdentifier );
                 // Convert blobs
-                if ( !QgsVariantUtils::isNull( properties.value( field.name() ) ) && static_cast<QMetaType::Type>( field.type() ) == QMetaType::QByteArray )
+                if ( !QgsVariantUtils::isNull( properties.value( fieldIdentifier ) ) && static_cast<QMetaType::Type>( field.type() ) == QMetaType::QByteArray )
                 {
                   value = QByteArray::fromBase64( value.toByteArray() );
                 }

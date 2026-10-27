@@ -1728,6 +1728,43 @@ class QgsServerAPITest(QgsServerAPITestBase):
         self.server.handleRequest(request, response, project)
         self.assertEqual(response.statusCode(), 403)
 
+        # Update layer property via its field alias
+        layer = project.mapLayersByName("test layer èé 3857 published update")[0]
+        layer.setFieldAlias(1, "Field Alias")
+        feature = project.mapLayersByName("test layer èé 3857 published update")[
+            0
+        ].getFeature(1)
+        self.assertEqual(feature.attribute("Field Alias"), "Text 1-bis")
+
+        data = b"""{
+        "geometry": {
+            "coordinates": [[
+            8.247,
+            45.814
+            ]],
+            "type": "MultiPoint"
+        },
+        "properties": {
+            "Field Alias": "Updated Text by Alias"
+        },
+        "type": "Feature"
+        }"""
+        request = QgsBufferServerRequest(
+            f"http://server.qgis.org/wfs3/collections/{update_layer}/items/1",
+            QgsBufferServerRequest.PutMethod,
+            {"Content-Type": "application/geo+json"},
+            data,
+        )
+        response = QgsBufferServerResponse()
+        self.server.handleRequest(request, response, project)
+        self.assertEqual(response.statusCode(), 200)
+        j = json.loads(bytes(response.body()).decode("utf8"))
+        self.assertEqual(j["properties"]["Field Alias"], "Updated Text by Alias")
+        feature = project.mapLayersByName("test layer èé 3857 published update")[
+            0
+        ].getFeature(1)
+        self.assertEqual(feature.attribute("Field Alias"), "Updated Text by Alias")
+
     def test_wfs3_collection_items_delete(self):
         """Test WFS3 API items DELETE"""
 
@@ -1901,6 +1938,31 @@ class QgsServerAPITest(QgsServerAPITestBase):
         response = QgsBufferServerResponse()
         self.server.handleRequest(request, response, project)
         self.assertEqual(response.statusCode(), 403)
+
+        # Patch layer property via its field alias
+        layer = project.mapLayersByName("test layer èé 3857 published update")[0]
+        layer.setFieldAlias(1, "Field Alias")
+
+        data = b"""{
+            "modify": {
+                "Field Alias": "Updated Text by Alias"
+            }
+        }"""
+        request = QgsBufferServerRequest(
+            f"http://server.qgis.org/wfs3/collections/{update_layer}/items/1",
+            QgsBufferServerRequest.PatchMethod,
+            {"Content-Type": "application/json"},
+            data,
+        )
+        response = QgsBufferServerResponse()
+        self.server.handleRequest(request, response, project)
+        self.assertEqual(response.statusCode(), 200)
+        j = json.loads(bytes(response.body()).decode("utf8"))
+        self.assertEqual(j["properties"]["Field Alias"], "Updated Text by Alias")
+        feature = project.mapLayersByName("test layer èé 3857 published update")[
+            0
+        ].getFeature(1)
+        self.assertEqual(feature.attribute("Field Alias"), "Updated Text by Alias")
 
     def test_wfs3_field_filters(self):
         """Test field filters"""
