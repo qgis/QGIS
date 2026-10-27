@@ -16,6 +16,7 @@
 #include "qgsexternalresourcewidgetwrapper.h"
 
 #include "qgsapplication.h"
+#include "qgsdatadefinedutils.h"
 #include "qgsexpressioncontextutils.h"
 #include "qgsexternalresourcewidget.h"
 #include "qgsexternalstoragefilewidget.h"
@@ -102,27 +103,21 @@ void QgsExternalResourceWidgetWrapper::updateProperties( const QgsFeature &featu
       const QString dvcString = mPropertyCollection.valueAsString( QgsEditorWidgetWrapper::Property::DocumentViewerContent, expressionContext, u"NoContent"_s, &ok );
       if ( ok )
       {
-        QgsExternalResourceWidget::DocumentViewerContent dvc;
-        if ( dvcString.compare( "image"_L1, Qt::CaseInsensitive ) == 0 )
+        static constexpr auto CONTENT_MAP = makeDataDefinedStringDecoder<QgsExternalResourceWidget::DocumentViewerContent>( {
+          { u"image", QgsExternalResourceWidget::Image },
+          { u"audio", QgsExternalResourceWidget::Audio },
+          { u"video", QgsExternalResourceWidget::Video },
+          { u"web", QgsExternalResourceWidget::Web },
+          { u"nocontent", QgsExternalResourceWidget::NoContent },
+        } );
+
+        auto evaluatedContent = CONTENT_MAP.lookup( dvcString );
+        QgsExternalResourceWidget::DocumentViewerContent dvc = QgsExternalResourceWidget::NoContent;
+        if ( evaluatedContent )
         {
-          dvc = QgsExternalResourceWidget::Image;
+          dvc = *evaluatedContent;
         }
-        else if ( dvcString.compare( "audio"_L1, Qt::CaseInsensitive ) == 0 )
-        {
-          dvc = QgsExternalResourceWidget::Audio;
-        }
-        else if ( dvcString.compare( "video"_L1, Qt::CaseInsensitive ) == 0 )
-        {
-          dvc = QgsExternalResourceWidget::Video;
-        }
-        else if ( dvcString.compare( "web"_L1, Qt::CaseInsensitive ) == 0 )
-        {
-          dvc = QgsExternalResourceWidget::Web;
-        }
-        else
-        {
-          dvc = QgsExternalResourceWidget::NoContent;
-        }
+
         mQgsWidget->setDocumentViewerContent( dvc );
       }
     }
