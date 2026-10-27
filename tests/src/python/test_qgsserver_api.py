@@ -1516,6 +1516,53 @@ class QgsServerAPITest(QgsServerAPITestBase):
             "MULTIPOINT ((801010 5592333))",
         )
 
+        # Create a feature by setting a property by its field alias
+        layer = project.mapLayersByName("test layer èé 3857 published insert")[0]
+        layer.setFieldAlias(1, "Field Alias")
+
+        data = b"""{
+        "geometry": {
+            "coordinates": [[
+            7.247,
+            44.814
+            ]],
+            "type": "MultiPoint"
+        },
+        "properties": {
+            "Field Alias": "Inserted text by Alias",
+            "text_2": "Some other text",
+            "int_1": 123,
+            "float_1": 12345.678,
+            "datetime_1": "2019-11-07T12:34:56",
+            "date_1": "2019-11-07",
+            "blob_1": "dGVzdA==",
+            "bool_1": true
+        },
+        "type": "Feature"
+        }"""
+
+        request = QgsBufferServerRequest(
+            f"http://server.qgis.org/wfs3/collections/{insert_layer}/items",
+            QgsBufferServerRequest.PostMethod,
+            {"Content-Type": "application/geo+json"},
+            data,
+        )
+        response = QgsBufferServerResponse()
+        self.server.handleRequest(request, response, project)
+        self.assertEqual(response.statusCode(), 201)
+        self.assertEqual(response.body(), '"string"')
+        # Get last feature
+        req = QgsFeatureRequest()
+        order_by_clause = QgsFeatureRequest.OrderByClause("$id", False)
+        req.setOrderBy(QgsFeatureRequest.OrderBy([order_by_clause]))
+        feature = next(
+            project.mapLayersByName("test layer èé 3857 published insert")[
+                0
+            ].getFeatures(req)
+        )
+        self.assertEqual(feature.attribute("text_1"), "Inserted text by Alias")
+        self.assertEqual(feature.attribute("Field Alias"), "Inserted text by Alias")
+
     def test_wfs3_collection_items_put(self):
         """Test WFS3 API items PUT"""
 

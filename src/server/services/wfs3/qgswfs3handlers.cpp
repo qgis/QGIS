@@ -2995,26 +2995,29 @@ void QgsWfs3CollectionsItemsHandler::handleRequest( const QgsServerApiContext &c
         json postData = json::parse( context.request()->data().toStdString() );
 
         // Process data: extract geometry (because we need to process attributes in a much more complex way)
-        const QgsFields fields = QgsOgrUtils::stringToFields( context.request()->data(), QTextCodec::codecForName( "UTF-8" ) );
-        const QgsFeatureList features = QgsOgrUtils::stringToFeatureList( context.request()->data(), fields, QTextCodec::codecForName( "UTF-8" ) );
+        const QgsFields fieldsInRequest = QgsOgrUtils::stringToFields( context.request()->data(), QTextCodec::codecForName( "UTF-8" ) );
+        const QgsFeatureList features = QgsOgrUtils::stringToFeatureList( context.request()->data(), fieldsInRequest, QTextCodec::codecForName( "UTF-8" ) );
         if ( features.isEmpty() )
         {
           throw QgsServerApiBadRequestException( u"Posted data does not contain any feature"_s );
         }
 
-        QgsFeature feat = features.first();
-        if ( !feat.isValid() )
+        const QgsFeature &featureInRequest = features.first();
+        if ( !featureInRequest.isValid() )
         {
           throw QgsServerApiInternalServerError( u"Feature is not valid"_s );
         }
 
+        const QgsFields fields = mapLayer->fields();
+        QgsFeature featureToCreate = QgsFeature( fields );
+
         // FIXME: in JSON-FG we might have a different CRS than CRS84,
         // we should check for a crs member in the JSON and use it if present
 
+        QgsGeometry geom { featureInRequest.geometry() };
         // Transform geometry
         if ( mapLayer->crs() != requestedCrs )
         {
-          QgsGeometry geom { feat.geometry() };
           try
           {
             geom.transform( QgsCoordinateTransform( requestedCrs, mapLayer->crs(), context.project()->transformContext() ) );
@@ -3023,8 +3026,8 @@ void QgsWfs3CollectionsItemsHandler::handleRequest( const QgsServerApiContext &c
           {
             throw QgsServerApiInternalServerError( u"Geometry could not be transformed to destination CRS"_s );
           }
-          feat.setGeometry( geom );
         }
+        featureToCreate.setGeometry( geom );
 
         // Process attributes
         try
@@ -3036,29 +3039,31 @@ void QgsWfs3CollectionsItemsHandler::handleRequest( const QgsServerApiContext &c
             authorizedFieldNames.push_back( f.name() );
           }
           const QVariantMap properties = QgsJsonUtils::parseJson( postData["properties"].dump() ).toMap();
-          const QgsFields fields = mapLayer->fields();
+
           for ( const auto &field : fields )
           {
-            if ( !QgsVariantUtils::isNull( properties.value( field.name() ) ) )
+            const QString fieldIdentifier = field.alias().isEmpty() ? field.name() : field.alias();
+
+            if ( !QgsVariantUtils::isNull( properties.value( fieldIdentifier ) ) )
             {
               if ( !authorizedFieldNames.contains( field.name() ) )
               {
-                throw QgsServerApiBadRequestException( u"Feature field %1 is not allowed"_s.arg( field.name() ) );
+                throw QgsServerApiBadRequestException( u"Feature field %1 is not allowed"_s.arg( fieldIdentifier ) );
               }
               else
               {
-                QVariant value = properties.value( field.name() );
+                QVariant value = properties.value( fieldIdentifier );
                 // Convert blobs
-                if ( !QgsVariantUtils::isNull( properties.value( field.name() ) ) && static_cast<QMetaType::Type>( field.type() ) == QMetaType::QByteArray )
+                if ( !QgsVariantUtils::isNull( properties.value( fieldIdentifier ) ) && static_cast<QMetaType::Type>( field.type() ) == QMetaType::QByteArray )
                 {
                   value = QByteArray::fromBase64( value.toByteArray() );
                 }
-                feat.setAttribute( field.name(), value );
+                featureToCreate.setAttribute( field.name(), value );
               }
             }
             else
             {
-              feat.setAttribute( field.name(), QVariant() );
+              featureToCreate.setAttribute( field.name(), QVariant() );
             }
           }
         }
@@ -3070,19 +3075,19 @@ void QgsWfs3CollectionsItemsHandler::handleRequest( const QgsServerApiContext &c
         // Make sure the first field (id) is null for shapefiles
         if ( mapLayer->providerType() == "ogr"_L1 && mapLayer->storageType() == "ESRI Shapefile"_L1 )
         {
-          feat.setAttribute( 0, QVariant() );
+          featureToCreate.setAttribute( 0, QVariant() );
         }
-        feat.setId( FID_NULL );
+        featureToCreate.setId( FID_NULL );
 
-        QgsVectorLayerUtils::matchAttributesToFields( feat, mapLayer->fields() );
+        QgsVectorLayerUtils::matchAttributesToFields( featureToCreate, fields );
 
-        QgsFeatureList featuresToAdd( { feat } );
+        QgsFeatureList featuresToAdd( { featureToCreate } );
         if ( !mapLayer->dataProvider()->addFeatures( featuresToAdd ) )
         {
           throw QgsServerApiInternalServerError( u"Error adding feature to collection"_s );
         }
 
-        feat = featuresToAdd.first();
+        QgsFeature createdFeature = featuresToAdd.first();
 
         // Send response
         context.response()->setStatusCode( 201 );
@@ -3099,7 +3104,7 @@ void QgsWfs3CollectionsItemsHandler::handleRequest( const QgsServerApiContext &c
           url.append( '/' );
         }
 
-        context.response()->setHeader( u"Location"_s, url + QString::number( feat.id() ) );
+        context.response()->setHeader( u"Location"_s, url + QString::number( createdFeature.id() ) );
         context.response()->write( "\"string\"" );
       }
       catch ( json::exception &ex )
