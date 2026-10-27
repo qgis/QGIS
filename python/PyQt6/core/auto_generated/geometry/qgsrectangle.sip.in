@@ -420,7 +420,7 @@ A null rectangle is also an empty rectangle and an invalid rectangle.
 .. seealso:: :py:func:`setNull`
 %End
 
-    bool isValid() const;
+ bool isValid() const /Deprecated="Since 4.4. Use isEmpty() or isNull() instead."/;
 %Docstring
 Test if the rectangle is valid
 
@@ -430,7 +430,9 @@ corresponding minimum coordinate.
 
 .. seealso:: :py:func:`isNull`
 
-.. versionadded:: 4.0
+.. deprecated:: 4.4
+
+   Use :py:func:`~QgsRectangle.isEmpty` or :py:func:`~QgsRectangle.isNull` instead.
 %End
 
     bool isMaximal() const;
