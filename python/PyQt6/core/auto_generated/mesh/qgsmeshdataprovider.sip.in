@@ -83,16 +83,14 @@ and same clock wise
 %End
 
 
-    double zMinimun() const;
+    double minimumElevation() const;
 %Docstring
 Returns the minimum elevation value of all vertices of the mesh.
 
 .. versionadded:: 4.4
-
-\note
 %End
 
-    double zMaximum() const;
+    double maximumElevation() const;
 %Docstring
 Returns the maximum elevation value of all vertices of the mesh.
 

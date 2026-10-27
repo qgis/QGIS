@@ -1200,14 +1200,14 @@ int QgsMeshVerticesElevationDataset::valuesCount() const
   return 0;
 }
 
-double QgsMeshVerticesElevationDataset::zMinimum()
+double QgsMeshVerticesElevationDataset::minimumElevation() const
 {
-  return mMesh->zMinimun();
+  return mMesh->minimumElevation();
 }
 
-double QgsMeshVerticesElevationDataset::zMaximum()
+double QgsMeshVerticesElevationDataset::maximumElevation() const
 {
-  return mMesh->zMaximum();
+  return mMesh->maximumElevation();
 }
 
 QgsMeshVerticesElevationDatasetGroup::QgsMeshVerticesElevationDatasetGroup( QString name, QgsMesh *mesh )
@@ -1250,5 +1250,5 @@ QgsMeshDatasetGroup::Type QgsMeshVerticesElevationDatasetGroup::type() const
 
 void QgsMeshVerticesElevationDatasetGroup::updateStatistic() const
 {
-  setMinimumMaximum( mDataset->zMinimum(), mDataset->zMaximum() );
+  setMinimumMaximum( mDataset->minimumElevation(), mDataset->maximumElevation() );
 }
