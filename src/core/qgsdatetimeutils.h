@@ -35,7 +35,7 @@ class CORE_EXPORT QgsDateTimeUtils
   public:
     /**
      * Encodes a \a datetime to a new DOM element.
-     * \param datetime datetime to encode
+     * \param dateTime datetime to encode
      * \param doc DOM document
      * \param tagName name of the DOM element
      * \param context read/write context used for encoding
