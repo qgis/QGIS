@@ -764,9 +764,24 @@ QgsRuleBasedRenderer::RuleList QgsRuleBasedRenderer::Rule::rulesForFeature( cons
   if ( onlyActive )
     listChildren = mActiveChildren;
 
+  bool matchedNonElseRule = false;
   for ( Rule *rule : std::as_const( listChildren ) )
   {
-    lst += rule->rulesForFeature( feature, context, onlyActive );
+    if ( rule->isElse() )
+      continue;
+
+    const RuleList childRules = rule->rulesForFeature( feature, context, onlyActive );
+    matchedNonElseRule |= !childRules.isEmpty();
+    lst += childRules;
+  }
+
+  if ( !matchedNonElseRule )
+  {
+    for ( Rule *rule : std::as_const( listChildren ) )
+    {
+      if ( rule->isElse() )
+        lst += rule->rulesForFeature( feature, context, onlyActive );
+    }
   }
   return lst;
 }
