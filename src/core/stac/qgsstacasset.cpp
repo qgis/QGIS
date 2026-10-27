@@ -98,13 +98,7 @@ QgsMimeDataUtils::Uri QgsStacAsset::uri( const QString &authcfg ) const
 {
   QgsMimeDataUtils::Uri uri;
   QUrl url( href() );
-  if ( ( formatName() == "COG"_L1 )
-       || ( formatName() == "Zarr"_L1 )
-       || ( formatName() == "TileDB"_L1 )
-       || ( formatName() == "Parquet"_L1 )
-       || ( formatName() == "FGB"_L1 )
-       || ( formatName() == "PMTiles"_L1 )
-       || ( formatName() == "VRT"_L1 ) )
+  if ( ( formatName() == "COG"_L1 ) || ( formatName() == "Zarr"_L1 ) || ( formatName() == "TileDB"_L1 ) || ( formatName() == "Parquet"_L1 ) || ( formatName() == "FGB"_L1 ) || ( formatName() == "PMTiles"_L1 ) )
   {
     if ( formatName() == "Parquet"_L1 || ( formatName() == "FGB"_L1 ) || ( formatName() == "PMTiles"_L1 ) )
     {
@@ -153,6 +147,12 @@ QgsMimeDataUtils::Uri QgsStacAsset::uri( const QString &authcfg ) const
     {
       uri.uri = u"%1|option:ZOOM_LEVEL_AUTO=YES"_s.arg( uri.uri );
     }
+  }
+  else if ( formatName() == "VRT"_L1 )
+  {
+    uri.layerType = u"raster"_s;
+    uri.providerKey = u"gdal"_s;
+    uri.uri = href();
   }
   else if ( formatName() == "COPC"_L1 )
   {
