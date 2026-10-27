@@ -12,8 +12,9 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include "qgstest.h"
+
 #include "qgsdatetimeutils.h"
+#include "qgstest.h"
 
 #include <QDirIterator>
 #include <QObject>
