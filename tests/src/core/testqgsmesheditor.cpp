@@ -1599,7 +1599,7 @@ void TestQgsMeshEditor::meshEditorFromMeshLayer_quadTriangle()
   QCOMPARE( meshLayerQuadTriangle->meshEditor()->freeVerticesIndexes().count(), 0 );
 
   //Add a vertex on a face and one external
-  editor->addVertices( { { 1500, 2800, -10 }, { 3000, 3500, 1000 } }, 10 );
+  editor->addVertices( { { 1500, 2800, -10 }, { 3000, 3500, 100 } }, 10 );
 
   QCOMPARE( meshLayerQuadTriangle->meshVertexCount(), 9 );
   QCOMPARE( meshLayerQuadTriangle->meshFaceCount(), 7 ); // vertex on a quad face : 4 faces created, 1 removed, removed are still present but void and not counted

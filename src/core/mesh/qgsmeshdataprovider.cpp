@@ -213,7 +213,7 @@ void QgsMesh::calculateZMinMax() const
   }
 }
 
-double QgsMesh::zMinimun() const
+double QgsMesh::minimumElevation() const
 {
   if ( !zMinMaxIsValid() )
     calculateZMinMax();
@@ -221,7 +221,7 @@ double QgsMesh::zMinimun() const
   return mZMin;
 }
 
-double QgsMesh::zMaximum() const
+double QgsMesh::maximumElevation() const
 {
   if ( !zMinMaxIsValid() )
     calculateZMinMax();

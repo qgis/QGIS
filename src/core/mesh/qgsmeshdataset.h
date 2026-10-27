@@ -692,15 +692,13 @@ class CORE_EXPORT QgsMeshDatasetGroup
     QMap<QString, QString> mMetadata;
     bool mIsScalar = true;
 
-    virtual void updateStatistic() const;
-
   private:
     mutable double mMinimum = std::numeric_limits<double>::quiet_NaN();
     mutable double mMaximum = std::numeric_limits<double>::quiet_NaN();
     mutable bool mIsStatisticObsolete = true;
-
-
     QDateTime mReferenceTime;
+
+    virtual void updateStatistic() const;
 };
 
 #ifndef SIP_RUN
@@ -801,13 +799,13 @@ class QgsMeshVerticesElevationDataset : public QgsMeshDataset
      *  Returns the minimum elevation value of all vertices
      *  \since QGIS 4.4
      */
-    double zMinimum() const;
+    double minimumElevation() const;
 
     /**
      *  Returns the maximum elevation value of all vertices
      *  \since QGIS 4.4
      */
-    double zMaximum() const;
+    double maximumElevation() const;
 
   private:
     QgsMesh *mMesh;
@@ -835,11 +833,10 @@ class CORE_EXPORT QgsMeshVerticesElevationDatasetGroup : public QgsMeshDatasetGr
     QgsMeshDatasetGroup::Type type() const override;
     QDomElement writeXml( QDomDocument &, const QgsReadWriteContext & ) const override { return QDomElement(); };
 
-  protected:
-    void updateStatistic() const override;
-
   private:
     std::unique_ptr<QgsMeshVerticesElevationDataset> mDataset;
+
+    void updateStatistic() const override;
 };
 
 #endif //SIP_RUN

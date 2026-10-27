@@ -109,16 +109,14 @@ struct CORE_EXPORT QgsMesh
     /**
      *  Returns the minimum elevation value of all vertices of the mesh.
      *  \since QGIS 4.4
-     *
-     *  \note
      */
-    double zMinimun() const;
+    double minimumElevation() const;
 
     /**
      *  Returns the maximum elevation value of all vertices of the mesh.
      *  \since QGIS 4.4
      */
-    double zMaximum() const;
+    double maximumElevation() const;
 
     /**
      *  Invalidates the minimum and maximum elevation values, therefoe when querying zMinimum() or zMaximum(),
