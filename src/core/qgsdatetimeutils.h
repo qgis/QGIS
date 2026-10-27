@@ -19,8 +19,8 @@
 #include "qgis_core.h"
 #include "qgsreadwritecontext.h"
 
-#include <QStringList>
 #include <QDomElement>
+#include <QStringList>
 
 #define SIP_NO_FILE
 
@@ -38,7 +38,7 @@ class CORE_EXPORT QgsDateTimeUtils
      * \param datetime datetime to encode
      * \param doc DOM document
      * \param tagName name of the DOM element
-     * \param context read/write context used for enconding
+     * \param context read/write context used for encoding
      * \returns element containing encoded datetime
      */
     static QDomElement writeDateTimeToXml( const QDateTime &dateTime, const QString &tagName, QDomDocument &doc, const QgsReadWriteContext &context );

@@ -60,7 +60,7 @@ QDateTime QgsDateTimeUtils::readDateTimeToXml( const QDomElement &element, const
 {
   Q_UNUSED( context );
 
-  if ( element.attribute( u"valid"_s ) != u"true"_s )
+  if ( element.attribute( u"valid"_s ) != "true"_L1 )
     return QDateTime();
 
   bool ok;
@@ -72,13 +72,13 @@ QDateTime QgsDateTimeUtils::readDateTimeToXml( const QDomElement &element, const
 
   QTimeZone timeZone;
 
-  if ( timeSpecStr == u"local-time"_s )
+  if ( timeSpecStr == "local-time"_L1 )
     timeZone = QTimeZone::LocalTime;
 
-  if ( timeSpecStr == u"utc" )
+  if ( timeSpecStr == "utc"_L1 )
     timeZone = QTimeZone::UTC;
 
-  if ( timeSpecStr == u"offset-from-utc"_s )
+  if ( timeSpecStr == "offset-from-utc"_L1 )
   {
     int offset = element.attribute( u"offset"_s ).toInt( &ok );
     if ( !ok )
@@ -87,7 +87,7 @@ QDateTime QgsDateTimeUtils::readDateTimeToXml( const QDomElement &element, const
     timeZone = QTimeZone::fromSecondsAheadOfUtc( offset );
   }
 
-  if ( timeSpecStr == u"time-zone"_s )
+  if ( timeSpecStr == "time-zone"_L1 )
   {
     const QByteArray id = element.attribute( u"time-zone"_s ).toUtf8();
     timeZone = QTimeZone( id );
