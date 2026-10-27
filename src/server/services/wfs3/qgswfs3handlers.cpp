@@ -3087,7 +3087,7 @@ void QgsWfs3CollectionsItemsHandler::handleRequest( const QgsServerApiContext &c
           throw QgsServerApiInternalServerError( u"Error adding feature to collection"_s );
         }
 
-        QgsFeature createdFeature = featuresToAdd.first();
+        featureToCreate = featuresToAdd.first();
 
         // Send response
         context.response()->setStatusCode( 201 );
@@ -3104,7 +3104,7 @@ void QgsWfs3CollectionsItemsHandler::handleRequest( const QgsServerApiContext &c
           url.append( '/' );
         }
 
-        context.response()->setHeader( u"Location"_s, url + QString::number( createdFeature.id() ) );
+        context.response()->setHeader( u"Location"_s, url + QString::number( featureToCreate.id() ) );
         context.response()->write( "\"string\"" );
       }
       catch ( json::exception &ex )
