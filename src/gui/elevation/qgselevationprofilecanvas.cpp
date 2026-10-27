@@ -1216,7 +1216,10 @@ void QgsElevationProfileCanvas::setSources( const QList< std::variant< QgsMapLay
   {
     if ( auto *layer = std::get_if< QgsMapLayer * >( &source ) )
     {
-      mSources << QgsWeakMapLayerPointer( *layer );
+      if ( ( *layer )->profileSource() )
+      {
+        mSources << QgsWeakMapLayerPointer( *layer );
+      }
     }
     else if ( auto *profileSource = std::get_if< QgsAbstractProfileSource * >( &source ) )
     {

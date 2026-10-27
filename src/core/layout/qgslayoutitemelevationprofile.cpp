@@ -558,7 +558,10 @@ void QgsLayoutItemElevationProfile::setSources( const QList< std::variant< QgsMa
   {
     if ( auto *layer = std::get_if< QgsMapLayer * >( &source ) )
     {
-      mSources << QgsMapLayerRef( *layer );
+      if ( ( *layer )->profileSource() )
+      {
+        mSources << QgsMapLayerRef( *layer );
+      }
     }
     else if ( auto *profileSource = std::get_if< QgsAbstractProfileSource * >( &source ) )
     {

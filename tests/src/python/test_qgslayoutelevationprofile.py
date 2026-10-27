@@ -96,6 +96,14 @@ class MyDummyProfileSource(QgsAbstractProfileSource):
         return "my-dummy-profile"
 
 
+class MyPluginLayerNoSource(QgsPluginLayer):
+    LAYER_TYPE = "MyPluginLayerNoSource"
+
+    def __init__(self):
+        super().__init__(MyPluginLayerNoSource.LAYER_TYPE, "new_plugin_layer")
+        self.setValid(True)
+
+
 class MyPluginLayer(QgsPluginLayer):
     """
     Defines a QgsPluginLayer Elevation Profile Source.
@@ -1666,6 +1674,10 @@ class TestQgsLayoutItemElevationProfile(QgisTestCase, LayoutItemTestCase):
         self.assertTrue(layer3.isValid())
         project.addMapLayers([layer3])
 
+        layer4 = MyPluginLayerNoSource()
+        self.assertTrue(layer4.isValid())
+        project.addMapLayers([layer4])
+
         source = MyDummyProfileSource()
         source_id = source.profileSourceId()
 
@@ -1691,7 +1703,13 @@ class TestQgsLayoutItemElevationProfile(QgisTestCase, LayoutItemTestCase):
         profile.setSources([layer1, layer2])
         self.assertEqual(len(profile.sources()), 2)
 
-        profile.setSources([layer1, layer2, layer3])
+        profile.setSources([layer1, layer2, layer3])  # QgsPluginLayer with valid source
+        self.assertEqual(len(profile.sources()), 3)
+
+        with self.assertRaises(ValueError):
+            profile.setSources(
+                [layer1, layer2, layer4]
+            )  # QgsPluginLayer with no profile source
         self.assertEqual(len(profile.sources()), 3)
 
         QgsApplication.profileSourceRegistry().registerProfileSource(source)

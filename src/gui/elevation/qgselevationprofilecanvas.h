@@ -152,7 +152,15 @@ class GUI_EXPORT QgsElevationProfileCanvas : public QgsPlotCanvas
             QgsMapLayer *layerSource = reinterpret_cast<QgsMapLayer *>( sipConvertToType( p0, sipType_QgsMapLayer, 0, SIP_NOT_NONE, &state, &sipIsErr ) );
             if ( !sipIsErr )
             {
-              sourcesList << layerSource;
+              if ( layerSource->profileSource() && sipCanConvertToType( layerSource->profileSource(), source_type, SIP_NOT_NONE ) )
+              {
+                sourcesList << layerSource;
+              }
+              else
+              {
+                sipIsErr = 1;
+                PyErr_SetString( PyExc_ValueError, u"The input list contains a map layer that does not provide a valid profile source!"_s.toUtf8().constData() );
+              }
             }
 
             sipReleaseType( layerSource, sipType_QgsMapLayer, state );

@@ -20,6 +20,7 @@ from qgis.core import (
     QgsPluginLayer,
     QgsPoint,
     QgsPointXY,
+    QgsProfileRequest,
     QgsProject,
     QgsRasterLayer,
     QgsVectorLayer,
@@ -88,11 +89,37 @@ class TestTool(QgsPlotTool):
         )
 
 
+class MyPluginLayerNoSource(QgsPluginLayer):
+    LAYER_TYPE = "MyPluginLayerNoSource"
+
+    def __init__(self):
+        super().__init__(MyPluginLayerNoSource.LAYER_TYPE, "new_plugin_layer")
+
+
 class MyPluginLayer(QgsPluginLayer):
     LAYER_TYPE = "MyPluginLayer"
 
     def __init__(self):
         super().__init__(MyPluginLayer.LAYER_TYPE, "new_plugin_layer")
+        self._profile_source = MyPluginLayerProfileSource(self)
+
+    def profileSource(self):
+        return self._profile_source
+
+
+class MyPluginLayerProfileSource(QgsAbstractProfileSource):
+    def __init__(self, layer: MyPluginLayer):
+        super().__init__()
+        self._layer = layer
+
+    def profileSourceId(self):
+        return self._layer.id()
+
+    def profileSourceName(self):
+        return self._layer.name()
+
+    def createProfileGenerator(self, request: QgsProfileRequest):
+        return None
 
 
 class MyDummyProfileSource(QgsAbstractProfileSource):
@@ -365,13 +392,18 @@ class TestQgsElevationProfileCanvas(QgisTestCase):
         canvas.setSources([vl1, rl1])
         self.assertEqual(len(canvas.sources()), 2)
 
-        pl1 = MyPluginLayer()
-        canvas.setSources([vl1, rl1, pl1])
+        pl1 = MyPluginLayerNoSource()  # Plugin layer with no profile source
+        with self.assertRaises(ValueError):
+            canvas.setSources([vl1, rl1, pl1])
+        self.assertEqual(len(canvas.sources()), 2)
+
+        pl2 = MyPluginLayer()  # Plugin layer with valid profile source
+        canvas.setSources([vl1, rl1, pl2])
         self.assertEqual(len(canvas.sources()), 3)
 
-        ps1 = MyDummyProfileSource()
+        ps1 = MyDummyProfileSource()  # Custom profile source
         QgsApplication.profileSourceRegistry().registerProfileSource(ps1)
-        canvas.setSources([vl1, rl1, pl1, ps1])
+        canvas.setSources([vl1, rl1, pl2, ps1])
         self.assertEqual(len(canvas.sources()), 4)
         QgsApplication.profileSourceRegistry().unregisterProfileSource(
             ps1.profileSourceId()
