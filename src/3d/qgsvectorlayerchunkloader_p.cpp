@@ -63,15 +63,6 @@ QgsVectorLayerChunkLoader::QgsVectorLayerChunkLoader( const Qgs3DRenderContext &
 {
   if ( context.crs().type() == Qgis::CrsType::Geocentric )
   {
-    // TODO: add support for handling of vector layers (other than points)
-    if ( QgsWkbTypes::geometryType( mLayer->wkbType() ) != Qgis::GeometryType::Point )
-    {
-      // (we're using dummy quadtree here to make sure the empty extent does not break the scene completely)
-      QgsDebugError( u"Non-point vector layers in globe scenes are not supported yet!"_s );
-      setupQuadtree( QgsBox3D( -7e6, -7e6, -7e6, 7e6, 7e6, 7e6 ), -1, 3 );
-      return;
-    }
-
     mIsGeocentric = true;
 
     const QgsCoordinateReferenceSystem geographicCrs = context.crs().toGeographicCrs();
@@ -179,12 +170,12 @@ QFuture<QgsChunkLoaderResult> QgsVectorLayerChunkLoader::loadChunk( QgsChunkNode
   req.setSubsetOfAttributes( attributeNames, mLayer->fields() );
 
   QgsCoordinateTransform layerToRenderCrs;
+  QgsRectangle filterRect;
   if ( mIsGeocentric )
   {
     layerToRenderCrs = QgsCoordinateTransform( mLayer->crs3D(), renderCtx.crs(), renderCtx.transformContext() );
     layerToRenderCrs.setBallparkTransformsAreAppropriate( true );
 
-    QgsRectangle filterRect;
     if ( mLayer->crs().type() == Qgis::CrsType::Geocentric )
     {
       try
@@ -248,9 +239,13 @@ void QgsVectorLayerChunkLoader::loadChunkInWorker(
 
     if ( isGeocentric )
     {
-      QgsGeometry g = f.geometry();
+      QgsGeometry g = f.geometry().clipped( req.filterRect() );
+      if ( g.isEmpty() )
+        continue;
+
       if ( !g.constGet()->is3D() )
         g.get()->addZValue( 0 );
+
 
       try
       {

@@ -111,6 +111,15 @@ Returns which faces are generated during extrusion.
 .. versionadded:: 4.0
 %End
 
+    void setGlobeEllipsoid( double semiMajorAxis, double semiMinorAxis );
+%Docstring
+Sets the ellipsoid of the globe that polygons are being tessellated
+onto, switching the tessellator into globe (geocentric) mode where
+triangles spanning larger areas are subdivided.
+
+.. versionadded:: 4.4
+%End
+
  void setTextureRotation( float rotation ) /Deprecated="Since 4.2. Handled in shaders now. No longer has any effect on the texture coordinates."/;
 %Docstring
 Sets the rotation of texture UV coordinates (in degrees).
