@@ -50,9 +50,9 @@ class QgsPointCloudNodeId;
     double maximum = std::numeric_limits<double>::lowest();
     double mean = 0;
     double stDev = 0;
-    int count = 0;
+    qint64  count = 0;
 #ifndef SIP_RUN
-    QMap<int, int> classCount;
+    QMap<int, qint64> classCount;
     //! Updates the current point cloud statistics to hold the cumulation of the current statistics and \a stats
     void cumulateStatistics( const QgsPointCloudAttributeStatistics &stats );
 #endif
@@ -103,7 +103,7 @@ class CORE_EXPORT QgsPointCloudStatistics
      * Returns a map containing the count of each class of the attribute \a attribute
      * If no matching statistic is available then an empty map will be returned.
      */
-    QMap<int, int> availableClasses( const QString &attribute ) const;
+    QMap<int, qint64> availableClasses( const QString &attribute ) const;
 #endif
 
     /**
