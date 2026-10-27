@@ -6983,10 +6983,9 @@ void QgisApp::fileSaveAs()
   mProjectLastModified = fullPath.lastModified();
 
   const Qgis::EmbeddedScriptMode embeddedScriptMode = QgsSettingsRegistryCore::settingsCodeExecutionBehaviorUndeterminedProjects->value();
-  if(embeddedScriptMode != Qgis::EmbeddedScriptMode::Always
-    && embeddedScriptMode != Qgis::EmbeddedScriptMode::Never)
+  if ( embeddedScriptMode != Qgis::EmbeddedScriptMode::Always && embeddedScriptMode != Qgis::EmbeddedScriptMode::Never )
   {
-    if( previousProjectTrustStatus != Qgis::ProjectTrustStatus::Undetermined )
+    if ( previousProjectTrustStatus != Qgis::ProjectTrustStatus::Undetermined )
     {
       QgsProjectTrustDialog dialog( QgsProject::instance(), nullptr, QgsGuiUtils::ModalDialogFlags, QgsProjectTrustDialog::TrustDialogType::AfterSaveToNewLocation );
       dialog.exec();
@@ -14203,7 +14202,7 @@ void QgisApp::closeProject()
   if ( !mBlockActiveLayerChanged )
     onActiveLayerChanged( activeLayer() );
 
-  QgsApplication::setCurrentProjectTemporaryTrustStatus(Qgis::ProjectTrustStatus::Undetermined);
+  QgsApplication::setCurrentProjectTemporaryTrustStatus( Qgis::ProjectTrustStatus::Undetermined );
 }
 
 void QgisApp::changeEvent( QEvent *event )

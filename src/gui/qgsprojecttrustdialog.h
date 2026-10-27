@@ -33,9 +33,9 @@ class GUI_EXPORT QgsProjectTrustDialog : public QDialog, private Ui::QgsProjectT
 {
     Q_OBJECT
   public:
-    enum TrustDialogType
+    enum class TrustDialogType : int
     {
-      Initial, //!< Opened when trying to execute embedded scripts in a project with undetermined trust status
+      Initial,                //!< Opened when trying to execute embedded scripts in a project with undetermined trust status
       AfterSaveToNewLocation, //!< Opened after saving a project to a new location, to ask the user if they want to trust the new location
     };
 

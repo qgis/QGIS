@@ -92,11 +92,11 @@ QgsProjectTrustDialog::QgsProjectTrustDialog( QgsProject *project, QWidget *pare
 
   if ( project )
   {
-    bool isUnsavedNewProject = project->fileName().isEmpty() && project->lastSaveDateTime().isNull(); 
-    if(isUnsavedNewProject)
+    bool isUnsavedNewProject = project->fileName().isEmpty() && project->lastSaveDateTime().isNull();
+    if ( isUnsavedNewProject )
     {
-      mButtonBox->button( QDialogButtonBox::StandardButton::YesToAll )->setEnabled(false);
-      mButtonBox->button( QDialogButtonBox::StandardButton::NoToAll )->setEnabled(false);
+      mButtonBox->button( QDialogButtonBox::StandardButton::YesToAll )->setEnabled( false );
+      mButtonBox->button( QDialogButtonBox::StandardButton::NoToAll )->setEnabled( false );
       mProjectDetailsLabel->setText( tr( "The current project is new and unsaved and can only be trusted for the duration of the session." ) );
       mTrustProjectFolderCheckBox->setVisible( false );
     }
@@ -128,7 +128,7 @@ QgsProjectTrustDialog::QgsProjectTrustDialog( QgsProject *project, QWidget *pare
 
       if ( mProjectIsFile )
       {
-        if(trustDialogType == TrustDialogType::AfterSaveToNewLocation)
+        if ( trustDialogType == TrustDialogType::AfterSaveToNewLocation )
         {
           mProjectDetailsLabel->setText( tr( "The current project has been saved to a new file path ’%1’." ).arg( u"<b>%1</b>"_s.arg( mProjectAbsoluteFilePath ) ) );
         }
@@ -141,7 +141,7 @@ QgsProjectTrustDialog::QgsProjectTrustDialog( QgsProject *project, QWidget *pare
       }
       else
       {
-        if(trustDialogType == TrustDialogType::AfterSaveToNewLocation)
+        if ( trustDialogType == TrustDialogType::AfterSaveToNewLocation )
         {
           mProjectDetailsLabel->setText( tr( "The current project has been saved to a new URI ’%1’." ).arg( u"<b>%1</b>"_s.arg( mProjectAbsoluteFilePath ) ) );
         }
@@ -181,8 +181,8 @@ QgsProjectTrustDialog::QgsProjectTrustDialog( QgsProject *project, QWidget *pare
     newItem->setFlags( Qt::ItemIsEnabled | Qt::ItemIsSelectable );
     mScriptPreviewList->addItem( newItem );
   }
-  
-  if(trustDialogType == TrustDialogType::AfterSaveToNewLocation)
+
+  if ( trustDialogType == TrustDialogType::AfterSaveToNewLocation )
   {
     mDescriptionLabel->setText( tr( "Do you want to trust this new location for the execution of embedded scripts?" ) );
     mTitleLabel->setText( tr( "Trust new project location" ) );
@@ -200,18 +200,18 @@ void QgsProjectTrustDialog::buttonBoxClicked( QAbstractButton *button )
 
   bool accepted = false;
   QString path = !mProjectIsFile || mTrustProjectFolderCheckBox->isChecked() ? mProjectAbsolutePath : mProjectAbsoluteFilePath;
-  if(QgsProject::instance()->fileName().isEmpty() && QgsProject::instance()->lastSaveDateTime().isNull()) 
+  if ( QgsProject::instance()->fileName().isEmpty() && QgsProject::instance()->lastSaveDateTime().isNull() )
   {
     // new, unsaved project
     if ( buttonType == QDialogButtonBox::StandardButton::Yes || buttonType == QDialogButtonBox::StandardButton::YesToAll )
     {
       accepted = true;
-      QgsApplication::setCurrentProjectTemporaryTrustStatus(Qgis::ProjectTrustStatus::Trusted);
+      QgsApplication::setCurrentProjectTemporaryTrustStatus( Qgis::ProjectTrustStatus::Trusted );
     }
     else if ( buttonType == QDialogButtonBox::StandardButton::No || buttonType == QDialogButtonBox::StandardButton::NoToAll )
     {
       accepted = false;
-      QgsApplication::setCurrentProjectTemporaryTrustStatus(Qgis::ProjectTrustStatus::Untrusted);
+      QgsApplication::setCurrentProjectTemporaryTrustStatus( Qgis::ProjectTrustStatus::Untrusted );
     }
   }
   else if ( !path.isEmpty() )

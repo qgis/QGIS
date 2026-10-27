@@ -2192,7 +2192,7 @@ Qgis::ProjectTrustStatus QgsApplication::currentProjectTemporaryTrustStatus()
   return instance()->mCurrentProjectTemporaryTrustStatus;
 }
 
-void QgsApplication::setCurrentProjectTemporaryTrustStatus(Qgis::ProjectTrustStatus trustStatus)
+void QgsApplication::setCurrentProjectTemporaryTrustStatus( Qgis::ProjectTrustStatus trustStatus )
 {
   instance()->mCurrentProjectTemporaryTrustStatus = trustStatus;
 }
