@@ -12372,7 +12372,7 @@ QgsPointLocator.QgsPointLocator: src/core/qgspointlocator.h#L190
 QgsPointLocator.QgsPointLocator: src/core/qgspointlocator.h#L361
 QgsPointLocator.cachedGeometryCount: src/core/qgspointlocator.h#L460
 QgsPointLocator.destinationCrs: src/core/qgspointlocator.h#L137
-QgsPointLocator.destroyIndex: src/core/qgspointlocator.h#L489
+QgsPointLocator.destroyIndex: src/core/qgspointlocator.h#L494
 QgsPointLocator.edgesInRect: src/core/qgspointlocator.h#L421
 QgsPointLocator.edgesInRect: src/core/qgspointlocator.h#L427
 QgsPointLocator.extent: src/core/qgspointlocator.h#L142
@@ -12388,7 +12388,7 @@ QgsPointLocator.nearestLineEndpoints: src/core/qgspointlocator.h#L398
 QgsPointLocator.nearestMiddleOfSegment: src/core/qgspointlocator.h#L390
 QgsPointLocator.nearestVertex: src/core/qgspointlocator.h#L374
 QgsPointLocator.pointInPolygon: src/core/qgspointlocator.h#L455
-QgsPointLocator.rebuildIndex: src/core/qgspointlocator.h#L486
+QgsPointLocator.rebuildIndex: src/core/qgspointlocator.h#L491
 QgsPointLocator.setExtent: src/core/qgspointlocator.h#L147
 QgsPointLocator.setRenderContext: src/core/qgspointlocator.h#L153
 QgsPointLocator.verticesInRect: src/core/qgspointlocator.h#L435
