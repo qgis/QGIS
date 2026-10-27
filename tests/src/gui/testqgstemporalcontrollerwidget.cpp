@@ -25,6 +25,7 @@ class TestQgsTemporalControllerWidget : public QgsTest
     Q_OBJECT
 
   public:
+    QByteArray mOriginalTz;
     TestQgsTemporalControllerWidget()
       : QgsTest( u"Temporal Controller Widget Tests"_s )
     {}
@@ -41,6 +42,8 @@ void TestQgsTemporalControllerWidget::initTestCase()
 {
   QgsApplication::init();
   QgsApplication::initQgis();
+
+  QByteArray mOriginalTz = qgetenv( "TZ" );
 }
 
 void TestQgsTemporalControllerWidget::cleanupTestCase()
@@ -49,10 +52,18 @@ void TestQgsTemporalControllerWidget::cleanupTestCase()
 }
 
 void TestQgsTemporalControllerWidget::init()
-{}
+{
+  setenv( "TZ", "Europe/Berlin", 1 );
+  tzset();
+}
 
 void TestQgsTemporalControllerWidget::cleanup()
-{}
+{
+  setenv( "TZ", mOriginalTz, 1 );
+  tzset();
+
+  QCOMPARE( getenv( "TZ" ), mOriginalTz );
+}
 
 void TestQgsTemporalControllerWidget::testDatePersists()
 {
