@@ -718,7 +718,7 @@ class TestPyQgsProviderConnectionBase:
 
         fields = QgsFields()
         fields.append(QgsField("a", QVariant.Int))
-        fields.append(QgsField("b", QVariant.String))
+        fields.append(QgsField("b", QVariant.String, "", 10))
         fields.append(QgsField("c", QVariant.Int))
         conn.createVectorTable(
             schema,
