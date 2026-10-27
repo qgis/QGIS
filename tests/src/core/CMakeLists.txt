@@ -65,6 +65,7 @@ set(TESTS
  testqgsdatadefinedsizelegend.cpp
  testqgsdataitem.cpp
  testqgsdatasourceuri.cpp
+ testqgsdatetimeutils.cpp
  testqgsdiagram.cpp
  testqgsdistancearea.cpp
  testqgsdxfexport.cpp
