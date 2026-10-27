@@ -97,10 +97,10 @@ QList<int> QgsPointCloudStatistics::classesOf( const QString &attribute ) const
   return s.classCount.keys();
 }
 
-QMap<int, int> QgsPointCloudStatistics::availableClasses( const QString &attribute ) const
+QMap<int, qint64> QgsPointCloudStatistics::availableClasses( const QString &attribute ) const
 {
   if ( !mStatisticsMap.contains( attribute ) )
-    return QMap<int, int>();
+    return QMap<int, qint64>();
   return mStatisticsMap[attribute].classCount;
 }
 
@@ -222,7 +222,7 @@ QgsPointCloudAttributeStatistics QgsPointCloudStatistics::fromAttributeStatistic
   QJsonObject classCountJson = statsJson.value( u"class-count"_s ).toObject();
   for ( const QString &key : classCountJson.keys() )
   {
-    statsObj.classCount.insert( key.toInt(), classCountJson.value( key ).toInt() );
+    statsObj.classCount.insert( key.toInteger(), classCountJson.value( key ).toInteger() );
   }
   return statsObj;
 }
