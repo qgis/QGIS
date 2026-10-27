@@ -4943,7 +4943,6 @@ template<_TYPE_>
         return 0;
     }
 
-    QList<_TYPE_> *ql = new QList<_TYPE_>;
     std::vector<std::unique_ptr<_TYPE_>> *ql = new std::vector<std::unique_ptr<_TYPE_>>;
 
     for (Py_ssize_t i = 0; ; ++i)
