@@ -241,13 +241,7 @@ class CreateNewModelAction : public QgsProcessingToolboxAction
 
     QIcon icon() const override { return QgsApplication::getThemeIcon( u"/processingModel.svg"_s ); }
 
-    void trigger( const QgsProcessingActionContext & ) override
-    {
-      QgisApp::instance()->openModelDesignerDialog( nullptr );
-      // auto dlg = new QgsModelDesignerDialog();
-      // QObject::connect( dlg, &QgsModelDesignerDialog::modelUpdated, dlg, [] { QgsApplication::processingRegistry()->providerById( QgsProcessing::MODEL_PROVIDER_ID )->refreshAlgorithms(); } );
-      // dlg->show();
-    }
+    void trigger( const QgsProcessingActionContext & ) override { QgisApp::instance()->openModelDesignerDialog( nullptr ); }
 };
 
 
@@ -270,10 +264,9 @@ class OpenModelFromFileAction : public QgsProcessingToolboxAction
 
       settings.setValue( u"Processing/lastModelsDir"_s, QFileInfo( fileName ).absoluteDir().absolutePath() );
 
-      auto dlg = new QgsModelDesignerDialog();
-      dlg->loadModel( fileName );
-      dlg->show();
-      dlg->activate();
+      QgsProcessingModelAlgorithm *newModel = QgsProcessingModelAlgorithm::loadModel( fileName );
+
+      QgisApp::instance()->openModelDesignerDialog( newModel );
     }
 };
 
@@ -358,14 +351,7 @@ class EditModelContextAction : public QgsProcessingToolboxContextAction
       std::unique_ptr< QgsProcessingModelAlgorithm > newModel( qgis::down_cast< QgsProcessingModelAlgorithm * >( modelAlgorithm->create() ) );
       newModel->setSourceFilePath( modelAlgorithm->sourceFilePath() );
 
-      // auto dlg = new QgsModelDesignerDialog();
-      // dlg->setModel( newModel.release() );
-
       QgisApp::instance()->openModelDesignerDialog( newModel.release() );
-
-      // QObject::connect( dlg, &QgsModelDesignerDialog::modelUpdated, dlg, [] { QgsApplication::processingRegistry()->providerById( QgsProcessing::MODEL_PROVIDER_ID )->refreshAlgorithms(); } );
-      // dlg->show();
-      // dlg->activate();
     }
 };
 
@@ -584,10 +570,7 @@ void QgsAppProcessingUtils::registerActions()
 
 void QgsAppProcessingUtils::openModelDesigner()
 {
-  // QgsModelDesignerDialog has delete on close set:
-  auto dlg = new QgsModelDesignerDialog();
-  connect( dlg, &QgsModelDesignerDialog::modelUpdated, this, &QgsAppProcessingUtils::updateModels );
-  dlg->show();
+  QgisApp::instance()->openModelDesignerDialog( nullptr );
 }
 
 void QgsAppProcessingUtils::openHistory()
