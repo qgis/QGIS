@@ -278,6 +278,8 @@ filtered set of features.
     void editableChanged();
 %Docstring
 Emitted when the editable state of the attribute form has changed.
+
+.. versionadded:: 4.4
 %End
 
   public slots:
