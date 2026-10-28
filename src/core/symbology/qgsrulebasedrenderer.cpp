@@ -777,10 +777,12 @@ QgsRuleBasedRenderer::RuleList QgsRuleBasedRenderer::Rule::rulesForFeature( cons
 
   if ( !matchedNonElseRule )
   {
-    for ( Rule *rule : std::as_const( listChildren ) )
+    for ( Rule *rule : std::as_const( mElseRules ) )
     {
-      if ( rule->isElse() )
-        lst += rule->rulesForFeature( feature, context, onlyActive );
+      if ( onlyActive && !mActiveChildren.contains( rule ) )
+        continue;
+
+      lst += rule->rulesForFeature( feature, context, onlyActive );
     }
   }
   return lst;
