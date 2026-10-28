@@ -79,6 +79,8 @@ Saves the model to the current project.
     void aboutToClose();
 %Docstring
 Emitted when the dialog is about to close.
+
+.. versionadded:: 4.4
 %End
 
     void modelUpdated();
