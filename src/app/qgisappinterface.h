@@ -121,7 +121,7 @@ class APP_EXPORT QgisAppInterface : public QgisInterface
     void showLayoutManager() override;
     QList<QgsLayoutDesignerInterface *> openLayoutDesigners() override;
     QgsLayoutDesignerInterface *openLayoutDesigner( QgsMasterLayoutInterface *layout ) override;
-    QgsModelDesignerDialog *openModelDesignerDialog( QgsProcessingModelAlgorithm *layout ) override;
+    QgsModelDesignerDialog *openModelDesigner( QgsProcessingModelAlgorithm *layout ) override;
     void showOptionsDialog( QWidget *parent = nullptr, const QString &currentPage = QString() ) override;
     void showProjectPropertiesDialog( const QString &currentPage = QString() ) override;
     QMap<QString, QVariant> defaultStyleSheetOptions() override;

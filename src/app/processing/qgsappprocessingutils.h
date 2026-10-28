@@ -85,9 +85,6 @@ class QgsAppProcessingUtils : public QObject
 
     void registerActions();
 
-    // TODO delete ?
-    void openModelDesigner();
-
     void openHistory();
 
     void initProjectModelProvider();

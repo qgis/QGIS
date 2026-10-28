@@ -568,11 +568,6 @@ void QgsAppProcessingUtils::registerActions()
   QgsGui::processingGuiRegistry()->registerProviderToolboxContextAction( QgsProcessing::MODEL_PROVIDER_ID, new ExportModelAsPythonScriptAction() );
 }
 
-void QgsAppProcessingUtils::openModelDesigner()
-{
-  QgisApp::instance()->openModelDesignerDialog( nullptr );
-}
-
 void QgsAppProcessingUtils::openHistory()
 {
   auto dlg = new QgsProcessingHistoryDialog( QgisApp::instance() );
