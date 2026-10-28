@@ -88,7 +88,7 @@ QList<QgsSpatialIndexKDBushData> QgsSpatialIndexKDBush::within( const QgsPointXY
   return result;
 }
 
-void QgsSpatialIndexKDBush::within( const QgsPointXY &point, double radius, const std::function<void( QgsSpatialIndexKDBushData )> &visitor )
+void QgsSpatialIndexKDBush::within( const QgsPointXY &point, double radius, const std::function<void( const QgsSpatialIndexKDBushData & )> &visitor ) const
 {
   if ( !d->index->finalized )
     return;
@@ -111,7 +111,7 @@ QList<QgsSpatialIndexKDBushData> QgsSpatialIndexKDBush::intersects( const QgsRec
   return result;
 }
 
-void QgsSpatialIndexKDBush::intersects( const QgsRectangle &rectangle, const std::function<void( QgsSpatialIndexKDBushData )> &visitor ) const
+void QgsSpatialIndexKDBush::intersects( const QgsRectangle &rectangle, const std::function<void( const QgsSpatialIndexKDBushData & )> &visitor ) const
 {
   if ( !d->index->finalized )
     return;

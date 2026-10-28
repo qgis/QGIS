@@ -30,6 +30,7 @@
 #include "qgs3dmapsceneentity.h"
 #include "qgsraycasthit.h"
 
+#include <QFuture>
 #include <QMatrix4x4>
 #include <QTime>
 
@@ -38,12 +39,30 @@
 class QgsAABB;
 class QgsChunkNode;
 class QgsChunkList;
-class QgsChunkQueueJob;
-class QgsChunkLoaderFactory;
+class QgsChunkLoader;
 class QgsChunkBoundsEntity;
-class QgsChunkQueueJobFactory;
 class QgsRay3D;
 class QgsRayCastContext;
+struct QgsChunkLoaderResult;
+
+
+/**
+ * \ingroup qgis_3d
+ * \brief Utility wrapper for currently running job started by QgsChunkedEntity.
+ */
+struct QgsChunkQueueJob
+{
+    enum class Type
+    {
+      Load,
+      Update,
+      CreateChildren,
+    };
+
+    QgsChunkNode *node;
+    Type type;
+    QFuture<void> future;
+};
 
 
 /**
@@ -56,9 +75,7 @@ class QgsChunkedEntity : public Qgs3DMapSceneEntity
     Q_OBJECT
   public:
     //! Constructs a chunked entity
-    QgsChunkedEntity(
-      Qgs3DMapSettings *mapSettings, float tau, QgsChunkLoaderFactory *loaderFactory, bool ownsFactory, int primitivesBudget = std::numeric_limits<int>::max(), Qt3DCore::QNode *parent = nullptr
-    );
+    QgsChunkedEntity( Qgs3DMapSettings *mapSettings, float tau, QgsChunkLoader *loader, bool ownsLoader, int primitivesBudget = std::numeric_limits<int>::max(), Qt3DCore::QNode *parent = nullptr );
     ~QgsChunkedEntity() override;
 
     //! Called when e.g. camera changes and entity may need updated
@@ -75,13 +92,13 @@ class QgsChunkedEntity : public Qgs3DMapSceneEntity
     //! Determines whether bounding boxes of tiles should be shown (for debugging)
     void setShowBoundingBoxes( bool enabled );
 
-    //! update already loaded nodes (add to the queue)
-    void updateNodes( const QList<QgsChunkNode *> &nodes, QgsChunkQueueJobFactory *updateJobFactory );
+    //! Updates already loaded nodes (add to the queue)
+    void updateNodes( const QList<QgsChunkNode *> &nodes );
 
     //! Returns list of active nodes - i.e. nodes that are get rendered
     QList<QgsChunkNode *> activeNodes() const { return mActiveNodes; }
     //! Returns the root node of the whole quadtree hierarchy of nodes
-    QgsChunkNode *rootNode() const { return mRootNode; }
+    QgsChunkNode *rootNode() const { return mRootNode.get(); }
 
     /**
      * Checks if \a ray intersects the entity by using the specified parameters in \a context and returns information about the hits.
@@ -96,7 +113,7 @@ class QgsChunkedEntity : public Qgs3DMapSceneEntity
 
   protected:
     //! Cancels the background job that is currently in progress
-    void cancelActiveJob( QgsChunkQueueJob *job );
+    void cancelActiveJob( QgsChunkQueueJob &job );
     void cancelActiveJobs();
     //! Sets whether the entity needs to get active nodes updated
     void setNeedsUpdate( bool needsUpdate ) { mNeedsUpdate = needsUpdate; }
@@ -111,16 +128,17 @@ class QgsChunkedEntity : public Qgs3DMapSceneEntity
     void requestResidency( QgsChunkNode *node );
 
     void startJobs();
-    QgsChunkQueueJob *startJob( QgsChunkNode *node );
+    void startJob( QgsChunkNode *node );
 
     int unloadNodes();
 
-  private slots:
-    void onActiveJobFinished();
+    void eraseJobFromList( QgsChunkQueueJob &job );
+
+    void onActiveLoadJobFinished( QgsChunkQueueJob &job, QgsChunkLoaderResult &result );
 
   protected:
     //! root node of the quadtree hierarchy
-    QgsChunkNode *mRootNode = nullptr;
+    std::unique_ptr<QgsChunkNode> mRootNode;
     //! A chunk has been loaded recently? let's display it!
     bool mNeedsUpdate = false;
 
@@ -132,14 +150,14 @@ class QgsChunkedEntity : public Qgs3DMapSceneEntity
      * it reaches leafs.
      */
     float mTau;
-    //! factory that creates loaders for individual chunk nodes
-    QgsChunkLoaderFactory *mChunkLoaderFactory = nullptr;
-    //! True if entity owns the factory
-    bool mOwnsFactory = true;
+    //! loader that creates individual chunk nodes
+    QgsChunkLoader *mChunkLoader = nullptr;
+    //! True if entity owns the loader
+    bool mOwnsLoader = true;
     //! queue of chunks to be loaded
-    QgsChunkList *mChunkLoaderQueue = nullptr;
+    std::unique_ptr<QgsChunkList> mChunkLoaderQueue;
     //! queue of chunk to be eventually replaced
-    QgsChunkList *mReplacementQueue = nullptr;
+    std::unique_ptr<QgsChunkList> mReplacementQueue;
     //! list of nodes that are being currently used for rendering
     QList<QgsChunkNode *> mActiveNodes;
     //! number of nodes omitted during frustum culling - for the curious ones
@@ -152,8 +170,11 @@ class QgsChunkedEntity : public Qgs3DMapSceneEntity
     //! Entity that shows bounding boxes of active chunks (NULLPTR if not enabled)
     QgsChunkBoundsEntity *mBboxesEntity = nullptr;
 
-    //! jobs that are currently being processed (asynchronously in worker threads)
-    QList<QgsChunkQueueJob *> mActiveJobs;
+    /**
+     * Jobs that are currently being processed (asynchronously in worker threads).
+     * Stored as allocated objects to give each one its own identity.
+     */
+    std::vector<std::unique_ptr<QgsChunkQueueJob>> mActiveJobs;
 
     bool mIsValid = true;
 

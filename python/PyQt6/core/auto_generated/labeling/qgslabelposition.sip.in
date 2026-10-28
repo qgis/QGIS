@@ -97,6 +97,10 @@ Constructor for QgsLabelPosition.
     bool isUnplaced;
 
     long long groupedLabelId;
+
+    long long groupedPositionIndex;
+
+    long long subPartId;
 };
 
 /************************************************************************

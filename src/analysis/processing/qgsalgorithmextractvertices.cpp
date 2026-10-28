@@ -142,6 +142,8 @@ bool QgsExtractVerticesAlgorithm::prepareAlgorithm( const QVariantMap &parameter
 
 QgsFeatureList QgsExtractVerticesAlgorithm::processFeature( const QgsFeature &feature, QgsProcessingContext &, QgsProcessingFeedback * )
 {
+  QGS_MARK_ALGORITHM_SOURCE
+
   QgsFeatureList outputFeatures;
 
   QgsFeature f = feature;

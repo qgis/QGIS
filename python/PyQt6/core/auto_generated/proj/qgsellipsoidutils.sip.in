@@ -84,6 +84,27 @@ Returns a list of all known celestial bodies.
 .. versionadded:: 3.20
 %End
 
+    static QQuaternion quaternionFromNormalUpRight( const QVector3D &normalUp, const QVector3D &normalRight );
+%Docstring
+Builds a rotation quaternion from an "up" direction and a "right"
+direction, with the remaining basis axis derived as their cross product.
+
+.. versionadded:: 4.4
+%End
+
+    static QQuaternion ellipsoidEastNorthUpRotation( const QgsVector3D &position, double semiMajorAxis, double semiMinorAxis );
+%Docstring
+Returns a rotation quaternion for the east-north-up (ENU) reference
+frame at ``position`` on the ellipsoid with the given ``semiMajorAxis``
+and ``semiMinorAxis``. The local axes are defined as:
+
+The x axis points in the local east direction. The y axis points in the
+local north direction. The z axis points in the direction of the
+ellipsoid surface normal which passes through the position.
+
+.. versionadded:: 4.4
+%End
+
 };
 
 /************************************************************************

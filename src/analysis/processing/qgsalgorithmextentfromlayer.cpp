@@ -94,6 +94,8 @@ void QgsExtentFromLayerAlgorithm::initAlgorithm( const QVariantMap & )
 
 QVariantMap QgsExtentFromLayerAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
+  QGS_MARK_ALGORITHM_SOURCE
+
   QgsMapLayer *layer = parameterAsLayer( parameters, u"INPUT"_s, context );
 
   if ( !layer )

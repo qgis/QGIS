@@ -176,6 +176,8 @@ std::optional<QgsGeometry> QgsExtrudeAlgorithm::extrudePolygon( const QgsAbstrac
 
 QgsFeatureList QgsExtrudeAlgorithm::processFeature( const QgsFeature &feature, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
+  QGS_MARK_ALGORITHM_SOURCE
+
 #ifdef WITH_SFCGAL
   if ( !feature.hasGeometry() )
   {

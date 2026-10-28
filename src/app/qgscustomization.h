@@ -101,7 +101,7 @@ class APP_EXPORT QgsCustomization
      * change whether or not the item should be displayed or not.
      * It's also used to serialize these customization in an XML file.
      */
-    class QgsItem
+    class APP_EXPORT QgsItem
     {
       public:
         /**
@@ -117,6 +117,9 @@ class APP_EXPORT QgsCustomization
          * \param parent parent Item
          */
         QgsItem( const QString &name, const QString &title, QgsItem *parent = nullptr );
+
+        QgsItem( const QgsItem & ) = delete;
+        QgsItem &operator=( const QgsItem & ) = delete;
 
         /**
          * Destructor
@@ -239,14 +242,14 @@ class APP_EXPORT QgsCustomization
          */
         enum class ItemCapability : int
         {
-          None = 0,                                //! No capability
-          AddUserMenuChild = 1 << 0,               //! Support adding QgsUserMenuItem item as child
-          AddActionRefChild = 1 << 1,              //! Support adding QgsActionRefItem as child
-          AddUserToolBarChild = 1 << 2,            //! Support adding QgsUserToolBarItem as child
-          AddProcessingAlgorithmRefChild = 1 << 3, //! Support adding QgsProcessingAlgorithmRefItem as child. \since QGIS 4.2
-          Rename = 1 << 4,                         //! Support renaming
-          Delete = 1 << 5,                         //! Support delete
-          Drag = 1 << 6                            //! Support dragging for later droping
+          None = 0,                                //!< No capability
+          AddUserMenuChild = 1 << 0,               //!< Support adding QgsUserMenuItem item as child
+          AddActionRefChild = 1 << 1,              //!< Support adding QgsActionRefItem as child
+          AddUserToolBarChild = 1 << 2,            //!< Support adding QgsUserToolBarItem as child
+          AddProcessingAlgorithmRefChild = 1 << 3, //!< Support adding QgsProcessingAlgorithmRefItem as child. \since QGIS 4.2
+          Rename = 1 << 4,                         //!< Support renaming
+          Delete = 1 << 5,                         //!< Support delete
+          Drag = 1 << 6                            //!< Support dragging for later droping
         };
 
         /**
@@ -299,7 +302,7 @@ class APP_EXPORT QgsCustomization
     /**
      * \brief Represents an action
      */
-    class QgsActionItem : public QgsItem
+    class APP_EXPORT QgsActionItem : public QgsItem
     {
       public:
         /**
@@ -358,7 +361,7 @@ class APP_EXPORT QgsCustomization
     /**
      * Represent a reference to an existing action item
      */
-    class QgsActionRefItem : public QgsActionItem
+    class APP_EXPORT QgsActionRefItem : public QgsActionItem
     {
       public:
         QgsActionRefItem( QgsItem *parent );
@@ -389,7 +392,7 @@ class APP_EXPORT QgsCustomization
      * Inherits from Action because QMenu are stored within a QAction and we want to keep
      * track of the menu associated action
      */
-    class QgsMenuItem : public QgsActionItem
+    class APP_EXPORT QgsMenuItem : public QgsActionItem
     {
       public:
         /**
@@ -419,7 +422,7 @@ class APP_EXPORT QgsCustomization
         ItemCapability capabilities() const override;
     };
 
-    class QgsUserMenuItem : public QgsMenuItem
+    class APP_EXPORT QgsUserMenuItem : public QgsMenuItem
     {
       public:
         /**
@@ -450,7 +453,7 @@ class APP_EXPORT QgsCustomization
     /**
      * Represents a toolbar
      */
-    class QgsToolBarItem : public QgsItem
+    class APP_EXPORT QgsToolBarItem : public QgsItem
     {
       public:
         /**
@@ -468,13 +471,13 @@ class APP_EXPORT QgsCustomization
         QgsToolBarItem( const QString &name, const QString &title, QgsItem *parent );
 
         /**
-         * Sets original dock widget visible state
+         * Sets original toolbar visible state
          * \see wasVisible()
          */
         void setWasVisible( const bool &wasVisible );
 
         /**
-         * Returns original dock widget visible state
+         * Returns original toolbar visible state
          * \see setWasVisible()
          */
         bool wasVisible() const;
@@ -496,7 +499,7 @@ class APP_EXPORT QgsCustomization
         bool mWasVisible = false;
     };
 
-    class QgsUserToolBarItem : public QgsToolBarItem
+    class APP_EXPORT QgsUserToolBarItem : public QgsToolBarItem
     {
       public:
         /**
@@ -526,7 +529,7 @@ class APP_EXPORT QgsCustomization
     /**
      * Root item for all ToolBar item
      */
-    class QgsToolBarsItem : public QgsItem
+    class APP_EXPORT QgsToolBarsItem : public QgsItem
     {
       public:
         /**
@@ -550,7 +553,7 @@ class APP_EXPORT QgsCustomization
     /**
      * Root item for all Menus item
      */
-    class QgsMenusItem : public QgsItem
+    class APP_EXPORT QgsMenusItem : public QgsItem
     {
       public:
         /**
@@ -574,7 +577,7 @@ class APP_EXPORT QgsCustomization
     /**
      * Represent a Dock
      */
-    class QgsDockItem : public QgsItem
+    class APP_EXPORT QgsDockItem : public QgsItem
     {
       public:
         /**
@@ -622,7 +625,7 @@ class APP_EXPORT QgsCustomization
     /**
      * Root item for all dock items
      */
-    class QgsDocksItem : public QgsItem
+    class APP_EXPORT QgsDocksItem : public QgsItem
     {
       public:
         /**
@@ -645,7 +648,7 @@ class APP_EXPORT QgsCustomization
     /**
      * Represent a QgsBrowserDockWidget item
      */
-    class QgsBrowserElementItem : public QgsItem
+    class APP_EXPORT QgsBrowserElementItem : public QgsItem
     {
       public:
         /**
@@ -676,7 +679,7 @@ class APP_EXPORT QgsCustomization
     /**
      * Root item for all browser items
      */
-    class QgsBrowserElementsItem : public QgsItem
+    class APP_EXPORT QgsBrowserElementsItem : public QgsItem
     {
       public:
         /**
@@ -699,7 +702,7 @@ class APP_EXPORT QgsCustomization
     /**
      * Represent a QgsStatusBar widget
      */
-    class QgsStatusBarWidgetItem : public QgsItem
+    class APP_EXPORT QgsStatusBarWidgetItem : public QgsItem
     {
       public:
         /**
@@ -729,7 +732,7 @@ class APP_EXPORT QgsCustomization
     /**
      * Root item for all StatusBarWidget
      */
-    class QgsStatusBarWidgetsItem : public QgsItem
+    class APP_EXPORT QgsStatusBarWidgetsItem : public QgsItem
     {
       public:
         /**
@@ -752,7 +755,7 @@ class APP_EXPORT QgsCustomization
     /**
      * Represent a processing provider
      */
-    class QgsProcessingProviderItem : public QgsItem
+    class APP_EXPORT QgsProcessingProviderItem : public QgsItem
     {
       public:
         /**
@@ -783,7 +786,7 @@ class APP_EXPORT QgsCustomization
     /**
      * Represent a processing algorithm group
      */
-    class QgsProcessingGroupItem : public QgsItem
+    class APP_EXPORT QgsProcessingGroupItem : public QgsItem
     {
       public:
         /**
@@ -816,7 +819,7 @@ class APP_EXPORT QgsCustomization
      *
      * \since QGIS 4.2
      */
-    class QgsProcessingAlgorithmItem : public QgsItem
+    class APP_EXPORT QgsProcessingAlgorithmItem : public QgsItem
     {
       public:
         /**
@@ -849,7 +852,7 @@ class APP_EXPORT QgsCustomization
      *
      * \since QGIS 4.2
      */
-    class QgsProcessingAlgorithmRefItem : public QgsItem
+    class APP_EXPORT QgsProcessingAlgorithmRefItem : public QgsItem
     {
       public:
         /**
@@ -893,7 +896,7 @@ class APP_EXPORT QgsCustomization
      *
      * \since QGIS 4.2
      */
-    class QgsProcessingProvidersItem : public QgsItem
+    class APP_EXPORT QgsProcessingProvidersItem : public QgsItem
     {
       public:
         /**
@@ -950,6 +953,11 @@ class APP_EXPORT QgsCustomization
      * Apply customization to the application
      */
     void apply() const;
+
+    /**
+     * Updates customization model with current application customization elements (actions, menus, dockWidgets...)
+     */
+    void load();
 
     /**
      * Reads customization file (given at construction time) to update customization content
@@ -1017,11 +1025,6 @@ class APP_EXPORT QgsCustomization
     void addActions( QgsItem *item, QWidget *widget ) const;
 
     /**
-     * Update customization model with current application customization elements (actins, menus, dockWidgets...)
-     */
-    void load();
-
-    /**
      * Update customization model with current application QgsBrowserDockWidget elements
      */
     void loadApplicationBrowserItems();
@@ -1077,6 +1080,12 @@ class APP_EXPORT QgsCustomization
      * Apply toolbar customization to the application
      */
     void applyToToolBars() const;
+
+    /**
+     * Find recursively \a rootItem QgsActionRefItem children and set their icon
+     * using referenced action one.
+     */
+    void loadActionRefItemIcons( QgsItem *rootItem );
 
     /**
      * Find recursively \a rootItem QgsProcessingAlgorithmRefItem children and set their icon
@@ -1138,14 +1147,9 @@ class APP_EXPORT QgsCustomization
     void loadOldIniFile( const QString &filePath );
 
     /**
-     * Update action \a widget visibility based on \a item
+     * Apply \a item configuration to \a widget
      */
-    void updateActionVisibility( QgsCustomization::QgsItem *item, QWidget *widget ) const;
-
-    /**
-     * Update menu \a widget visibility based on \a item
-     */
-    template<class WidgetType> void updateMenuActionVisibility( QgsCustomization::QgsItem *parentItem, WidgetType *parentWidget ) const;
+    void applyItemToWidget( QgsCustomization::QgsItem *item, QWidget *widget ) const;
 
     /**
      * Returns QWidget corresponding to \a path. Path is a '/' separated list of
@@ -1158,6 +1162,11 @@ class APP_EXPORT QgsCustomization
      * items name representing the targeted item in its widget hierarchy
      */
     static QAction *findQAction( const QString &path );
+
+    /**
+     * Returns true if \a widget is a user defined menu or toolbar
+     */
+    static bool isUserDefined( QWidget *widget );
 
     QString uniqueItemName( const QString &baseName ) const;
     QAction *findAction( const QString &path ) const;

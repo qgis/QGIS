@@ -130,13 +130,6 @@ class GUI_EXPORT QgsLabelingEngineRulesWidget : public QgsPanelWidget, private U
      */
     QList<QgsAbstractLabelingEngineRule *> rules() const SIP_TRANSFERBACK;
 
-  signals:
-
-    /**
-     * Emitted when the rules configured in the widget are changed.
-     */
-    void changed();
-
   private slots:
 
     void createTypesMenu();

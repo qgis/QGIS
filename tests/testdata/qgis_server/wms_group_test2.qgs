@@ -1,7 +1,7 @@
 <!DOCTYPE qgis PUBLIC 'http://mrcc.com/qgis.dtd' 'SYSTEM'>
 <qgis saveDateTime="2023-11-26T15:41:43" projectname="" saveUserFull="Tomas" version="3.33.0-Master" saveUser="tomas">
   <homePath path=""/>
-  <title></title>
+  <title>title</title>
   <transaction mode="Disabled"/>
   <projectFlags set=""/>
   <projectCrs>

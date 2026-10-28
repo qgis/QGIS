@@ -147,6 +147,8 @@ bool QgsTinMeshCreationAlgorithm::prepareAlgorithm( const QVariantMap &parameter
 
 QVariantMap QgsTinMeshCreationAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
+  QGS_MARK_ALGORITHM_SOURCE
+
   QgsMeshTriangulation triangulation;
   QgsCoordinateReferenceSystem destinationCrs = parameterAsCrs( parameters, u"CRS_OUTPUT"_s, context );
   if ( !destinationCrs.isValid() && context.project() )

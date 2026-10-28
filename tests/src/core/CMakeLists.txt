@@ -63,6 +63,7 @@ set(TESTS
  testqgscredentials.cpp
  testqgscurve.cpp
  testqgsdatadefinedsizelegend.cpp
+ testqgsdatadefinedutils.cpp
  testqgsdataitem.cpp
  testqgsdatasourceuri.cpp
  testqgsdiagram.cpp
@@ -79,14 +80,17 @@ set(TESTS
  testqgsfilledmarker.cpp
  testqgsfontmarker.cpp
  testqgsfontutils.cpp
+ testqgsfutureutils.cpp
  testqgsgdalcloudconnection.cpp
  testqgsgdalprovider.cpp
  testqgsgdalutils.cpp
  testqgsgenericspatialindex.cpp
  testqgsgeometryimport.cpp
  testqgsgeopdfexport.cpp
+ testqgsgeos.cpp
  testqgsgltfutils.cpp
  testqgsgml.cpp
+ testqgsgpkgtiles.cpp
  testqgsgradients.cpp
  testqgsgraduatedsymbolrenderer.cpp
  testqgshistogram.cpp
@@ -152,6 +156,7 @@ set(TESTS
  testqgsofflineediting.cpp
  testqgsogcutils.cpp
  testqgsogrprovider.cpp
+ testqgsogrproviderdeadlock.cpp
  testqgsogrutils.cpp
  testqgsoverlayexpression.cpp
  testqgspagesizeregistry.cpp
@@ -175,6 +180,7 @@ set(TESTS
  testqgsrange.cpp
  testqgsrasterblock.cpp
  testqgsrastercontourrenderer.cpp
+ testqgsrastervectorfieldrenderer.cpp
  testqgsrasterdataprovidertemporalcapabilities.cpp
  testqgsrasterfilewriter.cpp
  testqgsrasterfill.cpp

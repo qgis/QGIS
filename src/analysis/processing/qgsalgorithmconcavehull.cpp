@@ -17,6 +17,7 @@
 
 #include "qgsalgorithmconcavehull.h"
 
+#include "qgsgeos.h"
 #include "qgsmultipoint.h"
 #include "qgsprocessingregistry.h"
 #include "qgsspatialindex.h"
@@ -99,12 +100,14 @@ bool QgsConcaveHullAlgorithm::prepareAlgorithm( const QVariantMap &parameters, Q
 
 QVariantMap QgsConcaveHullAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
+  QGS_MARK_ALGORITHM_SOURCE
+
   QString dest;
   std::unique_ptr<QgsFeatureSink> sink( parameterAsSink( parameters, u"OUTPUT"_s, context, dest, QgsFields(), Qgis::WkbType::Polygon, mSource->sourceCrs() ) );
   if ( !sink )
     throw QgsProcessingException( invalidSinkError( parameters, u"OUTPUT"_s ) );
 
-#if GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR < 11
+#if GEOS_VERSION_NUM < GEOS_COMPUTE_VERSION( 3, 11, 0 )
   concaveHullQgis( sink, parameters, context, feedback );
 #else
   concaveHullGeos( sink, parameters, feedback );

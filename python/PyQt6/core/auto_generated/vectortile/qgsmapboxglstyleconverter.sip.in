@@ -424,14 +424,14 @@ translated to QGIS styles.
 .. seealso:: :py:func:`errorMessage`
 %End
 
-    QgsVectorTileRenderer *renderer() const /Factory/;
+    std::unique_ptr<QgsVectorTileRenderer> renderer() const;
 %Docstring
 Returns a new instance of a vector tile renderer representing the
 converted style, or ``None`` if the style could not be converted
 successfully.
 %End
 
-    QgsVectorTileLabeling *labeling() const /Factory/;
+    std::unique_ptr<QgsVectorTileLabeling> labeling() const;
 %Docstring
 Returns a new instance of a vector tile labeling representing the
 converted style, or ``None`` if the style could not be converted

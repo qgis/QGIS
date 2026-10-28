@@ -399,11 +399,27 @@ class QgsFeedback;
     virtual bool isSimple( QString *errorMsg = nullptr ) const = 0;
 
     /**
+     * Splits this geometry according to a given geometry.
+     * \param splitGeom the geometry that splits this geometry
+     * \param[out] newGeometries list of new geometries that have been created with the split
+     * \param topological TRUE if topological editing is enabled
+     * \param[out] topologyTestPoints points that need to be tested for topological completeness in the dataset. Points from curve geometries are not yet fully supported.
+     * \param[out] errorMsg error messages emitted, if any
+     * \returns EngineOperationResult a result code: success or reason of failure
+     *
+     * \since QGIS 4.4
+     */
+    virtual QgsGeometryEngine::EngineOperationResult splitGeometry(
+      const QgsAbstractGeometry &splitGeom, QVector<QgsGeometry > &newGeometries SIP_OUT, bool topological, QgsPointSequence &topologyTestPoints SIP_OUT, QString *errorMsg SIP_OUT = nullptr
+    ) const
+      = 0;
+
+    /**
      * Splits this geometry according to a given line.
      * \param splitLine the line that splits the geometry
      * \param[out] newGeometries list of new geometries that have been created with the split
      * \param topological TRUE if topological editing is enabled
-     * \param[out] topologyTestPoints points that need to be tested for topological completeness in the dataset
+     * \param[out] topologyTestPoints points that need to be tested for topological completeness in the dataset. Points from curve geometries are not yet fully supported.
      * \param[out] errorMsg error messages emitted, if any
      * \param skipIntersectionCheck set to TRUE to skip the potentially expensive initial intersection check. Only set this flag if an intersection
      * test has already been performed by the caller!

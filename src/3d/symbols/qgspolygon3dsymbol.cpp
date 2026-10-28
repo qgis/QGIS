@@ -190,6 +190,9 @@ bool QgsPolygon3DSymbol::exportGeometries( Qgs3DSceneExporter *exporter, Qt3DCor
         exporter->mObjects.push_back( object );
       }
     }
+
+    exporter->mObjects << exporter->processLines( entity, objectNamePrefix );
+
     return exporter->mObjects.size() > startSize;
   }
   else

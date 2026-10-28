@@ -30,7 +30,7 @@ public:
     /// Set a string value for a key
     void setValue(const QString &key, const QString &value) override;
 
-Q_SIGNALS:
+signals:
     // Property change signals
     void groupKeyChanged();
 

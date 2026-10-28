@@ -1,3 +1,4 @@
+
 /***************************************************************************
                          qgsalgorithmrasterfeaturepreservingsmoothing.cpp
                          ---------------------
@@ -17,6 +18,7 @@
 
 #include "qgsalgorithmrasterfeaturepreservingsmoothing.h"
 
+#include "qgsacademicreference.h"
 #include "qgsrasterfilewriter.h"
 
 #include <QString>
@@ -79,8 +81,18 @@ QString QgsRasterFeaturePreservingSmoothingAlgorithm::shortHelpString() const
     "1. Calculating surface normal 3D vectors for each grid cell.\n"
     "2. Smoothing the normal vector field using a filter that applies more weight to neighbors with similar surface normals (preserving edges).\n"
     "3. Iteratively updating the elevations in the DEM to match the smoothed normal field.\n\n"
-    "References: Lindsay, John et al (2019): LiDAR DEM Smoothing and the Preservation of Drainage Features. Remote Sensing, Vol. 11, Issue 16, https://doi.org/10.3390/rs11161926"
   );
+}
+
+QList<QgsAcademicReference> QgsRasterFeaturePreservingSmoothingAlgorithm::academicReferences() const
+{
+  QgsAcademicReference lindsayReference
+    = QgsAcademicReference::createJournalArticle( { u"Lindsay, J. et al."_s }, 2019, u"LiDAR DEM Smoothing and the Preservation of Drainage Features"_s, u"Remote Sensing"_s, u"11"_s, u"16"_s );
+  lindsayReference.setUrl( u"https://doi.org/10.3390/rs11161926"_s );
+  QgsAcademicReference hornReference
+    = QgsAcademicReference::createJournalArticle( { u"Horn, B. K. P."_s }, 1981, u"Hill shading and the reflectance map"_s, u"Proceedings of the IEEE"_s, u"69"_s, u"1"_s, u"14-47"_s );
+  hornReference.setUrl( u"https://doi.org/10.1109/PROC.1981.11918"_s );
+  return { lindsayReference, hornReference };
 }
 
 QString QgsRasterFeaturePreservingSmoothingAlgorithm::shortDescription() const
@@ -163,6 +175,8 @@ bool QgsRasterFeaturePreservingSmoothingAlgorithm::prepareAlgorithm( const QVari
 
 QVariantMap QgsRasterFeaturePreservingSmoothingAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
+  QGS_MARK_ALGORITHM_SOURCE
+
   const int radius = parameterAsInt( parameters, u"RADIUS"_s, context );
 
   const double thresholdDegrees = parameterAsDouble( parameters, u"THRESHOLD"_s, context );

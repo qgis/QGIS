@@ -72,8 +72,6 @@ void TestQgsOfflineEditing::initTestCase()
   QgsApplication::initQgis();
   QgsApplication::showSettings();
 
-  //OfflineEditing
-  mOfflineEditing = new QgsOfflineEditing();
   offlineDataPath = ".";
 }
 
@@ -106,6 +104,9 @@ void TestQgsOfflineEditing::init()
 
   QgsProject::instance()->addMapLayer( gpkgLayer );
   layerIds.append( gpkgLayer->id() );
+
+  //OfflineEditing
+  mOfflineEditing = new QgsOfflineEditing( QgsProject::instance() );
 }
 
 void TestQgsOfflineEditing::cleanup()

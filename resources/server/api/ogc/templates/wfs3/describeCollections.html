@@ -4,7 +4,7 @@
     <h1>Collections</h1>
 
     {% for collection in collections %}
-        <h3><a href="{% for link in links_filter( collection.links, "type", "text/html" ) %}
+        <h3><a href="{% for link in links_filter( links_filter( collection.links, "type", "text/html" ), "rel", "items") %}
         {{ path_chomp( link.href ) }}
         {% endfor %}">{{ collection.title }}</a></h3>
 

@@ -568,9 +568,10 @@ void QgsQueryResultPanelWidget::copyResults( int fromRow, int toRow, int fromCol
       mdata->setText( text );
     }
     // Transfers ownership to the clipboard object
-#ifdef Q_OS_LINUX
-    QApplication::clipboard()->setMimeData( mdata, QClipboard::Selection );
-#endif
+    if ( QApplication::clipboard()->supportsSelection() )
+    {
+      QApplication::clipboard()->setMimeData( mdata, QClipboard::Selection );
+    }
     QApplication::clipboard()->setMimeData( mdata, QClipboard::Clipboard );
   }
 }
@@ -679,7 +680,7 @@ QgsQueryResultWidget::QgsQueryResultWidget( QWidget *parent, QgsAbstractDatabase
 {
   setupUi( this );
 
-  mToolBar->setIconSize( QgsGuiUtils::iconSize( false ) );
+  mToolBar->setIconSize( QgsGui::iconSize( Qgis::UserInterfaceIconType::MainWindowToolbar ) );
 
   mQueryWidget = new QgsQueryResultPanelWidget( nullptr, connection );
   mPanelStack->setMainPanel( mQueryWidget );

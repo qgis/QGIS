@@ -13,17 +13,6 @@
 
 
 
-class QgsElevationControllerSettingsAction : QWidgetAction
-{
-%TypeHeaderCode
-#include "qgselevationcontrollerwidget.h"
-%End
-  public:
-    QgsElevationControllerSettingsAction( QWidget *parent = 0 );
-
-    QgsDoubleSpinBox *sizeSpin();
-
-};
 
 
 
@@ -82,6 +71,15 @@ Returns a reference to the widget's configuration menu, which can be
 used to add actions to the menu.
 %End
 
+    QgsMapCanvas *mapCanvas() const;
+%Docstring
+Returns the map canvas the widget takes its layers from.
+
+.. seealso:: :py:func:`setMapCanvas`
+
+.. versionadded:: 4.4
+%End
+
     double fixedRangeSize() const;
 %Docstring
 Returns the fixed range size, or -1 if no fixed size is set.
@@ -133,6 +131,19 @@ Sets whether the elevation slider should be inverted.
     void setSignificantElevations( const QList<double> &elevations );
 %Docstring
 Sets a list of significant ``elevations`` to highlight in the widget.
+%End
+
+    void setMapCanvas( QgsMapCanvas *canvas );
+%Docstring
+Sets the map ``canvas`` the widget takes its layers from.
+
+The canvas provides the layer used by the "Current Layer" entry of the
+range limits button, and its layers give the initial limits when the
+project defines no elevation range of its own.
+
+.. seealso:: :py:func:`mapCanvas`
+
+.. versionadded:: 4.4
 %End
 
   signals:

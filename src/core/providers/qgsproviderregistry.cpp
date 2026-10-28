@@ -689,6 +689,19 @@ QString QgsProviderRegistry::relativeToAbsoluteUri( const QString &providerKey, 
     return uri;
 }
 
+QgsEmptyLayerCreationResult QgsProviderRegistry::createEmptyLayer(
+  const QString &providerKey, const QString &uri, const QgsFields &fields, Qgis::WkbType wkbType, const QgsCoordinateReferenceSystem &crs, Qgis::CreateLayerActionOnExisting actionOnExisting
+)
+{
+  QgsProviderMetadata *meta = findMetadata_( mProviders, providerKey );
+  if ( meta )
+    return meta->createEmptyLayer( uri, fields, wkbType, crs, actionOnExisting );
+  else
+  {
+    return QgsEmptyLayerCreationResult( Qgis::VectorExportResult::ErrorInvalidProvider, QString(), QObject::tr( "Unable to load %1 provider" ).arg( providerKey ), {} );
+  }
+}
+
 Qgis::VectorExportResult QgsProviderRegistry::createEmptyLayer(
   const QString &providerKey,
   const QString &uri,

@@ -273,6 +273,7 @@ namespace QgsWms
       }
       mapSettings->setDestinationCrs( outputCrs );
       mapSettings->setExtent( bbox );
+      mapSettings->setEllipsoid( context.project()->ellipsoid() );
       QgsRenderer renderer( context );
       QList<QgsMapLayer *> layers = context.layersToRender();
       renderer.configureLayers( layers, mapSettings.get() );

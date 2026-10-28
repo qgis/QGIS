@@ -293,9 +293,10 @@ void QgsClipboard::setSystemClipboard()
   // the Windows clipboard (which seems contrary to the Qt
   // docs). With a Linux X server, ::Clipboard was required.
   // The simple solution was to put the text into both clipboards.
-#ifdef Q_OS_LINUX
-  cb->setMimeData( m, QClipboard::Selection );
-#endif
+  if ( cb->supportsSelection() )
+  {
+    cb->setMimeData( m, QClipboard::Selection );
+  }
   cb->setMimeData( m, QClipboard::Clipboard );
 
   QgsDebugMsgLevel( u"replaced system clipboard with: %1."_s.arg( textCopy ), 4 );
@@ -404,11 +405,15 @@ QgsFields QgsClipboard::retrieveFields() const
 {
   QClipboard *cb = QApplication::clipboard();
 
-#ifdef Q_OS_LINUX
-  const QString string = cb->text( QClipboard::Selection );
-#else
-  QString string = cb->text( QClipboard::Clipboard );
-#endif
+  QString string;
+  if ( cb->supportsSelection() )
+  {
+    string = cb->text( QClipboard::Selection );
+  }
+  else
+  {
+    string = cb->text( QClipboard::Clipboard );
+  }
 
   QgsFields f = QgsOgrUtils::stringToFields( string, QTextCodec::codecForName( "System" ) );
   if ( f.size() < 1 )
@@ -452,11 +457,15 @@ QgsFeatureList QgsClipboard::copyOf( const QgsFields &fields ) const
 
   QClipboard *cb = QApplication::clipboard();
 
-#ifdef Q_OS_LINUX
-  QString text = cb->text( QClipboard::Selection );
-#else
-  QString text = cb->text( QClipboard::Clipboard );
-#endif
+  QString text;
+  if ( cb->supportsSelection() )
+  {
+    text = cb->text( QClipboard::Selection );
+  }
+  else
+  {
+    text = cb->text( QClipboard::Clipboard );
+  }
 
   if ( text.endsWith( '\n' ) )
   {
@@ -491,11 +500,16 @@ void QgsClipboard::insert( const QgsFeature &feature )
 bool QgsClipboard::isEmpty() const
 {
   QClipboard *cb = QApplication::clipboard();
-#ifdef Q_OS_LINUX
-  const QString text = cb->text( QClipboard::Selection );
-#else
-  QString text = cb->text( QClipboard::Clipboard );
-#endif
+  QString text;
+  if ( cb->supportsSelection() )
+  {
+    text = cb->text( QClipboard::Selection );
+  }
+  else
+  {
+    text = cb->text( QClipboard::Clipboard );
+  }
+
   return text.isEmpty() && mFeatureClipboard.empty();
 }
 
@@ -532,17 +546,19 @@ void QgsClipboard::setData( const QString &mimeType, const QByteArray &data, con
     mdata->setText( text );
   }
   // Transfers ownership to the clipboard object
-#ifdef Q_OS_LINUX
-  QApplication::clipboard()->setMimeData( mdata, QClipboard::Selection );
-#endif
+  if ( QApplication::clipboard()->supportsSelection() )
+  {
+    QApplication::clipboard()->setMimeData( mdata, QClipboard::Selection );
+  }
   QApplication::clipboard()->setMimeData( mdata, QClipboard::Clipboard );
 }
 
 void QgsClipboard::setText( const QString &text )
 {
-#ifdef Q_OS_LINUX
-  QApplication::clipboard()->setText( text, QClipboard::Selection );
-#endif
+  if ( QApplication::clipboard()->supportsSelection() )
+  {
+    QApplication::clipboard()->setText( text, QClipboard::Selection );
+  }
   QApplication::clipboard()->setText( text, QClipboard::Clipboard );
 }
 

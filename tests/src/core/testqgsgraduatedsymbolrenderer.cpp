@@ -14,10 +14,12 @@
  ***************************************************************************/
 #include "qgsclassificationequalinterval.h"
 #include "qgsclassificationquantile.h"
+#include "qgsfeature.h"
 #include "qgsgraduatedsymbolrenderer.h"
 #include "qgsmarkersymbol.h"
 #include "qgssymbollayerutils.h"
 #include "qgstest.h"
+#include "qgsvectordataprovider.h"
 #include "qgsvectorlayer.h"
 
 #include <QObject>
@@ -45,6 +47,9 @@ class TestQgsGraduatedSymbolRenderer : public QObject
     void rangesHaveGaps();
     void classifySymmetric();
     void testMatchingRangeForValue();
+    void testRangeBoundInclusivity();
+    void testValueCapturedByEarlierRange();
+    void testRangeOverlapsEarlierRange();
 
   private:
 };
@@ -308,6 +313,144 @@ void TestQgsGraduatedSymbolRenderer::testMatchingRangeForValue()
   // test values which fall just outside ranges, e.g. due to double precision (refs https://github.com/qgis/QGIS/issues/27420)
   QCOMPARE( renderer.rangeForValue( 1.1 - std::numeric_limits<double>::epsilon() * 2 )->label(), u"r1"_s );
   QCOMPARE( renderer.rangeForValue( 3.7 + std::numeric_limits<double>::epsilon() * 2 )->label(), u"r4"_s );
+}
+
+void TestQgsGraduatedSymbolRenderer::testRangeBoundInclusivity()
+{
+  // empty renderer - out of range indices
+  QgsGraduatedSymbolRenderer emptyRenderer;
+  QVERIFY( emptyRenderer.rangeLowerBoundIsInclusive( -1 ) );
+  QVERIFY( emptyRenderer.rangeLowerBoundIsInclusive( 0 ) );
+  QVERIFY( emptyRenderer.rangeUpperBoundIsInclusive( -1 ) );
+  QVERIFY( emptyRenderer.rangeUpperBoundIsInclusive( 0 ) );
+
+  // manually built contiguous ranges
+  QgsGraduatedSymbolRenderer renderer;
+  QgsMarkerSymbol ms;
+  ms.setColor( QColor( 255, 0, 0 ) );
+  const QgsRendererRange r1( 1.1, 3.2, ms.clone(), u"r1"_s );
+  renderer.addClass( r1 );
+  const QgsRendererRange r2( 3.2, 3.3, ms.clone(), u"r2"_s );
+  renderer.addClass( r2 );
+  const QgsRendererRange r3( 3.3, 3.6, ms.clone(), u"r3"_s );
+  renderer.addClass( r3 );
+
+  QVERIFY( renderer.rangeLowerBoundIsInclusive( 0 ) );
+  QVERIFY( renderer.rangeUpperBoundIsInclusive( 0 ) );
+  QVERIFY( !renderer.rangeLowerBoundIsInclusive( 1 ) );
+  QVERIFY( renderer.rangeUpperBoundIsInclusive( 1 ) );
+  QVERIFY( !renderer.rangeLowerBoundIsInclusive( 2 ) );
+  QVERIFY( renderer.rangeUpperBoundIsInclusive( 2 ) );
+
+  // render with a layer
+  QgsVectorLayer vl( u"None?field=value:double"_s, u"classification_layer"_s, u"memory"_s );
+  QVERIFY( vl.isValid() );
+  QgsFeatureList features;
+  const QList<double> values = { 1, 2, 3, 10, 20, 30, 40 };
+  for ( const double v : values )
+  {
+    QgsFeature f( vl.fields() );
+    f.setAttribute( u"value"_s, v );
+    features << f;
+  }
+  QVERIFY( vl.dataProvider()->addFeatures( features ) );
+
+  QgsGraduatedSymbolRenderer dataRenderer;
+  dataRenderer.setClassAttribute( u"value"_s );
+  dataRenderer.setSourceSymbol( new QgsMarkerSymbol() );
+  dataRenderer.setClassificationMethod( new QgsClassificationEqualInterval() );
+
+  QString error;
+  dataRenderer.updateClasses( &vl, 4, error );
+  QCOMPARE( dataRenderer.ranges().count(), 4 );
+
+  QVERIFY( dataRenderer.rangeLowerBoundIsInclusive( 0 ) );
+  QVERIFY( dataRenderer.rangeUpperBoundIsInclusive( 0 ) );
+  for ( int i = 1; i < dataRenderer.ranges().count(); ++i )
+  {
+    QVERIFY( !dataRenderer.rangeLowerBoundIsInclusive( i ) );
+    QVERIFY( dataRenderer.rangeUpperBoundIsInclusive( i ) );
+  }
+
+  // move the classes
+  dataRenderer.moveClass( 1, 0 );
+  dataRenderer.moveClass( 3, 1 );
+
+  // moved classes are inclusive, due to ordering
+  QVERIFY( dataRenderer.rangeLowerBoundIsInclusive( 0 ) );
+  QVERIFY( dataRenderer.rangeUpperBoundIsInclusive( 0 ) );
+  QVERIFY( dataRenderer.rangeLowerBoundIsInclusive( 1 ) );
+  QVERIFY( dataRenderer.rangeUpperBoundIsInclusive( 1 ) );
+
+  // class on index 2 is inclusive for low and exclusive for high
+  QVERIFY( dataRenderer.rangeLowerBoundIsInclusive( 2 ) );
+  QVERIFY( !dataRenderer.rangeUpperBoundIsInclusive( 2 ) );
+
+  // class on index 3 is exclusive for both low and high
+  QVERIFY( !dataRenderer.rangeLowerBoundIsInclusive( 3 ) );
+  QVERIFY( !dataRenderer.rangeUpperBoundIsInclusive( 3 ) );
+}
+
+void TestQgsGraduatedSymbolRenderer::testValueCapturedByEarlierRange()
+{
+  QgsGraduatedSymbolRenderer renderer;
+  QgsMarkerSymbol ms;
+  ms.setColor( QColor( 255, 0, 0 ) );
+  renderer.addClass( QgsRendererRange( 0, 10, ms.clone(), u"r1"_s ) );
+  renderer.addClass( QgsRendererRange( 10, 20, ms.clone(), u"r2"_s ) );
+  renderer.addClass( QgsRendererRange( 20, 30, ms.clone(), u"r3"_s ) );
+
+  // value in first range
+  QVERIFY( !renderer.valueCapturedByEarlierRange( 0, 5 ) );
+
+  // value in second range captured by first
+  QVERIFY( renderer.valueCapturedByEarlierRange( 1, 5 ) );
+  QVERIFY( renderer.valueCapturedByEarlierRange( 2, 5 ) );
+
+  // value in second range not captured by first
+  QVERIFY( !renderer.valueCapturedByEarlierRange( 1, 15 ) );
+  QVERIFY( renderer.valueCapturedByEarlierRange( 2, 15 ) );
+
+  // value in third range captured not by earlier ranges
+  QVERIFY( !renderer.valueCapturedByEarlierRange( 0, 25 ) );
+  QVERIFY( !renderer.valueCapturedByEarlierRange( 1, 25 ) );
+
+  // values on bounds are captured by earlier ranges
+  QVERIFY( renderer.valueCapturedByEarlierRange( 1, 0 ) );
+  QVERIFY( renderer.valueCapturedByEarlierRange( 1, 10 ) );
+
+  // move range [10,20] to the first position
+  renderer.moveClass( 1, 0 );
+
+  QVERIFY( !renderer.valueCapturedByEarlierRange( 1, 5 ) );
+  QVERIFY( renderer.valueCapturedByEarlierRange( 1, 10 ) );
+}
+
+void TestQgsGraduatedSymbolRenderer::testRangeOverlapsEarlierRange()
+{
+  QgsGraduatedSymbolRenderer renderer;
+  QgsMarkerSymbol symbol;
+
+  // contiguous ranges which only touch at their shared boundary are not considered overlapping
+  renderer.addClass( QgsRendererRange( 0, 10, symbol.clone(), u"r1"_s ) );
+  renderer.addClass( QgsRendererRange( 10, 20, symbol.clone(), u"r2"_s ) );
+  renderer.addClass( QgsRendererRange( 20, 30, symbol.clone(), u"r3"_s ) );
+
+  QVERIFY( !renderer.rangeOverlapsEarlierRange( 0 ) );
+  QVERIFY( !renderer.rangeOverlapsEarlierRange( 1 ) );
+  QVERIFY( !renderer.rangeOverlapsEarlierRange( 2 ) );
+
+  // add a overlapping class
+  renderer.addClass( QgsRendererRange( 5, 15, symbol.clone(), u"r4"_s ) );
+  QVERIFY( renderer.rangeOverlapsEarlierRange( 3 ) );
+
+  // add a class which is contained in an earlier range
+  renderer.addClass( QgsRendererRange( 22, 28, symbol.clone(), u"r5"_s ) );
+  QVERIFY( renderer.rangeOverlapsEarlierRange( 4 ) );
+
+  // add a class which does not overlap any earlier range
+  renderer.addClass( QgsRendererRange( 40, 50, symbol.clone(), u"r6"_s ) );
+  QVERIFY( !renderer.rangeOverlapsEarlierRange( 5 ) );
 }
 
 QGSTEST_MAIN( TestQgsGraduatedSymbolRenderer )

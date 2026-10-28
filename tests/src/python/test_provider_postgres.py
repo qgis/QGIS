@@ -462,6 +462,53 @@ class TestPyQgsPostgresProvider(QgisTestCase, ProviderTestCase):
         expected = {1: "teeeext", 2: "teeeeeeeeeeeeeeeeeeeeeeext"}
         self.assertEqual(values, expected)
 
+    def testBufferedTransactionJsonbBytea(self):
+        # Test issue GH #65323: Buffered transaction with jsonb column fails to commit
+
+        self.execSQLCommand('DROP TABLE IF EXISTS "qgis_test"."gh_65323_jsonb_test"')
+        self.execSQLCommand(
+            'CREATE TABLE "qgis_test"."gh_65323_jsonb_test" (id serial PRIMARY KEY, data jsonb, dataj json, dataa bytea)'
+        )
+
+        p = QgsProject()
+        vl = QgsVectorLayer(
+            self.dbconn
+            + ' sslmode=disable key=\'id\' table="qgis_test"."gh_65323_jsonb_test" sql=',
+            "gh_65323_jsonb_test",
+            "postgres",
+        )
+        self.assertTrue(vl.isValid())
+
+        # Setup buffered transaction
+        p.setTransactionMode(Qgis.TransactionMode.BufferedGroups)
+        p.addMapLayer(vl)
+        f1 = QgsVectorLayerUtils.createFeature(vl)
+        f1["id"] = 1
+        f1["data"] = {"key": "value"}
+        f1["dataj"] = {"key": "value"}
+        f1["dataa"] = QByteArray(b"some binary data")
+
+        f2 = QgsVectorLayerUtils.createFeature(vl)
+        f2["id"] = 2
+        f2["data"] = {"key2": "value2"}
+        f2["dataj"] = {"key2": "value2"}
+        f2["dataa"] = QByteArray(b"some other binary data")
+
+        self.assertTrue(vl.startEditing())
+        self.assertTrue(vl.addFeature(f1))
+        self.assertTrue(vl.addFeature(f2))
+        self.assertTrue(vl.commitChanges())
+
+        # Check that the features were added
+        f1 = vl.getFeature(1)
+        self.assertEqual(f1["data"], {"key": "value"})
+        self.assertEqual(f1["dataj"], {"key": "value"})
+        self.assertEqual(f1["dataa"], QByteArray(b"some binary data"))
+        f2 = vl.getFeature(2)
+        self.assertEqual(f2["data"], {"key2": "value2"})
+        self.assertEqual(f2["dataj"], {"key2": "value2"})
+        self.assertEqual(f2["dataa"], QByteArray(b"some other binary data"))
+
     def testQueryLayers(self):
         def test_query(dbconn, query, key):
             ql = QgsVectorLayer(

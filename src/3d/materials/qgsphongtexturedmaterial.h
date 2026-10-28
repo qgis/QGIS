@@ -16,6 +16,7 @@
 #ifndef QGSPHONGTEXTUREDMATERIAL_H
 #define QGSPHONGTEXTUREDMATERIAL_H
 
+#include "qgis.h"
 #include "qgis_3d.h"
 #include "qgsmaterial.h"
 
@@ -24,6 +25,9 @@
 #include <Qt3DRender/QTexture>
 
 #define SIP_NO_FILE
+
+class QMatrix4x4;
+
 
 namespace Qt3DRender
 {
@@ -50,6 +54,20 @@ class _3D_EXPORT QgsPhongTexturedMaterial : public QgsMaterial
      */
     explicit QgsPhongTexturedMaterial( Qt3DCore::QNode *parent = nullptr );
     ~QgsPhongTexturedMaterial() override;
+
+    /**
+     * Enables or disables instanced point rendering mode.
+     * When \a enabled is TRUE the material uses the instanced vertex shader with
+     * texture coordinate support. \a flags controls which per-instance attributes
+     * (scale, rotation) are active.
+     */
+    void setInstancingEnabled( bool enabled, Qgis::InstancedMaterialFlags flags );
+
+    /**
+     * Sets the transform from mesh space to object space
+     * \note Only applies when instancing is enabled
+     */
+    void setInstancingMeshTransform( const QMatrix4x4 &transform );
 
   public slots:
     //! Sets ambient color, must be a SRGB color
@@ -80,8 +98,7 @@ class _3D_EXPORT QgsPhongTexturedMaterial : public QgsMaterial
 
   private:
     void init();
-
-    void updateVertexShader();
+    void updateShaders();
 
     Qt3DRender::QParameter *mAmbientParameter = nullptr;
     Qt3DRender::QParameter *mDiffuseTextureParameter = nullptr;
@@ -92,11 +109,16 @@ class _3D_EXPORT QgsPhongTexturedMaterial : public QgsMaterial
     Qt3DRender::QParameter *mShininessParameter = nullptr;
     Qt3DRender::QParameter *mOpacityParameter = nullptr;
 
+    bool mInstanced = false;
+    Qgis::InstancedMaterialFlags mInstanceFlags;
+
     Qt3DRender::QEffect *mEffect = nullptr;
     Qt3DRender::QTechnique *mGL3Technique = nullptr;
     Qt3DRender::QRenderPass *mGL3RenderPass = nullptr;
-    Qt3DRender::QShaderProgram *mGL3Shader = nullptr;
+    Qt3DRender::QShaderProgram *mShaderProgram = nullptr;
     Qt3DRender::QFilterKey *mFilterKey = nullptr;
+    Qt3DRender::QParameter *mTransformParameter = nullptr;
+    Qt3DRender::QParameter *mNormalTransformParameter = nullptr;
 
     bool mDataDefinedTextureTransformEnabled = false;
 };

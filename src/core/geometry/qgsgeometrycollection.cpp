@@ -495,12 +495,12 @@ QDomElement QgsGeometryCollection::asGml3( QDomDocument &doc, int precision, con
   return elemMultiGeometry;
 }
 
-json QgsGeometryCollection::asJsonObject( int precision ) const
+json QgsGeometryCollection::asJsonObject( int precision, Qgis::GeoJsonProfile profile ) const
 {
   json coordinates( json::array() );
   for ( const QgsAbstractGeometry *geom : std::as_const( mGeometries ) )
   {
-    coordinates.push_back( geom->asJsonObject( precision ) );
+    coordinates.push_back( geom->asJsonObject( precision, profile ) );
   }
   return { { "type", "GeometryCollection" }, { "geometries", coordinates } };
 }
@@ -644,34 +644,6 @@ bool QgsGeometryCollection::moveVertex( QgsVertexId position, const QgsPoint &ne
   }
 
   bool success = mGeometries.at( position.part )->moveVertex( position, newPos );
-  if ( success )
-  {
-    clearCache(); //set bounding box invalid
-  }
-  return success;
-}
-
-bool QgsGeometryCollection::deleteVertex( QgsVertexId position )
-{
-  if ( position.part < 0 || position.part >= mGeometries.size() )
-  {
-    return false;
-  }
-
-  QgsAbstractGeometry *geom = mGeometries.at( position.part );
-  if ( !geom )
-  {
-    return false;
-  }
-
-  bool success = geom->deleteVertex( position );
-
-  //remove geometry if no vertices left
-  if ( geom->isEmpty() )
-  {
-    removeGeometry( position.part );
-  }
-
   if ( success )
   {
     clearCache(); //set bounding box invalid

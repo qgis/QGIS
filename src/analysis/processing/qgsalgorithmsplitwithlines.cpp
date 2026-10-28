@@ -107,6 +107,8 @@ bool QgsSplitWithLinesAlgorithm::supportInPlaceEdit( const QgsMapLayer *l ) cons
 
 QVariantMap QgsSplitWithLinesAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
+  QGS_MARK_ALGORITHM_SOURCE
+
   std::unique_ptr<QgsFeatureSource> source( parameterAsSource( parameters, u"INPUT"_s, context ) );
   if ( !source )
     throw QgsProcessingException( invalidSourceError( parameters, u"INPUT"_s ) );
@@ -182,7 +184,7 @@ QVariantMap QgsSplitWithLinesAlgorithm::processAlgorithm( const QVariantMap &par
           originalGeometryEngine->prepareGeometry();
         }
 
-        if ( originalGeometryEngine->intersects( splitFeatureCandidate.constGet() ) )
+        if ( originalGeometryEngine->intersects( splitFeatureCandidate.constGet(), nullptr, feedback ) )
         {
           QVector<QgsGeometry> splitGeomParts = splitFeatureCandidate.convertToType( Qgis::GeometryType::Line, true ).asGeometryCollection();
           splittingLines.append( splitGeomParts );
@@ -210,7 +212,7 @@ QVariantMap QgsSplitWithLinesAlgorithm::processAlgorithm( const QVariantMap &par
             if ( inGeom.isNull() )
               continue;
 
-            if ( splitGeomEngine->intersects( inGeom.constGet() ) )
+            if ( splitGeomEngine->intersects( inGeom.constGet(), nullptr, feedback ) )
             {
               QgsGeometry before = inGeom;
               if ( splitterPList.empty() )

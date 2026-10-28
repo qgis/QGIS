@@ -36,6 +36,11 @@ QString QgsIntersectionAlgorithm::displayName() const
   return QObject::tr( "Intersection" );
 }
 
+QStringList QgsIntersectionAlgorithm::tags() const
+{
+  return QObject::tr( "intersect,intersection,overlap" ).split( ',' );
+}
+
 QString QgsIntersectionAlgorithm::group() const
 {
   return QObject::tr( "Vector overlay" );
@@ -96,6 +101,8 @@ void QgsIntersectionAlgorithm::initAlgorithm( const QVariantMap & )
 
 QVariantMap QgsIntersectionAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
+  QGS_MARK_ALGORITHM_SOURCE
+
   std::unique_ptr<QgsFeatureSource> sourceA( parameterAsSource( parameters, u"INPUT"_s, context ) );
   if ( !sourceA )
     throw QgsProcessingException( invalidSourceError( parameters, u"INPUT"_s ) );

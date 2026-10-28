@@ -39,6 +39,8 @@ class QgsFillSinksWangLiuAlgorithm : public QgsProcessingAlgorithm
     QString group() const override;
     QString groupId() const override;
     QString shortHelpString() const override;
+    QList<QgsAcademicReference> academicReferences() const override;
+    QList<QgsProcessingAlgorithm::ExternalLink> externalLinks() const override;
     QString shortDescription() const override;
     void initAlgorithm( const QVariantMap &configuration = QVariantMap() ) override;
     QgsFillSinksWangLiuAlgorithm *createInstance() const override SIP_FACTORY;
@@ -69,7 +71,6 @@ class QgsFillSinksWangLiuAlgorithm : public QgsProcessingAlgorithm
     bool mHasNoDataValue = false;
     double mNoData = 0;
     int mBand = 1;
-    Qgis::DataType mDataType = Qgis::DataType::UnknownDataType;
     int mLayerWidth = 0;
     int mLayerHeight = 0;
     QgsRectangle mExtent;

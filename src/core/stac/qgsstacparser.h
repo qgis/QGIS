@@ -32,6 +32,7 @@ class QgsStacItemCollection;
 
 
 /**
+ * \ingroup core
  * \brief SpatioTemporal Asset Catalog JSON parser.
  *
  * This class parses json data and creates the appropriate
@@ -45,7 +46,7 @@ class CORE_EXPORT QgsStacParser
     //! Default constructor
     QgsStacParser() = default;
 
-    //! Sets the JSON \data to be parsed
+    //! Sets the JSON \a data to be parsed
     void setData( const QByteArray &data );
 
     /**

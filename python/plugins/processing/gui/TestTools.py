@@ -38,6 +38,7 @@ from qgis.core import (
     QgsProcessingParameterFeatureSource,
     QgsProcessingParameterFile,
     QgsProcessingParameterFileDestination,
+    QgsProcessingParameterInterpolationPixelSize,
     QgsProcessingParameterMultipleLayers,
     QgsProcessingParameterNumber,
     QgsProcessingParameterRasterDestination,
@@ -253,6 +254,8 @@ def createTest(text):
                 params[param.name()] = int(token)
             else:
                 params[param.name()] = float(token)
+        elif isinstance(param, QgsProcessingParameterInterpolationPixelSize):
+            params[param.name()] = float(token)
         elif isinstance(param, QgsProcessingParameterEnum):
             if isinstance(token, list):
                 params[param.name()] = [int(t) for t in token]

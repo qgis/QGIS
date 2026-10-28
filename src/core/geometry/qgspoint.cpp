@@ -355,7 +355,7 @@ QDomElement QgsPoint::asGml3( QDomDocument &doc, int precision, const QString &n
 }
 
 
-json QgsPoint::asJsonObject( int precision ) const
+json QgsPoint::asJsonObject( int precision, Qgis::GeoJsonProfile profile ) const
 {
   json j {
     { "type", "Point" },
@@ -368,6 +368,10 @@ json QgsPoint::asJsonObject( int precision ) const
     if ( is3D() )
     {
       j["coordinates"].push_back( qgsRound( mZ, precision ) );
+    }
+    if ( isMeasure() && ( profile == Qgis::GeoJsonProfile::JsonFg || profile == Qgis::GeoJsonProfile::JsonFgPlus ) )
+    {
+      j["coordinates"].push_back( qgsRound( mM, precision ) );
     }
   }
   return j;
@@ -486,12 +490,6 @@ bool QgsPoint::moveVertex( QgsVertexId position, const QgsPoint &newPos )
     mM = newPos.mM;
   }
   return true;
-}
-
-bool QgsPoint::deleteVertex( QgsVertexId position )
-{
-  Q_UNUSED( position )
-  return false;
 }
 
 bool QgsPoint::deleteVertices( const QSet<QgsVertexId> &positions )

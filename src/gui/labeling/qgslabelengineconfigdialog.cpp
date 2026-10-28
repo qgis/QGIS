@@ -85,16 +85,16 @@ QgsLabelEngineConfigWidget::QgsLabelEngineConfigWidget( QgsMapCanvas *canvas, QW
 
   mTextRenderFormatComboBox->setCurrentIndex( mTextRenderFormatComboBox->findData( QVariant::fromValue( engineSettings.defaultTextRenderFormat() ) ) );
 
-  connect( spinCandLine, qOverload<double>( &QgsDoubleSpinBox::valueChanged ), this, &QgsLabelEngineConfigWidget::widgetChanged );
-  connect( spinCandPolygon, qOverload<double>( &QgsDoubleSpinBox::valueChanged ), this, &QgsLabelEngineConfigWidget::widgetChanged );
-  connect( chkShowCandidates, &QCheckBox::toggled, this, &QgsLabelEngineConfigWidget::widgetChanged );
-  connect( chkShowAllLabels, &QCheckBox::toggled, this, &QgsLabelEngineConfigWidget::widgetChanged );
-  connect( chkShowUnplaced, &QCheckBox::toggled, this, &QgsLabelEngineConfigWidget::widgetChanged );
-  connect( chkShowPartialsLabels, &QCheckBox::toggled, this, &QgsLabelEngineConfigWidget::widgetChanged );
-  connect( chkShowMetrics, &QCheckBox::toggled, this, &QgsLabelEngineConfigWidget::widgetChanged );
-  connect( mTextRenderFormatComboBox, qOverload<int>( &QComboBox::currentIndexChanged ), this, &QgsLabelEngineConfigWidget::widgetChanged );
-  connect( mUnplacedColorButton, &QgsColorButton::colorChanged, this, &QgsLabelEngineConfigWidget::widgetChanged );
-  connect( mPlacementVersionComboBox, qOverload<int>( &QComboBox::currentIndexChanged ), this, &QgsLabelEngineConfigWidget::widgetChanged );
+  connect( spinCandLine, qOverload<double>( &QgsDoubleSpinBox::valueChanged ), this, &QgsLabelEngineConfigWidget::changed );
+  connect( spinCandPolygon, qOverload<double>( &QgsDoubleSpinBox::valueChanged ), this, &QgsLabelEngineConfigWidget::changed );
+  connect( chkShowCandidates, &QCheckBox::toggled, this, &QgsLabelEngineConfigWidget::changed );
+  connect( chkShowAllLabels, &QCheckBox::toggled, this, &QgsLabelEngineConfigWidget::changed );
+  connect( chkShowUnplaced, &QCheckBox::toggled, this, &QgsLabelEngineConfigWidget::changed );
+  connect( chkShowPartialsLabels, &QCheckBox::toggled, this, &QgsLabelEngineConfigWidget::changed );
+  connect( chkShowMetrics, &QCheckBox::toggled, this, &QgsLabelEngineConfigWidget::changed );
+  connect( mTextRenderFormatComboBox, qOverload<int>( &QComboBox::currentIndexChanged ), this, &QgsLabelEngineConfigWidget::changed );
+  connect( mUnplacedColorButton, &QgsColorButton::colorChanged, this, &QgsLabelEngineConfigWidget::changed );
+  connect( mPlacementVersionComboBox, qOverload<int>( &QComboBox::currentIndexChanged ), this, &QgsLabelEngineConfigWidget::changed );
 
   mWidgetMenu = new QMenu( this );
   QAction *resetAction = new QAction( tr( "Restore Defaults" ), this );
@@ -141,13 +141,12 @@ void QgsLabelEngineConfigWidget::apply()
 
 void QgsLabelEngineConfigWidget::setDefaults()
 {
-  const pal::Pal p;
   spinCandLine->setValue( 5 );
   spinCandPolygon->setValue( 10 );
   chkShowCandidates->setChecked( false );
   chkShowMetrics->setChecked( false );
   chkShowAllLabels->setChecked( false );
-  chkShowPartialsLabels->setChecked( p.showPartialLabels() );
+  chkShowPartialsLabels->setChecked( pal::Pal::DEFAULT_SHOW_PARTIAL_LABELS );
   mTextRenderFormatComboBox->setCurrentIndex( mTextRenderFormatComboBox->findData( QVariant::fromValue( Qgis::TextRenderFormat::AlwaysOutlines ) ) );
   mPlacementVersionComboBox->setCurrentIndex( mPlacementVersionComboBox->findData( static_cast<int>( Qgis::LabelPlacementEngineVersion::Version2 ) ) );
 }

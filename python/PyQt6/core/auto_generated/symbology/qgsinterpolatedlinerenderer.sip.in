@@ -320,7 +320,7 @@ The interpolation is done between two values defined at the extremities.
   public:
     QgsInterpolatedLineSymbolLayer();
 
-    static QgsSymbolLayer *create( const QVariantMap &properties ) /Factory/;
+    static std::unique_ptr<QgsSymbolLayer> create( const QVariantMap &properties );
 %Docstring
 Creates the symbol layer
 %End

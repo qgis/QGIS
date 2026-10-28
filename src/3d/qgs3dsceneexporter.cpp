@@ -25,10 +25,10 @@
 #include "qgsdemterraintilegeometry_p.h"
 #include "qgsdemterraintileloader_p.h"
 #include "qgsflatterraingenerator.h"
+#include "qgsfutureutils.h"
 #include "qgsgeotransform.h"
 #include "qgsimagetexture.h"
 #include "qgsmeshterraingenerator.h"
-#include "qgsmeshterraintileloader_p.h"
 #include "qgsterrainentity.h"
 #include "qgsterraingenerator.h"
 #include "qgsterraintexturegenerator_p.h"
@@ -195,6 +195,9 @@ bool Qgs3DSceneExporter::parseVectorLayerEntity( Qt3DCore::QEntity *entity, QgsV
         processEntityMaterial( parentEntity, object );
       mObjects.push_back( object );
     }
+
+    mObjects << processLines( entity, layer->name() + u"_"_s );
+
     return mObjects.size() > prevSize;
   }
 
@@ -263,7 +266,6 @@ void Qgs3DSceneExporter::parseTerrain( QgsTerrainEntity *terrain, const QString 
     return;
   QgsTerrainTileEntity *terrainTile = nullptr;
   QgsTerrainTextureGenerator *textureGenerator = terrain->textureGenerator();
-  textureGenerator->waitForFinished();
   const QSize oldResolution = textureGenerator->textureSize();
   textureGenerator->setTextureSize( QSize( mTerrainTextureResolution, mTerrainTextureResolution ) );
   switch ( generator->type() )
@@ -291,12 +293,10 @@ void Qgs3DSceneExporter::parseTerrain( QgsTerrainEntity *terrain, const QString 
 QgsTerrainTileEntity *Qgs3DSceneExporter::getFlatTerrainEntity( QgsTerrainEntity *terrain, QgsChunkNode *node, const QgsVector3D &mapOrigin )
 {
   QgsFlatTerrainGenerator *generator = qgis::down_cast<QgsFlatTerrainGenerator *>( terrain->mapSettings()->terrainGenerator() );
-  FlatTerrainChunkLoader *flatTerrainLoader = qobject_cast<FlatTerrainChunkLoader *>( generator->createChunkLoader( node ) );
-  flatTerrainLoader->start();
-  if ( mExportTextures )
-    terrain->textureGenerator()->waitForFinished();
+  QFuture<QgsChunkLoaderResult> resultFuture = generator->loadChunk( node );
+  QgsFutureUtils::waitForFinished( resultFuture );
   // the entity we created will be deallocated once the scene exporter is deallocated
-  Qt3DCore::QEntity *entity = flatTerrainLoader->createEntity( this );
+  Qt3DCore::QEntity *entity = resultFuture.takeResult().createEntity( this );
   QgsTerrainTileEntity *tileEntity = qobject_cast<QgsTerrainTileEntity *>( entity );
 
   const QList<QgsGeoTransform *> transforms = entity->findChildren<QgsGeoTransform *>();
@@ -314,12 +314,9 @@ QgsTerrainTileEntity *Qgs3DSceneExporter::getDemTerrainEntity( QgsTerrainEntity 
   // create the entity synchronously and then it will be deleted once our scene exporter instance is deallocated
   QgsDemTerrainGenerator *generator = qgis::down_cast<QgsDemTerrainGenerator *>( terrain->mapSettings()->terrainGenerator()->clone() );
   generator->setResolution( mTerrainResolution );
-  QgsDemTerrainTileLoader *loader = qobject_cast<QgsDemTerrainTileLoader *>( generator->createChunkLoader( node ) );
-  loader->start();
-  generator->heightMapGenerator()->waitForFinished();
-  if ( mExportTextures )
-    terrain->textureGenerator()->waitForFinished();
-  QgsTerrainTileEntity *tileEntity = qobject_cast<QgsTerrainTileEntity *>( loader->createEntity( this ) );
+  QFuture<QgsChunkLoaderResult> resultFuture = generator->loadChunk( node );
+  QgsFutureUtils::waitForFinished( resultFuture );
+  QgsTerrainTileEntity *tileEntity = qobject_cast<QgsTerrainTileEntity *>( resultFuture.takeResult().createEntity( this ) );
 
   const QList<QgsGeoTransform *> transforms = tileEntity->findChildren<QgsGeoTransform *>();
   for ( QgsGeoTransform *transform : transforms )
@@ -334,10 +331,9 @@ QgsTerrainTileEntity *Qgs3DSceneExporter::getDemTerrainEntity( QgsTerrainEntity 
 QgsTerrainTileEntity *Qgs3DSceneExporter::getMeshTerrainEntity( QgsTerrainEntity *terrain, QgsChunkNode *node, const QgsVector3D &mapOrigin )
 {
   QgsMeshTerrainGenerator *generator = qgis::down_cast<QgsMeshTerrainGenerator *>( terrain->mapSettings()->terrainGenerator() );
-  QgsMeshTerrainTileLoader *loader = qobject_cast<QgsMeshTerrainTileLoader *>( generator->createChunkLoader( node ) );
-  loader->start();
-  // TODO: export textures
-  QgsTerrainTileEntity *tileEntity = qobject_cast<QgsTerrainTileEntity *>( loader->createEntity( this ) );
+  QFuture<QgsChunkLoaderResult> resultFuture = generator->loadChunk( node );
+  QgsFutureUtils::waitForFinished( resultFuture );
+  QgsTerrainTileEntity *tileEntity = qobject_cast<QgsTerrainTileEntity *>( resultFuture.takeResult().createEntity( this ) );
 
   const QList<QgsGeoTransform *> transforms = tileEntity->findChildren<QgsGeoTransform *>();
   for ( QgsGeoTransform *transform : transforms )
@@ -624,6 +620,9 @@ Qgs3DExportObject *Qgs3DSceneExporter::processGeometryRenderer( Qt3DRender::QGeo
   if ( !geometry )
     return nullptr;
 
+  if ( findAttribute( geometry, u"pointA"_s, Qt3DCore::QAttribute::VertexAttribute ) )
+    return nullptr;
+
   // === Compute triangleIndexStartingIndiceToKeep according to duplicated features
   //
   // In the case of polygons, we have multiple feature geometries within the same geometry object (QgsTessellatedPolygonGeometry).
@@ -793,25 +792,30 @@ QVector<Qgs3DExportObject *> Qgs3DSceneExporter::processLines( Qt3DCore::QEntity
   const QList<Qt3DRender::QGeometryRenderer *> renderers = entity->findChildren<Qt3DRender::QGeometryRenderer *>();
   for ( Qt3DRender::QGeometryRenderer *renderer : renderers )
   {
-    if ( renderer->primitiveType() != Qt3DRender::QGeometryRenderer::LineStripAdjacency )
-      continue;
     Qt3DCore::QGeometry *geom = renderer->geometry();
-    Qt3DCore::QAttribute *positionAttribute = findAttribute( geom, Qt3DCore::QAttribute::defaultPositionAttributeName(), Qt3DCore::QAttribute::VertexAttribute );
-    Qt3DCore::QAttribute *indexAttribute = findAttribute( geom, QString(), Qt3DCore::QAttribute::IndexAttribute );
-    if ( !positionAttribute || !indexAttribute )
-    {
-      QgsDebugError( QString( "Cannot export '%1' - geometry has no position or index attribute!" ).arg( objectNamePrefix ) );
+    Qt3DCore::QAttribute *pointAAttribute = findAttribute( geom, u"pointA"_s, Qt3DCore::QAttribute::VertexAttribute );
+    Qt3DCore::QAttribute *pointBAttribute = findAttribute( geom, u"pointB"_s, Qt3DCore::QAttribute::VertexAttribute );
+    Qt3DCore::QAttribute *pointCAttribute = findAttribute( geom, u"pointC"_s, Qt3DCore::QAttribute::VertexAttribute );
+    if ( !pointAAttribute || !pointBAttribute || pointCAttribute )
       continue;
-    }
 
-    const QByteArray vertexBytes = getData( positionAttribute->buffer() );
-    const QByteArray indexBytes = getData( indexAttribute->buffer() );
-    if ( vertexBytes.isNull() || indexBytes.isNull() )
+    const QByteArray pointABytes = getData( pointAAttribute->buffer() );
+    const QByteArray pointBBytes = getData( pointBAttribute->buffer() );
+    if ( pointABytes.isNull() || pointBBytes.isNull() )
     {
-      QgsDebugError( QString( "Geometry for '%1' has position or index attribute with empty data!" ).arg( objectNamePrefix ) );
+      QgsDebugError( QString( "Geometry for '%1' has pointA or pointB attribute with empty data!" ).arg( objectNamePrefix ) );
       continue;
     }
-    const QVector<float> positionData = getAttributeData<float>( positionAttribute, vertexBytes );
+    const QVector<float> pointAData = getAttributeData<float>( pointAAttribute, pointABytes );
+    const QVector<float> pointBData = getAttributeData<float>( pointBAttribute, pointBBytes );
+
+    QVector<float> positionData;
+    positionData.reserve( pointAData.size() + pointBData.size() );
+    for ( int i = 0; i + 2 < pointAData.size(); i += 3 )
+    {
+      positionData << pointAData[i] << pointAData[i + 1] << pointAData[i + 2];
+      positionData << pointBData[i] << pointBData[i + 1] << pointBData[i + 2];
+    }
 
     Qgs3DExportObject *exportObject = new Qgs3DExportObject( getObjectName( objectNamePrefix + u"line"_s ) );
     exportObject->setupLine( positionData );
@@ -830,7 +834,7 @@ Qgs3DExportObject *Qgs3DSceneExporter::processPoints( Qt3DCore::QEntity *entity,
     Qt3DCore::QGeometry *geometry = qobject_cast<QgsBillboardGeometry *>( renderer->geometry() );
     if ( !geometry )
       continue;
-    Qt3DCore::QAttribute *positionAttribute = findAttribute( geometry, Qt3DCore::QAttribute::defaultPositionAttributeName(), Qt3DCore::QAttribute::VertexAttribute );
+    Qt3DCore::QAttribute *positionAttribute = findAttribute( geometry, "instancePosition", Qt3DCore::QAttribute::VertexAttribute );
     if ( !positionAttribute )
     {
       QgsDebugError( QString( "Cannot export '%1' - geometry has no position attribute!" ).arg( objectNamePrefix ) );

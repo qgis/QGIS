@@ -59,7 +59,7 @@ QgsMeshLayer3DRendererWidget::QgsMeshLayer3DRendererWidget( QgsMeshLayer *layer,
   layout->addWidget( mWidgetMesh );
 
   connect( mChkEnabled, &QCheckBox::clicked, this, &QgsMeshLayer3DRendererWidget::onEnabledClicked );
-  connect( mWidgetMesh, &QgsMesh3DSymbolWidget::changed, this, &QgsMeshLayer3DRendererWidget::widgetChanged );
+  connect( mWidgetMesh, &QgsMesh3DSymbolWidget::changed, this, &QgsMeshLayer3DRendererWidget::changed );
 
   setProperty( "helpPage", u"working_with_mesh/mesh_properties.html#d-view-properties"_s );
 }
@@ -88,7 +88,7 @@ void QgsMeshLayer3DRendererWidget::apply()
 void QgsMeshLayer3DRendererWidget::onEnabledClicked()
 {
   mWidgetMesh->setEnabled( mChkEnabled->isChecked() );
-  emit widgetChanged();
+  emit changed();
 }
 
 void QgsMeshLayer3DRendererWidget::syncToLayer( QgsMapLayer *layer )

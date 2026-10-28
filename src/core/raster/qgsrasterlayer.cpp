@@ -324,7 +324,7 @@ void QgsRasterLayer::setRendererForDrawingStyle( Qgis::RasterDrawingStyle drawin
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
-  setRenderer( QgsApplication::rasterRendererRegistry()->defaultRendererForDrawingStyle( drawingStyle, mDataProvider ) );
+  setRenderer( QgsApplication::rasterRendererRegistry()->defaultRendererForDrawingStyle( drawingStyle, mDataProvider ).release() );
 }
 
 QgsRasterDataProvider *QgsRasterLayer::dataProvider()
@@ -348,6 +348,15 @@ void QgsRasterLayer::reload()
   if ( mDataProvider )
   {
     mDataProvider->reloadData();
+
+    if ( mDataProvider->isValid() )
+    {
+      const QgsRectangle extent = mDataProvider->extent();
+      if ( !extent.isNull() )
+      {
+        setExtent( extent );
+      }
+    }
   }
 }
 
@@ -813,9 +822,10 @@ void QgsRasterLayer::setDataProvider( QString const &provider, const QgsDataProv
     QgsDebugMsgLevel( u"Set Data provider QgsLayerMetadata identifier[%1]"_s.arg( metadata().identifier() ), 4 );
   }
 
-  if ( provider == "gdal"_L1 )
+  if ( provider == "gdal"_L1 || provider == "wms"_L1 )
   {
-    // make sure that the /vsigzip or /vsizip is added to uri, if applicable
+    // if provider has updated its URI, make sure we store the updated one.
+    // TODO: this probably should be enabled for all provider, but we'll play it safe for now...
     mDataSource = mDataProvider->dataSourceUri();
   }
 
@@ -2084,8 +2094,8 @@ bool QgsRasterLayer::readSymbology( const QDomNode &layer_node, QString &errorMe
       QgsRasterRendererRegistryEntry rendererEntry;
       if ( mDataProvider && QgsApplication::rasterRendererRegistry()->rendererData( rendererType, rendererEntry ) )
       {
-        QgsRasterRenderer *renderer = rendererEntry.rendererCreateFunction( rasterRendererElem, mDataProvider );
-        mPipe->set( renderer );
+        std::unique_ptr<QgsRasterRenderer> renderer = rendererEntry.rendererCreateFunction( rasterRendererElem, mDataProvider );
+        mPipe->set( renderer.release() );
       }
     }
 
@@ -2164,9 +2174,9 @@ bool QgsRasterLayer::readSymbology( const QDomNode &layer_node, QString &errorMe
     QDomElement labelingElement = layer_node.firstChildElement( u"labeling"_s );
     if ( !labelingElement.isNull() )
     {
-      QgsAbstractRasterLayerLabeling *labeling = QgsAbstractRasterLayerLabeling::createFromElement( labelingElement, context );
+      std::unique_ptr<QgsAbstractRasterLayerLabeling> labeling = QgsAbstractRasterLayerLabeling::createFromElement( labelingElement, context );
       mLabelsEnabled = layer_node.toElement().attribute( u"labelsEnabled"_s, u"0"_s ).toInt();
-      setLabeling( labeling );
+      setLabeling( labeling.release() );
     }
   }
 

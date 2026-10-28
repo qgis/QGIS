@@ -124,12 +124,22 @@ void QgsSingleBandGrayRendererWidget::setMapCanvas( QgsMapCanvas *canvas )
 
 void QgsSingleBandGrayRendererWidget::mMinLineEdit_textChanged( const QString & )
 {
-  minMaxModified();
+  QString text = mMinLineEdit->text();
+  int pos = 0;
+  if ( mMinLineEdit->validator()->validate( text, pos ) == QValidator::Acceptable )
+  {
+    minMaxModified();
+  }
 }
 
 void QgsSingleBandGrayRendererWidget::mMaxLineEdit_textChanged( const QString & )
 {
-  minMaxModified();
+  QString text = mMaxLineEdit->text();
+  int pos = 0;
+  if ( mMaxLineEdit->validator()->validate( text, pos ) == QValidator::Acceptable )
+  {
+    minMaxModified();
+  }
 }
 
 void QgsSingleBandGrayRendererWidget::minMaxModified()
@@ -233,7 +243,7 @@ void QgsSingleBandGrayRendererWidget::showLegendSettings()
     legendPanel->setUseContinuousRampCheckBoxVisibility( false );
     legendPanel->setPanelTitle( tr( "Legend Settings" ) );
     legendPanel->setSettings( mLegendSettings );
-    connect( legendPanel, &QgsColorRampLegendNodeWidget::widgetChanged, this, [this, legendPanel] {
+    connect( legendPanel, &QgsColorRampLegendNodeWidget::changed, this, [this, legendPanel] {
       mLegendSettings = legendPanel->settings();
       emit widgetChanged();
     } );

@@ -72,6 +72,8 @@ void QgsApplyLayerStyleAlgorithm::initAlgorithm( const QVariantMap & )
 
 bool QgsApplyLayerStyleAlgorithm::prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback * )
 {
+  QGS_MARK_ALGORITHM_SOURCE
+
   QgsMapLayer *layer = parameterAsLayer( parameters, u"INPUT"_s, context );
   const QString style = parameterAsFile( parameters, u"STYLE"_s, context );
 

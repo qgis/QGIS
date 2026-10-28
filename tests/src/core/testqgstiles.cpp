@@ -47,6 +47,8 @@ class TestQgsTiles : public QObject
     void test_matrixFromWebMercator();
     void test_matrixFromCustomDef();
     void test_matrixFromTileMatrix();
+
+    void test_derivedValues();
 };
 
 
@@ -246,6 +248,35 @@ void TestQgsTiles::test_matrixFromTileMatrix()
   QVERIFY( qgsDoubleNear( tm0.extent().xMaximum(), 20037508.3427892, 0.0000001 ) );
   QVERIFY( qgsDoubleNear( tm0.extent().yMaximum(), 20037508.3427892, 0.0000001 ) );
   QVERIFY( qgsDoubleNear( tm0.scale(), 559082264.0287178, 0.00001 ) );
+}
+
+void TestQgsTiles::test_derivedValues()
+{
+  QgsTileMatrix tm = QgsTileMatrix::fromWebMercator( 0 );
+  QCOMPARE( tm.derivedMatrixWidthAtZoomLevel( 0 ), 1 );
+  QCOMPARE( tm.derivedMatrixHeightAtZoomLevel( 0 ), 1 );
+  QCOMPARE( tm.derivedMatrixWidthAtZoomLevel( 1 ), 2 );
+  QCOMPARE( tm.derivedMatrixHeightAtZoomLevel( 1 ), 2 );
+  QCOMPARE( tm.derivedMatrixWidthAtZoomLevel( 2 ), 4 );
+  QCOMPARE( tm.derivedMatrixHeightAtZoomLevel( 2 ), 4 );
+  QCOMPARE( tm.derivedMatrixWidthAtZoomLevel( 6 ), 64 );
+  QCOMPARE( tm.derivedMatrixHeightAtZoomLevel( 6 ), 64 );
+
+  // starting from a different zoom level
+  tm = QgsTileMatrix::fromWebMercator( 2 );
+  QCOMPARE( tm.derivedMatrixWidthAtZoomLevel( 2 ), 4 );
+  QCOMPARE( tm.derivedMatrixHeightAtZoomLevel( 2 ), 4 );
+  QCOMPARE( tm.derivedMatrixWidthAtZoomLevel( 6 ), 64 );
+  QCOMPARE( tm.derivedMatrixHeightAtZoomLevel( 6 ), 64 );
+
+  // different width/height
+  tm = QgsTileMatrix::fromCustomDef( 3, QgsCoordinateReferenceSystem( "EPSG:4326" ), QgsPointXY( -180.0, 90.0 ), 180.0, 4, 2 );
+  QCOMPARE( tm.derivedMatrixWidthAtZoomLevel( 3 ), 32 );
+  QCOMPARE( tm.derivedMatrixHeightAtZoomLevel( 3 ), 16 );
+  QCOMPARE( tm.derivedMatrixWidthAtZoomLevel( 4 ), 64 );
+  QCOMPARE( tm.derivedMatrixHeightAtZoomLevel( 4 ), 32 );
+  QCOMPARE( tm.derivedMatrixWidthAtZoomLevel( 6 ), 256 );
+  QCOMPARE( tm.derivedMatrixHeightAtZoomLevel( 6 ), 128 );
 }
 
 

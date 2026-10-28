@@ -690,8 +690,13 @@ void QgsProject::registerTranslatableObjects( QgsTranslationContext *translation
             else
               fieldName = field.alias();
 
+
             translationContext->registerTranslation( u"project:layers:%1:fieldaliases"_s.arg( vlayer->id() ), fieldName );
 
+            if ( !field.customComment().isEmpty() )
+            {
+              translationContext->registerTranslation( u"project:layers:%1:fieldcustomcomments"_s.arg( vlayer->id() ), field.customComment() );
+            }
             //constraint description
             if ( !field.constraints().constraintDescription().isEmpty() )
               translationContext->registerTranslation( u"project:layers:%1:constraintdescriptions"_s.arg( vlayer->id() ), field.constraints().constraintDescription() );
@@ -1039,6 +1044,7 @@ void QgsProject::setCrs( const QgsCoordinateReferenceSystem &crs, bool adjustEll
 
     const QgsCoordinateReferenceSystem oldVerticalCrs = verticalCrs();
     const QgsCoordinateReferenceSystem oldCrs3D = mCrs3D;
+
     mCrs = crs;
     writeEntry( u"SpatialRefSys"_s, u"/ProjectionsEnabled"_s, crs.isValid() ? 1 : 0 );
     mProjectScope.reset();
@@ -2003,10 +2009,10 @@ bool QgsProject::addLayer( const QDomElement &layerElem, QList<QDomNode> &broken
   }
 
   // It should be safe to delete the layer now if layer was stored, because all the store
-  // had to to was to reset the data source in case the validity changed.
+  // had to do was to reset the data source in case the validity changed.
   if ( !layerWasStored )
   {
-    mapLayer.release();
+    mapLayer.release(); // NOLINT(bugprone-unused-return-value)
   }
 
   return layerIsValid;
@@ -2135,32 +2141,44 @@ bool QgsProject::readProjectFile( const QString &filename, Qgis::ProjectReadFlag
     return false;
   }
 
-  QTextStream textStream( &projectFile );
-  QString projectString = textStream.readAll();
-  projectFile.close();
-
-  for ( int i = 0; i < 32; i++ )
+  if ( !doc->setContent( &projectFile ) )
   {
-    if ( i == 9 || i == 10 || i == 13 )
+    projectFile.seek( 0 );
+    QTextStream textStream( &projectFile );
+    QString projectString;
+    while ( true )
     {
-      continue;
+      QString part = textStream.read( 65536 );
+      if ( part.isEmpty() )
+        break;
+
+      for ( int i = 0; i < 32; i++ )
+      {
+        if ( i == 9 || i == 10 || i == 13 )
+        {
+          continue;
+        }
+        part.replace( QChar( i ), u"%1%2%1"_s.arg( FONTMARKER_CHR_FIX, QString::number( i ) ) );
+      }
+      projectString.append( part );
     }
-    projectString.replace( QChar( i ), u"%1%2%1"_s.arg( FONTMARKER_CHR_FIX, QString::number( i ) ) );
-  }
+    projectFile.close();
 
-  // location of problem associated with errorMsg
-  int line, column;
-  QString errorMsg;
-  if ( !doc->setContent( projectString, &errorMsg, &line, &column ) )
+    int line, column;
+    QString errorMsg;
+    if ( !doc->setContent( projectString, &errorMsg, &line, &column ) )
+    {
+      const QString errorString = tr( "Project file read error in file %1: %2 at line %3 column %4" ).arg( projectFile.fileName(), errorMsg ).arg( line ).arg( column );
+      QgsDebugError( errorString );
+      setError( errorString );
+
+      return false;
+    }
+  }
+  else
   {
-    const QString errorString = tr( "Project file read error in file %1: %2 at line %3 column %4" ).arg( projectFile.fileName(), errorMsg ).arg( line ).arg( column );
-    QgsDebugError( errorString );
-    setError( errorString );
-
-    return false;
+    projectFile.close();
   }
-
-  projectFile.close();
 
   QgsDebugMsgLevel( "Opened document " + projectFile.fileName(), 2 );
 
@@ -2960,6 +2978,8 @@ QgsExpressionContextScope *QgsProject::createExpressionContextScope() const
     // neither this function
     projectScope->addFunction( u"sensor_data"_s, new GetSensorData( sensorManager()->sensorsData() ) );
 
+    projectScope->addLayerStore( mLayerStore.get() );
+
     return projectScope.release();
   }
 
@@ -3408,7 +3428,6 @@ bool QgsProject::writeProjectFile( const QString &filename )
     mVerticalCrs.writeXml( verticalSrsNode, *doc );
     qgisNode.appendChild( verticalSrsNode );
   }
-
   QDomElement elevationShadingNode = doc->createElement( u"elevation-shading-renderer"_s );
   mElevationShadingRenderer.writeXml( elevationShadingNode, context );
   qgisNode.appendChild( elevationShadingNode );

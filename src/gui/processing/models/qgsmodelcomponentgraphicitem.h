@@ -19,11 +19,14 @@
 #include "qgis.h"
 #include "qgis_gui.h"
 #include "qgsprocessingcontext.h"
+#include "qgsprocessingwidgetcontext.h"
 
 #include <QFont>
 #include <QGraphicsObject>
 #include <QPicture>
 #include <QPointer>
+
+#define SIP_NO_FILE
 
 class QgsProcessingModelComponent;
 class QgsProcessingModelParameter;
@@ -38,16 +41,17 @@ class QgsModelGraphicsView;
 class QgsModelViewMouseEvent;
 class QgsProcessingModelGroupBox;
 class QgsModelArrowItem;
+class QgsProcessingParameterDefinition;
 
 ///@cond NOT_STABLE
 
 /**
  * \ingroup gui
  * \brief Base class for graphic items representing model components in the model designer.
- * \warning Not stable API
+ * \warning Not available in Python bindings
  * \since QGIS 3.14
  */
-class GUI_EXPORT QgsModelComponentGraphicItem : public QGraphicsObject
+class GUI_EXPORT QgsModelComponentGraphicItem : public QGraphicsObject, public QgsProcessingWidgetContextGenerator
 {
     Q_OBJECT
 
@@ -61,7 +65,7 @@ class GUI_EXPORT QgsModelComponentGraphicItem : public QGraphicsObject
     };
 
     //! Available flags
-    enum Flag SIP_ENUM_BASETYPE( IntFlag )
+    enum Flag
     {
       // For future API flexibility only and to avoid sip issues, remove when real entries are added to flags.
       Unused = 1 << 0, //!< Temporary unused entry
@@ -76,7 +80,7 @@ class GUI_EXPORT QgsModelComponentGraphicItem : public QGraphicsObject
      *
      * Ownership of \a component is transferred to the item.
      */
-    QgsModelComponentGraphicItem( QgsProcessingModelComponent *component SIP_TRANSFER, QgsProcessingModelAlgorithm *model, QGraphicsItem *parent SIP_TRANSFERTHIS );
+    QgsModelComponentGraphicItem( QgsProcessingModelComponent *component, QgsProcessingModelAlgorithm *model, QGraphicsItem *parent );
 
     ~QgsModelComponentGraphicItem() override;
 
@@ -93,7 +97,7 @@ class GUI_EXPORT QgsModelComponentGraphicItem : public QGraphicsObject
     /**
      * Returns the model component associated with this item.
      */
-    const QgsProcessingModelComponent *component() const SIP_SKIP;
+    const QgsProcessingModelComponent *component() const;
 
     /**
      * Returns the model associated with this item.
@@ -103,7 +107,7 @@ class GUI_EXPORT QgsModelComponentGraphicItem : public QGraphicsObject
     /**
      * Returns the model associated with this item.
      */
-    const QgsProcessingModelAlgorithm *model() const SIP_SKIP;
+    const QgsProcessingModelAlgorithm *model() const;
 
     /**
      * Returns the associated view.
@@ -138,8 +142,6 @@ class GUI_EXPORT QgsModelComponentGraphicItem : public QGraphicsObject
      * Sets a new scene \a rect for the item.
      */
     void setItemRect( QRectF rect );
-
-#ifndef SIP_RUN
 
     /**
      * Returns the color of the link at the specified \a index on the specified \a edge.
@@ -177,7 +179,7 @@ class GUI_EXPORT QgsModelComponentGraphicItem : public QGraphicsObject
      * Handles a model double-click \a event.
      */
     virtual void modelDoubleClickEvent( QgsModelViewMouseEvent *event );
-#endif
+
     void mouseDoubleClickEvent( QGraphicsSceneMouseEvent *event ) override;
     void hoverEnterEvent( QGraphicsSceneHoverEvent *event ) override;
     void hoverMoveEvent( QGraphicsSceneHoverEvent *event ) override;
@@ -233,7 +235,7 @@ class GUI_EXPORT QgsModelComponentGraphicItem : public QGraphicsObject
      * \param edge item edge for calculated best link point
      * \returns calculated link point in item coordinates.
      */
-    QPointF calculateAutomaticLinkPoint( QgsModelComponentGraphicItem *other, Qt::Edge &edge SIP_OUT ) const;
+    QPointF calculateAutomaticLinkPoint( QgsModelComponentGraphicItem *other, Qt::Edge &edge ) const;
 
     /**
      * Returns the best link point to use for a link originating at a specified \a other point.
@@ -242,7 +244,7 @@ class GUI_EXPORT QgsModelComponentGraphicItem : public QGraphicsObject
      * \param edge item edge for calculated best link point
      * \returns calculated link point in item coordinates.
      */
-    QPointF calculateAutomaticLinkPoint( const QPointF &point, Qt::Edge &edge SIP_OUT ) const;
+    QPointF calculateAutomaticLinkPoint( const QPointF &point, Qt::Edge &edge ) const;
 
     /**
      * Returns the output socket graphics items at the specified \a index.
@@ -287,6 +289,15 @@ class GUI_EXPORT QgsModelComponentGraphicItem : public QGraphicsObject
      * \since QGIS 4.2
      */
     QList< QgsModelArrowItem * > outgoingArrows();
+
+    /**
+     * Register a Processing widget context generator class that will be used to retrieve
+     * a widget context for the item when required.
+     * \since QGIS 4.4
+     */
+    void registerWidgetContextGenerator( QgsProcessingWidgetContextGenerator *generator );
+
+    QgsProcessingParameterWidgetContext createWidgetContext() override;
 
   signals:
 
@@ -412,7 +423,7 @@ class GUI_EXPORT QgsModelComponentGraphicItem : public QGraphicsObject
      *
      * \since QGIS 4.0
      */
-    SIP_SKIP static constexpr QColor FALLBACK_COLOR = QColor( 128, 128, 128 ); /* mid gray */
+    static constexpr QColor FALLBACK_COLOR = QColor( 128, 128, 128 ); /* mid gray */
 
   private:
     QSizeF itemSize() const;
@@ -436,6 +447,7 @@ class GUI_EXPORT QgsModelComponentGraphicItem : public QGraphicsObject
     QList< QgsModelDesignerSocketGraphicItem * > mInSockets;
     QList< QgsModelDesignerSocketGraphicItem * > mOutSockets;
 
+    QgsProcessingWidgetContextGenerator *mWidgetContextGenerator = nullptr;
 
     static constexpr double MIN_COMPONENT_WIDTH = 70;
     static constexpr double MIN_COMPONENT_HEIGHT = 30;
@@ -443,6 +455,7 @@ class GUI_EXPORT QgsModelComponentGraphicItem : public QGraphicsObject
     static constexpr double DEFAULT_BUTTON_WIDTH = 16;
     static constexpr double DEFAULT_BUTTON_HEIGHT = 16;
     static constexpr double BUTTON_MARGIN = 2;
+    static constexpr double SOCKET_MARGIN = 25; //! Margin from the edge of the component to socket
     static constexpr double TEXT_MARGIN = 4;
     static constexpr double RECT_PEN_SIZE = 2;
     static constexpr double RECT_OUTLINE_SIZE = 10;
@@ -458,7 +471,7 @@ Q_DECLARE_OPERATORS_FOR_FLAGS( QgsModelComponentGraphicItem::Flags )
 /**
  * \ingroup gui
  * \brief A graphic item representing a model parameter (input) in the model designer.
- * \warning Not stable API
+ * \warning Not available in Python bindings
  * \since QGIS 3.14
  */
 class GUI_EXPORT QgsModelParameterGraphicItem : public QgsModelComponentGraphicItem
@@ -474,12 +487,20 @@ class GUI_EXPORT QgsModelParameterGraphicItem : public QgsModelComponentGraphicI
      *
      * Ownership of \a parameter is transferred to the item.
      */
-    QgsModelParameterGraphicItem( QgsProcessingModelParameter *parameter SIP_TRANSFER, QgsProcessingModelAlgorithm *model, QGraphicsItem *parent SIP_TRANSFERTHIS );
+    QgsModelParameterGraphicItem( QgsProcessingModelParameter *parameter, QgsProcessingModelAlgorithm *model, QGraphicsItem *parent );
 
     void contextMenuEvent( QGraphicsSceneContextMenuEvent *event ) override;
     bool canDeleteComponent() override;
-
+    void editComponent() override;
+    void editComment() override;
     QColor linkColor( Qt::Edge edge, int index ) const override;
+
+    /**
+     * Applies edits to the item, using an updated \a parameter definition.
+     *
+     * \since QGIS 4.4
+     */
+    QString applyEdit( std::unique_ptr< QgsProcessingParameterDefinition > newParameter, const QString &oldDescription, const QString &oldName, const QString &comment, const QColor &commentColor );
 
   protected:
     QColor fillColor( State state ) const override;
@@ -496,13 +517,20 @@ class GUI_EXPORT QgsModelParameterGraphicItem : public QgsModelComponentGraphicI
     void deleteComponent() override;
 
   private:
+    /**
+     * Opens the dialog to edit the parameter definition or comments.
+     *
+     * \param editComment set to TRUE to focus the comments tab
+     */
+    void edit( bool editComment = false );
+
     QPicture mPicture;
 };
 
 /**
  * \ingroup gui
  * \brief A graphic item representing a child algorithm in the model designer.
- * \warning Not stable API
+ * \warning Not available in Python bindings
  * \since QGIS 3.14
  */
 class GUI_EXPORT QgsModelChildAlgorithmGraphicItem : public QgsModelComponentGraphicItem
@@ -518,7 +546,7 @@ class GUI_EXPORT QgsModelChildAlgorithmGraphicItem : public QgsModelComponentGra
      *
      * Ownership of \a child is transferred to the item.
      */
-    QgsModelChildAlgorithmGraphicItem( QgsProcessingModelChildAlgorithm *child SIP_TRANSFER, QgsProcessingModelAlgorithm *model, QGraphicsItem *parent SIP_TRANSFERTHIS );
+    QgsModelChildAlgorithmGraphicItem( QgsProcessingModelChildAlgorithm *child, QgsProcessingModelAlgorithm *model, QGraphicsItem *parent );
     void contextMenuEvent( QGraphicsSceneContextMenuEvent *event ) override;
     bool canDeleteComponent() override;
 
@@ -587,6 +615,16 @@ class GUI_EXPORT QgsModelChildAlgorithmGraphicItem : public QgsModelComponentGra
      */
     int indexForOutput( const QString &output ) const;
 
+    void editComponent() override;
+    void editComment() override;
+
+    /**
+     * Applies edits to the item, using an updated child \a algorithm definition.
+     *
+     * \since QGIS 4.4
+     */
+    void applyEdit( const QgsProcessingModelChildAlgorithm &algorithm );
+
   signals:
 
     /**
@@ -648,6 +686,13 @@ class GUI_EXPORT QgsModelChildAlgorithmGraphicItem : public QgsModelComponentGra
     void activateAlgorithm();
 
   private:
+    /**
+     * Opens the dialog to edit the child algorithm parameters or comments.
+     *
+     * \param editComment set to TRUE to focus the comments tab
+     */
+    void edit( bool editComment = false );
+
     QPicture mPicture;
     QPixmap mPixmap;
     bool mStarted = false;
@@ -657,11 +702,10 @@ class GUI_EXPORT QgsModelChildAlgorithmGraphicItem : public QgsModelComponentGra
     bool mIsValid = true;
 };
 
-
 /**
  * \ingroup gui
  * \brief A graphic item representing a model output in the model designer.
- * \warning Not stable API
+ * \warning Not available in Python bindings
  * \since QGIS 3.14
  */
 class GUI_EXPORT QgsModelOutputGraphicItem : public QgsModelComponentGraphicItem
@@ -677,9 +721,17 @@ class GUI_EXPORT QgsModelOutputGraphicItem : public QgsModelComponentGraphicItem
      *
      * Ownership of \a output is transferred to the item.
      */
-    QgsModelOutputGraphicItem( QgsProcessingModelOutput *output SIP_TRANSFER, QgsProcessingModelAlgorithm *model, QGraphicsItem *parent SIP_TRANSFERTHIS );
+    QgsModelOutputGraphicItem( QgsProcessingModelOutput *output, QgsProcessingModelAlgorithm *model, QGraphicsItem *parent );
 
     bool canDeleteComponent() override;
+    void editComponent() override;
+    void editComment() override;
+
+    /**
+     * Applies edits to the model output item.
+     * \since QGIS 4.4
+     */
+    void applyEdit( const QString &name, const QString &description, const QVariant &defaultValue, bool mandatory, const QString &comment, const QColor &commentColor );
 
   protected:
     QColor fillColor( State state ) const override;
@@ -693,14 +745,15 @@ class GUI_EXPORT QgsModelOutputGraphicItem : public QgsModelComponentGraphicItem
     void deleteComponent() override;
 
   private:
+    void edit( bool editComment = false );
+
     QPicture mPicture;
 };
-
 
 /**
  * \ingroup gui
  * \brief A graphic item representing a model comment in the model designer.
- * \warning Not stable API
+ * \warning Not available in Python bindings
  * \since QGIS 3.14
  */
 class GUI_EXPORT QgsModelCommentGraphicItem : public QgsModelComponentGraphicItem
@@ -716,7 +769,7 @@ class GUI_EXPORT QgsModelCommentGraphicItem : public QgsModelComponentGraphicIte
      *
      * Ownership of \a output is transferred to the item.
      */
-    QgsModelCommentGraphicItem( QgsProcessingModelComment *comment SIP_TRANSFER, QgsModelComponentGraphicItem *parentItem, QgsProcessingModelAlgorithm *model, QGraphicsItem *parent SIP_TRANSFERTHIS );
+    QgsModelCommentGraphicItem( QgsProcessingModelComment *comment, QgsModelComponentGraphicItem *parentItem, QgsProcessingModelAlgorithm *model, QGraphicsItem *parent );
     ~QgsModelCommentGraphicItem() override;
     void contextMenuEvent( QGraphicsSceneContextMenuEvent *event ) override;
     bool canDeleteComponent() override;
@@ -745,11 +798,10 @@ class GUI_EXPORT QgsModelCommentGraphicItem : public QgsModelComponentGraphicIte
     QPointer<QgsModelComponentGraphicItem> mParentItem;
 };
 
-
 /**
  * \ingroup gui
  * \brief A graphic item representing a group box in the model designer.
- * \warning Not stable API
+ * \warning Not available in Python bindings
  * \since QGIS 3.14
  */
 class GUI_EXPORT QgsModelGroupBoxGraphicItem : public QgsModelComponentGraphicItem
@@ -765,7 +817,7 @@ class GUI_EXPORT QgsModelGroupBoxGraphicItem : public QgsModelComponentGraphicIt
      *
      * Ownership of \a output is transferred to the item.
      */
-    QgsModelGroupBoxGraphicItem( QgsProcessingModelGroupBox *box SIP_TRANSFER, QgsProcessingModelAlgorithm *model, QGraphicsItem *parent SIP_TRANSFERTHIS );
+    QgsModelGroupBoxGraphicItem( QgsProcessingModelGroupBox *box, QgsProcessingModelAlgorithm *model, QGraphicsItem *parent );
     ~QgsModelGroupBoxGraphicItem() override;
     void contextMenuEvent( QGraphicsSceneContextMenuEvent *event ) override;
     bool canDeleteComponent() override;

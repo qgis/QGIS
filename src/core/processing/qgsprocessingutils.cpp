@@ -18,6 +18,7 @@
 #include "qgsprocessingutils.h"
 
 #include "qgsannotationlayer.h"
+#include "qgsapplication.h"
 #include "qgsexception.h"
 #include "qgsexpressioncontextscopegenerator.h"
 #include "qgsfileutils.h"
@@ -1846,6 +1847,48 @@ QString QgsProcessingUtils::supportedImageFileFilters()
   }
 
   return fileFilters.join( ";;"_L1 );
+}
+
+QString QgsProcessingUtils::userFolder()
+{
+  const QDir settingsDir = QDir( QgsApplication::qgisSettingsDirPath() );
+  const QDir userDir = QDir( settingsDir.filePath( u"processing"_s ) );
+  if ( !userDir.exists() )
+  {
+    userDir.mkpath( u"."_s );
+  }
+
+  return userDir.absolutePath();
+}
+
+QString QgsProcessingUtils::defaultOutputFolder()
+{
+  return QDir( QDir::homePath() ).absoluteFilePath( u"processing"_s );
+}
+
+QString QgsProcessingUtils::defaultModelFolder()
+{
+  QDir modelFolder = QDir( userFolder() ).filePath( u"models"_s );
+  if ( !modelFolder.exists() )
+  {
+    modelFolder.mkpath( u"."_s );
+  }
+  return modelFolder.absolutePath();
+}
+
+QStringList QgsProcessingUtils::modelFolders()
+{
+  // NOTE -- deliberately NOT a settings entry, we need to maintain compatibility with processing GUI
+  // class for configuring settings for now
+  const QString settingValue = QgsSettings().value( u"Processing/Configuration/MODELS_FOLDER"_s ).toString();
+  if ( !settingValue.trimmed().isEmpty() )
+  {
+    return settingValue.split( ';' );
+  }
+  else
+  {
+    return { defaultModelFolder() };
+  }
 }
 
 //

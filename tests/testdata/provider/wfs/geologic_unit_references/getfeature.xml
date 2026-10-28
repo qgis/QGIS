@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wfs:FeatureCollection
+    xmlns:wfs="http://www.opengis.net/wfs"
+    xmlns:xs="http://www.w3.org/2001/XMLSchema"
+    xmlns:gwml2="http://www.opengis.net/gwml-main/2.2"
+    xmlns:swe="http://www.opengis.net/swe/2.0"
+    xmlns:gco="http://www.isotc211.org/2005/gco"
+    xmlns:gsmlb="http://www.opengis.net/gsml/4.1/GeoSciML-Basic"
+    xmlns:gml="http://www.opengis.net/gml"
+    xmlns:om="http://www.opengis.net/om/2.0"
+    xmlns:xlink="http://www.w3.org/1999/xlink"
+    xmlns:gmd="http://www.isotc211.org/2005/gmd"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" numberOfFeatures="2" timeStamp="2026-06-02T07:02:33.542Z" xsi:schemaLocation="http://www.opengis.net/wfs https://data.geoscience.fr/api/groundwater/schemas/wfs/1.1.0/wfs.xsd http://www.opengis.net/gwml-main/2.2 http://schemas.opengis.net/gwml/2.2/gwml2-main.xsd">
+    <gml:featureMembers>
+        <gwml2:GW_Aquifer gml:id="101A">
+            <null:description
+                xmlns:null="http://www.opengis.net/gml/3.2">Aquifer from national BD LISA (Base de Données des Limites des Systèmes Aquifères) database
+            </null:description>
+            <null:identifier
+                xmlns:null="http://www.opengis.net/gml/3.2" codeSpace="http://www.ietf.org/rfc/rfc2616">101A</null:identifier>
+            <null:name
+                xmlns:null="http://www.opengis.net/gml/3.2" codeSpace="http://id.eaufrance.fr/saq/2/">Sables dunaires en Loire-Atlantique et Vendée (bassin Loire-Bretagne)
+            </null:name>
+            <gsmlb:observationMethod>
+                <swe:Category>
+                    <swe:value>http://www.sandre.eaufrance.fr/?urn=urn:sandre:donnees:698::CdElement:1:::referentiel:3.1:xml</swe:value>
+                </swe:Category>
+            </gsmlb:observationMethod>
+            <gsmlb:occurrence>
+                <gsmlb:MappedFeature id="MappedFeature.1337">
+                    <gsmlb:observationMethod>
+                        <swe:Category>
+                            <swe:value>http://www.sandre.eaufrance.fr/?urn=urn:sandre:donnees:698::CdElement:1:::referentiel:3.1:xml</swe:value>
+                        </swe:Category>
+                    </gsmlb:observationMethod>
+                    <gsmlb:resolutionRepresentativeFraction>50000</gsmlb:resolutionRepresentativeFraction>
+                    <gsmlb:mappingFrame xlink:href="http://resource.geosciml.org/feature/brgm/EarthBedrockSurface"/>
+                    <gsmlb:specification xlink:href="https://data.geoscience.fr/id/hydrogeounit/101AA01"/>
+                    <gsmlb:shape>MULTIPOLYGON (((46.26631202790441 -1.2191226895440267, 46.26631202790441 -1.2091226895440267, 46.27631202790441 -1.2091226895440267, 46.27631202790441 -1.2191226895440267, 46.26631202790441 -1.2191226895440267)))</gsmlb:shape>
+                </gsmlb:MappedFeature>
+            </gsmlb:occurrence>
+            <gsmlb:purpose>instance</gsmlb:purpose>
+            <gsmlb:geologicUnitType xlink:href="http://resource.geosciml.org/classifier/cgi/geologicunittype/hydrogeologic_unit" xlink:title="Hydrogeologic Unit"/>
+            <gsmlb:rank xlink:href="https://data.geoscience.fr/ncl/HydroUnitScaleUse/3" xlink:title="Locale"/>
+            <gwml2:gwUnitMedia xlink:href="https://data.geoscience.fr/ncl/HydroUnitCarac/6" xlink:title="Poreux"/>
+            <gwml2:gwAquiferType xlink:href="https://data.geoscience.fr/ncl/HydroUnitStat/5" xlink:title="Entité hydrogéologique à nappe libre"/>
+        </gwml2:GW_Aquifer>
+        <gwml2:GW_Aquifer gml:id="101B">
+            <null:description
+                xmlns:null="http://www.opengis.net/gml/3.2">Aquifer from national BD LISA (Base de Données des Limites des Systèmes Aquifères) database
+            </null:description>
+            <null:identifier
+                xmlns:null="http://www.opengis.net/gml/3.2" codeSpace="http://www.ietf.org/rfc/rfc2616">101B</null:identifier>
+            <null:name
+                xmlns:null="http://www.opengis.net/gml/3.2" codeSpace="http://id.eaufrance.fr/saq/2/">Sables dunaires en Loire-Atlantique et Vendée (bassin Loire-Bretagne)
+            </null:name>
+            <gsmlb:observationMethod>
+                <swe:Category>
+                    <swe:value>http://www.sandre.eaufrance.fr/?urn=urn:sandre:donnees:698::CdElement:1:::referentiel:3.1:xml</swe:value>
+                </swe:Category>
+            </gsmlb:observationMethod>
+            <gsmlb:occurrence>
+                <gsmlb:MappedFeature id="MappedFeature.1337">
+                    <gsmlb:observationMethod>
+                        <swe:Category>
+                            <swe:value>http://www.sandre.eaufrance.fr/?urn=urn:sandre:donnees:698::CdElement:1:::referentiel:3.1:xml</swe:value>
+                        </swe:Category>
+                    </gsmlb:observationMethod>
+                    <gsmlb:resolutionRepresentativeFraction>50000</gsmlb:resolutionRepresentativeFraction>
+                    <gsmlb:mappingFrame xlink:href="http://resource.geosciml.org/feature/brgm/EarthBedrockSurface"/>
+                    <gsmlb:specification xlink:href="https://data.geoscience.fr/id/hydrogeounit/101AA01"/>
+                    <gsmlb:shape>MULTIPOLYGON (((46.26631202790441 -1.2191226895440267, 46.26631202790441 -1.2091226895440267, 46.27631202790441 -1.2091226895440267, 46.27631202790441 -1.2191226895440267, 46.26631202790441 -1.2191226895440267)))</gsmlb:shape>
+                </gsmlb:MappedFeature>
+            </gsmlb:occurrence>
+            <gsmlb:occurrence>
+                <gsmlb:MappedFeature id="MappedFeature.1338">
+                    <gsmlb:observationMethod>
+                        <swe:Category>
+                            <swe:value>http://www.sandre.eaufrance.fr/?urn=urn:sandre:donnees:698::CdElement:1:::referentiel:3.1:xml</swe:value>
+                        </swe:Category>
+                    </gsmlb:observationMethod>
+                    <gsmlb:resolutionRepresentativeFraction>50000</gsmlb:resolutionRepresentativeFraction>
+                    <gsmlb:mappingFrame xlink:href="http://resource.geosciml.org/feature/brgm/EarthBedrockSurface"/>
+                    <gsmlb:specification xlink:href="https://data.geoscience.fr/id/hydrogeounit/101AA01"/>
+                    <gsmlb:shape>MULTIPOLYGON (((46.26881202790441 -1.2041226895440267, 46.26881202790441 -1.1941226895440267, 46.27381202790441 -1.1941226895440267, 46.27381202790441 -1.2041226895440267, 46.26881202790441 -1.2041226895440267)))</gsmlb:shape>
+                </gsmlb:MappedFeature>
+            </gsmlb:occurrence>
+            <gsmlb:purpose>instance</gsmlb:purpose>
+            <gsmlb:geologicUnitType xlink:href="http://resource.geosciml.org/classifier/cgi/geologicunittype/hydrogeologic_unit" xlink:title="Hydrogeologic Unit"/>
+            <gsmlb:rank xlink:href="https://data.geoscience.fr/ncl/HydroUnitScaleUse/3" xlink:title="Locale"/>
+            <gwml2:gwUnitMedia xlink:href="https://data.geoscience.fr/ncl/HydroUnitCarac/6" xlink:title="Poreux"/>
+            <gwml2:gwAquiferType xlink:href="https://data.geoscience.fr/ncl/HydroUnitStat/5" xlink:title="Entité hydrogéologique à nappe libre"/>
+        </gwml2:GW_Aquifer>
+    </gml:featureMembers>
+</wfs:FeatureCollection>

@@ -16,13 +16,14 @@ import struct
 import unittest
 
 import numpy as np
-from osgeo import gdal
+from osgeo import gdal, ogr, osr
 from qgis.core import (
     Qgis,
     QgsPointXY,
     QgsProviderRegistry,
     QgsRasterLayer,
     QgsRectangle,
+    QgsVectorLayer,
 )
 from qgis.PyQt.QtCore import QTemporaryDir
 from qgis.testing import QgisTestCase, start_app
@@ -599,28 +600,64 @@ class PyQgsGdalProvider(QgisTestCase, RasterProviderTestCase):
     def testHistogramBinCountWithScale(self):
         """Test issue GH #59461"""
 
-        # Create raster with 2x2 pixels, int type, values 0-10000, scale 0.001
         tmp_dir = QTemporaryDir()
-        tmpfile = os.path.join(tmp_dir.path(), "testBinCountWithScale.tif")
-        ds = gdal.GetDriverByName("GTiff").Create(tmpfile, 2, 2, 1, gdal.GDT_Int32)
-        ds.SetGeoTransform([0, 1, 0, 0, 0, -1])
-        ds.SetProjection("EPSG:4326")
-        ds.WriteRaster(0, 0, 2, 2, struct.pack("i" * 4, 0, 5000, 10000, -10000))
-        # Set band scale
-        band = ds.GetRasterBand(1)
-        band.SetScale(0.001)
-        ds = None
-        rl = QgsRasterLayer(tmpfile, "test")
-        self.assertTrue(rl.isValid())
-        provider = rl.dataProvider()
-        # Data type is changed by QGIS because of the scale
-        self.assertEqual(provider.dataType(1), Qgis.DataType.Float32)
-        self.assertEqual(provider.bandScale(1), 0.001)
 
-        # Create histogram
-        hist = provider.histogram(1, 10000)
-        self.assertIsNotNone(hist)
-        self.assertEqual(hist.binCount, 10)
+        def _test_scale(scale):
+
+            # Test float pixels to make sure we trigger Scott's formula for bin count
+            tmpfile = os.path.join(tmp_dir.path(), "testBinCountWithScaleFloat.tif")
+            ds = gdal.GetDriverByName("GTiff").Create(
+                tmpfile, 10, 10, 1, gdal.GDT_Float32
+            )
+            ds.SetGeoTransform([0, 1, 0, 0, 0, -1])
+            ds.SetProjection("EPSG:4326")
+            # Fill with stripes 1 to 10
+            for i in range(10):
+                ds.WriteRaster(0, i, 10, 1, struct.pack("f" * 10, *([i + 1] * 10)))
+            # Set band scale
+            band = ds.GetRasterBand(1)
+            band.SetScale(scale)
+            ds = None
+
+            rl = QgsRasterLayer(tmpfile, "test")
+            self.assertTrue(rl.isValid())
+            provider = rl.dataProvider()
+            # Data type is changed by QGIS because of the scale
+            self.assertEqual(provider.dataType(1), Qgis.DataType.Float32)
+
+            # Create histogram
+            hist = provider.histogram(1)
+            self.assertIsNotNone(hist)
+            self.assertEqual(hist.binCount, 4)
+
+            # Create raster with 2x2 pixels, int type, values 0-10000, scale 0.001
+            tmpfile = os.path.join(tmp_dir.path(), "testBinCountWithScale.tif")
+            ds = gdal.GetDriverByName("GTiff").Create(tmpfile, 2, 2, 1, gdal.GDT_Int32)
+            ds.SetGeoTransform([0, 1, 0, 0, 0, -1])
+            ds.SetProjection("EPSG:4326")
+            ds.WriteRaster(0, 0, 2, 2, struct.pack("i" * 4, 0, 5000, 10000, -10000))
+            # Set band scale
+            band = ds.GetRasterBand(1)
+            band.SetScale(scale)
+            ds = None
+            rl = QgsRasterLayer(tmpfile, "test")
+            self.assertTrue(rl.isValid())
+            provider = rl.dataProvider()
+            # Data type is changed by QGIS because of the scale
+            if scale != 1.0:
+                self.assertEqual(provider.dataType(1), Qgis.DataType.Float32)
+
+            # Create histogram
+            hist = provider.histogram(1, 5)
+            self.assertIsNotNone(hist)
+            # Test requested bin count is respected, even
+            # if it's bigger than the number of pixels
+            self.assertEqual(hist.binCount, 5)
+
+        _test_scale(1.0)
+        _test_scale(0.1)
+        _test_scale(0.01)
+        _test_scale(0.001)
 
     def test_GMF_PER_DATASET_mask_band(self):
         """Test issue GH #64642 - rasters with a GMF_PER_DATASET mask band"""
@@ -721,6 +758,47 @@ class PyQgsGdalProvider(QgisTestCase, RasterProviderTestCase):
         pos = QgsPointXY(1, -1)
         value_sample = raster_layer.dataProvider().sample(pos, 1)[0]
         self.assertEqual(value_sample, full_content[3])
+
+    def test_gpkg_mixed_crs(self):
+        """Test issue GH #67713 - mixed CRS in GPKG"""
+
+        # Create a mixed CRS GPKG with one raster in EPSG:25830 and a vector in EPSG:4326
+        tmp_dir = QTemporaryDir()
+        gpkg_path = os.path.join(tmp_dir.path(), "mixed_crs.gpkg")
+
+        utm = osr.SpatialReference()
+        utm.ImportFromEPSG(25830)
+        src = gdal.GetDriverByName("MEM").Create("", 256, 256, 3, gdal.GDT_Byte)
+        src.SetSpatialRef(utm)
+        src.SetGeoTransform([436800, 0.1, 0, 4484240, 0, -0.1])
+        gdal.GetDriverByName("GPKG").CreateCopy(
+            gpkg_path, src, options=["RASTER_TABLE=ortho"]
+        )
+
+        wgs84 = osr.SpatialReference()
+        wgs84.ImportFromEPSG(4326)
+        ds = gdal.OpenEx(gpkg_path, gdal.OF_VECTOR | gdal.OF_UPDATE)
+        layer = ds.CreateLayer("zones", wgs84, ogr.wkbPolygon)
+        feature = ogr.Feature(layer.GetLayerDefn())
+        feature.SetGeometry(
+            ogr.CreateGeometryFromWkt(
+                "POLYGON((40.5 -3.74,40.5 -3.73,40.51 -3.73,40.5 -3.74))"
+            )
+        )
+        layer.CreateFeature(feature)
+
+        del layer
+        del ds
+
+        # Open the raster and check that it is valid and has the correct CRS
+        raster_layer = QgsRasterLayer(gpkg_path, "mixed_crs", "gdal")
+        self.assertTrue(raster_layer.isValid())
+        self.assertEqual(raster_layer.crs().authid(), "EPSG:25830")
+
+        # Open the vector and check that it is valid and has the correct CRS
+        vector_layer = QgsVectorLayer(f"{gpkg_path}|layername=zones", "zones", "ogr")
+        self.assertTrue(vector_layer.isValid())
+        self.assertEqual(vector_layer.crs().authid(), "EPSG:4326")
 
 
 if __name__ == "__main__":

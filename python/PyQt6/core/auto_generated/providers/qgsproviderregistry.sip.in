@@ -45,7 +45,7 @@ gdal|ogr|postgres it will load only providers gdal, ogr and postgres.
       Manager,
     };
 
-    static QgsProviderRegistry *instance( const QString &pluginPath = QString() );
+    static QgsProviderRegistry *instance( const QString &pluginPath = QString() ) /DisallowNone/;
 %Docstring
 Means of accessing canonical single instance
 %End
@@ -108,6 +108,31 @@ Returns the provider capabilities
 .. deprecated:: 3.10
 
    Use instead :py:func:`~QgsProviderRegistry.capabilities` method of individual data item provider.
+%End
+
+    QgsEmptyLayerCreationResult createEmptyLayer(
+      const QString &providerKey,
+      const QString &uri,
+      const QgsFields &fields,
+      Qgis::WkbType wkbType = Qgis::WkbType::NoGeometry,
+      const QgsCoordinateReferenceSystem &crs = QgsCoordinateReferenceSystem(),
+      Qgis::CreateLayerActionOnExisting actionOnExisting = Qgis::CreateLayerActionOnExisting::Abort
+    );
+%Docstring
+Creates new empty vector layer.
+
+:param providerKey: Destination provider key
+:param uri: Destination for new layer
+:param fields: New layer fields
+:param wkbType: New layer geometry WKB type
+:param crs: New layer coordinate reference system
+:param actionOnExisting: Action to take when attempting to overwrite any
+                         existing layer in the same location
+
+:return: An object encapsulating the properties of the newly created
+         layer.
+
+.. versionadded:: 4.2
 %End
 
 

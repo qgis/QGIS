@@ -21,10 +21,9 @@
 #include "qgis.h"
 #include "qgis_core.h"
 #include "qgsprocessingfeedback.h"
+#include "qgsprocessingmodelresult.h"
 
 #define SIP_NO_FILE
-
-class QgsProcessingModelChildAlgorithmResult;
 
 /**
  * \ingroup core

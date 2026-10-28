@@ -79,6 +79,8 @@ void QgsCreateDirectoryAlgorithm::initAlgorithm( const QVariantMap & )
 
 QVariantMap QgsCreateDirectoryAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
+  QGS_MARK_ALGORITHM_SOURCE
+
   const QString path = parameterAsString( parameters, u"PATH"_s, context );
 
   if ( !path.isEmpty() )

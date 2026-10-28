@@ -240,6 +240,36 @@ class TestQgsCoordinateReferenceSystem(QgisTestCase):
             )
         )
 
+    def test_is_geographic_crossing_antimeridian(self):
+        # geographic, does not cross
+        self.assertFalse(
+            QgsCoordinateReferenceSystem("EPSG:4326").isGeographicCrossingAntimeridian()
+        )
+        self.assertFalse(
+            QgsCoordinateReferenceSystem("EPSG:4283").isGeographicCrossingAntimeridian()
+        )
+        # non-geographic
+        self.assertFalse(
+            QgsCoordinateReferenceSystem("EPSG:3857").isGeographicCrossingAntimeridian()
+        )
+
+        # crosses antimeridian, but not geographic
+        self.assertFalse(
+            QgsCoordinateReferenceSystem("EPSG:2193").isGeographicCrossingAntimeridian()
+        )
+
+        # crosses antimeridian, geographic
+        self.assertTrue(
+            QgsCoordinateReferenceSystem("EPSG:4167").isGeographicCrossingAntimeridian()
+        )
+        self.assertTrue(
+            QgsCoordinateReferenceSystem("EPSG:4152").isGeographicCrossingAntimeridian()
+        )
+
+        self.assertTrue(
+            QgsCoordinateReferenceSystem("EPSG:8902").isGeographicCrossingAntimeridian()
+        )
+
 
 if __name__ == "__main__":
     unittest.main()

@@ -67,6 +67,17 @@ class CORE_EXPORT QgsLayerTreeUtils
     static void removeInvalidLayers( QgsLayerTreeGroup *group );
 
     /**
+     * Assigns a new unique id to every group in the sub-tree rooted at \a node.
+     *
+     * Call this on a copied sub-tree before inserting it into a project (paste,
+     * duplicate, QLR import) so duplicated groups do not share an id with their
+     * source. Layer and custom nodes are not changed.
+     *
+     * \since QGIS 4.4
+     */
+    static void regenerateGroupIds( QgsLayerTreeNode *node );
+
+    /**
      * Stores in a layer's originalXmlProperties the layer properties information
      * \since QGIS 3.6
      */

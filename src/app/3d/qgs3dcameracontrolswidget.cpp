@@ -68,9 +68,8 @@ Qgs3DCameraControlsWidget::Qgs3DCameraControlsWidget( Qgs3DMapCanvas *canvas, QW
 
 void Qgs3DCameraControlsWidget::updateCameraLookingAt()
 {
-  QgsVector3D mapLookingAt( mCameraX->value(), mCameraY->value(), mCameraX->value() );
+  QgsVector3D mapLookingAt( mCameraX->value(), mCameraY->value(), mCameraZ->value() );
   QgsVector3D worldLookingAt = m3DMapCanvas->mapSettings()->mapToWorldCoordinates( mapLookingAt );
-  worldLookingAt.setZ( mCameraZ->value() );
 
   m3DMapCanvas->cameraController()->setLookingAtPoint( worldLookingAt, m3DMapCanvas->cameraController()->distance(), m3DMapCanvas->cameraController()->pitch(), m3DMapCanvas->cameraController()->yaw() );
 }

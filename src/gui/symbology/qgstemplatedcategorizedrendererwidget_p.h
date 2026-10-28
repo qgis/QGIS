@@ -22,8 +22,11 @@
 #include "qgsvariantutils.h"
 
 #include <QAbstractItemModel>
+#include <QColor>
+#include <QFont>
 #include <QIODevice>
 #include <QMimeData>
+#include <QPalette>
 #include <QPointer>
 #include <QScreen>
 #include <QString>
@@ -175,7 +178,7 @@ template<typename RendererType> class QgsTemplatedCategorizedRendererModel : pub
 
         case Qt::TextAlignmentRole:
         {
-          return ( index.column() == valueColumn() ) ? static_cast<Qt::Alignment::Int>( Qt::AlignHCenter ) : static_cast<Qt::Alignment::Int>( Qt::AlignLeft );
+          return ( index.column() == symbolColumn() ) ? static_cast<Qt::Alignment::Int>( Qt::AlignHCenter ) : static_cast<Qt::Alignment::Int>( Qt::AlignLeft );
         }
 
         case Qt::EditRole:

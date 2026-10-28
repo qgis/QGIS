@@ -26,6 +26,7 @@ using namespace Qt::StringLiterals;
 #include "qgsfeatureiterator.h"
 #include "qgslayertreegroup.h"
 #include "qgsreadwritecontext.h"
+#include "qgsvariantutils.h"
 #include <qgsvectordataprovider.h>
 #include <qgsapplication.h>
 #include <qgsvectorlayerjoinbuffer.h>
@@ -73,6 +74,8 @@ class TestVectorLayerJoinBuffer : public QObject
     void testChangeAttributeValues();
     void testCollidingNameColumn();
     void testCollidingNameColumnCached();
+    void testMemoryCacheRebuiltWhenJoinedLayerFieldsChange();
+    void testCachedJoinOnLayerWithoutFeatures();
 
   private:
     QgsProject mProject;
@@ -1008,6 +1011,97 @@ void TestVectorLayerJoinBuffer::testCollidingNameColumnCached()
   QCOMPARE( fA1.attribute( "name" ).toString(), u"name_a"_s );
   QCOMPARE( fA1.attribute( "value_b" ).toString(), u"value_b"_s );
   QCOMPARE( fA1.attribute( "value_c" ).toString(), u"value_c"_s );
+}
+
+void TestVectorLayerJoinBuffer::testMemoryCacheRebuiltWhenJoinedLayerFieldsChange()
+{
+  // A joins B with a memory cache, so B's rows are held in memory instead of being queried
+  // once per feature of A. Joining C to B afterwards changes B's field list, which leaves A's
+  // cached copy of B stale: B emits updatedFields(), and A's join buffer reacts by clearing
+  // its cache and refilling it.
+  //
+  // The refill is what this test covers.
+  QgsVectorLayer vlA( u"Point?field=id_a:integer"_s, u"A_refill"_s, u"memory"_s );
+  QgsVectorLayer vlB( u"Point?field=id_b:integer&field=value_b"_s, u"B_refill"_s, u"memory"_s );
+  QgsVectorLayer vlC( u"Point?field=id_c:integer&field=value_c"_s, u"C_refill"_s, u"memory"_s );
+  QVERIFY( vlA.isValid() && vlB.isValid() && vlC.isValid() );
+
+  QgsFeature fA( vlA.dataProvider()->fields() );
+  fA.setAttribute( u"id_a"_s, 1 );
+  QVERIFY( vlA.dataProvider()->addFeature( fA ) );
+
+  QgsFeature fB( vlB.dataProvider()->fields() );
+  fB.setAttribute( u"id_b"_s, 1 );
+  fB.setAttribute( u"value_b"_s, u"11"_s );
+  QVERIFY( vlB.dataProvider()->addFeature( fB ) );
+
+  QgsFeature fC( vlC.dataProvider()->fields() );
+  fC.setAttribute( u"id_c"_s, 1 );
+  fC.setAttribute( u"value_c"_s, u"111"_s );
+  QVERIFY( vlC.dataProvider()->addFeature( fC ) );
+
+  QgsVectorLayerJoinInfo joinAB;
+  joinAB.setTargetFieldName( u"id_a"_s );
+  joinAB.setJoinLayer( &vlB );
+  joinAB.setJoinFieldName( u"id_b"_s );
+  joinAB.setUsingMemoryCache( true );
+  joinAB.setPrefix( u"B_"_s );
+  QVERIFY( vlA.addJoin( joinAB ) );
+  QCOMPARE( vlA.vectorJoins().count(), 1 );
+
+  // the cache is built when the join is added
+  QVERIFY( !vlA.vectorJoins().first().cachedAttributes.isEmpty() );
+  QVERIFY( !vlA.vectorJoins().first().cacheDirty );
+
+  // joining C to B changes B's fields and so invalidates A's cache of B
+  QgsVectorLayerJoinInfo joinBC;
+  joinBC.setTargetFieldName( u"id_b"_s );
+  joinBC.setJoinLayer( &vlC );
+  joinBC.setJoinFieldName( u"id_c"_s );
+  joinBC.setUsingMemoryCache( true );
+  joinBC.setPrefix( u"C_"_s );
+  QVERIFY( vlB.addJoin( joinBC ) );
+
+  // it must have been refilled, not merely cleared
+  QVERIFY( !vlA.vectorJoins().first().cachedAttributes.isEmpty() );
+  QVERIFY( !vlA.vectorJoins().first().cacheDirty );
+
+  // and the joined value is still resolved correctly
+  QgsFeature f;
+  QVERIFY( vlA.getFeatures().nextFeature( f ) );
+  QCOMPARE( f.attribute( u"B_value_b"_s ).toString(), u"11"_s );
+}
+
+void TestVectorLayerJoinBuffer::testCachedJoinOnLayerWithoutFeatures()
+{
+  // A joined layer holding no features leads to an empty cache. That state must stay
+  // distinguishable from "not cached yet", otherwise every feature falls back to a direct
+  // provider request which cannot match anything.
+  QgsVectorLayer vlA( u"Point?field=id_a:integer"_s, u"A_empty"_s, u"memory"_s );
+  QgsVectorLayer vlB( u"Point?field=id_b:integer&field=value_b"_s, u"B_empty"_s, u"memory"_s );
+  QVERIFY( vlA.isValid() && vlB.isValid() );
+
+  QgsFeature fA( vlA.dataProvider()->fields() );
+  fA.setAttribute( u"id_a"_s, 1 );
+  QVERIFY( vlA.dataProvider()->addFeature( fA ) );
+
+  QgsVectorLayerJoinInfo joinAB;
+  joinAB.setTargetFieldName( u"id_a"_s );
+  joinAB.setJoinLayer( &vlB );
+  joinAB.setJoinFieldName( u"id_b"_s );
+  joinAB.setUsingMemoryCache( true );
+  joinAB.setPrefix( u"B_"_s );
+  QVERIFY( vlA.addJoin( joinAB ) );
+
+  // built, and empty because the joined layer has no features
+  QVERIFY( vlA.vectorJoins().first().cachedAttributes.isEmpty() );
+  QVERIFY( !vlA.vectorJoins().first().cacheDirty );
+
+  // the joined attribute is simply unset
+  QgsFeature f;
+  QVERIFY( vlA.getFeatures().nextFeature( f ) );
+  QCOMPARE( f.attribute( u"id_a"_s ).toInt(), 1 );
+  QVERIFY( QgsVariantUtils::isNull( f.attribute( u"B_value_b"_s ) ) );
 }
 
 QGSTEST_MAIN( TestVectorLayerJoinBuffer )

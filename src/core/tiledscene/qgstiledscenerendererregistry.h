@@ -117,7 +117,7 @@ class CORE_EXPORT QgsTiledSceneRendererAbstractMetadata
     QIcon mIcon;
 };
 
-typedef QgsTiledSceneRenderer *( *QgsTiledSceneRendererCreateFunc )( QDomElement &, const QgsReadWriteContext & ) SIP_SKIP;
+typedef std::unique_ptr<QgsTiledSceneRenderer> ( *QgsTiledSceneRendererCreateFunc )( QDomElement &, const QgsReadWriteContext & ) SIP_SKIP;
 typedef QgsTiledSceneRendererWidget *( *QgsTiledSceneRendererWidgetFunc )( QgsTiledSceneLayer *, QgsStyle *, QgsTiledSceneRenderer * ) SIP_SKIP;
 
 /**
@@ -138,7 +138,7 @@ class CORE_EXPORT QgsTiledSceneRendererMetadata : public QgsTiledSceneRendererAb
                  mWidgetFunc( pfWidget )
     {}
 
-    QgsTiledSceneRenderer *createRenderer( QDomElement &elem, const QgsReadWriteContext &context ) override SIP_FACTORY { return mCreateFunc ? mCreateFunc( elem, context ) : nullptr; }
+    QgsTiledSceneRenderer *createRenderer( QDomElement &elem, const QgsReadWriteContext &context ) override SIP_FACTORY;
 
 #ifndef SIP_RUN
     QgsTiledSceneRendererWidget *createRendererWidget( QgsTiledSceneLayer *layer, QgsStyle *style, QgsTiledSceneRenderer *renderer ) override SIP_FACTORY
@@ -219,7 +219,7 @@ class CORE_EXPORT QgsTiledSceneRendererRegistry
      *
      * Caller takes ownership of the returned renderer.
      */
-    static QgsTiledSceneRenderer *defaultRenderer( const QgsTiledSceneLayer *layer ) SIP_FACTORY;
+    static std::unique_ptr<QgsTiledSceneRenderer> defaultRenderer( const QgsTiledSceneLayer *layer );
 
   private:
 #ifdef SIP_RUN

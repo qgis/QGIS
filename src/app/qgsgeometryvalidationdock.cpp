@@ -69,7 +69,7 @@ QgsGeometryValidationDock::QgsGeometryValidationDock( const QString &title, QgsM
   mErrorRubberband->setColor( QColor( 255, 238, 88, 255 ) );
   mErrorRubberband->setWidth( scaleFactor );
 
-  mErrorLocationRubberband->setIcon( QgsRubberBand::ICON_X );
+  mErrorLocationRubberband->setIcon( Qgis::RubberBandIconType::CrossX );
   mErrorLocationRubberband->setWidth( scaleFactor );
   mErrorLocationRubberband->setIconSize( scaleFactor * 5 );
   mErrorLocationRubberband->setColor( QColor( 50, 255, 50, 255 ) );

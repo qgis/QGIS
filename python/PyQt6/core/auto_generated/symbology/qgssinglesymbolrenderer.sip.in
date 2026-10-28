@@ -67,7 +67,7 @@ the symbol is transferred to the renderer.
     virtual bool toSld( QDomDocument &doc, QDomElement &element, QgsSldExportContext &context ) const;
 
 
-    static QgsFeatureRenderer *createFromSld( QDomElement &element, Qgis::GeometryType geomType ) /Factory/;
+    static std::unique_ptr<QgsFeatureRenderer> createFromSld( QDomElement &element, Qgis::GeometryType geomType );
 %Docstring
 Creates a new single symbol renderer from an SLD ``element``.
 
@@ -81,7 +81,7 @@ The caller takes ownership of the returned renderer.
     virtual QgsSymbolList symbols( QgsRenderContext &context ) const;
 
 
-    static QgsFeatureRenderer *create( QDomElement &element, const QgsReadWriteContext &context ) /Factory/;
+    static std::unique_ptr<QgsFeatureRenderer> create( QDomElement &element, const QgsReadWriteContext &context );
 %Docstring
 Creates a new single symbol renderer from an XML ``element``, using the
 supplied read/write ``context``.
@@ -100,7 +100,7 @@ The caller takes ownership of the returned renderer.
     virtual void setLegendSymbolItem( const QString &key, QgsSymbol *symbol /Transfer/ );
 
 
-    static QgsSingleSymbolRenderer *convertFromRenderer( const QgsFeatureRenderer *renderer ) /Factory/;
+    static std::unique_ptr<QgsSingleSymbolRenderer> convertFromRenderer( const QgsFeatureRenderer *renderer );
 %Docstring
 Creates a new single symbol renderer from an existing ``renderer``.
 

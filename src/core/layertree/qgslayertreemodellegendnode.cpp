@@ -30,6 +30,7 @@
 #include "qgslayertreemodel.h"
 #include "qgslegendsettings.h"
 #include "qgsmarkersymbol.h"
+#include "qgspainting.h"
 #include "qgspointcloudlayer.h"
 #include "qgspointcloudrenderer.h"
 #include "qgsrasterlayer.h"
@@ -377,9 +378,9 @@ QgsSymbolLegendNode::~QgsSymbolLegendNode() = default;
 Qt::ItemFlags QgsSymbolLegendNode::flags() const
 {
   if ( mItem.isCheckable() )
-    return Qt::ItemIsEnabled | Qt::ItemIsUserCheckable | Qt::ItemIsSelectable;
+    return Qt::ItemIsEnabled | Qt::ItemIsUserCheckable | Qt::ItemIsSelectable | Qt::ItemIsEditable;
   else
-    return Qt::ItemIsEnabled | Qt::ItemIsSelectable;
+    return Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsEditable;
 }
 
 
@@ -645,17 +646,26 @@ QVariant QgsSymbolLegendNode::data( int role ) const
 
 bool QgsSymbolLegendNode::setData( const QVariant &value, int role )
 {
-  if ( role != Qt::CheckStateRole )
-    return false;
-
-  if ( !mItem.isCheckable() )
+  if ( role != Qt::EditRole && role != Qt::CheckStateRole )
     return false;
 
   QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( mLayerNode->layer() );
-  if ( !vlayer || !vlayer->renderer() )
+  if ( !( vlayer && vlayer->renderer() ) )
     return false;
 
-  vlayer->renderer()->checkLegendSymbolItem( mItem.ruleKey(), value == Qt::Checked );
+  if ( role == Qt::EditRole )
+  {
+    const QString newLabel = value.toString();
+    setUserLabel( newLabel );
+    vlayer->renderer()->setLegendSymbolItemLabel( mItem.ruleKey(), newLabel );
+  }
+  else if ( role == Qt::CheckStateRole )
+  {
+    if ( !mItem.isCheckable() )
+      return false;
+
+    vlayer->renderer()->checkLegendSymbolItem( mItem.ruleKey(), value == Qt::Checked );
+  }
 
   if ( QgsProject *project = vlayer->project() )
     project->setDirty( true );
@@ -666,6 +676,11 @@ bool QgsSymbolLegendNode::setData( const QVariant &value, int role )
   vlayer->triggerRepaint();
 
   return true;
+}
+
+void QgsSymbolLegendNode::invalidateDisplayData()
+{
+  mPixmap = QPixmap();
 }
 
 QSizeF QgsSymbolLegendNode::drawSymbol( const QgsLegendSettings &settings, ItemContext *ctx, double itemHeight ) const
@@ -820,10 +835,9 @@ QSizeF QgsSymbolLegendNode::drawSymbol( const QgsLegendSettings &settings, ItemC
       const int maxBleed = static_cast< int >( std::ceil( QgsSymbolLayerUtils::estimateMaxSymbolBleed( s, *context ) ) );
       const QSize symbolSize( static_cast< int >( std::round( width * dotsPerMM ) ), static_cast<int >( std::round( height * dotsPerMM ) ) );
       const QSize maxSize( symbolSize.width() + maxBleed * 2, symbolSize.height() + maxBleed * 2 );
-      p->save();
+      QgsScopedQPainterState painterState( p );
       p->setClipRect( -maxBleed, -maxBleed, maxSize.width(), maxSize.height(), Qt::IntersectClip );
       s->drawPreviewIcon( p, symbolSize, context, false, nullptr, &patchShape, ctx->screenProperties );
-      p->restore();
     }
     else
     {
@@ -1513,6 +1527,11 @@ QVariant QgsDataDefinedSizeLegendNode::data( int role ) const
   return QVariant();
 }
 
+void QgsDataDefinedSizeLegendNode::invalidateDisplayData()
+{
+  mImage = QImage();
+}
+
 QgsLayerTreeModelLegendNode::ItemMetrics QgsDataDefinedSizeLegendNode::draw( const QgsLegendSettings &settings, QgsLayerTreeModelLegendNode::ItemContext &ctx )
 {
   // setup temporary render context if none specified
@@ -1541,9 +1560,9 @@ QgsLayerTreeModelLegendNode::ItemMetrics QgsDataDefinedSizeLegendNode::draw( con
     context = tempRenderContext.get();
   }
 
+  QgsScopedQPainterState painterState( context->painter() );
   if ( context->painter() )
   {
-    context->painter()->save();
     context->painter()->translate( ctx.columnLeft, ctx.top );
 
     // scale to pixels
@@ -1557,9 +1576,6 @@ QgsLayerTreeModelLegendNode::ItemMetrics QgsDataDefinedSizeLegendNode::draw( con
   QSizeF contentSize;
   double labelXOffset;
   ddsLegend.drawCollapsedLegend( *context, &contentSize, &labelXOffset );
-
-  if ( context->painter() )
-    context->painter()->restore();
 
   ItemMetrics im;
   im.symbolSize = QSizeF( ( contentSize.width() - labelXOffset ) / context->scaleFactor(), contentSize.height() / context->scaleFactor() );

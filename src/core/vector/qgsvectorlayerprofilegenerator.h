@@ -64,6 +64,7 @@ class CORE_EXPORT QgsVectorLayerProfileResults : public QgsAbstractProfileSurfac
     };
 
     QHash< QgsFeatureId, QVector< Feature > > features;
+    QMap< double, QgsFeatureId > mDistanceToFeatureId;
     QPointer< QgsVectorLayer > mLayer;
 
     Qgis::VectorProfileType profileType = Qgis::VectorProfileType::IndividualFeatures;
@@ -134,9 +135,15 @@ class CORE_EXPORT QgsVectorLayerProfileGenerator : public QgsAbstractProfileSurf
     void processIntersectionCurve( const QgsLineString *intersectionCurve, const QgsFeature &feature );
 
     QgsPoint interpolatePointOnTriangle( const QgsPolygon *triangle, double x, double y ) const;
-    void processTriangleIntersectForPoint( const QgsPolygon *triangle, const QgsPoint *intersect, QVector< QgsGeometry > &transformedParts, QVector< QgsGeometry > &crossSectionParts );
-    void processTriangleIntersectForLine( const QgsPolygon *triangle, const QgsLineString *intersect, QVector< QgsGeometry > &transformedParts, QVector< QgsGeometry > &crossSectionParts );
-    void processTriangleIntersectForPolygon( const QgsPolygon *triangle, const QgsPolygon *intersectionPolygon, QVector< QgsGeometry > &transformedParts, QVector< QgsGeometry > &crossSectionParts );
+    void processTriangleIntersectForPoint(
+      const QgsPolygon *triangle, const QgsPoint *intersect, QVector< QgsGeometry > &transformedParts, QVector< QgsGeometry > &crossSectionParts, const QgsFeatureId featureId
+    );
+    void processTriangleIntersectForLine(
+      const QgsPolygon *triangle, const QgsLineString *intersect, QVector< QgsGeometry > &transformedParts, QVector< QgsGeometry > &crossSectionParts, const QgsFeatureId featureId
+    );
+    void processTriangleIntersectForPolygon(
+      const QgsPolygon *triangle, const QgsPolygon *intersectionPolygon, QVector< QgsGeometry > &transformedParts, QVector< QgsGeometry > &crossSectionParts, const QgsFeatureId featureId
+    );
 
     double tolerance() const;
 
@@ -145,6 +152,8 @@ class CORE_EXPORT QgsVectorLayerProfileGenerator : public QgsAbstractProfileSurf
 
     void clampAltitudes( QgsLineString *lineString, const QgsPoint &centroid, double offset ) const;
     bool clampAltitudes( QgsPolygon *polygon, double offset ) const;
+
+    void insertSurfaceSeparators();
 
     QString mId;
     std::unique_ptr<QgsFeedback> mFeedback = nullptr;
@@ -195,6 +204,8 @@ class CORE_EXPORT QgsVectorLayerProfileGenerator : public QgsAbstractProfileSurf
 
     // NOT for use in the background thread!
     QPointer< QgsVectorLayer > mLayer;
+
+    QVector<QPair<double, double>> mSurfaceIntervals;
 
     friend class QgsVectorLayerProfileResults;
 };

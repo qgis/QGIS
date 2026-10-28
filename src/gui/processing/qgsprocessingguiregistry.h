@@ -21,6 +21,8 @@
 #include "qgis_gui.h"
 #include "qgis_sip.h"
 #include "qgsmodeldesignerconfigwidget.h"
+#include "qgsprocessingalgorithmwidgetbase.h"
+#include "qgsprocessingwidgetcontext.h"
 #include "qgsprocessingwidgetwrapper.h"
 
 #include <QList>
@@ -35,6 +37,61 @@ class QgsProcessingModelConfigWidgetFactory;
 class QgsProcessingModelConfigWidget;
 class QgsProcessingModelComponent;
 class QgsProcessingGuiInternalModelConfigWidgetFactory;
+class QgsProcessingToolboxAction;
+class QgsProcessingToolboxContextAction;
+class QgsProcessingAlgorithmWidgetBase;
+class QgsProcessingScriptEditorDialog;
+class QMainWindow;
+
+/**
+ * A factory for creating widgets and dialogs for Processing components.
+ *
+ * \warning This is not stable API, it is in place for temporary compatibility with Python code only.
+ *
+ * \ingroup gui
+ * \since QGIS 4.4
+ */
+class GUI_EXPORT QgsProcessingDialogFactory
+{
+  public:
+    virtual ~QgsProcessingDialogFactory();
+
+    /**
+   * Creates a new widget for executing the specified algorithm.
+   */
+    virtual QgsProcessingAlgorithmWidget *createWidget(
+      QgsProcessingAlgorithm *algorithm SIP_TRANSFER,
+      bool inPlace = false,
+      QMainWindow *parent = nullptr,
+      QgsProcessingAlgorithmWidgetBase::WidgetFlags flags = QgsProcessingAlgorithmWidgetBase::WidgetFlags(),
+      Qgis::DockableWidgetInitialState initialState = Qgis::DockableWidgetInitialState::RestorePreviousState
+    ) = 0 SIP_TRANSFERBACK;
+
+
+    /**
+     * Creates a new script editor dialog.
+     */
+    virtual QgsProcessingScriptEditorDialog *createScriptEditorDialog( const QString &filePath = QString(), QWidget *parent = nullptr ) = 0 SIP_TRANSFERBACK;
+};
+
+/**
+ * A factory for creating Processing contexts, aware of the GUI components which may influence this.
+ *
+ * \warning This is not stable API, it is in place for temporary compatibility with Python code only.
+ *
+ * \ingroup gui
+ * \since QGIS 4.4
+ */
+class GUI_EXPORT QgsProcessingContextFactory
+{
+  public:
+    virtual ~QgsProcessingContextFactory();
+
+    /**
+    * Creates a new Processing context.
+    */
+    virtual QgsProcessingContext *createContext( QgsProcessingFeedback *feedback = nullptr ) = 0 SIP_TRANSFERBACK;
+};
 
 /**
  * A registry for widgets for use with the Processing framework.
@@ -45,7 +102,7 @@ class QgsProcessingGuiInternalModelConfigWidgetFactory;
  * \ingroup gui
  * \since QGIS 3.2
  */
-class GUI_EXPORT QgsProcessingGuiRegistry
+class GUI_EXPORT QgsProcessingGuiRegistry : public QgsProcessingWidgetContextGenerator
 {
   public:
     /**
@@ -53,7 +110,7 @@ class GUI_EXPORT QgsProcessingGuiRegistry
      * created by QgsGui.
      */
     QgsProcessingGuiRegistry();
-    ~QgsProcessingGuiRegistry();
+    ~QgsProcessingGuiRegistry() override;
 
     /**
      * Add a new configuration widget factory for customized algorithm configuration
@@ -142,7 +199,7 @@ class GUI_EXPORT QgsProcessingGuiRegistry
      *
      * \since QGIS 3.4
      */
-    QgsAbstractProcessingParameterWidgetWrapper *createParameterWidgetWrapper( const QgsProcessingParameterDefinition *parameter, Qgis::ProcessingMode type ) SIP_FACTORY;
+    QgsAbstractProcessingParameterWidgetWrapper *createParameterWidgetWrapper( const QgsProcessingParameterDefinition *parameter, Qgis::ProcessingMode type ) SIP_TRANSFERBACK;
 
     /**
      * Creates a new modeler parameter widget for the given \a parameter. This widget allows
@@ -206,6 +263,154 @@ class GUI_EXPORT QgsProcessingGuiRegistry
     QgsProcessingModelConfigWidget *createModelConfigWidgetForComponent( QgsProcessingModelComponent *component, QgsProcessingContext &context, const QgsProcessingParameterWidgetContext &widgetContext ) const
       SIP_FACTORY;
 
+    /**
+     * Register a Processing widget context \a generator class that will be used to retrieve
+     * a widget context when required.
+     *
+     * \note This is intended for registration of a "top-level", application widget generator
+     * which can return contexts with knowledge of the application map canvas, active project, etc.
+     *
+     * \warning The \a generator must live for the lifetime of the application, or this method
+     * must explicitly be called with a NULLPTR argument to de-register the generator.
+     *
+     * \see createWidgetContext()
+     * \since QGIS 4.4
+     */
+    void registerWidgetContextGenerator( QgsProcessingWidgetContextGenerator *generator );
+
+    /**
+     * Register a Processing widget context.
+     *
+     * \note This returns a "top-level", application widget context
+     * with knowledge of the application map canvas, active project, etc. Individual Processing GUI
+     * subcomponents may start with this context, then further refine with lower-level specific components
+     * (such as individual model-specific properties)
+     *
+     * \see createWidgetContext()
+     * \since QGIS 4.4
+     */
+    QgsProcessingParameterWidgetContext createWidgetContext() override;
+
+    /**
+     * Registers a toolbox \a action for a provider.
+     *
+     * Ownership of \a action is transferred to the registry.
+     *
+     * \see toolboxActionsForProvider()
+     * \see deregisterProviderToolboxActions()
+     * \since QGIS 4.4
+     */
+    void registerProviderToolboxAction( const QString &providerId, QgsProcessingToolboxAction *action SIP_TRANSFER );
+
+    /**
+     * Deregisters all toolbox actions for a provider.
+     *
+     * Any previously registered actions for this provider will be deleted.
+     *
+     * \see registerProviderToolboxAction()
+     * \since QGIS 4.4
+     */
+    void deregisterProviderToolboxActions( const QString &providerId );
+
+    /**
+     * Returns a list of all toolbox actions registered for a provider.
+     *
+     * \see registerProviderToolboxAction()
+     * \since QGIS 4.4
+     */
+    QList< QgsProcessingToolboxAction * > toolboxActionsForProvider( const QString &providerId ) const;
+
+    /**
+     * Registers a toolbox context menu \a action for a provider.
+     *
+     * Ownership of \a action is transferred to the registry.
+     *
+     * \see toolboxContextActionsForProvider()
+     * \see deregisterProviderToolboxContextActions()
+     * \since QGIS 4.4
+     */
+    void registerProviderToolboxContextAction( const QString &providerId, QgsProcessingToolboxContextAction *action SIP_TRANSFER );
+
+    /**
+     * Deregisters all toolbox context menu actions for a provider.
+     *
+     * Any previously registered actions for this provider will be deleted.
+     *
+     * \see registerProviderToolboxContextAction()
+     * \since QGIS 4.4
+     */
+    void deregisterProviderToolboxContextActions( const QString &providerId );
+
+    /**
+     * Deregisters a context menu \a action.
+     *
+     * The action will not be deleted, ownership will be returned to Python.
+     *
+     * \deprecated QGIS 4.4. Use deregisterProviderToolboxContextActions() instead.
+     */
+    Q_DECL_DEPRECATED void deregisterProviderToolboxContextAction( QgsProcessingToolboxContextAction *action SIP_TRANSFERBACK ) SIP_DEPRECATED;
+
+    /**
+     * Returns a list of all toolbox context menu actions registered for a provider.
+     *
+     * \see toolboxContextActions()
+     * \see registerProviderToolboxContextAction()
+     * \since QGIS 4.4
+     */
+    QList< QgsProcessingToolboxContextAction * > toolboxContextActionsForProvider( const QString &providerId ) const;
+
+    /**
+     * Returns a list of all toolbox context menu actions registered.
+     *
+     * \see toolboxContextActionsForProvider()
+     * \since QGIS 4.4
+     */
+    QList< QgsProcessingToolboxContextAction * > toolboxContextActions() const;
+
+    /**
+     * Sets the application's processing dialog \a factory.
+     *
+     * Ownership of \a factory is transferred.
+     *
+     * \warning This is not stable API, it is in place for temporary compatibility with Python code only.
+     *
+     * \see dialogFactory()
+     * \since QGIS 4.4
+     */
+    void setDialogFactory( QgsProcessingDialogFactory *factory SIP_TRANSFER );
+
+    /**
+     * Returns the application's processing dialog factory, if set.
+     *
+     * \warning This is not stable API, it is in place for temporary compatibility with Python code only.
+     *
+     * \see setDialogFactory()
+     * \since QGIS 4.4
+     */
+    QgsProcessingDialogFactory *dialogFactory();
+
+    /**
+     * Sets the application's Processing context \a factory.
+     *
+     * Ownership of \a factory is transferred.
+     *
+     * \warning This is not stable API, it is in place for temporary compatibility with Python code only.
+     *
+     * \see contextFactory()
+     * \since QGIS 4.4
+     */
+    void setContextFactory( QgsProcessingContextFactory *factory SIP_TRANSFER );
+
+    /**
+     * Returns the application's Processing context factory, if set.
+     *
+     * \warning This is not stable API, it is in place for temporary compatibility with Python code only.
+     *
+     * \see setContextFactory()
+     * \since QGIS 4.4
+     */
+    QgsProcessingContextFactory *contextFactory();
+
   private:
 #ifdef SIP_RUN
     QgsProcessingGuiRegistry( const QgsProcessingGuiRegistry &other );
@@ -215,6 +420,13 @@ class GUI_EXPORT QgsProcessingGuiRegistry
 
     QList<QPointer<QgsProcessingModelConfigWidgetFactory>> mModelConfigWidgetFactories;
     std::unique_ptr< QgsProcessingGuiInternalModelConfigWidgetFactory > mModelConfigWidgetFactory;
+
+    QgsProcessingWidgetContextGenerator *mWidgetContextGenerator = nullptr;
+
+    QMap< QString, QList< QgsProcessingToolboxAction * > > mProviderToolboxActions;
+    QMap< QString, QList< QgsProcessingToolboxContextAction * > > mProviderToolboxContextActions;
+    std::unique_ptr< QgsProcessingDialogFactory > mProcessingDialogFactory;
+    std::unique_ptr< QgsProcessingContextFactory > mContextFactory;
 };
 
 

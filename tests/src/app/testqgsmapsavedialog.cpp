@@ -57,6 +57,9 @@ class TestQgsMapSaveDialog : public QgsTest
       canvas.show(); // to make the canvas resize
       canvas.hide();
       canvas.setExtent( QgsRectangle( 623913, 5720967, 1215325, 6068610 ) );
+      canvas.mapSettings().setDpiTarget( 96 );
+      canvas.mapSettings().setOutputDpi( 96 );
+      canvas.mapSettings().setDevicePixelRatio( 1 );
 
       // Set up dialog
       QgsMapSaveDialog dialog( nullptr, &canvas );

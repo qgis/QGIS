@@ -23,7 +23,15 @@
 #    endif
 #endif
 //------------------------------------------------------------------------------
-#ifdef _WIN32
+#if defined(__clang__) || defined(__GNUC__)
+#    define ODBC_UNREACHABLE __builtin_unreachable()
+#elif defined(_MSC_VER)
+#    define ODBC_UNREACHABLE __assume(false)
+#else
+#    define ODBC_UNREACHABLE ((void)0)
+#endif
+//------------------------------------------------------------------------------
+#ifdef _MSC_VER
 #   pragma warning(disable: 4251 4275)
 #endif
 //------------------------------------------------------------------------------

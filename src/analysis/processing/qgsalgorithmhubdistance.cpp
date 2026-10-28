@@ -92,6 +92,8 @@ void QgsHubDistanceAlgorithm::initAlgorithm( const QVariantMap & )
 
 QVariantMap QgsHubDistanceAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
+  QGS_MARK_ALGORITHM_SOURCE
+
   if ( parameters.value( u"INPUT"_s ) == parameters.value( u"HUBS"_s ) )
     throw QgsProcessingException( QObject::tr( "The same layer was specified for both the hubs and spokes. The hubs and spoke layers must be different layers." ) );
 
@@ -131,12 +133,12 @@ QVariantMap QgsHubDistanceAlgorithm::processAlgorithm( const QVariantMap &parame
 
   QString linesDest;
   std::unique_ptr<QgsFeatureSink> linesSink( parameterAsSink( parameters, u"OUTPUT_LINES"_s, context, linesDest, fields, Qgis::WkbType::LineString, hubSource->sourceCrs() ) );
-  if ( !linesSink )
+  if ( parameters.value( u"OUTPUT_LINES"_s ).isValid() && !linesSink )
     throw QgsProcessingException( invalidSinkError( parameters, u"OUTPUT_LINES"_s ) );
 
   QString pointsDest;
   std::unique_ptr<QgsFeatureSink> pointsSink( parameterAsSink( parameters, u"OUTPUT_POINTS"_s, context, pointsDest, fields, Qgis::WkbType::Point, hubSource->sourceCrs() ) );
-  if ( !pointsSink )
+  if ( parameters.value( u"OUTPUT_POINTS"_s ).isValid() && !pointsSink )
     throw QgsProcessingException( invalidSinkError( parameters, u"OUTPUT_POINTS"_s ) );
 
   QgsFeatureRequest request;

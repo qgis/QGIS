@@ -21,6 +21,7 @@
 #include "qgscolorrampimpl.h"
 #include "qgsexpressioncontextutils.h"
 #include "qgsnumericformatregistry.h"
+#include "qgspainting.h"
 #include "qgssymbol.h"
 #include "qgssymbollayer.h"
 #include "qgssymbollayerutils.h"
@@ -98,7 +99,7 @@ void QgsPieChartPlot::renderContent( QgsRenderContext &context, QgsPlotRenderCon
   QgsExpressionContextScope *chartScope = new QgsExpressionContextScope( u"chart"_s );
   const QgsExpressionContextScopePopper scopePopper( context.expressionContext(), chartScope );
 
-  context.painter()->save();
+  QgsScopedQPainterState painterState( context.painter() );
   context.painter()->setClipRect( plotArea );
 
   const bool pieStackHorizontal = plotArea.width() >= plotArea.height();
@@ -114,7 +115,6 @@ void QgsPieChartPlot::renderContent( QgsRenderContext &context, QgsPlotRenderCon
   }
 
   QgsNumericFormatContext numericContext;
-  QMap<QString, QColor> categoriesColor;
   int seriesIndex = 0;
   for ( const QgsAbstractPlotSeries *series : seriesList )
   {
@@ -127,6 +127,7 @@ void QgsPieChartPlot::renderContent( QgsRenderContext &context, QgsPlotRenderCon
     symbol->startRender( context );
     const double pieWidth = pieArea - QgsSymbolLayerUtils::estimateMaxSymbolBleed( symbol, context ) - maxLabelHeight * 3;
 
+    QMap<QString, QColor> categoriesColor;
     QgsColorRamp *ramp = colorRampAt( seriesIndex % mColorRamps.size() );
     if ( QgsRandomColorRamp *randomRamp = dynamic_cast<QgsRandomColorRamp *>( ramp ) )
     {
@@ -255,8 +256,6 @@ void QgsPieChartPlot::renderContent( QgsRenderContext &context, QgsPlotRenderCon
     symbol->setColor( symbolColor );
     seriesIndex++;
   }
-
-  context.painter()->restore();
 }
 
 QgsFillSymbol *QgsPieChartPlot::fillSymbolAt( int index ) const

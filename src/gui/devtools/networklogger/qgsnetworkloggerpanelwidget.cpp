@@ -18,7 +18,7 @@
 #include <nlohmann/json.hpp>
 
 #include "qgsapplication.h"
-#include "qgsguiutils.h"
+#include "qgsgui.h"
 #include "qgsjsonutils.h"
 #include "qgsnetworklogger.h"
 #include "qgsnetworkloggernode.h"
@@ -174,7 +174,7 @@ QgsNetworkLoggerPanelWidget::QgsNetworkLoggerPanelWidget( QgsNetworkLogger *logg
 
   mTreeView = new QgsNetworkLoggerTreeView( mLogger );
   verticalLayout->addWidget( mTreeView );
-  mToolbar->setIconSize( QgsGuiUtils::iconSize( true ) );
+  mToolbar->setIconSize( QgsGui::iconSize( Qgis::UserInterfaceIconType::DockedToolbar ) );
 
   mFilterLineEdit->setShowClearButton( true );
   mFilterLineEdit->setShowSearchIcon( true );

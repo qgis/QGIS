@@ -1838,6 +1838,38 @@ class TestQgsCategorizedSymbolRenderer(QgisTestCase):
         _test("int", [1, 2], QVariant())
         _test("int", [1, 2], "")
 
+    def testSetLegendSymbolItemLabel(self):
+        cat1 = QgsRendererCategory(1, createMarkerSymbol(), "category 1")
+        cat2 = QgsRendererCategory(2, createMarkerSymbol(), "category 2")
+        cat3 = QgsRendererCategory(3, createMarkerSymbol(), "category 3")
+
+        renderer = QgsCategorizedSymbolRenderer("field", [cat1, cat2, cat3])
+
+        # verify initial labels
+        self.assertEqual(renderer.categories()[0].label(), "category 1")
+        self.assertEqual(renderer.categories()[1].label(), "category 2")
+        self.assertEqual(renderer.categories()[2].label(), "category 3")
+
+        # change label for second category using its key
+        key2 = renderer.categories()[1].uuid()
+        renderer.setLegendSymbolItemLabel(key2, "updated category 2")
+
+        self.assertEqual(renderer.categories()[0].label(), "category 1")
+        self.assertEqual(renderer.categories()[1].label(), "updated category 2")
+        self.assertEqual(renderer.categories()[2].label(), "category 3")
+
+        # change label via legendSymbolItems key
+        items = renderer.legendSymbolItems()
+        self.assertEqual(len(items), 3)
+        renderer.setLegendSymbolItemLabel(items[0].ruleKey(), "new category 1")
+        self.assertEqual(renderer.categories()[0].label(), "new category 1")
+
+        # non-existent key should not change anything
+        renderer.setLegendSymbolItemLabel("nonexistent", "nonexistent_label")
+        self.assertEqual(renderer.categories()[0].label(), "new category 1")
+        self.assertEqual(renderer.categories()[1].label(), "updated category 2")
+        self.assertEqual(renderer.categories()[2].label(), "category 3")
+
 
 if __name__ == "__main__":
     unittest.main()

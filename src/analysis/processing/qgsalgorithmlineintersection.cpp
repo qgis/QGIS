@@ -92,6 +92,8 @@ QgsLineIntersectionAlgorithm *QgsLineIntersectionAlgorithm::createInstance() con
 
 QVariantMap QgsLineIntersectionAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
+  QGS_MARK_ALGORITHM_SOURCE
+
   std::unique_ptr<QgsFeatureSource> sourceA( parameterAsSource( parameters, u"INPUT"_s, context ) );
   if ( !sourceA )
     throw QgsProcessingException( invalidSourceError( parameters, u"INPUT"_s ) );
@@ -154,7 +156,7 @@ QVariantMap QgsLineIntersectionAlgorithm::processAlgorithm( const QVariantMap &p
         }
 
         QgsGeometry tmpGeom = inFeatureB.geometry();
-        if ( engine->intersects( tmpGeom.constGet() ) )
+        if ( engine->intersects( tmpGeom.constGet(), nullptr, feedback ) )
         {
           QgsMultiPointXY points;
           QgsGeometry intersectGeom = inGeom.intersection( tmpGeom, QgsGeometryParameters(), feedback );

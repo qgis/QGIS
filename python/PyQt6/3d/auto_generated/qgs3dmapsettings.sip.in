@@ -752,7 +752,19 @@ Sets the camera lens' field of view
 .. versionadded:: 3.8
 %End
 
+    Qgis::Map3DProjectionType projectionType() const;
+%Docstring
+Returns the camera lens' projection type
 
+.. versionadded:: 4.2
+%End
+
+    void setProjectionType( const Qgis::Map3DProjectionType projectionType );
+%Docstring
+Sets the camera lens' projection type
+
+.. versionadded:: 4.2
+%End
 
 
     double cameraMovementSpeed() const;

@@ -141,7 +141,7 @@ void QgisAppStyleSheet::applyStyleSheet( const QMap<QString, QVariant> &opts )
 
   QgsDebugMsgLevel( u"Stylesheet built: %1"_s.arg( ss ), 2 );
 
-  emit appStyleSheetChanged( ss );
+  QgsGui::instance()->setApplicationStyleSheet( ss );
 }
 
 void QgisAppStyleSheet::updateStyleSheet()

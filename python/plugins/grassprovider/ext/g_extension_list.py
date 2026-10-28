@@ -29,10 +29,10 @@ def processInputs(alg, parameters, context, feedback):
     # Locally installed extensions
     if selectedOption == 0:
         optionString = "-a"
-    # Extensions available in the official GRASS GIS Addons repository
+    # Extensions available in the official GRASS Addons repository
     elif selectedOption == 1:
         optionString = "-l"
-    # Extensions available in the official GRASS GIS Addons repository including module description
+    # Extensions available in the official GRASS Addons repository including module description
     else:
         optionString = "-c"
     param = QgsProcessingParameterBoolean(optionString, "", True)

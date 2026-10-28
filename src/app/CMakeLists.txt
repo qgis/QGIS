@@ -16,6 +16,7 @@ set(QGIS_APP_SRCS
   qgsappcoordinateoperationhandlers.cpp
   qgsappdbutils.cpp
   qgsapplayertreeviewmenuprovider.cpp
+  qgsappmenuutils.cpp
   qgsappwindowmanager.cpp
   qgsappscreenshots.cpp
   qgsanimationexportdialog.cpp
@@ -66,6 +67,7 @@ set(QGIS_APP_SRCS
   qgsrasterattributetableapputils.cpp
   qgssnappinglayertreemodel.cpp
   qgssnappingwidget.cpp
+  qgstopocentricwidget.cpp
   qgsstatusbarcoordinateswidget.cpp
   qgsstatusbarmagnifierwidget.cpp
   qgsstatusbarscalewidget.cpp
@@ -155,6 +157,7 @@ set(QGIS_APP_SRCS
   qgsrelationmanagerdialog.cpp
   qgsrelationadddlg.cpp
   qgsrelationaddpolymorphicdialog.cpp
+  qgssaveprojecttemplatedialog.cpp
   qgsselectbyformdialog.cpp
   qgsstatisticalsummarydockwidget.cpp
   qgstextannotationdialog.cpp
@@ -300,6 +303,9 @@ set(QGIS_APP_SRCS
   mesh/qgsmeshtransformcoordinatesdockwidget.cpp
   mesh/qgsmeshselectbyexpressiondialog.cpp
 
+  processing/qgsappprocessingutils.cpp
+  processing/qgsprocessingtoolboxdock.cpp
+
   vector/qgsvectorelevationpropertieswidget.cpp
 )
 
@@ -382,6 +388,7 @@ if (WITH_3D)
     3d/qgssimplelinematerialwidget.cpp
     3d/qgssymbol3dwidget.cpp
     3d/qgstiledscenelayer3drendererwidget.cpp
+    3d/qgsunlitmaterialwidget.cpp
     3d/qgsvectorlayer3dpropertieswidget.cpp
     3d/qgsvectorlayer3drendererwidget.cpp
     3d/qgsmeshlayer3drendererwidget.cpp
@@ -457,10 +464,6 @@ elseif(MINGW)
     qgisapp.cpp
     PROPERTIES COMPILE_FLAGS "-Wa,-mbig-obj"
   )
-endif()
-
-if(ENABLE_MODELTEST)
-  include_directories(../../tests/qt_modeltest)
 endif()
 
 if (ANDROID)
@@ -554,6 +557,7 @@ target_compile_definitions(qgis_app PRIVATE "QT_PLUGINS_DIR=\"${QT_PLUGINS_DIR}\
 target_compile_definitions(qgis_app PRIVATE "QGISPOSTFIX=\"${QGISPOSTFIX}\"")
 if (POSTGRES_FOUND)
   target_compile_definitions(qgis_app PRIVATE -DPOSTGRESQL_VERSION=\"${PostgreSQL_VERSION_STRING}\")
+  target_link_libraries(qgis_app PRIVATE PostgreSQL::PostgreSQL)
 endif()
 
 target_include_directories(qgis_app PUBLIC

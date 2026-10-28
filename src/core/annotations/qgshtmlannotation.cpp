@@ -23,6 +23,7 @@
 #include "qgsfeatureiterator.h"
 #include "qgslogger.h"
 #include "qgsnetworkaccessmanager.h"
+#include "qgspainting.h"
 #include "qgsproject.h"
 #include "qgsrendercontext.h"
 #include "qgsvectorlayer.h"

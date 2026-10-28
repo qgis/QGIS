@@ -88,6 +88,8 @@ void QgsFindProjectionAlgorithm::initAlgorithm( const QVariantMap & )
 
 QVariantMap QgsFindProjectionAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
+  QGS_MARK_ALGORITHM_SOURCE
+
   std::unique_ptr<QgsProcessingFeatureSource> source( parameterAsSource( parameters, u"INPUT"_s, context ) );
   if ( !source )
     throw QgsProcessingException( invalidSourceError( parameters, u"INPUT"_s ) );
@@ -159,7 +161,7 @@ QVariantMap QgsFindProjectionAlgorithm::processAlgorithm( const QVariantMap &par
 
     try
     {
-      if ( engine->intersects( transformedBounds.constGet() ) )
+      if ( engine->intersects( transformedBounds.constGet(), nullptr, feedback ) )
       {
         feedback->pushInfo( QObject::tr( "Found candidate CRS: %1." ).arg( candidateCrs.authid() ) );
         QgsFeature f = QgsFeature( fields );

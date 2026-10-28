@@ -1094,7 +1094,7 @@ bool QgsCompositionConverter::readScaleBarXml( QgsLayoutItemScaleBar *layoutItem
   layoutItem->setMaximumBarWidth( itemElem.attribute( u"maxBarWidth"_s, u"150"_s ).toDouble() );
   layoutItem->mSegmentMillimeters = itemElem.attribute( u"segmentMillimeters"_s, u"0.0"_s ).toDouble();
   layoutItem->setMapUnitsPerScaleBarUnit( itemElem.attribute( u"numMapUnitsPerScaleBarUnit"_s, u"1.0"_s ).toDouble() );
-  layoutItem->setUnitLabel( itemElem.attribute( u"unitLabel"_s ) );
+  layoutItem->setUnitLabel( ' ' + itemElem.attribute( u"unitLabel"_s ) );
 
   QFont f;
   if ( !QgsFontUtils::setFromXmlChildNode( f, itemElem, u"scaleBarFont"_s ) )

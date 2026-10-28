@@ -117,6 +117,7 @@ union of the intervals describes the temporal extent.
 .. versionadded:: 3.12
 %End
 
+
     static QgsCoordinateReferenceSystem parseCrs( const QString &bboxCrs );
 %Docstring
 Parses the CRS URI ``bboxCrs`` (example:

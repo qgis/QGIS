@@ -53,6 +53,7 @@ class QgsCurvePolygon;
 class QgsFeature;
 class QgsLineString;
 class QgsCurve;
+class QgsSymbolConverterContext;
 
 /**
  * \ingroup core
@@ -148,16 +149,40 @@ class CORE_EXPORT QgsArcGisRestUtils
     /**
      * Converts a symbol JSON \a definition to a QgsSymbol.
      *
-     * Caller takes ownership of the returned symbol.
+     * \param definition symbol JSON definition
+     * \param context conversion context, used to collect warnings and errors encountered during conversion.
+     * \returns the converted symbol, or nullptr on failure. Caller takes ownership of the returned symbol.
+     * \note The \a context parameter was added in QGIS 4.2
      */
-    static std::unique_ptr< QgsSymbol > convertSymbol( const QVariantMap &definition );
+    static std::unique_ptr< QgsSymbol > convertSymbol( const QVariantMap &definition, QgsSymbolConverterContext &context );
+
+    /**
+     * Converts a symbol JSON \a definition to a QgsSymbol.
+     *
+     * \param definition symbol JSON definition
+     * \returns the converted symbol, or nullptr on failure. Caller takes ownership of the returned symbol.
+     * \deprecated QGIS 4.2. Use the overload with a QgsSymbolConverterContext argument instead.
+     */
+    Q_DECL_DEPRECATED static std::unique_ptr< QgsSymbol > convertSymbol( const QVariantMap &definition ) SIP_DEPRECATED;
 
     /**
      * Converts renderer JSON \a data to an equivalent QgsFeatureRenderer.
      *
-     * Caller takes ownership of the returned renderer.
+     * \param rendererData renderer JSON data
+     * \param context conversion context, used to collect warnings and errors encountered during conversion.
+     * \returns the converted renderer, or nullptr on failure. Caller takes ownership of the returned renderer.
+     * \note The \a context parameter was added in QGIS 4.2
      */
-    static std::unique_ptr< QgsFeatureRenderer > convertRenderer( const QVariantMap &rendererData );
+    static std::unique_ptr< QgsFeatureRenderer > convertRenderer( const QVariantMap &rendererData, QgsSymbolConverterContext &context );
+
+    /**
+     * Converts renderer JSON \a data to an equivalent QgsFeatureRenderer.
+     *
+     * \param rendererData renderer JSON data
+     * \returns the converted renderer, or nullptr on failure. Caller takes ownership of the returned renderer.
+     * \deprecated QGIS 4.2. Use the overload with a QgsSymbolConverterContext argument instead.
+     */
+    Q_DECL_DEPRECATED static std::unique_ptr< QgsFeatureRenderer > convertRenderer( const QVariantMap &rendererData ) SIP_DEPRECATED;
 
     /**
      * Converts labeling JSON \a data to an equivalent QGIS vector labeling.
@@ -352,6 +377,14 @@ class CORE_EXPORT QgsArcGisRestUtils
     static double defaultNoDataForDataType( Qgis::DataType type, bool &ok SIP_OUT );
 
   private:
+    /**
+     * Applies visual variables from renderer JSON \a data to a \a symbol.
+     *
+     * Currently only rotation visual variables (\c rotationInfo) are supported.
+     * Warnings and errors encountered during conversion are pushed to \a context.
+     */
+    static void applyVisualVariables( const QVariantMap &rendererData, QgsSymbol *symbol, QgsSymbolConverterContext &context );
+
     /**
      * Converts a JSON \a list to a point geometry of the specified wkb \a type.
      */

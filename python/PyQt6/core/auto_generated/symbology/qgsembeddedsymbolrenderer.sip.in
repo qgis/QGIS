@@ -76,7 +76,7 @@ Ownership of ``symbol`` is transferred to the renderer.
 .. seealso:: :py:func:`defaultSymbol`
 %End
 
-    static QgsFeatureRenderer *create( QDomElement &element, const QgsReadWriteContext &context ) /Factory/;
+    static std::unique_ptr<QgsFeatureRenderer> create( QDomElement &element, const QgsReadWriteContext &context );
 %Docstring
 Creates a new embedded symbol renderer from an XML ``element``, using
 the supplied read/write ``context``.
@@ -84,7 +84,7 @@ the supplied read/write ``context``.
 The caller takes ownership of the returned renderer.
 %End
 
-    static QgsEmbeddedSymbolRenderer *convertFromRenderer( const QgsFeatureRenderer *renderer ) /Factory/;
+    static std::unique_ptr<QgsEmbeddedSymbolRenderer> convertFromRenderer( const QgsFeatureRenderer *renderer );
 %Docstring
 Creates a QgsEmbeddedSymbolRenderer from an existing ``renderer``.
 

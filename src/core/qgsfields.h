@@ -16,7 +16,6 @@
 #ifndef QGSFIELDS_H
 #define QGSFIELDS_H
 
-
 #include "qgis.h"
 #include "qgis_core.h"
 #include "qgis_sip.h"
@@ -445,7 +444,7 @@ class CORE_EXPORT QgsFields
     QList<QgsField> toList() const SIP_HOLDGIL;
 
     bool operator==( const QgsFields &other ) const SIP_HOLDGIL;
-    bool operator!=( const QgsFields &other ) const  SIP_HOLDGIL { return !( *this == other ); }
+    bool operator!=( const QgsFields &other ) const SIP_HOLDGIL { return !( *this == other ); }
 
 #ifndef SIP_RUN
 

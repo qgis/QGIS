@@ -51,14 +51,14 @@ class CORE_EXPORT QgsTiledSceneTextureRenderer : public QgsTiledSceneRenderer
     /**
      * Creates a textured renderer from an XML \a element.
      */
-    static QgsTiledSceneRenderer *create( QDomElement &element, const QgsReadWriteContext &context ) SIP_FACTORY;
+    static std::unique_ptr<QgsTiledSceneRenderer> create( QDomElement &element, const QgsReadWriteContext &context );
 
     /**
      * Returns a copy of the default fill symbol used to render triangles without textures.
      *
      * \see setFillSymbol()
      */
-    static std::unique_ptr< QgsFillSymbol > createDefaultFillSymbol() SIP_FACTORY;
+    static std::unique_ptr< QgsFillSymbol > createDefaultFillSymbol();
 
     /**
      * Returns the fill symbol used to render triangles without textures.

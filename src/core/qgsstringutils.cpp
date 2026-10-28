@@ -23,14 +23,23 @@
 #include <QString>
 #include <QStringList>
 #include <QTextBoundaryFinder>
+#include <QUuid>
 #include <QVector>
 
 using namespace Qt::StringLiterals;
 
-QHash<QString, QString> QgsStringUtils::UNACCENT_MAP = QgsStringUtils::createUnaccentMap();
-
 QString QgsStringUtils::unaccent( const QString &input )
 {
+  // do a cheap scan ahead first, if all characters are simple ascii characters then we don't have to
+  // do anything
+  constexpr char16_t MAX_SIMPLE_CHAR = 127;
+  if ( std::none_of( input.cbegin(), input.cend(), []( QChar c ) { return c.unicode() > MAX_SIMPLE_CHAR; } ) )
+  {
+    return input;
+  }
+
+  static const QHash<char32_t, QString> UNACCENT_MAP = QgsStringUtils::createUnaccentMap();
+
   // Normalize input to NFC so that Unicode characters composed of base +
   // combining marks are converted to their canonical composed form.
   // This ensures lookups match the keys in UNACCENT_MAP, which are stored
@@ -45,28 +54,61 @@ QString QgsStringUtils::unaccent( const QString &input )
   while ( i < n )
   {
     const QChar c = in.at( i );
+
+    if ( c.unicode() <= MAX_SIMPLE_CHAR )
+    {
+      // basic ascii character, just skip the costly logic entirely
+      out.append( c );
+      ++i;
+      continue;
+    }
+
     int len = 1;
+
+    char32_t ucs4 = c.unicode();
 
     // Detect surrogate pair (non-BMP)
     if ( c.isHighSurrogate() && i + 1 < n )
     {
       const QChar c2 = in.at( i + 1 );
       if ( c2.isLowSurrogate() )
+      {
+        ucs4 = QChar::surrogateToUcs4( c, c2 );
         len = 2;
+      }
     }
 
-    const QString key = in.mid( i, len ).normalized( QString::NormalizationForm_C );
-
-    auto it = UNACCENT_MAP.constFind( key );
+    auto it = UNACCENT_MAP.constFind( ucs4 );
     if ( it != UNACCENT_MAP.constEnd() )
+    {
       out.append( it.value() );
+    }
     else
-      out.append( key );
+    {
+      out.append( c );
+      if ( len == 2 )
+      {
+        out.append( in.at( i + 1 ) );
+      }
+    }
 
     i += len;
   }
 
   return out;
+}
+
+QString QgsStringUtils::createUniqueId( const QString &base )
+{
+  // A random UUID guarantees uniqueness; the base is a human-readable prefix.
+  const QString uuid = QUuid::createUuid().toString( QUuid::StringFormat::WithoutBraces );
+  QString id = base.isEmpty() ? uuid : base + '_' + uuid;
+  // Tidy the id up to avoid characters that may cause problems elsewhere (e.g.
+  // in some parts of XML). Replaces every non-word character (word characters
+  // are the alphabet, numbers and underscore) with an underscore.
+  const thread_local QRegularExpression idRx( uR"([\W])"_s );
+  id.replace( idRx, u"_"_s );
+  return id;
 }
 
 QString QgsStringUtils::capitalize( const QString &string, Qgis::Capitalization capitalization )
@@ -111,15 +153,9 @@ QString QgsStringUtils::capitalize( const QString &string, Qgis::Capitalization 
     {
       // yes, this is MASSIVELY simplifying the problem!!
 
-      static QStringList smallWords;
-      static QStringList newPhraseSeparators;
-      static QRegularExpression splitWords;
-      if ( smallWords.empty() )
-      {
-        smallWords = QObject::tr( "a|an|and|as|at|but|by|en|for|if|in|nor|of|on|or|per|s|the|to|vs.|vs|via" ).split( '|' );
-        newPhraseSeparators = QObject::tr( ".|:" ).split( '|' );
-        splitWords = QRegularExpression( u"\\b"_s, QRegularExpression::UseUnicodePropertiesOption );
-      }
+      const thread_local QStringList smallWords = QObject::tr( "a|an|and|as|at|but|by|en|for|if|in|nor|of|on|or|per|s|the|to|vs.|vs|via" ).split( '|' );
+      const thread_local QStringList newPhraseSeparators = QObject::tr( ".|:" ).split( '|' );
+      const thread_local QRegularExpression splitWords = QRegularExpression( u"\\b"_s, QRegularExpression::UseUnicodePropertiesOption );
 
       const bool allSameCase = string.toLower() == string || string.toUpper() == string;
       const QStringList parts = ( allSameCase ? string.toLower() : string ).split( splitWords, Qt::SkipEmptyParts );

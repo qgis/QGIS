@@ -396,6 +396,15 @@ class CORE_EXPORT QgsProcessingModelAlgorithm : public QgsProcessingAlgorithm
     bool loadVariant( const QVariant &variant );
 
     /**
+     * Returns the QGIS version the model was originally created (or last saved) in.
+     *
+     * If the model was saved in QGIS versions prior to 4.4, this version will default to 0.0.0.
+     *
+     * \since QGIS 4.4
+     */
+    QString modelQgisVersion() const { return mModelQgisVersion; }
+
+    /**
      * Returns the model's help contents (a free-form map of values describing the algorithm's
      * use and metadata).
      * \see setHelpContent()
@@ -523,9 +532,9 @@ class CORE_EXPORT QgsProcessingModelAlgorithm : public QgsProcessingAlgorithm
      * Creates a new expression context scope for a child algorithm within the model.
      * \see variablesForChildAlgorithm()
      */
-    QgsExpressionContextScope *createExpressionContextScopeForChildAlgorithm(
+    std::unique_ptr<QgsExpressionContextScope> createExpressionContextScopeForChildAlgorithm(
       const QString &childId, QgsProcessingContext &context, const QVariantMap &modelParameters = QVariantMap(), const QVariantMap &results = QVariantMap()
-    ) const SIP_FACTORY;
+    ) const;
 
     /**
      * Returns the map of custom expression context variables defined for this model.
@@ -591,6 +600,7 @@ class CORE_EXPORT QgsProcessingModelAlgorithm : public QgsProcessingAlgorithm
      */
     static QString safeName( const QString &name, bool capitalize = false );
 
+
 #ifndef SIP_RUN
 
     //! Internal model versions
@@ -614,6 +624,7 @@ class CORE_EXPORT QgsProcessingModelAlgorithm : public QgsProcessingAlgorithm
     QString mModelName;
     QString mModelGroup;
     QString mModelGroupId;
+    QString mModelQgisVersion;
 
     QMap< QString, QgsProcessingModelChildAlgorithm > mChildAlgorithms;
 

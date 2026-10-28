@@ -39,7 +39,7 @@
 
 using namespace Qt::StringLiterals;
 
-const QgsSettingsEntryBool *QgsSettingsRegistryGui::settingsRespectScreenDPI = new QgsSettingsEntryBool( u"respect-screen-dpi"_s, QgsSettingsTree::sTreeGui, false );
+const QgsSettingsEntryBool *QgsSettingsRegistryGui::settingsRespectScreenDPI = new QgsSettingsEntryBool( u"canvas-inherits-screen-dpi"_s, QgsSettingsTree::sTreeGui, true );
 
 const QgsSettingsEntryBool *QgsSettingsRegistryGui::settingsCadFloaterActive
   = new QgsSettingsEntryBool( u"floater-active"_s, QgsSettingsTree::sTreeCad, false, u"Whether the CAD floater widget is active"_s );

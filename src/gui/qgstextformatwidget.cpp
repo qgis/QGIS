@@ -21,6 +21,7 @@
 #include "qgsexpressioncontextutils.h"
 #include "qgsfillsymbol.h"
 #include "qgsfontutils.h"
+#include "qgsgeos.h"
 #include "qgsgui.h"
 #include "qgshelp.h"
 #include "qgsiconutils.h"
@@ -120,7 +121,7 @@ void QgsTextFormatWidget::initWidget()
   mRenderingItem->setIcon( QgsApplication::getThemeIcon( u"propertyicons/render.svg"_s ) );
   mRenderingItem->setToolTip( tr( "Rendering" ) );
 
-#if ( GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR < 10 )
+#if GEOS_VERSION_NUM < GEOS_COMPUTE_VERSION( 3, 10, 0 )
   mDuplicatesStackedWidget->setCurrentWidget( mDuplicatesNotAvailableWidget );
   mLabelSpacingStackedWidget->setCurrentWidget( mLabelSpacingNotAvailableWidget );
 #endif
@@ -524,15 +525,15 @@ void QgsTextFormatWidget::initWidget()
 
   mLabelingOptionsListWidget->setCurrentRow( settings.value( u"Windows/Labeling/Tab"_s, 0 ).toInt() );
 
-  mBufferEffect.reset( QgsPaintEffectRegistry::defaultStack() );
+  mBufferEffect = QgsPaintEffectRegistry::defaultStack();
   connect( mBufferEffectWidget, &QgsEffectStackCompactWidget::changed, this, &QgsTextFormatWidget::updatePreview );
   mBufferEffectWidget->setPaintEffect( mBufferEffect.get() );
 
-  mMaskEffect.reset( QgsPaintEffectRegistry::defaultStack() );
+  mMaskEffect = QgsPaintEffectRegistry::defaultStack();
   connect( mMaskEffectWidget, &QgsEffectStackCompactWidget::changed, this, &QgsTextFormatWidget::updatePreview );
   mMaskEffectWidget->setPaintEffect( mMaskEffect.get() );
 
-  mBackgroundEffect.reset( QgsPaintEffectRegistry::defaultStack() );
+  mBackgroundEffect = QgsPaintEffectRegistry::defaultStack();
   connect( mBackgroundEffectWidget, &QgsEffectStackCompactWidget::changed, this, &QgsTextFormatWidget::updatePreview );
   mBackgroundEffectWidget->setPaintEffect( mBackgroundEffect.get() );
 
@@ -1119,7 +1120,7 @@ void QgsTextFormatWidget::updateWidgetForFormat( const QgsTextFormat &format )
     mBufferEffect.reset( lPaintEffect->clone() );
   else
   {
-    mBufferEffect.reset( QgsPaintEffectRegistry::defaultStack() );
+    mBufferEffect = QgsPaintEffectRegistry::defaultStack();
     mBufferEffect->setEnabled( false );
   }
   mBufferEffectWidget->setPaintEffect( mBufferEffect.get() );
@@ -1136,7 +1137,7 @@ void QgsTextFormatWidget::updateWidgetForFormat( const QgsTextFormat &format )
     mMaskEffect.reset( lPaintEffect->clone() );
   else
   {
-    mMaskEffect.reset( QgsPaintEffectRegistry::defaultStack() );
+    mMaskEffect = QgsPaintEffectRegistry::defaultStack();
     mMaskEffect->setEnabled( false );
   }
   mMaskEffectWidget->setPaintEffect( mMaskEffect.get() );
@@ -1226,13 +1227,13 @@ void QgsTextFormatWidget::updateWidgetForFormat( const QgsTextFormat &format )
     mBackgroundEffect.reset( lPaintEffect->clone() );
   else
   {
-    mBackgroundEffect.reset( QgsPaintEffectRegistry::defaultStack() );
+    mBackgroundEffect = QgsPaintEffectRegistry::defaultStack();
     mBackgroundEffect->setEnabled( false );
   }
   mBackgroundEffectWidget->setPaintEffect( mBackgroundEffect.get() );
 
-  mBackgroundMarkerSymbolButton->setSymbol( background.markerSymbol() ? background.markerSymbol()->clone() : QgsSymbol::defaultSymbol( Qgis::GeometryType::Point ) );
-  mBackgroundFillSymbolButton->setSymbol( background.fillSymbol() ? background.fillSymbol()->clone() : QgsSymbol::defaultSymbol( Qgis::GeometryType::Polygon ) );
+  mBackgroundMarkerSymbolButton->setSymbol( background.markerSymbol() ? background.markerSymbol()->clone() : QgsSymbol::defaultSymbol( Qgis::GeometryType::Point ).release() );
+  mBackgroundFillSymbolButton->setSymbol( background.fillSymbol() ? background.fillSymbol()->clone() : QgsSymbol::defaultSymbol( Qgis::GeometryType::Polygon ).release() );
 
   // drop shadow
   mShadowDrawChkBx->setChecked( shadow.enabled() );
@@ -1645,6 +1646,10 @@ void QgsTextFormatWidget::updatePlacementWidgets()
   {
     showDistanceFrame = true;
     mPlacementDistanceFrame->setEnabled( true );
+  }
+  else if ( currentGeometryType == Qgis::GeometryType::Line && currentPlacement == Qgis::LabelPlacement::Horizontal )
+  {
+    showRotationFrame = true;
   }
 
   mPlacementLineFrame->setVisible( showLineFrame );
@@ -2514,7 +2519,7 @@ QgsTextFormatPanelWidget::QgsTextFormatPanelWidget( const QgsTextFormat &format,
   mFormatWidget = qobject_cast<QgsTextFormatWidget *>( widget() );
   connect( mFormatWidget, &QgsTextFormatWidget::widgetChanged, this, [this] {
     if ( !mBlockSignals )
-      emit widgetChanged();
+      emit changed();
   } );
 }
 

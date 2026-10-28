@@ -1,13 +1,9 @@
 #version 330 core
 
-in treatedVertex {
-    vec3 worldPosition;
-    vec3 worldNormal;
-    float magnitude;
-    noperspective vec4 edgeA;
-    noperspective vec4 edgeB;
-    flat int configuration;
-} fs_in;
+in vec3 worldPosition;
+in vec3 worldNormal;
+in float magnitude;
+in vec3 barycentric;
 
 out vec4 fragColor;
 
@@ -18,6 +14,8 @@ uniform bool wireframeEnabled;
 uniform float lineWidth;
 // Sets the color of the wireframe
 uniform vec4 lineColor;
+// Sets if triangles should use per face normal instead of the per vertex normal
+uniform bool flatTriangles;
 
 // Sets the redering style, 0: unique color, 1: color ramp shader of terrain, 2: color ramp shader of 2D rendering
 uniform int textureType;
@@ -46,59 +44,24 @@ uniform vec4 arrowsColor;
 
 #pragma include ../phong.inc.frag
 
-// modified copy from Qt source : examples/qt3d/wireframe/robustwireframe.frag
-vec4 wireframeShadeLine( const in vec4 color )
+
+float edgeFactor()
 {
-    // Find the smallest distance between the fragment and a triangle edge
-    float d;
-    if ( fs_in.configuration == 0 )
-    {
-        // Common configuration
-        d = min( fs_in.edgeA.x, fs_in.edgeA.y );
-        d = min( d, fs_in.edgeA.z );
-    }
-    else
-    {
-        // Handle configuration where screen space projection breaks down
-        // Compute and compare the squared distances
-        vec2 AF = gl_FragCoord.xy - fs_in.edgeA.xy;
-        float sqAF = dot( AF, AF );
-        float AFcosA = dot( AF, fs_in.edgeA.zw );
-        d = abs( sqAF - AFcosA * AFcosA );
+    vec3 dBdx = dFdx( barycentric );
+    vec3 dBdy = dFdy( barycentric );
+    vec3 gradientLength = sqrt( dBdx * dBdx + dBdy * dBdy );
+    vec3 d = barycentric / gradientLength;
+    float dist = min( min( d.x, d.y ), d.z );
 
-        vec2 BF = gl_FragCoord.xy - fs_in.edgeB.xy;
-        float sqBF = dot( BF, BF );
-        float BFcosB = dot( BF, fs_in.edgeB.zw );
-        d = min( d, abs( sqBF - BFcosB * BFcosB ) );
+    if ( dist < lineWidth - 1.0 )
+        return 0.0;
+    if ( dist > lineWidth + 1.0 )
+        return 1.0;
 
-        // Only need to care about the 3rd edge for some configurations.
-        if ( fs_in.configuration == 1 || fs_in.configuration == 2 || fs_in.configuration == 4 )
-        {
-            float AFcosA0 = dot( AF, normalize( fs_in.edgeB.xy - fs_in.edgeA.xy ) );
-            d = min( d, abs( sqAF - AFcosA0 * AFcosA0 ) );
-        }
-
-        d = sqrt( d );
-    }
-
-    // Blend between line color and phong color
-    float mixVal;
-    if ( d < lineWidth - 1.0 )
-    {
-        mixVal = 1.0;
-    }
-    else if ( d > lineWidth + 1.0 )
-    {
-        mixVal = 0.0;
-    }
-    else
-    {
-        float x = d - ( lineWidth - 1.0 );
-        mixVal = exp2( -2.0 * ( x * x ) );
-    }
-
-    return mix( color, lineColor, mixVal );
+    float x = dist - ( lineWidth - 1.0 );
+    return 1.0 - exp2( -2.0 * x * x );
 }
+
 
 vec3 linearColorRamp()
 {
@@ -122,12 +85,12 @@ vec3 linearColorRamp()
       float value1=colorRampLine1.x;
       float value2=colorRampLine2.x;
 
-      if (fs_in.magnitude<=value1 )
+      if (magnitude<=value1 )
         return color1;
 
-      if (fs_in.magnitude>value1 && fs_in.magnitude<=value2)
+      if (magnitude>value1 && magnitude<=value2)
       {
-          float mixValue=(fs_in.magnitude-value1)/(value2-value1);
+          float mixValue=(magnitude-value1)/(value2-value1);
           return mix(color1,color2,mixValue);
       }
     }
@@ -154,7 +117,7 @@ vec3 discreteColorRamp()
         color=colorRampLine.yzw;
         float value=colorRampLine.x;
 
-        if ( isinf(value) || fs_in.magnitude<value)
+        if ( isinf(value) || magnitude<value)
         {
             return color;
         }
@@ -174,7 +137,7 @@ vec3 exactColorRamp()
         vec3 color=colorRampLine.yzw;
         float value=colorRampLine.x;
 
-        if ( abs(fs_in.magnitude-value)<0.01)
+        if ( abs(magnitude-value)<0.01)
         {
             return color;
         }
@@ -211,8 +174,8 @@ float arrows()
 {
     ivec2 size=textureSize(arrowsGridTexture,0);
 
-    float posX=(fs_in.worldPosition.x-arrowsMinCorner.x)/arrowsSpacing+0.5;
-    float posY=(fs_in.worldPosition.y+arrowsMinCorner.y)/arrowsSpacing+0.5;
+    float posX=(worldPosition.x-arrowsMinCorner.x)/arrowsSpacing+0.5;
+    float posY=(worldPosition.y+arrowsMinCorner.y)/arrowsSpacing+0.5;
     int gridPosX=int(posX);
     int gridPosY=int(posY);
 
@@ -259,12 +222,18 @@ void main()
     float ambianceFactor=0.15;
     vec3 diffuseColor;
 
+    vec3 shadingNormal;
+    if (flatTriangles)
+        shadingNormal = normalize( cross( dFdx( worldPosition ), dFdy( worldPosition ) ) );
+    else
+        shadingNormal = worldNormal;
+
     //Apply light
-    adModel(fs_in.worldPosition, fs_in.worldNormal,diffuseColor);
+    adModel(worldPosition, shadingNormal, diffuseColor);
     color = vec4(  color.xyz * (diffuseColor+ambianceFactor), 1 );
 
     if (wireframeEnabled)
-      color = wireframeShadeLine( color );
+      color = mix( lineColor, color, edgeFactor() );
 
     if (arrowsEnabled)
     {

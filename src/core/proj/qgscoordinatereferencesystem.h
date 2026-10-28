@@ -786,8 +786,19 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
     /**
      * Returns whether the CRS is a geographic CRS (using lat/lon coordinates)
      * \returns TRUE if CRS is geographic, or FALSE if it is a projected CRS
+     *
+     * \see isGeographicCrossingAntimeridian()
      */
     bool isGeographic() const;
+
+    /**
+     * Returns TRUE if the CRS is a geographic CRS (using lat/lon coordinates) where the area of use crosses the antimeridian.
+     *
+     * Care must be taken when working with extents in these CRS to avoid flipping the regions to the opposite portion of the globe.
+     *
+     * \since QGIS 4.4
+     */
+    bool isGeographicCrossingAntimeridian() const;
 
     /**
      * Returns TRUE if the CRS is a dynamic CRS.
@@ -1113,6 +1124,35 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
     //! Returns auth id of related geographic CRS
     QString geographicCrsAuthId() const;
 
+    /**
+     * Returns the topocentric origin of a topocentric compatible CRS.
+     *
+     * \param latitude Latitude of topocentric origin in decimal degrees
+     * \param longitude Longitude of topocentric origin in decimal degrees
+     * \returns TRUE if this CRS is a topocentric compatible CRS and the origin was successfully retrieved
+     * \since QGIS 4.2
+     */
+    bool topocentricOrigin( double &latitude SIP_OUT, double &longitude SIP_OUT ) const;
+
+
+    /**
+     * Constructs a topocentric CRS derived from this CRS with origin
+     * at \a latitude, \a longitude in decimal degrees.
+     *
+     * If the CRS is not topocentric compatible, returns invalid CRS.
+     *
+     * \since QGIS 4.2
+     */
+    QgsCoordinateReferenceSystem toTopocentricCrs( double latitude, double longitude ) const;
+
+    /**
+     * Returns the base CRS for this topocentric CRS, or an invalid CRS if this
+     * is not a topocentric CRS or no base CRS has been set.
+     *
+     * \since QGIS 4.2
+     */
+    QgsCoordinateReferenceSystem topocentricBaseCrs() const;
+
 #ifdef SIP_RUN
     // clang-format off
     SIP_PYOBJECT __repr__();
@@ -1248,6 +1288,8 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
      */
     static QString projFromSrsId( int srsId );
 
+    static const QMap<QString, QString> &authIdToQgisSrsIdMap();
+
     /**
      * Set the Proj string.
      * \param projString Proj format specifies
@@ -1285,6 +1327,8 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
 
     //! Work out the projection units and set the appropriate local variable
     void setMapUnits();
+
+    void setExtraProperties();
 
     //! Helper for getting number of user CRS already in db
     static long getRecordCount();
@@ -1333,7 +1377,6 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
     static CUSTOM_CRS_VALIDATION sCustomSrsValidation;
 
     // cache
-
     static bool sDisableSrIdCache;
     static bool sDisableOgcCache;
     static bool sDisableProjCache;

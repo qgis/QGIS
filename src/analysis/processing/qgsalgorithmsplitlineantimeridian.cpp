@@ -119,6 +119,8 @@ bool QgsSplitGeometryAtAntimeridianAlgorithm::prepareAlgorithm( const QVariantMa
 
 QgsFeatureList QgsSplitGeometryAtAntimeridianAlgorithm::processFeature( const QgsFeature &f, QgsProcessingContext &, QgsProcessingFeedback * )
 {
+  QGS_MARK_ALGORITHM_SOURCE
+
   if ( !f.hasGeometry() )
   {
     return QgsFeatureList() << f;

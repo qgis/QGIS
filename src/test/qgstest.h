@@ -42,6 +42,7 @@
 #include "qgssurface.h"
 #include "qgstriangle.h"
 #include "qgsunittypes.h"
+#include "qgsziputils.h"
 
 #include <QDesktopServices>
 #include <QDir>
@@ -65,7 +66,6 @@ using namespace Qt::StringLiterals;
     qputenv( "QGIS_CUSTOM_CONFIG_PATH", settingsDir.path().toUtf8() ); \
     QgsApplication app( argc, argv, false );                           \
     app.setAttribute( Qt::AA_Use96Dpi, true );                         \
-    QTEST_DISABLE_KEYPAD_NAVIGATION                                    \
     TestObject tc;                                                     \
     QTEST_SET_MAIN_SOURCE_PATH                                         \
     return QTest::qExec( &tc, argc, argv );                            \
@@ -284,13 +284,31 @@ class TEST_EXPORT QgsTest : public QObject
       QString header = QString( "checkLongStr (%1, %2):" ).arg( name, referenceName );
       QString subPath = "control_files/" + mControlPathPrefix + "/expected_" + name + "/" + "expected_" + referenceName;
       QString expectedPath = testDataPath( subPath );
+
+      QByteArray expectedStr;
       QFile expectedFile( expectedPath );
-      if ( !expectedFile.open( QFile::ReadOnly | QIODevice::Text ) )
+      if ( expectedFile.open( QFile::ReadOnly | QIODevice::Text ) )
       {
-        qWarning() << header.toStdString().c_str() << "Unable to open expected data file" << expectedPath;
-        return false;
+        expectedStr = expectedFile.readAll();
       }
-      QByteArray expectedStr = expectedFile.readAll();
+      else
+      {
+        // Using gzip helps in limiting code base size when using big data files.
+        QFile expectedFileGZ( expectedPath + ".gz" );
+        if ( expectedFileGZ.open( QFile::ReadOnly ) )
+        {
+          if ( !QgsZipUtils::decodeGzip( expectedFileGZ.readAll(), expectedStr ) )
+          {
+            qWarning() << header.toStdString().c_str() << "Unable to open expected GZip data file" << expectedPath;
+            return false;
+          }
+        }
+        else
+        {
+          qWarning() << header.toStdString().c_str() << "Unable to open expected data file" << expectedPath;
+          return false;
+        }
+      }
 
       if ( actualStr.size() != expectedStr.size() )
       {

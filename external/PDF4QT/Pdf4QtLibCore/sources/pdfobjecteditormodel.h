@@ -44,6 +44,7 @@ enum ObjectEditorAttributeType
     Color,          ///< Color
     Double,         ///< Double value
     ComboBox,       ///< Combo box with predefined set of items
+    Font,           ///< Font family selection
     Boolean,        ///< Check box
     Invalid
 };
@@ -172,7 +173,7 @@ public:
     /// is retrieved. Otherwise, array itself is returned.
     /// \param index Attribute index
     /// \param resolveArrayIndex For array attribute, retrieve array item (true), or array itself (false)
-    PDFObject getValue(size_t index, bool resolveArrayIndex) const;
+    virtual PDFObject getValue(size_t index, bool resolveArrayIndex) const;
 
     PDFObject getDefaultValue(size_t index) const;
     PDFObject getEditedObject() const { return m_editedObject; }
@@ -182,7 +183,7 @@ public:
     /// \param attribute Attribute
     /// \param object Old object
     /// \param value Value
-    PDFObject writeAttributeValueToObject(size_t attribute, PDFObject object, PDFObject value) const;
+    virtual PDFObject writeAttributeValueToObject(size_t attribute, PDFObject object, PDFObject value) const;
 
     /// Returns minimum value of the attribute
     /// \param index Attribute index
@@ -269,6 +270,13 @@ public:
     explicit PDFObjectEditorAnnotationsModel(QObject* parent);
 
 private:
+    virtual PDFObject getValue(size_t index, bool resolveArrayIndex) const override;
+    virtual PDFObject writeAttributeValueToObject(size_t attribute, PDFObject object, PDFObject value) const override;
+
+    bool isFreeTextDefaultAppearanceAttribute(size_t attribute) const;
+    PDFObject getFreeTextDefaultAppearanceAttributeValue(size_t attribute) const;
+    PDFObject writeFreeTextDefaultAppearanceAttributeValue(size_t attribute, PDFObject object, PDFObject value) const;
+
     size_t createQuaddingAttribute(QByteArray attributeName,
                                    QString category,
                                    QString subcategory,
@@ -280,6 +288,10 @@ private:
                                      QString subcategory,
                                      QString name,
                                      uint32_t typeFlags = 0);
+
+    size_t m_freeTextFontAttribute = 0;
+    size_t m_freeTextFontSizeAttribute = 0;
+    size_t m_freeTextTextColorAttribute = 0;
 };
 
 } // namespace pdf

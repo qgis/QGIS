@@ -120,9 +120,9 @@ QList<QgsLabelFeature *> QgsMeshLayerLabelProvider::labelFeatures( QgsRenderCont
   return mLabels;
 }
 
-QList< QgsLabelFeature * > QgsMeshLayerLabelProvider::registerFeature( const QgsFeature &feature, QgsRenderContext &context, const QgsGeometry &obstacleGeometry, const QgsSymbol *symbol )
+QList< QgsLabelFeature * > QgsMeshLayerLabelProvider::registerFeature( const QgsFeature &feature, QgsRenderContext &context, const QgsLabelFeatureDetails &details )
 {
-  std::vector< std::unique_ptr< QgsLabelFeature > > labels = mSettings.registerFeatureWithDetails( feature, context, obstacleGeometry, symbol );
+  std::vector< std::unique_ptr< QgsLabelFeature > > labels = mSettings.registerFeatureWithDetails( feature, context, details );
   QList< QgsLabelFeature * > res;
   for ( auto &it : labels )
   {

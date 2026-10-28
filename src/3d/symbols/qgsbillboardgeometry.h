@@ -57,6 +57,16 @@ class _3D_EXPORT QgsBillboardGeometry : public Qt3DCore::QGeometry
     void setPositions( const QVector<QVector3D> &vertices );
 
     /**
+     * Sets per-instance \a positions and \a sizes for billboards sharing a single texture.
+     *
+     * Use this method when rendering multiple billboards with the same texture but different sizes, and texture
+     * atlas handling is not required.
+     *
+     * \see setBillboardData()
+     */
+    void setPositionsAndSizes( const QVector<QVector3D> &positions, const QVector<QSizeF> &sizes );
+
+    /**
      * \ingroup qgis_3d
      * \brief Contains the billboard positions and texture information.
      *
@@ -95,20 +105,25 @@ class _3D_EXPORT QgsBillboardGeometry : public Qt3DCore::QGeometry
     void countChanged( int count );
 
   private:
-    enum class Mode
+    enum class Attribute
     {
-      PositionOnly,
-      PositionAndTextureData,
-      PositionAndTextureDataWithPixelOffsets,
+      Position = 1 << 0,
+      Size = 1 << 1,
+      TextureData = 1 << 2,
+      PixelOffsets = 1 << 3,
     };
-    void setMode( Mode mode );
+    Q_DECLARE_FLAGS( Attributes, Attribute )
+
+    void setAttributes( Attributes attributes );
+    Attributes mAttributes;
 
     Qt3DCore::QAttribute *mPositionAttribute = nullptr;
+    Qt3DCore::QAttribute *mSizeAttribute = nullptr;
     Qt3DCore::QAttribute *mAtlasOffsetAttribute = nullptr;
     Qt3DCore::QAttribute *mAtlasSizeAttribute = nullptr;
     Qt3DCore::QAttribute *mAtlasPixelOffsetAttribute = nullptr;
     Qt3DCore::QBuffer *mVertexBuffer = nullptr;
-    int mVertexCount = 0;
+    qsizetype mVertexCount = 0;
 };
 
 #endif // QGSBILLBOARDGEOMETRY_H

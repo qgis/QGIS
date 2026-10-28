@@ -56,6 +56,7 @@ email                : sherman at mrcc.com
 #include "qgsmessagelog.h"
 #include "qgsmimedatautils.h"
 #include "qgsoverlaywidgetlayout.h"
+#include "qgspainting.h"
 #include "qgsproject.h"
 #include "qgsprojectionselectiondialog.h"
 #include "qgsprojectviewsettings.h"
@@ -184,6 +185,7 @@ QgsMapCanvas::QgsMapCanvas( QWidget *parent )
     mSettings.setFlag( Qgis::MapSettingsFlag::DrawEditingInfo );
     mSettings.setFlag( Qgis::MapSettingsFlag::UseRenderingOptimization );
     mSettings.setFlag( Qgis::MapSettingsFlag::RenderPartialOutput );
+    mSettings.setFlag( Qgis::MapSettingsFlag::DrawLabelSelection );
     mSettings.setEllipsoid( QgsProject::instance()->ellipsoid() );
     connect( QgsProject::instance(), &QgsProject::ellipsoidChanged, this, [this] {
       mSettings.setEllipsoid( QgsProject::instance()->ellipsoid() );
@@ -2312,7 +2314,7 @@ void QgsMapCanvas::flashGeometries( const QList<QgsGeometry> &geometries, const 
     rb->setSecondaryStrokeColor( QColor( 255, 255, 255 ) );
   }
   if ( geomType == Qgis::GeometryType::Point )
-    rb->setIcon( QgsRubberBand::ICON_CIRCLE );
+    rb->setIcon( Qgis::RubberBandIconType::Circle );
 
   QColor startColor = color1;
   if ( !startColor.isValid() )

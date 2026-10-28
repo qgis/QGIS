@@ -259,6 +259,8 @@ QVariantMap QgsLayoutAtlasToPdfAlgorithm::exportAtlas(
   QgsLayoutAtlas *atlas, const QgsLayoutExporter &exporter, const QgsLayoutExporter::PdfExportSettings &settings, const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback
 )
 {
+  QGS_MARK_ALGORITHM_SOURCE
+
   Q_UNUSED( exporter )
 
   const QString dest = parameterAsFileOutput( parameters, u"OUTPUT"_s, context );
@@ -357,6 +359,8 @@ QVariantMap QgsLayoutAtlasToMultiplePdfAlgorithm::exportAtlas(
   QgsLayoutAtlas *atlas, const QgsLayoutExporter &exporter, const QgsLayoutExporter::PdfExportSettings &settings, const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback
 )
 {
+  QGS_MARK_ALGORITHM_SOURCE
+
   Q_UNUSED( exporter )
 
   QString error;

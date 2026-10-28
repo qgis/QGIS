@@ -52,6 +52,8 @@ Returns the ID for the map layer associated with this node.
 .. seealso:: :py:func:`layer`
 %End
 
+    virtual QString id() const;
+
     QgsMapLayer *layer() const;
 %Docstring
 Returns the map layer associated with this node.

@@ -80,6 +80,8 @@ Constructor for QgsColorRampLegendNode.
 
     virtual QJsonObject exportSymbolToJson( const QgsLegendSettings &settings, const QgsRenderContext &context ) const;
 
+    virtual void invalidateDisplayData();
+
 
     void setIconSize( QSize size );
 %Docstring

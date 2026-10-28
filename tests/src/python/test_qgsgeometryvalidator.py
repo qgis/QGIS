@@ -12,7 +12,7 @@ __copyright__ = "Copyright 2016, The QGIS Project"
 
 import unittest
 
-from qgis.core import QgsGeometry, QgsGeometryValidator, QgsPointXY
+from qgis.core import Qgis, QgsGeometry, QgsGeometryValidator, QgsPointXY
 from qgis.PyQt.QtTest import QSignalSpy
 from qgis.testing import QgisTestCase, start_app
 
@@ -177,6 +177,29 @@ class TestQgsGeometryValidator(QgisTestCase):
         self.assertEqual(
             spy[1][0].what(),
             "segment 1 of ring 1 of polygon 0 intersects segment 2 of ring 2 of polygon 0 at 2, 7",
+        )
+
+        # test ring touches itself
+        g = QgsGeometry.fromWkt(
+            "Polygon ((8 0, 0 0, 0 8, 8 8, 8 0),(4 4, 3 5, 3 3, 4 4, 5 3, 5 5, 4 4))"
+        )
+
+        validator = QgsGeometryValidator(g)
+        spy = QSignalSpy(validator.errorFound)
+        validator.run()
+
+        self.assertEqual(len(spy), 2)
+
+        self.assertEqual(spy[0][0].where(), QgsPointXY(4, 4))
+        self.assertEqual(
+            spy[0][0].what(),
+            "segments 0 and 2 of line 1 intersect at 4, 4",
+        )
+
+        self.assertEqual(spy[1][0].where(), QgsPointXY(4, 4))
+        self.assertEqual(
+            spy[1][0].what(),
+            "segments 3 and 5 of line 1 intersect at 4, 4",
         )
 
     def test_line_vertices(self):
@@ -418,6 +441,27 @@ class TestQgsGeometryValidator(QgisTestCase):
             spy[0][0].what(),
             "ring 1 of polygon 0 not in exterior ring",
         )
+
+    def test_polygon_z_coplanar(self):
+        # The polygon is valid in 2D (its XY projection is a valid polygon), so
+        # QGIS and GEOS do not report any errors. However,
+        # SFCGAL performs a 3D validity checks and reports an error.
+        geom = QgsGeometry.fromWkt(
+            "POLYGON Z ((0 0 0, 1 0 0, 1 1 0.001, 0 1 0, 0 0 0))"
+        )
+        tests = [
+            (Qgis.GeometryValidationEngine.QgisInternal, 0),
+            (Qgis.GeometryValidationEngine.Geos, 0),
+        ]
+
+        if Qgis.hasSfcgal():
+            tests.append((Qgis.GeometryValidationEngine.Sfcgal, 1))
+
+        for method, expected_spy in tests:
+            validator = QgsGeometryValidator(geom, method=method)
+            spy = QSignalSpy(validator.errorFound)
+            validator.run()
+            self.assertEqual(len(spy), expected_spy)
 
 
 if __name__ == "__main__":

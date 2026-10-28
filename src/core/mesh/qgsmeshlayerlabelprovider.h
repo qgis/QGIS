@@ -69,15 +69,11 @@ class CORE_EXPORT QgsMeshLayerLabelProvider : public QgsAbstractLabelProvider
      * \param feature feature to label
      * \param context render context. The QgsExpressionContext contained within the render context
      * must have already had the feature and fields sets prior to calling this method.
-     * \param obstacleGeometry optional obstacle geometry, if a different geometry to the feature's geometry
-     * should be used as an obstacle for labels (e.g., if the feature has been rendered with an offset point
-     * symbol, the obstacle geometry should represent the bounds of the offset symbol). If not set,
-     * the feature's original geometry will be used as an obstacle for labels.
-     * \param symbol feature symbol to label (ownership is not transferred - the symbol must exist until after labeling is complete)
+     * \param details label details
      * \returns a list of the newly generated label features. Ownership of these label features is not transferred
      * (it has already been assigned to the label provider).
      */
-    virtual QList< QgsLabelFeature * > registerFeature( const QgsFeature &feature, QgsRenderContext &context, const QgsGeometry &obstacleGeometry = QgsGeometry(), const QgsSymbol *symbol = nullptr );
+    virtual QList< QgsLabelFeature * > registerFeature( const QgsFeature &feature, QgsRenderContext &context, const QgsLabelFeatureDetails &details );
 
     /**
      * Returns the layer's settings.

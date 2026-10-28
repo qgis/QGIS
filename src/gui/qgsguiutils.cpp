@@ -270,20 +270,6 @@ namespace QgsGuiUtils
     return QgsApplication::scaleIconSize( standardSize );
   }
 
-  QSize iconSize( bool dockableToolbar )
-  {
-    const QgsSettings s;
-    const int w = s.value( u"/qgis/toolbarIconSize"_s, 32 ).toInt();
-    QSize size( w, w );
-
-    if ( dockableToolbar )
-    {
-      size = panelIconSize( size );
-    }
-
-    return size;
-  }
-
   QSize panelIconSize( QSize size )
   {
     int adjustedSize = 16;

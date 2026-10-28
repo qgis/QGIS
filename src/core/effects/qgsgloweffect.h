@@ -221,7 +221,7 @@ class CORE_EXPORT QgsGlowEffect : public QgsPaintEffect
      * \see setRamp
      * \see colorType
      */
-    QgsColorRamp *ramp() const { return mRamp; }
+    QgsColorRamp *ramp() const { return mRamp.get(); }
 
     /**
      * Sets the blend mode for the effect
@@ -277,7 +277,7 @@ class CORE_EXPORT QgsGlowEffect : public QgsPaintEffect
     double mSpread = 2.0;
     Qgis::RenderUnit mSpreadUnit = Qgis::RenderUnit::Millimeters;
     QgsMapUnitScale mSpreadMapUnitScale;
-    QgsColorRamp *mRamp = nullptr;
+    std::unique_ptr<QgsColorRamp> mRamp;
     double mBlurLevel = 2.645;
     Qgis::RenderUnit mBlurUnit = Qgis::RenderUnit::Millimeters;
     QgsMapUnitScale mBlurMapUnitScale;
@@ -303,7 +303,7 @@ class CORE_EXPORT QgsOuterGlowEffect : public QgsGlowEffect
      * \param map encoded properties string map
      * \returns new QgsOuterGlowEffect
      */
-    static QgsPaintEffect *create( const QVariantMap &map ) SIP_FACTORY;
+    static std::unique_ptr<QgsPaintEffect> create( const QVariantMap &map );
 
     QgsOuterGlowEffect();
 
@@ -330,7 +330,7 @@ class CORE_EXPORT QgsInnerGlowEffect : public QgsGlowEffect
      * \param map encoded properties string map
      * \returns new QgsInnerGlowEffect
      */
-    static QgsPaintEffect *create( const QVariantMap &map ) SIP_FACTORY;
+    static std::unique_ptr<QgsPaintEffect> create( const QVariantMap &map );
 
     QgsInnerGlowEffect();
 

@@ -55,17 +55,17 @@ QgsAnnotationLayer3DRendererWidget::QgsAnnotationLayer3DRendererWidget( QgsAnnot
 
   connect( mOffsetZSpinBox, qOverload< double >( &QDoubleSpinBox::valueChanged ), this, [this]( double ) {
     if ( !mBlockChanges )
-      emit widgetChanged();
+      emit changed();
   } );
 
   connect( mCheckShowCallouts, &QCheckBox::toggled, this, [this] {
     if ( !mBlockChanges )
-      emit widgetChanged();
+      emit changed();
   } );
 
   connect( mFontButton, &QgsFontButton::changed, this, [this] {
     if ( !mBlockChanges )
-      emit widgetChanged();
+      emit changed();
   } );
 
   syncToLayer( layer );
@@ -130,7 +130,7 @@ void QgsAnnotationLayer3DRendererWidget::rendererTypeChanged()
       break;
   }
   if ( !mBlockChanges )
-    emit widgetChanged();
+    emit changed();
 }
 
 void QgsAnnotationLayer3DRendererWidget::clampingChanged()
@@ -151,7 +151,7 @@ void QgsAnnotationLayer3DRendererWidget::clampingChanged()
       break;
   }
   if ( !mBlockChanges )
-    emit widgetChanged();
+    emit changed();
 }
 
 void QgsAnnotationLayer3DRendererWidget::syncToLayer( QgsMapLayer *layer )

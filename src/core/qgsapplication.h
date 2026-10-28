@@ -348,7 +348,12 @@ class CORE_EXPORT QgsApplication : public QApplication
   //! Returns the path to the master qgis.db file.
   static QString qgisMasterDatabaseFilePath();
 
-  //! Returns the path to the settings directory in user's home dir
+  /**
+   * Returns the path to the settings directory in user's home dir.
+   *
+   * This is the path to the root directory of the user's current active QGIS
+   * profile.
+   */
   static QString qgisSettingsDirPath();
 
   //! Returns the path to the user qgis.db file.
@@ -389,6 +394,33 @@ class CORE_EXPORT QgsApplication : public QApplication
 
   //! Returns the paths to svg directories.
   static QStringList svgPaths();
+
+  /**
+   * Sets the paths to project templates.
+   *
+   * \see projectTemplatePaths()
+   * \see defaultProjectTemplatePaths()
+   * \since QGIS 4.4
+   */
+  static void setProjectTemplatePaths(const QStringList &projectTemplatePaths);
+
+  /**
+   * Returns the paths to project templates.
+   *
+   * \see setProjectTemplatePaths()
+   * \see defaultProjectTemplatePaths()
+   * \since QGIS 4.4
+   */
+  static QStringList projectTemplatePaths();
+
+  /**
+   * Returns the default project template paths.
+   *
+   * \see setProjectTemplatePaths()
+   * \see projectTemplatePaths()
+   * \since QGIS 4.4
+   */
+  static QStringList defaultProjectTemplatePaths();
 
   /**
    * Returns the paths to layout template directories.
@@ -604,8 +636,8 @@ class CORE_EXPORT QgsApplication : public QApplication
   //! Constants for endian-ness
   enum endian_t
   {
-    XDR = 0, // network, or big-endian, byte order
-    NDR = 1 // little-endian byte order
+    XDR = 0, //!< Network, or big-endian, byte order
+    NDR = 1 //!< Little-endian byte order
   };
   // clang-format on
 
@@ -742,7 +774,7 @@ class CORE_EXPORT QgsApplication : public QApplication
    * Returns the application's task manager, used for managing application
    * wide background task handling.
    */
-  static QgsTaskManager *taskManager();
+  static QgsTaskManager *taskManager() SIP_DISALLOWNONE;
 
   /**
    * Returns the application's settings registry, used for managing application
@@ -757,26 +789,30 @@ class CORE_EXPORT QgsApplication : public QApplication
    * Returns the application's color scheme registry, used for managing color
    * schemes.
    */
-  static QgsColorSchemeRegistry *colorSchemeRegistry() SIP_KEEPREFERENCE;
+  static QgsColorSchemeRegistry *
+  colorSchemeRegistry() SIP_DISALLOWNONE SIP_KEEPREFERENCE;
 
   /**
    * Returns the application's paint effect registry, used for managing paint
    * effects.
    */
-  static QgsPaintEffectRegistry *paintEffectRegistry() SIP_KEEPREFERENCE;
+  static QgsPaintEffectRegistry *
+  paintEffectRegistry() SIP_DISALLOWNONE SIP_KEEPREFERENCE;
 
   /**
    * Returns the application's renderer registry, used for managing vector layer
    * renderers.
    */
-  static QgsRendererRegistry *rendererRegistry() SIP_KEEPREFERENCE;
+  static QgsRendererRegistry *
+  rendererRegistry() SIP_DISALLOWNONE SIP_KEEPREFERENCE;
 
   /**
    * Returns the application's raster renderer registry, used for managing
    * raster layer renderers.
    * \note not available in Python bindings
    */
-  static QgsRasterRendererRegistry *rasterRendererRegistry() SIP_SKIP;
+  static QgsRasterRendererRegistry *
+  rasterRendererRegistry() SIP_DISALLOWNONE SIP_SKIP;
 
   /**
    * Returns the application's point cloud renderer registry, used for managing
@@ -784,7 +820,7 @@ class CORE_EXPORT QgsApplication : public QApplication
    * \since QGIS 3.18
    */
   static QgsPointCloudRendererRegistry *
-  pointCloudRendererRegistry() SIP_KEEPREFERENCE;
+  pointCloudRendererRegistry() SIP_DISALLOWNONE SIP_KEEPREFERENCE;
 
   /**
    * Returns the application's tiled scene renderer registry, used for managing
@@ -792,14 +828,14 @@ class CORE_EXPORT QgsApplication : public QApplication
    * \since QGIS 3.34
    */
   static QgsTiledSceneRendererRegistry *
-  tiledSceneRendererRegistry() SIP_KEEPREFERENCE;
+  tiledSceneRendererRegistry() SIP_DISALLOWNONE SIP_KEEPREFERENCE;
 
   /**
    * Returns the application's data item provider registry, which keeps a list
    * of data item providers that may add items to the browser tree.
    */
   static QgsDataItemProviderRegistry *
-  dataItemProviderRegistry() SIP_KEEPREFERENCE;
+  dataItemProviderRegistry() SIP_DISALLOWNONE SIP_KEEPREFERENCE;
 
   /**
    * Returns the application's coordinate reference system (CRS) registry, which
@@ -808,7 +844,7 @@ class CORE_EXPORT QgsApplication : public QApplication
    * \since QGIS 3.18
    */
   static QgsCoordinateReferenceSystemRegistry *
-  coordinateReferenceSystemRegistry() SIP_KEEPREFERENCE;
+  coordinateReferenceSystemRegistry() SIP_DISALLOWNONE SIP_KEEPREFERENCE;
 
   /**
    * Returns the application's SVG cache, used for caching SVG images and
@@ -816,7 +852,7 @@ class CORE_EXPORT QgsApplication : public QApplication
    *
    * \see imageCache()
    */
-  static QgsSvgCache *svgCache();
+  static QgsSvgCache *svgCache() SIP_DISALLOWNONE;
 
   /**
    * Returns the application's image cache, used for caching resampled versions
@@ -825,7 +861,7 @@ class CORE_EXPORT QgsApplication : public QApplication
    * \see svgCache()
    * \since QGIS 3.6
    */
-  static QgsImageCache *imageCache();
+  static QgsImageCache *imageCache() SIP_DISALLOWNONE;
 
   /**
    * Returns the application's source cache, used for caching embedded and
@@ -833,7 +869,7 @@ class CORE_EXPORT QgsApplication : public QApplication
    *
    * \since QGIS 3.16
    */
-  static QgsSourceCache *sourceCache();
+  static QgsSourceCache *sourceCache() SIP_DISALLOWNONE;
 
   /**
    * Returns the application's network content registry used for fetching
@@ -841,58 +877,66 @@ class CORE_EXPORT QgsApplication : public QApplication
    * \since QGIS 3.2
    */
   static QgsNetworkContentFetcherRegistry *
-  networkContentFetcherRegistry() SIP_KEEPREFERENCE;
+  networkContentFetcherRegistry() SIP_DISALLOWNONE SIP_KEEPREFERENCE;
 
   /**
    * Returns the application's validity check registry, used for managing
    * validity checks.
    * \since QGIS 3.6
    */
-  static QgsValidityCheckRegistry *validityCheckRegistry() SIP_KEEPREFERENCE;
+  static QgsValidityCheckRegistry *
+  validityCheckRegistry() SIP_DISALLOWNONE SIP_KEEPREFERENCE;
 
   /**
    * Returns the application's symbol layer registry, used for managing symbol
    * layers.
    */
-  static QgsSymbolLayerRegistry *symbolLayerRegistry() SIP_KEEPREFERENCE;
+  static QgsSymbolLayerRegistry *
+  symbolLayerRegistry() SIP_DISALLOWNONE SIP_KEEPREFERENCE;
 
   /**
    * Returns the application's callout registry, used for managing callout
    * types.
    * \since QGIS 3.10
    */
-  static QgsCalloutRegistry *calloutRegistry() SIP_KEEPREFERENCE;
+  static QgsCalloutRegistry *
+  calloutRegistry() SIP_DISALLOWNONE SIP_KEEPREFERENCE;
 
   /**
    * Returns the application's layout item registry, used for layout item types.
    */
-  static QgsLayoutItemRegistry *layoutItemRegistry() SIP_KEEPREFERENCE;
+  static QgsLayoutItemRegistry *
+  layoutItemRegistry() SIP_DISALLOWNONE SIP_KEEPREFERENCE;
 
   /**
    * Returns the application's annotation item registry, used for annotation
    * item types.
    * \since QGIS 3.16
    */
-  static QgsAnnotationItemRegistry *annotationItemRegistry() SIP_KEEPREFERENCE;
+  static QgsAnnotationItemRegistry *
+  annotationItemRegistry() SIP_DISALLOWNONE SIP_KEEPREFERENCE;
 
   /**
    * Returns the application's GPS connection registry, used for managing GPS
    * connections.
    */
-  static QgsGpsConnectionRegistry *gpsConnectionRegistry() SIP_KEEPREFERENCE;
+  static QgsGpsConnectionRegistry *
+  gpsConnectionRegistry() SIP_DISALLOWNONE SIP_KEEPREFERENCE;
 
   /**
    * Returns the application's GPSBabel format registry, used for managing
    * GPSBabel formats.
    * \since QGIS 3.22
    */
-  static QgsBabelFormatRegistry *gpsBabelFormatRegistry() SIP_KEEPREFERENCE;
+  static QgsBabelFormatRegistry *
+  gpsBabelFormatRegistry() SIP_DISALLOWNONE SIP_KEEPREFERENCE;
 
   /**
    * Returns the application's plugin layer registry, used for managing plugin
    * layer types.
    */
-  static QgsPluginLayerRegistry *pluginLayerRegistry() SIP_KEEPREFERENCE;
+  static QgsPluginLayerRegistry *
+  pluginLayerRegistry() SIP_DISALLOWNONE SIP_KEEPREFERENCE;
 
   /**
    * Returns the application's classification methods registry, used in
@@ -900,14 +944,14 @@ class CORE_EXPORT QgsApplication : public QApplication
    * \since QGIS 3.10
    */
   static QgsClassificationMethodRegistry *
-  classificationMethodRegistry() SIP_KEEPREFERENCE;
+  classificationMethodRegistry() SIP_DISALLOWNONE SIP_KEEPREFERENCE;
 
   /**
    * Returns the application's bookmark manager, used for storing
    * installation-wide bookmarks.
    * \since QGIS 3.10
    */
-  static QgsBookmarkManager *bookmarkManager();
+  static QgsBookmarkManager *bookmarkManager() SIP_DISALLOWNONE;
 
   /**
    * Returns the application's tile download manager, used for download of map
@@ -921,14 +965,16 @@ class CORE_EXPORT QgsApplication : public QApplication
    * Returns the handler for recently used style items.
    * \since QGIS 3.22
    */
-  static QgsRecentStyleHandler *recentStyleHandler() SIP_KEEPREFERENCE;
+  static QgsRecentStyleHandler *
+  recentStyleHandler() SIP_DISALLOWNONE SIP_KEEPREFERENCE;
 
   /**
    * Returns the database query log.
    *
    * \since QGIS 3.24
    */
-  static QgsDatabaseQueryLog *databaseQueryLog() SIP_KEEPREFERENCE;
+  static QgsDatabaseQueryLog *
+  databaseQueryLog() SIP_DISALLOWNONE SIP_KEEPREFERENCE;
 
   /**
    * Returns a shared QgsStyleModel containing the default style library (see
@@ -939,7 +985,7 @@ class CORE_EXPORT QgsApplication : public QApplication
    *
    * \since QGIS 3.10
    */
-  static QgsStyleModel *defaultStyleModel();
+  static QgsStyleModel *defaultStyleModel() SIP_DISALLOWNONE;
 
   /**
    * Returns the application font manager, which manages available fonts and
@@ -947,19 +993,19 @@ class CORE_EXPORT QgsApplication : public QApplication
    *
    * \since QGIS 3.28
    */
-  static QgsFontManager *fontManager() SIP_KEEPREFERENCE;
+  static QgsFontManager *fontManager() SIP_DISALLOWNONE SIP_KEEPREFERENCE;
 
   /**
    * Returns the application's sensor registry, used for sensor types.
    * \since QGIS 3.32
    */
-  static QgsSensorRegistry *sensorRegistry() SIP_KEEPREFERENCE;
+  static QgsSensorRegistry *sensorRegistry() SIP_DISALLOWNONE SIP_KEEPREFERENCE;
 
   /**
    * Returns the application's plot registry, used for plot types.
    * \since QGIS 4.0
    */
-  static QgsPlotRegistry *plotRegistry() SIP_KEEPREFERENCE;
+  static QgsPlotRegistry *plotRegistry() SIP_DISALLOWNONE SIP_KEEPREFERENCE;
 
   /**
    * Returns the application's message log.
@@ -984,20 +1030,21 @@ class CORE_EXPORT QgsApplication : public QApplication
    * Returns the application's processing registry, used for managing processing
    * providers, algorithms, and various parameters and outputs.
    */
-  static QgsProcessingRegistry *processingRegistry();
+  static QgsProcessingRegistry *processingRegistry() SIP_DISALLOWNONE;
 
   /**
    * Returns the application's page size registry, used for managing layout page
    * sizes.
    */
-  static QgsPageSizeRegistry *pageSizeRegistry() SIP_KEEPREFERENCE;
+  static QgsPageSizeRegistry *
+  pageSizeRegistry() SIP_DISALLOWNONE SIP_KEEPREFERENCE;
 
   /**
    * Returns the application's annotation registry, used for managing annotation
    * types.
    * \note not available in Python bindings
    */
-  static QgsAnnotationRegistry *annotationRegistry() SIP_SKIP;
+  static QgsAnnotationRegistry *annotationRegistry() SIP_DISALLOWNONE SIP_SKIP;
 
   /**
    * Returns the application's theme registry, used for styling the user
@@ -1005,48 +1052,53 @@ class CORE_EXPORT QgsApplication : public QApplication
    * \since QGIS 4.0
    */
   static QgsApplicationThemeRegistry *
-  applicationThemeRegistry() SIP_KEEPREFERENCE;
+  applicationThemeRegistry() SIP_DISALLOWNONE SIP_KEEPREFERENCE;
 
   /**
    * Returns the action scope registry.
    *
    */
-  static QgsActionScopeRegistry *actionScopeRegistry() SIP_KEEPREFERENCE;
+  static QgsActionScopeRegistry *
+  actionScopeRegistry() SIP_DISALLOWNONE SIP_KEEPREFERENCE;
 
   /**
    * Returns the application's connection registry, used for managing saved data
    * provider connections.
    * \since QGIS 3.14
    */
-  static QgsConnectionRegistry *connectionRegistry();
+  static QgsConnectionRegistry *connectionRegistry() SIP_DISALLOWNONE;
 
   /**
    * Returns the application runtime profiler.
    */
-  static QgsRuntimeProfiler *profiler();
+  static QgsRuntimeProfiler *profiler() SIP_DISALLOWNONE;
 
   /**
    * Gets the registry of available numeric formats.
    *
    * \since QGIS 3.12
    */
-  static QgsNumericFormatRegistry *numericFormatRegistry() SIP_KEEPREFERENCE;
+  static QgsNumericFormatRegistry *
+  numericFormatRegistry() SIP_DISALLOWNONE SIP_KEEPREFERENCE;
 
   /**
    * Gets the registry of available field formatters.
    */
-  static QgsFieldFormatterRegistry *fieldFormatterRegistry() SIP_KEEPREFERENCE;
+  static QgsFieldFormatterRegistry *
+  fieldFormatterRegistry() SIP_DISALLOWNONE SIP_KEEPREFERENCE;
 
   /**
    * Returns registry of available 3D renderers.
    */
-  static Qgs3DRendererRegistry *renderer3DRegistry() SIP_KEEPREFERENCE;
+  static Qgs3DRendererRegistry *
+  renderer3DRegistry() SIP_DISALLOWNONE SIP_KEEPREFERENCE;
 
   /**
    * Returns registry of available 3D symbols.
    * \since QGIS 3.16
    */
-  static Qgs3DSymbolRegistry *symbol3DRegistry() SIP_KEEPREFERENCE;
+  static Qgs3DSymbolRegistry *
+  symbol3DRegistry() SIP_DISALLOWNONE SIP_KEEPREFERENCE;
 
   /**
    * Returns registry of available 3D materials.
@@ -1056,7 +1108,8 @@ class CORE_EXPORT QgsApplication : public QApplication
    *
    * \since QGIS 4.2
    */
-  static QgsMaterialRegistry *materialRegistry() SIP_KEEPREFERENCE;
+  static QgsMaterialRegistry *
+  materialRegistry() SIP_DISALLOWNONE SIP_KEEPREFERENCE;
 
   /**
    * Gets the registry of available scalebar renderers.
@@ -1064,7 +1117,7 @@ class CORE_EXPORT QgsApplication : public QApplication
    * \since QGIS 3.14
    */
   static QgsScaleBarRendererRegistry *
-  scaleBarRendererRegistry() SIP_KEEPREFERENCE;
+  scaleBarRendererRegistry() SIP_DISALLOWNONE SIP_KEEPREFERENCE;
 
   /**
    * Gets the registry of available labeling engine rules.
@@ -1072,7 +1125,7 @@ class CORE_EXPORT QgsApplication : public QApplication
    * \since QGIS 3.40
    */
   static QgsLabelingEngineRuleRegistry *
-  labelingEngineRuleRegistry() SIP_KEEPREFERENCE;
+  labelingEngineRuleRegistry() SIP_DISALLOWNONE SIP_KEEPREFERENCE;
 
   /**
    * Gets the registry of available symbol converters.
@@ -1080,33 +1133,35 @@ class CORE_EXPORT QgsApplication : public QApplication
    * \since QGIS 4.2
    */
   static QgsSymbolConverterRegistry *
-  symbolConverterRegistry() SIP_KEEPREFERENCE;
+  symbolConverterRegistry() SIP_DISALLOWNONE SIP_KEEPREFERENCE;
 
   /**
    * Returns registry of available project storage implementations.
    * \since QGIS 3.2
    */
-  static QgsProjectStorageRegistry *projectStorageRegistry() SIP_KEEPREFERENCE;
+  static QgsProjectStorageRegistry *
+  projectStorageRegistry() SIP_DISALLOWNONE SIP_KEEPREFERENCE;
 
   /**
    * Returns registry of available layer metadata provider implementations.
    * \since QGIS 3.28
    */
   static QgsLayerMetadataProviderRegistry *
-  layerMetadataProviderRegistry() SIP_KEEPREFERENCE;
+  layerMetadataProviderRegistry() SIP_DISALLOWNONE SIP_KEEPREFERENCE;
 
   /**
    * Returns registry of available external storage implementations.
    * \since QGIS 3.20
    */
   static QgsExternalStorageRegistry *
-  externalStorageRegistry() SIP_KEEPREFERENCE;
+  externalStorageRegistry() SIP_DISALLOWNONE SIP_KEEPREFERENCE;
 
   /**
    * Returns registry of available profile source implementations.
    * \since QGIS 3.38
    */
-  static QgsProfileSourceRegistry *profileSourceRegistry() SIP_KEEPREFERENCE;
+  static QgsProfileSourceRegistry *
+  profileSourceRegistry() SIP_DISALLOWNONE SIP_KEEPREFERENCE;
 
   /**
    * Returns the registry of data repositories
@@ -1116,7 +1171,7 @@ class CORE_EXPORT QgsApplication : public QApplication
    * \since QGIS 3.14
    */
   static QgsLocalizedDataPathRegistry *
-  localizedDataPathRegistry() SIP_KEEPREFERENCE;
+  localizedDataPathRegistry() SIP_DISALLOWNONE SIP_KEEPREFERENCE;
 
   /**
    * Returns the string used to represent the value `NULL` throughout QGIS.
@@ -1259,6 +1314,8 @@ class CORE_EXPORT QgsApplication : public QApplication
   static const QgsSettingsEntryBool *settingsLocaleShowGroupSeparator;
   //! Settings entry search path for SVG
   static const QgsSettingsEntryStringList *settingsSearchPathsForSVG;
+  //! Settings entry search path for project templates
+  static const QgsSettingsEntryStringList *settingsProjectTemplatePaths;
 
   /**
    * Settings entry to configure the maximum number of concurrent connections

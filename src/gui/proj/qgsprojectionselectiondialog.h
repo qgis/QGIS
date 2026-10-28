@@ -28,6 +28,7 @@
 #include <QSet>
 
 class QDialogButtonBox;
+class QgsRectangle;
 
 /**
  * \class QgsCrsSelectionWidget
@@ -109,6 +110,22 @@ class GUI_EXPORT QgsCrsSelectionWidget : public QgsPanelWidget, private Ui::QgsG
      */
     void setFilters( QgsCoordinateReferenceSystemProxyModel::Filters filters );
 
+    /**
+     * Sets whether the topocentric CRS type option is shown in the widget's
+     * CRS type combobox. When \a allow is FALSE, the topocentric CRS option
+     * is hidden and cannot be selected.
+     *
+     * \since QGIS 4.2
+     */
+    void setAllowTopocentricCrs( bool allow );
+
+    /**
+     * Sets the visible area to use when showing a preview of the CRS in the widget.
+     *
+     * \since QGIS 4.2
+     */
+    void setPreviewRect( const QgsRectangle &rect );
+
   public slots:
 
     /**
@@ -154,13 +171,15 @@ class GUI_EXPORT QgsCrsSelectionWidget : public QgsPanelWidget, private Ui::QgsG
      */
     enum class CrsType
     {
-      Predefined, //!< Predefined (from database )
-      Custom,     //!< Custom CRS
+      Predefined,  //!< Predefined (from database)
+      Custom,      //!< Custom CRS
+      Topocentric, //!< Topocentric CRS
     };
 
     QString mNotSetText;
     bool mShowNoCrsOption = false;
     bool mDeferredInvalidCrsSet = false;
+    bool mAllowTopocentricCrs = true;
     int mBlockSignals = 0;
 };
 
@@ -278,6 +297,14 @@ class GUI_EXPORT QgsProjectionSelectionDialog : public QDialog
      * \since QGIS 3.36
      */
     void setFilters( QgsCoordinateReferenceSystemProxyModel::Filters filters );
+
+    /**
+     * Sets whether the topocentric CRS type option is shown in the dialog.
+     * When \a allow is FALSE, the topocentric CRS options is hidden and cannot be selected.
+     *
+     * \since QGIS 4.2
+     */
+    void setAllowTopocentricCrs( bool allow );
 
   public slots:
 

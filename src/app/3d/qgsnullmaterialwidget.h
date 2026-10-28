@@ -35,6 +35,9 @@ class QgsNullMaterialWidget : public QgsMaterialSettingsWidget, private Ui::Null
     std::unique_ptr< QgsAbstractMaterialSettings > settings() final;
   public slots:
     void setPreviewVisible( bool visible ) final;
+
+  protected:
+    void updateWidgetVisibility() final;
 };
 
 #endif // QGSNULLMATERIALWIDGET_H

@@ -159,7 +159,7 @@ void QgsCreateMarkerItemMapTool::cadCanvasReleaseEvent( QgsMapMouseEvent *event 
 
   std::unique_ptr<QgsMarkerSymbol> markerSymbol = QgsApplication::recentStyleHandler()->recentSymbol<QgsMarkerSymbol>( u"marker_annotation_item"_s );
   if ( !markerSymbol )
-    markerSymbol.reset( qgis::down_cast<QgsMarkerSymbol *>( QgsSymbol::defaultSymbol( Qgis::GeometryType::Point ) ) );
+    markerSymbol = qgis::unique_ptr_static_cast<QgsMarkerSymbol>( QgsSymbol::defaultSymbol( Qgis::GeometryType::Point ) );
   createdItem->setSymbol( markerSymbol.release() );
 
   // set reference scale to match canvas scale, but don't enable it by default for marker items
@@ -195,7 +195,7 @@ void QgsCreateLineItemMapTool::lineCaptured( const QgsCurve *line )
 
     std::unique_ptr<QgsLineSymbol> lineSymbol = QgsApplication::recentStyleHandler()->recentSymbol<QgsLineSymbol>( u"line_annotation_item"_s );
     if ( !lineSymbol )
-      lineSymbol.reset( qgis::down_cast<QgsLineSymbol *>( QgsSymbol::defaultSymbol( Qgis::GeometryType::Line ) ) );
+      lineSymbol = qgis::unique_ptr_static_cast<QgsLineSymbol>( QgsSymbol::defaultSymbol( Qgis::GeometryType::Line ) );
     createdItem->setSymbol( lineSymbol.release() );
 
     // set reference scale to match canvas scale, but don't enable it by default for marker items
@@ -229,7 +229,7 @@ void QgsCreatePolygonItemMapTool::polygonCaptured( const QgsCurvePolygon *polygo
 
     std::unique_ptr<QgsFillSymbol> fillSymbol = QgsApplication::recentStyleHandler()->recentSymbol<QgsFillSymbol>( u"polygon_annotation_item"_s );
     if ( !fillSymbol )
-      fillSymbol.reset( qgis::down_cast<QgsFillSymbol *>( QgsSymbol::defaultSymbol( Qgis::GeometryType::Polygon ) ) );
+      fillSymbol = qgis::unique_ptr_static_cast<QgsFillSymbol>( QgsSymbol::defaultSymbol( Qgis::GeometryType::Polygon ) );
     createdItem->setSymbol( fillSymbol.release() );
 
     // set reference scale to match canvas scale, but don't enable it by default for marker items
@@ -269,7 +269,6 @@ void QgsCreatePictureItemMapTool::cadCanvasPressEvent( QgsMapMouseEvent *event )
   if ( !mRubberBand )
   {
     mFirstPoint = event->snapPoint();
-    mRect.setRect( mFirstPoint.x(), mFirstPoint.y(), mFirstPoint.x(), mFirstPoint.y() );
 
     mRubberBand = make_qobject_unique<QgsRubberBand>( mCanvas, Qgis::GeometryType::Polygon );
     mRubberBand->setWidth( digitizingStrokeWidth() );
@@ -354,14 +353,19 @@ void QgsCreatePictureItemMapTool::cadCanvasMoveEvent( QgsMapMouseEvent *event )
   if ( !mRubberBand )
     return;
 
-  const QgsPointXY mapPoint = event->snapPoint();
-  mRect.setBottomRight( mapPoint.toQPointF() );
+  // Keep the preview rectangle aligned to the screen, matching the placed item
+  // which ignores map rotation by default.
+  const QgsPointXY firstCanvasPoint = toCanvasCoordinates( mFirstPoint );
+  const QgsPointXY currentCanvasPoint = toCanvasCoordinates( event->snapPoint() );
+
+  const QgsMapToPixel *transform = mCanvas->getCoordinateTransform();
+  const QgsPointXY topLeft = transform->toMapCoordinates( firstCanvasPoint.x(), firstCanvasPoint.y() );
+  const QgsPointXY topRight = transform->toMapCoordinates( currentCanvasPoint.x(), firstCanvasPoint.y() );
+  const QgsPointXY bottomRight = transform->toMapCoordinates( currentCanvasPoint.x(), currentCanvasPoint.y() );
+  const QgsPointXY bottomLeft = transform->toMapCoordinates( firstCanvasPoint.x(), currentCanvasPoint.y() );
 
   mRubberBand->reset( Qgis::GeometryType::Polygon );
-  mRubberBand->addPoint( mRect.bottomLeft(), false );
-  mRubberBand->addPoint( mRect.bottomRight(), false );
-  mRubberBand->addPoint( mRect.topRight(), false );
-  mRubberBand->addPoint( mRect.topLeft(), true );
+  mRubberBand->setToGeometry( QgsGeometry::fromPolygonXY( { { bottomLeft, bottomRight, topRight, topLeft } } ) );
 }
 
 void QgsCreatePictureItemMapTool::keyPressEvent( QKeyEvent *event )
@@ -414,7 +418,6 @@ void QgsCreateRectangleTextItemMapTool::cadCanvasPressEvent( QgsMapMouseEvent *e
   if ( !mRubberBand )
   {
     mFirstPoint = event->snapPoint();
-    mRect.setRect( mFirstPoint.x(), mFirstPoint.y(), mFirstPoint.x(), mFirstPoint.y() );
 
     mRubberBand = make_qobject_unique<QgsRubberBand>( mCanvas, Qgis::GeometryType::Polygon );
     mRubberBand->setWidth( digitizingStrokeWidth() );
@@ -456,14 +459,19 @@ void QgsCreateRectangleTextItemMapTool::cadCanvasMoveEvent( QgsMapMouseEvent *ev
   if ( !mRubberBand )
     return;
 
-  const QgsPointXY mapPoint = event->snapPoint();
-  mRect.setBottomRight( mapPoint.toQPointF() );
+  // Keep the preview rectangle aligned to the screen, matching the placed item
+  // which ignores map rotation by default.
+  const QgsPointXY firstCanvasPoint = toCanvasCoordinates( mFirstPoint );
+  const QgsPointXY currentCanvasPoint = toCanvasCoordinates( event->snapPoint() );
+
+  const QgsMapToPixel *transform = mCanvas->getCoordinateTransform();
+  const QgsPointXY topLeft = transform->toMapCoordinates( firstCanvasPoint.x(), firstCanvasPoint.y() );
+  const QgsPointXY topRight = transform->toMapCoordinates( currentCanvasPoint.x(), firstCanvasPoint.y() );
+  const QgsPointXY bottomRight = transform->toMapCoordinates( currentCanvasPoint.x(), currentCanvasPoint.y() );
+  const QgsPointXY bottomLeft = transform->toMapCoordinates( firstCanvasPoint.x(), currentCanvasPoint.y() );
 
   mRubberBand->reset( Qgis::GeometryType::Polygon );
-  mRubberBand->addPoint( mRect.bottomLeft(), false );
-  mRubberBand->addPoint( mRect.bottomRight(), false );
-  mRubberBand->addPoint( mRect.topRight(), false );
-  mRubberBand->addPoint( mRect.topLeft(), true );
+  mRubberBand->setToGeometry( QgsGeometry::fromPolygonXY( { { bottomLeft, bottomRight, topRight, topLeft } } ) );
 }
 
 void QgsCreateRectangleTextItemMapTool::keyPressEvent( QKeyEvent *event )
@@ -513,7 +521,7 @@ void QgsCreateLineTextItemMapTool::lineCaptured( const QgsCurve *line )
 
     std::unique_ptr<QgsLineSymbol> lineSymbol = QgsApplication::recentStyleHandler()->recentSymbol<QgsLineSymbol>( u"line_annotation_item"_s );
     if ( !lineSymbol )
-      lineSymbol.reset( qgis::down_cast<QgsLineSymbol *>( QgsSymbol::defaultSymbol( Qgis::GeometryType::Line ) ) );
+      lineSymbol = qgis::unique_ptr_static_cast<QgsLineSymbol>( QgsSymbol::defaultSymbol( Qgis::GeometryType::Line ) );
 
     QgsTextFormat format = QgsStyle::defaultTextFormatForProject( QgsProject::instance(), QgsStyle::TextFormatContext::Labeling );
     // default to HTML formatting

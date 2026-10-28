@@ -48,12 +48,12 @@ QgsOapifItemsRequest::QgsOapifItemsRequest( const QgsDataSourceUri &baseUri, con
 
 bool QgsOapifItemsRequest::request( bool synchronous, bool forceRefresh )
 {
-  QString acceptHeader = u"application/geo+json, application/json"_s;
+  QString acceptHeader = QStringList { QgsOapifUtils::MEDIA_TYPE_GEOJSON, QgsOapifUtils::MEDIA_TYPE_JSON }.join( ", "_L1 );
   if ( !mFeatureFormat.isEmpty() )
   {
     acceptHeader = mFeatureFormat;
   }
-  const bool isGeoJSON = mFeatureFormat.isEmpty() || mFeatureFormat == "application/geo+json"_L1;
+  const bool isGeoJSON = mFeatureFormat.isEmpty() || mFeatureFormat == QgsOapifUtils::MEDIA_TYPE_GEOJSON;
   mFakeResponseHasHeaders = !isGeoJSON;
   QgsDebugMsgLevel( u" QgsOapifItemsRequest::request() start time: %1"_s.arg( time( nullptr ) ), 5 );
   if ( !sendGET( QUrl::fromEncoded( mUrl.toLatin1() ), acceptHeader, synchronous, forceRefresh ) )
@@ -89,6 +89,8 @@ static void removeUselessSpacesFromJSONBuffer( QByteArray &buffer )
       {
         ptr[j++] = ch;
         ++i;
+        ptr[j++] = '"';
+        continue;
       }
     }
     else
@@ -125,8 +127,8 @@ void QgsOapifItemsRequest::processReply()
     return;
   }
 
-  const bool isGeoJSON = mFeatureFormat.isEmpty() || mFeatureFormat == "application/geo+json"_L1;
-  const bool isGML = mFeatureFormat.startsWith( "application/gml+xml"_L1 );
+  const bool isGeoJSON = mFeatureFormat.isEmpty() || mFeatureFormat == QgsOapifUtils::MEDIA_TYPE_GEOJSON;
+  const bool isGML = mFeatureFormat.startsWith( QgsOapifUtils::MEDIA_TYPE_GML );
 
   if ( isGeoJSON )
   {
@@ -147,12 +149,18 @@ void QgsOapifItemsRequest::processReply()
   }
 
   QString extension;
-  if ( mFeatureFormat == "application/flatgeobuf"_L1 )
+  if ( mFeatureFormat == QgsOapifUtils::MEDIA_TYPE_FLATGEOBUF )
+  {
     extension = u"fgb"_s;
+  }
   else if ( isGML )
+  {
     extension = u"gml"_s;
+  }
   else
+  {
     extension = u"json"_s;
+  }
   const QString vsimemFilename = u"/vsimem/oaipf_%1.%2"_s.arg( reinterpret_cast<quintptr>( &buffer ), QT_POINTER_SIZE * 2, 16, '0'_L1 ).arg( extension );
 
   VSIFCloseL( VSIFileFromMemBuffer( vsimemFilename.toUtf8().constData(), const_cast<GByte *>( reinterpret_cast<const GByte *>( buffer.constData() ) ), buffer.size(), false ) );
@@ -221,7 +229,7 @@ void QgsOapifItemsRequest::processReply()
     {
       id = f.attribute( idField ).toString();
     }
-    else if ( mFeatureFormat == PSEUDO_JSONFG_MEDIA_TYPE )
+    else if ( mFeatureFormat == QgsOapifUtils::MEDIA_TYPE_PSEUDO_JSONFG )
     {
       id = QString::number( f.id() );
     }
@@ -273,7 +281,7 @@ void QgsOapifItemsRequest::processReply()
       }
 
       const auto links = QgsOAPIFJson::parseLinks( j );
-      mNextUrl = QgsOAPIFJson::findLink( links, u"next"_s, { u"application/geo+json"_s } );
+      mNextUrl = QgsOAPIFJson::findLink( links, u"next"_s, { QgsOapifUtils::MEDIA_TYPE_GEOJSON } );
 
       if ( j.is_object() && j.contains( "numberMatched" ) )
       {

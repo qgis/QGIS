@@ -37,22 +37,48 @@ could provide their own implementation to be able to use plugins.
   public:
     QgisInterface();
 
-    virtual QgsPluginManagerInterface *pluginManagerInterface() = 0;
+    virtual QgsPluginManagerInterface *pluginManagerInterface() = 0 /DisallowNone/;
+%Docstring
+Returns the inbuilt plugin manager interface.
 
-    virtual QgsLayerTreeView *layerTreeView() = 0;
+.. warning::
 
-    virtual QgsGpsToolsInterface *gpsTools() = 0;
+   The methods in this interface are suitable for managing c++ plugins only.
+
+.. seealso:: :py:func:`showPluginManager`
+%End
+
+    virtual void showPluginManager( int tabIndex = -1, const QString &searchTerm = QString() ) = 0;
+%Docstring
+Shows the Plugin Manager window.
+
+:param tabIndex: initial tab to open. If -1, the last used tab will be
+                 opened.
+:param searchTerm: optional pre-filled search term.
+
+.. note::
+
+   Unlike the methods from :py:func:`~QgisInterface.pluginManagerInterface`, the plugin manager dialog
+   shown by this method will fully handle Python plugins.
+
+.. versionadded:: 4.2
+%End
+
+    virtual QgsLayerTreeView *layerTreeView() = 0 /DisallowNone/;
+
+    virtual QgsGpsToolsInterface *gpsTools() = 0 /DisallowNone/;
 %Docstring
 Returns an interface to allow plugins to use QGIS GPS tools.
 %End
 
     virtual void addCustomActionForLayerType( QAction *action, QString menu, Qgis::LayerType type, bool allLayers ) = 0;
 %Docstring
-Add action to context menu for layers in the layer tree. If allLayers is
-``True``, then the action will be available for all layers of given
-type, otherwise the action will be available only for specific layers
-added with :py:func:`~QgisInterface.addCustomActionForLayer` after this
-call.
+Adds an ``action`` to context menu for layers in the layer tree.
+
+If ``allLayers`` is ``True``, then the action will be available for all
+layers of given type, otherwise the action will be available only for
+specific layers added with
+:py:func:`~QgisInterface.addCustomActionForLayer` after this call.
 
 If menu argument is not empty, the action will be also added to a menu
 within the main window, creating menu with the given name if it does not
@@ -65,8 +91,10 @@ exist yet.
 
     virtual void addCustomActionForLayer( QAction *action, QgsMapLayer *layer ) = 0;
 %Docstring
-Add action to context menu for a specific layer in the layer tree. It is
-necessary to first call
+Adds an ``action`` to context menu for a specific layer in the layer
+tree.
+
+It is necessary to first call
 :py:func:`~QgisInterface.addCustomActionForLayerType` with
 allLayers=false in order for this method to have any effect.
 
@@ -75,8 +103,8 @@ allLayers=false in order for this method to have any effect.
 
     virtual bool removeCustomActionForLayerType( QAction *action ) = 0;
 %Docstring
-Remove action for layers in the layer tree previously added with
-:py:func:`~QgisInterface.addCustomActionForLayerType`
+Removes ``action`` for layers in the layer tree previously added with
+:py:func:`~QgisInterface.addCustomActionForLayerType`.
 
 .. seealso:: :py:func:`addCustomActionForLayerType`
 %End
@@ -88,7 +116,7 @@ Returns a list of all map canvases open in the app.
 
     virtual QgsMapCanvas *createNewMapCanvas( const QString &name ) = 0;
 %Docstring
-Create a new map canvas with the specified unique ``name``.
+Creates a new map canvas with the specified unique ``name``.
 
 .. seealso:: :py:func:`closeMapCanvas`
 %End
@@ -109,7 +137,7 @@ Returns a list of all 3D map canvases open in the app.
 
     virtual Qgs3DMapCanvas *createNewMapCanvas3D( const QString &name, Qgis::SceneMode sceneMode = Qgis::SceneMode::Local ) = 0;
 %Docstring
-Create a new 3D map canvas with the specified unique ``name``.
+Creates a new 3D map canvas with the specified unique ``name``.
 
 .. note::
 
@@ -131,13 +159,15 @@ Closes the additional map canvas with matching ``name``.
 
     virtual QSize iconSize( bool dockedToolbar = false ) const = 0;
 %Docstring
-Returns the toolbar icon size. If ``dockedToolbar`` is ``True``, the
-icon size for toolbars contained within docks is returned.
+Returns the toolbar icon size.
+
+If ``dockedToolbar`` is ``True``, the icon size for toolbars contained
+within docks is returned.
 %End
 
     virtual QList<QgsMapLayer *> editableLayers( bool modified = false ) const = 0;
 %Docstring
-Returns vector layers in edit mode
+Returns vector layers in edit mode.
 
 :param modified: whether to return only layers that have been modified
 
@@ -149,7 +179,7 @@ Returns vector layers in edit mode
 Returns a pointer to the active layer (layer selected in the legend)
 %End
 
-    virtual QgsMapCanvas *mapCanvas() = 0;
+    virtual QgsMapCanvas *mapCanvas() = 0 /DisallowNone/;
 %Docstring
 Returns a pointer to the map canvas
 %End
@@ -161,18 +191,18 @@ Returns a list of the active decorations.
 .. versionadded:: 3.22
 %End
 
-    virtual QgsLayerTreeMapCanvasBridge *layerTreeCanvasBridge() = 0;
+    virtual QgsLayerTreeMapCanvasBridge *layerTreeCanvasBridge() = 0 /DisallowNone/;
 %Docstring
 Returns a pointer to the layer tree canvas bridge
 %End
 
-    virtual QWidget *mainWindow() = 0;
+    virtual QWidget *mainWindow() = 0 /DisallowNone/;
 %Docstring
 Returns a pointer to the main window (instance of QgisApp in case of
 QGIS)
 %End
 
-    virtual QgsMessageBar *messageBar() = 0;
+    virtual QgsMessageBar *messageBar() = 0 /DisallowNone/;
 %Docstring
 Returns the message bar of the main app
 %End
@@ -181,7 +211,6 @@ Returns the message bar of the main app
 %Docstring
 Returns all currently open layout designers.
 %End
-
 
     virtual QMap<QString, QVariant> defaultStyleSheetOptions() = 0;
 %Docstring
@@ -193,18 +222,18 @@ Returns changeable options built from settings and/or defaults
 Returns a reference font for initial qApp (may not be same as QgisApp)
 %End
 
-    virtual QgsAdvancedDigitizingDockWidget *cadDockWidget() = 0;
+    virtual QgsAdvancedDigitizingDockWidget *cadDockWidget() = 0 /DisallowNone/;
 %Docstring
-Advanced digitizing dock widget
+Returns a reference to the app's advanced digitizing dock widget.
 %End
 
 
-    virtual QMenu *projectMenu() = 0;
+    virtual QMenu *projectMenu() = 0 /DisallowNone/;
 %Docstring
 Returns a reference to the main window "Project" menu.
 %End
 
-    virtual QMenu *projectImportExportMenu() = 0;
+    virtual QMenu *projectImportExportMenu() = 0 /DisallowNone/;
 %Docstring
 Returns a reference to the main window "Import/Export" project menu.
 
@@ -228,7 +257,7 @@ Adds an ``action`` to the QGIS "Import project" menu.
 
     virtual void removeProjectImportAction( QAction *action ) = 0;
 %Docstring
-Adds an ``action`` to the QGIS "Import project" menu.
+Removes an ``action`` from the QGIS "Import project" menu.
 
 .. seealso:: :py:func:`addProjectImportAction`
 
@@ -250,7 +279,7 @@ Adds an ``action`` to the QGIS "Export project" menu.
 
     virtual void removeProjectExportAction( QAction *action ) = 0;
 %Docstring
-Adds an ``action`` to the QGIS "Export project" menu.
+Removes an ``action`` from the the QGIS "Export project" menu.
 
 .. seealso:: :py:func:`addProjectExportAction`
 
@@ -259,14 +288,14 @@ Adds an ``action`` to the QGIS "Export project" menu.
 .. versionadded:: 3.30
 %End
 
-    virtual QMenu *projectModelsMenu() = 0;
+    virtual QMenu *projectModelsMenu() = 0 /DisallowNone/;
 %Docstring
 Returns a reference to the main window "Projects" - "Models" submenu.
 
 .. versionadded:: 3.42
 %End
 
-    virtual QMenu *createProjectModelSubMenu( const QString &title ) = 0;
+    virtual QMenu *createProjectModelSubMenu( const QString &title ) = 0 /DisallowNone/;
 %Docstring
 Creates a new project model submenu in the "Projects" - "Models"
 submenu.
@@ -274,42 +303,42 @@ submenu.
 .. versionadded:: 3.42
 %End
 
-    virtual QMenu *editMenu() = 0;
+    virtual QMenu *editMenu() = 0 /DisallowNone/;
 %Docstring
 Returns a reference to the main window "Edit" menu.
 %End
 
-    virtual QMenu *viewMenu() = 0;
+    virtual QMenu *viewMenu() = 0 /DisallowNone/;
 %Docstring
 Returns a reference to the main window "View" menu.
 %End
 
-    virtual QMenu *layerMenu() = 0;
+    virtual QMenu *layerMenu() = 0 /DisallowNone/;
 %Docstring
 Returns a reference to the main window "Layer" menu.
 %End
 
-    virtual QMenu *newLayerMenu() = 0;
+    virtual QMenu *newLayerMenu() = 0 /DisallowNone/;
 %Docstring
 Returns a reference to the main window "Create New Layer" menu.
 %End
 
-    virtual QMenu *addLayerMenu() = 0;
+    virtual QMenu *addLayerMenu() = 0 /DisallowNone/;
 %Docstring
 Returns a reference to the main window "Add Layer" menu.
 %End
 
-    virtual QMenu *settingsMenu() = 0;
+    virtual QMenu *settingsMenu() = 0 /DisallowNone/;
 %Docstring
 Returns a reference to the main window "Settings" menu.
 %End
 
-    virtual QMenu *pluginMenu() = 0;
+    virtual QMenu *pluginMenu() = 0 /DisallowNone/;
 %Docstring
 Returns a reference to the main window "Plugin" menu.
 %End
 
-    virtual QMenu *pluginHelpMenu() = 0;
+    virtual QMenu *pluginHelpMenu() = 0 /DisallowNone/;
 %Docstring
 Returns a reference to the main window "Plugin Help" sub-menu.
 
@@ -321,34 +350,41 @@ or About actions.
 .. versionadded:: 3.10
 %End
 
-    virtual QMenu *rasterMenu() = 0;
+    virtual QMenu *rasterMenu() = 0 /DisallowNone/;
 %Docstring
 Returns a reference to the main window "Raster" menu.
 %End
 
-    virtual QMenu *databaseMenu() = 0;
+    virtual QMenu *databaseMenu() = 0 /DisallowNone/;
 %Docstring
 Returns a reference to the main window "Database" menu.
 %End
 
-    virtual QMenu *vectorMenu() = 0;
+    virtual QMenu *vectorMenu() = 0 /DisallowNone/;
 %Docstring
 Returns a reference to the main window "Vector" menu.
 %End
 
-    virtual QMenu *webMenu() = 0;
+    virtual QMenu *webMenu() = 0 /DisallowNone/;
 %Docstring
 Returns a reference to the main window "Web" menu.
 %End
 
-    virtual QMenu *meshMenu() = 0;
+    virtual QMenu *meshMenu() = 0 /DisallowNone/;
 %Docstring
 Returns a reference to the main window "Mesh" menu.
 
 .. versionadded:: 3.34
 %End
 
-    virtual QMenu *firstRightStandardMenu() = 0;
+    virtual QMenu *processingMenu() = 0 /DisallowNone/;
+%Docstring
+Returns a reference to the main window "Processing" menu.
+
+.. versionadded:: 4.4
+%End
+
+    virtual QMenu *firstRightStandardMenu() = 0 /DisallowNone/;
 %Docstring
 Returns a reference to the right most standard menu, which is usually
 the last menu item before the "Help" menu.
@@ -357,28 +393,28 @@ This can be used to insert additional top-level menus into their correct
 position BEFORE the help menu.
 %End
 
-    virtual QMenu *windowMenu() = 0;
+    virtual QMenu *windowMenu() = 0 /DisallowNone/;
 %Docstring
 Returns a reference to the main window "Window" menu.
 %End
 
-    virtual QMenu *helpMenu() = 0;
+    virtual QMenu *helpMenu() = 0 /DisallowNone/;
 %Docstring
 Returns a reference to the main window "Help" menu.
 %End
 
 
-    virtual QToolBar *fileToolBar() = 0;
+    virtual QToolBar *fileToolBar() = 0 /DisallowNone/;
 %Docstring
 Returns a reference to the main window "File" toolbar.
 %End
 
-    virtual QToolBar *layerToolBar() = 0;
+    virtual QToolBar *layerToolBar() = 0 /DisallowNone/;
 %Docstring
 Returns a reference to the main window "Layer" toolbar.
 %End
 
-    virtual QToolBar *dataSourceManagerToolBar() = 0;
+    virtual QToolBar *dataSourceManagerToolBar() = 0 /DisallowNone/;
 %Docstring
 Returns a reference to the main window "Data Source Manager" toolbar.
 
@@ -394,169 +430,176 @@ This method creates and opens the dialog if it is not already visible.
 .. versionadded:: 3.30
 %End
 
-    virtual QToolBar *mapNavToolToolBar() = 0;
+    virtual QToolBar *mapNavToolToolBar() = 0 /DisallowNone/;
 %Docstring
 Returns a reference to the main window "Map Navigation" toolbar.
 %End
 
-    virtual QToolBar *digitizeToolBar() = 0;
+    virtual QToolBar *digitizeToolBar() = 0 /DisallowNone/;
 %Docstring
 Returns a reference to the main window "Digitize" toolbar.
 %End
 
-    virtual QToolBar *advancedDigitizeToolBar() = 0;
+    virtual QToolBar *advancedDigitizeToolBar() = 0 /DisallowNone/;
 %Docstring
 Returns a reference to the main window "Advanced Digitizing" toolbar.
 %End
 
-    virtual QToolBar *shapeDigitizeToolBar() = 0;
+    virtual QToolBar *shapeDigitizeToolBar() = 0 /DisallowNone/;
 %Docstring
 Returns a reference to the main window "Shape Digitizing" toolbar.
 %End
 
-    virtual QToolBar *attributesToolBar() = 0;
+    virtual QToolBar *attributesToolBar() = 0 /DisallowNone/;
 %Docstring
 Returns a reference to the main window "Attributes" toolbar.
 %End
 
-    virtual QToolBar *selectionToolBar() = 0;
+    virtual QToolBar *selectionToolBar() = 0 /DisallowNone/;
 %Docstring
 Returns a reference to the main window "Selection" toolbar.
 
 .. versionadded:: 3.14
 %End
 
-    virtual QToolBar *pluginToolBar() = 0;
+    virtual QToolBar *pluginToolBar() = 0 /DisallowNone/;
 %Docstring
 Returns a reference to the main window "Plugin" toolbar.
 %End
 
-    virtual QToolBar *helpToolBar() = 0;
+    virtual QToolBar *helpToolBar() = 0 /DisallowNone/;
 %Docstring
 Returns a reference to the main window "Help" toolbar.
 %End
 
-    virtual QToolBar *rasterToolBar() = 0;
+    virtual QToolBar *rasterToolBar() = 0 /DisallowNone/;
 %Docstring
 Returns a reference to the main window "Raster" toolbar.
 %End
 
-    virtual QToolBar *vectorToolBar() = 0;
+    virtual QToolBar *vectorToolBar() = 0 /DisallowNone/;
 %Docstring
 Returns a reference to the main window "Vector" toolbar.
 %End
 
-    virtual QToolBar *databaseToolBar() = 0;
+    virtual QToolBar *databaseToolBar() = 0 /DisallowNone/;
 %Docstring
 Returns a reference to the main window "Database" toolbar.
 %End
 
-    virtual QToolBar *webToolBar() = 0;
+    virtual QToolBar *webToolBar() = 0 /DisallowNone/;
 %Docstring
 Returns a reference to the main window "Web" toolbar.
 %End
 
-    virtual QAction *actionNewProject() = 0;
+    virtual QToolBar *processingToolboxToolBar() = 0 /DisallowNone/;
+%Docstring
+Returns a reference to the Processing toolbox dock widget toolbar.
+
+.. versionadded:: 4.4
+%End
+
+    virtual QAction *actionNewProject() = 0 /DisallowNone/;
 %Docstring
 Returns the native New Project action.
 %End
-    virtual QAction *actionOpenProject() = 0;
+    virtual QAction *actionOpenProject() = 0 /DisallowNone/;
 %Docstring
 Returns the Open Project action.
 %End
-    virtual QAction *actionSaveProject() = 0;
+    virtual QAction *actionSaveProject() = 0 /DisallowNone/;
 %Docstring
 Returns the native Save Project action.
 %End
-    virtual QAction *actionSaveProjectAs() = 0;
+    virtual QAction *actionSaveProjectAs() = 0 /DisallowNone/;
 %Docstring
 Returns the native Save Project As action.
 %End
-    virtual QAction *actionSaveMapAsImage() = 0;
+    virtual QAction *actionSaveMapAsImage() = 0 /DisallowNone/;
 %Docstring
 Returns the native Save Map as Image action.
 %End
-    virtual QAction *actionProjectProperties() = 0;
+    virtual QAction *actionProjectProperties() = 0 /DisallowNone/;
 %Docstring
 Returns the native Project Properties action.
 %End
 
-    virtual QAction *actionCreatePrintLayout() = 0;
+    virtual QAction *actionCreatePrintLayout() = 0 /DisallowNone/;
 %Docstring
-Create new print layout action
+Creates new print layout action
 %End
 
-    virtual QAction *actionShowLayoutManager() = 0;
+    virtual QAction *actionShowLayoutManager() = 0 /DisallowNone/;
 %Docstring
-Show layout manager action
+Shows layout manager action
 %End
-    virtual QAction *actionExit() = 0;
+    virtual QAction *actionExit() = 0 /DisallowNone/;
 %Docstring
 Returns the Exit QGIS action.
 %End
 
 
-    virtual QAction *actionCutFeatures() = 0;
+    virtual QAction *actionCutFeatures() = 0 /DisallowNone/;
 %Docstring
 Returns the native Cut Features action.
 %End
-    virtual QAction *actionCopyFeatures() = 0;
+    virtual QAction *actionCopyFeatures() = 0 /DisallowNone/;
 %Docstring
 Returns the native Copy Features action.
 %End
-    virtual QAction *actionPasteFeatures() = 0;
+    virtual QAction *actionPasteFeatures() = 0 /DisallowNone/;
 %Docstring
 Returns the native Paste Features action.
 %End
-    virtual QAction *actionAddFeature() = 0;
+    virtual QAction *actionAddFeature() = 0 /DisallowNone/;
 %Docstring
 Returns the native Add Feature action.
 %End
-    virtual QAction *actionDeleteSelected() = 0;
+    virtual QAction *actionDeleteSelected() = 0 /DisallowNone/;
 %Docstring
 Returns the native Delete Selected Features action.
 %End
-    virtual QAction *actionMoveFeature() = 0;
+    virtual QAction *actionMoveFeature() = 0 /DisallowNone/;
 %Docstring
 Returns the native Move Features action.
 %End
-    virtual QAction *actionSplitFeatures() = 0;
+    virtual QAction *actionSplitFeatures() = 0 /DisallowNone/;
 %Docstring
 Returns the native Split Features action.
 %End
-    virtual QAction *actionSplitParts() = 0;
+    virtual QAction *actionSplitParts() = 0 /DisallowNone/;
 %Docstring
 Returns the native Split Parts action.
 %End
-    virtual QAction *actionAddRing() = 0;
+    virtual QAction *actionAddRing() = 0 /DisallowNone/;
 %Docstring
 Returns the native Add Ring action.
 %End
-    virtual QAction *actionAddPart() = 0;
+    virtual QAction *actionAddPart() = 0 /DisallowNone/;
 %Docstring
 Returns the native Add Part action.
 %End
-    virtual QAction *actionSimplifyFeature() = 0;
+    virtual QAction *actionSimplifyFeature() = 0 /DisallowNone/;
 %Docstring
 Returns the native Simplify/Smooth Features action.
 %End
-    virtual QAction *actionDeleteRing() = 0;
+    virtual QAction *actionDeleteRing() = 0 /DisallowNone/;
 %Docstring
 Returns the native Delete Ring action.
 %End
-    virtual QAction *actionDeletePart() = 0;
+    virtual QAction *actionDeletePart() = 0 /DisallowNone/;
 %Docstring
 Returns the native Delete Part action.
 %End
 
-    virtual QAction *actionVertexTool() = 0;
+    virtual QAction *actionVertexTool() = 0 /DisallowNone/;
 %Docstring
 Returns the native "Vertex Tool for All Layers" action.
 
 .. seealso:: :py:func:`actionVertexToolActiveLayer`
 %End
 
-    virtual QAction *actionVertexToolActiveLayer() = 0;
+    virtual QAction *actionVertexToolActiveLayer() = 0 /DisallowNone/;
 %Docstring
 Returns the native "Vertex Tool for Active Layer" action.
 
@@ -565,7 +608,7 @@ Returns the native "Vertex Tool for Active Layer" action.
 .. versionadded:: 3.6
 %End
 
-    virtual QActionGroup *mapToolActionGroup() = 0;
+    virtual QActionGroup *mapToolActionGroup() = 0 /DisallowNone/;
 %Docstring
 Returns the action group for map tools.
 
@@ -576,251 +619,314 @@ native, in-built map tool actions.
 .. versionadded:: 3.16
 %End
 
-    virtual QAction *actionPan() = 0;
+
+    virtual QAction *actionPan() = 0 /DisallowNone/;
 %Docstring
-Returns the native pan action. Call :py:func:`~QgisInterface.trigger` on
-it to set the default pan map tool.
-%End
-    virtual QAction *actionPanToSelected() = 0;
-%Docstring
-Returns the native pan to selected action. Call
-:py:func:`~QgisInterface.trigger` on it to pan the map canvas to the
-selection.
-%End
-    virtual QAction *actionZoomIn() = 0;
-%Docstring
-Returns the native zoom in action. Call
-:py:func:`~QgisInterface.trigger` on it to set the default zoom in map
+Returns the native pan action.
+
+Call :py:func:`~QgisInterface.trigger` on it to set the default pan map
 tool.
 %End
-    virtual QAction *actionZoomOut() = 0;
+
+    virtual QAction *actionPanToSelected() = 0 /DisallowNone/;
 %Docstring
-Returns the native zoom out action. Call
-:py:func:`~QgisInterface.trigger` on it to set the default zoom out map
-tool.
+Returns the native pan to selected action.
+
+Call :py:func:`~QgisInterface.trigger` on it to pan the map canvas to
+the selection.
 %End
-    virtual QAction *actionSelect() = 0;
+
+    virtual QAction *actionZoomIn() = 0 /DisallowNone/;
 %Docstring
-Returns the native select action. Call :py:func:`~QgisInterface.trigger`
-on it to set the default select map tool.
+Returns the native zoom in action.
+
+Call :py:func:`~QgisInterface.trigger` on it to set the default zoom in
+map tool.
 %End
-    virtual QAction *actionSelectRectangle() = 0;
+
+    virtual QAction *actionZoomOut() = 0 /DisallowNone/;
 %Docstring
-Returns the native select rectangle action. Call
-:py:func:`~QgisInterface.trigger` on it to set the default select
+Returns the native zoom out action.
+
+Call :py:func:`~QgisInterface.trigger` on it to set the default zoom out
+map tool.
+%End
+
+    virtual QAction *actionSelect() = 0 /DisallowNone/;
+%Docstring
+Returns the native select action.
+
+Call :py:func:`~QgisInterface.trigger` on it to set the default select
+map tool.
+%End
+
+    virtual QAction *actionSelectRectangle() = 0 /DisallowNone/;
+%Docstring
+Returns the native select rectangle action.
+
+Call :py:func:`~QgisInterface.trigger` on it to set the default select
 rectangle map tool.
 %End
-    virtual QAction *actionSelectPolygon() = 0;
+
+    virtual QAction *actionSelectPolygon() = 0 /DisallowNone/;
 %Docstring
-Returns the native select polygon action. Call
-:py:func:`~QgisInterface.trigger` on it to set the default select
+Returns the native select polygon action.
+
+Call :py:func:`~QgisInterface.trigger` on it to set the default select
 polygon map tool.
 %End
-    virtual QAction *actionSelectFreehand() = 0;
+
+    virtual QAction *actionSelectFreehand() = 0 /DisallowNone/;
 %Docstring
-Returns the native select freehand action. Call
-:py:func:`~QgisInterface.trigger` on it to set the default select
+Returns the native select freehand action.
+
+Call :py:func:`~QgisInterface.trigger` on it to set the default select
 freehand map tool.
 %End
-    virtual QAction *actionSelectRadius() = 0;
+
+    virtual QAction *actionSelectRadius() = 0 /DisallowNone/;
 %Docstring
-Returns the native select radius action. Call
-:py:func:`~QgisInterface.trigger` on it to set the default select radius
+Returns the native select radius action.
+
+Call :py:func:`~QgisInterface.trigger` on it to set the default select
+radius map tool.
+%End
+
+    virtual QAction *actionIdentify() = 0 /DisallowNone/;
+%Docstring
+Returns the native identify action.
+
+Call :py:func:`~QgisInterface.trigger` on it to set the default identify
 map tool.
 %End
-    virtual QAction *actionIdentify() = 0;
+
+    virtual QAction *actionFeatureAction() = 0 /DisallowNone/;
 %Docstring
-Returns the native identify action. Call
-:py:func:`~QgisInterface.trigger` on it to set the default identify map
-tool.
+Returns the native run action feature action.
+
+Call :py:func:`~QgisInterface.trigger` on it to set the default run
+feature action map tool.
 %End
-    virtual QAction *actionFeatureAction() = 0;
+
+    virtual QAction *actionMeasure() = 0 /DisallowNone/;
 %Docstring
-Returns the native run action feature action. Call
-:py:func:`~QgisInterface.trigger` on it to set the default run feature
-action map tool.
-%End
-    virtual QAction *actionMeasure() = 0;
-%Docstring
-Returns the native measure action. Call
-:py:func:`~QgisInterface.trigger` on it to set the default measure map
-tool.
-%End
-    virtual QAction *actionMeasureArea() = 0;
-%Docstring
-Returns the native measure area action. Call
-:py:func:`~QgisInterface.trigger` on it to set the default measure area
+Returns the native measure action.
+
+Call :py:func:`~QgisInterface.trigger` on it to set the default measure
 map tool.
 %End
-    virtual QAction *actionZoomFullExtent() = 0;
+
+    virtual QAction *actionMeasureArea() = 0 /DisallowNone/;
 %Docstring
-Returns the native zoom full extent action. Call
-:py:func:`~QgisInterface.trigger` on it to zoom to the full extent.
+Returns the native measure area action.
+
+Call :py:func:`~QgisInterface.trigger` on it to set the default measure
+area map tool.
+%End
+
+    virtual QAction *actionZoomFullExtent() = 0 /DisallowNone/;
+%Docstring
+Returns the native zoom full extent action.
+
+Call :py:func:`~QgisInterface.trigger` on it to zoom to the full extent.
 %End
 
  virtual QAction *actionZoomToLayer() = 0 /Deprecated="Since 3.40. Use actionZoomToLayers() instead."/;
 %Docstring
-Returns the native zoom to layer action. Call
-:py:func:`~QgisInterface.trigger` on it to zoom to the active layer.
+Returns the native zoom to layer action.
+
+Call :py:func:`~QgisInterface.trigger` on it to zoom to the active
+layer.
 
 .. deprecated:: 3.40
 
    Use :py:func:`~QgisInterface.actionZoomToLayers` instead.
 %End
 
-    virtual QAction *actionZoomToLayers() = 0;
+    virtual QAction *actionZoomToLayers() = 0 /DisallowNone/;
 %Docstring
-Returns the native zoom to layers action. Call
-:py:func:`~QgisInterface.trigger` on it to zoom to the selected layers.
+Returns the native zoom to layers action.
+
+Call :py:func:`~QgisInterface.trigger` on it to zoom to the selected
+layers.
 
 .. versionadded:: 3.18
 %End
 
-    virtual QAction *actionZoomToSelected() = 0;
+    virtual QAction *actionZoomToSelected() = 0 /DisallowNone/;
 %Docstring
-Returns the native zoom to selected action. Call
-:py:func:`~QgisInterface.trigger` on it to zoom to the current
+Returns the native zoom to selected action.
+
+Call :py:func:`~QgisInterface.trigger` on it to zoom to the current
 selection.
 %End
-    virtual QAction *actionZoomLast() = 0;
+
+    virtual QAction *actionZoomLast() = 0 /DisallowNone/;
 %Docstring
-Returns the native zoom last action. Call
-:py:func:`~QgisInterface.trigger` on it to zoom to last.
+Returns the native zoom last action.
+
+Call :py:func:`~QgisInterface.trigger` on it to zoom to last.
 %End
-    virtual QAction *actionZoomNext() = 0;
+
+    virtual QAction *actionZoomNext() = 0 /DisallowNone/;
 %Docstring
-Returns the native zoom next action. Call
-:py:func:`~QgisInterface.trigger` on it to zoom to next.
+Returns the native zoom next action.
+
+Call :py:func:`~QgisInterface.trigger` on it to zoom to next.
 %End
-    virtual QAction *actionZoomActualSize() = 0;
+
+    virtual QAction *actionZoomActualSize() = 0 /DisallowNone/;
 %Docstring
-Returns the native zoom resolution (100%) action. Call
-:py:func:`~QgisInterface.trigger` on it to zoom to actual size.
+Returns the native zoom resolution (100%) action.
+
+Call :py:func:`~QgisInterface.trigger` on it to zoom to actual size.
 %End
-    virtual QAction *actionMapTips() = 0;
+
+    virtual QAction *actionMapTips() = 0 /DisallowNone/;
 %Docstring
-Returns the native map tips action. Call
-:py:func:`~QgisInterface.trigger` on it to toggle map tips.
+Returns the native map tips action.
+
+Call :py:func:`~QgisInterface.trigger` on it to toggle map tips.
 %End
-    virtual QAction *actionNewBookmark() = 0;
+
+    virtual QAction *actionNewBookmark() = 0 /DisallowNone/;
 %Docstring
-Returns the native new bookmark action. Call
-:py:func:`~QgisInterface.trigger` on it to open the new bookmark dialog.
+Returns the native new bookmark action.
+
+Call :py:func:`~QgisInterface.trigger` on it to open the new bookmark
+dialog.
 %End
-    virtual QAction *actionShowBookmarks() = 0;
+
+    virtual QAction *actionShowBookmarks() = 0 /DisallowNone/;
 %Docstring
-Returns the native show bookmarks action. Call
-:py:func:`~QgisInterface.trigger` on it to open the bookmarks dialog.
+Returns the native show bookmarks action.
+
+Call :py:func:`~QgisInterface.trigger` on it to open the bookmarks
+dialog.
 %End
-    virtual QAction *actionDraw() = 0;
+
+    virtual QAction *actionDraw() = 0 /DisallowNone/;
 %Docstring
 Returns the native draw action.
 %End
 
-    virtual QAction *actionNewVectorLayer() = 0;
-    virtual QAction *actionAddOgrLayer() = 0;
-    virtual QAction *actionAddRasterLayer() = 0;
-    virtual QAction *actionAddPgLayer() = 0;
-    virtual QAction *actionAddWmsLayer() = 0;
+    virtual QAction *actionNew3DMapCanvas() = 0 /DisallowNone/;
+%Docstring
+Returns the native action for creating a new 3d map canvas.
+%End
 
-    virtual QAction *actionAddXyzLayer() = 0;
+    virtual QAction *actionNewVectorLayer() = 0 /DisallowNone/;
+    virtual QAction *actionAddOgrLayer() = 0 /DisallowNone/;
+    virtual QAction *actionAddRasterLayer() = 0 /DisallowNone/;
+    virtual QAction *actionAddPgLayer() = 0 /DisallowNone/;
+    virtual QAction *actionAddWmsLayer() = 0 /DisallowNone/;
+
+    virtual QAction *actionAddXyzLayer() = 0 /DisallowNone/;
 %Docstring
 Returns the native Add XYZ Layer action.
 
 .. versionadded:: 3.14
 %End
 
-    virtual QAction *actionAddVectorTileLayer() = 0;
+    virtual QAction *actionAddVectorTileLayer() = 0 /DisallowNone/;
 %Docstring
 Returns the native Add Vector Tile Layer action.
 
 .. versionadded:: 3.14
 %End
 
-    virtual QAction *actionAddPointCloudLayer() = 0;
+    virtual QAction *actionAddPointCloudLayer() = 0 /DisallowNone/;
 %Docstring
 Returns the native Add Point Cloud Layer action.
 
 .. versionadded:: 3.18
 %End
 
-    virtual QAction *actionAddAfsLayer() = 0;
+    virtual QAction *actionAddAfsLayer() = 0 /DisallowNone/;
 %Docstring
 Returns the native Add ArcGIS REST Server action.
 %End
 
-    virtual QAction *actionAddAmsLayer() = 0;
+    virtual QAction *actionAddAmsLayer() = 0 /DisallowNone/;
 %Docstring
 Returns the native Add ArcGIS REST Server action.
 %End
 
-    virtual QAction *actionCopyLayerStyle() = 0;
-    virtual QAction *actionPasteLayerStyle() = 0;
-    virtual QAction *actionOpenTable() = 0;
-    virtual QAction *actionOpenFieldCalculator() = 0;
+    virtual QAction *actionCopyLayerStyle() = 0 /DisallowNone/;
+    virtual QAction *actionPasteLayerStyle() = 0 /DisallowNone/;
+    virtual QAction *actionOpenTable() = 0 /DisallowNone/;
+    virtual QAction *actionOpenFieldCalculator() = 0 /DisallowNone/;
 
-    virtual QAction *actionOpenStatisticalSummary() = 0;
+    virtual QAction *actionOpenStatisticalSummary() = 0 /DisallowNone/;
 %Docstring
 Statistical summary action.
 %End
 
-    virtual QAction *actionToggleEditing() = 0;
-    virtual QAction *actionSaveActiveLayerEdits() = 0;
-    virtual QAction *actionAllEdits() = 0;
-    virtual QAction *actionSaveEdits() = 0;
-    virtual QAction *actionSaveAllEdits() = 0;
-    virtual QAction *actionRollbackEdits() = 0;
-    virtual QAction *actionRollbackAllEdits() = 0;
-    virtual QAction *actionCancelEdits() = 0;
-    virtual QAction *actionCancelAllEdits() = 0;
-    virtual QAction *actionLayerSaveAs() = 0;
-    virtual QAction *actionDuplicateLayer() = 0;
-    virtual QAction *actionLayerProperties() = 0;
-    virtual QAction *actionAddToOverview() = 0;
-    virtual QAction *actionAddAllToOverview() = 0;
-    virtual QAction *actionRemoveAllFromOverview() = 0;
-    virtual QAction *actionHideAllLayers() = 0;
-    virtual QAction *actionShowAllLayers() = 0;
-    virtual QAction *actionHideSelectedLayers() = 0;
+    virtual QAction *actionToggleEditing() = 0 /DisallowNone/;
+    virtual QAction *actionSaveActiveLayerEdits() = 0 /DisallowNone/;
+    virtual QAction *actionAllEdits() = 0 /DisallowNone/;
+    virtual QAction *actionSaveEdits() = 0 /DisallowNone/;
+    virtual QAction *actionSaveAllEdits() = 0 /DisallowNone/;
+    virtual QAction *actionRollbackEdits() = 0 /DisallowNone/;
+    virtual QAction *actionRollbackAllEdits() = 0 /DisallowNone/;
+    virtual QAction *actionCancelEdits() = 0 /DisallowNone/;
+    virtual QAction *actionCancelAllEdits() = 0 /DisallowNone/;
+    virtual QAction *actionLayerSaveAs() = 0 /DisallowNone/;
+    virtual QAction *actionDuplicateLayer() = 0 /DisallowNone/;
+    virtual QAction *actionLayerProperties() = 0 /DisallowNone/;
+    virtual QAction *actionAddToOverview() = 0 /DisallowNone/;
+    virtual QAction *actionAddAllToOverview() = 0 /DisallowNone/;
+    virtual QAction *actionRemoveAllFromOverview() = 0 /DisallowNone/;
+    virtual QAction *actionHideAllLayers() = 0 /DisallowNone/;
+    virtual QAction *actionShowAllLayers() = 0 /DisallowNone/;
+    virtual QAction *actionHideSelectedLayers() = 0 /DisallowNone/;
 
-    virtual QAction *actionToggleSelectedLayers() = 0;
+    virtual QAction *actionToggleSelectedLayers() = 0 /DisallowNone/;
 %Docstring
 Returns the Toggle Selected Layers action.
 
 .. versionadded:: 3.14
 %End
 
-    virtual QAction *actionToggleSelectedLayersIndependently() = 0;
+    virtual QAction *actionToggleSelectedLayersIndependently() = 0 /DisallowNone/;
 %Docstring
 Returns the Toggle Selected Layers Independently action.
 
 .. versionadded:: 3.14
 %End
 
-    virtual QAction *actionHideDeselectedLayers() = 0;
+    virtual QAction *actionHideDeselectedLayers() = 0 /DisallowNone/;
 %Docstring
 Returns the Hide Deselected Layers action.
 %End
-    virtual QAction *actionShowSelectedLayers() = 0;
+    virtual QAction *actionShowSelectedLayers() = 0 /DisallowNone/;
 
-    virtual QAction *actionManagePlugins() = 0;
-    virtual QAction *actionPluginListSeparator() = 0;
-    virtual QAction *actionShowPythonDialog() = 0;
+    virtual QAction *actionManagePlugins() = 0 /DisallowNone/;
+    virtual QAction *actionPluginListSeparator() = 0 /DisallowNone/;
+    virtual QAction *actionShowPythonDialog() = 0 /DisallowNone/;
 
-    virtual QAction *actionToggleFullScreen() = 0;
-    virtual QAction *actionOptions() = 0;
-    virtual QAction *actionCustomProjection() = 0;
+    virtual QAction *actionToggleFullScreen() = 0 /DisallowNone/;
+    virtual QAction *actionOptions() = 0 /DisallowNone/;
+    virtual QAction *actionCustomProjection() = 0 /DisallowNone/;
 
-    virtual QAction *actionHelpContents() = 0;
-    virtual QAction *actionQgisHomePage() = 0;
-    virtual QAction *actionCheckQgisVersion() = 0;
-    virtual QAction *actionAbout() = 0;
+    virtual QAction *actionHelpContents() = 0 /DisallowNone/;
+    virtual QAction *actionQgisHomePage() = 0 /DisallowNone/;
+    virtual QAction *actionCheckQgisVersion() = 0 /DisallowNone/;
+    virtual QAction *actionAbout() = 0 /DisallowNone/;
+
+    virtual QAction *actionEditFeaturesInPlace() = 0 /DisallowNone/;
+%Docstring
+Returns the Processing "Edit Features in Place" action.
+
+.. versionadded:: 4.4
+%End
 
 
  virtual QAction *actionCircle2Points() /Deprecated="Since 3.26. Shape digitizing is now part of the add feature tool. To enable the shape tool, use QgsMapToolCapture.setCurrentCaptureTechnique() and then QgsMapToolCapture.setCurrentShapeMapTool()."/;
 %Docstring
-Returns the native add circle from 2 points action. Call
-:py:func:`~QgisInterface.trigger` on it to set the map tool.
+Returns the native add circle from 2 points action.
+
+Call :py:func:`~QgisInterface.trigger` on it to set the map tool.
 
 .. deprecated:: 3.26
 
@@ -829,8 +935,9 @@ Returns the native add circle from 2 points action. Call
 
  virtual QAction *actionCircle3Points() /Deprecated="Since 3.26. Shape digitizing is now part of the add feature tool. To enable the shape tool, use QgsMapToolCapture.setCurrentCaptureTechnique() and then QgsMapToolCapture.setCurrentShapeMapTool()."/;
 %Docstring
-Returns the native add circle from 3 points action. Call
-:py:func:`~QgisInterface.trigger` on it to set the map tool.
+Returns the native add circle from 3 points action.
+
+Call :py:func:`~QgisInterface.trigger` on it to set the map tool.
 
 .. deprecated:: 3.26
 
@@ -839,8 +946,9 @@ Returns the native add circle from 3 points action. Call
 
  virtual QAction *actionCircle3Tangents() /Deprecated="Since 3.26. Shape digitizing is now part of the add feature tool. To enable the shape tool, use QgsMapToolCapture.setCurrentCaptureTechnique() and then QgsMapToolCapture.setCurrentShapeMapTool()."/;
 %Docstring
-Returns the native add circle from 3 tangents action. Call
-:py:func:`~QgisInterface.trigger` on it to set the map tool.
+Returns the native add circle from 3 tangents action.
+
+Call :py:func:`~QgisInterface.trigger` on it to set the map tool.
 
 .. deprecated:: 3.26
 
@@ -849,8 +957,9 @@ Returns the native add circle from 3 tangents action. Call
 
  virtual QAction *actionCircle2TangentsPoint() /Deprecated="Since 3.26. Shape digitizing is now part of the add feature tool. To enable the shape tool, use QgsMapToolCapture.setCurrentCaptureTechnique() and then QgsMapToolCapture.setCurrentShapeMapTool()."/;
 %Docstring
-Returns the native add circle from 2 tangents and a point action. Call
-:py:func:`~QgisInterface.trigger` on it to set the map tool.
+Returns the native add circle from 2 tangents and a point action.
+
+Call :py:func:`~QgisInterface.trigger` on it to set the map tool.
 
 .. deprecated:: 3.26
 
@@ -859,8 +968,9 @@ Returns the native add circle from 2 tangents and a point action. Call
 
  virtual QAction *actionCircleCenterPoint() /Deprecated="Since 3.26. Shape digitizing is now part of the add feature tool. To enable the shape tool, use QgsMapToolCapture.setCurrentCaptureTechnique() and then QgsMapToolCapture.setCurrentShapeMapTool()."/;
 %Docstring
-Returns the native add circle from center action. Call
-:py:func:`~QgisInterface.trigger` on it to set the map tool.
+Returns the native add circle from center action.
+
+Call :py:func:`~QgisInterface.trigger` on it to set the map tool.
 
 .. deprecated:: 3.26
 
@@ -869,8 +979,9 @@ Returns the native add circle from center action. Call
 
  virtual QAction *actionEllipseCenter2Points() /Deprecated="Since 3.26. Shape digitizing is now part of the add feature tool. To enable the shape tool, use QgsMapToolCapture.setCurrentCaptureTechnique() and then QgsMapToolCapture.setCurrentShapeMapTool()."/;
 %Docstring
-Returns the native add ellipse from center and 2 points action. Call
-:py:func:`~QgisInterface.trigger` on it to set the map tool.
+Returns the native add ellipse from center and 2 points action.
+
+Call :py:func:`~QgisInterface.trigger` on it to set the map tool.
 
 .. deprecated:: 3.26
 
@@ -879,8 +990,9 @@ Returns the native add ellipse from center and 2 points action. Call
 
  virtual QAction *actionEllipseCenterPoint() /Deprecated="Since 3.26. Shape digitizing is now part of the add feature tool. To enable the shape tool, use QgsMapToolCapture.setCurrentCaptureTechnique() and then QgsMapToolCapture.setCurrentShapeMapTool()."/;
 %Docstring
-Returns the native add ellipse from center and a point action. Call
-:py:func:`~QgisInterface.trigger` on it to set the map tool.
+Returns the native add ellipse from center and a point action.
+
+Call :py:func:`~QgisInterface.trigger` on it to set the map tool.
 
 .. deprecated:: 3.26
 
@@ -889,8 +1001,9 @@ Returns the native add ellipse from center and a point action. Call
 
  virtual QAction *actionEllipseExtent() /Deprecated="Since 3.26. Shape digitizing is now part of the add feature tool. To enable the shape tool, use QgsMapToolCapture.setCurrentCaptureTechnique() and then QgsMapToolCapture.setCurrentShapeMapTool()."/;
 %Docstring
-Returns the native add ellipse from an extent action. Call
-:py:func:`~QgisInterface.trigger` on it to set the map tool.
+Returns the native add ellipse from an extent action.
+
+Call :py:func:`~QgisInterface.trigger` on it to set the map tool.
 
 .. deprecated:: 3.26
 
@@ -899,8 +1012,9 @@ Returns the native add ellipse from an extent action. Call
 
  virtual QAction *actionEllipseFoci() /Deprecated="Since 3.26. Shape digitizing is now part of the add feature tool. To enable the shape tool, use QgsMapToolCapture.setCurrentCaptureTechnique() and then QgsMapToolCapture.setCurrentShapeMapTool()."/;
 %Docstring
-Returns the native add ellipse from foci action. Call
-:py:func:`~QgisInterface.trigger` on it to set the map tool.
+Returns the native add ellipse from foci action.
+
+Call :py:func:`~QgisInterface.trigger` on it to set the map tool.
 
 .. deprecated:: 3.26
 
@@ -909,8 +1023,9 @@ Returns the native add ellipse from foci action. Call
 
  virtual QAction *actionRectangleCenterPoint() /Deprecated="Since 3.26. Shape digitizing is now part of the add feature tool. To enable the shape tool, use QgsMapToolCapture.setCurrentCaptureTechnique() and then QgsMapToolCapture.setCurrentShapeMapTool()."/;
 %Docstring
-Returns the native add rectangle from center and a point action. Call
-:py:func:`~QgisInterface.trigger` on it to set the map tool.
+Returns the native add rectangle from center and a point action.
+
+Call :py:func:`~QgisInterface.trigger` on it to set the map tool.
 
 .. deprecated:: 3.26
 
@@ -919,8 +1034,9 @@ Returns the native add rectangle from center and a point action. Call
 
  virtual QAction *actionRectangleExtent() /Deprecated="Since 3.26. Shape digitizing is now part of the add feature tool. To enable the shape tool, use QgsMapToolCapture.setCurrentCaptureTechnique() and then QgsMapToolCapture.setCurrentShapeMapTool()."/;
 %Docstring
-Returns the native add rectangle from extent action. Call
-:py:func:`~QgisInterface.trigger` on it to set the map tool.
+Returns the native add rectangle from extent action.
+
+Call :py:func:`~QgisInterface.trigger` on it to set the map tool.
 
 .. deprecated:: 3.26
 
@@ -930,8 +1046,9 @@ Returns the native add rectangle from extent action. Call
  virtual QAction *actionRectangle3PointsDistance() /Deprecated="Since 3.26. Shape digitizing is now part of the add feature tool. To enable the shape tool, use QgsMapToolCapture.setCurrentCaptureTechnique() and then QgsMapToolCapture.setCurrentShapeMapTool()."/;
 %Docstring
 Returns the native add rectangle from 3 points (distance from 2nd and
-3rd points) action. Call :py:func:`~QgisInterface.trigger` on it to set
-the map tool.
+3rd points) action.
+
+Call :py:func:`~QgisInterface.trigger` on it to set the map tool.
 
 .. deprecated:: 3.26
 
@@ -941,8 +1058,9 @@ the map tool.
  virtual QAction *actionRectangle3PointsProjected() /Deprecated="Since 3.26. Shape digitizing is now part of the add feature tool. To enable the shape tool, use QgsMapToolCapture.setCurrentCaptureTechnique() and then QgsMapToolCapture.setCurrentShapeMapTool()."/;
 %Docstring
 Returns the native add rectangle from 3 points (distance from projected
-3rd point on segment p1 and p2) action. Call
-:py:func:`~QgisInterface.trigger` on it to set the map tool.
+3rd point on segment p1 and p2) action.
+
+Call :py:func:`~QgisInterface.trigger` on it to set the map tool.
 
 .. deprecated:: 3.26
 
@@ -951,8 +1069,9 @@ Returns the native add rectangle from 3 points (distance from projected
 
  virtual QAction *actionRegularPolygon2Points() /Deprecated="Since 3.26. Shape digitizing is now part of the add feature tool. To enable the shape tool, use QgsMapToolCapture.setCurrentCaptureTechnique() and then QgsMapToolCapture.setCurrentShapeMapTool()."/;
 %Docstring
-Returns the native add regular polygon from 2 points action. Call
-:py:func:`~QgisInterface.trigger` on it to set the map tool.
+Returns the native add regular polygon from 2 points action.
+
+Call :py:func:`~QgisInterface.trigger` on it to set the map tool.
 
 .. deprecated:: 3.26
 
@@ -962,6 +1081,7 @@ Returns the native add regular polygon from 2 points action. Call
  virtual QAction *actionRegularPolygonCenterPoint() /Deprecated="Since 3.26. Shape digitizing is now part of the add feature tool. To enable the shape tool, use QgsMapToolCapture.setCurrentCaptureTechnique() and then QgsMapToolCapture.setCurrentShapeMapTool()."/;
 %Docstring
 Returns the native add regular polygon from center and a point action.
+
 Call :py:func:`~QgisInterface.trigger` on it to set the map tool.
 
 .. deprecated:: 3.26
@@ -972,6 +1092,7 @@ Call :py:func:`~QgisInterface.trigger` on it to set the map tool.
  virtual QAction *actionRegularPolygonCenterCorner() /Deprecated="Since 3.26. Shape digitizing is now part of the add feature tool. To enable the shape tool, use QgsMapToolCapture.setCurrentCaptureTechnique() and then QgsMapToolCapture.setCurrentShapeMapTool()."/;
 %Docstring
 Returns the native add regular polygon from center and a corner action.
+
 Call :py:func:`~QgisInterface.trigger` on it to set the map tool.
 
 .. deprecated:: 3.26
@@ -979,11 +1100,13 @@ Call :py:func:`~QgisInterface.trigger` on it to set the map tool.
    Shape digitizing is now part of the add feature tool. To enable the shape tool, use :py:func:`QgsMapToolCapture.setCurrentCaptureTechnique()` and then :py:func:`QgsMapToolCapture.setCurrentShapeMapTool()`.
 %End
 
-    virtual QgsVectorLayerTools *vectorLayerTools() = 0;
+    virtual QgsVectorLayerTools *vectorLayerTools() = 0 /DisallowNone/;
 %Docstring
-Access the vector layer tools instance. With the help of this you can
-access methods like addFeature, startEditing or stopEditing while giving
-the user the appropriate dialogs.
+Access the vector layer tools instance.
+
+With the help of this you can access methods like addFeature,
+startEditing or stopEditing while giving the user the appropriate
+dialogs.
 
 :return: An instance of the vector layer tools
 %End
@@ -993,11 +1116,13 @@ the user the appropriate dialogs.
 Returns the timeout for timed messages: default of 5 seconds
 %End
 
-    virtual QgsStatusBar *statusBarIface() = 0;
+    virtual QgsStatusBar *statusBarIface() = 0 /DisallowNone/;
 %Docstring
-Returns a pointer to the app's status bar interface. This should be used
-for interacting and adding widgets and messages to the app's status bar
-(do not use the native Qt :py:func:`~QgisInterface.statusBar` method).
+Returns a pointer to the app's status bar interface.
+
+This should be used for interacting and adding widgets and messages to
+the app's status bar (do not use the native Qt
+:py:func:`~QgisInterface.statusBar` method).
 %End
 
     virtual void takeAppScreenShots( const QString &saveDirectory, const int categories = 0 );
@@ -1013,13 +1138,15 @@ Take screenshots for user documentation
 
     virtual QgsLayerTreeRegistryBridge::InsertionPoint layerTreeInsertionPoint() = 0;
 %Docstring
-Returns the insertion point. This represents the current layer tree
-group and index where newly added map layers should be inserted into.
+Returns the insertion point.
+
+This represents the current layer tree group and index where newly added
+map layers should be inserted into.
 
 .. versionadded:: 3.10
 %End
 
-    virtual QgsUserProfileManager *userProfileManager() = 0;
+    virtual QgsUserProfileManager *userProfileManager() = 0 /DisallowNone/;
 %Docstring
 Returns a reference to the user profile manager
 
@@ -1139,36 +1266,43 @@ cancel when prompted to save the current project).
 
     virtual void reloadConnections() = 0;
 %Docstring
-Triggered when connections have changed. This calls reloadConnections in
-the main application and triggers a signal that is forwarded to the GUI
-elements that needs to be updated (i.e. the source select dialogs and
-the browser widgets)
+Triggered when connections have changed.
+
+This calls reloadConnections in the main application and triggers a
+signal that is forwarded to the GUI elements that needs to be updated
+(i.e. the source select dialogs and the browser widgets)
 %End
 
-    virtual bool setActiveLayer( QgsMapLayer * ) = 0;
+    virtual bool setActiveLayer( QgsMapLayer *layer ) = 0;
 %Docstring
-Set the active layer (layer gets selected in the legend) returns
-``True`` if the layer exists, ``False`` otherwise
+Sets the active ``layer``.
+
+This layer will be selected in the QGIS layer tree.
+
+:return: ``True`` if the layer exists in the project, ``False``
+         otherwise
 %End
 
-    virtual void copySelectionToClipboard( QgsMapLayer * ) = 0;
+    virtual void copySelectionToClipboard( QgsMapLayer *layer ) = 0;
 %Docstring
-Copy selected features from the layer to clipboard
+Copy selected features from a ``layer`` to the clipboard.
 %End
 
-    virtual void pasteFromClipboard( QgsMapLayer * ) = 0;
+    virtual void pasteFromClipboard( QgsMapLayer *layer ) = 0;
 %Docstring
-Paste features from clipboard to the layer
+Paste features from the clipboard to a ``layer``.
 %End
 
     virtual int addToolBarIcon( QAction *qAction ) = 0;
 %Docstring
-Add an icon to the plugins toolbar
+Adds an action (icon only, no text) to the plugins toolbar
 %End
 
     virtual QAction *addToolBarWidget( QWidget *widget /Transfer/ ) = 0;
 %Docstring
-Add a widget to the plugins toolbar. To remove this widget again, call
+Adds a widget to the plugins toolbar.
+
+To remove this widget again, call
 :py:func:`~QgisInterface.removeToolBarIcon` with the returned QAction.
 
 :param widget: widget to add. The toolbar will take ownership of this
@@ -1179,12 +1313,14 @@ Add a widget to the plugins toolbar. To remove this widget again, call
 
     virtual void removeToolBarIcon( QAction *qAction ) = 0;
 %Docstring
-Remove an action (icon) from the plugin toolbar
+Removes an action (icon only, no text) from the plugin toolbar
 %End
 
     virtual QAction *addRasterToolBarWidget( QWidget *widget /Transfer/ ) = 0;
 %Docstring
-Add a widget to the raster toolbar. To remove this widget again, call
+Adds a widget to the raster toolbar.
+
+To remove this widget again, call
 :py:func:`~QgisInterface.removeRasterToolBarIcon` with the returned
 QAction.
 
@@ -1196,22 +1332,24 @@ QAction.
 
     virtual int addRasterToolBarIcon( QAction *qAction ) = 0;
 %Docstring
-Add an icon to the Raster toolbar
+Adds an action (icon only, no text) to the Raster toolbar
 %End
 
     virtual void removeRasterToolBarIcon( QAction *qAction ) = 0;
 %Docstring
-Remove an action (icon) from the Raster toolbar
+Removes an action (icon only, no text) from the Raster toolbar
 %End
 
     virtual int addVectorToolBarIcon( QAction *qAction ) = 0;
 %Docstring
-Add an icon to the Vector toolbar
+Adds an action (icon only, no text) to the Vector toolbar
 %End
 
     virtual QAction *addVectorToolBarWidget( QWidget *widget /Transfer/ ) = 0;
 %Docstring
-Add a widget to the vector toolbar. To remove this widget again, call
+Adds a widget to the vector toolbar.
+
+To remove this widget again, call
 :py:func:`~QgisInterface.removeVectorToolBarIcon` with the returned
 QAction.
 
@@ -1223,17 +1361,19 @@ QAction.
 
     virtual void removeVectorToolBarIcon( QAction *qAction ) = 0;
 %Docstring
-Remove an action (icon) from the Vector toolbar
+Removes an action (icon only, no text) from the Vector toolbar
 %End
 
     virtual int addDatabaseToolBarIcon( QAction *qAction ) = 0;
 %Docstring
-Add an icon to the Database toolbar
+Adds an action (icon only, no text) to the Database toolbar
 %End
 
     virtual QAction *addDatabaseToolBarWidget( QWidget *widget /Transfer/ ) = 0;
 %Docstring
-Add a widget to the database toolbar. To remove this widget again, call
+Adds a widget to the database toolbar.
+
+To remove this widget again, call
 :py:func:`~QgisInterface.removeDatabaseToolBarIcon` with the returned
 QAction.
 
@@ -1245,17 +1385,19 @@ QAction.
 
     virtual void removeDatabaseToolBarIcon( QAction *qAction ) = 0;
 %Docstring
-Remove an action (icon) from the Database toolbar
+Removes an action (icon only, no text) from the Database toolbar
 %End
 
     virtual int addWebToolBarIcon( QAction *qAction ) = 0;
 %Docstring
-Add an icon to the Web toolbar
+Adds an action (icon only, no text) to the Web toolbar
 %End
 
     virtual QAction *addWebToolBarWidget( QWidget *widget /Transfer/ ) = 0;
 %Docstring
-Add a widget to the web toolbar. To remove this widget again, call
+Adds a widget to the web toolbar.
+
+To remove this widget again, call
 :py:func:`~QgisInterface.removeWebToolBarIcon` with the returned
 QAction.
 
@@ -1267,17 +1409,17 @@ QAction.
 
     virtual void removeWebToolBarIcon( QAction *qAction ) = 0;
 %Docstring
-Remove an action (icon) from the Web toolbar
+Removes an action (icon only, no text) from the Web toolbar
 %End
 
     virtual QToolBar *addToolBar( const QString &name ) = 0 /Factory/;
 %Docstring
-Add toolbar with specified name
+Adds toolbar with specified name
 %End
 
     virtual void addToolBar( QToolBar *toolbar /Transfer/, Qt::ToolBarArea area = Qt::TopToolBarArea ) = 0;
 %Docstring
-Add a toolbar
+Adds a toolbar
 %End
 
     virtual void openMessageLog( const QString &tabName = QString() ) = 0;
@@ -1307,14 +1449,18 @@ already created for the layout.
 
     virtual void showOptionsDialog( QWidget *parent = 0, const QString &currentPage = QString() ) = 0;
 %Docstring
-Opens the options dialog. The ``currentPage`` argument can be used to
-force the dialog to open at a specific page.
+Opens the options dialog.
+
+The ``currentPage`` argument can be used to force the dialog to open at
+a specific page.
 %End
 
     virtual void showProjectPropertiesDialog( const QString &currentPage = QString() ) = 0;
 %Docstring
-Opens the project properties dialog. The ``currentPage`` argument can be
-used to force the dialog to open at a specific page.
+Opens the project properties dialog.
+
+The ``currentPage`` argument can be used to force the dialog to open at
+a specific page.
 
 .. versionadded:: 3.16
 %End
@@ -1328,81 +1474,95 @@ Generate stylesheet
 
     virtual void saveStyleSheetOptions( const QMap<QString, QVariant> &opts ) = 0;
 %Docstring
-Save changed default option keys/values to user settings
+Saves changed default option keys/values to user settings
 %End
 
     virtual void addPluginToMenu( const QString &name, QAction *action ) = 0;
 %Docstring
-Add action to the plugins menu
+Adds an ``action`` to the plugins menu
 %End
 
     virtual void removePluginMenu( const QString &name, QAction *action ) = 0;
 %Docstring
-Remove action from the plugins menu
+Removes ``action`` from the plugins menu
 %End
 
     virtual void insertAddLayerAction( QAction *action ) = 0;
 %Docstring
-Add "add layer" action to layer menu
+Adds "add layer" ``action`` to layer menu
 %End
 
     virtual void removeAddLayerAction( QAction *action ) = 0;
 %Docstring
-Remove "add layer" action from layer menu
+Removes "add layer" ``action`` from layer menu
 %End
 
     virtual void addPluginToDatabaseMenu( const QString &name, QAction *action ) = 0;
 %Docstring
-Add action to the Database menu
+Adds an ``action`` to the Database menu
 %End
 
     virtual void removePluginDatabaseMenu( const QString &name, QAction *action ) = 0;
 %Docstring
-Remove action from the Database menu
+Removes ``action`` from the Database menu
 %End
 
     virtual void addPluginToRasterMenu( const QString &name, QAction *action ) = 0;
 %Docstring
-Add action to the Raster menu
+Adds an ``action`` to the Raster menu
 %End
 
     virtual void removePluginRasterMenu( const QString &name, QAction *action ) = 0;
 %Docstring
-Remove action from the Raster menu
+Removes ``action`` from the Raster menu
 %End
 
     virtual void addPluginToVectorMenu( const QString &name, QAction *action ) = 0;
 %Docstring
-Add action to the Vector menu
+Adds an ``action`` to the Vector menu
 %End
 
     virtual void removePluginVectorMenu( const QString &name, QAction *action ) = 0;
 %Docstring
-Remove action from the Vector menu
+Removes ``action`` from the Vector menu
 %End
 
     virtual void addPluginToWebMenu( const QString &name, QAction *action ) = 0;
 %Docstring
-Add action to the Web menu
+Adds an ``action`` to the Web menu
 %End
 
     virtual void removePluginWebMenu( const QString &name, QAction *action ) = 0;
 %Docstring
-Remove action from the Web menu
+Removes ``action`` from the Web menu
 %End
 
     virtual void addPluginToMeshMenu( const QString &name, QAction *action ) = 0;
 %Docstring
-Add action to the Mesh menu
+Adds an ``action`` to the Mesh menu
 
 .. versionadded:: 3.24
 %End
 
     virtual void removePluginMeshMenu( const QString &name, QAction *action ) = 0;
 %Docstring
-Remove action from the Mesh menu
+Removes ``action`` from the Mesh menu
 
 .. versionadded:: 3.24
+%End
+
+    virtual void addPluginToProcessingMenu( const QString &name, QAction *action ) = 0;
+%Docstring
+Adds an ``action`` to the Processing menu.
+
+.. versionadded:: 4.4
+%End
+
+    virtual void removePluginProcessingMenu( const QString &name, QAction *action ) = 0;
+%Docstring
+Removes ``action`` from the Processing menu.
+
+.. versionadded:: 4.4
 %End
 
     virtual void addDockWidget( Qt::DockWidgetArea area, QDockWidget *dockwidget ) = 0;
@@ -1417,9 +1577,11 @@ Adds a ``dock`` widget to the main window, in the specified dock
 
     virtual void addTabifiedDockWidget( Qt::DockWidgetArea area, QDockWidget *dockwidget, const QStringList &tabifyWith = QStringList(), bool raiseTab = false ) = 0;
 %Docstring
-Add a dock widget to the given area and tabify it (if other dock widgets
-exist in the same ``area``). The new tab will be below other tabs unless
-``raiseTab`` is passed as ``True``.
+Adds a dock widget to the given area and tabify it (if other dock
+widgets exist in the same ``area``).
+
+The new tab will be below other tabs unless ``raiseTab`` is passed as
+``True``.
 
 ``tabifyWith`` is a list of dock widget object names, ordered by
 priority, with which the new dock widget should be tabified. Only the
@@ -1441,9 +1603,10 @@ it).
 
     virtual void showLayerProperties( QgsMapLayer *l, const QString &page = QString() ) = 0;
 %Docstring
-Opens layer properties dialog for the layer ``l``. Optionally, a
-``page`` to open can be specified (since QGIS 3.20). The list below
-contains valid page names:
+Opens layer properties dialog for the layer ``l``.
+
+Optionally, a ``page`` to open can be specified (since QGIS 3.20). The
+list below contains valid page names:
 
 Vector Layer: mOptsPage_Information, mOptsPage_Source, mOptsPage_Style,
 mOptsPage_Labels, mOptsPage_Masks, mOptsPage_Diagrams,
@@ -1486,31 +1649,35 @@ Open attribute table dialog
 
     virtual void addWindow( QAction *action ) = 0;
 %Docstring
-Add window to Window menu. The action title is the window title and the
-action should raise, unminimize and activate the window.
+Adds window to Window menu.
+
+The action title is the window title and the action should raise,
+unminimize and activate the window.
 %End
 
     virtual void removeWindow( QAction *action ) = 0;
 %Docstring
-Remove window from Window menu. Calling this is necessary only for
-windows which are hidden rather than deleted when closed.
+Remove window from Window menu.
+
+Calling this is necessary only for windows which are hidden rather than
+deleted when closed.
 %End
 
     virtual bool registerMainWindowAction( QAction *action, const QString &defaultShortcut ) = 0;
 %Docstring
-Register action to the shortcuts manager so its shortcut can be changed
-in GUI
+Registers an ``action`` to the shortcuts manager so its shortcut can be
+changed in GUI
 %End
 
     virtual bool unregisterMainWindowAction( QAction *action ) = 0;
 %Docstring
-Unregister a previously registered action. (e.g. when plugin is going to
-be unloaded)
+Unregisters a previously registered ``action``. (e.g. when plugin is
+going to be unloaded)
 %End
 
     virtual void registerMapLayerConfigWidgetFactory( QgsMapLayerConfigWidgetFactory *factory ) = 0;
 %Docstring
-Register a new tab in the map layer properties dialog.
+Registers a new tab in the map layer properties dialog.
 
 .. note::
 
@@ -1524,7 +1691,7 @@ Register a new tab in the map layer properties dialog.
 
     virtual void unregisterMapLayerConfigWidgetFactory( QgsMapLayerConfigWidgetFactory *factory ) = 0;
 %Docstring
-Unregister a previously registered tab in the map layer properties
+Unregisters a previously registered tab in the map layer properties
 dialog.
 
 .. seealso:: :py:class:`QgsMapLayerConfigWidgetFactory`
@@ -1534,7 +1701,7 @@ dialog.
 
     virtual void registerOptionsWidgetFactory( QgsOptionsWidgetFactory *factory ) = 0;
 %Docstring
-Register a new tab in the options dialog.
+Registers a new tab in the options dialog.
 
 .. note::
 
@@ -1548,7 +1715,7 @@ Register a new tab in the options dialog.
 
     virtual void unregisterOptionsWidgetFactory( QgsOptionsWidgetFactory *factory ) = 0;
 %Docstring
-Unregister a previously registered tab in the options dialog.
+Unregisters a previously registered tab in the options dialog.
 
 .. seealso:: :py:class:`QgsOptionsWidgetFactory`
 
@@ -1557,7 +1724,7 @@ Unregister a previously registered tab in the options dialog.
 
     virtual void registerProjectPropertiesWidgetFactory( QgsOptionsWidgetFactory *factory ) = 0;
 %Docstring
-Register a new tab in the project properties dialog.
+Registers a new tab in the project properties dialog.
 
 .. note::
 
@@ -1573,7 +1740,7 @@ Register a new tab in the project properties dialog.
 
     virtual void unregisterProjectPropertiesWidgetFactory( QgsOptionsWidgetFactory *factory ) = 0;
 %Docstring
-Unregister a previously registered tab in the options dialog.
+Unregisters a previously registered tab in the options dialog.
 
 .. seealso:: :py:class:`QgsOptionsWidgetFactory`
 
@@ -1584,7 +1751,7 @@ Unregister a previously registered tab in the options dialog.
 
     virtual void registerDevToolWidgetFactory( QgsDevToolWidgetFactory *factory ) = 0;
 %Docstring
-Register a new tool in the development/debugging tools dock.
+Registers a new tool in the development/debugging tools dock.
 
 .. note::
 
@@ -1598,7 +1765,7 @@ Register a new tool in the development/debugging tools dock.
 
     virtual void unregisterDevToolWidgetFactory( QgsDevToolWidgetFactory *factory ) = 0;
 %Docstring
-Unregister a previously registered tool factory from the
+Unregisters a previously registered tool factory from the
 development/debugging tools dock.
 
 .. seealso:: :py:func:`registerDevToolWidgetFactory`
@@ -1626,7 +1793,7 @@ Show a page of the API documentation
 
     virtual void registerApplicationExitBlocker( QgsApplicationExitBlockerInterface *blocker ) = 0;
 %Docstring
-Register a new application exit blocker, which can be used to prevent
+Registers a new application exit blocker, which can be used to prevent
 the QGIS application from exiting while a plugin or script has unsaved
 changes.
 
@@ -1642,7 +1809,7 @@ changes.
 
     virtual void unregisterApplicationExitBlocker( QgsApplicationExitBlockerInterface *blocker ) = 0;
 %Docstring
-Unregister a previously registered application exit ``blocker``.
+Unregisters a previously registered application exit ``blocker``.
 
 .. seealso:: :py:func:`registerApplicationExitBlocker`
 
@@ -1651,7 +1818,7 @@ Unregister a previously registered application exit ``blocker``.
 
     virtual void registerMapToolHandler( QgsAbstractMapToolHandler *handler ) = 0;
 %Docstring
-Register a new application map tool ``handler``, which can be used to
+Registers a new application map tool ``handler``, which can be used to
 automatically setup all connections and logic required to switch to a
 custom map tool whenever the state of the QGIS application permits.
 
@@ -1669,7 +1836,7 @@ custom map tool whenever the state of the QGIS application permits.
 
     virtual void unregisterMapToolHandler( QgsAbstractMapToolHandler *handler ) = 0;
 %Docstring
-Unregister a previously registered map tool ``handler``.
+Unregisters a previously registered map tool ``handler``.
 
 .. seealso:: :py:func:`registerMapToolHandler`
 
@@ -1678,7 +1845,7 @@ Unregister a previously registered map tool ``handler``.
 
     virtual void registerCustomDropHandler( QgsCustomDropHandler *handler ) = 0;
 %Docstring
-Register a new custom drop ``handler``.
+Registers a new custom drop ``handler``.
 
 .. note::
 
@@ -1692,7 +1859,7 @@ Register a new custom drop ``handler``.
 
     virtual void unregisterCustomDropHandler( QgsCustomDropHandler *handler ) = 0;
 %Docstring
-Unregister a previously registered custom drop ``handler``.
+Unregisters a previously registered custom drop ``handler``.
 
 .. seealso:: :py:class:`QgsCustomDropHandler`
 
@@ -1701,7 +1868,7 @@ Unregister a previously registered custom drop ``handler``.
 
     virtual void registerCustomProjectOpenHandler( QgsCustomProjectOpenHandler *handler ) = 0;
 %Docstring
-Register a new custom project open ``handler``.
+Registers a new custom project open ``handler``.
 
 .. note::
 
@@ -1717,7 +1884,7 @@ Register a new custom project open ``handler``.
 
     virtual void unregisterCustomProjectOpenHandler( QgsCustomProjectOpenHandler *handler ) = 0;
 %Docstring
-Unregister a previously registered custom project open ``handler``.
+Unregisters a previously registered custom project open ``handler``.
 
 .. seealso:: :py:class:`QgsCustomDropHandler`
 
@@ -1728,7 +1895,7 @@ Unregister a previously registered custom project open ``handler``.
 
     virtual void registerCustomLayoutDropHandler( QgsLayoutCustomDropHandler *handler ) = 0;
 %Docstring
-Register a new custom drop ``handler`` for layout windows.
+Registers a new custom drop ``handler`` for layout windows.
 
 .. note::
 
@@ -1742,7 +1909,7 @@ Register a new custom drop ``handler`` for layout windows.
 
     virtual void unregisterCustomLayoutDropHandler( QgsLayoutCustomDropHandler *handler ) = 0;
 %Docstring
-Unregister a previously registered custom drop ``handler`` for layout
+Unregisters a previously registered custom drop ``handler`` for layout
 windows.
 
 .. seealso:: :py:class:`QgsLayoutCustomDropHandler`
@@ -1754,9 +1921,11 @@ windows.
 
     virtual void openURL( const QString &url, bool useQgisDocDirectory = true ) = 0 /Deprecated="Since 3.40. Use QDesktopServices instead."/;
 %Docstring
-Open a url in the users browser. By default the QGIS doc directory is
-used as the base for the URL. To open a URL that is not relative to the
-installed QGIS documentation, set useQgisDocDirectory to ``False``.
+Opens a url in the users browser.
+
+By default the QGIS doc directory is used as the base for the URL. To
+open a URL that is not relative to the installed QGIS documentation, set
+useQgisDocDirectory to ``False``.
 
 :param url: URL to open
 :param useQgisDocDirectory: If ``True``, the URL will be formed by
@@ -1770,13 +1939,18 @@ installed QGIS documentation, set useQgisDocDirectory to ``False``.
 
     virtual bool openFeatureForm( QgsVectorLayer *l, QgsFeature &f, bool updateFeatureOnly = false, bool showModal = true ) = 0;
 %Docstring
-Opens a new feature form. Returns ``True`` if dialog was accepted (if
-shown modal, ``True`` otherwise).
+Opens a new feature form.
+
+:return: The return value depends on the dialog's mode. When the dialog
+         is shown in a non-editable mode, it will always return
+         ``True``. If the dialog is opened in a modal, editable mode
+         then it will return ``True`` only if the dialog was accepted by
+         the user.
 
 :param l: vector layer
 :param f: feature to show/modify
-:param updateFeatureOnly: only update the feature update (don't change
-                          any attributes of the layer) [UNUSED]
+:param updateFeatureOnly: only update the feature (don't change any
+                          attributes of the layer) [UNUSED]
 :param showModal: if ``True``, will wait for the dialog to be executed
                   (only shown otherwise)
 %End
@@ -1795,8 +1969,10 @@ Returns a feature form for a given feature.
 %Docstring
 This method is only needed when using a UI form with a custom widget
 plugin and calling openFeatureForm or getFeatureForm from Python (PyQt)
-and you haven't used the info tool first. Python will crash bringing
-QGIS with it if the custom form is not loaded from a C++ method call.
+and you haven't used the info tool first.
+
+Python will crash bringing QGIS with it if the custom form is not loaded
+from a C++ method call.
 
 This method uses a QTimer to call QUiLoader in order to load the form
 via C++. You only need to call this once. After that you can call
@@ -1815,8 +1991,9 @@ text to ``searchText`` and automatically displaying any results.
 
     virtual void registerLocatorFilter( QgsLocatorFilter *filter /Transfer/ ) = 0;
 %Docstring
-Registers a locator ``filter`` for the app's locator bar. Ownership of
-the filter is transferred to the locator.
+Registers a locator ``filter`` for the app's locator bar.
+
+Ownership of the filter is transferred to the locator.
 
 .. warning::
 
@@ -1829,7 +2006,9 @@ the filter is transferred to the locator.
     virtual void deregisterLocatorFilter( QgsLocatorFilter *filter ) = 0;
 %Docstring
 Deregisters a locator ``filter`` from the app's locator bar and deletes
-it. Calling this will block whilst any currently running query is
+it.
+
+Calling this will block whilst any currently running query is
 terminated.
 
 Plugins which register filters to the locator bar must take care to
@@ -1852,17 +2031,20 @@ going through main application settings.
     virtual bool askForDatumTransform( QgsCoordinateReferenceSystem sourceCrs, QgsCoordinateReferenceSystem destinationCrs ) = 0;
 %Docstring
 Checks available datum transforms and ask user if several are available
-and none is chosen. Dialog is shown only if global option is set
-accordingly.
+and none is chosen.
+
+Dialog is shown only if global option is set accordingly.
 
 :return: ``True`` if a datum transform has been specifically chosen by
          user or only one is available.
 %End
 
-    virtual QgsBrowserGuiModel *browserModel() = 0;
+    virtual QgsBrowserGuiModel *browserModel() = 0 /DisallowNone/;
 %Docstring
-Returns the application browser model. Using this shared model is more
-efficient than creating a new browser model for every use.
+Returns the application browser model.
+
+Using this shared model is more efficient than creating a new browser
+model for every use.
 
 .. versionadded:: 3.4
 %End
@@ -1904,8 +2086,9 @@ final layer added.
 
     void currentLayerChanged( QgsMapLayer *layer );
 %Docstring
-Emitted whenever current (selected) layer changes. The pointer to layer
-can be ``None`` if no layer is selected.
+Emitted whenever current (selected) layer changes.
+
+The pointer to layer can be ``None`` if no layer is selected.
 %End
 
     void currentThemeChanged( const QString &theme );

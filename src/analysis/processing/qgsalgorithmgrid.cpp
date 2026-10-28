@@ -117,6 +117,8 @@ bool QgsGridAlgorithm::prepareAlgorithm( const QVariantMap &parameters, QgsProce
 
 QVariantMap QgsGridAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
+  QGS_MARK_ALGORITHM_SOURCE
+
   if ( mHSpacing <= 0 || mVSpacing <= 0 )
     throw QgsProcessingException( QObject::tr( "Invalid grid spacing. horizontal: '%1', vertical: '%2'" ).arg( mHSpacing ).arg( mVSpacing ) );
 

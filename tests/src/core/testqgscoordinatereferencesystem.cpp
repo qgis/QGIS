@@ -119,6 +119,9 @@ class TestQgsCoordinateReferenceSystem : public QObject
     void projFactors();
     void toOgcUri();
     void toOgcUrn();
+    void topocentricOrigin();
+    void topocentricBaseCrs();
+    void topocentricEllipsoid();
 
   private:
     void debugPrint( QgsCoordinateReferenceSystem &crs );
@@ -1723,6 +1726,21 @@ void TestQgsCoordinateReferenceSystem::readWriteXml()
   QVERIFY( myCrs21c.toWkt( Qgis::CrsWktVariant::Wkt2_2019 ).contains( QLatin1String( R"""(PARAMETER["Easting at projection centre",750,)""" ) ) );
   QVERIFY( myCrs21c.toWkt( Qgis::CrsWktVariant::Wkt2_2019 ).contains( QLatin1String( R"""(PARAMETER["Northing at projection centre",250,)""" ) ) );
   QCOMPARE( myCrs21c.description(), u"a new CRS C"_s );
+
+  // topocentric CRS, base CRS should be present
+  const QgsCoordinateReferenceSystem epsg4978( u"EPSG:4978"_s );
+  const QgsCoordinateReferenceSystem topoFrom4978 = epsg4978.toTopocentricCrs( 45.0, 10.0 );
+  node = document.createElement( u"crs"_s );
+  document.appendChild( node );
+  QVERIFY( topoFrom4978.writeXml( node, document ) );
+  QgsCoordinateReferenceSystem restoredFrom4978;
+  QVERIFY( restoredFrom4978.readXml( node ) );
+  QVERIFY( restoredFrom4978.isValid() );
+  QCOMPARE( restoredFrom4978.topocentricBaseCrs().authid(), u"EPSG:4978"_s );
+  double lat = 0.0, lon = 0.0;
+  QVERIFY( restoredFrom4978.topocentricOrigin( lat, lon ) );
+  QCOMPARE( lat, 45.0 );
+  QCOMPARE( lon, 10.0 );
 }
 
 void TestQgsCoordinateReferenceSystem::readWriteXmlNativeFormatWkt()
@@ -2336,6 +2354,92 @@ void TestQgsCoordinateReferenceSystem::toOgcUrn()
   QVERIFY( crs.isValid() );
   QCOMPARE( crs.toOgcUrn(), u"urn:ogc:def:crs:IAU:2015:30100"_s );
 }
+
+void TestQgsCoordinateReferenceSystem::topocentricOrigin()
+{
+  double lat = 0.0, lon = 0.0;
+
+  QVERIFY( !QgsCoordinateReferenceSystem().topocentricOrigin( lat, lon ) );
+  QVERIFY( !QgsCoordinateReferenceSystem( u"EPSG:4326"_s ).topocentricOrigin( lat, lon ) );
+  QVERIFY( !QgsCoordinateReferenceSystem( u"EPSG:3857"_s ).topocentricOrigin( lat, lon ) );
+  QVERIFY( !QgsCoordinateReferenceSystem( u"EPSG:4978"_s ).topocentricOrigin( lat, lon ) );
+
+  const QgsCoordinateReferenceSystem geocentricCrs( u"EPSG:4978"_s );
+  QVERIFY( geocentricCrs.isValid() );
+  const QgsCoordinateReferenceSystem topoCrs = geocentricCrs.toTopocentricCrs( 45.0, 10.0 );
+  QVERIFY( topoCrs.isValid() );
+  QVERIFY( topoCrs.topocentricOrigin( lat, lon ) );
+  QCOMPARE( lat, 45.0 );
+  QCOMPARE( lon, 10.0 );
+
+  const QgsCoordinateReferenceSystem topoCrs2 = geocentricCrs.toTopocentricCrs( -33.5, -70.75 );
+  QVERIFY( topoCrs2.isValid() );
+  QVERIFY( topoCrs2.topocentricOrigin( lat, lon ) );
+  QCOMPARE( lat, -33.5 );
+  QCOMPARE( lon, -70.75 );
+}
+
+
+void TestQgsCoordinateReferenceSystem::topocentricEllipsoid()
+{
+  const QgsCoordinateReferenceSystem epsg4978( u"EPSG:4978"_s );
+  QVERIFY( epsg4978.isValid() );
+  const QgsCoordinateReferenceSystem topoCrsEpsg4978 = epsg4978.toTopocentricCrs( 45.81, 15.98 );
+  QVERIFY( topoCrsEpsg4978.isValid() );
+  QCOMPARE( topoCrsEpsg4978.ellipsoidAcronym(), u"EPSG:7030"_s );
+
+  const QgsCoordinateReferenceSystem epsg4936( u"EPSG:4936"_s );
+  QVERIFY( epsg4936.isValid() );
+  const QgsCoordinateReferenceSystem topoCrsEpsg4936 = epsg4936.toTopocentricCrs( 45.55, 18.69 );
+  QVERIFY( topoCrsEpsg4936.isValid() );
+  QCOMPARE( topoCrsEpsg4936.ellipsoidAcronym(), u"EPSG:7019"_s );
+
+  const QgsCoordinateReferenceSystem epsg4326( u"EPSG:4326"_s );
+  QVERIFY( epsg4326.isValid() );
+  const QgsCoordinateReferenceSystem topoCrsEpsg4326 = epsg4326.toTopocentricCrs( 45.29, 18.80 );
+  QVERIFY( topoCrsEpsg4326.isValid() );
+  QCOMPARE( topoCrsEpsg4326.ellipsoidAcronym(), u"PARAMETER:6378137:6356752.31424517929553986"_s );
+
+  const QgsCoordinateReferenceSystem epsg4258( u"EPSG:4258"_s );
+  QVERIFY( epsg4258.isValid() );
+  const QgsCoordinateReferenceSystem topoCrsEpsg4258 = epsg4258.toTopocentricCrs( 45.33, 14.44 );
+  QVERIFY( topoCrsEpsg4258.isValid() );
+  QCOMPARE( topoCrsEpsg4258.ellipsoidAcronym(), u"PARAMETER:6378137:6356752.31414035614579916"_s );
+
+  const QgsCoordinateReferenceSystem epsg25832( u"EPSG:25832"_s );
+  QVERIFY( epsg25832.isValid() );
+  const QgsCoordinateReferenceSystem topoCrsEpsg25832 = epsg25832.toTopocentricCrs( 43.51, 16.44 );
+  QVERIFY( topoCrsEpsg25832.isValid() );
+  QCOMPARE( topoCrsEpsg25832.ellipsoidAcronym(), u"PARAMETER:6378137:6356752.31414035614579916"_s );
+
+  const QgsCoordinateReferenceSystem epsg32632( u"EPSG:32632"_s );
+  QVERIFY( epsg32632.isValid() );
+  const QgsCoordinateReferenceSystem topoCrsEpsg32632 = epsg32632.toTopocentricCrs( 42.65, 18.09 );
+  QVERIFY( topoCrsEpsg32632.isValid() );
+  QCOMPARE( topoCrsEpsg32632.ellipsoidAcronym(), u"PARAMETER:6378137:6356752.31424517929553986"_s );
+}
+
+
+void TestQgsCoordinateReferenceSystem::topocentricBaseCrs()
+{
+  QVERIFY( !QgsCoordinateReferenceSystem().topocentricBaseCrs().isValid() );
+  QVERIFY( !QgsCoordinateReferenceSystem( u"EPSG:4326"_s ).topocentricBaseCrs().isValid() );
+  QVERIFY( !QgsCoordinateReferenceSystem( u"EPSG:3857"_s ).topocentricBaseCrs().isValid() );
+  QVERIFY( !QgsCoordinateReferenceSystem( u"EPSG:4978"_s ).topocentricBaseCrs().isValid() );
+
+  const QgsCoordinateReferenceSystem epsg4978( u"EPSG:4978"_s );
+  QVERIFY( epsg4978.isValid() );
+  const QgsCoordinateReferenceSystem topoFrom4978 = epsg4978.toTopocentricCrs( 45.0, 10.0 );
+  QVERIFY( topoFrom4978.isValid() );
+  QCOMPARE( topoFrom4978.topocentricBaseCrs().authid(), u"EPSG:4978"_s );
+
+  const QgsCoordinateReferenceSystem epsg4326( u"EPSG:4326"_s );
+  QVERIFY( epsg4326.isValid() );
+  const QgsCoordinateReferenceSystem topoFrom4326 = epsg4326.toTopocentricCrs( -33.5, -70.75 );
+  QVERIFY( topoFrom4326.isValid() );
+  QCOMPARE( topoFrom4326.topocentricBaseCrs().authid(), u"EPSG:4326"_s );
+}
+
 
 QGSTEST_MAIN( TestQgsCoordinateReferenceSystem )
 #include "testqgscoordinatereferencesystem.moc"

@@ -512,6 +512,9 @@ void QgsFeaturePickerModelBase::scheduledReload()
 
 QSet<QString> QgsFeaturePickerModelBase::requestedAttributesForStyle() const
 {
+  if ( !mSourceLayer )
+    return {};
+
   QSet<QString> requestedAttrs;
 
   const auto rowStyles = mSourceLayer->conditionalStyles()->rowStyles();

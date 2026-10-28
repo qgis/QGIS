@@ -30,6 +30,7 @@
 #include "qgslayoutrendercontext.h"
 #include "qgslayoutreportcontext.h"
 #include "qgslayoututils.h"
+#include "qgspainting.h"
 #include "qgssettingsentryimpl.h"
 #include "qgstextformat.h"
 #include "qgstextrenderer.h"

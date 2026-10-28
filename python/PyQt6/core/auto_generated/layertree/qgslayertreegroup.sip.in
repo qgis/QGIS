@@ -53,6 +53,8 @@ Returns the group's name.
 Sets the group's name.
 %End
 
+    virtual QString id() const;
+
     QgsLayerTreeGroup *insertGroup( int index, const QString &name );
 %Docstring
 Insert a new group node with given name at specified position. The newly
@@ -383,7 +385,7 @@ Returns QGIS Server Properties for the layer tree group
 %End
 
 
-    void setHasWmsTimeDimension( const bool hasWmsTimeDimension );
+ void setHasWmsTimeDimension( const bool hasWmsTimeDimension ) /Deprecated="Since 4.4. Use serverProperties() to access TIME dimension instead."/;
 %Docstring
 Sets whether the WMS time dimension should be computed for this group or
 not
@@ -397,6 +399,10 @@ not
 .. seealso:: :py:func:`hasWmsTimeDimension`
 
 .. versionadded:: 3.44
+
+.. deprecated:: 4.4
+
+   Use :py:func:`~QgsLayerTreeGroup.serverProperties` to access TIME dimension instead.
 %End
 
     bool hasWmsTimeDimension() const;

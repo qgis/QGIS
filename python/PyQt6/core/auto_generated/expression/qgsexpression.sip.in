@@ -86,6 +86,7 @@ Implicit sharing was added in 2.14
 #include "qgsexpression.h"
 %End
   public:
+
     struct ParserError
     {
         enum ParserErrorType /BaseType=IntEnum/
@@ -474,7 +475,7 @@ This function returns variables in each expression between [% and %].
 .. versionadded:: 3.2
 %End
 
-    static double evaluateToDouble( const QString &text, double fallbackValue );
+ static double evaluateToDouble( const QString &text, double fallbackValue ) /Deprecated="Since 4.4. "/;
 %Docstring
 Attempts to evaluate a text string as an expression to a resultant
 double value.
@@ -489,6 +490,28 @@ double value.
 
    this method is inefficient for bulk evaluation of expressions, it is intended
    for one-off evaluations only.
+
+.. deprecated:: 4.4
+%End
+
+    static double evaluateToDouble( const QString &text, double fallbackValue, const QgsExpressionContext *context );
+%Docstring
+Attempts to evaluate a text string as an expression to a resultant
+double value.
+
+:param text: text to evaluate as expression
+:param fallbackValue: value to return if text can not be evaluated as a
+                      double
+:param context: expression context to use for evaluation
+
+:return: evaluated double value, or fallback value
+
+.. note::
+
+   this method is inefficient for bulk evaluation of expressions, it is intended
+   for one-off evaluations only.
+
+.. versionadded:: 4.4
 %End
 
     enum SpatialOperator /BaseType=IntEnum/
@@ -504,9 +527,26 @@ double value.
       soWithin,
     };
 
-    static const QList<QgsExpressionFunction *> &Functions();
 
-    static const QStringList &BuiltinFunctions();
+ static QList<QgsExpressionFunction *> Functions();
+%Docstring
+Returns a list of all registered functions.
+
+.. warning::
+
+   This is not thread safe, and should not be called from outside the main thread.
+
+.. deprecated:: 4.4
+
+   For use in Python code only, not thread safe.
+%End
+
+    static QStringList BuiltinFunctions();
+%Docstring
+Returns a list of the names of all built-in functions.
+
+The list also includes aliases of the built-in functions.
+%End
 
     static bool registerFunction( QgsExpressionFunction *function, bool transferOwnership = false );
 %Docstring
@@ -543,9 +583,17 @@ to the expression engine.
 tells whether the identifier is a name of existing function
 %End
 
-    static int functionIndex( const QString &name );
+ static int functionIndex( const QString &name );
 %Docstring
-Returns index of the function in Functions array
+Returns index of the function in Functions array.
+
+.. warning::
+
+   This is not thread safe, and should not be called from outside the main thread.
+
+.. deprecated:: 4.4
+
+   For use in Python code only, not thread safe.
 %End
 
     static int functionCount();
@@ -772,6 +820,20 @@ IN type expression.
            possible
 
 .. versionadded:: 3.18
+%End
+
+    QgsExpression simplified() const;
+%Docstring
+Returns an expression which is the simplest direct equivalent of this
+expression
+
+Eg. an expression like ``1 + 2`` can be effectively replaced by the
+expression ``3``, or a nested expression like
+``coalesce(coalesce("field_a", "field_b"), "field_c")`` could be
+replaced by a single ``coalesce("field_a", "field_b", "field_c")``
+expression.
+
+.. versionadded:: 4.4
 %End
 
     SIP_PYOBJECT __repr__();

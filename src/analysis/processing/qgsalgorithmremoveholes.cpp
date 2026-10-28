@@ -111,6 +111,8 @@ bool QgsRemoveHolesAlgorithm::prepareAlgorithm( const QVariantMap &parameters, Q
 
 QgsFeatureList QgsRemoveHolesAlgorithm::processFeature( const QgsFeature &feature, QgsProcessingContext &context, QgsProcessingFeedback * )
 {
+  QGS_MARK_ALGORITHM_SOURCE
+
   QgsFeature f = feature;
   if ( f.hasGeometry() )
   {

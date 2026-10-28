@@ -498,7 +498,7 @@ void QgsPointCloudClassifiedRendererWidget::emitWidgetChanged()
     return;
 
   updateCategoriesPercentages();
-  emit widgetChanged();
+  emit changed();
 }
 
 void QgsPointCloudClassifiedRendererWidget::categoriesDoubleClicked( const QModelIndex &idx )

@@ -42,7 +42,7 @@ Constructor for QgsAnnotationMarkerItem, at the specified ``point``.
     virtual QgsAnnotationItemEditOperationTransientResults *transientEditResultsV2( QgsAbstractAnnotationItemEditOperation *operation, const QgsAnnotationItemEditContext &context ) /Factory/;
 
 
-    static QgsAnnotationMarkerItem *create() /Factory/;
+    static std::unique_ptr<QgsAnnotationMarkerItem> create();
 %Docstring
 Creates a new marker annotation item.
 %End

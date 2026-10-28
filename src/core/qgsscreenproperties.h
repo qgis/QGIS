@@ -129,7 +129,7 @@ __pragma( warning( push ) ) __pragma( warning( disable : 4273 ) )
  *
  * \since QGIS 3.32
  */
-CORE_EXPORT inline uint qHash( const QgsScreenProperties &properties ) SIP_SKIP
+CORE_EXPORT inline size_t qHash( const QgsScreenProperties &properties ) SIP_SKIP
 {
   return qHash( properties.devicePixelRatio() ) + qHash( properties.physicalDpi() );
 }

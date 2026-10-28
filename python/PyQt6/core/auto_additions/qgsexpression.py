@@ -26,6 +26,8 @@ try:
     QgsExpression.checkExpression = staticmethod(QgsExpression.checkExpression)
     QgsExpression.replaceExpressionText = staticmethod(QgsExpression.replaceExpressionText)
     QgsExpression.evaluateToDouble = staticmethod(QgsExpression.evaluateToDouble)
+    QgsExpression.Functions = staticmethod(QgsExpression.Functions)
+    QgsExpression.BuiltinFunctions = staticmethod(QgsExpression.BuiltinFunctions)
     QgsExpression.registerFunction = staticmethod(QgsExpression.registerFunction)
     QgsExpression.unregisterFunction = staticmethod(QgsExpression.unregisterFunction)
     QgsExpression.cleanRegisteredFunctions = staticmethod(QgsExpression.cleanRegisteredFunctions)

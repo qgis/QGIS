@@ -111,10 +111,13 @@ bool QgsDxfExportAlgorithm::prepareAlgorithm( const QVariantMap &parameters, Qgs
 
 QVariantMap QgsDxfExportAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
+  QGS_MARK_ALGORITHM_SOURCE
+
   QgsMapSettings mapSettings;
   mapSettings.setTransformContext( context.transformContext() );
   mapSettings.setLayerStyleOverrides( mMapThemeStyleOverrides );
   mapSettings.setScaleMethod( mScaleMethod );
+  mapSettings.setEllipsoid( context.ellipsoid() );
 
   QList<QgsVectorLayer *> mapLayers;
 
@@ -191,6 +194,10 @@ QVariantMap QgsDxfExportAlgorithm::processAlgorithm( const QVariantMap &paramete
 
     case QgsDxfExport::ExportResult::EmptyExtentError:
       throw QgsProcessingException( QObject::tr( "DXF export failed, the extent could not be determined" ) );
+      break;
+
+    case QgsDxfExport::ExportResult::InvalidEncodingError:
+      throw QgsProcessingException( QObject::tr( "DXF export failed, the encoding \"%1\" is not supported" ).arg( encoding ) );
       break;
   }
 

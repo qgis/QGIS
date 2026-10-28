@@ -288,7 +288,7 @@ class CORE_EXPORT QgsSymbol
      *
      * The caller takes ownership of the returned object.
      */
-    static QgsSymbol *defaultSymbol( Qgis::GeometryType geomType ) SIP_FACTORY;
+    static std::unique_ptr<QgsSymbol> defaultSymbol( Qgis::GeometryType geomType );
 
     /**
      * Returns the symbol's type.

@@ -233,6 +233,8 @@ void QgsDrapeToZAlgorithm::prepareGeometry( QgsGeometry &geometry, double defaul
 
 QgsPoint QgsDrapeToZAlgorithm::drapeVertex( const QgsPoint &p, double rasterVal ) const
 {
+  QGS_MARK_ALGORITHM_SOURCE
+
   return QgsPoint( p.wkbType(), p.x(), p.y(), rasterVal, p.m() );
 }
 
@@ -296,6 +298,8 @@ void QgsDrapeToMAlgorithm::prepareGeometry( QgsGeometry &geometry, double defaul
 
 QgsPoint QgsDrapeToMAlgorithm::drapeVertex( const QgsPoint &p, double rasterVal ) const
 {
+  QGS_MARK_ALGORITHM_SOURCE
+
   return QgsPoint( p.wkbType(), p.x(), p.y(), p.z(), rasterVal );
 }
 

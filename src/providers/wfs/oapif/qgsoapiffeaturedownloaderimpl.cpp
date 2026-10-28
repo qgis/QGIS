@@ -173,17 +173,17 @@ void QgsOapifFeatureDownloaderImpl::run( bool serializeFeatures, long long maxFe
       url += ( hasQueryParam ? '&'_L1 : '?'_L1 );
       url += u"bbox=%1,%2,%3,%4"_s.arg( qgsDoubleToString( rect.xMinimum() ), qgsDoubleToString( rect.yMinimum() ), qgsDoubleToString( rect.xMaximum() ), qgsDoubleToString( rect.yMaximum() ) );
 
-      if ( mShared->mSourceCrs != QgsCoordinateReferenceSystem::fromOgcWmsCrs( OAPIF_PROVIDER_DEFAULT_CRS ) )
+      if ( mShared->mSourceCrs != QgsCoordinateReferenceSystem::fromOgcWmsCrs( QgsOapifUtils::DEFAULT_CRS ) )
         url += u"&bbox-crs=%1"_s.arg( mShared->mSourceCrs.toOgcUri() );
     }
   }
 
-  if ( mShared->mSourceCrs != QgsCoordinateReferenceSystem::fromOgcWmsCrs( OAPIF_PROVIDER_DEFAULT_CRS ) )
+  if ( mShared->mSourceCrs != QgsCoordinateReferenceSystem::fromOgcWmsCrs( QgsOapifUtils::DEFAULT_CRS ) )
     url += u"&crs=%1"_s.arg( mShared->mSourceCrs.toOgcUri() );
 
   url = mShared->appendExtraQueryParameters( url );
 
-  if ( mShared->mFeatureFormat.startsWith( "application/gml+xml"_L1 ) )
+  if ( mShared->mFeatureFormat.startsWith( QgsOapifUtils::MEDIA_TYPE_GML ) )
   {
     runGmlDownload( loop, url, serializeFeatures, maxTotalFeatures, useProgressDialog );
   }

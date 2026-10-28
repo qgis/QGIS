@@ -303,6 +303,16 @@ class CORE_EXPORT QgsLayerTreeModel : public QAbstractItemModel
     void addTargetScreenProperties( const QgsScreenProperties &properties );
 
     /**
+     * Sets all target screen \a properties to use when generating icons for Qt::DecorationRole data.
+     *
+     * This allows icons to be generated at an icon device pixel ratio and DPI which
+     * corresponds exactly to the view's screen properties in which this model is used.
+     *
+     * \since QGIS 4.2
+     */
+    void setTargetScreenProperties( const QSet< QgsScreenProperties > &properties );
+
+    /**
      * Returns the target screen properties to use when generating icons.
      *
      * This allows icons to be generated at an icon device pixel ratio and DPI which
@@ -341,6 +351,13 @@ class CORE_EXPORT QgsLayerTreeModel : public QAbstractItemModel
      * \since QGIS 3.32
      */
     bool hitTestInProgress() const;
+
+    /**
+     * Invalidates all cached display data throughout the model.
+     *
+     * \since QGIS 4.2
+     */
+    void invalidateDisplayData();
 
   signals:
 

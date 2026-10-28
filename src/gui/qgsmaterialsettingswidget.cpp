@@ -18,8 +18,18 @@
 #include "moc_qgsmaterialsettingswidget.cpp"
 
 QgsMaterialSettingsWidget::QgsMaterialSettingsWidget( QWidget *parent )
-  : QWidget( parent )
+  : QgsPanelWidget( parent )
 {}
 
-void QgsMaterialSettingsWidget::setTechnique( Qgis::MaterialRenderingTechnique )
-{}
+void QgsMaterialSettingsWidget::setTechnique( Qgis::MaterialRenderingTechnique technique )
+{
+  mTechnique = technique;
+  updateWidgetVisibility();
+}
+
+
+void QgsMaterialSettingsWidget::setMode( Qgis::MaterialWidgetMode mode )
+{
+  mMode = mode;
+  updateWidgetVisibility();
+}

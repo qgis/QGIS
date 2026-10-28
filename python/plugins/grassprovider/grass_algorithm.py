@@ -72,12 +72,13 @@ with warnings.catch_warnings():
     warnings.filterwarnings("ignore", category=DeprecationWarning)
     from osgeo import ogr
 
-from processing.core.parameters import getParameterFromString
 from processing.core.ProcessingConfig import ProcessingConfig
-from processing.tools.system import getTempFilename, isWindows
+from processing.tools.system import getTempFilename
 
 from grassprovider.grass_utils import GrassUtils
 from grassprovider.parsed_description import ParsedDescription
+
+from .parameters import getParameterFromString
 
 pluginPath = os.path.normpath(
     os.path.join(os.path.split(os.path.dirname(__file__))[0], os.pardir)
@@ -282,9 +283,7 @@ class GrassAlgorithm(QgsProcessingAlgorithm):
                 parameter = getParameterFromString(param_string, "GrassAlgorithm")
             except Exception as e:
                 QgsMessageLog.logMessage(
-                    self.tr("Could not open GRASS GIS algorithm: {0}").format(
-                        self._name
-                    ),
+                    self.tr("Could not open GRASS algorithm: {0}").format(self._name),
                     self.tr("Processing"),
                     Qgis.MessageLevel.Critical,
                 )
@@ -316,7 +315,7 @@ class GrassAlgorithm(QgsProcessingAlgorithm):
 
         param = QgsProcessingParameterExtent(
             self.GRASS_REGION_EXTENT_PARAMETER,
-            self.tr("GRASS GIS region extent"),
+            self.tr("GRASS region extent"),
             optional=True,
         )
         param.setFlags(
@@ -328,7 +327,7 @@ class GrassAlgorithm(QgsProcessingAlgorithm):
             # Add a cellsize parameter
             param = QgsProcessingParameterNumber(
                 self.GRASS_REGION_CELLSIZE_PARAMETER,
-                self.tr("GRASS GIS region cellsize (leave 0 for default)"),
+                self.tr("GRASS region cellsize (leave 0 for default)"),
                 type=QgsProcessingParameterNumber.Type.Double,
                 minValue=0.0,
                 maxValue=sys.float_info.max + 1,
@@ -489,13 +488,13 @@ class GrassAlgorithm(QgsProcessingAlgorithm):
         )
 
     def processAlgorithm(self, original_parameters, context, feedback):
-        if isWindows():
+        if GrassUtils.is_windows():
             path = GrassUtils.grassPath()
             if path == "":
                 raise QgsProcessingException(
                     self.tr(
-                        "GRASS GIS folder is not configured. Please "
-                        "configure it before running GRASS GIS algorithms."
+                        "GRASS folder is not configured. Please "
+                        "configure it before running GRASS algorithms."
                     )
                 )
 
@@ -537,7 +536,7 @@ class GrassAlgorithm(QgsProcessingAlgorithm):
                 getattr(self, fullName)(parameters, context, feedback)
 
         # Run GRASS
-        loglines = [self.tr("GRASS GIS execution commands")]
+        loglines = [self.tr("GRASS execution commands")]
         for line in self.commands:
             feedback.pushCommandInfo(line)
             loglines.append(line)
@@ -549,7 +548,7 @@ class GrassAlgorithm(QgsProcessingAlgorithm):
         GrassUtils.executeGrass(self.commands, feedback, self.outputCommands)
 
         # If the session has been created outside of this algorithm, add
-        # the new GRASS GIS layers to it otherwise finish the session
+        # the new GRASS layers to it otherwise finish the session
         if existingSession:
             GrassUtils.addSessionLayers(self.exportedLayers)
         else:
@@ -1041,7 +1040,7 @@ class GrassAlgorithm(QgsProcessingAlgorithm):
         # Add a loop export from the basename
         for cmd in [self.commands, self.outputCommands]:
             # TODO Format/options support
-            if isWindows():
+            if GrassUtils.is_windows():
                 cmd.append(f"if not exist {outDir} mkdir {outDir}")
                 cmd.append(
                     "for /F %%r IN ('g.list type^=rast pattern^=\"{}*\"') do r.out.gdal -m{} input=%%r output={}/%%r.tif {}".format(

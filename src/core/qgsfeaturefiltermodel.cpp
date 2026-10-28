@@ -80,7 +80,7 @@ QSet<QString> QgsFeatureFilterModel::requestedAttributes() const
 
 QVariant QgsFeatureFilterModel::entryIdentifier( const QgsFeatureExpressionValuesGatherer::Entry &entry ) const
 {
-  return entry.featureId;
+  return entry.identifierFields;
 }
 
 QgsFeatureExpressionValuesGatherer::Entry QgsFeatureFilterModel::createEntry( const QVariant &identifier ) const

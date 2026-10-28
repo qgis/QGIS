@@ -24,7 +24,7 @@
 #include "moc_qgsrecentcoordinatereferencesystemsmodel.cpp"
 
 #ifdef ENABLE_MODELTEST
-#include "modeltest.h"
+#include <QAbstractItemModelTester>
 #endif
 
 QgsRecentCoordinateReferenceSystemsModel::QgsRecentCoordinateReferenceSystemsModel( QObject *parent, int subclassColumnCount )
@@ -32,7 +32,7 @@ QgsRecentCoordinateReferenceSystemsModel::QgsRecentCoordinateReferenceSystemsMod
   , mColumnCount( subclassColumnCount )
 {
 #ifdef ENABLE_MODELTEST
-  new ModelTest( this, this );
+  new QAbstractItemModelTester( this, QAbstractItemModelTester::FailureReportingMode::Fatal, this );
 #endif
 
   mCrs = QgsApplication::coordinateReferenceSystemRegistry()->recentCrs();
@@ -216,26 +216,36 @@ bool QgsRecentCoordinateReferenceSystemsProxyModel::filterAcceptsRow( int source
     case Qgis::CrsType::Other:
       break;
 
-    case Qgis::CrsType::Geodetic:
-    case Qgis::CrsType::Geocentric:
-    case Qgis::CrsType::Geographic2d:
-    case Qgis::CrsType::Geographic3d:
     case Qgis::CrsType::Projected:
-    case Qgis::CrsType::Temporal:
-    case Qgis::CrsType::Engineering:
-    case Qgis::CrsType::Bound:
     case Qgis::CrsType::DerivedProjected:
+      if ( mFilters.testFlag( QgsCoordinateReferenceSystemProxyModel::Filter::FilterTopocentricCompatible ) )
+        return false;
       if ( !mFilters.testFlag( QgsCoordinateReferenceSystemProxyModel::Filter::FilterHorizontal ) )
         return false;
       break;
 
+    case Qgis::CrsType::Geocentric:
+    case Qgis::CrsType::Geographic3d:
+      if ( !mFilters.testFlag( QgsCoordinateReferenceSystemProxyModel::Filter::FilterHorizontal ) && !mFilters.testFlag( QgsCoordinateReferenceSystemProxyModel::Filter::FilterTopocentricCompatible ) )
+        return false;
+      break;
+
+    case Qgis::CrsType::Geodetic:
+    case Qgis::CrsType::Geographic2d:
+    case Qgis::CrsType::Temporal:
+    case Qgis::CrsType::Engineering:
+    case Qgis::CrsType::Bound:
+      if ( !mFilters.testFlag( QgsCoordinateReferenceSystemProxyModel::Filter::FilterHorizontal ) && !mFilters.testFlag( QgsCoordinateReferenceSystemProxyModel::Filter::FilterTopocentricCompatible ) )
+        return false;
+      break;
+
     case Qgis::CrsType::Vertical:
-      if ( !mFilters.testFlag( QgsCoordinateReferenceSystemProxyModel::Filter::FilterVertical ) )
+      if ( !mFilters.testFlag( QgsCoordinateReferenceSystemProxyModel::Filter::FilterVertical ) && !mFilters.testFlag( QgsCoordinateReferenceSystemProxyModel::Filter::FilterTopocentricCompatible ) )
         return false;
       break;
 
     case Qgis::CrsType::Compound:
-      if ( !mFilters.testFlag( QgsCoordinateReferenceSystemProxyModel::Filter::FilterCompound ) )
+      if ( !mFilters.testFlag( QgsCoordinateReferenceSystemProxyModel::Filter::FilterCompound ) && !mFilters.testFlag( QgsCoordinateReferenceSystemProxyModel::Filter::FilterTopocentricCompatible ) )
         return false;
       break;
   }

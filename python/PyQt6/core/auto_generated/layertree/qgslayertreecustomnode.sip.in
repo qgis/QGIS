@@ -45,9 +45,15 @@ other than layers and groups.
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
 %End
 
-        QString nodeId() const;
+        virtual QString id() const;
+
+ QString nodeId() const /Deprecated="Since 4.4. Use id() instead."/;
 %Docstring
 Returns the node's unique identifier.
+
+.. deprecated:: 4.4
+
+   Use :py:func:`~QgsLayerTreeCustomNode.id` instead.
 %End
 
     virtual QString name() const;

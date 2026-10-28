@@ -24,6 +24,8 @@
 
 using namespace Qt::StringLiterals;
 
+class QgsExpressionFunction;
+
 /**
  * \ingroup core
  * \brief A unary node is either negative as in boolean (not) or as in numbers (minus).
@@ -84,7 +86,7 @@ class CORE_EXPORT QgsExpressionNodeUnaryOperator : public QgsExpressionNode
     QList<const QgsExpressionNode *> nodes() const override SIP_SKIP;
     bool needsGeometry() const override;
     QgsExpressionNode *clone() const override SIP_FACTORY;
-
+    QgsExpressionNode *simplifiedNode() const override SIP_FACTORY;
     bool isStatic( QgsExpression *parent, const QgsExpressionContext *context ) const override;
 
     /**
@@ -201,6 +203,7 @@ class CORE_EXPORT QgsExpressionNodeBinaryOperator : public QgsExpressionNode
     bool needsGeometry() const override;
     QgsExpressionNode *clone() const override SIP_FACTORY;
     bool isStatic( QgsExpression *parent, const QgsExpressionContext *context ) const override;
+    QgsExpressionNode *simplifiedNode() const override SIP_FACTORY;
 
     /**
      * Returns the precedence index for the operator. Higher values have higher precedence.
@@ -414,6 +417,7 @@ class CORE_EXPORT QgsExpressionNodeInOperator : public QgsExpressionNode
     bool needsGeometry() const override;
     QgsExpressionNode *clone() const override SIP_FACTORY;
     bool isStatic( QgsExpression *parent, const QgsExpressionContext *context ) const override;
+    QgsExpressionNode *simplifiedNode() const override SIP_FACTORY;
 
   private:
     QgsExpressionNodeInOperator( const QgsExpressionNodeInOperator &other ) = delete;
@@ -441,18 +445,27 @@ class CORE_EXPORT QgsExpressionNodeFunction : public QgsExpressionNode
      */
     QgsExpressionNodeFunction( int fnIndex, QgsExpressionNode::NodeList *args SIP_TRANSFER );
 
+    /**
+     * Constructor for QgsExpressionNodeFunction, using a shared_ptr to the function.
+     *
+     * \note Not available in Python bindings
+     * \since QGIS 4.4
+     */
+    SIP_SKIP QgsExpressionNodeFunction( std::shared_ptr<QgsExpressionFunction> function, QgsExpressionNode::NodeList *args SIP_TRANSFER );
+
     ~QgsExpressionNodeFunction() override;
 
 #ifdef SIP_RUN
     SIP_PYOBJECT __repr__();
     % MethodCode QString function;
-    if ( QgsExpressionFunction *fd = QgsExpression::QgsExpression::Functions()[sipCpp->fnIndex()] )
+    std::shared_ptr<QgsExpressionFunction> fd = sipCpp->function();
+    if ( fd )
     {
       function = fd->name();
     }
     else
     {
-      function = QString::number( sipCpp->fnIndex() );
+      function = u"invalid"_s;
     }
 
     QString str = u"<QgsExpressionNodeFunction: %1>"_s.arg( function );
@@ -462,11 +475,17 @@ class CORE_EXPORT QgsExpressionNodeFunction : public QgsExpressionNode
 
       /**
      * Returns the index of the node's function.
+    */
+      int fnIndex() const;
+
+    /**
+     * Returns a reference to the node's function.
+     *
+     * \note Not available in Python bindings.
+     *
+     * \since QGIS 4.4
      */
-      int fnIndex() const
-    {
-      return mFnIndex;
-    }
+    SIP_SKIP std::shared_ptr<QgsExpressionFunction> function() const;
 
     /**
      * Returns a list of arguments specified for the function.
@@ -486,6 +505,7 @@ class CORE_EXPORT QgsExpressionNodeFunction : public QgsExpressionNode
     bool needsGeometry() const override;
     QgsExpressionNode *clone() const override SIP_FACTORY;
     bool isStatic( QgsExpression *parent, const QgsExpressionContext *context ) const override;
+    QgsExpressionNode *simplifiedNode() const override SIP_FACTORY;
 
     //! Tests whether the provided argument list is valid for the matching function
     static bool validateParams( int fnIndex, QgsExpressionNode::NodeList *args, QString &error );
@@ -498,8 +518,7 @@ class CORE_EXPORT QgsExpressionNodeFunction : public QgsExpressionNode
     QgsExpressionNodeFunction( const QgsExpressionNodeFunction &other );
 #endif
 
-
-    int mFnIndex;
+    std::shared_ptr<QgsExpressionFunction> mFunction = nullptr;
     std::unique_ptr<NodeList> mArgs;
 };
 
@@ -693,6 +712,7 @@ class CORE_EXPORT QgsExpressionNodeCondition : public QgsExpressionNode
     bool needsGeometry() const override;
     QgsExpressionNode *clone() const override SIP_FACTORY;
     bool isStatic( QgsExpression *parent, const QgsExpressionContext *context ) const override;
+    QgsExpressionNode *simplifiedNode() const override SIP_FACTORY;
 
   private:
     QgsExpressionNodeCondition( const QgsExpressionNodeCondition &other ) = delete;

@@ -189,6 +189,7 @@ void TestQgsMssqlProvider::projectTransaction()
 
   vectorLayerPoint->addFeature( feat );
 
+  vectorLayerPoint->dataProvider()->reloadData();
   QCOMPARE( vectorLayerPoint->featureCount(), 6 );
 
   featIt = vectorLayerPoint->getFeatures();
@@ -205,6 +206,7 @@ void TestQgsMssqlProvider::projectTransaction()
 
   vectorLayerPoint->rollBack();
 
+  vectorLayerPoint->dataProvider()->reloadData();
   QCOMPARE( vectorLayerPoint->featureCount(), 5 );
 }
 
@@ -230,6 +232,8 @@ void TestQgsMssqlProvider::transactionTwoLayers()
 
   vectorLayerPoint1->addFeature( feat );
 
+  vectorLayerPoint1->dataProvider()->reloadData();
+  vectorLayerPoint2->dataProvider()->reloadData();
   QCOMPARE( vectorLayerPoint1->featureCount(), 6 );
   QCOMPARE( vectorLayerPoint2->featureCount(), 5 );
 
@@ -243,10 +247,16 @@ void TestQgsMssqlProvider::transactionTwoLayers()
 
   vectorLayerPoint1->addFeature( feat );
 
+  vectorLayerPoint1->dataProvider()->reloadData();
+  vectorLayerPoint2->dataProvider()->reloadData();
+
   QCOMPARE( vectorLayerPoint1->featureCount(), 6 );
   QCOMPARE( vectorLayerPoint2->featureCount(), 6 );
 
   vectorLayerPoint1->rollBack();
+
+  vectorLayerPoint1->dataProvider()->reloadData();
+  vectorLayerPoint2->dataProvider()->reloadData();
 
   QCOMPARE( vectorLayerPoint1->featureCount(), 5 );
   QCOMPARE( vectorLayerPoint2->featureCount(), 5 );
@@ -287,14 +297,19 @@ void TestQgsMssqlProvider::transactionUndoRedo()
 
   QCOMPARE( vectorLayerPoint1->undoStack()->count(), 2 );
 
+  vectorLayerPoint1->dataProvider()->reloadData();
   QCOMPARE( vectorLayerPoint1->featureCount(), 7 );
   vectorLayerPoint1->undoStack()->undo();
+  vectorLayerPoint1->dataProvider()->reloadData();
   QCOMPARE( vectorLayerPoint1->featureCount(), 6 );
   vectorLayerPoint1->undoStack()->undo();
+  vectorLayerPoint1->dataProvider()->reloadData();
   QCOMPARE( vectorLayerPoint1->featureCount(), 5 );
   vectorLayerPoint1->undoStack()->redo();
+  vectorLayerPoint1->dataProvider()->reloadData();
   QCOMPARE( vectorLayerPoint1->featureCount(), 6 );
   vectorLayerPoint1->undoStack()->redo();
+  vectorLayerPoint1->dataProvider()->reloadData();
   QCOMPARE( vectorLayerPoint1->featureCount(), 7 );
 
   vectorLayerPoint1->rollBack();

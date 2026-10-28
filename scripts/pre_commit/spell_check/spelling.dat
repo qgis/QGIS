@@ -788,7 +788,7 @@ athiesm:atheism
 athiest:atheist
 atleast:at least
 atomatically:automatically
-atomical:atomic
+atomical:atomic:*
 atomicly:atomically
 atorney:attorney
 atribute:attribute
@@ -1999,7 +1999,7 @@ declaritively:declaratively
 declation:declaration
 declations:declarations
 decomissioned:decommissioned
-decomposit:decompose
+decomposit:decompose:*
 decomposited:decomposed
 decompositing:decomposing
 decomposits:decomposes

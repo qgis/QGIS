@@ -92,6 +92,8 @@ void QgsPointsLayerFromTableAlgorithm::initAlgorithm( const QVariantMap & )
 
 QVariantMap QgsPointsLayerFromTableAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
+  QGS_MARK_ALGORITHM_SOURCE
+
   std::unique_ptr<QgsProcessingFeatureSource> featureSource( parameterAsSource( parameters, u"INPUT"_s, context ) );
   if ( !featureSource )
     throw QgsProcessingException( invalidSourceError( parameters, u"INPUT"_s ) );

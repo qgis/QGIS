@@ -21,12 +21,14 @@
 #include "layer.h"
 #include "pal.h"
 #include "problem.h"
+#include "qgsdatadefinedutils.h"
 #include "qgsexpressioncontextutils.h"
 #include "qgsfillsymbol.h"
 #include "qgslabelingenginerule.h"
 #include "qgslabelingresults.h"
 #include "qgslogger.h"
 #include "qgsmaplayer.h"
+#include "qgspainting.h"
 #include "qgsrendercontext.h"
 #include "qgsruntimeprofiler.h"
 #include "qgssymbol.h"
@@ -88,9 +90,13 @@ class QgsLabelSorter
 // QgsLabelingEngine
 //
 
-QgsLabelingEngine::QgsLabelingEngine()
-  : mResults( new QgsLabelingResults )
-{}
+QgsLabelingEngine::QgsLabelingEngine( const QgsMapSettings &mapSettings )
+{
+  const bool enableSearchTree = !mapSettings.labelingEngineSettings().flags().testFlag( Qgis::LabelingFlag::DisableSearchTree );
+  mResults = std::make_unique< QgsLabelingResults >( enableSearchTree );
+
+  setMapSettings( mapSettings );
+}
 
 QgsLabelingEngine::~QgsLabelingEngine()
 {
@@ -289,7 +295,7 @@ void QgsLabelingEngine::registerLabels( QgsRenderContext &context )
 
   const QgsLabelingEngineSettings &settings = mMapSettings.labelingEngineSettings();
 
-  mPal = std::make_unique< pal::Pal >();
+  mPal = std::make_unique< pal::Pal >( settings.flags() );
 
   mPal->setMaximumLineCandidatesPerMapUnit( settings.maximumLineCandidatesPerCm() / context.convertToMapUnits( 10, Qgis::RenderUnit::Millimeters ) );
   mPal->setMaximumPolygonCandidatesPerMapUnitSquared( settings.maximumPolygonCandidatesPerCmSquared() / std::pow( context.convertToMapUnits( 10, Qgis::RenderUnit::Millimeters ), 2 ) );
@@ -519,10 +525,10 @@ void QgsLabelingEngine::drawLabels( QgsRenderContext &context, const QString &la
 
       QgsPointXY outPt2 = xform.transform( label->getX() + label->getWidth(), label->getY() + label->getHeight() );
       QRectF rect( 0, 0, outPt2.x() - outPt.x(), outPt2.y() - outPt.y() );
-      painter->save();
+      QgsScopedQPainterState painterState( painter );
       painter->setRenderHint( QPainter::Antialiasing, false );
       painter->translate( QPointF( outPt.x(), outPt.y() ) );
-      painter->rotate( -label->getAlpha() * 180 / M_PI );
+      painter->rotate( -label->angleRadians() * 180 / M_PI );
 
       if ( label->conflictsWithObstacle() )
       {
@@ -536,7 +542,7 @@ void QgsLabelingEngine::drawLabels( QgsRenderContext &context, const QString &la
       }
 
       painter->drawRect( rect );
-      painter->restore();
+      painterState.restore();
 
       if ( pal::LabelPosition *nextPart = label->nextPart() )
         drawLabelRect( nextPart );
@@ -677,12 +683,12 @@ void QgsLabelingEngine::drawLabelCandidateRect( pal::LabelPosition *lp, QgsRende
 
   QgsPointXY outPt = xform->transform( lp->getX(), lp->getY() );
 
-  painter->save();
+  QgsScopedQPainterState painterState( painter );
 
   QgsPointXY outPt2 = xform->transform( lp->getX() + lp->getWidth(), lp->getY() + lp->getHeight() );
   QRectF rect( 0, 0, outPt2.x() - outPt.x(), outPt2.y() - outPt.y() );
   painter->translate( QPointF( outPt.x(), outPt.y() ) );
-  painter->rotate( -lp->getAlpha() * 180 / M_PI );
+  painter->rotate( -lp->angleRadians() * 180 / M_PI );
 
   if ( lp->conflictsWithObstacle() )
   {
@@ -693,7 +699,7 @@ void QgsLabelingEngine::drawLabelCandidateRect( pal::LabelPosition *lp, QgsRende
     painter->setPen( QColor( 0, 0, 0, 64 ) );
   }
   painter->drawRect( rect );
-  painter->restore();
+  painterState.restore();
 
   // save the rect
   rect.moveTo( outPt.x(), outPt.y() );
@@ -713,10 +719,10 @@ void QgsLabelingEngine::drawLabelMetrics( pal::LabelPosition *label, const QgsMa
 
   QgsPointXY outPt2 = xform.transform( label->getX() + label->getWidth(), label->getY() + label->getHeight() );
   QRectF rect( 0, 0, outPt2.x() - renderPoint.x(), outPt2.y() - renderPoint.y() );
-  painter->save();
+  QgsScopedQPainterState painterState( painter );
   painter->setRenderHint( QPainter::Antialiasing, false );
   painter->translate( QPointF( renderPoint.x(), renderPoint.y() ) );
-  painter->rotate( -label->getAlpha() * 180 / M_PI );
+  painter->rotate( -label->angleRadians() * 180 / M_PI );
 
   painter->setBrush( Qt::NoBrush );
   painter->setPen( QColor( 255, 0, 0, 220 ) );
@@ -792,8 +798,6 @@ void QgsLabelingEngine::drawLabelMetrics( pal::LabelPosition *label, const QgsMa
       prevBlockBaseline = blockBaseLine;
     }
   }
-
-  painter->restore();
 }
 
 
@@ -801,8 +805,8 @@ void QgsLabelingEngine::drawLabelMetrics( pal::LabelPosition *label, const QgsMa
 //  QgsDefaultLabelingEngine
 //
 
-QgsDefaultLabelingEngine::QgsDefaultLabelingEngine()
-  : QgsLabelingEngine()
+QgsDefaultLabelingEngine::QgsDefaultLabelingEngine( const QgsMapSettings &mapSettings )
+  : QgsLabelingEngine( mapSettings )
 {}
 
 void QgsDefaultLabelingEngine::run( QgsRenderContext &context )
@@ -830,8 +834,8 @@ void QgsDefaultLabelingEngine::run( QgsRenderContext &context )
 //  QgsStagedRenderLabelingEngine
 //
 
-QgsStagedRenderLabelingEngine::QgsStagedRenderLabelingEngine()
-  : QgsLabelingEngine()
+QgsStagedRenderLabelingEngine::QgsStagedRenderLabelingEngine( const QgsMapSettings &mapSettings )
+  : QgsLabelingEngine( mapSettings )
 {}
 
 void QgsStagedRenderLabelingEngine::run( QgsRenderContext &context )
@@ -975,33 +979,53 @@ QVector<Qgis::LabelPredefinedPointPosition> QgsLabelingUtils::decodePredefinedPo
   result.reserve( predefinedOrderList.size() );
   for ( const QString &position : predefinedOrderList )
   {
-    QString cleaned = position.trimmed().toUpper();
-    if ( cleaned == "TL"_L1 )
-      result << Qgis::LabelPredefinedPointPosition::TopLeft;
-    else if ( cleaned == "TSL"_L1 )
-      result << Qgis::LabelPredefinedPointPosition::TopSlightlyLeft;
-    else if ( cleaned == "T"_L1 )
-      result << Qgis::LabelPredefinedPointPosition::TopMiddle;
-    else if ( cleaned == "TSR"_L1 )
-      result << Qgis::LabelPredefinedPointPosition::TopSlightlyRight;
-    else if ( cleaned == "TR"_L1 )
-      result << Qgis::LabelPredefinedPointPosition::TopRight;
-    else if ( cleaned == "L"_L1 )
-      result << Qgis::LabelPredefinedPointPosition::MiddleLeft;
-    else if ( cleaned == "R"_L1 )
-      result << Qgis::LabelPredefinedPointPosition::MiddleRight;
-    else if ( cleaned == "BL"_L1 )
-      result << Qgis::LabelPredefinedPointPosition::BottomLeft;
-    else if ( cleaned == "BSL"_L1 )
-      result << Qgis::LabelPredefinedPointPosition::BottomSlightlyLeft;
-    else if ( cleaned == "B"_L1 )
-      result << Qgis::LabelPredefinedPointPosition::BottomMiddle;
-    else if ( cleaned == "BSR"_L1 )
-      result << Qgis::LabelPredefinedPointPosition::BottomSlightlyRight;
-    else if ( cleaned == "BR"_L1 )
-      result << Qgis::LabelPredefinedPointPosition::BottomRight;
-    else if ( cleaned == "O"_L1 )
-      result << Qgis::LabelPredefinedPointPosition::OverPoint;
+    static constexpr auto POINT_POSITION_MAP = makeDataDefinedStringDecoder<Qgis::LabelPredefinedPointPosition>( {
+      { u"tl", Qgis::LabelPredefinedPointPosition::TopLeft },
+      { u"topleft", Qgis::LabelPredefinedPointPosition::TopLeft },
+
+      { u"tsl", Qgis::LabelPredefinedPointPosition::TopSlightlyLeft },
+      { u"topslightlyleft", Qgis::LabelPredefinedPointPosition::TopSlightlyLeft },
+
+      { u"t", Qgis::LabelPredefinedPointPosition::TopMiddle },
+      { u"top", Qgis::LabelPredefinedPointPosition::TopMiddle },
+
+      { u"tsr", Qgis::LabelPredefinedPointPosition::TopSlightlyRight },
+      { u"topslightlyright", Qgis::LabelPredefinedPointPosition::TopSlightlyRight },
+
+      { u"tr", Qgis::LabelPredefinedPointPosition::TopRight },
+      { u"topright", Qgis::LabelPredefinedPointPosition::TopRight },
+
+      { u"l", Qgis::LabelPredefinedPointPosition::MiddleLeft },
+      { u"left", Qgis::LabelPredefinedPointPosition::MiddleLeft },
+
+      { u"r", Qgis::LabelPredefinedPointPosition::MiddleRight },
+      { u"right", Qgis::LabelPredefinedPointPosition::MiddleRight },
+
+      { u"bl", Qgis::LabelPredefinedPointPosition::BottomLeft },
+      { u"bottomleft", Qgis::LabelPredefinedPointPosition::BottomLeft },
+
+      { u"bsl", Qgis::LabelPredefinedPointPosition::BottomSlightlyLeft },
+      { u"bottomslightlyleft", Qgis::LabelPredefinedPointPosition::BottomSlightlyLeft },
+
+      { u"b", Qgis::LabelPredefinedPointPosition::BottomMiddle },
+      { u"bottom", Qgis::LabelPredefinedPointPosition::BottomMiddle },
+
+      { u"bsr", Qgis::LabelPredefinedPointPosition::BottomSlightlyRight },
+      { u"bottomslightlyright", Qgis::LabelPredefinedPointPosition::BottomSlightlyRight },
+
+      { u"br", Qgis::LabelPredefinedPointPosition::BottomRight },
+      { u"bottomright", Qgis::LabelPredefinedPointPosition::BottomRight },
+
+      { u"o", Qgis::LabelPredefinedPointPosition::OverPoint },
+      { u"overpoint", Qgis::LabelPredefinedPointPosition::OverPoint },
+
+    } );
+
+    auto evaluatedPosition = POINT_POSITION_MAP.lookup( position );
+    if ( evaluatedPosition )
+    {
+      result << *evaluatedPosition;
+    }
   }
   return result;
 }
@@ -1027,15 +1051,32 @@ Qgis::LabelLinePlacementFlags QgsLabelingUtils::decodeLinePlacementFlags( const 
   bool foundLineOrientationFlag = false;
   for ( const QString &flag : flagList )
   {
-    QString cleaned = flag.trimmed().toUpper();
-    if ( cleaned == "OL"_L1 )
-      flags |= Qgis::LabelLinePlacementFlag::OnLine;
-    else if ( cleaned == "AL"_L1 )
-      flags |= Qgis::LabelLinePlacementFlag::AboveLine;
-    else if ( cleaned == "BL"_L1 )
-      flags |= Qgis::LabelLinePlacementFlag::BelowLine;
-    else if ( cleaned == "LO"_L1 )
-      foundLineOrientationFlag = true;
+    static constexpr auto LINE_PLACEMENT_MAP = makeDataDefinedStringDecoder<Qgis::LabelLinePlacementFlag>(
+      { { u"ol", Qgis::LabelLinePlacementFlag::OnLine },
+        { u"online", Qgis::LabelLinePlacementFlag::OnLine },
+
+        { u"al", Qgis::LabelLinePlacementFlag::AboveLine },
+        { u"aboveline", Qgis::LabelLinePlacementFlag::AboveLine },
+
+        { u"bl", Qgis::LabelLinePlacementFlag::BelowLine },
+        { u"belowline", Qgis::LabelLinePlacementFlag::BelowLine },
+
+        { u"lo", Qgis::LabelLinePlacementFlag::MapOrientation },
+        { u"lineorientation", Qgis::LabelLinePlacementFlag::MapOrientation } }
+    );
+
+    auto evaluatedPlacement = LINE_PLACEMENT_MAP.lookup( flag );
+    if ( evaluatedPlacement )
+    {
+      if ( *evaluatedPlacement == Qgis::LabelLinePlacementFlag::MapOrientation )
+      {
+        foundLineOrientationFlag = true;
+      }
+      else
+      {
+        flags |= *evaluatedPlacement;
+      }
+    }
   }
   if ( !foundLineOrientationFlag )
     flags |= Qgis::LabelLinePlacementFlag::MapOrientation;

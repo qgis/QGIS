@@ -121,6 +121,7 @@ void QgsServerOgcApiHandler::write( json &data, const QgsServerApiContext &conte
     case QgsServerOgcApi::ContentType::GEOJSON:
     case QgsServerOgcApi::ContentType::JSON:
     case QgsServerOgcApi::ContentType::OPENAPI3:
+    case QgsServerOgcApi::ContentType::SCHEMA_JSON:
       jsonDump( data, context, QgsServerOgcApi::contentTypeMimes().value( contentType ).first() );
       break;
     case QgsServerOgcApi::ContentType::XML:
@@ -219,12 +220,12 @@ QString QgsServerOgcApiHandler::headerLink(
   const QgsServerApiContext &context, const QgsServerOgcApi::Rel &linkType, const QgsServerOgcApi::ContentType contentType, const QgsServerOgcApi::Profile &profile, const QString &title
 ) const
 {
-  const QString profileStr { profile != QgsServerOgcApi::Profile::NONE ? QgsServerOgcApi::profileToString( profile ) : QString() };
+  const QString profileStr { profile != QgsServerOgcApi::Profile::Unset ? QgsServerOgcApi::profileToString( profile ) : QString() };
   QString hrefStr = QString::fromStdString( href( context, "/", QgsServerOgcApi::contentTypeToExtension( contentType ) ) );
 
   if ( !profileStr.isEmpty() )
   {
-    hrefStr += u"&profile="_s + profileStr;
+    hrefStr += "&profile="_L1 + profileStr;
   }
 
   QString titleStr = !title.isEmpty() ? title : QString::fromStdString( linkTitle() );
@@ -240,7 +241,7 @@ QString QgsServerOgcApiHandler::headerLink(
 
   if ( !profileStr.isEmpty() )
   {
-    linkStr += QString( "; profile=\"%1\"" ).arg( profileStr );
+    linkStr += u"; profile=\"%1\""_s.arg( profileStr );
   }
 
   return linkStr;
@@ -315,6 +316,8 @@ void QgsServerOgcApiHandler::htmlDump( const json &data, const QgsServerApiConte
     // Get the template directory and the file name
     QFileInfo pathInfo { path };
     Environment env { QString( pathInfo.dir().path() + QDir::separator() ).toStdString() };
+    // Do not call env.set_html_autoescape( true ) because that would escape links too
+    // use the escape() function in the templates instead
 
     // For template debugging:
     env.add_callback( "json_dump", 0, [data]( Arguments & ) { return data.dump(); } );
@@ -467,6 +470,37 @@ void QgsServerOgcApiHandler::htmlDump( const json &data, const QgsServerApiConte
       return out;
     } );
 
+    // HTML escape function
+    env.add_callback( "escape", 1, []( Arguments &args ) {
+      std::string str { args.at( 0 )->get<std::string>() };
+      std::string escaped;
+      escaped.reserve( str.size() );
+      for ( const char c : str )
+      {
+        switch ( c )
+        {
+          case '&':
+            escaped.append( "&amp;" );
+            break;
+          case '<':
+            escaped.append( "&lt;" );
+            break;
+          case '>':
+            escaped.append( "&gt;" );
+            break;
+          case '"':
+            escaped.append( "&quot;" );
+            break;
+          case '\'':
+            escaped.append( "&#39;" );
+            break;
+          default:
+            escaped.push_back( c );
+        }
+      }
+      return escaped;
+    } );
+
     context.response()->write( env.render_file( pathInfo.fileName().toStdString(), data ) );
   }
   catch ( std::exception &e )
@@ -569,6 +603,69 @@ QgsServerOgcApi::ContentType QgsServerOgcApiHandler::contentTypeFromRequest( con
     }
   }
   return result;
+}
+
+QgsServerOgcApi::Profile QgsServerOgcApiHandler::profileFromString( const QString &profile, bool &ok )
+{
+  if ( profile.compare( "RFC7946"_L1, Qt::CaseSensitivity::CaseInsensitive ) == 0 )
+  {
+    ok = true;
+    return QgsServerOgcApi::Profile::Rfc7946;
+  }
+  else if ( profile.compare( "JSON-FG"_L1, Qt::CaseSensitivity::CaseInsensitive ) == 0 )
+  {
+    ok = true;
+    return QgsServerOgcApi::Profile::JsonFg;
+  }
+  else if ( profile.compare( "JSON-FG-PLUS"_L1, Qt::CaseSensitivity::CaseInsensitive ) == 0 )
+  {
+    ok = true;
+    return QgsServerOgcApi::Profile::JsonFgPlus;
+  }
+  else if ( profile.compare( "REL-AS-KEY"_L1, Qt::CaseSensitivity::CaseInsensitive ) == 0 )
+  {
+    ok = true;
+    return QgsServerOgcApi::Profile::RelAsKey;
+  }
+  else if ( profile.compare( "REL-AS-URI"_L1, Qt::CaseSensitivity::CaseInsensitive ) == 0 )
+  {
+    ok = true;
+    return QgsServerOgcApi::Profile::RelAsUri;
+  }
+  else if ( profile.compare( "REL-AS-LINK"_L1, Qt::CaseSensitivity::CaseInsensitive ) == 0 )
+  {
+    ok = true;
+    return QgsServerOgcApi::Profile::RelAsLink;
+  }
+  else
+  {
+    ok = false;
+    return QgsServerOgcApi::Profile::Unset;
+  }
+  BUILTIN_UNREACHABLE
+}
+
+QList<QgsServerOgcApi::Profile> QgsServerOgcApiHandler::profilesFromRequest( const QgsServerRequest *request ) const
+{
+  const QStringList profileStrings { request->queryParameter( u"profile"_s ).split( ',', Qt::SkipEmptyParts ) };
+  QList<QgsServerOgcApi::Profile> profiles;
+  if ( !profileStrings.isEmpty() )
+  {
+    for ( const auto &profileString : std::as_const( profileStrings ) )
+    {
+      bool ok { false };
+      const QgsServerOgcApi::Profile p { profileFromString( profileString, ok ) };
+      if ( ok )
+      {
+        profiles.push_back( p );
+      }
+      else
+      {
+        throw QgsServerApiBadRequestException( u"Unsupported profile requested: %1"_s.arg( profileString ) );
+      }
+    }
+  }
+  return profiles;
 }
 
 QString QgsServerOgcApiHandler::parentLink( const QUrl &url, int levels )

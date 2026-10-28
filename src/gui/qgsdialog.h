@@ -49,6 +49,21 @@ class GUI_EXPORT QgsDialog : public QDialog
     //! Returns the button box.
     QDialogButtonBox *buttonBox() { return mButtonBox; }
 
+    /**
+     *  Static method to display a multi-line text input dialog with word wrapping.
+     *  Drop-in replacement for QInputDialog::getMultiLineText() which does not word wrap.
+     *  \since QGIS 4.4
+     */
+    static QString getMultiLineText(
+      QWidget *parent,
+      const QString &title,
+      const QString &label,
+      const QString &text = QString(),
+      bool *ok = nullptr,
+      Qt::WindowFlags flags = Qt::WindowFlags(),
+      Qt::InputMethodHints inputMethodHints = Qt::ImhNone
+    );
+
   protected:
     QVBoxLayout *mLayout = nullptr;
     QDialogButtonBox *mButtonBox = nullptr;

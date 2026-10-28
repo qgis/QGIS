@@ -64,9 +64,9 @@ class QgsWFSDataSourceURI
     //! Whether paging is enabled
     enum class PagingStatus
     {
-      DEFAULT, //! For WFS <= 1.1, no paging. For WFS 2.0, trust GetCapabilities "ImplementsResultPaging"
-      ENABLED, //! Enabled
-      DISABLED // Disabled
+      DEFAULT, //!< For WFS <= 1.1, no paging. For WFS 2.0, trust GetCapabilities "ImplementsResultPaging"
+      ENABLED, //!< Enabled
+      DISABLED //!< Disabled
     };
 
     //! Returns whether paging is enabled.
@@ -141,9 +141,9 @@ class QgsWFSDataSourceURI
     //! How to analyze DescribeFeatureType response
     enum class FeatureMode
     {
-      Default,         //! If the server supports transaction, same as SIMPLE_FEATURE. Otherwise COMPLEX_FEATURE
-      SimpleFeatures,  //! Analyze DescribeFeatureType response with QGIS built-in Simple Feature analyzer
-      ComplexFeatures, //! Analyze DescribeFeatureType response with OGR GMLAS Complex Feature analyzer
+      Default,         //!< If the server supports transaction, same as SIMPLE_FEATURE. Otherwise COMPLEX_FEATURE
+      SimpleFeatures,  //!< Analyze DescribeFeatureType response with QGIS built-in Simple Feature analyzer
+      ComplexFeatures, //!< Analyze DescribeFeatureType response with OGR GMLAS Complex Feature analyzer
     };
 
     //! Returns how to analyze DescribeFeatureType response.

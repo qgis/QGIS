@@ -1,0 +1,19 @@
+<!-- template for the WFS3 function description page -->
+
+{% include "header.html" %}
+
+<div class="row">
+    <div class="col-md-6">
+        <h1>Functions</h1>
+
+	<table class="table table-sm table-params">
+        {% for function in functions %}
+	    <tr>
+                <td>{{ function.description }}</td>
+            </tr>
+        {% endfor %}
+	</table>
+   </div>
+</div>
+
+{% include "footer.html" %}

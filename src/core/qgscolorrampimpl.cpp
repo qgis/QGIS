@@ -243,7 +243,7 @@ QgsGradientColorRamp::QgsGradientColorRamp( const QColor &color1, const QColor &
   , mFunc( _interpolateRgb )
 {}
 
-QgsColorRamp *QgsGradientColorRamp::create( const QVariantMap &props )
+std::unique_ptr<QgsColorRamp> QgsGradientColorRamp::create( const QVariantMap &props )
 {
   // color1 and color2
   QColor color1 = DEFAULT_GRADIENT_COLOR1;
@@ -301,7 +301,7 @@ QgsColorRamp *QgsGradientColorRamp::create( const QVariantMap &props )
       info[it.key().mid( 5 )] = it.value().toString();
   }
 
-  QgsGradientColorRamp *r = new QgsGradientColorRamp( color1, color2, discrete, stops );
+  auto r = std::make_unique<QgsGradientColorRamp>( color1, color2, discrete, stops );
   r->setInfo( info );
 
   if ( props.contains( u"spec"_s ) )
@@ -976,7 +976,7 @@ QgsCptCityColorRamp::QgsCptCityColorRamp( const QString &schemeName, const QStri
     loadFile();
 }
 
-QgsColorRamp *QgsCptCityColorRamp::create( const QVariantMap &props ) // cppcheck-suppress duplInheritedMember
+std::unique_ptr<QgsColorRamp> QgsCptCityColorRamp::create( const QVariantMap &props ) // cppcheck-suppress duplInheritedMember
 {
   QString schemeName = DEFAULT_CPTCITY_SCHEMENAME;
   QString variantName = DEFAULT_CPTCITY_VARIANTNAME;
@@ -989,7 +989,7 @@ QgsColorRamp *QgsCptCityColorRamp::create( const QVariantMap &props ) // cppchec
   if ( props.contains( u"inverted"_s ) )
     inverted = props[u"inverted"_s].toInt();
 
-  return new QgsCptCityColorRamp( schemeName, variantName, inverted );
+  return std::make_unique<QgsCptCityColorRamp>( schemeName, variantName, inverted );
 }
 
 QString QgsCptCityColorRamp::type() const

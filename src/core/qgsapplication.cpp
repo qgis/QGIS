@@ -69,6 +69,7 @@
 #include "qgsplotregistry.h"
 #include "qgspluginlayerregistry.h"
 #include "qgspointcloudrendererregistry.h"
+#include "qgsprocessingdefaultstyleregistry.h"
 #include "qgsprofilesourceregistry.h"
 #include "qgsproject.h"
 #include "qgsprojectstorageregistry.h"
@@ -148,6 +149,10 @@ const QgsSettingsEntryString *QgsApplication::settingsLocaleGlobalLocale = new Q
 const QgsSettingsEntryBool *QgsApplication::settingsLocaleShowGroupSeparator = new QgsSettingsEntryBool( u"showGroupSeparator"_s, QgsSettingsTree::sTreeLocale, false );
 
 const QgsSettingsEntryStringList *QgsApplication::settingsSearchPathsForSVG = new QgsSettingsEntryStringList( u"searchPathsForSVG"_s, QgsSettingsTree::sTreeSvg, QStringList() );
+
+// The default template directory depends on the active profile, which is not known now, so we use an empty default,
+// and it will be handled later on by the getter QgsApplication::projectTemplatePaths.
+const QgsSettingsEntryStringList *QgsApplication::settingsProjectTemplatePaths = new QgsSettingsEntryStringList( u"projectTemplatePaths"_s, QgsSettingsTree::sTreeProject, QStringList() );
 
 const QgsSettingsEntryString *QgsApplication::settingsNullRepresentation = new QgsSettingsEntryString( u"null-value"_s, QgsSettingsTree::sTreeQgis, u"NULL"_s );
 
@@ -558,6 +563,12 @@ void QgsApplication::init( QString profileFolder )
   // so we read actual value in main.cpp
   ABISYM( sMaxThreads ) = -1;
 
+  // initialize built in expression functions upfront. While the expression engine API is setup
+  // in such a way that these will be lazy loaded on first use, manually pre-loading them on the main
+  // thread while nothing else is happening avoids ANY potential thread-safety issues with the lazy loading.
+  // This is cheap to call anyway, so there's no harm in being overly vigilant...
+  ( void ) QgsExpression::getFunctionsSnapshot();
+
   {
     QgsScopedRuntimeProfile profile( tr( "Load color schemes" ) );
     colorSchemeRegistry()->addDefaultSchemes();
@@ -574,6 +585,8 @@ void QgsApplication::init( QString profileFolder )
   QgsStyle *defaultStyle = QgsStyle::defaultStyle( false );
   if ( !members()->mStyleModel )
     members()->mStyleModel = std::make_unique<QgsStyleModel>( defaultStyle );
+
+  QgsApplication::processingRegistry()->defaultStyleRegistry()->loadStyles();
 
   ABISYM( mInitialized ) = true;
 }
@@ -1102,7 +1115,11 @@ QString QgsApplication::resolvePkgPath()
     prefixPath = dir.absolutePath();
 #else
 
-#if defined( Q_OS_MACOS )
+#if defined( Q_OS_MACOS ) && defined( QGIS_MAC_BUNDLE )
+    // Go from QGIS.app/Contents/MacOS to the bundle root, like QgsApplication::init() does
+    QDir dir( appPath + "/../.."_L1 );
+    prefixPath = dir.absolutePath();
+#elif defined( Q_OS_MACOS )
     prefixPath = appPath;
 #elif defined( Q_OS_WIN )
     prefixPath = appPath;
@@ -1202,7 +1219,7 @@ void QgsApplication::setUITheme( const QString &themeName )
   {
     // apply OS-specific UI scale factor to stylesheet's em values
     int index = 0;
-    const static QRegularExpression regex( u"(?<=[\\s:])([0-9\\.]+)(?=em)"_s );
+    const thread_local QRegularExpression regex( u"(?<=[\\s:])([0-9\\.]+)(?=em)"_s );
     QRegularExpressionMatch match = regex.match( styledata, index );
     while ( match.hasMatch() )
     {
@@ -1310,11 +1327,11 @@ QString QgsApplication::srsDatabaseFilePath()
 {
   if ( ABISYM( mRunningFromBuildDir ) )
   {
-    QString tempCopy = QDir::tempPath() + "/srs6.db";
+    QString tempCopy = QDir::tempPath() + "/srs.db";
 
     if ( !QFile( tempCopy ).exists() )
     {
-      QFile f( buildSourcePath() + "/resources/srs6.db" );
+      QFile f( buildSourcePath() + "/resources/srs.db" );
       if ( !f.copy( tempCopy ) )
       {
         qFatal( "Could not create temporary copy" );
@@ -1327,6 +1344,31 @@ QString QgsApplication::srsDatabaseFilePath()
   {
     return pkgDataPath() + u"/resources/srs.db"_s;
   }
+}
+
+void QgsApplication::setProjectTemplatePaths( const QStringList &projectTemplatePaths )
+{
+  settingsProjectTemplatePaths->setValue( projectTemplatePaths );
+}
+
+QStringList QgsApplication::projectTemplatePaths()
+{
+  QStringList configuredPaths = settingsProjectTemplatePaths->value();
+
+  // Normalize the paths and avoid duplicates
+  QStringList paths;
+  for ( const QString &configuredPath : std::as_const( configuredPaths ) )
+  {
+    const QString path = QDir::cleanPath( QDir( configuredPath ).absolutePath() );
+    if ( !paths.contains( path ) )
+      paths.append( path );
+  }
+  return paths;
+}
+
+QStringList QgsApplication::defaultProjectTemplatePaths()
+{
+  return { qgisSettingsDirPath() + u"/project_templates"_s };
 }
 
 void QgsApplication::setSvgPaths( const QStringList &svgPaths )

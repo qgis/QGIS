@@ -17,14 +17,15 @@
 
 #include <limits>
 
+#include "qgsabstractgeometry.h"
+#include "qgsfields.h"
+#include "qgsgeometry.h"
+#include "qgswkbtypes.h"
+
 #include <QRegularExpression>
 #include <QString>
 
 using namespace Qt::StringLiterals;
-
-const QString OAPIF_PROVIDER_DEFAULT_CRS = u"http://www.opengis.net/def/crs/OGC/1.3/CRS84"_s;
-
-const QString PSEUDO_JSONFG_MEDIA_TYPE = u"application/fg+json"_s;
 
 std::vector<QgsOAPIFJson::Link> QgsOAPIFJson::parseLinks( const json &jParent )
 {
@@ -249,14 +250,14 @@ QString QgsOAPIFGetNextLinkFromResponseHeader( const QList<QNetworkReply::RawHea
             nextUrl = href;
             break;
           }
-          else if ( type == "application/geo+json"_L1 && formatType == PSEUDO_JSONFG_MEDIA_TYPE )
+          else if ( type == QgsOapifUtils::MEDIA_TYPE_GEOJSON && formatType == QgsOapifUtils::MEDIA_TYPE_PSEUDO_JSONFG )
           {
-            if ( profile == "http://www.opengis.net/def/profile/ogc/0/jsonfg"_L1 )
+            if ( profile.compare( QgsOapifUtils::PROFILE_JSONFG, Qt::CaseInsensitive ) == 0 )
             {
               nextUrl = href;
               break;
             }
-            else if ( profile == "http://www.opengis.net/def/profile/ogc/0/jsonfg-plus"_L1 )
+            else if ( profile.compare( QgsOapifUtils::PROFILE_JSONFG_PLUS, Qt::CaseInsensitive ) == 0 )
             {
               nextUrlCandidateJsonFGPlus = href;
             }
@@ -286,4 +287,40 @@ QString QgsOAPIFGetNextLinkFromResponseHeader( const QList<QNetworkReply::RawHea
   }
 
   return nextUrl;
+}
+
+void QgsOAPIFJson::writeJsonFgPlace( json &feature, const QgsGeometry &geometry, Qgis::WkbType layerType, const QString &contentCrs, bool asDocument )
+{
+  if ( geometry.isNull() )
+  {
+    feature["geometry"] = nullptr;
+    feature["place"] = nullptr;
+    return;
+  }
+
+  const QVector<QgsGeometry> geometries = geometry.coerceToType( layerType );
+  const QgsGeometry coerced = geometries.size() == 1 ? geometries.at( 0 ) : geometry;
+  feature["place"] = coerced.constGet()->asJsonObject( 17, Qgis::GeoJsonProfile::JsonFg );
+
+  if ( !contentCrs.isEmpty() )
+    feature["coordRefSys"] = contentCrs.toStdString();
+
+  if ( asDocument )
+  {
+    feature["geometry"] = nullptr;
+    feature["conformsTo"] = { "http://www.opengis.net/spec/json-fg-1/1.0/conf/core", "http://www.opengis.net/spec/json-fg-1/1.0/conf/circular-arcs" };
+  }
+}
+
+void QgsOAPIFJson::removeReadOnlyProperties( json &feature, const QgsFields &fields )
+{
+  auto properties = feature.find( "properties" );
+  if ( properties == feature.end() || !properties->is_object() )
+    return;
+
+  for ( const QgsField &field : fields )
+  {
+    if ( field.isReadOnly() )
+      properties->erase( field.name().toStdString() );
+  }
 }

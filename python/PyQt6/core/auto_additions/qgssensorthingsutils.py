@@ -1,5 +1,12 @@
 # The following has been generated automatically from src/core/providers/sensorthings/qgssensorthingsutils.h
 try:
+    QgsSensorThingsUtils.ServiceCapabilities.__attribute_docs__ = {'version': 'SensorThings API version', 'availableExtensions': 'Available SensorThings extensions', 'availableEntities': 'Available SensorThings entities'}
+    QgsSensorThingsUtils.ServiceCapabilities.__annotations__ = {'version': 'Qgis.SensorThingsVersion', 'availableExtensions': 'Qgis.SensorThingsExtensions', 'availableEntities': 'Set[Qgis.SensorThingsEntity]'}
+    QgsSensorThingsUtils.ServiceCapabilities.__doc__ = """SensorThings service capabilities"""
+    QgsSensorThingsUtils.ServiceCapabilities.__group__ = ['providers', 'sensorthings']
+except (NameError, AttributeError):
+    pass
+try:
     QgsSensorThingsUtils.stringToEntity = staticmethod(QgsSensorThingsUtils.stringToEntity)
     QgsSensorThingsUtils.displayString = staticmethod(QgsSensorThingsUtils.displayString)
     QgsSensorThingsUtils.entitySetStringToEntity = staticmethod(QgsSensorThingsUtils.entitySetStringToEntity)
@@ -13,6 +20,7 @@ try:
     QgsSensorThingsUtils.filterForWkbType = staticmethod(QgsSensorThingsUtils.filterForWkbType)
     QgsSensorThingsUtils.filterForExtent = staticmethod(QgsSensorThingsUtils.filterForExtent)
     QgsSensorThingsUtils.combineFilters = staticmethod(QgsSensorThingsUtils.combineFilters)
+    QgsSensorThingsUtils.determineServiceCapabilities = staticmethod(QgsSensorThingsUtils.determineServiceCapabilities)
     QgsSensorThingsUtils.availableGeometryTypes = staticmethod(QgsSensorThingsUtils.availableGeometryTypes)
     QgsSensorThingsUtils.expandableTargets = staticmethod(QgsSensorThingsUtils.expandableTargets)
     QgsSensorThingsUtils.relationshipCardinality = staticmethod(QgsSensorThingsUtils.relationshipCardinality)

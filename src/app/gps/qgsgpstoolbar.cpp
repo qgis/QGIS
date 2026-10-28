@@ -95,7 +95,7 @@ QgsGpsToolBar::QgsGpsToolBar( QgsAppGpsConnection *connection, QgsMapCanvas *can
 
   addSeparator();
 
-  mDestinationLayerModel = new QgsMapLayerProxyModel( this );
+  mDestinationLayerModel = new QgsMapLayerProxyModel( QgsProject::instance(), this );
   mDestinationLayerModel->setProject( QgsProject::instance() );
   mDestinationLayerModel->setFilters( Qgis::LayerFilter::HasGeometry | Qgis::LayerFilter::WritableLayer );
 

@@ -42,6 +42,8 @@ add_library(Pdf4QtLibCore SHARED
     sources/pdfdocumentbuilder.h
     sources/pdfdocumentmanipulator.cpp
     sources/pdfdocumentmanipulator.h
+    sources/pdfpagegeometry.cpp
+    sources/pdfpagegeometry.h
     sources/pdfdocumenttextflow.cpp
     sources/pdfdocumenttextflow.h
     sources/pdfdocumenttextfloweditormodel.cpp
@@ -136,6 +138,10 @@ add_library(Pdf4QtLibCore SHARED
     sources/pdfnametounicode.h
     sources/pdffont.cpp
     sources/pdffont.h
+    sources/pdfimagecompressor.cpp
+    sources/pdfimagecompressor.h
+    sources/pdfimageoptimizer.cpp
+    sources/pdfimageoptimizer.h
     sources/pdfimage.cpp
     sources/pdfimage.h
     sources/pdfdocumentsanitizer.h
@@ -158,8 +164,13 @@ add_library(Pdf4QtLibCore SHARED
     sources/pdfpagecontenteditorprocessor.cpp
     sources/pdfpagecontenteditorcontentstreambuilder.h
     sources/pdfpagecontenteditorcontentstreambuilder.cpp
+    sources/pdfeditorfallbackfont.h
+    sources/pdfeditorfallbackfont.cpp
     sources/pdfapplicationtranslator.h
     sources/pdfapplicationtranslator.cpp
+    sources/pdfsettings.h
+    sources/pdfsettings.cpp
+    fonts.qrc
 )
 
 include(GenerateExportHeader)

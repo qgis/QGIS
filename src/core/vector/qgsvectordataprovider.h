@@ -17,6 +17,8 @@
 
 class QTextCodec;
 
+#include <optional>
+
 #include "qgis_core.h"
 
 #include <QHash>
@@ -45,6 +47,7 @@ class QgsTransaction;
 class QgsFeedback;
 class QgsFeatureRenderer;
 class QgsAbstractVectorLayerLabeling;
+class QgsLayerRenderingSettings;
 
 
 /**
@@ -221,11 +224,25 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider, public QgsFeat
      * or if the given attribute is not an enum type.
      * \param index the index of the attribute
      * \param enumList reference to the list to fill
+     * \deprecated QGIS 4.4. Use codedValues() instead.
      */
-    virtual void enumValues( int index, QStringList &enumList SIP_OUT ) const
+    Q_DECL_DEPRECATED virtual void enumValues( int index, QStringList &enumList SIP_OUT ) const SIP_DEPRECATED
     {
       Q_UNUSED( index )
       enumList.clear();
+    }
+
+    /**
+     * Returns the possible enum or coded values of an attribute in key-value pairs. Returns an empty list if a provider does not support
+     * enum types, if the given attribute is not an enum type or using a field domain for coded values.
+     * \param index the index of the attribute
+     * \returns list of code-value pairs. If the attribute is enum type, then both key and value will contain the same enum value
+     * \since QGIS 4.4
+     */
+    virtual QList<QPair<QString, QString>> codedValues( int index ) const
+    {
+      Q_UNUSED( index )
+      return {};
     }
 
     using QgsFeatureSink::addFeatures;
@@ -542,6 +559,20 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider, public QgsFeat
      * \since QGIS 3.6
      */
     virtual QgsAbstractVectorLayerLabeling *createLabeling( const QVariantMap &configuration = QVariantMap() ) const SIP_FACTORY;
+
+    /**
+     * Returns layer-level rendering settings, using provider backend specific information.
+     *
+     * The \a configuration map can be used to pass provider-specific configuration maps to the provider to
+     * allow customization of the returned settings. Support and format of \a configuration varies by provider.
+     *
+     * When called with an empty \a configuration map the provider's default rendering settings will be returned.
+     *
+     * Providers which do not support this should return nullptr.
+     *
+     * \since QGIS 4.4
+     */
+    virtual const QgsLayerRenderingSettings *renderingSettings( const QVariantMap &configuration = QVariantMap() ) const;
 
     /**
      * Convert \a value to \a type

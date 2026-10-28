@@ -38,13 +38,13 @@ class QgsSfcgalGeometry;
 
 /// compute SFCGAL integer version from major, minor and patch number
 /// This is not available before SFCGAL version 2.3.
-#ifndef SFCGAL_MAKE_VERSION
-#define SFCGAL_MAKE_VERSION( major, minor, patch ) ( ( major ) * 10000 + ( minor ) * 100 + ( patch ) )
+#ifndef SFCGAL_COMPUTE_VERSION
+#define SFCGAL_COMPUTE_VERSION( major, minor, patch ) ( ( major ) * 10000 + ( minor ) * 100 + ( patch ) )
 #endif
 /// compute current SFCGAL integer version
 /// This is not available before SFCGAL version 2.3.
 #ifndef SFCGAL_VERSION_NUM
-#define SFCGAL_VERSION_NUM SFCGAL_MAKE_VERSION( SFCGAL_VERSION_MAJOR_INT, SFCGAL_VERSION_MINOR_INT, SFCGAL_VERSION_PATCH_INT )
+#define SFCGAL_VERSION_NUM SFCGAL_COMPUTE_VERSION( SFCGAL_VERSION_MAJOR_INT, SFCGAL_VERSION_MINOR_INT, SFCGAL_VERSION_PATCH_INT )
 #endif
 
 /// check if \a ptr is not null else add stacktrace entry and return the \a defaultObj
@@ -109,7 +109,7 @@ namespace sfcgal
 namespace sfcgal
 {
   // ==== SFCGAL primitive
-#if SFCGAL_VERSION_NUM >= SFCGAL_MAKE_VERSION( 2, 3, 0 )
+#if SFCGAL_VERSION_NUM >= SFCGAL_COMPUTE_VERSION( 2, 3, 0 )
   //! Shortcut to SFCGAL primitive
   using primitive = sfcgal_primitive_t;
   //! Shortcut to SFCGAL primitive type
@@ -406,13 +406,14 @@ class CORE_EXPORT QgsSfcgalEngine
     /**
      * Checks if \a geom is valid.
      *
-     * If the geometry is invalid, \a errorMsg will be filled with the reported geometry error.
+     * If the geometry is invalid, \a reasonMsg will be filled with the reported geometry error.
      *
      * \param geom geometry to perform the operation
-     * \param errorMsg Error message returned by SFGCAL
+     * \param errorMsg Error message returned by SFGCAL if the operation fails
+     * \param reasonMsg If the geometry is invalid, reasonMsg will be filled with the reported geometry error.
      * \param errorLoc if specified, it will be set to the geometry of the error location.
      */
-    static bool isValid( const sfcgal::geometry *geom, QString *errorMsg = nullptr, QgsGeometry *errorLoc = nullptr );
+    static bool isValid( const sfcgal::geometry *geom, QString *errorMsg = nullptr, QString *reasonMsg = nullptr, QgsGeometry *errorLoc = nullptr );
 
     /**
      * Checks if \a geom is simple.
@@ -717,7 +718,7 @@ class CORE_EXPORT QgsSfcgalEngine
      */
     static sfcgal::shared_geom toPolyhedralSurface( const sfcgal::geometry *geom, QString *errorMsg = nullptr );
 
-#if SFCGAL_VERSION_NUM >= SFCGAL_MAKE_VERSION( 2, 3, 0 )
+#if SFCGAL_VERSION_NUM >= SFCGAL_COMPUTE_VERSION( 2, 3, 0 )
 
     /**
      * Apply 3D matrix transform \a mat to geometry \a geom
@@ -935,7 +936,7 @@ class CORE_EXPORT QgsSfcgalEngine
      *
      * \since QGIS 4.2
      */
-    static sfcgal::shared_geom primitiveRotate( const sfcgal::primitive *prim, double angle, const QgsVector3D &axisVector, const QgsPoint &center = QgsPoint(), QString *errorMsg = nullptr );
+    static sfcgal::shared_prim primitiveRotate( const sfcgal::primitive *prim, double angle, const QgsVector3D &axisVector, const QgsPoint &center = QgsPoint(), QString *errorMsg = nullptr );
 
     /**
      * Scale the primitive \a prim by vector \a scaleFactor.
@@ -947,7 +948,7 @@ class CORE_EXPORT QgsSfcgalEngine
      *
      * \since QGIS 4.2
      */
-    static sfcgal::shared_geom primitiveScale( const sfcgal::primitive *prim, const QgsVector3D &scaleFactor, const QgsPoint &center = QgsPoint(), QString *errorMsg = nullptr );
+    static sfcgal::shared_prim primitiveScale( const sfcgal::primitive *prim, const QgsVector3D &scaleFactor, const QgsPoint &center = QgsPoint(), QString *errorMsg = nullptr );
 #endif
 };
 

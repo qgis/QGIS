@@ -108,7 +108,7 @@ Returns the source color ramp.
 .. seealso:: :py:func:`setSourceColorRamp`
 %End
 
-    QgsColorRamp *createColorRamp() const /Factory/;
+    std::unique_ptr<QgsColorRamp> createColorRamp() const;
 %Docstring
 Creates a gradient color ramp from shader settings.
 

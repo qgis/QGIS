@@ -149,7 +149,7 @@ void Qgs3DMapSettings::readXml( const QDomElement &elem, const QgsReadWriteConte
   if ( !elemCamera.isNull() )
   {
     mFieldOfView = elemCamera.attribute( u"field-of-view"_s, u"45"_s ).toDouble();
-    mProjectionType = static_cast<Qt3DRender::QCameraLens::ProjectionType>( elemCamera.attribute( u"projection-type"_s, u"1"_s ).toInt() );
+    mProjectionType = static_cast<Qgis::Map3DProjectionType>( elemCamera.attribute( u"projection-type"_s, u"1"_s ).toInt() );
     QString cameraNavigationMode = elemCamera.attribute( u"camera-navigation-mode"_s, u"basic-navigation"_s );
     if ( cameraNavigationMode == "terrain-based-navigation"_L1 )
       mCameraNavigationMode = Qgis::NavigationMode::TerrainBased;
@@ -1267,14 +1267,14 @@ void Qgs3DMapSettings::setFieldOfView( const double fieldOfView )
   emit fieldOfViewChanged();
 }
 
-Qt3DRender::QCameraLens::ProjectionType Qgs3DMapSettings::projectionType() const
+Qgis::Map3DProjectionType Qgs3DMapSettings::projectionType() const
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
   return mProjectionType;
 }
 
-void Qgs3DMapSettings::setProjectionType( const Qt3DRender::QCameraLens::ProjectionType projectionType )
+void Qgs3DMapSettings::setProjectionType( const Qgis::Map3DProjectionType projectionType )
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 

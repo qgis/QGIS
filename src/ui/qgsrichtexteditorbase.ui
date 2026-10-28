@@ -200,6 +200,10 @@
    <property name="checkable">
     <bool>true</bool>
    </property>
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionEditBulletList.svg</normaloff>:/images/themes/default/mActionEditBulletList.svg</iconset>
+   </property>
    <property name="text">
     <string>Bullet List</string>
    </property>
@@ -210,6 +214,10 @@
   <action name="mActionOrderedList">
    <property name="checkable">
     <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionEditOrderedList.svg</normaloff>:/images/themes/default/mActionEditOrderedList.svg</iconset>
    </property>
    <property name="text">
     <string>Ordered List</string>
@@ -252,6 +260,14 @@
    </property>
    <property name="toolTip">
     <string>Insert image</string>
+   </property>
+  </action>
+  <action name="mActionInsertImageFromUrl">
+   <property name="text">
+    <string>Insert Image from URL…</string>
+   </property>
+   <property name="toolTip">
+    <string>Download an image and insert it</string>
    </property>
   </action>
   <action name="mActionEditSource">

@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wcs:Capabilities
+    xmlns:wcs="http://www.opengis.net/wcs/1.1"
+    xmlns:ows="http://www.opengis.net/ows/1.1"
+    xmlns:xlink="http://www.w3.org/1999/xlink"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    version="1.1.2"
+    updateSequence="1">
+  <ows:ServiceIdentification>
+    <ows:Title>Test WCS</ows:Title>
+    <ows:Abstract>Test WCS</ows:Abstract>
+    <ows:ServiceType>WCS</ows:ServiceType>
+    <ows:ServiceTypeVersion>1.1.1</ows:ServiceTypeVersion>
+  </ows:ServiceIdentification>
+  <ows:ServiceProvider>
+    <ows:ProviderName>QGIS Tests</ows:ProviderName>
+  </ows:ServiceProvider>
+  <ows:OperationsMetadata>
+    <ows:Operation name="GetCapabilities">
+      <ows:DCP>
+        <ows:HTTP>
+          <ows:Get xlink:href="http://localhost:$$PORT$$/wcs?"/>
+        </ows:HTTP>
+      </ows:DCP>
+    </ows:Operation>
+    <ows:Operation name="DescribeCoverage">
+      <ows:DCP>
+        <ows:HTTP>
+          <ows:Get xlink:href="http://localhost:$$PORT$$/wcs?"/>
+        </ows:HTTP>
+      </ows:DCP>
+    </ows:Operation>
+    <ows:Operation name="GetCoverage">
+      <ows:DCP>
+        <ows:HTTP>
+          <ows:Get xlink:href="http://localhost:$$PORT$$/wcs?"/>
+        </ows:HTTP>
+      </ows:DCP>
+    </ows:Operation>
+  </ows:OperationsMetadata>
+  <wcs:Contents>
+    <wcs:CoverageSummary>
+      <ows:Title>Test DTMe</ows:Title>
+      <ows:Abstract>Test DTM</ows:Abstract>
+      <ows:Identifier>dtm</ows:Identifier>
+      <ows:WGS84BoundingBox>
+        <ows:LowerCorner>10.0 45.0</ows:LowerCorner>
+        <ows:UpperCorner>11.0 46.0</ows:UpperCorner>
+      </ows:WGS84BoundingBox>
+      <wcs:SupportedCRS>urn:ogc:def:crs:EPSG::4326</wcs:SupportedCRS>
+      <wcs:SupportedFormat>image/tiff</wcs:SupportedFormat>
+    </wcs:CoverageSummary>
+  </wcs:Contents>
+</wcs:Capabilities>

@@ -95,7 +95,7 @@ void QgsPlotWidget::updateProperty()
   QgsPropertyOverrideButton *button = qobject_cast<QgsPropertyOverrideButton *>( sender() );
   const QgsPlot::DataDefinedProperty key = static_cast<QgsPlot::DataDefinedProperty>( button->propertyKey() );
   mPropertyCollection.setProperty( key, button->toProperty() );
-  emit widgetChanged();
+  emit changed();
 }
 
 QgsBarChartPlotWidget::QgsBarChartPlotWidget( QWidget *parent )
@@ -121,34 +121,34 @@ QgsBarChartPlotWidget::QgsBarChartPlotWidget( QWidget *parent )
   connect( mSpinMinXAxis, qOverload<double>( &QDoubleSpinBox::valueChanged ), this, [this]( double ) {
     if ( mBlockChanges )
       return;
-    emit widgetChanged();
+    emit changed();
   } );
 
   connect( mSpinMaxXAxis, qOverload<double>( &QDoubleSpinBox::valueChanged ), this, [this]( double ) {
     if ( mBlockChanges )
       return;
-    emit widgetChanged();
+    emit changed();
   } );
 
   mSpinMinYAxis->setClearValue( 0 );
   connect( mSpinMinYAxis, qOverload<double>( &QDoubleSpinBox::valueChanged ), this, [this]( double ) {
     if ( mBlockChanges )
       return;
-    emit widgetChanged();
+    emit changed();
   } );
 
   mSpinMaxYAxis->setClearValue( 0 );
   connect( mSpinMaxYAxis, qOverload<double>( &QDoubleSpinBox::valueChanged ), this, [this]( double ) {
     if ( mBlockChanges )
       return;
-    emit widgetChanged();
+    emit changed();
   } );
 
   mXAxisMajorLinesSymbolButton->setSymbolType( Qgis::SymbolType::Line );
   connect( mXAxisMajorLinesSymbolButton, &QgsSymbolButton::changed, this, [this] {
     if ( mBlockChanges )
       return;
-    emit widgetChanged();
+    emit changed();
   } );
   mXAxisMajorLinesSymbolButton->setDefaultSymbol( QgsPlotDefaultSettings::axisGridMajorSymbol() );
 
@@ -156,33 +156,33 @@ QgsBarChartPlotWidget::QgsBarChartPlotWidget( QWidget *parent )
   connect( mXAxisMinorLinesSymbolButton, &QgsSymbolButton::changed, this, [this] {
     if ( mBlockChanges )
       return;
-    emit widgetChanged();
+    emit changed();
   } );
   mXAxisMinorLinesSymbolButton->setDefaultSymbol( QgsPlotDefaultSettings::axisGridMinorSymbol() );
 
   connect( mXAxisMajorIntervalSpin, qOverload<double>( &QDoubleSpinBox::valueChanged ), this, [this]( double ) {
     if ( mBlockChanges )
       return;
-    emit widgetChanged();
+    emit changed();
   } );
 
   connect( mXAxisMinorIntervalSpin, qOverload<double>( &QDoubleSpinBox::valueChanged ), this, [this]( double ) {
     if ( mBlockChanges )
       return;
-    emit widgetChanged();
+    emit changed();
   } );
 
   connect( mXAxisLabelIntervalSpin, qOverload<double>( &QDoubleSpinBox::valueChanged ), this, [this]( double ) {
     if ( mBlockChanges )
       return;
-    emit widgetChanged();
+    emit changed();
   } );
 
   mYAxisMajorLinesSymbolButton->setSymbolType( Qgis::SymbolType::Line );
   connect( mYAxisMajorLinesSymbolButton, &QgsSymbolButton::changed, this, [this] {
     if ( mBlockChanges )
       return;
-    emit widgetChanged();
+    emit changed();
   } );
   mYAxisMajorLinesSymbolButton->setDefaultSymbol( QgsPlotDefaultSettings::axisGridMajorSymbol() );
 
@@ -190,33 +190,33 @@ QgsBarChartPlotWidget::QgsBarChartPlotWidget( QWidget *parent )
   connect( mYAxisMinorLinesSymbolButton, &QgsSymbolButton::changed, this, [this] {
     if ( mBlockChanges )
       return;
-    emit widgetChanged();
+    emit changed();
   } );
   mYAxisMinorLinesSymbolButton->setDefaultSymbol( QgsPlotDefaultSettings::axisGridMinorSymbol() );
 
   connect( mYAxisLabelIntervalSpin, qOverload<double>( &QDoubleSpinBox::valueChanged ), this, [this]( double ) {
     if ( mBlockChanges )
       return;
-    emit widgetChanged();
+    emit changed();
   } );
 
   connect( mYAxisMajorIntervalSpin, qOverload<double>( &QDoubleSpinBox::valueChanged ), this, [this]( double ) {
     if ( mBlockChanges )
       return;
-    emit widgetChanged();
+    emit changed();
   } );
 
   connect( mYAxisMinorIntervalSpin, qOverload<double>( &QDoubleSpinBox::valueChanged ), this, [this]( double ) {
     if ( mBlockChanges )
       return;
-    emit widgetChanged();
+    emit changed();
   } );
 
   mChartBackgroundSymbolButton->setSymbolType( Qgis::SymbolType::Fill );
   connect( mChartBackgroundSymbolButton, &QgsSymbolButton::changed, this, [this] {
     if ( mBlockChanges )
       return;
-    emit widgetChanged();
+    emit changed();
   } );
   mChartBackgroundSymbolButton->setDefaultSymbol( QgsPlotDefaultSettings::chartBackgroundSymbol() );
 
@@ -224,7 +224,7 @@ QgsBarChartPlotWidget::QgsBarChartPlotWidget( QWidget *parent )
   connect( mChartBorderSymbolButton, &QgsSymbolButton::changed, this, [this] {
     if ( mBlockChanges )
       return;
-    emit widgetChanged();
+    emit changed();
   } );
   mChartBorderSymbolButton->setDefaultSymbol( QgsPlotDefaultSettings::chartBorderSymbol() );
 
@@ -234,7 +234,7 @@ QgsBarChartPlotWidget::QgsBarChartPlotWidget( QWidget *parent )
     widget->setFormat( mXAxisNumericFormat.get() );
     connect( widget, &QgsNumericFormatSelectorWidget::changed, this, [this, widget] {
       mXAxisNumericFormat.reset( widget->format() );
-      emit widgetChanged();
+      emit changed();
     } );
     openPanel( widget );
   } );
@@ -245,7 +245,7 @@ QgsBarChartPlotWidget::QgsBarChartPlotWidget( QWidget *parent )
     widget->setFormat( mYAxisNumericFormat.get() );
     connect( widget, &QgsNumericFormatSelectorWidget::changed, this, [this, widget] {
       mYAxisNumericFormat.reset( widget->format() );
-      emit widgetChanged();
+      emit changed();
     } );
     openPanel( widget );
   } );
@@ -258,41 +258,41 @@ QgsBarChartPlotWidget::QgsBarChartPlotWidget( QWidget *parent )
   connect( mXAxisLabelFontButton, &QgsFontButton::changed, this, [this] {
     if ( mBlockChanges )
       return;
-    emit widgetChanged();
+    emit changed();
   } );
 
   connect( mYAxisLabelFontButton, &QgsFontButton::changed, this, [this] {
     if ( mBlockChanges )
       return;
-    emit widgetChanged();
+    emit changed();
   } );
 
   mSpinLeftMargin->setClearValue( 0 );
   connect( mSpinLeftMargin, qOverload<double>( &QDoubleSpinBox::valueChanged ), this, [this]( double ) {
     if ( mBlockChanges )
       return;
-    emit widgetChanged();
+    emit changed();
   } );
 
   mSpinRightMargin->setClearValue( 0 );
   connect( mSpinRightMargin, qOverload<double>( &QDoubleSpinBox::valueChanged ), this, [this]( double ) {
     if ( mBlockChanges )
       return;
-    emit widgetChanged();
+    emit changed();
   } );
 
   mSpinTopMargin->setClearValue( 0 );
   connect( mSpinTopMargin, qOverload<double>( &QDoubleSpinBox::valueChanged ), this, [this]( double ) {
     if ( mBlockChanges )
       return;
-    emit widgetChanged();
+    emit changed();
   } );
 
   mSpinBottomMargin->setClearValue( 0 );
   connect( mSpinBottomMargin, qOverload<double>( &QDoubleSpinBox::valueChanged ), this, [this]( double ) {
     if ( mBlockChanges )
       return;
-    emit widgetChanged();
+    emit changed();
   } );
 
   mXAxisTypeCombo->addItem( tr( "Interval" ), QVariant::fromValue( Qgis::PlotAxisType::Interval ) );
@@ -301,13 +301,13 @@ QgsBarChartPlotWidget::QgsBarChartPlotWidget( QWidget *parent )
   connect( mXAxisTypeCombo, qOverload<int>( &QComboBox::currentIndexChanged ), this, [this]( int ) {
     if ( mBlockChanges )
       return;
-    emit widgetChanged();
+    emit changed();
   } );
 
   connect( mXAxisLabelSuffixEdit, &QLineEdit::textChanged, this, [this] {
     if ( mBlockChanges )
       return;
-    emit widgetChanged();
+    emit changed();
   } );
 
   mXAxisLabelsCombo->addItem( tr( "None" ), QVariant::fromValue( Qgis::PlotAxisSuffixPlacement::NoLabels ) );
@@ -318,7 +318,7 @@ QgsBarChartPlotWidget::QgsBarChartPlotWidget( QWidget *parent )
   connect( mXAxisLabelsCombo, qOverload<int>( &QComboBox::currentIndexChanged ), this, [this]( int ) {
     if ( mBlockChanges )
       return;
-    emit widgetChanged();
+    emit changed();
   } );
 
   mXAxisMajorLinesSymbolButton->registerExpressionContextGenerator( this );
@@ -365,11 +365,11 @@ void QgsBarChartPlotWidget::mAddSymbolPushButton_clicked()
   connect( symbolButton, &QgsSymbolButton::changed, this, [this] {
     if ( mBlockChanges )
       return;
-    emit widgetChanged();
+    emit changed();
   } );
   mSymbolsList->setCellWidget( row, 1, symbolButton );
 
-  emit widgetChanged();
+  emit changed();
 }
 
 void QgsBarChartPlotWidget::mRemoveSymbolPushButton_clicked()
@@ -382,7 +382,7 @@ void QgsBarChartPlotWidget::mRemoveSymbolPushButton_clicked()
 
   mSymbolsList->removeRow( mSymbolsList->row( item ) );
 
-  emit widgetChanged();
+  emit changed();
 }
 
 void QgsBarChartPlotWidget::updateXAxisProperties()
@@ -439,7 +439,7 @@ void QgsBarChartPlotWidget::setPlot( QgsPlot *plot )
     connect( symbolButton, &QgsSymbolButton::changed, this, [this] {
       if ( mBlockChanges )
         return;
-      emit widgetChanged();
+      emit changed();
     } );
     mSymbolsList->setCellWidget( row, 1, symbolButton );
   }
@@ -596,34 +596,34 @@ QgsLineChartPlotWidget::QgsLineChartPlotWidget( QWidget *parent )
   connect( mSpinMinXAxis, qOverload<double>( &QDoubleSpinBox::valueChanged ), this, [this]( double ) {
     if ( mBlockChanges )
       return;
-    emit widgetChanged();
+    emit changed();
   } );
 
   connect( mSpinMaxXAxis, qOverload<double>( &QDoubleSpinBox::valueChanged ), this, [this]( double ) {
     if ( mBlockChanges )
       return;
-    emit widgetChanged();
+    emit changed();
   } );
 
   mSpinMinYAxis->setClearValue( 0 );
   connect( mSpinMinYAxis, qOverload<double>( &QDoubleSpinBox::valueChanged ), this, [this]( double ) {
     if ( mBlockChanges )
       return;
-    emit widgetChanged();
+    emit changed();
   } );
 
   mSpinMaxYAxis->setClearValue( 0 );
   connect( mSpinMaxYAxis, qOverload<double>( &QDoubleSpinBox::valueChanged ), this, [this]( double ) {
     if ( mBlockChanges )
       return;
-    emit widgetChanged();
+    emit changed();
   } );
 
   mXAxisMajorLinesSymbolButton->setSymbolType( Qgis::SymbolType::Line );
   connect( mXAxisMajorLinesSymbolButton, &QgsSymbolButton::changed, this, [this] {
     if ( mBlockChanges )
       return;
-    emit widgetChanged();
+    emit changed();
   } );
   mXAxisMajorLinesSymbolButton->setDefaultSymbol( QgsPlotDefaultSettings::axisGridMajorSymbol() );
 
@@ -631,33 +631,33 @@ QgsLineChartPlotWidget::QgsLineChartPlotWidget( QWidget *parent )
   connect( mXAxisMinorLinesSymbolButton, &QgsSymbolButton::changed, this, [this] {
     if ( mBlockChanges )
       return;
-    emit widgetChanged();
+    emit changed();
   } );
   mXAxisMinorLinesSymbolButton->setDefaultSymbol( QgsPlotDefaultSettings::axisGridMinorSymbol() );
 
   connect( mXAxisMajorIntervalSpin, qOverload<double>( &QDoubleSpinBox::valueChanged ), this, [this]( double ) {
     if ( mBlockChanges )
       return;
-    emit widgetChanged();
+    emit changed();
   } );
 
   connect( mXAxisMinorIntervalSpin, qOverload<double>( &QDoubleSpinBox::valueChanged ), this, [this]( double ) {
     if ( mBlockChanges )
       return;
-    emit widgetChanged();
+    emit changed();
   } );
 
   connect( mXAxisLabelIntervalSpin, qOverload<double>( &QDoubleSpinBox::valueChanged ), this, [this]( double ) {
     if ( mBlockChanges )
       return;
-    emit widgetChanged();
+    emit changed();
   } );
 
   mYAxisMajorLinesSymbolButton->setSymbolType( Qgis::SymbolType::Line );
   connect( mYAxisMajorLinesSymbolButton, &QgsSymbolButton::changed, this, [this] {
     if ( mBlockChanges )
       return;
-    emit widgetChanged();
+    emit changed();
   } );
   mYAxisMajorLinesSymbolButton->setDefaultSymbol( QgsPlotDefaultSettings::axisGridMajorSymbol() );
 
@@ -665,33 +665,33 @@ QgsLineChartPlotWidget::QgsLineChartPlotWidget( QWidget *parent )
   connect( mYAxisMinorLinesSymbolButton, &QgsSymbolButton::changed, this, [this] {
     if ( mBlockChanges )
       return;
-    emit widgetChanged();
+    emit changed();
   } );
   mYAxisMinorLinesSymbolButton->setDefaultSymbol( QgsPlotDefaultSettings::axisGridMinorSymbol() );
 
   connect( mYAxisLabelIntervalSpin, qOverload<double>( &QDoubleSpinBox::valueChanged ), this, [this]( double ) {
     if ( mBlockChanges )
       return;
-    emit widgetChanged();
+    emit changed();
   } );
 
   connect( mYAxisMajorIntervalSpin, qOverload<double>( &QDoubleSpinBox::valueChanged ), this, [this]( double ) {
     if ( mBlockChanges )
       return;
-    emit widgetChanged();
+    emit changed();
   } );
 
   connect( mYAxisMinorIntervalSpin, qOverload<double>( &QDoubleSpinBox::valueChanged ), this, [this]( double ) {
     if ( mBlockChanges )
       return;
-    emit widgetChanged();
+    emit changed();
   } );
 
   mChartBackgroundSymbolButton->setSymbolType( Qgis::SymbolType::Fill );
   connect( mChartBackgroundSymbolButton, &QgsSymbolButton::changed, this, [this] {
     if ( mBlockChanges )
       return;
-    emit widgetChanged();
+    emit changed();
   } );
   mChartBackgroundSymbolButton->setDefaultSymbol( QgsPlotDefaultSettings::chartBackgroundSymbol() );
 
@@ -699,7 +699,7 @@ QgsLineChartPlotWidget::QgsLineChartPlotWidget( QWidget *parent )
   connect( mChartBorderSymbolButton, &QgsSymbolButton::changed, this, [this] {
     if ( mBlockChanges )
       return;
-    emit widgetChanged();
+    emit changed();
   } );
   mChartBorderSymbolButton->setDefaultSymbol( QgsPlotDefaultSettings::chartBorderSymbol() );
 
@@ -709,7 +709,7 @@ QgsLineChartPlotWidget::QgsLineChartPlotWidget( QWidget *parent )
     widget->setFormat( mXAxisNumericFormat.get() );
     connect( widget, &QgsNumericFormatSelectorWidget::changed, this, [this, widget] {
       mXAxisNumericFormat.reset( widget->format() );
-      emit widgetChanged();
+      emit changed();
     } );
     openPanel( widget );
   } );
@@ -720,7 +720,7 @@ QgsLineChartPlotWidget::QgsLineChartPlotWidget( QWidget *parent )
     widget->setFormat( mYAxisNumericFormat.get() );
     connect( widget, &QgsNumericFormatSelectorWidget::changed, this, [this, widget] {
       mYAxisNumericFormat.reset( widget->format() );
-      emit widgetChanged();
+      emit changed();
     } );
     openPanel( widget );
   } );
@@ -733,41 +733,41 @@ QgsLineChartPlotWidget::QgsLineChartPlotWidget( QWidget *parent )
   connect( mXAxisLabelFontButton, &QgsFontButton::changed, this, [this] {
     if ( mBlockChanges )
       return;
-    emit widgetChanged();
+    emit changed();
   } );
 
   connect( mYAxisLabelFontButton, &QgsFontButton::changed, this, [this] {
     if ( mBlockChanges )
       return;
-    emit widgetChanged();
+    emit changed();
   } );
 
   mSpinLeftMargin->setClearValue( 0 );
   connect( mSpinLeftMargin, qOverload<double>( &QDoubleSpinBox::valueChanged ), this, [this]( double ) {
     if ( mBlockChanges )
       return;
-    emit widgetChanged();
+    emit changed();
   } );
 
   mSpinRightMargin->setClearValue( 0 );
   connect( mSpinRightMargin, qOverload<double>( &QDoubleSpinBox::valueChanged ), this, [this]( double ) {
     if ( mBlockChanges )
       return;
-    emit widgetChanged();
+    emit changed();
   } );
 
   mSpinTopMargin->setClearValue( 0 );
   connect( mSpinTopMargin, qOverload<double>( &QDoubleSpinBox::valueChanged ), this, [this]( double ) {
     if ( mBlockChanges )
       return;
-    emit widgetChanged();
+    emit changed();
   } );
 
   mSpinBottomMargin->setClearValue( 0 );
   connect( mSpinBottomMargin, qOverload<double>( &QDoubleSpinBox::valueChanged ), this, [this]( double ) {
     if ( mBlockChanges )
       return;
-    emit widgetChanged();
+    emit changed();
   } );
 
   mXAxisTypeCombo->addItem( tr( "Interval" ), QVariant::fromValue( Qgis::PlotAxisType::Interval ) );
@@ -776,13 +776,13 @@ QgsLineChartPlotWidget::QgsLineChartPlotWidget( QWidget *parent )
   connect( mXAxisTypeCombo, qOverload<int>( &QComboBox::currentIndexChanged ), this, [this]( int ) {
     if ( mBlockChanges )
       return;
-    emit widgetChanged();
+    emit changed();
   } );
 
   connect( mXAxisLabelSuffixEdit, &QLineEdit::textChanged, this, [this] {
     if ( mBlockChanges )
       return;
-    emit widgetChanged();
+    emit changed();
   } );
 
   mXAxisLabelsCombo->addItem( tr( "None" ), QVariant::fromValue( Qgis::PlotAxisSuffixPlacement::NoLabels ) );
@@ -793,7 +793,7 @@ QgsLineChartPlotWidget::QgsLineChartPlotWidget( QWidget *parent )
   connect( mXAxisLabelsCombo, qOverload<int>( &QComboBox::currentIndexChanged ), this, [this]( int ) {
     if ( mBlockChanges )
       return;
-    emit widgetChanged();
+    emit changed();
   } );
 
   mXAxisMajorLinesSymbolButton->registerExpressionContextGenerator( this );
@@ -841,7 +841,7 @@ void QgsLineChartPlotWidget::mAddSymbolPushButton_clicked()
   connect( symbolButton, &QgsSymbolButton::changed, this, [this] {
     if ( mBlockChanges )
       return;
-    emit widgetChanged();
+    emit changed();
   } );
   mSymbolsList->setCellWidget( row, 1, symbolButton );
 
@@ -855,11 +855,11 @@ void QgsLineChartPlotWidget::mAddSymbolPushButton_clicked()
   connect( symbolButton, &QgsSymbolButton::changed, this, [this] {
     if ( mBlockChanges )
       return;
-    emit widgetChanged();
+    emit changed();
   } );
   mSymbolsList->setCellWidget( row, 2, symbolButton );
 
-  emit widgetChanged();
+  emit changed();
 }
 
 void QgsLineChartPlotWidget::mRemoveSymbolPushButton_clicked()
@@ -872,7 +872,7 @@ void QgsLineChartPlotWidget::mRemoveSymbolPushButton_clicked()
 
   mSymbolsList->removeRow( mSymbolsList->row( item ) );
 
-  emit widgetChanged();
+  emit changed();
 }
 
 void QgsLineChartPlotWidget::updateXAxisProperties()
@@ -930,7 +930,7 @@ void QgsLineChartPlotWidget::setPlot( QgsPlot *plot )
     connect( symbolButton, &QgsSymbolButton::changed, this, [this] {
       if ( mBlockChanges )
         return;
-      emit widgetChanged();
+      emit changed();
     } );
     mSymbolsList->setCellWidget( row, 1, symbolButton );
 
@@ -944,7 +944,7 @@ void QgsLineChartPlotWidget::setPlot( QgsPlot *plot )
     connect( symbolButton, &QgsSymbolButton::changed, this, [this] {
       if ( mBlockChanges )
         return;
-      emit widgetChanged();
+      emit changed();
     } );
     mSymbolsList->setCellWidget( row, 2, symbolButton );
   }
@@ -1102,7 +1102,7 @@ QgsPieChartPlotWidget::QgsPieChartPlotWidget( QWidget *parent )
   connect( mLabelCombo, qOverload<int>( &QComboBox::currentIndexChanged ), this, [this]( int ) {
     if ( mBlockChanges )
       return;
-    emit widgetChanged();
+    emit changed();
   } );
 
   mLabelFontButton->setDialogTitle( tr( "Chart Label Font" ) );
@@ -1110,7 +1110,7 @@ QgsPieChartPlotWidget::QgsPieChartPlotWidget( QWidget *parent )
   connect( mLabelFontButton, &QgsFontButton::changed, this, [this] {
     if ( mBlockChanges )
       return;
-    emit widgetChanged();
+    emit changed();
   } );
 
   connect( mLabelFormatButton, &QPushButton::clicked, this, [this] {
@@ -1119,7 +1119,7 @@ QgsPieChartPlotWidget::QgsPieChartPlotWidget( QWidget *parent )
     widget->setFormat( mNumericFormat.get() );
     connect( widget, &QgsNumericFormatSelectorWidget::changed, this, [this, widget] {
       mNumericFormat.reset( widget->format() );
-      emit widgetChanged();
+      emit changed();
     } );
     openPanel( widget );
   } );
@@ -1128,28 +1128,28 @@ QgsPieChartPlotWidget::QgsPieChartPlotWidget( QWidget *parent )
   connect( mSpinLeftMargin, qOverload<double>( &QDoubleSpinBox::valueChanged ), this, [this]( double ) {
     if ( mBlockChanges )
       return;
-    emit widgetChanged();
+    emit changed();
   } );
 
   mSpinRightMargin->setClearValue( 0 );
   connect( mSpinRightMargin, qOverload<double>( &QDoubleSpinBox::valueChanged ), this, [this]( double ) {
     if ( mBlockChanges )
       return;
-    emit widgetChanged();
+    emit changed();
   } );
 
   mSpinTopMargin->setClearValue( 0 );
   connect( mSpinTopMargin, qOverload<double>( &QDoubleSpinBox::valueChanged ), this, [this]( double ) {
     if ( mBlockChanges )
       return;
-    emit widgetChanged();
+    emit changed();
   } );
 
   mSpinBottomMargin->setClearValue( 0 );
   connect( mSpinBottomMargin, qOverload<double>( &QDoubleSpinBox::valueChanged ), this, [this]( double ) {
     if ( mBlockChanges )
       return;
-    emit widgetChanged();
+    emit changed();
   } );
 
   connect( mAddSymbolPushButton, &QPushButton::clicked, this, &QgsPieChartPlotWidget::mAddSymbolPushButton_clicked );
@@ -1181,7 +1181,7 @@ void QgsPieChartPlotWidget::mAddSymbolPushButton_clicked()
   connect( symbolButton, &QgsSymbolButton::changed, this, [this] {
     if ( mBlockChanges )
       return;
-    emit widgetChanged();
+    emit changed();
   } );
   mSymbolsList->setCellWidget( row, 1, symbolButton );
 
@@ -1192,11 +1192,11 @@ void QgsPieChartPlotWidget::mAddSymbolPushButton_clicked()
   connect( colorRampButton, &QgsColorRampButton::colorRampChanged, this, [this] {
     if ( mBlockChanges )
       return;
-    emit widgetChanged();
+    emit changed();
   } );
   mSymbolsList->setCellWidget( row, 2, colorRampButton );
 
-  emit widgetChanged();
+  emit changed();
 }
 
 void QgsPieChartPlotWidget::mRemoveSymbolPushButton_clicked()
@@ -1209,7 +1209,7 @@ void QgsPieChartPlotWidget::mRemoveSymbolPushButton_clicked()
 
   mSymbolsList->removeRow( mSymbolsList->row( item ) );
 
-  emit widgetChanged();
+  emit changed();
 }
 
 void QgsPieChartPlotWidget::setPlot( QgsPlot *plot )
@@ -1242,7 +1242,7 @@ void QgsPieChartPlotWidget::setPlot( QgsPlot *plot )
     connect( symbolButton, &QgsSymbolButton::changed, this, [this] {
       if ( mBlockChanges )
         return;
-      emit widgetChanged();
+      emit changed();
     } );
     mSymbolsList->setCellWidget( row, 1, symbolButton );
 
@@ -1253,7 +1253,7 @@ void QgsPieChartPlotWidget::setPlot( QgsPlot *plot )
     connect( colorRampButton, &QgsColorRampButton::colorRampChanged, this, [this] {
       if ( mBlockChanges )
         return;
-      emit widgetChanged();
+      emit changed();
     } );
     mSymbolsList->setCellWidget( row, 2, colorRampButton );
   }

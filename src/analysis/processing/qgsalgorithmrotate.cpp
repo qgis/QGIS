@@ -101,6 +101,8 @@ bool QgsRotateFeaturesAlgorithm::prepareAlgorithm( const QVariantMap &parameters
 
 QgsFeatureList QgsRotateFeaturesAlgorithm::processFeature( const QgsFeature &feature, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
+  QGS_MARK_ALGORITHM_SOURCE
+
   if ( mUseAnchor && !mTransformedAnchor )
   {
     mTransformedAnchor = true;

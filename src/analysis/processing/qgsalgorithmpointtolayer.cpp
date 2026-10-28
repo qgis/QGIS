@@ -55,6 +55,8 @@ QgsPointToLayerAlgorithm *QgsPointToLayerAlgorithm::createInstance() const
 
 QVariantMap QgsPointToLayerAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
+  QGS_MARK_ALGORITHM_SOURCE
+
   const QgsCoordinateReferenceSystem crs = parameterAsPointCrs( parameters, u"INPUT"_s, context );
   const QgsGeometry geom = QgsGeometry::fromPointXY( parameterAsPoint( parameters, u"INPUT"_s, context ) );
 

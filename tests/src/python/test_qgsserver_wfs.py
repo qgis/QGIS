@@ -1551,7 +1551,7 @@ class TestQgsServerWFS(QgsServerTestBase):
         )
 
     def test_wfs_aspatial_getcapabilities(self):
-        ### Test issue GH #60185 - WFS GetCapabilities for aspatial layers"""
+        """Test issue GH #60185 - WFS GetCapabilities for aspatial layers"""
 
         # create a memory layer with no geometry
         fields = QgsFields()

@@ -45,11 +45,11 @@ layer attributes.
     QgsVectorFieldSymbolLayer();
     ~QgsVectorFieldSymbolLayer();
 
-    static QgsSymbolLayer *create( const QVariantMap &properties = QVariantMap() );
+    static std::unique_ptr<QgsSymbolLayer> create( const QVariantMap &properties = QVariantMap() );
 %Docstring
 Creates the symbol layer
 %End
-    static QgsSymbolLayer *createFromSld( QDomElement &element );
+    static std::unique_ptr<QgsSymbolLayer> createFromSld( QDomElement &element );
 
     virtual QString layerType() const;
 

@@ -18,6 +18,7 @@
 #ifndef QGSMAPLAYERSERVERPROPERTIES_H
 #define QGSMAPLAYERSERVERPROPERTIES_H
 
+#include "qgis.h"
 #include "qgis_core.h"
 #include "qgis_sip.h"
 
@@ -151,24 +152,14 @@ class CORE_EXPORT QgsServerWmsDimensionProperties
     };
     Q_ENUM( PredefinedWmsDimensionName )
 
+    SIP_SKIP static constexpr const char *TIME_DIMENSION_NAME = "TIME";
+
     /**
      * Setting to define QGIS Server WMS Dimension.
      * \since QGIS 3.10
      */
     struct CORE_EXPORT WmsDimensionInfo
     {
-        /**
-       * Selection behavior for QGIS Server WMS Dimension default display
-       * \since QGIS 3.10
-       */
-        enum DefaultDisplay
-        {
-          AllValues = 0,      //!< Display all values of the dimension
-          MinValue = 1,       //!< Add selection to current selection
-          MaxValue = 2,       //!< Modify current selection to include only select features which match
-          ReferenceValue = 3, //!< Remove from current selection
-        };
-
         /**
        * Constructor for WmsDimensionInfo.
        */
@@ -178,7 +169,7 @@ class CORE_EXPORT QgsServerWmsDimensionProperties
           const QString &dimEndFieldName = QString(),
           const QString &dimUnits = QString(),
           const QString &dimUnitSymbol = QString(),
-          const int &dimDefaultDisplayType = QgsServerWmsDimensionProperties::WmsDimensionInfo::AllValues,
+          Qgis::WmsDimensionDefaultDisplay dimDefaultDisplayType = Qgis::WmsDimensionDefaultDisplay::AllValues,
           const QVariant &dimReferenceValue = QVariant()
         )
           : name( dimName )
@@ -187,19 +178,50 @@ class CORE_EXPORT QgsServerWmsDimensionProperties
           , units( dimUnits )
           , unitSymbol( dimUnitSymbol )
           , defaultDisplayType( dimDefaultDisplayType )
-          , referenceValue( dimReferenceValue )
+          , mReferenceValue( dimReferenceValue )
+        {}
+
+        /**
+         * Constructor for layer tree group TIME WmsDimensionInfo which doesn't require field and unit information.
+         * \param dimName dimension name (expected to be "TIME" for time dimension)
+         * \param dimDefaultDisplayType dimension default value for display type
+         * \param dimReferenceValue dimension reference value used if default display type is Qgis::WmsDimensionDefaultDisplay::ReferenceValue
+         */
+        explicit WmsDimensionInfo(
+          const QString &dimName, Qgis::WmsDimensionDefaultDisplay dimDefaultDisplayType = Qgis::WmsDimensionDefaultDisplay::AllValues, const QVariant &dimReferenceValue = QVariant()
+        )
+          : name( dimName )
+          , defaultDisplayType( dimDefaultDisplayType )
+          , mReferenceValue( dimReferenceValue )
         {}
 
         bool operator==( const WmsDimensionInfo &other ) const;
         bool operator!=( const WmsDimensionInfo &other ) const;
+
+        /**
+     * Returns reference value used when default display type is Qgis::WmsDimensionDefaultDisplay::ReferenceValue
+     *
+     * \since QGIS 4.4
+     */
+        QVariant referenceValue() const SIP_PYNAME( _referenceValue ) { return mReferenceValue; }
+
+        /**
+     * Set \a referenceValue used when default display type is Qgis::WmsDimensionDefaultDisplay::ReferenceValue
+     *
+     * \since QGIS 4.4
+     */
+        void setReferenceValue( const QVariant &referenceValue ) { mReferenceValue = referenceValue; }
+
 
         QString name;
         QString fieldName;
         QString endFieldName;
         QString units;
         QString unitSymbol;
-        int defaultDisplayType;
-        QVariant referenceValue;
+        Qgis::WmsDimensionDefaultDisplay defaultDisplayType;
+
+      private:
+        QVariant mReferenceValue;
     };
 
     virtual ~QgsServerWmsDimensionProperties() = default;
@@ -214,6 +236,14 @@ class CORE_EXPORT QgsServerWmsDimensionProperties
      * \since QGIS 3.10
      */
     static QMap<int, QString> wmsDimensionDefaultDisplayLabels();
+
+    /**
+     * Returns WMS Dimension default display descriptions
+     * \note This method returns the same labels as wmsDimensionDefaultDisplayLabels() but keeps keys
+     * as enum instead of int
+     * \since QGIS 4.4
+     */
+    static QMap<Qgis::WmsDimensionDefaultDisplay, QString> wmsDimensionDefaultDisplayDescriptions() SIP_SKIP;
 
     /**
      * Adds a QGIS Server WMS Dimension

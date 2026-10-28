@@ -14,7 +14,7 @@ static const char *accessToString(O1SmugMug::Access access) {
     const std::size_t stringsSize = sizeof(strings) / sizeof(strings[0]);
     Q_ASSERT(access >= 0 && static_cast<std::size_t>(access) < stringsSize
                 && "Unsupported SmugMug authorization access!");
-    Q_UNUSED(stringsSize)
+    (void)stringsSize;
 
     return strings[access];
 }
@@ -28,7 +28,7 @@ static const char *permissionsToString(O1SmugMug::Permissions permissions) {
     const std::size_t stringsSize = sizeof(strings) / sizeof(strings[0]);
     Q_ASSERT(permissions >= 0 && static_cast<std::size_t>(permissions) < stringsSize
                 && "Unsupported SmugMug authorization permissions!");
-    Q_UNUSED(stringsSize)
+    (void)stringsSize;
 
     return strings[permissions];
 }

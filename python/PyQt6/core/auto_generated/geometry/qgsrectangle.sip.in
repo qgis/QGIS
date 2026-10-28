@@ -43,6 +43,10 @@ coordinates.
 The rectangle will be normalized after creation. Since QGIS 3.20, if
 ``normalize`` is ``False`` then the normalization step will not be
 applied automatically.
+
+If the the rectangle represents a portion of the globe in geographic
+coordinates where the extent wraps around the antimeridian then
+``normalize`` must be set to ``False``.
 %End
 
     QgsRectangle( const QgsPointXY &p1, const QgsPointXY &p2, bool normalize = true ) /HoldGIL/;
@@ -75,6 +79,19 @@ Creates a new rectangle from a ``wkt`` string. The WKT must contain only
 %Docstring
 Creates a new rectangle, given the specified ``center`` point and
 ``width`` and ``height``.
+%End
+
+    static QgsRectangle fromEdges( double left, double top, double right, double bottom );
+%Docstring
+Creates a rectangle from the ``left``, ``top``, ``right`` and ``bottom``
+edges.
+
+The rectangle will not be normalized, permitting situations where the
+left edge > right or top < bottom. E.g. for use when the rectangle
+represents a portion of the globe in geographic coordinates where the
+extent wraps around the antimeridian.
+
+.. versionadded:: 4.4
 %End
 
     void set( const QgsPointXY &p1, const QgsPointXY &p2, bool normalize = true );
@@ -140,22 +157,96 @@ It is NOT normalized.
 
     double xMaximum() const /HoldGIL/;
 %Docstring
-Returns the x maximum value (right side of rectangle).
+Returns the x maximum value.
+
+This usually corresponds to the right side of the rectangle, unless the
+rectangle was created using non-normalized coordinates. E.g. when the
+rectangle represents a portion of the globe in geographic coordinates
+where the extent wraps around the antimeridian.
+
+.. seealso:: :py:func:`right`
 %End
 
     double xMinimum() const /HoldGIL/;
 %Docstring
-Returns the x minimum value (left side of rectangle).
+Returns the x minimum value.
+
+This usually corresponds to the left side of the rectangle, unless the
+rectangle was created using non-normalized coordinates. E.g. when the
+rectangle represents a portion of the globe in geographic coordinates
+where the extent wraps around the antimeridian.
+
+.. seealso:: :py:func:`left`
 %End
 
     double yMaximum() const /HoldGIL/;
 %Docstring
-Returns the y maximum value (top side of rectangle).
+Returns the y maximum value.
+
+This usually corresponds to the top of the rectangle, unless the
+rectangle was created using non-normalized coordinates.
+
+.. seealso:: :py:func:`top`
 %End
 
     double yMinimum() const /HoldGIL/;
 %Docstring
-Returns the y minimum value (bottom side of rectangle).
+Returns the y minimum value.
+
+This usually corresponds to the bottom of the rectangle, unless the
+rectangle was created using non-normalized coordinates.
+
+.. seealso:: :py:func:`top`
+%End
+
+    double left() const /HoldGIL/;
+%Docstring
+Returns the left side of the rectangle.
+
+This usually corresponds to the minimum x value, unless the rectangle
+represents a portion of the globe in geographic coordinates where the
+extent wraps around the antimeridian.
+
+.. seealso:: :py:func:`xMinimum`
+
+.. versionadded:: 4.4
+%End
+
+    double right() const /HoldGIL/;
+%Docstring
+Returns the right side of the rectangle.
+
+This usually corresponds to the maximum x value, unless the rectangle
+represents a portion of the globe in geographic coordinates where the
+extent wraps around the antimeridian.
+
+.. seealso:: :py:func:`xMaximum`
+
+.. versionadded:: 4.4
+%End
+
+    double top() const /HoldGIL/;
+%Docstring
+Returns the top side of the rectangle.
+
+This usually corresponds to the maximum y value, unless the rectangle
+was created using non-normalized coordinates.
+
+.. seealso:: :py:func:`yMaximum`
+
+.. versionadded:: 4.4
+%End
+
+    double bottom() const /HoldGIL/;
+%Docstring
+Returns the bottom side of the rectangle.
+
+This usually corresponds to the minimum y value, unless the rectangle
+was created using non-normalized coordinates.
+
+.. seealso:: :py:func:`yMinimum`
+
+.. versionadded:: 4.4
 %End
 
     void normalize();
@@ -315,7 +406,27 @@ An empty rectangle may still be non-null if it contains valid spatial
 information (e.g. bounding box of a point or of a vertical or horizontal
 segment).
 
+.. warning::
+
+   Do not use this method to determine if the rectangle
+   represents the bounding box of a point. The :py:func:`~QgsRectangle.isPoint` method
+   should be used instead.
+
 .. seealso:: :py:func:`isNull`
+
+.. seealso:: :py:func:`isPoint`
+%End
+
+    bool isPoint() const;
+%Docstring
+Returns ``True`` if the rectangle represents a point.
+
+A rectangle represents a point if both the x coordinates are an exact
+match and the y coordinates are an exact match.
+
+.. seealso:: :py:func:`isNull`
+
+.. versionadded:: 4.4
 %End
 
     bool isNull() const;

@@ -22,6 +22,7 @@ from qgis.core import (
     Qgis,
     QgsCategorizedSymbolRenderer,
     QgsCoordinateReferenceSystem,
+    QgsFillSymbol,
     QgsFontUtils,
     QgsLayout,
     QgsLayoutExporter,
@@ -162,16 +163,18 @@ class TestSelectiveMasking(QgisTestCase):
         if renderer.type() == "categorizedSymbol":
             i = renderer.categoryIndexForValue(ruleId)
             cat = renderer.categories()[i]
-            symbol = cat.symbol()
+            symbol = cat.symbol().clone()
         elif renderer.type() == "singleSymbol":
-            symbol = renderer.symbol()
+            symbol = renderer.symbol().clone()
 
         symbollayer = symbol.symbolLayer(symbollayer_ids[0])
         for i in range(1, len(symbollayer_ids)):
-            symbol = symbollayer.subSymbol()
+            symbol = symbollayer.subSymbol().clone()
             symbollayer = symbol.symbolLayer(symbollayer_ids[i])
 
-        return symbollayer
+        res = symbollayer.clone()
+        res.setId(symbollayer.id())
+        return res
 
     def get_symbollayer_ref(self, layer, ruleId, symbollayer_ids):
         """
@@ -322,8 +325,6 @@ class TestSelectiveMasking(QgisTestCase):
 
         props = mask_layer.properties()
 
-        print(f"props={props}")
-
         mask_layer2 = QgsMaskMarkerSymbolLayer.create(props)
         self.assertEqual(
             mask_layer2.masks(),
@@ -365,26 +366,15 @@ class TestSelectiveMasking(QgisTestCase):
         label_settings.setFormat(fmt)
         self.polys_layer.labeling().setSettings(label_settings)
 
+        label_settings = self.polys_layer.labeling().settings()
+        text_format = label_settings.format()
+        mask_settings = text_format.mask()
         self.assertEqual(
-            [
-                slRef.symbolLayerIdV2()
-                for slRef in self.polys_layer.labeling()
-                .settings()
-                .format()
-                .mask()
-                .maskedSymbolLayers()
-            ],
+            [slRef.symbolLayerIdV2() for slRef in mask_settings.maskedSymbolLayers()],
             ["", "", ""],
         )
         self.assertEqual(
-            [
-                slRef.symbolLayerId()
-                for slRef in self.polys_layer.labeling()
-                .settings()
-                .format()
-                .mask()
-                .maskedSymbolLayers()
-            ],
+            [slRef.symbolLayerId() for slRef in mask_settings.maskedSymbolLayers()],
             [slRef.symbolLayerId() for slRef in oldMaskRefs],
         )
 
@@ -392,26 +382,18 @@ class TestSelectiveMasking(QgisTestCase):
             QgsProject.instance().mapLayers()
         )
 
+        label_settings = self.polys_layer.labeling().settings()
+        text_format = label_settings.format()
+        mask_settings = text_format.mask()
         self.assertEqual(
             [
                 QUuid(slRef.symbolLayerIdV2()).isNull()
-                for slRef in self.polys_layer.labeling()
-                .settings()
-                .format()
-                .mask()
-                .maskedSymbolLayers()
+                for slRef in mask_settings.maskedSymbolLayers()
             ],
             [False, False, False],
         )
         self.assertEqual(
-            [
-                slRef.symbolLayerIdV2()
-                for slRef in self.polys_layer.labeling()
-                .settings()
-                .format()
-                .mask()
-                .maskedSymbolLayers()
-            ],
+            [slRef.symbolLayerIdV2() for slRef in mask_settings.maskedSymbolLayers()],
             [
                 self.get_symbollayer(self.lines_layer2, "", [1, 0]).id(),
                 self.get_symbollayer(self.points_layer, "B52", [0]).id(),
@@ -419,14 +401,7 @@ class TestSelectiveMasking(QgisTestCase):
             ],
         )
         self.assertEqual(
-            [
-                slRef.symbolLayerId()
-                for slRef in self.polys_layer.labeling()
-                .settings()
-                .format()
-                .mask()
-                .maskedSymbolLayers()
-            ],
+            [slRef.symbolLayerId() for slRef in mask_settings.maskedSymbolLayers()],
             [QgsSymbolLayerId(), QgsSymbolLayerId(), QgsSymbolLayerId()],
         )
 
@@ -1053,13 +1028,25 @@ class TestSelectiveMasking(QgisTestCase):
 
         self.check_renderings(self.map_settings, "label_mask_with_effect")
 
-        # test that force vector output has no impact on the result
-        self.map_settings.setFlag(Qgis.MapSettingsFlag.ForceVectorOutput, True)
-        self.map_settings.setFlag(Qgis.MapSettingsFlag.UseAdvancedEffects, True)
+        # test that prefer vector output has no impact on the result, as we should detect the effects and fallback
+        # to raster rendering anyway
+        self.map_settings.setRasterizedRenderingPolicy(
+            Qgis.RasterizedRenderingPolicy.PreferVector
+        )
         # skip parallel rendering for this check, as force vector output is ignored when parallel rendering
         # is used
         self.check_renderings(
             self.map_settings, "label_mask_with_effect", test_parallel_rendering=False
+        )
+
+        # with force vector output the effects should not render
+        self.map_settings.setRasterizedRenderingPolicy(
+            Qgis.RasterizedRenderingPolicy.ForceVector
+        )
+        self.check_renderings(
+            self.map_settings,
+            "label_mask_with_effect_force_vector",
+            test_parallel_rendering=False,
         )
 
     def test_label_with_blend_mode(self):
@@ -1093,8 +1080,12 @@ class TestSelectiveMasking(QgisTestCase):
         map_settings.setFlag(Qgis.MapSettingsFlag.UseAdvancedEffects, True)
         self.check_renderings(map_settings, "label_mask_with_blend_mode")
 
-        # test that force vector output has no impact on the result
-        self.map_settings.setFlag(Qgis.MapSettingsFlag.ForceVectorOutput, True)
+        # test that prefer vector output has no impact on the result, as we should detect the effects and fallback
+        # to raster rendering anyway
+        self.map_settings.setRasterizedRenderingPolicy(
+            Qgis.RasterizedRenderingPolicy.PreferVector
+        )
+
         # skip parallel rendering for this check, as force vector output is ignored when parallel rendering
         # is used
         self.check_renderings(
@@ -1876,6 +1867,257 @@ class TestSelectiveMasking(QgisTestCase):
         self.map_settings.setSelectiveMaskingSourceSets([mask_set])
 
         self.check_renderings(self.map_settings, "selective_masking_set_label")
+
+    def test_layer_opacity(self):
+        """
+        Test that layer opacity is respected during exports
+        """
+        self.assertTrue(
+            QgsProject.instance().read(
+                os.path.join(unitTestDataPath(), "selective_masking.qgs")
+            )
+        )
+
+        polys = QgsProject.instance().mapLayersByName("polys")[0]
+        self.assertTrue(polys)
+        simple_fill = QgsFillSymbol.createSimple(
+            {"color": "#ffaaaa", "style_border": "no"}
+        )
+        polys.setRenderer(QgsSingleSymbolRenderer(simple_fill))
+        polys.setOpacity(0.5)
+
+        points = QgsProject.instance().mapLayersByName("points")[0]
+        self.assertTrue(points)
+
+        simple_marker = QgsMarkerSymbol.createSimple(
+            {"color": "#0000ff", "size": "30", "outline_style": "no"}
+        )
+        points.setRenderer(QgsSingleSymbolRenderer(simple_marker))
+
+        self.assertTrue(len(polys.labeling().subProviders()), 1)
+        settings = polys.labeling().settings()
+        fmt = settings.format()
+        fmt.setFont(QgsFontUtils.getStandardTestFont("Bold"))
+        fmt.setSize(32)
+        fmt.setSizeUnit(QgsUnitTypes.RenderPoints)
+
+        mask = fmt.mask()
+        mask.setEnabled(True)
+        mask.setSize(9)
+        mask.setSizeUnit(Qgis.RenderUnit.Millimeters)
+        mask.setMaskedSymbolLayers(
+            [QgsSymbolLayerReference(points.id(), simple_marker[0].id())]
+        )
+
+        fmt.setMask(mask)
+
+        settings.setFormat(fmt)
+        polys.labeling().setSettings(settings)
+
+        map_settings = QgsMapSettings()
+        crs = polys.crs()
+        map_settings.setExtent(polys.extent())
+        map_settings.setBackgroundColor(QColor(152, 219, 249))
+        map_settings.setOutputSize(QSize(800, 600))
+        map_settings.setOutputDpi(72)
+        map_settings.setFlag(QgsMapSettings.Antialiasing, True)
+        map_settings.setRasterizedRenderingPolicy(
+            Qgis.RasterizedRenderingPolicy.PreferVector
+        )
+        map_settings.setDestinationCrs(crs)
+        map_settings.setLayers([points, polys])
+
+        im = QImage(map_settings.outputSize(), QImage.Format.Format_RGB32)
+        im.setDotsPerMeterX(int(map_settings.outputDpi() / 25.4 * 1000))
+        im.setDotsPerMeterY(int(map_settings.outputDpi() / 25.4 * 1000))
+        im.fill(Qt.GlobalColor.transparent)
+        p = QPainter(im)
+
+        job = QgsMapRendererCustomPainterJob(map_settings, p)
+        job.start()
+        job.waitForFinished()
+
+        p.end()
+
+        self.assertTrue(self.image_check("layer_opacity", "layer_opacity", im))
+
+        polys.setOpacity(1.0)
+        points.setOpacity(0.5)
+
+        im = QImage(map_settings.outputSize(), QImage.Format.Format_RGB32)
+        im.setDotsPerMeterX(int(map_settings.outputDpi() / 25.4 * 1000))
+        im.setDotsPerMeterY(int(map_settings.outputDpi() / 25.4 * 1000))
+        im.fill(Qt.GlobalColor.transparent)
+        p = QPainter(im)
+
+        job = QgsMapRendererCustomPainterJob(map_settings, p)
+        job.start()
+        job.waitForFinished()
+
+        p.end()
+
+        self.assertTrue(
+            self.image_check("layer_opacity_points", "layer_opacity_points", im)
+        )
+
+    def test_layer_opacity2(self):
+        """
+        Test that layer opacity is respected during exports
+        """
+        self.assertTrue(
+            QgsProject.instance().read(
+                os.path.join(unitTestDataPath(), "selective_masking.qgs")
+            )
+        )
+
+        polys = QgsProject.instance().mapLayersByName("polys")[0]
+        self.assertTrue(polys)
+        simple_fill = QgsFillSymbol.createSimple(
+            {"color": "#ffaaaa", "style_border": "no"}
+        )
+        polys.setRenderer(QgsSingleSymbolRenderer(simple_fill))
+        polys.setOpacity(0.5)
+
+        self.assertTrue(len(polys.labeling().subProviders()), 1)
+        settings = polys.labeling().settings()
+        fmt = settings.format()
+        fmt.setFont(QgsFontUtils.getStandardTestFont("Bold"))
+        fmt.setSize(32)
+        fmt.setSizeUnit(QgsUnitTypes.RenderPoints)
+
+        mask = fmt.mask()
+        mask.setEnabled(True)
+        mask.setSize(9)
+        mask.setSizeUnit(Qgis.RenderUnit.Millimeters)
+        mask.setMaskedSymbolLayers(
+            [QgsSymbolLayerReference(polys.id(), simple_fill[0].id())]
+        )
+
+        fmt.setMask(mask)
+
+        settings.setFormat(fmt)
+        polys.labeling().setSettings(settings)
+
+        map_settings = QgsMapSettings()
+        crs = polys.crs()
+        map_settings.setExtent(polys.extent())
+        map_settings.setBackgroundColor(QColor(152, 219, 249))
+        map_settings.setOutputSize(QSize(800, 600))
+        map_settings.setOutputDpi(72)
+        map_settings.setFlag(QgsMapSettings.Antialiasing, True)
+        map_settings.setRasterizedRenderingPolicy(
+            Qgis.RasterizedRenderingPolicy.PreferVector
+        )
+        map_settings.setDestinationCrs(crs)
+        map_settings.setLayers([polys])
+
+        im = QImage(map_settings.outputSize(), QImage.Format.Format_RGB32)
+        im.setDotsPerMeterX(int(map_settings.outputDpi() / 25.4 * 1000))
+        im.setDotsPerMeterY(int(map_settings.outputDpi() / 25.4 * 1000))
+        im.fill(Qt.GlobalColor.transparent)
+        p = QPainter(im)
+
+        job = QgsMapRendererCustomPainterJob(map_settings, p)
+        job.start()
+        job.waitForFinished()
+
+        p.end()
+
+        self.assertTrue(
+            self.image_check("layer_opacity_polys", "layer_opacity_polys", im)
+        )
+
+    def test_layer_blend_mode(self):
+        """
+        Test that layer blend mode is respected during exports
+        """
+        self.assertTrue(
+            QgsProject.instance().read(
+                os.path.join(unitTestDataPath(), "selective_masking.qgs")
+            )
+        )
+
+        polys = QgsProject.instance().mapLayersByName("polys")[0]
+        self.assertTrue(polys)
+        simple_fill = QgsFillSymbol.createSimple(
+            {"color": "#ffaaaa", "style_border": "no"}
+        )
+        polys.setRenderer(QgsSingleSymbolRenderer(simple_fill))
+        polys.setBlendMode(QPainter.CompositionMode.CompositionMode_Difference)
+
+        points = QgsProject.instance().mapLayersByName("points")[0]
+        self.assertTrue(points)
+
+        simple_marker = QgsMarkerSymbol.createSimple(
+            {"color": "#0000ff", "size": "30", "outline_style": "no"}
+        )
+        points.setRenderer(QgsSingleSymbolRenderer(simple_marker))
+
+        self.assertTrue(len(polys.labeling().subProviders()), 1)
+        settings = polys.labeling().settings()
+        fmt = settings.format()
+        fmt.setFont(QgsFontUtils.getStandardTestFont("Bold"))
+        fmt.setSize(32)
+        fmt.setSizeUnit(QgsUnitTypes.RenderPoints)
+
+        mask = fmt.mask()
+        mask.setEnabled(True)
+        mask.setSize(9)
+        mask.setSizeUnit(Qgis.RenderUnit.Millimeters)
+        mask.setMaskedSymbolLayers(
+            [QgsSymbolLayerReference(points.id(), simple_marker[0].id())]
+        )
+
+        fmt.setMask(mask)
+
+        settings.setFormat(fmt)
+        polys.labeling().setSettings(settings)
+
+        map_settings = QgsMapSettings()
+        crs = polys.crs()
+        map_settings.setExtent(polys.extent())
+        map_settings.setBackgroundColor(QColor(152, 219, 249))
+        map_settings.setOutputSize(QSize(800, 600))
+        map_settings.setOutputDpi(72)
+        map_settings.setFlag(QgsMapSettings.Antialiasing, True)
+        map_settings.setRasterizedRenderingPolicy(
+            Qgis.RasterizedRenderingPolicy.PreferVector
+        )
+        map_settings.setDestinationCrs(crs)
+        map_settings.setLayers([points, polys])
+
+        im = QImage(map_settings.outputSize(), QImage.Format.Format_RGB32)
+        im.setDotsPerMeterX(int(map_settings.outputDpi() / 25.4 * 1000))
+        im.setDotsPerMeterY(int(map_settings.outputDpi() / 25.4 * 1000))
+        im.fill(Qt.GlobalColor.transparent)
+        p = QPainter(im)
+
+        job = QgsMapRendererCustomPainterJob(map_settings, p)
+        job.start()
+        job.waitForFinished()
+
+        p.end()
+
+        self.assertTrue(self.image_check("layer_blending", "layer_blending", im))
+
+        polys.setBlendMode(QPainter.CompositionMode.CompositionMode_SourceOver)
+        points.setBlendMode(QPainter.CompositionMode.CompositionMode_Multiply)
+
+        im = QImage(map_settings.outputSize(), QImage.Format.Format_RGB32)
+        im.setDotsPerMeterX(int(map_settings.outputDpi() / 25.4 * 1000))
+        im.setDotsPerMeterY(int(map_settings.outputDpi() / 25.4 * 1000))
+        im.fill(Qt.GlobalColor.transparent)
+        p = QPainter(im)
+
+        job = QgsMapRendererCustomPainterJob(map_settings, p)
+        job.start()
+        job.waitForFinished()
+
+        p.end()
+
+        self.assertTrue(
+            self.image_check("layer_blending_points", "layer_blending_points", im)
+        )
 
 
 if __name__ == "__main__":

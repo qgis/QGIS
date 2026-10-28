@@ -42,6 +42,7 @@ class ANALYSIS_EXPORT QgsKMeansClusteringAlgorithm : public QgsProcessingAlgorit
     QString group() const override;
     QString groupId() const override;
     QString shortHelpString() const override;
+    QList<QgsAcademicReference> academicReferences() const override;
     QString shortDescription() const override;
     QgsKMeansClusteringAlgorithm *createInstance() const override SIP_FACTORY;
 

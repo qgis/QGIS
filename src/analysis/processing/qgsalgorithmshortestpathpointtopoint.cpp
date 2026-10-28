@@ -76,6 +76,8 @@ void QgsShortestPathPointToPointAlgorithm::initAlgorithm( const QVariantMap & )
 
 QVariantMap QgsShortestPathPointToPointAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
+  QGS_MARK_ALGORITHM_SOURCE
+
   loadCommonParams( parameters, context, feedback );
 
   QgsFields fields;

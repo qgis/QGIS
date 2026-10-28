@@ -103,6 +103,23 @@ Sets ``filters`` for the available CRS.
 .. versionadded:: 3.36
 %End
 
+    void setAllowTopocentricCrs( bool allow );
+%Docstring
+Sets whether the topocentric CRS type option is shown in the widget's
+CRS type combobox. When ``allow`` is ``False``, the topocentric CRS
+option is hidden and cannot be selected.
+
+.. versionadded:: 4.2
+%End
+
+    void setPreviewRect( const QgsRectangle &rect );
+%Docstring
+Sets the visible area to use when showing a preview of the CRS in the
+widget.
+
+.. versionadded:: 4.2
+%End
+
   public slots:
 
     void setCrs( const QgsCoordinateReferenceSystem &crs );
@@ -275,6 +292,15 @@ Sets ``filters`` for the available CRS.
 .. seealso:: :py:func:`filters`
 
 .. versionadded:: 3.36
+%End
+
+    void setAllowTopocentricCrs( bool allow );
+%Docstring
+Sets whether the topocentric CRS type option is shown in the dialog.
+When ``allow`` is ``False``, the topocentric CRS options is hidden and
+cannot be selected.
+
+.. versionadded:: 4.2
 %End
 
   public slots:

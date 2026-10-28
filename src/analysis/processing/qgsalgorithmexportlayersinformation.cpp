@@ -105,6 +105,8 @@ bool QgsExportLayersInformationAlgorithm::prepareAlgorithm( const QVariantMap &p
 
 QVariantMap QgsExportLayersInformationAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
+  QGS_MARK_ALGORITHM_SOURCE
+
   QgsFields outFields;
   outFields.append( QgsField( u"name"_s, QMetaType::Type::QString ) );
   outFields.append( QgsField( u"source"_s, QMetaType::Type::QString ) );

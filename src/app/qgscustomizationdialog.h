@@ -173,7 +173,7 @@ class APP_EXPORT QgsCustomizationDialog : public QMainWindow, private Ui::QgsCus
      * \brief tree view to edit a customization
      * \since QGIS 4.0
      */
-    class QgsCustomizationModel : public QAbstractItemModel
+    class APP_EXPORT QgsCustomizationModel : public QAbstractItemModel
     {
       public:
         enum class Mode
@@ -193,6 +193,7 @@ class APP_EXPORT QgsCustomizationDialog : public QMainWindow, private Ui::QgsCus
         int rowCount( const QModelIndex &parent = {} ) const override;
         int columnCount( const QModelIndex &parent = {} ) const override;
         QMimeData *mimeData( const QModelIndexList &indexes ) const override;
+        Qt::DropActions supportedDropActions() const override;
         bool canDropMimeData( const QMimeData *data, Qt::DropAction action, int, int, const QModelIndex & ) const override;
         bool dropMimeData( const QMimeData *data, Qt::DropAction action, int row, int, const QModelIndex &parent ) override;
 
@@ -206,11 +207,6 @@ class APP_EXPORT QgsCustomizationDialog : public QMainWindow, private Ui::QgsCus
          * Delete user items at \a indexes location
          */
         void deleteUserItems( const QModelIndexList &indexes );
-
-        /**
-       * Initialize (or reinitialize if already initialized) model
-       */
-        void init();
 
         /**
        * Reset all current modifications
@@ -245,6 +241,17 @@ class APP_EXPORT QgsCustomizationDialog : public QMainWindow, private Ui::QgsCus
          * \a parent at \a row position
          */
         bool dropMimeDataProcessingAlgorithms( const QMimeData *data, int row, const QModelIndex &parent );
+
+        /**
+         * Initialize (or reinitialize if already initialized) model using QgisApp
+         * customization object
+         */
+        void initFromQgisApp();
+
+        /**
+         * Initialize model root items from current customization object
+         */
+        void initRootItems();
 
         Mode mMode = Mode::ActionSelector;
         QgisApp *mQgisApp = nullptr;

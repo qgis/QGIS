@@ -2402,13 +2402,18 @@ class PyQgsOGRProvider(QgisTestCase):
             "Range",
         )
 
+        cv = vl.dataProvider().codedValues(fields.lookupField("with_enum_domain"))
+        self.assertIn(("1", "one"), cv)
+        self.assertIn(("2", "2"), cv)
+        self.assertEqual(len(cv), 2)
+
         enum_field = fields[fields.lookupField("with_enum_domain")]
         enum_setup = enum_field.editorWidgetSetup()
-        self.assertEqual(enum_setup.type(), "ValueMap")
-        self.assertTrue(enum_setup.config()["map"], [{"one": "1"}, {"2": "2"}])
+        self.assertEqual(enum_setup.type(), "")
+        self.assertFalse(enum_setup.config())
         self.assertEqual(
             vl.editorWidgetSetup(fields.lookupField("with_enum_domain")).type(),
-            "ValueMap",
+            "",
         )
 
     def test_provider_editorWidgets(self):
@@ -5264,6 +5269,93 @@ class PyQgsOGRProvider(QgisTestCase):
         self.assertTrue(
             metadata.urisReferToSame(uri1, uri2, Qgis.SourceHierarchyLevel.Object)
         )
+
+    def testListFieldDomainsCapabilityShapefile(self):
+        """Shapefile provider should not report ListFieldDomains capability"""
+        vl = QgsVectorLayer(
+            os.path.join(unitTestDataPath(), "points.shp"), "test", "ogr"
+        )
+        self.assertTrue(vl.isValid())
+        self.assertFalse(
+            vl.dataProvider().capabilities()
+            & Qgis.VectorProviderCapability.ReadFieldDomains
+        )
+
+    def testCreateEmptyLayer(self):
+        """Test creating empty layers using the provider"""
+        metadata = QgsProviderRegistry.instance().providerMetadata("ogr")
+        fields = QgsFields()
+        fields.append(QgsField("test", QVariant.String))
+        with tempfile.TemporaryDirectory() as temp_dir:
+            gpkg_file = os.path.join(temp_dir, "test.gpkg")
+            res = metadata.createEmptyLayer(
+                gpkg_file,
+                fields,
+                Qgis.WkbType.Point,
+                QgsCoordinateReferenceSystem("EPSG:3857"),
+            )
+            self.assertEqual(res.result(), Qgis.VectorExportResult.Success)
+            self.assertEqual(res.createdLayerUri(), gpkg_file + "|layername=test")
+            self.assertFalse(res.errorMessage())
+
+            vl = QgsVectorLayer(res.createdLayerUri(), "test", "ogr")
+            self.assertTrue(vl.isValid())
+            self.assertEqual(vl.wkbType(), Qgis.WkbType.Point)
+            self.assertEqual(vl.crs(), QgsCoordinateReferenceSystem("EPSG:3857"))
+
+            # should not overwrite by default
+            res2 = metadata.createEmptyLayer(
+                gpkg_file,
+                fields,
+                Qgis.WkbType.Point,
+                QgsCoordinateReferenceSystem("EPSG:3857"),
+            )
+            self.assertEqual(
+                res2.result(), Qgis.VectorExportResult.ErrorCreatingDataSource
+            )
+            self.assertIn("exists", res2.errorMessage())
+
+            # create new layer
+            res2 = metadata.createEmptyLayer(
+                gpkg_file + "|layername=polygons",
+                fields,
+                Qgis.WkbType.Polygon,
+                QgsCoordinateReferenceSystem("EPSG:3857"),
+                Qgis.CreateLayerActionOnExisting.CreateOrOverwriteLayer,
+            )
+            self.assertEqual(res2.result(), Qgis.VectorExportResult.Success)
+            self.assertEqual(res2.createdLayerUri(), gpkg_file + "|layername=polygons")
+            self.assertFalse(res2.errorMessage())
+            vl = QgsVectorLayer(res2.createdLayerUri(), "test", "ogr")
+            self.assertTrue(vl.isValid())
+            self.assertEqual(vl.wkbType(), Qgis.WkbType.Polygon)
+            self.assertEqual(vl.crs(), QgsCoordinateReferenceSystem("EPSG:3857"))
+
+            # original should still exist
+            vl = QgsVectorLayer(res.createdLayerUri(), "test", "ogr")
+            self.assertTrue(vl.isValid())
+            self.assertEqual(vl.wkbType(), Qgis.WkbType.Point)
+            self.assertEqual(vl.crs(), QgsCoordinateReferenceSystem("EPSG:3857"))
+
+            # now overwrite whole database
+            res3 = metadata.createEmptyLayer(
+                gpkg_file + "|layername=lines",
+                fields,
+                Qgis.WkbType.LineString,
+                QgsCoordinateReferenceSystem("EPSG:3857"),
+                Qgis.CreateLayerActionOnExisting.CreateOrOverwriteFile,
+            )
+            self.assertEqual(res3.result(), Qgis.VectorExportResult.Success)
+            self.assertEqual(res3.createdLayerUri(), gpkg_file + "|layername=lines")
+            self.assertFalse(res3.errorMessage())
+            vl = QgsVectorLayer(res3.createdLayerUri(), "test", "ogr")
+            self.assertTrue(vl.isValid())
+            self.assertEqual(vl.wkbType(), Qgis.WkbType.LineString)
+            self.assertEqual(vl.crs(), QgsCoordinateReferenceSystem("EPSG:3857"))
+
+            # other layers should be deleted
+            vl = QgsVectorLayer(res.createdLayerUri(), "test", "ogr")
+            self.assertFalse(vl.isValid())
 
 
 if __name__ == "__main__":

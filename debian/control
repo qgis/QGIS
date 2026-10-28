@@ -368,7 +368,6 @@ Depends:
  python3-owslib,
  python3-plotly,
  python3-psycopg2,
- python3-pygments,
  python3-pyproj,
  python3-pyqt6, python3-pyqt6.qsci, python3-pyqt6.qtmultimedia, python3-pyqt6.qtpositioning, python3-pyqt6.qtsvg, python3-pyqt6.qtserialport, python3-pyqt6.sip, pyqt6-dev-tools,
  python3-yaml,
@@ -410,6 +409,7 @@ Depends:
  qgis-server-wcs (= ${binary:Version}),
  qgis-server-wfs (= ${binary:Version}),
  qgis-server-wfs3 (= ${binary:Version}),
+ qgis-server-landingpage (= ${binary:Version}),
  qgis-server-bin (= ${binary:Version}),
  qgis-server-common (= ${source:Version}),
  ${shlibs:Depends},
@@ -486,6 +486,18 @@ Description: QGIS server providing various OGC services
  display databases of geographic information.
  .
  This package contains the WFS 3 service.
+
+Package: qgis-server-landingpage
+Architecture: any
+Depends:
+ qgis-server-common (= ${source:Version}),
+ ${shlibs:Depends},
+ ${misc:Depends}
+Description: QGIS server providing various OGC services
+ QGIS is a Geographic Information System (GIS) which manages, analyzes and
+ display databases of geographic information.
+ .
+ This package contains the landingpage service.
 
 Package: qgis-server-wcs
 Architecture: any

@@ -18,6 +18,7 @@
 #include "qgsapplication.h"
 #include "qgscolordialog.h"
 #include "qgslogger.h"
+#include "qgspainting.h"
 #include "qgssettings.h"
 #include "qgssymbollayerutils.h"
 
@@ -35,7 +36,7 @@
 using namespace Qt::StringLiterals;
 
 #ifdef ENABLE_MODELTEST
-#include "modeltest.h"
+#include <QAbstractItemModelTester>
 #endif
 
 QgsColorSchemeList::QgsColorSchemeList( QWidget *parent, QgsColorScheme *scheme, const QString &context, const QColor &baseColor )
@@ -44,7 +45,7 @@ QgsColorSchemeList::QgsColorSchemeList( QWidget *parent, QgsColorScheme *scheme,
 {
   mModel = new QgsColorSchemeModel( scheme, context, baseColor, this );
 #ifdef ENABLE_MODELTEST
-  new ModelTest( mModel, this );
+  new QAbstractItemModelTester( mModel, QAbstractItemModelTester::FailureReportingMode::Fatal, this );
 #endif
   setModel( mModel );
 
@@ -140,8 +141,8 @@ void QgsColorSchemeList::copyColors()
   }
 
   //copy colors
-  QMimeData *mimeData = QgsSymbolLayerUtils::colorListToMimeData( colorsToCopy );
-  QApplication::clipboard()->setMimeData( mimeData );
+  std::unique_ptr<QMimeData> mimeData = QgsSymbolLayerUtils::colorListToMimeData( colorsToCopy );
+  QApplication::clipboard()->setMimeData( mimeData.release() );
 }
 
 void QgsColorSchemeList::showImportColorsDialog()
@@ -520,8 +521,8 @@ QMimeData *QgsColorSchemeModel::mimeData( const QModelIndexList &indexes ) const
     colorList << qMakePair( mColors[( *indexIt ).row()].first, mColors[( *indexIt ).row()].second );
   }
 
-  QMimeData *mimeData = QgsSymbolLayerUtils::colorListToMimeData( colorList );
-  return mimeData;
+  std::unique_ptr<QMimeData> mimeData = QgsSymbolLayerUtils::colorListToMimeData( colorList );
+  return mimeData.release();
 }
 
 bool QgsColorSchemeModel::dropMimeData( const QMimeData *data, Qt::DropAction action, int row, int column, const QModelIndex &parent )

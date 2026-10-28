@@ -21,6 +21,7 @@
 
 #include <QAction>
 #include <QLayout>
+#include <QSize>
 #include <QString>
 #include <QUuid>
 
@@ -36,7 +37,6 @@ const QgsSettingsEntryVariant *QgsDockableWidgetHelper::sSettingsDialogGeometry 
 const QgsSettingsEntryEnumFlag<Qt::DockWidgetArea> *QgsDockableWidgetHelper::sSettingsDockArea
   = new QgsSettingsEntryEnumFlag<Qt::DockWidgetArea>( u"dock-area"_s, QgsDockableWidgetHelper::sTtreeDockConfigs, Qt::RightDockWidgetArea );
 
-std::function<QString()> QgsDockableWidgetHelper::sAppStylesheetFunction = [] { return QString(); };
 QMainWindow *QgsDockableWidgetHelper::sOwnerWindow = nullptr;
 
 QgsDockableWidgetHelper::QgsDockableWidgetHelper(
@@ -319,7 +319,8 @@ void QgsDockableWidgetHelper::toggleDockMode( bool docked )
       mDialog = new QgsNonRejectableDialog( nullptr, Qt::Window );
     else
       mDialog = new QDialog( nullptr, Qt::Window );
-    mDialog->setStyleSheet( sAppStylesheetFunction() );
+    mDialog->setStyleSheet( QgsGui::applicationStyleSheet() );
+    connect( QgsGui::instance(), &QgsGui::applicationStyleSheetChanged, mDialog, &QDialog::setStyleSheet );
 
     mDialog->setWindowTitle( mWindowTitle );
     mDialog->setObjectName( mObjectName );
@@ -331,16 +332,23 @@ void QgsDockableWidgetHelper::toggleDockMode( bool docked )
     vl->setContentsMargins( 0, 0, 0, 0 );
     vl->addWidget( mWidget );
 
+    mDialogRestored = false;
     if ( !mSettingKeyDockId.isEmpty() )
     {
-      mDialog->restoreGeometry( sSettingsDialogGeometry->value( mSettingKeyDockId ).toByteArray() );
+      mDialogRestored = mDialog->restoreGeometry( sSettingsDialogGeometry->value( mSettingKeyDockId ).toByteArray() );
     }
     else
     {
       if ( !mDockGeometry.isEmpty() )
+      {
         mDialog->setGeometry( mDockGeometry );
+        mDialogRestored = true;
+      }
       else if ( !mDialogGeometry.isEmpty() )
+      {
         mDialog->setGeometry( mDialogGeometry );
+        mDialogRestored = true;
+      }
     }
     mDialog->setLayout( vl );
     mDialog->raise();
@@ -404,6 +412,13 @@ void QgsDockableWidgetHelper::setWindowTitle( const QString &title )
   {
     mDock->setWindowTitle( title );
   }
+}
+
+void QgsDockableWidgetHelper::setDefaultDialogSize( const QSize &size )
+{
+  mDefaultDialogSize = size;
+  if ( mDialog && !mDialogRestored && mDefaultDialogSize.isValid() )
+    mDialog->resize( mDefaultDialogSize.expandedTo( mDialog->sizeHint() ) );
 }
 
 void QgsDockableWidgetHelper::setDockObjectName( const QString &name )

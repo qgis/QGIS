@@ -205,12 +205,12 @@ class CORE_EXPORT QgsSymbolLayerReference
     QString mSymbolLayerId;
 };
 
-inline uint qHash( const QgsSymbolLayerId &id )
+inline size_t qHash( const QgsSymbolLayerId &id )
 {
   return qHash( id.symbolKey() ) ^ qHash( id.symbolLayerIndexPath() );
 }
 
-inline uint qHash( const QgsSymbolLayerReference &r )
+inline size_t qHash( const QgsSymbolLayerReference &r )
 {
   return qHash( r.layerId() ) ^ qHash( r.symbolLayerIdV2() );
 }

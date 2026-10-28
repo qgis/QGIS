@@ -31,11 +31,11 @@ QgsSymbolAnimationSettingsWidget::QgsSymbolAnimationSettingsWidget( QWidget *par
 
   connect( mFrameRateSpin, qOverload<double>( &QDoubleSpinBox::valueChanged ), this, [this] {
     if ( !mBlockUpdates )
-      emit widgetChanged();
+      emit changed();
   } );
   connect( mIsAnimatedGroup, &QGroupBox::toggled, this, [this] {
     if ( !mBlockUpdates )
-      emit widgetChanged();
+      emit changed();
   } );
 }
 

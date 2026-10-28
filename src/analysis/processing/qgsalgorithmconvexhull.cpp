@@ -80,6 +80,8 @@ QgsFields QgsConvexHullAlgorithm::outputFields( const QgsFields &inputFields ) c
 
 QgsFeatureList QgsConvexHullAlgorithm::processFeature( const QgsFeature &feature, QgsProcessingContext &, QgsProcessingFeedback *feedback )
 {
+  QGS_MARK_ALGORITHM_SOURCE
+
   QgsFeature f = feature;
   if ( f.hasGeometry() )
   {

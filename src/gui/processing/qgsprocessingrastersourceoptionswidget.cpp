@@ -29,8 +29,8 @@ QgsProcessingRasterSourceOptionsWidget::QgsProcessingRasterSourceOptionsWidget( 
   mDpiSpinBox->setClearValue( 0, tr( "Not set" ) );
   mDpiSpinBox->setValue( 96 );
 
-  connect( mReferenceScale, qOverload<double>( &QgsScaleWidget::scaleChanged ), this, &QgsPanelWidget::widgetChanged );
-  connect( mDpiSpinBox, qOverload<int>( &QSpinBox::valueChanged ), this, &QgsPanelWidget::widgetChanged );
+  connect( mReferenceScale, qOverload<double>( &QgsScaleWidget::scaleChanged ), this, &QgsPanelWidget::changed );
+  connect( mDpiSpinBox, qOverload<int>( &QSpinBox::valueChanged ), this, &QgsPanelWidget::changed );
 }
 
 void QgsProcessingRasterSourceOptionsWidget::setReferenceScale( double scale )

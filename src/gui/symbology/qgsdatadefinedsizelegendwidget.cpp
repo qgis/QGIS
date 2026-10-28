@@ -125,15 +125,15 @@ QgsDataDefinedSizeLegendWidget::QgsDataDefinedSizeLegendWidget( const QgsDataDef
     mPreviewModel->setLegendMapViewData( canvas->mapUnitsPerPixel(), canvas->mapSettings().outputDpi(), canvas->scale() );
   viewLayerTree->setModel( mPreviewModel );
 
-  connect( cboAlignSymbols, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, [this] { emit widgetChanged(); } );
-  connect( radDisabled, &QRadioButton::clicked, this, &QgsPanelWidget::widgetChanged );
-  connect( radSeparated, &QRadioButton::clicked, this, &QgsPanelWidget::widgetChanged );
-  connect( radCollapsed, &QRadioButton::clicked, this, &QgsPanelWidget::widgetChanged );
-  connect( groupManualSizeClasses, &QGroupBox::clicked, this, &QgsPanelWidget::widgetChanged );
+  connect( cboAlignSymbols, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, [this] { emit changed(); } );
+  connect( radDisabled, &QRadioButton::clicked, this, &QgsPanelWidget::changed );
+  connect( radSeparated, &QRadioButton::clicked, this, &QgsPanelWidget::changed );
+  connect( radCollapsed, &QRadioButton::clicked, this, &QgsPanelWidget::changed );
+  connect( groupManualSizeClasses, &QGroupBox::clicked, this, &QgsPanelWidget::changed );
   connect( btnChangeSymbol, &QPushButton::clicked, this, &QgsDataDefinedSizeLegendWidget::changeSymbol );
-  connect( editTitle, &QLineEdit::textChanged, this, &QgsPanelWidget::widgetChanged );
-  connect( mLineSymbolButton, &QgsSymbolButton::changed, this, &QgsPanelWidget::widgetChanged );
-  connect( this, &QgsPanelWidget::widgetChanged, this, &QgsDataDefinedSizeLegendWidget::updatePreview );
+  connect( editTitle, &QLineEdit::textChanged, this, &QgsPanelWidget::changed );
+  connect( mLineSymbolButton, &QgsSymbolButton::changed, this, &QgsPanelWidget::changed );
+  connect( this, &QgsPanelWidget::changed, this, &QgsDataDefinedSizeLegendWidget::updatePreview );
   connect( radCollapsed, &QRadioButton::toggled, this, [this]( bool toggled ) { groupBoxOptions->setEnabled( toggled ); } );
   updatePreview();
 }
@@ -219,7 +219,7 @@ void QgsDataDefinedSizeLegendWidget::changeSymbol()
   const QIcon icon = QgsSymbolLayerUtils::symbolPreviewIcon( mSourceSymbol.get(), btnChangeSymbol->iconSize(), 0, nullptr, QgsScreenProperties( screen() ) );
   btnChangeSymbol->setIcon( icon );
 
-  emit widgetChanged();
+  emit changed();
 }
 
 void QgsDataDefinedSizeLegendWidget::addSizeClass()
@@ -234,7 +234,7 @@ void QgsDataDefinedSizeLegendWidget::addSizeClass()
   QStandardItem *itemLabel = new QStandardItem( QLocale().toString( v ) );
   mSizeClassesModel->appendRow( QList<QStandardItem *>() << item << itemLabel );
   mSizeClassesModel->sort( 0 );
-  emit widgetChanged();
+  emit changed();
 }
 
 void QgsDataDefinedSizeLegendWidget::removeSizeClass()
@@ -244,7 +244,7 @@ void QgsDataDefinedSizeLegendWidget::removeSizeClass()
     return;
 
   mSizeClassesModel->removeRow( idx.row() );
-  emit widgetChanged();
+  emit changed();
 }
 
 void QgsDataDefinedSizeLegendWidget::onSizeClassesChanged()
@@ -256,5 +256,5 @@ void QgsDataDefinedSizeLegendWidget::onSizeClassesChanged()
   }
 
   mSizeClassesModel->sort( 0 );
-  emit widgetChanged();
+  emit changed();
 }

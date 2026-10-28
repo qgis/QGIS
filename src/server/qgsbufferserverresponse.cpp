@@ -76,7 +76,9 @@ QMap<QString, QString> QgsBufferServerResponse::headers() const
   QMap<QString, QString> singleHeaders;
   for ( auto it = mHeaders.keyBegin(); it != mHeaders.keyEnd(); ++it )
   {
+    Q_NOWARN_DEPRECATED_PUSH
     singleHeaders.insert( *it, header( *it ) );
+    Q_NOWARN_DEPRECATED_POP
   }
   return singleHeaders;
 }

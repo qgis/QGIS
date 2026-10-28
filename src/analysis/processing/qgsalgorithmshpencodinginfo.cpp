@@ -82,6 +82,8 @@ void QgsShapefileEncodingInfoAlgorithm::initAlgorithm( const QVariantMap & )
 
 bool QgsShapefileEncodingInfoAlgorithm::prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
+  QGS_MARK_ALGORITHM_SOURCE
+
   const QString path = parameterAsFile( parameters, u"INPUT"_s, context );
 
   mCpgEncoding = QgsOgrUtils::readShapefileEncodingFromCpg( path );

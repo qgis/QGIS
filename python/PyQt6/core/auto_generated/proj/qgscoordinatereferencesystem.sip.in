@@ -944,6 +944,19 @@ Returns whether the CRS is a geographic CRS (using lat/lon coordinates)
 
 :return: ``True`` if CRS is geographic, or ``False`` if it is a
          projected CRS
+
+.. seealso:: :py:func:`isGeographicCrossingAntimeridian`
+%End
+
+    bool isGeographicCrossingAntimeridian() const;
+%Docstring
+Returns ``True`` if the CRS is a geographic CRS (using lat/lon
+coordinates) where the area of use crosses the antimeridian.
+
+Care must be taken when working with extents in these CRS to avoid
+flipping the regions to the opposite portion of the globe.
+
+.. versionadded:: 4.4
 %End
 
     bool isDynamic() const;
@@ -1310,6 +1323,39 @@ Returns ``True`` if the CRS has a vertical axis.
     QString geographicCrsAuthId() const;
 %Docstring
 Returns auth id of related geographic CRS
+%End
+
+    bool topocentricOrigin( double &latitude /Out/, double &longitude /Out/ ) const;
+%Docstring
+Returns the topocentric origin of a topocentric compatible CRS.
+
+
+
+:return: - ``True`` if this CRS is a topocentric compatible CRS and the
+           origin was successfully retrieved
+         - latitude: Latitude of topocentric origin in decimal degrees
+         - longitude: Longitude of topocentric origin in decimal degrees
+
+.. versionadded:: 4.2
+%End
+
+
+    QgsCoordinateReferenceSystem toTopocentricCrs( double latitude, double longitude ) const;
+%Docstring
+Constructs a topocentric CRS derived from this CRS with origin at
+``latitude``, ``longitude`` in decimal degrees.
+
+If the CRS is not topocentric compatible, returns invalid CRS.
+
+.. versionadded:: 4.2
+%End
+
+    QgsCoordinateReferenceSystem topocentricBaseCrs() const;
+%Docstring
+Returns the base CRS for this topocentric CRS, or an invalid CRS if this
+is not a topocentric CRS or no base CRS has been set.
+
+.. versionadded:: 4.2
 %End
 
     SIP_PYOBJECT __repr__();

@@ -107,6 +107,8 @@ QgsBufferAlgorithm *QgsBufferAlgorithm::createInstance() const
 
 QVariantMap QgsBufferAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
+  QGS_MARK_ALGORITHM_SOURCE
+
   std::unique_ptr<QgsProcessingFeatureSource> source( parameterAsSource( parameters, u"INPUT"_s, context ) );
   if ( !source )
     throw QgsProcessingException( invalidSourceError( parameters, u"INPUT"_s ) );
@@ -301,8 +303,11 @@ bool QgsBufferAlgorithm::supportInPlaceEdit( const QgsMapLayer *layer ) const
   const QgsVectorLayer *vlayer = qobject_cast<const QgsVectorLayer *>( layer );
   if ( !vlayer )
     return false;
-  //Only Polygons
-  return vlayer->wkbType() == Qgis::WkbType::Polygon || vlayer->wkbType() == Qgis::WkbType::MultiPolygon;
+
+  return vlayer->wkbType() == Qgis::WkbType::Polygon
+         || vlayer->wkbType() == Qgis::WkbType::MultiPolygon
+         || vlayer->wkbType() == Qgis::WkbType::PolyhedralSurface
+         || vlayer->wkbType() == Qgis::WkbType::MultiSurface;
 }
 
 ///@endcond

@@ -41,7 +41,7 @@ class CORE_EXPORT QgsPointClusterRenderer : public QgsPointDistanceRenderer
     bool accept( QgsStyleEntityVisitorInterface *visitor ) const override;
 
     //! Creates a renderer from XML element
-    static QgsFeatureRenderer *create( QDomElement &symbologyElem, const QgsReadWriteContext &context ) SIP_FACTORY;
+    static std::unique_ptr<QgsFeatureRenderer> create( QDomElement &symbologyElem, const QgsReadWriteContext &context );
 
     /**
      * Returns the symbol used for rendering clustered groups (but not ownership of the symbol).
@@ -60,7 +60,7 @@ class CORE_EXPORT QgsPointClusterRenderer : public QgsPointDistanceRenderer
      * Creates a QgsPointClusterRenderer from an existing renderer.
      * \returns a new renderer if the conversion was possible, otherwise NULLPTR.
      */
-    static QgsPointClusterRenderer *convertFromRenderer( const QgsFeatureRenderer *renderer ) SIP_FACTORY;
+    static std::unique_ptr<QgsPointClusterRenderer> convertFromRenderer( const QgsFeatureRenderer *renderer );
 
   private:
 #ifdef SIP_RUN

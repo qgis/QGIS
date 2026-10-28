@@ -24,7 +24,7 @@ Represents a single error message.
     enum Format /BaseType=IntEnum/
     {
       Text,
-      Html
+      Html,
     };
 
     QgsErrorMessage();

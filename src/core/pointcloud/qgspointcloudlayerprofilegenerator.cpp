@@ -23,6 +23,7 @@
 #include "qgsgeometryutils.h"
 #include "qgsgeos.h"
 #include "qgsmessagelog.h"
+#include "qgspainting.h"
 #include "qgspointcloudblockrequest.h"
 #include "qgspointcloudlayer.h"
 #include "qgspointcloudlayerelevationproperties.h"

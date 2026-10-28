@@ -637,29 +637,6 @@ bool QgsNurbsCurve::dropMValue()
   return true;
 }
 
-bool QgsNurbsCurve::deleteVertex( QgsVertexId position )
-{
-  if ( position.part != 0 || position.ring != 0 )
-  {
-    return false;
-  }
-  const int idx = position.vertex;
-  if ( idx < 0 || idx >= mControlPoints.size() )
-  {
-    return false;
-  }
-  mControlPoints.remove( idx );
-  if ( idx < mWeights.size() )
-  {
-    mWeights.remove( idx );
-  }
-
-  generateUniformKnots();
-
-  clearCache();
-  return true;
-}
-
 bool QgsNurbsCurve::deleteVertices( const QSet<QgsVertexId> &positions )
 {
   if ( positions.isEmpty() )
@@ -1748,8 +1725,12 @@ QDomElement QgsNurbsCurve::asGml3( QDomDocument &doc, int precision, const QStri
   return line->asGml3( doc, precision, ns, axisOrder );
 }
 
-json QgsNurbsCurve::asJsonObject( int precision ) const
+json QgsNurbsCurve::asJsonObject( int precision, Qgis::GeoJsonProfile profile ) const
 {
+  // The current profiles do not make any difference for NURBS curves, as GeoJSON does not support them,
+  // so we convert to LineString but we keep the parameter in case we need to add specific handling
+  // for future profiles
+  Q_UNUSED( profile )
   std::unique_ptr<QgsLineString> line( curveToLine() );
   if ( !line )
     return json::object();
@@ -1884,4 +1865,9 @@ bool QgsNurbsCurve::isAnchorVertex( int localIndex ) const
     return false;
 
   return ( localIndex % mDegree ) == 0;
+}
+
+bool QgsNurbsCurve::isSimpleCurve() const
+{
+  return false;
 }

@@ -34,7 +34,7 @@ Default constructor
 
     void setData( const QByteArray &data );
 %Docstring
-Sets the JSON \data to be parsed
+Sets the JSON ``data`` to be parsed
 %End
 
     void setBaseUrl( const QUrl &url );

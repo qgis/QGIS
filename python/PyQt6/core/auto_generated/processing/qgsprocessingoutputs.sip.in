@@ -74,6 +74,11 @@ Returns the color to use for the output in the model designer canvas.
 .. versionadded:: 4.0
 %End
 
+    virtual QgsProcessingOutputDefinition *clone() const = 0 /Factory/;
+%Docstring
+Creates a clone of the output definition.
+%End
+
     virtual QString type() const = 0;
 %Docstring
 Unique output type name.
@@ -205,11 +210,12 @@ Constructor for QgsProcessingOutputMapLayer.
 
     virtual QColor modelColor() const;
 
-
     static QString typeName();
 %Docstring
 Returns the type name for the output class.
 %End
+
+    virtual QgsProcessingOutputDefinition *clone() const /Factory/;
 
     virtual QString type() const;
 
@@ -239,6 +245,8 @@ Constructor for QgsProcessingOutputVectorLayer.
 %Docstring
 Returns the type name for the output class.
 %End
+    virtual QgsProcessingOutputDefinition *clone() const /Factory/;
+
     virtual QString type() const;
     virtual bool isMapLayer() const;
 
@@ -281,6 +289,9 @@ Returns the type name for the output class.
 
     virtual QColor modelColor() const;
 
+
+    virtual QgsProcessingOutputDefinition *clone() const /Factory/;
+
     virtual QString type() const;
     virtual bool isMapLayer() const;
 
@@ -307,6 +318,8 @@ Constructor for QgsProcessingOutputPointCloudLayer.
 %Docstring
 Returns the type name for the output class.
 %End
+    virtual QgsProcessingOutputDefinition *clone() const /Factory/;
+
     virtual QString type() const;
     virtual bool isMapLayer() const;
 
@@ -340,6 +353,8 @@ Constructor for QgsProcessingOutputMultipleLayers.
 %Docstring
 Returns the type name for the output class.
 %End
+    virtual QgsProcessingOutputDefinition *clone() const /Factory/;
+
     virtual QString type() const;
 
 
@@ -370,6 +385,8 @@ Constructor for QgsProcessingOutputHtml.
 %Docstring
 Returns the type name for the output class.
 %End
+    virtual QgsProcessingOutputDefinition *clone() const /Factory/;
+
     virtual QString type() const;
 
     virtual QColor modelColor() const;
@@ -402,6 +419,8 @@ Constructor for QgsProcessingOutputVariant.
 Returns the type name for the output class.
 %End
 
+    virtual QgsProcessingOutputDefinition *clone() const /Factory/;
+
     virtual QString type() const;
 
     virtual QString valueAsString( const QVariant &value, QgsProcessingContext &context, bool &ok /Out/ ) const;
@@ -430,6 +449,8 @@ Constructor for QgsProcessingOutputNumber.
 %Docstring
 Returns the type name for the output class.
 %End
+    virtual QgsProcessingOutputDefinition *clone() const /Factory/;
+
     virtual QString type() const;
     virtual QString valueAsString( const QVariant &value, QgsProcessingContext &context, bool &ok /Out/ ) const;
 
@@ -449,6 +470,9 @@ A string output for processing algorithms.
 %Docstring
 Constructor for QgsProcessingOutputString.
 %End
+
+    virtual QgsProcessingOutputDefinition *clone() const /Factory/;
+
 
     static QString typeName();
 %Docstring
@@ -484,6 +508,8 @@ Constructor for :py:class:`QgsProcessingOutputNumber`.
 %Docstring
 Returns the type name for the output class.
 %End
+    virtual QgsProcessingOutputDefinition *clone() const /Factory/;
+
     virtual QString type() const;
     virtual QString valueAsString( const QVariant &value, QgsProcessingContext &context, bool &ok /Out/ ) const;
 
@@ -509,6 +535,8 @@ Constructor for QgsProcessingOutputFolder.
 %Docstring
 Returns the type name for the output class.
 %End
+    virtual QgsProcessingOutputDefinition *clone() const /Factory/;
+
     virtual QString type() const;
 
     virtual QColor modelColor() const;
@@ -536,6 +564,8 @@ Constructor for QgsProcessingOutputFile.
 %Docstring
 Returns the type name for the output class.
 %End
+    virtual QgsProcessingOutputDefinition *clone() const /Factory/;
+
     virtual QString type() const;
 
     virtual QColor modelColor() const;
@@ -566,6 +596,8 @@ Constructor for QgsProcessingOutputConditionalBranch.
 %Docstring
 Returns the type name for the output class.
 %End
+    virtual QgsProcessingOutputDefinition *clone() const /Factory/;
+
     virtual QString type() const;
 };
 
@@ -592,6 +624,8 @@ Returns the type name for the output class.
 %End
 
     virtual QColor modelColor() const;
+
+    virtual QgsProcessingOutputDefinition *clone() const /Factory/;
 
     virtual QString type() const;
     virtual bool isMapLayer() const;

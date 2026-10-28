@@ -113,6 +113,12 @@ class CORE_EXPORT QgsRasterAttributeTable
          */
         bool isRamp() const;
 
+        /**
+         * Comparison operator for Field objects. Two fields are considered equal if they have the same name, usage and type.
+         * \since QGIS 4.4
+         */
+        bool operator==( const Field &other ) const { return name == other.name && usage == other.usage && type == other.type; }
+
         QString name;
         Qgis::RasterAttributeTableFieldUsage usage;
         QMetaType::Type type;
@@ -394,7 +400,7 @@ class CORE_EXPORT QgsRasterAttributeTable
      *       the renderer will still use the \a classificationColumn for
      *       generating the class labels.
      */
-    QgsRasterRenderer *createRenderer( QgsRasterDataProvider *provider, const int bandNumber, const int classificationColumn = -1 ) SIP_FACTORY;
+    std::unique_ptr<QgsRasterRenderer> createRenderer( QgsRasterDataProvider *provider, const int bandNumber, const int classificationColumn = -1 );
 
     /**
      * Returns the data rows ordered by the value column(s) in ascending order, if
@@ -440,7 +446,7 @@ class CORE_EXPORT QgsRasterAttributeTable
      * \param bandNumber band number
      * \returns NULLPTR in case of errors or unsupported renderer.
      */
-    static QgsRasterAttributeTable *createFromRaster( QgsRasterLayer *rasterLayer, int *bandNumber SIP_OUT = nullptr ) SIP_FACTORY;
+    static std::unique_ptr<QgsRasterAttributeTable> createFromRaster( QgsRasterLayer *rasterLayer, int *bandNumber SIP_OUT = nullptr );
 
     /**
      * Returns information about supported Raster Attribute Table usages.

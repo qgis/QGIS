@@ -524,7 +524,7 @@ void QgsStacSourceSelect::showItemsContextMenu( QPoint point )
     {
       if ( asset.isCloudOptimized() )
       {
-        QAction *loadAssetAction = new QAction( asset.title(), assetsMenu );
+        QAction *loadAssetAction = new QAction( asset.title().isEmpty() ? QUrl( asset.href() ).fileName() : asset.title(), assetsMenu );
         connect( loadAssetAction, &QAction::triggered, this, [this, uri = asset.uri()] {
           QgsTemporaryCursorOverride cursorOverride( Qt::WaitCursor );
           loadUri( uri );

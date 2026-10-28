@@ -35,12 +35,14 @@ set(QGIS_3D_SRCS
   qgsfonttextureatlasgenerator.cpp
   qgsgeotransform.cpp
   qgsglobechunkedentity.cpp
+  qgsglobeutils_p.cpp
   qgsgltf3dutils.cpp
   qgsimagetexture.cpp
   qgslayoutitem3dmap.cpp
   qgslayerstylewatcher.cpp
   qgsmapoverlayentity.cpp
   qgsmapoverlaytexturegenerator_p.cpp
+  qgsobj3dutils.cpp
   qgsoffscreen3dengine.cpp
   qgsraycastingutils.cpp
   qgsraycastcontext.cpp
@@ -75,7 +77,6 @@ set(QGIS_3D_SRCS
   chunks/qgschunklist_p.cpp
   chunks/qgschunkloader.cpp
   chunks/qgschunknode.cpp
-  chunks/qgschunkqueuejob.cpp
 
   lights/qgsdirectionallightsettings.cpp
   lights/qgslightsource.cpp
@@ -85,7 +86,6 @@ set(QGIS_3D_SRCS
   materials/qgsglobematerial.cpp
   materials/qgsgoochmaterial.cpp
   materials/qgsgoochmaterial3dhandler.cpp
-  materials/qgshighlightmaterial.cpp
   materials/qgsmaterial.cpp
   materials/qgsmaterial3dhandler.cpp
   materials/qgsmetalroughmaterial.cpp
@@ -98,6 +98,8 @@ set(QGIS_3D_SRCS
   materials/qgsphongtexturedmaterial3dhandler.cpp
   materials/qgssimplelinematerial3dhandler.cpp
   materials/qgstexturematerial.cpp
+  materials/qgsunlitmaterial.cpp
+  materials/qgsunlitmaterial3dhandler.cpp
 
   processing/qgs3dalgorithms.cpp
   processing/qgsalgorithmtessellate.cpp
@@ -118,6 +120,7 @@ set(QGIS_3D_SRCS
   framegraph/qgsoverlaytexturerenderview.cpp
   framegraph/qgspostprocessingentity.cpp
   framegraph/qgsrenderpassquad.cpp
+  framegraph/qgsrubberbandrenderview.cpp
   framegraph/qgspostprocessingrenderview.cpp
   framegraph/qgsshadowrenderview.cpp
   framegraph/qgsframegraph.cpp
@@ -156,7 +159,6 @@ set(QGIS_3D_SRCS
   terrain/qgsterraingenerator.cpp
   terrain/qgsterraintexturegenerator_p.cpp
   terrain/qgsterraintextureimage_p.cpp
-  terrain/qgsterraintileloader.cpp
 
   mesh/qgsmesh3dgeometry_p.cpp
   mesh/qgsmesh3dentity_p.cpp
@@ -204,6 +206,7 @@ set(QGIS_3D_HDRS
   qgsmapoverlayentity.h
   qgsmapoverlaytexturegenerator_p.h
   qgsmeshlayer3drenderer.h
+  qgsobj3dutils.h
   qgsoffscreen3dengine.h
   qgsraycastingutils.h
   qgsraycastcontext.h
@@ -234,7 +237,6 @@ set(QGIS_3D_HDRS
   materials/qgsglobematerial.h
   materials/qgsgoochmaterial.h
   materials/qgsgoochmaterial3dhandler.h
-  materials/qgshighlightmaterial.h
   materials/qgsmaterial.h
   materials/qgsmaterial3dhandler.cpp
   materials/qgsmetalroughmaterial.h
@@ -247,6 +249,8 @@ set(QGIS_3D_HDRS
   materials/qgsphongtexturedmaterial3dhandler.h
   materials/qgssimplelinematerial3dhandler.h
   materials/qgstexturematerial.h
+  materials/qgsunlitmaterial.h
+  materials/qgsunlitmaterial3dhandler.h
 
   framegraph/qgsabstractrenderview.h
   framegraph/qgs3daxisrenderview.h
@@ -267,6 +271,7 @@ set(QGIS_3D_HDRS
   framegraph/qgspostprocessingentity.h
   framegraph/qgsrenderpassquad.h
   framegraph/qgspostprocessingrenderview.h
+  framegraph/qgsrubberbandrenderview.h
   framegraph/qgsshadowrenderview.h
 
   symbols/qgs3dsymbolutils.h
@@ -291,11 +296,9 @@ set(QGIS_3D_HDRS
   terrain/qgsquantizedmeshterrainsettings.h
   terrain/qgsterraindownloader.h
   terrain/qgsterraingenerator.h
-  terrain/qgsterraintileloader.h
   terrain/qgsterrainentity.h
 
   chunks/qgschunkloader.h
-  chunks/qgschunkqueuejob.h
   chunks/qgschunknode.h
   chunks/qgschunkedentity.h
 
@@ -303,6 +306,7 @@ set(QGIS_3D_HDRS
 )
 
 set(QGIS_3D_PRIVATE_HDRS
+  qgsglobeutils_p.h
   qgsrulebasedchunkloader_p.h
   qgsvectorlayerchunkloader_p.h
   qgspointcloudlayerchunkloader_p.h
@@ -323,7 +327,6 @@ set(QGIS_3D_PRIVATE_HDRS
   mesh/qgsmesh3dentity_p.h
   mesh/qgsmesh3dgeometry_p.h
   mesh/qgsmesh3dmaterial_p.h
-  mesh/qgsmeshterraintileloader_p.h
   qgscolorramptexture.h
 )
 
@@ -368,6 +371,8 @@ target_include_directories(qgis_3d PUBLIC
   ${CMAKE_SOURCE_DIR}/external/delaunator-cpp
   ${CMAKE_SOURCE_DIR}/external/tinygltf
   ${CMAKE_SOURCE_DIR}/external/rectpack2D
+  ${CMAKE_SOURCE_DIR}/external/tinyobj
+  ${CMAKE_SOURCE_DIR}/external/earcut
 )
 
 target_link_libraries(qgis_3d

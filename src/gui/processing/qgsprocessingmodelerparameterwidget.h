@@ -209,6 +209,7 @@ class GUI_EXPORT QgsProcessingModelerParameterWidget : public QWidget, public Qg
 
     void sourceMenuAboutToShow();
     void sourceMenuActionTriggered( QAction *action );
+    void emitChangedSignal();
 
   private:
     // IMPORTANT - must match order of widgets in the stacked widget!
@@ -248,6 +249,9 @@ class GUI_EXPORT QgsProcessingModelerParameterWidget : public QWidget, public Qg
     QgsFilterLineEdit *mModelOutputName = nullptr;
 
     QList<Qgis::ProcessingModelChildParameterSource> mLimitedSources;
+
+    int mBlockChangesSignal = 0;
+
     friend class TestProcessingGui;
 };
 

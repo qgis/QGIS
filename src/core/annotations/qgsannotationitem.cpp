@@ -20,11 +20,14 @@
 #include "qgsannotationitemnode.h"
 #include "qgsapplication.h"
 #include "qgscalloutsregistry.h"
+#include "qgspainting.h"
 #include "qgsrendercontext.h"
 #include "qgssymbollayerutils.h"
 #include "qgsunittypes.h"
 
+#include <QPainter>
 #include <QString>
+#include <QTransform>
 
 using namespace Qt::StringLiterals;
 
@@ -146,9 +149,9 @@ bool QgsAnnotationItem::readCommonProperties( const QDomElement &element, const 
   }
   else
   {
-    mCallout.reset( QgsApplication::calloutRegistry()->createCallout( calloutType, element.firstChildElement( u"callout"_s ), context ) );
+    mCallout = QgsApplication::calloutRegistry()->createCallout( calloutType, element.firstChildElement( u"callout"_s ), context );
     if ( !mCallout )
-      mCallout.reset( QgsCalloutRegistry::defaultCallout() );
+      mCallout = QgsCalloutRegistry::defaultCallout();
   }
 
   const QString calloutAnchorWkt = element.attribute( u"calloutAnchor"_s );
@@ -183,8 +186,27 @@ void QgsAnnotationItem::renderCallout( QgsRenderContext &context, const QRectF &
   }
   anchor.transform( context.mapToPixel().transform() );
 
+  // Rotate the painter with the item, but counter-rotate the anchor so the
+  // callout still points to its anchor on screen.
+  QPainter *painter = context.painter();
+  const bool rotated = !qgsDoubleNear( angle, 0 );
+
+  QgsScopedQPainterState painterState( painter, QgsScopedQPainterState::InitialState::NoSave );
+  if ( rotated )
+  {
+    const QPointF center = rect.center();
+    QTransform anchorTransform;
+    anchorTransform.translate( center.x(), center.y() );
+    anchorTransform.rotate( -angle );
+    anchorTransform.translate( -center.x(), -center.y() );
+    anchor.transform( anchorTransform );
+
+    painterState.save();
+    QgsPainting::rotatePainterAroundPoint( painter, center, angle );
+  }
+
   mCallout->startRender( context );
-  mCallout->render( context, rect, angle, anchor, calloutContext );
+  mCallout->render( context, rect, 0, anchor, calloutContext );
   mCallout->stopRender( context );
 }
 

@@ -322,6 +322,14 @@ class CORE_EXPORT QgsMeshLayer : public QgsMapLayer, public QgsAbstractProfileSo
     void setRendererSettings( const QgsMeshRendererSettings &settings, const bool repaint = true );
 
     /**
+     * Invalidates the cache used by the renderer to store the values of the active
+     * scalar and vector dataset groups.
+     *
+     * \since QGIS 4.4
+     */
+    void invalidateRendererCache();
+
+    /**
      * Returns time format settings
      *
      * \since QGIS 3.8
@@ -648,25 +656,29 @@ class CORE_EXPORT QgsMeshLayer : public QgsMapLayer, public QgsAbstractProfileSo
     QgsMeshDatasetIndex activeVectorDatasetAtTime( const QgsDateTimeRange &timeRange, int group = -1 ) const;
 
     /**
-      * Sets the static scalar dataset index that is rendered if the temporal properties is not active
+      * Sets the static scalar dataset index that is rendered if the temporal properties are not active.
+      *
+      * Since QGIS 4.4, this method is exposed to PyQGIS.
       *
       * \param staticScalarDatasetIndex the scalar data set index
       *
       * \since QGIS 3.14
       */
-    void setStaticScalarDatasetIndex( const QgsMeshDatasetIndex &staticScalarDatasetIndex ) SIP_SKIP;
+    void setStaticScalarDatasetIndex( const QgsMeshDatasetIndex &staticScalarDatasetIndex );
 
     /**
-      * Sets the static vector dataset index that is rendered if the temporal properties is not active
+      * Sets the static vector dataset index that is rendered if the temporal properties are not active.
+      *
+      * Since QGIS 4.4, this method is exposed to PyQGIS.
       *
       * \param staticVectorDatasetIndex the vector data set index
       *
       * \since QGIS 3.14
       */
-    void setStaticVectorDatasetIndex( const QgsMeshDatasetIndex &staticVectorDatasetIndex ) SIP_SKIP;
+    void setStaticVectorDatasetIndex( const QgsMeshDatasetIndex &staticVectorDatasetIndex );
 
     /**
-      * Returns the static scalar dataset index that is rendered if the temporal properties is not active.
+      * Returns the static scalar dataset index that is rendered if the temporal properties are not active.
       *
       * Since QGIS 3.38, the \a group argument can be used to specify a fixed group
       * to use. If this is not specified, then the active group from the layer's renderer will be used.
@@ -676,7 +688,7 @@ class CORE_EXPORT QgsMeshLayer : public QgsMapLayer, public QgsAbstractProfileSo
     QgsMeshDatasetIndex staticScalarDatasetIndex( int group = -1 ) const;
 
     /**
-      * Returns the static vector dataset index that is rendered if the temporal properties is not active.
+      * Returns the static vector dataset index that is rendered if the temporal properties are not active.
       *
       * Since QGIS 3.38, the \a group argument can be used to specify a fixed group
       * to use. If this is not specified, then the active group from the layer's renderer will be used.
@@ -963,7 +975,7 @@ class CORE_EXPORT QgsMeshLayer : public QgsMapLayer, public QgsAbstractProfileSo
      * \see setLabelsEnabled()
      * \since QGIS 3.36
      */
-    const QgsAbstractMeshLayerLabeling *labeling() const SIP_SKIP { return mLabeling; }
+    const QgsAbstractMeshLayerLabeling *labeling() const SIP_SKIP { return mLabeling.get(); }
 
     /**
      * Access to labeling configuration. May be NULLPTR if labeling is not used.
@@ -971,7 +983,7 @@ class CORE_EXPORT QgsMeshLayer : public QgsMapLayer, public QgsAbstractProfileSo
      * \see labelsEnabled()
      * \since QGIS 3.36
      */
-    QgsAbstractMeshLayerLabeling *labeling() { return mLabeling; }
+    QgsAbstractMeshLayerLabeling *labeling() { return mLabeling.get(); }
 
     /**
      * Sets labeling configuration. Takes ownership of the object.
@@ -1092,7 +1104,7 @@ class CORE_EXPORT QgsMeshLayer : public QgsMapLayer, public QgsAbstractProfileSo
 
   private:
     //! Pointer to data provider derived from the abastract base class QgsMeshDataProvider
-    QgsMeshDataProvider *mDataProvider = nullptr;
+    std::unique_ptr<QgsMeshDataProvider> mDataProvider;
 
     //! List of extra dataset uri associated with this layer
     QStringList mExtraDatasetUri;
@@ -1132,7 +1144,7 @@ class CORE_EXPORT QgsMeshLayer : public QgsMapLayer, public QgsAbstractProfileSo
     bool mLabelsEnabled = false;
 
     //! Labeling configuration
-    QgsAbstractMeshLayerLabeling *mLabeling = nullptr;
+    std::unique_ptr<QgsAbstractMeshLayerLabeling> mLabeling;
 
     //! Returns the exact position in map coordinates of the closest vertex in the search area
     int closestEdge( const QgsPointXY &point, double searchRadius, QgsPointXY &projectedPoint ) const;

@@ -67,12 +67,12 @@ class CORE_EXPORT QgsDiagramLayerSettings
     //avoid inclusion of QgsPalLabeling
     enum Placement
     {
-      AroundPoint = 0, // Point / Polygon
-      OverPoint,       // Point / Polygon
-      Line,            // Line / Polygon
-      Curved,          // Line
-      Horizontal,      // Polygon
-      Free             // Polygon
+      AroundPoint = 0, //!< Point / Polygon
+      OverPoint,       //!< Point / Polygon
+      Line,            //!< Line / Polygon
+      Curved,          //!< Line
+      Horizontal,      //!< Polygon
+      Free             //!< Polygon
     };
 
     //! Line placement flags for controlling line based placements

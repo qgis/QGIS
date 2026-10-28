@@ -231,11 +231,17 @@ QString QgsAbstractGeometry::wktTypeStr() const
 
 QString QgsAbstractGeometry::asJson( int precision )
 {
-  return QString::fromStdString( asJsonObject( precision ).dump() );
+  return asGeoJson( precision, Qgis::GeoJsonProfile::Rfc7946 );
 }
 
-json QgsAbstractGeometry::asJsonObject( int precision ) const
+QString QgsAbstractGeometry::asGeoJson( int precision, Qgis::GeoJsonProfile profile )
 {
+  return QString::fromStdString( asJsonObject( precision, profile ).dump() );
+}
+
+json QgsAbstractGeometry::asJsonObject( int precision, Qgis::GeoJsonProfile profile ) const
+{
+  Q_UNUSED( profile )
   Q_UNUSED( precision )
   return nullptr;
 }

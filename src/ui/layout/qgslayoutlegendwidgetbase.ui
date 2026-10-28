@@ -156,11 +156,11 @@
           </item>
           <item row="1" column="1">
            <widget class="QgsDoubleSpinBox" name="mMaxWidthSpinBox">
-            <property name="prefix">
-             <string/>
-            </property>
             <property name="suffix">
              <string> mm</string>
+            </property>
+            <property name="maximum">
+             <double>9999.000000000000000</double>
             </property>
             <property name="showClearButton" stdset="0">
              <bool>false</bool>

@@ -67,6 +67,11 @@ QString QgsSpatialIndexAlgorithm::shortHelpString() const
   );
 }
 
+QString QgsSpatialIndexAlgorithm::shortDescription() const
+{
+  return QObject::tr( "Creates an index to speed up access to the features in a layer." );
+}
+
 QgsSpatialIndexAlgorithm *QgsSpatialIndexAlgorithm::createInstance() const
 {
   return new QgsSpatialIndexAlgorithm();
@@ -81,6 +86,8 @@ void QgsSpatialIndexAlgorithm::initAlgorithm( const QVariantMap & )
 
 QVariantMap QgsSpatialIndexAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
+  QGS_MARK_ALGORITHM_SOURCE
+
   QgsVectorLayer *layer = parameterAsVectorLayer( parameters, u"INPUT"_s, context );
 
   if ( !layer )

@@ -40,6 +40,7 @@ class QgsRasterFeaturePreservingSmoothingAlgorithm : public QgsProcessingAlgorit
     QString groupId() const override;
     QString shortHelpString() const override;
     QString shortDescription() const override;
+    QList<QgsAcademicReference> academicReferences() const override;
     void initAlgorithm( const QVariantMap &configuration = QVariantMap() ) override;
     QgsRasterFeaturePreservingSmoothingAlgorithm *createInstance() const override SIP_FACTORY;
 

@@ -123,6 +123,9 @@ class GUI_EXPORT QgsDockableWidgetHelper : public QObject
     //! Returns the displayed title of the dialog and the dock widget
     QString windowTitle() const { return mWindowTitle; }
 
+    //! Sets default dialog size
+    void setDefaultDialogSize( const QSize &size );
+
     //! Sets the object name of the dock widget
     void setDockObjectName( const QString &name );
     //! Returns the object name of the dock widget
@@ -153,8 +156,6 @@ class GUI_EXPORT QgsDockableWidgetHelper : public QObject
     QAction *createDockUndockAction( const QString &title, QWidget *parent );
 
     bool eventFilter( QObject *watched, QEvent *event ) override;
-
-    static std::function<QString()> sAppStylesheetFunction;
 
     static QMainWindow *sOwnerWindow;
 
@@ -205,6 +206,8 @@ class GUI_EXPORT QgsDockableWidgetHelper : public QObject
     QString mUuid;
 
     QString mSettingKeyDockId;
+    QSize mDefaultDialogSize;
+    bool mDialogRestored = false;
 
     friend class TestQgsDockableWidgetHelper;
 };

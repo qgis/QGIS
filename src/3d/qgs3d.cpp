@@ -20,6 +20,7 @@
 #include "qgs3drendererregistry.h"
 #include "qgs3dsymbolregistry.h"
 #include "qgs3dterrainregistry.h"
+#include "qgsabstractmaterialsettings.h"
 #include "qgsannotationlayer3drenderer.h"
 #include "qgsapplication.h"
 #include "qgscategorized3drenderer.h"
@@ -45,6 +46,8 @@
 #include "qgssimplelinematerial3dhandler.h"
 #include "qgsstyle.h"
 #include "qgstiledscenelayer3drenderer.h"
+#include "qgsunlitmaterial.h"
+#include "qgsunlitmaterial3dhandler.h"
 #include "qgsvectorlayer3drenderer.h"
 
 #include <QString>
@@ -72,6 +75,7 @@ Qgs3D::~Qgs3D()
   qgis::down_cast< QgsMaterialSettingsMetadata * >( materialRegistry->materialSettingsMetadata( u"simpleline"_s ) )->setHandler( nullptr );
   qgis::down_cast< QgsMaterialSettingsMetadata * >( materialRegistry->materialSettingsMetadata( u"gooch"_s ) )->setHandler( nullptr );
   qgis::down_cast< QgsMaterialSettingsMetadata * >( materialRegistry->materialSettingsMetadata( u"metalrough"_s ) )->setHandler( nullptr );
+  qgis::down_cast< QgsMaterialSettingsMetadata * >( materialRegistry->materialSettingsMetadata( u"unlit"_s ) )->setHandler( nullptr );
 }
 
 void Qgs3D::initialize()
@@ -103,6 +107,9 @@ void Qgs3D::initialize()
 
   instance()->mMetalRoughTexturedMaterialHandler = std::make_unique< QgsMetalRoughTexturedMaterial3DHandler >();
   qgis::down_cast< QgsMaterialSettingsMetadata * >( materialRegistry->materialSettingsMetadata( u"metalroughtextured"_s ) )->setHandler( instance()->mMetalRoughTexturedMaterialHandler.get() );
+
+  instance()->mUnlitMaterialHandler = std::make_unique< QgsUnlitMaterial3DHandler >();
+  qgis::down_cast< QgsMaterialSettingsMetadata * >( materialRegistry->materialSettingsMetadata( u"unlit"_s ) )->setHandler( instance()->mUnlitMaterialHandler.get() );
 
   QgsApplication::renderer3DRegistry()->addRenderer( new QgsVectorLayer3DRendererMetadata );
   QgsApplication::renderer3DRegistry()->addRenderer( new QgsRuleBased3DRendererMetadata );
@@ -156,6 +163,19 @@ QgsMaterial *Qgs3D::toMaterial( const QgsAbstractMaterialSettings *settings, Qgi
     return handler->toMaterial( settings, technique, context );
   }
   return nullptr;
+}
+
+QgsUnlitMaterial *Qgs3D::createHighlightMaterial()
+{
+  auto highlightMaterial = new QgsUnlitMaterial();
+
+  const QgsSettings settings;
+  const float alpha = settings.value( u"Map/highlight/colorAlpha"_s, Qgis::DEFAULT_HIGHLIGHT_COLOR.alpha() ).toFloat() / 255.f;
+  QColor color = QColor( settings.value( u"Map/highlight/color"_s, Qgis::DEFAULT_HIGHLIGHT_COLOR.name() ).toString() );
+  color.setAlphaF( alpha );
+  highlightMaterial->setColor( color );
+
+  return highlightMaterial;
 }
 
 Qgs3D::Qgs3D()

@@ -25,6 +25,10 @@ class QgsSettingsEntryInteger;
  * \brief Provides a list of features based on filter conditions.
  *
  * Features are fetched asynchronously.
+ *
+ * Entries are identified by the values of one or more identifier fields
+ * (e.g. to store a foreign key in a relation reference widget).
+ * To identify features by their feature id instead, use QgsFeaturePickerModel.
  */
 class CORE_EXPORT QgsFeatureFilterModel : public QgsFeaturePickerModelBase
 {

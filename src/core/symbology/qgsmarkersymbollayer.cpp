@@ -945,7 +945,7 @@ QgsSimpleMarkerSymbolLayer::QgsSimpleMarkerSymbolLayer(
 
 QgsSimpleMarkerSymbolLayer::~QgsSimpleMarkerSymbolLayer() = default;
 
-QgsSymbolLayer *QgsSimpleMarkerSymbolLayer::create( const QVariantMap &props )
+std::unique_ptr<QgsSymbolLayer> QgsSimpleMarkerSymbolLayer::create( const QVariantMap &props )
 {
   Qgis::MarkerShape shape = Qgis::MarkerShape::Circle;
   QColor color = DEFAULT_SIMPLEMARKER_COLOR;
@@ -985,7 +985,7 @@ QgsSymbolLayer *QgsSimpleMarkerSymbolLayer::create( const QVariantMap &props )
   if ( props.contains( u"scale_method"_s ) )
     scaleMethod = QgsSymbolLayerUtils::decodeScaleMethod( props[u"scale_method"_s].toString() );
 
-  QgsSimpleMarkerSymbolLayer *m = new QgsSimpleMarkerSymbolLayer( shape, size, angle, scaleMethod, color, strokeColor, penJoinStyle );
+  auto m = std::make_unique<QgsSimpleMarkerSymbolLayer>( shape, size, angle, scaleMethod, color, strokeColor, penJoinStyle );
   if ( props.contains( u"offset"_s ) )
     m->setOffset( QgsSymbolLayerUtils::decodePoint( props[u"offset"_s].toString() ) );
   if ( props.contains( u"offset_unit"_s ) )
@@ -1501,7 +1501,7 @@ QString QgsSimpleMarkerSymbolLayer::ogrFeatureStyle( double mmScaleFactor, doubl
   return ogrString;
 }
 
-QgsSymbolLayer *QgsSimpleMarkerSymbolLayer::createFromSld( QDomElement &element )
+std::unique_ptr<QgsSymbolLayer> QgsSimpleMarkerSymbolLayer::createFromSld( QDomElement &element )
 {
   QgsDebugMsgLevel( u"Entered."_s, 4 );
 
@@ -1539,7 +1539,7 @@ QgsSymbolLayer *QgsSimpleMarkerSymbolLayer::createFromSld( QDomElement &element 
   offset.setX( offset.x() * scaleFactor );
   offset.setY( offset.y() * scaleFactor );
 
-  QgsSimpleMarkerSymbolLayer *m = new QgsSimpleMarkerSymbolLayer( shape, size );
+  auto m = std::make_unique<QgsSimpleMarkerSymbolLayer>( shape, size );
   m->setOutputUnit( sldUnitSize );
   m->setColor( color );
   m->setStrokeColor( strokeColor );
@@ -1869,7 +1869,7 @@ QgsFilledMarkerSymbolLayer::QgsFilledMarkerSymbolLayer( Qgis::MarkerShape shape,
 
 QgsFilledMarkerSymbolLayer::~QgsFilledMarkerSymbolLayer() = default;
 
-QgsSymbolLayer *QgsFilledMarkerSymbolLayer::create( const QVariantMap &props )
+std::unique_ptr<QgsSymbolLayer> QgsFilledMarkerSymbolLayer::create( const QVariantMap &props )
 {
   QString name = DEFAULT_SIMPLEMARKER_NAME;
   double size = DEFAULT_SIMPLEMARKER_SIZE;
@@ -1885,7 +1885,7 @@ QgsSymbolLayer *QgsFilledMarkerSymbolLayer::create( const QVariantMap &props )
   if ( props.contains( u"scale_method"_s ) )
     scaleMethod = QgsSymbolLayerUtils::decodeScaleMethod( props[u"scale_method"_s].toString() );
 
-  QgsFilledMarkerSymbolLayer *m = new QgsFilledMarkerSymbolLayer( decodeShape( name ), size, angle, scaleMethod );
+  auto m = std::make_unique<QgsFilledMarkerSymbolLayer>( decodeShape( name ), size, angle, scaleMethod );
   if ( props.contains( u"offset"_s ) )
     m->setOffset( QgsSymbolLayerUtils::decodePoint( props[u"offset"_s].toString() ) );
   if ( props.contains( u"offset_unit"_s ) )
@@ -1974,10 +1974,10 @@ QVariantMap QgsFilledMarkerSymbolLayer::properties() const
 
 QgsFilledMarkerSymbolLayer *QgsFilledMarkerSymbolLayer::clone() const
 {
-  QgsFilledMarkerSymbolLayer *m = static_cast< QgsFilledMarkerSymbolLayer * >( QgsFilledMarkerSymbolLayer::create( properties() ) );
-  copyCommonProperties( m );
+  auto m = qgis::unique_ptr_static_cast<QgsFilledMarkerSymbolLayer>( QgsFilledMarkerSymbolLayer::create( properties() ) );
+  copyCommonProperties( m.get() );
   m->setSubSymbol( mFill->clone() );
-  return m;
+  return m.release();
 }
 
 QgsSymbol *QgsFilledMarkerSymbolLayer::subSymbol()
@@ -2128,7 +2128,7 @@ QgsSvgMarkerSymbolLayer::QgsSvgMarkerSymbolLayer( const QgsSvgMarkerSymbolLayer 
 
 QgsSvgMarkerSymbolLayer::~QgsSvgMarkerSymbolLayer() = default;
 
-QgsSymbolLayer *QgsSvgMarkerSymbolLayer::create( const QVariantMap &props )
+std::unique_ptr<QgsSymbolLayer> QgsSvgMarkerSymbolLayer::create( const QVariantMap &props )
 {
   QString name;
   double size = DEFAULT_SVGMARKER_SIZE;
@@ -2144,7 +2144,7 @@ QgsSymbolLayer *QgsSvgMarkerSymbolLayer::create( const QVariantMap &props )
   if ( props.contains( u"scale_method"_s ) )
     scaleMethod = QgsSymbolLayerUtils::decodeScaleMethod( props[u"scale_method"_s].toString() );
 
-  QgsSvgMarkerSymbolLayer *m = new QgsSvgMarkerSymbolLayer( name, size, angle, scaleMethod );
+  auto m = std::make_unique<QgsSvgMarkerSymbolLayer>( name, size, angle, scaleMethod );
 
   if ( props.contains( u"size_unit"_s ) )
     m->setSizeUnit( QgsUnitTypes::decodeRenderUnit( props[u"size_unit"_s].toString() ) );
@@ -2740,7 +2740,7 @@ bool QgsSvgMarkerSymbolLayer::writeSldMarker( QDomDocument &doc, QDomElement &el
   return true;
 }
 
-QgsSymbolLayer *QgsSvgMarkerSymbolLayer::createFromSld( QDomElement &element )
+std::unique_ptr<QgsSymbolLayer> QgsSvgMarkerSymbolLayer::createFromSld( QDomElement &element )
 {
   QgsDebugMsgLevel( u"Entered."_s, 4 );
 
@@ -2797,7 +2797,7 @@ QgsSymbolLayer *QgsSvgMarkerSymbolLayer::createFromSld( QDomElement &element )
     realPath = svgUrl.path();
   }
 
-  QgsSvgMarkerSymbolLayer *m = new QgsSvgMarkerSymbolLayer( realPath, size );
+  auto m = std::make_unique<QgsSvgMarkerSymbolLayer>( realPath, size );
 
   QMap<QString, QgsProperty> params;
 
@@ -3043,7 +3043,7 @@ QgsRasterMarkerSymbolLayer::QgsRasterMarkerSymbolLayer( const QString &path, dou
 
 QgsRasterMarkerSymbolLayer::~QgsRasterMarkerSymbolLayer() = default;
 
-QgsSymbolLayer *QgsRasterMarkerSymbolLayer::create( const QVariantMap &props )
+std::unique_ptr<QgsSymbolLayer> QgsRasterMarkerSymbolLayer::create( const QVariantMap &props )
 {
   QString path;
   double size = DEFAULT_RASTERMARKER_SIZE;
@@ -3061,10 +3061,10 @@ QgsSymbolLayer *QgsRasterMarkerSymbolLayer::create( const QVariantMap &props )
 
   auto m = std::make_unique< QgsRasterMarkerSymbolLayer >( path, size, angle, scaleMethod );
   m->setCommonProperties( props );
-  return m.release();
+  return m;
 }
 
-QgsSymbolLayer *QgsRasterMarkerSymbolLayer::createFromSld( QDomElement &element )
+std::unique_ptr<QgsSymbolLayer> QgsRasterMarkerSymbolLayer::createFromSld( QDomElement &element )
 {
   const QDomElement graphicElem = element.firstChildElement( u"Graphic"_s );
   if ( graphicElem.isNull() )
@@ -3092,7 +3092,7 @@ QgsSymbolLayer *QgsRasterMarkerSymbolLayer::createFromSld( QDomElement &element 
     return nullptr;
   }
 
-  QgsRasterMarkerSymbolLayer *m = new QgsRasterMarkerSymbolLayer( url );
+  auto m = std::make_unique<QgsRasterMarkerSymbolLayer>( url );
   // TODO: parse other attributes from the SLD spec (Opacity, Size, Rotation, AnchorPoint, Displacement)
   return m;
 }
@@ -3593,7 +3593,7 @@ QgsFontMarkerSymbolLayer::QgsFontMarkerSymbolLayer( const QString &fontFamily, Q
 
 QgsFontMarkerSymbolLayer::~QgsFontMarkerSymbolLayer() = default;
 
-QgsSymbolLayer *QgsFontMarkerSymbolLayer::create( const QVariantMap &props )
+std::unique_ptr<QgsSymbolLayer> QgsFontMarkerSymbolLayer::create( const QVariantMap &props )
 {
   QString fontFamily = DEFAULT_FONTMARKER_FONT;
   QString string = DEFAULT_FONTMARKER_CHR;
@@ -3623,7 +3623,7 @@ QgsSymbolLayer *QgsFontMarkerSymbolLayer::create( const QVariantMap &props )
   if ( props.contains( u"angle"_s ) )
     angle = props[u"angle"_s].toDouble();
 
-  QgsFontMarkerSymbolLayer *m = new QgsFontMarkerSymbolLayer( fontFamily, string, pointSize, color, angle );
+  auto m = std::make_unique<QgsFontMarkerSymbolLayer>( fontFamily, string, pointSize, color, angle );
 
   if ( props.contains( u"font_style"_s ) )
     m->setFontStyle( props[u"font_style"_s].toString() );
@@ -4121,7 +4121,7 @@ QRectF QgsFontMarkerSymbolLayer::bounds( QPointF point, QgsSymbolRenderContext &
   return symbolBounds;
 }
 
-QgsSymbolLayer *QgsFontMarkerSymbolLayer::createFromSld( QDomElement &element )
+std::unique_ptr<QgsSymbolLayer> QgsFontMarkerSymbolLayer::createFromSld( QDomElement &element )
 {
   QgsDebugMsgLevel( u"Entered."_s, 4 );
 
@@ -4162,7 +4162,7 @@ QgsSymbolLayer *QgsFontMarkerSymbolLayer::createFromSld( QDomElement &element )
   offset.setY( offset.y() * scaleFactor );
   size = size * scaleFactor;
 
-  QgsMarkerSymbolLayer *m = new QgsFontMarkerSymbolLayer( fontFamily, QChar( chr ), size, color );
+  auto m = std::make_unique<QgsFontMarkerSymbolLayer>( fontFamily, QChar( chr ), size, color );
   m->setOutputUnit( sldUnitSize );
   m->setAngle( angle );
   m->setOffset( offset );
@@ -4213,7 +4213,7 @@ QgsAnimatedMarkerSymbolLayer::QgsAnimatedMarkerSymbolLayer( const QString &path,
 
 QgsAnimatedMarkerSymbolLayer::~QgsAnimatedMarkerSymbolLayer() = default;
 
-QgsSymbolLayer *QgsAnimatedMarkerSymbolLayer::create( const QVariantMap &properties ) // cppcheck-suppress duplInheritedMember
+std::unique_ptr<QgsSymbolLayer> QgsAnimatedMarkerSymbolLayer::create( const QVariantMap &properties ) // cppcheck-suppress duplInheritedMember
 {
   QString path;
   double size = DEFAULT_RASTERMARKER_SIZE;
@@ -4230,7 +4230,7 @@ QgsSymbolLayer *QgsAnimatedMarkerSymbolLayer::create( const QVariantMap &propert
   m->setFrameRate( properties.value( u"frameRate"_s, u"10"_s ).toDouble() );
 
   m->setCommonProperties( properties );
-  return m.release();
+  return m;
 }
 
 QString QgsAnimatedMarkerSymbolLayer::layerType() const

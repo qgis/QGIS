@@ -1,9 +1,9 @@
 <!DOCTYPE qgis PUBLIC 'http://mrcc.com/qgis.dtd' 'SYSTEM'>
-<qgis projectname="Metadata Title" saveDateTime="2026-01-14T10:08:25" saveUser="dave" saveUserFull="dave" version="3.99.0-Master">
+<qgis projectname="Metadata Title" saveDateTime="2026-06-19T14:52:39" saveUser="dave" saveUserFull="dave" version="4.1.0-Master">
   <homePath path=""/>
   <title>Metadata Title</title>
   <transaction mode="Disabled"/>
-  <projectFlags set=""/>
+  <projectFlags set="0"/>
   <projectCrs>
     <spatialrefsys nativeFormat="Wkt">
       <wkt></wkt>
@@ -35,7 +35,7 @@
     <customproperties>
       <Option/>
     </customproperties>
-    <layer-tree-group checked="Qt::Checked" expanded="1" groupLayer="" name="Planes and Roads">
+    <layer-tree-group checked="Qt::Checked" expanded="1" groupLayer="" name="Planes and Roads" wms-group-request-mode="Normal">
       <customproperties>
         <Option/>
       </customproperties>
@@ -49,7 +49,7 @@
           <Option/>
         </customproperties>
       </layer-tree-layer>
-      <layer-tree-group checked="Qt::Checked" expanded="1" groupLayer="" name="Purple Marks">
+      <layer-tree-group checked="Qt::Checked" expanded="1" groupLayer="" name="Purple Marks" wms-group-request-mode="Normal">
         <customproperties>
           <Option/>
         </customproperties>
@@ -69,7 +69,7 @@
         </layer-tree-layer>
       </layer-tree-group>
     </layer-tree-group>
-    <layer-tree-group checked="Qt::Checked" expanded="1" groupLayer="" name="Little bit of nothing">
+    <layer-tree-group checked="Qt::Checked" expanded="1" groupLayer="" name="Little bit of nothing" wms-group-request-mode="Normal">
       <customproperties>
         <Option/>
       </customproperties>
@@ -88,10 +88,10 @@
   </layer-tree-group>
   <snapping-settings enabled="0" intersection-snapping="0" maxScale="0" minScale="0" mode="2" scaleDependencyMode="0" self-snapping="0" tolerance="0" type="1" unit="2">
     <individual-layer-settings>
-      <layer-setting enabled="0" id="points_1c05d011_813c_4234_9b80_7aa5fa9c6d8d" maxScale="0" minScale="0" tolerance="12" type="1" units="1"/>
-      <layer-setting enabled="0" id="points_240d6bd6_9203_470a_994a_aae13cd9fa04" maxScale="0" minScale="0" tolerance="0" type="1" units="2"/>
       <layer-setting enabled="0" id="lines_5238db60_470c_41a5_b1d1_059e70f93b99" maxScale="0" minScale="0" tolerance="12" type="1" units="1"/>
       <layer-setting enabled="0" id="lines_a677672a_bf5d_410d_98c9_d326a5719a1b" maxScale="0" minScale="0" tolerance="0" type="1" units="2"/>
+      <layer-setting enabled="0" id="points_1c05d011_813c_4234_9b80_7aa5fa9c6d8d" maxScale="0" minScale="0" tolerance="12" type="1" units="1"/>
+      <layer-setting enabled="0" id="points_240d6bd6_9203_470a_994a_aae13cd9fa04" maxScale="0" minScale="0" tolerance="0" type="1" units="2"/>
     </individual-layer-settings>
   </snapping-settings>
   <relations>
@@ -416,14 +416,14 @@
       <referencedLayers/>
       <referencingLayers/>
       <fieldConfiguration>
-        <field configurationFlags="NoFlag" name="id">
+        <field configurationFlags="0" name="id">
           <editWidget type="">
             <config>
               <Option/>
             </config>
           </editWidget>
         </field>
-        <field configurationFlags="NoFlag" name="descriptio">
+        <field configurationFlags="0" name="descriptio">
           <editWidget type="">
             <config>
               <Option/>
@@ -1057,7 +1057,7 @@
       <referencedLayers/>
       <referencingLayers/>
       <fieldConfiguration>
-        <field configurationFlags="NoFlag" name="Name">
+        <field configurationFlags="0" name="Name">
           <editWidget type="ValueMap">
             <config>
               <Option type="Map">
@@ -1076,7 +1076,7 @@
             </config>
           </editWidget>
         </field>
-        <field configurationFlags="NoFlag" name="Value">
+        <field configurationFlags="0" name="Value">
           <editWidget type="TextEdit">
             <config>
               <Option type="Map">
@@ -1577,8 +1577,8 @@ def my_form_open(dialog, layer, feature):
             <Option type="QString" value="Value"/>
           </Option>
           <Option name="embeddedWidgets/count" type="QString" value="0"/>
-          <Option name="variableNames" type="invalid"/>
-          <Option name="variableValues" type="invalid"/>
+          <Option name="variableNames"/>
+          <Option name="variableValues"/>
         </Option>
       </customproperties>
       <blendMode>0</blendMode>
@@ -1663,7 +1663,7 @@ def my_form_open(dialog, layer, feature):
         </relation>
       </referencingLayers>
       <fieldConfiguration>
-        <field configurationFlags="NoFlag" name="Name">
+        <field configurationFlags="0" name="Name">
           <editWidget type="ValueMap">
             <config>
               <Option type="Map">
@@ -1682,7 +1682,7 @@ def my_form_open(dialog, layer, feature):
             </config>
           </editWidget>
         </field>
-        <field configurationFlags="NoFlag" name="Value">
+        <field configurationFlags="0" name="Value">
           <editWidget type="TextEdit">
             <config>
               <Option type="Map">
@@ -1697,6 +1697,10 @@ def my_form_open(dialog, layer, feature):
         <alias field="Name" index="0" name="Runwayid"/>
         <alias field="Value" index="1" name="Name"/>
       </aliases>
+      <customComments>
+        <customComment field="Name" value="This is the ID of the runway"/>
+        <customComment field="Value" value="And - confusingly enough - this is the name of the runway"/>
+      </customComments>
       <defaults>
         <default applyOnUpdate="0" expression="" field="Name"/>
         <default applyOnUpdate="0" expression="" field="Value"/>
@@ -1713,15 +1717,15 @@ def my_form_open(dialog, layer, feature):
       <attributeactions>
         <defaultAction key="Canvas" value="{00000000-0000-0000-0000-000000000000}"/>
         <actionsetting action="ogr2ogr -f &quot;GPKG&quot; &quot;[% &quot;OUTPUT_PATH&quot; %]&quot; &quot;[% &quot;INPUT_FILE&quot; %]&quot;" capture="1" icon="" id="{57794bf8-bfb6-456e-b565-45e12429aa9b}" isEnabledOnlyWhenEditable="0" name="Run an application" notificationMessage="" shortTitle="Run application" type="0">
-          <actionScope id="Feature"/>
           <actionScope id="Canvas"/>
+          <actionScope id="Feature"/>
         </actionsetting>
         <actionsetting action="from qgis.PyQt import QtWidgets&#xa;&#xa;QtWidgets.QMessageBox.information(None, &quot;Clicked coords&quot;, &quot;layer: [% @layer_id %]\ncoords: ([% @click_x %],[% @click_y %])&quot;)" capture="0" icon="" id="{3b81530c-1920-4c0b-800b-d1d1742acad4}" isEnabledOnlyWhenEditable="0" name="Clicked coordinates (Run feature actions tool)" notificationMessage="" shortTitle="Clicked Coordinate" type="1">
           <actionScope id="Canvas"/>
         </actionsetting>
         <actionsetting action="[% &quot;PATH&quot; %]" capture="0" icon="" id="{0b9b8a91-2547-4611-9851-8279358fbe6c}" isEnabledOnlyWhenEditable="0" name="Open file" notificationMessage="" shortTitle="Open file" type="5">
-          <actionScope id="Feature"/>
           <actionScope id="Canvas"/>
+          <actionScope id="Feature"/>
         </actionsetting>
       </attributeactions>
       <attributetableconfig actionWidgetStyle="dropDown" sortExpression="" sortOrder="0">
@@ -2426,7 +2430,7 @@ def my_form_open(dialog, layer, feature):
       <referencedLayers/>
       <referencingLayers/>
       <fieldConfiguration>
-        <field configurationFlags="NoFlag" name="Class">
+        <field configurationFlags="0" name="Class">
           <editWidget type="TextEdit">
             <config>
               <Option type="Map">
@@ -2436,28 +2440,28 @@ def my_form_open(dialog, layer, feature):
             </config>
           </editWidget>
         </field>
-        <field configurationFlags="NoFlag" name="Heading">
+        <field configurationFlags="0" name="Heading">
           <editWidget type="TextEdit">
             <config>
               <Option/>
             </config>
           </editWidget>
         </field>
-        <field configurationFlags="NoFlag" name="Importance">
+        <field configurationFlags="0" name="Importance">
           <editWidget type="RelationReference">
             <config>
               <Option/>
             </config>
           </editWidget>
         </field>
-        <field configurationFlags="NoFlag" name="Pilots">
+        <field configurationFlags="0" name="Pilots">
           <editWidget type="Range">
             <config>
               <Option/>
             </config>
           </editWidget>
         </field>
-        <field configurationFlags="NoFlag" name="Cabin Crew">
+        <field configurationFlags="0" name="Cabin Crew">
           <editWidget type="ValueRelation">
             <config>
               <Option type="Map">
@@ -2485,7 +2489,7 @@ def my_form_open(dialog, layer, feature):
             </config>
           </editWidget>
         </field>
-        <field configurationFlags="NoFlag" name="Staff">
+        <field configurationFlags="0" name="Staff">
           <editWidget type="Range">
             <config>
               <Option/>
@@ -3150,7 +3154,7 @@ def my_form_open(dialog, layer, feature):
       </referencedLayers>
       <referencingLayers/>
       <fieldConfiguration>
-        <field configurationFlags="NoFlag" name="Class">
+        <field configurationFlags="0" name="Class">
           <editWidget type="TextEdit">
             <config>
               <Option type="Map">
@@ -3160,14 +3164,14 @@ def my_form_open(dialog, layer, feature):
             </config>
           </editWidget>
         </field>
-        <field configurationFlags="NoFlag" name="Heading">
+        <field configurationFlags="0" name="Heading">
           <editWidget type="TextEdit">
             <config>
               <Option/>
             </config>
           </editWidget>
         </field>
-        <field configurationFlags="NoFlag" name="Importance">
+        <field configurationFlags="0" name="Importance">
           <editWidget type="RelationReference">
             <config>
               <Option type="Map">
@@ -3190,14 +3194,14 @@ def my_form_open(dialog, layer, feature):
             </config>
           </editWidget>
         </field>
-        <field configurationFlags="NoFlag" name="Pilots">
+        <field configurationFlags="0" name="Pilots">
           <editWidget type="Range">
             <config>
               <Option/>
             </config>
           </editWidget>
         </field>
-        <field configurationFlags="NoFlag" name="Cabin Crew">
+        <field configurationFlags="0" name="Cabin Crew">
           <editWidget type="ValueRelation">
             <config>
               <Option type="Map">
@@ -3225,7 +3229,7 @@ def my_form_open(dialog, layer, feature):
             </config>
           </editWidget>
         </field>
-        <field configurationFlags="NoFlag" name="Staff">
+        <field configurationFlags="0" name="Staff">
           <editWidget type="Range">
             <config>
               <Option/>
@@ -3273,8 +3277,8 @@ def my_form_open(dialog, layer, feature):
       <attributeactions>
         <defaultAction key="Canvas" value="{00000000-0000-0000-0000-000000000000}"/>
         <actionsetting action="[% &quot;PATH&quot; %]" capture="0" icon="" id="{da8571be-9228-4f4c-9f61-a279ed5f059f}" isEnabledOnlyWhenEditable="0" name="Open file" notificationMessage="" shortTitle="Open file" type="5">
-          <actionScope id="Feature"/>
           <actionScope id="Canvas"/>
+          <actionScope id="Feature"/>
         </actionsetting>
       </attributeactions>
       <attributetableconfig actionWidgetStyle="dropDown" sortExpression="" sortOrder="0">
@@ -3554,12 +3558,13 @@ def my_form_open(dialog, layer, feature):
   <Annotations/>
   <Layouts/>
   <ElevationProfiles/>
+  <SelectiveMaskingSourceSets/>
   <mapViewDocks3D/>
   <Bookmarks/>
   <Sensors/>
   <ProjectViewSettings UseProjectScales="0" rotation="0">
     <Scales/>
-    <DefaultViewExtent xmax="-89.8414858913184986" xmin="-109.31543130074736325" ymax="48.37094510143425907" ymin="35.73326394201423284">
+    <DefaultViewExtent xmax="-90.24512526269944601" xmin="-108.91179192936641584" ymax="50.33145073271992231" ymin="33.7727583107285696">
       <spatialrefsys nativeFormat="Wkt">
         <wkt></wkt>
         <proj4></proj4>
@@ -3573,7 +3578,7 @@ def my_form_open(dialog, layer, feature):
       </spatialrefsys>
     </DefaultViewExtent>
   </ProjectViewSettings>
-  <ProjectStyleSettings DefaultSymbolOpacity="1" RandomizeDefaultSymbolColor="1" colorModel="Rgb" iccProfileId="attachment:///QGIS3-TYorsm" projectStyleId="attachment:///JPUusY_styles.db">
+  <ProjectStyleSettings DefaultSymbolOpacity="1" RandomizeDefaultSymbolColor="1" colorModel="Rgb" iccProfileId="attachment:///QGIS3-TYorsm" projectStyleId="attachment:///lLNJXq_styles.db">
     <databases/>
   </ProjectStyleSettings>
   <ProjectTimeSettings cumulativeTemporalRange="0" frameRate="1" timeStep="1" timeStepUnit="h" totalMovieFrames="100"/>
@@ -3624,7 +3629,7 @@ def my_form_open(dialog, layer, feature):
       </spatialrefsys>
     </CoordinateCustomCrs>
   </ProjectDisplaySettings>
-  <ProjectGpsSettings autoAddTrackVertices="0" autoCommitFeatures="0" destinationFollowsActiveLayer="1" destinationLayer="lines_a677672a_bf5d_410d_98c9_d326a5719a1b" destinationLayerName="lines" destinationLayerProvider="ogr" destinationLayerSource="/home/dave/dev/qgis/QGIS/tests/testdata/lines.shp">
+  <ProjectGpsSettings autoAddTrackVertices="0" autoCommitFeatures="0" destinationFollowsActiveLayer="1" destinationLayer="lines_a677672a_bf5d_410d_98c9_d326a5719a1b" destinationLayerName="lines" destinationLayerProvider="ogr" destinationLayerSource="/home/dave/dev/qgis/QGIS2/tests/testdata/lines.shp">
     <timeStampFields/>
   </ProjectGpsSettings>
 </qgis>

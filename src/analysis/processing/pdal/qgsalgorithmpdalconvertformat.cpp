@@ -77,6 +77,8 @@ void QgsPdalConvertFormatAlgorithm::initAlgorithm( const QVariantMap & )
 
 QStringList QgsPdalConvertFormatAlgorithm::createArgumentLists( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
+  QGS_MARK_ALGORITHM_SOURCE
+
   Q_UNUSED( feedback );
 
   QgsPointCloudLayer *layer = parameterAsPointCloudLayer( parameters, u"INPUT"_s, context, QgsProcessing::LayerOptionsFlag::SkipIndexGeneration );

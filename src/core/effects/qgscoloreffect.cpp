@@ -21,15 +21,16 @@
 
 #include "qgscolorutils.h"
 #include "qgsimageoperation.h"
+#include "qgspainting.h"
 #include "qgsrendercontext.h"
 
 #include <QString>
 
 using namespace Qt::StringLiterals;
 
-QgsPaintEffect *QgsColorEffect::create( const QVariantMap &map )
+std::unique_ptr<QgsPaintEffect> QgsColorEffect::create( const QVariantMap &map )
 {
-  QgsColorEffect *newEffect = new QgsColorEffect();
+  auto newEffect = std::make_unique<QgsColorEffect>();
   newEffect->readProperties( map );
   return newEffect;
 }

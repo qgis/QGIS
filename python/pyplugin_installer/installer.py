@@ -606,9 +606,7 @@ class QgsPluginInstaller(QObject):
         # add to settings
         settings.setValue(reposName + "/url", reposURL)
         settings.setValue(reposName + "/authcfg", dlg.configId().strip())
-        settings.setValue(
-            reposName + "/enabled", bool(dlg.checkBoxEnabled.checkState())
-        )
+        settings.setValue(reposName + "/enabled", dlg.checkBoxEnabled.isChecked())
         # refresh lists and populate widgets
         plugins.removeRepository(reposName)
         self.reloadAndExportData()
@@ -659,7 +657,7 @@ class QgsPluginInstaller(QObject):
             newName = newName + "(2)"
         settings.setValue(newName + "/url", dlg.editURL.text().strip())
         settings.setValue(newName + "/authcfg", dlg.configId().strip())
-        settings.setValue(newName + "/enabled", bool(dlg.checkBoxEnabled.checkState()))
+        settings.setValue(newName + "/enabled", dlg.checkBoxEnabled.isChecked())
         if (
             dlg.editAuthCfgWgt.configId().strip()
             != repositories.all()[reposName]["authcfg"]
@@ -860,7 +858,12 @@ class QgsPluginInstaller(QObject):
                 success = False
 
             try:
-                shutil.move(extractDir.filePath(pluginName), pluginsDirectory)
+                # we copy instead of move, so that the target files inherit parent folder permissions on windows
+                shutil.copytree(
+                    extractDir.filePath(pluginName),
+                    pluginDirectory,
+                    copy_function=shutil.copy,
+                )
             except:
                 infoString = (
                     self.tr("Could not store plugin to the plugin directory:")

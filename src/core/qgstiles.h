@@ -95,11 +95,11 @@ __pragma( warning( push ) ) __pragma( warning( disable : 4273 ) )
  *
  * \since QGIS 3.32
  */
-CORE_EXPORT inline uint qHash( QgsTileXYZ id ) SIP_SKIP
+CORE_EXPORT inline size_t qHash( QgsTileXYZ id ) SIP_SKIP
 {
-  const uint h1 = qHash( static_cast< quint64 >( id.column() ) );
-  const uint h2 = qHash( static_cast< quint64 >( id.row() ) );
-  const uint h3 = qHash( static_cast< quint64 >( id.zoomLevel() ) );
+  const size_t h1 = qHash( static_cast< quint64 >( id.column() ) );
+  const size_t h2 = qHash( static_cast< quint64 >( id.row() ) );
+  const size_t h3 = qHash( static_cast< quint64 >( id.zoomLevel() ) );
   return h1 ^ ( h2 << 1 ) ^ ( h3 << 2 );
 }
 
@@ -218,6 +218,26 @@ class CORE_EXPORT QgsTileMatrix
 
     //! Returns number of rows of the tile matrix
     int matrixHeight() const { return mMatrixHeight; }
+
+    /**
+     * Returns the calculated matrix width at the specified zoom level.
+     *
+     * \note The \a zoomLevel must be greater than this matrix's zoomLevel()
+     *
+     * \see derivedMatrixHeightAtZoomLevel()
+     * \since QGIS 4.4
+     */
+    long long derivedMatrixWidthAtZoomLevel( int zoomLevel ) const;
+
+    /**
+     * Returns the calculated matrix height at the specified zoom level.
+     *
+     * \note The \a zoomLevel must be greater than this matrix's zoomLevel()
+     *
+     * \see derivedMatrixWidthAtZoomLevel()
+     * \since QGIS 4.4
+     */
+    long long derivedMatrixHeightAtZoomLevel( int zoomLevel ) const;
 
     //! Returns extent of the tile matrix
     QgsRectangle extent() const { return mExtent; }

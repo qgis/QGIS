@@ -687,6 +687,19 @@ class TestPyQgsMssqlProvider(QgisTestCase, MssqlProviderTestBase):
         self.assertCountEqual(namelist, ["default style", "related style", "by day"])
         self.assertCountEqual(desclist, ["faded greens and elegant patterns"] * 3)
 
+        # Test aspatial table float_dec style
+        vl = QgsVectorLayer(
+            '%s table="qgis_test"."float_dec" sql=' % (self.dbconn), "testprec", "mssql"
+        )
+        vl.saveStyleToDatabaseV2("float_dec style", "aspatial", True, "")
+        styles = vl.listStylesInDatabase()
+        self.assertIn("float_dec style", styles[2])
+        self.assertTrue(
+            QgsProviderRegistry.instance().styleExists(
+                "mssql", vl.source(), "float_dec style"
+            )
+        )
+
     def testInsertPolygonInMultiPolygon(self):
         layer = QgsVectorLayer(
             "MultiPolygon?crs=epsg:4326&field=id:integer", "addfeat", "memory"

@@ -253,7 +253,7 @@ Qgis::GeometryOperationResult QgsGeometryEditUtils::addPart( QgsAbstractGeometry
     }
     else if ( QgsWkbTypes::flatType( part->wkbType() ) == Qgis::WkbType::MultiPolygon || QgsWkbTypes::flatType( part->wkbType() ) == Qgis::WkbType::MultiSurface )
     {
-      std::unique_ptr<QgsGeometryCollection> parts( static_cast<QgsGeometryCollection *>( part.release() ) );
+      auto parts = qgis::unique_ptr_static_cast<QgsGeometryCollection>( std::move( part ) );
 
       int i;
       const int n = geomCollection->numGeometries();

@@ -47,13 +47,6 @@ Ownership of the returned object is transferred to the caller
 
 .. seealso:: :py:func:`setRule`
 %End
-
-  signals:
-
-    void changed();
-%Docstring
-Emitted whenever the configuration of the rule is changed.
-%End
 };
 
 

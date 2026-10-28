@@ -120,6 +120,8 @@ Qgis::WkbType QgsBoundaryAlgorithm::outputWkbType( Qgis::WkbType inputWkbType ) 
 
 QgsFeatureList QgsBoundaryAlgorithm::processFeature( const QgsFeature &feature, QgsProcessingContext &, QgsProcessingFeedback *feedback )
 {
+  QGS_MARK_ALGORITHM_SOURCE
+
   QgsFeature outFeature = feature;
 
   if ( feature.hasGeometry() )

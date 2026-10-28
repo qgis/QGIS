@@ -144,8 +144,8 @@ class TestQgsSnappingUtils : public QObject
     {
       QgsCategorizedSymbolRenderer *renderer = new QgsCategorizedSymbolRenderer();
       renderer->setClassAttribute( u"fld"_s );
-      renderer->setSourceSymbol( QgsSymbol::defaultSymbol( Qgis::GeometryType::Polygon ) );
-      renderer->addCategory( QgsRendererCategory( "2", QgsSymbol::defaultSymbol( Qgis::GeometryType::Polygon ), u"2"_s ) );
+      renderer->setSourceSymbol( QgsSymbol::defaultSymbol( Qgis::GeometryType::Polygon ).release() );
+      renderer->addCategory( QgsRendererCategory( "2", QgsSymbol::defaultSymbol( Qgis::GeometryType::Polygon ).release(), u"2"_s ) );
       mVL->setRenderer( renderer );
 
       //create legend with symbology nodes for categorized renderer

@@ -121,7 +121,7 @@ void QgsRasterLayerLabelProvider::drawLabel( QgsRenderContext &context, pal::Lab
   const QPointF outPt = xform.transform( label->getX(), label->getY() ).toQPointF();
 
   QgsTextLabelFeature *lf = qgis::down_cast<QgsTextLabelFeature *>( label->getFeaturePart()->feature() );
-  QgsTextRenderer::drawDocument( outPt, mFormat, lf->document(), lf->documentMetrics(), context, Qgis::TextHorizontalAlignment::Left, label->getAlpha(), Qgis::TextLayoutMode::Labeling );
+  QgsTextRenderer::drawDocument( outPt, mFormat, lf->document(), lf->documentMetrics(), context, Qgis::TextHorizontalAlignment::Left, label->angleRadians(), Qgis::TextLayoutMode::Labeling );
 }
 
 void QgsRasterLayerLabelProvider::startRender( QgsRenderContext &context )
@@ -308,7 +308,7 @@ bool QgsAbstractRasterLayerLabeling::isInScaleRange( double ) const
   return true;
 }
 
-QgsAbstractRasterLayerLabeling *QgsAbstractRasterLayerLabeling::createFromElement( const QDomElement &element, const QgsReadWriteContext &context )
+std::unique_ptr<QgsAbstractRasterLayerLabeling> QgsAbstractRasterLayerLabeling::createFromElement( const QDomElement &element, const QgsReadWriteContext &context )
 {
   const QString type = element.attribute( u"type"_s );
   if ( type == "simple"_L1 )
@@ -465,7 +465,7 @@ bool QgsRasterLayerSimpleLabeling::hasNonDefaultCompositionMode() const
   return mTextFormat.hasNonDefaultCompositionMode();
 }
 
-QgsRasterLayerSimpleLabeling *QgsRasterLayerSimpleLabeling::create( const QDomElement &element, const QgsReadWriteContext &context )
+std::unique_ptr<QgsRasterLayerSimpleLabeling> QgsRasterLayerSimpleLabeling::create( const QDomElement &element, const QgsReadWriteContext &context )
 {
   auto res = std::make_unique< QgsRasterLayerSimpleLabeling >();
   res->setBand( element.attribute( u"band"_s, u"1"_s ).toInt() );
@@ -505,7 +505,7 @@ QgsRasterLayerSimpleLabeling *QgsRasterLayerSimpleLabeling::create( const QDomEl
   res->mMinimumScale = renderingElem.attribute( u"scaleMax"_s, u"0"_s ).toDouble();
   res->mScaleVisibility = renderingElem.attribute( u"scaleVisibility"_s ).toInt();
 
-  return res.release();
+  return res;
 }
 
 QgsTextFormat QgsRasterLayerSimpleLabeling::textFormat() const
@@ -602,10 +602,10 @@ void QgsRasterLayerSimpleLabeling::multiplyOpacity( double opacityFactor )
   mTextFormat.multiplyOpacity( opacityFactor );
 }
 
-QgsAbstractRasterLayerLabeling *QgsAbstractRasterLayerLabeling::defaultLabelingForLayer( QgsRasterLayer *layer )
+std::unique_ptr<QgsAbstractRasterLayerLabeling> QgsAbstractRasterLayerLabeling::defaultLabelingForLayer( QgsRasterLayer *layer )
 {
   auto res = std::make_unique< QgsRasterLayerSimpleLabeling >();
   res->setTextFormat( QgsStyle::defaultTextFormatForProject( layer->project() ) );
   res->setBand( 1 );
-  return res.release();
+  return res;
 }

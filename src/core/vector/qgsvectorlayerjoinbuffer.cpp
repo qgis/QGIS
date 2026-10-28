@@ -525,6 +525,7 @@ void QgsVectorLayerJoinBuffer::joinedLayerUpdatedFields()
     if ( joinedLayer == it->joinLayer() )
     {
       it->cachedAttributes.clear();
+      it->cacheDirty = true;
       cacheJoinLayer( *it );
     }
   }

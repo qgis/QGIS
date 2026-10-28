@@ -19,6 +19,7 @@
 #include "qgsgrouplayer.h"
 #include "qgslayertreegroup.h"
 #include "qgslayertreelayer.h"
+#include "qgslayertreeutils.h"
 #include "qgslogger.h"
 #include "qgsmaplayer.h"
 #include "qgsmaplayerfactory.h"
@@ -189,6 +190,9 @@ bool QgsLayerDefinition::loadLayerDefinition(
   if ( !layerTreeElem.isNull() )
   {
     root.readChildrenFromXml( layerTreeElem, context );
+    // imported groups are new copies, so give them fresh ids like the layer ids above
+    for ( QgsLayerTreeNode *node : root.children() )
+      QgsLayerTreeUtils::regenerateGroupIds( node );
     loadInLegend = false;
   }
 

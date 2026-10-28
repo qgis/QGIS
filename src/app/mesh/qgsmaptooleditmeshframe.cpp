@@ -533,7 +533,7 @@ void QgsMapToolEditMeshFrame::initialize()
   const QColor color = digitizingStrokeColor();
   if ( !mFaceVerticesBand )
     mFaceVerticesBand = new QgsRubberBand( mCanvas );
-  mFaceVerticesBand->setIcon( QgsRubberBand::ICON_CIRCLE );
+  mFaceVerticesBand->setIcon( Qgis::RubberBandIconType::Circle );
   mFaceVerticesBand->setColor( color );
   mFaceVerticesBand->setWidth( QgsGuiUtils::scaleIconSize( 2 ) );
   mFaceVerticesBand->setBrushStyle( Qt::NoBrush );
@@ -543,7 +543,7 @@ void QgsMapToolEditMeshFrame::initialize()
 
   if ( !mVertexBand )
     mVertexBand = new QgsRubberBand( mCanvas );
-  mVertexBand->setIcon( QgsRubberBand::ICON_CIRCLE );
+  mVertexBand->setIcon( Qgis::RubberBandIconType::Circle );
   mVertexBand->setColor( color );
   mVertexBand->setWidth( QgsGuiUtils::scaleIconSize( 2 ) );
   mVertexBand->setBrushStyle( Qt::NoBrush );
@@ -614,7 +614,7 @@ void QgsMapToolEditMeshFrame::initialize()
   if ( !mMovingFreeVertexRubberband )
   {
     mMovingFreeVertexRubberband = createRubberBand( Qgis::GeometryType::Point );
-    mMovingFreeVertexRubberband->setIcon( QgsRubberBand::ICON_X );
+    mMovingFreeVertexRubberband->setIcon( Qgis::RubberBandIconType::CrossX );
     mMovingFreeVertexRubberband->setIconSize( QgsGuiUtils::scaleIconSize( 10 ) );
     mMovingFreeVertexRubberband->setWidth( QgsGuiUtils::scaleIconSize( 3 ) );
     mMovingFreeVertexRubberband->setVisible( true );

@@ -237,6 +237,8 @@ bool QgsGenerateElevationProfileAlgorithm::prepareAlgorithm( const QVariantMap &
 
 QVariantMap QgsGenerateElevationProfileAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback * )
 {
+  QGS_MARK_ALGORITHM_SOURCE
+
   const QgsGeometry curveGeom = parameterAsGeometry( parameters, u"CURVE"_s, context );
 
   const bool hasMinimumDistance = parameters.value( u"MINIMUM_DISTANCE"_s ).isValid();

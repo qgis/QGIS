@@ -194,21 +194,37 @@ namespace
     constexpr int WIDTH = 32;
     constexpr int HEIGHT = 32;
 
-    const QImage img = data.image;
+    QImage img = data.image;
     if ( img.isNull() )
       return result;
 
-    QImage scaledImage = img.scaled( WIDTH, HEIGHT, Qt::IgnoreAspectRatio, Qt::SmoothTransformation );
-    if ( scaledImage.format() != QImage::Format_RGB32 )
+    bool isSrgb = true;
+    switch ( img.format() )
     {
-      // do we need to consider transparency here? probably not, if someone specifies a skybox texture
-      // with semi-transparent pixels then they get what they deserve...
-      scaledImage = scaledImage.convertToFormat( QImage::Format_RGB32 );
+      case QImage::Format_RGBA32FPx4:
+      case QImage::Format_RGBA32FPx4_Premultiplied:
+      case QImage::Format_RGBX32FPx4:
+      case QImage::Format_RGBA16FPx4:
+      case QImage::Format_RGBA16FPx4_Premultiplied:
+      case QImage::Format_RGBX16FPx4:
+        // float based image formats won't be in sRGB color space
+        isSrgb = false;
+        break;
+      default:
+        break;
     }
+
+    if ( img.format() != QImage::Format_RGBA32FPx4 )
+    {
+      // convert image to float
+      img = img.convertToFormat( QImage::Format_RGBA32FPx4 );
+    }
+
+    QImage scaledImage = img.scaled( WIDTH, HEIGHT, Qt::IgnoreAspectRatio, Qt::SmoothTransformation );
     for ( int y = 0; y < HEIGHT; ++y )
     {
       const float v = ( ( static_cast< float >( y ) + 0.5f ) / static_cast< float >( HEIGHT ) ) * 2.0f - 1.0f;
-      const QRgb *line = reinterpret_cast<const QRgb *>( scaledImage.constScanLine( y ) );
+      const float *line = reinterpret_cast<const float *>( scaledImage.constScanLine( y ) );
       for ( int x = 0; x < WIDTH; ++x )
       {
         // map pixel coordinate to [-1, 1] range
@@ -220,7 +236,11 @@ namespace
         float weight = 1.0f / std::pow( 1.0f + u * u + v * v, 1.5f );
         result.totalWeight += weight;
 
-        const QColor color = Qgs3DUtils::srgbToLinear( line[x] );
+        QColor color = QColor::fromRgbF( line[x * 4 + 0], line[x * 4 + 1], line[x * 4 + 2], 1 );
+        if ( isSrgb )
+        {
+          color = Qgs3DUtils::srgbToLinear( color );
+        }
         const QVector3D weightedColor( color.redF() * weight, color.greenF() * weight, color.blueF() * weight );
 
         constexpr float Y00 = 0.282095f;
@@ -287,7 +307,6 @@ void QgsCubeFacesSkyboxEntity::updateEnvironmentLight( QgsEnvironmentLight *envL
   lightCubeMap->setMinificationFilter( Qt3DRender::QTextureCubeMap::LinearMipMapLinear );
   lightCubeMap->setGenerateMipMaps( true );
   lightCubeMap->setWrapMode( Qt3DRender::QTextureWrapMode( Qt3DRender::QTextureWrapMode::ClampToEdge ) );
-  lightCubeMap->setFormat( Qt3DRender::QAbstractTexture::SRGB8_Alpha8 );
 
   int maxSize = 0;
   for ( const QString &texturePath : { mSourcePosX, mSourcePosY, mSourcePosZ, mSourceNegX, mSourceNegY, mSourceNegZ } )
@@ -318,6 +337,20 @@ void QgsCubeFacesSkyboxEntity::updateEnvironmentLight( QgsEnvironmentLight *envL
     else if ( config.mirrorHorizontal || config.mirrorVertical )
     {
       finalImage = finalImage.mirrored( config.mirrorHorizontal, config.mirrorVertical );
+    }
+
+    bool requiresConversionToRgb = false;
+    Qt3DRender::QAbstractTexture::TextureFormat textureFormat = Qgs3DUtils::determineTextureFormat( finalImage.format(), true, requiresConversionToRgb );
+    lightCubeMap->setFormat( textureFormat );
+    if ( requiresConversionToRgb )
+    {
+      finalImage.convertTo( QImage::Format::Format_ARGB32_Premultiplied );
+    }
+
+    if ( finalImage.width() != finalImage.height() )
+    {
+      const int maxDimension = std::max( finalImage.width(), finalImage.height() );
+      finalImage = finalImage.scaled( maxDimension, maxDimension, Qt::AspectRatioMode::IgnoreAspectRatio, Qt::SmoothTransformation );
     }
 
     auto textureImage = new QgsImageTexture( finalImage, lightCubeMap );
@@ -359,7 +392,6 @@ void QgsCubeFacesSkyboxEntity::reloadTexture()
   newCubeMap->setMinificationFilter( Qt3DRender::QTextureCubeMap::Linear );
   newCubeMap->setGenerateMipMaps( false );
   newCubeMap->setWrapMode( Qt3DRender::QTextureWrapMode( Qt3DRender::QTextureWrapMode::ClampToEdge ) );
-  newCubeMap->setFormat( Qt3DRender::QAbstractTexture::SRGB8_Alpha8 );
 
   // all faces must have the SAME size, so take the maximum size from the input images
   int maxSize = 0;
@@ -399,6 +431,20 @@ void QgsCubeFacesSkyboxEntity::reloadTexture()
     else if ( config.mirrorHorizontal || config.mirrorVertical )
     {
       finalImage = finalImage.mirrored( config.mirrorHorizontal, config.mirrorVertical );
+    }
+
+    bool requiresConversionToRgb = false;
+    Qt3DRender::QAbstractTexture::TextureFormat textureFormat = Qgs3DUtils::determineTextureFormat( finalImage.format(), true, requiresConversionToRgb );
+    newCubeMap->setFormat( textureFormat );
+    if ( requiresConversionToRgb )
+    {
+      finalImage.convertTo( QImage::Format::Format_ARGB32_Premultiplied );
+    }
+
+    if ( finalImage.width() != finalImage.height() )
+    {
+      const int maxDimension = std::max( finalImage.width(), finalImage.height() );
+      finalImage = finalImage.scaled( maxDimension, maxDimension, Qt::AspectRatioMode::IgnoreAspectRatio, Qt::SmoothTransformation );
     }
 
     auto textureImage = new QgsImageTexture( finalImage, newCubeMap );

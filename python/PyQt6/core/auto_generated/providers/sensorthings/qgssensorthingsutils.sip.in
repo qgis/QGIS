@@ -130,6 +130,20 @@ https://docs.ogc.org/is/18-088/18-088.html#requirement-request-data-filter
 .. versionadded:: 3.38
 %End
 
+    struct ServiceCapabilities
+    {
+        Qgis::SensorThingsVersion version;
+        Qgis::SensorThingsExtensions availableExtensions;
+        QSet< Qgis::SensorThingsEntity > availableEntities;
+    };
+
+    static ServiceCapabilities determineServiceCapabilities( const QString &uri, QgsFeedback *feedback = 0, const QString &authCfg = QString() );
+%Docstring
+Retrieves general service capabilities for a SensorThings server.
+
+.. versionadded:: 4.2
+%End
+
     static QList< Qgis::GeometryType > availableGeometryTypes( const QString &uri, Qgis::SensorThingsEntity type, QgsFeedback *feedback = 0, const QString &authCfg = QString() );
 %Docstring
 Returns a list of available geometry types for the server at the

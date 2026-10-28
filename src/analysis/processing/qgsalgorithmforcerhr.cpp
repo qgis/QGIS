@@ -90,6 +90,8 @@ QgsForceRHRAlgorithm *QgsForceRHRAlgorithm::createInstance() const
 
 QgsFeatureList QgsForceRHRAlgorithm::processFeature( const QgsFeature &feature, QgsProcessingContext &, QgsProcessingFeedback * )
 {
+  QGS_MARK_ALGORITHM_SOURCE
+
   if ( !feature.hasGeometry() )
     return QgsFeatureList() << feature;
 

@@ -194,6 +194,32 @@ Returns number of columns of the tile matrix
 Returns number of rows of the tile matrix
 %End
 
+    long long derivedMatrixWidthAtZoomLevel( int zoomLevel ) const;
+%Docstring
+Returns the calculated matrix width at the specified zoom level.
+
+.. note::
+
+   The ``zoomLevel`` must be greater than this matrix's :py:func:`~QgsTileMatrix.zoomLevel`
+
+.. seealso:: :py:func:`derivedMatrixHeightAtZoomLevel`
+
+.. versionadded:: 4.4
+%End
+
+    long long derivedMatrixHeightAtZoomLevel( int zoomLevel ) const;
+%Docstring
+Returns the calculated matrix height at the specified zoom level.
+
+.. note::
+
+   The ``zoomLevel`` must be greater than this matrix's :py:func:`~QgsTileMatrix.zoomLevel`
+
+.. seealso:: :py:func:`derivedMatrixWidthAtZoomLevel`
+
+.. versionadded:: 4.4
+%End
+
     QgsRectangle extent() const;
 %Docstring
 Returns extent of the tile matrix

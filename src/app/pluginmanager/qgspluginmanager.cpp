@@ -253,15 +253,19 @@ void QgsPluginManager::setPythonUtils( QgsPythonUtils *pythonUtils )
     ckbCheckUpdates->setChecked( true );
   }
 
+  // Use whileBlocking to avoid refresh plugin list too many times ...
   if ( settingsAllowExperimental->value() )
   {
-    ckbExperimental->setChecked( true );
+    whileBlocking( ckbExperimental )->setChecked( true );
   }
 
   if ( settingsAllowDeprecated->value() )
   {
-    ckbDeprecated->setChecked( true );
+    whileBlocking( ckbDeprecated )->setChecked( true );
   }
+
+  // And do it once to be sure it's correctly initialized
+  refreshPluginList();
 }
 
 void QgsPluginManager::loadPlugin( const QString &id )
@@ -1330,28 +1334,18 @@ void QgsPluginManager::setCurrentTab( int idx )
     {
       tabInfoHTML += "<style>"
                      "  body, p {"
-                     "      color: "
-                     + palette().color( QPalette::ColorRole::Text ).name()
-                     + ";"
-                       "      background-color:"
-                     + palette().color( QPalette::ColorRole::Base ).name()
-                     + ";"
-                       "      margin: 2px;"
-                       "      font-family: Verdana, Sans-serif;"
-                       "      font-size: 10pt;"
-                       "  }"
-                       "  a, a:hover {"
-                       "      color: "
-                     + palette().color( QPalette::ColorRole::Link ).name()
-                     + ";"
-                       "  }"
-                       "  a:visited {"
-                       "      color: "
-                     + palette().color( QPalette::ColorRole::LinkVisited ).name()
-                     + ";"
-                       "  }"
-                       "</style>";
-      // tabInfoHTML += "<style>" + QgsApplication::reportStyleSheet() + "</style>";
+                     "      color: palette(text);"
+                     "      margin: 2px;"
+                     "      font-family: Verdana, Sans-serif;"
+                     "      font-size: 10pt;"
+                     "  }"
+                     "  a, a:hover {"
+                     "      color: palette(link);"
+                     "  }"
+                     "  a:visited {"
+                     "      color: palette(link);"
+                     "  }"
+                     "</style>";
       tabInfoHTML += it.value();
     }
     wvDetails->setHtml( tabInfoHTML );
@@ -1601,19 +1595,22 @@ void QgsPluginManager::buttonDeleteRep_clicked()
   }
 }
 
+void QgsPluginManager::refreshPluginList()
+{
+  QgsPythonRunner::run( u"pyplugin_installer.installer_data.plugins.rebuild()"_s );
+  QgsPythonRunner::run( u"pyplugin_installer.instance().exportPluginsToManager()"_s );
+}
 
 void QgsPluginManager::ckbExperimental_toggled( bool state )
 {
   settingsAllowExperimental->setValue( state );
-  QgsPythonRunner::run( u"pyplugin_installer.installer_data.plugins.rebuild()"_s );
-  QgsPythonRunner::run( u"pyplugin_installer.instance().exportPluginsToManager()"_s );
+  refreshPluginList();
 }
 
 void QgsPluginManager::ckbDeprecated_toggled( bool state )
 {
   settingsAllowDeprecated->setValue( state );
-  QgsPythonRunner::run( u"pyplugin_installer.installer_data.plugins.rebuild()"_s );
-  QgsPythonRunner::run( u"pyplugin_installer.instance().exportPluginsToManager()"_s );
+  refreshPluginList();
 }
 
 
@@ -1753,6 +1750,10 @@ void QgsPluginManager::showEvent( QShowEvent *e )
   if ( mInit )
   {
     updateOptionsListVerticalTabs();
+    if ( mCurrentlyDisplayedPlugin.isEmpty() )
+    {
+      setCurrentTab( mOptionsListWidget->currentRow() );
+    }
   }
   else
   {

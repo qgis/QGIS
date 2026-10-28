@@ -96,6 +96,8 @@ bool QgsVoronoiPolygonsAlgorithm::prepareAlgorithm( const QVariantMap &parameter
 
 QVariantMap QgsVoronoiPolygonsAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
+  QGS_MARK_ALGORITHM_SOURCE
+
   QString dest;
   if ( mCopyAttributes )
   {
@@ -198,7 +200,7 @@ QString QgsVoronoiPolygonsAlgorithm::voronoiWithAttributes( const QVariantMap &p
         engine->prepareGeometry();
         for ( const QgsFeatureId id : intersected )
         {
-          if ( engine->intersects( index.geometry( id ).constGet() ) )
+          if ( engine->intersects( index.geometry( id ).constGet(), nullptr, feedback ) )
           {
             f.setAttributes( attributeCache.value( id ) );
             break;

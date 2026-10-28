@@ -45,7 +45,7 @@ reference open within the main QGIS application.
       WMSOnlineResource,
     };
 
-    static QgsProject *instance();
+    static QgsProject *instance() /DisallowNone/;
 %Docstring
 Returns the QgsProject singleton instance
 %End
@@ -899,17 +899,20 @@ retrieve a path which is always an absolute path.
 .. versionadded:: 3.2
 %End
 
-    QgsRelationManager *relationManager() const;
+    QgsRelationManager *relationManager() const /DisallowNone/;
+%Docstring
+Returns the project's relation manager.
+%End
 
 
-    QgsLayoutManager *layoutManager();
+    QgsLayoutManager *layoutManager() /DisallowNone/;
 %Docstring
 Returns the project's layout manager, which manages print layouts,
 atlases and reports within the project.
 %End
 
 
-    QgsElevationProfileManager *elevationProfileManager();
+    QgsElevationProfileManager *elevationProfileManager() /DisallowNone/;
 %Docstring
 Returns the project's elevation profile manager, which manages elevation
 profiles within the project.
@@ -918,7 +921,7 @@ profiles within the project.
 %End
 
 
-    QgsSelectiveMaskingSourceSetManager *selectiveMaskingSourceSetManager();
+    QgsSelectiveMaskingSourceSetManager *selectiveMaskingSourceSetManager() /DisallowNone/;
 %Docstring
 Returns the project's selective masking set manager, which manages
 storage of a set of selective masking source sets within the project.
@@ -927,7 +930,7 @@ storage of a set of selective masking source sets within the project.
 %End
 
 
-    QgsMapViewsManager *viewsManager();
+    QgsMapViewsManager *viewsManager() /DisallowNone/;
 %Docstring
 Returns the project's views manager, which manages map views (including
 3d maps) in the project.
@@ -936,7 +939,7 @@ Returns the project's views manager, which manages map views (including
 %End
 
 
-    QgsBookmarkManager *bookmarkManager();
+    QgsBookmarkManager *bookmarkManager() /DisallowNone/;
 %Docstring
 Returns the project's bookmark manager, which manages bookmarks within
 the project.
@@ -945,7 +948,7 @@ the project.
 %End
 
 
-    QgsSensorManager *sensorManager();
+    QgsSensorManager *sensorManager() /DisallowNone/;
 %Docstring
 Returns the project's sensor manager, which manages sensors within the
 project.
@@ -954,7 +957,7 @@ project.
 %End
 
 
-    QgsProjectViewSettings *viewSettings();
+    QgsProjectViewSettings *viewSettings() /DisallowNone/;
 %Docstring
 Returns the project's view settings, which contains settings and
 properties relating to how a QgsProject should be viewed and behave
@@ -964,7 +967,7 @@ inside a map canvas (e.g. map scales and default view extent)
 %End
 
 
-    QgsProjectStyleSettings *styleSettings();
+    QgsProjectStyleSettings *styleSettings() /DisallowNone/;
 %Docstring
 Returns the project's style settings, which contains settings and
 properties relating to how a QgsProject should handle styling. (e.g.
@@ -974,7 +977,7 @@ styling of a newly added vector layer)
 %End
 
 
-    QgsProjectTimeSettings *timeSettings();
+    QgsProjectTimeSettings *timeSettings() /DisallowNone/;
 %Docstring
 Returns the project's time settings, which contains the project's
 temporal range and other time based settings.
@@ -983,7 +986,7 @@ temporal range and other time based settings.
 %End
 
 
-    QgsProjectElevationProperties *elevationProperties();
+    QgsProjectElevationProperties *elevationProperties() /DisallowNone/;
 %Docstring
 Returns the project's elevation properties, which contains the project's
 elevation related settings.
@@ -992,7 +995,7 @@ elevation related settings.
 %End
 
 
-    QgsProjectDisplaySettings *displaySettings();
+    QgsProjectDisplaySettings *displaySettings() /DisallowNone/;
 %Docstring
 Returns the project's display settings, which contains settings and
 properties relating to how a QgsProject should display values such as
@@ -1002,7 +1005,7 @@ map coordinates and bearings.
 %End
 
 
-    QgsProjectGpsSettings *gpsSettings();
+    QgsProjectGpsSettings *gpsSettings() /DisallowNone/;
 %Docstring
 Returns the project's GPS settings, which contains settings and
 properties relating to how a QgsProject should interact with a GPS
@@ -1011,18 +1014,18 @@ device.
 .. versionadded:: 3.30
 %End
 
-    QgsLayerTree *layerTreeRoot() const;
+    QgsLayerTree *layerTreeRoot() const /DisallowNone/;
 %Docstring
 Returns pointer to the root (invisible) node of the project's layer tree
 %End
 
-    QgsLayerTreeRegistryBridge *layerTreeRegistryBridge() const;
+    QgsLayerTreeRegistryBridge *layerTreeRegistryBridge() const /DisallowNone/;
 %Docstring
 Returns pointer to the helper class that synchronizes map layer registry
 with layer tree
 %End
 
-    QgsMapThemeCollection *mapThemeCollection();
+    QgsMapThemeCollection *mapThemeCollection() /DisallowNone/;
 %Docstring
 Returns pointer to the project's map theme collection.
 
@@ -1031,7 +1034,7 @@ Returns pointer to the project's map theme collection.
    renamed in QGIS 3.0, formerly :py:class:`QgsVisibilityPresetCollection`
 %End
 
-    QgsAnnotationManager *annotationManager();
+    QgsAnnotationManager *annotationManager() /DisallowNone/;
 %Docstring
 Returns pointer to the project's annotation manager.
 %End
@@ -1215,7 +1218,7 @@ Returns project's global labeling engine settings
 %End
 
 
-    QgsMapLayerStore *layerStore();
+    QgsMapLayerStore *layerStore() /DisallowNone/;
 %Docstring
 Returns a pointer to the project's internal layer store.
 %End
@@ -1465,7 +1468,7 @@ ownership of the layer and is responsible for deleting it.
 .. seealso:: :py:func:`removeMapLayer`
 %End
 
-    QgsAnnotationLayer *mainAnnotationLayer();
+    QgsAnnotationLayer *mainAnnotationLayer() /DisallowNone/;
 %Docstring
 Returns the main annotation layer associated with the project.
 
@@ -1541,7 +1544,7 @@ provider.
 %End
 
 
-    QgsAuxiliaryStorage *auxiliaryStorage();
+    QgsAuxiliaryStorage *auxiliaryStorage() /DisallowNone/;
 %Docstring
 Returns the current auxiliary storage.
 %End

@@ -21,6 +21,7 @@
 #include "qgscategorizedsymbolrenderer.h"
 #include "qgsfillsymbol.h"
 #include "qgsfillsymbollayer.h"
+#include "qgsgraduatedsymbolrenderer.h"
 #include "qgslinesymbol.h"
 #include "qgslinesymbollayer.h"
 #include "qgslogger.h"
@@ -67,7 +68,17 @@ class TestQgsArcGisRestUtils : public QObject
     void testParsePictureFillSymbolNullOutline();
     void testParseRendererSimple();
     void testParseRendererCategorized();
+    void testParseRendererCategorizedNullValue();
+    void testRendererTransparency();
+    void testVisualVariableRotationGeographic();
+    void testVisualVariableRotationArithmetic();
+    void testVisualVariableRotationDefaultsToGeographic();
+    void testVisualVariableRotationValueExpressionSkipped();
+    void testVisualVariableRotationSimpleRenderer();
+    void testVisualVariableRotationCategorizedRenderer();
+    void testVisualVariableRotationGraduatedRenderer();
     void testParseLabeling();
+    void testParseLabelingRepeat();
     void testParseCompoundCurve();
     void testParsePolyline();
     void testParsePolylineZ();
@@ -255,7 +266,10 @@ void TestQgsArcGisRestUtils::testParseMarkerSymbol()
     "}"
     "}"
   );
-  std::unique_ptr<QgsSymbol> symbol( QgsArcGisRestUtils::convertSymbol( map ) );
+  QgsReadWriteContext rwContext;
+  QgsSymbolConverterContext context( rwContext );
+  std::unique_ptr<QgsSymbol> symbol( QgsArcGisRestUtils::convertSymbol( map, context ) );
+  QVERIFY( context.warnings().isEmpty() );
   QgsMarkerSymbol *marker = dynamic_cast<QgsMarkerSymbol *>( symbol.get() );
   QVERIFY( marker );
   QCOMPARE( marker->symbolLayerCount(), 1 );
@@ -265,8 +279,8 @@ void TestQgsArcGisRestUtils::testParseMarkerSymbol()
   QCOMPARE( markerLayer->shape(), Qgis::MarkerShape::Square );
   QCOMPARE( markerLayer->size(), 8.0 );
   QCOMPARE( markerLayer->sizeUnit(), Qgis::RenderUnit::Points );
-  QCOMPARE( markerLayer->angle(), -10.0 ); // opposite direction to esri spec!
-  QCOMPARE( markerLayer->offset(), QPointF( 7, 17 ) );
+  QCOMPARE( markerLayer->angle(), -10.0 );              // opposite direction to esri spec!
+  QCOMPARE( markerLayer->offset(), QPointF( 7, -17 ) ); // y offset is opposite direction to esri spec!
   QCOMPARE( markerLayer->offsetUnit(), Qgis::RenderUnit::Points );
   QCOMPARE( markerLayer->strokeColor(), QColor( 152, 230, 17, 176 ) );
   QCOMPARE( markerLayer->strokeWidth(), 5.0 );
@@ -319,8 +333,10 @@ void TestQgsArcGisRestUtils::testParseMarkerSymbol()
     "}"
     "}"
   );
-
-  std::unique_ptr<QgsSymbol> fontSymbol( QgsArcGisRestUtils::convertSymbol( fontMap ) );
+  QgsReadWriteContext rwContext2;
+  QgsSymbolConverterContext context2( rwContext2 );
+  std::unique_ptr<QgsSymbol> fontSymbol( QgsArcGisRestUtils::convertSymbol( fontMap, context2 ) );
+  QVERIFY( context2.warnings().isEmpty() );
   QgsMarkerSymbol *fontMarker = dynamic_cast<QgsMarkerSymbol *>( fontSymbol.get() );
   QVERIFY( fontMarker );
   QCOMPARE( fontMarker->symbolLayerCount(), 1 );
@@ -364,7 +380,9 @@ void TestQgsArcGisRestUtils::testParseMarkerSymbolNullOutline()
     "\"outline\": null"
     "}"
   );
-  const std::unique_ptr<QgsSymbol> symbol( QgsArcGisRestUtils::convertSymbol( map ) );
+  QgsReadWriteContext rwContext;
+  QgsSymbolConverterContext context( rwContext );
+  const std::unique_ptr<QgsSymbol> symbol( QgsArcGisRestUtils::convertSymbol( map, context ) );
   QgsMarkerSymbol *marker = dynamic_cast<QgsMarkerSymbol *>( symbol.get() );
   QVERIFY( marker );
   QCOMPARE( marker->symbolLayerCount(), 1 );
@@ -393,7 +411,10 @@ void TestQgsArcGisRestUtils::testPictureMarkerSymbol()
     "\"yoffset\": 17"
     "}"
   );
-  std::unique_ptr<QgsSymbol> symbol( QgsArcGisRestUtils::convertSymbol( map ) );
+  QgsReadWriteContext rwContext;
+  QgsSymbolConverterContext context( rwContext );
+  std::unique_ptr<QgsSymbol> symbol( QgsArcGisRestUtils::convertSymbol( map, context ) );
+  QVERIFY( context.warnings().isEmpty() );
   QgsMarkerSymbol *marker = dynamic_cast<QgsMarkerSymbol *>( symbol.get() );
   QVERIFY( marker );
   QCOMPARE( marker->symbolLayerCount(), 1 );
@@ -403,8 +424,8 @@ void TestQgsArcGisRestUtils::testPictureMarkerSymbol()
   QCOMPARE( markerLayer->size(), 20.0 );
   QCOMPARE( markerLayer->fixedAspectRatio(), 1.25 );
   QCOMPARE( markerLayer->sizeUnit(), Qgis::RenderUnit::Points );
-  QCOMPARE( markerLayer->angle(), -10.0 ); // opposite direction to esri spec!
-  QCOMPARE( markerLayer->offset(), QPointF( 7, 17 ) );
+  QCOMPARE( markerLayer->angle(), -10.0 );              // opposite direction to esri spec!
+  QCOMPARE( markerLayer->offset(), QPointF( 7, -17 ) ); // y offset is opposite direction to esri spec!
   QCOMPARE( markerLayer->offsetUnit(), Qgis::RenderUnit::Points );
 
   // invalid json
@@ -427,7 +448,10 @@ void TestQgsArcGisRestUtils::testParseLineSymbol()
     "\"width\": 7"
     "}"
   );
-  std::unique_ptr<QgsSymbol> symbol( QgsArcGisRestUtils::convertSymbol( map ) );
+  QgsReadWriteContext rwContext;
+  QgsSymbolConverterContext context( rwContext );
+  std::unique_ptr<QgsSymbol> symbol( QgsArcGisRestUtils::convertSymbol( map, context ) );
+  QVERIFY( context.warnings().isEmpty() );
   QgsLineSymbol *line = dynamic_cast<QgsLineSymbol *>( symbol.get() );
   QVERIFY( line );
   QCOMPARE( line->symbolLayerCount(), 1 );
@@ -468,7 +492,10 @@ void TestQgsArcGisRestUtils::testParseFillSymbol()
     "}"
     "}"
   );
-  const std::unique_ptr<QgsSymbol> symbol( QgsArcGisRestUtils::convertSymbol( map ) );
+  QgsReadWriteContext rwContextFill;
+  QgsSymbolConverterContext contextFill( rwContextFill );
+  const std::unique_ptr<QgsSymbol> symbol( QgsArcGisRestUtils::convertSymbol( map, contextFill ) );
+  QVERIFY( contextFill.warnings().isEmpty() );
   QgsFillSymbol *fill = dynamic_cast<QgsFillSymbol *>( symbol.get() );
   QVERIFY( fill );
   QCOMPARE( fill->symbolLayerCount(), 1 );
@@ -499,7 +526,9 @@ void TestQgsArcGisRestUtils::testParseFillSymbolNullOutline()
     "\"outline\": null"
     "}"
   );
-  const std::unique_ptr<QgsSymbol> symbol( QgsArcGisRestUtils::convertSymbol( map ) );
+  QgsReadWriteContext rwContext;
+  QgsSymbolConverterContext context( rwContext );
+  const std::unique_ptr<QgsSymbol> symbol( QgsArcGisRestUtils::convertSymbol( map, context ) );
   QgsFillSymbol *fill = dynamic_cast<QgsFillSymbol *>( symbol.get() );
   QVERIFY( fill );
   QCOMPARE( fill->symbolLayerCount(), 1 );
@@ -536,7 +565,10 @@ void TestQgsArcGisRestUtils::testParsePictureFillSymbol()
     "}"
     "}"
   );
-  const std::unique_ptr<QgsSymbol> symbol( QgsArcGisRestUtils::convertSymbol( map ) );
+  QgsReadWriteContext rwContextPFill;
+  QgsSymbolConverterContext contextPFill( rwContextPFill );
+  const std::unique_ptr<QgsSymbol> symbol( QgsArcGisRestUtils::convertSymbol( map, contextPFill ) );
+  QVERIFY( contextPFill.warnings().isEmpty() );
   QgsFillSymbol *fill = dynamic_cast<QgsFillSymbol *>( symbol.get() );
   QVERIFY( fill );
   QCOMPARE( fill->symbolLayerCount(), 2 );
@@ -568,7 +600,9 @@ void TestQgsArcGisRestUtils::testParsePictureFillSymbolNullOutline()
     "\"outline\": null"
     "}"
   );
-  const std::unique_ptr<QgsSymbol> symbol( QgsArcGisRestUtils::convertSymbol( map ) );
+  QgsReadWriteContext rwContext;
+  QgsSymbolConverterContext context( rwContext );
+  const std::unique_ptr<QgsSymbol> symbol( QgsArcGisRestUtils::convertSymbol( map, context ) );
   QgsFillSymbol *fill = dynamic_cast<QgsFillSymbol *>( symbol.get() );
   QVERIFY( fill );
   // With null outline, should only have 1 layer (raster fill), not 2
@@ -612,7 +646,9 @@ void TestQgsArcGisRestUtils::testParseRendererSimple()
     "}"
     "}"
   );
-  const std::unique_ptr<QgsFeatureRenderer> renderer( QgsArcGisRestUtils::convertRenderer( map ) );
+  QgsReadWriteContext rwContext;
+  QgsSymbolConverterContext context( rwContext );
+  const std::unique_ptr<QgsFeatureRenderer> renderer( QgsArcGisRestUtils::convertRenderer( map, context ) );
   QgsSingleSymbolRenderer *ssRenderer = dynamic_cast<QgsSingleSymbolRenderer *>( renderer.get() );
   QVERIFY( ssRenderer );
   QVERIFY( ssRenderer->symbol() );
@@ -686,7 +722,9 @@ void TestQgsArcGisRestUtils::testParseRendererCategorized()
     "]"
     "}"
   );
-  const std::unique_ptr<QgsFeatureRenderer> renderer( QgsArcGisRestUtils::convertRenderer( map ) );
+  QgsReadWriteContext rwContext;
+  QgsSymbolConverterContext context( rwContext );
+  const std::unique_ptr<QgsFeatureRenderer> renderer( QgsArcGisRestUtils::convertRenderer( map, context ) );
   QgsCategorizedSymbolRenderer *catRenderer = dynamic_cast<QgsCategorizedSymbolRenderer *>( renderer.get() );
   QVERIFY( catRenderer );
   QCOMPARE( catRenderer->categories().count(), 2 );
@@ -696,6 +734,382 @@ void TestQgsArcGisRestUtils::testParseRendererCategorized()
   QCOMPARE( catRenderer->categories().at( 1 ).value().toString(), u"Canada"_s );
   QCOMPARE( catRenderer->categories().at( 1 ).label(), u"Canada"_s );
   QVERIFY( catRenderer->categories().at( 1 ).symbol() );
+}
+
+void TestQgsArcGisRestUtils::testParseRendererCategorizedNullValue()
+{
+  // ArcGIS represents a NULL field value in a unique value renderer using the literal
+  // string "<Null>" as the category's value -- this should be converted to a real NULL
+  // match rather than being treated as the literal text "<Null>"
+  const QVariantMap map = jsonStringToMap(
+    "{"
+    "\"type\": \"uniqueValue\","
+    "\"field1\": \"zone\","
+    "\"uniqueValueInfos\": ["
+    "{"
+    "\"value\": \"1\","
+    "\"symbol\": {"
+    "\"color\": [255, 0, 0, 255],"
+    "\"type\": \"esriSFS\","
+    "\"style\": \"esriSFSSolid\""
+    "},"
+    "\"label\": \"Zone 1\""
+    "},"
+    "{"
+    "\"value\": \"<Null>\","
+    "\"symbol\": {"
+    "\"color\": [0, 0, 0, 255],"
+    "\"type\": \"esriSFS\","
+    "\"style\": \"esriSFSBackwardDiagonal\""
+    "},"
+    "\"label\": \"PSI/ZWILAG\""
+    "}"
+    "]"
+    "}"
+  );
+  QgsReadWriteContext rwContext;
+  QgsSymbolConverterContext context( rwContext );
+  const std::unique_ptr<QgsFeatureRenderer> renderer( QgsArcGisRestUtils::convertRenderer( map, context ) );
+  QgsCategorizedSymbolRenderer *catRenderer = dynamic_cast<QgsCategorizedSymbolRenderer *>( renderer.get() );
+  QVERIFY( catRenderer );
+  QCOMPARE( catRenderer->categories().count(), 2 );
+  QCOMPARE( catRenderer->categories().at( 0 ).value().toString(), u"1"_s );
+  QCOMPARE( catRenderer->categories().at( 0 ).label(), u"Zone 1"_s );
+  QVERIFY( catRenderer->categories().at( 0 ).symbol() );
+
+  // the "<Null>" category value must be stored as an invalid (NULL) QVariant, not the literal string "<Null>"
+  QVERIFY( !catRenderer->categories().at( 1 ).value().isValid() );
+  QCOMPARE( catRenderer->categories().at( 1 ).label(), u"PSI/ZWILAG"_s );
+  QVERIFY( catRenderer->categories().at( 1 ).symbol() );
+}
+
+void TestQgsArcGisRestUtils::testRendererTransparency()
+{
+  // transparency at drawingInfo level is now a layer-level rendering setting,
+  // and should not be baked into individual symbol opacity
+  // simple renderer
+  {
+    const QVariantMap map = jsonStringToMap(
+      "{"
+      "\"type\": \"simple\","
+      "\"symbol\": "
+      "{\"color\":[0,0,128,255],\"size\":15,\"angle\":0,\"xoffset\":0,\"yoffset\":0,\"type\":\"esriSMS\",\"style\":\"esriSMSCircle\",\"outline\":{\"color\":[0,0,128,255],\"width\":1,\"type\":"
+      "\"esriSLS\",\"style\":\"esriSLSSolid\"}},"
+      "\"transparency\": 70"
+      "}"
+    );
+    QgsReadWriteContext rwContext;
+    QgsSymbolConverterContext context( rwContext );
+    const std::unique_ptr<QgsFeatureRenderer> renderer( QgsArcGisRestUtils::convertRenderer( map, context ) );
+    const QgsSingleSymbolRenderer *ssRenderer = dynamic_cast<QgsSingleSymbolRenderer *>( renderer.get() );
+    QVERIFY( ssRenderer );
+    QVERIFY( ssRenderer->symbol() );
+    QCOMPARE( ssRenderer->symbol()->opacity(), 1.0 );
+  }
+
+  // uniqueValue renderer
+  {
+    const QVariantMap map = jsonStringToMap(
+      "{"
+      "\"type\": \"uniqueValue\","
+      "\"field1\": \"TYPE\","
+      "\"uniqueValueInfos\": ["
+      "{"
+      "\"value\": \"A\","
+      "\"symbol\": "
+      "{\"color\":[255,0,0,255],\"size\":8,\"angle\":0,\"xoffset\":0,\"yoffset\":0,\"type\":\"esriSMS\",\"style\":\"esriSMSCircle\",\"outline\":{\"color\":[0,0,0,255],\"width\":1,\"type\":"
+      "\"esriSLS\",\"style\":\"esriSLSSolid\"}},"
+      "\"label\": \"A\""
+      "}"
+      "],"
+      "\"transparency\": 50"
+      "}"
+    );
+    QgsReadWriteContext rwContext;
+    QgsSymbolConverterContext context( rwContext );
+    const std::unique_ptr<QgsFeatureRenderer> renderer( QgsArcGisRestUtils::convertRenderer( map, context ) );
+    const QgsCategorizedSymbolRenderer *catRenderer = dynamic_cast<QgsCategorizedSymbolRenderer *>( renderer.get() );
+    QVERIFY( catRenderer );
+    QCOMPARE( catRenderer->categories().count(), 1 );
+    QVERIFY( catRenderer->categories().at( 0 ).symbol() );
+    QCOMPARE( catRenderer->categories().at( 0 ).symbol()->opacity(), 1.0 );
+  }
+
+  // classBreaks renderer
+  {
+    const QVariantMap map = jsonStringToMap(
+      "{"
+      "\"type\": \"classBreaks\","
+      "\"field\": \"POP\","
+      "\"minValue\": 0,"
+      "\"classBreakInfos\": ["
+      "{"
+      "\"classMaxValue\": 1000,"
+      "\"symbol\": "
+      "{\"color\":[255,0,0,255],\"size\":8,\"angle\":0,\"xoffset\":0,\"yoffset\":0,\"type\":\"esriSMS\",\"style\":\"esriSMSCircle\",\"outline\":{\"color\":[0,0,0,255],\"width\":1,\"type\":"
+      "\"esriSLS\",\"style\":\"esriSLSSolid\"}},"
+      "\"label\": \"< 1000\""
+      "}"
+      "],"
+      "\"transparency\": 25"
+      "}"
+    );
+    QgsReadWriteContext rwContext;
+    QgsSymbolConverterContext context( rwContext );
+    const std::unique_ptr<QgsFeatureRenderer> renderer( QgsArcGisRestUtils::convertRenderer( map, context ) );
+    const QgsGraduatedSymbolRenderer *gradRenderer = dynamic_cast<QgsGraduatedSymbolRenderer *>( renderer.get() );
+    QVERIFY( gradRenderer );
+    QVERIFY( !gradRenderer->ranges().isEmpty() );
+    QVERIFY( gradRenderer->ranges().at( 0 ).symbol() );
+    QCOMPARE( gradRenderer->ranges().at( 0 ).symbol()->opacity(), 1.0 );
+  }
+}
+
+void TestQgsArcGisRestUtils::testVisualVariableRotationGeographic()
+{
+  // Geographic rotation: 0° = North, clockwise — maps directly to a field property
+  const QVariantMap rendererData = jsonStringToMap(
+    "{"
+    "\"type\": \"simple\","
+    "\"symbol\": "
+    "{\"color\":[0,0,128,128],\"size\":15,\"angle\":0,\"xoffset\":0,\"yoffset\":0,\"type\":\"esriSMS\",\"style\":\"esriSMSCircle\",\"outline\":{\"color\":[0,0,128,255],\"width\":1,\"type\":"
+    "\"esriSLS\",\"style\":\"esriSLSSolid\"}},"
+    "\"visualVariables\": ["
+    "{"
+    "\"type\": \"rotationInfo\","
+    "\"field\": \"WIND_DIR\","
+    "\"rotationType\": \"geographic\""
+    "}"
+    "]"
+    "}"
+  );
+  QgsReadWriteContext rwContext;
+  QgsSymbolConverterContext context( rwContext );
+  const std::unique_ptr<QgsFeatureRenderer> renderer( QgsArcGisRestUtils::convertRenderer( rendererData, context ) );
+  const QgsSingleSymbolRenderer *ssRenderer = dynamic_cast<QgsSingleSymbolRenderer *>( renderer.get() );
+  QVERIFY( ssRenderer );
+  const QgsProperty prop = ssRenderer->symbol()->symbolLayer( 0 )->dataDefinedProperties().property( QgsSymbolLayer::Property::Angle );
+  QVERIFY( prop.isActive() );
+  QCOMPARE( prop.propertyType(), Qgis::PropertyType::Field );
+  QCOMPARE( prop.field(), u"WIND_DIR"_s );
+}
+
+void TestQgsArcGisRestUtils::testVisualVariableRotationArithmetic()
+{
+  // Arithmetic rotation: 0° = East, CCW — must be converted via "90 - field"
+  const QVariantMap rendererData = jsonStringToMap(
+    "{"
+    "\"type\": \"simple\","
+    "\"symbol\": "
+    "{\"color\":[0,0,128,128],\"size\":15,\"angle\":0,\"xoffset\":0,\"yoffset\":0,\"type\":\"esriSMS\",\"style\":\"esriSMSCircle\",\"outline\":{\"color\":[0,0,128,255],\"width\":1,\"type\":"
+    "\"esriSLS\",\"style\":\"esriSLSSolid\"}},"
+    "\"visualVariables\": ["
+    "{"
+    "\"type\": \"rotationInfo\","
+    "\"field\": \"ROTATION\","
+    "\"rotationType\": \"arithmetic\""
+    "}"
+    "]"
+    "}"
+  );
+  QgsReadWriteContext rwContext;
+  QgsSymbolConverterContext context( rwContext );
+  const std::unique_ptr<QgsFeatureRenderer> renderer( QgsArcGisRestUtils::convertRenderer( rendererData, context ) );
+  const QgsSingleSymbolRenderer *ssRenderer = dynamic_cast<QgsSingleSymbolRenderer *>( renderer.get() );
+  QVERIFY( ssRenderer );
+  const QgsProperty prop = ssRenderer->symbol()->symbolLayer( 0 )->dataDefinedProperties().property( QgsSymbolLayer::Property::Angle );
+  QVERIFY( prop.isActive() );
+  QCOMPARE( prop.propertyType(), Qgis::PropertyType::Expression );
+  QCOMPARE( prop.expressionString(), u"90 - \"ROTATION\""_s );
+}
+
+void TestQgsArcGisRestUtils::testVisualVariableRotationDefaultsToGeographic()
+{
+  // When rotationType is absent the implementation does not apply rotation
+  const QVariantMap rendererData = jsonStringToMap(
+    "{"
+    "\"type\": \"simple\","
+    "\"symbol\": "
+    "{\"color\":[0,0,128,128],\"size\":15,\"angle\":0,\"xoffset\":0,\"yoffset\":0,\"type\":\"esriSMS\",\"style\":\"esriSMSCircle\",\"outline\":{\"color\":[0,0,128,255],\"width\":1,\"type\":"
+    "\"esriSLS\",\"style\":\"esriSLSSolid\"}},"
+    "\"visualVariables\": ["
+    "{"
+    "\"type\": \"rotationInfo\","
+    "\"field\": \"BEARING\""
+    "}"
+    "]"
+    "}"
+  );
+  QgsReadWriteContext rwContext;
+  QgsSymbolConverterContext context( rwContext );
+  const std::unique_ptr<QgsFeatureRenderer> renderer( QgsArcGisRestUtils::convertRenderer( rendererData, context ) );
+  const QgsSingleSymbolRenderer *ssRenderer = dynamic_cast<QgsSingleSymbolRenderer *>( renderer.get() );
+  QVERIFY( ssRenderer );
+  const QgsProperty prop = ssRenderer->symbol()->symbolLayer( 0 )->dataDefinedProperties().property( QgsSymbolLayer::Property::Angle );
+  QVERIFY( !prop.isActive() );
+}
+
+void TestQgsArcGisRestUtils::testVisualVariableRotationValueExpressionSkipped()
+{
+  // valueExpression (Arcade) is not supported yet — no rotation should be applied
+  const QVariantMap rendererData = jsonStringToMap(
+    "{"
+    "\"type\": \"simple\","
+    "\"symbol\": "
+    "{\"color\":[0,0,128,128],\"size\":15,\"angle\":0,\"xoffset\":0,\"yoffset\":0,\"type\":\"esriSMS\",\"style\":\"esriSMSCircle\",\"outline\":{\"color\":[0,0,128,255],\"width\":1,\"type\":"
+    "\"esriSLS\",\"style\":\"esriSLSSolid\"}},"
+    "\"visualVariables\": ["
+    "{"
+    "\"type\": \"rotationInfo\","
+    "\"valueExpression\": \"$feature.ANGLE * 2\","
+    "\"rotationType\": \"geographic\""
+    "}"
+    "]"
+    "}"
+  );
+  QgsReadWriteContext rwContext;
+  QgsSymbolConverterContext context( rwContext );
+  const std::unique_ptr<QgsFeatureRenderer> renderer( QgsArcGisRestUtils::convertRenderer( rendererData, context ) );
+  const QgsSingleSymbolRenderer *ssRenderer = dynamic_cast<QgsSingleSymbolRenderer *>( renderer.get() );
+  QVERIFY( ssRenderer );
+  const QgsProperty prop = ssRenderer->symbol()->symbolLayer( 0 )->dataDefinedProperties().property( QgsSymbolLayer::Property::Angle );
+  QVERIFY( !prop.isActive() );
+  QVERIFY( !context.warnings().isEmpty() );
+  QVERIFY( context.warnings().first().contains( u"valueExpression"_s ) );
+}
+
+void TestQgsArcGisRestUtils::testVisualVariableRotationSimpleRenderer()
+{
+  // Rotation visual variable is applied to the symbol of a simple renderer
+  const QVariantMap map = jsonStringToMap(
+    "{"
+    "\"type\": \"simple\","
+    "\"symbol\": {"
+    "\"color\": [0,0,128,128],"
+    "\"size\": 15,"
+    "\"angle\": 0,"
+    "\"xoffset\": 0,"
+    "\"yoffset\": 0,"
+    "\"type\": \"esriSMS\","
+    "\"style\": \"esriSMSCircle\","
+    "\"outline\": {\"color\":[0,0,128,255],\"width\":1,\"type\":\"esriSLS\",\"style\":\"esriSLSSolid\"}"
+    "},"
+    "\"visualVariables\": ["
+    "{"
+    "\"type\": \"rotationInfo\","
+    "\"field\": \"HEADING\","
+    "\"rotationType\": \"geographic\""
+    "}"
+    "]"
+    "}"
+  );
+  QgsReadWriteContext rwContext;
+  QgsSymbolConverterContext context( rwContext );
+  const std::unique_ptr<QgsFeatureRenderer> renderer( QgsArcGisRestUtils::convertRenderer( map, context ) );
+  QgsSingleSymbolRenderer *ssRenderer = dynamic_cast<QgsSingleSymbolRenderer *>( renderer.get() );
+  QVERIFY( ssRenderer );
+  QVERIFY( ssRenderer->symbol() );
+  const QgsProperty prop = ssRenderer->symbol()->symbolLayer( 0 )->dataDefinedProperties().property( QgsSymbolLayer::Property::Angle );
+  QVERIFY( prop.isActive() );
+  QCOMPARE( prop.propertyType(), Qgis::PropertyType::Field );
+  QCOMPARE( prop.field(), u"HEADING"_s );
+}
+
+void TestQgsArcGisRestUtils::testVisualVariableRotationCategorizedRenderer()
+{
+  // Rotation visual variable is applied to all category symbols of a uniqueValue renderer
+  const QVariantMap map = jsonStringToMap(
+    "{"
+    "\"type\": \"uniqueValue\","
+    "\"field1\": \"COUNTRY\","
+    "\"uniqueValueInfos\": ["
+    "{"
+    "\"value\": \"US\","
+    "\"symbol\": "
+    "{\"color\":[253,127,111,255],\"size\":12,\"angle\":0,\"xoffset\":0,\"yoffset\":0,\"type\":\"esriSMS\",\"style\":\"esriSMSCircle\",\"outline\":{\"color\":[26,26,26,255],\"width\":0.75,\"type\":"
+    "\"esriSLS\",\"style\":\"esriSLSSolid\"}},"
+    "\"label\": \"United States\""
+    "},"
+    "{"
+    "\"value\": \"Canada\","
+    "\"symbol\": "
+    "{\"color\":[126,176,213,255],\"size\":12,\"angle\":0,\"xoffset\":0,\"yoffset\":0,\"type\":\"esriSMS\",\"style\":\"esriSMSCircle\",\"outline\":{\"color\":[26,26,26,255],\"width\":0.75,\"type\":"
+    "\"esriSLS\",\"style\":\"esriSLSSolid\"}},"
+    "\"label\": \"Canada\""
+    "}"
+    "],"
+    "\"visualVariables\": ["
+    "{"
+    "\"type\": \"rotationInfo\","
+    "\"field\": \"WIND_DIR\","
+    "\"rotationType\": \"arithmetic\""
+    "}"
+    "]"
+    "}"
+  );
+  QgsReadWriteContext rwContext;
+  QgsSymbolConverterContext context( rwContext );
+  const std::unique_ptr<QgsFeatureRenderer> renderer( QgsArcGisRestUtils::convertRenderer( map, context ) );
+  QgsCategorizedSymbolRenderer *catRenderer = dynamic_cast<QgsCategorizedSymbolRenderer *>( renderer.get() );
+  QVERIFY( catRenderer );
+  QCOMPARE( catRenderer->categories().count(), 2 );
+  for ( const QgsRendererCategory &category : catRenderer->categories() )
+  {
+    QVERIFY( category.symbol() );
+    const QgsProperty prop = category.symbol()->symbolLayer( 0 )->dataDefinedProperties().property( QgsSymbolLayer::Property::Angle );
+    QVERIFY( prop.isActive() );
+    QCOMPARE( prop.propertyType(), Qgis::PropertyType::Expression );
+    QCOMPARE( prop.expressionString(), u"90 - \"WIND_DIR\""_s );
+  }
+}
+
+void TestQgsArcGisRestUtils::testVisualVariableRotationGraduatedRenderer()
+{
+  // Rotation visual variable is applied to all class symbols of a classBreaks renderer
+  const QVariantMap map = jsonStringToMap(
+    "{"
+    "\"type\": \"classBreaks\","
+    "\"field\": \"POPULATION\","
+    "\"minValue\": 0,"
+    "\"classBreakInfos\": ["
+    "{"
+    "\"classMaxValue\": 1000,"
+    "\"symbol\": "
+    "{\"color\":[255,0,0,255],\"size\":8,\"angle\":0,\"xoffset\":0,\"yoffset\":0,\"type\":\"esriSMS\",\"style\":\"esriSMSCircle\",\"outline\":{\"color\":[0,0,0,255],\"width\":1,\"type\":\"esriSLS\","
+    "\"style\":\"esriSLSSolid\"}},"
+    "\"label\": \"< 1000\""
+    "},"
+    "{"
+    "\"classMaxValue\": 5000,"
+    "\"symbol\": "
+    "{\"color\":[0,255,0,255],\"size\":14,\"angle\":0,\"xoffset\":0,\"yoffset\":0,\"type\":\"esriSMS\",\"style\":\"esriSMSCircle\",\"outline\":{\"color\":[0,0,0,255],\"width\":1,\"type\":\"esriSLS\","
+    "\"style\":\"esriSLSSolid\"}},"
+    "\"label\": \"1000 - 5000\""
+    "}"
+    "],"
+    "\"visualVariables\": ["
+    "{"
+    "\"type\": \"rotationInfo\","
+    "\"field\": \"HEADING\","
+    "\"rotationType\": \"geographic\""
+    "}"
+    "]"
+    "}"
+  );
+  QgsReadWriteContext rwContext;
+  QgsSymbolConverterContext context( rwContext );
+  const std::unique_ptr<QgsFeatureRenderer> renderer( QgsArcGisRestUtils::convertRenderer( map, context ) );
+  QgsGraduatedSymbolRenderer *gradRenderer = dynamic_cast<QgsGraduatedSymbolRenderer *>( renderer.get() );
+  QVERIFY( gradRenderer );
+  QVERIFY( gradRenderer->ranges().count() >= 2 );
+  for ( const QgsRendererRange &range : gradRenderer->ranges() )
+  {
+    QVERIFY( range.symbol() );
+    const QgsProperty prop = range.symbol()->symbolLayer( 0 )->dataDefinedProperties().property( QgsSymbolLayer::Property::Angle );
+    QVERIFY( prop.isActive() );
+    QCOMPARE( prop.propertyType(), Qgis::PropertyType::Field );
+    QCOMPARE( prop.field(), u"HEADING"_s );
+  }
 }
 
 void TestQgsArcGisRestUtils::testParseLabeling()
@@ -816,6 +1230,146 @@ void TestQgsArcGisRestUtils::testParseLabeling()
   QCOMPARE( textFormat.buffer().color(), QColor( 255, 255, 255 ) );
   QCOMPARE( textFormat.buffer().size(), 1.0 );
   QCOMPARE( textFormat.buffer().sizeUnit(), Qgis::RenderUnit::Points );
+}
+
+void TestQgsArcGisRestUtils::testParseLabelingRepeat()
+{
+  const QVariantMap map = jsonStringToMap(
+    "{"
+    "\"labelingInfo\": ["
+    "{"
+    "\"labelExpression\": \"[Hierarchy]\","
+    "\"labelPlacement\": \"esriServerLinePlacementCenterAlong\","
+    "\"textLayout\": \"straight\","
+    "\"deconflictionStrategy\": \"dynamic\","
+    "\"allowOverrun\": true,"
+    "\"repeatLabel\": true,"
+    "\"repeatLabelDistance\": 150,"
+    "\"lineConnection\": \"minimizeLabels\","
+    "\"useClippedGeometry\": true,"
+    "\"stackLabel\": true,"
+    "\"stackAlignment\": \"dynamic\","
+    "\"removeDuplicates\": \"none\","
+    "\"stackRowLength\": 24,"
+    "\"where\": \"(\\\"Hierarchy\\\"  = 'XX' )\","
+    "\"useCodedValues\": true,"
+    "\"maxScale\": 0,"
+    "\"minScale\": 0,"
+    "\"name\": \"XX\","
+    "\"priority\": 1,"
+    "\"symbol\": {"
+    "\"type\": \"esriTS\","
+    "\"color\": ["
+    "0,"
+    "92,"
+    "230,"
+    "255"
+    "],"
+    "\"backgroundColor\": null,"
+    "\"borderLineColor\": null,"
+    "\"borderLineSize\": null,"
+    "\"verticalAlignment\": \"baseline\","
+    "\"horizontalAlignment\": \"left\","
+    "\"rightToLeft\": false,"
+    "\"angle\": 0,"
+    "\"xoffset\": 0,"
+    "\"yoffset\": 0,"
+    "\"kerning\": true,"
+    "\"haloColor\": ["
+    "251,"
+    "251,"
+    "251,"
+    "255"
+    "],"
+    "\"haloSize\": 2,"
+    "\"font\": {"
+    "\"family\": \"Arial\","
+    "\"size\": 14,"
+    "\"style\": \"normal\","
+    "\"weight\": \"bold\","
+    "\"decoration\": \"none\""
+    "}"
+    "}"
+    "},"
+    "{"
+    "\"labelExpression\": \"[Hierarchy]\","
+    "\"labelPlacement\": \"esriServerLinePlacementCenterAlong\","
+    "\"textLayout\": \"straight\","
+    "\"deconflictionStrategy\": \"dynamic\","
+    "\"allowOverrun\": true,"
+    "\"repeatLabel\": true,"
+    "\"repeatLabelDistance\": 290,"
+    "\"lineConnection\": \"minimizeLabels\","
+    "\"useClippedGeometry\": true,"
+    "\"stackLabel\": true,"
+    "\"stackAlignment\": \"dynamic\","
+    "\"removeDuplicates\": \"none\","
+    "\"stackRowLength\": 24,"
+    "\"where\": \"(\\\"Hierarchy\\\"  = 'XXXX' )\","
+    "\"useCodedValues\": true,"
+    "\"maxScale\": 0,"
+    "\"minScale\": 0,"
+    "\"name\": \"XXXX\","
+    "\"priority\": 2,"
+    "\"symbol\": {"
+    "\"type\": \"esriTS\","
+    "\"color\": ["
+    "0,"
+    "92,"
+    "230,"
+    "255"
+    "],"
+    "\"backgroundColor\": null,"
+    "\"borderLineColor\": null,"
+    "\"borderLineSize\": null,"
+    "\"verticalAlignment\": \"baseline\","
+    "\"horizontalAlignment\": \"left\","
+    "\"rightToLeft\": false,"
+    "\"angle\": 0,"
+    "\"xoffset\": 0,"
+    "\"yoffset\": 0,"
+    "\"kerning\": true,"
+    "\"haloColor\": ["
+    "251,"
+    "251,"
+    "251,"
+    "255"
+    "],"
+    "\"haloSize\": 2,"
+    "\"font\": {"
+    "\"family\": \"Arial\","
+    "\"size\": 14,"
+    "\"style\": \"normal\","
+    "\"weight\": \"bold\","
+    "\"decoration\": \"none\""
+    "}"
+    "}"
+    "}"
+    "]"
+    "}"
+  );
+
+  const std::unique_ptr<QgsAbstractVectorLayerLabeling> labeling( QgsArcGisRestUtils::convertLabeling( map.value( u"labelingInfo"_s ).toList() ) );
+  QVERIFY( labeling );
+  QgsRuleBasedLabeling *rules = dynamic_cast<QgsRuleBasedLabeling *>( labeling.get() );
+  QVERIFY( rules );
+  QgsRuleBasedLabeling::Rule *root = rules->rootRule();
+  QVERIFY( root );
+
+  const QgsRuleBasedLabeling::RuleList children = root->children();
+  QCOMPARE( children.count(), 2 );
+
+  QgsPalLayerSettings *settings = children.at( 0 )->settings();
+  QVERIFY( settings );
+  QCOMPARE( settings->placement, Qgis::LabelPlacement::Line );
+  QCOMPARE( settings->repeatDistance, 150 );
+  QCOMPARE( settings->repeatDistanceUnit, Qgis::RenderUnit::Points );
+
+  settings = children.at( 1 )->settings();
+  QVERIFY( settings );
+  QCOMPARE( settings->placement, Qgis::LabelPlacement::Line );
+  QCOMPARE( settings->repeatDistance, 290 );
+  QCOMPARE( settings->repeatDistanceUnit, Qgis::RenderUnit::Points );
 }
 
 QVariantMap TestQgsArcGisRestUtils::jsonStringToMap( const QString &string ) const

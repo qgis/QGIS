@@ -175,12 +175,12 @@ void QgsDxfExport::writeGroup( const QColor &color, int exactMatchCode, int rgbC
 
 void QgsDxfExport::writeGroupCode( int code )
 {
-  mTextStream << u"%1\n"_s.arg( code, 3, 10, QChar( ' ' ) );
+  mDevice->write( mCodec->fromUnicode( u"%1\n"_s.arg( code, 3, 10, QChar( ' ' ) ) ) );
 }
 
 void QgsDxfExport::writeInt( int i )
 {
-  mTextStream << u"%1\n"_s.arg( i, 6, 10, QChar( ' ' ) );
+  mDevice->write( mCodec->fromUnicode( u"%1\n"_s.arg( i, 6, 10, QChar( ' ' ) ) ) );
 }
 
 void QgsDxfExport::writeDouble( double d )
@@ -188,12 +188,12 @@ void QgsDxfExport::writeDouble( double d )
   QString s( qgsDoubleToString( d ) );
   if ( !s.contains( '.' ) )
     s += ".0"_L1;
-  mTextStream << s << '\n';
+  writeString( s );
 }
 
 void QgsDxfExport::writeString( const QString &s )
 {
-  mTextStream << s << '\n';
+  mDevice->write( mCodec->fromUnicode( s + '\n' ) );
 }
 
 QgsDxfExport::ExportResult QgsDxfExport::writeToFile( QIODevice *d, const QString &encoding )
@@ -208,8 +208,12 @@ QgsDxfExport::ExportResult QgsDxfExport::writeToFile( QIODevice *d, const QStrin
     return ExportResult::DeviceNotWritableError;
   }
 
-  mTextStream.setDevice( d );
-  mTextStream.setEncoding( QStringConverter::encodingForName( encoding.toLocal8Bit() ).value_or( QStringConverter::Utf8 ) );
+  mDevice = d;
+  mCodec = QTextCodec::codecForName( encoding.toLocal8Bit() );
+  if ( !mCodec )
+  {
+    return ExportResult::InvalidEncodingError;
+  }
 
   if ( mCrs.isValid() )
     mMapSettings.setDestinationCrs( mCrs );
@@ -858,14 +862,14 @@ void QgsDxfExport::writeEntities()
 
         if ( job->labelProvider )
         {
-          job->labelProvider->registerFeature( fet, job->renderContext );
+          job->labelProvider->registerFeature( fet, job->renderContext, QgsLabelFeatureDetails() );
           Q_NOWARN_DEPRECATED_PUSH
           registerDxfLayer( job->featureSource.id(), fet.id(), lName );
           Q_NOWARN_DEPRECATED_POP
         }
         else if ( job->ruleBasedLabelProvider )
         {
-          job->ruleBasedLabelProvider->registerFeature( fet, job->renderContext );
+          job->ruleBasedLabelProvider->registerFeature( fet, job->renderContext, QgsLabelFeatureDetails() );
           Q_NOWARN_DEPRECATED_PUSH
           registerDxfLayer( job->featureSource.id(), fet.id(), lName );
           Q_NOWARN_DEPRECATED_POP
@@ -889,15 +893,8 @@ void QgsDxfExport::prepareRenderers()
 {
   Q_ASSERT( mJobs.empty() ); // If this fails, stopRenderers() was not called after the last job
 
-  mRenderContext = QgsRenderContext();
-  mRenderContext.setPathResolver( mMapSettings.pathResolver() );
+  mRenderContext = QgsRenderContext::fromMapSettings( mMapSettings );
   mRenderContext.setRendererScale( mSymbologyScale );
-  mRenderContext.setExtent( mMapSettings.extent() );
-  QgsDistanceArea da;
-  da.setSourceCrs( mMapSettings.destinationCrs(), mMapSettings.transformContext() );
-  da.setEllipsoid( mMapSettings.ellipsoid() );
-  mRenderContext.setDistanceArea( da );
-  mRenderContext.setScaleFactor( 96.0 / 25.4 );
   mRenderContext.setMapToPixel(
     QgsMapToPixel( 1.0 / mFactor, mMapSettings.extent().center().x(), mMapSettings.extent().center().y(), std::floor( mMapSettings.extent().width() * mFactor ), std::floor( mMapSettings.extent().height() * mFactor ), 0 )
   );
@@ -906,8 +903,7 @@ void QgsDxfExport::prepareRenderers()
   mRenderContext.expressionContext().appendScope( QgsExpressionContextUtils::globalScope() );
   mRenderContext.expressionContext().appendScope( QgsExpressionContextUtils::mapSettingsScope( mMapSettings ) );
 
-  mLabelingEngine = std::make_unique<QgsDefaultLabelingEngine>();
-  mLabelingEngine->setMapSettings( mMapSettings );
+  mLabelingEngine = std::make_unique<QgsDefaultLabelingEngine>( mMapSettings );
   mRenderContext.setLabelingEngine( mLabelingEngine.get() );
 
   const QList< QgsMapLayer * > layers = mMapSettings.layers();
@@ -1034,7 +1030,7 @@ void QgsDxfExport::stopRenderers()
 
 void QgsDxfExport::writeEndFile()
 {
-  mTextStream << DXF_TRAILER;
+  mDevice->write( mCodec->fromUnicode( DXF_TRAILER ) );
 
   writeGroup( 0, u"EOF"_s );
 }
@@ -1610,7 +1606,7 @@ void QgsDxfExport::writeText( const QString &layer, const QString &text, pal::La
     }
   }
 
-  writeText( layer, text, QgsPoint( lblX, lblY ), label->getHeight(), label->getAlpha() * 180.0 / M_PI, layerSettings.format().color(), hali, vali );
+  writeText( layer, text, QgsPoint( lblX, lblY ), label->getHeight(), label->angleRadians() * 180.0 / M_PI, layerSettings.format().color(), hali, vali );
 }
 
 void QgsDxfExport::writePoint( const QString &layer, const QColor &color, const QgsPoint &pt )
@@ -2602,7 +2598,7 @@ void QgsDxfExport::drawLabel( const QString &layerId, QgsRenderContext &context,
                    .arg( tmpLyr.format().font().italic() ? 1 : 0 )
                    .arg( tmpLyr.format().font().bold() ? 1 : 0 )
                    .arg( label->getHeight() / ( 1 + txt.count( u"\\P"_s ) ) * 0.75 ) );
-    writeMText( dxfLayer, txt, QgsPoint( label->getX(), label->getY() ), label->getWidth(), label->getAlpha() * 180.0 / M_PI, tmpLyr.format().color() );
+    writeMText( dxfLayer, txt, QgsPoint( label->getX(), label->getY() ), label->getWidth(), label->angleRadians() * 180.0 / M_PI, tmpLyr.format().color() );
   }
 }
 

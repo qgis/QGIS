@@ -82,6 +82,10 @@ try:
     QgsProcessingUtils.resolveDefaultEncoding = staticmethod(QgsProcessingUtils.resolveDefaultEncoding)
     QgsProcessingUtils.supportedImageFormats = staticmethod(QgsProcessingUtils.supportedImageFormats)
     QgsProcessingUtils.supportedImageFileFilters = staticmethod(QgsProcessingUtils.supportedImageFileFilters)
+    QgsProcessingUtils.userFolder = staticmethod(QgsProcessingUtils.userFolder)
+    QgsProcessingUtils.defaultOutputFolder = staticmethod(QgsProcessingUtils.defaultOutputFolder)
+    QgsProcessingUtils.defaultModelFolder = staticmethod(QgsProcessingUtils.defaultModelFolder)
+    QgsProcessingUtils.modelFolders = staticmethod(QgsProcessingUtils.modelFolders)
     QgsProcessingUtils.__group__ = ['processing']
 except (NameError, AttributeError):
     pass

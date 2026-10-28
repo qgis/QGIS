@@ -18,8 +18,7 @@
 
 def _mapping_feature(feature):
     geom = feature.geometry()
-    fields = [field.name() for field in feature.fields()]
-    properties = dict(list(zip(fields, feature.attributes())))
+    properties = feature.attributeMap()
     return {
         "type": "Feature",
         "properties": properties,

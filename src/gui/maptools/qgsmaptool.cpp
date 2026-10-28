@@ -323,7 +323,7 @@ QString QgsMapTool::dataDefinedColumnName( int propertyKey, const QgsPropertyCol
         if ( node->nodeType() == QgsExpressionNode::ntFunction )
         {
           const QgsExpressionNodeFunction *functionNode = qgis::down_cast<const QgsExpressionNodeFunction *>( node );
-          if ( const QgsExpressionFunction *function = QgsExpression::QgsExpression::Functions()[functionNode->fnIndex()] )
+          if ( const QgsExpression::SharedFunctionPtr function = functionNode->function() )
           {
             if ( function->name() == "coalesce"_L1 )
             {

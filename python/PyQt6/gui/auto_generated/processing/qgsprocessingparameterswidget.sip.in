@@ -12,7 +12,7 @@
 
 
 
-class QgsProcessingParametersWidget : QgsPanelWidget, QgsProcessingParametersGenerator
+class QgsProcessingParametersWidget : QgsPanelWidget, QgsProcessingParametersGenerator, QgsProcessingContextGenerator
 {
 %Docstring(signature="appended")
 A widget which allows users to select the value for the parameters for
@@ -29,17 +29,77 @@ an algorithm.
 #include "qgsprocessingparameterswidget.h"
 %End
   public:
-    QgsProcessingParametersWidget( const QgsProcessingAlgorithm *algorithm, QWidget *parent /TransferThis/ = 0 );
+    QgsProcessingParametersWidget( const QgsProcessingAlgorithm *algorithm, bool inPlace, QgsMapLayer *activeLayer, QgsMessageBar *messageBar, QWidget *parent /TransferThis/ = 0 );
 %Docstring
 Constructor for QgsProcessingParametersWidget, for the specified
 ``algorithm``.
 %End
+    ~QgsProcessingParametersWidget();
+
+    void initWidgets();
+%Docstring
+Creates all parameter widgets. Must be called manually AFTER fully
+setting up the widget properties, e.g.
+:py:func:`~QgsProcessingParametersWidget.registerProcessingContextGenerator`
+%End
 
     const QgsProcessingAlgorithm *algorithm() const;
+    virtual QgsProcessingContext *processingContext() const;
+
+    virtual QVariantMap createProcessingParameters( QgsProcessingParametersGenerator::Flags flags = QgsProcessingParametersGenerator::Flags() );
+
+
+    void registerProcessingContextGenerator( QgsProcessingContextGenerator *generator );
+%Docstring
+Registers a Processing context ``generator`` class that will be used to
+retrieve a Processing context for the widget when required.
+
+.. versionadded:: 4.4
+%End
+
+    QList< QgsProcessingParametersGenerator::ParameterValidationResult > validate() const;
+%Docstring
+Validates the parameter values currently shown in the widget.
+
+.. versionadded:: 4.4
+%End
+
+    QVariantMap createAndValidateParameters( QgsProcessingParametersGenerator::Flags flags, QList< QgsProcessingParametersGenerator::ParameterValidationResult > &validationResults /Out/ ) const;
+%Docstring
+Validates and returns the parameter values representing the current
+state of the widget.
+
+:param flags: flags controlling how parameter values are generated
+
+:return: - map of current parameter values
+         - validationResults: results of the validation
+
+.. versionadded:: 4.4
+%End
+
+    void setParameters( const QVariantMap &parameters );
+%Docstring
+Sets parameter values to show in the panel.
+
+.. versionadded:: 4.4
+%End
+
+    QgsAbstractProcessingParameterWidgetWrapper *wrapper( const QString &name ) const;
+%Docstring
+Returns the wrapper for the parameter with matching ``name``, or
+``None`` if none exists.
+
+.. versionadded:: 4.4
+%End
+
+    QList< QgsAbstractProcessingParameterWidgetWrapper * > wrappers() const;
+%Docstring
+Returns a list of all widget wrappers contained by the panel widget.
+
+.. versionadded:: 4.4
+%End
 
   protected:
-    virtual void initWidgets();
-
     void addParameterWidget( const QgsProcessingParameterDefinition *parameter, QWidget *widget /Transfer/, int stretch = 0 );
     void addParameterLabel( const QgsProcessingParameterDefinition *parameter, QWidget *label /Transfer/ );
 

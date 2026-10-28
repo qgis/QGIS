@@ -24,6 +24,7 @@
 #include "qgslayertreeviewdefaultactions.h"
 #include "qgsmaplayer.h"
 #include "qgsmessagebar.h"
+#include "qgsscreenhelper.h"
 
 #include <QApplication>
 #include <QContextMenuEvent>
@@ -38,7 +39,7 @@
 using namespace Qt::StringLiterals;
 
 #ifdef ENABLE_MODELTEST
-#include "modeltest.h"
+#include <QAbstractItemModelTester>
 #endif
 
 #include "qgslayertreeviewindicator.h"
@@ -96,7 +97,9 @@ void QgsLayerTreeViewBase::setLayerTreeModel( QgsLayerTreeModel *model )
 
   mLayerTreeModel = model;
 
-  mLayerTreeModel->addTargetScreenProperties( QgsScreenProperties( screen() ) );
+  mLayerTreeModel->setTargetScreenProperties( { QgsScreenProperties( screen() ) } );
+  auto screenHelper = new QgsScreenHelper( this );
+  connect( screenHelper, &QgsScreenHelper::screenDpiChanged, this, [this] { mLayerTreeModel->setTargetScreenProperties( { QgsScreenProperties( screen() ) } ); } );
 
   connect( mLayerTreeModel->rootGroup(), &QgsLayerTreeNode::expandedChanged, this, &QgsLayerTreeViewBase::onExpandedChanged );
 
@@ -512,7 +515,7 @@ void QgsLayerTreeView::setModel( QgsLayerTreeModel *treeModel, QgsLayerTreeProxy
   connect( mProxyModel, &QAbstractItemModel::rowsRemoved, this, &QgsLayerTreeView::modelRowsRemoved );
 
 #ifdef ENABLE_MODELTEST
-  new ModelTest( mProxyModel, this );
+  new QAbstractItemModelTester( mProxyModel, QAbstractItemModelTester::FailureReportingMode::Fatal, this );
 #endif
 
   QTreeView::setModel( mProxyModel );
@@ -982,26 +985,29 @@ bool QgsLayerTreeProxyModel::nodeShown( QgsLayerTreeNode *node ) const
   if ( !node )
     return true;
 
-  if ( node->nodeType() == QgsLayerTreeNode::NodeGroup )
+  switch ( node->nodeType() )
   {
-    return true;
-  }
-  else
-  {
-    QgsMapLayer *layer = QgsLayerTree::toLayer( node )->layer();
-    if ( !layer )
-      return true;
-    if ( !mFilterText.isEmpty() && !layer->name().contains( mFilterText, Qt::CaseInsensitive ) )
-      return false;
-    if ( !mShowPrivateLayers && layer->flags().testFlag( QgsMapLayer::LayerFlag::Private ) )
+    case QgsLayerTreeNode::NodeLayer:
     {
-      return false;
-    }
-    if ( mHideValidLayers && layer->isValid() )
-      return false;
+      QgsMapLayer *layer = QgsLayerTree::toLayer( node )->layer();
+      if ( !layer )
+        return true;
+      if ( !mFilterText.isEmpty() && !layer->name().contains( mFilterText, Qt::CaseInsensitive ) )
+        return false;
+      if ( !mShowPrivateLayers && layer->flags().testFlag( QgsMapLayer::LayerFlag::Private ) )
+      {
+        return false;
+      }
+      if ( mHideValidLayers && layer->isValid() )
+        return false;
 
-    return true;
+      return true;
+    }
+    case QgsLayerTreeNode::NodeGroup:
+    case QgsLayerTreeNode::NodeCustom:
+      return true;
   }
+  return true;
 }
 
 bool QgsLayerTreeProxyModel::showPrivateLayers() const

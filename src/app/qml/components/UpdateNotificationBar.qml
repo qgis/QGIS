@@ -12,9 +12,9 @@ Rectangle {
 
   RowLayout {
     anchors.fill: parent
-    anchors.leftMargin: 20
-    anchors.rightMargin: 16
-    spacing: 12
+    anchors.leftMargin: 28
+    anchors.rightMargin: 28
+    spacing: 20
 
     Rectangle {
       Layout.preferredWidth: 20
@@ -29,7 +29,7 @@ Rectangle {
         anchors.horizontalCenter: parent.horizontalCenter
         anchors.verticalCenterOffset: 1
         text: "!"
-        font.pointSize: Application.font.pointSize * 0.8
+        font.pointSize: tinyFontSize
         font.bold: true
         color: "#f0e64a"
       }
@@ -39,35 +39,31 @@ Rectangle {
       Layout.fillWidth: true
       Layout.alignment: Qt.AlignVCenter
       text: root.message
-      font.pointSize: Application.font.pointSize * 0.8
+      font.pointSize: tinyFontSize
       color: "#ffffff"
       elide: Text.ElideRight
     }
-
-    Rectangle {
-      Layout.preferredWidth: installButtonText.implicitWidth + 32
-      Layout.preferredHeight: 32
-      Layout.alignment: Qt.AlignVCenter
-      radius: 16
-      color: "transparent"
-      border.color: "#f0e64a"
-
-      Text {
-        id: installButtonText
-        anchors.centerIn: parent
-        text: root.buttonText
-        font.pointSize: Application.font.pointSize * 0.8
-        font.bold: true
-        color: "#ffffff"
+    
+    RoundButton {
+      id: installButtonText
+      Layout.preferredWidth: implicitWidth * 1.2
+      radius: implicitHeight / 2
+      rightInset: 0
+      leftInset: 0
+      highlighted: true
+      font.pointSize: tinyFontSize
+      font.bold: true
+      text: root.buttonText
+      
+      background: Rectangle {      
+        implicitWidth: parent.Material.buttonHeight
+        implicitHeight: parent.Material.buttonHeight
+        radius: parent.radius
+        color: "transparent"
+        border.color: "#f0e64a"
       }
-
-      MouseArea {
-        id: installMouseArea
-        anchors.fill: parent
-        hoverEnabled: true
-        cursorShape: Qt.PointingHandCursor
-        onClicked: root.installClicked()
-      }
+      
+      onClicked: root.installClicked()
     }
   }
 }

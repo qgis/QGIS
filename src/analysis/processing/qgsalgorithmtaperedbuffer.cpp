@@ -129,6 +129,8 @@ void QgsTaperedBufferAlgorithm::initParameters( const QVariantMap & )
 
 QgsFeatureList QgsTaperedBufferAlgorithm::processFeature( const QgsFeature &feature, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
+  QGS_MARK_ALGORITHM_SOURCE
+
   if ( !feature.hasGeometry() )
     return QgsFeatureList() << feature;
 
@@ -243,6 +245,8 @@ void QgsVariableWidthBufferByMAlgorithm::initParameters( const QVariantMap & )
 
 QgsFeatureList QgsVariableWidthBufferByMAlgorithm::processFeature( const QgsFeature &feature, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
+  QGS_MARK_ALGORITHM_SOURCE
+
   if ( !feature.hasGeometry() )
     return QgsFeatureList() << feature;
 

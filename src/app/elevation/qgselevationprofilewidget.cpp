@@ -110,7 +110,7 @@ QgsElevationProfileLayersDialog::QgsElevationProfileLayersDialog( QWidget *paren
   mFilterLineEdit->setShowClearButton( true );
   mFilterLineEdit->setShowSearchIcon( true );
 
-  mModel = new QgsMapLayerProxyModel( listMapLayers );
+  mModel = new QgsMapLayerProxyModel( QgsProject::instance(), listMapLayers );
   listMapLayers->setModel( mModel );
   const QModelIndex firstLayer = mModel->index( 0, 0 );
   listMapLayers->selectionModel()->select( firstLayer, QItemSelectionModel::Select );
@@ -177,7 +177,7 @@ QgsElevationProfileWidget::QgsElevationProfileWidget( QgsElevationProfile *profi
   const QgsSettings setting;
 
   QToolBar *toolBar = new QToolBar( this );
-  toolBar->setIconSize( QgisApp::instance()->iconSize( true ) );
+  toolBar->setIconSize( QgsGui::iconSize( Qgis::UserInterfaceIconType::DockedToolbar ) );
 
   mCanvas = new QgsElevationProfileCanvas( this );
   mCanvas->setProject( QgsProject::instance() );
@@ -203,7 +203,7 @@ QgsElevationProfileWidget::QgsElevationProfileWidget( QgsElevationProfile *profi
 
   // These 2 connections should be made after mCanvas is created, since they will
   // override canvas sources, set by a connection made in canvas constructor
-  connect( QgsApplication::profileSourceRegistry(), &QgsProfileSourceRegistry::profileSourceRegistered, mLayerTreeView, &QgsElevationProfileLayerTreeView::addNodeForRegisteredSource );
+  connect( QgsApplication::profileSourceRegistry(), &QgsProfileSourceRegistry::profileSourceRegistered, this, &QgsElevationProfileWidget::handleNodeForNewlyRegisteredSource );
   connect( QgsApplication::profileSourceRegistry(), &QgsProfileSourceRegistry::profileSourceUnregistered, mLayerTreeView, &QgsElevationProfileLayerTreeView::removeNodeForUnregisteredSource );
 
   mZoomTool = new QgsPlotToolZoom( mCanvas );
@@ -603,7 +603,6 @@ QgsElevationProfileWidget::QgsElevationProfileWidget( QgsElevationProfile *profi
     scheduleUpdate();
   } );
 
-  updateCanvasSources();
   setMainCanvas( canvas );
 
   if ( mProfile->distanceUnit() != Qgis::DistanceUnit::Unknown )
@@ -718,13 +717,11 @@ void QgsElevationProfileWidget::setMainCanvas( QgsMapCanvas *canvas )
     if ( mMapPointRubberBand )
       mMapPointRubberBand->hide();
   } );
-  connect( mCaptureCurveMapTool.get(), &QgsMapToolProfileCurve::captureCanceled, this, [this] {
+  connect( mCaptureCurveMapTool.get(), &QgsMapToolProfileCurve::captureFinished, this, [this] {
     if ( mRubberBand )
       mRubberBand->show();
     if ( mToleranceRubberBand )
       mToleranceRubberBand->show();
-    if ( mMapPointRubberBand )
-      mMapPointRubberBand->show();
   } );
 
   mCaptureCurveFromFeatureMapTool = std::make_unique<QgsMapToolProfileCurveFromFeature>( canvas );
@@ -733,7 +730,7 @@ void QgsElevationProfileWidget::setMainCanvas( QgsMapCanvas *canvas )
 
   mMapPointRubberBand = make_qobject_unique<QgsRubberBand>( canvas, Qgis::GeometryType::Point );
   mMapPointRubberBand->setZValue( 1000 );
-  mMapPointRubberBand->setIcon( QgsRubberBand::ICON_FULL_DIAMOND );
+  mMapPointRubberBand->setIcon( Qgis::RubberBandIconType::DiamondFilled );
   mMapPointRubberBand->setWidth( QgsGuiUtils::scaleIconSize( 8 ) );
   mMapPointRubberBand->setIconSize( QgsGuiUtils::scaleIconSize( 4 ) );
   mMapPointRubberBand->setSecondaryStrokeColor( QColor( 255, 255, 255, 100 ) );
@@ -786,6 +783,11 @@ void QgsElevationProfileWidget::setupLayerTreeView( bool resetTree )
     {
       copyProjectTree( mLayerTree );
     }
+    else
+    {
+      mLayerTreeView->cleanupDeletedLayers( QgsProject::instance() );
+      mLayerTreeView->populateMissingLayers( QgsProject::instance(), true );
+    }
 
     // Initially populates the tree view using sources from the source registry
     const QList< QgsAbstractProfileSource * > sources = QgsApplication::profileSourceRegistry()->profileSources();
@@ -802,6 +804,24 @@ void QgsElevationProfileWidget::setupLayerTreeView( bool resetTree )
 
   connect( mLayerTree, &QgsLayerTree::layerOrderChanged, this, &QgsElevationProfileWidget::updateCanvasSources );
   connect( mLayerTree, &QgsLayerTreeGroup::visibilityChanged, this, &QgsElevationProfileWidget::updateCanvasSources );
+
+  updateCanvasSources();
+}
+
+void QgsElevationProfileWidget::handleNodeForNewlyRegisteredSource( const QString &sourceId, const QString &sourceName )
+{
+  if ( mProfile->useProjectLayerTree() )
+  {
+    // Skip custom node creation and override
+    // canvas sources to match the layer tree sources
+    updateCanvasSources();
+  }
+  else
+  {
+    // Add a custom node to the layer tree, and let layerOrderChanged
+    // signal trigger an update of canvas sources
+    mLayerTreeView->addNodeForRegisteredSource( sourceId, sourceName );
+  }
 }
 
 void QgsElevationProfileWidget::cancelJobs()
@@ -890,9 +910,9 @@ void QgsElevationProfileWidget::updateCanvasSources()
     else if ( QgsLayerTree::isCustomNode( node ) && node->customProperty( u"source"_s ) == QgsElevationProfileLayerTreeView::CUSTOM_NODE_ELEVATION_PROFILE_SOURCE )
     {
       QgsLayerTreeCustomNode *customNode = QgsLayerTree::toCustomNode( node );
-      if ( mLayerTree->findCustomNode( customNode->nodeId() )->isVisible() )
+      if ( mLayerTree->findCustomNode( customNode->id() )->isVisible() )
       {
-        if ( QgsAbstractProfileSource *customSource = QgsApplication::profileSourceRegistry()->findSourceById( customNode->nodeId() ) )
+        if ( QgsAbstractProfileSource *customSource = QgsApplication::profileSourceRegistry()->findSourceById( customNode->id() ) )
         {
           sources << customSource;
         }
@@ -1448,6 +1468,10 @@ void QgsElevationProfileWidget::createOrUpdateRubberBands()
     if ( mToleranceRubberBand )
       mToleranceRubberBand->hide();
   }
+
+  // hide the map point band, it will be shown again on hover
+  if ( mMapPointRubberBand )
+    mMapPointRubberBand->hide();
 }
 
 void QgsElevationProfileWidget::onProjectElevationPropertiesChanged()

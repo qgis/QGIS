@@ -502,6 +502,7 @@ supports filtering the results.
       Modeler,
       InPlace,
       ShowKnownIssues,
+
     };
     typedef QFlags<QgsProcessingToolboxProxyModel::Filter> Filters;
 
@@ -565,6 +566,8 @@ against the algorithm name, short description, tags, etc.
 
 .. seealso:: :py:func:`filterString`
 %End
+
+
 
     QString filterString() const;
 %Docstring

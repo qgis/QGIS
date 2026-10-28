@@ -1172,7 +1172,7 @@ QPixmap QgsSymbolLayerUtils::colorRampPreviewPixmap( QgsColorRamp *ramp, QSize s
         const QPen pen( ramp->color( static_cast< double >( i ) / size.width() ) );
         painter.setPen( pen );
         const int x = flipDirection ? size.width() - i - 1 : i;
-        painter.drawLine( x, 0 + padding, x, size.height() - 1 - padding );
+        painter.drawLine( QLineF( x, 0 + padding, x, size.height() - 1 - padding ) );
       }
       break;
     }
@@ -1184,7 +1184,7 @@ QPixmap QgsSymbolLayerUtils::colorRampPreviewPixmap( QgsColorRamp *ramp, QSize s
         const QPen pen( ramp->color( static_cast< double >( i ) / size.height() ) );
         painter.setPen( pen );
         const int y = flipDirection ? size.height() - i - 1 : i;
-        painter.drawLine( 0 + padding, y, size.width() - 1 - padding, y );
+        painter.drawLine( QLineF( 0 + padding, y, size.width() - 1 - padding, y ) );
       }
       break;
     }
@@ -3534,7 +3534,7 @@ void QgsSymbolLayerUtils::clearSymbolMap( QgsSymbolMap &symbols )
   symbols.clear();
 }
 
-QMimeData *QgsSymbolLayerUtils::symbolToMimeData( const QgsSymbol *symbol )
+std::unique_ptr<QMimeData> QgsSymbolLayerUtils::symbolToMimeData( const QgsSymbol *symbol )
 {
   if ( !symbol )
     return nullptr;
@@ -3549,7 +3549,7 @@ QMimeData *QgsSymbolLayerUtils::symbolToMimeData( const QgsSymbol *symbol )
   mimeData->setImageData( symbolPreviewPixmap( symbol, QSize( 100, 100 ), 18 ).toImage() );
   mimeData->setColorData( symbol->color() );
 
-  return mimeData.release();
+  return mimeData;
 }
 
 std::unique_ptr< QgsSymbol > QgsSymbolLayerUtils::symbolFromMimeData( const QMimeData *data )
@@ -3744,11 +3744,11 @@ QList<QColor> QgsSymbolLayerUtils::parseColorList( const QString &colorStr )
   return colors;
 }
 
-QMimeData *QgsSymbolLayerUtils::colorToMimeData( const QColor &color )
+std::unique_ptr<QMimeData> QgsSymbolLayerUtils::colorToMimeData( const QColor &color )
 {
   //set both the mime color data (which includes alpha channel), and the text (which is the color's hex
   //value, and can be used when pasting colors outside of QGIS).
-  QMimeData *mimeData = new QMimeData;
+  auto mimeData = std::make_unique<QMimeData>();
   mimeData->setColorData( QVariant( color ) );
   mimeData->setText( color.name() );
   return mimeData;
@@ -3901,10 +3901,10 @@ QgsNamedColorList QgsSymbolLayerUtils::colorListFromMimeData( const QMimeData *d
   return mimeColors;
 }
 
-QMimeData *QgsSymbolLayerUtils::colorListToMimeData( const QgsNamedColorList &colorList, const bool allFormats )
+std::unique_ptr<QMimeData> QgsSymbolLayerUtils::colorListToMimeData( const QgsNamedColorList &colorList, const bool allFormats )
 {
   //native format
-  QMimeData *mimeData = new QMimeData();
+  auto mimeData = std::make_unique<QMimeData>();
   QDomDocument xmlDoc;
   QDomElement xmlRootElement = xmlDoc.createElement( u"ColorSchemeModelDragData"_s );
   xmlDoc.appendChild( xmlRootElement );

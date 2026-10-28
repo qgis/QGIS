@@ -148,7 +148,7 @@ between speed and blur quality.
    alphaOnly is set to ``False``, or ARGB32 if alphaOnly is ``True``
 %End
 
-    static QImage *gaussianBlur( QImage &image, int radius, QgsFeedback *feedback = 0 ) /Factory/;
+    static QImage gaussianBlur( QImage &image, int radius, QgsFeedback *feedback = 0 );
 %Docstring
 Performs a gaussian blur on an image. Gaussian blur is slower but
 results in a high quality blur.
@@ -198,6 +198,29 @@ Crop any transparent border from around an image.
                 be centered in the returned image.
 :param center: cropped image will be centered on the center of the
                original image if set to ``True``
+%End
+
+    static bool isBlankImage( const QImage &image );
+%Docstring
+Tests whether an ``image`` is completely blank, i.e. it consists
+entirely of completely transparent pixels.
+
+Only the alpha channel for pixels are tested, and a pixel is considered
+empty if the alpha value is equal to 0.
+
+.. seealso:: :py:func:`isSingleColor`
+
+.. versionadded:: 4.4
+%End
+
+    static bool isSingleColor( const QImage &image, const QColor &color );
+%Docstring
+Tests whether an ``image`` is consists only of pixels matching the
+specified ``color``.
+
+.. seealso:: :py:func:`isBlankImage`
+
+.. versionadded:: 4.4
 %End
 
     static QImage floodFill( const QImage &image, const QPoint &startPoint, const QColor &newColor, int tolerance = 0, QgsFeedback *feedback = 0 );

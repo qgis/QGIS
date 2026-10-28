@@ -28,7 +28,7 @@ QgsSimpleLineMaterialWidget::QgsSimpleLineMaterialWidget( QWidget *parent )
   : QgsMaterialSettingsWidget( parent )
 {
   setupUi( this );
-  mPreviewWidget->hide();
+  setPreviewVisible( false );
   mPreviewWidget->setMaterialType( u"simpleline"_s );
 
   QgsSimpleLineMaterialSettings defaultMaterial;
@@ -73,6 +73,15 @@ std::unique_ptr<QgsAbstractMaterialSettings> QgsSimpleLineMaterialWidget::settin
 void QgsSimpleLineMaterialWidget::setPreviewVisible( bool visible )
 {
   mPreviewWidget->setVisible( visible );
+  mGridLayout->setColumnStretch( 0, visible ? 1 : 0 );
+  if ( !visible )
+  {
+    mVerticalSpacer->changeSize( 0, 0, QSizePolicy::Fixed, QSizePolicy::Fixed );
+  }
+  else
+  {
+    mVerticalSpacer->changeSize( 20, 40, QSizePolicy::Minimum, QSizePolicy::Expanding );
+  }
   updatePreview();
 }
 
@@ -83,3 +92,6 @@ void QgsSimpleLineMaterialWidget::updatePreview()
   const std::unique_ptr<QgsAbstractMaterialSettings> newSettings( settings() );
   mPreviewWidget->updatePreview( newSettings.get() );
 }
+
+void QgsSimpleLineMaterialWidget::updateWidgetVisibility()
+{}

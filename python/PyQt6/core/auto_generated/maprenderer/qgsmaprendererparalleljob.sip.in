@@ -25,22 +25,15 @@ see preview of the map.
     QgsMapRendererParallelJob( const QgsMapSettings &settings );
     ~QgsMapRendererParallelJob();
 
-    virtual void cancel();
+    void cancel() final;
+    void cancelWithoutBlocking() final;
+    void waitForFinished() final;
+    bool isActive() const final;
 
-    virtual void cancelWithoutBlocking();
+    bool usedCachedLabels() const final;
+    QgsLabelingResults *takeLabelingResults() final /Transfer/;
 
-    virtual void waitForFinished();
-
-    virtual bool isActive() const;
-
-
-    virtual bool usedCachedLabels() const;
-
-    virtual QgsLabelingResults *takeLabelingResults() /Transfer/;
-
-
-    virtual QImage renderedImage();
-
+    QImage renderedImage() final;
 
 };
 

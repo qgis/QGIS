@@ -57,6 +57,7 @@ QgsPolygon3DSymbolWidget::QgsPolygon3DSymbolWidget( QWidget *parent )
   connect( chkAddBackFaces, &QCheckBox::toggled, this, &QgsPolygon3DSymbolWidget::changed );
   connect( chkInvertNormals, &QCheckBox::toggled, this, &QgsPolygon3DSymbolWidget::changed );
   connect( widgetMaterial, &QgsMaterialWidget::changed, this, &QgsPolygon3DSymbolWidget::changed );
+  connect( widgetMaterial, &QgsMaterialWidget::showPanel, this, &QgsPolygon3DSymbolWidget::openPanel );
   connect( btnHeightDD, &QgsPropertyOverrideButton::changed, this, &QgsPolygon3DSymbolWidget::changed );
   connect( btnExtrusionDD, &QgsPropertyOverrideButton::changed, this, &QgsPolygon3DSymbolWidget::changed );
   connect( groupEdges, &QGroupBox::toggled, this, &QgsPolygon3DSymbolWidget::changed );
@@ -67,6 +68,7 @@ QgsPolygon3DSymbolWidget::QgsPolygon3DSymbolWidget( QWidget *parent )
 
   widgetMaterial->setTechnique( renderingTechnique() );
   widgetMaterial->setFilterByTechnique( true );
+  widgetMaterial->setDockMode( dockMode() );
 }
 
 Qgs3DSymbolWidget *QgsPolygon3DSymbolWidget::create( QgsVectorLayer * )
@@ -145,10 +147,21 @@ Qgis::MaterialRenderingTechnique QgsPolygon3DSymbolWidget::renderingTechnique() 
   return Qgis::MaterialRenderingTechnique::TrianglesDataDefined;
 }
 
+void QgsPolygon3DSymbolWidget::setDockMode( bool dockMode )
+{
+  widgetMaterial->setDockMode( dockMode );
+  Qgs3DSymbolWidget::setDockMode( dockMode );
+}
+
 void QgsPolygon3DSymbolWidget::updateGuiState()
 {
   // Altitude binding is not taken into account if altitude clamping is absolute.
   // See: Qgs3DUtils::clampAltitudes()
   const bool absoluteClamping = cboAltClamping->currentIndex() == static_cast<int>( Qgis::AltitudeClamping::Absolute );
   cboAltBinding->setEnabled( !absoluteClamping );
+}
+
+void QgsPolygon3DSymbolWidget::setMode( Qgis::MaterialWidgetMode mode )
+{
+  widgetMaterial->setMode( mode );
 }

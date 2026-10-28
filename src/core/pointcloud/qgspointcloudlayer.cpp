@@ -85,6 +85,7 @@ QgsPointCloudLayer::~QgsPointCloudLayer()
     task->cancel();
     task->waitForFinished();
   }
+  emit willBeDeleted();
 }
 
 QgsPointCloudLayer *QgsPointCloudLayer::clone() const
@@ -1057,7 +1058,11 @@ bool QgsPointCloudLayer::rollBack()
   if ( mIsVpc )
   {
     if ( mEditingIndexes.isEmpty() )
-      return false;
+    {
+      mEditable = false;
+      emit editingStopped();
+      return true;
+    }
 
     QVector<QPair<int, QList<QgsPointCloudNodeId>>> queuedUpdates;
     queuedUpdates.reserve( mEditingIndexes.size() );

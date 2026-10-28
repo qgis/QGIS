@@ -24,6 +24,8 @@ try:
     QgsImageOperation.flipImage = staticmethod(QgsImageOperation.flipImage)
     QgsImageOperation.nonTransparentImageRect = staticmethod(QgsImageOperation.nonTransparentImageRect)
     QgsImageOperation.cropTransparent = staticmethod(QgsImageOperation.cropTransparent)
+    QgsImageOperation.isBlankImage = staticmethod(QgsImageOperation.isBlankImage)
+    QgsImageOperation.isSingleColor = staticmethod(QgsImageOperation.isSingleColor)
     QgsImageOperation.floodFill = staticmethod(QgsImageOperation.floodFill)
     QgsImageOperation.__group__ = ['effects']
 except (NameError, AttributeError):

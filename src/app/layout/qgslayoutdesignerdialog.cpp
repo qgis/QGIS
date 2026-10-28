@@ -116,8 +116,9 @@ using namespace Qt::StringLiterals;
 #include <gdal.h>
 
 #ifdef ENABLE_MODELTEST
-#include "modeltest.h"
+#include <QAbstractItemModelTester>
 #endif
+
 #include <QGlobalStatic>
 #define FIT_LAYOUT -101
 #define FIT_LAYOUT_WIDTH -102
@@ -321,7 +322,8 @@ QgsLayoutDesignerDialog::QgsLayoutDesignerDialog( QWidget *parent, Qt::WindowFla
   QgsSettings settings;
   int size = settings.value( u"/qgis/toolbarIconSize"_s, QGIS_ICON_SIZE ).toInt();
   setIconSize( QSize( size, size ) );
-  setStyleSheet( QgisApp::instance()->styleSheet() );
+  setStyleSheet( QgsGui::applicationStyleSheet() );
+  connect( QgsGui::instance(), &QgsGui::applicationStyleSheetChanged, this, &QgsLayoutDesignerDialog::setStyleSheet );
 
   setupUi( this );
   setWindowTitle( tr( "QGIS Layout Designer" ) );
@@ -1210,7 +1212,7 @@ void QgsLayoutDesignerDialog::setCurrentLayout( QgsLayout *layout )
     mSelectTool->setLayout( layout );
     mItemsTreeView->setCurrentLayout( mLayout );
 #ifdef ENABLE_MODELTEST
-    new ModelTest( mLayout->itemsModel(), this );
+    new QAbstractItemModelTester( mLayout->itemsModel(), QAbstractItemModelTester::FailureReportingMode::Fatal, this );
 #endif
 
     connect( mLayout, &QgsLayout::backgroundTaskCountChanged, this, &QgsLayoutDesignerDialog::backgroundTaskCountChanged );
@@ -1988,7 +1990,7 @@ void QgsLayoutDesignerDialog::duplicate()
 
   // provide feedback, since loading of template into duplicate layout will be hidden
   QDialog *dlg = new QgsBusyIndicatorDialog( tr( "Duplicating layout…" ) );
-  dlg->setStyleSheet( QgisApp::instance()->styleSheet() );
+  dlg->setStyleSheet( QgsGui::applicationStyleSheet() );
   dlg->show();
 
   QgsLayoutDesignerDialog *newDialog = QgisApp::instance()->duplicateLayout( mMasterLayout, newTitle );

@@ -57,7 +57,7 @@ QgsMapCanvasDockWidget::QgsMapCanvasDockWidget( const QString &name, QWidget *pa
   qgis::down_cast<QVBoxLayout *>( layout() )->setSpacing( 0 );
 
   setWindowTitle( mCanvasName );
-  mToolbar->setIconSize( QgisApp::instance()->iconSize( true ) );
+  mToolbar->setIconSize( QgsGui::iconSize( Qgis::UserInterfaceIconType::DockedToolbar ) );
 
   mMapCanvas = new QgsMapCanvas( this );
   mMapCanvas->setFlags( Qgis::MapCanvasFlag::ShowMainAnnotationLayer );

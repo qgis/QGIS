@@ -1102,6 +1102,14 @@ void TestQgsExpressionContext::layerStores()
   QgsExpressionContext c3;
   c3 = context;
   QCOMPARE( c3.loadedLayerStore(), &store4 );
+
+  QgsProject project;
+  std::unique_ptr<QgsExpressionContextScope> projectScope( QgsExpressionContextUtils::projectScope( &project ) );
+  QCOMPARE( projectScope->layerStores(), QList<QgsMapLayerStore *>( { project.layerStore() } ) );
+
+  QgsExpressionContext projectContext;
+  projectContext.appendScope( projectScope.release() );
+  QCOMPARE( projectContext.layerStores(), QList<QgsMapLayerStore *>( { project.layerStore() } ) );
 }
 
 void TestQgsExpressionContext::uniqueHash()
@@ -1133,7 +1141,7 @@ void TestQgsExpressionContext::uniqueHash()
   feature.setAttributes( QgsAttributes() << 5 << 11 );
   context.setFeature( feature );
 
-  QCOMPARE( context.uniqueHash( ok, vars ), u"11||~~||18646899||~~||var1=b string||~~||var2=5||~~||"_s );
+  QCOMPARE( context.uniqueHash( ok, vars ), u"11||~~||13209806757982668659||~~||var1=b string||~~||var2=5||~~||"_s );
   QVERIFY( ok );
 
   // a value which can't be converted to string

@@ -30,7 +30,7 @@ using namespace Qt::StringLiterals;
 QgsFeaturePickerWidget::QgsFeaturePickerWidget( QWidget *parent )
   : QWidget( parent )
   , mModel( new QgsFeaturePickerModel( this ) )
-  , mCompleter( new QCompleter( mModel ) )
+  , mCompleter( new QCompleter( mModel, this ) )
 {
   QHBoxLayout *layout = new QHBoxLayout();
   mComboBox = new QComboBox( this );

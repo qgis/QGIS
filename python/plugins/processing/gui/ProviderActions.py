@@ -17,35 +17,58 @@
 
 __author__ = "Nyall Dawson"
 __date__ = "April 2017"
-__copyright__ = "(C) 2017, Nyall Dason"
+__copyright__ = "(C) 2017, Nyall Dawson"
+from warnings import warn
+
+from qgis.gui import QgsGui
 
 
 class ProviderActions:
-    actions = {}
-
     @staticmethod
     def registerProviderActions(provider, actions):
         """Adds actions for a provider"""
-        ProviderActions.actions[provider.id()] = actions
+        warn(
+            "The ProviderActions class is deprecated, use QgsProcessingGuiRegistry.registerProviderToolboxAction instead",
+            DeprecationWarning,
+            2,
+        )
+        for action in actions:
+            QgsGui.processingGuiRegistry().registerProviderToolboxAction(
+                provider.id(), action
+            )
 
     @staticmethod
     def deregisterProviderActions(provider):
         """Removes actions for a provider"""
-        if provider.id() in ProviderActions.actions:
-            del ProviderActions.actions[provider.id()]
+        warn(
+            "The ProviderActions class is deprecated, use QgsProcessingGuiRegistry.deregisterProviderToolboxActions instead",
+            DeprecationWarning,
+            2,
+        )
+        QgsGui.processingGuiRegistry().deregisterProviderToolboxActions(provider.id())
 
 
 class ProviderContextMenuActions:
-    # All the registered context menu actions for the toolbox
-    actions = []
-
     @staticmethod
     def registerProviderContextMenuActions(actions):
         """Adds context menu actions for a provider"""
-        ProviderContextMenuActions.actions.extend(actions)
+        warn(
+            "The ProviderContextMenuActions class is deprecated, use QgsProcessingGuiRegistry.registerProviderToolboxContextAction instead",
+            DeprecationWarning,
+            2,
+        )
+        for action in actions:
+            QgsGui.processingGuiRegistry().registerProviderToolboxContextAction(
+                "deprecated", action
+            )
 
     @staticmethod
     def deregisterProviderContextMenuActions(actions):
         """Removes context menu actions for a provider"""
+        warn(
+            "The ProviderContextMenuActions class is deprecated, use QgsProcessingGuiRegistry.deregisterProviderToolboxContextActions instead",
+            DeprecationWarning,
+            2,
+        )
         for act in actions:
-            ProviderContextMenuActions.actions.remove(act)
+            QgsGui.processingGuiRegistry().deregisterProviderToolboxContextAction(act)

@@ -80,9 +80,6 @@
           };
 
           devShells.default =
-            let
-              nixPatches = pkgs.lib.concatStringsSep " " self'.packages.qgis.passthru.unwrapped.patches;
-            in
             pkgs.mkShell {
               inputsFrom = [
                 self'.packages.qgis
@@ -92,6 +89,8 @@
               shellHook = ''
                 export QT_PLUGIN_PATH="${pkgs.qt6Packages.qtbase}/${pkgs.qt6Packages.qtbase.qtPluginPrefix}"
                 export QT_QPA_PLATFORM_PLUGIN_PATH="${pkgs.qt6Packages.qtbase}/${pkgs.qt6Packages.qtbase.qtPluginPrefix}/platforms"
+
+                export LD_LIBRARY_PATH="${pkgs.libspatialite}/lib:''$LD_LIBRARY_PATH"
 
                 # TODO: take inspiration from
                 # https://github.com/qgis/QGIS/blob/798f63fc3c0d2616a5fbc8f47139fbeb5db7c052/.docker/docker-qgis-build.sh#L79

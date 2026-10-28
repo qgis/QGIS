@@ -28,7 +28,32 @@ Contains utility functions for working with symbols and symbol layers.
 %End
   public:
     static QString encodeColor( const QColor &color );
+%Docstring
+Lossy-encodes a ``color`` to a string.
+
+.. warning::
+
+   Use of this method is discouraged, as it loses color precision and does not handle
+   non-RGB color values losslessly. Use :py:func:`QgsColorUtils.colorToString()` instead.
+
+.. seealso:: :py:func:`decodeColor`
+
+.. seealso:: :py:func:`QgsColorUtils.colorToString`
+%End
+
     static QColor decodeColor( const QString &str );
+%Docstring
+Decodes a string to a color.
+
+.. warning::
+
+   Use of this method is discouraged, as it handles only colors lossy-encoded using
+   :py:func:`~QgsSymbolLayerUtils.encodeColor`. Use :py:func:`QgsColorUtils.colorFromString()` instead.
+
+.. seealso:: :py:func:`encodeColor`
+
+.. seealso:: :py:func:`QgsColorUtils.colorFromString`
+%End
 
     static QString encodeSldAlpha( int alpha );
     static int decodeSldAlpha( const QString &str );
@@ -825,7 +850,7 @@ top-level element
 
     static void clearSymbolMap( QgsSymbolMap &symbols );
 
-    static QMimeData *symbolToMimeData( const QgsSymbol *symbol ) /Factory/;
+    static std::unique_ptr<QMimeData> symbolToMimeData( const QgsSymbol *symbol );
 %Docstring
 Creates new mime data from a ``symbol``. This also sets the mime color
 data to match the symbol's color, so that copied symbols can be paste in
@@ -902,7 +927,7 @@ formats, including hex codes, rgb and rgba strings.
 :return: list of parsed colors
 %End
 
-    static QMimeData *colorToMimeData( const QColor &color ) /Factory/;
+    static std::unique_ptr<QMimeData> colorToMimeData( const QColor &color );
 %Docstring
 Creates mime data from a color. Sets both the mime data's color data,
 and the mime data's text with the color's hex code.
@@ -933,7 +958,7 @@ Attempts to parse mime data as a list of named colors
 :return: list of parsed colors
 %End
 
-    static QMimeData *colorListToMimeData( const QgsNamedColorList &colorList, bool allFormats = true ) /Factory/;
+    static std::unique_ptr<QMimeData> colorListToMimeData( const QgsNamedColorList &colorList, bool allFormats = true );
 %Docstring
 Creates mime data from a list of named colors
 

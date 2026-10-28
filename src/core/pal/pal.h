@@ -96,11 +96,19 @@ namespace pal
       static const QgsSettingsEntryInteger *settingsRenderingLabelCandidatesLimitLines;
       static const QgsSettingsEntryInteger *settingsRenderingLabelCandidatesLimitPolygons;
 
-      Pal();
+      /**
+       * Constructor for pal labeling engine.
+       */
+      Pal( Qgis::LabelingFlags flags );
       ~Pal();
 
       Pal( const Pal &other ) = delete;
       Pal &operator=( const Pal &other ) = delete;
+
+      /**
+       * Returns labeling flags.
+       */
+      Qgis::LabelingFlags flags() const { return mFlags; }
 
       /**
        * \brief add a new layer
@@ -172,6 +180,8 @@ namespace pal
        * \see showPartialLabels()
        */
       void setShowPartialLabels( bool show );
+
+      static constexpr bool DEFAULT_SHOW_PARTIAL_LABELS = true;
 
       /**
        * Returns whether partial labels should be allowed.
@@ -283,6 +293,8 @@ namespace pal
       QList< QgsAbstractLabelingEngineRule * > rules() const { return mRules; }
 
     private:
+      Qgis::LabelingFlags mFlags;
+
       std::vector< std::pair< QgsAbstractLabelProvider *, std::unique_ptr< Layer > > > mLayers;
 
       QList< QgsAbstractLabelingEngineRule * > mRules;
@@ -307,7 +319,7 @@ namespace pal
       /**
        * \brief show partial labels (cut-off by the map canvas) or not
        */
-      bool mShowPartialLabels = true;
+      bool mShowPartialLabels = DEFAULT_SHOW_PARTIAL_LABELS;
 
       double mMaxLineCandidatesPerMapUnit = 0;
       double mMaxPolygonCandidatesPerMapUnitSquared = 0;

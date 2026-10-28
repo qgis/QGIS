@@ -15,12 +15,16 @@
 
 #include "qgsvectorlayer3drendererwidget.h"
 
+#include "qgisapp.h"
 #include "qgs3dsymbolregistry.h"
+#include "qgs3dsymbolutils.h"
 #include "qgsapplication.h"
 #include "qgscategorized3drenderer.h"
 #include "qgscategorized3drendererwidget.h"
+#include "qgsmapcanvas.h"
 #include "qgsrulebased3drenderer.h"
 #include "qgsrulebased3drendererwidget.h"
+#include "qgssinglesymbolrenderer.h"
 #include "qgssymbol3dwidget.h"
 #include "qgsvectorlayer.h"
 #include "qgsvectorlayer3dpropertieswidget.h"
@@ -39,7 +43,7 @@
 using namespace Qt::StringLiterals;
 
 QgsSingleSymbol3DRendererWidget::QgsSingleSymbol3DRendererWidget( QgsVectorLayer *layer, QWidget *parent )
-  : QWidget( parent )
+  : QgsPanelWidget( parent )
   , mLayer( layer )
 {
   // If layer is null, the widget cannot be created.
@@ -55,13 +59,14 @@ QgsSingleSymbol3DRendererWidget::QgsSingleSymbol3DRendererWidget( QgsVectorLayer
   scrollLayout->addWidget( scrollArea );
 
   widgetSymbol = new QgsSymbol3DWidget( mLayer, this );
+  widgetSymbol->setMode( Qgis::MaterialWidgetMode::Compact );
   scrollArea->setWidget( widgetSymbol );
 
   setLayout( scrollLayout );
 
-  connect( widgetSymbol, &QgsSymbol3DWidget::widgetChanged, this, &QgsSingleSymbol3DRendererWidget::widgetChanged );
+  connect( widgetSymbol, &QgsSymbol3DWidget::changed, this, &QgsSingleSymbol3DRendererWidget::changed );
+  connect( widgetSymbol, &QgsSymbol3DWidget::showPanel, this, &QgsSingleSymbol3DRendererWidget::openPanel );
 }
-
 
 void QgsSingleSymbol3DRendererWidget::setLayer( QgsVectorLayer *layer )
 {
@@ -89,15 +94,34 @@ void QgsSingleSymbol3DRendererWidget::setLayer( QgsVectorLayer *layer )
   }
   if ( !rendererSet )
   {
-    const std::unique_ptr<QgsAbstract3DSymbol> sym( QgsApplication::symbol3DRegistry()->defaultSymbolForGeometryType( mLayer->geometryType() ) );
-    sym->setDefaultPropertiesFromLayer( mLayer );
-    widgetSymbol->setSymbol( sym.get(), mLayer );
+    std::unique_ptr<QgsAbstract3DSymbol> symbol3D;
+    QgsFeatureRenderer *renderer2D = mLayer->renderer();
+    // Initialize the 3D symbol from the 2D single-symbol renderer
+    // to provide a matching default appearance
+    if ( renderer2D && renderer2D->type() == "singleSymbol"_L1 )
+    {
+      QgsSingleSymbolRenderer *singleRenderer2D = qgis::down_cast<QgsSingleSymbolRenderer *>( renderer2D );
+      symbol3D = Qgs3DSymbolUtils::create3DSymbolFrom2D( mLayer, singleRenderer2D->symbol() );
+    }
+    else
+    {
+      symbol3D = QgsApplication::symbol3DRegistry()->defaultSymbolForGeometryType( mLayer->geometryType() );
+      symbol3D->setDefaultPropertiesFromLayer( mLayer );
+    }
+
+    widgetSymbol->setSymbol( symbol3D.get(), mLayer );
   }
 }
 
 std::unique_ptr<QgsAbstract3DSymbol> QgsSingleSymbol3DRendererWidget::symbol()
 {
   return widgetSymbol->symbol(); // cloned or null
+}
+
+void QgsSingleSymbol3DRendererWidget::setDockMode( bool dockMode )
+{
+  widgetSymbol->setDockMode( dockMode );
+  QgsPanelWidget::setDockMode( dockMode );
 }
 
 // -------
@@ -135,12 +159,14 @@ QgsVectorLayer3DRendererWidget::QgsVectorLayer3DRendererWidget( QgsMapLayer *lay
   widgetRendererStack->addWidget( widgetRuleBasedRenderer );
 
   connect( cboRendererType, qOverload<int>( &QComboBox::currentIndexChanged ), this, &QgsVectorLayer3DRendererWidget::onRendererTypeChanged );
-  connect( widgetSingleSymbolRenderer, &QgsSingleSymbol3DRendererWidget::widgetChanged, this, &QgsVectorLayer3DRendererWidget::widgetChanged );
-  connect( widgetCategorizedRenderer, &QgsCategorized3DRendererWidget::widgetChanged, this, &QgsVectorLayer3DRendererWidget::widgetChanged );
+  connect( widgetSingleSymbolRenderer, &QgsSingleSymbol3DRendererWidget::changed, this, &QgsVectorLayer3DRendererWidget::changed );
+  connect( widgetSingleSymbolRenderer, &QgsSingleSymbol3DRendererWidget::showPanel, this, &QgsPanelWidget::openPanel );
+  connect( widgetCategorizedRenderer, &QgsCategorized3DRendererWidget::changed, this, &QgsVectorLayer3DRendererWidget::changed );
   connect( widgetCategorizedRenderer, &QgsCategorized3DRendererWidget::showPanel, this, &QgsPanelWidget::openPanel );
-  connect( widgetRuleBasedRenderer, &QgsRuleBased3DRendererWidget::widgetChanged, this, &QgsVectorLayer3DRendererWidget::widgetChanged );
+  connect( widgetRuleBasedRenderer, &QgsRuleBased3DRendererWidget::changed, this, &QgsVectorLayer3DRendererWidget::changed );
   connect( widgetRuleBasedRenderer, &QgsRuleBased3DRendererWidget::showPanel, this, &QgsPanelWidget::openPanel );
-  connect( widgetBaseProperties, &QgsVectorLayer3DPropertiesWidget::changed, this, &QgsVectorLayer3DRendererWidget::widgetChanged );
+
+  connect( widgetBaseProperties, &QgsVectorLayer3DPropertiesWidget::changed, this, &QgsVectorLayer3DRendererWidget::changed );
 
   setProperty( "helpPage", u"working_with_vector/vector_properties.html#d-view-properties"_s );
 
@@ -195,6 +221,7 @@ void QgsVectorLayer3DRendererWidget::syncToLayer( QgsMapLayer *layer )
 void QgsVectorLayer3DRendererWidget::setDockMode( bool dockMode )
 {
   QgsPanelWidget::setDockMode( dockMode );
+  widgetSingleSymbolRenderer->setDockMode( dockMode );
   widgetRuleBasedRenderer->setDockMode( dockMode );
   widgetCategorizedRenderer->setDockMode( dockMode );
 }
@@ -257,7 +284,7 @@ void QgsVectorLayer3DRendererWidget::onRendererTypeChanged( int index )
     default:
       Q_ASSERT( false );
   }
-  emit widgetChanged();
+  emit changed();
 }
 
 

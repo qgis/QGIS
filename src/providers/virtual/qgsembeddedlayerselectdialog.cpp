@@ -20,12 +20,13 @@ email                : hugo dot mercier at oslandia dot com
 #include "qgsgui.h"
 #include "qgsmaplayermodel.h"
 #include "qgsmaplayerproxymodel.h"
+#include "qgsproject.h"
 
 #include "moc_qgsembeddedlayerselectdialog.cpp"
 
 QgsEmbeddedLayerSelectDialog::QgsEmbeddedLayerSelectDialog( QWidget *parent )
   : QDialog( parent )
-  , mLayerProxyModel( new QgsMapLayerProxyModel( this ) )
+  , mLayerProxyModel( new QgsMapLayerProxyModel( QgsProject::instance(), this ) ) // skip-keyword-check
 {
   setupUi( this );
 

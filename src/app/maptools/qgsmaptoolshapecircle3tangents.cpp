@@ -69,10 +69,14 @@ static QgsPoint getFirstPointOnParallels(
   QgsPoint intersection;
   bool isInter;
 
-  if ( ( !QgsGeometryUtils::segmentIntersection( p1_line1, p2_line1, p1_line2, p2_line2, intersection, isInter, true ) )
-       || ( !QgsGeometryUtils::segmentIntersection( p1_line1, p2_line1, p1_line3, p2_line3, intersection, isInter, true ) ) )
+  QgsGeometryUtils::segmentIntersection( p1_line1, p2_line1, p1_line2, p2_line2, intersection, isInter );
+  if ( !isInter )
     return pos_line1;
-  if ( !QgsGeometryUtils::segmentIntersection( p1_line2, p2_line2, p1_line3, p2_line3, intersection, isInter, true ) )
+  QgsGeometryUtils::segmentIntersection( p1_line1, p2_line1, p1_line3, p2_line3, intersection, isInter );
+  if ( !isInter )
+    return pos_line1;
+  QgsGeometryUtils::segmentIntersection( p1_line2, p2_line2, p1_line3, p2_line3, intersection, isInter );
+  if ( !isInter )
     return pos_line2;
 
   return QgsPoint();

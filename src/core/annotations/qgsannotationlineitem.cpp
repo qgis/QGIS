@@ -142,6 +142,9 @@ Qgis::AnnotationItemEditOperationResult QgsAnnotationLineItem::applyEditV2( QgsA
       mCurve->transform( transform );
       return Qgis::AnnotationItemEditOperationResult::Success;
     }
+
+    case QgsAbstractAnnotationItemEditOperation::Type::SetItemBounds:
+      break;
   }
 
   return Qgis::AnnotationItemEditOperationResult::Invalid;
@@ -183,6 +186,7 @@ QgsAnnotationItemEditOperationTransientResults *QgsAnnotationLineItem::transient
       return new QgsAnnotationItemEditOperationTransientResults( QgsGeometry( std::move( modifiedCurve ) ) );
     }
 
+    case QgsAbstractAnnotationItemEditOperation::Type::SetItemBounds:
     case QgsAbstractAnnotationItemEditOperation::Type::DeleteNode:
     case QgsAbstractAnnotationItemEditOperation::Type::AddNode:
       break;
@@ -195,9 +199,9 @@ Qgis::AnnotationItemFlags QgsAnnotationLineItem::flags() const
   return Qgis::AnnotationItemFlag::SupportsReferenceScale;
 }
 
-QgsAnnotationLineItem *QgsAnnotationLineItem::create()
+std::unique_ptr<QgsAnnotationLineItem> QgsAnnotationLineItem::create()
 {
-  return new QgsAnnotationLineItem( new QgsLineString() );
+  return std::make_unique<QgsAnnotationLineItem>( new QgsLineString() );
 }
 
 bool QgsAnnotationLineItem::readXml( const QDomElement &element, const QgsReadWriteContext &context )

@@ -43,8 +43,14 @@ Q_GLOBAL_STATIC( QgsStringMap, sVariableHelpTexts )
 Q_GLOBAL_STATIC( QgsStringMap, sGroups )
 
 HelpTextHash QgsExpression::sFunctionHelpTexts;
-QRecursiveMutex QgsExpression::sFunctionsMutex;
-QMap< QString, int> QgsExpression::sFunctionIndexMap;
+QMutex QgsExpression::sFunctionWriteMutex;
+#if defined( __clang__ )
+AtomicSharedPtr<QgsExpression::FunctionListSnapshot> QgsExpression::sFunctions {};
+#else
+std::atomic<QgsExpression::FunctionListSnapshot> QgsExpression::sFunctions;
+#endif
+
+QStringList QgsExpression::sBuiltinFunctionNames;
 
 ///@cond PRIVATE
 HelpTextHash &QgsExpression::functionHelpTexts()
@@ -138,45 +144,48 @@ QString QgsExpression::quotedValue( const QVariant &value, QVariant::Type type )
 
 bool QgsExpression::isFunctionName( const QString &name )
 {
-  return functionIndex( name ) != -1;
+  const QgsExpression::FunctionListSnapshot functions = QgsExpression::getFunctionsSnapshot();
+  const int fnIndex = functions->functionIndex( name );
+  return fnIndex != -1;
 }
 
 int QgsExpression::functionIndex( const QString &name )
 {
-  QMutexLocker locker( &sFunctionsMutex );
+  const QgsExpression::FunctionListSnapshot functions = QgsExpression::getFunctionsSnapshot();
+  return functions->functionIndex( name );
+}
 
-  auto it = sFunctionIndexMap.constFind( name );
-  if ( it != sFunctionIndexMap.constEnd() )
-    return *it;
+int QgsExpression::SharedFunctionPtrList::functionIndex( const QString &name ) const
+{
+  return mFunctionIndexMap.value( name.toLower(), -1 );
+}
 
-  const QList<QgsExpressionFunction *> &functions = QgsExpression::Functions();
+void QgsExpression::SharedFunctionPtrList::updateFunctionNameMap()
+{
   int i = 0;
-  for ( const QgsExpressionFunction *function : functions )
+  mFunctionIndexMap.clear();
+  for ( const SharedFunctionPtr &function : std::as_const( *this ) )
   {
-    if ( QString::compare( name, function->name(), Qt::CaseInsensitive ) == 0 )
-    {
-      sFunctionIndexMap.insert( name, i );
-      return i;
-    }
+    mFunctionIndexMap.insert( function->name().toLower(), i );
     const QStringList aliases = function->aliases();
     for ( const QString &alias : aliases )
     {
-      if ( QString::compare( name, alias, Qt::CaseInsensitive ) == 0 )
-      {
-        sFunctionIndexMap.insert( name, i );
-        return i;
-      }
+      mFunctionIndexMap.insert( alias.toLower(), i );
     }
     i++;
   }
-  return -1;
+}
+
+QgsExpression::SharedFunctionPtr QgsExpression::SharedFunctionPtrList::getFunction( int index ) const
+{
+  return ( *this )[index];
 }
 
 int QgsExpression::functionCount()
 {
-  return Functions().size();
+  const QgsExpression::FunctionListSnapshot functions = QgsExpression::getFunctionsSnapshot();
+  return functions->size();
 }
-
 
 QgsExpression::QgsExpression( const QString &expr )
   : d( new QgsExpressionPrivate )
@@ -475,7 +484,7 @@ QString QgsExpression::replaceExpressionText( const QString &action, const QgsEx
   int index = 0;
   while ( index < action.size() )
   {
-    static const QRegularExpression sRegEx { u"\\[%(.*?)%\\]"_s, QRegularExpression::MultilineOption | QRegularExpression::DotMatchesEverythingOption };
+    const thread_local QRegularExpression sRegEx { u"\\[%(.*?)%\\]"_s, QRegularExpression::MultilineOption | QRegularExpression::DotMatchesEverythingOption };
 
     const QRegularExpressionMatch match = sRegEx.match( action, index );
     if ( !match.hasMatch() )
@@ -546,6 +555,13 @@ QSet<QString> QgsExpression::referencedVariables( const QString &text )
 
 double QgsExpression::evaluateToDouble( const QString &text, const double fallbackValue )
 {
+  QgsExpressionContext context;
+  context << QgsExpressionContextUtils::globalScope() << QgsExpressionContextUtils::projectScope( QgsProject::instance() ); // skip-keyword-check
+  return evaluateToDouble( text, fallbackValue, &context );
+}
+
+double QgsExpression::evaluateToDouble( const QString &text, const double fallbackValue, const QgsExpressionContext *context )
+{
   bool ok;
   //first test if text is directly convertible to double
   // use system locale: e.g. in German locale, user is presented with numbers "1,23" instead of "1.23" in C locale
@@ -559,16 +575,27 @@ double QgsExpression::evaluateToDouble( const QString &text, const double fallba
   //otherwise try to evaluate as expression
   QgsExpression expr( text );
 
-  QgsExpressionContext context;
-  context << QgsExpressionContextUtils::globalScope() << QgsExpressionContextUtils::projectScope( QgsProject::instance() ); // skip-keyword-check
-
-  QVariant result = expr.evaluate( &context );
+  QVariant result = expr.evaluate( context );
   convertedValue = result.toDouble( &ok );
   if ( expr.hasEvalError() || !ok )
   {
     return fallbackValue;
   }
   return convertedValue;
+}
+
+QList<QgsExpressionFunction *> QgsExpression::Functions()
+{
+  const QgsExpression::FunctionListSnapshot functions = QgsExpression::getFunctionsSnapshot();
+  QList<QgsExpressionFunction *> res;
+  for ( const SharedFunctionPtr &it : *functions )
+  {
+    // not safe -- we convert back to raw pointer, so there's a chance this may
+    // be a dangling pointer. This method is only for use for Python code anyway, where thread
+    // safety is not so critical...
+    res.append( it.get() );
+  }
+  return res;
 }
 
 QString QgsExpression::helpText( QString name )
@@ -1483,6 +1510,17 @@ bool QgsExpression::attemptReduceToInClause( const QStringList &expressions, QSt
   }
   result = u"%1 IN (%2)"_s.arg( quotedColumnRef( inField ), values.join( ',' ) );
   return true;
+}
+
+QgsExpression QgsExpression::simplified() const
+{
+  if ( !d->mRootNode )
+    return QgsExpression();
+
+  QgsExpression res = *this;
+  res.detach();
+  res.d->mRootNode.reset( d->mRootNode->simplifiedNode() );
+  return res;
 }
 
 const QgsExpressionNode *QgsExpression::rootNode() const

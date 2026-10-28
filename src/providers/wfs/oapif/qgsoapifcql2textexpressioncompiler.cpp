@@ -94,13 +94,26 @@ QString QgsOapifCql2TextExpressionCompiler::quotedIdentifier( const QString &ide
   return quoted;
 }
 
+QString QgsOapifCql2TextExpressionCompiler::geometryQueryable() const
+{
+  QString firstGeometry;
+  for ( auto it = mQueryables.constBegin(); it != mQueryables.constEnd(); ++it )
+  {
+    if ( it->mIsPrimaryGeometry )
+      return it.key();
+    if ( it->mIsGeometry && firstGeometry.isEmpty() )
+      firstGeometry = it.key();
+  }
+  return firstGeometry;
+}
+
 static bool isGeometryColumn( const QgsExpressionNode *node )
 {
   if ( node->nodeType() != QgsExpressionNode::ntFunction )
     return false;
 
   const QgsExpressionNodeFunction *fn = static_cast<const QgsExpressionNodeFunction *>( node );
-  QgsExpressionFunction *fd = QgsExpression::Functions()[fn->fnIndex()];
+  const QgsExpression::SharedFunctionPtr fd = fn->function();
   return fd->name() == "$geometry"_L1;
 }
 
@@ -112,7 +125,8 @@ static QgsGeometry geometryFromConstExpr( const QgsExpressionNode *node )
   if ( node->nodeType() == QgsExpressionNode::ntFunction )
   {
     const QgsExpressionNodeFunction *fnNode = static_cast<const QgsExpressionNodeFunction *>( node );
-    QgsExpressionFunction *fnDef = QgsExpression::Functions()[fnNode->fnIndex()];
+    const QgsExpression::SharedFunctionPtr fnDef = fnNode->function();
+
     if ( fnDef->name() == "geom_from_wkt"_L1 )
     {
       const QList<QgsExpressionNode *> &args = fnNode->args()->list();
@@ -128,7 +142,7 @@ static QgsGeometry geometryFromConstExpr( const QgsExpressionNode *node )
 
 QgsOapifCql2TextExpressionCompiler::Result QgsOapifCql2TextExpressionCompiler::compileNodeFunction( const QgsExpressionNodeFunction *node, QString &result )
 {
-  QgsExpressionFunction *fd = QgsExpression::Functions()[node->fnIndex()];
+  const QgsExpression::SharedFunctionPtr fd = node->function();
 
   if ( fd->name() == "intersects_bbox"_L1 && mSupportsBasicSpatialOperators )
   {
@@ -138,15 +152,7 @@ QgsOapifCql2TextExpressionCompiler::Result QgsOapifCql2TextExpressionCompiler::c
     const QgsGeometry geom = geometryFromConstExpr( argNodes[1] );
     if ( !geom.isNull() && isGeometryColumn( argNodes[0] ) )
     {
-      QString geometryColumn;
-      for ( const auto &kv : mQueryables.toStdMap() )
-      {
-        if ( kv.second.mIsGeometry )
-        {
-          geometryColumn = kv.first;
-          break;
-        }
-      }
+      const QString geometryColumn = geometryQueryable();
       if ( geometryColumn.isEmpty() )
       {
         return Fail;
@@ -181,15 +187,7 @@ QgsOapifCql2TextExpressionCompiler::Result QgsOapifCql2TextExpressionCompiler::c
     const QgsGeometry geom = geometryFromConstExpr( argNodes[1] );
     if ( !geom.isNull() && geom.wkbType() == Qgis::WkbType::Point && isGeometryColumn( argNodes[0] ) )
     {
-      QString geometryColumn;
-      for ( const auto &kv : mQueryables.toStdMap() )
-      {
-        if ( kv.second.mIsGeometry )
-        {
-          geometryColumn = kv.first;
-          break;
-        }
-      }
+      const QString geometryColumn = geometryQueryable();
       if ( geometryColumn.isEmpty() )
       {
         return Fail;

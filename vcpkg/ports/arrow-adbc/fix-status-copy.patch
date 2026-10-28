@@ -1,0 +1,29 @@
+diff --git a/c/driver/framework/status.h b/c/driver/framework/status.h
+index 1111111..2222222 100644
+--- a/c/driver/framework/status.h
++++ b/c/driver/framework/status.h
+@@ -43,8 +43,24 @@
+ class Status {
+  public:
+   /// \brief Construct an OK status.
+   Status() : impl_(nullptr) {}
+ 
++  /// \brief Copy constructor (deep-copies the error detail, if present).
++  Status(const Status& other)
++      : impl_(other.impl_ ? std::make_unique<Impl>(*other.impl_) : nullptr) {}
++
++  /// \brief Copy assignment (deep-copies the error detail, if present).
++  Status& operator=(const Status& other) {
++    impl_ = other.impl_ ? std::make_unique<Impl>(*other.impl_) : nullptr;
++    return *this;
++  }
++
++  /// \brief Move constructor.
++  Status(Status&& other) = default;
++
++  /// \brief Move assignment.
++  Status& operator=(Status&& other) = default;
++
+   /// \brief Construct a non-OK status with a message.
+   explicit Status(AdbcStatusCode code, std::string message)
+       : Status(code, std::move(message), {}) {}

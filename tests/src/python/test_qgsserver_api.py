@@ -1,4 +1,6 @@
-"""QGIS Unit tests for QgsServer API.
+"""QGIS Unit tests for QgsServer API, includes initial tests for OGC API Features (AKA: OAPIF, WFS3).
+
+See also specific *ogcapi*.py tests for more OAPIF tests.
 
 From build dir, run: ctest -R PyQgsServerApi -V
 
@@ -394,6 +396,8 @@ class RestrictedLayerAccessControl(QgsAccessControlFilter):
 class QgsServerAPITest(QgsServerAPITestBase):
     """QGIS API server tests"""
 
+    regenerate_api_reference = False
+
     def setUp(self):
         super().setUp()
         # Default url has changed in QGIS 4 stick to /wfs3 for the tests
@@ -766,6 +770,45 @@ class QgsServerAPITest(QgsServerAPITestBase):
         )
         self.compareApi(request, project, "test_wfs3_collections_project.html")
 
+    def test_wfs3_getfeature_html_escape(self):
+
+        # Create mem layer with a single text field
+        layer = QgsVectorLayer(
+            "Point?crs=epsg:4326&field=txt:string", "test_layer", "memory"
+        )
+        self.assertTrue(layer.isValid())
+        f = QgsFeature(layer.fields())
+        f.setGeometry(QgsGeometry.fromWkt("POINT(1 1)"))
+        f.setAttribute("txt", "<b>test</b>")
+        layer.dataProvider().addFeatures([f])
+
+        p = QgsProject()
+        p.addMapLayer(layer)
+
+        # Expose to WFS
+        p.writeEntry("WFSLayers", "/", [layer.id()])
+
+        request = QgsBufferServerRequest(
+            "http://server.qgis.org/wfs3/collections/test_layer/items/1.html"
+        )
+        response = QgsBufferServerResponse()
+        server = QgsServer()
+
+        server.handleRequest(request, response, p)
+        self.assertEqual(response.statusCode(), 200)
+        self.assertNotIn("<b>test</b>", str(response.body(), "utf-8"))
+        self.assertIn("&lt;b&gt;test&lt;/b&gt;", str(response.body(), "utf-8"))
+
+        # Same test with the whole collection
+        request = QgsBufferServerRequest(
+            "http://server.qgis.org/wfs3/collections/test_layer/items.html"
+        )
+        response = QgsBufferServerResponse()
+        server.handleRequest(request, response, p)
+        self.assertEqual(response.statusCode(), 200)
+        self.assertNotIn("<b>test</b>", str(response.body(), "utf-8"))
+        self.assertIn("&lt;b&gt;test&lt;/b&gt;", str(response.body(), "utf-8"))
+
     def test_wfs3_collections_content_type(self):
         """Test WFS3 API collections in html format with Accept header"""
 
@@ -1003,7 +1046,7 @@ class QgsServerAPITest(QgsServerAPITestBase):
             os.path.join(self.temporary_path, "qgis_server", "test_project_api.qgs")
         )
         request = QgsBufferServerRequest(
-            "http://server.qgis.org/wfs3/collections/testlayer%20èé/items.fgb?limit=1"
+            "http://server.qgis.org/wfs3/collections/testlayer%20èé/items.fgb?limit=1&foo=bar"
         )
         server = QgsServer()
         response = QgsBufferServerResponse()
@@ -1019,12 +1062,15 @@ class QgsServerAPITest(QgsServerAPITestBase):
         )
         self.assertEqual(headers["OGC-NumberReturned"][0], "1")
         self.assertEqual(
-            headers["Link"],
-            [
-                '<http://server.qgis.org/wfs3/collections/testlayer%20%C3%A8%C3%A9/items.geojson?limit=1>; rel="alternate"; title="This document as GEOJSON"; type="application/geo+json"; profile="json"',
-                '<http://server.qgis.org/wfs3/collections/testlayer%20%C3%A8%C3%A9/items.html?limit=1>; rel="alternate"; title="This document as HTML"; type="text/html"',
-                '<http://server.qgis.org/wfs3/collections/testlayer èé/items.fgb?offset=1&limit=1>; rel="next"; title="Next page"; type="application/flatgeobuf"',
-            ],
+            set(headers["Link"]),
+            set(
+                [
+                    '<http://server.qgis.org/wfs3/collections/testlayer%20%C3%A8%C3%A9/items.fgb?limit=1&foo=bar>; rel="self"; title="This document as FlatGeobuf"; type="application/flatgeobuf"',
+                    '<http://server.qgis.org/wfs3/collections/testlayer%20%C3%A8%C3%A9/items.geojson?limit=1&foo=bar>; rel="alternate"; title="This document as GEOJSON"; type="application/geo+json"; profile="json"',
+                    '<http://server.qgis.org/wfs3/collections/testlayer%20%C3%A8%C3%A9/items.html?limit=1&foo=bar>; rel="alternate"; title="This document as HTML"; type="text/html"',
+                    '<http://server.qgis.org/wfs3/collections/testlayer èé/items.fgb?foo=bar&offset=1&limit=1>; rel="next"; title="Next page"; type="application/flatgeobuf"',
+                ]
+            ),
         )
 
         def _get_layer():
@@ -1419,6 +1465,57 @@ class QgsServerAPITest(QgsServerAPITestBase):
             "MULTIPOINT ((806732 5592286))",
         )
 
+        # Valid request with a geometry not in OGC:CRS84 but in the same CRS as the source layer
+        data = b"""{
+        "geometry": {
+            "coordinates": [[
+            801010,
+            5592333
+            ]],
+            "type": "MultiPoint"
+        },
+        "properties": {
+            "text_1": "Text 1",
+            "text_2": "Text 2",
+            "int_1": 123,
+            "float_1": 12345.678,
+            "datetime_1": "2019-11-07T12:34:56",
+            "date_1": "2019-11-07",
+            "blob_1": "dGVzdA==",
+            "bool_1": true
+        },
+        "type": "Feature"
+        }"""
+
+        encoded_crs = parse.quote("http://www.opengis.net/def/crs/EPSG/0/3857", safe="")
+        request = QgsBufferServerRequest(
+            f"http://server.qgis.org/wfs3/collections/{insert_layer}/items?crs={encoded_crs}",
+            QgsBufferServerRequest.PostMethod,
+            {"Content-Type": "application/geo+json"},
+            data,
+        )
+        response = QgsBufferServerResponse()
+        self.server.handleRequest(request, response, project)
+        self.assertEqual(response.statusCode(), 201)
+        self.assertEqual(response.body(), '"string"')
+        # Get last feature
+        req = QgsFeatureRequest()
+        order_by_clause = QgsFeatureRequest.OrderByClause("$id", False)
+        req.setOrderBy(QgsFeatureRequest.OrderBy([order_by_clause]))
+        feature = next(
+            project.mapLayersByName("test layer èé 3857 published insert")[
+                0
+            ].getFeatures(req)
+        )
+        self.assertEqual(
+            response.headers()["Location"],
+            f"http://server.qgis.org/wfs3/collections/{insert_layer}/items/{feature.id()}",
+        )
+        self.assertEqual(
+            re.sub(r"\.\d+", "", feature.geometry().asWkt().upper()),
+            "MULTIPOINT ((801010 5592333))",
+        )
+
     def test_wfs3_collection_items_put(self):
         """Test WFS3 API items PUT"""
 
@@ -1571,6 +1668,40 @@ class QgsServerAPITest(QgsServerAPITestBase):
         self.assertEqual(
             re.sub(r"\.\d+", "", feature.geometry().asWkt().upper()),
             "MULTIPOINT ((918051 5750592))",
+        )
+
+        # Update feature with a modified geometry not in OGC:CRS84 but in the same CRS as the source layer
+        data = b"""{
+        "geometry": {
+            "coordinates": [[
+            902000,
+            5750592
+            ]],
+            "type": "MultiPoint"
+        },
+        "properties": {},
+        "type": "Feature"
+        }"""
+
+        encoded_crs = parse.quote("http://www.opengis.net/def/crs/EPSG/0/3857", safe="")
+        request = QgsBufferServerRequest(
+            f"http://server.qgis.org/wfs3/collections/{update_layer}/items/1?crs={encoded_crs}",
+            QgsBufferServerRequest.PutMethod,
+            {"Content-Type": "application/geo+json"},
+            data,
+        )
+        response = QgsBufferServerResponse()
+        self.server.handleRequest(request, response, project)
+        self.assertEqual(response.statusCode(), 200)
+        j = json.loads(bytes(response.body()).decode("utf8"))
+        self.assertEqual(j["geometry"]["coordinates"], [[902000, 5750592]])
+
+        feature = project.mapLayersByName("test layer èé 3857 published update")[
+            0
+        ].getFeature(1)
+        self.assertEqual(
+            re.sub(r"\.\d+", "", feature.geometry().asWkt().upper()),
+            "MULTIPOINT ((902000 5750592))",
         )
 
         # Try to update a forbidden (unpublished) field
@@ -3089,7 +3220,7 @@ class QgsServerOgcAPITest(QgsServerAPITestBase):
             ctx,
             QgsServerOgcApi.Rel.alternate,
             QgsServerOgcApi.ContentType.JSON,
-            QgsServerOgcApi.Profile.NONE,
+            QgsServerOgcApi.Profile.Unset,
             title,
         )
 

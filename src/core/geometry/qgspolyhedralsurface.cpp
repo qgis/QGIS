@@ -308,8 +308,10 @@ QDomElement QgsPolyhedralSurface::asGml3( QDomDocument &doc, int precision, cons
   return elemPolyhedralSurface;
 }
 
-json QgsPolyhedralSurface::asJsonObject( int precision ) const
+json QgsPolyhedralSurface::asJsonObject( int precision, Qgis::GeoJsonProfile profile ) const
 {
+  // JSON-FG profile is not supported yet for PolyhedralSurface geometry
+  Q_UNUSED( profile );
   // GeoJSON format does not support PolyhedralSurface geometry
   // Return a multipolygon instead;
   std::unique_ptr<QgsMultiPolygon> multiPolygon( toMultiPolygon() );
@@ -731,28 +733,6 @@ bool QgsPolyhedralSurface::moveVertex( QgsVertexId vId, const QgsPoint &newPos )
   bool success = patch->moveVertex( QgsVertexId( 0, vId.ring, vId.vertex ), newPos );
   if ( success )
   {
-    clearCache();
-  }
-
-  return success;
-}
-
-bool QgsPolyhedralSurface::deleteVertex( QgsVertexId vId )
-{
-  if ( vId.part < 0 || vId.part >= partCount() )
-  {
-    return false;
-  }
-
-  QgsPolygon *patch = mPatches.at( vId.part );
-  bool success = patch->deleteVertex( QgsVertexId( 0, vId.ring, vId.vertex ) );
-  if ( success )
-  {
-    // if the patch has lost its exterior ring, remove it
-    if ( !patch->exteriorRing() )
-    {
-      delete mPatches.takeAt( vId.part );
-    }
     clearCache();
   }
 

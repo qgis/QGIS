@@ -92,7 +92,7 @@ void QgsMesh3DTerrainTileEntity::buildGeometry()
   QgsVector3D chunkOrigin( meshCenter.x(), meshCenter.y(), 0 );
 
   Qt3DRender::QGeometryRenderer *mesh = new Qt3DRender::QGeometryRenderer;
-  mesh->setGeometry( new QgsMeshTerrain3DGeometry( mTriangularMesh, chunkOrigin, mRenderContext.extent(), mSymbol.get()->verticalScale(), mesh ) );
+  mesh->setGeometry( new QgsMeshTerrain3DGeometry( mTriangularMesh, chunkOrigin, mRenderContext.extent(), mSymbol.get()->verticalScale(), mSymbol.get()->wireframeEnabled(), mesh ) );
   addComponent( mesh );
 
   QgsGeoTransform *transform = new QgsGeoTransform;

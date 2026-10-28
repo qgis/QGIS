@@ -105,6 +105,8 @@ bool QgsSlopeAlgorithm::prepareAlgorithm( const QVariantMap &parameters, QgsProc
 
 QVariantMap QgsSlopeAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
+  QGS_MARK_ALGORITHM_SOURCE
+
   const double zFactor = parameterAsDouble( parameters, u"Z_FACTOR"_s, context );
   const QString creationOptions = parameterAsString( parameters, u"CREATION_OPTIONS"_s, context ).trimmed();
   const double outputNodata = parameterAsDouble( parameters, u"NODATA"_s, context );

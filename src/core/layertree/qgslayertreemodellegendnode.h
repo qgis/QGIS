@@ -183,6 +183,15 @@ class CORE_EXPORT QgsLayerTreeModelLegendNode : public QObject
     */
     virtual void invalidateMapBasedData() {}
 
+    /**
+     * Invalidates cached display data for the node.
+     *
+     * The default implementation does nothing.
+     *
+     * \since QGIS 4.2
+     */
+    virtual void invalidateDisplayData() {}
+
     struct ItemContext
     {
         Q_NOWARN_DEPRECATED_PUSH //because of deprecated members
@@ -426,7 +435,7 @@ class CORE_EXPORT QgsSymbolLegendNode : public QgsLayerTreeModelLegendNode
     Qt::ItemFlags flags() const override;
     QVariant data( int role ) const override;
     bool setData( const QVariant &value, int role ) override;
-
+    void invalidateDisplayData() override;
     QSizeF drawSymbol( const QgsLegendSettings &settings, ItemContext *ctx, double itemHeight ) const override;
 
     QJsonObject exportSymbolToJson( const QgsLegendSettings &settings, const QgsRenderContext &context ) const override;
@@ -833,7 +842,7 @@ class CORE_EXPORT QgsDataDefinedSizeLegendNode : public QgsLayerTreeModelLegendN
     ~QgsDataDefinedSizeLegendNode() override;
 
     QVariant data( int role ) const override;
-
+    void invalidateDisplayData() override;
     ItemMetrics draw( const QgsLegendSettings &settings, ItemContext &ctx ) override;
 
 #ifdef SIP_RUN

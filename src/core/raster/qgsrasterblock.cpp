@@ -53,7 +53,7 @@ QgsRasterBlock::~QgsRasterBlock()
 {
   QgsDebugMsgLevel( u"mData = %1"_s.arg( reinterpret_cast< quint64 >( mData ) ), 4 );
   qgsFree( mData );
-  delete mImage;
+
   qgsFree( mNoDataBitmap );
 }
 
@@ -63,8 +63,8 @@ bool QgsRasterBlock::reset( Qgis::DataType dataType, int width, int height )
 
   qgsFree( mData );
   mData = nullptr;
-  delete mImage;
-  mImage = nullptr;
+  mImage.reset();
+
   qgsFree( mNoDataBitmap );
   mNoDataBitmap = nullptr;
   mDataType = Qgis::DataType::UnknownDataType;
@@ -91,7 +91,7 @@ bool QgsRasterBlock::reset( Qgis::DataType dataType, int width, int height )
   {
     QgsDebugMsgLevel( u"Color type"_s, 4 );
     const QImage::Format format = imageFormat( dataType );
-    mImage = new QImage( width, height, format );
+    mImage = std::make_unique<QImage>( width, height, format );
   }
   else
   {
@@ -104,7 +104,14 @@ bool QgsRasterBlock::reset( Qgis::DataType dataType, int width, int height )
   mTypeSize = QgsRasterBlock::typeSize( mDataType );
   mWidth = width;
   mHeight = height;
-  QgsDebugMsgLevel( u"mWidth= %1 mHeight = %2 mDataType = %3 mData = %4 mImage = %5"_s.arg( mWidth ).arg( mHeight ).arg( static_cast< int>( mDataType ) ).arg( reinterpret_cast< quint64 >( mData ) ).arg( reinterpret_cast< quint64 >( mImage ) ), 4 );
+  QgsDebugMsgLevel(
+    u"mWidth= %1 mHeight = %2 mDataType = %3 mData = %4 mImage = %5"_s.arg( mWidth )
+      .arg( mHeight )
+      .arg( static_cast< int>( mDataType ) )
+      .arg( reinterpret_cast< quint64 >( mData ) )
+      .arg( reinterpret_cast< quint64 >( mImage.get() ) ),
+    4
+  );
   return true;
 }
 
@@ -136,7 +143,14 @@ Qgis::DataType QgsRasterBlock::dataType( QImage::Format format )
 
 bool QgsRasterBlock::isEmpty() const
 {
-  QgsDebugMsgLevel( u"mWidth= %1 mHeight = %2 mDataType = %3 mData = %4 mImage = %5"_s.arg( mWidth ).arg( mHeight ).arg( qgsEnumValueToKey( mDataType ) ).arg( reinterpret_cast< quint64 >( mData ) ).arg( reinterpret_cast< quint64 >( mImage ) ), 4 );
+  QgsDebugMsgLevel(
+    u"mWidth= %1 mHeight = %2 mDataType = %3 mData = %4 mImage = %5"_s.arg( mWidth )
+      .arg( mHeight )
+      .arg( qgsEnumValueToKey( mDataType ) )
+      .arg( reinterpret_cast< quint64 >( mData ) )
+      .arg( reinterpret_cast< quint64 >( mImage.get() ) ),
+    4
+  );
   return mWidth == 0 || mHeight == 0 || ( typeIsNumeric( mDataType ) && !mData ) || ( typeIsColor( mDataType ) && !mImage );
 }
 
@@ -754,9 +768,8 @@ bool QgsRasterBlock::setImage( const QImage *image )
 {
   qgsFree( mData );
   mData = nullptr;
-  delete mImage;
-  mImage = nullptr;
-  mImage = new QImage( *image );
+
+  mImage = std::make_unique<QImage>( *image );
   mWidth = mImage->width();
   mHeight = mImage->height();
   mDataType = dataType( mImage->format() );

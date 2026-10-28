@@ -46,9 +46,9 @@ bool QgsPhongMaterialSettings::supportsTechnique( Qgis::MaterialRenderingTechniq
   return false;
 }
 
-QgsAbstractMaterialSettings *QgsPhongMaterialSettings::create()
+std::unique_ptr<QgsAbstractMaterialSettings> QgsPhongMaterialSettings::create()
 {
-  return new QgsPhongMaterialSettings();
+  return std::make_unique<QgsPhongMaterialSettings>();
 }
 
 QgsPhongMaterialSettings *QgsPhongMaterialSettings::clone() const

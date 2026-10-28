@@ -142,7 +142,7 @@ void QgsSingleBandPseudoColorRenderer::createShader(
   setShader( rasterShader );
 }
 
-QgsRasterRenderer *QgsSingleBandPseudoColorRenderer::create( const QDomElement &elem, QgsRasterInterface *input )
+std::unique_ptr<QgsRasterRenderer> QgsSingleBandPseudoColorRenderer::create( const QDomElement &elem, QgsRasterInterface *input )
 {
   if ( elem.isNull() )
   {
@@ -158,7 +158,7 @@ QgsRasterRenderer *QgsSingleBandPseudoColorRenderer::create( const QDomElement &
     shader->readXml( rasterShaderElem );
   }
 
-  QgsSingleBandPseudoColorRenderer *r = new QgsSingleBandPseudoColorRenderer( input, band, shader );
+  auto r = std::make_unique<QgsSingleBandPseudoColorRenderer>( input, band, shader );
   r->readXml( elem );
 
   // TODO: add _readXML in superclass?
@@ -480,7 +480,11 @@ QList<QgsLayerTreeModelLegendNode *> QgsSingleBandPseudoColorRenderer::createLeg
         if ( !rampShader->colorRampItemList().isEmpty() )
         {
           res << new QgsColorRampLegendNode(
-            nodeLayer, rampShader->createColorRamp(), rampShader->legendSettings() ? *rampShader->legendSettings() : QgsColorRampLegendNodeSettings(), rampShader->minimumValue(), rampShader->maximumValue()
+            nodeLayer,
+            rampShader->createColorRamp().release(),
+            rampShader->legendSettings() ? *rampShader->legendSettings() : QgsColorRampLegendNodeSettings(),
+            rampShader->minimumValue(),
+            rampShader->maximumValue()
           );
         }
         break;

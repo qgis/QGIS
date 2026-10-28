@@ -21,9 +21,7 @@
 #include "qgslabelingengine.h"
 #include "qgslogger.h"
 #include "qgsmaplayer.h"
-#include "qgsmaplayerlistutils_p.h"
 #include "qgsmaplayerrenderer.h"
-#include "qgsproject.h"
 #include "qgsthreadingutils.h"
 
 #include <QString>
@@ -65,8 +63,7 @@ void QgsMapRendererParallelJob::startPrivate()
 
   if ( mSettings.testFlag( Qgis::MapSettingsFlag::DrawLabeling ) )
   {
-    mLabelingEngineV2 = std::make_unique<QgsDefaultLabelingEngine>();
-    mLabelingEngineV2->setMapSettings( mSettings );
+    mLabelingEngineV2 = std::make_unique<QgsDefaultLabelingEngine>( mSettings );
   }
 
   const bool canUseLabelCache = prepareLabelCache();
@@ -318,7 +315,7 @@ void QgsMapRendererParallelJob::renderingFinished()
 
     mStatus = Idle;
 
-    mRenderingTime = mRenderingStart.elapsed();
+    mRenderingTime = static_cast< int >( mRenderingStart.elapsed() );
 
     emit finished();
   }
@@ -329,6 +326,7 @@ void QgsMapRendererParallelJob::renderLayersSecondPassFinished()
   QgsDebugMsgLevel( u"PARALLEL finished"_s, 2 );
 
   // compose second pass images into first pass images
+
   composeSecondPass( mSecondPassLayerJobs, mLabelJob );
 
   // compose final image
@@ -344,8 +342,7 @@ void QgsMapRendererParallelJob::renderLayersSecondPassFinished()
 
   mStatus = Idle;
 
-  mRenderingTime = mRenderingStart.elapsed();
-
+  mRenderingTime = static_cast< int >( mRenderingStart.elapsed() );
   emit finished();
 }
 
@@ -369,9 +366,9 @@ void QgsMapRendererParallelJob::renderLayerStatic( LayerRenderJob &job )
     job.previewRenderImageInitialized = true;
   }
 
-  if ( job.img )
+  if ( job.destinationImage )
   {
-    job.img->fill( 0 );
+    job.destinationImage->fill( 0 );
     job.imageInitialized = true;
   }
 
@@ -401,7 +398,7 @@ void QgsMapRendererParallelJob::renderLayerStatic( LayerRenderJob &job )
   }
 
   job.errors = job.renderer->errors();
-  job.renderingTime += t.elapsed();
+  job.renderingTime += static_cast< int >( t.elapsed() );
   QgsDebugMsgLevel( u"job %1 end [%2 ms] (layer %3)"_s.arg( reinterpret_cast< quint64 >( &job ), 0, 16 ).arg( job.renderingTime ).arg( job.layerId ), 2 );
 }
 
@@ -419,7 +416,7 @@ void QgsMapRendererParallelJob::renderLabelsStatic( QgsMapRendererParallelJob *s
     if ( job.img )
     {
       job.img->fill( 0 );
-      painter.begin( job.img );
+      painter.begin( job.img.get() );
     }
     else if ( job.picture )
     {
@@ -453,7 +450,7 @@ void QgsMapRendererParallelJob::renderLabelsStatic( QgsMapRendererParallelJob *s
 
     painter.end();
 
-    job.renderingTime = labelTime.elapsed();
+    job.renderingTime = static_cast< int >( labelTime.elapsed() );
     job.complete = true;
     job.participatingLayers = self->participatingLabelLayers( self->mLabelingEngineV2.get() );
     if ( job.img )

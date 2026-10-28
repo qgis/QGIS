@@ -19,7 +19,6 @@ __author__ = "Médéric Ribreux"
 __date__ = "October 2017"
 __copyright__ = "(C) 2017, Médéric Ribreux"
 
-from processing.tools.system import isWindows
 from qgis.core import QgsProcessingParameterString
 
 from grassprovider.grass_utils import GrassUtils
@@ -60,7 +59,7 @@ def processInputs(alg, parameters, context, feedback):
     # And set the region
     grassName = alg.exportedLayers["input"]
     # We use the shell to capture the results from r.proj -g
-    if isWindows():
+    if GrassUtils.is_windows():
         # TODO: make some tests under a non POSIX shell
         alg.commands.append("set regVar=")
         alg.commands.append(

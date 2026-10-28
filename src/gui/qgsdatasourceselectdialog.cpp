@@ -112,7 +112,7 @@ QgsDataSourceSelectWidget::QgsDataSourceSelectWidget( QgsBrowserGuiModel *browse
   connect( mLeFilter, &QgsFilterLineEdit::textChanged, this, &QgsDataSourceSelectWidget::setFilter );
   connect( group, &QActionGroup::triggered, this, &QgsDataSourceSelectWidget::setFilterSyntax );
 
-  mBrowserToolbar->setIconSize( QgsGuiUtils::iconSize( true ) );
+  mBrowserToolbar->setIconSize( QgsGui::iconSize( Qgis::UserInterfaceIconType::DockedToolbar ) );
 
   if ( QgsSettings().value( u"datasourceSelectFilterVisible"_s, false, QgsSettings::Section::Gui ).toBool() )
   {

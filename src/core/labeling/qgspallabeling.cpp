@@ -25,6 +25,7 @@
 #include "qgsapplication.h"
 #include "qgscolorutils.h"
 #include "qgscurvepolygon.h"
+#include "qgsdatadefinedutils.h"
 #include "qgsexception.h"
 #include "qgsexpression.h"
 #include "qgsfontmanager.h"
@@ -157,7 +158,7 @@ void QgsPalLayerSettings::initPropertyDefinitions()
     { static_cast< int >( QgsPalLayerSettings::Property::TabStopDistance ),
       QgsPropertyDefinition( "TabStopDistance", QgsPropertyDefinition::DataTypeNumeric, QObject::tr( "Tab stop distance(s)" ), QObject::tr( "Numeric distance or array of distances" ), origin ) },
     { static_cast< int >( QgsPalLayerSettings::Property::TextOrientation ),
-      QgsPropertyDefinition( "TextOrientation", QgsPropertyDefinition::DataTypeString, QObject::tr( "Text orientation" ), QObject::tr( "string " ) + "[<b>horizontal</b>|<b>vertical</b>]", origin ) },
+      QgsPropertyDefinition( "TextOrientation", QgsPropertyDefinition::DataTypeString, QObject::tr( "Text orientation" ), QObject::tr( "string " ) + "[<b>Horizontal</b>|<b>Vertical</b>|<b>RotationBased</b>]", origin ) },
     { static_cast< int >( QgsPalLayerSettings::Property::DirSymbDraw ), QgsPropertyDefinition( "DirSymbDraw", QObject::tr( "Draw direction symbol" ), QgsPropertyDefinition::Boolean, origin ) },
     { static_cast< int >( QgsPalLayerSettings::Property::DirSymbLeft ), QgsPropertyDefinition( "DirSymbLeft", QObject::tr( "Left direction symbol" ), QgsPropertyDefinition::String, origin ) },
     { static_cast< int >( QgsPalLayerSettings::Property::DirSymbRight ), QgsPropertyDefinition( "DirSymbRight", QObject::tr( "Right direction symbol" ), QgsPropertyDefinition::String, origin ) },
@@ -279,11 +280,11 @@ void QgsPalLayerSettings::initPropertyDefinitions()
     { static_cast< int >( QgsPalLayerSettings::Property::LineAnchorPercent ),
       QgsPropertyDefinition( "LineAnchorPercent", QObject::tr( "Line anchor percentage, as fraction from 0.0 to 1.0" ), QgsPropertyDefinition::Double0To1, origin ) },
     { static_cast< int >( QgsPalLayerSettings::Property::LineAnchorClipping ),
-      QgsPropertyDefinition( "LineAnchorClipping", QgsPropertyDefinition::DataTypeString, QObject::tr( "Line anchor clipping mode" ), QObject::tr( "string " ) + u"[<b>visible</b>|<b>entire</b>]"_s, origin ) },
+      QgsPropertyDefinition( "LineAnchorClipping", QgsPropertyDefinition::DataTypeString, QObject::tr( "Line anchor clipping mode" ), QObject::tr( "string " ) + u"[<b>Visible</b>|<b>Entire</b>]"_s, origin ) },
     { static_cast< int >( QgsPalLayerSettings::Property::LineAnchorType ),
-      QgsPropertyDefinition( "LineAnchorType", QgsPropertyDefinition::DataTypeString, QObject::tr( "Line anchor type" ), QObject::tr( "string " ) + u"[<b>hint</b>|<b>strict</b>]"_s, origin ) },
+      QgsPropertyDefinition( "LineAnchorType", QgsPropertyDefinition::DataTypeString, QObject::tr( "Line anchor type" ), QObject::tr( "string " ) + u"[<b>Hint</b>|<b>Strict</b>]"_s, origin ) },
     { static_cast< int >( QgsPalLayerSettings::Property::LineAnchorTextPoint ),
-      QgsPropertyDefinition( "LineAnchorTextPoint", QgsPropertyDefinition::DataTypeString, QObject::tr( "Line anchor text point" ), QObject::tr( "string " ) + u"[<b>follow</b>|<b>start</b>|<b>center</b>|<b>end</b>]"_s, origin ) },
+      QgsPropertyDefinition( "LineAnchorTextPoint", QgsPropertyDefinition::DataTypeString, QObject::tr( "Line anchor text point" ), QObject::tr( "string " ) + u"[<b>Follow</b>|<b>Start</b>|<b>Center</b>|<b>End</b>]"_s, origin ) },
     { static_cast< int >( QgsPalLayerSettings::Property::CurvedLabelMode ),
       QgsPropertyDefinition( "CurvedLabelMode", QgsPropertyDefinition::DataTypeString, QObject::tr( "Curved label mode" ), QObject::tr( "string " ) + u"[<b>Default</b>|<b>CharactersAtVertices</b>|<b>StretchCharacterSpacingToFit</b>|<b>StretchWordSpacingToFit</b>]"_s, origin ) },
     { static_cast< int >( QgsPalLayerSettings::Property::Priority ),
@@ -298,11 +299,11 @@ void QgsPalLayerSettings::initPropertyDefinitions()
         QObject::tr( "Predefined position order" ),
         QObject::tr( "Comma separated list of placements in order of priority<br>" )
           + QStringLiteral(
-            "[<b>TL</b>=Top left|<b>TSL</b>=Top, slightly left|<b>T</b>=Top middle|<br>"
-            "<b>TSR</b>=Top, slightly right|<b>TR</b>=Top right|<br>"
-            "<b>L</b>=Left|<b>R</b>=Right|<br>"
-            "<b>BL</b>=Bottom left|<b>BSL</b>=Bottom, slightly left|<b>B</b>=Bottom middle|<br>"
-            "<b>BSR</b>=Bottom, slightly right|<b>BR</b>=Bottom right|<b>O</b>=Over point]"
+            "[<b>TopLeft</b>=Top left|<b>TopSlightyLeft</b>=Top, slightly left|<b>Top</b>=Top middle|<br>"
+            "<b>TopSlightlyRight</b>=Top, slightly right|<b>TopRight</b>=Top right|<br>"
+            "<b>Left</b>=Left|<b>Right</b>=Right|<br>"
+            "<b>BottomLeft</b>=Bottom left|<b>BottomSlightlyLeft</b>=Bottom, slightly left|<b>Bottom</b>=Bottom middle|<br>"
+            "<b>BottomSlightlyRight</b>=Bottom, slightly right|<b>BottomRight</b>=Bottom right|<b>OverPoint</b>=Over point]"
           ),
         origin
       ) },
@@ -313,13 +314,13 @@ void QgsPalLayerSettings::initPropertyDefinitions()
         QObject::tr( "Line placement options" ),
         QObject::tr( "Comma separated list of placement options<br>" )
           + QStringLiteral(
-            "[<b>OL</b>=On line|<b>AL</b>=Above line|<b>BL</b>=Below line|<br>"
-            "<b>LO</b>=Respect line orientation]"
+            "[<b>OnLine</b>=On line|<b>AboveLine</b>=Above line|<b>BelowLine</b>=Below line|<br>"
+            "<b>LineOrientation</b>=Respect line orientation]"
           ),
         origin
       ) },
     { static_cast< int >( QgsPalLayerSettings::Property::PolygonLabelOutside ),
-      QgsPropertyDefinition( "PolygonLabelOutside", QgsPropertyDefinition::DataTypeString, QObject::tr( "Label outside polygons" ), QObject::tr( "string " ) + "[<b>yes</b> (allow placing outside)|<b>no</b> (never place outside)|<b>force</b> (always place outside)]", origin ) },
+      QgsPropertyDefinition( "PolygonLabelOutside", QgsPropertyDefinition::DataTypeString, QObject::tr( "Label outside polygons" ), QObject::tr( "string " ) + "[<b>Yes</b> (allow placing outside)|<b>No</b> (never place outside)|<b>Force</b> (always place outside)]", origin ) },
     { static_cast< int >( QgsPalLayerSettings::Property::PositionX ), QgsPropertyDefinition( "PositionX", QObject::tr( "Position (X)" ), QgsPropertyDefinition::Double, origin ) },
     { static_cast< int >( QgsPalLayerSettings::Property::PositionY ), QgsPropertyDefinition( "PositionY", QObject::tr( "Position (Y)" ), QgsPropertyDefinition::Double, origin ) },
     { static_cast< int >( QgsPalLayerSettings::Property::PositionPoint ),
@@ -1257,7 +1258,7 @@ void QgsPalLayerSettings::readXml( const QDomElement &elem, const QgsReadWriteCo
   mLineSettings.setAnchorType( static_cast< QgsLabelLineSettings::AnchorType >( placementElem.attribute( u"lineAnchorType"_s, u"0"_s ).toInt() ) );
   mLineSettings.setAnchorClipping( static_cast< QgsLabelLineSettings::AnchorClipping >( placementElem.attribute( u"lineAnchorClipping"_s, u"0"_s ).toInt() ) );
   // when reading the anchor text point we default to center mode, to keep same result as for projects created in < 3.26
-  mLineSettings.setAnchorTextPoint( qgsEnumKeyToValue( placementElem.attribute( u"lineAnchorTextPoint"_s ), QgsLabelLineSettings::AnchorTextPoint::CenterOfText ) );
+  mLineSettings.setAnchorTextPoint( qgsEnumKeyToValue( placementElem.attribute( u"lineAnchorTextPoint"_s ), Qgis::TextAnchorPoint::CenterOfText ) );
   mLineSettings.setCurvedLabelMode( qgsEnumKeyToValue( placementElem.attribute( u"curvedLabelMode"_s ), Qgis::CurvedLabelMode::Default ) );
 
   mPointSettings.setMaximumDistance( placementElem.attribute( u"maximumDistance"_s, u"0"_s ).toDouble() );
@@ -1426,12 +1427,12 @@ void QgsPalLayerSettings::readXml( const QDomElement &elem, const QgsReadWriteCo
   // TODO - replace with registry when multiple callout styles exist
   const QString calloutType = elem.attribute( u"calloutType"_s );
   if ( calloutType.isEmpty() )
-    mCallout.reset( QgsCalloutRegistry::defaultCallout() );
+    mCallout = QgsCalloutRegistry::defaultCallout();
   else
   {
-    mCallout.reset( QgsApplication::calloutRegistry()->createCallout( calloutType, elem.firstChildElement( u"callout"_s ), context ) );
+    mCallout = QgsApplication::calloutRegistry()->createCallout( calloutType, elem.firstChildElement( u"callout"_s ), context );
     if ( !mCallout )
-      mCallout.reset( QgsCalloutRegistry::defaultCallout() );
+      mCallout = QgsCalloutRegistry::defaultCallout();
   }
 }
 
@@ -2101,7 +2102,7 @@ void QgsPalLayerSettings::calculateLabelMetrics(
 
 void QgsPalLayerSettings::registerFeature( const QgsFeature &f, QgsRenderContext &context )
 {
-  registerFeatureWithDetails( f, context, QgsGeometry(), nullptr );
+  registerFeatureWithDetails( f, context, QgsLabelFeatureDetails() );
 }
 
 bool QgsPalLayerSettings::isLabelVisible( QgsRenderContext &context ) const
@@ -2251,39 +2252,21 @@ QgsTextFormat QgsPalLayerSettings::evaluateTextFormat( QgsRenderContext &context
     const QVariant exprVal = mDataDefinedProperties.value( QgsPalLayerSettings::Property::FontCase, context.expressionContext() );
     if ( !QgsVariantUtils::isNull( exprVal ) )
     {
-      QString fcase = exprVal.toString().trimmed();
-      QgsDebugMsgLevel( u"exprVal FontCase:%1"_s.arg( fcase ), 4 );
+      static constexpr auto FONT_CASE_MAP = makeDataDefinedStringDecoder<Qgis::Capitalization>( {
+        { u"nochange", Qgis::Capitalization::MixedCase },
+        { u"upper", Qgis::Capitalization::AllUppercase },
+        { u"lower", Qgis::Capitalization::AllLowercase },
+        { u"capitalize", Qgis::Capitalization::ForceFirstLetterToCapital },
+        { u"title", Qgis::Capitalization::TitleCase },
+        { u"smallcaps", Qgis::Capitalization::SmallCaps },
+        { u"allsmallcaps", Qgis::Capitalization::AllSmallCaps },
+      } );
 
-      if ( !fcase.isEmpty() )
+      const QString fcase = exprVal.toString();
+      auto evaluatedCase = FONT_CASE_MAP.lookup( fcase );
+      if ( evaluatedCase )
       {
-        if ( fcase.compare( "NoChange"_L1, Qt::CaseInsensitive ) == 0 )
-        {
-          evaluatedFormat.setCapitalization( Qgis::Capitalization::MixedCase );
-        }
-        else if ( fcase.compare( "Upper"_L1, Qt::CaseInsensitive ) == 0 )
-        {
-          evaluatedFormat.setCapitalization( Qgis::Capitalization::AllUppercase );
-        }
-        else if ( fcase.compare( "Lower"_L1, Qt::CaseInsensitive ) == 0 )
-        {
-          evaluatedFormat.setCapitalization( Qgis::Capitalization::AllLowercase );
-        }
-        else if ( fcase.compare( "Capitalize"_L1, Qt::CaseInsensitive ) == 0 )
-        {
-          evaluatedFormat.setCapitalization( Qgis::Capitalization::ForceFirstLetterToCapital );
-        }
-        else if ( fcase.compare( "Title"_L1, Qt::CaseInsensitive ) == 0 )
-        {
-          evaluatedFormat.setCapitalization( Qgis::Capitalization::TitleCase );
-        }
-        else if ( fcase.compare( "SmallCaps"_L1, Qt::CaseInsensitive ) == 0 )
-        {
-          evaluatedFormat.setCapitalization( Qgis::Capitalization::SmallCaps );
-        }
-        else if ( fcase.compare( "AllSmallCaps"_L1, Qt::CaseInsensitive ) == 0 )
-        {
-          evaluatedFormat.setCapitalization( Qgis::Capitalization::AllSmallCaps );
-        }
+        evaluatedFormat.setCapitalization( *evaluatedCase );
       }
     }
   }
@@ -2338,6 +2321,8 @@ QgsTextFormat QgsPalLayerSettings::evaluateTextFormat( QgsRenderContext &context
 
 bool QgsPalLayerSettings::evaluateLabelContent( const QgsFeature &feature, QgsRenderContext &context, bool allowMultipleLines, QString &labelText, QgsTextDocument &document, const QgsTextFormat &format ) const
 {
+  QgsTextFormat formatEvaluated = format;
+
   // Check to see if we are using an expression string.
   if ( isExpression )
   {
@@ -2370,10 +2355,6 @@ bool QgsPalLayerSettings::evaluateLabelContent( const QgsFeature &feature, QgsRe
   {
     labelText = substitutions.process( labelText );
   }
-
-  // TODO -- this is in the wrong place. We should be capitalizing the text only, ie after we have parsed
-  // any HTML tags to a text document.
-  labelText = QgsStringUtils::capitalize( labelText, format.capitalization() );
 
   // TODO -- this is in the wrong place. We should be formatting numbers AFTER converting HTML to documents
 
@@ -2408,23 +2389,47 @@ bool QgsPalLayerSettings::evaluateLabelContent( const QgsFeature &feature, QgsRe
     }
   }
 
-  document = QgsTextDocument::fromTextAndFormat( { labelText }, format );
+  // maintain API - capitalization may have been set in textFont
+  if ( formatEvaluated.capitalization() == Qgis::Capitalization::MixedCase && mFormat.font().capitalization() != QFont::MixedCase )
+  {
+    formatEvaluated.setCapitalization( static_cast< Qgis::Capitalization >( mFormat.font().capitalization() ) );
+  }
 
   QString wrapchr = wrapChar;
+  QString wrapchrCopy = wrapChar;
   int evalAutoWrapLength = autoWrapLength;
-  if ( dataDefinedValues.contains( QgsPalLayerSettings::Property::MultiLineWrapChar ) )
+  if ( allowMultipleLines )
   {
-    wrapchr = dataDefinedValues.value( QgsPalLayerSettings::Property::MultiLineWrapChar ).toString();
-  }
-  if ( dataDefinedValues.contains( QgsPalLayerSettings::Property::AutoWrapLength ) )
-  {
-    evalAutoWrapLength = dataDefinedValues.value( QgsPalLayerSettings::Property::AutoWrapLength, evalAutoWrapLength ).toInt();
+    if ( dataDefinedValues.contains( QgsPalLayerSettings::Property::MultiLineWrapChar ) )
+    {
+      wrapchr = dataDefinedValues.value( QgsPalLayerSettings::Property::MultiLineWrapChar ).toString();
+    }
+    if ( dataDefinedValues.contains( QgsPalLayerSettings::Property::AutoWrapLength ) )
+    {
+      evalAutoWrapLength = dataDefinedValues.value( QgsPalLayerSettings::Property::AutoWrapLength, evalAutoWrapLength ).toInt();
+    }
+
+    wrapchrCopy = wrapchr;
+
+    if ( wrapchr.isEmpty() )
+    {
+      wrapchr = u"\n"_s; // default to new line delimiter
+      wrapchrCopy = wrapchr;
+    }
+    else if ( formatEvaluated.capitalization() != Qgis::Capitalization::MixedCase )
+    {
+      // Change wrapchr to a non printable character to avoid issues with capitalization.
+      while ( labelText.contains( wrapchr ) )
+      {
+        labelText.replace( wrapchr, QString( QChar::ReplacementCharacter ) );
+      }
+
+      wrapchr = QString( QChar::ReplacementCharacter );
+    }
   }
 
-  if ( wrapchr.isEmpty() )
-  {
-    wrapchr = u"\n"_s; // default to new line delimiter
-  }
+  document = QgsTextDocument::fromTextAndFormat( { labelText }, formatEvaluated );
+  labelText = document.toPlainText().join( wrapchrCopy );
 
   if ( allowMultipleLines )
   {
@@ -2486,7 +2491,7 @@ QgsGeometry QgsPalLayerSettings::evaluateLabelGeometry( const QgsFeature &featur
   return geom;
 }
 
-std::vector<std::unique_ptr<QgsLabelFeature> > QgsPalLayerSettings::registerFeatureWithDetails( const QgsFeature &f, QgsRenderContext &context, QgsGeometry obstacleGeometry, const QgsSymbol *symbol )
+std::vector<std::unique_ptr<QgsLabelFeature> > QgsPalLayerSettings::registerFeatureWithDetails( const QgsFeature &f, QgsRenderContext &context, const QgsLabelFeatureDetails &details )
 {
   QVariant exprVal; // value() is repeatedly nulled on data defined evaluation and replaced when successful
   mCurFeat = &f;
@@ -2497,6 +2502,8 @@ std::vector<std::unique_ptr<QgsLabelFeature> > QgsPalLayerSettings::registerFeat
     isObstacle = mDataDefinedProperties.valueAsBool( QgsPalLayerSettings::Property::IsObstacle, context.expressionContext(), isObstacle ); // default to layer default
 
   std::vector<std::unique_ptr<QgsLabelFeature> > res;
+
+  QgsGeometry obstacleGeometry = details.obstacleGeometry();
 
   // possibly an obstacle-only feature
   if ( !drawLabels )
@@ -2544,6 +2551,14 @@ std::vector<std::unique_ptr<QgsLabelFeature> > QgsPalLayerSettings::registerFeat
   QgsTextFormat evaluatedFormat = evaluateTextFormat( context, labelIsHidden );
   if ( labelIsHidden )
     return {};
+
+  if ( context.testFlag( Qgis::RenderContextFlag::DrawLabelSelection ) && details.isSelected() )
+  {
+    // when rendering labels in a selected state, we render them using a buffer in the layer's selection color
+    dataDefinedValues.insert( QgsPalLayerSettings::Property::BufferDraw, true );
+    dataDefinedValues.insert( QgsPalLayerSettings::Property::BufferSize, 2 );
+    dataDefinedValues.insert( QgsPalLayerSettings::Property::BufferColor, context.selectionColor() );
+  }
 
   QgsLabelPlacementSettings placementSettings = mPlacementSettings;
   placementSettings.updateDataDefinedProperties( mDataDefinedProperties, context.expressionContext() );
@@ -2647,7 +2662,7 @@ std::vector<std::unique_ptr<QgsLabelFeature> > QgsPalLayerSettings::registerFeat
     case Qgis::MultiPartLabelingBehavior::LabelEveryPartWithEntireLabel:
     {
       std::unique_ptr< QgsTextLabelFeature > label
-        = generateLabelFeature( context, feature, 0, geom, obstacleGeometry, doc, labelText, evaluatedFormat, symbol, lineSettings, pointSettings, placementSettings, isObstacle, doClip );
+        = generateLabelFeature( context, feature, 0, geom, obstacleGeometry, doc, labelText, evaluatedFormat, details.symbol(), lineSettings, pointSettings, placementSettings, isObstacle, doClip );
       if ( label )
         res.emplace_back( std::move( label ) );
       break;
@@ -2662,7 +2677,7 @@ std::vector<std::unique_ptr<QgsLabelFeature> > QgsPalLayerSettings::registerFeat
       for ( std::size_t i = 0; i < partCount; ++i )
       {
         std::unique_ptr< QgsTextLabelFeature > label
-          = generateLabelFeature( context, feature, static_cast< int >( i ), geometryParts[i], obstacleGeometry, documentParts[i], labelText, evaluatedFormat, symbol, lineSettings, pointSettings, placementSettings, isObstacle, doClip );
+          = generateLabelFeature( context, feature, static_cast< int >( i ), geometryParts[i], obstacleGeometry, documentParts[i], labelText, evaluatedFormat, details.symbol(), lineSettings, pointSettings, placementSettings, isObstacle, doClip );
         if ( label )
           res.emplace_back( std::move( label ) );
       }
@@ -4057,30 +4072,26 @@ void QgsPalLayerSettings::parseTextFormatting( QgsRenderContext &context )
     exprVal = mDataDefinedProperties.value( QgsPalLayerSettings::Property::MultiLineAlignment, context.expressionContext() );
     if ( !QgsVariantUtils::isNull( exprVal ) )
     {
-      QString str = exprVal.toString().trimmed();
+      const QString str = exprVal.toString();
       QgsDebugMsgLevel( u"exprVal MultiLineAlignment:%1"_s.arg( str ), 4 );
 
-      if ( !str.isEmpty() )
-      {
-        // "Left"
-        Qgis::LabelMultiLineAlignment aligntype = Qgis::LabelMultiLineAlignment::Left;
+      static constexpr auto MULTI_LINE_ALIGNMENT_MAP = makeDataDefinedStringDecoder<Qgis::LabelMultiLineAlignment>(
+        { { u"left", Qgis::LabelMultiLineAlignment::Left },
+          { u"center", Qgis::LabelMultiLineAlignment::Center },
+          { u"right", Qgis::LabelMultiLineAlignment::Right },
+          { u"follow", Qgis::LabelMultiLineAlignment::FollowPlacement },
+          { u"justify", Qgis::LabelMultiLineAlignment::Justify } }
+      );
 
-        if ( str.compare( "Center"_L1, Qt::CaseInsensitive ) == 0 )
-        {
-          aligntype = Qgis::LabelMultiLineAlignment::Center;
-        }
-        else if ( str.compare( "Right"_L1, Qt::CaseInsensitive ) == 0 )
-        {
-          aligntype = Qgis::LabelMultiLineAlignment::Right;
-        }
-        else if ( str.compare( "Follow"_L1, Qt::CaseInsensitive ) == 0 )
-        {
-          aligntype = Qgis::LabelMultiLineAlignment::FollowPlacement;
-        }
-        else if ( str.compare( "Justify"_L1, Qt::CaseInsensitive ) == 0 )
-        {
-          aligntype = Qgis::LabelMultiLineAlignment::Justify;
-        }
+      auto evaluatedAlignment = MULTI_LINE_ALIGNMENT_MAP.lookup( str );
+      if ( evaluatedAlignment )
+      {
+        dataDefinedValues.insert( QgsPalLayerSettings::Property::MultiLineAlignment, QVariant( static_cast< int >( *evaluatedAlignment ) ) );
+      }
+      else if ( !str.isEmpty() )
+      {
+        // for compatibility with old logic, non-matching strings get treated as "Left"
+        Qgis::LabelMultiLineAlignment aligntype = Qgis::LabelMultiLineAlignment::Left;
         dataDefinedValues.insert( QgsPalLayerSettings::Property::MultiLineAlignment, QVariant( static_cast< int >( aligntype ) ) );
       }
     }
@@ -4119,22 +4130,23 @@ void QgsPalLayerSettings::parseTextFormatting( QgsRenderContext &context )
     exprVal = mDataDefinedProperties.value( QgsPalLayerSettings::Property::DirSymbPlacement, context.expressionContext() );
     if ( !QgsVariantUtils::isNull( exprVal ) )
     {
-      QString str = exprVal.toString().trimmed();
-      QgsDebugMsgLevel( u"exprVal DirSymbPlacement:%1"_s.arg( str ), 4 );
+      const QString str = exprVal.toString();
 
-      if ( !str.isEmpty() )
+      static constexpr auto DIRECTION_MAP = makeDataDefinedStringDecoder<QgsLabelLineSettings::DirectionSymbolPlacement>(
+        { { u"above", QgsLabelLineSettings::DirectionSymbolPlacement::SymbolAbove },
+          { u"below", QgsLabelLineSettings::DirectionSymbolPlacement::SymbolBelow },
+          { u"leftright", QgsLabelLineSettings::DirectionSymbolPlacement::SymbolLeftRight } }
+      );
+
+      auto evaluatedDirection = DIRECTION_MAP.lookup( str );
+      if ( evaluatedDirection )
       {
-        // "LeftRight"
+        dataDefinedValues.insert( QgsPalLayerSettings::Property::DirSymbPlacement, QVariant( static_cast< int >( *evaluatedDirection ) ) );
+      }
+      else if ( !str.trimmed().isEmpty() )
+      {
+        // for compatibility with old logic non-empty strings fallback to LeftRight mode
         QgsLabelLineSettings::DirectionSymbolPlacement placetype = QgsLabelLineSettings::DirectionSymbolPlacement::SymbolLeftRight;
-
-        if ( str.compare( "Above"_L1, Qt::CaseInsensitive ) == 0 )
-        {
-          placetype = QgsLabelLineSettings::DirectionSymbolPlacement::SymbolAbove;
-        }
-        else if ( str.compare( "Below"_L1, Qt::CaseInsensitive ) == 0 )
-        {
-          placetype = QgsLabelLineSettings::DirectionSymbolPlacement::SymbolBelow;
-        }
         dataDefinedValues.insert( QgsPalLayerSettings::Property::DirSymbPlacement, QVariant( static_cast< int >( placetype ) ) );
       }
     }

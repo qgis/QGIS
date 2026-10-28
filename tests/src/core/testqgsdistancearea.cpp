@@ -53,6 +53,7 @@ class TestQgsDistanceArea : public QObject
     void regression61299();
     void setCrsEllipsoidLogic();
     void measureLineProjectedCartesian();
+    void sphericalEllipsoidWithFlattening0();
 };
 
 void TestQgsDistanceArea::initTestCase()
@@ -554,6 +555,30 @@ void TestQgsDistanceArea::measureLineProjectedCartesian()
   // expected: 1 meter expressed in degrees of arc at the source CRS
   const double expected = QgsUnitTypes::fromUnitToUnitFactor( Qgis::DistanceUnit::Meters, Qgis::DistanceUnit::Degrees );
   QGSCOMPARENEAR( r1, expected, 1e-12 );
+}
+
+void TestQgsDistanceArea::sphericalEllipsoidWithFlattening0()
+{
+  // regression: a perfect sphere reports inverse flattening == 0, which
+  // previously caused geod_init() to receive 1/0 == infinity and produce
+  // nan measurements. Flattening must be treated as 0 for a sphere.
+  QgsCoordinateReferenceSystem crs( u"IAU_2015:49900"_s );
+
+  QgsDistanceArea da;
+  QVERIFY( da.setEllipsoid( crs.ellipsoidAcronym() ) ); // semi-major == semi-minor (sphere)
+  QVERIFY( da.willUseEllipsoid() );
+  QCOMPARE( da.ellipsoidInverseFlattening(), 0.0 );
+
+  // two points 10° apart along the equator
+  const double result = da.measureLine( QgsPointXY( 0.0, 0.0 ), QgsPointXY( 10.0, 0.0 ) );
+  QVERIFY( std::isfinite( result ) ); // pre-fix this was nan/inf
+  QGSCOMPARENEAR( result, da.ellipsoidSemiMajor() * 10.0 * M_PI / 180.0, 0.001 );
+
+  // area should likewise be finite and positive
+  const QgsGeometry poly = QgsGeometry::fromWkt( u"Polygon((0 0, 10 0, 10 10, 0 10, 0 0))"_s );
+  const double area = da.measureArea( poly );
+  QVERIFY( std::isfinite( area ) );
+  QVERIFY( area > 0.0 );
 }
 
 QGSTEST_MAIN( TestQgsDistanceArea )

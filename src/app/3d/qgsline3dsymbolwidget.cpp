@@ -51,9 +51,11 @@ QgsLine3DSymbolWidget::QgsLine3DSymbolWidget( QWidget *parent )
   connect( chkSimpleLines, &QCheckBox::toggled, this, &QgsLine3DSymbolWidget::simple3DLinesToggled );
   connect( chkSimpleLines, &QCheckBox::toggled, this, &QgsLine3DSymbolWidget::renderingTechniqueChanged );
   connect( widgetMaterial, &QgsMaterialWidget::changed, this, &QgsLine3DSymbolWidget::changed );
+  connect( widgetMaterial, &QgsMaterialWidget::showPanel, this, &QgsLine3DSymbolWidget::openPanel );
 
   widgetMaterial->setTechnique( renderingTechnique() );
   widgetMaterial->setFilterByTechnique( true );
+  widgetMaterial->setDockMode( dockMode() );
 }
 
 Qgs3DSymbolWidget *QgsLine3DSymbolWidget::create( QgsVectorLayer * )
@@ -102,6 +104,12 @@ Qgis::MaterialRenderingTechnique QgsLine3DSymbolWidget::renderingTechnique() con
   return chkSimpleLines->isChecked() ? Qgis::MaterialRenderingTechnique::Lines : Qgis::MaterialRenderingTechnique::Triangles;
 }
 
+void QgsLine3DSymbolWidget::setDockMode( bool dockMode )
+{
+  widgetMaterial->setDockMode( dockMode );
+  Qgs3DSymbolWidget::setDockMode( dockMode );
+}
+
 void QgsLine3DSymbolWidget::updateGuiState()
 {
   const bool simple = chkSimpleLines->isChecked();
@@ -139,4 +147,9 @@ void QgsLine3DSymbolWidget::simple3DLinesToggled( bool active )
       cboAltClamping->addItem( tr( "Terrain" ), static_cast<int>( Qgis::AltitudeClamping::Terrain ) );
     }
   }
+}
+
+void QgsLine3DSymbolWidget::setMode( Qgis::MaterialWidgetMode mode )
+{
+  widgetMaterial->setMode( mode );
 }

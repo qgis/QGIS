@@ -164,7 +164,7 @@ class CORE_EXPORT QgsTiledSceneRenderer
      *
      * \see save()
      */
-    static QgsTiledSceneRenderer *load( QDomElement &element, const QgsReadWriteContext &context ) SIP_FACTORY;
+    static std::unique_ptr<QgsTiledSceneRenderer> load( QDomElement &element, const QgsReadWriteContext &context );
 
     /**
      * Saves the renderer configuration to an XML element.

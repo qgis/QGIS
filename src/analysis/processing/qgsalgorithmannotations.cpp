@@ -79,6 +79,8 @@ void QgsTransferAnnotationsFromMainAlgorithm::initAlgorithm( const QVariantMap &
 
 QVariantMap QgsTransferAnnotationsFromMainAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback * )
 {
+  QGS_MARK_ALGORITHM_SOURCE
+
   if ( !context.project() )
     throw QgsProcessingException( QObject::tr( "No project available." ) );
 

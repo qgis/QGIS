@@ -321,7 +321,7 @@ void QgsTextBufferSettings::readFromLayer( QgsVectorLayer *layer )
     QDomDocument doc( u"effect"_s );
     doc.setContent( layer->customProperty( u"labeling/bufferEffect"_s ).toString() );
     const QDomElement effectElem = doc.firstChildElement( u"effect"_s ).firstChildElement( u"effect"_s );
-    setPaintEffect( QgsApplication::paintEffectRegistry()->createEffect( effectElem ) );
+    setPaintEffect( QgsApplication::paintEffectRegistry()->createEffect( effectElem ).release() );
   }
   else
     setPaintEffect( nullptr );
@@ -390,7 +390,7 @@ void QgsTextBufferSettings::readXml( const QDomElement &elem )
   d->fillBufferInterior = !textBufferElem.attribute( u"bufferNoFill"_s, u"0"_s ).toInt();
   const QDomElement effectElem = textBufferElem.firstChildElement( u"effect"_s );
   if ( !effectElem.isNull() )
-    setPaintEffect( QgsApplication::paintEffectRegistry()->createEffect( effectElem ) );
+    setPaintEffect( QgsApplication::paintEffectRegistry()->createEffect( effectElem ).release() );
   else
     setPaintEffect( nullptr );
 }

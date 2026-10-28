@@ -96,9 +96,9 @@ class ANALYSIS_EXPORT QgsTinInterpolator : public QgsInterpolator
      * \param type point/structure line, break line
      * \returns 0 in case of success, -1 if the feature could not be inserted because of numerical problems
     */
-    int insertData( const QgsFeature &f, QgsInterpolator::ValueSource source, int attr, QgsInterpolator::SourceType type );
+    int insertData( const QgsFeature &f, Qgis::InterpolationValueSource source, int attr, Qgis::InterpolationSourceType type );
 
-    int addPointsFromGeometry( const QgsGeometry &g, QgsInterpolator::ValueSource source, double attributeValue );
+    int addPointsFromGeometry( const QgsGeometry &g, Qgis::InterpolationValueSource source, double attributeValue );
 };
 
 #endif

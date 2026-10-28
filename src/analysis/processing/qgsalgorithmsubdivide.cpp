@@ -92,6 +92,8 @@ Qgis::WkbType QgsSubdivideAlgorithm::outputWkbType( Qgis::WkbType inputWkbType )
 
 QgsFeatureList QgsSubdivideAlgorithm::processFeature( const QgsFeature &f, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
+  QGS_MARK_ALGORITHM_SOURCE
+
   QgsFeature feature = f;
   if ( feature.hasGeometry() )
   {

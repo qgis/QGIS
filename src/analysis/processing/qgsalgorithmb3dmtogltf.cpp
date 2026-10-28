@@ -82,6 +82,8 @@ void QgsB3DMToGltfAlgorithm::initAlgorithm( const QVariantMap & )
 
 QVariantMap QgsB3DMToGltfAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
+  QGS_MARK_ALGORITHM_SOURCE
+
   const QString path = parameterAsFile( parameters, u"INPUT"_s, context );
   const QString outputPath = parameterAsFile( parameters, u"OUTPUT"_s, context );
 

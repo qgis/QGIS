@@ -23,6 +23,7 @@
 #include "qgseditorwidgetwrapper.h"
 #include "qgsfeatureselectionmodel.h"
 #include "qgsgui.h"
+#include "qgspainting.h"
 #include "qgsrendercontext.h"
 #include "qgsvectordataprovider.h"
 #include "qgsvectorlayerjoinbuffer.h"
@@ -178,7 +179,7 @@ void QgsAttributeTableDelegate::setFeatureSelectionModel( QgsFeatureSelectionMod
 void QgsAttributeTableDelegate::paint( QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index ) const
 {
   const QgsAttributeTableFilterModel::ColumnType columnType = static_cast<QgsAttributeTableFilterModel::ColumnType>(
-    index.model()->data( index, static_cast<int>( QgsAttributeTableFilterModel::CustomRole::Type ) ).toInt()
+    index.model()->data( index, static_cast<int>( QgsAttributeTableModel::CustomRole::ColumnType ) ).toInt()
   );
 
   if ( columnType == QgsAttributeTableFilterModel::ColumnTypeActionButton )

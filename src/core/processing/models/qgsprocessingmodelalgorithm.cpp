@@ -159,7 +159,9 @@ QVariantMap QgsProcessingModelAlgorithm::parametersForChildAlgorithm(
         }
         case Qgis::ProcessingModelChildParameterSource::ExpressionText:
         {
+          Q_NOWARN_DEPRECATED_PUSH
           expressionText = QgsExpression::replaceExpressionText( source.expressionText(), &expressionContext );
+          Q_NOWARN_DEPRECATED_POP
           break;
         }
 
@@ -448,7 +450,9 @@ QVariantMap QgsProcessingModelAlgorithm::processAlgorithm( const QVariantMap &pa
       }
 
       QgsExpressionContext expContext = baseContext;
-      expContext << QgsExpressionContextUtils::processingAlgorithmScope( child.algorithm(), parameters, context ) << createExpressionContextScopeForChildAlgorithm( childId, context, parameters, childResults );
+      expContext
+        << QgsExpressionContextUtils::processingAlgorithmScope( child.algorithm(), parameters, context )
+        << createExpressionContextScopeForChildAlgorithm( childId, context, parameters, childResults ).release();
       context.setExpressionContext( expContext );
 
       QString error;
@@ -566,9 +570,19 @@ QVariantMap QgsProcessingModelAlgorithm::processAlgorithm( const QVariantMap &pa
         if ( ( childAlg->flags() & Qgis::ProcessingAlgorithmFlag::NoThreading ) && ( QThread::currentThread() != qApp->thread() ) )
         {
           // child algorithm run step must be called on main thread
-          auto runOnMainThread = [modelThread, &context, &childAlgorithmFeedback, &results, &childAlg, &childParams] {
+          bool exceptionFromMainThread = false;
+          auto runOnMainThread = [modelThread, &context, &childAlgorithmFeedback, &results, &childAlg, &childParams, &exceptionFromMainThread, &child, &error, &childResult] {
             Q_ASSERT_X( QThread::currentThread() == qApp->thread(), "QgsProcessingModelAlgorithm::processAlgorithm", "childAlg->runPrepared() must be run on the main thread" );
-            results = childAlg->runPrepared( childParams, context, &childAlgorithmFeedback );
+            try
+            {
+              results = childAlg->runPrepared( childParams, context, &childAlgorithmFeedback );
+            }
+            catch ( QgsProcessingException &e )
+            {
+              error = ( childAlg->flags() & Qgis::ProcessingAlgorithmFlag::CustomException ) ? e.what() : QObject::tr( "Error encountered while running %1: %2" ).arg( child.description(), e.what() );
+              childResult.setExecutionStatus( Qgis::ProcessingModelChildAlgorithmExecutionStatus::Failed );
+              exceptionFromMainThread = true;
+            }
             context.pushToThread( modelThread );
           };
 
@@ -580,14 +594,19 @@ QVariantMap QgsProcessingModelAlgorithm::processAlgorithm( const QVariantMap &pa
 #ifndef __clang_analyzer__
           QMetaObject::invokeMethod( qApp, runOnMainThread, Qt::BlockingQueuedConnection );
 #endif
+          if ( !exceptionFromMainThread )
+          {
+            runResult = true;
+            childResult.setExecutionStatus( Qgis::ProcessingModelChildAlgorithmExecutionStatus::Success );
+          }
         }
         else
         {
           // safe to run on model thread
           results = childAlg->runPrepared( childParams, context, &childAlgorithmFeedback );
+          runResult = true;
+          childResult.setExecutionStatus( Qgis::ProcessingModelChildAlgorithmExecutionStatus::Success );
         }
-        runResult = true;
-        childResult.setExecutionStatus( Qgis::ProcessingModelChildAlgorithmExecutionStatus::Success );
       }
       catch ( QgsProcessingException &e )
       {
@@ -1410,7 +1429,7 @@ QMap<QString, QgsProcessingModelAlgorithm::VariableDefinition> QgsProcessingMode
   return variables;
 }
 
-QgsExpressionContextScope *QgsProcessingModelAlgorithm::createExpressionContextScopeForChildAlgorithm(
+std::unique_ptr<QgsExpressionContextScope> QgsProcessingModelAlgorithm::createExpressionContextScopeForChildAlgorithm(
   const QString &childId, QgsProcessingContext &context, const QVariantMap &modelParameters, const QVariantMap &results
 ) const
 {
@@ -1421,7 +1440,7 @@ QgsExpressionContextScope *QgsProcessingModelAlgorithm::createExpressionContextS
   {
     scope->addVariable( QgsExpressionContextScope::StaticVariable( varIt.key(), varIt->value, true, false, varIt->description ) );
   }
-  return scope.release();
+  return scope;
 }
 
 QgsProcessingModelChildParameterSources QgsProcessingModelAlgorithm::availableSourcesForChild( const QString &childId, const QgsProcessingParameterDefinition *param ) const
@@ -1795,6 +1814,7 @@ QVariant QgsProcessingModelAlgorithm::toVariant() const
   map.insert( u"model_group"_s, mModelGroup );
   map.insert( u"help"_s, mHelpContent );
   map.insert( u"internal_version"_s, qgsEnumValueToKey( mInternalVersion ) );
+  map.insert( u"qgis_version"_s, mModelQgisVersion );
 
   QVariantMap childMap;
   QMap< QString, QgsProcessingModelChildAlgorithm >::const_iterator childIt = mChildAlgorithms.constBegin();
@@ -1844,6 +1864,13 @@ bool QgsProcessingModelAlgorithm::loadVariant( const QVariant &model )
   mModelName = map.value( u"model_name"_s ).toString();
   mModelGroup = map.value( u"model_group"_s ).toString();
   mModelGroupId = map.value( u"model_group"_s ).toString();
+  mModelQgisVersion = map.value( u"qgis_version"_s, QString() ).toString();
+
+  if ( mModelQgisVersion == QString() )
+  {
+    mModelQgisVersion = QgsProjectVersion( 0, 0, 0 ).text();
+  }
+
   mHelpContent = map.value( u"help"_s ).toMap();
 
   mInternalVersion = qgsEnumKeyToValue( map.value( u"internal_version"_s ).toString(), InternalVersion::Version1 );
@@ -1974,7 +2001,9 @@ void QgsProcessingModelAlgorithm::reattachAlgorithms() const
 bool QgsProcessingModelAlgorithm::toFile( const QString &path ) const
 {
   QDomDocument doc = QDomDocument( u"model"_s );
-  QDomElement elem = QgsXmlUtils::writeVariant( toVariant(), doc );
+  QVariantMap map = toVariant().toMap();
+  map.insert( u"qgis_version"_s, Qgis::version() );
+  QDomElement elem = QgsXmlUtils::writeVariant( map, doc );
   doc.appendChild( elem );
 
   QFile file( path );

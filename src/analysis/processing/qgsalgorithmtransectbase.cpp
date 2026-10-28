@@ -95,9 +95,6 @@ QVariantMap QgsTransectAlgorithmBase::processAlgorithm( const QVariantMap &param
   if ( mDynamicLength )
     mLengthProperty = parameters.value( u"LENGTH"_s ).value<QgsProperty>();
 
-  if ( mOrientation == QgsTransectAlgorithmBase::Both )
-    mLength /= 2.0;
-
   mDirection = static_cast<QgsTransectAlgorithmBase::Direction>( parameterAsInt( parameters, u"DIRECTION"_s, context ) );
 
   // Let subclass prepare their specific parameters
@@ -158,10 +155,13 @@ QVariantMap QgsTransectAlgorithmBase::processAlgorithm( const QVariantMap &param
 
     double evaluatedLength = mLength;
     if ( mDynamicLength )
-      evaluatedLength = mLengthProperty.valueAsDouble( context.expressionContext(), mLength );
+      evaluatedLength = mLengthProperty.valueAsDouble( expressionContext, mLength );
+    if ( mOrientation == QgsTransectAlgorithmBase::Both )
+      evaluatedLength /= 2.0;
+
     double evaluatedAngle = mAngle;
     if ( mDynamicAngle )
-      evaluatedAngle = mAngleProperty.valueAsDouble( context.expressionContext(), mAngle );
+      evaluatedAngle = mAngleProperty.valueAsDouble( expressionContext, mAngle );
 
     // Segmentize curved geometries to convert them to straight line segments
     if ( QgsWkbTypes::isCurvedType( inputGeometry.wkbType() ) )

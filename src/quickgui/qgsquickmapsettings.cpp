@@ -60,6 +60,7 @@ void QgsQuickMapSettings::setProject( QgsProject *project )
     setDestinationCrs( mProject->crs() );
     mMapSettings.setTransformContext( mProject->transformContext() );
     mMapSettings.setPathResolver( mProject->pathResolver() );
+    mMapSettings.setEllipsoid( mProject->ellipsoid() );
   }
   else
   {
@@ -225,6 +226,7 @@ void QgsQuickMapSettings::setLayers( const QList<QgsMapLayer *> &layers )
 void QgsQuickMapSettings::onCrsChanged()
 {
   setDestinationCrs( mProject->crs() );
+  mMapSettings.setEllipsoid( mProject->ellipsoid() );
 }
 
 void QgsQuickMapSettings::onReadProject( const QDomDocument &doc )

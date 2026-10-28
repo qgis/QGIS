@@ -213,12 +213,14 @@ class QgsAnnotationPictureItemWidget : public QgsAnnotationItemBaseWidget, priva
     void setDockMode( bool dockMode ) override;
     void setContext( const QgsSymbolWidgetContext &context ) override;
     QgsExpressionContext createExpressionContext() const override;
+
   public slots:
 
     void focusDefaultWidget() override;
 
   protected:
     bool setNewItem( QgsAnnotationItem *item ) override;
+    void showEvent( QShowEvent *event ) override;
 
   private slots:
 

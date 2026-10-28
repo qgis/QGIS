@@ -91,10 +91,10 @@ Qgs3DMapConfigWidget::Qgs3DMapConfigWidget( Qgs3DMapSettings *map, QgsMapCanvas 
   mMeshSymbolWidget = new QgsMesh3DSymbolWidget( nullptr, groupMeshTerrainShading );
   mMeshSymbolWidget->configureForTerrain();
 
-  cboCameraProjectionType->addItem( tr( "Perspective Projection" ), Qt3DRender::QCameraLens::PerspectiveProjection );
-  cboCameraProjectionType->addItem( tr( "Orthogonal Projection" ), Qt3DRender::QCameraLens::OrthographicProjection );
+  cboCameraProjectionType->addItem( tr( "Perspective Projection" ), QVariant::fromValue( Qgis::Map3DProjectionType::Perspective ) );
+  cboCameraProjectionType->addItem( tr( "Orthogonal Projection" ), QVariant::fromValue( Qgis::Map3DProjectionType::Orthographic ) );
   connect( cboCameraProjectionType, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, [this]() {
-    spinCameraFieldOfView->setEnabled( cboCameraProjectionType->currentIndex() == cboCameraProjectionType->findData( Qt3DRender::QCameraLens::PerspectiveProjection ) );
+    spinCameraFieldOfView->setEnabled( cboCameraProjectionType->currentIndex() == cboCameraProjectionType->findData( QVariant::fromValue( Qgis::Map3DProjectionType::Perspective ) ) );
   } );
 
   mCameraMovementSpeed->setClearValue( 4 );
@@ -179,7 +179,7 @@ Qgs3DMapConfigWidget::Qgs3DMapConfigWidget( Qgs3DMapSettings *map, QgsMapCanvas 
   }
 
   spinCameraFieldOfView->setValue( mMap->fieldOfView() );
-  cboCameraProjectionType->setCurrentIndex( cboCameraProjectionType->findData( mMap->projectionType() ) );
+  cboCameraProjectionType->setCurrentIndex( cboCameraProjectionType->findData( QVariant::fromValue( mMap->projectionType() ) ) );
   mCameraNavigationModeCombo->setCurrentIndex( mCameraNavigationModeCombo->findData( QVariant::fromValue( mMap->cameraNavigationMode() ) ) );
   mCameraMovementSpeed->setValue( mMap->cameraMovementSpeed() );
 
@@ -384,7 +384,7 @@ void Qgs3DMapConfigWidget::apply()
   }
 
   mMap->setFieldOfView( spinCameraFieldOfView->value() );
-  mMap->setProjectionType( cboCameraProjectionType->currentData().value<Qt3DRender::QCameraLens::ProjectionType>() );
+  mMap->setProjectionType( cboCameraProjectionType->currentData().value<Qgis::Map3DProjectionType>() );
   mMap->setCameraNavigationMode( mCameraNavigationModeCombo->currentData().value<Qgis::NavigationMode>() );
   mMap->setCameraMovementSpeed( mCameraMovementSpeed->value() );
   mMap->setShowLabels( chkShowLabels->isChecked() );

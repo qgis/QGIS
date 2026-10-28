@@ -333,7 +333,7 @@ Returns a list of all tags in the style database
 Removes all contents of the style
 %End
 
-    QgsColorRamp *colorRamp( const QString &name ) const /Factory/;
+    std::unique_ptr<QgsColorRamp> colorRamp( const QString &name ) const;
 %Docstring
 Returns a new copy of the specified color ramp. The caller takes
 responsibility for deleting the returned object.
@@ -419,7 +419,7 @@ patch shape is not present.
 .. versionadded:: 3.14
 %End
 
-    QgsAbstract3DSymbol *symbol3D( const QString &name ) const /Factory/;
+    std::unique_ptr<QgsAbstract3DSymbol> symbol3D( const QString &name ) const;
 %Docstring
 Returns a new copy of the 3D symbol with the specified ``name``.
 
@@ -546,7 +546,7 @@ Renames a symbol from ``oldName`` to ``newName``.
 Returns ``True`` if symbol was successfully renamed.
 %End
 
-    QgsSymbol *symbol( const QString &name ) /Factory/;
+    std::unique_ptr<QgsSymbol> symbol( const QString &name );
 %Docstring
 Returns a NEW copy of symbol
 %End

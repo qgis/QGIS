@@ -59,7 +59,7 @@ class CORE_EXPORT QgsInvertedPolygonRenderer : public QgsMergedFeatureRenderer
     QString dump() const override;
 
     //! Creates a renderer out of an XML, for loading
-    static QgsFeatureRenderer *create( QDomElement &element, const QgsReadWriteContext &context ) SIP_FACTORY; // cppcheck-suppress duplInheritedMember
+    static std::unique_ptr<QgsFeatureRenderer> create( QDomElement &element, const QgsReadWriteContext &context ); // cppcheck-suppress duplInheritedMember
 
     QDomElement save( QDomDocument &doc, const QgsReadWriteContext &context ) override;
 
@@ -86,7 +86,7 @@ class CORE_EXPORT QgsInvertedPolygonRenderer : public QgsMergedFeatureRenderer
      * Creates a QgsInvertedPolygonRenderer by a conversion from an existing renderer.
      * \returns a new renderer if the conversion was possible, otherwise NULLPTR.
      */
-    static QgsInvertedPolygonRenderer *convertFromRenderer( const QgsFeatureRenderer *renderer ) SIP_FACTORY; // cppcheck-suppress duplInheritedMember
+    static std::unique_ptr<QgsInvertedPolygonRenderer> convertFromRenderer( const QgsFeatureRenderer *renderer ); // cppcheck-suppress duplInheritedMember
 };
 
 

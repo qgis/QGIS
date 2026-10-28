@@ -202,6 +202,23 @@ QgsExpressionNode *QgsExpressionNodeUnaryOperator::clone() const
   return copy;
 }
 
+QgsExpressionNode *QgsExpressionNodeUnaryOperator::simplifiedNode() const
+{
+  std::unique_ptr< QgsExpressionNode > simplifiedOperand( mOperand->simplifiedNode() );
+  if ( simplifiedOperand->nodeType() == ntLiteral )
+  {
+    QgsExpressionNodeUnaryOperator tempNode( mOp, simplifiedOperand->clone() );
+    QgsExpression parentExp;
+    QVariant result = tempNode.eval( &parentExp, nullptr );
+    if ( !parentExp.hasEvalError() )
+    {
+      return new QgsExpressionNodeLiteral( result );
+    }
+  }
+
+  return new QgsExpressionNodeUnaryOperator( mOp, simplifiedOperand.release() );
+}
+
 bool QgsExpressionNodeUnaryOperator::isStatic( QgsExpression *parent, const QgsExpressionContext *context ) const
 {
   return mOperand->isStatic( parent, context );
@@ -275,6 +292,130 @@ QVariant QgsExpressionNodeBinaryOperator::compareNonNullValues( QgsExpression *p
     dR.setTimeSpec( Qt::UTC );
 
     return compareOp<qint64>( dR.msecsTo( dL ), op ) ? TVL_True : TVL_False;
+  }
+  else if ( ( vL.userType() == QMetaType::Type::QDateTime && vR.userType() == QMetaType::Type::QString ) || ( vL.userType() == QMetaType::Type::QString && vR.userType() == QMetaType::Type::QDateTime ) )
+  {
+    // left operand is a datetime, right is a string (or vice versa) -- here we try to implicitly cast the string operand to a datetime.
+    QDateTime dL;
+    if ( vL.userType() == QMetaType::Type::QDateTime )
+    {
+      dL = QgsExpressionUtils::getDateTimeValue( vL, parent );
+    }
+    else
+    {
+      dL = QDateTime::fromString( vL.toString(), Qt::ISODate );
+      if ( !dL.isValid() )
+      {
+        if ( parent )
+          parent->setEvalErrorString( QObject::tr( "Cannot convert '%1' to DateTime" ).arg( vL.toString() ) );
+        return QVariant();
+      }
+    }
+    ENSURE_NO_EVAL_ERROR
+
+    QDateTime dR;
+    if ( vR.userType() == QMetaType::Type::QDateTime )
+    {
+      dR = QgsExpressionUtils::getDateTimeValue( vR, parent );
+    }
+    else
+    {
+      dR = QDateTime::fromString( vR.toString(), Qt::ISODate );
+      if ( !dR.isValid() )
+      {
+        if ( parent )
+          parent->setEvalErrorString( QObject::tr( "Cannot convert '%1' to DateTime" ).arg( vR.toString() ) );
+        return QVariant();
+      }
+    }
+    ENSURE_NO_EVAL_ERROR
+
+    // while QDateTime has innate handling of timezones, we don't expose these ANYWHERE
+    // in QGIS. So to avoid confusion where seemingly equal datetime values give unexpected
+    // results (due to different hidden timezones), we force all datetime comparisons to treat
+    // all datetime values as having the same time zone
+    dL.setTimeSpec( Qt::UTC );
+    dR.setTimeSpec( Qt::UTC );
+
+    return compareOp<qint64>( dR.msecsTo( dL ), op ) ? TVL_True : TVL_False;
+  }
+  else if ( ( vL.userType() == QMetaType::Type::QDate && vR.userType() == QMetaType::Type::QString ) || ( vL.userType() == QMetaType::Type::QString && vR.userType() == QMetaType::Type::QDate ) )
+  {
+    // left operand is a date, right is a string (or vice versa) -- here we try to implicitly cast the string operand to a date.
+    QDate dL;
+    if ( vL.userType() == QMetaType::Type::QDate )
+    {
+      dL = QgsExpressionUtils::getDateValue( vL, parent );
+    }
+    else
+    {
+      dL = QDate::fromString( vL.toString(), Qt::ISODate );
+      if ( !dL.isValid() )
+      {
+        if ( parent )
+          parent->setEvalErrorString( QObject::tr( "Cannot convert '%1' to Date" ).arg( vL.toString() ) );
+        return QVariant();
+      }
+    }
+    ENSURE_NO_EVAL_ERROR
+
+    QDate dR;
+    if ( vR.userType() == QMetaType::Type::QDate )
+    {
+      dR = QgsExpressionUtils::getDateValue( vR, parent );
+    }
+    else
+    {
+      dR = QDate::fromString( vR.toString(), Qt::ISODate );
+      if ( !dR.isValid() )
+      {
+        if ( parent )
+          parent->setEvalErrorString( QObject::tr( "Cannot convert '%1' to Date" ).arg( vR.toString() ) );
+        return QVariant();
+      }
+    }
+    ENSURE_NO_EVAL_ERROR
+
+    return compareOp<qint64>( dR.daysTo( dL ), op ) ? TVL_True : TVL_False;
+  }
+  else if ( ( vL.userType() == QMetaType::Type::QTime && vR.userType() == QMetaType::Type::QString ) || ( vL.userType() == QMetaType::Type::QString && vR.userType() == QMetaType::Type::QTime ) )
+  {
+    // left operand is a time, right is a string (or vice versa) -- here we try to implicitly cast the string operand to a time.
+    QTime dL;
+    if ( vL.userType() == QMetaType::Type::QTime )
+    {
+      dL = QgsExpressionUtils::getTimeValue( vL, parent );
+    }
+    else
+    {
+      dL = QTime::fromString( vL.toString(), Qt::ISODate );
+      if ( !dL.isValid() )
+      {
+        if ( parent )
+          parent->setEvalErrorString( QObject::tr( "Cannot convert '%1' to Time" ).arg( vL.toString() ) );
+        return QVariant();
+      }
+    }
+    ENSURE_NO_EVAL_ERROR
+
+    QTime dR;
+    if ( vR.userType() == QMetaType::Type::QTime )
+    {
+      dR = QgsExpressionUtils::getTimeValue( vR, parent );
+    }
+    else
+    {
+      dR = QTime::fromString( vR.toString(), Qt::ISODate );
+      if ( !dR.isValid() )
+      {
+        if ( parent )
+          parent->setEvalErrorString( QObject::tr( "Cannot convert '%1' to Time" ).arg( vR.toString() ) );
+        return QVariant();
+      }
+    }
+    ENSURE_NO_EVAL_ERROR
+
+    return compareOp<int>( dR.msecsTo( dL ), op ) ? TVL_True : TVL_False;
   }
   else if ( ( vL.userType() == QMetaType::Type::QDate && vR.userType() == QMetaType::Type::QDate ) )
   {
@@ -770,51 +911,64 @@ QVariant QgsExpressionNodeBinaryOperator::evalNode( QgsExpression *parent, const
         return TVL_Unknown;
       else
       {
-        QString str = QgsExpressionUtils::getStringValue( vL, parent );
+        const QString str = QgsExpressionUtils::getStringValue( vL, parent );
         ENSURE_NO_EVAL_ERROR
-        QString regexp = QgsExpressionUtils::getStringValue( vR, parent );
+        const QString regexp = QgsExpressionUtils::getStringValue( vR, parent );
         ENSURE_NO_EVAL_ERROR
-        // TODO: cache QRegularExpression in case that regexp is a literal string (i.e. it will stay constant)
-        bool matches;
-        if ( mOp == boLike || mOp == boILike || mOp == boNotLike || mOp == boNotILike ) // change from LIKE syntax to regexp
-        {
-          QString esc_regexp = QgsStringUtils::qRegExpEscape( regexp );
-          // manage escape % and _
-          if ( esc_regexp.startsWith( '%' ) )
-          {
-            esc_regexp.replace( 0, 1, u".*"_s );
-          }
-          const thread_local QRegularExpression rx1( u"[^\\\\](%)"_s );
-          int pos = 0;
-          while ( ( pos = esc_regexp.indexOf( rx1, pos ) ) != -1 )
-          {
-            esc_regexp.replace( pos + 1, 1, u".*"_s );
-            pos += 1;
-          }
-          const thread_local QRegularExpression rx2( u"\\\\%"_s );
-          esc_regexp.replace( rx2, u"%"_s );
-          if ( esc_regexp.startsWith( '_' ) )
-          {
-            esc_regexp.replace( 0, 1, u"."_s );
-          }
-          const thread_local QRegularExpression rx3( u"[^\\\\](_)"_s );
-          pos = 0;
-          while ( ( pos = esc_regexp.indexOf( rx3, pos ) ) != -1 )
-          {
-            esc_regexp.replace( pos + 1, 1, '.' );
-            pos += 1;
-          }
-          esc_regexp.replace( "\\\\_"_L1, "_"_L1 );
 
-          matches
-            = QRegularExpression( QRegularExpression::anchoredPattern( esc_regexp ), mOp == boLike || mOp == boNotLike ? QRegularExpression::DotMatchesEverythingOption : QRegularExpression::DotMatchesEverythingOption | QRegularExpression::CaseInsensitiveOption )
-                .match( str )
-                .hasMatch();
-        }
-        else
+        QRegularExpression re;
+        const QString cachedRegExKey = u"re_bo_%1_%2"_s.arg( mOp ).arg( regexp );
+        if ( context )
         {
-          matches = QRegularExpression( regexp ).match( str ).hasMatch();
+          re = context->cachedValue( cachedRegExKey ).value< QRegularExpression >();
         }
+
+        bool matches = false;
+        if ( re.pattern().isEmpty() )
+        {
+          if ( mOp == boLike || mOp == boILike || mOp == boNotLike || mOp == boNotILike ) // change from LIKE syntax to regexp
+          {
+            QString esc_regexp = QgsStringUtils::qRegExpEscape( regexp );
+            // manage escape % and _
+            if ( esc_regexp.startsWith( '%' ) )
+            {
+              esc_regexp.replace( 0, 1, u".*"_s );
+            }
+            const thread_local QRegularExpression rx1( u"[^\\\\](%)"_s );
+            int pos = 0;
+            while ( ( pos = esc_regexp.indexOf( rx1, pos ) ) != -1 )
+            {
+              esc_regexp.replace( pos + 1, 1, u".*"_s );
+              pos += 1;
+            }
+            const thread_local QRegularExpression rx2( u"\\\\%"_s );
+            esc_regexp.replace( rx2, u"%"_s );
+            if ( esc_regexp.startsWith( '_' ) )
+            {
+              esc_regexp.replace( 0, 1, u"."_s );
+            }
+            const thread_local QRegularExpression rx3( u"[^\\\\](_)"_s );
+            pos = 0;
+            while ( ( pos = esc_regexp.indexOf( rx3, pos ) ) != -1 )
+            {
+              esc_regexp.replace( pos + 1, 1, '.' );
+              pos += 1;
+            }
+            esc_regexp.replace( "\\\\_"_L1, "_"_L1 );
+
+            re = QRegularExpression( QRegularExpression::anchoredPattern( esc_regexp ), mOp == boLike || mOp == boNotLike ? QRegularExpression::DotMatchesEverythingOption : QRegularExpression::DotMatchesEverythingOption | QRegularExpression::CaseInsensitiveOption );
+          }
+          else
+          {
+            re = QRegularExpression( regexp );
+          }
+          if ( context )
+          {
+            context->setCachedValue( cachedRegExKey, re );
+          }
+        }
+
+        matches = re.match( str ).hasMatch();
 
         if ( mOp == boNotLike || mOp == boNotILike )
         {
@@ -969,17 +1123,15 @@ bool QgsExpressionNodeBinaryOperator::prepareNode( QgsExpression *parent, const 
           }
         }
 
-        if ( !orValuesMap.contains( fieldName ) )
+        auto orValuesMapIt = orValuesMap.find( fieldName );
+        if ( orValuesMapIt == orValuesMap.end() )
         {
           orFieldNames.append( fieldName );
-          orValuesMap.insert( fieldName, *inOp->list()->clone() );
+          orValuesMapIt = orValuesMap.insert( fieldName, QgsExpressionNode::NodeList() );
         }
-        else
+        for ( const auto &valueNode : std::as_const( nodes ) )
         {
-          for ( const auto &valueNode : std::as_const( nodes ) )
-          {
-            orValuesMap[fieldName].append( valueNode->clone() );
-          }
+          orValuesMapIt->append( valueNode->clone() );
         }
 
         return true;
@@ -1295,6 +1447,26 @@ bool QgsExpressionNodeBinaryOperator::isStatic( QgsExpression *parent, const Qgs
   return false;
 }
 
+QgsExpressionNode *QgsExpressionNodeBinaryOperator::simplifiedNode() const
+{
+  std::unique_ptr< QgsExpressionNode > opLeft( mOpLeft->simplifiedNode() );
+  std::unique_ptr< QgsExpressionNode > opRight( mOpRight->simplifiedNode() );
+
+  // if both operands are literals, evaluate the operation
+  if ( opLeft->nodeType() == ntLiteral && opRight->nodeType() == ntLiteral )
+  {
+    QgsExpressionNodeBinaryOperator tempNode( mOp, opLeft->clone(), opRight->clone() );
+    QgsExpression parentExp;
+    QVariant result = tempNode.eval( &parentExp, nullptr );
+    if ( !parentExp.hasEvalError() )
+    {
+      return new QgsExpressionNodeLiteral( result );
+    }
+  }
+
+  return new QgsExpressionNodeBinaryOperator( mOp, opLeft.release(), opRight.release() );
+}
+
 //
 
 QVariant QgsExpressionNodeInOperator::evalNode( QgsExpression *parent, const QgsExpressionContext *context )
@@ -1396,14 +1568,63 @@ bool QgsExpressionNodeInOperator::isStatic( QgsExpression *parent, const QgsExpr
   return true;
 }
 
+QgsExpressionNode *QgsExpressionNodeInOperator::simplifiedNode() const
+{
+  std::unique_ptr< QgsExpressionNode > simplifiedTargetNode( mNode->simplifiedNode() );
+  bool allLiterals = simplifiedTargetNode->nodeType() == ntLiteral;
+
+  auto simplifiedList = std::make_unique< QgsExpressionNode::NodeList >();
+  simplifiedList->reserve( mList->count() );
+  for ( QgsExpressionNode *node : mList->list() )
+  {
+    std::unique_ptr< QgsExpressionNode > simplifiedItem( node->simplifiedNode() );
+    if ( simplifiedItem->nodeType() != ntLiteral )
+    {
+      allLiterals = false;
+    }
+
+    if ( simplifiedTargetNode->nodeType() == ntLiteral
+         && simplifiedItem->nodeType() == ntLiteral
+         && qgis::down_cast< QgsExpressionNodeLiteral *>( simplifiedTargetNode.get() )->value() == qgis::down_cast< QgsExpressionNodeLiteral * >( simplifiedItem.get() )->value() )
+    {
+      return new QgsExpressionNodeLiteral( !mNotIn );
+    }
+
+    simplifiedList->append( simplifiedItem.release() );
+  }
+
+  // if target node and all items in the list are literals, we can just directly evaluate and replace with a literal
+  if ( allLiterals )
+  {
+    QgsExpressionNodeInOperator tempNode( simplifiedTargetNode->clone(), simplifiedList->clone(), mNotIn );
+    QgsExpression parentExp;
+    QVariant result = tempNode.eval( &parentExp, nullptr );
+    if ( !parentExp.hasEvalError() )
+    {
+      return new QgsExpressionNodeLiteral( result );
+    }
+  }
+
+  return new QgsExpressionNodeInOperator( simplifiedTargetNode.release(), simplifiedList.release(), mNotIn );
+}
+
 //
 
 QVariant QgsExpressionNodeFunction::evalNode( QgsExpression *parent, const QgsExpressionContext *context )
 {
-  QString name = QgsExpression::QgsExpression::Functions()[mFnIndex]->name();
-  QgsExpressionFunction *fd = context && context->hasFunction( name ) ? context->function( name ) : QgsExpression::QgsExpression::Functions()[mFnIndex];
+  QgsExpression::SharedFunctionPtr func = function();
+  const QString name = func->name();
 
-  QVariant res = fd->run( mArgs.get(), context, parent, this );
+  QVariant res;
+  if ( context && context->hasFunction( name ) )
+  {
+    QgsExpressionFunction *fd = context->function( name );
+    res = fd->run( mArgs.get(), context, parent, this );
+  }
+  else
+  {
+    res = func->run( mArgs.get(), context, parent, this );
+  }
   ENSURE_NO_EVAL_ERROR
 
   // everything went fine
@@ -1411,15 +1632,14 @@ QVariant QgsExpressionNodeFunction::evalNode( QgsExpression *parent, const QgsEx
 }
 
 QgsExpressionNodeFunction::QgsExpressionNodeFunction( int fnIndex, QgsExpressionNode::NodeList *args )
-  : mFnIndex( fnIndex )
-{
-  // lock the function mutex once upfront -- we'll be doing this when calling QgsExpression::Functions() anyway,
-  // and it's cheaper to hold the recursive lock once upfront like while we handle ALL the function's arguments,
-  // since those might be QgsExpressionNodeFunction nodes and would need to re-obtain the lock otherwise.
-  QMutexLocker locker( &QgsExpression::QgsExpression::sFunctionsMutex );
+  : QgsExpressionNodeFunction( QgsExpression::getFunctionsSnapshot()->getFunction( fnIndex ), args )
+{}
 
-  const QgsExpressionFunction::ParameterList &functionParams = QgsExpression::QgsExpression::Functions()[mFnIndex]->parameters();
-  const int functionParamsSize = functionParams.size();
+QgsExpressionNodeFunction::QgsExpressionNodeFunction( std::shared_ptr<QgsExpressionFunction> function, NodeList *args )
+  : mFunction( function )
+{
+  const QgsExpressionFunction::ParameterList &functionParams = mFunction->parameters();
+  const qsizetype functionParamsSize = functionParams.size();
   if ( functionParams.isEmpty() )
   {
     // function does not support parameters
@@ -1446,7 +1666,7 @@ QgsExpressionNodeFunction::QgsExpressionNodeFunction( int fnIndex, QgsExpression
     const QList<QgsExpressionNode *> argList = args->list();
     //first loop through unnamed arguments
     {
-      const int argNamesSize = argNames.size();
+      const qsizetype argNamesSize = argNames.size();
       while ( idx < argNamesSize && argNames.at( idx ).isEmpty() )
       {
         mArgs->append( argList.at( idx )->clone() );
@@ -1458,7 +1678,7 @@ QgsExpressionNodeFunction::QgsExpressionNodeFunction( int fnIndex, QgsExpression
     for ( ; idx < functionParamsSize; ++idx )
     {
       const QgsExpressionFunction::Parameter &parameter = functionParams.at( idx );
-      int nodeIdx = argNames.indexOf( parameter.name().toLower() );
+      qsizetype nodeIdx = argNames.indexOf( parameter.name().toLower() );
       if ( nodeIdx < 0 )
       {
         //QgsExpressionFunction::Parameter not found - insert default value for QgsExpressionFunction::Parameter
@@ -1474,8 +1694,20 @@ QgsExpressionNodeFunction::QgsExpressionNodeFunction( int fnIndex, QgsExpression
   }
 }
 
+
 QgsExpressionNodeFunction::~QgsExpressionNodeFunction()
 {}
+
+int QgsExpressionNodeFunction::fnIndex() const
+{
+  const QgsExpression::FunctionListSnapshot functions = QgsExpression::getFunctionsSnapshot();
+  return functions->functionIndex( mFunction->name() );
+}
+
+std::shared_ptr<QgsExpressionFunction> QgsExpressionNodeFunction::function() const
+{
+  return mFunction;
+}
 
 QgsExpressionNode::NodeType QgsExpressionNodeFunction::nodeType() const
 {
@@ -1484,10 +1716,9 @@ QgsExpressionNode::NodeType QgsExpressionNodeFunction::nodeType() const
 
 bool QgsExpressionNodeFunction::prepareNode( QgsExpression *parent, const QgsExpressionContext *context )
 {
-  QgsExpressionFunction *fd = QgsExpression::QgsExpression::Functions()[mFnIndex];
-
-  bool res = fd->prepare( this, parent, context );
-  if ( mArgs && !fd->lazyEval() )
+  QgsExpression::SharedFunctionPtr func = function();
+  bool res = func->prepare( this, parent, context );
+  if ( mArgs && !func->lazyEval() )
   {
     const QList< QgsExpressionNode * > nodeList = mArgs->list();
     for ( QgsExpressionNode *n : nodeList )
@@ -1500,11 +1731,11 @@ bool QgsExpressionNodeFunction::prepareNode( QgsExpression *parent, const QgsExp
 
 QString QgsExpressionNodeFunction::dump() const
 {
-  QgsExpressionFunction *fd = QgsExpression::QgsExpression::Functions()[mFnIndex];
-  if ( fd->params() == 0 )
-    return u"%1%2"_s.arg( fd->name(), fd->name().startsWith( '$' ) ? QString() : u"()"_s ); // special column
+  QgsExpression::SharedFunctionPtr func = function();
+  if ( func->params() == 0 )
+    return u"%1%2"_s.arg( func->name(), func->name().startsWith( '$' ) ? QString() : u"()"_s ); // special column
   else
-    return u"%1(%2)"_s.arg( fd->name(), mArgs ? mArgs->dump() : QString() ); // function
+    return u"%1(%2)"_s.arg( func->name(), mArgs ? mArgs->dump() : QString() ); // function
 }
 
 QSet<QString> QgsExpressionNodeFunction::referencedColumns() const
@@ -1512,8 +1743,8 @@ QSet<QString> QgsExpressionNodeFunction::referencedColumns() const
   if ( hasCachedStaticValue() )
     return QSet< QString >();
 
-  QgsExpressionFunction *fd = QgsExpression::QgsExpression::Functions()[mFnIndex];
-  QSet<QString> functionColumns = fd->referencedColumns( this );
+  QgsExpression::SharedFunctionPtr func = function();
+  QSet<QString> functionColumns = func->referencedColumns( this );
 
   if ( !mArgs )
   {
@@ -1525,7 +1756,7 @@ QSet<QString> QgsExpressionNodeFunction::referencedColumns() const
   const QList< QgsExpressionNode * > nodeList = mArgs->list();
   for ( QgsExpressionNode *n : nodeList )
   {
-    if ( fd->parameters().count() <= paramIndex || !fd->parameters().at( paramIndex ).isSubExpression() )
+    if ( func->parameters().count() <= paramIndex || !func->parameters().at( paramIndex ).isSubExpression() )
       functionColumns.unite( n->referencedColumns() );
     paramIndex++;
   }
@@ -1535,8 +1766,8 @@ QSet<QString> QgsExpressionNodeFunction::referencedColumns() const
 
 QSet<QString> QgsExpressionNodeFunction::referencedVariables() const
 {
-  QgsExpressionFunction *fd = QgsExpression::QgsExpression::Functions()[mFnIndex];
-  if ( fd->name() == "var"_L1 )
+  QgsExpression::SharedFunctionPtr func = function();
+  if ( func->name() == "var"_L1 )
   {
     if ( !mArgs->list().isEmpty() )
     {
@@ -1565,9 +1796,9 @@ QSet<QString> QgsExpressionNodeFunction::referencedVariables() const
 
 QSet<QString> QgsExpressionNodeFunction::referencedFunctions() const
 {
-  QgsExpressionFunction *fd = QgsExpression::QgsExpression::Functions()[mFnIndex];
+  QgsExpression::SharedFunctionPtr func = function();
   QSet<QString> functions = QSet<QString>();
-  functions.insert( fd->name() );
+  functions.insert( func->name() );
 
   if ( !mArgs )
     return functions;
@@ -1597,7 +1828,8 @@ QList<const QgsExpressionNode *> QgsExpressionNodeFunction::nodes() const
 
 bool QgsExpressionNodeFunction::needsGeometry() const
 {
-  bool needs = QgsExpression::QgsExpression::Functions()[mFnIndex]->usesGeometry( this );
+  QgsExpression::SharedFunctionPtr func = function();
+  bool needs = func->usesGeometry( this );
   if ( mArgs )
   {
     const QList< QgsExpressionNode * > nodeList = mArgs->list();
@@ -1609,14 +1841,33 @@ bool QgsExpressionNodeFunction::needsGeometry() const
 
 QgsExpressionNode *QgsExpressionNodeFunction::clone() const
 {
-  QgsExpressionNodeFunction *copy = new QgsExpressionNodeFunction( mFnIndex, mArgs ? mArgs->clone() : nullptr );
+  QgsExpression::SharedFunctionPtr func = function();
+  QgsExpressionNodeFunction *copy = new QgsExpressionNodeFunction( func, mArgs ? mArgs->clone() : nullptr );
   cloneTo( copy );
   return copy;
 }
 
 bool QgsExpressionNodeFunction::isStatic( QgsExpression *parent, const QgsExpressionContext *context ) const
 {
-  return QgsExpression::Functions()[mFnIndex]->isStatic( this, parent, context );
+  QgsExpression::SharedFunctionPtr func = function();
+  return func->isStatic( this, parent, context );
+}
+
+QgsExpressionNode *QgsExpressionNodeFunction::simplifiedNode() const
+{
+  auto simplifiedArgs = std::make_unique< QgsExpressionNode::NodeList >();
+  if ( mArgs )
+  {
+    simplifiedArgs->reserve( mArgs->count() );
+    for ( QgsExpressionNode *arg : mArgs->list() )
+    {
+      std::unique_ptr< QgsExpressionNode > simplifiedArg( arg->simplifiedNode() );
+      simplifiedArgs->append( simplifiedArg.release() );
+    }
+
+    return new QgsExpressionNodeFunction( function(), simplifiedArgs.release() );
+  }
+  return clone();
 }
 
 bool QgsExpressionNodeFunction::validateParams( int fnIndex, QgsExpressionNode::NodeList *args, QString &error )
@@ -1624,10 +1875,13 @@ bool QgsExpressionNodeFunction::validateParams( int fnIndex, QgsExpressionNode::
   if ( !args || !args->hasNamedNodes() )
     return true;
 
-  const QgsExpressionFunction::ParameterList &functionParams = QgsExpression::Functions()[fnIndex]->parameters();
+  const QgsExpression::FunctionListSnapshot functions = QgsExpression::getFunctionsSnapshot();
+  const QgsExpression::SharedFunctionPtr fd = functions->getFunction( fnIndex );
+
+  const QgsExpressionFunction::ParameterList &functionParams = fd->parameters();
   if ( functionParams.isEmpty() )
   {
-    error = u"%1 does not support named QgsExpressionFunction::Parameters"_s.arg( QgsExpression::Functions()[fnIndex]->name() );
+    error = u"%1 does not support named QgsExpressionFunction::Parameters"_s.arg( fd->name() );
     return false;
   }
   else
@@ -1651,7 +1905,7 @@ bool QgsExpressionNodeFunction::validateParams( int fnIndex, QgsExpressionNode::
       {
         if ( !functionParams.at( idx ).optional() )
         {
-          error = u"No value specified for QgsExpressionFunction::Parameter '%1' for %2"_s.arg( functionParams.at( idx ).name(), QgsExpression::Functions()[fnIndex]->name() );
+          error = u"No value specified for QgsExpressionFunction::Parameter '%1' for %2"_s.arg( functionParams.at( idx ).name(), fd->name() );
           return false;
         }
       }
@@ -1659,7 +1913,7 @@ bool QgsExpressionNodeFunction::validateParams( int fnIndex, QgsExpressionNode::
       {
         if ( providedArgs.contains( idx ) )
         {
-          error = u"Duplicate QgsExpressionFunction::Parameter specified for '%1' for %2"_s.arg( functionParams.at( idx ).name(), QgsExpression::Functions()[fnIndex]->name() );
+          error = u"Duplicate QgsExpressionFunction::Parameter specified for '%1' for %2"_s.arg( functionParams.at( idx ).name(), fd->name() );
           return false;
         }
       }
@@ -1674,7 +1928,7 @@ bool QgsExpressionNodeFunction::validateParams( int fnIndex, QgsExpressionNode::
     {
       if ( !name.isEmpty() && !functionParams.contains( name ) )
       {
-        error = u"Invalid QgsExpressionFunction::Parameter name '%1' for %2"_s.arg( name, QgsExpression::Functions()[fnIndex]->name() );
+        error = u"Invalid QgsExpressionFunction::Parameter name '%1' for %2"_s.arg( name, fd->name() );
         return false;
       }
       if ( !name.isEmpty() && !handledArgs.contains( idx ) )
@@ -1682,7 +1936,7 @@ bool QgsExpressionNodeFunction::validateParams( int fnIndex, QgsExpressionNode::
         int functionIdx = functionParams.indexOf( name );
         if ( providedArgs.contains( functionIdx ) )
         {
-          error = u"Duplicate QgsExpressionFunction::Parameter specified for '%1' for %2"_s.arg( functionParams.at( functionIdx ).name(), QgsExpression::Functions()[fnIndex]->name() );
+          error = u"Duplicate QgsExpressionFunction::Parameter specified for '%1' for %2"_s.arg( functionParams.at( functionIdx ).name(), fd->name() );
           return false;
         }
       }
@@ -2114,6 +2368,37 @@ bool QgsExpressionNodeCondition::isStatic( QgsExpression *parent, const QgsExpre
   return true;
 }
 
+QgsExpressionNode *QgsExpressionNodeCondition::simplifiedNode() const
+{
+  auto simplifiedWhenThenList = std::make_unique< QgsExpressionNodeCondition::WhenThenList >();
+  for ( QgsExpressionNodeCondition::WhenThen *clause : mConditions )
+  {
+    std::unique_ptr< QgsExpressionNode > simplifiedWhen( clause->whenExp()->simplifiedNode() );
+    std::unique_ptr< QgsExpressionNode > simplifiedThen( clause->thenExp()->simplifiedNode() );
+
+    // if when condition is literal and TRUE we can just return the simplified THEN node
+    if ( simplifiedWhenThenList->isEmpty() && simplifiedWhen->nodeType() == ntLiteral && simplifiedWhen->eval( nullptr, nullptr ).toBool() )
+    {
+      return simplifiedThen.release();
+    }
+    // if when simplifies to literal and FALSE, skip this condition as it can never be reached
+    else if ( simplifiedWhen->nodeType() == ntLiteral && !simplifiedWhen->eval( nullptr, nullptr ).toBool() )
+    {
+      continue;
+    }
+
+    simplifiedWhenThenList->append( new QgsExpressionNodeCondition::WhenThen( simplifiedWhen.release(), simplifiedThen.release() ) );
+  }
+
+  std::unique_ptr< QgsExpressionNode > simplifiedElse( mElseExp ? mElseExp->simplifiedNode() : nullptr );
+  if ( simplifiedWhenThenList->isEmpty() )
+  {
+    return simplifiedElse ? simplifiedElse.release() : new QgsExpressionNodeLiteral( QVariant() );
+  }
+
+  return new QgsExpressionNodeCondition( simplifiedWhenThenList.release(), simplifiedElse.release() );
+}
+
 QSet<QString> QgsExpressionNodeInOperator::referencedColumns() const
 {
   if ( hasCachedStaticValue() )
@@ -2148,6 +2433,7 @@ QList<const QgsExpressionNode *> QgsExpressionNodeInOperator::nodes() const
 {
   QList<const QgsExpressionNode *> lst;
   lst << this;
+  lst << mNode.get();
   const QList< QgsExpressionNode * > nodeList = mList->list();
   for ( const QgsExpressionNode *n : nodeList )
     lst += n->nodes();

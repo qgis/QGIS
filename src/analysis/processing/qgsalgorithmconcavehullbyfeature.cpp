@@ -18,6 +18,7 @@
 #include "qgsalgorithmconcavehullbyfeature.h"
 
 #include "qgsgeometrycollection.h"
+#include "qgsgeos.h"
 
 #include <QString>
 
@@ -112,7 +113,7 @@ QgsFields QgsConcaveHullByFeatureAlgorithm::outputFields( const QgsFields &input
 
 bool QgsConcaveHullByFeatureAlgorithm::prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback * )
 {
-#if GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR < 11
+#if GEOS_VERSION_NUM < GEOS_COMPUTE_VERSION( 3, 11, 0 )
   throw QgsProcessingException( QObject::tr( "This algorithm requires a QGIS build based on GEOS 3.11 or later" ) );
 #endif
   mPercentage = parameterAsDouble( parameters, u"ALPHA"_s, context );
@@ -122,6 +123,8 @@ bool QgsConcaveHullByFeatureAlgorithm::prepareAlgorithm( const QVariantMap &para
 
 QgsFeatureList QgsConcaveHullByFeatureAlgorithm::processFeature( const QgsFeature &feature, QgsProcessingContext &, QgsProcessingFeedback *feedback )
 {
+  QGS_MARK_ALGORITHM_SOURCE
+
   QgsFeature f = feature;
   if ( f.hasGeometry() )
   {

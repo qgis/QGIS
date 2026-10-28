@@ -19,7 +19,9 @@ from qgis.core import (
     QgsLayout,
     QgsLayoutItemMap,
     QgsLayoutItemMapGrid,
+    QgsLayoutItemPage,
     QgsLayoutObject,
+    QgsLayoutSize,
     QgsLineSymbol,
     QgsProject,
     QgsProperty,
@@ -28,7 +30,7 @@ from qgis.core import (
     QgsSymbolLayer,
     QgsTextFormat,
 )
-from qgis.PyQt.QtCore import QDir, QRectF
+from qgis.PyQt.QtCore import QDir, QRectF, QSize
 from qgis.PyQt.QtGui import QColor, QPainter
 from qgis.PyQt.QtTest import QSignalSpy
 from qgis.PyQt.QtXml import QDomDocument
@@ -2595,6 +2597,49 @@ class TestQgsLayoutMapGrid(QgisTestCase):
         self.assertTrue(
             self.render_layout_check(
                 "composermap_multiline_right_above_tick", layout, allowed_mismatch=100
+            )
+        )
+
+    def test_border_annotations(self):
+        layout = QgsLayout(QgsProject.instance())
+        page = QgsLayoutItemPage(layout)
+        page.setPageSize(QgsLayoutSize(762.0, 1066.8))
+        layout.pageCollection().addPage(page)
+
+        map = QgsLayoutItemMap(layout)
+        map.attemptSetSceneRect(QRectF(207.947, 75.161, 479.621, 719.431))
+        map.setFrameEnabled(True)
+        map.setBackgroundColor(QColor(150, 100, 100))
+        layout.addLayoutItem(map)
+
+        map.setCrs(QgsCoordinateReferenceSystem("EPSG:2193"))
+        map.setExtent(QgsRectangle(1348000.0, 5190000.0, 1372000.0, 5226000.0))
+        map.grid().setEnabled(True)
+        map.grid().setStyle(Qgis.MapGridStyle.FrameAndAnnotationsOnly)
+        map.grid().setIntervalX(1000)
+        map.grid().setIntervalY(1000)
+        map.grid().setAnnotationEnabled(True)
+        map.grid().setAnnotationFrameDistance(20)
+
+        map.grid().setAnnotationDirection(
+            QgsLayoutItemMapGrid.AnnotationDirection.Vertical,
+            QgsLayoutItemMapGrid.BorderSide.Top,
+        )
+        map.grid().setAnnotationDirection(
+            QgsLayoutItemMapGrid.AnnotationDirection.Vertical,
+            QgsLayoutItemMapGrid.BorderSide.Bottom,
+        )
+
+        format = QgsTextFormat.fromQFont(getTestFont("Bold"))
+        format.setSize(24)
+        map.grid().setAnnotationTextFormat(format)
+        map.grid().setAnnotationPrecision(0)
+
+        map.updateBoundingRect()
+
+        self.assertTrue(
+            self.render_layout_check(
+                "layout_grid_corner_annotations", layout, size=QSize(792, 1110)
             )
         )
 

@@ -81,6 +81,18 @@ QgsTileMatrix QgsTileMatrix::fromTileMatrix( const int zoomLevel, const QgsTileM
   return tm;
 }
 
+long long QgsTileMatrix::derivedMatrixWidthAtZoomLevel( int zoomLevel ) const
+{
+  const long long zoomFactor = 1LL << ( zoomLevel - mZoomLevel );
+  return mMatrixWidth * zoomFactor;
+}
+
+long long QgsTileMatrix::derivedMatrixHeightAtZoomLevel( int zoomLevel ) const
+{
+  const long long zoomFactor = 1LL << ( zoomLevel - mZoomLevel );
+  return mMatrixHeight * zoomFactor;
+}
+
 QgsRectangle QgsTileMatrix::tileExtent( QgsTileXYZ id ) const
 {
   double xMin = mExtent.xMinimum() + mTileXSpan * id.column();
@@ -289,14 +301,17 @@ double QgsTileMatrixSet::scaleToZoom( double scale ) const
 int QgsTileMatrixSet::scaleToZoomLevel( double scale, bool clamp ) const
 {
   int tileZoom = 0;
-  switch ( mScaleToTileZoomMethod )
+  if ( std::isfinite( scale ) )
   {
-    case Qgis::ScaleToTileZoomLevelMethod::MapBox:
-      tileZoom = static_cast<int>( round( scaleToZoom( scale ) ) );
-      break;
-    case Qgis::ScaleToTileZoomLevelMethod::Esri:
-      tileZoom = static_cast<int>( floor( scaleToZoom( scale ) ) );
-      break;
+    switch ( mScaleToTileZoomMethod )
+    {
+      case Qgis::ScaleToTileZoomLevelMethod::MapBox:
+        tileZoom = static_cast<int>( round( scaleToZoom( scale ) ) );
+        break;
+      case Qgis::ScaleToTileZoomLevelMethod::Esri:
+        tileZoom = static_cast<int>( floor( scaleToZoom( scale ) ) );
+        break;
+    }
   }
 
   return clamp ? std::clamp( tileZoom, minimumZoom(), maximumZoom() ) : tileZoom;

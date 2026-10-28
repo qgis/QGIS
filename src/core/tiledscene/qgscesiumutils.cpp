@@ -24,6 +24,7 @@
 #include "qgsblockingnetworkrequest.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgscoordinatetransform.h"
+#include "qgsellipsoidutils.h"
 #include "qgsgltfutils.h"
 #include "qgsjsonutils.h"
 #include "qgslogger.h"
@@ -204,21 +205,6 @@ QgsCesiumUtils::B3DMContents QgsCesiumUtils::extractGltfFromB3dm( const QByteArr
   return res;
 }
 
-static QQuaternion quaternionFromNormalUpRight( const QVector3D &normalUp, const QVector3D &normalRight )
-{
-  const QVector3D right = normalRight.normalized();
-  const QVector3D up = normalUp.normalized();
-  // In a right-handed coordinate system with X=right, Z=up:
-  // Y = cross(up, right) = forward (pointing North for ENU)
-  const QVector3D forward = QVector3D::crossProduct( up, right ).normalized();
-
-  // Build rotation matrix with columns [right, forward, up]
-  // QGenericMatrix constructor takes row-major input
-  float matData[9] = { right.x(), forward.x(), up.x(), right.y(), forward.y(), up.y(), right.z(), forward.z(), up.z() };
-  QMatrix3x3 rotMatrix( matData );
-  return QQuaternion::fromRotationMatrix( rotMatrix );
-}
-
 /**
  * Computes EAST_NORTH_UP orientation quaternions for each instance position.
  *
@@ -350,7 +336,7 @@ static void computeEastNorthUpQuaternions( const QVector<QVector3D> &positions, 
       up = upLocal;
     }
 
-    rotations[i] = quaternionFromNormalUpRight( up, east );
+    rotations[i] = QgsEllipsoidUtils::quaternionFromNormalUpRight( up, east );
   }
 }
 
@@ -793,7 +779,7 @@ static QgsCesiumUtils::TileContents extractGltfFromI3dm( const QByteArray &tileC
     {
       const QVector3D normalUp( upPtr[0], upPtr[1], upPtr[2] );
       const QVector3D normalRight( rightPtr[0], rightPtr[1], rightPtr[2] );
-      instancing.rotations[i] = quaternionFromNormalUpRight( normalUp, normalRight );
+      instancing.rotations[i] = QgsEllipsoidUtils::quaternionFromNormalUpRight( normalUp, normalRight );
     }
   }
   else if ( eastNorthUp )

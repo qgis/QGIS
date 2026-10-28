@@ -1,5 +1,8 @@
 # OAuth 1.0 and 2.0 for Qt
 
+*This repository is a fork of the upstream o2 library from https://github.com/pipacs/o2, with patches from QGIS applied
+on top of the base library version*
+
 This library encapsulates the OAuth 1.0 and 2.0 client authentication flows, and the sending of authenticated HTTP requests.
 
 The primary target is Qt Quick applications on embedded devices.
@@ -26,7 +29,6 @@ O1Flickr | o1flickr.h | Flickr OAuth specialization
 O1Freshbooks | o1freshbooks.h | Freshbooks OAuth specialization
 O1Requestor | o1requestor.h | Makes authenticated OAuth 1.0 requests: GET, POST or PUT, handles timeouts
 O1RequestParameter | o1.h | An extra request parameter participating in request signing
-O1Twitter | o1twitter.h | Twitter OAuth specialization
 O1SmugMug | o1smugmug.h | SmugMug OAuth specialization
 O2 | o2.h | Generic OAuth 2.0 authenticator
 O2Facebook | o2facebook.h | Facebook OAuth specialization
@@ -40,7 +42,6 @@ O2ReplyServer | o2replyserver.h | HTTP server to process authentication response
 O2Requestor | o2requestor.h | Makes authenticated OAuth 2.0 requests (GET, POST or PUT), handles timeouts and token expiry
 O2Skydrive | o2skydrive.h | OneDrive OAuth specialization
 O2SurveyMonkey | o2surveymonkey.h | SurveyMonkey OAuth specialization
-OXTwitter | oxtwitter.h | Twitter XAuth specialization
 O2Uber | o2uber.h | Uber OAuth specialization
 
 ## Installation
@@ -253,8 +254,6 @@ The *examples* folder contains complete example applications:
 Name | Description
 :-- | :--
 facebookdemo | Command line application authenticating with Facebook
-sialis | QT Quick Twitter client using OAuth 1
-twitterdemo | Command line client for authenticating with Twitter and posting status updates. Uses OAuth 1 or Twitter XAuth
 
 ## Change Log
 

@@ -1002,6 +1002,10 @@ void QgsPointLocator::waitForIndexingFinished()
 {
   disconnect( mInitTask, &QgsPointLocatorInitTask::taskTerminated, this, &QgsPointLocator::onInitTaskFinished );
   disconnect( mInitTask, &QgsPointLocatorInitTask::taskCompleted, this, &QgsPointLocator::onInitTaskFinished );
+  if ( mIsDestroying )
+  {
+    mInitTask->cancel();
+  }
   mInitTask->waitForFinished();
 
   if ( !mIsDestroying )
@@ -1033,10 +1037,12 @@ bool QgsPointLocator::prepare( bool relaxed )
   return true;
 }
 
-bool QgsPointLocator::rebuildIndex( int maxFeaturesToIndex )
+bool QgsPointLocator::rebuildIndex( int maxFeaturesToIndex, QgsFeedback *feedback )
 {
   QElapsedTimer t;
   t.start();
+
+  QgsScopedThreadName threadName( u"loc_index:%1"_s.arg( mSource->id() ) );
 
   QgsDebugMsgLevel( u"RebuildIndex start : %1"_s.arg( mSource->id() ), 2 );
 
@@ -1088,6 +1094,13 @@ bool QgsPointLocator::rebuildIndex( int maxFeaturesToIndex )
 
   while ( fi.nextFeature( f ) )
   {
+    if ( feedback && feedback->isCanceled() )
+    {
+      qDeleteAll( dataList );
+      destroyIndex();
+      return false;
+    }
+
     if ( !f.hasGeometry() )
       continue;
 

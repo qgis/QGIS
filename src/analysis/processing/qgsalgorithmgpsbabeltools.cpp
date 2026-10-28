@@ -104,6 +104,8 @@ QgsConvertGpxFeatureTypeAlgorithm *QgsConvertGpxFeatureTypeAlgorithm::createInst
 
 QVariantMap QgsConvertGpxFeatureTypeAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
+  QGS_MARK_ALGORITHM_SOURCE
+
   const QString inputPath = parameterAsString( parameters, u"INPUT"_s, context );
   const QString outputPath = parameterAsString( parameters, u"OUTPUT"_s, context );
 
@@ -310,6 +312,8 @@ QgsConvertGpsDataAlgorithm *QgsConvertGpsDataAlgorithm::createInstance() const
 
 QVariantMap QgsConvertGpsDataAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
+  QGS_MARK_ALGORITHM_SOURCE
+
   const QString inputPath = parameterAsString( parameters, u"INPUT"_s, context );
   const QString outputPath = parameterAsString( parameters, u"OUTPUT"_s, context );
 
@@ -504,6 +508,8 @@ QgsDownloadGpsDataAlgorithm *QgsDownloadGpsDataAlgorithm::createInstance() const
 
 QVariantMap QgsDownloadGpsDataAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
+  QGS_MARK_ALGORITHM_SOURCE
+
   const QString outputPath = parameterAsString( parameters, u"OUTPUT"_s, context );
   const Qgis::GpsFeatureType featureType = static_cast<Qgis::GpsFeatureType>( parameterAsEnum( parameters, u"FEATURE_TYPE"_s, context ) );
 
@@ -710,6 +716,8 @@ QgsUploadGpsDataAlgorithm *QgsUploadGpsDataAlgorithm::createInstance() const
 
 QVariantMap QgsUploadGpsDataAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
+  QGS_MARK_ALGORITHM_SOURCE
+
   const QString inputPath = parameterAsString( parameters, u"INPUT"_s, context );
   const Qgis::GpsFeatureType featureType = static_cast<Qgis::GpsFeatureType>( parameterAsEnum( parameters, u"FEATURE_TYPE"_s, context ) );
 

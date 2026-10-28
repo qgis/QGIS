@@ -38,68 +38,37 @@
 #include "qgsdistancearea.h"
 #include "qgs3drendercontext.h"
 #include "qgslayerstylewatcher.h"
+#include "qgsvector3d.h"
 #include "qobjectuniqueptr.h"
 
 #include <QImage>
 
 class QgsMapLayer;
-class QgsGlobeMapUpdateJobFactory;
 class QgsTerrainTextureGenerator;
 class QgsLayerStyleWatcher;
+
 
 class QgsGlobeChunkLoader : public QgsChunkLoader
 {
     Q_OBJECT
   public:
-    QgsGlobeChunkLoader( QgsChunkNode *node, const Qgs3DRenderContext &context, QgsTerrainTextureGenerator *textureGenerator, const QgsCoordinateTransform &globeCrsToLatLon );
-    void start() override;
+    QgsGlobeChunkLoader( Qgs3DMapSettings *mapSettings );
 
-    Qt3DCore::QEntity *createEntity( Qt3DCore::QEntity *parent ) override;
+    ~QgsGlobeChunkLoader() override;
 
-  private:
-    Qgs3DRenderContext mRenderContext;
-    QgsTerrainTextureGenerator *mTextureGenerator;
-    QgsCoordinateTransform mGlobeCrsToLatLon;
-    int mJobId = -1;
-    QImage mTexture;
-};
-
-
-//! Handles asynchronous updates of globe's map images when layers change
-class QgsGlobeMapUpdateJob : public QgsChunkQueueJob
-{
-    Q_OBJECT
-  public:
-    QgsGlobeMapUpdateJob( QgsTerrainTextureGenerator *textureGenerator, QgsChunkNode *node );
-    void start() override;
-
-    void cancel() override;
-
-  private:
-    QgsTerrainTextureGenerator *mTextureGenerator = nullptr;
-    int mJobId = -1;
-};
-
-class QgsGlobeChunkLoaderFactory : public QgsChunkLoaderFactory
-{
-    Q_OBJECT
-  public:
-    QgsGlobeChunkLoaderFactory( Qgs3DMapSettings *mapSettings );
-
-    ~QgsGlobeChunkLoaderFactory() override;
-
-    QgsChunkLoader *createChunkLoader( QgsChunkNode *node ) const override;
+    QFuture<QgsChunkLoaderResult> loadChunk( QgsChunkNode *node ) override;
+    QFuture<QgsChunkLoaderResult> updateChunk( QgsChunkNode *node ) override;
 
     QgsChunkNode *createRootNode() const override;
 
-    QVector<QgsChunkNode *> createChildren( QgsChunkNode *node ) const override;
+    QFuture<QVector<QgsChunkNode *>> createChildren( QgsChunkNode *node ) override;
 
   private:
     Qgs3DMapSettings *mMapSettings = nullptr;
-    QgsTerrainTextureGenerator *mTextureGenerator = nullptr; // owned by the factory
+    std::unique_ptr<QgsTerrainTextureGenerator> mTextureGenerator;
     QgsDistanceArea mDistanceArea;
     QgsCoordinateTransform mGlobeCrsToLatLon;
-    double mRadiusX, mRadiusY, mRadiusZ;
+    QgsVector3D mRadius;
 };
 
 /**
@@ -121,7 +90,6 @@ class _3D_EXPORT QgsGlobeEntity : public QgsChunkedEntity
     void invalidateMapImages();
 
   private:
-    std::unique_ptr<QgsGlobeMapUpdateJobFactory> mUpdateJobFactory;
     QObjectUniquePtr<QgsLayerStyleWatcher> mLayerWatcher = nullptr;
 };
 

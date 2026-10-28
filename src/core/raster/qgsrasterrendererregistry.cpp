@@ -28,6 +28,7 @@
 #include "qgsrastershader.h"
 #include "qgsrastersinglecolorrenderer.h"
 #include "qgsrastertransparency.h"
+#include "qgsrastervectorfieldrenderer.h"
 #include "qgssettingsentryimpl.h"
 #include "qgssettingstree.h"
 #include "qgssinglebandcolordatarenderer.h"
@@ -76,6 +77,7 @@ QgsRasterRendererRegistry::QgsRasterRendererRegistry()
   insert( QgsRasterRendererRegistryEntry( u"singlecolor"_s, QObject::tr( "Single color" ), QgsRasterSingleColorRenderer::create, nullptr ) );
   insert( QgsRasterRendererRegistryEntry( u"hillshade"_s, QObject::tr( "Hillshade" ), QgsHillshadeRenderer::create, nullptr ) );
   insert( QgsRasterRendererRegistryEntry( u"contour"_s, QObject::tr( "Contours" ), QgsRasterContourRenderer::create, nullptr ) );
+  insert( QgsRasterRendererRegistryEntry( u"vectorfield"_s, QObject::tr( "Vector field" ), QgsRasterVectorFieldRenderer::create, nullptr, Qgis::RasterRendererCapability::UsesMultipleBands ) );
 }
 
 void QgsRasterRendererRegistry::insert( const QgsRasterRendererRegistryEntry &entry )
@@ -131,7 +133,7 @@ Qgis::RasterRendererCapabilities QgsRasterRendererRegistry::rendererCapabilities
   return Qgis::RasterRendererCapabilities();
 }
 
-QgsRasterRenderer *QgsRasterRendererRegistry::defaultRendererForDrawingStyle( Qgis::RasterDrawingStyle drawingStyle, QgsRasterDataProvider *provider ) const
+std::unique_ptr<QgsRasterRenderer> QgsRasterRendererRegistry::defaultRendererForDrawingStyle( Qgis::RasterDrawingStyle drawingStyle, QgsRasterDataProvider *provider ) const
 {
   if ( !provider || provider->bandCount() < 1 )
   {
@@ -146,13 +148,10 @@ QgsRasterRenderer *QgsRasterRendererRegistry::defaultRendererForDrawingStyle( Qg
       const int grayBand = 1; //reasonable default
 
       // first preference -- use attribute table to generate classes
-      if ( provider->attributeTable( grayBand ) )
+      const QgsRasterAttributeTable *attributeTable { provider->attributeTable( grayBand ) };
+      if ( attributeTable && attributeTable->hasColor() )
       {
         std::unique_ptr<QgsColorRamp> ramp;
-        if ( !provider->attributeTable( grayBand )->hasColor() )
-        {
-          ramp = std::make_unique< QgsRandomColorRamp >();
-        }
         const QgsPalettedRasterRenderer::MultiValueClassData classes = QgsPalettedRasterRenderer::rasterAttributeTableToClassData( provider->attributeTable( grayBand ), -1, ramp.get() );
         if ( !classes.empty() )
         {
@@ -163,9 +162,36 @@ QgsRasterRenderer *QgsRasterRendererRegistry::defaultRendererForDrawingStyle( Qg
       // second preference -- use raster color table to generate classes
       if ( !renderer )
       {
-        const QgsPalettedRasterRenderer::ClassData classes = QgsPalettedRasterRenderer::colorTableToClassData( provider->colorTable( grayBand ) );
+        QgsPalettedRasterRenderer::ClassData classes = QgsPalettedRasterRenderer::colorTableToClassData( provider->colorTable( grayBand ) );
         if ( !classes.empty() )
         {
+          // If there is an attribute table (with no colors), try to get the labels for the colors
+          if ( attributeTable
+               && attributeTable->fieldsByUsage( Qgis::RasterAttributeTableFieldUsage::MinMax ).size() > 0
+               && attributeTable->fieldsByUsage( Qgis::RasterAttributeTableFieldUsage::Name ).size() > 0 )
+          {
+            const QgsRasterAttributeTable::Field minMaxFld = attributeTable->fieldsByUsage( Qgis::RasterAttributeTableFieldUsage::MinMax ).first();
+            const QgsRasterAttributeTable::Field nameFld = attributeTable->fieldsByUsage( Qgis::RasterAttributeTableFieldUsage::Name ).first();
+            const int fieldValueIndex = attributeTable->fields().indexOf( minMaxFld );
+            const int fieldNameIndex = attributeTable->fields().indexOf( nameFld );
+            QMap<double, QString> ratLabelsMap;
+            const QList<QList<QVariant>> constRatData = attributeTable->data();
+            for ( const auto &row : constRatData )
+            {
+              const double fieldValue = row.value( fieldValueIndex ).toDouble();
+              const QString fieldName = row.value( fieldNameIndex ).toString();
+              ratLabelsMap.insert( fieldValue, fieldName );
+            }
+
+            for ( qsizetype i = 0; i < classes.size(); ++i )
+            {
+              QgsPalettedRasterRenderer::Class &classData = classes[i];
+              if ( ratLabelsMap.contains( classData.value ) )
+              {
+                classData.label = ratLabelsMap.value( classData.value );
+              }
+            }
+          }
           renderer = std::make_unique< QgsPalettedRasterRenderer >( provider, grayBand, classes );
         }
       }
@@ -192,7 +218,7 @@ QgsRasterRenderer *QgsRasterRendererRegistry::defaultRendererForDrawingStyle( Qg
       QString ratErrorMessage;
       if ( QgsRasterAttributeTable *rat = provider->attributeTable( grayBand ); rat && rat->isValid( &ratErrorMessage ) )
       {
-        renderer.reset( rat->createRenderer( provider, grayBand ) );
+        renderer = rat->createRenderer( provider, grayBand );
       }
 
       if ( !ratErrorMessage.isEmpty() )
@@ -264,7 +290,7 @@ QgsRasterRenderer *QgsRasterRendererRegistry::defaultRendererForDrawingStyle( Qg
     tr->setTransparentThreeValuePixelList( {} );
   }
   renderer->setRasterTransparency( tr.release() );
-  return renderer.release();
+  return renderer;
 }
 
 bool QgsRasterRendererRegistry::minMaxValuesForBand( int band, QgsRasterDataProvider *provider, double &minValue, double &maxValue ) const

@@ -11,6 +11,7 @@
 
 
 
+
 class QgsExpressionNodeUnaryOperator : QgsExpressionNode
 {
 %Docstring(signature="appended")
@@ -71,6 +72,7 @@ Returns the node the operator will operate upon.
 
     virtual QgsExpressionNode *clone() const /Factory/;
 
+    virtual QgsExpressionNode *simplifiedNode() const /Factory/;
 
     virtual bool isStatic( QgsExpression *parent, const QgsExpressionContext *context ) const;
 
@@ -180,6 +182,8 @@ Returns the node to the right of the operator.
     virtual QgsExpressionNode *clone() const /Factory/;
 
     virtual bool isStatic( QgsExpression *parent, const QgsExpressionContext *context ) const;
+
+    virtual QgsExpressionNode *simplifiedNode() const /Factory/;
 
 
     int precedence() const;
@@ -385,6 +389,8 @@ Returns the list of nodes to search for matching values within.
 
     virtual bool isStatic( QgsExpression *parent, const QgsExpressionContext *context ) const;
 
+    virtual QgsExpressionNode *simplifiedNode() const /Factory/;
+
 
   private:
     QgsExpressionNodeInOperator( const QgsExpressionNodeInOperator &other );
@@ -406,18 +412,20 @@ A function node consists of an index of the function in the global
 function array and a list of arguments that will be passed to it.
 %End
 
+
     ~QgsExpressionNodeFunction();
 
     SIP_PYOBJECT __repr__();
 %MethodCode
 QString function;
-    if ( QgsExpressionFunction *fd = QgsExpression::QgsExpression::Functions()[sipCpp->fnIndex()] )
+    std::shared_ptr<QgsExpressionFunction> fd = sipCpp->function();
+    if ( fd )
     {
       function = fd->name();
     }
     else
     {
-      function = QString::number( sipCpp->fnIndex() );
+      function = QStringLiteral( "invalid" );
     }
 
     QString str = QStringLiteral( "<QgsExpressionNodeFunction: %1>" ).arg( function );
@@ -428,6 +436,7 @@ QString function;
 %Docstring
 Returns the index of the node's function.
 %End
+
 
     QgsExpressionNode::NodeList *args() const;
 %Docstring
@@ -455,6 +464,8 @@ Returns a list of arguments specified for the function.
     virtual QgsExpressionNode *clone() const /Factory/;
 
     virtual bool isStatic( QgsExpression *parent, const QgsExpressionContext *context ) const;
+
+    virtual QgsExpressionNode *simplifiedNode() const /Factory/;
 
 
     static bool validateParams( int fnIndex, QgsExpressionNode::NodeList *args, QString &error );
@@ -676,6 +687,8 @@ The ELSE expression used for the condition.
     virtual QgsExpressionNode *clone() const /Factory/;
 
     virtual bool isStatic( QgsExpression *parent, const QgsExpressionContext *context ) const;
+
+    virtual QgsExpressionNode *simplifiedNode() const /Factory/;
 
 
   private:

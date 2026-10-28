@@ -236,7 +236,7 @@ void QgsVectorTileBasicLabelProvider::registerTileFeatures( const QgsVectorTileR
           const Qgis::GeometryType featureType = QgsWkbTypes::geometryType( f.geometry().wkbType() );
           if ( featureType == layerStyle.geometryType() )
           {
-            subProvider->registerFeature( f, context );
+            subProvider->registerFeature( f, context, QgsLabelFeatureDetails() );
           }
           else if ( featureType == Qgis::GeometryType::Polygon && layerStyle.geometryType() == Qgis::GeometryType::Point )
           {
@@ -245,7 +245,7 @@ void QgsVectorTileBasicLabelProvider::registerTileFeatures( const QgsVectorTileR
             QgsFeature centroid = f;
             const QgsRectangle boundingBox = f.geometry().boundingBox();
             centroid.setGeometry( f.geometry().poleOfInaccessibility( std::min( boundingBox.width(), boundingBox.height() ) / 20 ) );
-            subProvider->registerFeature( centroid, context );
+            subProvider->registerFeature( centroid, context, QgsLabelFeatureDetails() );
           }
         }
       }
@@ -262,7 +262,7 @@ void QgsVectorTileBasicLabelProvider::registerTileFeatures( const QgsVectorTileR
         const Qgis::GeometryType featureType = QgsWkbTypes::geometryType( f.geometry().wkbType() );
         if ( featureType == layerStyle.geometryType() )
         {
-          subProvider->registerFeature( f, context );
+          subProvider->registerFeature( f, context, QgsLabelFeatureDetails() );
         }
         else if ( featureType == Qgis::GeometryType::Polygon && layerStyle.geometryType() == Qgis::GeometryType::Point )
         {
@@ -271,7 +271,7 @@ void QgsVectorTileBasicLabelProvider::registerTileFeatures( const QgsVectorTileR
           QgsFeature centroid = f;
           const QgsRectangle boundingBox = f.geometry().boundingBox();
           centroid.setGeometry( f.geometry().poleOfInaccessibility( std::min( boundingBox.width(), boundingBox.height() ) / 20 ) );
-          subProvider->registerFeature( centroid, context );
+          subProvider->registerFeature( centroid, context, QgsLabelFeatureDetails() );
         }
       }
     }

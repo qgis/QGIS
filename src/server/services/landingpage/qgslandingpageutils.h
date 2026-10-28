@@ -23,6 +23,7 @@
 
 #include <QMap>
 #include <QRegularExpression>
+#include <QSet>
 #include <QStringList>
 
 #ifndef SIP_RUN
@@ -30,6 +31,7 @@ using namespace nlohmann;
 #endif
 
 class QgsProject;
+class QgsServerInterface;
 
 /**
  * The QgsLandingPageUtils struct contains static utilities for the
@@ -50,14 +52,25 @@ struct QgsLandingPageUtils
     static QMap<QString, QString> projects( const QgsServerSettings &settings );
 
     /**
-   * Returns project information for a given \a projectPath, optional \a serverSettings and \a request
+   * Returns project information for a given \a projectPath, optional \a serverSettings,
+   * \a request and \a serverInterface.
    */
-    static json projectInfo( const QString &projectPath, const QgsServerSettings *serverSettings = nullptr, const QgsServerRequest &request = QgsServerRequest() );
+    static json projectInfo(
+      const QString &projectPath, const QgsServerSettings *serverSettings = nullptr, const QgsServerRequest &request = QgsServerRequest(), const QgsServerInterface *serverInterface = nullptr
+    );
 
     /**
-   * Returns the layer tree information for the given \a project
+   * Returns the layer tree information for the given \a project, \a wmsLayersQueryable,
+   * \a wmsLayersSearchable, \a wmsRestrictedLayers, \a allowedLayerIds and \a wfsLayerIds.
    */
-    static json layerTree( const QgsProject &project, const QStringList &wmsLayersQueryable, const QStringList &wmsLayersSearchable, const QStringList &wmsRestrictedLayers );
+    static json layerTree(
+      const QgsProject &project,
+      const QStringList &wmsLayersQueryable,
+      const QStringList &wmsLayersSearchable,
+      const QStringList &wmsRestrictedLayers,
+      const QSet<QString> &allowedLayerIds,
+      const QStringList &wfsLayerIds
+    );
 
     /**
    * Extracts the project hash from the URL and returns the (possibly empty) project path.

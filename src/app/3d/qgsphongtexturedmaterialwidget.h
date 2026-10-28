@@ -40,6 +40,9 @@ class QgsPhongTexturedMaterialWidget : public QgsMaterialSettingsWidget, private
 
     void updateWidgetState();
     void updatePreview();
+
+  protected:
+    void updateWidgetVisibility() final;
 };
 
 #endif // QGSPHONGTEXTUREDMATERIALWIDGET_H

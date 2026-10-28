@@ -16,7 +16,7 @@
 #include "qgsdocumentationpanelwidget.h"
 
 #include "qgisapp.h"
-#include "qgsguiutils.h"
+#include "qgsgui.h"
 
 #include <QVBoxLayout>
 
@@ -38,7 +38,7 @@ QgsDocumentationPanelWidget::QgsDocumentationPanelWidget( QWidget *parent )
 {
   setupUi( this );
 
-  mToolbar->setIconSize( QgsGuiUtils::iconSize( true ) );
+  mToolbar->setIconSize( QgsGui::iconSize( Qgis::UserInterfaceIconType::DockedToolbar ) );
 
 #ifdef HAVE_WEBENGINE
   mWebView = new QWebEngineView( this );

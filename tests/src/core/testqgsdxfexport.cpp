@@ -100,6 +100,7 @@ class TestQgsDxfExport : public QObject
     void testWritingCodepage();
     void testExpressionContext();
     void testMetersAtScale();
+    void testEncoding();
 
   private:
     QgsVectorLayer *mPointLayer = nullptr;
@@ -116,7 +117,9 @@ class TestQgsDxfExport : public QObject
     //! Builds standard 640x480 @ 96 dpi map settings using \a vl's CRS, with \a vl as only layer.
     QgsMapSettings makeMapSettings( QgsVectorLayer *vl, const QgsRectangle &extent = QgsRectangle() ) const;
     //! Runs a DXF export of \a vl with the given mode and scale, returning the raw bytes.
-    QByteArray exportToBytes( QgsVectorLayer *vl, const QgsMapSettings &ms, Qgis::FeatureSymbologyExport mode = Qgis::FeatureSymbologyExport::PerFeature, double scale = 1000.0 ) const;
+    QByteArray exportToBytes(
+      QgsVectorLayer *vl, const QgsMapSettings &ms, Qgis::FeatureSymbologyExport mode = Qgis::FeatureSymbologyExport::PerFeature, double scale = 1000.0, const QString &encoding = u"CP1252"_s
+    ) const;
 
     // NOLINTBEGIN(readability-identifier-naming)
     struct BlockVertices
@@ -177,12 +180,12 @@ void TestQgsDxfExport::init()
   QVariantMap ggProps;
   ggProps.insert( u"SymbolType"_s, u"Fill"_s );
   ggProps.insert( u"geometryModifier"_s, u"buffer( $geometry, 0.1 )"_s );
-  QgsSymbolLayer *ggSymbolLayer = QgsGeometryGeneratorSymbolLayer::create( ggProps );
+  std::unique_ptr<QgsSymbolLayer> ggSymbolLayer = QgsGeometryGeneratorSymbolLayer::create( ggProps );
   QgsSymbolLayerList fillSymbolLayerList;
   fillSymbolLayerList << new QgsSimpleFillSymbolLayer();
   ggSymbolLayer->setSubSymbol( new QgsFillSymbol( fillSymbolLayerList ) );
   QgsSymbolLayerList slList;
-  slList << ggSymbolLayer;
+  slList << ggSymbolLayer.release();
   QgsMarkerSymbol *markerSymbol = new QgsMarkerSymbol( slList );
   QgsSingleSymbolRenderer *sr = new QgsSingleSymbolRenderer( markerSymbol );
   mPointLayerGeometryGenerator->setRenderer( sr );
@@ -2602,6 +2605,37 @@ void TestQgsDxfExport::testMetersAtScale()
   QVERIFY2( fileContainsText( file, "REGEX Biplane", &debugInfo ), debugInfo.toUtf8().constData() );
 }
 
+void TestQgsDxfExport::testEncoding()
+{
+  // This test is aimed at testing whether encoding works as expected
+  // See: https://github.com/qgis/QGIS/issues/67573
+
+  auto vl = std::make_unique<QgsVectorLayer>( u"Point?crs=epsg:3857&field=name:string"_s, u"vl"_s, u"memory"_s );
+  QgsFeature feature( vl->fields() );
+  feature.setAttributes( QgsAttributes() << u"\uB2F5"_s );
+  feature.setGeometry( QgsGeometry::fromWkt( u"Point (5 5)"_s ) );
+  QVERIFY( vl->dataProvider()->addFeature( feature ) );
+
+  QgsPalLayerSettings settings;
+  settings.fieldName = u"name"_s;
+  setDefaultLabelParams( settings );
+  vl->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );
+  vl->setLabelsEnabled( true );
+
+  const QgsMapSettings mapSettings = makeMapSettings( vl.get(), vl->extent().buffered( 100.0 ) );
+
+  // Use CP949 encoding
+  const QByteArray bytes = exportToBytes( vl.get(), mapSettings, Qgis::FeatureSymbologyExport::PerFeature, 1000, u"CP949"_s );
+  QVERIFY( !bytes.isEmpty() );
+
+  QVERIFY( bytes.contains( "ANSI_949" ) );
+  QVERIFY( bytes.contains( QByteArray( "\xB4\xE4" ) ) );      // \uB2F5 encoded in CP949
+  QVERIFY( !bytes.contains( QByteArray( "\xEB\x8B\xB5" ) ) ); // \uB2F5 encoded in UTF-8
+
+  const QByteArray bytesError = exportToBytes( vl.get(), mapSettings, Qgis::FeatureSymbologyExport::PerFeature, 1000, u"WRONG_ENCODING"_s );
+  QVERIFY( bytesError.isEmpty() );
+}
+
 QgsMapSettings TestQgsDxfExport::makeMapSettings( QgsVectorLayer *vl, const QgsRectangle &extent ) const
 {
   QgsMapSettings ms;
@@ -2614,7 +2648,7 @@ QgsMapSettings TestQgsDxfExport::makeMapSettings( QgsVectorLayer *vl, const QgsR
   return ms;
 }
 
-QByteArray TestQgsDxfExport::exportToBytes( QgsVectorLayer *vl, const QgsMapSettings &ms, Qgis::FeatureSymbologyExport mode, double scale ) const
+QByteArray TestQgsDxfExport::exportToBytes( QgsVectorLayer *vl, const QgsMapSettings &ms, Qgis::FeatureSymbologyExport mode, double scale, const QString &encoding ) const
 {
   QByteArray bytes;
   {
@@ -2626,7 +2660,7 @@ QByteArray TestQgsDxfExport::exportToBytes( QgsVectorLayer *vl, const QgsMapSett
     d.setMapSettings( ms );
     d.setExtent( ms.extent() );
     d.setSymbologyScale( scale );
-    if ( d.writeToFile( &buf, u"CP1252"_s ) != QgsDxfExport::ExportResult::Success )
+    if ( d.writeToFile( &buf, encoding ) != QgsDxfExport::ExportResult::Success )
       return QByteArray();
   }
   return bytes;

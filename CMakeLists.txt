@@ -65,7 +65,7 @@ endif()
 #############################################################
 # Project and version
 set(CPACK_PACKAGE_VERSION_MAJOR "4")
-set(CPACK_PACKAGE_VERSION_MINOR "1")
+set(CPACK_PACKAGE_VERSION_MINOR "3")
 set(CPACK_PACKAGE_VERSION_PATCH "0")
 set(COMPLETE_VERSION ${CPACK_PACKAGE_VERSION_MAJOR}.${CPACK_PACKAGE_VERSION_MINOR}.${CPACK_PACKAGE_VERSION_PATCH})
 set(RELEASE_NAME "Master")
@@ -353,14 +353,13 @@ if(WITH_CORE)
 
   set (WITH_HANA FALSE CACHE BOOL "Determines whether SAP HANA Spatial support should be built")
   if(WITH_HANA)
-    find_package(ODBC)
-    if(ODBC_FOUND)
-      set(HAVE_HANA TRUE)
+    set (WITH_INTERNAL_ODBCCPP ${PREFER_INTERNAL_LIBS} CACHE BOOL "Determines whether the internal odbccpp library should be used")
+    if(WITH_INTERNAL_ODBCCPP)
       add_subdirectory(external/odbccpp)
-      set_target_properties(odbccpp_static PROPERTIES AUTOMOC OFF AUTOUIC OFF AUTORCC OFF)
     else()
-      message(STATUS "Couldn't find ODBC library")
+      find_package(odbccpp CONFIG REQUIRED)
     endif()
+    set(HAVE_HANA TRUE)
   endif(WITH_HANA)
 
 
@@ -448,6 +447,7 @@ if(WITH_CORE)
   IF(WITH_INTERNAL_SPATIALINDEX)
     message(STATUS "Using internal spatialindex")
     set(SPATIALINDEX_INCLUDE_DIR ${CMAKE_SOURCE_DIR}/external/spatialindex/include)
+    include_directories(BEFORE SYSTEM ${CMAKE_SOURCE_DIR}/external/spatialindex/include)
   else()
     find_package(Spatialindex REQUIRED)
     if(SPATIALINDEX_VERSION VERSION_GREATER_EQUAL "2.1")
@@ -597,9 +597,10 @@ if(WITH_CORE)
   endif()
 
   # Use QtGamepad optionally for input control
-  set (WITH_QTGAMEPAD FALSE CACHE BOOL "Determines whether QtGamepad should be tried for GPS positioning")
+  set (WITH_QTGAMEPAD FALSE CACHE BOOL "Determines whether QtGamepad support should be enabled")
   if (WITH_QTGAMEPAD)
-      find_package(${QT_VERSION_BASE} COMPONENTS Gamepad REQUIRED)
+      # QtGamepadLegacy from https://github.com/pumphaus/qtgamepadlegacy must be used for Qt6 builds
+      find_package(${QT_VERSION_BASE} COMPONENTS GamepadLegacy REQUIRED)
       # following variable is used in qgsconfig.h
       set (HAVE_QTGAMEPAD TRUE)
   endif()

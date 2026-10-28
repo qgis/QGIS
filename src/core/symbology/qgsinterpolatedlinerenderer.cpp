@@ -19,6 +19,7 @@
 
 #include "qgscolorutils.h"
 #include "qgsgeometryutils_base.h"
+#include "qgspainting.h"
 #include "qgsstyle.h"
 #include "qgssymbollayerutils.h"
 #include "qgsunittypes.h"
@@ -817,12 +818,12 @@ void QgsInterpolatedLineSymbolLayer::stopRender( QgsSymbolRenderContext & )
 
 QgsInterpolatedLineSymbolLayer *QgsInterpolatedLineSymbolLayer::clone() const
 {
-  QgsInterpolatedLineSymbolLayer *l = static_cast<QgsInterpolatedLineSymbolLayer *>( create( properties() ) );
-  copyCommonProperties( l );
-  return l;
+  auto l = qgis::unique_ptr_static_cast<QgsInterpolatedLineSymbolLayer>( create( properties() ) );
+  copyCommonProperties( l.get() );
+  return l.release();
 }
 
-QgsSymbolLayer *QgsInterpolatedLineSymbolLayer::create( const QVariantMap &properties )
+std::unique_ptr<QgsSymbolLayer> QgsInterpolatedLineSymbolLayer::create( const QVariantMap &properties )
 {
   std::unique_ptr<QgsInterpolatedLineSymbolLayer> symbolLayer;
   symbolLayer = std::make_unique<QgsInterpolatedLineSymbolLayer>();
@@ -863,7 +864,7 @@ QgsSymbolLayer *QgsInterpolatedLineSymbolLayer::create( const QVariantMap &prope
   if ( properties.contains( u"coloring_method"_s ) )
     symbolLayer->mLineRender.mStrokeColoring.setColoringMethod( static_cast<QgsInterpolatedLineColor::ColoringMethod>( properties.value( u"coloring_method"_s ).toInt() ) );
 
-  return symbolLayer.release();
+  return symbolLayer;
 }
 
 Qgis::SymbolLayerFlags QgsInterpolatedLineSymbolLayer::flags() const

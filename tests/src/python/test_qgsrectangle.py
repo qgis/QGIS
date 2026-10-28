@@ -21,11 +21,46 @@ start_app()
 
 class TestQgsRectangle(QgisTestCase):
     def testCtor(self):
-        rect = QgsRectangle(5.0, 5.0, 10.0, 10.0)
+        rect = QgsRectangle(5.0, 10.0, 15.0, 20.0, normalize=True)
         self.assertEqual(rect.xMinimum(), 5.0)
+        self.assertEqual(rect.left(), 5.0)
+        self.assertEqual(rect.yMinimum(), 10.0)
+        self.assertEqual(rect.bottom(), 10.0)
+        self.assertEqual(rect.xMaximum(), 15.0)
+        self.assertEqual(rect.right(), 15.0)
+        self.assertEqual(rect.yMaximum(), 20.0)
+        self.assertEqual(rect.top(), 20.0)
+
+        rect = QgsRectangle.fromEdges(5.0, 20.0, 15.0, 10.0)
+        self.assertEqual(rect.xMinimum(), 5.0)
+        self.assertEqual(rect.left(), 5.0)
+        self.assertEqual(rect.yMinimum(), 10.0)
+        self.assertEqual(rect.bottom(), 10.0)
+        self.assertEqual(rect.xMaximum(), 15.0)
+        self.assertEqual(rect.right(), 15.0)
+        self.assertEqual(rect.yMaximum(), 20.0)
+        self.assertEqual(rect.top(), 20.0)
+
+    def testCtorNotNormalizedValues(self):
+        rect = QgsRectangle(20.0, 15.0, 10.0, 5.0, normalize=True)
+        self.assertEqual(rect.xMinimum(), 10.0)
+        self.assertEqual(rect.left(), 10.0)
         self.assertEqual(rect.yMinimum(), 5.0)
+        self.assertEqual(rect.bottom(), 5.0)
+        self.assertEqual(rect.xMaximum(), 20.0)
+        self.assertEqual(rect.right(), 20.0)
+        self.assertEqual(rect.yMaximum(), 15.0)
+        self.assertEqual(rect.top(), 15.0)
+
+        rect = QgsRectangle.fromEdges(20.0, 5.0, 10.0, 15.0)
+        self.assertEqual(rect.xMinimum(), 20.0)
+        self.assertEqual(rect.left(), 20.0)
+        self.assertEqual(rect.yMinimum(), 15.0)
+        self.assertEqual(rect.bottom(), 15.0)
         self.assertEqual(rect.xMaximum(), 10.0)
-        self.assertEqual(rect.yMaximum(), 10.0)
+        self.assertEqual(rect.right(), 10.0)
+        self.assertEqual(rect.yMaximum(), 5.0)
+        self.assertEqual(rect.top(), 5.0)
 
     def testDimensions(self):
         rect = QgsRectangle(0.0, 0.0, 10.0, 20.0)
@@ -208,6 +243,31 @@ class TestQgsRectangle(QgisTestCase):
         self.assertTrue(rect4.isValid())
         rect4.setXMaximum(float("inf"))
         self.assertFalse(rect4.isValid())
+
+    def test_is_point(self):
+        rect = QgsRectangle()
+        self.assertFalse(rect.isPoint())
+
+        rect = QgsRectangle(1, 2, 3, 4)
+        self.assertFalse(rect.isPoint())
+
+        rect = QgsRectangle(1, 2, 1, 4)
+        self.assertFalse(rect.isPoint())
+
+        rect = QgsRectangle(1, 2, 3, 2)
+        self.assertFalse(rect.isPoint())
+
+        rect = QgsRectangle(1.1, 2.1, 1.1, 2.1)
+        self.assertTrue(rect.isPoint())
+
+        rect = QgsRectangle(0, 0, 0, 0)
+        self.assertTrue(rect.isPoint())
+
+        rect = QgsRectangle(-9999.9999, -999999.9999, -9999.9999, -999999.9999)
+        self.assertTrue(rect.isPoint())
+
+        rect = QgsRectangle(3, 1, 4, 2, normalize=False)
+        self.assertFalse(rect.isPoint())
 
 
 if __name__ == "__main__":

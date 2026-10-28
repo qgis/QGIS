@@ -22,12 +22,12 @@
 
 std::unique_ptr< QgsLineSymbol > QgsLineSymbol::createSimple( const QVariantMap &properties )
 {
-  QgsSymbolLayer *sl = QgsSimpleLineSymbolLayer::create( properties );
+  std::unique_ptr<QgsSymbolLayer> sl = QgsSimpleLineSymbolLayer::create( properties );
   if ( !sl )
     return nullptr;
 
   QgsSymbolLayerList layers;
-  layers.append( sl );
+  layers.append( sl.release() );
   return std::make_unique< QgsLineSymbol >( layers );
 }
 

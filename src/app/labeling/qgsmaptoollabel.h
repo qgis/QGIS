@@ -231,7 +231,7 @@ class APP_EXPORT QgsMapToolLabel : public QgsMapToolAdvancedDigitizing
 
     /**
      * Change the data defined line anchor percent of current label
-     * \param anchorPercent data defined line anchor percent
+     * \param lineAnchorPercent data defined line anchor percent
      * \returns TRUE if data defined curved offset could be changed
      */
     bool changeCurrentLabelDataDefinedLineAnchorPercent( const QVariant &lineAnchorPercent );

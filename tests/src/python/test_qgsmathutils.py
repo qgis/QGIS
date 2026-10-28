@@ -8,7 +8,7 @@ the Free Software Foundation; either version 2 of the License, or
 
 import unittest
 
-from qgis.core import QgsMathUtils
+from qgis.core import QgsDoubleRange, QgsMathUtils
 from qgis.testing import QgisTestCase
 
 
@@ -57,6 +57,56 @@ class TestQgsMathUtils(QgisTestCase):
 
         self.assertEqual(QgsMathUtils.doubleToRational(3.1415926535), (103993, 33102))
         self.assertEqual(QgsMathUtils.doubleToRational(1.6180339887), (28657, 17711))
+
+    def test_rounding_interval(self):
+        self.assertEqual(QgsMathUtils.roundingInterval(2222), 100)
+        self.assertEqual(QgsMathUtils.roundingInterval(1000), 100)
+        self.assertEqual(QgsMathUtils.roundingInterval(999), 10)
+        self.assertAlmostEqual(QgsMathUtils.roundingInterval(5.55), 0.1, 10)
+        self.assertAlmostEqual(QgsMathUtils.roundingInterval(0.086), 0.001, 10)
+        # a finer grain can be asked for
+        self.assertEqual(QgsMathUtils.roundingInterval(2222, 100), 10)
+        self.assertEqual(QgsMathUtils.roundingInterval(2222, 1000), 1)
+        self.assertEqual(QgsMathUtils.roundingInterval(2222, 1), 1000)
+        self.assertAlmostEqual(QgsMathUtils.roundingInterval(5.55, 100), 0.01, 10)
+
+        # degenerate spans have no interval
+        self.assertEqual(QgsMathUtils.roundingInterval(0), 0)
+        self.assertEqual(QgsMathUtils.roundingInterval(-5), 0)
+        self.assertEqual(QgsMathUtils.roundingInterval(2222, 0), 0)
+
+    def test_rounded_range(self):
+        self.assertEqual(
+            QgsMathUtils.roundedRange(QgsDoubleRange(1234.5, 3456.7)),
+            QgsDoubleRange(1200, 3500),
+        )
+        self.assertEqual(
+            QgsMathUtils.roundedRange(QgsDoubleRange(0, 8848.86)),
+            QgsDoubleRange(0, 8900),
+        )
+        self.assertEqual(
+            QgsMathUtils.roundedRange(QgsDoubleRange(-15.2, 102.7)),
+            QgsDoubleRange(-20, 110),
+        )
+        # fractional ranges should not pick up floating point noise
+        self.assertEqual(
+            QgsMathUtils.roundedRange(QgsDoubleRange(12.34, 17.89)),
+            QgsDoubleRange(12.3, 17.9),
+        )
+        self.assertEqual(
+            QgsMathUtils.roundedRange(QgsDoubleRange(0.0123, 0.0987)),
+            QgsDoubleRange(0.012, 0.099),
+        )
+        # already round values should be left alone
+        self.assertEqual(
+            QgsMathUtils.roundedRange(QgsDoubleRange(100, 500)),
+            QgsDoubleRange(100, 500),
+        )
+        # degenerate ranges are returned unchanged
+        self.assertEqual(
+            QgsMathUtils.roundedRange(QgsDoubleRange(50, 50)), QgsDoubleRange(50, 50)
+        )
+        self.assertTrue(QgsMathUtils.roundedRange(QgsDoubleRange()).isInfinite())
 
 
 if __name__ == "__main__":

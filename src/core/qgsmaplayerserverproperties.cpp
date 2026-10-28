@@ -52,7 +52,7 @@ bool QgsServerWmsDimensionProperties::WmsDimensionInfo::operator==( const WmsDim
          && units == other.units
          && unitSymbol == other.unitSymbol
          && defaultDisplayType == other.defaultDisplayType
-         && referenceValue == other.referenceValue;
+         && mReferenceValue == other.mReferenceValue;
 }
 
 bool QgsServerWmsDimensionProperties::WmsDimensionInfo::operator!=( const WmsDimensionInfo &other ) const
@@ -133,10 +133,22 @@ void QgsServerWmsDimensionProperties::setWmsDimensions( const QList<QgsServerWms
 QMap<int, QString> QgsServerWmsDimensionProperties::wmsDimensionDefaultDisplayLabels()
 {
   QMap<int, QString> labels;
-  labels[QgsServerWmsDimensionProperties::WmsDimensionInfo::AllValues] = QObject::tr( "All values" );
-  labels[QgsServerWmsDimensionProperties::WmsDimensionInfo::MinValue] = QObject::tr( "Min value" );
-  labels[QgsServerWmsDimensionProperties::WmsDimensionInfo::MaxValue] = QObject::tr( "Max value" );
-  labels[QgsServerWmsDimensionProperties::WmsDimensionInfo::ReferenceValue] = QObject::tr( "Reference value" );
+  const QMap<Qgis::WmsDimensionDefaultDisplay, QString> descriptions = wmsDimensionDefaultDisplayDescriptions();
+  for ( auto it = descriptions.cbegin(); it != descriptions.cend(); it++ )
+  {
+    labels[static_cast<int>( it.key() )] = descriptions[it.key()];
+  }
+
+  return labels;
+}
+
+QMap<Qgis::WmsDimensionDefaultDisplay, QString> QgsServerWmsDimensionProperties::wmsDimensionDefaultDisplayDescriptions()
+{
+  QMap<Qgis::WmsDimensionDefaultDisplay, QString> labels;
+  labels[Qgis::WmsDimensionDefaultDisplay::AllValues] = QObject::tr( "All Values" );
+  labels[Qgis::WmsDimensionDefaultDisplay::MinValue] = QObject::tr( "Minimum Value" );
+  labels[Qgis::WmsDimensionDefaultDisplay::MaxValue] = QObject::tr( "Maximum Value" );
+  labels[Qgis::WmsDimensionDefaultDisplay::ReferenceValue] = QObject::tr( "Reference Value" );
   return labels;
 }
 
@@ -175,11 +187,12 @@ void QgsServerWmsDimensionProperties::readXml( const QDomNode &layer_node )
 {
   reset();
 
-  // Apply only for vector layers
-  if ( !layer() || layer()->type() != Qgis::LayerType::Vector )
+  // Apply only for vector layers and layer tree group
+  if ( layer() && layer()->type() != Qgis::LayerType::Vector )
     return;
 
-  const QgsFields fields = static_cast<const QgsVectorLayer *>( layer() )->fields();
+  const QgsVectorLayer *vl = qobject_cast<const QgsVectorLayer *>( layer() );
+
   // QGIS Server WMS Dimensions
   const QDomNode wmsDimsNode = layer_node.namedItem( u"wmsDimensions"_s );
   if ( wmsDimsNode.isNull() )
@@ -193,27 +206,32 @@ void QgsServerWmsDimensionProperties::readXml( const QDomNode &layer_node )
     const QDomElement dimElem = wmsDimsList.at( i ).toElement();
     const QString dimName = dimElem.attribute( u"name"_s );
     const QString dimFieldName = dimElem.attribute( u"fieldName"_s );
-    // check field name
-    const int dimFieldNameIndex = fields.indexOf( dimFieldName );
-    if ( dimFieldNameIndex == -1 )
-    {
-      continue;
-    }
+    const Qgis::WmsDimensionDefaultDisplay dimDefaultDisplayType = static_cast<Qgis::WmsDimensionDefaultDisplay>( dimElem.attribute( u"defaultDisplayType"_s ).toInt() );
+    const QString dimRefValueStr = dimElem.attribute( u"referenceValue"_s );
+
     QVariant dimRefValue;
-    const int dimDefaultDisplayType = dimElem.attribute( u"defaultDisplayType"_s ).toInt();
-    if ( dimDefaultDisplayType == QgsServerWmsDimensionProperties::WmsDimensionInfo::AllValues )
+    if ( vl )
     {
-      const QString dimRefValueStr = dimElem.attribute( u"referenceValue"_s );
+      // check field name
+      const QgsFields fields = vl->fields();
+      const int dimFieldNameIndex = fields.indexOf( dimFieldName );
+      if ( dimFieldNameIndex == -1 )
+        continue;
+
       if ( !dimRefValueStr.isEmpty() )
       {
         const QgsField dimField = fields.at( dimFieldNameIndex );
         dimRefValue = QVariant( dimRefValueStr );
         if ( !dimField.convertCompatible( dimRefValue ) )
-        {
           continue;
-        }
       }
     }
+    // layer tree group
+    else if ( dimName == QgsServerWmsDimensionProperties::TIME_DIMENSION_NAME )
+    {
+      dimRefValue = QDateTime::fromString( dimRefValueStr, Qt::ISODate );
+    }
+
     QgsServerWmsDimensionProperties::WmsDimensionInfo
       dim( dimName, dimFieldName, dimElem.attribute( u"endFieldName"_s ), dimElem.attribute( u"units"_s ), dimElem.attribute( u"unitSymbol"_s ), dimDefaultDisplayType, dimRefValue );
     //XXX This add O(n^2) complexity !!!!
@@ -233,12 +251,24 @@ void QgsServerWmsDimensionProperties::writeXml( QDomNode &layer_node, QDomDocume
     {
       QDomElement dimElem = document.createElement( u"dimension"_s );
       dimElem.setAttribute( u"name"_s, dim.name );
-      dimElem.setAttribute( u"fieldName"_s, dim.fieldName );
-      dimElem.setAttribute( u"endFieldName"_s, dim.endFieldName );
-      dimElem.setAttribute( u"units"_s, dim.units );
-      dimElem.setAttribute( u"unitSymbol"_s, dim.unitSymbol );
-      dimElem.setAttribute( u"defaultDisplayType"_s, dim.defaultDisplayType );
-      dimElem.setAttribute( u"referenceValue"_s, dim.referenceValue.toString() );
+
+      if ( !dim.fieldName.isEmpty() )
+        dimElem.setAttribute( u"fieldName"_s, dim.fieldName );
+
+      if ( !dim.endFieldName.isEmpty() )
+        dimElem.setAttribute( u"endFieldName"_s, dim.endFieldName );
+
+      if ( !dim.units.isEmpty() )
+        dimElem.setAttribute( u"units"_s, dim.units );
+
+      if ( !dim.unitSymbol.isEmpty() )
+        dimElem.setAttribute( u"unitSymbol"_s, dim.unitSymbol );
+
+      dimElem.setAttribute( u"defaultDisplayType"_s, static_cast<int>( dim.defaultDisplayType ) );
+
+      if ( !dim.referenceValue().isNull() )
+        dimElem.setAttribute( u"referenceValue"_s, dim.referenceValue().toString() );
+
       wmsDimsElem.appendChild( dimElem );
     }
     layer_node.appendChild( wmsDimsElem );
@@ -259,6 +289,7 @@ void QgsMapLayerServerProperties::copyTo( QgsMapLayerServerProperties *propertie
 
   properties->setShortName( mShortName );
   properties->setTitle( mTitle );
+  properties->setWfsTitle( mWfsTitle );
   properties->setAbstract( mAbstract );
   properties->setKeywordList( mKeywordList );
   properties->setDataUrl( mDataUrl );
@@ -275,6 +306,7 @@ bool QgsMapLayerServerProperties::operator==( const QgsMapLayerServerProperties 
          && QgsServerWmsDimensionProperties::operator==( other )
          && mShortName == other.mShortName
          && mTitle == other.mTitle
+         && mWfsTitle == other.mWfsTitle
          && mAbstract == other.mAbstract
          && mKeywordList == other.mKeywordList
          && mDataUrl == other.mDataUrl

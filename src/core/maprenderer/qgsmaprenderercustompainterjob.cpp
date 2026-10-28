@@ -21,7 +21,6 @@
 #include "qgsfeedback.h"
 #include "qgslabelingengine.h"
 #include "qgslogger.h"
-#include "qgsmaplayerlistutils_p.h"
 #include "qgsmaplayerrenderer.h"
 #include "qgspainting.h"
 
@@ -99,8 +98,7 @@ void QgsMapRendererCustomPainterJob::startPrivate()
 
   if ( mSettings.testFlag( Qgis::MapSettingsFlag::DrawLabeling ) )
   {
-    mLabelingEngineV2 = std::make_unique<QgsDefaultLabelingEngine>();
-    mLabelingEngineV2->setMapSettings( mSettings );
+    mLabelingEngineV2 = std::make_unique<QgsDefaultLabelingEngine>( mSettings );
   }
 
   const bool canUseLabelCache = prepareLabelCache();
@@ -245,7 +243,7 @@ void QgsMapRendererCustomPainterJob::futureFinished()
 {
   mActive = false;
   if ( !mPrepared ) // can't access from other thread
-    mRenderingTime = mRenderingStart.elapsed();
+    mRenderingTime = static_cast< int >( mRenderingStart.elapsed() );
   QgsDebugMsgLevel( u"QPAINTER futureFinished"_s, 5 );
 
   if ( !mPrepared )
@@ -320,9 +318,9 @@ void QgsMapRendererCustomPainterJob::doRender()
         job.previewRenderImageInitialized = true;
       }
 
-      if ( job.img )
+      if ( job.destinationImage )
       {
-        job.img->fill( 0 );
+        job.destinationImage->fill( 0 );
         job.imageInitialized = true;
       }
 
@@ -333,14 +331,14 @@ void QgsMapRendererCustomPainterJob::doRender()
         job.renderer->renderContext()->painter()->end();
       }
 
-      job.renderingTime += layerTime.elapsed();
+      job.renderingTime += static_cast< int >( layerTime.elapsed() );
     }
 
-    if ( !hasSecondPass && job.img )
+    if ( !hasSecondPass && job.destinationImage )
     {
       // If we flattened this layer for alternate blend modes, composite it now
       mPainter->setOpacity( job.opacity );
-      mPainter->drawImage( 0, 0, *job.img );
+      mPainter->drawImage( 0, 0, *job.destinationImage );
       mPainter->setOpacity( 1.0 );
     }
 
@@ -363,10 +361,9 @@ void QgsMapRendererCustomPainterJob::doRender()
     image.setDevicePixelRatio( mSettings.devicePixelRatio() );
     image.fill( Qt::white );
     mapShadingRenderer.renderShading( *mainElevationMap.get(), image, QgsRenderContext::fromMapSettings( mSettings ) );
-    mPainter->save();
+    QgsScopedQPainterState painterState( mPainter );
     mPainter->setCompositionMode( QPainter::CompositionMode_Multiply );
     mPainter->drawImage( 0, 0, image );
-    mPainter->restore();
   }
 
   if ( mSettings.testFlag( Qgis::MapSettingsFlag::DrawLabeling ) && !mLabelJob.context.renderingStopped() )
@@ -380,7 +377,7 @@ void QgsMapRendererCustomPainterJob::doRender()
       {
         QPainter painter;
         mLabelJob.img->fill( 0 );
-        painter.begin( mLabelJob.img );
+        painter.begin( mLabelJob.img.get() );
         mLabelJob.context.setPainter( &painter );
         drawLabeling( mLabelJob.context, mLabelingEngineV2.get(), &painter );
         painter.end();
@@ -399,7 +396,7 @@ void QgsMapRendererCustomPainterJob::doRender()
       }
 
       mLabelJob.complete = true;
-      mLabelJob.renderingTime = labelTime.elapsed();
+      mLabelJob.renderingTime = static_cast< int >( labelTime.elapsed() );
       mLabelJob.participatingLayers = participatingLabelLayers( mLabelingEngineV2.get() );
     }
   }
@@ -433,9 +430,9 @@ void QgsMapRendererCustomPainterJob::doRender()
           job.previewRenderImageInitialized = true;
         }
 
-        if ( job.img )
+        if ( job.destinationImage )
         {
-          job.img->fill( 0 );
+          job.destinationImage->fill( 0 );
           job.imageInitialized = true;
         }
 
@@ -446,39 +443,38 @@ void QgsMapRendererCustomPainterJob::doRender()
           job.renderer->renderContext()->painter()->end();
         }
 
-        job.renderingTime += layerTime.elapsed();
+        job.renderingTime += static_cast< int >( layerTime.elapsed() );
       }
     }
 
-    bool forceVector = mSettings.testFlag( Qgis::MapSettingsFlag::ForceVectorOutput ) && !mSettings.testFlag( Qgis::MapSettingsFlag::ForceRasterMasks );
-    composeSecondPass( mSecondPassLayerJobs, mLabelJob, forceVector );
+    composeSecondPass( mSecondPassLayerJobs, mLabelJob );
 
-    if ( !forceVector )
+    for ( LayerRenderJob &job : mLayerJobs )
     {
-      const QImage finalImage = composeImage( mSettings, mLayerJobs, mLabelJob );
+      // if there is vector rendering we use it, else we use the raster rendering
+      if ( job.picture )
+      {
+        QgsPainting::drawPicture( mPainter, QPointF( 0, 0 ), *job.picture );
+      }
+      else
+      {
+        mPainter->setOpacity( job.opacity );
+        mPainter->setCompositionMode( job.blendMode );
+        mPainter->drawImage( 0, 0, *job.destinationImage );
+        mPainter->setCompositionMode( QPainter::CompositionMode_SourceOver );
+        mPainter->setOpacity( 1.0 );
+      }
+    }
 
+    if ( mLabelJob.picture )
+    {
+      QgsPainting::drawPicture( mPainter, QPointF( 0, 0 ), *mLabelJob.picture );
+    }
+    else if ( mLabelJob.img )
+    {
       mPainter->setCompositionMode( QPainter::CompositionMode_SourceOver );
       mPainter->setOpacity( 1.0 );
-      mPainter->drawImage( 0, 0, finalImage );
-    }
-    else
-    {
-      //Vector composition is simply draw the saved picture on the painter
-      for ( LayerRenderJob &job : mLayerJobs )
-      {
-        // if there is vector rendering we use it, else we use the raster rendering
-        if ( job.picture )
-        {
-          QgsPainting::drawPicture( mPainter, QPointF( 0, 0 ), *job.picture );
-        }
-        else
-          mPainter->drawImage( 0, 0, *job.img );
-      }
-
-      if ( mLabelJob.picture )
-      {
-        QgsPainting::drawPicture( mPainter, QPointF( 0, 0 ), *mLabelJob.picture );
-      }
+      mPainter->drawImage( 0, 0, *mLabelJob.img );
     }
   }
 

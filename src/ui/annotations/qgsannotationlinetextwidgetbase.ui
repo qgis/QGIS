@@ -58,13 +58,13 @@
       <string>Insert/Edit Expression…</string>
      </property>
      <property name="popupMode">
-      <enum>QToolButton::MenuButtonPopup</enum>
+      <enum>QToolButton::ToolButtonPopupMode::MenuButtonPopup</enum>
      </property>
      <property name="toolButtonStyle">
-      <enum>Qt::ToolButtonTextOnly</enum>
+      <enum>Qt::ToolButtonStyle::ToolButtonTextOnly</enum>
      </property>
      <property name="arrowType">
-      <enum>Qt::DownArrow</enum>
+      <enum>Qt::ArrowType::DownArrow</enum>
      </property>
     </widget>
    </item>
@@ -84,7 +84,14 @@
       <string>Properties</string>
      </property>
      <layout class="QGridLayout" name="gridLayout_2" columnstretch="1,2">
-      <item row="0" column="1">
+      <item row="1" column="0">
+       <widget class="QLabel" name="label_4">
+        <property name="text">
+         <string>Offset from line</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="1">
        <layout class="QHBoxLayout" name="horizontalLayout_3">
         <item>
          <widget class="QgsDoubleSpinBox" name="mSpinOffset">
@@ -120,18 +127,21 @@
            </size>
           </property>
           <property name="focusPolicy">
-           <enum>Qt::StrongFocus</enum>
+           <enum>Qt::FocusPolicy::StrongFocus</enum>
           </property>
          </widget>
         </item>
        </layout>
       </item>
       <item row="0" column="0">
-       <widget class="QLabel" name="label_4">
+       <widget class="QLabel" name="label">
         <property name="text">
-         <string>Offset from line</string>
+         <string>Alignment</string>
         </property>
        </widget>
+      </item>
+      <item row="0" column="1">
+       <widget class="QComboBox" name="mAlignmentCombo"/>
       </item>
      </layout>
     </widget>
@@ -174,6 +184,7 @@
  <tabstops>
   <tabstop>mInsertExpressionButton</tabstop>
   <tabstop>mTextFormatButton</tabstop>
+  <tabstop>mAlignmentCombo</tabstop>
   <tabstop>mOffsetUnitWidget</tabstop>
   <tabstop>mSpinOffset</tabstop>
  </tabstops>

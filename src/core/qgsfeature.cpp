@@ -444,9 +444,9 @@ QDataStream &operator>>( QDataStream &in, QgsFeature &feature )
   return in;
 }
 
-uint qHash( const QgsFeature &key, uint seed )
+size_t qHash( const QgsFeature &key, size_t seed )
 {
-  uint hash = seed;
+  size_t hash = seed;
   const auto constAttributes = key.attributes();
   for ( const QVariant &attr : constAttributes )
   {

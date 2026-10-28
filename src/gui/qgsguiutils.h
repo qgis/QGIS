@@ -172,14 +172,6 @@ namespace QgsGuiUtils
   int GUI_EXPORT scaleIconSize( int standardSize );
 
   /**
-   * Returns the user-preferred size of a window's toolbar icons.
-   * \param dockableToolbar If set to TRUE, the icon size will be returned for dockable window panel's toolbars.
-   * \returns a QSize object representing an icon's width and height.
-   * \since QGIS 3.8
-   */
-  QSize GUI_EXPORT iconSize( bool dockableToolbar = false );
-
-  /**
    * Returns dockable panel toolbar icon width based on the provided window toolbar width.
    * \param size Icon size from which the output size will be derived from.
    * \returns a QSize object representing an icon's width and height.

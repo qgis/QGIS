@@ -47,6 +47,17 @@ TEST_DATA_DIR = unitTestDataPath()
 
 class TestPyQgsPostgresRasterProvider(QgisTestCase):
     @classmethod
+    def _execute_sql_file(cls, basename):
+        """Run SQL from tests/testdata/provider/postgresraster/<basename>.sql"""
+
+        md = QgsProviderRegistry.instance().providerMetadata("postgres")
+        conn = md.createConnection(cls.dbconn + " sslmode=disable ", {})
+        with open(
+            os.path.join(TEST_DATA_DIR, "provider", "postgresraster", basename + ".sql")
+        ) as f:
+            conn.executeSql(f.read())
+
+    @classmethod
     def _load_test_table(cls, schemaname, tablename, basename=None):
 
         postgres_conn = cls.dbconn + " sslmode=disable "
@@ -57,13 +68,7 @@ class TestPyQgsPostgresRasterProvider(QgisTestCase):
             basename = tablename
 
         if tablename not in [n.tableName() for n in conn.tables(schemaname)]:
-            with open(
-                os.path.join(
-                    TEST_DATA_DIR, "provider", "postgresraster", basename + ".sql"
-                )
-            ) as f:
-                sql = f.read()
-                conn.executeSql(sql)
+            cls._execute_sql_file(basename)
             assert tablename in [n.tableName() for n in conn.tables(schemaname)], (
                 tablename + " not found!"
             )
@@ -92,6 +97,7 @@ class TestPyQgsPostgresRasterProvider(QgisTestCase):
         cls._load_test_table("public", "bug_37968_dem_linear_cdn_extract")
         cls._load_test_table("public", "bug_39017_untiled_no_metadata")
         cls._load_test_table("public", "raster_sparse_3035")
+        cls._load_test_table("public", "raster_sparse_3035_gap")
 
         # Fix timing issues in backend
         # time.sleep(1)
@@ -1238,6 +1244,98 @@ class TestPyQgsPostgresRasterProvider(QgisTestCase):
         stats = self.source.bandStatistics(1, Qgis.RasterBandStatistic.All, extent)
         self.assertAlmostEqual(stats.minimumValue, expected_min, 6)
         self.assertAlmostEqual(stats.maximumValue, expected_max, 6)
+
+    def test_TileGapFilledWithNoData(self):
+        """Test issue GH #47490: pixels in a merged block that are not
+        covered by any returned tile must be filled with nodata and not
+        left as 0"""
+
+        rl = QgsRasterLayer(
+            self.dbconn
+            + " key='rid' srid=3035 sslmode=disable table={table} schema={schema}".format(
+                table="raster_sparse_3035_gap", schema="public"
+            ),
+            "pg_layer",
+            "postgresraster",
+        )
+
+        self.assertTrue(rl.isValid())
+
+        dp = rl.dataProvider()
+        # check NoData value
+        self.assertEqual(dp.sourceNoDataValue(1), -9999.0)
+
+        # get block of data
+        block = dp.block(1, rl.extent(), 6, 5)
+        self.assertTrue(block.isValid())
+
+        # list of gap cells
+        gap_cells = [(2, 2), (2, 3), (3, 2)]
+
+        # if value is not in gap_cells it should have value, if it is in gap_cells it should be NoData
+        # no 0 values should exist in the block
+        for row in range(5):
+            for col in range(6):
+                if (row, col) in gap_cells:
+                    self.assertTrue(block.isNoData(row, col))
+                    self.assertEqual(block.value(row, col), dp.sourceNoDataValue(1))
+                else:
+                    self.assertFalse(block.isNoData(row, col))
+                # no cells with value 0 should exist
+                self.assertNotEqual(block.value(row, col), 0.0)
+
+    def testReloadReflectsDataChanges(self):
+        """Reloading the layer must reflect changes made to the underlying
+        table: extent, raster size and data. GH #59381"""
+
+        # Setup test data on every run to make sure we have a clean state
+        self._execute_sql_file("raster_3035_reload")
+
+        rl = QgsRasterLayer(
+            self.dbconn
+            + ' sslmode=disable key=\'pk\' srid=3035 table="public"."raster_3035_reload" sql=',
+            "test_reload",
+            "postgresraster",
+        )
+        self.assertTrue(rl.isValid())
+
+        # Initial state: a single 2x2 tile, all pixels = 100
+        self.assertEqual(rl.extent(), QgsRectangle(4080050, 2430700, 4080100, 2430750))
+        self.assertEqual(rl.dataProvider().xSize(), 2)
+        self.assertEqual(rl.dataProvider().ySize(), 2)
+
+        block = rl.dataProvider().block(1, rl.extent(), 2, 2)
+        data = []
+        for i in range(2):
+            for j in range(2):
+                data.append(int(block.value(i, j)))
+        self.assertEqual(data, [100, 100, 100, 100])
+
+        # Add a second tile
+        self._execute_sql_file("raster_3035_reload_update")
+
+        # No reload, cached extent
+        self.assertEqual(rl.extent(), QgsRectangle(4080050, 2430700, 4080100, 2430750))
+
+        rl.reload()
+
+        self.assertEqual(rl.extent(), QgsRectangle(4080050, 2430700, 4080150, 2430750))
+        self.assertEqual(rl.dataProvider().xSize(), 4)
+        self.assertEqual(rl.dataProvider().ySize(), 2)
+
+        block = rl.dataProvider().block(1, rl.extent(), 4, 2)
+        data = []
+        for i in range(2):
+            for j in range(4):
+                data.append(int(block.value(i, j)))
+        self.assertEqual(data, [100, 100, 200, 200, 100, 100, 200, 200])
+
+        # Reloading with no data changes should be a no-op
+        rl.reload()
+        self.assertEqual(rl.extent(), QgsRectangle(4080050, 2430700, 4080150, 2430750))
+        self.assertEqual(rl.dataProvider().bandCount(), 1)
+        self.assertEqual(rl.dataProvider().dataType(1), Qgis.DataType.Float32)
+        self.assertEqual(rl.dataProvider().sourceNoDataValue(1), -9999)
 
 
 if __name__ == "__main__":

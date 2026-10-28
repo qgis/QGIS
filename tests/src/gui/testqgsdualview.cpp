@@ -25,6 +25,7 @@
 #include "qgsattributeeditorfield.h"
 #include "qgsattributeform.h"
 #include "qgsattributeformeditorwidget.h"
+#include "qgsattributetablefiltermodel.h"
 #include "qgsfeature.h"
 #include "qgsfeatureiterator.h"
 #include "qgsfeaturelistmodel.h"
@@ -73,7 +74,7 @@ class TestQgsDualView : public QObject
     QgsMapCanvas *mCanvas = nullptr;
     QgsVectorLayer *mPointsLayer = nullptr;
     QString mTestDataDir;
-    QgsDualView *mDualView = nullptr;
+    std::unique_ptr<QgsDualView> mDualView;
 };
 
 void TestQgsDualView::initTestCase()
@@ -107,14 +108,12 @@ void TestQgsDualView::cleanupTestCase()
 
 void TestQgsDualView::init()
 {
-  mDualView = new QgsDualView();
+  mDualView = std::make_unique<QgsDualView>();
   mDualView->init( mPointsLayer, mCanvas );
 }
 
 void TestQgsDualView::cleanup()
-{
-  delete mDualView;
-}
+{}
 
 void TestQgsDualView::testColumnCount()
 {
@@ -162,7 +161,7 @@ void TestQgsDualView::testFilterSelected()
   selected << ids.at( 1 ) << ids.at( 3 );
   mPointsLayer->selectByIds( qgis::listToSet( selected ) );
 
-  mDualView->setFilterMode( QgsAttributeTableFilterModel::ShowSelected );
+  mDualView->setFilterMode( Qgis::AttributeTableFilterMode::ShowSelected );
   QCOMPARE( mDualView->tableView()->model()->rowCount(), 2 );
 
   const int headingIdx = mPointsLayer->fields().lookupField( u"Heading"_s );
@@ -183,7 +182,7 @@ void TestQgsDualView::testSelectAll()
 {
   QEventLoop loop;
   connect( qobject_cast<QgsAttributeTableFilterModel *>( mDualView->mFilterModel ), &QgsAttributeTableFilterModel::visibleReloaded, &loop, &QEventLoop::quit );
-  mDualView->setFilterMode( QgsAttributeTableFilterModel::ShowVisible );
+  mDualView->setFilterMode( Qgis::AttributeTableFilterMode::ShowVisible );
   // Only show parts of the canvas, so only one selected feature is visible
   mCanvas->setExtent( QgsRectangle( -139, 23, -100, 48 ) );
   loop.exec();
@@ -237,6 +236,19 @@ void TestQgsDualView::testSort()
     const QModelIndex index = mDualView->tableView()->model()->index( i, 1 );
     QCOMPARE( mDualView->tableView()->model()->data( index ).toString(), headings.at( i ) );
   }
+
+  // Test crash when a field was added, sorted by and removed
+  const int fieldsCount = mPointsLayer->fields().count();
+  const int columnsCount = mDualView->attributeTableConfig().columns().size();
+  const QgsField newField( u"newField"_s, QMetaType::Type::QString );
+  mPointsLayer->startEditing();
+  mPointsLayer->addAttribute( newField );
+  QCOMPARE( mDualView->attributeTableConfig().columns().size(), columnsCount + 1 );
+  QCOMPARE( mPointsLayer->fields().count(), fieldsCount + 1 );
+  mDualView->setSortExpression( u"newField"_s );
+  mPointsLayer->rollBack();
+  QCOMPARE( mPointsLayer->fields().count(), fieldsCount );
+  QCOMPARE( mDualView->attributeTableConfig().columns().size(), columnsCount );
 }
 
 void TestQgsDualView::testAttributeFormSharedValueScanning()

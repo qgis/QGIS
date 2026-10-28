@@ -95,9 +95,9 @@ class CORE_EXPORT QgsSymbolLayerAbstractMetadata
     Qgis::SymbolType mType;
 };
 
-typedef QgsSymbolLayer *( *QgsSymbolLayerCreateFunc )( const QVariantMap & ) SIP_SKIP;
+typedef std::unique_ptr<QgsSymbolLayer> ( *QgsSymbolLayerCreateFunc )( const QVariantMap & ) SIP_SKIP;
 typedef QgsSymbolLayerWidget *( *QgsSymbolLayerWidgetFunc )( QgsVectorLayer * ) SIP_SKIP;
-typedef QgsSymbolLayer *( *QgsSymbolLayerCreateFromSldFunc )( QDomElement & ) SIP_SKIP;
+typedef std::unique_ptr<QgsSymbolLayer> ( *QgsSymbolLayerCreateFromSldFunc )( QDomElement & ) SIP_SKIP;
 typedef void ( *QgsSymbolLayerPathResolverFunc )( QVariantMap &, const QgsPathResolver &, bool ) SIP_SKIP;
 typedef void ( *QgsSymbolLayerFontResolverFunc )( const QVariantMap &, const QgsReadWriteContext & ) SIP_SKIP;
 
@@ -138,9 +138,9 @@ class CORE_EXPORT QgsSymbolLayerMetadata : public QgsSymbolLayerAbstractMetadata
     //! \note not available in Python bindings
     void setWidgetFunction( QgsSymbolLayerWidgetFunc f ) SIP_SKIP { mWidgetFunc = f; }
 
-    QgsSymbolLayer *createSymbolLayer( const QVariantMap &map ) override SIP_FACTORY { return mCreateFunc ? mCreateFunc( map ) : nullptr; }
+    QgsSymbolLayer *createSymbolLayer( const QVariantMap &map ) override SIP_FACTORY { return mCreateFunc ? mCreateFunc( map ).release() : nullptr; }
     QgsSymbolLayerWidget *createSymbolLayerWidget( QgsVectorLayer *vl ) override SIP_FACTORY { return mWidgetFunc ? mWidgetFunc( vl ) : nullptr; }
-    QgsSymbolLayer *createSymbolLayerFromSld( QDomElement &elem ) override SIP_FACTORY { return mCreateFromSldFunc ? mCreateFromSldFunc( elem ) : nullptr; }
+    QgsSymbolLayer *createSymbolLayerFromSld( QDomElement &elem ) override SIP_FACTORY { return mCreateFromSldFunc ? mCreateFromSldFunc( elem ).release() : nullptr; }
     void resolvePaths( QVariantMap &properties, const QgsPathResolver &pathResolver, bool saving ) override
     {
       if ( mPathResolverFunc )

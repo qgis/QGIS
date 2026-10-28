@@ -30,7 +30,7 @@ using namespace Qt::StringLiterals;
 #ifdef HAVE_QTGAMEPAD
 #include "qgs2dgamepadcontroller.h"
 #include "qgs3dgamepadcontroller.h"
-#include <QtGamepad/QGamepadManager>
+#include <QtGamepadLegacy/QGamepadManager>
 #endif
 
 //

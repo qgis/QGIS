@@ -595,10 +595,13 @@
        <item row="5" column="1">
         <widget class="QgsDoubleSpinBox" name="mSunElevationSpin">
          <property name="suffix">
-          <string/>
+          <string>m</string>
+         </property>
+         <property name="decimals">
+          <number>0</number>
          </property>
          <property name="maximum">
-          <double>360.000000000000000</double>
+          <double>9999.000000000000000</double>
          </property>
         </widget>
        </item>
@@ -623,15 +626,15 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>QgsDoubleSpinBox</class>
-   <extends>QDoubleSpinBox</extends>
-   <header>qgsdoublespinbox.h</header>
-  </customwidget>
-  <customwidget>
    <class>QgsColorButton</class>
    <extends>QToolButton</extends>
    <header>qgscolorbutton.h</header>
    <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsDoubleSpinBox</class>
+   <extends>QDoubleSpinBox</extends>
+   <header>qgsdoublespinbox.h</header>
   </customwidget>
   <customwidget>
    <class>QgsDateTimeEdit</class>
@@ -657,6 +660,12 @@
   <tabstop>sliderAltitude</tabstop>
   <tabstop>btnDirectionalColor</tabstop>
   <tabstop>spinDirectionalIntensity</tabstop>
+  <tabstop>mSunTimeWidget</tabstop>
+  <tabstop>mSunColorButton</tabstop>
+  <tabstop>mSunIntensitySpin</tabstop>
+  <tabstop>mSunTemperatureSpin</tabstop>
+  <tabstop>mSunPressureSpin</tabstop>
+  <tabstop>mSunElevationSpin</tabstop>
  </tabstops>
  <resources/>
  <connections/>

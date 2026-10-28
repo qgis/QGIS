@@ -419,6 +419,16 @@ class TestQgsFeature(QgisTestCase):
             },
         )
 
+        feat.setGeometry(None)
+        self.assertEqual(
+            feat.__geo_interface__,
+            {
+                "geometry": None,
+                "properties": {"my_field": None, "my_field2": None, "my_field3": None},
+                "type": "Feature",
+            },
+        )
+
 
 if __name__ == "__main__":
     unittest.main()

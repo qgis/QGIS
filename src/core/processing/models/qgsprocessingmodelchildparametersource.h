@@ -48,7 +48,6 @@ class CORE_EXPORT QgsProcessingModelChildParameterSource
      * \see fromModelParameter()
      * \see fromChildOutput()
      * \see fromExpression()
-     * \see fromExpressionText()
      */
     static QgsProcessingModelChildParameterSource fromStaticValue( const QVariant &value );
 
@@ -57,7 +56,6 @@ class CORE_EXPORT QgsProcessingModelChildParameterSource
      * \see fromStaticValue()
      * \see fromChildOutput()
      * \see fromExpression()
-     * \see fromExpressionText()
      */
     static QgsProcessingModelChildParameterSource fromModelParameter( const QString &parameterName );
 
@@ -66,7 +64,6 @@ class CORE_EXPORT QgsProcessingModelChildParameterSource
      * \see fromStaticValue()
      * \see fromModelParameter()
      * \see fromExpression()
-     * \see fromExpressionText()
      */
     static QgsProcessingModelChildParameterSource fromChildOutput( const QString &childId, const QString &outputName );
 
@@ -78,7 +75,6 @@ class CORE_EXPORT QgsProcessingModelChildParameterSource
      * \see fromStaticValue()
      * \see fromChildOutput()
      * \see fromModelParameter()
-     * \see fromExpressionText()
      * \since QGIS 3.2
      */
     static QgsProcessingModelChildParameterSource fromExpression( const QString &expression );
@@ -93,9 +89,9 @@ class CORE_EXPORT QgsProcessingModelChildParameterSource
      * \see fromChildOutput()
      * \see fromModelParameter()
      * \see fromExpression()
-     * \since QGIS 3.2
+     * \deprecated QGIS 4.4. Use fromStaticValue() or fromExpression() instead.
      */
-    static QgsProcessingModelChildParameterSource fromExpressionText( const QString &text );
+    Q_DECL_DEPRECATED static QgsProcessingModelChildParameterSource fromExpressionText( const QString &text ) SIP_DEPRECATED;
 
     /**
      * Returns the parameter value's source.
@@ -200,9 +196,9 @@ class CORE_EXPORT QgsProcessingModelChildParameterSource
      * Returns the source's text with expressions. This is only used when the
      * source() is ExpressionText.
      * \see setExpressionText()
-     * \since QGIS 3.2
+     * \deprecated QGIS 4.4. Use staticValue() or expression() instead.
      */
-    QString expressionText() const { return mExpressionText; }
+    Q_DECL_DEPRECATED QString expressionText() const SIP_DEPRECATED { return mExpressionText; }
 
     /**
      * Sets the source's text containing expressions. Calling this will also
@@ -211,9 +207,9 @@ class CORE_EXPORT QgsProcessingModelChildParameterSource
      * in its expression context to include results calculated from the child
      * algorithms already executed by the model.
      * \see expressionText()
-     * \since QGIS 3.2
+     * \deprecated QGIS 4.4. Use setStaticValue() or setExpression() instead.
      */
-    void setExpressionText( const QString &text )
+    Q_DECL_DEPRECATED void setExpressionText( const QString &text ) SIP_DEPRECATED
     {
       mExpressionText = text;
       mSource = Qgis::ProcessingModelChildParameterSource::ExpressionText;

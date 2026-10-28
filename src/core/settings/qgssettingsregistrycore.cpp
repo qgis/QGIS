@@ -184,7 +184,7 @@ const QgsSettingsEntryStringList *QgsSettingsRegistryCore::settingsCodeExecution
   = new QgsSettingsEntryStringList( u"code-execution-denied-projects-folders"_s, QgsSettingsTree::sTreeCore, QStringList(), u"Projects and folders that are untrusted and denied execution of embedded scripts"_s );
 
 const QgsSettingsEntryBool *QgsSettingsRegistryCore::settingsMeasurePlanimetric
-  = new QgsSettingsEntryBool( u"planimetric"_s, QgsSettingsTree::sTreeMeasure, true, u"Whether measurements should be planimetric (ellipsoid off) or use the ellipsoid"_s );
+  = new QgsSettingsEntryBool( u"planimetric"_s, QgsSettingsTree::sTreeMeasure, false, u"Whether measurements should be planimetric (ellipsoid off) or use the ellipsoid"_s );
 
 const QgsSettingsEntryBool *QgsSettingsRegistryCore::settingsMeasureKeepBaseUnit
   = new QgsSettingsEntryBool( u"keep-base-unit"_s, QgsSettingsTree::sTreeMeasure, true, u"Whether to keep base measurement units instead of converting to larger units"_s );
@@ -277,6 +277,10 @@ void QgsSettingsRegistryCore::migrateOldSettings()
   settingsLayerDefaultCrs->copyValueFromKey( u"/Projections/layerDefaultCrs"_s, true );
   QgsApplication::settingsApplicationFullName->copyValueFromKey( u"qgis/application_full_name"_s, true );
   QgsApplication::settingsApplicationFullName->copyValueFromKey( u"/qgis/application_full_name"_s, true );
+
+  // project templates now have a list of directories
+  QgsApplication::settingsProjectTemplatePaths->copyValueFromKey( u"qgis/projectTemplateDir"_s, true );
+  QgsApplication::settingsProjectTemplatePaths->copyValueFromKey( u"/qgis/projectTemplateDir"_s, true );
 
   // gdal/skipDrivers was a comma-joined string; convert to a proper QStringList
   {

@@ -9,6 +9,7 @@ try:
     QgsPainting.qtDefaultDpiY = staticmethod(QgsPainting.qtDefaultDpiY)
     QgsPainting.applyScaleFixForQPictureDpi = staticmethod(QgsPainting.applyScaleFixForQPictureDpi)
     QgsPainting.drawPicture = staticmethod(QgsPainting.drawPicture)
+    QgsPainting.rotatePainterAroundPoint = staticmethod(QgsPainting.rotatePainterAroundPoint)
     QgsPainting.__group__ = ['painting']
 except (NameError, AttributeError):
     pass

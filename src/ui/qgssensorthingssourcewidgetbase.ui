@@ -45,13 +45,10 @@
      </layout>
     </widget>
    </item>
-   <item row="0" column="1" colspan="2">
-    <widget class="QComboBox" name="mComboEntityType"/>
-   </item>
    <item row="5" column="1" colspan="2">
     <widget class="QWidget" name="mExtentLimitFrame" native="true">
      <property name="focusPolicy">
-      <enum>Qt::StrongFocus</enum>
+      <enum>Qt::FocusPolicy::StrongFocus</enum>
      </property>
     </widget>
    </item>
@@ -127,6 +124,36 @@
      </property>
     </widget>
    </item>
+   <item row="0" column="1">
+    <widget class="QComboBox" name="mComboEntityType"/>
+   </item>
+   <item row="0" column="2">
+    <widget class="QToolButton" name="mRetrieveEntitiesButton">
+     <property name="minimumSize">
+      <size>
+       <width>24</width>
+       <height>24</height>
+      </size>
+     </property>
+     <property name="maximumSize">
+      <size>
+       <width>24</width>
+       <height>16777215</height>
+      </size>
+     </property>
+     <property name="toolTip">
+      <string>Check available types</string>
+     </property>
+     <property name="icon">
+      <iconset>
+       <normalon>:/images/themes/default/mActionRefresh.svg</normalon>
+      </iconset>
+     </property>
+     <property name="autoRaise">
+      <bool>true</bool>
+     </property>
+    </widget>
+   </item>
   </layout>
  </widget>
  <customwidgets>
@@ -138,11 +165,13 @@
  </customwidgets>
  <tabstops>
   <tabstop>mComboEntityType</tabstop>
+  <tabstop>mRetrieveEntitiesButton</tabstop>
   <tabstop>mComboGeometryType</tabstop>
   <tabstop>mRetrieveTypesButton</tabstop>
   <tabstop>mSpinPageSize</tabstop>
   <tabstop>mSpinFeatureLimit</tabstop>
   <tabstop>mExtentLimitFrame</tabstop>
+  <tabstop>mExpansionsTable</tabstop>
  </tabstops>
  <resources/>
  <connections/>

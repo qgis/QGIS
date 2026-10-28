@@ -65,6 +65,7 @@
 #include "qgsrastersinglecolorrendererwidget.h"
 #include "qgsrastertransparency.h"
 #include "qgsrastertransparencywidget.h"
+#include "qgsrastervectorfieldrendererwidget.h"
 #include "qgssettings.h"
 #include "qgssinglebandgrayrendererwidget.h"
 #include "qgssinglebandpseudocolorrendererwidget.h"
@@ -437,6 +438,7 @@ QgsRasterLayerProperties::QgsRasterLayerProperties( QgsMapLayer *lyr, QgsMapCanv
   QgsApplication::rasterRendererRegistry()->insertWidgetFunction( u"singlebandgray"_s, QgsSingleBandGrayRendererWidget::create );
   QgsApplication::rasterRendererRegistry()->insertWidgetFunction( u"hillshade"_s, QgsHillshadeRendererWidget::create );
   QgsApplication::rasterRendererRegistry()->insertWidgetFunction( u"contour"_s, QgsRasterContourRendererWidget::create );
+  QgsApplication::rasterRendererRegistry()->insertWidgetFunction( u"vectorfield"_s, QgsRasterVectorFieldRendererWidget::create );
   QgsApplication::rasterRendererRegistry()->insertWidgetFunction( u"singlecolor"_s, QgsRasterSingleColorRendererWidget::create );
 
   //fill available renderers into combo box
@@ -640,12 +642,12 @@ void QgsRasterLayerProperties::setRendererWidget( const QString &rendererName )
       {
         if ( rendererName == "singlebandgray"_L1 )
         {
-          whileBlocking( mRasterLayer )->setRenderer( QgsApplication::rasterRendererRegistry()->defaultRendererForDrawingStyle( Qgis::RasterDrawingStyle::SingleBandGray, mRasterLayer->dataProvider() ) );
+          whileBlocking( mRasterLayer )->setRenderer( QgsApplication::rasterRendererRegistry()->defaultRendererForDrawingStyle( Qgis::RasterDrawingStyle::SingleBandGray, mRasterLayer->dataProvider() ).release() );
           whileBlocking( mRasterLayer )->setDefaultContrastEnhancement();
         }
         else if ( rendererName == "multibandcolor"_L1 )
         {
-          whileBlocking( mRasterLayer )->setRenderer( QgsApplication::rasterRendererRegistry()->defaultRendererForDrawingStyle( Qgis::RasterDrawingStyle::MultiBandColor, mRasterLayer->dataProvider() ) );
+          whileBlocking( mRasterLayer )->setRenderer( QgsApplication::rasterRendererRegistry()->defaultRendererForDrawingStyle( Qgis::RasterDrawingStyle::MultiBandColor, mRasterLayer->dataProvider() ).release() );
           whileBlocking( mRasterLayer )->setDefaultContrastEnhancement();
         }
       }
@@ -847,16 +849,11 @@ void QgsRasterLayerProperties::apply()
     }
   }
 
-  // Do nothing on "bad" layers
-  if ( !mRasterLayer->isValid() )
-    return;
-
   // apply all plugin dialogs
   for ( QgsMapLayerConfigWidget *page : std::as_const( mConfigWidgets ) )
   {
     page->apply();
   }
-
 
   /*
    * Legend Tab
@@ -872,9 +869,12 @@ void QgsRasterLayerProperties::apply()
   //set whether the layer histogram should be inverted
   //mRasterLayer->setInvertHistogram( cboxInvertColorMap->isChecked() );
 
-  mRasterLayer->brightnessFilter()->setBrightness( mSliderBrightness->value() );
-  mRasterLayer->brightnessFilter()->setContrast( mSliderContrast->value() );
-  mRasterLayer->brightnessFilter()->setGamma( mGammaSpinBox->value() );
+  if ( mRasterLayer->brightnessFilter() )
+  {
+    mRasterLayer->brightnessFilter()->setBrightness( mSliderBrightness->value() );
+    mRasterLayer->brightnessFilter()->setContrast( mSliderContrast->value() );
+    mRasterLayer->brightnessFilter()->setGamma( mGammaSpinBox->value() );
+  }
 
   QgsDebugMsgLevel( u"processing transparency tab"_s, 3 );
   /*

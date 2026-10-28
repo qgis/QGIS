@@ -31,7 +31,6 @@
 #include <memory>
 
 #include "qgschunkedentity.h"
-#include "qgschunkqueuejob.h"
 #include "qgslayerstylewatcher.h"
 #include "qobjectuniqueptr.h"
 
@@ -47,7 +46,6 @@ class QgsTerrainTextureGenerator;
 class QgsCoordinateTransform;
 class QgsMapLayer;
 class QgsTerrainGenerator;
-class TerrainMapUpdateJobFactory;
 class QgsLayerStyleWatcher;
 
 /**
@@ -65,7 +63,7 @@ class QgsTerrainEntity : public QgsChunkedEntity
     ~QgsTerrainEntity() override;
 
     //! Returns pointer to the generator of textures for terrain tiles
-    QgsTerrainTextureGenerator *textureGenerator() { return mTextureGenerator; }
+    QgsTerrainTextureGenerator *textureGenerator() { return mTextureGenerator.get(); }
 
     //! Returns the transform attached to the terrain entity
     Qt3DCore::QTransform *transform() const { return mTerrainTransform; }
@@ -80,31 +78,10 @@ class QgsTerrainEntity : public QgsChunkedEntity
     void onTerrainElevationOffsetChanged();
 
   private:
-    QgsTerrainTextureGenerator *mTextureGenerator = nullptr;
+    std::unique_ptr<QgsTerrainTextureGenerator> mTextureGenerator;
     Qt3DCore::QTransform *mTerrainTransform = nullptr;
 
-    std::unique_ptr<TerrainMapUpdateJobFactory> mUpdateJobFactory;
     QObjectUniquePtr<QgsLayerStyleWatcher> mLayerWatcher;
-};
-
-
-//! Handles asynchronous updates of terrain's map images when layers change
-class TerrainMapUpdateJob : public QgsChunkQueueJob
-{
-    Q_OBJECT
-  public:
-    TerrainMapUpdateJob( QgsTerrainTextureGenerator *textureGenerator, QgsChunkNode *mNode );
-
-    void start() override;
-
-    void cancel() override;
-
-  private slots:
-    void onTileReady( int jobId, const QImage &image );
-
-  private:
-    QgsTerrainTextureGenerator *mTextureGenerator = nullptr;
-    int mJobId = -1;
 };
 
 /// @endcond

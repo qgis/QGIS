@@ -174,7 +174,7 @@ class CORE_EXPORT QgsImageOperation
      * \returns blurred image
      * \note for fastest operation, ensure the source image is ARGB32_Premultiplied
      */
-    static QImage *gaussianBlur( QImage &image, int radius, QgsFeedback *feedback = nullptr ) SIP_FACTORY;
+    static QImage gaussianBlur( QImage &image, int radius, QgsFeedback *feedback = nullptr );
 
     /**
      * Flips an image horizontally or vertically
@@ -203,6 +203,25 @@ class CORE_EXPORT QgsImageOperation
      * \param center cropped image will be centered on the center of the original image if set to TRUE
      */
     static QImage cropTransparent( const QImage &image, QSize minSize = QSize(), bool center = false );
+
+    /**
+     * Tests whether an \a image is completely blank, i.e. it consists entirely of completely transparent pixels.
+     *
+     * Only the alpha channel for pixels are tested, and a pixel is considered empty if the alpha value is equal
+     * to 0.
+     *
+     * \see isSingleColor()
+     * \since QGIS 4.4
+     */
+    static bool isBlankImage( const QImage &image );
+
+    /**
+     * Tests whether an \a image is consists only of pixels matching the specified \a color.
+     *
+     * \see isBlankImage()
+     * \since QGIS 4.4
+     */
+    static bool isSingleColor( const QImage &image, const QColor &color );
 
     /**
      * Performs a flood fill operation on an image, replacing contiguous areas of the same color.

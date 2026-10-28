@@ -1,0 +1,73 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/processing/qgsprocessingparameterheatmappixelsize.h         *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
+ ************************************************************************/
+
+
+
+
+
+
+class QgsProcessingParameterHeatmapPixelSize : QgsProcessingParameterNumber
+{
+%Docstring(signature="appended")
+A parameter for the heatmap algorithm pixel size parameter.
+
+.. versionadded:: 4.2
+%End
+
+%TypeHeaderCode
+#include "qgsprocessingparameterheatmappixelsize.h"
+%End
+  public:
+    QgsProcessingParameterHeatmapPixelSize(
+      const QString &name,
+      const QString &description = QString(),
+      const QString &parentLayerParameter = QString(),
+      const QString &radiusParameter = QString(),
+      const QString &radiusFieldParameter = QString(),
+      const QVariant &defaultValue = QVariant()
+    );
+%Docstring
+Constructor for QgsProcessingParameterHeatmapPixelSize.
+%End
+
+    virtual QgsProcessingParameterHeatmapPixelSize *clone() const;
+
+    virtual QString type() const;
+
+    static QString typeName();
+%Docstring
+Returns the type name for the parameter class.
+%End
+    virtual QString asPythonString( QgsProcessing::PythonOutputType outputType = QgsProcessing::PythonOutputType::PythonQgsProcessingAlgorithmSubclass ) const;
+
+
+    QString parentLayerParameter() const;
+%Docstring
+Returns the linked parent layer parameter name.
+%End
+
+    QString radiusParameter() const;
+%Docstring
+Returns the linked radius parameter name.
+%End
+
+    QString radiusFieldParameter() const;
+%Docstring
+Returns the radius field parameter name.
+%End
+
+};
+
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/processing/qgsprocessingparameterheatmappixelsize.h         *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
+ ************************************************************************/
