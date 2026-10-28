@@ -292,6 +292,7 @@ class DRW_Layer : public DRW_TableEntry
       plotF = true; // default TRUE (plot yes)
       lWeight = DRW_LW_Conv::widthDefault; // default BYDEFAULT (dxf -3, dwg 31)
       color24 = -1; //default -1 not set
+      transparency = DRW::Opaque;
       DRW_TableEntry::reset();
     }
 
