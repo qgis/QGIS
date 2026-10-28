@@ -6034,7 +6034,7 @@ class TestQgsExpression : public QObject
       const std::unique_ptr<QgsExpressionContextScope> projectScopeTemplate = QgsExpressionContextUtils::projectScope( QgsProject::instance() );
 
       bool testOk = false;
-      auto runTest = [weakPointer, rawPointer, pointsLayerId, pointsLayerName, projectScopeTemplate.get(), this, &testOk] {
+      auto runTest = [weakPointer, rawPointer, pointsLayerId, pointsLayerName, &projectScopeTemplate, this, &testOk] {
         testOk = false;
         QgsExpression exp;
         // NULL value
