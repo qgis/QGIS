@@ -49,7 +49,7 @@ class CORE_EXPORT QgsDateTimeUtils
      * \param context read/write context used for decoding
      * \returns decoded datetime
      */
-    static QDateTime readDateTimeToXml( const QDomElement &element, const QgsReadWriteContext &context );
+    static QDateTime readDateTimeFromXml( const QDomElement &element, const QgsReadWriteContext &context );
 };
 
 #endif //QGSDATETIMEUTILSUTILS_H
