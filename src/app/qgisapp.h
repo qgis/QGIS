@@ -511,6 +511,8 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
      * If a designer already exists for this model then it will be activated.
      *
      * Ownership of \a model is transferred to the dialog.
+     *
+     * \since QGIS 4.4
      */
     QgsModelDesignerDialog *openModelDesignerDialog( QgsProcessingModelAlgorithm *model );
 

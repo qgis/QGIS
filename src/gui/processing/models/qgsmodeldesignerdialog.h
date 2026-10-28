@@ -136,6 +136,8 @@ class GUI_EXPORT QgsModelDesignerDialog : public QMainWindow,
 
     /**
      * Emitted when the dialog is about to close.
+     *
+     * \since QGIS 4.4
      */
     void aboutToClose();
 

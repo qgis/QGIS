@@ -380,6 +380,8 @@ class CORE_EXPORT QgsProcessingModelAlgorithm : public QgsProcessingAlgorithm
     /**
      * Returns a new instance of QgsProcessingModelAlgorithm loaded from the file \a path.
      * This is a thin wrapper around fromFile that handles errors, and returns a new instance of QgsProcessingModelAlgorithm.
+     *
+     * \since QGIS 4.4
      */
     static QgsProcessingModelAlgorithm *loadModel( const QString &path ) SIP_FACTORY;
 
