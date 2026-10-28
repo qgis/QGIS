@@ -3437,7 +3437,7 @@ void QgsWfs3CollectionsFeatureHandler::handleRequest( const QgsServerApiContext 
           int fieldIndex = 0;
           for ( const auto &field : fields )
           {
-            QString fieldIdentifier = field.displayName();
+            const QString fieldIdentifier = field.displayName();
 
             if ( !QgsVariantUtils::isNull( properties.value( fieldIdentifier ) ) )
             {
@@ -3569,7 +3569,7 @@ void QgsWfs3CollectionsFeatureHandler::handleRequest( const QgsServerApiContext 
           int fieldIndex = 0;
           for ( const auto &field : fields )
           {
-            QString fieldIdentifier = field.displayName();
+            const QString fieldIdentifier = field.displayName();
 
             if ( !QgsVariantUtils::isNull( properties.value( fieldIdentifier ) ) )
             {
