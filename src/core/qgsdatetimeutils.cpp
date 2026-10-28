@@ -32,7 +32,6 @@ QDomElement QgsDateTimeUtils::writeDateTimeToXml( const QDateTime &dateTime, con
     return element;
   }
 
-  element.setAttribute( u"valid"_s, u"true"_s );
   element.setAttribute( u"epoch-ms"_s, QString::number( dateTime.toMSecsSinceEpoch() ) );
 
   switch ( dateTime.timeSpec() )
@@ -60,7 +59,7 @@ QDateTime QgsDateTimeUtils::readDateTimeFromXml( const QDomElement &element, con
 {
   Q_UNUSED( context );
 
-  if ( element.attribute( u"valid"_s ) != "true"_L1 )
+  if ( element.attribute( u"valid"_s ) == "false"_L1 )
     return QDateTime();
 
   bool ok;
