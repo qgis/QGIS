@@ -395,18 +395,68 @@ class CORE_EXPORT QgsVectorLayerCache : public QObject
 
     /**
      * Emitted when an attribute is changed. Is re-emitted after the layer itself emits this signal.
-     * You should connect to this signal, to be sure, to not get a cached value if querying the cache.
+     *
+     * \warning This signal should be used instead of the layer's to ensure
+     * that this cache has updated information for the feature attributes ready for retrieval.
+     *
+     * \see featureAdded()
+     * \see featureDeleted()
      */
     void attributeValueChanged( QgsFeatureId fid, int field, const QVariant &value );
 
     /**
-     * Emitted when a new feature has been added to the layer and this cache.
-     * You should connect to this signal instead of the layers', if you want to be sure
-     * that this cache has updated information for the new feature
+     * Emitted when a new feature is about to be added to the cache (as a result of feature addition to the layer).
      *
-     * \param fid The featureid of the changed feature
+     * \param fid The featureid of the added feature to be added
+     *
+     * \see featureAdded()
+     *
+     * \since QGIS 4.4
+     */
+    void featureAboutToBeAdded( QgsFeatureId fid );
+
+    /**
+     * Emitted when a new feature has been added to the layer and this cache.
+     *
+     * \param fid The featureid of the added feature
+     *
+     * \warning This signal should be used instead of the layer's to ensure
+     * that this cache has updated information for the new feature ready for retrieval.
+     *
+     * \see featureAboutToBeAdded()
+     * \see attributeValueChanged()
+     * \see featureDeleted()
      */
     void featureAdded( QgsFeatureId fid );
+
+    /**
+     * Emitted when a feature is about to be deleted from this cache (as a result of a feature deletion from the layer).
+     *
+     * This signal will be emitted when the feature is still available in the cache, immediately before it is deleted.
+     *
+     * \param fid The featureid of the feature to be deleted.
+     *
+     * \see featureDeleted()
+     *
+     * \since QGIS 4.4
+     */
+    void featureAboutToBeDeleted( QgsFeatureId fid );
+
+    /**
+     * Emitted when a feature has been deleted from the layer and this cache.
+     *
+     * \param fid The featureid of the deleted feature
+     *
+     * \warning This signal should be used instead of the layer's to ensure
+     * that this cache has already removed all information for the deleted feature.
+     *
+     * \see featureAboutToBeDeleted()
+     * \see attributeValueChanged()
+     * \see featureAdded()
+     *
+     * \since QGIS 4.4
+     */
+    void featureDeleted( QgsFeatureId fid );
 
     /**
      * The cache has been invalidated and cleared. Note that when a cache is invalidated
@@ -418,7 +468,7 @@ class CORE_EXPORT QgsVectorLayerCache : public QObject
   private slots:
     void onAttributeValueChanged( QgsFeatureId fid, int field, const QVariant &value );
     void onJoinAttributeValueChanged( QgsFeatureId fid, int field, const QVariant &value );
-    void featureDeleted( QgsFeatureId fid );
+    void onFeatureDeleted( QgsFeatureId fid );
     void onFeatureAdded( QgsFeatureId fid );
     void attributeAdded( int field );
     void attributeDeleted( int field );

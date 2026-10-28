@@ -341,51 +341,187 @@ class TestQgsVectorLayerCache(QgisTestCase, FeatureSourceTestCase):
     def test_layer_feature_added_no_full_cache(self):
         layer, cache, _ = self._create_test_data()
 
-        spy = QSignalSpy(cache.featureAdded)
+        about_to_be_added_spy = QSignalSpy(cache.featureAboutToBeAdded)
+        added_spy = QSignalSpy(cache.featureAdded)
+
+        new_features = []
+        on_about_to_be_added_called = []
+        on_added_called = []
+
+        def _on_about_to_be_added_called(fid):
+            nonlocal new_features
+            nonlocal on_about_to_be_added_called
+            self.assertEqual(fid, new_features[0].id())
+            on_about_to_be_added_called.append(True)
+
+            # at this point the feature must NOT be present in the cache
+            self.assertFalse(cache.isFidCached(fid))
+
+        cache.featureAboutToBeAdded.connect(_on_about_to_be_added_called)
+
+        def _on_added_called(fid):
+            nonlocal new_features
+            nonlocal on_added_called
+            self.assertEqual(fid, new_features[0].id())
+            on_added_called.append(True)
+
+            # still not present in the cache, we aren't doing a full cache
+            self.assertFalse(cache.isFidCached(fid))
+
+        cache.featureAdded.connect(_on_added_called)
 
         layer.startEditing()
         new_feat = QgsFeature(layer.fields())
         new_feat.setGeometry(QgsGeometry(QgsPoint(10.0, 10.0)))
         new_feat.setAttributes(["item_new", 99])
+        new_features.append(new_feat)
         layer.addFeature(new_feat)
 
-        self.assertEqual(len(spy), 1)
-        self.assertEqual(spy[-1][0], new_feat.id())
+        self.assertEqual(len(about_to_be_added_spy), 1)
+        self.assertEqual(about_to_be_added_spy[-1][0], new_feat.id())
+
+        self.assertEqual(on_added_called, [True])
+
+        self.assertEqual(len(added_spy), 1)
+        self.assertEqual(added_spy[-1][0], new_feat.id())
 
         # by default newly added features AREN'T added to the cache!
         self.assertFalse(cache.isFidCached(new_feat.id()))
 
-        # TODO test this:
-        return
-
-        layer.commitChanges()
-
-        self.assertEqual(len(spy), 1)
-        self.assertEqual(spy[-1][0], new_feat.id())
-
-        # by default newly added features AREN'T added to the cache!
-        self.assertFalse(cache.isFidCached(new_feat.id()))
-
-    def test_layer_feature_with_full_cache(self):
+    def test_layer_feature_add_with_full_cache(self):
         layer, cache, _ = self._create_test_data()
         cache.setFullCache(True)
 
-        spy = QSignalSpy(cache.featureAdded)
+        about_to_be_added_spy = QSignalSpy(cache.featureAboutToBeAdded)
+        added_spy = QSignalSpy(cache.featureAdded)
+
+        new_features = []
+        on_about_to_be_added_called = []
+        on_added_called = []
+
+        def _on_about_to_be_added_called(fid):
+            nonlocal new_features
+            nonlocal on_about_to_be_added_called
+            self.assertEqual(fid, new_features[0].id())
+            on_about_to_be_added_called.append(True)
+
+            # at this point the feature must NOT be present in the cache
+            self.assertFalse(cache.isFidCached(fid))
+
+        cache.featureAboutToBeAdded.connect(_on_about_to_be_added_called)
+
+        def _on_added_called(fid):
+            nonlocal new_features
+            nonlocal on_added_called
+            self.assertEqual(fid, new_features[0].id())
+            on_added_called.append(True)
+
+            # with full cache newly added features ARE added to the cache!
+            self.assertTrue(cache.isFidCached(fid))
+
+        cache.featureAdded.connect(_on_added_called)
 
         layer.startEditing()
         new_feat = QgsFeature(layer.fields())
         new_feat.setGeometry(QgsGeometry(QgsPoint(10.0, 10.0)))
         new_feat.setAttributes(["item_new", 99])
+        new_features.append(new_feat)
         layer.addFeature(new_feat)
 
-        self.assertEqual(len(spy), 1)
-        self.assertEqual(spy[-1][0], new_feat.id())
+        self.assertEqual(len(about_to_be_added_spy), 1)
+        self.assertEqual(about_to_be_added_spy[-1][0], new_feat.id())
+
+        self.assertEqual(on_added_called, [True])
+
+        self.assertEqual(len(added_spy), 1)
+        self.assertEqual(added_spy[-1][0], new_feat.id())
 
         # with full cache newly added features ARE added to the cache!
         self.assertTrue(cache.isFidCached(new_feat.id()))
 
-        # Todo test this
+    def test_layer_feature_add_and_commit(self):
+        layer, cache, _ = self._create_test_data()
+        cache.setFullCache(True)
+
+        on_deleted_called_fids = []
+        on_about_to_be_deleted_fids = []
+        on_added_fids = []
+        on_about_to_be_added_fids = []
+
+        original_fids = set(f.id() for f in layer.getFeatures())
+
+        def _on_about_to_be_deleted_called(fid):
+            nonlocal on_about_to_be_deleted_fids
+            on_about_to_be_deleted_fids.append(fid)
+
+        cache.featureAboutToBeDeleted.connect(_on_about_to_be_deleted_called)
+
+        def _on_deleted_called(fid):
+            nonlocal on_deleted_called_fids
+            on_deleted_called_fids.append(fid)
+
+        cache.featureDeleted.connect(_on_deleted_called)
+
+        def _on_about_to_be_added_called(fid):
+            nonlocal on_about_to_be_added_fids
+            on_about_to_be_added_fids.append(fid)
+
+            # at this point the feature must NOT be present in the cache
+            self.assertFalse(cache.isFidCached(fid))
+
+        cache.featureAboutToBeAdded.connect(_on_about_to_be_added_called)
+
+        def _on_added_called(fid):
+            nonlocal on_added_fids
+            on_added_fids.append(fid)
+
+            # with full cache newly added features ARE added to the cache!
+            self.assertTrue(cache.isFidCached(fid))
+
+        cache.featureAdded.connect(_on_added_called)
+
+        layer.startEditing()
+        new_feat = QgsFeature(layer.fields())
+        new_feat.setGeometry(QgsGeometry(QgsPoint(10.0, 10.0)))
+        new_feat.setAttributes(["item_new", 99])
+
+        layer.addFeature(new_feat)
+        uncommitted_feature_id = new_feat.id()
+
+        self.assertEqual(on_about_to_be_added_fids, [uncommitted_feature_id])
+        self.assertEqual(on_added_fids, [uncommitted_feature_id])
+
+        self.assertEqual(on_about_to_be_deleted_fids, [])
+        self.assertEqual(on_deleted_called_fids, [])
+
+        self.assertTrue(cache.isFidCached(uncommitted_feature_id))
+
+        # committing changes
         layer.commitChanges()
+
+        # commitChanges should result in the following:
+        # - featureAboutToBeDeleted, with the uncommitted feature fid
+        # - featureDeleted, with the uncommitted feature fid
+        # - featureAboutToBeAdded, with the newly committed (provider level) feature fid
+        # - featureAdded, with the newly committed (provider level) feature fid
+
+        new_fids = set(f.id() for f in layer.getFeatures())
+        new_feature_provider_fid = list(new_fids.difference(original_fids))[0]
+
+        self.assertEqual(on_about_to_be_deleted_fids, [uncommitted_feature_id])
+        self.assertEqual(on_deleted_called_fids, [uncommitted_feature_id])
+        self.assertEqual(
+            on_about_to_be_added_fids,
+            [uncommitted_feature_id, new_feature_provider_fid],
+        )
+        self.assertEqual(
+            on_added_fids, [uncommitted_feature_id, new_feature_provider_fid]
+        )
+
+        # uncommitted feature id should be evicted from cache
+        self.assertFalse(cache.isFidCached(uncommitted_feature_id))
+        # but newly committed provider feature id should be present
+        self.assertTrue(cache.isFidCached(new_feature_provider_fid))
 
     def test_layer_attribute_changed_signal(self):
         layer, cache, fids = self._create_test_data()

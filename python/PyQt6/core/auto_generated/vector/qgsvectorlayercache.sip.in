@@ -356,17 +356,81 @@ valid pointer for cleanup purpose.
     void attributeValueChanged( QgsFeatureId fid, int field, const QVariant &value );
 %Docstring
 Emitted when an attribute is changed. Is re-emitted after the layer
-itself emits this signal. You should connect to this signal, to be sure,
-to not get a cached value if querying the cache.
+itself emits this signal.
+
+.. warning::
+
+   This signal should be used instead of the layer's to ensure
+   that this cache has updated information for the feature attributes ready for retrieval.
+
+.. seealso:: :py:func:`featureAdded`
+
+.. seealso:: :py:func:`featureDeleted`
+%End
+
+    void featureAboutToBeAdded( QgsFeatureId fid );
+%Docstring
+Emitted when a new feature is about to be added to the cache (as a
+result of feature addition to the layer).
+
+:param fid: The featureid of the added feature to be added
+
+.. seealso:: :py:func:`featureAdded`
+
+.. versionadded:: 4.4
 %End
 
     void featureAdded( QgsFeatureId fid );
 %Docstring
 Emitted when a new feature has been added to the layer and this cache.
-You should connect to this signal instead of the layers', if you want to
-be sure that this cache has updated information for the new feature
 
-:param fid: The featureid of the changed feature
+:param fid: The featureid of the added feature
+
+.. warning::
+
+   This signal should be used instead of the layer's to ensure
+   that this cache has updated information for the new feature ready for retrieval.
+
+.. seealso:: :py:func:`featureAboutToBeAdded`
+
+.. seealso:: :py:func:`attributeValueChanged`
+
+.. seealso:: :py:func:`featureDeleted`
+%End
+
+    void featureAboutToBeDeleted( QgsFeatureId fid );
+%Docstring
+Emitted when a feature is about to be deleted from this cache (as a
+result of a feature deletion from the layer).
+
+This signal will be emitted when the feature is still available in the
+cache, immediately before it is deleted.
+
+:param fid: The featureid of the feature to be deleted.
+
+.. seealso:: :py:func:`featureDeleted`
+
+.. versionadded:: 4.4
+%End
+
+    void featureDeleted( QgsFeatureId fid );
+%Docstring
+Emitted when a feature has been deleted from the layer and this cache.
+
+:param fid: The featureid of the deleted feature
+
+.. warning::
+
+   This signal should be used instead of the layer's to ensure
+   that this cache has already removed all information for the deleted feature.
+
+.. seealso:: :py:func:`featureAboutToBeDeleted`
+
+.. seealso:: :py:func:`attributeValueChanged`
+
+.. seealso:: :py:func:`featureAdded`
+
+.. versionadded:: 4.4
 %End
 
     void invalidated();

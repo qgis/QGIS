@@ -33,7 +33,7 @@ QgsVectorLayerCache::QgsVectorLayerCache( QgsVectorLayer *layer, int cacheSize, 
 {
   mCache.setMaxCost( cacheSize );
 
-  connect( mLayer, &QgsVectorLayer::featureDeleted, this, &QgsVectorLayerCache::featureDeleted );
+  connect( mLayer, &QgsVectorLayer::featureDeleted, this, &QgsVectorLayerCache::onFeatureDeleted );
   connect( mLayer, &QgsVectorLayer::featureAdded, this, &QgsVectorLayerCache::onFeatureAdded );
   connect( mLayer, &QgsVectorLayer::destroyed, this, &QgsVectorLayerCache::layerDeleted );
 
@@ -348,8 +348,9 @@ void QgsVectorLayerCache::onJoinAttributeValueChanged( QgsFeatureId fid, int fie
   }
 }
 
-void QgsVectorLayerCache::featureDeleted( QgsFeatureId fid )
+void QgsVectorLayerCache::onFeatureDeleted( QgsFeatureId fid )
 {
+  emit featureAboutToBeDeleted( fid );
   mCache.remove( fid );
 
   if ( auto it = mCacheUnorderedKeys.find( fid ); it != mCacheUnorderedKeys.end() )
@@ -358,10 +359,13 @@ void QgsVectorLayerCache::featureDeleted( QgsFeatureId fid )
     if ( auto orderedIt = std::find( mCacheOrderedKeys.begin(), mCacheOrderedKeys.end(), fid ); orderedIt != mCacheOrderedKeys.end() )
       mCacheOrderedKeys.erase( orderedIt );
   }
+  emit featureDeleted( fid );
 }
 
 void QgsVectorLayerCache::onFeatureAdded( QgsFeatureId fid )
 {
+  emit featureAboutToBeAdded( fid );
+
   if ( mFullCache )
   {
     if ( cacheSize() <= mLayer->featureCount() )
