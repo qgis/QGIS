@@ -9290,15 +9290,19 @@ QgsModelDesignerDialog *QgisApp::openModelDesignerDialog( QgsProcessingModelAlgo
 {
   // maybe a model designer already open for this model
   const QSet<QgsModelDesignerDialog *> constMModelDesignerDialogs = mModelDesignerDialogs;
-  for ( QgsModelDesignerDialog *designer : constMModelDesignerDialogs )
+  if ( model )
   {
-    // check for file path or model provider ?
-    if ( designer->model()->sourceFilePath() == model->sourceFilePath() )
+    for ( QgsModelDesignerDialog *designer : constMModelDesignerDialogs )
     {
-      designer->show();
-      designer->activate();
-      designer->raise();
-      return designer;
+      // check for file path or model provider ?
+      if ( ( model->provider()->id() == QgsProcessing::MODEL_PROVIDER_ID && designer->model()->sourceFilePath() == model->sourceFilePath() )
+           || ( model->provider()->id() == QgsProcessing::PROJECT_PROVIDER_ID && designer->model()->name() == model->name() ) )
+      {
+        designer->show();
+        designer->activate();
+        designer->raise();
+        return designer;
+      }
     }
   }
 
@@ -9309,9 +9313,17 @@ QgsModelDesignerDialog *QgisApp::openModelDesignerDialog( QgsProcessingModelAlgo
   if ( model )
   {
     newDesigner->setModel( model );
-  }
 
-  QObject::connect( newDesigner, &QgsModelDesignerDialog::modelUpdated, newDesigner, [] { QgsApplication::processingRegistry()->providerById( QgsProcessing::MODEL_PROVIDER_ID )->refreshAlgorithms(); } );
+    const QString providerId = model->provider()->id();
+    QObject::connect( newDesigner, &QgsModelDesignerDialog::modelUpdated, newDesigner, [providerId]() { QgsApplication::processingRegistry()->providerById( providerId )->refreshAlgorithms(); } );
+  }
+  else
+  {
+    // This is an empty model for now, but we need to connect anyways because it might be saved at some point
+    QObject::connect( newDesigner, &QgsModelDesignerDialog::modelUpdated, newDesigner, []() {
+      QgsApplication::processingRegistry()->providerById( QgsProcessing::MODEL_PROVIDER_ID )->refreshAlgorithms();
+    } );
+  }
 
   connect( newDesigner, &QgsModelDesignerDialog::aboutToClose, newDesigner, [this, newDesigner] { mModelDesignerDialogs.remove( newDesigner ); } );
 
