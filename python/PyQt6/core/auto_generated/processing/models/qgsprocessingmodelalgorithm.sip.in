@@ -450,6 +450,13 @@ Reads the model from a file, at the specified ``path``.
 .. seealso:: :py:func:`toFile`
 %End
 
+    static QgsProcessingModelAlgorithm *loadModel( const QString &path ) /Factory/;
+%Docstring
+Returns a new instance of QgsProcessingModelAlgorithm loaded from the
+file ``path``. This is a thin wrapper around fromFile that handles
+errors, and returns a new instance of QgsProcessingModelAlgorithm.
+%End
+
     QVariant toVariant() const;
 %Docstring
 Saves this model to a QVariantMap, wrapped in a QVariant. You can use
