@@ -243,9 +243,10 @@ class CreateNewModelAction : public QgsProcessingToolboxAction
 
     void trigger( const QgsProcessingActionContext & ) override
     {
-      auto dlg = new QgsModelDesignerDialog();
-      QObject::connect( dlg, &QgsModelDesignerDialog::modelUpdated, dlg, [] { QgsApplication::processingRegistry()->providerById( QgsProcessing::MODEL_PROVIDER_ID )->refreshAlgorithms(); } );
-      dlg->show();
+      QgisApp::instance()->openModelDesignerDialog( nullptr );
+      // auto dlg = new QgsModelDesignerDialog();
+      // QObject::connect( dlg, &QgsModelDesignerDialog::modelUpdated, dlg, [] { QgsApplication::processingRegistry()->providerById( QgsProcessing::MODEL_PROVIDER_ID )->refreshAlgorithms(); } );
+      // dlg->show();
     }
 };
 
@@ -357,12 +358,14 @@ class EditModelContextAction : public QgsProcessingToolboxContextAction
       std::unique_ptr< QgsProcessingModelAlgorithm > newModel( qgis::down_cast< QgsProcessingModelAlgorithm * >( modelAlgorithm->create() ) );
       newModel->setSourceFilePath( modelAlgorithm->sourceFilePath() );
 
-      auto dlg = new QgsModelDesignerDialog();
-      dlg->setModel( newModel.release() );
+      // auto dlg = new QgsModelDesignerDialog();
+      // dlg->setModel( newModel.release() );
 
-      QObject::connect( dlg, &QgsModelDesignerDialog::modelUpdated, dlg, [] { QgsApplication::processingRegistry()->providerById( QgsProcessing::MODEL_PROVIDER_ID )->refreshAlgorithms(); } );
-      dlg->show();
-      dlg->activate();
+      QgisApp::instance()->openModelDesignerDialog( newModel.release() );
+
+      // QObject::connect( dlg, &QgsModelDesignerDialog::modelUpdated, dlg, [] { QgsApplication::processingRegistry()->providerById( QgsProcessing::MODEL_PROVIDER_ID )->refreshAlgorithms(); } );
+      // dlg->show();
+      // dlg->activate();
     }
 };
 
