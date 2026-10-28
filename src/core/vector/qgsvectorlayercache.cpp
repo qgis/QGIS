@@ -55,12 +55,12 @@ QgsVectorLayerCache::~QgsVectorLayerCache()
   mCacheIndices.clear();
 }
 
-void QgsVectorLayerCache::setCacheSize( int cacheSize )
+void QgsVectorLayerCache::setCacheSize( long long cacheSize )
 {
   mCache.setMaxCost( cacheSize );
 }
 
-int QgsVectorLayerCache::cacheSize()
+long long QgsVectorLayerCache::cacheSize() const
 {
   return mCache.maxCost();
 }
