@@ -37,6 +37,7 @@ using namespace Qt::StringLiterals;
 
 class TestAuthStorageDb : public QgsAuthConfigurationStorageDb
 {
+    Q_OBJECT
   public:
     TestAuthStorageDb( const QMap<QString, QVariant> &settings )
       : QgsAuthConfigurationStorageDb( settings )
