@@ -518,7 +518,8 @@ void QgsModelDesignerDialog::setModel( QgsProcessingModelAlgorithm *model )
 void QgsModelDesignerDialog::loadModel( const QString &path )
 {
   QgsProcessingModelAlgorithm *alg = QgsProcessingModelAlgorithm::loadModel( path );
-  setModel( alg );
+  if ( alg )
+    setModel( alg );
 }
 
 void QgsModelDesignerDialog::handleVersionMismatch( const QString &modelVersion ) const
