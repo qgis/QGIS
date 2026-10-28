@@ -64,6 +64,18 @@ Returns the target filename.
 .. seealso:: :py:func:`layerName`
 %End
 
+    void setFileName( const QString &fileName );
+%Docstring
+Sets the target ``fileName``.
+
+If ``fileName`` does not end with an extension, that format's extension
+is appended.
+
+.. seealso:: :py:func:`fileName`
+
+.. versionadded:: 4.4
+%End
+
     QString layerName() const;
 %Docstring
 Returns the target layer name.
