@@ -63,8 +63,10 @@ class QgsLayerTreeMapCanvasBridge;
 class QgsLayerTreeView;
 class QgsLayout;
 class QgsMasterLayoutInterface;
+class QgsProcessingModelAlgorithm;
 class QgsLayoutCustomDropHandler;
 class QgsLayoutDesignerDialog;
+class QgsModelDesignerDialog;
 class QgsLayoutDesignerInterface;
 class QgsMapCanvas;
 class QgsMapCanvasDockWidget;
@@ -503,6 +505,12 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
      * If a designer already exists for this layout then it will be activated.
      */
     QgsLayoutDesignerDialog *openLayoutDesignerDialog( QgsMasterLayoutInterface *layout );
+
+    /**
+     * Opens a layout designer dialog for an existing \a layout.
+     * If a designer already exists for this layout then it will be activated.
+     */
+    QgsModelDesignerDialog *openModelDesignerDialog( QgsProcessingModelAlgorithm *model );
 
     /**
      * Opens an elevation profile widget for an existing \a profile.
@@ -2723,6 +2731,8 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
 
     //! Currently open layout designer dialogs
     QSet<QgsLayoutDesignerDialog *> mLayoutDesignerDialogs;
+
+    QSet<QgsModelDesignerDialog *> mModelDesignerDialogs;
 
     QSet<QgsElevationProfileWidget * > mElevationProfileWidgets;
 

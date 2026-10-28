@@ -135,6 +135,11 @@ class GUI_EXPORT QgsModelDesignerDialog : public QMainWindow,
   signals:
 
     /**
+     * Emitted when the dialog is about to close.
+     */
+    void aboutToClose();
+
+    /**
      * Emitted when the model is updated.
      *
      * \warning DO NOT USE -- this is bad API, here for compatibility with Python code only.
