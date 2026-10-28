@@ -924,14 +924,6 @@ void QgsAppProcessingUtils::addAlgorithmsToDefaultToolbars()
   }
 }
 
-void QgsAppProcessingUtils::updateModels()
-{
-  if ( QgsProcessingProvider *modelProvider = QgsApplication::processingRegistry()->providerById( QgsProcessing::MODEL_PROVIDER_ID ) )
-  {
-    modelProvider->refreshAlgorithms();
-  }
-}
-
 void QgsAppProcessingUtils::updateProjectModelMenu()
 {
   QMenu *projectModelsMenu = mQgisApp->projectModelsMenu();

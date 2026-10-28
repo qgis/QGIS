@@ -1288,9 +1288,9 @@ class GUI_EXPORT QgisInterface : public QObject
 
 
     /**
-     * Opens a new layout designer dialog for the specified \a layout, or
+     * Opens a new model designer dialog for the specified \a model, or
      * brings an already open designer window to the foreground if one
-     * is already created for the layout.
+     * is already created for the model.
      */
     virtual QgsModelDesignerDialog *openModelDesignerDialog( QgsProcessingModelAlgorithm *model SIP_TRANSFER ) = 0;
 

@@ -517,25 +517,8 @@ void QgsModelDesignerDialog::setModel( QgsProcessingModelAlgorithm *model )
 
 void QgsModelDesignerDialog::loadModel( const QString &path )
 {
-  auto alg = std::make_unique<QgsProcessingModelAlgorithm>();
-  if ( alg->fromFile( path ) )
-  {
-    alg->setProvider( QgsApplication::processingRegistry()->providerById( QgsProcessing::MODEL_PROVIDER_ID ) );
-    alg->setSourceFilePath( path );
-    setModel( alg.release() );
-  }
-  else
-  {
-    QgsMessageLog::logMessage( tr( "Could not load model %1" ).arg( path ), tr( "Processing" ), Qgis::MessageLevel::Critical );
-    QMessageBox::critical(
-      this,
-      tr( "Open Model" ),
-      tr(
-        "The selected model could not be loaded.\n"
-        "See the log for more information."
-      )
-    );
-  }
+  QgsProcessingModelAlgorithm *alg = QgsProcessingModelAlgorithm::loadModel( path );
+  setModel( alg );
 }
 
 void QgsModelDesignerDialog::handleVersionMismatch( const QString &modelVersion ) const

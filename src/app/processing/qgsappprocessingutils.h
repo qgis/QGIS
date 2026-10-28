@@ -117,8 +117,6 @@ class QgsAppProcessingUtils : public QObject
 
   private slots:
 
-    void updateModels();
-
     //! Adds projects models to menu
     void updateProjectModelMenu();
 
