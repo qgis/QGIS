@@ -1292,7 +1292,7 @@ class GUI_EXPORT QgisInterface : public QObject
      * brings an already open designer window to the foreground if one
      * is already created for the model.
      */
-    virtual QgsModelDesignerDialog *openModelDesignerDialog( QgsProcessingModelAlgorithm *model SIP_TRANSFER ) = 0;
+    virtual QgsModelDesignerDialog *openModelDesigner( QgsProcessingModelAlgorithm *model SIP_TRANSFER ) = 0;
 
     /**
      * Opens the options dialog.

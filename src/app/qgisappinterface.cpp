@@ -494,7 +494,7 @@ QgsLayoutDesignerInterface *QgisAppInterface::openLayoutDesigner( QgsMasterLayou
   return nullptr;
 }
 
-QgsModelDesignerDialog *QgisAppInterface::openModelDesignerDialog( QgsProcessingModelAlgorithm *model )
+QgsModelDesignerDialog *QgisAppInterface::openModelDesigner( QgsProcessingModelAlgorithm *model )
 {
   QgsModelDesignerDialog *designer = qgis->openModelDesignerDialog( model );
   if ( designer )
