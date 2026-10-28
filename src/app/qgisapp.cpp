@@ -1821,7 +1821,7 @@ QgisApp::QgisApp(
     toggleMapTips( true );
   }
 
-  connect( mActionModelDesigner, &QAction::triggered, mAppProcessingUtils.get(), &QgsAppProcessingUtils::openModelDesigner );
+  connect( mActionModelDesigner, &QAction::triggered, mAppProcessingUtils.get(), [] { QgisApp::instance()->openModelDesignerDialog( nullptr ); } );
   connect( mProcessingHistoryAction, &QAction::triggered, mAppProcessingUtils.get(), &QgsAppProcessingUtils::openHistory );
 
   mPythonMacrosEnabled = false;

@@ -166,7 +166,7 @@ class ProcessingModelItem(QgsDataItem):
 
     def editModel(self):
         alg = QgsProcessingModelAlgorithm.loadModel(self.path())
-        iface.openModelDesignerDialog(alg)
+        iface.openModelDesigner(alg)
 
     def actions(self, parent):
         run_model_action = QAction(
