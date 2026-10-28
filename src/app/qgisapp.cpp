@@ -9288,7 +9288,7 @@ QgsLayoutDesignerDialog *QgisApp::openLayoutDesignerDialog( QgsMasterLayoutInter
 
 QgsModelDesignerDialog *QgisApp::openModelDesignerDialog( QgsProcessingModelAlgorithm *model )
 {
-  // maybe a designer already open for this model
+  // maybe a model designer already open for this model
   const QSet<QgsModelDesignerDialog *> constMModelDesignerDialogs = mModelDesignerDialogs;
   for ( QgsModelDesignerDialog *designer : constMModelDesignerDialogs )
   {
@@ -9305,25 +9305,20 @@ QgsModelDesignerDialog *QgisApp::openModelDesignerDialog( QgsProcessingModelAlgo
   //nope, so make a new one
   //important - no parent set, otherwise Windows 10 sets the dialog as always on top of the QGIS window!!
   QgsModelDesignerDialog *newDesigner = new QgsModelDesignerDialog( nullptr );
-  // newDesigner set model
 
   if ( model )
   {
     newDesigner->setModel( model );
   }
-  // newDesigner->setMasterLayout( layout );
 
-  // connect( dlg, &QgsModelDesignerDialog::modelUpdated, this, &QgsAppProcessingUtils::updateModels ); //TODO delete this utils function
   QObject::connect( newDesigner, &QgsModelDesignerDialog::modelUpdated, newDesigner, [] { QgsApplication::processingRegistry()->providerById( QgsProcessing::MODEL_PROVIDER_ID )->refreshAlgorithms(); } );
 
   connect( newDesigner, &QgsModelDesignerDialog::aboutToClose, newDesigner, [this, newDesigner] { mModelDesignerDialogs.remove( newDesigner ); } );
 
-  //add it to the map of existing print designers
+  //add it to the map of existing model designers
   mModelDesignerDialogs.insert( newDesigner );
 
   newDesigner->show();
-
-
   return newDesigner;
 }
 
