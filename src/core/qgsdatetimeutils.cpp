@@ -56,7 +56,7 @@ QDomElement QgsDateTimeUtils::writeDateTimeToXml( const QDateTime &dateTime, con
   return element;
 }
 
-QDateTime QgsDateTimeUtils::readDateTimeToXml( const QDomElement &element, const QgsReadWriteContext &context )
+QDateTime QgsDateTimeUtils::readDateTimeFromXml( const QDomElement &element, const QgsReadWriteContext &context )
 {
   Q_UNUSED( context );
 

@@ -60,7 +60,7 @@ bool QgsMeshLayerTemporalProperties::readXml( const QDomElement &element, const 
 
   QDomElement refTimeElem = temporalElement.firstChildElement( u"reference-time"_s );
   if ( !refTimeElem.isNull() )
-    mReferenceTime = QgsDateTimeUtils::readDateTimeToXml( refTimeElem, context );
+    mReferenceTime = QgsDateTimeUtils::readDateTimeFromXml( refTimeElem, context );
   else
     mReferenceTime = QDateTime::fromString( temporalElement.attribute( u"reference-time"_s ), Qt::ISODate );
 
@@ -73,14 +73,14 @@ bool QgsMeshLayerTemporalProperties::readXml( const QDomElement &element, const 
   QDomElement startTimeElem = temporalElement.firstChildElement( u"start-time-extent"_s );
 
   if ( !startTimeElem.isNull() )
-    startTime = QgsDateTimeUtils::readDateTimeToXml( startTimeElem, context );
+    startTime = QgsDateTimeUtils::readDateTimeFromXml( startTimeElem, context );
   else if ( temporalElement.hasAttribute( u"start-time-extent"_s ) )
     startTime = QDateTime::fromString( temporalElement.attribute( u"start-time-extent"_s ), Qt::ISODate );
 
   QDateTime endTime;
   QDomElement endTimeElem = temporalElement.firstChildElement( u"end-time-extent"_s );
   if ( !endTimeElem.isNull() )
-    endTime = QgsDateTimeUtils::readDateTimeToXml( endTimeElem, context );
+    endTime = QgsDateTimeUtils::readDateTimeFromXml( endTimeElem, context );
   else if ( temporalElement.hasAttribute( u"end-time-extent"_s ) )
     endTime = QDateTime::fromString( temporalElement.attribute( u"end-time-extent"_s ), Qt::ISODate );
 

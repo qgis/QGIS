@@ -68,7 +68,7 @@ void TestQgsDateTimeUtils::readWriteToXml()
   for ( qsizetype i = 0; i < dateTimes.size(); ++i )
   {
     QDomElement dateTimeElement = rootElement.firstChildElement( u"my datetime %1"_s.arg( i ) );
-    const QDateTime readDateTime = QgsDateTimeUtils::readDateTimeToXml( dateTimeElement, context );
+    const QDateTime readDateTime = QgsDateTimeUtils::readDateTimeFromXml( dateTimeElement, context );
 
     const QDateTime &dt = dateTimes.at( i );
     if ( dt.isValid() )
