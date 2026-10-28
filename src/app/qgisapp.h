@@ -507,8 +507,10 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     QgsLayoutDesignerDialog *openLayoutDesignerDialog( QgsMasterLayoutInterface *layout );
 
     /**
-     * Opens a layout designer dialog for an existing \a layout.
-     * If a designer already exists for this layout then it will be activated.
+     * Opens a model designer dialog for an existing \a model.
+     * If a designer already exists for this model then it will be activated.
+     *
+     * Ownership of \a model is transferred to the dialog.
      */
     QgsModelDesignerDialog *openModelDesignerDialog( QgsProcessingModelAlgorithm *model );
 
