@@ -1448,7 +1448,7 @@ already created for the layout.
 %End
 
 
-    virtual QgsModelDesignerDialog *openModelDesignerDialog( QgsProcessingModelAlgorithm *model ) = 0;
+    virtual QgsModelDesignerDialog *openModelDesignerDialog( QgsProcessingModelAlgorithm *model /Transfer/ ) = 0;
 %Docstring
 Opens a new layout designer dialog for the specified ``layout``, or
 brings an already open designer window to the foreground if one is
