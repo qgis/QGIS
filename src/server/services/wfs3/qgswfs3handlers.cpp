@@ -3042,7 +3042,7 @@ void QgsWfs3CollectionsItemsHandler::handleRequest( const QgsServerApiContext &c
 
           for ( const auto &field : fields )
           {
-            QString fieldIdentifier = field.displayName();
+            const QString fieldIdentifier = field.displayName();
 
             if ( !QgsVariantUtils::isNull( properties.value( fieldIdentifier ) ) )
             {
