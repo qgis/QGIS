@@ -553,6 +553,35 @@ class TestQgsVectorLayerCache(QgisTestCase, FeatureSourceTestCase):
         self.assertEqual(len(spy), 1)
         self.assertFalse(cache.hasFullCache())
 
+    def test_has_full_cache(self):
+        layer, cache, fids = self._create_test_data(num_features=5, cache_size=10)
+
+        # empty cache, with capacity for 10 features
+        self.assertEqual(len(cache.cachedFeatureIds()), 0)
+        self.assertEqual(cache.cacheSize(), 10)
+        self.assertFalse(cache.hasFullCache())
+
+        # request all 5 features -- should fit in cache, as 5 < cache capacity of 10
+        all_features = [f for f in cache.getFeatures()]
+        self.assertEqual(len(all_features), 5)
+
+        # all features fit in cache!
+        self.assertTrue(cache.hasFullCache())
+
+    def test_has_full_cache_too_small(self):
+        layer, cache, fids = self._create_test_data(num_features=10, cache_size=5)
+
+        # empty cache, with capacity for 5 features
+        self.assertEqual(len(cache.cachedFeatureIds()), 0)
+        self.assertEqual(cache.cacheSize(), 5)
+        self.assertFalse(cache.hasFullCache())
+
+        # request all 10 features -- can't fit in cache!
+        all_features = [f for f in cache.getFeatures()]
+        self.assertEqual(len(all_features), 10)
+
+        self.assertFalse(cache.hasFullCache())
+
 
 if __name__ == "__main__":
     unittest.main()

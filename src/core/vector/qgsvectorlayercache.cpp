@@ -329,7 +329,7 @@ void QgsVectorLayerCache::requestCompleted( const QgsFeatureRequest &featureRequ
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
   // If a request is too large for the cache don't notify to prevent from indexing incomplete requests
-  if ( fids.count() <= mCache.size() )
+  if ( fids.count() <= mCache.maxCost() )
   {
     for ( const auto &idx : std::as_const( mCacheIndices ) )
     {
