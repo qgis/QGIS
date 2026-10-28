@@ -429,6 +429,17 @@ match and the y coordinates are an exact match.
 .. versionadded:: 4.4
 %End
 
+    bool isNormalized() const;
+%Docstring
+Returns ``True`` if the rectangle is normalized.
+
+A rectangle is normalized if the :py:func:`~QgsRectangle.xMinimum` <=
+:py:func:`~QgsRectangle.xMaximum` and :py:func:`~QgsRectangle.yMinimum`
+<= :py:func:`~QgsRectangle.yMaximum`.
+
+.. versionadded:: 4.4
+%End
+
     bool isNull() const;
 %Docstring
 Test if the rectangle is null (holding no spatial information).

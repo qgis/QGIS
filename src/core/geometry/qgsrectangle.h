@@ -624,6 +624,18 @@ class CORE_EXPORT QgsRectangle
     }
 
     /**
+     * Returns TRUE if the rectangle is normalized.
+     *
+     * A rectangle is normalized if the xMinimum() <= xMaximum() and yMinimum() <= yMaximum().
+     *
+     * \since QGIS 4.4
+     */
+    bool isNormalized() const
+    {
+      return qgsDoubleLessThanOrNear( mXmin, mXmax ) && qgsDoubleLessThanOrNear( mYmin, mYmax );
+    }
+
+    /**
      * Test if the rectangle is null (holding no spatial information).
      *
      * A rectangle is considered null if all its coordinates are NaN,

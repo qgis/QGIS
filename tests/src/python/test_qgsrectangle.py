@@ -266,8 +266,39 @@ class TestQgsRectangle(QgisTestCase):
         rect = QgsRectangle(-9999.9999, -999999.9999, -9999.9999, -999999.9999)
         self.assertTrue(rect.isPoint())
 
-        rect = QgsRectangle(3, 1, 4, 2, normalize=False)
+        rect = QgsRectangle(4, 1, 3, 2, normalize=False)
         self.assertFalse(rect.isPoint())
+
+    def test_is_normalized(self):
+        rect = QgsRectangle()
+        self.assertFalse(rect.isNormalized())
+
+        rect = QgsRectangle(1, 2, 3, 4)
+        self.assertTrue(rect.isNormalized())
+
+        rect = QgsRectangle(1, 2, 1, 4)
+        self.assertTrue(rect.isNormalized())
+
+        rect = QgsRectangle(1, 2, 3, 2)
+        self.assertTrue(rect.isNormalized())
+
+        rect = QgsRectangle(1.1, 2.1, 1.1, 2.1)
+        self.assertTrue(rect.isNormalized())
+
+        rect = QgsRectangle(0, 0, 0, 0)
+        self.assertTrue(rect.isNormalized())
+
+        rect = QgsRectangle(-9999.9999, -999999.9999, -9999.9999, -999999.9999)
+        self.assertTrue(rect.isNormalized())
+
+        rect = QgsRectangle(4, 1, 3, 2, normalize=False)
+        self.assertFalse(rect.isNormalized())
+
+        rect = QgsRectangle(3, 2, 4, 1, normalize=False)
+        self.assertFalse(rect.isNormalized())
+
+        rect = QgsRectangle(4, 2, 3, 1, normalize=False)
+        self.assertFalse(rect.isNormalized())
 
 
 if __name__ == "__main__":
