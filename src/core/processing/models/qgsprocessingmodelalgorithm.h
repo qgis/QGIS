@@ -378,6 +378,12 @@ class CORE_EXPORT QgsProcessingModelAlgorithm : public QgsProcessingAlgorithm
     bool fromFile( const QString &path );
 
     /**
+     * Returns a new instance of QgsProcessingModelAlgorithm loaded from the file \a path.
+     * This is a thin wrapper around fromFile that handles errors, and returns a new instance of QgsProcessingModelAlgorithm.
+     */
+    static QgsProcessingModelAlgorithm *loadModel( const QString &path ) SIP_FACTORY;
+
+    /**
      * Saves this model to a QVariantMap, wrapped in a QVariant.
      * You can use QgsXmlUtils::writeVariant to save it to an XML document.
      *

@@ -6,6 +6,7 @@ try:
 except (NameError, AttributeError):
     pass
 try:
+    QgsProcessingModelAlgorithm.loadModel = staticmethod(QgsProcessingModelAlgorithm.loadModel)
     QgsProcessingModelAlgorithm.safeName = staticmethod(QgsProcessingModelAlgorithm.safeName)
     QgsProcessingModelAlgorithm.__overridden_methods__ = ['initAlgorithm', 'flags', 'name', 'displayName', 'group', 'groupId', 'icon', 'svgIconPath', 'shortHelpString', 'shortDescription', 'helpUrl', 'canExecute', 'asPythonCommand', 'createExpressionContext', 'createInstance', 'processAlgorithm']
     QgsProcessingModelAlgorithm.__group__ = ['processing', 'models']

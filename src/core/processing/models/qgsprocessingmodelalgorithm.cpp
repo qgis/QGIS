@@ -34,6 +34,7 @@
 #include "qgsxmlutils.h"
 
 #include <QFile>
+#include <QMessageBox>
 #include <QRegularExpression>
 #include <QString>
 #include <QTextStream>
@@ -2037,6 +2038,31 @@ bool QgsProcessingModelAlgorithm::fromFile( const QString &path )
   QVariant props = QgsXmlUtils::readVariant( doc.firstChildElement() );
   return loadVariant( props );
 }
+
+QgsProcessingModelAlgorithm *QgsProcessingModelAlgorithm::loadModel( const QString &path )
+{
+  auto alg = std::make_unique<QgsProcessingModelAlgorithm>();
+  if ( alg->fromFile( path ) )
+  {
+    alg->setProvider( QgsApplication::processingRegistry()->providerById( QgsProcessing::MODEL_PROVIDER_ID ) );
+    alg->setSourceFilePath( path );
+    return alg.release();
+  }
+  else
+  {
+    QgsMessageLog::logMessage( QObject::tr( "Could not load model %1" ).arg( path ), QObject::tr( "Processing" ), Qgis::MessageLevel::Critical );
+    QMessageBox::critical(
+      nullptr,
+      QObject::tr( "Open Model" ),
+      QObject::tr(
+        "The selected model could not be loaded.\n"
+        "See the log for more information."
+      )
+    );
+    return nullptr;
+  }
+}
+
 
 void QgsProcessingModelAlgorithm::setChildAlgorithms( const QMap<QString, QgsProcessingModelChildAlgorithm> &childAlgorithms )
 {
