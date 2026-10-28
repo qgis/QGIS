@@ -455,6 +455,8 @@ Reads the model from a file, at the specified ``path``.
 Returns a new instance of QgsProcessingModelAlgorithm loaded from the
 file ``path``. This is a thin wrapper around fromFile that handles
 errors, and returns a new instance of QgsProcessingModelAlgorithm.
+
+.. versionadded:: 4.4
 %End
 
     QVariant toVariant() const;
