@@ -106,7 +106,7 @@ class CORE_EXPORT QgsVectorLayerCache : public QObject
      *
      * \param cacheSize indicates the maximum number of features to keep in the cache
      */
-    void setCacheSize( int cacheSize );
+    void setCacheSize( long long cacheSize );
 
     /**
      * \brief
@@ -115,7 +115,7 @@ class CORE_EXPORT QgsVectorLayerCache : public QObject
      *
      * \returns int
      */
-    int cacheSize();
+    long long cacheSize() const;
 
     /**
      * Enable or disable the caching of geometries

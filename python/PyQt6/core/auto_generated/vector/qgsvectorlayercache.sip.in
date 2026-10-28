@@ -32,7 +32,7 @@ substantially.
     QgsVectorLayerCache( QgsVectorLayer *layer, int cacheSize, QObject *parent /TransferThis/ = 0 );
     ~QgsVectorLayerCache();
 
-    void setCacheSize( int cacheSize );
+    void setCacheSize( long long cacheSize );
 %Docstring
 Sets the maximum number of features to keep in the cache. Some features
 will be removed from the cache if the number is smaller than the
@@ -42,7 +42,7 @@ previous size of the cache.
                   the cache
 %End
 
-    int cacheSize();
+    long long cacheSize() const;
 %Docstring
 Returns the maximum number of features this cache will hold. In case
 full caching is enabled, this number can change, as new features get
