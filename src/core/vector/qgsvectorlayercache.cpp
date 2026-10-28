@@ -144,7 +144,11 @@ void QgsVectorLayerCache::addCacheIndex( QgsAbstractCacheIndex *cacheIndex )
 
 void QgsVectorLayerCache::setCacheAddedAttributes( bool cacheAddedAttributes )
 {
-  if ( cacheAddedAttributes )
+  if ( cacheAddedAttributes == mCacheAddedAttributes )
+    return;
+
+  mCacheAddedAttributes = cacheAddedAttributes;
+  if ( mCacheAddedAttributes )
   {
     connect( mLayer, &QgsVectorLayer::attributeAdded, this, &QgsVectorLayerCache::attributeAdded );
   }
@@ -373,8 +377,10 @@ void QgsVectorLayerCache::onFeatureAdded( QgsFeatureId fid )
 
 void QgsVectorLayerCache::attributeAdded( int field )
 {
-  Q_UNUSED( field )
-  mCachedAttributes.append( field );
+  if ( !mCachedAttributes.contains( field ) )
+  {
+    mCachedAttributes.append( field );
+  }
   invalidate();
 }
 
