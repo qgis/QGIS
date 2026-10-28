@@ -701,8 +701,8 @@ void TestQgsExpressionContext::projectScope()
 
   QgsExpressionContext context;
   std::unique_ptr<QgsExpressionContextScope> scope = QgsExpressionContextUtils::projectScope( &project );
-  context << std::move( scope );
   QCOMPARE( scope->name(), tr( "Project" ) );
+  context << std::move( scope );
 
   // metadata variables
   QCOMPARE( context.variable( "project_title" ).toString(), u"project title"_s );
