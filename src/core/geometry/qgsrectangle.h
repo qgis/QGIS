@@ -494,7 +494,16 @@ class CORE_EXPORT QgsRectangle
      */
     bool contains( const QgsRectangle &rect ) const SIP_HOLDGIL
     {
-      return ( rect.mXmin >= mXmin && rect.mXmax <= mXmax && rect.mYmin >= mYmin && rect.mYmax <= mYmax );
+      // simple case, both rectangles are normalized
+      if ( isNormalized() && rect.isNormalized() )
+      {
+        return qgsDoubleGreaterThanOrNear( rect.mXmin, mXmin ) && qgsDoubleLessThanOrNear( rect.mXmax, mXmax )
+               && qgsDoubleGreaterThanOrNear( rect.mYmin, mYmin ) && qgsDoubleLessThanOrNear( rect.mYmax, mYmax );
+      }
+      else
+      {
+        return containsRange(mXmin, mXmax, rect.mXmin, rect.mXmax) && containsRange(mYmin, mYmax, rect.mYmin, rect.mYmax);
+      }
     }
 
     /**
@@ -820,6 +829,35 @@ class CORE_EXPORT QgsRectangle
     double mYmin = std::numeric_limits<double>::max();
     double mXmax = -std::numeric_limits<double>::max();
     double mYmax = -std::numeric_limits<double>::max();
+
+    /**
+     * Tests for range containment, handling non-normalized ranges where max < min
+     * (these are treated as "everything outside the value")
+     */
+    static bool containsRange(double aMin, double aMax, double bMin, double bMax)
+    {
+      const bool aNormalized = (aMax >= aMin);
+      const bool bNormalized = (bMax >= bMin);
+
+      if (aNormalized && bNormalized)
+      {
+        // both ranges normal, nice and easy
+        return qgsDoubleGreaterThanOrNear( bMin, aMin ) && qgsDoubleLessThanOrNear( bMax, aMax );
+      }
+      else if (!aNormalized && bNormalized)
+      {
+        return qgsDoubleGreaterThanOrNear( bMin, aMin ) || qgsDoubleLessThanOrNear( bMax, aMax );
+      }
+      else if ( aNormalized && !bNormalized )
+      {
+        // a cannot possibly contain b
+        return false;
+      }
+      else {
+        // both non-normalized
+        return qgsDoubleLessThanOrNear( aMin, bMin ) && qgsDoubleGreaterThanOrNear( aMax, bMax );
+      }
+    }
 
 };
 
