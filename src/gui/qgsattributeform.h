@@ -293,6 +293,7 @@ class GUI_EXPORT QgsAttributeForm : public QWidget
 
     /**
      * Emitted when the editable state of the attribute form has changed.
+     * \since QGIS 4.4
      */
     void editableChanged();
 

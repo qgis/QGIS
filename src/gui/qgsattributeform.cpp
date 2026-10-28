@@ -518,7 +518,7 @@ bool QgsAttributeForm::saveEdits( QString *error )
         QgsAttributeMap newValues;
         QgsAttributeMap oldValues;
 
-        int n = 0;
+        int editedCount = 0;
         for ( int i = 0; i < dst.count(); ++i )
         {
           if ( qgsVariantEqual( dst.at( i ), src.at( i ) ) // If field is not changed...
@@ -535,19 +535,19 @@ bool QgsAttributeForm::saveEdits( QString *error )
           newValues[i] = dst.at( i );
           oldValues[i] = src.at( i );
 
-          n++;
+          editedCount++;
         }
 
         auto context = std::make_unique<QgsVectorLayerToolsContext>();
         QgsExpressionContext expressionContext = createExpressionContext( updatedFeature );
         context->setExpressionContext( &expressionContext );
-        success = mLayer->changeAttributeValues( mFeature.id(), newValues, oldValues, false, context.get() ) && n > 0;
+        success = mLayer->changeAttributeValues( mFeature.id(), newValues, oldValues, false, context.get() ) && editedCount > 0;
         if ( success )
         {
           mFeature.setAttributes( dst );
         }
 
-        if ( updatedFeatureChangedGeometry && ( success || n == 0 ) )
+        if ( updatedFeatureChangedGeometry && ( success || editedCount == 0 ) )
         {
           QgsGeometry geometry = updatedFeature.geometry();
           success = success || mLayer->changeGeometry( mFeature.id(), geometry, false );
