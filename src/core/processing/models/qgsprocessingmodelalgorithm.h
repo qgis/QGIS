@@ -383,7 +383,7 @@ class CORE_EXPORT QgsProcessingModelAlgorithm : public QgsProcessingAlgorithm
      *
      * \since QGIS 4.4
      */
-    static QgsProcessingModelAlgorithm *loadModel( const QString &path ) SIP_FACTORY;
+    static std::unique_ptr< QgsProcessingModelAlgorithm > loadModel( const QString &path );
 
     /**
      * Saves this model to a QVariantMap, wrapped in a QVariant.
