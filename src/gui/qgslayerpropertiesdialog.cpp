@@ -272,7 +272,7 @@ void QgsLayerPropertiesDialog::addPropertiesPageFactory( const QgsMapLayerConfig
   QgsMapLayerConfigWidget *page = factory->createWidget( mLayer, mCanvas, false, this );
   if ( !page )
   {
-    QgsDebugError( u"Fail to create widget from factory '%1'"_s.arg( factory->title() ) );
+    QgsDebugError( u"Failed to create widget from factory '%1'"_s.arg( factory->title() ) );
     return;
   }
 
