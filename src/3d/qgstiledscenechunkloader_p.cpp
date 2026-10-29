@@ -339,25 +339,27 @@ QFuture<void> QgsTiledSceneChunkLoader::prepareChildren( QgsChunkNode *node )
 {
   long long nodeId = node->tileId().uniqueId;
 
-  return fetchHierarchyForNode( nodeId )
-    .then(
-      this,
-      [this, nodeId]() {
-        // we need to make sure that if a child tile's content references
-        // another tileset JSON, we fetch its hierarchy before a chunk node is
-        // created for such child tile - otherwise we end up trying to load
-        // tileset JSON file instead of the actual content
+  return QFuture<void>( //
+    fetchHierarchyForNode( nodeId )
+      .then(
+        this,
+        [this, nodeId]() {
+          // we need to make sure that if a child tile's content references
+          // another tileset JSON, we fetch its hierarchy before a chunk node is
+          // created for such child tile - otherwise we end up trying to load
+          // tileset JSON file instead of the actual content
 
-        const QVector<long long> childIds = mData.mIndex.childTileIds( nodeId );
-        QList<QFuture<void>> fetches;
-        for ( long long childId : childIds )
-        {
-          fetches.append( fetchHierarchyForNode( childId ) );
+          const QVector<long long> childIds = mData.mIndex.childTileIds( nodeId );
+          QList<QFuture<void>> fetches;
+          for ( long long childId : childIds )
+          {
+            fetches.append( fetchHierarchyForNode( childId ) );
+          }
+          return QtFuture::whenAll( fetches.begin(), fetches.end() );
         }
-        return QtFuture::whenAll( fetches.begin(), fetches.end() );
-      }
-    )
-    .unwrap();
+      )
+      .unwrap()
+  );
 }
 
 //////////
