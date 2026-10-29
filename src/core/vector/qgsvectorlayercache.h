@@ -70,24 +70,27 @@ class CORE_EXPORT QgsVectorLayerCache : public QObject
           , mAllAttributesFetched( allAttributesFetched )
           , mGeometryFetched( geometryFetched )
         {
-          mFeature = std::make_unique<QgsFeature>( feat );
+          mFeature = feat;
         }
 
         ~QgsCachedFeature()
         {
           // That's the reason we need this wrapper:
           // Inform the cache that this feature has been removed
-          mCache->featureRemoved( mFeature->id() );
+          mCache->featureRemoved( mFeature.id() );
         }
 
-        inline const QgsFeature *feature() { return mFeature.get(); }
+        /**
+         * Returns the cached feature
+         */
+        inline QgsFeature feature() const { return mFeature; }
 
         bool allAttributesFetched() const;
 
         bool geometryFetched() const;
 
       private:
-        std::unique_ptr<QgsFeature> mFeature;
+        QgsFeature mFeature;
         QgsVectorLayerCache *mCache = nullptr;
         bool mAllAttributesFetched = true;
         bool mGeometryFetched = false;
