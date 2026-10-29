@@ -9007,6 +9007,42 @@ void TestQgsProcessing::parameterPointCloudOut()
   QCOMPARE( context2.layersToLoadOnCompletion().values().at( 0 ).name, u"my_dest"_s );
   QCOMPARE( context2.layersToLoadOnCompletion().values().at( 0 ).outputName, u"x"_s );
   QCOMPARE( context2.layersToLoadOnCompletion().values().at( 0 ).layerTypeHint, QgsProcessingUtils::LayerHint::PointCloud );
+
+  QVERIFY( !def->limitToVpc() );
+
+  // limited to VPC/VPZ
+  def = std::make_unique<QgsProcessingParameterPointCloudDestination>( "vpc", QString(), QVariant(), false, true, true );
+  QVERIFY( def->limitToVpc() );
+  QCOMPARE( def->supportedOutputPointCloudLayerExtensions(), QStringList() << u"vpc"_s << u"vpz"_s );
+  QCOMPARE( def->defaultFileExtension(), u"vpc"_s );
+  QVERIFY( def->generateTemporaryDestination().endsWith( ".vpc"_L1 ) );
+  QVERIFY( def->createFileFilter().contains( u"*.vpc"_s ) );
+  QVERIFY( def->createFileFilter().contains( u"*.vpz"_s ) );
+  QVERIFY( !def->createFileFilter().contains( u"*.las"_s ) );
+  QVERIFY( !def->createFileFilter().contains( u"*.laz"_s ) );
+  QVERIFY( provider.isSupportedOutputValue( "/tmp/test.vpc", def.get(), context, error ) );
+  QVERIFY( provider.isSupportedOutputValue( "/tmp/test.VPZ", def.get(), context, error ) );
+  QVERIFY( !provider.isSupportedOutputValue( "/tmp/test.las", def.get(), context, error ) );
+  QVERIFY( !provider.isSupportedOutputValue( "/tmp/test.copc.laz", def.get(), context, error ) );
+
+  pythonCode = def->asPythonString();
+  QCOMPARE( pythonCode, u"QgsProcessingParameterPointCloudDestination('vpc', '', createByDefault=True, limitToVpc=True, defaultValue=None)"_s );
+
+  // clone
+  std::unique_ptr<QgsProcessingParameterPointCloudDestination> cloned( dynamic_cast<QgsProcessingParameterPointCloudDestination *>( def->clone() ) );
+  QVERIFY( cloned->limitToVpc() );
+
+  // fromVariantMap and toVariantMap tests
+  QgsProcessingParameterPointCloudDestination fromMapVpc( "x" );
+  QVERIFY( fromMapVpc.fromVariantMap( def->toVariantMap() ) );
+  QVERIFY( fromMapVpc.limitToVpc() );
+  QVERIFY( fromMapVpc.fromVariantMap( QgsProcessingParameterPointCloudDestination( "y" ).toVariantMap() ) );
+  QVERIFY( !fromMapVpc.limitToVpc() );
+
+  // set to false
+  def->setLimitToVpc( false );
+  QVERIFY( !def->limitToVpc() );
+  QVERIFY( def->createFileFilter().contains( u"*.las"_s ) );
 }
 
 void TestQgsProcessing::parameterFileOut()

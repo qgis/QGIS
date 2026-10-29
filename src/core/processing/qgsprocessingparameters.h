@@ -4765,8 +4765,13 @@ class CORE_EXPORT QgsProcessingParameterPointCloudDestination : public QgsProces
      *
      * If \a createByDefault is FALSE and the parameter is \a optional, then this destination
      * output will not be created by default.
+     *
+     * If \a limitToVpc is TRUE then only virtual point cloud formats (VPC and VPZ) will
+     * be offered as output formats (since QGIS 4.4).
      */
-    QgsProcessingParameterPointCloudDestination( const QString &name, const QString &description = QString(), const QVariant &defaultValue = QVariant(), bool optional = false, bool createByDefault = true );
+    QgsProcessingParameterPointCloudDestination(
+      const QString &name, const QString &description = QString(), const QVariant &defaultValue = QVariant(), bool optional = false, bool createByDefault = true, bool limitToVpc = false
+    );
 
     /**
      * Returns the type name for the parameter class.
@@ -4776,9 +4781,12 @@ class CORE_EXPORT QgsProcessingParameterPointCloudDestination : public QgsProces
     QString type() const override { return typeName(); }
     bool checkValueIsAcceptable( const QVariant &input, QgsProcessingContext *context = nullptr ) const override;
     QString valueAsPythonString( const QVariant &value, QgsProcessingContext &context ) const override;
+    QString asPythonString( QgsProcessing::PythonOutputType outputType = QgsProcessing::PythonOutputType::PythonQgsProcessingAlgorithmSubclass ) const override;
     QgsProcessingOutputDefinition *toOutputDefinition() const override SIP_FACTORY;
     QString defaultFileExtension() const override;
     QString createFileFilter() const override;
+    QVariantMap toVariantMap() const override;
+    bool fromVariantMap( const QVariantMap &map ) override;
 
     /**
      * Returns a list of the point cloud format file extensions supported for this parameter.
@@ -4787,9 +4795,28 @@ class CORE_EXPORT QgsProcessingParameterPointCloudDestination : public QgsProces
     virtual QStringList supportedOutputPointCloudLayerExtensions() const;
 
     /**
+     * Returns TRUE if the output is limited to virtual point cloud formats (VPC and VPZ).
+     *
+     * \see setLimitToVpc()
+     * \since QGIS 4.4
+     */
+    bool limitToVpc() const { return mLimitToVpc; }
+
+    /**
+     * Sets whether the output is limited to virtual point cloud formats (VPC and VPZ).
+     *
+     * \see limitToVpc()
+     * \since QGIS 4.4
+     */
+    void setLimitToVpc( bool limit ) { mLimitToVpc = limit; }
+
+    /**
      * Creates a new parameter using the definition from a script code.
      */
     static QgsProcessingParameterPointCloudDestination *fromScriptCode( const QString &name, const QString &description, bool isOptional, const QString &definition ) SIP_FACTORY;
+
+  private:
+    bool mLimitToVpc = false;
 };
 
 /**
