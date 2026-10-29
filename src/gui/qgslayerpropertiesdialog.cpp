@@ -264,12 +264,18 @@ void QgsLayerPropertiesDialog::refocusDialog()
 
 void QgsLayerPropertiesDialog::addPropertiesPageFactory( const QgsMapLayerConfigWidgetFactory *factory )
 {
-  if ( !factory->supportsLayer( mLayer ) || !factory->supportLayerPropertiesDialog() )
+  if ( !factory || !factory->supportsLayer( mLayer ) || !factory->supportLayerPropertiesDialog() )
   {
     return;
   }
 
   QgsMapLayerConfigWidget *page = factory->createWidget( mLayer, mCanvas, false, this );
+  if ( !page )
+  {
+    QgsDebugError( u"Fail to create widget from factory '%1'"_s.arg( factory->title() ) );
+    return;
+  }
+
   mConfigWidgets << page;
 
   const QString beforePage = factory->layerPropertiesPagePositionHint();
