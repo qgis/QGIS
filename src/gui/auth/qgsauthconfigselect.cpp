@@ -253,7 +253,7 @@ void QgsAuthConfigSelect::btnConfigEdit_clicked()
 bool QgsAuthConfigSelect::authCfgDetailsDisplayed() const
 {
   QgsSettings s;
-  QStringList nonEditableAuthStores = s.value( u"qgis/detailsNotDisplayedAuthStores"_s ).toStringList();
+  const QStringList nonEditableAuthStores = s.value( u"qgis/detailsNotDisplayedAuthStores"_s ).toStringList();
   for ( auto it = nonEditableAuthStores.constBegin(); it != nonEditableAuthStores.constEnd(); ++it )
   {
     const QgsAuthConfigurationStorage *authCfgStorage = QgsApplication::authManager()->authConfigurationStorageRegistry()->storage( *it );
