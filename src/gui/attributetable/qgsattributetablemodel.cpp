@@ -65,7 +65,6 @@ QgsAttributeTableModel::QgsAttributeTableModel( QgsVectorLayerCache *layerCache,
 
   loadAttributes();
 
-  connect( mLayer, &QgsVectorLayer::featuresDeleted, this, &QgsAttributeTableModel::featuresDeleted );
   connect( mLayer, &QgsVectorLayer::attributeDeleted, this, &QgsAttributeTableModel::attributeDeleted );
   connect( mLayer, &QgsVectorLayer::updatedFields, this, &QgsAttributeTableModel::updatedFields );
 
@@ -79,6 +78,7 @@ QgsAttributeTableModel::QgsAttributeTableModel( QgsVectorLayerCache *layerCache,
 
   connect( mLayer, &QgsVectorLayer::editCommandEnded, this, &QgsAttributeTableModel::editCommandEnded );
   connect( mLayerCache, &QgsVectorLayerCache::attributeValueChanged, this, &QgsAttributeTableModel::attributeValueChanged );
+  connect( mLayerCache, &QgsVectorLayerCache::featureAboutToBeDeleted, this, [this]( QgsFeatureId id ) { featuresDeleted( { id } ); } );
   connect( mLayerCache, &QgsVectorLayerCache::featureAdded, this, [this]( QgsFeatureId id ) { featureAdded( id ); } );
   connect( mLayerCache, &QgsVectorLayerCache::cachedLayerDeleted, this, &QgsAttributeTableModel::layerDeleted );
 }
