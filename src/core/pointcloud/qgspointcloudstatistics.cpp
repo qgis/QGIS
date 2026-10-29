@@ -222,7 +222,7 @@ QgsPointCloudAttributeStatistics QgsPointCloudStatistics::fromAttributeStatistic
   QJsonObject classCountJson = statsJson.value( u"class-count"_s ).toObject();
   for ( const QString &key : classCountJson.keys() )
   {
-    statsObj.classCount.insert( key.toInteger(), classCountJson.value( key ).toInteger() );
+    statsObj.classCount.insert( key.toInt(), classCountJson.value( key ).toInteger() );
   }
   return statsObj;
 }
