@@ -507,16 +507,6 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     QgsLayoutDesignerDialog *openLayoutDesignerDialog( QgsMasterLayoutInterface *layout );
 
     /**
-     * Opens a model designer dialog for an existing \a model.
-     * If a designer already exists for this model then it will be activated.
-     *
-     * Ownership of \a model is transferred to the dialog.
-     *
-     * \since QGIS 4.4
-     */
-    QgsModelDesignerDialog *openModelDesignerDialog( QgsProcessingModelAlgorithm *model );
-
-    /**
      * Opens an elevation profile widget for an existing \a profile.
      * If a widget already exists for this profile then it will be activated.
      */
@@ -820,6 +810,12 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
 
     //! Returns the CAD dock widget
     QgsAdvancedDigitizingDockWidget *cadDockWidget() { return mAdvancedDigitizingDockWidget; }
+
+    /**
+     * Returns pointer to the app processing utils
+     * \since QGIS 4.4
+     */
+    QgsAppProcessingUtils *appProcessingUtils() { return mAppProcessingUtils.get(); }
 
     //! Returns map overview canvas
     QgsMapOverviewCanvas *mapOverviewCanvas() { return mOverviewCanvas; }
@@ -2735,8 +2731,6 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
 
     //! Currently open layout designer dialogs
     QSet<QgsLayoutDesignerDialog *> mLayoutDesignerDialogs;
-
-    QSet<QgsModelDesignerDialog *> mModelDesignerDialogs;
 
     QSet<QgsElevationProfileWidget * > mElevationProfileWidgets;
 
