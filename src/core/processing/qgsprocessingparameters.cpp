@@ -44,6 +44,7 @@
 #include "qgsvariantutils.h"
 #include "qgsvectorfilewriter.h"
 #include "qgsvectorlayer.h"
+#include "qgsvirtualpointcloudprovider.h"
 
 #include <QRegularExpression>
 #include <QString>
@@ -9843,7 +9844,7 @@ QString QgsProcessingParameterPointCloudDestination::defaultFileExtension() cons
 {
   if ( mLimitToVpc )
   {
-    return u"vpc"_s;
+    return QgsVirtualPointCloudProvider::defaultVpcExtension();
   }
   else if ( auto *lOriginalProvider = originalProvider() )
   {
@@ -9874,7 +9875,7 @@ QStringList QgsProcessingParameterPointCloudDestination::supportedOutputPointClo
 {
   if ( mLimitToVpc )
   {
-    return QStringList() << u"vpc"_s << u"vpz"_s;
+    return QgsVirtualPointCloudProvider::supportedVpcExtensions();
   }
   else if ( auto *lOriginalProvider = originalProvider() )
   {
