@@ -496,15 +496,8 @@ QgsLayoutDesignerInterface *QgisAppInterface::openLayoutDesigner( QgsMasterLayou
 
 QgsModelDesignerDialog *QgisAppInterface::openModelDesigner( QgsProcessingModelAlgorithm *model )
 {
-  QgsModelDesignerDialog *designer = qgis->openModelDesignerDialog( model );
-  if ( designer )
-  {
-    // return designer->iface();
-    return designer;
-  }
-  return nullptr;
+  return qgis->openModelDesignerDialog( model );
 }
-
 
 void QgisAppInterface::showOptionsDialog( QWidget *parent, const QString &currentPage )
 {

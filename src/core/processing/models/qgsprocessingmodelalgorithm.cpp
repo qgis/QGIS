@@ -2039,14 +2039,14 @@ bool QgsProcessingModelAlgorithm::fromFile( const QString &path )
   return loadVariant( props );
 }
 
-QgsProcessingModelAlgorithm *QgsProcessingModelAlgorithm::loadModel( const QString &path )
+std::unique_ptr< QgsProcessingModelAlgorithm > QgsProcessingModelAlgorithm::loadModel( const QString &path )
 {
   auto alg = std::make_unique<QgsProcessingModelAlgorithm>();
   if ( alg->fromFile( path ) )
   {
     alg->setProvider( QgsApplication::processingRegistry()->providerById( QgsProcessing::MODEL_PROVIDER_ID ) );
     alg->setSourceFilePath( path );
-    return alg.release();
+    return alg;
   }
   else
   {
