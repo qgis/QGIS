@@ -582,6 +582,23 @@ class TestQgsVectorLayerCache(QgisTestCase, FeatureSourceTestCase):
 
         self.assertFalse(cache.hasFullCache())
 
+    def test_attribute_deleted_invalidates_cache(self):
+        layer, cache, fids = self._create_test_data()
+
+        cache.setFullCache(True)
+        target_fid = fids[0]
+        self.assertTrue(cache.hasFullCache())
+        self.assertTrue(cache.isFidCached(target_fid))
+
+        invalidated_spy = QSignalSpy(cache.invalidated)
+
+        layer.startEditing()
+        layer.deleteAttribute(1)
+
+        self.assertEqual(len(invalidated_spy), 1)
+        self.assertFalse(cache.hasFullCache())
+        self.assertFalse(cache.isFidCached(target_fid))
+
 
 if __name__ == "__main__":
     unittest.main()

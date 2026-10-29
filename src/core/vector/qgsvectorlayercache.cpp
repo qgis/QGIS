@@ -453,6 +453,7 @@ void QgsVectorLayerCache::attributeDeleted( int field )
     else if ( attr > field )
       mCachedAttributes << attr - 1;
   }
+  invalidate();
 }
 
 void QgsVectorLayerCache::geometryChanged( QgsFeatureId fid, const QgsGeometry &geom )
