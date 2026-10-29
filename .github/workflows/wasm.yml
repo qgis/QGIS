@@ -26,10 +26,10 @@ jobs:
       - name: ♻️ Check disk space
         run: df . -h
 
-      - name: 🧹 Reclaim disk space
-        run: |
-          sudo rm -rf /usr/local/lib/android/
-          sudo rm -rf /opt/*
+#      - name: 🧹 Reclaim disk space
+#        run: |
+#          sudo rm -rf /usr/local/lib/android/
+#          sudo rm -rf /opt/*
 
       - name: ♻️ Check disk space
         run: df . -h
