@@ -450,7 +450,7 @@ Reads the model from a file, at the specified ``path``.
 .. seealso:: :py:func:`toFile`
 %End
 
-    static QgsProcessingModelAlgorithm *loadModel( const QString &path ) /Factory/;
+    static std::unique_ptr< QgsProcessingModelAlgorithm > loadModel( const QString &path );
 %Docstring
 Returns a new instance of QgsProcessingModelAlgorithm loaded from the
 file ``path``. This is a thin wrapper around fromFile that handles

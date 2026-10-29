@@ -264,10 +264,10 @@ class OpenModelFromFileAction : public QgsProcessingToolboxAction
 
       settings.setValue( u"Processing/lastModelsDir"_s, QFileInfo( fileName ).absoluteDir().absolutePath() );
 
-      QgsProcessingModelAlgorithm *newModel = QgsProcessingModelAlgorithm::loadModel( fileName );
+      std::unique_ptr< QgsProcessingModelAlgorithm > newModel = QgsProcessingModelAlgorithm::loadModel( fileName );
       if ( !newModel )
         return;
-      QgisApp::instance()->openModelDesignerDialog( newModel );
+      QgisApp::instance()->openModelDesignerDialog( newModel.release() );
     }
 };
 
