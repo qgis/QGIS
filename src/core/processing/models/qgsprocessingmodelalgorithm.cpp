@@ -2048,19 +2048,9 @@ std::unique_ptr< QgsProcessingModelAlgorithm > QgsProcessingModelAlgorithm::load
     alg->setSourceFilePath( path );
     return alg;
   }
-  else
-  {
-    QgsMessageLog::logMessage( QObject::tr( "Could not load model %1" ).arg( path ), QObject::tr( "Processing" ), Qgis::MessageLevel::Critical );
-    QMessageBox::critical(
-      nullptr,
-      QObject::tr( "Open Model" ),
-      QObject::tr(
-        "The selected model could not be loaded.\n"
-        "See the log for more information."
-      )
-    );
-    return nullptr;
-  }
+
+  QgsMessageLog::logMessage( QObject::tr( "Could not load model %1" ).arg( path ), QObject::tr( "Processing" ), Qgis::MessageLevel::Critical );
+  return nullptr;
 }
 
 

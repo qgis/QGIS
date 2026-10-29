@@ -518,8 +518,20 @@ void QgsModelDesignerDialog::setModel( QgsProcessingModelAlgorithm *model )
 void QgsModelDesignerDialog::loadModel( const QString &path )
 {
   std::unique_ptr< QgsProcessingModelAlgorithm > alg = QgsProcessingModelAlgorithm::loadModel( path );
-  if ( alg )
-    setModel( alg.release() );
+  if ( !alg )
+  {
+    QMessageBox::critical(
+      this,
+      QObject::tr( "Open Model" ),
+      QObject::tr(
+        "The selected model could not be loaded.\n"
+        "See the log for more information."
+      )
+    );
+    return;
+  }
+
+  setModel( alg.release() );
 }
 
 void QgsModelDesignerDialog::handleVersionMismatch( const QString &modelVersion ) const
