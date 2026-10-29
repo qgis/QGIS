@@ -594,7 +594,7 @@ void TestQgsAttributeTable::testRegression15974()
   QVERIFY( shpLayer->addFeatures( QgsFeatureList() << f1 << f2 << f3 ) );
   auto dlg = std::make_unique<QgsAttributeTableDialog>( shpLayer.get() );
   QCOMPARE( shpLayer->featureCount(), 3L );
-  mQgisApp->saveEdits( shpLayer.get() );
+  shpLayer->commitChanges();
   QCOMPARE( shpLayer->featureCount(), 3L );
   QCOMPARE( dlg->mMainView->masterModel()->rowCount(), 3 );
   QCOMPARE( dlg->mMainView->mLayerCache->cachedFeatureIds().count(), 3 );
