@@ -5383,12 +5383,17 @@ destination path for a point cloud layer created by the algorithm.
 #include "qgsprocessingparameters.h"
 %End
   public:
-    QgsProcessingParameterPointCloudDestination( const QString &name, const QString &description = QString(), const QVariant &defaultValue = QVariant(), bool optional = false, bool createByDefault = true );
+    QgsProcessingParameterPointCloudDestination(
+      const QString &name, const QString &description = QString(), const QVariant &defaultValue = QVariant(), bool optional = false, bool createByDefault = true, bool limitToVpc = false
+    );
 %Docstring
 Constructor for QgsProcessingParameterPointCloudDestination.
 
 If ``createByDefault`` is ``False`` and the parameter is ``optional``,
 then this destination output will not be created by default.
+
+If ``limitToVpc`` is ``True`` then only virtual point cloud formats (VPC
+and VPZ) will be offered as output formats (since QGIS 4.4).
 %End
 
     static QString typeName();
@@ -5402,11 +5407,17 @@ Returns the type name for the parameter class.
 
     virtual QString valueAsPythonString( const QVariant &value, QgsProcessingContext &context ) const;
 
+    virtual QString asPythonString( QgsProcessing::PythonOutputType outputType = QgsProcessing::PythonOutputType::PythonQgsProcessingAlgorithmSubclass ) const;
+
     virtual QgsProcessingOutputDefinition *toOutputDefinition() const /Factory/;
 
     virtual QString defaultFileExtension() const;
 
     virtual QString createFileFilter() const;
+
+    virtual QVariantMap toVariantMap() const;
+
+    virtual bool fromVariantMap( const QVariantMap &map );
 
 
     virtual QStringList supportedOutputPointCloudLayerExtensions() const;
@@ -5417,10 +5428,31 @@ this parameter.
 .. seealso:: :py:func:`defaultFileExtension`
 %End
 
+    bool limitToVpc() const;
+%Docstring
+Returns ``True`` if the output is limited to virtual point cloud formats
+(VPC and VPZ).
+
+.. seealso:: :py:func:`setLimitToVpc`
+
+.. versionadded:: 4.4
+%End
+
+    void setLimitToVpc( bool limit );
+%Docstring
+Sets whether the output is limited to virtual point cloud formats (VPC
+and VPZ).
+
+.. seealso:: :py:func:`limitToVpc`
+
+.. versionadded:: 4.4
+%End
+
     static QgsProcessingParameterPointCloudDestination *fromScriptCode( const QString &name, const QString &description, bool isOptional, const QString &definition ) /Factory/;
 %Docstring
 Creates a new parameter using the definition from a script code.
 %End
+
 };
 
 class QgsProcessingParameterPointCloudAttribute : QgsProcessingParameterDefinition
