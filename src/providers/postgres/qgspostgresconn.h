@@ -490,6 +490,7 @@ class QgsPostgresConn : public QObject
     static bool allowRasterOverviewTables( const QString &connName );
     static QString schemaToRestrict( const QString &connName );
     static QString sessionRole( const QString &connName );
+    static bool disableCopyInserts( const QString &connName );
 
     /**
      * Duplicates \a src connection settings to a new \a dst connection.

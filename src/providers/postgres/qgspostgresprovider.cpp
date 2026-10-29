@@ -131,6 +131,8 @@ QgsPostgresProvider::QgsPostgresProvider( QString const &uri, const ProviderOpti
     }
   }
 
+  mDisableCopyInserts = mUri.param( u"disableCopyInserts"_s ) == '1'_L1;
+
   if ( mSchemaName.isEmpty() && mTableName.startsWith( '(' ) && mTableName.endsWith( ')' ) )
   {
     mIsQuery = true;
@@ -2330,8 +2332,15 @@ bool QgsPostgresProvider::addFeatures( QgsFeatureList &flist, Flags flags )
     return false;
   }
 
-  conn->lock();
-  const bool returnvalue = flags.testFlag( QgsFeatureSink::BulkLoad ) ? addFeaturesCopy( conn, flist ) : addFeaturesInsert( conn, flist, flags );
+  // COPY cannot wrap values in toTopoGeom()
+  const Qgis::PostgresRelKind kind = flags.testFlag( QgsFeatureSink::FastInsert ) && !mDisableCopyInserts ? relkind() : Qgis::PostgresRelKind::Unknown;
+  const bool useCopy = flags.testFlag( QgsFeatureSink::FastInsert )
+                       && !mDisableCopyInserts
+                       && mSpatialColType
+                            != SctTopoGeometry
+
+                                 conn->lock();
+  const bool returnvalue = useCopy ? addFeaturesCopy( conn, flist ) : addFeaturesInsert( conn, flist, flags );
   conn->unlock();
 
   return returnvalue;
@@ -6077,6 +6086,8 @@ QVariantMap QgsPostgresProviderMetadata::decodeUri( const QString &uri ) const
     uriParts[u"sql"_s] = dsUri.sql();
   if ( !dsUri.param( u"checkPrimaryKeyUnicity"_s ).isEmpty() )
     uriParts[u"checkPrimaryKeyUnicity"_s] = dsUri.param( u"checkPrimaryKeyUnicity"_s );
+  if ( !dsUri.param( u"disableCopyInserts"_s ).isEmpty() )
+    uriParts[u"disableCopyInserts"_s] = dsUri.param( u"disableCopyInserts"_s );
   if ( !dsUri.geometryColumn().isEmpty() )
     uriParts[u"geometrycolumn"_s] = dsUri.geometryColumn();
 
@@ -6120,6 +6131,8 @@ QString QgsPostgresProviderMetadata::encodeUri( const QVariantMap &parts ) const
     dsUri.setSql( parts.value( u"sql"_s ).toString() );
   if ( parts.contains( u"checkPrimaryKeyUnicity"_s ) )
     dsUri.setParam( u"checkPrimaryKeyUnicity"_s, parts.value( u"checkPrimaryKeyUnicity"_s ).toString() );
+  if ( parts.contains( u"disableCopyInserts"_s ) )
+    dsUri.setParam( u"disableCopyInserts"_s, parts.value( u"disableCopyInserts"_s ).toString() );
   if ( parts.contains( u"geometrycolumn"_s ) )
     dsUri.setGeometryColumn( parts.value( u"geometrycolumn"_s ).toString() );
   return dsUri.uri( false );

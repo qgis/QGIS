@@ -11865,17 +11865,12 @@ DatabaseProviderConnectionCapabilities2 = Qgis  # dirty hack since SIP seems to 
 # monkey patching scoped based enum
 Qgis.DatabaseProviderTableImportCapability.SetGeometryColumnName.__doc__ = "Can set the name of the geometry column"
 Qgis.DatabaseProviderTableImportCapability.SetPrimaryKeyName.__doc__ = "Can set the name of the primary key column"
-Qgis.DatabaseProviderTableImportCapability.BulkInsert.__doc__ = "Supports an optional bulk insert mode for faster import of features (e.g. PostgreSQL COPY). \n.. versionadded:: 4.6"
 Qgis.DatabaseProviderTableImportCapability.__doc__ = """Represents capabilities of a database provider connection when importing table data.
 
 .. versionadded:: 3.44
 
 * ``SetGeometryColumnName``: Can set the name of the geometry column
 * ``SetPrimaryKeyName``: Can set the name of the primary key column
-* ``BulkInsert``: Supports an optional bulk insert mode for faster import of features (e.g. PostgreSQL COPY).
-
-  .. versionadded:: 4.6
-
 
 """
 # --

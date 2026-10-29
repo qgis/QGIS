@@ -74,12 +74,6 @@ class CORE_EXPORT QgsFeatureSink
        * this flag is not set.
        */
       RollBackOnErrors = 1 << 2,
-
-      /**
-       * Use the sink's bulk loading mechanism (e.g. PostgreSQL COPY) when adding features, which can be
-       * significantly faster for large numbers of features.
-       */
-      BulkLoad = 1 << 3,
     };
     Q_DECLARE_FLAGS( Flags, Flag )
 

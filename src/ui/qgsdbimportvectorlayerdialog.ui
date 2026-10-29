@@ -145,19 +145,6 @@
         </property>
        </widget>
       </item>
-      <item row="4" column="0" colspan="2">
-       <widget class="QCheckBox" name="mChkBulkInsert">
-        <property name="toolTip">
-         <string>Insert features using the database's bulk insert mechanism (e.g. PostgreSQL COPY), which is significantly faster than individual INSERT statements for large layers.</string>
-        </property>
-        <property name="text">
-         <string>Use bulk insert for faster import</string>
-        </property>
-        <property name="checked">
-         <bool>true</bool>
-        </property>
-       </widget>
-      </item>
      </layout>
     </widget>
    </item>
@@ -389,7 +376,6 @@
   <tabstop>mEditGeometryColumnName</tabstop>
   <tabstop>mCrsSelector</tabstop>
   <tabstop>mEditComment</tabstop>
-  <tabstop>mChkBulkInsert</tabstop>
  </tabstops>
  <resources>
   <include location="../../images/images.qrc"/>

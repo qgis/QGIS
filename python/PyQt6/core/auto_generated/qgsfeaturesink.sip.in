@@ -34,8 +34,6 @@ methods.
       FastInsert,
 
       RollBackOnErrors,
-
-      BulkLoad,
     };
     typedef QFlags<QgsFeatureSink::Flag> Flags;
 

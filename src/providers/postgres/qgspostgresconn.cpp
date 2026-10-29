@@ -2773,6 +2773,11 @@ QgsDataSourceUri QgsPostgresConn::connUri( const QString &connName )
     uri.setParam( "session_role", sessionRole );
   }
 
+  if ( QgsPostgresConn::disableCopyInserts( connName ) )
+  {
+    uri.setParam( "disableCopyInserts", "1" );
+  }
+
   return uri;
 }
 
@@ -2833,6 +2838,12 @@ QString QgsPostgresConn::sessionRole( const QString &connName )
   return settings.value( "/PostgreSQL/connections/" + connName + "/session_role" ).toString();
 }
 
+bool QgsPostgresConn::disableCopyInserts( const QString &connName )
+{
+  QgsSettings settings;
+  return settings.value( "/PostgreSQL/connections/" + connName + "/disableCopyInserts", false ).toBool();
+}
+
 void QgsPostgresConn::deleteConnection( const QString &connName )
 {
   QgsSettings settings;
@@ -2859,6 +2870,7 @@ void QgsPostgresConn::deleteConnection( const QString &connName )
   settings.remove( key + "/session_role" );
   settings.remove( key + "/allowRasterOverviewTables" );
   settings.remove( key + "/schema" );
+  settings.remove( key + "/disableCopyInserts" );
   settings.remove( key );
 }
 
@@ -2888,6 +2900,7 @@ void QgsPostgresConn::duplicateConnection( const QString &src, const QString &ds
   settings.setValue( newKey + u"/authcfg"_s, settings.value( key + u"/authcfg"_s ).toString() );
   settings.setValue( newKey + u"/allowRasterOverviewTables"_s, settings.value( key + u"/allowRasterOverviewTables"_s ).toString() );
   settings.setValue( newKey + u"/schema"_s, settings.value( key + u"/schema"_s ).toString() );
+  settings.setValue( newKey + u"/disableCopyInserts"_s, settings.value( key + u"/disableCopyInserts"_s ).toBool() );
   settings.sync();
 }
 
@@ -3004,6 +3017,10 @@ QString QgsPostgresConn::connectionInfo( const QgsDataSourceUri &uri, const bool
   if ( uri.hasParam( "session_role" ) )
   {
     strUri += " session_role=" + uri.param( "session_role" );
+  }
+  if ( uri.hasParam( "disableCopyInserts" ) )
+  {
+    strUri += " disableCopyInserts=" + uri.param( "disableCopyInserts" );
   }
 
   return strUri;

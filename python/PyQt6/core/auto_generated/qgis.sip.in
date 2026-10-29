@@ -3483,7 +3483,6 @@ The development version
     {
       SetGeometryColumnName,
       SetPrimaryKeyName,
-      BulkInsert,
     };
     typedef QFlags<Qgis::DatabaseProviderTableImportCapability> DatabaseProviderTableImportCapabilities;
 

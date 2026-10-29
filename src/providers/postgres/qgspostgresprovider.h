@@ -484,6 +484,8 @@ class QgsPostgresProvider final : public QgsVectorDataProvider
 
     bool mCheckPrimaryKeyUnicity = true;
 
+    bool mDisableCopyInserts = false;
+
     QgsLayerMetadata mLayerMetadata;
 
     std::unique_ptr<QgsPostgresListener> mListener;

@@ -128,13 +128,6 @@ QgsDbImportVectorLayerDialog::QgsDbImportVectorLayerDialog( QgsAbstractDatabaseP
     mEditGeometryColumnName = nullptr;
   }
 
-  const bool supportsBulkInsert = mConnection->tableImportCapabilities().testFlag( Qgis::DatabaseProviderTableImportCapability::BulkInsert );
-  if ( !supportsBulkInsert )
-  {
-    delete mChkBulkInsert;
-    mChkBulkInsert = nullptr;
-  }
-
   const bool supportsTableComments = mConnection->capabilities2().testFlag( Qgis::DatabaseProviderConnectionCapability2::SetTableComment );
   if ( !supportsTableComments )
   {
@@ -367,11 +360,6 @@ std::unique_ptr<QgsVectorLayerExporterTask> QgsDbImportVectorLayerDialog::create
   if ( mChkDropTable->isChecked() )
   {
     allProviderOptions.insert( u"overwrite"_s, true );
-  }
-
-  if ( mChkBulkInsert && mChkBulkInsert->isChecked() )
-  {
-    allProviderOptions.insert( u"bulkInsert"_s, true );
   }
 
   // This flag tells to the provider that field types do not need conversion -- we have already
