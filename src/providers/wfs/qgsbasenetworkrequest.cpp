@@ -68,9 +68,10 @@ static void insertIntoMemoryCache( const QUrl &url, const QByteArray &response )
   }
 }
 
-QgsBaseNetworkRequest::QgsBaseNetworkRequest( const QgsAuthorizationSettings &auth, const QString &translatedComponent )
+QgsBaseNetworkRequest::QgsBaseNetworkRequest( const QgsAuthorizationSettings &auth, const QString &translatedComponent, bool disableDecompressedSafetyCheckThreshold )
   : mAuth( auth )
   , mTranslatedComponent( translatedComponent )
+  , mDisableDecompressedSafetyCheckThreshold( disableDecompressedSafetyCheckThreshold )
 {
   connect( QgsNetworkAccessManager::instance(), qOverload<QNetworkReply *>( &QgsNetworkAccessManager::requestTimedOut ), this, &QgsBaseNetworkRequest::requestTimedOut );
 }
@@ -186,6 +187,11 @@ bool QgsBaseNetworkRequest::sendGET( const QUrl &url, const QString &acceptHeade
   QgsDebugMsgLevel( u"Calling: %1"_s.arg( modifiedUrl.toDisplayString( QUrl::EncodeSpaces ) ), 4 );
 
   QNetworkRequest request( modifiedUrl );
+
+  if ( mDisableDecompressedSafetyCheckThreshold )
+  {
+    request.setDecompressedSafetyCheckThreshold( -1 );
+  }
 
   mRequestHeaders = extraHeaders;
   if ( !acceptHeader.isEmpty() )

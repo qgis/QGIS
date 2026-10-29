@@ -129,6 +129,7 @@ void QgsWfsDataItemGuiProvider::duplicateConnection( QgsDataItem *item )
   QgsOwsConnection::settingsAuthCfg->setValue( QgsOwsConnection::settingsAuthCfg->value( detailsParameters ), newDetailsParameters );
 
   QgsOwsConnection::settingsHeaders->setValue( QgsOwsConnection::settingsHeaders->value( detailsParameters ), newDetailsParameters );
+  QgsOwsConnection::settingsDisableDecompressedSafetyCheckThreshold->setValue( QgsOwsConnection::settingsDisableDecompressedSafetyCheckThreshold->value( detailsParameters ), newDetailsParameters );
 
   QgsOwsConnection::settingsWfsFeatureMode->setValue( QgsOwsConnection::settingsWfsFeatureMode->value( detailsParameters ), newDetailsParameters );
 

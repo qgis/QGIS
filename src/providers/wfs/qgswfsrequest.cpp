@@ -27,7 +27,7 @@
 using namespace Qt::StringLiterals;
 
 QgsWfsRequest::QgsWfsRequest( const QgsWFSDataSourceURI &uri )
-  : QgsBaseNetworkRequest( uri.auth(), tr( "WFS" ) )
+  : QgsBaseNetworkRequest( uri.auth(), tr( "WFS" ), uri.disableDecompressedSafetyCheckThreshold() )
   , mUri( uri )
 {
   QgsDebugMsgLevel( u"theUri = "_s + uri.uri(), 4 );

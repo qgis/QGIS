@@ -30,7 +30,7 @@ using namespace nlohmann;
 #include <QTextCodec>
 
 QgsOapifLandingPageRequest::QgsOapifLandingPageRequest( const QgsDataSourceUri &uri )
-  : QgsBaseNetworkRequest( QgsAuthorizationSettings( uri.username(), uri.password(), QgsHttpHeaders(), uri.authConfigId() ), "OAPIF" )
+  : QgsBaseNetworkRequest( QgsAuthorizationSettings( uri.username(), uri.password(), QgsHttpHeaders(), uri.authConfigId() ), tr( "OAPIF" ), uri.hasParam( QgsWFSConstants::URI_PARAM_DISABLE_DECOMPRESSED_SAFETY_CHECK_THRESHOLD ) )
   , mUri( uri )
 {
   // Using Qt::DirectConnection since the download might be running on a different thread.

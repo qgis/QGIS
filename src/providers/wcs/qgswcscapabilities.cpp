@@ -144,6 +144,12 @@ bool QgsWcsCapabilities::sendRequest( QString const &url )
   QgsDebugMsgLevel( "url = " + url, 2 );
   mError.clear();
   QNetworkRequest request( url );
+
+  const bool disableDecompressedSafetyCheckThreshold { mUri.hasParam( u"disableDecompressedSafetyCheckThreshold"_s ) };
+  if ( disableDecompressedSafetyCheckThreshold )
+  {
+    request.setDecompressedSafetyCheckThreshold( -1 );
+  }
   QgsSetRequestInitiatorClass( request, u"QgsWcsCapabilities"_s );
   if ( !setAuthorization( request ) )
   {

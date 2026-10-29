@@ -49,6 +49,9 @@ class QgsWFSDataSourceURI
     //! Returns request URL (with SERVICE=WFS parameter)
     QUrl requestUrl( const QString &request, Qgis::HttpMethod method = Qgis::HttpMethod::Get ) const;
 
+    //! Returns whether the decompressed safety check threshold is disabled
+    bool disableDecompressedSafetyCheckThreshold() const;
+
     //! Gets WFS version. Can be auto, 1.0.0, 1.1.0 or 2.0.0.
     QString version() const;
 

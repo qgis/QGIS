@@ -41,7 +41,7 @@ void QgsWmsNewConnection::detectFormat()
 {
   const QString preparedUrl { QgsWmsProvider::prepareUri( url() ) };
   const QgsDataSourceUri uri { preparedUrl };
-  const bool disableDecompressedSafetyCheckThreshold { uri.hasParam( u"DisableDecompressedSafetyCheckThreshold"_s ) };
+  const bool disableDecompressedSafetyCheckThreshold { uri.hasParam( u"disableDecompressedSafetyCheckThreshold"_s ) };
   QgsWmsCapabilitiesDownload capDownload( preparedUrl, authorizationSettings(), true, disableDecompressedSafetyCheckThreshold );
 
   const QgsTemporaryCursorOverride busyCursor { Qt::WaitCursor };
