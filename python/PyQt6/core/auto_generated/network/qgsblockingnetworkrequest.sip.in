@@ -206,6 +206,41 @@ Performs a "put" operation on the specified ``request``, using the given
 .. versionadded:: 3.18
 %End
 
+    ErrorCode patch( QNetworkRequest &request, QIODevice *data, QgsFeedback *feedback = 0 );
+%Docstring
+Performs a "patch" operation on the specified ``request``, using the
+given ``data``.
+
+If an :py:func:`~QgsBlockingNetworkRequest.authCfg` has been set, then
+any authentication configuration required will automatically be applied
+to ``request``. There is no need to manually apply the authentication to
+the request prior to calling this method.
+
+The optional ``feedback`` argument can be used to abort ongoing
+requests.
+
+The method will return NoError if the get operation was successful. The
+contents of the reply can be retrieved by calling
+:py:func:`~QgsBlockingNetworkRequest.reply`.
+
+If an error was encountered then a specific ErrorCode will be returned,
+and a detailed error message can be retrieved by calling
+:py:func:`~QgsBlockingNetworkRequest.errorMessage`.
+
+.. versionadded:: 4.6
+%End
+
+    ErrorCode patch( QNetworkRequest &request, const QByteArray &data, QgsFeedback *feedback = 0 );
+%Docstring
+This is an overloaded function.
+
+Performs a "patch" operation on the specified ``request``, using the
+given ``data``.
+
+.. versionadded:: 4.6
+%End
+
+
     ErrorCode deleteResource( QNetworkRequest &request, QgsFeedback *feedback = 0 );
 %Docstring
 Performs a "delete" operation on the specified ``request``.

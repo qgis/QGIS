@@ -108,6 +108,21 @@ QgsBlockingNetworkRequest::ErrorCode QgsBlockingNetworkRequest::put( QNetworkReq
   return doRequest( Qgis::HttpMethod::Put, request, true, feedback );
 }
 
+QgsBlockingNetworkRequest::ErrorCode QgsBlockingNetworkRequest::patch( QNetworkRequest &request, const QByteArray &data, QgsFeedback *feedback )
+{
+  QByteArray ldata( data );
+  QBuffer buffer( &ldata );
+  buffer.open( QIODevice::ReadOnly );
+  return patch( request, &buffer, feedback );
+}
+
+QgsBlockingNetworkRequest::ErrorCode QgsBlockingNetworkRequest::patch( QNetworkRequest &request, QIODevice *data, QgsFeedback *feedback )
+{
+  mPayloadDataVariant = data;
+  return doRequest( Qgis::HttpMethod::Patch, request, true, feedback );
+}
+
+
 QgsBlockingNetworkRequest::ErrorCode QgsBlockingNetworkRequest::deleteResource( QNetworkRequest &request, QgsFeedback *feedback )
 {
   return doRequest( Qgis::HttpMethod::Delete, request, true, feedback );
@@ -147,6 +162,10 @@ void QgsBlockingNetworkRequest::sendRequestToNetworkAccessManager( const QNetwor
 
     case Qgis::HttpMethod::Delete:
       mReply = QgsNetworkAccessManager::instance()->deleteResource( request );
+      break;
+
+    case Qgis::HttpMethod::Patch:
+      mReply = QgsNetworkAccessManager::instance()->sendCustomRequest( request, "PATCH", std::get<QIODevice *>( mPayloadDataVariant ) );
       break;
   };
 }
