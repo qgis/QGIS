@@ -57,7 +57,12 @@ from qgis.PyQt.QtCore import (
     pyqtSlot,
 )
 from qgis.PyQt.QtGui import QKeySequence
-from qgis.PyQt.QtWidgets import QAction, QMenu, QWidget
+from qgis.PyQt.QtWidgets import (
+    QAction,
+    QMenu,
+    QMessageBox,
+    QWidget,
+)
 from qgis.utils import iface
 
 from processing.core.Processing import Processing
@@ -167,6 +172,14 @@ class ProcessingModelItem(QgsDataItem):
     def editModel(self):
         alg = QgsProcessingModelAlgorithm.loadModel(self.path())
         if not alg:
+            QMessageBox.critical(
+                None,
+                QObject.tr("Open Model"),
+                QObject.tr(
+                    "The selected model could not be loaded.\n"
+                    "See the log for more information."
+                ),
+            )
             return
         iface.openModelDesigner(alg)
 

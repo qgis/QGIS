@@ -266,7 +266,17 @@ class OpenModelFromFileAction : public QgsProcessingToolboxAction
 
       std::unique_ptr< QgsProcessingModelAlgorithm > newModel = QgsProcessingModelAlgorithm::loadModel( fileName );
       if ( !newModel )
+      {
+        QMessageBox::critical(
+          nullptr,
+          QObject::tr( "Open Model" ),
+          QObject::tr(
+            "The selected model could not be loaded.\n"
+            "See the log for more information."
+          )
+        );
         return;
+      }
       QgisApp::instance()->appProcessingUtils()->openModelDesignerDialog( newModel.release() );
     }
 };
@@ -928,7 +938,6 @@ QgsModelDesignerDialog *QgsAppProcessingUtils::openModelDesignerDialog( QgsProce
   {
     for ( QgsModelDesignerDialog *designer : constMModelDesignerDialogs )
     {
-      // check for file path or model provider ?
       if ( ( model->provider()->id() == QgsProcessing::MODEL_PROVIDER_ID && designer->model()->sourceFilePath() == model->sourceFilePath() )
            || ( model->provider()->id() == QgsProcessing::PROJECT_PROVIDER_ID && designer->model()->name() == model->name() ) )
       {
