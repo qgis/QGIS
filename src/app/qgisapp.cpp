@@ -1816,7 +1816,7 @@ QgisApp::QgisApp(
     toggleMapTips( true );
   }
 
-  connect( mActionModelDesigner, &QAction::triggered, mAppProcessingUtils.get(), [] { QgisApp::instance()->openModelDesignerDialog( nullptr ); } );
+  connect( mActionModelDesigner, &QAction::triggered, mAppProcessingUtils.get(), [this] { mAppProcessingUtils->openModelDesignerDialog( nullptr ); } );
   connect( mProcessingHistoryAction, &QAction::triggered, mAppProcessingUtils.get(), &QgsAppProcessingUtils::openHistory );
 
   mPythonMacrosEnabled = false;
@@ -9283,54 +9283,6 @@ QgsLayoutDesignerDialog *QgisApp::openLayoutDesignerDialog( QgsMasterLayoutInter
   newDesigner->open();
   emit layoutDesignerOpened( newDesigner->iface() );
 
-  return newDesigner;
-}
-
-QgsModelDesignerDialog *QgisApp::openModelDesignerDialog( QgsProcessingModelAlgorithm *model )
-{
-  // maybe a model designer already open for this model
-  const QSet<QgsModelDesignerDialog *> constMModelDesignerDialogs = mModelDesignerDialogs;
-  if ( model )
-  {
-    for ( QgsModelDesignerDialog *designer : constMModelDesignerDialogs )
-    {
-      // check for file path or model provider ?
-      if ( ( model->provider()->id() == QgsProcessing::MODEL_PROVIDER_ID && designer->model()->sourceFilePath() == model->sourceFilePath() )
-           || ( model->provider()->id() == QgsProcessing::PROJECT_PROVIDER_ID && designer->model()->name() == model->name() ) )
-      {
-        designer->show();
-        designer->activate();
-        designer->raise();
-        return designer;
-      }
-    }
-  }
-
-  //nope, so make a new one
-  //important - no parent set, otherwise Windows 10 sets the dialog as always on top of the QGIS window!!
-  QgsModelDesignerDialog *newDesigner = new QgsModelDesignerDialog( nullptr );
-
-  if ( model )
-  {
-    newDesigner->setModel( model );
-
-    const QString providerId = model->provider()->id();
-    QObject::connect( newDesigner, &QgsModelDesignerDialog::modelUpdated, newDesigner, [providerId]() { QgsApplication::processingRegistry()->providerById( providerId )->refreshAlgorithms(); } );
-  }
-  else
-  {
-    // This is an empty model for now, but we need to connect anyways because it might be saved at some point
-    QObject::connect( newDesigner, &QgsModelDesignerDialog::modelUpdated, newDesigner, []() {
-      QgsApplication::processingRegistry()->providerById( QgsProcessing::MODEL_PROVIDER_ID )->refreshAlgorithms();
-    } );
-  }
-
-  connect( newDesigner, &QgsModelDesignerDialog::aboutToClose, newDesigner, [this, newDesigner] { mModelDesignerDialogs.remove( newDesigner ); } );
-
-  //add it to the map of existing model designers
-  mModelDesignerDialogs.insert( newDesigner );
-
-  newDesigner->show();
   return newDesigner;
 }
 
