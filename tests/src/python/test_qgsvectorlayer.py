@@ -2723,6 +2723,20 @@ class TestQgsVectorLayer(QgisTestCase, FeatureSourceTestCase):
         fet = next(layer.getFeatures())
         self.assertEqual(fet["test2"], 0)
 
+        # expressionField methods with invalid indexes should not crash
+        self.assertEqual(layer.expressionField(42), "")
+        self.assertEqual(layer.expressionField(-42), "")
+
+        layer.updateExpressionField(42, "foo")
+        layer.updateExpressionField(-42, "bar")
+        self.assertEqual(layer.expressionField(idx), "sum(test2)")
+        self.assertEqual(layer.fields().count(), cnt + 1)
+
+        layer.removeExpressionField(42)
+        self.assertEqual(layer.fields().count(), cnt + 1)
+        layer.removeExpressionField(-42)
+        self.assertEqual(layer.fields().count(), cnt + 1)
+
     def test_ExpressionFieldEllipsoidLengthCalculation(self):
         # create a temporary layer
         temp_layer = QgsVectorLayer(

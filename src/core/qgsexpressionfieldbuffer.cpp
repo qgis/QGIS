@@ -30,16 +30,25 @@ void QgsExpressionFieldBuffer::addExpression( const QString &exp, const QgsField
 
 void QgsExpressionFieldBuffer::removeExpression( int index )
 {
+  if ( index < 0 || index >= mExpressions.size() )
+    return;
+
   mExpressions.removeAt( index );
 }
 
 void QgsExpressionFieldBuffer::renameExpression( int index, const QString &name )
 {
+  if ( index < 0 || index >= mExpressions.size() )
+    return;
+
   mExpressions[index].field.setName( name );
 }
 
 void QgsExpressionFieldBuffer::updateExpression( int index, const QString &exp )
 {
+  if ( index < 0 || index >= mExpressions.size() )
+    return;
+
   mExpressions[index].cachedExpression = QgsExpression( exp );
 }
 

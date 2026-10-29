@@ -291,6 +291,12 @@ class GUI_EXPORT QgsAttributeForm : public QWidget
      */
     void openFilteredFeaturesAttributeTable( const QString &filter );
 
+    /**
+     * Emitted when the editable state of the attribute form has changed.
+     * \since QGIS 4.4
+     */
+    void editableChanged();
+
   public slots:
 
     /**
@@ -589,6 +595,7 @@ class GUI_EXPORT QgsAttributeForm : public QWidget
     friend class TestQgsAttributeForm;
     friend class TestQgsValueRelationWidgetWrapper;
     friend class TestQgsWidgetsConfigDlg;
+    friend class TestQgsQmlWidgetWrapper;
 };
 
 #endif // QGSATTRIBUTEFORM_H

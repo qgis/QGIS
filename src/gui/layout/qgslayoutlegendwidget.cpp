@@ -1294,9 +1294,9 @@ void QgsLayoutLegendWidget::mLayerExpressionButton_clicked()
 
   // Passing the vector layer to expression dialog exposes the fields, but we still want generic
   // layer variables
-  QgsExpressionContextScope *limitedLayerScope { QgsExpressionContextUtils::layerScope( vl ) };
+  std::unique_ptr<QgsExpressionContextScope> limitedLayerScope = QgsExpressionContextUtils::layerScope( vl );
   limitedLayerScope->setFields( QgsFields() );
-  legendContext.appendScope( limitedLayerScope );
+  legendContext.appendScope( std::move( limitedLayerScope ) );
 
   QgsExpressionBuilderDialog expressiondialog( nullptr, currentExpression, nullptr, u"generic"_s, legendContext );
   if ( expressiondialog.exec() )

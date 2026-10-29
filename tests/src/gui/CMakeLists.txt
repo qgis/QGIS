@@ -86,6 +86,7 @@ set(TESTS
   testqgslabelingwidget.cpp
   testqgsmeshrendererscalarsettingswidget.cpp
   testqgswidgetsconfigdlg.cpp
+  testqgsqmlwidgetwrapper.cpp
 )
 
 foreach(TESTSRC ${TESTS})

@@ -62,9 +62,9 @@ void QgsExpressionNode::NodeList::append( QgsExpressionNode::NamedNode *node )
   delete node;
 }
 
-QgsExpressionNode::NodeList *QgsExpressionNode::NodeList::clone() const
+std::unique_ptr<QgsExpressionNode::NodeList> QgsExpressionNode::NodeList::clone() const
 {
-  NodeList *nl = new NodeList;
+  auto nl = std::make_unique<NodeList>();
   for ( QgsExpressionNode *node : mList )
   {
     nl->mList.append( node->clone() );
@@ -1161,7 +1161,7 @@ bool QgsExpressionNodeBinaryOperator::prepareNode( QgsExpression *parent, const 
         }
         else
         {
-          auto inNode = std::make_unique<QgsExpressionNodeInOperator>( new QgsExpressionNodeColumnRef( fieldName ), orValuesIt.value().clone() );
+          auto inNode = std::make_unique<QgsExpressionNodeInOperator>( new QgsExpressionNodeColumnRef( fieldName ), orValuesIt.value().clone().release() );
           if ( currentNode )
           {
             currentNode = std::make_unique<QgsExpressionNodeBinaryOperator>( boOr, currentNode.release(), inNode.release() );
@@ -1548,7 +1548,7 @@ QString QgsExpressionNodeInOperator::dump() const
 
 QgsExpressionNode *QgsExpressionNodeInOperator::clone() const
 {
-  QgsExpressionNodeInOperator *copy = new QgsExpressionNodeInOperator( mNode->clone(), mList->clone(), mNotIn );
+  QgsExpressionNodeInOperator *copy = new QgsExpressionNodeInOperator( mNode->clone(), mList->clone().release(), mNotIn );
   cloneTo( copy );
   return copy;
 }
@@ -1596,7 +1596,7 @@ QgsExpressionNode *QgsExpressionNodeInOperator::simplifiedNode() const
   // if target node and all items in the list are literals, we can just directly evaluate and replace with a literal
   if ( allLiterals )
   {
-    QgsExpressionNodeInOperator tempNode( simplifiedTargetNode->clone(), simplifiedList->clone(), mNotIn );
+    QgsExpressionNodeInOperator tempNode( simplifiedTargetNode->clone(), simplifiedList->clone().release(), mNotIn );
     QgsExpression parentExp;
     QVariant result = tempNode.eval( &parentExp, nullptr );
     if ( !parentExp.hasEvalError() )
@@ -1842,7 +1842,7 @@ bool QgsExpressionNodeFunction::needsGeometry() const
 QgsExpressionNode *QgsExpressionNodeFunction::clone() const
 {
   QgsExpression::SharedFunctionPtr func = function();
-  QgsExpressionNodeFunction *copy = new QgsExpressionNodeFunction( func, mArgs ? mArgs->clone() : nullptr );
+  QgsExpressionNodeFunction *copy = new QgsExpressionNodeFunction( func, mArgs ? mArgs->clone().release() : nullptr );
   cloneTo( copy );
   return copy;
 }
@@ -2347,7 +2347,7 @@ QgsExpressionNode *QgsExpressionNodeCondition::clone() const
   WhenThenList conditions;
   conditions.reserve( mConditions.size() );
   for ( WhenThen *wt : mConditions )
-    conditions.append( wt->clone() );
+    conditions.append( wt->clone().release() );
 
   QgsExpressionNodeCondition *copy = new QgsExpressionNodeCondition( conditions, mElseExp ? mElseExp->clone() : nullptr );
   cloneTo( copy );
@@ -2600,9 +2600,9 @@ QgsExpressionNodeCondition::WhenThen::WhenThen( QgsExpressionNode *whenExp, QgsE
 QgsExpressionNodeCondition::WhenThen::~WhenThen()
 {}
 
-QgsExpressionNodeCondition::WhenThen *QgsExpressionNodeCondition::WhenThen::clone() const
+std::unique_ptr<QgsExpressionNodeCondition::WhenThen> QgsExpressionNodeCondition::WhenThen::clone() const
 {
-  return new WhenThen( mWhenExp->clone(), mThenExp->clone() );
+  return std::make_unique<WhenThen>( mWhenExp->clone(), mThenExp->clone() );
 }
 
 QString QgsExpressionNodeBinaryOperator::text() const
