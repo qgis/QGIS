@@ -167,7 +167,7 @@ bool QgsVectorLayerCache::featureAtId( QgsFeatureId featureId, QgsFeature &featu
 
   if ( cachedFeature )
   {
-    feature = QgsFeature( *cachedFeature->feature() );
+    feature = cachedFeature->feature();
     featureFound = true;
   }
   else
@@ -205,7 +205,7 @@ bool QgsVectorLayerCache::featureAtIdWithAllAttributes( QgsFeatureId featureId, 
 
   if ( cachedFeature && cachedFeature->allAttributesFetched() )
   {
-    feature = QgsFeature( *cachedFeature->feature() );
+    feature = cachedFeature->feature();
     featureFound = true;
   }
   else if ( mLayer->getFeatures( QgsFeatureRequest().setFilterFid( featureId ).setFlags( !mCacheGeometry ? Qgis::FeatureRequestFlag::NoGeometry : Qgis::FeatureRequestFlags() ) ).nextFeature( feature ) )
@@ -230,7 +230,7 @@ bool QgsVectorLayerCache::completeFeatureAtId( QgsFeatureId featureId, QgsFeatur
 
   if ( cachedFeature && cachedFeature->allAttributesFetched() && cachedFeature->geometryFetched() )
   {
-    feature = QgsFeature( *cachedFeature->feature() );
+    feature = cachedFeature->feature();
     featureFound = true;
   }
   else if ( mLayer->getFeatures( QgsFeatureRequest().setFilterFid( featureId ) ).nextFeature( feature ) )
@@ -315,7 +315,7 @@ void QgsVectorLayerCache::onAttributeValueChanged( QgsFeatureId fid, int field, 
 
   if ( cachedFeat )
   {
-    cachedFeat->mFeature->setAttribute( field, value );
+    cachedFeat->mFeature.setAttribute( field, value );
   }
 
   emit attributeValueChanged( fid, field, value );
@@ -398,7 +398,7 @@ void QgsVectorLayerCache::geometryChanged( QgsFeatureId fid, const QgsGeometry &
 
   if ( cachedFeat )
   {
-    cachedFeat->mFeature->setGeometry( geom );
+    cachedFeat->mFeature.setGeometry( geom );
   }
 }
 
