@@ -97,7 +97,7 @@ void QgsPdalBuildVpcAlgorithm::initAlgorithm( const QVariantMap & )
   );
   addParameter( overviewLength.release() );
 
-  addParameter( new QgsProcessingParameterPointCloudDestination( u"OUTPUT"_s, QObject::tr( "Virtual point cloud" ) ) );
+  addParameter( new QgsProcessingParameterPointCloudDestination( u"OUTPUT"_s, QObject::tr( "Virtual point cloud" ), QVariant(), false, true, true ) );
 }
 
 QStringList QgsPdalBuildVpcAlgorithm::createArgumentLists( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
