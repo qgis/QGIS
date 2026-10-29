@@ -334,7 +334,7 @@ bool QgsEptPointCloudIndex::loadSchema( const QByteArray &dataJson )
 
     if ( schemaObj.contains( "counts"_L1 ) )
     {
-      QMap< int, int > classCounts;
+      QMap< int, qint64 > classCounts;
       const QJsonArray counts = schemaObj.value( "counts"_L1 ).toArray();
       for ( const QJsonValue &count : counts )
       {
