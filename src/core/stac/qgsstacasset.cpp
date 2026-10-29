@@ -56,7 +56,16 @@ QStringList QgsStacAsset::roles() const
 bool QgsStacAsset::isCloudOptimized() const
 {
   const QString format = formatName();
-  return format == "COG"_L1 || format == "COPC"_L1 || format == "EPT"_L1 || format == "Zarr"_L1 || format == "Parquet"_L1 || format == "FGB"_L1 || format == "PMTiles"_L1 || format == "TileDB"_L1;
+  return format == "COG"_L1
+         || format == "COPC"_L1
+         || format == "EPT"_L1
+         || format == "Zarr"_L1
+         || format == "Parquet"_L1
+         || format == "FGB"_L1
+         || format == "PMTiles"_L1
+         || format == "TileDB"_L1
+         || format == "VPC"_L1
+         || format == "VRT"_L1;
 }
 
 QString QgsStacAsset::formatName() const
@@ -75,6 +84,10 @@ QString QgsStacAsset::formatName() const
     return u"FGB"_s;
   else if ( mMediaType == "application/vnd.pmtiles"_L1 )
     return u"PMTiles"_s;
+  else if ( mMediaType == "application/vnd.vpc; profile=cloud-optimized"_L1 || mMediaType == "application/vnd.vpz; profile=cloud-optimized"_L1 )
+    return u"VPC"_s;
+  else if ( mMediaType == "application/vnd.vrt; profile=cloud-optimized"_L1 )
+    return u"VRT"_s;
   else if ( mMediaType.contains( "tiledb"_L1, Qt::CaseInsensitive ) )
     return u"TileDB"_s;
   return QString();
@@ -135,6 +148,12 @@ QgsMimeDataUtils::Uri QgsStacAsset::uri( const QString &authcfg ) const
       uri.uri = u"%1|option:ZOOM_LEVEL_AUTO=YES"_s.arg( uri.uri );
     }
   }
+  else if ( formatName() == "VRT"_L1 )
+  {
+    uri.layerType = u"raster"_s;
+    uri.providerKey = u"gdal"_s;
+    uri.uri = href();
+  }
   else if ( formatName() == "COPC"_L1 )
   {
     uri.layerType = u"pointcloud"_s;
@@ -147,6 +166,14 @@ QgsMimeDataUtils::Uri QgsStacAsset::uri( const QString &authcfg ) const
   {
     uri.layerType = u"pointcloud"_s;
     uri.providerKey = u"ept"_s;
+    uri.uri = href();
+    if ( !authcfg.isEmpty() )
+      uri.uri.append( u" authcfg='%1'"_s.arg( authcfg ) );
+  }
+  else if ( formatName() == "VPC"_L1 )
+  {
+    uri.layerType = u"pointcloud"_s;
+    uri.providerKey = u"vpc"_s;
     uri.uri = href();
     if ( !authcfg.isEmpty() )
       uri.uri.append( u" authcfg='%1'"_s.arg( authcfg ) );
