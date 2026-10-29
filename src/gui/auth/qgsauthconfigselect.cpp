@@ -256,7 +256,7 @@ bool QgsAuthConfigSelect::authCfgDetailsDisplayed() const
   QStringList nonEditableAuthStores = s.value( u"qgis/detailsNotDisplayedAuthStores"_s ).toStringList();
   for ( auto it = nonEditableAuthStores.constBegin(); it != nonEditableAuthStores.constEnd(); ++it )
   {
-    QgsAuthConfigurationStorage *authCfgStorage = QgsApplication::authManager()->authConfigurationStorageRegistry()->storage( *it );
+    const QgsAuthConfigurationStorage *authCfgStorage = QgsApplication::authManager()->authConfigurationStorageRegistry()->storage( *it );
     if ( authCfgStorage )
     {
       if ( authCfgStorage->methodConfigExists( mAuthCfg ) )
