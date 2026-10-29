@@ -111,6 +111,7 @@ bool QgsWFSGetFeature::request( bool synchronous, const QString &WFSVersion, con
     case Qgis::HttpMethod::Head:
     case Qgis::HttpMethod::Put:
     case Qgis::HttpMethod::Delete:
+    case Qgis::HttpMethod::Patch:
       // not supported, impossible to hit
       break;
   }

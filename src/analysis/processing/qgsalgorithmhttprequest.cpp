@@ -41,12 +41,12 @@ QString QgsHttpRequestAlgorithm::name() const
 
 QString QgsHttpRequestAlgorithm::displayName() const
 {
-  return tr( "HTTP(S) POST/GET request" );
+  return tr( "HTTP(S) request" );
 }
 
 QString QgsHttpRequestAlgorithm::shortDescription() const
 {
-  return tr( "Performs a HTTP(S) POST/GET request and returns the result code, error message and the data." );
+  return tr( "Performs a HTTP(S) POST/GET/HEAD/PUT/DELETE/PATCH request and returns the result code, error message and the data." );
 }
 
 QStringList QgsHttpRequestAlgorithm::tags() const
@@ -83,12 +83,13 @@ void QgsHttpRequestAlgorithm::initAlgorithm( const QVariantMap & )
 {
   addParameter( new QgsProcessingParameterString( u"URL"_s, tr( "URL" ), QVariant(), false, false ) );
 
-  auto methodParam = std::make_unique<QgsProcessingParameterEnum>( u"METHOD"_s, QObject::tr( "Method" ), QStringList() << u"GET"_s << u"POST"_s, false, 0 );
+  auto methodParam
+    = std::make_unique<QgsProcessingParameterEnum>( u"METHOD"_s, QObject::tr( "Method" ), QStringList() << u"GET"_s << u"POST"_s << u"HEAD"_s << u"PUT"_s << u"DELETE"_s << u"PATCH"_s, false, 0 );
   methodParam->setHelp( QObject::tr( "The HTTP method to use for the request" ) );
   addParameter( methodParam.release() );
 
-  auto dataParam = std::make_unique<QgsProcessingParameterString>( u"DATA"_s, tr( "POST data" ), QVariant(), false, true );
-  dataParam->setHelp( QObject::tr( "The data to add in the body if the request is a POST" ) );
+  auto dataParam = std::make_unique<QgsProcessingParameterString>( u"DATA"_s, tr( "POST/PUT/PATCH data" ), QVariant(), false, true );
+  dataParam->setHelp( QObject::tr( "The data to add in the body if the request is a POST, PUT or PATCH" ) );
   addParameter( dataParam.release() );
 
   auto outputFileParam = std::make_unique<QgsProcessingParameterFileDestination>( u"OUTPUT"_s, tr( "File destination" ), QObject::tr( "All files (*.*)" ), QVariant(), true, false );
@@ -143,9 +144,28 @@ QVariantMap QgsHttpRequestAlgorithm::processAlgorithm( const QVariantMap &parame
     }
 
     case Qgis::HttpMethod::Head:
+    {
+      errorCode = blockingRequest.head( request );
+      break;
+    }
+
     case Qgis::HttpMethod::Put:
+    {
+      errorCode = blockingRequest.put( request, data.toUtf8() );
+      break;
+    }
+
     case Qgis::HttpMethod::Delete:
-      throw QgsProcessingException( QObject::tr( "Unsupported HTTP method: %1" ).arg( qgsEnumValueToKey( httpMethod ) ) );
+    {
+      errorCode = blockingRequest.deleteResource( request );
+      break;
+    }
+
+    case Qgis::HttpMethod::Patch:
+    {
+      errorCode = blockingRequest.patch( request, data.toUtf8() );
+      break;
+    }
   }
 
   // Handle reply
