@@ -24,7 +24,7 @@
     double maximum;
     double mean;
     double stDev;
-    int count;
+    qint64  count;
 
     int singleClassCount( int cls ) const;
 %Docstring
