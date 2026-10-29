@@ -54,10 +54,8 @@ class GUI_EXPORT QgsAuthConfigSelect : public QWidget, private Ui::QgsAuthConfig
     //! Sets key of layer provider, if applicable
     void setDataProviderKey( const QString &key );
 
-#ifndef SIP_RUN
     //! Settings entry details not displayed auth stores
-    static const QgsSettingsEntryStringList *settingsDetailsNotDisplayedAuthStores;
-#endif
+    static const QgsSettingsEntryStringList *settingsDetailsNotDisplayedAuthStores SIP_SKIP;
 
   signals:
     //! Emitted when authentication config is changed or missing

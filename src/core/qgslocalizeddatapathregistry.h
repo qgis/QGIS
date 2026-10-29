@@ -68,8 +68,10 @@ class CORE_EXPORT QgsLocalizedDataPathRegistry
     //! Unregisters a localized path
     void unregisterPath( const QString &path );
 
+#ifndef SIP_RUN
     //! Settings entry localized data paths
-    static const QgsSettingsEntryStringList *settingsLocalizedDataPaths SIP_SKIP;
+    static const QgsSettingsEntryStringList *settingsLocalizedDataPaths;
+#endif
 
   private:
 #ifdef SIP_RUN
