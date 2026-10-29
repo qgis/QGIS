@@ -27,6 +27,7 @@
 #include "qgsauthmethodmetadata.h"
 #include "qgslogger.h"
 #include "qgssettings.h"
+#include "qgssettingstree.h"
 
 #include <QHash>
 #include <QMessageBox>
@@ -35,6 +36,9 @@
 #include <QTimer>
 
 #include "moc_qgsauthconfigselect.cpp"
+
+const QgsSettingsEntryStringList *QgsAuthConfigSelect::settingsDetailsNotDisplayedAuthStores
+  = new QgsSettingsEntryStringList( u"detailsNotDisplayedAuthStores"_s, QgsSettingsTree::sTreeQgis, QStringList(), u"List of AuthStore ids where the details (e.g. user, pw) should not be displayed in the auth config select dialog"_s );
 
 using namespace Qt::StringLiterals;
 
@@ -253,7 +257,7 @@ void QgsAuthConfigSelect::btnConfigEdit_clicked()
 bool QgsAuthConfigSelect::authCfgDetailsDisplayed() const
 {
   QgsSettings s;
-  const QStringList nonEditableAuthStores = s.value( u"qgis/detailsNotDisplayedAuthStores"_s ).toStringList();
+  const QStringList nonEditableAuthStores = settingsDetailsNotDisplayedAuthStores->value();
   for ( auto it = nonEditableAuthStores.constBegin(); it != nonEditableAuthStores.constEnd(); ++it )
   {
     const QgsAuthConfigurationStorage *authCfgStorage = QgsApplication::authManager()->authConfigurationStorageRegistry()->storage( *it );
