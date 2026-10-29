@@ -97,25 +97,29 @@ QList<QgsExpressionContextScope> QgsSymbolWidgetContext::additionalExpressionCon
   return mAdditionalScopes;
 }
 
-QList<QgsExpressionContextScope *> QgsSymbolWidgetContext::globalProjectAtlasMapLayerScopes( const QgsMapLayer *layer ) const
+std::vector<std::unique_ptr<QgsExpressionContextScope>> QgsSymbolWidgetContext::globalProjectAtlasMapLayerScopes( const QgsMapLayer *layer ) const
 {
-  QList<QgsExpressionContextScope *> scopes;
-  scopes << QgsExpressionContextUtils::globalScope() << QgsExpressionContextUtils::projectScope( QgsProject::instance() ) << QgsExpressionContextUtils::atlasScope( nullptr );
+  std::vector<std::unique_ptr<QgsExpressionContextScope>> scopes;
+  scopes.push_back( QgsExpressionContextUtils::globalScope() );
+  scopes.push_back( QgsExpressionContextUtils::projectScope( QgsProject::instance() ) );
+  scopes.push_back( QgsExpressionContextUtils::atlasScope( nullptr ) );
   if ( mMapCanvas )
   {
-    scopes << QgsExpressionContextUtils::mapSettingsScope( mMapCanvas->mapSettings() ) << mMapCanvas->defaultExpressionContextScope() << new QgsExpressionContextScope( mMapCanvas->expressionContextScope() );
+    scopes.push_back( QgsExpressionContextUtils::mapSettingsScope( mMapCanvas->mapSettings() ) );
+    scopes.push_back( mMapCanvas->defaultExpressionContextScope() );
+    scopes.push_back( std::make_unique<QgsExpressionContextScope>( mMapCanvas->expressionContextScope() ) );
 
     if ( const QgsExpressionContextScopeGenerator *generator = dynamic_cast<const QgsExpressionContextScopeGenerator *>( mMapCanvas->temporalController() ) )
     {
-      scopes << generator->createExpressionContextScope();
+      scopes.push_back( std::unique_ptr<QgsExpressionContextScope>( generator->createExpressionContextScope() ) );
     }
   }
   else
   {
-    scopes << QgsExpressionContextUtils::mapSettingsScope( QgsMapSettings() );
+    scopes.push_back( QgsExpressionContextUtils::mapSettingsScope( QgsMapSettings() ) );
   }
   if ( layer )
-    scopes << QgsExpressionContextUtils::layerScope( layer );
+    scopes.push_back( QgsExpressionContextUtils::layerScope( layer ) );
   return scopes;
 }
 

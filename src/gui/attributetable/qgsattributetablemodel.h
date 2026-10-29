@@ -63,9 +63,10 @@ class GUI_EXPORT QgsAttributeTableModel : public QAbstractTableModel
     {
       FeatureId SIP_MONKEYPATCH_COMPAT_NAME( FeatureIdRole ) = Qt::UserRole, //!< Get the feature id of the feature in this row
       FieldIndex SIP_MONKEYPATCH_COMPAT_NAME( FieldIndexRole ),              //!< Get the field index of this column
+      ColumnType,                                                            //!< The type of a given column. \since QGIS 4.4
       User SIP_MONKEYPATCH_COMPAT_NAME( UserRole ),                          //!< Start further roles starting from this role
       // Insert new values here, SortRole needs to be the last one
-      Sort SIP_MONKEYPATCH_COMPAT_NAME( SortRole ), //!< Role used for sorting start here
+      Sort SIP_MONKEYPATCH_COMPAT_NAME( SortRole ) = User + 1000, //!< Role used for sorting start here
     };
     Q_ENUM( CustomRole )
     // *INDENT-ON*

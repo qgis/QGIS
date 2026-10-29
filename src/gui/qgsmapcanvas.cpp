@@ -718,9 +718,9 @@ QgsMapLayer *QgsMapCanvas::currentLayer()
   return mCurrentLayer;
 }
 
-QgsExpressionContextScope *QgsMapCanvas::defaultExpressionContextScope() const
+std::unique_ptr<QgsExpressionContextScope> QgsMapCanvas::defaultExpressionContextScope() const
 {
-  QgsExpressionContextScope *s = new QgsExpressionContextScope( QObject::tr( "Map Canvas" ) );
+  auto s = std::make_unique<QgsExpressionContextScope>( QObject::tr( "Map Canvas" ) );
   s->setVariable( u"canvas_cursor_point"_s, QgsGeometry::fromPointXY( cursorPoint() ), true );
   return s;
 }

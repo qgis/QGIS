@@ -35,16 +35,16 @@ class CORE_EXPORT QgsMapRendererParallelJob : public QgsMapRendererQImageJob
     QgsMapRendererParallelJob( const QgsMapSettings &settings );
     ~QgsMapRendererParallelJob() override;
 
-    void cancel() override;
-    void cancelWithoutBlocking() override;
-    void waitForFinished() override;
-    bool isActive() const override;
+    void cancel() final;
+    void cancelWithoutBlocking() final;
+    void waitForFinished() final;
+    bool isActive() const final;
 
-    bool usedCachedLabels() const override;
-    QgsLabelingResults *takeLabelingResults() SIP_TRANSFER override;
+    bool usedCachedLabels() const final;
+    QgsLabelingResults *takeLabelingResults() final SIP_TRANSFER;
 
     // from QgsMapRendererJobWithPreview
-    QImage renderedImage() override;
+    QImage renderedImage() final;
 
   private slots:
     //! layers are rendered, labeling is still pending

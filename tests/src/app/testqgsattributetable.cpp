@@ -646,8 +646,9 @@ void TestQgsAttributeTable::testOrderColumn()
 
   qDebug() << filterModel->mapFromSource( filterModel->sourceModel()->index( 0, 0 ) );
 
-  // column 0 is indeed column 2 since we moved it
-  QCOMPARE( filterModel->sortColumn(), 2 );
+  // the sort column is always the first one -- the actual value here doesn't matter as we return the
+  // same data for the sort role regardless of the column, it just needs to be a valid column
+  QCOMPARE( filterModel->sortColumn(), 0 );
 
   // Assume an action column at the index 0,3
   // When we request the source index, it should be invalid (because there is no source of this column)

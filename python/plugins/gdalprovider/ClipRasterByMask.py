@@ -398,6 +398,10 @@ class ClipRasterByMask(GdalAlgorithm):
         arguments.append("-cl")
         arguments.append(mask_details.layer_name)
 
+        if mask_details.subset_string:
+            arguments.append("-cwhere")
+            arguments.append(mask_details.subset_string)
+
         if self.parameterAsBoolean(parameters, self.CROP_TO_CUTLINE, context):
             arguments.append("-crop_to_cutline")
 
