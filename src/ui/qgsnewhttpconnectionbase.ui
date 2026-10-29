@@ -166,7 +166,7 @@
           <item row="4" column="1">
            <widget class="QCheckBox" name="cbxDisableDecompressedSafetyCheckThreshold">
             <property name="toolTip">
-             <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Check this option in case of error &amp;quot;The server returned a compressed response that exceeds the maximum allowed size&amp;quot; only if you trust this server and you believe that the error is a false positive.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+             <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Check this option in case of error &amp;quot;The server returned a compressed response that exceeds the safety check limits&amp;quot; only if you trust this server and you believe that the error is a false positive.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
             </property>
             <property name="text">
              <string>Disable decompressed safety check threshold</string>

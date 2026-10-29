@@ -731,7 +731,15 @@ void QgsBaseNetworkRequest::replyFinished()
     }
     else
     {
-      mErrorMessage = errorMessageWithReason( mReply->errorString() );
+      QString errorString { mReply->errorString() };
+      if ( errorString.contains( u"The decompressed output exceeds the limits specified by QNetworkRequest::decompressedSafetyCheckThreshold"_s ) )
+      {
+        errorString += tr(
+          "\nThe server returned a compressed response that exceeds the safety check limits. "
+          "If you trust this server you can disable this check in the WFS server connection settings."
+        );
+      }
+      mErrorMessage = errorMessageWithReason( errorString );
       const QString replyContent = mReply->readAll();
       QDomDocument exceptionDoc;
       QString errorMsg;
