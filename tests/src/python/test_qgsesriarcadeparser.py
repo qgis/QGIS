@@ -2556,6 +2556,124 @@ return 1; // green
             QgsEsriArcadeReturnStatement,
         )
 
+    def test_nested_sum_plus_value(self):
+        script = QgsEsriArcadeScript(
+            """
+(($feature['ModulNr'] + ' ') + $feature['Modul'])
+"""
+        )
+
+        self.assertFalse(script.hasParserError())
+
+        self.assertIsInstance(script.rootBlock(), QgsEsriArcadeBlockStatement)
+        self.assertEqual(script.rootBlock().count(), 1)
+
+        self.assertIsInstance(
+            script.rootBlock().statements()[0].expression(),
+            QgsEsriArcadeBinaryOperatorExpression,
+        )
+        self.assertEqual(
+            script.rootBlock().statements()[0].expression().binaryOperator(),
+            QgsEsriArcadeBinaryOperatorExpression.BinaryOperator.Plus,
+        )
+
+        # Nested sum
+        self.assertIsInstance(
+            script.rootBlock().statements()[0].expression().leftOperand(),
+            QgsEsriArcadeBinaryOperatorExpression,
+        )
+        self.assertEqual(
+            script.rootBlock()
+            .statements()[0]
+            .expression()
+            .leftOperand()
+            .binaryOperator(),
+            QgsEsriArcadeBinaryOperatorExpression.BinaryOperator.Plus,
+        )
+
+        # Nested sum left
+        self.assertIsInstance(
+            script.rootBlock().statements()[0].expression().leftOperand().leftOperand(),
+            QgsEsriArcadeIndexExpression,
+        )
+        self.assertIsInstance(
+            script.rootBlock()
+            .statements()[0]
+            .expression()
+            .leftOperand()
+            .leftOperand()
+            .containerExpression(),
+            QgsEsriArcadeProfileVariableReferenceExpression,
+        )
+        self.assertIsInstance(
+            script.rootBlock()
+            .statements()[0]
+            .expression()
+            .leftOperand()
+            .leftOperand()
+            .indexExpression(),
+            QgsEsriArcadeLiteralExpression,
+        )
+        self.assertEqual(
+            script.rootBlock()
+            .statements()[0]
+            .expression()
+            .leftOperand()
+            .leftOperand()
+            .indexExpression()
+            .value(),
+            "ModulNr",
+        )
+        # Nested sum right
+        self.assertIsInstance(
+            script.rootBlock()
+            .statements()[0]
+            .expression()
+            .leftOperand()
+            .rightOperand(),
+            QgsEsriArcadeLiteralExpression,
+        )
+        self.assertEqual(
+            script.rootBlock()
+            .statements()[0]
+            .expression()
+            .leftOperand()
+            .rightOperand()
+            .value(),
+            " ",
+        )
+
+        # Outher sum right
+        self.assertIsInstance(
+            script.rootBlock().statements()[0].expression().rightOperand(),
+            QgsEsriArcadeIndexExpression,
+        )
+        self.assertIsInstance(
+            script.rootBlock()
+            .statements()[0]
+            .expression()
+            .rightOperand()
+            .containerExpression(),
+            QgsEsriArcadeProfileVariableReferenceExpression,
+        )
+        self.assertIsInstance(
+            script.rootBlock()
+            .statements()[0]
+            .expression()
+            .rightOperand()
+            .indexExpression(),
+            QgsEsriArcadeLiteralExpression,
+        )
+        self.assertEqual(
+            script.rootBlock()
+            .statements()[0]
+            .expression()
+            .rightOperand()
+            .indexExpression()
+            .value(),
+            "Modul",
+        )
+
 
 if __name__ == "__main__":
     unittest.main()
