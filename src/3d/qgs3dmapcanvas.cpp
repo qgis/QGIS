@@ -302,6 +302,24 @@ void Qgs3DMapCanvas::setMapTool( Qgs3DMapTool *tool )
   }
 }
 
+void Qgs3DMapCanvas::unsetMapTool( Qgs3DMapTool *tool )
+{
+  if ( mMapTool && mMapTool == tool )
+  {
+    // reset mMapTool
+    Qgs3DMapTool *oldTool = mMapTool;
+    mMapTool = nullptr;
+    oldTool->deactivate();
+
+    // For Camera Control tool
+    if ( mScene )
+    {
+      mScene->cameraController()->setEnabled( true );
+    }
+    setCursor( Qt::OpenHandCursor );
+  }
+}
+
 bool Qgs3DMapCanvas::eventFilter( QObject *watched, QEvent *event )
 {
   if ( watched != this )

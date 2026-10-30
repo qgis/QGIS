@@ -28,6 +28,8 @@ Base class for map tools operating on 3D map canvas.
 Base constructor for a Qgs3DMapTool for the specified ``canvas``
 %End
 
+    ~Qgs3DMapTool();
+
     virtual void mousePressEvent( QMouseEvent *event );
 %Docstring
 Reimplement to handle mouse ``event`` forwarded by the parent
