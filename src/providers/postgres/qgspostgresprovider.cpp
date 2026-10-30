@@ -2480,6 +2480,14 @@ bool QgsPostgresProvider::addFeatures( QgsFeatureList &flist, Flags flags )
         {
           values += delim + quotedByteaValue( attributeValue );
         }
+        else if ( fieldTypeName == "text"_L1 )
+        {
+          //save maps and lists of string fields as json
+          if ( attributeValue.userType() == QMetaType::Type::QVariantMap || attributeValue.userType() == QMetaType::Type::QVariantList )
+            values += delim + quotedJsonValue( attributeValue );
+          else
+            values += delim + quotedValue( attributeValue );
+        }
         //TODO: convert arrays and hstore to native types
         else
         {
@@ -3079,6 +3087,14 @@ bool QgsPostgresProvider::changeAttributeValues( const QgsChangedAttributesMap &
           else if ( fld.typeName() == "bytea"_L1 )
           {
             sql += quotedByteaValue( attributeValue );
+          }
+          else if ( fld.typeName() == "text"_L1 )
+          {
+            //save maps and lists of string fields as json
+            if ( attributeValue.userType() == QMetaType::Type::QVariantMap || attributeValue.userType() == QMetaType::Type::QVariantList )
+              sql += quotedJsonValue( attributeValue );
+            else
+              sql += quotedValue( attributeValue );
           }
           else
           {
