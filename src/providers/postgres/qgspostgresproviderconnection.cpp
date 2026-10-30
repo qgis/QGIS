@@ -53,6 +53,7 @@ const QStringList QgsPostgresProviderConnection::CONFIGURATION_PARAMETERS = {
   u"session_role"_s,
   u"allowRasterOverviewTables"_s,
   u"schema"_s,
+  u"disableCopyInserts"_s,
 };
 
 const QString QgsPostgresProviderConnection::SETTINGS_BASE_KEY = u"/PostgreSQL/connections/"_s;
