@@ -345,6 +345,7 @@ set(QGIS_CORE_SRCS
   providers/arcgis/qgsarcgisportalutils.cpp
   providers/arcgis/qgsarcgisrestquery.cpp
   providers/arcgis/qgsarcgisrestutils.cpp
+  providers/arcgis/qgsesriarcadeconverter.cpp
   providers/arcgis/qgsesriarcadescript.cpp
 
   providers/gdal/qgsgdalcloudconnection.cpp
@@ -2012,6 +2013,7 @@ set(QGIS_CORE_HDRS
   providers/arcgis/qgsarcgisportalutils.h
   providers/arcgis/qgsarcgisrestquery.h
   providers/arcgis/qgsarcgisrestutils.h
+  providers/arcgis/qgsesriarcadeconverter.h
   providers/arcgis/qgsesriarcadescript.h
 
   providers/gdal/qgsgdalcloudconnection.h
