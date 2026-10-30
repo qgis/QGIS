@@ -6225,6 +6225,9 @@ int QgisEvent = QEvent::User + 1;
       SetTableComment = 1 << 2,   //!< Can set comments for tables via setTableComment() \since QGIS 3.44
       EditFieldDomain = 1 << 3,   //!< Can edit existing field domain \since QGIS 4.0
       DeleteFieldDomain = 1 << 4, //!< Can delete existing field domain \since QGIS 4.0
+      CreateIndex = 1 << 5,       //!< Can create an index on a column via createIndex() \since QGIS 4.6
+      ListTableIndexes = 1 << 6,  //!< Can list all indexes defined on a table via tableIndexes() \since QGIS 4.6
+      DeleteIndex = 1 << 7,       //!< Can delete an index by name via deleteIndex() \since QGIS 4.6
     };
     Q_ENUM( DatabaseProviderConnectionCapability2 )
     Q_DECLARE_FLAGS( DatabaseProviderConnectionCapabilities2, DatabaseProviderConnectionCapability2 )

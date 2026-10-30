@@ -1191,6 +1191,22 @@ void QgsAbstractDatabaseProviderConnection::createSpatialIndex( const QString &,
   checkCapability( Capability::CreateSpatialIndex );
 }
 
+void QgsAbstractDatabaseProviderConnection::createIndex( const QString &, const QString &, const QString &, const QString & ) const
+{
+  checkCapability( Qgis::DatabaseProviderConnectionCapability2::CreateIndex );
+}
+
+QMap<QString, QStringList> QgsAbstractDatabaseProviderConnection::tableIndexes( const QString &, const QString & ) const
+{
+  checkCapability( Qgis::DatabaseProviderConnectionCapability2::ListTableIndexes );
+  return {};
+}
+
+void QgsAbstractDatabaseProviderConnection::deleteIndex( const QString &, const QString &, const QString & ) const
+{
+  checkCapability( Qgis::DatabaseProviderConnectionCapability2::DeleteIndex );
+}
+
 QgsVectorLayer *QgsAbstractDatabaseProviderConnection::createSqlVectorLayer( const SqlVectorLayerOptions & ) const
 {
   checkCapability( Capability::SqlLayers );

@@ -48,6 +48,9 @@ class QgsGeoPackageProviderConnection : public QgsOgrProviderConnection
     ) const override;
     bool spatialIndexExists( const QString &schema, const QString &name, const QString &geometryColumn ) const override;
     void deleteSpatialIndex( const QString &schema, const QString &name, const QString &geometryColumn ) const override;
+    void createIndex( const QString &schema, const QString &table, const QString &column, const QString &name ) const override;
+    QMap<QString, QStringList> tableIndexes( const QString &schema, const QString &table ) const override;
+    void deleteIndex( const QString &schema, const QString &table, const QString &name ) const override;
     QList<QgsAbstractDatabaseProviderConnection::TableProperty> tables( const QString &schema = QString(), const TableFlags &flags = TableFlags(), QgsFeedback *feedback = nullptr ) const override;
     QIcon icon() const override;
     QgsFields fields( const QString &schema, const QString &table, QgsFeedback *feedback = nullptr ) const override;
