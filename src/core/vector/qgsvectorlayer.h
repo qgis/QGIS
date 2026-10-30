@@ -2655,6 +2655,13 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer,
     void beforeEditingStarted();
 
     /**
+     * Emitted to trigger (geometry) checks to determine whether commits are allowed.
+     *
+     * The \a stopEditing flag specifies if the editing mode shall be left after this commit.
+     */
+    void beforeCommitChecks( bool stopEditing );
+
+    /**
      * Emitted before changes are committed to the data provider.
      *
      * The \a stopEditing flag specifies if the editing mode shall be left after this commit.
@@ -2948,6 +2955,9 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer,
 
     //! Apply render settings from data provider
     void applyRendererSettings();
+
+    //! Get layers from the transaction group to which this layer belongs
+    QSet<QgsVectorLayer *> transactionLayers();
 
     QgsConditionalLayerStyles *mConditionalStyles = nullptr;
     QgsVectorDataProvider *mDataProvider = nullptr;

@@ -81,6 +81,7 @@
 #include "qgstaskmanager.h"
 #include "qgsthreadingutils.h"
 #include "qgstransaction.h"
+#include "qgstransactiongroup.h"
 #include "qgsvectordataprovider.h"
 #include "qgsvectorlayereditbuffer.h"
 #include "qgsvectorlayereditpassthrough.h"
@@ -4196,18 +4197,36 @@ bool QgsVectorLayer::commitChanges( bool stopEditing )
     return false;
   }
 
-  emit beforeCommitChanges( stopEditing );
+  if ( project() && project()->transactionMode() == Qgis::TransactionMode::AutomaticGroups )
+  {
+    QSet<QgsVectorLayer *> otherTransactionLayers;
+    otherTransactionLayers = transactionLayers();
 
-  if ( !mAllowCommit )
-    return false;
+    emit beforeCommitChanges( stopEditing );
+
+    if ( !otherTransactionLayers.isEmpty() )
+    {
+      // if it's in a transaction group we cannot continue, when one layer does not allow commits (yet)
+      for ( const QgsVectorLayer *layer : otherTransactionLayers )
+      {
+        if ( !layer->allowCommit() )
+          return false;
+      }
+    }
+  }
+  else
+  {
+    // trigger the checks (on transaction groups they are triggered in the specific functions via beforeCommitChanges)
+    emit beforeCommitChecks( stopEditing );
+    // as well as the beforeCommitChanges (for individual provider implementations e.g. grassprovider)
+    emit beforeCommitChanges( stopEditing );
+    if ( !mAllowCommit )
+      return false;
+  }
 
   mCommitChangesActive = true;
 
-  bool success = false;
-  if ( mEditBuffer->editBufferGroup() )
-    success = mEditBuffer->editBufferGroup()->commitChanges( mCommitErrors, stopEditing );
-  else
-    success = mEditBuffer->commitChanges( mCommitErrors );
+  bool success = mEditBuffer->commitChanges( mCommitErrors );
 
   mCommitChangesActive = false;
 
@@ -5393,6 +5412,24 @@ void QgsVectorLayer::applyRendererSettings()
       ( providerRenderingSettings->hasMaximumScale() && providerRenderingSettings->maximumScale() != 0 )
       || ( providerRenderingSettings->hasMinimumScale() && providerRenderingSettings->minimumScale() != 0 )
     );
+}
+
+QSet<QgsVectorLayer *> QgsVectorLayer::transactionLayers()
+{
+  QSet<QgsVectorLayer *> transactionLayers;
+  if ( project() )
+  {
+    QString connString = QgsTransaction::connectionString( source() );
+    QString key = providerType();
+
+    QMap<QPair<QString, QString>, QgsTransactionGroup *> transactionGroups = project()->transactionGroups();
+    QMap<QPair<QString, QString>, QgsTransactionGroup *>::iterator tIt = transactionGroups.find( qMakePair( key, connString ) );
+    QgsTransactionGroup *tg = ( tIt != transactionGroups.end() ? tIt.value() : nullptr );
+
+    if ( tg && tg->layers().contains( this ) )
+      transactionLayers = tg->layers();
+  }
+  return transactionLayers;
 }
 
 QVariant QgsVectorLayer::aggregate(
