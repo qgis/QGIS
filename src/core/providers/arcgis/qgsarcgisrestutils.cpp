@@ -25,6 +25,7 @@
 #include "qgsclassificationstandarddeviation.h"
 #include "qgscolorrampimpl.h"
 #include "qgscurve.h"
+#include "qgsesriarcadeconverter.h"
 #include "qgsfields.h"
 #include "qgsgeometryengine.h"
 #include "qgsgraduatedsymbolrenderer.h"
@@ -872,6 +873,20 @@ std::unique_ptr< QgsFeatureRenderer > QgsArcGisRestUtils::convertRenderer( const
     else
     {
       attribute = field1;
+    }
+
+    const QString valueExpression = rendererData.value( u"valueExpression"_s ).toString();
+    if ( attribute.isEmpty() && !valueExpression.isEmpty() )
+    {
+      QgsEsriArcadeConverter converter( valueExpression );
+      if ( converter.result() == QgsEsriArcadeConverter::Result::Success )
+      {
+        attribute = converter.expression();
+      }
+      else
+      {
+        context.pushWarning( QObject::tr( "ESRI valueExpression '%1' couldn't be converted to QGIS expression: '%2'" ).arg( valueExpression ).arg( converter.errorMessage() ) );
+      }
     }
 
     const QVariantList categories = rendererData.value( u"uniqueValueInfos"_s ).toList();
