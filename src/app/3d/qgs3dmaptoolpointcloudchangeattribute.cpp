@@ -120,7 +120,7 @@ SelectedPoints Qgs3DMapToolPointCloudChangeAttribute::searchPoints( QgsPointClou
   mapToPixel3D.origin = canvas.mapSettings()->origin();
   mapToPixel3D.canvasSize = canvas.size();
 
-  QgsCoordinateTransform ct( layer->crs(), canvas.mapSettings()->crs(), canvas.mapSettings()->transformContext() );
+  QgsCoordinateTransform ct( layer->crs3D(), canvas.mapSettings()->crs(), canvas.mapSettings()->transformContext() );
   ct.setBallparkTransformsAreAppropriate( true );
   const double zValueScale = layer->elevationProperties()->zScale();
   const double zValueOffset = layer->elevationProperties()->zOffset();
@@ -137,13 +137,14 @@ SelectedPoints Qgs3DMapToolPointCloudChangeAttribute::searchPoints( QgsPointClou
       const QgsPointCloudNode node = pc.getNode( queue.constFirst() );
       queue.removeFirst();
 
-      const QgsBox3D bounds = node.bounds();
-      QgsVector3D extentMin3D( bounds.xMinimum(), bounds.yMinimum(), bounds.zMinimum() * zValueScale + zValueOffset );
-      QgsVector3D extentMax3D( bounds.xMaximum(), bounds.yMaximum(), bounds.zMaximum() * zValueScale + zValueOffset );
+      QgsBox3D bounds = node.bounds();
+      bounds.setZMinimum( bounds.zMinimum() * zValueScale + zValueOffset );
+      bounds.setZMaximum( bounds.zMaximum() * zValueScale + zValueOffset );
+      QgsBox3D boundsMapCoords;
+
       try
       {
-        extentMin3D = ct.transform( extentMin3D );
-        extentMax3D = ct.transform( extentMax3D );
+        boundsMapCoords = ct.transformBox3D( bounds );
       }
       catch ( QgsCsException & )
       {
@@ -151,10 +152,10 @@ SelectedPoints Qgs3DMapToolPointCloudChangeAttribute::searchPoints( QgsPointClou
         continue;
       }
 
-      const QgsBox3D box( extentMin3D.x(), extentMin3D.y(), extentMin3D.z(), extentMax3D.x(), extentMax3D.y(), extentMax3D.z() );
       // check whether the hull intersects the search polygon
-      const QgsGeometry hull = box3DToPolygonInScreenSpace( box, mapToPixel3D );
-      if ( !searchPolygon.intersects( hull.constGet() ) )
+      // if a corner is behind the camera, a null hull is returned and per-point check will take place
+      const QgsGeometry hull = box3DToPolygonInScreenSpace( boundsMapCoords, mapToPixel3D );
+      if ( !hull.isNull() && !searchPolygon.intersects( hull.constGet() ) )
         continue;
 
       // check whether no one clip plane excludes the whole node
@@ -162,9 +163,9 @@ SelectedPoints Qgs3DMapToolPointCloudChangeAttribute::searchPoints( QgsPointClou
       for ( const QVector4D &plane : clipPlanes )
       {
         bool isClipped = true;
-        for ( double x : { bounds.xMinimum(), bounds.xMaximum() } )
-          for ( double y : { bounds.yMinimum(), bounds.yMaximum() } )
-            for ( double z : { bounds.zMinimum(), bounds.zMaximum() } )
+        for ( double x : { boundsMapCoords.xMinimum(), boundsMapCoords.xMaximum() } )
+          for ( double y : { boundsMapCoords.yMinimum(), boundsMapCoords.yMaximum() } )
+            for ( double z : { boundsMapCoords.zMinimum(), boundsMapCoords.zMaximum() } )
               isClipped = isClipped && pointIsClipped( mapToPixel3D.origin, { plane }, x, y, z );
         // This half-space excludes all of the node's corners, so it excludes
         // the whole node.
@@ -187,19 +188,15 @@ SelectedPoints Qgs3DMapToolPointCloudChangeAttribute::searchPoints( QgsPointClou
 
   QgsScopedEvent _trace2( u"PointCloud"_s, u"Qgs3DMapToolPointCloudChangeAttribute::searchPoints, selecting points"_s );
 
-  // Get the map's clipping extent in layer crs and skip if empty. We only need points within this extent.
-  const Qgs3DMapSettings *map = canvas.mapSettings();
-  const QgsRectangle mapExtent = Qgs3DUtils::tryReprojectExtent2D( map->extent(), map->crs(), layer->crs(), map->transformContext() );
-  if ( mapExtent.isEmpty() )
-    return {};
+  // Get the map's clipping extent. We only need points within this extent.
+  const QgsRectangle mapExtent = canvas.mapSettings()->extent();
 
   // The bulk of the time of this method is spent here, parallelise it.
-  QgsPointCloudLayerElevationProperties elevationProperties = layer->elevationProperties();
   QgsAbstract3DRenderer *renderer3D = layer->renderer3D();
 
   // QtConcurrent requires std::function, bare lambdas lead to compile errors.
-  std::function mapFn = [this, &searchPolygon, &mapToPixel3D, pc = std::move( pc ), &elevationProperties, renderer3D, mapExtent]( QgsPointCloudNodeId n ) {
-    const QVector<int> pts = selectedPointsInNode( searchPolygon, n, mapToPixel3D, pc, mapExtent, elevationProperties, renderer3D );
+  std::function mapFn = [this, &searchPolygon, &mapToPixel3D, pc = std::move( pc ), zValueScale, zValueOffset, renderer3D, &mapExtent, ct]( QgsPointCloudNodeId n ) {
+    const QVector<int> pts = selectedPointsInNode( searchPolygon, n, mapToPixel3D, pc, mapExtent, zValueScale, zValueOffset, renderer3D, ct );
     if ( pts.isEmpty() )
       return SelectedPoints {};
     else
@@ -230,9 +227,11 @@ QVector<int> Qgs3DMapToolPointCloudChangeAttribute::selectedPointsInNode(
   QgsPointCloudNodeId n,
   const MapToPixel3D &mapToPixel3D,
   QgsPointCloudIndex pcIndex,
-  QgsRectangle mapExtent,
-  QgsPointCloudLayerElevationProperties &elevationProperties,
-  QgsAbstract3DRenderer *renderer3D
+  const QgsRectangle &mapExtent,
+  double layerZScale,
+  double layerZOffset,
+  QgsAbstract3DRenderer *renderer3D,
+  QgsCoordinateTransform ct
 )
 {
   QVector<int> selected;
@@ -304,10 +303,6 @@ QVector<int> Qgs3DMapToolPointCloudChangeAttribute::selectedPointsInNode(
   const QgsPointCloudAttribute::DataType zType = blockAttributes.find( u"Z"_s, zOffset )->type();
   const QgsPointCloudAttribute *categoryAttribute = const_cast<QgsPointCloudAttribute *>( blockAttributes.find( categoryAttributeName, categoryAttributeOffset ) );
 
-  // we should adjust the Z based on the layer's elevation properties scale and offset
-  const double layerZScale = elevationProperties.zScale();
-  const double layerZOffset = elevationProperties.zOffset();
-
   QgsPoint pt;
   const QList<QVector4D> clipPlanes = mCanvas->scene()->clipPlaneEquations();
   const bool haveClipPlanes = !clipPlanes.isEmpty();
@@ -332,10 +327,23 @@ QVector<int> Qgs3DMapToolPointCloudChangeAttribute::selectedPointsInNode(
         continue;
     }
 
-    // get map coordinates
+    // get layer coordinates
     double x, y, z;
     QgsPointCloudAttribute::getPointXYZ( ptr, i, recordSize, xOffset, xType, yOffset, yType, zOffset, zType, blockScale, blockOffset, x, y, z );
+
+    // adjust for layer elevation properties
     z = z * layerZScale + layerZOffset;
+
+    // convert to map coordinates
+    try
+    {
+      ct.transformInPlace( x, y, z );
+    }
+    catch ( QgsCsException & )
+    {
+      QgsDebugError( u"Could not reproject point cloud point to 3d map crs"_s );
+      continue;
+    }
 
     // check if inside map extent
     if ( !mapExtent.contains( x, y ) )
@@ -367,7 +375,14 @@ QgsGeometry Qgs3DMapToolPointCloudChangeAttribute::box3DToPolygonInScreenSpace( 
   QVector<QgsPointXY> pts;
   for ( const QgsVector3D &c : box.corners() )
   {
-    const QPointF pt = mapToPixel3D.transform( c.x(), c.y(), c.z() );
+    bool isInFrustum = false;
+    bool isBehindCamera = false;
+    const QPointF pt = mapToPixel3D.transform( c.x(), c.y(), c.z(), &isInFrustum, &isBehindCamera );
+
+    // The convex hull is not correct if we have a point behind the camera
+    if ( isBehindCamera )
+      return {};
+
     pts.append( QgsPointXY( pt.x(), pt.y() ) );
   }
 
