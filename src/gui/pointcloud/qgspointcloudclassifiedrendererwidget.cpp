@@ -758,7 +758,7 @@ void QgsPointCloudClassifiedRendererWidget::updateCategoriesPercentages()
   QMap<int, float> percentages;
 
   const QgsPointCloudStatistics stats = mLayer->statistics();
-  const QMap<int, int> classes = stats.availableClasses( attribute() );
+  const QMap<int, qint64> classes = stats.availableClasses( attribute() );
   const int pointCount = stats.sampledPointsCount();
   const QgsPointCloudCategoryList currentCategories = mModel->categories();
 

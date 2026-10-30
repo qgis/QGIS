@@ -1264,7 +1264,7 @@ void Qgs3DMapCanvasWidget::onPointCloudChangeAttributeSettingsChanged()
       }
 
       // then add missing classes from the layer stats too
-      const QMap<int, int> statisticsClasses = layer->statistics().availableClasses( u"Classification"_s );
+      const QMap<int, qint64> statisticsClasses = layer->statistics().availableClasses( u"Classification"_s );
       for ( auto it = statisticsClasses.constBegin(); it != statisticsClasses.constEnd(); ++it )
       {
         if ( !classes.contains( it.key() ) )
