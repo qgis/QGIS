@@ -1534,6 +1534,58 @@ QString QgsMapLayer::loadDefaultStyle( bool &resultFlag )
   return loadNamedStyle( styleURI(), resultFlag, QgsMapLayer::AllStyleCategories, Qgis::LoadStyleFlag::IgnoreMissingStyleErrors );
 }
 
+bool QgsMapLayer::restoreDefaultStyle( QString &errorMessage, bool loadFromProvider )
+{
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
+  if ( loadFromProvider )
+  {
+    if ( !dataProvider() || !dataProvider()->styleStorageCapabilities().testFlag( Qgis::ProviderStyleStorageCapability::LoadFromDatabase ) )
+    {
+      errorMessage = QObject::tr( "The data provider does not support loading styles from the datasource." );
+      return false;
+    }
+
+    // fetch the stored style first, so that the layer is left untouched if there is none
+    QString styleName;
+    QString loadError;
+    const QString qml = QgsProviderRegistry::instance()->loadStoredStyle( mProviderKey, mDataSource, styleName, loadError );
+    if ( qml.isEmpty() )
+    {
+      errorMessage = loadError.isEmpty() ? QObject::tr( "No default style was found for this layer." ) : loadError;
+      return false;
+    }
+
+    QDomDocument document( u"qgis"_s );
+    document.setContent( qml );
+    QString importError;
+    if ( !importNamedStyle( document, importError ) )
+    {
+      errorMessage = importError;
+      return false;
+    }
+
+    if ( !styleName.isEmpty() )
+      styleManager()->renameStyle( styleManager()->currentStyle(), styleName );
+
+    emit styleLoaded( QgsMapLayer::AllStyleCategories );
+  }
+  else
+  {
+    bool resultFlag = false;
+    const QString message = loadNamedStyle( styleURI(), resultFlag, true );
+    if ( !resultFlag )
+    {
+      errorMessage = message.isEmpty() ? QObject::tr( "No default style was found for this layer." ) : message;
+      return false;
+    }
+  }
+
+  triggerRepaint();
+  emitStyleChanged();
+  return true;
+}
+
 bool QgsMapLayer::loadNamedMetadataFromDatabase( const QString &db, const QString &uri, QString &qmd )
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS

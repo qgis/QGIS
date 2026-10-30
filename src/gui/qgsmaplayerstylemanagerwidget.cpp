@@ -19,6 +19,7 @@
 #include "qgsmapcanvas.h"
 #include "qgsmaplayer.h"
 #include "qgsmaplayerconfigwidget.h"
+#include "qgsmaplayerstyleguiutils.h"
 #include "qgsmaplayerstylemanager.h"
 #include "qgsmeshlayerproperties.h"
 #include "qgspointcloudlayer.h"
@@ -296,27 +297,12 @@ void QgsMapLayerStyleManagerWidget::saveAsDefault()
   switch ( mLayer->type() )
   {
     case Qgis::LayerType::Vector:
-      QgsVectorLayerProperties( mMapCanvas, mMapLayerConfigWidgetContext.messageBar(), qobject_cast<QgsVectorLayer *>( mLayer ) ).saveDefaultStyle();
-      break;
-
     case Qgis::LayerType::Raster:
-      QgsRasterLayerProperties( mLayer, mMapCanvas ).saveStyleAsDefault();
-      break;
-
     case Qgis::LayerType::Mesh:
-      QgsMeshLayerProperties( mLayer, mMapCanvas ).saveStyleAsDefault();
-      break;
-
     case Qgis::LayerType::VectorTile:
-      QgsVectorTileLayerProperties( qobject_cast<QgsVectorTileLayer *>( mLayer ), mMapCanvas, mMapLayerConfigWidgetContext.messageBar() ).saveStyleAsDefault();
-      break;
-
     case Qgis::LayerType::PointCloud:
-      QgsPointCloudLayerProperties( qobject_cast<QgsPointCloudLayer *>( mLayer ), mMapCanvas, mMapLayerConfigWidgetContext.messageBar() ).saveStyleAsDefault();
-      break;
-
     case Qgis::LayerType::TiledScene:
-      QgsTiledSceneLayerProperties( qobject_cast<QgsTiledSceneLayer *>( mLayer ), mMapCanvas, mMapLayerConfigWidgetContext.messageBar() ).saveStyleAsDefault();
+      QgsMapLayerStyleGuiUtils::saveStyleAsDefault( mLayer );
       break;
 
     // Not available for these
@@ -335,27 +321,12 @@ void QgsMapLayerStyleManagerWidget::loadDefault()
   switch ( mLayer->type() )
   {
     case Qgis::LayerType::Vector:
-      QgsVectorLayerProperties( mMapCanvas, mMapLayerConfigWidgetContext.messageBar(), qobject_cast<QgsVectorLayer *>( mLayer ) ).loadDefaultStyle();
-      break;
-
     case Qgis::LayerType::Raster:
-      QgsRasterLayerProperties( mLayer, mMapCanvas ).loadDefaultStyle();
-      break;
-
     case Qgis::LayerType::Mesh:
-      QgsMeshLayerProperties( mLayer, mMapCanvas ).loadDefaultStyle();
-      break;
-
     case Qgis::LayerType::VectorTile:
-      QgsVectorTileLayerProperties( qobject_cast<QgsVectorTileLayer *>( mLayer ), mMapCanvas, mMapLayerConfigWidgetContext.messageBar() ).loadDefaultStyle();
-      break;
-
     case Qgis::LayerType::PointCloud:
-      QgsPointCloudLayerProperties( qobject_cast<QgsPointCloudLayer *>( mLayer ), mMapCanvas, mMapLayerConfigWidgetContext.messageBar() ).loadDefaultStyle();
-      break;
-
     case Qgis::LayerType::TiledScene:
-      QgsTiledSceneLayerProperties( qobject_cast<QgsTiledSceneLayer *>( mLayer ), mMapCanvas, mMapLayerConfigWidgetContext.messageBar() ).loadDefaultStyle();
+      QgsMapLayerStyleGuiUtils::loadDefaultStyle( mLayer );
       break;
 
     // Not available for these

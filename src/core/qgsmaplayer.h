@@ -1237,6 +1237,24 @@ class CORE_EXPORT QgsMapLayer : public QObject
      */
     virtual QString loadDefaultStyle( bool &resultFlag SIP_OUT );
 
+    /**
+     * Restores the default style for this layer and triggers a repaint.
+     *
+     * If \a loadFromProvider is TRUE the default style is loaded from the data
+     * provider's style storage, otherwise it is loaded from the .qml file or qgis.db.
+     *
+     * If no default style could be restored the layer's current style is left unchanged.
+     *
+     * \param errorMessage error message about what went wrong
+     * \param loadFromProvider TRUE to load the default style from theprovider's storage
+     * \returns TRUE if the default style was restored
+     *
+     * \see loadDefaultStyle()
+     * \see saveDefaultStyle()
+     * \since QGIS 4.6
+     */
+    bool restoreDefaultStyle( QString &errorMessage SIP_OUT, bool loadFromProvider = false );
+
     // TODO QGIS 5.0 -- fix this. We incorrectly have a single boolean flag which in which false is used inconsistently for "a style WAS found but an error occurred loading it" vs "no style was found".
     // The first (style found, error occurred loading it) should trigger a user-facing warning, whereas the second (no style found) isn't reflective of an error at all.
 
