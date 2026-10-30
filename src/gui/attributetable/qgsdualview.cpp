@@ -525,8 +525,12 @@ void QgsDualView::initModels( QgsMapCanvas *mapCanvas, const QgsFeatureRequest &
   connect( mFeatureListView, &QgsFeatureListView::displayExpressionChanged, this, &QgsDualView::displayExpressionChanged );
 
   mFeatureListModel = new QgsFeatureListModel( mFilterModel, mFilterModel );
+  // TODO this test reveals deep issues in QgsFeatureListModel - these need to be fixed and the
+  // test re-enabled
+#if 0
 #ifdef ENABLE_MODELTEST
-  // new QAbstractItemModelTester( mFeatureListModel, QAbstractItemModelTester::FailureReportingMode::Fatal, this );
+   new QAbstractItemModelTester( mFeatureListModel, QAbstractItemModelTester::FailureReportingMode::Fatal, this );
+#endif
 #endif
 }
 
