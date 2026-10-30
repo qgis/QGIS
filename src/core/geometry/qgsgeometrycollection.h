@@ -267,7 +267,7 @@ class CORE_EXPORT QgsGeometryCollection : public QgsAbstractGeometry
     QVector< QgsAbstractGeometry * > takeGeometries() SIP_TRANSFER;
 
     void normalize() final SIP_HOLDGIL;
-    void transform( const QgsCoordinateTransform &ct, Qgis::TransformDirection d = Qgis::TransformDirection::Forward, bool transformZ = false ) override SIP_THROW( QgsCsException );
+    void transform( const QgsCoordinateTransform &ct, Qgis::TransformDirection d = Qgis::TransformDirection::Forward, bool transformZ = true ) override SIP_THROW( QgsCsException );
     void transform( const QTransform &t, double zTranslate = 0.0, double zScale = 1.0, double mTranslate = 0.0, double mScale = 1.0 ) override;
 
     void draw( QPainter &p ) const override;

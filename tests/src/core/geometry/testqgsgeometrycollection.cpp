@@ -805,7 +805,7 @@ void TestQgsGeometryCollection::geometryCollection()
 
 #if 0 // note - z value transform doesn't currently work with proj 6+, because we don't yet support compound CRS definitions
   //z value transform
-  pTransform.transform( tr, Qgis::TransformDirection::Forward, true );
+  pTransform.transform( tr, Qgis::TransformDirection::Forward );
   extR = static_cast< const QgsLineString * >( pTransform.geometryN( 0 ) );
   QGSCOMPARENEAR( extR->pointN( 0 ).z(), -19.249066, 0.001 );
   QGSCOMPARENEAR( extR->pointN( 1 ).z(), -19.148357, 0.001 );
@@ -816,7 +816,7 @@ void TestQgsGeometryCollection::geometryCollection()
   QGSCOMPARENEAR( intR->pointN( 1 ).z(), -19.148357, 0.001 );
   QGSCOMPARENEAR( intR->pointN( 2 ).z(), -19.092128, 0.001 );
   QGSCOMPARENEAR( intR->pointN( 3 ).z(), -19.249066, 0.001 );
-  pTransform.transform( tr, Qgis::TransformDirection::Reverse, true );
+  pTransform.transform( tr, Qgis::TransformDirection::Reverse );
   extR = static_cast< const QgsLineString * >( pTransform.geometryN( 0 ) );
   QGSCOMPARENEAR( extR->pointN( 0 ).z(), 1, 0.001 );
   QGSCOMPARENEAR( extR->pointN( 1 ).z(), 3, 0.001 );
