@@ -13,11 +13,16 @@ __copyright__ = "Copyright 2022, The QGIS Project"
 import unittest
 
 from qgis.core import (
+    QgsAbstractProfileSource,
+    QgsApplication,
     QgsCoordinateReferenceSystem,
     QgsLineString,
+    QgsPluginLayer,
     QgsPoint,
     QgsPointXY,
     QgsProject,
+    QgsRasterLayer,
+    QgsVectorLayer,
 )
 from qgis.gui import QgsElevationProfileCanvas, QgsPlotMouseEvent, QgsPlotTool
 from qgis.PyQt.QtCore import QEvent, QPoint, QPointF, Qt
@@ -81,6 +86,27 @@ class TestTool(QgsPlotTool):
                 event.count(),
             )
         )
+
+
+class MyPluginLayer(QgsPluginLayer):
+    LAYER_TYPE = "MyPluginLayer"
+
+    def __init__(self):
+        super().__init__(MyPluginLayer.LAYER_TYPE, "new_plugin_layer")
+
+
+class MyDummyProfileSource(QgsAbstractProfileSource):
+    def __init__(self):
+        QgsAbstractProfileSource.__init__(self)
+
+    def createProfileGenerator(self, request):
+        return None  # MyDummyProfileGenerator(request)
+
+    def profileSourceName(self):
+        return "My Dummy Profile"
+
+    def profileSourceId(self):
+        return "my-dummy-profile"
 
 
 class TestQgsElevationProfileCanvas(QgisTestCase):
@@ -311,6 +337,45 @@ class TestQgsElevationProfileCanvas(QgisTestCase):
         self.assertAlmostEqual(canvas.visibleDistanceRange().upper(), 351.976, delta=1)
         self.assertAlmostEqual(canvas.visibleElevationRange().lower(), 87.5, delta=1)
         self.assertAlmostEqual(canvas.visibleElevationRange().upper(), 112.5, delta=1)
+
+    def testSourceGettersSetters(self):
+        canvas = QgsElevationProfileCanvas()
+        vl1 = QgsVectorLayer()
+
+        # Not allowed types
+        def _source_tests(sources):
+            with self.assertRaises(TypeError):
+                canvas.setSources(sources)
+            self.assertEqual(len(canvas.sources()), 0)
+
+        _source_tests(3)
+        _source_tests([3])
+        _source_tests([])
+        _source_tests([None])
+        _source_tests([QgsPoint(0, 0)])
+        _source_tests(vl1)
+        _source_tests([vl1, 3])
+        _source_tests([vl1, QgsPoint(0, 0)])
+
+        # Allowed types
+        canvas.setSources([vl1])
+        self.assertEqual(len(canvas.sources()), 1)
+
+        rl1 = QgsRasterLayer()
+        canvas.setSources([vl1, rl1])
+        self.assertEqual(len(canvas.sources()), 2)
+
+        pl1 = MyPluginLayer()
+        canvas.setSources([vl1, rl1, pl1])
+        self.assertEqual(len(canvas.sources()), 3)
+
+        ps1 = MyDummyProfileSource()
+        QgsApplication.profileSourceRegistry().registerProfileSource(ps1)
+        canvas.setSources([vl1, rl1, pl1, ps1])
+        self.assertEqual(len(canvas.sources()), 4)
+        QgsApplication.profileSourceRegistry().unregisterProfileSource(
+            ps1.profileSourceId()
+        )
 
 
 if __name__ == "__main__":
