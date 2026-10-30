@@ -1301,7 +1301,7 @@ void Qgs3DMapCanvasWidget::onPointCloudChangeAttributeSettingsChanged()
     }
     else
     {
-      whileBlocking( mCboChangeAttributeValue )->addItem( u"%1 ()"_s.arg( oldValue ), oldValue );
+      whileBlocking( mCboChangeAttributeValue )->addItem( u"%1 (%2)"_s.arg( oldValue ).arg( lasCodes.value( oldValue ) ), oldValue );
       mCboChangeAttributeValue->setCurrentIndex( mCboChangeAttributeValue->count() - 1 );
     }
   }
