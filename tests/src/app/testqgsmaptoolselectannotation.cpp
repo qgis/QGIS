@@ -55,6 +55,7 @@ class TestQgsMapToolSelectAnnotation : public QObject
     void testMoveItemRotatedCanvas();
     void testRotateItem();
     void testResizeRotatedItem();
+    void testAbortMoveItem();
 };
 
 void TestQgsMapToolSelectAnnotation::initTestCase()
@@ -522,6 +523,81 @@ void TestQgsMapToolSelectAnnotation::testResizeRotatedItem()
   QGSCOMPARENEAR( bounds.yMaximum(), 5.5, 0.01 );
 }
 
+void TestQgsMapToolSelectAnnotation::testAbortMoveItem()
+{
+  QgsProject::instance()->clear();
+  QgsMapCanvas canvas;
+  canvas.setDestinationCrs( QgsCoordinateReferenceSystem( u"EPSG:4326"_s ) );
+  canvas.setFrameStyle( QFrame::NoFrame );
+  canvas.resize( 600, 600 );
+  canvas.setExtent( QgsRectangle( 0, 0, 10, 10 ) );
+  canvas.show(); // to make the canvas resize
+
+  QgsAnnotationLayer *layer = new QgsAnnotationLayer( u"test"_s, QgsAnnotationLayer::LayerOptions( QgsProject::instance()->transformContext() ) );
+  QVERIFY( layer->isValid() );
+  QgsProject::instance()->addMapLayers( { layer } );
+
+  QgsAnnotationPolygonItem *item1 = new QgsAnnotationPolygonItem(
+    new QgsPolygon( new QgsLineString( QVector<QgsPoint> { QgsPoint( 1, 1 ), QgsPoint( 5, 1 ), QgsPoint( 5, 5 ), QgsPoint( 1, 5 ), QgsPoint( 1, 1 ) } ) )
+  );
+  item1->setZIndex( 1 );
+  const QString i1id = layer->addItem( item1 );
+  QCOMPARE( qgis::down_cast<QgsAnnotationPolygonItem *>( layer->item( i1id ) )->geometry()->asWkt(), u"Polygon ((1 1, 5 1, 5 5, 1 5, 1 1))"_s );
+
+  layer->setCrs( QgsCoordinateReferenceSystem( u"EPSG:4326"_s ) );
+
+  canvas.setLayers( { layer } );
+  while ( !canvas.isDrawing() )
+  {
+    QgsApplication::processEvents();
+  }
+  canvas.waitWhileRendering();
+  QCOMPARE( canvas.renderedItemResults()->renderedItems().size(), 1 );
+
+  QgsAdvancedDigitizingDockWidget cadDock( &canvas );
+  QgsMapToolSelectAnnotation tool( &canvas, &cadDock );
+  canvas.setMapTool( &tool );
+
+  QSignalSpy spy( &tool, &QgsMapToolSelectAnnotation::singleItemSelected );
+  TestQgsMapToolUtils utils( &tool );
+
+  // click on item
+  utils.mouseMove( 1.5, 1.5 );
+  utils.mouseClick( 1.5, 1.5, Qt::LeftButton, Qt::KeyboardModifiers(), true );
+  QCOMPARE( spy.count(), 1 );
+  QCOMPARE( spy.at( 0 ).at( 1 ).toString(), i1id );
+
+  // a mouse press on the item will start moving the item
+  utils.mouseClick( 1.5, 1.5, Qt::LeftButton, Qt::KeyboardModifiers(), true );
+
+  // move mouse and right click to abort item move
+  utils.mouseMove( 4.5, 4.5, Qt::LeftButton );
+  utils.mouseMove( 4.5, 4.5, Qt::LeftButton );
+  utils.mouseClick( 4.5, 4.5, Qt::RightButton, Qt::KeyboardModifiers(), true );
+  utils.mouseClick( 4.5, 4.5, Qt::LeftButton, Qt::KeyboardModifiers(), true );
+
+  canvas.refresh();
+  canvas.waitWhileRendering();
+  QCOMPARE( canvas.renderedItemResults()->renderedItems().size(), 1 );
+
+  // check that item was not moved
+  QCOMPARE( qgis::down_cast<QgsAnnotationPolygonItem *>( layer->item( i1id ) )->geometry()->asWkt(), u"Polygon ((1 1, 5 1, 5 5, 1 5, 1 1))"_s );
+
+  // start a new move
+  utils.mouseMove( 1.5, 1.5 );
+  utils.mouseClick( 1.5, 1.5, Qt::LeftButton, Qt::KeyboardModifiers(), true );
+  utils.mouseMove( 4.5, 4.5, Qt::LeftButton );
+  utils.mouseMove( 4.5, 4.5, Qt::LeftButton );
+  utils.keyClick( Qt::Key_Escape, Qt::KeyboardModifiers() );
+  utils.mouseClick( 4.5, 4.5, Qt::LeftButton, Qt::KeyboardModifiers(), true );
+
+  canvas.refresh();
+  canvas.waitWhileRendering();
+  QCOMPARE( canvas.renderedItemResults()->renderedItems().size(), 1 );
+
+  // check that item was not moved
+  QCOMPARE( qgis::down_cast<QgsAnnotationPolygonItem *>( layer->item( i1id ) )->geometry()->asWkt(), u"Polygon ((1 1, 5 1, 5 5, 1 5, 1 1))"_s );
+}
 
 QGSTEST_MAIN( TestQgsMapToolSelectAnnotation )
 #include "testqgsmaptoolselectannotation.moc"
