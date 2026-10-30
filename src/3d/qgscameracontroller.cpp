@@ -809,7 +809,7 @@ void QgsCameraController::onPositionChangedGlobeTerrainNavigation( Qt3DInput::QM
   const QgsVector3D startPosMap = QgsVector3D( mDragPoint ) + mOrigin;
   const double sphereRadiusMap = startPosMap.length();
   // Find the intersection of this sphere and the ray from the current clicked point.
-  const QgsRay3D ray = Qgs3DUtils::rayFromScreenPoint( QPoint( mouse->x(), mouse->y() ), mScene->engine()->size(), mCameraBefore.get() );
+  const QgsRay3D ray = Qgs3DUtils::rayFromScreenPoint( QPoint( mouse->x(), mouse->y() ), mScene->engine()->size(), mCameraBefore.get(), mScene->mapSettings()->projectionType() );
   const QgsVector3D rayOriginMap = QgsVector3D( ray.origin() ) + mOrigin;
   // From equations of ray and sphere
   const double quadA = QVector3D::dotProduct( ray.direction(), ray.direction() );

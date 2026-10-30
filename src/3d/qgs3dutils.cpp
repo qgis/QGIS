@@ -802,30 +802,47 @@ QgsPhongMaterialSettings Qgs3DUtils::phongMaterialFromQt3DComponent( Qt3DExtras:
   return settings;
 }
 
-QgsRay3D Qgs3DUtils::rayFromScreenPoint( const QPoint &point, const QSize &windowSize, Qt3DRender::QCamera *camera )
+QgsRay3D Qgs3DUtils::rayFromScreenPoint( const QPoint &point, const QSize &windowSize, Qt3DRender::QCamera *camera, Qgis::Map3DProjectionType projectionType )
 {
   const QVector3D deviceCoords( point.x(), point.y(), 0.0 );
   // normalized device coordinates
   const QVector3D normDeviceCoords( 2.0 * deviceCoords.x() / windowSize.width() - 1.0f, 1.0f - 2.0 * deviceCoords.y() / windowSize.height(), camera->nearPlane() );
-  // clip coordinates
-  const QVector4D rayClip( normDeviceCoords.x(), normDeviceCoords.y(), -1.0, 0.0 );
+  // clip coordinates of point on ray (its "end")
+  const QVector4D rayEndClip( normDeviceCoords.x(), normDeviceCoords.y(), 0.0, 1.0 );
 
   const QMatrix4x4 invertedProjMatrix = camera->projectionMatrix().inverted();
   const QMatrix4x4 invertedViewMatrix = camera->viewMatrix().inverted();
 
-  // ray direction in view coordinates
-  QVector4D rayDirView = invertedProjMatrix * rayClip;
-  // ray origin in world coordinates
-  const QVector4D rayOriginWorld = invertedViewMatrix * QVector4D( 0.0f, 0.0f, 0.0f, 1.0f );
+  QVector3D rayOriginWorld; // ray origin in world coordinates
+  switch ( projectionType )
+  {
+    case Qgis::Map3DProjectionType::Perspective:
+    {
+      // In perspective projection, the ray always comes from the camera centre.
+      rayOriginWorld = QVector3D( invertedViewMatrix * QVector4D( 0.0f, 0.0f, 0.0f, 1.0f ) );
+      break;
+    }
+    case Qgis::Map3DProjectionType::Orthographic:
+    {
+      // In orthographic projection, the ray centre shifts with the cursor, the
+      // ray is always perpendicular to the projection plane.
+      QVector4D rayOriginView = invertedProjMatrix * rayEndClip;
+      rayOriginView.setZ( 0.0f );
+      rayOriginWorld = QVector3D( invertedViewMatrix * rayOriginView );
+      break;
+    }
+    default:
+      QgsDebugError( "Unhandled 3D projection type" );
+  }
 
-  // ray direction in world coordinates
-  rayDirView.setZ( -1.0f );
-  rayDirView.setW( 0.0f );
-  const QVector4D rayDirWorld4D = invertedViewMatrix * rayDirView;
-  QVector3D rayDirWorld( rayDirWorld4D.x(), rayDirWorld4D.y(), rayDirWorld4D.z() );
+  // Find ray direction by first unprojecting the ray end's position
+  const QVector4D rayEndView = invertedProjMatrix * rayEndClip;
+  const QVector4D rayEndWorld4D = invertedViewMatrix * rayEndView;
+  const QVector3D rayEndWorld = rayEndWorld4D.toVector3DAffine();
+  QVector3D rayDirWorld = rayEndWorld - rayOriginWorld;
   rayDirWorld = rayDirWorld.normalized();
 
-  return QgsRay3D( QVector3D( rayOriginWorld ), rayDirWorld );
+  return QgsRay3D( rayOriginWorld, rayDirWorld );
 }
 
 QVector3D Qgs3DUtils::screenPointToWorldPos( const QPoint &screenPoint, double depth, const QSize &screenSize, Qt3DRender::QCamera *camera )
@@ -1130,7 +1147,7 @@ QQuaternion Qgs3DUtils::rotationFromPitchHeadingAngles( float pitchAngle, float 
 
 QgsPoint Qgs3DUtils::screenPointToMapCoordinates( const QPoint &screenPoint, const QSize size, const QgsCameraController *cameraController, const Qgs3DMapSettings *mapSettings )
 {
-  const QgsRay3D ray = rayFromScreenPoint( screenPoint, size, cameraController->camera() );
+  const QgsRay3D ray = rayFromScreenPoint( screenPoint, size, cameraController->camera(), mapSettings->projectionType() );
 
   // pick an arbitrary point mid-way between near and far plane
   const float pointDistance = ( cameraController->camera()->farPlane() + cameraController->camera()->nearPlane() ) / 2;
