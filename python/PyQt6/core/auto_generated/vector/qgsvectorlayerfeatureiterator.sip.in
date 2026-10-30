@@ -14,6 +14,7 @@
 
 %ModuleHeaderCode
 #include "qgsfeatureiterator.h"
+#include "qgsvectorlayerfeatureiterator.h"
 %End
 
   class QgsVectorLayerFeatureSource : QgsAbstractFeatureSource
