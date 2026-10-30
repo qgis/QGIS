@@ -4093,6 +4093,12 @@ The development version
       ShowInvalid,
     };
 
+    enum class PointCloudOutputsTypes /BaseType=IntEnum/
+    {
+      All,
+      OnlyVPC,
+    };
+
     static const double DEFAULT_SEARCH_RADIUS_MM;
 
     static const float DEFAULT_MAPTOPIXEL_THRESHOLD;
