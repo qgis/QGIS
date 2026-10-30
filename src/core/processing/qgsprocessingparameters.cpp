@@ -9738,10 +9738,10 @@ QgsProcessingParameterAnnotationLayer *QgsProcessingParameterAnnotationLayer::fr
 }
 
 QgsProcessingParameterPointCloudDestination::QgsProcessingParameterPointCloudDestination(
-  const QString &name, const QString &description, const QVariant &defaultValue, bool optional, bool createByDefault, bool limitToVpc
+  const QString &name, const QString &description, const QVariant &defaultValue, bool optional, bool createByDefault, Qgis::PointCloudOutputsTypes allowedPointCloudOutputs
 )
   : QgsProcessingDestinationParameter( name, description, defaultValue, optional, createByDefault )
-  , mLimitToVpc( limitToVpc )
+  , mAllowedPointCloudOutputs( allowedPointCloudOutputs )
 {}
 
 QgsProcessingParameterDefinition *QgsProcessingParameterPointCloudDestination::clone() const
@@ -9824,8 +9824,8 @@ QString QgsProcessingParameterPointCloudDestination::asPythonString( const QgsPr
 
       code += u", createByDefault=%1"_s.arg( createByDefault() ? u"True"_s : u"False"_s );
 
-      if ( mLimitToVpc )
-        code += ", limitToVpc=True"_L1;
+      if ( mAllowedPointCloudOutputs != Qgis::PointCloudOutputsTypes::All )
+        code += u", allowedPointCloudOutputs=Qgis.PointCloudOutputsTypes.%1"_s.arg( qgsEnumValueToKey( mAllowedPointCloudOutputs ) );
 
       QgsProcessingContext c;
       code += u", defaultValue=%1)"_s.arg( valueAsPythonString( mDefault, c ) );
@@ -9842,7 +9842,7 @@ QgsProcessingOutputDefinition *QgsProcessingParameterPointCloudDestination::toOu
 
 QString QgsProcessingParameterPointCloudDestination::defaultFileExtension() const
 {
-  if ( mLimitToVpc )
+  if ( mAllowedPointCloudOutputs == Qgis::PointCloudOutputsTypes::OnlyVPC )
   {
     return QgsVirtualPointCloudProvider::defaultVpcExtension();
   }
@@ -9873,7 +9873,7 @@ QString QgsProcessingParameterPointCloudDestination::createFileFilter() const
 
 QStringList QgsProcessingParameterPointCloudDestination::supportedOutputPointCloudLayerExtensions() const
 {
-  if ( mLimitToVpc )
+  if ( mAllowedPointCloudOutputs == Qgis::PointCloudOutputsTypes::OnlyVPC )
   {
     return QgsVirtualPointCloudProvider::supportedVpcExtensions();
   }
@@ -9895,14 +9895,14 @@ QStringList QgsProcessingParameterPointCloudDestination::supportedOutputPointClo
 QVariantMap QgsProcessingParameterPointCloudDestination::toVariantMap() const
 {
   QVariantMap map = QgsProcessingDestinationParameter::toVariantMap();
-  map.insert( u"limit_to_vpc"_s, mLimitToVpc );
+  map.insert( u"allowed_point_cloud_outputs"_s, qgsEnumValueToKey( mAllowedPointCloudOutputs ) );
   return map;
 }
 
 bool QgsProcessingParameterPointCloudDestination::fromVariantMap( const QVariantMap &map )
 {
   QgsProcessingDestinationParameter::fromVariantMap( map );
-  mLimitToVpc = map.value( u"limit_to_vpc"_s, false ).toBool();
+  mAllowedPointCloudOutputs = qgsEnumKeyToValue( map.value( u"allowed_point_cloud_outputs"_s ).toString(), Qgis::PointCloudOutputsTypes::All );
   return true;
 }
 
