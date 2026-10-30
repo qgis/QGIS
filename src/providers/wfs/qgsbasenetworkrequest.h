@@ -30,7 +30,7 @@ class QgsBaseNetworkRequest : public QObject
 {
     Q_OBJECT
   public:
-    explicit QgsBaseNetworkRequest( const QgsAuthorizationSettings &auth, const QString &translatedComponent );
+    explicit QgsBaseNetworkRequest( const QgsAuthorizationSettings &auth, const QString &translatedComponent, bool disableDecompressedSafetyCheckThreshold );
 
     ~QgsBaseNetworkRequest() override;
 
@@ -147,6 +147,9 @@ class QgsBaseNetworkRequest : public QObject
 
     //! Whether in simulated HTTP mode, the Content-Type request header should be included
     bool mFakeURLIncludesContentType = false;
+
+    //! Prevent errors when decompressing responses in QT6
+    bool mDisableDecompressedSafetyCheckThreshold = false;
 
   protected:
     /**

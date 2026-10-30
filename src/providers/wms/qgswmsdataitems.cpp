@@ -37,7 +37,7 @@ QgsWMSConnectionItem::QgsWMSConnectionItem( QgsDataItem *parent, QString name, Q
   mIconName = u"mIconConnect.svg"_s;
   mCapabilities |= Qgis::BrowserItemCapability::Collapse;
   const QgsDataSourceUri uriObj { mUri };
-  const bool disableDecompressedSafetyCheckThreshold { uriObj.hasParam( u"DisableDecompressedSafetyCheckThreshold"_s ) };
+  const bool disableDecompressedSafetyCheckThreshold { uriObj.hasParam( u"disableDecompressedSafetyCheckThreshold"_s ) };
   mCapabilitiesDownload = new QgsWmsCapabilitiesDownload( false, disableDecompressedSafetyCheckThreshold );
 }
 
