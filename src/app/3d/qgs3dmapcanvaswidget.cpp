@@ -184,6 +184,7 @@ Qgs3DMapCanvasWidget::Qgs3DMapCanvasWidget( const QString &name, bool isDocked )
   mPointCloudEditingToolbar->addWidget( new QLabel( tr( "Attribute" ) ) )->setObjectName( u"m3DActionAttributeLabel"_s );
   mCboChangeAttribute = new QComboBox();
   mCboChangeAttribute->setObjectName( u"m3DCboChangeAttribute"_s );
+  mCboChangeAttribute->setSizeAdjustPolicy( QComboBox::AdjustToContents );
   mPointCloudEditingToolbar->addWidget( mCboChangeAttribute )->setObjectName( u"m3DActionChangeAttribute"_s );
   mSpinChangeAttributeValue = new QgsDoubleSpinBox();
   mSpinChangeAttributeValue->setObjectName( u"m3DSpinChangeAttributeValue"_s );
@@ -195,6 +196,7 @@ Qgs3DMapCanvasWidget::Qgs3DMapCanvasWidget( const QString &name, bool isDocked )
   mCboChangeAttributeValue = new QComboBox();
   mCboChangeAttributeValue->setObjectName( u"m3DCboChangeAttributeValue"_s );
   mCboChangeAttributeValue->setEditable( true );
+  mCboChangeAttributeValue->setSizeAdjustPolicy( QComboBox::AdjustToContents );
   mClassValidator = new ClassValidator( this );
   mCboChangeAttributeValueAction = mPointCloudEditingToolbar->addWidget( mCboChangeAttributeValue );
   mCboChangeAttributeValueAction->setObjectName( u"m3DActionChangeAttributeValueCombo"_s );
