@@ -80,6 +80,7 @@ class TestQgs3DUtils : public QgsTest
 
     void testTransforms();
     void testRayFromScreenPoint();
+    void testRayFromScreenPointOrthographic();
     void testQgsBox3DDistanceTo();
     void testQgsRay3D();
     void testDefinesToShaderCode();
@@ -215,6 +216,35 @@ void TestQgs3DUtils::testRayFromScreenPoint()
     {
       const QgsRay3D ray1 = Qgs3DUtils::rayFromScreenPoint( QPoint( 500, 1000 ), QSize( 1000, 1000 ), &camera, Qgis::Map3DProjectionType::Perspective );
       const QgsRay3D ray2( QVector3D( 0, 0, 0 ), QVector3D( 0, 0.258819073438644f, -0.965925812721252f ) );
+      QGSCOMPARENEARVECTOR3D( ray1.origin(), ray2.origin(), 0.00001 );
+      QGSCOMPARENEARVECTOR3D( ray1.direction(), ray2.direction(), 0.00001 );
+    }
+  }
+}
+
+void TestQgs3DUtils::testRayFromScreenPointOrthographic()
+{
+  Qt3DRender::QCamera camera;
+  {
+    camera.setProjectionType( Qt3DRender::QCameraLens::OrthographicProjection );
+    camera.setLeft( -100.0f );
+    camera.setRight( 100.0f );
+    camera.setTop( 50.0f );
+    camera.setBottom( -50.0f );
+    camera.setNearPlane( 10.0f );
+    camera.setFarPlane( 100.0f );
+    camera.setPosition( QVector3D( 0.0f, 0.0f, 0.0f ) );
+    camera.setUpVector( QVector3D( 0.0f, 1.0f, 0.0f ) );
+
+    {
+      const QgsRay3D ray1 = Qgs3DUtils::rayFromScreenPoint( QPoint( 100, 50 ), QSize( 200, 100 ), &camera, Qgis::Map3DProjectionType::Orthographic );
+      const QgsRay3D ray2( QVector3D( 0.0f, 0.0f, 0.0f ), QVector3D( 0.0f, 0.0f, -1.0f ) );
+      QGSCOMPARENEARVECTOR3D( ray1.origin(), ray2.origin(), 0.00001 );
+      QGSCOMPARENEARVECTOR3D( ray1.direction(), ray2.direction(), 0.00001 );
+    }
+    {
+      const QgsRay3D ray1 = Qgs3DUtils::rayFromScreenPoint( QPoint( 50, 0 ), QSize( 200, 100 ), &camera, Qgis::Map3DProjectionType::Orthographic );
+      const QgsRay3D ray2( QVector3D( -50.0f, 50.0f, 0.0f ), QVector3D( 0.0f, 0.0f, -1.0f ) );
       QGSCOMPARENEARVECTOR3D( ray1.origin(), ray2.origin(), 0.00001 );
       QGSCOMPARENEARVECTOR3D( ray1.direction(), ray2.direction(), 0.00001 );
     }
