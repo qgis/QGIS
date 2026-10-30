@@ -244,6 +244,31 @@ class TestQgsRectangle(QgisTestCase):
         rect4.setXMaximum(float("inf"))
         self.assertFalse(rect4.isValid())
 
+    def test_is_point(self):
+        rect = QgsRectangle()
+        self.assertFalse(rect.isPoint())
+
+        rect = QgsRectangle(1, 2, 3, 4)
+        self.assertFalse(rect.isPoint())
+
+        rect = QgsRectangle(1, 2, 1, 4)
+        self.assertFalse(rect.isPoint())
+
+        rect = QgsRectangle(1, 2, 3, 2)
+        self.assertFalse(rect.isPoint())
+
+        rect = QgsRectangle(1.1, 2.1, 1.1, 2.1)
+        self.assertTrue(rect.isPoint())
+
+        rect = QgsRectangle(0, 0, 0, 0)
+        self.assertTrue(rect.isPoint())
+
+        rect = QgsRectangle(-9999.9999, -999999.9999, -9999.9999, -999999.9999)
+        self.assertTrue(rect.isPoint())
+
+        rect = QgsRectangle(3, 1, 4, 2, normalize=False)
+        self.assertFalse(rect.isPoint())
+
 
 if __name__ == "__main__":
     unittest.main()

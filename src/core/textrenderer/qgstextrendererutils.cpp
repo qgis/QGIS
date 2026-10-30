@@ -15,6 +15,7 @@
 
 #include "qgstextrendererutils.h"
 
+#include "qgsdatadefinedutils.h"
 #include "qgsgeometryutils_base.h"
 #include "qgsvectorlayer.h"
 
@@ -24,81 +25,69 @@ using namespace Qt::StringLiterals;
 
 QgsTextBackgroundSettings::ShapeType QgsTextRendererUtils::decodeShapeType( const QString &string )
 {
-  QgsTextBackgroundSettings::ShapeType shpkind = QgsTextBackgroundSettings::ShapeRectangle;
-  const QString skind = string.trimmed();
+  static constexpr auto SHAPE_TYPE_MAP = makeDataDefinedStringDecoder<QgsTextBackgroundSettings::ShapeType>( {
+    { u"square", QgsTextBackgroundSettings::ShapeSquare },
+    { u"ellipse", QgsTextBackgroundSettings::ShapeEllipse },
+    { u"circle", QgsTextBackgroundSettings::ShapeCircle },
+    { u"svg", QgsTextBackgroundSettings::ShapeSVG },
+    { u"marker", QgsTextBackgroundSettings::ShapeMarkerSymbol },
+    { u"rectangle", QgsTextBackgroundSettings::ShapeRectangle },
+  } );
 
-  if ( skind.compare( "Square"_L1, Qt::CaseInsensitive ) == 0 )
+  auto evaluatedType = SHAPE_TYPE_MAP.lookup( string );
+  if ( evaluatedType )
   {
-    shpkind = QgsTextBackgroundSettings::ShapeSquare;
+    return *evaluatedType;
   }
-  else if ( skind.compare( "Ellipse"_L1, Qt::CaseInsensitive ) == 0 )
-  {
-    shpkind = QgsTextBackgroundSettings::ShapeEllipse;
-  }
-  else if ( skind.compare( "Circle"_L1, Qt::CaseInsensitive ) == 0 )
-  {
-    shpkind = QgsTextBackgroundSettings::ShapeCircle;
-  }
-  else if ( skind.compare( "SVG"_L1, Qt::CaseInsensitive ) == 0 )
-  {
-    shpkind = QgsTextBackgroundSettings::ShapeSVG;
-  }
-  else if ( skind.compare( "marker"_L1, Qt::CaseInsensitive ) == 0 )
-  {
-    shpkind = QgsTextBackgroundSettings::ShapeMarkerSymbol;
-  }
-  return shpkind;
+  return QgsTextBackgroundSettings::ShapeRectangle;
 }
 
 QgsTextBackgroundSettings::SizeType QgsTextRendererUtils::decodeBackgroundSizeType( const QString &string )
 {
-  const QString stype = string.trimmed();
-  // "Buffer"
-  QgsTextBackgroundSettings::SizeType sizType = QgsTextBackgroundSettings::SizeBuffer;
+  static constexpr auto SIZE_TYPE_MAP = makeDataDefinedStringDecoder<QgsTextBackgroundSettings::SizeType>( {
+    { u"fixed", QgsTextBackgroundSettings::SizeFixed },
+    { u"buffer", QgsTextBackgroundSettings::SizeBuffer },
+  } );
 
-  if ( stype.compare( "Fixed"_L1, Qt::CaseInsensitive ) == 0 )
+  auto evaluatedType = SIZE_TYPE_MAP.lookup( string );
+  if ( evaluatedType )
   {
-    sizType = QgsTextBackgroundSettings::SizeFixed;
+    return *evaluatedType;
   }
-  return sizType;
+  return QgsTextBackgroundSettings::SizeBuffer;
 }
 
 QgsTextBackgroundSettings::RotationType QgsTextRendererUtils::decodeBackgroundRotationType( const QString &string )
 {
-  const QString rotstr = string.trimmed();
-  // "Sync"
-  QgsTextBackgroundSettings::RotationType rottype = QgsTextBackgroundSettings::RotationSync;
+  static constexpr auto ROTATION_TYPE_MAP = makeDataDefinedStringDecoder<QgsTextBackgroundSettings::RotationType>( {
+    { u"offset", QgsTextBackgroundSettings::RotationOffset },
+    { u"fixed", QgsTextBackgroundSettings::RotationFixed },
+    { u"sync", QgsTextBackgroundSettings::RotationSync },
+  } );
 
-  if ( rotstr.compare( "Offset"_L1, Qt::CaseInsensitive ) == 0 )
+  auto evaluatedType = ROTATION_TYPE_MAP.lookup( string );
+  if ( evaluatedType )
   {
-    rottype = QgsTextBackgroundSettings::RotationOffset;
+    return *evaluatedType;
   }
-  else if ( rotstr.compare( "Fixed"_L1, Qt::CaseInsensitive ) == 0 )
-  {
-    rottype = QgsTextBackgroundSettings::RotationFixed;
-  }
-  return rottype;
+  return QgsTextBackgroundSettings::RotationSync;
 }
 
 QgsTextShadowSettings::ShadowPlacement QgsTextRendererUtils::decodeShadowPlacementType( const QString &string )
 {
-  const QString str = string.trimmed();
-  // "Lowest"
-  QgsTextShadowSettings::ShadowPlacement shdwtype = QgsTextShadowSettings::ShadowLowest;
+  static constexpr auto SHADOW_PLACEMENT_MAP = makeDataDefinedStringDecoder<QgsTextShadowSettings::ShadowPlacement>( {
+    { u"text", QgsTextShadowSettings::ShadowText },
+    { u"buffer", QgsTextShadowSettings::ShadowBuffer },
+    { u"background", QgsTextShadowSettings::ShadowShape },
+    { u"lowest", QgsTextShadowSettings::ShadowLowest },
+  } );
 
-  if ( str.compare( "Text"_L1, Qt::CaseInsensitive ) == 0 )
+  auto evaluatedType = SHADOW_PLACEMENT_MAP.lookup( string );
+  if ( evaluatedType )
   {
-    shdwtype = QgsTextShadowSettings::ShadowText;
+    return *evaluatedType;
   }
-  else if ( str.compare( "Buffer"_L1, Qt::CaseInsensitive ) == 0 )
-  {
-    shdwtype = QgsTextShadowSettings::ShadowBuffer;
-  }
-  else if ( str.compare( "Background"_L1, Qt::CaseInsensitive ) == 0 )
-  {
-    shdwtype = QgsTextShadowSettings::ShadowShape;
-  }
-  return shdwtype;
+  return QgsTextShadowSettings::ShadowLowest;
 }
 
 QString QgsTextRendererUtils::encodeTextOrientation( Qgis::TextOrientation orientation )
@@ -120,14 +109,17 @@ Qgis::TextOrientation QgsTextRendererUtils::decodeTextOrientation( const QString
   if ( ok )
     *ok = true;
 
-  const QString cleaned = name.toLower().trimmed();
+  static constexpr auto ORIENTATION_MAP = makeDataDefinedStringDecoder<Qgis::TextOrientation>( {
+    { u"horizontal", Qgis::TextOrientation::Horizontal },
+    { u"vertical", Qgis::TextOrientation::Vertical },
+    { u"rotationbased", Qgis::TextOrientation::RotationBased },
+  } );
 
-  if ( cleaned == "horizontal"_L1 )
-    return Qgis::TextOrientation::Horizontal;
-  else if ( cleaned == "vertical"_L1 )
-    return Qgis::TextOrientation::Vertical;
-  else if ( cleaned == "rotation-based"_L1 )
-    return Qgis::TextOrientation::RotationBased;
+  auto evaluatedOrientation = ORIENTATION_MAP.lookup( name );
+  if ( evaluatedOrientation )
+  {
+    return *evaluatedOrientation;
+  }
 
   if ( ok )
     *ok = false;

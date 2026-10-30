@@ -95,7 +95,10 @@ void QgsAttributeTableFilterModel::sort( int column, Qt::SortOrder order )
   {
     const int myColumn = mColumnMapping.at( column );
     masterModel()->prefetchColumnData( myColumn );
-    QSortFilterProxyModel::sort( myColumn, order );
+    // it doesn't matter which column we pass to the base class method -- the sort data is always
+    // taken from the QgsAttributeTableModel::CustomRole::Sort role, which does not change depending
+    // on the column!
+    QSortFilterProxyModel::sort( 0, order );
   }
   emit sortColumnChanged( column, order );
 }
@@ -104,7 +107,7 @@ QVariant QgsAttributeTableFilterModel::data( const QModelIndex &index, int role 
 {
   if ( mapColumnToSource( index.column() ) == -1 ) // actions
   {
-    if ( role == static_cast<int>( CustomRole::Type ) )
+    if ( role == static_cast<int>( QgsAttributeTableModel::CustomRole::ColumnType ) )
       return ColumnTypeActionButton;
     else if ( role == static_cast<int>( QgsAttributeTableModel::CustomRole::FeatureId ) )
     {
@@ -117,7 +120,7 @@ QVariant QgsAttributeTableFilterModel::data( const QModelIndex &index, int role 
       return sourceModel()->data( fieldIndex, static_cast<int>( QgsAttributeTableModel::CustomRole::Sort ) );
     }
   }
-  else if ( role == static_cast<int>( CustomRole::Type ) )
+  else if ( role == static_cast<int>( QgsAttributeTableModel::CustomRole::ColumnType ) )
     return ColumnTypeField;
 
   return QSortFilterProxyModel::data( index, role );

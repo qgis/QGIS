@@ -18,9 +18,12 @@
 
 #include "qgis_gui.h"
 #include "qgis_sip.h"
+#include "qgsattributeform.h"
 #include "qgswidgetwrapper.h"
 
 #include <QQuickWidget>
+
+class QgsQmlAttributeFormBridge;
 
 /**
  * \ingroup gui
@@ -64,6 +67,7 @@ class GUI_EXPORT QgsQmlWidgetWrapper : public QgsWidgetWrapper
     QTemporaryFile mQmlFile;
     QString mQmlCode;
     QQuickWidget *mWidget = nullptr;
+    QgsQmlAttributeFormBridge *mWidgetBridge = nullptr;
     QgsFeature mFeature;
     QgsFeature mFormFeature;
     bool mRequiresFormScope = false;
@@ -75,23 +79,112 @@ class GUI_EXPORT QgsQmlWidgetWrapper : public QgsWidgetWrapper
 
 /**
  * \ingroup gui
- * \brief To pass the QgsExpression functionality and it's context to the context of the QQuickWidget
+ * \brief To pass the QgsExpression functionality and its context to the QQuickWidget's root context
  * \since QGIS 3.4
  */
-class QmlExpression : public QObject
+class QgsQmlExpression : public QObject
 {
     Q_OBJECT
 
   public:
-    //! set the \a context of the expression
+    //! Sets the expression \a context
     void setExpressionContext( const QgsExpressionContext &context );
 
-    //! evaluates the value regarding the \a expression and the context
+    //! Evaluates the \a expression string
     Q_INVOKABLE QVariant evaluate( const QString &expression ) const;
 
   private:
     QgsExpressionContext mExpressionContext;
 };
+
+
+/**
+ * \ingroup gui
+ * \brief This object exposes attribute form functionalities to the QQuickWidget's root context
+ * \since QGIS 4.4
+ */
+class QgsQmlAttributeFormBridge : public QObject
+{
+    Q_OBJECT
+
+    //! Returns the vector layer associated with the attribute form.
+    Q_PROPERTY( QgsVectorLayer *layer READ layer )
+
+    //! Returns TRUE if the attribute form is in an editable state.
+    Q_PROPERTY( bool editable READ editable NOTIFY editableChanged )
+
+    //! Returns the attribute form editor context.
+    Q_PROPERTY( QgsAttributeEditorContext context READ context NOTIFY contextChanged )
+
+    /**
+     * Returns the feature that is currently displayed in the form with
+     * all the changes received on editing the values in the widgets.
+     */
+    Q_PROPERTY( QgsFeature currentFormFeature READ currentFormFeature NOTIFY currentFormFeatureChanged )
+
+  public:
+    /**
+     * The default QgsQmlAttributeFormBridge constructor
+     *
+     * \param form The attribute form used for interactions and properties
+     */
+    QgsQmlAttributeFormBridge( QgsAttributeForm *form, QObject *parent = nullptr );
+    ~QgsQmlAttributeFormBridge() override = default;
+
+    //! Returns TRUE if the attribute form is in an editable state.
+    bool editable() const;
+
+    //! Returns the vector layer associated with the attribute form.
+    QgsVectorLayer *layer() const;
+
+    //! Returns the attribute form editor context.
+    QgsAttributeEditorContext context() const;
+
+    //! Sets the attribute form editor \a context
+    void setContext( const QgsAttributeEditorContext &context );
+
+    /**
+     * Returns the feature that is currently displayed in the form with
+     * all the changes received on editing the values in the widgets.
+     */
+    QgsFeature currentFormFeature() const;
+
+    /**
+     * Changes the \a geometry of the feature attached to the form.
+     */
+    Q_INVOKABLE void changeGeometry( const QgsGeometry &geometry );
+
+    /**
+     * Changes the value of a given attribute and updates the editor
+     * widget(s) related to this field.
+     *
+     * \param field The field to change
+     * \param value The new value
+     */
+    Q_INVOKABLE void changeAttribute( const QString &field, const QVariant &value );
+
+    /**
+     * Returns the value of a given attribute.
+     *
+     * \param field The field to change
+     */
+    Q_INVOKABLE QVariant attribute( const QString &field );
+
+  signals:
+    //! Emitted when the attribute form editable state has changed.
+    void editableChanged();
+
+    //! Emitted when the attribute form editor context has changed.
+    void contextChanged();
+
+    //! Emitted when the current feature form has changed.
+    void currentFormFeatureChanged();
+
+  private:
+    QgsAttributeForm *mForm = nullptr;
+    QgsAttributeEditorContext mContext;
+};
+
 ///@endcond
 #endif //SIP_RUN
 

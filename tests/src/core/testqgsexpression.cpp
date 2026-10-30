@@ -43,6 +43,7 @@ using namespace Qt::StringLiterals;
 #include "qgsexpressioncontextutils.h"
 #include "qgsexpressionutils.h"
 #include "qgsmeshlayer.h"
+#include <geos_c.h>
 
 static void _parseAndEvalExpr( int arg )
 {
@@ -687,7 +688,7 @@ class TestQgsExpression : public QObject
       config.insert( u"map"_s, map );
       layer.setEditorWidgetSetup( 0, QgsEditorWidgetSetup( u"ValueMap"_s, config ) );
 
-      QgsExpressionContext context( { QgsExpressionContextUtils::layerScope( &layer ) } );
+      QgsExpressionContext context( QgsExpressionContextUtils::layerScope( &layer ) );
       context.setFeature( f2 );
       QgsExpression expression( "represent_attributes()" );
 
@@ -702,7 +703,7 @@ class TestQgsExpression : public QObject
       QCOMPARE( result.value( u"col1"_s ).toString(), u"two"_s );
       QCOMPARE( result.value( u"col2"_s ).toString(), u"test2"_s );
 
-      QgsExpressionContext context2( { QgsExpressionContextUtils::layerScope( &layer ) } );
+      QgsExpressionContext context2( QgsExpressionContextUtils::layerScope( &layer ) );
       context2.setFeature( f2 );
       expression = QgsExpression( "represent_attributes($currentfeature)" );
 
@@ -5807,11 +5808,14 @@ class TestQgsExpression : public QObject
 
     void evaluateToDouble()
     {
-      QCOMPARE( QgsExpression::evaluateToDouble( QString( "5" ), 0.0 ), 5.0 );
-      QCOMPARE( QgsExpression::evaluateToDouble( QString( "5+6" ), 0.0 ), 11.0 );
-      QCOMPARE( QgsExpression::evaluateToDouble( QString( "5*" ), 7.0 ), 7.0 );
-      QCOMPARE( QgsExpression::evaluateToDouble( QString( "a" ), 9.0 ), 9.0 );
-      QCOMPARE( QgsExpression::evaluateToDouble( QString(), 9.0 ), 9.0 );
+      QgsExpressionContext context;
+      context << QgsExpressionContextUtils::globalScope() << QgsExpressionContextUtils::projectScope( QgsProject::instance() );
+
+      QCOMPARE( QgsExpression::evaluateToDouble( QString( "5" ), 0.0, &context ), 5.0 );
+      QCOMPARE( QgsExpression::evaluateToDouble( QString( "5+6" ), 0.0, &context ), 11.0 );
+      QCOMPARE( QgsExpression::evaluateToDouble( QString( "5*" ), 7.0, &context ), 7.0 );
+      QCOMPARE( QgsExpression::evaluateToDouble( QString( "a" ), 9.0, &context ), 9.0 );
+      QCOMPARE( QgsExpression::evaluateToDouble( QString(), 9.0, &context ), 9.0 );
     }
 
     void eval_isField()
@@ -6027,10 +6031,10 @@ class TestQgsExpression : public QObject
       const QString pointsLayerId = mPointsLayer->id();
       const QString pointsLayerName = mPointsLayer->name();
 
-      const QgsExpressionContextScope *projectScopeTemplate = QgsExpressionContextUtils::projectScope( QgsProject::instance() );
+      const std::unique_ptr<QgsExpressionContextScope> projectScopeTemplate = QgsExpressionContextUtils::projectScope( QgsProject::instance() );
 
       bool testOk = false;
-      auto runTest = [weakPointer, rawPointer, pointsLayerId, pointsLayerName, projectScopeTemplate, this, &testOk] {
+      auto runTest = [weakPointer, rawPointer, pointsLayerId, pointsLayerName, &projectScopeTemplate, this, &testOk] {
         testOk = false;
         QgsExpression exp;
         // NULL value

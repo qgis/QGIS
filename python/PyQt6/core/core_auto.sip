@@ -675,6 +675,7 @@
 %Include auto_generated/providers/qgsproviderutils.sip
 %Include auto_generated/providers/arcgis/qgsarcgisportalutils.sip
 %Include auto_generated/providers/arcgis/qgsarcgisrestutils.sip
+%Include auto_generated/providers/arcgis/qgsesriarcadescript.sip
 %Include auto_generated/providers/memory/qgsmemoryproviderutils.sip
 %Include auto_generated/providers/sensorthings/qgssensorthingsutils.sip
 %Include auto_generated/raster/qgsrasterattributetable.sip
@@ -726,6 +727,7 @@
 %Include auto_generated/raster/qgsrastershader.sip
 %Include auto_generated/raster/qgsrastershaderfunction.sip
 %Include auto_generated/raster/qgsrastertransparency.sip
+%Include auto_generated/raster/qgsrastervectorfieldrenderer.sip
 %Include auto_generated/raster/qgsrasterviewport.sip
 %Include auto_generated/raster/qgssinglebandcolordatarenderer.sip
 %Include auto_generated/raster/qgssinglebandgrayrenderer.sip

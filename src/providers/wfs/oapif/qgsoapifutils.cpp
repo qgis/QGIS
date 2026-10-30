@@ -18,6 +18,7 @@
 #include <limits>
 
 #include "qgsabstractgeometry.h"
+#include "qgsfields.h"
 #include "qgsgeometry.h"
 #include "qgswkbtypes.h"
 
@@ -308,5 +309,18 @@ void QgsOAPIFJson::writeJsonFgPlace( json &feature, const QgsGeometry &geometry,
   {
     feature["geometry"] = nullptr;
     feature["conformsTo"] = { "http://www.opengis.net/spec/json-fg-1/1.0/conf/core", "http://www.opengis.net/spec/json-fg-1/1.0/conf/circular-arcs" };
+  }
+}
+
+void QgsOAPIFJson::removeReadOnlyProperties( json &feature, const QgsFields &fields )
+{
+  auto properties = feature.find( "properties" );
+  if ( properties == feature.end() || !properties->is_object() )
+    return;
+
+  for ( const QgsField &field : fields )
+  {
+    if ( field.isReadOnly() )
+      properties->erase( field.name().toStdString() );
   }
 }

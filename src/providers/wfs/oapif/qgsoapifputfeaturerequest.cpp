@@ -59,6 +59,7 @@ bool QgsOapifPutFeatureRequest::putFeature( const QgsOapifSharedData *sharedData
         jProperties.erase( iterId );
     }
   }
+  QgsOAPIFJson::removeReadOnlyProperties( j, sharedData->mFields );
   const bool jsonFg = sharedData->shouldWriteJsonFg();
   if ( jsonFg )
   {

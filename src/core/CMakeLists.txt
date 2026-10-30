@@ -10,6 +10,9 @@ ADD_FLEX_BISON_DEPENDENCY(QgsSqlStatementLexer QgsSqlStatementParser)
 BISON_TARGET(QgsMeshCalcParser mesh/qgsmeshcalcparser.yy ${CMAKE_CURRENT_BINARY_DIR}/qgsmeshcalcparser.cpp COMPILE_FLAGS "-p mesh_")
 FLEX_TARGET(QgsMeshCalcLexer mesh/qgsmeshcalclexer.ll ${CMAKE_CURRENT_BINARY_DIR}/qgsmeshcalclexer.cpp)
 ADD_FLEX_BISON_DEPENDENCY(QgsMeshCalcLexer QgsMeshCalcParser)
+BISON_TARGET(QgsEsriArcadeParser providers/arcgis/qgsesriarcadescriptparser.yy ${CMAKE_CURRENT_BINARY_DIR}/qgsesriarcadeparser.cpp COMPILE_FLAGS "-p arcade_")
+FLEX_TARGET(QgsEsriArcadeLexer providers/arcgis/qgsesriarcadescriptlexer.ll ${CMAKE_CURRENT_BINARY_DIR}/qgsesriarcadelexer.cpp)
+ADD_FLEX_BISON_DEPENDENCY(QgsEsriArcadeLexer QgsEsriArcadeParser)
 
 # LAZPerf-priority
 if(WITH_INTERNAL_LAZPERF)
@@ -42,6 +45,8 @@ set(QGIS_CORE_SRCS
   ${BISON_QgsSqlStatementParser_OUTPUTS}
   ${FLEX_QgsMeshCalcLexer_OUTPUTS}
   ${BISON_QgsMeshCalcParser_OUTPUTS}
+  ${FLEX_QgsEsriArcadeLexer_OUTPUTS}
+  ${BISON_QgsEsriArcadeParser_OUTPUTS}
 
   actions/qgsaction.cpp
   actions/qgsactionscope.cpp
@@ -340,6 +345,7 @@ set(QGIS_CORE_SRCS
   providers/arcgis/qgsarcgisportalutils.cpp
   providers/arcgis/qgsarcgisrestquery.cpp
   providers/arcgis/qgsarcgisrestutils.cpp
+  providers/arcgis/qgsesriarcadescript.cpp
 
   providers/gdal/qgsgdalcloudconnection.cpp
   providers/gdal/qgsgdalclouddataitems.cpp
@@ -856,6 +862,8 @@ set(QGIS_CORE_SRCS
   raster/qgsrastershader.cpp
   raster/qgsrastershaderfunction.cpp
   raster/qgsrastertransparency.cpp
+  raster/qgsrastervectorfieldrenderer.cpp
+  raster/qgsrastervectorfieldvaluesource.cpp
   raster/qgssortedrasterblockindex.cpp
 
   raster/qgsbilinearrasterresampler.cpp
@@ -1160,6 +1168,8 @@ if(NOT MSVC)
     ${BISON_QgsSqlStatementParser_OUTPUTS}
     ${FLEX_QgsMeshCalcLexer_OUTPUTS}
     ${BISON_QgsMeshCalcParser_OUTPUTS}
+    ${FLEX_QgsEsriArcadeLexer_OUTPUTS}
+    ${BISON_QgsEsriArcadeParser_OUTPUTS}
     PROPERTIES COMPILE_FLAGS -w)
 else()
   # -wd4702 unreachable code
@@ -1176,6 +1186,8 @@ else()
     ${BISON_QgsSqlStatementParser_OUTPUTS}
     ${FLEX_QgsMeshCalcLexer_OUTPUTS}
     ${BISON_QgsMeshCalcParser_OUTPUTS}
+    ${FLEX_QgsEsriArcadeLexer_OUTPUTS}
+    ${BISON_QgsEsriArcadeParser_OUTPUTS}
     PROPERTIES COMPILE_FLAGS /W0)
 endif()
 
@@ -1225,6 +1237,7 @@ set(QGIS_CORE_HDRS
   qgsdatabaseschemamodel.h
   qgsdatabasetablemodel.h
   qgsdatadefinedsizelegend.h
+  qgsdatadefinedutils.h
   qgsdataproviderelevationproperties.h
   qgsdataprovidertemporalcapabilities.h
   qgsdatasourceuri.h
@@ -1999,6 +2012,7 @@ set(QGIS_CORE_HDRS
   providers/arcgis/qgsarcgisportalutils.h
   providers/arcgis/qgsarcgisrestquery.h
   providers/arcgis/qgsarcgisrestutils.h
+  providers/arcgis/qgsesriarcadescript.h
 
   providers/gdal/qgsgdalcloudconnection.h
   providers/gdal/qgsgdalclouddataitems.h
@@ -2081,6 +2095,8 @@ set(QGIS_CORE_HDRS
   raster/qgsrastershader.h
   raster/qgsrastershaderfunction.h
   raster/qgsrastertransparency.h
+  raster/qgsrastervectorfieldrenderer.h
+  raster/qgsrastervectorfieldvaluesource.h
   raster/qgsrasterviewport.h
   raster/qgssinglebandcolordatarenderer.h
   raster/qgssinglebandgrayrenderer.h

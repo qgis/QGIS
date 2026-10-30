@@ -2365,7 +2365,8 @@ bool QgsVectorLayer::setDataProvider( QString const &provider, const QgsDataProv
       QStringList stuff = match.capturedTexts();
       QString lName = stuff[1];
 
-      const QMap<QString, QgsMapLayer *> &layers = QgsProject::instance()->mapLayers(); // skip-keyword-check
+      // TODO QGIS 5.0 -- if layer has not been added to project, return empty QMap here
+      const QMap<QString, QgsMapLayer *> &layers = this->project() ? this->project()->mapLayers() : QgsProject::instance()->mapLayers(); // skip-keyword-check
 
       QMap<QString, QgsMapLayer *>::const_iterator it;
       for ( it = layers.constBegin(); it != layers.constEnd() && ( *it )->name() != lName; ++it )
@@ -4710,6 +4711,9 @@ void QgsVectorLayer::removeExpressionField( int index )
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
+  if ( mFields.fieldOrigin( index ) != Qgis::FieldOrigin::Expression )
+    return;
+
   emit beforeRemovingExpressionField( index );
   int oi = mFields.fieldOriginIndex( index );
   mExpressionFieldBuffer->removeExpression( oi );
@@ -4734,6 +4738,9 @@ QString QgsVectorLayer::expressionField( int index ) const
 void QgsVectorLayer::updateExpressionField( int index, const QString &exp )
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
+  if ( mFields.fieldOrigin( index ) != Qgis::FieldOrigin::Expression )
+    return;
 
   int oi = mFields.fieldOriginIndex( index );
   mExpressionFieldBuffer->updateExpression( oi, exp );
@@ -6106,7 +6113,7 @@ QgsExpressionContextScope *QgsVectorLayer::createExpressionContextScope() const
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
-  return QgsExpressionContextUtils::layerScope( this );
+  return QgsExpressionContextUtils::layerScope( this ).release();
 }
 
 void QgsVectorLayer::setDiagramLayerSettings( const QgsDiagramLayerSettings &s )

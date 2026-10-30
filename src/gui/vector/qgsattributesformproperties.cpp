@@ -463,6 +463,7 @@ void QgsAttributesFormProperties::loadAttributeWidgetEdit()
 void QgsAttributesFormProperties::loadInfoWidget( const QString &infoText )
 {
   mInfoTextWidget = new QLabel( infoText );
+  mInfoTextWidget->setWordWrap( true );
   mAttributeTypeFrame->layout()->setContentsMargins( 0, 0, 0, 0 );
   mAttributeTypeFrame->layout()->addWidget( mInfoTextWidget );
 }

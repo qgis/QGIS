@@ -253,15 +253,19 @@ void QgsPluginManager::setPythonUtils( QgsPythonUtils *pythonUtils )
     ckbCheckUpdates->setChecked( true );
   }
 
+  // Use whileBlocking to avoid refresh plugin list too many times ...
   if ( settingsAllowExperimental->value() )
   {
-    ckbExperimental->setChecked( true );
+    whileBlocking( ckbExperimental )->setChecked( true );
   }
 
   if ( settingsAllowDeprecated->value() )
   {
-    ckbDeprecated->setChecked( true );
+    whileBlocking( ckbDeprecated )->setChecked( true );
   }
+
+  // And do it once to be sure it's correctly initialized
+  refreshPluginList();
 }
 
 void QgsPluginManager::loadPlugin( const QString &id )
@@ -1591,19 +1595,22 @@ void QgsPluginManager::buttonDeleteRep_clicked()
   }
 }
 
+void QgsPluginManager::refreshPluginList()
+{
+  QgsPythonRunner::run( u"pyplugin_installer.installer_data.plugins.rebuild()"_s );
+  QgsPythonRunner::run( u"pyplugin_installer.instance().exportPluginsToManager()"_s );
+}
 
 void QgsPluginManager::ckbExperimental_toggled( bool state )
 {
   settingsAllowExperimental->setValue( state );
-  QgsPythonRunner::run( u"pyplugin_installer.installer_data.plugins.rebuild()"_s );
-  QgsPythonRunner::run( u"pyplugin_installer.instance().exportPluginsToManager()"_s );
+  refreshPluginList();
 }
 
 void QgsPluginManager::ckbDeprecated_toggled( bool state )
 {
   settingsAllowDeprecated->setValue( state );
-  QgsPythonRunner::run( u"pyplugin_installer.installer_data.plugins.rebuild()"_s );
-  QgsPythonRunner::run( u"pyplugin_installer.instance().exportPluginsToManager()"_s );
+  refreshPluginList();
 }
 
 

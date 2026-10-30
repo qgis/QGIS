@@ -18,6 +18,7 @@
 #include "qgsgui.h"
 #include "qgslayertree.h"
 #include "qgslayertreeembeddedwidgetregistry.h"
+#include "qgslayertreegroup.h"
 #include "qgslayertreemodel.h"
 #include "qgslayertreemodellegendnode.h"
 #include "qgslayertreeutils.h"
@@ -500,6 +501,8 @@ void QgsLayerTreeView::setModel( QAbstractItemModel *model )
   proxyModel->setHideValidLayers( mHideValidLayers );
 
   setModel( treeModel, proxyModel );
+
+  connect( this, &QTreeView::doubleClicked, this, &QgsLayerTreeView::onDoubleClicked );
 }
 
 void QgsLayerTreeView::setModel( QgsLayerTreeModel *treeModel, QgsLayerTreeProxyModel *proxyModel )
@@ -680,6 +683,17 @@ void QgsLayerTreeView::onCurrentChanged()
 
   emit currentLayerChanged( layerCurrent );
 }
+
+void QgsLayerTreeView::onDoubleClicked( const QModelIndex &index )
+{
+  QgsLayerTreeNode *node = index2node( index );
+
+  if ( !node || node->nodeType() != QgsLayerTreeNode::NodeGroup )
+    return;
+
+  node->setExpanded( !node->isExpanded() );
+}
+
 
 void QgsLayerTreeView::onCustomPropertyChanged( QgsLayerTreeNode *node, const QString &key )
 {

@@ -1679,6 +1679,12 @@ The development version
       ForceVector,
     };
 
+    enum class RenderFormat /BaseType=IntEnum/
+    {
+      Raster,
+      Vector,
+    };
+
     enum class MapSettingsFlag /BaseType=IntFlag/
     {
       Antialiasing,
@@ -4060,6 +4066,20 @@ The development version
     {
       Gridded,
       Random
+    };
+
+    enum class RasterVectorFieldSourceMode /BaseType=IntEnum/
+    {
+      CartesianComponents,
+      EncodedDirection,
+    };
+
+    enum class RasterDirectionEncoding /BaseType=IntEnum/
+    {
+      Esri,
+      Grass,
+      Saga,
+      PcRaster,
     };
 
     enum class LinearMatrixMethod /BaseType=IntEnum/

@@ -433,8 +433,6 @@ void QgsAttributeTableModel::loadAttributes()
   if ( mFields == fields )
     return;
 
-  mFields = fields;
-
   bool ins = false, rm = false;
 
   QgsAttributeList attributes;
@@ -454,6 +452,8 @@ void QgsAttributeTableModel::loadAttributes()
     rm = true;
     beginRemoveColumns( QModelIndex(), attributes.size(), mFieldCount + mExtraColumns - 1 );
   }
+
+  mFields = fields;
 
   mFieldCount = attributes.size();
   mAttributes = attributes;
@@ -684,9 +684,7 @@ QVariant QgsAttributeTableModel::headerData( int section, Qt::Orientation orient
 
 QVariant QgsAttributeTableModel::data( const QModelIndex &index, int role ) const
 {
-  if ( !index.isValid()
-       || !mLayer
-       || ( role != Qt::TextAlignmentRole && role != Qt::DisplayRole && role != Qt::ToolTipRole && role != Qt::EditRole && role != static_cast<int>( CustomRole::FeatureId ) && role != static_cast<int>( CustomRole::FieldIndex ) && role != Qt::BackgroundRole && role != Qt::ForegroundRole && role != Qt::DecorationRole && role != Qt::FontRole && role < static_cast<int>( CustomRole::Sort ) ) )
+  if ( !index.isValid() || !mLayer )
     return QVariant();
 
   const QgsFeatureId rowId = rowToId( index.row() );
@@ -715,7 +713,7 @@ QVariant QgsAttributeTableModel::data( const QModelIndex &index, int role ) cons
     }
   }
 
-  const QgsField field = mLayer->fields().at( fieldId );
+  const QgsField field = mFields.at( fieldId );
 
   if ( role == Qt::TextAlignmentRole )
   {
@@ -939,7 +937,10 @@ void QgsAttributeTableModel::bulkEditCommandEnded()
   {
     // Invalidates the cache (there is no API for doing this directly)
     emit mLayer->dataChanged();
-    emit dataChanged( createIndex( 0, 0 ), createIndex( rowCount() - 1, columnCount() - 1 ) );
+    if ( rowCount() > 0 )
+    {
+      emit dataChanged( createIndex( 0, 0 ), createIndex( rowCount() - 1, columnCount() - 1 ) );
+    }
   }
   else if ( !mAttributeValueChanges.empty() && !mInsertedRowsChanges.empty() )
   {
@@ -1115,6 +1116,12 @@ void QgsAttributeTableModel::prefetchSortData( const QString &expressionString, 
       const QVariant sortValue = widgetData.fieldFormatter->sortValue( mLayer, cache.sortFieldIndex, widgetData.config, widgetData.cache, f.attribute( cache.sortFieldIndex ) );
       cache.sortCache.insert( f.id(), sortValue );
     }
+  }
+  const int rows = rowCount();
+  if ( rows > 0 )
+  {
+    const int sortRole = static_cast< int >( CustomRole::Sort ) + static_cast< int >( cacheIndex );
+    emit dataChanged( index( 0, 0 ), index( rows - 1, columnCount() - 1 ), { sortRole } );
   }
 }
 
