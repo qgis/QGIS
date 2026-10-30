@@ -184,7 +184,7 @@ QgsCameraController *Qgs3DMapCanvas::cameraController()
 
 QgsRayCastResult Qgs3DMapCanvas::castRay( const QPoint &screenPoint, QgsRayCastContext context )
 {
-  const QgsRay3D ray = Qgs3DUtils::rayFromScreenPoint( screenPoint, size(), camera() );
+  const QgsRay3D ray = Qgs3DUtils::rayFromScreenPoint( screenPoint, size(), camera(), mapSettings()->projectionType() );
   if ( context.maximumDistance() < 0 )
     context.setMaximumDistance( camera()->farPlane() );
   const QgsRayCastResult res = Qgs3DUtils::castRay( mScene, ray, context );
