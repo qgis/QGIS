@@ -539,6 +539,48 @@ class TestQgsRuleBasedRenderer : public QgsTest
       renderer->stopRender( ctx );
     }
 
+    void testRulesForFeatureElse()
+    {
+      const QString shpFile = TEST_DATA_DIR + u"/rectangles.shp"_s;
+      auto layer = std::make_unique<QgsVectorLayer>( shpFile, u"rectangles"_s, u"ogr"_s );
+      QVERIFY( layer->isValid() );
+
+      // group rule without symbol, with its own else rule
+      QgsRuleBasedRenderer::Rule *group = new QgsRuleBasedRenderer::Rule( nullptr, 0, 0, "\"id\" <= 2" );
+      QgsRuleBasedRenderer::Rule *groupR1 = new QgsRuleBasedRenderer::Rule( QgsFillSymbol::createSimple( QVariantMap() ).release(), 0, 0, "\"id\" = 1" );
+      QgsRuleBasedRenderer::Rule *groupElse = new QgsRuleBasedRenderer::Rule( QgsFillSymbol::createSimple( QVariantMap() ).release(), 0, 0, "ELSE" );
+      group->appendChild( groupR1 );
+      group->appendChild( groupElse );
+      QgsRuleBasedRenderer::Rule *rootElse = new QgsRuleBasedRenderer::Rule( QgsFillSymbol::createSimple( QVariantMap() ).release(), 0, 0, "ELSE" );
+
+      QgsRuleBasedRenderer::Rule *rootrule = new QgsRuleBasedRenderer::Rule( nullptr );
+      rootrule->appendChild( group );
+      rootrule->appendChild( rootElse );
+      auto renderer = std::make_unique<QgsRuleBasedRenderer>( rootrule );
+
+      QgsRenderContext ctx;
+      ctx.setRendererScale( 0 );
+      renderer->startRender( ctx, layer->fields() );
+
+      QgsFeature f = layer->getFeature( 0 );
+      QCOMPARE( renderer->rootRule()->rulesForFeature( f, &ctx ), QgsRuleBasedRenderer::RuleList() << groupR1 );
+      f = layer->getFeature( 1 );
+      QCOMPARE( renderer->rootRule()->rulesForFeature( f, &ctx ), QgsRuleBasedRenderer::RuleList() << groupElse );
+      f = layer->getFeature( 2 );
+      QCOMPARE( renderer->rootRule()->rulesForFeature( f, &ctx ), QgsRuleBasedRenderer::RuleList() << rootElse );
+      renderer->stopRender( ctx );
+
+      // a rule without filter matches everything, so the root else rule never applies
+      QgsRuleBasedRenderer::Rule *noFilter = new QgsRuleBasedRenderer::Rule( QgsFillSymbol::createSimple( QVariantMap() ).release() );
+      rootrule->insertChild( 0, noFilter );
+      renderer->startRender( ctx, layer->fields() );
+      f = layer->getFeature( 1 );
+      QCOMPARE( renderer->rootRule()->rulesForFeature( f, &ctx ), QgsRuleBasedRenderer::RuleList() << noFilter << groupElse );
+      f = layer->getFeature( 2 );
+      QCOMPARE( renderer->rootRule()->rulesForFeature( f, &ctx ), QgsRuleBasedRenderer::RuleList() << noFilter );
+      renderer->stopRender( ctx );
+    }
+
     void testUsedAttributes()
     {
       // Create rulebased style
