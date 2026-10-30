@@ -39,6 +39,7 @@
 #include <QFileDialog>
 #include <QMessageBox>
 #include <QRegularExpression>
+#include <QSet>
 #include <QSpinBox>
 #include <QString>
 #include <QTextCodec>
@@ -877,11 +878,20 @@ void QgsVectorLayerSaveAsDialog::mUseAliasesForExportedName_stateChanged( int st
         }
       }
 
+      QSet<QString> usedExportNames;
       for ( int i = 0; i < mAttributeTable->rowCount(); i++ )
       {
         mUseAliasesForExportedName->setTristate( false );
-        const QString alias = mAttributeTable->item( i, static_cast<int>( ColumnIndex::ExportName ) )->data( Qt::UserRole ).toString();
-        mAttributeTable->item( i, static_cast<int>( ColumnIndex::ExportName ) )->setText( alias );
+        QTableWidgetItem *exportNameItem = mAttributeTable->item( i, static_cast<int>( ColumnIndex::ExportName ) );
+        const QString alias = exportNameItem->data( Qt::UserRole ).toString();
+
+        QString exportName = alias;
+        int counter = 1;
+        while ( usedExportNames.contains( exportName ) )
+          exportName = u"%1_%2"_s.arg( alias ).arg( ++counter );
+
+        usedExportNames.insert( exportName );
+        exportNameItem->setText( exportName );
       }
     }
     break;
