@@ -283,7 +283,7 @@ class _3D_EXPORT Qgs3DUtils
     static QgsPhongMaterialSettings phongMaterialFromQt3DComponent( Qt3DExtras::QPhongMaterial *material );
 
     //! Convert from clicked point on the screen to a ray in world coordinates
-    static QgsRay3D rayFromScreenPoint( const QPoint &point, const QSize &windowSize, Qt3DRender::QCamera *camera );
+    static QgsRay3D rayFromScreenPoint( const QPoint &point, const QSize &windowSize, Qt3DRender::QCamera *camera, Qgis::Map3DProjectionType projectionType );
 
     /**
      * Converts the clicked mouse position to the corresponding 3D world coordinates
