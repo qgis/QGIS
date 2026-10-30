@@ -5384,7 +5384,12 @@ destination path for a point cloud layer created by the algorithm.
 %End
   public:
     QgsProcessingParameterPointCloudDestination(
-      const QString &name, const QString &description = QString(), const QVariant &defaultValue = QVariant(), bool optional = false, bool createByDefault = true, bool limitToVpc = false
+      const QString &name,
+      const QString &description = QString(),
+      const QVariant &defaultValue = QVariant(),
+      bool optional = false,
+      bool createByDefault = true,
+      Qgis::PointCloudOutputsTypes allowedPointCloudOutputs = Qgis::PointCloudOutputsTypes::All
     );
 %Docstring
 Constructor for QgsProcessingParameterPointCloudDestination.
@@ -5392,8 +5397,9 @@ Constructor for QgsProcessingParameterPointCloudDestination.
 If ``createByDefault`` is ``False`` and the parameter is ``optional``,
 then this destination output will not be created by default.
 
-If ``limitToVpc`` is ``True`` then only virtual point cloud formats (VPC
-and VPZ) will be offered as output formats (since QGIS 4.4).
+The ``allowedPointCloudOutputs`` argument can be used to restrict the
+output formats offered, e.g. to only virtual point cloud formats (VPC
+and VPZ) (since QGIS 4.4).
 %End
 
     static QString typeName();
@@ -5428,22 +5434,20 @@ this parameter.
 .. seealso:: :py:func:`defaultFileExtension`
 %End
 
-    bool limitToVpc() const;
+    Qgis::PointCloudOutputsTypes allowedPointCloudOutputs() const;
 %Docstring
-Returns ``True`` if the output is limited to virtual point cloud formats
-(VPC and VPZ).
+Returns the point cloud output formats allowed for this parameter.
 
-.. seealso:: :py:func:`setLimitToVpc`
+.. seealso:: :py:func:`setAllowedPointCloudOutputs`
 
 .. versionadded:: 4.4
 %End
 
-    void setLimitToVpc( bool limit );
+    void setAllowedPointCloudOutputs( Qgis::PointCloudOutputsTypes allowed );
 %Docstring
-Sets whether the output is limited to virtual point cloud formats (VPC
-and VPZ).
+Sets the point cloud output formats ``allowed`` for this parameter.
 
-.. seealso:: :py:func:`limitToVpc`
+.. seealso:: :py:func:`allowedPointCloudOutputs`
 
 .. versionadded:: 4.4
 %End

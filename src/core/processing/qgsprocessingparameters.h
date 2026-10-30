@@ -4766,11 +4766,16 @@ class CORE_EXPORT QgsProcessingParameterPointCloudDestination : public QgsProces
      * If \a createByDefault is FALSE and the parameter is \a optional, then this destination
      * output will not be created by default.
      *
-     * If \a limitToVpc is TRUE then only virtual point cloud formats (VPC and VPZ) will
-     * be offered as output formats (since QGIS 4.4).
+     * The \a allowedPointCloudOutputs argument can be used to restrict the output formats
+     * offered, e.g. to only virtual point cloud formats (VPC and VPZ) (since QGIS 4.4).
      */
     QgsProcessingParameterPointCloudDestination(
-      const QString &name, const QString &description = QString(), const QVariant &defaultValue = QVariant(), bool optional = false, bool createByDefault = true, bool limitToVpc = false
+      const QString &name,
+      const QString &description = QString(),
+      const QVariant &defaultValue = QVariant(),
+      bool optional = false,
+      bool createByDefault = true,
+      Qgis::PointCloudOutputsTypes allowedPointCloudOutputs = Qgis::PointCloudOutputsTypes::All
     );
 
     /**
@@ -4795,20 +4800,20 @@ class CORE_EXPORT QgsProcessingParameterPointCloudDestination : public QgsProces
     virtual QStringList supportedOutputPointCloudLayerExtensions() const;
 
     /**
-     * Returns TRUE if the output is limited to virtual point cloud formats (VPC and VPZ).
+     * Returns the point cloud output formats allowed for this parameter.
      *
-     * \see setLimitToVpc()
+     * \see setAllowedPointCloudOutputs()
      * \since QGIS 4.4
      */
-    bool limitToVpc() const { return mLimitToVpc; }
+    Qgis::PointCloudOutputsTypes allowedPointCloudOutputs() const { return mAllowedPointCloudOutputs; }
 
     /**
-     * Sets whether the output is limited to virtual point cloud formats (VPC and VPZ).
+     * Sets the point cloud output formats \a allowed for this parameter.
      *
-     * \see limitToVpc()
+     * \see allowedPointCloudOutputs()
      * \since QGIS 4.4
      */
-    void setLimitToVpc( bool limit ) { mLimitToVpc = limit; }
+    void setAllowedPointCloudOutputs( Qgis::PointCloudOutputsTypes allowed ) { mAllowedPointCloudOutputs = allowed; }
 
     /**
      * Creates a new parameter using the definition from a script code.
@@ -4816,7 +4821,7 @@ class CORE_EXPORT QgsProcessingParameterPointCloudDestination : public QgsProces
     static QgsProcessingParameterPointCloudDestination *fromScriptCode( const QString &name, const QString &description, bool isOptional, const QString &definition ) SIP_FACTORY;
 
   private:
-    bool mLimitToVpc = false;
+    Qgis::PointCloudOutputsTypes mAllowedPointCloudOutputs = Qgis::PointCloudOutputsTypes::All;
 };
 
 /**
