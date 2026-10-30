@@ -670,9 +670,10 @@ class CORE_EXPORT QgsRectangle
      * or if a maximum coordinate is less than or equal to the corresponding minimum coordinate.
      *
      * \see isNull()
-     * \since QGIS 4.0
+     *
+     * \deprecated QGIS 4.4. Use isEmpty() or isNull() instead.
      */
-    bool isValid() const
+    Q_DECL_DEPRECATED bool isValid() const SIP_DEPRECATED
     {
       if ( ( !isFinite() ) || ( mXmax <= mXmin ) || ( mYmax <= mYmin ) )
       {
