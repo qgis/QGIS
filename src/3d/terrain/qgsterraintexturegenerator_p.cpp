@@ -80,11 +80,12 @@ QFuture<QImage> QgsTerrainTextureGenerator::render( const QgsRectangle &extent, 
   } );
   jobData->watcher.setFuture( jobData->promise.future() );
 
+  QFuture<QImage> future = jobData->promise.future();
   mJobs[job] = std::move( jobData ); //store job data just before launching the job
   job->start();
 
   // QgsDebugMsgLevel( u"added job: %1 .... in queue: %2"_s.arg( jobData.jobId ).arg( jobs.count() ), 2);
-  return mJobs[job]->promise.future();
+  return future;
 }
 
 void QgsTerrainTextureGenerator::onRenderingFinished()

@@ -78,6 +78,11 @@ opacity for colors)
 
 
 
+%ModuleHeaderCode
+#include "qgssettingseditorwidgetwrapperimpl.h"
+typedef QgsSettingsEditorWidgetWrapperTemplate<QgsSettingsEntryString,QLineEdit,QString> QgsSettingsEditorWidgetWrapperTemplateQgsSettingsEntryStringQLineEditQStringBase;
+%End
+
 typedef QgsSettingsEditorWidgetWrapperTemplate<QgsSettingsEntryString,QLineEdit,QString> QgsSettingsEditorWidgetWrapperTemplateQgsSettingsEntryStringQLineEditQStringBase /NoTypeName/;
 
 class QgsSettingsStringLineEditWrapper : QgsSettingsEditorWidgetWrapperTemplateQgsSettingsEntryStringQLineEditQStringBase
@@ -90,7 +95,6 @@ A factory for editors for string settings with a line edit.
 
 %TypeHeaderCode
 #include "qgssettingseditorwidgetwrapperimpl.h"
-typedef QgsSettingsEditorWidgetWrapperTemplate<QgsSettingsEntryString,QLineEdit,QString> QgsSettingsEditorWidgetWrapperTemplateQgsSettingsEntryStringQLineEditQStringBase;
 %End
   public:
     QgsSettingsStringLineEditWrapper( QObject *parent = 0 );
@@ -125,6 +129,11 @@ Constructor of the wrapper for a given ``setting`` and its widget
 
 
 
+%ModuleHeaderCode
+#include "qgssettingseditorwidgetwrapperimpl.h"
+typedef QgsSettingsEditorWidgetWrapperTemplate<QgsSettingsEntryString,QComboBox,QString> QgsSettingsEditorWidgetWrapperTemplateQgsSettingsEntryStringQComboBoxQStringBase;
+%End
+
 typedef QgsSettingsEditorWidgetWrapperTemplate<QgsSettingsEntryString,QComboBox,QString> QgsSettingsEditorWidgetWrapperTemplateQgsSettingsEntryStringQComboBoxQStringBase /NoTypeName/;
 
 class QgsSettingsStringComboBoxWrapper : QgsSettingsEditorWidgetWrapperTemplateQgsSettingsEntryStringQComboBoxQStringBase
@@ -137,7 +146,6 @@ A factory for editors of string settings with a combo box.
 
 %TypeHeaderCode
 #include "qgssettingseditorwidgetwrapperimpl.h"
-typedef QgsSettingsEditorWidgetWrapperTemplate<QgsSettingsEntryString,QComboBox,QString> QgsSettingsEditorWidgetWrapperTemplateQgsSettingsEntryStringQComboBoxQStringBase;
 %End
   public:
     enum class Mode /BaseType=IntEnum/
@@ -192,6 +200,11 @@ Constructor of the wrapper for a given ``setting`` and its widget
 
 
 
+%ModuleHeaderCode
+#include "qgssettingseditorwidgetwrapperimpl.h"
+typedef QgsSettingsEditorWidgetWrapperTemplate<QgsSettingsEntryBool,QCheckBox,bool> QgsSettingsEditorWidgetWrapperTemplateQgsSettingsEntryBoolQCheckBoxboolBase;
+%End
+
 typedef QgsSettingsEditorWidgetWrapperTemplate<QgsSettingsEntryBool,QCheckBox,bool> QgsSettingsEditorWidgetWrapperTemplateQgsSettingsEntryBoolQCheckBoxboolBase /NoTypeName/;
 
 class QgsSettingsBoolCheckBoxWrapper : QgsSettingsEditorWidgetWrapperTemplateQgsSettingsEntryBoolQCheckBoxboolBase
@@ -204,7 +217,6 @@ A factory for editors of boolean settings with a checkbox.
 
 %TypeHeaderCode
 #include "qgssettingseditorwidgetwrapperimpl.h"
-typedef QgsSettingsEditorWidgetWrapperTemplate<QgsSettingsEntryBool,QCheckBox,bool> QgsSettingsEditorWidgetWrapperTemplateQgsSettingsEntryBoolQCheckBoxboolBase;
 %End
   public:
     QgsSettingsBoolCheckBoxWrapper( QObject *parent = 0 );
@@ -237,6 +249,11 @@ Constructor of the wrapper for a given ``setting`` and its widget
 };
 
 
+%ModuleHeaderCode
+#include "qgssettingseditorwidgetwrapperimpl.h"
+typedef QgsSettingsEditorWidgetWrapperTemplate<QgsSettingsEntryBool,QGroupBox,bool> QgsSettingsEditorWidgetWrapperTemplateQgsSettingsEntryBoolQGroupBoxboolBase;
+%End
+
 typedef QgsSettingsEditorWidgetWrapperTemplate<QgsSettingsEntryBool,QGroupBox,bool> QgsSettingsEditorWidgetWrapperTemplateQgsSettingsEntryBoolQGroupBoxboolBase /NoTypeName/;
 
 class QgsSettingsBoolGroupBoxWrapper : QgsSettingsEditorWidgetWrapperTemplateQgsSettingsEntryBoolQGroupBoxboolBase
@@ -249,7 +266,6 @@ A factory for editors of boolean settings with a group box.
 
 %TypeHeaderCode
 #include "qgssettingseditorwidgetwrapperimpl.h"
-typedef QgsSettingsEditorWidgetWrapperTemplate<QgsSettingsEntryBool,QGroupBox,bool> QgsSettingsEditorWidgetWrapperTemplateQgsSettingsEntryBoolQGroupBoxboolBase;
 %End
   public:
     QgsSettingsBoolGroupBoxWrapper( QObject *parent = 0 );
@@ -286,6 +302,11 @@ Constructor of the wrapper for a given ``setting`` and its widget
 };
 
 
+%ModuleHeaderCode
+#include "qgssettingseditorwidgetwrapperimpl.h"
+typedef QgsSettingsEditorWidgetWrapperTemplate<QgsSettingsEntryInteger,QSpinBox,int> QgsSettingsEditorWidgetWrapperTemplateQgsSettingsEntryIntegerQSpinBoxintBase;
+%End
+
 typedef QgsSettingsEditorWidgetWrapperTemplate<QgsSettingsEntryInteger,QSpinBox,int> QgsSettingsEditorWidgetWrapperTemplateQgsSettingsEntryIntegerQSpinBoxintBase /NoTypeName/;
 
 class QgsSettingsIntegerSpinBoxWrapper : QgsSettingsEditorWidgetWrapperTemplateQgsSettingsEntryIntegerQSpinBoxintBase
@@ -298,7 +319,6 @@ A factory for editors for integer settings with a spin box.
 
 %TypeHeaderCode
 #include "qgssettingseditorwidgetwrapperimpl.h"
-typedef QgsSettingsEditorWidgetWrapperTemplate<QgsSettingsEntryInteger,QSpinBox,int> QgsSettingsEditorWidgetWrapperTemplateQgsSettingsEntryIntegerQSpinBoxintBase;
 %End
   public:
     QgsSettingsIntegerSpinBoxWrapper( QObject *parent = 0 );
@@ -332,6 +352,11 @@ Constructor of the wrapper for a given ``setting`` and its widget
 
 
 
+%ModuleHeaderCode
+#include "qgssettingseditorwidgetwrapperimpl.h"
+typedef QgsSettingsEditorWidgetWrapperTemplate<QgsSettingsEntryDouble,QDoubleSpinBox,double> QgsSettingsEditorWidgetWrapperTemplateQgsSettingsEntryDoubleQDoubleSpinBoxdoubleBase;
+%End
+
 typedef QgsSettingsEditorWidgetWrapperTemplate<QgsSettingsEntryDouble,QDoubleSpinBox,double> QgsSettingsEditorWidgetWrapperTemplateQgsSettingsEntryDoubleQDoubleSpinBoxdoubleBase /NoTypeName/;
 
 class QgsSettingsDoubleSpinBoxWrapper : QgsSettingsEditorWidgetWrapperTemplateQgsSettingsEntryDoubleQDoubleSpinBoxdoubleBase
@@ -344,7 +369,6 @@ A factory for editors for double settings with a double spin box.
 
 %TypeHeaderCode
 #include "qgssettingseditorwidgetwrapperimpl.h"
-typedef QgsSettingsEditorWidgetWrapperTemplate<QgsSettingsEntryDouble,QDoubleSpinBox,double> QgsSettingsEditorWidgetWrapperTemplateQgsSettingsEntryDoubleQDoubleSpinBoxdoubleBase;
 %End
   public:
     QgsSettingsDoubleSpinBoxWrapper( QObject *parent = 0 );
@@ -378,6 +402,11 @@ Constructor of the wrapper for a given ``setting`` and its widget
 
 
 
+%ModuleHeaderCode
+#include "qgssettingseditorwidgetwrapperimpl.h"
+typedef QgsSettingsEditorWidgetWrapperTemplate<QgsSettingsEntryColor,QgsColorButton,QColor> QgsSettingsEditorWidgetWrapperTemplateQgsSettingsEntryColorQgsColorButtonQColorBase;
+%End
+
 typedef QgsSettingsEditorWidgetWrapperTemplate<QgsSettingsEntryColor,QgsColorButton,QColor> QgsSettingsEditorWidgetWrapperTemplateQgsSettingsEntryColorQgsColorButtonQColorBase /NoTypeName/;
 
 class QgsSettingsColorButtonWrapper : QgsSettingsEditorWidgetWrapperTemplateQgsSettingsEntryColorQgsColorButtonQColorBase
@@ -390,7 +419,6 @@ A factory for editors of color settings with a color button.
 
 %TypeHeaderCode
 #include "qgssettingseditorwidgetwrapperimpl.h"
-typedef QgsSettingsEditorWidgetWrapperTemplate<QgsSettingsEntryColor,QgsColorButton,QColor> QgsSettingsEditorWidgetWrapperTemplateQgsSettingsEntryColorQgsColorButtonQColorBase;
 %End
   public:
     QgsSettingsColorButtonWrapper( QObject *parent = 0 );
