@@ -1,0 +1,71 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/providers/arcgis/qgsesriarcadeconverter.h                   *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
+ ************************************************************************/
+
+
+
+
+class QgsEsriArcadeConverter
+{
+%Docstring(signature="appended")
+Converts an Esri Arcade script to a :py:class:`QgsExpression`.
+
+.. versionadded:: 4.4
+%End
+
+%TypeHeaderCode
+#include "qgsesriarcadeconverter.h"
+%End
+  public:
+    enum class Result
+    {
+      Success,
+      ParserError,
+      InvalidScriptMultiStatements,
+      InvalidScriptIncompatible,
+      UnknownError,
+    };
+
+    QgsEsriArcadeConverter( const QString &script );
+%Docstring
+Constructor for QgsEsriArcadeConverter for converting the specified
+``script``.
+%End
+
+    Result result() const;
+%Docstring
+Returns the result of converting the script.
+
+If the conversion was not successful, a descriptive error can be
+retrieved by :py:func:`~QgsEsriArcadeConverter.errorMessage`.
+
+.. seealso:: :py:func:`errorMessage`
+%End
+
+    QString errorMessage() const;
+%Docstring
+Returns the descriptive error message, if an error was obtained while
+converting the script.
+
+.. seealso:: :py:func:`result`
+%End
+
+    QString expression() const;
+%Docstring
+Returns the QGIS expression equivalent of the Arcade script, if
+conversion was successful.
+%End
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/providers/arcgis/qgsesriarcadeconverter.h                   *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
+ ************************************************************************/
