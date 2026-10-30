@@ -1801,7 +1801,7 @@ OGRGeometryH QgsOgrProvider::ConvertGeometryIfNecessary( OGRGeometryH hGeom )
 
 QString QgsOgrProvider::jsonStringValue( const QVariant &value ) const
 {
-  QString stringValue = QString::fromUtf8( QJsonDocument::fromVariant( value ).toJson().constData() );
+  QString stringValue = QString::fromUtf8( QJsonDocument::fromVariant( value ).toJson( QJsonDocument::JsonFormat::Compact ).constData() );
   if ( stringValue.isEmpty() )
   {
     //store as string, because it's no valid QJson value
@@ -2027,7 +2027,7 @@ bool QgsOgrProvider::addFeaturePrivate( QgsFeature &f, Flags flags, QgsFeatureId
           }
           else
           {
-            stringValue = attrVal.toString();
+            stringValue = jsonStringValue( attrVal );
           }
           QgsDebugMsgLevel( u"Writing string attribute %1 with %2, encoding %3"_s.arg( qgisAttributeId ).arg( attrVal.toString(), textEncoding()->name().data() ), 3 );
           OGR_F_SetFieldString( feature.get(), ogrAttributeId, textEncoding()->fromUnicode( stringValue ).constData() );
