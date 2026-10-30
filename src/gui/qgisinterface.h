@@ -50,7 +50,9 @@ class QgsLayerTreeView;
 class QgsLayerTreeGroup;
 class QgsLayout;
 class QgsMasterLayoutInterface;
+class QgsProcessingModelAlgorithm;
 class QgsLayoutDesignerInterface;
+class QgsModelDesignerDialog;
 class QgsMapCanvas;
 class QgsMapLayer;
 class QgsMapLayerConfigWidgetFactory;
@@ -1283,6 +1285,16 @@ class GUI_EXPORT QgisInterface : public QObject
      * is already created for the layout.
      */
     virtual QgsLayoutDesignerInterface *openLayoutDesigner( QgsMasterLayoutInterface *layout ) = 0;
+
+
+    /**
+     * Opens a new model designer dialog for the specified \a model, or
+     * brings an already open designer window to the foreground if one
+     * is already created for the model.
+     *
+     * \since QGIS 4.4
+     */
+    virtual QgsModelDesignerDialog *openModelDesigner( QgsProcessingModelAlgorithm *model SIP_TRANSFER ) = 0;
 
     /**
      * Opens the options dialog.

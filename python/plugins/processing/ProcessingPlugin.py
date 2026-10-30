@@ -57,7 +57,12 @@ from qgis.PyQt.QtCore import (
     pyqtSlot,
 )
 from qgis.PyQt.QtGui import QKeySequence
-from qgis.PyQt.QtWidgets import QAction, QMenu, QWidget
+from qgis.PyQt.QtWidgets import (
+    QAction,
+    QMenu,
+    QMessageBox,
+    QWidget,
+)
 from qgis.utils import iface
 
 from processing.core.Processing import Processing
@@ -114,22 +119,6 @@ class ProcessingOptionsFactory(QgsOptionsWidgetFactory):
         return ConfigOptionsPage(parent)
 
 
-class ModelerDialogHack:
-    dlgs = []
-
-    @staticmethod
-    def create_model_designer_dialog():
-        """
-        Workaround crappy sip handling of QMainWindow. It doesn't know that we are using the deleteonclose
-        flag, so happily just deletes dialogs as soon as they go out of scope. The only workaround possible
-        while we still have to drag around this Python code is to store a reference to the sip wrapper so that
-        sip doesn't get confused. The underlying object will still be deleted by the deleteonclose flag though!
-        """
-        dlg = QgsModelDesignerDialog()
-        ModelerDialogHack.dlgs.append(dlg)
-        return dlg
-
-
 class ProcessingDropHandler(QgsCustomDropHandler):
     def handleFileDrop(self, file):
         if not file.lower().endswith(".model3"):
@@ -181,9 +170,18 @@ class ProcessingModelItem(QgsDataItem):
         ProcessingDropHandler.runAlg(self.path())
 
     def editModel(self):
-        dlg = ModelerDialogHack.create_model_designer_dialog()
-        dlg.loadModel(self.path())
-        dlg.show()
+        alg = QgsProcessingModelAlgorithm.loadModel(self.path())
+        if not alg:
+            QMessageBox.critical(
+                None,
+                QObject.tr("Open Model"),
+                QObject.tr(
+                    "The selected model could not be loaded.\n"
+                    "See the log for more information."
+                ),
+            )
+            return
+        iface.openModelDesigner(alg)
 
     def actions(self, parent):
         run_model_action = QAction(
