@@ -13,6 +13,7 @@ set(QGIS_3D_SRCS
   qgsannotationlayerchunkloader_p.cpp
   qgs3danimationsettings.cpp
   qgs3dexportobject.cpp
+  qgs3deditingtoolbar.cpp
   qgs3dhighlightfeaturehandler.cpp
   qgs3dmapexportsettings.cpp
   qgs3dmapscene.cpp
@@ -38,6 +39,7 @@ set(QGIS_3D_SRCS
   qgsglobeutils_p.cpp
   qgsgltf3dutils.cpp
   qgsimagetexture.cpp
+  qgslateralpanelwidget.cpp
   qgslayoutitem3dmap.cpp
   qgslayerstylewatcher.cpp
   qgsmapoverlayentity.cpp
@@ -172,6 +174,7 @@ set(QGIS_3D_HDRS
   qgs3danimationsettings.h
   qgs3daxis.h
   qgs3daxissettings.h
+  qgs3deditingtoolbar.h
   qgs3dhighlightfeaturehandler.h
   qgs3dmapscene.h
   qgs3dmapsettings.h
@@ -182,6 +185,7 @@ set(QGIS_3D_HDRS
   qgs3dtypes.h
   qgs3dutils.h
   qgs3dmapcanvas.h
+  qgs3dmapinterface.h
   qgscolorgradingsettings.h
   qgscrosssection.h
   qgs3dwiredmesh_p.h
@@ -201,6 +205,7 @@ set(QGIS_3D_HDRS
   qgsgeotransform.h
   qgsglobechunkedentity.h
   qgsgltf3dutils.h
+  qgslateralpanelwidget.h
   qgslayoutitem3dmap.h
   qgslayerstylewatcher.h
   qgsmapoverlayentity.h
