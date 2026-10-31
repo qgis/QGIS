@@ -741,6 +741,24 @@ class TestQgsMapBoxGlStyleConverter(QgisTestCase):
             ),
             """(level IS 0) AND ("type" IN ('Restricted', 'Temporary'))""",
         )
+
+        self.assertEqual(
+            QgsMapBoxGlStyleConverter.parseExpression(
+                [
+                    "all",
+                    [
+                        "match",
+                        ["geometry-type"],
+                        ["LineString", "MultiLineString"],
+                        True,
+                        False,
+                    ],
+                ],
+                conversion_context,
+            ),
+            """("_geom_type" IN ('LineString', 'MultiLineString'))""",
+        )
+
         self.assertEqual(
             QgsMapBoxGlStyleConverter.parseExpression(
                 [
