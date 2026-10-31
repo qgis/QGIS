@@ -80,6 +80,7 @@ class TestQgs3DUtils : public QgsTest
 
     void testTransforms();
     void testRayFromScreenPoint();
+    void testRayFromScreenPointOrthographic();
     void testQgsBox3DDistanceTo();
     void testQgsRay3D();
     void testDefinesToShaderCode();
@@ -172,19 +173,19 @@ void TestQgs3DUtils::testRayFromScreenPoint()
     camera.setViewCenter( QVector3D( 0.0f, 0.0f, 0.0f ) );
 
     {
-      const QgsRay3D ray1 = Qgs3DUtils::rayFromScreenPoint( QPoint( 50, 50 ), QSize( 100, 100 ), &camera );
+      const QgsRay3D ray1 = Qgs3DUtils::rayFromScreenPoint( QPoint( 50, 50 ), QSize( 100, 100 ), &camera, Qgis::Map3DProjectionType::Perspective );
       const QgsRay3D ray2( QVector3D( 8.99999904632568f, 14.9999980926514f, 29.9999980926514f ), QVector3D( -0.25916051864624f, -0.431934207677841f, -0.863868415355682f ) );
       QGSCOMPARENEARVECTOR3D( ray1.origin(), ray2.origin(), 0.00001 );
       QGSCOMPARENEARVECTOR3D( ray1.direction(), ray2.direction(), 0.00001 );
     }
     {
-      const QgsRay3D ray1 = Qgs3DUtils::rayFromScreenPoint( QPoint( 0, 0 ), QSize( 100, 100 ), &camera );
+      const QgsRay3D ray1 = Qgs3DUtils::rayFromScreenPoint( QPoint( 0, 0 ), QSize( 100, 100 ), &camera, Qgis::Map3DProjectionType::Perspective );
       const QgsRay3D ray2( QVector3D( 8.99999904632568f, 14.9999980926514f, 29.9999980926514f ), QVector3D( -0.810001313686371f, -0.0428109727799892f, -0.584863305091858f ) );
       QGSCOMPARENEARVECTOR3D( ray1.origin(), ray2.origin(), 0.00001 );
       QGSCOMPARENEARVECTOR3D( ray1.direction(), ray2.direction(), 0.00001 );
     }
     {
-      const QgsRay3D ray1 = Qgs3DUtils::rayFromScreenPoint( QPoint( 100, 100 ), QSize( 100, 100 ), &camera );
+      const QgsRay3D ray1 = Qgs3DUtils::rayFromScreenPoint( QPoint( 100, 100 ), QSize( 100, 100 ), &camera, Qgis::Map3DProjectionType::Perspective );
       const QgsRay3D ray2( QVector3D( 8.99999904632568f, 14.9999980926514f, 29.9999980926514f ), QVector3D( 0.429731547832489f, -0.590972006320953f, -0.682702660560608f ) );
       QGSCOMPARENEARVECTOR3D( ray1.origin(), ray2.origin(), 0.00001 );
       QGSCOMPARENEARVECTOR3D( ray1.direction(), ray2.direction(), 0.00001 );
@@ -201,20 +202,49 @@ void TestQgs3DUtils::testRayFromScreenPoint()
     camera.setViewCenter( QVector3D( 0.0f, 100.0f, -100.0f ) );
 
     {
-      const QgsRay3D ray1 = Qgs3DUtils::rayFromScreenPoint( QPoint( 500, 500 ), QSize( 1000, 1000 ), &camera );
+      const QgsRay3D ray1 = Qgs3DUtils::rayFromScreenPoint( QPoint( 500, 500 ), QSize( 1000, 1000 ), &camera, Qgis::Map3DProjectionType::Perspective );
       const QgsRay3D ray2( QVector3D( 0, 0, 0 ), QVector3D( 0, 0.70710676908493f, -0.70710676908493f ) );
       QGSCOMPARENEARVECTOR3D( ray1.origin(), ray2.origin(), 0.00001 );
       QGSCOMPARENEARVECTOR3D( ray1.direction(), ray2.direction(), 0.00001 );
     }
     {
-      const QgsRay3D ray1 = Qgs3DUtils::rayFromScreenPoint( QPoint( 0, 0 ), QSize( 1000, 1000 ), &camera );
+      const QgsRay3D ray1 = Qgs3DUtils::rayFromScreenPoint( QPoint( 0, 0 ), QSize( 1000, 1000 ), &camera, Qgis::Map3DProjectionType::Perspective );
       const QgsRay3D ray2( QVector3D( 0, 0, 0 ), QVector3D( -0.70710676908493f, 0.683012664318085f, -0.183012709021568f ) );
       QGSCOMPARENEARVECTOR3D( ray1.origin(), ray2.origin(), 0.00001 );
       QGSCOMPARENEARVECTOR3D( ray1.direction(), ray2.direction(), 0.00001 );
     }
     {
-      const QgsRay3D ray1 = Qgs3DUtils::rayFromScreenPoint( QPoint( 500, 1000 ), QSize( 1000, 1000 ), &camera );
+      const QgsRay3D ray1 = Qgs3DUtils::rayFromScreenPoint( QPoint( 500, 1000 ), QSize( 1000, 1000 ), &camera, Qgis::Map3DProjectionType::Perspective );
       const QgsRay3D ray2( QVector3D( 0, 0, 0 ), QVector3D( 0, 0.258819073438644f, -0.965925812721252f ) );
+      QGSCOMPARENEARVECTOR3D( ray1.origin(), ray2.origin(), 0.00001 );
+      QGSCOMPARENEARVECTOR3D( ray1.direction(), ray2.direction(), 0.00001 );
+    }
+  }
+}
+
+void TestQgs3DUtils::testRayFromScreenPointOrthographic()
+{
+  Qt3DRender::QCamera camera;
+  {
+    camera.setProjectionType( Qt3DRender::QCameraLens::OrthographicProjection );
+    camera.setLeft( -100.0f );
+    camera.setRight( 100.0f );
+    camera.setTop( 50.0f );
+    camera.setBottom( -50.0f );
+    camera.setNearPlane( 10.0f );
+    camera.setFarPlane( 100.0f );
+    camera.setPosition( QVector3D( 0.0f, 0.0f, 0.0f ) );
+    camera.setUpVector( QVector3D( 0.0f, 1.0f, 0.0f ) );
+
+    {
+      const QgsRay3D ray1 = Qgs3DUtils::rayFromScreenPoint( QPoint( 100, 50 ), QSize( 200, 100 ), &camera, Qgis::Map3DProjectionType::Orthographic );
+      const QgsRay3D ray2( QVector3D( 0.0f, 0.0f, 0.0f ), QVector3D( 0.0f, 0.0f, -1.0f ) );
+      QGSCOMPARENEARVECTOR3D( ray1.origin(), ray2.origin(), 0.00001 );
+      QGSCOMPARENEARVECTOR3D( ray1.direction(), ray2.direction(), 0.00001 );
+    }
+    {
+      const QgsRay3D ray1 = Qgs3DUtils::rayFromScreenPoint( QPoint( 50, 0 ), QSize( 200, 100 ), &camera, Qgis::Map3DProjectionType::Orthographic );
+      const QgsRay3D ray2( QVector3D( -50.0f, 50.0f, 0.0f ), QVector3D( 0.0f, 0.0f, -1.0f ) );
       QGSCOMPARENEARVECTOR3D( ray1.origin(), ray2.origin(), 0.00001 );
       QGSCOMPARENEARVECTOR3D( ray1.direction(), ray2.direction(), 0.00001 );
     }
@@ -486,7 +516,7 @@ void TestQgs3DUtils::test3DSceneRay3D()
   // the distance to the building should be smaller than the distance to the terrain
   Qt3DRender::QCamera *camera = scene->cameraController()->camera();
   const QPoint clickedPoint1( 115, 374 );
-  const QgsRay3D ray1 = Qgs3DUtils::rayFromScreenPoint( clickedPoint1, winSize, camera );
+  const QgsRay3D ray1 = Qgs3DUtils::rayFromScreenPoint( clickedPoint1, winSize, camera, scene->mapSettings()->projectionType() );
   QgsRayCastContext context;
   context.setMaximumDistance( camera->farPlane() );
   const QgsRayCastResult result1 = Qgs3DUtils::castRay( scene, ray1, context );
@@ -510,7 +540,7 @@ void TestQgs3DUtils::test3DSceneRay3D()
   // clicking on the terrain
   // the building layer should not be hit
   const QPoint clickedPoint2( 419, 326 );
-  const QgsRay3D ray2 = Qgs3DUtils::rayFromScreenPoint( clickedPoint2, winSize, camera );
+  const QgsRay3D ray2 = Qgs3DUtils::rayFromScreenPoint( clickedPoint2, winSize, camera, scene->mapSettings()->projectionType() );
   const QgsRayCastResult result2 = Qgs3DUtils::castRay( scene, ray2, context );
 
   const QList< QgsRayCastHit > terrainHits2 = result2.terrainHits();
