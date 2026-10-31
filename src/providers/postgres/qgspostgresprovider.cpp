@@ -4632,7 +4632,42 @@ Qgis::VectorExportResult QgsPostgresProvider::createEmptyLayer(
 
     // get geometry type, dim and srid
     int dim = 2;
-    long srid = srs.postgisSrid();
+    long srid;
+
+    // get srid from PostGIS
+
+    if ( !srs.authid().isEmpty() )
+    {
+      QStringList authId_list = srs.authid().split( ':' );
+
+      sql = u"SELECT srid FROM public.spatial_ref_sys WHERE auth_name = %1 AND auth_srid = %2"_s.arg( quotedValue( authId_list[0] ) ).arg( quotedValue( authId_list[1] ) );
+
+      result = conn->LoggedPQexec( "QgsPostgresProvider", sql );
+
+      if ( result.PQresultStatus() != PGRES_TUPLES_OK )
+        throw PGException( result );
+
+      if ( result.PQntuples() < 1 )
+      {
+        if ( errorMessage )
+          *errorMessage = QObject::tr( "Creation of data source %1 failed: \n No record matching %2 found in public.spatial_ref_sys" ).arg( schemaTableName, srs.authid() );
+
+        conn->LoggedPQexecNR( "QgsPostgresProvider", u"ROLLBACK"_s );
+        conn->unref();
+        return Qgis::VectorExportResult::ErrorCreatingLayer;
+      }
+
+      srid = result.PQgetvalue( 0, 0 ).toLong();
+    }
+    else
+    {
+      if ( errorMessage )
+        *errorMessage = QObject::tr( "Creation of data source %1 failed: CRS has no authority ID" ).arg( schemaTableName );
+
+      conn->LoggedPQexecNR( "QgsPostgresProvider", u"ROLLBACK"_s );
+      conn->unref();
+      return Qgis::VectorExportResult::ErrorCreatingLayer;
+    }
 
     postgisGeometryType( wkbType, geometryType, dim );
 

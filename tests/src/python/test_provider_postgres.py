@@ -39,6 +39,7 @@ from qgis.core import (
     QgsFeatureSink,
     QgsFeatureSource,
     QgsFieldConstraints,
+    QgsFields,
     QgsGeometry,
     QgsProcessingContext,
     QgsProcessingFeedback,
@@ -4086,6 +4087,69 @@ class TestPyQgsPostgresProvider(QgisTestCase, ProviderTestCase):
 
         self.assertTrue(layer.isValid())
         self.assertEqual(layer.crs().description(), "my_projection")
+
+    def testCreateVectorTableUsesDatabaseSRID(self):
+        """Use the database's SRID for EPSG:6319 when creating a table."""
+
+        md = QgsProviderRegistry.instance().providerMetadata("postgres")
+        conn = md.createConnection(self.dbconn, {})
+        table_name = "test_database_createEmptyLayer_srid_lookup"
+        crs = QgsCoordinateReferenceSystem("EPSG:6319")
+        result = conn.executeSql(
+            "SELECT srid FROM public.spatial_ref_sys WHERE auth_name = 'EPSG' AND auth_srid = 6319"
+        )
+        self.assertEqual(len(result), 1)
+        database_srid = result[0][0]
+
+        self.execSQLCommand(f'DROP TABLE IF EXISTS "qgis_test"."{table_name}"')
+
+        try:
+            conn.createVectorTable(
+                "qgis_test",
+                table_name,
+                QgsFields(),
+                QgsWkbTypes.Point,
+                crs,
+                False,
+                {},
+            )
+            result = conn.executeSql(
+                f"SELECT Find_SRID('qgis_test', '{table_name}', 'geom')"
+            )
+            self.assertEqual(result[0][0], database_srid)
+        finally:
+            self.execSQLCommand(f'DROP TABLE IF EXISTS "qgis_test"."{table_name}"')
+
+    def testCreateVectorTableWithoutAuthorityIdFails(self):
+        """Reject table creation when the CRS has no authority ID."""
+
+        md = QgsProviderRegistry.instance().providerMetadata("postgres")
+        conn = md.createConnection(self.dbconn, {})
+        table_name = "test_missing_authority_id"
+        crs = QgsCoordinateReferenceSystem()
+        self.assertFalse(crs.authid())
+        self.execSQLCommand(f'DROP TABLE IF EXISTS "qgis_test"."{table_name}"')
+
+        try:
+            with self.assertRaisesRegex(
+                QgsProviderConnectionException, "CRS has no authority ID"
+            ):
+                conn.createVectorTable(
+                    "qgis_test",
+                    table_name,
+                    QgsFields(),
+                    QgsWkbTypes.Point,
+                    crs,
+                    False,
+                    {},
+                )
+
+            cur = self.con.cursor()
+            cur.execute("SELECT to_regclass(%s)", (f"qgis_test.{table_name}",))
+            self.assertIsNone(cur.fetchone()[0])
+        finally:
+            self.con.rollback()
+            self.execSQLCommand(f'DROP TABLE IF EXISTS "qgis_test"."{table_name}"')
 
     def testSingleMultiColumnPkSmallData(self):
         """Test Single and Multi Column PK, `Small` Data"""
