@@ -939,7 +939,7 @@ void TestQgsCopcProvider::testStatsCalculator()
     QCOMPARE( ( float ) s.minimum, 0 );
     QCOMPARE( ( float ) s.maximum, 1 );
     QGSCOMPARENEAR( static_cast<float>( s.stDev ), 0.0061436155811, 0.0000001 );
-    QMap<int, int> classCount = s.classCount;
+    QMap<int, qint64> classCount = s.classCount;
     QCOMPARE( classCount.size(), 2 );
   }
 
@@ -948,7 +948,7 @@ void TestQgsCopcProvider::testStatsCalculator()
     QCOMPARE( ( float ) s.minimum, 0 );
     QCOMPARE( ( float ) s.maximum, 1 );
     QGSCOMPARENEAR( static_cast<float>( s.stDev ), 0.0053205453, 0.0000001 );
-    QMap<int, int> classCount = s.classCount;
+    QMap<int, qint64> classCount = s.classCount;
     QCOMPARE( classCount.size(), 2 );
   }
 
@@ -957,7 +957,7 @@ void TestQgsCopcProvider::testStatsCalculator()
     QCOMPARE( ( float ) s.minimum, 0 );
     QCOMPARE( ( float ) s.maximum, 1 );
     QGSCOMPARENEAR( static_cast<float>( s.stDev ), 0.0043442328, 0.0000001 );
-    QMap<int, int> classCount = s.classCount;
+    QMap<int, qint64> classCount = s.classCount;
     QCOMPARE( classCount.size(), 2 );
   }
 
@@ -966,7 +966,7 @@ void TestQgsCopcProvider::testStatsCalculator()
     QCOMPARE( ( float ) s.minimum, 0 );
     QCOMPARE( ( float ) s.maximum, 1 );
     QGSCOMPARENEAR( static_cast<float>( s.stDev ), 0.0030718162, 0.0000001 );
-    QMap<int, int> classCount = s.classCount;
+    QMap<int, qint64> classCount = s.classCount;
     QCOMPARE( classCount.size(), 2 );
   }
 
@@ -975,7 +975,7 @@ void TestQgsCopcProvider::testStatsCalculator()
     QCOMPARE( ( float ) s.minimum, 2 );
     QCOMPARE( ( float ) s.maximum, 18 );
     QGSCOMPARENEAR( static_cast<float>( s.stDev ), 0.5567283630, 0.0000001 );
-    QMap<int, int> classCount = s.classCount;
+    QMap<int, qint64> classCount = s.classCount;
     QCOMPARE( classCount.size(), 7 );
     QCOMPARE( classCount[2], 103782 );
     QCOMPARE( classCount[3], 484 );
