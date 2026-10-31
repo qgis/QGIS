@@ -483,6 +483,16 @@ class TestQgsGraduatedSymbolRenderer(QgisTestCase):
             "deleteClass not correct",
         )
 
+        # Invalid indexes should be ignored and not crash
+
+        renderer.deleteClass(-1)
+        renderer.deleteClass(42)
+        self.assertEqual(
+            dumpRangeBreaks(renderer.ranges()),
+            "(25.5000-30.5000,20.0000-25.5000,0.0000-0.0000,)",
+            "invalid index not ignored",
+        )
+
         renderer.deleteAllClasses()
         self.assertEqual(
             len(renderer.ranges()), 0, "deleteAllClasses didn't delete all"

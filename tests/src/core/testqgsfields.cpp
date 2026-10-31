@@ -57,6 +57,7 @@ class TestQgsFields : public QObject
     void constIterator();
     void appendList();
     void appendQgsFields();
+    void iconForField();
 
   private:
 };
@@ -365,6 +366,10 @@ void TestQgsFields::fieldOriginIndex()
   //field origin index not specified with other than OriginProvider, should remain -1
   fields.append( field4, Qgis::FieldOrigin::Edit );
   QCOMPARE( fields.fieldOriginIndex( 3 ), -1 );
+
+  // invalid indexes should return -1 and not crash
+  QCOMPARE( fields.fieldOriginIndex( 42 ), -1 );
+  QCOMPARE( fields.fieldOriginIndex( -42 ), -1 );
 }
 
 void TestQgsFields::indexFromName()
@@ -787,6 +792,18 @@ void TestQgsFields::appendQgsFields()
   QCOMPARE( fields.fieldOrigin( 5 ), Qgis::FieldOrigin::Provider );
   QCOMPARE( fields.fieldOriginIndex( 5 ), 7 );
   QCOMPARE( fields.indexFromName( QStringLiteral( "field6" ) ), 5 );
+}
+
+void TestQgsFields::iconForField()
+{
+  QgsFields fields;
+  fields.append( QgsField( QStringLiteral( field1" ), QMetaType::Type::QString ), Qgis::FieldOrigin::Edit, 2 );
+  fields.append( QgsField( QStringLiteral( "field2" ), QMetaType::Type::Int ), Qgis::FieldOrigin::Join, 4 );
+  fields.append( QgsField( QStringLiteral( "field3" ), QMetaType::Type::Double ), Qgis::FieldOrigin::Provider, 6 );
+
+  // requesting out of bounds should return null icon and not crash
+  QVERIFY( fields.iconForField( -1 ).isNull() );
+  QVERIFY( fields.iconForField( 42 ).isNull() );
 }
 
 QGSTEST_MAIN( TestQgsFields )
