@@ -3787,7 +3787,12 @@ QString QgsMapBoxGlStyleConverter::parseExpression( const QVariantList &expressi
   }
   else if ( op == "match"_L1 )
   {
-    const QString attribute = expression.value( 1 ).toList().value( 1 ).toString();
+    const QVariantList attributeList = expression.value( 1 ).toList();
+    QString attribute = attributeList.size() > 1 ? expression.value( 1 ).toList().value( 1 ).toString() : expression.value( 1 ).toList().value( 0 ).toString();
+    if ( attribute == "geometry-type"_L1 )
+    {
+      attribute = u"_geom_type"_s;
+    }
 
     if ( expression.size() == 5
          && expression.at( 3 ).userType() == QMetaType::Type::Bool
