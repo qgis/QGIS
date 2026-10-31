@@ -69,6 +69,7 @@ class TestQgsArcGisRestUtils : public QObject
     void testParseRendererSimple();
     void testParseRendererCategorized();
     void testParseRendererCategorizedNullValue();
+    void testParseRendererCategorizedValueExpression();
     void testRendererTransparency();
     void testVisualVariableRotationGeographic();
     void testVisualVariableRotationArithmetic();
@@ -780,6 +781,74 @@ void TestQgsArcGisRestUtils::testParseRendererCategorizedNullValue()
   // the "<Null>" category value must be stored as an invalid (NULL) QVariant, not the literal string "<Null>"
   QVERIFY( !catRenderer->categories().at( 1 ).value().isValid() );
   QCOMPARE( catRenderer->categories().at( 1 ).label(), u"PSI/ZWILAG"_s );
+  QVERIFY( catRenderer->categories().at( 1 ).symbol() );
+}
+
+void TestQgsArcGisRestUtils::testParseRendererCategorizedValueExpression()
+{
+  const QVariantMap map = jsonStringToMap(
+    "{"
+    "\"type\": \"uniqueValue\","
+    "\"valueExpression\": \"(($feature['ModulNr'] + ' ') + $feature['Modul'])\","
+    "\"valueExpressionTitle\": \"Custom\","
+    "\"uniqueValueGroups\": ["
+    "{"
+    "\"heading\": \"\\\"ModulNr\\\" || ' ' ||  \\\"Modul\\\" \","
+    "\"classes\": ["
+    "{"
+    "\"label\": \"11 Genève\","
+    "\"symbol\": {"
+    "\"type\": \"esriSFS\","
+    "\"style\": \"esriSFSSolid\","
+    "\"color\": ["
+    "196,"
+    "205,"
+    "27,"
+    "255"
+    "],"
+    "},"
+    "\"values\": ["
+    "["
+    "\"11 Genève\""
+    "]"
+    "]"
+    "},"
+    "{"
+    "\"label\": \"12 Neuchâtel\","
+    "\"symbol\": {"
+    "\"type\": \"esriSFS\","
+    "\"style\": \"esriSFSSolid\","
+    "\"color\": ["
+    "196,"
+    "205,"
+    "27,"
+    "255"
+    "],"
+    "},"
+    "\"values\": ["
+    "["
+    "\"12 Neuchâtel\""
+    "]"
+    "]"
+    "},"
+    "]"
+    "}"
+    "]"
+    "}"
+  );
+  QgsReadWriteContext rwContext;
+  QgsSymbolConverterContext context( rwContext );
+  const std::unique_ptr<QgsFeatureRenderer> renderer( QgsArcGisRestUtils::convertRenderer( map, context ) );
+  QgsCategorizedSymbolRenderer *catRenderer = dynamic_cast<QgsCategorizedSymbolRenderer *>( renderer.get() );
+  QVERIFY( catRenderer );
+  QCOMPARE( catRenderer->categories().count(), 2 );
+  QCOMPARE( catRenderer->categories().at( 0 ).value().toString(), u"11 Genève"_s );
+  QCOMPARE( catRenderer->categories().at( 0 ).label(), u"11 Genève"_s );
+  QVERIFY( catRenderer->categories().at( 0 ).symbol() );
+
+  QVERIFY( !catRenderer->categories().at( 1 ).value().isValid() );
+  QCOMPARE( catRenderer->categories().at( 0 ).value().toString(), u"12 Neuchâtel"_s );
+  QCOMPARE( catRenderer->categories().at( 1 ).label(), u"12 Neuchâtel"_s );
   QVERIFY( catRenderer->categories().at( 1 ).symbol() );
 }
 
