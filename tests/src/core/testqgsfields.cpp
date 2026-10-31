@@ -797,9 +797,9 @@ void TestQgsFields::appendQgsFields()
 void TestQgsFields::iconForField()
 {
   QgsFields fields;
-  fields.append( QgsField( u"field1"_s, QMetaType::Type::QString ), Qgis::FieldOrigin::Edit, 2 );
-  fields.append( QgsField( u"field2"_s, QMetaType::Type::Int ), Qgis::FieldOrigin::Join, 4 );
-  fields.append( QgsField( u"field3"_s, QMetaType::Type::Double ), Qgis::FieldOrigin::Provider, 6 );
+  fields.append( QgsField( QStringLiteral( field1" ), QMetaType::Type::QString ), Qgis::FieldOrigin::Edit, 2 );
+  fields.append( QgsField( QStringLiteral( "field2" ), QMetaType::Type::Int ), Qgis::FieldOrigin::Join, 4 );
+  fields.append( QgsField( QStringLiteral( "field3" ), QMetaType::Type::Double ), Qgis::FieldOrigin::Provider, 6 );
 
   // requesting out of bounds should return null icon and not crash
   QVERIFY( fields.iconForField( -1 ).isNull() );
