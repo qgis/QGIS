@@ -114,10 +114,13 @@ class gdalinfo(GdalAlgorithm):
     def icon(self):
         return self.get_png_icon("raster-info.png")
 
-    def commandName(self):
+    def _commandNameLegacy(self):
         return "gdalinfo"
 
-    def getConsoleCommands(self, parameters, context, feedback, executing=True):
+    def _commandNameGdalCli(self):
+        return "gdal raster info"
+
+    def _getConsoleCommandsLegacy(self, parameters, context, feedback, executing=True):
         arguments = []
         if self.parameterAsBoolean(parameters, self.MIN_MAX, context):
             arguments.append("-mm")
@@ -145,6 +148,38 @@ class gdalinfo(GdalAlgorithm):
 
         if input_details.credential_options:
             arguments.extend(input_details.credential_options_as_arguments())
+
+        return [self.commandName(), GdalUtils.escapeAndJoin(arguments)]
+
+    def _getConsoleCommandsGdalCli(self, parameters, context, feedback, executing=True):
+        arguments = []
+        if self.parameterAsBoolean(parameters, self.MIN_MAX, context):
+            arguments.append("--min-max")
+        if self.parameterAsBoolean(parameters, self.STATS, context):
+            arguments.append("--stats")
+        if self.parameterAsBoolean(parameters, self.NO_GCP, context):
+            arguments.append("--no-gcp")
+        if self.parameterAsBoolean(parameters, self.NO_METADATA, context):
+            arguments.append("--no-md")
+
+        if self.EXTRA in parameters and parameters[self.EXTRA] not in (None, ""):
+            extra = self.parameterAsString(parameters, self.EXTRA, context)
+            arguments.append(extra)
+
+        raster = self.parameterAsRasterLayer(parameters, self.INPUT, context)
+        if raster is None:
+            raise QgsProcessingException(
+                self.invalidRasterError(parameters, self.INPUT)
+            )
+        input_details = GdalUtils.gdal_connection_details_from_layer(raster)
+
+        if input_details.open_options:
+            arguments.extend(input_details.open_options_as_arguments(new_api=True))
+
+        if input_details.credential_options:
+            arguments.extend(input_details.credential_options_as_arguments())
+
+        arguments.append(input_details.connection_string)
 
         return [self.commandName(), GdalUtils.escapeAndJoin(arguments)]
 
