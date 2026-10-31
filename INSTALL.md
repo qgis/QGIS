@@ -579,33 +579,50 @@ cmake --build ./build-x64-linux
 ## 3.12. Building and running with Nix
 
 With [Nix](https://nixos.org/) and [Nixpkgs](https://github.com/NixOS/nixpkgs)
-you can build and run any QGIS version directly from Git using a single command.
+you can:
 
-First, install Nix
-[(learn more about this installer)](https://zero-to-nix.com/start/install)
+1. Launch QGIS development environment containing all build dependencies and other useful software using a single command.
+
+2. Build and run any QGIS version directly from Git using a single command.
+
+3. Build and run a web server with C++ API documentation
+
+[Install Nix](https://github.com/NixOS/nix-installer):
 
 ```bash
-  curl --proto '=https' --tlsv1.2 -sSf \
-    -L https://install.determinate.systems/nix \
-    | sh -s -- install
+curl -sSfL https://artifacts.nixos.org/nix-installer | sh -s -- install --enable-flakes
 ```
 
-Then, run one of the following commands to automatically build and run QGIS.
+Launch QGIS development environment:
+
+```sh
+nix develop
+```
 
 Run QGIS from Git:
 
 ```sh
+nix run .#qgis                            # run QGIS from current Git checkout
+
 nix run github:qgis/QGIS#qgis             # run latest version from master
 
 nix run github:qgis/QGIS/<BRANCH>#qgis    # run latest version from specific branch
 
-nix run github:qgis/QGIS/<CHECKOUT>#qgis  # run latest version from specific checkout
+nix run github:qgis/QGIS/<CHECKOUT>#qgis  # run version from specific checkout
 ```
 
 Run QGIS from PR:
 
 ```sh
 nix run github:qgis/QGIS/pull/<PR-NUMBER>/merge#qgis
+```
+
+Run QGIS C++ docs server:
+
+```sh
+nix run .#docs                            # run QGIS docs from current Git checkout
+
+nix run github:qgis/QGIS#docs             # run QGIS docs from master
 ```
 
 # 4. Building on Windows
