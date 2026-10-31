@@ -104,7 +104,7 @@ class CORE_EXPORT QgsFutureUtils
     {
       auto combinedPromise = new QPromise<std::tuple<Ts...>>;
       combinedPromise->start();
-      new QgsCombinedFutureHelper( { futures... }, combinedPromise->future(), [combinedPromise, futures...]() mutable {
+      new QgsCombinedFutureHelper( { QFuture<void>( futures )... }, QFuture<void>( combinedPromise->future() ), [combinedPromise, futures...]() mutable {
         // The futures are now finished, but we need to call this so exceptions
         // are thrown.
         try
