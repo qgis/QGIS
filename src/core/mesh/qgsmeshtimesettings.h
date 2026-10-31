@@ -73,7 +73,7 @@ class CORE_EXPORT QgsMeshTimeSettings
 
   private:
     QString mRelativeTimeFormat = u"d hh:mm:ss"_s;
-    QString mAbsoluteTimeFormat = u"yyyy-MM-dd HH:mm:ss"_s;
+    QString mAbsoluteTimeFormat = u"yyyy-MM-dd HH:mm:ss ttt"_s;
 };
 
 Q_DECLARE_METATYPE( QgsMeshTimeSettings );

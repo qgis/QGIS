@@ -833,7 +833,7 @@ void TestQgsIdentify::identifyMesh()
   const QString vectorDs = QStringLiteral( TEST_DATA_DIR ) + "/mesh/quad_and_triangle_vertex_vector.dat";
   tempLayer->dataProvider()->addDataset( vectorDs );
   static_cast<QgsMeshLayerTemporalProperties *>( tempLayer->temporalProperties() )
-    ->setReferenceTime( QDateTime( QDate( 1950, 01, 01 ), QTime( 0, 0, 0 ), Qt::UTC ), tempLayer->dataProvider()->temporalCapabilities() );
+    ->setReferenceTime( QDateTime( QDate( 1950, 01, 01 ), QTime( 0, 0, 0 ), QTimeZone::UTC ), tempLayer->dataProvider()->temporalCapabilities() );
 
   // we need to setup renderer otherwise triangular mesh
   // will not be populated and identify will not work
@@ -867,7 +867,7 @@ void TestQgsIdentify::identifyMesh()
   QCOMPARE( results[1].mDerivedAttributes[u"Snapped Vertex Position X"_s], u"2000"_s );
   QCOMPARE( results[1].mDerivedAttributes[u"Snapped Vertex Position Y"_s], u"3000"_s );
 
-  canvas->setTemporalRange( QgsDateTimeRange( QDateTime( QDate( 1950, 01, 01 ), QTime( 0, 0, 0 ), Qt::UTC ), QDateTime( QDate( 1950, 01, 01 ), QTime( 1, 0, 0 ), Qt::UTC ) ) );
+  canvas->setTemporalRange( QgsDateTimeRange( QDateTime( QDate( 1950, 01, 01 ), QTime( 0, 0, 0 ), QTimeZone::UTC ), QDateTime( QDate( 1950, 01, 01 ), QTime( 1, 0, 0 ), QTimeZone::UTC ) ) );
 
   tempLayer->temporalProperties()->setIsActive( true );
   results = testIdentifyMesh( tempLayer, 2400, 2400 );
@@ -876,7 +876,7 @@ void TestQgsIdentify::identifyMesh()
   QCOMPARE( results[0].mAttributes[u"Scalar Value"_s], u"42"_s );
   QCOMPARE( results[0].mDerivedAttributes[u"Source"_s], mesh );
 
-  QCOMPARE( results[1].mDerivedAttributes[u"Time Step"_s], u"1950-01-01 00:00:00"_s );
+  QCOMPARE( results[1].mDerivedAttributes[u"Time Step"_s], u"1950-01-01 00:00:00 +00:00"_s );
 
   QCOMPARE( results[1].mLabel, u"VertexVectorDataset"_s );
   QCOMPARE( results[1].mDerivedAttributes[u"Source"_s], vectorDs );
