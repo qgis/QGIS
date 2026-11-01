@@ -4339,6 +4339,39 @@ QString QgsMapBoxGlStyleConverter::retrieveSpriteAsBase64WithProperties(
         spriteSizeProperty += u"ELSE %3 END"_s.arg( spriteSize.width() );
         break;
       }
+      else if ( method == "get"_L1 )
+      {
+        const QString attribute = parseKey( json.value( 1 ), context );
+
+        spriteProperty = u"CASE"_s;
+        spriteSizeProperty = u"CASE"_s;
+
+        const QStringList spriteCategories = context.spriteCategories();
+        for ( const QString &category : spriteCategories )
+        {
+          const QStringList spriteNames = context.spriteDefinitions( category ).keys();
+          for ( const QString &name : spriteNames )
+          {
+            QSize size;
+            QString path;
+            const QString spriteName = category.isEmpty() ? name : u"%1:%2"_s.arg( category, name );
+            const QImage sprite = retrieveSprite( spriteName, context, size );
+            path = prepareBase64( sprite );
+            if ( spritePath.isEmpty() && !path.isEmpty() )
+            {
+              spritePath = path;
+              spriteSize = size;
+            }
+
+            spriteProperty += u" WHEN %1 = '%2' THEN '%3'"_s.arg( attribute, spriteName, path );
+            spriteSizeProperty += u" WHEN %1 = '%2' THEN %3"_s.arg( attribute ).arg( spriteName ).arg( size.width() );
+          }
+
+          spriteProperty += " ELSE '' END"_L1;
+          spriteSizeProperty += " ELSE 0 END"_L1;
+        }
+        break;
+      }
       else
       {
         context.pushWarning( QObject::tr( "%1: Could not interpret sprite value list with method %2" ).arg( context.layerId(), method ) );
