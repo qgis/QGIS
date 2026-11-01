@@ -383,9 +383,19 @@ bool QgsMapBoxGlStyleConverter::parseFillLayer( const QVariantMap &jsonLayer, Qg
 
       case QMetaType::Type::QVariantList:
       case QMetaType::Type::QStringList:
-        fillTranslate
-          = QPointF( jsonFillTranslate.toList().value( 0 ).toDouble() * context.pixelSizeConversionFactor(), jsonFillTranslate.toList().value( 1 ).toDouble() * context.pixelSizeConversionFactor() );
+      {
+        bool isPointValues = false;
+        const double pointX = jsonFillTranslate.toList().value( 0 ).toDouble( &isPointValues );
+        if ( isPointValues )
+        {
+          fillTranslate = QPointF( pointX * context.pixelSizeConversionFactor(), jsonFillTranslate.toList().value( 1 ).toDouble() * context.pixelSizeConversionFactor() );
+        }
+        else
+        {
+          ddProperties.setProperty( QgsSymbolLayer::Property::Offset, parseInterpolateListByZoom( jsonFillTranslate.toList(), PropertyType::Point, context, context.pixelSizeConversionFactor() ) );
+        }
         break;
+      }
 
       default:
         context.pushWarning(
@@ -2830,17 +2840,20 @@ QgsProperty QgsMapBoxGlStyleConverter::parseInterpolatePointByZoom( const QVaria
   const double base = json.value( u"base"_s, u"1"_s ).toDouble();
   const QVariantList stops = json.value( u"stops"_s ).toList();
   if ( stops.empty() )
+  {
     return QgsProperty();
+  }
 
   QString scaleExpression;
   if ( stops.size() <= 2 )
   {
+    const bool isLiteralRepresentation = stops.value( 0 ).toList().value( 1 ).toList().value( 0 ).toString() == "literal"_L1;
     scaleExpression = u"array(%1,%2)"_s.arg(
       interpolateExpression(
         stops.value( 0 ).toList().value( 0 ).toDouble(),
         stops.last().toList().value( 0 ).toDouble(),
-        stops.value( 0 ).toList().value( 1 ).toList().value( 0 ),
-        stops.last().toList().value( 1 ).toList().value( 0 ),
+        isLiteralRepresentation ? stops.value( 0 ).toList().value( 1 ).toList().value( 1 ).toList().value( 0 ) : stops.value( 0 ).toList().value( 1 ).toList().value( 0 ),
+        isLiteralRepresentation ? stops.last().toList().value( 1 ).toList().value( 1 ).toList().value( 0 ) : stops.last().toList().value( 1 ).toList().value( 0 ),
         base,
         multiplier,
         json.value( u"x1"_s ).toDouble(),
@@ -2853,8 +2866,8 @@ QgsProperty QgsMapBoxGlStyleConverter::parseInterpolatePointByZoom( const QVaria
       interpolateExpression(
         stops.value( 0 ).toList().value( 0 ).toDouble(),
         stops.last().toList().value( 0 ).toDouble(),
-        stops.value( 0 ).toList().value( 1 ).toList().value( 1 ),
-        stops.last().toList().value( 1 ).toList().value( 1 ),
+        isLiteralRepresentation ? stops.value( 0 ).toList().value( 1 ).toList().value( 1 ).toList().value( 1 ) : stops.value( 0 ).toList().value( 1 ).toList().value( 1 ),
+        isLiteralRepresentation ? stops.last().toList().value( 1 ).toList().value( 1 ).toList().value( 1 ) : stops.last().toList().value( 1 ).toList().value( 1 ),
         base,
         multiplier,
         json.value( u"x1"_s ).toDouble(),
@@ -2915,6 +2928,7 @@ QString QgsMapBoxGlStyleConverter::parsePointStops(
       return QString();
     }
 
+    const bool isLiteralRepresentation = bv.toList().value( 0 ).toString() == "literal"_L1;
     caseString += QStringLiteral(
                     "WHEN @vector_tile_zoom > %1 AND @vector_tile_zoom <= %2 "
                     "THEN array(%3,%4)"
@@ -2922,8 +2936,34 @@ QString QgsMapBoxGlStyleConverter::parsePointStops(
                     .arg(
                       bz.toString(),
                       tz.toString(),
-                      interpolateExpression( bz.toDouble(), tz.toDouble(), bv.toList().value( 0 ), tv.toList().value( 0 ), base, multiplier, x1, y1, x2, y2, type, &context ),
-                      interpolateExpression( bz.toDouble(), tz.toDouble(), bv.toList().value( 1 ), tv.toList().value( 1 ), base, multiplier, x1, y1, x2, y2, type, &context )
+                      interpolateExpression(
+                        bz.toDouble(),
+                        tz.toDouble(),
+                        isLiteralRepresentation ? bv.toList().value( 1 ).toList().value( 0 ) : bv.toList().value( 0 ),
+                        isLiteralRepresentation ? tv.toList().value( 1 ).toList().value( 0 ) : tv.toList().value( 0 ),
+                        base,
+                        multiplier,
+                        x1,
+                        y1,
+                        x2,
+                        y2,
+                        type,
+                        &context
+                      ),
+                      interpolateExpression(
+                        bz.toDouble(),
+                        tz.toDouble(),
+                        isLiteralRepresentation ? bv.toList().value( 1 ).toList().value( 1 ) : bv.toList().value( 1 ),
+                        isLiteralRepresentation ? tv.toList().value( 1 ).toList().value( 1 ) : tv.toList().value( 1 ),
+                        base,
+                        multiplier,
+                        x1,
+                        y1,
+                        x2,
+                        y2,
+                        type,
+                        &context
+                      )
                     );
   }
   caseString += "END"_L1;
