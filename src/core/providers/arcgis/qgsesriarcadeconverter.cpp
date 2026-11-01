@@ -22,7 +22,7 @@
 
 using namespace Qt::StringLiterals;
 
-
+///@cond PRIVATE
 class ArcadeToExpressionVisitor : public QgsEsriArcadeRecursiveVisitor
 {
   public:
@@ -823,6 +823,8 @@ class ArcadeToExpressionVisitor : public QgsEsriArcadeRecursiveVisitor
       throw QgsNotSupportedException( QObject::tr( "Scripts containing continue statements cannot be converted to QGIS expressions." ) );
     }
 };
+
+///@endcond PRIVATE
 
 const QString ArcadeToExpressionVisitor::NEXT_BLOCK_MARKER = u"!!!!!NEXT_BLOCK!!!!!"_s;
 
