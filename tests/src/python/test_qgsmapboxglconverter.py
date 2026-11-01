@@ -3098,6 +3098,67 @@ class TestQgsMapBoxGlStyleConverter(QgisTestCase):
             'CASE WHEN "lake_depth" IS NOT NULL THEN 24  WHEN length(to_string("ele")) IS 3 THEN 18 ELSE 24 END',
         )
 
+    def testRetrieveSpriteWithConcatStringFieldValue(self):
+        def strip_base64(s):
+            pos = 0
+            while True:
+                pos = s.find("'base64:", pos)
+                if pos < 0:
+                    break
+                end_pos = s.find("'", pos + 1)
+                assert end_pos > pos
+                s = s[0:pos] + "'base64:[snip]'" + s[end_pos + 1 :]
+                pos += len("'base64:")
+            return s
+
+        sprite_image_file = (
+            f"{TEST_DATA_DIR}/vector_tile/sprites/swisstopo-sprite@2x.png"
+        )
+        with open(sprite_image_file, "rb") as f:
+            sprite_image = QImage()
+            sprite_image.loadFromData(f.read())
+        sprite_definition_file = (
+            f"{TEST_DATA_DIR}/vector_tile/sprites/swisstopo-mini-sprite@2x.json"
+        )
+        with open(sprite_definition_file) as f:
+            sprite_definition = json.load(f)
+
+        context = QgsMapBoxGlStyleConversionContext()
+        context.setSprites(sprite_image, sprite_definition, "")
+        self.assertEqual(context.spriteCategories(), [""])
+
+        icon_image = [
+            "concat",
+            "large_1",
+            ["get", "ref_size"],
+        ]
+        sprite, size, sprite_property, sprite_size_property = (
+            QgsMapBoxGlStyleConverter.retrieveSpriteAsBase64WithProperties(
+                icon_image, context
+            )
+        )
+
+        expected = """CASE WHEN concat('large_1', "ref_size") = 'scree_very_large_1' THEN 'base64:[snip]' ELSE '' END"""
+        self.assertEqual(strip_base64(sprite_property), expected)
+
+        context = QgsMapBoxGlStyleConversionContext()
+        context.setSprites(sprite_image, sprite_definition, "basics")
+        self.assertEqual(context.spriteCategories(), ["basics"])
+
+        icon_image = [
+            "concat",
+            "large_1",
+            ["get", "ref_size"],
+        ]
+        sprite, size, sprite_property, sprite_size_property = (
+            QgsMapBoxGlStyleConverter.retrieveSpriteAsBase64WithProperties(
+                icon_image, context
+            )
+        )
+
+        expected = """CASE WHEN concat('large_1', "ref_size") = 'basics:scree_very_large_1' THEN 'base64:[snip]' ELSE '' END"""
+        self.assertEqual(strip_base64(sprite_property), expected)
+
     def testRetrieveSpriteWithCategory(self):
         context = QgsMapBoxGlStyleConversionContext()
         sprite_image_file = (

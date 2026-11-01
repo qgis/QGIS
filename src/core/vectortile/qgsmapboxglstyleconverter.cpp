@@ -4317,6 +4317,62 @@ QString QgsMapBoxGlStyleConverter::retrieveSpriteAsBase64WithProperties(
         spriteSizeProperty += u"ELSE %3 END"_s.arg( spriteSize.width() );
         break;
       }
+      else if ( method == "concat"_L1 )
+      {
+        QString concatString = u"concat("_s;
+        QStringList partialStringMatches;
+        for ( int i = 1; i < json.size(); i++ )
+        {
+          if ( i > 1 )
+          {
+            concatString += ", "_L1;
+          }
+          concatString += parseValue( json.value( i ), context );
+
+          if ( json.value( i ).userType() == QMetaType::Type::QString )
+          {
+            partialStringMatches << json.value( i ).toString();
+          }
+        }
+        concatString += ')'_L1;
+
+        spriteProperty = u"CASE"_s;
+        spriteSizeProperty = u"CASE"_s;
+
+        const QStringList spriteCategories = context.spriteCategories();
+        for ( const QString &category : spriteCategories )
+        {
+          const QStringList spriteNames = context.spriteDefinitions( category ).keys();
+          for ( const QString &name : spriteNames )
+          {
+            QSize size;
+            QString path;
+            const QString spriteName = category.isEmpty() ? name : u"%1:%2"_s.arg( category, name );
+            if ( !partialStringMatches.isEmpty() )
+            {
+              if ( !std::all_of( partialStringMatches.begin(), partialStringMatches.end(), [&spriteName]( const QString &string ) { return spriteName.contains( string ); } ) )
+              {
+                continue;
+              }
+            }
+
+            const QImage sprite = retrieveSprite( spriteName, context, size );
+            path = prepareBase64( sprite );
+            if ( spritePath.isEmpty() && !path.isEmpty() )
+            {
+              spritePath = path;
+              spriteSize = size;
+            }
+
+            spriteProperty += u" WHEN %1 = '%2' THEN '%3'"_s.arg( concatString, spriteName, path );
+            spriteSizeProperty += u" WHEN %1 = '%2' THEN %3"_s.arg( concatString ).arg( spriteName ).arg( size.width() );
+          }
+
+          spriteProperty += " ELSE '' END"_L1;
+          spriteSizeProperty += " ELSE 0 END"_L1;
+        }
+        break;
+      }
       else if ( method == "case"_L1 )
       {
         spriteProperty = u"CASE"_s;
