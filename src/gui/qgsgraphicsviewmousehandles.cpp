@@ -88,6 +88,25 @@ void QgsGraphicsViewMouseHandles::setResizeEnabled( bool enable )
   update();
 }
 
+void QgsGraphicsViewMouseHandles::reset()
+{
+  mIsDragging = false;
+  mIsDragStarting = false;
+  mIsResizing = false;
+  mIsRotating = false;
+
+  hideAlignItems();
+
+  //reset default action
+  mCurrentMouseMoveAction = Qgis::MouseHandlesAction::MoveItem;
+  //redraw handles
+  resetTransform();
+  update();
+  updateHandles();
+  //reset status bar message
+  resetStatusBar();
+}
+
 void QgsGraphicsViewMouseHandles::paintInternal( QPainter *painter, bool showHandles, bool showStaticBoundingBoxes, bool showTemporaryBoundingBoxes, const QStyleOptionGraphicsItem *, QWidget * )
 {
   if ( !showHandles )
@@ -897,16 +916,7 @@ void QgsGraphicsViewMouseHandles::mouseReleaseEvent( QGraphicsSceneMouseEvent *e
     mIsRotating = false;
   }
 
-  hideAlignItems();
-
-  //reset default action
-  mCurrentMouseMoveAction = Qgis::MouseHandlesAction::MoveItem;
-  //redraw handles
-  resetTransform();
-  update();
-  updateHandles();
-  //reset status bar message
-  resetStatusBar();
+  reset();
 }
 
 bool QgsGraphicsViewMouseHandles::selectionRotation( double &rotation ) const

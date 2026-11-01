@@ -138,6 +138,13 @@ class GUI_EXPORT QgsGraphicsViewMouseHandles : public QObject, public QGraphicsR
      */
     void setResizeEnabled( bool enable );
 
+    /**
+     * Aborts the current drag, resize or rotate operation and resets to a clean state.
+     *
+     * \since QGIS 4.4
+     */
+    void reset();
+
   public slots:
 
     //! Redraws handles when selected item size changes
