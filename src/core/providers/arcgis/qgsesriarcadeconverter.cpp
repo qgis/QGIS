@@ -22,12 +22,13 @@
 
 using namespace Qt::StringLiterals;
 
+
 class ArcadeToExpressionVisitor : public QgsEsriArcadeRecursiveVisitor
 {
   public:
     QgsEsriArcadeConverter::Result mResult = QgsEsriArcadeConverter::Result::Success;
 
-    const QString sNEXT_BLOCK_MARKER = u"!!!!!NEXT_BLOCK!!!!!"_s;
+    static const QString NEXT_BLOCK_MARKER;
 
     QString mCurrentPart;
     bool mCurrentPartIsLiteral = false;
@@ -785,7 +786,7 @@ class ArcadeToExpressionVisitor : public QgsEsriArcadeRecursiveVisitor
       }
       else
       {
-        mCurrentPart = u"if(%1, %2, %3)"_s.arg( condition, whenTrue, sNEXT_BLOCK_MARKER );
+        mCurrentPart = u"if(%1, %2, %3)"_s.arg( condition, whenTrue, NEXT_BLOCK_MARKER );
       }
 
       mCurrentPartIsLiteral = false;
@@ -823,6 +824,12 @@ class ArcadeToExpressionVisitor : public QgsEsriArcadeRecursiveVisitor
     }
 };
 
+const QString ArcadeToExpressionVisitor::NEXT_BLOCK_MARKER = u"!!!!!NEXT_BLOCK!!!!!"_s;
+
+
+//
+// QgsEsriArcadeConverter
+//
 
 QgsEsriArcadeConverter::QgsEsriArcadeConverter( const QString &script )
   : mScript( script )
