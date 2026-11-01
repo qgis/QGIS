@@ -124,17 +124,31 @@ class ArcadeToExpressionVisitor : public QgsEsriArcadeRecursiveVisitor
       {
         visit( *continueStatement );
       }
+      else
+      {
+        throw QgsNotSupportedException( QObject::tr( "An unexpected node was encountered while converting to a QGIS expression." ) );
+      }
     }
 
     void visit( const QgsEsriArcadeBlockStatement &node ) override
     {
-      if ( node.statements().size() > 1 )
+      if ( node.statements().empty() )
+      {
+        mResult = QgsEsriArcadeConverter::Result::UnknownError;
+        throw QgsNotSupportedException( QObject::tr( "An empty script block was encountered while converting to a QGIS expression." ) );
+      }
+      else if ( node.statements().size() > 1 )
       {
         mResult = QgsEsriArcadeConverter::Result::InvalidScriptMultiStatements;
-        throw QgsNotSupportedException( "" );
+        throw QgsNotSupportedException( QObject::tr( "Scripts containing multiple statements cannot be converted to QGIS expressions." ) );
       }
 
       QgsEsriArcadeStatement *firstStatement = node.statements().at( 0 );
+      if ( !firstStatement )
+      {
+        mResult = QgsEsriArcadeConverter::Result::UnknownError;
+        throw QgsNotSupportedException( QObject::tr( "An empty script block was encountered while converting to a QGIS expression." ) );
+      }
       visit( *firstStatement );
     }
 
@@ -156,9 +170,33 @@ class ArcadeToExpressionVisitor : public QgsEsriArcadeRecursiveVisitor
       throw QgsNotSupportedException( QObject::tr( "Scripts containing function definitions cannot be converted to QGIS expressions." ) );
     }
 
-    void visit( const QgsEsriArcadeReturnStatement &node ) override { visit( *node.expression() ); }
+    void visit( const QgsEsriArcadeReturnStatement &node ) override
+    {
+      if ( QgsEsriArcadeExpression *expression = node.expression() )
+      {
+        visit( *expression );
+      }
+      else
+      {
+        mCurrentPart = u"NULL"_s;
+        mCurrentPartIsLiteral = false;
+        mCurrentPartIsSimple = true;
+      }
+    }
 
-    void visit( const QgsEsriArcadeExpressionStatement &node ) override { visit( *node.expression() ); }
+    void visit( const QgsEsriArcadeExpressionStatement &node ) override
+    {
+      if ( QgsEsriArcadeExpression *expression = node.expression() )
+      {
+        visit( *expression );
+      }
+      else
+      {
+        mCurrentPart = u"NULL"_s;
+        mCurrentPartIsLiteral = false;
+        mCurrentPartIsSimple = true;
+      }
+    }
 
     void visit( const QgsEsriArcadeLiteralExpression &node ) override
     {
@@ -188,7 +226,13 @@ class ArcadeToExpressionVisitor : public QgsEsriArcadeRecursiveVisitor
 
     void visit( const QgsEsriArcadeVariableReferenceExpression &node ) override
     {
-      mCurrentPart = u"@%1"_s.arg( node.name() );
+      const QString variableName = node.name();
+      if ( variableName.isEmpty() )
+      {
+        mResult = QgsEsriArcadeConverter::Result::UnknownError;
+        throw QgsNotSupportedException( QObject::tr( "An empty variable reference was encountered while converting to a QGIS expression." ) );
+      }
+      mCurrentPart = u"@%1"_s.arg( variableName );
       mCurrentPartIsLiteral = false;
       mCurrentPartIsSimple = true;
     }
@@ -218,7 +262,16 @@ class ArcadeToExpressionVisitor : public QgsEsriArcadeRecursiveVisitor
 
     void visit( const QgsEsriArcadeMemberAccessExpression &node ) override
     {
-      visit( *node.containerExpression() );
+      if ( QgsEsriArcadeExpression *container = node.containerExpression() )
+      {
+        visit( *container );
+      }
+      else
+      {
+        mResult = QgsEsriArcadeConverter::Result::UnknownError;
+        throw QgsNotSupportedException( QObject::tr( "Member access to an empty container was encountered while converting to a QGIS expression." ) );
+      }
+
       if ( mCurrentPart.compare( "@feature"_L1, Qt::CaseInsensitive ) == 0 )
       {
         mCurrentPart = QgsExpression::quotedColumnRef( node.memberName() );
@@ -252,6 +305,12 @@ class ArcadeToExpressionVisitor : public QgsEsriArcadeRecursiveVisitor
 
     void visit( const QgsEsriArcadeBinaryOperatorExpression &node ) override
     {
+      if ( !node.leftOperand() || !node.rightOperand() )
+      {
+        mResult = QgsEsriArcadeConverter::Result::UnknownError;
+        throw QgsNotSupportedException( QObject::tr( "A binary operator with missing operands was encountered while converting to a QGIS expression." ) );
+      }
+
       bool isChainableOp = false;
       switch ( node.binaryOperator() )
       {
@@ -345,6 +404,12 @@ class ArcadeToExpressionVisitor : public QgsEsriArcadeRecursiveVisitor
 
     void visit( const QgsEsriArcadeUnaryOperatorExpression &node ) override
     {
+      if ( !node.operand() )
+      {
+        mResult = QgsEsriArcadeConverter::Result::UnknownError;
+        throw QgsNotSupportedException( QObject::tr( "A unary operator with missing operand was encountered while converting to a QGIS expression." ) );
+      }
+
       visit( *node.operand() );
 
       static const QMap< QgsEsriArcadeUnaryOperatorExpression::UnaryOperator, QString > sUNARY_OPERATOR_MAP {
@@ -375,12 +440,22 @@ class ArcadeToExpressionVisitor : public QgsEsriArcadeRecursiveVisitor
     void visit( const QgsEsriArcadeFunctionCallExpression &node ) override
     {
       const QString functionName = node.functionName().toLower();
+      if ( functionName.isEmpty() )
+      {
+        mResult = QgsEsriArcadeConverter::Result::UnknownError;
+        throw QgsNotSupportedException( QObject::tr( "An empty function name was encountered while converting to a QGIS expression." ) );
+      }
       QStringList convertedArguments;
       QList< bool > convertedArgumentsAreSimple;
       QList< bool > convertedArgumentsAreLiteral;
 
       for ( QgsEsriArcadeExpression *arg : node.arguments() )
       {
+        if ( !arg )
+        {
+          mResult = QgsEsriArcadeConverter::Result::UnknownError;
+          throw QgsNotSupportedException( QObject::tr( "An empty function argument encountered while converting to a QGIS expression." ) );
+        }
         visit( *arg );
         convertedArguments.append( mCurrentPart );
         convertedArgumentsAreSimple.append( mCurrentPartIsSimple );
@@ -403,6 +478,11 @@ class ArcadeToExpressionVisitor : public QgsEsriArcadeRecursiveVisitor
         {
           if ( convertedArgumentsAreLiteral[1] )
           {
+            if ( convertedArguments[1].size() < 2 )
+            {
+              mResult = QgsEsriArcadeConverter::Result::UnknownError;
+              throw QgsNotSupportedException( QObject::tr( "A domainname function with invalid name argument was encountered while converting to a QGIS expression." ) );
+            }
             mCurrentPart = u"represent_value(%1)"_s.arg( QgsExpression::quotedColumnRef( convertedArguments[1].mid( 1, convertedArguments[1].length() - 2 ) ) );
             mCurrentPartIsLiteral = false;
             mCurrentPartIsSimple = true;
@@ -415,6 +495,11 @@ class ArcadeToExpressionVisitor : public QgsEsriArcadeRecursiveVisitor
       }
       else if ( functionName.compare( "when"_L1, Qt::CaseInsensitive ) == 0 )
       {
+        if ( convertedArguments.size() < 2 )
+        {
+          mResult = QgsEsriArcadeConverter::Result::UnknownError;
+          throw QgsNotSupportedException( QObject::tr( "When function with < 2 arguments encountered while converting to a QGIS expression." ) );
+        }
         QString res = u"CASE WHEN %1 THEN %2"_s.arg( convertedArguments.value( 0 ), convertedArguments.value( 1 ) );
         if ( convertedArguments.size() > 2 )
         {
@@ -442,6 +527,11 @@ class ArcadeToExpressionVisitor : public QgsEsriArcadeRecursiveVisitor
       }
       else if ( functionName.compare( "decode"_L1, Qt::CaseInsensitive ) == 0 )
       {
+        if ( convertedArguments.size() < 2 )
+        {
+          mResult = QgsEsriArcadeConverter::Result::UnknownError;
+          throw QgsNotSupportedException( QObject::tr( "A decode function with < 2 arguments was encountered while converting to a QGIS expression." ) );
+        }
         QStringList mapGetParts;
         int i = 1;
         while ( true )
@@ -490,6 +580,11 @@ class ArcadeToExpressionVisitor : public QgsEsriArcadeRecursiveVisitor
       }
       else if ( functionName.compare( "mid"_L1, Qt::CaseInsensitive ) == 0 )
       {
+        if ( convertedArguments.empty() )
+        {
+          mResult = QgsEsriArcadeConverter::Result::UnknownError;
+          throw QgsNotSupportedException( QObject::tr( "A mid function with no arguments was encountered while converting to a QGIS expression." ) );
+        }
         QString start = convertedArguments.value( 1 );
         bool intOk = false;
         int intStart = start.toInt( &intOk );
@@ -687,10 +782,23 @@ class ArcadeToExpressionVisitor : public QgsEsriArcadeRecursiveVisitor
 
     void visit( const QgsEsriArcadeIndexExpression &node ) override
     {
-      visit( *node.containerExpression() );
+      QgsEsriArcadeExpression *container = node.containerExpression();
+      if ( !container )
+      {
+        mResult = QgsEsriArcadeConverter::Result::UnknownError;
+        throw QgsNotSupportedException( QObject::tr( "An index operator with no container was encountered while converting to a QGIS expression." ) );
+      }
+      visit( *container );
       const QString containerPart = mCurrentPart;
 
-      visit( *node.indexExpression() );
+      QgsEsriArcadeExpression *index = node.indexExpression();
+      if ( !index )
+      {
+        mResult = QgsEsriArcadeConverter::Result::UnknownError;
+        throw QgsNotSupportedException( QObject::tr( "An index operator with no index was encountered while converting to a QGIS expression." ) );
+      }
+      visit( *index );
+
       if ( containerPart.compare( "@feature"_L1, Qt::CaseInsensitive ) == 0 )
       {
         if ( mCurrentPartIsLiteral )
@@ -700,7 +808,7 @@ class ArcadeToExpressionVisitor : public QgsEsriArcadeRecursiveVisitor
             { "shape.starea()", "area(@geometry)" },
           };
 
-          const QString candidate = mCurrentPart.toLower().mid( 1, mCurrentPart.length() - 2 );
+          const QString candidate = mCurrentPart.size() > 2 ? mCurrentPart.toLower().mid( 1, mCurrentPart.length() - 2 ) : QString();
           auto it = sSPECIAL_FEATURE_ATTRIBUTES.constFind( candidate );
           if ( it != sSPECIAL_FEATURE_ATTRIBUTES.constEnd() )
           {
@@ -708,7 +816,7 @@ class ArcadeToExpressionVisitor : public QgsEsriArcadeRecursiveVisitor
           }
           else
           {
-            if ( mCurrentPart.startsWith( "'" ) )
+            if ( mCurrentPart.startsWith( "'" ) && mCurrentPart.size() > 2 )
             {
               mCurrentPart = mCurrentPart.mid( 1, mCurrentPart.length() - 2 );
             }
@@ -754,6 +862,11 @@ class ArcadeToExpressionVisitor : public QgsEsriArcadeRecursiveVisitor
       QStringList parts;
       for ( QgsEsriArcadeExpression *element : node.elements() )
       {
+        if ( !element )
+        {
+          mResult = QgsEsriArcadeConverter::Result::UnknownError;
+          throw QgsNotSupportedException( QObject::tr( "An array literal with a missing element was encountered while converting to a QGIS expression." ) );
+        }
         visit( *element );
         parts.append( mCurrentPart );
       }
@@ -771,10 +884,22 @@ class ArcadeToExpressionVisitor : public QgsEsriArcadeRecursiveVisitor
 
     void visit( const QgsEsriArcadeIfStatement &node ) override
     {
-      visit( *node.condition() );
+      QgsEsriArcadeExpression *conditionExpression = node.condition();
+      if ( !conditionExpression )
+      {
+        mResult = QgsEsriArcadeConverter::Result::UnknownError;
+        throw QgsNotSupportedException( QObject::tr( "An if statement with no condition was encountered while converting to a QGIS expression." ) );
+      }
+      visit( *conditionExpression );
       const QString condition = mCurrentPart;
 
-      visit( *node.trueBlock() );
+      QgsEsriArcadeBlockStatement *trueBlock = node.trueBlock();
+      if ( !trueBlock )
+      {
+        mResult = QgsEsriArcadeConverter::Result::UnknownError;
+        throw QgsNotSupportedException( QObject::tr( "An if statement with no true block was encountered while converting to a QGIS expression." ) );
+      }
+      visit( *trueBlock );
       const QString whenTrue = mCurrentPart;
 
       QString whenFalse;
