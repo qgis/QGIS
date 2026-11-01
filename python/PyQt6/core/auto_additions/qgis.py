@@ -11850,6 +11850,9 @@ Qgis.DatabaseProviderConnectionCapability2.SetFieldAlias.__doc__ = "Can set alia
 Qgis.DatabaseProviderConnectionCapability2.SetTableComment.__doc__ = "Can set comments for tables via setTableComment() \n.. versionadded:: 3.44"
 Qgis.DatabaseProviderConnectionCapability2.EditFieldDomain.__doc__ = "Can edit existing field domain \n.. versionadded:: 4.0"
 Qgis.DatabaseProviderConnectionCapability2.DeleteFieldDomain.__doc__ = "Can delete existing field domain \n.. versionadded:: 4.0"
+Qgis.DatabaseProviderConnectionCapability2.CreateIndex.__doc__ = "Can create an index on a column via createIndex() \n.. versionadded:: 4.6"
+Qgis.DatabaseProviderConnectionCapability2.ListTableIndexes.__doc__ = "Can list all indexes defined on a table via tableIndexes() \n.. versionadded:: 4.6"
+Qgis.DatabaseProviderConnectionCapability2.DeleteIndex.__doc__ = "Can delete an index by name via deleteIndex() \n.. versionadded:: 4.6"
 Qgis.DatabaseProviderConnectionCapability2.__doc__ = """The Capability enum represents the extended operations supported by the connection.
 
 .. versionadded:: 3.32
@@ -11867,6 +11870,18 @@ Qgis.DatabaseProviderConnectionCapability2.__doc__ = """The Capability enum repr
 * ``DeleteFieldDomain``: Can delete existing field domain
 
   .. versionadded:: 4.0
+
+* ``CreateIndex``: Can create an index on a column via createIndex()
+
+  .. versionadded:: 4.6
+
+* ``ListTableIndexes``: Can list all indexes defined on a table via tableIndexes()
+
+  .. versionadded:: 4.6
+
+* ``DeleteIndex``: Can delete an index by name via deleteIndex()
+
+  .. versionadded:: 4.6
 
 
 """
