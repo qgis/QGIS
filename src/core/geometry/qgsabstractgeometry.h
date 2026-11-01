@@ -430,7 +430,7 @@ class CORE_EXPORT QgsAbstractGeometry
      * units (generally meters). If FALSE, then z coordinates will not be changed by the
      * transform.
      */
-    virtual void transform( const QgsCoordinateTransform &ct, Qgis::TransformDirection d = Qgis::TransformDirection::Forward, bool transformZ = false ) SIP_THROW( QgsCsException ) = 0;
+    virtual void transform( const QgsCoordinateTransform &ct, Qgis::TransformDirection d = Qgis::TransformDirection::Forward, bool transformZ = true ) SIP_THROW( QgsCsException ) = 0;
 
     /**
      * Transforms the x and y components of the geometry using a QTransform object \a t.
