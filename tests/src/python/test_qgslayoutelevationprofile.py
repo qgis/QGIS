@@ -17,11 +17,14 @@ import unittest
 from qgis.core import (
     Qgis,
     QgsAbstractProfileGenerator,
+    QgsAbstractProfileResults,
     QgsAbstractProfileSource,
     QgsApplication,
     QgsCoordinateReferenceSystem,
+    QgsDoubleRange,
     QgsExpressionContextUtils,
     QgsFeature,
+    QgsFeedback,
     QgsFillSymbol,
     QgsFlatTerrainProvider,
     QgsFontUtils,
@@ -31,16 +34,23 @@ from qgis.core import (
     QgsLayoutItemShape,
     QgsLineString,
     QgsLineSymbol,
+    QgsMapLayerRenderer,
     QgsMarkerSymbol,
+    QgsPluginLayer,
+    QgsPluginLayerType,
+    QgsPoint,
     QgsPrintLayout,
+    QgsProfileRenderContext,
+    QgsProfileRequest,
     QgsProject,
     QgsRasterLayer,
     QgsSimpleFillSymbolLayer,
     QgsTextFormat,
     QgsVectorLayer,
+    QgsVectorLayerElevationProperties,
 )
 from qgis.PyQt.QtCore import QRectF, Qt
-from qgis.PyQt.QtGui import QColor, QImage, QPainter
+from qgis.PyQt.QtGui import QBrush, QColor, QImage, QPainter, QPen
 from qgis.PyQt.QtTest import QSignalSpy
 from qgis.testing import QgisTestCase, start_app
 from test_qgslayoutitem import LayoutItemTestCase
@@ -84,6 +94,125 @@ class MyDummyProfileSource(QgsAbstractProfileSource):
 
     def profileSourceId(self):
         return "my-dummy-profile"
+
+
+class MyPluginLayer(QgsPluginLayer):
+    """
+    Defines a QgsPluginLayer Elevation Profile Source.
+    Borrowed from QGIS issue #66965, by Nicolas Clausolles.
+    """
+
+    LAYER_TYPE = "MyPluginLayer"
+
+    def __init__(self):
+        super().__init__(MyPluginLayer.LAYER_TYPE, "new_plugin_layer")
+        self._profile_source = MyPluginLayerProfileSource(self)
+        self.setValid(True)
+
+    def setTransformContext(self, transform_context):
+        pass
+
+    def createMapRenderer(self, renderer_context):
+        return MyPluginLayerRenderer(self.id(), renderer_context)
+
+    def elevationProperties(self) -> QgsVectorLayerElevationProperties:
+        return PluginLayerElevationProperties()
+
+    def profileSource(self):
+        return self._profile_source
+
+    def readXml(self, node, context):
+        self.setValid(True)
+        return True
+
+    def writeXml(self, node, doc, context):
+        return True
+
+
+class MyPluginLayerType(QgsPluginLayerType):
+    def __init__(self):
+        super().__init__(MyPluginLayer.LAYER_TYPE)
+
+
+class MyPluginLayerRenderer(QgsMapLayerRenderer):
+    def render(self):
+        return self.renderContext() is not None
+
+
+class PluginLayerElevationProperties(QgsVectorLayerElevationProperties):
+    def __init__(self):
+        super().__init__(None)
+
+    def showByDefaultInElevationProfilePlots(self):
+        return True
+
+
+class MyPluginLayerProfileSource(QgsAbstractProfileSource):
+    def __init__(self, layer: MyPluginLayer):
+        super().__init__()
+        self._layer = layer
+
+    def profileSourceId(self):
+        return self._layer.id()
+
+    def profileSourceName(self):
+        return self._layer.name()
+
+    def createProfileGenerator(self, request: QgsProfileRequest):
+        return MyPluginLayerProfileGenerator(self._layer, request)
+
+
+class MyPluginLayerProfileGenerator(QgsAbstractProfileGenerator):
+    """class for Storage of map layer elevation properties"""
+
+    def __init__(self, layer: MyPluginLayer, request: QgsProfileRequest):
+        super().__init__()
+        self._layer = layer
+        self._results: MyPluginLayerLayerProfileResults | None = None
+        self._feedback = QgsFeedback()
+        self._request = request
+
+    def feedback(self):
+        return self._feedback
+
+    def sourceId(self):
+        return self._layer.id()
+
+    def generateProfile(self, context) -> bool:
+        if self._request.profileCurve() is None:
+            return True
+        self._results = MyPluginLayerLayerProfileResults()
+        return not self._feedback.isCanceled()
+
+    def takeResults(self):
+        return self._results
+
+
+class MyPluginLayerLayerProfileResults(QgsAbstractProfileResults):
+    def type(self):
+        return "MyPluginLayerProfileResults"
+
+    def asGeometries(self):
+        return []
+
+    def asFeatures(self, type, feedback=None):
+        return []
+
+    def zRange(self):
+        return QgsDoubleRange(-1, 1)
+
+    def renderResults(self, context: QgsProfileRenderContext):
+        """Draws a red rectangle centered in the elevation profile"""
+        if (painter := context.renderContext().painter()) is None:
+            assert False
+            return
+        rect = painter.viewport()
+        w, h = rect.width(), rect.height()
+        painter.save()
+        painter.setPen(QPen(QColor(255, 0, 0, 100), 2))
+        painter.setBrush(QBrush(QColor(255, 0, 0, 80)))
+        painter.drawRect(QRectF(0.25 * w, 0.25 * h, 0.5 * w, 0.5 * h))
+        painter.restore()
 
 
 class TestQgsLayoutItemElevationProfile(QgisTestCase, LayoutItemTestCase):
@@ -477,8 +606,14 @@ class TestQgsLayoutItemElevationProfile(QgisTestCase, LayoutItemTestCase):
         self.assertTrue(layer3.isValid())
         project.addMapLayers([layer3])
 
-        profile.setSources([layer2, layer3])
-        self.assertEqual(profile.sources(), [layer2, layer3])
+        QgsApplication.pluginLayerRegistry().addPluginLayerType(MyPluginLayerType())
+        plugin_layer = MyPluginLayer()
+        project.addMapLayer(plugin_layer)
+
+        profile.setSources([layer2, layer3, plugin_layer])
+        self.assertEqual(
+            profile.sources(), [layer2, layer3, plugin_layer.profileSource()]
+        )
 
         project.layoutManager().addLayout(layout)
 
@@ -498,8 +633,15 @@ class TestQgsLayoutItemElevationProfile(QgisTestCase, LayoutItemTestCase):
 
             self.assertEqual(
                 [m.profileSourceId() for m in profile2.sources()],
-                [layer2.id(), layer3.id()],
+                [
+                    layer2.id(),
+                    layer3.id(),
+                ],  # Sample plugin layer is not stored in the project
             )
+
+        QgsApplication.pluginLayerRegistry().removePluginLayerType(
+            MyPluginLayer.LAYER_TYPE
+        )
 
     def test_settings(self):
         project = QgsProject()
@@ -1344,8 +1486,14 @@ class TestQgsLayoutItemElevationProfile(QgisTestCase, LayoutItemTestCase):
         self.assertTrue(layer3.isValid())
         project.addMapLayers([layer3])
 
-        profile.setSources([layer2, layer3])
-        self.assertEqual(profile.sources(), [layer2, layer3])
+        QgsApplication.pluginLayerRegistry().addPluginLayerType(MyPluginLayerType())
+        plugin_layer = MyPluginLayer()
+        project.addMapLayer(plugin_layer)
+
+        profile.setSources([layer2, layer3, plugin_layer])
+        self.assertEqual(
+            profile.sources(), [layer2, layer3, plugin_layer.profileSource()]
+        )
 
         project.layoutManager().addLayout(layout)
 
@@ -1365,8 +1513,15 @@ class TestQgsLayoutItemElevationProfile(QgisTestCase, LayoutItemTestCase):
 
             self.assertEqual(
                 [m.profileSourceId() for m in profile2.sources()],
-                [layer2.id(), layer3.id()],
+                [
+                    layer2.id(),
+                    layer3.id(),
+                ],  # Sample plugin layer is not stored in the project
             )
+
+        QgsApplication.pluginLayerRegistry().removePluginLayerType(
+            MyPluginLayer.LAYER_TYPE
+        )
 
     def test_custom_sources_legacy(self):
         project = QgsProject()
@@ -1482,6 +1637,69 @@ class TestQgsLayoutItemElevationProfile(QgisTestCase, LayoutItemTestCase):
                 [m.profileSourceId() for m in profile2.sources()],
                 [source_id, layer2.id(), layer3.id()],
             )
+
+        res = QgsApplication.profileSourceRegistry().unregisterProfileSource(source_id)
+        self.assertTrue(res)
+
+    def test_sources_getters_setters(self):
+        project = QgsProject()
+        layout = QgsPrintLayout(project)
+        profile = QgsLayoutItemElevationProfile(layout)
+        layout.addLayoutItem(profile)
+
+        self.assertFalse(profile.layers())
+        self.assertFalse(profile.sources())
+
+        layer1 = QgsVectorLayer(
+            os.path.join(unitTestDataPath(), "france_parts.shp"), "france", "ogr"
+        )
+        self.assertTrue(layer1.isValid())
+        project.addMapLayers([layer1])
+
+        layer2 = QgsRasterLayer(
+            os.path.join(unitTestDataPath(), "landsat.tif"), "landsat", "gdal"
+        )
+        self.assertTrue(layer2.isValid())
+        project.addMapLayers([layer2])
+
+        layer3 = MyPluginLayer()
+        self.assertTrue(layer3.isValid())
+        project.addMapLayers([layer3])
+
+        source = MyDummyProfileSource()
+        source_id = source.profileSourceId()
+
+        # Not allowed types
+        def _source_tests(sources):
+            with self.assertRaises(TypeError):
+                profile.setSources(sources)
+            self.assertEqual(len(profile.sources()), 0)
+
+        _source_tests(3)
+        _source_tests([3])
+        _source_tests([])
+        _source_tests([None])
+        _source_tests([QgsPoint(0, 0)])
+        _source_tests(layer1)
+        _source_tests([layer1, 3])
+        _source_tests([layer1, QgsPoint(0, 0)])
+
+        # Allowed types
+        profile.setSources([layer1])
+        self.assertEqual(len(profile.sources()), 1)
+
+        profile.setSources([layer1, layer2])
+        self.assertEqual(len(profile.sources()), 2)
+
+        profile.setSources([layer1, layer2, layer3])
+        self.assertEqual(len(profile.sources()), 3)
+
+        QgsApplication.profileSourceRegistry().registerProfileSource(source)
+
+        profile.setSources([layer1, layer2, layer3, source])
+        self.assertEqual(len(profile.sources()), 4)
+
+        project.layoutManager().addLayout(layout)
 
         res = QgsApplication.profileSourceRegistry().unregisterProfileSource(source_id)
         self.assertTrue(res)

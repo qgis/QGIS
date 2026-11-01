@@ -889,7 +889,7 @@ void QgsElevationProfileWidget::updateCanvasSources()
     return;
 
   QList<QgsMapLayer *> layers;
-  QList<QgsAbstractProfileSource *> sources;
+  QList< std::variant< QgsMapLayer *, QgsAbstractProfileSource * > > sources;
   const QList<QgsLayerTreeNode *> layerAndCustomNodeOrder = mLayerTree->layerAndCustomNodeOrder();
 
   for ( QgsLayerTreeNode *node : layerAndCustomNodeOrder )
@@ -904,7 +904,7 @@ void QgsElevationProfileWidget::updateCanvasSources()
       if ( mLayerTree->findLayer( layer )->isVisible() )
       {
         layers << layer;
-        sources << layer->profileSource();
+        sources << layer;
       }
     }
     else if ( QgsLayerTree::isCustomNode( node ) && node->customProperty( u"source"_s ) == QgsElevationProfileLayerTreeView::CUSTOM_NODE_ELEVATION_PROFILE_SOURCE )
