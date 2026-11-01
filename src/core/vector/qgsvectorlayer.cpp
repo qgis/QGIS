@@ -97,6 +97,7 @@
 #include "qgsvectorlayerutils.h"
 #include "qgsweakrelation.h"
 #include "qgsxmlutils.h"
+#include "qgsziputils.h"
 
 #include <QDir>
 #include <QDomNode>
@@ -2224,6 +2225,25 @@ QString QgsVectorLayer::loadDefaultStyle( bool &resultFlag )
     return styleXml;
   }
 
+  // No user defined default style found, check if a QML style is available inside a zip archive
+  QDomDocument qmlDocument;
+  bool styleLoadedFromZip = loadQMLFromZipArchive( qmlDocument );
+  QString errorMessage;
+
+  if ( styleLoadedFromZip )
+  {
+    resultFlag = importNamedStyle( qmlDocument, errorMessage );
+
+    if ( !resultFlag )
+    {
+      QgsDebugMsgLevel( tr( "Loading style file %1 failed because:\n%2" ).arg( publicSource(), errorMessage ), 2 );
+    }
+    else
+    {
+      return QString();
+    }
+  }
+
   if ( isSpatial() && mDataProvider->capabilities() & Qgis::VectorProviderCapability::CreateRenderer )
   {
     // otherwise try to create a renderer directly from the data provider
@@ -2241,6 +2261,75 @@ QString QgsVectorLayer::loadDefaultStyle( bool &resultFlag )
 
   return QString();
 }
+
+
+bool QgsVectorLayer::loadQMLFromZipArchive( QDomDocument &qmlDocument ) const
+{
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
+  const QString sourceURI = publicSource();
+
+  if ( providerType() != "ogr"_L1 )
+  {
+    return false;
+  }
+
+  const QVariantMap components = QgsProviderRegistry::instance()->decodeUri( "ogr"_L1, sourceURI );
+
+  const QString sourcePath = components.value( u"path"_s ).toString();
+  const QFileInfo sourceInfo( sourcePath );
+
+  if ( !( sourceInfo.exists() && sourceInfo.suffix().compare( "zip"_L1, Qt::CaseInsensitive ) == 0 ) )
+  {
+    return false;
+  }
+
+  const QString vsiPath = components.value( u"vsiSuffix"_s ).toString();
+  const QFileInfo vsiPathInfo = QFileInfo( vsiPath );
+
+  if ( vsiPathInfo.suffix().compare( "shp"_L1, Qt::CaseInsensitive ) != 0 )
+  {
+    return false;
+  }
+
+  const QString layerName = vsiPathInfo.completeBaseName();
+  const QStringList archiveFileNames = QgsZipUtils::files( sourcePath );
+  QStringList matchingQmlFileNames;
+  for ( const QString &archiveFileName : archiveFileNames )
+  {
+    const QFileInfo archiveFileInfo( archiveFileName );
+    if ( archiveFileInfo.suffix().compare( "qml"_L1, Qt::CaseInsensitive ) == 0 && archiveFileInfo.completeBaseName().compare( layerName, Qt::CaseInsensitive ) == 0 )
+    {
+      matchingQmlFileNames.append( archiveFileName );
+    }
+  }
+  if ( matchingQmlFileNames.count() == 1 )
+  {
+    const QString qmlFileName = matchingQmlFileNames.first();
+
+    QByteArray qmlContent;
+    QString errorMessage;
+
+    if ( !QgsZipUtils::extractFileFromZip( sourcePath, qmlFileName, qmlContent ) )
+    {
+      QgsDebugMsgLevel( u"Could not extract QML file '%1' from zip archive '%2'"_s.arg( qmlFileName, sourcePath ), 2 );
+      return false;
+    }
+    if ( !qmlDocument.setContent( qmlContent, &errorMessage ) )
+    {
+      QgsDebugMsgLevel( u"Could not parse QML file '%1' from zip archive '%2': %3"_s.arg( qmlFileName, sourcePath, errorMessage ), 2 );
+      return false;
+    }
+    return true;
+  }
+  else if ( matchingQmlFileNames.count() > 1 )
+  {
+    QgsDebugMsgLevel( u"Multiple QML files found for %1 within the zip: %2"_s.arg( layerName, matchingQmlFileNames.join( ", " ) ), 2 );
+  }
+
+  return false;
+}
+
 
 bool QgsVectorLayer::setDataProvider( QString const &provider, const QgsDataProvider::ProviderOptions &options, Qgis::DataProviderReadFlags flags )
 {
