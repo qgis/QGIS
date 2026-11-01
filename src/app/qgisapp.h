@@ -63,8 +63,10 @@ class QgsLayerTreeMapCanvasBridge;
 class QgsLayerTreeView;
 class QgsLayout;
 class QgsMasterLayoutInterface;
+class QgsProcessingModelAlgorithm;
 class QgsLayoutCustomDropHandler;
 class QgsLayoutDesignerDialog;
+class QgsModelDesignerDialog;
 class QgsLayoutDesignerInterface;
 class QgsMapCanvas;
 class QgsMapCanvasDockWidget;
@@ -808,6 +810,12 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
 
     //! Returns the CAD dock widget
     QgsAdvancedDigitizingDockWidget *cadDockWidget() { return mAdvancedDigitizingDockWidget; }
+
+    /**
+     * Returns pointer to the app processing utils
+     * \since QGIS 4.4
+     */
+    QgsAppProcessingUtils *appProcessingUtils() { return mAppProcessingUtils.get(); }
 
     //! Returns map overview canvas
     QgsMapOverviewCanvas *mapOverviewCanvas() { return mOverviewCanvas; }
