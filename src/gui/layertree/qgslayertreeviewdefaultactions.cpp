@@ -52,7 +52,7 @@ QAction *QgsLayerTreeViewDefaultActions::actionRemoveGroupOrLayer( QObject *pare
 
 QAction *QgsLayerTreeViewDefaultActions::actionRemoveGroupPromoteLayers( QObject *parent )
 {
-  QAction *a = new QAction( QgsApplication::getThemeIcon( u"/mActionRemoveLayer.svg"_s ), tr( "&Remove Group" ), parent );
+  QAction *a = new QAction( tr( "&Ungroup" ), parent );
   connect( a, &QAction::triggered, this, &QgsLayerTreeViewDefaultActions::removeGroupPromoteLayers );
   return a;
 }
@@ -533,36 +533,4 @@ void QgsLayerTreeViewDefaultActions::mutuallyExclusiveGroup()
     return;
 
   QgsLayerTree::toGroup( node )->setIsMutuallyExclusive( !QgsLayerTree::toGroup( node )->isMutuallyExclusive() );
-}
-
-void QgsLayerTreeViewDefaultActions::ungroupSelected()
-{
-  QgsLayerTreeNode *currentGroup = mView->currentGroupNode();
-  if ( !currentGroup || currentGroup == mView->layerTreeModel()->rootGroup() )
-    return;
-
-  QgsLayerTreeNode *parentNode = currentGroup->parent();
-  if ( !parentNode )
-    return;
-
-  int insertIdx = parentNode->children().indexOf( currentGroup );
-  QgsLayerTreeGroup *parentGroup = QgsLayerTree::toGroup( parentNode );
-
-  const QList<QgsLayerTreeNode *> nodes = currentGroup->children();
-
-  for ( QgsLayerTreeNode *node : nodes )
-    parentGroup->insertChildNode( insertIdx++, node->clone() );
-
-  for ( QgsLayerTreeNode *node : nodes )
-    parentGroup->removeChildNode( node );
-
-  parentGroup->removeChildNode( currentGroup );
-}
-
-QAction *QgsLayerTreeViewDefaultActions::actionUngroup( QgsMapCanvas *canvas, QObject *parent )
-{
-  QAction *a = new QAction( tr( "&Ungroup" ), parent );
-  a->setData( QVariant::fromValue( reinterpret_cast<void *>( canvas ) ) );
-  connect( a, &QAction::triggered, this, static_cast<void ( QgsLayerTreeViewDefaultActions::* )()>( &QgsLayerTreeViewDefaultActions::ungroupSelected ) );
-  return a;
 }
