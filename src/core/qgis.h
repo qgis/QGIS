@@ -7325,6 +7325,18 @@ int QgisEvent = QEvent::User + 1;
     Q_ENUM( AttributeTableFilterMode )
 
     /**
+     * Point cloud output formats allowed for a point cloud destination.
+     *
+     * \since QGIS 4.4
+     */
+    enum class PointCloudOutputsTypes : int
+    {
+      All,     //!< All point cloud formats supported by the processing provider
+      OnlyVPC, //!< Only virtual point cloud formats (VPC and VPZ)
+    };
+    Q_ENUM( PointCloudOutputsTypes )
+
+    /**
      * Identify search radius in mm
      */
     static const double DEFAULT_SEARCH_RADIUS_MM;

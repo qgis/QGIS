@@ -9007,6 +9007,42 @@ void TestQgsProcessing::parameterPointCloudOut()
   QCOMPARE( context2.layersToLoadOnCompletion().values().at( 0 ).name, u"my_dest"_s );
   QCOMPARE( context2.layersToLoadOnCompletion().values().at( 0 ).outputName, u"x"_s );
   QCOMPARE( context2.layersToLoadOnCompletion().values().at( 0 ).layerTypeHint, QgsProcessingUtils::LayerHint::PointCloud );
+
+  QCOMPARE( def->allowedPointCloudOutputs(), Qgis::PointCloudOutputsTypes::All );
+
+  // limited to VPC/VPZ
+  def = std::make_unique<QgsProcessingParameterPointCloudDestination>( "vpc", QString(), QVariant(), false, true, Qgis::PointCloudOutputsTypes::OnlyVPC );
+  QCOMPARE( def->allowedPointCloudOutputs(), Qgis::PointCloudOutputsTypes::OnlyVPC );
+  QCOMPARE( def->supportedOutputPointCloudLayerExtensions(), QStringList() << u"vpc"_s << u"vpz"_s );
+  QCOMPARE( def->defaultFileExtension(), u"vpc"_s );
+  QVERIFY( def->generateTemporaryDestination().endsWith( ".vpc"_L1 ) );
+  QVERIFY( def->createFileFilter().contains( u"*.vpc"_s ) );
+  QVERIFY( def->createFileFilter().contains( u"*.vpz"_s ) );
+  QVERIFY( !def->createFileFilter().contains( u"*.las"_s ) );
+  QVERIFY( !def->createFileFilter().contains( u"*.laz"_s ) );
+  QVERIFY( provider.isSupportedOutputValue( "/tmp/test.vpc", def.get(), context, error ) );
+  QVERIFY( provider.isSupportedOutputValue( "/tmp/test.VPZ", def.get(), context, error ) );
+  QVERIFY( !provider.isSupportedOutputValue( "/tmp/test.las", def.get(), context, error ) );
+  QVERIFY( !provider.isSupportedOutputValue( "/tmp/test.copc.laz", def.get(), context, error ) );
+
+  pythonCode = def->asPythonString();
+  QCOMPARE( pythonCode, u"QgsProcessingParameterPointCloudDestination('vpc', '', createByDefault=True, allowedPointCloudOutputs=Qgis.PointCloudOutputsTypes.OnlyVPC, defaultValue=None)"_s );
+
+  // clone
+  std::unique_ptr<QgsProcessingParameterPointCloudDestination> cloned( dynamic_cast<QgsProcessingParameterPointCloudDestination *>( def->clone() ) );
+  QCOMPARE( cloned->allowedPointCloudOutputs(), Qgis::PointCloudOutputsTypes::OnlyVPC );
+
+  // fromVariantMap and toVariantMap tests
+  QgsProcessingParameterPointCloudDestination fromMapVpc( "x" );
+  QVERIFY( fromMapVpc.fromVariantMap( def->toVariantMap() ) );
+  QCOMPARE( fromMapVpc.allowedPointCloudOutputs(), Qgis::PointCloudOutputsTypes::OnlyVPC );
+  QVERIFY( fromMapVpc.fromVariantMap( QgsProcessingParameterPointCloudDestination( "y" ).toVariantMap() ) );
+  QCOMPARE( fromMapVpc.allowedPointCloudOutputs(), Qgis::PointCloudOutputsTypes::All );
+
+  // allow all outputs again
+  def->setAllowedPointCloudOutputs( Qgis::PointCloudOutputsTypes::All );
+  QCOMPARE( def->allowedPointCloudOutputs(), Qgis::PointCloudOutputsTypes::All );
+  QVERIFY( def->createFileFilter().contains( u"*.las"_s ) );
 }
 
 void TestQgsProcessing::parameterFileOut()

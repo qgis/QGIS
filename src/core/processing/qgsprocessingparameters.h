@@ -4765,8 +4765,18 @@ class CORE_EXPORT QgsProcessingParameterPointCloudDestination : public QgsProces
      *
      * If \a createByDefault is FALSE and the parameter is \a optional, then this destination
      * output will not be created by default.
+     *
+     * The \a allowedPointCloudOutputs argument can be used to restrict the output formats
+     * offered, e.g. to only virtual point cloud formats (VPC and VPZ) (since QGIS 4.4).
      */
-    QgsProcessingParameterPointCloudDestination( const QString &name, const QString &description = QString(), const QVariant &defaultValue = QVariant(), bool optional = false, bool createByDefault = true );
+    QgsProcessingParameterPointCloudDestination(
+      const QString &name,
+      const QString &description = QString(),
+      const QVariant &defaultValue = QVariant(),
+      bool optional = false,
+      bool createByDefault = true,
+      Qgis::PointCloudOutputsTypes allowedPointCloudOutputs = Qgis::PointCloudOutputsTypes::All
+    );
 
     /**
      * Returns the type name for the parameter class.
@@ -4776,9 +4786,12 @@ class CORE_EXPORT QgsProcessingParameterPointCloudDestination : public QgsProces
     QString type() const override { return typeName(); }
     bool checkValueIsAcceptable( const QVariant &input, QgsProcessingContext *context = nullptr ) const override;
     QString valueAsPythonString( const QVariant &value, QgsProcessingContext &context ) const override;
+    QString asPythonString( QgsProcessing::PythonOutputType outputType = QgsProcessing::PythonOutputType::PythonQgsProcessingAlgorithmSubclass ) const override;
     QgsProcessingOutputDefinition *toOutputDefinition() const override SIP_FACTORY;
     QString defaultFileExtension() const override;
     QString createFileFilter() const override;
+    QVariantMap toVariantMap() const override;
+    bool fromVariantMap( const QVariantMap &map ) override;
 
     /**
      * Returns a list of the point cloud format file extensions supported for this parameter.
@@ -4787,9 +4800,28 @@ class CORE_EXPORT QgsProcessingParameterPointCloudDestination : public QgsProces
     virtual QStringList supportedOutputPointCloudLayerExtensions() const;
 
     /**
+     * Returns the point cloud output formats allowed for this parameter.
+     *
+     * \see setAllowedPointCloudOutputs()
+     * \since QGIS 4.4
+     */
+    Qgis::PointCloudOutputsTypes allowedPointCloudOutputs() const { return mAllowedPointCloudOutputs; }
+
+    /**
+     * Sets the point cloud output formats \a allowed for this parameter.
+     *
+     * \see allowedPointCloudOutputs()
+     * \since QGIS 4.4
+     */
+    void setAllowedPointCloudOutputs( Qgis::PointCloudOutputsTypes allowed ) { mAllowedPointCloudOutputs = allowed; }
+
+    /**
      * Creates a new parameter using the definition from a script code.
      */
     static QgsProcessingParameterPointCloudDestination *fromScriptCode( const QString &name, const QString &description, bool isOptional, const QString &definition ) SIP_FACTORY;
+
+  private:
+    Qgis::PointCloudOutputsTypes mAllowedPointCloudOutputs = Qgis::PointCloudOutputsTypes::All;
 };
 
 /**
