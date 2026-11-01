@@ -510,6 +510,74 @@ class TestQgsRectangle(QgisTestCase):
         rect = QgsRectangle(4, 2, 3, 1, normalize=False)
         self.assertFalse(rect.isNormalized())
 
+    def test_split_antimeridian(self):
+        # normalized rects
+
+        # vertical slices:
+        self.assertEqual(
+            QgsRectangle(-120, 60, -120, 70).splitAtAntimeridian(),
+            (QgsRectangle(-120, 60, -120, 70), QgsRectangle()),
+        )
+        self.assertEqual(
+            QgsRectangle(120, 60, 120, 70).splitAtAntimeridian(),
+            (QgsRectangle(120, 60, 120, 70), QgsRectangle()),
+        )
+        self.assertEqual(
+            QgsRectangle(-180, 60, -180, 70).splitAtAntimeridian(),
+            (QgsRectangle(-180, 60, -180, 70), QgsRectangle()),
+        )
+        self.assertEqual(
+            QgsRectangle(180, 60, 180, 70).splitAtAntimeridian(),
+            (QgsRectangle(180, 60, 180, 70), QgsRectangle()),
+        )
+
+        self.assertEqual(
+            QgsRectangle(190, 60, 190, 70).splitAtAntimeridian(),
+            (QgsRectangle(-170, 60, -170, 70), QgsRectangle()),
+        )
+
+        self.assertEqual(
+            QgsRectangle(-190, 60, -190, 70).splitAtAntimeridian(),
+            (QgsRectangle(170, 60, 170, 70), QgsRectangle()),
+        )
+
+        self.assertEqual(
+            QgsRectangle(-550, 60, -550, 70).splitAtAntimeridian(),
+            (QgsRectangle(170, 60, 170, 70), QgsRectangle()),
+        )
+        self.assertEqual(
+            QgsRectangle(550, 60, 550, 70).splitAtAntimeridian(),
+            (QgsRectangle(-170, 60, -170, 70), QgsRectangle()),
+        )
+
+        # normalized rects
+
+        self.assertEqual(
+            QgsRectangle(-120, 60, 110, 70).splitAtAntimeridian(),
+            (QgsRectangle(-120, 60, 110, 70), QgsRectangle()),
+        )
+
+        self.assertEqual(
+            QgsRectangle(-120, 60, 190, 70).splitAtAntimeridian(),
+            (QgsRectangle(-120, 60, 180, 70), QgsRectangle(-180, 60, -170, 70)),
+        )
+
+        self.assertEqual(
+            QgsRectangle(-190, 60, 120, 70).splitAtAntimeridian(),
+            (QgsRectangle(170, 60, 180, 70), QgsRectangle(-180, 60, 120, 70)),
+        )
+
+        # non-normalized rects
+        self.assertEqual(
+            QgsRectangle(110, 60, -120, 70, normalize=False).splitAtAntimeridian(),
+            (QgsRectangle(110, 60, 180, 70), QgsRectangle(-180, 60, -120, 70)),
+        )
+
+        self.assertEqual(
+            QgsRectangle(5, 60, -5, 70, normalize=False).splitAtAntimeridian(),
+            (QgsRectangle(5, 60, 180, 70), QgsRectangle(-180, 60, -5, 70)),
+        )
+
 
 if __name__ == "__main__":
     unittest.main()
