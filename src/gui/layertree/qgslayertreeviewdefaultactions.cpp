@@ -52,7 +52,7 @@ QAction *QgsLayerTreeViewDefaultActions::actionRemoveGroupOrLayer( QObject *pare
 
 QAction *QgsLayerTreeViewDefaultActions::actionRemoveGroupPromoteLayers( QObject *parent )
 {
-  QAction *a = new QAction( QgsApplication::getThemeIcon( u"/mActionRemoveLayer.svg"_s ), tr( "&Remove Group" ), parent );
+  QAction *a = new QAction( tr( "&Ungroup" ), parent );
   connect( a, &QAction::triggered, this, &QgsLayerTreeViewDefaultActions::removeGroupPromoteLayers );
   return a;
 }
