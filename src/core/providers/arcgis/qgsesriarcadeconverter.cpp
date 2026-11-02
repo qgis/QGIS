@@ -949,9 +949,9 @@ class ArcadeToExpressionVisitor : public QgsEsriArcadeRecursiveVisitor
     }
 };
 
-///@endcond PRIVATE
-
 const QString ArcadeToExpressionVisitor::NEXT_BLOCK_MARKER = u"!!!!!NEXT_BLOCK!!!!!"_s;
+
+///@endcond PRIVATE
 
 
 //
