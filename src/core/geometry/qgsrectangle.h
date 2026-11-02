@@ -795,6 +795,24 @@ class CORE_EXPORT QgsRectangle
      */
     QgsBox3D toBox3d( double zMin, double zMax ) const;
 
+    /**
+     * Splits the rectangle at the antimeridian (longitude 180 degrees).
+     *
+     * Returns two normalized rectangles, one representing the part to the west of the
+     * antimeridian and one which represents the part to the east.
+     *
+     * If the rectangle does not cross the antimeridian then the second returned
+     * rectangle will be a null rectangle.
+     *
+     * \warning This method is only valid for calling on rectangles which represent
+     * geographic extents (i.e. contain latitude/longitude coordinates). If the
+     * extent is in a projected CRS, then the results will be incorrect, even
+     * if that projected rectangle crosses the antimeridian.
+     *
+     * \since QGIS 4.4
+     */
+    std::pair< QgsRectangle, QgsRectangle > splitAtAntimeridian() const;
+
     //! Allows direct construction of QVariants from rectangles.
     operator QVariant() const
     {
