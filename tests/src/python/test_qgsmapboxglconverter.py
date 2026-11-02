@@ -1645,6 +1645,39 @@ class TestQgsMapBoxGlStyleConverter(QgisTestCase):
             "with_variable('marker_size',CASE WHEN \"foo\" = 'foo' THEN 2 END,(CASE WHEN @vector_tile_zoom >= 13 AND @vector_tile_zoom <= 16 THEN scale_linear(@vector_tile_zoom,13,16,0.25,0.45) WHEN @vector_tile_zoom > 16 AND @vector_tile_zoom <= 17 THEN scale_linear(@vector_tile_zoom,16,17,0.45,0.7) WHEN @vector_tile_zoom > 17 THEN 0.7 END)*@marker_size)",
         )
 
+    def testFillTranslateInterpolation(self):
+        context = QgsMapBoxGlStyleConversionContext()
+        style = {
+            "id": "building-top",
+            "type": "fill",
+            "paint": {
+                "fill-color": "#f2eae2",
+                "fill-outline-color": "#dfdbd7",
+                "fill-translate": [
+                    "interpolate",
+                    ["linear"],
+                    ["zoom"],
+                    14,
+                    ["literal", [0, 0]],
+                    16,
+                    ["literal", [-2, -2]],
+                ],
+            },
+        }
+        has_renderer, rendererStyle = QgsMapBoxGlStyleConverter.parseFillLayer(
+            style, context
+        )
+        self.assertTrue(has_renderer)
+        self.assertEqual(
+            rendererStyle.geometryType(), QgsWkbTypes.GeometryType.PolygonGeometry
+        )
+        dd_properties = rendererStyle.symbol().symbolLayers()[0].dataDefinedProperties()
+        self.assertTrue(dd_properties.hasProperty(QgsSymbolLayer.Property.Offset))
+        self.assertEqual(
+            dd_properties.property(QgsSymbolLayer.Property.Offset).expressionString(),
+            "array(scale_linear(@vector_tile_zoom,14,16,0,-2),scale_linear(@vector_tile_zoom,14,16,0,-2))",
+        )
+
     def testCircleLayer(self):
         context = QgsMapBoxGlStyleConversionContext()
         style = {
