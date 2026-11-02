@@ -37,7 +37,7 @@
 using namespace Qt::StringLiterals;
 
 QgsOapifFeatureDownloaderImpl::QgsOapifFeatureDownloaderImpl( QgsOapifSharedData *shared, QgsFeatureDownloader *downloader, bool requestMadeFromMainThread )
-  : QgsBaseNetworkRequest( shared->mURI.auth(), tr( "OAPIF" ) )
+  : QgsBaseNetworkRequest( shared->mURI.auth(), tr( "OAPIF" ), shared->mURI.disableDecompressedSafetyCheckThreshold() )
   , QgsFeatureDownloaderImpl( shared, downloader )
   , mShared( shared )
 {
