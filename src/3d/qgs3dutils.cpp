@@ -802,7 +802,7 @@ QgsPhongMaterialSettings Qgs3DUtils::phongMaterialFromQt3DComponent( Qt3DExtras:
   return settings;
 }
 
-QgsRay3D Qgs3DUtils::rayFromScreenPoint( const QPoint &point, const QSize &windowSize, Qt3DRender::QCamera *camera, Qgis::Map3DProjectionType projectionType )
+QgsRay3D Qgs3DUtils::rayFromScreenPoint( const QPoint &point, const QSize &windowSize, Qt3DRender::QCamera *camera )
 {
   const QVector3D deviceCoords( point.x(), point.y(), 0.0 );
   // normalized device coordinates
@@ -814,15 +814,15 @@ QgsRay3D Qgs3DUtils::rayFromScreenPoint( const QPoint &point, const QSize &windo
   const QMatrix4x4 invertedViewMatrix = camera->viewMatrix().inverted();
 
   QVector3D rayOriginWorld; // ray origin in world coordinates
-  switch ( projectionType )
+  switch ( camera->projectionType() )
   {
-    case Qgis::Map3DProjectionType::Perspective:
+    case Qt3DRender::QCameraLens::PerspectiveProjection:
     {
       // In perspective projection, the ray always comes from the camera centre.
       rayOriginWorld = QVector3D( invertedViewMatrix * QVector4D( 0.0f, 0.0f, 0.0f, 1.0f ) );
       break;
     }
-    case Qgis::Map3DProjectionType::Orthographic:
+    case Qt3DRender::QCameraLens::OrthographicProjection:
     {
       // In orthographic projection, the ray centre shifts with the cursor, the
       // ray is always perpendicular to the projection plane.
@@ -1147,7 +1147,7 @@ QQuaternion Qgs3DUtils::rotationFromPitchHeadingAngles( float pitchAngle, float 
 
 QgsPoint Qgs3DUtils::screenPointToMapCoordinates( const QPoint &screenPoint, const QSize size, const QgsCameraController *cameraController, const Qgs3DMapSettings *mapSettings )
 {
-  const QgsRay3D ray = rayFromScreenPoint( screenPoint, size, cameraController->camera(), mapSettings->projectionType() );
+  const QgsRay3D ray = rayFromScreenPoint( screenPoint, size, cameraController->camera() );
 
   // pick an arbitrary point mid-way between near and far plane
   const float pointDistance = ( cameraController->camera()->farPlane() + cameraController->camera()->nearPlane() ) / 2;
@@ -1313,11 +1313,27 @@ std::unique_ptr<Qt3DRender::QCamera> Qgs3DUtils::copyCamera( Qt3DRender::QCamera
   copy->setPosition( cam->position() );
   copy->setViewCenter( cam->viewCenter() );
   copy->setUpVector( cam->upVector() );
-  copy->setProjectionMatrix( cam->projectionMatrix() );
   copy->setNearPlane( cam->nearPlane() );
   copy->setFarPlane( cam->farPlane() );
-  copy->setAspectRatio( cam->aspectRatio() );
-  copy->setFieldOfView( cam->fieldOfView() );
+
+  switch ( cam->projectionType() )
+  {
+    case Qt3DRender::QCameraLens::OrthographicProjection:
+    case Qt3DRender::QCameraLens::FrustumProjection:
+      copy->setLeft( cam->left() );
+      copy->setRight( cam->right() );
+      copy->setBottom( cam->bottom() );
+      copy->setTop( cam->top() );
+      break;
+    case Qt3DRender::QCameraLens::PerspectiveProjection:
+      copy->setAspectRatio( cam->aspectRatio() );
+      copy->setFieldOfView( cam->fieldOfView() );
+      break;
+    case Qt3DRender::QCameraLens::CustomProjection:
+      copy->setProjectionMatrix( cam->projectionMatrix() );
+      break;
+  }
+  copy->setProjectionType( cam->projectionType() );
   return copy;
 }
 
