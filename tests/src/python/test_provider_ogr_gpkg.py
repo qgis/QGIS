@@ -13,6 +13,7 @@ __author__ = "Even Rouault"
 __date__ = "2016-04-21"
 __copyright__ = "Copyright 2016, Even Rouault"
 
+import json
 import math
 import os
 import re
@@ -2178,9 +2179,6 @@ class TestPyQgsOGRProviderGpkg(QgisTestCase):
                 )
             )
         )
-        self.assertTrue(vl.commitChanges())
-
-        vl.startEditing()
         self.assertTrue(
             vl.addAttribute(
                 QgsField(
@@ -2194,17 +2192,32 @@ class TestPyQgsOGRProviderGpkg(QgisTestCase):
                 )
             )
         )
-        self.assertTrue(vl.commitChanges())
 
         # test setting values to new attributes
+        fi = vl.getFeatures(QgsFeatureRequest())
+        f = QgsFeature()
         while fi.nextFeature(f):
             if f["fid"] == 2:
                 f["json_content"] = {"uno": "foo"}
                 f["json_content2"] = ["uno", "due", "tre"]
                 f["json_content3"] = {"uno": ["uno", "due", "tre"]}
-                self.assertEqual(f["json_content"], {"foo": "baz"})
+                vl.updateFeature(f)
+                self.assertEqual(f["json_content"], {"uno": "foo"})
                 self.assertEqual(f["json_content2"], ["uno", "due", "tre"])
                 self.assertEqual(f["json_content3"], {"uno": ["uno", "due", "tre"]})
+                break
+        self.assertTrue(vl.commitChanges())
+
+        # read back again
+        vl2 = QgsVectorLayer(f"{tmpfile}|layerid=0", "foo", "ogr")
+        fi = vl2.getFeatures(QgsFeatureRequest())
+        f = QgsFeature()
+        while fi.nextFeature(f):
+            if f["fid"] == 2:
+                self.assertEqual(f["json_content"], {"uno": "foo"})
+                self.assertEqual(f["json_content2"], ["uno", "due", "tre"])
+                self.assertEqual(f["json_content3"], {"uno": ["uno", "due", "tre"]})
+                break
 
         # test deleting attribute
         vl.startEditing()
@@ -2214,6 +2227,108 @@ class TestPyQgsOGRProviderGpkg(QgisTestCase):
         # test if index of existent field is not -1 and the one of the deleted is -1
         self.assertNotEqual(vl.fields().indexFromName("json_content2"), -1)
         self.assertEqual(vl.fields().indexFromName("json_content3"), -1)
+
+        # test text fields containing json
+        vl.startEditing()
+        self.assertTrue(
+            vl.addAttribute(
+                QgsField(
+                    "text_content",
+                    QVariant.String,
+                    "text",
+                    0,
+                    0,
+                    "no comment",
+                    QVariant.Invalid,
+                )
+            )
+        )
+        self.assertTrue(
+            vl.addAttribute(
+                QgsField(
+                    "text_content2",
+                    QVariant.String,
+                    "text",
+                    60,
+                    0,
+                    "no comment",
+                    QVariant.Invalid,
+                )
+            )
+        )
+        self.assertTrue(
+            vl.addAttribute(
+                QgsField(
+                    "text_content3",
+                    QVariant.String,
+                    "text",
+                    60,
+                    0,
+                    "no comment",
+                    QVariant.Invalid,
+                )
+            )
+        )
+        self.assertTrue(
+            vl.addAttribute(
+                QgsField(
+                    "text_content4",
+                    QVariant.String,
+                    "text",
+                    60,
+                    0,
+                    "no comment",
+                    QVariant.Invalid,
+                )
+            )
+        )
+
+        fi = vl.getFeatures(QgsFeatureRequest())
+        f = QgsFeature()
+        while fi.nextFeature(f):
+            if f["fid"] == 3:
+                f["text_content"] = "hallo"
+                f["text_content2"] = {"hey": "ho"}
+                f["text_content3"] = ["unu", "du", "tri"]
+                f["text_content4"] = {"unu": ["unu", "du", "tri"]}
+                vl.updateFeature(f)
+                self.assertEqual(f["text_content"], "hallo")
+                self.assertEqual(f["text_content2"], {"hey": "ho"})
+                self.assertEqual(f["text_content3"], ["unu", "du", "tri"])
+                self.assertEqual(f["text_content4"], {"unu": ["unu", "du", "tri"]})
+                break
+        self.assertTrue(vl.commitChanges())
+
+        # read back again
+        vl3 = QgsVectorLayer(f"{tmpfile}|layerid=0", "foo", "ogr")
+        fi = vl3.getFeatures(QgsFeatureRequest())
+        f = QgsFeature()
+
+        fields = vl.dataProvider().fields()
+        self.assertEqual(
+            fields.at(fields.indexFromName("text_content")).type(), QVariant.String
+        )
+        self.assertEqual(
+            fields.at(fields.indexFromName("text_content2")).type(), QVariant.String
+        )
+        self.assertEqual(
+            fields.at(fields.indexFromName("text_content3")).type(), QVariant.String
+        )
+        self.assertEqual(
+            fields.at(fields.indexFromName("text_content4")).type(), QVariant.String
+        )
+
+        # test if the json values are correctly written to the text field, they are actually strings now.
+        # they can be converted to lists and maps when opening with the dedicated widgets
+        fi = vl.getFeatures(QgsFeatureRequest())
+        f = QgsFeature()
+        while fi.nextFeature(f):
+            if f["fid"] == 3:
+                self.assertEqual(f["text_content"], "hallo")
+                self.assertEqual(f["text_content2"], '{"hey":"ho"}')
+                self.assertEqual(f["text_content3"], '["unu","du","tri"]')
+                self.assertEqual(f["text_content4"], '{"unu":["unu","du","tri"]}')
+                break
 
     def test_quote_identifier(self):
         """Regression #21100"""
