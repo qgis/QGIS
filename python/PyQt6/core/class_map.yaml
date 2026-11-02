@@ -2025,7 +2025,7 @@ QgsBookmarkManagerModel.rowCount: src/core/qgsbookmarkmodel.h#L87
 QgsBookmarkManagerModel.setData: src/core/qgsbookmarkmodel.h#L91
 QgsBookmarkManagerModel: src/core/qgsbookmarkmodel.h#L42
 QgsBookmarkManagerProxyModel: src/core/qgsbookmarkmodel.h#L118
-QgsBox3D.__repr__: src/core/geometry/qgsbox3d.h#L493
+QgsBox3D.__repr__: src/core/geometry/qgsbox3d.h#L494
 QgsBox3D.area: src/core/geometry/qgsbox3d.h#L315
 QgsBox3D.center: src/core/geometry/qgsbox3d.h#L308
 QgsBox3D.combineWith: src/core/geometry/qgsbox3d.h#L376
@@ -2042,7 +2042,7 @@ QgsBox3D.intersect: src/core/geometry/qgsbox3d.h#L325
 QgsBox3D.intersects: src/core/geometry/qgsbox3d.h#L345
 QgsBox3D.is2d: src/core/geometry/qgsbox3d.h#L331
 QgsBox3D.is3D: src/core/geometry/qgsbox3d.h#L340
-QgsBox3D.isEmpty: src/core/geometry/qgsbox3d.h#L450
+QgsBox3D.isEmpty: src/core/geometry/qgsbox3d.h#L451
 QgsBox3D.isNull: src/core/geometry/qgsbox3d.h#L440
 QgsBox3D.normalize: src/core/geometry/qgsbox3d.h#L280
 QgsBox3D.scale: src/core/geometry/qgsbox3d.h#L416
@@ -2056,7 +2056,7 @@ QgsBox3D.setYMinimum: src/core/geometry/qgsbox3d.h#L219
 QgsBox3D.setZMaximum: src/core/geometry/qgsbox3d.h#L254
 QgsBox3D.setZMinimum: src/core/geometry/qgsbox3d.h#L247
 QgsBox3D.toRectangle: src/core/geometry/qgsbox3d.h#L388
-QgsBox3D.toString: src/core/geometry/qgsbox3d.h#L459
+QgsBox3D.toString: src/core/geometry/qgsbox3d.h#L460
 QgsBox3D.volume: src/core/geometry/qgsbox3d.h#L320
 QgsBox3D.width: src/core/geometry/qgsbox3d.h#L287
 QgsBox3D.xMaximum: src/core/geometry/qgsbox3d.h#L212
