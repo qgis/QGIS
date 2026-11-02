@@ -797,7 +797,7 @@ void TestQgsFields::appendQgsFields()
 void TestQgsFields::iconForField()
 {
   QgsFields fields;
-  fields.append( QgsField( QStringLiteral( field1" ), QMetaType::Type::QString ), Qgis::FieldOrigin::Edit, 2 );
+  fields.append( QgsField( QStringLiteral( "field1" ), QMetaType::Type::QString ), Qgis::FieldOrigin::Edit, 2 );
   fields.append( QgsField( QStringLiteral( "field2" ), QMetaType::Type::Int ), Qgis::FieldOrigin::Join, 4 );
   fields.append( QgsField( QStringLiteral( "field3" ), QMetaType::Type::Double ), Qgis::FieldOrigin::Provider, 6 );
 
