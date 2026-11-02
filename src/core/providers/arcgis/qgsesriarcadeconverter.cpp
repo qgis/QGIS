@@ -363,6 +363,22 @@ class ArcadeToExpressionVisitor : public QgsEsriArcadeRecursiveVisitor
       QString newOpRightChunk = mCurrentPart;
       const bool rightIsSimple = mCurrentPartIsSimple;
 
+      // special case, testing against null
+      if ( newOpRightChunk.compare( "NULL"_L1, Qt::CaseInsensitive ) == 0 )
+      {
+        if ( node.binaryOperator() == QgsEsriArcadeBinaryOperatorExpression::BinaryOperator::Equal || node.binaryOperator() == QgsEsriArcadeBinaryOperatorExpression::BinaryOperator::NotEqual )
+        {
+          if ( !leftIsSimple )
+          {
+            newOpLeftPart = u"(%1)"_s.arg( newOpLeftPart );
+          }
+          mCurrentPart = u"%1 %2 NULL"_s.arg( newOpLeftPart, node.binaryOperator() == QgsEsriArcadeBinaryOperatorExpression::BinaryOperator::Equal ? u"IS"_s : u"IS NOT"_s );
+          mCurrentPartIsLiteral = false;
+          mCurrentPartIsSimple = false;
+          return;
+        }
+      }
+
       static const QMap< QgsEsriArcadeBinaryOperatorExpression::BinaryOperator, QString > sBINARY_OPERATOR_MAP {
         { QgsEsriArcadeBinaryOperatorExpression::BinaryOperator::Plus, "+" },
         { QgsEsriArcadeBinaryOperatorExpression::BinaryOperator::Minus, "-" },

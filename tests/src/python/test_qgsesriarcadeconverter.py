@@ -119,6 +119,14 @@ class TestQgsEsriArcadeConverter(unittest.TestCase):
             '"Name" + \'\\n\' + "Value"',
         )
         self.assertEqual(
+            self.convert_script("$feature.Name == null"),
+            '"Name" IS NULL',
+        )
+        self.assertEqual(
+            self.convert_script("$feature.Name != null"),
+            '"Name" IS NOT NULL',
+        )
+        self.assertEqual(
             self.convert_script(
                 """proper($feature["SITE_NAME"])+ TextFormatting.NewLine + "Removed: "+ $feature["REMOVAL_DATE"]""",
             ),
