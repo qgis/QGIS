@@ -4121,6 +4121,10 @@ QgsEsriArcadeContinueStatement.clone: src/core/providers/arcgis/qgsesriarcadescr
 QgsEsriArcadeContinueStatement.dump: src/core/providers/arcgis/qgsesriarcadescript.h#L1330
 QgsEsriArcadeContinueStatement.nodeType: src/core/providers/arcgis/qgsesriarcadescript.h#L1329
 QgsEsriArcadeContinueStatement: src/core/providers/arcgis/qgsesriarcadescript.h#L1321
+QgsEsriArcadeConverter.errorMessage: src/core/providers/arcgis/qgsesriarcadeconverter.h#L65
+QgsEsriArcadeConverter.expression: src/core/providers/arcgis/qgsesriarcadeconverter.h#L70
+QgsEsriArcadeConverter.result: src/core/providers/arcgis/qgsesriarcadeconverter.h#L58
+QgsEsriArcadeConverter: src/core/providers/arcgis/qgsesriarcadeconverter.h#L31
 QgsEsriArcadeDictionaryElement.clone: src/core/providers/arcgis/qgsesriarcadescript.h#L1014
 QgsEsriArcadeDictionaryElement.dump: src/core/providers/arcgis/qgsesriarcadescript.h#L1019
 QgsEsriArcadeDictionaryElement.isAutoKey: src/core/providers/arcgis/qgsesriarcadescript.h#L1007
