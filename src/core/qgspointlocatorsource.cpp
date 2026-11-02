@@ -1,8 +1,8 @@
 /***************************************************************************
   qgspointlocatorsource.cpp
   --------------------------------------
-  Date                 : September 2025
-  Copyright            : (C) 2025 by the QGIS project
+  Date                 : September 2026
+  Copyright            : (C) 2026 by the QGIS project
   Email                : info at qgis dot org
  ***************************************************************************
  *                                                                         *
@@ -39,26 +39,20 @@ using namespace Qt::StringLiterals;
 // QgsPointLocatorVectorSource
 //
 
-QgsPointLocatorVectorSource::QgsPointLocatorVectorSource( QgsVectorLayer *layer, QgsRenderContext *context )
-  : mLayer( layer )
-  , mContext( context )
+QgsPointLocatorVectorSource::QgsPointLocatorVectorSource( QgsVectorLayer *layer, const QgsRenderContext *context )
 {
   // this has to be done on the main thread, see QgsVectorLayerFeatureSource
   mSource = std::make_unique<QgsVectorLayerFeatureSource>( layer );
 
-  if ( mContext )
+  if ( context )
   {
+    mContext = std::make_unique<QgsRenderContext>( *context );
     mRenderer.reset( layer->renderer() ? layer->renderer()->clone() : nullptr );
     mContext->expressionContext() << QgsExpressionContextUtils::layerScope( layer );
   }
 }
 
 QgsPointLocatorVectorSource::~QgsPointLocatorVectorSource() = default;
-
-QgsMapLayer *QgsPointLocatorVectorSource::layer() const
-{
-  return mLayer;
-}
 
 QString QgsPointLocatorVectorSource::id() const
 {
@@ -68,10 +62,13 @@ QString QgsPointLocatorVectorSource::id() const
 void QgsPointLocatorVectorSource::releaseIndexingResources()
 {
   mRenderer.reset();
+  mContext.reset();
   mSource.reset();
 }
 
-QVector<QgsPointLocatorSource::Geometry> QgsPointLocatorVectorSource::snappableGeometries( const QgsRectangle *extent, const QgsCoordinateTransform &transform, int maxFeaturesToIndex, bool &ok, QgsFeedback *feedback )
+QVector<QgsPointLocatorSource::Geometry> QgsPointLocatorVectorSource::snappableGeometries(
+  const QgsRectangle *extent, const QgsCoordinateTransform &transform, int maxFeaturesToIndex, bool &ok, QgsFeedback *feedback
+)
 {
   ok = true;
   QVector<Geometry> geometries;
@@ -105,7 +102,7 @@ QVector<QgsPointLocatorSource::Geometry> QgsPointLocatorVectorSource::snappableG
   QgsRenderContext *ctx = nullptr;
   if ( mContext )
   {
-    ctx = mContext;
+    ctx = mContext.get();
     if ( mRenderer )
     {
       // setup scale for scale dependent visibility (rule based)
@@ -186,7 +183,7 @@ QVector<QgsPointLocatorSource::Geometry> QgsPointLocatorVectorSource::snappableG
 //
 
 QgsPointLocatorAnnotationSource::QgsPointLocatorAnnotationSource( QgsAnnotationLayer *layer )
-  : mLayer( layer )
+  : mLayerId( layer->id() )
 {
   // Snapshot the snappable items on the main thread. The live layer must not be read once indexing
   // moves to a worker thread.
@@ -214,23 +211,15 @@ QgsPointLocatorAnnotationSource::QgsPointLocatorAnnotationSource( QgsAnnotationL
   }
 }
 
-QgsMapLayer *QgsPointLocatorAnnotationSource::layer() const
-{
-  return mLayer;
-}
-
-QString QgsPointLocatorAnnotationSource::id() const
-{
-  return mLayer ? mLayer->id() : QString();
-}
-
 void QgsPointLocatorAnnotationSource::releaseIndexingResources()
 {
   // keep mItemIds, it is still needed to stamp matches at query time
   mSnapshot.clear();
 }
 
-QVector<QgsPointLocatorSource::Geometry> QgsPointLocatorAnnotationSource::snappableGeometries( const QgsRectangle *extent, const QgsCoordinateTransform &transform, int maxFeaturesToIndex, bool &ok, QgsFeedback *feedback )
+QVector<QgsPointLocatorSource::Geometry> QgsPointLocatorAnnotationSource::snappableGeometries(
+  const QgsRectangle *extent, const QgsCoordinateTransform &transform, int maxFeaturesToIndex, bool &ok, QgsFeedback *feedback
+)
 {
   ok = true;
   QVector<Geometry> geometries;
@@ -259,12 +248,11 @@ QVector<QgsPointLocatorSource::Geometry> QgsPointLocatorAnnotationSource::snappa
       }
     }
 
-    const QgsRectangle bbox = geom.boundingBox();
-    if ( !bbox.isFinite() )
+    if ( !geom.boundingBox().isFinite() )
       continue;
 
     // geom and extent are both in destination CRS now
-    if ( extent && !extent->intersects( bbox ) )
+    if ( extent && !geom.boundingBoxIntersects( *extent ) )
       continue;
 
     geometries.append( Geometry { it.key(), geom } );

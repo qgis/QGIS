@@ -653,7 +653,7 @@ Returns whether the layer supports editing or not.
 Returns ``True`` if the layer can be a snap target (indexable by
 :py:class:`QgsPointLocator`).
 
-The default is ``False`` and vector and annotation layers override it.
+The default implementation returns ``False``.
 
 .. versionadded:: 4.4
 %End

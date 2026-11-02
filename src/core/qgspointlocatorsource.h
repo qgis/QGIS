@@ -1,8 +1,8 @@
 /***************************************************************************
   qgspointlocatorsource.h
   --------------------------------------
-  Date                 : September 2025
-  Copyright            : (C) 2025 by the QGIS project
+  Date                 : September 2026
+  Copyright            : (C) 2026 by the QGIS project
   Email                : info at qgis dot org
  ***************************************************************************
  *                                                                         *
@@ -39,7 +39,6 @@
 
 #define SIP_NO_FILE
 
-class QgsMapLayer;
 class QgsVectorLayer;
 class QgsAnnotationLayer;
 class QgsRectangle;
@@ -60,6 +59,7 @@ class QgsFeedback;
  * (background) index build.
  *
  * \note not available in Python bindings
+ * \since QGIS 4.4
  */
 class QgsPointLocatorSource
 {
@@ -81,16 +81,10 @@ class QgsPointLocatorSource
      * Sets \a ok to FALSE if the maximum feature count was exceeded, or if \a feedback was canceled,
      * and indexing must be aborted.
      *
-     * This may be called on a worker thread, so it MUST NOT read the live layer. It may only use
+     * This may be called on a worker thread, so it must not read the live layer. It may only use
      * state snapshotted on the main thread at construction.
      */
     virtual QVector<Geometry> snappableGeometries( const QgsRectangle *extent, const QgsCoordinateTransform &transform, int maxFeaturesToIndex, bool &ok, QgsFeedback *feedback = nullptr ) = 0;
-
-    //! The map layer this source indexes.
-    virtual QgsMapLayer *layer() const = 0;
-
-    //! The vector layer this source indexes, or NULLPTR for a non-vector source.
-    virtual QgsVectorLayer *vectorLayer() const { return nullptr; }
 
     //! The item id mapped to the synthetic feature \a id, or an empty string if this source has no item ids.
     virtual QString itemId( QgsFeatureId ) const { return QString(); }
@@ -109,27 +103,24 @@ class QgsPointLocatorSource
  * \ingroup core
  * \brief QgsPointLocatorSource backed by a vector layer.
  * \note not available in Python bindings
+ * \since QGIS 4.4
  */
 class QgsPointLocatorVectorSource : public QgsPointLocatorSource
 {
   public:
     /**
      * Constructs a vector source for \a layer. Clones the feature source (and, if \a context is
-     * not NULLPTR, the layer renderer) on the main thread. \a context is borrowed and owned by the
-     * caller (the locator).
+     * not NULLPTR, the render context and the layer renderer) on the main thread.
      */
-    QgsPointLocatorVectorSource( QgsVectorLayer *layer, QgsRenderContext *context );
+    QgsPointLocatorVectorSource( QgsVectorLayer *layer, const QgsRenderContext *context );
     ~QgsPointLocatorVectorSource() override;
 
     QVector<Geometry> snappableGeometries( const QgsRectangle *extent, const QgsCoordinateTransform &transform, int maxFeaturesToIndex, bool &ok, QgsFeedback *feedback = nullptr ) override;
-    QgsMapLayer *layer() const override;
-    QgsVectorLayer *vectorLayer() const override { return mLayer; }
     QString id() const override;
     void releaseIndexingResources() override;
 
   private:
-    QgsVectorLayer *mLayer = nullptr;
-    QgsRenderContext *mContext = nullptr; // borrowed, owned by the locator
+    std::unique_ptr<QgsRenderContext> mContext;
     std::unique_ptr<QgsFeatureRenderer> mRenderer;
     std::unique_ptr<QgsVectorLayerFeatureSource> mSource;
 };
@@ -143,6 +134,7 @@ class QgsPointLocatorVectorSource : public QgsPointLocatorSource
  * layer.
  *
  * \note not available in Python bindings
+ * \since QGIS 4.4
  */
 class QgsPointLocatorAnnotationSource : public QgsPointLocatorSource
 {
@@ -151,13 +143,12 @@ class QgsPointLocatorAnnotationSource : public QgsPointLocatorSource
     explicit QgsPointLocatorAnnotationSource( QgsAnnotationLayer *layer );
 
     QVector<Geometry> snappableGeometries( const QgsRectangle *extent, const QgsCoordinateTransform &transform, int maxFeaturesToIndex, bool &ok, QgsFeedback *feedback = nullptr ) override;
-    QgsMapLayer *layer() const override;
     QString itemId( QgsFeatureId id ) const override { return mItemIds.value( id ); }
-    QString id() const override;
+    QString id() const override { return mLayerId; }
     void releaseIndexingResources() override;
 
   private:
-    QgsAnnotationLayer *mLayer = nullptr;
+    QString mLayerId;
     //! Cloned snap geometries in the layer CRS, keyed by synthetic feature id. Freed after indexing.
     QHash<QgsFeatureId, QgsGeometry> mSnapshot;
     //! Maps each synthetic feature id to its annotation item id. Kept alive for query-time match stamping.

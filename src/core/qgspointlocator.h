@@ -142,19 +142,20 @@ class CORE_EXPORT QgsPointLocator : public QObject
     /**
      * Returns the associated vector layer, or NULLPTR if this locator was built for a
      * non-vector layer such as an annotation layer. Use mapLayer() for the generic accessor.
-     */
-    QgsVectorLayer *layer() const { return qobject_cast<QgsVectorLayer *>( mLayer.data() ); }
-
-    /**
-     * Returns the annotation item id mapped to the synthetic feature \a id, or an empty string if
-     * \a id is not an annotation item.
      *
      * \since QGIS 4.4
      */
-    QString annotationItemId( QgsFeatureId id ) const;
+    QgsVectorLayer *vectorLayer() const { return qobject_cast<QgsVectorLayer *>( mLayer.data() ); }
 
     /**
-     * Returns the layer this locator was built for (vector or annotation)
+     * Returns the associated vector layer.
+     *
+     * \deprecated QGIS 4.4. Use vectorLayer() or mapLayer() instead.
+     */
+    Q_DECL_DEPRECATED QgsVectorLayer *layer() const SIP_DEPRECATED { return vectorLayer(); }
+
+    /**
+     * Returns the layer this locator was built for.
      *
      * \since QGIS 4.4
      */
@@ -570,9 +571,6 @@ class CORE_EXPORT QgsPointLocator : public QObject
      */
     Match makeMatch( Type type, QgsFeatureId fid, double dist, const QgsPointXY &pt, int vertexIndex = 0, QgsPointXY *edgePoints = nullptr ) const;
 
-    //! Returns the geometry source backing this locator, or NULLPTR before the first init().
-    QgsPointLocatorSource *source() const { return mSource.get(); }
-
     //! Storage manager
     std::unique_ptr< SpatialIndex::IStorageManager > mStorage;
 
@@ -585,7 +583,7 @@ class CORE_EXPORT QgsPointLocator : public QObject
 
     //! R-tree containing spatial index
     QgsCoordinateTransform mTransform;
-    //! Layer this locator was built for (vector or annotation). QPointer so it survives layer deletion.
+    //! Layer this locator was built for. QPointer so it survives layer deletion.
     QPointer<QgsMapLayer> mLayer;
     std::unique_ptr< QgsRectangle > mExtent;
 

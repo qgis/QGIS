@@ -902,8 +902,7 @@ QgsPointLocator::QgsPointLocator( QgsAnnotationLayer *layer, const QgsCoordinate
   setExtent( extent );
 
   mStorage.reset( StorageManager::createNewMemoryStorageManager() );
-  // TODO(follow-up): incremental updates. A single itemsChanged() drops and rebuilds the whole
-  // R-tree. Fine-grained itemAdded/Removed/Changed signals should update the index in place.
+  // TODO: update the index per item instead of rebuilding it on every itemsChanged()
   connect( layer, &QgsAnnotationLayer::itemsChanged, this, &QgsPointLocator::destroyIndex );
 }
 
@@ -928,19 +927,14 @@ QgsMapLayer *QgsPointLocator::mapLayer() const
   return mLayer;
 }
 
-QString QgsPointLocator::annotationItemId( QgsFeatureId id ) const
-{
-  return mSource ? mSource->itemId( id ) : QString();
-}
-
 Qgis::GeometryType QgsPointLocator::geometryType() const
 {
-  if ( QgsVectorLayer *vl = layer() )
+  if ( QgsVectorLayer *vl = vectorLayer() )
   {
     return vl->geometryType();
   }
 
-  // annotation layers are not geometry layers, so ret Unknown
+  // annotation layers do not have a fixed geometry type, so return Unknown
   return Qgis::GeometryType::Unknown;
 }
 
@@ -948,7 +942,7 @@ QgsPointLocator::Match QgsPointLocator::makeMatch( Type type, QgsFeatureId fid, 
 {
   // the Match constructor only carries the vector layer. Resolve the generic map layer and, for
   // annotation sources, the item id here so the identity is populated before any MatchFilter runs
-  Match m( type, layer(), fid, dist, pt, vertexIndex, edgePoints );
+  Match m( type, vectorLayer(), fid, dist, pt, vertexIndex, edgePoints );
   m.mMapLayer = mLayer;
   if ( mSource )
     m.mItemId = mSource->itemId( fid );
@@ -972,7 +966,7 @@ void QgsPointLocator::setRenderContext( const QgsRenderContext *context )
     // already indexing, return!
     return;
 
-  QgsVectorLayer *vl = layer();
+  QgsVectorLayer *vl = vectorLayer();
   if ( !vl )
     // render-context based filtering is only supported for vector layers
     return;
@@ -1002,8 +996,7 @@ void QgsPointLocator::onInitTaskFinished()
     return;
 
   mIsIndexing = false;
-  // free the heavy indexing resources but keep the lightweight identity data (item id map / layer
-  // handle) alive so matches can still be stamped at query time
+  // free the indexing resources, but keep the item id map so matches can still be stamped
   if ( mSource )
     mSource->releaseIndexingResources();
 
@@ -1029,7 +1022,7 @@ bool QgsPointLocator::init( int maxFeaturesToIndex, bool relaxed )
 
   // build the geometry source snapshot on the main thread, so a relaxed rebuild can run on a
   // worker thread without touching the live layer
-  if ( QgsVectorLayer *vl = layer() )
+  if ( QgsVectorLayer *vl = vectorLayer() )
   {
     if ( !vl->dataProvider() || !vl->dataProvider()->isValid() )
       return false;
@@ -1196,7 +1189,7 @@ void QgsPointLocator::onFeatureAdded( QgsFeatureId fid )
     return; // nothing to do if we are not initialized yet
   }
 
-  QgsVectorLayer *vl = layer();
+  QgsVectorLayer *vl = vectorLayer();
   if ( !vl )
     return; // incremental updates are only wired for vector layers
 
