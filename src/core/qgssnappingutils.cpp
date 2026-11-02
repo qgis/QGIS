@@ -434,7 +434,7 @@ void QgsSnappingUtils::onInitFinished( bool ok )
   // let's make the allowed area smaller for the next time
   if ( !ok )
   {
-    mHybridMaxAreaPerLayer[loc->layer()->id()] /= 4;
+    mHybridMaxAreaPerLayer[loc->mapLayer()->id()] /= 4;
   }
 }
 

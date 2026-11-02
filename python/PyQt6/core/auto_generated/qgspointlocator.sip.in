@@ -72,24 +72,27 @@ item's :py:func:`~QgsPointLocator.snapGeometry`
 
     ~QgsPointLocator();
 
-    QgsVectorLayer *layer() const;
+    QgsVectorLayer *vectorLayer() const;
 %Docstring
 Returns the associated vector layer, or ``None`` if this locator was
 built for a non-vector layer such as an annotation layer. Use
 :py:func:`~QgsPointLocator.mapLayer` for the generic accessor.
-%End
-
-    QString annotationItemId( QgsFeatureId id ) const;
-%Docstring
-Returns the annotation item id mapped to the synthetic feature ``id``,
-or an empty string if ``id`` is not an annotation item.
 
 .. versionadded:: 4.4
 %End
 
+ QgsVectorLayer *layer() const /Deprecated="Since 4.4. Use vectorLayer() or mapLayer() instead."/;
+%Docstring
+Returns the associated vector layer.
+
+.. deprecated:: 4.4
+
+   Use :py:func:`~QgsPointLocator.vectorLayer` or :py:func:`~QgsPointLocator.mapLayer` instead.
+%End
+
     QgsMapLayer *mapLayer() const;
 %Docstring
-Returns the layer this locator was built for (vector or annotation)
+Returns the layer this locator was built for.
 
 .. versionadded:: 4.4
 %End
