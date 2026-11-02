@@ -50,14 +50,13 @@ using namespace Qt::StringLiterals;
 ///@cond PRIVATE
 
 QgsPointCloudLayerChunkLoader::QgsPointCloudLayerChunkLoader(
-  const Qgs3DRenderContext &context, const QgsCoordinateTransform &coordinateTransform, QgsPointCloudIndex pc, QgsPointCloud3DSymbol *symbol, double zValueScale, double zValueOffset, int pointBudget
+  const Qgs3DRenderContext &context, const QgsCoordinateTransform &coordinateTransform, QgsPointCloudIndex pc, QgsPointCloud3DSymbol *symbol, double zValueScale, double zValueOffset, int
 )
   : mRenderContext( context )
   , mCoordinateTransform( coordinateTransform )
   , mPointCloudIndex( std::move( pc ) )
   , mZValueScale( zValueScale )
   , mZValueOffset( zValueOffset )
-  , mPointBudget( pointBudget )
 {
   mSymbol.reset( symbol );
 

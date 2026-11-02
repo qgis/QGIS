@@ -81,8 +81,6 @@ class QgsPointCloudLayerChunkLoader : public QgsChunkLoader
     std::unique_ptr<QgsPointCloud3DSymbol> mSymbol;
     double mZValueScale = 1.0;
     double mZValueOffset = 0;
-    int mPointBudget = 1000000;
-    bool mTriangulate = false;
     QgsRectangle mExtent; //!< This should hold the map's extent in layer's crs
 
     friend class QgsPointCloudLayerChunkedEntity;
