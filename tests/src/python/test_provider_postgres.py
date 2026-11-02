@@ -18,6 +18,7 @@ __author__ = "Matthias Kuhn"
 __date__ = "2015-04-23"
 __copyright__ = "Copyright 2015, The QGIS Project"
 
+import json
 import os
 import time
 import unittest
@@ -2082,7 +2083,11 @@ class TestPyQgsPostgresProvider(QgisTestCase, ProviderTestCase):
             },
         )
         json_idx = vl.fields().lookupField("jvalue")
+        self.assertEqual(vl.fields.at(json_idx).type(), QVariant.Map)
         jsonb_idx = vl.fields().lookupField("jbvalue")
+        self.assertEqual(vl.fields.at(jsonb_idx).type(), QVariant.Map)
+        text_idx = vl.fields().lookupField("textfield")
+        self.assertEqual(vl.fields.at(text_idx).type(), QVariant.String)
 
         for attr in attrs:
             # Add a new feature
@@ -2093,7 +2098,7 @@ class TestPyQgsPostgresProvider(QgisTestCase, ProviderTestCase):
             )
             self.assertTrue(vl2.startEditing())
             f = QgsFeature(vl2.fields())
-            f.setAttributes([None, attr, attr])
+            f.setAttributes([None, attr, attr, attr])
             self.assertTrue(vl2.addFeatures([f]))
             self.assertTrue(vl2.commitChanges(), attr)
             # Read back
@@ -2104,7 +2109,7 @@ class TestPyQgsPostgresProvider(QgisTestCase, ProviderTestCase):
             )
             fid = [f.id() for f in vl2.getFeatures()][-1]
             f = vl2.getFeature(fid)
-            self.assertEqual(f.attributes(), [fid, attr, attr])
+            self.assertEqual(f.attributes(), [fid, attr, attr, attr])
             # Change attribute values
             vl2 = QgsVectorLayer(
                 '%s table="qgis_test"."json" sql=' % (self.dbconn),
@@ -2114,7 +2119,9 @@ class TestPyQgsPostgresProvider(QgisTestCase, ProviderTestCase):
             fid = [f.id() for f in vl2.getFeatures()][-1]
             self.assertTrue(vl2.startEditing())
             self.assertTrue(
-                vl2.changeAttributeValues(fid, {json_idx: attr, jsonb_idx: attr})
+                vl2.changeAttributeValues(
+                    fid, {json_idx: attr, jsonb_idx: attr, text_idx: attr}
+                )
             )
             self.assertTrue(vl2.commitChanges())
             # Read back
@@ -2124,7 +2131,8 @@ class TestPyQgsPostgresProvider(QgisTestCase, ProviderTestCase):
                 "postgres",
             )
             f = vl2.getFeature(fid)
-            self.assertEqual(f.attributes(), [fid, attr, attr])
+            # Here we have to convert the text field (last one) to json to compare
+            self.assertEqual(f.attributes(), [fid, attr, attr, json.load(attr)])
 
         # Let's check changeFeatures:
         for attr in attrs2:
@@ -2137,7 +2145,7 @@ class TestPyQgsPostgresProvider(QgisTestCase, ProviderTestCase):
             self.assertTrue(vl2.startEditing())
             self.assertTrue(
                 vl2.dataProvider().changeFeatures(
-                    {fid: {json_idx: attr, jsonb_idx: attr}}, {}
+                    {fid: {json_idx: attr, jsonb_idx: attr, text_idx: attr}}, {}
                 )
             )
             self.assertTrue(vl2.commitChanges())
@@ -2149,7 +2157,9 @@ class TestPyQgsPostgresProvider(QgisTestCase, ProviderTestCase):
                 "postgres",
             )
             f = vl2.getFeature(fid)
-            self.assertEqual(f.attributes(), [fid, attr, attr])
+
+            # Here we have to convert the text field (last one) to json to compare
+            self.assertEqual(f.attributes(), [fid, attr, attr, json.load(attr)])
 
     def testStringArray(self):
         vl = QgsVectorLayer(
