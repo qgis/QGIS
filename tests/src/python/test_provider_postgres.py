@@ -2000,7 +2000,9 @@ class TestPyQgsPostgresProvider(QgisTestCase, ProviderTestCase):
 
     def testJson(self):
         vl = QgsVectorLayer(
-            '%s table="qgis_test"."json" sql=' % (self.dbconn), "testjson", "postgres"
+            '%s table="qgis_test"."json" sql=' % (self.dbconn),
+            "testjson",
+            "postgres",
         )
         self.assertTrue(vl.isValid())
 
@@ -2042,11 +2044,11 @@ class TestPyQgsPostgresProvider(QgisTestCase, ProviderTestCase):
             },
         )
         json_idx = vl.fields().lookupField("jvalue")
-        self.assertEqual(vl.fields.at(json_idx).type(), QVariant.Map)
+        self.assertEqual(vl.fields().at(json_idx).type(), QVariant.Map)
         jsonb_idx = vl.fields().lookupField("jbvalue")
-        self.assertEqual(vl.fields.at(jsonb_idx).type(), QVariant.Map)
+        self.assertEqual(vl.fields().at(jsonb_idx).type(), QVariant.Map)
         text_idx = vl.fields().lookupField("textfield")
-        self.assertEqual(vl.fields.at(text_idx).type(), QVariant.String)
+        self.assertEqual(vl.fields().at(text_idx).type(), QVariant.String)
 
         for attr in attrs:
             # Add a new feature
@@ -2068,7 +2070,11 @@ class TestPyQgsPostgresProvider(QgisTestCase, ProviderTestCase):
             )
             fid = [f.id() for f in vl2.getFeatures()][-1]
             f = vl2.getFeature(fid)
-            self.assertEqual(f.attributes(), [fid, attr, attr, attr])
+            string_attr = attr
+            if isinstance(attr, list) or isinstance(attr, dict):
+                # Here we have to convert the text field (last one) to json string to compare
+                string_attr = json.dumps(attr)
+            self.assertEqual(f.attributes(), [fid, attr, attr, string_attr])
             # Change attribute values
             vl2 = QgsVectorLayer(
                 '%s table="qgis_test"."json" sql=' % (self.dbconn),
@@ -2090,8 +2096,11 @@ class TestPyQgsPostgresProvider(QgisTestCase, ProviderTestCase):
                 "postgres",
             )
             f = vl2.getFeature(fid)
-            # Here we have to convert the text field (last one) to json to compare
-            self.assertEqual(f.attributes(), [fid, attr, attr, json.load(attr)])
+            string_attr = attr
+            if isinstance(attr, list) or isinstance(attr, dict):
+                # Here we have to convert the text field (last one) to json string to compare
+                string_attr = json.dumps(attr)
+            self.assertEqual(f.attributes(), [fid, attr, attr, string_attr])
 
         # Let's check changeFeatures:
         for attr in attrs2:
@@ -2117,8 +2126,11 @@ class TestPyQgsPostgresProvider(QgisTestCase, ProviderTestCase):
             )
             f = vl2.getFeature(fid)
 
-            # Here we have to convert the text field (last one) to json to compare
-            self.assertEqual(f.attributes(), [fid, attr, attr, json.load(attr)])
+            string_attr = attr
+            if isinstance(attr, list) or isinstance(attr, dict):
+                # Here we have to convert the text field (last one) to json string to compare
+                string_attr = json.dumps(attr)
+            self.assertEqual(f.attributes(), [fid, attr, attr, string_attr])
 
     def testStringArray(self):
         vl = QgsVectorLayer(
