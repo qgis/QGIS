@@ -148,7 +148,7 @@ class CORE_EXPORT QgsFontUtils
      * Caller takes responsibility for deleting the returned object.
      * \see fromMimeData()
      */
-    static QMimeData *toMimeData( const QFont &font ) SIP_FACTORY;
+    static std::unique_ptr<QMimeData> toMimeData( const QFont &font );
 
     /**
      * Attempts to parse the provided mime \a data as a QFont.

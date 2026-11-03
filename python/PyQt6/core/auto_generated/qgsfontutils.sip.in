@@ -171,7 +171,7 @@ font.
 .. seealso:: :py:func:`toXmlElement`
 %End
 
-    static QMimeData *toMimeData( const QFont &font ) /Factory/;
+    static std::unique_ptr<QMimeData> toMimeData( const QFont &font );
 %Docstring
 Returns new mime data representing the specified ``font`` settings.
 Caller takes responsibility for deleting the returned object.

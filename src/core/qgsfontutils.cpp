@@ -457,7 +457,7 @@ bool QgsFontUtils::setFromXmlChildNode( QFont &font, const QDomElement &element,
   }
 }
 
-QMimeData *QgsFontUtils::toMimeData( const QFont &font )
+std::unique_ptr<QMimeData> QgsFontUtils::toMimeData( const QFont &font )
 {
   std::unique_ptr< QMimeData > mimeData( new QMimeData );
 
@@ -466,7 +466,7 @@ QMimeData *QgsFontUtils::toMimeData( const QFont &font )
   fontDoc.appendChild( fontElem );
   mimeData->setText( fontDoc.toString() );
 
-  return mimeData.release();
+  return mimeData;
 }
 
 QFont QgsFontUtils::fromMimeData( const QMimeData *data, bool *ok )
