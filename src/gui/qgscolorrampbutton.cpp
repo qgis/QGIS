@@ -160,7 +160,7 @@ void QgsColorRampButton::showColorRampDialog()
     {
       if ( dlg.saveAsGradientRamp() )
       {
-        setColorRamp( dlg.ramp().cloneGradientRamp() );
+        setColorRamp( dlg.ramp().cloneGradientRamp().release() );
       }
       else
       {

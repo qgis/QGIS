@@ -1697,7 +1697,7 @@ QString QgsStyleManagerDialog::addColorRampStatic( QWidget *parent, QgsStyle *st
     name = QFileInfo( dlg.ramp().schemeName() ).baseName() + dlg.ramp().variantName();
     if ( dlg.saveAsGradientRamp() )
     {
-      ramp.reset( dlg.ramp().cloneGradientRamp() );
+      ramp = dlg.ramp().cloneGradientRamp();
     }
     else
     {
@@ -1938,7 +1938,7 @@ bool QgsStyleManagerDialog::editColorRamp()
     }
     if ( dlg.saveAsGradientRamp() )
     {
-      ramp.reset( dlg.ramp().cloneGradientRamp() );
+      ramp = dlg.ramp().cloneGradientRamp();
     }
     else
     {
