@@ -96,9 +96,9 @@ QgsNumericFormat *QgsNumericFormatRegistry::createFromXml( const QDomElement &el
   return new QgsFallbackNumericFormat();
 }
 
-QgsNumericFormat *QgsNumericFormatRegistry::fallbackFormat() const
+std::unique_ptr<QgsNumericFormat> QgsNumericFormatRegistry::fallbackFormat() const
 {
-  return new QgsFallbackNumericFormat();
+  return std::make_unique<QgsFallbackNumericFormat>();
 }
 
 QString QgsNumericFormatRegistry::visibleName( const QString &id ) const

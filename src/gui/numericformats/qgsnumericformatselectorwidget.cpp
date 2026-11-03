@@ -38,7 +38,7 @@ QgsNumericFormatSelectorWidget::QgsNumericFormatSelectorWidget( QWidget *parent 
 {
   setupUi( this );
 
-  mCurrentFormat.reset( QgsApplication::numericFormatRegistry()->fallbackFormat() );
+  mCurrentFormat = QgsApplication::numericFormatRegistry()->fallbackFormat();
 
   mPreviewFormat = std::make_unique<QgsBasicNumericFormat>();
   mPreviewFormat->setShowThousandsSeparator( false );

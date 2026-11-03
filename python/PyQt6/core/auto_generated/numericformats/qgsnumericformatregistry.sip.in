@@ -78,7 +78,7 @@ matching format ID registered, a default
 The caller takes ownership of the returned object.
 %End
 
-    QgsNumericFormat *fallbackFormat() const /Factory/;
+    std::unique_ptr<QgsNumericFormat> fallbackFormat() const;
 %Docstring
 Returns a basic numeric formatter which can be used to represent any
 number in an default manner.
