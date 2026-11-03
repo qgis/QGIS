@@ -994,18 +994,18 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas *mapCanvas, QWidget *pa
   // Default styles
   mStyleMarkerSymbol->setShowNull( true );
   mStyleMarkerSymbol->setSymbolType( Qgis::SymbolType::Marker );
-  mStyleMarkerSymbol->setSymbol( QgsProject::instance()->styleSettings()->defaultSymbol( Qgis::SymbolType::Marker ) );
+  mStyleMarkerSymbol->setSymbol( QgsProject::instance()->styleSettings()->defaultSymbol( Qgis::SymbolType::Marker ).release() );
 
   mStyleLineSymbol->setShowNull( true );
   mStyleLineSymbol->setSymbolType( Qgis::SymbolType::Line );
-  mStyleLineSymbol->setSymbol( QgsProject::instance()->styleSettings()->defaultSymbol( Qgis::SymbolType::Line ) );
+  mStyleLineSymbol->setSymbol( QgsProject::instance()->styleSettings()->defaultSymbol( Qgis::SymbolType::Line ).release() );
 
   mStyleFillSymbol->setShowNull( true );
   mStyleFillSymbol->setSymbolType( Qgis::SymbolType::Fill );
-  mStyleFillSymbol->setSymbol( QgsProject::instance()->styleSettings()->defaultSymbol( Qgis::SymbolType::Fill ) );
+  mStyleFillSymbol->setSymbol( QgsProject::instance()->styleSettings()->defaultSymbol( Qgis::SymbolType::Fill ).release() );
 
   mStyleColorRampSymbol->setShowNull( true );
-  mStyleColorRampSymbol->setColorRamp( QgsProject::instance()->styleSettings()->defaultColorRamp() );
+  mStyleColorRampSymbol->setColorRamp( QgsProject::instance()->styleSettings()->defaultColorRamp().release() );
 
   mStyleTextFormat->setShowNullFormat( true );
   mStyleTextFormat->setNoFormatString( tr( "Clear Current Text Format" ) );
