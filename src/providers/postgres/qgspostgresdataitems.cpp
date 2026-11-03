@@ -226,7 +226,7 @@ QVector<QgsDataItem *> QgsPGSchemaItem::createChildren()
     {
       try
       {
-        QgsAbstractDatabaseProviderConnection *dbConn { static_cast<QgsAbstractDatabaseProviderConnection *>( md->createConnection( mConnectionName ) ) };
+        std::unique_ptr<QgsAbstractDatabaseProviderConnection> dbConn( static_cast<QgsAbstractDatabaseProviderConnection *>( md->createConnection( mConnectionName ) ) );
         if ( dbConn )
         {
           const QList<QgsLayerMetadataProviderResult> results { dbConn->searchLayerMetadata( QgsMetadataSearchContext() ) };
