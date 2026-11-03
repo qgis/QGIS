@@ -93,7 +93,7 @@ class CORE_EXPORT QgsNumericFormatRegistry
      *
      * The caller takes ownership of the returned object.
      */
-    QgsNumericFormat *fallbackFormat() const SIP_FACTORY;
+    std::unique_ptr<QgsNumericFormat> fallbackFormat() const;
 
     /**
      * Returns the translated, user-visible name for the format with matching \a id.
