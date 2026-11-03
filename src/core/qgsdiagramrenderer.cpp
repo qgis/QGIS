@@ -848,7 +848,7 @@ void QgsLinearlyInterpolatedDiagramRenderer::readXml( const QDomElement &elem, c
   const QDomElement ddsLegendSizeElem = elem.firstChildElement( u"data-defined-size-legend"_s );
   if ( !ddsLegendSizeElem.isNull() )
   {
-    mDataDefinedSizeLegend.reset( QgsDataDefinedSizeLegend::readXml( ddsLegendSizeElem, context ) );
+    mDataDefinedSizeLegend = QgsDataDefinedSizeLegend::readXml( ddsLegendSizeElem, context );
   }
   else
   {

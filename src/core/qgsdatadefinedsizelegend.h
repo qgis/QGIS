@@ -161,7 +161,7 @@ class CORE_EXPORT QgsDataDefinedSizeLegend
     QImage collapsedLegendImage( QgsRenderContext &context, const QColor &backgroundColor = Qt::transparent, double paddingMM = 1 ) const;
 
     //! Creates instance from given element and returns it (caller takes ownership). Returns NULLPTR on error.
-    static QgsDataDefinedSizeLegend *readXml( const QDomElement &elem, const QgsReadWriteContext &context ) SIP_FACTORY;
+    static std::unique_ptr<QgsDataDefinedSizeLegend> readXml( const QDomElement &elem, const QgsReadWriteContext &context );
 
     //! Writes configuration to the given XML element.
     void writeXml( QDomElement &elem, const QgsReadWriteContext &context ) const;
