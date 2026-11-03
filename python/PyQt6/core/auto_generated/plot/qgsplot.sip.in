@@ -863,26 +863,26 @@ Manages default settings for plot objects.
 #include "qgsplot.h"
 %End
   public:
-    static QgsNumericFormat *axisLabelNumericFormat() /Factory/;
+    static std::unique_ptr<QgsNumericFormat> axisLabelNumericFormat();
 %Docstring
 Returns the default numeric format to use for plot axis labels.
 %End
 
-    static QgsLineSymbol *axisGridMajorSymbol() /Factory/;
+    static std::unique_ptr<QgsLineSymbol> axisGridMajorSymbol();
 %Docstring
 Returns the default line symbol to use for axis major grid lines.
 
 .. seealso:: :py:func:`axisGridMinorSymbol`
 %End
 
-    static QgsLineSymbol *axisGridMinorSymbol() /Factory/;
+    static std::unique_ptr<QgsLineSymbol> axisGridMinorSymbol();
 %Docstring
 Returns the default line symbol to use for axis minor grid lines.
 
 .. seealso:: :py:func:`axisGridMajorSymbol`
 %End
 
-    static QgsFillSymbol *chartBackgroundSymbol() /Factory/;
+    static std::unique_ptr<QgsFillSymbol> chartBackgroundSymbol();
 %Docstring
 Returns the default fill symbol to use for the chart area background
 fill.
@@ -890,14 +890,14 @@ fill.
 .. seealso:: :py:func:`chartBorderSymbol`
 %End
 
-    static QgsFillSymbol *chartBorderSymbol() /Factory/;
+    static std::unique_ptr<QgsFillSymbol> chartBorderSymbol();
 %Docstring
 Returns the default fill symbol to use for the chart area border.
 
 .. seealso:: :py:func:`chartBackgroundSymbol`
 %End
 
-    static QgsMarkerSymbol *lineChartMarkerSymbol() /Factory/;
+    static std::unique_ptr<QgsMarkerSymbol> lineChartMarkerSymbol();
 %Docstring
 Returns the default marker symbol to use for line charts.
 
@@ -906,7 +906,7 @@ Returns the default marker symbol to use for line charts.
 .. versionadded:: 4.0
 %End
 
-    static QgsLineSymbol *lineChartLineSymbol() /Factory/;
+    static std::unique_ptr<QgsLineSymbol> lineChartLineSymbol();
 %Docstring
 Returns the default line symbol to use for line charts.
 
@@ -915,28 +915,28 @@ Returns the default line symbol to use for line charts.
 .. versionadded:: 4.0
 %End
 
-    static QgsFillSymbol *barChartFillSymbol() /Factory/;
+    static std::unique_ptr<QgsFillSymbol> barChartFillSymbol();
 %Docstring
 Returns the default fill symbol to use for bar charts.
 
 .. versionadded:: 4.0
 %End
 
-    static QgsFillSymbol *pieChartFillSymbol() /Factory/;
+    static std::unique_ptr<QgsFillSymbol> pieChartFillSymbol();
 %Docstring
 Returns the default fill symbol to use for pie charts.
 
 .. versionadded:: 4.0
 %End
 
-    static QgsColorRamp *pieChartColorRamp() /Factory/;
+    static std::unique_ptr<QgsColorRamp> pieChartColorRamp();
 %Docstring
 Returns the default color ramp to use for pie charts.
 
 .. versionadded:: 4.0
 %End
 
-    static QgsNumericFormat *pieChartNumericFormat() /Factory/;
+    static std::unique_ptr<QgsNumericFormat> pieChartNumericFormat();
 %Docstring
 Returns the default color ramp to use for pie charts.
 

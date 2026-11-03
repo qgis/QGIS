@@ -82,7 +82,7 @@ class CORE_EXPORT QgsLineChartPlot : public Qgs2DXyPlot
     int lineSymbolCount() const { return mLineSymbols.size(); }
 
     //! Returns a new line chart.
-    static QgsLineChartPlot *create() SIP_FACTORY;
+    static std::unique_ptr<QgsLineChartPlot> create();
 
     //! Returns a new data gatherer for a given line chart \a plot.
     static QgsVectorLayerAbstractPlotDataGatherer *createDataGatherer( QgsPlot *plot ) SIP_TRANSFERBACK;

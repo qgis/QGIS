@@ -111,7 +111,7 @@ Returns the pie chart label type.
 Sets the pie chart label type.
 %End
 
-    static QgsPieChartPlot *create() /Factory/;
+    static std::unique_ptr<QgsPieChartPlot> create();
 %Docstring
 Returns a new pie chart.
 %End
