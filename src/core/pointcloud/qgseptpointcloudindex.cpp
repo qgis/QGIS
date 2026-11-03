@@ -371,9 +371,9 @@ bool QgsEptPointCloudIndex::loadSchema( const QByteArray &dataJson )
 
 std::unique_ptr<QgsPointCloudBlock> QgsEptPointCloudIndex::nodeData( QgsPointCloudNodeId n, const QgsPointCloudRequest &request )
 {
-  if ( QgsPointCloudBlock *cached = getNodeDataFromCache( n, request ) )
+  if ( std::unique_ptr<QgsPointCloudBlock> cached = getNodeDataFromCache( n, request ) )
   {
-    return std::unique_ptr<QgsPointCloudBlock>( cached );
+    return cached;
   }
 
   std::unique_ptr<QgsPointCloudBlock> block;
@@ -426,9 +426,9 @@ std::unique_ptr<QgsPointCloudBlock> QgsEptPointCloudIndex::nodeData( QgsPointClo
 
 QgsPointCloudBlockRequest *QgsEptPointCloudIndex::asyncNodeData( QgsPointCloudNodeId n, const QgsPointCloudRequest &request )
 {
-  if ( QgsPointCloudBlock *cached = getNodeDataFromCache( n, request ) )
+  if ( std::unique_ptr<QgsPointCloudBlock> cached = getNodeDataFromCache( n, request ) )
   {
-    return new QgsCachedPointCloudBlockRequest( cached, n, mUri, attributes(), request.attributes(), scale(), offset(), mFilterExpression, request.filterRect() );
+    return new QgsCachedPointCloudBlockRequest( cached.release(), n, mUri, attributes(), request.attributes(), scale(), offset(), mFilterExpression, request.filterRect() );
   }
 
   if ( mAccessType != Qgis::PointCloudAccessType::Remote )

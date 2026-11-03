@@ -198,7 +198,7 @@ void QgsPointCloudRgbRenderer::renderBlock( const QgsPointCloudBlock *block, Qgs
 }
 
 
-QgsPointCloudRenderer *QgsPointCloudRgbRenderer::create( QDomElement &element, const QgsReadWriteContext &context )
+std::unique_ptr<QgsPointCloudRenderer> QgsPointCloudRgbRenderer::create( QDomElement &element, const QgsReadWriteContext &context )
 {
   auto r = std::make_unique< QgsPointCloudRgbRenderer >();
 
@@ -236,7 +236,7 @@ QgsPointCloudRenderer *QgsPointCloudRgbRenderer::create( QDomElement &element, c
     r->setBlueContrastEnhancement( blueContrastEnhancement );
   }
 
-  return r.release();
+  return r;
 }
 
 QDomElement QgsPointCloudRgbRenderer::save( QDomDocument &doc, const QgsReadWriteContext &context ) const

@@ -29,9 +29,9 @@ QgsPointCloudBlock::QgsPointCloudBlock( int count, const QgsPointCloudAttributeC
   , mOffset( offset )
 {}
 
-QgsPointCloudBlock *QgsPointCloudBlock::clone() const
+std::unique_ptr<QgsPointCloudBlock> QgsPointCloudBlock::clone() const
 {
-  return new QgsPointCloudBlock( *this );
+  return std::make_unique<QgsPointCloudBlock>( *this );
 }
 
 const char *QgsPointCloudBlock::data() const

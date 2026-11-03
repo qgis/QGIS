@@ -282,7 +282,7 @@ void QgsAbstractPointCloudIndex::copyCommonProperties( QgsAbstractPointCloudInde
   destination->mFilterExpression = mFilterExpression;
 }
 
-QgsPointCloudBlock *QgsAbstractPointCloudIndex::getNodeDataFromCache( QgsPointCloudNodeId node, const QgsPointCloudRequest &request )
+std::unique_ptr<QgsPointCloudBlock> QgsAbstractPointCloudIndex::getNodeDataFromCache( QgsPointCloudNodeId node, const QgsPointCloudRequest &request )
 {
   QgsPointCloudCacheKey key( node, request, mFilterExpression, mUri );
 
@@ -309,7 +309,7 @@ void QgsAbstractPointCloudIndex::storeNodeDataToCacheStatic(
 
   QMutexLocker l( &sBlockCacheMutex );
   QgsDebugMsgLevel( u"(%1/%2): Caching node %3 of %4"_s.arg( sBlockCache.totalCost() ).arg( sBlockCache.maxCost() ).arg( key.node().toString() ).arg( key.uri() ), 4 );
-  sBlockCache.insert( key, data->clone(), cost );
+  sBlockCache.insert( key, data->clone().release(), cost );
 }
 
 QVariantMap QgsAbstractPointCloudIndex::extraMetadata() const
@@ -491,7 +491,7 @@ QString QgsPointCloudIndex::subsetString() const
   return mIndex->subsetString();
 }
 
-QgsPointCloudBlock *QgsPointCloudIndex::getNodeDataFromCache( QgsPointCloudNodeId node, const QgsPointCloudRequest &request )
+std::unique_ptr<QgsPointCloudBlock> QgsPointCloudIndex::getNodeDataFromCache( QgsPointCloudNodeId node, const QgsPointCloudRequest &request )
 {
   Q_ASSERT( mIndex );
   return mIndex->getNodeDataFromCache( node, request );

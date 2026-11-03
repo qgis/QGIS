@@ -33,7 +33,7 @@ Ctor
 
     virtual ~QgsPointCloudBlock();
 
-    QgsPointCloudBlock *clone() const /Factory/;
+    std::unique_ptr<QgsPointCloudBlock> clone() const;
 %Docstring
 Clones the QgsPointCloudBlock returning a new copy. Caller takes
 ownership of the returned object.

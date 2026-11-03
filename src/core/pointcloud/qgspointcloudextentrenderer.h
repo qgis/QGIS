@@ -54,7 +54,7 @@ class CORE_EXPORT QgsPointCloudExtentRenderer : public QgsPointCloudRenderer
     /**
      * Creates an extent renderer from an XML \a element.
      */
-    static QgsPointCloudRenderer *create( QDomElement &element, const QgsReadWriteContext &context ) SIP_FACTORY;
+    static std::unique_ptr<QgsPointCloudRenderer> create( QDomElement &element, const QgsReadWriteContext &context );
 
     /**
      * Renders a polygon \a extent geometry to the specified render \a context.
@@ -64,7 +64,7 @@ class CORE_EXPORT QgsPointCloudExtentRenderer : public QgsPointCloudRenderer
     /**
      * Returns a new instance of the default fill symbol to use for showing point cloud extents.
      */
-    static QgsFillSymbol *defaultFillSymbol() SIP_FACTORY;
+    static std::unique_ptr<QgsFillSymbol> defaultFillSymbol();
 
     /**
      * Returns the symbol used to render the cloud's extent.
