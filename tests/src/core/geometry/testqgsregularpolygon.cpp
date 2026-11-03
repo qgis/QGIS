@@ -239,7 +239,7 @@ void TestQgsRegularPolygon::conversions()
 
   QgsPointSequence ptsPol;
   auto pol = std::make_unique<QgsPolygon>();
-  pol.reset( rp.toPolygon() );
+  pol = rp.toPolygon();
 
   QCOMPARE( pol->numInteriorRings(), 0 );
   QCOMPARE( pol->exteriorRing()->numPoints(), 5 );
@@ -261,7 +261,7 @@ void TestQgsRegularPolygon::conversions()
   std::unique_ptr<QgsLineString> ls( rp2.toLineString() );
   QVERIFY( ls->isEmpty() );
 
-  ls.reset( rp.toLineString() );
+  ls = rp.toLineString();
 
   QCOMPARE( ls->numPoints(), 5 );
   QCOMPARE( ls->pointN( 0 ), ls->pointN( 4 ) );
