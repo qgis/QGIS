@@ -226,7 +226,7 @@ Try to find a rule given its unique key
 %End
 
 
-        QgsRuleBasedLabeling::Rule *clone( bool resetRuleKey = true ) const /Factory/;
+        std::unique_ptr<QgsRuleBasedLabeling::Rule> clone( bool resetRuleKey = true ) const;
 %Docstring
 clone this rule
 
@@ -237,7 +237,7 @@ clone this rule
 %End
 
 
-        static QgsRuleBasedLabeling::Rule *create( const QDomElement &ruleElem, const QgsReadWriteContext &context, bool reuseId = true ) /Factory/;
+        static std::unique_ptr<QgsRuleBasedLabeling::Rule> create( const QDomElement &ruleElem, const QgsReadWriteContext &context, bool reuseId = true );
 %Docstring
 Create a rule from an XML definition
 
@@ -305,7 +305,7 @@ Constructs the labeling from given tree of rules (takes ownership)
 
     QgsRuleBasedLabeling::Rule *rootRule();
 
-    static QgsRuleBasedLabeling *create( const QDomElement &element, const QgsReadWriteContext &context ) /Factory/;
+    static std::unique_ptr<QgsRuleBasedLabeling> create( const QDomElement &element, const QgsReadWriteContext &context );
 %Docstring
 Create the instance from a DOM element with saved configuration
 %End

@@ -5228,11 +5228,11 @@ void QgsPalLabeling::dataDefinedDropShadow( QgsPalLayerSettings &tmpLyr, const Q
   }
 }
 
-QMimeData *QgsPalLayerSettings::toMimeData() const
+std::unique_ptr<QMimeData> QgsPalLayerSettings::toMimeData() const
 {
   //set both the mime color data, and the text (format settings).
 
-  QMimeData *mimeData = new QMimeData;
+  auto mimeData = std::make_unique<QMimeData>();
   mimeData->setColorData( QVariant( format().color() ) );
 
   QgsReadWriteContext rwContext;

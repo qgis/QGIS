@@ -258,22 +258,22 @@ QgsRuleBasedLabeling::Rule *QgsRuleBasedLabeling::Rule::findRuleByKey( const QSt
   return nullptr;
 }
 
-QgsRuleBasedLabeling::Rule *QgsRuleBasedLabeling::Rule::clone( bool resetRuleKey ) const
+std::unique_ptr<QgsRuleBasedLabeling::Rule> QgsRuleBasedLabeling::Rule::clone( bool resetRuleKey ) const
 {
   QgsPalLayerSettings *s = mSettings.get() ? new QgsPalLayerSettings( *mSettings ) : nullptr;
-  Rule *newrule = new Rule( s, mMaximumScale, mMinimumScale, mFilterExp, mDescription );
+  auto newrule = std::make_unique<Rule>( s, mMaximumScale, mMinimumScale, mFilterExp, mDescription );
   newrule->setActive( mIsActive );
   if ( !resetRuleKey )
     newrule->setRuleKey( ruleKey() );
 
   // clone children
   for ( Rule *rule : mChildren )
-    newrule->appendChild( rule->clone( resetRuleKey ) );
+    newrule->appendChild( rule->clone( resetRuleKey ).release() );
 
   return newrule;
 }
 
-QgsRuleBasedLabeling::Rule *QgsRuleBasedLabeling::Rule::create( const QDomElement &ruleElem, const QgsReadWriteContext &context, bool reuseId )
+std::unique_ptr<QgsRuleBasedLabeling::Rule> QgsRuleBasedLabeling::Rule::create( const QDomElement &ruleElem, const QgsReadWriteContext &context, bool reuseId )
 {
   QgsPalLayerSettings *settings = nullptr;
   QDomElement settingsElem = ruleElem.firstChildElement( u"settings"_s );
@@ -292,7 +292,7 @@ QgsRuleBasedLabeling::Rule *QgsRuleBasedLabeling::Rule::create( const QDomElemen
     ruleKey = ruleElem.attribute( u"key"_s );
   else
     ruleKey = QUuid::createUuid().toString();
-  Rule *rule = new Rule( settings, scaleMinDenom, scaleMaxDenom, filterExp, description );
+  auto rule = std::make_unique<Rule>( settings, scaleMinDenom, scaleMaxDenom, filterExp, description );
 
   if ( !ruleKey.isEmpty() )
     rule->mRuleKey = ruleKey;
@@ -302,10 +302,10 @@ QgsRuleBasedLabeling::Rule *QgsRuleBasedLabeling::Rule::create( const QDomElemen
   QDomElement childRuleElem = ruleElem.firstChildElement( u"rule"_s );
   while ( !childRuleElem.isNull() )
   {
-    Rule *childRule = create( childRuleElem, context );
+    std::unique_ptr<Rule> childRule = create( childRuleElem, context );
     if ( childRule )
     {
-      rule->appendChild( childRule );
+      rule->appendChild( childRule.release() );
     }
     else
     {
@@ -495,7 +495,7 @@ QgsRuleBasedLabeling::QgsRuleBasedLabeling( QgsRuleBasedLabeling::Rule *root )
 
 QgsRuleBasedLabeling *QgsRuleBasedLabeling::clone() const
 {
-  Rule *rootRule = mRootRule->clone();
+  std::unique_ptr<Rule> rootRule = mRootRule->clone();
 
   // normally with clone() the individual rules get new keys (UUID), but here we want to keep
   // the tree of rules intact, so that other components that may use the rule keys work nicely (e.g. map themes)
@@ -506,7 +506,7 @@ QgsRuleBasedLabeling *QgsRuleBasedLabeling::clone() const
   for ( int i = 0; i < origDescendants.count(); ++i )
     clonedDescendants[i]->setRuleKey( origDescendants[i]->ruleKey() );
 
-  return new QgsRuleBasedLabeling( rootRule );
+  return new QgsRuleBasedLabeling( rootRule.release() );
 }
 
 QgsRuleBasedLabeling::~QgsRuleBasedLabeling()
@@ -523,16 +523,15 @@ const QgsRuleBasedLabeling::Rule *QgsRuleBasedLabeling::rootRule() const
 }
 
 
-QgsRuleBasedLabeling *QgsRuleBasedLabeling::create( const QDomElement &element, const QgsReadWriteContext &context ) // cppcheck-suppress duplInheritedMember
+std::unique_ptr<QgsRuleBasedLabeling> QgsRuleBasedLabeling::create( const QDomElement &element, const QgsReadWriteContext &context ) // cppcheck-suppress duplInheritedMember
 {
   QDomElement rulesElem = element.firstChildElement( u"rules"_s );
 
-  Rule *root = Rule::create( rulesElem, context );
+  std::unique_ptr<Rule> root = Rule::create( rulesElem, context );
   if ( !root )
     return nullptr;
 
-  QgsRuleBasedLabeling *rl = new QgsRuleBasedLabeling( root );
-  return rl;
+  return std::make_unique<QgsRuleBasedLabeling>( root.release() );
 }
 
 QString QgsRuleBasedLabeling::type() const
