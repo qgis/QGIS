@@ -959,11 +959,10 @@ QgsLegendRenderer::LegendComponent QgsLegendRenderer::drawSymbolItem( QgsLayerTr
 
   ctx.maxSiblingSymbolWidth = maxSiblingSymbolWidth;
 
-  QgsExpressionContextScope *symbolScope = nullptr;
-  if ( const QgsSymbolLegendNode *symbolNode = dynamic_cast< const QgsSymbolLegendNode * >( symbolItem ) )
+  const QgsSymbolLegendNode *symbolNode = dynamic_cast< const QgsSymbolLegendNode * >( symbolItem );
+  if ( symbolNode )
   {
-    symbolScope = symbolNode->createSymbolScope();
-    context.expressionContext().appendScope( symbolScope );
+    context.expressionContext().appendScope( symbolNode->createSymbolScope() );
     ctx.patchShape = symbolNode->patchShape();
   }
 
@@ -971,7 +970,7 @@ QgsLegendRenderer::LegendComponent QgsLegendRenderer::drawSymbolItem( QgsLayerTr
 
   QgsLayerTreeModelLegendNode::ItemMetrics im = symbolItem->draw( mSettings, ctx );
 
-  if ( symbolScope )
+  if ( symbolNode )
     delete context.expressionContext().popScope();
 
   if ( layerScope )
