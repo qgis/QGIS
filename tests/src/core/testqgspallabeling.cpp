@@ -270,12 +270,12 @@ void TestQgsPalLabeling::testLabelSettingsToFromMime()
   settings.isExpression = true;
   settings.placement = Qgis::LabelPlacement::OverPoint;
 
-  const QMimeData *md = settings.toMimeData();
+  const std::unique_ptr<QMimeData> md = settings.toMimeData();
 
   bool ok = false;
   QgsPalLayerSettings from_mime = QgsPalLayerSettings::fromMimeData( nullptr, &ok );
   QVERIFY( !ok );
-  from_mime = QgsPalLayerSettings::fromMimeData( md, &ok );
+  from_mime = QgsPalLayerSettings::fromMimeData( md.get(), &ok );
   QVERIFY( ok );
   QCOMPARE( from_mime.fieldName, settings.fieldName );
   QCOMPARE( from_mime.isExpression, settings.isExpression );

@@ -2966,7 +2966,7 @@ bool QgsVectorLayer::readStyle( const QDomNode &node, QString &errorMessage, Qgs
       QgsReadWriteContextCategoryPopper p = context.enterCategory( tr( "Labeling" ) );
 
       QDomElement labelingElement = node.firstChildElement( u"labeling"_s );
-      QgsAbstractVectorLayerLabeling *labeling = nullptr;
+      std::unique_ptr<QgsAbstractVectorLayerLabeling> labeling;
       if ( labelingElement.isNull() || ( labelingElement.attribute( u"type"_s ) == "simple"_L1 && labelingElement.firstChildElement( u"settings"_s ).isNull() ) )
       {
         // make sure we have custom properties for labeling for 2.x projects
@@ -2981,7 +2981,7 @@ bool QgsVectorLayer::readStyle( const QDomNode &node, QString &errorMessage, Qgs
       {
         labeling = QgsAbstractVectorLayerLabeling::create( labelingElement, context );
       }
-      setLabeling( labeling );
+      setLabeling( labeling.release() );
 
       if ( node.toElement().hasAttribute( u"labelsEnabled"_s ) )
         mLabelsEnabled = node.toElement().attribute( u"labelsEnabled"_s ).toInt();
@@ -6733,11 +6733,11 @@ QgsEditorWidgetSetup QgsVectorLayer::editorWidgetSetup( int index ) const
   return mFields.at( index ).editorWidgetSetup();
 }
 
-QgsAbstractVectorLayerLabeling *QgsVectorLayer::readLabelingFromCustomProperties()
+std::unique_ptr<QgsAbstractVectorLayerLabeling> QgsVectorLayer::readLabelingFromCustomProperties()
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
-  QgsAbstractVectorLayerLabeling *labeling = nullptr;
+  std::unique_ptr<QgsAbstractVectorLayerLabeling> labeling;
   if ( customProperty( u"labeling"_s ).toString() == "pal"_L1 )
   {
     if ( customProperty( u"labeling/enabled"_s, QVariant( false ) ).toBool() )
@@ -6745,7 +6745,7 @@ QgsAbstractVectorLayerLabeling *QgsVectorLayer::readLabelingFromCustomProperties
       // try to load from custom properties
       QgsPalLayerSettings settings;
       settings.readFromLayerCustomProperties( this );
-      labeling = new QgsVectorLayerSimpleLabeling( settings );
+      labeling = std::make_unique<QgsVectorLayerSimpleLabeling>( settings );
     }
 
     // also clear old-style labeling config

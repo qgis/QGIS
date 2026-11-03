@@ -31,7 +31,7 @@
 
 using namespace Qt::StringLiterals;
 
-QgsAbstractVectorLayerLabeling *QgsAbstractVectorLayerLabeling::create( const QDomElement &element, const QgsReadWriteContext &context )
+std::unique_ptr<QgsAbstractVectorLayerLabeling> QgsAbstractVectorLayerLabeling::create( const QDomElement &element, const QgsReadWriteContext &context )
 {
   const QString type = element.attribute( u"type"_s );
   if ( type == "rule-based"_L1 )
@@ -150,17 +150,17 @@ bool QgsVectorLayerSimpleLabeling::hasNonDefaultCompositionMode() const
          || mSettings->format().hasNonDefaultCompositionMode();
 }
 
-QgsVectorLayerSimpleLabeling *QgsVectorLayerSimpleLabeling::create( const QDomElement &element, const QgsReadWriteContext &context ) // cppcheck-suppress duplInheritedMember
+std::unique_ptr<QgsVectorLayerSimpleLabeling> QgsVectorLayerSimpleLabeling::create( const QDomElement &element, const QgsReadWriteContext &context ) // cppcheck-suppress duplInheritedMember
 {
   const QDomElement settingsElem = element.firstChildElement( u"settings"_s );
   if ( !settingsElem.isNull() )
   {
     QgsPalLayerSettings settings;
     settings.readXml( settingsElem, context );
-    return new QgsVectorLayerSimpleLabeling( settings );
+    return std::make_unique<QgsVectorLayerSimpleLabeling>( settings );
   }
 
-  return new QgsVectorLayerSimpleLabeling( QgsPalLayerSettings() );
+  return std::make_unique<QgsVectorLayerSimpleLabeling>( QgsPalLayerSettings() );
 }
 
 QPointF quadOffsetToSldAnchor( Qgis::LabelQuadrantPosition quadrantPosition )

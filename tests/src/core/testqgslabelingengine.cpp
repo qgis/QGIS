@@ -491,7 +491,7 @@ void TestQgsLabelingEngine::testRuleBased()
   // read saved rules
   doc2.setContent( doc.toString() );
   const QDomElement e2 = doc2.documentElement();
-  QgsRuleBasedLabeling *rl2 = QgsRuleBasedLabeling::create( e2, QgsReadWriteContext() );
+  std::unique_ptr<QgsRuleBasedLabeling> rl2 = QgsRuleBasedLabeling::create( e2, QgsReadWriteContext() );
   QVERIFY( rl2 );
   // check that another save will keep the data the same
   const QDomElement e3 = rl2->save( doc3, QgsReadWriteContext() );
@@ -499,8 +499,6 @@ void TestQgsLabelingEngine::testRuleBased()
   QCOMPARE( doc.toString(), doc3.toString() );
 
   vl->setLabeling( nullptr );
-
-  delete rl2;
 
 #if 0
   QPainter p( &img );

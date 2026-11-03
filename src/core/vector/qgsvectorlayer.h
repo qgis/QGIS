@@ -2933,7 +2933,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer,
     bool readSldTextSymbolizer( const QDomNode &node, QgsPalLayerSettings &settings ) const;
 
     //! Read simple labeling from layer's custom properties (QGIS 2.x projects)
-    QgsAbstractVectorLayerLabeling *readLabelingFromCustomProperties();
+    std::unique_ptr<QgsAbstractVectorLayerLabeling> readLabelingFromCustomProperties();
 
     bool deleteFeatureCascade( QgsFeatureId fid, DeleteContext *context = nullptr );
 
