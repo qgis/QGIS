@@ -3718,6 +3718,12 @@ bool QgsPostgresProvider::estimateExtent() const
     return false;
   }
 
+  if ( mSpatialColType == SctTopoGeometry )
+  {
+    QgsDebugMsgLevel( "Estimating extent of topological geometries is not supported", 2 );
+    return false;
+  }
+
   const int vmaj = connectionRO()->majorVersion();
   const int vmin = connectionRO()->minorVersion();
 
