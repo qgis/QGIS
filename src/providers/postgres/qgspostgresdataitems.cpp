@@ -288,23 +288,38 @@ QVector<QgsDataItem *> QgsPGSchemaItem::createChildren()
     }
   }
 
-  QgsPostgresConnPool::instance()->releaseConnection( conn );
-
-  QgsProjectStorage *storage = QgsApplication::projectStorageRegistry()->projectStorageFromType( "postgresql" );
-  if ( QgsPostgresConn::allowProjectsInDatabase( mConnectionName ) && storage )
+  // get projects and their info for tooltip  in a single query,to avoid multiple queries for every project
+  if ( QgsPostgresConn::allowProjectsInDatabase( mConnectionName ) && QgsPostgresUtils::projectsTableExists( conn, mName ) )
   {
-    QgsPostgresProjectUri postUri;
-    postUri.connInfo = uri;
-    postUri.schemaName = mName;
-    QString schemaUri = QgsPostgresProjectStorage::encodeUri( postUri );
-    const QStringList projectNames = storage->listProjects( schemaUri );
-    for ( const QString &projectName : projectNames )
+    const bool hasCommentColumn = QgsPostgresUtils::columnExists( conn, mName, u"qgis_projects"_s, u"comment"_s );
+    const QString sql = QStringLiteral(
+                          "SELECT name, "
+                          "(metadata->>'last_modified_time')::timestamp(0)::TEXT AS time, "
+                          "metadata->>'last_modified_user' AS user "
+                          "%1"
+                          "FROM %2.qgis_projects"
+    )
+                          .arg( hasCommentColumn ? u", comment "_s : u" "_s, QgsPostgresConn::quotedIdentifier( mName ) );
+
+    QgsPostgresResult res( conn->PQexec( sql ) );
+    if ( res.PQresultStatus() == PGRES_TUPLES_OK )
     {
-      QgsPostgresProjectUri projectUri( postUri );
-      projectUri.projectName = projectName;
-      items.append( new QgsPGProjectItem( this, projectName, projectUri, mConnectionName ) );
+      QgsPostgresProjectUri postUri;
+      postUri.connInfo = uri;
+      postUri.schemaName = mName;
+
+      for ( int i = 0; i < res.PQntuples(); ++i )
+      {
+        QgsPostgresProjectUri projectUri( postUri );
+        projectUri.projectName = res.PQgetvalue( i, 0 );
+        QgsPGProjectItem *projectItem = new QgsPGProjectItem( this, projectUri.projectName, projectUri, mConnectionName );
+        projectItem->setToolTip( QgsPGProjectItem::formatTooltip( res.PQgetvalue( i, 1 ), res.PQgetvalue( i, 2 ), hasCommentColumn ? res.PQgetvalue( i, 3 ) : QString() ) );
+        items.append( projectItem );
+      }
     }
   }
+
+  QgsPostgresConnPool::instance()->releaseConnection( conn );
 
   return items;
 }
@@ -459,8 +474,6 @@ QgsPGProjectItem::QgsPGProjectItem( QgsDataItem *parent, const QString name, con
   , mConnectionName( connectionName )
 {
   mCapabilities |= Qgis::BrowserItemCapability::Delete | Qgis::BrowserItemCapability::Fertile;
-
-  refreshTooltip();
 }
 
 QString QgsPGProjectItem::uriWithNewName( const QString &newProjectName )
