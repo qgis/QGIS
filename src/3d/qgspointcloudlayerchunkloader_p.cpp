@@ -50,7 +50,7 @@ using namespace Qt::StringLiterals;
 ///@cond PRIVATE
 
 QgsPointCloudLayerChunkLoader::QgsPointCloudLayerChunkLoader(
-  const Qgs3DRenderContext &context, const QgsCoordinateTransform &coordinateTransform, QgsPointCloudIndex pc, QgsPointCloud3DSymbol *symbol, double zValueScale, double zValueOffset, int
+  const Qgs3DRenderContext &context, const QgsCoordinateTransform &coordinateTransform, QgsPointCloudIndex pc, QgsPointCloud3DSymbol *symbol, double zValueScale, double zValueOffset
 )
   : mRenderContext( context )
   , mCoordinateTransform( coordinateTransform )
@@ -294,7 +294,7 @@ QgsPointCloudLayerChunkedEntity::QgsPointCloudLayerChunkedEntity(
   double zValueOffset,
   int pointBudget
 )
-  : QgsChunkedEntity( map, maximumScreenSpaceError, new QgsPointCloudLayerChunkLoader( Qgs3DRenderContext::fromMapSettings( map ), coordinateTransform, resolveIndex( pcl, indexPosition ), symbol, zValueScale, zValueOffset, pointBudget ), true, pointBudget )
+  : QgsChunkedEntity( map, maximumScreenSpaceError, new QgsPointCloudLayerChunkLoader( Qgs3DRenderContext::fromMapSettings( map ), coordinateTransform, resolveIndex( pcl, indexPosition ), symbol, zValueScale, zValueOffset ), true, pointBudget )
   , mLayer( pcl )
   , mIndexPosition( indexPosition )
 {
