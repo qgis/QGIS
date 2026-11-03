@@ -63,7 +63,7 @@ class CORE_EXPORT QgsProjectStyleSettings : public QObject
      * \returns a symbol pointer or NULLPTR if there is no default set
      * \note the symbol ownership is transferred to the caller
      */
-    QgsSymbol *defaultSymbol( Qgis::SymbolType symbolType ) const SIP_FACTORY;
+    std::unique_ptr<QgsSymbol> defaultSymbol( Qgis::SymbolType symbolType ) const;
 
     /**
      * Sets the project default symbol for a given type.
@@ -78,7 +78,7 @@ class CORE_EXPORT QgsProjectStyleSettings : public QObject
      * \returns a color ramp pointer or NULLPTR if there is no default set
      * \note the color ramp ownership is transferred to the caller
      */
-    QgsColorRamp *defaultColorRamp() const SIP_FACTORY;
+    std::unique_ptr<QgsColorRamp> defaultColorRamp() const;
 
     /**
      * Sets the project default color ramp.
