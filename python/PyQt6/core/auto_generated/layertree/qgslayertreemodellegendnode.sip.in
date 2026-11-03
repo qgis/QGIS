@@ -314,7 +314,7 @@ Emitted when the size of this node changes.
 Construct the node with pointer to its parent layer node
 %End
 
-    QgsRenderContext *createTemporaryRenderContext() const /Factory/;
+    std::unique_ptr<QgsRenderContext> createTemporaryRenderContext() const;
 %Docstring
 Returns a temporary context or ``None`` if legendMapViewData are not
 valid
@@ -509,7 +509,7 @@ Evaluates and returns the text label of the current node
 .. versionadded:: 3.10
 %End
 
-    QgsExpressionContextScope *createSymbolScope() const /Factory/;
+    std::unique_ptr<QgsExpressionContextScope> createSymbolScope() const;
 %Docstring
 Create an expression context scope containing symbol related variables.
 
