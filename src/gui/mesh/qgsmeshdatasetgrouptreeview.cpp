@@ -145,7 +145,7 @@ void QgsMeshDatasetGroupTreeModel::syncToLayer( QgsMeshLayer *layer )
 {
   beginResetModel();
   if ( layer && layer->datasetGroupTreeRootItem() )
-    mRootItem.reset( layer->datasetGroupTreeRootItem()->clone() );
+    mRootItem = layer->datasetGroupTreeRootItem()->clone();
   else
     mRootItem.reset();
   endResetModel();
@@ -189,7 +189,7 @@ void QgsMeshDatasetGroupTreeModel::resetDefault( QgsMeshLayer *meshLayer )
 
   beginResetModel();
   meshLayer->resetDatasetGroupTreeItem();
-  mRootItem.reset( meshLayer->datasetGroupTreeRootItem()->clone() );
+  mRootItem = meshLayer->datasetGroupTreeRootItem()->clone();
   endResetModel();
 }
 

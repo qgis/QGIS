@@ -854,7 +854,7 @@ Constructor from a DOM element, constructs also the children
 
     ~QgsMeshDatasetGroupTreeItem();
 
-    QgsMeshDatasetGroupTreeItem *clone() const /Factory/;
+    std::unique_ptr<QgsMeshDatasetGroupTreeItem> clone() const;
 %Docstring
 Clones the item
 
