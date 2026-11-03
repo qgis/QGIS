@@ -159,7 +159,7 @@ QVariantMap QgsSplitVectorLayerAlgorithm::processAlgorithm( const QVariantMap &p
     }
     feedback->pushInfo( QObject::tr( "Creating layer: %1" ).arg( fileName ) );
 
-    sink.reset( QgsProcessingUtils::createFeatureSink( fileName, context, fields, geometryType, crs ) );
+    sink = QgsProcessingUtils::createFeatureSink( fileName, context, fields, geometryType, crs );
     const QString expr = QgsExpression::createFieldEqualityExpression( fieldName, *it );
     QgsFeatureIterator features = source->getFeatures( QgsFeatureRequest().setFilterExpression( expr ), Qgis::ProcessingFeatureSourceFlag::SkipGeometryValidityChecks );
     count = 0;

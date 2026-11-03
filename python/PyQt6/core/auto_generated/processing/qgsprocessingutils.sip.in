@@ -312,7 +312,7 @@ context's temporary layer store. Ownership of the layer remains with the
 The ``typeHint`` can be used to dictate the type of map layer expected.
 %End
 
-    static QgsProcessingFeatureSource *variantToSource( const QVariant &value, QgsProcessingContext &context, const QVariant &fallbackValue = QVariant() ) /Factory/;
+    static std::unique_ptr<QgsProcessingFeatureSource> variantToSource( const QVariant &value, QgsProcessingContext &context, const QVariant &fallbackValue = QVariant() );
 %Docstring
 Converts a variant ``value`` to a new feature source.
 
@@ -839,7 +839,7 @@ attributes or geometry.
     virtual Qgis::SpatialIndexPresence hasSpatialIndex() const;
 
 
-    QgsExpressionContextScope *createExpressionContextScope() const /Factory/;
+    std::unique_ptr<QgsExpressionContextScope> createExpressionContextScope() const;
 %Docstring
 Returns an expression context scope suitable for this source.
 %End

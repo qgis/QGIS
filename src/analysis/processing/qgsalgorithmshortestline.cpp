@@ -95,11 +95,11 @@ void QgsShortestLineAlgorithm::initAlgorithm( const QVariantMap & )
 
 bool QgsShortestLineAlgorithm::prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback * )
 {
-  mSource.reset( parameterAsSource( parameters, u"SOURCE"_s, context ) );
+  mSource = parameterAsSource( parameters, u"SOURCE"_s, context );
   if ( !mSource )
     throw QgsProcessingException( invalidSourceError( parameters, u"SOURCE"_s ) );
 
-  mDestination.reset( parameterAsSource( parameters, u"DESTINATION"_s, context ) );
+  mDestination = parameterAsSource( parameters, u"DESTINATION"_s, context );
   if ( !mDestination )
     throw QgsProcessingException( invalidSourceError( parameters, u"DESTINATION"_s ) );
 

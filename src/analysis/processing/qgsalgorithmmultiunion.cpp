@@ -171,7 +171,7 @@ QVariantMap QgsMultiUnionAlgorithm::processAlgorithm( const QVariantMap &paramet
       {
         QString id = u"memory:"_s;
         fields = QgsProcessingUtils::combineFields( sourceA->fields(), overlayLayer->fields(), overlayFieldsPrefix );
-        sink.reset( QgsProcessingUtils::createFeatureSink( id, context, fields, geometryType, crs, QVariantMap(), QStringList(), QStringList(), QgsFeatureSink::RegeneratePrimaryKey ) );
+        sink = QgsProcessingUtils::createFeatureSink( id, context, fields, geometryType, crs, QVariantMap(), QStringList(), QStringList(), QgsFeatureSink::RegeneratePrimaryKey );
         ok = makeUnion( *sourceA, *overlayLayer, *sink, QString(), context, &multiStepFeedback );
 
         if ( !ok )
@@ -200,7 +200,7 @@ QVariantMap QgsMultiUnionAlgorithm::processAlgorithm( const QVariantMap &paramet
       {
         QString id = u"memory:"_s;
         fields = QgsProcessingUtils::combineFields( unionLayer->fields(), overlayLayer->fields(), overlayFieldsPrefix );
-        sink.reset( QgsProcessingUtils::createFeatureSink( id, context, fields, geometryType, crs, QVariantMap(), QStringList(), QStringList(), QgsFeatureSink::RegeneratePrimaryKey ) );
+        sink = QgsProcessingUtils::createFeatureSink( id, context, fields, geometryType, crs, QVariantMap(), QStringList(), QStringList(), QgsFeatureSink::RegeneratePrimaryKey );
         ok = makeUnion( *unionLayer, *overlayLayer, *sink, QString(), context, &multiStepFeedback );
         if ( !ok )
           throw QgsProcessingException( QObject::tr( "Interrupted by user." ) );

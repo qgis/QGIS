@@ -125,11 +125,11 @@ QVariantMap QgsJoinByLocationAlgorithm::processAlgorithm( const QVariantMap &par
 {
   QGS_MARK_ALGORITHM_SOURCE
 
-  mBaseSource.reset( parameterAsSource( parameters, u"INPUT"_s, context ) );
+  mBaseSource = parameterAsSource( parameters, u"INPUT"_s, context );
   if ( !mBaseSource )
     throw QgsProcessingException( invalidSourceError( parameters, u"INPUT"_s ) );
 
-  mJoinSource.reset( parameterAsSource( parameters, u"JOIN"_s, context ) );
+  mJoinSource = parameterAsSource( parameters, u"JOIN"_s, context );
   if ( !mJoinSource )
     throw QgsProcessingException( invalidSourceError( parameters, u"JOIN"_s ) );
 
@@ -173,7 +173,7 @@ QVariantMap QgsJoinByLocationAlgorithm::processAlgorithm( const QVariantMap &par
   const QgsFields outputFields = QgsProcessingUtils::combineFields( mBaseSource->fields(), joinFields );
 
   QString joinedSinkId;
-  mJoinedFeatures.reset( parameterAsSink( parameters, u"OUTPUT"_s, context, joinedSinkId, outputFields, mBaseSource->wkbType(), mBaseSource->sourceCrs(), QgsFeatureSink::RegeneratePrimaryKey ) );
+  mJoinedFeatures = parameterAsSink( parameters, u"OUTPUT"_s, context, joinedSinkId, outputFields, mBaseSource->wkbType(), mBaseSource->sourceCrs(), QgsFeatureSink::RegeneratePrimaryKey );
 
   if ( parameters.value( u"OUTPUT"_s ).isValid() && !mJoinedFeatures )
     throw QgsProcessingException( invalidSinkError( parameters, u"OUTPUT"_s ) );
@@ -181,9 +181,8 @@ QVariantMap QgsJoinByLocationAlgorithm::processAlgorithm( const QVariantMap &par
   mDiscardNonMatching = parameterAsBoolean( parameters, u"DISCARD_NONMATCHING"_s, context );
 
   QString nonMatchingSinkId;
-  mUnjoinedFeatures.reset(
-    parameterAsSink( parameters, u"NON_MATCHING"_s, context, nonMatchingSinkId, mBaseSource->fields(), mBaseSource->wkbType(), mBaseSource->sourceCrs(), QgsFeatureSink::RegeneratePrimaryKey )
-  );
+  mUnjoinedFeatures
+    = parameterAsSink( parameters, u"NON_MATCHING"_s, context, nonMatchingSinkId, mBaseSource->fields(), mBaseSource->wkbType(), mBaseSource->sourceCrs(), QgsFeatureSink::RegeneratePrimaryKey );
   if ( parameters.value( u"NON_MATCHING"_s ).isValid() && !mUnjoinedFeatures )
     throw QgsProcessingException( invalidSinkError( parameters, u"NON_MATCHING"_s ) );
 
