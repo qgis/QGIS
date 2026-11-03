@@ -45,7 +45,7 @@ QgsTemplateProjectsModel::QgsTemplateProjectsModel( QObject *parent )
   emptyProjectItem->setData( false, static_cast<int>( CustomRole::WritableRole ) );
   emptyProjectItem->setData( canvasColor, static_cast<int>( CustomRole::CanvasColorRole ) );
   emptyProjectItem->setData( static_cast<int>( TemplateType::Blank ), static_cast<int>( CustomRole::TypeRole ) );
-  emptyProjectItem->setData( tr( "Blank" ), static_cast<int>( CustomRole::TitleRole ) );
+  emptyProjectItem->setData( tr( "New Empty Project" ), static_cast<int>( CustomRole::TitleRole ) );
   connect( QgsProject::instance(), &QgsProject::crsChanged, this, [emptyProjectItem]() {
     emptyProjectItem->setData( QgsProject::instance()->crs().userFriendlyIdentifier(), static_cast<int>( CustomRole::CrsRole ) );
   } );
