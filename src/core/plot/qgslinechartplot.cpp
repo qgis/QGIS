@@ -30,8 +30,8 @@ using namespace Qt::StringLiterals;
 
 QgsLineChartPlot::QgsLineChartPlot()
 {
-  setMarkerSymbolAt( 0, QgsPlotDefaultSettings::lineChartMarkerSymbol() );
-  setLineSymbolAt( 0, QgsPlotDefaultSettings::lineChartLineSymbol() );
+  setMarkerSymbolAt( 0, QgsPlotDefaultSettings::lineChartMarkerSymbol().release() );
+  setLineSymbolAt( 0, QgsPlotDefaultSettings::lineChartLineSymbol().release() );
 }
 
 void QgsLineChartPlot::renderContent( QgsRenderContext &context, QgsPlotRenderContext &, const QRectF &plotArea, const QgsPlotData &plotData )
@@ -363,9 +363,9 @@ bool QgsLineChartPlot::readXml( const QDomElement &element, const QgsReadWriteCo
   return true;
 }
 
-QgsLineChartPlot *QgsLineChartPlot::create()
+std::unique_ptr<QgsLineChartPlot> QgsLineChartPlot::create()
 {
-  return new QgsLineChartPlot();
+  return std::make_unique<QgsLineChartPlot>();
 }
 
 QgsVectorLayerAbstractPlotDataGatherer *QgsLineChartPlot::createDataGatherer( QgsPlot *plot )

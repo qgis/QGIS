@@ -71,7 +71,7 @@ Sets the line ``symbol`` to use for the series with matching ``index``.
 Returns the line symbols list count.
 %End
 
-    static QgsLineChartPlot *create() /Factory/;
+    static std::unique_ptr<QgsLineChartPlot> create();
 %Docstring
 Returns a new line chart.
 %End

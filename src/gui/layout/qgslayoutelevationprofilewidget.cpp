@@ -248,7 +248,7 @@ QgsLayoutElevationProfileWidget::QgsLayoutElevationProfileWidget( QgsLayoutItemE
     mProfile->update();
     mProfile->endCommand();
   } );
-  mDistanceAxisMajorLinesSymbolButton->setDefaultSymbol( QgsPlotDefaultSettings::axisGridMajorSymbol() );
+  mDistanceAxisMajorLinesSymbolButton->setDefaultSymbol( QgsPlotDefaultSettings::axisGridMajorSymbol().release() );
 
   mDistanceAxisMinorLinesSymbolButton->setSymbolType( Qgis::SymbolType::Line );
   connect( mDistanceAxisMinorLinesSymbolButton, &QgsSymbolButton::changed, this, [this] {
@@ -261,7 +261,7 @@ QgsLayoutElevationProfileWidget::QgsLayoutElevationProfileWidget( QgsLayoutItemE
     mProfile->update();
     mProfile->endCommand();
   } );
-  mDistanceAxisMinorLinesSymbolButton->setDefaultSymbol( QgsPlotDefaultSettings::axisGridMinorSymbol() );
+  mDistanceAxisMinorLinesSymbolButton->setDefaultSymbol( QgsPlotDefaultSettings::axisGridMinorSymbol().release() );
 
   connect( mDistanceAxisMajorIntervalSpin, qOverload<double>( &QDoubleSpinBox::valueChanged ), this, [this]( double value ) {
     if ( !mProfile || mBlockChanges )
@@ -307,7 +307,7 @@ QgsLayoutElevationProfileWidget::QgsLayoutElevationProfileWidget( QgsLayoutItemE
     mProfile->update();
     mProfile->endCommand();
   } );
-  mElevationAxisMajorLinesSymbolButton->setDefaultSymbol( QgsPlotDefaultSettings::axisGridMajorSymbol() );
+  mElevationAxisMajorLinesSymbolButton->setDefaultSymbol( QgsPlotDefaultSettings::axisGridMajorSymbol().release() );
 
   mElevationAxisMinorLinesSymbolButton->setSymbolType( Qgis::SymbolType::Line );
   connect( mElevationAxisMinorLinesSymbolButton, &QgsSymbolButton::changed, this, [this] {
@@ -320,7 +320,7 @@ QgsLayoutElevationProfileWidget::QgsLayoutElevationProfileWidget( QgsLayoutItemE
     mProfile->update();
     mProfile->endCommand();
   } );
-  mElevationAxisMinorLinesSymbolButton->setDefaultSymbol( QgsPlotDefaultSettings::axisGridMinorSymbol() );
+  mElevationAxisMinorLinesSymbolButton->setDefaultSymbol( QgsPlotDefaultSettings::axisGridMinorSymbol().release() );
 
   connect( mElevationAxisLabelIntervalSpin, qOverload<double>( &QDoubleSpinBox::valueChanged ), this, [this]( double value ) {
     if ( !mProfile || mBlockChanges )
@@ -366,7 +366,7 @@ QgsLayoutElevationProfileWidget::QgsLayoutElevationProfileWidget( QgsLayoutItemE
     mProfile->update();
     mProfile->endCommand();
   } );
-  mChartBackgroundSymbolButton->setDefaultSymbol( QgsPlotDefaultSettings::chartBackgroundSymbol() );
+  mChartBackgroundSymbolButton->setDefaultSymbol( QgsPlotDefaultSettings::chartBackgroundSymbol().release() );
 
   mChartBorderSymbolButton->setSymbolType( Qgis::SymbolType::Fill );
   connect( mChartBorderSymbolButton, &QgsSymbolButton::changed, this, [this] {
@@ -379,7 +379,7 @@ QgsLayoutElevationProfileWidget::QgsLayoutElevationProfileWidget( QgsLayoutItemE
     mProfile->update();
     mProfile->endCommand();
   } );
-  mChartBorderSymbolButton->setDefaultSymbol( QgsPlotDefaultSettings::chartBorderSymbol() );
+  mChartBorderSymbolButton->setDefaultSymbol( QgsPlotDefaultSettings::chartBorderSymbol().release() );
 
   connect( mDistanceAxisLabelFormatButton, &QPushButton::clicked, this, [this] {
     if ( !mProfile || mBlockChanges )

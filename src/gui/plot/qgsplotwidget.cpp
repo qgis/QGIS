@@ -150,7 +150,7 @@ QgsBarChartPlotWidget::QgsBarChartPlotWidget( QWidget *parent )
       return;
     emit changed();
   } );
-  mXAxisMajorLinesSymbolButton->setDefaultSymbol( QgsPlotDefaultSettings::axisGridMajorSymbol() );
+  mXAxisMajorLinesSymbolButton->setDefaultSymbol( QgsPlotDefaultSettings::axisGridMajorSymbol().release() );
 
   mXAxisMinorLinesSymbolButton->setSymbolType( Qgis::SymbolType::Line );
   connect( mXAxisMinorLinesSymbolButton, &QgsSymbolButton::changed, this, [this] {
@@ -158,7 +158,7 @@ QgsBarChartPlotWidget::QgsBarChartPlotWidget( QWidget *parent )
       return;
     emit changed();
   } );
-  mXAxisMinorLinesSymbolButton->setDefaultSymbol( QgsPlotDefaultSettings::axisGridMinorSymbol() );
+  mXAxisMinorLinesSymbolButton->setDefaultSymbol( QgsPlotDefaultSettings::axisGridMinorSymbol().release() );
 
   connect( mXAxisMajorIntervalSpin, qOverload<double>( &QDoubleSpinBox::valueChanged ), this, [this]( double ) {
     if ( mBlockChanges )
@@ -184,7 +184,7 @@ QgsBarChartPlotWidget::QgsBarChartPlotWidget( QWidget *parent )
       return;
     emit changed();
   } );
-  mYAxisMajorLinesSymbolButton->setDefaultSymbol( QgsPlotDefaultSettings::axisGridMajorSymbol() );
+  mYAxisMajorLinesSymbolButton->setDefaultSymbol( QgsPlotDefaultSettings::axisGridMajorSymbol().release() );
 
   mYAxisMinorLinesSymbolButton->setSymbolType( Qgis::SymbolType::Line );
   connect( mYAxisMinorLinesSymbolButton, &QgsSymbolButton::changed, this, [this] {
@@ -192,7 +192,7 @@ QgsBarChartPlotWidget::QgsBarChartPlotWidget( QWidget *parent )
       return;
     emit changed();
   } );
-  mYAxisMinorLinesSymbolButton->setDefaultSymbol( QgsPlotDefaultSettings::axisGridMinorSymbol() );
+  mYAxisMinorLinesSymbolButton->setDefaultSymbol( QgsPlotDefaultSettings::axisGridMinorSymbol().release() );
 
   connect( mYAxisLabelIntervalSpin, qOverload<double>( &QDoubleSpinBox::valueChanged ), this, [this]( double ) {
     if ( mBlockChanges )
@@ -218,7 +218,7 @@ QgsBarChartPlotWidget::QgsBarChartPlotWidget( QWidget *parent )
       return;
     emit changed();
   } );
-  mChartBackgroundSymbolButton->setDefaultSymbol( QgsPlotDefaultSettings::chartBackgroundSymbol() );
+  mChartBackgroundSymbolButton->setDefaultSymbol( QgsPlotDefaultSettings::chartBackgroundSymbol().release() );
 
   mChartBorderSymbolButton->setSymbolType( Qgis::SymbolType::Fill );
   connect( mChartBorderSymbolButton, &QgsSymbolButton::changed, this, [this] {
@@ -226,7 +226,7 @@ QgsBarChartPlotWidget::QgsBarChartPlotWidget( QWidget *parent )
       return;
     emit changed();
   } );
-  mChartBorderSymbolButton->setDefaultSymbol( QgsPlotDefaultSettings::chartBorderSymbol() );
+  mChartBorderSymbolButton->setDefaultSymbol( QgsPlotDefaultSettings::chartBorderSymbol().release() );
 
   connect( mXAxisLabelFormatButton, &QPushButton::clicked, this, [this] {
     QgsNumericFormatSelectorWidget *widget = new QgsNumericFormatSelectorWidget( this );
@@ -360,7 +360,7 @@ void QgsBarChartPlotWidget::mAddSymbolPushButton_clicked()
   QgsSymbolButton *symbolButton = new QgsSymbolButton( this );
   symbolButton->setSymbolType( Qgis::SymbolType::Fill );
   symbolButton->setShowNull( true );
-  symbolButton->setSymbol( QgsPlotDefaultSettings::barChartFillSymbol() );
+  symbolButton->setSymbol( QgsPlotDefaultSettings::barChartFillSymbol().release() );
   symbolButton->registerExpressionContextGenerator( this );
   connect( symbolButton, &QgsSymbolButton::changed, this, [this] {
     if ( mBlockChanges )
@@ -625,7 +625,7 @@ QgsLineChartPlotWidget::QgsLineChartPlotWidget( QWidget *parent )
       return;
     emit changed();
   } );
-  mXAxisMajorLinesSymbolButton->setDefaultSymbol( QgsPlotDefaultSettings::axisGridMajorSymbol() );
+  mXAxisMajorLinesSymbolButton->setDefaultSymbol( QgsPlotDefaultSettings::axisGridMajorSymbol().release() );
 
   mXAxisMinorLinesSymbolButton->setSymbolType( Qgis::SymbolType::Line );
   connect( mXAxisMinorLinesSymbolButton, &QgsSymbolButton::changed, this, [this] {
@@ -633,7 +633,7 @@ QgsLineChartPlotWidget::QgsLineChartPlotWidget( QWidget *parent )
       return;
     emit changed();
   } );
-  mXAxisMinorLinesSymbolButton->setDefaultSymbol( QgsPlotDefaultSettings::axisGridMinorSymbol() );
+  mXAxisMinorLinesSymbolButton->setDefaultSymbol( QgsPlotDefaultSettings::axisGridMinorSymbol().release() );
 
   connect( mXAxisMajorIntervalSpin, qOverload<double>( &QDoubleSpinBox::valueChanged ), this, [this]( double ) {
     if ( mBlockChanges )
@@ -659,7 +659,7 @@ QgsLineChartPlotWidget::QgsLineChartPlotWidget( QWidget *parent )
       return;
     emit changed();
   } );
-  mYAxisMajorLinesSymbolButton->setDefaultSymbol( QgsPlotDefaultSettings::axisGridMajorSymbol() );
+  mYAxisMajorLinesSymbolButton->setDefaultSymbol( QgsPlotDefaultSettings::axisGridMajorSymbol().release() );
 
   mYAxisMinorLinesSymbolButton->setSymbolType( Qgis::SymbolType::Line );
   connect( mYAxisMinorLinesSymbolButton, &QgsSymbolButton::changed, this, [this] {
@@ -667,7 +667,7 @@ QgsLineChartPlotWidget::QgsLineChartPlotWidget( QWidget *parent )
       return;
     emit changed();
   } );
-  mYAxisMinorLinesSymbolButton->setDefaultSymbol( QgsPlotDefaultSettings::axisGridMinorSymbol() );
+  mYAxisMinorLinesSymbolButton->setDefaultSymbol( QgsPlotDefaultSettings::axisGridMinorSymbol().release() );
 
   connect( mYAxisLabelIntervalSpin, qOverload<double>( &QDoubleSpinBox::valueChanged ), this, [this]( double ) {
     if ( mBlockChanges )
@@ -693,7 +693,7 @@ QgsLineChartPlotWidget::QgsLineChartPlotWidget( QWidget *parent )
       return;
     emit changed();
   } );
-  mChartBackgroundSymbolButton->setDefaultSymbol( QgsPlotDefaultSettings::chartBackgroundSymbol() );
+  mChartBackgroundSymbolButton->setDefaultSymbol( QgsPlotDefaultSettings::chartBackgroundSymbol().release() );
 
   mChartBorderSymbolButton->setSymbolType( Qgis::SymbolType::Fill );
   connect( mChartBorderSymbolButton, &QgsSymbolButton::changed, this, [this] {
@@ -701,7 +701,7 @@ QgsLineChartPlotWidget::QgsLineChartPlotWidget( QWidget *parent )
       return;
     emit changed();
   } );
-  mChartBorderSymbolButton->setDefaultSymbol( QgsPlotDefaultSettings::chartBorderSymbol() );
+  mChartBorderSymbolButton->setDefaultSymbol( QgsPlotDefaultSettings::chartBorderSymbol().release() );
 
   connect( mXAxisLabelFormatButton, &QPushButton::clicked, this, [this] {
     QgsNumericFormatSelectorWidget *widget = new QgsNumericFormatSelectorWidget( this );
@@ -836,7 +836,7 @@ void QgsLineChartPlotWidget::mAddSymbolPushButton_clicked()
   QgsSymbolButton *symbolButton = new QgsSymbolButton( this );
   symbolButton->setSymbolType( Qgis::SymbolType::Line );
   symbolButton->setShowNull( true );
-  symbolButton->setSymbol( QgsPlotDefaultSettings::lineChartLineSymbol() );
+  symbolButton->setSymbol( QgsPlotDefaultSettings::lineChartLineSymbol().release() );
   symbolButton->registerExpressionContextGenerator( this );
   connect( symbolButton, &QgsSymbolButton::changed, this, [this] {
     if ( mBlockChanges )
@@ -850,7 +850,7 @@ void QgsLineChartPlotWidget::mAddSymbolPushButton_clicked()
   symbolButton->setFixedSizeConstraints( false );
   symbolButton->setSymbolType( Qgis::SymbolType::Marker );
   symbolButton->setShowNull( true );
-  symbolButton->setSymbol( QgsPlotDefaultSettings::lineChartMarkerSymbol() );
+  symbolButton->setSymbol( QgsPlotDefaultSettings::lineChartMarkerSymbol().release() );
   symbolButton->registerExpressionContextGenerator( this );
   connect( symbolButton, &QgsSymbolButton::changed, this, [this] {
     if ( mBlockChanges )
@@ -1176,7 +1176,7 @@ void QgsPieChartPlotWidget::mAddSymbolPushButton_clicked()
   QgsSymbolButton *symbolButton = new QgsSymbolButton( this );
   symbolButton->setSymbolType( Qgis::SymbolType::Fill );
   symbolButton->setShowNull( true );
-  symbolButton->setSymbol( QgsPlotDefaultSettings::pieChartFillSymbol() );
+  symbolButton->setSymbol( QgsPlotDefaultSettings::pieChartFillSymbol().release() );
   symbolButton->registerExpressionContextGenerator( this );
   connect( symbolButton, &QgsSymbolButton::changed, this, [this] {
     if ( mBlockChanges )
@@ -1188,7 +1188,7 @@ void QgsPieChartPlotWidget::mAddSymbolPushButton_clicked()
   // Color ramp
   QgsColorRampButton *colorRampButton = new QgsColorRampButton( this );
   colorRampButton->setShowNull( true );
-  colorRampButton->setColorRamp( QgsPlotDefaultSettings::pieChartColorRamp() );
+  colorRampButton->setColorRamp( QgsPlotDefaultSettings::pieChartColorRamp().release() );
   connect( colorRampButton, &QgsColorRampButton::colorRampChanged, this, [this] {
     if ( mBlockChanges )
       return;

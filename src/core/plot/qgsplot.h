@@ -916,35 +916,35 @@ class CORE_EXPORT QgsPlotDefaultSettings
     /**
      * Returns the default numeric format to use for plot axis labels.
      */
-    static QgsNumericFormat *axisLabelNumericFormat() SIP_FACTORY;
+    static std::unique_ptr<QgsNumericFormat> axisLabelNumericFormat();
 
     /**
      * Returns the default line symbol to use for axis major grid lines.
      *
      * \see axisGridMinorSymbol()
      */
-    static QgsLineSymbol *axisGridMajorSymbol() SIP_FACTORY;
+    static std::unique_ptr<QgsLineSymbol> axisGridMajorSymbol();
 
     /**
      * Returns the default line symbol to use for axis minor grid lines.
      *
      * \see axisGridMajorSymbol()
      */
-    static QgsLineSymbol *axisGridMinorSymbol() SIP_FACTORY;
+    static std::unique_ptr<QgsLineSymbol> axisGridMinorSymbol();
 
     /**
      * Returns the default fill symbol to use for the chart area background fill.
      *
      * \see chartBorderSymbol()
      */
-    static QgsFillSymbol *chartBackgroundSymbol() SIP_FACTORY;
+    static std::unique_ptr<QgsFillSymbol> chartBackgroundSymbol();
 
     /**
      * Returns the default fill symbol to use for the chart area border.
      *
      * \see chartBackgroundSymbol()
      */
-    static QgsFillSymbol *chartBorderSymbol() SIP_FACTORY;
+    static std::unique_ptr<QgsFillSymbol> chartBorderSymbol();
 
     /**
      * Returns the default marker symbol to use for line charts.
@@ -952,7 +952,7 @@ class CORE_EXPORT QgsPlotDefaultSettings
      * \see lineChartLineSymbol()
      * \since QGIS 4.0
      */
-    static QgsMarkerSymbol *lineChartMarkerSymbol() SIP_FACTORY;
+    static std::unique_ptr<QgsMarkerSymbol> lineChartMarkerSymbol();
 
     /**
      * Returns the default line symbol to use for line charts.
@@ -960,31 +960,31 @@ class CORE_EXPORT QgsPlotDefaultSettings
      * \see lineChartMarkerSymbol()
      * \since QGIS 4.0
      */
-    static QgsLineSymbol *lineChartLineSymbol() SIP_FACTORY;
+    static std::unique_ptr<QgsLineSymbol> lineChartLineSymbol();
 
     /**
      * Returns the default fill symbol to use for bar charts.
      * \since QGIS 4.0
      */
-    static QgsFillSymbol *barChartFillSymbol() SIP_FACTORY;
+    static std::unique_ptr<QgsFillSymbol> barChartFillSymbol();
 
     /**
      * Returns the default fill symbol to use for pie charts.
      * \since QGIS 4.0
      */
-    static QgsFillSymbol *pieChartFillSymbol() SIP_FACTORY;
+    static std::unique_ptr<QgsFillSymbol> pieChartFillSymbol();
 
     /**
      * Returns the default color ramp to use for pie charts.
      * \since QGIS 4.0
      */
-    static QgsColorRamp *pieChartColorRamp() SIP_FACTORY;
+    static std::unique_ptr<QgsColorRamp> pieChartColorRamp();
 
     /**
      * Returns the default color ramp to use for pie charts.
      * \since QGIS 4.0
      */
-    static QgsNumericFormat *pieChartNumericFormat() SIP_FACTORY;
+    static std::unique_ptr<QgsNumericFormat> pieChartNumericFormat();
 };
 
 #endif // QGSPLOT_H
