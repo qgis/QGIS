@@ -488,39 +488,26 @@ QString QgsPGProjectItem::formatTooltip( const QString &time, const QString &use
 
 void QgsPGProjectItem::refreshTooltip()
 {
-  QgsProviderMetadata *md { QgsProviderRegistry::instance()->providerMetadata( "postgres" ) };
-  if ( md )
+  QgsPostgresConn *conn = QgsPostgresConnPool::instance()->acquireConnection( QgsPostgresConn::connectionInfo( mProjectUri.connInfo, false ) );
+  if ( !conn )
+    return;
+
+  const bool hasCommentColumn = QgsPostgresUtils::columnExists( conn, mProjectUri.schemaName, u"qgis_projects"_s, u"comment"_s );
+
+  const QString sql = QStringLiteral(
+                        "SELECT (metadata->>'last_modified_time')::timestamp(0)::TEXT AS time, "
+                        "metadata->>'last_modified_user' AS user "
+                        "%1"
+                        "FROM %2.qgis_projects WHERE name = %3"
+  )
+                        .arg( hasCommentColumn ? u", comment "_s : u" "_s, QgsPostgresConn::quotedIdentifier( mProjectUri.schemaName ), QgsPostgresConn::quotedValue( mName ) );
+
+  QgsPostgresResult res( conn->PQexec( sql ) );
+
+  if ( res.PQntuples() == 1 )
   {
-    QgsPostgresConn *conn = QgsPostgresConn::connectDb( mProjectUri.connInfo, false );
-    if ( conn )
-    {
-      QString commentColumn;
-      if ( QgsPostgresUtils::columnExists( conn, mProjectUri.schemaName, u"qgis_projects"_s, u"comment"_s ) )
-      {
-        commentColumn = u", comment "_s;
-      }
-
-      const QString sql = QStringLiteral(
-                            "SELECT (metadata->>'last_modified_time')::timestamp(0)::TEXT AS time, "
-                            "metadata->>'last_modified_user' AS user %1"
-                            "FROM %2.qgis_projects WHERE name = %3"
-      )
-                            .arg( commentColumn, QgsPostgresConn::quotedIdentifier( mProjectUri.schemaName ), QgsPostgresConn::quotedValue( mName ) );
-
-      QgsPostgresResult res( conn->PQexec( sql ) );
-
-      if ( res.PQntuples() == 1 )
-      {
-        const QString tooltip
-          = QStringLiteral(
-              "%1: %2\n"
-              "%3: %4\n"
-              "%5: %6"
-          )
-              .arg( tr( "Last modified time" ), res.PQgetvalue( 0, 0 ), tr( "Last modified user" ), res.PQgetvalue( 0, 1 ), tr( "Comment" ), commentColumn.isEmpty() ? QString() : res.PQgetvalue( 0, 2 ) );
-        setToolTip( tooltip );
-      }
-      conn->unref();
-    }
+    setToolTip( formatTooltip( res.PQgetvalue( 0, 0 ), res.PQgetvalue( 0, 1 ), hasCommentColumn ? res.PQgetvalue( 0, 2 ) : QString() ) );
   }
+
+  QgsPostgresConnPool::instance()->releaseConnection( conn );
 }
