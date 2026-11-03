@@ -4757,6 +4757,22 @@ INSERT INTO public.test_geog_ext(g)
         # Cleanup
         conn.executeSql("DROP TABLE public.test_geog_ext")
 
+    def testTopoGeometryEstimatedExtent(self):
+        # https://github.com/qgis/QGIS/issues/60593
+        # the test with TopoGeometry provides extent but estimating raises
+        # unnecessary error message the test needs to check the extent
+        # (but it is not estimated) but also needs to check that no
+        # errors have been raised
+        vl = QgsVectorLayer(
+            f'{self.dbconn} estimatedmetadata=\'true\' table="qgis_test"."TopoLayer1" (topogeom)',
+            "topo",
+            "postgres",
+        )
+        if not vl.isValid():
+            self.skipTest("postgis_topology not available")
+        self.assertEqual(vl.extent(), QgsRectangle(0, 0, 10, 10))
+        self.assertFalse(vl.dataProvider().hasErrors(), vl.dataProvider().errors())
+
     # See: https://github.com/qgis/QGIS/issues/55856
     def testPktLowerCase(self):
         # check that primary key creation correctly works
