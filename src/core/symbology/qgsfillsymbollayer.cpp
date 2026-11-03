@@ -3346,7 +3346,7 @@ void QgsLinePatternFillSymbolLayer::renderPolygon( const QPolygonF &points, cons
           shapePolygon->addInteriorRing( fromRing.release() );
         }
       }
-      shapeEngine.reset( QgsGeometry::createGeometryEngine( shapePolygon.get() ) );
+      shapeEngine = QgsGeometry::createGeometryEngine( shapePolygon.get() );
       shapeEngine->prepareGeometry();
       break;
     }
@@ -4193,7 +4193,7 @@ void QgsPointPatternFillSymbolLayer::renderPolygon( const QPolygonF &points, con
           shapePolygon->addInteriorRing( fromRing.release() );
         }
       }
-      shapeEngine.reset( QgsGeometry::createGeometryEngine( shapePolygon.get() ) );
+      shapeEngine = QgsGeometry::createGeometryEngine( shapePolygon.get() );
       shapeEngine->prepareGeometry();
       break;
     }

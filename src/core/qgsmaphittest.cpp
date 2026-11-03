@@ -238,7 +238,7 @@ void QgsMapHitTest::runHitTestFeatureSource(
     else
     {
       request.setFilterRect( transformedPolygon.boundingBox() );
-      polygonEngine.reset( QgsGeometry::createGeometryEngine( transformedPolygon.constGet() ) );
+      polygonEngine = QgsGeometry::createGeometryEngine( transformedPolygon.constGet() );
       polygonEngine->prepareGeometry();
     }
   }

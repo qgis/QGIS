@@ -264,9 +264,9 @@ QgsMultiCurve *QgsMultiCurve::simplifyByDistance( double tolerance ) const
   return res.release();
 }
 
-QgsMultiCurve *QgsMultiCurve::reversed() const
+std::unique_ptr<QgsMultiCurve> QgsMultiCurve::reversed() const
 {
-  QgsMultiCurve *reversedMultiCurve = new QgsMultiCurve();
+  auto reversedMultiCurve = std::make_unique<QgsMultiCurve>();
   reversedMultiCurve->reserve( mGeometries.size() );
   for ( const QgsAbstractGeometry *geom : mGeometries )
   {
