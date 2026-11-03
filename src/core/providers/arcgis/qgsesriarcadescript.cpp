@@ -584,10 +584,10 @@ QString QgsEsriArcadeDictionaryElement::dump() const
   return u"%1: %2"_s.arg( QgsEsriArcadeScript::quotedString( mKey ), mValue ? mValue->dump() : QString() );
 }
 
-QgsEsriArcadeDictionaryElement *QgsEsriArcadeDictionaryElement::clone() const
+std::unique_ptr<QgsEsriArcadeDictionaryElement> QgsEsriArcadeDictionaryElement::clone() const
 {
   QgsEsriArcadeExpression *clonedValue = mValue ? dynamic_cast<QgsEsriArcadeExpression *>( mValue->clone() ) : nullptr;
-  return new QgsEsriArcadeDictionaryElement( mKey, clonedValue, mIsAutoKey );
+  return std::make_unique<QgsEsriArcadeDictionaryElement>( mKey, clonedValue, mIsAutoKey );
 }
 
 //
@@ -623,7 +623,7 @@ QgsEsriArcadeNode *QgsEsriArcadeDictionaryLiteralExpression::clone() const
   clonedElements.reserve( mElements.size() );
   for ( QgsEsriArcadeDictionaryElement *element : std::as_const( mElements ) )
   {
-    clonedElements.append( element->clone() );
+    clonedElements.append( element->clone().release() );
   }
   return new QgsEsriArcadeDictionaryLiteralExpression( clonedElements );
 }
