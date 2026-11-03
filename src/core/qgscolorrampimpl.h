@@ -354,7 +354,7 @@ class CORE_EXPORT QgsLimitedRandomColorRamp : public QgsColorRamp
      * \param properties color ramp properties
      * \see properties()
      */
-    static QgsColorRamp *create( const QVariantMap &properties = QVariantMap() ) SIP_FACTORY;
+    static std::unique_ptr<QgsColorRamp> create( const QVariantMap &properties = QVariantMap() );
 
     double value( int index ) const override;
     QColor color( double value ) const override;
@@ -550,7 +550,7 @@ class CORE_EXPORT QgsPresetSchemeColorRamp : public QgsColorRamp, public QgsColo
      * \param properties color ramp properties
      * \see properties()
      */
-    static QgsColorRamp *create( const QVariantMap &properties = QVariantMap() ) SIP_FACTORY;
+    static std::unique_ptr<QgsColorRamp> create( const QVariantMap &properties = QVariantMap() );
 
     /**
      * Sets the list of colors used by the ramp.
@@ -619,7 +619,7 @@ class CORE_EXPORT QgsColorBrewerColorRamp : public QgsColorRamp
      * \param properties color ramp properties
      * \see properties()
      */
-    static QgsColorRamp *create( const QVariantMap &properties = QVariantMap() ) SIP_FACTORY;
+    static std::unique_ptr<QgsColorRamp> create( const QVariantMap &properties = QVariantMap() );
 
     double value( int index ) const override;
     QColor color( double value ) const override;
@@ -745,7 +745,7 @@ class CORE_EXPORT QgsCptCityColorRamp : public QgsGradientColorRamp
 
     QgsCptCityColorRamp *clone() const override SIP_FACTORY;
     void copy( const QgsCptCityColorRamp *other );
-    QgsGradientColorRamp *cloneGradientRamp() const SIP_FACTORY;
+    std::unique_ptr<QgsGradientColorRamp> cloneGradientRamp() const;
 
     QVariantMap properties() const override;
 

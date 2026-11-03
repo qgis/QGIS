@@ -31,7 +31,7 @@ QgsConnectionRegistry::QgsConnectionRegistry( QObject *parent SIP_TRANSFERTHIS )
   : QObject( parent )
 {}
 
-QgsAbstractProviderConnection *QgsConnectionRegistry::createConnection( const QString &id )
+std::unique_ptr<QgsAbstractProviderConnection> QgsConnectionRegistry::createConnection( const QString &id )
 {
   const QRegularExpressionMatch m = QRegularExpression( u"(.*?)\\://(.*)"_s ).match( id );
   if ( !m.hasMatch() )
@@ -45,5 +45,5 @@ QgsAbstractProviderConnection *QgsConnectionRegistry::createConnection( const QS
   if ( !md )
     throw QgsProviderConnectionException( QObject::tr( "Invalid provider key: %1" ).arg( providerKey ) );
 
-  return md->createConnection( name );
+  return std::unique_ptr<QgsAbstractProviderConnection>( md->createConnection( name ) );
 }

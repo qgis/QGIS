@@ -59,7 +59,7 @@ class CORE_EXPORT QgsConnectionRegistry : public QObject
      *
      * \throws QgsProviderConnectionException
      */
-    QgsAbstractProviderConnection *createConnection( const QString &name ) SIP_THROW( QgsProviderConnectionException ) SIP_FACTORY;
+    std::unique_ptr<QgsAbstractProviderConnection> createConnection( const QString &name ) SIP_THROW( QgsProviderConnectionException );
 
   private:
 #ifdef SIP_RUN
