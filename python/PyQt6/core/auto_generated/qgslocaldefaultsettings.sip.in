@@ -39,7 +39,7 @@ are displayed.
 .. seealso:: :py:func:`bearingFormat`
 %End
 
-    static QgsBearingNumericFormat *bearingFormat() /Factory/;
+    static std::unique_ptr<QgsBearingNumericFormat> bearingFormat();
 %Docstring
 Returns the default bearing format, which controls how angular bearings
 are displayed.
@@ -60,7 +60,7 @@ geographic coordinates are displayed.
 .. versionadded:: 3.26
 %End
 
-    static QgsGeographicCoordinateNumericFormat *geographicCoordinateFormat() /Factory/;
+    static std::unique_ptr<QgsGeographicCoordinateNumericFormat> geographicCoordinateFormat();
 %Docstring
 Returns the default geographic coordinate format, which controls how
 geographic coordinates are displayed.

@@ -1928,7 +1928,7 @@ QgisApp::QgisApp(
   std::sort( actions.begin(), actions.end(), cmpByText_ );
   mPanelMenu->insertActions( nullptr, actions );
 
-  mBearingNumericFormat.reset( QgsLocalDefaultSettings::bearingFormat() );
+  mBearingNumericFormat = QgsLocalDefaultSettings::bearingFormat();
 
   mNetworkLoggerWidgetFactory.reset( std::make_unique<QgsNetworkLoggerWidgetFactory>( mNetworkLogger ) );
   mQueryLoggerWidgetFactory.reset( std::make_unique<QgsDatabaseQueryLoggerWidgetFactory>( mQueryLogger ) );
@@ -2147,7 +2147,7 @@ QgisApp::QgisApp()
   mDigitizingTechniqueManager = new QgsMapToolsDigitizingTechniqueManager( this );
 
   mVectorLayerTools = new QgsGuiVectorLayerTools();
-  mBearingNumericFormat.reset( QgsLocalDefaultSettings::bearingFormat() );
+  mBearingNumericFormat = QgsLocalDefaultSettings::bearingFormat();
 
   mMapCanvas->setUserInputWidget( mUserInputDockWidget );
   mMapCanvas->setMessageBar( mInfoBar );

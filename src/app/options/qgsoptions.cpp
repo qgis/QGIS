@@ -1365,8 +1365,8 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
   // restore window and widget geometry/state
   connect( mRestoreDefaultWindowStateBtn, &QAbstractButton::clicked, this, &QgsOptions::restoreDefaultWindowState );
 
-  mBearingFormat.reset( QgsLocalDefaultSettings::bearingFormat() );
-  mCoordinateFormat.reset( QgsLocalDefaultSettings::geographicCoordinateFormat() );
+  mBearingFormat = QgsLocalDefaultSettings::bearingFormat();
+  mCoordinateFormat = QgsLocalDefaultSettings::geographicCoordinateFormat();
   connect( mCustomizeBearingFormatButton, &QPushButton::clicked, this, &QgsOptions::customizeBearingFormat );
   connect( mCustomizeCoordinateFormatButton, &QPushButton::clicked, this, &QgsOptions::customizeCoordinateFormat );
 
