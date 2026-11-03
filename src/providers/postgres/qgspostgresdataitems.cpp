@@ -292,14 +292,7 @@ QVector<QgsDataItem *> QgsPGSchemaItem::createChildren()
   if ( QgsPostgresConn::allowProjectsInDatabase( mConnectionName ) && QgsPostgresUtils::projectsTableExists( conn, mName ) )
   {
     const bool hasCommentColumn = QgsPostgresUtils::columnExists( conn, mName, u"qgis_projects"_s, u"comment"_s );
-    const QString sql = QStringLiteral(
-                          "SELECT name, "
-                          "(metadata->>'last_modified_time')::timestamp(0)::TEXT AS time, "
-                          "metadata->>'last_modified_user' AS user "
-                          "%1"
-                          "FROM %2.qgis_projects"
-    )
-                          .arg( hasCommentColumn ? u", comment "_s : u" "_s, QgsPostgresConn::quotedIdentifier( mName ) );
+    const QString sql = QgsPostgresUtils::sqlQgsProjectsInfo( mName, hasCommentColumn );
 
     QgsPostgresResult res( conn->PQexec( sql ) );
     if ( res.PQresultStatus() == PGRES_TUPLES_OK )
@@ -507,19 +500,12 @@ void QgsPGProjectItem::refreshTooltip()
 
   const bool hasCommentColumn = QgsPostgresUtils::columnExists( conn, mProjectUri.schemaName, u"qgis_projects"_s, u"comment"_s );
 
-  const QString sql = QStringLiteral(
-                        "SELECT (metadata->>'last_modified_time')::timestamp(0)::TEXT AS time, "
-                        "metadata->>'last_modified_user' AS user "
-                        "%1"
-                        "FROM %2.qgis_projects WHERE name = %3"
-  )
-                        .arg( hasCommentColumn ? u", comment "_s : u" "_s, QgsPostgresConn::quotedIdentifier( mProjectUri.schemaName ), QgsPostgresConn::quotedValue( mName ) );
-
+  const QString sql = u"%1 WHERE name = %2"_s.arg( QgsPostgresUtils::sqlQgsProjectsInfo( mProjectUri.schemaName, hasCommentColumn ), QgsPostgresConn::quotedValue( mName ) );
   QgsPostgresResult res( conn->PQexec( sql ) );
 
   if ( res.PQntuples() == 1 )
   {
-    setToolTip( formatTooltip( res.PQgetvalue( 0, 0 ), res.PQgetvalue( 0, 1 ), hasCommentColumn ? res.PQgetvalue( 0, 2 ) : QString() ) );
+    setToolTip( formatTooltip( res.PQgetvalue( 0, 1 ), res.PQgetvalue( 0, 2 ), hasCommentColumn ? res.PQgetvalue( 0, 3 ) : QString() ) );
   }
 
   QgsPostgresConnPool::instance()->releaseConnection( conn );
