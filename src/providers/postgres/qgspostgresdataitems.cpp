@@ -476,6 +476,16 @@ void QgsPGProjectItem::refresh()
   refreshTooltip();
 }
 
+QString QgsPGProjectItem::formatTooltip( const QString &time, const QString &user, const QString &comment )
+{
+  return QStringLiteral(
+           "%1: %2\n"
+           "%3: %4\n"
+           "%5: %6"
+  )
+    .arg( tr( "Last modified time" ), time, tr( "Last modified user" ), user, tr( "Comment" ), comment );
+}
+
 void QgsPGProjectItem::refreshTooltip()
 {
   QgsProviderMetadata *md { QgsProviderRegistry::instance()->providerMetadata( "postgres" ) };
