@@ -427,7 +427,7 @@ class CORE_EXPORT QgsPointCloudRenderer
      *
      * \see save()
      */
-    static QgsPointCloudRenderer *load( QDomElement &element, const QgsReadWriteContext &context ) SIP_FACTORY;
+    static std::unique_ptr<QgsPointCloudRenderer> load( QDomElement &element, const QgsReadWriteContext &context );
 
     /**
      * Saves the renderer configuration to an XML element.

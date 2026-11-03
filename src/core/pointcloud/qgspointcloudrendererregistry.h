@@ -120,7 +120,7 @@ class CORE_EXPORT QgsPointCloudRendererAbstractMetadata
     QIcon mIcon;
 };
 
-typedef QgsPointCloudRenderer *( *QgsPointCloudRendererCreateFunc )( QDomElement &, const QgsReadWriteContext & ) SIP_SKIP;
+typedef std::unique_ptr<QgsPointCloudRenderer> ( *QgsPointCloudRendererCreateFunc )( QDomElement &, const QgsReadWriteContext & ) SIP_SKIP;
 typedef QgsPointCloudRendererWidget *( *QgsPointCloudRendererWidgetFunc )( QgsPointCloudLayer *, QgsStyle *, QgsPointCloudRenderer * ) SIP_SKIP;
 
 /**
@@ -141,7 +141,7 @@ class CORE_EXPORT QgsPointCloudRendererMetadata : public QgsPointCloudRendererAb
                  mWidgetFunc( pfWidget )
     {}
 
-    QgsPointCloudRenderer *createRenderer( QDomElement &elem, const QgsReadWriteContext &context ) override SIP_FACTORY { return mCreateFunc ? mCreateFunc( elem, context ) : nullptr; }
+    QgsPointCloudRenderer *createRenderer( QDomElement &elem, const QgsReadWriteContext &context ) override SIP_FACTORY { return mCreateFunc ? mCreateFunc( elem, context ).release() : nullptr; }
 
 #ifndef SIP_RUN
     QgsPointCloudRendererWidget *createRendererWidget( QgsPointCloudLayer *layer, QgsStyle *style, QgsPointCloudRenderer *renderer ) override SIP_FACTORY
@@ -222,7 +222,7 @@ class CORE_EXPORT QgsPointCloudRendererRegistry
      *
      * Caller takes ownership of the returned renderer.
      */
-    static QgsPointCloudRenderer *defaultRenderer( const QgsPointCloudLayer *layer ) SIP_FACTORY;
+    static std::unique_ptr<QgsPointCloudRenderer> defaultRenderer( const QgsPointCloudLayer *layer );
 
     /**
      * Returns a list of categories using the available Classification classes of a specified \a layer, along with

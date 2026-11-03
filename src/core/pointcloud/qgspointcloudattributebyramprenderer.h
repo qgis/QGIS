@@ -80,7 +80,7 @@ class CORE_EXPORT QgsPointCloudAttributeByRampRenderer : public QgsPointCloudRen
     /**
      * Creates an RGB renderer from an XML \a element.
      */
-    static QgsPointCloudRenderer *create( QDomElement &element, const QgsReadWriteContext &context ) SIP_FACTORY;
+    static std::unique_ptr<QgsPointCloudRenderer> create( QDomElement &element, const QgsReadWriteContext &context );
 
     /**
      * Returns the attribute to use for the renderer.

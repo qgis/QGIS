@@ -49,7 +49,7 @@ specified. If specified, ownership is transferred to the renderer. If no
     virtual QList<QgsLayerTreeModelLegendNode *> createLegendNodes( QgsLayerTreeLayer *nodeLayer ) /Factory/;
 
 
-    static QgsPointCloudRenderer *create( QDomElement &element, const QgsReadWriteContext &context ) /Factory/;
+    static std::unique_ptr<QgsPointCloudRenderer> create( QDomElement &element, const QgsReadWriteContext &context );
 %Docstring
 Creates an extent renderer from an XML ``element``.
 %End
@@ -60,7 +60,7 @@ Renders a polygon ``extent`` geometry to the specified render
 ``context``.
 %End
 
-    static QgsFillSymbol *defaultFillSymbol() /Factory/;
+    static std::unique_ptr<QgsFillSymbol> defaultFillSymbol();
 %Docstring
 Returns a new instance of the default fill symbol to use for showing
 point cloud extents.
