@@ -42,7 +42,7 @@ class QgsRasterBlock;
  * \note not available in Python bindings
  * \since QGIS 4.4
  */
-class QgsRasterVectorFieldValueSourceBase : public QgsVectorFieldValueSource
+class CORE_EXPORT QgsRasterVectorFieldValueSourceBase : public QgsVectorFieldValueSource
 {
   public:
     /**
@@ -88,7 +88,7 @@ class QgsRasterVectorFieldValueSourceBase : public QgsVectorFieldValueSource
  * \note not available in Python bindings
  * \since QGIS 4.4
  */
-class QgsRasterVectorFieldValueSource : public QgsRasterVectorFieldValueSourceBase
+class CORE_EXPORT QgsRasterVectorFieldValueSource : public QgsRasterVectorFieldValueSourceBase
 {
   public:
     /**
