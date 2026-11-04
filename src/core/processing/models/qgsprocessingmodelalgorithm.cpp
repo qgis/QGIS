@@ -34,7 +34,6 @@
 #include "qgsxmlutils.h"
 
 #include <QFile>
-#include <QMessageBox>
 #include <QRegularExpression>
 #include <QString>
 #include <QTextStream>
