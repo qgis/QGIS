@@ -50,7 +50,7 @@ class QgsPointCloudNodeId;
     double maximum = std::numeric_limits<double>::lowest();
     double mean = 0;
     double stDev = 0;
-    qint64  count = 0;
+    qint64 count = 0;
 #ifndef SIP_RUN
     QMap<int, qint64> classCount;
     //! Updates the current point cloud statistics to hold the cumulation of the current statistics and \a stats
