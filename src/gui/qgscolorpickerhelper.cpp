@@ -52,7 +52,7 @@ void QgsColorPickerHelper::activate( int sampleRadius )
   {
     // already active
     return;
-  } // avoid spamming signals when sampling and mouse moves quickly
+  }
 
   mSampleRadius = sampleRadius;
   mPickingColor = true;
@@ -95,6 +95,7 @@ bool QgsColorPickerHelper::eventFilter( QObject *watched, QEvent *event )
       {
         mPendingTargetWidget = target;
         mPendingLocalPos = localPos;
+        // avoid spamming signals when sampling and mouse moves quickly
         if ( !mSampleTimer->isActive() )
         {
           mSampleTimer->start();
@@ -199,7 +200,7 @@ void QgsColorPickerHelper::hoverSampleTimeout()
 
 QWidget *QgsColorPickerHelper::findEventWindowWidgetAndLocalPos( QObject *watched, const QPointF &eventPos, QPoint &outPos )
 {
-  // object may already by a widget
+  // object may already be a widget
   if ( QWidget *w = qobject_cast<QWidget *>( watched ) )
   {
     // if so, we use the top level window associated with this widget -- that ensures that
