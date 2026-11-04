@@ -1,4 +1,4 @@
-ARG DISTRO_VERSION=44
+ARG DISTRO_VERSION=45
 
 FROM fedora:${DISTRO_VERSION} AS binary-for-oracle
 LABEL org.opencontainers.image.authors="Matthias Kuhn <matthias@opengis.ch>"
@@ -45,8 +45,8 @@ RUN dnf -y --refresh install \
     perl-YAML-Tiny \
     poppler-utils \
     proj-devel \
-    protobuf-devel \
-    protobuf-lite-devel \
+    protobuf3-devel \
+    protobuf3-lite-devel \
     python3-devel \
     python3-mock \
     python3-oauthlib \
