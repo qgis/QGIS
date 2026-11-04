@@ -4571,6 +4571,7 @@ void QgisApp::setupConnections()
   connect( this, &QgisApp::initializationCompleted, this, [this] {
     fileOpenAfterLaunch();
     connect( QgsProject::instance(), &QgsProject::layersAdded, this, &QgisApp::showMapCanvas );
+    connect( this, &QgisApp::newProject, this, &QgisApp::showMapCanvas );
   } );
 
   // Connect warning dialog from project reading
