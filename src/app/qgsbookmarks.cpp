@@ -158,7 +158,7 @@ void QgsBookmarks::lstBookmarks_customContextMenuRequested( QPoint pos )
   if ( !index.isValid() )
   {
     // No bookmark under mouse, display generic menu
-    QMenu menu;
+    QMenu menu( this );
     menu.addAction( actionAdd );
     menu.addSeparator();
     menu.addAction( actionExport );
@@ -168,7 +168,7 @@ void QgsBookmarks::lstBookmarks_customContextMenuRequested( QPoint pos )
   }
 
   // Create the context menu
-  QMenu menu;
+  QMenu menu( this );
 
   // Add zoom and delete actions
   menu.addAction( actionZoomTo );

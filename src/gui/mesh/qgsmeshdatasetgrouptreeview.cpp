@@ -598,7 +598,7 @@ void QgsMeshDatasetGroupTreeView::contextMenuEvent( QContextMenuEvent *event )
 
   std::unique_ptr<QMenu> menu( createContextMenu() );
   if ( menu && menu->actions().count() != 0 )
-    menu->exec( mapToGlobal( event->pos() ) );
+    menu->exec( event->globalPos() );
 }
 
 void QgsMeshDatasetGroupTreeView::removeCurrentItem()
@@ -637,7 +637,7 @@ void QgsMeshDatasetGroupTreeView::onDatasetGroupSaved( const QString &uri )
 
 QMenu *QgsMeshDatasetGroupTreeView::createContextMenu()
 {
-  QMenu *contextMenu = new QMenu;
+  QMenu *contextMenu = new QMenu( this );
 
   const QModelIndex &index = currentIndex();
   if ( !index.isValid() )
