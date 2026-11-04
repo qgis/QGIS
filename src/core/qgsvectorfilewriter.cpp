@@ -136,7 +136,7 @@ QgsVectorFileWriter::QgsVectorFileWriter(
   init( vectorFileName, fileEncoding, fields, geometryType, srs, driverName, datasourceOptions, layerOptions, newFilename, fieldValueConverter, layerName, action, newLayer, sinkFlags, transformContext, fieldNameSource, sourceDatabaseProviderConnection );
 }
 
-QgsVectorFileWriter *QgsVectorFileWriter::create(
+std::unique_ptr<QgsVectorFileWriter> QgsVectorFileWriter::create(
   const QString &fileName,
   const QgsFields &fields,
   Qgis::WkbType geometryType,
@@ -149,7 +149,7 @@ QgsVectorFileWriter *QgsVectorFileWriter::create(
 )
 {
   Q_NOWARN_DEPRECATED_PUSH
-  return new QgsVectorFileWriter(
+  QgsVectorFileWriter *writer = new QgsVectorFileWriter(
     fileName,
     options.fileEncoding,
     fields,
@@ -172,6 +172,7 @@ QgsVectorFileWriter *QgsVectorFileWriter::create(
     options.sourceDatabaseProviderConnection
   );
   Q_NOWARN_DEPRECATED_POP
+  return std::unique_ptr<QgsVectorFileWriter>( writer );
 }
 
 bool QgsVectorFileWriter::supportsFeatureStyles( const QString &driverName )

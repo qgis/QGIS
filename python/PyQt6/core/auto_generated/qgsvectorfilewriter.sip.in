@@ -482,7 +482,7 @@ Create a new vector file writer
 
 
 
-    static QgsVectorFileWriter *create(
+    static std::unique_ptr<QgsVectorFileWriter> create(
       const QString &fileName,
       const QgsFields &fields,
       Qgis::WkbType geometryType,
@@ -492,7 +492,7 @@ Create a new vector file writer
       QgsFeatureSink::SinkFlags sinkFlags = QgsFeatureSink::SinkFlags(),
       QString *newFilename = 0,
       QString *newLayer = 0
-    ) /Factory/;
+    );
 %Docstring
 Create a new vector file writer.
 
