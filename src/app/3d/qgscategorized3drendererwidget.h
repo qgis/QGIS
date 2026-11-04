@@ -117,7 +117,6 @@ class QgsCategorized3DRendererWidget : public QgsPanelWidget, private Ui::QgsCat
     QgsVectorLayer *mLayer = nullptr;
     QString mOldClassificationAttribute;
     Qgs3DCategoryList mCopyBuffer;
-    bool mUpdatingSymbolButton = false;
     QAction *mCategoriesFrom2DAction = nullptr;
 };
 
