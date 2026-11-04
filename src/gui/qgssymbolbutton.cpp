@@ -318,16 +318,17 @@ void QgsSymbolButton::mousePressEvent( QMouseEvent *e )
     return;
   }
 
-  if ( e->button() == Qt::RightButton )
-  {
-    QToolButton::showMenu();
-    return;
-  }
-  else if ( e->button() == Qt::LeftButton )
+  if ( e->button() == Qt::LeftButton )
   {
     mDragStartPosition = e->pos();
   }
   QToolButton::mousePressEvent( e );
+}
+
+void QgsSymbolButton::contextMenuEvent( QContextMenuEvent *e )
+{
+  showMenu();
+  e->accept();
 }
 
 void QgsSymbolButton::mouseMoveEvent( QMouseEvent *e )

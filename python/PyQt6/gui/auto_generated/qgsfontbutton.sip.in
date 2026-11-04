@@ -299,6 +299,8 @@ Emitted when the widget's text format settings are changed.
 
     virtual void mousePressEvent( QMouseEvent *e );
 
+    virtual void contextMenuEvent( QContextMenuEvent *e );
+
     virtual void mouseMoveEvent( QMouseEvent *e );
 
 

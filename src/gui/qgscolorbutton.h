@@ -457,9 +457,11 @@ class GUI_EXPORT QgsColorButton : public QToolButton
     static const QPixmap &transparentBackground();
 
     /**
-     * Reimplemented to detect right mouse button clicks on the color button and allow dragging colors
+     * Reimplemented to allow dragging colors
      */
     void mousePressEvent( QMouseEvent *e ) override;
+
+    void contextMenuEvent( QContextMenuEvent *e ) override;
 
     /**
      * Reimplemented to allow dragging colors from button
