@@ -564,7 +564,7 @@ void QgsModelDesignerDialog::handleVersionMismatch( const QString &modelVersion 
   {
     const QString message = tr(
                               "This model was created by a newer version of QGIS (%1)."
-                              "The integrity of this model file may not be guaranteed."
+                              " The integrity of this model file may not be guaranteed."
     )
                               .arg( fileVersion.text() );
 
