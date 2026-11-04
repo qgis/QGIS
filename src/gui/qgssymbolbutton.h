@@ -32,6 +32,8 @@ class QgsMessageBar;
 class QMimeData;
 class QgsSymbol;
 class QgsSymbolSelectorWidget;
+class QgsColorPickerHelper;
+
 
 /**
  * \ingroup gui
@@ -302,8 +304,6 @@ class GUI_EXPORT QgsSymbolButton : public QToolButton
     void contextMenuEvent( QContextMenuEvent *e ) override;
     // Reimplemented to allow dragging colors/symbols from button
     void mouseMoveEvent( QMouseEvent *e ) override;
-    void mouseReleaseEvent( QMouseEvent *e ) override;
-    void keyPressEvent( QKeyEvent *e ) override;
     // Reimplemented to accept dragged colors
     void dragEnterEvent( QDragEnterEvent *e ) override;
 
@@ -332,6 +332,10 @@ class GUI_EXPORT QgsSymbolButton : public QToolButton
      */
     void activatePicker();
 
+    void onColorPicked( const QColor &color );
+    void onColorHovered( const QColor &color );
+    void colorPickingCanceled();
+
   private:
     QSize mSizeHint;
 
@@ -354,13 +358,13 @@ class GUI_EXPORT QgsSymbolButton : public QToolButton
 
     QgsExpressionContextGenerator *mExpressionContextGenerator = nullptr;
 
-    bool mPickingColor = false;
-
     bool mShowNull = false;
 
     bool mFixedSizeConstraints = true;
 
     std::unique_ptr<QgsSymbol> mDefaultSymbol;
+
+    QgsColorPickerHelper *mPickerHelper = nullptr;
 
     /**
      * Regenerates the text preview. If \a color is specified, a temporary color preview
@@ -383,14 +387,6 @@ class GUI_EXPORT QgsSymbolButton : public QToolButton
      * Create a \a color icon for display in the drop-down menu.
      */
     QPixmap createColorIcon( const QColor &color ) const;
-
-    /**
-     * Ends a color picking operation
-     * \param eventPos global position of pixel to sample color from
-     * \param samplingColor set to TRUE to actually sample the color, FALSE to just cancel
-     * the color picking operation
-     */
-    void stopPicking( QPoint eventPos, bool samplingColor = true );
 
     void showColorDialog();
 
