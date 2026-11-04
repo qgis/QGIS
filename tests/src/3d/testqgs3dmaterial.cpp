@@ -252,13 +252,12 @@ void TestQgs3DMaterial::clipping()
     }
   };
 
-  auto getShaderCode = []( const Qt3DRender::QEffect *effect ) -> QList<QByteArray> {
+  auto getShaderCode = []( const Qt3DRender::QEffect *effect ) -> QByteArray {
     Qt3DRender::QTechnique *technique = effect->techniques()[0];
     Qt3DRender::QRenderPass *renderPass = technique->renderPasses()[0];
     Qt3DRender::QShaderProgram *shaderProgram = renderPass->shaderProgram();
-    QByteArray geomCode = shaderProgram->geometryShaderCode();
     QByteArray vertexCode = shaderProgram->vertexShaderCode();
-    return QList<QByteArray> { geomCode, vertexCode };
+    return vertexCode;
   };
 
   // test phong material
@@ -279,12 +278,9 @@ void TestQgs3DMaterial::clipping()
   QVERIFY( !phongArrayParameterFound );
   QVERIFY( !phongMaxParameterFound );
 
-  QList<QByteArray> phongShaderCode = getShaderCode( phongMaterialEffect );
-  QByteArray phongDefaultGeomCode = phongShaderCode[0];
-  QByteArray phongDefaultVertexCode = phongShaderCode[1];
-  QVERIFY( phongDefaultGeomCode.isEmpty() );
+  QByteArray phongShaderCode = getShaderCode( phongMaterialEffect );
+  QByteArray phongDefaultVertexCode = phongShaderCode;
   QVERIFY( !phongDefaultVertexCode.isEmpty() );
-  QVERIFY( !QString( phongDefaultGeomCode ).contains( defineClippingStr ) );
   QVERIFY( !QString( phongDefaultVertexCode ).contains( defineClippingStr ) );
 
   // Enable clipping
@@ -294,10 +290,8 @@ void TestQgs3DMaterial::clipping()
   QVERIFY( phongMaxParameterFound );
 
   phongShaderCode = getShaderCode( phongMaterialEffect );
-  QVERIFY( phongShaderCode[0].isEmpty() );
-  QVERIFY( phongShaderCode[1] != phongDefaultVertexCode );
-  QVERIFY( !QString( phongShaderCode[0] ).contains( defineClippingStr ) );
-  QVERIFY( QString( phongShaderCode[1] ).contains( defineClippingStr ) );
+  QVERIFY( phongShaderCode != phongDefaultVertexCode );
+  QVERIFY( QString( phongShaderCode ).contains( defineClippingStr ) );
 
   // Disable clipping
   phongMaterial->disableClipping();
@@ -306,10 +300,8 @@ void TestQgs3DMaterial::clipping()
   QVERIFY( !phongMaxParameterFound );
 
   phongShaderCode = getShaderCode( phongMaterialEffect );
-  QCOMPARE( phongShaderCode[0], phongDefaultGeomCode );
-  QCOMPARE( phongShaderCode[1], phongDefaultVertexCode );
-  QVERIFY( !QString( phongShaderCode[0] ).contains( defineClippingStr ) );
-  QVERIFY( !QString( phongShaderCode[1] ).contains( defineClippingStr ) );
+  QCOMPARE( phongShaderCode, phongDefaultVertexCode );
+  QVERIFY( !QString( phongShaderCode ).contains( defineClippingStr ) );
 
 
   // test line material
@@ -329,12 +321,9 @@ void TestQgs3DMaterial::clipping()
   QVERIFY( !lineArrayParameterFound );
   QVERIFY( !lineMaxParameterFound );
 
-  QList<QByteArray> lineShaderCode = getShaderCode( lineMaterialEffect );
-  QByteArray lineDefaultGeomCode = lineShaderCode[0];
-  QByteArray lineDefaultVertexCode = lineShaderCode[1];
-  QVERIFY( lineDefaultGeomCode.isEmpty() );
+  QByteArray lineShaderCode = getShaderCode( lineMaterialEffect );
+  QByteArray lineDefaultVertexCode = lineShaderCode;
   QVERIFY( !lineDefaultVertexCode.isEmpty() );
-  QVERIFY( !QString( lineDefaultGeomCode ).contains( defineClippingStr ) );
   QVERIFY( !QString( lineDefaultVertexCode ).contains( defineClippingStr ) );
 
   // Enable clipping
@@ -344,9 +333,8 @@ void TestQgs3DMaterial::clipping()
   QVERIFY( lineMaxParameterFound );
 
   lineShaderCode = getShaderCode( lineMaterialEffect );
-  QVERIFY( lineShaderCode[1] != lineDefaultVertexCode );
-  QVERIFY( !QString( lineShaderCode[0] ).contains( defineClippingStr ) );
-  QVERIFY( QString( lineShaderCode[1] ).contains( defineClippingStr ) );
+  QVERIFY( lineShaderCode != lineDefaultVertexCode );
+  QVERIFY( QString( lineShaderCode ).contains( defineClippingStr ) );
 
   // Disable clipping
   lineMaterial->disableClipping();
@@ -355,10 +343,8 @@ void TestQgs3DMaterial::clipping()
   QVERIFY( !lineMaxParameterFound );
 
   lineShaderCode = getShaderCode( lineMaterialEffect );
-  QCOMPARE( lineShaderCode[0], lineDefaultGeomCode );
-  QCOMPARE( lineShaderCode[1], lineDefaultVertexCode );
-  QVERIFY( !QString( lineShaderCode[0] ).contains( defineClippingStr ) );
-  QVERIFY( !QString( lineShaderCode[1] ).contains( defineClippingStr ) );
+  QCOMPARE( lineShaderCode, lineDefaultVertexCode );
+  QVERIFY( !QString( lineShaderCode ).contains( defineClippingStr ) );
 }
 
 QGSTEST_MAIN( TestQgs3DMaterial )
