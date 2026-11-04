@@ -5508,7 +5508,6 @@ QgsGeometry.convertToSingleType: src/core/geometry/qgsgeometry.h#L2920
 QgsGeometry.convertToStraightSegment: src/core/geometry/qgsgeometry.h#L3170
 QgsGeometry.convertToType: src/core/geometry/qgsgeometry.h#L2562
 QgsGeometry.convexHull: src/core/geometry/qgsgeometry.h#L2020
-QgsGeometry.createGeometryEngine: src/core/geometry/qgsgeometry.h#L3469
 QgsGeometry.createPolygonFromQPolygonF: src/core/geometry/qgsgeometry.h#L3279
 QgsGeometry.createPolylineFromQPolygonF: src/core/geometry/qgsgeometry.h#L3270
 QgsGeometry.createWedgeBuffer: src/core/geometry/qgsgeometry.h#L470
@@ -5680,7 +5679,6 @@ QgsGeometryCollection.dimension: src/core/geometry/qgsgeometrycollection.h#L187
 QgsGeometryCollection.draw: src/core/geometry/qgsgeometrycollection.h#L273
 QgsGeometryCollection.dropMValue: src/core/geometry/qgsgeometrycollection.h#L326
 QgsGeometryCollection.dropZValue: src/core/geometry/qgsgeometrycollection.h#L325
-QgsGeometryCollection.extractPartsByType: src/core/geometry/qgsgeometrycollection.h#L450
 QgsGeometryCollection.fromWkb: src/core/geometry/qgsgeometrycollection.h#L276
 QgsGeometryCollection.fromWkt: src/core/geometry/qgsgeometrycollection.h#L277
 QgsGeometryCollection.fuzzyDistanceEqual: src/core/geometry/qgsgeometrycollection.h#L112
@@ -11213,7 +11211,6 @@ QgsMultiCurve.curveN: src/core/geometry/qgsmulticurve.h#L56
 QgsMultiCurve.fromWkt: src/core/geometry/qgsmulticurve.h#L89
 QgsMultiCurve.geometryType: src/core/geometry/qgsmulticurve.h#L84
 QgsMultiCurve.insertGeometry: src/core/geometry/qgsmulticurve.h#L95
-QgsMultiCurve.reversed: src/core/geometry/qgsmulticurve.h#L101
 QgsMultiCurve.simplifyByDistance: src/core/geometry/qgsmulticurve.h#L96
 QgsMultiCurve.toCurveType: src/core/geometry/qgsmulticurve.h#L88
 QgsMultiCurve: src/core/geometry/qgsmulticurve.h#L32
@@ -11229,7 +11226,6 @@ QgsMultiLineString.fromWkt: src/core/geometry/qgsmultilinestring.h#L110
 QgsMultiLineString.geometryType: src/core/geometry/qgsmultilinestring.h#L107
 QgsMultiLineString.insertGeometry: src/core/geometry/qgsmultilinestring.h#L116
 QgsMultiLineString.lineStringN: src/core/geometry/qgsmultilinestring.h#L80
-QgsMultiLineString.measuredLine: src/core/geometry/qgsmultilinestring.h#L179
 QgsMultiLineString.simplifyByDistance: src/core/geometry/qgsmultilinestring.h#L117
 QgsMultiLineString.toCurveType: src/core/geometry/qgsmultilinestring.h#L123
 QgsMultiLineString.wktOmitChildType: src/core/geometry/qgsmultilinestring.h#L183
@@ -12785,7 +12781,6 @@ QgsPolyhedralSurface.simplifyByDistance: src/core/geometry/qgspolyhedralsurface.
 QgsPolyhedralSurface.snappedToGrid: src/core/geometry/qgspolyhedralsurface.h#L138
 QgsPolyhedralSurface.swapXy: src/core/geometry/qgspolyhedralsurface.h#L297
 QgsPolyhedralSurface.toCurveType: src/core/geometry/qgspolyhedralsurface.h#L299
-QgsPolyhedralSurface.toMultiPolygon: src/core/geometry/qgspolyhedralsurface.h#L307
 QgsPolyhedralSurface.transform: src/core/geometry/qgspolyhedralsurface.h#L255
 QgsPolyhedralSurface.transform: src/core/geometry/qgspolyhedralsurface.h#L256
 QgsPolyhedralSurface.transform: src/core/geometry/qgspolyhedralsurface.h#L301
@@ -15318,8 +15313,6 @@ QgsQuadrilateral.rectangleFromExtent: src/core/geometry/qgsquadrilateral.h#L105
 QgsQuadrilateral.setPoint: src/core/geometry/qgsquadrilateral.h#L175
 QgsQuadrilateral.setPoints: src/core/geometry/qgsquadrilateral.h#L186
 QgsQuadrilateral.squareFromDiagonal: src/core/geometry/qgsquadrilateral.h#L122
-QgsQuadrilateral.toLineString: src/core/geometry/qgsquadrilateral.h#L201
-QgsQuadrilateral.toPolygon: src/core/geometry/qgsquadrilateral.h#L196
 QgsQuadrilateral.toString: src/core/geometry/qgsquadrilateral.h#L207
 QgsQuadrilateral: src/core/geometry/qgsquadrilateral.h#L40
 QgsQueryResultModel.canFetchMore: src/core/qgsqueryresultmodel.h#L95
@@ -16347,8 +16340,6 @@ QgsRegularPolygon.setCenter: src/core/geometry/qgsregularpolygon.h#L130
 QgsRegularPolygon.setFirstVertex: src/core/geometry/qgsregularpolygon.h#L144
 QgsRegularPolygon.setNumberSides: src/core/geometry/qgsregularpolygon.h#L151
 QgsRegularPolygon.setRadius: src/core/geometry/qgsregularpolygon.h#L137
-QgsRegularPolygon.toLineString: src/core/geometry/qgsregularpolygon.h#L166
-QgsRegularPolygon.toPolygon: src/core/geometry/qgsregularpolygon.h#L161
 QgsRegularPolygon.toString: src/core/geometry/qgsregularpolygon.h#L194
 QgsRegularPolygon.toTriangle: src/core/geometry/qgsregularpolygon.h#L172
 QgsRegularPolygon: src/core/geometry/qgsregularpolygon.h#L39
