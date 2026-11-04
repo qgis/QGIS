@@ -34,7 +34,7 @@ QgsColorPickerHelper::QgsColorPickerHelper( QObject *parent )
   // avoid spamming signals when sampling and mouse moves quickly
   // defer actual color sampling to a small timeout
   mSampleTimer->setSingleShot( true );
-  mSampleTimer->setInterval( 25 );
+  mSampleTimer->setInterval( 100 );
   connect( mSampleTimer, &QTimer::timeout, this, &QgsColorPickerHelper::hoverSampleTimeout );
 }
 
