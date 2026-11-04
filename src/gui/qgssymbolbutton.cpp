@@ -17,6 +17,7 @@
 
 #include "qgsapplication.h"
 #include "qgscolordialog.h"
+#include "qgscolorpickerhelper.h"
 #include "qgscolorschemeregistry.h"
 #include "qgscolorswatchgrid.h"
 #include "qgscolorwidgets.h"
@@ -48,6 +49,7 @@ using namespace Qt::StringLiterals;
 QgsSymbolButton::QgsSymbolButton( QWidget *parent, const QString &dialogTitle )
   : QToolButton( parent )
   , mDialogTitle( dialogTitle.isEmpty() ? tr( "Symbol Settings" ) : dialogTitle )
+  , mPickerHelper( new QgsColorPickerHelper( this ) )
 {
   mSymbol = QgsFillSymbol::createSimple( QVariantMap() );
 
@@ -61,6 +63,10 @@ QgsSymbolButton::QgsSymbolButton( QWidget *parent, const QString &dialogTitle )
   setPopupMode( QToolButton::MenuButtonPopup );
 
   updateSizeHint();
+
+  connect( mPickerHelper, &QgsColorPickerHelper::colorPicked, this, &QgsSymbolButton::onColorPicked );
+  connect( mPickerHelper, &QgsColorPickerHelper::canceled, this, &QgsSymbolButton::colorPickingCanceled );
+  connect( mPickerHelper, &QgsColorPickerHelper::colorHovered, this, &QgsSymbolButton::onColorHovered );
 }
 
 void QgsSymbolButton::updateSizeHint()
@@ -311,13 +317,6 @@ void QgsSymbolButton::pasteColor()
 
 void QgsSymbolButton::mousePressEvent( QMouseEvent *e )
 {
-  if ( mPickingColor )
-  {
-    //don't show dialog if in color picker mode
-    e->accept();
-    return;
-  }
-
   if ( e->button() == Qt::LeftButton )
   {
     mDragStartPosition = e->pos();
@@ -331,15 +330,13 @@ void QgsSymbolButton::contextMenuEvent( QContextMenuEvent *e )
   e->accept();
 }
 
+void QgsSymbolButton::onColorHovered( const QColor &color )
+{
+  updatePreview( color );
+}
+
 void QgsSymbolButton::mouseMoveEvent( QMouseEvent *e )
 {
-  if ( mPickingColor )
-  {
-    updatePreview( QgsGui::sampleColor( e->globalPos() ) );
-    e->accept();
-    return;
-  }
-
   //handle dragging colors/symbols from button
 
   if ( !( e->buttons() & Qt::LeftButton ) )
@@ -362,32 +359,6 @@ void QgsSymbolButton::mouseMoveEvent( QMouseEvent *e )
   drag->setPixmap( QgsColorWidget::createDragIcon( mSymbol->color() ) );
   drag->exec( Qt::CopyAction );
   setDown( false );
-}
-
-void QgsSymbolButton::mouseReleaseEvent( QMouseEvent *e )
-{
-  if ( mPickingColor )
-  {
-    //end color picking operation by sampling the color under cursor
-    stopPicking( e->globalPos() );
-    e->accept();
-    return;
-  }
-
-  QToolButton::mouseReleaseEvent( e );
-}
-
-void QgsSymbolButton::keyPressEvent( QKeyEvent *e )
-{
-  if ( !mPickingColor )
-  {
-    //if not picking a color, use default tool button behavior
-    QToolButton::keyPressEvent( e );
-    return;
-  }
-
-  //cancel picking, sampling the color if space was pressed
-  stopPicking( QCursor::pos(), e->key() == Qt::Key_Space );
 }
 
 void QgsSymbolButton::dragEnterEvent( QDragEnterEvent *e )
@@ -610,14 +581,8 @@ void QgsSymbolButton::addRecentColor( const QColor &color )
 
 void QgsSymbolButton::activatePicker()
 {
-  //activate picker color
-  QApplication::setOverrideCursor( QgsApplication::getThemeCursor( QgsApplication::Cursor::Sampler ) );
-  grabMouse();
-  grabKeyboard();
-  mPickingColor = true;
-  setMouseTracking( true );
+  mPickerHelper->activate();
 }
-
 
 void QgsSymbolButton::changeEvent( QEvent *e )
 {
@@ -751,25 +716,16 @@ QPixmap QgsSymbolButton::createColorIcon( const QColor &color ) const
   return pixmap;
 }
 
-void QgsSymbolButton::stopPicking( QPoint eventPos, bool samplingColor )
+
+void QgsSymbolButton::onColorPicked( const QColor &color )
 {
-  //release mouse and keyboard, and reset cursor
-  releaseMouse();
-  releaseKeyboard();
-  QgsApplication::restoreOverrideCursor();
-  setMouseTracking( false );
-  mPickingColor = false;
+  setColor( color );
+  addRecentColor( color );
+}
 
-  if ( !samplingColor )
-  {
-    //not sampling color, restore old icon
-    updatePreview();
-    return;
-  }
-
-  const QColor newColor = QgsGui::sampleColor( eventPos );
-  setColor( newColor );
-  addRecentColor( newColor );
+void QgsSymbolButton::colorPickingCanceled()
+{
+  updatePreview();
 }
 
 void QgsSymbolButton::showColorDialog()
