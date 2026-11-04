@@ -197,14 +197,10 @@ bool QgsColorRampButton::event( QEvent *e )
   return QToolButton::event( e );
 }
 
-void QgsColorRampButton::mousePressEvent( QMouseEvent *e )
+void QgsColorRampButton::contextMenuEvent( QContextMenuEvent *e )
 {
-  if ( e->button() == Qt::RightButton )
-  {
-    QToolButton::showMenu();
-    return;
-  }
-  QToolButton::mousePressEvent( e );
+  QToolButton::showMenu();
+  e->accept();
 }
 
 QPixmap QgsColorRampButton::createMenuIcon( QgsColorRamp *colorramp )

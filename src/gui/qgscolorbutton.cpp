@@ -213,16 +213,17 @@ void QgsColorButton::mousePressEvent( QMouseEvent *e )
     return;
   }
 
-  if ( e->button() == Qt::RightButton )
-  {
-    QToolButton::showMenu();
-    return;
-  }
-  else if ( e->button() == Qt::LeftButton )
+  if ( e->button() == Qt::LeftButton )
   {
     mDragStartPosition = e->pos();
   }
   QToolButton::mousePressEvent( e );
+}
+
+void QgsColorButton::contextMenuEvent( QContextMenuEvent *e )
+{
+  QToolButton::showMenu();
+  e->accept();
 }
 
 bool QgsColorButton::colorFromMimeData( const QMimeData *mimeData, QColor &resultColor )
