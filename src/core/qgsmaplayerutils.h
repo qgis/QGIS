@@ -50,7 +50,7 @@ class CORE_EXPORT QgsMapLayerUtils
      * Ownership is transferred to the caller.
      * \since QGIS 3.22
      */
-    static QgsAbstractDatabaseProviderConnection *databaseConnection( const QgsMapLayer *layer ) SIP_FACTORY;
+    static std::unique_ptr<QgsAbstractDatabaseProviderConnection> databaseConnection( const QgsMapLayer *layer );
 
     /**
      * Returns TRUE if the source of the specified \a layer matches the given \a path.

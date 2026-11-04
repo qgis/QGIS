@@ -3781,7 +3781,7 @@ QgsVectorFileWriter::WriterError QgsVectorFileWriter::prepareWriteAsVectorFormat
 
   if ( !options.sourceDatabaseProviderConnection )
   {
-    details.sourceDatabaseProviderConnection.reset( QgsMapLayerUtils::databaseConnection( layer ) );
+    details.sourceDatabaseProviderConnection = QgsMapLayerUtils::databaseConnection( layer );
   }
 
   return NoError;

@@ -917,7 +917,7 @@ std::unique_ptr<QgsRuleBasedRenderer::Rule> QgsRuleBasedRenderer::Rule::createFr
     }
     else if ( childElem.localName() == "Filter"_L1 )
     {
-      QgsExpression *filter = QgsOgcUtils::expressionFromOgcFilter( childElem );
+      std::unique_ptr<QgsExpression> filter = QgsOgcUtils::expressionFromOgcFilter( childElem );
       if ( filter )
       {
         if ( filter->hasParserError() )
@@ -928,7 +928,6 @@ std::unique_ptr<QgsRuleBasedRenderer::Rule> QgsRuleBasedRenderer::Rule::createFr
         {
           filterExp = filter->expression();
         }
-        delete filter;
       }
     }
     else if ( childElem.localName() == "ElseFilter"_L1 )

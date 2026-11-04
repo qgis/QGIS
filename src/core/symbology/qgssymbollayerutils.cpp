@@ -3298,7 +3298,7 @@ bool QgsSymbolLayerUtils::functionFromSldElement( QDomElement &element, QString 
   }
 
   // parse ogc:Filter
-  QgsExpression *expr = QgsOgcUtils::expressionFromOgcFilter( elem );
+  std::unique_ptr<QgsExpression> expr = QgsOgcUtils::expressionFromOgcFilter( elem );
   if ( !expr )
     return false;
 
@@ -3312,7 +3312,6 @@ bool QgsSymbolLayerUtils::functionFromSldElement( QDomElement &element, QString 
     function = expr->expression();
   }
 
-  delete expr;
   return valid;
 }
 
