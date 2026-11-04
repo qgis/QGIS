@@ -999,7 +999,7 @@ void QgsAttributeTableDialog::editingToggled()
   }
   else
   {
-    QMenu *actionMenu = new QMenu();
+    QMenu *actionMenu = new QMenu( mActionFeatureActions );
     const auto constActions = actions;
     for ( const QgsAction &action : constActions )
     {

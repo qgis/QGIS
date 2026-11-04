@@ -313,7 +313,7 @@ void QgsQueryResultPanelWidget::showCellContextMenu( QPoint point )
   const QModelIndex modelIndex = mQueryResultsTableView->indexAt( point );
   if ( modelIndex.isValid() )
   {
-    QMenu *menu = new QMenu();
+    QMenu *menu = new QMenu( this );
     menu->setAttribute( Qt::WA_DeleteOnClose );
 
     menu->addAction( QgsApplication::getThemeIcon( "mActionEditCopy.svg" ), tr( "Copy" ), this, [this] { copySelection(); }, QKeySequence::Copy );

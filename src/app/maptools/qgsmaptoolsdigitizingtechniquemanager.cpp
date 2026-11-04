@@ -120,7 +120,7 @@ void QgsMapToolsDigitizingTechniqueManager::setupToolBars()
     {
       shapeButton = new QToolButton( QgisApp::instance()->mShapeDigitizeToolBar );
       shapeButton->setPopupMode( QToolButton::MenuButtonPopup );
-      shapeButton->setMenu( new QMenu() );
+      shapeButton->setMenu( new QMenu( shapeButton ) );
 
       QAction *action = QgisApp::instance()->mShapeDigitizeToolBar->addWidget( shapeButton );
       action->setObjectName( u"shapeButtonAction"_s );

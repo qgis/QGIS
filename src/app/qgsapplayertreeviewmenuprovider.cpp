@@ -72,7 +72,7 @@ QgsAppLayerTreeViewMenuProvider::QgsAppLayerTreeViewMenuProvider( QgsLayerTreeVi
 
 QMenu *QgsAppLayerTreeViewMenuProvider::createContextMenu()
 {
-  QMenu *menu = new QMenu;
+  QMenu *menu = new QMenu( mView );
 
   QgsLayerTreeViewDefaultActions *actions = mView->defaultActions();
 
