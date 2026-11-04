@@ -1018,8 +1018,8 @@ QCursor QgsApplication::getThemeCursor( Cursor cursor )
       activeY = 6;
       break;
     case Sampler:
-      activeX = 5;
-      activeY = 5;
+      activeX = 0;
+      activeY = 0;
       name = u"mSampler.svg"_s;
       break;
       // No default
