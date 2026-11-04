@@ -552,7 +552,7 @@ bool QgsRasterAttributeTable::writeToFile( const QString &path, QString *errorMe
 
   cleanedPath = QgsFileUtils::ensureFileNameHasExtension( cleanedPath, { { u".vat"_s } } );
 
-  writer.reset( QgsVectorFileWriter::create( cleanedPath, qgisFields(), Qgis::WkbType::NoGeometry, QgsCoordinateReferenceSystem(), QgsCoordinateTransformContext(), options ) );
+  writer = QgsVectorFileWriter::create( cleanedPath, qgisFields(), Qgis::WkbType::NoGeometry, QgsCoordinateReferenceSystem(), QgsCoordinateTransformContext(), options );
 
   cleanedPath.append( u".dbf"_s );
 
