@@ -67,7 +67,6 @@ void QgsColorPickerHelper::activate( int sampleRadius )
   {
     if ( !widget->hasMouseTracking() )
     {
-      widget->setAttribute( Qt::WA_Hover, true );
       widget->setMouseTracking( true );
       mWidgetsToCleanup.append( QPointer( widget ) );
     }
@@ -101,7 +100,9 @@ bool QgsColorPickerHelper::eventFilter( QObject *watched, QEvent *event )
           mSampleTimer->start();
         }
       }
-      return false;
+      // consume hover events -- otherwise eg toolbuttons will show in a raised state
+      // when the cursor passes over them as though they are interactable
+      return true;
     }
 
     case QEvent::MouseButtonPress:
@@ -251,7 +252,6 @@ void QgsColorPickerHelper::stopPicking()
   {
     if ( widget )
     {
-      widget->setAttribute( Qt::WA_Hover, false );
       widget->setMouseTracking( false );
     }
   }
