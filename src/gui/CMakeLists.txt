@@ -617,6 +617,7 @@ set(QGIS_GUI_SRCS
   qgscollapsiblegroupbox.cpp
   qgscolorbrewercolorrampdialog.cpp
   qgscolorbutton.cpp
+  qgscolorpickerhelper.cpp
   qgscolorrampbutton.cpp
   qgscolordialog.cpp
   qgscolorramplegendnodewidget.cpp
@@ -893,6 +894,7 @@ set(QGIS_GUI_HDRS
   qgscolorbrewercolorrampdialog.h
   qgscolorbutton.h
   qgscolordialog.h
+  qgscolorpickerhelper.h
   qgscolorrampbutton.h
   qgscolorramplegendnodewidget.h
   qgscolorschemelist.h
