@@ -75,7 +75,7 @@ Ownership is not transferred.
 .. seealso:: :py:func:`callout`
 %End
 
-    QgsCallout *callout() /Factory/;
+    std::unique_ptr<QgsCallout> callout();
 %Docstring
 Returns a new callout, respecting the configuration from the widget.
 
