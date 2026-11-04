@@ -290,9 +290,9 @@ void QgsSQLStatement::NodeList::accept( QgsSQLStatement::Visitor &v ) const
   }
 }
 
-QgsSQLStatement::NodeList *QgsSQLStatement::NodeList::clone() const
+std::unique_ptr<QgsSQLStatement::NodeList> QgsSQLStatement::NodeList::clone() const
 {
-  NodeList *nl = new NodeList;
+  auto nl = std::make_unique<NodeList>();
   const auto constMList = mList;
   for ( Node *node : constMList )
   {
@@ -468,7 +468,7 @@ QString QgsSQLStatement::NodeInOperator::dump() const
 
 QgsSQLStatement::Node *QgsSQLStatement::NodeInOperator::clone() const
 {
-  return new NodeInOperator( mNode->clone(), mList->clone(), mNotIn );
+  return new NodeInOperator( mNode->clone(), mList->clone().release(), mNotIn );
 }
 
 //
@@ -492,7 +492,7 @@ QString QgsSQLStatement::NodeFunction::dump() const
 
 QgsSQLStatement::Node *QgsSQLStatement::NodeFunction::clone() const
 {
-  return new NodeFunction( mName, mArgs ? mArgs->clone() : nullptr );
+  return new NodeFunction( mName, mArgs ? mArgs->clone().release() : nullptr );
 }
 
 //
@@ -570,12 +570,12 @@ QString QgsSQLStatement::NodeColumnRef::dump() const
 
 QgsSQLStatement::Node *QgsSQLStatement::NodeColumnRef::clone() const
 {
-  return cloneThis();
+  return cloneThis().release();
 }
 
-QgsSQLStatement::NodeColumnRef *QgsSQLStatement::NodeColumnRef::cloneThis() const
+std::unique_ptr<QgsSQLStatement::NodeColumnRef> QgsSQLStatement::NodeColumnRef::cloneThis() const
 {
-  NodeColumnRef *newColumnRef = new NodeColumnRef( mTableName, mName, mStar );
+  auto newColumnRef = std::make_unique<NodeColumnRef>( mTableName, mName, mStar );
   newColumnRef->setDistinct( mDistinct );
   return newColumnRef;
 }
@@ -594,16 +594,16 @@ QString QgsSQLStatement::NodeSelectedColumn::dump() const
   return ret;
 }
 
-QgsSQLStatement::NodeSelectedColumn *QgsSQLStatement::NodeSelectedColumn::cloneThis() const
+std::unique_ptr<QgsSQLStatement::NodeSelectedColumn> QgsSQLStatement::NodeSelectedColumn::cloneThis() const
 {
-  NodeSelectedColumn *newObj = new NodeSelectedColumn( mColumnNode->clone() );
+  auto newObj = std::make_unique<NodeSelectedColumn>( mColumnNode->clone() );
   newObj->setAlias( mAlias );
   return newObj;
 }
 
 QgsSQLStatement::Node *QgsSQLStatement::NodeSelectedColumn::clone() const
 {
-  return cloneThis();
+  return cloneThis().release();
 }
 //
 
@@ -622,14 +622,14 @@ QString QgsSQLStatement::NodeTableDef::dump() const
   return ret;
 }
 
-QgsSQLStatement::NodeTableDef *QgsSQLStatement::NodeTableDef::cloneThis() const
+std::unique_ptr<QgsSQLStatement::NodeTableDef> QgsSQLStatement::NodeTableDef::cloneThis() const
 {
-  return new NodeTableDef( mSchema, mName, mAlias );
+  return std::make_unique<NodeTableDef>( mSchema, mName, mAlias );
 }
 
 QgsSQLStatement::Node *QgsSQLStatement::NodeTableDef::clone() const
 {
-  return cloneThis();
+  return cloneThis().release();
 }
 
 //
@@ -699,19 +699,19 @@ QgsSQLStatement::Node *QgsSQLStatement::NodeSelect::clone() const
   const auto constMColumns = mColumns;
   for ( QgsSQLStatement::NodeSelectedColumn *column : constMColumns )
   {
-    newColumnList.push_back( column->cloneThis() );
+    newColumnList.push_back( column->cloneThis().release() );
   }
   QList<QgsSQLStatement::NodeTableDef *> newTableList;
   const auto constMTableList = mTableList;
   for ( QgsSQLStatement::NodeTableDef *table : constMTableList )
   {
-    newTableList.push_back( table->cloneThis() );
+    newTableList.push_back( table->cloneThis().release() );
   }
   QgsSQLStatement::NodeSelect *newSelect = new NodeSelect( newTableList, newColumnList, mDistinct );
   const auto constMJoins = mJoins;
   for ( QgsSQLStatement::NodeJoin *join : constMJoins )
   {
-    newSelect->appendJoin( join->cloneThis() );
+    newSelect->appendJoin( join->cloneThis().release() );
   }
   if ( mWhere )
   {
@@ -721,7 +721,7 @@ QgsSQLStatement::Node *QgsSQLStatement::NodeSelect::clone() const
   const auto constMOrderBy = mOrderBy;
   for ( QgsSQLStatement::NodeColumnSorted *columnSorted : constMOrderBy )
   {
-    newOrderByList.push_back( columnSorted->cloneThis() );
+    newOrderByList.push_back( columnSorted->cloneThis().release() );
   }
   newSelect->setOrderBy( newOrderByList );
   return newSelect;
@@ -763,15 +763,15 @@ QString QgsSQLStatement::NodeJoin::dump() const
 
 QgsSQLStatement::Node *QgsSQLStatement::NodeJoin::clone() const
 {
-  return cloneThis();
+  return cloneThis().release();
 }
 
-QgsSQLStatement::NodeJoin *QgsSQLStatement::NodeJoin::cloneThis() const
+std::unique_ptr<QgsSQLStatement::NodeJoin> QgsSQLStatement::NodeJoin::cloneThis() const
 {
   if ( mOnExpr )
-    return new NodeJoin( mTableDef->cloneThis(), mOnExpr->clone(), mType );
+    return std::make_unique<NodeJoin>( mTableDef->cloneThis().release(), mOnExpr->clone(), mType );
   else
-    return new NodeJoin( mTableDef->cloneThis(), mUsingColumns, mType );
+    return std::make_unique<NodeJoin>( mTableDef->cloneThis().release(), mUsingColumns, mType );
 }
 
 //
@@ -787,12 +787,12 @@ QString QgsSQLStatement::NodeColumnSorted::dump() const
 
 QgsSQLStatement::Node *QgsSQLStatement::NodeColumnSorted::clone() const
 {
-  return cloneThis();
+  return cloneThis().release();
 }
 
-QgsSQLStatement::NodeColumnSorted *QgsSQLStatement::NodeColumnSorted::cloneThis() const
+std::unique_ptr<QgsSQLStatement::NodeColumnSorted> QgsSQLStatement::NodeColumnSorted::cloneThis() const
 {
-  return new NodeColumnSorted( mColumn->cloneThis(), mAsc );
+  return std::make_unique<NodeColumnSorted>( mColumn->cloneThis().release(), mAsc );
 }
 
 //
