@@ -57,6 +57,7 @@ class QgsWelcomeScreenController : public QObject
   signals:
     void newVersionAvailable( const QString &versionString );
     void pluginUpdatesAvailable( const QStringList &plugins );
+    void welcomeScreenShown();
 
   private:
     QgsWelcomeScreen *mWelcomeScreen = nullptr;
