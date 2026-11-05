@@ -23,13 +23,10 @@
 #include "qgsattributedialog.h"
 #include "qgsdistancearea.h"
 #include "qgshighlight.h"
-#include "qgslogger.h"
 #include "qgsproject.h"
 #include "qgssettingsentryimpl.h"
 #include "qgssettingsregistrycore.h"
-#include "qgsvectordataprovider.h"
 #include "qgsvectorlayer.h"
-#include "qgsvectorlayerutils.h"
 
 #include <QPushButton>
 #include <QString>
@@ -174,19 +171,19 @@ bool QgsFeatureAction::editFeature( bool showModal )
 }
 
 QgsFeatureAction::AddFeatureResult QgsFeatureAction::addFeature(
-  const QgsAttributeMap &defaultAttributes, bool showModal, std::unique_ptr<QgsExpressionContextScope> scope, bool hideParent, std::unique_ptr<QgsHighlight> highlight
+  const QgsVectorLayerToolsContext &context, const QgsAttributeMap &defaultAttributes, std::unique_ptr<QgsExpressionContextScope> scope, std::unique_ptr<QgsHighlight> highlight
 )
 {
   if ( !mLayer || !mLayer->isEditable() )
     return AddFeatureResult::LayerStateError;
 
-  QgsExpressionContext context = mLayer->createExpressionContext();
+  QgsExpressionContext expressionContext = mLayer->createExpressionContext();
   if ( scope )
   {
-    context.appendScope( scope.release() );
+    expressionContext.appendScope( scope.release() );
   }
 
-  const QgsFeature newFeature = QgsAttributeForm::createFeature( mLayer, mFeature->geometry(), defaultAttributes, context );
+  const QgsFeature newFeature = QgsAttributeForm::createFeature( mLayer, mFeature->geometry(), defaultAttributes, expressionContext );
   *mFeature = newFeature;
 
   //show the dialog to enter attribute values
@@ -252,17 +249,18 @@ QgsFeatureAction::AddFeatureResult QgsFeatureAction::addFeature(
 
     connect( dialog->attributeForm(), &QgsAttributeForm::featureSaved, this, &QgsFeatureAction::onFeatureSaved );
 
-    if ( !showModal )
+    if ( !context.showModal() )
     {
       setParent( dialog ); // keep dialog until the dialog is closed and destructed
       connect( dialog, &QgsAttributeDialog::finished, this, &QgsFeatureAction::addFeatureFinished );
       dialog->show();
 
-      if ( hideParent )
+      if ( context.hideParent() )
       {
         connect( this, &QgsFeatureAction::addFeatureFinished, this, &QgsFeatureAction::unhideParentWidget );
         hideParentWidget();
       }
+
       mFeature = nullptr;
       return AddFeatureResult::Pending;
     }
