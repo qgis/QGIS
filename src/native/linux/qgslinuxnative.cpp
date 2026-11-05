@@ -15,14 +15,15 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "qgsconfig.h"
 #include "qgslinuxnative.h"
 
-#include <QCoreApplication>
 #include <QDBusArgument>
 #include <QDBusConnection>
 #include <QDBusInterface>
 #include <QDBusMetaType>
 #include <QFile>
+#include <QGuiApplication>
 #include <QImage>
 #include <QProcess>
 #include <QString>
@@ -33,9 +34,22 @@ using namespace Qt::StringLiterals;
 
 #include "moc_qgslinuxnative.cpp"
 
+#include "qgswaylandpointerlocker.h"
+
+QgsLinuxNative::QgsLinuxNative()
+  : mIsWayland( QGuiApplication::platformName() == "wayland"_L1 )
+{}
+
 QgsNative::Capabilities QgsLinuxNative::capabilities() const
 {
-  return QgsNative::Capability::NativeDesktopNotifications | QgsNative::Capability::NativeFilePropertiesDialog | QgsNative::Capability::NativeOpenTerminalAtPath;
+  QgsNative::Capabilities res = QgsNative::Capability::NativeDesktopNotifications | QgsNative::Capability::NativeFilePropertiesDialog | QgsNative::Capability::NativeOpenTerminalAtPath;
+#ifdef HAVE_WAYLAND
+  if ( mIsWayland )
+  {
+    res.setFlag( QgsNative::Capability::NativePointerLock );
+  }
+#endif
+  return res;
 }
 
 void QgsLinuxNative::initializeMainWindow( QWindow *, const QString &, const QString &, const QString & )
@@ -142,6 +156,20 @@ bool QgsLinuxNative::openTerminalAtPath( const QString &path )
   QStringList arguments;
   arguments << u"--working-directory"_s << path;
   return QProcess::startDetached( term, QStringList(), path );
+}
+
+QgsPointerLocker *QgsLinuxNative::createPointerLocker( QWindow *window, QObject *parent )
+{
+#ifdef HAVE_WAYLAND
+  if ( !mIsWayland )
+    return nullptr;
+
+  return new QgsWaylandPointerLocker( window, parent );
+#else
+  ( void ) window;
+  ( void ) parent;
+  return nullptr;
+#endif
 }
 
 /**
