@@ -78,6 +78,7 @@ RUN dnf -y --refresh install \
     sip6 \
     spatialindex-devel \
     sqlite-devel \
+    tbb-devel \
     unzip \
     unixODBC-devel \
     xorg-x11-server-Xvfb \
