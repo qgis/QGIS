@@ -194,7 +194,7 @@ target_include_directories(Pdf4QtLibCore PRIVATE SYSTEM
                            ${Fontconfig_INCLUDE_DIRS})
 
 if(LINUX_GCC)
-   # target_link_libraries(Pdf4QtLibCore PUBLIC TBB::tbb)
+   target_link_libraries(Pdf4QtLibCore PUBLIC TBB::tbb)
 endif()
 
 set(PDF4QT_COMPILE_OPTIONS)
