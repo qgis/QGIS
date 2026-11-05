@@ -646,7 +646,6 @@ QgsAbstractValidityCheck.prepareCheck: src/core/validity/qgsabstractvaliditychec
 QgsAbstractValidityCheck: src/core/validity/qgsabstractvaliditycheck.h#L91
 QgsAbstractVectorLayerLabeling.accept: src/core/labeling/qgsvectorlayerlabeling.h#L155
 QgsAbstractVectorLayerLabeling.clone: src/core/labeling/qgsvectorlayerlabeling.h#L63
-QgsAbstractVectorLayerLabeling.create: src/core/labeling/qgsvectorlayerlabeling.h#L130
 QgsAbstractVectorLayerLabeling.defaultSettingsForLayer: src/core/labeling/qgsvectorlayerlabeling.h#L162
 QgsAbstractVectorLayerLabeling.hasNonDefaultCompositionMode: src/core/labeling/qgsvectorlayerlabeling.h#L114
 QgsAbstractVectorLayerLabeling.multiplyOpacity: src/core/labeling/qgsvectorlayerlabeling.h#L125
@@ -11762,7 +11761,6 @@ QgsPalLayerSettings.setThinningSettings: src/core/labeling/qgspallabeling.h#L857
 QgsPalLayerSettings.setUnplacedVisibility: src/core/labeling/qgspallabeling.h#L908
 QgsPalLayerSettings.startRender: src/core/labeling/qgspallabeling.h#L282
 QgsPalLayerSettings.stopRender: src/core/labeling/qgspallabeling.h#L291
-QgsPalLayerSettings.toMimeData: src/core/labeling/qgspallabeling.h#L917
 QgsPalLayerSettings.unplacedVisibility: src/core/labeling/qgspallabeling.h#L900
 QgsPalLayerSettings.writeXml: src/core/labeling/qgspallabeling.h#L699
 QgsPalLayerSettings: src/core/labeling/qgspallabeling.h#L90
@@ -16726,8 +16724,6 @@ QgsRuleBasedLabeling.QgsRuleBasedLabeling: src/core/labeling/qgsrulebasedlabelin
 QgsRuleBasedLabeling.Rule.accept: src/core/labeling/qgsrulebasedlabeling.h#L331
 QgsRuleBasedLabeling.Rule.active: src/core/labeling/qgsrulebasedlabeling.h#L124
 QgsRuleBasedLabeling.Rule.appendChild: src/core/labeling/qgsrulebasedlabeling.h#L229
-QgsRuleBasedLabeling.Rule.clone: src/core/labeling/qgsrulebasedlabeling.h#L255
-QgsRuleBasedLabeling.Rule.create: src/core/labeling/qgsrulebasedlabeling.h#L266
 QgsRuleBasedLabeling.Rule.dependsOnScale: src/core/labeling/qgsrulebasedlabeling.h#L86
 QgsRuleBasedLabeling.Rule.descendants: src/core/labeling/qgsrulebasedlabeling.h#L212
 QgsRuleBasedLabeling.Rule.description: src/core/labeling/qgsrulebasedlabeling.h#L117
@@ -16755,7 +16751,6 @@ QgsRuleBasedLabeling.Rule.settings: src/core/labeling/qgsrulebasedlabeling.h#L79
 QgsRuleBasedLabeling.Rule: src/core/labeling/qgsrulebasedlabeling.h#L56
 QgsRuleBasedLabeling.accept: src/core/labeling/qgsrulebasedlabeling.h#L403
 QgsRuleBasedLabeling.clone: src/core/labeling/qgsrulebasedlabeling.h#L397
-QgsRuleBasedLabeling.create: src/core/labeling/qgsrulebasedlabeling.h#L392
 QgsRuleBasedLabeling.hasNonDefaultCompositionMode: src/core/labeling/qgsrulebasedlabeling.h#L414
 QgsRuleBasedLabeling.multiplyOpacity: src/core/labeling/qgsrulebasedlabeling.h#L417
 QgsRuleBasedLabeling.requiresAdvancedEffects: src/core/labeling/qgsrulebasedlabeling.h#L413
@@ -21128,7 +21123,6 @@ QgsVectorLayerServerProperties: src/core/qgsmaplayerserverproperties.h#L601
 QgsVectorLayerSimpleLabeling.QgsVectorLayerSimpleLabeling: src/core/labeling/qgsvectorlayerlabeling.h#L202
 QgsVectorLayerSimpleLabeling.accept: src/core/labeling/qgsvectorlayerlabeling.h#L210
 QgsVectorLayerSimpleLabeling.clone: src/core/labeling/qgsvectorlayerlabeling.h#L205
-QgsVectorLayerSimpleLabeling.create: src/core/labeling/qgsvectorlayerlabeling.h#L227
 QgsVectorLayerSimpleLabeling.hasNonDefaultCompositionMode: src/core/labeling/qgsvectorlayerlabeling.h#L222
 QgsVectorLayerSimpleLabeling.multiplyOpacity: src/core/labeling/qgsvectorlayerlabeling.h#L225
 QgsVectorLayerSimpleLabeling.requiresAdvancedEffects: src/core/labeling/qgsvectorlayerlabeling.h#L221
