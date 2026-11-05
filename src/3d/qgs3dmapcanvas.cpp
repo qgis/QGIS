@@ -301,7 +301,7 @@ void Qgs3DMapCanvas::setMapTool( Qgs3DMapTool *tool )
   }
 }
 
-bool Qgs3DMapCanvas::eventFilter( QObject *watched, QEvent *event )
+bool Qgs3DMapCanvas::eventFilter( QObject *, QEvent *event )
 {
   if ( mScene && mScene->get3DAxis() && mScene->get3DAxis()->handleEvent( event ) )
   {
