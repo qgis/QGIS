@@ -48,7 +48,6 @@ RUN dnf -y --refresh install \
     protobuf3-devel \
     protobuf3-lite-devel \
     python3-devel \
-    python3-mock \
     python3-oauthlib \
     python3-OWSLib \
     python3-pyqt6 \
