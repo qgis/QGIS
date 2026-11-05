@@ -135,6 +135,8 @@ Item {
                 focusPolicy: Qt.NoFocus
               }
 
+              onCurrentIndexChanged: focusCurrentList()
+
               function focusCurrentList() {
                 if (currentIndex === 0) {
                   recentProjectsListView.forceActiveFocus();
@@ -143,8 +145,6 @@ Item {
                   templateProjectsListView.forceActiveFocus();
                 }
               }
-
-              onCurrentIndexChanged: focusCurrentList()
             }
           }
 
@@ -174,14 +174,6 @@ Item {
                 isSelected: recentProjectsListView.currentIndex === index
                 radius: 6
 
-                function activate() {
-                  if (isEnabled) {
-                    welcomeScreenController.openProject(ProjectPath);
-                    welcomeScreenController.hideScene();
-                    recentProjectsListView.currentIndex = 0;
-                  }
-                }
-
                 onClicked: (mouse) => {
                   tabBar.focusCurrentList()
                   recentProjectsListView.currentIndex = index;
@@ -200,6 +192,14 @@ Item {
                 onDoubleClicked: (mouse) => {
                   if (mouse.button === Qt.LeftButton) {
                     activate();
+                  }
+                }
+
+                function activate() {
+                  if (isEnabled) {
+                    welcomeScreenController.openProject(ProjectPath);
+                    welcomeScreenController.hideScene();
+                    recentProjectsListView.currentIndex = 0;
                   }
                 }
               }
@@ -395,23 +395,6 @@ Item {
                 isSelected: templateProjectsListView.currentIndex === index
                 radius: 6
 
-                function activate() {
-                  switch (Type) {
-                  case TemplateProjectsModel.TemplateType.Blank:
-                    welcomeScreenController.createBlankProject(); //#spellok
-                    welcomeScreenController.hideScene();
-                    return;
-                  case TemplateProjectsModel.TemplateType.Basemap:
-                    welcomeScreenController.createProjectFromBasemap();
-                    welcomeScreenController.hideScene();
-                    return;
-                  default:
-                    welcomeScreenController.createProjectFromTemplate(TemplateNativePath || ""); //#spellok
-                    welcomeScreenController.hideScene();
-                    return;
-                  }
-                }
-
                 onClicked: (mouse) => {
                   tabBar.focusCurrentList()
                   templateProjectsListView.currentIndex = index;
@@ -428,6 +411,23 @@ Item {
                 onDoubleClicked: (mouse) => {
                   if (mouse.button === Qt.LeftButton) {
                     activate();
+                  }
+                }
+
+                function activate() {
+                  switch (Type) {
+                  case TemplateProjectsModel.TemplateType.Blank:
+                    welcomeScreenController.createBlankProject(); //#spellok
+                    welcomeScreenController.hideScene();
+                    return;
+                  case TemplateProjectsModel.TemplateType.Basemap:
+                    welcomeScreenController.createProjectFromBasemap();
+                    welcomeScreenController.hideScene();
+                    return;
+                  default:
+                    welcomeScreenController.createProjectFromTemplate(TemplateNativePath || ""); //#spellok
+                    welcomeScreenController.hideScene();
+                    return;
                   }
                 }
               }
