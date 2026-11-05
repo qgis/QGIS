@@ -61,15 +61,7 @@ void QgsClipboard::replaceWithCopyOf( QgsVectorLayer *src )
   if ( !src )
     return;
 
-  // Replace the QGIS clipboard.
-  mFeatureFields = src->fields();
-  mFeatureClipboard = src->selectedFeatures();
-  mCRS = src->crs();
-  mFeatureLayer = src;
-  QgsDebugMsgLevel( u"replaced QGIS clipboard."_s, 2 );
-
-  setSystemClipboard();
-  mUseSystemClipboard = false;
+  setSystemClipboard( src, src->crs(), src->fields(), src->selectedFeatures() );
   emit changed();
 }
 
@@ -95,198 +87,32 @@ void QgsClipboard::replaceWithCopyOf( QgsVectorTileLayer *src )
     }
   }
 
-  mFeatureFields = supersetFields;
-
-  mFeatureClipboard.clear();
+  QgsFeatureList featuresToCopy;
   for ( const QgsFeature &feature : selectedFeatures )
   {
     QgsFeature superSetFeature = feature;
-    QgsVectorLayerUtils::matchAttributesToFields( superSetFeature, mFeatureFields );
-    mFeatureClipboard.append( superSetFeature );
+    QgsVectorLayerUtils::matchAttributesToFields( superSetFeature, supersetFields );
+    featuresToCopy.append( superSetFeature );
   }
 
-  mCRS = src->crs();
-  mFeatureLayer = src;
   QgsDebugMsgLevel( u"replaced QGIS clipboard."_s, 2 );
 
-  setSystemClipboard();
-  mUseSystemClipboard = false;
+  setSystemClipboard( src, src->crs(), supersetFields, featuresToCopy );
   emit changed();
 }
 
 void QgsClipboard::replaceWithCopyOf( QgsFeatureStore &featureStore, QgsVectorLayer *src )
 {
   QgsDebugMsgLevel( u"features count = %1"_s.arg( featureStore.features().size() ), 2 );
-  mFeatureFields = featureStore.fields();
-  mFeatureClipboard = featureStore.features();
-  mCRS = featureStore.crs();
-  mFeatureLayer = src;
-  setSystemClipboard();
-  mUseSystemClipboard = false;
+  setSystemClipboard( src, featureStore.crs(), featureStore.fields(), featureStore.features() );
   emit changed();
 }
 
-void QgsClipboard::generateClipboardText( QString &textContent, QString &htmlContent ) const
+void QgsClipboard::setSystemClipboard(QgsMapLayer* sourceLayer, const QgsCoordinateReferenceSystem& crs, const QgsFields& fields, const QgsFeatureList& features )
 {
-  CopyFormat format = QgsSettings().enumValue( u"qgis/copyFeatureFormat"_s, AttributesWithWKT );
-
-  textContent.clear();
-  htmlContent.clear();
-
-  if ( QgsVectorLayer *vectorLayer = qobject_cast<QgsVectorLayer *>( mFeatureLayer.data() ) )
-  {
-    if ( vectorLayer->geometryType() == Qgis::GeometryType::Null )
-    {
-      format = AttributesOnly;
-    }
-  }
-
-  switch ( format )
-  {
-    case AttributesOnly:
-    case AttributesWithWKT:
-    case AttributesWithWKB:
-    {
-      QStringList textLines, htmlLines;
-      QStringList textFields, htmlFields;
-
-      // first do the field names
-      if ( ( format == AttributesWithWKB ) || ( format == AttributesWithWKT ) )
-      {
-        const QLatin1String geometryHeading = format == AttributesWithWKB ? "wkb_geom"_L1 : "wkt_geom"_L1;
-        // only include the "wkx_geom" field IF we have other fields -- otherwise it's redundant and we should just set the clipboard to WKT/WKB text directly
-        if ( !mFeatureFields.isEmpty() )
-        {
-          textFields += geometryHeading;
-        }
-
-        htmlFields += "<td>"_L1 + geometryHeading + "</td>"_L1;
-      }
-
-      textFields.reserve( mFeatureFields.size() );
-      htmlFields.reserve( mFeatureFields.size() );
-      for ( const QgsField &field : mFeatureFields )
-      {
-        textFields += field.name();
-        htmlFields += u"<td>%1</td>"_s.arg( field.name() );
-      }
-      if ( !textFields.empty() )
-        textLines += textFields.join( QLatin1Char( '\t' ) );
-      htmlLines += htmlFields.join( QString() );
-      textFields.clear();
-      htmlFields.clear();
-
-      // then the field contents
-      for ( QgsFeatureList::const_iterator it = mFeatureClipboard.constBegin(); it != mFeatureClipboard.constEnd(); ++it )
-      {
-        const QgsAttributes attributes = it->attributes();
-
-        // TODO: Set up Paste Transformations to specify the order in which fields are added.
-        if ( ( format == AttributesWithWKB ) || ( format == AttributesWithWKT ) )
-        {
-          if ( it->hasGeometry() )
-          {
-            if ( format == AttributesWithWKT )
-            {
-              const QString wkt = it->geometry().asWkt();
-              textFields += wkt;
-              htmlFields += u"<td>%1</td>"_s.arg( wkt );
-            }
-            else if ( format == AttributesWithWKB )
-            {
-              const QString wkb = it->geometry().asWkb().toHex();
-              textFields += wkb;
-              htmlFields += u"<td>%1</td>"_s.arg( wkb );
-            }
-          }
-          else
-          {
-            textFields += QgsApplication::nullRepresentation();
-            htmlFields += u"<td>%1</td>"_s.arg( QgsApplication::nullRepresentation() );
-          }
-        }
-
-        for ( int idx = 0; idx < attributes.count(); ++idx )
-        {
-          QString value;
-          QVariant variant = attributes.at( idx );
-          const bool useJSONFromVariant = variant.userType() == QMetaType::Type::QStringList || variant.userType() == QMetaType::Type::QVariantList || variant.userType() == QMetaType::Type::QVariantMap;
-
-          if ( useJSONFromVariant )
-          {
-            value = QString::fromStdString( QgsJsonUtils::jsonFromVariant( variant ).dump() );
-          }
-          else
-          {
-            if ( QgsVariantUtils::isNull( variant ) && variant.isValid() )
-              value = "";
-            else
-              value = variant.toString();
-          }
-
-          if ( value.contains( '\n' ) || value.contains( '\t' ) )
-            textFields += '"' + value.replace( '"', "\"\""_L1 ) + '\"';
-          else
-          {
-            textFields += value;
-          }
-          if ( useJSONFromVariant )
-          {
-            value = QString::fromStdString( QgsJsonUtils::jsonFromVariant( variant ).dump() );
-          }
-          else
-          {
-            if ( QgsVariantUtils::isNull( variant ) && variant.isValid() )
-              value = "";
-            else
-              value = variant.toString();
-          }
-          value.replace( '\n', "<br>"_L1 ).replace( '\t', "&emsp;"_L1 );
-          htmlFields += u"<td>%1</td>"_s.arg( value );
-        }
-
-        textLines += textFields.join( QLatin1Char( '\t' ) );
-        htmlLines += htmlFields.join( QString() );
-        textFields.clear();
-        htmlFields.clear();
-      }
-
-      textContent = textLines.join( '\n' );
-      htmlContent = u"<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0 Transitional//EN\"><html><head><meta http-equiv=\"content-type\" content=\"text/html; charset=utf-8\"/></head><body><table border=\"1\"><tr>"_s
-                    + htmlLines.join( "</tr><tr>"_L1 )
-                    + u"</tr></table></body></html>"_s;
-      break;
-    }
-    case GeoJSON:
-    {
-      QgsJsonExporter exporter;
-      exporter.setSourceCrs( mCRS );
-
-      textContent = exporter.exportFeatures( mFeatureClipboard );
-    }
-  }
-}
-
-void QgsClipboard::setSystemClipboard()
-{
-  // avoid overwriting internal clipboard - note that on Windows, the call to QClipboard::setText
-  // below doesn't immediately trigger QClipboard::dataChanged, and accordingly the call to
-  // systemClipboardChanged() is delayed. So by setting mIgnoreNextSystemClipboardChange we indicate
-  // that just the next call to systemClipboardChanged() should be ignored
-  mIgnoreNextSystemClipboardChange = true;
-
   QClipboard *cb = QApplication::clipboard();
 
-  // Copy text into the clipboard
-  QString textCopy, htmlCopy;
-  generateClipboardText( textCopy, htmlCopy );
-  QMimeData *m = new QMimeData();
-  m->setText( textCopy );
-
-  if ( mFeatureClipboard.count() < 1000 && !htmlCopy.isEmpty() )
-  {
-    m->setHtml( htmlCopy );
-  }
+  QgsFeatureListMimeData *m = new QgsFeatureListMimeData( sourceLayer, crs, fields, features );
 
   // With qgis running under Linux, but with a Windows based X
   // server (Xwin32), ::Selection was necessary to get the data into
@@ -298,8 +124,6 @@ void QgsClipboard::setSystemClipboard()
     cb->setMimeData( m, QClipboard::Selection );
   }
   cb->setMimeData( m, QClipboard::Clipboard );
-
-  QgsDebugMsgLevel( u"replaced system clipboard with: %1."_s.arg( textCopy ), 4 );
 }
 
 QgsFeatureList QgsClipboard::stringToFeatureList( const QString &string, const QgsFields &fields ) const
@@ -452,10 +276,12 @@ QgsFields QgsClipboard::retrieveFields() const
 QgsFeatureList QgsClipboard::copyOf( const QgsFields &fields ) const
 {
   QgsDebugMsgLevel( u"returning clipboard."_s, 2 );
-  if ( !mUseSystemClipboard )
-    return mFeatureClipboard;
-
   QClipboard *cb = QApplication::clipboard();
+
+  if ( const QgsFeatureListMimeData* featureListData = featureListDataFromClipboard() )
+  {
+    return featureListData->mFeatures;
+  }
 
   QString text;
   if ( cb->supportsSelection() )
@@ -493,7 +319,13 @@ bool QgsClipboard::isEmpty() const
     text = cb->text( QClipboard::Clipboard );
   }
 
-  return text.isEmpty() && mFeatureClipboard.empty();
+  bool hasFeatureClipboard = false;
+  if ( const QgsFeatureListMimeData* featureListData = featureListDataFromClipboard() )
+  {
+    hasFeatureClipboard = !featureListData->mFeatures.isEmpty();
+  }
+
+  return text.isEmpty() && !hasFeatureClipboard;
 }
 
 QgsFeatureList QgsClipboard::transformedCopyOf( const QgsCoordinateReferenceSystem &destCRS, const QgsFields &fields ) const
@@ -516,12 +348,18 @@ QgsFeatureList QgsClipboard::transformedCopyOf( const QgsCoordinateReferenceSyst
 
 QgsCoordinateReferenceSystem QgsClipboard::crs() const
 {
-  return mCRS;
+  if ( const QgsFeatureListMimeData* featureListData = featureListDataFromClipboard() )
+  {
+    return featureListData->mCRS;
+  }
+  else
+  {
+    return QgsCoordinateReferenceSystem();
+  }
 }
 
 void QgsClipboard::setData( const QString &mimeType, const QByteArray &data, const QString &text )
 {
-  mUseSystemClipboard = true;
   QMimeData *mdata = new QMimeData();
   mdata->setData( mimeType, data );
   if ( !text.isEmpty() )
@@ -561,18 +399,26 @@ QByteArray QgsClipboard::data( const QString &mimeType ) const
 
 QgsFields QgsClipboard::fields() const
 {
-  if ( !mUseSystemClipboard )
-    return mFeatureFields;
+  if ( const QgsFeatureListMimeData* featureListData = featureListDataFromClipboard() )
+  {
+    return featureListData->mFields;
+  }
   else
+  {
     return retrieveFields();
+  }
 }
 
 QgsMapLayer *QgsClipboard::layer() const
 {
-  if ( !mUseSystemClipboard )
-    return mFeatureLayer.data();
+  if ( const QgsFeatureListMimeData* featureListData = featureListDataFromClipboard() )
+  {
+    return featureListData->mSourceLayer;
+  }
   else
+  {
     return nullptr;
+  }
 }
 
 std::unique_ptr<QgsVectorLayer> QgsClipboard::pasteToNewMemoryVector( QgsMessageBar *messageBar )
@@ -688,12 +534,253 @@ std::unique_ptr<QgsVectorLayer> QgsClipboard::pasteToNewMemoryVector( QgsMessage
 
 void QgsClipboard::systemClipboardChanged()
 {
-  if ( mIgnoreNextSystemClipboardChange )
+  if ( QApplication::clipboard()->ownsClipboard() )
   {
-    mIgnoreNextSystemClipboardChange = false;
+    // on wayland the system clipboard will always emit dataChanged on an application defocus/refocus cycle,
+    // so we'll ignore this if we know we set the clipboard originally ourselves
     return;
   }
 
-  mUseSystemClipboard = true;
   emit changed();
+}
+
+const QgsFeatureListMimeData* QgsClipboard::featureListDataFromClipboard() const
+{
+  QClipboard *cb = QApplication::clipboard();
+  const QMimeData* data = nullptr;
+  if ( cb->supportsSelection() )
+  {
+    data = cb->mimeData( QClipboard::Selection );
+  }
+  else
+  {
+    data = cb->mimeData( QClipboard::Clipboard );
+  }
+  const QgsFeatureListMimeData* ff = qobject_cast< const QgsFeatureListMimeData* >( data );
+  QgsDebugError( u"Got clipboard? %1"_s.arg( ff ? "y" : "N"));
+  return ff;
+}
+
+//
+// QgsFeatureListMimeData
+//
+
+QgsFeatureListMimeData::QgsFeatureListMimeData(QgsMapLayer* sourceLayer, const QgsCoordinateReferenceSystem& crs, const QgsFields& fields, const QgsFeatureList& features)
+  : mFeatures( features )
+  , mFields( fields )
+  , mCRS( crs)
+  , mSourceLayer( sourceLayer )
+{
+
+}
+
+QStringList QgsFeatureListMimeData::formats() const
+{
+  return {
+    QStringLiteral( "text/plain" ),
+    QStringLiteral( "text/html" )
+  };
+}
+
+QVariant QgsFeatureListMimeData::retrieveData(const QString& mimeType, QMetaType type ) const
+{
+  if ( mimeType == QStringLiteral( "text/plain" ) )
+{
+    return toText( false );
+}
+ else if ( mimeType == QStringLiteral( "text/html" ) )
+  {
+    return toText( true );
+  }
+  return QMimeData::retrieveData( mimeType, type );
+}
+
+QString QgsFeatureListMimeData::toText( bool asHtml ) const
+{
+  QgsClipboard::CopyFormat format = QgsSettings().enumValue( u"qgis/copyFeatureFormat"_s, QgsClipboard::AttributesWithWKT );
+
+  if ( QgsVectorLayer *vectorLayer = qobject_cast<QgsVectorLayer *>( mSourceLayer.data() ) )
+  {
+    if ( vectorLayer->geometryType() == Qgis::GeometryType::Null )
+    {
+      format = QgsClipboard::AttributesOnly;
+    }
+  }
+
+  QString content;
+  switch ( format )
+  {
+    case QgsClipboard::AttributesOnly:
+    case QgsClipboard::AttributesWithWKT:
+    case QgsClipboard::AttributesWithWKB:
+    {
+      QStringList lines;
+      QStringList fields;
+
+      // first do the field names
+      if ( ( format == QgsClipboard::AttributesWithWKB ) || ( format == QgsClipboard::AttributesWithWKT ) )
+      {
+        const QLatin1String geometryHeading = format == QgsClipboard::AttributesWithWKB ? "wkb_geom"_L1 : "wkt_geom"_L1;
+        // only include the "wkx_geom" field IF we have other fields -- otherwise it's redundant and we should just set the clipboard to WKT/WKB text directly
+        if ( !asHtml )
+        {
+          if ( !mFields.isEmpty() )
+          {
+              fields += geometryHeading;
+          }
+        }
+        else
+        {
+          fields += "<td>"_L1 + geometryHeading + "</td>"_L1;
+        }
+      }
+
+      fields.reserve( mFields.size() );
+      for ( const QgsField &field : mFields )
+      {
+        if ( !asHtml )
+        {
+        fields += field.name();
+        }
+        else
+        {
+        fields += u"<td>%1</td>"_s.arg( field.name() );
+        }
+      }
+      if ( !asHtml )
+      {
+      if ( !fields.empty() )
+        lines += fields.join( QLatin1Char( '\t' ) );
+      }
+      else
+      {
+      lines += fields.join( QString() );
+      }
+      fields.clear();
+
+      // then the field contents
+      for ( QgsFeatureList::const_iterator it = mFeatures.constBegin(); it != mFeatures.constEnd(); ++it )
+      {
+        const QgsAttributes attributes = it->attributes();
+
+        // TODO: Set up Paste Transformations to specify the order in which fields are added.
+        if ( ( format == QgsClipboard::AttributesWithWKB ) || ( format == QgsClipboard::AttributesWithWKT ) )
+        {
+          if ( it->hasGeometry() )
+          {
+            if ( format == QgsClipboard::AttributesWithWKT )
+            {
+              const QString wkt = it->geometry().asWkt();
+              if (!asHtml )
+              {
+              fields += wkt;
+              }
+              else
+              {
+              fields += u"<td>%1</td>"_s.arg( wkt );
+              }
+            }
+            else if ( format == QgsClipboard::AttributesWithWKB )
+            {
+              const QString wkb = it->geometry().asWkb().toHex();
+              if ( !asHtml )
+              {
+              fields += wkb;
+              }
+              else
+              {
+              fields += u"<td>%1</td>"_s.arg( wkb );
+              }
+            }
+          }
+          else
+          {
+            if ( !asHtml )
+            {
+            fields += QgsApplication::nullRepresentation();
+            }
+            else
+            {
+            fields += u"<td>%1</td>"_s.arg( QgsApplication::nullRepresentation() );
+            }
+          }
+        }
+
+        for ( int idx = 0; idx < attributes.count(); ++idx )
+        {
+          QString value;
+          QVariant variant = attributes.at( idx );
+          const bool useJSONFromVariant = variant.userType() == QMetaType::Type::QStringList || variant.userType() == QMetaType::Type::QVariantList || variant.userType() == QMetaType::Type::QVariantMap;
+
+          if ( useJSONFromVariant )
+          {
+            value = QString::fromStdString( QgsJsonUtils::jsonFromVariant( variant ).dump() );
+          }
+          else
+          {
+            if ( QgsVariantUtils::isNull( variant ) && variant.isValid() )
+              value = "";
+            else
+              value = variant.toString();
+          }
+
+          if ( !asHtml )
+          {
+          if ( value.contains( '\n' ) || value.contains( '\t' ) )
+            fields += '"' + value.replace( '"', "\"\""_L1 ) + '\"';
+          else
+          {
+            fields += value;
+          }
+          }
+          else
+          {
+          if ( useJSONFromVariant )
+          {
+            value = QString::fromStdString( QgsJsonUtils::jsonFromVariant( variant ).dump() );
+          }
+          else
+          {
+            if ( QgsVariantUtils::isNull( variant ) && variant.isValid() )
+              value = "";
+            else
+              value = variant.toString();
+          }
+          value.replace( '\n', "<br>"_L1 ).replace( '\t', "&emsp;"_L1 );
+          fields += u"<td>%1</td>"_s.arg( value );
+          }
+        }
+
+        if ( !asHtml )
+        {
+        lines += fields.join( QLatin1Char( '\t' ) );
+        }
+        else
+        {
+        lines += fields.join( QString() );
+        }
+        fields.clear();
+      }
+
+      if (!asHtml )
+      {
+      content = lines.join( '\n' );
+      }
+      else
+      {
+      content = u"<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0 Transitional//EN\"><html><head><meta http-equiv=\"content-type\" content=\"text/html; charset=utf-8\"/></head><body><table border=\"1\"><tr>"_s
+                    + lines.join( "</tr><tr>"_L1 )
+                    + u"</tr></table></body></html>"_s;
+      }
+      break;
+    }
+    case QgsClipboard::GeoJSON:
+    {
+      QgsJsonExporter exporter;
+      exporter.setSourceCrs( mCRS );
+
+      content = exporter.exportFeatures( mFeatures );
+    }
+  }
+  return content;
 }
