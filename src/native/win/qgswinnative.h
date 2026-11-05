@@ -58,7 +58,7 @@ class NATIVE_EXPORT QgsWinNative : public QgsNative
 
   private:
     QWindow *mWindow = nullptr;
-    Capabilities mCapabilities = NativeFilePropertiesDialog | NativeOpenTerminalAtPath;
+    Capabilities mCapabilities = QgsNative::Capability::NativeFilePropertiesDialog | QgsNative::Capability::NativeOpenTerminalAtPath;
     bool mWinToastInitialized = false;
     QgsWinNativeEventFilter *mNativeEventFilter = nullptr;
 };

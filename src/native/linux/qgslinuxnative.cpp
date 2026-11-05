@@ -35,7 +35,7 @@ using namespace Qt::StringLiterals;
 
 QgsNative::Capabilities QgsLinuxNative::capabilities() const
 {
-  return NativeDesktopNotifications | NativeFilePropertiesDialog | NativeOpenTerminalAtPath;
+  return QgsNative::Capability::NativeDesktopNotifications | QgsNative::Capability::NativeFilePropertiesDialog | QgsNative::Capability::NativeOpenTerminalAtPath;
 }
 
 void QgsLinuxNative::initializeMainWindow( QWindow *, const QString &, const QString &, const QString & )
