@@ -2256,6 +2256,8 @@ bool QgsMapBoxGlStyleConverter::parseSymbolLayerAsRenderer( const QVariantMap &j
       lineSymbol->setPlacements( Qgis::MarkerLinePlacement::CentralPoint );
     }
 
+    const QVariantMap jsonPaint = jsonLayer.value( u"paint"_s ).toMap();
+
     QgsRasterMarkerSymbolLayer *markerLayer = new QgsRasterMarkerSymbolLayer();
     QSize spriteSize;
     QString spriteProperty, spriteSizeProperty;
@@ -2319,8 +2321,42 @@ bool QgsMapBoxGlStyleConverter::parseSymbolLayerAsRenderer( const QVariantMap &j
       }
     }
 
+    double iconOpacity = -1.0;
+    if ( jsonPaint.contains( u"icon-opacity"_s ) )
+    {
+      const QVariant jsonIconOpacity = jsonPaint.value( u"icon-opacity"_s );
+      switch ( jsonIconOpacity.userType() )
+      {
+        case QMetaType::Type::Int:
+        case QMetaType::Type::LongLong:
+        case QMetaType::Type::Double:
+          iconOpacity = jsonIconOpacity.toDouble();
+          break;
+
+        case QMetaType::Type::QVariantMap:
+          markerDdProperties.setProperty( QgsSymbolLayer::Property::Opacity, parseInterpolateByZoom( jsonIconOpacity.toMap(), context, 100, &iconOpacity ) );
+          break;
+
+        case QMetaType::Type::QVariantList:
+        case QMetaType::Type::QStringList:
+          markerDdProperties.setProperty( QgsSymbolLayer::Property::Opacity, parseValueList( jsonIconOpacity.toList(), PropertyType::Numeric, context, 100, 255, nullptr, &iconOpacity ) );
+          break;
+
+        default:
+          context.pushWarning(
+            QObject::tr( "%1: Skipping unsupported icon-opacity type (%2)" ).arg( context.layerId(), QMetaType::typeName( static_cast<QMetaType::Type>( jsonIconOpacity.userType() ) ) )
+          );
+          break;
+      }
+    }
+
     markerLayer->setDataDefinedProperties( markerDdProperties );
     markerLayer->setAngle( rotation );
+    if ( iconOpacity >= 0 )
+    {
+      markerLayer->setOpacity( iconOpacity );
+    }
+
     lineSymbol->setSubSymbol( new QgsMarkerSymbol( QgsSymbolLayerList() << markerLayer ) );
 
     std::unique_ptr< QgsSymbol > symbol = std::make_unique< QgsLineSymbol >( QgsSymbolLayerList() << lineSymbol );
