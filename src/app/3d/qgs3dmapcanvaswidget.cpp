@@ -812,6 +812,13 @@ bool Qgs3DMapCanvasWidget::eventFilter( QObject *watched, QEvent *event )
   return QObject::eventFilter( watched, event );
 }
 
+void Qgs3DMapCanvasWidget::showEvent( QShowEvent *event )
+{
+  QWidget::showEvent( event );
+  mContainer->setFocus( Qt::OtherFocusReason );
+  mCanvas->requestActivate();
+}
+
 void Qgs3DMapCanvasWidget::toggleNavigationWidget( const bool visibility )
 {
   mNavigationWidget->setVisible( visibility );

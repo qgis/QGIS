@@ -108,6 +108,7 @@ class APP_EXPORT Qgs3DMapCanvasWidget : public QWidget
     void updateLayerRelatedActions( QgsMapLayer *layer );
 
     bool eventFilter( QObject *watched, QEvent *event ) override;
+    void showEvent( QShowEvent *event ) override;
 
     void nudgeLeft();
 
