@@ -193,7 +193,7 @@ target_include_directories(Pdf4QtLibCore PRIVATE SYSTEM
                            ${FREETYPE_INCLUDE_DIRS}
                            ${Fontconfig_INCLUDE_DIRS})
 
-if(LINUX_GCC)
+if(UNIX AND NOT APPLE)
    target_link_libraries(Pdf4QtLibCore PUBLIC TBB::tbb)
 endif()
 
