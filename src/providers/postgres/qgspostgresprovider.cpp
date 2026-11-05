@@ -3445,6 +3445,14 @@ bool QgsPostgresProvider::changeFeatures( const QgsChangedAttributesMap &attr_ma
           {
             sql += quotedByteaValue( value );
           }
+          else if ( fld.typeName() == "text"_L1 )
+          {
+            //save maps and lists of string fields as json
+            if ( value.userType() == QMetaType::Type::QVariantMap || value.userType() == QMetaType::Type::QVariantList )
+              sql += quotedJsonValue( value );
+            else
+              sql += quotedValue( value );
+          }
           else
           {
             sql += quotedValue( value );
