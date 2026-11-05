@@ -32,7 +32,6 @@ try:
     QgsExpressionContextUtils.processingAlgorithmScope = staticmethod(QgsExpressionContextUtils.processingAlgorithmScope)
     QgsExpressionContextUtils.processingModelAlgorithmScope = staticmethod(QgsExpressionContextUtils.processingModelAlgorithmScope)
     QgsExpressionContextUtils.notificationScope = staticmethod(QgsExpressionContextUtils.notificationScope)
-    QgsExpressionContextUtils.registerContextFunctions = staticmethod(QgsExpressionContextUtils.registerContextFunctions)
     QgsExpressionContextUtils.meshExpressionScope = staticmethod(QgsExpressionContextUtils.meshExpressionScope)
     QgsExpressionContextUtils.__group__ = ['expression']
 except (NameError, AttributeError):

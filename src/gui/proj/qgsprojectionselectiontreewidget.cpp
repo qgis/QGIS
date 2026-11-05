@@ -43,7 +43,7 @@ using namespace Qt::StringLiterals;
 #include <QRegularExpression>
 
 #ifdef ENABLE_MODELTEST
-#include "modeltest.h"
+#include <QAbstractItemModelTester>
 #endif
 
 QgsProjectionSelectionTreeWidget::QgsProjectionSelectionTreeWidget( QWidget *parent, QgsCoordinateReferenceSystemProxyModel::Filters filters )
@@ -593,7 +593,7 @@ QgsRecentCoordinateReferenceSystemTableModel::QgsRecentCoordinateReferenceSystem
   : QgsRecentCoordinateReferenceSystemsProxyModel( parent, 3 )
 {
 #ifdef ENABLE_MODELTEST
-  new ModelTest( this, this );
+  new QAbstractItemModelTester( this, QAbstractItemModelTester::FailureReportingMode::Fatal, this );
 #endif
 }
 

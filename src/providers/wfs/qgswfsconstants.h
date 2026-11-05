@@ -57,6 +57,7 @@ struct QgsWFSConstants
     static const QString URI_PARAM_SQL;
     static const QString URI_PARAM_HTTPMETHOD;
     static const QString URI_PARAM_FEATURE_MODE;
+    static const QString URI_PARAM_DISABLE_DECOMPRESSED_SAFETY_CHECK_THRESHOLD;
 
     //
     static const QString VERSION_AUTO;

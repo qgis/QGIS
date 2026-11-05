@@ -116,8 +116,9 @@ using namespace Qt::StringLiterals;
 #include <gdal.h>
 
 #ifdef ENABLE_MODELTEST
-#include "modeltest.h"
+#include <QAbstractItemModelTester>
 #endif
+
 #include <QGlobalStatic>
 #define FIT_LAYOUT -101
 #define FIT_LAYOUT_WIDTH -102
@@ -1211,7 +1212,7 @@ void QgsLayoutDesignerDialog::setCurrentLayout( QgsLayout *layout )
     mSelectTool->setLayout( layout );
     mItemsTreeView->setCurrentLayout( mLayout );
 #ifdef ENABLE_MODELTEST
-    new ModelTest( mLayout->itemsModel(), this );
+    new QAbstractItemModelTester( mLayout->itemsModel(), QAbstractItemModelTester::FailureReportingMode::Fatal, this );
 #endif
 
     connect( mLayout, &QgsLayout::backgroundTaskCountChanged, this, &QgsLayoutDesignerDialog::backgroundTaskCountChanged );

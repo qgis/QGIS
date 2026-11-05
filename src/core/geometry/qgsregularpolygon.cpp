@@ -174,25 +174,25 @@ QgsPointSequence QgsRegularPolygon::points() const
   return pts;
 }
 
-QgsPolygon *QgsRegularPolygon::toPolygon() const
+std::unique_ptr<QgsPolygon> QgsRegularPolygon::toPolygon() const
 {
   auto polygon = std::make_unique<QgsPolygon>();
   if ( isEmpty() )
   {
-    return polygon.release();
+    return polygon;
   }
 
-  polygon->setExteriorRing( toLineString() );
+  polygon->setExteriorRing( toLineString().release() );
 
-  return polygon.release();
+  return polygon;
 }
 
-QgsLineString *QgsRegularPolygon::toLineString() const
+std::unique_ptr<QgsLineString> QgsRegularPolygon::toLineString() const
 {
   auto ext = std::make_unique<QgsLineString>();
   if ( isEmpty() )
   {
-    return ext.release();
+    return ext;
   }
 
   QgsPointSequence pts;
@@ -201,7 +201,7 @@ QgsLineString *QgsRegularPolygon::toLineString() const
   ext->setPoints( pts );
   ext->addVertex( pts.at( 0 ) ); //close regular polygon
 
-  return ext.release();
+  return ext;
 }
 
 QgsTriangle QgsRegularPolygon::toTriangle() const

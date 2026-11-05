@@ -138,6 +138,7 @@
      <addaction name="separator"/>
      <addaction name="mActionSetStyles"/>
      <addaction name="separator"/>
+     <addaction name="mActionHelp"/>
     </widget>
    </item>
    <item row="8" column="0">
@@ -526,6 +527,18 @@
    </property>
    <property name="toolTip">
     <string>Add feature via attribute form</string>
+   </property>
+  </action>
+  <action name="mActionHelp">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionHelpContents.svg</normaloff>:/images/themes/default/mActionHelpContents.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Help</string>
+   </property>
+   <property name="toolTip">
+    <string>Open help</string>
    </property>
   </action>
  </widget>

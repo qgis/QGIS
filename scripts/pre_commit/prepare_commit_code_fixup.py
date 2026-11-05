@@ -150,7 +150,6 @@ NON_STANDARD_NAMED_QGIS_HEADERS = (
     "TriangleInterpolator.h",
     "CloughTocherInterpolator.h",
     "HalfEdge.h",
-    "modeltest.h",
     "libdxfrw.h",
     "dockModel.h",
     "o2replyserver.h",

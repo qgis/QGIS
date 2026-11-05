@@ -184,6 +184,7 @@ Qgs3DMapCanvasWidget::Qgs3DMapCanvasWidget( const QString &name, bool isDocked )
   mPointCloudEditingToolbar->addWidget( new QLabel( tr( "Attribute" ) ) )->setObjectName( u"m3DActionAttributeLabel"_s );
   mCboChangeAttribute = new QComboBox();
   mCboChangeAttribute->setObjectName( u"m3DCboChangeAttribute"_s );
+  mCboChangeAttribute->setSizeAdjustPolicy( QComboBox::AdjustToContents );
   mPointCloudEditingToolbar->addWidget( mCboChangeAttribute )->setObjectName( u"m3DActionChangeAttribute"_s );
   mSpinChangeAttributeValue = new QgsDoubleSpinBox();
   mSpinChangeAttributeValue->setObjectName( u"m3DSpinChangeAttributeValue"_s );
@@ -195,6 +196,7 @@ Qgs3DMapCanvasWidget::Qgs3DMapCanvasWidget( const QString &name, bool isDocked )
   mCboChangeAttributeValue = new QComboBox();
   mCboChangeAttributeValue->setObjectName( u"m3DCboChangeAttributeValue"_s );
   mCboChangeAttributeValue->setEditable( true );
+  mCboChangeAttributeValue->setSizeAdjustPolicy( QComboBox::AdjustToContents );
   mClassValidator = new ClassValidator( this );
   mCboChangeAttributeValueAction = mPointCloudEditingToolbar->addWidget( mCboChangeAttributeValue );
   mCboChangeAttributeValueAction->setObjectName( u"m3DActionChangeAttributeValueCombo"_s );
@@ -559,6 +561,14 @@ Qgs3DMapCanvasWidget::Qgs3DMapCanvasWidget( const QString &name, bool isDocked )
 
   updateLayerRelatedActions( QgisApp::instance()->activeLayer() );
   mEditingToolBar->setVisible( setting.value( u"/3D/editingToolbar/visibility"_s, false, QgsSettings::Gui ).toBool() );
+
+  toolBar->addSeparator();
+
+  //  Help button
+  QAction *helpAction = new QAction( QgsApplication::getThemeIcon( u"mActionHelpContents.svg"_s ), tr( "Open Help" ), this );
+  helpAction->setObjectName( u"m3DActionHelp"_s );
+  connect( helpAction, &QAction::triggered, this, []() { QgsHelp::openHelp( u"map_views/3d_map_view.html"_s ); } );
+  toolBar->addAction( helpAction );
 
   QList<QAction *> toolbarMenuActions;
   // Set action names so that they can be used in customization
@@ -935,7 +945,7 @@ void Qgs3DMapCanvasWidget::configure()
 
   mConfigureDialog = new QDialog( this );
   mConfigureDialog->setAttribute( Qt::WA_DeleteOnClose );
-  mConfigureDialog->setWindowTitle( tr( "3D Configuration" ) );
+  mConfigureDialog->setWindowTitle( tr( "3D Configuration - %1" ).arg( mCanvasName ) );
   mConfigureDialog->setObjectName( u"3DConfigurationDialog"_s );
   mConfigureDialog->setMinimumSize( 600, 460 );
   QgsGui::enableAutoGeometryRestore( mConfigureDialog );
@@ -1256,7 +1266,7 @@ void Qgs3DMapCanvasWidget::onPointCloudChangeAttributeSettingsChanged()
       }
 
       // then add missing classes from the layer stats too
-      const QMap<int, int> statisticsClasses = layer->statistics().availableClasses( u"Classification"_s );
+      const QMap<int, qint64> statisticsClasses = layer->statistics().availableClasses( u"Classification"_s );
       for ( auto it = statisticsClasses.constBegin(); it != statisticsClasses.constEnd(); ++it )
       {
         if ( !classes.contains( it.key() ) )
@@ -1291,7 +1301,7 @@ void Qgs3DMapCanvasWidget::onPointCloudChangeAttributeSettingsChanged()
     }
     else
     {
-      whileBlocking( mCboChangeAttributeValue )->addItem( u"%1 ()"_s.arg( oldValue ), oldValue );
+      whileBlocking( mCboChangeAttributeValue )->addItem( u"%1 (%2)"_s.arg( oldValue ).arg( lasCodes.value( oldValue ) ), oldValue );
       mCboChangeAttributeValue->setCurrentIndex( mCboChangeAttributeValue->count() - 1 );
     }
   }

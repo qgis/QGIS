@@ -10,6 +10,14 @@ ADD_FLEX_BISON_DEPENDENCY(QgsSqlStatementLexer QgsSqlStatementParser)
 BISON_TARGET(QgsMeshCalcParser mesh/qgsmeshcalcparser.yy ${CMAKE_CURRENT_BINARY_DIR}/qgsmeshcalcparser.cpp COMPILE_FLAGS "-p mesh_")
 FLEX_TARGET(QgsMeshCalcLexer mesh/qgsmeshcalclexer.ll ${CMAKE_CURRENT_BINARY_DIR}/qgsmeshcalclexer.cpp)
 ADD_FLEX_BISON_DEPENDENCY(QgsMeshCalcLexer QgsMeshCalcParser)
+BISON_TARGET(QgsEsriArcadeParser providers/arcgis/qgsesriarcadescriptparser.yy ${CMAKE_CURRENT_BINARY_DIR}/qgsesriarcadeparser.cpp COMPILE_FLAGS "-p arcade_")
+FLEX_TARGET(QgsEsriArcadeLexer providers/arcgis/qgsesriarcadescriptlexer.ll ${CMAKE_CURRENT_BINARY_DIR}/qgsesriarcadelexer.cpp)
+ADD_FLEX_BISON_DEPENDENCY(QgsEsriArcadeLexer QgsEsriArcadeParser)
+
+# LAZPerf-priority
+if(WITH_INTERNAL_LAZPERF)
+  include_directories(BEFORE SYSTEM ${CMAKE_SOURCE_DIR}/external/lazperf)
+endif()
 
 if (WITH_PDF4QT)
   SET(PDF4QT_BUILD_ONLY_CORE_LIBRARY TRUE)
@@ -37,6 +45,8 @@ set(QGIS_CORE_SRCS
   ${BISON_QgsSqlStatementParser_OUTPUTS}
   ${FLEX_QgsMeshCalcLexer_OUTPUTS}
   ${BISON_QgsMeshCalcParser_OUTPUTS}
+  ${FLEX_QgsEsriArcadeLexer_OUTPUTS}
+  ${BISON_QgsEsriArcadeParser_OUTPUTS}
 
   actions/qgsaction.cpp
   actions/qgsactionscope.cpp
@@ -335,6 +345,8 @@ set(QGIS_CORE_SRCS
   providers/arcgis/qgsarcgisportalutils.cpp
   providers/arcgis/qgsarcgisrestquery.cpp
   providers/arcgis/qgsarcgisrestutils.cpp
+  providers/arcgis/qgsesriarcadeconverter.cpp
+  providers/arcgis/qgsesriarcadescript.cpp
 
   providers/gdal/qgsgdalcloudconnection.cpp
   providers/gdal/qgsgdalclouddataitems.cpp
@@ -515,6 +527,7 @@ set(QGIS_CORE_SRCS
   qgsfields.cpp
   qgsfileutils.cpp
   qgsfontutils.cpp
+  qgsfutureutils.cpp
   qgsgdalutils.cpp
   qgsgeometrysimplifier.cpp
   qgsgeometryvalidator.cpp
@@ -850,6 +863,8 @@ set(QGIS_CORE_SRCS
   raster/qgsrastershader.cpp
   raster/qgsrastershaderfunction.cpp
   raster/qgsrastertransparency.cpp
+  raster/qgsrastervectorfieldrenderer.cpp
+  raster/qgsrastervectorfieldvaluesource.cpp
   raster/qgssortedrasterblockindex.cpp
 
   raster/qgsbilinearrasterresampler.cpp
@@ -1137,16 +1152,6 @@ add_custom_command(OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/qgsexpression_texts.cpp
   WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
 )
 
-if(ENABLE_MODELTEST)
-  set(MODELTEST_SRCS
-    ../../tests/qt_modeltest/modeltest.cpp
-    ../../tests/qt_modeltest/dynamictreemodel.cpp
-  )
-  set(QGIS_CORE_SRCS ${QGIS_CORE_SRCS}
-    ${MODELTEST_SRCS}
-  )
-endif()
-
 if (CMAKE_CXX_COMPILER_ID MATCHES "Clang")
   # spatialindex headers produce warnings
   set_source_files_properties(qgsspatialindex.cpp PROPERTIES COMPILE_FLAGS -Wno-overloaded-virtual)
@@ -1164,6 +1169,8 @@ if(NOT MSVC)
     ${BISON_QgsSqlStatementParser_OUTPUTS}
     ${FLEX_QgsMeshCalcLexer_OUTPUTS}
     ${BISON_QgsMeshCalcParser_OUTPUTS}
+    ${FLEX_QgsEsriArcadeLexer_OUTPUTS}
+    ${BISON_QgsEsriArcadeParser_OUTPUTS}
     PROPERTIES COMPILE_FLAGS -w)
 else()
   # -wd4702 unreachable code
@@ -1180,6 +1187,8 @@ else()
     ${BISON_QgsSqlStatementParser_OUTPUTS}
     ${FLEX_QgsMeshCalcLexer_OUTPUTS}
     ${BISON_QgsMeshCalcParser_OUTPUTS}
+    ${FLEX_QgsEsriArcadeLexer_OUTPUTS}
+    ${BISON_QgsEsriArcadeParser_OUTPUTS}
     PROPERTIES COMPILE_FLAGS /W0)
 endif()
 
@@ -1229,6 +1238,7 @@ set(QGIS_CORE_HDRS
   qgsdatabaseschemamodel.h
   qgsdatabasetablemodel.h
   qgsdatadefinedsizelegend.h
+  qgsdatadefinedutils.h
   qgsdataproviderelevationproperties.h
   qgsdataprovidertemporalcapabilities.h
   qgsdatasourceuri.h
@@ -1273,6 +1283,7 @@ set(QGIS_CORE_HDRS
   qgsfilefiltergenerator.h
   qgsfileutils.h
   qgsfontutils.h
+  qgsfutureutils.h
   qgsgdalutils.h
   qgsgenericspatialindex.h
   qgsgeometryoptions.h
@@ -2002,6 +2013,8 @@ set(QGIS_CORE_HDRS
   providers/arcgis/qgsarcgisportalutils.h
   providers/arcgis/qgsarcgisrestquery.h
   providers/arcgis/qgsarcgisrestutils.h
+  providers/arcgis/qgsesriarcadeconverter.h
+  providers/arcgis/qgsesriarcadescript.h
 
   providers/gdal/qgsgdalcloudconnection.h
   providers/gdal/qgsgdalclouddataitems.h
@@ -2084,6 +2097,8 @@ set(QGIS_CORE_HDRS
   raster/qgsrastershader.h
   raster/qgsrastershaderfunction.h
   raster/qgsrastertransparency.h
+  raster/qgsrastervectorfieldrenderer.h
+  raster/qgsrastervectorfieldvaluesource.h
   raster/qgsrasterviewport.h
   raster/qgssinglebandcolordatarenderer.h
   raster/qgssinglebandgrayrenderer.h

@@ -111,14 +111,6 @@ class QgsMeshVectorGlyphRenderer : public QgsMeshVectorRenderer
     //! Draws data on user-defined grid
     void drawVectorDataOnGrid();
 
-    /**
-     * Calculates the buffer size
-     * needed to draw arrows which have
-     * start or end point outside the
-     * visible canvas extent (in pixels)
-     */
-    double calcExtentBufferSize() const;
-
     const QgsTriangularMesh &mTriangularMesh;
     const QgsMeshDataBlock &mDatasetValues;
     const QVector<double> &mDatasetValuesMag; //magnitudes

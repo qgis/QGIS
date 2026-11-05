@@ -102,7 +102,7 @@ QgsPostgresFeatureIterator::QgsPostgresFeatureIterator( QgsPostgresFeatureSource
         if ( !mTransform.isShortCircuited() || mSource->mSpatialColType != SctGeometry )
         {
           mDistanceWithinGeom = mRequest.referenceGeometry();
-          mDistanceWithinEngine.reset( QgsGeometry::createGeometryEngine( mDistanceWithinGeom.constGet() ) );
+          mDistanceWithinEngine = QgsGeometry::createGeometryEngine( mDistanceWithinGeom.constGet() );
           mDistanceWithinEngine->prepareGeometry();
           limitAtProvider = false;
         }

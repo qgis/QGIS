@@ -586,7 +586,7 @@ QDialog *QgisAppInterface::showAttributeTable( QgsVectorLayer *l, const QString 
 {
   if ( l && l->dataProvider() )
   {
-    QgsAttributeTableDialog *dialog = new QgsAttributeTableDialog( l, QgsAttributeTableFilterModel::ShowFilteredList );
+    QgsAttributeTableDialog *dialog = new QgsAttributeTableDialog( l, Qgis::AttributeTableFilterMode::ShowFilteredList );
     dialog->setFilterExpression( filterExpression );
     dialog->show();
     return dialog;

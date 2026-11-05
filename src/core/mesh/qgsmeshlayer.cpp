@@ -109,7 +109,9 @@ bool QgsMeshLayer::hasSimplifiedMeshes() const
 }
 
 QgsMeshLayer::~QgsMeshLayer()
-{}
+{
+  emit willBeDeleted();
+}
 
 QgsMeshDataProvider *QgsMeshLayer::dataProvider()
 {

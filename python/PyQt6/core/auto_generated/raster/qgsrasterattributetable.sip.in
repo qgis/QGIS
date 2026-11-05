@@ -89,6 +89,8 @@ Returns ``True`` if the field carries a color ramp component information
 AlphaMin/AlphaMax) information.
 %End
 
+        bool operator==( const Field &other ) const;
+
         QString name;
         Qgis::RasterAttributeTableFieldUsage usage;
         QMetaType::Type type;

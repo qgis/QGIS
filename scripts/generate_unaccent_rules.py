@@ -127,24 +127,20 @@ def write_cpp(path: Path, rules):
         f.write("#include <QHash>\n")
         f.write("#include <QString>\n\n")
 
-        f.write("QHash<QString, QString> QgsStringUtils::createUnaccentMap()\n")
+        f.write("QHash<char32_t, QString> QgsStringUtils::createUnaccentMap()\n")
         f.write("{\n")
-        f.write("  QHash<QString, QString> map;\n")
-        f.write(f"  map.reserve( {len(rules)} );\n\n")
 
+        rule_values = []
         for src, dst in rules:
             esc_src = cpp_escape(src)
 
             if dst == "":
-                f.write(f'  map.insert( QStringLiteral( "{esc_src}" ), QString() );\n')
+                rule_values.append(f""" {{ U'{esc_src}', QString() }}""")
             else:
                 esc_dst = cpp_escape(dst)
-                f.write(
-                    f'  map.insert( QStringLiteral( "{esc_src}" ), '
-                    f'QStringLiteral( "{esc_dst}" ) );\n'
-                )
+                rule_values.append(f""" {{ U'{esc_src}', u"{esc_dst}"_s }}""")
 
-        f.write("\n  return map;\n")
+        f.write("  return { " + ", ".join(rule_values) + " };\n")
         f.write("}\n")
 
 

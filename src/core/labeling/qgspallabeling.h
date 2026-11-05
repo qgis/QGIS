@@ -1095,6 +1095,8 @@ class CORE_EXPORT QgsPalLayerSettings
     Qgis::AngleUnit mRotationUnit = Qgis::AngleUnit::Degrees;
 
     static void initPropertyDefinitions();
+
+    friend class TestQgsPalLabeling;
 };
 
 

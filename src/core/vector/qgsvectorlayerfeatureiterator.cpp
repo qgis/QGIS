@@ -69,6 +69,19 @@ QgsVectorLayerFeatureSource::QgsVectorLayerFeatureSource( const QgsVectorLayer *
   mExpressionFieldBuffer = std::make_unique<QgsExpressionFieldBuffer>( *layer->mExpressionFieldBuffer );
   mCrs = layer->crs();
 
+  QgsProject *project = layer->project();
+  // TODO QGIS 5.0 -- remove fallback to QgsProject.instance()
+  if ( !project )
+  {
+    project = QgsProject::instance(); // skip-keyword-check
+  }
+
+  mTransformContext = project->transformContext();
+  mEllipsoid = project->ellipsoid();
+  mDistanceUnit = project->distanceUnits();
+  mAreaUnit = project->areaUnits();
+  mProjectScope = std::unique_ptr<QgsExpressionContextScope>( QgsExpressionContextUtils::projectScope( project ) );
+
   mHasEditBuffer = layer->editBuffer();
   if ( mHasEditBuffer )
   {
@@ -855,11 +868,11 @@ void QgsVectorLayerFeatureIterator::prepareExpression( int fieldIdx )
   auto exp = std::make_unique<QgsExpression>( exps[oi].cachedExpression );
 
   QgsDistanceArea da;
-  da.setSourceCrs( mSource->mCrs, QgsProject::instance()->transformContext() ); // skip-keyword-check
-  da.setEllipsoid( QgsProject::instance()->ellipsoid() );                       // skip-keyword-check
+  da.setSourceCrs( mSource->mCrs, mSource->mTransformContext );
+  da.setEllipsoid( mSource->mEllipsoid );
   exp->setGeomCalculator( &da );
-  exp->setDistanceUnits( QgsProject::instance()->distanceUnits() ); // skip-keyword-check
-  exp->setAreaUnits( QgsProject::instance()->areaUnits() );         // skip-keyword-check
+  exp->setDistanceUnits( mSource->mDistanceUnit );
+  exp->setAreaUnits( mSource->mAreaUnit );
 
   if ( !mExpressionContext )
     createExpressionContext();
@@ -1337,7 +1350,7 @@ void QgsVectorLayerFeatureIterator::createExpressionContext()
 {
   mExpressionContext = std::make_unique< QgsExpressionContext >();
   mExpressionContext->appendScope( QgsExpressionContextUtils::globalScope() );
-  mExpressionContext->appendScope( QgsExpressionContextUtils::projectScope( QgsProject::instance() ) ); // skip-keyword-check
+  mExpressionContext->appendScope( mSource->mProjectScope.release() );
   mExpressionContext->appendScope( new QgsExpressionContextScope( mSource->mLayerScope ) );
   mExpressionContext->setFeedback( mRequest.feedback() );
 }

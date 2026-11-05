@@ -47,7 +47,7 @@ QgsCachedFeatureIterator::QgsCachedFeatureIterator( QgsVectorLayerCache *vlCache
       if ( !mRequest.referenceGeometry().isEmpty() )
       {
         mDistanceWithinGeom = mRequest.referenceGeometry();
-        mDistanceWithinEngine.reset( QgsGeometry::createGeometryEngine( mDistanceWithinGeom.constGet() ) );
+        mDistanceWithinEngine = QgsGeometry::createGeometryEngine( mDistanceWithinGeom.constGet() );
         mDistanceWithinEngine->prepareGeometry();
         mDistanceWithin = mRequest.distanceWithin();
       }
@@ -102,7 +102,7 @@ bool QgsCachedFeatureIterator::fetchFeature( QgsFeature &f )
       continue;
     }
 
-    f = QgsFeature( *mVectorLayerCache->mCache[*mFeatureIdIterator]->feature() );
+    f = mVectorLayerCache->mCache[*mFeatureIdIterator]->feature();
     ++mFeatureIdIterator;
     if ( mRequest.acceptFeature( f ) )
     {

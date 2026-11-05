@@ -118,7 +118,7 @@ class QgsXyzTilesBaseAlgorithm : public QgsProcessingAlgorithm
     bool mSkipEmptyTiles = false;
     QgsExpressionContext mExpressionContext;
     QString mTileFormat;
-    QList<QgsMapLayer *> mLayers;
+    std::vector<std::unique_ptr<QgsMapLayer >> mLayers;
     QgsRectangle mWgs84Extent;
     QObjectUniquePtr<QObject> mJobOwner = nullptr;
 

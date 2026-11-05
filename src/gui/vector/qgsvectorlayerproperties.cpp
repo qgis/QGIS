@@ -47,6 +47,7 @@
 #include "qgsmaptip.h"
 #include "qgsmaskingwidget.h"
 #include "qgsmessagebar.h"
+#include "qgsmessagebaritem.h"
 #include "qgsmetadatawidget.h"
 #include "qgsnative.h"
 #include "qgsnewauxiliaryfielddialog.h"
@@ -1881,6 +1882,7 @@ void QgsVectorLayerProperties::initMapTipPreview()
   mMapTipPreview = new QgsWebView( mMapTipPreviewContainer );
   mMapTipPreviewLayout->addWidget( mMapTipPreview );
 
+  mMapTipPreview->setOpenExternalLinks( true );
   mMapTipPreview->page()->settings()->setAttribute( QWebSettings::DeveloperExtrasEnabled, true );
   mMapTipPreview->page()->settings()->setAttribute( QWebSettings::JavascriptEnabled, true );
   mMapTipPreview->page()->settings()->setAttribute( QWebSettings::LocalStorageEnabled, true );

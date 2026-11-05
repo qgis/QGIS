@@ -9,6 +9,11 @@
 
 
 
+%ModuleHeaderCode
+#include "qgssettingsentry.h"
+typedef QgsSettingsEntryBaseTemplate<QVariant> QgsSettingsEntryBaseTemplateQVariantBase;
+%End
+
 typedef QgsSettingsEntryBaseTemplate<QVariant> QgsSettingsEntryBaseTemplateQVariantBase /NoTypeName/;
 
 class QgsSettingsEntryVariant : QgsSettingsEntryBaseTemplateQVariantBase
@@ -21,8 +26,6 @@ A variant settings entry.
 
 %TypeHeaderCode
 #include "qgssettingsentryimpl.h"
-#include "qgssettingsentry.h"
-typedef QgsSettingsEntryBaseTemplate<QVariant> QgsSettingsEntryBaseTemplateQVariantBase;
 %End
   public:
     QgsSettingsEntryVariant(
@@ -104,6 +107,11 @@ Returns settings value.
 };
 
 
+%ModuleHeaderCode
+#include "qgssettingsentry.h"
+typedef QgsSettingsEntryBaseTemplate<QString> QgsSettingsEntryBaseTemplateQStringBase;
+%End
+
 typedef QgsSettingsEntryBaseTemplate<QString> QgsSettingsEntryBaseTemplateQStringBase /NoTypeName/;
 
 class QgsSettingsEntryString : QgsSettingsEntryBaseTemplateQStringBase
@@ -116,8 +124,6 @@ A string settings entry.
 
 %TypeHeaderCode
 #include "qgssettingsentryimpl.h"
-#include "qgssettingsentry.h"
-typedef QgsSettingsEntryBaseTemplate<QString> QgsSettingsEntryBaseTemplateQStringBase;
 %End
   public:
     QgsSettingsEntryString(
@@ -212,6 +218,11 @@ Returns the string maximum length. By -1 there is no limitation.
 
 
 
+%ModuleHeaderCode
+#include "qgssettingsentry.h"
+typedef QgsSettingsEntryBaseTemplate<QStringList> QgsSettingsEntryBaseTemplateQStringListBase;
+%End
+
 typedef QgsSettingsEntryBaseTemplate<QStringList> QgsSettingsEntryBaseTemplateQStringListBase /NoTypeName/;
 
 class QgsSettingsEntryStringList : QgsSettingsEntryBaseTemplateQStringListBase
@@ -224,8 +235,6 @@ A string list settings entry.
 
 %TypeHeaderCode
 #include "qgssettingsentryimpl.h"
-#include "qgssettingsentry.h"
-typedef QgsSettingsEntryBaseTemplate<QStringList> QgsSettingsEntryBaseTemplateQStringListBase;
 %End
   public:
     QgsSettingsEntryStringList(
@@ -285,6 +294,11 @@ to be used from plugins.
 
 
 
+%ModuleHeaderCode
+#include "qgssettingsentry.h"
+typedef QgsSettingsEntryBaseTemplate<bool> QgsSettingsEntryBaseTemplateboolBase;
+%End
+
 typedef QgsSettingsEntryBaseTemplate<bool> QgsSettingsEntryBaseTemplateboolBase /NoTypeName/;
 
 class QgsSettingsEntryBool : QgsSettingsEntryBaseTemplateboolBase
@@ -297,8 +311,6 @@ A boolean settings entry.
 
 %TypeHeaderCode
 #include "qgssettingsentryimpl.h"
-#include "qgssettingsentry.h"
-typedef QgsSettingsEntryBaseTemplate<bool> QgsSettingsEntryBaseTemplateboolBase;
 %End
   public:
     QgsSettingsEntryBool(
@@ -358,6 +370,11 @@ used from plugins.
 
 
 
+%ModuleHeaderCode
+#include "qgssettingsentry.h"
+typedef QgsSettingsEntryBaseTemplate<int> QgsSettingsEntryBaseTemplateintBase;
+%End
+
 typedef QgsSettingsEntryBaseTemplate<int> QgsSettingsEntryBaseTemplateintBase /NoTypeName/;
 
 class QgsSettingsEntryInteger : QgsSettingsEntryBaseTemplateintBase
@@ -370,8 +387,6 @@ An integer settings entry.
 
 %TypeHeaderCode
 #include "qgssettingsentryimpl.h"
-#include "qgssettingsentry.h"
-typedef QgsSettingsEntryBaseTemplate<int> QgsSettingsEntryBaseTemplateintBase;
 %End
   public:
     QgsSettingsEntryInteger(
@@ -464,6 +479,11 @@ Returns the maximum value.
 
 
 
+%ModuleHeaderCode
+#include "qgssettingsentry.h"
+typedef QgsSettingsEntryBaseTemplate<double> QgsSettingsEntryBaseTemplatedoubleBase;
+%End
+
 typedef QgsSettingsEntryBaseTemplate<double> QgsSettingsEntryBaseTemplatedoubleBase /NoTypeName/;
 
 class QgsSettingsEntryDouble : QgsSettingsEntryBaseTemplatedoubleBase
@@ -476,8 +496,6 @@ A double settings entry.
 
 %TypeHeaderCode
 #include "qgssettingsentryimpl.h"
-#include "qgssettingsentry.h"
-typedef QgsSettingsEntryBaseTemplate<double> QgsSettingsEntryBaseTemplatedoubleBase;
 %End
   public:
     QgsSettingsEntryDouble(
@@ -595,6 +613,11 @@ Returns how much decimals should be shown in the Gui.
 
 
 
+%ModuleHeaderCode
+#include "qgssettingsentry.h"
+typedef QgsSettingsEntryBaseTemplate<QColor> QgsSettingsEntryBaseTemplateQColorBase;
+%End
+
 typedef QgsSettingsEntryBaseTemplate<QColor> QgsSettingsEntryBaseTemplateQColorBase /NoTypeName/;
 
 class QgsSettingsEntryColor : QgsSettingsEntryBaseTemplateQColorBase
@@ -607,8 +630,6 @@ A color settings entry.
 
 %TypeHeaderCode
 #include "qgssettingsentryimpl.h"
-#include "qgssettingsentry.h"
-typedef QgsSettingsEntryBaseTemplate<QColor> QgsSettingsEntryBaseTemplateQColorBase;
 %End
   public:
     QgsSettingsEntryColor(
@@ -687,6 +708,11 @@ Returns ``True`` if transparency is allowed for the color
 };
 
 
+%ModuleHeaderCode
+#include "qgssettingsentry.h"
+typedef QgsSettingsEntryBaseTemplate<QVariantMap> QgsSettingsEntryBaseTemplateQVariantMapBase;
+%End
+
 typedef QgsSettingsEntryBaseTemplate<QVariantMap> QgsSettingsEntryBaseTemplateQVariantMapBase /NoTypeName/;
 
 class QgsSettingsEntryVariantMap : QgsSettingsEntryBaseTemplateQVariantMapBase
@@ -699,8 +725,6 @@ A string list settings entry.
 
 %TypeHeaderCode
 #include "qgssettingsentryimpl.h"
-#include "qgssettingsentry.h"
-typedef QgsSettingsEntryBaseTemplate<QVariantMap> QgsSettingsEntryBaseTemplateQVariantMapBase;
 %End
   public:
     QgsSettingsEntryVariantMap(

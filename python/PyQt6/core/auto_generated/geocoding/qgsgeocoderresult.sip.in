@@ -8,6 +8,7 @@
 
 
 
+
 class QgsGeocoderResult
 {
 %Docstring(signature="appended")
@@ -181,6 +182,24 @@ Returns the optional description for the result.
 Sets an optional ``description`` for the result.
 
 .. seealso:: :py:func:`description`
+%End
+
+    QIcon icon() const;
+%Docstring
+Returns the optional icon for the result.
+
+.. seealso:: :py:func:`setIcon`
+
+.. versionadded:: 4.4
+%End
+
+    void setIcon( const QIcon &icon );
+%Docstring
+Sets an optional ``icon`` for the result.
+
+.. seealso:: :py:func:`icon`
+
+.. versionadded:: 4.4
 %End
 
 };

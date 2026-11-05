@@ -24,6 +24,7 @@
 #include "qgscolorrampimpl.h"
 #include "qgscolorutils.h"
 #include "qgscurvepolygon.h"
+#include "qgsdatadefinedutils.h"
 #include "qgsdxfexport.h"
 #include "qgsexpressioncontextutils.h"
 #include "qgsfeedback.h"
@@ -1243,37 +1244,22 @@ void QgsTemplatedLineSymbolLayerBase::renderPolyline( const QPolygonF &pts, QgsS
     if ( !QgsVariantUtils::isNull( exprVal ) )
     {
       QString placementString = exprVal.toString();
-      if ( placementString.compare( "interval"_L1, Qt::CaseInsensitive ) == 0 )
+
+      static constexpr auto PLACEMENT_MAP = makeDataDefinedStringDecoder<Qgis::MarkerLinePlacements>( {
+        { u"interval", Qgis::MarkerLinePlacement::Interval },
+        { u"vertex", Qgis::MarkerLinePlacement::Vertex },
+        { u"innervertices", Qgis::MarkerLinePlacement::InnerVertices },
+        { u"lastvertex", Qgis::MarkerLinePlacement::LastVertex },
+        { u"firstvertex", Qgis::MarkerLinePlacement::FirstVertex },
+        { u"centerpoint", Qgis::MarkerLinePlacement::CentralPoint },
+        { u"curvepoint", Qgis::MarkerLinePlacement::CurvePoint },
+        { u"segmentcenter", Qgis::MarkerLinePlacement::SegmentCenter },
+      } );
+
+      auto evaluatedPlacement = PLACEMENT_MAP.lookup( placementString );
+      if ( evaluatedPlacement )
       {
-        placements = Qgis::MarkerLinePlacement::Interval;
-      }
-      else if ( placementString.compare( "vertex"_L1, Qt::CaseInsensitive ) == 0 )
-      {
-        placements = Qgis::MarkerLinePlacement::Vertex;
-      }
-      else if ( placementString.compare( "innervertices"_L1, Qt::CaseInsensitive ) == 0 )
-      {
-        placements = Qgis::MarkerLinePlacement::InnerVertices;
-      }
-      else if ( placementString.compare( "lastvertex"_L1, Qt::CaseInsensitive ) == 0 )
-      {
-        placements = Qgis::MarkerLinePlacement::LastVertex;
-      }
-      else if ( placementString.compare( "firstvertex"_L1, Qt::CaseInsensitive ) == 0 )
-      {
-        placements = Qgis::MarkerLinePlacement::FirstVertex;
-      }
-      else if ( placementString.compare( "centerpoint"_L1, Qt::CaseInsensitive ) == 0 )
-      {
-        placements = Qgis::MarkerLinePlacement::CentralPoint;
-      }
-      else if ( placementString.compare( "curvepoint"_L1, Qt::CaseInsensitive ) == 0 )
-      {
-        placements = Qgis::MarkerLinePlacement::CurvePoint;
-      }
-      else if ( placementString.compare( "segmentcenter"_L1, Qt::CaseInsensitive ) == 0 )
-      {
-        placements = Qgis::MarkerLinePlacement::SegmentCenter;
+        placements = *evaluatedPlacement;
       }
       else
       {

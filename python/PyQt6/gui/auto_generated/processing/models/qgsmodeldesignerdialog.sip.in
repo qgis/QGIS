@@ -52,6 +52,7 @@ Loads a model into the designer from the specified file ``path``.
 %End
 
 
+
     virtual QgsProcessingFeedback *createFeedback() /Factory/;
 
     virtual QgsProcessingParameterWidgetContext createWidgetContext();

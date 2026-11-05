@@ -501,7 +501,7 @@ class GUI_EXPORT QgsProcessingAlgorithmWidgetBase : public QWidget, public QgsPr
      *
      * \since QGIS 3.14
      */
-    void algorithmFinished( bool successful, const QVariantMap &result );
+    void algorithmFinished( bool successful, const QVariantMap &result, QgsProcessingContext *context );
 
     /**
      * Emitted when the widget requests that the algorithm is canceled.

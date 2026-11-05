@@ -478,7 +478,7 @@ QgsIdentifyResultsDialog::QgsIdentifyResultsDialog( QgsMapCanvas *canvas, QWidge
   initSelectionModes();
 
   QMenu *settingsMenu = new QMenu( this );
-  QgsToolButtonAction *settingsAction = new QgsToolButtonAction();
+  QgsToolButtonAction *settingsAction = new QgsToolButtonAction( this );
   settingsAction->setAutoRaise( true );
   settingsAction->setText( tr( "Settings" ) );
   settingsAction->setToolTip( tr( "Identify Settings" ) );

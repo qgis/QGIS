@@ -517,7 +517,7 @@ std::unique_ptr< QgsMultiSurface > QgsArcGisRestUtils::convertGeometryPolygon( c
         {
           newPolygon->addInteriorRing( curve );
           it.remove();
-          engine.reset( QgsGeometry::createGeometryEngine( newPolygon ) );
+          engine = QgsGeometry::createGeometryEngine( newPolygon );
           engine->prepareGeometry();
         }
       }
@@ -718,6 +718,17 @@ std::unique_ptr<QgsAbstractVectorLayerLabeling > QgsArcGisRestUtils::convertLabe
     else if ( placement == "esriServerPolygonPlacementAlwaysHorizontal"_L1 )
     {
       settings->placement = Qgis::LabelPlacement::Horizontal;
+    }
+
+    const bool repeatLabel = labeling.value( u"repeatLabel"_s ).toBool();
+    if ( repeatLabel && settings->placement == Qgis::LabelPlacement::Line )
+    {
+      const double repeatLabelDistance = labeling.value( u"repeatLabelDistance"_s ).toDouble();
+      if ( repeatLabelDistance > 0.0 )
+      {
+        settings->repeatDistance = repeatLabelDistance;
+        settings->repeatDistanceUnit = Qgis::RenderUnit::Points;
+      }
     }
 
     const double minScale = labeling.value( u"minScale"_s ).toDouble();

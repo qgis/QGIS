@@ -231,7 +231,10 @@ expression_non_logical:
         {
           const QString expressionFunctionName = *$1;
           delete $1;
-          const int fnIndex = QgsExpression::functionIndex(expressionFunctionName);
+
+          const QgsExpression::FunctionListSnapshot functions = QgsExpression::getFunctionsSnapshot();
+
+          const int fnIndex = functions->functionIndex(expressionFunctionName);
           if (fnIndex == -1)
           {
             QgsExpression::ParserError::ParserErrorType errorType = QgsExpression::ParserError::FunctionUnknown;
@@ -240,7 +243,8 @@ expression_non_logical:
             delete $3;
             YYERROR;
           }
-          QgsExpressionFunction* func = QgsExpression::Functions()[fnIndex];
+
+          QgsExpression::SharedFunctionPtr func = functions->getFunction( fnIndex );
           QString paramError;
           if ( !QgsExpressionNodeFunction::validateParams( fnIndex, $3, paramError ) )
           {
@@ -270,14 +274,15 @@ expression_non_logical:
             YYERROR;
           }
 
-          $$ = new QgsExpressionNodeFunction(fnIndex, $3);
+          $$ = new QgsExpressionNodeFunction(func, $3);
           addParserLocation(&@1, $$);
         }
 
     | NAME '(' ')'
         {
           const QString expressionFunctionName = *$1;
-          const int fnIndex = QgsExpression::functionIndex(expressionFunctionName);
+          const QgsExpression::FunctionListSnapshot functions = QgsExpression::getFunctionsSnapshot();
+          const int fnIndex = functions->functionIndex(expressionFunctionName);
           delete $1;
           if (fnIndex == -1)
           {
@@ -286,7 +291,7 @@ expression_non_logical:
             exp_error(&yyloc, parser_ctx, QObject::tr( "Function %1 is not known" ).arg( expressionFunctionName ).toUtf8().constData() );
             YYERROR;
           }
-          QgsExpressionFunction* func = QgsExpression::Functions()[fnIndex];
+          QgsExpression::SharedFunctionPtr func = functions->getFunction( fnIndex );
           // 0 parameters is expected, -1 parameters means leave it to the
           // implementation
           if ( func->minParams() > 0 )
@@ -296,7 +301,7 @@ expression_non_logical:
             exp_error(&yyloc, parser_ctx, QObject::tr( "%1 function is called with wrong number of arguments" ).arg( func->name() ).toLocal8Bit().constData() );
             YYERROR;
           }
-          $$ = new QgsExpressionNodeFunction(fnIndex, new QgsExpressionNode::NodeList());
+          $$ = new QgsExpressionNodeFunction(functions->getFunction( fnIndex ), new QgsExpressionNode::NodeList());
           addParserLocation(&@1, $$);
         }
 
@@ -316,11 +321,12 @@ expression_non_logical:
     | SPECIAL_COL
         {
           const QString expressionFunctionName = *$1;
-          const int fnIndex = QgsExpression::functionIndex(*$1);
+          const QgsExpression::FunctionListSnapshot functions = QgsExpression::getFunctionsSnapshot();
+          const int fnIndex = functions->functionIndex(*$1);
           delete $1;
           if (fnIndex >= 0)
           {
-            $$ = new QgsExpressionNodeFunction( fnIndex, nullptr );
+            $$ = new QgsExpressionNodeFunction( functions->getFunction( fnIndex ), nullptr );
           }
           else
           {
@@ -338,7 +344,9 @@ expression_non_logical:
           QgsExpressionNode::NodeList* args = new QgsExpressionNode::NodeList();
           QgsExpressionNodeLiteral* literal = new QgsExpressionNodeLiteral( QString( *$1 ).mid( 1 ) );
           args->append( literal );
-          $$ = new QgsExpressionNodeFunction( QgsExpression::functionIndex( "var" ), args );
+          const QgsExpression::FunctionListSnapshot functions = QgsExpression::getFunctionsSnapshot();
+          const int fnIndex = functions->functionIndex("var");
+          $$ = new QgsExpressionNodeFunction( functions->getFunction( fnIndex ), args );
           delete $1;
         }
 

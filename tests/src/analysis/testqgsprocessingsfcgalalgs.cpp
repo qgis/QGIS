@@ -124,7 +124,7 @@ void TestQgsProcessingSfcgalAlgs::medialAxis()
     QVariantMap parameters;
     parameters.insert( u"INPUT"_s, QVariant::fromValue( mPolygonLayer ) );
     parameters.insert( u"OUTPUT"_s, QgsProcessing::TEMPORARY_OUTPUT );
-#if SFCGAL_VERSION_NUM >= SFCGAL_MAKE_VERSION( 2, 3, 0 )
+#if SFCGAL_VERSION_NUM >= SFCGAL_COMPUTE_VERSION( 2, 3, 0 )
     parameters.insert( u"EXTEND_TO_EDGES"_s, false );
 #endif
 
@@ -157,7 +157,7 @@ void TestQgsProcessingSfcgalAlgs::medialAxis()
     QgsProject::instance()->removeMapLayer( outputLayer );
   }
 
-#if SFCGAL_VERSION_NUM >= SFCGAL_MAKE_VERSION( 2, 3, 0 )
+#if SFCGAL_VERSION_NUM >= SFCGAL_COMPUTE_VERSION( 2, 3, 0 )
   // extend to edges
   {
     QVariantMap parameters;

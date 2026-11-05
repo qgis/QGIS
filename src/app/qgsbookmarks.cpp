@@ -62,7 +62,7 @@ QgsBookmarks::QgsBookmarks( QWidget *parent )
   bookmarksDockContents->layout()->setContentsMargins( 0, 0, 0, 0 );
   static_cast<QGridLayout *>( bookmarksDockContents->layout() )->setVerticalSpacing( 0 );
 
-  QgsToolButtonAction *actionImportExport = new QgsToolButtonAction();
+  QgsToolButtonAction *actionImportExport = new QgsToolButtonAction( this );
   actionImportExport->setAutoRaise( true );
   actionImportExport->setToolTip( tr( "Import/Export Bookmarks" ) );
   actionImportExport->setIcon( QgsApplication::getThemeIcon( u"/mActionSharing.svg"_s ) );

@@ -217,6 +217,10 @@ QString QgsWfsProviderMetadata::encodeUri( const QVariantMap &parts ) const
     {
       dsUri.setAuthConfigId( it.value().toString() );
     }
+    else if ( it.key() == "sql"_L1 )
+    {
+      dsUri.setSql( it.value().toString() );
+    }
     else
     {
       dsUri.setParam( it.key(), it.value().toString() );
@@ -232,7 +236,14 @@ QVariantMap QgsWfsProviderMetadata::decodeUri( const QString &uri ) const
   const QSet<QString> parameterKeys = dsUri.parameterKeys();
   for ( const QString &key : std::as_const( parameterKeys ) )
   {
-    decoded.insert( key, dsUri.param( key ) );
+    if ( key == "sql"_L1 )
+    {
+      decoded.insert( key, dsUri.sql() );
+    }
+    else
+    {
+      decoded.insert( key, dsUri.param( key ) );
+    }
   }
   return decoded;
 }

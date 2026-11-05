@@ -157,6 +157,12 @@ class GUI_EXPORT QgsElevationProfileLayerTreeView : public QgsLayerTreeViewBase
      */
     QgsElevationProfileLayerTreeProxyModel *proxyModel();
 
+    /**
+     * Removes from the layer tree any layers that no longer exist in the \a project.
+     * \since QGIS 4.4
+     */
+    void cleanupDeletedLayers( QgsProject *project );
+
   public slots:
 
     /**
@@ -184,9 +190,10 @@ class GUI_EXPORT QgsElevationProfileLayerTreeView : public QgsLayerTreeViewBase
     /**
      * Adds any layers from a \a project which currently aren't within the profile's layer tree.
      *
+     * \param forceUnchecked Optionally force any added layer to be unchecked in the profile's layer tree. (since QGIS 4.4)
      * \since QGIS 4.0
      */
-    void populateMissingLayers( QgsProject *project );
+    void populateMissingLayers( QgsProject *project, bool forceUnchecked = false );
 
   signals:
 

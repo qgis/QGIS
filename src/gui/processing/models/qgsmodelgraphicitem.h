@@ -171,6 +171,7 @@ class GUI_EXPORT QgsModelDesignerSocketGraphicItem : public QgsModelDesignerFlat
     );
 
     void paint( QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget = nullptr ) override;
+    QRectF boundingRect() const override;
 
     /**
      * Returns the index of this socket in either QgsModelDesignerSocketGraphicItem::mInSockets
@@ -197,6 +198,12 @@ class GUI_EXPORT QgsModelDesignerSocketGraphicItem : public QgsModelDesignerFlat
      * Return the component associated to the socket.
      */
     QgsProcessingModelComponent *component() { return mComponent; };
+
+    /**
+     * Return the component associated to the socket.
+     * \note Not available in Python bindings.
+     */
+    const QgsProcessingModelComponent *component() const SIP_SKIP { return mComponent; };
 
     /**
      * Return the parent graphic item associated to the socket.

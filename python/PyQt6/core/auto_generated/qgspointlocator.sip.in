@@ -359,7 +359,13 @@ Emitted whenever index has been built and initialization is finished
 %End
 
   protected:
-    bool rebuildIndex( int maxFeaturesToIndex = -1 );
+    bool rebuildIndex( int maxFeaturesToIndex = -1, QgsFeedback *feedback = 0 );
+%Docstring
+Rebuilds the index.
+
+The optional ``feedback`` argument allows for early cancellation of the
+rebuild.
+%End
 
   protected slots:
     void destroyIndex();

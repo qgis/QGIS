@@ -70,10 +70,12 @@ void QgsCodeEditorExpression::setExpressionContext( const QgsExpressionContext &
 
   mFunctions.clear();
 
-  const int count = QgsExpression::functionCount();
+  const QgsExpression::FunctionListSnapshot functions = QgsExpression::getFunctionsSnapshot();
+
+  const int count = functions->size();
   for ( int i = 0; i < count; i++ )
   {
-    QgsExpressionFunction *func = QgsExpression::Functions()[i];
+    QgsExpression::SharedFunctionPtr func = functions->getFunction( i );
     if ( func->isDeprecated() ) // don't show deprecated functions
       continue;
     if ( func->isContextual() )

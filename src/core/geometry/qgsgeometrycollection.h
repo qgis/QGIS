@@ -295,7 +295,6 @@ class CORE_EXPORT QgsGeometryCollection : public QgsAbstractGeometry
     //low-level editing
     bool insertVertex( QgsVertexId position, const QgsPoint &vertex ) override;
     bool moveVertex( QgsVertexId position, const QgsPoint &newPos ) override;
-    bool deleteVertex( QgsVertexId position ) override;
     bool deleteVertices( const QSet<QgsVertexId> &positions ) override;
     bool hasVertex( QgsVertexId position ) const override;
 
@@ -448,7 +447,7 @@ class CORE_EXPORT QgsGeometryCollection : public QgsAbstractGeometry
      *
      * \since QGIS 3.36
     */
-    QgsGeometryCollection *extractPartsByType( Qgis::WkbType type, bool useFlatType = true ) const SIP_FACTORY;
+    std::unique_ptr<QgsGeometryCollection> extractPartsByType( Qgis::WkbType type, bool useFlatType = true ) const;
 
     QgsGeometryCollection *createEmptyWithSameType() const override SIP_FACTORY;
 

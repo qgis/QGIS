@@ -120,6 +120,7 @@ class CORE_EXPORT QgsOwsConnection : public QObject
     static const QgsSettingsEntryStringList *settingsAvailableImageFormats;
     static const QgsSettingsEntryBool *settingsPreferCoordinatesForWfsT11;
     static const QgsSettingsEntryBool *settingsIgnoreAxisOrientation;
+    static const QgsSettingsEntryBool *settingsDisableDecompressedSafetyCheckThreshold;
     static const QgsSettingsEntryBool *settingsInvertAxisOrientation;
     static const QgsSettingsEntryString *settingsUsername;
     static const QgsSettingsEntryString *settingsPassword;

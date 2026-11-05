@@ -39,6 +39,7 @@
 #include "pointset.h"
 #include "problem.h"
 #include "qgsgeometry.h"
+#include "qgsgeos.h"
 #include "qgslabelingengine.h"
 #include "qgslabelingenginerule.h"
 #include "qgsrendercontext.h"
@@ -50,7 +51,7 @@
 
 using namespace Qt::StringLiterals;
 
-#if ( GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR < 10 )
+#if GEOS_VERSION_NUM < GEOS_COMPUTE_VERSION( 3, 10, 0 )
 #include "qgsmessagelog.h"
 #endif
 #include <cfloat>
@@ -807,7 +808,7 @@ bool Pal::candidatesAreConflicting( const LabelPosition *lp1, const LabelPositio
     GEOSContextHandle_t geosctxt = QgsGeosContext::get();
     try
     {
-#if GEOS_VERSION_MAJOR > 3 || ( GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR >= 10 )
+#if GEOS_VERSION_NUM >= GEOS_COMPUTE_VERSION( 3, 10, 0 )
       if ( GEOSPreparedDistanceWithin_r( geosctxt, lp1->preparedMultiPartGeom(), lp2->multiPartGeom(), labelMarginDistance ) )
       {
         res = true;

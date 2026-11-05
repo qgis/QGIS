@@ -10,6 +10,7 @@
 
 
 
+
 class QgsAuthConfigSelect : QWidget
 {
 %Docstring(signature="appended")
@@ -44,6 +45,7 @@ Gets the authentication config id for the resource
 %Docstring
 Sets key of layer provider, if applicable
 %End
+
 
   signals:
     void selectedConfigIdChanged( const QString &authcfg );

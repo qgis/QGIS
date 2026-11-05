@@ -122,7 +122,10 @@ bool QgsVectorTileLayer::loadDataSource()
   return mDataProvider && mDataProvider->isValid();
 }
 
-QgsVectorTileLayer::~QgsVectorTileLayer() = default;
+QgsVectorTileLayer::~QgsVectorTileLayer()
+{
+  emit willBeDeleted();
+};
 
 QgsVectorTileLayer *QgsVectorTileLayer::clone() const
 {
@@ -758,7 +761,7 @@ void QgsVectorTileLayer::selectByGeometry(
     if ( !isPointOrRectangle || relationship == Qgis::SelectGeometryRelationship::Within )
     {
       // use prepared geometry for faster intersection test
-      selectionGeomPrepared.reset( QgsGeometry::createGeometryEngine( selectionGeom.constGet() ) );
+      selectionGeomPrepared = QgsGeometry::createGeometryEngine( selectionGeom.constGet() );
     }
   }
 

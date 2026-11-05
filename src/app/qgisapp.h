@@ -205,6 +205,7 @@ class QgsToolButtonAction;
 
 #include <QAbstractSocket>
 #include <QDateTime>
+#include <QFileSystemWatcher>
 #include <QGestureEvent>
 #include <QMainWindow>
 #include <QPointer>
@@ -261,6 +262,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     static const QgsSettingsEntryInteger *settingsMapTipsDelay SIP_SKIP;
     static const QgsSettingsEntryBool *settingsAskToSaveProjectChanges SIP_SKIP;
     static const QgsSettingsEntryBool *settingsWarnOldProjectVersion SIP_SKIP;
+    static const QgsSettingsEntryBool *settingsShowWelcomePage SIP_SKIP;
     static const QgsSettingsEntryBool *settingsNewProjectDefault SIP_SKIP;
     static const QgsSettingsEntryInteger *settingsProjOpenAtLaunch SIP_SKIP;
     static const QgsSettingsEntryString *settingsProjOpenAtLaunchPath SIP_SKIP;
@@ -1079,7 +1081,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     void layerProperties();
 
     //! show the attribute table for the currently selected layer
-    void attributeTable( QgsAttributeTableFilterModel::FilterMode filter = QgsAttributeTableFilterModel::ShowAll, const QString &filterExpression = QString() );
+    void attributeTable( Qgis::AttributeTableFilterMode filter = Qgis::AttributeTableFilterMode::ShowAll, const QString &filterExpression = QString() );
 
     void fieldCalculator();
 
@@ -1824,7 +1826,6 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     void fileOpenAfterLaunch();
     //! After project read, set any auto-opened project as successful
     void fileOpenedOKAfterLaunch();
-    void fileNewFromTemplateAction( QAction *qAction );
     void fileNewFromDefaultTemplate();
     //! Calculate new rasters from existing ones
     void showRasterCalculator();
@@ -2944,6 +2945,9 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     QObjectUniquePtr<QgsCustomizationDialog> mCustomizationDialog;
 
     std::unique_ptr< QgsProcessingWidgetContextGenerator > mProcessingWidgetContextGenerator;
+
+    //! Project template directories to watch
+    QFileSystemWatcher mProjectTemplateWatcher;
 
     friend class QgsCanvasRefreshBlocker;
     friend class QgsMapToolsDigitizingTechniqueManager;

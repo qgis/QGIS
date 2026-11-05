@@ -13,15 +13,19 @@
  *                                                                         *
  ***************************************************************************/
 
+#include <memory>
+
 #include "elevation/qgselevationprofilewidget.h"
 #include "qgisapp.h"
 #include "qgsabstractprofilesource.h"
 #include "qgselevationprofile.h"
 #include "qgselevationprofilecanvas.h"
 #include "qgslayertree.h"
+#include "qgsmaplayerelevationproperties.h"
 #include "qgsprofilesourceregistry.h"
 #include "qgstest.h"
 
+#include <QSignalSpy>
 #include <QString>
 
 using namespace Qt::StringLiterals;
@@ -57,6 +61,9 @@ class TestQgsAppElevationProfileWidget : public QObject
     void registerCustomProfileInSyncMode();
     void registerCustomProfileInNonSyncMode();
     void registerCustomProfileAndToggleSyncMode();
+    void testRemovedProjectLayers();
+    void testAddedProjectLayers();
+    void testChangedLayersWithCustomProfile();
 
   private:
     QgisApp *mQgisApp = nullptr;
@@ -90,6 +97,8 @@ void TestQgsAppElevationProfileWidget::cleanup()
     QgsApplication::profileSourceRegistry()->unregisterProfileSource( source->profileSourceId() );
   }
   QVERIFY( QgsApplication::profileSourceRegistry()->profileSources().isEmpty() );
+
+  QgsProject::instance()->clear();
 }
 
 void TestQgsAppElevationProfileWidget::registerCustomProfileAddsCustomNode()
@@ -262,6 +271,145 @@ void TestQgsAppElevationProfileWidget::registerCustomProfileAndToggleSyncMode()
 
   // Unregister the custom profile
   QVERIFY( QgsApplication::profileSourceRegistry()->unregisterProfileSource( u"my-dummy-profile"_s ) );
+}
+
+void TestQgsAppElevationProfileWidget::testRemovedProjectLayers()
+{
+  const QString dataDir( TEST_DATA_DIR ); //defined in CmakeLists.txt
+  const QString layerPath = dataDir + u"/points.shp"_s;
+
+  QgsVectorLayer *layer1 = new QgsVectorLayer( layerPath, u"points 1"_s, u"ogr"_s );
+  QgsVectorLayer *layer2 = new QgsVectorLayer( layerPath, u"points 2"_s, u"ogr"_s );
+  QgsVectorLayer *layer3 = new QgsVectorLayer( layerPath, u"points 3"_s, u"ogr"_s );
+
+  QgsProject::instance()->addMapLayers( QList<QgsMapLayer *>() << layer1 << layer2 << layer3 );
+
+  QgsElevationProfile *profile = new QgsElevationProfile( QgsProject::instance() );
+  QgsElevationProfileWidget::applyDefaultSettingsToProfile( profile );
+  QgsElevationProfileWidget *profileWidget = new QgsElevationProfileWidget( profile, mQgisApp->mapCanvas() );
+  QVERIFY( profileWidget->profile() );
+  QVERIFY( profile->layerTree()->findLayer( layer1 ) );
+  QVERIFY( profile->layerTree()->findLayer( layer2 ) );
+  QVERIFY( profile->layerTree()->findLayer( layer3 ) );
+
+  // close widget and wait for deletion
+  QSignalSpy spy( profileWidget, &QObject::destroyed );
+  profileWidget->close();
+  QVERIFY( spy.wait( 1000 ) );
+  profileWidget = nullptr;
+
+  QgsProject::instance()->removeMapLayers( QList<QgsMapLayer *>() << layer1 << layer2 );
+
+  profileWidget = new QgsElevationProfileWidget( profile, mQgisApp->mapCanvas() );
+  QVERIFY( profileWidget->profile() );
+  QCOMPARE( profile->layerTree()->findLayers().size(), 1 );
+  QVERIFY( profile->layerTree()->findLayer( layer3 ) );
+}
+
+void TestQgsAppElevationProfileWidget::testAddedProjectLayers()
+{
+  const QString dataDir( TEST_DATA_DIR ); //defined in CmakeLists.txt
+  const QString layerPath = dataDir + u"/points.shp"_s;
+
+  QgsVectorLayer *layer1 = new QgsVectorLayer( layerPath, u"points 1"_s, u"ogr"_s );
+
+  QgsProject::instance()->addMapLayers( QList<QgsMapLayer *>() << layer1 );
+
+  // enable show by default
+  layer1->elevationProperties()->setZOffset( 1.0 );
+  QVERIFY( layer1->elevationProperties()->showByDefaultInElevationProfilePlots() );
+
+  QgsElevationProfile *profile = new QgsElevationProfile( QgsProject::instance() );
+  QgsElevationProfileWidget::applyDefaultSettingsToProfile( profile );
+  QgsElevationProfileWidget *profileWidget = new QgsElevationProfileWidget( profile, mQgisApp->mapCanvas() );
+  QVERIFY( profileWidget->profile() );
+  QVERIFY( profile->layerTree()->findLayer( layer1 ) );
+  QCOMPARE( profile->layerTree()->findLayers().size(), 1 );
+
+  // close widget and wait for deletion
+  QSignalSpy spy( profileWidget, &QObject::destroyed );
+  profileWidget->close();
+  QVERIFY( spy.wait( 1000 ) );
+
+  QgsVectorLayer *layer2 = new QgsVectorLayer( layerPath, u"points 2"_s, u"ogr"_s );
+  QgsVectorLayer *layer3 = new QgsVectorLayer( layerPath, u"points 3"_s, u"ogr"_s );
+
+  QgsProject::instance()->addMapLayers( QList<QgsMapLayer *>() << layer2 << layer3 );
+  // enable show by default
+  layer2->elevationProperties()->setZOffset( 1.0 );
+  QVERIFY( layer2->elevationProperties()->showByDefaultInElevationProfilePlots() );
+  layer3->elevationProperties()->setZOffset( 1.0 );
+  QVERIFY( layer3->elevationProperties()->showByDefaultInElevationProfilePlots() );
+
+  profileWidget = new QgsElevationProfileWidget( profile, mQgisApp->mapCanvas() );
+  QVERIFY( profileWidget->profile() );
+  QgsLayerTreeLayer *l;
+  l = profile->layerTree()->findLayer( layer1 );
+  QVERIFY( l );
+  QVERIFY( l->itemVisibilityChecked() );
+  l = profile->layerTree()->findLayer( layer2 );
+  QVERIFY( l );
+  QVERIFY( !l->itemVisibilityChecked() );
+  l = profile->layerTree()->findLayer( layer3 );
+  QVERIFY( l );
+  QVERIFY( !l->itemVisibilityChecked() );
+}
+
+void TestQgsAppElevationProfileWidget::testChangedLayersWithCustomProfile()
+{
+  const QString dataDir( TEST_DATA_DIR ); //defined in CmakeLists.txt
+  const QString layerPath = dataDir + u"/points.shp"_s;
+
+  QgsVectorLayer *layer1 = new QgsVectorLayer( layerPath, u"points 1"_s, u"ogr"_s );
+  QgsVectorLayer *layer2 = new QgsVectorLayer( layerPath, u"points 2"_s, u"ogr"_s );
+
+  QgsProject::instance()->addMapLayers( QList<QgsMapLayer *>() << layer1 << layer2 );
+
+  // enable show by default
+  layer1->elevationProperties()->setZOffset( 1.0 );
+  QVERIFY( layer1->elevationProperties()->showByDefaultInElevationProfilePlots() );
+  layer2->elevationProperties()->setZOffset( 1.0 );
+  QVERIFY( layer2->elevationProperties()->showByDefaultInElevationProfilePlots() );
+
+  QgsElevationProfile *profile = new QgsElevationProfile( QgsProject::instance() );
+  QgsElevationProfileWidget::applyDefaultSettingsToProfile( profile );
+  QgsElevationProfileWidget *profileWidget = new QgsElevationProfileWidget( profile, mQgisApp->mapCanvas() );
+  QVERIFY( profileWidget->profile() );
+  QVERIFY( profile->layerTree()->findLayer( layer1 ) );
+  QCOMPARE( profile->layerTree()->children().size(), 2 );
+
+  // Register a custom profile and check that there is a custom node in the tree view
+  MyDummyProfileSource *source = new MyDummyProfileSource();
+  QVERIFY( QgsApplication::profileSourceRegistry()->registerProfileSource( source ) );
+  QVERIFY( profile->layerTree() );
+  QCOMPARE( profile->layerTree()->children().size(), 3 );
+  QCOMPARE( profile->layerTree()->findCustomNodeIds().size(), 1 );
+
+  // close widget and wait for deletion
+  QSignalSpy spy( profileWidget, &QObject::destroyed );
+  profileWidget->close();
+  QVERIFY( spy.wait( 1000 ) );
+
+  QgsVectorLayer *layer3 = new QgsVectorLayer( layerPath, u"points 3"_s, u"ogr"_s );
+
+  QgsProject::instance()->removeMapLayers( QList<QgsMapLayer *>() << layer2 );
+  QgsProject::instance()->addMapLayers( QList<QgsMapLayer *>() << layer3 );
+
+  // enable show by default
+  layer3->elevationProperties()->setZOffset( 1.0 );
+  QVERIFY( layer3->elevationProperties()->showByDefaultInElevationProfilePlots() );
+
+  // Unregister the custom profile and check that the custom node persists in the closed profile
+  QVERIFY( QgsApplication::profileSourceRegistry()->unregisterProfileSource( u"my-dummy-profile"_s ) );
+
+  profileWidget = new QgsElevationProfileWidget( profile, mQgisApp->mapCanvas() );
+  QVERIFY( profileWidget->profile() );
+
+  QVERIFY( profile->layerTree()->findLayer( layer1 ) );
+  QVERIFY( profile->layerTree()->findLayer( layer3 ) );
+
+  QCOMPARE( profile->layerTree()->findCustomNodeIds().size(), 1 );
+  QCOMPARE( profile->layerTree()->children().size(), 3 );
 }
 
 QGSTEST_MAIN( TestQgsAppElevationProfileWidget )

@@ -236,12 +236,12 @@ void TestQgsProcessingModelAlgorithm::modelScope()
   QgsProject p;
   pc.setProject( &p );
   p.setFileName( TEST_DATA_DIR + u"/test_file.qgs"_s );
-  scope.reset( QgsExpressionContextUtils::processingModelAlgorithmScope( &alg, params, pc ) );
+  scope = QgsExpressionContextUtils::processingModelAlgorithmScope( &alg, params, pc );
   QCOMPARE( scope->variable( u"model_path"_s ).toString(), QString( QStringLiteral( TEST_DATA_DIR ) + u"/test_file.qgs"_s ) );
   QCOMPARE( scope->variable( u"model_folder"_s ).toString(), QStringLiteral( TEST_DATA_DIR ) );
 
   alg.setSourceFilePath( TEST_DATA_DIR + u"/processing/my_model.model3"_s );
-  scope.reset( QgsExpressionContextUtils::processingModelAlgorithmScope( &alg, params, pc ) );
+  scope = QgsExpressionContextUtils::processingModelAlgorithmScope( &alg, params, pc );
   QCOMPARE( scope->variable( u"model_path"_s ).toString(), QString( QStringLiteral( TEST_DATA_DIR ) + u"/processing/my_model.model3"_s ) );
   QCOMPARE( scope->variable( u"model_folder"_s ).toString(), QString( QStringLiteral( TEST_DATA_DIR ) + u"/processing"_s ) );
 

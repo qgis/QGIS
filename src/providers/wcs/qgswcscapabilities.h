@@ -35,23 +35,19 @@ class QNetworkAccessManager;
 class QNetworkReply;
 
 /**
- * \brief Metadata link property structure.
- *
- *  Contains the optional medatadaLink element
+ * Encapsulates metadata link properties.
  */
 struct QgsWcsMetadataLinkProperty
 {
     //! Metadata type, the standard to which the metadata complies
     QString metadataType;
 
-    //! Metadata link URL
+    //! Optional metadata link URL
     QString xlinkHref;
 };
 
 /**
- * \brief CoverageSummary structure.
- *
- *  Provides description for coverage data
+ * Encapsulates coverage details from CoverageSummary.
  */
 struct QgsWcsCoverageSummary
 {
@@ -62,10 +58,10 @@ struct QgsWcsCoverageSummary
     //! Coverage unique identifier
     QString identifier;
 
-    //! Title for the coverage
+    //! Coverage title
     QString title;
 
-    //! Brief coverage description
+    //! Coverage description
     QString abstract;
 
     //! Coverage CRS which GetCoverage response may be expressed
@@ -98,7 +94,7 @@ struct QgsWcsCoverageSummary
     bool hasSize = false;
 };
 
-//! Capability Property structure
+//! Encapsulates capability properties
 struct QgsWcsCapabilitiesProperty
 {
     QString version;
@@ -110,7 +106,7 @@ struct QgsWcsCapabilitiesProperty
 };
 
 /**
- * \brief WCS Capabilities.
+ * Encapsulates WCS capabilities.
 */
 class QgsWcsCapabilities : public QObject
 {
@@ -118,11 +114,10 @@ class QgsWcsCapabilities : public QObject
 
   public:
     /**
-     * Constructor for the provider.
+     * Constructor for the QgsWcsCapabilities.
      *
-     * \param   uri   HTTP URL of the Web Server.  If needed a proxy will be used
-     *                otherwise we contact the host directly.
-     *
+     * \param uri HTTP URL of the WCS server. If needed a proxy will be used
+     * otherwise we contact the host directly.
      */
     explicit QgsWcsCapabilities( QgsDataSourceUri const &uri );
     //! copy constructor
@@ -134,17 +129,15 @@ class QgsWcsCapabilities : public QObject
     const QgsWcsCapabilitiesProperty &capabilities() const;
 
     /**
-     * \brief   Returns a list of the supported layers of the WCS server
+     * Returns a list of the supported layers of the WCS server
      *
-     * \param[out] layers   The list of layers will be placed here.
-     *
-     * \returns false if the layers could not be retrieved or parsed -
-     *         see lastError() for more info
+     * \param[out] layers The list of coverages will be placed here.
+     * \returns FALSE if the layers could not be retrieved or parsed.
      */
     bool supportedCoverages( QVector<QgsWcsCoverageSummary> &coverageSummary );
 
     /**
-     * \brief   Returns a map for the hierarchy of layers
+     * Returns a map for the hierarchy of layers
      */
     void coverageParents( QMap<int, int> &parents, QMap<int, QStringList> &parentNames ) const;
 
@@ -155,33 +148,35 @@ class QgsWcsCapabilities : public QObject
     QList<QgsWcsCoverageSummary> coverages() const;
 
     /**
-     * \brief Prepare the URI so that we can later simply append param=value
-     * \param uri uri to prepare
-     * \returns prepared uri
+     * Returns the request URL with query parameters from the base URI preserved.
      */
-    static QString prepareUri( QString uri );
+    QUrl requestUrl( const QString &serverUrl ) const;
 
     /**
-     * \brief Returns the GetCoverage full url
-     *  \param version optional version, e.g. 1.0.0 or 1.1.0
+     * Returns the GetCoverage full URL.
+     * \param version optional version, e.g. 1.0.0 or 1.1.0
     */
     QString getCapabilitiesUrl( const QString &version ) const;
 
-    //! \brief Returns the GetCoverage full url using current version
+    //! Returns the GetCoverage full URL using current version.
     QString getCapabilitiesUrl() const;
 
-    //! \brief Returns the GetCoverage full full url using current version
+    /**
+     * Returns the DescribeCoverage full URL for given coverage \a identifier.
+     * \param identifier coverage identifier.
+     */
     QString getDescribeCoverageUrl( QString const &identifier ) const;
 
-    //! Returns the GetCoverage base url
+    //! Returns the GetCoverage base URL
     QString getCoverageUrl() const;
 
-    //! Send request to server
+    //! Sends request to server
     bool sendRequest( QString const &url );
 
     /**
-     * Gets additional coverage info from server. Version 1.0 GetCapabilities
-     *  response does not contain all info (CRS, formats).
+     * Gets additional coverage info from server.
+     *
+     * Version 1.0 GetCapabilities response does not contain all info (CRS, formats).
      */
     bool describeCoverage( QString const &identifier, bool forceRefresh = false );
 
@@ -197,29 +192,13 @@ class QgsWcsCapabilities : public QObject
 
     QString version() const { return mCapabilities.version; }
 
-    /**
-     * \brief   Returns the caption error text for the last error in this provider
-     *
-     * If an operation returns 0 (e.g. draw()), this function
-     * returns the text of the error associated with the failure.
-     * Interactive users of this provider can then, for example,
-     * call a QMessageBox to display the contents.
-     */
+    //! Returns the caption error text for the last error in this provider.
     QString lastErrorTitle();
 
-    /**
-     * \brief   Returns the verbose error text for the last error in this provider
-     *
-     * If an operation returns 0 (e.g. draw()), this function
-     * returns the text of the error associated with the failure.
-     * Interactive users of this provider can then, for example,
-     * call a QMessageBox to display the contents.
-     */
+    //! Returns the verbose error text for the last error in this provider.
     QString lastError();
 
-    /**
-     * \brief   Returns the format of the error message (text or html)
-     */
+    //! Returns the format of the error message (text or html).
     QString lastErrorFormat();
 
     //! Gets tag name without namespace
@@ -232,15 +211,15 @@ class QgsWcsCapabilities : public QObject
     static QDomElement firstChild( const QDomElement &element, const QString &name );
 
     /**
-     * Find sub elements by path which is string of dot separated tag names.
-     *  NS is ignored. Example path: domainSet.spatialDomain.RectifiedGrid
-    */
+     * Finds sub elements by path which is string of dot separated tag names.
+     * NS is ignored. Example path: domainSet.spatialDomain.RectifiedGrid
+     */
     static QList<QDomElement> domElements( const QDomElement &element, const QString &path );
 
     /**
-     * Find first sub element by path which is string of dot separated tag names.
-     *  NS is ignored. Example path: domainSet.spatialDomain.RectifiedGrid
-    */
+     * Finds first sub element by path which is string of dot separated tag names.
+     * NS is ignored. Example path: domainSet.spatialDomain.RectifiedGrid
+     */
     static QDomElement domElement( const QDomElement &element, const QString &path );
 
     //! Gets text of element specified by path
@@ -253,10 +232,10 @@ class QgsWcsCapabilities : public QObject
     static QString elementLink( const QDomElement &element );
 
   signals:
-    //! \brief emit a signal to notify of a progress event
+    //! Emitted when progress changes.
     void progressChanged( int progress, int totalSteps );
 
-    //! \brief emit a signal to be caught by qgisapp and display a msg on status bar
+    //! Emitted when status changes.
     void statusChanged( QString const &statusQString );
 
     void downloadFinished();
@@ -271,7 +250,7 @@ class QgsWcsCapabilities : public QObject
     //! Gets coverage summary for identifier
     QgsWcsCoverageSummary *coverageSummary( QString const &identifier, QgsWcsCoverageSummary *parent = nullptr );
 
-    //! Get list of all sub coverages
+    //! Gets list of all sub coverages
     QList<QgsWcsCoverageSummary> coverageSummaries( const QgsWcsCoverageSummary *parent = nullptr ) const;
 
     void initCoverageSummary( QgsWcsCoverageSummary &coverageSummary );
@@ -285,12 +264,10 @@ class QgsWcsCapabilities : public QObject
     QString crsUrnToAuthId( const QString &text );
 
     /**
-     * \brief Retrieve and parse the (cached) Capabilities document from the server
+     * Retrieves and parses the (cached) Capabilities document from the server.
      *
      * \param preferredVersion optional version, e.g. 1.0.0, 1.1.0
-     *
-     * \returns false if the capabilities document could not be retrieved or parsed -
-     *         see lastError() for more info
+     * \returns FALSE if the capabilities document could not be retrieved or parsed.
      *
      * When this returns, "layers" will make sense.
      *
@@ -298,82 +275,66 @@ class QgsWcsCapabilities : public QObject
      */
     bool retrieveServerCapabilities( const QString &preferredVersion );
 
-    //! Retrieve the best WCS version supported by server and QGIS
+    //! Retrieves the best WCS version supported by server and QGIS
     bool retrieveServerCapabilities();
 
-    //! \returns false if the capabilities document could not be parsed - see lastError() for more info
+    //! Parses the capabilities document.
     bool parseCapabilitiesDom( const QByteArray &xml, QgsWcsCapabilitiesProperty &capabilities );
 
     // ------------- 1.0 --------------------
-    //! parse the WCS Layer XML element
+    //! Parses the WCS Layer XML element
     void parseContentMetadata( const QDomElement &element, QgsWcsCoverageSummary &coverageSummary );
 
-    //! parse the WCS Layer XML element
+    //! Parses the WCS Layer XML element
     void parseCoverageOfferingBrief( const QDomElement &element, QgsWcsCoverageSummary &coverageSummary, QgsWcsCoverageSummary *parent = nullptr );
 
-    //! Parse metadata element from the document
+    //! Parses metadata element from the document
     void parseMetadataLink( const QDomElement &element, QgsWcsMetadataLinkProperty &metadataLink );
 
-
     // ------------- 1.1 --------------------
-    //! parse the WCS Layer XML element
+    //! Parses the WCS Layer XML element
     void parseCoverageSummary( const QDomElement &element, QgsWcsCoverageSummary &coverageSummary, QgsWcsCoverageSummary *parent = nullptr );
 
-    //! Data source uri
+    //! Data source URI
     QgsDataSourceUri mUri;
 
     //! Response capabilities version
     QString mVersion;
 
-    /**
-     * Capabilities of the WCS Server (raw)
-     */
+    //! Capabilities of the WCS server (raw)
     QByteArray mCapabilitiesResponse;
 
-    /**
-     * Capabilities of the WCS Server
-     */
+    //! Capabilities of the WCS server
     QDomDocument mCapabilitiesDom;
 
-    /**
-     * Last Service Exception Report from the WCS Server
-     */
+    //! Last service exception report from the WCS server
     QDomDocument mServiceExceptionReportDom;
 
-    /**
-     * Parsed capabilities of the WCS Server
-     */
+    //! Parsed capabilities of the WCS server
     QgsWcsCapabilitiesProperty mCapabilities;
 
     /**
-     * layers hosted by the WCS Server
+     * Layers hosted by the WCS server.
+     *
      * This vector contain initial copies which are not updated by coverageSummary()!!!
      */
     QVector<QgsWcsCoverageSummary> mCoveragesSupported;
 
-    /**
-     * The reply to the capabilities request
-     */
+    //! The reply to the capabilities request
     QNetworkReply *mCapabilitiesReply = nullptr;
 
-    /**
-     * The error caption associated with the last WCS error.
-     */
+    //! The error caption associated with the last WCS error.
     QString mErrorTitle;
 
-    /**
-     * The error message associated with the last WCS error.
-     */
+    //! The error message associated with the last WCS error.
     QString mError;
 
-    /**
-     * The mime type of the message
-     */
+    //! The mime type of the message
     QString mErrorFormat;
 
     int mCoverageCount = 0;
 
-    //! number of layers and parents
+    //! Number of layers and parents
     QMap<int, int> mCoverageParents;
     QMap<int, QStringList> mCoverageParentIdentifiers;
 
@@ -389,7 +350,4 @@ class QgsWcsCapabilities : public QObject
     QgsWcsCapabilities &operator=( const QgsWcsCapabilities & ) = delete;
 };
 
-
-#endif
-
-// ENDS
+#endif // QGSWCSCAPABILITIES_H

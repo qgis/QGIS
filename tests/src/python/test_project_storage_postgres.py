@@ -19,7 +19,11 @@ import unittest
 
 import psycopg2
 from qgis.core import (
+    QgsApplication,
     QgsDataSourceUri,
+    QgsProject,
+    QgsProjectItem,
+    QgsProviderRegistry,
     QgsVectorLayer,
 )
 from qgis.PyQt.QtCore import QUrl, QUrlQuery
@@ -98,6 +102,78 @@ class TestPyQgsProjectStoragePostgres(QgisTestCase, TestPyQgsProjectStorageBase)
 
         u.setQuery(urlQuery)
         return str(u.toEncoded(), "utf-8")
+
+    def test_browser_project_item(self):
+        """Test project items and their tooltips in the browser"""
+
+        # helper to find item in list by name
+        def find_item(items: list[QgsProjectItem], name: str):
+            return next((item for item in items if item.name() == name), None)
+
+        # helper to find project item by name in the Postgres browser tree
+        def find_project_item_in_postgres(
+            project_name: str,
+        ) -> tuple[
+            QgsProjectItem, tuple[QgsProjectItem, QgsProjectItem, QgsProjectItem]
+        ]:
+            root_item = (
+                QgsApplication.dataItemProviderRegistry()
+                .provider("PostGIS")
+                .createDataItem("", None)
+            )
+            conn_item = find_item(root_item.createChildren(), "browser_projects_test")
+            self.assertIsNotNone(conn_item)
+            schema_item = find_item(conn_item.createChildren(), self.schema)
+            self.assertIsNotNone(schema_item)
+            project_item = find_item(schema_item.createChildren(), project_name)
+            self.assertIsInstance(project_item, QgsProjectItem)
+            # return all objects to avoid deletion of parents
+            return (project_item, (root_item, conn_item, schema_item))
+
+        self.dropProjectsTable()
+
+        # provider metadata and connection
+        md = QgsProviderRegistry.instance().providerMetadata(self.provider)
+        conn = md.createConnection(self.dbconn, {"projectsInDatabase": True})
+        md.saveConnection(conn, "browser_projects_test")
+
+        project_name = "pg_project_for_testing_browser"
+        comment_str = "test comment"
+
+        # project with vector layer saved in DB
+        project = QgsProject()
+        project.addMapLayer(QgsVectorLayer(self.vl.source(), "test", self.provider))
+        project.setFileName(self.encode_uri(self.ds_uri, self.schema, project_name))
+        self.assertTrue(project.write())
+
+        # add comment to project in DB
+        self.execSQLCommand(
+            f"UPDATE qgis_test.qgis_projects SET comment = '{comment_str}' WHERE name = '{project_name}';"
+        )
+
+        # test creation of project item in Postgres browser tree and  tooltip
+        project_item, _parents = find_project_item_in_postgres(project_name)
+        self.assertIsInstance(project_item, QgsProjectItem)
+        tooltip_lines = project_item.toolTip().split("\n")
+        self.assertEqual(len(tooltip_lines), 3)
+        self.assertTrue(tooltip_lines[0].startswith("Last modified time: "))
+        self.assertTrue(tooltip_lines[1].startswith("Last modified user: "))
+        self.assertEqual(tooltip_lines[2], f"Comment: {comment_str}")
+
+        # historic tables might not have comment column, test that it works without it
+        self.execSQLCommand("ALTER TABLE qgis_test.qgis_projects DROP COLUMN comment;")
+
+        project_item, _parents = find_project_item_in_postgres(project_name)
+        self.assertIsInstance(project_item, QgsProjectItem)
+        tooltip_lines = project_item.toolTip().split("\n")
+        self.assertEqual(len(tooltip_lines), 3)
+        self.assertTrue(tooltip_lines[0].startswith("Last modified time: "))
+        self.assertTrue(tooltip_lines[1].startswith("Last modified user: "))
+        self.assertEqual(tooltip_lines[2], "Comment: ")
+
+        # cleanup
+        self.dropProjectsTable()
+        md.deleteConnection("browser_projects_test")
 
 
 if __name__ == "__main__":

@@ -65,7 +65,6 @@ QgsAttributeTableModel::QgsAttributeTableModel( QgsVectorLayerCache *layerCache,
 
   loadAttributes();
 
-  connect( mLayer, &QgsVectorLayer::featuresDeleted, this, &QgsAttributeTableModel::featuresDeleted );
   connect( mLayer, &QgsVectorLayer::attributeDeleted, this, &QgsAttributeTableModel::attributeDeleted );
   connect( mLayer, &QgsVectorLayer::updatedFields, this, &QgsAttributeTableModel::updatedFields );
 
@@ -79,6 +78,7 @@ QgsAttributeTableModel::QgsAttributeTableModel( QgsVectorLayerCache *layerCache,
 
   connect( mLayer, &QgsVectorLayer::editCommandEnded, this, &QgsAttributeTableModel::editCommandEnded );
   connect( mLayerCache, &QgsVectorLayerCache::attributeValueChanged, this, &QgsAttributeTableModel::attributeValueChanged );
+  connect( mLayerCache, &QgsVectorLayerCache::featureAboutToBeDeleted, this, [this]( QgsFeatureId id ) { featuresDeleted( { id } ); } );
   connect( mLayerCache, &QgsVectorLayerCache::featureAdded, this, [this]( QgsFeatureId id ) { featureAdded( id ); } );
   connect( mLayerCache, &QgsVectorLayerCache::cachedLayerDeleted, this, &QgsAttributeTableModel::layerDeleted );
 }
@@ -113,24 +113,11 @@ bool QgsAttributeTableModel::loadFeatureAtId( QgsFeatureId fid, int fieldIdx ) c
 
 int QgsAttributeTableModel::extraColumns() const
 {
-  return mExtraColumns;
+  return 1;
 }
 
-void QgsAttributeTableModel::setExtraColumns( int extraColumns )
-{
-  if ( extraColumns > mExtraColumns )
-  {
-    beginInsertColumns( QModelIndex(), mFieldCount + mExtraColumns, mFieldCount + extraColumns - 1 );
-    mExtraColumns = extraColumns;
-    endInsertColumns();
-  }
-  else if ( extraColumns < mExtraColumns )
-  {
-    beginRemoveColumns( QModelIndex(), mFieldCount + extraColumns, mFieldCount + mExtraColumns - 1 );
-    mExtraColumns = extraColumns;
-    endRemoveColumns();
-  }
-}
+void QgsAttributeTableModel::setExtraColumns( int )
+{}
 
 void QgsAttributeTableModel::featuresDeleted( const QgsFeatureIds &fids )
 {
@@ -291,7 +278,12 @@ void QgsAttributeTableModel::featureAdded( QgsFeatureId fid )
       mRowIdMap.insert( n, fid );
       if ( !mResettingModel )
         endInsertRows();
-      reload( index( rowCount() - 1, 0 ), index( rowCount() - 1, columnCount() ) );
+
+      const int row = rowCount() - 1;
+      const QModelIndex first = index( row, 0 );
+      const int lastColumn = columnCount() - 1;
+      const QModelIndex last = index( row, lastColumn );
+      reload( first, last );
       if ( mBulkEditCommandRunning && !mResettingModel )
       {
         mInsertedRowsChanges.append( fid );
@@ -428,8 +420,6 @@ void QgsAttributeTableModel::loadAttributes()
   if ( mFields == fields )
     return;
 
-  mFields = fields;
-
   bool ins = false, rm = false;
 
   QgsAttributeList attributes;
@@ -439,16 +429,18 @@ void QgsAttributeTableModel::loadAttributes()
     attributes << idx;
   }
 
-  if ( mFieldCount + mExtraColumns < attributes.size() + mExtraColumns )
+  if ( mFieldCount < attributes.size() )
   {
     ins = true;
-    beginInsertColumns( QModelIndex(), mFieldCount + mExtraColumns, attributes.size() - 1 );
+    beginInsertColumns( QModelIndex(), mFieldCount, attributes.size() - 1 );
   }
-  else if ( attributes.size() + mExtraColumns < mFieldCount + mExtraColumns )
+  else if ( attributes.size() < mFieldCount )
   {
     rm = true;
-    beginRemoveColumns( QModelIndex(), attributes.size(), mFieldCount + mExtraColumns - 1 );
+    beginRemoveColumns( QModelIndex(), attributes.size(), mFieldCount - 1 );
   }
+
+  mFields = fields;
 
   mFieldCount = attributes.size();
   mAttributes = attributes;
@@ -623,14 +615,18 @@ int QgsAttributeTableModel::fieldCol( int idx ) const
 
 int QgsAttributeTableModel::rowCount( const QModelIndex &parent ) const
 {
-  Q_UNUSED( parent )
+  if ( parent.isValid() )
+    return 0;
+
   return mRowIdMap.size();
 }
 
 int QgsAttributeTableModel::columnCount( const QModelIndex &parent ) const
 {
-  Q_UNUSED( parent )
-  return std::max( 1, mFieldCount + mExtraColumns ); // if there are zero columns all model indices will be considered invalid
+  if ( parent.isValid() )
+    return 0;
+
+  return std::max( 1, mFieldCount + 1 ); // if there are zero columns all model indices will be considered invalid
 }
 
 QVariant QgsAttributeTableModel::headerData( int section, Qt::Orientation orientation, int role ) const
@@ -642,7 +638,7 @@ QVariant QgsAttributeTableModel::headerData( int section, Qt::Orientation orient
   {
     if ( orientation == Qt::Vertical ) //row
     {
-      return QVariant( section );
+      return QVariant( section + 1 );
     }
     else if ( section >= 0 && section < mFieldCount )
     {
@@ -651,7 +647,7 @@ QVariant QgsAttributeTableModel::headerData( int section, Qt::Orientation orient
     }
     else
     {
-      return tr( "extra column" );
+      return tr( "Actions" );
     }
   }
   else if ( role == Qt::ToolTipRole )
@@ -661,44 +657,73 @@ QVariant QgsAttributeTableModel::headerData( int section, Qt::Orientation orient
       // TODO show DisplayExpression
       return tr( "Feature ID: %1" ).arg( rowToId( section ) );
     }
-    else
+    else if ( section >= 0 && section < mFieldCount )
     {
       const QgsField field = mLayer->fields().at( mAttributes.at( section ) );
       return QgsFieldModel::fieldToolTipExtended( field, mLayer );
     }
   }
-  else
-  {
-    return QVariant();
-  }
+
+  return QVariant();
 }
 
 QVariant QgsAttributeTableModel::data( const QModelIndex &index, int role ) const
 {
-  if ( !index.isValid()
-       || !mLayer
-       || ( role != Qt::TextAlignmentRole && role != Qt::DisplayRole && role != Qt::ToolTipRole && role != Qt::EditRole && role != static_cast<int>( CustomRole::FeatureId ) && role != static_cast<int>( CustomRole::FieldIndex ) && role != Qt::BackgroundRole && role != Qt::ForegroundRole && role != Qt::DecorationRole && role != Qt::FontRole && role < static_cast<int>( CustomRole::Sort ) ) )
+  if ( !index.isValid() || !mLayer )
     return QVariant();
 
-  const QgsFeatureId rowId = rowToId( index.row() );
+  const bool isActionColumn = index.column() == mFieldCount;
 
+  // model roles which don't vary by row
+  switch ( role )
+  {
+    case static_cast<int>( QgsAttributeTableModel::CustomRole::ColumnType ):
+    {
+      if ( isActionColumn )
+      {
+        return static_cast< int >( ColumnTypeValue::ActionButton );
+      }
+      else
+      {
+        return static_cast< int >( ColumnTypeValue::Field );
+      }
+    }
+
+    case static_cast<int>( CustomRole::FieldIndex ):
+    {
+      return isActionColumn ? QVariant() : mAttributes.at( index.column() );
+    }
+
+    case Qt::TextAlignmentRole:
+    {
+      if ( isActionColumn )
+      {
+        return static_cast<Qt::Alignment::Int>( Qt::AlignLeft | Qt::AlignVCenter );
+      }
+      else
+      {
+        const int fieldId = mAttributes.at( index.column() );
+        const QgsField field = mFields.at( fieldId );
+        const WidgetData &widgetData = getWidgetData( index.column() );
+        return static_cast<Qt::Alignment::Int>( widgetData.fieldFormatter->alignmentFlag( field, widgetData.config ) | Qt::AlignVCenter );
+      }
+    }
+
+    default:
+      break;
+  }
+
+  // model roles which don't vary by column
   if ( role == static_cast<int>( CustomRole::FeatureId ) )
-    return rowId;
-
-  if ( index.column() >= mFieldCount )
-    return QVariant();
-
-  const int fieldId = mAttributes.at( index.column() );
-
-  if ( role == static_cast<int>( CustomRole::FieldIndex ) )
-    return fieldId;
-
-  if ( role >= static_cast<int>( CustomRole::Sort ) )
+  {
+    return rowToId( index.row() );
+  }
+  else if ( role >= static_cast<int>( CustomRole::Sort ) )
   {
     const unsigned long cacheIndex = role - static_cast<int>( CustomRole::Sort );
     if ( cacheIndex < mSortCaches.size() )
     {
-      return mSortCaches.at( cacheIndex ).sortCache.value( rowId );
+      return mSortCaches.at( cacheIndex ).sortCache.value( rowToId( index.row() ) );
     }
     else
     {
@@ -706,14 +731,12 @@ QVariant QgsAttributeTableModel::data( const QModelIndex &index, int role ) cons
     }
   }
 
-  const QgsField field = mLayer->fields().at( fieldId );
+  if ( isActionColumn )
+    return QVariant();
 
-  if ( role == Qt::TextAlignmentRole )
-  {
-    const WidgetData &widgetData = getWidgetData( index.column() );
-    return static_cast<Qt::Alignment::Int>( widgetData.fieldFormatter->alignmentFlag( mLayer, fieldId, widgetData.config ) | Qt::AlignVCenter );
-  }
-
+  // the remaining roles vary per column and row, and require a feature
+  const QgsFeatureId rowId = rowToId( index.row() );
+  const int fieldId = mAttributes.at( index.column() );
   if ( mFeat.id() != rowId || !mFeat.isValid() || !mLayerCache->cacheSubsetOfAttributes().contains( fieldId ) )
   {
     if ( !loadFeatureAtId( rowId, fieldId ) )
@@ -723,8 +746,8 @@ QVariant QgsAttributeTableModel::data( const QModelIndex &index, int role ) cons
       return QVariant( "ERROR" );
   }
 
-  QVariant val = mFeat.attribute( fieldId );
-
+  const QgsField field = mFields.at( fieldId );
+  const QVariant val = mFeat.attribute( fieldId );
   switch ( role )
   {
     case Qt::DisplayRole:
@@ -833,6 +856,9 @@ QVariant QgsAttributeTableModel::data( const QModelIndex &index, int role ) cons
 
       return QVariant();
     }
+
+    default:
+      break;
   }
 
   return QVariant();
@@ -857,10 +883,15 @@ bool QgsAttributeTableModel::setData( const QModelIndex &index, const QVariant &
 Qt::ItemFlags QgsAttributeTableModel::flags( const QModelIndex &index ) const
 {
   if ( !index.isValid() )
-    return Qt::ItemIsEnabled;
-
-  if ( index.column() >= mFieldCount || !mLayer )
     return Qt::NoItemFlags;
+
+  if ( !mLayer )
+    return Qt::NoItemFlags;
+
+  if ( index.column() >= mFieldCount + 1 )
+    return Qt::NoItemFlags;
+  else if ( index.column() == mFieldCount ) // actions column
+    return Qt::ItemIsEnabled | Qt::ItemIsSelectable;
 
   Qt::ItemFlags flags = QAbstractTableModel::flags( index );
 
@@ -930,25 +961,44 @@ void QgsAttributeTableModel::bulkEditCommandEnded()
   {
     // Invalidates the cache (there is no API for doing this directly)
     emit mLayer->dataChanged();
-    emit dataChanged( createIndex( 0, 0 ), createIndex( rowCount() - 1, columnCount() - 1 ) );
-  }
-  else
-  {
-    int minRow = rowCount();
-    int minCol = columnCount();
-    int maxRow = 0;
-    int maxCol = 0;
-    const auto keys = mAttributeValueChanges.keys();
-    for ( const auto &key : keys )
+    if ( rowCount() > 0 )
     {
-      attributeValueChanged( key.first, key.second, mAttributeValueChanges.value( key ) );
-      const int row( idToRow( key.first ) );
-      const int col( fieldCol( key.second ) );
+      emit dataChanged( createIndex( 0, 0 ), createIndex( rowCount() - 1, columnCount() - 1 ) );
+    }
+  }
+  else if ( !mAttributeValueChanges.empty() && !mInsertedRowsChanges.empty() )
+  {
+    int minRow = std::numeric_limits< int >::max();
+    int minCol = std::numeric_limits< int >::max();
+    int maxRow = -1;
+    int maxCol = -1;
+    const int lastColumn = columnCount() - 1;
+    for ( auto it = mAttributeValueChanges.constBegin(); it != mAttributeValueChanges.constEnd(); ++it )
+    {
+      attributeValueChanged( it.key().first, it.key().second, it.value() );
+      const int row( idToRow( it.key().first ) );
+      const int col( fieldCol( it.key().second ) );
       minRow = std::min<int>( row, minRow );
       minCol = std::min<int>( col, minCol );
       maxRow = std::max<int>( row, maxRow );
       maxCol = std::max<int>( col, maxCol );
     }
+
+    for ( QgsFeatureId fid : std::as_const( mInsertedRowsChanges ) )
+    {
+      const int row( idToRow( fid ) );
+      minRow = std::min<int>( row, minRow );
+      maxRow = std::max<int>( row, maxRow );
+      // the whole row has changed, so we need to expand the range to include ALL columns
+      minCol = 0;
+      maxCol = lastColumn;
+    }
+#ifdef QGISDEBUG
+    Q_ASSERT_X( minRow >= 0 && minRow < rowCount(), "QgsAttributeTableModel::bulkEditCommandEnded", u"Invalid minRow, got %1 expected >=0 && < %2"_s.arg( minRow ).arg( rowCount() ).toLocal8Bit().constData() );
+    Q_ASSERT_X( minCol >= 0 && minCol < columnCount(), "QgsAttributeTableModel::bulkEditCommandEnded", u"Invalid minCol, got %1 expected >=0 && < %2"_s.arg( minCol ).arg( columnCount() ).toLocal8Bit().constData() );
+    Q_ASSERT_X( maxRow >= 0 && maxRow < rowCount(), "QgsAttributeTableModel::bulkEditCommandEnded", u"Invalid maxRow, got %1 expected >=0 && < %2"_s.arg( maxRow ).arg( rowCount() ).toLocal8Bit().constData() );
+    Q_ASSERT_X( maxCol >= 0 && maxCol < columnCount(), "QgsAttributeTableModel::bulkEditCommandEnded", u"Invalid maxCol, got %1 expected >=0 && < %2"_s.arg( maxCol ).arg( columnCount() ).toLocal8Bit().constData() );
+#endif
 
     emit dataChanged( createIndex( minRow, minCol ), createIndex( maxRow, maxCol ) );
   }
@@ -958,9 +1008,29 @@ void QgsAttributeTableModel::bulkEditCommandEnded()
 void QgsAttributeTableModel::reload( const QModelIndex &index1, const QModelIndex &index2 )
 {
   mFeat.setId( std::numeric_limits<int>::min() );
-  emit dataChanged( index1, index2 );
-}
 
+#ifdef QGISDEBUG
+  Q_ASSERT_X( index1.row() >= 0 && index1.row() < rowCount(), "QgsAttributeTableModel::reload", u"Invalid min row, got %1 expected >=0 && < %2"_s.arg( index1.row() ).arg( rowCount() ).toLocal8Bit().constData() );
+  Q_ASSERT_X(
+    index1.column() >= 0 && index1.column() < columnCount(),
+    "QgsAttributeTableModel::reload",
+    u"Invalid min col, got %1 expected >=0 && < %2"_s.arg( index1.column() ).arg( columnCount() ).toLocal8Bit().constData()
+  );
+  Q_ASSERT_X( index2.row() >= 0 && index2.row() < rowCount(), "QgsAttributeTableModel::reload", u"Invalid max row, got %1 expected >=0 && < %2"_s.arg( index2.row() ).arg( rowCount() ).toLocal8Bit().constData() );
+  Q_ASSERT_X(
+    index2.column() >= 0 && index2.column() < columnCount(),
+    "QgsAttributeTableModel::reload",
+    u"Invalid max col, got %1 expected >=0 && < %2"_s.arg( index2.column() ).arg( columnCount() ).toLocal8Bit().constData()
+  );
+  Q_ASSERT_X( index2.row() >= index1.row(), "QgsAttributeTableModel::reload", u"Invalid max row, got %1 expected >= %2"_s.arg( index2.row() ).arg( index1.row() ).toLocal8Bit().constData() );
+  Q_ASSERT_X( index2.column() >= index1.column(), "QgsAttributeTableModel::reload", u"Invalid max column, got %1 expected >= %2"_s.arg( index2.column() ).arg( index1.column() ).toLocal8Bit().constData() );
+#endif
+
+  if ( !mResettingModel )
+  {
+    emit dataChanged( index1, index2 );
+  }
+}
 
 void QgsAttributeTableModel::executeAction( QUuid action, const QModelIndex &idx ) const
 {
@@ -1070,6 +1140,12 @@ void QgsAttributeTableModel::prefetchSortData( const QString &expressionString, 
       const QVariant sortValue = widgetData.fieldFormatter->sortValue( mLayer, cache.sortFieldIndex, widgetData.config, widgetData.cache, f.attribute( cache.sortFieldIndex ) );
       cache.sortCache.insert( f.id(), sortValue );
     }
+  }
+  const int rows = rowCount();
+  if ( rows > 0 )
+  {
+    const int sortRole = static_cast< int >( CustomRole::Sort ) + static_cast< int >( cacheIndex );
+    emit dataChanged( index( 0, 0 ), index( rows - 1, columnCount() - 1 ), { sortRole } );
   }
 }
 

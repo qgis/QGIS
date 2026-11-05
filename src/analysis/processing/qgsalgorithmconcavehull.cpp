@@ -17,6 +17,7 @@
 
 #include "qgsalgorithmconcavehull.h"
 
+#include "qgsgeos.h"
 #include "qgsmultipoint.h"
 #include "qgsprocessingregistry.h"
 #include "qgsspatialindex.h"
@@ -106,7 +107,7 @@ QVariantMap QgsConcaveHullAlgorithm::processAlgorithm( const QVariantMap &parame
   if ( !sink )
     throw QgsProcessingException( invalidSinkError( parameters, u"OUTPUT"_s ) );
 
-#if GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR < 11
+#if GEOS_VERSION_NUM < GEOS_COMPUTE_VERSION( 3, 11, 0 )
   concaveHullQgis( sink, parameters, context, feedback );
 #else
   concaveHullGeos( sink, parameters, feedback );

@@ -17,6 +17,7 @@
 
 #include "qgsactionmenu.h"
 #include "qgsapplication.h"
+#include "qgsattributetablemodel.h"
 #include "qgsexpression.h"
 #include "qgsexpressionbuilderdialog.h"
 #include "qgsexpressioncontextutils.h"

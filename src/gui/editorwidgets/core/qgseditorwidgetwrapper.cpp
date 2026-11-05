@@ -50,7 +50,8 @@ QgsField QgsEditorWidgetWrapper::field() const
 
 QVariant QgsEditorWidgetWrapper::defaultValue() const
 {
-  mDefaultValue = layer()->dataProvider()->defaultValueClause( mFieldIdx );
+  const QString defaultValueClause = layer()->dataProvider()->defaultValueClause( mFieldIdx );
+  mDefaultValue = defaultValueClause.isEmpty() ? QVariant() : defaultValueClause;
 
   return mDefaultValue;
 }

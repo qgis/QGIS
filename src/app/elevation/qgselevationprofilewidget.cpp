@@ -783,6 +783,11 @@ void QgsElevationProfileWidget::setupLayerTreeView( bool resetTree )
     {
       copyProjectTree( mLayerTree );
     }
+    else
+    {
+      mLayerTreeView->cleanupDeletedLayers( QgsProject::instance() );
+      mLayerTreeView->populateMissingLayers( QgsProject::instance(), true );
+    }
 
     // Initially populates the tree view using sources from the source registry
     const QList< QgsAbstractProfileSource * > sources = QgsApplication::profileSourceRegistry()->profileSources();

@@ -317,6 +317,18 @@ void QgsLayerStylingWidget::rebuildWidgetForLayer( QgsMapLayer *layer )
       break;
   }
 
+  for ( const QgsMapLayerConfigWidgetFactory *factory : std::as_const( mPageFactories ) )
+  {
+    if ( factory->supportsStyleDock() && factory->supportsLayer( layer ) )
+    {
+      QListWidgetItem *item = new QListWidgetItem( factory->icon(), QString() );
+      item->setToolTip( factory->title() );
+      item->setData( static_cast< int >( CustomRole::PageEnum ), QVariant::fromValue( Page::Custom ) );
+      item->setData( static_cast< int >( CustomRole::PageFactoryPointer ), QVariant::fromValue( reinterpret_cast< void * >( const_cast<QgsMapLayerConfigWidgetFactory *>( factory ) ) ) );
+      mOptionsListWidget->addItem( item );
+    }
+  }
+
   switch ( layer->type() )
   {
     case Qgis::LayerType::Vector:
@@ -337,18 +349,6 @@ void QgsLayerStylingWidget::rebuildWidgetForLayer( QgsMapLayer *layer )
     case Qgis::LayerType::Annotation:
     case Qgis::LayerType::Group:
       break;
-  }
-
-  for ( const QgsMapLayerConfigWidgetFactory *factory : std::as_const( mPageFactories ) )
-  {
-    if ( factory->supportsStyleDock() && factory->supportsLayer( layer ) )
-    {
-      QListWidgetItem *item = new QListWidgetItem( factory->icon(), QString() );
-      item->setToolTip( factory->title() );
-      item->setData( static_cast< int >( CustomRole::PageEnum ), QVariant::fromValue( Page::Custom ) );
-      item->setData( static_cast< int >( CustomRole::PageFactoryPointer ), QVariant::fromValue( reinterpret_cast< void * >( const_cast<QgsMapLayerConfigWidgetFactory *>( factory ) ) ) );
-      mOptionsListWidget->addItem( item );
-    }
   }
 
   QListWidgetItem *historyItem = new QListWidgetItem( QgsApplication::getThemeIcon( u"mActionHistory.svg"_s ), QString() );

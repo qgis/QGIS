@@ -167,7 +167,7 @@ void QgsLocationBasedAlgorithm::processByIteratingOverTargetSource(
 
       if ( !engine )
       {
-        engine.reset( QgsGeometry::createGeometryEngine( f.geometry().constGet() ) );
+        engine = QgsGeometry::createGeometryEngine( f.geometry().constGet() );
         engine->prepareGeometry();
       }
 
@@ -301,7 +301,7 @@ void QgsLocationBasedAlgorithm::processByIteratingOverIntersectSource(
 
       if ( !engine )
       {
-        engine.reset( QgsGeometry::createGeometryEngine( f.geometry().constGet() ) );
+        engine = QgsGeometry::createGeometryEngine( f.geometry().constGet() );
         engine->prepareGeometry();
       }
 

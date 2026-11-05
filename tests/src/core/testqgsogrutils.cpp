@@ -94,6 +94,7 @@ class TestQgsOgrUtils : public QObject
 
     void testListStylesSortingByDate();
     void testListStylesNoDuplicates();
+    void testLoadStoredStyleCleanupsFilter();
 
   private:
     QString mTestDataDir;
@@ -1319,7 +1320,7 @@ void TestQgsOgrUtils::testOgrUtilsStoredStyle()
     QgsVectorLayer vl = QgsVectorLayer( testFile, u"test"_s, u"ogr"_s );
     QVERIFY( vl.isValid() );
 
-    QgsSingleSymbolRenderer *renderer { static_cast<QgsSingleSymbolRenderer *>( vl.renderer() ) };
+    QgsSingleSymbolRenderer *renderer { dynamic_cast<QgsSingleSymbolRenderer *>( vl.renderer() ) };
     QVERIFY( renderer );
     QgsSymbol *symbol = renderer->symbol()->clone();
 
@@ -1759,14 +1760,6 @@ void TestQgsOgrUtils::testListStylesSortingByDate()
   // 2024-01-01 00:00:00 +02:00 == 2023-12-31 22:00:00 UTC
   updateStyleTime( 2, u"2024-01-01T00:00:00+02:00"_s );
 
-  OGRLayerH hLayer = GDALDatasetGetLayerByName( hDS.get(), "layer_styles" );
-  if ( hLayer )
-  {
-    OGR_L_SetAttributeFilter( hLayer, nullptr );
-    OGR_L_SetSpatialFilter( hLayer, nullptr );
-    OGR_L_ResetReading( hLayer );
-  }
-
   QStringList ids, names, descriptions;
   const int relatedCount = QgsOgrUtils::listStyles( hDS.get(), u"target"_s, u"geom"_s, ids, names, descriptions, error );
   QCOMPARE( relatedCount, 0 );
@@ -1804,20 +1797,88 @@ void TestQgsOgrUtils::testListStylesNoDuplicates()
   updateStyle( 1, u"2024-06-01T10:00:00Z"_s );
   updateStyle( 2, u"2024-06-01T10:00:00Z"_s );
 
-  OGRLayerH hLayer = GDALDatasetGetLayerByName( hDS.get(), "layer_styles" );
-  if ( hLayer )
-  {
-    OGR_L_SetAttributeFilter( hLayer, nullptr );
-    OGR_L_SetSpatialFilter( hLayer, nullptr );
-    OGR_L_ResetReading( hLayer );
-  }
-
   QStringList ids, names, descriptions;
   const int relatedCount = QgsOgrUtils::listStyles( hDS.get(), u"target"_s, u"geom"_s, ids, names, descriptions, error );
   QCOMPARE( relatedCount, 0 );
   QCOMPARE( ids.size(), 2 );
   QCOMPARE( names.size(), 2 );
   QCOMPARE( descriptions.size(), 2 );
+}
+
+/**
+ * Test for issue GH #58467
+ */
+void TestQgsOgrUtils::testLoadStoredStyleCleanupsFilter()
+{
+  QTemporaryDir tempDir;
+  QVERIFY( tempDir.isValid() );
+  QString tempDirPath = tempDir.path();
+  QString testFile = tempDirPath + "/test.gpkg";
+
+  // create GeoPackage with two layers
+  OGRSFDriverH hDriver = OGRGetDriverByName( "GPKG" );
+  QVERIFY( hDriver );
+  gdal::ogr_datasource_unique_ptr hCreateDS( OGR_Dr_CreateDataSource( hDriver, testFile.toUtf8().constData(), nullptr ) );
+  QVERIFY( hCreateDS );
+  OGRSpatialReferenceH hSRS = OSRNewSpatialReference( nullptr );
+  OSRImportFromEPSG( hSRS, 4326 );
+  OGRLayerH hLayerA = OGR_DS_CreateLayer( hCreateDS.get(), "layer_a", hSRS, wkbPoint, nullptr );
+  OGRLayerH hLayerB = OGR_DS_CreateLayer( hCreateDS.get(), "layer_b", hSRS, wkbPoint, nullptr );
+  QVERIFY( hLayerA );
+  QVERIFY( hLayerB );
+  OSRRelease( hSRS );
+  hCreateDS.reset();
+
+  // save layer styles
+  QString error;
+  QString geomColumnA;
+  QString geomColumnB;
+  {
+    QgsVectorLayer layerA( u"%1|layername=layer_a"_s.arg( testFile ), u"layer_a"_s, u"ogr"_s );
+    QVERIFY( layerA.isValid() );
+
+    geomColumnA = layerA.dataProvider()->geometryColumnName();
+    QgsSingleSymbolRenderer *rendererA { dynamic_cast<QgsSingleSymbolRenderer *>( layerA.renderer() ) };
+    QVERIFY( rendererA );
+
+    QgsSymbol *symbolA = rendererA->symbol()->clone();
+    symbolA->setColor( QColor( 255, 0, 0 ) );
+    rendererA->setSymbol( symbolA );
+    layerA.saveStyleToDatabaseV2( "styleA1", "styleA1", false, QString(), error );
+
+    symbolA = rendererA->symbol()->clone();
+    symbolA->setColor( QColor( 0, 255, 0 ) );
+    rendererA->setSymbol( symbolA );
+    layerA.saveStyleToDatabaseV2( "styleA2", "styleA2", true, QString(), error );
+
+    QgsVectorLayer layerB( u"%1|layername=layer_b"_s.arg( testFile ), u"layer_b"_s, u"ogr"_s );
+    QVERIFY( layerB.isValid() );
+
+    geomColumnB = layerB.dataProvider()->geometryColumnName();
+    QgsSingleSymbolRenderer *rendererB { dynamic_cast<QgsSingleSymbolRenderer *>( layerB.renderer() ) };
+    QVERIFY( rendererB );
+
+    QgsSymbol *symbolB = rendererB->symbol()->clone();
+    symbolB->setColor( QColor( 0, 0, 255 ) );
+    rendererB->setSymbol( symbolB );
+    layerB.saveStyleToDatabaseV2( "styleB1", "styleB1", false, QString(), error );
+  }
+
+  gdal::ogr_datasource_unique_ptr hDS( OGROpen( testFile.toUtf8().constData(), false, nullptr ) );
+
+  QString styleName;
+  QgsOgrUtils::loadStoredStyle( hDS.get(), u"layer_a"_s, geomColumnA, styleName, error );
+  QCOMPARE( styleName, u"styleA2"_s );
+
+  QStringList ids;
+  QStringList names;
+  QStringList descriptions;
+  const int count = QgsOgrUtils::listStyles( hDS.get(), u"layer_b"_s, geomColumnB, ids, names, descriptions, error );
+  QCOMPARE( count, 1 );
+  QCOMPARE( ids.size(), 3 );
+  QCOMPARE( names.size(), 3 );
+  QCOMPARE( descriptions.size(), 3 );
+  QCOMPARE( names.at( 0 ), u"styleB1"_s );
 }
 
 QGSTEST_MAIN( TestQgsOgrUtils )

@@ -10,6 +10,11 @@
 
 
 
+%ModuleHeaderCode
+#include "qgsoptional.h"
+typedef QgsOptional<QgsExpression> QgsOptionalQgsExpressionBase;
+%End
+
 typedef QgsOptional<QgsExpression> QgsOptionalQgsExpressionBase /NoTypeName/;
 
 class QgsOptionalExpression : QgsOptionalQgsExpressionBase
@@ -25,8 +30,6 @@ to redo the configuration.
 
 %TypeHeaderCode
 #include "qgsoptionalexpression.h"
-#include "qgsoptional.h"
-typedef QgsOptional<QgsExpression> QgsOptionalQgsExpressionBase;
 %End
   public:
     QgsOptionalExpression();

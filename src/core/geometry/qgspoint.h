@@ -661,7 +661,6 @@ class CORE_EXPORT QgsPoint : public QgsAbstractGeometry
     //low-level editing
     bool insertVertex( QgsVertexId position, const QgsPoint &vertex ) override;
     bool moveVertex( QgsVertexId position, const QgsPoint &newPos ) override;
-    bool deleteVertex( QgsVertexId position ) override;
     bool deleteVertices( const QSet<QgsVertexId> &positions ) override;
     bool hasVertex( QgsVertexId position ) const override;
 

@@ -17,7 +17,6 @@
 #include "qgsinternalgeometryengine.h"
 
 #include <functional>
-#include <geos_c.h>
 #include <memory>
 #include <random>
 
@@ -1485,7 +1484,7 @@ QVector<QgsPointXY> QgsInternalGeometryEngine::randomPointsInPolygon( int count,
     return QVector< QgsPointXY >();
 
   // prefer more stable GEOS implementation if available
-#if ( GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR >= 11 ) || GEOS_VERSION_MAJOR > 3
+#if GEOS_VERSION_NUM >= GEOS_COMPUTE_VERSION( 3, 11, 0 )
   return randomPointsInPolygonGeosBackend( mGeometry, count, acceptPoint, seed, feedback, maxTriesPerPoint, mLastError );
 #else
   return randomPointsInPolygonPoly2TriBackend( mGeometry, count, acceptPoint, seed, feedback, maxTriesPerPoint, mLastError );

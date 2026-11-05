@@ -1,3 +1,5 @@
+# Script to use with the github action 'check-user-reported-qgis-version.yml'
+
 import json
 import re
 

@@ -890,7 +890,7 @@ void TestQgsMultiCurve::reversed()
   part.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointZM, 27, 37, 6, 2 ) << QgsPoint( Qgis::WkbType::PointZM, 43, 43, 11, 5 ) << QgsPoint( Qgis::WkbType::PointZM, 27, 53, 21, 52 ) );
   mc.addGeometry( part.clone() );
 
-  reversed.reset( mc.reversed() );
+  reversed = mc.reversed();
   QVERIFY( !reversed->isEmpty() );
 
   const QgsCircularString *ls = static_cast<const QgsCircularString *>( reversed->geometryN( 0 ) );

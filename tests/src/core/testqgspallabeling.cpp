@@ -18,6 +18,7 @@
 #include "qgsnullsymbolrenderer.h"
 #include "qgspallabeling.h"
 #include "qgstest.h"
+#include "qgstextdocument.h"
 #include "qgsvectorlayer.h"
 #include "qgsvectorlayerlabeling.h"
 
@@ -38,9 +39,10 @@ class TestQgsPalLabeling : public QgsTest
     {}
 
   private slots:
-    void cleanupTestCase(); // will be called after the last testfunction was executed.
-    void wrapChar();        //test wrapping text lines
-    void graphemes();       //test splitting strings to graphemes
+    void cleanupTestCase();        // will be called after the last testfunction was executed.
+    void wrapChar();               //test wrapping text lines
+    void wrapCharCapitalization(); //test wrapping text lines with capitalization
+    void graphemes();              //test splitting strings to graphemes
     void testGeometryGenerator();
     void testLabelSettingsToFromMime();
 };
@@ -69,6 +71,27 @@ void TestQgsPalLabeling::wrapChar()
   QCOMPARE( QgsPalLabeling::splitToLines( u"with automatic-wrap and manual-wrap"_s, u"-"_s, 6, true ), QStringList() << "with" << "automatic" << "wrap" << "and" << "manual" << "wrap" );
   QCOMPARE( QgsPalLabeling::splitToLines( u"with auto-wrap and manual-wrap"_s, u"-"_s, 12, false ), QStringList() << "with auto" << "wrap and manual" << "wrap" );
   QCOMPARE( QgsPalLabeling::splitToLines( u"with auto-wrap and manual-wrap"_s, u"-"_s, 6, false ), QStringList() << "with auto" << "wrap and" << "manual" << "wrap" );
+}
+
+void TestQgsPalLabeling::wrapCharCapitalization()
+{
+  QgsPalLayerSettings settings;
+  QgsTextFormat format;
+  format.setCapitalization( Qgis::Capitalization::AllUppercase );
+  settings.setFormat( format );
+  settings.fieldName = u"'fooxbar'"_s;
+  settings.isExpression = true;
+  settings.wrapChar = u"x"_s;
+
+  QgsFeature feature;
+  QgsRenderContext context;
+  QgsTextDocument doc;
+  QString labelText;
+
+  QVERIFY( settings.evaluateLabelContent( feature, context, /* allowMultipleLines */ true, labelText, doc, format ) );
+  QCOMPARE( doc.size(), 2 );
+  QCOMPARE( doc.at( 0 ).toPlainText(), u"FOO"_s );
+  QCOMPARE( doc.at( 1 ).toPlainText(), u"BAR"_s );
 }
 
 void TestQgsPalLabeling::graphemes()

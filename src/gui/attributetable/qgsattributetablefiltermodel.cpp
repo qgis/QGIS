@@ -87,75 +87,19 @@ void QgsAttributeTableFilterModel::sort( int column, Qt::SortOrder order )
 {
   if ( order != Qt::AscendingOrder && order != Qt::DescendingOrder )
     order = Qt::AscendingOrder;
-  if ( column < 0 || column >= mColumnMapping.size() )
-  {
-    sort( QString() );
-  }
-  else
-  {
-    const int myColumn = mColumnMapping.at( column );
-    masterModel()->prefetchColumnData( myColumn );
-    QSortFilterProxyModel::sort( myColumn, order );
-  }
+
+  masterModel()->prefetchColumnData( column );
+  // it doesn't matter which column we pass to the base class method -- the sort data is always
+  // taken from the QgsAttributeTableModel::CustomRole::Sort role, which does not change depending
+  // on the column!
+  QSortFilterProxyModel::sort( 0, order );
+
   emit sortColumnChanged( column, order );
-}
-
-QVariant QgsAttributeTableFilterModel::data( const QModelIndex &index, int role ) const
-{
-  if ( mapColumnToSource( index.column() ) == -1 ) // actions
-  {
-    if ( role == static_cast<int>( CustomRole::Type ) )
-      return ColumnTypeActionButton;
-    else if ( role == static_cast<int>( QgsAttributeTableModel::CustomRole::FeatureId ) )
-    {
-      const QModelIndex fieldIndex = QSortFilterProxyModel::mapToSource( QSortFilterProxyModel::index( index.row(), 0, index.parent() ) );
-      return sourceModel()->data( fieldIndex, static_cast<int>( QgsAttributeTableModel::CustomRole::FeatureId ) );
-    }
-    else if ( role == static_cast<int>( QgsAttributeTableModel::CustomRole::Sort ) )
-    {
-      const QModelIndex fieldIndex = QSortFilterProxyModel::mapToSource( QSortFilterProxyModel::index( index.row(), 0, index.parent() ) );
-      return sourceModel()->data( fieldIndex, static_cast<int>( QgsAttributeTableModel::CustomRole::Sort ) );
-    }
-  }
-  else if ( role == static_cast<int>( CustomRole::Type ) )
-    return ColumnTypeField;
-
-  return QSortFilterProxyModel::data( index, role );
-}
-
-QVariant QgsAttributeTableFilterModel::headerData( int section, Qt::Orientation orientation, int role ) const
-{
-  if ( orientation == Qt::Horizontal )
-  {
-    if ( mColumnMapping.at( section ) == -1 && role == Qt::DisplayRole )
-      return tr( "Actions" );
-    else
-    {
-      const int sourceSection = mapColumnToSource( section );
-      return sourceModel()->headerData( sourceSection, orientation, role );
-    }
-  }
-  else
-  {
-    if ( role == Qt::DisplayRole )
-      return section + 1;
-    else
-    {
-      const int sourceSection = mapToSource( index( section, ( !mColumnMapping.isEmpty() && mColumnMapping.at( 0 ) == -1 ) ? 1 : 0 ) ).row();
-      return sourceModel()->headerData( sourceSection, orientation, role );
-    }
-  }
 }
 
 int QgsAttributeTableFilterModel::actionColumnIndex() const
 {
-  return mColumnMapping.indexOf( -1 );
-}
-
-int QgsAttributeTableFilterModel::columnCount( const QModelIndex &parent ) const
-{
-  Q_UNUSED( parent )
-  return mColumnMapping.count();
+  return masterModel()->columnCount() - 1;
 }
 
 void QgsAttributeTableFilterModel::setAttributeTableConfig( const QgsAttributeTableConfig &config, bool force )
@@ -169,91 +113,9 @@ void QgsAttributeTableFilterModel::setAttributeTableConfig( const QgsAttributeTa
     return;
   }
 
-  QVector<int> newColumnMapping;
-  const auto constColumns = mConfig.columns();
-  for ( const QgsAttributeTableConfig::ColumnConfig &columnConfig : constColumns )
+  if ( !mConfig.sortExpression().isEmpty() )
   {
-    // Hidden? Forget about this column
-    if ( columnConfig.hidden )
-      continue;
-
-    // The new value for the mapping (field index or -1 for action column)
-    const int newValue = ( columnConfig.type == QgsAttributeTableConfig::Action ) ? -1 : layer()->fields().lookupField( columnConfig.name );
-    newColumnMapping << newValue;
-  }
-
-  if ( newColumnMapping != mColumnMapping )
-  {
-    bool requiresReset = false;
-    int firstRemovedColumn = -1;
-    int removedColumnCount = 0;
-
-    // Check if there have a contiguous set of columns have been removed or if we require a full reset
-    for ( int i = 0; i < std::min( newColumnMapping.size(), mColumnMapping.size() - removedColumnCount ); ++i )
-    {
-      if ( newColumnMapping.at( i ) == mColumnMapping.at( i + removedColumnCount ) )
-        continue;
-
-      if ( firstRemovedColumn == -1 )
-      {
-        firstRemovedColumn = i;
-
-        while ( i < mColumnMapping.size() - removedColumnCount && mColumnMapping.at( i + removedColumnCount ) != newColumnMapping.at( i ) )
-        {
-          ++removedColumnCount;
-        }
-      }
-      else
-      {
-        requiresReset = true;
-        break;
-      }
-    }
-
-    // No difference found so far
-    if ( firstRemovedColumn == -1 )
-    {
-      if ( newColumnMapping.size() > mColumnMapping.size() )
-      {
-        // More columns: appended to the end
-        beginInsertColumns( QModelIndex(), mColumnMapping.size(), newColumnMapping.size() - 1 );
-        mColumnMapping = newColumnMapping;
-        endInsertColumns();
-      }
-      else
-      {
-        // Less columns: removed from the end
-        beginRemoveColumns( QModelIndex(), newColumnMapping.size(), mColumnMapping.size() - 1 );
-        mColumnMapping = newColumnMapping;
-        endRemoveColumns();
-      }
-    }
-    else
-    {
-      if ( newColumnMapping.size() == mColumnMapping.size() - removedColumnCount )
-      {
-        //the amount of removed column in the model need to be equal removedColumnCount
-        beginRemoveColumns( QModelIndex(), firstRemovedColumn, firstRemovedColumn + removedColumnCount - 1 );
-        mColumnMapping = newColumnMapping;
-        endRemoveColumns();
-      }
-      else
-      {
-        requiresReset = true;
-      }
-    }
-
-    if ( requiresReset )
-    {
-      beginResetModel();
-      mColumnMapping = newColumnMapping;
-      endResetModel();
-    }
-  }
-
-  if ( !config.sortExpression().isEmpty() )
-  {
-    sort( config.sortExpression(), config.sortOrder() );
+    sort( mConfig.sortExpression(), mConfig.sortOrder() );
   }
 }
 
@@ -302,11 +164,6 @@ void QgsAttributeTableFilterModel::setSourceModel( QgsAttributeTableModel *sourc
 {
   mTableModel = sourceModel;
 
-  for ( int i = 0; i < mTableModel->columnCount() - mTableModel->extraColumns(); ++i )
-  {
-    mColumnMapping.append( i );
-  }
-
   QSortFilterProxyModel::setSourceModel( sourceModel );
 
   // The following connections are needed in order to keep the filter model in sync, see: regression #15974
@@ -322,14 +179,14 @@ bool QgsAttributeTableFilterModel::selectedOnTop()
 void QgsAttributeTableFilterModel::setFilteredFeatures( const QgsFeatureIds &ids )
 {
   mFilteredFeatures = ids;
-  if ( mFilterMode != ShowFilteredList && mFilterMode != ShowInvalid )
+  if ( mFilterMode != Qgis::AttributeTableFilterMode::ShowFilteredList && mFilterMode != Qgis::AttributeTableFilterMode::ShowInvalid )
   {
-    setFilterMode( ShowFilteredList );
+    setFilterMode( Qgis::AttributeTableFilterMode::ShowFilteredList );
   }
   invalidateFilter();
 }
 
-QgsFeatureIds QgsAttributeTableFilterModel::filteredFeatures()
+QgsFeatureIds QgsAttributeTableFilterModel::filteredFeatures() const
 {
   QgsFeatureIds ids;
   ids.reserve( rowCount() );
@@ -341,7 +198,7 @@ QgsFeatureIds QgsAttributeTableFilterModel::filteredFeatures()
   return ids;
 }
 
-void QgsAttributeTableFilterModel::setFilterMode( FilterMode filterMode )
+void QgsAttributeTableFilterModel::setFilterMode( Qgis::AttributeTableFilterMode filterMode )
 {
   if ( filterMode != mFilterMode )
   {
@@ -350,7 +207,7 @@ void QgsAttributeTableFilterModel::setFilterMode( FilterMode filterMode )
     mFilterMode = filterMode;
     invalidate();
 
-    if ( mFilterMode == QgsAttributeTableFilterModel::ShowInvalid )
+    if ( mFilterMode == Qgis::AttributeTableFilterMode::ShowInvalid )
     {
       filterFeatures();
     }
@@ -362,18 +219,18 @@ void QgsAttributeTableFilterModel::disconnectFilterModeConnections()
   // cleanup existing connections
   switch ( mFilterMode )
   {
-    case ShowVisible:
+    case Qgis::AttributeTableFilterMode::ShowVisible:
       disconnect( mCanvas, &QgsMapCanvas::extentsChanged, this, &QgsAttributeTableFilterModel::startTimedReloadVisible );
       disconnect( mCanvas, &QgsMapCanvas::temporalRangeChanged, this, &QgsAttributeTableFilterModel::startTimedReloadVisible );
       disconnect( layer(), &QgsVectorLayer::featureAdded, this, &QgsAttributeTableFilterModel::startTimedReloadVisible );
       disconnect( layer(), &QgsVectorLayer::geometryChanged, this, &QgsAttributeTableFilterModel::startTimedReloadVisible );
       break;
-    case ShowAll:
-    case ShowEdited:
-    case ShowSelected:
+    case Qgis::AttributeTableFilterMode::ShowAll:
+    case Qgis::AttributeTableFilterMode::ShowEdited:
+    case Qgis::AttributeTableFilterMode::ShowSelected:
       break;
-    case ShowFilteredList:
-    case ShowInvalid:
+    case Qgis::AttributeTableFilterMode::ShowFilteredList:
+    case Qgis::AttributeTableFilterMode::ShowInvalid:
       disconnect( layer(), &QgsVectorLayer::featureAdded, this, &QgsAttributeTableFilterModel::startTimedFilterFeatures );
       disconnect( layer(), &QgsVectorLayer::attributeValueChanged, this, &QgsAttributeTableFilterModel::onAttributeValueChanged );
       disconnect( layer(), &QgsVectorLayer::geometryChanged, this, &QgsAttributeTableFilterModel::onGeometryChanged );
@@ -381,24 +238,24 @@ void QgsAttributeTableFilterModel::disconnectFilterModeConnections()
   }
 }
 
-void QgsAttributeTableFilterModel::connectFilterModeConnections( QgsAttributeTableFilterModel::FilterMode filterMode )
+void QgsAttributeTableFilterModel::connectFilterModeConnections( Qgis::AttributeTableFilterMode filterMode )
 {
   // setup new connections
   switch ( filterMode )
   {
-    case ShowVisible:
+    case Qgis::AttributeTableFilterMode::ShowVisible:
       connect( mCanvas, &QgsMapCanvas::extentsChanged, this, &QgsAttributeTableFilterModel::startTimedReloadVisible );
       connect( mCanvas, &QgsMapCanvas::temporalRangeChanged, this, &QgsAttributeTableFilterModel::startTimedReloadVisible );
       connect( layer(), &QgsVectorLayer::featureAdded, this, &QgsAttributeTableFilterModel::startTimedReloadVisible );
       connect( layer(), &QgsVectorLayer::geometryChanged, this, &QgsAttributeTableFilterModel::startTimedReloadVisible );
       generateListOfVisibleFeatures();
       break;
-    case ShowAll:
-    case ShowEdited:
-    case ShowSelected:
+    case Qgis::AttributeTableFilterMode::ShowAll:
+    case Qgis::AttributeTableFilterMode::ShowEdited:
+    case Qgis::AttributeTableFilterMode::ShowSelected:
       break;
-    case ShowFilteredList:
-    case ShowInvalid:
+    case Qgis::AttributeTableFilterMode::ShowFilteredList:
+    case Qgis::AttributeTableFilterMode::ShowInvalid:
       connect( layer(), &QgsVectorLayer::featureAdded, this, &QgsAttributeTableFilterModel::startTimedFilterFeatures );
       connect( layer(), &QgsVectorLayer::attributeValueChanged, this, &QgsAttributeTableFilterModel::onAttributeValueChanged );
       connect( layer(), &QgsVectorLayer::geometryChanged, this, &QgsAttributeTableFilterModel::onGeometryChanged );
@@ -411,20 +268,20 @@ bool QgsAttributeTableFilterModel::filterAcceptsRow( int sourceRow, const QModel
   Q_UNUSED( sourceParent )
   switch ( mFilterMode )
   {
-    case ShowAll:
+    case Qgis::AttributeTableFilterMode::ShowAll:
       return true;
 
-    case ShowFilteredList:
-    case ShowInvalid:
+    case Qgis::AttributeTableFilterMode::ShowFilteredList:
+    case Qgis::AttributeTableFilterMode::ShowInvalid:
       return mFilteredFeatures.contains( masterModel()->rowToId( sourceRow ) );
 
-    case ShowSelected:
+    case Qgis::AttributeTableFilterMode::ShowSelected:
       return layer()->selectedFeatureIds().contains( masterModel()->rowToId( sourceRow ) );
 
-    case ShowVisible:
+    case Qgis::AttributeTableFilterMode::ShowVisible:
       return mFilteredFeatures.contains( masterModel()->rowToId( sourceRow ) );
 
-    case ShowEdited:
+    case Qgis::AttributeTableFilterMode::ShowEdited:
     {
       QgsVectorLayerEditBuffer *editBuffer = layer()->editBuffer();
       if ( editBuffer )
@@ -469,7 +326,7 @@ void QgsAttributeTableFilterModel::onAttributeValueChanged( QgsFeatureId fid, in
   Q_UNUSED( fid );
   Q_UNUSED( value );
 
-  if ( mFilterMode == QgsAttributeTableFilterModel::ShowInvalid || mFilterExpression.referencedAttributeIndexes( layer()->fields() ).contains( idx ) )
+  if ( mFilterMode == Qgis::AttributeTableFilterMode::ShowInvalid || mFilterExpression.referencedAttributeIndexes( layer()->fields() ).contains( idx ) )
   {
     startTimedFilterFeatures();
   }
@@ -477,7 +334,7 @@ void QgsAttributeTableFilterModel::onAttributeValueChanged( QgsFeatureId fid, in
 
 void QgsAttributeTableFilterModel::onGeometryChanged()
 {
-  if ( mFilterMode == QgsAttributeTableFilterModel::ShowInvalid || mFilterExpression.needsGeometry() )
+  if ( mFilterMode == Qgis::AttributeTableFilterMode::ShowInvalid || mFilterExpression.needsGeometry() )
   {
     startTimedFilterFeatures();
   }
@@ -559,7 +416,7 @@ void QgsAttributeTableFilterModel::filterFeatures()
 
 void QgsAttributeTableFilterModel::selectionChanged()
 {
-  if ( ShowSelected == mFilterMode )
+  if ( Qgis::AttributeTableFilterMode::ShowSelected == mFilterMode )
   {
     invalidateFilter();
   }
@@ -572,24 +429,6 @@ void QgsAttributeTableFilterModel::selectionChanged()
 void QgsAttributeTableFilterModel::onColumnsChanged()
 {
   setAttributeTableConfig( mConfig );
-}
-
-int QgsAttributeTableFilterModel::mapColumnToSource( int column ) const
-{
-  if ( mColumnMapping.isEmpty() )
-    return column;
-  if ( column < 0 || column >= mColumnMapping.size() )
-    return -1;
-  else
-    return mColumnMapping.at( column );
-}
-
-int QgsAttributeTableFilterModel::mapColumnFromSource( int column ) const
-{
-  if ( mColumnMapping.isEmpty() )
-    return column;
-  else
-    return mColumnMapping.indexOf( column );
 }
 
 void QgsAttributeTableFilterModel::generateListOfVisibleFeatures()
@@ -682,7 +521,7 @@ void QgsAttributeTableFilterModel::generateListOfVisibleFeatures()
   }
 }
 
-QgsFeatureId QgsAttributeTableFilterModel::rowToId( const QModelIndex &row )
+QgsFeatureId QgsAttributeTableFilterModel::rowToId( const QModelIndex &row ) const
 {
   return masterModel()->rowToId( mapToSource( row ).row() );
 }
@@ -704,56 +543,7 @@ QModelIndexList QgsAttributeTableFilterModel::fidToIndexList( QgsFeatureId fid )
   return indexes;
 }
 
-QModelIndex QgsAttributeTableFilterModel::mapToSource( const QModelIndex &proxyIndex ) const
-{
-  if ( !proxyIndex.isValid() )
-    return QModelIndex();
-
-  int sourceColumn = mapColumnToSource( proxyIndex.column() );
-
-  // For the action column there is no matching column in the source model, just return invalid
-  if ( sourceColumn == -1 )
-    return QModelIndex();
-
-  return QSortFilterProxyModel::mapToSource( index( proxyIndex.row(), sourceColumn, proxyIndex.parent() ) );
-}
-
-QModelIndex QgsAttributeTableFilterModel::mapFromSource( const QModelIndex &sourceIndex ) const
-{
-  const QModelIndex proxyIndex = QSortFilterProxyModel::mapFromSource( sourceIndex );
-
-  if ( proxyIndex.column() < 0 )
-    return QModelIndex();
-
-  int col = mapColumnFromSource( proxyIndex.column() );
-
-  if ( col == -1 )
-    col = 0;
-
-  return index( proxyIndex.row(), col, proxyIndex.parent() );
-}
-
-Qt::ItemFlags QgsAttributeTableFilterModel::flags( const QModelIndex &index ) const
-{
-  // Handle the action column flags here, the master model doesn't know it
-  if ( mapColumnToSource( index.column() ) == -1 )
-    return Qt::ItemIsEnabled | Qt::ItemIsSelectable;
-
-  const QModelIndex source_index = mapToSource( index );
-  return masterModel()->flags( source_index );
-}
-
 QModelIndex QgsAttributeTableFilterModel::mapToMaster( const QModelIndex &proxyIndex ) const
 {
-  if ( !proxyIndex.isValid() )
-    return QModelIndex();
-
-  int sourceColumn = mapColumnToSource( proxyIndex.column() );
-
-  // For the action column there is no matching column in the source model, just return the first one
-  // so we are still able to query for the feature id, the feature...
-  if ( sourceColumn == -1 )
-    sourceColumn = 0;
-
-  return QSortFilterProxyModel::mapToSource( index( proxyIndex.row(), sourceColumn, proxyIndex.parent() ) );
+  return mapToSource( proxyIndex );
 }

@@ -77,7 +77,6 @@ set(QGIS_3D_SRCS
   chunks/qgschunklist_p.cpp
   chunks/qgschunkloader.cpp
   chunks/qgschunknode.cpp
-  chunks/qgschunkqueuejob.cpp
 
   lights/qgsdirectionallightsettings.cpp
   lights/qgslightsource.cpp
@@ -160,7 +159,6 @@ set(QGIS_3D_SRCS
   terrain/qgsterraingenerator.cpp
   terrain/qgsterraintexturegenerator_p.cpp
   terrain/qgsterraintextureimage_p.cpp
-  terrain/qgsterraintileloader.cpp
 
   mesh/qgsmesh3dgeometry_p.cpp
   mesh/qgsmesh3dentity_p.cpp
@@ -298,11 +296,9 @@ set(QGIS_3D_HDRS
   terrain/qgsquantizedmeshterrainsettings.h
   terrain/qgsterraindownloader.h
   terrain/qgsterraingenerator.h
-  terrain/qgsterraintileloader.h
   terrain/qgsterrainentity.h
 
   chunks/qgschunkloader.h
-  chunks/qgschunkqueuejob.h
   chunks/qgschunknode.h
   chunks/qgschunkedentity.h
 
@@ -331,7 +327,6 @@ set(QGIS_3D_PRIVATE_HDRS
   mesh/qgsmesh3dentity_p.h
   mesh/qgsmesh3dgeometry_p.h
   mesh/qgsmesh3dmaterial_p.h
-  mesh/qgsmeshterraintileloader_p.h
   qgscolorramptexture.h
 )
 

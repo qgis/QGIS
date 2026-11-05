@@ -484,6 +484,21 @@ class TestQgsBox3d(unittest.TestCase):
         )
         self.assertTrue(box11.isNull())
 
+        box12 = QgsBox3d(
+            float("nan"), float("nan"), float("nan"), float("nan"), 13, float("nan")
+        )
+        self.assertFalse(box12.isNull())
+
+        box13 = QgsBox3d(
+            float("nan"),
+            float("nan"),
+            float("nan"),
+            float("nan"),
+            float("nan"),
+            float("nan"),
+        )
+        self.assertTrue(box13.isNull())
+
     def testIsEmpty(self):
         box1 = QgsBox3d()
         self.assertTrue(box1.isEmpty())
@@ -497,20 +512,28 @@ class TestQgsBox3d(unittest.TestCase):
         box4 = QgsBox3d(5, 6, 7, 12, 13, 14, False)
         self.assertFalse(box4.isEmpty())
 
-        # zMin > zMax
+        # zMin > zMax => not empty
         box5 = QgsBox3d(5, 6, 7, 12, 13, 2, False)
-        self.assertTrue(box5.isEmpty())
+        self.assertFalse(box5.isEmpty())
 
-        # zMin == zMax
+        # zMin == zMax => empty
         box6 = QgsBox3d(5, 6, 7, 12, 13, 7, False)
         self.assertTrue(box6.isEmpty())
 
-        # xMin > xMax
+        # xMin > xMax => not empty
         box7 = QgsBox3d(5, 6, 7, -20, 13, 14, False)
+        self.assertFalse(box7.isEmpty())
+
+        # xMin = xMax => empty
+        box7 = QgsBox3d(5, 6, 7, 5, 13, 14, False)
         self.assertTrue(box7.isEmpty())
 
-        # yMin > yMax
+        # yMin > yMax => not empty
         box8 = QgsBox3d(5, 6, 7, 12, 2, 14, False)
+        self.assertFalse(box8.isEmpty())
+
+        # yMin = yMax => not empty
+        box8 = QgsBox3d(5, 6, 7, 12, 2, 7, False)
         self.assertTrue(box8.isEmpty())
 
     def testToString(self):

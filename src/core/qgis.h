@@ -2921,6 +2921,18 @@ int QgisEvent = QEvent::User + 1;
     Q_ENUM( RasterizedRenderingPolicy )
 
     /**
+     * Rendering formats.
+     *
+     * \since QGIS 4.4
+     */
+    enum class RenderFormat : int
+    {
+      Raster, //!< Raster-based rendering
+      Vector, //!< Vector-based rendering
+    };
+    Q_ENUM( RenderFormat )
+
+    /**
      * Flags which adjust the way maps are rendered.
      *
      * \since QGIS 3.22
@@ -7254,6 +7266,34 @@ int QgisEvent = QEvent::User + 1;
     Q_ENUM( VectorFieldSeedingMethod )
 
     /**
+     * Defines how a raster vector field renderer reads the vectors from the raster bands.
+     *
+     * \since QGIS 4.4
+     */
+    enum class RasterVectorFieldSourceMode : int
+    {
+      CartesianComponents = 0, //!< Two bands holding the x and y components of the vectors
+      EncodedDirection,        //!< A single band holding integer coded compass directions, see Qgis::RasterDirectionEncoding
+    };
+    Q_ENUM( RasterVectorFieldSourceMode )
+
+    /**
+     * Schemes used to encode a compass direction as an integer raster value.
+     *
+     * These are the conventions of the D8 flow direction rasters produced by different software
+     *
+     * \since QGIS 4.4
+     */
+    enum class RasterDirectionEncoding : int
+    {
+      Esri = 0, //!< Esri: 1=E, 2=SE, 4=S, 8=SW, 16=W, 32=NW, 64=N, 128=NE
+      Grass,    //!< GRASS: 1=NE, 2=N, 3=NW, 4=W, 5=SW, 6=S, 7=SE, 8=E
+      Saga,     //!< SAGA: 0=N, 1=NE, 2=E, 3=SE, 4=S, 5=SW, 6=W, 7=NW
+      PcRaster, //!< PCRaster: 1=SW, 2=S, 3=SE, 4=W, 6=E, 7=NW, 8=N, 9=NE
+    };
+    Q_ENUM( RasterDirectionEncoding )
+
+    /**
      * Mathematical methods to use for solving linear matrix equations.
      *
      * \since QGIS 4.4
@@ -7265,6 +7305,36 @@ int QgisEvent = QEvent::User + 1;
       LuWithSvdFallback = 2 //!< Try LU first; fallback to SVD on singularity
     };
     Q_ENUM( LinearMatrixMethod )
+
+    /**
+     * Defines how rows in attribute tables should be filtered.
+     *
+     * \note Prior to QGIS 4.4 this was available as QgsAttributeTableFilterModel::FilterMode.
+     *
+     * \since QGIS 4.4
+     */
+    enum class AttributeTableFilterMode : int
+    {
+      ShowAll,          //!< Show all features
+      ShowSelected,     //!< Show only selected features
+      ShowVisible,      //!< Show only visible features (depends on the map canvas)
+      ShowFilteredList, //!< Show only features whose IDs are on the filter list
+      ShowEdited,       //!< Show only features which have unsaved changes
+      ShowInvalid,      //!< Show only features not respecting constraints \since QGIS 3.30
+    };
+    Q_ENUM( AttributeTableFilterMode )
+
+    /**
+     * Point cloud output formats allowed for a point cloud destination.
+     *
+     * \since QGIS 4.4
+     */
+    enum class PointCloudOutputsTypes : int
+    {
+      All,     //!< All point cloud formats supported by the processing provider
+      OnlyVPC, //!< Only virtual point cloud formats (VPC and VPZ)
+    };
+    Q_ENUM( PointCloudOutputsTypes )
 
     /**
      * Identify search radius in mm

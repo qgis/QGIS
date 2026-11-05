@@ -3774,7 +3774,7 @@ QgsVectorFileWriter::WriterError QgsVectorFileWriter::prepareWriteAsVectorFormat
       req.setFilterRect( filterRect );
     }
     details.filterRectGeometry = QgsGeometry::fromRect( options.filterExtent );
-    details.filterRectEngine.reset( QgsGeometry::createGeometryEngine( details.filterRectGeometry.constGet() ) );
+    details.filterRectEngine = QgsGeometry::createGeometryEngine( details.filterRectGeometry.constGet() );
     details.filterRectEngine->prepareGeometry();
   }
   details.sourceFeatureIterator = layer->getFeatures( req );
