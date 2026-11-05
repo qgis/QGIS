@@ -4668,7 +4668,7 @@ Qgis::VectorExportResult QgsPostgresProvider::createEmptyLayer(
 
     // get geometry type, dim and srid
     int dim = 2;
-    long srid;
+    long srid = -1;
 
     // get srid from PostGIS
     if ( !srs.authid().isEmpty() )
