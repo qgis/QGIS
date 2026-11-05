@@ -210,15 +210,19 @@ QIcon QgsIconUtils::addOverlay( const QIcon &icon, const QString &overlayPath, Q
     return icon;
 
   size = icon.actualSize( size );
-  const QIcon overlayIcon( overlayPath );
-  const qreal dpr = overlayIcon.pixmap( size ).devicePixelRatio();
+  const qreal dpr = icon.pixmap( size ).devicePixelRatio();
 
   // Render through a QIcon so the SVG scales correctly and honours device pixel ratio
   // (QPixmap loaded directly from a file ignores the size argument when no colors are passed).
-  QPixmap pixmap = overlayIcon.pixmap( size, dpr );
+  const QIcon overlayIcon( overlayPath );
+
+  QPixmap pixmap( size * dpr );
+  pixmap.setDevicePixelRatio( dpr );
+  pixmap.fill( Qt::transparent );
 
   QPainter painter( &pixmap );
   painter.drawPixmap( 0, 0, icon.pixmap( size, dpr ) );
+  painter.drawPixmap( 0, 0, overlayIcon.pixmap( size, dpr ) );
   painter.end();
 
   return QIcon( pixmap );
