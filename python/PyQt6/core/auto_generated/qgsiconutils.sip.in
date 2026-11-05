@@ -109,7 +109,7 @@ Returns the default icon for the specified layer ``type``.
 
     static QIcon addOverlay( const QIcon &icon, const QString &overlayPath, QSize size = QSize( 16, 16 ) );
 %Docstring
-Returns a copy of ``icon`` with an underlay icon rendered from the image
+Returns a copy of ``icon`` with an overlay icon rendered from the image
 file at ``overlayPath``.
 
 :param icon: The base icon to which the overlay will be added.

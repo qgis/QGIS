@@ -118,7 +118,7 @@ class CORE_EXPORT QgsIconUtils
     static QIcon iconForLayerType( Qgis::LayerType type );
 
     /**
-     * Returns a copy of \a icon with an underlay icon rendered from the
+     * Returns a copy of \a icon with an overlay icon rendered from the
      * image file at \a overlayPath.
      *
      * \param icon The base icon to which the overlay will be added.
