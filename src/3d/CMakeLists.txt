@@ -375,6 +375,10 @@ target_include_directories(qgis_3d PUBLIC
   ${CMAKE_SOURCE_DIR}/external/earcut
 )
 
+if(WITH_TBB)
+   target_link_libraries(qgis_3d TBB::tbb)
+endif()
+
 target_link_libraries(qgis_3d
   ${QT_VERSION_BASE}::3DCore
   ${QT_VERSION_BASE}::3DRender

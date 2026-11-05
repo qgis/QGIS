@@ -2083,6 +2083,10 @@ if (WITH_QTGAMEPAD)
     )
 endif()
 
+if(WITH_TBB)
+   target_link_libraries(qgis_gui TBB::tbb)
+endif()
+
 if (FORCE_STATIC_LIBS)
   target_link_libraries(qgis_gui
     provider_wms_gui_a
