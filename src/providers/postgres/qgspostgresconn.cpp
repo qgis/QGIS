@@ -2943,7 +2943,7 @@ QgsCoordinateReferenceSystem QgsPostgresConn::sridToCrs( int srid, QString &erro
       const QString authSRID = result.PQgetvalue( 0, 1 );
       const QString srText = result.PQgetvalue( 0, 2 );
       bool ok = false;
-      if ( authName == "EPSG"_L1 || authName == "ESRI"_L1 )
+      if ( authName.compare( "EPSG"_L1, Qt::CaseInsensitive ) == 0 || authName.compare( "ESRI"_L1, Qt::CaseInsensitive ) == 0 )
       {
         ok = crs.createFromUserInput( authName + ':' + authSRID );
       }
