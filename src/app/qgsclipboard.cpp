@@ -51,6 +51,8 @@
 
 using namespace Qt::StringLiterals;
 
+const QString QgsClipboard::FEATURES_MIME_TYPE = u"application/qgis.featurelist"_s;
+
 QgsClipboard::QgsClipboard()
 {
   connect( QApplication::clipboard(), &QClipboard::dataChanged, this, &QgsClipboard::systemClipboardChanged );
@@ -108,7 +110,7 @@ void QgsClipboard::replaceWithCopyOf( QgsFeatureStore &featureStore, QgsVectorLa
   emit changed();
 }
 
-void QgsClipboard::setSystemClipboard(QgsMapLayer* sourceLayer, const QgsCoordinateReferenceSystem& crs, const QgsFields& fields, const QgsFeatureList& features )
+void QgsClipboard::setSystemClipboard( QgsMapLayer *sourceLayer, const QgsCoordinateReferenceSystem &crs, const QgsFields &fields, const QgsFeatureList &features )
 {
   QClipboard *cb = QApplication::clipboard();
 
@@ -255,27 +257,48 @@ QgsFields QgsClipboard::retrieveFields() const
   return f;
 }
 
-QgsFeatureList QgsClipboard::copyOf( const QgsFields &fields ) const
+bool QgsClipboard::getFeaturesFromClipboard( QgsCoordinateReferenceSystem &crs, QgsFields &fields, QgsFeatureList &features ) const
 {
-  QgsDebugMsgLevel( u"returning clipboard."_s, 2 );
-  QClipboard *cb = QApplication::clipboard();
-
-  if ( const QgsFeatureListMimeData* featureListData = featureListDataFromClipboard() )
+  if ( const QgsFeatureListMimeData *featureListData = featureListDataFromClipboard() )
   {
-    return featureListData->mFeatures;
+    crs = featureListData->mCRS;
+    fields = featureListData->mFields;
+    features = featureListData->mFeatures;
+    return true;
   }
 
   const QMimeData *data = QApplication::clipboard()->mimeData();
   if ( !data )
     return false;
 
+  if ( data->hasFormat( FEATURES_MIME_TYPE ) )
   {
-    text = cb->text( QClipboard::Selection );
+    const QByteArray clipboardData = data->data( FEATURES_MIME_TYPE );
+    QDataStream stream( clipboardData );
+    QString crsWkt;
+    stream >> crsWkt >> fields >> features;
+    crs = QgsCoordinateReferenceSystem::fromWkt( crsWkt );
+    return true;
   }
   else
   {
-    text = cb->text( QClipboard::Clipboard );
+    fields = retrieveFields();
+    features = getFeaturesFromClipboardText( fields );
+    // unknown
+    crs = QgsCoordinateReferenceSystem();
+    return true;
   }
+}
+
+QgsFeatureList QgsClipboard::getFeaturesFromClipboardText( const QgsFields &fields ) const
+{
+  QgsDebugMsgLevel( u"returning clipboard."_s, 2 );
+  QClipboard *cb = QApplication::clipboard();
+  const QMimeData *mimeData = cb->mimeData( QClipboard::Clipboard );
+  if ( !mimeData )
+    return {};
+
+  QString text = mimeData->text();
 
   if ( text.endsWith( '\n' ) )
   {
@@ -292,46 +315,54 @@ QgsFeatureList QgsClipboard::copyOf( const QgsFields &fields ) const
 
 bool QgsClipboard::isEmpty() const
 {
+  if ( const QgsFeatureListMimeData *featureListData = featureListDataFromClipboard() )
+  {
+    return featureListData->mFeatures.isEmpty();
+  }
+
   QClipboard *cb = QApplication::clipboard();
-  const QString text = cb->text( QClipboard::Clipboard );
+  const QMimeData *data = cb->mimeData( QClipboard::Clipboard );
+  if ( !data )
+    return true;
 
-  bool hasFeatureClipboard = false;
-  if ( const QgsFeatureListMimeData* featureListData = featureListDataFromClipboard() )
+  if ( data->hasFormat( FEATURES_MIME_TYPE ) )
   {
-    hasFeatureClipboard = !featureListData->mFeatures.isEmpty();
+    // can't be empty if it has this mime type
+    return false;
   }
 
-  return text.isEmpty() && !hasFeatureClipboard;
+  return !data->hasText() || data->text().isEmpty();
 }
 
-QgsFeatureList QgsClipboard::transformedCopyOf( const QgsCoordinateReferenceSystem &destCRS, const QgsFields &fields ) const
+QgsFeatureList QgsClipboard::transformedCopyOf( QgsVectorLayer *destinationLayer ) const
 {
-  QgsFeatureList featureList = copyOf( fields );
+  if ( !destinationLayer )
+    return {};
 
-  QgisApp::instance()->askUserForDatumTransform( crs(), destCRS );
-  const QgsCoordinateTransform ct = QgsCoordinateTransform( crs(), destCRS, QgsProject::instance() );
+  QgsCoordinateReferenceSystem clipboardCrs;
+  QgsFields clipboardFields;
+  QgsFeatureList featureList;
+  getFeaturesFromClipboard( clipboardCrs, clipboardFields, featureList );
 
-  QgsDebugMsgLevel( u"transforming clipboard."_s, 2 );
-  for ( QgsFeatureList::iterator iter = featureList.begin(); iter != featureList.end(); ++iter )
+  if ( clipboardCrs.isValid() && destinationLayer->crs().isValid() && clipboardCrs != destinationLayer->crs() )
   {
-    QgsGeometry g = iter->geometry();
-    g.transform( ct );
-    iter->setGeometry( g );
+    QgisApp::instance()->askUserForDatumTransform( clipboardCrs, destinationLayer->crs() );
+
+    const QgsCoordinateTransform ct = QgsCoordinateTransform( clipboardCrs, destinationLayer->crs(), QgsProject::instance() );
+
+    QgsDebugMsgLevel( u"transforming clipboard."_s, 2 );
+    if ( !ct.isShortCircuited() )
+    {
+      for ( QgsFeatureList::iterator iter = featureList.begin(); iter != featureList.end(); ++iter )
+      {
+        QgsGeometry g = iter->geometry();
+        g.transform( ct );
+        iter->setGeometry( g );
+      }
+    }
   }
 
-  return featureList;
-}
-
-QgsCoordinateReferenceSystem QgsClipboard::crs() const
-{
-  if ( const QgsFeatureListMimeData* featureListData = featureListDataFromClipboard() )
-  {
-    return featureListData->mCRS;
-  }
-  else
-  {
-    return QgsCoordinateReferenceSystem();
-  }
+  return QgsVectorLayerUtils::makeFeaturesCompatible( featureList, destinationLayer );
 }
 
 void QgsClipboard::setData( const QString &mimeType, const QByteArray &data, const QString &text )
@@ -365,21 +396,9 @@ QByteArray QgsClipboard::data( const QString &mimeType ) const
   return QByteArray();
 }
 
-QgsFields QgsClipboard::fields() const
-{
-  if ( const QgsFeatureListMimeData* featureListData = featureListDataFromClipboard() )
-  {
-    return featureListData->mFields;
-  }
-  else
-  {
-    return retrieveFields();
-  }
-}
-
 QgsMapLayer *QgsClipboard::layer() const
 {
-  if ( const QgsFeatureListMimeData* featureListData = featureListDataFromClipboard() )
+  if ( const QgsFeatureListMimeData *featureListData = featureListDataFromClipboard() )
   {
     return featureListData->mSourceLayer;
   }
@@ -391,12 +410,14 @@ QgsMapLayer *QgsClipboard::layer() const
 
 std::unique_ptr<QgsVectorLayer> QgsClipboard::pasteToNewMemoryVector( QgsMessageBar *messageBar )
 {
-  const QgsFields fields = QgsClipboard::fields();
+  QgsCoordinateReferenceSystem crs;
+  QgsFields fields;
+  QgsFeatureList features;
+  getFeaturesFromClipboard( crs, fields, features );
 
   // Decide geometry type from features, switch to multi type if at least one multi is found
   QMap<Qgis::WkbType, int> typeCounts;
-  const QgsFeatureList features = copyOf( fields );
-  for ( const QgsFeature &feature : features )
+  for ( const QgsFeature &feature : std::as_const( features ) )
   {
     if ( !feature.hasGeometry() )
       continue;
@@ -445,7 +466,7 @@ std::unique_ptr<QgsVectorLayer> QgsClipboard::pasteToNewMemoryVector( QgsMessage
       messageBar->pushMessage( tr( "Paste features" ), tr( "Multiple geometry types found, features with geometry different from %1 will be created without geometry." ).arg( typeName ), Qgis::MessageLevel::Info );
   }
 
-  std::unique_ptr<QgsVectorLayer> layer( QgsMemoryProviderUtils::createMemoryLayer( u"pasted_features"_s, QgsFields(), wkbType, crs() ) );
+  std::unique_ptr<QgsVectorLayer> layer( QgsMemoryProviderUtils::createMemoryLayer( u"pasted_features"_s, QgsFields(), wkbType, crs ) );
 
   if ( !layer->isValid() || !layer->dataProvider() )
   {
@@ -455,7 +476,7 @@ std::unique_ptr<QgsVectorLayer> QgsClipboard::pasteToNewMemoryVector( QgsMessage
   }
 
   layer->startEditing();
-  for ( const QgsField &f : QgsClipboard::fields() )
+  for ( const QgsField &f : fields )
   {
     QgsDebugMsgLevel( u"field %1 (%2)"_s.arg( f.name(), QVariant::typeToName( f.type() ) ), 2 );
     if ( !layer->addAttribute( f ) )
@@ -512,44 +533,46 @@ void QgsClipboard::systemClipboardChanged()
   emit changed();
 }
 
-const QgsFeatureListMimeData* QgsClipboard::featureListDataFromClipboard() const
+const QgsFeatureListMimeData *QgsClipboard::featureListDataFromClipboard() const
 {
   QClipboard *cb = QApplication::clipboard();
-  const QMimeData* data = cb->mimeData( QClipboard::Clipboard );
+  const QMimeData *data = cb->mimeData( QClipboard::Clipboard );
 
-  return qobject_cast< const QgsFeatureListMimeData* >( data );
+  return qobject_cast< const QgsFeatureListMimeData * >( data );
 }
 
 //
 // QgsFeatureListMimeData
 //
 
-QgsFeatureListMimeData::QgsFeatureListMimeData(QgsMapLayer* sourceLayer, const QgsCoordinateReferenceSystem& crs, const QgsFields& fields, const QgsFeatureList& features)
+QgsFeatureListMimeData::QgsFeatureListMimeData( QgsMapLayer *sourceLayer, const QgsCoordinateReferenceSystem &crs, const QgsFields &fields, const QgsFeatureList &features )
   : mFeatures( features )
   , mFields( fields )
-  , mCRS( crs)
+  , mCRS( crs )
   , mSourceLayer( sourceLayer )
-{
-
-}
+{}
 
 QStringList QgsFeatureListMimeData::formats() const
 {
-  return {
-    QStringLiteral( "text/plain" ),
-    QStringLiteral( "text/html" )
-  };
+  return { u"text/plain"_s, u"text/html"_s, QgsClipboard::FEATURES_MIME_TYPE };
 }
 
-QVariant QgsFeatureListMimeData::retrieveData(const QString& mimeType, QMetaType type ) const
+QVariant QgsFeatureListMimeData::retrieveData( const QString &mimeType, QMetaType type ) const
 {
-  if ( mimeType == QStringLiteral( "text/plain" ) )
-{
+  if ( mimeType == "text/plain"_L1 )
+  {
     return toText( false );
-}
- else if ( mimeType == QStringLiteral( "text/html" ) )
+  }
+  else if ( mimeType == "text/html"_L1 )
   {
     return toText( true );
+  }
+  else if ( mimeType == QgsClipboard::FEATURES_MIME_TYPE )
+  {
+    QByteArray data;
+    QDataStream stream( &data, QIODevice::WriteOnly );
+    stream << mCRS.toWkt() << mFields << mFeatures;
+    return data;
   }
   return QMimeData::retrieveData( mimeType, type );
 }
@@ -585,7 +608,7 @@ QString QgsFeatureListMimeData::toText( bool asHtml ) const
         {
           if ( !mFields.isEmpty() )
           {
-              fields += geometryHeading;
+            fields += geometryHeading;
           }
         }
         else
@@ -599,21 +622,21 @@ QString QgsFeatureListMimeData::toText( bool asHtml ) const
       {
         if ( !asHtml )
         {
-        fields += field.name();
+          fields += field.name();
         }
         else
         {
-        fields += u"<td>%1</td>"_s.arg( field.name() );
+          fields += u"<td>%1</td>"_s.arg( field.name() );
         }
       }
       if ( !asHtml )
       {
-      if ( !fields.empty() )
-        lines += fields.join( QLatin1Char( '\t' ) );
+        if ( !fields.empty() )
+          lines += fields.join( QLatin1Char( '\t' ) );
       }
       else
       {
-      lines += fields.join( QString() );
+        lines += fields.join( QString() );
       }
       fields.clear();
 
@@ -630,13 +653,13 @@ QString QgsFeatureListMimeData::toText( bool asHtml ) const
             if ( format == QgsClipboard::AttributesWithWKT )
             {
               const QString wkt = it->geometry().asWkt();
-              if (!asHtml )
+              if ( !asHtml )
               {
-              fields += wkt;
+                fields += wkt;
               }
               else
               {
-              fields += u"<td>%1</td>"_s.arg( wkt );
+                fields += u"<td>%1</td>"_s.arg( wkt );
               }
             }
             else if ( format == QgsClipboard::AttributesWithWKB )
@@ -644,11 +667,11 @@ QString QgsFeatureListMimeData::toText( bool asHtml ) const
               const QString wkb = it->geometry().asWkb().toHex();
               if ( !asHtml )
               {
-              fields += wkb;
+                fields += wkb;
               }
               else
               {
-              fields += u"<td>%1</td>"_s.arg( wkb );
+                fields += u"<td>%1</td>"_s.arg( wkb );
               }
             }
           }
@@ -656,11 +679,11 @@ QString QgsFeatureListMimeData::toText( bool asHtml ) const
           {
             if ( !asHtml )
             {
-            fields += QgsApplication::nullRepresentation();
+              fields += QgsApplication::nullRepresentation();
             }
             else
             {
-            fields += u"<td>%1</td>"_s.arg( QgsApplication::nullRepresentation() );
+              fields += u"<td>%1</td>"_s.arg( QgsApplication::nullRepresentation() );
             }
           }
         }
@@ -685,51 +708,51 @@ QString QgsFeatureListMimeData::toText( bool asHtml ) const
 
           if ( !asHtml )
           {
-          if ( value.contains( '\n' ) || value.contains( '\t' ) )
-            fields += '"' + value.replace( '"', "\"\""_L1 ) + '\"';
-          else
-          {
-            fields += value;
-          }
-          }
-          else
-          {
-          if ( useJSONFromVariant )
-          {
-            value = QString::fromStdString( QgsJsonUtils::jsonFromVariant( variant ).dump() );
-          }
-          else
-          {
-            if ( QgsVariantUtils::isNull( variant ) && variant.isValid() )
-              value = "";
+            if ( value.contains( '\n' ) || value.contains( '\t' ) )
+              fields += '"' + value.replace( '"', "\"\""_L1 ) + '\"';
             else
-              value = variant.toString();
+            {
+              fields += value;
+            }
           }
-          value.replace( '\n', "<br>"_L1 ).replace( '\t', "&emsp;"_L1 );
-          fields += u"<td>%1</td>"_s.arg( value );
+          else
+          {
+            if ( useJSONFromVariant )
+            {
+              value = QString::fromStdString( QgsJsonUtils::jsonFromVariant( variant ).dump() );
+            }
+            else
+            {
+              if ( QgsVariantUtils::isNull( variant ) && variant.isValid() )
+                value = "";
+              else
+                value = variant.toString();
+            }
+            value.replace( '\n', "<br>"_L1 ).replace( '\t', "&emsp;"_L1 );
+            fields += u"<td>%1</td>"_s.arg( value );
           }
         }
 
         if ( !asHtml )
         {
-        lines += fields.join( QLatin1Char( '\t' ) );
+          lines += fields.join( QLatin1Char( '\t' ) );
         }
         else
         {
-        lines += fields.join( QString() );
+          lines += fields.join( QString() );
         }
         fields.clear();
       }
 
-      if (!asHtml )
+      if ( !asHtml )
       {
-      content = lines.join( '\n' );
+        content = lines.join( '\n' );
       }
       else
       {
-      content = u"<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0 Transitional//EN\"><html><head><meta http-equiv=\"content-type\" content=\"text/html; charset=utf-8\"/></head><body><table border=\"1\"><tr>"_s
-                    + lines.join( "</tr><tr>"_L1 )
-                    + u"</tr></table></body></html>"_s;
+        content = u"<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0 Transitional//EN\"><html><head><meta http-equiv=\"content-type\" content=\"text/html; charset=utf-8\"/></head><body><table border=\"1\"><tr>"_s
+                  + lines.join( "</tr><tr>"_L1 )
+                  + u"</tr></table></body></html>"_s;
       }
       break;
     }
