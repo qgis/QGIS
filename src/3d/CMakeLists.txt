@@ -375,6 +375,14 @@ target_include_directories(qgis_3d PUBLIC
   ${CMAKE_SOURCE_DIR}/external/earcut
 )
 
+if (WIN32)
+  include_directories(${CMAKE_SOURCE_DIR}/src/native/win)
+elseif (APPLE)
+  include_directories(${CMAKE_SOURCE_DIR}/src/native/mac)
+elseif (UNIX)
+  include_directories(${CMAKE_SOURCE_DIR}/src/native/linux)
+endif()
+
 target_link_libraries(qgis_3d
   ${QT_VERSION_BASE}::3DCore
   ${QT_VERSION_BASE}::3DRender
@@ -400,7 +408,7 @@ if (NOT ANDROID)
     )
 endif()
 
-target_link_libraries(qgis_3d qgis_core)
+target_link_libraries(qgis_3d qgis_core qgis_gui qgis_native)
 
 # clang-tidy
 if(CLANG_TIDY_EXE)
