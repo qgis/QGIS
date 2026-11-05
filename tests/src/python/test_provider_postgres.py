@@ -2112,9 +2112,9 @@ class TestPyQgsPostgresProvider(QgisTestCase, ProviderTestCase):
             fid = [f.id() for f in vl2.getFeatures()][-1]
             f = vl2.getFeature(fid)
             string_attr = attr
-            if isinstance(attr, list) or isinstance(attr, dict):
-                # Here we have to convert the text field (last one) to json string to compare
-                string_attr = json.dumps(attr)
+            if isinstance(attr, (dict, list, int, float)):
+                # Here we have to convert the check values for the text field (last one) to json-string
+                string_attr = json.dumps(attr, separators=(",", ":"))
             self.assertEqual(f.attributes(), [fid, attr, attr, string_attr])
             # Change attribute values
             vl2 = QgsVectorLayer(
@@ -2138,9 +2138,9 @@ class TestPyQgsPostgresProvider(QgisTestCase, ProviderTestCase):
             )
             f = vl2.getFeature(fid)
             string_attr = attr
-            if isinstance(attr, list) or isinstance(attr, dict):
-                # Here we have to convert the text field (last one) to json string to compare
-                string_attr = json.dumps(attr)
+            if isinstance(attr, (dict, list, int, float)):
+                # Here we have to convert the check values for the text field (last one) to json-string
+                string_attr = json.dumps(attr, separators=(",", ":"))
             self.assertEqual(f.attributes(), [fid, attr, attr, string_attr])
 
         # Let's check changeFeatures:
@@ -2168,9 +2168,9 @@ class TestPyQgsPostgresProvider(QgisTestCase, ProviderTestCase):
             f = vl2.getFeature(fid)
 
             string_attr = attr
-            if isinstance(attr, list) or isinstance(attr, dict):
-                # Here we have to convert the text field (last one) to json string to compare
-                string_attr = json.dumps(attr)
+            if isinstance(attr, (dict, list, int, float)):
+                # Here we have to convert the check values for the text field (last one) to json-string
+                string_attr = json.dumps(attr, separators=(",", ":"))
             self.assertEqual(f.attributes(), [fid, attr, attr, string_attr])
 
     def testStringArray(self):
