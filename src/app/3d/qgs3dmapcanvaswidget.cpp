@@ -519,6 +519,7 @@ Qgs3DMapCanvasWidget::Qgs3DMapCanvasWidget( const QString &name, bool isDocked )
   mContainer = QWidget::createWindowContainer( mCanvas );
   mContainer->setMinimumSize( QSize( 200, 200 ) );
   mContainer->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Expanding );
+  mContainer->setFocusPolicy( Qt::FocusPolicy::StrongFocus );
 
   mContainer->installEventFilter( mCanvas );
 
@@ -801,6 +802,12 @@ bool Qgs3DMapCanvasWidget::eventFilter( QObject *watched, QEvent *event )
 
     mToolbarMenu->exec( mouseEvent->globalPos() );
     return false;
+  }
+  else if ( watched == mCanvas && event->type() == QEvent::MouseButtonPress )
+  {
+    // window container must be focused in order for keyboard events to be passed to it
+    // so we treat a click on the canvas as focusing the container (Qt doesn't do this automatically)
+    mContainer->setFocus( Qt::MouseFocusReason );
   }
   return QObject::eventFilter( watched, event );
 }
