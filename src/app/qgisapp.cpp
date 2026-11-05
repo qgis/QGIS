@@ -10289,7 +10289,7 @@ void QgisApp::pasteFromClipboard( QgsMapLayer *destinationLayer )
   const bool duplicateFeature = clipboard()->layer() == pasteVectorLayer;
 
   pasteVectorLayer->beginEditCommand( tr( "Features pasted" ) );
-  QgsFeatureList features = clipboard()->transformedCopyOf( pasteVectorLayer->crs(), pasteVectorLayer->fields() );
+  QgsFeatureList features = clipboard()->transformedCopyOf( pasteVectorLayer );
   int nTotalFeatures = features.count();
   QgsFeatureList pastedFeatures;
   // Count collapsed geometries

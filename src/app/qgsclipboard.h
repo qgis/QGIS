@@ -26,9 +26,9 @@
 
 #include <QList>
 #include <QMap>
+#include <QMimeData>
 #include <QObject>
 #include <QPointer>
-#include <QMimeData>
 
 class QgsVectorLayer;
 class QgsVectorTileLayer;
@@ -49,8 +49,7 @@ class QgsFeatureListMimeData : public QMimeData
     Q_OBJECT
 
   public:
-
-    QgsFeatureListMimeData( QgsMapLayer* sourceLayer, const QgsCoordinateReferenceSystem& crs, const QgsFields& fields, const QgsFeatureList& features );
+    QgsFeatureListMimeData( QgsMapLayer *sourceLayer, const QgsCoordinateReferenceSystem &crs, const QgsFields &fields, const QgsFeatureList &features );
 
     QStringList formats() const override;
 
@@ -60,12 +59,10 @@ class QgsFeatureListMimeData : public QMimeData
     QPointer<QgsMapLayer> mSourceLayer;
 
   protected:
-    QVariant retrieveData(const QString &mimeType, QMetaType type ) const override;
+    QVariant retrieveData( const QString &mimeType, QMetaType type ) const override;
 
   private:
-
-    QString toText(bool asHtml ) const;
-
+    QString toText( bool asHtml ) const;
 };
 
 /**
@@ -87,6 +84,8 @@ class APP_EXPORT QgsClipboard : public QObject
       GeoJSON,           //!< GeoJSON FeatureCollection format
     };
     Q_ENUM( CopyFormat )
+
+    static const QString FEATURES_MIME_TYPE;
 
     /**
      * Constructor for the clipboard.
@@ -111,10 +110,9 @@ class APP_EXPORT QgsClipboard : public QObject
      */
     void replaceWithCopyOf( QgsFeatureStore &featureStore, QgsVectorLayer *src = nullptr );
 
-    /**
-     * Returns a copy of features on the internal clipboard.
-     */
-    QgsFeatureList copyOf( const QgsFields &fields = QgsFields() ) const;
+    QgsFeatureList getFeaturesFromClipboardText( const QgsFields &fields = QgsFields() ) const;
+
+    bool getFeaturesFromClipboard( QgsCoordinateReferenceSystem &crs, QgsFields &fields, QgsFeatureList &features ) const;
 
     /**
      * Returns TRUE if the internal clipboard is empty, else FALSE.
@@ -125,12 +123,7 @@ class APP_EXPORT QgsClipboard : public QObject
      * Returns a copy of features on the internal clipboard, transformed
      * from the clipboard CRS to the destCRS.
      */
-    QgsFeatureList transformedCopyOf( const QgsCoordinateReferenceSystem &destCRS, const QgsFields &fields = QgsFields() ) const;
-
-    /**
-     * Get the clipboard CRS
-     */
-    QgsCoordinateReferenceSystem crs() const;
+    QgsFeatureList transformedCopyOf( QgsVectorLayer *destinationLayer ) const;
 
     /**
      * Stores a MimeData together with a text into the system clipboard
@@ -154,11 +147,6 @@ class APP_EXPORT QgsClipboard : public QObject
      */
     QByteArray data( const QString &mimeType ) const;
 
-    /**
-     * Source fields
-     */
-    QgsFields fields() const;
-
     QgsMapLayer *layer() const;
 
     /**
@@ -179,13 +167,12 @@ class APP_EXPORT QgsClipboard : public QObject
     void changed();
 
   private:
-
-    const QgsFeatureListMimeData* featureListDataFromClipboard() const;
+    const QgsFeatureListMimeData *featureListDataFromClipboard() const;
 
     /**
      * Set system clipboard from previously set features.
      */
-    void setSystemClipboard( QgsMapLayer* sourceLayer, const QgsCoordinateReferenceSystem& crs, const QgsFields& fields, const QgsFeatureList& features );
+    void setSystemClipboard( QgsMapLayer *sourceLayer, const QgsCoordinateReferenceSystem &crs, const QgsFields &fields, const QgsFeatureList &features );
 
     /**
      * Attempts to convert a string to a list of features, by parsing the string as WKT/WKB and GeoJSON
