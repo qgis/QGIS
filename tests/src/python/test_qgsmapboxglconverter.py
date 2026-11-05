@@ -1663,6 +1663,36 @@ class TestQgsMapBoxGlStyleConverter(QgisTestCase):
             "with_variable('marker_size',CASE WHEN \"foo\" = 'foo' THEN 2 END,(CASE WHEN @vector_tile_zoom >= 13 AND @vector_tile_zoom <= 16 THEN scale_linear(@vector_tile_zoom,13,16,0.25,0.45) WHEN @vector_tile_zoom > 16 AND @vector_tile_zoom <= 17 THEN scale_linear(@vector_tile_zoom,16,17,0.45,0.7) WHEN @vector_tile_zoom > 17 THEN 0.7 END)*@marker_size)",
         )
 
+    def testLineMarkerOpacity(self):
+        """Line marker icon-opacity"""
+        context = QgsMapBoxGlStyleConversionContext()
+
+        image = QImage(QSize(1, 1), QImage.Format.Format_ARGB32)
+        context.setSprites(
+            image, {"foo": {"x": 0, "y": 0, "width": 2, "height": 2, "pixelRatio": 1}}
+        )
+        style = {
+            "id": "oneway",
+            "type": "symbol",
+            "source-layer": "transportation",
+            "layout": {
+                "symbol-placement": "line",
+                "icon-image": "{foo}",
+                "icon-size": 0.7,
+            },
+            "paint": {
+                "icon-opacity": 0.5,
+            },
+        }
+        renderer, has_renderer, labeling, has_labeling = (
+            QgsMapBoxGlStyleConverter.parseSymbolLayer(style, context)
+        )
+        self.assertTrue(has_renderer)
+        sub_symbol = renderer.symbol().symbolLayers()[0].subSymbol()
+        self.assertTrue(sub_symbol)
+        opacity = sub_symbol.symbolLayers()[0].opacity()
+        self.assertEqual(opacity, 0.5)
+
     def testFillTranslateInterpolation(self):
         context = QgsMapBoxGlStyleConversionContext()
         style = {
