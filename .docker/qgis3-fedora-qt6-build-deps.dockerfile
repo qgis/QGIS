@@ -83,6 +83,7 @@ RUN dnf -y --refresh install \
     xorg-x11-server-Xvfb \
     util-linux \
     wayland-devel \
+    wayland-protocols-devel \
     wget \
     openssl-devel \
     libsecret-devel \
