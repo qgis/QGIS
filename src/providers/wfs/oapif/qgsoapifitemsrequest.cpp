@@ -28,6 +28,7 @@ using namespace nlohmann;
 #include "qgsoapifutils.h"
 #include "qgsproviderregistry.h"
 #include "qgsvectordataprovider.h"
+#include "qgswfsconstants.h"
 
 #include "cpl_conv.h"
 #include "cpl_vsi.h"
@@ -35,7 +36,7 @@ using namespace nlohmann;
 #include <QTextCodec>
 
 QgsOapifItemsRequest::QgsOapifItemsRequest( const QgsDataSourceUri &baseUri, const QString &url, const QString &featureFormat )
-  : QgsBaseNetworkRequest( QgsAuthorizationSettings( baseUri.username(), baseUri.password(), QgsHttpHeaders(), baseUri.authConfigId() ), tr( "OAPIF" ) )
+  : QgsBaseNetworkRequest( QgsAuthorizationSettings( baseUri.username(), baseUri.password(), QgsHttpHeaders(), baseUri.authConfigId() ), tr( "OAPIF" ), baseUri.hasParam( QgsWFSConstants::URI_PARAM_DISABLE_DECOMPRESSED_SAFETY_CHECK_THRESHOLD ) )
   , mUrl( url )
   , mFeatureFormat( featureFormat )
 {

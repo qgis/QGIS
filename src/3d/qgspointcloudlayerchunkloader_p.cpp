@@ -50,14 +50,13 @@ using namespace Qt::StringLiterals;
 ///@cond PRIVATE
 
 QgsPointCloudLayerChunkLoader::QgsPointCloudLayerChunkLoader(
-  const Qgs3DRenderContext &context, const QgsCoordinateTransform &coordinateTransform, QgsPointCloudIndex pc, QgsPointCloud3DSymbol *symbol, double zValueScale, double zValueOffset, int pointBudget
+  const Qgs3DRenderContext &context, const QgsCoordinateTransform &coordinateTransform, QgsPointCloudIndex pc, QgsPointCloud3DSymbol *symbol, double zValueScale, double zValueOffset
 )
   : mRenderContext( context )
   , mCoordinateTransform( coordinateTransform )
   , mPointCloudIndex( std::move( pc ) )
   , mZValueScale( zValueScale )
   , mZValueOffset( zValueOffset )
-  , mPointBudget( pointBudget )
 {
   mSymbol.reset( symbol );
 
@@ -295,7 +294,7 @@ QgsPointCloudLayerChunkedEntity::QgsPointCloudLayerChunkedEntity(
   double zValueOffset,
   int pointBudget
 )
-  : QgsChunkedEntity( map, maximumScreenSpaceError, new QgsPointCloudLayerChunkLoader( Qgs3DRenderContext::fromMapSettings( map ), coordinateTransform, resolveIndex( pcl, indexPosition ), symbol, zValueScale, zValueOffset, pointBudget ), true, pointBudget )
+  : QgsChunkedEntity( map, maximumScreenSpaceError, new QgsPointCloudLayerChunkLoader( Qgs3DRenderContext::fromMapSettings( map ), coordinateTransform, resolveIndex( pcl, indexPosition ), symbol, zValueScale, zValueOffset ), true, pointBudget )
   , mLayer( pcl )
   , mIndexPosition( indexPosition )
 {
@@ -365,8 +364,8 @@ QList<QgsRayCastHit> QgsPointCloudLayerChunkedEntity::rayIntersection( const Qgs
     return result;
 
   // transform ray
-  const QgsVector3D rayOriginMapCoords = loader->mRenderContext.worldToMapCoordinates( ray.origin() );
-  const QgsVector3D pointMapCoords = loader->mRenderContext.worldToMapCoordinates( ray.point( ray.origin().length() ) );
+  const QgsVector3D rayOriginMapCoords = mMapSettings->worldToMapCoordinates( ray.origin() );
+  const QgsVector3D pointMapCoords = mMapSettings->worldToMapCoordinates( ray.point( ray.origin().length() ) );
   QgsVector3D rayDirectionMapCoords = pointMapCoords - rayOriginMapCoords;
   rayDirectionMapCoords.normalize();
 

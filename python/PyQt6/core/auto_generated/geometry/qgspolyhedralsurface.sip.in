@@ -241,7 +241,7 @@ between adjacent segments.
     virtual bool transform( QgsAbstractGeometryTransformer *transformer, QgsFeedback *feedback = 0 );
 
 
-    QgsMultiPolygon *toMultiPolygon() const /Factory/;
+    std::unique_ptr<QgsMultiPolygon> toMultiPolygon() const;
 %Docstring
 Converts a polyhedral surface to a multipolygon. Caller takes ownership.
 %End

@@ -180,7 +180,7 @@ QVariantMap QgsSplitWithLinesAlgorithm::processAlgorithm( const QVariantMap &par
         const QgsGeometry splitFeatureCandidate = splitFeaturesIndex.geometry( splitFeatureCandidateId );
         if ( !originalGeometryEngine )
         {
-          originalGeometryEngine.reset( QgsGeometry::createGeometryEngine( originalGeometry.constGet() ) );
+          originalGeometryEngine = QgsGeometry::createGeometryEngine( originalGeometry.constGet() );
           originalGeometryEngine->prepareGeometry();
         }
 

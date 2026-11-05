@@ -67,12 +67,6 @@ void QgsMaterial::enableClipping( const QList<QVector4D> &clipPlanesEquations )
     for ( Qt3DRender::QRenderPass *renderPass : technique->renderPasses() )
     {
       Qt3DRender::QShaderProgram *shaderProgram = renderPass->shaderProgram();
-      const QByteArray geomCode = shaderProgram->geometryShaderCode();
-      if ( !geomCode.isEmpty() )
-      {
-        const QByteArray newGeomCode = Qgs3DUtils::addDefinesToShaderCode( geomCode, QStringList( QgsMaterial::CLIP_PLANE_DEFINE ) );
-        shaderProgram->setGeometryShaderCode( newGeomCode );
-      }
 
       const QByteArray vertexCode = shaderProgram->vertexShaderCode();
       if ( !vertexCode.isEmpty() )
@@ -111,12 +105,6 @@ void QgsMaterial::disableClipping()
     for ( Qt3DRender::QRenderPass *renderPass : technique->renderPasses() )
     {
       Qt3DRender::QShaderProgram *shaderProgram = renderPass->shaderProgram();
-      const QByteArray geomCode = shaderProgram->geometryShaderCode();
-      if ( !geomCode.isEmpty() )
-      {
-        const QByteArray newGeomCode = Qgs3DUtils::removeDefinesFromShaderCode( geomCode, QStringList( QgsMaterial::CLIP_PLANE_DEFINE ) );
-        shaderProgram->setGeometryShaderCode( newGeomCode );
-      }
 
       const QByteArray vertexCode = shaderProgram->vertexShaderCode();
       if ( !vertexCode.isEmpty() )

@@ -144,6 +144,12 @@ bool QgsWcsCapabilities::sendRequest( QString const &url )
   QgsDebugMsgLevel( "url = " + url, 2 );
   mError.clear();
   QNetworkRequest request( url );
+
+  const bool disableDecompressedSafetyCheckThreshold { mUri.hasParam( u"disableDecompressedSafetyCheckThreshold"_s ) };
+  if ( disableDecompressedSafetyCheckThreshold )
+  {
+    request.setDecompressedSafetyCheckThreshold( -1 );
+  }
   QgsSetRequestInitiatorClass( request, u"QgsWcsCapabilities"_s );
   if ( !setAuthorization( request ) )
   {
@@ -442,6 +448,15 @@ void QgsWcsCapabilities::capabilitiesReplyFinished()
 
     mErrorFormat = u"text/plain"_s;
     mError = tr( "Download of capabilities failed: %1" ).arg( mCapabilitiesReply->errorString() );
+    if ( const QString errorString = mCapabilitiesReply->errorString();
+         errorString.contains( u"The decompressed output exceeds the limits specified by QNetworkRequest::decompressedSafetyCheckThreshold"_s ) )
+    {
+      mError += tr(
+        "\nThe server returned a compressed response that exceeds the safety check limits. "
+        "This is likely due to a large number of layers or complex capabilities. "
+        "If you trust this server you can disable this check in the WCS server connection settings."
+      );
+    }
     QgsMessageLog::logMessage( mError, tr( "WCS" ) );
     mCapabilitiesResponse.clear();
   }

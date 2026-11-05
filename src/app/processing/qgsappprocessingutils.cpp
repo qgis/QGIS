@@ -241,12 +241,7 @@ class CreateNewModelAction : public QgsProcessingToolboxAction
 
     QIcon icon() const override { return QgsApplication::getThemeIcon( u"/processingModel.svg"_s ); }
 
-    void trigger( const QgsProcessingActionContext & ) override
-    {
-      auto dlg = new QgsModelDesignerDialog();
-      QObject::connect( dlg, &QgsModelDesignerDialog::modelUpdated, dlg, [] { QgsApplication::processingRegistry()->providerById( QgsProcessing::MODEL_PROVIDER_ID )->refreshAlgorithms(); } );
-      dlg->show();
-    }
+    void trigger( const QgsProcessingActionContext & ) override { QgisApp::instance()->appProcessingUtils()->openModelDesignerDialog( nullptr ); }
 };
 
 
@@ -269,10 +264,20 @@ class OpenModelFromFileAction : public QgsProcessingToolboxAction
 
       settings.setValue( u"Processing/lastModelsDir"_s, QFileInfo( fileName ).absoluteDir().absolutePath() );
 
-      auto dlg = new QgsModelDesignerDialog();
-      dlg->loadModel( fileName );
-      dlg->show();
-      dlg->activate();
+      std::unique_ptr< QgsProcessingModelAlgorithm > newModel = QgsProcessingModelAlgorithm::loadModel( fileName );
+      if ( !newModel )
+      {
+        QMessageBox::critical(
+          nullptr,
+          QObject::tr( "Open Model" ),
+          QObject::tr(
+            "The selected model could not be loaded.\n"
+            "See the log for more information."
+          )
+        );
+        return;
+      }
+      QgisApp::instance()->appProcessingUtils()->openModelDesignerDialog( newModel.release() );
     }
 };
 
@@ -357,12 +362,7 @@ class EditModelContextAction : public QgsProcessingToolboxContextAction
       std::unique_ptr< QgsProcessingModelAlgorithm > newModel( qgis::down_cast< QgsProcessingModelAlgorithm * >( modelAlgorithm->create() ) );
       newModel->setSourceFilePath( modelAlgorithm->sourceFilePath() );
 
-      auto dlg = new QgsModelDesignerDialog();
-      dlg->setModel( newModel.release() );
-
-      QObject::connect( dlg, &QgsModelDesignerDialog::modelUpdated, dlg, [] { QgsApplication::processingRegistry()->providerById( QgsProcessing::MODEL_PROVIDER_ID )->refreshAlgorithms(); } );
-      dlg->show();
-      dlg->activate();
+      QgisApp::instance()->appProcessingUtils()->openModelDesignerDialog( newModel.release() );
     }
 };
 
@@ -577,14 +577,6 @@ void QgsAppProcessingUtils::registerActions()
   separatorAction->setIsSeparator( true );
   QgsGui::processingGuiRegistry()->registerProviderToolboxContextAction( QgsProcessing::MODEL_PROVIDER_ID, separatorAction );
   QgsGui::processingGuiRegistry()->registerProviderToolboxContextAction( QgsProcessing::MODEL_PROVIDER_ID, new ExportModelAsPythonScriptAction() );
-}
-
-void QgsAppProcessingUtils::openModelDesigner()
-{
-  // QgsModelDesignerDialog has delete on close set:
-  auto dlg = new QgsModelDesignerDialog();
-  connect( dlg, &QgsModelDesignerDialog::modelUpdated, this, &QgsAppProcessingUtils::updateModels );
-  dlg->show();
 }
 
 void QgsAppProcessingUtils::openHistory()
@@ -938,12 +930,51 @@ void QgsAppProcessingUtils::addAlgorithmsToDefaultToolbars()
   }
 }
 
-void QgsAppProcessingUtils::updateModels()
+QgsModelDesignerDialog *QgsAppProcessingUtils::openModelDesignerDialog( QgsProcessingModelAlgorithm *model )
 {
-  if ( QgsProcessingProvider *modelProvider = QgsApplication::processingRegistry()->providerById( QgsProcessing::MODEL_PROVIDER_ID ) )
+  // maybe a model designer already open for this model
+  const QSet<QgsModelDesignerDialog *> constMModelDesignerDialogs = mModelDesignerDialogs;
+  if ( model )
   {
-    modelProvider->refreshAlgorithms();
+    for ( QgsModelDesignerDialog *designer : constMModelDesignerDialogs )
+    {
+      if ( ( model->provider()->id() == QgsProcessing::MODEL_PROVIDER_ID && designer->model()->sourceFilePath() == model->sourceFilePath() )
+           || ( model->provider()->id() == QgsProcessing::PROJECT_PROVIDER_ID && designer->model()->name() == model->name() ) )
+      {
+        designer->show();
+        designer->activate();
+        designer->raise();
+        return designer;
+      }
+    }
   }
+
+  //nope, so make a new one
+  //important - no parent set, otherwise Windows 10 sets the dialog as always on top of the QGIS window!!
+  QgsModelDesignerDialog *newDesigner = new QgsModelDesignerDialog( nullptr );
+
+  if ( model )
+  {
+    newDesigner->setModel( model );
+
+    const QString providerId = model->provider()->id();
+    QObject::connect( newDesigner, &QgsModelDesignerDialog::modelUpdated, newDesigner, [providerId]() { QgsApplication::processingRegistry()->providerById( providerId )->refreshAlgorithms(); } );
+  }
+  else
+  {
+    // This is an empty model for now, but we need to connect anyways because it might be saved at some point
+    QObject::connect( newDesigner, &QgsModelDesignerDialog::modelUpdated, newDesigner, []() {
+      QgsApplication::processingRegistry()->providerById( QgsProcessing::MODEL_PROVIDER_ID )->refreshAlgorithms();
+    } );
+  }
+
+  connect( newDesigner, &QgsModelDesignerDialog::aboutToClose, newDesigner, [this, newDesigner] { mModelDesignerDialogs.remove( newDesigner ); } );
+
+  //add it to the map of existing model designers
+  mModelDesignerDialogs.insert( newDesigner );
+
+  newDesigner->show();
+  return newDesigner;
 }
 
 void QgsAppProcessingUtils::updateProjectModelMenu()

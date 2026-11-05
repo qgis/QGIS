@@ -439,9 +439,14 @@ QgsModelDesignerDialog::~QgsModelDesignerDialog()
 void QgsModelDesignerDialog::closeEvent( QCloseEvent *event )
 {
   if ( checkForUnsavedChanges() )
+  {
+    emit aboutToClose();
     event->accept();
+  }
   else
+  {
     event->ignore();
+  }
 }
 
 void QgsModelDesignerDialog::beginUndoCommand( const QString &text, const QString &id, QgsModelUndoCommand::CommandOperation operation )
@@ -512,25 +517,21 @@ void QgsModelDesignerDialog::setModel( QgsProcessingModelAlgorithm *model )
 
 void QgsModelDesignerDialog::loadModel( const QString &path )
 {
-  auto alg = std::make_unique<QgsProcessingModelAlgorithm>();
-  if ( alg->fromFile( path ) )
+  std::unique_ptr< QgsProcessingModelAlgorithm > alg = QgsProcessingModelAlgorithm::loadModel( path );
+  if ( !alg )
   {
-    alg->setProvider( QgsApplication::processingRegistry()->providerById( QgsProcessing::MODEL_PROVIDER_ID ) );
-    alg->setSourceFilePath( path );
-    setModel( alg.release() );
-  }
-  else
-  {
-    QgsMessageLog::logMessage( tr( "Could not load model %1" ).arg( path ), tr( "Processing" ), Qgis::MessageLevel::Critical );
     QMessageBox::critical(
       this,
-      tr( "Open Model" ),
-      tr(
+      QObject::tr( "Open Model" ),
+      QObject::tr(
         "The selected model could not be loaded.\n"
         "See the log for more information."
       )
     );
+    return;
   }
+
+  setModel( alg.release() );
 }
 
 void QgsModelDesignerDialog::handleVersionMismatch( const QString &modelVersion ) const
@@ -564,7 +565,7 @@ void QgsModelDesignerDialog::handleVersionMismatch( const QString &modelVersion 
   {
     const QString message = tr(
                               "This model was created by a newer version of QGIS (%1)."
-                              "The integrity of this model file may not be guaranteed."
+                              " The integrity of this model file may not be guaranteed."
     )
                               .arg( fileVersion.text() );
 

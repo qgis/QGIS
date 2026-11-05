@@ -862,7 +862,7 @@ void QgsMapToolEditMeshFrame::cadCanvasPressEvent( QgsMapMouseEvent *e )
             mSelectionHandler->canvasPressEvent( e );
           else
           {
-            QMenu menu;
+            QMenu menu( mCanvas );
             populateContextMenuWithEvent( &menu, e );
             menu.exec( e->globalPos() );
           }

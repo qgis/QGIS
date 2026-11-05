@@ -741,6 +741,24 @@ class TestQgsMapBoxGlStyleConverter(QgisTestCase):
             ),
             """(level IS 0) AND ("type" IN ('Restricted', 'Temporary'))""",
         )
+
+        self.assertEqual(
+            QgsMapBoxGlStyleConverter.parseExpression(
+                [
+                    "all",
+                    [
+                        "match",
+                        ["geometry-type"],
+                        ["LineString", "MultiLineString"],
+                        True,
+                        False,
+                    ],
+                ],
+                conversion_context,
+            ),
+            """("_geom_type" IN ('LineString', 'MultiLineString'))""",
+        )
+
         self.assertEqual(
             QgsMapBoxGlStyleConverter.parseExpression(
                 [
@@ -1643,6 +1661,39 @@ class TestQgsMapBoxGlStyleConverter(QgisTestCase):
             .property(QgsPalLayerSettings.Property.ShapeSizeX)
             .asExpression(),
             "with_variable('marker_size',CASE WHEN \"foo\" = 'foo' THEN 2 END,(CASE WHEN @vector_tile_zoom >= 13 AND @vector_tile_zoom <= 16 THEN scale_linear(@vector_tile_zoom,13,16,0.25,0.45) WHEN @vector_tile_zoom > 16 AND @vector_tile_zoom <= 17 THEN scale_linear(@vector_tile_zoom,16,17,0.45,0.7) WHEN @vector_tile_zoom > 17 THEN 0.7 END)*@marker_size)",
+        )
+
+    def testFillTranslateInterpolation(self):
+        context = QgsMapBoxGlStyleConversionContext()
+        style = {
+            "id": "building-top",
+            "type": "fill",
+            "paint": {
+                "fill-color": "#f2eae2",
+                "fill-outline-color": "#dfdbd7",
+                "fill-translate": [
+                    "interpolate",
+                    ["linear"],
+                    ["zoom"],
+                    14,
+                    ["literal", [0, 0]],
+                    16,
+                    ["literal", [-2, -2]],
+                ],
+            },
+        }
+        has_renderer, rendererStyle = QgsMapBoxGlStyleConverter.parseFillLayer(
+            style, context
+        )
+        self.assertTrue(has_renderer)
+        self.assertEqual(
+            rendererStyle.geometryType(), QgsWkbTypes.GeometryType.PolygonGeometry
+        )
+        dd_properties = rendererStyle.symbol().symbolLayers()[0].dataDefinedProperties()
+        self.assertTrue(dd_properties.hasProperty(QgsSymbolLayer.Property.Offset))
+        self.assertEqual(
+            dd_properties.property(QgsSymbolLayer.Property.Offset).expressionString(),
+            "array(scale_linear(@vector_tile_zoom,14,16,0,-2),scale_linear(@vector_tile_zoom,14,16,0,-2))",
         )
 
     def testCircleLayer(self):
@@ -3098,6 +3149,67 @@ class TestQgsMapBoxGlStyleConverter(QgisTestCase):
             'CASE WHEN "lake_depth" IS NOT NULL THEN 24  WHEN length(to_string("ele")) IS 3 THEN 18 ELSE 24 END',
         )
 
+    def testRetrieveSpriteWithConcatStringFieldValue(self):
+        def strip_base64(s):
+            pos = 0
+            while True:
+                pos = s.find("'base64:", pos)
+                if pos < 0:
+                    break
+                end_pos = s.find("'", pos + 1)
+                assert end_pos > pos
+                s = s[0:pos] + "'base64:[snip]'" + s[end_pos + 1 :]
+                pos += len("'base64:")
+            return s
+
+        sprite_image_file = (
+            f"{TEST_DATA_DIR}/vector_tile/sprites/swisstopo-sprite@2x.png"
+        )
+        with open(sprite_image_file, "rb") as f:
+            sprite_image = QImage()
+            sprite_image.loadFromData(f.read())
+        sprite_definition_file = (
+            f"{TEST_DATA_DIR}/vector_tile/sprites/swisstopo-mini-sprite@2x.json"
+        )
+        with open(sprite_definition_file) as f:
+            sprite_definition = json.load(f)
+
+        context = QgsMapBoxGlStyleConversionContext()
+        context.setSprites(sprite_image, sprite_definition, "")
+        self.assertEqual(context.spriteCategories(), [""])
+
+        icon_image = [
+            "concat",
+            "large_1",
+            ["get", "ref_size"],
+        ]
+        sprite, size, sprite_property, sprite_size_property = (
+            QgsMapBoxGlStyleConverter.retrieveSpriteAsBase64WithProperties(
+                icon_image, context
+            )
+        )
+
+        expected = """CASE WHEN concat('large_1', "ref_size") = 'scree_very_large_1' THEN 'base64:[snip]' ELSE '' END"""
+        self.assertEqual(strip_base64(sprite_property), expected)
+
+        context = QgsMapBoxGlStyleConversionContext()
+        context.setSprites(sprite_image, sprite_definition, "basics")
+        self.assertEqual(context.spriteCategories(), ["basics"])
+
+        icon_image = [
+            "concat",
+            "large_1",
+            ["get", "ref_size"],
+        ]
+        sprite, size, sprite_property, sprite_size_property = (
+            QgsMapBoxGlStyleConverter.retrieveSpriteAsBase64WithProperties(
+                icon_image, context
+            )
+        )
+
+        expected = """CASE WHEN concat('large_1', "ref_size") = 'basics:scree_very_large_1' THEN 'base64:[snip]' ELSE '' END"""
+        self.assertEqual(strip_base64(sprite_property), expected)
+
     def testRetrieveSpriteWithCategory(self):
         context = QgsMapBoxGlStyleConversionContext()
         sprite_image_file = (
@@ -3145,6 +3257,71 @@ class TestQgsMapBoxGlStyleConverter(QgisTestCase):
             return s
 
         expected = "CASE WHEN \"class\" IN ('sinkhole') THEN 'base64:[snip]' WHEN \"class\" IN ('sinkhole_rock','sinkhole_scree') THEN 'base64:[snip]' WHEN \"class\" IN ('sinkhole_ice','sinkhole_water') THEN 'base64:[snip]' ELSE '' END"
+        self.assertEqual(strip_base64(sprite_property), expected)
+
+    def testRetrieveSpriteWithFieldValue(self):
+        def strip_base64(s):
+            pos = 0
+            while True:
+                pos = s.find("'base64:", pos)
+                if pos < 0:
+                    break
+                end_pos = s.find("'", pos + 1)
+                assert end_pos > pos
+                s = s[0:pos] + "'base64:[snip]'" + s[end_pos + 1 :]
+                pos += len("'base64:")
+            return s
+
+        sprite_image_file = (
+            f"{TEST_DATA_DIR}/vector_tile/sprites/swisstopo-sprite@2x.png"
+        )
+        with open(sprite_image_file, "rb") as f:
+            sprite_image = QImage()
+            sprite_image.loadFromData(f.read())
+        sprite_definition_file = (
+            f"{TEST_DATA_DIR}/vector_tile/sprites/swisstopo-mini-sprite@2x.json"
+        )
+        with open(sprite_definition_file) as f:
+            sprite_definition = json.load(f)
+
+        context = QgsMapBoxGlStyleConversionContext()
+        context.setSprites(sprite_image, sprite_definition, "")
+        self.assertEqual(context.spriteCategories(), [""])
+
+        icon_image = [
+            "match",
+            ["get", "subclass"],
+            ["subclass_a"],
+            ["get", "subclass"],
+            ["get", "class"],
+        ]
+        sprite, size, sprite_property, sprite_size_property = (
+            QgsMapBoxGlStyleConverter.retrieveSpriteAsBase64WithProperties(
+                icon_image, context
+            )
+        )
+
+        expected = """CASE WHEN "subclass" IN ('subclass_a') THEN CASE WHEN "subclass" = 'scree_very_large_1' THEN 'base64:[snip]' WHEN "subclass" = 'scree_very_large_2' THEN 'base64:[snip]' WHEN "subclass" = 'scree_very_large_3' THEN 'base64:[snip]' ELSE '' END ELSE CASE WHEN "class" = 'scree_very_large_1' THEN 'base64:[snip]' WHEN "class" = 'scree_very_large_2' THEN 'base64:[snip]' WHEN "class" = 'scree_very_large_3' THEN 'base64:[snip]' ELSE '' END END"""
+        self.assertEqual(strip_base64(sprite_property), expected)
+
+        context = QgsMapBoxGlStyleConversionContext()
+        context.setSprites(sprite_image, sprite_definition, "basics")
+        self.assertEqual(context.spriteCategories(), ["basics"])
+
+        icon_image = [
+            "match",
+            ["get", "subclass"],
+            ["subclass_a"],
+            ["get", "subclass"],
+            ["get", "class"],
+        ]
+        sprite, size, sprite_property, sprite_size_property = (
+            QgsMapBoxGlStyleConverter.retrieveSpriteAsBase64WithProperties(
+                icon_image, context
+            )
+        )
+
+        expected = """CASE WHEN "subclass" IN ('subclass_a') THEN CASE WHEN "subclass" = 'basics:scree_very_large_1' THEN 'base64:[snip]' WHEN "subclass" = 'basics:scree_very_large_2' THEN 'base64:[snip]' WHEN "subclass" = 'basics:scree_very_large_3' THEN 'base64:[snip]' ELSE '' END ELSE CASE WHEN "class" = 'basics:scree_very_large_1' THEN 'base64:[snip]' WHEN "class" = 'basics:scree_very_large_2' THEN 'base64:[snip]' WHEN "class" = 'basics:scree_very_large_3' THEN 'base64:[snip]' ELSE '' END END"""
         self.assertEqual(strip_base64(sprite_property), expected)
 
     def testLoadSpritesMultipleSheets(self):

@@ -301,7 +301,7 @@ bool QgsEptPointCloudIndex::loadSchema( const QByteArray &dataJson )
     bool foundStats = false;
     if ( schemaObj.contains( "count"_L1 ) )
     {
-      stats.count = schemaObj.value( "count"_L1 ).toInt();
+      stats.count = schemaObj.value( "count"_L1 ).toInteger();
       foundStats = true;
     }
     if ( schemaObj.contains( "minimum"_L1 ) )
@@ -314,7 +314,7 @@ bool QgsEptPointCloudIndex::loadSchema( const QByteArray &dataJson )
       stats.maximum = schemaObj.value( "maximum"_L1 ).toDouble();
       foundStats = true;
     }
-    if ( schemaObj.contains( "count"_L1 ) )
+    if ( schemaObj.contains( "mean"_L1 ) )
     {
       stats.mean = schemaObj.value( "mean"_L1 ).toDouble();
       foundStats = true;
@@ -334,12 +334,12 @@ bool QgsEptPointCloudIndex::loadSchema( const QByteArray &dataJson )
 
     if ( schemaObj.contains( "counts"_L1 ) )
     {
-      QMap< int, int > classCounts;
+      QMap< int, qint64 > classCounts;
       const QJsonArray counts = schemaObj.value( "counts"_L1 ).toArray();
       for ( const QJsonValue &count : counts )
       {
         const QJsonObject countObj = count.toObject();
-        classCounts.insert( countObj.value( "value"_L1 ).toInt(), countObj.value( "count"_L1 ).toInt() );
+        classCounts.insert( countObj.value( "value"_L1 ).toInt(), countObj.value( "count"_L1 ).toInteger() );
       }
       mAttributeClasses.insert( name, classCounts );
     }

@@ -105,6 +105,7 @@ ADD_PYTHON_TEST(PyQgsElevationProfileManagerModel test_qgselevationprofilemanage
 ADD_PYTHON_TEST(PyQgsElevationUtils test_qgselevationutils.py)
 ADD_PYTHON_TEST(PyQgsEllipsoidUtils test_qgsellipsoidutils.py)
 ADD_PYTHON_TEST(PyQgsEmbeddedSymbolRenderer test_qgsembeddedsymbolrenderer.py)
+ADD_PYTHON_TEST(PyQgsEsriArcadeConverter test_qgsesriarcadeconverter.py)
 ADD_PYTHON_TEST(PyQgsEsriArcadeScript test_qgsesriarcadeparser.py)
 ADD_PYTHON_TEST(PyQgsEsriI3sLayer test_qgsesrii3slayer.py)
 ADD_PYTHON_TEST(PyQgsExifTools test_qgsexiftools.py)

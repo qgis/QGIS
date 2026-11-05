@@ -378,6 +378,14 @@ class CORE_EXPORT QgsProcessingModelAlgorithm : public QgsProcessingAlgorithm
     bool fromFile( const QString &path );
 
     /**
+     * Returns a new instance of QgsProcessingModelAlgorithm loaded from the file \a path.
+     * This is a thin wrapper around fromFile that returns a new instance of QgsProcessingModelAlgorithm.
+     *
+     * \since QGIS 4.4
+     */
+    static std::unique_ptr< QgsProcessingModelAlgorithm > loadModel( const QString &path );
+
+    /**
      * Saves this model to a QVariantMap, wrapped in a QVariant.
      * You can use QgsXmlUtils::writeVariant to save it to an XML document.
      *

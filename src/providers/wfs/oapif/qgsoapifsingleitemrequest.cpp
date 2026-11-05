@@ -30,7 +30,7 @@
 using namespace Qt::StringLiterals;
 
 QgsOapifSingleItemRequest::QgsOapifSingleItemRequest( const QgsDataSourceUri &baseUri, const QString &url )
-  : QgsBaseNetworkRequest( QgsAuthorizationSettings( baseUri.username(), baseUri.password(), QgsHttpHeaders(), baseUri.authConfigId() ), tr( "OAPIF" ) )
+  : QgsBaseNetworkRequest( QgsAuthorizationSettings( baseUri.username(), baseUri.password(), QgsHttpHeaders(), baseUri.authConfigId() ), tr( "OAPIF" ), baseUri.hasParam( u"disableDecompressedSafetyCheckThreshold"_s ) )
   , mUrl( url )
 {
   // Using Qt::DirectConnection since the download might be running on a different thread.

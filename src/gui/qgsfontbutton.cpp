@@ -252,16 +252,17 @@ bool QgsFontButton::event( QEvent *e )
 
 void QgsFontButton::mousePressEvent( QMouseEvent *e )
 {
-  if ( e->button() == Qt::RightButton )
-  {
-    QToolButton::showMenu();
-    return;
-  }
-  else if ( e->button() == Qt::LeftButton )
+  if ( e->button() == Qt::LeftButton )
   {
     mDragStartPosition = e->pos();
   }
   QToolButton::mousePressEvent( e );
+}
+
+void QgsFontButton::contextMenuEvent( QContextMenuEvent *e )
+{
+  QToolButton::showMenu();
+  e->accept();
 }
 
 void QgsFontButton::mouseMoveEvent( QMouseEvent *e )

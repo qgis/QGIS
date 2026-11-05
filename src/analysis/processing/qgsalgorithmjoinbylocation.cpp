@@ -465,7 +465,7 @@ bool QgsJoinByLocationAlgorithm::processFeatureFromJoinSource( QgsFeature &joinF
 
     if ( !engine )
     {
-      engine.reset( QgsGeometry::createGeometryEngine( featGeom.constGet() ) );
+      engine = QgsGeometry::createGeometryEngine( featGeom.constGet() );
       engine->prepareGeometry();
       for ( int ix : std::as_const( mJoinedFieldIndices ) )
       {
@@ -538,7 +538,7 @@ bool QgsJoinByLocationAlgorithm::processFeatureFromInputSource( QgsFeature &base
 
     if ( !engine )
     {
-      engine.reset( QgsGeometry::createGeometryEngine( featGeom.constGet() ) );
+      engine = QgsGeometry::createGeometryEngine( featGeom.constGet() );
       engine->prepareGeometry();
     }
 

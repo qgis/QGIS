@@ -113,7 +113,7 @@ QgsProjectionSelectionTreeWidget::QgsProjectionSelectionTreeWidget( QWidget *par
     // If list is empty, do nothing
     if ( lstRecent->model()->rowCount() == 0 )
       return;
-    QMenu menu;
+    QMenu menu( this );
     // Clear selected
     const QModelIndex currentIndex = lstRecent->indexAt( pos );
     if ( currentIndex.isValid() )

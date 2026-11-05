@@ -383,9 +383,19 @@ bool QgsMapBoxGlStyleConverter::parseFillLayer( const QVariantMap &jsonLayer, Qg
 
       case QMetaType::Type::QVariantList:
       case QMetaType::Type::QStringList:
-        fillTranslate
-          = QPointF( jsonFillTranslate.toList().value( 0 ).toDouble() * context.pixelSizeConversionFactor(), jsonFillTranslate.toList().value( 1 ).toDouble() * context.pixelSizeConversionFactor() );
+      {
+        bool isPointValues = false;
+        const double pointX = jsonFillTranslate.toList().value( 0 ).toDouble( &isPointValues );
+        if ( isPointValues )
+        {
+          fillTranslate = QPointF( pointX * context.pixelSizeConversionFactor(), jsonFillTranslate.toList().value( 1 ).toDouble() * context.pixelSizeConversionFactor() );
+        }
+        else
+        {
+          ddProperties.setProperty( QgsSymbolLayer::Property::Offset, parseInterpolateListByZoom( jsonFillTranslate.toList(), PropertyType::Point, context, context.pixelSizeConversionFactor() ) );
+        }
         break;
+      }
 
       default:
         context.pushWarning(
@@ -2830,17 +2840,20 @@ QgsProperty QgsMapBoxGlStyleConverter::parseInterpolatePointByZoom( const QVaria
   const double base = json.value( u"base"_s, u"1"_s ).toDouble();
   const QVariantList stops = json.value( u"stops"_s ).toList();
   if ( stops.empty() )
+  {
     return QgsProperty();
+  }
 
   QString scaleExpression;
   if ( stops.size() <= 2 )
   {
+    const bool isLiteralRepresentation = stops.value( 0 ).toList().value( 1 ).toList().value( 0 ).toString() == "literal"_L1;
     scaleExpression = u"array(%1,%2)"_s.arg(
       interpolateExpression(
         stops.value( 0 ).toList().value( 0 ).toDouble(),
         stops.last().toList().value( 0 ).toDouble(),
-        stops.value( 0 ).toList().value( 1 ).toList().value( 0 ),
-        stops.last().toList().value( 1 ).toList().value( 0 ),
+        isLiteralRepresentation ? stops.value( 0 ).toList().value( 1 ).toList().value( 1 ).toList().value( 0 ) : stops.value( 0 ).toList().value( 1 ).toList().value( 0 ),
+        isLiteralRepresentation ? stops.last().toList().value( 1 ).toList().value( 1 ).toList().value( 0 ) : stops.last().toList().value( 1 ).toList().value( 0 ),
         base,
         multiplier,
         json.value( u"x1"_s ).toDouble(),
@@ -2853,8 +2866,8 @@ QgsProperty QgsMapBoxGlStyleConverter::parseInterpolatePointByZoom( const QVaria
       interpolateExpression(
         stops.value( 0 ).toList().value( 0 ).toDouble(),
         stops.last().toList().value( 0 ).toDouble(),
-        stops.value( 0 ).toList().value( 1 ).toList().value( 1 ),
-        stops.last().toList().value( 1 ).toList().value( 1 ),
+        isLiteralRepresentation ? stops.value( 0 ).toList().value( 1 ).toList().value( 1 ).toList().value( 1 ) : stops.value( 0 ).toList().value( 1 ).toList().value( 1 ),
+        isLiteralRepresentation ? stops.last().toList().value( 1 ).toList().value( 1 ).toList().value( 1 ) : stops.last().toList().value( 1 ).toList().value( 1 ),
         base,
         multiplier,
         json.value( u"x1"_s ).toDouble(),
@@ -2915,6 +2928,7 @@ QString QgsMapBoxGlStyleConverter::parsePointStops(
       return QString();
     }
 
+    const bool isLiteralRepresentation = bv.toList().value( 0 ).toString() == "literal"_L1;
     caseString += QStringLiteral(
                     "WHEN @vector_tile_zoom > %1 AND @vector_tile_zoom <= %2 "
                     "THEN array(%3,%4)"
@@ -2922,8 +2936,34 @@ QString QgsMapBoxGlStyleConverter::parsePointStops(
                     .arg(
                       bz.toString(),
                       tz.toString(),
-                      interpolateExpression( bz.toDouble(), tz.toDouble(), bv.toList().value( 0 ), tv.toList().value( 0 ), base, multiplier, x1, y1, x2, y2, type, &context ),
-                      interpolateExpression( bz.toDouble(), tz.toDouble(), bv.toList().value( 1 ), tv.toList().value( 1 ), base, multiplier, x1, y1, x2, y2, type, &context )
+                      interpolateExpression(
+                        bz.toDouble(),
+                        tz.toDouble(),
+                        isLiteralRepresentation ? bv.toList().value( 1 ).toList().value( 0 ) : bv.toList().value( 0 ),
+                        isLiteralRepresentation ? tv.toList().value( 1 ).toList().value( 0 ) : tv.toList().value( 0 ),
+                        base,
+                        multiplier,
+                        x1,
+                        y1,
+                        x2,
+                        y2,
+                        type,
+                        &context
+                      ),
+                      interpolateExpression(
+                        bz.toDouble(),
+                        tz.toDouble(),
+                        isLiteralRepresentation ? bv.toList().value( 1 ).toList().value( 1 ) : bv.toList().value( 1 ),
+                        isLiteralRepresentation ? tv.toList().value( 1 ).toList().value( 1 ) : tv.toList().value( 1 ),
+                        base,
+                        multiplier,
+                        x1,
+                        y1,
+                        x2,
+                        y2,
+                        type,
+                        &context
+                      )
                     );
   }
   caseString += "END"_L1;
@@ -3787,7 +3827,12 @@ QString QgsMapBoxGlStyleConverter::parseExpression( const QVariantList &expressi
   }
   else if ( op == "match"_L1 )
   {
-    const QString attribute = expression.value( 1 ).toList().value( 1 ).toString();
+    const QVariantList attributeList = expression.value( 1 ).toList();
+    QString attribute = attributeList.size() > 1 ? expression.value( 1 ).toList().value( 1 ).toString() : expression.value( 1 ).toList().value( 0 ).toString();
+    if ( attribute == "geometry-type"_L1 )
+    {
+      attribute = u"_geom_type"_s;
+    }
 
     if ( expression.size() == 5
          && expression.at( 3 ).userType() == QMetaType::Type::Bool
@@ -4317,6 +4362,62 @@ QString QgsMapBoxGlStyleConverter::retrieveSpriteAsBase64WithProperties(
         spriteSizeProperty += u"ELSE %3 END"_s.arg( spriteSize.width() );
         break;
       }
+      else if ( method == "concat"_L1 )
+      {
+        QString concatString = u"concat("_s;
+        QStringList partialStringMatches;
+        for ( int i = 1; i < json.size(); i++ )
+        {
+          if ( i > 1 )
+          {
+            concatString += ", "_L1;
+          }
+          concatString += parseValue( json.value( i ), context );
+
+          if ( json.value( i ).userType() == QMetaType::Type::QString )
+          {
+            partialStringMatches << json.value( i ).toString();
+          }
+        }
+        concatString += ')'_L1;
+
+        spriteProperty = u"CASE"_s;
+        spriteSizeProperty = u"CASE"_s;
+
+        const QStringList spriteCategories = context.spriteCategories();
+        for ( const QString &category : spriteCategories )
+        {
+          const QStringList spriteNames = context.spriteDefinitions( category ).keys();
+          for ( const QString &name : spriteNames )
+          {
+            QSize size;
+            QString path;
+            const QString spriteName = category.isEmpty() ? name : u"%1:%2"_s.arg( category, name );
+            if ( !partialStringMatches.isEmpty() )
+            {
+              if ( !std::all_of( partialStringMatches.begin(), partialStringMatches.end(), [&spriteName]( const QString &string ) { return spriteName.contains( string ); } ) )
+              {
+                continue;
+              }
+            }
+
+            const QImage sprite = retrieveSprite( spriteName, context, size );
+            path = prepareBase64( sprite );
+            if ( spritePath.isEmpty() && !path.isEmpty() )
+            {
+              spritePath = path;
+              spriteSize = size;
+            }
+
+            spriteProperty += u" WHEN %1 = '%2' THEN '%3'"_s.arg( concatString, spriteName, path );
+            spriteSizeProperty += u" WHEN %1 = '%2' THEN %3"_s.arg( concatString ).arg( spriteName ).arg( size.width() );
+          }
+
+          spriteProperty += " ELSE '' END"_L1;
+          spriteSizeProperty += " ELSE 0 END"_L1;
+        }
+        break;
+      }
       else if ( method == "case"_L1 )
       {
         spriteProperty = u"CASE"_s;
@@ -4337,6 +4438,39 @@ QString QgsMapBoxGlStyleConverter::retrieveSpriteAsBase64WithProperties(
 
         spriteProperty += u"ELSE '%1' END"_s.arg( spritePath );
         spriteSizeProperty += u"ELSE %3 END"_s.arg( spriteSize.width() );
+        break;
+      }
+      else if ( method == "get"_L1 )
+      {
+        const QString attribute = parseKey( json.value( 1 ), context );
+
+        spriteProperty = u"CASE"_s;
+        spriteSizeProperty = u"CASE"_s;
+
+        const QStringList spriteCategories = context.spriteCategories();
+        for ( const QString &category : spriteCategories )
+        {
+          const QStringList spriteNames = context.spriteDefinitions( category ).keys();
+          for ( const QString &name : spriteNames )
+          {
+            QSize size;
+            QString path;
+            const QString spriteName = category.isEmpty() ? name : u"%1:%2"_s.arg( category, name );
+            const QImage sprite = retrieveSprite( spriteName, context, size );
+            path = prepareBase64( sprite );
+            if ( spritePath.isEmpty() && !path.isEmpty() )
+            {
+              spritePath = path;
+              spriteSize = size;
+            }
+
+            spriteProperty += u" WHEN %1 = '%2' THEN '%3'"_s.arg( attribute, spriteName, path );
+            spriteSizeProperty += u" WHEN %1 = '%2' THEN %3"_s.arg( attribute ).arg( spriteName ).arg( size.width() );
+          }
+
+          spriteProperty += " ELSE '' END"_L1;
+          spriteSizeProperty += " ELSE 0 END"_L1;
+        }
         break;
       }
       else

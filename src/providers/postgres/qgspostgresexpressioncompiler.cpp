@@ -42,6 +42,18 @@ QString QgsPostgresExpressionCompiler::quotedValue( const QVariant &value, bool 
 {
   ok = true;
 
+  // custom handling for QgsInterval type
+  if ( value.userType() == qMetaTypeId<QgsInterval>() )
+  {
+    const QgsInterval interval = value.value<QgsInterval>();
+    if ( !interval.isValid() )
+    {
+      ok = false;
+      return QString();
+    }
+    return u"'%1 seconds'::interval"_s.arg( qgsDoubleToString( interval.seconds() ) );
+  }
+
   // don't use the default QgsPostgresConn::quotedValue handling for double values -- for
   // various reasons it returns them as string values!
   switch ( value.userType() )

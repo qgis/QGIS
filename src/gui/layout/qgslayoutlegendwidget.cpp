@@ -1549,7 +1549,7 @@ QMenu *QgsLayoutLegendMenuProvider::createContextMenu()
   if ( mWidget->legend()->syncMode() != Qgis::LegendSyncMode::Manual )
     return nullptr; // no editing allowed
 
-  QMenu *menu = new QMenu();
+  QMenu *menu = new QMenu( mView );
 
   if ( QgsLayerTree::isLayer( mView->currentNode() ) )
   {

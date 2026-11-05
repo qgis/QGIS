@@ -24,7 +24,7 @@ import unittest
 from datetime import datetime
 
 import mockedwebserver
-from osgeo import gdal, ogr  # NOQA
+from osgeo import gdal, ogr, osr  # NOQA
 from qgis.core import (
     NULL,
     Qgis,
@@ -5356,6 +5356,53 @@ class PyQgsOGRProvider(QgisTestCase):
             # other layers should be deleted
             vl = QgsVectorLayer(res.createdLayerUri(), "test", "ogr")
             self.assertFalse(vl.isValid())
+
+    def test_extent_over_antimeridian(self):
+        """
+        Test layer extent when layer's features cross the antimeridian
+        """
+        with tempfile.TemporaryDirectory() as temp_dir:
+            tmpfile = os.path.join(temp_dir, "test_antimeridian.gpkg")
+
+            spatial_ref = osr.SpatialReference()
+            # EPSG:4167 crosses the antimeridian
+            spatial_ref.ImportFromEPSG(4167)
+            spatial_ref.SetAxisMappingStrategy(osr.OAMS_TRADITIONAL_GIS_ORDER)
+
+            driver = ogr.GetDriverByName("GPKG")
+            dataset = driver.CreateDataSource(tmpfile)
+
+            layer_name = "locations"
+            layer = dataset.CreateLayer(
+                layer_name, srs=spatial_ref, geom_type=ogr.wkbPoint
+            )
+            feature_defn = layer.GetLayerDefn()
+
+            # create features crossing antimeridian
+            for p_x, p_y in [(176.44, -37.32), (169.37, -45.29), (-176.32, -44.11)]:
+                feature = ogr.Feature(feature_defn)
+
+                point = ogr.Geometry(ogr.wkbPoint)
+                point.AddPoint(p_x, p_y)
+                feature.SetGeometry(point)
+
+                layer.CreateFeature(feature)
+
+            feature = None
+            dataset = None
+
+            layer = QgsVectorLayer(tmpfile, "test")
+            self.assertTrue(layer.isValid())
+
+            self.assertEqual(layer.crs().authid(), "EPSG:4167")
+
+            # the layer's extent should be a non-normalized extent which crosses
+            # the anti-meridian, to match the ACTUAL extent of the features within the layer
+            self.assertAlmostEqual(layer.extent().xMinimum(), 160.6, places=1)
+            self.assertAlmostEqual(layer.extent().xMaximum(), -171.2, places=1)
+
+            self.assertAlmostEqual(layer.extent().yMinimum(), -45.29)
+            self.assertAlmostEqual(layer.extent().yMaximum(), -37.32)
 
 
 if __name__ == "__main__":

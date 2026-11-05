@@ -737,6 +737,16 @@ void QgsVirtualPointCloudProvider::onFinishedLoadingSubIndex( int i )
   }
 }
 
+QStringList QgsVirtualPointCloudProvider::supportedVpcExtensions()
+{
+  return { u"vpc"_s, u"vpz"_s };
+}
+
+QString QgsVirtualPointCloudProvider::defaultVpcExtension()
+{
+  return u"vpc"_s;
+}
+
 QgsVirtualPointCloudProviderMetadata::QgsVirtualPointCloudProviderMetadata()
   : QgsProviderMetadata( PROVIDER_KEY, PROVIDER_DESCRIPTION )
 {}

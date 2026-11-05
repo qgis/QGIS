@@ -3534,7 +3534,7 @@ geometry.
                  be applied
 %End
 
-    static QgsGeometryEngine *createGeometryEngine( const QgsAbstractGeometry *geometry, double precision = 0.0, Qgis::GeosCreationFlags flags = Qgis::GeosCreationFlag::SkipEmptyInteriorRings ) /Factory/;
+    static std::unique_ptr<QgsGeometryEngine> createGeometryEngine( const QgsAbstractGeometry *geometry, double precision = 0.0, Qgis::GeosCreationFlags flags = Qgis::GeosCreationFlag::SkipEmptyInteriorRings );
 %Docstring
 Creates and returns a new geometry engine representing the specified
 ``geometry`` using ``precision`` on a grid. The ``precision`` argument

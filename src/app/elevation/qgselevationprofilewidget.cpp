@@ -1570,7 +1570,7 @@ void QgsAppElevationProfileLayerTreeView::contextMenuEvent( QContextMenuEvent *e
     setCurrentIndex( QModelIndex() );
 
   const bool allowModifications = qobject_cast<QgsElevationProfileLayerTreeModel * >( layerTreeModel() )->allowModifications();
-  QMenu *menu = new QMenu();
+  QMenu *menu = new QMenu( this );
   if ( QgsMapLayer *layer = layerForIndex( index ) )
   {
     QAction *propertiesAction = new QAction( tr( "Properties…" ), menu );
@@ -1591,7 +1591,7 @@ void QgsAppElevationProfileLayerTreeView::contextMenuEvent( QContextMenuEvent *e
 
   if ( !menu->isEmpty() )
   {
-    menu->exec( mapToGlobal( event->pos() ) );
+    menu->exec( event->globalPos() );
   }
   delete menu;
 }

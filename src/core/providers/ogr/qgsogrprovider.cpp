@@ -1428,7 +1428,33 @@ QgsRectangle QgsOgrProvider::extent() const
     );
   }
 
-  return mExtentRect.toRectangle();
+  QgsRectangle res = mExtentRect.toRectangle();
+
+  // detect if the extent is the wrong portion of the globe for datasets which may cross the antimeridian
+  // we flag this for crs which we know can be used across the antimeridian only, where the extent returned
+  // by GDAL does not fall within the valid bounds of that crs.
+  // This logic is rather coarse, as it assumes datasets are well-formed and never used outside the
+  // area of use of their CRS. However, it's only triggered in a very small set of circumstances (not many
+  // geographic CRS cross the antimeridian), and the consequence of returning an invalid extent (ie one which
+  // contains NONE of the layer's features) is quite extreme...
+  // This logic is not perfect -- alternative approaches are welcome! :D
+  if ( mCrs.isGeographicCrossingAntimeridian() )
+  {
+    const QgsRectangle crsBounds = mCrs.bounds();
+    if ( !crsBounds.contains( res ) )
+    {
+      QgsDebugError( u"Extent of layer reported by GDAL looks wrong (longitude %1 to %2 falls outside of CRS area of use bounds of >=%3 and <=%4)"_s.arg( res.xMinimum() )
+                       .arg( res.xMaximum() )
+                       .arg( crsBounds.xMinimum() )
+                       .arg( crsBounds.xMaximum() ) );
+      // we have NO way of knowing the actual extent of this layer outside of iterating through all
+      // the features -- so just take a worse case scenario of the longitudinal bounds of the CRS'
+      // area of use
+      res.setXMinimum( crsBounds.xMinimum() );
+      res.setXMaximum( crsBounds.xMaximum() );
+    }
+  }
+  return res;
 }
 
 QgsBox3D QgsOgrProvider::extent3D() const

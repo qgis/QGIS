@@ -68,9 +68,10 @@ static void insertIntoMemoryCache( const QUrl &url, const QByteArray &response )
   }
 }
 
-QgsBaseNetworkRequest::QgsBaseNetworkRequest( const QgsAuthorizationSettings &auth, const QString &translatedComponent )
+QgsBaseNetworkRequest::QgsBaseNetworkRequest( const QgsAuthorizationSettings &auth, const QString &translatedComponent, bool disableDecompressedSafetyCheckThreshold )
   : mAuth( auth )
   , mTranslatedComponent( translatedComponent )
+  , mDisableDecompressedSafetyCheckThreshold( disableDecompressedSafetyCheckThreshold )
 {
   connect( QgsNetworkAccessManager::instance(), qOverload<QNetworkReply *>( &QgsNetworkAccessManager::requestTimedOut ), this, &QgsBaseNetworkRequest::requestTimedOut );
 }
@@ -186,6 +187,11 @@ bool QgsBaseNetworkRequest::sendGET( const QUrl &url, const QString &acceptHeade
   QgsDebugMsgLevel( u"Calling: %1"_s.arg( modifiedUrl.toDisplayString( QUrl::EncodeSpaces ) ), 4 );
 
   QNetworkRequest request( modifiedUrl );
+
+  if ( mDisableDecompressedSafetyCheckThreshold )
+  {
+    request.setDecompressedSafetyCheckThreshold( -1 );
+  }
 
   mRequestHeaders = extraHeaders;
   if ( !acceptHeader.isEmpty() )
@@ -725,7 +731,15 @@ void QgsBaseNetworkRequest::replyFinished()
     }
     else
     {
-      mErrorMessage = errorMessageWithReason( mReply->errorString() );
+      QString errorString { mReply->errorString() };
+      if ( errorString.contains( u"The decompressed output exceeds the limits specified by QNetworkRequest::decompressedSafetyCheckThreshold"_s ) )
+      {
+        errorString += tr(
+          "\nThe server returned a compressed response that exceeds the safety check limits. "
+          "If you trust this server you can disable this check in the WFS server connection settings."
+        );
+      }
+      mErrorMessage = errorMessageWithReason( errorString );
       const QString replyContent = mReply->readAll();
       QDomDocument exceptionDoc;
       QString errorMsg;

@@ -88,7 +88,9 @@ bool QgsOapifProvider::init()
   const bool synchronous = true;
   const bool forceRefresh = false;
 
+  const QgsDataSourceUri dsUri = QgsDataSourceUri( mShared->mURI.uri() );
   const QString url = QgsDataSourceUri( mShared->mURI.uri() ).param( QgsWFSConstants::URI_PARAM_URL );
+  mDisableDecompressedSafetyCheckThreshold = dsUri.hasParam( QgsWFSConstants::URI_PARAM_DISABLE_DECOMPRESSED_SAFETY_CHECK_THRESHOLD );
   const int pos = url.indexOf( '?' );
   if ( pos >= 0 )
   {

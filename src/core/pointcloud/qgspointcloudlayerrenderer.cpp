@@ -291,7 +291,15 @@ bool QgsPointCloudLayerRenderer::render()
         mSubIndexExtentRenderer->renderExtent( si.polygonBounds(), context );
         if ( mSubIndexExtentRenderer->showLabels() )
         {
-          mSubIndexExtentRenderer->renderLabel( context.renderContext().mapToPixel().transformBounds( si.extent().toRectF() ), si.uri().section( "/", -1 ).section( ".", 0, 0 ), context );
+          try
+          {
+            const QgsRectangle extentMapCoords = context.renderContext().coordinateTransform().transformBoundingBox( si.extent() );
+            mSubIndexExtentRenderer->renderLabel( context.renderContext().mapToPixel().transformBounds( extentMapCoords.toRectF() ), si.uri().section( "/", -1 ).section( ".", 0, 0 ), context );
+          }
+          catch ( QgsCsException & )
+          {
+            QgsDebugError( u"Could not reproject virtual point cloud sub index extent to map crs"_s );
+          }
         }
       }
 
