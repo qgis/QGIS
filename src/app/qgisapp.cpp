@@ -5326,7 +5326,7 @@ void QgisApp::updateRecentProjectPaths()
   if ( !mRecentProjects.isEmpty() )
   {
     mRecentProjectsMenu->addSeparator();
-    QAction *clearRecentProjectsAction = mRecentProjectsMenu->addAction( tr( "Clear List" ) );
+    QAction *clearRecentProjectsAction = mRecentProjectsMenu->addAction( tr( "Clear List…" ) );
     connect( clearRecentProjectsAction, &QAction::triggered, mWelcomeScreen, [this]() { mWelcomeScreen->clearRecentProjects(); } );
   }
 
