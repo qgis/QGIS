@@ -97,6 +97,7 @@ RUN  apt-get update \
     libsfcgal2 \
     supervisor \
     unzip \
+    wayland-protocols \
     xauth \
     xfonts-100dpi \
     xfonts-75dpi \
