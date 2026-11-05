@@ -103,6 +103,7 @@ class TestQgsRectangle(QgisTestCase):
         pnt2 = QgsPointXY(6.0, 2.0)
 
         rect3 = rect1.intersect(rect2)
+        self.assertTrue(rect1.contains(rect1))
         self.assertTrue(rect1.contains(rect3))
         self.assertTrue(rect2.contains(rect3))
 
@@ -121,6 +122,215 @@ class TestQgsRectangle(QgisTestCase):
         self.assertFalse(rect3.contains(pnt2.x(), pnt2.y()))
         self.assertTrue(rect3.contains(pnt1))
         self.assertTrue(rect3.contains(pnt1.x(), pnt1.y()))
+
+    def testContainsNonNormalized(self):
+        """
+        Test QgsRectangle contains method with non-normalized rectangles
+        """
+
+        # y is completely within:
+
+        # x-axis:
+        # 1. ---|               |-----
+        # 2. |-|
+        self.assertTrue(
+            QgsRectangle(30, 5, 10, 45, normalize=False).contains(
+                QgsRectangle(1, 25, 2, 27)
+            )
+        )
+        # 1. ---|               |-----
+        # 2.   |-|
+        self.assertFalse(
+            QgsRectangle(30, 5, 10, 45, normalize=False).contains(
+                QgsRectangle(1, 25, 12, 27)
+            )
+        )
+        # 1. ---|               |-----
+        # 2.        |-|
+        self.assertFalse(
+            QgsRectangle(30, 5, 10, 45, normalize=False).contains(
+                QgsRectangle(12, 25, 15, 27)
+            )
+        )
+        # 1. ---|               |-----
+        # 2.                  |---|
+        self.assertFalse(
+            QgsRectangle(30, 5, 10, 45, normalize=False).contains(
+                QgsRectangle(25, 25, 35, 27)
+            )
+        )
+        # 1. ---|               |-----
+        # 2.                     |--|
+        self.assertTrue(
+            QgsRectangle(30, 5, 10, 45, normalize=False).contains(
+                QgsRectangle(35, 25, 45, 27)
+            )
+        )
+        # 1. |-|
+        # 2. ---|               |-----
+        self.assertFalse(
+            QgsRectangle(1, 5, 2, 45).contains(
+                QgsRectangle(31, 25, 12, 27, normalize=False)
+            )
+        )
+        # 1. |-----|
+        # 2. ---|               |-----
+        self.assertFalse(
+            QgsRectangle(1, 5, 15, 45).contains(
+                QgsRectangle(31, 25, 12, 27, normalize=False)
+            )
+        )
+        # 1.         |-----|
+        # 2. ---|               |-----
+        self.assertFalse(
+            QgsRectangle(15, 5, 18, 45).contains(
+                QgsRectangle(31, 25, 12, 27, normalize=False)
+            )
+        )
+        # 1.                 |-----|
+        # 2. ---|               |-----
+        self.assertFalse(
+            QgsRectangle(15, 5, 38, 45).contains(
+                QgsRectangle(31, 25, 12, 27, normalize=False)
+            )
+        )
+        # 1.                      |--|
+        # 2. ---|               |------
+        self.assertFalse(
+            QgsRectangle(35, 5, 38, 45).contains(
+                QgsRectangle(31, 25, 12, 27, normalize=False)
+            )
+        )
+        # 1. ---|               |-----
+        # 2. -|                    |--
+        self.assertTrue(
+            QgsRectangle(30, 5, 10, 45, normalize=False).contains(
+                QgsRectangle(35, 25, 2, 27, normalize=False)
+            )
+        )
+        # 1. ---|               |-----
+        # 2. ------|               |--
+        self.assertFalse(
+            QgsRectangle(30, 5, 10, 45, normalize=False).contains(
+                QgsRectangle(35, 25, 15, 27, normalize=False)
+            )
+        )
+        # 1. ---|               |-----
+        # 2. ------|          |-------
+        self.assertFalse(
+            QgsRectangle(30, 5, 10, 45, normalize=False).contains(
+                QgsRectangle(25, 25, 15, 27, normalize=False)
+            )
+        )
+        # 1. ---|               |-----
+        # 2. -|               |-------
+        self.assertFalse(
+            QgsRectangle(30, 5, 10, 45, normalize=False).contains(
+                QgsRectangle(25, 25, 2, 27, normalize=False)
+            )
+        )
+
+        # x is completely within:
+
+        # y-axis:
+        # 1. ---|               |-----
+        # 2. |-|
+        self.assertTrue(
+            QgsRectangle(5, 30, 45, 10, normalize=False).contains(
+                QgsRectangle(25, 1, 27, 2)
+            )
+        )
+        # 1. ---|               |-----
+        # 2.   |-|
+        self.assertFalse(
+            QgsRectangle(5, 30, 45, 10, normalize=False).contains(
+                QgsRectangle(25, 1, 27, 12)
+            )
+        )
+        # 1. ---|               |-----
+        # 2.        |-|
+        self.assertFalse(
+            QgsRectangle(5, 30, 45, 10, normalize=False).contains(
+                QgsRectangle(25, 12, 27, 15)
+            )
+        )
+        # 1. ---|               |-----
+        # 2.                  |---|
+        self.assertFalse(
+            QgsRectangle(5, 30, 45, 10, normalize=False).contains(
+                QgsRectangle(25, 25, 27, 35)
+            )
+        )
+        # 1. ---|               |-----
+        # 2.                     |--|
+        self.assertTrue(
+            QgsRectangle(5, 30, 45, 10, normalize=False).contains(
+                QgsRectangle(25, 35, 27, 45)
+            )
+        )
+        # 1. |-|
+        # 2. ---|               |-----
+        self.assertFalse(
+            QgsRectangle(5, 1, 45, 2).contains(
+                QgsRectangle(25, 31, 27, 12, normalize=False)
+            )
+        )
+        # 1. |-----|
+        # 2. ---|               |-----
+        self.assertFalse(
+            QgsRectangle(5, 1, 45, 15).contains(
+                QgsRectangle(25, 31, 27, 12, normalize=False)
+            )
+        )
+        # 1.         |-----|
+        # 2. ---|               |-----
+        self.assertFalse(
+            QgsRectangle(5, 15, 45, 18).contains(
+                QgsRectangle(25, 31, 27, 12, normalize=False)
+            )
+        )
+        # 1.                 |-----|
+        # 2. ---|               |-----
+        self.assertFalse(
+            QgsRectangle(5, 15, 45, 38).contains(
+                QgsRectangle(25, 31, 27, 12, normalize=False)
+            )
+        )
+        # 1.                      |--|
+        # 2. ---|               |------
+        self.assertFalse(
+            QgsRectangle(5, 35, 45, 38).contains(
+                QgsRectangle(25, 31, 27, 12, normalize=False)
+            )
+        )
+        # 1. ---|               |-----
+        # 2. -|                    |--
+        self.assertTrue(
+            QgsRectangle(5, 30, 45, 10, normalize=False).contains(
+                QgsRectangle(25, 35, 27, 2, normalize=False)
+            )
+        )
+        # 1. ---|               |-----
+        # 2. ------|               |--
+        self.assertFalse(
+            QgsRectangle(5, 30, 45, 10, normalize=False).contains(
+                QgsRectangle(25, 35, 27, 15, normalize=False)
+            )
+        )
+        # 1. ---|               |-----
+        # 2. ------|          |-------
+        self.assertFalse(
+            QgsRectangle(5, 30, 45, 10, normalize=False).contains(
+                QgsRectangle(25, 25, 27, 15, normalize=False)
+            )
+        )
+        # 1. ---|               |-----
+        # 2. -|               |-------
+        self.assertFalse(
+            QgsRectangle(5, 30, 45, 10, normalize=False).contains(
+                QgsRectangle(25, 25, 27, 2, normalize=False)
+            )
+        )
 
     def testUnion(self):
         rect1 = QgsRectangle(0.0, 0.0, 5.0, 5.0)
@@ -243,6 +453,130 @@ class TestQgsRectangle(QgisTestCase):
         self.assertTrue(rect4.isValid())
         rect4.setXMaximum(float("inf"))
         self.assertFalse(rect4.isValid())
+
+    def test_is_point(self):
+        rect = QgsRectangle()
+        self.assertFalse(rect.isPoint())
+
+        rect = QgsRectangle(1, 2, 3, 4)
+        self.assertFalse(rect.isPoint())
+
+        rect = QgsRectangle(1, 2, 1, 4)
+        self.assertFalse(rect.isPoint())
+
+        rect = QgsRectangle(1, 2, 3, 2)
+        self.assertFalse(rect.isPoint())
+
+        rect = QgsRectangle(1.1, 2.1, 1.1, 2.1)
+        self.assertTrue(rect.isPoint())
+
+        rect = QgsRectangle(0, 0, 0, 0)
+        self.assertTrue(rect.isPoint())
+
+        rect = QgsRectangle(-9999.9999, -999999.9999, -9999.9999, -999999.9999)
+        self.assertTrue(rect.isPoint())
+
+        rect = QgsRectangle(4, 1, 3, 2, normalize=False)
+        self.assertFalse(rect.isPoint())
+
+    def test_is_normalized(self):
+        rect = QgsRectangle()
+        self.assertFalse(rect.isNormalized())
+
+        rect = QgsRectangle(1, 2, 3, 4)
+        self.assertTrue(rect.isNormalized())
+
+        rect = QgsRectangle(1, 2, 1, 4)
+        self.assertTrue(rect.isNormalized())
+
+        rect = QgsRectangle(1, 2, 3, 2)
+        self.assertTrue(rect.isNormalized())
+
+        rect = QgsRectangle(1.1, 2.1, 1.1, 2.1)
+        self.assertTrue(rect.isNormalized())
+
+        rect = QgsRectangle(0, 0, 0, 0)
+        self.assertTrue(rect.isNormalized())
+
+        rect = QgsRectangle(-9999.9999, -999999.9999, -9999.9999, -999999.9999)
+        self.assertTrue(rect.isNormalized())
+
+        rect = QgsRectangle(4, 1, 3, 2, normalize=False)
+        self.assertFalse(rect.isNormalized())
+
+        rect = QgsRectangle(3, 2, 4, 1, normalize=False)
+        self.assertFalse(rect.isNormalized())
+
+        rect = QgsRectangle(4, 2, 3, 1, normalize=False)
+        self.assertFalse(rect.isNormalized())
+
+    def test_split_antimeridian(self):
+        # normalized rects
+
+        # vertical slices:
+        self.assertEqual(
+            QgsRectangle(-120, 60, -120, 70).splitAtAntimeridian(),
+            (QgsRectangle(-120, 60, -120, 70), QgsRectangle()),
+        )
+        self.assertEqual(
+            QgsRectangle(120, 60, 120, 70).splitAtAntimeridian(),
+            (QgsRectangle(120, 60, 120, 70), QgsRectangle()),
+        )
+        self.assertEqual(
+            QgsRectangle(-180, 60, -180, 70).splitAtAntimeridian(),
+            (QgsRectangle(-180, 60, -180, 70), QgsRectangle()),
+        )
+        self.assertEqual(
+            QgsRectangle(180, 60, 180, 70).splitAtAntimeridian(),
+            (QgsRectangle(180, 60, 180, 70), QgsRectangle()),
+        )
+
+        self.assertEqual(
+            QgsRectangle(190, 60, 190, 70).splitAtAntimeridian(),
+            (QgsRectangle(-170, 60, -170, 70), QgsRectangle()),
+        )
+
+        self.assertEqual(
+            QgsRectangle(-190, 60, -190, 70).splitAtAntimeridian(),
+            (QgsRectangle(170, 60, 170, 70), QgsRectangle()),
+        )
+
+        self.assertEqual(
+            QgsRectangle(-550, 60, -550, 70).splitAtAntimeridian(),
+            (QgsRectangle(170, 60, 170, 70), QgsRectangle()),
+        )
+        self.assertEqual(
+            QgsRectangle(550, 60, 550, 70).splitAtAntimeridian(),
+            (QgsRectangle(-170, 60, -170, 70), QgsRectangle()),
+        )
+
+        # normalized rects
+
+        self.assertEqual(
+            QgsRectangle(-120, 60, 110, 70).splitAtAntimeridian(),
+            (QgsRectangle(-120, 60, 110, 70), QgsRectangle()),
+        )
+
+        self.assertEqual(
+            QgsRectangle(-120, 60, 190, 70).splitAtAntimeridian(),
+            (QgsRectangle(-120, 60, 180, 70), QgsRectangle(-180, 60, -170, 70)),
+        )
+
+        self.assertEqual(
+            QgsRectangle(-190, 60, 120, 70).splitAtAntimeridian(),
+            (QgsRectangle(170, 60, 180, 70), QgsRectangle(-180, 60, 120, 70)),
+        )
+
+        # non-normalized rects
+        self.assertEqual(
+            QgsRectangle(110, 60, -120, 70, normalize=False).splitAtAntimeridian(),
+            (QgsRectangle(110, 60, 180, 70), QgsRectangle(-180, 60, -120, 70)),
+        )
+
+        self.assertEqual(
+            QgsRectangle(5, 60, -5, 70, normalize=False).splitAtAntimeridian(),
+            (QgsRectangle(5, 60, 180, 70), QgsRectangle(-180, 60, -5, 70)),
+        )
 
 
 if __name__ == "__main__":

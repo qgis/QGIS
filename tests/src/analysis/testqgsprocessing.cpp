@@ -13120,7 +13120,7 @@ void TestQgsProcessing::algorithmScope()
   std::unique_ptr<QgsProcessingAlgorithm> alg( new DummyAlgorithm( "alg1" ) );
   QVariantMap params;
   params.insert( u"a_param"_s, 5 );
-  scope.reset( QgsExpressionContextUtils::processingAlgorithmScope( alg.get(), params, pc ) );
+  scope = QgsExpressionContextUtils::processingAlgorithmScope( alg.get(), params, pc );
   QVERIFY( scope.get() );
   QCOMPARE( scope->variable( u"algorithm_id"_s ).toString(), alg->id() );
 

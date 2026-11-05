@@ -163,8 +163,6 @@ bool QgsDateTimeSearchWidgetWrapper::valid() const
 
 void QgsDateTimeSearchWidgetWrapper::setExpression( const QString &expression )
 {
-  QString exp = expression;
-
   const QgsField field = layer()->fields().at( mFieldIdx );
   const QMetaType::Type fieldType = field.type();
   const QString fieldName = field.name();

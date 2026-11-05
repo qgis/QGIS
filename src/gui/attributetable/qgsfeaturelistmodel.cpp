@@ -234,7 +234,11 @@ bool QgsFeatureListModel::setDisplayExpression( const QString &expression )
     masterModel()->prefetchSortData( expression, QGSFEATURELISTMODEL_CACHE_INDEX );
   }
 
-  emit dataChanged( index( 0, 0 ), index( rowCount() - 1, 0 ) );
+  const int rows = rowCount();
+  if ( rows > 0 )
+  {
+    emit dataChanged( index( 0, 0 ), index( rows - 1, 0 ) );
+  }
 
   invalidate();
   return true;
@@ -411,13 +415,16 @@ QModelIndex QgsFeatureListModel::parent( const QModelIndex &child ) const
 
 int QgsFeatureListModel::columnCount( const QModelIndex &parent ) const
 {
-  Q_UNUSED( parent )
+  if ( parent.isValid() )
+    return 0;
+
   return 1;
 }
 
 int QgsFeatureListModel::rowCount( const QModelIndex &parent ) const
 {
-  Q_UNUSED( parent )
+  if ( parent.isValid() )
+    return 0;
 
   const int offset = mInjectNull ? 1 : 0;
 

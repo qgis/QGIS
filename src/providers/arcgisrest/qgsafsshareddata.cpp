@@ -145,7 +145,7 @@ bool QgsAfsSharedData::getObjectIds( QString &errorMessage )
     errorMessage = QObject::tr( "Failed to determine objectIdFieldName and/or objectIds" );
     return false;
   }
-  if ( objectIdData[u"objectIdFieldName"_s].toString() != mObjectIdFieldName )
+  if ( objectIdData[u"objectIdFieldName"_s].toString().compare( mObjectIdFieldName, Qt::CaseInsensitive ) != 0 )
   {
     QgsDebugError( u"Object ID field name mismatch: %1 vs %2"_s.arg( objectIdData[u"objectIdFieldName"_s].toString(), mObjectIdFieldName ) );
   }
@@ -180,6 +180,29 @@ QgsFeatureId QgsAfsSharedData::objectIdToFeatureId( quint32 oid )
   // lock must already be obtained by caller!
   return mObjectIdToFeatureId.value( oid, -1 );
 }
+
+namespace
+{
+  QVariant caseInsensitiveMapFind( const QVariantMap &map, const QString &key )
+  {
+    // first try QVariantMap lookup directly for performance
+    auto it = map.constFind( key );
+    if ( it != map.constEnd() )
+    {
+      return it.value();
+    }
+
+    // failing that, iterate through all the keys and try a case-insensitive match
+    for ( auto it = map.constBegin(); it != map.constEnd(); ++it )
+    {
+      if ( it.key().compare( key, Qt::CaseInsensitive ) == 0 )
+      {
+        return it.value();
+      }
+    }
+    return QVariant();
+  }
+} //namespace
 
 bool QgsAfsSharedData::getFeature( QgsFeatureId id, QgsFeature &f, const QList<QgsFeatureId> &pendingFeatureIds, QgsFeedback *feedback )
 {
@@ -328,7 +351,10 @@ bool QgsAfsSharedData::getFeature( QgsFeatureId id, QgsFeature &f, const QList<Q
     QgsAttributes attributes( mFields.size() );
     for ( int idx = 0; idx < mFields.size(); ++idx )
     {
-      QVariant attribute = attributesData[mFields.at( idx ).name()];
+      // note -- this needs to be a case insensitive lookup -- the fields defined at the
+      // service definition level may have different case to what's returned in the json!
+      // See https://github.com/qgis/QGIS/issues/67979
+      QVariant attribute = caseInsensitiveMapFind( attributesData, mFields.at( idx ).name() );
       if ( QgsVariantUtils::isNull( attribute ) )
       {
         // ensure that null values are mapped correctly for PyQGIS
@@ -337,7 +363,10 @@ bool QgsAfsSharedData::getFeature( QgsFeatureId id, QgsFeature &f, const QList<Q
 
       // date/datetime fields must be converted
       if ( mFields.at( idx ).type() == QMetaType::Type::QDateTime || mFields.at( idx ).type() == QMetaType::Type::QDate )
-        attribute = QgsArcGisRestUtils::convertDateTime( attribute );
+      {
+        const QDateTime dt = QgsArcGisRestUtils::convertDateTime( attribute );
+        attribute = dt.isValid() ? dt : QVariant();
+      }
 
       if ( !mFields.at( idx ).convertCompatible( attribute ) )
       {
@@ -346,7 +375,7 @@ bool QgsAfsSharedData::getFeature( QgsFeatureId id, QgsFeature &f, const QList<Q
       attributes[idx] = attribute;
       if ( mFields.at( idx ).name() == mObjectIdFieldName )
       {
-        featureId = objectIdToFeatureId( attributesData[mFields.at( idx ).name()].toInt() );
+        featureId = objectIdToFeatureId( caseInsensitiveMapFind( attributesData, mFields.at( idx ).name() ).toInt() );
       }
     }
     feature.setAttributes( attributes );

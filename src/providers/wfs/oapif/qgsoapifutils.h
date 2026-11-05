@@ -31,6 +31,7 @@ using namespace nlohmann;
 
 using namespace Qt::StringLiterals;
 
+class QgsFields;
 class QgsGeometry;
 
 /**
@@ -58,6 +59,9 @@ class QgsOAPIFJson
 
     //! Write the feature as JSON-FG
     static void writeJsonFgPlace( json &feature, const QgsGeometry &geometry, Qgis::WkbType layerType, const QString &contentCrs, bool asDocument );
+
+    //! Removes read-only properties from the feature
+    static void removeReadOnlyProperties( json &feature, const QgsFields &fields );
 };
 
 // Return the href for the next link from the response headers and the MIME type of the format

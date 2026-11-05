@@ -122,7 +122,10 @@ bool QgsVectorTileLayer::loadDataSource()
   return mDataProvider && mDataProvider->isValid();
 }
 
-QgsVectorTileLayer::~QgsVectorTileLayer() = default;
+QgsVectorTileLayer::~QgsVectorTileLayer()
+{
+  emit willBeDeleted();
+};
 
 QgsVectorTileLayer *QgsVectorTileLayer::clone() const
 {

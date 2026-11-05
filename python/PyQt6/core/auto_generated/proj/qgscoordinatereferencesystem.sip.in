@@ -944,6 +944,19 @@ Returns whether the CRS is a geographic CRS (using lat/lon coordinates)
 
 :return: ``True`` if CRS is geographic, or ``False`` if it is a
          projected CRS
+
+.. seealso:: :py:func:`isGeographicCrossingAntimeridian`
+%End
+
+    bool isGeographicCrossingAntimeridian() const;
+%Docstring
+Returns ``True`` if the CRS is a geographic CRS (using lat/lon
+coordinates) where the area of use crosses the antimeridian.
+
+Care must be taken when working with extents in these CRS to avoid
+flipping the regions to the opposite portion of the globe.
+
+.. versionadded:: 4.4
 %End
 
     bool isDynamic() const;

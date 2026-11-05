@@ -56,17 +56,26 @@
           <string>Connection Details</string>
          </property>
          <layout class="QGridLayout" name="gridLayout">
-          <item row="8" column="0" colspan="2">
-           <widget class="QPushButton" name="mTestConnectionButton">
-            <property name="text">
-             <string>&amp;Test Connection</string>
+          <item row="10" column="0" colspan="2">
+           <spacer name="verticalSpacer">
+            <property name="orientation">
+             <enum>Qt::Orientation::Vertical</enum>
             </property>
-           </widget>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>20</width>
+              <height>0</height>
+             </size>
+            </property>
+           </spacer>
           </item>
-          <item row="3" column="0">
-           <widget class="QLabel" name="TextLabel1">
+          <item row="2" column="0">
+           <widget class="QLabel" name="TextLabel1_2">
             <property name="text">
-             <string>URL</string>
+             <string>Name</string>
+            </property>
+            <property name="wordWrap">
+             <bool>true</bool>
             </property>
             <property name="margin">
              <number>5</number>
@@ -104,13 +113,27 @@
             </layout>
            </widget>
           </item>
-          <item row="2" column="0">
-           <widget class="QLabel" name="TextLabel1_2">
-            <property name="text">
-             <string>Name</string>
+          <item row="7" column="0" colspan="2">
+           <widget class="QgsHttpHeaderWidget" name="mHttpHeaders" native="true">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
             </property>
-            <property name="wordWrap">
-             <bool>true</bool>
+           </widget>
+          </item>
+          <item row="3" column="1">
+           <widget class="QLineEdit" name="txtUrl">
+            <property name="toolTip">
+             <string>HTTP address of the Web Map Server</string>
+            </property>
+           </widget>
+          </item>
+          <item row="3" column="0">
+           <widget class="QLabel" name="TextLabel1">
+            <property name="text">
+             <string>URL</string>
             </property>
             <property name="margin">
              <number>5</number>
@@ -118,17 +141,11 @@
            </widget>
           </item>
           <item row="9" column="0" colspan="2">
-           <spacer name="verticalSpacer">
-            <property name="orientation">
-             <enum>Qt::Orientation::Vertical</enum>
+           <widget class="QPushButton" name="mTestConnectionButton">
+            <property name="text">
+             <string>&amp;Test Connection</string>
             </property>
-            <property name="sizeHint" stdset="0">
-             <size>
-              <width>20</width>
-              <height>0</height>
-             </size>
-            </property>
-           </spacer>
+           </widget>
           </item>
           <item row="2" column="1">
            <widget class="QLineEdit" name="txtName">
@@ -146,20 +163,13 @@
             </property>
            </widget>
           </item>
-          <item row="3" column="1">
-           <widget class="QLineEdit" name="txtUrl">
+          <item row="4" column="1">
+           <widget class="QCheckBox" name="cbxDisableDecompressedSafetyCheckThreshold">
             <property name="toolTip">
-             <string>HTTP address of the Web Map Server</string>
+             <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Check this option in case of error &amp;quot;The server returned a compressed response that exceeds the safety check limits&amp;quot; only if you trust this server and you believe that the error is a false positive.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
             </property>
-           </widget>
-          </item>
-          <item row="7" column="0" colspan="2">
-           <widget class="QgsHttpHeaderWidget" name="mHttpHeaders" native="true">
-            <property name="sizePolicy">
-             <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
+            <property name="text">
+             <string>Disable decompressed safety check threshold</string>
             </property>
            </widget>
           </item>
@@ -322,16 +332,6 @@
               </property>
               <property name="text">
                <string>Detect</string>
-              </property>
-             </widget>
-            </item>
-            <item row="15" column="0">
-             <widget class="QCheckBox" name="cbxDisableDecompressedSafetyCheckThreshold">
-              <property name="toolTip">
-               <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Check this option in case of error &amp;quot;The server returned a compressed response that exceeds the maximum allowed size&amp;quot; only if you trust this server and you believe that the error is a false positive.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-              </property>
-              <property name="text">
-               <string>Disable decompressed safety check threshold</string>
               </property>
              </widget>
             </item>
@@ -558,7 +558,7 @@
     </widget>
    </item>
   </layout>
-  <widget class="QWidget" name="">
+  <widget class="QWidget" name="layoutWidget">
    <property name="geometry">
     <rect>
      <x>0</x>

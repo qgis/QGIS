@@ -37,6 +37,7 @@ class QgsVectorLayerEditBuffer;
 class QgsVectorLayerJoinBuffer;
 class QgsVectorLayerJoinInfo;
 class QgsExpressionContext;
+class QgsCoordinateTransformContext;
 
 class QgsVectorLayerFeatureIterator;
 
@@ -44,6 +45,7 @@ class QgsVectorLayerFeatureIterator;
 // clang-format off
 % ModuleHeaderCode
 #include "qgsfeatureiterator.h"
+#include "qgsvectorlayerfeatureiterator.h"
 % End
 // clang-format on
 #endif
@@ -140,6 +142,11 @@ class QgsVectorLayerFeatureIterator;
     QgsAttributeList mDeletedAttributeIds;
 
     QgsCoordinateReferenceSystem mCrs;
+    QString mEllipsoid;
+    QgsCoordinateTransformContext mTransformContext;
+    Qgis::DistanceUnit mDistanceUnit;
+    Qgis::AreaUnit mAreaUnit;
+    std::unique_ptr<QgsExpressionContextScope> mProjectScope;
 
   private:
 #ifdef SIP_RUN

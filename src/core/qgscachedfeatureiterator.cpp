@@ -102,7 +102,7 @@ bool QgsCachedFeatureIterator::fetchFeature( QgsFeature &f )
       continue;
     }
 
-    f = QgsFeature( *mVectorLayerCache->mCache[*mFeatureIdIterator]->feature() );
+    f = mVectorLayerCache->mCache[*mFeatureIdIterator]->feature();
     ++mFeatureIdIterator;
     if ( mRequest.acceptFeature( f ) )
     {

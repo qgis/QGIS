@@ -140,7 +140,28 @@ void QgsAttributeForm::addInterface( QgsAttributeFormInterface *iface )
 
 bool QgsAttributeForm::editable()
 {
-  return mFeature.isValid() && mLayer->isEditable();
+  bool isEditable = false;
+  switch ( mMode )
+  {
+    case QgsAttributeEditorContext::SingleEditMode:
+    case QgsAttributeEditorContext::IdentifyMode:
+    case QgsAttributeEditorContext::FixAttributeMode:
+    case QgsAttributeEditorContext::SearchMode:
+    case QgsAttributeEditorContext::AggregateSearchMode:
+    case QgsAttributeEditorContext::MultiEditMode:
+      isEditable = mFeature.isValid() && mLayer->isEditable();
+      break;
+
+    case QgsAttributeEditorContext::AddFeatureMode:
+      isEditable = mLayer->isEditable();
+      break;
+
+    case QgsAttributeEditorContext::PreviewMode:
+      isEditable = true;
+      break;
+  }
+
+  return isEditable;
 }
 
 void QgsAttributeForm::setMode( QgsAttributeEditorContext::Mode mode )
@@ -315,7 +336,7 @@ void QgsAttributeForm::changeAttribute( const QString &field, const QVariant &va
 
 void QgsAttributeForm::changeGeometry( const QgsGeometry &geometry )
 {
-  mFeature.setGeometry( geometry );
+  mCurrentFormFeature.setGeometry( geometry );
 }
 
 void QgsAttributeForm::setFeature( const QgsFeature &feature )
@@ -367,6 +388,12 @@ bool QgsAttributeForm::saveEdits( QString *error )
   bool changedLayer = false;
 
   QgsFeature updatedFeature = QgsFeature( mFeature );
+  const bool updatedFeatureChangedGeometry = !mFeature.geometry().isExactlyEqual( mCurrentFormFeature.geometry() );
+  if ( updatedFeatureChangedGeometry )
+  {
+    mFeature.setGeometry( mCurrentFormFeature.geometry() );
+  }
+
   if ( mFeature.isValid() || mMode == QgsAttributeEditorContext::AddFeatureMode )
   {
     bool doUpdate = false;
@@ -491,7 +518,7 @@ bool QgsAttributeForm::saveEdits( QString *error )
         QgsAttributeMap newValues;
         QgsAttributeMap oldValues;
 
-        int n = 0;
+        int editedCount = 0;
         for ( int i = 0; i < dst.count(); ++i )
         {
           if ( qgsVariantEqual( dst.at( i ), src.at( i ) ) // If field is not changed...
@@ -508,18 +535,31 @@ bool QgsAttributeForm::saveEdits( QString *error )
           newValues[i] = dst.at( i );
           oldValues[i] = src.at( i );
 
-          n++;
+          editedCount++;
         }
 
         auto context = std::make_unique<QgsVectorLayerToolsContext>();
         QgsExpressionContext expressionContext = createExpressionContext( updatedFeature );
         context->setExpressionContext( &expressionContext );
-        success = mLayer->changeAttributeValues( mFeature.id(), newValues, oldValues, false, context.get() );
+        success = mLayer->changeAttributeValues( mFeature.id(), newValues, oldValues, false, context.get() ) && editedCount > 0;
+        if ( success )
+        {
+          mFeature.setAttributes( dst );
+        }
 
-        if ( success && n > 0 )
+        if ( updatedFeatureChangedGeometry && ( success || editedCount == 0 ) )
+        {
+          QgsGeometry geometry = updatedFeature.geometry();
+          success = success || mLayer->changeGeometry( mFeature.id(), geometry, false );
+          if ( success )
+          {
+            mFeature.setGeometry( geometry );
+          }
+        }
+
+        if ( success )
         {
           mLayer->endEditCommand();
-          mFeature.setAttributes( dst );
           changedLayer = true;
         }
         else
@@ -1679,26 +1719,7 @@ bool QgsAttributeForm::needsGeometry() const
 
 void QgsAttributeForm::synchronizeState()
 {
-  bool isEditable = false;
-  switch ( mMode )
-  {
-    case QgsAttributeEditorContext::SingleEditMode:
-    case QgsAttributeEditorContext::IdentifyMode:
-    case QgsAttributeEditorContext::FixAttributeMode:
-    case QgsAttributeEditorContext::SearchMode:
-    case QgsAttributeEditorContext::AggregateSearchMode:
-    case QgsAttributeEditorContext::MultiEditMode:
-      isEditable = mFeature.isValid() && mLayer->isEditable();
-      break;
-
-    case QgsAttributeEditorContext::AddFeatureMode:
-      isEditable = mLayer->isEditable();
-      break;
-
-    case QgsAttributeEditorContext::PreviewMode:
-      isEditable = true;
-      break;
-  }
+  bool isEditable = editable();
 
   for ( QgsWidgetWrapper *ww : std::as_const( mWidgets ) )
   {
@@ -1773,6 +1794,8 @@ void QgsAttributeForm::synchronizeState()
   {
     okButton->setEnabled( isEditable );
   }
+
+  emit editableChanged();
 }
 
 void QgsAttributeForm::init()

@@ -41,32 +41,6 @@ class GUI_EXPORT QgsAttributeTableFilterModel : public QSortFilterProxyModel, pu
 
   public:
     /**
-     * The type of a column.
-     */
-    enum ColumnType
-    {
-      ColumnTypeField,       //!< This column shows a field
-      ColumnTypeActionButton //!< This column shows action buttons
-    };
-    Q_ENUM( ColumnType )
-
-    // *INDENT-OFF*
-
-    /**
-     * The additional roles defined by this filter model.
-     * The values of these roles start just after the roles defined by
-     * QgsAttributeTableModel so they do not conflict.
-     * \note Prior to QGIS 3.36 this was available as QgsAttributeTableFilterModel::Role
-     * \since QGIS 3.36
-     */
-    enum class CustomRole SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsAttributeTableFilterModel, Role ) : int
-    {
-      Type SIP_MONKEYPATCH_COMPAT_NAME( TypeRole ) = static_cast<int>( QgsAttributeTableModel::CustomRole::User ) //!< The type of a given column
-    };
-    Q_ENUM( CustomRole )
-    // *INDENT-ON*
-
-    /**
      * Make sure, the master model is already loaded, so the selection will get synchronized.
      *
      * \param parent parent object (owner)
@@ -182,12 +156,6 @@ class GUI_EXPORT QgsAttributeTableFilterModel : public QSortFilterProxyModel, pu
 
     inline QModelIndex mapFromMaster( const QModelIndex &sourceIndex ) const { return mapFromSource( sourceIndex ); }
 
-    QModelIndex mapToSource( const QModelIndex &proxyIndex ) const override;
-
-    QModelIndex mapFromSource( const QModelIndex &sourceIndex ) const override;
-
-    Qt::ItemFlags flags( const QModelIndex &index ) const override;
-
     /**
      * Sort by the given column using the given order.
      * Prefetches all the data from the layer to speed up sorting.
@@ -214,17 +182,13 @@ class GUI_EXPORT QgsAttributeTableFilterModel : public QSortFilterProxyModel, pu
     //! Returns the map canvas
     QgsMapCanvas *mapCanvas() const { return mCanvas; }
 
-    QVariant data( const QModelIndex &index, int role ) const override;
-
-    QVariant headerData( int section, Qt::Orientation orientation, int role ) const override;
-
     /**
      * Gets the index of the first column that contains an action widget.
      * Returns -1 if none is defined.
+     *
+     * \deprecated QGIS 4.4
      */
-    int actionColumnIndex() const;
-
-    int columnCount( const QModelIndex &parent ) const override;
+    Q_DECL_DEPRECATED int actionColumnIndex() const SIP_DEPRECATED;
 
     /**
      * Set the attribute table configuration to control which fields are shown,
@@ -329,12 +293,9 @@ class GUI_EXPORT QgsAttributeTableFilterModel : public QSortFilterProxyModel, pu
     QgsAttributeTableModel *mTableModel = nullptr;
 
     QgsAttributeTableConfig mConfig;
-    QVector<int> mColumnMapping;
+
     QgsExpression mFilterExpression;
     QgsExpressionContext mFilterExpressionContext;
-
-    int mapColumnToSource( int column ) const;
-    int mapColumnFromSource( int column ) const;
 
     QTimer mReloadVisibleTimer;
     QTimer mFilterFeaturesTimer;

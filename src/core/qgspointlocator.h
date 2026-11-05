@@ -483,7 +483,12 @@ class CORE_EXPORT QgsPointLocator : public QObject
     void initFinished( bool ok );
 
   protected:
-    bool rebuildIndex( int maxFeaturesToIndex = -1 );
+    /**
+     * Rebuilds the index.
+     *
+     * The optional \a feedback argument allows for early cancellation of the rebuild.
+     */
+    bool rebuildIndex( int maxFeaturesToIndex = -1, QgsFeedback *feedback = nullptr );
 
   protected slots:
     void destroyIndex();

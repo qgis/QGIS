@@ -71,10 +71,9 @@ Qgs25DRendererWidget::Qgs25DRendererWidget( QgsVectorLayer *layer, QgsStyle *sty
 
   mHeightWidget->setLayer( layer );
 
-  QgsExpressionContextScope *scope = QgsExpressionContextUtils::layerScope( mLayer );
+  std::unique_ptr<QgsExpressionContextScope> scope = QgsExpressionContextUtils::layerScope( mLayer );
   const QVariant height = scope->variable( u"qgis_25d_height"_s );
   const QVariant angle = scope->variable( u"qgis_25d_angle"_s );
-  delete scope;
 
   mHeightWidget->setField( QgsVariantUtils::isNull( height ) ? u"10"_s : height.toString() );
   mAngleWidget->setValue( QgsVariantUtils::isNull( angle ) ? 70 : angle.toDouble() );

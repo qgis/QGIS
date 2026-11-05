@@ -616,6 +616,30 @@ class TestQgsCoordinateTransform(QgisTestCase):
         self.assertGreater(transformedExtent.xMaximum(), 16000000)
         self.assertGreater(transformedExtent.yMaximum(), 16000000)
 
+    def test_bounding_box_over_antimeridian(self):
+        context = QgsCoordinateTransformContext()
+        transform = QgsCoordinateTransform(
+            QgsCoordinateReferenceSystem("EPSG:4167"),
+            QgsCoordinateReferenceSystem("EPSG:2193"),
+            context,
+        )
+        extent = QgsRectangle(178, -46, -176, -34, normalize=False)
+        transformedExtent = transform.transformBoundingBox(
+            extent, handle180Crossover=True
+        )
+        self.assertAlmostEqual(transformedExtent.xMinimum(), 1987144, places=-5)
+        self.assertAlmostEqual(transformedExtent.yMinimum(), 4846792, places=-5)
+        self.assertAlmostEqual(transformedExtent.xMaximum(), 2618166, places=-5)
+        self.assertAlmostEqual(transformedExtent.yMaximum(), 6226555, places=-5)
+
+        reverse_extent = transform.transformBoundingBox(
+            transformedExtent, Qgis.TransformDirection.Reverse, handle180Crossover=True
+        )
+        self.assertAlmostEqual(reverse_extent.left(), 177.1923, places=0)
+        self.assertAlmostEqual(reverse_extent.yMinimum(), -46.42131, places=0)
+        self.assertAlmostEqual(reverse_extent.right(), -173.89997, places=0)
+        self.assertAlmostEqual(reverse_extent.yMaximum(), -33.612464, places=0)
+
 
 if __name__ == "__main__":
     unittest.main()

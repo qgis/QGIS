@@ -20,6 +20,7 @@
 #include "qgscolorrampimpl.h"
 #include "qgscolorutils.h"
 #include "qgscurvepolygon.h"
+#include "qgsdatadefinedutils.h"
 #include "qgsexpression.h"
 #include "qgsexpressioncontextutils.h"
 #include "qgsexpressionnode.h"
@@ -522,15 +523,20 @@ QgsArrowSymbolLayer::HeadType QgsSymbolLayerUtils::decodeArrowHeadType( const QV
   if ( ok )
     *ok = true;
 
+  static constexpr auto ARROW_HEAD_MAP = makeDataDefinedStringDecoder<QgsArrowSymbolLayer::HeadType>( {
+    { u"single", QgsArrowSymbolLayer::HeadSingle },
+    { u"reversed", QgsArrowSymbolLayer::HeadReversed },
+    { u"double", QgsArrowSymbolLayer::HeadDouble },
+  } );
+
+  auto evaluatedArrowHead = ARROW_HEAD_MAP.lookup( value.toString() );
+  if ( evaluatedArrowHead )
+  {
+    return *evaluatedArrowHead;
+  }
+
   bool intOk = false;
-  const QString s = value.toString().toLower().trimmed();
-  if ( s == "single"_L1 )
-    return QgsArrowSymbolLayer::HeadSingle;
-  else if ( s == "reversed"_L1 )
-    return QgsArrowSymbolLayer::HeadReversed;
-  else if ( s == "double"_L1 )
-    return QgsArrowSymbolLayer::HeadDouble;
-  else if ( value.toInt() == 1 )
+  if ( value.toInt() == 1 )
     return QgsArrowSymbolLayer::HeadReversed;
   else if ( value.toInt() == 2 )
     return QgsArrowSymbolLayer::HeadDouble;
@@ -547,15 +553,20 @@ QgsArrowSymbolLayer::ArrowType QgsSymbolLayerUtils::decodeArrowType( const QVari
   if ( ok )
     *ok = true;
 
+  static constexpr auto ARROW_TYPE_MAP = makeDataDefinedStringDecoder<QgsArrowSymbolLayer::ArrowType>( {
+    { u"plain", QgsArrowSymbolLayer::ArrowPlain },
+    { u"lefthalf", QgsArrowSymbolLayer::ArrowLeftHalf },
+    { u"righthalf", QgsArrowSymbolLayer::ArrowRightHalf },
+  } );
+
+  auto evaluatedArrowType = ARROW_TYPE_MAP.lookup( value.toString() );
+  if ( evaluatedArrowType )
+  {
+    return *evaluatedArrowType;
+  }
+
   bool intOk = false;
-  const QString s = value.toString().toLower().trimmed();
-  if ( s == "plain"_L1 )
-    return QgsArrowSymbolLayer::ArrowPlain;
-  else if ( s == "lefthalf"_L1 )
-    return QgsArrowSymbolLayer::ArrowLeftHalf;
-  else if ( s == "righthalf"_L1 )
-    return QgsArrowSymbolLayer::ArrowRightHalf;
-  else if ( value.toInt() == 1 )
+  if ( value.toInt() == 1 )
     return QgsArrowSymbolLayer::ArrowLeftHalf;
   else if ( value.toInt() == 2 )
     return QgsArrowSymbolLayer::ArrowRightHalf;
@@ -569,18 +580,21 @@ QgsArrowSymbolLayer::ArrowType QgsSymbolLayerUtils::decodeArrowType( const QVari
 
 Qgis::MarkerClipMode QgsSymbolLayerUtils::decodeMarkerClipMode( const QString &string, bool *ok )
 {
-  const QString compareString = string.trimmed();
   if ( ok )
     *ok = true;
 
-  if ( compareString.compare( "no"_L1, Qt::CaseInsensitive ) == 0 )
-    return Qgis::MarkerClipMode::NoClipping;
-  else if ( compareString.compare( "shape"_L1, Qt::CaseInsensitive ) == 0 )
-    return Qgis::MarkerClipMode::Shape;
-  else if ( compareString.compare( "centroid_within"_L1, Qt::CaseInsensitive ) == 0 )
-    return Qgis::MarkerClipMode::CentroidWithin;
-  else if ( compareString.compare( "completely_within"_L1, Qt::CaseInsensitive ) == 0 )
-    return Qgis::MarkerClipMode::CompletelyWithin;
+  static constexpr auto MARKER_CLIP_MODE_MAP = makeDataDefinedStringDecoder<Qgis::MarkerClipMode>( {
+    { u"no", Qgis::MarkerClipMode::NoClipping },
+    { u"shape", Qgis::MarkerClipMode::Shape },
+    { u"centroidwithin", Qgis::MarkerClipMode::CentroidWithin },
+    { u"completelywithin", Qgis::MarkerClipMode::CompletelyWithin },
+  } );
+
+  auto evaluatedMode = MARKER_CLIP_MODE_MAP.lookup( string );
+  if ( evaluatedMode )
+  {
+    return *evaluatedMode;
+  }
 
   if ( ok )
     *ok = false;
@@ -605,16 +619,20 @@ QString QgsSymbolLayerUtils::encodeMarkerClipMode( Qgis::MarkerClipMode mode )
 
 Qgis::LineClipMode QgsSymbolLayerUtils::decodeLineClipMode( const QString &string, bool *ok )
 {
-  const QString compareString = string.trimmed();
   if ( ok )
     *ok = true;
 
-  if ( compareString.compare( "no"_L1, Qt::CaseInsensitive ) == 0 )
-    return Qgis::LineClipMode::NoClipping;
-  else if ( compareString.compare( "during_render"_L1, Qt::CaseInsensitive ) == 0 )
-    return Qgis::LineClipMode::ClipPainterOnly;
-  else if ( compareString.compare( "before_render"_L1, Qt::CaseInsensitive ) == 0 )
-    return Qgis::LineClipMode::ClipToIntersection;
+  static constexpr auto LINE_CLIP_MODE_MAP = makeDataDefinedStringDecoder<Qgis::LineClipMode>( {
+    { u"no", Qgis::LineClipMode::NoClipping },
+    { u"duringrender", Qgis::LineClipMode::ClipPainterOnly },
+    { u"beforerender", Qgis::LineClipMode::ClipToIntersection },
+  } );
+
+  auto evaluatedMode = LINE_CLIP_MODE_MAP.lookup( string );
+  if ( evaluatedMode )
+  {
+    return *evaluatedMode;
+  }
 
   if ( ok )
     *ok = false;

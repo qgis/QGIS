@@ -2497,6 +2497,93 @@ class TestPyQgsOapifProvider(QgisTestCase, ProviderTestCase):
 
         self.assertTrue(vl.dataProvider().deleteFeatures([1, 2]))
 
+    def testFeatureChangeWithoutInsertion(self):
+        """Editing features without insertion allowed"""
+
+        endpoint = (
+            self.__class__.basetestpath
+            + "/fake_qgis_http_endpoint_testFeatureChangeWithoutInsertion"
+        )
+        # /items takes HEAD and GET only
+        create_landing_page_api_collection(endpoint)
+
+        # first items
+        first_items = {
+            "type": "FeatureCollection",
+            "features": [
+                {
+                    "type": "Feature",
+                    "id": "feat.1",
+                    "properties": {"pk": 1, "cnt": 100},
+                    "geometry": {"type": "Point", "coordinates": [66.33, -70.332]},
+                }
+            ],
+        }
+        with open(
+            sanitize(
+                endpoint, "/collections/mycollection/items?limit=10&" + ACCEPT_ITEMS
+            ),
+            "wb",
+        ) as f:
+            f.write(json.dumps(first_items).encode("UTF-8"))
+
+        with open(
+            sanitize(endpoint, "/collections/mycollection/items/feat.1?VERB=OPTIONS"),
+            "wb",
+        ) as f:
+            f.write(b"HEAD, GET, PUT, PATCH")
+
+        vl = QgsVectorLayer(
+            "url='http://"
+            + endpoint
+            + "' typename='mycollection' restrictToRequestBBOX=1",
+            "test",
+            "OAPIF",
+        )
+        self.assertTrue(vl.isValid())
+        self.assertNotEqual(
+            vl.dataProvider().capabilities() & vl.dataProvider().ChangeAttributeValues,
+            vl.dataProvider().NoCapabilities,
+        )
+        self.assertNotEqual(
+            vl.dataProvider().capabilities() & vl.dataProvider().ChangeGeometries,
+            vl.dataProvider().NoCapabilities,
+        )
+        self.assertEqual(
+            vl.dataProvider().capabilities() & vl.dataProvider().AddFeatures,
+            vl.dataProvider().NoCapabilities,
+        )
+        self.assertEqual(
+            vl.dataProvider().capabilities() & vl.dataProvider().DeleteFeatures,
+            vl.dataProvider().NoCapabilities,
+        )
+
+        # real page
+        with open(
+            sanitize(
+                endpoint, "/collections/mycollection/items?limit=1000&" + ACCEPT_ITEMS
+            ),
+            "wb",
+        ) as f:
+            f.write(json.dumps(first_items).encode("UTF-8"))
+
+        values = [f.id() for f in vl.getFeatures()]
+        self.assertEqual(values, [1])
+
+        with open(
+            sanitize(
+                endpoint,
+                '/collections/mycollection/items/feat.1?PATCHDATA={"properties":{"cnt":200}}&Content-Type=application_merge-patch+json',
+            ),
+            "wb",
+        ) as f:
+            f.write(b"")
+
+        self.assertTrue(vl.dataProvider().changeAttributeValues({1: {2: 200}}))
+
+        values = [f["cnt"] for f in vl.getFeatures()]
+        self.assertEqual(values, [200])
+
     def testFeatureInsertionNonDefaultCrs(self):
 
         endpoint = (
@@ -3342,6 +3429,133 @@ class TestPyQgsOapifProvider(QgisTestCase, ProviderTestCase):
             QgsWkbTypes.Type.MultiPolygon,
             "MULTIPOLYGON (((2 49, 2 50, 3 50, 3 49, 2 49)))",
         )
+
+    def testPart5SchemaReadOnlyPropertiesNotWritten(self):
+        """Read only fields should not be written on put or post"""
+
+        endpoint = (
+            self.__class__.basetestpath
+            + "/fake_qgis_http_endpoint_testPart5SchemaReadOnlyPropertiesNotWritten"
+        )
+        additionalConformance = [
+            "http://www.opengis.net/spec/ogcapi-features-5/1.0/conf/schemas",
+        ]
+        collectionLinks = [
+            {
+                "type": "application/schema+json",
+                "rel": "[ogc-rel:schema]",
+                "title": "See these fields, you should not, Luke",
+                "href": "http://" + endpoint + "/collections/mycollection/schema",
+            }
+        ]
+        create_landing_page_api_collection(
+            endpoint,
+            additionalConformance=additionalConformance,
+            collectionLinks=collectionLinks,
+        )
+
+        schema = {
+            "$schema": "https://json-schema.org/draft/2020-12/schema",
+            "$id": "http://" + endpoint + "/collections/mycollection/schema",
+            "type": "object",
+            "title": "See these fields, you should not, Luke",
+            "properties": {
+                "name": {"type": "string", "x-ogc-propertySeq": 1},
+                "owner": {"type": "string", "readOnly": True, "x-ogc-propertySeq": 2},
+                "geometry": {
+                    "x-ogc-role": "primary-geometry",
+                    "format": "geometry-point",
+                },
+            },
+        }
+        with open(
+            sanitize(endpoint, "/collections/mycollection/schema?" + ACCEPT_SCHEMA),
+            "wb",
+        ) as f:
+            f.write(json.dumps(schema).encode("UTF-8"))
+
+        items = {
+            "type": "FeatureCollection",
+            "features": [
+                {
+                    "type": "Feature",
+                    "id": "feat.1",
+                    "properties": {"name": "a", "owner": "x"},
+                    "geometry": {"type": "Point", "coordinates": [7, 46]},
+                }
+            ],
+        }
+        for limit in (10, 1000):
+            with open(
+                sanitize(
+                    endpoint,
+                    f"/collections/mycollection/items?limit={limit}&" + ACCEPT_ITEMS,
+                ),
+                "wb",
+            ) as f:
+                f.write(json.dumps(items).encode("UTF-8"))
+
+        with open(
+            sanitize(endpoint, "/collections/mycollection/items?VERB=OPTIONS"), "wb"
+        ) as f:
+            f.write(b"HEAD, GET, POST")
+        with open(
+            sanitize(endpoint, "/collections/mycollection/items/feat.1?VERB=OPTIONS"),
+            "wb",
+        ) as f:
+            # do no add PATCH, otherwise it would be used instead of PUT and the test would not be valid
+            f.write(b"HEAD, GET, PUT")
+
+        vl = QgsVectorLayer(
+            f"url='http://{endpoint}' typename='mycollection' restrictToRequestBBOX=1",
+            "test",
+            "OAPIF",
+        )
+        self.assertTrue(vl.isValid())
+        self.assertTrue(vl.fields().field("owner").isReadOnly())
+        self.assertEqual([f.id() for f in vl.getFeatures()], [1])
+
+        # owner is read-only, so it should not be sent to the server on creation or update
+        created = {
+            "geometry": {"coordinates": [8.0, 47.0], "type": "Point"},
+            "properties": {"name": "b"},
+            "type": "Feature",
+        }
+        with open(
+            sanitize(
+                endpoint,
+                "/collections/mycollection/items?POSTDATA=" + compactJson(created),
+            ),
+            "wb",
+        ) as f:
+            f.write(b"Location: /collections/mycollection/items/new_id\r\n")
+
+        f = QgsFeature(vl.fields())
+        f.setAttribute("name", "b")
+        f.setAttribute("owner", "x")
+        f.setGeometry(QgsGeometry.fromWkt("Point (8 47)"))
+        ok, _ = vl.dataProvider().addFeatures([f])
+        self.assertTrue(ok)
+
+        # again, owner is not sent
+        replaced = {
+            "geometry": {"coordinates": [7.0, 46.0], "type": "Point"},
+            "id": "feat.1",
+            "properties": {"name": "c"},
+            "type": "Feature",
+        }
+        with open(
+            sanitize(
+                endpoint,
+                "/collections/mycollection/items/feat.1?PUTDATA="
+                + compactJson(replaced),
+            ),
+            "wb",
+        ) as f:
+            f.write(b"")
+
+        name = vl.fields().indexOf("name")
+        self.assertTrue(vl.dataProvider().changeAttributeValues({1: {name: "c"}}))
 
     def testFlatgeobufOutputFormat(self):
 

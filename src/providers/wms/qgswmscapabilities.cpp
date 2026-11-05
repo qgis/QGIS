@@ -2800,7 +2800,7 @@ void QgsWmsCapabilitiesDownload::capabilitiesReplyFinished()
            errorString.contains( u"The decompressed output exceeds the limits specified by QNetworkRequest::decompressedSafetyCheckThreshold"_s ) )
       {
         const QString compressErrorTip = tr(
-          "The server returned a compressed response that exceeds the maximum allowed size. "
+          "The server returned a compressed response that exceeds the safety check limits. "
           "This is likely due to a large number of layers or complex capabilities. "
           "If you trust this server you can disable this check in the WMS server connection settings."
         );

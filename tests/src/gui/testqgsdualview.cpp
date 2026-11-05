@@ -117,7 +117,8 @@ void TestQgsDualView::cleanup()
 
 void TestQgsDualView::testColumnCount()
 {
-  QCOMPARE( mDualView->tableView()->model()->columnCount(), mPointsLayer->fields().count() );
+  // the table model includes the actions column, so it should have fields + 1 columns
+  QCOMPARE( mDualView->tableView()->model()->columnCount(), mPointsLayer->fields().count() + 1 );
 }
 
 void TestQgsDualView::testColumnHeaders()
@@ -127,6 +128,9 @@ void TestQgsDualView::testColumnHeaders()
     const QgsField fld = mPointsLayer->fields().at( i );
     QCOMPARE( mDualView->tableView()->model()->headerData( i, Qt::Horizontal ).toString(), fld.name() );
   }
+
+  // last column should be the actions column
+  QCOMPARE( mDualView->tableView()->model()->headerData( mPointsLayer->fields().count(), Qt::Horizontal ).toString(), "Actions" );
 }
 
 void TestQgsDualView::testData()

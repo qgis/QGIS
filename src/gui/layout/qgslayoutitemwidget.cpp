@@ -507,6 +507,8 @@ void QgsLayoutItemPropertiesWidget::variablesChanged()
   if ( !mItem )
     return;
 
+  mItem->layout()->undoStack()->beginCommand( mItem, tr( "Change Item Variables" ) );
+
   if ( QgsLayoutFrame *frame = qobject_cast<QgsLayoutFrame *>( mItem ) )
   {
     if ( QgsLayoutMultiFrame *mf = frame->multiFrame() )
@@ -518,6 +520,7 @@ void QgsLayoutItemPropertiesWidget::variablesChanged()
   {
     QgsExpressionContextUtils::setLayoutItemVariables( mItem, mVariableEditor->variablesInActiveScope() );
   }
+  mItem->layout()->undoStack()->endCommand();
 }
 
 QgsLayoutItem::ReferencePoint QgsLayoutItemPropertiesWidget::positionMode() const

@@ -20,18 +20,6 @@ A proxy model for filtering an attribute table model.
 #include "qgsattributetablefiltermodel.h"
 %End
   public:
-    enum ColumnType /BaseType=IntEnum/
-    {
-      ColumnTypeField,
-      ColumnTypeActionButton
-    };
-
-
-    enum class CustomRole /BaseType=IntEnum/
-    {
-      Type
-    };
-
     QgsAttributeTableFilterModel( QgsMapCanvas *canvas, QgsAttributeTableModel *sourceModel, QObject *parent /TransferThis/ = 0 );
 %Docstring
 Make sure, the master model is already loaded, so the selection will get
@@ -146,15 +134,6 @@ Returns the feature id for a given model index.
 
     QModelIndex mapFromMaster( const QModelIndex &sourceIndex ) const;
 
-    virtual QModelIndex mapToSource( const QModelIndex &proxyIndex ) const;
-
-
-    virtual QModelIndex mapFromSource( const QModelIndex &sourceIndex ) const;
-
-
-    virtual Qt::ItemFlags flags( const QModelIndex &index ) const;
-
-
     virtual void sort( int column, Qt::SortOrder order = Qt::AscendingOrder );
 
 %Docstring
@@ -184,20 +163,13 @@ The expression which is used to sort the attribute table.
 Returns the map canvas
 %End
 
-    virtual QVariant data( const QModelIndex &index, int role ) const;
-
-
-    virtual QVariant headerData( int section, Qt::Orientation orientation, int role ) const;
-
-
-    int actionColumnIndex() const;
+ int actionColumnIndex() const /Deprecated="Since 4.4. "/;
 %Docstring
 Gets the index of the first column that contains an action widget.
 Returns -1 if none is defined.
+
+.. deprecated:: 4.4
 %End
-
-    virtual int columnCount( const QModelIndex &parent ) const;
-
 
     void setAttributeTableConfig( const QgsAttributeTableConfig &config );
 %Docstring

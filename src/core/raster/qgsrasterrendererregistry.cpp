@@ -28,6 +28,7 @@
 #include "qgsrastershader.h"
 #include "qgsrastersinglecolorrenderer.h"
 #include "qgsrastertransparency.h"
+#include "qgsrastervectorfieldrenderer.h"
 #include "qgssettingsentryimpl.h"
 #include "qgssettingstree.h"
 #include "qgssinglebandcolordatarenderer.h"
@@ -76,6 +77,7 @@ QgsRasterRendererRegistry::QgsRasterRendererRegistry()
   insert( QgsRasterRendererRegistryEntry( u"singlecolor"_s, QObject::tr( "Single color" ), QgsRasterSingleColorRenderer::create, nullptr ) );
   insert( QgsRasterRendererRegistryEntry( u"hillshade"_s, QObject::tr( "Hillshade" ), QgsHillshadeRenderer::create, nullptr ) );
   insert( QgsRasterRendererRegistryEntry( u"contour"_s, QObject::tr( "Contours" ), QgsRasterContourRenderer::create, nullptr ) );
+  insert( QgsRasterRendererRegistryEntry( u"vectorfield"_s, QObject::tr( "Vector field" ), QgsRasterVectorFieldRenderer::create, nullptr, Qgis::RasterRendererCapability::UsesMultipleBands ) );
 }
 
 void QgsRasterRendererRegistry::insert( const QgsRasterRendererRegistryEntry &entry )

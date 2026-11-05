@@ -25,11 +25,12 @@ using namespace nlohmann;
 #include "qgsoapifapirequest.h"
 #include "qgsoapifutils.h"
 #include "moc_qgsoapifapirequest.cpp"
+#include "qgswfsconstants.h"
 
 #include <QTextCodec>
 
 QgsOapifApiRequest::QgsOapifApiRequest( const QgsDataSourceUri &baseUri, const QString &url )
-  : QgsBaseNetworkRequest( QgsAuthorizationSettings( baseUri.username(), baseUri.password(), QgsHttpHeaders(), baseUri.authConfigId() ), tr( "OAPIF" ) )
+  : QgsBaseNetworkRequest( QgsAuthorizationSettings( baseUri.username(), baseUri.password(), QgsHttpHeaders(), baseUri.authConfigId() ), tr( "OAPIF" ), baseUri.hasParam( QgsWFSConstants::URI_PARAM_DISABLE_DECOMPRESSED_SAFETY_CHECK_THRESHOLD ) )
   , mUrl( url )
 {
   // Using Qt::DirectConnection since the download might be running on a different thread.

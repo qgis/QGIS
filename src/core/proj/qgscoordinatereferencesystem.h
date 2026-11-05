@@ -786,8 +786,19 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
     /**
      * Returns whether the CRS is a geographic CRS (using lat/lon coordinates)
      * \returns TRUE if CRS is geographic, or FALSE if it is a projected CRS
+     *
+     * \see isGeographicCrossingAntimeridian()
      */
     bool isGeographic() const;
+
+    /**
+     * Returns TRUE if the CRS is a geographic CRS (using lat/lon coordinates) where the area of use crosses the antimeridian.
+     *
+     * Care must be taken when working with extents in these CRS to avoid flipping the regions to the opposite portion of the globe.
+     *
+     * \since QGIS 4.4
+     */
+    bool isGeographicCrossingAntimeridian() const;
 
     /**
      * Returns TRUE if the CRS is a dynamic CRS.
@@ -1316,6 +1327,8 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
 
     //! Work out the projection units and set the appropriate local variable
     void setMapUnits();
+
+    void setExtraProperties();
 
     //! Helper for getting number of user CRS already in db
     static long getRecordCount();

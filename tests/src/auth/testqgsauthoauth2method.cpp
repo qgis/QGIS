@@ -44,6 +44,7 @@ namespace
   // Subclass QgsO2 to enable using protected methods in tests
   class TestableQgsO2 : public QgsO2
   {
+      Q_OBJECT
     public:
       using QgsO2::onVerificationReceived;
       using QgsO2::QgsO2;

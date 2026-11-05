@@ -801,7 +801,7 @@ expression evaluation for the map canvas render.
 %End
 
 
-    QgsExpressionContextScope *defaultExpressionContextScope() const /Factory/;
+    std::unique_ptr<QgsExpressionContextScope> defaultExpressionContextScope() const;
 %Docstring
 Creates a new scope which contains default variables and functions
 relating to the map canvas.

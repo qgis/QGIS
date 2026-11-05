@@ -22,6 +22,7 @@
 #include "qgis_core.h"
 #include "qgsexpressionnode.h"
 #include "qgsinterval.h"
+#include "qgsproject.h"
 #include "qgsthreadingutils.h"
 
 #include <QCoreApplication>
@@ -616,6 +617,7 @@ class CORE_EXPORT QgsExpression
      */
     static QSet<QString> referencedVariables( const QString &text );
 
+    // TODO QGIS 5.0 -- remove this function in favour of version with explicit context
     /**
      * Attempts to evaluate a text string as an expression to a resultant double
      * value.
@@ -624,8 +626,24 @@ class CORE_EXPORT QgsExpression
      * \returns evaluated double value, or fallback value
      * \note this method is inefficient for bulk evaluation of expressions, it is intended
      * for one-off evaluations only.
+     *
+     * \deprecated QGIS 4.4
      */
-    static double evaluateToDouble( const QString &text, double fallbackValue );
+    Q_DECL_DEPRECATED static double evaluateToDouble( const QString &text, double fallbackValue ) SIP_DEPRECATED;
+
+    /**
+     * Attempts to evaluate a text string as an expression to a resultant double
+     * value.
+     * \param text text to evaluate as expression
+     * \param fallbackValue value to return if text can not be evaluated as a double
+     * \param context expression context to use for evaluation
+     * \returns evaluated double value, or fallback value
+     * \note this method is inefficient for bulk evaluation of expressions, it is intended
+     * for one-off evaluations only.
+     *
+     * \since QGIS 4.4
+     */
+    static double evaluateToDouble( const QString &text, double fallbackValue, const QgsExpressionContext *context );
 
     enum SpatialOperator
     {

@@ -294,7 +294,7 @@ QgsTerrainTileEntity *Qgs3DSceneExporter::getFlatTerrainEntity( QgsTerrainEntity
 {
   QgsFlatTerrainGenerator *generator = qgis::down_cast<QgsFlatTerrainGenerator *>( terrain->mapSettings()->terrainGenerator() );
   QFuture<QgsChunkLoaderResult> resultFuture = generator->loadChunk( node );
-  QgsFutureUtils::waitForFinished( resultFuture );
+  QgsFutureUtils::waitForFinished( QFuture<void>( resultFuture ) );
   // the entity we created will be deallocated once the scene exporter is deallocated
   Qt3DCore::QEntity *entity = resultFuture.takeResult().createEntity( this );
   QgsTerrainTileEntity *tileEntity = qobject_cast<QgsTerrainTileEntity *>( entity );
@@ -315,7 +315,7 @@ QgsTerrainTileEntity *Qgs3DSceneExporter::getDemTerrainEntity( QgsTerrainEntity 
   QgsDemTerrainGenerator *generator = qgis::down_cast<QgsDemTerrainGenerator *>( terrain->mapSettings()->terrainGenerator()->clone() );
   generator->setResolution( mTerrainResolution );
   QFuture<QgsChunkLoaderResult> resultFuture = generator->loadChunk( node );
-  QgsFutureUtils::waitForFinished( resultFuture );
+  QgsFutureUtils::waitForFinished( QFuture<void>( resultFuture ) );
   QgsTerrainTileEntity *tileEntity = qobject_cast<QgsTerrainTileEntity *>( resultFuture.takeResult().createEntity( this ) );
 
   const QList<QgsGeoTransform *> transforms = tileEntity->findChildren<QgsGeoTransform *>();
@@ -332,7 +332,7 @@ QgsTerrainTileEntity *Qgs3DSceneExporter::getMeshTerrainEntity( QgsTerrainEntity
 {
   QgsMeshTerrainGenerator *generator = qgis::down_cast<QgsMeshTerrainGenerator *>( terrain->mapSettings()->terrainGenerator() );
   QFuture<QgsChunkLoaderResult> resultFuture = generator->loadChunk( node );
-  QgsFutureUtils::waitForFinished( resultFuture );
+  QgsFutureUtils::waitForFinished( QFuture<void>( resultFuture ) );
   QgsTerrainTileEntity *tileEntity = qobject_cast<QgsTerrainTileEntity *>( resultFuture.takeResult().createEntity( this ) );
 
   const QList<QgsGeoTransform *> transforms = tileEntity->findChildren<QgsGeoTransform *>();

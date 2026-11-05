@@ -21,6 +21,7 @@
 #include "qgscolorramp.h"
 #include "qgscolorrampimpl.h"
 #include "qgscolorutils.h"
+#include "qgsdatadefinedutils.h"
 #include "qgsdxfexport.h"
 #include "qgsexpressioncontextutils.h"
 #include "qgsfeedback.h"
@@ -763,17 +764,16 @@ void QgsGradientFillSymbolLayer::applyDataDefinedSymbology( QgsSymbolRenderConte
     QString currentType = mDataDefinedProperties.valueAsString( QgsSymbolLayer::Property::GradientType, context.renderContext().expressionContext(), QString(), &ok );
     if ( ok )
     {
-      if ( currentType == QObject::tr( "linear" ) )
+      static constexpr auto GRADIENT_MAP = makeDataDefinedStringDecoder<Qgis::GradientType>( {
+        { u"linear", Qgis::GradientType::Linear },
+        { u"radial", Qgis::GradientType::Radial },
+        { u"conical", Qgis::GradientType::Conical },
+      } );
+
+      auto evaluatedGradient = GRADIENT_MAP.lookup( currentType );
+      if ( evaluatedGradient )
       {
-        gradientType = Qgis::GradientType::Linear;
-      }
-      else if ( currentType == QObject::tr( "radial" ) )
-      {
-        gradientType = Qgis::GradientType::Radial;
-      }
-      else if ( currentType == QObject::tr( "conical" ) )
-      {
-        gradientType = Qgis::GradientType::Conical;
+        gradientType = *evaluatedGradient;
       }
     }
   }
@@ -785,13 +785,15 @@ void QgsGradientFillSymbolLayer::applyDataDefinedSymbology( QgsSymbolRenderConte
     QString currentCoordMode = mDataDefinedProperties.valueAsString( QgsSymbolLayer::Property::CoordinateMode, context.renderContext().expressionContext(), QString(), &ok );
     if ( ok )
     {
-      if ( currentCoordMode == QObject::tr( "feature" ) )
+      static constexpr auto COORDINATE_MAP = makeDataDefinedStringDecoder<Qgis::SymbolCoordinateReference>( {
+        { u"feature", Qgis::SymbolCoordinateReference::Feature },
+        { u"viewport", Qgis::SymbolCoordinateReference::Viewport },
+      } );
+
+      auto evaluatedMode = COORDINATE_MAP.lookup( currentCoordMode );
+      if ( evaluatedMode )
       {
-        coordinateMode = Qgis::SymbolCoordinateReference::Feature;
-      }
-      else if ( currentCoordMode == QObject::tr( "viewport" ) )
-      {
-        coordinateMode = Qgis::SymbolCoordinateReference::Viewport;
+        coordinateMode = *evaluatedMode;
       }
     }
   }
@@ -803,17 +805,16 @@ void QgsGradientFillSymbolLayer::applyDataDefinedSymbology( QgsSymbolRenderConte
     QString currentSpread = mDataDefinedProperties.valueAsString( QgsSymbolLayer::Property::GradientSpread, context.renderContext().expressionContext(), QString(), &ok );
     if ( ok )
     {
-      if ( currentSpread == QObject::tr( "pad" ) )
+      static constexpr auto SPREAD_MAP = makeDataDefinedStringDecoder<Qgis::GradientSpread>( {
+        { u"pad", Qgis::GradientSpread::Pad },
+        { u"repeat", Qgis::GradientSpread::Repeat },
+        { u"reflect", Qgis::GradientSpread::Reflect },
+      } );
+
+      auto evaluatedSpread = SPREAD_MAP.lookup( currentSpread );
+      if ( evaluatedSpread )
       {
-        spread = Qgis::GradientSpread::Pad;
-      }
-      else if ( currentSpread == QObject::tr( "repeat" ) )
-      {
-        spread = Qgis::GradientSpread::Repeat;
-      }
-      else if ( currentSpread == QObject::tr( "reflect" ) )
-      {
-        spread = Qgis::GradientSpread::Reflect;
+        spread = *evaluatedSpread;
       }
     }
   }

@@ -5533,14 +5533,14 @@ void QgisApp::updateProjectFromTemplates()
       QMenu *dirMenu = mProjectFromTemplateMenu->addMenu( fontMetrics.elidedText( label, Qt::ElideLeft, maxLabelWidth ) );
       for ( const QString &templateFile : templateFiles )
       {
-        dirMenu->addAction( templateFile, [this, templateDirName, templateFile]() { fileNewFromTemplate( templateDirName + QDir::separator() + templateFile ); } );
+        dirMenu->addAction( templateFile, this, [this, templateDirName, templateFile]() { fileNewFromTemplate( templateDirName + QDir::separator() + templateFile ); } );
       }
     }
   }
 
   // add <blank> entry, which loads a blank template (regardless of "default template")
   if ( settingsNewProjectDefault->value() )
-    mProjectFromTemplateMenu->addAction( tr( "< Blank >" ), [this]() { fileNewBlank(); } );
+    mProjectFromTemplateMenu->addAction( tr( "< Blank >" ), this, [this]() { fileNewBlank(); } );
 
   mProjectFromTemplateMenu->menuAction()->setEnabled( !mProjectFromTemplateMenu->isEmpty() );
 

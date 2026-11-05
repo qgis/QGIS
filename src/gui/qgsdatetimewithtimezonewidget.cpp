@@ -152,7 +152,7 @@ QString QgsTimeZoneItemModel::offsetToString( int seconds )
   const int offsetInMinutes = std::abs( seconds ) / 60;
   const int hours = offsetInMinutes / 60;
   const int minutes = offsetInMinutes % 60;
-  return tr( "UTC%1%2:%3" ).arg( seconds >= 0 ? '+' : '-' ).arg( hours, 2, 10, '0' ).arg( minutes, 2, 10, '0' );
+  return tr( "UTC%1%2:%3" ).arg( seconds >= 0 ? '+' : '-' ).arg( hours, 2, 10, QChar( '0' ) ).arg( minutes, 2, 10, QChar( '0' ) );
 }
 
 //

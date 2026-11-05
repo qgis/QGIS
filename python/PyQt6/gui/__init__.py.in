@@ -151,6 +151,10 @@ QgsAttributeTableFilterModel.ShowInvalid = _Qgis.AttributeTableFilterMode.ShowIn
 QgsAttributeTableFilterModel.ShowInvalid.is_monkey_patched = True
 QgsAttributeTableFilterModel.ShowInvalid.__doc__ = "Show only features not respecting constraints \n.. versionadded:: 3.30"
 
+QgsAttributeTableFilterModel.Role = QgsAttributeTableModel.CustomRole
+QgsAttributeTableFilterModel.CustomRole = QgsAttributeTableModel.CustomRole
+QgsAttributeTableFilterModel.TypeRole = QgsAttributeTableModel.CustomRole.ColumnType
+QgsAttributeTableModel.CustomRole.TypeRole = QgsAttributeTableFilterModel.CustomRole.ColumnType
 
 # Classes patched
 QgsSettingsEnumEditorWidgetWrapper = PyQgsSettingsEnumEditorWidgetWrapper

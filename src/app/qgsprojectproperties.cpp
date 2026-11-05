@@ -285,26 +285,21 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas *mapCanvas, QWidget *pa
   bool show = settings.value( u"/projections/promptWhenMultipleTransformsExist"_s, false, QgsSettings::App ).toBool();
   mShowDatumTransformDialogCheckBox->setChecked( show );
 
-  QPolygonF mainCanvasPoly = mapCanvas->mapSettings().visiblePolygon();
-  QgsGeometry g = QgsGeometry::fromQPolygonF( mainCanvasPoly );
-  // close polygon
-  mainCanvasPoly << mainCanvasPoly.at( 0 );
-
-  if ( QgsProject::instance()->crs().isEarthCrs() && QgsProject::instance()->crs() != QgsCoordinateReferenceSystem::fromEpsgId( 4326 ) )
+  QgsRectangle mainCanvasExtent = mapCanvas->mapSettings().visibleExtent();
+  if ( QgsProject::instance()->crs().isEarthCrs() )
   {
     // reproject extent
     QgsCoordinateTransform ct( QgsProject::instance()->crs(), QgsCoordinateReferenceSystem::fromEpsgId( 4326 ), QgsProject::instance() );
     ct.setBallparkTransformsAreAppropriate( true );
 
-    g = g.densifyByCount( 5 );
     try
     {
-      g.transform( ct );
+      mainCanvasExtent = ct.transformBoundingBox( mainCanvasExtent, Qgis::TransformDirection::Forward, true );
+      projectionSelector->setPreviewRect( mainCanvasExtent );
     }
     catch ( QgsCsException & )
     {}
   }
-  projectionSelector->setPreviewRect( g.boundingBox() );
 
   mMapTileRenderingCheckBox->setChecked( QgsProject::instance()->readBoolEntry( u"RenderMapTile"_s, u"/"_s, false ) );
 

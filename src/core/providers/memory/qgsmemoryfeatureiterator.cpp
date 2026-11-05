@@ -300,9 +300,8 @@ QgsExpressionContext *QgsMemoryFeatureSource::expressionContext()
   // iterating over a memory layer with a subset string set
   if ( !mExpressionContext )
   {
-    mExpressionContext = std::make_unique< QgsExpressionContext >(
-      QList<QgsExpressionContextScope *>() << QgsExpressionContextUtils::globalScope() << QgsExpressionContextUtils::projectScope( QgsProject::instance() ) // skip-keyword-check
-    );
+    mExpressionContext = std::make_unique< QgsExpressionContext >();
+    *mExpressionContext << QgsExpressionContextUtils::globalScope() << QgsExpressionContextUtils::projectScope( QgsProject::instance() ); // skip-keyword-check
     mExpressionContext->setFields( mFields );
   }
   return mExpressionContext.get();
