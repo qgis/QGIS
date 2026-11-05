@@ -3466,7 +3466,7 @@ class CORE_EXPORT QgsGeometry
      *
      * QgsGeometryEngine operations are backed by the GEOS library (https://trac.osgeo.org/geos/).
      */
-    static QgsGeometryEngine *createGeometryEngine( const QgsAbstractGeometry *geometry, double precision = 0.0, Qgis::GeosCreationFlags flags = Qgis::GeosCreationFlag::SkipEmptyInteriorRings ) SIP_FACTORY;
+    static std::unique_ptr<QgsGeometryEngine> createGeometryEngine( const QgsAbstractGeometry *geometry, double precision = 0.0, Qgis::GeosCreationFlags flags = Qgis::GeosCreationFlag::SkipEmptyInteriorRings );
 
     /**
      * Upgrades a point list from QgsPointXY to QgsPoint

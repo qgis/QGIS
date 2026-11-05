@@ -90,6 +90,22 @@ class CORE_EXPORT QgsVirtualPointCloudProvider : public QgsPointCloudDataProvide
      */
     bool containsUnsupportedFiles() const { return mContainsUnsupportedFiles; }
 
+    /**
+     * Returns a list of file extensions supported for virtual point cloud (VPC) files.
+     *
+     * \see defaultVpcExtension()
+     * \since QGIS 4.4
+     */
+    static QStringList supportedVpcExtensions();
+
+    /**
+     * Returns the default file extension for virtual point cloud (VPC) files.
+     *
+     * \see supportedVpcExtensions()
+     * \since QGIS 4.4
+     */
+    static QString defaultVpcExtension();
+
   signals:
     void subIndexLoaded( int i );
 

@@ -517,7 +517,7 @@ std::unique_ptr< QgsMultiSurface > QgsArcGisRestUtils::convertGeometryPolygon( c
         {
           newPolygon->addInteriorRing( curve );
           it.remove();
-          engine.reset( QgsGeometry::createGeometryEngine( newPolygon ) );
+          engine = QgsGeometry::createGeometryEngine( newPolygon );
           engine->prepareGeometry();
         }
       }

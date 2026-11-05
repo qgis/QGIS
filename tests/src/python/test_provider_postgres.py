@@ -29,11 +29,15 @@ from qgis.analysis import QgsNativeAlgorithms
 from qgis.core import (
     NULL,
     Qgis,
+    QgsAbstractFeatureIterator,
     QgsApplication,
     QgsCoordinateReferenceSystem,
     QgsDataProvider,
     QgsDataSourceUri,
     QgsDefaultValue,
+    QgsExpression,
+    QgsExpressionContext,
+    QgsExpressionContextUtils,
     QgsFeature,
     QgsFeatureRequest,
     QgsFeatureSink,
@@ -325,6 +329,43 @@ class TestPyQgsPostgresProvider(QgisTestCase, ProviderTestCase):
             f.attributes()[datetime_idx],
             QDateTime(QDate(2004, 3, 4), QTime(13, 41, 52)),
         )
+
+    # https://github.com/qgis/QGIS/issues/62577
+    def testCompileIntervalValue(self):
+        """
+        QgsInterval value (in to_interval()) needs to be compiled
+        into a PostgreSQL interval.
+        """
+        vl = QgsVectorLayer(
+            f'{self.dbconn} table="qgis_test"."date_times" sql=',
+            "testdatetimes",
+            "postgres",
+        )
+        self.assertTrue(vl.isValid())
+
+        # get the current settings
+        compile_expressions = QgsSettings().value("/qgis/compileExpressions")
+        self.enableCompiler()
+
+        # prepare the expression, so that to_interval() is cached as a static QgsInterval value
+        expression = QgsExpression(
+            '"datetime_field" > "datetime_field" - to_interval(\'1 day\')'
+        )
+        context = QgsExpressionContext(
+            QgsExpressionContextUtils.globalProjectLayerScopes(vl)
+        )
+        expression.prepare(context)
+
+        it = vl.dataProvider().getFeatures(QgsFeatureRequest(expression, context))
+        self.assertEqual([f["id"] for f in it], [1])
+        self.assertEqual(
+            it.compileStatus(), QgsAbstractFeatureIterator.CompileStatus.Compiled
+        )
+        # invalid compiled SQL would silently fall back to local evaluation, check explicitly for it
+        self.assertFalse(it.compileFailed())
+
+        # restore the original settings
+        QgsSettings().setValue("/qgis/compileExpressions", compile_expressions)
 
     def testBooleanType(self):
         vl = QgsVectorLayer(
@@ -4756,6 +4797,22 @@ INSERT INTO public.test_geog_ext(g)
 
         # Cleanup
         conn.executeSql("DROP TABLE public.test_geog_ext")
+
+    def testTopoGeometryEstimatedExtent(self):
+        # https://github.com/qgis/QGIS/issues/60593
+        # the test with TopoGeometry provides extent but estimating raises
+        # unnecessary error message the test needs to check the extent
+        # (but it is not estimated) but also needs to check that no
+        # errors have been raised
+        vl = QgsVectorLayer(
+            f'{self.dbconn} estimatedmetadata=\'true\' table="qgis_test"."TopoLayer1" (topogeom)',
+            "topo",
+            "postgres",
+        )
+        if not vl.isValid():
+            self.skipTest("postgis_topology not available")
+        self.assertEqual(vl.extent(), QgsRectangle(0, 0, 10, 10))
+        self.assertFalse(vl.dataProvider().hasErrors(), vl.dataProvider().errors())
 
     # See: https://github.com/qgis/QGIS/issues/55856
     def testPktLowerCase(self):

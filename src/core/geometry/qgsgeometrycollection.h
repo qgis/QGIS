@@ -447,7 +447,7 @@ class CORE_EXPORT QgsGeometryCollection : public QgsAbstractGeometry
      *
      * \since QGIS 3.36
     */
-    QgsGeometryCollection *extractPartsByType( Qgis::WkbType type, bool useFlatType = true ) const SIP_FACTORY;
+    std::unique_ptr<QgsGeometryCollection> extractPartsByType( Qgis::WkbType type, bool useFlatType = true ) const;
 
     QgsGeometryCollection *createEmptyWithSameType() const override SIP_FACTORY;
 

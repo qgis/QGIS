@@ -571,6 +571,9 @@ void QgsApplication::init( QString profileFolder )
 
   {
     QgsScopedRuntimeProfile profile( tr( "Load color schemes" ) );
+    // TODO QGIS 5.0 - remove the default inclusion of the project instance
+    // the default inclusion of the project instance ensures that the "Project colors" scheme is available as it was before
+    colorSchemeRegistry()->setProject( QgsProject::instance() ); // skip-keyword-check
     colorSchemeRegistry()->addDefaultSchemes();
     colorSchemeRegistry()->initStyleScheme();
   }
@@ -1015,8 +1018,8 @@ QCursor QgsApplication::getThemeCursor( Cursor cursor )
       activeY = 6;
       break;
     case Sampler:
-      activeX = 5;
-      activeY = 5;
+      activeX = 0;
+      activeY = 0;
       name = u"mSampler.svg"_s;
       break;
       // No default

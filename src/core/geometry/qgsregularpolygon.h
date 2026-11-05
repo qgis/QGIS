@@ -158,12 +158,12 @@ class CORE_EXPORT QgsRegularPolygon
     /**
      * Returns as a polygon.
      */
-    QgsPolygon *toPolygon() const SIP_FACTORY;
+    std::unique_ptr<QgsPolygon> toPolygon() const;
 
     /**
      * Returns as a linestring.
      */
-    QgsLineString *toLineString() const SIP_FACTORY;
+    std::unique_ptr<QgsLineString> toLineString() const;
 
     /**
      * Returns as a triangle.

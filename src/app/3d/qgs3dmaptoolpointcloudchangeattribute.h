@@ -38,16 +38,18 @@ struct MapToPixel3D
     QgsVector3D origin; // shift of world coordinates
     QSize canvasSize;
 
-    QPointF transform( double x, double y, double z, bool *isInView = nullptr ) const
+    QPointF transform( double x, double y, double z, bool *isInView = nullptr, bool *isBehindCamera = nullptr ) const
     {
       const QVector4D cClip = VP * QVector4D( static_cast<float>( x - origin.x() ), static_cast<float>( y - origin.y() ), static_cast<float>( z - origin.z() ), 1 );
+      if ( isBehindCamera )
+        *isBehindCamera = cClip.w() <= 0;
       // normalized device coordinates (-1 to +1)
       // z == -1 is near plane, z == +1 is far plane
       const float xNdc = cClip.x() / cClip.w();
       const float yNdc = cClip.y() / cClip.w();
       const float zNdc = cClip.z() / cClip.w();
       if ( isInView )
-        *isInView = !( zNdc < -1 || zNdc > 1 || yNdc < -1 || yNdc > 1 || zNdc < -1 || xNdc > 1 );
+        *isInView = !( zNdc < -1 || zNdc > 1 || yNdc < -1 || yNdc > 1 || xNdc < -1 || xNdc > 1 );
 
       // window / screen space coordinates
       const float xScreen = ( xNdc + 1 ) * 0.5f * static_cast<float>( canvasSize.width() );
@@ -94,16 +96,24 @@ class Qgs3DMapToolPointCloudChangeAttribute : public Qgs3DMapTool
     double mNewValue = 0;
 
   private:
+    //! Find points intersecting \a searchPolygon in Screen coordinates
     SelectedPoints searchPoints( QgsPointCloudLayer *layer, const QgsGeos &searchPolygon, Qgs3DMapCanvas &canvas, QgsPointCloudIndex &pc );
 
+    /**
+     * \param searchPolygon in Screen pixel coordinates
+     * \param mapExtent in map coordinates
+     * \param ct transform from layer to map coordinates
+     */
     QVector<int> selectedPointsInNode(
       const QgsGeos &searchPolygon,
       QgsPointCloudNodeId n,
       const MapToPixel3D &mapToPixel3D,
       QgsPointCloudIndex index,
-      QgsRectangle mapExtent,
-      QgsPointCloudLayerElevationProperties &elevationProperties,
-      QgsAbstract3DRenderer *renderer3D
+      const QgsRectangle &mapExtent,
+      double layerZScale,
+      double layerZOffset,
+      QgsAbstract3DRenderer *renderer3D,
+      QgsCoordinateTransform ct
     );
 
     QgsGeometry box3DToPolygonInScreenSpace( const QgsBox3D &box, const MapToPixel3D &mapToPixel3D );

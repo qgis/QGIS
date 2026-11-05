@@ -971,7 +971,7 @@ bool QgsPolyhedralSurface::transform( QgsAbstractGeometryTransformer *transforme
   return res;
 }
 
-QgsMultiPolygon *QgsPolyhedralSurface::toMultiPolygon() const
+std::unique_ptr<QgsMultiPolygon> QgsPolyhedralSurface::toMultiPolygon() const
 {
   auto multiPolygon = std::make_unique< QgsMultiPolygon >();
   multiPolygon->reserve( mPatches.size() );
@@ -979,7 +979,7 @@ QgsMultiPolygon *QgsPolyhedralSurface::toMultiPolygon() const
   {
     multiPolygon->addGeometry( polygon->clone() );
   }
-  return multiPolygon.release();
+  return multiPolygon;
 }
 
 void QgsPolyhedralSurface::filterVertices( const std::function<bool( const QgsPoint & )> &filter )
