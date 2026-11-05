@@ -2989,7 +2989,7 @@ int QgsPostgresConn::crsToSrid( const QgsCoordinateReferenceSystem &crs, QString
 
   if ( result.PQresultStatus() != PGRES_TUPLES_OK )
   {
-    errorMessage = QObject::tr( "Could not query PostGIS for CRS %1: %2" ).arg( crs.authid(), result.PQresultErrorMessage() );
+    errorMessage = QObject::tr( "Could not query PostGIS spatial_ref_sys table for CRS %1: %2" ).arg( crs.authid(), result.PQresultErrorMessage() );
     return -1;
   }
 
