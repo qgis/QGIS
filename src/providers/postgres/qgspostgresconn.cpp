@@ -2955,7 +2955,7 @@ QgsCoordinateReferenceSystem QgsPostgresConn::sridToCrs( int srid, QString &erro
       if ( crs.isValid() )
         mCrsCache.insert( srid, crs );
       else
-        errorMessage = QObject::tr( "Could not create a valid CRS for SRID %1." ).arg( srid );
+        errorMessage = QObject::tr( "Could not create a valid CRS for SRID %1. Please check the definition in the PostGIS spatial_ref_sys table for validity." ).arg( srid );
     }
     else if ( result.PQresultStatus() != PGRES_TUPLES_OK )
       errorMessage = QObject::tr( "Could not query PostGIS for SRID %1: %2" ).arg( srid ).arg( result.PQresultErrorMessage() );
