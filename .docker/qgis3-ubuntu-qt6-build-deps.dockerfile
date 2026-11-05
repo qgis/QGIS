@@ -230,6 +230,7 @@ RUN  apt-get update \
     qt6-tools-dev-tools \
     qt6-base-private-dev \
     qt6-5compat-dev \
+    qt6-wayland-dev \
     qt6-webengine-dev \
     qt6-pdf-dev \
     qt6-serialport-dev \
