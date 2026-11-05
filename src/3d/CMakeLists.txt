@@ -383,6 +383,10 @@ elseif (UNIX)
   include_directories(${CMAKE_SOURCE_DIR}/src/native/linux)
 endif()
 
+if(WITH_TBB)
+   target_link_libraries(qgis_3d TBB::tbb)
+endif()
+
 target_link_libraries(qgis_3d
   ${QT_VERSION_BASE}::3DCore
   ${QT_VERSION_BASE}::3DRender
