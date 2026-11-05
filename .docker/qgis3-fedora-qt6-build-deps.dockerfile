@@ -70,6 +70,7 @@ RUN dnf -y --refresh install \
     qt6-qtdeclarative-devel \
     qt6-qt5compat-devel \
     qt6-qtmultimedia-devel \
+    qt6-qtwayland-devel \
     qt6-qtwebengine-devel \
     qtkeychain-qt6-devel \
     qwt-qt6-devel \
@@ -81,6 +82,7 @@ RUN dnf -y --refresh install \
     unixODBC-devel \
     xorg-x11-server-Xvfb \
     util-linux \
+    wayland-devel \
     wget \
     openssl-devel \
     libsecret-devel \
