@@ -90,16 +90,6 @@ class APP_EXPORT QgsClipboard : public QObject
     QgsFeatureList copyOf( const QgsFields &fields = QgsFields() ) const;
 
     /**
-     * Clears the internal clipboard.
-     */
-    void clear();
-
-    /**
-     * Inserts a copy of the feature on the internal clipboard.
-     */
-    void insert( const QgsFeature &feature );
-
-    /**
      * Returns TRUE if the internal clipboard is empty, else FALSE.
      */
     bool isEmpty() const;

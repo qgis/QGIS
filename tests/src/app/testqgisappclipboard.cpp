@@ -623,7 +623,6 @@ void TestQgisAppClipboard::testVectorTileLayer()
 void TestQgisAppClipboard::copyPasteUnset()
 {
   QgsClipboard clipboard;
-  clipboard.clear();
 
   QgsFields fields;
   fields.append( QgsField( u"int_field"_s, QMetaType::Type::Int ) );

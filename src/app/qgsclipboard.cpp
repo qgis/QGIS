@@ -480,23 +480,6 @@ QgsFeatureList QgsClipboard::copyOf( const QgsFields &fields ) const
   return stringToFeatureList( text, fields );
 }
 
-void QgsClipboard::clear()
-{
-  mFeatureClipboard.clear();
-
-  QgsDebugMsgLevel( u"cleared clipboard."_s, 2 );
-  emit changed();
-}
-
-void QgsClipboard::insert( const QgsFeature &feature )
-{
-  mFeatureClipboard.push_back( feature );
-
-  QgsDebugMsgLevel( "inserted " + feature.geometry().asWkt(), 4 );
-  mUseSystemClipboard = false;
-  emit changed();
-}
-
 bool QgsClipboard::isEmpty() const
 {
   QClipboard *cb = QApplication::clipboard();
