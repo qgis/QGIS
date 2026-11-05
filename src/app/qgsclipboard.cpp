@@ -113,16 +113,6 @@ void QgsClipboard::setSystemClipboard(QgsMapLayer* sourceLayer, const QgsCoordin
   QClipboard *cb = QApplication::clipboard();
 
   QgsFeatureListMimeData *m = new QgsFeatureListMimeData( sourceLayer, crs, fields, features );
-
-  // With qgis running under Linux, but with a Windows based X
-  // server (Xwin32), ::Selection was necessary to get the data into
-  // the Windows clipboard (which seems contrary to the Qt
-  // docs). With a Linux X server, ::Clipboard was required.
-  // The simple solution was to put the text into both clipboards.
-  if ( cb->supportsSelection() )
-  {
-    cb->setMimeData( m, QClipboard::Selection );
-  }
   cb->setMimeData( m, QClipboard::Clipboard );
 }
 
@@ -229,15 +219,7 @@ QgsFields QgsClipboard::retrieveFields() const
 {
   QClipboard *cb = QApplication::clipboard();
 
-  QString string;
-  if ( cb->supportsSelection() )
-  {
-    string = cb->text( QClipboard::Selection );
-  }
-  else
-  {
-    string = cb->text( QClipboard::Clipboard );
-  }
+  const QString string = cb->text( QClipboard::Clipboard );
 
   QgsFields f = QgsOgrUtils::stringToFields( string, QTextCodec::codecForName( "System" ) );
   if ( f.size() < 1 )
@@ -283,8 +265,10 @@ QgsFeatureList QgsClipboard::copyOf( const QgsFields &fields ) const
     return featureListData->mFeatures;
   }
 
-  QString text;
-  if ( cb->supportsSelection() )
+  const QMimeData *data = QApplication::clipboard()->mimeData();
+  if ( !data )
+    return false;
+
   {
     text = cb->text( QClipboard::Selection );
   }
@@ -309,15 +293,7 @@ QgsFeatureList QgsClipboard::copyOf( const QgsFields &fields ) const
 bool QgsClipboard::isEmpty() const
 {
   QClipboard *cb = QApplication::clipboard();
-  QString text;
-  if ( cb->supportsSelection() )
-  {
-    text = cb->text( QClipboard::Selection );
-  }
-  else
-  {
-    text = cb->text( QClipboard::Clipboard );
-  }
+  const QString text = cb->text( QClipboard::Clipboard );
 
   bool hasFeatureClipboard = false;
   if ( const QgsFeatureListMimeData* featureListData = featureListDataFromClipboard() )
@@ -367,19 +343,11 @@ void QgsClipboard::setData( const QString &mimeType, const QByteArray &data, con
     mdata->setText( text );
   }
   // Transfers ownership to the clipboard object
-  if ( QApplication::clipboard()->supportsSelection() )
-  {
-    QApplication::clipboard()->setMimeData( mdata, QClipboard::Selection );
-  }
   QApplication::clipboard()->setMimeData( mdata, QClipboard::Clipboard );
 }
 
 void QgsClipboard::setText( const QString &text )
 {
-  if ( QApplication::clipboard()->supportsSelection() )
-  {
-    QApplication::clipboard()->setText( text, QClipboard::Selection );
-  }
   QApplication::clipboard()->setText( text, QClipboard::Clipboard );
 }
 
@@ -547,18 +515,9 @@ void QgsClipboard::systemClipboardChanged()
 const QgsFeatureListMimeData* QgsClipboard::featureListDataFromClipboard() const
 {
   QClipboard *cb = QApplication::clipboard();
-  const QMimeData* data = nullptr;
-  if ( cb->supportsSelection() )
-  {
-    data = cb->mimeData( QClipboard::Selection );
-  }
-  else
-  {
-    data = cb->mimeData( QClipboard::Clipboard );
-  }
-  const QgsFeatureListMimeData* ff = qobject_cast< const QgsFeatureListMimeData* >( data );
-  QgsDebugError( u"Got clipboard? %1"_s.arg( ff ? "y" : "N"));
-  return ff;
+  const QMimeData* data = cb->mimeData( QClipboard::Clipboard );
+
+  return qobject_cast< const QgsFeatureListMimeData* >( data );
 }
 
 //
