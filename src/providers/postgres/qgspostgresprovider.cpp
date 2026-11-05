@@ -449,7 +449,10 @@ int QgsPostgresProvider::crsToSrid( const QgsCoordinateReferenceSystem &crs, Qgs
 {
   int srid = -1;
   if ( conn )
-    srid = conn->crsToSrid( crs );
+  {
+    QString errorMessage;
+    srid = conn->crsToSrid( crs, errorMessage );
+  }
   return srid;
 }
 
@@ -457,7 +460,10 @@ QgsCoordinateReferenceSystem QgsPostgresProvider::sridToCrs( int srid, QgsPostgr
 {
   QgsCoordinateReferenceSystem crs;
   if ( conn )
-    crs = conn->sridToCrs( srid );
+  {
+    QString errorMessage;
+    crs = conn->sridToCrs( srid, errorMessage );
+  }
   return crs;
 }
 
@@ -4635,29 +4641,19 @@ Qgis::VectorExportResult QgsPostgresProvider::createEmptyLayer(
     long srid;
 
     // get srid from PostGIS
-
     if ( !srs.authid().isEmpty() )
     {
-      QStringList authId_list = srs.authid().split( ':' );
-
-      sql = u"SELECT srid FROM public.spatial_ref_sys WHERE auth_name = %1 AND auth_srid = %2"_s.arg( quotedValue( authId_list[0] ) ).arg( quotedValue( authId_list[1] ) );
-
-      result = conn->LoggedPQexec( "QgsPostgresProvider", sql );
-
-      if ( result.PQresultStatus() != PGRES_TUPLES_OK )
-        throw PGException( result );
-
-      if ( result.PQntuples() < 1 )
+      QString sridError;
+      srid = conn->crsToSrid( srs, sridError );
+      if ( srid < 0 )
       {
         if ( errorMessage )
-          *errorMessage = QObject::tr( "Creation of data source %1 failed: \n No record matching %2 found in public.spatial_ref_sys" ).arg( schemaTableName, srs.authid() );
+          *errorMessage = QObject::tr( "Creation of data source %1 failed:\n%2" ).arg( schemaTableName, sridError );
 
         conn->LoggedPQexecNR( "QgsPostgresProvider", u"ROLLBACK"_s );
         conn->unref();
         return Qgis::VectorExportResult::ErrorCreatingLayer;
       }
-
-      srid = result.PQgetvalue( 0, 0 ).toLong();
     }
     else
     {
