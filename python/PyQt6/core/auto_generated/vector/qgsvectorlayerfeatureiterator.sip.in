@@ -14,6 +14,7 @@
 
 %ModuleHeaderCode
 #include "qgsfeatureiterator.h"
+#include "qgsvectorlayerfeatureiterator.h"
 %End
 
   class QgsVectorLayerFeatureSource : QgsAbstractFeatureSource
@@ -76,6 +77,11 @@ Returns the layer id of the source layer.
 };
 
 
+%ModuleHeaderCode
+#include "qgsfeatureiterator.h"
+typedef QgsAbstractFeatureIteratorFromSource<QgsVectorLayerFeatureSource> QgsAbstractFeatureIteratorFromSourceQgsVectorLayerFeatureSourceBase;
+%End
+
 typedef QgsAbstractFeatureIteratorFromSource<QgsVectorLayerFeatureSource> QgsAbstractFeatureIteratorFromSourceQgsVectorLayerFeatureSourceBase /NoTypeName/;
 
 class QgsVectorLayerFeatureIterator : QgsAbstractFeatureIteratorFromSourceQgsVectorLayerFeatureSourceBase
@@ -87,8 +93,6 @@ A feature iterator which iterates over features from a
 
 %TypeHeaderCode
 #include "qgsvectorlayerfeatureiterator.h"
-#include "qgsfeatureiterator.h"
-typedef QgsAbstractFeatureIteratorFromSource<QgsVectorLayerFeatureSource> QgsAbstractFeatureIteratorFromSourceQgsVectorLayerFeatureSourceBase;
 %End
   public:
     QgsVectorLayerFeatureIterator( QgsVectorLayerFeatureSource *source, bool ownSource, const QgsFeatureRequest &request );

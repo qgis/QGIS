@@ -5412,14 +5412,23 @@ class TestQgsExpression : public QObject
       QStringList appendExpected = array;
       appendExpected << u"three"_s;
       QCOMPARE( QgsExpression( "array_append(\"strings\", 'three')" ).evaluate( &context ), QVariant( appendExpected ) );
+      QCOMPARE( QgsExpression( "array_insert(\"strings\", 2, 'three')" ).evaluate( &context ), QVariant( appendExpected ) );
+      QCOMPARE( QgsExpression( "array_insert(\"strings\", 42, 'three')" ).evaluate( &context ), QVariant( appendExpected ) );
 
       QStringList prependExpected = array;
       prependExpected.prepend( u"zero"_s );
       QCOMPARE( QgsExpression( "array_prepend(\"strings\", 'zero')" ).evaluate( &context ), QVariant( prependExpected ) );
+      QCOMPARE( QgsExpression( "array_insert(\"strings\", 0, 'zero')" ).evaluate( &context ), QVariant( prependExpected ) );
+      QCOMPARE( QgsExpression( "array_insert(\"strings\", -2, 'zero')" ).evaluate( &context ), QVariant( prependExpected ) );
+      QCOMPARE( QgsExpression( "array_insert(\"strings\", -42, 'zero')" ).evaluate( &context ), QVariant( prependExpected ) );
 
       QStringList insertExpected = array;
       insertExpected.insert( 1, u"one and a half"_s );
       QCOMPARE( QgsExpression( "array_insert(\"strings\", 1, 'one and a half')" ).evaluate( &context ), QVariant( insertExpected ) );
+
+      QCOMPARE( QgsExpression( "array_insert( array(), 0, 'one')" ).evaluate( &context ), QVariant( QVariantList() << u"one"_s ) );
+      QCOMPARE( QgsExpression( "array_insert( array(), -1, 'one')" ).evaluate( &context ), QVariant( QVariantList() << u"one"_s ) );
+      QCOMPARE( QgsExpression( "array_insert( array(), 1, 'one')" ).evaluate( &context ), QVariant( QVariantList() << u"one"_s ) );
 
       QStringList removeAtExpected = array;
       removeAtExpected.removeAt( 0 );
@@ -5504,14 +5513,23 @@ class TestQgsExpression : public QObject
       QVariantList appendExpected = array;
       appendExpected << 3;
       QCOMPARE( QgsExpression( "array_append(\"ints\", 3)" ).evaluate( &context ), QVariant( appendExpected ) );
+      QCOMPARE( QgsExpression( "array_insert(\"ints\", 2, 3)" ).evaluate( &context ), QVariant( appendExpected ) );
+      QCOMPARE( QgsExpression( "array_insert(\"ints\", 42, 3)" ).evaluate( &context ), QVariant( appendExpected ) );
 
       QVariantList prependExpected = array;
       prependExpected.prepend( 0 );
       QCOMPARE( QgsExpression( "array_prepend(\"ints\", 0)" ).evaluate( &context ), QVariant( prependExpected ) );
+      QCOMPARE( QgsExpression( "array_insert(\"ints\", 0, 0)" ).evaluate( &context ), QVariant( prependExpected ) );
+      QCOMPARE( QgsExpression( "array_insert(\"ints\", -2, 0)" ).evaluate( &context ), QVariant( prependExpected ) );
+      QCOMPARE( QgsExpression( "array_insert(\"ints\", -42, 0)" ).evaluate( &context ), QVariant( prependExpected ) );
 
       QVariantList insertExpected = array;
       insertExpected.insert( 1, 2 );
       QCOMPARE( QgsExpression( "array_insert(\"ints\", 1, 2)" ).evaluate( &context ), QVariant( insertExpected ) );
+
+      QCOMPARE( QgsExpression( "array_insert( array(), 0, 1)" ).evaluate( &context ), QVariant( QVariantList() << 1 ) );
+      QCOMPARE( QgsExpression( "array_insert( array(), -1, 1)" ).evaluate( &context ), QVariant( QVariantList() << 1 ) );
+      QCOMPARE( QgsExpression( "array_insert( array(), 1, 1)" ).evaluate( &context ), QVariant( QVariantList() << 1 ) );
 
       QVariantList removeAtExpected = array;
       removeAtExpected.removeAt( 0 );
