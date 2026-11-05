@@ -188,7 +188,7 @@ PDFCertificateInfo PDFCertificateInfo::getCertificateInfo(x509_st* certificate)
 {
     PDFCertificateInfo info;
 
-    auto getStringFromASN1_STRING = [](ASN1_STRING* string) -> QString
+    auto getStringFromASN1_STRING = [](const ASN1_STRING* string) -> QString
     {
         QString result;
 
@@ -207,12 +207,12 @@ PDFCertificateInfo PDFCertificateInfo::getCertificateInfo(x509_st* certificate)
         return result;
     };
 
-    auto getStringFromX509Name = [&getStringFromASN1_STRING](X509_NAME* name, int nid) -> QString
+    auto getStringFromX509Name = [&getStringFromASN1_STRING](const X509_NAME* name, int nid) -> QString
     {
         QString result;
 
         const int stringLocation = X509_NAME_get_index_by_NID(name, nid, -1);
-        X509_NAME_ENTRY* entry = X509_NAME_get_entry(name, stringLocation);
+        const X509_NAME_ENTRY* entry = X509_NAME_get_entry(name, stringLocation);
         return getStringFromASN1_STRING(X509_NAME_ENTRY_get_data(entry));
     };
 
@@ -239,7 +239,7 @@ PDFCertificateInfo PDFCertificateInfo::getCertificateInfo(x509_st* certificate)
         return result;
     };
 
-    if (X509_NAME* subjectName = X509_get_subject_name(certificate))
+    if (const X509_NAME* subjectName = X509_get_subject_name(certificate))
     {
         // List of these properties are in RFC 5280, section 4.1.2.4, these attributes
         // are standard and all implementations must be prepared to process them.
@@ -291,7 +291,7 @@ PDFCertificateInfo PDFCertificateInfo::getCertificateInfo(x509_st* certificate)
         info.setNotValidBefore(getDateTimeFromASN(notBeforeTime));
         info.setNotValidAfter(getDateTimeFromASN(notAfterTime));
 
-        X509_PUBKEY* publicKey = X509_get_X509_PUBKEY(certificate);
+        const X509_PUBKEY* publicKey = X509_get_X509_PUBKEY(certificate);
         EVP_PKEY* evpKey = X509_PUBKEY_get(publicKey);
         const int keyType = EVP_PKEY_type(EVP_PKEY_base_id(evpKey));
 
