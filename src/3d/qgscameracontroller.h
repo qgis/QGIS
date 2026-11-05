@@ -49,6 +49,7 @@ class QgsVector3D;
 class QgsWindow3DEngine;
 class Qgs3DMapScene;
 class QgsCrossSection;
+class QgsPointerLocker;
 
 /**
  * \ingroup qgis_3d
@@ -460,6 +461,8 @@ class _3D_EXPORT QgsCameraController : public QObject
     // Moves given point (in ECEF) by specified lat/lon angle difference (in degrees) and returns new ECEF point
     QgsVector3D moveGeocentricPoint( const QgsVector3D &point, double latDiff, double lonDiff );
 
+    void applyRelativePointerRotation( double dx, double dy );
+
     //! The 3d scene the controller uses
     Qgs3DMapScene *mScene = nullptr;
 
@@ -524,6 +527,8 @@ class _3D_EXPORT QgsCameraController : public QObject
 
     //! Did camera change since last frame? Need to know if we should emit cameraChanged().
     bool mCameraChanged = false;
+
+    QgsPointerLocker *mPointerLocker = nullptr;
 
     // To test the cameracontroller
     friend class TestQgs3DRendering;
