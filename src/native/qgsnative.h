@@ -41,7 +41,7 @@ class NATIVE_EXPORT QgsNative : public QObject
 
   public:
     //! Native interface capabilities
-    enum Capability
+    enum class Capability : int
     {
       NativeDesktopNotifications = 1 << 1, //!< Native desktop notifications are supported. See showDesktopNotification().
       NativeFilePropertiesDialog = 1 << 2, //!< Platform can show a native "file" (or folder) properties dialog.
