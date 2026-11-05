@@ -73,7 +73,6 @@ Qgs3DMapCanvas::Qgs3DMapCanvas()
   } );
 
   setCursor( Qt::OpenHandCursor );
-  installEventFilter( this );
 }
 
 Qgs3DMapCanvas::~Qgs3DMapCanvas()
@@ -304,9 +303,6 @@ void Qgs3DMapCanvas::setMapTool( Qgs3DMapTool *tool )
 
 bool Qgs3DMapCanvas::eventFilter( QObject *watched, QEvent *event )
 {
-  if ( watched != this )
-    return false;
-
   if ( mScene && mScene->get3DAxis() && mScene->get3DAxis()->handleEvent( event ) )
   {
     event->accept();
