@@ -297,6 +297,77 @@ bool QgsSpatiaLiteProviderConnection::spatialIndexExists( const QString &schema,
   return !res.isEmpty() && !res.at( 0 ).isEmpty() && res.at( 0 ).at( 0 ).toInt() == 1;
 }
 
+void QgsSpatiaLiteProviderConnection::createIndex( const QString &schema, const QString &table, const QString &column, const QString &name ) const
+{
+  Q_UNUSED( schema )
+  checkCapability( Qgis::DatabaseProviderConnectionCapability2::CreateIndex );
+
+  if ( name.isEmpty() || column.isEmpty() || table.isEmpty() )
+  {
+    throw QgsProviderConnectionException( QObject::tr( "Column name, table or index name not specified while creating index" ) );
+  }
+
+  bool columnExists = false;
+  const QList<QVariantList> columnRows = executeSqlPrivate( u"PRAGMA table_info(%1)"_s.arg( QgsSqliteUtils::quotedString( table ) ) ).rows();
+  for ( const QVariantList &row : columnRows )
+  {
+    if ( row.at( 1 ).toString().compare( column, Qt::CaseInsensitive ) == 0 )
+    {
+      columnExists = true;
+      break;
+    }
+  }
+
+  if ( !columnExists )
+  {
+    throw QgsProviderConnectionException( QObject::tr( "Column '%1' does not exist in table '%2'" ).arg( column, table ) );
+  }
+
+  executeSqlPrivate( u"CREATE INDEX %1 ON %2 (%3)"_s.arg( QgsSqliteUtils::quotedIdentifier( name ), QgsSqliteUtils::quotedIdentifier( table ), QgsSqliteUtils::quotedIdentifier( column ) ) );
+}
+
+QMap<QString, QStringList> QgsSpatiaLiteProviderConnection::tableIndexes( const QString &schema, const QString &table ) const
+{
+  Q_UNUSED( schema )
+  checkCapability( Qgis::DatabaseProviderConnectionCapability2::ListTableIndexes );
+
+  if ( table.isEmpty() )
+  {
+    throw QgsProviderConnectionException( QObject::tr( "Table not specified while listing indexes" ) );
+  }
+
+  // we only care about the user created indexes, pk and uniques not, as those are created automatically
+  const QList<QVariantList> rows = executeSqlPrivate(
+                                     u"SELECT il.name AS index_name, ii.name AS column_name FROM pragma_index_list(%1) il LEFT JOIN pragma_index_info(il.name) ii WHERE il.origin = 'c'"_s.arg(
+                                       QgsSqliteUtils::quotedString( table )
+                                     )
+  )
+                                     .rows();
+
+  QMap<QString, QStringList> result;
+  for ( const QVariantList &row : rows )
+  {
+    QStringList &columns = result[row.at( 0 ).toString()];
+    if ( !row.at( 1 ).isNull() )
+      columns.append( row.at( 1 ).toString() );
+  }
+  return result;
+}
+
+void QgsSpatiaLiteProviderConnection::deleteIndex( const QString &schema, const QString &table, const QString &name ) const
+{
+  Q_UNUSED( schema )
+  Q_UNUSED( table )
+  checkCapability( Qgis::DatabaseProviderConnectionCapability2::DeleteIndex );
+
+  if ( name.isEmpty() )
+  {
+    throw QgsProviderConnectionException( QObject::tr( "Index name not specified while deleting index" ) );
+  }
+
+  executeSqlPrivate( u"DROP INDEX %1"_s.arg( QgsSqliteUtils::quotedIdentifier( name ) ) );
+}
+
 QList<QgsSpatiaLiteProviderConnection::TableProperty> QgsSpatiaLiteProviderConnection::tables( const QString &schema, const TableFlags &flags, QgsFeedback *feedback ) const
 {
   checkCapability( Capability::Tables );
@@ -465,6 +536,8 @@ void QgsSpatiaLiteProviderConnection::setDefaultCapabilities()
     GeometryColumnCapability::SinglePolygon,
   };
   mSqlLayerDefinitionCapabilities = { Qgis::SqlLayerDefinitionCapability::SubsetStringFilter, Qgis::SqlLayerDefinitionCapability::GeometryColumn };
+
+  mCapabilities2 |= Qgis::DatabaseProviderConnectionCapability2::CreateIndex | Qgis::DatabaseProviderConnectionCapability2::ListTableIndexes | Qgis::DatabaseProviderConnectionCapability2::DeleteIndex;
 }
 
 QgsAbstractDatabaseProviderConnection::QueryResult QgsSpatiaLiteProviderConnection::executeSqlPrivate( const QString &sql, QgsFeedback *feedback ) const

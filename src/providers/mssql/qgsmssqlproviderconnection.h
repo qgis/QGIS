@@ -77,6 +77,9 @@ class QgsMssqlProviderConnection : public QgsAbstractDatabaseProviderConnection
     Qgis::DatabaseProviderTableImportCapabilities tableImportCapabilities() const override;
     QString defaultPrimaryKeyColumnName() const override;
     void moveTableToSchema( const QString &sourceSchema, const QString &tableName, const QString &targetSchema ) const override;
+    void createIndex( const QString &schema, const QString &table, const QString &column, const QString &name ) const override;
+    QMap<QString, QStringList> tableIndexes( const QString &schema, const QString &table ) const override;
+    void deleteIndex( const QString &schema, const QString &table, const QString &name ) const override;
 
   private:
     QgsAbstractDatabaseProviderConnection::QueryResult executeSqlPrivate( const QString &sql, bool resolveTypes = true, QgsFeedback *feedback = nullptr ) const;

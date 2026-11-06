@@ -113,6 +113,8 @@ void QgsMssqlProviderConnection::setDefaultCapabilities()
     Qgis::SqlLayerDefinitionCapability::GeometryColumn,
     Qgis::SqlLayerDefinitionCapability::UnstableFeatureIds,
   };
+
+  mCapabilities2 |= Qgis::DatabaseProviderConnectionCapability2::CreateIndex | Qgis::DatabaseProviderConnectionCapability2::ListTableIndexes | Qgis::DatabaseProviderConnectionCapability2::DeleteIndex;
 }
 
 void QgsMssqlProviderConnection::dropTablePrivate( const QString &schema, const QString &name ) const
@@ -909,4 +911,60 @@ QgsAbstractDatabaseProviderConnection::SqlVectorLayerOptions QgsMssqlProviderCon
   const QString trimmedTable { tUri.table().trimmed() };
   options.sql = trimmedTable.startsWith( '(' ) ? trimmedTable.mid( 1 ).chopped( 1 ) : u"SELECT * FROM %1"_s.arg( tUri.quotedTablename() );
   return options;
+}
+
+void QgsMssqlProviderConnection::createIndex( const QString &schema, const QString &table, const QString &column, const QString &name ) const
+{
+  checkCapability( Qgis::DatabaseProviderConnectionCapability2::CreateIndex );
+
+  if ( name.isEmpty() || column.isEmpty() || table.isEmpty() )
+  {
+    throw QgsProviderConnectionException( QObject::tr( "Column name, table or index name not specified while creating index" ) );
+  }
+
+  const QString schemaTable = schema.isEmpty() ? QgsMssqlUtils::quotedIdentifier( table ) : u"%1.%2"_s.arg( QgsMssqlUtils::quotedIdentifier( schema ), QgsMssqlUtils::quotedIdentifier( table ) );
+
+  executeSqlPrivate( u"CREATE INDEX %1 ON %2 (%3)"_s.arg( QgsMssqlUtils::quotedIdentifier( name ), schemaTable, QgsMssqlUtils::quotedIdentifier( column ) ) );
+}
+
+QMap<QString, QStringList> QgsMssqlProviderConnection::tableIndexes( const QString &schema, const QString &table ) const
+{
+  checkCapability( Qgis::DatabaseProviderConnectionCapability2::ListTableIndexes );
+
+  if ( table.isEmpty() )
+  {
+    throw QgsProviderConnectionException( QObject::tr( "Table not specified while listing indexes" ) );
+  }
+
+  const QString qualifiedTable = schema.isEmpty() ? QgsMssqlUtils::quotedIdentifier( table ) : u"%1.%2"_s.arg( QgsMssqlUtils::quotedIdentifier( schema ), QgsMssqlUtils::quotedIdentifier( table ) );
+
+  // skip tables which we cannot delete, pk, uniques from the mssql itself (is_unique_constraint)
+  const QList<QVariantList> rows = executeSqlPrivate(
+                                     u"SELECT i.name, COL_NAME(ic.object_id, ic.column_id) FROM sys.indexes i "
+                                     "JOIN sys.index_columns ic ON ic.object_id = i.object_id AND ic.index_id = i.index_id "
+                                     "WHERE i.object_id = OBJECT_ID(%1) "
+                                     "AND i.is_primary_key = 0 AND i.is_unique_constraint = 0 AND ic.is_included_column = 0"_s.arg( QgsMssqlUtils::quotedValue( qualifiedTable ) )
+  )
+                                     .rows();
+
+  QMap<QString, QStringList> result;
+  for ( const QVariantList &row : rows )
+  {
+    result[row.at( 0 ).toString()].append( row.at( 1 ).toString() );
+  }
+  return result;
+}
+
+void QgsMssqlProviderConnection::deleteIndex( const QString &schema, const QString &table, const QString &name ) const
+{
+  checkCapability( Qgis::DatabaseProviderConnectionCapability2::DeleteIndex );
+
+  if ( table.isEmpty() || name.isEmpty() )
+  {
+    throw QgsProviderConnectionException( QObject::tr( "Table or index name not specified while deleting index" ) );
+  }
+
+  const QString schemaTable = schema.isEmpty() ? QgsMssqlUtils::quotedIdentifier( table ) : u"%1.%2"_s.arg( QgsMssqlUtils::quotedIdentifier( schema ), QgsMssqlUtils::quotedIdentifier( table ) );
+
+  executeSqlPrivate( u"DROP INDEX %1 ON %2"_s.arg( QgsMssqlUtils::quotedIdentifier( name ), schemaTable ) );
 }

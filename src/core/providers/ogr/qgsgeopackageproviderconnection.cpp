@@ -191,6 +191,77 @@ void QgsGeoPackageProviderConnection::deleteSpatialIndex( const QString &schema,
   executeGdalSqlPrivate( u"SELECT DisableSpatialIndex(%1, %2)"_s.arg( QgsSqliteUtils::quotedString( name ), QgsSqliteUtils::quotedString( geometryColumn ) ) );
 }
 
+void QgsGeoPackageProviderConnection::createIndex( const QString &schema, const QString &table, const QString &column, const QString &name ) const
+{
+  Q_UNUSED( schema )
+  checkCapability( Qgis::DatabaseProviderConnectionCapability2::CreateIndex );
+
+  if ( name.isEmpty() || column.isEmpty() || table.isEmpty() )
+  {
+    throw QgsProviderConnectionException( QObject::tr( "Column name, table or index name not specified while creating index" ) );
+  }
+
+  bool columnExists = false;
+  const QList<QVariantList> columnRows = executeGdalSqlPrivate( u"PRAGMA table_info(%1)"_s.arg( QgsSqliteUtils::quotedString( table ) ) ).rows();
+  for ( const QVariantList &row : columnRows )
+  {
+    if ( row.at( 1 ).toString().compare( column, Qt::CaseInsensitive ) == 0 )
+    {
+      columnExists = true;
+      break;
+    }
+  }
+
+  if ( !columnExists )
+  {
+    throw QgsProviderConnectionException( QObject::tr( "Column '%1' does not exist in table '%2'" ).arg( column, table ) );
+  }
+
+  executeGdalSqlPrivate( u"CREATE INDEX %1 ON %2 (%3)"_s.arg( QgsSqliteUtils::quotedIdentifier( name ), QgsSqliteUtils::quotedIdentifier( table ), QgsSqliteUtils::quotedIdentifier( column ) ) );
+}
+
+QMap<QString, QStringList> QgsGeoPackageProviderConnection::tableIndexes( const QString &schema, const QString &table ) const
+{
+  Q_UNUSED( schema )
+  checkCapability( Qgis::DatabaseProviderConnectionCapability2::ListTableIndexes );
+
+  if ( table.isEmpty() )
+  {
+    throw QgsProviderConnectionException( QObject::tr( "Table not specified when listing indexes" ) );
+  }
+
+  // we only care about the user created indexes, pk and uniques not, as those are created automatically
+  const QList<QVariantList> rows = executeGdalSqlPrivate(
+                                     u"SELECT il.name AS index_name, ii.name AS column_name FROM pragma_index_list(%1) il LEFT JOIN pragma_index_info(il.name) ii WHERE il.origin = 'c'"_s.arg(
+                                       QgsSqliteUtils::quotedString( table )
+                                     )
+  )
+                                     .rows();
+
+  QMap<QString, QStringList> result;
+  for ( const QVariantList &row : rows )
+  {
+    QStringList &columns = result[row.at( 0 ).toString()];
+    if ( !row.at( 1 ).isNull() )
+      columns.append( row.at( 1 ).toString() );
+  }
+  return result;
+}
+
+void QgsGeoPackageProviderConnection::deleteIndex( const QString &schema, const QString &table, const QString &name ) const
+{
+  Q_UNUSED( schema )
+  Q_UNUSED( table )
+  checkCapability( Qgis::DatabaseProviderConnectionCapability2::DeleteIndex );
+
+  if ( name.isEmpty() )
+  {
+    throw QgsProviderConnectionException( QObject::tr( "Index name not specified while deleting index" ) );
+  }
+
+  executeGdalSqlPrivate( u"DROP INDEX %1"_s.arg( QgsSqliteUtils::quotedIdentifier( name ) ) );
+}
+
 QList<QgsGeoPackageProviderConnection::TableProperty> QgsGeoPackageProviderConnection::tables( const QString &schema, const TableFlags &flags, QgsFeedback *feedback ) const
 {
   // List of GPKG quoted system and dummy tables names to be excluded from the tables listing
@@ -341,6 +412,8 @@ void QgsGeoPackageProviderConnection::setDefaultCapabilities()
   mCapabilities |= Capability::UpdateRelationship;
   mCapabilities |= Capability::DeleteRelationship;
 #endif
+
+  mCapabilities2 |= Qgis::DatabaseProviderConnectionCapability2::CreateIndex | Qgis::DatabaseProviderConnectionCapability2::ListTableIndexes | Qgis::DatabaseProviderConnectionCapability2::DeleteIndex;
 }
 
 QString QgsGeoPackageProviderConnection::primaryKeyColumnName( const QString &table ) const
