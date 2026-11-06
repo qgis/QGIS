@@ -99,7 +99,7 @@ class APP_EXPORT QgsFeatureAction : public QAction
   private slots:
     void onFeatureSaved( const QgsFeature &feature );
     void unhideParentWidget();
-    void hideParentWidget();
+    void hideParentDialog( QWidget *targetWidget );
 
   private:
     QgsAttributeDialog *newDialog( bool cloneFeature );
@@ -112,6 +112,7 @@ class APP_EXPORT QgsFeatureAction : public QAction
     bool mFeatureSaved = false;
 
     bool mForceSuppressFormPopup = false;
+    QPointer< QWidget > mHiddenWindow;
 };
 
 #endif
