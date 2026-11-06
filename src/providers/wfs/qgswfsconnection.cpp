@@ -88,7 +88,6 @@ QgsWfsConnection::QgsWfsConnection( const QString &connName )
       case Qgis::HttpMethod::Head:
       case Qgis::HttpMethod::Put:
       case Qgis::HttpMethod::Delete:
-      case Qgis::HttpMethod::Patch:
         // not supported
         break;
     }
