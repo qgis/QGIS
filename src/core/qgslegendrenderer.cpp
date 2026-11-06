@@ -927,11 +927,10 @@ QgsLegendRenderer::LegendComponent QgsLegendRenderer::drawSymbolItem( QgsLayerTr
   ctx.context = &context;
 
   // add a layer expression context scope
-  std::unique_ptr<QgsExpressionContextScope> layerScope;
+  std::unique_ptr<QgsExpressionContextScopePopper> layerScopePopper;
   if ( symbolItem->layerNode()->layer() )
   {
-    layerScope = QgsExpressionContextUtils::layerScope( symbolItem->layerNode()->layer() );
-    context.expressionContext().appendScope( std::move( layerScope ) );
+    layerScopePopper = std::make_unique< QgsExpressionContextScopePopper >( context.expressionContext(), QgsExpressionContextUtils::layerScope( symbolItem->layerNode()->layer() ).release() );
   }
 
   ctx.painter = context.painter();
@@ -959,22 +958,16 @@ QgsLegendRenderer::LegendComponent QgsLegendRenderer::drawSymbolItem( QgsLayerTr
 
   ctx.maxSiblingSymbolWidth = maxSiblingSymbolWidth;
 
-  const QgsSymbolLegendNode *symbolNode = dynamic_cast< const QgsSymbolLegendNode * >( symbolItem );
-  if ( symbolNode )
+  std::unique_ptr<QgsExpressionContextScopePopper> symbolScopePopper;
+  if ( const QgsSymbolLegendNode *symbolNode = dynamic_cast< const QgsSymbolLegendNode * >( symbolItem ) )
   {
-    context.expressionContext().appendScope( symbolNode->createSymbolScope() );
+    symbolScopePopper = std::make_unique< QgsExpressionContextScopePopper >( context.expressionContext(), symbolNode->createSymbolScope().release() );
     ctx.patchShape = symbolNode->patchShape();
   }
 
   ctx.patchSize = symbolItem->userPatchSize();
 
   QgsLayerTreeModelLegendNode::ItemMetrics im = symbolItem->draw( mSettings, ctx );
-
-  if ( symbolNode )
-    delete context.expressionContext().popScope();
-
-  if ( layerScope )
-    delete context.expressionContext().popScope();
 
   LegendComponent component;
   component.item = symbolItem;
