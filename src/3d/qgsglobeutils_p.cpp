@@ -40,7 +40,7 @@ QgsRectangle QgsGlobeUtils::nodeIdToLonLatRect( QgsChunkNodeId id )
 QgsChunkNodeId QgsGlobeUtils::findSmallestIdContainingExtent( const QgsRectangle &lonLatExtent )
 {
   QgsChunkNodeId id( 0, 0, 0 );
-  if ( !lonLatExtent.isValid() )
+  if ( !lonLatExtent.isEmpty() )
     return id;
 
   bool descended = true;
