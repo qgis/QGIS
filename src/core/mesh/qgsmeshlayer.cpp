@@ -701,10 +701,7 @@ QgsMeshDatasetIndex QgsMeshLayer::datasetIndexAtTime( const QgsDateTimeRange &ti
     return QgsMeshDatasetIndex( datasetGroupIndex, -1 );
 
   const QDateTime layerReferenceTime = mTemporalProperties->referenceTime();
-  QDateTime utcTime = timeRange.begin();
-  if ( utcTime.timeSpec() != Qt::UTC )
-    utcTime.setTimeSpec( Qt::UTC );
-  const qint64 startTime = layerReferenceTime.msecsTo( utcTime );
+  const qint64 startTime = layerReferenceTime.msecsTo( timeRange.begin() );
 
   return mDatasetGroupStore->datasetIndexAtTime( startTime, datasetGroupIndex, mTemporalProperties->matchingMethod() );
 }

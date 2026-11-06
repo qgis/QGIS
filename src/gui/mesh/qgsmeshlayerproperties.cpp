@@ -86,7 +86,7 @@ QgsMeshLayerProperties::QgsMeshLayerProperties( QgsMapLayer *lyr, QgsMapCanvas *
   connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsMeshLayerProperties::showHelp );
 
   connect( mTemporalReloadButton, &QPushButton::clicked, this, &QgsMeshLayerProperties::reloadTemporalProperties );
-  connect( mTemporalDateTimeReference, &QDateTimeEdit::dateTimeChanged, this, &QgsMeshLayerProperties::onTimeReferenceChange );
+  connect( mTemporalDateTimeReference, &QgsDateTimeWithTimeZoneWidget::dateTimeChanged, this, &QgsMeshLayerProperties::onTimeReferenceChange );
   connect( mMeshLayer, &QgsMeshLayer::activeScalarDatasetGroupChanged, mStaticDatasetWidget, &QgsMeshStaticDatasetWidget::setScalarDatasetGroup );
   connect( mMeshLayer, &QgsMeshLayer::activeVectorDatasetGroupChanged, mStaticDatasetWidget, &QgsMeshStaticDatasetWidget::setVectorDatasetGroup );
 
@@ -131,10 +131,6 @@ QgsMeshLayerProperties::QgsMeshLayerProperties( QgsMapLayer *lyr, QgsMapCanvas *
   metadataFrame->setLayout( metadataLayout );
   mOptsPage_Metadata->setContentsMargins( 0, 0, 0, 0 );
   mBackupCrs = mMeshLayer->crs();
-
-  mTemporalDateTimeStart->setDisplayFormat( "yyyy-MM-dd HH:mm:ss" );
-  mTemporalDateTimeEnd->setDisplayFormat( "yyyy-MM-dd HH:mm:ss" );
-  mTemporalDateTimeReference->setDisplayFormat( "yyyy-MM-dd HH:mm:ss" );
 
   setMetadataWidget( mMetadataWidget, mOptsPage_Metadata );
 
