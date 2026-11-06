@@ -56,13 +56,19 @@ class QgsDetectVectorChangesAlgorithm : public QgsProcessingAlgorithm
       Topological
     };
 
+    bool geometriesAreEqual( QgsGeometry original, QgsGeometry revised ) const;
+
     std::unique_ptr<QgsProcessingFeatureSource> mOriginal;
     std::unique_ptr<QgsProcessingFeatureSource> mRevised;
     QStringList mFieldsToCompare;
     QList<int> mOriginalFieldsToCompareIndices;
     QList<int> mRevisedFieldsToCompareIndices;
+    QString mUniqueIdField;
+    int mOriginalUniqueIdIndex = -1;
+    int mRevisedUniqueIdIndex = -1;
 
     GeometryMatchType mMatchType = Topological;
+    bool mUseGeometry = true;
 };
 
 ///@endcond PRIVATE
