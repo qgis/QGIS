@@ -7226,7 +7226,6 @@ QgsLayerTreeModelLegendNode.QgsLayerTreeModelLegendNode: src/core/layertree/qgsl
 QgsLayerTreeModelLegendNode.__repr__: src/core/layertree/qgslayertreemodellegendnode.h#L335
 QgsLayerTreeModelLegendNode.checkAllItems: src/core/layertree/qgslayertreemodellegendnode.h#L351
 QgsLayerTreeModelLegendNode.columnBreak: src/core/layertree/qgslayertreemodellegendnode.h#L172
-QgsLayerTreeModelLegendNode.createTemporaryRenderContext: src/core/layertree/qgslayertreemodellegendnode.h#L385
 QgsLayerTreeModelLegendNode.data: src/core/layertree/qgslayertreemodellegendnode.h#L125
 QgsLayerTreeModelLegendNode.dataChanged: src/core/layertree/qgslayertreemodellegendnode.h#L371
 QgsLayerTreeModelLegendNode.draw: src/core/layertree/qgslayertreemodellegendnode.h#L296
@@ -19028,7 +19027,6 @@ QgsSymbolLayerUtils.wellKnownMarkerToSld: src/core/symbology/qgssymbollayerutils
 QgsSymbolLayerUtils.wellKnownMarkerToSld: src/core/symbology/qgssymbollayerutils.h#L585
 QgsSymbolLayerUtils: src/core/symbology/qgssymbollayerutils.h#L63
 QgsSymbolLegendNode.__repr__: src/core/layertree/qgslayertreemodellegendnode.h#L579
-QgsSymbolLegendNode.createSymbolScope: src/core/layertree/qgslayertreemodellegendnode.h#L575
 QgsSymbolLegendNode.customSymbol: src/core/layertree/qgslayertreemodellegendnode.h#L545
 QgsSymbolLegendNode.data: src/core/layertree/qgslayertreemodellegendnode.h#L436
 QgsSymbolLegendNode.drawSymbol: src/core/layertree/qgslayertreemodellegendnode.h#L439
