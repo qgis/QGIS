@@ -1033,8 +1033,6 @@ const QgsSettingsEntryBool *QgisApp::settingsProjOpenedOKAtLaunch
   = new QgsSettingsEntryBool( u"project-opened-ok-at-launch"_s, QgsSettingsTree::sTreeProject, true, u"Whether the project specified to open at launch was opened successfully last time"_s );
 const QgsSettingsEntryBool *QgisApp::settingsShowScriptWarning
   = new QgsSettingsEntryBool( u"show-script-warning"_s, QgsSettingsTree::sTreeApp, true, u"Whether to warn the user before running a Python script embedded in a project"_s );
-const QgsSettingsEntryBool *QgisApp::settingsDisplayWaylandWarning
-  = new QgsSettingsEntryBool( u"display-wayland-warning"_s, QgsSettingsTree::sTreeGui, true, u"Whether to show the warning dialog when running QGIS under Wayland"_s );
 const QgsSettingsEntryBool *QgisApp::settingsRestoreDefaultWindowState
   = new QgsSettingsEntryBool( u"restore-default-window-state"_s, QgsSettingsTree::sTreeApp, false, u"Whether to restore the default window state on next QGIS startup"_s );
 
@@ -2051,46 +2049,6 @@ QgisApp::QgisApp(
   QgsApplication::fontManager()->enableFontDownloadsForSession();
 
   mDevToolsWidget->setActiveTab( lastDevToolsTab );
-
-  if ( QGuiApplication::platformName() == "wayland"_L1 )
-  {
-    const bool displayWaylandWarning = settingsDisplayWaylandWarning->value();
-    if ( displayWaylandWarning )
-    {
-      const QString shortMessage = tr( "Wayland session detected: User experience will be degraded" );
-      QgsMessageBarItem *messageWidget = QgsMessageBar::createMessage( QString(), shortMessage );
-
-      QPushButton *detailsButton = new QPushButton( tr( "More Info" ) );
-      connect( detailsButton, &QPushButton::clicked, this, [detailsButton] {
-        QgsMessageViewer *dialog = new QgsMessageViewer( detailsButton );
-        dialog->setTitle( tr( "Wayland Session Detected" ) );
-        // NOTE: black coloring MUST be specified here or the message shows white-on-white on wayland sessions 🙃
-        const QString warning = u"<p style=\"color: black\">%1</p><p style=\"color: black\"><b>%2</b></p>"_s.arg(
-          tr(
-            "Running QGIS in a Wayland session will result "
-            "in a degraded experience due to limitations in the "
-            "underlying Qt library and current versions of the Wayland protocol."
-          ),
-          tr(
-            "It is highly recommended that you switch to a traditional X11 session "
-            "for an optimal user experience."
-          )
-        );
-        dialog->setMessageAsHtml( warning );
-        dialog->showMessage();
-      } );
-      messageWidget->layout()->addWidget( detailsButton );
-
-      QPushButton *ignoreButton = new QPushButton( tr( "Ignore" ) );
-      connect( ignoreButton, &QPushButton::clicked, this, [this, messageWidget] {
-        QgisApp::settingsDisplayWaylandWarning->setValue( false );
-        messageBar()->popWidget( messageWidget );
-      } );
-      messageWidget->layout()->addWidget( ignoreButton );
-
-      messageBar()->pushWidget( messageWidget, Qgis::MessageLevel::Critical, 0 );
-    }
-  }
 
   startProfile( tr( "Welcome screen" ) );
   connect( this, &QgisApp::pluginUpdatesAvailable, this, [this]( const QStringList &plugins ) {
