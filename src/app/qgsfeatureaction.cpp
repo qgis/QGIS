@@ -255,10 +255,10 @@ QgsFeatureAction::AddFeatureResult QgsFeatureAction::addFeature(
       connect( dialog, &QgsAttributeDialog::finished, this, &QgsFeatureAction::addFeatureFinished );
       dialog->show();
 
-      if ( context.hideParent() )
+      if ( context.hideParent() && context.parentWidget() )
       {
         connect( this, &QgsFeatureAction::addFeatureFinished, this, &QgsFeatureAction::unhideParentWidget );
-        hideParentWidget();
+        hideParentDialog( context.parentWidget() );
       }
 
       mFeature = nullptr;
@@ -293,25 +293,26 @@ void QgsFeatureAction::onFeatureSaved( const QgsFeature &feature )
   mFeatureSaved = true;
 }
 
-void QgsFeatureAction::hideParentWidget()
+void QgsFeatureAction::hideParentDialog( QWidget *targetWidget )
 {
-  QWidget *dialog = parentWidget();
-  if ( dialog )
+  if ( !targetWidget )
+    return;
+
+  QWidget *window = targetWidget->window();
+  if ( window && window->objectName() != "QgisApp"_L1 )
   {
-    QWidget *triggerWidget = dialog->parentWidget();
-    if ( triggerWidget && triggerWidget->window()->objectName() != "QgisApp"_L1 )
-      triggerWidget->window()->setVisible( false );
+    mHiddenWindow = window;
   }
 }
 
 void QgsFeatureAction::unhideParentWidget()
 {
-  QWidget *dialog = parentWidget();
-  if ( dialog )
+  if ( mHiddenWindow )
   {
-    QWidget *triggerWidget = dialog->parentWidget();
-    if ( triggerWidget )
-      triggerWidget->window()->setVisible( true );
+    mHiddenWindow->setVisible( true );
+    mHiddenWindow->activateWindow();
+    mHiddenWindow->raise();
+    mHiddenWindow = nullptr;
   }
 }
 
