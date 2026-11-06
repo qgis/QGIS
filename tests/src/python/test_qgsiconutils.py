@@ -33,7 +33,8 @@ class TestQgsIconUtils(QgisTestCase):
         res = QgsIconUtils.addOverlay(icon, overlay_path, size)
         self.assertFalse(res.isNull())
 
-        image = res.pixmap(size).toImage()
+        # render with a fixed device pixel ratio so the result does not depend on the screen
+        image = res.pixmap(size, 1.0).toImage()
         self.assertEqual(image.size(), size)
         self.assertTrue(
             self.image_check(
