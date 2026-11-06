@@ -303,7 +303,7 @@ class CORE_EXPORT QgsSpatialIndex : public QgsFeatureSink
     friend class QgsFeatureIteratorDataStream; // for access to featureInfo()
 
   private:
-    QSharedDataPointer<QgsSpatialIndexData> d;
+    QExplicitlySharedDataPointer<QgsSpatialIndexData> d;
 };
 
 Q_DECLARE_OPERATORS_FOR_FLAGS( QgsSpatialIndex::Flags )
