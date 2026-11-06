@@ -391,7 +391,10 @@ void QgsBlockingNetworkRequest::replyFinished()
         {
           QNetworkRequest request( toUrl );
 
-          if ( !mAuthCfg.isEmpty() && !QgsApplication::authManager()->updateNetworkRequest( request, mAuthCfg ) )
+          // only use authcfg if redirecting to same host
+          const bool useAuthCfg( !mAuthCfg.isEmpty() && redirect.toUrl().host() == mReply->request().url().host() );
+
+          if ( useAuthCfg && !QgsApplication::authManager()->updateNetworkRequest( request, mAuthCfg ) )
           {
             mReplyContent.clear();
             mErrorMessage = errorMessageFailedAuth();
