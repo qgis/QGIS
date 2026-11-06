@@ -267,6 +267,7 @@ bool QgsProjectPropertyValue::writeXml( QString const &nodeName, QDomElement &ke
 
   {
     // retain compatibility with QGIS 3 for the time being
+    // consider dropping after the second LTR of the 4.x cycle is out
     QDomElement valueElement = document.createElement( nodeName );
 
     // remember the type so that we can rebuild it when the project is read in
