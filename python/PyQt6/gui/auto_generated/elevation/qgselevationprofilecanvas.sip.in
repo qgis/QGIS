@@ -11,6 +11,8 @@
 
 
 
+
+
 class QgsElevationProfileCanvas : QgsPlotCanvas
 {
 %Docstring(signature="appended")
@@ -103,11 +105,61 @@ Returns the list of layers included in the profile.
 .. seealso:: :py:func:`setLayers`
 %End
 
-    void setSources( const QList<QgsAbstractProfileSource *> &sources );
+
+    void setSources( SIP_PYOBJECT sources /TypeHint="List[Union[QgsMapLayer, QgsAbstractProfileSource]]"/ );
 %Docstring
 Sets the list of ``sources`` to include in the profile.
 
 .. seealso:: :py:func:`sources`
+%End
+%MethodCode
+      if ( PyList_Check( a0 ) && PyList_GET_SIZE( a0 ) )
+      {
+        sipIsErr = 0;
+        QList< std::variant< QgsMapLayer *, QgsAbstractProfileSource * > > sourcesList;
+        for ( Py_ssize_t i = 0; i < PyList_GET_SIZE( a0 ); ++i )
+        {
+          PyObject *p0 = PyList_GetItem( a0, i );
+          int state;
+
+          const sipTypeDef *source_type = sipFindType( "QgsAbstractProfileSource" );
+
+          if ( sipCanConvertToType( p0, sipType_QgsMapLayer, SIP_NOT_NONE ) )
+          {
+            QgsMapLayer *layerSource = reinterpret_cast<QgsMapLayer *>( sipConvertToType( p0, sipType_QgsMapLayer, 0, SIP_NOT_NONE, &state, &sipIsErr ) );
+            if ( !sipIsErr )
+            {
+              sourcesList << layerSource;
+            }
+
+            sipReleaseType( layerSource, sipType_QgsMapLayer, state );
+          }
+          else if ( sipCanConvertToType( p0, source_type, SIP_NOT_NONE ) )
+          {
+            QgsAbstractProfileSource *profileSource = reinterpret_cast<QgsAbstractProfileSource *>( sipConvertToType( p0, source_type, 0, SIP_NOT_NONE, &state, &sipIsErr ) );
+            if ( !sipIsErr )
+            {
+              sourcesList << profileSource;
+            }
+
+            sipReleaseType( profileSource, source_type, state );
+          }
+          else
+          {
+            sipIsErr = 1;
+            PyErr_SetString( PyExc_TypeError, QStringLiteral( "The input list contains an element with unexpected type!" ).toUtf8().constData() );
+          }
+        }
+        if ( !sipIsErr )
+        {
+          sipCpp->setSources( sourcesList );
+        }
+      }
+      else
+      {
+        sipIsErr = 1;
+        PyErr_SetString( PyExc_TypeError, QStringLiteral( "First argument is not a list or is empty." ).toUtf8().constData() );
+      }
 %End
 
     QList<QgsAbstractProfileSource *> sources() const;
@@ -119,6 +171,7 @@ profile source registry.
 
 .. seealso:: :py:func:`setSources`
 %End
+
 
     void setCrs( const QgsCoordinateReferenceSystem &crs );
 %Docstring

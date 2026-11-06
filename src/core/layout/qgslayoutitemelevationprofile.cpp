@@ -533,11 +533,15 @@ QList<QgsAbstractProfileSource *> QgsLayoutItemElevationProfile::sources() const
         sources << layer->profileSource();
       }
     }
-    else if ( auto profileSource = std::get_if< QgsAbstractProfileSource * >( &source ) )
+    else if ( auto *profileSource = std::get_if< QgsAbstractProfileSource * >( &source ) )
     {
       if ( QgsApplication::profileSourceRegistry()->findSourceById( ( *profileSource )->profileSourceId() ) )
       {
         sources << *profileSource;
+      }
+      else
+      {
+        QgsMessageLog::logMessage( tr( "Could not find profile source with id '%1' in the registry. Skipping..." ).arg( ( *profileSource )->profileSourceId() ) );
       }
     }
   }
@@ -545,19 +549,27 @@ QList<QgsAbstractProfileSource *> QgsLayoutItemElevationProfile::sources() const
   return sources;
 }
 
-void QgsLayoutItemElevationProfile::setSources( const QList<QgsAbstractProfileSource *> &sources )
+void QgsLayoutItemElevationProfile::setSources( const QList< std::variant< QgsMapLayer *, QgsAbstractProfileSource * > > &sources )
 {
   mSources.clear();
   mSources.reserve( sources.count() );
-  for ( QgsAbstractProfileSource *profileSource : sources )
+
+  for ( const auto &source : sources )
   {
-    if ( auto layer = dynamic_cast<QgsMapLayer *>( profileSource ) )
+    if ( auto *layer = std::get_if< QgsMapLayer * >( &source ) )
     {
-      mSources << QgsMapLayerRef( layer );
+      mSources << QgsMapLayerRef( *layer );
     }
-    else if ( QgsApplication::profileSourceRegistry()->findSourceById( profileSource->profileSourceId() ) )
+    else if ( auto *profileSource = std::get_if< QgsAbstractProfileSource * >( &source ) )
     {
-      mSources << profileSource;
+      if ( QgsApplication::profileSourceRegistry()->findSourceById( ( *profileSource )->profileSourceId() ) )
+      {
+        mSources << *profileSource;
+      }
+      else
+      {
+        QgsMessageLog::logMessage( tr( "Could not find profile source with id '%1' in the registry. Skipping..." ).arg( ( *profileSource )->profileSourceId() ) );
+      }
     }
   }
 
@@ -937,13 +949,17 @@ bool QgsLayoutItemElevationProfile::writePropertiesToElement( QDomElement &layou
           sourcesElement.appendChild( sourceElement );
         }
       }
-      else if ( auto profileSource = std::get_if< QgsAbstractProfileSource * >( &source ) )
+      else if ( auto *profileSource = std::get_if< QgsAbstractProfileSource * >( &source ) )
       {
         if ( QgsApplication::profileSourceRegistry()->findSourceById( ( *profileSource )->profileSourceId() ) )
         {
           QDomElement sourceElement = doc.createElement( u"profileCustomSource"_s );
           sourceElement.setAttribute( u"id"_s, ( *profileSource )->profileSourceId() );
           sourcesElement.appendChild( sourceElement );
+        }
+        else
+        {
+          QgsMessageLog::logMessage( tr( "Could not find profile source with id '%1' in the registry. Skipping..." ).arg( ( *profileSource )->profileSourceId() ) );
         }
       }
     }
@@ -1031,6 +1047,10 @@ bool QgsLayoutItemElevationProfile::readPropertiesFromElement( const QDomElement
         if ( QgsAbstractProfileSource *profileSource = QgsApplication::profileSourceRegistry()->findSourceById( sourceId ) )
         {
           mSources << profileSource;
+        }
+        else
+        {
+          QgsMessageLog::logMessage( tr( "Could not find profile source with id '%1' in the registry. Skipping..." ).arg( sourceId ) );
         }
       }
       else if ( sourceElement.tagName() == "profileLayerSource"_L1 )

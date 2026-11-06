@@ -725,9 +725,7 @@ void QgsLayoutElevationProfileWidget::copySettingsFromProfileCanvas( QgsElevatio
 
   QList<QgsMapLayer *> canvasLayers = canvas->layers();
   mProfile->setLayers( canvasLayers );
-
-  QList<QgsAbstractProfileSource *> canvasSources = canvas->sources();
-  mProfile->setSources( canvasSources );
+  mProfile->setSources( canvas->rawSources() );
 
   syncLayerTreeAndProfileItemSources();
 
@@ -910,7 +908,7 @@ void QgsLayoutElevationProfileWidget::updateItemSources()
     return;
 
   QList<QgsMapLayer *> layers;
-  QList<QgsAbstractProfileSource *> sources;
+  QList< std::variant< QgsMapLayer *, QgsAbstractProfileSource * > > sources;
   const QList<QgsLayerTreeNode *> layerAndCustomNodeOrder = mLayerTree->layerAndCustomNodeOrder();
   for ( QgsLayerTreeNode *node : layerAndCustomNodeOrder )
   {
@@ -920,7 +918,7 @@ void QgsLayoutElevationProfileWidget::updateItemSources()
       if ( mLayerTree->findLayer( layer )->isVisible() )
       {
         layers << layer;
-        sources << layer->profileSource();
+        sources << layer;
       }
     }
     else if ( QgsLayerTree::isCustomNode( node ) && node->customProperty( u"source"_s ) == QgsElevationProfileLayerTreeView::CUSTOM_NODE_ELEVATION_PROFILE_SOURCE )

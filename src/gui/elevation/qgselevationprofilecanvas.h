@@ -28,6 +28,10 @@
 #include "qgsplotcanvas.h"
 #include "qgsprofilepoint.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 class QgsElevationProfilePlotItem;
 class QgsElevationProfileCrossHairsItem;
 class QgsAbstractProfileResults;
@@ -115,12 +119,73 @@ class GUI_EXPORT QgsElevationProfileCanvas : public QgsPlotCanvas
      */
     QList<QgsMapLayer *> layers() const;
 
+#ifndef SIP_RUN
     /**
      * Sets the list of \a sources to include in the profile.
      *
      * \see sources()
      */
-    void setSources( const QList<QgsAbstractProfileSource *> &sources );
+    void setSources( const QList< std::variant< QgsMapLayer *, QgsAbstractProfileSource * > > &sources );
+#else
+    // clang-format off
+
+    /**
+     * Sets the list of \a sources to include in the profile.
+     *
+     * \see sources()
+     */
+    void setSources( SIP_PYOBJECT sources SIP_TYPEHINT( List[Union[QgsMapLayer, QgsAbstractProfileSource]] ) );
+    % MethodCode
+      if ( PyList_Check( a0 ) && PyList_GET_SIZE( a0 ) )
+      {
+        sipIsErr = 0;
+        QList< std::variant< QgsMapLayer *, QgsAbstractProfileSource * > > sourcesList;
+        for ( SIP_SSIZE_T i = 0; i < PyList_GET_SIZE( a0 ); ++i )
+        {
+          PyObject *p0 = PyList_GetItem( a0, i );
+          int state;
+
+          const sipTypeDef *source_type = sipFindType( "QgsAbstractProfileSource" );
+
+          if ( sipCanConvertToType( p0, sipType_QgsMapLayer, SIP_NOT_NONE ) )
+          {
+            QgsMapLayer *layerSource = reinterpret_cast<QgsMapLayer *>( sipConvertToType( p0, sipType_QgsMapLayer, 0, SIP_NOT_NONE, &state, &sipIsErr ) );
+            if ( !sipIsErr )
+            {
+              sourcesList << layerSource;
+            }
+
+            sipReleaseType( layerSource, sipType_QgsMapLayer, state );
+          }
+          else if ( sipCanConvertToType( p0, source_type, SIP_NOT_NONE ) )
+          {
+            QgsAbstractProfileSource *profileSource = reinterpret_cast<QgsAbstractProfileSource *>( sipConvertToType( p0, source_type, 0, SIP_NOT_NONE, &state, &sipIsErr ) );
+            if ( !sipIsErr )
+            {
+              sourcesList << profileSource;
+            }
+
+            sipReleaseType( profileSource, source_type, state );
+          }
+          else
+          {
+            sipIsErr = 1;
+            PyErr_SetString( PyExc_TypeError, u"The input list contains an element with unexpected type!"_s.toUtf8().constData() );
+          }
+        }
+        if ( !sipIsErr )
+        {
+          sipCpp->setSources( sourcesList );
+        }
+      }
+      else
+      {
+        sipIsErr = 1;
+        PyErr_SetString( PyExc_TypeError, u"First argument is not a list or is empty."_s.toUtf8().constData() );
+      }
+    % End
+// clang-format on
+#endif
 
     /**
      * Returns the list of sources included in the profile.
@@ -130,6 +195,18 @@ class GUI_EXPORT QgsElevationProfileCanvas : public QgsPlotCanvas
      * \see setSources()
      */
     QList<QgsAbstractProfileSource *> sources() const;
+
+    /**
+     * Returns the list of raw sources included in the profile.
+     *
+     * It is different from sources(), because rawSources() allows callers to access the original
+     * QgsMapLayer objects (e.g., from QgsPluginLayer objects).
+     *
+     * \see sources()
+     * \note Not available in Python bindings
+     * \since QGIS 4.4
+     */
+    QList< std::variant< QgsMapLayer *, QgsAbstractProfileSource * > > rawSources() const SIP_SKIP;
 
     /**
      * Sets the \a crs associated with the canvas' map coordinates.
