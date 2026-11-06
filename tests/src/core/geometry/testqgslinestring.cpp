@@ -1382,7 +1382,7 @@ void TestQgsLineString::CRSTransform()
 
   //3d CRS transform with Z
   ls = QgsLineString( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointZM, 6374985, -3626584, 1, 2 ) << QgsPoint( Qgis::WkbType::PointZM, 6474985, -3526584, 3, 4 ) );
-  ls.transform( tr, Qgis::TransformDirection::Forward, true );
+  ls.transform( tr, Qgis::TransformDirection::Forward );
 
   QGSCOMPARENEAR( ls.pointN( 0 ).x(), 175.771, 0.001 );
   QGSCOMPARENEAR( ls.pointN( 0 ).y(), -39.724, 0.001 );
@@ -1407,12 +1407,12 @@ void TestQgsLineString::CRSTransform()
 
 #if 0 // note - z value transform doesn't currently work with proj 6+, because we don't yet support compound CRS definitions
   //z value transform
-  ls.transform( tr, Qgis::TransformDirection::Forward, true );
+  ls.transform( tr, Qgis::TransformDirection::Forward );
 
   QGSCOMPARENEAR( ls.pointN( 0 ).z(), -19.249066, 0.001 );
   QGSCOMPARENEAR( ls.pointN( 1 ).z(), -21.092128, 0.001 );
 
-  ls.transform( tr, Qgis::TransformDirection::Reverse, true );
+  ls.transform( tr, Qgis::TransformDirection::Reverse );
 
   QGSCOMPARENEAR( ls.pointN( 0 ).z(), 1.0, 0.001 );
   QGSCOMPARENEAR( ls.pointN( 1 ).z(), 3.0, 0.001 );

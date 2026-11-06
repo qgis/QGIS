@@ -934,12 +934,12 @@ void TestQgsCircularString::crsTransform()
 
 #if 0 // note - z value transform doesn't currently work with proj 6+, because we don't yet support compound CRS definitions
   //z value transform
-  cs.transform( tr, Qgis::TransformDirection::Forward, true );
+  cs.transform( tr, Qgis::TransformDirection::Forward );
 
   QGSCOMPARENEAR( cs.pointN( 0 ).z(), -19.249066, 0.001 );
   QGSCOMPARENEAR( cs.pointN( 1 ).z(), -21.092128, 0.001 );
 
-  cs.transform( tr, Qgis::TransformDirection::Reverse, true );
+  cs.transform( tr, Qgis::TransformDirection::Reverse );
 
   QGSCOMPARENEAR( cs.pointN( 0 ).z(), 1.0, 0.001 );
   QGSCOMPARENEAR( cs.pointN( 1 ).z(), 3.0, 0.001 );

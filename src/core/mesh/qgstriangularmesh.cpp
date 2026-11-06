@@ -70,7 +70,9 @@ QgsMeshVertex QgsTriangularMesh::transformVertex( const QgsMeshVertex &vertex, Q
   {
     try
     {
-      transformedVertex.transform( mCoordinateTransform, direction );
+      // Keep Z untransformed so it stays consistent with dataset values
+      // with the bool true, value is displayed inconsistently between widgets (one widget reads the native mesh z, the other transforms it)
+      transformedVertex.transform( mCoordinateTransform, direction, false );
     }
     catch ( QgsCsException &cse )
     {
