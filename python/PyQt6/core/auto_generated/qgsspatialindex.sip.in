@@ -235,6 +235,13 @@ FlagStoreFeatureGeometries flag.
 Gets reference count - just for debugging!
 %End
 
+    void detach();
+%Docstring
+Detaches this instance of QgsSpatialIndex from all shared copies.
+
+.. versionadded:: 4.4
+%End
+
 };
 
 QFlags<QgsSpatialIndex::Flag> operator|(QgsSpatialIndex::Flag f1, QFlags<QgsSpatialIndex::Flag> f2);

@@ -395,6 +395,7 @@ bool QgsSpatialIndex::addFeature( QgsFeature &feature, QgsFeatureSink::Flags )
 
   if ( addFeature( id, rect ) )
   {
+    // already detached in addFeature
     if ( d->mFlags & QgsSpatialIndex::FlagStoreFeatureGeometries )
     {
       const QMutexLocker locker( &d->mMutex );
@@ -429,6 +430,8 @@ bool QgsSpatialIndex::insertFeature( QgsFeatureId id, const QgsRectangle &bounds
 
 bool QgsSpatialIndex::addFeature( QgsFeatureId id, const QgsRectangle &bounds )
 {
+  d.detach();
+
   const SpatialIndex::Region r( QgsSpatialIndexUtils::rectangleToRegion( bounds ) );
 
   const QMutexLocker locker( &d->mMutex );
@@ -464,6 +467,7 @@ bool QgsSpatialIndex::deleteFeature( const QgsFeature &f )
   if ( !featureInfo( f, r, id ) )
     return false;
 
+  d.detach();
   const QMutexLocker locker( &d->mMutex );
   // TODO: handle exceptions
   if ( d->mFlags & QgsSpatialIndex::FlagStoreFeatureGeometries )
@@ -475,6 +479,7 @@ bool QgsSpatialIndex::deleteFeature( QgsFeatureId id, const QgsRectangle &bounds
 {
   const SpatialIndex::Region r = QgsSpatialIndexUtils::rectangleToRegion( bounds );
 
+  d.detach();
   const QMutexLocker locker( &d->mMutex );
   // TODO: handle exceptions (if the comment in the other ::deleteFeature implementation is correct!)
   if ( d->mFlags & QgsSpatialIndex::FlagStoreFeatureGeometries )
@@ -545,4 +550,9 @@ QgsGeometry QgsSpatialIndex::geometry( QgsFeatureId id ) const
 QAtomicInt QgsSpatialIndex::refs() const
 {
   return d->ref;
+}
+
+void QgsSpatialIndex::detach()
+{
+  d.detach();
 }
