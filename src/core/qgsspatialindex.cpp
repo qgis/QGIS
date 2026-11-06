@@ -551,3 +551,8 @@ QAtomicInt QgsSpatialIndex::refs() const
 {
   return d->ref;
 }
+
+void QgsSpatialIndex::detach()
+{
+  d.detach();
+}
