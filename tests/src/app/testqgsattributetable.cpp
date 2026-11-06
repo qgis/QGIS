@@ -759,13 +759,18 @@ void TestQgsAttributeTable::testCopySelectedRows()
   tempLayer->selectByIds( QgsFeatureIds() << 1 << 2 );
 
   dlg->mActionCopySelectedRows_triggered();
-#if 0
+
   QgsClipboard *clipboard = QgisApp::instance()->clipboard();
   QVERIFY( clipboard );
   QVERIFY( !clipboard->isEmpty() );
-  QCOMPARE( clipboard->fields().names(), QStringList() << "pk" << "col1" << "col2" );
 
-  const QgsFeatureList features = clipboard->copyOf();
+  QgsFields clipboardFields;
+  QgsCoordinateReferenceSystem clipboardCrs;
+  QgsFeatureList features;
+  mQgisApp->clipboard()->getFeaturesFromClipboard( clipboardCrs, clipboardFields, features );
+
+  QCOMPARE( clipboardFields.names(), QStringList() << "pk" << "col1" << "col2" );
+
   QCOMPARE( features.count(), 2 );
 
   const int feature1Index = features.at( 0 ).attribute( 0 ).toInt() == 1 ? 0 : 1;
@@ -778,9 +783,7 @@ void TestQgsAttributeTable::testCopySelectedRows()
   QCOMPARE( features.at( feature2Index ).attribute( "col1" ), 4 );
   QCOMPARE( features.at( feature2Index ).attribute( 2 ), QVariant() );
 
-
-  QCOMPARE( clipboard->crs().authid(), "EPSG:3111" );
-#endif
+  QCOMPARE( clipboardCrs.authid(), "EPSG:3111" );
 }
 
 void TestQgsAttributeTable::testOpenWithFilterExpression()
