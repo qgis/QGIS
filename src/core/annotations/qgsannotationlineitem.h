@@ -56,6 +56,7 @@ class CORE_EXPORT QgsAnnotationLineItem : public QgsAnnotationItem
 
     using QgsAnnotationItem::boundingBox;
     QgsRectangle boundingBox() const override;
+    const QgsAbstractGeometry *snapGeometry() const override;
 
     QgsAnnotationLineItem *clone() const override SIP_FACTORY;
 

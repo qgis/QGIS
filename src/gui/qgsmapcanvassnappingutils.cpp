@@ -54,7 +54,8 @@ void QgsMapCanvasSnappingUtils::canvasTransformContextChanged()
 
 void QgsMapCanvasSnappingUtils::canvasCurrentLayerChanged()
 {
-  setCurrentLayer( qobject_cast<QgsVectorLayer *>( mCanvas->currentLayer() ) );
+  // any snappable layer (vector or annotation) can be the active-layer snap target
+  setCurrentLayer( mCanvas->currentLayer() );
 }
 
 void QgsMapCanvasSnappingUtils::canvasMapToolChanged()

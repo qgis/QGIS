@@ -146,6 +146,8 @@ Returns ``True`` if the operation was successfully applied.
 
     virtual Qgis::MapLayerProperties properties() const;
 
+    virtual bool supportsSnapping() const;
+
     virtual QgsAnnotationLayer *clone() const /Factory/;
 
     virtual QgsMapLayerRenderer *createMapRenderer( QgsRenderContext &rendererContext ) /Factory/;

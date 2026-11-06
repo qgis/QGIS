@@ -261,6 +261,11 @@ QgsRectangle QgsAnnotationPolygonItem::boundingBox() const
   return mPolygon->boundingBox();
 }
 
+const QgsAbstractGeometry *QgsAnnotationPolygonItem::snapGeometry() const
+{
+  return mPolygon.get();
+}
+
 void QgsAnnotationPolygonItem::setGeometry( QgsCurvePolygon *geometry )
 {
   mPolygon.reset( geometry );

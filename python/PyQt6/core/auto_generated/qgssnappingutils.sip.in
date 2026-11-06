@@ -52,12 +52,13 @@ Constructor for QgsSnappingUtils
     ~QgsSnappingUtils();
 
 
-    QgsPointLocator *locatorForLayer( QgsVectorLayer *vl );
+    QgsPointLocator *locatorForLayer( QgsMapLayer *ml );
 %Docstring
 Gets a point locator for the given layer. If such locator does not
-exist, it will be created
+exist, it will be created.
 
-:param vl: the vector layer
+:param ml: the map layer (vector, or since QGIS 4.4 a snappable
+           non-vector layer)
 %End
 
     QgsPointLocator::Match snapToMap( QPoint point, QgsPointLocator::MatchFilter *filter = 0, bool relaxed = false );
@@ -93,12 +94,12 @@ screen coords to map coords
 %End
     QgsMapSettings mapSettings() const;
 
-    void setCurrentLayer( QgsVectorLayer *layer );
+    void setCurrentLayer( QgsMapLayer *layer );
 %Docstring
 Sets current layer so that if mode is SnapCurrentLayer we know which
 layer to use
 %End
-    QgsVectorLayer *currentLayer() const;
+    QgsMapLayer *currentLayer() const;
 %Docstring
 The current layer used if mode is SnapCurrentLayer
 %End
@@ -125,7 +126,7 @@ indexing is used
 
     struct LayerConfig
     {
-        LayerConfig( QgsVectorLayer *l, QgsPointLocator::Types t, double tol, Qgis::MapToolUnit u );
+        LayerConfig( QgsMapLayer *l, QgsPointLocator::Types t, double tol, Qgis::MapToolUnit u );
 %Docstring
 Create a new configuration for a snapping layer.
 
@@ -138,7 +139,8 @@ Create a new configuration for a snapping layer.
 
      snapper.setLayers([snapping_layer1, snapping_layer2])
 
-:param l: The vector layer for which this configuration is
+:param l: The map layer this configuration is for (vector, or since QGIS
+          4.4 a snappable non-vector layer)
 :param t: Which parts of the geometry should be snappable
 :param tol: The tolerance radius in which the snapping will trigger
 :param u: The unit in which the tolerance is specified
@@ -147,7 +149,7 @@ Create a new configuration for a snapping layer.
         bool operator==( const QgsSnappingUtils::LayerConfig &other ) const;
         bool operator!=( const QgsSnappingUtils::LayerConfig &other ) const;
 
-        QgsVectorLayer *layer;
+        QgsMapLayer *layer;
         QgsPointLocator::Types type;
         double tolerance;
         Qgis::MapToolUnit unit;

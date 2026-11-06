@@ -173,6 +173,7 @@ class CORE_EXPORT QgsAnnotationLayer : public QgsMapLayer
     Qgis::AnnotationItemEditOperationResult applyEditV2( QgsAbstractAnnotationItemEditOperation *operation, const QgsAnnotationItemEditContext &context );
 
     Qgis::MapLayerProperties properties() const override;
+    bool supportsSnapping() const override;
     QgsAnnotationLayer *clone() const override SIP_FACTORY;
     QgsMapLayerRenderer *createMapRenderer( QgsRenderContext &rendererContext ) override SIP_FACTORY;
     QgsRectangle extent() const override;

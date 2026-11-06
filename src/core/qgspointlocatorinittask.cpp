@@ -23,7 +23,7 @@
 /// @cond PRIVATE
 
 QgsPointLocatorInitTask::QgsPointLocatorInitTask( QgsPointLocator *loc )
-  : QgsTask( tr( "Indexing %1" ).arg( loc->layer()->id() ), QgsTask::Silent )
+  : QgsTask( tr( "Indexing %1" ).arg( loc->mapLayer()->id() ), QgsTask::Silent )
   , mLoc( loc )
 {
   mFeedback = std::make_unique< QgsFeedback >();
