@@ -113,7 +113,7 @@ void QgsTransactionGroup::onBeforeCommitChanges( bool stopEditing )
     return;
 
   // checks have to be done for all the layers
-  for ( QgsVectorLayer *layer : mLayers )
+  for ( QgsVectorLayer *layer : std::as_const( mLayers ) )
   {
     emit layer->beforeCommitChecks( stopEditing );
   }
