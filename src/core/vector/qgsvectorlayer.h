@@ -2944,6 +2944,9 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer,
 
     bool deleteFeatureCascade( QgsFeatureId fid, DeleteContext *context = nullptr );
 
+    //! Load QML style from a zip archive, if existent
+    bool loadQMLFromZipArchive( QDomDocument &qml ) const;
+
 #ifdef SIP_RUN
     QgsVectorLayer( const QgsVectorLayer &rhs );
 #endif
