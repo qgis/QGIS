@@ -24,6 +24,14 @@ Qgs3DMapTool::Qgs3DMapTool( Qgs3DMapCanvas *canvas )
   , mCanvas( canvas )
 {}
 
+Qgs3DMapTool::~Qgs3DMapTool()
+{
+  if ( mCanvas )
+  {
+    mCanvas->unsetMapTool( this );
+  }
+}
+
 void Qgs3DMapTool::mousePressEvent( QMouseEvent *event )
 {
   Q_UNUSED( event )
