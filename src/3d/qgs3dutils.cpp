@@ -1313,27 +1313,22 @@ std::unique_ptr<Qt3DRender::QCamera> Qgs3DUtils::copyCamera( Qt3DRender::QCamera
   copy->setPosition( cam->position() );
   copy->setViewCenter( cam->viewCenter() );
   copy->setUpVector( cam->upVector() );
-  copy->setNearPlane( cam->nearPlane() );
-  copy->setFarPlane( cam->farPlane() );
 
   switch ( cam->projectionType() )
   {
     case Qt3DRender::QCameraLens::OrthographicProjection:
+      copy->lens()->setOrthographicProjection( cam->left(), cam->right(), cam->bottom(), cam->top(), cam->nearPlane(), cam->farPlane() );
+      break;
     case Qt3DRender::QCameraLens::FrustumProjection:
-      copy->setLeft( cam->left() );
-      copy->setRight( cam->right() );
-      copy->setBottom( cam->bottom() );
-      copy->setTop( cam->top() );
+      copy->lens()->setFrustumProjection( cam->left(), cam->right(), cam->bottom(), cam->top(), cam->nearPlane(), cam->farPlane() );
       break;
     case Qt3DRender::QCameraLens::PerspectiveProjection:
-      copy->setAspectRatio( cam->aspectRatio() );
-      copy->setFieldOfView( cam->fieldOfView() );
+      copy->lens()->setPerspectiveProjection( cam->fieldOfView(), cam->aspectRatio(), cam->nearPlane(), cam->farPlane() );
       break;
     case Qt3DRender::QCameraLens::CustomProjection:
       copy->setProjectionMatrix( cam->projectionMatrix() );
       break;
   }
-  copy->setProjectionType( cam->projectionType() );
   return copy;
 }
 
