@@ -215,7 +215,7 @@ QVector<QgsDataItem *> QgsGeoPackageCollectionItem::createChildren()
     {
       auto relationsItem = std::make_unique< QgsRelationshipsItem >( this, mPath + "/relations", conn->uri(), u"ogr"_s );
       // force this item to appear last by setting a maximum string value for the sort key
-      relationsItem->setSortKey( QString( QChar( 0x11FFFF ) ) );
+      relationsItem->setSortKey( QString( QChar( 0xFFFF ) ) );
       children.append( relationsItem.release() );
     }
   }
