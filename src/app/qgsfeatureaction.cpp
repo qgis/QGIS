@@ -251,7 +251,7 @@ QgsFeatureAction::AddFeatureResult QgsFeatureAction::addFeature(
 
     if ( !context.showModal() )
     {
-      setParent( dialog ); // keep dialog until the dialog is closed and destructed
+      setParent( dialog ); // keep this action alive until the dialog is closed and destructed
       connect( dialog, &QgsAttributeDialog::finished, this, &QgsFeatureAction::addFeatureFinished );
       dialog->show();
 
