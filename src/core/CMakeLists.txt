@@ -604,6 +604,7 @@ set(QGIS_CORE_SRCS
   qgspointxy.cpp
   qgspointlocator.cpp
   qgspointlocatorinittask.cpp
+  qgspointlocatorsource.cpp
   qgsqueryresultmodel.cpp
   qgssnappingconfig.cpp
   qgsproperty.cpp
@@ -1367,6 +1368,7 @@ set(QGIS_CORE_HDRS
   qgspluginlayerregistry.h
   qgspointlocator.h
   qgspointlocatorinittask.h
+  qgspointlocatorsource.h
   qgspointxy.h
   qgspostgresstringutils.h
   qgsproperty.h

@@ -1811,6 +1811,9 @@ Returns whether the layer supports editing or not
 .. versionadded:: 3.18
 %End
 
+    virtual bool supportsSnapping() const;
+
+
     bool changeGeometry( QgsFeatureId fid, QgsGeometry &geometry, bool skipDefaultValue = false );
 %Docstring
 Changes a feature's ``geometry`` within the layer's edit buffer (but
