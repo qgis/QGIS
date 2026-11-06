@@ -40,7 +40,7 @@ class APP_EXPORT QgsMapToolAddFeature : public QgsMapToolDigitizeFeature
     void featureDigitized( const QgsFeature &feature ) override;
 
   private:
-    bool addFeature( QgsVectorLayer *vlayer, const QgsFeature &f, bool showModal = true );
+    bool addFeature( QgsVectorLayer *vlayer, const QgsFeature &f, const QgsVectorLayerToolsContext &context );
 
     /**
      * Creates a highlight corresponding to the captured geometry map tool and transfers

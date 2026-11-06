@@ -31,6 +31,7 @@ class QgsIdentifyResultsDialog;
 class QgsVectorLayer;
 class QgsAttributeDialog;
 class QgsExpressionContextScope;
+class QgsVectorLayerToolsContext;
 
 class APP_EXPORT QgsFeatureAction : public QAction
 {
@@ -53,19 +54,17 @@ class APP_EXPORT QgsFeatureAction : public QAction
      * Will set the default values to recently used or provider defaults based on settings
      * and override with values in defaultAttributes if provided.
      *
+     * \param context            Context
      * \param defaultAttributes  Provide some default attributes here if desired.
      * \param scope              Scope of the expression
-     * \param showModal          If the used dialog should be modal or not
-     * \param hideParent         If the parent widget should be hidden, when the used dialog is opened
      * \param highlight          Optional canvas highlight for feature
      *
      * \returns result if feature was added if showModal is true. If showModal is FALSE, returns Pending in every case
      */
     AddFeatureResult addFeature(
+      const QgsVectorLayerToolsContext &context,
       const QgsAttributeMap &defaultAttributes = QgsAttributeMap(),
-      bool showModal = true,
       std::unique_ptr<QgsExpressionContextScope> scope = std::unique_ptr<QgsExpressionContextScope>(),
-      bool hideParent = false,
       std::unique_ptr<QgsHighlight> highlight = std::unique_ptr<QgsHighlight>()
     );
 
@@ -100,7 +99,7 @@ class APP_EXPORT QgsFeatureAction : public QAction
   private slots:
     void onFeatureSaved( const QgsFeature &feature );
     void unhideParentWidget();
-    void hideParentWidget();
+    void hideParentDialog( QWidget *targetWidget );
 
   private:
     QgsAttributeDialog *newDialog( bool cloneFeature );
@@ -113,6 +112,7 @@ class APP_EXPORT QgsFeatureAction : public QAction
     bool mFeatureSaved = false;
 
     bool mForceSuppressFormPopup = false;
+    QPointer< QWidget > mHiddenWindow;
 };
 
 #endif

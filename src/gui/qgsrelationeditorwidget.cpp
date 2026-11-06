@@ -449,8 +449,11 @@ void QgsRelationEditorWidget::addFeatureGeometry()
 
 void QgsRelationEditorWidget::onDigitizingCompleted( const QgsFeature &feature )
 {
-  QgsAbstractRelationEditorWidget::addFeature( feature.geometry() );
+  // we have to cleanup the digitizing first, before showing the attribute form for the
+  // new feature
   digitizingFinished();
+
+  QgsAbstractRelationEditorWidget::addFeature( feature.geometry() );
 }
 
 void QgsRelationEditorWidget::multiEditItemSelectionChanged()

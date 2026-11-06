@@ -343,12 +343,15 @@ void QgsAppGpsDigitizing::createFeature()
   QgsFeature f;
   f.setGeometry( geometryLayerCrs );
 
+  QgsVectorLayerToolsContext context;
+
   switch ( vlayer->geometryType() )
   {
     case Qgis::GeometryType::Point:
     {
       QgsFeatureAction action( tr( "Feature Added" ), f, vlayer, QUuid(), -1, this );
-      const QgsFeatureAction::AddFeatureResult result = action.addFeature( attrMap );
+
+      const QgsFeatureAction::AddFeatureResult result = action.addFeature( context, attrMap );
       switch ( result )
       {
         case QgsFeatureAction::AddFeatureResult::Success:
@@ -387,7 +390,7 @@ void QgsAppGpsDigitizing::createFeature()
 
       QgsFeatureAction action( tr( "Feature added" ), f, vlayer, QUuid(), -1, this );
 
-      const QgsFeatureAction::AddFeatureResult result = action.addFeature( attrMap );
+      const QgsFeatureAction::AddFeatureResult result = action.addFeature( context, attrMap );
       switch ( result )
       {
         case QgsFeatureAction::AddFeatureResult::Success:
