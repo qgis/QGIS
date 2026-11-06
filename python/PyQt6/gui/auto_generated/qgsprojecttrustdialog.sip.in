@@ -22,7 +22,13 @@ script.
 #include "qgsprojecttrustdialog.h"
 %End
   public:
-    QgsProjectTrustDialog( QgsProject *project, QWidget *parent /TransferThis/ = 0, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags );
+    enum class TrustDialogType /BaseType=IntEnum/
+    {
+      Initial,
+      AfterSaveToNewLocation,
+    };
+
+    QgsProjectTrustDialog( QgsProject *project, QWidget *parent /TransferThis/ = 0, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags, TrustDialogType trustDialogType = Initial );
 %Docstring
 Constructor for QgsProjectTrustDialog using the specified ``project``
 instance.
