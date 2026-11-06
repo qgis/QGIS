@@ -688,7 +688,6 @@ The development version
       Head,
       Put,
       Delete,
-      Patch,
     };
 
     enum class VectorExportResult /BaseType=IntEnum/

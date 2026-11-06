@@ -551,7 +551,6 @@ void QgsWFSFeatureDownloaderImpl::startHitsRequest()
       case Qgis::HttpMethod::Head:
       case Qgis::HttpMethod::Put:
       case Qgis::HttpMethod::Delete:
-      case Qgis::HttpMethod::Patch:
         break;
     }
   }
@@ -677,7 +676,6 @@ void QgsWFSFeatureDownloaderImpl::run( bool serializeFeatures, long long maxFeat
       case Qgis::HttpMethod::Head:
       case Qgis::HttpMethod::Put:
       case Qgis::HttpMethod::Delete:
-      case Qgis::HttpMethod::Patch:
         // not possible!
         break;
     }

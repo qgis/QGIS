@@ -94,7 +94,6 @@ void QgsFileDownloader::startDownload()
     case Qgis::HttpMethod::Head:
     case Qgis::HttpMethod::Put:
     case Qgis::HttpMethod::Delete:
-    case Qgis::HttpMethod::Patch:
       QgsDebugError( u"Unsupported HTTP method: %1"_s.arg( qgsEnumValueToKey( mHttpMethod ) ) );
       // not supported
       break;

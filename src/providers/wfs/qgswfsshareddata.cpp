@@ -578,7 +578,6 @@ long long QgsWFSFeatureHitsRequest::getFeatureCount( const QString &WFSVersion, 
     case Qgis::HttpMethod::Head:
     case Qgis::HttpMethod::Put:
     case Qgis::HttpMethod::Delete:
-    case Qgis::HttpMethod::Patch:
       // not supported, impossible to hit
       return -1;
   }
@@ -697,7 +696,6 @@ QgsRectangle QgsWFSSingleFeatureRequest::getExtent()
     case Qgis::HttpMethod::Head:
     case Qgis::HttpMethod::Put:
     case Qgis::HttpMethod::Delete:
-    case Qgis::HttpMethod::Patch:
       // not supported, impossible to hit
       return QgsRectangle();
   }
