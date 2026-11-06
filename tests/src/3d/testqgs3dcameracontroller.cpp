@@ -1254,6 +1254,9 @@ void TestQgs3DCameraController::testChangeNavigationMode()
 {
   auto canvas3D = std::make_unique<Qgs3DMapCanvas>();
   canvas3D->show();
+  // NOTE: for actual interactive use this must be installed on the window's CONTAINER widget
+  canvas3D->installEventFilter( canvas3D.get() );
+
   QVERIFY( QTest::qWaitForWindowExposed( canvas3D.get() ) );
 
   Qgs3DMapSettings *mapSettings = new Qgs3DMapSettings;
