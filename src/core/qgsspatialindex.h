@@ -279,6 +279,13 @@ class CORE_EXPORT QgsSpatialIndex : public QgsFeatureSink
     //! Gets reference count - just for debugging!
     QAtomicInt SIP_PYALTERNATIVETYPE( int ) refs() const;
 
+    /**
+     * Detaches this instance of QgsSpatialIndex from all shared copies.
+     *
+     * \since QGIS 4.4
+     */
+    void detach();
+
   private:
     /**
      * Calculates feature info to insert into index.
