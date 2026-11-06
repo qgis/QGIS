@@ -1001,11 +1001,10 @@ QSizeF QgsLegendRenderer::drawLayerTitle( QgsLayerTreeLayer *nodeLayer, QgsRende
 
   const QgsTextFormat layerFormat = mSettings.style( nodeLegendStyle( nodeLayer ) ).textFormat();
 
-  std::unique_ptr<QgsExpressionContextScope> layerScope;
+  std::unique_ptr<QgsExpressionContextScopePopper> layerScopePopper;
   if ( nodeLayer->layer() )
   {
-    layerScope = QgsExpressionContextUtils::layerScope( nodeLayer->layer() );
-    context.expressionContext().appendScope( std::move( layerScope ) );
+    layerScopePopper = std::make_unique< QgsExpressionContextScopePopper >( context.expressionContext(), QgsExpressionContextUtils::layerScope( nodeLayer->layer() ).release() );
   }
 
   const QStringList lines = mSettings.evaluateItemText( titleString, context.expressionContext() );
@@ -1044,9 +1043,6 @@ QSizeF QgsLegendRenderer::drawLayerTitle( QgsLayerTreeLayer *nodeLayer, QgsRende
   }
 
   size.rheight() += mSettings.style( nodeLegendStyle( nodeLayer ) ).margin( QgsLegendStyle::Side::Bottom );
-
-  if ( nodeLayer->layer() )
-    delete context.expressionContext().popScope();
 
   return size;
 }
