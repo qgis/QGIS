@@ -3369,7 +3369,7 @@ Shows placeholders for labels which could not be placed, e.g. due to overlaps wi
     <string>New &amp;3D Map View</string>
    </property>
    <property name="toolTip">
-    <string>New 3D Map View</string>
+    <string>New 3D Local Map View</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+Alt+M</string>
