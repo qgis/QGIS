@@ -554,12 +554,12 @@ QgsFeatureListMimeData::QgsFeatureListMimeData( QgsMapLayer *sourceLayer, const 
 
 QStringList QgsFeatureListMimeData::formats() const
 {
-  return { u"text/plain"_s, u"text/html"_s, QgsClipboard::FEATURES_MIME_TYPE };
+  return { u"text/plain"_s, u"text/plain;charset=utf-8"_s, u"text/html"_s, QgsClipboard::FEATURES_MIME_TYPE };
 }
 
 QVariant QgsFeatureListMimeData::retrieveData( const QString &mimeType, QMetaType type ) const
 {
-  if ( mimeType == "text/plain"_L1 )
+  if ( mimeType == "text/plain"_L1 || mimeType == "text/plain;charset=utf-8"_L1 )
   {
     return toText( false );
   }
