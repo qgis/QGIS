@@ -63,6 +63,8 @@ class TestQgisAppClipboard : public QObject
     void testVectorTileLayer();
     void copyPasteUnset();
 
+    void copyPasteAcrossInstances();
+
   private:
     QgisApp *mQgisApp = nullptr;
     QString mTestDataDir;
@@ -683,6 +685,65 @@ void TestQgisAppClipboard::copyPasteUnset()
   QVERIFY( f.isUnsetValue( 0 ) );
   QVERIFY( f.isUnsetValue( 1 ) );
   QVERIFY( f.isUnsetValue( 2 ) );
+}
+
+void TestQgisAppClipboard::copyPasteAcrossInstances()
+{
+  // mimic copy/paste of features across different QGIS instances
+
+  QgsFields fields;
+  fields.append( QgsField( u"int_field"_s, QMetaType::Type::Int ) );
+  fields.append( QgsField( u"double_field"_s, QMetaType::Type::Double ) );
+  fields.append( QgsField( u"string_field"_s, QMetaType::Type::QString ) );
+
+  QgsFeature feat( fields, 5 );
+  feat.setGeometry( QgsGeometry( new QgsPoint( 5, 6 ) ) );
+  feat.setAttributes( QgsAttributes() << 3 << 11.6 << "abc" );
+  QgsFeature feat2( fields, 6 );
+  feat2.setGeometry( QgsGeometry( new QgsPoint( 7, 8 ) ) );
+  feat2.setAttributes( QgsAttributes() << 7 << 12.6 << "def" );
+
+  QgsFeatureStore feats;
+  feats.addFeature( feat );
+  feats.addFeature( feat2 );
+  feats.setFields( fields );
+  feats.setCrs( QgsCoordinateReferenceSystem( "EPSG:3111" ) );
+  mQgisApp->clipboard()->replaceWithCopyOf( feats );
+
+  // retrieve data using lossless representation
+  const QByteArray clipData = QApplication::clipboard()->mimeData()->data( QgsClipboard::FEATURES_MIME_TYPE );
+  // clear clipboard
+  QApplication::clipboard()->clear();
+  QVERIFY( mQgisApp->clipboard()->isEmpty() );
+
+  QgsFields clipboardFields;
+  QgsCoordinateReferenceSystem clipboardCrs;
+  QgsFeatureList clipboardFeatures;
+  mQgisApp->clipboard()->getFeaturesFromClipboard( clipboardCrs, clipboardFields, clipboardFeatures );
+  QVERIFY( clipboardFields.isEmpty() );
+  QVERIFY( !clipboardCrs.isValid() );
+  QVERIFY( clipboardFeatures.isEmpty() );
+
+  // mimic pasting in a different QGIS instance
+  QMimeData *newData = new QMimeData();
+  newData->setData( QgsClipboard::FEATURES_MIME_TYPE, clipData );
+  QApplication::clipboard()->setMimeData( newData );
+
+  mQgisApp->clipboard()->getFeaturesFromClipboard( clipboardCrs, clipboardFields, clipboardFeatures );
+  // must be a lossless representation of the fields, crs, and features
+  QCOMPARE( clipboardFields.size(), 3 );
+  QCOMPARE( clipboardFields.at( 0 ).name(), u"int_field"_s );
+  QCOMPARE( clipboardFields.at( 0 ).type(), QMetaType::Type::Int );
+  QCOMPARE( clipboardFields.at( 1 ).name(), u"double_field"_s );
+  QCOMPARE( clipboardFields.at( 1 ).type(), QMetaType::Type::Double );
+  QCOMPARE( clipboardFields.at( 2 ).name(), u"string_field"_s );
+  QCOMPARE( clipboardFields.at( 2 ).type(), QMetaType::Type::QString );
+  QCOMPARE( clipboardCrs.authid(), u"EPSG:3111"_s );
+  QCOMPARE( clipboardFeatures.size(), 2 );
+  QCOMPARE( clipboardFeatures.at( 0 ).attributes(), QgsAttributes() << 3 << 11.6 << "abc" );
+  QCOMPARE( clipboardFeatures.at( 0 ).geometry().asWkt(), u"Point (5 6)"_s );
+  QCOMPARE( clipboardFeatures.at( 1 ).attributes(), QgsAttributes() << 7 << 12.6 << "def" );
+  QCOMPARE( clipboardFeatures.at( 1 ).geometry().asWkt(), u"Point (7 8)"_s );
 }
 
 QGSTEST_MAIN( TestQgisAppClipboard )
