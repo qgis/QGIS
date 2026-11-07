@@ -5,6 +5,7 @@ services:
       dockerfile: Dockerfile-postgis
       context: ../tests/testdata
     environment:
+      - POSTGRES_PASS=docker
       - ALLOW_IP_RANGE="172.18.0.0/16"
 # The following files are added in Dockerfile-postgis
       - SSL_CERT_FILE=/etc/ssl/certs/postgres.crt

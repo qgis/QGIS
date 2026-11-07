@@ -449,7 +449,10 @@ int QgsPostgresProvider::crsToSrid( const QgsCoordinateReferenceSystem &crs, Qgs
 {
   int srid = -1;
   if ( conn )
-    srid = conn->crsToSrid( crs );
+  {
+    QString errorMessage;
+    srid = conn->crsToSrid( crs, errorMessage );
+  }
   return srid;
 }
 
@@ -457,7 +460,10 @@ QgsCoordinateReferenceSystem QgsPostgresProvider::sridToCrs( int srid, QgsPostgr
 {
   QgsCoordinateReferenceSystem crs;
   if ( conn )
-    crs = conn->sridToCrs( srid );
+  {
+    QString errorMessage;
+    crs = conn->sridToCrs( srid, errorMessage );
+  }
   return crs;
 }
 
@@ -4662,7 +4668,32 @@ Qgis::VectorExportResult QgsPostgresProvider::createEmptyLayer(
 
     // get geometry type, dim and srid
     int dim = 2;
-    long srid = srs.postgisSrid();
+    long srid = -1;
+
+    // get srid from PostGIS
+    if ( !srs.authid().isEmpty() )
+    {
+      QString sridError;
+      srid = conn->crsToSrid( srs, sridError );
+      if ( srid < 0 )
+      {
+        if ( errorMessage )
+          *errorMessage = QObject::tr( "Creation of data source %1 failed:\n%2" ).arg( schemaTableName, sridError );
+
+        conn->LoggedPQexecNR( "QgsPostgresProvider", u"ROLLBACK"_s );
+        conn->unref();
+        return Qgis::VectorExportResult::ErrorCreatingLayer;
+      }
+    }
+    else
+    {
+      if ( errorMessage )
+        *errorMessage = QObject::tr( "Creation of data source %1 failed: CRS has no authority ID" ).arg( schemaTableName );
+
+      conn->LoggedPQexecNR( "QgsPostgresProvider", u"ROLLBACK"_s );
+      conn->unref();
+      return Qgis::VectorExportResult::ErrorCreatingLayer;
+    }
 
     postgisGeometryType( wkbType, geometryType, dim );
 
