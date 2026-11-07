@@ -620,7 +620,7 @@ class CORE_EXPORT QgsAbstractDatabaseProviderConnection : public QgsAbstractProv
      * ones) override this method accordingly.
      *
      * \throws QgsProviderConnectionException if any errors are encountered.
-     * \since QGIS 4.2
+     * \since QGIS 4.4
      */
     virtual QString styleStorageUri( const QString &schema, const QString &tableName, const QString &geometryColumn = QString(), Qgis::WkbType wkbType = Qgis::WkbType::Unknown ) const SIP_THROW(
       QgsProviderConnectionException

@@ -843,7 +843,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
      *
      * \returns Object containing information about export status and messages.
      *
-     * \since QGIS 4.2
+     * \since QGIS 4.4
      */
     QgsSaveStyleResult saveStyleToDatabaseV3(
       const QString &name, const QString &description, bool useAsDefault, const QString &uiFileContent, const Qgis::SaveStyleFormats formats, QgsMapLayer::StyleCategories categories = QgsMapLayer::AllStyleCategories

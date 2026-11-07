@@ -903,7 +903,7 @@ database.
 
 :return: Object containing information about export status and messages.
 
-.. versionadded:: 4.2
+.. versionadded:: 4.4
 %End
 
 
