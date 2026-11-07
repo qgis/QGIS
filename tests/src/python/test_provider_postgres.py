@@ -2949,7 +2949,7 @@ class TestPyQgsPostgresProvider(QgisTestCase, ProviderTestCase):
             self.assertEqual(len(rows), 1)
             return rows[0]
 
-        def assert_style_expert_success(result: QgsSaveStyleResult):
+        def assert_style_export_success(result: QgsSaveStyleResult):
             self.assertEqual(result.saveResult, QgsMapLayer.SaveStyleResult.Success)
             self.assertEqual(result.providerSaveStyleError, "")
             self.assertEqual(result.qmlError, "")
@@ -2963,7 +2963,7 @@ class TestPyQgsPostgresProvider(QgisTestCase, ProviderTestCase):
             "",
             Qgis.SaveStyleFormat.QML | Qgis.SaveStyleFormat.SLD,
         )
-        assert_style_expert_success(result)
+        assert_style_export_success(result)
         qml, sld, use_as_default, description = get_stored_style("both formats")
         self.assertIn("<qgis", qml)
         self.assertIn("StyledLayerDescriptor", sld)
@@ -2978,7 +2978,7 @@ class TestPyQgsPostgresProvider(QgisTestCase, ProviderTestCase):
             "",
             Qgis.SaveStyleFormats(Qgis.SaveStyleFormat.QML),
         )
-        assert_style_expert_success(result)
+        assert_style_export_success(result)
         qml, sld, _, _ = get_stored_style("qml only")
         self.assertIn("<qgis", qml)
         self.assertFalse(sld)
@@ -2991,7 +2991,7 @@ class TestPyQgsPostgresProvider(QgisTestCase, ProviderTestCase):
             "",
             Qgis.SaveStyleFormats(Qgis.SaveStyleFormat.SLD),
         )
-        assert_style_expert_success(result)
+        assert_style_export_success(result)
         qml, sld, use_as_default, _ = get_stored_style("sld only")
         self.assertFalse(qml)
         self.assertIn("StyledLayerDescriptor", sld)
@@ -3011,7 +3011,7 @@ class TestPyQgsPostgresProvider(QgisTestCase, ProviderTestCase):
             "",
             Qgis.SaveStyleFormat.QML | Qgis.SaveStyleFormat.SLD,
         )
-        assert_style_expert_success(result)
+        assert_style_export_success(result)
         qml, sld, _, description = get_stored_style("qml only")
         self.assertIn("<qgis", qml)
         self.assertIn("StyledLayerDescriptor", sld)
