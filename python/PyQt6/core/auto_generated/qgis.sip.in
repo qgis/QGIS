@@ -4105,6 +4105,13 @@ The development version
       All,
       OnlyVPC,
     };
+    enum class SaveStyleFormat /BaseType=IntFlag/
+    {
+      QML,
+      SLD,
+    };
+    typedef QFlags<Qgis::SaveStyleFormat> SaveStyleFormats;
+
 
     static const double DEFAULT_SEARCH_RADIUS_MM;
 

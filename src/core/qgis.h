@@ -7336,6 +7336,19 @@ int QgisEvent = QEvent::User + 1;
       OnlyVPC, //!< Only virtual point cloud formats (VPC and VPZ)
     };
     Q_ENUM( PointCloudOutputsTypes )
+    /**
+     * Style save format
+     *
+     * \since QGIS 4.2
+     */
+    enum class SaveStyleFormat : int SIP_ENUM_BASETYPE( IntFlag )
+    {
+      QML = 0,
+      SLD = 1 << 0,
+    };
+    Q_ENUM( SaveStyleFormat )
+    Q_DECLARE_FLAGS( SaveStyleFormats, SaveStyleFormat )
+    Q_FLAG( SaveStyleFormats )
 
     /**
      * Identify search radius in mm
