@@ -59,10 +59,10 @@ public:
     static PDFCertificateInfo getCertificateInfo(X509* certificate);
 
     /// Returns name converted to QString
-    static QString getStringFromX509Name(X509_NAME* name, int nid);
+    static QString getStringFromX509Name(const X509_NAME* name, int nid);
 
     /// Returns ASN1 string converted to QString
-    static QString getStringFromASN1_STRING(ASN1_STRING* string);
+    static QString getStringFromASN1_STRING(const ASN1_STRING* string);
 
     /// Converts ASN time to QDateTime. If conversion fails, then invalid
     /// datetime is returned.

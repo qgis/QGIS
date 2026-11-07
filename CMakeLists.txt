@@ -26,6 +26,7 @@ set (WITH_ORACLE FALSE CACHE BOOL "Determines whether Oracle support should be b
 set (WITH_PDAL TRUE CACHE BOOL "Determines whether PDAL support should be built")
 set (WITH_QGIS_PROCESS TRUE CACHE BOOL "Determines whether the standalone \"qgis_process\" tool should be built")
 set (WITH_QTPOSITIONING TRUE CACHE BOOL "Determines whether QtPositioning support should be included")
+set (WITH_TBB FALSE CACHE BOOL "Determines whether TBB support should be included")
 set (WITH_VCPKG FALSE CACHE BOOL "Use the vcpkg submodule for dependency management.")
 set (WITH_TRACY FALSE CACHE BOOL "Determines whether Tracy profiler support should be included")
 
@@ -578,6 +579,10 @@ if(WITH_CORE)
     set(HAVE_TRACY TRUE)
   endif()
 
+  if (WITH_TBB)
+    find_package(TBB REQUIRED)
+  endif()
+
   #############################################################
   # search for Qt
 
@@ -608,6 +613,9 @@ if(WITH_CORE)
   set (WITH_PDF4QT FALSE CACHE BOOL "Determines whether the embedded PDF4Qt library should be build for PDF and HTML to QPainter conversion")
   if (WITH_PDF4QT)
     set(HAVE_PDF4QT TRUE)  # used in qgisconfig.h
+    if((UNIX AND NOT APPLE) AND NOT WITH_TBB)
+      message(FATAL_ERROR "PDF4Qt requires TBB support. Set WITH_TBB to TRUE.")
+    endif()
     message(STATUS "PDF4Qt enabled")
   else()
     message(STATUS "PDF4Qt disabled")

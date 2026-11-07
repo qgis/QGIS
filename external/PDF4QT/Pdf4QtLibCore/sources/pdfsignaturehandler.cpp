@@ -1303,7 +1303,7 @@ bool PDFSignatureHandler_adbe_pkcs7_rsa_sha1::getMessageDigestAlgorithm(ASN1_OCT
 
     int size = RSA_size(rsa);
     std::vector<unsigned char> decryptedBuffer(size, 0);
-    const int signatureSize = RSA_public_decrypt(encryptedString->length, encryptedString->data, decryptedBuffer.data(), rsa, RSA_PKCS1_PADDING);
+    const int signatureSize = RSA_public_decrypt(ASN1_STRING_length(encryptedString), ASN1_STRING_get0_data(encryptedString), decryptedBuffer.data(), rsa, RSA_PKCS1_PADDING);
 
     if (signatureSize <= 0)
     {
@@ -1502,7 +1502,7 @@ void PDFSignatureHandler_adbe_pkcs7_rsa_sha1::verifyRSASignature(PDFSignatureVer
             OBJ_obj2txt(buffer.data(), int(buffer.size() - 1), OBJ_nid2obj(algorithmNID), 0);
             result.addHashAlgorithm(QString::fromLatin1(buffer.data()));
 
-            const int verifyValue = RSA_verify(algorithmNID, digest, digestLength, encryptedString->data, encryptedString->length, rsa.get());
+            const int verifyValue = RSA_verify(algorithmNID, digest, digestLength, ASN1_STRING_get0_data(encryptedString.get()), ASN1_STRING_length(encryptedString.get()), rsa.get());
 
             if (verifyValue == 0)
             {
@@ -1564,16 +1564,16 @@ PDFCertificateInfo PDFPublicKeySignatureHandler::getCertificateInfo(X509* certif
     return PDFCertificateInfo::getCertificateInfo(certificate);
 }
 
-QString PDFPublicKeySignatureHandler::getStringFromX509Name(X509_NAME* name, int nid)
+QString PDFPublicKeySignatureHandler::getStringFromX509Name(const X509_NAME* name, int nid)
 {
     QString result;
 
     const int stringLocation = X509_NAME_get_index_by_NID(name, nid, -1);
-    X509_NAME_ENTRY* entry = X509_NAME_get_entry(name, stringLocation);
+    const X509_NAME_ENTRY* entry = X509_NAME_get_entry(name, stringLocation);
     return getStringFromASN1_STRING(X509_NAME_ENTRY_get_data(entry));
 }
 
-QString pdf::PDFPublicKeySignatureHandler::getStringFromASN1_STRING(ASN1_STRING* string)
+QString pdf::PDFPublicKeySignatureHandler::getStringFromASN1_STRING(const ASN1_STRING* string)
 {
     QString result;
 
@@ -1652,7 +1652,7 @@ void PDFPublicKeySignatureHandler::addSignatureDateFromSignerInfoStack(STACK_OF(
 
     // Jakub Melka: We will get signed attribute from signer info.
     PKCS7_SIGNER_INFO* signerInfo = sk_PKCS7_SIGNER_INFO_value(signerInfoStack, 0);
-    ASN1_TYPE* attribute = PKCS7_get_signed_attribute(signerInfo, NID_pkcs9_signingTime);
+    const ASN1_TYPE* attribute = PKCS7_get_signed_attribute(signerInfo, NID_pkcs9_signingTime);
 
     if (!attribute)
     {

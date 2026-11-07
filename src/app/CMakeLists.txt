@@ -622,6 +622,10 @@ target_link_libraries(qgis_app
   libdxfrw
 )
 
+if(WITH_TBB)
+   target_link_libraries(qgis_app PUBLIC TBB::tbb)
+endif()
+
 target_compile_definitions(qgis_app PRIVATE "-DQT_NO_FOREACH")
 
 if (USE_PRECOMPILED_HEADERS)

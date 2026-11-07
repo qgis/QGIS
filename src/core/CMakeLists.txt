@@ -2924,6 +2924,10 @@ target_link_libraries(qgis_core
   nlohmann_json::nlohmann_json
 )
 
+if(WITH_TBB)
+   target_link_libraries(qgis_core TBB::tbb)
+endif()
+
 if(WITH_QTPOSITIONING)
   target_link_libraries(qgis_core
     ${QT_VERSION_BASE}::Positioning
