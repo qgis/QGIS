@@ -465,7 +465,7 @@ based ones) override this method accordingly.
 
 :raises QgsProviderConnectionException: if any errors are encountered.
 
-.. versionadded:: 4.2
+.. versionadded:: 4.4
 %End
 
     virtual void createVectorTable(
