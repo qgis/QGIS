@@ -44,8 +44,6 @@ class QgsVectorLayerFeatureIterator;
 // clang-format off
 % ModuleHeaderCode
 #include "qgsfeatureiterator.h"
-#include "qgsvectorlayerfeatureiterator.h"
-typedef QgsAbstractFeatureIteratorFromSource<QgsVectorLayerFeatureSource> QgsAbstractFeatureIteratorFromSourceQgsVectorLayerFeatureSourceBase;
 % End
 // clang-format on
 #endif

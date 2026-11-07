@@ -14,8 +14,6 @@
 
 %ModuleHeaderCode
 #include "qgsfeatureiterator.h"
-#include "qgsvectorlayerfeatureiterator.h"
-typedef QgsAbstractFeatureIteratorFromSource<QgsVectorLayerFeatureSource> QgsAbstractFeatureIteratorFromSourceQgsVectorLayerFeatureSourceBase;
 %End
 
   class QgsVectorLayerFeatureSource : QgsAbstractFeatureSource
