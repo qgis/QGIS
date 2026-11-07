@@ -13583,7 +13583,7 @@ Qgis.SaveStyleFormat.QML.__doc__ = "QML style format"
 Qgis.SaveStyleFormat.SLD.__doc__ = "SLD style format"
 Qgis.SaveStyleFormat.__doc__ = """Style save format
 
-.. versionadded:: 4.2
+.. versionadded:: 4.4
 
 * ``QML``: QML style format
 * ``SLD``: SLD style format
