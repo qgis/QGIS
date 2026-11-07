@@ -424,7 +424,6 @@ QgsAbstractMaterialSettings.writeXml: src/core/./3d/materials/qgsabstractmateria
 QgsAbstractMaterialSettings: src/core/./3d/materials/qgsabstractmaterialsettings.h#L41
 QgsAbstractMeshLayerLabeling.accept: src/core/mesh/qgsmeshlayerlabeling.h#L140
 QgsAbstractMeshLayerLabeling.clone: src/core/mesh/qgsmeshlayerlabeling.h#L56
-QgsAbstractMeshLayerLabeling.create: src/core/mesh/qgsmeshlayerlabeling.h#L120
 QgsAbstractMeshLayerLabeling.defaultSettingsForLayer: src/core/mesh/qgsmeshlayerlabeling.h#L145
 QgsAbstractMeshLayerLabeling.hasNonDefaultCompositionMode: src/core/mesh/qgsmeshlayerlabeling.h#L106
 QgsAbstractMeshLayerLabeling.multiplyOpacity: src/core/mesh/qgsmeshlayerlabeling.h#L115
@@ -8949,7 +8948,6 @@ QgsLayoutTable.writePropertiesToElement: src/core/layout/qgslayouttable.h#L570
 QgsLayoutTable: src/core/layout/qgslayouttable.h#L103
 QgsLayoutTableColumn.__repr__: src/core/layout/qgslayouttablecolumn.h#L208
 QgsLayoutTableColumn.attribute: src/core/layout/qgslayouttablecolumn.h#L128
-QgsLayoutTableColumn.clone: src/core/layout/qgslayouttablecolumn.h#L192
 QgsLayoutTableColumn.hAlignment: src/core/layout/qgslayouttablecolumn.h#L96
 QgsLayoutTableColumn.heading: src/core/layout/qgslayouttablecolumn.h#L81
 QgsLayoutTableColumn.readXml: src/core/layout/qgslayouttablecolumn.h#L61
@@ -10565,7 +10563,6 @@ QgsMesh.vertex: src/core/mesh/qgsmeshdataprovider.h#L83
 QgsMesh.vertexCount: src/core/mesh/qgsmeshdataprovider.h#L72
 QgsMesh3DAveragingMethod.calculate: src/core/mesh/qgsmesh3daveraging.h#L93
 QgsMesh3DAveragingMethod.clone: src/core/mesh/qgsmesh3daveraging.h#L113
-QgsMesh3DAveragingMethod.createFromXml: src/core/mesh/qgsmesh3daveraging.h#L101
 QgsMesh3DAveragingMethod.equals: src/core/mesh/qgsmesh3daveraging.h#L107
 QgsMesh3DAveragingMethod.equals: src/core/mesh/qgsmesh3daveraging.h#L110
 QgsMesh3DAveragingMethod.method: src/core/mesh/qgsmesh3daveraging.h#L116
@@ -10680,7 +10677,6 @@ QgsMeshDatasetGroupTreeItem.appendChild: src/core/mesh/qgsmeshdataset.h#L915
 QgsMeshDatasetGroupTreeItem.child: src/core/mesh/qgsmeshdataset.h#L930
 QgsMeshDatasetGroupTreeItem.childCount: src/core/mesh/qgsmeshdataset.h#L945
 QgsMeshDatasetGroupTreeItem.childFromDatasetGroupIndex: src/core/mesh/qgsmeshdataset.h#L939
-QgsMeshDatasetGroupTreeItem.clone: src/core/mesh/qgsmeshdataset.h#L908
 QgsMeshDatasetGroupTreeItem.datasetGroupIndex: src/core/mesh/qgsmeshdataset.h#L1005
 QgsMeshDatasetGroupTreeItem.datasetGroupType: src/core/mesh/qgsmeshdataset.h#L1028
 QgsMeshDatasetGroupTreeItem.defaultName: src/core/mesh/qgsmeshdataset.h#L1021
@@ -10921,7 +10917,6 @@ QgsMeshLayerElevationProperties: src/core/mesh/qgsmeshlayerelevationproperties.h
 QgsMeshLayerSimpleLabeling.QgsMeshLayerSimpleLabeling: src/core/mesh/qgsmeshlayerlabeling.h#L168
 QgsMeshLayerSimpleLabeling.accept: src/core/mesh/qgsmeshlayerlabeling.h#L176
 QgsMeshLayerSimpleLabeling.clone: src/core/mesh/qgsmeshlayerlabeling.h#L171
-QgsMeshLayerSimpleLabeling.create: src/core/mesh/qgsmeshlayerlabeling.h#L190
 QgsMeshLayerSimpleLabeling.hasNonDefaultCompositionMode: src/core/mesh/qgsmeshlayerlabeling.h#L187
 QgsMeshLayerSimpleLabeling.multiplyOpacity: src/core/mesh/qgsmeshlayerlabeling.h#L188
 QgsMeshLayerSimpleLabeling.requiresAdvancedEffects: src/core/mesh/qgsmeshlayerlabeling.h#L186
@@ -11058,7 +11053,6 @@ QgsMeshTransformVerticesByExpression.text: src/core/mesh/qgsmeshadvancedediting.
 QgsMeshTransformVerticesByExpression.transformedVertex: src/core/mesh/qgsmeshadvancedediting.h#L186
 QgsMeshTransformVerticesByExpression: src/core/mesh/qgsmeshadvancedediting.h#L155
 QgsMeshUtils.exportRasterBlock: src/core/mesh/qgsmeshutils.h#L105
-QgsMeshUtils.exportRasterBlock: src/core/mesh/qgsmeshutils.h#L79
 QgsMeshUtils: src/core/mesh/qgsmeshutils.h#L59
 QgsMeshVectorTraceAnimationGenerator.setFPS: src/core/mesh/qgsmeshtracerenderer.h#L49
 QgsMeshVectorTraceAnimationGenerator.setMaxSpeedPixel: src/core/mesh/qgsmeshtracerenderer.h#L52
