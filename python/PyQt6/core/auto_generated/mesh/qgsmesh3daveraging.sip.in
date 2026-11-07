@@ -84,7 +84,7 @@ Calculated 2d block values from 3d stacked mesh values
 Writes configuration to a new DOM element
 %End
 
-    static QgsMesh3DAveragingMethod *createFromXml( const QDomElement &elem ) /Factory/;
+    static std::unique_ptr<QgsMesh3DAveragingMethod> createFromXml( const QDomElement &elem );
 %Docstring
 Creates the instance from XML by calling readXml of derived classes
 %End

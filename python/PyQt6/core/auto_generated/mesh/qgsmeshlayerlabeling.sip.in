@@ -95,7 +95,7 @@ the whole labeling elements.
 %End
 
 
-    static QgsAbstractMeshLayerLabeling *create( const QDomElement &element, const QgsReadWriteContext &context ) /Factory/;
+    static std::unique_ptr<QgsAbstractMeshLayerLabeling> create( const QDomElement &element, const QgsReadWriteContext &context );
 %Docstring
 Try to create instance of an implementation based on the XML data
 %End
@@ -170,7 +170,7 @@ Set pal settings (takes ownership).
 
     virtual void multiplyOpacity( double opacityFactor );
 
-    static QgsMeshLayerSimpleLabeling *create( const QDomElement &element, const QgsReadWriteContext &context );
+    static std::unique_ptr<QgsMeshLayerSimpleLabeling> create( const QDomElement &element, const QgsReadWriteContext &context );
 %Docstring
 Create the instance from a DOM element with saved configuration
 %End

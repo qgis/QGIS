@@ -76,7 +76,7 @@ class CORE_EXPORT QgsMeshUtils
      *
      * \since QGIS 3.6
      */
-    static QgsRasterBlock *exportRasterBlock(
+    static std::unique_ptr<QgsRasterBlock> exportRasterBlock(
       const QgsMeshLayer &layer,
       const QgsMeshDatasetIndex &datasetIndex,
       const QgsCoordinateReferenceSystem &destinationCrs,
@@ -84,7 +84,7 @@ class CORE_EXPORT QgsMeshUtils
       double mapUnitsPerPixel,
       const QgsRectangle &extent,
       QgsRasterBlockFeedback *feedback = nullptr
-    ) SIP_FACTORY;
+    );
 
 
     /**
