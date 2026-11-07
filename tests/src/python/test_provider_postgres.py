@@ -2867,6 +2867,7 @@ class TestPyQgsPostgresProvider(QgisTestCase, ProviderTestCase):
         status = vl.loadNamedStyle(style_path)
         self.assertTrue(status)
 
+        # helper functions
         def get_stored_style(style_name: str):
             cur = self.con.cursor()
             cur.execute(
@@ -2880,20 +2881,12 @@ class TestPyQgsPostgresProvider(QgisTestCase, ProviderTestCase):
             return rows[0]
 
         def assert_style_expert_success(result: QgsSaveStyleResult):
-            self.assertFalse(
-                result.saveResult & QgsMapLayer.SaveStyleResult.QmlGenerationFailed
-            )
-            self.assertFalse(
-                result.saveResult & QgsMapLayer.SaveStyleResult.SldGenerationFailed
-            )
-            self.assertFalse(
-                result.saveResult & QgsMapLayer.SaveStyleResult.DatabaseWriteFailed
-            )
+            self.assertEqual(result.saveResult, QgsMapLayer.SaveStyleResult.Success)
             self.assertEqual(result.providerSaveStyleError, "")
             self.assertEqual(result.qmlError, "")
             self.assertEqual(result.sldErrorMessages, [])
 
-        # QML + SLD
+        # both QML and SLD are saved
         result = vl.saveStyleToDatabaseV3(
             "both formats",
             "qml and sld",
@@ -2908,7 +2901,7 @@ class TestPyQgsPostgresProvider(QgisTestCase, ProviderTestCase):
         self.assertFalse(use_as_default)
         self.assertEqual(description, "qml and sld")
 
-        # QML only - SLD must not be stored
+        # QML only - SLD must be empty
         result = vl.saveStyleToDatabaseV3(
             "qml only",
             "qml",
@@ -2921,7 +2914,7 @@ class TestPyQgsPostgresProvider(QgisTestCase, ProviderTestCase):
         self.assertIn("<qgis", qml)
         self.assertFalse(sld)
 
-        # SLD only - QML must not be stored
+        # SLD only - QML must be empty
         result = vl.saveStyleToDatabaseV3(
             "sld only",
             "sld",
@@ -2957,19 +2950,19 @@ class TestPyQgsPostgresProvider(QgisTestCase, ProviderTestCase):
         related_count, _, _, _, _ = vl.listStylesInDatabase()
         self.assertEqual(related_count, 3)
 
-        # failure to write to the database is reported
+        # fail to store style in DB is properly reported
         uri = QgsDataSourceUri(vl.source())
         uri.setDatabase("qgis_test_non_existent_database")
-        bad_vl = QgsVectorLayer(uri.uri(False), "bad", "postgres")
-        result = bad_vl.saveStyleToDatabaseV3(
+        vl_non_valid = QgsVectorLayer(uri.uri(False), "not valid layer", "postgres")
+        result = vl_non_valid.saveStyleToDatabaseV3(
             "fail",
             "fail",
             False,
             "",
             Qgis.SaveStyleFormat.QML | Qgis.SaveStyleFormat.SLD,
         )
-        self.assertTrue(
-            result.saveResult & QgsMapLayer.SaveStyleResult.DatabaseWriteFailed
+        self.assertEqual(
+            result.saveResult, QgsMapLayer.SaveStyleResult.DatabaseWriteFailed
         )
         self.assertTrue(result.providerSaveStyleError)
 
