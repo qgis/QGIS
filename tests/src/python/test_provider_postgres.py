@@ -40,6 +40,7 @@ from qgis.core import (
     QgsFeatureSource,
     QgsFieldConstraints,
     QgsGeometry,
+    QgsMapLayer,
     QgsProcessingContext,
     QgsProcessingFeedback,
     QgsProcessingUtils,
@@ -49,6 +50,7 @@ from qgis.core import (
     QgsReadWriteContext,
     QgsRectangle,
     QgsReferencedGeometry,
+    QgsSaveStyleResult,
     QgsSettings,
     QgsSettingsTree,
     QgsTransactionGroup,
@@ -2851,6 +2853,127 @@ class TestPyQgsPostgresProvider(QgisTestCase, ProviderTestCase):
         )
         self.assertFalse(res)
         self.assertFalse(err)
+
+    def testSaveStyleToDatabaseV3(self):
+        """Test saveStyleToDatabaseV3() with the various style formats"""
+        self.execSQLCommand("DROP TABLE IF EXISTS layer_styles CASCADE")
+
+        vl = self.getEditableLayer()
+        self.assertTrue(vl.isValid())
+
+        style_path = QDir.toNativeSeparators(
+            f"{unitTestDataPath()}/symbol_layer/singleSymbol.qml"
+        )
+        status = vl.loadNamedStyle(style_path)
+        self.assertTrue(status)
+
+        def get_stored_style(style_name: str):
+            cur = self.con.cursor()
+            cur.execute(
+                "SELECT styleqml::text, stylesld::text, useasdefault, description "
+                "FROM layer_styles WHERE stylename = %s",
+                (style_name,),
+            )
+            rows = cur.fetchall()
+            cur.close()
+            self.assertEqual(len(rows), 1)
+            return rows[0]
+
+        def assert_style_expert_success(result: QgsSaveStyleResult):
+            self.assertFalse(
+                result.saveResult & QgsMapLayer.SaveStyleResult.QmlGenerationFailed
+            )
+            self.assertFalse(
+                result.saveResult & QgsMapLayer.SaveStyleResult.SldGenerationFailed
+            )
+            self.assertFalse(
+                result.saveResult & QgsMapLayer.SaveStyleResult.DatabaseWriteFailed
+            )
+            self.assertEqual(result.providerSaveStyleError, "")
+            self.assertEqual(result.qmlError, "")
+            self.assertEqual(result.sldErrorMessages, [])
+
+        # QML + SLD
+        result = vl.saveStyleToDatabaseV3(
+            "both formats",
+            "qml and sld",
+            False,
+            "",
+            Qgis.SaveStyleFormat.QML | Qgis.SaveStyleFormat.SLD,
+        )
+        assert_style_expert_success(result)
+        qml, sld, use_as_default, description = get_stored_style("both formats")
+        self.assertIn("<qgis", qml)
+        self.assertIn("StyledLayerDescriptor", sld)
+        self.assertFalse(use_as_default)
+        self.assertEqual(description, "qml and sld")
+
+        # QML only - SLD must not be stored
+        result = vl.saveStyleToDatabaseV3(
+            "qml only",
+            "qml",
+            False,
+            "",
+            Qgis.SaveStyleFormats(Qgis.SaveStyleFormat.QML),
+        )
+        assert_style_expert_success(result)
+        qml, sld, _, _ = get_stored_style("qml only")
+        self.assertIn("<qgis", qml)
+        self.assertFalse(sld)
+
+        # SLD only - QML must not be stored
+        result = vl.saveStyleToDatabaseV3(
+            "sld only",
+            "sld",
+            True,
+            "",
+            Qgis.SaveStyleFormats(Qgis.SaveStyleFormat.SLD),
+        )
+        assert_style_expert_success(result)
+        qml, sld, use_as_default, _ = get_stored_style("sld only")
+        self.assertFalse(qml)
+        self.assertIn("StyledLayerDescriptor", sld)
+        self.assertTrue(use_as_default)
+
+        # all three styles are listed for the layer
+        related_count, _, namelist, _, errmsg = vl.listStylesInDatabase()
+        self.assertFalse(errmsg)
+        self.assertEqual(related_count, 3)
+        self.assertCountEqual(namelist, ["both formats", "qml only", "sld only"])
+
+        # saving again under the same name overwrites the existing style
+        result = vl.saveStyleToDatabaseV3(
+            "qml only",
+            "qml and sld now",
+            False,
+            "",
+            Qgis.SaveStyleFormat.QML | Qgis.SaveStyleFormat.SLD,
+        )
+        assert_style_expert_success(result)
+        qml, sld, _, description = get_stored_style("qml only")
+        self.assertIn("<qgis", qml)
+        self.assertIn("StyledLayerDescriptor", sld)
+        self.assertEqual(description, "qml and sld now")
+        related_count, _, _, _, _ = vl.listStylesInDatabase()
+        self.assertEqual(related_count, 3)
+
+        # failure to write to the database is reported
+        uri = QgsDataSourceUri(vl.source())
+        uri.setDatabase("qgis_test_non_existent_database")
+        bad_vl = QgsVectorLayer(uri.uri(False), "bad", "postgres")
+        result = bad_vl.saveStyleToDatabaseV3(
+            "fail",
+            "fail",
+            False,
+            "",
+            Qgis.SaveStyleFormat.QML | Qgis.SaveStyleFormat.SLD,
+        )
+        self.assertTrue(
+            result.saveResult & QgsMapLayer.SaveStyleResult.DatabaseWriteFailed
+        )
+        self.assertTrue(result.providerSaveStyleError)
+
+        self.execSQLCommand("DROP TABLE IF EXISTS layer_styles CASCADE")
 
     def testStyleWithGeometryType(self):
         """Test saving styles with the additional geometry type
