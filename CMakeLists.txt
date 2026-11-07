@@ -29,6 +29,10 @@ set (WITH_QTPOSITIONING TRUE CACHE BOOL "Determines whether QtPositioning suppor
 set (WITH_VCPKG FALSE CACHE BOOL "Use the vcpkg submodule for dependency management.")
 set (WITH_TRACY FALSE CACHE BOOL "Determines whether Tracy profiler support should be included")
 
+if (UNIX AND NOT APPLE AND NOT ANDROID)
+  set (WITH_WAYLAND TRUE CACHE BOOL "Determines whether Wayland support should be included")
+endif()
+
 set (SDK_PATH "" CACHE STRING "Build with VCPKG SDK")
 set (QGISPOSTFIX "" CACHE STRING "Optional postfix to apply to public shared objects and executables")
 
@@ -620,6 +624,11 @@ if(WITH_CORE)
   if(Qt6Core_VERSION VERSION_GREATER_EQUAL 6.9)
     set(QT_NO_PRIVATE_MODULE_WARNING ON)
     find_package(${QT_VERSION_BASE} COMPONENTS SqlPrivate REQUIRED)
+  endif()
+
+  if (WITH_WAYLAND)
+    find_package(${QT_VERSION_BASE} COMPONENTS WaylandClient REQUIRED)
+    set(HAVE_WAYLAND TRUE)
   endif()
 
   if (NOT IOS)
