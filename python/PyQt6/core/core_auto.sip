@@ -677,6 +677,7 @@
 %Include auto_generated/providers/arcgis/qgsarcgisrestutils.sip
 %Include auto_generated/providers/arcgis/qgsesriarcadeconverter.sip
 %Include auto_generated/providers/arcgis/qgsesriarcadescript.sip
+%Include auto_generated/providers/arcgis/qgsvbscript.sip
 %Include auto_generated/providers/memory/qgsmemoryproviderutils.sip
 %Include auto_generated/providers/sensorthings/qgssensorthingsutils.sip
 %Include auto_generated/raster/qgsrasterattributetable.sip
