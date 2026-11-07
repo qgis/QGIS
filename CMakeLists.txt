@@ -440,6 +440,10 @@ if(WITH_CORE)
 
   find_package(GEOS REQUIRED)
   message(STATUS "Found Geos: ${GEOS_VERSION} ${GEOS_DIR}")
+  STRING(REGEX REPLACE "([0-9]+)\\.([0-9]+)\\.([0-9]+).*$" "\\1" GEOS_VERSION_MAJOR_INT "${GEOS_VERSION}")
+  STRING(REGEX REPLACE "([0-9]+)\\.([0-9]+)\\.([0-9]+).*$" "\\2" GEOS_VERSION_MINOR_INT "${GEOS_VERSION}")
+  STRING(REGEX REPLACE "([0-9]+)\\.([0-9]+)\\.([0-9]+).*$" "\\3" GEOS_VERSION_PATCH_INT "${GEOS_VERSION}")
+
   find_package(GDAL REQUIRED)
   message(STATUS "Found GDAL: ${GDAL_VERSION} ${GDAL_DIR}")
   find_package(EXPAT REQUIRED)
