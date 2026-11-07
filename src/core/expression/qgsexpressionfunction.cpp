@@ -774,13 +774,14 @@ static QVariant fcnAggregate( const QVariantList &values, const QgsExpressionCon
       const QString contextHash = context->uniqueHash( ok, allVars );
       if ( ok )
       {
-        cacheKey = QStringLiteral( "aggfcn:%1:%2:%3:%4:%5:%6" ).arg( vl->id(), QString::number( static_cast< int >( aggregate ) ), subExpression, parameters.filter,
-                   orderBy, contextHash );
+        cacheKey = QStringLiteral( "aggfcn:%1:%2:%3:%4:%5:%6:%7" ).arg( vl->id(), QString::number( static_cast< int >( aggregate ) ), subExpression, parameters.filter,
+                   parameters.delimiter, orderBy, contextHash );
       }
     }
     else
     {
-      cacheKey = QStringLiteral( "aggfcn:%1:%2:%3:%4:%5" ).arg( vl->id(), QString::number( static_cast< int >( aggregate ) ), subExpression, parameters.filter, orderBy );
+      cacheKey = QStringLiteral( "aggfcn:%1:%2:%3:%4:%5:%6" ).arg( vl->id(), QString::number( static_cast< int >( aggregate ) ), subExpression, parameters.filter,
+                 parameters.delimiter, orderBy );
     }
 
     if ( !cacheKey.isEmpty() && context->hasCachedValue( cacheKey ) )
@@ -914,10 +915,11 @@ static QVariant fcnAggregateRelation( const QVariantList &values, const QgsExpre
 
   parameters.filter = relation.getRelatedFeaturesFilter( f );
 
-  const QString cacheKey = QStringLiteral( "relagg:%1%:%2:%3:%4:%5:%6" ).arg( relationId, vl->id(),
+  const QString cacheKey = QStringLiteral( "relagg:%1%:%2:%3:%4:%5:%6:%7" ).arg( relationId, vl->id(),
                            QString::number( static_cast< int >( aggregate ) ),
                            subExpression,
                            parameters.filter,
+                           parameters.delimiter,
                            orderBy );
   if ( context->hasCachedValue( cacheKey ) )
     return context->cachedValue( cacheKey );
@@ -1045,13 +1047,14 @@ static QVariant fcnAggregateGeneric( Qgis::Aggregate aggregate, const QVariantLi
     const QString contextHash = context->uniqueHash( ok, refVars );
     if ( ok )
     {
-      cacheKey = QStringLiteral( "agg:%1:%2:%3:%4:%5:%6" ).arg( vl->id(), QString::number( static_cast< int >( aggregate ) ), subExpression, parameters.filter,
-                 orderBy, contextHash );
+      cacheKey = QStringLiteral( "agg:%1:%2:%3:%4:%5:%6:%7" ).arg( vl->id(), QString::number( static_cast< int >( aggregate ) ), subExpression, parameters.filter,
+                 parameters.delimiter, orderBy, contextHash );
     }
   }
   else
   {
-    cacheKey = QStringLiteral( "agg:%1:%2:%3:%4:%5" ).arg( vl->id(), QString::number( static_cast< int >( aggregate ) ), subExpression, parameters.filter, orderBy );
+    cacheKey = QStringLiteral( "agg:%1:%2:%3:%4:%5:%6" ).arg( vl->id(), QString::number( static_cast< int >( aggregate ) ), subExpression, parameters.filter,
+               parameters.delimiter, orderBy );
   }
 
   if ( context->hasCachedValue( cacheKey ) )
