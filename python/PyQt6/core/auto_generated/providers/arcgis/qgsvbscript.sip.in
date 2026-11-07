@@ -1,0 +1,1270 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/providers/arcgis/qgsvbscript.h                              *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
+ ************************************************************************/
+
+
+
+
+
+
+
+class QgsVbScriptNode
+{
+%Docstring(signature="appended")
+Represents an abstract node for a VBScript script.
+
+VBScript node subclasses are either:
+
+- statements (inheriting :py:class:`QgsVbSriptStatement`), such as a
+  variable declaration, if statement, for loop.
+- or expressions (inheriting :py:class:`QgsVbScriptExpression`), which
+  are a portion of a statement representing an expression. For example
+  ``1+2``, ``Upper('A string')``, or literals like ``255`` or ``'a
+  string'``.
+
+.. versionadded:: 4.4
+%End
+
+%TypeHeaderCode
+#include "qgsvbscript.h"
+%End
+%ConvertToSubClassCode
+    switch ( sipCpp->nodeType() )
+    {
+      case QgsVbScriptNode::NodeType::BlockStatement:
+        sipType = sipType_QgsVbScriptBlockStatement;
+        break;
+      case QgsVbScriptNode::NodeType::VariableDeclarationStatement:
+        sipType = sipType_QgsVbScriptVariableDeclarationStatement;
+        break;
+      case QgsVbScriptNode::NodeType::AssignmentStatement:
+        sipType = sipType_QgsVbScriptAssignmentStatement;
+        break;
+      case QgsVbScriptNode::NodeType::IfStatement:
+        sipType = sipType_QgsVbScriptIfStatement;
+        break;
+      case QgsVbScriptNode::NodeType::ForStatement:
+        sipType = sipType_QgsVbScriptForStatement;
+        break;
+      case QgsVbScriptNode::NodeType::ForEachStatement:
+        sipType = sipType_QgsVbScriptForEachStatement;
+        break;
+      case QgsVbScriptNode::NodeType::WhileStatement:
+        sipType = sipType_QgsVbScriptWhileStatement;
+        break;
+      case QgsVbScriptNode::NodeType::ExitStatement:
+        sipType = sipType_QgsVbScriptExitStatement;
+        break;
+      case QgsVbScriptNode::NodeType::FunctionDeclarationStatement:
+        sipType = sipType_QgsVbScriptFunctionDeclarationStatement;
+        break;
+      case QgsVbScriptNode::NodeType::ExpressionStatement:
+        sipType = sipType_QgsVbScriptExpressionStatement;
+        break;
+      case QgsVbScriptNode::NodeType::LiteralExpression:
+        sipType = sipType_QgsVbScriptLiteralExpression;
+        break;
+      case QgsVbScriptNode::NodeType::VariableReferenceExpression:
+        sipType = sipType_QgsVbScriptVariableReferenceExpression;
+        break;
+      case QgsVbScriptNode::NodeType::MemberAccessExpression:
+        sipType = sipType_QgsVbScriptMemberAccessExpression;
+        break;
+      case QgsVbScriptNode::NodeType::BinaryOperatorExpression:
+        sipType = sipType_QgsVbScriptBinaryOperatorExpression;
+        break;
+      case QgsVbScriptNode::NodeType::UnaryOperatorExpression:
+        sipType = sipType_QgsVbScriptUnaryOperatorExpression;
+        break;
+      case QgsVbScriptNode::NodeType::FunctionCallExpression:
+        sipType = sipType_QgsVbScriptFunctionCallExpression;
+        break;
+      case QgsVbScriptNode::NodeType::ArrayLiteralExpression:
+        sipType = sipType_QgsVbScriptArrayLiteralExpression;
+        break;
+      default:
+        sipType = nullptr;
+        break;
+    }
+%End
+  public:
+    enum class NodeType
+    {
+      BlockStatement,
+      VariableDeclarationStatement,
+      AssignmentStatement,
+      FunctionDeclarationStatement,
+      ExpressionStatement,
+      LiteralExpression,
+      VariableReferenceExpression,
+      MemberAccessExpression,
+      BinaryOperatorExpression,
+      UnaryOperatorExpression,
+      FunctionCallExpression,
+      IndexExpression,
+      ArrayLiteralExpression,
+      IfStatement,
+      ForStatement,
+      ForEachStatement,
+      WhileStatement,
+      ExitStatement,
+    };
+
+    virtual ~QgsVbScriptNode();
+
+    virtual QgsVbScriptNode::NodeType nodeType() const = 0;
+%Docstring
+Returns the node type.
+%End
+
+    virtual QString dump() const = 0;
+%Docstring
+Returns the formatted script representation of the node.
+
+This can be used to export a script node back to a valid VBScript
+string.
+%End
+
+    virtual QgsVbScriptNode *clone() const = 0 /Factory/;
+%Docstring
+Creates a copy of the node.
+
+Caller takes ownership of the returned object.
+%End
+
+    virtual void accept( QgsVbScriptVisitor &visitor ) const = 0;
+%Docstring
+Accepts a ``visitor`` to traverse the node.
+%End
+};
+
+class QgsVbScriptStatement : QgsVbScriptNode
+{
+%Docstring(signature="appended")
+Base class for statement nodes in a VBScript script.
+
+Subclasses represent standalone statements, such as a variable
+declaration, if statement, for loop, etc.
+
+.. versionadded:: 4.4
+%End
+
+%TypeHeaderCode
+#include "qgsvbscript.h"
+%End
+  public:
+    ~QgsVbScriptStatement();
+};
+
+class QgsVbScriptExpression : QgsVbScriptNode
+{
+%Docstring(signature="appended")
+Base class for expression nodes in a VBScript script.
+
+Subclasses represent expressions, which are a portion of a statement
+representing an expression.
+
+For example ``1+2``, ``UCase('A string')``, or literals like ``255`` or
+``"a string"``.
+
+.. versionadded:: 4.4
+%End
+
+%TypeHeaderCode
+#include "qgsvbscript.h"
+%End
+  public:
+    ~QgsVbScriptExpression();
+};
+
+class QgsVbScriptBlockStatement : QgsVbScriptStatement
+{
+%Docstring(signature="appended")
+Represents a sequence of statements.
+
+.. versionadded:: 4.4
+%End
+
+%TypeHeaderCode
+#include "qgsvbscript.h"
+%End
+  public:
+    QgsVbScriptBlockStatement();
+
+    explicit QgsVbScriptBlockStatement( const QList<QgsVbScriptStatement *> &statements /Transfer/ );
+%Docstring
+Constructor for QgsVbScriptBlockStatement with an existing statement
+list.
+
+Ownership of all ``statements`` is transferred to this block.
+%End
+
+    ~QgsVbScriptBlockStatement();
+
+    virtual QgsVbScriptNode::NodeType nodeType() const;
+    virtual QString dump() const;
+
+    virtual QgsVbScriptNode *clone() const /Factory/;
+
+    virtual void accept( QgsVbScriptVisitor &visitor ) const;
+
+
+    void appendStatement( QgsVbScriptStatement *statement /Transfer/ );
+%Docstring
+Appends a statement to the block.
+
+Ownership of ``statement`` is transferred to this block.
+%End
+
+    QList<QgsVbScriptStatement *> statements() const;
+%Docstring
+Returns the list of statements contained within this block.
+%End
+
+    int count() const;
+%Docstring
+Returns the number of statements in this block.
+%End
+
+  private:
+    QgsVbScriptBlockStatement( const QgsVbScriptBlockStatement &other );
+};
+
+class QgsVbScriptVariableDeclarationStatement : QgsVbScriptStatement
+{
+%Docstring(signature="appended")
+Represents a variable declaration statement.
+
+For example ``var x = 3;``.
+
+.. versionadded:: 4.4
+%End
+
+%TypeHeaderCode
+#include "qgsvbscript.h"
+%End
+  public:
+    explicit QgsVbScriptVariableDeclarationStatement( const QString &variableName );
+%Docstring
+Constructor for QgsVbScriptVariableDeclarationStatement.
+%End
+
+    explicit QgsVbScriptVariableDeclarationStatement( const QStringList &variableNames );
+%Docstring
+Constructor for QgsVbScriptVariableDeclarationStatement.
+%End
+
+    virtual QgsVbScriptNode::NodeType nodeType() const;
+    virtual QString dump() const;
+
+    virtual QgsVbScriptNode *clone() const /Factory/;
+
+    virtual void accept( QgsVbScriptVisitor &visitor ) const;
+
+
+    QStringList variableNames() const;
+%Docstring
+Returns the declared variable names.
+%End
+
+  private:
+    QgsVbScriptVariableDeclarationStatement( const QgsVbScriptVariableDeclarationStatement &other );
+};
+
+class QgsVbScriptAssignmentStatement : QgsVbScriptStatement
+{
+%Docstring(signature="appended")
+Represents a variable reassignment statement.
+
+For example, ``age = "35 years";``.
+
+.. versionadded:: 4.4
+%End
+
+%TypeHeaderCode
+#include "qgsvbscript.h"
+%End
+  public:
+    QgsVbScriptAssignmentStatement( QgsVbScriptExpression *target /Transfer/, QgsVbScriptExpression *value /Transfer/, bool isSet = false );
+%Docstring
+Constructor for QgsVbScriptAssignmentStatement.
+
+Ownership of ``target`` and ``value`` is transferred to this statement.
+%End
+
+    virtual QgsVbScriptNode::NodeType nodeType() const;
+    virtual QString dump() const;
+
+    virtual QgsVbScriptNode *clone() const /Factory/;
+
+    virtual void accept( QgsVbScriptVisitor &visitor ) const;
+
+
+    QgsVbScriptExpression *target() const;
+%Docstring
+Returns the target expression being assigned to.
+%End
+
+    QgsVbScriptExpression *value() const;
+%Docstring
+Returns the assigned value expression.
+%End
+
+    bool isSet() const;
+%Docstring
+Returns ``True`` if the assignment uses the Set keyword.
+%End
+
+  private:
+    QgsVbScriptAssignmentStatement( const QgsVbScriptAssignmentStatement &other );
+};
+
+class QgsVbScriptFunctionDeclarationStatement : QgsVbScriptStatement
+{
+%Docstring(signature="appended")
+Represents a function declaration statement.
+
+For example ``function foo(a, b) ... end function``.
+
+.. versionadded:: 4.4
+%End
+
+%TypeHeaderCode
+#include "qgsvbscript.h"
+%End
+  public:
+    QgsVbScriptFunctionDeclarationStatement( const QString &functionName, const QStringList &parameters, QgsVbScriptBlockStatement *body /Transfer/, bool isSub = false );
+%Docstring
+Constructor for QgsVbScriptFunctionDeclarationStatement.
+
+Ownership of ``body`` is transferred to this statement.
+%End
+
+    virtual QgsVbScriptNode::NodeType nodeType() const;
+    virtual QString dump() const;
+
+    virtual QgsVbScriptNode *clone() const /Factory/;
+
+    virtual void accept( QgsVbScriptVisitor &visitor ) const;
+
+
+    QString functionName() const;
+%Docstring
+Returns the function name.
+%End
+
+    QStringList parameters() const;
+%Docstring
+Returns the parameter names.
+%End
+
+    QgsVbScriptBlockStatement *body() const;
+%Docstring
+Returns the function body block.
+%End
+
+    bool isSub() const;
+%Docstring
+Returns ``True`` if this is a Sub procedure rather than a Function.
+%End
+
+  private:
+    QgsVbScriptFunctionDeclarationStatement( const QgsVbScriptFunctionDeclarationStatement &other );
+};
+
+class QgsVbScriptExpressionStatement : QgsVbScriptStatement
+{
+%Docstring(signature="appended")
+Represents an expression evaluated as a statement.
+
+For example, a standalone ``variable * 2 + 3`` expression.
+
+.. versionadded:: 4.4
+%End
+
+%TypeHeaderCode
+#include "qgsvbscript.h"
+%End
+  public:
+    explicit QgsVbScriptExpressionStatement( QgsVbScriptExpression *expression /Transfer/ );
+%Docstring
+Constructor for QgsVbScriptExpressionStatement.
+
+Ownership of ``expression`` is transferred to this statement.
+%End
+
+    virtual QgsVbScriptNode::NodeType nodeType() const;
+    virtual QString dump() const;
+
+    virtual QgsVbScriptNode *clone() const /Factory/;
+
+    virtual void accept( QgsVbScriptVisitor &visitor ) const;
+
+
+    QgsVbScriptExpression *expression() const;
+%Docstring
+Returns the underlying expression.
+%End
+
+  private:
+    QgsVbScriptExpressionStatement( const QgsVbScriptExpressionStatement &other );
+};
+
+class QgsVbScriptLiteralExpression : QgsVbScriptExpression
+{
+%Docstring(signature="appended")
+Represents a literal value (number, text string, boolean, or null).
+
+.. versionadded:: 4.4
+%End
+
+%TypeHeaderCode
+#include "qgsvbscript.h"
+%End
+  public:
+    explicit QgsVbScriptLiteralExpression( const QVariant &value );
+%Docstring
+Constructor for QgsVbScriptLiteralExpression.
+%End
+
+    virtual QgsVbScriptNode::NodeType nodeType() const;
+    virtual QString dump() const;
+
+    virtual QgsVbScriptNode *clone() const /Factory/;
+
+    virtual void accept( QgsVbScriptVisitor &visitor ) const;
+
+
+    QVariant value() const;
+%Docstring
+Returns the literal value.
+%End
+
+    QString valueAsString() const;
+%Docstring
+Returns a string representation of the literal value.
+%End
+
+};
+
+class QgsVbScriptVariableReferenceExpression : QgsVbScriptExpression
+{
+%Docstring(signature="appended")
+Represents a reference to a variable identifier.
+
+.. versionadded:: 4.4
+%End
+
+%TypeHeaderCode
+#include "qgsvbscript.h"
+%End
+  public:
+    explicit QgsVbScriptVariableReferenceExpression( const QString &name );
+%Docstring
+Constructor for QgsVbScriptVariableReferenceExpression.
+%End
+
+    virtual QgsVbScriptNode::NodeType nodeType() const;
+    virtual QString dump() const;
+
+    virtual QgsVbScriptNode *clone() const /Factory/;
+
+    virtual void accept( QgsVbScriptVisitor &visitor ) const;
+
+
+    QString name() const;
+%Docstring
+Returns the variable identifier name.
+%End
+
+};
+
+class QgsVbScriptMemberAccessExpression : QgsVbScriptExpression
+{
+%Docstring(signature="appended")
+Represents a member access expression using bracket notation.
+
+.. versionadded:: 4.4
+%End
+
+%TypeHeaderCode
+#include "qgsvbscript.h"
+%End
+  public:
+    QgsVbScriptMemberAccessExpression( QgsVbScriptExpression *containerExpression /Transfer/, const QString &memberName );
+%Docstring
+Constructor for QgsVbScriptMemberAccessExpression.
+
+Ownership of ``containerExpression`` is transferred to this expression.
+%End
+
+    virtual QgsVbScriptNode::NodeType nodeType() const;
+    virtual QString dump() const;
+
+    virtual QgsVbScriptNode *clone() const /Factory/;
+
+    virtual void accept( QgsVbScriptVisitor &visitor ) const;
+
+
+    QgsVbScriptExpression *containerExpression() const;
+%Docstring
+Returns the container expression being accessed.
+%End
+
+    QString memberName() const;
+%Docstring
+Returns the member attribute name.
+%End
+
+  private:
+    QgsVbScriptMemberAccessExpression( const QgsVbScriptMemberAccessExpression &other );
+};
+
+class QgsVbScriptBinaryOperatorExpression : QgsVbScriptExpression
+{
+%Docstring(signature="appended")
+Represents a binary operation expression.
+
+.. versionadded:: 4.4
+%End
+
+%TypeHeaderCode
+#include "qgsvbscript.h"
+%End
+  public:
+    enum class BinaryOperator
+    {
+      Plus,
+      Minus,
+      Multiply,
+      Divide,
+      IntegerDivide,
+      Modulo,
+      Exponent,
+      Concat,
+      Equal,
+      NotEqual,
+      LessThan,
+      GreaterThan,
+      LessThanOrEqual,
+      GreaterThanOrEqual,
+      Is,
+      LogicalAnd,
+      LogicalOr,
+      LogicalXor,
+      LogicalImp,
+      LogicalEqv,
+    };
+
+
+    QgsVbScriptBinaryOperatorExpression( BinaryOperator binaryOperator, QgsVbScriptExpression *leftOperand /Transfer/, QgsVbScriptExpression *rightOperand /Transfer/ );
+%Docstring
+Constructor for QgsVbScriptBinaryOperatorExpression.
+
+Ownership of ``leftOperand`` and ``rightOperand`` is transferred to this
+expression.
+%End
+
+    virtual QgsVbScriptNode::NodeType nodeType() const;
+    virtual QString dump() const;
+
+    virtual QgsVbScriptNode *clone() const /Factory/;
+
+    virtual void accept( QgsVbScriptVisitor &visitor ) const;
+
+
+    BinaryOperator binaryOperator() const;
+%Docstring
+Returns the binary operator.
+%End
+
+    QgsVbScriptExpression *leftOperand() const;
+%Docstring
+Returns the left-hand operand expression.
+%End
+
+    QgsVbScriptExpression *rightOperand() const;
+%Docstring
+Returns the right-hand operand expression.
+%End
+
+    int precedence() const;
+%Docstring
+Returns operator precedence value.
+%End
+
+    bool leftAssociative() const;
+%Docstring
+Returns ``True`` if operator is left-associative.
+%End
+
+    QString text() const;
+%Docstring
+Returns text representation of the operator.
+%End
+
+  private:
+    QgsVbScriptBinaryOperatorExpression( const QgsVbScriptBinaryOperatorExpression &other );
+};
+
+class QgsVbScriptUnaryOperatorExpression : QgsVbScriptExpression
+{
+%Docstring(signature="appended")
+Represents a unary operation expression.
+
+.. versionadded:: 4.4
+%End
+
+%TypeHeaderCode
+#include "qgsvbscript.h"
+%End
+  public:
+    enum class UnaryOperator
+    {
+      Not,
+      Minus,
+      Plus,
+    };
+
+
+    QgsVbScriptUnaryOperatorExpression( UnaryOperator unaryOperator, QgsVbScriptExpression *operand /Transfer/ );
+%Docstring
+Constructor for QgsVbScriptUnaryOperatorExpression.
+
+Ownership of ``operand`` is transferred to this expression.
+%End
+
+    virtual QgsVbScriptNode::NodeType nodeType() const;
+    virtual QString dump() const;
+
+    virtual QgsVbScriptNode *clone() const /Factory/;
+
+    virtual void accept( QgsVbScriptVisitor &visitor ) const;
+
+
+    UnaryOperator unaryOperator() const;
+%Docstring
+Returns the unary operator.
+%End
+
+    QgsVbScriptExpression *operand() const;
+%Docstring
+Returns the operand expression.
+%End
+
+    QString text() const;
+%Docstring
+Returns text representation of the operator.
+%End
+
+  private:
+    QgsVbScriptUnaryOperatorExpression( const QgsVbScriptUnaryOperatorExpression &other );
+};
+
+class QgsVbScriptFunctionCallExpression : QgsVbScriptExpression
+{
+%Docstring(signature="appended")
+Represents a function call expression.
+
+For example ``UCase(value)``.
+
+.. versionadded:: 4.4
+%End
+
+%TypeHeaderCode
+#include "qgsvbscript.h"
+%End
+  public:
+    QgsVbScriptFunctionCallExpression( QgsVbScriptExpression *targetExpression /Transfer/, const QList<QgsVbScriptExpression *> &arguments /Transfer/ );
+%Docstring
+Constructor for QgsVbScriptFunctionCallExpression.
+
+Ownership of ``targetExpression`` and all expressions in ``arguments``
+is transferred to this node.
+%End
+
+    ~QgsVbScriptFunctionCallExpression();
+
+    virtual QgsVbScriptNode::NodeType nodeType() const;
+    virtual QString dump() const;
+
+    virtual QgsVbScriptNode *clone() const /Factory/;
+
+    virtual void accept( QgsVbScriptVisitor &visitor ) const;
+
+
+    QgsVbScriptExpression *targetExpression() const;
+%Docstring
+Returns the callee expression.
+%End
+
+    QList<QgsVbScriptExpression *> arguments() const;
+%Docstring
+Returns the list of argument expressions.
+%End
+
+  private:
+    QgsVbScriptFunctionCallExpression( const QgsVbScriptFunctionCallExpression &other );
+};
+
+class QgsVbScriptIndexExpression : QgsVbScriptExpression
+{
+%Docstring(signature="appended")
+Represents an array or dictionary index subscript expression.
+
+For example ``values[index]``.
+
+.. versionadded:: 4.4
+%End
+
+%TypeHeaderCode
+#include "qgsvbscript.h"
+%End
+  public:
+    QgsVbScriptIndexExpression( QgsVbScriptExpression *containerExpression /Transfer/, QgsVbScriptExpression *indexExpression /Transfer/ );
+%Docstring
+Constructor for QgsVbScriptIndexExpression.
+
+Ownership of ``containerExpression`` and ``indexExpression`` is
+transferred to this expression.
+%End
+
+    virtual QgsVbScriptNode::NodeType nodeType() const;
+    virtual QString dump() const;
+
+    virtual QgsVbScriptNode *clone() const /Factory/;
+
+    virtual void accept( QgsVbScriptVisitor &visitor ) const;
+
+
+    QgsVbScriptExpression *containerExpression() const;
+%Docstring
+Returns the container expression being indexed.
+%End
+
+    QgsVbScriptExpression *indexExpression() const;
+%Docstring
+Returns the index expression.
+%End
+
+  private:
+    QgsVbScriptIndexExpression( const QgsVbScriptIndexExpression &other );
+};
+
+class QgsVbScriptArrayLiteralExpression : QgsVbScriptExpression
+{
+%Docstring(signature="appended")
+Represents an array literal expression.
+
+Array elements may be expressions themselves.
+
+.. versionadded:: 4.4
+%End
+
+%TypeHeaderCode
+#include "qgsvbscript.h"
+%End
+  public:
+    explicit QgsVbScriptArrayLiteralExpression( const QList<QgsVbScriptExpression *> &elements /Transfer/ );
+%Docstring
+Constructor for QgsVbScriptArrayLiteralExpression.
+
+Ownership of all expressions in ``elements`` is transferred to this
+node.
+%End
+
+    ~QgsVbScriptArrayLiteralExpression();
+
+    virtual QgsVbScriptNode::NodeType nodeType() const;
+    virtual QString dump() const;
+
+    virtual QgsVbScriptNode *clone() const /Factory/;
+
+    virtual void accept( QgsVbScriptVisitor &visitor ) const;
+
+
+    QList<QgsVbScriptExpression *> elements() const;
+%Docstring
+Returns the list of element expressions.
+%End
+
+  private:
+    QgsVbScriptArrayLiteralExpression( const QgsVbScriptArrayLiteralExpression &other );
+};
+
+class QgsVbScriptIfStatement : QgsVbScriptStatement
+{
+%Docstring(signature="appended")
+Represents an if statement.
+
+.. versionadded:: 4.4
+%End
+
+%TypeHeaderCode
+#include "qgsvbscript.h"
+%End
+  public:
+    QgsVbScriptIfStatement(
+      QgsVbScriptExpression *condition /Transfer/, QgsVbScriptBlockStatement *trueBlock /Transfer/, QgsVbScriptBlockStatement *falseBlock /Transfer/ = 0, bool isInline = false
+    );
+%Docstring
+Constructor for QgsVbScriptIfStatement.
+
+Ownership of ``condition``, ``trueBlock``, and ``falseBlock`` is
+transferred to this statement.
+%End
+
+    virtual QgsVbScriptNode::NodeType nodeType() const;
+    virtual QString dump() const;
+
+    virtual QgsVbScriptNode *clone() const /Factory/;
+
+    virtual void accept( QgsVbScriptVisitor &visitor ) const;
+
+
+    QgsVbScriptExpression *condition() const;
+%Docstring
+Returns the condition expression.
+%End
+
+    QgsVbScriptBlockStatement *trueBlock() const;
+%Docstring
+Returns the statement block executed when the condition evaluates to
+``True``.
+%End
+
+    QgsVbScriptBlockStatement *falseBlock() const;
+%Docstring
+Returns the statement block executed when the condition evaluates to
+``False``, or ``None`` if none.
+%End
+
+    bool isInline() const;
+%Docstring
+Returns ``True`` if this statement was declared as a single-line inline
+If.
+%End
+
+  private:
+    QgsVbScriptIfStatement( const QgsVbScriptIfStatement &other );
+};
+
+class QgsVbScriptForStatement : QgsVbScriptStatement
+{
+%Docstring(signature="appended")
+Represents a standard counter-based for loop.
+
+.. versionadded:: 4.4
+%End
+
+%TypeHeaderCode
+#include "qgsvbscript.h"
+%End
+  public:
+    QgsVbScriptForStatement(
+      const QString &variableName,
+      QgsVbScriptExpression *startExpression /Transfer/,
+      QgsVbScriptExpression *endExpression /Transfer/,
+      QgsVbScriptExpression *stepExpression /Transfer/,
+      QgsVbScriptBlockStatement *body /Transfer/
+    );
+%Docstring
+Constructor for QgsVbScriptForStatement.
+
+Ownership of ``startExpression``, ``endExpression``, ``stepExpression``,
+and ``body`` is transferred to this statement.
+%End
+
+    virtual QgsVbScriptNode::NodeType nodeType() const;
+    virtual QString dump() const;
+
+    virtual QgsVbScriptNode *clone() const /Factory/;
+
+    virtual void accept( QgsVbScriptVisitor &visitor ) const;
+
+
+    QString variableName() const;
+%Docstring
+Returns the loop variable identifier name.
+%End
+
+    QgsVbScriptExpression *startExpression() const;
+%Docstring
+Returns the initial counter expression.
+%End
+
+    QgsVbScriptExpression *endExpression() const;
+%Docstring
+Returns the terminal counter expression.
+%End
+
+    QgsVbScriptExpression *stepExpression() const;
+%Docstring
+Returns the step increment expression, or ``None`` if default.
+%End
+
+    QgsVbScriptBlockStatement *body() const;
+%Docstring
+Returns the loop body block statement.
+%End
+
+  private:
+    QgsVbScriptForStatement( const QgsVbScriptForStatement &other );
+};
+
+class QgsVbScriptForEachStatement : QgsVbScriptStatement
+{
+%Docstring(signature="appended")
+Represents a for ... each loop.
+
+.. versionadded:: 4.4
+%End
+
+%TypeHeaderCode
+#include "qgsvbscript.h"
+%End
+  public:
+    QgsVbScriptForEachStatement( const QString &variableName, QgsVbScriptExpression *collection /Transfer/, QgsVbScriptBlockStatement *body /Transfer/ );
+%Docstring
+Constructor for QgsVbScriptForEachStatement.
+
+Ownership of ``collection`` and ``body`` is transferred to this
+statement.
+%End
+
+    virtual QgsVbScriptNode::NodeType nodeType() const;
+    virtual QString dump() const;
+
+    virtual QgsVbScriptNode *clone() const /Factory/;
+
+    virtual void accept( QgsVbScriptVisitor &visitor ) const;
+
+
+    QString variableName() const;
+%Docstring
+Returns the loop variable identifier name.
+%End
+
+    QgsVbScriptExpression *collection() const;
+%Docstring
+Returns the collection expression being iterated over.
+%End
+
+    QgsVbScriptBlockStatement *body() const;
+%Docstring
+Returns the loop body block statement.
+%End
+
+  private:
+    QgsVbScriptForEachStatement( const QgsVbScriptForEachStatement &other );
+};
+
+class QgsVbScriptWhileStatement : QgsVbScriptStatement
+{
+%Docstring(signature="appended")
+Represents a while loop statement.
+
+.. versionadded:: 4.4
+%End
+
+%TypeHeaderCode
+#include "qgsvbscript.h"
+%End
+  public:
+    enum class LoopType
+    {
+      WhileWend,
+      DoWhile,
+      DoUntil,
+      DoLoopWhile,
+      DoLoopUntil,
+    };
+
+    QgsVbScriptWhileStatement( LoopType loopType, QgsVbScriptExpression *condition /Transfer/, QgsVbScriptBlockStatement *body /Transfer/ );
+%Docstring
+Constructor for QgsVbScriptWhileStatement.
+
+Ownership of ``condition`` and ``body`` is transferred to this
+statement.
+%End
+
+    virtual QgsVbScriptNode::NodeType nodeType() const;
+    virtual QString dump() const;
+
+    virtual QgsVbScriptNode *clone() const /Factory/;
+
+    virtual void accept( QgsVbScriptVisitor &visitor ) const;
+
+
+    LoopType loopType() const;
+%Docstring
+Returns the loop variant type.
+%End
+
+    QgsVbScriptExpression *condition() const;
+%Docstring
+Returns the loop condition expression.
+%End
+
+    QgsVbScriptBlockStatement *body() const;
+%Docstring
+Returns the loop body block statement.
+%End
+
+  private:
+    QgsVbScriptWhileStatement( const QgsVbScriptWhileStatement &other );
+};
+
+class QgsVbScriptExitStatement : QgsVbScriptStatement
+{
+%Docstring(signature="appended")
+Represents an Exit loop or Exit Sub/Function statement.
+
+.. versionadded:: 4.4
+%End
+
+%TypeHeaderCode
+#include "qgsvbscript.h"
+%End
+  public:
+    enum class ExitType
+    {
+      ExitDo,
+      ExitFor,
+      ExitFunction,
+      ExitSub,
+    };
+
+    explicit QgsVbScriptExitStatement( ExitType exitType );
+%Docstring
+Constructor for QgsVbScriptExitStatement.
+%End
+
+    virtual QgsVbScriptNode::NodeType nodeType() const;
+    virtual QString dump() const;
+
+    virtual QgsVbScriptNode *clone() const /Factory/;
+
+    virtual void accept( QgsVbScriptVisitor &visitor ) const;
+
+
+    ExitType exitType() const;
+%Docstring
+Returns the exit target scope.
+%End
+
+};
+
+class QgsVbScriptVisitor
+{
+%Docstring(signature="appended")
+Abstract visitor interface for traversing VBScript abstract syntax
+trees.
+
+.. versionadded:: 4.4
+%End
+
+%TypeHeaderCode
+#include "qgsvbscript.h"
+%End
+  public:
+    virtual ~QgsVbScriptVisitor();
+
+    virtual void visit( const QgsVbScriptBlockStatement &node ) = 0;
+%Docstring
+Visit a :py:class:`QgsVbScriptBlockStatement` ``node``
+%End
+    virtual void visit( const QgsVbScriptVariableDeclarationStatement &node ) = 0;
+%Docstring
+Visit a :py:class:`QgsVbScriptVariableDeclarationStatement` ``node``
+%End
+    virtual void visit( const QgsVbScriptAssignmentStatement &node ) = 0;
+%Docstring
+Visit a :py:class:`QgsVbScriptAssignmentStatement` ``node``
+%End
+    virtual void visit( const QgsVbScriptFunctionDeclarationStatement &node ) = 0;
+%Docstring
+Visit a :py:class:`QgsVbScriptFunctionDeclarationStatement` ``node``
+%End
+    virtual void visit( const QgsVbScriptExpressionStatement &node ) = 0;
+%Docstring
+Visit a :py:class:`QgsVbScriptExpressionStatement` ``node``
+%End
+    virtual void visit( const QgsVbScriptLiteralExpression &node ) = 0;
+%Docstring
+Visit a :py:class:`QgsVbScriptLiteralExpression` ``node``
+%End
+    virtual void visit( const QgsVbScriptVariableReferenceExpression &node ) = 0;
+%Docstring
+Visit a :py:class:`QgsVbScriptVariableReferenceExpression` ``node``
+%End
+    virtual void visit( const QgsVbScriptMemberAccessExpression &node ) = 0;
+%Docstring
+Visit a :py:class:`QgsVbScriptMemberAccessExpression` ``node``
+%End
+    virtual void visit( const QgsVbScriptBinaryOperatorExpression &node ) = 0;
+%Docstring
+Visit a :py:class:`QgsVbScriptBinaryOperatorExpression` ``node``
+%End
+    virtual void visit( const QgsVbScriptUnaryOperatorExpression &node ) = 0;
+%Docstring
+Visit a :py:class:`QgsVbScriptUnaryOperatorExpression` ``node``
+%End
+    virtual void visit( const QgsVbScriptFunctionCallExpression &node ) = 0;
+%Docstring
+Visit a :py:class:`QgsVbScriptFunctionCallExpression` ``node``
+%End
+    virtual void visit( const QgsVbScriptIndexExpression &node ) = 0;
+%Docstring
+Visit a :py:class:`QgsVbScriptIndexExpression` ``node``
+%End
+    virtual void visit( const QgsVbScriptArrayLiteralExpression &node ) = 0;
+%Docstring
+Visit a :py:class:`QgsVbScriptArrayLiteralExpression` ``node``
+%End
+    virtual void visit( const QgsVbScriptIfStatement &node ) = 0;
+%Docstring
+Visit a :py:class:`QgsVbScriptIfStatement` ``node``
+%End
+    virtual void visit( const QgsVbScriptForStatement &node ) = 0;
+%Docstring
+Visit a :py:class:`QgsVbScriptForStatement` ``node``
+%End
+    virtual void visit( const QgsVbScriptForEachStatement &node ) = 0;
+%Docstring
+Visit a :py:class:`QgsVbScriptForEachStatement` ``node``
+%End
+    virtual void visit( const QgsVbScriptWhileStatement &node ) = 0;
+%Docstring
+Visit a :py:class:`QgsVbScriptWhileStatement` ``node``
+%End
+    virtual void visit( const QgsVbScriptExitStatement &node ) = 0;
+%Docstring
+Visit a :py:class:`QgsVbScriptExitStatement` ``node``
+%End
+};
+
+class QgsVbScriptRecursiveVisitor : QgsVbScriptVisitor
+{
+%Docstring(signature="appended")
+Visitor implementation that recursively traverses all child nodes in a
+VBScript script.
+
+.. versionadded:: 4.4
+%End
+
+%TypeHeaderCode
+#include "qgsvbscript.h"
+%End
+  public:
+    QgsVbScriptRecursiveVisitor();
+
+    virtual void visit( const QgsVbScriptBlockStatement &node );
+
+    virtual void visit( const QgsVbScriptVariableDeclarationStatement &node );
+
+    virtual void visit( const QgsVbScriptAssignmentStatement &node );
+
+    virtual void visit( const QgsVbScriptFunctionDeclarationStatement &node );
+
+    virtual void visit( const QgsVbScriptExpressionStatement &node );
+
+    virtual void visit( const QgsVbScriptLiteralExpression &node );
+
+    virtual void visit( const QgsVbScriptVariableReferenceExpression &node );
+
+    virtual void visit( const QgsVbScriptMemberAccessExpression &node );
+
+    virtual void visit( const QgsVbScriptBinaryOperatorExpression &node );
+
+    virtual void visit( const QgsVbScriptUnaryOperatorExpression &node );
+
+    virtual void visit( const QgsVbScriptFunctionCallExpression &node );
+
+    virtual void visit( const QgsVbScriptIndexExpression &node );
+
+    virtual void visit( const QgsVbScriptArrayLiteralExpression &node );
+
+    virtual void visit( const QgsVbScriptIfStatement &node );
+
+    virtual void visit( const QgsVbScriptForStatement &node );
+
+    virtual void visit( const QgsVbScriptForEachStatement &node );
+
+    virtual void visit( const QgsVbScriptWhileStatement &node );
+
+    virtual void visit( const QgsVbScriptExitStatement &node );
+
+};
+
+class QgsVbScript
+{
+%Docstring(signature="appended")
+Parses and encapsulates an entire VBScript script.
+
+.. versionadded:: 4.4
+%End
+
+%TypeHeaderCode
+#include "qgsvbscript.h"
+%End
+  public:
+    explicit QgsVbScript( const QString &scriptText = QString() );
+%Docstring
+Creates a new script from ``scriptText``.
+%End
+
+    QgsVbScript( const QgsVbScript &other );
+
+    ~QgsVbScript();
+
+    bool hasParserError() const;
+%Docstring
+Returns ``True`` if a parsing error occurred.
+%End
+
+    QString parserErrorString() const;
+%Docstring
+Returns parser error description.
+%End
+
+    const QgsVbScriptBlockStatement *rootBlock() const;
+%Docstring
+Returns the root block statement node, or ``None`` if parsing failed.
+%End
+
+    QString script() const;
+%Docstring
+Returns the original script text.
+%End
+
+    QString dump() const;
+%Docstring
+Dumps the abstract syntax tree back into an Arcade script string.
+%End
+
+    void acceptVisitor( QgsVbScriptVisitor &visitor ) const;
+%Docstring
+Accepts a visitor to traverse the script abstract syntax tree.
+%End
+
+    static QString quotedString( const QString &text );
+%Docstring
+Returns a properly quoted string literal (enclosed in double quotes with
+escape sequences).
+%End
+
+  protected:
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/providers/arcgis/qgsvbscript.h                              *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
+ ************************************************************************/

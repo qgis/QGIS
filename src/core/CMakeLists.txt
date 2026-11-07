@@ -14,6 +14,10 @@ BISON_TARGET(QgsEsriArcadeParser providers/arcgis/qgsesriarcadescriptparser.yy $
 FLEX_TARGET(QgsEsriArcadeLexer providers/arcgis/qgsesriarcadescriptlexer.ll ${CMAKE_CURRENT_BINARY_DIR}/qgsesriarcadelexer.cpp)
 ADD_FLEX_BISON_DEPENDENCY(QgsEsriArcadeLexer QgsEsriArcadeParser)
 
+BISON_TARGET(QgsVbScriptParser providers/arcgis/qgsvbscriptparser.yy ${CMAKE_CURRENT_BINARY_DIR}/qgsvbscriptparser.cpp COMPILE_FLAGS "-p vbscript_")
+FLEX_TARGET(QgsVbScriptLexer providers/arcgis/qgsvbscriptlexer.ll ${CMAKE_CURRENT_BINARY_DIR}/qgsvbscriptlexer.cpp)
+ADD_FLEX_BISON_DEPENDENCY(QgsVbScriptLexer QgsVbScriptParser)
+
 # LAZPerf-priority
 if(WITH_INTERNAL_LAZPERF)
   include_directories(BEFORE SYSTEM ${CMAKE_SOURCE_DIR}/external/lazperf)
@@ -47,6 +51,8 @@ set(QGIS_CORE_SRCS
   ${BISON_QgsMeshCalcParser_OUTPUTS}
   ${FLEX_QgsEsriArcadeLexer_OUTPUTS}
   ${BISON_QgsEsriArcadeParser_OUTPUTS}
+  ${FLEX_QgsVbScriptLexer_OUTPUTS}
+  ${BISON_QgsVbScriptParser_OUTPUTS}
 
   actions/qgsaction.cpp
   actions/qgsactionscope.cpp
@@ -347,6 +353,7 @@ set(QGIS_CORE_SRCS
   providers/arcgis/qgsarcgisrestutils.cpp
   providers/arcgis/qgsesriarcadeconverter.cpp
   providers/arcgis/qgsesriarcadescript.cpp
+  providers/arcgis/qgsvbscript.cpp
 
   providers/gdal/qgsgdalcloudconnection.cpp
   providers/gdal/qgsgdalclouddataitems.cpp
@@ -1172,6 +1179,8 @@ if(NOT MSVC)
     ${BISON_QgsMeshCalcParser_OUTPUTS}
     ${FLEX_QgsEsriArcadeLexer_OUTPUTS}
     ${BISON_QgsEsriArcadeParser_OUTPUTS}
+    ${FLEX_QgsVbScriptLexer_OUTPUTS}
+    ${BISON_QgsVbScriptParser_OUTPUTS}
     PROPERTIES COMPILE_FLAGS -w)
 else()
   # -wd4702 unreachable code
@@ -1190,6 +1199,8 @@ else()
     ${BISON_QgsMeshCalcParser_OUTPUTS}
     ${FLEX_QgsEsriArcadeLexer_OUTPUTS}
     ${BISON_QgsEsriArcadeParser_OUTPUTS}
+    ${FLEX_QgsVbScriptLexer_OUTPUTS}
+    ${BISON_QgsVbScriptParser_OUTPUTS}
     PROPERTIES COMPILE_FLAGS /W0)
 endif()
 
@@ -2017,6 +2028,7 @@ set(QGIS_CORE_HDRS
   providers/arcgis/qgsarcgisrestutils.h
   providers/arcgis/qgsesriarcadeconverter.h
   providers/arcgis/qgsesriarcadescript.h
+  providers/arcgis/qgsvbscript.h
 
   providers/gdal/qgsgdalcloudconnection.h
   providers/gdal/qgsgdalclouddataitems.h
