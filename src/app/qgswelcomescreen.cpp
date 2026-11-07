@@ -201,6 +201,8 @@ void QgsWelcomeScreen::showScene()
   }
   refreshGeometry();
   show();
+  setFocus( Qt::OtherFocusReason );
+  emit mWelcomeScreenController->welcomeScreenShown();
 }
 
 void QgsWelcomeScreen::hideScene()
