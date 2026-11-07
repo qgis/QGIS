@@ -7339,7 +7339,7 @@ int QgisEvent = QEvent::User + 1;
     /**
      * Style save format
      *
-     * \since QGIS 4.2
+     * \since QGIS 4.4
      */
     enum class SaveStyleFormat : int SIP_ENUM_BASETYPE( IntFlag )
     {
