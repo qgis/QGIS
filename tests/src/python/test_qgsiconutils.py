@@ -26,7 +26,7 @@ class TestQgsIconUtils(QgisTestCase):
             "/field_indicators/mIndicatorFieldDomain.svg"
         )
 
-        icon = QgsFields.iconForFieldType(QMetaType.Type.QString)
+        icon = QgsFields.iconForFieldType(QMetaType.Type.Bool)
         self.assertFalse(icon.isNull())
 
         size = QSize(32, 32)
@@ -38,8 +38,8 @@ class TestQgsIconUtils(QgisTestCase):
         self.assertEqual(image.size(), size)
         self.assertTrue(
             self.image_check(
-                "icon_overlay_string",
-                "icon_overlay_string",
+                "icon_overlay_bool",
+                "icon_overlay_bool",
                 image,
                 use_checkerboard_background=True,
             )
