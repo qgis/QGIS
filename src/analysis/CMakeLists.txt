@@ -677,6 +677,10 @@ if (WITH_SFCGAL)
   target_link_libraries(qgis_analysis SFCGAL::SFCGAL)
 endif()
 
+if(WITH_TBB)
+   target_link_libraries(qgis_analysis TBB::tbb)
+endif()
+
 target_compile_definitions(qgis_analysis PRIVATE "-DQT_NO_FOREACH")
 target_compile_definitions(qgis_analysis PRIVATE "CMAKE_SOURCE_DIR=\"${CMAKE_SOURCE_DIR}\"")
 
