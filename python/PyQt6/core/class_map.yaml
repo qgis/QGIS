@@ -18097,6 +18097,7 @@ QgsSpatialIndex.addFeature: src/core/qgsspatialindex.h#L175
 QgsSpatialIndex.addFeatures: src/core/qgsspatialindex.h#L161
 QgsSpatialIndex.deleteFeature: src/core/qgsspatialindex.h#L180
 QgsSpatialIndex.deleteFeature: src/core/qgsspatialindex.h#L187
+QgsSpatialIndex.detach: src/core/qgsspatialindex.h#L287
 QgsSpatialIndex.geometry: src/core/qgsspatialindex.h#L261
 QgsSpatialIndex.insertFeature: src/core/qgsspatialindex.h#L141
 QgsSpatialIndex.insertFeature: src/core/qgsspatialindex.h#L168
