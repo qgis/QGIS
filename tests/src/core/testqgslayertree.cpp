@@ -34,6 +34,7 @@
 #include "qgsvectorlayerdiagramprovider.h"
 #include "qgsvectorlayerlabelprovider.h"
 
+#include <QDir>
 #include <QMimeData>
 #include <QSignalSpy>
 #include <QString>
@@ -83,6 +84,7 @@ class TestQgsLayerTree : public QObject
     void testGroupIdReadWriteXml();
     void testGroupIdCopyVsMove();
     void testGroupIdCreateCloneRemove();
+    void testGroupIcon();
 
   private:
     QgsLayerTreeGroup *mRoot = nullptr;
@@ -1391,6 +1393,37 @@ void TestQgsLayerTree::testGroupIdCreateCloneRemove()
   const QString bId = b->id();
   root.removeChildNode( a );
   QCOMPARE( b->id(), bId );
+}
+
+void TestQgsLayerTree::testGroupIcon()
+{
+  QgsLayerTree root;
+  QgsLayerTreeGroup *group = root.addGroup( u"group"_s );
+  QgsLayerTreeModel model( &root );
+  const QModelIndex index = model.node2index( group );
+  const QImage folderImage = QgsApplication::getThemeIcon( u"/mActionFolder.svg"_s ).pixmap( 16 ).toImage();
+  QCOMPARE( model.data( index, Qt::DecorationRole ).value<QIcon>().pixmap( 16 ).toImage(), folderImage );
+
+  // setting property
+  const QSignalSpy spy( &model, &QAbstractItemModel::dataChanged );
+  const QString svg = QStringLiteral( TEST_DATA_DIR ) + u"/sample_svg.svg"_s;
+  const QImage svgImage = QIcon( svg ).pixmap( 16 ).toImage();
+  group->setCustomProperty( u"icon"_s, svg );
+  QCOMPARE( spy.count(), 1 );
+  QCOMPARE( spy.at( 0 ).at( 0 ).toModelIndex(), index );
+  QCOMPARE( model.data( index, Qt::DecorationRole ).value<QIcon>().pixmap( 16 ).toImage(), svgImage );
+
+  // missing icon falls back to default
+  const QTemporaryDir dir;
+  const QString later = dir.filePath( u"missing.svg"_s );
+  group->setCustomProperty( u"icon"_s, later );
+  QCOMPARE( spy.count(), 2 );
+  QCOMPARE( model.data( index, Qt::DecorationRole ).value<QIcon>().pixmap( 16 ).toImage(), folderImage );
+
+  // with search path
+  QDir::addSearchPath( u"testgroupicon"_s, QStringLiteral( TEST_DATA_DIR ) );
+  group->setCustomProperty( u"icon"_s, u"testgroupicon:sample_svg.svg"_s );
+  QCOMPARE( model.data( index, Qt::DecorationRole ).value<QIcon>().pixmap( 16 ).toImage(), svgImage );
 }
 
 QGSTEST_MAIN( TestQgsLayerTree )
