@@ -85,6 +85,7 @@ typedef SInt32 SRefCon;
 
 #include "qgscustomization.h"
 #include "qgssettings.h"
+#include "qgssettingsentry.h"
 #include "qgsfontutils.h"
 #include "qgsmessagelog.h"
 #include "qgspythonrunner.h"
@@ -1031,7 +1032,7 @@ int main( int argc, char *argv[] )
 
 
 #if defined( Q_OS_UNIX ) && !defined( Q_OS_MACOS ) && !defined( ANDROID )
-  bool myUseGuiFlag = nullptr != getenv( "DISPLAY" );
+  bool myUseGuiFlag = nullptr != getenv( "DISPLAY" ) || nullptr != getenv( "WAYLAND_DISPLAY" );
 #else
   bool myUseGuiFlag = true;
 #endif
@@ -1040,7 +1041,7 @@ int main( int argc, char *argv[] )
     std::cerr << QObject::tr(
                    "QGIS starting in non-interactive mode not supported.\n"
                    "You are seeing this message most likely because you "
-                   "have no DISPLAY environment variable set.\n"
+                   "have no DISPLAY or WAYLAND_DISPLAY environment variable set.\n"
     )
                    .toUtf8()
                    .constData();
@@ -1114,9 +1115,10 @@ int main( int argc, char *argv[] )
 
   if ( !globalsettingsfile.isEmpty() )
   {
-    bool ok = QgsSettings::setGlobalSettingsPath( globalsettingsfile );
+    const bool ok1 = QgsSettingsEntryBase::setGlobalSettingsPath( globalsettingsfile );
+    const bool ok2 = QgsSettings::setGlobalSettingsPath( globalsettingsfile );
 
-    if ( !ok )
+    if ( !ok1 || !ok2 )
     {
       preApplicationWarningMessages << QObject::tr( "Invalid globalsettingsfile path: %1" ).arg( globalsettingsfile ), u"QGIS"_s;
     }
@@ -1886,6 +1888,10 @@ int main( int argc, char *argv[] )
 
       case QgsDxfExport::ExportResult::EmptyExtentError:
         std::cerr << "dxf output failed, the extent could not be determined" << std::endl;
+        break;
+
+      case QgsDxfExport::ExportResult::InvalidEncodingError:
+        std::cerr << "dxf output failed, the encoding \"" << dxfEncoding.toStdString() << "\" is not supported" << std::endl;
         break;
     }
 

@@ -67,6 +67,9 @@ class QgsOapifCql2TextExpressionCompiler
 
     QString quotedIdentifier( const QString &identifier ) const;
 
+    //! Returns the primary geometry queryable, or the first geometry one, or an empty string if there is none
+    QString geometryQueryable() const;
+
     // Input
     const QMap<QString, QgsOapifQueryablesRequest::Queryable> &mQueryables;
     const bool mSupportsLikeBetweenIn;

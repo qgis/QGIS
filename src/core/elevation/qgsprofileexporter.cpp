@@ -194,6 +194,7 @@ bool QgsProfileExporterTask::run()
           break;
 
         case QgsDxfExport::ExportResult::EmptyExtentError:
+        case QgsDxfExport::ExportResult::InvalidEncodingError:
           mResult = ExportResult::DxfExportFailed;
           break;
       }

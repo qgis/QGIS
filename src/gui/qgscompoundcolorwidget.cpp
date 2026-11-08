@@ -16,6 +16,7 @@
 #include "qgscompoundcolorwidget.h"
 
 #include "qgsapplication.h"
+#include "qgscolorpickerhelper.h"
 #include "qgscolorscheme.h"
 #include "qgscolorschemeregistry.h"
 #include "qgsguiutils.h"
@@ -43,6 +44,7 @@ using namespace Qt::StringLiterals;
 
 QgsCompoundColorWidget::QgsCompoundColorWidget( QWidget *parent, const QColor &color, Layout widgetLayout )
   : QgsPanelWidget( parent )
+  , mPickerHelper( new QgsColorPickerHelper( this ) )
 {
   setupUi( this );
 
@@ -315,6 +317,9 @@ QgsCompoundColorWidget::QgsCompoundColorWidget( QWidget *parent, const QColor &c
   connect( mSwatchButton14, &QgsColorButton::colorClicked, this, &QgsCompoundColorWidget::_setColor );
   connect( mSwatchButton15, &QgsColorButton::colorClicked, this, &QgsCompoundColorWidget::_setColor );
   connect( mSwatchButton16, &QgsColorButton::colorClicked, this, &QgsCompoundColorWidget::_setColor );
+
+  connect( mPickerHelper, &QgsColorPickerHelper::colorPicked, this, &QgsCompoundColorWidget::onColorPicked );
+  connect( mPickerHelper, &QgsColorPickerHelper::colorHovered, this, &QgsCompoundColorWidget::onColorHovered );
 }
 
 QgsCompoundColorWidget::~QgsCompoundColorWidget()
@@ -610,6 +615,8 @@ void QgsCompoundColorWidget::mAddCustomColorButton_clicked()
     case 15:
       mSwatchButton16->setColor( mColorPreview->color() );
       break;
+    default:
+      return;
   }
   mLastCustomColorIndex++;
   if ( mLastCustomColorIndex >= 16 )
@@ -620,12 +627,7 @@ void QgsCompoundColorWidget::mAddCustomColorButton_clicked()
 
 void QgsCompoundColorWidget::mSampleButton_clicked()
 {
-  //activate picker color
-  setCursor( QgsApplication::getThemeCursor( QgsApplication::Cursor::Sampler ) );
-  grabMouse();
-  grabKeyboard();
-  mPickingColor = true;
-  setMouseTracking( true );
+  mPickerHelper->activate( mSpinBoxRadius->value() - 1 );
 }
 
 void QgsCompoundColorWidget::mTabWidget_currentChanged( int index )
@@ -701,25 +703,15 @@ void QgsCompoundColorWidget::saveSettings()
   settings.setValue( u"Windows/ColorDialog/sampleRadius"_s, mSpinBoxRadius->value() );
 }
 
-void QgsCompoundColorWidget::stopPicking( QPoint eventPos, const bool takeSample )
+void QgsCompoundColorWidget::onColorPicked( const QColor &color )
 {
-  //release mouse and keyboard, and reset cursor
-  releaseMouse();
-  releaseKeyboard();
-  unsetCursor();
-  setMouseTracking( false );
-  mPickingColor = false;
+  mSamplePreview->setColor( color );
+  mColorPreview->setColor( color, true );
+}
 
-  if ( !takeSample )
-  {
-    //not sampling color, nothing more to do
-    return;
-  }
-
-  //grab snapshot of pixel under mouse cursor
-  const QColor snappedColor = sampleColor( eventPos );
-  mSamplePreview->setColor( snappedColor );
-  mColorPreview->setColor( snappedColor, true );
+void QgsCompoundColorWidget::onColorHovered( const QColor &color )
+{
+  mSamplePreview->setColor( color );
 }
 
 void QgsCompoundColorWidget::setColor( const QColor &color )
@@ -778,107 +770,6 @@ void QgsCompoundColorWidget::hideEvent( QHideEvent *e )
   saveSettings();
   QWidget::hideEvent( e );
 }
-
-void QgsCompoundColorWidget::mousePressEvent( QMouseEvent *e )
-{
-  if ( mPickingColor )
-  {
-    //don't show dialog if in color picker mode
-    e->accept();
-    return;
-  }
-
-  QWidget::mousePressEvent( e );
-}
-
-QColor QgsCompoundColorWidget::averageColor( const QImage &image ) const
-{
-  QRgb tmpRgb;
-  int colorCount = 0;
-  int sumRed = 0;
-  int sumBlue = 0;
-  int sumGreen = 0;
-  //scan through image and sum rgb components
-  for ( int heightIndex = 0; heightIndex < image.height(); ++heightIndex )
-  {
-    const QRgb *scanLine = reinterpret_cast<const QRgb *>( image.constScanLine( heightIndex ) );
-    for ( int widthIndex = 0; widthIndex < image.width(); ++widthIndex )
-    {
-      tmpRgb = scanLine[widthIndex];
-      sumRed += qRed( tmpRgb );
-      sumBlue += qBlue( tmpRgb );
-      sumGreen += qGreen( tmpRgb );
-      colorCount++;
-    }
-  }
-  //calculate average components as floats
-  const double avgRed = static_cast<double>( sumRed ) / ( 255.0 * colorCount );
-  const double avgGreen = static_cast<double>( sumGreen ) / ( 255.0 * colorCount );
-  const double avgBlue = static_cast<double>( sumBlue ) / ( 255.0 * colorCount );
-
-  //create a new color representing the average
-  return QColor::fromRgbF( avgRed, avgGreen, avgBlue );
-}
-
-QColor QgsCompoundColorWidget::sampleColor( QPoint point ) const
-{
-  const int sampleRadius = mSpinBoxRadius->value() - 1;
-  QScreen *screen = findScreenAt( point );
-  if ( !screen )
-  {
-    return QColor();
-  }
-
-  const int x = point.x() - screen->geometry().left();
-  const int y = point.y() - screen->geometry().top();
-  const QPixmap snappedPixmap = screen->grabWindow( 0, x - sampleRadius, y - sampleRadius, 1 + sampleRadius * 2, 1 + sampleRadius * 2 );
-  const QImage snappedImage = snappedPixmap.toImage();
-  //scan all pixels and take average color
-  return averageColor( snappedImage );
-}
-
-void QgsCompoundColorWidget::mouseMoveEvent( QMouseEvent *e )
-{
-  if ( mPickingColor )
-  {
-    //currently in color picker mode
-    //sample color under cursor update preview widget to give feedback to user
-    const QColor hoverColor = sampleColor( e->globalPos() );
-    mSamplePreview->setColor( hoverColor );
-
-    e->accept();
-    return;
-  }
-
-  QWidget::mouseMoveEvent( e );
-}
-
-void QgsCompoundColorWidget::mouseReleaseEvent( QMouseEvent *e )
-{
-  if ( mPickingColor )
-  {
-    //end color picking operation by sampling the color under cursor
-    stopPicking( e->globalPos() );
-    e->accept();
-    return;
-  }
-
-  QWidget::mouseReleaseEvent( e );
-}
-
-void QgsCompoundColorWidget::keyPressEvent( QKeyEvent *e )
-{
-  if ( !mPickingColor )
-  {
-    //if not picking a color, use default tool button behavior
-    QgsPanelWidget::keyPressEvent( e );
-    return;
-  }
-
-  //cancel picking, sampling the color if space was pressed
-  stopPicking( QCursor::pos(), e->key() == Qt::Key_Space );
-}
-
 
 void QgsCompoundColorWidget::updateComponent()
 {

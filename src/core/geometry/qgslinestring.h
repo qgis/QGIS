@@ -436,7 +436,6 @@ class CORE_EXPORT QgsLineString : public QgsSimpleCurve
     void drawAsPolygon( QPainter &p ) const override;
 
     bool insertVertex( QgsVertexId position, const QgsPoint &vertex ) override;
-    bool deleteVertex( QgsVertexId position ) override;
     bool deleteVertices( const QSet<QgsVertexId> &positions ) override;
 
     QgsLineString *reversed() const override SIP_FACTORY;

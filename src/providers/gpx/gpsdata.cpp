@@ -406,7 +406,11 @@ QgsGpsData *QgsGpsData::getData( const QString &fileName )
         atEnd = 1;
       if ( !XML_Parse( p, buffer, readBytes, atEnd ) )
       {
+#if ( XML_MAJOR_VERSION > 2 || ( XML_MAJOR_VERSION == 2 && XML_MINOR_VERSION >= 9 ) )
+        QgsLogger::warning( QObject::tr( "Parse error at line %1 : %2" ).arg( XML_GetCurrentLineNumber64( p ) ).arg( XML_ErrorString( XML_GetErrorCode( p ) ) ) );
+#else
         QgsLogger::warning( QObject::tr( "Parse error at line %1 : %2" ).arg( XML_GetCurrentLineNumber( p ) ).arg( XML_ErrorString( XML_GetErrorCode( p ) ) ) );
+#endif
         failed = true;
         break;
       }

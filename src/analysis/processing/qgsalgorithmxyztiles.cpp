@@ -70,7 +70,14 @@ void MetaTile::addTile( const int row, const int col, Tile tileToAdd, const QgsR
 namespace
 {
   QList<MetaTile> getMetatiles(
-    const QgsTileMatrix &z0Matrix, const QgsRectangle &contentsExtent, int zoom, long long &tileCount, int metaTileSize, const QList<QgsTileExtentMaxZoomRegion> &maxZoomRegions, int defaultMaxZoom
+    const QgsTileMatrix &z0Matrix,
+    const QgsRectangle &contentsExtent,
+    int zoom,
+    long long &tileCount,
+    int metaTileSize,
+    const QList<QgsTileExtentMaxZoomRegion> &maxZoomRegions,
+    int defaultMaxZoom,
+    QgsProcessingFeedback *feedback
   )
   {
     const QgsTileMatrix targetZoomMatrix = QgsTileMatrix::fromTileMatrix( zoom, z0Matrix );
@@ -97,8 +104,12 @@ namespace
     const int totalMetaRows = static_cast<int>( std::ceil( static_cast<double>( maxY - minY + 1 ) / metaTileSize ) );
     tileCount = 0;
     QList<MetaTile> metaTiles;
+    bool hasWarnedForManyTiles = false;
     for ( int metaTileColumn = 0; metaTileColumn < totalMetaColumns; ++metaTileColumn )
     {
+      if ( feedback->isCanceled() )
+        break;
+
       const int startI = metaTileColumn * metaTileSize;
       const int endI = std::min( startI + metaTileSize - 1, maxX - minX );
       const int startX = minX + startI;
@@ -106,6 +117,9 @@ namespace
 
       for ( int metaTileRow = 0; metaTileRow < totalMetaRows; ++metaTileRow )
       {
+        if ( feedback->isCanceled() )
+          break;
+
         const int startJ = metaTileRow * metaTileSize;
         const int endJ = std::min( startJ + metaTileSize - 1, maxY - minY );
         const int startY = minY + startJ;
@@ -150,6 +164,16 @@ namespace
         if ( !metaTile.tiles.isEmpty() )
         {
           metaTiles.append( metaTile );
+          constexpr qsizetype MAX_METATILES_BEFORE_WARNING = 1'000'000;
+          if ( !hasWarnedForManyTiles && metaTiles.size() >= MAX_METATILES_BEFORE_WARNING )
+          {
+            feedback->pushWarning(
+              QObject::tr( "A large number of tiles (more than %1 metatiles) will be created for zoom level %2. This will take some time. Please check the tile matrix settings and extent to confirm these parameters are correct." )
+                .arg( MAX_METATILES_BEFORE_WARNING )
+                .arg( zoom )
+            );
+            hasWarnedForManyTiles = true;
+          }
         }
       }
     }
@@ -376,7 +400,7 @@ bool QgsXyzTilesBaseAlgorithm::prepareAlgorithm( const QVariantMap &parameters, 
     {
       QgsMapLayer *clonedLayer = layer->clone();
       clonedLayer->moveToThread( nullptr );
-      mLayers << clonedLayer;
+      mLayers.emplace_back( std::unique_ptr< QgsMapLayer >( clonedLayer ) );
     }
   }
 
@@ -442,6 +466,7 @@ bool QgsXyzTilesBaseAlgorithm::prepareAlgorithm( const QVariantMap &parameters, 
 
       const QgsPointXY center = z0Extent.center();
       z0Extent = QgsRectangle( center.x() - requiredWidth / 2.0, center.y() - requiredHeight / 2.0, center.x() + requiredWidth / 2.0, center.y() + requiredHeight / 2.0 );
+      feedback->pushWarning( QObject::tr( "The manual zoom 0 extent does not result in square pixels. This has been automatically adjusted to %1." ).arg( z0Extent.toString() ) );
     }
   }
 
@@ -531,19 +556,23 @@ void QgsXyzTilesBaseAlgorithm::checkLayersUsagePolicy( QgsProcessingFeedback *fe
 {
   if ( mTotalMetaTiles > MAXIMUM_OPENSTREETMAP_TILES_FETCH )
   {
-    for ( QgsMapLayer *layer : std::as_const( mLayers ) )
+    auto it = mLayers.begin();
+    while ( it != mLayers.end() )
     {
-      if ( QgsMapLayerUtils::isOpenStreetMapLayer( layer ) )
+      if ( QgsMapLayerUtils::isOpenStreetMapLayer( it->get() ) )
       {
         // Prevent bulk downloading of tiles from openstreetmap.org as per OSMF tile usage policy
         feedback->pushFormattedMessage(
           QObject::tr( "Layer %1 will be skipped as the algorithm leads to bulk downloading behavior which is prohibited by the %2OpenStreetMap Foundation tile usage policy%3" )
-            .arg( layer->name(), u"<a href=\"https://operations.osmfoundation.org/policies/tiles/\">"_s, u"</a>"_s ),
+            .arg( it->get()->name(), u"<a href=\"https://operations.osmfoundation.org/policies/tiles/\">"_s, u"</a>"_s ),
           QObject::tr( "Layer %1 will be skipped as the algorithm leads to bulk downloading behavior which is prohibited by the %2OpenStreetMap Foundation tile usage policy%3" )
-            .arg( layer->name(), QString(), QString() )
+            .arg( it->get()->name(), QString(), QString() )
         );
-        mLayers.removeAll( layer );
-        delete layer;
+        it = mLayers.erase( it );
+      }
+      else
+      {
+        it++;
       }
     }
   }
@@ -558,7 +587,12 @@ std::optional< QgsMapSettings > QgsXyzTilesBaseAlgorithm::mapSettingsForTile( co
   settings.setOutputImageFormat( QImage::Format_ARGB32_Premultiplied );
   settings.setTransformContext( mTransformContext );
   settings.setEllipsoid( mEllipsoid );
-  settings.setLayers( mLayers );
+  QList< QgsMapLayer * > layers;
+  for ( const std::unique_ptr< QgsMapLayer > &layer : std::as_const( mLayers ) )
+  {
+    layers << layer.get();
+  }
+  settings.setLayers( layers );
   settings.setOutputDpi( mDpi );
   settings.setFlag( Qgis::MapSettingsFlag::Antialiasing, mAntialias );
   settings.setFlag( Qgis::MapSettingsFlag::RenderMapTile, true );
@@ -737,10 +771,13 @@ QVariantMap QgsXyzTilesDirectoryAlgorithm::processAlgorithm( const QVariantMap &
   for ( int z = mMinZoom; z <= mMaxZoomLimitIncludingOverrides; z++ )
   {
     if ( feedback->isCanceled() )
-      break;
+    {
+      mLayers.clear();
+      return {};
+    }
 
     long long tileCount = 0;
-    mMetaTiles += getMetatiles( mZ0matrix, mTileGenerationRegion, z, tileCount, mMetaTileSize, mMaxZoomRegions, mMaxZoom );
+    mMetaTiles += getMetatiles( mZ0matrix, mTileGenerationRegion, z, tileCount, mMetaTileSize, mMaxZoomRegions, mMaxZoom, feedback );
     feedback->pushInfo( QObject::tr( "%1 metatiles (%2 tiles) will be created for zoom level %3" ).arg( mMetaTiles.size() - mTotalMetaTiles ).arg( tileCount ).arg( z ) );
     mTotalMetaTiles = mMetaTiles.size();
     totalTiles += tileCount;
@@ -751,17 +788,26 @@ QVariantMap QgsXyzTilesDirectoryAlgorithm::processAlgorithm( const QVariantMap &
   }
 
   feedback->pushInfo( QObject::tr( "A total of %1 metatiles (%2 tiles) will be created" ).arg( mTotalMetaTiles ).arg( totalTiles ) );
+  if ( feedback->isCanceled() )
+  {
+    mLayers.clear();
+    return {};
+  }
 
   checkLayersUsagePolicy( feedback );
 
-  for ( QgsMapLayer *layer : std::as_const( mLayers ) )
+  for ( const std::unique_ptr< QgsMapLayer > &layer : std::as_const( mLayers ) )
   {
     layer->moveToThread( QThread::currentThread() );
   }
 
+  if ( feedback->isCanceled() )
+  {
+    mLayers.clear();
+    return {};
+  }
   doExport( feedback );
 
-  qDeleteAll( mLayers );
   mLayers.clear();
 
   if ( mSkipEmptyTiles )
@@ -911,7 +957,6 @@ void QgsXyzTilesDirectoryAlgorithm::doExport( QgsProcessingFeedback *feedback )
   for ( auto it = mRendererJobs.constBegin(); it != mRendererJobs.constEnd(); it++ )
   {
     it.key()->cancel();
-    it.key()->deleteLater();
   }
   mRendererJobs.clear();
 
@@ -1002,10 +1047,13 @@ QVariantMap QgsXyzTilesMbtilesAlgorithm::processAlgorithm( const QVariantMap &pa
   for ( int z = mMinZoom; z <= mMaxZoomLimitIncludingOverrides; z++ )
   {
     if ( feedback->isCanceled() )
-      break;
+    {
+      mLayers.clear();
+      return {};
+    }
 
     long long tileCount = 0;
-    mMetaTiles += getMetatiles( mZ0matrix, mTileGenerationRegion, z, tileCount, mMetaTileSize, mMaxZoomRegions, mMaxZoom );
+    mMetaTiles += getMetatiles( mZ0matrix, mTileGenerationRegion, z, tileCount, mMetaTileSize, mMaxZoomRegions, mMaxZoom, feedback );
     feedback->pushInfo( QObject::tr( "%1 metatiles (%2 tiles) will be created for zoom level %3" ).arg( mMetaTiles.size() - mTotalMetaTiles ).arg( tileCount ).arg( z ) );
     mTotalMetaTiles = mMetaTiles.size();
     totalTiles += tileCount;
@@ -1016,17 +1064,27 @@ QVariantMap QgsXyzTilesMbtilesAlgorithm::processAlgorithm( const QVariantMap &pa
   }
 
   feedback->pushInfo( QObject::tr( "A total of %1 metatiles (%2 tiles) will be created" ).arg( mTotalMetaTiles ).arg( totalTiles ) );
+  if ( feedback->isCanceled() )
+  {
+    mLayers.clear();
+    return {};
+  }
 
   checkLayersUsagePolicy( feedback );
 
-  for ( QgsMapLayer *layer : std::as_const( mLayers ) )
+  for ( const std::unique_ptr< QgsMapLayer > &layer : std::as_const( mLayers ) )
   {
     layer->moveToThread( QThread::currentThread() );
   }
 
+  if ( feedback->isCanceled() )
+  {
+    mLayers.clear();
+    return {};
+  }
+
   doExport( feedback );
 
-  qDeleteAll( mLayers );
   mLayers.clear();
 
   if ( !feedback->isCanceled() )
@@ -1143,7 +1201,6 @@ void QgsXyzTilesMbtilesAlgorithm::doExport( QgsProcessingFeedback *feedback )
   for ( auto it = mRendererJobs.constBegin(); it != mRendererJobs.constEnd(); it++ )
   {
     it.key()->cancel();
-    it.key()->deleteLater();
   }
   mRendererJobs.clear();
 
@@ -1241,10 +1298,13 @@ QVariantMap QgsXyzTilesGpkgAlgorithm::processAlgorithm( const QVariantMap &param
   for ( int z = mMinZoom; z <= mMaxZoomLimitIncludingOverrides; z++ )
   {
     if ( feedback->isCanceled() )
-      break;
+    {
+      mLayers.clear();
+      return {};
+    }
 
     long long tileCount = 0;
-    mMetaTiles += getMetatiles( mZ0matrix, mTileGenerationRegion, z, tileCount, mMetaTileSize, mMaxZoomRegions, mMaxZoom );
+    mMetaTiles += getMetatiles( mZ0matrix, mTileGenerationRegion, z, tileCount, mMetaTileSize, mMaxZoomRegions, mMaxZoom, feedback );
     feedback->pushInfo( QObject::tr( "%1 metatiles (%2 tiles) will be created for zoom level %3" ).arg( mMetaTiles.size() - mTotalMetaTiles ).arg( tileCount ).arg( z ) );
     mTotalMetaTiles = mMetaTiles.size();
     totalTiles += tileCount;
@@ -1254,18 +1314,28 @@ QVariantMap QgsXyzTilesGpkgAlgorithm::processAlgorithm( const QVariantMap &param
     throw QgsProcessingException( QObject::tr( "No metatiles will be created -- please check the extent and zoom limits" ) );
   }
   feedback->pushInfo( QObject::tr( "A total of %1 metatiles (%2 tiles) will be created" ).arg( mTotalMetaTiles ).arg( totalTiles ) );
+  if ( feedback->isCanceled() )
+  {
+    mLayers.clear();
+    return {};
+  }
 
   checkLayersUsagePolicy( feedback );
 
-  for ( QgsMapLayer *layer : std::as_const( mLayers ) )
+  for ( const std::unique_ptr< QgsMapLayer > &layer : std::as_const( mLayers ) )
   {
     layer->moveToThread( QThread::currentThread() );
   }
+  if ( feedback->isCanceled() )
+  {
+    mLayers.clear();
+    return {};
+  }
+
   mJobOwner.reset( new QObject() );
 
   doExport( feedback );
 
-  qDeleteAll( mLayers );
   mLayers.clear();
 
   if ( !feedback->isCanceled() )
@@ -1384,7 +1454,6 @@ void QgsXyzTilesGpkgAlgorithm::doExport( QgsProcessingFeedback *feedback )
   for ( auto it = mRendererJobs.constBegin(); it != mRendererJobs.constEnd(); it++ )
   {
     it.key()->cancel();
-    it.key()->deleteLater();
   }
   mRendererJobs.clear();
 

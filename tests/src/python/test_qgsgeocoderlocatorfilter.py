@@ -13,6 +13,7 @@ __copyright__ = "Copyright 2020, The QGIS Project"
 import unittest
 
 from qgis.core import (
+    QgsApplication,
     QgsCoordinateReferenceSystem,
     QgsFeedback,
     QgsGeocoderInterface,
@@ -56,6 +57,7 @@ class TestGeocoder(QgsGeocoderInterface):
             result1.setAdditionalAttributes({"b": 123, "c": "xyz"})
             result1.setDescription("desc")
             result1.setGroup("group")
+            result1.setIcon(QgsApplication.getThemeIcon("/providerQgis.svg"))
             result2 = QgsGeocoderResult(
                 "res 2",
                 QgsGeometry.fromPointXY(QgsPointXY(13, 14)),
@@ -125,6 +127,7 @@ class TestQgsGeocoderLocatorFilter(QgisTestCase):
         self.assertEqual(geocode_result.additionalAttributes(), {"b": 123, "c": "xyz"})
         self.assertTrue(geocode_result.viewport().isNull())
         self.assertEqual(geocode_result.description(), "desc")
+        self.assertFalse(geocode_result.icon().isNull())
         self.assertEqual(geocode_result.group(), "group")
         self.assertEqual(res2.displayString, "res 2")
         geocode_result = filter.locatorResultToGeocoderResult(res2)

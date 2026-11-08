@@ -131,7 +131,8 @@ QgsMapLayer *QgsExpressionUtils::getMapLayerPrivate( const QVariant &value, cons
     }
   }
 
-  // last resort - QgsProject instance. This is bad, we need to remove this!
+  // TODO QGIS 5.0 -- remove this fallback to QgsProject.instance(). Layers should only be resolved through the layer stores
+  // in the context
   auto getMapLayerFromProjectInstance = [&ml, identifier] {
     QgsProject *project = QgsProject::instance(); // skip-keyword-check
 
@@ -240,7 +241,8 @@ void QgsExpressionUtils::executeLambdaForMapLayer( const QVariant &value, const 
 
   if ( !context || context->layerStores().empty() )
   {
-    // if no layer stores, then this is only for layers in project and therefore associated with the main thread
+    // TODO QGIS 5.0 -- once the QgsProject.instance() fallback in getMapLayerPrivate() is removed, nothing can be resolved
+    // without layer stores, so this branch should just return with foundLayer = false
     auto runFunction = [value, context, expression, &function, &foundLayer] {
       if ( QgsMapLayer *layer = getMapLayerPrivate( value, context, expression ) )
       {
@@ -304,7 +306,8 @@ void QgsExpressionUtils::executeLambdaForMapLayer( const QVariant &value, const 
         return;
     }
 
-    // last resort - QgsProject instance. This is bad, we need to remove this!
+    // TODO QGIS 5.0 -- remove this fallback to QgsProject.instance(). Layers should only be resolved through the layer stores
+    // in the context
     auto getMapLayerFromProjectInstance = [value, identifier, &function, &foundLayer] {
       QgsProject *project = QgsProject::instance(); // skip-keyword-check
 

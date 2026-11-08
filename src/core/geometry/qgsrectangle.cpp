@@ -65,6 +65,11 @@ QgsRectangle QgsRectangle::fromCenterAndSize( const QgsPointXY &center, double w
   return QgsRectangle( xMin, yMin, xMax, yMax );
 }
 
+QgsRectangle QgsRectangle::fromEdges( double left, double top, double right, double bottom )
+{
+  return QgsRectangle( left, bottom, right, top, false );
+}
+
 QgsRectangle QgsRectangle::scaled( double scaleFactor, const QgsPointXY *center ) const
 {
   QgsRectangle scaledRect = QgsRectangle( *this );
@@ -174,6 +179,49 @@ QString QgsRectangle::asPolygon() const
 QgsBox3D QgsRectangle::toBox3d( double zMin, double zMax ) const
 {
   return QgsBox3D( mXmin, mYmin, zMin, mXmax, mYmax, zMax );
+}
+
+std::pair<QgsRectangle, QgsRectangle> QgsRectangle::splitAtAntimeridian() const
+{
+  if ( isNull() )
+    return { QgsRectangle(), QgsRectangle() };
+
+  auto normalizeLongitude = []( double x ) {
+    double res = std::fmod( x, 360 );
+    if ( res > 180 )
+      res -= 360;
+    else if ( res < -180 )
+      res += 360;
+    return res;
+  };
+
+  if ( qgsDoubleNear( xMinimum(), xMaximum() ) )
+  {
+    // vertical slice
+    const double x = normalizeLongitude( xMinimum() );
+    return { QgsRectangle( x, yMinimum(), x, yMaximum() ), QgsRectangle() };
+  }
+  else if ( xMinimum() < xMaximum() )
+  {
+    // normalized rect
+    const double x1 = normalizeLongitude( xMinimum() );
+    const double x2 = normalizeLongitude( xMaximum() );
+    if ( x1 < x2 )
+    {
+      return { QgsRectangle( x1, yMinimum(), x2, yMaximum() ), QgsRectangle() };
+    }
+    else
+    {
+      return { QgsRectangle( x1, yMinimum(), 180, yMaximum() ), QgsRectangle( -180, yMinimum(), x2, yMaximum() ) };
+    }
+  }
+  else
+  {
+    // non-normalized
+    const double x1 = normalizeLongitude( xMinimum() );
+    const double x2 = normalizeLongitude( xMaximum() );
+    return { QgsRectangle( x1, yMinimum(), 180, yMaximum() ), QgsRectangle( -180, yMinimum(), x2, yMaximum() ) };
+  }
 }
 
 QgsRectangle QgsRectangle::snappedToGrid( double spacing ) const

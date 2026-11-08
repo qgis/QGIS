@@ -48,6 +48,7 @@ class QgsCoordinateReferenceSystemPrivate : public QSharedData
       , mEllipsoidAcronym( other.mEllipsoidAcronym )
       , mProjType( other.mProjType )
       , mIsGeographic( other.mIsGeographic )
+      , mIsGeographicCrossingAntimeridian( other.mIsGeographicCrossingAntimeridian )
       , mMapUnits( other.mMapUnits )
       , mSRID( other.mSRID )
       , mAuthId( other.mAuthId )
@@ -90,6 +91,9 @@ class QgsCoordinateReferenceSystemPrivate : public QSharedData
 
     //! Whether this is a geographic or projected coordinate system
     bool mIsGeographic = false;
+
+    //! Whether this is a geographic CRS whose bounds of use crosses the antimeridian
+    bool mIsGeographicCrossingAntimeridian = false;
 
     //! The map units for the CRS
     Qgis::DistanceUnit mMapUnits = Qgis::DistanceUnit::Unknown;

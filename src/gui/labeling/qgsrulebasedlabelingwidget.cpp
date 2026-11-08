@@ -93,7 +93,7 @@ QgsRuleBasedLabelingWidget::QgsRuleBasedLabelingWidget( QgsVectorLayer *layer, Q
   if ( mLayer->labeling() && mLayer->labeling()->type() == "rule-based"_L1 )
   {
     const QgsRuleBasedLabeling *rl = static_cast<const QgsRuleBasedLabeling *>( mLayer->labeling() );
-    mRootRule.reset( rl->rootRule()->clone( false ) );
+    mRootRule = rl->rootRule()->clone( false );
   }
   else if ( mLayer->labeling() && mLayer->labeling()->type() == "simple"_L1 )
   {
@@ -542,7 +542,7 @@ QMimeData *QgsRuleBasedLabelingModel::mimeData( const QModelIndexList &indexes )
 
     // we use a clone of the existing rule because it has a new unique rule key
     // non-unique rule keys would confuse other components using them (e.g. legend)
-    QgsRuleBasedLabeling::Rule *rule = ruleForIndex( index )->clone();
+    std::unique_ptr<QgsRuleBasedLabeling::Rule> rule = ruleForIndex( index )->clone();
     QDomDocument doc;
 
     QDomElement rootElem = doc.createElement( u"rule_mime"_s );
@@ -550,8 +550,6 @@ QMimeData *QgsRuleBasedLabelingModel::mimeData( const QModelIndexList &indexes )
     const QDomElement rulesElem = rule->save( doc, QgsReadWriteContext() );
     rootElem.appendChild( rulesElem );
     doc.appendChild( rootElem );
-
-    delete rule;
 
     stream << doc.toString( -1 );
   }
@@ -597,9 +595,9 @@ bool QgsRuleBasedLabelingModel::dropMimeData( const QMimeData *data, Qt::DropAct
     QDomElement ruleElem = rootElem.firstChildElement( u"rule"_s );
     if ( rootElem.attribute( u"type"_s ) == "renderer"_L1 )
       _renderer2labelingRules( ruleElem ); // do some modifications so that we load the rules more nicely
-    QgsRuleBasedLabeling::Rule *rule = QgsRuleBasedLabeling::Rule::create( ruleElem, QgsReadWriteContext(), false );
+    std::unique_ptr<QgsRuleBasedLabeling::Rule> rule = QgsRuleBasedLabeling::Rule::create( ruleElem, QgsReadWriteContext(), false );
 
-    insertRule( parent, row + rows, rule );
+    insertRule( parent, row + rows, rule.release() );
 
     ++rows;
   }

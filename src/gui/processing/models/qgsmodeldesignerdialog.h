@@ -89,6 +89,13 @@ class GUI_EXPORT QgsModelDesignerDialog : public QMainWindow,
      */
     void loadModel( const QString &path );
 
+    /**
+     * Handles a version mismatch between the model file \a modelVersion and the current QGIS version.
+     *
+     * \since QGIS 4.4
+     */
+    void handleVersionMismatch( const QString &modelVersion ) const SIP_SKIP;
+
 #ifndef SIP_RUN
     /**
      * Sets the related \a scene.
@@ -126,6 +133,13 @@ class GUI_EXPORT QgsModelDesignerDialog : public QMainWindow,
     void saveInProject();
 
   signals:
+
+    /**
+     * Emitted when the dialog is about to close.
+     *
+     * \since QGIS 4.4
+     */
+    void aboutToClose();
 
     /**
      * Emitted when the model is updated.

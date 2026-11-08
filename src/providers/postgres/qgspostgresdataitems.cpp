@@ -226,7 +226,7 @@ QVector<QgsDataItem *> QgsPGSchemaItem::createChildren()
     {
       try
       {
-        QgsAbstractDatabaseProviderConnection *dbConn { static_cast<QgsAbstractDatabaseProviderConnection *>( md->createConnection( mConnectionName ) ) };
+        std::unique_ptr<QgsAbstractDatabaseProviderConnection> dbConn( static_cast<QgsAbstractDatabaseProviderConnection *>( md->createConnection( mConnectionName ) ) );
         if ( dbConn )
         {
           const QList<QgsLayerMetadataProviderResult> results { dbConn->searchLayerMetadata( QgsMetadataSearchContext() ) };
@@ -288,23 +288,31 @@ QVector<QgsDataItem *> QgsPGSchemaItem::createChildren()
     }
   }
 
-  QgsPostgresConnPool::instance()->releaseConnection( conn );
-
-  QgsProjectStorage *storage = QgsApplication::projectStorageRegistry()->projectStorageFromType( "postgresql" );
-  if ( QgsPostgresConn::allowProjectsInDatabase( mConnectionName ) && storage )
+  // get projects and their info for tooltip  in a single query,to avoid multiple queries for every project
+  if ( QgsPostgresConn::allowProjectsInDatabase( mConnectionName ) && QgsPostgresUtils::projectsTableExists( conn, mName ) )
   {
-    QgsPostgresProjectUri postUri;
-    postUri.connInfo = uri;
-    postUri.schemaName = mName;
-    QString schemaUri = QgsPostgresProjectStorage::encodeUri( postUri );
-    const QStringList projectNames = storage->listProjects( schemaUri );
-    for ( const QString &projectName : projectNames )
+    const bool hasCommentColumn = QgsPostgresUtils::columnExists( conn, mName, u"qgis_projects"_s, u"comment"_s );
+    const QString sql = QgsPostgresUtils::sqlQgsProjectsInfo( mName, hasCommentColumn );
+
+    QgsPostgresResult res( conn->PQexec( sql ) );
+    if ( res.PQresultStatus() == PGRES_TUPLES_OK )
     {
-      QgsPostgresProjectUri projectUri( postUri );
-      projectUri.projectName = projectName;
-      items.append( new QgsPGProjectItem( this, projectName, projectUri, mConnectionName ) );
+      QgsPostgresProjectUri postUri;
+      postUri.connInfo = uri;
+      postUri.schemaName = mName;
+
+      for ( int i = 0; i < res.PQntuples(); ++i )
+      {
+        QgsPostgresProjectUri projectUri( postUri );
+        projectUri.projectName = res.PQgetvalue( i, 0 );
+        QgsPGProjectItem *projectItem = new QgsPGProjectItem( this, projectUri.projectName, projectUri, mConnectionName );
+        projectItem->setToolTip( QgsPGProjectItem::formatTooltip( res.PQgetvalue( i, 1 ), res.PQgetvalue( i, 2 ), hasCommentColumn ? res.PQgetvalue( i, 3 ) : QString() ) );
+        items.append( projectItem );
+      }
     }
   }
+
+  QgsPostgresConnPool::instance()->releaseConnection( conn );
 
   return items;
 }
@@ -459,8 +467,6 @@ QgsPGProjectItem::QgsPGProjectItem( QgsDataItem *parent, const QString name, con
   , mConnectionName( connectionName )
 {
   mCapabilities |= Qgis::BrowserItemCapability::Delete | Qgis::BrowserItemCapability::Fertile;
-
-  refreshTooltip();
 }
 
 QString QgsPGProjectItem::uriWithNewName( const QString &newProjectName )
@@ -476,41 +482,31 @@ void QgsPGProjectItem::refresh()
   refreshTooltip();
 }
 
+QString QgsPGProjectItem::formatTooltip( const QString &time, const QString &user, const QString &comment )
+{
+  return QStringLiteral(
+           "%1: %2\n"
+           "%3: %4\n"
+           "%5: %6"
+  )
+    .arg( tr( "Last modified time" ), time, tr( "Last modified user" ), user, tr( "Comment" ), comment );
+}
+
 void QgsPGProjectItem::refreshTooltip()
 {
-  QgsProviderMetadata *md { QgsProviderRegistry::instance()->providerMetadata( "postgres" ) };
-  if ( md )
+  QgsPostgresConn *conn = QgsPostgresConnPool::instance()->acquireConnection( QgsPostgresConn::connectionInfo( mProjectUri.connInfo, false ) );
+  if ( !conn )
+    return;
+
+  const bool hasCommentColumn = QgsPostgresUtils::columnExists( conn, mProjectUri.schemaName, u"qgis_projects"_s, u"comment"_s );
+
+  const QString sql = u"%1 WHERE name = %2"_s.arg( QgsPostgresUtils::sqlQgsProjectsInfo( mProjectUri.schemaName, hasCommentColumn ), QgsPostgresConn::quotedValue( mName ) );
+  QgsPostgresResult res( conn->PQexec( sql ) );
+
+  if ( res.PQntuples() == 1 )
   {
-    QgsPostgresConn *conn = QgsPostgresConn::connectDb( mProjectUri.connInfo, false );
-    if ( conn )
-    {
-      QString commentColumn;
-      if ( QgsPostgresUtils::columnExists( conn, mProjectUri.schemaName, u"qgis_projects"_s, u"comment"_s ) )
-      {
-        commentColumn = u", comment "_s;
-      }
-
-      const QString sql = QStringLiteral(
-                            "SELECT (metadata->>'last_modified_time')::timestamp(0)::TEXT AS time, "
-                            "metadata->>'last_modified_user' AS user %1"
-                            "FROM %2.qgis_projects WHERE name = %3"
-      )
-                            .arg( commentColumn, QgsPostgresConn::quotedIdentifier( mProjectUri.schemaName ), QgsPostgresConn::quotedValue( mName ) );
-
-      QgsPostgresResult res( conn->PQexec( sql ) );
-
-      if ( res.PQntuples() == 1 )
-      {
-        const QString tooltip
-          = QStringLiteral(
-              "%1: %2\n"
-              "%3: %4\n"
-              "%5: %6"
-          )
-              .arg( tr( "Last modified time" ), res.PQgetvalue( 0, 0 ), tr( "Last modified user" ), res.PQgetvalue( 0, 1 ), tr( "Comment" ), commentColumn.isEmpty() ? QString() : res.PQgetvalue( 0, 2 ) );
-        setToolTip( tooltip );
-      }
-      conn->unref();
-    }
+    setToolTip( formatTooltip( res.PQgetvalue( 0, 1 ), res.PQgetvalue( 0, 2 ), hasCommentColumn ? res.PQgetvalue( 0, 3 ) : QString() ) );
   }
+
+  QgsPostgresConnPool::instance()->releaseConnection( conn );
 }

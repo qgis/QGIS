@@ -498,6 +498,22 @@ class CORE_EXPORT QgsExpressionContext
      */
     explicit QgsExpressionContext( const QList<QgsExpressionContextScope *> &scopes SIP_TRANSFER );
 
+    /**
+     * Initializes the context with given list of scopes.
+     * Ownership of the scopes is transferred to the stack.
+     *
+     * \since QGIS 4.4
+     */
+    explicit QgsExpressionContext( std::vector<std::unique_ptr<QgsExpressionContextScope>> scopes ) SIP_SKIP;
+
+    /**
+     * Initializes the context with \a scope.
+     * Ownership of the scope is transferred to the stack.
+     *
+     * \since QGIS 4.4
+     */
+    explicit QgsExpressionContext( std::unique_ptr<QgsExpressionContextScope> scope ) SIP_SKIP;
+
     QgsExpressionContext( const QgsExpressionContext &other );
     SIP_SKIP QgsExpressionContext( QgsExpressionContext &&other );
 
@@ -709,12 +725,32 @@ class CORE_EXPORT QgsExpressionContext
     void appendScope( QgsExpressionContextScope *scope SIP_TRANSFER );
 
     /**
+     * Appends a scope to the end of the context. This scope will override
+     * any matching variables or functions provided by existing scopes within the
+     * context. Ownership of the scope is transferred to the stack.
+     * \param scope expression context to append to context
+     *
+     * \since QGIS 4.4
+     */
+    void appendScope( std::unique_ptr<QgsExpressionContextScope> scope ) SIP_SKIP;
+
+    /**
      * Appends a list of scopes to the end of the context. This scopes will override
      * any matching variables or functions provided by existing scopes within the
      * context. Ownership of the scopes is transferred to the stack.
      * \param scopes scopes to append to context
      */
     void appendScopes( const QList<QgsExpressionContextScope *> &scopes SIP_TRANSFER );
+
+    /**
+     * Appends a list of scopes to the end of the context. This scopes will override
+     * any matching variables or functions provided by existing scopes within the
+     * context. Ownership of the scopes is transferred to the stack.
+     * \param scopes scopes to append to context
+     *
+     * \since QGIS 4.4
+     */
+    void appendScopes( std::vector<std::unique_ptr<QgsExpressionContextScope>> scopes ) SIP_SKIP;
 
     /**
      * Removes the last scope from the expression context and return it.
@@ -736,6 +772,15 @@ class CORE_EXPORT QgsExpressionContext
      * context. Ownership of the scope is transferred to the stack.
      */
     QgsExpressionContext &operator<<( QgsExpressionContextScope *scope SIP_TRANSFER );
+
+    /**
+     * Appends a scope to the end of the context. This scope will override
+     * any matching variables or functions provided by existing scopes within the
+     * context. Ownership of the scope is transferred to the stack.
+     *
+     * \since QGIS 4.4
+     */
+    QgsExpressionContext &operator<<( std::unique_ptr<QgsExpressionContextScope> scope ) SIP_SKIP;
 
     /**
      * Convenience function for setting a feature for the context. The feature

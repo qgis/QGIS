@@ -299,8 +299,6 @@ class QgsPluginInstaller(QObject):
                     "download_url_experimental": plugin["download_url_experimental"],
                     "filename": plugin["filename"],
                     "downloads": plugin["downloads"],
-                    "average_vote": plugin["average_vote"],
-                    "rating_votes": plugin["rating_votes"],
                     "plugin_dependencies": plugin.get("plugin_dependencies", None),
                     "pythonic": "true",
                 }
@@ -606,9 +604,7 @@ class QgsPluginInstaller(QObject):
         # add to settings
         settings.setValue(reposName + "/url", reposURL)
         settings.setValue(reposName + "/authcfg", dlg.configId().strip())
-        settings.setValue(
-            reposName + "/enabled", bool(dlg.checkBoxEnabled.checkState())
-        )
+        settings.setValue(reposName + "/enabled", dlg.checkBoxEnabled.isChecked())
         # refresh lists and populate widgets
         plugins.removeRepository(reposName)
         self.reloadAndExportData()
@@ -659,7 +655,7 @@ class QgsPluginInstaller(QObject):
             newName = newName + "(2)"
         settings.setValue(newName + "/url", dlg.editURL.text().strip())
         settings.setValue(newName + "/authcfg", dlg.configId().strip())
-        settings.setValue(newName + "/enabled", bool(dlg.checkBoxEnabled.checkState()))
+        settings.setValue(newName + "/enabled", dlg.checkBoxEnabled.isChecked())
         if (
             dlg.editAuthCfgWgt.configId().strip()
             != repositories.all()[reposName]["authcfg"]
@@ -720,40 +716,6 @@ class QgsPluginInstaller(QObject):
         """temporarily block another repositories to fetch only one for inspection"""
         repositories.setInspectionFilter(reposName)
         self.reloadAndExportData()
-
-    # ----------------------------------------- #
-    def sendVote(self, plugin_id, vote):
-        """send vote via the RPC"""
-
-        if not plugin_id or not vote:
-            return False
-        url = "https://plugins.qgis.org/plugins/RPC2/"
-        params = {
-            "id": "djangorpc",
-            "method": "plugin.vote",
-            "params": [str(plugin_id), str(vote)],
-        }
-        req = QNetworkRequest(QUrl(url))
-        req.setAttribute(
-            QNetworkRequest.Attribute(
-                QgsNetworkRequestParameters.RequestAttributes.AttributeInitiatorClass
-            ),
-            "QgsPluginInstaller",
-        )
-        req.setAttribute(
-            QNetworkRequest.Attribute(
-                QgsNetworkRequestParameters.RequestAttributes.AttributeInitiatorRequestId
-            ),
-            "sendVote",
-        )
-        req.setRawHeader(b"Content-Type", b"application/json")
-        reply = QgsNetworkAccessManager.instance().blockingPost(
-            req, bytes(json.dumps(params), "utf-8")
-        )
-        if reply.attribute(QNetworkRequest.Attribute.HttpStatusCodeAttribute) == 200:
-            return True
-        else:
-            return False
 
     def installFromZipFile(self, filePath):
         if not os.path.isfile(filePath):

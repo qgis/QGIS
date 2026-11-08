@@ -254,7 +254,8 @@ expression_non_logical:
             functionName = u"within"_s;
           }
 
-          const int fnIndex = QgsExpression::functionIndex(functionName);
+          const QgsExpression::FunctionListSnapshot functions = QgsExpression::getFunctionsSnapshot();
+          const int fnIndex = functions->functionIndex(functionName);
           if (fnIndex == -1)
           {
             QgsExpression::ParserError::ParserErrorType errorType = QgsExpression::ParserError::FunctionUnknown;
@@ -279,7 +280,7 @@ expression_non_logical:
              YYERROR;
           }
 
-          $$ = new QgsExpressionNodeFunction(fnIndex, nodeList);
+          $$ = new QgsExpressionNodeFunction(functions->getFunction(fnIndex), nodeList);
           addParserLocation(&@1, $$);
         }
     | NAME '(' exp_list ')'
@@ -287,7 +288,8 @@ expression_non_logical:
           const QString expressionFunctionName = *$1;
           delete $1;
 
-          const int fnIndex = QgsExpression::functionIndex(expressionFunctionName);
+          const QgsExpression::FunctionListSnapshot functions = QgsExpression::getFunctionsSnapshot();
+          const int fnIndex = functions->functionIndex(expressionFunctionName);
           if (fnIndex == -1)
           {
             QgsExpression::ParserError::ParserErrorType errorType = QgsExpression::ParserError::FunctionUnknown;
@@ -296,7 +298,7 @@ expression_non_logical:
             delete $3;
             YYERROR;
           }
-          QgsExpressionFunction* func = QgsExpression::Functions()[fnIndex];
+          const QgsExpression::SharedFunctionPtr func = functions->getFunction( fnIndex );
           QString paramError;
           if ( !QgsExpressionNodeFunction::validateParams( fnIndex, $3, paramError ) )
           {
@@ -326,14 +328,15 @@ expression_non_logical:
             YYERROR;
           }
 
-          $$ = new QgsExpressionNodeFunction(fnIndex, $3);
+          $$ = new QgsExpressionNodeFunction(func, $3);
           addParserLocation(&@1, $$);
         }
 
     | NAME '(' ')'
         {
           const QString expressionFunctionName = *$1;
-          const int fnIndex = QgsExpression::functionIndex(expressionFunctionName);
+          const QgsExpression::FunctionListSnapshot functions = QgsExpression::getFunctionsSnapshot();
+          const int fnIndex = functions->functionIndex(expressionFunctionName);
           delete $1;
           if (fnIndex == -1)
           {
@@ -342,7 +345,7 @@ expression_non_logical:
             cql2_error(&yyloc, parser_ctx, QObject::tr( "Function %1 is not known" ).arg( expressionFunctionName ).toUtf8().constData() );
             YYERROR;
           }
-          QgsExpressionFunction* func = QgsExpression::Functions()[fnIndex];
+          const QgsExpression::SharedFunctionPtr func = functions->getFunction(fnIndex);
           // 0 parameters is expected, -1 parameters means leave it to the
           // implementation
           if ( func->minParams() > 0 )
@@ -352,7 +355,7 @@ expression_non_logical:
             cql2_error(&yyloc, parser_ctx, QObject::tr( "%1 function is called with wrong number of arguments" ).arg( func->name() ).toLocal8Bit().constData() );
             YYERROR;
           }
-          $$ = new QgsExpressionNodeFunction(fnIndex, new QgsExpressionNode::NodeList());
+          $$ = new QgsExpressionNodeFunction(func, new QgsExpressionNode::NodeList());
           addParserLocation(&@1, $$);
         }
 
@@ -377,7 +380,9 @@ expression_non_logical:
         QgsExpressionNode::NodeList *args = new QgsExpressionNode::NodeList();
         args->append( arg );
 
-        $$ = new QgsExpressionNodeFunction( QgsExpression::functionIndex("geom_from_wkt"), args );
+        const QgsExpression::FunctionListSnapshot functions = QgsExpression::getFunctionsSnapshot();
+
+        $$ = new QgsExpressionNodeFunction( functions->getFunction( functions->functionIndex("geom_from_wkt") ), args );
 
         if( parser_ctx->layerCrs != parser_ctx->filterCrs )
         {
@@ -385,7 +390,7 @@ expression_non_logical:
            args->append($$);
            args->append( new QgsExpressionNodeLiteral( QVariant(parser_ctx->filterCrs) ) );
            args->append( new QgsExpressionNodeLiteral( QVariant(parser_ctx->layerCrs) ) );
-           $$ = new QgsExpressionNodeFunction( QgsExpression::functionIndex("transform"), args );
+           $$ = new QgsExpressionNodeFunction( functions->getFunction( functions->functionIndex("transform")), args );
         }
     }
     ;

@@ -498,8 +498,28 @@ class GUI_EXPORT QgsProcessingParameterWidgetFactoryInterface
      *
      * \see compatibleOutputTypes()
      * \see compatibleDataTypes()
+     *
+     * \deprecated QGIS 4.4. Use the version with QgsProcessingParameterDefinition argument instead.
      */
-    virtual QStringList compatibleParameterTypes() const;
+    Q_DECL_DEPRECATED virtual QStringList compatibleParameterTypes() const SIP_DEPRECATED;
+
+    /**
+     * Returns a list of compatible Processing parameter types for inputs
+     * for this parameter.
+     *
+     * In order to determine the available sources for the parameter in a model
+     * the types returned by this method are checked. The returned list corresponds to the
+     * various available values for QgsProcessingParameterDefinition::type().
+     *
+     * Subclasses should return a list of all QgsProcessingParameterDefinition::type()
+     * values which can be used as input values for the parameter.
+     *
+     * \see compatibleOutputTypes()
+     * \see compatibleDataTypes()
+     *
+     * \since QGIS 4.4
+     */
+    virtual QStringList compatibleParameterTypes( const QgsProcessingParameterDefinition *parameter ) const;
 
     /**
      * Returns a list of compatible Processing output types for inputs
@@ -514,8 +534,28 @@ class GUI_EXPORT QgsProcessingParameterWidgetFactoryInterface
      *
      * \see compatibleParameterTypes()
      * \see compatibleDataTypes()
+     *
+     * \deprecated QGIS 4.4. Use the version with QgsProcessingParameterDefinition argument instead.
      */
-    virtual QStringList compatibleOutputTypes() const;
+    Q_DECL_DEPRECATED virtual QStringList compatibleOutputTypes() const SIP_DEPRECATED;
+
+    /**
+     * Returns a list of compatible Processing output types for inputs
+     * for this parameter.
+     *
+     * In order to determine the available sources for the parameter in a model
+     * the types returned by this method are checked. The returned list corresponds to the
+     * various available values for QgsProcessingOutputDefinition::type().
+     *
+     * Subclasses should return a list of all QgsProcessingOutputDefinition::type()
+     * values which can be used as values for the parameter.
+     *
+     * \see compatibleParameterTypes()
+     * \see compatibleDataTypes()
+     *
+     * \since QGIS 4.4
+     */
+    virtual QStringList compatibleOutputTypes( const QgsProcessingParameterDefinition *parameter ) const;
 
     /**
      * Returns a list of compatible Processing data types for inputs
@@ -550,6 +590,9 @@ class GUI_EXPORT QgsProcessingParameterWidgetFactoryInterface
      * \since QGIS 3.24
      */
     virtual Qgis::ProcessingModelChildParameterSource defaultModelSource( const QgsProcessingParameterDefinition *parameter ) const;
+
+  private:
+    mutable bool mPreventRecursion = false;
 };
 
 /**

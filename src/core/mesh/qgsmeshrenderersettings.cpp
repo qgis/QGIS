@@ -399,7 +399,7 @@ void QgsMeshRendererSettings::readXml( const QDomElement &elem, const QgsReadWri
   const QDomElement elemAveraging = elem.firstChildElement( u"averaging-3d"_s );
   if ( !elemAveraging.isNull() )
   {
-    mAveragingMethod.reset( QgsMesh3DAveragingMethod::createFromXml( elemAveraging ) );
+    mAveragingMethod = QgsMesh3DAveragingMethod::createFromXml( elemAveraging );
   }
 }
 

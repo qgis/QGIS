@@ -196,7 +196,7 @@ QString QgsVoronoiPolygonsAlgorithm::voronoiWithAttributes( const QVariantMap &p
       {
         f.setGeometry( QgsGeometry( voronoiClippedToExtent.constGet()->simplifiedTypeRef()->clone() ) );
         const QList<QgsFeatureId> intersected = index.intersects( collectionPart.boundingBox() );
-        engine.reset( QgsGeometry::createGeometryEngine( collectionPart.constGet() ) );
+        engine = QgsGeometry::createGeometryEngine( collectionPart.constGet() );
         engine->prepareGeometry();
         for ( const QgsFeatureId id : intersected )
         {

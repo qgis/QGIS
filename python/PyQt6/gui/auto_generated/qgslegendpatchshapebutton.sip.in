@@ -137,8 +137,7 @@ Emitted when the shape's settings are changed.
 
     virtual void resizeEvent( QResizeEvent *event );
 
-
-    virtual void mousePressEvent( QMouseEvent *e );
+    virtual void contextMenuEvent( QContextMenuEvent *e );
 
 
 };

@@ -127,7 +127,7 @@ class CORE_EXPORT QgsAbstractVectorLayerLabeling
     // static stuff
 
     //! Try to create instance of an implementation based on the XML data
-    static QgsAbstractVectorLayerLabeling *create( const QDomElement &element, const QgsReadWriteContext &context ) SIP_FACTORY;
+    static std::unique_ptr<QgsAbstractVectorLayerLabeling> create( const QDomElement &element, const QgsReadWriteContext &context );
 
     /**
      * Writes the SE 1.1 TextSymbolizer element based on the current layer labeling settings
@@ -224,7 +224,7 @@ class CORE_EXPORT QgsVectorLayerSimpleLabeling : public QgsAbstractVectorLayerLa
     bool toSld( QDomNode &parent, QgsSldExportContext &context ) const override;
     void multiplyOpacity( double opacityFactor ) override;
     //! Create the instance from a DOM element with saved configuration
-    static QgsVectorLayerSimpleLabeling *create( const QDomElement &element, const QgsReadWriteContext &context ); // cppcheck-suppress duplInheritedMember
+    static std::unique_ptr<QgsVectorLayerSimpleLabeling> create( const QDomElement &element, const QgsReadWriteContext &context ); // cppcheck-suppress duplInheritedMember
 
   private:
     std::unique_ptr<QgsPalLayerSettings> mSettings;

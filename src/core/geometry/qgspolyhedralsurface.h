@@ -257,7 +257,6 @@ class CORE_EXPORT QgsPolyhedralSurface : public QgsSurface
 
     bool insertVertex( QgsVertexId position, const QgsPoint &vertex ) override;
     bool moveVertex( QgsVertexId position, const QgsPoint &newPos ) override;
-    bool deleteVertex( QgsVertexId position ) override;
     bool deleteVertices( const QSet<QgsVertexId> &positions ) override;
     bool hasVertex( QgsVertexId position ) const override;
 
@@ -305,7 +304,7 @@ class CORE_EXPORT QgsPolyhedralSurface : public QgsSurface
      * Converts a polyhedral surface to a multipolygon.
      * Caller takes ownership.
     */
-    QgsMultiPolygon *toMultiPolygon() const SIP_FACTORY;
+    std::unique_ptr<QgsMultiPolygon> toMultiPolygon() const;
 
 #ifndef SIP_RUN
     void filterVertices( const std::function< bool( const QgsPoint & ) > &filter ) override;

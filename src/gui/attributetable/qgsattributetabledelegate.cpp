@@ -178,38 +178,43 @@ void QgsAttributeTableDelegate::setFeatureSelectionModel( QgsFeatureSelectionMod
 
 void QgsAttributeTableDelegate::paint( QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index ) const
 {
-  const QgsAttributeTableFilterModel::ColumnType columnType = static_cast<QgsAttributeTableFilterModel::ColumnType>(
-    index.model()->data( index, static_cast<int>( QgsAttributeTableFilterModel::CustomRole::Type ) ).toInt()
+  const QgsAttributeTableModel::ColumnTypeValue columnType = static_cast<QgsAttributeTableModel::ColumnTypeValue>(
+    index.model()->data( index, static_cast<int>( QgsAttributeTableModel::CustomRole::ColumnType ) ).toInt()
   );
 
-  if ( columnType == QgsAttributeTableFilterModel::ColumnTypeActionButton )
+  switch ( columnType )
   {
-    emit actionColumnItemPainted( index );
-  }
-  else
-  {
-    const QgsFeatureId fid = index.model()->data( index, static_cast<int>( QgsAttributeTableModel::CustomRole::FeatureId ) ).toLongLong();
-
-    QStyleOptionViewItem myOpt = option;
-
-    if ( QgsVariantUtils::isNull( index.model()->data( index, Qt::EditRole ) ) )
+    case QgsAttributeTableModel::ColumnTypeValue::ActionButton:
     {
-      myOpt.font.setItalic( true );
-      myOpt.palette.setColor( QPalette::Text, QColor( "gray" ) );
+      emit actionColumnItemPainted( index );
+      break;
     }
-
-    if ( mFeatureSelectionModel && mFeatureSelectionModel->isSelected( fid ) )
-      myOpt.state |= QStyle::State_Selected;
-
-    QItemDelegate::paint( painter, myOpt, index );
-
-    if ( option.state & QStyle::State_HasFocus )
+    case QgsAttributeTableModel::ColumnTypeValue::Field:
     {
-      const QRect r = option.rect.adjusted( 1, 1, -1, -1 );
-      const QPen p( QBrush( QColor( 0, 255, 127 ) ), 2 );
-      const QgsScopedQPainterState painterState( painter );
-      painter->setPen( p );
-      painter->drawRect( r );
+      const QgsFeatureId fid = index.model()->data( index, static_cast<int>( QgsAttributeTableModel::CustomRole::FeatureId ) ).toLongLong();
+
+      QStyleOptionViewItem myOpt = option;
+
+      if ( QgsVariantUtils::isNull( index.model()->data( index, Qt::EditRole ) ) )
+      {
+        myOpt.font.setItalic( true );
+        myOpt.palette.setColor( QPalette::Text, QColor( "gray" ) );
+      }
+
+      if ( mFeatureSelectionModel && mFeatureSelectionModel->isSelected( fid ) )
+        myOpt.state |= QStyle::State_Selected;
+
+      QItemDelegate::paint( painter, myOpt, index );
+
+      if ( option.state & QStyle::State_HasFocus )
+      {
+        const QRect r = option.rect.adjusted( 1, 1, -1, -1 );
+        const QPen p( QBrush( QColor( 0, 255, 127 ) ), 2 );
+        const QgsScopedQPainterState painterState( painter );
+        painter->setPen( p );
+        painter->drawRect( r );
+      }
+      break;
     }
   }
 }

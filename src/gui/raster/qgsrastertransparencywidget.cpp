@@ -747,7 +747,7 @@ void QgsRasterTransparencyWidget::setupTransparencyTable( int nBands )
     tableTransparency->setHorizontalHeaderItem( static_cast<int>( RgbBandTableColumns::Green ), new QTableWidgetItem( tr( "Green" ) ) );
     tableTransparency->setHorizontalHeaderItem( static_cast<int>( RgbBandTableColumns::Blue ), new QTableWidgetItem( tr( "Blue" ) ) );
     tableTransparency->setHorizontalHeaderItem( static_cast<int>( RgbBandTableColumns::Tolerance ), new QTableWidgetItem( tr( "Tolerance" ) ) );
-    tableTransparency->setHorizontalHeaderItem( static_cast<int>( RgbBandTableColumns::Opacity ), new QTableWidgetItem( tr( "Opacity [%]" ) ) );
+    tableTransparency->setHorizontalHeaderItem( static_cast<int>( RgbBandTableColumns::Opacity ), new QTableWidgetItem( tr( "Transparency [%]" ) ) );
   }
   else //1 band
   {
@@ -758,7 +758,7 @@ void QgsRasterTransparencyWidget::setupTransparencyTable( int nBands )
     tableTransparency->horizontalHeader()->setSectionResizeMode( static_cast<int>( SingleBandTableColumns::Opacity ), QHeaderView::Stretch );
     tableTransparency->setHorizontalHeaderItem( static_cast<int>( SingleBandTableColumns::From ), new QTableWidgetItem( tr( "From" ) ) );
     tableTransparency->setHorizontalHeaderItem( static_cast<int>( SingleBandTableColumns::To ), new QTableWidgetItem( tr( "To" ) ) );
-    tableTransparency->setHorizontalHeaderItem( static_cast<int>( SingleBandTableColumns::Opacity ), new QTableWidgetItem( tr( "Opacity [%]" ) ) );
+    tableTransparency->setHorizontalHeaderItem( static_cast<int>( SingleBandTableColumns::Opacity ), new QTableWidgetItem( tr( "Transparency [%]" ) ) );
   }
 }
 

@@ -62,7 +62,7 @@ QgsBookmarks::QgsBookmarks( QWidget *parent )
   bookmarksDockContents->layout()->setContentsMargins( 0, 0, 0, 0 );
   static_cast<QGridLayout *>( bookmarksDockContents->layout() )->setVerticalSpacing( 0 );
 
-  QgsToolButtonAction *actionImportExport = new QgsToolButtonAction();
+  QgsToolButtonAction *actionImportExport = new QgsToolButtonAction( this );
   actionImportExport->setAutoRaise( true );
   actionImportExport->setToolTip( tr( "Import/Export Bookmarks" ) );
   actionImportExport->setIcon( QgsApplication::getThemeIcon( u"/mActionSharing.svg"_s ) );
@@ -158,7 +158,7 @@ void QgsBookmarks::lstBookmarks_customContextMenuRequested( QPoint pos )
   if ( !index.isValid() )
   {
     // No bookmark under mouse, display generic menu
-    QMenu menu;
+    QMenu menu( this );
     menu.addAction( actionAdd );
     menu.addSeparator();
     menu.addAction( actionExport );
@@ -168,7 +168,7 @@ void QgsBookmarks::lstBookmarks_customContextMenuRequested( QPoint pos )
   }
 
   // Create the context menu
-  QMenu menu;
+  QMenu menu( this );
 
   // Add zoom and delete actions
   menu.addAction( actionZoomTo );

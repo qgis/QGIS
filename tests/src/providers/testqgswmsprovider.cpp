@@ -103,6 +103,8 @@ class TestQgsWmsProvider : public QgsTest
 
     void testWmsUnreachableCapabilitiesWithVisibleSubLayer();
 
+    void testLocalXyzDoubleEncoding();
+
   private:
     QgsWmsCapabilities *mCapabilities = nullptr;
 };
@@ -1410,6 +1412,15 @@ void TestQgsWmsProvider::testWmsUnreachableCapabilitiesWithVisibleSubLayer()
   provider.mLayerExtent = QgsRectangle( 0, 0, 2, 2 );
   provider.mCaps.mIdentifyFormats.insert( Qgis::RasterIdentifyFormat::Text, u"text"_s );
   ( void ) provider.identify( QgsPointXY( 1., 1. ), Qgis::RasterIdentifyFormat::Text, QgsRectangle( 0, 0, 2, 2 ), 10, 10, 42 );
+}
+
+void TestQgsWmsProvider::testLocalXyzDoubleEncoding()
+{
+  QgsWmsSettings settings;
+  const QString uri = u"http-header:referer=&url=file%3A%2F%2F%2Fraster%2Fosm_tiles%2F%257Bz%257D%2F%257Bx%257D%2F%257By%257D.png&type=xyz&zmax=18&zmin=0"_s;
+  const bool ok = settings.parseUri( uri );
+  QVERIFY( ok );
+  QCOMPARE( settings.baseUrl(), u"file:///raster/osm_tiles/{z}/{x}/{y}.png"_s );
 }
 
 QGSTEST_MAIN( TestQgsWmsProvider )

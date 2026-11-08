@@ -54,78 +54,45 @@ class TestQgsZonalStatistics(QgisTestCase):
         # validate statistics for each feature
         request = QgsFeatureRequest().setFilterFid(0)
         feat = next(myVector.getFeatures(request))
-        myMessage = f"Expected: {12.0:f}\nGot: {feat[1]:f}\n"
-        assert feat[1] == 12.0, myMessage
-        myMessage = f"Expected: {8.0:f}\nGot: {feat[2]:f}\n"
-        assert feat[2] == 8.0, myMessage
-        myMessage = f"Expected: {0.666666666666667:f}\nGot: {feat[3]:f}\n"
-        assert abs(feat[3] - 0.666666666666667) < 0.00001, myMessage
-        myMessage = f"Expected: {1.0:f}\nGot: {feat[4]:f}\n"
-        assert feat[4] == 1.0, myMessage
-        myMessage = f"Expected: {0.47140452079103201:f}\nGot: {feat[5]:f}\n"
-        assert abs(feat[5] - 0.47140452079103201) < 0.00001, myMessage
-        myMessage = f"Expected: {0.0:f}\nGot: {feat[6]:f}\n"
-        assert feat[6] == 0.0, myMessage
-        myMessage = f"Expected: {1.0:f}\nGot: {feat[7]:f}\n"
-        assert feat[7] == 1.0, myMessage
-        myMessage = f"Expected: {1.0:f}\nGot: {feat[8]:f}\n"
-        assert feat[8] == 1.0, myMessage
-        myMessage = f"Expected: {0.0:f}\nGot: {feat[9]:f}\n"
-        assert feat[9] == 0.0, myMessage
-        myMessage = f"Expected: {1.0:f}\nGot: {feat[10]:f}\n"
-        assert feat[10] == 1.0, myMessage
-        myMessage = f"Expected: {2.0:f}\nGot: {feat[11]:f}\n"
-        assert feat[11] == 2.0, myMessage
+        self.assertEqual(feat[1], 12.0)
+        self.assertEqual(feat[2], 8.0)
+        self.assertAlmostEqual(feat[3], 0.666666666666667)
+        self.assertEqual(feat[4], 1.0)
+        self.assertAlmostEqual(feat[5], 0.47140452079103201)
+        self.assertEqual(feat[6], 0.0)
+        self.assertEqual(feat[7], 1.0)
+        self.assertEqual(feat[8], 1.0)
+        self.assertEqual(feat[9], 0.0)
+        self.assertEqual(feat[10], 1.0)
+        self.assertEqual(feat[11], 2.0)
 
         request.setFilterFid(1)
         feat = next(myVector.getFeatures(request))
-        myMessage = f"Expected: {9.0:f}\nGot: {feat[1]:f}\n"
-        assert feat[1] == 9.0, myMessage
-        myMessage = f"Expected: {5.0:f}\nGot: {feat[2]:f}\n"
-        assert feat[2] == 5.0, myMessage
-        myMessage = f"Expected: {0.555555555555556:f}\nGot: {feat[3]:f}\n"
-        assert abs(feat[3] - 0.555555555555556) < 0.00001, myMessage
-        myMessage = f"Expected: {1.0:f}\nGot: {feat[4]:f}\n"
-        assert feat[4] == 1.0, myMessage
-        myMessage = f"Expected: {0.49690399499995302:f}\nGot: {feat[5]:f}\n"
-        assert abs(feat[5] - 0.49690399499995302) < 0.00001, myMessage
-        myMessage = f"Expected: {0.0:f}\nGot: {feat[6]:f}\n"
-        assert feat[6] == 0.0, myMessage
-        myMessage = f"Expected: {1.0:f}\nGot: {feat[7]:f}\n"
-        assert feat[7] == 1.0, myMessage
-        myMessage = f"Expected: {1.0:f}\nGot: {feat[8]:f}\n"
-        assert feat[8] == 1.0, myMessage
-        myMessage = f"Expected: {0.0:f}\nGot: {feat[9]:f}\n"
-        assert feat[9] == 0.0, myMessage
-        myMessage = f"Expected: {1.0:f}\nGot: {feat[10]:f}\n"
-        assert feat[10] == 1.0, myMessage
-        myMessage = f"Expected: {2.0:f}\nGot: {feat[11]:f}\n"
-        assert feat[11] == 2.0, myMessage
+        self.assertEqual(feat[1], 9.0)
+        self.assertEqual(feat[2], 5.0)
+        self.assertAlmostEqual(feat[3], 0.555555555555556)
+        self.assertEqual(feat[4], 1.0)
+        self.assertAlmostEqual(feat[5], 0.49690399499995302)
+        self.assertEqual(feat[6], 0.0)
+        self.assertEqual(feat[7], 1.0)
+        self.assertEqual(feat[8], 1.0)
+        self.assertEqual(feat[9], 0.0)
+        self.assertEqual(feat[10], 1.0)
+        self.assertEqual(feat[11], 2.0)
 
         request.setFilterFid(2)
         feat = next(myVector.getFeatures(request))
-        myMessage = f"Expected: {6.0:f}\nGot: {feat[1]:f}\n"
-        assert feat[1] == 6.0, myMessage
-        myMessage = f"Expected: {5.0:f}\nGot: {feat[2]:f}\n"
-        assert feat[2] == 5.0, myMessage
-        myMessage = f"Expected: {0.833333333333333:f}\nGot: {feat[3]:f}\n"
-        assert abs(feat[3] - 0.833333333333333) < 0.00001, myMessage
-        myMessage = f"Expected: {1.0:f}\nGot: {feat[4]:f}\n"
-        assert feat[4] == 1.0, myMessage
-        myMessage = f"Expected: {0.372677996249965:f}\nGot: {feat[5]:f}\n"
-        assert abs(feat[5] - 0.372677996249965) < 0.00001, myMessage
-        myMessage = f"Expected: {0.0:f}\nGot: {feat[6]:f}\n"
-        assert feat[6] == 0.0, myMessage
-        myMessage = f"Expected: {1.0:f}\nGot: {feat[7]:f}\n"
-        assert feat[7] == 1.0, myMessage
-        myMessage = f"Expected: {1.0:f}\nGot: {feat[8]:f}\n"
-        assert feat[8] == 1.0, myMessage
-        myMessage = f"Expected: {0.0:f}\nGot: {feat[9]:f}\n"
-        assert feat[9] == 0.0, myMessage
-        myMessage = f"Expected: {1.0:f}\nGot: {feat[10]:f}\n"
-        assert feat[10] == 1.0, myMessage
-        myMessage = f"Expected: {2.0:f}\nGot: {feat[11]:f}\n"
-        assert feat[11] == 2.0, myMessage
+        self.assertEqual(feat[1], 6.0)
+        self.assertEqual(feat[2], 5.00)
+        self.assertAlmostEqual(feat[3], 0.833333333333333)
+        self.assertEqual(feat[4], 1.0)
+        self.assertAlmostEqual(feat[5], 0.372677996249965)
+        self.assertEqual(feat[6], 0.0)
+        self.assertEqual(feat[7], 1.0)
+        self.assertEqual(feat[8], 1.0)
+        self.assertEqual(feat[9], 0.0)
+        self.assertEqual(feat[10], 1.0)
+        self.assertEqual(feat[11], 2.0)
 
     def test_enum_conversion(self):
         """Test regression GH #43245"""

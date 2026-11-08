@@ -344,6 +344,20 @@ QgsExpressionContext::QgsExpressionContext( const QList<QgsExpressionContextScop
   mLoadLayerFunction = std::make_unique< LoadLayerFunction >();
 }
 
+QgsExpressionContext::QgsExpressionContext( std::vector<std::unique_ptr<QgsExpressionContextScope>> scopes )
+{
+  for ( std::unique_ptr<QgsExpressionContextScope> &scope : scopes )
+    mStack.append( scope.release() );
+
+  mLoadLayerFunction = std::make_unique< LoadLayerFunction >();
+}
+
+QgsExpressionContext::QgsExpressionContext( std::unique_ptr<QgsExpressionContextScope> scope )
+{
+  mStack.append( scope.release() );
+  mLoadLayerFunction = std::make_unique< LoadLayerFunction >();
+}
+
 QgsExpressionContext::QgsExpressionContext( const QgsExpressionContext &other )
   : mStack {}
 {
@@ -650,9 +664,20 @@ void QgsExpressionContext::appendScope( QgsExpressionContextScope *scope )
   mStack.append( scope );
 }
 
+void QgsExpressionContext::appendScope( std::unique_ptr<QgsExpressionContextScope> scope )
+{
+  appendScope( scope.release() );
+}
+
 void QgsExpressionContext::appendScopes( const QList<QgsExpressionContextScope *> &scopes )
 {
   mStack.append( scopes );
+}
+
+void QgsExpressionContext::appendScopes( std::vector<std::unique_ptr<QgsExpressionContextScope>> scopes )
+{
+  for ( std::unique_ptr<QgsExpressionContextScope> &scope : scopes )
+    mStack.append( scope.release() );
 }
 
 QgsExpressionContextScope *QgsExpressionContext::popScope()
@@ -674,6 +699,11 @@ QgsExpressionContext &QgsExpressionContext::operator<<( QgsExpressionContextScop
 {
   mStack.append( scope );
   return *this;
+}
+
+QgsExpressionContext &QgsExpressionContext::operator<<( std::unique_ptr<QgsExpressionContextScope> scope )
+{
+  return operator<<( scope.release() );
 }
 
 void QgsExpressionContext::setFeature( const QgsFeature &feature )

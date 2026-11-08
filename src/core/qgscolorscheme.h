@@ -28,6 +28,7 @@
 
 class QgsSettingsEntryStringList;
 class QgsSettingsEntryVariant;
+class QgsProject;
 
 /**
  * \ingroup core
@@ -280,7 +281,19 @@ class CORE_EXPORT QgsCustomColorScheme : public QgsColorScheme
 class CORE_EXPORT QgsProjectColorScheme : public QgsColorScheme
 {
   public:
-    QgsProjectColorScheme() = default;
+    /**
+     * Constructor for a project color scheme bound to the current QgsProject instance().
+     *
+     * \note Will be removed in QGIS 5.0. Use the constructor which requires an explicit project instead.
+     */
+    Q_DECL_DEPRECATED QgsProjectColorScheme() SIP_DEPRECATED;
+
+    /**
+     * Constructor for a project color scheme bound to the specified \a project.
+     *
+     * \since QGIS 4.4
+     */
+    QgsProjectColorScheme( QgsProject *project );
 
     QString schemeName() const override { return QObject::tr( "Project colors" ); }
 
@@ -293,6 +306,9 @@ class CORE_EXPORT QgsProjectColorScheme : public QgsColorScheme
     bool setColors( const QgsNamedColorList &colors, const QString &context = QString(), const QColor &baseColor = QColor() ) override;
 
     QgsProjectColorScheme *clone() const override SIP_FACTORY;
+
+  private:
+    QgsProject *mProject = nullptr;
 };
 
 #endif

@@ -68,8 +68,6 @@ only of triangle patches.
 
     virtual bool insertVertex( QgsVertexId position, const QgsPoint &vertex );
 
-    virtual bool deleteVertex( QgsVertexId position );
-
     virtual bool deleteVertices( const QSet<QgsVertexId> &positions );
 
 

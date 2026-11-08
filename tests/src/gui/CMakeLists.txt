@@ -11,10 +11,6 @@ include_directories(
   ${CMAKE_CURRENT_BINARY_DIR}
 )
 
-if(ENABLE_MODELTEST)
-  include_directories(${CMAKE_SOURCE_DIR}/tests/qt_modeltest)
-endif()
-
 # a simple app for testing GUI of renderers
 # These tests are old and are never run so removed for now.
 
@@ -89,6 +85,7 @@ set(TESTS
   testqgssvgselectorwidget.cpp
   testqgslabelingwidget.cpp
   testqgsmeshrendererscalarsettingswidget.cpp
+  testqgsqmlwidgetwrapper.cpp
 )
 
 foreach(TESTSRC ${TESTS})

@@ -112,7 +112,7 @@ void QgsFeatureFilterWidget::filterShowAll()
   }
   mApplyFilterButton->setVisible( false );
   mStoreFilterExpressionButton->setVisible( false );
-  mMainView->setFilterMode( QgsAttributeTableFilterModel::ShowAll );
+  mMainView->setFilterMode( Qgis::AttributeTableFilterMode::ShowAll );
 }
 
 void QgsFeatureFilterWidget::filterSelected()
@@ -122,7 +122,7 @@ void QgsFeatureFilterWidget::filterSelected()
   mFilterQuery->setVisible( false );
   mApplyFilterButton->setVisible( false );
   mStoreFilterExpressionButton->setVisible( false );
-  mMainView->setFilterMode( QgsAttributeTableFilterModel::ShowSelected );
+  mMainView->setFilterMode( Qgis::AttributeTableFilterMode::ShowSelected );
 }
 
 void QgsFeatureFilterWidget::filterVisible()
@@ -138,7 +138,7 @@ void QgsFeatureFilterWidget::filterVisible()
   mFilterQuery->setVisible( false );
   mApplyFilterButton->setVisible( false );
   mStoreFilterExpressionButton->setVisible( false );
-  mMainView->setFilterMode( QgsAttributeTableFilterModel::ShowVisible );
+  mMainView->setFilterMode( Qgis::AttributeTableFilterMode::ShowVisible );
 }
 
 void QgsFeatureFilterWidget::filterInvalid()
@@ -150,7 +150,7 @@ void QgsFeatureFilterWidget::filterInvalid()
   mStoreFilterExpressionButton->setVisible( false );
   const QgsExpressionContext context( QgsExpressionContextUtils::globalProjectLayerScopes( mLayer ) );
   mMainView->filterFeatures( u"is_feature_valid() = false"_s, context );
-  mMainView->setFilterMode( QgsAttributeTableFilterModel::ShowInvalid );
+  mMainView->setFilterMode( Qgis::AttributeTableFilterMode::ShowInvalid );
 }
 
 void QgsFeatureFilterWidget::filterEdited()
@@ -160,7 +160,7 @@ void QgsFeatureFilterWidget::filterEdited()
   mFilterQuery->setVisible( false );
   mApplyFilterButton->setVisible( false );
   mStoreFilterExpressionButton->setVisible( false );
-  mMainView->setFilterMode( QgsAttributeTableFilterModel::ShowEdited );
+  mMainView->setFilterMode( Qgis::AttributeTableFilterMode::ShowEdited );
 }
 
 
@@ -472,7 +472,7 @@ void QgsFeatureFilterWidget::setFilterExpression( const QString &filterString, Q
   }
 
   mMainView->filterFeatures( filterExpression, context );
-  mMainView->setFilterMode( QgsAttributeTableFilterModel::ShowFilteredList );
+  mMainView->setFilterMode( Qgis::AttributeTableFilterMode::ShowFilteredList );
 }
 
 void QgsFeatureFilterWidget::replaceSearchWidget( QWidget *oldw, QWidget *neww )

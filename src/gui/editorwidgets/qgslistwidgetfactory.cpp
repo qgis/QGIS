@@ -45,7 +45,7 @@ QgsEditorConfigWidget *QgsListWidgetFactory::configWidget( QgsVectorLayer *vl, i
 unsigned int QgsListWidgetFactory::fieldScore( const QgsVectorLayer *vl, int fieldIdx ) const
 {
   const QgsField field = vl->fields().field( fieldIdx );
-  // Handle the json field
+  // on json fields, we check the first features
   if ( field.typeName().compare( u"json"_s, Qt::CaseInsensitive ) == 0 || field.typeName().compare( u"jsonb"_s, Qt::CaseInsensitive ) == 0 )
   {
     // Look the first not-null value (limiting to the first 20 features) and check if it is really an array
@@ -123,6 +123,7 @@ unsigned int QgsListWidgetFactory::fieldScore( const QgsVectorLayer *vl, int fie
         }
       }
     }
+
     if ( foundNotNull )
     {
       if ( !foundInvalidValue )
@@ -140,8 +141,15 @@ unsigned int QgsListWidgetFactory::fieldScore( const QgsVectorLayer *vl, int fie
     }
   }
 
+  // on string allow it with 5 - it should not become best fit
+  if ( field.type() == QMetaType::Type::QString )
+  {
+    return 5;
+  }
+
+  // on lists return 20 - it should become best fit
   return ( field.type() == QMetaType::Type::QVariantList || field.type() == QMetaType::Type::QStringList || field.type() == QMetaType::Type::QVariantMap )
              && field.subType() != QMetaType::Type::UnknownType
            ? 20
-           : 0;
+           : 5;
 }

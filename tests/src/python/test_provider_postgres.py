@@ -18,6 +18,7 @@ __author__ = "Matthias Kuhn"
 __date__ = "2015-04-23"
 __copyright__ = "Copyright 2015, The QGIS Project"
 
+import json
 import os
 import time
 import unittest
@@ -29,11 +30,15 @@ from qgis.analysis import QgsNativeAlgorithms
 from qgis.core import (
     NULL,
     Qgis,
+    QgsAbstractFeatureIterator,
     QgsApplication,
     QgsCoordinateReferenceSystem,
     QgsDataProvider,
     QgsDataSourceUri,
     QgsDefaultValue,
+    QgsExpression,
+    QgsExpressionContext,
+    QgsExpressionContextUtils,
     QgsFeature,
     QgsFeatureRequest,
     QgsFeatureSink,
@@ -325,6 +330,43 @@ class TestPyQgsPostgresProvider(QgisTestCase, ProviderTestCase):
             f.attributes()[datetime_idx],
             QDateTime(QDate(2004, 3, 4), QTime(13, 41, 52)),
         )
+
+    # https://github.com/qgis/QGIS/issues/62577
+    def testCompileIntervalValue(self):
+        """
+        QgsInterval value (in to_interval()) needs to be compiled
+        into a PostgreSQL interval.
+        """
+        vl = QgsVectorLayer(
+            f'{self.dbconn} table="qgis_test"."date_times" sql=',
+            "testdatetimes",
+            "postgres",
+        )
+        self.assertTrue(vl.isValid())
+
+        # get the current settings
+        compile_expressions = QgsSettings().value("/qgis/compileExpressions")
+        self.enableCompiler()
+
+        # prepare the expression, so that to_interval() is cached as a static QgsInterval value
+        expression = QgsExpression(
+            '"datetime_field" > "datetime_field" - to_interval(\'1 day\')'
+        )
+        context = QgsExpressionContext(
+            QgsExpressionContextUtils.globalProjectLayerScopes(vl)
+        )
+        expression.prepare(context)
+
+        it = vl.dataProvider().getFeatures(QgsFeatureRequest(expression, context))
+        self.assertEqual([f["id"] for f in it], [1])
+        self.assertEqual(
+            it.compileStatus(), QgsAbstractFeatureIterator.CompileStatus.Compiled
+        )
+        # invalid compiled SQL would silently fall back to local evaluation, check explicitly for it
+        self.assertFalse(it.compileFailed())
+
+        # restore the original settings
+        QgsSettings().setValue("/qgis/compileExpressions", compile_expressions)
 
     def testBooleanType(self):
         vl = QgsVectorLayer(
@@ -1999,7 +2041,9 @@ class TestPyQgsPostgresProvider(QgisTestCase, ProviderTestCase):
 
     def testJson(self):
         vl = QgsVectorLayer(
-            '%s table="qgis_test"."json" sql=' % (self.dbconn), "testjson", "postgres"
+            '%s table="qgis_test"."json" sql=' % (self.dbconn),
+            "testjson",
+            "postgres",
         )
         self.assertTrue(vl.isValid())
 
@@ -2041,7 +2085,11 @@ class TestPyQgsPostgresProvider(QgisTestCase, ProviderTestCase):
             },
         )
         json_idx = vl.fields().lookupField("jvalue")
+        self.assertEqual(vl.fields().at(json_idx).type(), QVariant.Map)
         jsonb_idx = vl.fields().lookupField("jbvalue")
+        self.assertEqual(vl.fields().at(jsonb_idx).type(), QVariant.Map)
+        text_idx = vl.fields().lookupField("textfield")
+        self.assertEqual(vl.fields().at(text_idx).type(), QVariant.String)
 
         for attr in attrs:
             # Add a new feature
@@ -2052,7 +2100,7 @@ class TestPyQgsPostgresProvider(QgisTestCase, ProviderTestCase):
             )
             self.assertTrue(vl2.startEditing())
             f = QgsFeature(vl2.fields())
-            f.setAttributes([None, attr, attr])
+            f.setAttributes([None, attr, attr, attr])
             self.assertTrue(vl2.addFeatures([f]))
             self.assertTrue(vl2.commitChanges(), attr)
             # Read back
@@ -2063,7 +2111,13 @@ class TestPyQgsPostgresProvider(QgisTestCase, ProviderTestCase):
             )
             fid = [f.id() for f in vl2.getFeatures()][-1]
             f = vl2.getFeature(fid)
-            self.assertEqual(f.attributes(), [fid, attr, attr])
+            string_attr = attr
+            if isinstance(attr, (dict, list, int, float)):
+                # Here we have to convert the check values for the text field (last one) to json-string
+                string_attr = json.dumps(
+                    attr, separators=(",", ":"), ensure_ascii=False
+                )
+            self.assertEqual(f.attributes(), [fid, attr, attr, string_attr])
             # Change attribute values
             vl2 = QgsVectorLayer(
                 '%s table="qgis_test"."json" sql=' % (self.dbconn),
@@ -2073,7 +2127,9 @@ class TestPyQgsPostgresProvider(QgisTestCase, ProviderTestCase):
             fid = [f.id() for f in vl2.getFeatures()][-1]
             self.assertTrue(vl2.startEditing())
             self.assertTrue(
-                vl2.changeAttributeValues(fid, {json_idx: attr, jsonb_idx: attr})
+                vl2.changeAttributeValues(
+                    fid, {json_idx: attr, jsonb_idx: attr, text_idx: attr}
+                )
             )
             self.assertTrue(vl2.commitChanges())
             # Read back
@@ -2083,7 +2139,13 @@ class TestPyQgsPostgresProvider(QgisTestCase, ProviderTestCase):
                 "postgres",
             )
             f = vl2.getFeature(fid)
-            self.assertEqual(f.attributes(), [fid, attr, attr])
+            string_attr = attr
+            if isinstance(attr, (dict, list, int, float)):
+                # Here we have to convert the check values for the text field (last one) to json-string
+                string_attr = json.dumps(
+                    attr, separators=(",", ":"), ensure_ascii=False
+                )
+            self.assertEqual(f.attributes(), [fid, attr, attr, string_attr])
 
         # Let's check changeFeatures:
         for attr in attrs2:
@@ -2096,7 +2158,7 @@ class TestPyQgsPostgresProvider(QgisTestCase, ProviderTestCase):
             self.assertTrue(vl2.startEditing())
             self.assertTrue(
                 vl2.dataProvider().changeFeatures(
-                    {fid: {json_idx: attr, jsonb_idx: attr}}, {}
+                    {fid: {json_idx: attr, jsonb_idx: attr, text_idx: attr}}, {}
                 )
             )
             self.assertTrue(vl2.commitChanges())
@@ -2108,7 +2170,14 @@ class TestPyQgsPostgresProvider(QgisTestCase, ProviderTestCase):
                 "postgres",
             )
             f = vl2.getFeature(fid)
-            self.assertEqual(f.attributes(), [fid, attr, attr])
+
+            string_attr = attr
+            if isinstance(attr, (dict, list, int, float)):
+                # Here we have to convert the check values for the text field (last one) to json-string
+                string_attr = json.dumps(
+                    attr, separators=(",", ":"), ensure_ascii=False
+                )
+            self.assertEqual(f.attributes(), [fid, attr, attr, string_attr])
 
     def testStringArray(self):
         vl = QgsVectorLayer(
@@ -4756,6 +4825,22 @@ INSERT INTO public.test_geog_ext(g)
 
         # Cleanup
         conn.executeSql("DROP TABLE public.test_geog_ext")
+
+    def testTopoGeometryEstimatedExtent(self):
+        # https://github.com/qgis/QGIS/issues/60593
+        # the test with TopoGeometry provides extent but estimating raises
+        # unnecessary error message the test needs to check the extent
+        # (but it is not estimated) but also needs to check that no
+        # errors have been raised
+        vl = QgsVectorLayer(
+            f'{self.dbconn} estimatedmetadata=\'true\' table="qgis_test"."TopoLayer1" (topogeom)',
+            "topo",
+            "postgres",
+        )
+        if not vl.isValid():
+            self.skipTest("postgis_topology not available")
+        self.assertEqual(vl.extent(), QgsRectangle(0, 0, 10, 10))
+        self.assertFalse(vl.dataProvider().hasErrors(), vl.dataProvider().errors())
 
     # See: https://github.com/qgis/QGIS/issues/55856
     def testPktLowerCase(self):

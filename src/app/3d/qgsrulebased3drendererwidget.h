@@ -22,6 +22,7 @@
 
 #include "qgspanelwidget.h"
 #include "qgsrulebased3drenderer.h"
+#include "qgsrulebasedrenderer.h"
 #include "qobjectuniqueptr.h"
 
 #include <QAbstractItemModel>
@@ -92,6 +93,7 @@ class QgsRuleBased3DRendererWidget : public QgsPanelWidget, private Ui::QgsRuleB
     void setDockMode( bool dockMode ) override;
 
   protected slots:
+    void updateRulesFrom2D();
     void addRule();
     void editRule();
     void editRule( const QModelIndex &index );
@@ -107,6 +109,10 @@ class QgsRuleBased3DRendererWidget : public QgsPanelWidget, private Ui::QgsRuleB
     QgsRuleBased3DRenderer::Rule *currentRule();
 
   private:
+    void syncChildrenRulesFrom2D( const QgsRuleBasedRenderer::Rule *rule2D, QgsRuleBased3DRenderer::Rule *rule3D, const QModelIndex &rule3DIndex );
+    static std::unique_ptr<QgsRuleBased3DRenderer::Rule> create3DRuleFrom2D( QgsVectorLayer *layer, const QgsRuleBasedRenderer::Rule *rule2D );
+
+  private:
     QgsVectorLayer *mLayer = nullptr;
 
     std::unique_ptr<QgsRuleBased3DRenderer::Rule> mRootRule = nullptr;
@@ -115,6 +121,7 @@ class QgsRuleBased3DRendererWidget : public QgsPanelWidget, private Ui::QgsRuleB
     QAction *mCopyAction = nullptr;
     QAction *mPasteAction = nullptr;
     QAction *mDeleteAction = nullptr;
+    QAction *mRulesFrom2DAction = nullptr;
 };
 
 

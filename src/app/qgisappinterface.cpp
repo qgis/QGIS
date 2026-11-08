@@ -18,6 +18,7 @@
 
 #include "qgisappinterface.h"
 
+#include "processing/qgsappprocessingutils.h"
 #include "qgisapp.h"
 #include "qgisappstylesheet.h"
 #include "qgsappgpsdigitizing.h"
@@ -494,6 +495,11 @@ QgsLayoutDesignerInterface *QgisAppInterface::openLayoutDesigner( QgsMasterLayou
   return nullptr;
 }
 
+QgsModelDesignerDialog *QgisAppInterface::openModelDesigner( QgsProcessingModelAlgorithm *model )
+{
+  return qgis->appProcessingUtils()->openModelDesignerDialog( model );
+}
+
 void QgisAppInterface::showOptionsDialog( QWidget *parent, const QString &currentPage )
 {
   return qgis->showOptionsDialog( parent, currentPage );
@@ -586,7 +592,7 @@ QDialog *QgisAppInterface::showAttributeTable( QgsVectorLayer *l, const QString 
 {
   if ( l && l->dataProvider() )
   {
-    QgsAttributeTableDialog *dialog = new QgsAttributeTableDialog( l, QgsAttributeTableFilterModel::ShowFilteredList );
+    QgsAttributeTableDialog *dialog = new QgsAttributeTableDialog( l, Qgis::AttributeTableFilterMode::ShowFilteredList );
     dialog->setFilterExpression( filterExpression );
     dialog->show();
     return dialog;

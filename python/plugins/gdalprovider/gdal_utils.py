@@ -75,6 +75,7 @@ class GdalConnectionDetails:
     layer_name: Optional[str] = None
     credential_options: Optional[dict] = None
     geometry_column_name: Optional[str] = None
+    subset_string: Optional[str] = None
 
     def open_options_as_arguments(self) -> list[str]:
         """
@@ -428,7 +429,9 @@ class GdalUtils:
                 QgsCredentials.instance().put(conninfo, user, passwd)
 
             return GdalConnectionDetails(
-                connection_string=f"PG:{dsUri.connectionInfo()}", format='"PostgreSQL"'
+                connection_string=f"PG:{dsUri.connectionInfo()}",
+                format='"PostgreSQL"',
+                subset_string=layer.subsetString(),
             )
         elif provider == "mssql":
             # 'dbname=\'db_name\' host=myHost estimatedmetadata=true
@@ -488,6 +491,8 @@ class GdalUtils:
                 path = parts["path"]
                 if "vsiPrefix" in parts:
                     path = parts["vsiPrefix"] + path
+                if "vsiSuffix" in parts:
+                    path += parts["vsiSuffix"]
 
                 _, ext = os.path.splitext(parts["path"])
                 format = QgsVectorFileWriter.driverForExtension(ext)
@@ -504,6 +509,8 @@ class GdalUtils:
                 path = parts["path"]
                 if "vsiPrefix" in parts:
                     path = parts["vsiPrefix"] + path
+                if "vsiSuffix" in parts:
+                    path += parts["vsiSuffix"]
 
                 return GdalConnectionDetails(
                     connection_string=path,

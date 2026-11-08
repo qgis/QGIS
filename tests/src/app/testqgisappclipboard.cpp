@@ -27,6 +27,7 @@
 #include "qgsvectortilelayer.h"
 
 #include <QApplication>
+#include <QClipboard>
 #include <QObject>
 #include <QRegularExpression>
 #include <QSplashScreen>
@@ -61,6 +62,8 @@ class TestQgisAppClipboard : public QObject
     void clipboardLogic(); //test clipboard logic
     void testVectorTileLayer();
     void copyPasteUnset();
+
+    void copyPasteAcrossInstances();
 
   private:
     QgisApp *mQgisApp = nullptr;
@@ -109,7 +112,7 @@ void TestQgisAppClipboard::copyPaste()
     inputLayer->selectAll();
     mQgisApp->copySelectionToClipboard( inputLayer );
 
-    const QgsFeatureList features = mQgisApp->clipboard()->copyOf();
+    const QgsFeatureList features = mQgisApp->clipboard()->getFeaturesFromClipboardText();
     qDebug() << features.size() << " features copied to clipboard";
 
     QVERIFY( features.size() == it.value() );
@@ -155,22 +158,19 @@ void TestQgisAppClipboard::copyToText()
   QgsSettings settings;
   settings.setEnumValue( u"/qgis/copyFeatureFormat"_s, QgsClipboard::AttributesOnly );
   QString result, resultHtml;
-  mQgisApp->clipboard()->generateClipboardText( result, resultHtml );
-  QCOMPARE( result, QString( "int_field\tdouble_field\tstring_field\n9\t9.9\tval\n19\t19.19\tval2\n\t\t" ) );
+
+  QCOMPARE( QApplication::clipboard()->text(), QString( "int_field\tdouble_field\tstring_field\n9\t9.9\tval\n19\t19.19\tval2\n\t\t" ) );
 
   // attributes with WKT
   settings.setEnumValue( u"/qgis/copyFeatureFormat"_s, QgsClipboard::AttributesWithWKT );
-  mQgisApp->clipboard()->generateClipboardText( result, resultHtml );
-  QCOMPARE( result, QString( "wkt_geom\tint_field\tdouble_field\tstring_field\nPoint (5 6)\t9\t9.9\tval\nPoint (7 8)\t19\t19.19\tval2\nPoint (9 10)\t\t\t" ) );
+  QCOMPARE( QApplication::clipboard()->text(), QString( "wkt_geom\tint_field\tdouble_field\tstring_field\nPoint (5 6)\t9\t9.9\tval\nPoint (7 8)\t19\t19.19\tval2\nPoint (9 10)\t\t\t" ) );
 
   // attributes with WKB
   settings.setEnumValue( u"/qgis/copyFeatureFormat"_s, QgsClipboard::AttributesWithWKB );
-  mQgisApp->clipboard()->generateClipboardText( result, resultHtml );
-  QCOMPARE( result, QString( "wkb_geom\tint_field\tdouble_field\tstring_field\n010100000000000000000014400000000000001840\t9\t9.9\tval\n01010000000000000000001c400000000000002040\t19\t19.19\tval2\n010100000000000000000022400000000000002440\t\t\t" ) );
+  QCOMPARE( QApplication::clipboard()->text(), QString( "wkb_geom\tint_field\tdouble_field\tstring_field\n010100000000000000000014400000000000001840\t9\t9.9\tval\n01010000000000000000001c400000000000002040\t19\t19.19\tval2\n010100000000000000000022400000000000002440\t\t\t" ) );
 
   // HTML test
-  mQgisApp->clipboard()->replaceWithCopyOf( feats );
-  result = mQgisApp->clipboard()->data( "text/html" );
+  result = QApplication::clipboard()->mimeData()->data( "text/html" );
   QCOMPARE(
     result,
     QString(
@@ -183,7 +183,6 @@ void TestQgisAppClipboard::copyToText()
 
   // GeoJSON
   settings.setEnumValue( u"/qgis/copyFeatureFormat"_s, QgsClipboard::GeoJSON );
-  mQgisApp->clipboard()->generateClipboardText( result, resultHtml );
   const QString expected = "{\"features\":[{\"geometry\":{\"coordinates\":[5.0,6.0],\"type\":\"Point\"},\"id\":5,"
                            "\"properties\":{\"double_field\":9.9,\"int_field\":9,\"string_field\":\"val\"},\"type\":\"Feature\"},"
                            "{\"geometry\":{\"coordinates\":[7.0,8.0],\"type\":\"Point\"},\"id\":6,"
@@ -191,7 +190,7 @@ void TestQgisAppClipboard::copyToText()
                            "{\"geometry\":{\"coordinates\":[9.0,10.0],\"type\":\"Point\"},\"id\":7,"
                            "\"properties\":{\"double_field\":null,\"int_field\":null,\"string_field\":null},\"type\":\"Feature\"}],"
                            "\"type\":\"FeatureCollection\"}";
-  QCOMPARE( result, expected );
+  QCOMPARE( QApplication::clipboard()->text(), expected );
 
   // test CRS is transformed correctly for GeoJSON
 
@@ -203,12 +202,10 @@ void TestQgisAppClipboard::copyToText()
   feats.setFields( fields );
   mQgisApp->clipboard()->replaceWithCopyOf( feats );
 
-  mQgisApp->clipboard()->generateClipboardText( result, resultHtml );
-
   // just test coordinates as integers - that's enough to verify that reprojection has occurred
   // and helps avoid rounding issues
   const thread_local QRegularExpression regex( "\\[([-\\d.]+),([-\\d.]+)\\]" );
-  const QRegularExpressionMatch match = regex.match( result );
+  const QRegularExpressionMatch match = regex.match( QApplication::clipboard()->text() );
   const QStringList list = match.capturedTexts();
   QCOMPARE( list.count(), 3 );
 
@@ -243,19 +240,15 @@ void TestQgisAppClipboard::copyToText()
 
   // attributes only
   settings.setEnumValue( u"/qgis/copyFeatureFormat"_s, QgsClipboard::AttributesOnly );
-  mQgisApp->clipboard()->generateClipboardText( result, resultHtml );
-  qDebug() << result;
-  QCOMPARE( result, QString( "int_field\tdouble_field\tstring_field\n1\t1.1\tSingle line text\n2\t2.2\t\"Unix Multiline \nText\"\n3\t3.3\t\"Windows Multiline \r\nText\"" ) );
+  QCOMPARE( QApplication::clipboard()->text(), QString( "int_field\tdouble_field\tstring_field\n1\t1.1\tSingle line text\n2\t2.2\t\"Unix Multiline \nText\"\n3\t3.3\t\"Windows Multiline \r\nText\"" ) );
 
   // attributes with WKT
   settings.setEnumValue( u"/qgis/copyFeatureFormat"_s, QgsClipboard::AttributesWithWKT );
-  mQgisApp->clipboard()->generateClipboardText( result, resultHtml );
-  QCOMPARE( result, QString( "wkt_geom\tint_field\tdouble_field\tstring_field\nPoint (5 6)\t1\t1.1\tSingle line text\nPoint (7 8)\t2\t2.2\t\"Unix Multiline \nText\"\nPoint (9 10)\t3\t3.3\t\"Windows Multiline \r\nText\"" ) );
+  QCOMPARE( QApplication::clipboard()->text(), QString( "wkt_geom\tint_field\tdouble_field\tstring_field\nPoint (5 6)\t1\t1.1\tSingle line text\nPoint (7 8)\t2\t2.2\t\"Unix Multiline \nText\"\nPoint (9 10)\t3\t3.3\t\"Windows Multiline \r\nText\"" ) );
 
   // attributes with WKB
   settings.setEnumValue( u"/qgis/copyFeatureFormat"_s, QgsClipboard::AttributesWithWKB );
-  mQgisApp->clipboard()->generateClipboardText( result, resultHtml );
-  QCOMPARE( result, QString( "wkb_geom\tint_field\tdouble_field\tstring_field\n010100000000000000000014400000000000001840\t1\t1.1\tSingle line text\n01010000000000000000001c400000000000002040\t2\t2.2\t\"Unix Multiline \nText\"\n010100000000000000000022400000000000002440\t3\t3.3\t\"Windows Multiline \r\nText\"" ) );
+  QCOMPARE( QApplication::clipboard()->text(), QString( "wkb_geom\tint_field\tdouble_field\tstring_field\n010100000000000000000014400000000000001840\t1\t1.1\tSingle line text\n01010000000000000000001c400000000000002040\t2\t2.2\t\"Unix Multiline \nText\"\n010100000000000000000022400000000000002440\t3\t3.3\t\"Windows Multiline \r\nText\"" ) );
 }
 
 void TestQgisAppClipboard::copyToTextNoFields()
@@ -277,25 +270,21 @@ void TestQgisAppClipboard::copyToTextNoFields()
 
   // attributes with WKT
   settings.setEnumValue( u"/qgis/copyFeatureFormat"_s, QgsClipboard::AttributesWithWKT );
-  mQgisApp->clipboard()->generateClipboardText( result, resultHtml );
-  QCOMPARE( result, u"Point (5 6)\nPoint (7 8)"_s );
+  QCOMPARE( QApplication::clipboard()->text(), u"Point (5 6)\nPoint (7 8)"_s );
 
   // attributes with WKB
   settings.setEnumValue( u"/qgis/copyFeatureFormat"_s, QgsClipboard::AttributesWithWKB );
-  mQgisApp->clipboard()->generateClipboardText( result, resultHtml );
-  QCOMPARE( result, u"010100000000000000000014400000000000001840\n01010000000000000000001c400000000000002040"_s );
+  QCOMPARE( QApplication::clipboard()->text(), u"010100000000000000000014400000000000001840\n01010000000000000000001c400000000000002040"_s );
 
   // HTML test
-  mQgisApp->clipboard()->replaceWithCopyOf( feats );
-  result = mQgisApp->clipboard()->data( "text/html" );
+  result = QApplication::clipboard()->mimeData()->data( "text/html" );
   QCOMPARE( result, u"<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0 Transitional//EN\"><html><head><meta http-equiv=\"content-type\" content=\"text/html; charset=utf-8\"/></head><body><table border=\"1\"><tr><td>wkb_geom</td></tr><tr><td>010100000000000000000014400000000000001840</td></tr><tr><td>01010000000000000000001c400000000000002040</td></tr></table></body></html>"_s );
 
   // GeoJSON
   settings.setEnumValue( u"/qgis/copyFeatureFormat"_s, QgsClipboard::GeoJSON );
-  mQgisApp->clipboard()->generateClipboardText( result, resultHtml );
   const QString expected = "{\"features\":[{\"geometry\":{\"coordinates\":[5.0,6.0],\"type\":\"Point\"},\"id\":5,\"properties\":null,\"type\":\"Feature\"},{\"geometry\":{\"coordinates\":[7.0,8.0],"
                            "\"type\":\"Point\"},\"id\":6,\"properties\":null,\"type\":\"Feature\"}],\"type\":\"FeatureCollection\"}";
-  QCOMPARE( result, expected );
+  QCOMPARE( QApplication::clipboard()->text(), expected );
 }
 
 void TestQgisAppClipboard::pasteWkt()
@@ -317,7 +306,7 @@ void TestQgisAppClipboard::pasteWkt()
 
   mQgisApp->clipboard()->setText( u"POINT (125 10)\nPOINT (111 30)"_s );
 
-  features = mQgisApp->clipboard()->copyOf();
+  features = mQgisApp->clipboard()->getFeaturesFromClipboardText();
   QCOMPARE( features.length(), 2 );
   QVERIFY( features.at( 0 ).hasGeometry() && !features.at( 0 ).geometry().isNull() );
   QCOMPARE( features.at( 0 ).geometry().constGet()->wkbType(), Qgis::WkbType::Point );
@@ -335,7 +324,7 @@ void TestQgisAppClipboard::pasteWkt()
   // can change geometryType as in https://github.com/qgis/QGIS/issues/24769
   mQgisApp->clipboard()->setText( u"POINT (111 30)\t GoodFieldValue\nPOINT (125 10)\t(WrongFieldValue)"_s );
 
-  features = mQgisApp->clipboard()->copyOf();
+  features = mQgisApp->clipboard()->getFeaturesFromClipboardText();
   QCOMPARE( features.length(), 2 );
 
   QVERIFY( features.at( 0 ).hasGeometry() );
@@ -354,7 +343,7 @@ void TestQgisAppClipboard::pasteWkt()
 
   //clipboard should support features without geometry
   mQgisApp->clipboard()->setText( u"MNL\t11\t282\tkm\t\t\t\nMNL\t11\t347.80000000000001\tkm\t\t\t"_s );
-  features = mQgisApp->clipboard()->copyOf();
+  features = mQgisApp->clipboard()->getFeaturesFromClipboardText();
   QCOMPARE( features.length(), 2 );
   QVERIFY( !features.at( 0 ).hasGeometry() );
   QCOMPARE( features.at( 0 ).attributes().count(), 7 );
@@ -376,7 +365,7 @@ void TestQgisAppClipboard::pasteWkt()
   QVERIFY( features.at( 1 ).attributes().at( 6 ).toString().isEmpty() );
 
   mQgisApp->clipboard()->setText( u"wkt_geom\ta\tb\tc\n\tMNL\t11\t282\tkm\t\t\t\n\tMNL\t11\t347.80000000000001\tkm\t\t\t"_s );
-  features = mQgisApp->clipboard()->copyOf();
+  features = mQgisApp->clipboard()->getFeaturesFromClipboardText();
   QCOMPARE( features.length(), 2 );
   QVERIFY( !features.at( 0 ).hasGeometry() );
   QCOMPARE( features.at( 0 ).fields().count(), 3 );
@@ -402,7 +391,7 @@ void TestQgisAppClipboard::pasteWkt()
   QVERIFY( features.at( 1 ).attributes().at( 6 ).toString().isEmpty() );
 
   mQgisApp->clipboard()->setText( u"wkt_geom\ta\tb\tc\nNULL\t1\tb\t2\nNULL\t3\tc3\t4\nPoint (5 4)\t2\tb2\t3"_s );
-  features = mQgisApp->clipboard()->copyOf();
+  features = mQgisApp->clipboard()->getFeaturesFromClipboardText();
   QCOMPARE( features.length(), 3 );
   QCOMPARE( features.at( 0 ).fields().count(), 3 );
   QCOMPARE( features.at( 0 ).fields().at( 0 ).name(), u"a"_s );
@@ -427,7 +416,7 @@ void TestQgisAppClipboard::pasteWkt()
   // when a set of features is built outside of QGIS, last one might be terminated by newline
   // https://github.com/qgis/QGIS/issues/33617
   mQgisApp->clipboard()->setText( u"POINT (125 10)\nPOINT (111 30)\n"_s );
-  features = mQgisApp->clipboard()->copyOf();
+  features = mQgisApp->clipboard()->getFeaturesFromClipboardText();
   QCOMPARE( features.length(), 2 );
   QVERIFY( features.at( 0 ).hasGeometry() && !features.at( 0 ).geometry().isNull() );
   QCOMPARE( features.at( 0 ).geometry().constGet()->wkbType(), Qgis::WkbType::Point );
@@ -444,7 +433,7 @@ void TestQgisAppClipboard::pasteWkt()
   // on MS Windows, the <EOL> marker is CRLF
   // https://github.com/qgis/QGIS/pull/33618#discussion_r363147854
   mQgisApp->clipboard()->setText( u"POINT (125 10)\r\nPOINT (111 30)\r\n"_s );
-  features = mQgisApp->clipboard()->copyOf();
+  features = mQgisApp->clipboard()->getFeaturesFromClipboardText();
   QCOMPARE( features.length(), 2 );
   QVERIFY( features.at( 0 ).hasGeometry() && !features.at( 0 ).geometry().isNull() );
   QCOMPARE( features.at( 0 ).geometry().constGet()->wkbType(), Qgis::WkbType::Point );
@@ -465,7 +454,7 @@ void TestQgisAppClipboard::pasteGeoJson()
   fields.append( QgsField( u"name"_s, QMetaType::Type::QString ) );
   mQgisApp->clipboard()->setText( u"{\n\"type\": \"Feature\",\"geometry\": {\"type\": \"Point\",\"coordinates\": [125, 10]},\"properties\": {\"name\": \"Dinagat Islands\"}}"_s );
 
-  const QgsFeatureList features = mQgisApp->clipboard()->copyOf( fields );
+  const QgsFeatureList features = mQgisApp->clipboard()->getFeaturesFromClipboardText( fields );
 
   QCOMPARE( features.length(), 1 );
   QVERIFY( features.at( 0 ).hasGeometry() && !features.at( 0 ).geometry().isNull() );
@@ -482,17 +471,17 @@ void TestQgisAppClipboard::retrieveFields()
   //empty string
   mQgisApp->clipboard()->setText( QString() );
 
-  QgsFields fields = mQgisApp->clipboard()->fields();
+  QgsFields fields = mQgisApp->clipboard()->retrieveFields();
   QCOMPARE( fields.count(), 0 );
 
   // bad string
   mQgisApp->clipboard()->setText( u"asdasdas"_s );
-  fields = mQgisApp->clipboard()->fields();
+  fields = mQgisApp->clipboard()->retrieveFields();
   QCOMPARE( fields.count(), 0 );
 
   // geojson string
   mQgisApp->clipboard()->setText( u"{\n\"type\": \"Feature\",\"geometry\": {\"type\": \"Point\",\"coordinates\": [125, 10]},\"properties\": {\"name\": \"Dinagat Islands\",\"height\":5.5}}"_s );
-  fields = mQgisApp->clipboard()->fields();
+  fields = mQgisApp->clipboard()->retrieveFields();
   QCOMPARE( fields.count(), 2 );
   QCOMPARE( fields.at( 0 ).name(), QString( "name" ) );
   QCOMPARE( fields.at( 0 ).type(), QMetaType::Type::QString );
@@ -504,13 +493,21 @@ void TestQgisAppClipboard::clipboardLogic()
 {
   //start by setting clipboard contents as text
   mQgisApp->clipboard()->setText( u"{\n\"type\": \"Feature\",\"geometry\": {\"type\": \"Point\",\"coordinates\": [125, 10]},\"properties\": {\"name\": \"Dinagat Islands\"}}"_s );
-  QgsFields fields = mQgisApp->clipboard()->fields();
+
+  QgsFields fields;
+  QgsCoordinateReferenceSystem clipboardCrs;
+  QgsFeatureList features;
+  mQgisApp->clipboard()->getFeaturesFromClipboard( clipboardCrs, fields, features );
+
   QCOMPARE( fields.count(), 1 );
   QCOMPARE( fields.at( 0 ).name(), QString( "name" ) );
   QCOMPARE( fields.at( 0 ).type(), QMetaType::Type::QString );
-  QgsFeatureList features = mQgisApp->clipboard()->copyOf( mQgisApp->clipboard()->fields() );
+
   QCOMPARE( features.length(), 1 );
   QCOMPARE( features.at( 0 ).attribute( "name" ).toString(), QString( "Dinagat Islands" ) );
+
+  // TODO -- should be WGGS84 for GeoJSON clipboard contents
+  QVERIFY( !clipboardCrs.isValid() );
 
   //set clipboard to some QgsFeatures
   fields = QgsFields();
@@ -526,18 +523,20 @@ void TestQgisAppClipboard::clipboardLogic()
   feats.addFeature( feat );
   feats.addFeature( feat2 );
   feats.setFields( fields );
-  const QgsCoordinateReferenceSystem crs( u"EPSG:4326"_s );
+  const QgsCoordinateReferenceSystem crs( u"EPSG:3857"_s );
   feats.setCrs( crs );
+  // set clipboard to lossless representation of QGIS features
   mQgisApp->clipboard()->replaceWithCopyOf( feats );
 
   //test result
-  fields = mQgisApp->clipboard()->fields();
+  mQgisApp->clipboard()->getFeaturesFromClipboard( clipboardCrs, fields, features );
+
   QCOMPARE( fields.count(), 2 );
   QCOMPARE( fields.at( 0 ).name(), QString( "int_field" ) );
   QCOMPARE( fields.at( 0 ).type(), QMetaType::Type::Int );
   QCOMPARE( fields.at( 1 ).name(), QString( "date_field" ) );
   QCOMPARE( fields.at( 1 ).type(), QMetaType::Type::QDate );
-  features = mQgisApp->clipboard()->copyOf( mQgisApp->clipboard()->fields() );
+
   QCOMPARE( features.length(), 2 );
   QCOMPARE( features.at( 0 ).id(), 5LL );
   QCOMPARE( features.at( 0 ).attribute( "int_field" ).toInt(), 9 );
@@ -546,15 +545,21 @@ void TestQgisAppClipboard::clipboardLogic()
   QCOMPARE( features.at( 1 ).attribute( "int_field" ).toInt(), 19 );
   QCOMPARE( features.at( 1 ).attribute( "date_field" ).toDate(), QDate( 2011, 9, 5 ) );
 
-  //replace with text again, make sure system clipboard is used rather than internal clipboard
+  QCOMPARE( clipboardCrs.authid(), u"EPSG:3857"_s );
+
+  //replace with text again, make sure system clipboard is used
   mQgisApp->clipboard()->setText( u"{\n\"type\": \"Feature\",\"geometry\": {\"type\": \"Point\",\"coordinates\": [125, 10]},\"properties\": {\"name\": \"Dinagat Islands\"}}"_s );
-  fields = mQgisApp->clipboard()->fields();
+
+  mQgisApp->clipboard()->getFeaturesFromClipboard( clipboardCrs, fields, features );
+
   QCOMPARE( fields.count(), 1 );
   QCOMPARE( fields.at( 0 ).name(), QString( "name" ) );
   QCOMPARE( fields.at( 0 ).type(), QMetaType::Type::QString );
-  features = mQgisApp->clipboard()->copyOf( mQgisApp->clipboard()->fields() );
   QCOMPARE( features.length(), 1 );
   QCOMPARE( features.at( 0 ).attribute( "name" ).toString(), QString( "Dinagat Islands" ) );
+
+  // TODO -- should be WGGS84 for GeoJSON clipboard contents
+  QVERIFY( !clipboardCrs.isValid() );
 }
 
 void TestQgisAppClipboard::testVectorTileLayer()
@@ -581,12 +586,17 @@ void TestQgisAppClipboard::testVectorTileLayer()
 
   mQgisApp->clipboard()->replaceWithCopyOf( layer.get() );
 
+  QgsFields fields;
+  QgsCoordinateReferenceSystem clipboardCrs;
+  QgsFeatureList clipboardFeatures;
+  mQgisApp->clipboard()->getFeaturesFromClipboard( clipboardCrs, fields, clipboardFeatures );
+
   // test that clipboard features are a "superset" of the incoming fields
-  QVERIFY( mQgisApp->clipboard()->fields().lookupField( u"disputed"_s ) > -1 );
-  QVERIFY( mQgisApp->clipboard()->fields().lookupField( u"maritime"_s ) > -1 );
-  QVERIFY( mQgisApp->clipboard()->fields().lookupField( u"admin_level"_s ) > -1 );
-  QVERIFY( mQgisApp->clipboard()->fields().lookupField( u"class"_s ) > -1 );
-  QVERIFY( mQgisApp->clipboard()->fields().lookupField( u"name:th"_s ) > -1 );
+  QVERIFY( fields.lookupField( u"disputed"_s ) > -1 );
+  QVERIFY( fields.lookupField( u"maritime"_s ) > -1 );
+  QVERIFY( fields.lookupField( u"admin_level"_s ) > -1 );
+  QVERIFY( fields.lookupField( u"class"_s ) > -1 );
+  QVERIFY( fields.lookupField( u"name:th"_s ) > -1 );
 
   QgsFeatureId maritimeId = -1;
   QgsFeatureId oceanId = -1;
@@ -598,7 +608,6 @@ void TestQgisAppClipboard::testVectorTileLayer()
       oceanId = feature.id();
   }
 
-  const QgsFeatureList clipboardFeatures = mQgisApp->clipboard()->copyOf();
   QCOMPARE( clipboardFeatures.size(), 4 );
 
   QgsFeature maritimeFeature;
@@ -614,16 +623,15 @@ void TestQgisAppClipboard::testVectorTileLayer()
   QVERIFY( oceanFeature.isValid() );
 
   // ensure that clipboard features are the superset of incoming fields, and that features have consistent fields with this superset
-  QCOMPARE( maritimeFeature.fields(), mQgisApp->clipboard()->fields() );
+  QCOMPARE( maritimeFeature.fields(), fields );
   QCOMPARE( maritimeFeature.attribute( u"maritime"_s ).toString(), u"0"_s );
-  QCOMPARE( oceanFeature.fields(), mQgisApp->clipboard()->fields() );
+  QCOMPARE( oceanFeature.fields(), fields );
   QCOMPARE( oceanFeature.attribute( u"class"_s ).toString(), u"ocean"_s );
 }
 
 void TestQgisAppClipboard::copyPasteUnset()
 {
   QgsClipboard clipboard;
-  clipboard.clear();
 
   QgsFields fields;
   fields.append( QgsField( u"int_field"_s, QMetaType::Type::Int ) );
@@ -677,6 +685,65 @@ void TestQgisAppClipboard::copyPasteUnset()
   QVERIFY( f.isUnsetValue( 0 ) );
   QVERIFY( f.isUnsetValue( 1 ) );
   QVERIFY( f.isUnsetValue( 2 ) );
+}
+
+void TestQgisAppClipboard::copyPasteAcrossInstances()
+{
+  // mimic copy/paste of features across different QGIS instances
+
+  QgsFields fields;
+  fields.append( QgsField( u"int_field"_s, QMetaType::Type::Int ) );
+  fields.append( QgsField( u"double_field"_s, QMetaType::Type::Double ) );
+  fields.append( QgsField( u"string_field"_s, QMetaType::Type::QString ) );
+
+  QgsFeature feat( fields, 5 );
+  feat.setGeometry( QgsGeometry( new QgsPoint( 5, 6 ) ) );
+  feat.setAttributes( QgsAttributes() << 3 << 11.6 << "abc" );
+  QgsFeature feat2( fields, 6 );
+  feat2.setGeometry( QgsGeometry( new QgsPoint( 7, 8 ) ) );
+  feat2.setAttributes( QgsAttributes() << 7 << 12.6 << "def" );
+
+  QgsFeatureStore feats;
+  feats.addFeature( feat );
+  feats.addFeature( feat2 );
+  feats.setFields( fields );
+  feats.setCrs( QgsCoordinateReferenceSystem( "EPSG:3111" ) );
+  mQgisApp->clipboard()->replaceWithCopyOf( feats );
+
+  // retrieve data using lossless representation
+  const QByteArray clipData = QApplication::clipboard()->mimeData()->data( QgsClipboard::FEATURES_MIME_TYPE );
+  // clear clipboard
+  QApplication::clipboard()->clear();
+  QVERIFY( mQgisApp->clipboard()->isEmpty() );
+
+  QgsFields clipboardFields;
+  QgsCoordinateReferenceSystem clipboardCrs;
+  QgsFeatureList clipboardFeatures;
+  mQgisApp->clipboard()->getFeaturesFromClipboard( clipboardCrs, clipboardFields, clipboardFeatures );
+  QVERIFY( clipboardFields.isEmpty() );
+  QVERIFY( !clipboardCrs.isValid() );
+  QVERIFY( clipboardFeatures.isEmpty() );
+
+  // mimic pasting in a different QGIS instance
+  QMimeData *newData = new QMimeData();
+  newData->setData( QgsClipboard::FEATURES_MIME_TYPE, clipData );
+  QApplication::clipboard()->setMimeData( newData );
+
+  mQgisApp->clipboard()->getFeaturesFromClipboard( clipboardCrs, clipboardFields, clipboardFeatures );
+  // must be a lossless representation of the fields, crs, and features
+  QCOMPARE( clipboardFields.size(), 3 );
+  QCOMPARE( clipboardFields.at( 0 ).name(), u"int_field"_s );
+  QCOMPARE( clipboardFields.at( 0 ).type(), QMetaType::Type::Int );
+  QCOMPARE( clipboardFields.at( 1 ).name(), u"double_field"_s );
+  QCOMPARE( clipboardFields.at( 1 ).type(), QMetaType::Type::Double );
+  QCOMPARE( clipboardFields.at( 2 ).name(), u"string_field"_s );
+  QCOMPARE( clipboardFields.at( 2 ).type(), QMetaType::Type::QString );
+  QCOMPARE( clipboardCrs.authid(), u"EPSG:3111"_s );
+  QCOMPARE( clipboardFeatures.size(), 2 );
+  QCOMPARE( clipboardFeatures.at( 0 ).attributes(), QgsAttributes() << 3 << 11.6 << "abc" );
+  QCOMPARE( clipboardFeatures.at( 0 ).geometry().asWkt(), u"Point (5 6)"_s );
+  QCOMPARE( clipboardFeatures.at( 1 ).attributes(), QgsAttributes() << 7 << 12.6 << "def" );
+  QCOMPARE( clipboardFeatures.at( 1 ).geometry().asWkt(), u"Point (7 8)"_s );
 }
 
 QGSTEST_MAIN( TestQgisAppClipboard )

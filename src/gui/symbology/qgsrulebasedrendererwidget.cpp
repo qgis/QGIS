@@ -46,7 +46,7 @@
 using namespace Qt::StringLiterals;
 
 #ifdef ENABLE_MODELTEST
-#include "modeltest.h"
+#include <QAbstractItemModelTester>
 #endif
 
 
@@ -83,7 +83,7 @@ QgsRuleBasedRendererWidget::QgsRuleBasedRendererWidget( QgsVectorLayer *layer, Q
 
   mModel = new QgsRuleBasedRendererModel( mRenderer.get(), viewRules, screen() );
 #ifdef ENABLE_MODELTEST
-  new ModelTest( mModel, this ); // for model validity checking
+  new QAbstractItemModelTester( mModel, QAbstractItemModelTester::FailureReportingMode::Fatal, this );
 #endif
   viewRules->setModel( mModel );
 

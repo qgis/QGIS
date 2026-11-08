@@ -133,9 +133,7 @@ class GUI_EXPORT QgsLegendPatchShapeButton : public QToolButton
     void changeEvent( QEvent *e ) override;
     void showEvent( QShowEvent *e ) override;
     void resizeEvent( QResizeEvent *event ) override;
-
-    // Reimplemented to detect right mouse button clicks on the button
-    void mousePressEvent( QMouseEvent *e ) override;
+    void contextMenuEvent( QContextMenuEvent *e ) override;
 
   private slots:
 

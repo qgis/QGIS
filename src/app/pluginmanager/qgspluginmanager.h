@@ -205,9 +205,6 @@ class QgsPluginManager : public QgsOptionsDialogBase, private Ui::QgsPluginManag
     //! show the given message in the Plugin Manager internal message bar
     void pushMessage( const QString &text, Qgis::MessageLevel level, int duration = -1 );
 
-    //! vote button was clicked
-    void submitVote();
-
     //! Set search text
     void search( const QString &searchTerm );
 
@@ -240,8 +237,8 @@ class QgsPluginManager : public QgsOptionsDialogBase, private Ui::QgsPluginManag
     //! Returns true if there are invalid plugins in the metadata registry
     bool hasInvalidPlugins();
 
-    //! send vote
-    void sendVote( int pluginId, int vote );
+    //! Refresh plugin list and their metadata
+    void refreshPluginList();
 
     QStandardItemModel *mModelPlugins = nullptr;
 

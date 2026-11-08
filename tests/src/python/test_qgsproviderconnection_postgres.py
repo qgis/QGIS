@@ -1104,6 +1104,98 @@ CREATE FOREIGN TABLE IF NOT EXISTS points_csv (
             tables,
         )
 
+    def test_rename_raster_with_overviews(self):
+        """Test that overviews are renamed when raster is renamed."""
+
+        md = QgsProviderRegistry.instance().providerMetadata("postgres")
+        conn = md.createConnection(self.uri, {})
+
+        # create raster table
+        sql = """
+        DROP TABLE IF EXISTS qgis_test.raster_to_rename;
+        DROP TABLE IF EXISTS qgis_test.raster_renamed;
+        DROP TABLE IF EXISTS qgis_test.o_2_raster_renamed;
+        DROP TABLE IF EXISTS qgis_test.o_4_raster_renamed;
+        CREATE TABLE qgis_test.raster_to_rename (
+            id serial PRIMARY KEY,
+            rast raster
+        );
+        INSERT INTO qgis_test.raster_to_rename (rast)
+        SELECT ST_SetSRID(ST_AsRaster(ST_Buffer(ST_Point(0,0),10),150, 150), 3857);
+        SELECT AddRasterConstraints('qgis_test'::name, 'raster_to_rename'::name, 'rast'::name);
+        DROP TABLE IF EXISTS qgis_test.o_2_raster_to_rename;
+        DROP TABLE IF EXISTS qgis_test.o_4_raster_to_rename;
+        """
+
+        conn.executeSql(sql)
+
+        # test table exist
+        table = conn.table("qgis_test", "raster_to_rename")
+        self.assertEqual(table.tableName(), "raster_to_rename")
+
+        # create overviews
+        sql = """
+        SELECT ST_CreateOverview('qgis_test.raster_to_rename'::regclass, 'rast'::name, 2);
+        SELECT ST_CreateOverview('qgis_test.raster_to_rename'::regclass, 'rast'::name, 4);
+        """
+
+        conn.executeSql(sql)
+
+        # check that overviews were created
+        sqlOverviews = """
+        SELECT o_table_schema, o_table_name FROM public.raster_overviews
+        WHERE r_table_schema = 'qgis_test' AND r_table_name = 'raster_to_rename' ORDER BY o_table_name;
+        """
+        overviews = conn.executeSql(sqlOverviews)
+
+        self.assertEqual(
+            overviews,
+            [
+                ["qgis_test", "o_2_raster_to_rename"],
+                ["qgis_test", "o_4_raster_to_rename"],
+            ],
+        )
+
+        # rename raster, overviews should be renamed as well
+        conn.renameRasterTable("qgis_test", "raster_to_rename", "raster_renamed")
+
+        # look at overviews after rename
+        sqlOverviews = """
+        SELECT o_table_schema, o_table_name FROM public.raster_overviews
+        WHERE r_table_schema = 'qgis_test' AND r_table_name = 'raster_renamed' ORDER BY o_table_name;
+        """
+
+        overviews = conn.executeSql(sqlOverviews)
+
+        self.assertEqual(
+            overviews,
+            [
+                ["qgis_test", "o_2_raster_renamed"],
+                ["qgis_test", "o_4_raster_renamed"],
+            ],
+        )
+
+        # look for overviews of the original raster name - should be empty
+        sqlOverviews = """
+        SELECT o_table_schema, o_table_name FROM public.raster_overviews
+        WHERE r_table_schema = 'qgis_test' AND r_table_name = 'raster_to_rename';
+        """
+
+        overviews = conn.executeSql(sqlOverviews)
+
+        self.assertEqual([], overviews)
+
+        # look for tables with the original name - should be empty
+        sqlTables = """
+        SELECT tablename FROM pg_catalog.pg_tables
+        WHERE schemaname = 'qgis_test'
+        AND tablename LIKE '%raster_to_rename';
+        """
+
+        tables = conn.executeSql(sqlTables)
+
+        self.assertEqual([], tables)
+
     def test_drop_raster_with_overviews(self):
         """Test that dropRasterTable also drops raster overviews."""
 

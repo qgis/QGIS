@@ -30,7 +30,7 @@
 using namespace Qt::StringLiterals;
 
 QgsOapifSingleItemRequest::QgsOapifSingleItemRequest( const QgsDataSourceUri &baseUri, const QString &url )
-  : QgsBaseNetworkRequest( QgsAuthorizationSettings( baseUri.username(), baseUri.password(), QgsHttpHeaders(), baseUri.authConfigId() ), tr( "OAPIF" ) )
+  : QgsBaseNetworkRequest( QgsAuthorizationSettings( baseUri.username(), baseUri.password(), QgsHttpHeaders(), baseUri.authConfigId() ), tr( "OAPIF" ), baseUri.hasParam( u"disableDecompressedSafetyCheckThreshold"_s ) )
   , mUrl( url )
 {
   // Using Qt::DirectConnection since the download might be running on a different thread.
@@ -43,7 +43,7 @@ QgsOapifSingleItemRequest::QgsOapifSingleItemRequest( const QgsDataSourceUri &ba
 bool QgsOapifSingleItemRequest::request( bool synchronous, bool forceRefresh )
 {
   QgsDebugMsgLevel( u" QgsOapifSingleItemRequest::request() start time: %1"_s.arg( time( nullptr ) ), 5 );
-  if ( !sendGET( QUrl::fromEncoded( mUrl.toLatin1() ), QString( "application/geo+json, application/json" ), synchronous, forceRefresh ) )
+  if ( !sendGET( QUrl::fromEncoded( mUrl.toLatin1() ), QString( "%1, %2" ).arg( QgsOapifUtils::MEDIA_TYPE_GEOJSON, QgsOapifUtils::MEDIA_TYPE_JSON ), synchronous, forceRefresh ) )
   {
     emit gotResponse();
     return false;

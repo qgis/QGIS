@@ -175,8 +175,6 @@ QStringList QgsSettingsTreeNamedListNode::items( const QStringList &parentsNamed
 
 QStringList QgsSettingsTreeNamedListNode::items( Qgis::SettingsOrigin origin, const QStringList &parentsNamedItems ) const
 {
-  Q_UNUSED( origin )
-
   if ( namedNodesCount() - 1 != parentsNamedItems.count() )
     throw QgsSettingsException(
       QObject::tr( "The number of given parent named items (%1) for the node '%2' doesn't match with the number of named items in the key (%3)." )
@@ -185,10 +183,28 @@ QStringList QgsSettingsTreeNamedListNode::items( Qgis::SettingsOrigin origin, co
 
   const QString completeKeyParam = completeKeyWithNamedItems( mItemsCompleteKey, parentsNamedItems );
 
-  QSettings &settings = QgsSettingsEntryBase::userSettings();
-  settings.beginGroup( completeKeyParam );
-  const QStringList res = settings.childGroups();
-  settings.endGroup();
+  QStringList res;
+
+  // Collect items from the user QSettings
+  if ( origin != Qgis::SettingsOrigin::Global )
+  {
+    QSettings &settings = QgsSettingsEntryBase::userSettings();
+    settings.beginGroup( completeKeyParam );
+    res = settings.childGroups();
+    settings.endGroup();
+  }
+
+  // Collect items from the global defaults hash
+  if ( origin != Qgis::SettingsOrigin::Local )
+  {
+    const QStringList globalGroups = QgsSettingsEntryBase::globalChildGroups( completeKeyParam );
+    for ( const QString &group : globalGroups )
+    {
+      if ( !res.contains( group ) )
+        res.append( group );
+    }
+  }
+
   return res;
 }
 

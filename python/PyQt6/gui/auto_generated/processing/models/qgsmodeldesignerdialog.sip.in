@@ -52,6 +52,7 @@ Loads a model into the designer from the specified file ``path``.
 %End
 
 
+
     virtual QgsProcessingFeedback *createFeedback() /Factory/;
 
     virtual QgsProcessingParameterWidgetContext createWidgetContext();
@@ -74,6 +75,13 @@ Saves the model to the current project.
 %End
 
   signals:
+
+    void aboutToClose();
+%Docstring
+Emitted when the dialog is about to close.
+
+.. versionadded:: 4.4
+%End
 
     void modelUpdated();
 %Docstring

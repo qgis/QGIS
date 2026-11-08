@@ -15,7 +15,7 @@ import shutil
 import tempfile
 
 from qgis.core import Qgis, QgsFileUtils
-from qgis.PyQt.QtCore import QTemporaryDir
+from qgis.PyQt.QtCore import QRegularExpression, QTemporaryDir
 from qgis.testing import unittest
 from utilities import unitTestDataPath
 
@@ -613,6 +613,57 @@ class TestQgsFileUtils(unittest.TestCase):
             with open(path) as f:
                 new_content = f.read()
             self.assertEqual(new_content, "this is my TeSt file\nwith some TeSts")
+
+    def test_replace_regular_expression_in_file(self):
+        """
+        Test QgsFileUtils.replaceInFile
+        """
+
+        file_content = (
+            "this is my test file\n"
+            "with path like this: C:/Windows/painful\\Ridiculus\\path\\\n"
+            "and path like that: C:/Windows/painful/Ridiculus/path/\n"
+        )
+
+        with tempfile.TemporaryDirectory() as temp_dir:
+            path = os.path.join(temp_dir, "test_file.txt")
+            with open(path, "w") as f:
+                f.write(file_content)
+
+            # file does not exist
+            self.assertFalse(
+                QgsFileUtils.replaceInFile(
+                    path + "xxx", QRegularExpression("abc"), "def"
+                )
+            )
+
+            # string not present, should return True still
+            self.assertTrue(
+                QgsFileUtils.replaceInFile(path, QRegularExpression("abc"), "def")
+            )
+
+            with open(path) as f:
+                new_content = f.read()
+            self.assertEqual(new_content, file_content)
+
+            # regular expression which IS present
+            self.assertTrue(
+                QgsFileUtils.replaceInFile(
+                    path,
+                    QRegularExpression(
+                        "C:(\\\\|/)Windows(\\\\|/)painful(\\\\|/)Ridiculus(\\\\|/)path(\\\\|/)"
+                    ),
+                    "C:/Windows/much/better/path/",
+                )
+            )
+            with open(path) as f:
+                new_content = f.read()
+            self.assertEqual(
+                new_content,
+                "this is my test file\n"
+                "with path like this: C:/Windows/much/better/path/\n"
+                "and path like that: C:/Windows/much/better/path/\n",
+            )
 
     def test_copy_directory(self):
         """

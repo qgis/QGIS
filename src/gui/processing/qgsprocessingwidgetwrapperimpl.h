@@ -1995,6 +1995,11 @@ class GUI_EXPORT QgsProcessingMultipleLayerWidgetWrapper : public QgsAbstractPro
     QWidget *createWidget() override SIP_FACTORY;
     void setWidgetContext( const QgsProcessingParameterWidgetContext &context ) override;
 
+    using QgsProcessingParameterWidgetFactoryInterface::compatibleParameterTypes;
+    QStringList compatibleParameterTypes( const QgsProcessingParameterDefinition *definition ) const override;
+    using QgsProcessingParameterWidgetFactoryInterface::compatibleOutputTypes;
+    QStringList compatibleOutputTypes( const QgsProcessingParameterDefinition *definition ) const override;
+
   protected:
     void setWidgetValue( const QVariant &value, QgsProcessingContext &context ) override;
     QVariant widgetValue() const override;
@@ -2519,9 +2524,11 @@ class GUI_EXPORT QgsInterpolationSourceWidget : public QWidget, private Ui::QgsI
     void addLayer();
     void removeLayer();
     void layerChanged( QgsVectorLayer *layer );
+    void updateAddButtonState();
 
   private:
     void addLayerData( QgsVectorLayer *layer, const QString &attribute );
+    bool canAddLayer() const;
 
     friend class TestProcessingGui;
 };

@@ -623,7 +623,7 @@ void QgsDirectoryParamWidget::mousePressEvent( QMouseEvent *event )
   if ( event->button() == Qt::RightButton )
   {
     // show the popup menu
-    QMenu popupMenu;
+    QMenu popupMenu( this );
 
     QStringList labels;
     labels << tr( "Name" ) << tr( "Size" ) << tr( "Date" ) << tr( "Permissions" ) << tr( "Owner" ) << tr( "Group" ) << tr( "Type" );

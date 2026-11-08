@@ -575,12 +575,22 @@ QgsElevationProfileWidget::QgsElevationProfileWidget( QgsElevationProfile *profi
   // manipulate the PROJECT's layer tree ONLY, and consequently do not trigger the QgsProject::legendLayersAdded signal which the
   // bridge relies on. So we also need to explicitly listen out for QgsProject::layersAddedWithoutLegend here, to ensure that
   // layers added via QLR or copy/paste are also added to the elevation profile's layer tree
-  connect( QgsProject::instance(), &QgsProject::layersAddedWithoutLegend, mLayerTreeView, [this] {
-    if ( mProfile && !mProfile->useProjectLayerTree() )
-    {
-      mLayerTreeView->populateMissingLayers( QgsProject::instance() );
-    }
-  } );
+  // Hoewver (!), drag and dropped layers fire both QgsProject::layersAddedWithoutLegend first, and then QgsProject::legendLayersAdded once the
+  // layers are sorted for the legend.
+  // We want to handle the QgsProject::layersAddedWithoutLegend signal last, so that we can skip adding layers that are added
+  // by the layer bridge using QgsProject::legendLayersAdded, that's why we use a queued connection.
+  connect(
+    QgsProject::instance(),
+    &QgsProject::layersAddedWithoutLegend,
+    mLayerTreeView,
+    [this] {
+      if ( mProfile && !mProfile->useProjectLayerTree() )
+      {
+        mLayerTreeView->populateMissingLayers( QgsProject::instance() );
+      }
+    },
+    Qt::QueuedConnection
+  );
 
   connect( QgsProject::instance()->elevationProperties(), &QgsProjectElevationProperties::changed, this, &QgsElevationProfileWidget::onProjectElevationPropertiesChanged );
   connect( QgsProject::instance(), &QgsProject::crs3DChanged, this, &QgsElevationProfileWidget::onProjectElevationPropertiesChanged );
@@ -782,6 +792,11 @@ void QgsElevationProfileWidget::setupLayerTreeView( bool resetTree )
     if ( resetTree )
     {
       copyProjectTree( mLayerTree );
+    }
+    else
+    {
+      mLayerTreeView->cleanupDeletedLayers( QgsProject::instance() );
+      mLayerTreeView->populateMissingLayers( QgsProject::instance(), true );
     }
 
     // Initially populates the tree view using sources from the source registry
@@ -1565,7 +1580,7 @@ void QgsAppElevationProfileLayerTreeView::contextMenuEvent( QContextMenuEvent *e
     setCurrentIndex( QModelIndex() );
 
   const bool allowModifications = qobject_cast<QgsElevationProfileLayerTreeModel * >( layerTreeModel() )->allowModifications();
-  QMenu *menu = new QMenu();
+  QMenu *menu = new QMenu( this );
   if ( QgsMapLayer *layer = layerForIndex( index ) )
   {
     QAction *propertiesAction = new QAction( tr( "Properties…" ), menu );
@@ -1586,7 +1601,7 @@ void QgsAppElevationProfileLayerTreeView::contextMenuEvent( QContextMenuEvent *e
 
   if ( !menu->isEmpty() )
   {
-    menu->exec( mapToGlobal( event->pos() ) );
+    menu->exec( event->globalPos() );
   }
   delete menu;
 }

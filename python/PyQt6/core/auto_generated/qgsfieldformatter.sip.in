@@ -93,11 +93,25 @@ transform the value in here.
 :return: an unmodified value by default.
 %End
 
-    virtual Qt::AlignmentFlag alignmentFlag( QgsVectorLayer *layer, int fieldIndex, const QVariantMap &config ) const;
+ virtual Qt::AlignmentFlag alignmentFlag( QgsVectorLayer *layer, int fieldIndex, const QVariantMap &config ) const /Deprecated="Since 4.4. Use the version taking a QgsField argument."/;
 %Docstring
 Returns the alignment for a particular field. By default this will
 consider the field type but can be overwritten if mapped values are
 represented.
+
+.. deprecated:: 4.4
+
+   Use the version taking a :py:class:`QgsField` argument.
+%End
+
+    virtual Qt::AlignmentFlag alignmentFlag( const QgsField &field, const QVariantMap &config ) const;
+%Docstring
+Returns the alignment for a particular ``field``.
+
+By default this will consider the field type but can be overwritten if
+mapped values are represented.
+
+.. versionadded:: 4.4
 %End
 
     virtual QVariant createCache( QgsVectorLayer *layer, int fieldIndex, const QVariantMap &config ) const;

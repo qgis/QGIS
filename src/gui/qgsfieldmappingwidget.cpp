@@ -29,7 +29,7 @@
 #include "moc_qgsfieldmappingwidget.cpp"
 
 #ifdef ENABLE_MODELTEST
-#include "modeltest.h"
+#include <QAbstractItemModelTester>
 #endif
 
 QgsFieldMappingWidget::QgsFieldMappingWidget(
@@ -47,7 +47,7 @@ QgsFieldMappingWidget::QgsFieldMappingWidget(
   mModel->setNativeTypes( nativeTypes );
 
 #ifdef ENABLE_MODELTEST
-  new ModelTest( mModel, this );
+  new QAbstractItemModelTester( mModel, QAbstractItemModelTester::FailureReportingMode::Fatal, this );
 #endif
 
   mTableView->setModel( mModel );

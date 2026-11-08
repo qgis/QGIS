@@ -593,7 +593,7 @@ QgsRectangle QgsCoordinateTransform::transformBoundingBox( const QgsRectangle &r
   if ( !d->mIsValid || d->mShortCircuit )
     return rect;
 
-  if ( rect.isEmpty() )
+  if ( rect.isPoint() )
   {
     const QgsPointXY p = transform( rect.xMinimum(), rect.yMinimum(), direction );
     return QgsRectangle( p, p );

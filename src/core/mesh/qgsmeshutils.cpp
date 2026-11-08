@@ -29,7 +29,7 @@
 #include "qgsrendercontext.h"
 #include "qgstriangularmesh.h"
 
-QgsRasterBlock *QgsMeshUtils::exportRasterBlock(
+std::unique_ptr<QgsRasterBlock> QgsMeshUtils::exportRasterBlock(
   const QgsMeshLayer &layer,
   const QgsMeshDatasetIndex &datasetIndex,
   const QgsCoordinateReferenceSystem &destinationCrs,
@@ -74,7 +74,7 @@ QgsRasterBlock *QgsMeshUtils::exportRasterBlock(
 
   QgsMeshLayerInterpolator interpolator( *( triangularMesh.get() ), datasetValues, activeFaceFlagValues, scalarDataType, renderContext, QSize( widthPixel, heightPixel ) );
 
-  return interpolator.block( 0, extent, widthPixel, heightPixel, feedback );
+  return std::unique_ptr<QgsRasterBlock>( interpolator.block( 0, extent, widthPixel, heightPixel, feedback ) );
 }
 
 QgsRasterBlock *QgsMeshUtils::exportRasterBlock(

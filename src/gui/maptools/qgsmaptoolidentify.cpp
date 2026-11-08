@@ -507,7 +507,7 @@ bool QgsMapToolIdentify::identifyVectorTileLayer( QList<QgsMapToolIdentify::Iden
           selectionGeom.transform( ct );
 
         // use prepared geometry for faster intersection test
-        selectionGeomPrepared.reset( QgsGeometry::createGeometryEngine( selectionGeom.constGet() ) );
+        selectionGeomPrepared = QgsGeometry::createGeometryEngine( selectionGeom.constGet() );
       }
     }
 
@@ -687,7 +687,7 @@ bool QgsMapToolIdentify::identifyVectorLayer( QList<QgsMapToolIdentify::Identify
           selectionGeom.transform( ct );
 
         // use prepared geometry for faster intersection test
-        selectionGeomPrepared.reset( QgsGeometry::createGeometryEngine( selectionGeom.constGet() ) );
+        selectionGeomPrepared = QgsGeometry::createGeometryEngine( selectionGeom.constGet() );
       }
     }
 

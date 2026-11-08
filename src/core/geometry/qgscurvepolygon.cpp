@@ -1279,51 +1279,6 @@ bool QgsCurvePolygon::moveVertex( QgsVertexId vId, const QgsPoint &newPos )
   return success;
 }
 
-bool QgsCurvePolygon::deleteVertex( QgsVertexId vId )
-{
-  const int interiorRingId = vId.ring - 1;
-  if ( !mExteriorRing || vId.ring < 0 || interiorRingId >= mInteriorRings.size() )
-  {
-    return false;
-  }
-
-  // cppcheck-suppress containerOutOfBounds
-  QgsCurve *ring = vId.ring == 0 ? mExteriorRing.get() : mInteriorRings.at( interiorRingId );
-  int n = ring->numPoints();
-  if ( n <= 4 )
-  {
-    //no points will be left in ring, so remove whole ring
-    if ( vId.ring == 0 )
-    {
-      mExteriorRing.reset();
-      if ( !mInteriorRings.isEmpty() )
-      {
-        mExteriorRing.reset( mInteriorRings.takeFirst() );
-      }
-    }
-    else
-    {
-      removeInteriorRing( vId.ring - 1 );
-    }
-    clearCache();
-    return true;
-  }
-
-  bool success = ring->deleteVertex( vId );
-  if ( success )
-  {
-    // If first or last vertex is removed, re-sync the last/first vertex
-    // Do not use "n - 2", but "ring->numPoints() - 1" as more than one vertex
-    // may have been deleted (e.g. with CircularString)
-    if ( vId.vertex == 0 )
-      ring->moveVertex( QgsVertexId( 0, 0, ring->numPoints() - 1 ), ring->vertexAt( QgsVertexId( 0, 0, 0 ) ) );
-    else if ( vId.vertex == n - 1 )
-      ring->moveVertex( QgsVertexId( 0, 0, 0 ), ring->vertexAt( QgsVertexId( 0, 0, ring->numPoints() - 1 ) ) );
-    clearCache();
-  }
-  return success;
-}
-
 bool QgsCurvePolygon::deleteVertices( const QSet<QgsVertexId> &positions )
 {
   if ( positions.empty() )
@@ -1486,6 +1441,9 @@ double QgsCurvePolygon::vertexAngle( QgsVertexId vertex ) const
 
 int QgsCurvePolygon::vertexCount( int /*part*/, int ring ) const
 {
+  if ( !mExteriorRing || ring < 0 || ring >= 1 + mInteriorRings.size() )
+    return 0;
+
   return ring == 0 ? mExteriorRing->vertexCount() : mInteriorRings[ring - 1]->vertexCount();
 }
 
@@ -1501,6 +1459,9 @@ int QgsCurvePolygon::partCount() const
 
 QgsPoint QgsCurvePolygon::vertexAt( QgsVertexId id ) const
 {
+  if ( !mExteriorRing || id.ring < 0 || id.ring >= 1 + mInteriorRings.size() )
+    return QgsPoint();
+
   return id.ring == 0 ? mExteriorRing->vertexAt( id ) : mInteriorRings[id.ring - 1]->vertexAt( id );
 }
 
@@ -1657,7 +1618,9 @@ int QgsCurvePolygon::childCount() const
 
 QgsAbstractGeometry *QgsCurvePolygon::childGeometry( int index ) const
 {
-  if ( index == 0 )
+  if ( index < 0 || index >= 1 + mInteriorRings.size() )
+    return nullptr;
+  else if ( index == 0 )
     return mExteriorRing.get();
   else
     return mInteriorRings.at( index - 1 );

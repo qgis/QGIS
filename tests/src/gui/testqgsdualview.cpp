@@ -25,6 +25,7 @@
 #include "qgsattributeeditorfield.h"
 #include "qgsattributeform.h"
 #include "qgsattributeformeditorwidget.h"
+#include "qgsattributetablefiltermodel.h"
 #include "qgsfeature.h"
 #include "qgsfeatureiterator.h"
 #include "qgsfeaturelistmodel.h"
@@ -116,7 +117,8 @@ void TestQgsDualView::cleanup()
 
 void TestQgsDualView::testColumnCount()
 {
-  QCOMPARE( mDualView->tableView()->model()->columnCount(), mPointsLayer->fields().count() );
+  // the table model includes the actions column, so it should have fields + 1 columns
+  QCOMPARE( mDualView->tableView()->model()->columnCount(), mPointsLayer->fields().count() + 1 );
 }
 
 void TestQgsDualView::testColumnHeaders()
@@ -126,6 +128,9 @@ void TestQgsDualView::testColumnHeaders()
     const QgsField fld = mPointsLayer->fields().at( i );
     QCOMPARE( mDualView->tableView()->model()->headerData( i, Qt::Horizontal ).toString(), fld.name() );
   }
+
+  // last column should be the actions column
+  QCOMPARE( mDualView->tableView()->model()->headerData( mPointsLayer->fields().count(), Qt::Horizontal ).toString(), "Actions" );
 }
 
 void TestQgsDualView::testData()
@@ -160,7 +165,7 @@ void TestQgsDualView::testFilterSelected()
   selected << ids.at( 1 ) << ids.at( 3 );
   mPointsLayer->selectByIds( qgis::listToSet( selected ) );
 
-  mDualView->setFilterMode( QgsAttributeTableFilterModel::ShowSelected );
+  mDualView->setFilterMode( Qgis::AttributeTableFilterMode::ShowSelected );
   QCOMPARE( mDualView->tableView()->model()->rowCount(), 2 );
 
   const int headingIdx = mPointsLayer->fields().lookupField( u"Heading"_s );
@@ -181,7 +186,7 @@ void TestQgsDualView::testSelectAll()
 {
   QEventLoop loop;
   connect( qobject_cast<QgsAttributeTableFilterModel *>( mDualView->mFilterModel ), &QgsAttributeTableFilterModel::visibleReloaded, &loop, &QEventLoop::quit );
-  mDualView->setFilterMode( QgsAttributeTableFilterModel::ShowVisible );
+  mDualView->setFilterMode( Qgis::AttributeTableFilterMode::ShowVisible );
   // Only show parts of the canvas, so only one selected feature is visible
   mCanvas->setExtent( QgsRectangle( -139, 23, -100, 48 ) );
   loop.exec();

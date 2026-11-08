@@ -17,6 +17,7 @@
 
 #include "qgs3dmapscene.h"
 #include "qgs3dmapsceneentity.h"
+#include "qgs3dmapsettings.h"
 #include "qgs3dsymbolregistry.h"
 #include "qgsabstract3dengine.h"
 #include "qgsapplication.h"
@@ -188,7 +189,21 @@ void Qgs3DHighlightFeatureHandler::highlightFeature( QgsFeature feature, QgsMapL
     case Qgis::LayerType::PointCloud:
     {
       const QgsGeometry geom = feature.geometry();
-      const QgsPoint pt( geom.vertexAt( 0 ) );
+      QgsPoint pt( geom.vertexAt( 0 ) );
+
+      if ( mScene->mapSettings()->crs() != layer->crs3D() )
+      {
+        QgsCoordinateTransform ct( layer->crs3D(), mScene->mapSettings()->crs(), mScene->mapSettings()->transformContext() );
+        try
+        {
+          pt.transform( ct, Qgis::TransformDirection::Forward, true );
+        }
+        catch ( QgsCsException & )
+        {
+          QgsDebugError( u"Could not reproject identified feature to 3d view crs"_s );
+          return;
+        }
+      }
 
       if ( !mRubberBands.contains( layer ) )
       {

@@ -386,7 +386,7 @@ QgsVectorWarperTask.errorMessage: src/analysis/georeferencing/qgsvectorwarper.h#
 QgsVectorWarperTask.result: src/analysis/georeferencing/qgsvectorwarper.h#L107
 QgsVectorWarperTask.run: src/analysis/georeferencing/qgsvectorwarper.h#L115
 QgsVectorWarperTask: src/analysis/georeferencing/qgsvectorwarper.h#L76
-QgsZonalStatistics.calculateStatistics: src/analysis/vector/qgszonalstatistics.h#L103
-QgsZonalStatistics.displayName: src/analysis/vector/qgszonalstatistics.h#L110
-QgsZonalStatistics.shortName: src/analysis/vector/qgszonalstatistics.h#L117
+QgsZonalStatistics.calculateStatistics: src/analysis/vector/qgszonalstatistics.h#L115
+QgsZonalStatistics.displayName: src/analysis/vector/qgszonalstatistics.h#L122
+QgsZonalStatistics.shortName: src/analysis/vector/qgszonalstatistics.h#L129
 QgsZonalStatistics: src/analysis/vector/qgszonalstatistics.h#L47

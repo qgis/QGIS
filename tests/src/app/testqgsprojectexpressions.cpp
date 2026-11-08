@@ -72,8 +72,10 @@ void TestQgsProjectExpressions::cleanupTestCase()
 
 void TestQgsProjectExpressions::projectExpressions()
 {
-  const int count_before_project = QgsExpression::functionCount();
-  QVERIFY( QgsExpression::functionIndex( u"mychoice"_s ) != -1 ); // User expression loaded
+  QgsExpression::FunctionListSnapshot functions = QgsExpression::getFunctionsSnapshot();
+  const int count_before_project = functions->size();
+
+  QVERIFY( functions->functionIndex( u"mychoice"_s ) != -1 ); // User expression loaded
 
   const QString myExpression = u"mychoice(1, 2)"_s;
   QgsExpression exp( u"mychoice(1, 2)"_s );
@@ -87,17 +89,20 @@ void TestQgsProjectExpressions::projectExpressions()
 
   QgsSettingsRegistryCore::settingsCodeExecutionBehaviorUndeterminedProjects->setValue( Qgis::EmbeddedScriptMode::Never );
   QgsProject::instance()->read( projectPath );
-  QCOMPARE( QgsExpression::functionIndex( u"myprojectfunction"_s ), -1 );
+  functions = QgsExpression::getFunctionsSnapshot();
+  QCOMPARE( functions->functionIndex( u"myprojectfunction"_s ), -1 );
 
   QgsSettingsRegistryCore::settingsCodeExecutionBehaviorUndeterminedProjects->setValue( Qgis::EmbeddedScriptMode::NeverAsk );
   QgsApplication::setTemporarilyUntrustedProjectsFolders( QStringList() << projectPath );
   QgsProject::instance()->loadFunctionsFromProject();
-  QCOMPARE( QgsExpression::functionIndex( u"myprojectfunction"_s ), -1 );
+  functions = QgsExpression::getFunctionsSnapshot();
+  QCOMPARE( functions->functionIndex( u"myprojectfunction"_s ), -1 );
   QgsApplication::setTemporarilyUntrustedProjectsFolders( QStringList() );
   QgsApplication::setTemporarilyTrustedProjectsFolders( QStringList() << projectPath );
   QgsProject::instance()->loadFunctionsFromProject();
-  QVERIFY( QgsExpression::functionIndex( u"myprojectfunction"_s ) != -1 );
-  QVERIFY( QgsExpression::functionIndex( u"mychoice"_s ) != -1 ); // Overwritten function
+  functions = QgsExpression::getFunctionsSnapshot();
+  QVERIFY( functions->functionIndex( u"myprojectfunction"_s ) != -1 );
+  QVERIFY( functions->functionIndex( u"mychoice"_s ) != -1 ); // Overwritten function
   const int count_project_loaded = QgsExpression::functionCount();
 
   QCOMPARE( count_project_loaded - count_before_project, 1 ); // myprojectfunction
@@ -110,7 +115,8 @@ void TestQgsProjectExpressions::projectExpressions()
   const int count_project_unloaded = QgsExpression::functionCount();
   QCOMPARE( count_before_project, count_project_unloaded ); // myprojectfunction is gone
 
-  QCOMPARE( QgsExpression::functionIndex( u"myprojectfunction"_s ), -1 );
+  functions = QgsExpression::getFunctionsSnapshot();
+  QCOMPARE( functions->functionIndex( u"myprojectfunction"_s ), -1 );
   exp = myExpression;                    // Re-parse it
   QCOMPARE( exp.evaluate().toInt(), 1 ); // Original result, coming from user function
 

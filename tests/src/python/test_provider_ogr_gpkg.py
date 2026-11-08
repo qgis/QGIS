@@ -13,6 +13,7 @@ __author__ = "Even Rouault"
 __date__ = "2016-04-21"
 __copyright__ = "Copyright 2016, Even Rouault"
 
+import json
 import math
 import os
 import re
@@ -80,6 +81,8 @@ def GDAL_COMPUTE_VERSION(maj, min, rev):
 
 
 class TestPyQgsOGRProviderGpkgConformance(QgisTestCase, ProviderTestCase):
+    runConcurrentLayerAccessThreadSafetyTest = True
+
     @classmethod
     def setUpClass(cls):
         """Run before all tests"""
@@ -2178,9 +2181,6 @@ class TestPyQgsOGRProviderGpkg(QgisTestCase):
                 )
             )
         )
-        self.assertTrue(vl.commitChanges())
-
-        vl.startEditing()
         self.assertTrue(
             vl.addAttribute(
                 QgsField(
@@ -2194,17 +2194,32 @@ class TestPyQgsOGRProviderGpkg(QgisTestCase):
                 )
             )
         )
-        self.assertTrue(vl.commitChanges())
 
         # test setting values to new attributes
+        fi = vl.getFeatures(QgsFeatureRequest())
+        f = QgsFeature()
         while fi.nextFeature(f):
             if f["fid"] == 2:
                 f["json_content"] = {"uno": "foo"}
                 f["json_content2"] = ["uno", "due", "tre"]
                 f["json_content3"] = {"uno": ["uno", "due", "tre"]}
-                self.assertEqual(f["json_content"], {"foo": "baz"})
+                vl.updateFeature(f)
+                self.assertEqual(f["json_content"], {"uno": "foo"})
                 self.assertEqual(f["json_content2"], ["uno", "due", "tre"])
                 self.assertEqual(f["json_content3"], {"uno": ["uno", "due", "tre"]})
+                break
+        self.assertTrue(vl.commitChanges())
+
+        # read back again
+        vl2 = QgsVectorLayer(f"{tmpfile}|layerid=0", "foo", "ogr")
+        fi = vl2.getFeatures(QgsFeatureRequest())
+        f = QgsFeature()
+        while fi.nextFeature(f):
+            if f["fid"] == 2:
+                self.assertEqual(f["json_content"], {"uno": "foo"})
+                self.assertEqual(f["json_content2"], ["uno", "due", "tre"])
+                self.assertEqual(f["json_content3"], {"uno": ["uno", "due", "tre"]})
+                break
 
         # test deleting attribute
         vl.startEditing()
@@ -2214,6 +2229,108 @@ class TestPyQgsOGRProviderGpkg(QgisTestCase):
         # test if index of existent field is not -1 and the one of the deleted is -1
         self.assertNotEqual(vl.fields().indexFromName("json_content2"), -1)
         self.assertEqual(vl.fields().indexFromName("json_content3"), -1)
+
+        # test text fields containing json
+        vl.startEditing()
+        self.assertTrue(
+            vl.addAttribute(
+                QgsField(
+                    "text_content",
+                    QVariant.String,
+                    "text",
+                    0,
+                    0,
+                    "no comment",
+                    QVariant.Invalid,
+                )
+            )
+        )
+        self.assertTrue(
+            vl.addAttribute(
+                QgsField(
+                    "text_content2",
+                    QVariant.String,
+                    "text",
+                    60,
+                    0,
+                    "no comment",
+                    QVariant.Invalid,
+                )
+            )
+        )
+        self.assertTrue(
+            vl.addAttribute(
+                QgsField(
+                    "text_content3",
+                    QVariant.String,
+                    "text",
+                    60,
+                    0,
+                    "no comment",
+                    QVariant.Invalid,
+                )
+            )
+        )
+        self.assertTrue(
+            vl.addAttribute(
+                QgsField(
+                    "text_content4",
+                    QVariant.String,
+                    "text",
+                    60,
+                    0,
+                    "no comment",
+                    QVariant.Invalid,
+                )
+            )
+        )
+
+        fi = vl.getFeatures(QgsFeatureRequest())
+        f = QgsFeature()
+        while fi.nextFeature(f):
+            if f["fid"] == 3:
+                f["text_content"] = "hallo"
+                f["text_content2"] = {"hey": "ho"}
+                f["text_content3"] = ["unu", "du", "tri"]
+                f["text_content4"] = {"unu": ["unu", "du", "tri"]}
+                vl.updateFeature(f)
+                self.assertEqual(f["text_content"], "hallo")
+                self.assertEqual(f["text_content2"], {"hey": "ho"})
+                self.assertEqual(f["text_content3"], ["unu", "du", "tri"])
+                self.assertEqual(f["text_content4"], {"unu": ["unu", "du", "tri"]})
+                break
+        self.assertTrue(vl.commitChanges())
+
+        # read back again
+        vl3 = QgsVectorLayer(f"{tmpfile}|layerid=0", "foo", "ogr")
+        fi = vl3.getFeatures(QgsFeatureRequest())
+        f = QgsFeature()
+
+        fields = vl.dataProvider().fields()
+        self.assertEqual(
+            fields.at(fields.indexFromName("text_content")).type(), QVariant.String
+        )
+        self.assertEqual(
+            fields.at(fields.indexFromName("text_content2")).type(), QVariant.String
+        )
+        self.assertEqual(
+            fields.at(fields.indexFromName("text_content3")).type(), QVariant.String
+        )
+        self.assertEqual(
+            fields.at(fields.indexFromName("text_content4")).type(), QVariant.String
+        )
+
+        # test if the json values are correctly written to the text field, they are actually strings now.
+        # they can be converted to lists and maps when opening with the dedicated widgets
+        fi = vl.getFeatures(QgsFeatureRequest())
+        f = QgsFeature()
+        while fi.nextFeature(f):
+            if f["fid"] == 3:
+                self.assertEqual(f["text_content"], "hallo")
+                self.assertEqual(f["text_content2"], '{"hey":"ho"}')
+                self.assertEqual(f["text_content3"], '["unu","du","tri"]')
+                self.assertEqual(f["text_content4"], '{"unu":["unu","du","tri"]}')
+                break
 
     def test_quote_identifier(self):
         """Regression #21100"""
@@ -3937,6 +4054,120 @@ class TestPyQgsOGRProviderGpkg(QgisTestCase):
             vl.dataProvider().capabilities()
             & Qgis.VectorProviderCapability.ReadFieldDomains
         )
+
+    def testUniqueWithBufferedTransactionGroup(self):
+        # Create a GeoPackage with a unique constraint on a field
+
+        tmpfile = os.path.join(
+            self.basetestpath, "testUniqueWithBufferedTransactionGroup.gpkg"
+        )
+        ds = ogr.GetDriverByName("GPKG").CreateDataSource(tmpfile)
+
+        # Create a layer with a constraint on the "hausnummer" field
+        lyr = ds.CreateLayer("eingang", geom_type=ogr.wkbPoint)
+        lyr.CreateField(ogr.FieldDefn("hausnummer", ogr.OFTInteger))
+        lyr = None
+        sql = "CREATE UNIQUE INDEX unique_index ON eingang(hausnummer)"
+        ds.ExecuteSQL(sql)
+
+        ds = None
+
+        vl = QgsVectorLayer(f"{tmpfile}|layername=eingang", "test", "ogr")
+        self.assertTrue(vl.isSpatial())
+        self.assertTrue(vl.isValid())
+        self.assertTrue(
+            vl.dataProvider().capabilities()
+            & QgsVectorDataProvider.ChangeAttributeValues
+        )
+
+        # Start a buffered transaction group (even though there is only one layer)
+        # and try to add two features with the same value for the unique field
+        p = QgsProject()
+        p.setTransactionMode(Qgis.TransactionMode.BufferedGroups)
+        p.setFlags(Qgis.ProjectFlag.EvaluateDefaultValuesOnProviderSide)
+        self.assertTrue(p.addMapLayer(vl))
+        self.assertTrue(vl.startEditing())
+        self.assertTrue(vl.isEditable())
+        self.assertFalse(vl.isModified())
+
+        f1 = QgsFeature(vl.fields())
+        f1.setAttribute("hausnummer", 1)
+        f1.setGeometry(QgsGeometry.fromWkt("POINT(0 0)"))
+        self.assertTrue(vl.addFeatures([f1]))
+
+        # Add a feature with a duplicate value for the unique field
+        f2 = QgsFeature(vl.fields())
+        f2.setAttribute("hausnummer", 1)
+        f2.setGeometry(QgsGeometry.fromWkt("POINT(1 1)"))
+        self.assertTrue(vl.addFeatures([f2]))
+
+        self.assertTrue(vl.isModified())
+        res, errors = p.commitChanges(False, vl)
+        self.assertTrue(len(errors) > 0)
+        self.assertIn("UNIQUE constraint failed", vl.dataProvider().lastError())
+        self.assertFalse(res)
+        self.assertTrue(vl.isEditable())
+        self.assertTrue(vl.isModified())
+        self.assertEqual(len([f for f in vl.getFeatures()]), 2)
+        # This fails because of an upstream issue in OGR
+        # which doesn't properly report the number of features
+        # in the layer after a rollback
+        # TODO: fix this in OGR and re-enable the test
+        # self.assertEqual(vl.featureCount(), 2)
+        self.assertTrue(vl.rollBack())
+        self.assertFalse(vl.isEditable())
+
+        # Verify that the layer is empty after the rollback
+        vl2 = QgsVectorLayer(f"{tmpfile}|layername=eingang", "test", "ogr")
+        self.assertTrue(vl2.isValid())
+        self.assertEqual(len([f for f in vl2.getFeatures()]), 0)
+        del vl2
+
+        # Check again but change the conflicting feature to have a unique value and commit again
+        self.assertTrue(vl.startEditing())
+        f1 = QgsFeature(vl.fields())
+        f1.setAttribute("hausnummer", 1)
+        f1.setGeometry(QgsGeometry.fromWkt("POINT(0 0)"))
+        self.assertTrue(vl.addFeatures([f1]))
+
+        # Add a feature with a duplicate value for the unique field
+        f2 = QgsFeature(vl.fields())
+        f2.setAttribute("hausnummer", 1)
+        f2.setGeometry(QgsGeometry.fromWkt("POINT(1 1)"))
+        self.assertTrue(vl.addFeatures([f2]))
+
+        self.assertTrue(vl.isModified())
+        res, errors = p.commitChanges(False, vl)
+        self.assertTrue(len(errors) > 0)
+        self.assertIn("UNIQUE constraint failed", vl.dataProvider().lastError())
+        self.assertFalse(res)
+        self.assertTrue(vl.isEditable())
+        self.assertTrue(vl.isModified())
+        self.assertEqual(len([f for f in vl.getFeatures()]), 2)
+
+        # Change f2 to have a unique value and commit again
+        # Retrieve the feature from the layer to ensure we have the correct feature ID
+        fids = [f.id() for f in vl.getFeatures()]
+        f2 = vl.getFeature(fids[1])
+        f2.setAttribute("hausnummer", 2)
+        self.assertTrue(vl.isModified())
+        self.assertTrue(vl.updateFeature(f2))
+        self.assertTrue(vl.isModified())
+        res, errors = p.commitChanges(False, vl)
+        self.assertTrue(res)
+        self.assertEqual(len(errors), 1)
+        # Not really an error, but a message from the provider
+        self.assertEqual(errors[0], "SUCCESS: 2 feature(s) added.")
+        self.assertTrue(vl.isEditable())
+        self.assertFalse(vl.isModified())
+        self.assertTrue(vl.commitChanges())
+        self.assertFalse(vl.isEditable())
+
+        # Verify that the features have the expected values
+        features = {f["hausnummer"]: f for f in vl.getFeatures()}
+        self.assertEqual(len(features), 2)
+        self.assertIn(1, features)
+        self.assertIn(2, features)
 
 
 if __name__ == "__main__":

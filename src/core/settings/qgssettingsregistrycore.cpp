@@ -278,6 +278,10 @@ void QgsSettingsRegistryCore::migrateOldSettings()
   QgsApplication::settingsApplicationFullName->copyValueFromKey( u"qgis/application_full_name"_s, true );
   QgsApplication::settingsApplicationFullName->copyValueFromKey( u"/qgis/application_full_name"_s, true );
 
+  // project templates now have a list of directories
+  QgsApplication::settingsProjectTemplatePaths->copyValueFromKey( u"qgis/projectTemplateDir"_s, true );
+  QgsApplication::settingsProjectTemplatePaths->copyValueFromKey( u"/qgis/projectTemplateDir"_s, true );
+
   // gdal/skipDrivers was a comma-joined string; convert to a proper QStringList
   {
     QgsSettings s;

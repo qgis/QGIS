@@ -914,7 +914,7 @@ class CORE_EXPORT QgsPalLayerSettings
      *
      * \since QGIS 4.0
      */
-    QMimeData *toMimeData() const SIP_FACTORY;
+    std::unique_ptr<QMimeData> toMimeData() const;
 
     /**
      * Attempts to parse the provided mime \a data as a QgsPalLayerSettings.
@@ -1095,6 +1095,8 @@ class CORE_EXPORT QgsPalLayerSettings
     Qgis::AngleUnit mRotationUnit = Qgis::AngleUnit::Degrees;
 
     static void initPropertyDefinitions();
+
+    friend class TestQgsPalLabeling;
 };
 
 

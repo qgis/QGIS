@@ -826,7 +826,7 @@ class CORE_EXPORT QgsSfcgalGeometry
     sfcgal::shared_geom mSfcgalGeom;
     bool mIsPrimitive = false;
 
-#if SFCGAL_VERSION_NUM >= SFCGAL_MAKE_VERSION( 2, 3, 0 )
+#if SFCGAL_VERSION_NUM >= SFCGAL_COMPUTE_VERSION( 2, 3, 0 )
     sfcgal::shared_prim mSfcgalPrim;
     sfcgal::primitiveType mPrimType;
 #endif

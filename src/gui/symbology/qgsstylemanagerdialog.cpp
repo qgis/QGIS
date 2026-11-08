@@ -754,7 +754,7 @@ void QgsStyleManagerDialog::copyItem()
     case QgsStyle::LabelSettingsEntity:
     {
       const QgsPalLayerSettings labelSettings( mStyle->labelSettings( details.name ) );
-      QApplication::clipboard()->setMimeData( labelSettings.toMimeData() );
+      QApplication::clipboard()->setMimeData( labelSettings.toMimeData().release() );
       break;
     }
 

@@ -651,34 +651,6 @@ bool QgsGeometryCollection::moveVertex( QgsVertexId position, const QgsPoint &ne
   return success;
 }
 
-bool QgsGeometryCollection::deleteVertex( QgsVertexId position )
-{
-  if ( position.part < 0 || position.part >= mGeometries.size() )
-  {
-    return false;
-  }
-
-  QgsAbstractGeometry *geom = mGeometries.at( position.part );
-  if ( !geom )
-  {
-    return false;
-  }
-
-  bool success = geom->deleteVertex( position );
-
-  //remove geometry if no vertices left
-  if ( geom->isEmpty() )
-  {
-    removeGeometry( position.part );
-  }
-
-  if ( success )
-  {
-    clearCache(); //set bounding box invalid
-  }
-  return success;
-}
-
 bool QgsGeometryCollection::deleteVertices( const QSet<QgsVertexId> &positions )
 {
   QMap<int, QSet<QgsVertexId>> partVertices;
@@ -1046,7 +1018,7 @@ void QgsGeometryCollection::transformVertices( const std::function<QgsPoint( con
   clearCache();
 }
 
-QgsGeometryCollection *QgsGeometryCollection::extractPartsByType( Qgis::WkbType type, bool useFlatType ) const
+std::unique_ptr<QgsGeometryCollection> QgsGeometryCollection::extractPartsByType( Qgis::WkbType type, bool useFlatType ) const
 {
   // be tolerant if caller passed a multi type as type argument
   const Qgis::WkbType filterSinglePartType = useFlatType ? QgsWkbTypes::flatType( QgsWkbTypes::singleType( type ) ) : QgsWkbTypes::singleType( type );
@@ -1060,7 +1032,7 @@ QgsGeometryCollection *QgsGeometryCollection::extractPartsByType( Qgis::WkbType 
       {
         // potential shortcut if we're already a matching subclass of QgsGeometryCollection
         if ( const QgsMultiPoint *mp = qgsgeometry_cast< const QgsMultiPoint *>( this ) )
-          return mp->clone();
+          return std::unique_ptr<QgsGeometryCollection>( mp->clone() );
       }
 
       res = std::make_unique< QgsMultiPoint >();
@@ -1072,7 +1044,7 @@ QgsGeometryCollection *QgsGeometryCollection::extractPartsByType( Qgis::WkbType 
       {
         // potential shortcut if we're already a matching subclass of QgsGeometryCollection
         if ( const QgsMultiLineString *ml = qgsgeometry_cast< const QgsMultiLineString *>( this ) )
-          return ml->clone();
+          return std::unique_ptr<QgsGeometryCollection>( ml->clone() );
       }
 
       res = std::make_unique< QgsMultiLineString >();
@@ -1084,7 +1056,7 @@ QgsGeometryCollection *QgsGeometryCollection::extractPartsByType( Qgis::WkbType 
       {
         // potential shortcut if we're already a matching subclass of QgsGeometryCollection
         if ( const QgsMultiPolygon *mp = qgsgeometry_cast< const QgsMultiPolygon *>( this ) )
-          return mp->clone();
+          return std::unique_ptr<QgsGeometryCollection>( mp->clone() );
       }
 
       res = std::make_unique< QgsMultiPolygon>();
@@ -1113,7 +1085,7 @@ QgsGeometryCollection *QgsGeometryCollection::extractPartsByType( Qgis::WkbType 
     }
   }
 
-  return res.release();
+  return res;
 }
 
 void QgsGeometryCollection::swapXy()

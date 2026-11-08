@@ -129,7 +129,7 @@ QgsSqlExpressionCompiler::Result QgsHanaExpressionCompiler::compileNode( const Q
     case QgsExpressionNode::ntFunction:
     {
       const QgsExpressionNodeFunction *nodeFunc = static_cast<const QgsExpressionNodeFunction *>( node );
-      QgsExpressionFunction *fd = QgsExpression::Functions()[nodeFunc->fnIndex()];
+      QgsExpression::SharedFunctionPtr fd = nodeFunc->function();
 
       if ( fd->name().isEmpty() )
         break;

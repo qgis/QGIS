@@ -21,7 +21,6 @@
 #include "qgsactionmenu.h"
 #include "qgsaddattrdialog.h"
 #include "qgsapplication.h"
-#include "qgsattributetablefiltermodel.h"
 #include "qgsattributetablemodel.h"
 #include "qgsattributetableview.h"
 #include "qgsclipboard.h"
@@ -123,7 +122,7 @@ void QgsAttributeTableDialog::updateMultiEditButtonState()
 }
 
 QgsAttributeTableDialog::QgsAttributeTableDialog(
-  QgsVectorLayer *layer, QgsAttributeTableFilterModel::FilterMode initialMode, QWidget *parent, Qt::WindowFlags flags, bool *initiallyDocked, const QString &filterExpression
+  QgsVectorLayer *layer, Qgis::AttributeTableFilterMode initialMode, QWidget *parent, Qt::WindowFlags flags, bool *initiallyDocked, const QString &filterExpression
 )
   : QDialog( parent, flags )
   , mLayer( layer )
@@ -156,6 +155,7 @@ QgsAttributeTableDialog::QgsAttributeTableDialog(
   connect( mActionAddFeature, &QAction::triggered, this, &QgsAttributeTableDialog::mActionAddFeatureViaAttributeTable_triggered );
   connect( mActionAddFeatureViaAttributeForm, &QAction::triggered, this, &QgsAttributeTableDialog::mActionAddFeatureViaAttributeForm_triggered );
   connect( mActionExpressionSelect, &QAction::triggered, this, &QgsAttributeTableDialog::mActionExpressionSelect_triggered );
+  connect( mActionHelp, &QAction::triggered, this, &QgsAttributeTableDialog::mActionHelp_triggered );
   connect( mMainView, &QgsDualView::showContextMenuExternally, this, &QgsAttributeTableDialog::showContextMenu );
 
   // Connect double-click zoom functionality
@@ -229,18 +229,18 @@ QgsAttributeTableDialog::QgsAttributeTableDialog(
 
   QgsFeatureRequest request;
   bool needsGeom = false;
-  if ( mLayer && mLayer->geometryType() != Qgis::GeometryType::Null && initialMode == QgsAttributeTableFilterModel::ShowVisible )
+  if ( mLayer && mLayer->geometryType() != Qgis::GeometryType::Null && initialMode == Qgis::AttributeTableFilterMode::ShowVisible )
   {
     QgsMapCanvas *mc = QgisApp::instance()->mapCanvas();
     QgsRectangle extent( mc->mapSettings().mapToLayerCoordinates( layer, mc->extent() ) );
     request.setFilterRect( extent );
     needsGeom = true;
   }
-  else if ( initialMode == QgsAttributeTableFilterModel::ShowSelected )
+  else if ( initialMode == Qgis::AttributeTableFilterMode::ShowSelected )
   {
     request.setFilterFids( layer->selectedFeatureIds() );
   }
-  else if ( initialMode == QgsAttributeTableFilterModel::ShowEdited )
+  else if ( initialMode == Qgis::AttributeTableFilterMode::ShowEdited )
   {
     request.setFilterFids( layer->editBuffer() ? layer->editBuffer()->allAddedOrEditedFeatures() : QgsFeatureIds() );
   }
@@ -402,25 +402,28 @@ QgsAttributeTableDialog::QgsAttributeTableDialog(
 
   switch ( initialMode )
   {
-    case QgsAttributeTableFilterModel::ShowVisible:
+    case Qgis::AttributeTableFilterMode::ShowVisible:
       mFeatureFilterWidget->filterVisible();
       break;
 
-    case QgsAttributeTableFilterModel::ShowSelected:
+    case Qgis::AttributeTableFilterMode::ShowSelected:
       mFeatureFilterWidget->filterSelected();
       break;
 
-    case QgsAttributeTableFilterModel::ShowEdited:
+    case Qgis::AttributeTableFilterMode::ShowEdited:
       mFeatureFilterWidget->filterEdited();
       break;
 
-    case QgsAttributeTableFilterModel::ShowFilteredList:
+    case Qgis::AttributeTableFilterMode::ShowFilteredList:
       mFeatureFilterWidget->setFilterExpression( filterExpression );
       break;
 
-    case QgsAttributeTableFilterModel::ShowAll:
-    default:
+    case Qgis::AttributeTableFilterMode::ShowAll:
       mFeatureFilterWidget->filterShowAll();
+      break;
+
+    case Qgis::AttributeTableFilterMode::ShowInvalid:
+      mFeatureFilterWidget->filterInvalid();
       break;
   }
 
@@ -496,7 +499,7 @@ void QgsAttributeTableDialog::updateTitle()
                           .arg( mLayer->selectedFeatureCount() );
   mDockableWidgetHelper->setWindowTitle( title );
 
-  if ( mMainView->filterMode() == QgsAttributeTableFilterModel::ShowAll )
+  if ( mMainView->filterMode() == Qgis::AttributeTableFilterMode::ShowAll )
     mRunFieldCalc->setText( tr( "Update All" ) );
   else
     mRunFieldCalc->setText( tr( "Update Filtered" ) );
@@ -531,7 +534,7 @@ void QgsAttributeTableDialog::keyPressEvent( QKeyEvent *event )
 
 void QgsAttributeTableDialog::updateFieldFromExpression()
 {
-  bool filtered = mMainView->filterMode() != QgsAttributeTableFilterModel::ShowAll;
+  bool filtered = mMainView->filterMode() != Qgis::AttributeTableFilterMode::ShowAll;
   QgsFeatureIds filteredIds = filtered ? mMainView->filteredFeatures() : QgsFeatureIds();
   runFieldCalculation( mLayer, mFieldCombo->currentField(), mUpdateExpressionText->asExpression(), filteredIds );
 }
@@ -825,6 +828,11 @@ void QgsAttributeTableDialog::mActionExpressionSelect_triggered()
   dlg->show();
 }
 
+void QgsAttributeTableDialog::mActionHelp_triggered()
+{
+  QgsHelp::openHelp( u"working_with_vector/attribute_table.html#introducing-the-attribute-table-interface"_s );
+}
+
 void QgsAttributeTableDialog::mActionCutSelectedRows_triggered()
 {
   QgisApp::instance()->cutSelectionToClipboard( mLayer );
@@ -991,7 +999,7 @@ void QgsAttributeTableDialog::editingToggled()
   }
   else
   {
-    QMenu *actionMenu = new QMenu();
+    QMenu *actionMenu = new QMenu( mActionFeatureActions );
     const auto constActions = actions;
     for ( const QgsAction &action : constActions )
     {

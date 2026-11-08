@@ -238,7 +238,7 @@ void QgsMapHitTest::runHitTestFeatureSource(
     else
     {
       request.setFilterRect( transformedPolygon.boundingBox() );
-      polygonEngine.reset( QgsGeometry::createGeometryEngine( transformedPolygon.constGet() ) );
+      polygonEngine = QgsGeometry::createGeometryEngine( transformedPolygon.constGet() );
       polygonEngine->prepareGeometry();
     }
   }
@@ -474,7 +474,7 @@ void QgsMapHitTestTask::prepare()
       layerData.renderer.reset( vl->renderer()->clone() );
       layerData.transform = mapSettings.layerTransform( vl );
       layerData.extent = extent;
-      layerData.layerScope.reset( QgsExpressionContextUtils::layerScope( vl ) );
+      layerData.layerScope = QgsExpressionContextUtils::layerScope( vl );
 
       mPreparedData.emplace_back( std::move( layerData ) );
     }

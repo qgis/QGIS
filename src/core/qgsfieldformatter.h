@@ -110,8 +110,19 @@ class CORE_EXPORT QgsFieldFormatter
      * Returns the alignment for a particular field. By default this will consider the field type but can be overwritten if mapped
      * values are represented.
      *
+     * \deprecated QGIS 4.4. Use the version taking a QgsField argument.
      */
-    virtual Qt::AlignmentFlag alignmentFlag( QgsVectorLayer *layer, int fieldIndex, const QVariantMap &config ) const;
+    Q_DECL_DEPRECATED virtual Qt::AlignmentFlag alignmentFlag( QgsVectorLayer *layer, int fieldIndex, const QVariantMap &config ) const SIP_DEPRECATED;
+
+    /**
+     * Returns the alignment for a particular \a field.
+     *
+     * By default this will consider the field type but can be overwritten if mapped
+     * values are represented.
+     *
+     * \since QGIS 4.4
+     */
+    virtual Qt::AlignmentFlag alignmentFlag( const QgsField &field, const QVariantMap &config ) const;
 
     /**
      * Create a cache for a given field.

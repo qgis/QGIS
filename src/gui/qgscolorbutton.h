@@ -24,6 +24,7 @@
 class QMimeData;
 class QgsColorSchemeRegistry;
 class QgsPanelWidget;
+class QgsColorPickerHelper;
 
 /**
  * \ingroup gui
@@ -457,24 +458,16 @@ class GUI_EXPORT QgsColorButton : public QToolButton
     static const QPixmap &transparentBackground();
 
     /**
-     * Reimplemented to detect right mouse button clicks on the color button and allow dragging colors
+     * Reimplemented to allow dragging colors
      */
     void mousePressEvent( QMouseEvent *e ) override;
+
+    void contextMenuEvent( QContextMenuEvent *e ) override;
 
     /**
      * Reimplemented to allow dragging colors from button
      */
     void mouseMoveEvent( QMouseEvent *e ) override;
-
-    /**
-     * Reimplemented to allow color picking
-     */
-    void mouseReleaseEvent( QMouseEvent *e ) override;
-
-    /**
-     * Reimplemented to allow canceling color pick via keypress, and sample via space bar press
-     */
-    void keyPressEvent( QKeyEvent *e ) override;
 
     /**
      * Reimplemented to accept dragged colors
@@ -503,8 +496,7 @@ class GUI_EXPORT QgsColorButton : public QToolButton
 
     QColor mDefaultColor;
 
-    //! Store current color when start picking
-    QColor mCurrentColor;
+    QgsColorPickerHelper *mPickerHelper = nullptr;
 
     QString mContext;
     bool mAllowOpacity = false;
@@ -517,7 +509,6 @@ class GUI_EXPORT QgsColorButton : public QToolButton
     QString mNullColorString;
 
     QPoint mDragStartPosition;
-    bool mPickingColor = false;
 
     QMenu *mMenu = nullptr;
 
@@ -534,14 +525,6 @@ class GUI_EXPORT QgsColorButton : public QToolButton
      * \see createColorMimeData
      */
     bool colorFromMimeData( const QMimeData *mimeData, QColor &resultColor );
-
-    /**
-     * Ends a color picking operation
-     * \param eventPos global position of pixel to sample color from
-     * \param samplingColor set to TRUE to actually sample the color, FALSE to just cancel
-     * the color picking operation
-     */
-    void stopPicking( QPoint eventPos, bool samplingColor = true );
 
     QColor linkedProjectColor() const;
 
@@ -572,6 +555,10 @@ class GUI_EXPORT QgsColorButton : public QToolButton
      * Creates the drop-down menu entries
      */
     void prepareMenu();
+
+    void onColorPicked( const QColor &color );
+    void onColorHovered( const QColor &color );
+    void colorPickingCanceled();
 
     friend class QgsColorTooltip;
 };

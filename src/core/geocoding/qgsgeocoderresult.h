@@ -20,6 +20,8 @@
 #include "qgscoordinatereferencesystem.h"
 #include "qgsgeometry.h"
 
+#include <QIcon>
+
 /**
  * \ingroup core
  * \brief Represents a matching result from a geocoder search.
@@ -177,6 +179,22 @@ class CORE_EXPORT QgsGeocoderResult
      */
     void setDescription( const QString &description );
 
+    /**
+     * Returns the optional icon for the result.
+     *
+     * \see setIcon()
+     * \since QGIS 4.4
+     */
+    QIcon icon() const;
+
+    /**
+     * Sets an optional \a icon for the result.
+     *
+     * \see icon()
+     * \since QGIS 4.4
+     */
+    void setIcon( const QIcon &icon );
+
   private:
     QgsGeocoderResult() = default;
 
@@ -190,6 +208,7 @@ class CORE_EXPORT QgsGeocoderResult
     QgsCoordinateReferenceSystem mCrs;
     QgsRectangle mViewport;
     QVariantMap mAdditionalAttributes;
+    QIcon mIcon;
 };
 
 #endif // QGSGEOCODERRESULT_H

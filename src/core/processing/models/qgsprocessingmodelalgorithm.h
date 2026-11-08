@@ -378,6 +378,14 @@ class CORE_EXPORT QgsProcessingModelAlgorithm : public QgsProcessingAlgorithm
     bool fromFile( const QString &path );
 
     /**
+     * Returns a new instance of QgsProcessingModelAlgorithm loaded from the file \a path.
+     * This is a thin wrapper around fromFile that returns a new instance of QgsProcessingModelAlgorithm.
+     *
+     * \since QGIS 4.4
+     */
+    static std::unique_ptr< QgsProcessingModelAlgorithm > loadModel( const QString &path );
+
+    /**
      * Saves this model to a QVariantMap, wrapped in a QVariant.
      * You can use QgsXmlUtils::writeVariant to save it to an XML document.
      *
@@ -394,6 +402,15 @@ class CORE_EXPORT QgsProcessingModelAlgorithm : public QgsProcessingAlgorithm
      * \since QGIS 3.4
      */
     bool loadVariant( const QVariant &variant );
+
+    /**
+     * Returns the QGIS version the model was originally created (or last saved) in.
+     *
+     * If the model was saved in QGIS versions prior to 4.4, this version will default to 0.0.0.
+     *
+     * \since QGIS 4.4
+     */
+    QString modelQgisVersion() const { return mModelQgisVersion; }
 
     /**
      * Returns the model's help contents (a free-form map of values describing the algorithm's
@@ -591,6 +608,7 @@ class CORE_EXPORT QgsProcessingModelAlgorithm : public QgsProcessingAlgorithm
      */
     static QString safeName( const QString &name, bool capitalize = false );
 
+
 #ifndef SIP_RUN
 
     //! Internal model versions
@@ -614,6 +632,7 @@ class CORE_EXPORT QgsProcessingModelAlgorithm : public QgsProcessingAlgorithm
     QString mModelName;
     QString mModelGroup;
     QString mModelGroupId;
+    QString mModelQgisVersion;
 
     QMap< QString, QgsProcessingModelChildAlgorithm > mChildAlgorithms;
 

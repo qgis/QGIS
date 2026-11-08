@@ -149,7 +149,7 @@ void QgsProcessingToolboxDockWidget::showPopupMenu( const QPoint &pos )
     return;
   }
 
-  auto menu = new QMenu();
+  auto menu = new QMenu( this );
   auto executeAction = new QAction( tr( "Execute…" ), menu );
   connect( executeAction, &QAction::triggered, this, &QgsProcessingToolboxDockWidget::executeCurrentAlgorithm );
   menu->addAction( executeAction );
@@ -195,6 +195,7 @@ void QgsProcessingToolboxDockWidget::showPopupMenu( const QPoint &pos )
   }
 
   menu->exec( mAlgorithmTree->mapToGlobal( pos ) );
+  delete menu;
 }
 
 void QgsProcessingToolboxDockWidget::executeCurrentAlgorithm()

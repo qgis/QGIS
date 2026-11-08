@@ -25,6 +25,10 @@ if (ENABLE_TESTS)
       set_tests_properties(${TESTNAME} PROPERTIES LABELS ${ARG_QGIS_TEST_LABELS})
     endif()
 
+    if(ENABLE_MODELTEST)
+      target_link_libraries(${TESTNAME} ${QT_VERSION_BASE}::Test)
+    endif()
+
     set_tests_properties(${TESTNAME} PROPERTIES FIXTURES_REQUIRED SOURCETREE)
     target_compile_definitions(${TESTNAME} PRIVATE "CMAKE_SOURCE_DIR=\"${CMAKE_SOURCE_DIR}\"")
   endmacro()

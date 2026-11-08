@@ -94,7 +94,7 @@ void QgsUniqueValuesWidgetWrapper::initWidget( QWidget *editor )
       fle->setNullValue( QgsApplication::nullRepresentation() );
     }
 
-    QCompleter *c = new QCompleter( sValues );
+    QCompleter *c = new QCompleter( sValues, mLineEdit );
     c->setCaseSensitivity( Qt::CaseInsensitive );
     c->setCompletionMode( QCompleter::PopupCompletion );
     mLineEdit->setCompleter( c );

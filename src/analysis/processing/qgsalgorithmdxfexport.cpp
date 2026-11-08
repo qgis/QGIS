@@ -195,6 +195,10 @@ QVariantMap QgsDxfExportAlgorithm::processAlgorithm( const QVariantMap &paramete
     case QgsDxfExport::ExportResult::EmptyExtentError:
       throw QgsProcessingException( QObject::tr( "DXF export failed, the extent could not be determined" ) );
       break;
+
+    case QgsDxfExport::ExportResult::InvalidEncodingError:
+      throw QgsProcessingException( QObject::tr( "DXF export failed, the encoding \"%1\" is not supported" ).arg( encoding ) );
+      break;
   }
 
   QVariantMap outputs;

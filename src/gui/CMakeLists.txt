@@ -31,6 +31,7 @@ set(QGIS_GUI_SRCS
   raster/qgsrastersinglecolorrendererwidget.cpp
   raster/qgsrendererrasterpropertieswidget.cpp
   raster/qgsrastertransparencywidget.cpp
+  raster/qgsrastervectorfieldrendererwidget.cpp
   raster/qgshillshaderendererwidget.cpp
   raster/qgsresamplingutils.cpp
 
@@ -616,6 +617,7 @@ set(QGIS_GUI_SRCS
   qgscollapsiblegroupbox.cpp
   qgscolorbrewercolorrampdialog.cpp
   qgscolorbutton.cpp
+  qgscolorpickerhelper.cpp
   qgscolorrampbutton.cpp
   qgscolordialog.cpp
   qgscolorramplegendnodewidget.cpp
@@ -635,6 +637,7 @@ set(QGIS_GUI_SRCS
   qgsdataitemguiproviderregistry.cpp
   qgsdataitemguiproviderutils.cpp
   qgsdatasourceselectdialog.cpp
+  qgsdatetimewithtimezonewidget.cpp
   qgsdbimportvectorlayerdialog.cpp
   qgsdbqueryhistoryprovider.cpp
   qgsdbrelationshipwidget.cpp
@@ -891,6 +894,7 @@ set(QGIS_GUI_HDRS
   qgscolorbrewercolorrampdialog.h
   qgscolorbutton.h
   qgscolordialog.h
+  qgscolorpickerhelper.h
   qgscolorrampbutton.h
   qgscolorramplegendnodewidget.h
   qgscolorschemelist.h
@@ -909,6 +913,7 @@ set(QGIS_GUI_HDRS
   qgsdataitemguiproviderutils.h
   qgsdatasourcemanagerdialog.h
   qgsdatasourceselectdialog.h
+  qgsdatetimewithtimezonewidget.h
   qgsdbimportvectorlayerdialog.h
   qgsdbqueryhistoryprovider.h
   qgsdbrelationshipwidget.h
@@ -1599,6 +1604,7 @@ set(QGIS_GUI_HDRS
   raster/qgsrasterminmaxwidget.h
   raster/qgsrasterrendererwidget.h
   raster/qgsrastertransparencywidget.h
+  raster/qgsrastervectorfieldrendererwidget.h
   raster/qgsrendererrasterpropertieswidget.h
   raster/qgssinglebandgrayrendererwidget.h
   raster/qgssinglebandpseudocolorrendererwidget.h
@@ -1886,10 +1892,6 @@ find_package(${QT_VERSION_BASE} COMPONENTS Multimedia MultimediaWidgets Qml Quic
 # for installing headers
 
 set_property(GLOBAL PROPERTY QGIS_GUI_HDRS ${QGIS_GUI_HDRS})
-
-if(ENABLE_MODELTEST)
-  include_directories(../../tests/qt_modeltest)
-endif()
 
 if (WITH_EPT)
   set(QGIS_GUI_SRCS ${QGIS_GUI_SRCS}

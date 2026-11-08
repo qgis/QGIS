@@ -1,0 +1,203 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/raster/qgsrastervectorfieldrenderer.h                       *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
+ ************************************************************************/
+
+
+
+
+
+class QgsRasterVectorFieldRenderer : QgsRasterRenderer
+{
+%Docstring(signature="appended")
+Raster renderer which draws a vector field stored in raster bands.
+
+The way that the raster data is interpreted as vectors (eg. Cartesian
+component per band, single band with cardinal direction) can be set
+using :py:func:`~setSourceMode`
+
+.. versionadded:: 4.4
+%End
+
+%TypeHeaderCode
+#include "qgsrastervectorfieldrenderer.h"
+%End
+  public:
+    explicit QgsRasterVectorFieldRenderer( QgsRasterInterface *input );
+%Docstring
+Creates a vector field renderer
+%End
+    ~QgsRasterVectorFieldRenderer();
+
+
+    virtual QgsRasterVectorFieldRenderer *clone() const /Factory/;
+
+    virtual Qgis::RasterRendererFlags flags() const;
+
+
+    static std::unique_ptr<QgsRasterRenderer> create( const QDomElement &elem, QgsRasterInterface *input );
+%Docstring
+Creates an instance of the renderer based on definition from XML (used
+by renderer registry)
+%End
+
+    virtual void writeXml( QDomDocument &doc, QDomElement &parentElem ) const;
+
+
+    virtual QgsRasterBlock *block( int bandNo, const QgsRectangle &extent, int width, int height, QgsRasterBlockFeedback *feedback = 0 ) /Factory/;
+
+
+    virtual QList<int> usesBands() const;
+
+    virtual QList<QPair<QString, QColor>> legendSymbologyItems() const;
+
+
+    Qgis::RasterVectorFieldSourceMode sourceMode() const;
+%Docstring
+Returns the way the vectors are stored in the raster bands.
+
+.. seealso:: :py:func:`setSourceMode`
+%End
+
+    void setSourceMode( Qgis::RasterVectorFieldSourceMode mode );
+%Docstring
+Sets the way the vectors are stored in the raster bands.
+
+.. seealso:: :py:func:`sourceMode`
+%End
+
+    int directionBand() const;
+%Docstring
+Returns the band which holds the coded compass directions, used when the
+:py:func:`~QgsRasterVectorFieldRenderer.sourceMode` is
+:py:class:`Qgis`.RasterVectorFieldSourceMode.EncodedDirection.
+
+.. seealso:: :py:func:`setDirectionBand`
+%End
+
+    bool setDirectionBand( int band );
+%Docstring
+Attempts to set the ``band`` which holds the coded compass directions.
+
+Returns ``True`` if the band was successfully set.
+
+.. seealso:: :py:func:`directionBand`
+%End
+
+    Qgis::RasterDirectionEncoding directionEncoding() const;
+%Docstring
+Returns the scheme the
+:py:func:`~QgsRasterVectorFieldRenderer.directionBand` is coded with.
+
+.. seealso:: :py:func:`setDirectionEncoding`
+%End
+
+    void setDirectionEncoding( Qgis::RasterDirectionEncoding encoding );
+%Docstring
+Sets the scheme the
+:py:func:`~QgsRasterVectorFieldRenderer.directionBand` is coded with.
+
+.. seealso:: :py:func:`directionEncoding`
+%End
+
+    int xBand() const;
+%Docstring
+Returns the band which holds the x component of the vectors.
+
+.. seealso:: :py:func:`setXBand`
+%End
+
+    bool setXBand( int band );
+%Docstring
+Attempts to set the ``band`` which holds the x component of the vectors.
+
+Returns ``True`` if the band was successfully set.
+
+.. seealso:: :py:func:`xBand`
+%End
+
+    int yBand() const;
+%Docstring
+Returns the band which holds the y component of the vectors.
+
+.. seealso:: :py:func:`setYBand`
+%End
+
+    bool setYBand( int band );
+%Docstring
+Attempts to set the ``band`` which holds the y component of the vectors.
+
+Returns ``True`` if the band was successfully set.
+
+.. seealso:: :py:func:`yBand`
+%End
+
+    QgsVectorFieldSettings settings() const;
+%Docstring
+Returns the settings used to render the vector field.
+
+.. seealso:: :py:func:`setSettings`
+%End
+
+    void setSettings( const QgsVectorFieldSettings &settings );
+%Docstring
+Sets the ``settings`` used to render the vector field.
+
+.. seealso:: :py:func:`settings`
+%End
+
+    double minimumMagnitude() const;
+%Docstring
+Returns the magnitude the symbology treats as the smallest one of the
+raster.
+
+.. note::
+
+   Ignored when the :py:func:`~QgsRasterVectorFieldRenderer.sourceMode` is :py:class:`Qgis`.RasterVectorFieldSourceMode.EncodedDirection
+
+.. seealso:: :py:func:`setMinimumMagnitude`
+%End
+
+    void setMinimumMagnitude( double magnitude );
+%Docstring
+Sets the ``magnitude`` the symbology treats as the smallest one of the
+raster.
+
+.. seealso:: :py:func:`minimumMagnitude`
+%End
+
+    double maximumMagnitude() const;
+%Docstring
+Returns the magnitude the symbology treats as the largest one of the
+raster.
+
+.. note::
+
+   Ignored when the :py:func:`~QgsRasterVectorFieldRenderer.sourceMode` is :py:class:`Qgis`.RasterVectorFieldSourceMode.EncodedDirection
+
+.. seealso:: :py:func:`setMaximumMagnitude`
+%End
+
+    void setMaximumMagnitude( double magnitude );
+%Docstring
+Sets the ``magnitude`` the symbology treats as the largest one of the
+raster.
+
+.. seealso:: :py:func:`maximumMagnitude`
+%End
+
+  private:
+    QgsRasterVectorFieldRenderer( const QgsRasterVectorFieldRenderer & );
+    const QgsRasterVectorFieldRenderer &operator=( const QgsRasterVectorFieldRenderer & );
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/raster/qgsrastervectorfieldrenderer.h                       *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
+ ************************************************************************/

@@ -403,7 +403,6 @@ This method correctly accounts for proxy models set on the tree view.
 
 
   protected slots:
-
     void updateExpandedStateToNode( const QModelIndex &index );
 %Docstring
 Stores the expanded state to a node with matching ``index``.
@@ -659,7 +658,14 @@ Allows customization of the menu.
     void modelRowsInserted( const QModelIndex &index, int start, int end );
     void modelRowsRemoved();
 
+    void onDoubleClicked( const QModelIndex &index );
+%Docstring
+Expands layer groups only.
+
+.. versionadded:: 4.4
+%End
     void onCurrentChanged();
+
 
   protected:
 
