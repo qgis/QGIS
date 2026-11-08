@@ -2845,7 +2845,16 @@ class CORE_EXPORT QgsGeometry
 #endif
 
     /**
-     * Returns contents of the geometry as a list of geometries
+     * Returns the contents of the geometry as a list of single-part geometries.
+     *
+     * If the original geometry is already a single-part geometry then it will
+     * be the only element in the returned list.
+     *
+     * If the original geometry is a multi-part geometry, then the returned list
+     * will contain separate elements containing single-part geometry versions of
+     * each part in the original geometry. For instance, if the original geometry
+     * is a MultiPoint geometry, then the returned list will contain all the Point
+     * geometries from the MultiPoint.
      */
     QVector<QgsGeometry> asGeometryCollection() const;
 
