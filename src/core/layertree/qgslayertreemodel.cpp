@@ -196,7 +196,21 @@ QVariant QgsLayerTreeModel::data( const QModelIndex &index, int role ) const
   else if ( role == Qt::DecorationRole && index.column() == 0 )
   {
     if ( QgsLayerTree::isGroup( node ) )
+    {
+      const QString iconPath = node->customProperty( u"icon"_s ).toString();
+      if ( !iconPath.isEmpty() )
+      {
+        auto it = mGroupIcons.constFind( iconPath );
+        if ( it == mGroupIcons.constEnd() )
+        {
+          it = mGroupIcons.insert( iconPath, QIcon( iconPath ) );
+        }
+
+        return it->isNull() ? iconGroup() : *it;
+      }
+
       return iconGroup();
+    }
 
     if ( QgsLayerTree::isLayer( node ) )
     {
@@ -930,6 +944,12 @@ void QgsLayerTreeModel::nodeCustomPropertyChanged( QgsLayerTreeNode *node, const
 {
   if ( QgsLayerTree::isLayer( node ) && key == "showFeatureCount"_L1 )
     refreshLayerLegend( QgsLayerTree::toLayer( node ) );
+  else if ( QgsLayerTree::isGroup( node ) && key == "icon"_L1 )
+  {
+    const QModelIndex index = node2index( node );
+    if ( index.isValid() )
+      emit dataChanged( index, index, { Qt::DecorationRole } );
+  }
 }
 
 
