@@ -34,6 +34,7 @@ QgsAttributeDialog::QgsAttributeDialog( QgsVectorLayer *vl, QgsFeature *thepFeat
   : QDialog( parent )
   , mOwnedFeature( featureOwner ? thepFeature : nullptr )
 {
+  mTrackedVectorLayerTools.setProject( QgsProject::instance() );
   init( vl, thepFeature, context, showDialogButtons );
 }
 
