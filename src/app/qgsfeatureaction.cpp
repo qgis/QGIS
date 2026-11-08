@@ -301,6 +301,7 @@ void QgsFeatureAction::hideParentDialog( QWidget *targetWidget )
   QWidget *window = targetWidget->window();
   if ( window && window->objectName() != "QgisApp"_L1 )
   {
+    window->setVisible( false );
     mHiddenWindow = window;
   }
 }
