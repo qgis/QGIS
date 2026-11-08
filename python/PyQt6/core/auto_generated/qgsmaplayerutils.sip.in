@@ -178,7 +178,7 @@ which the style should be associated.
 
 :return: Flags representing whether QML or SLD storing was successful.
 
-.. versionadded:: 4.2
+.. versionadded:: 4.4
 %End
 };
 
@@ -187,7 +187,7 @@ class QgsSaveStyleResult
 %Docstring(signature="appended")
 Represents the result of saving a style.
 
-.. versionadded:: 4.2
+.. versionadded:: 4.4
 %End
 
 %TypeHeaderCode
