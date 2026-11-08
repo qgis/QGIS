@@ -162,7 +162,7 @@ class CORE_EXPORT QgsMapLayerUtils
      * \param categories The style categories to be saved.
      * \returns Flags representing whether QML or SLD storing was successful.
      *
-     * \since QGIS 4.2
+     * \since QGIS 4.4
      */
     static QgsSaveStyleResult saveLayerStyleToDatabase(
       QgsMapLayer *layer,
@@ -180,7 +180,7 @@ class CORE_EXPORT QgsMapLayerUtils
 /**
  * \ingroup core
  * \brief Represents the result of saving a style.
- * \since QGIS 4.2
+ * \since QGIS 4.4
  */
 class CORE_EXPORT QgsSaveStyleResult
 {

@@ -7336,6 +7336,7 @@ int QgisEvent = QEvent::User + 1;
       OnlyVPC, //!< Only virtual point cloud formats (VPC and VPZ)
     };
     Q_ENUM( PointCloudOutputsTypes )
+
     /**
      * Style save format
      *
