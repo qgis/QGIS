@@ -36,20 +36,20 @@ class CORE_EXPORT QgsDateTimeUtils
     /**
      * Encodes a \a datetime to a new DOM element.
      * \param dateTime datetime to encode
-     * \param doc DOM document
+     * \param element the DOM element where the datetime is written
      * \param tagName name of the DOM element
      * \param context read/write context used for encoding
-     * \returns element containing encoded datetime
      */
-    static QDomElement writeDateTimeToXml( const QDateTime &dateTime, const QString &tagName, QDomDocument &doc, const QgsReadWriteContext &context );
+    static void writeDateTimeToXml( const QDateTime &dateTime, const QString &tagName, QDomElement &element, const QgsReadWriteContext &context );
 
     /**
      * Decodes a DOM element to a datetime.
      * \param element DOM element to decode
+     * \param tagName tag name of the datetime
      * \param context read/write context used for decoding
      * \returns decoded datetime
      */
-    static QDateTime readDateTimeFromXml( const QDomElement &element, const QgsReadWriteContext &context );
+    static QDateTime readDateTimeFromXml( const QDomElement &element, const QString &tagName, const QgsReadWriteContext &context );
 };
 
 #endif //QGSDATETIMEUTILSUTILS_H

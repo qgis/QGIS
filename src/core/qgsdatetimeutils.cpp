@@ -19,55 +19,52 @@
 
 using namespace Qt::StringLiterals;
 
-
-QDomElement QgsDateTimeUtils::writeDateTimeToXml( const QDateTime &dateTime, const QString &tagName, QDomDocument &doc, const QgsReadWriteContext &context )
+void QgsDateTimeUtils::writeDateTimeToXml( const QDateTime &dateTime, const QString &tagName, QDomElement &element, const QgsReadWriteContext &context )
 {
   Q_UNUSED( context );
 
-  QDomElement element = doc.createElement( tagName );
-
-  if ( !dateTime.isValid() )
+  if ( dateTime.isNull() )
   {
-    element.setAttribute( u"valid"_s, u"false"_s );
-    return element;
+    element.setAttribute( u"%1-null"_s.arg( tagName ), u"true"_s );
+    return;
   }
 
-  element.setAttribute( u"epoch-ms"_s, QString::number( dateTime.toMSecsSinceEpoch() ) );
+  element.setAttribute( u"%1-epoch-ms"_s.arg( tagName ), QString::number( dateTime.toMSecsSinceEpoch() ) );
 
+  const QString specAttributeName = u"%1-time-spec"_s.arg( tagName );
   switch ( dateTime.timeSpec() )
   {
     case Qt::TimeSpec::LocalTime:
-      element.setAttribute( u"time-spec"_s, u"local-time"_s );
+      element.setAttribute( specAttributeName, u"local-time"_s );
       break;
     case Qt::TimeSpec::UTC:
-      element.setAttribute( u"time-spec"_s, u"utc"_s );
+      element.setAttribute( specAttributeName, u"utc"_s );
       break;
     case Qt::TimeSpec::OffsetFromUTC:
-      element.setAttribute( u"time-spec"_s, u"offset-from-utc"_s );
-      element.setAttribute( u"offset"_s, QString::number( dateTime.offsetFromUtc() ) );
+      element.setAttribute( specAttributeName, u"offset-from-utc"_s );
+      element.setAttribute( u"%1-offset"_s.arg( tagName ), QString::number( dateTime.offsetFromUtc() ) );
       break;
     case Qt::TimeSpec::TimeZone:
-      element.setAttribute( u"time-spec"_s, u"time-zone"_s );
-      element.setAttribute( u"time-zone"_s, QString::fromUtf8( dateTime.timeZone().id() ) );
+      QByteArray ts = dateTime.timeZone().id();
+      element.setAttribute( specAttributeName, u"time-zone"_s );
+      element.setAttribute( u"%1-time-zone"_s.arg( tagName ), QString::fromUtf8( dateTime.timeZone().id() ) );
       break;
   }
-
-  return element;
 }
 
-QDateTime QgsDateTimeUtils::readDateTimeFromXml( const QDomElement &element, const QgsReadWriteContext &context )
+QDateTime QgsDateTimeUtils::readDateTimeFromXml( const QDomElement &element, const QString &tagName, const QgsReadWriteContext &context )
 {
   Q_UNUSED( context );
 
-  if ( element.attribute( u"valid"_s ) == "false"_L1 )
+  if ( element.attribute( u"%1-null"_s.arg( tagName ) ) == "true"_L1 )
     return QDateTime();
 
   bool ok;
-  qint64 sinceEpoch = element.attribute( u"epoch-ms"_s ).toLongLong( &ok );
+  qint64 sinceEpoch = element.attribute( u"%1-epoch-ms"_s.arg( tagName ) ).toLongLong( &ok );
   if ( !ok )
     return QDateTime();
 
-  const QString timeSpecStr = element.attribute( u"time-spec"_s );
+  const QString timeSpecStr = element.attribute( u"%1-time-spec"_s.arg( tagName ) );
 
   QTimeZone timeZone;
 
@@ -79,7 +76,7 @@ QDateTime QgsDateTimeUtils::readDateTimeFromXml( const QDomElement &element, con
 
   if ( timeSpecStr == "offset-from-utc"_L1 )
   {
-    int offset = element.attribute( u"offset"_s ).toInt( &ok );
+    int offset = element.attribute( u"%1-offset"_s.arg( tagName ) ).toInt( &ok );
     if ( !ok )
       return QDateTime();
 
@@ -88,12 +85,12 @@ QDateTime QgsDateTimeUtils::readDateTimeFromXml( const QDomElement &element, con
 
   if ( timeSpecStr == "time-zone"_L1 )
   {
-    const QByteArray id = element.attribute( u"time-zone"_s ).toUtf8();
-    timeZone = QTimeZone( id );
+    const QByteArray id = element.attribute( u"%1-time-zone"_s.arg( tagName ) ).toUtf8();
+    if ( id.isEmpty() )
+      timeZone = QTimeZone();
+    else
+      timeZone = QTimeZone( id );
   }
 
-  if ( timeZone.isValid() )
-    return QDateTime::fromMSecsSinceEpoch( sinceEpoch, timeZone );
-
-  return QDateTime();
+  return QDateTime::fromMSecsSinceEpoch( sinceEpoch, timeZone );
 }

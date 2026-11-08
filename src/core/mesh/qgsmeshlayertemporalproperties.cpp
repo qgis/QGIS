@@ -38,9 +38,9 @@ QDomElement QgsMeshLayerTemporalProperties::writeXml( QDomElement &element, QDom
 
   QDomElement temporalElement = doc.createElement( u"temporal"_s );
   temporalElement.setAttribute( u"temporal-active"_s, isActive() ? true : false );
-  temporalElement.appendChild( QgsDateTimeUtils::writeDateTimeToXml( mReferenceTime, u"reference-time"_s, doc, context ) );
-  temporalElement.appendChild( QgsDateTimeUtils::writeDateTimeToXml( mTimeExtent.begin(), u"start-time-extent"_s, doc, context ) );
-  temporalElement.appendChild( QgsDateTimeUtils::writeDateTimeToXml( mTimeExtent.end(), u"end-time-extent"_s, doc, context ) );
+  QgsDateTimeUtils::writeDateTimeToXml( mReferenceTime, u"reference-time"_s, temporalElement, context );
+  QgsDateTimeUtils::writeDateTimeToXml( mTimeExtent.begin(), u"start-time-extent"_s, temporalElement, context );
+  QgsDateTimeUtils::writeDateTimeToXml( mTimeExtent.end(), u"end-time-extent"_s, temporalElement, context );
   temporalElement.setAttribute( u"matching-method"_s, mMatchingMethod );
   temporalElement.setAttribute( u"always-load-reference-time-from-source"_s, mAlwaysLoadReferenceTimeFromSource ? 1 : 0 );
   element.appendChild( temporalElement );
@@ -58,10 +58,8 @@ bool QgsMeshLayerTemporalProperties::readXml( const QDomElement &element, const 
 
   mAlwaysLoadReferenceTimeFromSource = temporalElement.attribute( u"always-load-reference-time-from-source"_s ).toInt();
 
-  QDomElement refTimeElem = temporalElement.firstChildElement( u"reference-time"_s );
-  if ( !refTimeElem.isNull() )
-    mReferenceTime = QgsDateTimeUtils::readDateTimeFromXml( refTimeElem, context );
-  else
+  mReferenceTime = QgsDateTimeUtils::readDateTimeFromXml( temporalElement, u"reference-time"_s, context );
+  if ( mReferenceTime.isNull() )
     mReferenceTime = QDateTime::fromString( temporalElement.attribute( u"reference-time"_s ), Qt::ISODate );
 
 #if QT_FEATURE_timezone > 0
@@ -69,19 +67,12 @@ bool QgsMeshLayerTemporalProperties::readXml( const QDomElement &element, const 
     mReferenceTime = QDateTime( mReferenceTime.date(), mReferenceTime.time(), QTimeZone( QTimeZone::UTC ) );
 #endif
 
-  QDateTime startTime;
-  QDomElement startTimeElem = temporalElement.firstChildElement( u"start-time-extent"_s );
-
-  if ( !startTimeElem.isNull() )
-    startTime = QgsDateTimeUtils::readDateTimeFromXml( startTimeElem, context );
-  else if ( temporalElement.hasAttribute( u"start-time-extent"_s ) )
+  QDateTime startTime = QgsDateTimeUtils::readDateTimeFromXml( temporalElement, u"start-time-extent"_s, context );
+  if ( startTime.isNull() )
     startTime = QDateTime::fromString( temporalElement.attribute( u"start-time-extent"_s ), Qt::ISODate );
 
-  QDateTime endTime;
-  QDomElement endTimeElem = temporalElement.firstChildElement( u"end-time-extent"_s );
-  if ( !endTimeElem.isNull() )
-    endTime = QgsDateTimeUtils::readDateTimeFromXml( endTimeElem, context );
-  else if ( temporalElement.hasAttribute( u"end-time-extent"_s ) )
+  QDateTime endTime = QgsDateTimeUtils::readDateTimeFromXml( temporalElement, u"end-time-extent"_s, context );
+  if ( endTime.isNull() )
     endTime = QDateTime::fromString( temporalElement.attribute( u"end-time-extent"_s ), Qt::ISODate );
 
 #if QT_FEATURE_timezone > 0

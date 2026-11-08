@@ -53,7 +53,7 @@ void TestQgsDateTimeUtils::readWriteToXml()
     << QDateTime( QDate( 2025, 10, 3 ), QTime( 4, 5, 6 ), QTimeZone( QTimeZone::UTC ) )
     << QDateTime( QDate( 2025, 2, 27 ), QTime( 4, 5, 6 ), QTimeZone::fromSecondsAheadOfUtc( 10 * 3600 ) )
     << QDateTime( QDate( 1960, 4, 27 ), QTime( 4, 5, 6 ), QTimeZone::fromSecondsAheadOfUtc( -5 * 3600 ) )
-    << QDateTime( QDate( 2025, 9, 27 ), QTime( 4, 5, 6 ), QTimeZone::fromSecondsAheadOfUtc( 20 * 3600 ) ); //invalid time
+    << QDateTime( QDate( 2025, 9, 27 ), QTime( 4, 5, 6 ), QTimeZone::fromSecondsAheadOfUtc( 20 * 3600 ) ); //invalid time zone
 
   QDomDocument doc;
   QgsReadWriteContext context;
@@ -62,25 +62,24 @@ void TestQgsDateTimeUtils::readWriteToXml()
   for ( qsizetype i = 0; i < dateTimes.size(); ++i )
   {
     const QDateTime &dt = dateTimes.at( i );
-    rootElement.appendChild( QgsDateTimeUtils::writeDateTimeToXml( dt, u"my datetime %1"_s.arg( i ), doc, context ) );
+    QgsDateTimeUtils::writeDateTimeToXml( dt, u"my datetime %1"_s.arg( i ), rootElement, context );
   }
 
   for ( qsizetype i = 0; i < dateTimes.size(); ++i )
   {
-    QDomElement dateTimeElement = rootElement.firstChildElement( u"my datetime %1"_s.arg( i ) );
-    const QDateTime readDateTime = QgsDateTimeUtils::readDateTimeFromXml( dateTimeElement, context );
+    const QDateTime readDateTime = QgsDateTimeUtils::readDateTimeFromXml( rootElement, u"my datetime %1"_s.arg( i ), context );
 
     const QDateTime &dt = dateTimes.at( i );
-    if ( dt.isValid() )
+    if ( !dt.isNull() )
     {
-      QVERIFY( readDateTime.isValid() );
+      QCOMPARE( readDateTime.isValid(), dt.isValid() );
       QCOMPARE( readDateTime, dt );
       QCOMPARE( readDateTime.timeZone(), dt.timeZone() );
       QCOMPARE( readDateTime.timeSpec(), dt.timeSpec() );
     }
     else
     {
-      QVERIFY( !readDateTime.isValid() );
+      QVERIFY( readDateTime.isNull() );
     }
   }
 }
