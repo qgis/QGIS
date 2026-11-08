@@ -34,6 +34,8 @@ class QString;
  * \class QgsNative
  * \ingroup native
  * \brief Abstract base class for an object which constrains the movement of a mouse cursor.
+ *
+ * \since QGIS 4.4
  */
 class NATIVE_EXPORT QgsPointerLocker : public QObject
 {
