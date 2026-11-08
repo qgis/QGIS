@@ -45,10 +45,17 @@ void QgsDateTimeUtils::writeDateTimeToXml( const QDateTime &dateTime, const QStr
       element.setAttribute( u"%1-offset"_s.arg( tagName ), QString::number( dateTime.offsetFromUtc() ) );
       break;
     case Qt::TimeSpec::TimeZone:
+    {
+#if QT_FEATURE_timezone > 0
       QByteArray ts = dateTime.timeZone().id();
       element.setAttribute( specAttributeName, u"time-zone"_s );
       element.setAttribute( u"%1-time-zone"_s.arg( tagName ), QString::fromUtf8( dateTime.timeZone().id() ) );
-      break;
+#else
+      element.setAttribute( specAttributeName, u"offset-from-utc"_s );
+      element.setAttribute( u"%1-offset"_s.arg( tagName ), QString::number( dateTime.offsetFromUtc() ) );
+#endif
+    }
+    break;
   }
 }
 
@@ -85,11 +92,16 @@ QDateTime QgsDateTimeUtils::readDateTimeFromXml( const QDomElement &element, con
 
   if ( timeSpecStr == "time-zone"_L1 )
   {
+#if QT_FEATURE_timezone > 0
     const QByteArray id = element.attribute( u"%1-time-zone"_s.arg( tagName ) ).toUtf8();
     if ( id.isEmpty() )
       timeZone = QTimeZone();
     else
       timeZone = QTimeZone( id );
+#else
+    // IANA ID is not supported so we can't retrieve the time zone and we considered it as UTC
+    timeZone = QTimeZone::UTC;
+#endif
   }
 
   return QDateTime::fromMSecsSinceEpoch( sinceEpoch, timeZone );
