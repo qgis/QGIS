@@ -372,10 +372,16 @@ QQuaternion QgsEllipsoidUtils::quaternionFromNormalUpRight( const QVector3D &nor
   return QQuaternion::fromRotationMatrix( rotMatrix );
 }
 
-QQuaternion QgsEllipsoidUtils::ellipsoidEastNorthUpRotation( const QgsVector3D &position, double semiMajorAxis, double semiMinorAxis )
+QgsVector3D QgsEllipsoidUtils::ellipsoidNormal( const QgsVector3D &position, double semiMajorAxis, double semiMinorAxis )
 {
   QgsVector3D up( position.x() / ( semiMajorAxis * semiMajorAxis ), position.y() / ( semiMajorAxis * semiMajorAxis ), position.z() / ( semiMinorAxis * semiMinorAxis ) );
   up.normalize();
+  return up;
+}
+
+QQuaternion QgsEllipsoidUtils::ellipsoidEastNorthUpRotation( const QgsVector3D &position, double semiMajorAxis, double semiMinorAxis )
+{
+  const QgsVector3D up = ellipsoidNormal( position, semiMajorAxis, semiMinorAxis );
 
   QgsVector3D east( -position.y(), position.x(), 0.0 );
   if ( east.length() < 1e-6 )

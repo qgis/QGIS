@@ -17,6 +17,7 @@
 
 #include "qgs3d.h"
 #include "qgs3dutils.h"
+#include "qgsellipsoidutils.h"
 #include "qgsfeature3dhandler_p.h"
 #include "qgsgeos.h"
 #include "qgsgeotransform.h"
@@ -83,7 +84,7 @@ class QgsBufferedLine3DSymbolHandler : public QgsFeature3DHandler
 };
 
 
-bool QgsBufferedLine3DSymbolHandler::prepare( const Qgs3DRenderContext &, QSet<QString> &attributeNames, const QgsBox3D &chunkExtent )
+bool QgsBufferedLine3DSymbolHandler::prepare( const Qgs3DRenderContext &context, QSet<QString> &attributeNames, const QgsBox3D &chunkExtent )
 {
   Q_UNUSED( attributeNames )
 
@@ -94,6 +95,18 @@ bool QgsBufferedLine3DSymbolHandler::prepare( const Qgs3DRenderContext &, QSet<Q
   const bool requiresTextureCoordinates = mSymbol->materialSettings() && mSymbol->materialSettings()->requiresTextureCoordinates();
   const bool requiresTangents = mSymbol->materialSettings() && mSymbol->materialSettings()->requiresTangents();
 
+  double globeSemiMajorAxis = 0;
+  double globeSemiMinorAxis = 0;
+  if ( context.crs().type() == Qgis::CrsType::Geocentric )
+  {
+    const QgsEllipsoidUtils::EllipsoidParameters params = QgsEllipsoidUtils::ellipsoidParameters( context.crs().ellipsoidAcronym() );
+    if ( params.valid )
+    {
+      globeSemiMajorAxis = params.semiMajor;
+      globeSemiMinorAxis = params.semiMinor;
+    }
+  }
+
   auto lineDataNormalTessellator = std::make_unique<QgsTessellator>();
   lineDataNormalTessellator->setOrigin( mChunkOrigin );
   lineDataNormalTessellator->setAddNormals( true );
@@ -101,6 +114,7 @@ bool QgsBufferedLine3DSymbolHandler::prepare( const Qgs3DRenderContext &, QSet<Q
   lineDataNormalTessellator->setAddTangents( requiresTangents );
   lineDataNormalTessellator->setExtrusionFaces( Qgis::ExtrusionFace::Walls | Qgis::ExtrusionFace::Roof );
   lineDataNormalTessellator->setTriangulationAlgorithm( Qgis::TriangulationAlgorithm::Earcut );
+  lineDataNormalTessellator->setGlobeEllipsoid( globeSemiMajorAxis, globeSemiMinorAxis );
 
   mLineDataNormal.tessellator = std::move( lineDataNormalTessellator );
 
@@ -111,6 +125,7 @@ bool QgsBufferedLine3DSymbolHandler::prepare( const Qgs3DRenderContext &, QSet<Q
   lineDataSelectedTessellator->setAddTangents( requiresTangents );
   lineDataSelectedTessellator->setExtrusionFaces( Qgis::ExtrusionFace::Walls | Qgis::ExtrusionFace::Roof );
   lineDataSelectedTessellator->setTriangulationAlgorithm( Qgis::TriangulationAlgorithm::Earcut );
+  lineDataSelectedTessellator->setGlobeEllipsoid( globeSemiMajorAxis, globeSemiMinorAxis );
 
   mLineDataSelected.tessellator = std::move( lineDataSelectedTessellator );
 

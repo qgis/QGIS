@@ -122,6 +122,14 @@ class CORE_EXPORT QgsEllipsoidUtils
     static QQuaternion quaternionFromNormalUpRight( const QVector3D &normalUp, const QVector3D &normalRight );
 
     /**
+     * Returns the unit surface normal (geodetic "up" direction) of the ellipsoid with the given
+     * \a semiMajorAxis and \a semiMinorAxis at the ECEF \a position.
+     *
+     * \since QGIS 4.4
+     */
+    static QgsVector3D ellipsoidNormal( const QgsVector3D &position, double semiMajorAxis, double semiMinorAxis );
+
+    /**
      * Returns a rotation quaternion for the east-north-up (ENU) reference frame at \a position on
      * the ellipsoid with the given \a semiMajorAxis and \a semiMinorAxis. The local axes are defined as:
      *
