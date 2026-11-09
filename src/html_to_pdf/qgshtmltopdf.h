@@ -25,6 +25,14 @@ class QgsLoggingWebEnginePage : public QWebEnginePage
 {
   protected:
     void javaScriptConsoleMessage( JavaScriptConsoleMessageLevel level, const QString &message, int lineNumber, const QString &sourceID ) override;
+    // disable interactive javascript calls, these can't be used in the headless utility
+    void javaScriptAlert( const QUrl &, const QString & ) override {}
+    bool javaScriptConfirm( const QUrl &, const QString & ) override { return true; }
+    bool javaScriptPrompt( const QUrl &, const QString &, const QString &, QString *result ) override
+    {
+      *result = QString();
+      return true;
+    }
 };
 
 class QgsHtmlToPdf : public QObject
