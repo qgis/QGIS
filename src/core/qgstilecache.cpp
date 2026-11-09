@@ -22,6 +22,8 @@
 #include <QImage>
 #include <QUrl>
 
+// Default cache size is 256 tiles (considering tiles 256x256)
+// TODO: make this configurable!
 QCache<QUrl, QImage> QgsTileCache::sTileCache( 256 );
 QMutex QgsTileCache::sTileCacheMutex;
 
