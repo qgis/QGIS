@@ -56,7 +56,7 @@ class QgsHtmlToPdf : public QObject
     int mWidth = 0;
 
     void onLoadFinished( bool ok );
-    void onJsFinished( const QVariant &res );
+    void onLoadJsFinished( const QVariant &res );
     void onPdfFinished( const QString &filePath, bool ok );
 };
 

@@ -88,10 +88,63 @@ void QgsHtmlToPdf::onLoadFinished( bool ok )
     return;
   }
 
-  mPage.runJavaScript( u"[document.documentElement.scrollWidth, document.documentElement.scrollHeight];"_s, [this]( QVariant res ) { onJsFinished( res ); } );
+  // a whole lot of unreliable approaches to try to constrain the page to a desired width
+  // and then get the actual CONTENT height. The current iteration works ok for basic HTML... but
+  // not so well if there's fancy javascript involved which changes the page height. Feel free to
+  // revise as better approaches are available...!
+  const QString jsTemplate = QString( uR"js(
+(() => {
+      const targetWidth = %1;
+
+      if (targetWidth > 0 && document.body) {
+        document.documentElement.style.width = targetWidth + 'px';
+        document.body.style.width = targetWidth + 'px';
+        document.documentElement.style.boxSizing = 'border-box';
+        document.body.style.boxSizing = 'border-box';
+        void document.body.offsetHeight;
+      }
+
+      // try to work out actual document height at this width... not very reliable ;)
+      let maxBottom = 0;
+      let maxRight = 0;
+      if (document.body) {
+        const elements = document.body.querySelectorAll('*');
+        for (let i = 0; i < elements.length; i++) {
+          const rect = elements[i].getBoundingClientRect();
+          if (rect.width > 0 && rect.height > 0) {
+            const bottom = rect.bottom + window.scrollY;
+            const right = rect.right + window.scrollX;
+            if (bottom > maxBottom) maxBottom = bottom;
+            if (right > maxRight) maxRight = right;
+          }
+        }
+      }
+
+      const bodyRect = document.body ? document.body.getBoundingClientRect() : { width: 0, height: 0 };
+      const contentHeight = Math.ceil(Math.max(
+        maxBottom,
+        bodyRect.height,
+        document.body ? document.body.scrollHeight : 0,
+        document.documentElement.scrollHeight,
+        document.documentElement.offsetHeight
+      ));
+
+      const contentWidth = targetWidth > 0 ? targetWidth : Math.ceil(Math.max(
+        maxRight,
+        bodyRect.width,
+        document.documentElement.scrollWidth,
+        document.documentElement.offsetWidth
+      ));
+
+      return [contentWidth, contentHeight];
+    })()
+  )js"_s )
+                               .arg( mWidth );
+
+  mPage.runJavaScript( jsTemplate, [this]( QVariant res ) { onLoadJsFinished( res ); } );
 }
 
-void QgsHtmlToPdf::onJsFinished( const QVariant &res )
+void QgsHtmlToPdf::onLoadJsFinished( const QVariant &res )
 {
   const QVariantList list = res.toList();
   if ( list.size() < 2 )
@@ -100,11 +153,21 @@ void QgsHtmlToPdf::onJsFinished( const QVariant &res )
     return;
   }
 
-  int width = list.value( 0 ).toInt();
-  int height = list.value( 1 ).toInt();
+  const int cssWidth = std::max( 1, list.value( 0 ).toInt() );
+  constexpr int PIXEL_BUFFER = 2;
+  const int cssHeight = std::max( 1, list.value( 1 ).toInt() ) + PIXEL_BUFFER;
 
-  const QSizeF pageSize = QSizeF( width / RENDER_TO_PDF_DPI, height / RENDER_TO_PDF_DPI );
-  const QPageLayout layout = QPageLayout( QPageSize( pageSize, QPageSize::Inch ), QPageLayout::Portrait, QMarginsF( 0, 0, 0, 0 ), QPageLayout::Inch, QMarginsF( 0, 0, 0, 0 ) );
+  constexpr double CSS_PX_TO_PT = 72.0 / 96.0;
+
+  const double wPoints = cssWidth * CSS_PX_TO_PT;
+  const double hPoints = cssHeight * CSS_PX_TO_PT;
+
+  const bool isLandscape = wPoints > hPoints;
+
+  const QSizeF pageSizePoints = isLandscape ? QSizeF( hPoints, wPoints ) : QSizeF( wPoints, hPoints );
+
+  const QPageLayout
+    layout( QPageSize( pageSizePoints, QPageSize::Point ), isLandscape ? QPageLayout::Landscape : QPageLayout::Portrait, QMarginsF( 0, 0, 0, 0 ), QPageLayout::Point, QMarginsF( 0, 0, 0, 0 ) );
 
   mPage.printToPdf( mPdfFileName, layout );
 }
