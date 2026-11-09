@@ -4666,16 +4666,24 @@ Qgis::VectorExportResult QgsPostgresProvider::createEmptyLayer(
     if ( result.PQresultStatus() != PGRES_COMMAND_OK )
       throw PGException( result );
 
-    // get geometry type, dim and srid
+    // get geometry type and dimension
     int dim = 2;
     postgisGeometryType( wkbType, geometryType, dim );
-    long srid = 0;
 
-    // get srid from PostGIS only if the table has a geometry column
-    if ( !geometryType.isEmpty() && !srs.authid().isEmpty() )
+    if ( !geometryType.isEmpty() )
     {
+      if ( srs.authid().isEmpty() )
+      {
+        if ( errorMessage )
+          *errorMessage = QObject::tr( "Creation of data source %1 failed: CRS has no authority ID" ).arg( schemaTableName );
+
+        conn->LoggedPQexecNR( "QgsPostgresProvider", u"ROLLBACK"_s );
+        conn->unref();
+        return Qgis::VectorExportResult::ErrorCreatingLayer;
+      }
+
       QString sridError;
-      srid = conn->crsToSrid( srs, sridError );
+      const int srid = conn->crsToSrid( srs, sridError );
       if ( srid < 0 )
       {
         if ( errorMessage )
@@ -4685,20 +4693,8 @@ Qgis::VectorExportResult QgsPostgresProvider::createEmptyLayer(
         conn->unref();
         return Qgis::VectorExportResult::ErrorCreatingLayer;
       }
-    }
-    else if ( !geometryType.isEmpty() )
-    {
-      if ( errorMessage )
-        *errorMessage = QObject::tr( "Creation of data source %1 failed: CRS has no authority ID" ).arg( schemaTableName );
 
-      conn->LoggedPQexecNR( "QgsPostgresProvider", u"ROLLBACK"_s );
-      conn->unref();
-      return Qgis::VectorExportResult::ErrorCreatingLayer;
-    }
-
-    // create geometry column
-    if ( !geometryType.isEmpty() )
-    {
+      // create geometry column
       sql = u"SELECT AddGeometryColumn(%1,%2,%3,%4,%5,%6)"_s.arg( quotedValue( schemaName ), quotedValue( tableName ), quotedValue( geometryColumn ) ).arg( srid ).arg( quotedValue( geometryType ) ).arg( dim );
 
       result = conn->LoggedPQexec( "QgsPostgresProvider", sql );
