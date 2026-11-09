@@ -74,76 +74,6 @@ from utilities import getExecutablePath, unitTestDataPath
 
 TEST_DATA_DIR = unitTestDataPath()
 
-# PDF-to-image utility
-# look for Poppler w/ Cairo, then muPDF
-# * Poppler w/ Cairo renders correctly
-# * Poppler w/o Cairo does not always correctly render vectors in PDF to image
-# * muPDF renders correctly, but slightly shifts colors
-for util in [
-    "pdftocairo",
-    # 'mudraw',
-]:
-    PDFUTIL = getExecutablePath(util)
-    if PDFUTIL:
-        break
-
-# noinspection PyUnboundLocalVariable
-if not PDFUTIL:
-    raise Exception(
-        "PDF-to-image utility not found on PATH: install Poppler (with Cairo)"
-    )
-
-
-def pdfToPng(pdf_file_path, rendered_file_path, page, dpi=96):
-    if PDFUTIL.strip().endswith("pdftocairo"):
-        filebase = os.path.join(
-            os.path.dirname(rendered_file_path),
-            os.path.splitext(os.path.basename(rendered_file_path))[0],
-        )
-        call = [
-            PDFUTIL,
-            "-png",
-            "-singlefile",
-            "-r",
-            str(dpi),
-            "-x",
-            "0",
-            "-y",
-            "0",
-            "-f",
-            str(page),
-            "-l",
-            str(page),
-            pdf_file_path,
-            filebase,
-        ]
-    elif PDFUTIL.strip().endswith("mudraw"):
-        call = [
-            PDFUTIL,
-            "-c",
-            "rgba",
-            "-r",
-            str(dpi),
-            "-f",
-            str(page),
-            "-l",
-            str(page),
-            # '-b', '8',
-            "-o",
-            rendered_file_path,
-            pdf_file_path,
-        ]
-    else:
-        return False, ""
-
-    print(f"exportToPdf call: {' '.join(call)}")
-    try:
-        subprocess.check_call(call)
-    except subprocess.CalledProcessError as e:
-        assert False, (
-            f"exportToPdf failed!\ncmd: {e.cmd}\nreturncode: {e.returncode}\nmessage: {e.message}"
-        )
-
 
 def svgToPng(svg_file_path, rendered_file_path, width):
     svgr = QSvgRenderer(svg_file_path)
@@ -621,9 +551,10 @@ class TestQgsLayoutExporter(QgisTestCase):
 
         rendered_page_1 = os.path.join(self.basetestpath, "test_exporttopdfdpi.png")
         dpi = 80
-        pdfToPng(pdf_file_path, rendered_page_1, dpi=dpi, page=1)
+
+        self.pdf_to_png(pdf_file_path, rendered_page_1, dpi=dpi, page=1)
         rendered_page_2 = os.path.join(self.basetestpath, "test_exporttopdfdpi2.png")
-        pdfToPng(pdf_file_path, rendered_page_2, dpi=dpi, page=2)
+        self.pdf_to_png(pdf_file_path, rendered_page_2, dpi=dpi, page=2)
 
         image = QImage(rendered_page_1)
         self.assertTrue(
@@ -858,7 +789,7 @@ class TestQgsLayoutExporter(QgisTestCase):
             self.basetestpath, "test_exporttopdfdpi_skip_first.png"
         )
         dpi = 80
-        pdfToPng(pdf_file_path, rendered_page_1, dpi=dpi, page=1)
+        self.pdf_to_png(pdf_file_path, rendered_page_1, dpi=dpi, page=1)
 
         image = QImage(rendered_page_1)
         self.assertTrue(
@@ -1154,9 +1085,9 @@ class TestQgsLayoutExporter(QgisTestCase):
 
         rendered_page_1 = os.path.join(self.basetestpath, "test_exporttopdfdpi.png")
         dpi = 80
-        pdfToPng(pdf_file_path, rendered_page_1, dpi=dpi, page=1)
+        self.pdf_to_png(pdf_file_path, rendered_page_1, dpi=dpi, page=1)
         rendered_page_2 = os.path.join(self.basetestpath, "test_exporttopdfdpi2.png")
-        pdfToPng(pdf_file_path, rendered_page_2, dpi=dpi, page=2)
+        self.pdf_to_png(pdf_file_path, rendered_page_2, dpi=dpi, page=2)
 
         image = QImage(rendered_page_1)
         self.assertTrue(
@@ -1490,7 +1421,7 @@ class TestQgsLayoutExporter(QgisTestCase):
         rendered_page_1 = os.path.join(
             self.basetestpath, "test_exportiteratortopdf_Basse-Normandie.png"
         )
-        pdfToPng(page1_path, rendered_page_1, dpi=80, page=1)
+        self.pdf_to_png(page1_path, rendered_page_1, dpi=80, page=1)
         image = QImage(rendered_page_1)
         self.assertTrue(
             self.image_check(
@@ -1508,7 +1439,7 @@ class TestQgsLayoutExporter(QgisTestCase):
         rendered_page_2 = os.path.join(
             self.basetestpath, "test_exportiteratortopdf_Bretagne.png"
         )
-        pdfToPng(page2_path, rendered_page_2, dpi=80, page=1)
+        self.pdf_to_png(page2_path, rendered_page_2, dpi=80, page=1)
         image = QImage(rendered_page_2)
         self.assertTrue(
             self.image_check(
@@ -1548,7 +1479,7 @@ class TestQgsLayoutExporter(QgisTestCase):
         rendered_page_1 = os.path.join(
             self.basetestpath, "test_exportiteratortopdf_single1.png"
         )
-        pdfToPng(pdf_path, rendered_page_1, dpi=80, page=1)
+        self.pdf_to_png(pdf_path, rendered_page_1, dpi=80, page=1)
         image = QImage(rendered_page_1)
         self.assertTrue(
             self.image_check(
@@ -1564,7 +1495,7 @@ class TestQgsLayoutExporter(QgisTestCase):
         rendered_page_2 = os.path.join(
             self.basetestpath, "test_exportiteratortopdf_single2.png"
         )
-        pdfToPng(pdf_path, rendered_page_2, dpi=80, page=2)
+        self.pdf_to_png(pdf_path, rendered_page_2, dpi=80, page=2)
         image = QImage(rendered_page_2)
         self.assertTrue(
             self.image_check(
@@ -1580,12 +1511,12 @@ class TestQgsLayoutExporter(QgisTestCase):
         rendered_page_3 = os.path.join(
             self.basetestpath, "test_exportiteratortopdf_single3.png"
         )
-        pdfToPng(pdf_path, rendered_page_3, dpi=80, page=3)
+        self.pdf_to_png(pdf_path, rendered_page_3, dpi=80, page=3)
         self.assertTrue(os.path.exists(rendered_page_3))
         rendered_page_4 = os.path.join(
             self.basetestpath, "test_exportiteratortopdf_single4.png"
         )
-        pdfToPng(pdf_path, rendered_page_4, dpi=80, page=4)
+        self.pdf_to_png(pdf_path, rendered_page_4, dpi=80, page=4)
         self.assertTrue(os.path.exists(rendered_page_4))
 
     def testPrintIterator(self):
@@ -1607,7 +1538,7 @@ class TestQgsLayoutExporter(QgisTestCase):
         self.assertEqual(result, QgsLayoutExporter.ExportResult.Success, error)
 
         rendered_page_1 = os.path.join(self.basetestpath, "test_printiterator1.png")
-        pdfToPng(pdf_path, rendered_page_1, dpi=80, page=1)
+        self.pdf_to_png(pdf_path, rendered_page_1, dpi=80, page=1)
         image = QImage(rendered_page_1)
         self.assertTrue(
             self.image_check(
@@ -1621,7 +1552,7 @@ class TestQgsLayoutExporter(QgisTestCase):
         )
 
         rendered_page_2 = os.path.join(self.basetestpath, "test_printiterator2.png")
-        pdfToPng(pdf_path, rendered_page_2, dpi=80, page=2)
+        self.pdf_to_png(pdf_path, rendered_page_2, dpi=80, page=2)
         image = QImage(rendered_page_2)
         self.assertTrue(
             self.image_check(
@@ -1635,10 +1566,10 @@ class TestQgsLayoutExporter(QgisTestCase):
         )
 
         rendered_page_3 = os.path.join(self.basetestpath, "test_printiterator3.png")
-        pdfToPng(pdf_path, rendered_page_3, dpi=80, page=3)
+        self.pdf_to_png(pdf_path, rendered_page_3, dpi=80, page=3)
         self.assertTrue(os.path.exists(rendered_page_3))
         rendered_page_4 = os.path.join(self.basetestpath, "test_printiterator4.png")
-        pdfToPng(pdf_path, rendered_page_4, dpi=80, page=4)
+        self.pdf_to_png(pdf_path, rendered_page_4, dpi=80, page=4)
         self.assertTrue(os.path.exists(rendered_page_4))
 
     def testExportReport(self):
