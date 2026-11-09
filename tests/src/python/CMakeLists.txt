@@ -766,3 +766,7 @@ endif()
 if (WITH_SFCGAL)
   ADD_PYTHON_TEST(PyQgsSfcgal test_qgssfcgal.py)
 endif()
+
+if (HAVE_WEBENGINE)
+  ADD_PYTHON_TEST(PyQgsHtmlToPdf test_qgshtmltopdf.py)
+endif()
