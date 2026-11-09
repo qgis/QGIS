@@ -19,11 +19,12 @@ jobs:
     strategy:
       matrix:
         include:
-          - os: macos-15-intel
+          - os: macos-26
             triplet: x64-osx-dynamic-release
+            host-triplet: arm64-osx-dynamic-release
             deployment-target: "10.15"
             osx-architecture: "x86_64"
-          - os: macos-15
+          - os: macos-26
             triplet: arm64-osx-dynamic-release
             deployment-target: "11.0"
             osx-architecture: "arm64"
@@ -123,7 +124,7 @@ jobs:
                 -D WITH_SFCGAL=ON \
                 -D WITH_PROJ_DATA=ON \
                 -D VCPKG_TARGET_TRIPLET="${{ matrix.triplet }}" \
-                -D VCPKG_HOST_TRIPLET="${{ matrix.triplet }}" \
+                -D VCPKG_HOST_TRIPLET="${{ matrix.host-triplet || matrix.triplet }}" \
                 -D VCPKG_INSTALL_OPTIONS="--only-binarycaching" \
                 -D CMAKE_OSX_DEPLOYMENT_TARGET=${{ matrix.deployment-target }} \
                 -D CMAKE_OSX_ARCHITECTURES=${{ matrix.osx-architecture }} \
