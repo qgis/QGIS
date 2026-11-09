@@ -32,13 +32,16 @@ using namespace Qt::StringLiterals;
 #include <QWebEngineCertificateError>
 #include <QWebEngineNavigationRequest>
 #include <QWebEngineLoadingInfo>
+#include <QWebEngineProfile>
+#include <QWebEngineSettings>
+#include <QFileInfo>
+#include <QDir>
 
 #include <iostream>
 
 QgsHtmlToPdf::QgsHtmlToPdf()
 {
-  // avoid locks if page requests a prompt:
-  mPage.runJavaScript( u"window.alert = function(){}; window.confirm = function(){return true;}; window.prompt = function(){return '';};"_s );
+  mPage.settings()->setAttribute( QWebEngineSettings::TouchEventsApiEnabled, false );
 
   connect( &mPage, &QWebEnginePage::loadFinished, this, &QgsHtmlToPdf::onLoadFinished );
   connect( &mPage, &QWebEnginePage::loadProgress, this, []( int progress ) { std::cout << progress << std::endl; } );
