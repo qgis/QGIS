@@ -74,7 +74,10 @@ void QgsHtmlToPdf::run( const QString &url, const QString &pdfFileName, int widt
   mPdfFileName = pdfFileName;
   mWidth = width;
 
-  mPage.load( QUrl( url ) );
+  const QFileInfo fi( url );
+  const QUrl resolvedUrl = fi.exists() ? QUrl::fromLocalFile( fi.absoluteFilePath() ) : QUrl::fromUserInput( url, QDir::currentPath(), QUrl::AssumeLocalFile );
+
+  mPage.load( resolvedUrl );
 }
 
 void QgsHtmlToPdf::onLoadFinished( bool ok )
