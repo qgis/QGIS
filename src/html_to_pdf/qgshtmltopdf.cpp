@@ -100,6 +100,25 @@ void QgsHtmlToPdf::onLoadFinished( bool ok )
   // revise as better approaches are available...!
   const QString jsTemplate = QString( uR"js(
 (() => {
+      // try to clear page margins
+      const style = document.createElement('style');
+      style.textContent = `
+        @page { margin: 0 !important; size: auto; }
+        html, body {
+          margin: 0 !important;
+          padding: 0 !important;
+        }
+        *, *::before, *::after {
+          break-inside: auto !important;
+          page-break-inside: auto !important;
+          break-before: auto !important;
+          page-break-before: auto !important;
+          break-after: auto !important;
+          page-break-after: auto !important;
+        }
+      `;
+      (document.head || document.documentElement).appendChild(style);
+
       const targetWidth = %1;
 
       if (targetWidth > 0 && document.body) {
