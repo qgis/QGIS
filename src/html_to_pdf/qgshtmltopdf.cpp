@@ -66,9 +66,10 @@ QgsHtmlToPdf::QgsHtmlToPdf()
   connect( &mPage, &QWebEnginePage::pdfPrintingFinished, this, &QgsHtmlToPdf::onPdfFinished );
 }
 
-void QgsHtmlToPdf::run( const QString &url, const QString &pdfFileName )
+void QgsHtmlToPdf::run( const QString &url, const QString &pdfFileName, int width )
 {
   mPdfFileName = pdfFileName;
+  mWidth = width;
 
   mPage.load( QUrl( url ) );
 }
