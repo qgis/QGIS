@@ -268,6 +268,7 @@ int QgsStringUtils::levenshteinDistance( const QString &string1, const QString &
   if ( length1 > length2 )
   {
     std::swap( s1, s2 );
+    std::swap( s1Char, s2Char );
     std::swap( length1, length2 );
   }
 
