@@ -56,6 +56,8 @@ int main( int argc, char *argv[] )
 #endif // _MSC_VER
 #endif // Q_OS_WIN
 
+  qputenv( "QTWEBENGINE_CHROMIUM_FLAGS", "--window-size=1920,1080" );
+
   // Initialize the default surface format for all
   // QWindow and QWindow derived components
 #if !defined( QT_NO_OPENGL )
