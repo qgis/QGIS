@@ -94,6 +94,9 @@ int main( int argc, char *argv[] )
   const QCommandLineOption widthOption( QStringList() << "w" << "width", "Target page width in CSS pixels (e.g. 1024). Content height will adjust to fit.", "width" );
   parser.addOption( widthOption );
 
+  const QCommandLineOption userAgentOption( "user-agent", "User agent string.", "user-agent" );
+  parser.addOption( userAgentOption );
+
   parser.addPositionalArgument( "url", "Source HTML URL." );
   parser.addPositionalArgument( "destination", "Destination PDF file." );
 
@@ -120,9 +123,15 @@ int main( int argc, char *argv[] )
     }
   }
 
+  QString userAgent;
+  if ( parser.isSet( userAgentOption ) )
+  {
+    userAgent = parser.value( userAgentOption );
+  }
+
   QgsHtmlToPdf converter;
   QObject::connect( &converter, &QgsHtmlToPdf::finished, &app, &QGuiApplication::exit );
-  QTimer::singleShot( 0, &converter, [&converter, url, destination, width] { converter.run( url, destination, width ); } );
+  QTimer::singleShot( 0, &converter, [&converter, url, destination, width, userAgent] { converter.run( url, destination, width, userAgent ); } );
 
   return QCoreApplication::exec();
 }

@@ -69,10 +69,16 @@ QgsHtmlToPdf::QgsHtmlToPdf()
   connect( &mPage, &QWebEnginePage::pdfPrintingFinished, this, &QgsHtmlToPdf::onPdfFinished );
 }
 
-void QgsHtmlToPdf::run( const QString &url, const QString &pdfFileName, int width )
+void QgsHtmlToPdf::run( const QString &url, const QString &pdfFileName, int width, const QString &userAgent )
 {
   mPdfFileName = pdfFileName;
   mWidth = width;
+  mUserAgent = userAgent;
+
+  if ( !mUserAgent.isEmpty() )
+  {
+    mPage.profile()->setHttpUserAgent( mUserAgent );
+  }
 
   const QFileInfo fi( url );
   const QUrl resolvedUrl = fi.exists() ? QUrl::fromLocalFile( fi.absoluteFilePath() ) : QUrl::fromUserInput( url, QDir::currentPath(), QUrl::AssumeLocalFile );
