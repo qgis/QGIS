@@ -75,6 +75,7 @@ void TestQgsStringUtils::levenshtein()
   QCOMPARE( QgsStringUtils::levenshteinDistance( QStringLiteral( "kItten" ), QStringLiteral( "sitting" ) ), 3 );
   QCOMPARE( QgsStringUtils::levenshteinDistance( QStringLiteral( "kitten" ), QStringLiteral( "sitTing" ), true ), 4 );
   QCOMPARE( QgsStringUtils::levenshteinDistance( QStringLiteral( "kitten" ), QStringLiteral( "xkitte" ) ), 2 );
+  QCOMPARE( QgsStringUtils::levenshteinDistance( QStringLiteral( "222" ), QStringLiteral( "42" ) ), 2 );
 }
 
 void TestQgsStringUtils::longestCommonSubstring()
