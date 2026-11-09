@@ -2995,8 +2995,8 @@ int QgsPostgresConn::crsToSrid( const QgsCoordinateReferenceSystem &crs, QString
 
   if ( result.PQntuples() == 0 )
   {
-    errorMessage = QObject::tr( "No record matching CRS %1 was found in spatial_ref_sys." ).arg( crs.authid() );
-    return 0;
+    errorMessage = QObject::tr( "Query ran successfully, but no record matching CRS %1 was found in spatial_ref_sys." ).arg( crs.authid() );
+    return -1;
   }
 
   const int resultSrid = result.PQgetvalue( 0, 0 ).toInt();
