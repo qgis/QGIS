@@ -4668,10 +4668,11 @@ Qgis::VectorExportResult QgsPostgresProvider::createEmptyLayer(
 
     // get geometry type, dim and srid
     int dim = 2;
-    long srid = -1;
+    postgisGeometryType( wkbType, geometryType, dim );
+    long srid = 0;
 
-    // get srid from PostGIS
-    if ( !srs.authid().isEmpty() )
+    // get srid from PostGIS only if the table has a geometry column
+    if ( !geometryType.isEmpty() && !srs.authid().isEmpty() )
     {
       QString sridError;
       srid = conn->crsToSrid( srs, sridError );
@@ -4685,7 +4686,7 @@ Qgis::VectorExportResult QgsPostgresProvider::createEmptyLayer(
         return Qgis::VectorExportResult::ErrorCreatingLayer;
       }
     }
-    else
+    else if ( !geometryType.isEmpty() )
     {
       if ( errorMessage )
         *errorMessage = QObject::tr( "Creation of data source %1 failed: CRS has no authority ID" ).arg( schemaTableName );
@@ -4694,8 +4695,6 @@ Qgis::VectorExportResult QgsPostgresProvider::createEmptyLayer(
       conn->unref();
       return Qgis::VectorExportResult::ErrorCreatingLayer;
     }
-
-    postgisGeometryType( wkbType, geometryType, dim );
 
     // create geometry column
     if ( !geometryType.isEmpty() )
