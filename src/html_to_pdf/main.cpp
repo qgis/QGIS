@@ -99,7 +99,9 @@ int main( int argc, char *argv[] )
 
   const QStringList args = parser.positionalArguments();
   if ( args.size() < 2 )
-    return 1;
+  {
+    parser.showHelp( 1 );
+  }
 
   const QString url = args.at( 0 );
   const QString destination = args.at( 1 );
