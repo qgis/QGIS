@@ -34,7 +34,7 @@ class QgsHtmlToPdf : public QObject
   public:
     QgsHtmlToPdf();
 
-    void run( const QString &url, const QString &pdfFileName );
+    void run( const QString &url, const QString &pdfFileName, int width );
 
   signals:
     void finished( int statusCode );
@@ -45,6 +45,7 @@ class QgsHtmlToPdf : public QObject
 
     QString mPdfFileName;
     QgsLoggingWebEnginePage mPage;
+    int mWidth = 0;
 
     void onLoadFinished( bool ok );
     void onJsFinished( const QVariant &res );

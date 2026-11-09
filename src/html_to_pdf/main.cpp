@@ -17,6 +17,8 @@
 
 #include "qgsconfig.h"
 
+#include <iostream>
+
 #include "qgshtmltopdf.h"
 
 #include <QCommandLineParser>
@@ -80,12 +82,16 @@ int main( int argc, char *argv[] )
   QGuiApplication::setOrganizationName( u"QGIS"_s );
   QGuiApplication::setOrganizationDomain( u"qgis.org"_s );
   QGuiApplication::setApplicationName( u"QGIS4"_s );
-  QGuiApplication::setApplicationVersion( u"%1 (%2)"_s.arg( VERSION ).arg( RELEASE_NAME ) );
+  QGuiApplication::setApplicationVersion( u"%1 (%2)"_s.arg( VERSION, RELEASE_NAME ) );
 
   QCommandLineParser parser;
   parser.setApplicationDescription( "QGIS HTML to PDF converter utility.\n\nUsed to convert HTML web pages to a single-page PDF file, for rendering within the main QGIS application." );
   parser.addHelpOption();
   parser.addVersionOption();
+
+  const QCommandLineOption widthOption( QStringList() << "w" << "width", "Target page width in CSS pixels (e.g. 1024). Content height will adjust to fit.", "width" );
+  parser.addOption( widthOption );
+
   parser.addPositionalArgument( "url", "Source HTML URL." );
   parser.addPositionalArgument( "destination", "Destination PDF file." );
 
@@ -98,9 +104,21 @@ int main( int argc, char *argv[] )
   const QString url = args.at( 0 );
   const QString destination = args.at( 1 );
 
+  int width = 0;
+  if ( parser.isSet( widthOption ) )
+  {
+    bool ok = false;
+    width = parser.value( widthOption ).toInt( &ok );
+    if ( !ok || width <= 0 )
+    {
+      std::cerr << "Error: --width must be a positive integer.\n";
+      return 1;
+    }
+  }
+
   QgsHtmlToPdf converter;
   QObject::connect( &converter, &QgsHtmlToPdf::finished, &app, &QGuiApplication::exit );
-  QTimer::singleShot( 0, &converter, [&converter, url, destination] { converter.run( url, destination ); } );
+  QTimer::singleShot( 0, &converter, [&converter, url, destination, width] { converter.run( url, destination, width ); } );
 
   return QCoreApplication::exec();
 }
