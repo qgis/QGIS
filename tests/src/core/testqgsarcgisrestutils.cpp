@@ -796,7 +796,6 @@ void TestQgsArcGisRestUtils::testParseRendererCategorizedValueExpression()
     "\"heading\": \"\\\"ModulNr\\\" || ' ' ||  \\\"Modul\\\" \","
     "\"classes\": ["
     "{"
-    "\"label\": \"11 Genève\","
     "\"symbol\": {"
     "\"type\": \"esriSFS\","
     "\"style\": \"esriSFSSolid\","
@@ -805,7 +804,7 @@ void TestQgsArcGisRestUtils::testParseRendererCategorizedValueExpression()
     "205,"
     "27,"
     "255"
-    "],"
+    "]"
     "},"
     "\"values\": ["
     "["
@@ -814,7 +813,27 @@ void TestQgsArcGisRestUtils::testParseRendererCategorizedValueExpression()
     "]"
     "},"
     "{"
-    "\"label\": \"12 Neuchâtel\","
+    "\"symbol\": {"
+    "\"type\": \"esriSFS\","
+    "\"style\": \"esriSFSSolid\","
+    "\"color\": ["
+    "196,"
+    "205,"
+    "27,"
+    "255"
+    "]"
+    "},"
+    "\"values\": ["
+    "["
+    "\"12 Neuchâtel\""
+    "]"
+    "]"
+    "}"
+    "]"
+    "}"
+    "],"
+    "\"uniqueValueInfos\": ["
+    "{"
     "\"symbol\": {"
     "\"type\": \"esriSFS\","
     "\"style\": \"esriSFSSolid\","
@@ -824,30 +843,66 @@ void TestQgsArcGisRestUtils::testParseRendererCategorizedValueExpression()
     "27,"
     "255"
     "],"
-    "},"
-    "\"values\": ["
-    "["
-    "\"12 Neuchâtel\""
-    "]"
-    "]"
-    "},"
-    "]"
+    "\"outline\": {"
+    "\"type\": \"esriSLS\","
+    "\"style\": \"esriSLSSolid\","
+    "\"color\": ["
+    "50,"
+    "11,"
+    "128,"
+    "255"
+    "],"
+    "\"width\": 0.737007409759112"
     "}"
-    "]"
+    "},"
+    "\"value\": \"11 Genève\","
+    "\"label\": \"11 Genève\""
+    "},"
+    "{"
+    "\"symbol\": {"
+    "\"type\": \"esriSFS\","
+    "\"style\": \"esriSFSSolid\","
+    "\"color\": ["
+    "196,"
+    "205,"
+    "27,"
+    "255"
+    "],"
+    "\"outline\": {"
+    "\"type\": \"esriSLS\","
+    "\"style\": \"esriSLSSolid\","
+    "\"color\": ["
+    "50,"
+    "11,"
+    "128,"
+    "255"
+    "],"
+    "\"width\": 0.737007409759112"
+    "}"
+    "},"
+    "\"value\": \"12 Neuchâtel\","
+    "\"label\": \"12 Neuchâtel\""
+    "}"
+    "],"
+    "\"fieldDelimiter\": \",\""
     "}"
   );
+  QVERIFY( !map.isEmpty() );
   QgsReadWriteContext rwContext;
   QgsSymbolConverterContext context( rwContext );
   const std::unique_ptr<QgsFeatureRenderer> renderer( QgsArcGisRestUtils::convertRenderer( map, context ) );
   QgsCategorizedSymbolRenderer *catRenderer = dynamic_cast<QgsCategorizedSymbolRenderer *>( renderer.get() );
   QVERIFY( catRenderer );
+  QCOMPARE( catRenderer->classAttribute(), u"\"ModulNr\" + ' ' + \"Modul\""_s );
+
   QCOMPARE( catRenderer->categories().count(), 2 );
+  QVERIFY( catRenderer->categories().at( 0 ).value().isValid() );
   QCOMPARE( catRenderer->categories().at( 0 ).value().toString(), u"11 Genève"_s );
   QCOMPARE( catRenderer->categories().at( 0 ).label(), u"11 Genève"_s );
   QVERIFY( catRenderer->categories().at( 0 ).symbol() );
 
-  QVERIFY( !catRenderer->categories().at( 1 ).value().isValid() );
-  QCOMPARE( catRenderer->categories().at( 0 ).value().toString(), u"12 Neuchâtel"_s );
+  QVERIFY( catRenderer->categories().at( 1 ).value().isValid() );
+  QCOMPARE( catRenderer->categories().at( 1 ).value().toString(), u"12 Neuchâtel"_s );
   QCOMPARE( catRenderer->categories().at( 1 ).label(), u"12 Neuchâtel"_s );
   QVERIFY( catRenderer->categories().at( 1 ).symbol() );
 }
@@ -1443,7 +1498,15 @@ void TestQgsArcGisRestUtils::testParseLabelingRepeat()
 
 QVariantMap TestQgsArcGisRestUtils::jsonStringToMap( const QString &string ) const
 {
-  const QJsonDocument doc = QJsonDocument::fromJson( string.toUtf8() );
+  QJsonParseError parseError;
+  const QJsonDocument doc = QJsonDocument::fromJson( string.toUtf8(), &parseError );
+
+  if ( QJsonParseError::NoError != parseError.error )
+  {
+    QgsDebugMsgLevel( parseError.errorString(), 1 );
+    return QVariantMap();
+  }
+
   if ( doc.isNull() )
   {
     return QVariantMap();
