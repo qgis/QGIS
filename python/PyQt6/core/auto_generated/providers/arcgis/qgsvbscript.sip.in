@@ -86,6 +86,9 @@ VBScript node subclasses are either:
       case QgsVbScriptNode::NodeType::ArrayLiteralExpression:
         sipType = sipType_QgsVbScriptArrayLiteralExpression;
         break;
+      case QgsVbScriptNode::NodeType::FieldReferenceExpression:
+        sipType = sipType_QgsVbScriptFieldReferenceExpression;
+        break;
       default:
         sipType = nullptr;
         break;
@@ -112,6 +115,7 @@ VBScript node subclasses are either:
       ForEachStatement,
       WhileStatement,
       ExitStatement,
+      FieldReferenceExpression,
     };
 
     virtual ~QgsVbScriptNode();
@@ -1019,6 +1023,7 @@ Returns the loop body block statement.
     QgsVbScriptWhileStatement( const QgsVbScriptWhileStatement &other );
 };
 
+
 class QgsVbScriptExitStatement : QgsVbScriptStatement
 {
 %Docstring(signature="appended")
@@ -1058,6 +1063,44 @@ Returns the exit target scope.
 %End
 
 };
+
+class QgsVbScriptFieldReferenceExpression : QgsVbScriptExpression
+{
+%Docstring(signature="appended")
+Represents an ESRI specific node for a reference to an attribute field
+enclosed in square brackets.
+
+For example ``[FIELD_NAME]`` or ``[FIELD]]NAME]``.
+
+.. versionadded:: 4.4
+%End
+
+%TypeHeaderCode
+#include "qgsvbscript.h"
+%End
+  public:
+    explicit QgsVbScriptFieldReferenceExpression( const QString &fieldName );
+%Docstring
+Constructor for QgsVbScriptFieldReferenceExpression.
+%End
+
+    virtual QgsVbScriptNode::NodeType nodeType() const;
+    virtual QString dump() const;
+
+    virtual QgsVbScriptNode *clone() const /Factory/;
+
+    virtual void accept( QgsVbScriptVisitor &visitor ) const;
+
+
+    QString fieldName() const;
+%Docstring
+Returns the unescaped field name.
+%End
+
+  private:
+    QgsVbScriptFieldReferenceExpression( const QgsVbScriptFieldReferenceExpression &other );
+};
+
 
 class QgsVbScriptVisitor
 {
@@ -1146,6 +1189,10 @@ Visit a :py:class:`QgsVbScriptWhileStatement` ``node``
 %Docstring
 Visit a :py:class:`QgsVbScriptExitStatement` ``node``
 %End
+    virtual void visit( const QgsVbScriptFieldReferenceExpression &node ) = 0;
+%Docstring
+Visit a :py:class:`QgsVbScriptFieldReferenceExpression` ``node``
+%End
 };
 
 class QgsVbScriptRecursiveVisitor : QgsVbScriptVisitor
@@ -1198,6 +1245,8 @@ VBScript script.
     virtual void visit( const QgsVbScriptWhileStatement &node );
 
     virtual void visit( const QgsVbScriptExitStatement &node );
+
+    virtual void visit( const QgsVbScriptFieldReferenceExpression &node );
 
 };
 
@@ -1256,6 +1305,18 @@ Accepts a visitor to traverse the script abstract syntax tree.
 %Docstring
 Returns a properly quoted string literal (enclosed in double quotes with
 escape sequences).
+%End
+
+    static QString quotedFieldReference( const QString &fieldName );
+%Docstring
+Returns a field name enclosed in square brackets with internal right
+brackets escaped.
+%End
+
+    static QString extractFieldReference( const QString &text );
+%Docstring
+Strips enclosing square brackets from ``text`` and unescapes double
+right brackets.
 %End
 
   protected:

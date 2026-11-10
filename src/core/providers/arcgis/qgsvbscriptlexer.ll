@@ -56,6 +56,7 @@ Q_GLOBAL_STATIC_WITH_ARGS( QLocale, cLocale, ( "C" ) )
 %}
 
 white          [ \t]+
+non_ascii      [\x80-\xFF]
 continuation   _[ \t]*\r?\n
 newline        \r?\n|:
 
@@ -65,7 +66,10 @@ num_hex        &[hH][0-9a-fA-F]+
 num_oct        &[oO][0-7]+
 num_float      ({dig}+\.{dig}*|\.{dig}+)([eE][-+]?{dig}+)?|{dig}+[eE][-+]?{dig}+
 
-identifier     [A-Za-z_][A-Za-z0-9_]*
+field_ref      \[([^\]]|\]\])*\]
+field_char     [A-Za-z0-9_.]|{non_ascii}
+field_ref_unbracketed ({field_char}|"\]\]")+([ \t]+({field_char}|"\]\]")+)*[ \t]*\]
+identifier     ([A-Za-z_]|{non_ascii})([A-Za-z0-9_]|{non_ascii})*
 
 string_literal  \"([^\"]|\"\")*\"
 date_literal    \#[^#\r\n]+\#
@@ -204,6 +208,16 @@ line_comment     (\'|(?i:rem)[ \t])[^\r\n]*
   content = content.mid( 1, content.length() - 2 );
   yylval->text = new QString( content );
   return STRING_LITERAL;
+}
+
+{field_ref} {
+  yylval->text = new QString( QgsVbScript::extractFieldReference( QString::fromUtf8( yytext ) ) );
+  return FIELD_REFERENCE;
+}
+
+{field_ref_unbracketed} {
+  yylval->text = new QString( QgsVbScript::extractFieldReference( QString::fromUtf8( yytext ) ) );
+  return FIELD_REFERENCE;
 }
 
 {identifier} {
