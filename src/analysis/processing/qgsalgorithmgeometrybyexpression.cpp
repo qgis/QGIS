@@ -97,12 +97,28 @@ Qgis::ProcessingFeatureSourceFlags QgsGeometryByExpressionAlgorithm::sourceFlags
 
 void QgsGeometryByExpressionAlgorithm::initParameters( const QVariantMap & )
 {
-  addParameter(
-    new QgsProcessingParameterEnum( u"OUTPUT_GEOMETRY"_s, QObject::tr( "Output geometry type" ), QStringList() << QObject::tr( "Polygon" ) << QObject::tr( "Line" ) << QObject::tr( "Point" ), false, 0 )
+  auto outputGeometryParam = std::make_unique<
+    QgsProcessingParameterEnum>( u"OUTPUT_GEOMETRY"_s, QObject::tr( "Output geometry type" ), QStringList() << QObject::tr( "Polygon" ) << QObject::tr( "Line" ) << QObject::tr( "Point" ), false, 0 );
+  outputGeometryParam->setHelp(
+    QObject::tr( "The output geometry strongly depends on the expression: for instance, if you create a buffer the geometry type has to be polygon. One of: Polygon, Line, Point." )
   );
-  addParameter( new QgsProcessingParameterBoolean( u"WITH_Z"_s, QObject::tr( "Output geometry has z dimension" ), false ) );
-  addParameter( new QgsProcessingParameterBoolean( u"WITH_M"_s, QObject::tr( "Output geometry has m values" ), false ) );
-  addParameter( new QgsProcessingParameterExpression( u"EXPRESSION"_s, QObject::tr( "Geometry expression" ), u"@geometry"_s, u"INPUT"_s ) );
+  addParameter( outputGeometryParam.release() );
+
+  auto withZParam = std::make_unique<QgsProcessingParameterBoolean>( u"WITH_Z"_s, QObject::tr( "Output geometry has z dimension" ), false );
+  withZParam->setHelp( QObject::tr( "Choose if the output geometry should include the Z dimension." ) );
+  addParameter( withZParam.release() );
+
+  auto withMParam = std::make_unique<QgsProcessingParameterBoolean>( u"WITH_M"_s, QObject::tr( "Output geometry has m values" ), false );
+  withMParam->setHelp( QObject::tr( "Choose if the output geometry should include the M dimension." ) );
+  addParameter( withMParam.release() );
+
+  auto expressionParam = std::make_unique<QgsProcessingParameterExpression>( u"EXPRESSION"_s, QObject::tr( "Geometry expression" ), u"@geometry"_s, u"INPUT"_s );
+  expressionParam->setHelp(
+    QObject::tr(
+      "Add the geometry expression you want to use. You can use the expression button to open the Expression Dialog. The dialog lists all the relevant expressions, together with their help and guide."
+    )
+  );
+  addParameter( expressionParam.release() );
 }
 
 bool QgsGeometryByExpressionAlgorithm::prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
