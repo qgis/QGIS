@@ -411,8 +411,7 @@ void QgsPostgresProvider::setTransaction( QgsTransaction *transaction )
 
 QgsReferencedGeometry QgsPostgresProvider::fromEwkt( const QString &ewkt, QgsPostgresConn *conn )
 {
-  thread_local const QRegularExpression regularExpressionSRID( "^SRID=(\\d+);" );
-
+  thread_local const QRegularExpression regularExpressionSRID( "^SRID=(-?\\d+);" );
   QRegularExpressionMatch regularExpressionMatch = regularExpressionSRID.match( ewkt );
   if ( !regularExpressionMatch.hasMatch() )
   {
@@ -423,9 +422,13 @@ QgsReferencedGeometry QgsPostgresProvider::fromEwkt( const QString &ewkt, QgsPos
 
   QString wkt = ewkt.mid( regularExpressionMatch.captured( 0 ).size() );
   int srid = regularExpressionMatch.captured( 1 ).toInt();
-
+  if ( srid < 0 )
+    srid = 0;
 
   QgsGeometry geom = QgsGeometry::fromWkt( wkt );
+  if ( srid == 0 )
+    return QgsReferencedGeometry( geom, QgsCoordinateReferenceSystem() );
+
   return QgsReferencedGeometry( geom, sridToCrs( srid, conn ) );
 }
 
