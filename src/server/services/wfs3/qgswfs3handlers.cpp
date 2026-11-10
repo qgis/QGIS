@@ -693,14 +693,6 @@ void QgsWfs3AbstractItemsHandler::gatherLayerFieldsInfo( json &data, const QgsVe
             fInfo.title = referencedLayerTitle.toStdString();
           }
         }
-        else if ( widgetType == "DateTime"_L1 )
-        {
-          fInfo.format = "date-time";
-        }
-        else if ( widgetType == "Date"_L1 )
-        {
-          fInfo.format = "date";
-        }
         else
         {
           // TODO: if the widget type is unknown, should we skip the field or include it with best effort?

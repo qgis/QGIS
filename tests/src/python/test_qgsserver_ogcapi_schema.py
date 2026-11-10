@@ -310,6 +310,15 @@ class QgsServerOgcApiSchemaTest(QgsServerAPITestBase):
             {"type": "string", "maxLength": 10, "x-ogc-propertySeq": 2},
         )
 
+        # Field with type date-time
+        field = QgsField("field1", QtCore.QMetaType.Type.QDateTime)
+        _test_widget_conf(
+            field,
+            "TextEdit",
+            {},
+            {"format": "date-time", "type": "string", "x-ogc-propertySeq": 2},
+        )
+
         # Field with alias
         field = QgsField("field1", QtCore.QMetaType.Type.QString)
         field.setAlias("My Field")
@@ -385,6 +394,15 @@ class QgsServerOgcApiSchemaTest(QgsServerAPITestBase):
             "UuidGenerator",
             {},
             {"format": "uuid", "type": "string", "x-ogc-propertySeq": 2},
+        )
+
+        # Datetime widget with date field
+        field = QgsField("field1", QtCore.QMetaType.Type.QDate)
+        _test_widget_conf(
+            field,
+            "DateTime",
+            {},
+            {"format": "date", "type": "string", "x-ogc-propertySeq": 2},
         )
 
     def test_enum(self):
