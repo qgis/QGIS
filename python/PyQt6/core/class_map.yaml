@@ -1878,7 +1878,6 @@ QgsBalloonCallout.type: src/core/callouts/qgscallout.h#L896
 QgsBalloonCallout.wedgeWidth: src/core/callouts/qgscallout.h#L1040
 QgsBalloonCallout.wedgeWidthUnit: src/core/callouts/qgscallout.h#L1066
 QgsBalloonCallout: src/core/callouts/qgscallout.h#L878
-QgsBarChartPlot.create: src/core/plot/qgsbarchartplot.h#L69
 QgsBarChartPlot.createDataGatherer: src/core/plot/qgsbarchartplot.h#L72
 QgsBarChartPlot.fillSymbolAt: src/core/plot/qgsbarchartplot.h#L56
 QgsBarChartPlot.fillSymbolCount: src/core/plot/qgsbarchartplot.h#L66
@@ -9163,7 +9162,6 @@ QgsLimitedRandomColorRamp.valMax: src/core/qgscolorrampimpl.h#L427
 QgsLimitedRandomColorRamp.valMin: src/core/qgscolorrampimpl.h#L421
 QgsLimitedRandomColorRamp.value: src/core/qgscolorrampimpl.h#L359
 QgsLimitedRandomColorRamp: src/core/qgscolorrampimpl.h#L328
-QgsLineChartPlot.create: src/core/plot/qgslinechartplot.h#L85
 QgsLineChartPlot.createDataGatherer: src/core/plot/qgslinechartplot.h#L88
 QgsLineChartPlot.initFromPlot: src/core/plot/qgslinechartplot.h#L94
 QgsLineChartPlot.lineSymbolAt: src/core/plot/qgslinechartplot.h#L72
@@ -11488,7 +11486,6 @@ QgsNumericFormatRegistry.QgsNumericFormatRegistry: src/core/numericformats/qgsnu
 QgsNumericFormatRegistry.addFormat: src/core/numericformats/qgsnumericformatregistry.h#L59
 QgsNumericFormatRegistry.create: src/core/numericformats/qgsnumericformatregistry.h#L80
 QgsNumericFormatRegistry.createFromXml: src/core/numericformats/qgsnumericformatregistry.h#L88
-QgsNumericFormatRegistry.fallbackFormat: src/core/numericformats/qgsnumericformatregistry.h#L96
 QgsNumericFormatRegistry.format: src/core/numericformats/qgsnumericformatregistry.h#L72
 QgsNumericFormatRegistry.formats: src/core/numericformats/qgsnumericformatregistry.h#L52
 QgsNumericFormatRegistry.removeFormat: src/core/numericformats/qgsnumericformatregistry.h#L64
@@ -11869,7 +11866,6 @@ QgsPhongTexturedMaterialSettings.writeXml: src/core/./3d/materials/qgsphongtextu
 QgsPhongTexturedMaterialSettings: src/core/./3d/materials/qgsphongtexturedmaterialsettings.h#L38
 QgsPieChartPlot.colorRampAt: src/core/plot/qgspiechartplot.h#L68
 QgsPieChartPlot.colorRampCount: src/core/plot/qgspiechartplot.h#L83
-QgsPieChartPlot.create: src/core/plot/qgspiechartplot.h#L126
 QgsPieChartPlot.createDataGatherer: src/core/plot/qgspiechartplot.h#L129
 QgsPieChartPlot.fillSymbolAt: src/core/plot/qgspiechartplot.h#L58
 QgsPieChartPlot.fillSymbolCount: src/core/plot/qgspiechartplot.h#L78
@@ -11956,17 +11952,6 @@ QgsPlotData.categories: src/core/plot/qgsplot.h#L333
 QgsPlotData.clearSeries: src/core/plot/qgsplot.h#L328
 QgsPlotData.setCategories: src/core/plot/qgsplot.h#L338
 QgsPlotData: src/core/plot/qgsplot.h#L302
-QgsPlotDefaultSettings.axisGridMajorSymbol: src/core/plot/qgsplot.h#L926
-QgsPlotDefaultSettings.axisGridMinorSymbol: src/core/plot/qgsplot.h#L933
-QgsPlotDefaultSettings.axisLabelNumericFormat: src/core/plot/qgsplot.h#L919
-QgsPlotDefaultSettings.barChartFillSymbol: src/core/plot/qgsplot.h#L969
-QgsPlotDefaultSettings.chartBackgroundSymbol: src/core/plot/qgsplot.h#L940
-QgsPlotDefaultSettings.chartBorderSymbol: src/core/plot/qgsplot.h#L947
-QgsPlotDefaultSettings.lineChartLineSymbol: src/core/plot/qgsplot.h#L963
-QgsPlotDefaultSettings.lineChartMarkerSymbol: src/core/plot/qgsplot.h#L955
-QgsPlotDefaultSettings.pieChartColorRamp: src/core/plot/qgsplot.h#L981
-QgsPlotDefaultSettings.pieChartFillSymbol: src/core/plot/qgsplot.h#L975
-QgsPlotDefaultSettings.pieChartNumericFormat: src/core/plot/qgsplot.h#L987
 QgsPlotDefaultSettings: src/core/plot/qgsplot.h#L913
 QgsPlotRegistry.addPlotType: src/core/plot/qgsplotregistry.h#L201
 QgsPlotRegistry.createPlot: src/core/plot/qgsplotregistry.h#L226
