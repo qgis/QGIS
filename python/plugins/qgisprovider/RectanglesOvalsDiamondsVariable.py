@@ -74,45 +74,50 @@ class RectanglesOvalsDiamondsVariable(QgisAlgorithm):
             )
         )
 
-        self.addParameter(
-            QgsProcessingParameterEnum(
-                self.SHAPE, self.tr("Buffer shape"), options=self.shapes
-            )
+        param = QgsProcessingParameterEnum(
+            self.SHAPE, self.tr("Buffer shape"), options=self.shapes
         )
+        param.setHelp(self.tr("The shape to use. One of: Rectangles, Diamonds, Ovals."))
+        self.addParameter(param)
 
-        self.addParameter(
-            QgsProcessingParameterField(
-                self.WIDTH,
-                self.tr("Width field"),
-                parentLayerParameterName=self.INPUT,
-                type=QgsProcessingParameterField.DataType.Numeric,
-            )
+        param = QgsProcessingParameterField(
+            self.WIDTH,
+            self.tr("Width field"),
+            parentLayerParameterName=self.INPUT,
+            type=QgsProcessingParameterField.DataType.Numeric,
         )
-        self.addParameter(
-            QgsProcessingParameterField(
-                self.HEIGHT,
-                self.tr("Height field"),
-                parentLayerParameterName=self.INPUT,
-                type=QgsProcessingParameterField.DataType.Numeric,
-            )
+        param.setHelp(self.tr("Field containing the width of the buffer shape."))
+        self.addParameter(param)
+
+        param = QgsProcessingParameterField(
+            self.HEIGHT,
+            self.tr("Height field"),
+            parentLayerParameterName=self.INPUT,
+            type=QgsProcessingParameterField.DataType.Numeric,
         )
-        self.addParameter(
-            QgsProcessingParameterField(
-                self.ROTATION,
-                self.tr("Rotation field"),
-                parentLayerParameterName=self.INPUT,
-                type=QgsProcessingParameterField.DataType.Numeric,
-                optional=True,
-            )
+        param.setHelp(self.tr("Field containing the height of the buffer shape."))
+        self.addParameter(param)
+
+        param = QgsProcessingParameterField(
+            self.ROTATION,
+            self.tr("Rotation field"),
+            parentLayerParameterName=self.INPUT,
+            type=QgsProcessingParameterField.DataType.Numeric,
+            optional=True,
         )
-        self.addParameter(
-            QgsProcessingParameterNumber(
-                self.SEGMENTS,
-                self.tr("Number of segments"),
-                minValue=1,
-                defaultValue=36,
-            )
+        param.setHelp(
+            self.tr("Field containing the rotation of the buffer shape in degrees.")
         )
+        self.addParameter(param)
+
+        param = QgsProcessingParameterNumber(
+            self.SEGMENTS,
+            self.tr("Number of segments"),
+            minValue=1,
+            defaultValue=36,
+        )
+        param.setHelp(self.tr("Number of segments for a full circle."))
+        self.addParameter(param)
 
         self.addParameter(
             QgsProcessingParameterFeatureSink(

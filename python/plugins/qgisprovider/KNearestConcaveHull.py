@@ -101,25 +101,35 @@ class KNearestConcaveHull(QgisAlgorithm):
         self.addParameter(
             QgsProcessingParameterFeatureSource(self.INPUT, self.tr("Input layer"))
         )
-        self.addParameter(
-            QgsProcessingParameterNumber(
-                self.KNEIGHBORS,
-                self.tr(
-                    "Number of neighboring points to consider (a lower number is more concave, a higher number is smoother)"
-                ),
-                QgsProcessingParameterNumber.Type.Integer,
-                defaultValue=3,
-                minValue=3,
+        param = QgsProcessingParameterNumber(
+            self.KNEIGHBORS,
+            self.tr(
+                "Number of neighboring points to consider (a lower number is more concave, a higher number is smoother)"
+            ),
+            QgsProcessingParameterNumber.Type.Integer,
+            defaultValue=3,
+            minValue=3,
+        )
+        param.setHelp(
+            self.tr(
+                "Number of neighboring points to consider for generating the concave hull."
             )
         )
-        self.addParameter(
-            QgsProcessingParameterField(
-                self.FIELD,
-                self.tr("Field (set if creating concave hulls by class)"),
-                parentLayerParameterName=self.INPUT,
-                optional=True,
+        self.addParameter(param)
+
+        param = QgsProcessingParameterField(
+            self.FIELD,
+            self.tr("Field (set if creating concave hulls by class)"),
+            parentLayerParameterName=self.INPUT,
+            optional=True,
+        )
+        param.setHelp(
+            self.tr(
+                "Field used to group features when generating concave hulls by class."
             )
         )
+        self.addParameter(param)
+
         self.addParameter(
             QgsProcessingParameterFeatureSink(
                 self.OUTPUT,
@@ -156,7 +166,7 @@ class KNearestConcaveHull(QgisAlgorithm):
                 )  # Add a field with the name of the grouping field
 
                 # Initialize writer
-                (sink, dest_id) = self.parameterAsSink(
+                sink, dest_id = self.parameterAsSink(
                     parameters,
                     self.OUTPUT,
                     context,
@@ -222,7 +232,7 @@ class KNearestConcaveHull(QgisAlgorithm):
         else:
             # Not grouped by field
             # Initialize writer
-            (sink, dest_id) = self.parameterAsSink(
+            sink, dest_id = self.parameterAsSink(
                 parameters,
                 self.OUTPUT,
                 context,
