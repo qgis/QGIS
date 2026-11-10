@@ -40,6 +40,7 @@ class QgsVbScriptForStatement;
 class QgsVbScriptForEachStatement;
 class QgsVbScriptWhileStatement;
 class QgsVbScriptExitStatement;
+class QgsVbScriptFieldReferenceExpression;
 
 /**
  * \ingroup core
@@ -110,6 +111,9 @@ class CORE_EXPORT QgsVbScriptNode
       case QgsVbScriptNode::NodeType::ArrayLiteralExpression:
         sipType = sipType_QgsVbScriptArrayLiteralExpression;
         break;
+      case QgsVbScriptNode::NodeType::FieldReferenceExpression:
+        sipType = sipType_QgsVbScriptFieldReferenceExpression;
+        break;
       default:
         sipType = nullptr;
         break;
@@ -141,6 +145,7 @@ class CORE_EXPORT QgsVbScriptNode
       ForEachStatement,             //!< For each loop
       WhileStatement,               //!< While loop
       ExitStatement,                //!< Exit loop statement
+      FieldReferenceExpression,     //!< Special ESRI specific reference to a layer's field (eg ``[FIELD_NAME]``)
     };
 
     virtual ~QgsVbScriptNode() = default;
@@ -1070,6 +1075,7 @@ class CORE_EXPORT QgsVbScriptWhileStatement : public QgsVbScriptStatement
     std::unique_ptr<QgsVbScriptBlockStatement> mBody;
 };
 
+
 /**
  * \ingroup core
  * \brief Represents an Exit loop or Exit Sub/Function statement.
@@ -1108,6 +1114,44 @@ class CORE_EXPORT QgsVbScriptExitStatement : public QgsVbScriptStatement
   private:
     ExitType mExitType = ExitType::ExitFunction;
 };
+
+/**
+ * \ingroup core
+ * \brief Represents an ESRI specific node for a reference to an attribute field enclosed in square brackets.
+ *
+ * For example ``[FIELD_NAME]`` or ``[FIELD]]NAME]``.
+ *
+ * \since QGIS 4.4
+ */
+class CORE_EXPORT QgsVbScriptFieldReferenceExpression : public QgsVbScriptExpression
+{
+  public:
+    /**
+     * Constructor for QgsVbScriptFieldReferenceExpression.
+     */
+    explicit QgsVbScriptFieldReferenceExpression( const QString &fieldName );
+
+    QgsVbScriptNode::NodeType nodeType() const override { return NodeType::FieldReferenceExpression; }
+    QString dump() const override;
+    QgsVbScriptNode *clone() const override SIP_FACTORY;
+    void accept( QgsVbScriptVisitor &visitor ) const override;
+
+    /**
+     * Returns the unescaped field name.
+     */
+    QString fieldName() const { return mFieldName; }
+
+  private:
+    QgsVbScriptFieldReferenceExpression( const QgsVbScriptFieldReferenceExpression &other ) = delete;
+    QgsVbScriptFieldReferenceExpression &operator=( const QgsVbScriptFieldReferenceExpression &other ) = delete;
+
+#ifdef SIP_RUN
+    QgsVbScriptFieldReferenceExpression( const QgsVbScriptFieldReferenceExpression &other );
+#endif
+
+    QString mFieldName;
+};
+
 
 /**
  * \ingroup core
@@ -1156,6 +1200,8 @@ class CORE_EXPORT QgsVbScriptVisitor
     virtual void visit( const QgsVbScriptWhileStatement &node ) = 0;
     //! Visit a QgsVbScriptExitStatement \a node
     virtual void visit( const QgsVbScriptExitStatement &node ) = 0;
+    //! Visit a QgsVbScriptFieldReferenceExpression \a node
+    virtual void visit( const QgsVbScriptFieldReferenceExpression &node ) = 0;
 };
 
 /**
@@ -1187,6 +1233,7 @@ class CORE_EXPORT QgsVbScriptRecursiveVisitor : public QgsVbScriptVisitor
     void visit( const QgsVbScriptForEachStatement &node ) override;
     void visit( const QgsVbScriptWhileStatement &node ) override;
     void visit( const QgsVbScriptExitStatement &node ) override;
+    void visit( const QgsVbScriptFieldReferenceExpression &node ) override;
 };
 
 /**
@@ -1242,6 +1289,16 @@ class CORE_EXPORT QgsVbScript
      * Returns a properly quoted string literal (enclosed in double quotes with escape sequences).
      */
     static QString quotedString( const QString &text );
+
+    /**
+     * Returns a field name enclosed in square brackets with internal right brackets escaped.
+     */
+    static QString quotedFieldReference( const QString &fieldName );
+
+    /**
+     * Strips enclosing square brackets from \a text and unescapes double right brackets.
+     */
+    static QString extractFieldReference( const QString &text );
 
   protected:
     std::unique_ptr<QgsVbScriptBlockStatement> mRootBlock;

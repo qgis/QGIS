@@ -15,6 +15,7 @@ from qgis.core import (
     QgsVbScriptBinaryOperatorExpression,
     QgsVbScriptBlockStatement,
     QgsVbScriptExpressionStatement,
+    QgsVbScriptFieldReferenceExpression,
     QgsVbScriptForEachStatement,
     QgsVbScriptForStatement,
     QgsVbScriptFunctionCallExpression,
@@ -1299,6 +1300,259 @@ wend
         self.assertEqual(
             script.rootBlock().statements()[0].value().rightOperand().value(),
             "\t",
+        )
+
+    def test_esri(self):
+        script = QgsVbScript(
+            """Function FindLabel ( [ACRES], [PARCEL_ID] )
+  If IsNull([ACRES[m]]]) Or [ACRES] = 0 Then
+    FindLabel = [PARCEL_ID]
+  Else
+    FindLabel = [PARCEL_ID] & " (" & Round([ACRES], 2) & " ac)"
+  End If
+End Function
+"""
+        )
+        self.assertFalse(script.hasParserError())
+
+        self.assertIsInstance(script.rootBlock(), QgsVbScriptBlockStatement)
+        self.assertEqual(script.rootBlock().count(), 1)
+
+        self.assertIsInstance(
+            script.rootBlock().statements()[0],
+            QgsVbScriptFunctionDeclarationStatement,
+        )
+        self.assertEqual(
+            script.rootBlock().statements()[0].parameters(), ["[ACRES]", "[PARCEL_ID]"]
+        )
+        self.assertIsInstance(
+            script.rootBlock().statements()[0].body(),
+            QgsVbScriptBlockStatement,
+        )
+
+        self.assertEqual(script.rootBlock().statements()[0].body().count(), 1)
+        self.assertIsInstance(
+            script.rootBlock().statements()[0].body().statements()[0],
+            QgsVbScriptIfStatement,
+        )
+
+        self.assertIsInstance(
+            script.rootBlock().statements()[0].body().statements()[0].condition(),
+            QgsVbScriptBinaryOperatorExpression,
+        )
+
+        self.assertIsInstance(
+            script.rootBlock()
+            .statements()[0]
+            .body()
+            .statements()[0]
+            .condition()
+            .leftOperand(),
+            QgsVbScriptFunctionCallExpression,
+        )
+        self.assertEqual(
+            script.rootBlock()
+            .statements()[0]
+            .body()
+            .statements()[0]
+            .condition()
+            .leftOperand()
+            .targetExpression()
+            .name(),
+            "IsNull",
+        )
+        self.assertEqual(
+            len(
+                script.rootBlock()
+                .statements()[0]
+                .body()
+                .statements()[0]
+                .condition()
+                .leftOperand()
+                .arguments()
+            ),
+            1,
+        )
+        self.assertIsInstance(
+            script.rootBlock()
+            .statements()[0]
+            .body()
+            .statements()[0]
+            .condition()
+            .leftOperand()
+            .arguments()[0],
+            QgsVbScriptFieldReferenceExpression,
+        )
+        self.assertEqual(
+            script.rootBlock()
+            .statements()[0]
+            .body()
+            .statements()[0]
+            .condition()
+            .leftOperand()
+            .arguments()[0]
+            .fieldName(),
+            "ACRES[m]",
+        )
+
+        self.assertIsInstance(
+            script.rootBlock()
+            .statements()[0]
+            .body()
+            .statements()[0]
+            .condition()
+            .rightOperand(),
+            QgsVbScriptBinaryOperatorExpression,
+        )
+
+        self.assertIsInstance(
+            script.rootBlock()
+            .statements()[0]
+            .body()
+            .statements()[0]
+            .condition()
+            .rightOperand()
+            .leftOperand(),
+            QgsVbScriptFieldReferenceExpression,
+        )
+        self.assertEqual(
+            script.rootBlock()
+            .statements()[0]
+            .body()
+            .statements()[0]
+            .condition()
+            .rightOperand()
+            .leftOperand()
+            .fieldName(),
+            "ACRES",
+        )
+
+        self.assertIsInstance(
+            script.rootBlock()
+            .statements()[0]
+            .body()
+            .statements()[0]
+            .trueBlock()
+            .statements()[0],
+            QgsVbScriptAssignmentStatement,
+        )
+        self.assertIsInstance(
+            script.rootBlock()
+            .statements()[0]
+            .body()
+            .statements()[0]
+            .trueBlock()
+            .statements()[0]
+            .value(),
+            QgsVbScriptFieldReferenceExpression,
+        )
+        self.assertEqual(
+            script.rootBlock()
+            .statements()[0]
+            .body()
+            .statements()[0]
+            .trueBlock()
+            .statements()[0]
+            .value()
+            .fieldName(),
+            "PARCEL_ID",
+        )
+
+    def test_esri_field_reference_unicode(self):
+        script = QgsVbScript("""[§_Schutz]""")
+        self.assertFalse(script.hasParserError())
+
+        self.assertIsInstance(script.rootBlock(), QgsVbScriptBlockStatement)
+        self.assertEqual(script.rootBlock().count(), 1)
+
+        self.assertIsInstance(
+            script.rootBlock().statements()[0],
+            QgsVbScriptExpressionStatement,
+        )
+        self.assertIsInstance(
+            script.rootBlock().statements()[0].expression(),
+            QgsVbScriptFieldReferenceExpression,
+        )
+        self.assertEqual(
+            script.rootBlock().statements()[0].expression().fieldName(), "§_Schutz"
+        )
+
+        script = QgsVbScript("""[Rivers, Streams.WC_LLID_NR]""")
+        self.assertFalse(script.hasParserError())
+
+        self.assertIsInstance(script.rootBlock(), QgsVbScriptBlockStatement)
+        self.assertEqual(script.rootBlock().count(), 1)
+
+        self.assertIsInstance(
+            script.rootBlock().statements()[0],
+            QgsVbScriptExpressionStatement,
+        )
+        self.assertIsInstance(
+            script.rootBlock().statements()[0].expression(),
+            QgsVbScriptFieldReferenceExpression,
+        )
+        self.assertEqual(
+            script.rootBlock().statements()[0].expression().fieldName(),
+            "Rivers, Streams.WC_LLID_NR",
+        )
+
+        script = QgsVbScript(
+            """[NAME
+
+
+            ]"""
+        )
+        self.assertFalse(script.hasParserError())
+
+        self.assertIsInstance(script.rootBlock(), QgsVbScriptBlockStatement)
+        self.assertEqual(script.rootBlock().count(), 1)
+
+        self.assertIsInstance(
+            script.rootBlock().statements()[0],
+            QgsVbScriptExpressionStatement,
+        )
+        self.assertIsInstance(
+            script.rootBlock().statements()[0].expression(),
+            QgsVbScriptFieldReferenceExpression,
+        )
+        self.assertEqual(
+            script.rootBlock().statements()[0].expression().fieldName(), """NAME"""
+        )
+
+        script = QgsVbScript("""oid]""")
+        self.assertFalse(script.hasParserError())
+
+        self.assertIsInstance(script.rootBlock(), QgsVbScriptBlockStatement)
+        self.assertEqual(script.rootBlock().count(), 1)
+
+        self.assertIsInstance(
+            script.rootBlock().statements()[0],
+            QgsVbScriptExpressionStatement,
+        )
+        self.assertIsInstance(
+            script.rootBlock().statements()[0].expression(),
+            QgsVbScriptFieldReferenceExpression,
+        )
+        self.assertEqual(
+            script.rootBlock().statements()[0].expression().fieldName(), "oid"
+        )
+
+        script = QgsVbScript("""oid OID]""")
+        self.assertFalse(script.hasParserError())
+
+        self.assertIsInstance(script.rootBlock(), QgsVbScriptBlockStatement)
+        self.assertEqual(script.rootBlock().count(), 1)
+
+        self.assertIsInstance(
+            script.rootBlock().statements()[0],
+            QgsVbScriptExpressionStatement,
+        )
+        self.assertIsInstance(
+            script.rootBlock().statements()[0].expression(),
+            QgsVbScriptFieldReferenceExpression,
+        )
+        self.assertEqual(
+            script.rootBlock().statements()[0].expression().fieldName(), "oid OID"
         )
 
 

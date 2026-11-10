@@ -702,6 +702,30 @@ void QgsVbScriptExitStatement::accept( QgsVbScriptVisitor &visitor ) const
 }
 
 //
+// QgsVbScriptFieldReferenceExpression
+//
+
+QgsVbScriptFieldReferenceExpression::QgsVbScriptFieldReferenceExpression( const QString &fieldName )
+  : mFieldName( fieldName )
+{}
+
+QString QgsVbScriptFieldReferenceExpression::dump() const
+{
+  return QgsVbScript::quotedFieldReference( mFieldName );
+}
+
+QgsVbScriptNode *QgsVbScriptFieldReferenceExpression::clone() const
+{
+  return new QgsVbScriptFieldReferenceExpression( mFieldName );
+}
+
+void QgsVbScriptFieldReferenceExpression::accept( QgsVbScriptVisitor &visitor ) const
+{
+  visitor.visit( *this );
+}
+
+
+//
 // QgsVbScriptRecursiveVisitor
 //
 
@@ -832,6 +856,9 @@ void QgsVbScriptRecursiveVisitor::visit( const QgsVbScriptWhileStatement &node )
 void QgsVbScriptRecursiveVisitor::visit( const QgsVbScriptExitStatement & )
 {}
 
+void QgsVbScriptRecursiveVisitor::visit( const QgsVbScriptFieldReferenceExpression & )
+{}
+
 //
 // QgsVbScriptScript
 //
@@ -917,4 +944,27 @@ QString QgsVbScript::quotedString( const QString &text )
   QString escaped = text;
   escaped.replace( '\"'_L1, "\"\""_L1 );
   return u"\"%1\""_s.arg( escaped );
+}
+
+QString QgsVbScript::quotedFieldReference( const QString &fieldName )
+{
+  QString escaped = fieldName;
+  escaped.replace( ']', "]]"_L1 );
+  return u"[%1]"_s.arg( escaped );
+}
+
+QString QgsVbScript::extractFieldReference( const QString &text )
+{
+  QString t = text.trimmed();
+  if ( t.startsWith( '[' ) && t.endsWith( ']' ) && t.length() >= 2 )
+  {
+    t = t.mid( 1, t.length() - 2 );
+  }
+  else if ( t.endsWith( ']' ) )
+  {
+    t.chop( 1 );
+  }
+  t = t.trimmed();
+  t.replace( "]]"_L1, "]"_L1 );
+  return t;
 }

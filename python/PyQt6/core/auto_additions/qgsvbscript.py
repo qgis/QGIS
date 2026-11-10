@@ -18,6 +18,7 @@ QgsVbScriptNode.NodeType.ForStatement.__doc__ = "For loop"
 QgsVbScriptNode.NodeType.ForEachStatement.__doc__ = "For each loop"
 QgsVbScriptNode.NodeType.WhileStatement.__doc__ = "While loop"
 QgsVbScriptNode.NodeType.ExitStatement.__doc__ = "Exit loop statement"
+QgsVbScriptNode.NodeType.FieldReferenceExpression.__doc__ = "Special ESRI specific reference to a layer's field (eg ``[FIELD_NAME]``)"
 QgsVbScriptNode.NodeType.__doc__ = """Node type identifier.
 
 * ``BlockStatement``: Block statement (a list of statements grouped together in a block)
@@ -38,6 +39,7 @@ QgsVbScriptNode.NodeType.__doc__ = """Node type identifier.
 * ``ForEachStatement``: For each loop
 * ``WhileStatement``: While loop
 * ``ExitStatement``: Exit loop statement
+* ``FieldReferenceExpression``: Special ESRI specific reference to a layer's field (eg ``[FIELD_NAME]``)
 
 """
 # --
@@ -131,6 +133,8 @@ QgsVbScriptExitStatement.ExitType.__doc__ = """Object to exit from.
 # --
 try:
     QgsVbScript.quotedString = staticmethod(QgsVbScript.quotedString)
+    QgsVbScript.quotedFieldReference = staticmethod(QgsVbScript.quotedFieldReference)
+    QgsVbScript.extractFieldReference = staticmethod(QgsVbScript.extractFieldReference)
     QgsVbScript.__group__ = ['providers', 'arcgis']
 except (NameError, AttributeError):
     pass
@@ -232,6 +236,11 @@ except (NameError, AttributeError):
 try:
     QgsVbScriptExitStatement.__overridden_methods__ = ['nodeType', 'dump', 'clone', 'accept']
     QgsVbScriptExitStatement.__group__ = ['providers', 'arcgis']
+except (NameError, AttributeError):
+    pass
+try:
+    QgsVbScriptFieldReferenceExpression.__overridden_methods__ = ['nodeType', 'dump', 'clone', 'accept']
+    QgsVbScriptFieldReferenceExpression.__group__ = ['providers', 'arcgis']
 except (NameError, AttributeError):
     pass
 try:

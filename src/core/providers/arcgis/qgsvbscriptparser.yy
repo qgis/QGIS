@@ -90,7 +90,7 @@ struct vbscript_parser_context
 %token <numberFloat> NUMBER_FLOAT
 %token <numberInt> NUMBER_INT
 %token <numberInt64> NUMBER_INT64
-%token <text> STRING_LITERAL IDENTIFIER
+%token <text> STRING_LITERAL IDENTIFIER FIELD_REFERENCE
 
 // operators and separators
 %token NE LE GE IS AND OR XOR EQV IMP NOT MOD
@@ -104,12 +104,11 @@ struct vbscript_parser_context
 %type <statement> statement simple_statement var_declaration assignment_statement if_statement inline_if_statement for_statement while_statement exit_statement function_declaration expression_statement
 %type <expression> expr primary_expr postfix_expr unary_expr exponent_expr multiplicative_expr integer_divide_expr modulo_expr additive_expr concat_expr relational_expr logical_not_expr logical_and_expr logical_or_expr logical_xor_expr logical_eqv_expr logical_imp_expr opt_step_clause
 %type <expressionList> opt_argument_list argument_list
-%type <identifierList> opt_parameter_list parameter_list identifier_list opt_next_identifier opt_param_clause
+%type <identifierList> opt_parameter_list parameter_list identifier_list opt_param_clause
+%type <text> parameter_name
 
-%destructor { delete $$; } <node>
 %destructor { delete $$; } <statement>
 %destructor { delete $$; } <blockStatement>
-%destructor { delete $$; } <ifStatement>
 %destructor { delete $$; } <expression>
 %destructor { delete $$; } <text>
 %destructor { qDeleteAll( *$$ ); delete $$; } <expressionList>
@@ -420,16 +419,28 @@ opt_parameter_list:
 ;
 
 parameter_list:
-    parameter_list ',' IDENTIFIER
+    parameter_list ',' parameter_name
     {
       $$ = $1;
       $$->append( *$3 );
       delete $3;
     }
-  | IDENTIFIER
+  | parameter_name
     {
       $$ = new QStringList();
       $$->append( *$1 );
+      delete $1;
+    }
+;
+
+parameter_name:
+    IDENTIFIER
+    {
+      $$ = $1;
+    }
+  | FIELD_REFERENCE
+    {
+      $$ = new QString( QgsVbScript::quotedFieldReference( *$1 ) );
       delete $1;
     }
 ;
@@ -696,6 +707,11 @@ primary_expr:
   | IDENTIFIER
     {
       $$ = new QgsVbScriptVariableReferenceExpression( *$1 );
+      delete $1;
+    }
+  | FIELD_REFERENCE
+    {
+      $$ = new QgsVbScriptFieldReferenceExpression( *$1 );
       delete $1;
     }
   | ARRAY '(' opt_argument_list ')'
