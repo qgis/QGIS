@@ -152,7 +152,7 @@ class GUI_EXPORT QgsElevationProfileCanvas : public QgsPlotCanvas
             QgsMapLayer *layerSource = reinterpret_cast<QgsMapLayer *>( sipConvertToType( p0, sipType_QgsMapLayer, 0, SIP_NOT_NONE, &state, &sipIsErr ) );
             if ( !sipIsErr )
             {
-              if ( layerSource->profileSource() && sipCanConvertToType( layerSource->profileSource(), source_type, SIP_NOT_NONE ) )
+              if ( layerSource->profileSource() )
               {
                 sourcesList << layerSource;
               }
