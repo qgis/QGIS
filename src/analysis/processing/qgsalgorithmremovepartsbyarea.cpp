@@ -101,6 +101,7 @@ void QgsRemovePartsByAreaAlgorithm::initParameters( const QVariantMap & )
   minArea->setIsDynamic( true );
   minArea->setDynamicPropertyDefinition( QgsPropertyDefinition( u"MIN_AREA"_s, QObject::tr( "Remove parts with area less than" ), QgsPropertyDefinition::DoublePositive ) );
   minArea->setDynamicLayerParameterName( u"INPUT"_s );
+  minArea->setHelp( QObject::tr( "Minimum area of the polygons to keep, using Cartesian calculations in the layer’s CRS." ) );
   addParameter( minArea.release() );
 }
 

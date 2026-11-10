@@ -88,12 +88,14 @@ void QgsAlgorithmRemoveDuplicateVertices::initParameters( const QVariantMap & )
   tolerance->setIsDynamic( true );
   tolerance->setDynamicPropertyDefinition( QgsPropertyDefinition( u"Tolerance"_s, QObject::tr( "Tolerance distance" ), QgsPropertyDefinition::DoublePositive ) );
   tolerance->setDynamicLayerParameterName( u"INPUT"_s );
+  tolerance->setHelp( QObject::tr( "Vertices closer than the specified distance are considered duplicates." ) );
   addParameter( tolerance.release() );
 
   auto useZ = std::make_unique<QgsProcessingParameterBoolean>( u"USE_Z_VALUE"_s, QObject::tr( "Use Z Value" ), false );
   useZ->setIsDynamic( true );
   useZ->setDynamicPropertyDefinition( QgsPropertyDefinition( u"UseZ"_s, QObject::tr( "Use Z Value" ), QgsPropertyDefinition::Boolean ) );
   useZ->setDynamicLayerParameterName( u"INPUT"_s );
+  useZ->setHelp( QObject::tr( "If the Use Z Value parameter is true, then the Z values are also tested and vertices with the same X and Y but different Z will be maintained." ) );
   addParameter( useZ.release() );
 }
 

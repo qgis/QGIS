@@ -75,14 +75,19 @@ QgsMinimumBoundingGeometryAlgorithm *QgsMinimumBoundingGeometryAlgorithm::create
 void QgsMinimumBoundingGeometryAlgorithm::initAlgorithm( const QVariantMap & )
 {
   addParameter( new QgsProcessingParameterFeatureSource( u"INPUT"_s, QObject::tr( "Input layer" ), QList<int>() << static_cast<int>( Qgis::ProcessingSourceType::VectorAnyGeometry ) ) );
-  addParameter(
-    new QgsProcessingParameterField( u"FIELD"_s, QObject::tr( "Field (optional, set if features should be grouped by class)" ), QVariant(), u"INPUT"_s, Qgis::ProcessingFieldParameterDataType::Any, false, true )
+  auto fieldParam = std::make_unique<
+    QgsProcessingParameterField>( u"FIELD"_s, QObject::tr( "Field (optional, set if features should be grouped by class)" ), QVariant(), u"INPUT"_s, Qgis::ProcessingFieldParameterDataType::Any, false, true );
+  fieldParam->setHelp(
+    QObject::tr( "Features can be grouped by a field. If set, this causes the output layer to contain one feature per grouped value with a minimal geometry covering only the features with matching values." )
   );
+  addParameter( fieldParam.release() );
 
   QStringList geometryTypes
     = QStringList() << QObject::tr( "Envelope (Bounding Box)" ) << QObject::tr( "Minimum Oriented Rectangle" ) << QObject::tr( "Minimum Enclosing Circle" ) << QObject::tr( "Convex Hull" );
 
-  addParameter( new QgsProcessingParameterEnum( u"TYPE"_s, QObject::tr( "Geometry type" ), geometryTypes ) );
+  auto typeParam = std::make_unique<QgsProcessingParameterEnum>( u"TYPE"_s, QObject::tr( "Geometry type" ), geometryTypes );
+  typeParam->setHelp( QObject::tr( "Enclosing geometry types. One of: Envelope (Bounding Box), Minimum Oriented Rectangle, Minimum Enclosing Circle, Convex Hull." ) );
+  addParameter( typeParam.release() );
   addParameter( new QgsProcessingParameterFeatureSink( u"OUTPUT"_s, QObject::tr( "Bounding geometry" ), Qgis::ProcessingSourceType::VectorPolygon ) );
 }
 

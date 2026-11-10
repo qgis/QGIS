@@ -93,16 +93,22 @@ void QgsOffsetLinesAlgorithm::initParameters( const QVariantMap & )
   offset->setIsDynamic( true );
   offset->setDynamicPropertyDefinition( QgsPropertyDefinition( u"DISTANCE"_s, QObject::tr( "Distance" ), QgsPropertyDefinition::Double ) );
   offset->setDynamicLayerParameterName( u"INPUT"_s );
+  offset->setHelp( QObject::tr( "Offset distance." ) );
   addParameter( offset.release() );
 
   auto segmentParam = std::make_unique<QgsProcessingParameterNumber>( u"SEGMENTS"_s, QObject::tr( "Segments" ), Qgis::ProcessingNumberParameterType::Integer, 8, false, 1 );
+  segmentParam->setHelp( QObject::tr( "Controls the number of line segments to use to approximate a quarter circle when creating rounded offsets." ) );
   addParameter( segmentParam.release() );
 
   auto joinStyleParam
     = std::make_unique<QgsProcessingParameterEnum>( u"JOIN_STYLE"_s, QObject::tr( "Join style" ), QStringList() << QObject::tr( "Round" ) << QObject::tr( "Miter" ) << QObject::tr( "Bevel" ), false, 0 );
+  joinStyleParam->setHelp( QObject::tr( "Specifies whether round, miter or beveled joins should be used when offsetting corners in a line. One of: Round, Miter, Bevel." ) );
   addParameter( joinStyleParam.release() );
 
   auto miterLimitParam = std::make_unique<QgsProcessingParameterNumber>( u"MITER_LIMIT"_s, QObject::tr( "Miter limit" ), Qgis::ProcessingNumberParameterType::Double, 2, false, 1 );
+  miterLimitParam->setHelp(
+    QObject::tr( "Sets the maximum distance from the offset geometry to use when creating a mitered join as a factor of the offset distance (only applicable for miter join styles). Minimum: 1.0" )
+  );
   addParameter( miterLimitParam.release() );
 }
 

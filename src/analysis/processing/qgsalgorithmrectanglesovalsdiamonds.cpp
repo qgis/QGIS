@@ -113,27 +113,35 @@ QgsRectanglesOvalsDiamondsAlgorithm *QgsRectanglesOvalsDiamondsAlgorithm::create
 
 void QgsRectanglesOvalsDiamondsAlgorithm::initParameters( const QVariantMap & )
 {
-  addParameter( new QgsProcessingParameterEnum( u"SHAPE"_s, QObject::tr( "Shape" ), QStringList() << QObject::tr( "Rectangle" ) << QObject::tr( "Diamond" ) << QObject::tr( "Oval" ), false, 0 ) );
+  auto shapeParam
+    = std::make_unique<QgsProcessingParameterEnum>( u"SHAPE"_s, QObject::tr( "Shape" ), QStringList() << QObject::tr( "Rectangle" ) << QObject::tr( "Diamond" ) << QObject::tr( "Oval" ), false, 0 );
+  shapeParam->setHelp( QObject::tr( "The shape to use. One of: Rectangle, Diamond, Oval." ) );
+  addParameter( shapeParam.release() );
 
   auto widthParam = std::make_unique<QgsProcessingParameterDistance>( u"WIDTH"_s, QObject::tr( "Width" ), 1.0, u"INPUT"_s, false, 0.0 );
   widthParam->setIsDynamic( true );
   widthParam->setDynamicPropertyDefinition( QgsPropertyDefinition( u"Width"_s, QObject::tr( "Width" ), QgsPropertyDefinition::DoublePositive ) );
   widthParam->setDynamicLayerParameterName( u"INPUT"_s );
+  widthParam->setHelp( QObject::tr( "Width of the buffer shape." ) );
   addParameter( widthParam.release() );
 
   auto heightParam = std::make_unique<QgsProcessingParameterDistance>( u"HEIGHT"_s, QObject::tr( "Height" ), 1.0, u"INPUT"_s, false, 0.0 );
   heightParam->setIsDynamic( true );
   heightParam->setDynamicPropertyDefinition( QgsPropertyDefinition( u"Height"_s, QObject::tr( "Height" ), QgsPropertyDefinition::DoublePositive ) );
   heightParam->setDynamicLayerParameterName( u"INPUT"_s );
+  heightParam->setHelp( QObject::tr( "Height of the buffer shape." ) );
   addParameter( heightParam.release() );
 
   auto rotationParam = std::make_unique<QgsProcessingParameterNumber>( u"ROTATION"_s, QObject::tr( "Rotation" ), Qgis::ProcessingNumberParameterType::Double, 0.0, true, -360.0, 360.0 );
   rotationParam->setIsDynamic( true );
   rotationParam->setDynamicPropertyDefinition( QgsPropertyDefinition( u"Rotation"_s, QObject::tr( "Rotation" ), QgsPropertyDefinition::Double ) );
   rotationParam->setDynamicLayerParameterName( u"INPUT"_s );
+  rotationParam->setHelp( QObject::tr( "Rotation of the buffer shape." ) );
   addParameter( rotationParam.release() );
 
-  addParameter( new QgsProcessingParameterNumber( u"SEGMENTS"_s, QObject::tr( "Segments" ), Qgis::ProcessingNumberParameterType::Integer, 36, false, 1 ) );
+  auto segmentsParam = std::make_unique<QgsProcessingParameterNumber>( u"SEGMENTS"_s, QObject::tr( "Segments" ), Qgis::ProcessingNumberParameterType::Integer, 36, false, 1 );
+  segmentsParam->setHelp( QObject::tr( "Number of segments for a full circle (Oval shape)" ) );
+  addParameter( segmentsParam.release() );
 }
 
 bool QgsRectanglesOvalsDiamondsAlgorithm::prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback * )

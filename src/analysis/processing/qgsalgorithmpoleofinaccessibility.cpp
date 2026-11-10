@@ -133,6 +133,7 @@ void QgsPoleOfInaccessibilityAlgorithm::initParameters( const QVariantMap & )
   toleranceParam->setIsDynamic( true );
   toleranceParam->setDynamicPropertyDefinition( QgsPropertyDefinition( u"Tolerance"_s, QObject::tr( "Tolerance" ), QgsPropertyDefinition::Double ) );
   toleranceParam->setDynamicLayerParameterName( u"INPUT"_s );
+  toleranceParam->setHelp( QObject::tr( "Set the tolerance for the calculation." ) );
   addParameter( toleranceParam.release() );
 }
 
