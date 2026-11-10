@@ -61,7 +61,7 @@ class GUI_EXPORT QgsColorRampButton : public QToolButton
      * Returns a copy of the current color ramp.
      * \see setColorRamp()
      */
-    QgsColorRamp *colorRamp() const SIP_FACTORY;
+    std::unique_ptr<QgsColorRamp> colorRamp() const;
 
     /**
      * Set the title for the color ramp dialog window.

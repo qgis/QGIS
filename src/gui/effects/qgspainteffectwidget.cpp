@@ -547,7 +547,7 @@ void QgsGlowWidget::colorModeChanged()
   else
   {
     mEffect->setColorType( QgsGlowEffect::ColorRamp );
-    mEffect->setRamp( btnColorRamp->colorRamp() );
+    mEffect->setRamp( btnColorRamp->colorRamp().release() );
   }
   emit changed();
 }
@@ -641,11 +641,11 @@ void QgsGlowWidget::applyColorRamp()
     return;
   }
 
-  QgsColorRamp *ramp = btnColorRamp->colorRamp();
+  std::unique_ptr<QgsColorRamp> ramp = btnColorRamp->colorRamp();
   if ( !ramp )
     return;
 
-  mEffect->setRamp( ramp );
+  mEffect->setRamp( ramp.release() );
   emit changed();
 }
 

@@ -38,7 +38,7 @@ show in the color ramp dialog
     virtual QSize sizeHint() const;
 
 
-    QgsColorRamp *colorRamp() const /Factory/;
+    std::unique_ptr<QgsColorRamp> colorRamp() const;
 %Docstring
 Returns a copy of the current color ramp.
 

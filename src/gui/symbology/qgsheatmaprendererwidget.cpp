@@ -170,11 +170,11 @@ void QgsHeatmapRendererWidget::applyColorRamp()
     return;
   }
 
-  QgsColorRamp *ramp = btnColorRamp->colorRamp();
+  std::unique_ptr<QgsColorRamp> ramp = btnColorRamp->colorRamp();
   if ( !ramp )
     return;
 
-  mRenderer->setColorRamp( ramp );
+  mRenderer->setColorRamp( ramp.release() );
   emit changed();
 }
 

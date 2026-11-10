@@ -418,7 +418,7 @@ void QgsColorRampButton::saveColorRamp()
   const QStringList colorRampTags = saveDlg.tags().split( ',' );
 
   // add new symbol to style and re-populate the list
-  QgsColorRamp *ramp = colorRamp();
+  QgsColorRamp *ramp = colorRamp().release();
   destinationStyle->addColorRamp( saveDlg.name(), ramp );
   destinationStyle->saveColorRamp( saveDlg.name(), ramp, saveDlg.isFavorite(), colorRampTags );
 
@@ -572,9 +572,9 @@ void QgsColorRampButton::setButtonBackground( QgsColorRamp *colorramp )
   setIcon( pm );
 }
 
-QgsColorRamp *QgsColorRampButton::colorRamp() const
+std::unique_ptr<QgsColorRamp> QgsColorRampButton::colorRamp() const
 {
-  return mColorRamp ? mColorRamp->clone() : nullptr;
+  return mColorRamp ? std::unique_ptr<QgsColorRamp>( mColorRamp->clone() ) : nullptr;
 }
 
 void QgsColorRampButton::setColorRampDialogTitle( const QString &title )

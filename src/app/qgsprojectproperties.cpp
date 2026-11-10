@@ -1746,7 +1746,7 @@ void QgsProjectProperties::apply()
   QgsProject::instance()->styleSettings()->setDefaultSymbol( Qgis::SymbolType::Marker, mStyleMarkerSymbol->symbol() );
   QgsProject::instance()->styleSettings()->setDefaultSymbol( Qgis::SymbolType::Line, mStyleLineSymbol->symbol() );
   QgsProject::instance()->styleSettings()->setDefaultSymbol( Qgis::SymbolType::Fill, mStyleFillSymbol->symbol() );
-  QgsProject::instance()->styleSettings()->setDefaultColorRamp( mStyleColorRampSymbol->colorRamp() );
+  QgsProject::instance()->styleSettings()->setDefaultColorRamp( mStyleColorRampSymbol->colorRamp().release() );
   QgsProject::instance()->styleSettings()->setDefaultTextFormat( mStyleTextFormat->textFormat() );
   QgsProject::instance()->styleSettings()->setRandomizeDefaultSymbolColor( cbxStyleRandomColors->isChecked() );
   QgsProject::instance()->styleSettings()->setDefaultSymbolOpacity( mDefaultOpacityWidget->opacity() );

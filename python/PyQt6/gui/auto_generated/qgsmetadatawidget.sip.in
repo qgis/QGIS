@@ -71,7 +71,7 @@ to the specified ``metadata`` object.
 .. seealso:: :py:func:`metadata`
 %End
 
-    QgsAbstractMetadataBase *metadata() /Factory/;
+    std::unique_ptr<QgsAbstractMetadataBase> metadata();
 %Docstring
 Returns a :py:class:`QgsAbstractMetadataBase` object representing the
 current state of the widget.
