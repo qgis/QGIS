@@ -82,13 +82,17 @@ class EliminateSelection(QgisAlgorithm):
                 [QgsProcessing.SourceType.TypeVectorPolygon],
             )
         )
-        self.addParameter(
-            QgsProcessingParameterEnum(
-                self.MODE,
-                self.tr("Merge selection with the neighbouring polygon with the"),
-                options=self.modes,
+        modeParam = QgsProcessingParameterEnum(
+            self.MODE,
+            self.tr("Merge selection with the neighbouring polygon with the"),
+            options=self.modes,
+        )
+        modeParam.setHelp(
+            self.tr(
+                "Choose the parameter to use in order to get rid of the selected polygons: Largest Area, Smallest Area, Largest Common Boundary."
             )
         )
+        self.addParameter(modeParam)
 
         self.addParameter(
             QgsProcessingParameterFeatureSink(
