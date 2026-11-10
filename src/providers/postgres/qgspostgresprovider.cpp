@@ -435,7 +435,10 @@ QgsReferencedGeometry QgsPostgresProvider::fromEwkt( const QString &ewkt, QgsPos
 QString QgsPostgresProvider::toEwkt( const QgsReferencedGeometry &geom, QgsPostgresConn *conn )
 {
   if ( !geom.isNull() )
-    return u"SRID=%1;%2"_s.arg( QString::number( crsToSrid( geom.crs(), conn ) ), geom.asWkt() );
+  {
+    const int srid = geom.crs().isValid() ? crsToSrid( geom.crs(), conn ) : 0;
+    return u"SRID=%1;%2"_s.arg( QString::number( srid ), geom.asWkt() );
+  }
   else
     return QString();
 }
