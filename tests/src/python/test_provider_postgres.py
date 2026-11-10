@@ -4899,7 +4899,7 @@ INSERT INTO public.test_ext(g)
         md = QgsProviderRegistry.instance().providerMetadata("postgres")
         conn = md.createConnection(self.dbconn, {})
 
-        # Create a 10 rows table with extent -10 -10 to 10 10
+        # Create points with extent -40 -10 to 40 10.
         conn.executeSql(
             """
 DROP TABLE IF EXISTS public.test_geog_ext;
@@ -4926,24 +4926,46 @@ INSERT INTO public.test_geog_ext(g)
         )
         self.assertTrue(vlEstm.isValid())
 
-        # No stats
-        self.assertAcceptableEstimatedExtent(
-            realExtent, vlEstm.extent(), "with no stats"
+        # Without statistics, estimated metadata falls back to the exact extent.
+        self.assertEqual(vlEstm.extent(), realExtent)
+
+        postgisVersion = tuple(
+            int(part)
+            for part in conn.executeSql("SELECT postgis_lib_version()")[0][0].split(
+                "."
+            )[:2]
         )
 
-        # PostGIS derives estimated geography extents from statistics. Their
-        # margin varies by version, so require coverage without a size bound.
+        def assertEstimatedGeographyExtent():
+            vlEstm.updateExtents()
+            estimatedExtent = vlEstm.extent()
+            if postgisVersion < (3, 5):
+                # QGIS disables geography estimates from older PostGIS versions.
+                self.assertEqual(realExtent, estimatedExtent)
+                return
+
+            box = conn.executeSql(
+                "SELECT ST_EstimatedExtent('public', 'test_geog_ext', 'g')::text"
+            )[0][0]
+            self.assertIsNotNone(box)
+            xmin, ymin, xmax, ymax = (
+                float(value) for value in box[4:-1].replace(",", " ").split()
+            )
+            self.assertEqual(estimatedExtent, QgsRectangle(xmin, ymin, xmax, ymax))
+            self.assertEstimatedExtentContainsRealExtent(
+                realExtent, estimatedExtent, "geography"
+            )
+            # The original regression returned the extent of the whole world.
+            self.assertGreater(estimatedExtent.xMinimum(), -180)
+            self.assertLess(estimatedExtent.xMaximum(), 180)
+            self.assertGreater(estimatedExtent.yMinimum(), -90)
+            self.assertLess(estimatedExtent.yMaximum(), 90)
+
         conn.executeSql("ANALYZE public.test_geog_ext")
-        vlEstm.updateExtents()
-        self.assertEstimatedExtentContainsRealExtent(
-            realExtent, vlEstm.extent(), "with stats"
-        )
+        assertEstimatedGeographyExtent()
 
         conn.executeSql("CREATE INDEX ON public.test_geog_ext using gist (g)")
-        vlEstm.updateExtents()
-        self.assertEstimatedExtentContainsRealExtent(
-            realExtent, vlEstm.extent(), "with index"
-        )
+        assertEstimatedGeographyExtent()
 
         # Cleanup
         conn.executeSql("DROP TABLE public.test_geog_ext")
