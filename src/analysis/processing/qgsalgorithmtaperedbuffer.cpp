@@ -112,18 +112,21 @@ void QgsTaperedBufferAlgorithm::initParameters( const QVariantMap & )
   startWidth->setIsDynamic( true );
   startWidth->setDynamicPropertyDefinition( QgsPropertyDefinition( u"START_WIDTH"_s, QObject::tr( "Start width" ), QgsPropertyDefinition::DoublePositive ) );
   startWidth->setDynamicLayerParameterName( u"INPUT"_s );
+  startWidth->setHelp( QObject::tr( "Represents the radius of the buffer applied at the start point of the line feature." ) );
   addParameter( startWidth.release() );
 
   auto endWidth = std::make_unique<QgsProcessingParameterNumber>( u"END_WIDTH"_s, QObject::tr( "End width" ), Qgis::ProcessingNumberParameterType::Double, 1, false, 0.0 );
   endWidth->setIsDynamic( true );
   endWidth->setDynamicPropertyDefinition( QgsPropertyDefinition( u"END_WIDTH"_s, QObject::tr( "End width" ), QgsPropertyDefinition::DoublePositive ) );
   endWidth->setDynamicLayerParameterName( u"INPUT"_s );
+  endWidth->setHelp( QObject::tr( "Represents the radius of the buffer applied at the end point of the line feature." ) );
   addParameter( endWidth.release() );
 
   auto segments = std::make_unique<QgsProcessingParameterNumber>( u"SEGMENTS"_s, QObject::tr( "Segments" ), Qgis::ProcessingNumberParameterType::Integer, 16, false, 1 );
   segments->setIsDynamic( true );
   segments->setDynamicPropertyDefinition( QgsPropertyDefinition( u"SEGMENTS"_s, QObject::tr( "Segments" ), QgsPropertyDefinition::IntegerPositiveGreaterZero ) );
   segments->setDynamicLayerParameterName( u"INPUT"_s );
+  segments->setHelp( QObject::tr( "Controls the number of line segments to use to approximate a quarter circle when creating rounded offsets." ) );
   addParameter( segments.release() );
 }
 
@@ -240,6 +243,9 @@ void QgsVariableWidthBufferByMAlgorithm::initParameters( const QVariantMap & )
   segments->setIsDynamic( true );
   segments->setDynamicPropertyDefinition( QgsPropertyDefinition( u"SEGMENTS"_s, QObject::tr( "Segments" ), QgsPropertyDefinition::IntegerPositiveGreaterZero ) );
   segments->setDynamicLayerParameterName( u"INPUT"_s );
+  segments->setHelp(
+    QObject::tr( "Number of the buffer segments per quarter circle. It can be a unique value (same value for all the features), or it can be taken from features data (the value can depend on feature attributes)." )
+  );
   addParameter( segments.release() );
 }
 

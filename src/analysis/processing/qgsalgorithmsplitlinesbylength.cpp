@@ -94,6 +94,7 @@ void QgsSplitLinesByLengthAlgorithm::initParameters( const QVariantMap & )
   length->setIsDynamic( true );
   length->setDynamicPropertyDefinition( QgsPropertyDefinition( u"LENGTH"_s, QObject::tr( "Maximum length" ), QgsPropertyDefinition::DoublePositive ) );
   length->setDynamicLayerParameterName( u"INPUT"_s );
+  length->setHelp( QObject::tr( "The maximum length of a line in the output." ) );
   addParameter( length.release() );
 }
 

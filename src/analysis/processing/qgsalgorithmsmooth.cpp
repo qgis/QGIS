@@ -94,18 +94,21 @@ void QgsSmoothAlgorithm::initParameters( const QVariantMap & )
   iterations->setIsDynamic( true );
   iterations->setDynamicPropertyDefinition( QgsPropertyDefinition( u"ITERATIONS"_s, QObject::tr( "Iterations" ), QgsPropertyDefinition::IntegerPositiveGreaterZero ) );
   iterations->setDynamicLayerParameterName( u"INPUT"_s );
+  iterations->setHelp( QObject::tr( "Increasing the number of iterations will give smoother geometries (and more vertices)." ) );
   addParameter( iterations.release() );
 
   auto offset = std::make_unique<QgsProcessingParameterNumber>( u"OFFSET"_s, QObject::tr( "Offset" ), Qgis::ProcessingNumberParameterType::Double, 0.25, false, 0.0, 0.5 );
   offset->setIsDynamic( true );
   offset->setDynamicPropertyDefinition( QgsPropertyDefinition( u"OFFSET"_s, QObject::tr( "Offset" ), QgsPropertyDefinition::Double0To1 ) );
   offset->setDynamicLayerParameterName( u"INPUT"_s );
+  offset->setHelp( QObject::tr( "Increasing values will move the smoothed lines / boundaries further away from the input lines / boundaries." ) );
   addParameter( offset.release() );
 
   auto maxAngle = std::make_unique<QgsProcessingParameterNumber>( u"MAX_ANGLE"_s, QObject::tr( "Maximum node angle to smooth" ), Qgis::ProcessingNumberParameterType::Double, 180.0, false, 0.0, 180.0 );
   maxAngle->setIsDynamic( true );
   maxAngle->setDynamicPropertyDefinition( QgsPropertyDefinition( u"MAX_ANGLE"_s, QObject::tr( "Maximum node angle to smooth" ), QgsPropertyDefinition::Rotation ) );
   maxAngle->setDynamicLayerParameterName( u"INPUT"_s );
+  maxAngle->setHelp( QObject::tr( "Every node below this value will be smoothed." ) );
   addParameter( maxAngle.release() );
 }
 

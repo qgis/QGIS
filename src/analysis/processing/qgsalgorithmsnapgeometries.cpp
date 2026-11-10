@@ -103,14 +103,17 @@ void QgsSnapGeometriesAlgorithm::initAlgorithm( const QVariantMap & )
     QObject::tr( "Input layer" ),
     QList<int>() << static_cast<int>( Qgis::ProcessingSourceType::VectorPoint ) << static_cast<int>( Qgis::ProcessingSourceType::VectorLine ) << static_cast<int>( Qgis::ProcessingSourceType::VectorPolygon )
   ) );
-  addParameter( new QgsProcessingParameterFeatureSource(
+  auto referenceParam = std::make_unique<QgsProcessingParameterFeatureSource>(
     u"REFERENCE_LAYER"_s,
     QObject::tr( "Reference layer" ),
     QList<int>() << static_cast<int>( Qgis::ProcessingSourceType::VectorPoint ) << static_cast<int>( Qgis::ProcessingSourceType::VectorLine ) << static_cast<int>( Qgis::ProcessingSourceType::VectorPolygon )
-  ) );
+  );
+  referenceParam->setHelp( QObject::tr( "Vector layer to snap to." ) );
+  addParameter( referenceParam.release() );
 
   auto tolParam = std::make_unique<QgsProcessingParameterDistance>( u"TOLERANCE"_s, QObject::tr( "Tolerance" ), 10.0, u"INPUT"_s, false, 0.00000001 );
   tolParam->setMetadata( { QVariantMap( { { u"widget_wrapper"_s, QVariantMap( { { u"decimals"_s, 8 } } ) } } ) } );
+  tolParam->setHelp( QObject::tr( "Control how close input vertices need to be to the reference layer geometries before they are snapped." ) );
   addParameter( tolParam.release() );
 
   const QStringList options = QStringList()
@@ -122,7 +125,17 @@ void QgsSnapGeometriesAlgorithm::initAlgorithm( const QVariantMap & )
                               << QObject::tr( "Move end points only, prefer closest point" )
                               << QObject::tr( "Snap end points to end points only" )
                               << QObject::tr( "Snap to anchor nodes (single layer only)" );
-  addParameter( new QgsProcessingParameterEnum( u"BEHAVIOR"_s, QObject::tr( "Behavior" ), options, false, QVariantList() << 0 ) );
+  auto behaviorParam = std::make_unique<QgsProcessingParameterEnum>( u"BEHAVIOR"_s, QObject::tr( "Behavior" ), options, false, QVariantList() << 0 );
+  behaviorParam->setHelp(
+    QObject::tr(
+      "Snapping can be done to an existing node or a segment (its closest point to the vertex to move). One of: "
+      "Prefer aligning nodes, insert extra vertices where required; Prefer closest point, insert extra vertices where required; "
+      "Prefer aligning nodes, don't insert new vertices; Prefer closest point, don't insert new vertices; "
+      "Move end points only, prefer aligning nodes; Move end points only, prefer closest point; "
+      "Snap end points to end points only; Snap to anchor nodes (single layer only)."
+    )
+  );
+  addParameter( behaviorParam.release() );
   addParameter( new QgsProcessingParameterFeatureSink( u"OUTPUT"_s, QObject::tr( "Snapped geometry" ), Qgis::ProcessingSourceType::VectorAnyGeometry ) );
 }
 

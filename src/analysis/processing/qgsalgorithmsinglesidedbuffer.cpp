@@ -101,12 +101,27 @@ void QgsSingleSidedBufferAlgorithm::initParameters( const QVariantMap & )
   bufferParam->setIsDynamic( true );
   bufferParam->setDynamicPropertyDefinition( QgsPropertyDefinition( u"Distance"_s, QObject::tr( "Buffer distance" ), QgsPropertyDefinition::Double ) );
   bufferParam->setDynamicLayerParameterName( u"INPUT"_s );
+  bufferParam->setHelp( QObject::tr( "Buffer distance." ) );
   addParameter( bufferParam.release() );
 
-  addParameter( new QgsProcessingParameterEnum( u"SIDE"_s, QObject::tr( "Side" ), QStringList() << QObject::tr( "Left" ) << QObject::tr( "Right" ), false, 0 ) );
-  addParameter( new QgsProcessingParameterNumber( u"SEGMENTS"_s, QObject::tr( "Segments" ), Qgis::ProcessingNumberParameterType::Integer, 8, false, 1 ) );
-  addParameter( new QgsProcessingParameterEnum( u"JOIN_STYLE"_s, QObject::tr( "Join style" ), QStringList() << QObject::tr( "Round" ) << QObject::tr( "Miter" ) << QObject::tr( "Bevel" ), false, 0 ) );
-  addParameter( new QgsProcessingParameterNumber( u"MITER_LIMIT"_s, QObject::tr( "Miter limit" ), Qgis::ProcessingNumberParameterType::Double, 2, false, 1 ) );
+  auto sideParam = std::make_unique<QgsProcessingParameterEnum>( u"SIDE"_s, QObject::tr( "Side" ), QStringList() << QObject::tr( "Left" ) << QObject::tr( "Right" ), false, 0 );
+  sideParam->setHelp( QObject::tr( "Which side to create the buffer on. One of: Left, Right." ) );
+  addParameter( sideParam.release() );
+
+  auto segmentsParam = std::make_unique<QgsProcessingParameterNumber>( u"SEGMENTS"_s, QObject::tr( "Segments" ), Qgis::ProcessingNumberParameterType::Integer, 8, false, 1 );
+  segmentsParam->setHelp( QObject::tr( "Controls the number of line segments to use to approximate a quarter circle when creating rounded offsets." ) );
+  addParameter( segmentsParam.release() );
+
+  auto joinStyleParam
+    = std::make_unique<QgsProcessingParameterEnum>( u"JOIN_STYLE"_s, QObject::tr( "Join style" ), QStringList() << QObject::tr( "Round" ) << QObject::tr( "Miter" ) << QObject::tr( "Bevel" ), false, 0 );
+  joinStyleParam->setHelp( QObject::tr( "Specifies whether round, miter or beveled joins should be used when offsetting corners in a line. Options are: Round, Miter, Bevel." ) );
+  addParameter( joinStyleParam.release() );
+
+  auto miterLimitParam = std::make_unique<QgsProcessingParameterNumber>( u"MITER_LIMIT"_s, QObject::tr( "Miter limit" ), Qgis::ProcessingNumberParameterType::Double, 2, false, 1 );
+  miterLimitParam->setHelp(
+    QObject::tr( "Sets the maximum distance from the offset geometry to use when creating a mitered join as a factor of the offset distance (only applicable for miter join styles). Minimum: 1.0." )
+  );
+  addParameter( miterLimitParam.release() );
 }
 
 bool QgsSingleSidedBufferAlgorithm::prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback * )

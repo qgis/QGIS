@@ -87,6 +87,7 @@ void QgsSegmentizeByMaximumDistanceAlgorithm::initParameters( const QVariantMap 
   tolerance->setIsDynamic( true );
   tolerance->setDynamicPropertyDefinition( QgsPropertyDefinition( u"DISTANCE"_s, QObject::tr( "Maximum offset distance" ), QgsPropertyDefinition::DoublePositive ) );
   tolerance->setDynamicLayerParameterName( u"INPUT"_s );
+  tolerance->setHelp( QObject::tr( "Maximum allowed offset distance between the original curve and the segmentized representation, in the layer units." ) );
   addParameter( tolerance.release() );
 }
 
@@ -189,6 +190,7 @@ void QgsSegmentizeByMaximumAngleAlgorithm::initParameters( const QVariantMap & )
   tolerance->setIsDynamic( true );
   tolerance->setDynamicPropertyDefinition( QgsPropertyDefinition( u"ANGLE"_s, QObject::tr( "Maximum angle between vertices (degrees)" ), QgsPropertyDefinition::DoublePositive ) );
   tolerance->setDynamicLayerParameterName( u"INPUT"_s );
+  tolerance->setHelp( QObject::tr( "Maximum allowed radius angle between vertices on the straightened geometry." ) );
   addParameter( tolerance.release() );
 }
 

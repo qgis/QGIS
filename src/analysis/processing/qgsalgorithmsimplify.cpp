@@ -89,11 +89,18 @@ void QgsSimplifyAlgorithm::initParameters( const QVariantMap & )
   QStringList methods;
   methods << QObject::tr( "Distance (Douglas-Peucker)" ) << QObject::tr( "Snap to grid" ) << QObject::tr( "Area (Visvalingam)" );
 
-  addParameter( new QgsProcessingParameterEnum( u"METHOD"_s, QObject::tr( "Simplification method" ), methods, false, 0 ) );
+  auto methodParam = std::make_unique<QgsProcessingParameterEnum>( u"METHOD"_s, QObject::tr( "Simplification method" ), methods, false, 0 );
+  methodParam->setHelp( QObject::tr( "Simplification method. One of: Distance (Douglas-Peucker), Snap to grid, Area (Visvalingam)." ) );
+  addParameter( methodParam.release() );
+
   auto tolerance = std::make_unique<QgsProcessingParameterDistance>( u"TOLERANCE"_s, QObject::tr( "Tolerance" ), 1.0, u"INPUT"_s, false, 0, 10000000.0 );
   tolerance->setIsDynamic( true );
   tolerance->setDynamicPropertyDefinition( QgsPropertyDefinition( u"Tolerance"_s, QObject::tr( "Tolerance distance" ), QgsPropertyDefinition::DoublePositive ) );
   tolerance->setDynamicLayerParameterName( u"INPUT"_s );
+  tolerance->setHelp(
+    QObject::tr( "Threshold tolerance (in units of the layer): if the distance between two nodes is smaller than the tolerance value, the segment will be simplified and vertices will be removed." )
+  );
+
   addParameter( tolerance.release() );
 }
 

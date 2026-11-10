@@ -108,24 +108,28 @@ void QgsWedgeBuffersAlgorithm::initParameters( const QVariantMap & )
   azimuth->setIsDynamic( true );
   azimuth->setDynamicPropertyDefinition( QgsPropertyDefinition( u"Azimuth"_s, QObject::tr( "Azimuth (degrees from North)" ), QgsPropertyDefinition::Double ) );
   azimuth->setDynamicLayerParameterName( u"INPUT"_s );
+  azimuth->setHelp( QObject::tr( "Angle (in degrees) as the middle value of the wedge." ) );
   addParameter( azimuth.release() );
 
   auto width = std::make_unique<QgsProcessingParameterNumber>( u"WIDTH"_s, QObject::tr( "Wedge width (in degrees)" ), Qgis::ProcessingNumberParameterType::Double, 45, false, 0, 360.0 );
   width->setIsDynamic( true );
   width->setDynamicPropertyDefinition( QgsPropertyDefinition( u"Width"_s, QObject::tr( "Wedge width (in degrees)" ), QgsPropertyDefinition::DoublePositive ) );
   width->setDynamicLayerParameterName( u"INPUT"_s );
+  width->setHelp( QObject::tr( "Width (in degrees) of the buffer. The wedge will extend to half of the angular width either side of the azimuth direction." ) );
   addParameter( width.release() );
 
   auto outerRadius = std::make_unique<QgsProcessingParameterNumber>( u"OUTER_RADIUS"_s, QObject::tr( "Outer radius" ), Qgis::ProcessingNumberParameterType::Double, 1, false, 0 );
   outerRadius->setIsDynamic( true );
   outerRadius->setDynamicPropertyDefinition( QgsPropertyDefinition( u"Outer radius"_s, QObject::tr( "Outer radius" ), QgsPropertyDefinition::DoublePositive ) );
   outerRadius->setDynamicLayerParameterName( u"INPUT"_s );
+  outerRadius->setHelp( QObject::tr( "The outer size (length) of the wedge: the size is meant from the source point to the edge of the wedge shape." ) );
   addParameter( outerRadius.release() );
 
   auto innerRadius = std::make_unique<QgsProcessingParameterNumber>( u"INNER_RADIUS"_s, QObject::tr( "Inner radius" ), Qgis::ProcessingNumberParameterType::Double, 0, true, 0 );
   innerRadius->setIsDynamic( true );
   innerRadius->setDynamicPropertyDefinition( QgsPropertyDefinition( u"Inner radius"_s, QObject::tr( "Inner radius" ), QgsPropertyDefinition::DoublePositive ) );
   innerRadius->setDynamicLayerParameterName( u"INPUT"_s );
+  innerRadius->setHelp( QObject::tr( "Inner radius value. If 0 the wedge will begin from the source point." ) );
   addParameter( innerRadius.release() );
 }
 
