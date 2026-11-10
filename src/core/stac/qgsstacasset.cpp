@@ -62,7 +62,7 @@ bool QgsStacAsset::isCloudOptimized() const
 
 QString QgsStacAsset::formatName() const
 {
-  const thread_local QRegularExpression zarrmMediaTypePattern( R"(application/(?:vnd|x)[+-.]zarr(?:;\sversion=\d(?:;\sprofile=.+)?)?)" );
+  const thread_local QRegularExpression zarrmMediaTypePattern( R"(application/(?:vnd|x)[+-.]zarr(?:;.*)?)" );
 
   if ( mMediaType == "image/tiff; application=geotiff; profile=cloud-optimized"_L1 || mMediaType == "image/vnd.stac.geotiff; cloud-optimized=true"_L1 )
     return u"COG"_s;
