@@ -2,4 +2,4 @@ Embedded copy of https://github.com/JakubMelka/PDF4QT
 
 Current snapshot is 53cac7cea9eb99f317366745a74d14be5c3df964
 
-patched to support statically linking and using QGIS' internal blend2d
+patched to support statically linking, optionally using QGIS' internal blend2d and disabling unused fontconfig dependency on Windows
