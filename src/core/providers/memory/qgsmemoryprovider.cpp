@@ -426,6 +426,7 @@ void QgsMemoryProvider::handlePostCloneOperations( QgsVectorDataProvider *source
     mFeatures = other->mFeatures;
     mNextFeatureId = other->mNextFeatureId;
     mExtent3D = other->mExtent3D;
+    mSpatialIndex = std::make_unique<QgsSpatialIndex>( *other->mSpatialIndex.get() );
   }
 }
 
