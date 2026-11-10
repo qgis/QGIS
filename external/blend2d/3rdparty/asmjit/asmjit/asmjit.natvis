@@ -1,0 +1,245 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!-- asmjit visualizer for Visual Studio (natvis) -->
+
+<AutoVisualizer xmlns="http://schemas.microsoft.com/vstudio/debugger/natvis/2010">
+  <Type Name="asmjit::String">
+    <Intrinsic Name="isSmall" Expression="(_type &lt; 0x1F)"/>
+    <DisplayString Condition="isSmall()">{_small.data, s8}</DisplayString>
+    <DisplayString Condition="!isSmall()">{_large.data, s8}</DisplayString>
+    <Expand HideRawView="true">
+      <Synthetic Name="_type">
+        <DisplayString Condition="(_type &lt; 0x1F)">Small</DisplayString>
+        <DisplayString Condition="(_type == 0x1F)">Large</DisplayString>
+        <DisplayString Condition="(_type &gt; 0x1F)">External</DisplayString>
+      </Synthetic>
+      <Item Name="_size" Condition="isSmall()" ExcludeView="simple">(int)_small.type, d</Item>
+      <Item Name="_size" Condition="!isSmall()" ExcludeView="simple">_large.size, d</Item>
+      <Item Name="_capacity" Condition="isSmall()" ExcludeView="simple">asmjit::String::kSSOCapacity, d</Item>
+      <Item Name="_capacity" Condition="!isSmall()" ExcludeView="simple">_large.capacity, d</Item>
+      <Item Name="_data" Condition="isSmall()" ExcludeView="simple">_small.data, s8</Item>
+      <Item Name="_data" Condition="!isSmall()" ExcludeView="simple">_large.data, s8</Item>
+    </Expand>
+  </Type>
+
+  <Type Name="asmjit::ArenaVector&lt;*&gt;">
+    <DisplayString>{{ [size={_size, d} capacity={_capacity, d}] }}</DisplayString>
+    <Expand>
+      <Item Name="_size" ExcludeView="simple">_size, d</Item>
+      <Item Name="_capacity" ExcludeView="simple">_capacity, d</Item>
+      <ArrayItems>
+        <Size>_size</Size>
+        <ValuePointer>(($T1*)_data)</ValuePointer>
+      </ArrayItems>
+    </Expand>
+  </Type>
+
+  <Type Name="asmjit::OperandSignature">
+    <Intrinsic Name="op_type" Expression="(asmjit::OperandType)(_bits &amp; 0x7)" />
+    <Intrinsic Name="opSize" Expression="(_bits &gt;&gt; 24) &amp; 0xFF" />
+    <Intrinsic Name="reg_type" Expression="(asmjit::RegType)((_bits &gt;&gt; 3) &amp; 0x1F)" />
+    <Intrinsic Name="reg_group" Expression="(asmjit::RegGroup)((_bits &gt;&gt; 8) &amp; 0xF)" />
+    <Intrinsic Name="memBaseType" Expression="(asmjit::RegType)((_bits &gt;&gt; 3) &amp; 0x1F)" />
+    <Intrinsic Name="memIndexType" Expression="(asmjit::RegType)((_bits &gt;&gt; 8) &amp; 0x1F)" />
+    <Intrinsic Name="memRegHome" Expression="(bool)((_bits &gt;&gt; 13) &amp; 0x1)" />
+    <Intrinsic Name="memX86Segment" Expression="(asmjit::x86::SReg::Id)((_bits &gt;&gt; 18) &amp; 0x7)" />
+    <Intrinsic Name="memX86AddrType" Expression="(asmjit::x86::Mem::AddrType)((_bits &gt;&gt; 14) &amp; 0x3)" />
+    <Intrinsic Name="memX86ShiftValue" Expression="((_bits &gt;&gt; 16) &amp; 0x3)" />
+    <Intrinsic Name="memX86Broadcast" Expression="(asmjit::x86::Mem::Broadcast)((_bits &gt;&gt; 21) &amp; 0x7)" />
+    <Intrinsic Name="immType" Expression="(asmjit::ImmType)((_bits &gt;&gt; 3) &amp; 0x1)" />
+
+    <DisplayString Condition="op_type() == asmjit::OperandType::kNone">[None]</DisplayString>
+    <DisplayString Condition="op_type() == asmjit::OperandType::kReg">[Reg] {{ type={reg_type()} group={reg_group()} size={opSize(), d} }}</DisplayString>
+    <DisplayString Condition="op_type() == asmjit::OperandType::kMem">[Mem] {{ base={memBaseType()} index={memIndexType()} }}</DisplayString>
+    <DisplayString Condition="op_type() == asmjit::OperandType::kImm">[Imm] {{ type={immType()} }}</DisplayString>
+    <DisplayString Condition="op_type() == asmjit::OperandType::kLabel">[Label]</DisplayString>
+    <DisplayString Condition="op_type() &gt; asmjit::OperandType::kMaxValue">[Unknown]</DisplayString>
+
+    <Expand HideRawView="true">
+      <Item Name="bits">_bits, X</Item>
+      <Item Name="op.type">op_type()</Item>
+      <Item Name="reg.type" Condition="op_type() == asmjit::OperandType::kReg">reg_type()</Item>
+      <Item Name="reg.group" Condition="op_type() == asmjit::OperandType::kReg">reg_group()</Item>
+      <Item Name="reg.size" Condition="op_type() == asmjit::OperandType::kReg">opSize(), d</Item>
+      <Item Name="mem.base_type" Condition="op_type() == asmjit::OperandType::kMem">memBaseType()</Item>
+      <Item Name="mem.index_type" Condition="op_type() == asmjit::OperandType::kMem">memIndexType()</Item>
+      <Item Name="mem.regHome" Condition="op_type() == asmjit::OperandType::kMem">memRegHome()</Item>
+      <Item Name="mem.size" Condition="op_type() == asmjit::OperandType::kMem">opSize(), d</Item>
+      <Item Name="mem.x86.segment" Condition="op_type() == asmjit::OperandType::kMem">memX86Segment()</Item>
+      <Item Name="mem.x86.addr_type" Condition="op_type() == asmjit::OperandType::kMem">memX86AddrType()</Item>
+      <Item Name="mem.x86.shift" Condition="op_type() == asmjit::OperandType::kMem">memX86ShiftValue()</Item>
+      <Item Name="mem.x86.broadcast" Condition="op_type() == asmjit::OperandType::kMem">memX86Broadcast()</Item>
+      <Item Name="imm.type" Condition="op_type() == asmjit::OperandType::kImm">immType()</Item>
+    </Expand>
+  </Type>
+
+  <Type Name="asmjit::Operand_">
+    <Intrinsic Name="op_type" Expression="(asmjit::OperandType)(_signature._bits &amp; 0x7)" />
+    <Intrinsic Name="opSize" Expression="(_signature._bits &gt;&gt; 24) &amp; 0xFF" />
+    <Intrinsic Name="reg_type" Expression="(asmjit::RegType)((_signature._bits &gt;&gt; 3) &amp; 0x1F)" />
+    <Intrinsic Name="reg_group" Expression="(asmjit::RegGroup)((_signature._bits &gt;&gt; 8) &amp; 0xF)" />
+    <Intrinsic Name="memBaseType" Expression="(asmjit::RegType)((_signature._bits &gt;&gt; 3) &amp; 0x1F)" />
+    <Intrinsic Name="memIndexType" Expression="(asmjit::RegType)((_signature._bits &gt;&gt; 8) &amp; 0x1F)" />
+    <Intrinsic Name="memRegHome" Expression="(bool)((_signature._bits &gt;&gt; 13) &amp; 0x1)" />
+    <Intrinsic Name="memX86Segment" Expression="(asmjit::x86::SReg::Id)((_signature._bits &gt;&gt; 18) &amp; 0x7)" />
+    <Intrinsic Name="memX86AddrType" Expression="(asmjit::x86::Mem::AddrType)((_signature._bits &gt;&gt; 14) &amp; 0x3)" />
+    <Intrinsic Name="memX86ShiftValue" Expression="((_signature._bits &gt;&gt; 16) &amp; 0x3)" />
+    <Intrinsic Name="memX86Broadcast" Expression="(asmjit::x86::Mem::Broadcast)((_signature._bits &gt;&gt; 21) &amp; 0x7)" />
+    <Intrinsic Name="memBaseId" Expression="_base_id" />
+    <Intrinsic Name="memIndexId" Expression="_data[0]" />
+    <Intrinsic Name="memOffset32b" Expression="(__int64)int(_data[1])" />
+    <Intrinsic Name="memOffset64b" Expression="(__int64) ((unsigned __int64)_base_id &lt;&lt; 32) | ((unsigned __int64)_data[1])" />
+    <Intrinsic Name="memOffset" Expression="memBaseType() != asmjit::RegType::kNone ? memOffset32b() : memOffset64b()" />
+    <Intrinsic Name="immType" Expression="(asmjit::ImmType)((_signature._bits &gt;&gt; 3) &amp; 0x1)" />
+    <Intrinsic Name="immValue" Expression="((__int64)_data[1] &lt;&lt; 32) | (__int64)_data[0]" />
+
+    <DisplayString Condition="op_type() == asmjit::OperandType::kNone">[None]</DisplayString>
+    <DisplayString Condition="op_type() == asmjit::OperandType::kReg">[Reg] {{ id={_base_id, d} group={reg_group(), d} type={reg_type(), d} size={opSize(), d} }}</DisplayString>
+    <DisplayString Condition="op_type() == asmjit::OperandType::kMem">[Mem] {{ base_id={memBaseId(), d} index_id={memIndexId(), d} offset={(__int64)memOffset(), d} }}</DisplayString>
+    <DisplayString Condition="op_type() == asmjit::OperandType::kImm">[Imm] {{ val={immValue(), d} hex={immValue(), X} }}</DisplayString>
+    <DisplayString Condition="op_type() == asmjit::OperandType::kLabel">[Label] {{ id={_base_id} }}</DisplayString>
+    <DisplayString Condition="op_type() &gt; 4">[Unknown]</DisplayString>
+    <Expand HideRawView="true">
+      <Item Name="_signature">_signature._bits, X</Item>
+      <Item Name="op.type">op_type()</Item>
+      <Item Name="op.size">opSize(), d</Item>
+      <Item Name="reg.type" Condition="op_type() == asmjit::OperandType::kReg">reg_type()</Item>
+      <Item Name="reg.group" Condition="op_type() == asmjit::OperandType::kReg">reg_group()</Item>
+      <Item Name="reg.id" Condition="op_type() == asmjit::OperandType::kReg">_base_id, d</Item>
+      <Item Name="mem.base_type" Condition="op_type() == asmjit::OperandType::kMem">memBaseType()</Item>
+      <Item Name="mem.base_id" Condition="op_type() == asmjit::OperandType::kMem &amp;&amp; memBaseType() != asmjit::RegType::kNone">memBaseId()</Item>
+      <Item Name="mem.index_type" Condition="op_type() == asmjit::OperandType::kMem">memIndexType()</Item>
+      <Item Name="mem.index_id" Condition="op_type() == asmjit::OperandType::kMem &amp;&amp; memIndexType() != asmjit::RegType::kNone">memIndexId()</Item>
+      <Item Name="mem.regHome" Condition="op_type() == asmjit::OperandType::kMem">memRegHome()</Item>
+      <Item Name="mem.offset" Condition="op_type() == asmjit::OperandType::kMem">memOffset(), d</Item>
+      <Item Name="mem.x86.segment" Condition="op_type() == asmjit::OperandType::kMem">memX86Segment()</Item>
+      <Item Name="mem.x86.addr_type" Condition="op_type() == asmjit::OperandType::kMem">memX86AddrType()</Item>
+      <Item Name="mem.x86.shift" Condition="op_type() == asmjit::OperandType::kMem">memX86ShiftValue()</Item>
+      <Item Name="mem.x86.broadcast" Condition="op_type() == asmjit::OperandType::kMem">memX86Broadcast()</Item>
+      <Item Name="imm.type" Condition="op_type() == asmjit::OperandType::kImm">immType()</Item>
+      <Item Name="imm.value" Condition="op_type() == asmjit::OperandType::kImm">immValue(), X</Item>
+      <Item Name="label.id" Condition="op_type() == asmjit::OperandType::kLabel">_base_id, d</Item>
+      <Item Name="raw.base_id">_base_id</Item>
+      <Item Name="raw.data[0]">_data[0]</Item>
+      <Item Name="raw.data[1]">_data[1]</Item>
+    </Expand>
+  </Type>
+
+  <Type Name="asmjit::FuncValue">
+    <Intrinsic Name="is_reg" Expression="(_data &amp; asmjit::FuncValue::kFlagIsReg) != 0" />
+    <Intrinsic Name="isStack" Expression="(_data &amp; asmjit::FuncValue::kFlagIsStack) != 0" />
+    <Intrinsic Name="isIndirect" Expression="(_data &amp; asmjit::FuncValue::kFlagIsIndirect) != 0" />
+    <Intrinsic Name="is_done" Expression="(_data &amp; asmjit::FuncValue::kFlagIsDone) != 0" />
+
+    <Intrinsic Name="type_id" Expression="((_data &amp; asmjit::FuncValue::kTypeIdMask) &gt;&gt; asmjit::FuncValue::kTypeIdShift)" />
+    <Intrinsic Name="reg_id" Expression="((_data &amp; asmjit::FuncValue::kRegIdMask) &gt;&gt; asmjit::FuncValue::kRegIdShift)" />
+    <Intrinsic Name="reg_type" Expression="((_data &amp; asmjit::FuncValue::kRegTypeMask) &gt;&gt; asmjit::FuncValue::kRegTypeShift)" />
+    <Intrinsic Name="stack_offset" Expression="((_data &amp; asmjit::FuncValue::kStackOffsetMask) &gt;&gt; asmjit::FuncValue::kStackOffsetShift)" />
+
+    <DisplayString Condition="is_reg()">[RegValue {{ reg_type={reg_type()} indirect={isIndirect()} done={is_done()} }}]</DisplayString>
+    <DisplayString Condition="isStack()">[StackValue {{ indirect={isIndirect()} done={is_done()} }}]</DisplayString>
+    <DisplayString Condition="!is_reg() &amp;&amp; !isStack()">[Unknown]</DisplayString>
+
+    <Expand HideRawView="true">
+      <Item Name="data">_data</Item>
+      <Item Name="type_id">(asmjit::TypeId)(type_id())</Item>
+      <Item Name="reg_type" Condition="is_reg()">(asmjit::RegType)reg_type()</Item>
+      <Item Name="reg_id" Condition="is_reg()">reg_id()</Item>
+      <Item Name="stack_offset" Condition="isStack()">stack_offset()</Item>
+    </Expand>
+  </Type>
+
+  <Type Name="asmjit::BaseNode">
+    <Intrinsic Name="nodeType" Expression="_node_type" />
+
+    <Intrinsic Name="is_inst" Expression="nodeType() == asmjit::NodeType::kInst"></Intrinsic>
+    <Intrinsic Name="is_section" Expression="nodeType() == asmjit::NodeType::kSection"></Intrinsic>
+    <Intrinsic Name="is_label" Expression="nodeType() == asmjit::NodeType::kLabel"></Intrinsic>
+    <Intrinsic Name="is_align" Expression="nodeType() == asmjit::NodeType::kAlign"></Intrinsic>
+    <Intrinsic Name="is_embed_data" Expression="nodeType() == asmjit::NodeType::kEmbedData"></Intrinsic>
+    <Intrinsic Name="is_embed_label" Expression="nodeType() == asmjit::NodeType::kEmbedLabel"></Intrinsic>
+    <Intrinsic Name="is_embed_label_delta" Expression="nodeType() == asmjit::NodeType::kEmbedLabelDelta"></Intrinsic>
+    <Intrinsic Name="is_const_pool" Expression="nodeType() == asmjit::NodeType::kConstPool"></Intrinsic>
+    <Intrinsic Name="is_comment" Expression="nodeType() == asmjit::NodeType::kComment"></Intrinsic>
+    <Intrinsic Name="is_sentinel" Expression="nodeType() == asmjit::NodeType::kSentinel"></Intrinsic>
+    <Intrinsic Name="isJump" Expression="nodeType() == asmjit::NodeType::kJump"></Intrinsic>
+    <Intrinsic Name="is_func" Expression="nodeType() == asmjit::NodeType::kFunc"></Intrinsic>
+    <Intrinsic Name="is_func_ret" Expression="nodeType() == asmjit::NodeType::kFuncRet"></Intrinsic>
+    <Intrinsic Name="is_invoke" Expression="nodeType() == asmjit::NodeType::kInvoke"></Intrinsic>
+
+    <Intrinsic Name="actsAsInst" Expression="is_inst() || isJump() || is_func() || is_func_ret() || is_invoke()" />
+    <Intrinsic Name="actsAsLabel" Expression="is_label() || is_func()" />
+
+    <DisplayString Condition="is_inst()">[InstNode]</DisplayString>
+    <DisplayString Condition="is_section()">[SectionNode]</DisplayString>
+    <DisplayString Condition="is_label()">[LabelNode]</DisplayString>
+    <DisplayString Condition="is_align()">[AlignNode]</DisplayString>
+    <DisplayString Condition="is_embed_data()">[EmbedDataNode]</DisplayString>
+    <DisplayString Condition="is_embed_label()">[EmbedLabelNode]</DisplayString>
+    <DisplayString Condition="is_embed_label_delta()">[EmbedLabelDeltaNode]</DisplayString>
+    <DisplayString Condition="is_const_pool()">[ConstPoolNode]</DisplayString>
+    <DisplayString Condition="is_comment()">[CommentNode]</DisplayString>
+    <DisplayString Condition="is_sentinel()">[SentinelNode]</DisplayString>
+    <DisplayString Condition="isJump()">[JumpNode]</DisplayString>
+    <DisplayString Condition="is_func()">[FuncNode]</DisplayString>
+    <DisplayString Condition="is_func_ret()">[FuncRetNode]</DisplayString>
+    <DisplayString Condition="is_invoke()">[InvokeNode]</DisplayString>
+    <DisplayString Condition="nodeType() == asmjit::NodeType::kNone || nodeType() &gt; 18">[UnknownNode {nodeType(), d}]</DisplayString>
+
+    <Expand HideRawView="true">
+      <Item Name="prev">_prev</Item>
+      <Item Name="next">_next</Item>
+
+      <Item Name="nodeType">_node_type</Item>
+      <Item Name="nodeFlags">_node_flags</Item>
+
+      <Item Name="position">_position</Item>
+      <Item Name="user_data.u64">_userDataU64</Item>
+      <Item Name="user_data.ptr">_userDataPtr</Item>
+      <Item Name="pass_data">_passData</Item>
+      <Item Name="inline_comment">_inline_comment, s8</Item>
+
+      <Item Name="baseInst" Condition="actsAsInst()">((asmjit::InstNode*)this)-&gt;_baseInst</Item>
+      <Item Name="op_count" Condition="actsAsInst()">_inst._op_count</Item>
+      <Item Name="op_capacity" Condition="actsAsInst()">_inst._op_capacity</Item>
+      <Item Name="op_array" Condition="actsAsInst()">((asmjit::InstNode*)this)-&gt;_opArray, [_inst._op_count]</Item>
+
+      <Item Name="section_id" Condition="is_section()">((asmjit::SectionNode*)this)-&gt;_section_id</Item>
+      <Item Name="nextSection" Condition="is_section()">((asmjit::SectionNode*)this)-&gt;_nextSection</Item>
+
+      <Item Name="label_id" Condition="is_label()">((asmjit::LabelNode*)this)-&gt;_label_id</Item>
+
+      <Item Name="align_mode" Condition="is_align()">((asmjit::AlignNode*)this)-&gt;_align_data._align_mode</Item>
+      <Item Name="alignment" Condition="is_align()">((asmjit::AlignNode*)this)-&gt;_alignment</Item>
+
+      <Item Name="type_id" Condition="is_embed_data()">_embed._type_id, d</Item>
+      <Item Name="type_size" Condition="is_embed_data()">_embed._type_size, d</Item>
+      <Item Name="item_count" Condition="is_embed_data()">((asmjit::EmbedDataNode*)this)-&gt;_item_count</Item>
+      <Item Name="repeat_count" Condition="is_embed_data()">((asmjit::EmbedDataNode*)this)-&gt;_repeat_count</Item>
+      <Item Name="inlineData" Condition="is_embed_data()">((asmjit::EmbedDataNode*)this)-&gt;_inlineData</Item>
+      <Item Name="externalData" Condition="is_embed_data()">((asmjit::EmbedDataNode*)this)-&gt;_externalData</Item>
+
+      <Item Name="label_id" Condition="is_embed_label()">((asmjit::EmbedLabelNode*)this)-&gt;_label_id</Item>
+
+      <Item Name="label_id" Condition="is_embed_label_delta()">((asmjit::EmbedLabelDeltaNode*)this)-&gt;_label_id</Item>
+      <Item Name="base_label_id" Condition="is_embed_label_delta()">((asmjit::EmbedLabelDeltaNode*)this)-&gt;_base_label_id</Item>
+      <Item Name="data_size" Condition="is_embed_label_delta()">((asmjit::EmbedLabelDeltaNode*)this)-&gt;_data_size</Item>
+
+      <Item Name="const_pool" Condition="is_const_pool()">((asmjit::ConstPoolNode*)this)-&gt;_const_pool</Item>
+
+      <Item Name="sentinel.sentinel_type" Condition="is_sentinel()">_sentinel._sentinel_type</Item>
+
+      <Item Name="annotation" Condition="isJump()">((asmjit::JumpNode*)this)-&gt;_annotation</Item>
+
+      <Item Name="func_detail" Condition="is_func()">((asmjit::FuncNode*)this)-&gt;_func_detail</Item>
+      <Item Name="frame" Condition="is_func()">((asmjit::FuncNode*)this)-&gt;_frame</Item>
+      <Item Name="exit_node" Condition="is_func()">((asmjit::FuncNode*)this)-&gt;_exit_node</Item>
+      <Item Name="end" Condition="is_func()">((asmjit::FuncNode*)this)-&gt;_end</Item>
+      <Item Name="args" Condition="is_func()">((asmjit::FuncNode*)this)-&gt;_args, [((asmjit::FuncNode*)this)-&gt;_func_detail._arg_count]</Item>
+
+      <Item Name="func_detail" Condition="is_invoke()">((asmjit::InvokeNode*)this)-&gt;_func_detail</Item>
+      <Item Name="rets" Condition="is_invoke()">((asmjit::InvokeNode*)this)-&gt;_rets</Item>
+      <Item Name="args" Condition="is_invoke()">((asmjit::InvokeNode*)this)-&gt;_args, [((asmjit::InvokeNode*)this)-&gt;_func_detail._arg_count]</Item>
+    </Expand>
+  </Type>
+</AutoVisualizer>
