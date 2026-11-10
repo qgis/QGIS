@@ -2987,7 +2987,7 @@ void QgsOptions::customizeBearingFormat()
   dlg.setWindowTitle( tr( "Bearing Format" ) );
   if ( dlg.exec() )
   {
-    mBearingFormat.reset( dlg.format() );
+    mBearingFormat = dlg.format();
   }
 }
 
@@ -2997,6 +2997,6 @@ void QgsOptions::customizeCoordinateFormat()
   dlg.setWindowTitle( tr( "Coordinate Format" ) );
   if ( dlg.exec() )
   {
-    mCoordinateFormat.reset( dlg.format() );
+    mCoordinateFormat = dlg.format();
   }
 }
