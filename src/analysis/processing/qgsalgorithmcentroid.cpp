@@ -92,6 +92,7 @@ void QgsCentroidAlgorithm::initParameters( const QVariantMap & )
   allParts->setIsDynamic( true );
   allParts->setDynamicPropertyDefinition( QgsPropertyDefinition( u"All parts"_s, QObject::tr( "Create centroid for each part" ), QgsPropertyDefinition::Boolean ) );
   allParts->setDynamicLayerParameterName( u"INPUT"_s );
+  allParts->setHelp( QObject::tr( "If True (checked), a centroid will be created for each part of the geometry." ) );
   addParameter( allParts.release() );
 }
 

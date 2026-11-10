@@ -82,6 +82,7 @@ void QgsDensifyGeometriesByIntervalAlgorithm::initParameters( const QVariantMap 
   interval->setIsDynamic( true );
   interval->setDynamicPropertyDefinition( QgsPropertyDefinition( u"Interval"_s, QObject::tr( "Interval" ), QgsPropertyDefinition::DoublePositive ) );
   interval->setDynamicLayerParameterName( u"INPUT"_s );
+  interval->setHelp( QObject::tr( "Maximum distance between two consecutive vertices." ) );
   addParameter( interval.release() );
 }
 
