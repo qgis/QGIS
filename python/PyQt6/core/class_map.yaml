@@ -12075,7 +12075,6 @@ QgsPointCloudAttribute: src/core/pointcloud/qgspointcloudattribute.h#L42
 QgsPointCloudAttributeByRampRenderer.attribute: src/core/pointcloud/qgspointcloudattributebyramprenderer.h#L90
 QgsPointCloudAttributeByRampRenderer.clone: src/core/pointcloud/qgspointcloudattributebyramprenderer.h#L73
 QgsPointCloudAttributeByRampRenderer.colorRampShader: src/core/pointcloud/qgspointcloudattributebyramprenderer.h#L104
-QgsPointCloudAttributeByRampRenderer.create: src/core/pointcloud/qgspointcloudattributebyramprenderer.h#L83
 QgsPointCloudAttributeByRampRenderer.maximum: src/core/pointcloud/qgspointcloudattributebyramprenderer.h#L135
 QgsPointCloudAttributeByRampRenderer.minimum: src/core/pointcloud/qgspointcloudattributebyramprenderer.h#L119
 QgsPointCloudAttributeByRampRenderer.renderBlock: src/core/pointcloud/qgspointcloudattributebyramprenderer.h#L74
@@ -12121,7 +12120,6 @@ QgsPointCloudAttributeProxyModel: src/core/pointcloud/qgspointcloudattributemode
 QgsPointCloudAttributeStatistics.singleClassCount: src/core/pointcloud/qgspointcloudstatistics.h#L64
 QgsPointCloudAttributeStatistics: src/core/pointcloud/qgspointcloudstatistics.h#L47
 QgsPointCloudBlock.attributes: src/core/pointcloud/qgspointcloudblock.h#L67
-QgsPointCloudBlock.clone: src/core/pointcloud/qgspointcloudblock.h#L51
 QgsPointCloudBlock.data: src/core/pointcloud/qgspointcloudblock.h#L54
 QgsPointCloudBlock.offset: src/core/pointcloud/qgspointcloudblock.h#L73
 QgsPointCloudBlock.pointCount: src/core/pointcloud/qgspointcloudblock.h#L57
@@ -12145,7 +12143,6 @@ QgsPointCloudClassifiedRenderer.attribute: src/core/pointcloud/qgspointcloudclas
 QgsPointCloudClassifiedRenderer.categories: src/core/pointcloud/qgspointcloudclassifiedrenderer.h#L213
 QgsPointCloudClassifiedRenderer.checkLegendItem: src/core/pointcloud/qgspointcloudclassifiedrenderer.h#L181
 QgsPointCloudClassifiedRenderer.clone: src/core/pointcloud/qgspointcloudclassifiedrenderer.h#L173
-QgsPointCloudClassifiedRenderer.create: src/core/pointcloud/qgspointcloudclassifiedrenderer.h#L187
 QgsPointCloudClassifiedRenderer.defaultCategories: src/core/pointcloud/qgspointcloudclassifiedrenderer.h#L192
 QgsPointCloudClassifiedRenderer.legendItemChecked: src/core/pointcloud/qgspointcloudclassifiedrenderer.h#L180
 QgsPointCloudClassifiedRenderer.legendRuleKeys: src/core/pointcloud/qgspointcloudclassifiedrenderer.h#L179
@@ -12178,8 +12175,6 @@ QgsPointCloudDataProvider.subsetStringHelpUrl: src/core/pointcloud/qgspointcloud
 QgsPointCloudDataProvider.supportsSubsetString: src/core/pointcloud/qgspointclouddataprovider.h#L238
 QgsPointCloudDataProvider: src/core/pointcloud/qgspointclouddataprovider.h#L41
 QgsPointCloudExtentRenderer.clone: src/core/pointcloud/qgspointcloudextentrenderer.h#L46
-QgsPointCloudExtentRenderer.create: src/core/pointcloud/qgspointcloudextentrenderer.h#L57
-QgsPointCloudExtentRenderer.defaultFillSymbol: src/core/pointcloud/qgspointcloudextentrenderer.h#L67
 QgsPointCloudExtentRenderer.fillSymbol: src/core/pointcloud/qgspointcloudextentrenderer.h#L74
 QgsPointCloudExtentRenderer.renderBlock: src/core/pointcloud/qgspointcloudextentrenderer.h#L47
 QgsPointCloudExtentRenderer.renderExtent: src/core/pointcloud/qgspointcloudextentrenderer.h#L62
@@ -12390,7 +12385,6 @@ QgsPointCloudRenderer.horizontalTriangleFilterUnit: src/core/pointcloud/qgspoint
 QgsPointCloudRenderer.labelTextFormat: src/core/pointcloud/qgspointcloudrenderer.h#L733
 QgsPointCloudRenderer.legendItemChecked: src/core/pointcloud/qgspointcloudrenderer.h#L483
 QgsPointCloudRenderer.legendRuleKeys: src/core/pointcloud/qgspointcloudrenderer.h#L708
-QgsPointCloudRenderer.load: src/core/pointcloud/qgspointcloudrenderer.h#L430
 QgsPointCloudRenderer.maximumScreenError: src/core/pointcloud/qgspointcloudrenderer.h#L584
 QgsPointCloudRenderer.maximumScreenErrorUnit: src/core/pointcloud/qgspointcloudrenderer.h#L604
 QgsPointCloudRenderer.overviewSwitchingScale: src/core/pointcloud/qgspointcloudrenderer.h#L762
@@ -12438,7 +12432,6 @@ QgsPointCloudRendererMetadata.createRenderer: src/core/pointcloud/qgspointcloudr
 QgsPointCloudRendererMetadata: src/core/pointcloud/qgspointcloudrendererregistry.h#L131
 QgsPointCloudRendererRegistry.addRenderer: src/core/pointcloud/qgspointcloudrendererregistry.h#L199
 QgsPointCloudRendererRegistry.classificationAttributeCategories: src/core/pointcloud/qgspointcloudrendererregistry.h#L231
-QgsPointCloudRendererRegistry.defaultRenderer: src/core/pointcloud/qgspointcloudrendererregistry.h#L225
 QgsPointCloudRendererRegistry.removeRenderer: src/core/pointcloud/qgspointcloudrendererregistry.h#L207
 QgsPointCloudRendererRegistry.rendererMetadata: src/core/pointcloud/qgspointcloudrendererregistry.h#L213
 QgsPointCloudRendererRegistry.renderersList: src/core/pointcloud/qgspointcloudrendererregistry.h#L218
@@ -12446,7 +12439,6 @@ QgsPointCloudRendererRegistry: src/core/pointcloud/qgspointcloudrendererregistry
 QgsPointCloudRgbRenderer.blueAttribute: src/core/pointcloud/qgspointcloudrgbrenderer.h#L135
 QgsPointCloudRgbRenderer.blueContrastEnhancement: src/core/pointcloud/qgspointcloudrgbrenderer.h#L193
 QgsPointCloudRgbRenderer.clone: src/core/pointcloud/qgspointcloudrgbrenderer.h#L81
-QgsPointCloudRgbRenderer.create: src/core/pointcloud/qgspointcloudrgbrenderer.h#L90
 QgsPointCloudRgbRenderer.greenAttribute: src/core/pointcloud/qgspointcloudrgbrenderer.h#L117
 QgsPointCloudRgbRenderer.greenContrastEnhancement: src/core/pointcloud/qgspointcloudrgbrenderer.h#L173
 QgsPointCloudRgbRenderer.redAttribute: src/core/pointcloud/qgspointcloudrgbrenderer.h#L99
