@@ -885,7 +885,7 @@ std::unique_ptr< QgsFeatureRenderer > QgsArcGisRestUtils::convertRenderer( const
       }
       else
       {
-        context.pushWarning( QObject::tr( "ESRI valueExpression '%1' couldn't be converted to QGIS expression: '%2'" ).arg( valueExpression ).arg( converter.errorMessage() ) );
+        context.pushWarning( QObject::tr( "The Arcade valueExpression '%1' could not be converted to a QGIS expression: '%2'" ).arg( valueExpression ).arg( converter.errorMessage() ) );
       }
     }
 
