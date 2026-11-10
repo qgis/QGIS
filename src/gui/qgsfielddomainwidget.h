@@ -233,7 +233,7 @@ class GUI_EXPORT QgsFieldDomainWidget : public QWidget, private Ui_QgsFieldDomai
      *
      * \see setFieldDomain()
      */
-    QgsFieldDomain *createFieldDomain() const SIP_FACTORY;
+    std::unique_ptr<QgsFieldDomain> createFieldDomain() const;
 
     /**
      * Returns TRUE if the widget currently represents a valid field domain configuration.
@@ -300,7 +300,7 @@ class GUI_EXPORT QgsFieldDomainDialog : public QDialog
      *
      * \see setFieldDomain()
      */
-    QgsFieldDomain *createFieldDomain() const SIP_FACTORY;
+    std::unique_ptr<QgsFieldDomain> createFieldDomain() const;
 
     /**
      * Sets if name of the field domain is editable

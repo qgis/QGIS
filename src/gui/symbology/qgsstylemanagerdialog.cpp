@@ -2169,7 +2169,7 @@ bool QgsStyleManagerDialog::addSymbol3D( const QString &type )
   if ( !dialog.exec() )
     return false;
 
-  symbol.reset( dialog.symbol() );
+  symbol = dialog.symbol();
   if ( !symbol )
     return false;
 
@@ -2241,7 +2241,7 @@ bool QgsStyleManagerDialog::editSymbol3D()
   if ( !dlg.exec() )
     return false;
 
-  symbol.reset( dlg.symbol() );
+  symbol = dlg.symbol();
   if ( !symbol )
     return false;
 

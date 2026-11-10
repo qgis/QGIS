@@ -149,7 +149,7 @@ QgsRasterRenderer *QgsPalettedRendererWidget::renderer()
   QgsPalettedRasterRenderer *r = new QgsPalettedRasterRenderer( mRasterLayer->dataProvider(), bandNumber, classes );
   if ( !btnColorRamp->isNull() )
   {
-    r->setSourceColorRamp( btnColorRamp->colorRamp() );
+    r->setSourceColorRamp( btnColorRamp->colorRamp().release() );
   }
   return r;
 }
@@ -439,7 +439,7 @@ void QgsPalettedRendererWidget::classify()
       return;
     }
 
-    mGatherer = new QgsPalettedRendererClassGatherer( mRasterLayer, mBandComboBox->currentBand(), mModel->classData(), btnColorRamp->colorRamp() );
+    mGatherer = new QgsPalettedRendererClassGatherer( mRasterLayer, mBandComboBox->currentBand(), mModel->classData(), btnColorRamp->colorRamp().release() );
 
     connect( mGatherer, &QgsPalettedRendererClassGatherer::progressChanged, mCalculatingProgressBar, [this]( int progress ) { mCalculatingProgressBar->setValue( progress ); } );
 

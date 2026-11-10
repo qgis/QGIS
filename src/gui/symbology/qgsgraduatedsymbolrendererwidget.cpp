@@ -866,14 +866,14 @@ void QgsGraduatedSymbolRendererWidget::methodComboBox_currentIndexChanged( int )
     case ColorMode:
     {
       mRenderer->setGraduatedMethod( Qgis::GraduatedMethod::Color );
-      QgsColorRamp *ramp = btnColorRamp->colorRamp();
+      std::unique_ptr<QgsColorRamp> ramp = btnColorRamp->colorRamp();
 
       if ( !ramp )
       {
         QMessageBox::critical( this, tr( "Select Method" ), tr( "No color ramp defined." ) );
         return;
       }
-      mRenderer->setSourceColorRamp( ramp );
+      mRenderer->setSourceColorRamp( ramp.release() );
       reapplyColorRamp();
       break;
     }
