@@ -93,7 +93,7 @@ void QgsCheckValidityAlgorithm::initAlgorithm( const QVariantMap & )
   widgetMetadata.insert( u"columns"_s, 3 );
   methodParamMetadata.insert( u"widget_wrapper"_s, widgetMetadata );
   methodParam->setMetadata( methodParamMetadata );
-  methodParam->setHelp( QObject::tr( "Method to use to check validity." ) );
+  methodParam->setHelp( QObject::tr( "Method to use to check validity. One of: QGIS, GEOS, SFCGAL." ) );
   addParameter( methodParam.release() );
 
   auto ignoreRingSelfIntersectionParam = std::make_unique<QgsProcessingParameterBoolean>( u"IGNORE_RING_SELF_INTERSECTION"_s, QObject::tr( "Ignore ring self intersections" ), false );

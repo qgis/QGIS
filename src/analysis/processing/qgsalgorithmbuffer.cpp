@@ -68,12 +68,12 @@ void QgsBufferAlgorithm::initAlgorithm( const QVariantMap & )
 
   auto endCapParam = std::make_unique<
     QgsProcessingParameterEnum>( u"END_CAP_STYLE"_s, QObject::tr( "End cap style" ), QStringList() << QObject::tr( "Round" ) << QObject::tr( "Flat" ) << QObject::tr( "Square" ), false, 0 );
-  endCapParam->setHelp( QObject::tr( "Controls how line endings are handled in the buffer." ) );
+  endCapParam->setHelp( QObject::tr( "Controls how line endings are handled in the buffer. One of: Round, Flat, Square." ) );
   addParameter( endCapParam.release() );
 
   auto joinStyleParam
     = std::make_unique<QgsProcessingParameterEnum>( u"JOIN_STYLE"_s, QObject::tr( "Join style" ), QStringList() << QObject::tr( "Round" ) << QObject::tr( "Miter" ) << QObject::tr( "Bevel" ), false, 0 );
-  joinStyleParam->setHelp( QObject::tr( "Specifies whether round, miter or beveled joins should be used when offsetting corners in a line." ) );
+  joinStyleParam->setHelp( QObject::tr( "Specifies whether round, miter or beveled joins should be used when offsetting corners in a line. One of: Round, Miter, Bevel." ) );
   addParameter( joinStyleParam.release() );
 
   auto mitterLimitParam = std::make_unique<QgsProcessingParameterNumber>( u"MITER_LIMIT"_s, QObject::tr( "Miter limit" ), Qgis::ProcessingNumberParameterType::Double, 2, false, 1 );
