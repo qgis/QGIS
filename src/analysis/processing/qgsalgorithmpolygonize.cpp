@@ -65,7 +65,7 @@ void QgsPolygonizeAlgorithm::initAlgorithm( const QVariantMap & )
   addParameter( new QgsProcessingParameterFeatureSource( u"INPUT"_s, QObject::tr( "Input layer" ), QList<int>() << static_cast<int>( Qgis::ProcessingSourceType::VectorLine ) ) );
 
   auto keepFieldsParam = std::make_unique<QgsProcessingParameterBoolean>( u"KEEP_FIELDS"_s, QObject::tr( "Keep table structure of line layer" ), false );
-  keepFieldsParam->setHelp( QObject::tr( "Check to keep the fields (only the table structure, not the values) of the input layer." ) );
+  keepFieldsParam->setHelp( QObject::tr( "If checked, keep the fields (only the table structure, not the values) of the input layer." ) );
   addParameter( keepFieldsParam.release() );
 
   addParameter( new QgsProcessingParameterFeatureSink( u"OUTPUT"_s, QObject::tr( "Polygons" ), Qgis::ProcessingSourceType::VectorPolygon ) );
