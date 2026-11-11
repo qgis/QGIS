@@ -15,15 +15,19 @@
 
 #include "qgsmaplayerstyleguiutils.h"
 
+#include "qgsdataprovider.h"
 #include "qgslogger.h"
 #include "qgsmapcanvas.h"
 #include "qgsmaplayer.h"
 #include "qgsmaplayerstylemanager.h"
+#include "qgsproviderregistry.h"
 
 #include <QAction>
 #include <QActionGroup>
 #include <QInputDialog>
 #include <QMenu>
+#include <QMessageBox>
+#include <QPushButton>
 #include <QString>
 
 #include "moc_qgsmaplayerstyleguiutils.cpp"
@@ -206,4 +210,102 @@ void QgsMapLayerStyleGuiUtils::renameStyle()
   {
     QgsDebugError( "Failed to rename style: " + name );
   }
+}
+
+bool QgsMapLayerStyleGuiUtils::saveStyleAsDefault( QgsMapLayer *layer )
+{
+  if ( !layer )
+    return false;
+
+  const QgsDataProvider *provider = layer->dataProvider();
+  if ( provider && provider->styleStorageCapabilities().testFlag( Qgis::ProviderStyleStorageCapability::SaveToDatabase ) )
+  {
+    QMessageBox askToUser;
+    askToUser.setText( tr( "Save default style to: " ) );
+    askToUser.setIcon( QMessageBox::Question );
+    QPushButton *cancelButton = askToUser.addButton( tr( "Cancel" ), QMessageBox::RejectRole );
+    askToUser.addButton( tr( "Local Database" ), QMessageBox::NoRole );
+    QPushButton *datasourceButton = askToUser.addButton( tr( "Datasource Database" ), QMessageBox::YesRole );
+
+    askToUser.exec();
+
+    if ( askToUser.clickedButton() == cancelButton )
+    {
+      return false;
+    }
+    else if ( askToUser.clickedButton() == datasourceButton )
+    {
+      QString errorMessage;
+      if ( QgsProviderRegistry::instance()->styleExists( layer->providerType(), layer->source(), QString(), errorMessage ) )
+      {
+        if ( QMessageBox::question( nullptr, tr( "Save style in database" ), tr( "A matching style already exists in the database for this layer. Do you want to overwrite it?" ), QMessageBox::Yes | QMessageBox::No )
+             == QMessageBox::No )
+        {
+          return false;
+        }
+      }
+      else if ( !errorMessage.isEmpty() )
+      {
+        QMessageBox::warning( nullptr, tr( "Save style in database" ), errorMessage );
+        return false;
+      }
+
+      errorMessage.clear();
+      layer->saveStyleToDatabaseV2( QString(), QString(), true, QString(), errorMessage );
+      if ( !errorMessage.isEmpty() )
+      {
+        QMessageBox::warning( nullptr, tr( "Save style in database" ), errorMessage );
+        return false;
+      }
+      return true;
+    }
+  }
+
+  bool defaultSavedFlag = false;
+  const QString message = layer->saveDefaultStyle( defaultSavedFlag, QgsMapLayer::AllStyleCategories );
+  if ( !defaultSavedFlag )
+  {
+    QMessageBox::information( nullptr, tr( "Default Style" ), message );
+  }
+  return defaultSavedFlag;
+}
+
+bool QgsMapLayerStyleGuiUtils::loadDefaultStyle( QgsMapLayer *layer )
+{
+  if ( !layer )
+    return false;
+
+  const QgsDataProvider *provider = layer->dataProvider();
+  if ( !provider )
+    return false;
+
+  bool loadFromProvider = false;
+  if ( provider->styleStorageCapabilities().testFlag( Qgis::ProviderStyleStorageCapability::LoadFromDatabase ) )
+  {
+    QMessageBox askToUser;
+    askToUser.setText( tr( "Load default style from: " ) );
+    askToUser.setIcon( QMessageBox::Question );
+    askToUser.addButton( tr( "Cancel" ), QMessageBox::RejectRole );
+    askToUser.addButton( tr( "Local Database" ), QMessageBox::NoRole );
+    askToUser.addButton( tr( "Datasource Database" ), QMessageBox::YesRole );
+
+    switch ( askToUser.exec() )
+    {
+      case 0:
+        return false;
+      case 2:
+        loadFromProvider = true;
+        break;
+      default:
+        break;
+    }
+  }
+
+  QString errorMessage;
+  if ( !layer->restoreDefaultStyle( errorMessage, loadFromProvider ) )
+  {
+    QMessageBox::information( nullptr, tr( "Default Style" ), errorMessage );
+    return false;
+  }
+  return true;
 }

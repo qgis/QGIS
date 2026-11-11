@@ -58,6 +58,26 @@ class GUI_EXPORT QgsMapLayerStyleGuiUtils : public QObject
      */
     void removesExtraMenuSeparators( QMenu *m );
 
+    /**
+     * Saves the current style of the \a layer as its default style.
+     *
+     * \returns TRUE if the style was saved
+     *
+     * \see loadDefaultStyle()
+     * \since QGIS 4.6
+     */
+    static bool saveStyleAsDefault( QgsMapLayer *layer );
+
+    /**
+     * Restores the default style for the \a layer.
+     *
+     * \returns TRUE if the default style was loaded
+     *
+     * \see saveStyleAsDefault()
+     * \since QGIS 4.6
+     */
+    static bool loadDefaultStyle( QgsMapLayer *layer );
+
   public slots:
 
   private:
