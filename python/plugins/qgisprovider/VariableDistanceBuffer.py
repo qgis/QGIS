@@ -103,7 +103,7 @@ class VariableDistanceBuffer(QgisAlgorithm):
         )
         param.setHelp(
             self.tr(
-                "Dissolve the final buffer. If True (checked), overlapping buffers will be dissolved (combined) into a single multipart feature."
+                "Dissolve the final buffer. If True (checked), all features will be dissolved (combined) into a single multipart feature."
             )
         )
         self.addParameter(param)
