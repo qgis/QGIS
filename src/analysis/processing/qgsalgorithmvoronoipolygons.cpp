@@ -72,7 +72,9 @@ void QgsVoronoiPolygonsAlgorithm::initAlgorithm( const QVariantMap & )
   addParameter( new QgsProcessingParameterFeatureSource( u"INPUT"_s, QObject::tr( "Input layer" ), QList<int>() << static_cast<int>( Qgis::ProcessingSourceType::VectorPoint ) ) );
 
   auto bufferParam = std::make_unique<QgsProcessingParameterNumber>( u"BUFFER"_s, QObject::tr( "Buffer region (% of extent)" ), Qgis::ProcessingNumberParameterType::Double, 0, false, 0 );
-  bufferParam->setHelp( QObject::tr( "The extent of the output layer will be this much bigger than the extent of the input layer." ) );
+  bufferParam->setHelp(
+    QObject::tr( "Percentage by which the input layer extent is enlarged on each side. The left and right sides are extended by this percentage of the extent width, the top and bottom sides by this percentage of the extent height." )
+  );
   addParameter( bufferParam.release() );
 
   auto toleranceParam = std::make_unique<QgsProcessingParameterNumber>( u"TOLERANCE"_s, QObject::tr( "Tolerance" ), Qgis::ProcessingNumberParameterType::Double, 0, true, 0 );
