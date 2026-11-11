@@ -276,7 +276,7 @@ void QgsDissolveAlgorithm::initAlgorithm( const QVariantMap & )
 
   auto disjointParam = std::make_unique<QgsProcessingParameterBoolean>( u"SEPARATE_DISJOINT"_s, QObject::tr( "Keep disjoint features separate" ), false );
   disjointParam->setFlags( disjointParam->flags() | Qgis::ProcessingParameterFlag::Advanced );
-  disjointParam->setHelp( QObject::tr( "Parts of dissolved features are exported as separate features (instead of parts of a multipart feature)." ) );
+  disjointParam->setHelp( QObject::tr( "Controls whether parts of dissolved features are exported as separate features (instead of parts of a multipart feature)." ) );
   addParameter( disjointParam.release() );
 
   addParameter( new QgsProcessingParameterFeatureSink( u"OUTPUT"_s, QObject::tr( "Dissolved" ) ) );
