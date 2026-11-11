@@ -119,7 +119,7 @@ void QgsSingleSidedBufferAlgorithm::initParameters( const QVariantMap & )
 
   auto miterLimitParam = std::make_unique<QgsProcessingParameterNumber>( u"MITER_LIMIT"_s, QObject::tr( "Miter limit" ), Qgis::ProcessingNumberParameterType::Double, 2, false, 1 );
   miterLimitParam->setHelp(
-    QObject::tr( "Sets the maximum distance from the offset geometry to use when creating a mitered join as a factor of the offset distance (only applicable for miter join styles). Minimum: 1.0." )
+    QObject::tr( "Sets the maximum distance from the offset geometry to use when creating a mitered join as a factor of the offset distance (only applicable for miter join styles)." )
   );
   addParameter( miterLimitParam.release() );
 }
