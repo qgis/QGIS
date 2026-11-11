@@ -45,7 +45,7 @@ QgsHtmlToPdf::QgsHtmlToPdf()
 
   connect( &mPage, &QWebEnginePage::loadFinished, this, &QgsHtmlToPdf::onLoadFinished );
   connect( &mPage, &QWebEnginePage::loadProgress, this, []( int progress ) { std::cout << progress << std::endl; } );
-  connect( &mPage, &QWebEnginePage::loadingChanged, this, []( const QWebEngineLoadingInfo &info ) {
+  connect( &mPage, &QWebEnginePage::loadingChanged, this, [this]( const QWebEngineLoadingInfo &info ) {
     if ( info.status() == QWebEngineLoadingInfo::LoadFailedStatus )
     {
       std::cerr
@@ -58,6 +58,7 @@ QgsHtmlToPdf::QgsHtmlToPdf()
         << "  Error String: "
         << info.errorString().toStdString()
         << "\n";
+      mReturnCode = ReturnCode::LoadFailed;
     }
     else if ( info.status() == QWebEngineLoadingInfo::LoadStartedStatus )
     {
@@ -90,7 +91,8 @@ void QgsHtmlToPdf::onLoadFinished( bool ok )
 {
   if ( !ok )
   {
-    emit finished( 1 );
+    mReturnCode = LoadFailed;
+    emit finished( mReturnCode );
     return;
   }
 
@@ -174,7 +176,8 @@ void QgsHtmlToPdf::onLoadJsFinished( const QVariant &res )
   const QVariantList list = res.toList();
   if ( list.size() < 2 )
   {
-    emit finished( 1 );
+    mReturnCode = ReturnCode::LoadJsFailed;
+    emit finished( mReturnCode );
     return;
   }
 
@@ -199,7 +202,12 @@ void QgsHtmlToPdf::onLoadJsFinished( const QVariant &res )
 
 void QgsHtmlToPdf::onPdfFinished( const QString &, bool ok )
 {
-  emit finished( ok ? 0 : 1 );
+  if ( !ok )
+  {
+    mReturnCode = ReturnCode::PrintFailed;
+  }
+
+  emit finished( mReturnCode );
 }
 
 

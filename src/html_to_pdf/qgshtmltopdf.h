@@ -40,6 +40,13 @@ class QgsHtmlToPdf : public QObject
     Q_OBJECT
 
   public:
+    enum ReturnCode
+    {
+      Success = 0,
+      LoadFailed = 1,
+      LoadJsFailed = 2,
+      PrintFailed = 3,
+    };
     QgsHtmlToPdf();
 
     void run( const QString &url, const QString &pdfFileName, int width, const QString &userAgent );
@@ -55,6 +62,8 @@ class QgsHtmlToPdf : public QObject
     QgsLoggingWebEnginePage mPage;
     int mWidth = 0;
     QString mUserAgent;
+
+    ReturnCode mReturnCode = ReturnCode::Success;
 
     void onLoadFinished( bool ok );
     void onLoadJsFinished( const QVariant &res );
