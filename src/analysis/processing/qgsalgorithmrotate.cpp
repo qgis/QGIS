@@ -76,7 +76,7 @@ void QgsRotateFeaturesAlgorithm::initParameters( const QVariantMap & )
   rotation->setIsDynamic( true );
   rotation->setDynamicPropertyDefinition( QgsPropertyDefinition( u"ANGLE"_s, QObject::tr( "Rotation (degrees clockwise)" ), QgsPropertyDefinition::Rotation ) );
   rotation->setDynamicLayerParameterName( u"INPUT"_s );
-  rotation->setHelp( QObject::tr( "Angle of the rotation in degrees." ) );
+  rotation->setHelp( QObject::tr( "Angle of the rotation in degrees. Positive values rotate clockwise, negative values rotate counter-clockwise." ) );
   addParameter( rotation.release() );
 
   auto anchor = std::make_unique<QgsProcessingParameterPoint>( u"ANCHOR"_s, QObject::tr( "Rotation anchor point" ), QVariant(), true );

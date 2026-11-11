@@ -106,7 +106,9 @@ class RectanglesOvalsDiamondsVariable(QgisAlgorithm):
             optional=True,
         )
         param.setHelp(
-            self.tr("Field containing the rotation of the buffer shape in degrees.")
+            self.tr(
+                "Field containing the rotation of the buffer shape in degrees. Positive values rotate clockwise, negative values rotate counter-clockwise."
+            )
         )
         self.addParameter(param)
 

@@ -136,7 +136,7 @@ void QgsRectanglesOvalsDiamondsAlgorithm::initParameters( const QVariantMap & )
   rotationParam->setIsDynamic( true );
   rotationParam->setDynamicPropertyDefinition( QgsPropertyDefinition( u"Rotation"_s, QObject::tr( "Rotation" ), QgsPropertyDefinition::Double ) );
   rotationParam->setDynamicLayerParameterName( u"INPUT"_s );
-  rotationParam->setHelp( QObject::tr( "Rotation of the buffer shape." ) );
+  rotationParam->setHelp( QObject::tr( "Rotation of the buffer shape. Positive values rotate clockwise, negative values rotate counter-clockwise." ) );
   addParameter( rotationParam.release() );
 
   auto segmentsParam = std::make_unique<QgsProcessingParameterNumber>( u"SEGMENTS"_s, QObject::tr( "Segments" ), Qgis::ProcessingNumberParameterType::Integer, 36, false, 1 );

@@ -137,7 +137,7 @@ void QgsAffineTransformationAlgorithm::initParameters( const QVariantMap & )
   rotation->setIsDynamic( true );
   rotation->setDynamicPropertyDefinition( QgsPropertyDefinition( u"ROTATION_Z"_s, QObject::tr( "Rotation around z-axis (degrees counter-clockwise)" ), QgsPropertyDefinition::Double ) );
   rotation->setDynamicLayerParameterName( u"INPUT"_s );
-  rotation->setHelp( QObject::tr( "Angle of the rotation in degrees. Applied after scaling and before translation." ) );
+  rotation->setHelp( QObject::tr( "Angle of the rotation in degrees. Positive values rotate counter-clockwise, negative values rotate clockwise. Applied after scaling and before translation." ) );
   addParameter( rotation.release() );
 }
 
