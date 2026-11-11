@@ -103,19 +103,15 @@ void QgsGeometryByExpressionAlgorithm::initParameters( const QVariantMap & )
   addParameter( outputGeometryParam.release() );
 
   auto withZParam = std::make_unique<QgsProcessingParameterBoolean>( u"WITH_Z"_s, QObject::tr( "Output geometry has z dimension" ), false );
-  withZParam->setHelp( QObject::tr( "Choose if the output geometry should include the Z dimension." ) );
+  withZParam->setHelp( QObject::tr( "If checked, the output geometry will include the z dimension" ) );
   addParameter( withZParam.release() );
 
   auto withMParam = std::make_unique<QgsProcessingParameterBoolean>( u"WITH_M"_s, QObject::tr( "Output geometry has m values" ), false );
-  withMParam->setHelp( QObject::tr( "Choose if the output geometry should include the M dimension." ) );
+  withMParam->setHelp( QObject::tr( "If checked, the output geometry will include the M dimension." ) );
   addParameter( withMParam.release() );
 
   auto expressionParam = std::make_unique<QgsProcessingParameterExpression>( u"EXPRESSION"_s, QObject::tr( "Geometry expression" ), u"@geometry"_s, u"INPUT"_s );
-  expressionParam->setHelp(
-    QObject::tr(
-      "Add the geometry expression you want to use. You can use the expression button to open the Expression Dialog. The dialog lists all the relevant expressions, together with their help and guide."
-    )
-  );
+  expressionParam->setHelp( QObject::tr( "The geometry expression to use." ) );
   addParameter( expressionParam.release() );
 }
 
