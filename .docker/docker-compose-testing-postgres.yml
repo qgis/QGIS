@@ -7,6 +7,7 @@ services:
     environment:
       - ALLOW_IP_RANGE="172.18.0.0/16"
 # The following files are added in Dockerfile-postgis
+      - POSTGRES_PASS=docker
       - SSL_CERT_FILE=/etc/ssl/certs/postgres.crt
       - SSL_KEY_FILE=/etc/ssl/private/postgres.key
       - SSL_CA_FILE=/etc/ssl/certs/qgis_ca.crt
