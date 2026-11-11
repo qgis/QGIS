@@ -159,6 +159,53 @@ class CORE_EXPORT QgsWebEnginePage : public QObject
      */
     static bool printToPdfBlocking( const QUrl &url, const QString &pdfFileName, QString &errorMessage SIP_OUT, int width, QgsFeedback *feedback = nullptr );
 
+    /**
+     * Renders HTML content to a \a painter asynchronously. Content will be rendered as vector objects.
+     *
+     * This method is safe to call on either the main or background threads, and will safely ensure
+     * that the main thread event loop is NOT run during the HTML rendering.
+     *
+     * \param html HTML content
+     * \param painter destination QPainter
+     * \param painterRect specifies the target rectangle for the page in \a painter coordinates
+     * \param errorMessage will be set to a descriptive error message if the printing fails
+     * \param baseUrl base URL for relative references in HTML
+     * \param feedback optional feedback for early cancellation
+     *
+     * \warning This method requires a QGIS build with PDF4Qt library support.
+     *
+     * \returns TRUE if rendering was successful
+     *
+     * \throws QgsNotSupportedException on QGIS builds without PDF4Qt library support.
+     *
+     * \since QGIS 4.4
+     */
+    static bool renderBlocking(
+      const QString &html, QPainter *painter, const QRectF &painterRect, QString &errorMessage SIP_OUT, const QUrl &baseUrl = QUrl(), QgsFeedback *feedback = nullptr
+    ) SIP_THROW( QgsNotSupportedException );
+
+    /**
+     * Renders HTML content to a \a painter asynchronously. Content will be rendered as vector objects.
+     *
+     * This method is safe to call on either the main or background threads, and will safely ensure
+     * that the main thread event loop is NOT run during the HTML rendering.
+     *
+     * \param url URL of HTML content
+     * \param painter destination QPainter
+     * \param painterRect specifies the target rectangle for the page in \a painter coordinates
+     * \param errorMessage will be set to a descriptive error message if the printing fails
+     * \param feedback optional feedback for early cancellation
+     *
+     * \warning This method requires a QGIS build with PDF4Qt library support.
+     *
+     * \returns TRUE if rendering was successful
+     *
+     * \throws QgsNotSupportedException on QGIS builds without PDF4Qt library support.
+     *
+     * \since QGIS 4.4
+     */
+    static bool renderBlocking( const QUrl &url, QPainter *painter, const QRectF &painterRect, QString &errorMessage SIP_OUT, QgsFeedback *feedback = nullptr ) SIP_THROW( QgsNotSupportedException );
+
   signals:
 
     /**

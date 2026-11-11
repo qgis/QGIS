@@ -167,6 +167,67 @@ the HTML rendering or PDF generation.
 .. versionadded:: 4.4
 %End
 
+    static bool renderBlocking(
+      const QString &html, QPainter *painter, const QRectF &painterRect, QString &errorMessage /Out/, const QUrl &baseUrl = QUrl(), QgsFeedback *feedback = 0
+    );
+%Docstring
+Renders HTML content to a ``painter`` asynchronously. Content will be
+rendered as vector objects.
+
+This method is safe to call on either the main or background threads,
+and will safely ensure that the main thread event loop is NOT run during
+the HTML rendering.
+
+:param html: HTML content
+:param painter: destination QPainter
+:param painterRect: specifies the target rectangle for the page in
+                    ``painter`` coordinates
+:param baseUrl: base URL for relative references in HTML
+:param feedback: optional feedback for early cancellation
+
+.. warning::
+
+   This method requires a QGIS build with PDF4Qt library support.
+
+:return: - ``True`` if rendering was successful
+         - errorMessage: a descriptive error message if the printing
+           fails
+
+:raises QgsNotSupportedException: on QGIS builds without PDF4Qt library
+                                  support.
+
+.. versionadded:: 4.4
+%End
+
+    static bool renderBlocking( const QUrl &url, QPainter *painter, const QRectF &painterRect, QString &errorMessage /Out/, QgsFeedback *feedback = 0 );
+%Docstring
+Renders HTML content to a ``painter`` asynchronously. Content will be
+rendered as vector objects.
+
+This method is safe to call on either the main or background threads,
+and will safely ensure that the main thread event loop is NOT run during
+the HTML rendering.
+
+:param url: URL of HTML content
+:param painter: destination QPainter
+:param painterRect: specifies the target rectangle for the page in
+                    ``painter`` coordinates
+:param feedback: optional feedback for early cancellation
+
+.. warning::
+
+   This method requires a QGIS build with PDF4Qt library support.
+
+:return: - ``True`` if rendering was successful
+         - errorMessage: a descriptive error message if the printing
+           fails
+
+:raises QgsNotSupportedException: on QGIS builds without PDF4Qt library
+                                  support.
+
+.. versionadded:: 4.4
+%End
+
   signals:
 
     void loadStarted();
