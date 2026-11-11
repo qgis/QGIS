@@ -398,7 +398,7 @@ void QgsCollectAlgorithm::initAlgorithm( const QVariantMap & )
   addParameter( new QgsProcessingParameterFeatureSource( u"INPUT"_s, QObject::tr( "Input layer" ) ) );
 
   auto fieldParam = std::make_unique<QgsProcessingParameterField>( u"FIELD"_s, QObject::tr( "Unique ID fields" ), QVariant(), u"INPUT"_s, Qgis::ProcessingFieldParameterDataType::Any, true, true );
-  fieldParam->setHelp( QObject::tr( "Choose one or more attributes to collect the geometries." ) );
+  fieldParam->setHelp( QObject::tr( "Attributes used to collect the geometries." ) );
   addParameter( fieldParam.release() );
 
   addParameter( new QgsProcessingParameterFeatureSink( u"OUTPUT"_s, QObject::tr( "Collected" ) ) );
