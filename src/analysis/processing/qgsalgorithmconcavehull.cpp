@@ -82,7 +82,7 @@ void QgsConcaveHullAlgorithm::initAlgorithm( const QVariantMap & )
   holesParam->setHelp( QObject::tr( "Choose whether to allow holes in the final concave hull." ) );
   addParameter( holesParam.release() );
   auto noMultiGeometryParam = std::make_unique<QgsProcessingParameterBoolean>( u"NO_MULTIGEOMETRY"_s, QObject::tr( "Split multipart geometry into singleparts" ), false );
-  noMultiGeometryParam->setHelp( QObject::tr( "Check if you want to have singlepart geometries instead of multipart ones." ) );
+  noMultiGeometryParam->setHelp( QObject::tr( "Check to have singlepart geometries instead of multipart ones." ) );
   addParameter( noMultiGeometryParam.release() );
   addParameter( new QgsProcessingParameterFeatureSink( u"OUTPUT"_s, QObject::tr( "Concave hull" ), Qgis::ProcessingSourceType::VectorPolygon ) );
 }
