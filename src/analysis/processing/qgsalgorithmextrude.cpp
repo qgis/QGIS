@@ -109,7 +109,7 @@ void QgsExtrudeAlgorithm::initParameters( const QVariantMap & )
   xExtrude->setIsDynamic( true );
   xExtrude->setDynamicPropertyDefinition( QgsPropertyDefinition( u"EXTRUDE_X"_s, QObject::tr( "Extrusion (x-axis)" ), QgsPropertyDefinition::Double ) );
   xExtrude->setDynamicLayerParameterName( u"INPUT"_s );
-  xExtrude->setHelp( QObject::tr( "Specify the extrusion value along the X-axis." ) );
+  xExtrude->setHelp( QObject::tr( "Specifies the extrusion value along the X-axis." ) );
   addParameter( xExtrude.release() );
 
   auto yExtrude = std::make_unique<QgsProcessingParameterNumber>( u"EXTRUDE_Y"_s, QObject::tr( "Extrusion (y-axis)" ), Qgis::ProcessingNumberParameterType::Double, 0.0 );

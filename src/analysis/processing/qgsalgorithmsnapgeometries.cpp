@@ -113,7 +113,7 @@ void QgsSnapGeometriesAlgorithm::initAlgorithm( const QVariantMap & )
 
   auto tolParam = std::make_unique<QgsProcessingParameterDistance>( u"TOLERANCE"_s, QObject::tr( "Tolerance" ), 10.0, u"INPUT"_s, false, 0.00000001 );
   tolParam->setMetadata( { QVariantMap( { { u"widget_wrapper"_s, QVariantMap( { { u"decimals"_s, 8 } } ) } } ) } );
-  tolParam->setHelp( QObject::tr( "Control how close input vertices need to be to the reference layer geometries before they are snapped." ) );
+  tolParam->setHelp( QObject::tr( "Controls how close input vertices need to be to the reference layer geometries before they are snapped." ) );
   addParameter( tolParam.release() );
 
   const QStringList options = QStringList()

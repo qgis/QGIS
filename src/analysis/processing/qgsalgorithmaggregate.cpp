@@ -82,13 +82,13 @@ void QgsAggregateAlgorithm::initAlgorithm( const QVariantMap & )
   addParameter( new QgsProcessingParameterFeatureSource( u"INPUT"_s, QObject::tr( "Input layer" ), QList<int>() << static_cast<int>( Qgis::ProcessingSourceType::Vector ) ) );
 
   auto groupByParam = std::make_unique<QgsProcessingParameterExpression>( u"GROUP_BY"_s, QObject::tr( "Group by expression (NULL to group all features)" ), u"NULL"_s, u"INPUT"_s );
-  groupByParam->setHelp( QObject::tr( "Choose the grouping field. If NULL all features will be grouped." ) );
+  groupByParam->setHelp( QObject::tr( "The grouping expression. If set to NULL all features will be treated as a single group." ) );
   addParameter( groupByParam.release() );
 
   auto aggregatesParam = std::make_unique<QgsProcessingParameterAggregate>( u"AGGREGATES"_s, QObject::tr( "Aggregates" ), u"INPUT"_s );
   aggregatesParam->setHelp(
     QObject::tr(
-      "List of output layer field definitions. Example of a field definition: {‘aggregate’: ‘sum’, ‘delimiter’: ‘,’, ‘input’: ‘$area’, ‘length’: 10, ‘name’: ‘totarea’, ‘precision’: 0, ‘type’: 6}."
+      "List of output layer field definitions."
     )
   );
   addParameter( aggregatesParam.release() );

@@ -108,7 +108,7 @@ void QgsWedgeBuffersAlgorithm::initParameters( const QVariantMap & )
   azimuth->setIsDynamic( true );
   azimuth->setDynamicPropertyDefinition( QgsPropertyDefinition( u"Azimuth"_s, QObject::tr( "Azimuth (degrees from North)" ), QgsPropertyDefinition::Double ) );
   azimuth->setDynamicLayerParameterName( u"INPUT"_s );
-  azimuth->setHelp( QObject::tr( "Angle (in degrees) as the middle value of the wedge." ) );
+  azimuth->setHelp( QObject::tr( "Angle (in degrees) for the middle of the wedge." ) );
   addParameter( azimuth.release() );
 
   auto width = std::make_unique<QgsProcessingParameterNumber>( u"WIDTH"_s, QObject::tr( "Wedge width (in degrees)" ), Qgis::ProcessingNumberParameterType::Double, 45, false, 0, 360.0 );

@@ -82,7 +82,7 @@ void QgsMultiRingConstantBufferAlgorithm::initParameters( const QVariantMap & )
   rings->setDynamicPropertyDefinition( QgsPropertyDefinition( u"RINGS"_s, QObject::tr( "Number of rings" ), QgsPropertyDefinition::IntegerPositive ) );
   rings->setDynamicLayerParameterName( u"INPUT"_s );
   rings->setHelp(
-    QObject::tr( "The number of rings. It can be a unique value (same number of rings for all the features) or it can be taken from features data (the number of rings depends on feature values)." )
+    QObject::tr( "The number of rings." )
   );
   addParameter( rings.release() );
 
@@ -91,7 +91,7 @@ void QgsMultiRingConstantBufferAlgorithm::initParameters( const QVariantMap & )
   distance->setDynamicPropertyDefinition( QgsPropertyDefinition( u"DISTANCE"_s, QObject::tr( "Distance between rings" ), QgsPropertyDefinition::DoublePositive ) );
   distance->setDynamicLayerParameterName( u"INPUT"_s );
   distance->setHelp(
-    QObject::tr( "Distance between the rings. It can be a unique value (same distance for all the features) or it can be taken from features data (the distance depends on feature values)." )
+    QObject::tr( "Distance between the rings." )
   );
   addParameter( distance.release() );
 }

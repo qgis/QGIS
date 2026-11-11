@@ -94,7 +94,7 @@ class VariableDistanceBuffer(QgisAlgorithm):
         )
         param.setHelp(
             self.tr(
-                "The segments parameter controls the number of line segments to use to approximate a quarter circle when creating rounded offsets."
+                "Controls the number of line segments to use to approximate a quarter circle when creating rounded offsets."
             )
         )
         self.addParameter(param)

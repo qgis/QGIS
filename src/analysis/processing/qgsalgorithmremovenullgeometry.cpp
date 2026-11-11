@@ -52,7 +52,7 @@ void QgsRemoveNullGeometryAlgorithm::initAlgorithm( const QVariantMap & )
 {
   addParameter( new QgsProcessingParameterFeatureSource( u"INPUT"_s, QObject::tr( "Input layer" ) ) );
   auto removeEmptyParam = std::make_unique<QgsProcessingParameterBoolean>( u"REMOVE_EMPTY"_s, QObject::tr( "Also remove empty geometries" ), false );
-  removeEmptyParam->setHelp( QObject::tr( "Remove also features with empty geometries." ) );
+  removeEmptyParam->setHelp( QObject::tr( "If checked, features with empty geometries (such as a linestring with no vertices) will also be removed." ) );
   addParameter( removeEmptyParam.release() );
 
   addParameter( new QgsProcessingParameterFeatureSink( u"OUTPUT"_s, QObject::tr( "Non null geometries" ), Qgis::ProcessingSourceType::VectorAnyGeometry, QVariant(), true ) );

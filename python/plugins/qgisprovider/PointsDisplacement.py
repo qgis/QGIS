@@ -72,7 +72,7 @@ class PointsDisplacement(QgisAlgorithm):
         param.setMetadata({"widget_wrapper": {"decimals": 5}})
         param.setHelp(
             self.tr(
-                "Distance below which point features are considered close. Close features are distributed altogether."
+                "Distance below which point features are considered close. Close features are distributed as a group."
             )
         )
         self.addParameter(param)
