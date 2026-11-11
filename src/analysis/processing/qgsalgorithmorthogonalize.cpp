@@ -110,7 +110,9 @@ void QgsOrthogonalizeAlgorithm::initParameters( const QVariantMap & )
   auto maxIterations
     = std::make_unique<QgsProcessingParameterNumber>( u"MAX_ITERATIONS"_s, QObject::tr( "Maximum algorithm iterations" ), Qgis::ProcessingNumberParameterType::Integer, 1000, false, 1, 10000 );
   maxIterations->setFlags( maxIterations->flags() | Qgis::ProcessingParameterFlag::Advanced );
-  maxIterations->setHelp( QObject::tr( "Setting a larger number for the maximum number of iterations will result in a more orthogonal geometry at the cost of extra processing time." ) );
+  maxIterations->setHelp(
+    QObject::tr( "Sets the maximum number of iterations that the orthoganlization will apply. A larger number will allow the algorithm to make more adjustments to achieve orthogonality." )
+  );
   addParameter( maxIterations.release() );
 }
 
