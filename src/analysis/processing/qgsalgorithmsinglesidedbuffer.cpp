@@ -105,7 +105,7 @@ void QgsSingleSidedBufferAlgorithm::initParameters( const QVariantMap & )
   addParameter( bufferParam.release() );
 
   auto sideParam = std::make_unique<QgsProcessingParameterEnum>( u"SIDE"_s, QObject::tr( "Side" ), QStringList() << QObject::tr( "Left" ) << QObject::tr( "Right" ), false, 0 );
-  sideParam->setHelp( QObject::tr( "Which side to create the buffer on. One of: Left, Right." ) );
+  sideParam->setHelp( QObject::tr( "Which side to create the buffer on." ) );
   addParameter( sideParam.release() );
 
   auto segmentsParam = std::make_unique<QgsProcessingParameterNumber>( u"SEGMENTS"_s, QObject::tr( "Segments" ), Qgis::ProcessingNumberParameterType::Integer, 8, false, 1 );

@@ -89,7 +89,7 @@ class EliminateSelection(QgisAlgorithm):
         )
         modeParam.setHelp(
             self.tr(
-                "Choose the parameter to use in order to eliminate the selected polygons. One of: Largest Area, Smallest Area, Largest Common Boundary."
+                "Choose the parameter to use in order to eliminate the selected polygons."
             )
         )
         self.addParameter(modeParam)

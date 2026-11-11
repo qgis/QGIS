@@ -77,7 +77,7 @@ class RectanglesOvalsDiamondsVariable(QgisAlgorithm):
         param = QgsProcessingParameterEnum(
             self.SHAPE, self.tr("Buffer shape"), options=self.shapes
         )
-        param.setHelp(self.tr("The shape to use. One of: Rectangles, Diamonds, Ovals."))
+        param.setHelp(self.tr("The shape to use."))
         self.addParameter(param)
 
         param = QgsProcessingParameterField(

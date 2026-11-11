@@ -86,7 +86,7 @@ void QgsMinimumBoundingGeometryAlgorithm::initAlgorithm( const QVariantMap & )
     = QStringList() << QObject::tr( "Envelope (Bounding Box)" ) << QObject::tr( "Minimum Oriented Rectangle" ) << QObject::tr( "Minimum Enclosing Circle" ) << QObject::tr( "Convex Hull" );
 
   auto typeParam = std::make_unique<QgsProcessingParameterEnum>( u"TYPE"_s, QObject::tr( "Geometry type" ), geometryTypes );
-  typeParam->setHelp( QObject::tr( "Enclosing geometry types. One of: Envelope (Bounding Box), Minimum Oriented Rectangle, Minimum Enclosing Circle, Convex Hull." ) );
+  typeParam->setHelp( QObject::tr( "Enclosing geometry types." ) );
   addParameter( typeParam.release() );
   addParameter( new QgsProcessingParameterFeatureSink( u"OUTPUT"_s, QObject::tr( "Bounding geometry" ), Qgis::ProcessingSourceType::VectorPolygon ) );
 }

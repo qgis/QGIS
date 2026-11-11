@@ -126,15 +126,7 @@ void QgsSnapGeometriesAlgorithm::initAlgorithm( const QVariantMap & )
                               << QObject::tr( "Snap end points to end points only" )
                               << QObject::tr( "Snap to anchor nodes (single layer only)" );
   auto behaviorParam = std::make_unique<QgsProcessingParameterEnum>( u"BEHAVIOR"_s, QObject::tr( "Behavior" ), options, false, QVariantList() << 0 );
-  behaviorParam->setHelp(
-    QObject::tr(
-      "Snapping can be done to an existing node or a segment (its closest point to the vertex to move). One of: "
-      "Prefer aligning nodes, insert extra vertices where required; Prefer closest point, insert extra vertices where required; "
-      "Prefer aligning nodes, don't insert new vertices; Prefer closest point, don't insert new vertices; "
-      "Move end points only, prefer aligning nodes; Move end points only, prefer closest point; "
-      "Snap end points to end points only; Snap to anchor nodes (single layer only)."
-    )
-  );
+  behaviorParam->setHelp( QObject::tr( "Snapping can be done to an existing node or a segment (its closest point to the vertex to move)." ) );
   addParameter( behaviorParam.release() );
   addParameter( new QgsProcessingParameterFeatureSink( u"OUTPUT"_s, QObject::tr( "Snapped geometry" ), Qgis::ProcessingSourceType::VectorAnyGeometry ) );
 }

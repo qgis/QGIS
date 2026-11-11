@@ -115,7 +115,7 @@ void QgsRectanglesOvalsDiamondsAlgorithm::initParameters( const QVariantMap & )
 {
   auto shapeParam
     = std::make_unique<QgsProcessingParameterEnum>( u"SHAPE"_s, QObject::tr( "Shape" ), QStringList() << QObject::tr( "Rectangle" ) << QObject::tr( "Diamond" ) << QObject::tr( "Oval" ), false, 0 );
-  shapeParam->setHelp( QObject::tr( "The shape to use. One of: Rectangle, Diamond, Oval." ) );
+  shapeParam->setHelp( QObject::tr( "The shape to use." ) );
   addParameter( shapeParam.release() );
 
   auto widthParam = std::make_unique<QgsProcessingParameterDistance>( u"WIDTH"_s, QObject::tr( "Width" ), 1.0, u"INPUT"_s, false, 0.0 );

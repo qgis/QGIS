@@ -74,13 +74,13 @@ void QgsTransectAlgorithmBase::initAlgorithm( const QVariantMap & )
 
   auto side = std::make_unique<
     QgsProcessingParameterEnum>( u"SIDE"_s, QObject::tr( "Side to create the transects" ), QStringList() << QObject::tr( "Left" ) << QObject::tr( "Right" ) << QObject::tr( "Both" ), false, 2 );
-  side->setHelp( QObject::tr( "Which side of the line to create transects on (relative to the line digitizing direction). One of: Left, Right, Both." ) );
+  side->setHelp( QObject::tr( "Which side of the line to create transects on (relative to the line digitizing direction)." ) );
   addParameter( side.release() );
 
   auto direction
     = std::make_unique<QgsProcessingParameterEnum>( u"DIRECTION"_s, QObject::tr( "Direction" ), QStringList() << QObject::tr( "Right to Left" ) << QObject::tr( "Left to Right" ), false, 0, true );
   direction->setGuiDefaultValueOverride( 1 );
-  direction->setHelp( QObject::tr( "Orientation direction for transects. One of: Right to Left, Left to Right." ) );
+  direction->setHelp( QObject::tr( "Orientation direction for transects." ) );
   addParameter( direction.release() );
 
   addParameter( new QgsProcessingParameterFeatureSink( u"OUTPUT"_s, QObject::tr( "Transect" ), Qgis::ProcessingSourceType::VectorLine ) );

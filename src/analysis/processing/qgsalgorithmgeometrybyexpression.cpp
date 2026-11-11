@@ -99,9 +99,7 @@ void QgsGeometryByExpressionAlgorithm::initParameters( const QVariantMap & )
 {
   auto outputGeometryParam = std::make_unique<
     QgsProcessingParameterEnum>( u"OUTPUT_GEOMETRY"_s, QObject::tr( "Output geometry type" ), QStringList() << QObject::tr( "Polygon" ) << QObject::tr( "Line" ) << QObject::tr( "Point" ), false, 0 );
-  outputGeometryParam->setHelp(
-    QObject::tr( "The output geometry strongly depends on the expression: for instance, if you create a buffer the geometry type has to be polygon. One of: Polygon, Line, Point." )
-  );
+  outputGeometryParam->setHelp( QObject::tr( "The output geometry strongly depends on the expression: for instance, if you create a buffer the geometry type has to be polygon." ) );
   addParameter( outputGeometryParam.release() );
 
   auto withZParam = std::make_unique<QgsProcessingParameterBoolean>( u"WITH_Z"_s, QObject::tr( "Output geometry has z dimension" ), false );

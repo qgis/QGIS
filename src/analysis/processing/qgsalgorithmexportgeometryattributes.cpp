@@ -85,9 +85,7 @@ void QgsExportGeometryAttributesAlgorithm::initAlgorithm( const QVariantMap & )
   const QStringList options = QStringList() << QObject::tr( "Cartesian Calculations in Layer's CRS" ) << QObject::tr( "Cartesian Calculations in Project's CRS" ) << QObject::tr( "Ellipsoidal Calculations" );
 
   auto methodParam = std::make_unique<QgsProcessingParameterEnum>( u"METHOD"_s, QObject::tr( "Calculate using" ), options, false, 0 );
-  methodParam->setHelp(
-    QObject::tr( "Calculation parameters to use for the geometric properties. One of: Cartesian Calculations in Layer’s CRS, Cartesian Calculations in Project’s CRS, Ellipsoidal Calculations." )
-  );
+  methodParam->setHelp( QObject::tr( "Calculation parameters to use for the geometric properties." ) );
   addParameter( methodParam.release() );
 
   addParameter( new QgsProcessingParameterFeatureSink( u"OUTPUT"_s, QObject::tr( "Added geometry info" ) ) );

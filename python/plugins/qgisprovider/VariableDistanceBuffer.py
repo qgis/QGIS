@@ -114,11 +114,7 @@ class VariableDistanceBuffer(QgisAlgorithm):
             options=self.end_cap_styles,
             defaultValue=0,
         )
-        param.setHelp(
-            self.tr(
-                "Controls how line endings are handled in the buffer. One of: Round, Flat, Square."
-            )
-        )
+        param.setHelp(self.tr("Controls how line endings are handled in the buffer."))
         self.addParameter(param)
         self.join_styles = [self.tr("Round"), "Miter", "Bevel"]
         param = QgsProcessingParameterEnum(
@@ -129,7 +125,7 @@ class VariableDistanceBuffer(QgisAlgorithm):
         )
         param.setHelp(
             self.tr(
-                "Specifies whether round, miter or beveled joins should be used when offsetting corners in a line. One of: Round, Miter, Bevel."
+                "Specifies whether round, miter or beveled joins should be used when offsetting corners in a line."
             )
         )
         self.addParameter(param)

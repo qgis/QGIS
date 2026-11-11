@@ -90,7 +90,7 @@ void QgsSimplifyAlgorithm::initParameters( const QVariantMap & )
   methods << QObject::tr( "Distance (Douglas-Peucker)" ) << QObject::tr( "Snap to grid" ) << QObject::tr( "Area (Visvalingam)" );
 
   auto methodParam = std::make_unique<QgsProcessingParameterEnum>( u"METHOD"_s, QObject::tr( "Simplification method" ), methods, false, 0 );
-  methodParam->setHelp( QObject::tr( "Simplification method. One of: Distance (Douglas-Peucker), Snap to grid, Area (Visvalingam)." ) );
+  methodParam->setHelp( QObject::tr( "Simplification method." ) );
   addParameter( methodParam.release() );
 
   auto tolerance = std::make_unique<QgsProcessingParameterDistance>( u"TOLERANCE"_s, QObject::tr( "Tolerance" ), 1.0, u"INPUT"_s, false, 0, 10000000.0 );
