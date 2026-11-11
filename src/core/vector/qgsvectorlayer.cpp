@@ -2355,33 +2355,6 @@ bool QgsVectorLayer::setDataProvider( QString const &provider, const QgsDataProv
   {
     // update datasource from data provider computed one
     mDataSource = mDataProvider->dataSourceUri( false );
-
-    QgsDebugMsgLevel( u"Beautifying layer name %1"_s.arg( name() ), 3 );
-
-    // adjust the display name for postgres layers
-    const thread_local QRegularExpression reg( R"lit("[^"]+"\."([^"] + )"( \([^)]+\))?)lit" );
-    const QRegularExpressionMatch match = reg.match( name() );
-    if ( match.hasMatch() )
-    {
-      QStringList stuff = match.capturedTexts();
-      QString lName = stuff[1];
-
-      // TODO QGIS 5.0 -- if layer has not been added to project, return empty QMap here
-      const QMap<QString, QgsMapLayer *> &layers = this->project() ? this->project()->mapLayers() : QgsProject::instance()->mapLayers(); // skip-keyword-check
-
-      QMap<QString, QgsMapLayer *>::const_iterator it;
-      for ( it = layers.constBegin(); it != layers.constEnd() && ( *it )->name() != lName; ++it )
-        ;
-
-      if ( it != layers.constEnd() && stuff.size() > 2 )
-      {
-        lName += '.' + stuff[2].mid( 2, stuff[2].length() - 3 );
-      }
-
-      if ( !lName.isEmpty() )
-        setName( lName );
-    }
-    QgsDebugMsgLevel( u"Beautified layer name %1"_s.arg( name() ), 3 );
   }
   else if ( mProviderKey == "osm"_L1 )
   {
