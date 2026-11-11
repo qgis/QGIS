@@ -126,6 +126,47 @@ in ``painter`` coordinates.
                                   support.
 %End
 
+    static bool printToPdfBlocking( const QString &html, const QString &pdfFileName, QString &errorMessage /Out/, int width, const QUrl &baseUrl = QUrl(), QgsFeedback *feedback = 0 );
+%Docstring
+Renders HTML content to a PDF file asynchronously.
+
+This method is safe to call on either the main or background threads,
+and will safely ensure that the main thread event loop is NOT run during
+the HTML rendering or PDF generation.
+
+:param html: HTML content
+:param pdfFileName: destination filename for PDF
+:param width: page width
+:param baseUrl: base URL for relative references in HTML
+:param feedback: optional feedback for early cancellation
+
+:return: - ``True`` if the printing was successful
+         - errorMessage: a descriptive error message if the printing
+           fails
+
+.. versionadded:: 4.4
+%End
+
+    static bool printToPdfBlocking( const QUrl &url, const QString &pdfFileName, QString &errorMessage /Out/, int width, QgsFeedback *feedback = 0 );
+%Docstring
+Renders HTML content to a PDF file asynchronously.
+
+This method is safe to call on either the main or background threads,
+and will safely ensure that the main thread event loop is NOT run during
+the HTML rendering or PDF generation.
+
+:param url: URL of HTML content
+:param pdfFileName: destination filename for PDF
+:param width: page width
+:param feedback: optional feedback for early cancellation
+
+:return: - ``True`` if the printing was successful
+         - errorMessage: a descriptive error message if the printing
+           fails
+
+.. versionadded:: 4.4
+%End
+
   signals:
 
     void loadStarted();

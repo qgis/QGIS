@@ -18,11 +18,21 @@
 #include "qgsconfig.h"
 #include "qgswebenginepage.h"
 
+#include "qgsapplication.h"
+#include "qgslogger.h"
+#include "qgsrunprocess.h"
+
+#include <QCoreApplication>
+#include <QDir>
 #include <QEventLoop>
 #include <QSizeF>
+#include <QString>
+#include <QTemporaryDir>
 #include <QWebEnginePage>
 
 #include "moc_qgswebenginepage.cpp"
+
+using namespace Qt::StringLiterals;
 
 #ifdef HAVE_PDF4QT
 #include "qgspdfrenderer.h"
@@ -184,6 +194,7 @@ void QgsWebEnginePage::handlePostBlockingLoadOperations()
   mCachedSize = QSize( width, height );
 }
 
+
 #ifdef HAVE_PDF4QT
 bool QgsWebEnginePage::render( QPainter *painter, const QRectF &painterRect )
 {
@@ -226,9 +237,102 @@ bool QgsWebEnginePage::render( QPainter *painter, const QRectF &painterRect )
   }
   return printOk;
 }
+
 #else
 bool QgsWebEnginePage::render( QPainter *, const QRectF & )
 {
   throw QgsNotSupportedException( QObject::tr( "Rendering web pages requires a QGIS build with PDF4Qt library support" ) );
 }
 #endif
+
+QString QgsWebEnginePage::htmlToPdfExecutable()
+{
+  QString executable = QProcessEnvironment::systemEnvironment().value( u"QGIS_HTML_TO_PDF_EXECUTABLE"_s );
+  if ( executable.isEmpty() )
+  {
+#if defined( Q_OS_WIN )
+    executable = QgsApplication::libexecPath() + "qgis_html_to_pdf.exe";
+#else
+    executable = QgsApplication::libexecPath() + "qgis_html_to_pdf";
+#endif
+  }
+  return executable;
+}
+
+QString QgsWebEnginePage::htmlToPdfReturnCodeToString( int code )
+{
+  // matches values in QgsHtmlToPdf::ResultCode
+  switch ( code )
+  {
+    case 0:
+      return QString();
+
+    case 1:
+    {
+      return tr( "Loading HTML failed" );
+    }
+
+    case 2:
+    {
+      return tr( "Executing Javascript initialization code failed" );
+    }
+
+    case 3:
+    {
+      return tr( "Printing HTML to PDF failed" );
+    }
+
+    default:
+    {
+      return tr( "Unknown error" );
+    }
+  }
+  BUILTIN_UNREACHABLE
+}
+
+bool QgsWebEnginePage::printToPdfBlocking( const QString &html, const QString &pdfFileName, QString &errorMessage, int width, const QUrl &baseUrl, QgsFeedback *feedback )
+{
+  const QString executable = htmlToPdfExecutable();
+  if ( executable.isEmpty() || !QFile::exists( executable ) )
+  {
+    errorMessage = tr( "qgis_html_to_pdf utility not found" );
+    return false;
+  }
+
+  const QTemporaryDir tempDir;
+  const QString outputFilename = tempDir.filePath( u"content.html"_s );
+  QFile outputFile( outputFilename );
+  if ( !outputFile.open( QFile::WriteOnly | QFile::Truncate ) )
+  {
+    errorMessage = tr( "writing HTML to temporary file failed" );
+    return false;
+  }
+
+  QTextStream outstream( &outputFile );
+  outstream << html;
+  outputFile.close();
+
+  QgsBlockingProcess process( executable, { outputFilename, pdfFileName, u"--width=%1"_s.arg( width ) } );
+  process.setStdErrHandler( []( const QByteArray &ba ) { QgsDebugError( ba ); } );
+  process.setStdOutHandler( []( const QByteArray &ba ) { QgsDebugMsgLevel( ba, 2 ); } );
+  const int returnCode = process.run( feedback );
+  errorMessage = htmlToPdfReturnCodeToString( returnCode );
+  return returnCode == 0;
+}
+
+bool QgsWebEnginePage::printToPdfBlocking( const QUrl &url, const QString &pdfFileName, QString &errorMessage, int width, QgsFeedback *feedback )
+{
+  const QString executable = htmlToPdfExecutable();
+  if ( executable.isEmpty() || !QFile::exists( executable ) )
+  {
+    errorMessage = tr( "qgis_html_to_pdf utility not found" );
+    return false;
+  }
+
+  QgsBlockingProcess process( executable, { url.toString(), pdfFileName, u"--width=%1"_s.arg( width ) } );
+  process.setStdErrHandler( []( const QByteArray &ba ) { QgsDebugError( ba ); } );
+  process.setStdOutHandler( []( const QByteArray &ba ) { QgsDebugMsgLevel( ba, 2 ); } );
+  const int returnCode = process.run( feedback );
+  errorMessage = htmlToPdfReturnCodeToString( returnCode );
+  return returnCode == 0;
+}
