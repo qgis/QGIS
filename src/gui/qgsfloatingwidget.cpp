@@ -186,7 +186,7 @@ void QgsFloatingWidget::onAnchorPointChanged()
     }
 
     // constrain x so that widget floats within parent widget
-    anchorX = std::clamp( anchorX, 0, parentWidget()->width() - width() );
+    anchorX = std::clamp( anchorX, 0, std::max( 0, parentWidget()->width() - width() ) );
 
     move( anchorX, anchorY );
   }
