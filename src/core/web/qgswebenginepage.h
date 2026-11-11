@@ -32,6 +32,7 @@ SIP_IF_MODULE( HAVE_WEBENGINE_SIP )
 
 class QWebEnginePage;
 class QPainter;
+class QgsFeedback;
 
 /**
  * \ingroup core
@@ -121,6 +122,43 @@ class CORE_EXPORT QgsWebEnginePage : public QObject
      */
     bool render( QPainter *painter, const QRectF &painterRect ) SIP_THROW( QgsNotSupportedException );
 
+    /**
+     * Renders HTML content to a PDF file asynchronously.
+     *
+     * This method is safe to call on either the main or background threads, and will safely ensure
+     * that the main thread event loop is NOT run during the HTML rendering or PDF generation.
+     *
+     * \param html HTML content
+     * \param pdfFileName destination filename for PDF
+     * \param errorMessage will be set to a descriptive error message if the printing fails
+     * \param width page width
+     * \param baseUrl base URL for relative references in HTML
+     * \param feedback optional feedback for early cancellation
+     *
+     * \returns TRUE if the printing was successful
+     *
+     * \since QGIS 4.4
+     */
+    static bool printToPdfBlocking( const QString &html, const QString &pdfFileName, QString &errorMessage SIP_OUT, int width, const QUrl &baseUrl = QUrl(), QgsFeedback *feedback = nullptr );
+
+    /**
+     * Renders HTML content to a PDF file asynchronously.
+     *
+     * This method is safe to call on either the main or background threads, and will safely ensure
+     * that the main thread event loop is NOT run during the HTML rendering or PDF generation.
+     *
+     * \param url URL of HTML content
+     * \param pdfFileName destination filename for PDF
+     * \param errorMessage will be set to a descriptive error message if the printing fails
+     * \param width page width
+     * \param feedback optional feedback for early cancellation
+     *
+     * \returns TRUE if the printing was successful
+     *
+     * \since QGIS 4.4
+     */
+    static bool printToPdfBlocking( const QUrl &url, const QString &pdfFileName, QString &errorMessage SIP_OUT, int width, QgsFeedback *feedback = nullptr );
+
   signals:
 
     /**
@@ -147,6 +185,10 @@ class CORE_EXPORT QgsWebEnginePage : public QObject
 
   private:
     void handlePostBlockingLoadOperations();
+
+    static QString htmlToPdfExecutable();
+
+    static QString htmlToPdfReturnCodeToString( int code );
 
     std::unique_ptr< QWebEnginePage > mPage;
     mutable QSize mCachedSize;

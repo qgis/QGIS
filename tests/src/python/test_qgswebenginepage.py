@@ -9,6 +9,7 @@ the Free Software Foundation; either version 2 of the License, or
 """
 
 import os
+import tempfile
 import unittest
 
 from qgis.core import QgsFontUtils, QgsWebEnginePage
@@ -101,6 +102,76 @@ class TestWebEnginePage(QgisTestCase):
                 "expected_render_with_text",
             )
         )
+
+    def test_print_url_to_pdf_bad_url(self):
+        """
+        Test printing html to pdf, with an invalid url
+        """
+        html_path = os.path.join(TEST_DATA_DIR, "nope.html")
+
+        with tempfile.TemporaryDirectory() as tmp_dir:
+            pdf_path = tmp_dir + "/test.pdf"
+
+            res, error = QgsWebEnginePage.printToPdfBlocking(
+                QUrl.fromLocalFile(html_path), pdf_path, 400
+            )
+            self.assertFalse(res)
+            self.assertEqual(error, "Loading HTML failed")
+
+    def test_print_url_to_pdf(self):
+        """
+        Test printing html to pdf
+        """
+        html_path = os.path.join(TEST_DATA_DIR, "test_html.html")
+        with tempfile.TemporaryDirectory() as tmp_dir:
+            pdf_path = tmp_dir + "/test.pdf"
+
+            res, error = QgsWebEnginePage.printToPdfBlocking(
+                QUrl.fromLocalFile(html_path), pdf_path, 400
+            )
+            self.assertTrue(res)
+            self.assertFalse(error)
+
+            png_path = tmp_dir + "/test.png"
+            self.pdf_to_png(pdf_path, png_path, dpi=96, page=1)
+
+            image = QImage(png_path)
+            self.assertTrue(
+                self.image_check(
+                    "local_html",
+                    "local_html",
+                    image,
+                )
+            )
+
+    def test_print_html_to_pdf(self):
+        """
+        Test printing html to pdf
+        """
+        html_path = os.path.join(TEST_DATA_DIR, "test_html.html")
+        with open(html_path) as f:
+            html_content = f.read()
+
+        with tempfile.TemporaryDirectory() as tmp_dir:
+            pdf_path = tmp_dir + "/test.pdf"
+
+            res, error = QgsWebEnginePage.printToPdfBlocking(
+                html_content, pdf_path, 400
+            )
+            self.assertTrue(res)
+            self.assertFalse(error)
+
+            png_path = tmp_dir + "/test.png"
+            self.pdf_to_png(pdf_path, png_path, dpi=96, page=1)
+
+            image = QImage(png_path)
+            self.assertTrue(
+                self.image_check(
+                    "local_html",
+                    "local_html",
+                    image,
+                )
+            )
 
 
 if __name__ == "__main__":
