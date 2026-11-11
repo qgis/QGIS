@@ -8425,9 +8425,10 @@ void QgisApp::makeMemoryLayerPermanent( QgsVectorLayer *layer )
 
         connect( vl, &QgsVectorLayer::willBeDeleted, barItem, [button]() { button->setEnabled( false ); } );
 
-        connect( button, &QPushButton::clicked, vl, [button, vl, layerNameForRename]() {
+        connect( button, &QPushButton::clicked, vl, [this, button, vl, layerNameForRename, barItem]() {
           vl->setName( layerNameForRename );
           button->setEnabled( false );
+          visibleMessageBar()->popWidget( barItem );
         } );
       }
 
