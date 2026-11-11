@@ -98,7 +98,7 @@ void QgsSimplifyAlgorithm::initParameters( const QVariantMap & )
   tolerance->setDynamicPropertyDefinition( QgsPropertyDefinition( u"Tolerance"_s, QObject::tr( "Tolerance distance" ), QgsPropertyDefinition::DoublePositive ) );
   tolerance->setDynamicLayerParameterName( u"INPUT"_s );
   tolerance->setHelp(
-    QObject::tr( "Threshold tolerance (in units of the layer): if the distance between two nodes is smaller than the tolerance value, the segment will be simplified and vertices will be removed." )
+    QObject::tr( "Threshold tolerance: if the distance between two nodes is smaller than the tolerance value, the segment will be simplified and vertices will be removed." )
   );
 
   addParameter( tolerance.release() );
