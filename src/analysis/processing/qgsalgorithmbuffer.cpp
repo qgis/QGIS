@@ -83,7 +83,7 @@ void QgsBufferAlgorithm::initAlgorithm( const QVariantMap & )
   addParameter( mitterLimitParam.release() );
 
   auto dissolveParam = std::make_unique<QgsProcessingParameterBoolean>( u"DISSOLVE"_s, QObject::tr( "Dissolve result" ), false );
-  dissolveParam->setHelp( QObject::tr( "Dissolve the final buffer. If True (checked), overlapping buffers will be dissolved (combined) into a single multipart feature." ) );
+  dissolveParam->setHelp( QObject::tr( "Dissolve the final buffer. If True (checked), all features will be dissolved (combined) into a single multipart feature." ) );
   addParameter( dissolveParam.release() );
 
   auto keepDisjointParam = std::make_unique<QgsProcessingParameterBoolean>( u"SEPARATE_DISJOINT"_s, QObject::tr( "Keep disjoint results separate" ), false );
