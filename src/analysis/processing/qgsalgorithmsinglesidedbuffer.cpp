@@ -114,7 +114,7 @@ void QgsSingleSidedBufferAlgorithm::initParameters( const QVariantMap & )
 
   auto joinStyleParam
     = std::make_unique<QgsProcessingParameterEnum>( u"JOIN_STYLE"_s, QObject::tr( "Join style" ), QStringList() << QObject::tr( "Round" ) << QObject::tr( "Miter" ) << QObject::tr( "Bevel" ), false, 0 );
-  joinStyleParam->setHelp( QObject::tr( "Specifies whether round, miter or beveled joins should be used when offsetting corners in a line. Options are: Round, Miter, Bevel." ) );
+  joinStyleParam->setHelp( QObject::tr( "Specifies whether round, miter or beveled joins should be used when offsetting corners in a line." ) );
   addParameter( joinStyleParam.release() );
 
   auto miterLimitParam = std::make_unique<QgsProcessingParameterNumber>( u"MITER_LIMIT"_s, QObject::tr( "Miter limit" ), Qgis::ProcessingNumberParameterType::Double, 2, false, 1 );

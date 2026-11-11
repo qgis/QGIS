@@ -87,7 +87,7 @@ void QgsSegmentizeByMaximumDistanceAlgorithm::initParameters( const QVariantMap 
   tolerance->setIsDynamic( true );
   tolerance->setDynamicPropertyDefinition( QgsPropertyDefinition( u"DISTANCE"_s, QObject::tr( "Maximum offset distance" ), QgsPropertyDefinition::DoublePositive ) );
   tolerance->setDynamicLayerParameterName( u"INPUT"_s );
-  tolerance->setHelp( QObject::tr( "Maximum allowed offset distance between the original curve and the segmentized representation, in the layer units." ) );
+  tolerance->setHelp( QObject::tr( "Maximum allowed offset distance between the original curve and the segmentized representation." ) );
   addParameter( tolerance.release() );
 }
 

@@ -268,7 +268,7 @@ void QgsDissolveAlgorithm::initAlgorithm( const QVariantMap & )
   auto fieldParam = std::make_unique<QgsProcessingParameterField>( u"FIELD"_s, QObject::tr( "Dissolve field(s)" ), QVariant(), u"INPUT"_s, Qgis::ProcessingFieldParameterDataType::Any, true, true );
   fieldParam->setHelp(
     QObject::tr(
-      "Features having the same value for the selected field(s) will be replaced with a single feature with a  merged geometry. If no field is provided then all the features are dissolved, "
+      "If specified, features having the same value for the selected field(s) will be replaced with a single feature with a merged geometry. If no field is provided then all the features are dissolved, "
       "resulting in a single (multipart) feature."
     )
   );

@@ -79,7 +79,7 @@ void QgsConcaveHullAlgorithm::initAlgorithm( const QVariantMap & )
   alphaParam->setHelp( QObject::tr( "Number from 0 (maximum concave hull) to 1 (convex hull)." ) );
   addParameter( alphaParam.release() );
   auto holesParam = std::make_unique<QgsProcessingParameterBoolean>( u"HOLES"_s, QObject::tr( "Allow holes" ), true );
-  holesParam->setHelp( QObject::tr( "Choose whether to allow holes in the final concave hull." ) );
+  holesParam->setHelp( QObject::tr( "Controls whether holes are allowed in the final concave hull." ) );
   addParameter( holesParam.release() );
   auto noMultiGeometryParam = std::make_unique<QgsProcessingParameterBoolean>( u"NO_MULTIGEOMETRY"_s, QObject::tr( "Split multipart geometry into singleparts" ), false );
   noMultiGeometryParam->setHelp( QObject::tr( "Check to have singlepart geometries instead of multipart ones." ) );

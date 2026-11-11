@@ -89,7 +89,7 @@ class EliminateSelection(QgisAlgorithm):
         )
         modeParam.setHelp(
             self.tr(
-                "Choose the parameter to use in order to eliminate the selected polygons."
+                "Controls how selected polygons will be eliminated."
             )
         )
         self.addParameter(modeParam)

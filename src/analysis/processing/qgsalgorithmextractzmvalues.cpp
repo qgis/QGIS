@@ -81,7 +81,7 @@ void QgsExtractZMValuesAlgorithmBase::initParameters( const QVariantMap & )
 
   auto summariesParam = std::make_unique<QgsProcessingParameterEnum>( u"SUMMARIES"_s, QObject::tr( "Summaries to calculate" ), statChoices, true, QVariantList() << 0 );
   summariesParam->setHelp(
-    QObject::tr( "Statistics on the Z or M values of a geometry. One or more of: First, Last, Count, Sum, Mean, Median, St dev (pop), Minimum, Maximum, Range, Minority, Majority, Variety, Q1, Q3, IQR." )
+    QObject::tr( "Statistics on the Z or M values of a geometry." )
   );
   addParameter( summariesParam.release() );
 
