@@ -86,11 +86,7 @@ void QgsAggregateAlgorithm::initAlgorithm( const QVariantMap & )
   addParameter( groupByParam.release() );
 
   auto aggregatesParam = std::make_unique<QgsProcessingParameterAggregate>( u"AGGREGATES"_s, QObject::tr( "Aggregates" ), u"INPUT"_s );
-  aggregatesParam->setHelp(
-    QObject::tr(
-      "List of output layer field definitions."
-    )
-  );
+  aggregatesParam->setHelp( QObject::tr( "List of output layer field definitions." ) );
   addParameter( aggregatesParam.release() );
 
   addParameter( new QgsProcessingParameterFeatureSink( u"OUTPUT"_s, QObject::tr( "Aggregated" ) ) );
