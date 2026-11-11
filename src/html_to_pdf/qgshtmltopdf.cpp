@@ -61,7 +61,7 @@ QgsHtmlToPdf::QgsHtmlToPdf()
     }
     else if ( info.status() == QWebEngineLoadingInfo::LoadStartedStatus )
     {
-      std::cerr << "[NETWORK] Loading initiated...\n";
+      std::cout << "[NETWORK] Loading initiated...\n";
     }
   } );
   connect( &mPage, &QWebEnginePage::permissionRequested, this, []( QWebEnginePermission permissionRequest ) { permissionRequest.deny(); } );
@@ -209,5 +209,14 @@ void QgsHtmlToPdf::onPdfFinished( const QString &, bool ok )
 
 void QgsLoggingWebEnginePage::javaScriptConsoleMessage( JavaScriptConsoleMessageLevel level, const QString &message, int lineNumber, const QString &sourceID )
 {
-  std::cerr << " [JS CONSOLE] " << ( level == ErrorMessageLevel ? "ERROR: " : "WARN/INFO: " ) << message.toStdString() << " (Line: " << lineNumber << ", Source: " << sourceID.toStdString() << ")\n";
+  switch ( level )
+  {
+    case QWebEnginePage::InfoMessageLevel:
+    case QWebEnginePage::WarningMessageLevel:
+      std::cout << " [JS CONSOLE] " << message.toStdString() << " (Line: " << lineNumber << ", Source: " << sourceID.toStdString() << ")\n";
+      break;
+    case QWebEnginePage::ErrorMessageLevel:
+      std::cerr << " [JS CONSOLE ERROR] " << message.toStdString() << " (Line: " << lineNumber << ", Source: " << sourceID.toStdString() << ")\n";
+      break;
+  }
 }
