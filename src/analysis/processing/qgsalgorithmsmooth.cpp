@@ -94,7 +94,7 @@ void QgsSmoothAlgorithm::initParameters( const QVariantMap & )
   iterations->setIsDynamic( true );
   iterations->setDynamicPropertyDefinition( QgsPropertyDefinition( u"ITERATIONS"_s, QObject::tr( "Iterations" ), QgsPropertyDefinition::IntegerPositiveGreaterZero ) );
   iterations->setDynamicLayerParameterName( u"INPUT"_s );
-  iterations->setHelp( QObject::tr( "Increasing the number of iterations will give smoother geometries (and more vertices)." ) );
+  iterations->setHelp( QObject::tr( "Specifies how many iterations of the smoothing process to perform. Larger number of iterations will give smoother geometries (and more vertices)." ) );
   addParameter( iterations.release() );
 
   auto offset = std::make_unique<QgsProcessingParameterNumber>( u"OFFSET"_s, QObject::tr( "Offset" ), Qgis::ProcessingNumberParameterType::Double, 0.25, false, 0.0, 0.5 );
