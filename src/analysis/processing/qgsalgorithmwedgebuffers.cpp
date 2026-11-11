@@ -122,7 +122,7 @@ void QgsWedgeBuffersAlgorithm::initParameters( const QVariantMap & )
   outerRadius->setIsDynamic( true );
   outerRadius->setDynamicPropertyDefinition( QgsPropertyDefinition( u"Outer radius"_s, QObject::tr( "Outer radius" ), QgsPropertyDefinition::DoublePositive ) );
   outerRadius->setDynamicLayerParameterName( u"INPUT"_s );
-  outerRadius->setHelp( QObject::tr( "The outer size (length) of the wedge: the size is meant from the source point to the edge of the wedge shape." ) );
+  outerRadius->setHelp( QObject::tr( "Distance from the source point to the outer edge of the wedge." ) );
   addParameter( outerRadius.release() );
 
   auto innerRadius = std::make_unique<QgsProcessingParameterNumber>( u"INNER_RADIUS"_s, QObject::tr( "Inner radius" ), Qgis::ProcessingNumberParameterType::Double, 0, true, 0 );
