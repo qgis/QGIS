@@ -95,7 +95,7 @@ void QgsAlgorithmRemoveDuplicateVertices::initParameters( const QVariantMap & )
   useZ->setIsDynamic( true );
   useZ->setDynamicPropertyDefinition( QgsPropertyDefinition( u"UseZ"_s, QObject::tr( "Use Z Value" ), QgsPropertyDefinition::Boolean ) );
   useZ->setDynamicLayerParameterName( u"INPUT"_s );
-  useZ->setHelp( QObject::tr( "If the Use Z Value parameter is true, then the Z values are also tested and vertices with the same X and Y but different Z will be maintained." ) );
+  useZ->setHelp( QObject::tr( "If checked, Z values are also compared, so vertices with the same X and Y but different Z values are kept." ) );
   addParameter( useZ.release() );
 }
 
