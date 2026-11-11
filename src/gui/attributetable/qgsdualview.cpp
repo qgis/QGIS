@@ -1163,8 +1163,10 @@ void QgsDualView::fieldCalculator()
   {
     int col = mMasterModel->fieldCol( calc.changedAttributeId() );
 
-    if ( col >= 0 )
+    if ( col >= 0 && mMasterModel->rowCount() > 0 )
+    {
       mMasterModel->reload( mMasterModel->index( 0, col ), mMasterModel->index( mMasterModel->rowCount() - 1, col ) );
+    }
   }
 }
 
