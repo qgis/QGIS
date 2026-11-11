@@ -25,6 +25,7 @@
 #include <QCoreApplication>
 #include <QDir>
 #include <QEventLoop>
+#include <QPainter>
 #include <QSizeF>
 #include <QString>
 #include <QTemporaryDir>
@@ -325,8 +326,7 @@ bool QgsWebEnginePage::printToPdfBlocking( const QString &html, const QString &p
     return false;
   }
 
-  QTextStream outstream( &outputFile );
-  outstream << html;
+  outputFile.write( html.toUtf8() );
   outputFile.close();
 
   QStringList args { outputFilename, pdfFileName, u"--width=%1"_s.arg( width ) };
@@ -349,4 +349,88 @@ bool QgsWebEnginePage::printToPdfBlocking( const QUrl &url, const QString &pdfFi
 
   const QStringList args { url.toString(), pdfFileName, u"--width=%1"_s.arg( width ) };
   return doPrintToPdf( args, errorMessage, feedback );
+}
+
+bool QgsWebEnginePage::renderBlocking( const QString &html, QPainter *painter, const QRectF &painterRect, QString &errorMessage, const QUrl &baseUrl, QgsFeedback *feedback )
+{
+#ifdef HAVE_PDF4QT
+  const QTemporaryDir tempDir;
+  const QString renderedPdfPath = tempDir.filePath( u"content.pdf"_s );
+
+  const double dpi = ( painter && painter->device() ) ? painter->device()->logicalDpiX() : 96.0;
+  const int cssWidth = std::max( 1, static_cast< int >( std::round( painterRect.width() * 96.0 / dpi ) ) );
+
+  if ( !printToPdfBlocking( html, renderedPdfPath, errorMessage, cssWidth, baseUrl, feedback ) )
+  {
+    return false;
+  }
+
+  QgsPdfRenderer renderer( renderedPdfPath );
+  if ( renderer.pageCount() < 1 )
+  {
+    errorMessage = tr( "Generated PDF contains no pages" );
+    return false;
+  }
+
+  const QRectF mediaBox = renderer.pageMediaBox( 0 );
+  if ( mediaBox.isEmpty() || mediaBox.width() <= 0 )
+    return false;
+
+  // Calculate target height preserving the content's natural aspect ratio
+  const double aspectRatio = mediaBox.height() / mediaBox.width();
+  const double targetHeight = painterRect.width() * aspectRatio;
+
+  const QRectF targetRect( painterRect.left(), painterRect.top(), painterRect.width(), targetHeight );
+  return renderer.render( painter, targetRect, 0 );
+
+#else
+  ( void ) html;
+  ( void ) painter;
+  ( void ) painterRect;
+  ( void ) errorMessage;
+  ( void ) baseUrl;
+  ( void ) feedback;
+  throw QgsNotSupportedException( QObject::tr( "Rendering HTML requires a QGIS build with PDF4Qt library support" ) );
+#endif
+}
+
+bool QgsWebEnginePage::renderBlocking( const QUrl &url, QPainter *painter, const QRectF &painterRect, QString &errorMessage, QgsFeedback *feedback )
+{
+#ifdef HAVE_PDF4QT
+  const QTemporaryDir tempDir;
+  const QString renderedPdfPath = tempDir.filePath( u"content.pdf"_s );
+
+  const double dpi = ( painter && painter->device() ) ? painter->device()->logicalDpiX() : 96.0;
+  const int cssWidth = std::max( 1, static_cast< int >( std::round( painterRect.width() * 96.0 / dpi ) ) );
+
+  if ( !printToPdfBlocking( url, renderedPdfPath, errorMessage, cssWidth, feedback ) )
+  {
+    return false;
+  }
+
+  QgsPdfRenderer renderer( renderedPdfPath );
+  if ( renderer.pageCount() < 1 )
+  {
+    errorMessage = tr( "Generated PDF contains no pages" );
+    return false;
+  }
+
+  const QRectF mediaBox = renderer.pageMediaBox( 0 );
+  if ( mediaBox.isEmpty() || mediaBox.width() <= 0 )
+    return false;
+
+  // Calculate target height preserving the content's natural aspect ratio
+  const double aspectRatio = mediaBox.height() / mediaBox.width();
+  const double targetHeight = painterRect.width() * aspectRatio;
+
+  const QRectF targetRect( painterRect.left(), painterRect.top(), painterRect.width(), targetHeight );
+  return renderer.render( painter, targetRect, 0 );
+#else
+  ( void ) url;
+  ( void ) painter;
+  ( void ) painterRect;
+  ( void ) errorMessage;
+  ( void ) feedback;
+  throw QgsNotSupportedException( QObject::tr( "Rendering HTML requires a QGIS build with PDF4Qt library support" ) );
+#endif
 }

@@ -173,6 +173,125 @@ class TestWebEnginePage(QgisTestCase):
                 )
             )
 
+    def test_render_web_page_blocking_fixed_width(self):
+        """
+        Test rendering web pages to a QPainter, with HTML containing fixed width element
+        """
+        html_path = os.path.join(TEST_DATA_DIR, "test_html.html")
+
+        image = QImage(600, 423, QImage.Format.Format_ARGB32_Premultiplied)
+        image.fill(Qt.GlobalColor.transparent)
+        painter = QPainter(image)
+        self.assertTrue(
+            QgsWebEnginePage.renderBlocking(
+                QUrl.fromLocalFile(html_path), painter, QRectF(0, 0, 600, 423)
+            )
+        )
+        painter.end()
+
+        self.assertTrue(
+            self.image_check(
+                "Render QgsWebEnginePage to QPainter",
+                "render",
+                image,
+                "expected_render_blocking",
+            )
+        )
+
+    def test_render_web_page_blocking_dynamic_width(self):
+        """
+        Test rendering web pages to a QPainter, with HTML containing dynamic width element
+        """
+        image = QImage(600, 423, QImage.Format.Format_ARGB32_Premultiplied)
+        image.fill(Qt.GlobalColor.transparent)
+        painter = QPainter(image)
+
+        html = """
+        <html>
+  <head>
+    <link href="bootstrap.css" media="all" rel="stylesheet" type="text/css" />
+    <style>
+      td {
+        border: 3px solid red;
+        height: 40px;
+      }
+    </style>
+  </head>
+  <body>
+    <table style="width: 100%">
+      <tbody>
+        <tr><td></td><td></td></tr>
+        <tr><td></td><td></td></tr>
+        <tr><td></td><td></td></tr>
+        <tr><td></td><td></td></tr>
+        <tr><td></td><td></td></tr>
+      </tbody>
+    </table>
+  </body>
+</html>
+"""
+
+        self.assertTrue(
+            QgsWebEnginePage.renderBlocking(html, painter, QRectF(0, 0, 600, 423))
+        )
+        painter.end()
+
+        self.assertTrue(
+            self.image_check(
+                "Render QgsWebEnginePage to QPainter",
+                "render",
+                image,
+                "expected_render_blocking_dynamic_width_600",
+            )
+        )
+
+    def test_render_web_page_blocking_dynamic_width_200(self):
+        """
+        Test rendering web pages to a QPainter, with HTML containing dynamic width element
+        """
+        image = QImage(200, 423, QImage.Format.Format_ARGB32_Premultiplied)
+        image.fill(Qt.GlobalColor.transparent)
+        painter = QPainter(image)
+
+        html = """
+        <html>
+  <head>
+    <link href="bootstrap.css" media="all" rel="stylesheet" type="text/css" />
+    <style>
+      td {
+        border: 3px solid red;
+        height: 40px;
+      }
+    </style>
+  </head>
+  <body>
+    <table style="width: 100%">
+      <tbody>
+        <tr><td></td><td></td></tr>
+        <tr><td></td><td></td></tr>
+        <tr><td></td><td></td></tr>
+        <tr><td></td><td></td></tr>
+        <tr><td></td><td></td></tr>
+      </tbody>
+    </table>
+  </body>
+</html>
+"""
+
+        self.assertTrue(
+            QgsWebEnginePage.renderBlocking(html, painter, QRectF(0, 0, 200, 423))
+        )
+        painter.end()
+
+        self.assertTrue(
+            self.image_check(
+                "Render QgsWebEnginePage to QPainter",
+                "render",
+                image,
+                "expected_render_blocking_dynamic_width_200",
+            )
+        )
+
 
 if __name__ == "__main__":
     unittest.main()
