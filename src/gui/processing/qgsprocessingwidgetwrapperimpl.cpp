@@ -42,6 +42,7 @@
 #include "qgsfilewidget.h"
 #include "qgsfilterlineedit.h"
 #include "qgsgeometrywidget.h"
+#include "qgsgui.h"
 #include "qgslayoutcombobox.h"
 #include "qgslayoutitemcombobox.h"
 #include "qgslayoutmanager.h"
@@ -57,6 +58,7 @@
 #include "qgsprocessingalgorithmwidgetbase.h"
 #include "qgsprocessingcontext.h"
 #include "qgsprocessingenummodelerwidget.h"
+#include "qgsprocessingguiregistry.h"
 #include "qgsprocessingmaplayercombobox.h"
 #include "qgsprocessingmatrixmodelerwidget.h"
 #include "qgsprocessingmatrixparameterdialog.h"
@@ -68,6 +70,7 @@
 #include "qgsprocessingparameterinterpolationsource.h"
 #include "qgsprocessingparameterreliefcolors.h"
 #include "qgsprocessingparameters.h"
+#include "qgsprocessingparametertype.h"
 #include "qgsprocessingpointcloudexpressionlineedit.h"
 #include "qgsprocessingrastercalculatorexpressionlineedit.h"
 #include "qgsprocessingregistry.h"
@@ -85,6 +88,7 @@
 #include <QCheckBox>
 #include <QComboBox>
 #include <QFileDialog>
+#include <QFileInfo>
 #include <QHBoxLayout>
 #include <QInputDialog>
 #include <QLabel>
@@ -6503,19 +6507,35 @@ QgsProcessingMapLayerParameterDefinitionWidget::QgsProcessingMapLayerParameterDe
 
   vlayout->addWidget( mLayerTypeComboBox );
 
+  mDefaultWidget = new QgsProcessingLayerDefaultValueWidget( context, widgetContext, definition ? definition->defaultValue() : QVariant() );
+  vlayout->addWidget( mDefaultWidget );
+  auto updateDefaultWidget = [this] {
+    QgsProcessingParameterMapLayer param( u"DEFAULT_VALUE"_s );
+    param.setDataTypes( dataTypes() );
+    mDefaultWidget->setParameter( &param );
+  };
+  updateDefaultWidget();
+
+  // the default value widget must only show layers of the allowed types
+  connect( mLayerTypeComboBox, &QgsCheckableComboBox::checkedItemsChanged, this, updateDefaultWidget );
   connect( mLayerTypeComboBox, &QgsCheckableComboBox::checkedItemsChanged, this, &QgsProcessingAbstractParameterDefinitionWidget::changed );
+  connect( mDefaultWidget, &QgsProcessingLayerDefaultValueWidget::changed, this, &QgsProcessingAbstractParameterDefinitionWidget::changed );
 
   setLayout( vlayout );
 }
 
-QgsProcessingParameterDefinition *QgsProcessingMapLayerParameterDefinitionWidget::createParameter( const QString &name, const QString &description, Qgis::ProcessingParameterFlags flags ) const
+QList<int> QgsProcessingMapLayerParameterDefinitionWidget::dataTypes() const
 {
   QList<int> dataTypes;
   for ( const QVariant &v : mLayerTypeComboBox->checkedItemsData() )
     dataTypes << v.toInt();
+  return dataTypes;
+}
 
-  auto param = std::make_unique<QgsProcessingParameterMapLayer>( name, description );
-  param->setDataTypes( dataTypes );
+QgsProcessingParameterDefinition *QgsProcessingMapLayerParameterDefinitionWidget::createParameter( const QString &name, const QString &description, Qgis::ProcessingParameterFlags flags ) const
+{
+  auto param = std::make_unique<QgsProcessingParameterMapLayer>( name, description, mDefaultWidget->value() );
+  param->setDataTypes( dataTypes() );
   param->setFlags( flags );
   return param.release();
 }
@@ -6567,10 +6587,60 @@ void QgsProcessingMapLayerWidgetWrapper::setWidgetContext( const QgsProcessingPa
   }
 }
 
+bool QgsProcessingMapLayerWidgetWrapper::isMissingModelDefaultLayer( const QVariant &value, QgsProcessingContext &context ) const
+{
+  // no default value
+  if ( !value.isValid() )
+    return false;
+
+  if ( type() != Qgis::ProcessingMode::Standard || !dynamic_cast<const QgsProcessingModelAlgorithm *>( parameterDefinition()->algorithm() ) )
+    return false;
+
+  if ( value != parameterDefinition()->defaultValueForGui() )
+    return false;
+
+  QVariant val = value;
+  if ( val.userType() == qMetaTypeId<QgsProcessingFeatureSourceDefinition>() )
+    val = val.value<QgsProcessingFeatureSourceDefinition>().source;
+  else if ( val.userType() == qMetaTypeId<QgsProcessingRasterLayerDefinition>() )
+    val = val.value<QgsProcessingRasterLayerDefinition>().source;
+
+  if ( val.userType() == qMetaTypeId<QgsProperty>() )
+  {
+    if ( val.value<QgsProperty>().propertyType() != Qgis::PropertyType::Static )
+      return false;
+    val = val.value<QgsProperty>().staticValue();
+  }
+
+  if ( val.userType() != QMetaType::Type::QString )
+    return false;
+
+  const QString string = val.toString();
+  if ( string.isEmpty() )
+    return false;
+
+  // model parameters store project layers by name (or by layer ID in older models), file based layers by path
+  const QgsProject *project = context.project() ? context.project() : widgetContext().project();
+  return !QgsProcessingLayerDefaultValueWidget::isAvailableLayerSource( string, project );
+}
+
 void QgsProcessingMapLayerWidgetWrapper::setWidgetValue( const QVariant &value, QgsProcessingContext &context )
 {
-  if ( mComboBox )
-    mComboBox->setValue( value, context );
+  if ( !mComboBox )
+    return;
+
+  // the default layer of a model parameter is not prefilled if it is not available in the current project,
+  // instead the widget behaves as for a parameter without a default value
+  if ( isMissingModelDefaultLayer( value, context ) )
+  {
+    if ( parameterDefinition()->flags() & Qgis::ProcessingParameterFlag::Optional )
+      mComboBox->setLayer( nullptr );
+    else
+      mComboBox->setLayer( widgetContext().activeLayer() );
+    return;
+  }
+
+  mComboBox->setValue( value, context );
 }
 
 QVariant QgsProcessingMapLayerWidgetWrapper::widgetValue() const
@@ -6642,12 +6712,7 @@ QgsProcessingAbstractParameterDefinitionWidget *QgsProcessingRasterLayerWidgetWr
   QgsProcessingContext &context, const QgsProcessingParameterWidgetContext &widgetContext, const QgsProcessingParameterDefinition *definition, const QgsProcessingAlgorithm *algorithm
 )
 {
-  Q_UNUSED( context );
-  Q_UNUSED( widgetContext );
-  Q_UNUSED( definition );
-  Q_UNUSED( algorithm );
-
-  return nullptr;
+  return new QgsProcessingLayerParameterDefinitionWidget( parameterType(), context, widgetContext, definition, algorithm );
 }
 
 
@@ -6681,18 +6746,33 @@ QgsProcessingVectorLayerParameterDefinitionWidget::QgsProcessingVectorLayerParam
 
   vlayout->addWidget( mGeometryTypeComboBox );
 
+  mDefaultWidget = new QgsProcessingLayerDefaultValueWidget( context, widgetContext, definition ? definition->defaultValue() : QVariant() );
+  vlayout->addWidget( mDefaultWidget );
+  auto updateDefaultWidget = [this] {
+    const QgsProcessingParameterVectorLayer param( u"DEFAULT_VALUE"_s, QString(), dataTypes() );
+    mDefaultWidget->setParameter( &param );
+  };
+  updateDefaultWidget();
+
+  // the default value widget must only show layers of the allowed geometry types
+  connect( mGeometryTypeComboBox, &QgsCheckableComboBox::checkedItemsChanged, this, updateDefaultWidget );
   connect( mGeometryTypeComboBox, &QgsCheckableComboBox::checkedItemsChanged, this, &QgsProcessingAbstractParameterDefinitionWidget::changed );
+  connect( mDefaultWidget, &QgsProcessingLayerDefaultValueWidget::changed, this, &QgsProcessingAbstractParameterDefinitionWidget::changed );
 
   setLayout( vlayout );
 }
 
-QgsProcessingParameterDefinition *QgsProcessingVectorLayerParameterDefinitionWidget::createParameter( const QString &name, const QString &description, Qgis::ProcessingParameterFlags flags ) const
+QList<int> QgsProcessingVectorLayerParameterDefinitionWidget::dataTypes() const
 {
   QList<int> dataTypes;
   for ( const QVariant &v : mGeometryTypeComboBox->checkedItemsData() )
     dataTypes << v.toInt();
+  return dataTypes;
+}
 
-  auto param = std::make_unique<QgsProcessingParameterVectorLayer>( name, description, dataTypes );
+QgsProcessingParameterDefinition *QgsProcessingVectorLayerParameterDefinitionWidget::createParameter( const QString &name, const QString &description, Qgis::ProcessingParameterFlags flags ) const
+{
+  auto param = std::make_unique<QgsProcessingParameterVectorLayer>( name, description, dataTypes(), mDefaultWidget->value() );
   param->setFlags( flags );
   return param.release();
 }
@@ -6758,18 +6838,34 @@ QgsProcessingFeatureSourceParameterDefinitionWidget::QgsProcessingFeatureSourceP
   }
 
   vlayout->addWidget( mGeometryTypeComboBox );
+
+  mDefaultWidget = new QgsProcessingLayerDefaultValueWidget( context, widgetContext, definition ? definition->defaultValue() : QVariant() );
+  vlayout->addWidget( mDefaultWidget );
+  auto updateDefaultWidget = [this] {
+    const QgsProcessingParameterFeatureSource param( u"DEFAULT_VALUE"_s, QString(), dataTypes() );
+    mDefaultWidget->setParameter( &param );
+  };
+  updateDefaultWidget();
+
+  // the default value widget must only show layers of the allowed geometry types
+  connect( mGeometryTypeComboBox, &QgsCheckableComboBox::checkedItemsChanged, this, updateDefaultWidget );
   connect( mGeometryTypeComboBox, &QgsCheckableComboBox::checkedItemsChanged, this, &QgsProcessingAbstractParameterDefinitionWidget::changed );
+  connect( mDefaultWidget, &QgsProcessingLayerDefaultValueWidget::changed, this, &QgsProcessingAbstractParameterDefinitionWidget::changed );
 
   setLayout( vlayout );
 }
 
-QgsProcessingParameterDefinition *QgsProcessingFeatureSourceParameterDefinitionWidget::createParameter( const QString &name, const QString &description, Qgis::ProcessingParameterFlags flags ) const
+QList<int> QgsProcessingFeatureSourceParameterDefinitionWidget::dataTypes() const
 {
   QList<int> dataTypes;
   for ( const QVariant &v : mGeometryTypeComboBox->checkedItemsData() )
     dataTypes << v.toInt();
+  return dataTypes;
+}
 
-  auto param = std::make_unique<QgsProcessingParameterFeatureSource>( name, description, dataTypes );
+QgsProcessingParameterDefinition *QgsProcessingFeatureSourceParameterDefinitionWidget::createParameter( const QString &name, const QString &description, Qgis::ProcessingParameterFlags flags ) const
+{
+  auto param = std::make_unique<QgsProcessingParameterFeatureSource>( name, description, dataTypes(), mDefaultWidget->value() );
   param->setFlags( flags );
   return param.release();
 }
@@ -6827,12 +6923,7 @@ QgsProcessingAbstractParameterDefinitionWidget *QgsProcessingMeshLayerWidgetWrap
   QgsProcessingContext &context, const QgsProcessingParameterWidgetContext &widgetContext, const QgsProcessingParameterDefinition *definition, const QgsProcessingAlgorithm *algorithm
 )
 {
-  Q_UNUSED( context );
-  Q_UNUSED( widgetContext );
-  Q_UNUSED( definition );
-  Q_UNUSED( algorithm );
-
-  return nullptr;
+  return new QgsProcessingLayerParameterDefinitionWidget( parameterType(), context, widgetContext, definition, algorithm );
 }
 
 
@@ -7603,14 +7694,26 @@ QgsProcessingMultipleLayerParameterDefinitionWidget::QgsProcessingMultipleLayerP
     mLayerTypeComboBox->setCurrentIndex( mLayerTypeComboBox->findData( static_cast<int>( layersParam->layerType() ) ) );
 
   vlayout->addWidget( mLayerTypeComboBox );
+
+  mDefaultWidget = new QgsProcessingLayerDefaultValueWidget( context, widgetContext, definition ? definition->defaultValue() : QVariant() );
+  vlayout->addWidget( mDefaultWidget );
+  auto updateDefaultWidget = [this] {
+    const QgsProcessingParameterMultipleLayers param( u"DEFAULT_VALUE"_s, QString(), static_cast<Qgis::ProcessingSourceType>( mLayerTypeComboBox->currentData().toInt() ) );
+    mDefaultWidget->setParameter( &param );
+  };
+  updateDefaultWidget();
+
+  // the default value widget must only show layers of the allowed type
+  connect( mLayerTypeComboBox, qOverload<int>( &QComboBox::currentIndexChanged ), this, updateDefaultWidget );
   connect( mLayerTypeComboBox, qOverload<int>( &QComboBox::currentIndexChanged ), this, &QgsProcessingAbstractParameterDefinitionWidget::changed );
+  connect( mDefaultWidget, &QgsProcessingLayerDefaultValueWidget::changed, this, &QgsProcessingAbstractParameterDefinitionWidget::changed );
 
   setLayout( vlayout );
 }
 
 QgsProcessingParameterDefinition *QgsProcessingMultipleLayerParameterDefinitionWidget::createParameter( const QString &name, const QString &description, Qgis::ProcessingParameterFlags flags ) const
 {
-  auto param = std::make_unique<QgsProcessingParameterMultipleLayers>( name, description, static_cast<Qgis::ProcessingSourceType>( mLayerTypeComboBox->currentData().toInt() ) );
+  auto param = std::make_unique<QgsProcessingParameterMultipleLayers>( name, description, static_cast<Qgis::ProcessingSourceType>( mLayerTypeComboBox->currentData().toInt() ), mDefaultWidget->value() );
   param->setFlags( flags );
   return param.release();
 }
@@ -7837,12 +7940,7 @@ QgsProcessingAbstractParameterDefinitionWidget *QgsProcessingPointCloudLayerWidg
   QgsProcessingContext &context, const QgsProcessingParameterWidgetContext &widgetContext, const QgsProcessingParameterDefinition *definition, const QgsProcessingAlgorithm *algorithm
 )
 {
-  Q_UNUSED( context );
-  Q_UNUSED( widgetContext );
-  Q_UNUSED( definition );
-  Q_UNUSED( algorithm );
-
-  return nullptr;
+  return new QgsProcessingLayerParameterDefinitionWidget( parameterType(), context, widgetContext, definition, algorithm );
 }
 
 
@@ -7873,12 +7971,7 @@ QgsProcessingAbstractParameterDefinitionWidget *QgsProcessingAnnotationLayerWidg
   QgsProcessingContext &context, const QgsProcessingParameterWidgetContext &widgetContext, const QgsProcessingParameterDefinition *definition, const QgsProcessingAlgorithm *algorithm
 )
 {
-  Q_UNUSED( context );
-  Q_UNUSED( widgetContext );
-  Q_UNUSED( definition );
-  Q_UNUSED( algorithm );
-
-  return nullptr;
+  return new QgsProcessingLayerParameterDefinitionWidget( parameterType(), context, widgetContext, definition, algorithm );
 }
 
 void QgsProcessingAnnotationLayerWidgetWrapper::setWidgetContext( const QgsProcessingParameterWidgetContext &context )
@@ -10301,5 +10394,238 @@ QString QgsProcessingTileExtentMaxZoomWidgetWrapper::modelerExpressionFormatStri
   return tr( "string of the format 'zoom:xmin,ymin,xmax,ymax [crs]', joined by a '::|::' delimiter" );
 }
 
+
+//
+// QgsProcessingLayerDefaultValueWidget
+//
+
+bool QgsProcessingLayerDefaultValueWidget::isAvailableLayerSource( const QString &source, const QgsProject *project )
+{
+  if ( source.isEmpty() )
+    return false;
+
+  if ( project && ( project->mapLayer( source ) || !project->mapLayersByName( source ).isEmpty() ) )
+    return true;
+
+  // file based sources may include additional parts, e.g. "|layername=..."
+  return QFileInfo::exists( source.section( '|', 0, 0 ) );
+}
+
+QgsProcessingLayerDefaultValueWidget::QgsProcessingLayerDefaultValueWidget(
+  QgsProcessingContext &context, const QgsProcessingParameterWidgetContext &widgetContext, const QVariant &defaultValue, QWidget *parent
+)
+  : QWidget( parent )
+  , mContext( context )
+  , mWidgetContext( widgetContext )
+  , mValue( defaultValue )
+{
+  // the default value of a model parameter cannot be linked to other model components, so
+  // the widget must behave as it does in a standalone algorithm dialog
+  mWidgetContext.setModel( nullptr );
+  mWidgetContext.setModelChildAlgorithmId( QString() );
+
+  QVBoxLayout *vlayout = new QVBoxLayout();
+  vlayout->setContentsMargins( 0, 0, 0, 0 );
+  vlayout->addWidget( new QLabel( tr( "Default value" ) ) );
+  setLayout( vlayout );
+}
+
+QgsProcessingLayerDefaultValueWidget::~QgsProcessingLayerDefaultValueWidget()
+{
+  clearWidget();
+}
+
+void QgsProcessingLayerDefaultValueWidget::setParameter( const QgsProcessingParameterDefinition *parameter )
+{
+  clearWidget();
+  if ( !parameter )
+    return;
+
+  mParameter.reset( parameter->clone() );
+  mParameter->setDescription( tr( "Default value" ) );
+  // mandatory parameter can still have no default value
+  mParameter->setFlags( mParameter->flags() | Qgis::ProcessingParameterFlag::Optional );
+  mParameter->setIsDynamic( false );
+  // the widget is only prefilled with layers from the current project or existing files,
+  // values which do not match (a layer name from another project, non-existing file) are not shown
+  mParameter->setDefaultValue( availableLayersOnly( mValue ) );
+
+  mWrapper.reset( QgsGui::processingGuiRegistry()->createParameterWidgetWrapper( mParameter.get(), Qgis::ProcessingMode::Standard ) );
+  if ( !mWrapper )
+    return;
+
+  mWrapper->setWidgetContext( mWidgetContext );
+  // the widget is initialized to the parameter's default value
+  mWidget = mWrapper->createWrappedWidget( mContext );
+  mWrapper->postInitialize( { mWrapper.get() } );
+  if ( mWidget )
+    layout()->addWidget( mWidget );
+
+  connect( mWrapper.get(), &QgsAbstractProcessingParameterWidgetWrapper::widgetValueHasChanged, this, [this] {
+    mValue = layerIdsToNames( mWrapper->parameterValue() );
+    emit changed();
+  } );
+}
+
+QVariant QgsProcessingLayerDefaultValueWidget::availableLayersOnly( const QVariant &value ) const
+{
+  // no default value
+  if ( !value.isValid() )
+    return QVariant();
+
+  const QgsProject *project = mContext.project() ? mContext.project() : mWidgetContext.project();
+  auto isAvailable = [project]( const QString &string ) -> bool { return isAvailableLayerSource( string, project ); };
+
+  if ( value.userType() == qMetaTypeId<QgsProcessingFeatureSourceDefinition>() )
+  {
+    const QgsProcessingFeatureSourceDefinition definition = value.value<QgsProcessingFeatureSourceDefinition>();
+    if ( definition.source.propertyType() == Qgis::PropertyType::Static && isAvailable( definition.source.staticValue().toString() ) )
+      return value;
+  }
+  else if ( value.userType() == qMetaTypeId<QgsProcessingRasterLayerDefinition>() )
+  {
+    const QgsProcessingRasterLayerDefinition definition = value.value<QgsProcessingRasterLayerDefinition>();
+    if ( definition.source.propertyType() == Qgis::PropertyType::Static && isAvailable( definition.source.staticValue().toString() ) )
+      return value;
+  }
+  else if ( value.userType() == QMetaType::Type::QVariantList )
+  {
+    QVariantList layers;
+    const QVariantList values = value.toList();
+    for ( const QVariant &v : values )
+    {
+      const QVariant layer = availableLayersOnly( v );
+      if ( layer.isValid() )
+        layers << layer;
+    }
+    return layers.isEmpty() ? QVariant() : QVariant( layers );
+  }
+  else if ( value.userType() == QMetaType::Type::QStringList )
+  {
+    QStringList layers;
+    const QStringList values = value.toStringList();
+    for ( const QString &v : values )
+    {
+      if ( isAvailable( v ) )
+        layers << v;
+    }
+    return layers.isEmpty() ? QVariant() : QVariant( layers );
+  }
+  else if ( value.userType() == QMetaType::Type::QString )
+  {
+    if ( isAvailable( value.toString() ) )
+      return value;
+  }
+
+  return QVariant();
+}
+
+QVariant QgsProcessingLayerDefaultValueWidget::layerIdsToNames( const QVariant &value ) const
+{
+  // no default value
+  if ( !value.isValid() )
+    return value;
+
+  QgsProject *project = mContext.project() ? mContext.project() : mWidgetContext.project();
+  if ( !project )
+    return value;
+
+  // layer names are resolved when the model is run, in the same way as layer IDs
+  auto layerIdToLayerName = [project]( const QString &string ) -> QString {
+    if ( const QgsMapLayer *layer = project->mapLayer( string ) )
+      return layer->name();
+    return string;
+  };
+
+  if ( value.userType() == qMetaTypeId<QgsProcessingFeatureSourceDefinition>() )
+  {
+    QgsProcessingFeatureSourceDefinition definition = value.value<QgsProcessingFeatureSourceDefinition>();
+    if ( definition.source.propertyType() == Qgis::PropertyType::Static )
+      definition.source = QgsProperty::fromValue( layerIdToLayerName( definition.source.staticValue().toString() ) );
+    return QVariant::fromValue( definition );
+  }
+  else if ( value.userType() == qMetaTypeId<QgsProcessingRasterLayerDefinition>() )
+  {
+    QgsProcessingRasterLayerDefinition definition = value.value<QgsProcessingRasterLayerDefinition>();
+    if ( definition.source.propertyType() == Qgis::PropertyType::Static )
+      definition.source = QgsProperty::fromValue( layerIdToLayerName( definition.source.staticValue().toString() ) );
+    return QVariant::fromValue( definition );
+  }
+  else if ( value.userType() == QMetaType::Type::QVariantList )
+  {
+    // multiple layers
+    QVariantList names;
+    const QVariantList values = value.toList();
+    for ( const QVariant &v : values )
+      names << layerIdsToNames( v );
+    return names;
+  }
+  else if ( value.userType() == QMetaType::Type::QStringList )
+  {
+    QStringList names;
+    const QStringList values = value.toStringList();
+    for ( const QString &v : values )
+      names << layerIdToLayerName( v );
+    return names;
+  }
+  else if ( value.userType() == QMetaType::Type::QString )
+  {
+    return layerIdToLayerName( value.toString() );
+  }
+
+  return value;
+}
+
+void QgsProcessingLayerDefaultValueWidget::clearWidget()
+{
+  mWrapper.reset();
+  delete mWidget;
+  mWidget = nullptr;
+  mParameter.reset();
+}
+
+
+//
+// QgsProcessingLayerParameterDefinitionWidget
+//
+
+QgsProcessingLayerParameterDefinitionWidget::QgsProcessingLayerParameterDefinitionWidget(
+  const QString &type,
+  QgsProcessingContext &context,
+  const QgsProcessingParameterWidgetContext &widgetContext,
+  const QgsProcessingParameterDefinition *definition,
+  const QgsProcessingAlgorithm *algorithm,
+  QWidget *parent
+)
+  : QgsProcessingAbstractParameterDefinitionWidget( context, widgetContext, definition, algorithm, parent )
+  , mType( type )
+{
+  QVBoxLayout *vlayout = new QVBoxLayout();
+  vlayout->setContentsMargins( 0, 0, 0, 0 );
+
+  mDefaultWidget = new QgsProcessingLayerDefaultValueWidget( context, widgetContext, definition ? definition->defaultValue() : QVariant() );
+  if ( const QgsProcessingParameterType *paramType = QgsApplication::processingRegistry()->parameterType( mType ) )
+  {
+    std::unique_ptr<QgsProcessingParameterDefinition> param( paramType->create( u"DEFAULT_VALUE"_s ) );
+    mDefaultWidget->setParameter( param.get() );
+  }
+  vlayout->addWidget( mDefaultWidget );
+  connect( mDefaultWidget, &QgsProcessingLayerDefaultValueWidget::changed, this, &QgsProcessingAbstractParameterDefinitionWidget::changed );
+
+  setLayout( vlayout );
+}
+
+QgsProcessingParameterDefinition *QgsProcessingLayerParameterDefinitionWidget::createParameter( const QString &name, const QString &description, Qgis::ProcessingParameterFlags flags ) const
+{
+  const QgsProcessingParameterType *paramType = QgsApplication::processingRegistry()->parameterType( mType );
+  if ( !paramType )
+    return nullptr;
+
+  std::unique_ptr<QgsProcessingParameterDefinition> param( paramType->create( name ) );
+  param->setDescription( description );
+  param->setDefaultValue( mDefaultWidget->value() );
+  param->setFlags( flags );
+  return param.release();
+}
 
 ///@endcond PRIVATE

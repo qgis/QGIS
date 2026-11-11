@@ -1651,6 +1651,53 @@ class GUI_EXPORT QgsProcessingDatabaseTableWidgetWrapper : public QgsAbstractPro
     friend class TestProcessingGui;
 };
 
+/**
+ * Widget for editing the default value of a layer parameter within a parameter definition widget.
+ *
+ * It is edited using the same widget which is used for the parameter in algorithm dialogs.
+ *
+ * \since QGIS 4.6
+ */
+class GUI_EXPORT QgsProcessingLayerDefaultValueWidget : public QWidget
+{
+    Q_OBJECT
+  public:
+    QgsProcessingLayerDefaultValueWidget( QgsProcessingContext &context, const QgsProcessingParameterWidgetContext &widgetContext, const QVariant &defaultValue, QWidget *parent = nullptr );
+    ~QgsProcessingLayerDefaultValueWidget() override;
+
+    void setParameter( const QgsProcessingParameterDefinition *parameter );
+
+    QVariant value() const { return mValue; }
+
+    /**
+     * Returns TRUE if the layer \a source of a default value matches a layer in the \a project
+     * (by name or layer ID) or an existing file. It is used to check if the default value
+     * should be suggested to the user.
+     */
+    static bool isAvailableLayerSource( const QString &source, const QgsProject *project );
+
+  signals:
+
+    //! Emitted when the default value is changed by the user
+    void changed();
+
+  private:
+    void clearWidget();
+
+    //! Replaces any project layer IDs in a widget \a value by the corresponding layer names
+    QVariant layerIdsToNames( const QVariant &value ) const;
+
+    //! Returns the parts of a default \a value which match layers in the current project or existing files, or an invalid value if nothing matches
+    QVariant availableLayersOnly( const QVariant &value ) const;
+
+    QgsProcessingContext &mContext;
+    QgsProcessingParameterWidgetContext mWidgetContext;
+    QVariant mValue;
+    std::unique_ptr<QgsProcessingParameterDefinition> mParameter;
+    std::unique_ptr<QgsAbstractProcessingParameterWidgetWrapper> mWrapper;
+    QWidget *mWidget = nullptr;
+};
+
 class GUI_EXPORT QgsProcessingMapLayerParameterDefinitionWidget : public QgsProcessingAbstractParameterDefinitionWidget
 {
     Q_OBJECT
@@ -1665,7 +1712,10 @@ class GUI_EXPORT QgsProcessingMapLayerParameterDefinitionWidget : public QgsProc
     QgsProcessingParameterDefinition *createParameter( const QString &name, const QString &description, Qgis::ProcessingParameterFlags flags ) const override;
 
   private:
+    QList<int> dataTypes() const;
+
     QgsCheckableComboBox *mLayerTypeComboBox = nullptr;
+    QgsProcessingLayerDefaultValueWidget *mDefaultWidget = nullptr;
 };
 
 class GUI_EXPORT QgsProcessingMapLayerWidgetWrapper : public QgsAbstractProcessingParameterWidgetWrapper, public QgsProcessingParameterWidgetFactoryInterface
@@ -1694,6 +1744,12 @@ class GUI_EXPORT QgsProcessingMapLayerWidgetWrapper : public QgsAbstractProcessi
     Qgis::ProcessingModelChildParameterSource defaultModelSource( const QgsProcessingParameterDefinition *parameter ) const override;
 
   private:
+    /**
+     * Returns TRUE if \a value is the default value of a model parameter, which refers to a layer
+     * which is neither available in the current project nor an existing file.
+     */
+    bool isMissingModelDefaultLayer( const QVariant &value, QgsProcessingContext &context ) const;
+
     QPointer<QgsProcessingMapLayerComboBox> mComboBox;
     int mBlockSignals = 0;
 
@@ -1734,7 +1790,10 @@ class GUI_EXPORT QgsProcessingVectorLayerParameterDefinitionWidget : public QgsP
     QgsProcessingParameterDefinition *createParameter( const QString &name, const QString &description, Qgis::ProcessingParameterFlags flags ) const override;
 
   private:
+    QList<int> dataTypes() const;
+
     QgsCheckableComboBox *mGeometryTypeComboBox = nullptr;
+    QgsProcessingLayerDefaultValueWidget *mDefaultWidget = nullptr;
 };
 
 class GUI_EXPORT QgsProcessingVectorLayerWidgetWrapper : public QgsProcessingMapLayerWidgetWrapper
@@ -1770,7 +1829,10 @@ class GUI_EXPORT QgsProcessingFeatureSourceParameterDefinitionWidget : public Qg
     QgsProcessingParameterDefinition *createParameter( const QString &name, const QString &description, Qgis::ProcessingParameterFlags flags ) const override;
 
   private:
+    QList<int> dataTypes() const;
+
     QgsCheckableComboBox *mGeometryTypeComboBox = nullptr;
+    QgsProcessingLayerDefaultValueWidget *mDefaultWidget = nullptr;
 };
 
 class GUI_EXPORT QgsProcessingFeatureSourceWidgetWrapper : public QgsProcessingMapLayerWidgetWrapper
@@ -1975,6 +2037,7 @@ class GUI_EXPORT QgsProcessingMultipleLayerParameterDefinitionWidget : public Qg
 
   private:
     QComboBox *mLayerTypeComboBox = nullptr;
+    QgsProcessingLayerDefaultValueWidget *mDefaultWidget = nullptr;
 };
 
 class GUI_EXPORT QgsProcessingMultipleLayerWidgetWrapper : public QgsAbstractProcessingParameterWidgetWrapper, public QgsProcessingParameterWidgetFactoryInterface
@@ -2723,6 +2786,29 @@ class GUI_EXPORT QgsProcessingTileExtentMaxZoomWidgetWrapper : public QgsAbstrac
     friend class TestProcessingGui;
 };
 
+/**
+ * Parameter definition widget for layer parameters without any properties besides the default value.
+ *
+ * \since QGIS 4.6
+ */
+class GUI_EXPORT QgsProcessingLayerParameterDefinitionWidget : public QgsProcessingAbstractParameterDefinitionWidget
+{
+    Q_OBJECT
+  public:
+    QgsProcessingLayerParameterDefinitionWidget(
+      const QString &type,
+      QgsProcessingContext &context,
+      const QgsProcessingParameterWidgetContext &widgetContext,
+      const QgsProcessingParameterDefinition *definition = nullptr,
+      const QgsProcessingAlgorithm *algorithm = nullptr,
+      QWidget *parent SIP_TRANSFERTHIS = nullptr
+    );
+    QgsProcessingParameterDefinition *createParameter( const QString &name, const QString &description, Qgis::ProcessingParameterFlags flags ) const override;
+
+  private:
+    QString mType;
+    QgsProcessingLayerDefaultValueWidget *mDefaultWidget = nullptr;
+};
 
 ///@endcond PRIVATE
 
