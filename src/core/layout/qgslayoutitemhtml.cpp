@@ -15,6 +15,8 @@
 
 #include "qgslayoutitemhtml.h"
 
+#include <nlohmann/json.hpp>
+
 #include "qgsdistancearea.h"
 #include "qgsexpression.h"
 #include "qgsjsonutils.h"
@@ -336,7 +338,8 @@ void QgsLayoutItemHtml::recreateCachedImageInBackground()
 
   emit backgroundTaskCountChanged( 1 );
   mCacheInvalidated = false;
-  mRenderJob = std::make_unique< QgsLayoutItemHtmlRenderJob >( mEvaluatedHtml, mResolvedBaseUrl, mEnableUserStylesheet ? mUserStylesheet : QString(), frameWidthLayoutUnits, layoutUnitsPerCssPixel() );
+  mRenderJob = std::make_unique<
+    QgsLayoutItemHtmlRenderJob >( mEvaluatedHtml, mResolvedBaseUrl, mEnableUserStylesheet ? mUserStylesheet : QString(), mAtlasFeatureJSON, frameWidthLayoutUnits, layoutUnitsPerCssPixel() );
   connect( mRenderJob.get(), &QgsLayoutItemHtmlRenderJob::finished, this, &QgsLayoutItemHtml::htmlRenderFinished );
   mRenderJob->start();
 }
@@ -408,6 +411,7 @@ void QgsLayoutItemHtml::renderHtmlSynchronously()
   {
     htmlRenderSettings.setUserStylesheet( mUserStylesheet );
   }
+  htmlRenderSettings.setFeatureJson( mAtlasFeatureJSON );
 
   if ( !QgsWebEnginePage::renderBlocking( mEvaluatedHtml, &painter, QRectF( 0, 0, widthCssPx, 9999 ), errorMessage, renderedSizeCssPx, htmlRenderSettings, nullptr ) )
   {
@@ -859,7 +863,7 @@ void QgsLayoutItemHtml::setExpressionContext( const QgsFeature &feature, QgsVect
     // create JSON representation of feature
     QgsJsonExporter exporter( layer );
     exporter.setIncludeRelated( true );
-    mAtlasFeatureJSON = exporter.exportFeature( feature );
+    mAtlasFeatureJSON = QgsJsonUtils::jsonToVariant( exporter.exportFeatureToJsonObject( feature ) ).toMap();
   }
   else
   {
@@ -898,10 +902,13 @@ void QgsLayoutItemHtml::refreshDataDefinedProperty( const QgsLayoutObject::DataD
 // QgsLayoutItemHtmlRenderJob
 //
 ///@cond PRIVATE
-QgsLayoutItemHtmlRenderJob::QgsLayoutItemHtmlRenderJob( const QString &html, const QUrl &baseUrl, const QString &userStylesheet, double frameWidthLayoutUnits, double unitsPerCssPx )
+QgsLayoutItemHtmlRenderJob::QgsLayoutItemHtmlRenderJob(
+  const QString &html, const QUrl &baseUrl, const QString &userStylesheet, const QVariantMap &featureJson, double frameWidthLayoutUnits, double unitsPerCssPx
+)
   : mHtml( html )
   , mBaseUrl( baseUrl )
   , mUserStylesheet( userStylesheet )
+  , mFeatureJson( featureJson )
   , mFrameWidthLayoutUnits( frameWidthLayoutUnits )
   , mUnitsPerCssPx( unitsPerCssPx )
 {
@@ -940,6 +947,7 @@ void QgsLayoutItemHtmlRenderJob::run()
   QgsHtmlRenderSettings htmlRenderSettings;
   htmlRenderSettings.setBaseUrl( mBaseUrl );
   htmlRenderSettings.setUserStylesheet( mUserStylesheet );
+  htmlRenderSettings.setFeatureJson( mFeatureJson );
 
   mSuccess = QgsWebEnginePage::renderBlocking( mHtml, &painter, QRectF( 0, 0, widthCssPx, 9999 ), mErrorMessage, renderedSizeCssPx, htmlRenderSettings, &mFeedback );
   painter.end();

@@ -41,7 +41,7 @@ class QgsLayoutItemHtmlRenderJob : public QObject
     Q_OBJECT
 
   public:
-    QgsLayoutItemHtmlRenderJob( const QString &html, const QUrl &baseUrl, const QString &userStylesheet, double frameWidthLayoutUnits, double unitsPerCssPx );
+    QgsLayoutItemHtmlRenderJob( const QString &html, const QUrl &baseUrl, const QString &userStylesheet, const QVariantMap &featureJson, double frameWidthLayoutUnits, double unitsPerCssPx );
 
     void start();
 
@@ -66,6 +66,7 @@ class QgsLayoutItemHtmlRenderJob : public QObject
     QString mHtml;
     QUrl mBaseUrl;
     QString mUserStylesheet;
+    QVariantMap mFeatureJson;
     double mFrameWidthLayoutUnits = 0.0;
     double mUnitsPerCssPx = 1.0;
 
@@ -330,7 +331,7 @@ class CORE_EXPORT QgsLayoutItemHtml : public QgsLayoutMultiFrame
     bool mEnableUserStylesheet = false;
 
     //! JSON string representation of current atlas feature
-    QString mAtlasFeatureJSON;
+    QVariantMap mAtlasFeatureJSON;
 
     QgsNetworkContentFetcher *mFetcher = nullptr;
     bool mFetching = false;
