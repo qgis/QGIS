@@ -569,6 +569,13 @@ void QgsApplication::init( QString profileFolder )
   // This is cheap to call anyway, so there's no harm in being overly vigilant...
   ( void ) QgsExpression::getFunctionsSnapshot();
 
+  // trigger creation of default style, but defer initialization until
+  // it's actually required
+  // The default style creation should be done before instantiating the QgsProject singleton
+  QgsStyle *defaultStyle = QgsStyle::defaultStyle( false );
+  if ( !members()->mStyleModel )
+    members()->mStyleModel = std::make_unique<QgsStyleModel>( defaultStyle );
+
   {
     QgsScopedRuntimeProfile profile( tr( "Load color schemes" ) );
     // TODO QGIS 5.0 - remove the default inclusion of the project instance
@@ -582,12 +589,6 @@ void QgsApplication::init( QString profileFolder )
     QgsScopedRuntimeProfile profile( tr( "Load bookmarks" ) );
     bookmarkManager()->initialize( QgsApplication::qgisSettingsDirPath() + "/bookmarks.xml" );
   }
-
-  // trigger creation of default style, but defer initialization until
-  // it's actually required
-  QgsStyle *defaultStyle = QgsStyle::defaultStyle( false );
-  if ( !members()->mStyleModel )
-    members()->mStyleModel = std::make_unique<QgsStyleModel>( defaultStyle );
 
   QgsApplication::processingRegistry()->defaultStyleRegistry()->loadStyles();
 
