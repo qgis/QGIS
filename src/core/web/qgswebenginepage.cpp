@@ -290,6 +290,23 @@ QString QgsWebEnginePage::htmlToPdfReturnCodeToString( int code )
   BUILTIN_UNREACHABLE
 }
 
+bool QgsWebEnginePage::doPrintToPdf( const QStringList &args, QString &errorMessage, QgsFeedback *feedback )
+{
+  const QString executable = htmlToPdfExecutable();
+  if ( executable.isEmpty() || !QFile::exists( executable ) )
+  {
+    errorMessage = tr( "qgis_html_to_pdf utility not found" );
+    return false;
+  }
+
+  QgsBlockingProcess process( executable, args );
+  process.setStdErrHandler( []( const QByteArray &ba ) { QgsDebugError( ba ); } );
+  process.setStdOutHandler( []( const QByteArray &ba ) { QgsDebugMsgLevel( ba, 2 ); } );
+  const int returnCode = process.run( feedback );
+  errorMessage = htmlToPdfReturnCodeToString( returnCode );
+  return returnCode == 0;
+}
+
 bool QgsWebEnginePage::printToPdfBlocking( const QString &html, const QString &pdfFileName, QString &errorMessage, int width, const QUrl &baseUrl, QgsFeedback *feedback )
 {
   const QString executable = htmlToPdfExecutable();
@@ -318,12 +335,7 @@ bool QgsWebEnginePage::printToPdfBlocking( const QString &html, const QString &p
     args.append( u"--base-url=%1"_s.arg( baseUrl.toString() ) );
   }
 
-  QgsBlockingProcess process( executable, args );
-  process.setStdErrHandler( []( const QByteArray &ba ) { QgsDebugError( ba ); } );
-  process.setStdOutHandler( []( const QByteArray &ba ) { QgsDebugMsgLevel( ba, 2 ); } );
-  const int returnCode = process.run( feedback );
-  errorMessage = htmlToPdfReturnCodeToString( returnCode );
-  return returnCode == 0;
+  return doPrintToPdf( args, errorMessage, feedback );
 }
 
 bool QgsWebEnginePage::printToPdfBlocking( const QUrl &url, const QString &pdfFileName, QString &errorMessage, int width, QgsFeedback *feedback )
@@ -335,10 +347,6 @@ bool QgsWebEnginePage::printToPdfBlocking( const QUrl &url, const QString &pdfFi
     return false;
   }
 
-  QgsBlockingProcess process( executable, { url.toString(), pdfFileName, u"--width=%1"_s.arg( width ) } );
-  process.setStdErrHandler( []( const QByteArray &ba ) { QgsDebugError( ba ); } );
-  process.setStdOutHandler( []( const QByteArray &ba ) { QgsDebugMsgLevel( ba, 2 ); } );
-  const int returnCode = process.run( feedback );
-  errorMessage = htmlToPdfReturnCodeToString( returnCode );
-  return returnCode == 0;
+  const QStringList args { url.toString(), pdfFileName, u"--width=%1"_s.arg( width ) };
+  return doPrintToPdf( args, errorMessage, feedback );
 }

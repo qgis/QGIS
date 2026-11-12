@@ -189,6 +189,7 @@ class CORE_EXPORT QgsWebEnginePage : public QObject
     static QString htmlToPdfExecutable();
 
     static QString htmlToPdfReturnCodeToString( int code );
+    static bool doPrintToPdf( const QStringList &args, QString &errorMessage, QgsFeedback *feedback );
 
     std::unique_ptr< QWebEnginePage > mPage;
     mutable QSize mCachedSize;
