@@ -25,6 +25,8 @@
 #include <QCoreApplication>
 #include <QDir>
 #include <QEventLoop>
+#include <QJsonDocument>
+#include <QJsonObject>
 #include <QPainter>
 #include <QSizeF>
 #include <QString>
@@ -301,14 +303,30 @@ bool QgsWebEnginePage::doPrintToPdf( const QStringList &args, const QgsHtmlRende
   }
 
   QStringList allArgs = args;
+
+  const QTemporaryDir tempDir;
+  const QString settingsFilename = tempDir.filePath( u"settings.json"_s );
+  allArgs.append( u"--settings=%1"_s.arg( settingsFilename ) );
+
+  QJsonObject settingsObj;
   if ( !settings.baseUrl().isEmpty() )
   {
-    allArgs.append( u"--base-url=%1"_s.arg( settings.baseUrl().toString() ) );
+    settingsObj.insert( u"baseUrl"_s, QJsonValue::fromVariant( settings.baseUrl() ) );
   }
   if ( !settings.userStylesheet().isEmpty() )
   {
-    allArgs.append( u"--user-stylesheet=%1"_s.arg( settings.userStylesheet() ) );
+    settingsObj.insert( u"userStylesheet"_s, QJsonValue::fromVariant( settings.userStylesheet() ) );
   }
+  QJsonDocument jsonDocument( settingsObj );
+  QFile settingsFile( settingsFilename );
+  if ( !settingsFile.open( QFile::WriteOnly | QFile::Truncate ) )
+  {
+    errorMessage = tr( "writing settings to temporary file failed" );
+    return false;
+  }
+
+  settingsFile.write( jsonDocument.toJson() );
+  settingsFile.close();
 
   QgsBlockingProcess process( executable, allArgs );
   process.setStdErrHandler( []( const QByteArray &ba ) { QgsDebugError( ba ); } );
