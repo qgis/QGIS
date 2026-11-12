@@ -2837,7 +2837,7 @@ QVariant QgsProcessingParameterDefinition::valueAsJsonObjectPrivate( const QVari
   }
 
   // unhandled type
-  Q_ASSERT_X( false, "QgsProcessingParameterDefinition::valueAsJsonObject", u"unsupported variant type %1"_s.arg( QMetaType::typeName( value.userType() ) ).toLocal8Bit() );
+  Q_ASSERT_X( false, "QgsProcessingParameterDefinition::valueAsJsonObject", u"unsupported variant type %1"_s.arg( value.metaType().name() ).toLocal8Bit() );
   return value;
 }
 
@@ -3010,7 +3010,7 @@ QString QgsProcessingParameterDefinition::valueAsStringPrivate( const QVariant &
     return value.toString();
 
   // unhandled type
-  QgsDebugError( u"unsupported variant type %1"_s.arg( QMetaType::typeName( value.userType() ) ) );
+  QgsDebugError( u"unsupported variant type %1"_s.arg( value.metaType().name() ) );
   ok = false;
   return value.toString();
 }

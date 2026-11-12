@@ -532,7 +532,7 @@ Converts field values from an iterator to an array of data.
 
         default:
         {
-          PyErr_SetString( PyExc_TypeError, QStringLiteral( "Field type (%1) cannot be converted to a data array." ).arg( QMetaType::typeName( field.type() ) ).toUtf8().constData() );
+          PyErr_SetString( PyExc_TypeError, QStringLiteral( "Field type (%1) cannot be converted to a data array." ).arg( QMetaType( field.type() ).name() ).toUtf8().constData() );
           sipIsErr = 1;
         }
       }

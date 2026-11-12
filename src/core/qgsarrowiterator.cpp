@@ -346,7 +346,7 @@ namespace
         QGIS_NANOARROW_THROW_NOT_OK( ArrowSchemaSetType( col->children[0], NANOARROW_TYPE_STRING ) );
         return;
       default:
-        throw QgsException( u"QgsArrowIterator can't infer field type '%1' for field '%2'"_s.arg( QMetaType::typeName( metaType ) ).arg( fieldName ) );
+        throw QgsException( u"QgsArrowIterator can't infer field type '%1' for field '%2'"_s.arg( QMetaType( metaType ).name() ).arg( fieldName ) );
     }
   }
 
