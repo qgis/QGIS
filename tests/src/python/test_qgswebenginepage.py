@@ -353,6 +353,61 @@ class TestWebEnginePage(QgisTestCase):
             )
         )
 
+    def test_render_web_page_blocking_feature_json(self):
+        """
+        Test rendering web pages to a QPainter, with feature json
+        """
+        image = QImage(600, 423, QImage.Format.Format_ARGB32_Premultiplied)
+        image.fill(Qt.GlobalColor.transparent)
+        painter = QPainter(image)
+
+        html = """
+                <html>
+                <head>
+                <script>
+                function setFeature(feature) {
+                    const box = document.getElementById('box');
+                    box.style.backgroundColor = feature.properties.bg;
+                    box.style.borderColor = feature.properties.border;
+                    box.style.height = feature.properties.height + 'px';
+                }
+                </script>
+                </head>
+                <body>
+                <div id="box" style="background-color: red; width: 100%; border: 5px solid black; height: 20px; box-sizing: border-box;">
+                 </div>
+                """
+        settings = QgsHtmlRenderSettings()
+        settings.setFeatureJson(
+            {
+                "type": "Feature",
+                "id": 1,
+                "geometry": None,
+                "properties": {
+                    "bg": "green",
+                    "border": "yellow",
+                    "height": 50,
+                },
+            }
+        )
+
+        res, error, size = QgsWebEnginePage.renderBlocking(
+            html, painter, QRectF(0, 0, 600, 423), settings
+        )
+        painter.end()
+        self.assertTrue(res)
+        self.assertEqual(size.width(), 600)
+        self.assertAlmostEqual(size.height(), 52, places=0)
+
+        self.assertTrue(
+            self.image_check(
+                "Render QgsWebEnginePage to QPainter with feature json",
+                "render",
+                image,
+                "expected_render_with_feature_json",
+            )
+        )
+
 
 if __name__ == "__main__":
     unittest.main()

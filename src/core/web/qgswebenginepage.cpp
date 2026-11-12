@@ -317,6 +317,10 @@ bool QgsWebEnginePage::doPrintToPdf( const QStringList &args, const QgsHtmlRende
   {
     settingsObj.insert( u"userStylesheet"_s, QJsonValue::fromVariant( settings.userStylesheet() ) );
   }
+  if ( !settings.featureJson().isEmpty() )
+  {
+    settingsObj.insert( u"feature"_s, QJsonValue::fromVariant( settings.featureJson() ) );
+  }
   QJsonDocument jsonDocument( settingsObj );
   QFile settingsFile( settingsFilename );
   if ( !settingsFile.open( QFile::WriteOnly | QFile::Truncate ) )

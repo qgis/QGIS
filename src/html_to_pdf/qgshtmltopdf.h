@@ -17,6 +17,7 @@
 #ifndef QGSHTMLTOPDF_H
 #define QGSHTMLTOPDF_H
 
+#include <QJsonObject>
 #include <QObject>
 #include <QString>
 #include <QWebEnginePage>
@@ -54,6 +55,7 @@ class QgsHtmlToPdf : public QObject
         QString userAgent;
         QString baseUrl;
         QString userStylesheet;
+        QJsonObject feature;
     };
     QgsHtmlToPdf();
 
