@@ -996,11 +996,11 @@ void QgsVectorFileWriter::init(
 #endif
 
         // create the field
-        QgsDebugMsgLevel( "creating field " + attrField.name() + " type " + QString( QVariant::typeToName( attrField.type() ) ) + " width " + QString::number( ogrWidth ) + " precision " + QString::number( ogrPrecision ), 2 );
+        QgsDebugMsgLevel( "creating field " + attrField.name() + " type " + QString( QMetaType( attrField.type() ).name() ) + " width " + QString::number( ogrWidth ) + " precision " + QString::number( ogrPrecision ), 2 );
         if ( OGR_L_CreateField( mLayer, fld.get(), true ) != OGRERR_NONE )
         {
           QgsDebugError( "error creating field " + attrField.name() );
-          mErrorMessage = QObject::tr( "Creation of field %1 (%2) failed (OGR error: %3)" ).arg( attrField.name(), QVariant::typeToName( attrField.type() ), QString::fromUtf8( CPLGetLastErrorMsg() ) );
+          mErrorMessage = QObject::tr( "Creation of field %1 (%2) failed (OGR error: %3)" ).arg( attrField.name(), QMetaType( attrField.type() ).name(), QString::fromUtf8( CPLGetLastErrorMsg() ) );
           mError = ErrAttributeCreationFailed;
           return;
         }

@@ -215,12 +215,12 @@ QDomElement QgsXmlUtils::writeVariant( const QVariant &value, QDomDocument &doc 
     case QMetaType::Type::LongLong:
     case QMetaType::Type::ULongLong:
     case QMetaType::Type::QString:
-      element.setAttribute( u"type"_s, QVariant::typeToName( static_cast<QMetaType::Type>( value.userType() ) ) );
+      element.setAttribute( u"type"_s, value.metaType().name() );
       element.setAttribute( u"value"_s, value.toString() );
       break;
 
     case QMetaType::Type::QChar:
-      element.setAttribute( u"type"_s, QVariant::typeToName( static_cast<QMetaType::Type>( value.userType() ) ) );
+      element.setAttribute( u"type"_s, value.metaType().name() );
       element.setAttribute( u"value"_s, QgsVariantUtils::isNull( value ) ? QString() : QString( value.toChar() ) );
       break;
 
