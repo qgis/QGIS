@@ -33,6 +33,10 @@
 
 using namespace Qt::StringLiterals;
 
+QgsNetworkContentFetcher::QgsNetworkContentFetcher( QObject *parent )
+  : QObject( parent )
+{}
+
 QgsNetworkContentFetcher::~QgsNetworkContentFetcher()
 {
   if ( mReply && mReply->isRunning() )

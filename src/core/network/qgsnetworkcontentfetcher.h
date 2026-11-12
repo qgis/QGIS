@@ -44,7 +44,12 @@ class CORE_EXPORT QgsNetworkContentFetcher : public QObject
     Q_OBJECT
 
   public:
-    QgsNetworkContentFetcher() = default;
+    /**
+     * Constructor for QgsNetworkContentFetcher, with the specified \a parent object.
+     *
+     * The \a parent argument was added in QGIS 4.4
+     */
+    QgsNetworkContentFetcher( QObject *parent = nullptr );
 
     ~QgsNetworkContentFetcher() override;
 

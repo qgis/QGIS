@@ -29,7 +29,13 @@ URL redirects are automatically handled.
 #include "qgsnetworkcontentfetcher.h"
 %End
   public:
-    QgsNetworkContentFetcher();
+    QgsNetworkContentFetcher( QObject *parent = 0 );
+%Docstring
+Constructor for QgsNetworkContentFetcher, with the specified ``parent``
+object.
+
+The ``parent`` argument was added in QGIS 4.4
+%End
 
     ~QgsNetworkContentFetcher();
 
