@@ -50,14 +50,14 @@ QVariant QgsSymbolConverterEsriRest::toVariant( const QgsSymbol *, QgsSymbolConv
 std::unique_ptr< QgsSymbol > QgsSymbolConverterEsriRest::createSymbol( const QVariant &variant, QgsSymbolConverterContext & ) const
 {
   QVariantMap symbolData;
-  if ( variant.type() == QVariant::Map )
+  if ( variant.typeId() == QMetaType::Type::QVariantMap )
   {
     symbolData = variant.toMap();
   }
-  else if ( variant.type() == QVariant::String )
+  else if ( variant.typeId() == QMetaType::Type::QString )
   {
     const QVariant v = QgsJsonUtils::parseJson( variant.toString() );
-    if ( v.type() == QVariant::Map )
+    if ( v.typeId() == QMetaType::Type::QVariantMap )
     {
       symbolData = v.toMap();
     }

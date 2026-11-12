@@ -206,7 +206,7 @@ class ArcadeToExpressionVisitor : public QgsEsriArcadeRecursiveVisitor
         mCurrentPart = u"'\\n'"_s;
         mCurrentPartIsLiteral = false;
       }
-      else if ( value.type() == QVariant::String )
+      else if ( value.typeId() == QMetaType::Type::QString )
       {
         mCurrentPart = QgsExpression::quotedString( value.toString() );
         mCurrentPartIsLiteral = true;

@@ -3296,7 +3296,7 @@ QString QgsMapLayer::customPropertyHtmlMetadata() const
 
       const QVariant propValue = customProperty( key );
       QString stringValue;
-      if ( propValue.type() == QVariant::List || propValue.type() == QVariant::StringList )
+      if ( propValue.typeId() == QMetaType::Type::QVariantList || propValue.typeId() == QMetaType::Type::QStringList )
       {
         for ( const QString &s : propValue.toStringList() )
         {
