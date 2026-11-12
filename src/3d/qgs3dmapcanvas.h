@@ -268,6 +268,13 @@ class _3D_EXPORT Qgs3DMapCanvas : public QWindow
     bool eventFilter( QObject *watched, QEvent *event ) override;
 
   private:
+    //! Events handled by the canvas
+    bool canvasEventFilter( QEvent *event );
+
+    //! Events handled by the container
+    bool containerEventFilter( QEvent *event );
+
+  private:
     std::unique_ptr<Qt3DCore::QAspectEngine> m_aspectEngine;
 
     // Aspects
