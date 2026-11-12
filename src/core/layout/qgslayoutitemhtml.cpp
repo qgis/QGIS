@@ -50,7 +50,7 @@
 #include <QString>
 #include <QThread>
 #include <QUrl>
-#include <QtConcurrent>
+#include <QtConcurrentRun>
 #include <QTimer>
 
 #include "moc_qgslayoutitemhtml.cpp"
