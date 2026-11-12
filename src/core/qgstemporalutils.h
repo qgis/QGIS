@@ -16,6 +16,9 @@
 #ifndef QGSTEMPORALUTILS_H
 #define QGSTEMPORALUTILS_H
 
+#include <cstdint>
+#include <optional>
+
 #include "qgis_core.h"
 #include "qgsinterval.h"
 #include "qgsrange.h"
@@ -280,5 +283,118 @@ class CORE_EXPORT QgsTemporalUtils
     static QList< QDateTime > calculateDateTimesFromISO8601( const QString &string, bool &ok SIP_OUT, bool &maxValuesExceeded SIP_OUT, int maxValues = -1 );
 };
 
+#ifndef SIP_RUN
+
+/**
+ * \ingroup core
+ * \class QgsNetCdfGribTimeParser
+ * \brief Parses date times stored in netCDF and GRIB datasets (as exposed by GDAL metadata).
+ *
+ * The implementation is a port of MDAL's time handling (MDAL::parseCFTimeUnit(), MDAL::parseCFReferenceTime(),
+ * MDAL::DateTime, MDAL::RelativeTimestamp and MDAL::DriverGdalGrib), so the results are identical
+ * to the times reported for the same files opened as mesh layers.
+ *
+ * If anything changes in this class it should likely be reflected in the corresponding MDAL function.
+ *
+ * \note Not available in Python bindings
+ * \since QGIS 4.4
+ */
+class CORE_EXPORT QgsNetCdfGribTimeParser
+{
+  public:
+    /**
+     * Converts a time \a value expressed following the CF (Climate and Forecast) conventions used
+     * by netCDF files to a date time, e.g. a value of 43465 with \a units "days since 1900-01-01 00:00:00"
+     * to 2019-01-01T00:00:00.
+     *
+     * Same as MDAL::DriverCF::parseTime() / MDAL::DriverGdalNetCDF::parseGlobals().
+     *
+     * \param value the time value to convert
+     * \param units the CF "units" attribute of the time variable (e.g., "days since 1900-01-01 00:00:00")
+     * \param calendar the CF "calendar" attribute of the time variable
+     *
+     * \returns the corresponding date time in UTC, expressed in the proleptic Gregorian calendar and rounded down to whole seconds
+     */
+    static QDateTime parseCfTime( double value, const QString &units, const QString &calendar = QString() );
+
+    /**
+     * Converts a GRIB time stored in GDAL metadata (items "GRIB_REF_TIME" and "GRIB_VALID_TIME",
+     * e.g. "1546300800 sec UTC", i.e. seconds since 1970-01-01T00:00:00 UTC) to a date time.
+     *
+     * Same as MDAL::DriverGdalGrib::parseBandInfo(): MDAL::DateTime( parseMetadataTime( value ), DateTime::Unix ).
+     *
+     * \param metadataValue the GRIB metadata value to convert (e.g., "1546300800 sec UTC")
+     *
+     * \returns the corresponding date time in UTC, expressed in the proleptic Gregorian calendar and rounded down to whole seconds. Invalid if \a metadataValue is empty or if the resulting year is not positive.
+     */
+    static QDateTime parseGribTime( const QString &metadataValue );
+
+  private:
+    static constexpr double MILLISECONDS_IN_SECOND = 1000;
+    static constexpr double MILLISECONDS_IN_MINUTE = 1000 * 60;
+    static constexpr double MILLISECONDS_IN_HOUR = 1000 * 60 * 60;
+    static constexpr double MILLISECONDS_IN_DAY = 1000 * 60 * 60 * 24;
+    static constexpr double MILLISECONDS_IN_WEEK = 1000 * 60 * 60 * 24 * 7;
+    static constexpr double MILLISECONDS_IN_EXACT_YEAR = 3.15569259747e10;                //CF Compliant
+    static constexpr double MILLISECONDS_IN_MONTH_CF = MILLISECONDS_IN_EXACT_YEAR / 12.0; //CF Compliant
+
+    enum class CFTimeUnit
+    {
+      Milliseconds,
+      Seconds,
+      Minutes,
+      Hours,
+      Days,
+      Weeks,
+      MonthsCF,
+      ExactYears
+    };
+
+    enum class CFCalendar
+    {
+      Gregorian,
+      ProlepticGregorian,
+      Julian
+    };
+
+    struct CFDateTimeValues
+    {
+        int year;
+        int month;
+        int day;
+        int hours;
+        int minutes;
+        double seconds;
+    };
+
+    // MDAL::split( str, char ) - empty tokens are skipped
+    static QStringList cfSplit( const QString &str, QChar delimiter );
+    // MDAL::toInt( std::string )
+    static int cfToInt( const QString &str );
+    // MDAL::toDouble( std::string )
+    static double cfToDouble( const QString &str );
+    // MDAL::parseDurationTimeUnit()
+    static CFTimeUnit cfParseDurationTimeUnit( const QString &timeUnit );
+    // MDAL::parseCFTimeUnit()
+    static CFTimeUnit cfParseTimeUnit( const QString &timeInformation );
+    // MDAL::DateTime::setWithGregorianCalendarDate()
+    static int64_t cfJulianTimeFromGregorianCalendarDate( CFDateTimeValues values );
+    // MDAL::DateTime::setWithJulianCalendarDate()
+    static int64_t cfJulianTimeFromJulianCalendarDate( CFDateTimeValues values );
+    // MDAL::DateTime::setWithGregorianJulianCalendarDate()
+    static int64_t cfJulianTimeFromGregorianJulianCalendarDate( const CFDateTimeValues &values );
+    // MDAL::parseCFReferenceTime(), returns the reference time as Julian day in ms (MDAL::DateTime::mJulianTime)
+    static std::optional<int64_t> cfParseReferenceTime( const QString &timeInformation, const QString &calendarString );
+    // MDAL::RelativeTimestamp( double duration, Unit unit ), returns the duration in ms
+    static int64_t cfRelativeTimestamp( double duration, CFTimeUnit unit );
+    // MDAL::DateTime::dateTimeGregorianProleptic()
+    static CFDateTimeValues cfDateTimeGregorianProleptic( int64_t julianTime );
+    // MDAL::DateTime::toStandardCalendarISO8601(), returns an invalid QDateTime when MDAL returns an empty string
+    static QDateTime cfJulianTimeToDateTime( int64_t julianTime );
+    // MDAL::DriverGdal::parseMetadataTime()
+    static std::optional<double> gribParseMetadataTime( const QString &timeString );
+};
+
+#endif
 
 #endif // QGSTEMPORALUTILS_H
