@@ -869,7 +869,7 @@ QString QgsExpressionContext::uniqueHash( bool &ok, const QSet<QString> &variabl
     {
       hash.append( delimiter );
     }
-    else if ( value.type() == QVariant::String )
+    else if ( value.typeId() == QMetaType::Type::QString )
     {
       hash.append( value.toString() + delimiter );
     }

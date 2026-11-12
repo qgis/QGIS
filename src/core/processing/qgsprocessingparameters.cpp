@@ -3259,7 +3259,7 @@ bool QgsProcessingParameterCrs::checkValueIsAcceptable( const QVariant &v, QgsPr
     return true;
   }
 
-  if ( input.type() == QVariant::String )
+  if ( input.typeId() == QMetaType::Type::QString )
   {
     const QString string = input.toString();
     if ( string.compare( "ProjectCrs"_L1, Qt::CaseInsensitive ) == 0 )
@@ -3296,7 +3296,7 @@ QString QgsProcessingParameterCrs::valueAsPythonString( const QVariant &value, Q
   if ( value.userType() == qMetaTypeId<QgsProperty>() )
     return u"QgsProperty.fromExpression('%1')"_s.arg( value.value< QgsProperty >().asExpression() );
 
-  if ( value.type() == QVariant::String )
+  if ( value.typeId() == QMetaType::Type::QString )
   {
     const QString string = value.toString();
     if ( string.compare( "ProjectCrs"_L1, Qt::CaseInsensitive ) == 0 )
@@ -3318,7 +3318,7 @@ QString QgsProcessingParameterCrs::valueAsPythonString( const QVariant &value, Q
 
 QString QgsProcessingParameterCrs::valueAsString( const QVariant &value, QgsProcessingContext &context, bool &ok ) const
 {
-  if ( value.type() == QVariant::String )
+  if ( value.typeId() == QMetaType::Type::QString )
   {
     const QString string = value.toString();
     if ( string.compare( "ProjectCrs"_L1, Qt::CaseInsensitive ) == 0 )
@@ -3334,7 +3334,7 @@ QString QgsProcessingParameterCrs::valueAsString( const QVariant &value, QgsProc
 
 QVariant QgsProcessingParameterCrs::valueAsJsonObject( const QVariant &value, QgsProcessingContext &context ) const
 {
-  if ( value.type() == QVariant::String )
+  if ( value.typeId() == QMetaType::Type::QString )
   {
     const QString string = value.toString();
     if ( string.compare( "ProjectCrs"_L1, Qt::CaseInsensitive ) == 0 )

@@ -658,7 +658,7 @@ bool qgsVariantEqual( const QVariant &lhs, const QVariant &rhs )
 {
   if ( lhs.isNull() == rhs.isNull() )
   {
-    if ( lhs.type() == QVariant::String && rhs.type() == QVariant::String )
+    if ( lhs.typeId() == QMetaType::Type::QString && rhs.typeId() == QMetaType::Type::QString )
     {
       const QString lhsString = lhs.toString();
       const QString rhsString = rhs.toString();
