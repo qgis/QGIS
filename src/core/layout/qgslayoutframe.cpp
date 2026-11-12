@@ -19,6 +19,7 @@
 #include "qgslayout.h"
 #include "qgslayoutitemregistry.h"
 #include "qgslayoutmultiframe.h"
+#include "qgslayoutrendercontext.h"
 
 #include <QString>
 
@@ -168,6 +169,18 @@ void QgsLayoutFrame::cleanup()
   mMultiFrame = nullptr;
 
   QgsLayoutItem::cleanup();
+}
+
+void QgsLayoutFrame::paint( QPainter *painter, const QStyleOptionGraphicsItem *itemStyle, QWidget *pWidget )
+{
+  QgsLayoutItem::paint( painter, itemStyle, pWidget );
+  if ( mMultiFrame )
+  {
+    if ( mLayout->renderContext().isPreviewRender() && mMultiFrame->renderInProgress() )
+    {
+      drawRefreshingOverlay( painter, itemStyle );
+    }
+  }
 }
 
 void QgsLayoutFrame::draw( QgsLayoutItemRenderContext &context )

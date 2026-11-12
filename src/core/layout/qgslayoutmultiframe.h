@@ -406,6 +406,14 @@ class CORE_EXPORT QgsLayoutMultiFrame : public QgsLayoutObject, public QgsLayout
      */
     virtual bool readPropertiesFromElement( const QDomElement &element, const QDomDocument &document, const QgsReadWriteContext &context );
 
+    /**
+     * Returns TRUE if the multiframe is currently rendering content in a
+     * background thread.
+     *
+     * \since QGIS 4.4
+     */
+    virtual bool renderInProgress() const;
+
     QList<QgsLayoutFrame *> mFrameItems;
 
     ResizeMode mResizeMode = UseExistingFrames;
