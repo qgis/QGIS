@@ -182,12 +182,13 @@ class TestWebEnginePage(QgisTestCase):
         image = QImage(600, 423, QImage.Format.Format_ARGB32_Premultiplied)
         image.fill(Qt.GlobalColor.transparent)
         painter = QPainter(image)
-        self.assertTrue(
-            QgsWebEnginePage.renderBlocking(
-                QUrl.fromLocalFile(html_path), painter, QRectF(0, 0, 600, 423)
-            )
+        res, error, size = QgsWebEnginePage.renderBlocking(
+            QUrl.fromLocalFile(html_path), painter, QRectF(0, 0, 600, 423)
         )
         painter.end()
+        self.assertTrue(res)
+        self.assertEqual(size.width(), 600)
+        self.assertAlmostEqual(size.height(), 200, places=-2)
 
         self.assertTrue(
             self.image_check(
@@ -231,10 +232,13 @@ class TestWebEnginePage(QgisTestCase):
 </html>
 """
 
-        self.assertTrue(
-            QgsWebEnginePage.renderBlocking(html, painter, QRectF(0, 0, 600, 423))
+        res, error, size = QgsWebEnginePage.renderBlocking(
+            html, painter, QRectF(0, 0, 600, 423)
         )
         painter.end()
+        self.assertTrue(res)
+        self.assertEqual(size.width(), 600)
+        self.assertAlmostEqual(size.height(), 200, places=-2)
 
         self.assertTrue(
             self.image_check(
@@ -278,10 +282,13 @@ class TestWebEnginePage(QgisTestCase):
 </html>
 """
 
-        self.assertTrue(
-            QgsWebEnginePage.renderBlocking(html, painter, QRectF(0, 0, 200, 423))
+        res, error, size = QgsWebEnginePage.renderBlocking(
+            html, painter, QRectF(0, 0, 200, 423)
         )
-        painter.end()
+
+        self.assertTrue(res)
+        self.assertEqual(size.width(), 200)
+        self.assertAlmostEqual(size.height(), 200, places=-2)
 
         self.assertTrue(
             self.image_check(

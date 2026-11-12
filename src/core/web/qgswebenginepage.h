@@ -169,6 +169,7 @@ class CORE_EXPORT QgsWebEnginePage : public QObject
      * \param painter destination QPainter
      * \param painterRect specifies the target rectangle for the page in \a painter coordinates
      * \param errorMessage will be set to a descriptive error message if the printing fails
+     * \param renderedSize will be set to the actual size of the rendered HTML
      * \param baseUrl base URL for relative references in HTML
      * \param feedback optional feedback for early cancellation
      *
@@ -181,7 +182,7 @@ class CORE_EXPORT QgsWebEnginePage : public QObject
      * \since QGIS 4.4
      */
     static bool renderBlocking(
-      const QString &html, QPainter *painter, const QRectF &painterRect, QString &errorMessage SIP_OUT, const QUrl &baseUrl = QUrl(), QgsFeedback *feedback = nullptr
+      const QString &html, QPainter *painter, const QRectF &painterRect, QString &errorMessage SIP_OUT, QSizeF &renderedSize SIP_OUT, const QUrl &baseUrl = QUrl(), QgsFeedback *feedback = nullptr
     ) SIP_THROW( QgsNotSupportedException );
 
     /**
@@ -194,6 +195,7 @@ class CORE_EXPORT QgsWebEnginePage : public QObject
      * \param painter destination QPainter
      * \param painterRect specifies the target rectangle for the page in \a painter coordinates
      * \param errorMessage will be set to a descriptive error message if the printing fails
+     * \param renderedSize will be set to the actual size of the rendered HTML
      * \param feedback optional feedback for early cancellation
      *
      * \warning This method requires a QGIS build with PDF4Qt library support.
@@ -204,7 +206,9 @@ class CORE_EXPORT QgsWebEnginePage : public QObject
      *
      * \since QGIS 4.4
      */
-    static bool renderBlocking( const QUrl &url, QPainter *painter, const QRectF &painterRect, QString &errorMessage SIP_OUT, QgsFeedback *feedback = nullptr ) SIP_THROW( QgsNotSupportedException );
+    static bool renderBlocking( const QUrl &url, QPainter *painter, const QRectF &painterRect, QString &errorMessage SIP_OUT, QSizeF &renderedSize SIP_OUT, QgsFeedback *feedback = nullptr ) SIP_THROW(
+      QgsNotSupportedException
+    );
 
   signals:
 

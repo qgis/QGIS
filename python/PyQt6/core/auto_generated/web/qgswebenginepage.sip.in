@@ -168,7 +168,7 @@ the HTML rendering or PDF generation.
 %End
 
     static bool renderBlocking(
-      const QString &html, QPainter *painter, const QRectF &painterRect, QString &errorMessage /Out/, const QUrl &baseUrl = QUrl(), QgsFeedback *feedback = 0
+      const QString &html, QPainter *painter, const QRectF &painterRect, QString &errorMessage /Out/, QSizeF &renderedSize /Out/, const QUrl &baseUrl = QUrl(), QgsFeedback *feedback = 0
     );
 %Docstring
 Renders HTML content to a ``painter`` asynchronously. Content will be
@@ -192,6 +192,7 @@ the HTML rendering.
 :return: - ``True`` if rendering was successful
          - errorMessage: a descriptive error message if the printing
            fails
+         - renderedSize: the actual size of the rendered HTML
 
 :raises QgsNotSupportedException: on QGIS builds without PDF4Qt library
                                   support.
@@ -199,7 +200,7 @@ the HTML rendering.
 .. versionadded:: 4.4
 %End
 
-    static bool renderBlocking( const QUrl &url, QPainter *painter, const QRectF &painterRect, QString &errorMessage /Out/, QgsFeedback *feedback = 0 );
+    static bool renderBlocking( const QUrl &url, QPainter *painter, const QRectF &painterRect, QString &errorMessage /Out/, QSizeF &renderedSize /Out/, QgsFeedback *feedback = 0 );
 %Docstring
 Renders HTML content to a ``painter`` asynchronously. Content will be
 rendered as vector objects.
@@ -221,6 +222,7 @@ the HTML rendering.
 :return: - ``True`` if rendering was successful
          - errorMessage: a descriptive error message if the printing
            fails
+         - renderedSize: the actual size of the rendered HTML
 
 :raises QgsNotSupportedException: on QGIS builds without PDF4Qt library
                                   support.
