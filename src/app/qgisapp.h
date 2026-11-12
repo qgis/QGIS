@@ -115,6 +115,7 @@ class QgsAbstractMapToolHandler;
 class QgsAppMapTools;
 class QgsMapToolIdentifyAction;
 class Qgs3DMapCanvasWidget;
+class Qgs3DMapCanvasToolBarFactory;
 class QgsVertexEditor;
 class QgsMapLayerActionContext;
 class QgsSettingsEntryBool;
@@ -906,6 +907,28 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
      * \see registerApplicationExitBlocker()
     */
     void unregisterApplicationExitBlocker( QgsApplicationExitBlockerInterface *blocker );
+
+    /**
+     * Registers a \a factory creating a custom toolbar in every 3D map view.
+     * \note Ownership of the factory is not transferred, and the factory must
+     *       be unregistered when plugin is unloaded.
+     *
+     * \see unregister3DMapCanvasToolBarFactory()
+     *
+     * \since QGIS 4.4.1
+     */
+    void register3DMapCanvasToolBarFactory( Qgs3DMapCanvasToolBarFactory *factory );
+
+    /**
+     * Unregisters a previously registered 3D map view toolbar \a factory.
+     * \note The factory is not deleted. It is the caller's responsibility to
+     *       delete it once it has been unregistered.
+     *
+     * \see register3DMapCanvasToolBarFactory()
+     *
+     * \since QGIS 4.4.1
+     */
+    void unregister3DMapCanvasToolBarFactory( Qgs3DMapCanvasToolBarFactory *factory );
 
     /**
      * Register a new application map tool \a handler, which can be used to automatically setup all connections
@@ -2861,6 +2884,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     QList<QgsDevToolWidgetFactory *> mDevToolFactories;
 
     QList<QgsApplicationExitBlockerInterface *> mApplicationExitBlockers;
+    QList<Qgs3DMapCanvasToolBarFactory *> m3DMapCanvasToolBarFactories;
     QList<QgsAbstractMapToolHandler *> mMapToolHandlers;
 
     QVector<QPointer<QgsCustomDropHandler>> mCustomDropHandlers;
