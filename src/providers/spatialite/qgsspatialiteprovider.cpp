@@ -424,7 +424,7 @@ Qgis::VectorExportResult QgsSpatiaLiteProvider::createEmptyLayer(
           + " name "
           + fld.name()
           + " type "
-          + QString( QVariant::typeToName( fld.type() ) )
+          + QString( QMetaType( fld.type() ).name() )
           + " typename "
           + fld.typeName()
           + " width "
