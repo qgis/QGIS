@@ -77,7 +77,7 @@ unsigned int QgsKeyValueWidgetFactory::fieldScore( const QgsVectorLayer *vl, int
         // Read the object from string or map
         QJsonObject jsonObject;
         bool validObject = false;
-        if ( value.type() == QVariant::Type::Map )
+        if ( value.typeId() == QMetaType::Type::QVariantMap )
         {
           validObject = true;
           jsonObject = QJsonObject::fromVariantMap( value.toMap() );

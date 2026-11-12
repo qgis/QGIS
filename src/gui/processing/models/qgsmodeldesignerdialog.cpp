@@ -1733,7 +1733,7 @@ void QgsModelDesignerDialog::showChildAlgorithmOutputs( const QString &childId )
     if ( !output.isValid() )
       continue;
 
-    if ( output.type() == QVariant::String )
+    if ( output.typeId() == QMetaType::Type::QString )
     {
       if ( QgsMapLayer *resultLayer = QgsProcessingUtils::mapLayerFromString( output.toString(), mLayerStore ) )
       {
