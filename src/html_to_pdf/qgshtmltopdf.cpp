@@ -70,11 +70,12 @@ QgsHtmlToPdf::QgsHtmlToPdf()
   connect( &mPage, &QWebEnginePage::pdfPrintingFinished, this, &QgsHtmlToPdf::onPdfFinished );
 }
 
-void QgsHtmlToPdf::run( const QString &url, const QString &pdfFileName, int width, const QString &userAgent )
+void QgsHtmlToPdf::run( const QString &url, const QString &pdfFileName, int width, const QString &userAgent, const QString &baseUrl )
 {
   mPdfFileName = pdfFileName;
   mWidth = width;
   mUserAgent = userAgent;
+  mBaseUrl = baseUrl;
 
   if ( !mUserAgent.isEmpty() )
   {
@@ -82,9 +83,25 @@ void QgsHtmlToPdf::run( const QString &url, const QString &pdfFileName, int widt
   }
 
   const QFileInfo fi( url );
-  const QUrl resolvedUrl = fi.exists() ? QUrl::fromLocalFile( fi.absoluteFilePath() ) : QUrl::fromUserInput( url, QDir::currentPath(), QUrl::AssumeLocalFile );
-
-  mPage.load( resolvedUrl );
+  if ( fi.isFile() && fi.exists() && !mBaseUrl.isEmpty() )
+  {
+    QFile htmlFile( url );
+    if ( htmlFile.open( QIODevice::ReadOnly ) )
+    {
+      mPage.setHtml( htmlFile.readAll(), QUrl::fromUserInput( mBaseUrl ) );
+    }
+    else
+    {
+      mReturnCode = LoadFailed;
+      emit finished( mReturnCode );
+      return;
+    }
+  }
+  else
+  {
+    const QUrl resolvedUrl = QUrl::fromUserInput( url );
+    mPage.load( resolvedUrl );
+  }
 }
 
 void QgsHtmlToPdf::onLoadFinished( bool ok )

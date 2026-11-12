@@ -49,7 +49,7 @@ class QgsHtmlToPdf : public QObject
     };
     QgsHtmlToPdf();
 
-    void run( const QString &url, const QString &pdfFileName, int width, const QString &userAgent );
+    void run( const QString &url, const QString &pdfFileName, int width, const QString &userAgent, const QString &baseUrl );
 
   signals:
     void finished( int statusCode );
@@ -62,6 +62,7 @@ class QgsHtmlToPdf : public QObject
     QgsLoggingWebEnginePage mPage;
     int mWidth = 0;
     QString mUserAgent;
+    QString mBaseUrl;
 
     ReturnCode mReturnCode = ReturnCode::Success;
 

@@ -312,7 +312,13 @@ bool QgsWebEnginePage::printToPdfBlocking( const QString &html, const QString &p
   outstream << html;
   outputFile.close();
 
-  QgsBlockingProcess process( executable, { outputFilename, pdfFileName, u"--width=%1"_s.arg( width ) } );
+  QStringList args { outputFilename, pdfFileName, u"--width=%1"_s.arg( width ) };
+  if ( !baseUrl.isEmpty() )
+  {
+    args.append( u"--base-url=%1"_s.arg( baseUrl.toString() ) );
+  }
+
+  QgsBlockingProcess process( executable, args );
   process.setStdErrHandler( []( const QByteArray &ba ) { QgsDebugError( ba ); } );
   process.setStdOutHandler( []( const QByteArray &ba ) { QgsDebugMsgLevel( ba, 2 ); } );
   const int returnCode = process.run( feedback );

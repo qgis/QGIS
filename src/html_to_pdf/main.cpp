@@ -97,6 +97,9 @@ int main( int argc, char *argv[] )
   const QCommandLineOption userAgentOption( "user-agent", "User agent string.", "user-agent" );
   parser.addOption( userAgentOption );
 
+  const QCommandLineOption baseUrlOption( "base-url", "Base URL.", "base-url" );
+  parser.addOption( baseUrlOption );
+
   parser.addPositionalArgument( "url", "Source HTML URL." );
   parser.addPositionalArgument( "destination", "Destination PDF file." );
 
@@ -129,9 +132,15 @@ int main( int argc, char *argv[] )
     userAgent = parser.value( userAgentOption );
   }
 
+  QString baseUrl;
+  if ( parser.isSet( baseUrlOption ) )
+  {
+    baseUrl = parser.value( baseUrlOption );
+  }
+
   QgsHtmlToPdf converter;
   QObject::connect( &converter, &QgsHtmlToPdf::finished, &app, &QGuiApplication::exit );
-  QTimer::singleShot( 0, &converter, [&converter, url, destination, width, userAgent] { converter.run( url, destination, width, userAgent ); } );
+  QTimer::singleShot( 0, &converter, [&converter, url, destination, width, userAgent, baseUrl] { converter.run( url, destination, width, userAgent, baseUrl ); } );
 
   return QCoreApplication::exec();
 }
