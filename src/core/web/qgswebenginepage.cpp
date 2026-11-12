@@ -351,7 +351,7 @@ bool QgsWebEnginePage::printToPdfBlocking( const QUrl &url, const QString &pdfFi
   return doPrintToPdf( args, errorMessage, feedback );
 }
 
-bool QgsWebEnginePage::renderBlocking( const QString &html, QPainter *painter, const QRectF &painterRect, QString &errorMessage, const QUrl &baseUrl, QgsFeedback *feedback )
+bool QgsWebEnginePage::renderBlocking( const QString &html, QPainter *painter, const QRectF &painterRect, QString &errorMessage, QSizeF &renderedSize, const QUrl &baseUrl, QgsFeedback *feedback )
 {
 #ifdef HAVE_PDF4QT
   const QTemporaryDir tempDir;
@@ -381,6 +381,7 @@ bool QgsWebEnginePage::renderBlocking( const QString &html, QPainter *painter, c
   const double targetHeight = painterRect.width() * aspectRatio;
 
   const QRectF targetRect( painterRect.left(), painterRect.top(), painterRect.width(), targetHeight );
+  renderedSize = targetRect.size();
   return renderer.render( painter, targetRect, 0 );
 
 #else
@@ -394,7 +395,7 @@ bool QgsWebEnginePage::renderBlocking( const QString &html, QPainter *painter, c
 #endif
 }
 
-bool QgsWebEnginePage::renderBlocking( const QUrl &url, QPainter *painter, const QRectF &painterRect, QString &errorMessage, QgsFeedback *feedback )
+bool QgsWebEnginePage::renderBlocking( const QUrl &url, QPainter *painter, const QRectF &painterRect, QString &errorMessage, QSizeF &renderedSize, QgsFeedback *feedback )
 {
 #ifdef HAVE_PDF4QT
   const QTemporaryDir tempDir;
@@ -424,6 +425,7 @@ bool QgsWebEnginePage::renderBlocking( const QUrl &url, QPainter *painter, const
   const double targetHeight = painterRect.width() * aspectRatio;
 
   const QRectF targetRect( painterRect.left(), painterRect.top(), painterRect.width(), targetHeight );
+  renderedSize = targetRect.size();
   return renderer.render( painter, targetRect, 0 );
 #else
   ( void ) url;
