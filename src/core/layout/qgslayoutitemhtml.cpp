@@ -224,22 +224,6 @@ void QgsLayoutItemHtml::loadHtml( const bool useCache, const QgsExpressionContex
       finalizeLoadedHtml( mHtml, baseUrl, evalContext );
       break;
   }
-
-#if 0
-  //set user stylesheet
-  QWebSettings *settings = mWebPage->settings();
-  if ( mEnableUserStylesheet && !mUserStylesheet.isEmpty() )
-  {
-    QByteArray ba;
-    ba.append( mUserStylesheet.toUtf8() );
-    const QUrl cssFileURL = QUrl( QString( "data:text/css;charset=utf-8;base64," + ba.toBase64() ) );
-    settings->setUserStyleSheetUrl( cssFileURL );
-  }
-  else
-  {
-    settings->setUserStyleSheetUrl( QUrl() );
-  }
-#endif
 }
 
 void QgsLayoutItemHtml::startFetchHtml( const QUrl &url )
@@ -352,7 +336,7 @@ void QgsLayoutItemHtml::recreateCachedImageInBackground()
 
   emit backgroundTaskCountChanged( 1 );
   mCacheInvalidated = false;
-  mRenderJob = std::make_unique< QgsLayoutItemHtmlRenderJob >( mEvaluatedHtml, mResolvedBaseUrl, frameWidthLayoutUnits, layoutUnitsPerCssPixel() );
+  mRenderJob = std::make_unique< QgsLayoutItemHtmlRenderJob >( mEvaluatedHtml, mResolvedBaseUrl, mEnableUserStylesheet ? mUserStylesheet : QString(), frameWidthLayoutUnits, layoutUnitsPerCssPixel() );
   connect( mRenderJob.get(), &QgsLayoutItemHtmlRenderJob::finished, this, &QgsLayoutItemHtml::htmlRenderFinished );
   mRenderJob->start();
 }
@@ -417,7 +401,15 @@ void QgsLayoutItemHtml::renderHtmlSynchronously()
   painter.setRenderHint( QPainter::SmoothPixmapTransform, true );
 
   QSizeF renderedSizeCssPx;
-  if ( !QgsWebEnginePage::renderBlocking( mEvaluatedHtml, &painter, QRectF( 0, 0, widthCssPx, 9999 ), errorMessage, renderedSizeCssPx, mResolvedBaseUrl, nullptr ) )
+
+  QgsHtmlRenderSettings htmlRenderSettings;
+  htmlRenderSettings.setBaseUrl( mResolvedBaseUrl );
+  if ( mEnableUserStylesheet )
+  {
+    htmlRenderSettings.setUserStylesheet( mUserStylesheet );
+  }
+
+  if ( !QgsWebEnginePage::renderBlocking( mEvaluatedHtml, &painter, QRectF( 0, 0, widthCssPx, 9999 ), errorMessage, renderedSizeCssPx, htmlRenderSettings, nullptr ) )
   {
     QgsDebugError( errorMessage );
   }
@@ -906,9 +898,10 @@ void QgsLayoutItemHtml::refreshDataDefinedProperty( const QgsLayoutObject::DataD
 // QgsLayoutItemHtmlRenderJob
 //
 ///@cond PRIVATE
-QgsLayoutItemHtmlRenderJob::QgsLayoutItemHtmlRenderJob( const QString &html, const QUrl &baseUrl, double frameWidthLayoutUnits, double unitsPerCssPx )
+QgsLayoutItemHtmlRenderJob::QgsLayoutItemHtmlRenderJob( const QString &html, const QUrl &baseUrl, const QString &userStylesheet, double frameWidthLayoutUnits, double unitsPerCssPx )
   : mHtml( html )
   , mBaseUrl( baseUrl )
+  , mUserStylesheet( userStylesheet )
   , mFrameWidthLayoutUnits( frameWidthLayoutUnits )
   , mUnitsPerCssPx( unitsPerCssPx )
 {
@@ -943,7 +936,12 @@ void QgsLayoutItemHtmlRenderJob::run()
 
   QPainter painter( &mPicture );
   QSizeF renderedSizeCssPx;
-  mSuccess = QgsWebEnginePage::renderBlocking( mHtml, &painter, QRectF( 0, 0, widthCssPx, 9999 ), mErrorMessage, renderedSizeCssPx, mBaseUrl, &mFeedback );
+
+  QgsHtmlRenderSettings htmlRenderSettings;
+  htmlRenderSettings.setBaseUrl( mBaseUrl );
+  htmlRenderSettings.setUserStylesheet( mUserStylesheet );
+
+  mSuccess = QgsWebEnginePage::renderBlocking( mHtml, &painter, QRectF( 0, 0, widthCssPx, 9999 ), mErrorMessage, renderedSizeCssPx, htmlRenderSettings, &mFeedback );
   painter.end();
 
   if ( mFeedback.isCanceled() )
