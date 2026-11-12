@@ -17,6 +17,7 @@
 
 #include "qgslogger.h"
 
+#include <QPicture>
 #include <QString>
 #include <QTransform>
 
@@ -267,4 +268,14 @@ void QgsPainting::rotatePainterAroundPoint( QPainter *painter, const QPointF &po
   painter->translate( point.x(), point.y() );
   painter->rotate( angle );
   painter->translate( -point.x(), -point.y() );
+}
+
+QPicture QgsPainting::deepCopyQPicture( const QPicture &picture )
+{
+  QPicture p;
+  // For some reason p.detach() doesn't seem to always work as intended
+  // Serialization/deserialization is a safe way to be ensured we don't
+  // share a copy.
+  p.setData( picture.data(), picture.size() );
+  return p;
 }

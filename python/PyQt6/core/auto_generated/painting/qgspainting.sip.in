@@ -155,6 +155,17 @@ Rotates a ``painter`` by ``angle`` degrees clockwise around ``point``.
 
 .. versionadded:: 4.4
 %End
+
+    static QPicture deepCopyQPicture( const QPicture &picture );
+%Docstring
+Deep copies a QPicture, making a copy which is safe to use in a
+different thread.
+
+Unfortunately just detaching the QPicture copy alone is not sufficient
+to make a thread-safe copy, this method must be used instead.
+
+.. versionadded:: 4.4
+%End
 };
 
 
