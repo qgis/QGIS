@@ -903,7 +903,7 @@ void QgsLayoutItemHtml::refreshDataDefinedProperty( const QgsLayoutObject::DataD
 //
 // QgsLayoutItemHtmlRenderJob
 //
-
+///@cond PRIVATE
 QgsLayoutItemHtmlRenderJob::QgsLayoutItemHtmlRenderJob( const QString &html, const QUrl &baseUrl, double frameWidthLayoutUnits, double unitsPerCssPx )
   : mHtml( html )
   , mBaseUrl( baseUrl )
@@ -964,3 +964,4 @@ void QgsLayoutItemHtmlRenderJob::run()
   mErrorMessage = tr( "Rendering HTML requires a QGIS build with WebEngine and PDF4QT support" );
 #endif
 }
+///@endcond
