@@ -111,11 +111,11 @@ QgsDetectVectorChangesAlgorithm *QgsDetectVectorChangesAlgorithm::createInstance
 
 bool QgsDetectVectorChangesAlgorithm::prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
-  mOriginal.reset( parameterAsSource( parameters, u"ORIGINAL"_s, context ) );
+  mOriginal = parameterAsSource( parameters, u"ORIGINAL"_s, context );
   if ( !mOriginal )
     throw QgsProcessingException( invalidSourceError( parameters, u"ORIGINAL"_s ) );
 
-  mRevised.reset( parameterAsSource( parameters, u"REVISED"_s, context ) );
+  mRevised = parameterAsSource( parameters, u"REVISED"_s, context );
   if ( !mRevised )
     throw QgsProcessingException( invalidSourceError( parameters, u"REVISED"_s ) );
 

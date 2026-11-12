@@ -136,7 +136,7 @@ void QgsThinPlateSplineAlgorithmBase::processBase( const QVariantMap &parameters
     throw QgsProcessingException( QObject::tr( "This algorithm requires a QGIS build with GSL support enabled." ) );
   }
 
-  mSource.reset( parameterAsSource( parameters, u"INPUT"_s, context ) );
+  mSource = parameterAsSource( parameters, u"INPUT"_s, context );
   if ( !mSource )
     throw QgsProcessingException( invalidSourceError( parameters, u"INPUT"_s ) );
 

@@ -292,7 +292,7 @@ class CORE_EXPORT QgsProcessingUtils
      *
      * This function creates a new object and the caller takes responsibility for deleting the returned object.
      */
-    static QgsProcessingFeatureSource *variantToSource( const QVariant &value, QgsProcessingContext &context, const QVariant &fallbackValue = QVariant() ) SIP_FACTORY;
+    static std::unique_ptr<QgsProcessingFeatureSource> variantToSource( const QVariant &value, QgsProcessingContext &context, const QVariant &fallbackValue = QVariant() );
 
     /**
      * Converts a variant \a value to a coordinate reference system.
@@ -354,7 +354,7 @@ class CORE_EXPORT QgsProcessingUtils
      * The caller takes responsibility for deleting the returned sink.
      */
 #ifndef SIP_RUN
-    static QgsFeatureSink *createFeatureSink( QString &destination,
+    static std::unique_ptr<QgsFeatureSink> createFeatureSink( QString &destination,
         QgsProcessingContext &context,
         const QgsFields &fields,
         Qgis::WkbType geometryType,
@@ -363,7 +363,7 @@ class CORE_EXPORT QgsProcessingUtils
         const QStringList &datasourceOptions = QStringList(),
         const QStringList &layerOptions = QStringList(),
         QgsFeatureSink::SinkFlags sinkFlags = QgsFeatureSink::SinkFlags(),
-        QgsRemappingSinkDefinition *remappingDefinition = nullptr ) SIP_FACTORY;
+        QgsRemappingSinkDefinition *remappingDefinition = nullptr );
 #endif
 
     /**
@@ -814,7 +814,7 @@ class CORE_EXPORT QgsProcessingFeatureSource : public QgsFeatureSource
     /**
      * Returns an expression context scope suitable for this source.
      */
-    QgsExpressionContextScope *createExpressionContextScope() const SIP_FACTORY;
+    std::unique_ptr<QgsExpressionContextScope> createExpressionContextScope() const;
 
     /**
      * Overrides the default geometry check method for the source.

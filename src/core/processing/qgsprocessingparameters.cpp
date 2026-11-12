@@ -687,7 +687,7 @@ bool QgsProcessingParameters::parameterAsBoolean( const QgsProcessingParameterDe
     return def.toBool();
 }
 
-QgsFeatureSink *QgsProcessingParameters::parameterAsSink(
+std::unique_ptr<QgsFeatureSink> QgsProcessingParameters::parameterAsSink(
   const QgsProcessingParameterDefinition *definition,
   const QVariantMap &parameters,
   const QgsFields &fields,
@@ -710,7 +710,7 @@ QgsFeatureSink *QgsProcessingParameters::parameterAsSink(
   return parameterAsSink( definition, val, fields, geometryType, crs, context, destinationIdentifier, sinkFlags, createOptions, datasourceOptions, layerOptions );
 }
 
-QgsFeatureSink *QgsProcessingParameters::parameterAsSink(
+std::unique_ptr<QgsFeatureSink> QgsProcessingParameters::parameterAsSink(
   const QgsProcessingParameterDefinition *definition,
   const QVariant &value,
   const QgsFields &fields,
@@ -796,10 +796,10 @@ QgsFeatureSink *QgsProcessingParameters::parameterAsSink(
     context.addLayerToLoadOnCompletion( destinationIdentifier, QgsProcessingContext::LayerDetails( destName, destinationProject, outputName, QgsProcessingUtils::LayerHint::Vector ) );
   }
 
-  return sink.release();
+  return sink;
 }
 
-QgsProcessingFeatureSource *QgsProcessingParameters::parameterAsSource( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, QgsProcessingContext &context )
+std::unique_ptr<QgsProcessingFeatureSource> QgsProcessingParameters::parameterAsSource( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, QgsProcessingContext &context )
 {
   if ( !definition )
     return nullptr;
@@ -807,12 +807,12 @@ QgsProcessingFeatureSource *QgsProcessingParameters::parameterAsSource( const Qg
   return parameterAsSource( definition, parameters.value( definition->name() ), context );
 }
 
-QgsProcessingFeatureSource *QgsProcessingParameters::parameterAsSource( const QgsProcessingParameterDefinition *definition, const QVariant &value, QgsProcessingContext &context )
+std::unique_ptr<QgsProcessingFeatureSource> QgsProcessingParameters::parameterAsSource( const QgsProcessingParameterDefinition *definition, const QVariant &value, QgsProcessingContext &context )
 {
   if ( !definition )
     return nullptr;
 
-  QgsProcessingFeatureSource *result = QgsProcessingUtils::variantToSource( value, context, definition->defaultValue() );
+  std::unique_ptr<QgsProcessingFeatureSource> result = QgsProcessingUtils::variantToSource( value, context, definition->defaultValue() );
   if ( QgsProcessingFeedback *feedback = context.feedback(); feedback && result )
   {
     feedback->reportSourceLoaded( definition->name(), result->featureCount() );
@@ -2333,7 +2333,7 @@ QgsAnnotationLayer *QgsProcessingParameters::parameterAsAnnotationLayer( const Q
   return qobject_cast< QgsAnnotationLayer *>( parameterAsLayer( definition, value, context, QgsProcessingUtils::LayerHint::Annotation ) );
 }
 
-QgsProcessingParameterDefinition *QgsProcessingParameters::parameterFromVariantMap( const QVariantMap &map )
+std::unique_ptr<QgsProcessingParameterDefinition> QgsProcessingParameters::parameterFromVariantMap( const QVariantMap &map )
 {
   const QString type = map.value( u"parameter_type"_s ).toString();
   const QString name = map.value( u"name"_s ).toString();
@@ -2421,7 +2421,7 @@ QgsProcessingParameterDefinition *QgsProcessingParameters::parameterFromVariantM
     return nullptr;
 
   def->fromVariantMap( map );
-  return def.release();
+  return def;
 }
 
 QString QgsProcessingParameters::descriptionFromName( const QString &name )
@@ -2431,7 +2431,7 @@ QString QgsProcessingParameters::descriptionFromName( const QString &name )
   return desc;
 }
 
-QgsProcessingParameterDefinition *QgsProcessingParameters::parameterFromScriptCode( const QString &code )
+std::unique_ptr<QgsProcessingParameterDefinition> QgsProcessingParameters::parameterFromScriptCode( const QString &code )
 {
   bool isOptional = false;
   QString name;
@@ -3216,9 +3216,9 @@ QString QgsProcessingParameterBoolean::asScriptCode() const
   return code.trimmed();
 }
 
-QgsProcessingParameterBoolean *QgsProcessingParameterBoolean::fromScriptCode( const QString &name, const QString &description, bool isOptional, const QString &definition )
+std::unique_ptr<QgsProcessingParameterBoolean> QgsProcessingParameterBoolean::fromScriptCode( const QString &name, const QString &description, bool isOptional, const QString &definition )
 {
-  return new QgsProcessingParameterBoolean( name, description, definition.toLower().trimmed() != u"false"_s, isOptional );
+  return std::make_unique<QgsProcessingParameterBoolean>( name, description, definition.toLower().trimmed() != u"false"_s, isOptional );
 }
 
 QgsProcessingParameterCrs::QgsProcessingParameterCrs( const QString &name, const QString &description, const QVariant &defaultValue, bool optional )
@@ -3348,9 +3348,9 @@ QVariant QgsProcessingParameterCrs::valueAsJsonObject( const QVariant &value, Qg
   return valueAsJsonObjectPrivate( value, context, ValueAsStringFlag::AllowMapLayerValues );
 }
 
-QgsProcessingParameterCrs *QgsProcessingParameterCrs::fromScriptCode( const QString &name, const QString &description, bool isOptional, const QString &definition )
+std::unique_ptr<QgsProcessingParameterCrs> QgsProcessingParameterCrs::fromScriptCode( const QString &name, const QString &description, bool isOptional, const QString &definition )
 {
-  return new QgsProcessingParameterCrs( name, description, definition.compare( "none"_L1, Qt::CaseInsensitive ) == 0 ? QVariant() : definition, isOptional );
+  return std::make_unique<QgsProcessingParameterCrs>( name, description, definition.compare( "none"_L1, Qt::CaseInsensitive ) == 0 ? QVariant() : definition, isOptional );
 }
 
 
@@ -3539,7 +3539,7 @@ QString QgsProcessingParameterMapLayer::asScriptCode() const
   return code.trimmed();
 }
 
-QgsProcessingParameterMapLayer *QgsProcessingParameterMapLayer::fromScriptCode( const QString &name, const QString &description, bool isOptional, const QString &definition )
+std::unique_ptr<QgsProcessingParameterMapLayer> QgsProcessingParameterMapLayer::fromScriptCode( const QString &name, const QString &description, bool isOptional, const QString &definition )
 {
   QList< int > types;
   QString def = definition;
@@ -3620,7 +3620,7 @@ QgsProcessingParameterMapLayer *QgsProcessingParameterMapLayer::fromScriptCode( 
     break;
   }
 
-  return new QgsProcessingParameterMapLayer( name, description, def.isEmpty() ? QVariant() : def, isOptional, types );
+  return std::make_unique<QgsProcessingParameterMapLayer>( name, description, def.isEmpty() ? QVariant() : def, isOptional, types );
 }
 
 QString QgsProcessingParameterMapLayer::asPythonString( const QgsProcessing::PythonOutputType outputType ) const
@@ -3832,9 +3832,9 @@ QVariant QgsProcessingParameterExtent::valueAsJsonObject( const QVariant &value,
   return valueAsJsonObjectPrivate( value, context, ValueAsStringFlag::AllowMapLayerValues );
 }
 
-QgsProcessingParameterExtent *QgsProcessingParameterExtent::fromScriptCode( const QString &name, const QString &description, bool isOptional, const QString &definition )
+std::unique_ptr<QgsProcessingParameterExtent> QgsProcessingParameterExtent::fromScriptCode( const QString &name, const QString &description, bool isOptional, const QString &definition )
 {
-  return new QgsProcessingParameterExtent( name, description, definition, isOptional );
+  return std::make_unique<QgsProcessingParameterExtent>( name, description, definition, isOptional );
 }
 
 QgsProcessingParameterPoint::QgsProcessingParameterPoint( const QString &name, const QString &description, const QVariant &defaultValue, bool optional )
@@ -3927,9 +3927,9 @@ QString QgsProcessingParameterPoint::valueAsPythonString( const QVariant &value,
   return QgsProcessingParameterDefinition::valueAsPythonString( value, context );
 }
 
-QgsProcessingParameterPoint *QgsProcessingParameterPoint::fromScriptCode( const QString &name, const QString &description, bool isOptional, const QString &definition )
+std::unique_ptr<QgsProcessingParameterPoint> QgsProcessingParameterPoint::fromScriptCode( const QString &name, const QString &description, bool isOptional, const QString &definition )
 {
-  return new QgsProcessingParameterPoint( name, description, definition, isOptional );
+  return std::make_unique<QgsProcessingParameterPoint>( name, description, definition, isOptional );
 }
 
 
@@ -4193,9 +4193,9 @@ bool QgsProcessingParameterGeometry::fromVariantMap( const QVariantMap &map )
   return true;
 }
 
-QgsProcessingParameterGeometry *QgsProcessingParameterGeometry::fromScriptCode( const QString &name, const QString &description, bool isOptional, const QString &definition )
+std::unique_ptr<QgsProcessingParameterGeometry> QgsProcessingParameterGeometry::fromScriptCode( const QString &name, const QString &description, bool isOptional, const QString &definition )
 {
-  return new QgsProcessingParameterGeometry( name, description, definition, isOptional );
+  return std::make_unique<QgsProcessingParameterGeometry>( name, description, definition, isOptional );
 }
 
 QString QgsProcessingParameterGeometry::userFriendlyString( const QVariant &value ) const
@@ -4382,11 +4382,11 @@ bool QgsProcessingParameterFile::fromVariantMap( const QVariantMap &map )
   return true;
 }
 
-QgsProcessingParameterFile *QgsProcessingParameterFile::fromScriptCode(
+std::unique_ptr<QgsProcessingParameterFile> QgsProcessingParameterFile::fromScriptCode(
   const QString &name, const QString &description, bool isOptional, const QString &definition, Qgis::ProcessingFileParameterBehavior behavior
 )
 {
-  return new QgsProcessingParameterFile( name, description, behavior, QString(), definition, isOptional );
+  return std::make_unique<QgsProcessingParameterFile>( name, description, behavior, QString(), definition, isOptional );
 }
 
 QgsProcessingParameterMatrix::QgsProcessingParameterMatrix(
@@ -4523,9 +4523,9 @@ bool QgsProcessingParameterMatrix::fromVariantMap( const QVariantMap &map )
   return true;
 }
 
-QgsProcessingParameterMatrix *QgsProcessingParameterMatrix::fromScriptCode( const QString &name, const QString &description, bool isOptional, const QString &definition )
+std::unique_ptr<QgsProcessingParameterMatrix> QgsProcessingParameterMatrix::fromScriptCode( const QString &name, const QString &description, bool isOptional, const QString &definition )
 {
-  return new QgsProcessingParameterMatrix( name, description, 0, false, QStringList(), definition.isEmpty() ? QVariant() : definition, isOptional );
+  return std::make_unique<QgsProcessingParameterMatrix>( name, description, 0, false, QStringList(), definition.isEmpty() ? QVariant() : definition, isOptional );
 }
 
 QgsProcessingParameterMultipleLayers::QgsProcessingParameterMultipleLayers( const QString &name, const QString &description, Qgis::ProcessingSourceType layerType, const QVariant &defaultValue, bool optional )
@@ -4813,7 +4813,7 @@ bool QgsProcessingParameterMultipleLayers::fromVariantMap( const QVariantMap &ma
   return true;
 }
 
-QgsProcessingParameterMultipleLayers *QgsProcessingParameterMultipleLayers::fromScriptCode( const QString &name, const QString &description, bool isOptional, const QString &definition )
+std::unique_ptr<QgsProcessingParameterMultipleLayers> QgsProcessingParameterMultipleLayers::fromScriptCode( const QString &name, const QString &description, bool isOptional, const QString &definition )
 {
   QString type = definition;
   QString defaultVal;
@@ -4831,7 +4831,7 @@ QgsProcessingParameterMultipleLayers *QgsProcessingParameterMultipleLayers::from
     layerType = Qgis::ProcessingSourceType::Raster;
   else if ( type == "file"_L1 )
     layerType = Qgis::ProcessingSourceType::File;
-  return new QgsProcessingParameterMultipleLayers( name, description, layerType, defaultVal.isEmpty() ? QVariant() : defaultVal, isOptional );
+  return std::make_unique<QgsProcessingParameterMultipleLayers>( name, description, layerType, defaultVal.isEmpty() ? QVariant() : defaultVal, isOptional );
 }
 
 QgsProcessingParameterNumber::QgsProcessingParameterNumber(
@@ -4976,9 +4976,10 @@ bool QgsProcessingParameterNumber::fromVariantMap( const QVariantMap &map )
   return true;
 }
 
-QgsProcessingParameterNumber *QgsProcessingParameterNumber::fromScriptCode( const QString &name, const QString &description, bool isOptional, const QString &definition )
+std::unique_ptr<QgsProcessingParameterNumber> QgsProcessingParameterNumber::fromScriptCode( const QString &name, const QString &description, bool isOptional, const QString &definition )
 {
-  return new QgsProcessingParameterNumber( name, description, Qgis::ProcessingNumberParameterType::Double, definition.isEmpty() ? QVariant() : ( definition.toLower().trimmed() == "none"_L1 ? QVariant() : definition ), isOptional );
+  return std::make_unique<
+    QgsProcessingParameterNumber>( name, description, Qgis::ProcessingNumberParameterType::Double, definition.isEmpty() ? QVariant() : ( definition.toLower().trimmed() == "none"_L1 ? QVariant() : definition ), isOptional );
 }
 
 QgsProcessingParameterRange::QgsProcessingParameterRange( const QString &name, const QString &description, Qgis::ProcessingNumberParameterType type, const QVariant &defaultValue, bool optional )
@@ -5102,9 +5103,10 @@ bool QgsProcessingParameterRange::fromVariantMap( const QVariantMap &map )
   return true;
 }
 
-QgsProcessingParameterRange *QgsProcessingParameterRange::fromScriptCode( const QString &name, const QString &description, bool isOptional, const QString &definition )
+std::unique_ptr<QgsProcessingParameterRange> QgsProcessingParameterRange::fromScriptCode( const QString &name, const QString &description, bool isOptional, const QString &definition )
 {
-  return new QgsProcessingParameterRange( name, description, Qgis::ProcessingNumberParameterType::Double, definition.isEmpty() ? QVariant() : ( definition.toLower().trimmed() == "none"_L1 ? QVariant() : definition ), isOptional );
+  return std::make_unique<
+    QgsProcessingParameterRange>( name, description, Qgis::ProcessingNumberParameterType::Double, definition.isEmpty() ? QVariant() : ( definition.toLower().trimmed() == "none"_L1 ? QVariant() : definition ), isOptional );
 }
 
 QgsProcessingParameterRasterLayer::QgsProcessingParameterRasterLayer( const QString &name, const QString &description, const QVariant &defaultValue, bool optional )
@@ -5229,9 +5231,9 @@ QString QgsProcessingParameterRasterLayer::createFileFilter() const
   return QgsProviderRegistry::instance()->fileRasterFilters() + u";;"_s + QObject::tr( "All files (*.*)" );
 }
 
-QgsProcessingParameterRasterLayer *QgsProcessingParameterRasterLayer::fromScriptCode( const QString &name, const QString &description, bool isOptional, const QString &definition )
+std::unique_ptr<QgsProcessingParameterRasterLayer> QgsProcessingParameterRasterLayer::fromScriptCode( const QString &name, const QString &description, bool isOptional, const QString &definition )
 {
-  return new QgsProcessingParameterRasterLayer( name, description, definition.isEmpty() ? QVariant() : definition, isOptional );
+  return std::make_unique<QgsProcessingParameterRasterLayer>( name, description, definition.isEmpty() ? QVariant() : definition, isOptional );
 }
 
 void QgsProcessingParameterRasterLayer::setParameterCapabilities( Qgis::RasterProcessingParameterCapabilities capabilities )
@@ -5594,7 +5596,7 @@ bool QgsProcessingParameterEnum::fromVariantMap( const QVariantMap &map )
   return true;
 }
 
-QgsProcessingParameterEnum *QgsProcessingParameterEnum::fromScriptCode( const QString &name, const QString &description, bool isOptional, const QString &definition )
+std::unique_ptr<QgsProcessingParameterEnum> QgsProcessingParameterEnum::fromScriptCode( const QString &name, const QString &description, bool isOptional, const QString &definition )
 {
   QString defaultVal;
   QString def = definition;
@@ -5622,7 +5624,7 @@ QgsProcessingParameterEnum *QgsProcessingParameterEnum::fromScriptCode( const QS
     defaultVal = m.captured( 2 );
   }
 
-  return new QgsProcessingParameterEnum( name, description, values.split( ';' ), multiple, defaultVal.isEmpty() ? QVariant() : defaultVal, isOptional, staticStrings );
+  return std::make_unique<QgsProcessingParameterEnum>( name, description, values.split( ';' ), multiple, defaultVal.isEmpty() ? QVariant() : defaultVal, isOptional, staticStrings );
 }
 
 QgsProcessingParameterString::QgsProcessingParameterString( const QString &name, const QString &description, const QVariant &defaultValue, bool multiLine, bool optional )
@@ -5704,7 +5706,7 @@ bool QgsProcessingParameterString::fromVariantMap( const QVariantMap &map )
   return true;
 }
 
-QgsProcessingParameterString *QgsProcessingParameterString::fromScriptCode( const QString &name, const QString &description, bool isOptional, const QString &definition )
+std::unique_ptr<QgsProcessingParameterString> QgsProcessingParameterString::fromScriptCode( const QString &name, const QString &description, bool isOptional, const QString &definition )
 {
   QString def = definition;
   bool multiLine = false;
@@ -5723,7 +5725,7 @@ QgsProcessingParameterString *QgsProcessingParameterString::fromScriptCode( cons
   if ( def == "None"_L1 )
     defaultValue = QVariant();
 
-  return new QgsProcessingParameterString( name, description, defaultValue, multiLine, isOptional );
+  return std::make_unique<QgsProcessingParameterString>( name, description, defaultValue, multiLine, isOptional );
 }
 
 //
@@ -5759,7 +5761,7 @@ QString QgsProcessingParameterAuthConfig::asScriptCode() const
   return code.trimmed();
 }
 
-QgsProcessingParameterAuthConfig *QgsProcessingParameterAuthConfig::fromScriptCode( const QString &name, const QString &description, bool isOptional, const QString &definition )
+std::unique_ptr<QgsProcessingParameterAuthConfig> QgsProcessingParameterAuthConfig::fromScriptCode( const QString &name, const QString &description, bool isOptional, const QString &definition )
 {
   QString def = definition;
 
@@ -5772,7 +5774,7 @@ QgsProcessingParameterAuthConfig *QgsProcessingParameterAuthConfig::fromScriptCo
   if ( def == "None"_L1 )
     defaultValue = QVariant();
 
-  return new QgsProcessingParameterAuthConfig( name, description, defaultValue, isOptional );
+  return std::make_unique<QgsProcessingParameterAuthConfig>( name, description, defaultValue, isOptional );
 }
 
 
@@ -5883,9 +5885,9 @@ bool QgsProcessingParameterExpression::fromVariantMap( const QVariantMap &map )
   return true;
 }
 
-QgsProcessingParameterExpression *QgsProcessingParameterExpression::fromScriptCode( const QString &name, const QString &description, bool isOptional, const QString &definition )
+std::unique_ptr<QgsProcessingParameterExpression> QgsProcessingParameterExpression::fromScriptCode( const QString &name, const QString &description, bool isOptional, const QString &definition )
 {
-  return new QgsProcessingParameterExpression( name, description, definition, QString(), isOptional, Qgis::ExpressionType::Qgis );
+  return std::make_unique<QgsProcessingParameterExpression>( name, description, definition, QString(), isOptional, Qgis::ExpressionType::Qgis );
 }
 
 
@@ -6031,9 +6033,9 @@ bool QgsProcessingParameterVectorLayer::fromVariantMap( const QVariantMap &map )
   return true;
 }
 
-QgsProcessingParameterVectorLayer *QgsProcessingParameterVectorLayer::fromScriptCode( const QString &name, const QString &description, bool isOptional, const QString &definition )
+std::unique_ptr<QgsProcessingParameterVectorLayer> QgsProcessingParameterVectorLayer::fromScriptCode( const QString &name, const QString &description, bool isOptional, const QString &definition )
 {
-  return new QgsProcessingParameterVectorLayer( name, description, QList< int>(), definition.isEmpty() ? QVariant() : definition, isOptional );
+  return std::make_unique<QgsProcessingParameterVectorLayer>( name, description, QList< int>(), definition.isEmpty() ? QVariant() : definition, isOptional );
 }
 
 QgsProcessingParameterMeshLayer::QgsProcessingParameterMeshLayer( const QString &name, const QString &description, const QVariant &defaultValue, bool optional )
@@ -6118,9 +6120,9 @@ QString QgsProcessingParameterMeshLayer::createFileFilter() const
   return QgsProviderRegistry::instance()->fileMeshFilters() + u";;"_s + QObject::tr( "All files (*.*)" );
 }
 
-QgsProcessingParameterMeshLayer *QgsProcessingParameterMeshLayer::fromScriptCode( const QString &name, const QString &description, bool isOptional, const QString &definition )
+std::unique_ptr<QgsProcessingParameterMeshLayer> QgsProcessingParameterMeshLayer::fromScriptCode( const QString &name, const QString &description, bool isOptional, const QString &definition )
 {
-  return new QgsProcessingParameterMeshLayer( name, description, definition.isEmpty() ? QVariant() : definition, isOptional );
+  return std::make_unique<QgsProcessingParameterMeshLayer>( name, description, definition.isEmpty() ? QVariant() : definition, isOptional );
 }
 
 QgsProcessingParameterField::QgsProcessingParameterField(
@@ -6387,7 +6389,7 @@ bool QgsProcessingParameterField::fromVariantMap( const QVariantMap &map )
   return true;
 }
 
-QgsProcessingParameterField *QgsProcessingParameterField::fromScriptCode( const QString &name, const QString &description, bool isOptional, const QString &definition )
+std::unique_ptr<QgsProcessingParameterField> QgsProcessingParameterField::fromScriptCode( const QString &name, const QString &description, bool isOptional, const QString &definition )
 {
   QString parent;
   Qgis::ProcessingFieldParameterDataType type = Qgis::ProcessingFieldParameterDataType::Any;
@@ -6446,7 +6448,7 @@ QgsProcessingParameterField *QgsProcessingParameterField::fromScriptCode( const 
     def.clear();
   }
 
-  return new QgsProcessingParameterField( name, description, def.isEmpty() ? QVariant() : def, parent, type, allowMultiple, isOptional, defaultToAllFields );
+  return std::make_unique<QgsProcessingParameterField>( name, description, def.isEmpty() ? QVariant() : def, parent, type, allowMultiple, isOptional, defaultToAllFields );
 }
 
 QgsProcessingParameterFeatureSource::QgsProcessingParameterFeatureSource( const QString &name, const QString &description, const QList<int> &types, const QVariant &defaultValue, bool optional )
@@ -6711,7 +6713,7 @@ bool QgsProcessingParameterFeatureSource::fromVariantMap( const QVariantMap &map
   return true;
 }
 
-QgsProcessingParameterFeatureSource *QgsProcessingParameterFeatureSource::fromScriptCode( const QString &name, const QString &description, bool isOptional, const QString &definition )
+std::unique_ptr<QgsProcessingParameterFeatureSource> QgsProcessingParameterFeatureSource::fromScriptCode( const QString &name, const QString &description, bool isOptional, const QString &definition )
 {
   QList< int > types;
   QString def = definition;
@@ -6738,7 +6740,7 @@ QgsProcessingParameterFeatureSource *QgsProcessingParameterFeatureSource::fromSc
     break;
   }
 
-  return new QgsProcessingParameterFeatureSource( name, description, types, def.isEmpty() ? QVariant() : def, isOptional );
+  return std::make_unique<QgsProcessingParameterFeatureSource>( name, description, types, def.isEmpty() ? QVariant() : def, isOptional );
 }
 
 QgsProcessingParameterFeatureSink::QgsProcessingParameterFeatureSink(
@@ -6994,7 +6996,7 @@ QString QgsProcessingParameterFeatureSink::generateTemporaryDestination( const Q
     return QgsProcessingDestinationParameter::generateTemporaryDestination( context );
 }
 
-QgsProcessingParameterFeatureSink *QgsProcessingParameterFeatureSink::fromScriptCode( const QString &name, const QString &description, bool isOptional, const QString &definition )
+std::unique_ptr<QgsProcessingParameterFeatureSink> QgsProcessingParameterFeatureSink::fromScriptCode( const QString &name, const QString &description, bool isOptional, const QString &definition )
 {
   Qgis::ProcessingSourceType type = Qgis::ProcessingSourceType::VectorAnyGeometry;
   QString def = definition;
@@ -7019,7 +7021,7 @@ QgsProcessingParameterFeatureSink *QgsProcessingParameterFeatureSink::fromScript
     def = def.mid( 6 );
   }
 
-  return new QgsProcessingParameterFeatureSink( name, description, type, definition.trimmed().isEmpty() ? QVariant() : definition, isOptional );
+  return std::make_unique<QgsProcessingParameterFeatureSink>( name, description, type, definition.trimmed().isEmpty() ? QVariant() : definition, isOptional );
 }
 
 bool QgsProcessingParameterFeatureSink::supportsAppend() const
@@ -7188,9 +7190,9 @@ QList<QPair<QString, QString>> QgsProcessingParameterRasterDestination::supporte
   }
 }
 
-QgsProcessingParameterRasterDestination *QgsProcessingParameterRasterDestination::fromScriptCode( const QString &name, const QString &description, bool isOptional, const QString &definition )
+std::unique_ptr<QgsProcessingParameterRasterDestination> QgsProcessingParameterRasterDestination::fromScriptCode( const QString &name, const QString &description, bool isOptional, const QString &definition )
 {
-  return new QgsProcessingParameterRasterDestination( name, description, definition.isEmpty() ? QVariant() : definition, isOptional );
+  return std::make_unique<QgsProcessingParameterRasterDestination>( name, description, definition.isEmpty() ? QVariant() : definition, isOptional );
 }
 
 
@@ -7348,9 +7350,9 @@ bool QgsProcessingParameterFileDestination::fromVariantMap( const QVariantMap &m
   return true;
 }
 
-QgsProcessingParameterFileDestination *QgsProcessingParameterFileDestination::fromScriptCode( const QString &name, const QString &description, bool isOptional, const QString &definition )
+std::unique_ptr<QgsProcessingParameterFileDestination> QgsProcessingParameterFileDestination::fromScriptCode( const QString &name, const QString &description, bool isOptional, const QString &definition )
 {
-  return new QgsProcessingParameterFileDestination( name, description, QString(), definition.isEmpty() ? QVariant() : definition, isOptional );
+  return std::make_unique<QgsProcessingParameterFileDestination>( name, description, QString(), definition.isEmpty() ? QVariant() : definition, isOptional );
 }
 
 QgsProcessingParameterFolderDestination::QgsProcessingParameterFolderDestination( const QString &name, const QString &description, const QVariant &defaultValue, bool optional, bool createByDefault )
@@ -7405,9 +7407,9 @@ QString QgsProcessingParameterFolderDestination::defaultFileExtension() const
   return QString();
 }
 
-QgsProcessingParameterFolderDestination *QgsProcessingParameterFolderDestination::fromScriptCode( const QString &name, const QString &description, bool isOptional, const QString &definition )
+std::unique_ptr<QgsProcessingParameterFolderDestination> QgsProcessingParameterFolderDestination::fromScriptCode( const QString &name, const QString &description, bool isOptional, const QString &definition )
 {
-  return new QgsProcessingParameterFolderDestination( name, description, definition.isEmpty() ? QVariant() : definition, isOptional );
+  return std::make_unique<QgsProcessingParameterFolderDestination>( name, description, definition.isEmpty() ? QVariant() : definition, isOptional );
 }
 
 QgsProcessingDestinationParameter::QgsProcessingDestinationParameter( const QString &name, const QString &description, const QVariant &defaultValue, bool optional, bool createByDefault )
@@ -7736,7 +7738,7 @@ bool QgsProcessingParameterVectorDestination::fromVariantMap( const QVariantMap 
   return true;
 }
 
-QgsProcessingParameterVectorDestination *QgsProcessingParameterVectorDestination::fromScriptCode( const QString &name, const QString &description, bool isOptional, const QString &definition )
+std::unique_ptr<QgsProcessingParameterVectorDestination> QgsProcessingParameterVectorDestination::fromScriptCode( const QString &name, const QString &description, bool isOptional, const QString &definition )
 {
   Qgis::ProcessingSourceType type = Qgis::ProcessingSourceType::VectorAnyGeometry;
   QString def = definition;
@@ -7756,7 +7758,7 @@ QgsProcessingParameterVectorDestination *QgsProcessingParameterVectorDestination
     def = def.mid( 8 );
   }
 
-  return new QgsProcessingParameterVectorDestination( name, description, type, definition.isEmpty() ? QVariant() : definition, isOptional );
+  return std::make_unique<QgsProcessingParameterVectorDestination>( name, description, type, definition.isEmpty() ? QVariant() : definition, isOptional );
 }
 
 QgsProcessingParameterBand::QgsProcessingParameterBand(
@@ -7920,7 +7922,7 @@ bool QgsProcessingParameterBand::fromVariantMap( const QVariantMap &map )
   return true;
 }
 
-QgsProcessingParameterBand *QgsProcessingParameterBand::fromScriptCode( const QString &name, const QString &description, bool isOptional, const QString &definition )
+std::unique_ptr<QgsProcessingParameterBand> QgsProcessingParameterBand::fromScriptCode( const QString &name, const QString &description, bool isOptional, const QString &definition )
 {
   QString parent;
   QString def = definition;
@@ -7945,7 +7947,7 @@ QgsProcessingParameterBand *QgsProcessingParameterBand::fromScriptCode( const QS
     def.clear();
   }
 
-  return new QgsProcessingParameterBand( name, description, def.isEmpty() ? QVariant() : def, parent, isOptional, allowMultiple );
+  return std::make_unique<QgsProcessingParameterBand>( name, description, def.isEmpty() ? QVariant() : def, parent, isOptional, allowMultiple );
 }
 
 //
@@ -8311,9 +8313,11 @@ QString QgsProcessingParameterScale::asPythonString( const QgsProcessing::Python
   return QString();
 }
 
-QgsProcessingParameterScale *QgsProcessingParameterScale::fromScriptCode( const QString &name, const QString &description, bool isOptional, const QString &definition ) // cppcheck-suppress duplInheritedMember
+std::unique_ptr<QgsProcessingParameterScale> QgsProcessingParameterScale::fromScriptCode(
+  const QString &name, const QString &description, bool isOptional, const QString &definition
+) // cppcheck-suppress duplInheritedMember
 {
-  return new QgsProcessingParameterScale( name, description, definition.isEmpty() ? QVariant() : ( definition.toLower().trimmed() == "none"_L1 ? QVariant() : definition ), isOptional );
+  return std::make_unique<QgsProcessingParameterScale>( name, description, definition.isEmpty() ? QVariant() : ( definition.toLower().trimmed() == "none"_L1 ? QVariant() : definition ), isOptional );
 }
 
 
@@ -8370,7 +8374,7 @@ QString QgsProcessingParameterLayout::asPythonString( const QgsProcessing::Pytho
   return QString();
 }
 
-QgsProcessingParameterLayout *QgsProcessingParameterLayout::fromScriptCode( const QString &name, const QString &description, bool isOptional, const QString &definition )
+std::unique_ptr<QgsProcessingParameterLayout> QgsProcessingParameterLayout::fromScriptCode( const QString &name, const QString &description, bool isOptional, const QString &definition )
 {
   QString def = definition;
 
@@ -8383,7 +8387,7 @@ QgsProcessingParameterLayout *QgsProcessingParameterLayout::fromScriptCode( cons
   if ( def == "None"_L1 )
     defaultValue = QVariant();
 
-  return new QgsProcessingParameterLayout( name, description, defaultValue, isOptional );
+  return std::make_unique<QgsProcessingParameterLayout>( name, description, defaultValue, isOptional );
 }
 
 
@@ -8478,7 +8482,7 @@ QStringList QgsProcessingParameterLayoutItem::dependsOnOtherParameters() const
   return depends;
 }
 
-QgsProcessingParameterLayoutItem *QgsProcessingParameterLayoutItem::fromScriptCode( const QString &name, const QString &description, bool isOptional, const QString &definition )
+std::unique_ptr<QgsProcessingParameterLayoutItem> QgsProcessingParameterLayoutItem::fromScriptCode( const QString &name, const QString &description, bool isOptional, const QString &definition )
 {
   QString parent;
   QString def = definition;
@@ -8497,7 +8501,7 @@ QgsProcessingParameterLayoutItem *QgsProcessingParameterLayoutItem::fromScriptCo
     def.clear();
   }
 
-  return new QgsProcessingParameterLayoutItem( name, description, def.isEmpty() ? QVariant() : def, parent, itemType, isOptional );
+  return std::make_unique<QgsProcessingParameterLayoutItem>( name, description, def.isEmpty() ? QVariant() : def, parent, itemType, isOptional );
 }
 
 QString QgsProcessingParameterLayoutItem::parentLayoutParameterName() const
@@ -8640,7 +8644,7 @@ void QgsProcessingParameterColor::setOpacityEnabled( bool enabled )
   mAllowOpacity = enabled;
 }
 
-QgsProcessingParameterColor *QgsProcessingParameterColor::fromScriptCode( const QString &name, const QString &description, bool isOptional, const QString &definition )
+std::unique_ptr<QgsProcessingParameterColor> QgsProcessingParameterColor::fromScriptCode( const QString &name, const QString &description, bool isOptional, const QString &definition )
 {
   QString def = definition;
 
@@ -8660,7 +8664,7 @@ QgsProcessingParameterColor *QgsProcessingParameterColor::fromScriptCode( const 
   if ( def == "None"_L1 || def.isEmpty() )
     defaultValue = QVariant();
 
-  return new QgsProcessingParameterColor( name, description, defaultValue, allowOpacity, isOptional );
+  return std::make_unique<QgsProcessingParameterColor>( name, description, defaultValue, allowOpacity, isOptional );
 }
 
 //
@@ -8790,7 +8794,9 @@ bool QgsProcessingParameterCoordinateOperation::fromVariantMap( const QVariantMa
   return true;
 }
 
-QgsProcessingParameterCoordinateOperation *QgsProcessingParameterCoordinateOperation::fromScriptCode( const QString &name, const QString &description, bool isOptional, const QString &definition )
+std::unique_ptr<QgsProcessingParameterCoordinateOperation> QgsProcessingParameterCoordinateOperation::fromScriptCode(
+  const QString &name, const QString &description, bool isOptional, const QString &definition
+)
 {
   QString def = definition;
 
@@ -8811,7 +8817,7 @@ QgsProcessingParameterCoordinateOperation *QgsProcessingParameterCoordinateOpera
   if ( def == "None"_L1 )
     defaultValue = QVariant();
 
-  return new QgsProcessingParameterCoordinateOperation( name, description, defaultValue, QString(), QString(), QVariant(), QVariant(), isOptional );
+  return std::make_unique<QgsProcessingParameterCoordinateOperation>( name, description, defaultValue, QString(), QString(), QVariant(), QVariant(), isOptional );
 }
 
 
@@ -8893,7 +8899,7 @@ bool QgsProcessingParameterMapTheme::fromVariantMap( const QVariantMap &map )
   return true;
 }
 
-QgsProcessingParameterMapTheme *QgsProcessingParameterMapTheme::fromScriptCode( const QString &name, const QString &description, bool isOptional, const QString &definition )
+std::unique_ptr<QgsProcessingParameterMapTheme> QgsProcessingParameterMapTheme::fromScriptCode( const QString &name, const QString &description, bool isOptional, const QString &definition )
 {
   QString def = definition;
   if ( def.startsWith( '"' ) || def.startsWith( '\'' ) )
@@ -8906,7 +8912,7 @@ QgsProcessingParameterMapTheme *QgsProcessingParameterMapTheme::fromScriptCode( 
   if ( defaultValue == "None"_L1 || defaultValue.toString().isEmpty() )
     defaultValue = QVariant();
 
-  return new QgsProcessingParameterMapTheme( name, description, defaultValue, isOptional );
+  return std::make_unique<QgsProcessingParameterMapTheme>( name, description, defaultValue, isOptional );
 }
 
 
@@ -9120,9 +9126,10 @@ bool QgsProcessingParameterDateTime::fromVariantMap( const QVariantMap &map )
   return true;
 }
 
-QgsProcessingParameterDateTime *QgsProcessingParameterDateTime::fromScriptCode( const QString &name, const QString &description, bool isOptional, const QString &definition )
+std::unique_ptr<QgsProcessingParameterDateTime> QgsProcessingParameterDateTime::fromScriptCode( const QString &name, const QString &description, bool isOptional, const QString &definition )
 {
-  return new QgsProcessingParameterDateTime( name, description, Qgis::ProcessingDateTimeParameterDataType::DateTime, definition.isEmpty() ? QVariant() : ( definition.toLower().trimmed() == "none"_L1 ? QVariant() : definition ), isOptional );
+  return std::make_unique<
+    QgsProcessingParameterDateTime>( name, description, Qgis::ProcessingDateTimeParameterDataType::DateTime, definition.isEmpty() ? QVariant() : ( definition.toLower().trimmed() == "none"_L1 ? QVariant() : definition ), isOptional );
 }
 
 
@@ -9243,7 +9250,7 @@ bool QgsProcessingParameterProviderConnection::fromVariantMap( const QVariantMap
   return true;
 }
 
-QgsProcessingParameterProviderConnection *QgsProcessingParameterProviderConnection::fromScriptCode( const QString &name, const QString &description, bool isOptional, const QString &definition )
+std::unique_ptr<QgsProcessingParameterProviderConnection> QgsProcessingParameterProviderConnection::fromScriptCode( const QString &name, const QString &description, bool isOptional, const QString &definition )
 {
   QString def = definition;
   QString provider;
@@ -9268,7 +9275,7 @@ QgsProcessingParameterProviderConnection *QgsProcessingParameterProviderConnecti
   if ( defaultValue == "None"_L1 || defaultValue.toString().isEmpty() )
     defaultValue = QVariant();
 
-  return new QgsProcessingParameterProviderConnection( name, description, provider, defaultValue, isOptional );
+  return std::make_unique<QgsProcessingParameterProviderConnection>( name, description, provider, defaultValue, isOptional );
 }
 
 
@@ -9378,7 +9385,7 @@ bool QgsProcessingParameterDatabaseSchema::fromVariantMap( const QVariantMap &ma
   return true;
 }
 
-QgsProcessingParameterDatabaseSchema *QgsProcessingParameterDatabaseSchema::fromScriptCode( const QString &name, const QString &description, bool isOptional, const QString &definition )
+std::unique_ptr<QgsProcessingParameterDatabaseSchema> QgsProcessingParameterDatabaseSchema::fromScriptCode( const QString &name, const QString &description, bool isOptional, const QString &definition )
 {
   QString parent;
   QString def = definition;
@@ -9396,7 +9403,7 @@ QgsProcessingParameterDatabaseSchema *QgsProcessingParameterDatabaseSchema::from
     def.clear();
   }
 
-  return new QgsProcessingParameterDatabaseSchema( name, description, parent, def.isEmpty() ? QVariant() : def, isOptional );
+  return std::make_unique<QgsProcessingParameterDatabaseSchema>( name, description, parent, def.isEmpty() ? QVariant() : def, isOptional );
 }
 
 //
@@ -9528,7 +9535,7 @@ bool QgsProcessingParameterDatabaseTable::fromVariantMap( const QVariantMap &map
   return true;
 }
 
-QgsProcessingParameterDatabaseTable *QgsProcessingParameterDatabaseTable::fromScriptCode( const QString &name, const QString &description, bool isOptional, const QString &definition )
+std::unique_ptr<QgsProcessingParameterDatabaseTable> QgsProcessingParameterDatabaseTable::fromScriptCode( const QString &name, const QString &description, bool isOptional, const QString &definition )
 {
   QString connection;
   QString schema;
@@ -9547,7 +9554,7 @@ QgsProcessingParameterDatabaseTable *QgsProcessingParameterDatabaseTable::fromSc
     def = m.captured( 3 );
   }
 
-  return new QgsProcessingParameterDatabaseTable( name, description, connection, schema, def.isEmpty() ? QVariant() : def, isOptional );
+  return std::make_unique<QgsProcessingParameterDatabaseTable>( name, description, connection, schema, def.isEmpty() ? QVariant() : def, isOptional );
 }
 
 bool QgsProcessingParameterDatabaseTable::allowNewTableNames() const
@@ -9646,9 +9653,9 @@ QString QgsProcessingParameterPointCloudLayer::createFileFilter() const
   return QgsProviderRegistry::instance()->filePointCloudFilters() + u";;"_s + QObject::tr( "All files (*.*)" );
 }
 
-QgsProcessingParameterPointCloudLayer *QgsProcessingParameterPointCloudLayer::fromScriptCode( const QString &name, const QString &description, bool isOptional, const QString &definition )
+std::unique_ptr<QgsProcessingParameterPointCloudLayer> QgsProcessingParameterPointCloudLayer::fromScriptCode( const QString &name, const QString &description, bool isOptional, const QString &definition )
 {
-  return new QgsProcessingParameterPointCloudLayer( name, description, definition.isEmpty() ? QVariant() : definition, isOptional );
+  return std::make_unique<QgsProcessingParameterPointCloudLayer>( name, description, definition.isEmpty() ? QVariant() : definition, isOptional );
 }
 
 //
@@ -9732,9 +9739,9 @@ QVariant QgsProcessingParameterAnnotationLayer::valueAsJsonObject( const QVarian
   return valueAsJsonObjectPrivate( value, context, ValueAsStringFlag::AllowMapLayerValues );
 }
 
-QgsProcessingParameterAnnotationLayer *QgsProcessingParameterAnnotationLayer::fromScriptCode( const QString &name, const QString &description, bool isOptional, const QString &definition )
+std::unique_ptr<QgsProcessingParameterAnnotationLayer> QgsProcessingParameterAnnotationLayer::fromScriptCode( const QString &name, const QString &description, bool isOptional, const QString &definition )
 {
-  return new QgsProcessingParameterAnnotationLayer( name, description, definition.isEmpty() ? QVariant() : definition, isOptional );
+  return std::make_unique<QgsProcessingParameterAnnotationLayer>( name, description, definition.isEmpty() ? QVariant() : definition, isOptional );
 }
 
 QgsProcessingParameterPointCloudDestination::QgsProcessingParameterPointCloudDestination(
@@ -9906,9 +9913,11 @@ bool QgsProcessingParameterPointCloudDestination::fromVariantMap( const QVariant
   return true;
 }
 
-QgsProcessingParameterPointCloudDestination *QgsProcessingParameterPointCloudDestination::fromScriptCode( const QString &name, const QString &description, bool isOptional, const QString &definition )
+std::unique_ptr<QgsProcessingParameterPointCloudDestination> QgsProcessingParameterPointCloudDestination::fromScriptCode(
+  const QString &name, const QString &description, bool isOptional, const QString &definition
+)
 {
-  return new QgsProcessingParameterPointCloudDestination( name, description, definition.isEmpty() ? QVariant() : definition, isOptional );
+  return std::make_unique<QgsProcessingParameterPointCloudDestination>( name, description, definition.isEmpty() ? QVariant() : definition, isOptional );
 }
 
 //
@@ -10103,7 +10112,9 @@ bool QgsProcessingParameterPointCloudAttribute::fromVariantMap( const QVariantMa
   return true;
 }
 
-QgsProcessingParameterPointCloudAttribute *QgsProcessingParameterPointCloudAttribute::fromScriptCode( const QString &name, const QString &description, bool isOptional, const QString &definition )
+std::unique_ptr<QgsProcessingParameterPointCloudAttribute> QgsProcessingParameterPointCloudAttribute::fromScriptCode(
+  const QString &name, const QString &description, bool isOptional, const QString &definition
+)
 {
   QString parent;
   bool allowMultiple = false;
@@ -10135,7 +10146,7 @@ QgsProcessingParameterPointCloudAttribute *QgsProcessingParameterPointCloudAttri
     def.clear();
   }
 
-  return new QgsProcessingParameterPointCloudAttribute( name, description, def.isEmpty() ? QVariant() : def, parent, allowMultiple, isOptional, defaultToAllAttributes );
+  return std::make_unique<QgsProcessingParameterPointCloudAttribute>( name, description, def.isEmpty() ? QVariant() : def, parent, allowMultiple, isOptional, defaultToAllAttributes );
 }
 
 //
@@ -10241,7 +10252,9 @@ QStringList QgsProcessingParameterVectorTileDestination::supportedOutputVectorTi
   return QStringList() << ext;
 }
 
-QgsProcessingParameterVectorTileDestination *QgsProcessingParameterVectorTileDestination::fromScriptCode( const QString &name, const QString &description, bool isOptional, const QString &definition )
+std::unique_ptr<QgsProcessingParameterVectorTileDestination> QgsProcessingParameterVectorTileDestination::fromScriptCode(
+  const QString &name, const QString &description, bool isOptional, const QString &definition
+)
 {
-  return new QgsProcessingParameterVectorTileDestination( name, description, definition.isEmpty() ? QVariant() : definition, isOptional );
+  return std::make_unique<QgsProcessingParameterVectorTileDestination>( name, description, definition.isEmpty() ? QVariant() : definition, isOptional );
 }

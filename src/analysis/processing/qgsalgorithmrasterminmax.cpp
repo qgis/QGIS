@@ -114,7 +114,7 @@ QVariantMap QgsRasterMinMaxAlgorithm::processAlgorithm( const QVariantMap &param
     QgsFields outFields;
     outFields.append( QgsField( u"value"_s, QMetaType::Type::Double, QString(), 20, 8 ) );
     outFields.append( QgsField( u"extremum_type"_s, QMetaType::Type::QString ) );
-    sink.reset( parameterAsSink( parameters, u"OUTPUT"_s, context, dest, outFields, Qgis::WkbType::Point, mCrs ) );
+    sink = parameterAsSink( parameters, u"OUTPUT"_s, context, dest, outFields, Qgis::WkbType::Point, mCrs );
     if ( !sink )
       throw QgsProcessingException( invalidSinkError( parameters, u"OUTPUT"_s ) );
   }

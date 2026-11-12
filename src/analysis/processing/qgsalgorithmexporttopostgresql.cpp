@@ -91,7 +91,7 @@ QgsExportToPostgresqlAlgorithm *QgsExportToPostgresqlAlgorithm::createInstance()
 
 bool QgsExportToPostgresqlAlgorithm::prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback * )
 {
-  mSource.reset( parameterAsSource( parameters, u"INPUT"_s, context ) );
+  mSource = parameterAsSource( parameters, u"INPUT"_s, context );
   if ( !mSource )
     throw QgsProcessingException( invalidSourceError( parameters, u"INPUT"_s ) );
 
