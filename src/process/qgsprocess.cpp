@@ -461,7 +461,7 @@ int QgsProcessingExec::run( const QStringList &args, Qgis::ProcessingLogLevel lo
             if ( params.contains( name ) )
             {
               // parameter specified multiple times, store all of them in a list...
-              if ( params.value( name ).type() == QVariant::StringList )
+              if ( params.value( name ).typeId() == QMetaType::Type::QStringList )
               {
                 // append to existing list
                 QStringList listValue = params.value( name ).toStringList();
@@ -502,7 +502,7 @@ int QgsProcessingExec::run( const QStringList &args, Qgis::ProcessingLogLevel lo
           if ( params.contains( name ) )
           {
             // parameter specified multiple times, store all of them in a list...
-            if ( params.value( name ).type() == QVariant::StringList )
+            if ( params.value( name ).typeId() == QMetaType::Type::QStringList )
             {
               // append to existing list
               QStringList listValue = params.value( name ).toStringList();
@@ -1326,7 +1326,7 @@ int QgsProcessingExec::execute(
       QVariant result = it.value();
       if ( !( mFlags & Flag::UseJson ) )
       {
-        if ( result.type() == QVariant::List || result.type() == QVariant::StringList )
+        if ( result.typeId() == QMetaType::Type::QVariantList || result.typeId() == QMetaType::Type::QStringList )
         {
           QStringList list;
           for ( const QVariant &v : result.toList() )
