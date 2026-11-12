@@ -39,6 +39,26 @@ Sets the base ``url`` to use when resolving relative links.
 .. seealso:: :py:func:`baseUrl`
 %End
 
+    void setUserStylesheet( const QString &stylesheet );
+%Docstring
+Sets the user ``stylesheet`` CSS rules to use while rendering the HTML
+content.
+
+These allow for overriding the styles specified within the HTML source.
+
+.. seealso:: :py:func:`userStylesheet`
+%End
+
+    QString userStylesheet() const;
+%Docstring
+Returns the user stylesheet CSS rules used while rendering the HTML
+content.
+
+These overriding the styles specified within the HTML source.
+
+.. seealso:: :py:func:`setUserStylesheet`
+%End
+
 };
 
 class QgsWebEnginePage : QObject

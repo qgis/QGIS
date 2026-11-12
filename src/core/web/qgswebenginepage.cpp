@@ -291,7 +291,7 @@ QString QgsWebEnginePage::htmlToPdfReturnCodeToString( int code )
   BUILTIN_UNREACHABLE
 }
 
-bool QgsWebEnginePage::doPrintToPdf( const QStringList &args, QString &errorMessage, QgsFeedback *feedback )
+bool QgsWebEnginePage::doPrintToPdf( const QStringList &args, const QgsHtmlRenderSettings &settings, QString &errorMessage, QgsFeedback *feedback )
 {
   const QString executable = htmlToPdfExecutable();
   if ( executable.isEmpty() || !QFile::exists( executable ) )
@@ -300,7 +300,17 @@ bool QgsWebEnginePage::doPrintToPdf( const QStringList &args, QString &errorMess
     return false;
   }
 
-  QgsBlockingProcess process( executable, args );
+  QStringList allArgs = args;
+  if ( !settings.baseUrl().isEmpty() )
+  {
+    allArgs.append( u"--base-url=%1"_s.arg( settings.baseUrl().toString() ) );
+  }
+  if ( !settings.userStylesheet().isEmpty() )
+  {
+    allArgs.append( u"--user-stylesheet=%1"_s.arg( settings.userStylesheet() ) );
+  }
+
+  QgsBlockingProcess process( executable, allArgs );
   process.setStdErrHandler( []( const QByteArray &ba ) { QgsDebugError( ba ); } );
   process.setStdOutHandler( []( const QByteArray &ba ) { QgsDebugMsgLevel( ba, 2 ); } );
   const int returnCode = process.run( feedback );
@@ -329,13 +339,8 @@ bool QgsWebEnginePage::printToPdfBlocking( const QString &html, const QString &p
   outputFile.write( html.toUtf8() );
   outputFile.close();
 
-  QStringList args { outputFilename, pdfFileName, u"--width=%1"_s.arg( width ) };
-  if ( !settings.baseUrl().isEmpty() )
-  {
-    args.append( u"--base-url=%1"_s.arg( settings.baseUrl().toString() ) );
-  }
-
-  return doPrintToPdf( args, errorMessage, feedback );
+  const QStringList args { outputFilename, pdfFileName, u"--width=%1"_s.arg( width ) };
+  return doPrintToPdf( args, settings, errorMessage, feedback );
 }
 
 bool QgsWebEnginePage::printToPdfBlocking( const QUrl &url, const QString &pdfFileName, QString &errorMessage, int width, const QgsHtmlRenderSettings &settings, QgsFeedback *feedback )
@@ -347,13 +352,8 @@ bool QgsWebEnginePage::printToPdfBlocking( const QUrl &url, const QString &pdfFi
     return false;
   }
 
-  QStringList args { url.toString(), pdfFileName, u"--width=%1"_s.arg( width ) };
-  if ( !settings.baseUrl().isEmpty() )
-  {
-    args.append( u"--base-url=%1"_s.arg( settings.baseUrl().toString() ) );
-  }
-
-  return doPrintToPdf( args, errorMessage, feedback );
+  const QStringList args { url.toString(), pdfFileName, u"--width=%1"_s.arg( width ) };
+  return doPrintToPdf( args, settings, errorMessage, feedback );
 }
 
 bool QgsWebEnginePage::renderBlocking(
