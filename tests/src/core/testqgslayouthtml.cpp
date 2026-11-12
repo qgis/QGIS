@@ -182,7 +182,7 @@ void TestQgsLayoutHtml::htmlMultiFrameSmartBreak()
   l.initializeDefaults();
   QgsLayoutItemHtml *htmlItem = new QgsLayoutItemHtml( &l );
   QgsLayoutFrame *htmlFrame = new QgsLayoutFrame( &l, htmlItem );
-  htmlFrame->attemptSetSceneRect( QRectF( 10, 10, 100, 52 ) );
+  htmlFrame->attemptSetSceneRect( QRectF( 10, 10, 100, 45 ) );
   htmlItem->addFrame( htmlFrame );
   htmlItem->setResizeMode( QgsLayoutMultiFrame::RepeatUntilFinished );
   htmlItem->setUseSmartBreaks( true );

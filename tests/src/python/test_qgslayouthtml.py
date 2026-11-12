@@ -92,7 +92,7 @@ class TestQgsLayoutHtml(QgisTestCase):
         """Test rendering to multiframes with smart breaks."""
         layout_html = QgsLayoutItemHtml(self.layout)
         html_frame = QgsLayoutFrame(self.layout, layout_html)
-        html_frame.attemptSetSceneRect(QRectF(10, 10, 100, 52))
+        html_frame.attemptSetSceneRect(QRectF(10, 10, 100, 45))
         layout_html.addFrame(html_frame)
         layout_html.setResizeMode(QgsLayoutMultiFrame.ResizeMode.RepeatUntilFinished)
         layout_html.setUseSmartBreaks(True)
