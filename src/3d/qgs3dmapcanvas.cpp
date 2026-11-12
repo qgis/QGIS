@@ -306,26 +306,49 @@ void Qgs3DMapCanvas::setMapTool( Qgs3DMapTool *tool )
 
 bool Qgs3DMapCanvas::eventFilter( QObject *watched, QEvent *event )
 {
-  // mouse events are only received by Qgs3DMapCanvas
-  switch ( event->type() )
+  if ( watched == this )
   {
-    case QEvent::MouseButtonPress:
-    case QEvent::MouseButtonRelease:
-    case QEvent::MouseMove:
-    case QEvent::Wheel:
-      if ( watched != this )
-        return false;
-      break;
-    default:
-      break;
+    return canvasEventFilter( event );
   }
+  else
+  {
+    return containerEventFilter( event );
+  }
+}
 
+bool Qgs3DMapCanvas::canvasEventFilter( QEvent *event )
+{
   if ( mScene && mScene->get3DAxis() && mScene->get3DAxis()->handleEvent( event ) )
   {
     event->accept();
     return true;
   }
 
+  if ( !mMapTool )
+    return false;
+
+  switch ( event->type() )
+  {
+    case QEvent::MouseButtonPress:
+      mMapTool->mousePressEvent( static_cast<QMouseEvent *>( event ) );
+      break;
+    case QEvent::MouseButtonRelease:
+      mMapTool->mouseReleaseEvent( static_cast<QMouseEvent *>( event ) );
+      break;
+    case QEvent::MouseMove:
+      mMapTool->mouseMoveEvent( static_cast<QMouseEvent *>( event ) );
+      break;
+    case QEvent::Wheel:
+      mMapTool->mouseWheelEvent( static_cast<QWheelEvent *>( event ) );
+      break;
+    default:
+      break;
+  }
+  return false;
+}
+
+bool Qgs3DMapCanvas::containerEventFilter( QEvent *event )
+{
   // ShortcutOverride is sent if the pressed key is "claimed" by a shortcut,
   // but we are given a chance to handle it anyway. We need to basically treat
   // it as if it were a KeyPress.
@@ -346,23 +369,11 @@ bool Qgs3DMapCanvas::eventFilter( QObject *watched, QEvent *event )
 
   switch ( event->type() )
   {
-    case QEvent::MouseButtonPress:
-      mMapTool->mousePressEvent( static_cast<QMouseEvent *>( event ) );
-      break;
-    case QEvent::MouseButtonRelease:
-      mMapTool->mouseReleaseEvent( static_cast<QMouseEvent *>( event ) );
-      break;
-    case QEvent::MouseMove:
-      mMapTool->mouseMoveEvent( static_cast<QMouseEvent *>( event ) );
-      break;
     case QEvent::KeyPress:
       mMapTool->keyPressEvent( static_cast<QKeyEvent *>( event ) );
       break;
     case QEvent::KeyRelease:
       mMapTool->keyReleaseEvent( static_cast<QKeyEvent *>( event ) );
-      break;
-    case QEvent::Wheel:
-      mMapTool->mouseWheelEvent( static_cast<QWheelEvent *>( event ) );
       break;
     default:
       break;
