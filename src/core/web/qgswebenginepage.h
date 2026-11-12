@@ -36,6 +36,33 @@ class QgsFeedback;
 
 /**
  * \ingroup core
+ * \brief Encapsulates settings for rendering HTML content.
+ *
+ * \since QGIS 4.4
+ */
+class CORE_EXPORT QgsHtmlRenderSettings
+{
+  public:
+    /**
+   * Returns the base URL used when resolving relative links.
+   *
+   * \see setBaseUrl()
+   */
+    QUrl baseUrl() const { return mBaseUrl; }
+
+    /**
+     * Sets the base \a url to use when resolving relative links.
+     *
+     * \see baseUrl()
+     */
+    void setBaseUrl( const QUrl &url ) { mBaseUrl = url; }
+
+  private:
+    QUrl mBaseUrl;
+};
+
+/**
+ * \ingroup core
  * \brief A wrapper around the QWebEnginePage class, adding extra functionality.
  *
  * \warning This class is only available on QGIS builds with WebEngine support enabled.
@@ -132,14 +159,16 @@ class CORE_EXPORT QgsWebEnginePage : public QObject
      * \param pdfFileName destination filename for PDF
      * \param errorMessage will be set to a descriptive error message if the printing fails
      * \param width page width
-     * \param baseUrl base URL for relative references in HTML
+     * \param settings optional HTML render settings
      * \param feedback optional feedback for early cancellation
      *
      * \returns TRUE if the printing was successful
      *
      * \since QGIS 4.4
      */
-    static bool printToPdfBlocking( const QString &html, const QString &pdfFileName, QString &errorMessage SIP_OUT, int width, const QUrl &baseUrl = QUrl(), QgsFeedback *feedback = nullptr );
+    static bool printToPdfBlocking(
+      const QString &html, const QString &pdfFileName, QString &errorMessage SIP_OUT, int width, const QgsHtmlRenderSettings &settings = QgsHtmlRenderSettings(), QgsFeedback *feedback = nullptr
+    );
 
     /**
      * Renders HTML content to a PDF file asynchronously.
@@ -151,13 +180,16 @@ class CORE_EXPORT QgsWebEnginePage : public QObject
      * \param pdfFileName destination filename for PDF
      * \param errorMessage will be set to a descriptive error message if the printing fails
      * \param width page width
+     * \param settings optional HTML render settings
      * \param feedback optional feedback for early cancellation
      *
      * \returns TRUE if the printing was successful
      *
      * \since QGIS 4.4
      */
-    static bool printToPdfBlocking( const QUrl &url, const QString &pdfFileName, QString &errorMessage SIP_OUT, int width, QgsFeedback *feedback = nullptr );
+    static bool printToPdfBlocking(
+      const QUrl &url, const QString &pdfFileName, QString &errorMessage SIP_OUT, int width, const QgsHtmlRenderSettings &settings = QgsHtmlRenderSettings(), QgsFeedback *feedback = nullptr
+    );
 
     /**
      * Renders HTML content to a \a painter asynchronously. Content will be rendered as vector objects.
@@ -170,7 +202,7 @@ class CORE_EXPORT QgsWebEnginePage : public QObject
      * \param painterRect specifies the target rectangle for the page in \a painter coordinates
      * \param errorMessage will be set to a descriptive error message if the printing fails
      * \param renderedSize will be set to the actual size of the rendered HTML
-     * \param baseUrl base URL for relative references in HTML
+     * \param settings optional HTML render settings
      * \param feedback optional feedback for early cancellation
      *
      * \warning This method requires a QGIS build with PDF4Qt library support.
@@ -182,7 +214,13 @@ class CORE_EXPORT QgsWebEnginePage : public QObject
      * \since QGIS 4.4
      */
     static bool renderBlocking(
-      const QString &html, QPainter *painter, const QRectF &painterRect, QString &errorMessage SIP_OUT, QSizeF &renderedSize SIP_OUT, const QUrl &baseUrl = QUrl(), QgsFeedback *feedback = nullptr
+      const QString &html,
+      QPainter *painter,
+      const QRectF &painterRect,
+      QString &errorMessage SIP_OUT,
+      QSizeF &renderedSize SIP_OUT,
+      const QgsHtmlRenderSettings &settings = QgsHtmlRenderSettings(),
+      QgsFeedback *feedback = nullptr
     ) SIP_THROW( QgsNotSupportedException );
 
     /**
@@ -196,6 +234,7 @@ class CORE_EXPORT QgsWebEnginePage : public QObject
      * \param painterRect specifies the target rectangle for the page in \a painter coordinates
      * \param errorMessage will be set to a descriptive error message if the printing fails
      * \param renderedSize will be set to the actual size of the rendered HTML
+     * \param settings optional HTML render settings
      * \param feedback optional feedback for early cancellation
      *
      * \warning This method requires a QGIS build with PDF4Qt library support.
@@ -206,9 +245,15 @@ class CORE_EXPORT QgsWebEnginePage : public QObject
      *
      * \since QGIS 4.4
      */
-    static bool renderBlocking( const QUrl &url, QPainter *painter, const QRectF &painterRect, QString &errorMessage SIP_OUT, QSizeF &renderedSize SIP_OUT, QgsFeedback *feedback = nullptr ) SIP_THROW(
-      QgsNotSupportedException
-    );
+    static bool renderBlocking(
+      const QUrl &url,
+      QPainter *painter,
+      const QRectF &painterRect,
+      QString &errorMessage SIP_OUT,
+      QSizeF &renderedSize SIP_OUT,
+      const QgsHtmlRenderSettings &settings = QgsHtmlRenderSettings(),
+      QgsFeedback *feedback = nullptr
+    ) SIP_THROW( QgsNotSupportedException );
 
   signals:
 
