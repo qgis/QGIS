@@ -4124,7 +4124,6 @@ QgsEsriArcadeConverter.errorMessage: src/core/providers/arcgis/qgsesriarcadeconv
 QgsEsriArcadeConverter.expression: src/core/providers/arcgis/qgsesriarcadeconverter.h#L70
 QgsEsriArcadeConverter.result: src/core/providers/arcgis/qgsesriarcadeconverter.h#L58
 QgsEsriArcadeConverter: src/core/providers/arcgis/qgsesriarcadeconverter.h#L31
-QgsEsriArcadeDictionaryElement.clone: src/core/providers/arcgis/qgsesriarcadescript.h#L1014
 QgsEsriArcadeDictionaryElement.dump: src/core/providers/arcgis/qgsesriarcadescript.h#L1019
 QgsEsriArcadeDictionaryElement.isAutoKey: src/core/providers/arcgis/qgsesriarcadescript.h#L1007
 QgsEsriArcadeDictionaryElement.key: src/core/providers/arcgis/qgsesriarcadescript.h#L997
@@ -14846,8 +14845,6 @@ QgsProjectStyleSettings.addStyleDatabasePath: src/core/project/qgsprojectstylese
 QgsProjectStyleSettings.colorModel: src/core/project/qgsprojectstylesettings.h#L178
 QgsProjectStyleSettings.colorSpace: src/core/project/qgsprojectstylesettings.h#L209
 QgsProjectStyleSettings.combinedStyleModel: src/core/project/qgsprojectstylesettings.h#L285
-QgsProjectStyleSettings.defaultColorRamp: src/core/project/qgsprojectstylesettings.h#L81
-QgsProjectStyleSettings.defaultSymbol: src/core/project/qgsprojectstylesettings.h#L66
 QgsProjectStyleSettings.defaultSymbolOpacity: src/core/project/qgsprojectstylesettings.h#L115
 QgsProjectStyleSettings.defaultTextFormat: src/core/project/qgsprojectstylesettings.h#L94
 QgsProjectStyleSettings.projectStyle: src/core/project/qgsprojectstylesettings.h#L146
