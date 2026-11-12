@@ -23,6 +23,7 @@
 #include "qgsmessagelog.h"
 #include "qgsnetworkaccessmanager.h"
 #include "qgsnetworkcontentfetchertask.h"
+#include "qgspainting.h"
 #include "qgssymbollayerutils.h"
 
 #include <QApplication>
@@ -225,13 +226,7 @@ QPicture QgsSvgCache::svgAsPicture(
     trimToMaximumSize();
   }
 
-  QPicture p;
-  // For some reason p.detach() doesn't seem to always work as intended, at
-  // least with QT 5.5 on Ubuntu 16.04
-  // Serialization/deserialization is a safe way to be ensured we don't
-  // share a copy.
-  p.setData( currentEntry->picture->data(), currentEntry->picture->size() );
-  return p;
+  return QgsPainting::deepCopyQPicture( *( currentEntry->picture.get() ) );
 }
 
 QByteArray QgsSvgCache::svgContent(

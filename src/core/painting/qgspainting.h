@@ -145,6 +145,16 @@ class CORE_EXPORT QgsPainting
      * \since QGIS 4.4
      */
     static void rotatePainterAroundPoint( QPainter *painter, const QPointF &point, double angle );
+
+    /**
+     * Deep copies a QPicture, making a copy which is safe to use in a different thread.
+     *
+     * Unfortunately just detaching the QPicture copy alone is not sufficient to make a thread-safe
+     * copy, this method must be used instead.
+     *
+     * \since QGIS 4.4
+     */
+    static QPicture deepCopyQPicture( const QPicture &picture );
 };
 
 #ifndef SIP_RUN

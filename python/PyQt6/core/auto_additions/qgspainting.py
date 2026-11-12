@@ -10,6 +10,7 @@ try:
     QgsPainting.applyScaleFixForQPictureDpi = staticmethod(QgsPainting.applyScaleFixForQPictureDpi)
     QgsPainting.drawPicture = staticmethod(QgsPainting.drawPicture)
     QgsPainting.rotatePainterAroundPoint = staticmethod(QgsPainting.rotatePainterAroundPoint)
+    QgsPainting.deepCopyQPicture = staticmethod(QgsPainting.deepCopyQPicture)
     QgsPainting.__group__ = ['painting']
 except (NameError, AttributeError):
     pass
