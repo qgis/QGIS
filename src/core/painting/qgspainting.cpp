@@ -277,5 +277,6 @@ QPicture QgsPainting::deepCopyQPicture( const QPicture &picture )
   // Serialization/deserialization is a safe way to be ensured we don't
   // share a copy.
   p.setData( picture.data(), picture.size() );
+  p.setBoundingRect( picture.boundingRect() );
   return p;
 }
