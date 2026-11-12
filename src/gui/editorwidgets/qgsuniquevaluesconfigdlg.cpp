@@ -15,6 +15,8 @@
 
 #include "qgsuniquevaluesconfigdlg.h"
 
+#include "qgsproject.h"
+
 #include <QString>
 
 #include "moc_qgsuniquevaluesconfigdlg.cpp"
@@ -26,6 +28,7 @@ QgsUniqueValuesConfigDlg::QgsUniqueValuesConfigDlg( QgsVectorLayer *vl, int fiel
 {
   setupUi( this );
   connect( editableUniqueValues, &QAbstractButton::toggled, this, &QgsEditorConfigWidget::changed );
+  connect( allowNullCheckBox, &QAbstractButton::toggled, this, &QgsEditorConfigWidget::changed );
 }
 
 
@@ -34,6 +37,7 @@ QVariantMap QgsUniqueValuesConfigDlg::config()
   QVariantMap cfg;
 
   cfg.insert( u"Editable"_s, editableUniqueValues->isChecked() );
+  cfg.insert( u"AllowNull"_s, allowNullCheckBox->isChecked() );
 
   return cfg;
 }
@@ -41,4 +45,13 @@ QVariantMap QgsUniqueValuesConfigDlg::config()
 void QgsUniqueValuesConfigDlg::setConfig( const QVariantMap &config )
 {
   editableUniqueValues->setChecked( config.value( u"Editable"_s, false ).toBool() );
+
+  QSet<QVariant> uniqueValues = layer()->uniqueValues( field() );
+  if ( config.value( u"AllowNull"_s ).isNull() )
+  {
+    bool uniqueValuesContainNull = uniqueValues.contains( QVariant( QgsVariantUtils::createNullVariant( layer()->fields().at( field() ).type() ) ) );
+    allowNullCheckBox->setChecked( uniqueValuesContainNull );
+  }
+  else
+    allowNullCheckBox->setChecked( config.value( u"AllowNull"_s ).toBool() );
 }
