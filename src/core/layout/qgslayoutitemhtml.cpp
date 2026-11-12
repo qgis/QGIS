@@ -244,6 +244,7 @@ void QgsLayoutItemHtml::loadHtml( const bool useCache, const QgsExpressionContex
 
 void QgsLayoutItemHtml::startFetchHtml( const QUrl &url )
 {
+  emit backgroundTaskCountChanged( 1 );
   mFetching = true;
   mFetcher->fetchContent( url );
 }
@@ -262,6 +263,7 @@ void QgsLayoutItemHtml::cancelPendingFetch()
   mFetcher->deleteLater();
   mFetcher = new QgsNetworkContentFetcher( this );
   connect( mFetcher, &QgsNetworkContentFetcher::finished, this, &QgsLayoutItemHtml::onHtmlFetched );
+  emit backgroundTaskCountChanged( 0 );
 }
 
 void QgsLayoutItemHtml::waitForPendingFetch()
@@ -282,6 +284,7 @@ void QgsLayoutItemHtml::onHtmlFetched()
   if ( !mFetching )
     return;
 
+  emit backgroundTaskCountChanged( 0 );
   mFetching = false;
   mFetchedHtml = mFetcher->contentAsString();
   mActualFetchedUrl = mFetcher->reply() ? mFetcher->reply()->url().toString() : mPendingFetchUrl;
@@ -314,6 +317,7 @@ void QgsLayoutItemHtml::finalizeLoadedHtml( const QString &rawHtml, const QUrl &
     mBackgroundUpdateTimer->stop();
     cancelRunningRenderJob( false );
     renderHtmlSynchronously();
+    emit backgroundTaskCountChanged( 0 );
   }
   else
   {
@@ -342,9 +346,11 @@ void QgsLayoutItemHtml::recreateCachedImageInBackground()
     emit contentsChanged();
     updateFrames();
     emit previewRefreshed();
+    emit backgroundTaskCountChanged( 0 );
     return;
   }
 
+  emit backgroundTaskCountChanged( 1 );
   mCacheInvalidated = false;
   mRenderJob = std::make_unique< QgsLayoutItemHtmlRenderJob >( mEvaluatedHtml, mResolvedBaseUrl, frameWidthLayoutUnits, layoutUnitsPerCssPixel() );
   connect( mRenderJob.get(), &QgsLayoutItemHtmlRenderJob::finished, this, &QgsLayoutItemHtml::htmlRenderFinished );
@@ -368,6 +374,8 @@ void QgsLayoutItemHtml::htmlRenderFinished()
   mRenderJob.reset();
 
   mPictureRasterizer->setPicture( mRenderedPicture );
+
+  emit backgroundTaskCountChanged( 0 );
 
   recalculateFrameSizes();
   emit contentsChanged();
