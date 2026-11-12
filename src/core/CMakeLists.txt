@@ -599,6 +599,7 @@ set(QGIS_CORE_SRCS
   qgsoptionalexpression.cpp
   qgsowsconnection.cpp
   qgspathresolver.cpp
+  qgspicturerasterizer.cpp
   qgspluginlayer.cpp
   qgspluginlayerregistry.cpp
   qgspointxy.cpp
@@ -1382,6 +1383,7 @@ set(QGIS_CORE_HDRS
   qgsreadwritelocker.h
   qgsrecentstylehandler.h
   qgsrelation.h
+  qgspicturerasterizer.h
   qgspolymorphicrelation.h
   qgsrelationcontext.h
   qgsremappingproxyfeaturesink.h
