@@ -293,7 +293,7 @@ void QgsLayoutItemHtml::onHtmlFetched()
   mPendingFetchUrl.clear();
 
   const std::optional< QgsExpressionContext > savedContext = std::move( mPendingExpressionContext );
-  mPendingExpressionContext.reset();
+  mPendingExpressionContext = {};
 
   const QgsExpressionContext scopedContext = createExpressionContext();
   const QgsExpressionContext *evalContext = savedContext.has_value() ? &*savedContext : &scopedContext;
