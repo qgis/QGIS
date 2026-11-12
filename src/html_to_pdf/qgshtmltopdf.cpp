@@ -36,6 +36,7 @@ using namespace Qt::StringLiterals;
 #include <QWebEngineSettings>
 #include <QJsonArray>
 #include <QJsonDocument>
+#include <QJsonObject>
 #include <QFileInfo>
 #include <QDir>
 
@@ -162,6 +163,15 @@ void QgsHtmlToPdf::onLoadFinished( bool ok )
         void document.body.offsetHeight;
       }
 
+      const feature = %3;
+      if (feature && typeof setFeature === "function") {
+        try {
+          setFeature(feature);
+        } catch (err) {
+          console.error("Error in setFeature:", err);
+        }
+      }
+
       // try to work out actual document height at this width... not very reliable ;)
       let maxBottom = 0;
       let maxRight = 0;
@@ -198,8 +208,8 @@ void QgsHtmlToPdf::onLoadFinished( bool ok )
     })()
   )js"_s )
                                .arg( mSettings.width )
-                               .arg( QString::fromUtf8( QJsonDocument( QJsonArray { mSettings.userStylesheet } ).toJson( QJsonDocument::Compact ) ) );
-  ;
+                               .arg( QString::fromUtf8( QJsonDocument( QJsonArray { mSettings.userStylesheet } ).toJson( QJsonDocument::Compact ) ) )
+                               .arg( mSettings.feature.isEmpty() ? u"null"_s : QString::fromUtf8( QJsonDocument( mSettings.feature ).toJson( QJsonDocument::Compact ) ) );
 
   mPage.runJavaScript( jsTemplate, [this]( QVariant res ) { onLoadJsFinished( res ); } );
 }

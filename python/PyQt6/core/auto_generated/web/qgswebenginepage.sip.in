@@ -59,6 +59,26 @@ These overriding the styles specified within the HTML source.
 .. seealso:: :py:func:`setUserStylesheet`
 %End
 
+    void setFeatureJson( const QVariantMap &json );
+%Docstring
+Sets the feature ``json``.
+
+When the HTML has been loaded, an attempt will be made to call a
+"setFeature" function, passing this custom json object.
+
+.. seealso:: :py:func:`featureJson`
+%End
+
+    QVariantMap featureJson() const;
+%Docstring
+Returns the feature json.
+
+When the HTML has been loaded, an attempt will be made to call a
+"setFeature" function, passing this custom json object.
+
+.. seealso:: :py:func:`setFeatureJson`
+%End
+
 };
 
 class QgsWebEnginePage : QObject

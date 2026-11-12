@@ -171,6 +171,57 @@ class TestQgsHtmlToPdf(QgisTestCase):
                 )
             )
 
+    def test_feature_json(self):
+        with tempfile.TemporaryDirectory() as tmp_dir:
+            html_path = tmp_dir + "/test.html"
+            with open(html_path, "w", encoding="utf8") as f_out:
+                f_out.write("""
+                <html>
+                <head>
+                <script>
+                function setFeature(feature) {
+                    const box = document.getElementById('box');
+                    box.style.backgroundColor = feature.properties.bg;
+                    box.style.borderColor = feature.properties.border;
+                    box.style.height = feature.properties.height + 'px';
+                }
+                </script>
+                </head>
+                <body>
+                <div id="box" style="background-color: red; width: 100%; border: 5px solid black; height: 20px; box-sizing: border-box;">
+                 </div>
+                """)
+
+            pdf_path = tmp_dir + "/test.pdf"
+            png_path = tmp_dir + "/test.png"
+            rc, output, err = self.run_html_to_pdf(
+                [html_path, pdf_path, "--width=400"],
+                {
+                    "feature": {
+                        "type": "Feature",
+                        "id": 1,
+                        "geometry": None,
+                        "properties": {
+                            "bg": "green",
+                            "border": "yellow",
+                            "height": 50,
+                        },
+                    }
+                },
+            )
+            self.assertEqual(rc, 0)
+
+            self.pdf_to_png(pdf_path, png_path, dpi=96, page=1)
+
+            image = QImage(png_path)
+            self.assertTrue(
+                self.image_check(
+                    "feature_json",
+                    "feature_json",
+                    image,
+                )
+            )
+
 
 if __name__ == "__main__":
     # look for qgis bin path

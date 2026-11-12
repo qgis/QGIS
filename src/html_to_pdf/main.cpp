@@ -149,6 +149,16 @@ int main( int argc, char *argv[] )
     settings.userAgent = settingsObj.value( u"userAgent"_s ).toString();
     settings.baseUrl = settingsObj.value( u"baseUrl"_s ).toString();
     settings.userStylesheet = settingsObj.value( u"userStylesheet"_s ).toString();
+
+    const QJsonValue featureVal = settingsObj.value( u"feature"_s );
+    if ( featureVal.isObject() )
+    {
+      settings.feature = featureVal.toObject();
+    }
+    else if ( featureVal.isString() )
+    {
+      settings.feature = QJsonDocument::fromJson( featureVal.toString().toUtf8() ).object();
+    }
   }
 
   QgsHtmlToPdf converter;

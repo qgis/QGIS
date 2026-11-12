@@ -75,9 +75,30 @@ class CORE_EXPORT QgsHtmlRenderSettings
      */
     QString userStylesheet() const { return mUserStylesheet; }
 
+    /**
+     * Sets the feature \a json.
+     *
+     * When the HTML has been loaded, an attempt will be made to call a "setFeature" function,
+     * passing this custom json object.
+     *
+     * \see featureJson()
+     */
+    void setFeatureJson( const QVariantMap &json ) { mFeatureJson = json; }
+
+    /**
+     * Returns the feature json.
+     *
+     * When the HTML has been loaded, an attempt will be made to call a "setFeature" function,
+     * passing this custom json object.
+     *
+     * \see setFeatureJson()
+     */
+    QVariantMap featureJson() const { return mFeatureJson; }
+
   private:
     QUrl mBaseUrl;
     QString mUserStylesheet;
+    QVariantMap mFeatureJson;
 };
 
 /**
