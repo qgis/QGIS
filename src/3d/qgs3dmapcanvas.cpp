@@ -73,6 +73,9 @@ Qgs3DMapCanvas::Qgs3DMapCanvas()
   } );
 
   setCursor( Qt::OpenHandCursor );
+
+  // This is needed to handle the mouse events
+  installEventFilter( this );
 }
 
 Qgs3DMapCanvas::~Qgs3DMapCanvas()
@@ -301,8 +304,22 @@ void Qgs3DMapCanvas::setMapTool( Qgs3DMapTool *tool )
   }
 }
 
-bool Qgs3DMapCanvas::eventFilter( QObject *, QEvent *event )
+bool Qgs3DMapCanvas::eventFilter( QObject *watched, QEvent *event )
 {
+  // mouse events are only received by Qgs3DMapCanvas
+  switch ( event->type() )
+  {
+    case QEvent::MouseButtonPress:
+    case QEvent::MouseButtonRelease:
+    case QEvent::MouseMove:
+    case QEvent::Wheel:
+      if ( watched != this )
+        return false;
+      break;
+    default:
+      break;
+  }
+
   if ( mScene && mScene->get3DAxis() && mScene->get3DAxis()->handleEvent( event ) )
   {
     event->accept();
