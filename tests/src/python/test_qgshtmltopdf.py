@@ -100,7 +100,7 @@ class TestQgsHtmlToPdf(QgisTestCase):
             with open(html_path, "w", encoding="utf8") as f_out:
                 f_out.write("""
                 <html>
-                <body>
+                <body style="margin: 0px; padding: 0px">
                 <div style="background-color: yellow; width: 100%; border: 3px solid blue; height: 30px">
                 </div>
                 """)
@@ -145,7 +145,7 @@ class TestQgsHtmlToPdf(QgisTestCase):
             with open(html_path, "w", encoding="utf8") as f_out:
                 f_out.write("""
                 <html>
-                <body>
+                <body style="margin: 0px; padding: 0px">
                 <div style="background-color: yellow; width: 100%; border: 3px solid blue; height: 30px">\
                 </div>
                 """)
@@ -187,7 +187,7 @@ class TestQgsHtmlToPdf(QgisTestCase):
                 }
                 </script>
                 </head>
-                <body>
+                <body style="margin: 0px; padding: 0px">
                 <div id="box" style="background-color: red; width: 100%; border: 5px solid black; height: 20px; box-sizing: border-box;">
                  </div>
                 """)
