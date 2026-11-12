@@ -36,7 +36,7 @@ void QgsTileCache::insertTile( const QUrl &url, const QImage &image )
   // in the image as multiple of a "standard" tile of 256x256 to calculate a cost for the cache.
   // This way, the cache will be able to store more smaller tiles and less larger tiles
   // using approximately the same amount of memory.
-  sTileCache.insert( url, new QImage( image ), std::min( static_cast<qsizetype>( 1 ), static_cast<qsizetype>( image.width() * image.height() / ( 256 * 256 ) ) ) );
+  sTileCache.insert( url, new QImage( image ), std::max( static_cast<qsizetype>( 1 ), static_cast<qsizetype>( image.width() * image.height() / ( 256 * 256 ) ) ) );
 }
 
 bool QgsTileCache::tile( const QUrl &url, QImage &image )
