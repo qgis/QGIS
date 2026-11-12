@@ -62,7 +62,10 @@ class TestQgsLayoutLabel : public QgsTest
     void renderAsHtml();
     void renderAsHtmlLineHeight();
     void labelRotation();
-
+#ifdef HAVE_WEBENGINE
+    void convertToHtml();
+    void renderAsHtmlRelative();
+#endif
   private:
     QgsVectorLayer *mVectorLayer = nullptr;
 };
@@ -363,7 +366,51 @@ void TestQgsLayoutLabel::labelRotation()
 
   mControlPathPrefix = u"composer_items"_s;
   QVERIFY( QGSLAYOUTCHECK( u"layoutrotation_label"_s, &l ) );
+  mControlPathPrefix = u"composer_label"_s;
 }
+
+#ifdef HAVE_WEBENGINE
+void TestQgsLayoutLabel::convertToHtml()
+{
+  QgsProject project;
+  project.read( QStringLiteral( TEST_DATA_DIR ) + "/layouts/sample_label_html.qgs" );
+
+  QgsLayout *layout = project.layoutManager()->printLayouts().at( 0 );
+  QVERIFY( layout );
+
+  QgsLayoutMultiFrame *html = layout->multiFrames().at( 0 );
+  QVERIFY( html );
+
+  QVERIFY( QGSLAYOUTCHECK( u"composerlabel_converttohtml"_s, layout, 0, 10 ) );
+}
+
+void TestQgsLayoutLabel::renderAsHtmlRelative()
+{
+  QgsLayout l( QgsProject::instance() );
+  l.initializeDefaults();
+  l.renderContext().mIsPreviewRender = false;
+  QgsLayoutItemLabel *label = new QgsLayoutItemLabel( &l );
+  label->setMargin( 1 );
+  l.addLayoutItem( label );
+
+  QgsProject::instance()->setFileName( QStringLiteral( TEST_DATA_DIR ) + QDir::separator() + "test.qgs" );
+  label->setText( u"test <img src=\"small_sample_image.png\" />"_s );
+
+  QgsTextFormat format;
+  format.setFont( QgsFontUtils::getStandardTestFont( u"Bold"_s ) );
+  format.setSize( 48 );
+  format.setSizeUnit( Qgis::RenderUnit::Points );
+  format.setColor( QColor( 200, 40, 60 ) );
+  label->setTextFormat( format );
+
+  label->setPos( 70, 70 );
+  label->adjustSizeToText();
+  label->setMode( QgsLayoutItemLabel::ModeHtml );
+  label->update();
+
+  QVERIFY( QGSLAYOUTCHECK( u"composerlabel_renderhtmlrelative"_s, &l ) );
+}
+#endif
 
 QGSTEST_MAIN( TestQgsLayoutLabel )
 #include "testqgslayoutlabel.moc"
