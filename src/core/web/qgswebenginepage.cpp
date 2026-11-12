@@ -418,7 +418,7 @@ bool QgsWebEnginePage::renderBlocking(
   ( void ) painter;
   ( void ) painterRect;
   ( void ) errorMessage;
-  ( void ) baseUrl;
+  ( void ) settings;
   ( void ) feedback;
   ( void ) renderedSize;
   throw QgsNotSupportedException( QObject::tr( "Rendering HTML requires a QGIS build with PDF4Qt library support" ) );
