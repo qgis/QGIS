@@ -1335,7 +1335,7 @@ QOCISpatialCols::QOCISpatialCols( int size, QOCISpatialResultPrivate *dp )
     fieldInf[idx].oraTypeName = ofi.oraTypeName;
     rec.append( qFromOraInf( ofi ) );
 
-    qDebug() << "ofi.type:" << QVariant::typeToName( ofi.type );
+    qDebug() << "ofi.type:" << QMetaType( ofi.type ).name();
     switch ( ofi.type )
     {
       case QMetaType::Type::QDateTime:
@@ -3120,7 +3120,7 @@ void QOCISpatialCols::getValues( QVector<QVariant> &v, int index )
         }
         break;
       default:
-        qWarning( "QOCISpatialCols::value: unknown data type %s", QVariant::typeToName( fld.typ ) );
+        qWarning( "QOCISpatialCols::value: unknown data type %s", QMetaType( fld.typ ).name() );
         break;
     }
   }

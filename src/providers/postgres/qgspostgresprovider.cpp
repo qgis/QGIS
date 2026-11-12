@@ -4772,7 +4772,7 @@ Qgis::VectorExportResult QgsPostgresProvider::createEmptyLayer(
       QgsDebugMsgLevel(
         u"creating field #%1 -> #%2 name %3 type %4 typename %5 width %6 precision %7"_s.arg( fldIdx )
           .arg( offset )
-          .arg( fld.name(), QVariant::typeToName( fld.type() ), fld.typeName() )
+          .arg( fld.name(), QMetaType( fld.type() ).name(), fld.typeName() )
           .arg( fld.length() )
           .arg( fld.precision() ),
         2
