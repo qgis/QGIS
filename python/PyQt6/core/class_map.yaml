@@ -12906,8 +12906,6 @@ QgsProcessingAlgorithm.parameterAsPointCloudLayer: src/core/processing/qgsproces
 QgsProcessingAlgorithm.parameterAsPointCrs: src/core/processing/qgsprocessingalgorithm.h#L984
 QgsProcessingAlgorithm.parameterAsRasterLayer: src/core/processing/qgsprocessingalgorithm.h#L881
 QgsProcessingAlgorithm.parameterAsSchema: src/core/processing/qgsprocessingalgorithm.h#L1086
-QgsProcessingAlgorithm.parameterAsSink: src/core/processing/qgsprocessingalgorithm.h#L802
-QgsProcessingAlgorithm.parameterAsSource: src/core/processing/qgsprocessingalgorithm.h#L813
 QgsProcessingAlgorithm.parameterAsString: src/core/processing/qgsprocessingalgorithm.h#L726
 QgsProcessingAlgorithm.parameterAsStrings: src/core/processing/qgsprocessingalgorithm.h#L1045
 QgsProcessingAlgorithm.parameterAsVectorLayer: src/core/processing/qgsprocessingalgorithm.h#L930
@@ -13030,7 +13028,6 @@ QgsProcessingFeatureBasedAlgorithm.sourceFlags: src/core/processing/qgsprocessin
 QgsProcessingFeatureBasedAlgorithm.supportInPlaceEdit: src/core/processing/qgsprocessingalgorithm.h#L1291
 QgsProcessingFeatureBasedAlgorithm: src/core/processing/qgsprocessingalgorithm.h#L1250
 QgsProcessingFeatureSource.allFeatureIds: src/core/processing/qgsprocessingutils.h#L811
-QgsProcessingFeatureSource.createExpressionContextScope: src/core/processing/qgsprocessingutils.h#L817
 QgsProcessingFeatureSource.fields: src/core/processing/qgsprocessingutils.h#L803
 QgsProcessingFeatureSource.getFeatures: src/core/processing/qgsprocessingutils.h#L797
 QgsProcessingFeatureSource.getFeatures: src/core/processing/qgsprocessingutils.h#L801
@@ -13404,7 +13401,6 @@ QgsProcessingParameterAlignRasterLayers.variantMapAsItem: src/core/processing/qg
 QgsProcessingParameterAlignRasterLayers: src/core/processing/qgsprocessingparameteralignrasterlayers.h#L57
 QgsProcessingParameterAnnotationLayer.checkValueIsAcceptable: src/core/processing/qgsprocessingparameters.h#L4742
 QgsProcessingParameterAnnotationLayer.clone: src/core/processing/qgsprocessingparameters.h#L4740
-QgsProcessingParameterAnnotationLayer.fromScriptCode: src/core/processing/qgsprocessingparameters.h#L4750
 QgsProcessingParameterAnnotationLayer.type: src/core/processing/qgsprocessingparameters.h#L4741
 QgsProcessingParameterAnnotationLayer.typeName: src/core/processing/qgsprocessingparameters.h#L4739
 QgsProcessingParameterAnnotationLayer.valueAsJsonObject: src/core/processing/qgsprocessingparameters.h#L4745
@@ -13427,7 +13423,6 @@ QgsProcessingParameterArea.userFriendlyString: src/core/processing/qgsprocessing
 QgsProcessingParameterArea: src/core/processing/qgsprocessingparameters.h#L2621
 QgsProcessingParameterAuthConfig.asScriptCode: src/core/processing/qgsprocessingparameters.h#L3156
 QgsProcessingParameterAuthConfig.clone: src/core/processing/qgsprocessingparameters.h#L3153
-QgsProcessingParameterAuthConfig.fromScriptCode: src/core/processing/qgsprocessingparameters.h#L3161
 QgsProcessingParameterAuthConfig.type: src/core/processing/qgsprocessingparameters.h#L3154
 QgsProcessingParameterAuthConfig.typeName: src/core/processing/qgsprocessingparameters.h#L3152
 QgsProcessingParameterAuthConfig.valueAsPythonString: src/core/processing/qgsprocessingparameters.h#L3155
@@ -13438,7 +13433,6 @@ QgsProcessingParameterBand.asScriptCode: src/core/processing/qgsprocessingparame
 QgsProcessingParameterBand.checkValueIsAcceptable: src/core/processing/qgsprocessingparameters.h#L3997
 QgsProcessingParameterBand.clone: src/core/processing/qgsprocessingparameters.h#L3995
 QgsProcessingParameterBand.dependsOnOtherParameters: src/core/processing/qgsprocessingparameters.h#L4000
-QgsProcessingParameterBand.fromScriptCode: src/core/processing/qgsprocessingparameters.h#L4021
 QgsProcessingParameterBand.fromVariantMap: src/core/processing/qgsprocessingparameters.h#L4016
 QgsProcessingParameterBand.parentLayerParameterName: src/core/processing/qgsprocessingparameters.h#L4007
 QgsProcessingParameterBand.setAllowMultiple: src/core/processing/qgsprocessingparameters.h#L4035
@@ -13450,7 +13444,6 @@ QgsProcessingParameterBand.valueAsPythonString: src/core/processing/qgsprocessin
 QgsProcessingParameterBand: src/core/processing/qgsprocessingparameters.h#L3981
 QgsProcessingParameterBoolean.asScriptCode: src/core/processing/qgsprocessingparameters.h#L1979
 QgsProcessingParameterBoolean.clone: src/core/processing/qgsprocessingparameters.h#L1976
-QgsProcessingParameterBoolean.fromScriptCode: src/core/processing/qgsprocessingparameters.h#L1984
 QgsProcessingParameterBoolean.type: src/core/processing/qgsprocessingparameters.h#L1977
 QgsProcessingParameterBoolean.typeName: src/core/processing/qgsprocessingparameters.h#L1975
 QgsProcessingParameterBoolean.valueAsPythonString: src/core/processing/qgsprocessingparameters.h#L1978
@@ -13459,7 +13452,6 @@ QgsProcessingParameterColor.asPythonString: src/core/processing/qgsprocessingpar
 QgsProcessingParameterColor.asScriptCode: src/core/processing/qgsprocessingparameters.h#L4178
 QgsProcessingParameterColor.checkValueIsAcceptable: src/core/processing/qgsprocessingparameters.h#L4180
 QgsProcessingParameterColor.clone: src/core/processing/qgsprocessingparameters.h#L4175
-QgsProcessingParameterColor.fromScriptCode: src/core/processing/qgsprocessingparameters.h#L4204
 QgsProcessingParameterColor.fromVariantMap: src/core/processing/qgsprocessingparameters.h#L4182
 QgsProcessingParameterColor.opacityEnabled: src/core/processing/qgsprocessingparameters.h#L4190
 QgsProcessingParameterColor.setOpacityEnabled: src/core/processing/qgsprocessingparameters.h#L4199
@@ -13474,7 +13466,6 @@ QgsProcessingParameterCoordinateOperation.clone: src/core/processing/qgsprocessi
 QgsProcessingParameterCoordinateOperation.dependsOnOtherParameters: src/core/processing/qgsprocessingparameters.h#L4248
 QgsProcessingParameterCoordinateOperation.destinationCrs: src/core/processing/qgsprocessingparameters.h#L4305
 QgsProcessingParameterCoordinateOperation.destinationCrsParameterName: src/core/processing/qgsprocessingparameters.h#L4277
-QgsProcessingParameterCoordinateOperation.fromScriptCode: src/core/processing/qgsprocessingparameters.h#L4256
 QgsProcessingParameterCoordinateOperation.fromVariantMap: src/core/processing/qgsprocessingparameters.h#L4251
 QgsProcessingParameterCoordinateOperation.setDestinationCrs: src/core/processing/qgsprocessingparameters.h#L4312
 QgsProcessingParameterCoordinateOperation.setDestinationCrsParameterName: src/core/processing/qgsprocessingparameters.h#L4284
@@ -13489,7 +13480,6 @@ QgsProcessingParameterCoordinateOperation.valueAsPythonString: src/core/processi
 QgsProcessingParameterCoordinateOperation: src/core/processing/qgsprocessingparameters.h#L4222
 QgsProcessingParameterCrs.checkValueIsAcceptable: src/core/processing/qgsprocessingparameters.h#L2008
 QgsProcessingParameterCrs.clone: src/core/processing/qgsprocessingparameters.h#L2006
-QgsProcessingParameterCrs.fromScriptCode: src/core/processing/qgsprocessingparameters.h#L2016
 QgsProcessingParameterCrs.type: src/core/processing/qgsprocessingparameters.h#L2007
 QgsProcessingParameterCrs.typeName: src/core/processing/qgsprocessingparameters.h#L2005
 QgsProcessingParameterCrs.userFriendlyString: src/core/processing/qgsprocessingparameters.h#L2000
@@ -13502,7 +13492,6 @@ QgsProcessingParameterDatabaseSchema.asScriptCode: src/core/processing/qgsproces
 QgsProcessingParameterDatabaseSchema.checkValueIsAcceptable: src/core/processing/qgsprocessingparameters.h#L4559
 QgsProcessingParameterDatabaseSchema.clone: src/core/processing/qgsprocessingparameters.h#L4557
 QgsProcessingParameterDatabaseSchema.dependsOnOtherParameters: src/core/processing/qgsprocessingparameters.h#L4565
-QgsProcessingParameterDatabaseSchema.fromScriptCode: src/core/processing/qgsprocessingparameters.h#L4582
 QgsProcessingParameterDatabaseSchema.fromVariantMap: src/core/processing/qgsprocessingparameters.h#L4564
 QgsProcessingParameterDatabaseSchema.parentConnectionParameterName: src/core/processing/qgsprocessingparameters.h#L4571
 QgsProcessingParameterDatabaseSchema.setParentConnectionParameterName: src/core/processing/qgsprocessingparameters.h#L4577
@@ -13517,7 +13506,6 @@ QgsProcessingParameterDatabaseTable.asScriptCode: src/core/processing/qgsprocess
 QgsProcessingParameterDatabaseTable.checkValueIsAcceptable: src/core/processing/qgsprocessingparameters.h#L4629
 QgsProcessingParameterDatabaseTable.clone: src/core/processing/qgsprocessingparameters.h#L4627
 QgsProcessingParameterDatabaseTable.dependsOnOtherParameters: src/core/processing/qgsprocessingparameters.h#L4635
-QgsProcessingParameterDatabaseTable.fromScriptCode: src/core/processing/qgsprocessingparameters.h#L4664
 QgsProcessingParameterDatabaseTable.fromVariantMap: src/core/processing/qgsprocessingparameters.h#L4634
 QgsProcessingParameterDatabaseTable.parentConnectionParameterName: src/core/processing/qgsprocessingparameters.h#L4641
 QgsProcessingParameterDatabaseTable.parentSchemaParameterName: src/core/processing/qgsprocessingparameters.h#L4653
@@ -13534,7 +13522,6 @@ QgsProcessingParameterDateTime.asPythonString: src/core/processing/qgsprocessing
 QgsProcessingParameterDateTime.checkValueIsAcceptable: src/core/processing/qgsprocessingparameters.h#L4395
 QgsProcessingParameterDateTime.clone: src/core/processing/qgsprocessingparameters.h#L4393
 QgsProcessingParameterDateTime.dataType: src/core/processing/qgsprocessingparameters.h#L4448
-QgsProcessingParameterDateTime.fromScriptCode: src/core/processing/qgsprocessingparameters.h#L4463
 QgsProcessingParameterDateTime.fromVariantMap: src/core/processing/qgsprocessingparameters.h#L4457
 QgsProcessingParameterDateTime.maximum: src/core/processing/qgsprocessingparameters.h#L4429
 QgsProcessingParameterDateTime.minimum: src/core/processing/qgsprocessingparameters.h#L4407
@@ -13632,7 +13619,6 @@ QgsProcessingParameterEnum.asPythonString: src/core/processing/qgsprocessingpara
 QgsProcessingParameterEnum.asScriptCode: src/core/processing/qgsprocessingparameters.h#L3003
 QgsProcessingParameterEnum.checkValueIsAcceptable: src/core/processing/qgsprocessingparameters.h#L3000
 QgsProcessingParameterEnum.clone: src/core/processing/qgsprocessingparameters.h#L2998
-QgsProcessingParameterEnum.fromScriptCode: src/core/processing/qgsprocessingparameters.h#L3052
 QgsProcessingParameterEnum.fromVariantMap: src/core/processing/qgsprocessingparameters.h#L3047
 QgsProcessingParameterEnum.options: src/core/processing/qgsprocessingparameters.h#L3010
 QgsProcessingParameterEnum.setAllowMultiple: src/core/processing/qgsprocessingparameters.h#L3028
@@ -13650,7 +13636,6 @@ QgsProcessingParameterExpression.asPythonString: src/core/processing/qgsprocessi
 QgsProcessingParameterExpression.clone: src/core/processing/qgsprocessingparameters.h#L3188
 QgsProcessingParameterExpression.dependsOnOtherParameters: src/core/processing/qgsprocessingparameters.h#L3191
 QgsProcessingParameterExpression.expressionType: src/core/processing/qgsprocessingparameters.h#L3212
-QgsProcessingParameterExpression.fromScriptCode: src/core/processing/qgsprocessingparameters.h#L3228
 QgsProcessingParameterExpression.fromVariantMap: src/core/processing/qgsprocessingparameters.h#L3223
 QgsProcessingParameterExpression.parentLayerParameterName: src/core/processing/qgsprocessingparameters.h#L3198
 QgsProcessingParameterExpression.setExpressionType: src/core/processing/qgsprocessingparameters.h#L3220
@@ -13662,7 +13647,6 @@ QgsProcessingParameterExpression.valueAsPythonString: src/core/processing/qgspro
 QgsProcessingParameterExpression: src/core/processing/qgsprocessingparameters.h#L3169
 QgsProcessingParameterExtent.checkValueIsAcceptable: src/core/processing/qgsprocessingparameters.h#L2038
 QgsProcessingParameterExtent.clone: src/core/processing/qgsprocessingparameters.h#L2036
-QgsProcessingParameterExtent.fromScriptCode: src/core/processing/qgsprocessingparameters.h#L2046
 QgsProcessingParameterExtent.type: src/core/processing/qgsprocessingparameters.h#L2037
 QgsProcessingParameterExtent.typeName: src/core/processing/qgsprocessingparameters.h#L2035
 QgsProcessingParameterExtent.valueAsJsonObject: src/core/processing/qgsprocessingparameters.h#L2041
@@ -13676,7 +13660,6 @@ QgsProcessingParameterFeatureSink.clone: src/core/processing/qgsprocessingparame
 QgsProcessingParameterFeatureSink.createFileFilter: src/core/processing/qgsprocessingparameters.h#L3675
 QgsProcessingParameterFeatureSink.dataType: src/core/processing/qgsprocessingparameters.h#L3688
 QgsProcessingParameterFeatureSink.defaultFileExtension: src/core/processing/qgsprocessingparameters.h#L3673
-QgsProcessingParameterFeatureSink.fromScriptCode: src/core/processing/qgsprocessingparameters.h#L3729
 QgsProcessingParameterFeatureSink.fromVariantMap: src/core/processing/qgsprocessingparameters.h#L3723
 QgsProcessingParameterFeatureSink.generateTemporaryDestination: src/core/processing/qgsprocessingparameters.h#L3724
 QgsProcessingParameterFeatureSink.hasGeometry: src/core/processing/qgsprocessingparameters.h#L3694
@@ -13695,7 +13678,6 @@ QgsProcessingParameterFeatureSource.asScriptCode: src/core/processing/qgsprocess
 QgsProcessingParameterFeatureSource.checkValueIsAcceptable: src/core/processing/qgsprocessingparameters.h#L3504
 QgsProcessingParameterFeatureSource.clone: src/core/processing/qgsprocessingparameters.h#L3502
 QgsProcessingParameterFeatureSource.createFileFilter: src/core/processing/qgsprocessingparameters.h#L3510
-QgsProcessingParameterFeatureSource.fromScriptCode: src/core/processing/qgsprocessingparameters.h#L3518
 QgsProcessingParameterFeatureSource.fromVariantMap: src/core/processing/qgsprocessingparameters.h#L3513
 QgsProcessingParameterFeatureSource.toVariantMap: src/core/processing/qgsprocessingparameters.h#L3512
 QgsProcessingParameterFeatureSource.type: src/core/processing/qgsprocessingparameters.h#L3503
@@ -13712,7 +13694,6 @@ QgsProcessingParameterField.clone: src/core/processing/qgsprocessingparameters.h
 QgsProcessingParameterField.dataType: src/core/processing/qgsprocessingparameters.h#L3425
 QgsProcessingParameterField.defaultToAllFields: src/core/processing/qgsprocessingparameters.h#L3454
 QgsProcessingParameterField.dependsOnOtherParameters: src/core/processing/qgsprocessingparameters.h#L3407
-QgsProcessingParameterField.fromScriptCode: src/core/processing/qgsprocessingparameters.h#L3473
 QgsProcessingParameterField.fromVariantMap: src/core/processing/qgsprocessingparameters.h#L3468
 QgsProcessingParameterField.parentLayerParameterName: src/core/processing/qgsprocessingparameters.h#L3413
 QgsProcessingParameterField.setAllowMultiple: src/core/processing/qgsprocessingparameters.h#L3443
@@ -13744,7 +13725,6 @@ QgsProcessingParameterFile.clone: src/core/processing/qgsprocessingparameters.h#
 QgsProcessingParameterFile.createFileFilter: src/core/processing/qgsprocessingparameters.h#L2189
 QgsProcessingParameterFile.extension: src/core/processing/qgsprocessingparameters.h#L2210
 QgsProcessingParameterFile.fileFilter: src/core/processing/qgsprocessingparameters.h#L2229
-QgsProcessingParameterFile.fromScriptCode: src/core/processing/qgsprocessingparameters.h#L2248
 QgsProcessingParameterFile.fromVariantMap: src/core/processing/qgsprocessingparameters.h#L2243
 QgsProcessingParameterFile.setBehavior: src/core/processing/qgsprocessingparameters.h#L2201
 QgsProcessingParameterFile.setExtension: src/core/processing/qgsprocessingparameters.h#L2221
@@ -13759,7 +13739,6 @@ QgsProcessingParameterFileDestination.clone: src/core/processing/qgsprocessingpa
 QgsProcessingParameterFileDestination.createFileFilter: src/core/processing/qgsprocessingparameters.h#L3919
 QgsProcessingParameterFileDestination.defaultFileExtension: src/core/processing/qgsprocessingparameters.h#L3917
 QgsProcessingParameterFileDestination.fileFilter: src/core/processing/qgsprocessingparameters.h#L3925
-QgsProcessingParameterFileDestination.fromScriptCode: src/core/processing/qgsprocessingparameters.h#L3939
 QgsProcessingParameterFileDestination.fromVariantMap: src/core/processing/qgsprocessingparameters.h#L3934
 QgsProcessingParameterFileDestination.setFileFilter: src/core/processing/qgsprocessingparameters.h#L3931
 QgsProcessingParameterFileDestination.toOutputDefinition: src/core/processing/qgsprocessingparameters.h#L3916
@@ -13771,7 +13750,6 @@ QgsProcessingParameterFileDestination: src/core/processing/qgsprocessingparamete
 QgsProcessingParameterFolderDestination.checkValueIsAcceptable: src/core/processing/qgsprocessingparameters.h#L3966
 QgsProcessingParameterFolderDestination.clone: src/core/processing/qgsprocessingparameters.h#L3964
 QgsProcessingParameterFolderDestination.defaultFileExtension: src/core/processing/qgsprocessingparameters.h#L3968
-QgsProcessingParameterFolderDestination.fromScriptCode: src/core/processing/qgsprocessingparameters.h#L3973
 QgsProcessingParameterFolderDestination.toOutputDefinition: src/core/processing/qgsprocessingparameters.h#L3967
 QgsProcessingParameterFolderDestination.type: src/core/processing/qgsprocessingparameters.h#L3965
 QgsProcessingParameterFolderDestination.typeName: src/core/processing/qgsprocessingparameters.h#L3963
@@ -13781,7 +13759,6 @@ QgsProcessingParameterGeometry.asPythonString: src/core/processing/qgsprocessing
 QgsProcessingParameterGeometry.asScriptCode: src/core/processing/qgsprocessingparameters.h#L2114
 QgsProcessingParameterGeometry.checkValueIsAcceptable: src/core/processing/qgsprocessingparameters.h#L2112
 QgsProcessingParameterGeometry.clone: src/core/processing/qgsprocessingparameters.h#L2110
-QgsProcessingParameterGeometry.fromScriptCode: src/core/processing/qgsprocessingparameters.h#L2148
 QgsProcessingParameterGeometry.fromVariantMap: src/core/processing/qgsprocessingparameters.h#L2117
 QgsProcessingParameterGeometry.setAllowMultipart: src/core/processing/qgsprocessingparameters.h#L2141
 QgsProcessingParameterGeometry.setGeometryTypes: src/core/processing/qgsprocessingparameters.h#L2129
@@ -13815,7 +13792,6 @@ QgsProcessingParameterInterpolationSource: src/core/processing/qgsprocessingpara
 QgsProcessingParameterLayout.asPythonString: src/core/processing/qgsprocessingparameters.h#L4069
 QgsProcessingParameterLayout.asScriptCode: src/core/processing/qgsprocessingparameters.h#L4068
 QgsProcessingParameterLayout.clone: src/core/processing/qgsprocessingparameters.h#L4065
-QgsProcessingParameterLayout.fromScriptCode: src/core/processing/qgsprocessingparameters.h#L4074
 QgsProcessingParameterLayout.type: src/core/processing/qgsprocessingparameters.h#L4066
 QgsProcessingParameterLayout.typeName: src/core/processing/qgsprocessingparameters.h#L4064
 QgsProcessingParameterLayout.valueAsPythonString: src/core/processing/qgsprocessingparameters.h#L4067
@@ -13824,7 +13800,6 @@ QgsProcessingParameterLayoutItem.asPythonString: src/core/processing/qgsprocessi
 QgsProcessingParameterLayoutItem.asScriptCode: src/core/processing/qgsprocessingparameters.h#L4105
 QgsProcessingParameterLayoutItem.clone: src/core/processing/qgsprocessingparameters.h#L4102
 QgsProcessingParameterLayoutItem.dependsOnOtherParameters: src/core/processing/qgsprocessingparameters.h#L4109
-QgsProcessingParameterLayoutItem.fromScriptCode: src/core/processing/qgsprocessingparameters.h#L4114
 QgsProcessingParameterLayoutItem.fromVariantMap: src/core/processing/qgsprocessingparameters.h#L4108
 QgsProcessingParameterLayoutItem.itemType: src/core/processing/qgsprocessingparameters.h#L4135
 QgsProcessingParameterLayoutItem.parentLayoutParameterName: src/core/processing/qgsprocessingparameters.h#L4120
@@ -13842,7 +13817,6 @@ QgsProcessingParameterMapLayer.asScriptCode: src/core/processing/qgsprocessingpa
 QgsProcessingParameterMapLayer.checkValueIsAcceptable: src/core/processing/qgsprocessingparameters.h#L3358
 QgsProcessingParameterMapLayer.clone: src/core/processing/qgsprocessingparameters.h#L3356
 QgsProcessingParameterMapLayer.createFileFilter: src/core/processing/qgsprocessingparameters.h#L3364
-QgsProcessingParameterMapLayer.fromScriptCode: src/core/processing/qgsprocessingparameters.h#L3372
 QgsProcessingParameterMapLayer.fromVariantMap: src/core/processing/qgsprocessingparameters.h#L3367
 QgsProcessingParameterMapLayer.toVariantMap: src/core/processing/qgsprocessingparameters.h#L3366
 QgsProcessingParameterMapLayer.type: src/core/processing/qgsprocessingparameters.h#L3357
@@ -13855,7 +13829,6 @@ QgsProcessingParameterMapTheme.asPythonString: src/core/processing/qgsprocessing
 QgsProcessingParameterMapTheme.asScriptCode: src/core/processing/qgsprocessingparameters.h#L4349
 QgsProcessingParameterMapTheme.checkValueIsAcceptable: src/core/processing/qgsprocessingparameters.h#L4347
 QgsProcessingParameterMapTheme.clone: src/core/processing/qgsprocessingparameters.h#L4345
-QgsProcessingParameterMapTheme.fromScriptCode: src/core/processing/qgsprocessingparameters.h#L4357
 QgsProcessingParameterMapTheme.fromVariantMap: src/core/processing/qgsprocessingparameters.h#L4352
 QgsProcessingParameterMapTheme.toVariantMap: src/core/processing/qgsprocessingparameters.h#L4351
 QgsProcessingParameterMapTheme.type: src/core/processing/qgsprocessingparameters.h#L4346
@@ -13865,7 +13838,6 @@ QgsProcessingParameterMapTheme: src/core/processing/qgsprocessingparameters.h#L4
 QgsProcessingParameterMatrix.asPythonString: src/core/processing/qgsprocessingparameters.h#L2288
 QgsProcessingParameterMatrix.checkValueIsAcceptable: src/core/processing/qgsprocessingparameters.h#L2286
 QgsProcessingParameterMatrix.clone: src/core/processing/qgsprocessingparameters.h#L2284
-QgsProcessingParameterMatrix.fromScriptCode: src/core/processing/qgsprocessingparameters.h#L2338
 QgsProcessingParameterMatrix.fromVariantMap: src/core/processing/qgsprocessingparameters.h#L2333
 QgsProcessingParameterMatrix.hasFixedNumberRows: src/core/processing/qgsprocessingparameters.h#L2323
 QgsProcessingParameterMatrix.headers: src/core/processing/qgsprocessingparameters.h#L2294
@@ -13908,7 +13880,6 @@ QgsProcessingParameterMeshDatasetTime: src/core/processing/qgsprocessingparamete
 QgsProcessingParameterMeshLayer.checkValueIsAcceptable: src/core/processing/qgsprocessingparameters.h#L3325
 QgsProcessingParameterMeshLayer.clone: src/core/processing/qgsprocessingparameters.h#L3323
 QgsProcessingParameterMeshLayer.createFileFilter: src/core/processing/qgsprocessingparameters.h#L3329
-QgsProcessingParameterMeshLayer.fromScriptCode: src/core/processing/qgsprocessingparameters.h#L3334
 QgsProcessingParameterMeshLayer.type: src/core/processing/qgsprocessingparameters.h#L3324
 QgsProcessingParameterMeshLayer.typeName: src/core/processing/qgsprocessingparameters.h#L3322
 QgsProcessingParameterMeshLayer.valueAsJsonObject: src/core/processing/qgsprocessingparameters.h#L3328
@@ -13920,7 +13891,6 @@ QgsProcessingParameterMultipleLayers.asScriptCode: src/core/processing/qgsproces
 QgsProcessingParameterMultipleLayers.checkValueIsAcceptable: src/core/processing/qgsprocessingparameters.h#L2371
 QgsProcessingParameterMultipleLayers.clone: src/core/processing/qgsprocessingparameters.h#L2369
 QgsProcessingParameterMultipleLayers.createFileFilter: src/core/processing/qgsprocessingparameters.h#L2377
-QgsProcessingParameterMultipleLayers.fromScriptCode: src/core/processing/qgsprocessingparameters.h#L2411
 QgsProcessingParameterMultipleLayers.fromVariantMap: src/core/processing/qgsprocessingparameters.h#L2406
 QgsProcessingParameterMultipleLayers.layerType: src/core/processing/qgsprocessingparameters.h#L2383
 QgsProcessingParameterMultipleLayers.minimumNumberInputs: src/core/processing/qgsprocessingparameters.h#L2396
@@ -13938,7 +13908,6 @@ QgsProcessingParameterNumber.asPythonString: src/core/processing/qgsprocessingpa
 QgsProcessingParameterNumber.checkValueIsAcceptable: src/core/processing/qgsprocessingparameters.h#L2458
 QgsProcessingParameterNumber.clone: src/core/processing/qgsprocessingparameters.h#L2456
 QgsProcessingParameterNumber.dataType: src/core/processing/qgsprocessingparameters.h#L2491
-QgsProcessingParameterNumber.fromScriptCode: src/core/processing/qgsprocessingparameters.h#L2505
 QgsProcessingParameterNumber.fromVariantMap: src/core/processing/qgsprocessingparameters.h#L2500
 QgsProcessingParameterNumber.maximum: src/core/processing/qgsprocessingparameters.h#L2479
 QgsProcessingParameterNumber.minimum: src/core/processing/qgsprocessingparameters.h#L2467
@@ -13953,7 +13922,6 @@ QgsProcessingParameterNumber.valueAsPythonString: src/core/processing/qgsprocess
 QgsProcessingParameterNumber: src/core/processing/qgsprocessingparameters.h#L2435
 QgsProcessingParameterPoint.checkValueIsAcceptable: src/core/processing/qgsprocessingparameters.h#L2077
 QgsProcessingParameterPoint.clone: src/core/processing/qgsprocessingparameters.h#L2075
-QgsProcessingParameterPoint.fromScriptCode: src/core/processing/qgsprocessingparameters.h#L2083
 QgsProcessingParameterPoint.type: src/core/processing/qgsprocessingparameters.h#L2076
 QgsProcessingParameterPoint.typeName: src/core/processing/qgsprocessingparameters.h#L2074
 QgsProcessingParameterPoint.valueAsPythonString: src/core/processing/qgsprocessingparameters.h#L2078
@@ -13965,7 +13933,6 @@ QgsProcessingParameterPointCloudAttribute.checkValueIsAcceptable: src/core/proce
 QgsProcessingParameterPointCloudAttribute.clone: src/core/processing/qgsprocessingparameters.h#L4853
 QgsProcessingParameterPointCloudAttribute.defaultToAllAttributes: src/core/processing/qgsprocessingparameters.h#L4893
 QgsProcessingParameterPointCloudAttribute.dependsOnOtherParameters: src/core/processing/qgsprocessingparameters.h#L4859
-QgsProcessingParameterPointCloudAttribute.fromScriptCode: src/core/processing/qgsprocessingparameters.h#L4911
 QgsProcessingParameterPointCloudAttribute.fromVariantMap: src/core/processing/qgsprocessingparameters.h#L4906
 QgsProcessingParameterPointCloudAttribute.parentLayerParameterName: src/core/processing/qgsprocessingparameters.h#L4865
 QgsProcessingParameterPointCloudAttribute.setAllowMultiple: src/core/processing/qgsprocessingparameters.h#L4883
@@ -13982,7 +13949,6 @@ QgsProcessingParameterPointCloudDestination.checkValueIsAcceptable: src/core/pro
 QgsProcessingParameterPointCloudDestination.clone: src/core/processing/qgsprocessingparameters.h#L4785
 QgsProcessingParameterPointCloudDestination.createFileFilter: src/core/processing/qgsprocessingparameters.h#L4792
 QgsProcessingParameterPointCloudDestination.defaultFileExtension: src/core/processing/qgsprocessingparameters.h#L4791
-QgsProcessingParameterPointCloudDestination.fromScriptCode: src/core/processing/qgsprocessingparameters.h#L4821
 QgsProcessingParameterPointCloudDestination.fromVariantMap: src/core/processing/qgsprocessingparameters.h#L4794
 QgsProcessingParameterPointCloudDestination.setAllowedPointCloudOutputs: src/core/processing/qgsprocessingparameters.h#L4816
 QgsProcessingParameterPointCloudDestination.supportedOutputPointCloudLayerExtensions: src/core/processing/qgsprocessingparameters.h#L4800
@@ -13995,7 +13961,6 @@ QgsProcessingParameterPointCloudDestination: src/core/processing/qgsprocessingpa
 QgsProcessingParameterPointCloudLayer.checkValueIsAcceptable: src/core/processing/qgsprocessingparameters.h#L4709
 QgsProcessingParameterPointCloudLayer.clone: src/core/processing/qgsprocessingparameters.h#L4707
 QgsProcessingParameterPointCloudLayer.createFileFilter: src/core/processing/qgsprocessingparameters.h#L4713
-QgsProcessingParameterPointCloudLayer.fromScriptCode: src/core/processing/qgsprocessingparameters.h#L4718
 QgsProcessingParameterPointCloudLayer.type: src/core/processing/qgsprocessingparameters.h#L4708
 QgsProcessingParameterPointCloudLayer.typeName: src/core/processing/qgsprocessingparameters.h#L4706
 QgsProcessingParameterPointCloudLayer.valueAsJsonObject: src/core/processing/qgsprocessingparameters.h#L4712
@@ -14006,7 +13971,6 @@ QgsProcessingParameterProviderConnection.asPythonString: src/core/processing/qgs
 QgsProcessingParameterProviderConnection.asScriptCode: src/core/processing/qgsprocessingparameters.h#L4501
 QgsProcessingParameterProviderConnection.checkValueIsAcceptable: src/core/processing/qgsprocessingparameters.h#L4499
 QgsProcessingParameterProviderConnection.clone: src/core/processing/qgsprocessingparameters.h#L4497
-QgsProcessingParameterProviderConnection.fromScriptCode: src/core/processing/qgsprocessingparameters.h#L4521
 QgsProcessingParameterProviderConnection.fromVariantMap: src/core/processing/qgsprocessingparameters.h#L4504
 QgsProcessingParameterProviderConnection.providerId: src/core/processing/qgsprocessingparameters.h#L4510
 QgsProcessingParameterProviderConnection.setProviderId: src/core/processing/qgsprocessingparameters.h#L4516
@@ -14019,7 +13983,6 @@ QgsProcessingParameterRange.asPythonString: src/core/processing/qgsprocessingpar
 QgsProcessingParameterRange.checkValueIsAcceptable: src/core/processing/qgsprocessingparameters.h#L2883
 QgsProcessingParameterRange.clone: src/core/processing/qgsprocessingparameters.h#L2881
 QgsProcessingParameterRange.dataType: src/core/processing/qgsprocessingparameters.h#L2891
-QgsProcessingParameterRange.fromScriptCode: src/core/processing/qgsprocessingparameters.h#L2905
 QgsProcessingParameterRange.fromVariantMap: src/core/processing/qgsprocessingparameters.h#L2900
 QgsProcessingParameterRange.setDataType: src/core/processing/qgsprocessingparameters.h#L2897
 QgsProcessingParameterRange.toVariantMap: src/core/processing/qgsprocessingparameters.h#L2899
@@ -14032,7 +13995,6 @@ QgsProcessingParameterRasterDestination.clone: src/core/processing/qgsprocessing
 QgsProcessingParameterRasterDestination.createFileFilter: src/core/processing/qgsprocessingparameters.h#L3852
 QgsProcessingParameterRasterDestination.defaultFileExtension: src/core/processing/qgsprocessingparameters.h#L3842
 QgsProcessingParameterRasterDestination.defaultFileFormat: src/core/processing/qgsprocessingparameters.h#L3850
-QgsProcessingParameterRasterDestination.fromScriptCode: src/core/processing/qgsprocessingparameters.h#L3872
 QgsProcessingParameterRasterDestination.supportedOutputRasterLayerExtensions: src/core/processing/qgsprocessingparameters.h#L3860
 QgsProcessingParameterRasterDestination.toOutputDefinition: src/core/processing/qgsprocessingparameters.h#L3841
 QgsProcessingParameterRasterDestination.type: src/core/processing/qgsprocessingparameters.h#L3838
@@ -14042,7 +14004,6 @@ QgsProcessingParameterRasterDestination: src/core/processing/qgsprocessingparame
 QgsProcessingParameterRasterLayer.checkValueIsAcceptable: src/core/processing/qgsprocessingparameters.h#L2930
 QgsProcessingParameterRasterLayer.clone: src/core/processing/qgsprocessingparameters.h#L2928
 QgsProcessingParameterRasterLayer.createFileFilter: src/core/processing/qgsprocessingparameters.h#L2934
-QgsProcessingParameterRasterLayer.fromScriptCode: src/core/processing/qgsprocessingparameters.h#L2939
 QgsProcessingParameterRasterLayer.parameterCapabilities: src/core/processing/qgsprocessingparameters.h#L2953
 QgsProcessingParameterRasterLayer.setParameterCapabilities: src/core/processing/qgsprocessingparameters.h#L2947
 QgsProcessingParameterRasterLayer.type: src/core/processing/qgsprocessingparameters.h#L2929
@@ -14064,14 +14025,12 @@ QgsProcessingParameterReliefColors: src/core/processing/qgsprocessingparameterre
 QgsProcessingParameterScale.QgsProcessingParameterScale: src/core/processing/qgsprocessingparameters.h#L2839
 QgsProcessingParameterScale.asPythonString: src/core/processing/qgsprocessingparameters.h#L2849
 QgsProcessingParameterScale.clone: src/core/processing/qgsprocessingparameters.h#L2846
-QgsProcessingParameterScale.fromScriptCode: src/core/processing/qgsprocessingparameters.h#L2854
 QgsProcessingParameterScale.type: src/core/processing/qgsprocessingparameters.h#L2848
 QgsProcessingParameterScale.typeName: src/core/processing/qgsprocessingparameters.h#L2844
 QgsProcessingParameterScale: src/core/processing/qgsprocessingparameters.h#L2833
 QgsProcessingParameterString.asPythonString: src/core/processing/qgsprocessingparameters.h#L3102
 QgsProcessingParameterString.asScriptCode: src/core/processing/qgsprocessingparameters.h#L3101
 QgsProcessingParameterString.clone: src/core/processing/qgsprocessingparameters.h#L3098
-QgsProcessingParameterString.fromScriptCode: src/core/processing/qgsprocessingparameters.h#L3122
 QgsProcessingParameterString.fromVariantMap: src/core/processing/qgsprocessingparameters.h#L3117
 QgsProcessingParameterString.multiLine: src/core/processing/qgsprocessingparameters.h#L3108
 QgsProcessingParameterString.setMultiLine: src/core/processing/qgsprocessingparameters.h#L3114
@@ -14124,7 +14083,6 @@ QgsProcessingParameterVectorDestination.clone: src/core/processing/qgsprocessing
 QgsProcessingParameterVectorDestination.createFileFilter: src/core/processing/qgsprocessingparameters.h#L3776
 QgsProcessingParameterVectorDestination.dataType: src/core/processing/qgsprocessingparameters.h#L3789
 QgsProcessingParameterVectorDestination.defaultFileExtension: src/core/processing/qgsprocessingparameters.h#L3774
-QgsProcessingParameterVectorDestination.fromScriptCode: src/core/processing/qgsprocessingparameters.h#L3809
 QgsProcessingParameterVectorDestination.fromVariantMap: src/core/processing/qgsprocessingparameters.h#L3804
 QgsProcessingParameterVectorDestination.hasGeometry: src/core/processing/qgsprocessingparameters.h#L3795
 QgsProcessingParameterVectorDestination.setDataType: src/core/processing/qgsprocessingparameters.h#L3801
@@ -14139,7 +14097,6 @@ QgsProcessingParameterVectorLayer.asPythonString: src/core/processing/qgsprocess
 QgsProcessingParameterVectorLayer.checkValueIsAcceptable: src/core/processing/qgsprocessingparameters.h#L3289
 QgsProcessingParameterVectorLayer.clone: src/core/processing/qgsprocessingparameters.h#L3287
 QgsProcessingParameterVectorLayer.createFileFilter: src/core/processing/qgsprocessingparameters.h#L3294
-QgsProcessingParameterVectorLayer.fromScriptCode: src/core/processing/qgsprocessingparameters.h#L3302
 QgsProcessingParameterVectorLayer.fromVariantMap: src/core/processing/qgsprocessingparameters.h#L3297
 QgsProcessingParameterVectorLayer.toVariantMap: src/core/processing/qgsprocessingparameters.h#L3296
 QgsProcessingParameterVectorLayer.type: src/core/processing/qgsprocessingparameters.h#L3288
@@ -14152,7 +14109,6 @@ QgsProcessingParameterVectorTileDestination.checkValueIsAcceptable: src/core/pro
 QgsProcessingParameterVectorTileDestination.clone: src/core/processing/qgsprocessingparameters.h#L4941
 QgsProcessingParameterVectorTileDestination.createFileFilter: src/core/processing/qgsprocessingparameters.h#L4947
 QgsProcessingParameterVectorTileDestination.defaultFileExtension: src/core/processing/qgsprocessingparameters.h#L4946
-QgsProcessingParameterVectorTileDestination.fromScriptCode: src/core/processing/qgsprocessingparameters.h#L4958
 QgsProcessingParameterVectorTileDestination.supportedOutputVectorTileLayerExtensions: src/core/processing/qgsprocessingparameters.h#L4953
 QgsProcessingParameterVectorTileDestination.toOutputDefinition: src/core/processing/qgsprocessingparameters.h#L4945
 QgsProcessingParameterVectorTileDestination.type: src/core/processing/qgsprocessingparameters.h#L4942
@@ -14256,10 +14212,6 @@ QgsProcessingParameters.parameterAsRasterLayer: src/core/processing/qgsprocessin
 QgsProcessingParameters.parameterAsRasterLayer: src/core/processing/qgsprocessingparameters.h#L1466
 QgsProcessingParameters.parameterAsSchema: src/core/processing/qgsprocessingparameters.h#L1854
 QgsProcessingParameters.parameterAsSchema: src/core/processing/qgsprocessingparameters.h#L1861
-QgsProcessingParameters.parameterAsSink: src/core/processing/qgsprocessingparameters.h#L1284
-QgsProcessingParameters.parameterAsSink: src/core/processing/qgsprocessingparameters.h#L1317
-QgsProcessingParameters.parameterAsSource: src/core/processing/qgsprocessingparameters.h#L1339
-QgsProcessingParameters.parameterAsSource: src/core/processing/qgsprocessingparameters.h#L1351
 QgsProcessingParameters.parameterAsString: src/core/processing/qgsprocessingparameters.h#L1084
 QgsProcessingParameters.parameterAsString: src/core/processing/qgsprocessingparameters.h#L1090
 QgsProcessingParameters.parameterAsStrings: src/core/processing/qgsprocessingparameters.h#L1772
@@ -14268,8 +14220,6 @@ QgsProcessingParameters.parameterAsTime: src/core/processing/qgsprocessingparame
 QgsProcessingParameters.parameterAsTime: src/core/processing/qgsprocessingparameters.h#L1195
 QgsProcessingParameters.parameterAsVectorLayer: src/core/processing/qgsprocessingparameters.h#L1510
 QgsProcessingParameters.parameterAsVectorLayer: src/core/processing/qgsprocessingparameters.h#L1521
-QgsProcessingParameters.parameterFromScriptCode: src/core/processing/qgsprocessingparameters.h#L1952
-QgsProcessingParameters.parameterFromVariantMap: src/core/processing/qgsprocessingparameters.h#L1940
 QgsProcessingParameters: src/core/processing/qgsprocessingparameters.h#L1072
 QgsProcessingProjectModelProvider.addModel: src/core/processing/qgsprocessingprojectmodelprovider.h#L60
 QgsProcessingProjectModelProvider.clear: src/core/processing/qgsprocessingprojectmodelprovider.h#L55
@@ -14381,7 +14331,6 @@ QgsProcessingUtils.tempFolder: src/core/processing/qgsprocessingutils.h#L418
 QgsProcessingUtils.userFolder: src/core/processing/qgsprocessingutils.h#L674
 QgsProcessingUtils.variantToCrs: src/core/processing/qgsprocessingutils.h#L305
 QgsProcessingUtils.variantToPythonLiteral: src/core/processing/qgsprocessingutils.h#L330
-QgsProcessingUtils.variantToSource: src/core/processing/qgsprocessingutils.h#L295
 QgsProcessingUtils: src/core/processing/qgsprocessingutils.h#L51
 QgsProfileExporter.run: src/core/elevation/qgsprofileexporter.h#L58
 QgsProfileExporter: src/core/elevation/qgsprofileexporter.h#L36
