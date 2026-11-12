@@ -24,7 +24,7 @@
 #include <QFutureWatcher>
 #include <QPainter>
 #include <QTimer>
-#include <QtConcurrent>
+#include <QtConcurrentRun>
 
 #include "moc_qgspicturerasterizer.cpp"
 
@@ -32,6 +32,7 @@
 // QgsPictureRasterizerJob
 //
 
+///@cond PRIVATE
 QgsPictureRasterizerJob::QgsPictureRasterizerJob( const QPicture &picture, const QSize &targetSize )
   : mTargetSize( targetSize )
   , mFeedback( std::make_unique< QgsFeedback >() )
@@ -88,7 +89,7 @@ bool QgsPictureRasterizerJob::isCanceled() const
 {
   return mFeedback->isCanceled();
 }
-
+///@endcond PRIVATE
 
 //
 // QgsPictureRasterizer
