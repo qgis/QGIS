@@ -306,7 +306,7 @@ void TestQgsLayoutGui::testElevationProfileWidget()
 
   QgsLayoutItemElevationProfile profile( &layout );
   // sources will be rendered from vl3->vl1 from bottom to top
-  profile.setSources( { vl1, vl2, vl3 } );
+  profile.setSources( { static_cast< QgsMapLayer * >( vl1 ), static_cast< QgsMapLayer * >( vl2 ), static_cast< QgsMapLayer * >( vl3 ) } );
   QgsLayoutElevationProfileWidget widget( &profile );
 
   QCOMPARE( widget.mLayerTree->children().size(), 3 );
@@ -327,7 +327,7 @@ void TestQgsLayoutGui::testElevationProfileWidget()
 
   QgsElevationProfileCanvas canvas;
   // sources will be rendered from vl3->vl1 from bottom to top
-  canvas.setSources( { vl1, vl2, vl3 } );
+  canvas.setSources( { static_cast< QgsMapLayer * >( vl1 ), static_cast< QgsMapLayer * >( vl2 ), static_cast< QgsMapLayer * >( vl3 ) } );
 
   widget.copySettingsFromProfileCanvas( &canvas );
   QCOMPARE( profile.sources().size(), 3 );
@@ -336,7 +336,7 @@ void TestQgsLayoutGui::testElevationProfileWidget()
   QCOMPARE( profile.sources().at( 1 )->profileSourceName(), u"vl2"_s );
   QCOMPARE( profile.sources().at( 2 )->profileSourceName(), u"vl3"_s );
 
-  canvas.setSources( { vl3, vl2, vl1 } );
+  canvas.setSources( { static_cast< QgsMapLayer * >( vl3 ), static_cast< QgsMapLayer * >( vl2 ), static_cast< QgsMapLayer * >( vl1 ) } );
   widget.copySettingsFromProfileCanvas( &canvas );
   QCOMPARE( profile.sources().size(), 3 );
   QCOMPARE( profile.sources().at( 0 )->profileSourceName(), u"vl3"_s );
@@ -358,7 +358,7 @@ void TestQgsLayoutGui::testElevationProfileWidgetRemovingSources()
 
   QgsLayoutItemElevationProfile profile( &layout );
   // sources will be rendered from vl3->vl1 from bottom to top
-  profile.setSources( { vl1, vl2, vl3 } );
+  profile.setSources( { static_cast< QgsMapLayer * >( vl1 ), static_cast< QgsMapLayer * >( vl2 ), static_cast< QgsMapLayer * >( vl3 ) } );
   QgsLayoutElevationProfileWidget widget( &profile );
 
   QCOMPARE( widget.mLayerTree->children().size(), 3 );
@@ -373,7 +373,7 @@ void TestQgsLayoutGui::testElevationProfileWidgetRemovingSources()
   QgsElevationProfileCanvas canvas;
   canvas.setProject( &project );
   // sources will be rendered from vl3->vl1 from bottom to top
-  canvas.setSources( { vl1, vl2, vl3 } );
+  canvas.setSources( { static_cast< QgsMapLayer * >( vl1 ), static_cast< QgsMapLayer * >( vl2 ), static_cast< QgsMapLayer * >( vl3 ) } );
 
   widget.copySettingsFromProfileCanvas( &canvas );
   QCOMPARE( profile.sources().size(), 3 );
