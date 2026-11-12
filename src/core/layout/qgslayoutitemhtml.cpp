@@ -24,15 +24,23 @@
 #include "qgslayoutitemmap.h"
 #include "qgslayoutrendercontext.h"
 #include "qgslayoutreportcontext.h"
+#include "qgslayoututils.h"
 #include "qgslogger.h"
 #include "qgsmapsettings.h"
-#include "qgsmessagelog.h"
-#include "qgsnetworkaccessmanager.h"
 #include "qgsnetworkcontentfetcher.h"
+#include "qgspainting.h"
+#include "qgspicturerasterizer.h"
 #include "qgsproject.h"
 #include "qgsvectorlayer.h"
-#include "qgswebframe.h"
-#include "qgswebpage.h"
+
+#include <QString>
+
+#if defined( HAVE_WEBENGINE ) && defined( HAVE_PDF4QT )
+#include "qgswebenginepage.h"
+#include <QWebEnginePage>
+#include <QWebEngineSettings>
+#include <QWebEngineScript>
+#endif
 
 #include <QAbstractTextDocumentLayout>
 #include <QCoreApplication>
@@ -42,6 +50,8 @@
 #include <QString>
 #include <QThread>
 #include <QUrl>
+#include <QtConcurrent>
+#include <QTimer>
 
 #include "moc_qgslayoutitemhtml.cpp"
 
@@ -51,45 +61,36 @@ using namespace Qt::StringLiterals;
 
 QgsLayoutItemHtml::QgsLayoutItemHtml( QgsLayout *layout )
   : QgsLayoutMultiFrame( layout )
+  , mPictureRasterizer( new QgsPictureRasterizer( this ) )
 {
-  mHtmlUnitsToLayoutUnits = htmlUnitsToLayoutUnits();
+  mPictureRasterizer->setMaxCacheSize( 10000 );
 
-  // only possible on the main thread!
-  if ( QThread::currentThread() == QApplication::instance()->thread() )
-  {
-    mWebPage = std::make_unique< QgsWebPage >();
-  }
-  else
-  {
-    QgsMessageLog::logMessage( QObject::tr( "Cannot load HTML content in background threads" ) );
-  }
+  mBackgroundUpdateTimer = new QTimer( this );
+  mBackgroundUpdateTimer->setSingleShot( true );
+  connect( mBackgroundUpdateTimer, &QTimer::timeout, this, &QgsLayoutItemHtml::recreateCachedImageInBackground );
 
-  if ( mWebPage )
-  {
-    mWebPage->setIdentifier( tr( "Layout HTML item" ) );
-    mWebPage->mainFrame()->setScrollBarPolicy( Qt::Horizontal, Qt::ScrollBarAlwaysOff );
-    mWebPage->mainFrame()->setScrollBarPolicy( Qt::Vertical, Qt::ScrollBarAlwaysOff );
-
-    //This makes the background transparent. Found on http://blog.qt.digia.com/blog/2009/06/30/transparent-qwebview-or-qwebpage/
-    QPalette palette = mWebPage->palette();
-    palette.setBrush( QPalette::Base, Qt::transparent );
-    mWebPage->setPalette( palette );
-
-    mWebPage->setNetworkAccessManager( QgsNetworkAccessManager::instance() );
-  }
+  connect( mPictureRasterizer, &QgsPictureRasterizer::rendered, this, [this] {
+    updateFrames();
+    emit previewRefreshed();
+  } );
 
   //a html item added to a layout needs to have the initial expression context set,
   //otherwise fields in the html aren't correctly evaluated until atlas preview feature changes (#9457)
   setExpressionContext( mLayout->reportContext().feature(), mLayout->reportContext().layer() );
 
+  connect( mLayout, &QgsLayout::refreshed, this, &QgsLayoutItemHtml::invalidateCache );
   connect( &mLayout->reportContext(), &QgsLayoutReportContext::changed, this, &QgsLayoutItemHtml::refreshExpressionContext );
 
-  mFetcher = new QgsNetworkContentFetcher();
+  mFetcher = new QgsNetworkContentFetcher( this );
+  connect( mFetcher, &QgsNetworkContentFetcher::finished, this, &QgsLayoutItemHtml::onHtmlFetched );
 }
 
 QgsLayoutItemHtml::~QgsLayoutItemHtml()
 {
-  mFetcher->deleteLater();
+  mBackgroundUpdateTimer->stop();
+  cancelPendingFetch();
+  cancelRunningRenderJob( true );
+  emit backgroundTaskCountChanged( 0 );
 }
 
 int QgsLayoutItemHtml::type() const
@@ -136,11 +137,6 @@ QgsLayoutItemHtml *QgsLayoutItemHtml::createFromLabel( QgsLayoutItemLabel *label
 
 void QgsLayoutItemHtml::setUrl( const QUrl &url )
 {
-  if ( !mWebPage )
-  {
-    return;
-  }
-
   mUrl = url;
   loadHtml( true );
   emit changed();
@@ -164,11 +160,6 @@ void QgsLayoutItemHtml::setEvaluateExpressions( bool evaluateExpressions )
 
 void QgsLayoutItemHtml::loadHtml( const bool useCache, const QgsExpressionContext *context )
 {
-  if ( !mWebPage )
-  {
-    return;
-  }
-
   const QgsExpressionContext scopedContext = createExpressionContext();
   const QgsExpressionContext *evalContext = context ? context : &scopedContext;
 
@@ -189,51 +180,52 @@ void QgsLayoutItemHtml::loadHtml( const bool useCache, const QgsExpressionContex
       }
       if ( currentUrl.isEmpty() )
       {
+        cancelPendingFetch();
+        finalizeLoadedHtml( QString(), QUrl(), evalContext );
         return;
       }
-      if ( !( useCache && currentUrl == mLastFetchedUrl ) )
+
+      if ( useCache && mHasFetchedHtml && currentUrl == mLastFetchedUrl )
       {
-        loadedHtml = fetchHtml( QUrl( currentUrl ) );
-        mLastFetchedUrl = currentUrl;
+        cancelPendingFetch();
+        finalizeLoadedHtml( mFetchedHtml, QUrl( mActualFetchedUrl ), evalContext );
       }
       else
       {
-        loadedHtml = mFetchedHtml;
+        if ( !( useCache && mFetching && currentUrl == mPendingFetchUrl ) )
+        {
+          cancelPendingFetch();
+          mBackgroundUpdateTimer->stop();
+          cancelRunningRenderJob( false );
+
+          mPendingFetchUrl = currentUrl;
+          mPendingExpressionContext = context ? std::optional< QgsExpressionContext >( *context ) : std::nullopt;
+          mCacheInvalidated = true;
+          startFetchHtml( QUrl( currentUrl ) );
+          updateFrames();
+        }
+        else if ( context )
+        {
+          mPendingExpressionContext = *context;
+        }
+
+        if ( !mLayout || !mLayout->renderContext().isPreviewRender() )
+        {
+          // if not a preview render, we HAVE to wait till we've loaded content
+          waitForPendingFetch();
+        }
       }
 
       break;
     }
     case QgsLayoutItemHtml::ManualHtml:
-      loadedHtml = mHtml;
+      cancelPendingFetch();
+      const QUrl baseUrl = ( mLayout && mLayout->project() ) ? QUrl::fromLocalFile( mLayout->project()->absoluteFilePath() ) : QUrl();
+      finalizeLoadedHtml( mHtml, baseUrl, evalContext );
       break;
   }
 
-  //evaluate expressions
-  if ( mEvaluateExpressions )
-  {
-    loadedHtml = QgsExpression::replaceExpressionText( loadedHtml, evalContext, &mDistanceArea );
-  }
-
-  bool loaded = false;
-
-  QEventLoop loop;
-  connect( mWebPage.get(), &QWebPage::loadFinished, &loop, [&loaded, &loop] {
-    loaded = true;
-    loop.quit();
-  } );
-  connect( mFetcher, &QgsNetworkContentFetcher::finished, &loop, [&loaded, &loop] {
-    loaded = true;
-    loop.quit();
-  } );
-
-  //reset page size. otherwise viewport size increases but never decreases again
-  mWebPage->setViewportSize( QSize( maxFrameWidth() * mHtmlUnitsToLayoutUnits, 0 ) );
-
-  //set html, using the specified url as base if in Url mode or the project file if in manual mode
-  const QUrl baseUrl = mContentMode == QgsLayoutItemHtml::Url ? QUrl( mActualFetchedUrl ) : QUrl::fromLocalFile( mLayout->project()->absoluteFilePath() );
-
-  mWebPage->mainFrame()->setHtml( loadedHtml, baseUrl );
-
+#if 0
   //set user stylesheet
   QWebSettings *settings = mWebPage->settings();
   if ( mEnableUserStylesheet && !mUserStylesheet.isEmpty() )
@@ -247,12 +239,202 @@ void QgsLayoutItemHtml::loadHtml( const bool useCache, const QgsExpressionContex
   {
     settings->setUserStyleSheetUrl( QUrl() );
   }
+#endif
+}
 
-  if ( !loaded )
+void QgsLayoutItemHtml::startFetchHtml( const QUrl &url )
+{
+  mFetching = true;
+  mFetcher->fetchContent( url );
+}
+
+void QgsLayoutItemHtml::cancelPendingFetch()
+{
+  if ( !mFetching )
+    return;
+
+  mFetching = false;
+  mPendingFetchUrl.clear();
+  mPendingExpressionContext.reset();
+
+  mFetcher->disconnect( this );
+  mFetcher->cancel();
+  mFetcher->deleteLater();
+  mFetcher = new QgsNetworkContentFetcher( this );
+  connect( mFetcher, &QgsNetworkContentFetcher::finished, this, &QgsLayoutItemHtml::onHtmlFetched );
+}
+
+void QgsLayoutItemHtml::waitForPendingFetch()
+{
+  if ( !mFetching )
+    return;
+
+  QEventLoop loop;
+  connect( mFetcher, &QgsNetworkContentFetcher::finished, &loop, &QEventLoop::quit );
+  if ( mFetching )
+  {
     loop.exec( QEventLoop::ExcludeUserInputEvents );
+  }
+}
+
+void QgsLayoutItemHtml::onHtmlFetched()
+{
+  if ( !mFetching )
+    return;
+
+  mFetching = false;
+  mFetchedHtml = mFetcher->contentAsString();
+  mActualFetchedUrl = mFetcher->reply() ? mFetcher->reply()->url().toString() : mPendingFetchUrl;
+  mLastFetchedUrl = mPendingFetchUrl;
+  mHasFetchedHtml = true;
+  mPendingFetchUrl.clear();
+
+  const std::optional< QgsExpressionContext > savedContext = std::move( mPendingExpressionContext );
+  mPendingExpressionContext.reset();
+
+  const QgsExpressionContext scopedContext = createExpressionContext();
+  const QgsExpressionContext *evalContext = savedContext.has_value() ? &*savedContext : &scopedContext;
+  finalizeLoadedHtml( mFetchedHtml, QUrl( mActualFetchedUrl ), evalContext );
+}
+
+void QgsLayoutItemHtml::finalizeLoadedHtml( const QString &rawHtml, const QUrl &baseUrl, const QgsExpressionContext *context )
+{
+  QString loadedHtml = rawHtml;
+  if ( mEvaluateExpressions && !loadedHtml.isEmpty() )
+  {
+    loadedHtml = QgsExpression::replaceExpressionText( loadedHtml, context, &mDistanceArea );
+  }
+
+  mEvaluatedHtml = loadedHtml;
+  mResolvedBaseUrl = baseUrl;
+  mCacheInvalidated = true;
+
+  if ( !mLayout || !mLayout->renderContext().isPreviewRender() )
+  {
+    mBackgroundUpdateTimer->stop();
+    cancelRunningRenderJob( false );
+    renderHtmlSynchronously();
+  }
+  else
+  {
+    // render HTML in a background thread, so we don't block the user interface
+    mBackgroundUpdateTimer->start( 1 );
+  }
+}
+
+void QgsLayoutItemHtml::recreateCachedImageInBackground()
+{
+  if ( mFetching )
+    return;
+
+  cancelRunningRenderJob( false );
+
+  const double frameWidthLayoutUnits = maxFrameWidth();
+  if ( frameWidthLayoutUnits <= 0 || mEvaluatedHtml.isEmpty() )
+  {
+    mCacheInvalidated = false;
+    mLastRenderedWidth = frameWidthLayoutUnits;
+    mSize = QSizeF( 0, 0 );
+    mRenderedPicture = QPicture();
+    mRenderedPage = QImage();
+    mPictureRasterizer->clear();
+    recalculateFrameSizes();
+    emit contentsChanged();
+    updateFrames();
+    emit previewRefreshed();
+    return;
+  }
+
+  mCacheInvalidated = false;
+  mRenderJob = std::make_unique< QgsLayoutItemHtmlRenderJob >( mEvaluatedHtml, mResolvedBaseUrl, frameWidthLayoutUnits, layoutUnitsPerCssPixel() );
+  connect( mRenderJob.get(), &QgsLayoutItemHtmlRenderJob::finished, this, &QgsLayoutItemHtml::htmlRenderFinished );
+  mRenderJob->start();
+}
+
+void QgsLayoutItemHtml::htmlRenderFinished()
+{
+  if ( !mRenderJob )
+    return;
+
+  if ( !mRenderJob->success() && !mRenderJob->errorMessage().isEmpty() )
+  {
+    QgsDebugError( mRenderJob->errorMessage() );
+  }
+
+  mLastRenderedWidth = mRenderJob->frameWidthLayoutUnits();
+  mSize = mRenderJob->size();
+  mRenderedPicture = QgsPainting::deepCopyQPicture( mRenderJob->picture() );
+  mRenderedPage = mRenderJob->renderedPage();
+  mRenderJob.reset();
+
+  mPictureRasterizer->setPicture( mRenderedPicture );
 
   recalculateFrameSizes();
-  //trigger a repaint
+  emit contentsChanged();
+  updateFrames();
+  emit previewRefreshed();
+}
+
+void QgsLayoutItemHtml::renderHtmlSynchronously()
+{
+  if ( mFetching )
+  {
+    waitForPendingFetch();
+    return;
+  }
+
+  const double frameWidthLayoutUnits = maxFrameWidth();
+  mLastRenderedWidth = frameWidthLayoutUnits;
+  mCacheInvalidated = false;
+
+  if ( frameWidthLayoutUnits <= 0 || mEvaluatedHtml.isEmpty() )
+  {
+    mSize = QSizeF( 0, 0 );
+    mRenderedPicture = QPicture();
+    mRenderedPage = QImage();
+    mPictureRasterizer->clear();
+    recalculateFrameSizes();
+    emit contentsChanged();
+    return;
+  }
+
+  const double unitsPerCssPx = layoutUnitsPerCssPixel();
+  const double widthCssPx = frameWidthLayoutUnits / unitsPerCssPx;
+
+  QString errorMessage;
+  mRenderedPicture = QPicture();
+  QPainter painter( &mRenderedPicture );
+  painter.setRenderHint( QPainter::Antialiasing, true );
+  painter.setRenderHint( QPainter::TextAntialiasing, true );
+  painter.setRenderHint( QPainter::SmoothPixmapTransform, true );
+  if ( !QgsWebEnginePage::renderBlocking( mEvaluatedHtml, &painter, QRectF( 0, 0, widthCssPx, 9999 ), errorMessage, mResolvedBaseUrl, nullptr ) )
+  {
+    QgsDebugError( errorMessage );
+  }
+  painter.end();
+
+  const QRectF pictureBoundsCssPx = QRectF( mRenderedPicture.boundingRect() );
+  const double heightCssPx = pictureBoundsCssPx.isEmpty() ? 0.0 : pictureBoundsCssPx.bottom();
+
+  mSize = QSizeF( frameWidthLayoutUnits, heightCssPx * unitsPerCssPx );
+
+  const QSize pageSizeCssPx( static_cast< int >( std::ceil( widthCssPx ) ), static_cast< int >( std::ceil( heightCssPx ) ) );
+  if ( mUseSmartBreaks && !pageSizeCssPx.isEmpty() )
+  {
+    mRenderedPage = QImage( pageSizeCssPx, QImage::Format_ARGB32 );
+    mRenderedPage.fill( Qt::transparent );
+    QPainter imagePainter( &mRenderedPage );
+    QgsPainting::drawPicture( &imagePainter, QPointF( 0, 0 ), mRenderedPicture );
+    imagePainter.end();
+  }
+  else
+  {
+    mRenderedPage = QImage();
+  }
+
+  mPictureRasterizer->setPicture( mRenderedPicture );
+
+  recalculateFrameSizes();
   emit contentsChanged();
 }
 
@@ -272,62 +454,28 @@ void QgsLayoutItemHtml::recalculateFrameSizes()
   if ( frameCount() < 1 )
     return;
 
-  if ( !mWebPage )
-    return;
-
-  QSize contentsSize = mWebPage->mainFrame()->contentsSize();
-
-  //find maximum frame width
-  const double maxWidth = maxFrameWidth();
-  //set content width to match maximum frame width
-  contentsSize.setWidth( maxWidth * mHtmlUnitsToLayoutUnits );
-
-  mWebPage->setViewportSize( contentsSize );
-  mSize.setWidth( contentsSize.width() / mHtmlUnitsToLayoutUnits );
-  mSize.setHeight( contentsSize.height() / mHtmlUnitsToLayoutUnits );
-  if ( contentsSize.isValid() )
+  if ( !mFetching )
   {
-    renderCachedImage();
+    const double currentWidth = maxFrameWidth();
+    if ( !qgsDoubleNear( currentWidth, mLastRenderedWidth ) && !mEvaluatedHtml.isEmpty() )
+    {
+      mCacheInvalidated = true;
+      if ( !mLayout || !mLayout->renderContext().isPreviewRender() )
+      {
+        mBackgroundUpdateTimer->stop();
+        cancelRunningRenderJob( false );
+        renderHtmlSynchronously();
+        return;
+      }
+      else
+      {
+        mBackgroundUpdateTimer->start( 1 );
+      }
+    }
   }
+
   QgsLayoutMultiFrame::recalculateFrameSizes();
   emit changed();
-}
-
-void QgsLayoutItemHtml::renderCachedImage()
-{
-  if ( !mWebPage )
-    return;
-
-  //render page to cache image
-  mRenderedPage = QImage( mWebPage->viewportSize(), QImage::Format_ARGB32 );
-  if ( mRenderedPage.isNull() )
-  {
-    return;
-  }
-  mRenderedPage.fill( Qt::transparent );
-  QPainter painter;
-  painter.begin( &mRenderedPage );
-  mWebPage->mainFrame()->render( &painter );
-  painter.end();
-}
-
-QString QgsLayoutItemHtml::fetchHtml( const QUrl &url )
-{
-  //pause until HTML fetch
-  bool loaded = false;
-  QEventLoop loop;
-  connect( mFetcher, &QgsNetworkContentFetcher::finished, &loop, [&loaded, &loop] {
-    loaded = true;
-    loop.quit();
-  } );
-  mFetcher->fetchContent( url );
-
-  if ( !loaded )
-    loop.exec( QEventLoop::ExcludeUserInputEvents );
-
-  mFetchedHtml = mFetcher->contentAsString();
-  mActualFetchedUrl = mFetcher->reply()->url().toString();
-  return mFetchedHtml;
 }
 
 QSizeF QgsLayoutItemHtml::totalSize() const
@@ -337,6 +485,81 @@ QSizeF QgsLayoutItemHtml::totalSize() const
 
 void QgsLayoutItemHtml::render( QgsLayoutItemRenderContext &context, const QRectF &renderExtent, const int frameIndex )
 {
+#if defined( HAVE_WEBENGINE ) && defined( HAVE_PDF4QT )
+  QPainter *painter = context.renderContext().painter();
+  if ( !painter )
+    return;
+
+  if ( mLayout->renderContext().isPreviewRender() )
+  {
+    const double currentScaleFactor = context.renderContext().scaleFactor();
+
+    if ( !mFetching && ( mCacheInvalidated || !qgsDoubleNear( maxFrameWidth(), mLastRenderedWidth ) ) && !mRenderJob && !mBackgroundUpdateTimer->isActive() && !mEvaluatedHtml.isEmpty() )
+    {
+      mBackgroundUpdateTimer->start( 1 );
+    }
+
+    // main thread preview render ONLY draws the rasterized QImage from QgsPictureRasterizer
+    const QSize targetPixelSize = ( mSize * currentScaleFactor ).toSize();
+    const QImage previewImage = mPictureRasterizer->image( targetPixelSize );
+
+    if ( !previewImage.isNull() && !mSize.isEmpty() )
+    {
+      const QgsScopedQPainterState painterState( painter );
+      painter->scale( currentScaleFactor, currentScaleFactor );
+      painter->translate( -renderExtent.left(), -renderExtent.top() );
+      painter->setClipRect( renderExtent, Qt::IntersectClip );
+      painter->setRenderHint( QPainter::SmoothPixmapTransform, true );
+      painter->drawImage( QRectF( QPointF( 0, 0 ), mSize ), previewImage );
+    }
+    else if ( mFetching || mRenderJob || mBackgroundUpdateTimer->isActive() || mPictureRasterizer->isRendering() )
+    {
+      if ( QgsLayoutFrame *currentFrame = frame( frameIndex ) )
+      {
+        const QgsScopedQPainterState painterState( painter );
+        painter->scale( currentScaleFactor, currentScaleFactor );
+        const QRectF frameRect( 0, 0, currentFrame->rect().width(), currentFrame->rect().height() );
+        painter->setBrush( QBrush( QColor( 125, 125, 125, 125 ) ) );
+        painter->setPen( Qt::NoPen );
+        painter->drawRect( frameRect );
+        painter->setBrush( Qt::NoBrush );
+
+        QFont messageFont;
+        messageFont.setPointSize( 12 );
+        painter->setFont( messageFont );
+        painter->setPen( QColor( 255, 255, 255, 255 ) );
+        painter->drawText( frameRect, Qt::AlignCenter, tr( "Rendering HTML" ) );
+      }
+    }
+    return;
+  }
+
+  if ( mFetching )
+  {
+    waitForPendingFetch();
+  }
+
+  if ( mCacheInvalidated || mRenderJob || !qgsDoubleNear( maxFrameWidth(), mLastRenderedWidth ) )
+  {
+    mBackgroundUpdateTimer->stop();
+    cancelRunningRenderJob( false );
+    renderHtmlSynchronously();
+  }
+
+  const QgsScopedQPainterState painterState( painter );
+  painter->setRenderHint( QPainter::Antialiasing );
+  painter->setRenderHint( QPainter::SmoothPixmapTransform );
+
+  // painter is scaled to dots; scale back to layout units
+  painter->scale( context.renderContext().scaleFactor(), context.renderContext().scaleFactor() );
+  painter->translate( -renderExtent.left(), -renderExtent.top() );
+  painter->setClipRect( renderExtent, Qt::IntersectClip );
+  // scale from CSS pixels (mRenderedPicture's coordinate space) to layout units
+  const double unitsPerCssPx = layoutUnitsPerCssPixel();
+  painter->scale( unitsPerCssPx, unitsPerCssPx );
+
+  QgsPainting::drawPicture( painter, QPointF( 0, 0 ), mRenderedPicture );
+#else
   Q_UNUSED( renderExtent )
   if ( mLayout->renderContext().isPreviewRender() )
   {
@@ -368,16 +591,49 @@ void QgsLayoutItemHtml::render( QgsLayoutItemRenderContext &context, const QRect
       td.documentLayout()->draw( painter, ctx );
     }
   }
+#endif
 }
 
-double QgsLayoutItemHtml::htmlUnitsToLayoutUnits()
+double QgsLayoutItemHtml::layoutUnitsPerCssPixel() const
 {
   if ( !mLayout )
-  {
-    return 1.0;
-  }
+    return 25.4 / 96.0;
 
-  return mLayout->convertToLayoutUnits( QgsLayoutMeasurement( mLayout->renderContext().dpi() / 72.0, Qgis::LayoutUnit::Millimeters ) ); //webkit seems to assume a standard dpi of 96
+  return mLayout->convertToLayoutUnits( QgsLayoutMeasurement( 1.0, Qgis::LayoutUnit::Inches ) ) / 96.0;
+}
+
+void QgsLayoutItemHtml::cancelRunningRenderJob( bool block )
+{
+  if ( !mRenderJob )
+    return;
+
+  disconnect( mRenderJob.get(), &QgsLayoutItemHtmlRenderJob::finished, this, &QgsLayoutItemHtml::htmlRenderFinished );
+  if ( block )
+  {
+    mRenderJob->cancelAndWait();
+    mRenderJob.reset();
+  }
+  else
+  {
+    QgsLayoutItemHtmlRenderJob *oldJob = mRenderJob.release();
+    connect( oldJob, &QgsLayoutItemHtmlRenderJob::finished, oldJob, &QObject::deleteLater );
+    oldJob->cancelWithoutBlocking();
+  }
+}
+
+void QgsLayoutItemHtml::updateFrames()
+{
+  for ( QgsLayoutFrame *frame : std::as_const( mFrameItems ) )
+  {
+    if ( frame )
+      frame->update();
+  }
+}
+
+void QgsLayoutItemHtml::invalidateCache()
+{
+  mPictureRasterizer->invalidate();
+  updateFrames();
 }
 
 bool candidateSort( QPair<int, int> c1, QPair<int, int> c2 )
@@ -394,13 +650,14 @@ bool candidateSort( QPair<int, int> c1, QPair<int, int> c2 )
 
 double QgsLayoutItemHtml::findNearbyPageBreak( double yPos )
 {
-  if ( !mWebPage || mRenderedPage.isNull() || !mUseSmartBreaks )
+  if ( mRenderedPage.isNull() || !mUseSmartBreaks )
   {
     return yPos;
   }
 
+  const double unitsPerCssPx = layoutUnitsPerCssPixel();
   //convert yPos to pixels
-  const int idealPos = yPos * htmlUnitsToLayoutUnits();
+  const int idealPos = static_cast< int >( yPos / unitsPerCssPx );
 
   //if ideal break pos is past end of page, there's nothing we need to do
   if ( idealPos >= mRenderedPage.height() )
@@ -408,7 +665,7 @@ double QgsLayoutItemHtml::findNearbyPageBreak( double yPos )
     return yPos;
   }
 
-  const int maxSearchDistance = mMaxBreakDistance * htmlUnitsToLayoutUnits();
+  const int maxSearchDistance = static_cast< int >( mMaxBreakDistance / unitsPerCssPx );
 
   //loop through all lines just before ideal break location, up to max distance
   //of maxSearchDistance
@@ -462,20 +719,37 @@ double QgsLayoutItemHtml::findNearbyPageBreak( double yPos )
     {
       //no longer in a consecutive block of rows of minimum pixel color changes
       //so return the row mid-way through the block
-      //first converting back to mm
-      return ( minCandidateRow + ( maxCandidateRow - minCandidateRow ) / 2 ) / htmlUnitsToLayoutUnits();
+      //first converting back to layout units
+      return ( minCandidateRow + ( maxCandidateRow - minCandidateRow ) / 2 ) * unitsPerCssPx;
     }
     minCandidateRow = ( *it ).first;
   }
 
   //above loop didn't work for some reason
-  //return first candidate converted to mm
-  return candidates[0].first / htmlUnitsToLayoutUnits();
+  //return first candidate converted to layout units
+  return candidates[0].first * unitsPerCssPx;
 }
 
 void QgsLayoutItemHtml::setUseSmartBreaks( bool useSmartBreaks )
 {
+  if ( mUseSmartBreaks == useSmartBreaks )
+    return;
+
   mUseSmartBreaks = useSmartBreaks;
+  if ( mUseSmartBreaks && mRenderedPage.isNull() && !mRenderedPicture.isNull() && !mSize.isEmpty() )
+  {
+    const double unitsPerCssPx = layoutUnitsPerCssPixel();
+    const QSize pageSizeCssPx( static_cast< int >( std::ceil( mSize.width() / unitsPerCssPx ) ), static_cast< int >( std::ceil( mSize.height() / unitsPerCssPx ) ) );
+    if ( !pageSizeCssPx.isEmpty() )
+    {
+      mRenderedPage = QImage( pageSizeCssPx, QImage::Format_ARGB32 );
+      mRenderedPage.fill( Qt::transparent );
+      QPainter imagePainter( &mRenderedPage );
+      QgsPainting::drawPicture( &imagePainter, QPointF( 0, 0 ), mRenderedPicture );
+      imagePainter.end();
+    }
+  }
+
   recalculateFrameSizes();
   emit changed();
 }
@@ -545,11 +819,15 @@ bool QgsLayoutItemHtml::readPropertiesFromElement( const QDomElement &itemElem, 
   {
     mUrl = urlString;
   }
-  loadHtml( true );
 
   //since frames had to be created before, we need to emit a changed signal to refresh the widget
   emit changed();
   return true;
+}
+
+bool QgsLayoutItemHtml::renderInProgress() const
+{
+  return mFetching || mRenderJob || mBackgroundUpdateTimer->isActive() || ( mPictureRasterizer && mPictureRasterizer->isRendering() );
 }
 
 void QgsLayoutItemHtml::setExpressionContext( const QgsFeature &feature, QgsVectorLayer *layer )
@@ -613,31 +891,68 @@ void QgsLayoutItemHtml::refreshDataDefinedProperty( const QgsLayoutObject::DataD
   }
 }
 
-//JavascriptExecutorLoop
-///@cond PRIVATE
 
-void JavascriptExecutorLoop::done()
+//
+// QgsLayoutItemHtmlRenderJob
+//
+
+QgsLayoutItemHtmlRenderJob::QgsLayoutItemHtmlRenderJob( const QString &html, const QUrl &baseUrl, double frameWidthLayoutUnits, double unitsPerCssPx )
+  : mHtml( html )
+  , mBaseUrl( baseUrl )
+  , mFrameWidthLayoutUnits( frameWidthLayoutUnits )
+  , mUnitsPerCssPx( unitsPerCssPx )
 {
-  mDone = true;
-  quit();
+  connect( &mWatcher, &QFutureWatcher< void >::finished, this, &QgsLayoutItemHtmlRenderJob::finished );
 }
 
-void JavascriptExecutorLoop::execIfNotDone()
+void QgsLayoutItemHtmlRenderJob::start()
 {
-  if ( !mDone )
-    exec( QEventLoop::ExcludeUserInputEvents );
-
-  // gross, but nothing else works, so f*** it.. it's not worth spending a day trying to find a non-hacky way
-  // to force the web page to update following the js execution
-  for ( int i = 0; i < 100; i++ )
-    qApp->processEvents();
+  mWatcher.setFuture( QtConcurrent::run( [this]() { run(); } ) );
 }
 
-void JavascriptExecutorLoop::reportError( const QString &error )
+void QgsLayoutItemHtmlRenderJob::cancelWithoutBlocking()
 {
-  mDone = true;
-  QgsMessageLog::logMessage( tr( "HTML setFeature function error: %1" ).arg( error ), tr( "Layout" ) );
-  quit();
+  mFeedback.cancel();
 }
 
-///@endcond
+void QgsLayoutItemHtmlRenderJob::cancelAndWait()
+{
+  mFeedback.cancel();
+  mWatcher.waitForFinished();
+}
+
+bool QgsLayoutItemHtmlRenderJob::isCanceled() const
+{
+  return mFeedback.isCanceled();
+}
+
+void QgsLayoutItemHtmlRenderJob::run()
+{
+#if defined( HAVE_WEBENGINE ) && defined( HAVE_PDF4QT )
+  const double widthCssPx = mFrameWidthLayoutUnits / mUnitsPerCssPx;
+
+  QPainter painter( &mPicture );
+  mSuccess = QgsWebEnginePage::renderBlocking( mHtml, &painter, QRectF( 0, 0, widthCssPx, 9999 ), mErrorMessage, mBaseUrl, &mFeedback );
+  painter.end();
+
+  if ( mFeedback.isCanceled() )
+    return;
+
+  const QRectF boundsCssPx = QRectF( mPicture.boundingRect() );
+  const double heightCssPx = boundsCssPx.isEmpty() ? 0.0 : boundsCssPx.bottom();
+  mSize = QSizeF( mFrameWidthLayoutUnits, heightCssPx * mUnitsPerCssPx );
+
+  const QSize pageSizeCssPx( static_cast< int >( std::ceil( widthCssPx ) ), static_cast< int >( std::ceil( heightCssPx ) ) );
+  if ( !pageSizeCssPx.isEmpty() )
+  {
+    mRenderedPage = QImage( pageSizeCssPx, QImage::Format_ARGB32 );
+    mRenderedPage.fill( Qt::transparent );
+    QPainter imagePainter( &mRenderedPage );
+    QgsPainting::drawPicture( &imagePainter, QPointF( 0, 0 ), mPicture );
+    imagePainter.end();
+  }
+#else
+  mSuccess = false;
+  mErrorMessage = tr( "Rendering HTML requires a QGIS build with WebEngine and PDF4QT support" );
+#endif
+}

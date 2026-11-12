@@ -10,6 +10,7 @@
 
 
 
+
 class QgsLayoutItemHtml : QgsLayoutMultiFrame
 {
 %Docstring(signature="appended")
@@ -261,10 +262,23 @@ Recalculates the frame sizes for the current viewport dimensions
     virtual void refreshDataDefinedProperty( QgsLayoutObject::DataDefinedProperty property = QgsLayoutObject::DataDefinedProperty::AllProperties );
 
 
+    void invalidateCache();
+
+  signals:
+
+    void previewRefreshed();
+%Docstring
+Emitted whenever the item's preview has been refreshed.
+
+.. versionadded:: 4.4
+%End
+
   protected:
     virtual bool writePropertiesToElement( QDomElement &elem, QDomDocument &doc, const QgsReadWriteContext &context ) const;
 
     virtual bool readPropertiesFromElement( const QDomElement &itemElem, const QDomDocument &doc, const QgsReadWriteContext &context );
+
+    virtual bool renderInProgress() const;
 
 
 };

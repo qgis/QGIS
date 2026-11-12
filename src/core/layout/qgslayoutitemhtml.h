@@ -20,8 +20,11 @@
 #include "qgis_sip.h"
 #include "qgsdistancearea.h"
 #include "qgsfeature.h"
+#include "qgsfeedback.h"
 #include "qgslayoutmultiframe.h"
 
+#include <QFutureWatcher>
+#include <QPicture>
 #include <QUrl>
 
 class QgsWebPage;
@@ -29,6 +32,53 @@ class QImage;
 class QgsLayoutItemLabel;
 class QgsVectorLayer;
 class QgsNetworkContentFetcher;
+class QgsPictureRasterizer;
+
+///@cond PRIVATE
+#ifndef SIP_RUN
+class QgsLayoutItemHtmlRenderJob : public QObject
+{
+    Q_OBJECT
+
+  public:
+    QgsLayoutItemHtmlRenderJob( const QString &html, const QUrl &baseUrl, double frameWidthLayoutUnits, double unitsPerCssPx );
+
+    void start();
+
+    void cancelWithoutBlocking();
+
+    void cancelAndWait();
+
+    bool isCanceled() const;
+    bool success() const { return mSuccess; }
+    QString errorMessage() const { return mErrorMessage; }
+    double frameWidthLayoutUnits() const { return mFrameWidthLayoutUnits; }
+    QSizeF size() const { return mSize; }
+    QPicture picture() const { return mPicture; }
+    QImage renderedPage() const { return mRenderedPage; }
+
+  signals:
+    void finished();
+
+  private:
+    void run();
+
+    QString mHtml;
+    QUrl mBaseUrl;
+    double mFrameWidthLayoutUnits = 0.0;
+    double mUnitsPerCssPx = 1.0;
+
+    QgsFeedback mFeedback;
+    QFutureWatcher< void > mWatcher;
+
+    bool mSuccess = false;
+    QString mErrorMessage;
+    QSizeF mSize;
+    QPicture mPicture;
+    QImage mRenderedPage;
+};
+#endif
+///@endcond PRIVATE
 
 /**
  * \ingroup core
@@ -233,21 +283,40 @@ class CORE_EXPORT QgsLayoutItemHtml : public QgsLayoutMultiFrame
 
     void refreshDataDefinedProperty( QgsLayoutObject::DataDefinedProperty property = QgsLayoutObject::DataDefinedProperty::AllProperties ) override;
 
+    void invalidateCache();
+
+  signals:
+
+    /**
+     * Emitted whenever the item's preview has been refreshed.
+     *
+     * \since QGIS 4.4
+     */
+    void previewRefreshed();
+
   protected:
     bool writePropertiesToElement( QDomElement &elem, QDomDocument &doc, const QgsReadWriteContext &context ) const override;
     bool readPropertiesFromElement( const QDomElement &itemElem, const QDomDocument &doc, const QgsReadWriteContext &context ) override;
+    bool renderInProgress() const override;
+
+  private slots:
+    void onHtmlFetched();
+    void recreateCachedImageInBackground();
+    void htmlRenderFinished();
 
   private:
     ContentMode mContentMode = QgsLayoutItemHtml::Url;
     QUrl mUrl;
-    std::unique_ptr< QgsWebPage > mWebPage;
     QString mHtml;
     QString mFetchedHtml;
+    bool mHasFetchedHtml = false;
     QString mLastFetchedUrl;
     QString mActualFetchedUrl; //may be different if page was redirected
-    QSizeF mSize;              //total size in mm
-    double mHtmlUnitsToLayoutUnits = 1.0;
+    QSizeF mSize;              //total size in layout units
+
+    QPicture mRenderedPicture;
     QImage mRenderedPage;
+
     bool mEvaluateExpressions = true;
     bool mUseSmartBreaks = true;
     double mMaxBreakDistance = 10.0;
@@ -263,14 +332,29 @@ class CORE_EXPORT QgsLayoutItemHtml : public QgsLayoutMultiFrame
     QString mAtlasFeatureJSON;
 
     QgsNetworkContentFetcher *mFetcher = nullptr;
+    bool mFetching = false;
+    QString mPendingFetchUrl;
+    std::optional< QgsExpressionContext > mPendingExpressionContext;
 
-    double htmlUnitsToLayoutUnits(); //calculate scale factor
+    QString mEvaluatedHtml;
+    QUrl mResolvedBaseUrl;
+    double mLastRenderedWidth = -1.0;
+    bool mCacheInvalidated = true;
+    QTimer *mBackgroundUpdateTimer = nullptr;
+    std::unique_ptr< QgsLayoutItemHtmlRenderJob > mRenderJob;
+    QgsPictureRasterizer *mPictureRasterizer = nullptr;
 
-    //renders a snapshot of the page to a cached image
-    void renderCachedImage();
+    double layoutUnitsPerCssPixel() const; //calculate scale factor
 
-    //fetches html content from a url and returns it as a string
-    QString fetchHtml( const QUrl &url );
+    void startFetchHtml( const QUrl &url );
+    void cancelPendingFetch();
+    void waitForPendingFetch();
+    void finalizeLoadedHtml( const QString &rawHtml, const QUrl &baseUrl, const QgsExpressionContext *context );
+
+    void renderHtmlSynchronously();
+    void cancelRunningRenderJob( bool block );
+
+    void updateFrames();
 
     //! Sets the current feature, the current layer and a list of local variable substitutions for evaluating expressions
     void setExpressionContext( const QgsFeature &feature, QgsVectorLayer *layer );
@@ -284,21 +368,5 @@ class CORE_EXPORT QgsLayoutItemHtml : public QgsLayoutMultiFrame
     QgsLayoutItemHtml &operator=( const QgsLayoutItemHtml & ) = delete;
 };
 
-///@cond PRIVATE
-#ifndef SIP_RUN
-class JavascriptExecutorLoop : public QEventLoop
-{
-    Q_OBJECT
-  public slots:
-
-    void done();
-    void execIfNotDone();
-    void reportError( const QString &error );
-
-  private:
-    bool mDone = false;
-};
-#endif
-///@endcond
 
 #endif // QGSLAYOUTITEMHTML_H
