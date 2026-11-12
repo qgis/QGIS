@@ -41,7 +41,7 @@ class QgsLayoutItemHtmlRenderJob : public QObject
     Q_OBJECT
 
   public:
-    QgsLayoutItemHtmlRenderJob( const QString &html, const QUrl &baseUrl, double frameWidthLayoutUnits, double unitsPerCssPx );
+    QgsLayoutItemHtmlRenderJob( const QString &html, const QUrl &baseUrl, const QString &userStylesheet, double frameWidthLayoutUnits, double unitsPerCssPx );
 
     void start();
 
@@ -65,6 +65,7 @@ class QgsLayoutItemHtmlRenderJob : public QObject
 
     QString mHtml;
     QUrl mBaseUrl;
+    QString mUserStylesheet;
     double mFrameWidthLayoutUnits = 0.0;
     double mUnitsPerCssPx = 1.0;
 
