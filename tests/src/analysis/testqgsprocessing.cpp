@@ -2608,7 +2608,7 @@ void TestQgsProcessing::createFeatureSinkPostgres()
   std::unique_ptr<QgsFeatureSink> sink;
   try
   {
-    sink.reset( QgsProcessingUtils::createFeatureSink( destination, context, fields, Qgis::WkbType::Polygon, QgsCoordinateReferenceSystem::fromEpsgId( 3111 ) ) );
+    sink = QgsProcessingUtils::createFeatureSink( destination, context, fields, Qgis::WkbType::Polygon, QgsCoordinateReferenceSystem::fromEpsgId( 3111 ) );
   }
   catch ( QgsProcessingException &e )
   {
