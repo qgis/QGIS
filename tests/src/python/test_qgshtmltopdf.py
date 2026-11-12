@@ -15,6 +15,7 @@ import subprocess
 import sys
 import tempfile
 
+from qgis.core import QgsApplication
 from qgis.PyQt.QtGui import QImage
 from qgis.testing import QgisTestCase, unittest
 from utilities import start_app, unitTestDataPath
@@ -130,8 +131,8 @@ class TestQgsHtmlToPdf(QgisTestCase):
 if __name__ == "__main__":
     # look for qgis bin path
     QGIS_HTML_TO_PDF_BIN = ""
-    prefixPath = os.environ["QGIS_PREFIX_PATH"]
-    # see qgsapplication.cpp:98
+
+    prefixPath = QgsApplication.libexecPath()
     for f in ["", "..", "bin"]:
         d = os.path.join(prefixPath, f)
         b = os.path.abspath(os.path.join(d, "qgis_html_to_pdf"))
@@ -155,7 +156,7 @@ if __name__ == "__main__":
             if found:
                 break
 
-    print(f"\nQGIS_PROCESS_BIN: {QGIS_HTML_TO_PDF_BIN}")
+    print(f"\nQGIS_HTML_TO_PDF_BIN: {QGIS_HTML_TO_PDF_BIN}")
     assert QGIS_HTML_TO_PDF_BIN, (
         "qgis_html_to_pdf binary not found, skipping test suite"
     )
