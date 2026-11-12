@@ -614,6 +614,8 @@ void QgsLayout::addMultiFrame( QgsLayoutMultiFrame *multiFrame )
 
   if ( !mMultiFrames.contains( multiFrame ) )
     mMultiFrames << multiFrame;
+
+  connect( multiFrame, &QgsLayoutMultiFrame::backgroundTaskCountChanged, this, &QgsLayout::multiFrameBackgroundTaskCountChanged );
 }
 
 void QgsLayout::removeMultiFrame( QgsLayoutMultiFrame *multiFrame )
@@ -1236,6 +1238,35 @@ void QgsLayout::itemBackgroundTaskCountChanged( int count )
   // sum up new count of background tasks
   int total = 0;
   for ( auto it = mBackgroundTaskCount.constBegin(); it != mBackgroundTaskCount.constEnd(); ++it )
+  {
+    total += it.value();
+  }
+  for ( auto it = mMultiFrameBackgroundTaskCount.constBegin(); it != mMultiFrameBackgroundTaskCount.constEnd(); ++it )
+  {
+    total += it.value();
+  }
+
+  emit backgroundTaskCountChanged( total );
+}
+
+void QgsLayout::multiFrameBackgroundTaskCountChanged( int count )
+{
+  QgsLayoutMultiFrame *multiFrame = qobject_cast<QgsLayoutMultiFrame *>( sender() );
+  if ( !multiFrame )
+    return;
+
+  if ( count > 0 )
+    mMultiFrameBackgroundTaskCount.insert( multiFrame, count );
+  else
+    mMultiFrameBackgroundTaskCount.remove( multiFrame );
+
+  // sum up new count of background tasks
+  int total = 0;
+  for ( auto it = mBackgroundTaskCount.constBegin(); it != mBackgroundTaskCount.constEnd(); ++it )
+  {
+    total += it.value();
+  }
+  for ( auto it = mMultiFrameBackgroundTaskCount.constBegin(); it != mMultiFrameBackgroundTaskCount.constEnd(); ++it )
   {
     total += it.value();
   }

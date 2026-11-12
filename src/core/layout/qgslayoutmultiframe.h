@@ -378,6 +378,13 @@ class CORE_EXPORT QgsLayoutMultiFrame : public QgsLayoutObject, public QgsLayout
      */
     void contentsChanged();
 
+    /**
+     * Emitted whenever the number of background tasks the multi frame is executing changes.
+     *
+     * \since QGIS 4.4
+     */
+    void backgroundTaskCountChanged( int count );
+
   protected:
     /**
      * Stores multiframe state within an XML DOM element.

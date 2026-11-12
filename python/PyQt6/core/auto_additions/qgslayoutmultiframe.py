@@ -16,10 +16,11 @@ QgsLayoutMultiFrame.UndoTableGridColor = QgsLayoutMultiFrame.UndoCommand.UndoTab
 QgsLayoutMultiFrame.UndoTableBackgroundColor = QgsLayoutMultiFrame.UndoCommand.UndoTableBackgroundColor
 QgsLayoutMultiFrame.UndoNone = QgsLayoutMultiFrame.UndoCommand.UndoNone
 try:
-    QgsLayoutMultiFrame.__attribute_docs__ = {'contentsChanged': 'Emitted when the contents of the multi frame have changed and the frames\nmust be redrawn.\n'}
+    QgsLayoutMultiFrame.__attribute_docs__ = {'contentsChanged': 'Emitted when the contents of the multi frame have changed and the frames\nmust be redrawn.\n', 'backgroundTaskCountChanged': 'Emitted whenever the number of background tasks the multi frame is\nexecuting changes.\n\n.. versionadded:: 4.4\n'}
     QgsLayoutMultiFrame.__virtual_methods__ = ['icon', 'fixedFrameSize', 'minFrameSize', 'addFrame', 'findNearbyPageBreak', 'displayName', 'finalizeRestoreFromXml', 'recalculateFrameSizes', 'refreshDataDefinedProperty', 'writePropertiesToElement', 'readPropertiesFromElement', 'renderInProgress']
     QgsLayoutMultiFrame.__abstract_methods__ = ['totalSize', 'type', 'render']
     QgsLayoutMultiFrame.__overridden_methods__ = ['createCommand', 'createExpressionContext', 'refresh']
+    QgsLayoutMultiFrame.__signal_arguments__ = {'backgroundTaskCountChanged': ['count: int']}
     QgsLayoutMultiFrame.__group__ = ['layout']
 except (NameError, AttributeError):
     pass
