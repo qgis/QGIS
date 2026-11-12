@@ -1730,7 +1730,7 @@ namespace QgsWms
             }
             QDomElement attributeElem = doc.createElement( u"Attribute"_s );
             attributeElem.setAttribute( u"name"_s, field.name() );
-            attributeElem.setAttribute( u"type"_s, QVariant::typeToName( field.type() ) );
+            attributeElem.setAttribute( u"type"_s, QMetaType( field.type() ).name() );
             attributeElem.setAttribute( u"typeName"_s, field.typeName() );
             QString alias = field.alias();
             if ( !alias.isEmpty() )

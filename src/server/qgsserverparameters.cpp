@@ -47,7 +47,7 @@ QgsServerParameterDefinition::QgsServerParameterDefinition( const QVariant::Type
 
 QString QgsServerParameterDefinition::typeName() const
 {
-  return QVariant::typeToName( mType );
+  return QMetaType( mType ).name();
 }
 
 QColor QgsServerParameterDefinition::toColor( bool &ok ) const
