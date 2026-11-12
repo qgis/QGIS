@@ -34,6 +34,8 @@ using namespace Qt::StringLiterals;
 #include <QWebEngineLoadingInfo>
 #include <QWebEngineProfile>
 #include <QWebEngineSettings>
+#include <QJsonArray>
+#include <QJsonDocument>
 #include <QFileInfo>
 #include <QDir>
 
@@ -70,12 +72,13 @@ QgsHtmlToPdf::QgsHtmlToPdf()
   connect( &mPage, &QWebEnginePage::pdfPrintingFinished, this, &QgsHtmlToPdf::onPdfFinished );
 }
 
-void QgsHtmlToPdf::run( const QString &url, const QString &pdfFileName, int width, const QString &userAgent, const QString &baseUrl )
+void QgsHtmlToPdf::run( const QString &url, const QString &pdfFileName, int width, const QString &userAgent, const QString &baseUrl, const QString &userStylesheet )
 {
   mPdfFileName = pdfFileName;
   mWidth = width;
   mUserAgent = userAgent;
   mBaseUrl = baseUrl;
+  mUserStylesheet = userStylesheet;
 
   if ( !mUserAgent.isEmpty() )
   {
@@ -113,6 +116,11 @@ void QgsHtmlToPdf::onLoadFinished( bool ok )
     return;
   }
 
+  // NOTE:
+  // the only option for user stylesheets is injecting javascript -- see
+  // https://doc.qt.io/qt-5/qtwebengine-webenginewidgets-stylesheetbrowser-example.html
+  // https://bugreports.qt.io/browse/QTBUG-51192?jql=text%20~%20%22setUserStyleSheetUrl%22
+
   // a whole lot of unreliable approaches to try to constrain the page to a desired width
   // and then get the actual CONTENT height. The current iteration works ok for basic HTML... but
   // not so well if there's fancy javascript involved which changes the page height. Feel free to
@@ -137,6 +145,15 @@ void QgsHtmlToPdf::onLoadFinished( bool ok )
         }
       `;
       (document.head || document.documentElement).appendChild(style);
+
+      const userCss = %2[0];
+      if (userCss) {
+        const userStyle = document.createElement('style');
+        userStyle.type = 'text/css';
+        userStyle.id = '__qgis_user_stylesheet';
+        userStyle.textContent = userCss;
+        (document.head || document.documentElement).appendChild(userStyle);
+      }
 
       const targetWidth = %1;
 
@@ -183,7 +200,9 @@ void QgsHtmlToPdf::onLoadFinished( bool ok )
       return [contentWidth, contentHeight];
     })()
   )js"_s )
-                               .arg( mWidth );
+                               .arg( mWidth )
+                               .arg( QString::fromUtf8( QJsonDocument( QJsonArray { mUserStylesheet } ).toJson( QJsonDocument::Compact ) ) );
+  ;
 
   mPage.runJavaScript( jsTemplate, [this]( QVariant res ) { onLoadJsFinished( res ); } );
 }

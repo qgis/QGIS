@@ -127,6 +127,40 @@ class TestQgsHtmlToPdf(QgisTestCase):
                 )
             )
 
+    def test_user_stylesheet(self):
+        with tempfile.TemporaryDirectory() as tmp_dir:
+            html_path = tmp_dir + "/test.html"
+            with open(html_path, "w", encoding="utf8") as f_out:
+                f_out.write("""
+                <html>
+                <body>
+                <div style="background-color: yellow; width: 100%; border: 3px solid blue; height: 30px">\
+                </div>
+                """)
+
+            pdf_path = tmp_dir + "/test.pdf"
+            png_path = tmp_dir + "/test.png"
+            rc, output, err = self.run_html_to_pdf(
+                [
+                    html_path,
+                    pdf_path,
+                    "--width=400",
+                    "--user-stylesheet=div { background-color: blue !important; border: 5px solid yellow  !important;}",
+                ]
+            )
+            self.assertEqual(rc, 0)
+
+            self.pdf_to_png(pdf_path, png_path, dpi=96, page=1)
+
+            image = QImage(png_path)
+            self.assertTrue(
+                self.image_check(
+                    "user_stylesheet",
+                    "user_stylesheet",
+                    image,
+                )
+            )
+
 
 if __name__ == "__main__":
     # look for qgis bin path
