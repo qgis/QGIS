@@ -21,6 +21,7 @@
 #include "qgs3dcameracontrolswidget.h"
 #include "qgs3ddebugwidget.h"
 #include "qgs3dmapcanvas.h"
+#include "qgs3dmapcanvastoolbarfactory.h"
 #include "qgs3dmapconfigwidget.h"
 #include "qgs3dmapexportsettings.h"
 #include "qgs3dmapexportwidget.h"
@@ -529,6 +530,13 @@ Qgs3DMapCanvasWidget::Qgs3DMapCanvasWidget( const QString &name, bool isDocked )
   layout->setSpacing( 0 );
   layout->addLayout( topLayout );
   layout->addWidget( mEditingToolBar );
+
+  // Add a layout for toolbars created by Qgs3DMapCanvasToolBarFactory (a plugin)
+  mFactoryToolBarsLayout = new QVBoxLayout;
+  mFactoryToolBarsLayout->setContentsMargins( 0, 0, 0, 0 );
+  mFactoryToolBarsLayout->setSpacing( 0 );
+  layout->addLayout( mFactoryToolBarsLayout );
+
   layout->addWidget( mMessageBar );
 
   mOpenGLSupported = isOpenGLSupported();
@@ -617,6 +625,34 @@ Qgs3DMapCanvasWidget::Qgs3DMapCanvasWidget( const QString &name, bool isDocked )
 
   toolBar->installEventFilter( this );
   mEditingToolBar->installEventFilter( this );
+}
+
+void Qgs3DMapCanvasWidget::addToolBarFromFactory( Qgs3DMapCanvasToolBarFactory *factory )
+{
+  if ( !factory || mFactoryToolBars.contains( factory ) )
+  {
+    return;
+  }
+
+  QToolBar *toolBar = factory->createToolBar( mCanvas, this );
+  if ( !toolBar )
+  {
+    return;
+  }
+
+  toolBar->setIconSize( QgsGui::iconSize( mDockableWidgetHelper->isDocked() ? Qgis::UserInterfaceIconType::DockedToolbar : Qgis::UserInterfaceIconType::MainWindowToolbar ) );
+
+  mFactoryToolBarsLayout->addWidget( toolBar );
+  mToolbarMenu->addAction( toolBar->toggleViewAction() );
+  toolBar->installEventFilter( this );
+
+  mFactoryToolBars.insert( factory, toolBar );
+}
+
+void Qgs3DMapCanvasWidget::removeToolBarFromFactory( Qgs3DMapCanvasToolBarFactory *factory )
+{
+  QToolBar *toolbar = mFactoryToolBars.take( factory );
+  delete toolbar;
 }
 
 Qgs3DMapCanvasWidget::~Qgs3DMapCanvasWidget()
