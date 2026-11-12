@@ -308,7 +308,7 @@ bool QgsWebEnginePage::doPrintToPdf( const QStringList &args, QString &errorMess
   return returnCode == 0;
 }
 
-bool QgsWebEnginePage::printToPdfBlocking( const QString &html, const QString &pdfFileName, QString &errorMessage, int width, const QUrl &baseUrl, QgsFeedback *feedback )
+bool QgsWebEnginePage::printToPdfBlocking( const QString &html, const QString &pdfFileName, QString &errorMessage, int width, const QgsHtmlRenderSettings &settings, QgsFeedback *feedback )
 {
   const QString executable = htmlToPdfExecutable();
   if ( executable.isEmpty() || !QFile::exists( executable ) )
@@ -330,15 +330,15 @@ bool QgsWebEnginePage::printToPdfBlocking( const QString &html, const QString &p
   outputFile.close();
 
   QStringList args { outputFilename, pdfFileName, u"--width=%1"_s.arg( width ) };
-  if ( !baseUrl.isEmpty() )
+  if ( !settings.baseUrl().isEmpty() )
   {
-    args.append( u"--base-url=%1"_s.arg( baseUrl.toString() ) );
+    args.append( u"--base-url=%1"_s.arg( settings.baseUrl().toString() ) );
   }
 
   return doPrintToPdf( args, errorMessage, feedback );
 }
 
-bool QgsWebEnginePage::printToPdfBlocking( const QUrl &url, const QString &pdfFileName, QString &errorMessage, int width, QgsFeedback *feedback )
+bool QgsWebEnginePage::printToPdfBlocking( const QUrl &url, const QString &pdfFileName, QString &errorMessage, int width, const QgsHtmlRenderSettings &settings, QgsFeedback *feedback )
 {
   const QString executable = htmlToPdfExecutable();
   if ( executable.isEmpty() || !QFile::exists( executable ) )
@@ -347,11 +347,18 @@ bool QgsWebEnginePage::printToPdfBlocking( const QUrl &url, const QString &pdfFi
     return false;
   }
 
-  const QStringList args { url.toString(), pdfFileName, u"--width=%1"_s.arg( width ) };
+  QStringList args { url.toString(), pdfFileName, u"--width=%1"_s.arg( width ) };
+  if ( !settings.baseUrl().isEmpty() )
+  {
+    args.append( u"--base-url=%1"_s.arg( settings.baseUrl().toString() ) );
+  }
+
   return doPrintToPdf( args, errorMessage, feedback );
 }
 
-bool QgsWebEnginePage::renderBlocking( const QString &html, QPainter *painter, const QRectF &painterRect, QString &errorMessage, QSizeF &renderedSize, const QUrl &baseUrl, QgsFeedback *feedback )
+bool QgsWebEnginePage::renderBlocking(
+  const QString &html, QPainter *painter, const QRectF &painterRect, QString &errorMessage, QSizeF &renderedSize, const QgsHtmlRenderSettings &settings, QgsFeedback *feedback
+)
 {
 #ifdef HAVE_PDF4QT
   const QTemporaryDir tempDir;
@@ -360,7 +367,7 @@ bool QgsWebEnginePage::renderBlocking( const QString &html, QPainter *painter, c
   const double dpi = ( painter && painter->device() ) ? painter->device()->logicalDpiX() : 96.0;
   const int cssWidth = std::max( 1, static_cast< int >( std::round( painterRect.width() * 96.0 / dpi ) ) );
 
-  if ( !printToPdfBlocking( html, renderedPdfPath, errorMessage, cssWidth, baseUrl, feedback ) )
+  if ( !printToPdfBlocking( html, renderedPdfPath, errorMessage, cssWidth, settings, feedback ) )
   {
     return false;
   }
@@ -396,7 +403,7 @@ bool QgsWebEnginePage::renderBlocking( const QString &html, QPainter *painter, c
 #endif
 }
 
-bool QgsWebEnginePage::renderBlocking( const QUrl &url, QPainter *painter, const QRectF &painterRect, QString &errorMessage, QSizeF &renderedSize, QgsFeedback *feedback )
+bool QgsWebEnginePage::renderBlocking( const QUrl &url, QPainter *painter, const QRectF &painterRect, QString &errorMessage, QSizeF &renderedSize, const QgsHtmlRenderSettings &settings, QgsFeedback *feedback )
 {
 #ifdef HAVE_PDF4QT
   const QTemporaryDir tempDir;
@@ -405,7 +412,7 @@ bool QgsWebEnginePage::renderBlocking( const QUrl &url, QPainter *painter, const
   const double dpi = ( painter && painter->device() ) ? painter->device()->logicalDpiX() : 96.0;
   const int cssWidth = std::max( 1, static_cast< int >( std::round( painterRect.width() * 96.0 / dpi ) ) );
 
-  if ( !printToPdfBlocking( url, renderedPdfPath, errorMessage, cssWidth, feedback ) )
+  if ( !printToPdfBlocking( url, renderedPdfPath, errorMessage, cssWidth, settings, feedback ) )
   {
     return false;
   }
@@ -435,6 +442,7 @@ bool QgsWebEnginePage::renderBlocking( const QUrl &url, QPainter *painter, const
   ( void ) errorMessage;
   ( void ) feedback;
   ( void ) renderedSize;
+  ( void ) settings;
   throw QgsNotSupportedException( QObject::tr( "Rendering HTML requires a QGIS build with PDF4Qt library support" ) );
 #endif
 }

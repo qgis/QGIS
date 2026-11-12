@@ -13,6 +13,34 @@
 
 
 
+class QgsHtmlRenderSettings
+{
+%Docstring(signature="appended")
+Encapsulates settings for rendering HTML content.
+
+.. versionadded:: 4.4
+%End
+
+%TypeHeaderCode
+#include "qgswebenginepage.h"
+%End
+  public:
+    QUrl baseUrl() const;
+%Docstring
+Returns the base URL used when resolving relative links.
+
+.. seealso:: :py:func:`setBaseUrl`
+%End
+
+    void setBaseUrl( const QUrl &url );
+%Docstring
+Sets the base ``url`` to use when resolving relative links.
+
+.. seealso:: :py:func:`baseUrl`
+%End
+
+};
+
 class QgsWebEnginePage : QObject
 {
 %Docstring(signature="appended")
@@ -126,7 +154,9 @@ in ``painter`` coordinates.
                                   support.
 %End
 
-    static bool printToPdfBlocking( const QString &html, const QString &pdfFileName, QString &errorMessage /Out/, int width, const QUrl &baseUrl = QUrl(), QgsFeedback *feedback = 0 );
+    static bool printToPdfBlocking(
+      const QString &html, const QString &pdfFileName, QString &errorMessage /Out/, int width, const QgsHtmlRenderSettings &settings = QgsHtmlRenderSettings(), QgsFeedback *feedback = 0
+    );
 %Docstring
 Renders HTML content to a PDF file asynchronously.
 
@@ -137,7 +167,7 @@ the HTML rendering or PDF generation.
 :param html: HTML content
 :param pdfFileName: destination filename for PDF
 :param width: page width
-:param baseUrl: base URL for relative references in HTML
+:param settings: optional HTML render settings
 :param feedback: optional feedback for early cancellation
 
 :return: - ``True`` if the printing was successful
@@ -147,7 +177,9 @@ the HTML rendering or PDF generation.
 .. versionadded:: 4.4
 %End
 
-    static bool printToPdfBlocking( const QUrl &url, const QString &pdfFileName, QString &errorMessage /Out/, int width, QgsFeedback *feedback = 0 );
+    static bool printToPdfBlocking(
+      const QUrl &url, const QString &pdfFileName, QString &errorMessage /Out/, int width, const QgsHtmlRenderSettings &settings = QgsHtmlRenderSettings(), QgsFeedback *feedback = 0
+    );
 %Docstring
 Renders HTML content to a PDF file asynchronously.
 
@@ -158,6 +190,7 @@ the HTML rendering or PDF generation.
 :param url: URL of HTML content
 :param pdfFileName: destination filename for PDF
 :param width: page width
+:param settings: optional HTML render settings
 :param feedback: optional feedback for early cancellation
 
 :return: - ``True`` if the printing was successful
@@ -168,7 +201,13 @@ the HTML rendering or PDF generation.
 %End
 
     static bool renderBlocking(
-      const QString &html, QPainter *painter, const QRectF &painterRect, QString &errorMessage /Out/, QSizeF &renderedSize /Out/, const QUrl &baseUrl = QUrl(), QgsFeedback *feedback = 0
+      const QString &html,
+      QPainter *painter,
+      const QRectF &painterRect,
+      QString &errorMessage /Out/,
+      QSizeF &renderedSize /Out/,
+      const QgsHtmlRenderSettings &settings = QgsHtmlRenderSettings(),
+      QgsFeedback *feedback = 0
     );
 %Docstring
 Renders HTML content to a ``painter`` asynchronously. Content will be
@@ -182,7 +221,7 @@ the HTML rendering.
 :param painter: destination QPainter
 :param painterRect: specifies the target rectangle for the page in
                     ``painter`` coordinates
-:param baseUrl: base URL for relative references in HTML
+:param settings: optional HTML render settings
 :param feedback: optional feedback for early cancellation
 
 .. warning::
@@ -200,7 +239,15 @@ the HTML rendering.
 .. versionadded:: 4.4
 %End
 
-    static bool renderBlocking( const QUrl &url, QPainter *painter, const QRectF &painterRect, QString &errorMessage /Out/, QSizeF &renderedSize /Out/, QgsFeedback *feedback = 0 );
+    static bool renderBlocking(
+      const QUrl &url,
+      QPainter *painter,
+      const QRectF &painterRect,
+      QString &errorMessage /Out/,
+      QSizeF &renderedSize /Out/,
+      const QgsHtmlRenderSettings &settings = QgsHtmlRenderSettings(),
+      QgsFeedback *feedback = 0
+    );
 %Docstring
 Renders HTML content to a ``painter`` asynchronously. Content will be
 rendered as vector objects.
@@ -213,6 +260,7 @@ the HTML rendering.
 :param painter: destination QPainter
 :param painterRect: specifies the target rectangle for the page in
                     ``painter`` coordinates
+:param settings: optional HTML render settings
 :param feedback: optional feedback for early cancellation
 
 .. warning::
