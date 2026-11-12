@@ -64,6 +64,11 @@ QgsGdalSourceSelect::QgsGdalSourceSelect( QWidget *parent, Qt::WindowFlags fl, Q
     cmbProtocolTypes->addItem( vsiDetail.name, vsiDetail.identifier );
   }
 
+  // lets have the plain http/https/ftp preselected
+  const int vsicurlIndex = cmbProtocolTypes->findData( u"vsicurl"_s );
+  if ( vsicurlIndex >= 0 )
+    cmbProtocolTypes->setCurrentIndex( vsicurlIndex );
+
   connect( protocolURI, &QLineEdit::textChanged, this, [this]( const QString &text ) {
     if ( radioSrcProtocol->isChecked() )
     {
