@@ -37,7 +37,7 @@ using namespace Qt::StringLiterals;
 Qgs3DMeasureDialog::Qgs3DMeasureDialog( Qgs3DMapToolMeasure *tool, QWidget *parent, Qt::WindowFlags f )
   : QDialog( parent, f )
   , mTool( tool )
-  , mMeasureArea( tool->measureArea() )
+  , mMeasurementType( tool->measurementType() )
 {
   setupUi( this );
 
@@ -57,7 +57,7 @@ Qgs3DMeasureDialog::Qgs3DMeasureDialog( Qgs3DMapToolMeasure *tool, QWidget *pare
   groupBox->hide();
 
   // Update text for 3D specific
-  if ( !mMeasureArea )
+  if ( mMeasurementType == Qgis::MeasurementType::Length )
   {
     mTable->show();
     totalDistanceLabel->setText( tr( "Total 3D Distance" ) );
@@ -106,7 +106,7 @@ void Qgs3DMeasureDialog::restorePosition()
 void Qgs3DMeasureDialog::addPoint()
 {
   const size_t numPoints = mTool->points().size();
-  if ( !mMeasureArea )
+  if ( mMeasurementType == Qgis::MeasurementType::Length )
   {
     if ( numPoints > 1 )
     {
@@ -124,7 +124,7 @@ void Qgs3DMeasureDialog::addPoint()
       updateTotal();
     }
   }
-  else if ( mMeasureArea && numPoints >= 2 )
+  else if ( ( mMeasurementType == Qgis::MeasurementType::Area ) && numPoints >= 2 )
   {
     const QVector<QgsPoint> points = mTool->points();
     QgsLineString ring( points );
@@ -166,7 +166,7 @@ double Qgs3DMeasureDialog::lastHorizontalDistance()
 void Qgs3DMeasureDialog::repopulateComboBoxUnits()
 {
   mUnitsCombo->clear();
-  if ( mMeasureArea )
+  if ( mMeasurementType == Qgis::MeasurementType::Area )
   {
     for ( const Qgis::AreaUnit unit : {
             Qgis::AreaUnit::SquareMeters,
@@ -212,7 +212,7 @@ void Qgs3DMeasureDialog::removeLastPoint()
   const int numPoints = mTool->points().size();
   if ( numPoints >= 1 )
   {
-    if ( !mMeasureArea )
+    if ( mMeasurementType == Qgis::MeasurementType::Length )
     {
       // Remove final row
       delete mTable->takeTopLevelItem( mTable->topLevelItemCount() - 1 );
@@ -256,7 +256,7 @@ void Qgs3DMeasureDialog::updateSettings()
 
   setupTableHeader();
 
-  if ( mMeasureArea )
+  if ( mMeasurementType == Qgis::MeasurementType::Area )
   {
     mUnitsCombo->setCurrentIndex( mUnitsCombo->findData( static_cast<int>( mDisplayedAreaUnit ) ) );
   }
@@ -268,7 +268,7 @@ void Qgs3DMeasureDialog::updateSettings()
 
 void Qgs3DMeasureDialog::unitsChanged( int index )
 {
-  if ( mMeasureArea )
+  if ( mMeasurementType == Qgis::MeasurementType::Area )
   {
     mDisplayedAreaUnit = static_cast<Qgis::AreaUnit>( mUnitsCombo->itemData( index ).toInt() );
   }
@@ -349,7 +349,7 @@ void Qgs3DMeasureDialog::addMeasurement( double distance, double verticalDistanc
 void Qgs3DMeasureDialog::updateTotal()
 {
   // Update total with new displayed unit
-  if ( mMeasureArea )
+  if ( mMeasurementType == Qgis::MeasurementType::Area )
   {
     editTotal->setText( formatArea( mTotal ) );
     editHorizontalTotal->setText( formatArea( mHorizontalTotal ) );
@@ -363,7 +363,7 @@ void Qgs3DMeasureDialog::updateTotal()
 
 void Qgs3DMeasureDialog::updateTable()
 {
-  if ( mMeasureArea )
+  if ( mMeasurementType == Qgis::MeasurementType::Area )
   {
     mTable->hide();
   }

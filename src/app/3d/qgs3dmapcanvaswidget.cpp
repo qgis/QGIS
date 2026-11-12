@@ -538,9 +538,9 @@ Qgs3DMapCanvasWidget::Qgs3DMapCanvasWidget( const QString &name, bool isDocked )
 
   mMapToolIdentify = new Qgs3DMapToolIdentify( mCanvas );
 
-  mMapToolMeasureLine = new Qgs3DMapToolMeasure( this, false );
+  mMapToolMeasureLine = new Qgs3DMapToolMeasure( this, Qgis::MeasurementType::Length );
 
-  mMapToolMeasureArea = new Qgs3DMapToolMeasure( this, true );
+  mMapToolMeasureArea = new Qgs3DMapToolMeasure( this, Qgis::MeasurementType::Area );
 
   mMapToolChangeAttribute = new Qgs3DMapToolPointCloudChangeAttribute( mCanvas );
 

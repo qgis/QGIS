@@ -39,9 +39,9 @@
 
 using namespace Qt::StringLiterals;
 
-Qgs3DMapToolMeasure::Qgs3DMapToolMeasure( Qgs3DMapCanvasWidget *canvasWidget, bool measureArea )
+Qgs3DMapToolMeasure::Qgs3DMapToolMeasure( Qgs3DMapCanvasWidget *canvasWidget, Qgis::MeasurementType mMeasurementType )
   : Qgs3DMapTool( canvasWidget->mapCanvas3D() )
-  , mMeasureArea( measureArea )
+  , mMeasurementType( mMeasurementType )
 {
   // Dialog
   mDialog = make_qobject_unique<Qgs3DMeasureDialog>( this, canvasWidget );
@@ -53,7 +53,7 @@ Qgs3DMapToolMeasure::~Qgs3DMapToolMeasure() = default;
 
 void Qgs3DMapToolMeasure::activate()
 {
-  const Qgis::GeometryType rubberbandType = mMeasureArea ? Qgis::GeometryType::Polygon : Qgis::GeometryType::Line;
+  const Qgis::GeometryType rubberbandType = ( mMeasurementType == Qgis::MeasurementType::Area ) ? Qgis::GeometryType::Polygon : Qgis::GeometryType::Line;
   mRubberBand = std::make_unique<QgsRubberBand3D>( mCanvas->scene(), rubberbandType );
 
   restart();

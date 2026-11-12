@@ -3238,6 +3238,12 @@ The development version
       Unknown
     };
 
+    enum class MeasurementType /BaseType=IntEnum/
+    {
+      Length,
+      Area,
+    };
+
     enum class RenderUnit /BaseType=IntEnum/
     {
       Millimeters,

@@ -98,8 +98,8 @@ class Qgs3DMeasureDialog : public QDialog, private Ui::QgsMeasureBase
     //! Area unit of the displayed value
     Qgis::AreaUnit mDisplayedAreaUnit = Qgis::AreaUnit::Unknown;
 
-    //! Indicates whether we're measuring distances or areas
-    bool mMeasureArea = false;
+    //! Indicates the type of measurement.
+    Qgis::MeasurementType mMeasurementType = Qgis::MeasurementType::Length;
 
     //! Convert from mMapDistanceUnit to mDisplayedDistanceUnit
     double convertLength( double length, Qgis::DistanceUnit toUnit ) const;

@@ -10845,6 +10845,19 @@ Qgis.TemporalUnit.__doc__ = """Temporal units.
 """
 # --
 Qgis.TemporalUnit.baseClass = Qgis
+# monkey patching scoped based enum
+Qgis.MeasurementType.Length.__doc__ = "Length measurement"
+Qgis.MeasurementType.Area.__doc__ = "Area measurement"
+Qgis.MeasurementType.__doc__ = """Types of measurement.
+
+.. versionadded:: 4.6
+
+* ``Length``: Length measurement
+* ``Area``: Area measurement
+
+"""
+# --
+Qgis.MeasurementType.baseClass = Qgis
 QgsUnitTypes.RenderUnit = Qgis.RenderUnit
 # monkey patching scoped based enum
 QgsUnitTypes.RenderMillimeters = Qgis.RenderUnit.Millimeters
