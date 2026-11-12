@@ -95,7 +95,7 @@ QString QgsRasterAttributeTableModel::headerTooltip( const int section ) const
                 <dt>Description</dt><dd>%3</dd>
             </dl>
             )HTML" )
-    .arg( QgsRasterAttributeTable::usageName( field.usage ), QVariant::typeToName( field.type ), QgsRasterAttributeTable::usageInformation().value( field.usage ).description );
+    .arg( QgsRasterAttributeTable::usageName( field.usage ), QMetaType( field.type ).name(), QgsRasterAttributeTable::usageInformation().value( field.usage ).description );
 }
 
 bool QgsRasterAttributeTableModel::isValid( QString *errorMessage )
