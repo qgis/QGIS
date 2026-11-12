@@ -116,6 +116,11 @@ QgsOgrSourceSelect::QgsOgrSourceSelect( QWidget *parent, Qt::WindowFlags fl, Qgs
   }
   cmbProtocolTypes->addItem( QObject::tr( "WFS3 (Experimental)" ), u"WFS3"_s );
 
+  // lets have the plain http/https/ftp preselected
+  const int vsicurlIndex = cmbProtocolTypes->findData( u"vsicurl"_s );
+  if ( vsicurlIndex >= 0 )
+    cmbProtocolTypes->setCurrentIndex( vsicurlIndex );
+
   cmbDatabaseTypes->blockSignals( false );
   cmbConnections->blockSignals( false );
 
