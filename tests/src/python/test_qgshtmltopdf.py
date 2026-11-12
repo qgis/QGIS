@@ -46,23 +46,29 @@ class TestQgsHtmlToPdf(QgisTestCase):
     def control_path_prefix(cls):
         return "html_to_pdf"
 
-    def run_html_to_pdf(self, arguments):
-        call = [QGIS_HTML_TO_PDF_BIN] + arguments
-        print(" ".join(call))
+    def run_html_to_pdf(self, arguments, settings_json):
+        with tempfile.TemporaryDirectory() as tmp_dir:
+            if settings_json:
+                with open(tmp_dir + "/settings.json", "w", encoding="utf8") as f:
+                    f.write(json.dumps(settings_json))
+                arguments.append(f"--settings={tmp_dir}/settings.json")
 
-        myenv = os.environ.copy()
-        myenv["QGIS_DEBUG"] = "0"
+            call = [QGIS_HTML_TO_PDF_BIN] + arguments
+            print(" ".join(call))
 
-        p = subprocess.Popen(
-            call, stdout=subprocess.PIPE, stderr=subprocess.PIPE, env=myenv
-        )
-        output, err = p.communicate()
-        rc = p.returncode
+            myenv = os.environ.copy()
+            myenv["QGIS_DEBUG"] = "0"
 
-        return rc, output.decode(), err.decode()
+            p = subprocess.Popen(
+                call, stdout=subprocess.PIPE, stderr=subprocess.PIPE, env=myenv
+            )
+            output, err = p.communicate()
+            rc = p.returncode
+
+            return rc, output.decode(), err.decode()
 
     def testNoArgs(self):
-        rc, output, err = self.run_html_to_pdf([])
+        rc, output, err = self.run_html_to_pdf([], {})
         self.assertIn("QGIS HTML to PDF converter utility", output)
         self.assertFalse(self.strip_std_ignorable_errors(err))
         self.assertEqual(rc, 1)
@@ -72,7 +78,9 @@ class TestQgsHtmlToPdf(QgisTestCase):
         with tempfile.TemporaryDirectory() as tmp_dir:
             pdf_path = tmp_dir + "/test.pdf"
             png_path = tmp_dir + "/test.png"
-            rc, output, err = self.run_html_to_pdf([html_path, pdf_path, "--width=400"])
+            rc, output, err = self.run_html_to_pdf(
+                [html_path, pdf_path, "--width=400"], {}
+            )
             self.assertEqual(rc, 0)
 
             self.pdf_to_png(pdf_path, png_path, dpi=96, page=1)
@@ -99,7 +107,9 @@ class TestQgsHtmlToPdf(QgisTestCase):
 
             pdf_path = tmp_dir + "/test.pdf"
             png_path = tmp_dir + "/test.png"
-            rc, output, err = self.run_html_to_pdf([html_path, pdf_path, "--width=400"])
+            rc, output, err = self.run_html_to_pdf(
+                [html_path, pdf_path, "--width=400"], {}
+            )
             self.assertEqual(rc, 0)
 
             self.pdf_to_png(pdf_path, png_path, dpi=96, page=1)
@@ -113,7 +123,9 @@ class TestQgsHtmlToPdf(QgisTestCase):
                 )
             )
 
-            rc, output, err = self.run_html_to_pdf([html_path, pdf_path, "--width=600"])
+            rc, output, err = self.run_html_to_pdf(
+                [html_path, pdf_path, "--width=600"], {}
+            )
             self.assertEqual(rc, 0)
 
             self.pdf_to_png(pdf_path, png_path, dpi=96, page=1)
@@ -141,12 +153,10 @@ class TestQgsHtmlToPdf(QgisTestCase):
             pdf_path = tmp_dir + "/test.pdf"
             png_path = tmp_dir + "/test.png"
             rc, output, err = self.run_html_to_pdf(
-                [
-                    html_path,
-                    pdf_path,
-                    "--width=400",
-                    "--user-stylesheet=div { background-color: blue !important; border: 5px solid yellow  !important;}",
-                ]
+                [html_path, pdf_path, "--width=400"],
+                {
+                    "userStylesheet": """div { background-color: blue !important; border: 5px solid yellow  !important;}"""
+                },
             )
             self.assertEqual(rc, 0)
 

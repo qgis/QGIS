@@ -47,9 +47,17 @@ class QgsHtmlToPdf : public QObject
       LoadJsFailed = 2,
       PrintFailed = 3,
     };
+
+    struct Settings
+    {
+        int width = 0;
+        QString userAgent;
+        QString baseUrl;
+        QString userStylesheet;
+    };
     QgsHtmlToPdf();
 
-    void run( const QString &url, const QString &pdfFileName, int width, const QString &userAgent, const QString &baseUrl, const QString &userStyleSheet );
+    void run( const QString &url, const QString &pdfFileName, const Settings &settings );
 
   signals:
     void finished( int statusCode );
@@ -60,10 +68,7 @@ class QgsHtmlToPdf : public QObject
 
     QString mPdfFileName;
     QgsLoggingWebEnginePage mPage;
-    int mWidth = 0;
-    QString mUserAgent;
-    QString mBaseUrl;
-    QString mUserStylesheet;
+    Settings mSettings;
 
     ReturnCode mReturnCode = ReturnCode::Success;
 

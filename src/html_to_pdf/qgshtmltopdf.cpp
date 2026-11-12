@@ -72,26 +72,23 @@ QgsHtmlToPdf::QgsHtmlToPdf()
   connect( &mPage, &QWebEnginePage::pdfPrintingFinished, this, &QgsHtmlToPdf::onPdfFinished );
 }
 
-void QgsHtmlToPdf::run( const QString &url, const QString &pdfFileName, int width, const QString &userAgent, const QString &baseUrl, const QString &userStylesheet )
+void QgsHtmlToPdf::run( const QString &url, const QString &pdfFileName, const Settings &settings )
 {
   mPdfFileName = pdfFileName;
-  mWidth = width;
-  mUserAgent = userAgent;
-  mBaseUrl = baseUrl;
-  mUserStylesheet = userStylesheet;
+  mSettings = settings;
 
-  if ( !mUserAgent.isEmpty() )
+  if ( !mSettings.userAgent.isEmpty() )
   {
-    mPage.profile()->setHttpUserAgent( mUserAgent );
+    mPage.profile()->setHttpUserAgent( mSettings.userAgent );
   }
 
   const QFileInfo fi( url );
-  if ( fi.isFile() && fi.exists() && !mBaseUrl.isEmpty() )
+  if ( fi.isFile() && fi.exists() && !mSettings.baseUrl.isEmpty() )
   {
     QFile htmlFile( url );
     if ( htmlFile.open( QIODevice::ReadOnly ) )
     {
-      mPage.setHtml( htmlFile.readAll(), QUrl::fromUserInput( mBaseUrl ) );
+      mPage.setHtml( htmlFile.readAll(), QUrl::fromUserInput( mSettings.baseUrl ) );
     }
     else
     {
@@ -200,8 +197,8 @@ void QgsHtmlToPdf::onLoadFinished( bool ok )
       return [contentWidth, contentHeight];
     })()
   )js"_s )
-                               .arg( mWidth )
-                               .arg( QString::fromUtf8( QJsonDocument( QJsonArray { mUserStylesheet } ).toJson( QJsonDocument::Compact ) ) );
+                               .arg( mSettings.width )
+                               .arg( QString::fromUtf8( QJsonDocument( QJsonArray { mSettings.userStylesheet } ).toJson( QJsonDocument::Compact ) ) );
   ;
 
   mPage.runJavaScript( jsTemplate, [this]( QVariant res ) { onLoadJsFinished( res ); } );
