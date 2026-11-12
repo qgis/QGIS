@@ -498,7 +498,7 @@ bool QgsRasterAttributeTable::insertRow( int position, const QVariantList &rowDa
     {
       if ( errorMessage )
       {
-        *errorMessage = tr( "Row data at column %1 cannot be converted to field type (%2)." ).arg( idx ).arg( QVariant::typeToName( type ) );
+        *errorMessage = tr( "Row data at column %1 cannot be converted to field type (%2)." ).arg( idx ).arg( QMetaType( type ).name() );
       }
       return false;
     }

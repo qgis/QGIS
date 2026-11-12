@@ -479,12 +479,12 @@ bool QgsVectorDataProvider::supportedType( const QgsField &field ) const
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
-  QgsDebugMsgLevel( u"field name = %1 type = %2 length = %3 precision = %4"_s.arg( field.name(), QVariant::typeToName( field.type() ) ).arg( field.length() ).arg( field.precision() ), 2 );
+  QgsDebugMsgLevel( u"field name = %1 type = %2 length = %3 precision = %4"_s.arg( field.name(), QMetaType( field.type() ).name() ).arg( field.length() ).arg( field.precision() ), 2 );
 
   for ( const NativeType &nativeType : mNativeTypes )
   {
     QgsDebugMsgLevel(
-      u"native field type = %1 min length = %2 max length = %3 min precision = %4 max precision = %5"_s.arg( QVariant::typeToName( nativeType.mType ) )
+      u"native field type = %1 min length = %2 max length = %3 min precision = %4 max precision = %5"_s.arg( QMetaType( nativeType.mType ).name() )
         .arg( nativeType.mMinLen )
         .arg( nativeType.mMaxLen )
         .arg( nativeType.mMinPrec )

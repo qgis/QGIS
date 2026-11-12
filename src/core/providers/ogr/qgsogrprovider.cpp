@@ -2186,7 +2186,7 @@ bool QgsOgrProvider::addFeaturePrivate( QgsFeature &f, Flags flags, QgsFeatureId
           QMetaType::Type ogrVariantSubType = QMetaType::Type::UnknownType;
           QgsOgrUtils::ogrFieldTypeToQVariantType( type, subType, ogrVariantType, ogrVariantSubType );
 
-          pushError( tr( "wrong data type for attribute %1 of feature %2: Got %3, expected %4" ).arg( ogrFieldName ).arg( f.id() ).arg( attrVal.typeName(), QVariant::typeToName( ogrVariantType ) ) );
+          pushError( tr( "wrong data type for attribute %1 of feature %2: Got %3, expected %4" ).arg( ogrFieldName ).arg( f.id() ).arg( attrVal.typeName(), QMetaType( ogrVariantType ).name() ) );
         }
         returnValue = false;
       }
