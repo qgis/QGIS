@@ -433,6 +433,14 @@ be implemented in
 .. seealso:: :py:func:`readXml`
 %End
 
+    virtual bool renderInProgress() const;
+%Docstring
+Returns ``True`` if the multiframe is currently rendering content in a
+background thread.
+
+.. versionadded:: 4.4
+%End
+
 
 
 };

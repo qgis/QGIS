@@ -125,6 +125,8 @@ Returns whether the frame is empty.
 
 
   protected:
+    virtual void paint( QPainter *painter, const QStyleOptionGraphicsItem *itemStyle, QWidget *pWidget );
+
     virtual void draw( QgsLayoutItemRenderContext &context );
 
     virtual void drawFrame( QgsRenderContext &context );

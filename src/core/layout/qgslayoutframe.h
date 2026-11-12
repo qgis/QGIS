@@ -112,6 +112,7 @@ class CORE_EXPORT QgsLayoutFrame : public QgsLayoutItem
     ExportLayerBehavior exportLayerBehavior() const override;
 
   protected:
+    void paint( QPainter *painter, const QStyleOptionGraphicsItem *itemStyle, QWidget *pWidget ) override;
     void draw( QgsLayoutItemRenderContext &context ) override;
     void drawFrame( QgsRenderContext &context ) override;
     void drawBackground( QgsRenderContext &context ) override;
