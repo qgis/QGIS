@@ -12,7 +12,7 @@ import os
 import tempfile
 import unittest
 
-from qgis.core import QgsFontUtils, QgsWebEnginePage
+from qgis.core import QgsFontUtils, QgsHtmlRenderSettings, QgsWebEnginePage
 from qgis.PyQt.QtCore import QRectF, QSize, Qt, QUrl
 from qgis.PyQt.QtGui import QImage, QPainter
 from qgis.PyQt.QtTest import QSignalSpy
@@ -210,7 +210,6 @@ class TestWebEnginePage(QgisTestCase):
         html = """
         <html>
   <head>
-    <link href="bootstrap.css" media="all" rel="stylesheet" type="text/css" />
     <style>
       td {
         border: 3px solid red;
@@ -260,7 +259,6 @@ class TestWebEnginePage(QgisTestCase):
         html = """
         <html>
   <head>
-    <link href="bootstrap.css" media="all" rel="stylesheet" type="text/css" />
     <style>
       td {
         border: 3px solid red;
@@ -296,6 +294,62 @@ class TestWebEnginePage(QgisTestCase):
                 "render",
                 image,
                 "expected_render_blocking_dynamic_width_200",
+            )
+        )
+
+    def test_render_web_page_blocking_user_stylesheet(self):
+        """
+        Test rendering web pages to a QPainter, with user stylesheet
+        """
+        image = QImage(600, 423, QImage.Format.Format_ARGB32_Premultiplied)
+        image.fill(Qt.GlobalColor.transparent)
+        painter = QPainter(image)
+
+        html = """
+        <html>
+  <head>
+    <style>
+      td {
+        border: 3px solid red;
+        height: 40px;
+      }
+    </style>
+  </head>
+  <body>
+    <table style="width: 100%">
+      <tbody>
+        <tr><td></td><td></td></tr>
+        <tr><td></td><td></td></tr>
+        <tr><td></td><td></td></tr>
+        <tr><td></td><td></td></tr>
+        <tr><td></td><td></td></tr>
+      </tbody>
+    </table>
+  </body>
+</html>
+"""
+        settings = QgsHtmlRenderSettings()
+        settings.setUserStylesheet("""
+      td {
+        border: 6px solid blue !important;
+        background: yellow !important;;
+      }
+        """)
+
+        res, error, size = QgsWebEnginePage.renderBlocking(
+            html, painter, QRectF(0, 0, 600, 423), settings
+        )
+        painter.end()
+        self.assertTrue(res)
+        self.assertEqual(size.width(), 600)
+        self.assertAlmostEqual(size.height(), 200, places=-2)
+
+        self.assertTrue(
+            self.image_check(
+                "Render QgsWebEnginePage to QPainter with user stylesheet",
+                "render",
+                image,
+                "expected_render_with_user_stylesheet",
             )
         )
 

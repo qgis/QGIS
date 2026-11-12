@@ -57,8 +57,27 @@ class CORE_EXPORT QgsHtmlRenderSettings
      */
     void setBaseUrl( const QUrl &url ) { mBaseUrl = url; }
 
+    /**
+     * Sets the user \a stylesheet CSS rules to use while rendering the HTML content.
+     *
+     * These allow for overriding the styles specified within the HTML source.
+     *
+     * \see userStylesheet()
+     */
+    void setUserStylesheet( const QString &stylesheet ) { mUserStylesheet = stylesheet; }
+
+    /**
+     * Returns the user stylesheet CSS rules used while rendering the HTML content.
+     *
+     * These overriding the styles specified within the HTML source.
+     *
+     * \see setUserStylesheet()
+     */
+    QString userStylesheet() const { return mUserStylesheet; }
+
   private:
     QUrl mBaseUrl;
+    QString mUserStylesheet;
 };
 
 /**
@@ -285,7 +304,7 @@ class CORE_EXPORT QgsWebEnginePage : public QObject
     static QString htmlToPdfExecutable();
 
     static QString htmlToPdfReturnCodeToString( int code );
-    static bool doPrintToPdf( const QStringList &args, QString &errorMessage, QgsFeedback *feedback );
+    static bool doPrintToPdf( const QStringList &args, const QgsHtmlRenderSettings &settings, QString &errorMessage, QgsFeedback *feedback );
 
     std::unique_ptr< QWebEnginePage > mPage;
     mutable QSize mCachedSize;
