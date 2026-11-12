@@ -415,14 +415,16 @@ void QgsLayoutItemHtml::renderHtmlSynchronously()
   painter.setRenderHint( QPainter::Antialiasing, true );
   painter.setRenderHint( QPainter::TextAntialiasing, true );
   painter.setRenderHint( QPainter::SmoothPixmapTransform, true );
-  if ( !QgsWebEnginePage::renderBlocking( mEvaluatedHtml, &painter, QRectF( 0, 0, widthCssPx, 9999 ), errorMessage, mResolvedBaseUrl, nullptr ) )
+
+  QSizeF renderedSizeCssPx;
+  if ( !QgsWebEnginePage::renderBlocking( mEvaluatedHtml, &painter, QRectF( 0, 0, widthCssPx, 9999 ), errorMessage, renderedSizeCssPx, mResolvedBaseUrl, nullptr ) )
   {
     QgsDebugError( errorMessage );
   }
   painter.end();
 
-  const QRectF pictureBoundsCssPx = QRectF( mRenderedPicture.boundingRect() );
-  const double heightCssPx = pictureBoundsCssPx.isEmpty() ? 0.0 : pictureBoundsCssPx.bottom();
+  const double heightCssPx = renderedSizeCssPx.height();
+  mRenderedPicture.setBoundingRect( QRect( 0, 0, static_cast< int >( std::ceil( widthCssPx ) ), static_cast< int >( std::ceil( heightCssPx ) ) ) );
 
   mSize = QSizeF( frameWidthLayoutUnits, heightCssPx * unitsPerCssPx );
 
@@ -940,14 +942,16 @@ void QgsLayoutItemHtmlRenderJob::run()
   const double widthCssPx = mFrameWidthLayoutUnits / mUnitsPerCssPx;
 
   QPainter painter( &mPicture );
-  mSuccess = QgsWebEnginePage::renderBlocking( mHtml, &painter, QRectF( 0, 0, widthCssPx, 9999 ), mErrorMessage, mBaseUrl, &mFeedback );
+  QSizeF renderedSizeCssPx;
+  mSuccess = QgsWebEnginePage::renderBlocking( mHtml, &painter, QRectF( 0, 0, widthCssPx, 9999 ), mErrorMessage, renderedSizeCssPx, mBaseUrl, &mFeedback );
   painter.end();
 
   if ( mFeedback.isCanceled() )
     return;
 
-  const QRectF boundsCssPx = QRectF( mPicture.boundingRect() );
-  const double heightCssPx = boundsCssPx.isEmpty() ? 0.0 : boundsCssPx.bottom();
+  const double heightCssPx = renderedSizeCssPx.height();
+  mPicture.setBoundingRect( QRect( 0, 0, static_cast< int >( std::ceil( widthCssPx ) ), static_cast< int >( std::ceil( heightCssPx ) ) ) );
+
   mSize = QSizeF( mFrameWidthLayoutUnits, heightCssPx * mUnitsPerCssPx );
 
   const QSize pageSizeCssPx( static_cast< int >( std::ceil( widthCssPx ) ), static_cast< int >( std::ceil( heightCssPx ) ) );
