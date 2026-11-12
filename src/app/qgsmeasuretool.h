@@ -33,14 +33,14 @@ class APP_EXPORT QgsMeasureTool : public QgsMapTool
     Q_OBJECT
 
   public:
-    QgsMeasureTool( QgsMapCanvas *canvas, bool measureArea );
+    QgsMeasureTool( QgsMapCanvas *canvas, Qgis::MeasurementType mMeasurementType );
 
     ~QgsMeasureTool() override;
 
     Flags flags() const override { return QgsMapTool::AllowZoomRect; }
 
-    //! returns whether measuring distance or area
-    bool measureArea() const { return mMeasureArea; }
+    //! returns the type of measurement
+    Qgis::MeasurementType measurementType() const { return mMeasurementType; }
 
     //! When we have added our last point, and not following
     bool done() const { return mDone; }
@@ -79,8 +79,8 @@ class APP_EXPORT QgsMeasureTool : public QgsMapTool
     //! Rubberband widget tracking the added nodes to line
     QgsRubberBand *mRubberBandPoints = nullptr;
 
-    //! Indicates whether we're measuring distances or areas
-    bool mMeasureArea = false;
+    //! Indicates the type of measurement.
+    Qgis::MeasurementType mMeasurementType = Qgis::MeasurementType::Length;
 
     //! Indicates whether we've just done a right mouse click
     bool mDone = true;
