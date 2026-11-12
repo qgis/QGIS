@@ -464,7 +464,7 @@ class CORE_EXPORT QgsField
         if ( !sipRes )
         {
           PyErr_SetString( PyExc_ValueError,
-                           QString( "Value could not be converted to field type %1: %2" ).arg( QMetaType::typeName( sipCpp->type() ), errorMessage ).toUtf8().constData() );
+                           QString( "Value could not be converted to field type %1: %2" ).arg( QMetaType( sipCpp->type() ).name(), errorMessage ).toUtf8().constData() );
           sipIsErr = 1;
         }
         else
