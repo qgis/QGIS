@@ -3422,8 +3422,7 @@ Qgis::VectorExportResult QgsOracleProvider::createEmptyLayer(
       }
 
       QgsDebugMsgLevel(
-        u"Field #%1 name %2 type %3 typename %4 width %5 precision %6"_s.arg( i ).arg( fld.name() ).arg( QVariant::typeToName( fld.type() ) ).arg( fld.typeName() ).arg( fld.length() ).arg( fld.precision() ),
-        2
+        u"Field #%1 name %2 type %3 typename %4 width %5 precision %6"_s.arg( i ).arg( fld.name() ).arg( QMetaType( fld.type() ).name() ).arg( fld.typeName() ).arg( fld.length() ).arg( fld.precision() ), 2
       );
 
       flist.append( fld );
