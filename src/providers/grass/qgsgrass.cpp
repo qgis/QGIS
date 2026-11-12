@@ -2435,26 +2435,26 @@ void QgsGrass::insertRow( dbDriver *driver, const QString &tableName, const QgsA
     QString valueString;
 
     bool quote = true;
-    switch ( attribute.type() )
+    switch ( attribute.typeId() )
     {
-      case QVariant::Int:
-      case QVariant::Double:
-      case QVariant::LongLong:
+      case QMetaType::Type::Int:
+      case QMetaType::Type::Double:
+      case QMetaType::Type::LongLong:
         valueString = attribute.toString();
         quote = false;
         break;
       // TODO: use rbool according to driver
-      case QVariant::Bool:
+      case QMetaType::Type::Bool:
         valueString = attribute.toBool() ? u"1"_s : u"0"_s;
         quote = false;
         break;
-      case QVariant::Date:
+      case QMetaType::Type::QDate:
         valueString = attribute.toDate().toString( Qt::ISODate );
         break;
-      case QVariant::Time:
+      case QMetaType::Type::QTime:
         valueString = attribute.toTime().toString( Qt::ISODate );
         break;
-      case QVariant::DateTime:
+      case QMetaType::Type::QDateTime:
         valueString = attribute.toDateTime().toString( Qt::ISODate );
         break;
       default:
