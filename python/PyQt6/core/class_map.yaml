@@ -2484,7 +2484,6 @@ QgsColorBrewerColorRamp.clone: src/core/qgscolorrampimpl.h#L636
 QgsColorBrewerColorRamp.color: src/core/qgscolorrampimpl.h#L625
 QgsColorBrewerColorRamp.colors: src/core/qgscolorrampimpl.h#L650
 QgsColorBrewerColorRamp.count: src/core/qgscolorrampimpl.h#L638
-QgsColorBrewerColorRamp.create: src/core/qgscolorrampimpl.h#L622
 QgsColorBrewerColorRamp.invert: src/core/qgscolorrampimpl.h#L635
 QgsColorBrewerColorRamp.listSchemeNames: src/core/qgscolorrampimpl.h#L680
 QgsColorBrewerColorRamp.loadPalette: src/core/qgscolorrampimpl.h#L692
@@ -2745,7 +2744,6 @@ QgsConditionalStyle.validBackgroundColor: src/core/qgsconditionalstyle.h#L270
 QgsConditionalStyle.validTextColor: src/core/qgsconditionalstyle.h#L257
 QgsConditionalStyle.writeXml: src/core/qgsconditionalstyle.h#L326
 QgsConditionalStyle: src/core/qgsconditionalstyle.h#L136
-QgsConnectionRegistry.createConnection: src/core/qgsconnectionregistry.h#L62
 QgsConnectionRegistry: src/core/qgsconnectionregistry.h#L39
 QgsConnectionsRootItem.__repr__: src/core/browser/qgsconnectionsitem.h#L54
 QgsConnectionsRootItem: src/core/browser/qgsconnectionsitem.h#L33
@@ -2987,7 +2985,6 @@ QgsCptCityCollectionItem.addChild: src/core/symbology/qgscptcityarchive.h#L324
 QgsCptCityCollectionItem.setPopulated: src/core/symbology/qgscptcityarchive.h#L323
 QgsCptCityCollectionItem: src/core/symbology/qgscptcityarchive.h#L316
 QgsCptCityColorRamp.clone: src/core/qgscolorrampimpl.h#L746
-QgsCptCityColorRamp.cloneGradientRamp: src/core/qgscolorrampimpl.h#L748
 QgsCptCityColorRamp.copy: src/core/qgscolorrampimpl.h#L747
 QgsCptCityColorRamp.copyingFileName: src/core/qgscolorrampimpl.h#L791
 QgsCptCityColorRamp.copyingInfo: src/core/qgscolorrampimpl.h#L793
@@ -3266,7 +3263,6 @@ QgsDataDefinedSizeLegend.font: src/core/qgsdatadefinedsizelegend.h#L133
 QgsDataDefinedSizeLegend.legendSymbolList: src/core/qgsdatadefinedsizelegend.h#L151
 QgsDataDefinedSizeLegend.legendType: src/core/qgsdatadefinedsizelegend.h#L86
 QgsDataDefinedSizeLegend.lineSymbol: src/core/qgsdatadefinedsizelegend.h#L108
-QgsDataDefinedSizeLegend.readXml: src/core/qgsdatadefinedsizelegend.h#L164
 QgsDataDefinedSizeLegend.setClasses: src/core/qgsdatadefinedsizelegend.h#L116
 QgsDataDefinedSizeLegend.setFont: src/core/qgsdatadefinedsizelegend.h#L131
 QgsDataDefinedSizeLegend.setLegendType: src/core/qgsdatadefinedsizelegend.h#L84
@@ -5336,7 +5332,6 @@ QgsFontUtils.setFontFamily: src/core/qgsfontutils.h#L206
 QgsFontUtils.setFromXmlChildNode: src/core/qgsfontutils.h#L144
 QgsFontUtils.setFromXmlElement: src/core/qgsfontutils.h#L132
 QgsFontUtils.standardTestFontFamily: src/core/qgsfontutils.h#L95
-QgsFontUtils.toMimeData: src/core/qgsfontutils.h#L151
 QgsFontUtils.toXmlElement: src/core/qgsfontutils.h#L121
 QgsFontUtils.translateNamedStyle: src/core/qgsfontutils.h#L166
 QgsFontUtils.untranslateNamedStyle: src/core/qgsfontutils.h#L174
@@ -9153,7 +9148,6 @@ QgsLegendSymbolItem: src/core/symbology/qgslegendsymbolitem.h#L36
 QgsLimitedRandomColorRamp.clone: src/core/qgscolorrampimpl.h#L370
 QgsLimitedRandomColorRamp.color: src/core/qgscolorrampimpl.h#L360
 QgsLimitedRandomColorRamp.count: src/core/qgscolorrampimpl.h#L372
-QgsLimitedRandomColorRamp.create: src/core/qgscolorrampimpl.h#L357
 QgsLimitedRandomColorRamp.hueMax: src/core/qgscolorrampimpl.h#L403
 QgsLimitedRandomColorRamp.hueMin: src/core/qgscolorrampimpl.h#L397
 QgsLimitedRandomColorRamp.properties: src/core/qgscolorrampimpl.h#L371
@@ -12820,7 +12814,6 @@ QgsPostgresStringUtils: src/core/qgspostgresstringutils.h#L37
 QgsPresetSchemeColorRamp.clone: src/core/qgscolorrampimpl.h#L584
 QgsPresetSchemeColorRamp.color: src/core/qgscolorrampimpl.h#L573
 QgsPresetSchemeColorRamp.count: src/core/qgscolorrampimpl.h#L586
-QgsPresetSchemeColorRamp.create: src/core/qgscolorrampimpl.h#L553
 QgsPresetSchemeColorRamp.fetchColors: src/core/qgscolorrampimpl.h#L589
 QgsPresetSchemeColorRamp.invert: src/core/qgscolorrampimpl.h#L583
 QgsPresetSchemeColorRamp.isEditable: src/core/qgscolorrampimpl.h#L590
