@@ -521,6 +521,7 @@ bool QgsGltfUtils::loadDracoModel( const QByteArray &data, const I3SNodeContext 
       posMetadata->GetEntryDouble( "i3s-scale_x", &scaleX );
       posMetadata->GetEntryDouble( "i3s-scale_y", &scaleY );
     }
+    const bool shouldScaleXY = scaleX != 1 || scaleY != 1;
 
     QgsVector3D nodeCenterLonLat = context.datasetToSceneTransform.transform( context.nodeCenterEcef, Qgis::TransformDirection::Reverse );
 
@@ -535,7 +536,6 @@ bool QgsGltfUtils::loadDracoModel( const QByteArray &data, const I3SNodeContext 
       // when using EPSG:4326, the X,Y coordinates are in degrees(!) relative to the node's center (in lat/lon degrees),
       // but they are scaled (because they are several orders of magnitude smaller than Z coordinates).
       // That scaling is applied so that Draco's compression works well.
-      // when using local CRS, scaling is not applied (not needed)
       if ( context.isGlobalMode )
       {
         double lonDeg = double( values[0] ) * scaleX + nodeCenterLonLat.x();
@@ -547,6 +547,12 @@ bool QgsGltfUtils::loadDracoModel( const QByteArray &data, const I3SNodeContext 
         values[0] = static_cast<float>( localPos.x() );
         values[1] = static_cast<float>( localPos.y() );
         values[2] = static_cast<float>( localPos.z() );
+      }
+      else if ( shouldScaleXY )
+      {
+        // scales may also be defined when using a projected crs
+        values[0] *= scaleX;
+        values[1] *= scaleY;
       }
 
       posPtr[i.value() * 3 + 0] = values[0];
