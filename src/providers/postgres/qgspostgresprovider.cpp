@@ -5043,7 +5043,7 @@ QVariant QgsPostgresProvider::convertValue( QMetaType::Type type, QMetaType::Typ
 
     default:
       result = value;
-      if ( !result.convert( type ) || value.isNull() )
+      if ( !result.convert( QMetaType( type ) ) || value.isNull() )
         result = QgsVariantUtils::createNullVariant( type );
       break;
   }
