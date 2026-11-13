@@ -64,8 +64,9 @@ class TestQgsLayoutLabel : public QgsTest
     void labelRotation();
 #if defined( HAVE_WEBENGINE ) && defined( HAVE_PDF4QT )
     void convertToHtml();
-    void renderAsHtmlRelative();
 #endif
+    void renderAsHtmlRelative();
+
   private:
     QgsVectorLayer *mVectorLayer = nullptr;
 };
