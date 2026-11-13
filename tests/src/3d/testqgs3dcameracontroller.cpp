@@ -1252,12 +1252,12 @@ void TestQgs3DCameraController::testResetViewPointCloud()
 
 void TestQgs3DCameraController::testChangeNavigationMode()
 {
-  auto canvas3D = std::make_unique<Qgs3DMapCanvas>();
-  canvas3D->show();
-  // NOTE: for actual interactive use this must be installed on the window's CONTAINER widget
-  canvas3D->installEventFilter( canvas3D.get() );
+  auto canvas3D = make_qobject_unique<Qgs3DMapCanvas>();
+  std::unique_ptr<QWidget> container( QWidget::createWindowContainer( canvas3D.get() ) );
+  container->installEventFilter( canvas3D.get() );
+  container->show();
 
-  QVERIFY( QTest::qWaitForWindowExposed( canvas3D.get() ) );
+  QVERIFY( QTest::qWaitForWindowExposed( container.get() ) );
 
   Qgs3DMapSettings *mapSettings = new Qgs3DMapSettings;
   canvas3D->setMapSettings( mapSettings );
@@ -1266,12 +1266,12 @@ void TestQgs3DCameraController::testChangeNavigationMode()
   QCOMPARE( canvas3D->cameraController()->cameraNavigationMode(), Qgis::NavigationMode::TerrainBased );
 
   QKeyEvent changeNavigationModeEvent( QEvent::ShortcutOverride, Qt::Key_QuoteLeft, Qt::ControlModifier );
-  QApplication::sendEvent( canvas3D.get(), &changeNavigationModeEvent );
+  QApplication::sendEvent( container.get(), &changeNavigationModeEvent );
 
   QCOMPARE( canvas3D->cameraController()->cameraNavigationMode(), Qgis::NavigationMode::Walk );
   QCOMPARE( mapSettings->cameraNavigationMode(), Qgis::NavigationMode::Walk );
 
-  QApplication::sendEvent( canvas3D.get(), &changeNavigationModeEvent );
+  QApplication::sendEvent( container.get(), &changeNavigationModeEvent );
   QCOMPARE( canvas3D->cameraController()->cameraNavigationMode(), Qgis::NavigationMode::TerrainBased );
   QCOMPARE( mapSettings->cameraNavigationMode(), Qgis::NavigationMode::TerrainBased );
 }
