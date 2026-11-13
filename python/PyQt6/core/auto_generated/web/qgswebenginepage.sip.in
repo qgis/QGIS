@@ -84,6 +84,12 @@ When the HTML has been loaded, an attempt will be made to call a
 .. seealso:: :py:func:`setFeatureJson`
 %End
 
+    QVariantMap asMap() const;
+%Docstring
+Returns the settings encapsulated in a variantmap, for passing to the
+qgis_html_to_pdf utility.
+%End
+
 };
 
 class QgsWebEnginePage : QObject
