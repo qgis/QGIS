@@ -11876,6 +11876,17 @@ QgsPhongTexturedMaterialSettings.textureScale: src/core/./3d/materials/qgsphongt
 QgsPhongTexturedMaterialSettings.type: src/core/./3d/materials/qgsphongtexturedmaterialsettings.h#L43
 QgsPhongTexturedMaterialSettings.writeXml: src/core/./3d/materials/qgsphongtexturedmaterialsettings.h#L197
 QgsPhongTexturedMaterialSettings: src/core/./3d/materials/qgsphongtexturedmaterialsettings.h#L38
+QgsPictureRasterizer.QgsPictureRasterizer: src/core/qgspicturerasterizer.h#L77
+QgsPictureRasterizer.clear: src/core/qgspicturerasterizer.h#L97
+QgsPictureRasterizer.image: src/core/qgspicturerasterizer.h#L111
+QgsPictureRasterizer.invalidate: src/core/qgspicturerasterizer.h#L102
+QgsPictureRasterizer.isRendering: src/core/qgspicturerasterizer.h#L116
+QgsPictureRasterizer.maxCacheSize: src/core/qgspicturerasterizer.h#L130
+QgsPictureRasterizer.picture: src/core/qgspicturerasterizer.h#L92
+QgsPictureRasterizer.rendered: src/core/qgspicturerasterizer.h#L137
+QgsPictureRasterizer.setMaxCacheSize: src/core/qgspicturerasterizer.h#L123
+QgsPictureRasterizer.setPicture: src/core/qgspicturerasterizer.h#L85
+QgsPictureRasterizer: src/core/qgspicturerasterizer.h#L69
 QgsPieChartPlot.colorRampAt: src/core/plot/qgspiechartplot.h#L68
 QgsPieChartPlot.colorRampCount: src/core/plot/qgspiechartplot.h#L83
 QgsPieChartPlot.createDataGatherer: src/core/plot/qgspiechartplot.h#L129
