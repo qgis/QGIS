@@ -20,9 +20,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-set(CMAKE_POSITION_INDEPENDENT_CODE ON)
-
-add_library(Pdf4QtLibCore STATIC
+add_library(Pdf4QtLibCore SHARED
     sources/pdfglobal.h
     sources/pdfaction.cpp
     sources/pdfaction.h
@@ -218,14 +216,7 @@ endif()
 target_include_directories(Pdf4QtLibCore INTERFACE ${CMAKE_CURRENT_SOURCE_DIR}/sources)
 target_include_directories(Pdf4QtLibCore PUBLIC ${CMAKE_BINARY_DIR}/${INSTALL_INCLUDEDIR})
 
-if(NOT WITH_INTERNAL_BLEND2D)
-  find_library(blend2d blend2d REQUIRED)
-else()
-  set(BLEND2D_STATIC ON)
-  set(BLEND2D_NO_INSTALL ON)
-  subdirs(${CMAKE_SOURCE_DIR}/external/blend2d)
-  set(blend2d_INCLUDES ${CMAKE_SOURCE_DIR}/external/blend2d)
-endif()
+find_library(blend2d blend2d REQUIRED)
 target_include_directories(Pdf4QtLibCore PRIVATE ${blend2d_INCLUDES})
 target_link_libraries(Pdf4QtLibCore PRIVATE blend2d)
 
@@ -234,3 +225,5 @@ set_target_properties(Pdf4QtLibCore PROPERTIES
                       SOVERSION ${PDF4QT_VERSION}
                       LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/${PDF4QT_INSTALL_LIB_DIR}
                       RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/${PDF4QT_INSTALL_BIN_DIR})
+
+install(TARGETS Pdf4QtLibCore RUNTIME DESTINATION ${PDF4QT_INSTALL_BIN_DIR} LIBRARY DESTINATION ${PDF4QT_INSTALL_LIB_DIR})

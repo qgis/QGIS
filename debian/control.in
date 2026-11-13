@@ -58,8 +58,6 @@ Build-Depends:
  poppler-utils,
  lighttpd,
  qt6-base-dev, qt6-base-private-dev, qt6-multimedia-dev, qt6-positioning-dev, qtkeychain-qt6-dev, qt6-tools-dev-tools, qt6-tools-dev, libqca-qt6-dev, libqca-qt6-plugins,
- qt6-wayland-dev, wayland-protocols,
- libtbb-dev, libopenjp2-7-dev, libopenjpip7, libopenjp2-tools, libopenjpip-dec-server,
  libqscintilla2-qt6-dev, qt6-serialport-dev, qt6-svg-dev, qt6-5compat-dev, qt6-webengine-dev, qt6-3d-dev,
  python3-pyqt6, python3-pyqt6.qsci, python3-pyqt6.qtmultimedia, python3-pyqt6.qtpositioning, python3-pyqt6.qtserialport, python3-pyqt6.qtsvg, pyqt6-dev-tools, pyqt6-dev,
  pyqt6.qsci-dev, python3-pyqt6.sip,

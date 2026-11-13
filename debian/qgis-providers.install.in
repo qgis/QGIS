@@ -1,5 +1,4 @@
 usr/lib/qgis/crssync
-usr/lib/qgis/qgis_html_to_pdf
 usr/lib/qgis/plugins/libauthmethod_apiheader.so
 usr/lib/qgis/plugins/libauthmethod_awss3.so
 usr/lib/qgis/plugins/libauthmethod_basic.so

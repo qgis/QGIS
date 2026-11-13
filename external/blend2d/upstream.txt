@@ -1,1 +1,0 @@
-Embedded copy of https://blend2d.com/download/blend2d-0.21.2.tar.gz (excluded blend2d/blend2d-testing/ and blend2d/3rdparty/asmjit/asmjit-testing)
