@@ -3823,7 +3823,7 @@ QString QgsProject::readEntry( const QString &scope, const QString &key, const Q
   {
     value = property->value();
 
-    const bool valid = value.canConvert( QMetaType::Type::QString );
+    const bool valid = value.canConvert<QString>();
     if ( ok )
       *ok = valid;
 
@@ -3849,7 +3849,7 @@ int QgsProject::readNumEntry( const QString &scope, const QString &key, int def,
     value = property->value();
   }
 
-  const bool valid = value.canConvert( QMetaType::Type::Int );
+  const bool valid = value.canConvert<int>();
 
   if ( ok )
   {
@@ -3873,7 +3873,7 @@ double QgsProject::readDoubleEntry( const QString &scope, const QString &key, do
   {
     const QVariant value = property->value();
 
-    const bool valid = value.canConvert( QMetaType::Type::Double );
+    const bool valid = value.canConvert<double>();
     if ( ok )
       *ok = valid;
 
@@ -3896,7 +3896,7 @@ bool QgsProject::readBoolEntry( const QString &scope, const QString &key, bool d
   {
     const QVariant value = property->value();
 
-    const bool valid = value.canConvert( QMetaType::Type::Bool );
+    const bool valid = value.canConvert<bool>();
     if ( ok )
       *ok = valid;
 
