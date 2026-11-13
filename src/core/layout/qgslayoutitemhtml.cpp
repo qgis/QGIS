@@ -34,11 +34,11 @@
 #include "qgspicturerasterizer.h"
 #include "qgsproject.h"
 #include "qgsvectorlayer.h"
+#include "qgswebenginepage.h"
 
 #include <QString>
 
 #if defined( HAVE_WEBENGINE ) && defined( HAVE_PDF4QT )
-#include "qgswebenginepage.h"
 #include <QWebEnginePage>
 #include <QWebEngineSettings>
 #include <QWebEngineScript>
