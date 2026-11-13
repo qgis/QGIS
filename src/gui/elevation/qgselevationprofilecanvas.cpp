@@ -612,19 +612,19 @@ void QgsElevationProfileCanvas::adjustRangeForAxisScaleLock( double &xMinimum, d
 
   const double currentRatio = horizontalScale / verticalScale;
 
-  if ( currentRatio <= mLockedAxisScale )
+  if ( currentRatio > mLockedAxisScale )
   {
     const double height = horizontalScale * mPlotItem->plotArea().height() / mLockedAxisScale;
-    const double deltaHeight = ( yMaximum - yMinimum ) - height;
-    yMinimum += deltaHeight / 2;
-    yMaximum -= deltaHeight / 2;
+    const double deltaHeight = height - ( yMaximum - yMinimum );
+    yMinimum -= deltaHeight / 2;
+    yMaximum += deltaHeight / 2;
   }
   else
   {
     const double width = verticalScale * mPlotItem->plotArea().width() * mLockedAxisScale;
-    const double deltaWidth = ( ( xMaximum - xMinimum ) - width );
-    xMinimum += deltaWidth / 2;
-    xMaximum -= deltaWidth / 2;
+    const double deltaWidth = width - ( xMaximum - xMinimum );
+    xMinimum -= deltaWidth / 2;
+    xMaximum += deltaWidth / 2;
   }
 }
 
@@ -690,23 +690,6 @@ bool QgsElevationProfileCanvas::lockAxisScales() const
 void QgsElevationProfileCanvas::setLockAxisScales( bool lock )
 {
   mLockAxisScales = lock;
-  if ( mLockAxisScales )
-  {
-    double xMinimum = mPlotItem->xMinimum() * mPlotItem->mXScaleFactor;
-    double xMaximum = mPlotItem->xMaximum() * mPlotItem->mXScaleFactor;
-    double yMinimum = mPlotItem->yMinimum();
-    double yMaximum = mPlotItem->yMaximum();
-    adjustRangeForAxisScaleLock( xMinimum, xMaximum, yMinimum, yMaximum );
-    mPlotItem->setXMinimum( xMinimum / mPlotItem->mXScaleFactor );
-    mPlotItem->setXMaximum( xMaximum / mPlotItem->mXScaleFactor );
-    mPlotItem->setYMinimum( yMinimum );
-    mPlotItem->setYMaximum( yMaximum );
-
-    refineResults();
-    mPlotItem->updatePlot();
-    emit plotAreaChanged();
-    emit scaleChanged();
-  }
 }
 
 double QgsElevationProfileCanvas::axisScaleRatio() const
@@ -720,13 +703,19 @@ void QgsElevationProfileCanvas::setAxisScaleRatio( double scale )
 {
   mLockedAxisScale = scale;
 
-  double xMinimum = mPlotItem->xMinimum() * mPlotItem->mXScaleFactor;
-  double xMaximum = mPlotItem->xMaximum() * mPlotItem->mXScaleFactor;
+  const double xMinimum = mPlotItem->xMinimum();
+  const double xMaximum = mPlotItem->xMaximum();
   double yMinimum = mPlotItem->yMinimum();
   double yMaximum = mPlotItem->yMaximum();
-  adjustRangeForAxisScaleLock( xMinimum, xMaximum, yMinimum, yMaximum );
-  mPlotItem->setXMinimum( xMinimum / mPlotItem->mXScaleFactor );
-  mPlotItem->setXMaximum( xMaximum / mPlotItem->mXScaleFactor );
+  const double horizontalScale = ( xMaximum - xMinimum ) / mPlotItem->plotArea().width();
+
+  // When setting the axis scale ratio, we keep the horizontal range fixed and adjust the
+  // vertical range so that their ratio matches the locked scale value
+  const double height = horizontalScale * mPlotItem->plotArea().height() / mLockedAxisScale;
+  const double deltaHeight = height - ( yMaximum - yMinimum );
+  yMinimum -= deltaHeight / 2;
+  yMaximum += deltaHeight / 2;
+
   mPlotItem->setYMinimum( yMinimum );
   mPlotItem->setYMaximum( yMaximum );
 
