@@ -263,6 +263,11 @@ Recalculates the frame sizes for the current viewport dimensions
 
 
     void invalidateCache();
+%Docstring
+Invalidates cached renders.
+
+.. versionadded:: 4.4
+%End
 
   signals:
 
