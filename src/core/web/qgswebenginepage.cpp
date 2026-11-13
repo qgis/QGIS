@@ -423,7 +423,7 @@ bool QgsWebEnginePage::renderBlocking(
     return false;
   }
 
-  QgsPdfRenderer renderer( renderedPdfPath, Qgis::PdfRenderFlag::RenderTextAsText );
+  QgsPdfRenderer renderer( renderedPdfPath );
   return renderBlockingInternal( painter, renderer, errorMessage, painterRect, renderedSize );
 #else
   ( void ) html;
@@ -451,7 +451,7 @@ bool QgsWebEnginePage::renderBlocking( const QUrl &url, QPainter *painter, const
     return false;
   }
 
-  QgsPdfRenderer renderer( renderedPdfPath, Qgis::PdfRenderFlag::RenderTextAsText );
+  QgsPdfRenderer renderer( renderedPdfPath );
   return renderBlockingInternal( painter, renderer, errorMessage, painterRect, renderedSize );
 #else
   ( void ) url;
