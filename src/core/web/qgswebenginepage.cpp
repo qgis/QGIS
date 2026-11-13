@@ -418,24 +418,7 @@ bool QgsWebEnginePage::renderBlocking(
   }
 
   QgsPdfRenderer renderer( renderedPdfPath, Qgis::PdfRenderFlag::RenderTextAsText );
-  if ( renderer.pageCount() < 1 )
-  {
-    errorMessage = tr( "Generated PDF contains no pages" );
-    return false;
-  }
-
-  const QRectF mediaBox = renderer.pageMediaBox( 0 );
-  if ( mediaBox.isEmpty() || mediaBox.width() <= 0 )
-    return false;
-
-  // Calculate target height preserving the content's natural aspect ratio
-  const double aspectRatio = mediaBox.height() / mediaBox.width();
-  const double targetHeight = painterRect.width() * aspectRatio;
-
-  const QRectF targetRect( painterRect.left(), painterRect.top(), painterRect.width(), targetHeight );
-  renderedSize = targetRect.size();
-  return renderer.render( painter, targetRect, 0 );
-
+  return renderBlockingInternal( painter, renderer, errorMessage, painterRect, renderedSize );
 #else
   ( void ) html;
   ( void ) painter;
@@ -463,6 +446,22 @@ bool QgsWebEnginePage::renderBlocking( const QUrl &url, QPainter *painter, const
   }
 
   QgsPdfRenderer renderer( renderedPdfPath, Qgis::PdfRenderFlag::RenderTextAsText );
+  return renderBlockingInternal( painter, renderer, errorMessage, painterRect, renderedSize );
+#else
+  ( void ) url;
+  ( void ) painter;
+  ( void ) painterRect;
+  ( void ) errorMessage;
+  ( void ) feedback;
+  ( void ) renderedSize;
+  ( void ) settings;
+  throw QgsNotSupportedException( QObject::tr( "Rendering HTML requires a QGIS build with PDF4Qt library support" ) );
+#endif
+}
+
+#ifdef HAVE_PDF4QT
+bool QgsWebEnginePage::renderBlockingInternal( QPainter *painter, QgsPdfRenderer &renderer, QString &errorMessage, const QRectF &painterRect, QSizeF &renderedSize )
+{
   if ( renderer.pageCount() < 1 )
   {
     errorMessage = tr( "Generated PDF contains no pages" );
@@ -480,14 +479,5 @@ bool QgsWebEnginePage::renderBlocking( const QUrl &url, QPainter *painter, const
   const QRectF targetRect( painterRect.left(), painterRect.top(), painterRect.width(), targetHeight );
   renderedSize = targetRect.size();
   return renderer.render( painter, targetRect, 0 );
-#else
-  ( void ) url;
-  ( void ) painter;
-  ( void ) painterRect;
-  ( void ) errorMessage;
-  ( void ) feedback;
-  ( void ) renderedSize;
-  ( void ) settings;
-  throw QgsNotSupportedException( QObject::tr( "Rendering HTML requires a QGIS build with PDF4Qt library support" ) );
-#endif
 }
+#endif
