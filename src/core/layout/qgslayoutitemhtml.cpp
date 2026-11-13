@@ -34,7 +34,12 @@
 #include "qgspicturerasterizer.h"
 #include "qgsproject.h"
 #include "qgsvectorlayer.h"
+
+#include <QString>
+
+#if defined( HAVE_WEBENGINE ) && defined( HAVE_PDF4QT )
 #include "qgswebenginepage.h"
+#endif
 
 #include <QString>
 
@@ -960,7 +965,9 @@ void QgsLayoutItemHtmlRenderJob::run()
   htmlRenderSettings.setUserStylesheet( mUserStylesheet );
   htmlRenderSettings.setFeatureJson( mFeatureJson );
 
+#if defined( HAVE_WEBENGINE ) && defined( HAVE_PDF4QT )
   mSuccess = QgsWebEnginePage::renderBlocking( mHtml, &painter, QRectF( 0, 0, widthCssPx, 9999 ), mErrorMessage, renderedSizeCssPx, htmlRenderSettings, &mFeedback );
+#endif
   painter.end();
 
   if ( mFeedback.isCanceled() )
