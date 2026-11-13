@@ -73,6 +73,7 @@ class TestQgsGdalProvider : public QgsTest
     void bandName();                // test band name based on `gtiff` tags (#7317)
     void bandNameNoDescription();   // test band name for when no description or tags available (#16047)
     void bandNameWithDescription(); // test band name for when description available (#16047)
+    void bandNameNetCdfGribTime();  // test band name for netCDF and GRIB with time dimension
     void colorTable();
     void interactionBetweenRasterChangeAndCache(); // test that updading a raster invalidates the GDAL dataset cache (#20104)
     void scale0();                                 //test when data has scale 0 (#20493)
@@ -456,6 +457,28 @@ void TestQgsGdalProvider::bandNameWithDescription()
   QVERIFY( rp );
   QCOMPARE( rp->generateBandName( 1 ), u"Band 1: 1.234 um"_s );
   delete provider;
+}
+
+void TestQgsGdalProvider::bandNameNetCdfGribTime()
+{
+  const QString raster_nc = QStringLiteral( TEST_DATA_DIR ) + "/netcdf/time_dimension_regular_daily.nc";
+  QgsDataProvider *provider_nc = QgsProviderRegistry::instance()->createProvider( u"gdal"_s, raster_nc, QgsDataProvider::ProviderOptions() );
+  QgsRasterDataProvider *rp_nc = dynamic_cast<QgsRasterDataProvider *>( provider_nc );
+  QVERIFY( rp_nc );
+  QCOMPARE( rp_nc->bandCount(), 10 );
+  QCOMPARE( rp_nc->generateBandName( 1 ), u"Band 01: 2024-01-01 00:00:00 (UTC)"_s );
+  QCOMPARE( rp_nc->generateBandName( 2 ), u"Band 02: 2024-01-02 00:00:00 (UTC)"_s );
+  QCOMPARE( rp_nc->generateBandName( 3 ), u"Band 03: 2024-01-03 00:00:00 (UTC)"_s );
+  delete provider_nc;
+
+  const QString raster_grib = QStringLiteral( TEST_DATA_DIR ) + "/grib/time_dimension_regular_hourly.grib2";
+  QgsDataProvider *provider_grib = QgsProviderRegistry::instance()->createProvider( u"gdal"_s, raster_grib, QgsDataProvider::ProviderOptions() );
+  QgsRasterDataProvider *rp_grib = dynamic_cast<QgsRasterDataProvider *>( provider_grib );
+  QVERIFY( rp_grib );
+  QCOMPARE( rp_grib->bandCount(), 12 );
+  QCOMPARE( rp_grib->generateBandName( 1 ), u"Band 01: 0[-] RESERVED=\"Reserved\" 2024-06-15 00:00:00 (UTC)"_s );
+  QCOMPARE( rp_grib->generateBandName( 2 ), u"Band 02: 0[-] RESERVED=\"Reserved\" 2024-06-15 01:00:00 (UTC)"_s );
+  delete provider_grib;
 }
 
 void TestQgsGdalProvider::colorTable()
