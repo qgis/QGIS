@@ -111,6 +111,13 @@ class CORE_EXPORT QgsLayoutItemHtml : public QgsLayoutMultiFrame
     QIcon icon() const override;
 
     /**
+     * Returns TRUE if HTML item rendering is supported on the system.
+     *
+     * \since QGIS 4.4
+     */
+    static bool isSupported();
+
+    /**
      * Returns a new QgsLayoutItemHtml for the specified parent \a layout.
      */
     static QgsLayoutItemHtml *create( QgsLayout *layout ) SIP_FACTORY;

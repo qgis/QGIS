@@ -21,7 +21,6 @@ from qgis.core import (
     QgsLayoutMultiFrame,
     QgsProject,
 )
-from qgis.gui import QgsGui
 from qgis.PyQt.QtCore import QRectF, QUrl
 from qgis.testing import QgisTestCase, start_app
 from qgis.testing.mocked import get_iface
@@ -49,7 +48,7 @@ class TestQgsLayoutHtml(QgisTestCase):
         myUrl = QUrl("file:///" + myPath)
         return myUrl
 
-    @unittest.skipIf(not QgsGui.hasWebEngine(), "QtWebEngine not available")
+    @unittest.skipIf(not QgsLayoutItemHtml.isSupported(), "HTML item not available")
     def testTable(self):
         """Test we can render a html table in a single frame."""
         layout_html = QgsLayoutItemHtml(self.layout)
@@ -64,7 +63,7 @@ class TestQgsLayoutHtml(QgisTestCase):
         self.layout.removeMultiFrame(layout_html)
         self.assertTrue(result)
 
-    @unittest.skipIf(not QgsGui.hasWebEngine(), "QtWebEngine not available")
+    @unittest.skipIf(not QgsLayoutItemHtml.isSupported(), "HTML item not available")
     def testTableMultiFrame(self):
         """Test we can render to multiframes."""
         layout_html = QgsLayoutItemHtml(self.layout)
@@ -87,7 +86,7 @@ class TestQgsLayoutHtml(QgisTestCase):
         self.layout.removeMultiFrame(layout_html)
         layout_html = None
 
-    @unittest.skipIf(not QgsGui.hasWebEngine(), "QtWebEngine not available")
+    @unittest.skipIf(not QgsLayoutItemHtml.isSupported(), "HTML item not available")
     def testHtmlSmartBreaks(self):
         """Test rendering to multiframes with smart breaks."""
         layout_html = QgsLayoutItemHtml(self.layout)

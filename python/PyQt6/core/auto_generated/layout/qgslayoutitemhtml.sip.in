@@ -41,6 +41,13 @@ Ownership is transferred to the layout.
     virtual QIcon icon() const;
 
 
+    static bool isSupported();
+%Docstring
+Returns ``True`` if HTML item rendering is supported on the system.
+
+.. versionadded:: 4.4
+%End
+
     static QgsLayoutItemHtml *create( QgsLayout *layout ) /Factory/;
 %Docstring
 Returns a new QgsLayoutItemHtml for the specified parent ``layout``.
