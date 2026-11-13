@@ -396,12 +396,41 @@ class QgsServerOgcApiSchemaTest(QgsServerAPITestBase):
             {"format": "uuid", "type": "string", "x-ogc-propertySeq": 2},
         )
 
-        # Datetime widget with date field
+        ### DateTime Widget
+
+        # String field with DateTime widget and a format config for ISO 8601 date-time
+        field = QgsField("field1", QtCore.QMetaType.Type.QString)
+        _test_widget_conf(
+            field,
+            "DateTime",
+            {"field_format": "yyyy-MM-dd HH:mm:ss+t"},
+            {"format": "date-time", "type": "string", "x-ogc-propertySeq": 2},
+        )
+
+        # String field with DateTime widget and a format config for time
+        field = QgsField("field1", QtCore.QMetaType.Type.QString)
+        _test_widget_conf(
+            field,
+            "DateTime",
+            {"field_format": "HH:mm:ss"},
+            {"format": "time", "type": "string", "x-ogc-propertySeq": 2},
+        )
+
+        # Date field with a DateTime widget without format config
         field = QgsField("field1", QtCore.QMetaType.Type.QDate)
         _test_widget_conf(
             field,
             "DateTime",
             {},
+            {"format": "date", "type": "string", "x-ogc-propertySeq": 2},
+        )
+
+        # Datetime field with a DateTime widget overwriting the date-time format to date
+        field = QgsField("field1", QtCore.QMetaType.Type.QDateTime)
+        _test_widget_conf(
+            field,
+            "DateTime",
+            {"field_format": "yyyy-MM-dd"},
             {"format": "date", "type": "string", "x-ogc-propertySeq": 2},
         )
 

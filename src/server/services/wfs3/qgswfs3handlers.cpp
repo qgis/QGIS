@@ -23,6 +23,7 @@
 #include "qgsattributeeditorfield.h"
 #include "qgsattributeeditorrelation.h"
 #include "qgsbufferserverrequest.h"
+#include "qgsdatetimefieldformatter.h"
 #include "qgsexpression.h"
 #include "qgsexpressioncontext.h"
 #include "qgsexpressioncontextutils.h"
@@ -691,6 +692,34 @@ void QgsWfs3AbstractItemsHandler::gatherLayerFieldsInfo( json &data, const QgsVe
           if ( !fInfo.title.has_value() && !referencedLayerTitle.isEmpty() )
           {
             fInfo.title = referencedLayerTitle.toStdString();
+          }
+        }
+        else if ( widgetType == "DateTime"_L1 )
+        {
+          // Get field format from editor widget setup config
+          const QString format = widgetConfig.value( u"field_format"_s, QgsDateTimeFieldFormatter::defaultFormat( field.type() ) ).toString();
+
+          // Analyze string fields, since fields with native date types already have their format derived from the field type
+          if ( field.type() == QMetaType::Type::QString )
+          {
+            if ( format == QgsDateTimeFieldFormatter::TIME_FORMAT )
+            {
+              fInfo.format = "time";
+            }
+            else if ( format == QgsDateTimeFieldFormatter::DATE_FORMAT )
+            {
+              fInfo.format = "date";
+            }
+            else
+            {
+              // DATETIME_FORMAT, QT_ISO_FORMAT and custom formats
+              fInfo.format = "date-time";
+            }
+          }
+          // Special case: QDateTime with an explicitly selected Date format.
+          if ( field.type() == QMetaType::Type::QDateTime && format == QgsDateTimeFieldFormatter::DATE_FORMAT )
+          {
+            fInfo.format = "date";
           }
         }
         else
