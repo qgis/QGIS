@@ -19,17 +19,17 @@ jobs:
     strategy:
       matrix:
         include:
-          - os: macos-26
+          -
             triplet: x64-osx-dynamic-release
             host-triplet: arm64-osx-dynamic-release
             deployment-target: "10.15"
             osx-architecture: "x86_64"
-          - os: macos-26
+          -
             triplet: arm64-osx-dynamic-release
             deployment-target: "11.0"
             osx-architecture: "arm64"
     name: build (macos)
-    runs-on: ${{ matrix.os }}
+    runs-on: macos-26
     env:
       FC: gfortran
       GCC_VERSION: 15
