@@ -33,6 +33,7 @@ SIP_IF_MODULE( HAVE_WEBENGINE_SIP )
 class QWebEnginePage;
 class QPainter;
 class QgsFeedback;
+class QgsPdfRenderer;
 
 /**
  * \ingroup core
@@ -331,6 +332,7 @@ class CORE_EXPORT QgsWebEnginePage : public QObject
 
     static QString htmlToPdfReturnCodeToString( int code );
     static bool doPrintToPdf( const QStringList &args, const QgsHtmlRenderSettings &settings, QString &errorMessage, QgsFeedback *feedback );
+    static bool renderBlockingInternal( QPainter *painter, QgsPdfRenderer &renderer, QString &errorMessage, const QRectF &painterRect, QSizeF &renderedSize );
 
     std::unique_ptr< QWebEnginePage > mPage;
     mutable QSize mCachedSize;
