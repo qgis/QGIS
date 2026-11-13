@@ -254,7 +254,7 @@ void QgsVectorLayerChunkLoader::loadChunkInWorker(
 
       try
       {
-        g.transform( layerToRenderCrs, Qgis::TransformDirection::Forward, true );
+        g.transform( layerToRenderCrs, Qgis::TransformDirection::Forward );
       }
       catch ( QgsCsException &e )
       {

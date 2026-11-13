@@ -2733,7 +2733,7 @@ void TestQgsCompoundCurve::crs3dTransformAndReverse()
 
 #if 0 // note - z value transform doesn't currently work with proj 6+, because we don't yet support compound CRS definitions
   //z value transform
-  cc.transform( tr, Qgis::TransformDirection::Forward, true );
+  cc.transform( tr, Qgis::TransformDirection::Forward );
 
   cc.pointAt( 0, pt, v );
   QGSCOMPARENEAR( pt.z(), -19.249066, 0.001 );
@@ -2744,7 +2744,7 @@ void TestQgsCompoundCurve::crs3dTransformAndReverse()
   cc.pointAt( 2, pt, v );
   QGSCOMPARENEAR( pt.z(), -19.370485, 0.001 );
 
-  cc.transform( tr, Qgis::TransformDirection::Reverse, true );
+  cc.transform( tr, Qgis::TransformDirection::Reverse );
 
   cc.pointAt( 0, pt, v );
   QGSCOMPARENEAR( pt.z(), 1, 0.001 );
