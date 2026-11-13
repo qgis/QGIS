@@ -62,7 +62,7 @@ class TestQgsLayoutLabel : public QgsTest
     void renderAsHtml();
     void renderAsHtmlLineHeight();
     void labelRotation();
-#ifdef HAVE_WEBENGINE
+#if defined( HAVE_WEBENGINE ) && defined( HAVE_PDF4QT )
     void convertToHtml();
     void renderAsHtmlRelative();
 #endif
@@ -369,7 +369,7 @@ void TestQgsLayoutLabel::labelRotation()
   mControlPathPrefix = u"composer_label"_s;
 }
 
-#ifdef HAVE_WEBENGINE
+#if defined( HAVE_WEBENGINE ) && defined( HAVE_PDF4QT )
 void TestQgsLayoutLabel::convertToHtml()
 {
   QgsProject project;

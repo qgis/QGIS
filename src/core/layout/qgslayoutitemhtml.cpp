@@ -105,6 +105,15 @@ QIcon QgsLayoutItemHtml::icon() const
   return QgsApplication::getThemeIcon( u"/mLayoutItemHtml.svg"_s );
 }
 
+bool QgsLayoutItemHtml::isSupported()
+{
+#if defined( HAVE_WEBENGINE ) && defined( HAVE_PDF4QT )
+  return true;
+#else
+  return false;
+#endif
+}
+
 QgsLayoutItemHtml *QgsLayoutItemHtml::create( QgsLayout *layout )
 {
   return new QgsLayoutItemHtml( layout );

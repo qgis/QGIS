@@ -60,6 +60,13 @@ class CORE_EXPORT QgsPdfRenderer
     QgsPdfRenderer &operator=( const QgsPdfRenderer &other ) = delete;
 
     /**
+     * Returns TRUE if the PDF rendering capability is available on the system.
+     *
+     * \since QGIS 4.4
+     */
+    static bool isAvailable();
+
+    /**
      * Returns the file path of the associated PDF file.
      */
     QString path() const { return mPath; }
