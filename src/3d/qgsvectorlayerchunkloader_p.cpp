@@ -109,7 +109,7 @@ QgsVectorLayerChunkLoader::QgsVectorLayerChunkLoader( const Qgs3DRenderContext &
       layerExtentLonLat = Qgs3DUtils::tryReprojectExtent2D( mLayer->extent(), mLayer->crs(), geographicCrs, context.transformContext() );
     }
 
-    if ( layerExtentLonLat.isValid() )
+    if ( !layerExtentLonLat.isEmpty() )
     {
       // add small padding to avoid clipping of point features located at the edge of the bounding box
       layerExtentLonLat.grow( 0.01 );
@@ -134,11 +134,11 @@ QgsVectorLayerChunkLoader::QgsVectorLayerChunkLoader( const Qgs3DRenderContext &
 
   QgsRectangle extent = context.extent();
   const QgsRectangle layerExtentInMapCrs = Qgs3DUtils::tryReprojectExtent2D( mLayer->extent(), mLayer->crs(), context.crs(), context.transformContext() );
-  if ( layerExtentInMapCrs.isValid() )
+  if ( !layerExtentInMapCrs.isEmpty() )
   {
     extent = context.extent().intersect( layerExtentInMapCrs );
   }
-  if ( extent.isValid() )
+  if ( !extent.isEmpty() )
   {
     QgsBox3D rootBox3D( extent, zMin, zMax );
     rootBox3D.grow( 1.0 );
