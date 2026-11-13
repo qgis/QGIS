@@ -5050,6 +5050,7 @@ void QgisApp::initLayerTreeView()
   connect( actionCollapseAll, &QAction::triggered, mLayerTreeView, &QgsLayerTreeView::collapseAllNodes );
 
   QToolBar *toolbar = new QToolBar();
+  toolbar->setObjectName( u"mLayerTreeToolBar"_s );
   toolbar->setIconSize( QgsGui::iconSize( Qgis::UserInterfaceIconType::DockedToolbar ) );
   toolbar->addAction( mActionStyleDock );
   toolbar->addAction( actionAddGroup );
