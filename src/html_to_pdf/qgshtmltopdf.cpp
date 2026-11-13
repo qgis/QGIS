@@ -209,7 +209,7 @@ void QgsHtmlToPdf::onLoadFinished( bool ok )
   )js"_s )
                                .arg( mSettings.width )
                                .arg( QString::fromUtf8( QJsonDocument( QJsonArray { mSettings.userStylesheet } ).toJson( QJsonDocument::Compact ) ) )
-                               .arg( mSettings.feature.isEmpty() ? u"null"_s : QString::fromUtf8( QJsonDocument( mSettings.feature ).toJson( QJsonDocument::Compact ) ) );
+                               .arg( mSettings.featureJson.isEmpty() ? u"null"_s : QString::fromUtf8( QJsonDocument( mSettings.featureJson ).toJson( QJsonDocument::Compact ) ) );
 
   mPage.runJavaScript( jsTemplate, [this]( QVariant res ) { onLoadJsFinished( res ); } );
 }
