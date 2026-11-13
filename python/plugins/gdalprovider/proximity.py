@@ -225,10 +225,16 @@ class proximity(GdalAlgorithm):
     def groupId(self):
         return "rasteranalysis"
 
-    def commandName(self):
+    def _commandNameLegacy(self):
         return "gdal_proximity"
 
-    def getConsoleCommands(self, parameters, context, feedback, executing=True):
+    def _commandNameGdalCli(self) -> str:
+        return "gdal raster proximity"
+
+    def useLegacyTool(self) -> bool:
+        return GdalUtils.version() < 3120000
+
+    def _getConsoleCommandsLegacy(self, parameters, context, feedback, executing=True):
         inLayer = self.parameterAsRasterLayer(parameters, self.INPUT, context)
         if inLayer is None:
             raise QgsProcessingException(
@@ -308,3 +314,82 @@ class proximity(GdalAlgorithm):
             self.commandName() + (".bat" if GdalUtils.is_windows() else ".py"),
             GdalUtils.escapeAndJoin(arguments),
         ]
+
+    def _getConsoleCommandsGdalCli(self, parameters, context, feedback, executing=True):
+        inLayer = self.parameterAsRasterLayer(parameters, self.INPUT, context)
+        if inLayer is None:
+            raise QgsProcessingException(
+                self.invalidRasterError(parameters, self.INPUT)
+            )
+        input_details = GdalUtils.gdal_connection_details_from_layer(inLayer)
+
+        distance = self.parameterAsDouble(parameters, self.MAX_DISTANCE, context)
+        replaceValue = self.parameterAsDouble(parameters, self.REPLACE, context)
+        if self.NODATA in parameters and parameters[self.NODATA] is not None:
+            nodata = self.parameterAsDouble(parameters, self.NODATA, context)
+        else:
+            nodata = None
+        options = self.parameterAsString(parameters, self.OPTIONS, context)
+        out = self.parameterAsOutputLayer(parameters, self.OUTPUT, context)
+        self.setOutputValue(self.OUTPUT, out)
+
+        arguments = [
+            "--band",
+            str(self.parameterAsInt(parameters, self.BAND, context)),
+            "--distance-units",
+            self.distanceUnits[self.parameterAsEnum(parameters, self.UNITS, context)][
+                1
+            ].lower(),
+        ]
+
+        values = self.parameterAsString(parameters, self.VALUES, context)
+        if values:
+            arguments.append("--target-values")
+            arguments.append(values)
+
+        if distance:
+            arguments.append("--max-distance")
+            arguments.append(str(distance))
+
+        if nodata is not None:
+            arguments.append("--nodata")
+            arguments.append(str(nodata))
+
+        if replaceValue:
+            arguments.append("--fixed-value")
+            arguments.append(str(replaceValue))
+
+        data_type = self.parameterAsEnum(parameters, self.DATA_TYPE, context)
+        if self.TYPES[data_type] == "Int8" and GdalUtils.version() < 3070000:
+            raise QgsProcessingException(
+                self.tr("Int8 data type requires GDAL version 3.7 or later")
+            )
+
+        arguments.append("--ot")
+        arguments.append(self.TYPES[data_type])
+
+        output_format = self.outputFormat(parameters, self.OUTPUT, context)
+        if not output_format:
+            raise QgsProcessingException(self.tr("Output format is invalid"))
+
+        arguments.append("--format")
+        arguments.append(output_format)
+
+        options = self.parameterAsString(parameters, self.CREATION_OPTIONS, context)
+        # handle backwards compatibility parameter OPTIONS
+        if self.OPTIONS in parameters and parameters[self.OPTIONS] not in (None, ""):
+            options = self.parameterAsString(parameters, self.OPTIONS, context)
+        if options:
+            arguments.extend(GdalUtils.parseCreationOptions(options, new_api=True))
+
+        if self.EXTRA in parameters and parameters[self.EXTRA] not in (None, ""):
+            extra = self.parameterAsString(parameters, self.EXTRA, context)
+            arguments.append(extra)
+
+        if input_details.credential_options:
+            arguments.extend(input_details.credential_options_as_arguments())
+
+        arguments.append(input_details.connection_string)
+        arguments.append(out)
+
+        return [self.commandName(), GdalUtils.escapeAndJoin(arguments)]
