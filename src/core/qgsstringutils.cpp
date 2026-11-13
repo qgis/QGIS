@@ -14,12 +14,14 @@
  ***************************************************************************/
 
 #include "qgsstringutils.h"
+
 #include "qgslogger.h"
 #include <QVector>
 #include <QStringList>
 #include <QTextBoundaryFinder>
 #include <QRegularExpression>
 #include <cstdlib> // for std::abs
+#include <numeric>
 
 QString QgsStringUtils::capitalize( const QString &string, Qgis::Capitalization capitalization )
 {
@@ -179,17 +181,15 @@ int QgsStringUtils::levenshteinDistance( const QString &string1, const QString &
   if ( length1 > length2 )
   {
     std::swap( s1, s2 );
+    std::swap( s1Char, s2Char );
     std::swap( length1, length2 );
   }
 
   //levenshtein algorithm begins here
   std::vector< int > col( length2 + 1, 0 );
-  std::vector< int > prevCol;
-  prevCol.reserve( length2 + 1 );
-  for ( int i = 0; i < length2 + 1; ++i )
-  {
-    prevCol.emplace_back( i );
-  }
+  std::vector< int > prevCol( length2 + 1, 0 );
+  std::iota( prevCol.begin(), prevCol.end(), 0 );
+
   const QChar *s2start = s2Char;
   for ( int i = 0; i < length1; ++i )
   {
