@@ -413,10 +413,12 @@ void QgsLayoutItemHtml::renderHtmlSynchronously()
   }
   htmlRenderSettings.setFeatureJson( mAtlasFeatureJSON );
 
+#if defined( HAVE_WEBENGINE ) && defined( HAVE_PDF4QT )
   if ( !QgsWebEnginePage::renderBlocking( mEvaluatedHtml, &painter, QRectF( 0, 0, widthCssPx, 9999 ), errorMessage, renderedSizeCssPx, htmlRenderSettings, nullptr ) )
   {
     QgsDebugError( errorMessage );
   }
+#endif
   painter.end();
 
   const double heightCssPx = renderedSizeCssPx.height();
