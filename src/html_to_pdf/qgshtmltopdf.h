@@ -56,7 +56,7 @@ class QgsHtmlToPdf : public QObject
         QString userAgent;
         QString baseUrl;
         QString userStylesheet;
-        QJsonObject feature;
+        QJsonObject featureJson;
     };
     QgsHtmlToPdf();
 

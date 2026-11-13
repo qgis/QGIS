@@ -153,11 +153,11 @@ int main( int argc, char *argv[] )
     const QJsonValue featureVal = settingsObj.value( u"feature"_s );
     if ( featureVal.isObject() )
     {
-      settings.feature = featureVal.toObject();
+      settings.featureJson = featureVal.toObject();
     }
     else if ( featureVal.isString() )
     {
-      settings.feature = QJsonDocument::fromJson( featureVal.toString().toUtf8() ).object();
+      settings.featureJson = QJsonDocument::fromJson( featureVal.toString().toUtf8() ).object();
     }
   }
 
