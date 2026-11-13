@@ -632,7 +632,7 @@ void QgsApplication::installTranslators()
      * the About, Preferences and Quit items to the Mac Application menu.
      * These items must be translated identically in both qt_ and qgis_ files.
      */
-    QString qtTranslationsPath = QLibraryInfo::location( QLibraryInfo::TranslationsPath );
+    QString qtTranslationsPath = QLibraryInfo::path( QLibraryInfo::TranslationsPath );
 #ifdef __MINGW32__
     QString prefix = QDir( QString( "%1/../" ).arg( QApplication::applicationDirPath() ) ).absolutePath();
     qtTranslationsPath = prefix + qtTranslationsPath.mid( QLibraryInfo::location( QLibraryInfo::PrefixPath ).length() );
