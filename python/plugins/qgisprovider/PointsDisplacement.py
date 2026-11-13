@@ -70,6 +70,11 @@ class PointsDisplacement(QgisAlgorithm):
             defaultValue=1.0,
         )
         param.setMetadata({"widget_wrapper": {"decimals": 5}})
+        param.setHelp(
+            self.tr(
+                "Distance below which point features are considered close. Close features are distributed as a group."
+            )
+        )
         self.addParameter(param)
 
         param = QgsProcessingParameterDistance(
@@ -80,13 +85,21 @@ class PointsDisplacement(QgisAlgorithm):
             defaultValue=1.0,
         )
         param.setMetadata({"widget_wrapper": {"decimals": 5}})
+        param.setHelp(
+            self.tr("Radius of the circle on which close features are placed.")
+        )
         self.addParameter(param)
 
-        self.addParameter(
-            QgsProcessingParameterBoolean(
-                self.HORIZONTAL, self.tr("Horizontal distribution for two point case")
+        param = QgsProcessingParameterBoolean(
+            self.HORIZONTAL, self.tr("Horizontal distribution for two point case")
+        )
+        param.setHelp(
+            self.tr(
+                "When only two points are identified as close, aligns them horizontally on the circle instead of vertically."
             )
         )
+        self.addParameter(param)
+
         self.addParameter(
             QgsProcessingParameterFeatureSink(
                 self.OUTPUT,

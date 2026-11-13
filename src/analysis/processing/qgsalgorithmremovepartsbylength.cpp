@@ -101,6 +101,7 @@ void QgsRemovePartsByLengthAlgorithm::initParameters( const QVariantMap & )
   minLength->setIsDynamic( true );
   minLength->setDynamicPropertyDefinition( QgsPropertyDefinition( u"MIN_LENGTH"_s, QObject::tr( "Remove parts with length less than" ), QgsPropertyDefinition::DoublePositive ) );
   minLength->setDynamicLayerParameterName( u"INPUT"_s );
+  minLength->setHelp( QObject::tr( "Minimum length of the lines to keep, using Cartesian calculations in the layer’s CRS." ) );
   addParameter( minLength.release() );
 }
 

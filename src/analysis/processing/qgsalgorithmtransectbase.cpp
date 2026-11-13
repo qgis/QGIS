@@ -61,6 +61,7 @@ void QgsTransectAlgorithmBase::initAlgorithm( const QVariantMap & )
   length->setIsDynamic( true );
   length->setDynamicPropertyDefinition( QgsPropertyDefinition( u"LENGTH"_s, QObject::tr( "Length of the transect" ), QgsPropertyDefinition::DoublePositive ) );
   length->setDynamicLayerParameterName( u"INPUT"_s );
+  length->setHelp( QObject::tr( "Total length of each transect line." ) );
   addParameter( length.release() );
 
   auto angle
@@ -68,15 +69,18 @@ void QgsTransectAlgorithmBase::initAlgorithm( const QVariantMap & )
   angle->setIsDynamic( true );
   angle->setDynamicPropertyDefinition( QgsPropertyDefinition( u"ANGLE"_s, QObject::tr( "Angle in degrees" ), QgsPropertyDefinition::Double ) );
   angle->setDynamicLayerParameterName( u"INPUT"_s );
+  angle->setHelp( QObject::tr( "Angle in degrees from the original line. A value of 90° creates perpendicular transects." ) );
   addParameter( angle.release() );
 
-  addParameter(
-    new QgsProcessingParameterEnum( u"SIDE"_s, QObject::tr( "Side to create the transects" ), QStringList() << QObject::tr( "Left" ) << QObject::tr( "Right" ) << QObject::tr( "Both" ), false, 2 )
-  );
+  auto side = std::make_unique<
+    QgsProcessingParameterEnum>( u"SIDE"_s, QObject::tr( "Side to create the transects" ), QStringList() << QObject::tr( "Left" ) << QObject::tr( "Right" ) << QObject::tr( "Both" ), false, 2 );
+  side->setHelp( QObject::tr( "Which side of the line to create transects on (relative to the line digitizing direction)." ) );
+  addParameter( side.release() );
 
   auto direction
     = std::make_unique<QgsProcessingParameterEnum>( u"DIRECTION"_s, QObject::tr( "Direction" ), QStringList() << QObject::tr( "Right to Left" ) << QObject::tr( "Left to Right" ), false, 0, true );
   direction->setGuiDefaultValueOverride( 1 );
+  direction->setHelp( QObject::tr( "Orientation direction for transects." ) );
   addParameter( direction.release() );
 
   addParameter( new QgsProcessingParameterFeatureSink( u"OUTPUT"_s, QObject::tr( "Transect" ), Qgis::ProcessingSourceType::VectorLine ) );

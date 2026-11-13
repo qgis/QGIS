@@ -93,9 +93,13 @@ void QgsCheckValidityAlgorithm::initAlgorithm( const QVariantMap & )
   widgetMetadata.insert( u"columns"_s, 3 );
   methodParamMetadata.insert( u"widget_wrapper"_s, widgetMetadata );
   methodParam->setMetadata( methodParamMetadata );
+  methodParam->setHelp( QObject::tr( "Method to use to check validity." ) );
   addParameter( methodParam.release() );
 
-  addParameter( new QgsProcessingParameterBoolean( u"IGNORE_RING_SELF_INTERSECTION"_s, QObject::tr( "Ignore ring self intersections" ), false ) );
+  auto ignoreRingSelfIntersectionParam = std::make_unique<QgsProcessingParameterBoolean>( u"IGNORE_RING_SELF_INTERSECTION"_s, QObject::tr( "Ignore ring self intersections" ), false );
+  ignoreRingSelfIntersectionParam->setHelp( QObject::tr( "Ignore self intersecting rings when checking for validity." ) );
+  addParameter( ignoreRingSelfIntersectionParam.release() );
+
   addParameter( new QgsProcessingParameterFeatureSink( u"VALID_OUTPUT"_s, QObject::tr( "Valid output" ), Qgis::ProcessingSourceType::VectorAnyGeometry, QVariant(), true ) );
   addParameter( new QgsProcessingParameterFeatureSink( u"INVALID_OUTPUT"_s, QObject::tr( "Invalid output" ), Qgis::ProcessingSourceType::VectorAnyGeometry, QVariant(), true ) );
   addParameter( new QgsProcessingParameterFeatureSink( u"ERROR_OUTPUT"_s, QObject::tr( "Error output" ), Qgis::ProcessingSourceType::VectorAnyGeometry, QVariant(), true ) );

@@ -106,6 +106,7 @@ void QgsFixGeometriesAlgorithm::initParameters( const QVariantMap & )
 #else
   methodParameter->setDefaultValue( 1 );
 #endif
+  methodParameter->setHelp( QObject::tr( "Method used to repair the geometries." ) );
   addParameter( methodParameter.release() );
 }
 

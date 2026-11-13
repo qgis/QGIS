@@ -81,54 +81,63 @@ void QgsAffineTransformationAlgorithm::initParameters( const QVariantMap & )
   xOffset->setIsDynamic( true );
   xOffset->setDynamicPropertyDefinition( QgsPropertyDefinition( u"DELTA_X"_s, QObject::tr( "Offset distance (x-axis)" ), QgsPropertyDefinition::Double ) );
   xOffset->setDynamicLayerParameterName( u"INPUT"_s );
+  xOffset->setHelp( QObject::tr( "Displacement to apply on the X axis. Applied after scaling and rotation." ) );
   addParameter( xOffset.release() );
 
   auto yOffset = std::make_unique<QgsProcessingParameterDistance>( u"DELTA_Y"_s, QObject::tr( "Translation (y-axis)" ), 0.0, u"INPUT"_s );
   yOffset->setIsDynamic( true );
   yOffset->setDynamicPropertyDefinition( QgsPropertyDefinition( u"DELTA_Y"_s, QObject::tr( "Offset distance (y-axis)" ), QgsPropertyDefinition::Double ) );
   yOffset->setDynamicLayerParameterName( u"INPUT"_s );
+  yOffset->setHelp( QObject::tr( "Displacement to apply on the Y axis. Applied after scaling and rotation." ) );
   addParameter( yOffset.release() );
 
   auto zOffset = std::make_unique<QgsProcessingParameterNumber>( u"DELTA_Z"_s, QObject::tr( "Translation (z-axis)" ), Qgis::ProcessingNumberParameterType::Double, 0.0 );
   zOffset->setIsDynamic( true );
   zOffset->setDynamicPropertyDefinition( QgsPropertyDefinition( u"DELTA_Z"_s, QObject::tr( "Offset distance (z-axis)" ), QgsPropertyDefinition::Double ) );
   zOffset->setDynamicLayerParameterName( u"INPUT"_s );
+  zOffset->setHelp( QObject::tr( "Displacement to apply on the Z axis. Applied after scaling and rotation." ) );
   addParameter( zOffset.release() );
 
   auto mOffset = std::make_unique<QgsProcessingParameterNumber>( u"DELTA_M"_s, QObject::tr( "Translation (m values)" ), Qgis::ProcessingNumberParameterType::Double, 0.0 );
   mOffset->setIsDynamic( true );
   mOffset->setDynamicPropertyDefinition( QgsPropertyDefinition( u"DELTA_M"_s, QObject::tr( "Offset distance (m values)" ), QgsPropertyDefinition::Double ) );
   mOffset->setDynamicLayerParameterName( u"INPUT"_s );
+  mOffset->setHelp( QObject::tr( "Offset to apply on m values. Applied after scaling." ) );
   addParameter( mOffset.release() );
 
   auto xScale = std::make_unique<QgsProcessingParameterNumber>( u"SCALE_X"_s, QObject::tr( "Scale factor (x-axis)" ), Qgis::ProcessingNumberParameterType::Double, 1.0 );
   xScale->setIsDynamic( true );
   xScale->setDynamicPropertyDefinition( QgsPropertyDefinition( u"SCALE_X"_s, QObject::tr( "Scale factor (x-axis)" ), QgsPropertyDefinition::Double ) );
   xScale->setDynamicLayerParameterName( u"INPUT"_s );
+  xScale->setHelp( QObject::tr( "Scaling value (expansion or contraction) to apply on the X axis. Applied before rotation and translation." ) );
   addParameter( xScale.release() );
 
   auto yScale = std::make_unique<QgsProcessingParameterNumber>( u"SCALE_Y"_s, QObject::tr( "Scale factor (y-axis)" ), Qgis::ProcessingNumberParameterType::Double, 1.0 );
   yScale->setIsDynamic( true );
   yScale->setDynamicPropertyDefinition( QgsPropertyDefinition( u"SCALE_Y"_s, QObject::tr( "Scale factor (y-axis)" ), QgsPropertyDefinition::Double ) );
   yScale->setDynamicLayerParameterName( u"INPUT"_s );
+  yScale->setHelp( QObject::tr( "Scaling value (expansion or contraction) to apply on the Y axis. Applied before rotation and translation." ) );
   addParameter( yScale.release() );
 
   auto zScale = std::make_unique<QgsProcessingParameterNumber>( u"SCALE_Z"_s, QObject::tr( "Scale factor (z-axis)" ), Qgis::ProcessingNumberParameterType::Double, 1.0 );
   zScale->setIsDynamic( true );
   zScale->setDynamicPropertyDefinition( QgsPropertyDefinition( u"SCALE_Z"_s, QObject::tr( "Scale factor (z-axis)" ), QgsPropertyDefinition::Double ) );
   zScale->setDynamicLayerParameterName( u"INPUT"_s );
+  zScale->setHelp( QObject::tr( "Scaling value (expansion or contraction) to apply on the Z axis. Applied before rotation and translation." ) );
   addParameter( zScale.release() );
 
   auto mScale = std::make_unique<QgsProcessingParameterNumber>( u"SCALE_M"_s, QObject::tr( "Scale factor (m values)" ), Qgis::ProcessingNumberParameterType::Double, 1.0 );
   mScale->setIsDynamic( true );
   mScale->setDynamicPropertyDefinition( QgsPropertyDefinition( u"SCALE_M"_s, QObject::tr( "Scale factor (m values)" ), QgsPropertyDefinition::Double ) );
   mScale->setDynamicLayerParameterName( u"INPUT"_s );
+  mScale->setHelp( QObject::tr( "Scaling value (expansion or contraction) to apply on m values. Applied before the offset." ) );
   addParameter( mScale.release() );
 
   auto rotation = std::make_unique<QgsProcessingParameterNumber>( u"ROTATION_Z"_s, QObject::tr( "Rotation around z-axis (degrees counter-clockwise)" ), Qgis::ProcessingNumberParameterType::Double, 0.0 );
   rotation->setIsDynamic( true );
   rotation->setDynamicPropertyDefinition( QgsPropertyDefinition( u"ROTATION_Z"_s, QObject::tr( "Rotation around z-axis (degrees counter-clockwise)" ), QgsPropertyDefinition::Double ) );
   rotation->setDynamicLayerParameterName( u"INPUT"_s );
+  rotation->setHelp( QObject::tr( "Angle of the rotation in degrees. Positive values rotate counter-clockwise, negative values rotate clockwise. Applied after scaling and before translation." ) );
   addParameter( rotation.release() );
 }
 

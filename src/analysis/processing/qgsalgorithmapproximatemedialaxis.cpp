@@ -108,7 +108,9 @@ Qgis::WkbType QgsApproximateMedialAxisAlgorithm::outputWkbType( Qgis::WkbType in
 
 void QgsApproximateMedialAxisAlgorithm::initParameters( const QVariantMap & )
 {
-  addParameter( new QgsProcessingParameterBoolean( u"EXTEND_TO_EDGES"_s, QObject::tr( "Extend endpoints to the polygon boundary" ), false ) );
+  auto extendToEdgesParam = std::make_unique<QgsProcessingParameterBoolean>( u"EXTEND_TO_EDGES"_s, QObject::tr( "Extend endpoints to the polygon boundary" ), false );
+  extendToEdgesParam->setHelp( QObject::tr( "Extends the medial axis so that its endpoints reach the boundary of the input polygon. Using this method requires QGIS installed with SFCGAL >= 2.3." ) );
+  addParameter( extendToEdgesParam.release() );
 }
 
 bool QgsApproximateMedialAxisAlgorithm::prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )

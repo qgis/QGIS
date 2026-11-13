@@ -101,6 +101,7 @@ void QgsSetZValueAlgorithm::initParameters( const QVariantMap & )
   zValueParam->setIsDynamic( true );
   zValueParam->setDynamicPropertyDefinition( QgsPropertyDefinition( u"Z_VALUE"_s, QObject::tr( "Z Value" ), QgsPropertyDefinition::Double ) );
   zValueParam->setDynamicLayerParameterName( u"INPUT"_s );
+  zValueParam->setHelp( QObject::tr( "Z value to assign to the feature geometries." ) );
   addParameter( zValueParam.release() );
 }
 

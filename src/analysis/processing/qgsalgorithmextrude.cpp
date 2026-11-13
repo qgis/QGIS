@@ -109,18 +109,21 @@ void QgsExtrudeAlgorithm::initParameters( const QVariantMap & )
   xExtrude->setIsDynamic( true );
   xExtrude->setDynamicPropertyDefinition( QgsPropertyDefinition( u"EXTRUDE_X"_s, QObject::tr( "Extrusion (x-axis)" ), QgsPropertyDefinition::Double ) );
   xExtrude->setDynamicLayerParameterName( u"INPUT"_s );
+  xExtrude->setHelp( QObject::tr( "Specifies the extrusion value along the X-axis." ) );
   addParameter( xExtrude.release() );
 
   auto yExtrude = std::make_unique<QgsProcessingParameterNumber>( u"EXTRUDE_Y"_s, QObject::tr( "Extrusion (y-axis)" ), Qgis::ProcessingNumberParameterType::Double, 0.0 );
   yExtrude->setIsDynamic( true );
   yExtrude->setDynamicPropertyDefinition( QgsPropertyDefinition( u"EXTRUDE_Y"_s, QObject::tr( "Extrusion (y-axis)" ), QgsPropertyDefinition::Double ) );
   yExtrude->setDynamicLayerParameterName( u"INPUT"_s );
+  yExtrude->setHelp( QObject::tr( "Specify the extrusion value along the Y-axis." ) );
   addParameter( yExtrude.release() );
 
   auto zExtrude = std::make_unique<QgsProcessingParameterNumber>( u"EXTRUDE_Z"_s, QObject::tr( "Extrusion (z-axis)" ), Qgis::ProcessingNumberParameterType::Double, 0.0 );
   zExtrude->setIsDynamic( true );
   zExtrude->setDynamicPropertyDefinition( QgsPropertyDefinition( u"EXTRUDE_Z"_s, QObject::tr( "Extrusion (z-axis)" ), QgsPropertyDefinition::Double ) );
   zExtrude->setDynamicLayerParameterName( u"INPUT"_s );
+  zExtrude->setHelp( QObject::tr( "Specify the extrusion value along the Z-axis." ) );
   addParameter( zExtrude.release() );
 }
 

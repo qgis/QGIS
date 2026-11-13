@@ -59,21 +59,38 @@ void QgsBufferAlgorithm::initAlgorithm( const QVariantMap & )
   bufferParam->setIsDynamic( true );
   bufferParam->setDynamicPropertyDefinition( QgsPropertyDefinition( u"Distance"_s, QObject::tr( "Buffer distance" ), QgsPropertyDefinition::Double ) );
   bufferParam->setDynamicLayerParameterName( u"INPUT"_s );
+  bufferParam->setHelp( QObject::tr( "Buffer distance (from the boundary of each feature)." ) );
   addParameter( bufferParam.release() );
+
   auto segmentParam = std::make_unique<QgsProcessingParameterNumber>( u"SEGMENTS"_s, QObject::tr( "Segments" ), Qgis::ProcessingNumberParameterType::Integer, 5, false, 1 );
   segmentParam->setHelp( QObject::tr( "The segments parameter controls the number of line segments to use to approximate a quarter circle when creating rounded offsets." ) );
   addParameter( segmentParam.release() );
-  addParameter(
-    new QgsProcessingParameterEnum( u"END_CAP_STYLE"_s, QObject::tr( "End cap style" ), QStringList() << QObject::tr( "Round" ) << QObject::tr( "Flat" ) << QObject::tr( "Square" ), false, 0 )
-  );
-  addParameter( new QgsProcessingParameterEnum( u"JOIN_STYLE"_s, QObject::tr( "Join style" ), QStringList() << QObject::tr( "Round" ) << QObject::tr( "Miter" ) << QObject::tr( "Bevel" ), false, 0 ) );
-  addParameter( new QgsProcessingParameterNumber( u"MITER_LIMIT"_s, QObject::tr( "Miter limit" ), Qgis::ProcessingNumberParameterType::Double, 2, false, 1 ) );
 
-  addParameter( new QgsProcessingParameterBoolean( u"DISSOLVE"_s, QObject::tr( "Dissolve result" ), false ) );
+  auto endCapParam = std::make_unique<
+    QgsProcessingParameterEnum>( u"END_CAP_STYLE"_s, QObject::tr( "End cap style" ), QStringList() << QObject::tr( "Round" ) << QObject::tr( "Flat" ) << QObject::tr( "Square" ), false, 0 );
+  endCapParam->setHelp( QObject::tr( "Controls how line endings are handled in the buffer." ) );
+  addParameter( endCapParam.release() );
+
+  auto joinStyleParam
+    = std::make_unique<QgsProcessingParameterEnum>( u"JOIN_STYLE"_s, QObject::tr( "Join style" ), QStringList() << QObject::tr( "Round" ) << QObject::tr( "Miter" ) << QObject::tr( "Bevel" ), false, 0 );
+  joinStyleParam->setHelp( QObject::tr( "Specifies whether round, miter or beveled joins should be used when offsetting corners in a line." ) );
+  addParameter( joinStyleParam.release() );
+
+  auto mitterLimitParam = std::make_unique<QgsProcessingParameterNumber>( u"MITER_LIMIT"_s, QObject::tr( "Miter limit" ), Qgis::ProcessingNumberParameterType::Double, 2, false, 1 );
+  mitterLimitParam->setHelp(
+    QObject::tr( "Sets the maximum distance from the offset geometry to use when creating a mitered join as a factor of the offset distance (only applicable for miter join styles)." )
+  );
+  addParameter( mitterLimitParam.release() );
+
+  auto dissolveParam = std::make_unique<QgsProcessingParameterBoolean>( u"DISSOLVE"_s, QObject::tr( "Dissolve result" ), false );
+  dissolveParam->setHelp( QObject::tr( "Dissolve the final buffer. If True (checked), all features will be dissolved (combined) into a single multipart feature." ) );
+  addParameter( dissolveParam.release() );
 
   auto keepDisjointParam = std::make_unique<QgsProcessingParameterBoolean>( u"SEPARATE_DISJOINT"_s, QObject::tr( "Keep disjoint results separate" ), false );
   keepDisjointParam->setFlags( keepDisjointParam->flags() | Qgis::ProcessingParameterFlag::Advanced );
-  keepDisjointParam->setHelp( QObject::tr( "If checked, then any disjoint parts in the buffer results will be output as separate single-part features." ) );
+  keepDisjointParam->setHelp(
+    QObject::tr( "If True (checked) and dissolved is checked, features that do not overlap or touch will be exported as separate features (instead of parts of a multipart feature)." )
+  );
   addParameter( keepDisjointParam.release() );
 
   addParameter( new QgsProcessingParameterFeatureSink( u"OUTPUT"_s, QObject::tr( "Buffered" ), Qgis::ProcessingSourceType::VectorPolygon, QVariant(), false, true, true ) );

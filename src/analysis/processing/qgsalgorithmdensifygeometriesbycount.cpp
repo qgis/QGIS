@@ -85,6 +85,7 @@ void QgsDensifyGeometriesByCountAlgorithm::initParameters( const QVariantMap &co
   verticesCnt->setIsDynamic( true );
   verticesCnt->setDynamicPropertyDefinition( QgsPropertyDefinition( u"VerticesCount"_s, QObject::tr( "Vertices count" ), QgsPropertyDefinition::IntegerPositive ) );
   verticesCnt->setDynamicLayerParameterName( u"INPUT"_s );
+  verticesCnt->setHelp( QObject::tr( "Number of vertices to add to each segment." ) );
   addParameter( verticesCnt.release() );
 }
 

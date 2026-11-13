@@ -81,12 +81,14 @@ void QgsMultiRingConstantBufferAlgorithm::initParameters( const QVariantMap & )
   rings->setIsDynamic( true );
   rings->setDynamicPropertyDefinition( QgsPropertyDefinition( u"RINGS"_s, QObject::tr( "Number of rings" ), QgsPropertyDefinition::IntegerPositive ) );
   rings->setDynamicLayerParameterName( u"INPUT"_s );
+  rings->setHelp( QObject::tr( "The number of rings." ) );
   addParameter( rings.release() );
 
   auto distance = std::make_unique<QgsProcessingParameterDistance>( u"DISTANCE"_s, QObject::tr( "Distance between rings" ), 1, u"INPUT"_s, false );
   distance->setIsDynamic( true );
   distance->setDynamicPropertyDefinition( QgsPropertyDefinition( u"DISTANCE"_s, QObject::tr( "Distance between rings" ), QgsPropertyDefinition::DoublePositive ) );
   distance->setDynamicLayerParameterName( u"INPUT"_s );
+  distance->setHelp( QObject::tr( "Distance between the rings." ) );
   addParameter( distance.release() );
 }
 

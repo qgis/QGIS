@@ -70,9 +70,21 @@ QgsVoronoiPolygonsAlgorithm *QgsVoronoiPolygonsAlgorithm::createInstance() const
 void QgsVoronoiPolygonsAlgorithm::initAlgorithm( const QVariantMap & )
 {
   addParameter( new QgsProcessingParameterFeatureSource( u"INPUT"_s, QObject::tr( "Input layer" ), QList<int>() << static_cast<int>( Qgis::ProcessingSourceType::VectorPoint ) ) );
-  addParameter( new QgsProcessingParameterNumber( u"BUFFER"_s, QObject::tr( "Buffer region (% of extent)" ), Qgis::ProcessingNumberParameterType::Double, 0, false, 0 ) );
-  addParameter( new QgsProcessingParameterNumber( u"TOLERANCE"_s, QObject::tr( "Tolerance" ), Qgis::ProcessingNumberParameterType::Double, 0, true, 0 ) );
-  addParameter( new QgsProcessingParameterBoolean( u"COPY_ATTRIBUTES"_s, QObject::tr( "Copy attributes from input features" ), true ) );
+
+  auto bufferParam = std::make_unique<QgsProcessingParameterNumber>( u"BUFFER"_s, QObject::tr( "Buffer region (% of extent)" ), Qgis::ProcessingNumberParameterType::Double, 0, false, 0 );
+  bufferParam->setHelp(
+    QObject::tr( "Percentage by which the input layer extent is enlarged on each side. The left and right sides are extended by this percentage of the extent width, the top and bottom sides by this percentage of the extent height." )
+  );
+  addParameter( bufferParam.release() );
+
+  auto toleranceParam = std::make_unique<QgsProcessingParameterNumber>( u"TOLERANCE"_s, QObject::tr( "Tolerance" ), Qgis::ProcessingNumberParameterType::Double, 0, true, 0 );
+  toleranceParam->setHelp( QObject::tr( "Specifies an optional snapping tolerance which can be used to improve the robustness of the voronoi." ) );
+  addParameter( toleranceParam.release() );
+
+  auto copyAttributesParam = std::make_unique<QgsProcessingParameterBoolean>( u"COPY_ATTRIBUTES"_s, QObject::tr( "Copy attributes from input features" ), true );
+  copyAttributesParam->setHelp( QObject::tr( "Specifies whether fields storing involved point features ID should be added to the output. If False, an id field is created to identify the polygons." ) );
+  addParameter( copyAttributesParam.release() );
+
   addParameter( new QgsProcessingParameterFeatureSink( u"OUTPUT"_s, QObject::tr( "Voronoi polygons" ), Qgis::ProcessingSourceType::VectorPolygon ) );
 }
 

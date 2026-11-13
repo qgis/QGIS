@@ -73,7 +73,11 @@ void QgsDelaunayTriangulationAlgorithm::initAlgorithm( const QVariantMap & )
   auto toleranceParam = std::make_unique<QgsProcessingParameterNumber>( u"TOLERANCE"_s, QObject::tr( "Tolerance" ), Qgis::ProcessingNumberParameterType::Double, 0, true, 0 );
   toleranceParam->setHelp( QObject::tr( "Specifies an optional snapping tolerance which can be used to improve the robustness of the triangulation" ) );
   addParameter( toleranceParam.release() );
-  addParameter( new QgsProcessingParameterBoolean( u"ADD_ATTRIBUTES"_s, QObject::tr( "Add point IDs to output" ), true ) );
+
+  auto addAttributesParam = std::make_unique<QgsProcessingParameterBoolean>( u"ADD_ATTRIBUTES"_s, QObject::tr( "Add point IDs to output" ), true );
+  addAttributesParam->setHelp( QObject::tr( "Specifies whether fields storing involved point features ID should be added to the output. If False, an id field is used to identify the polygons." ) );
+  addParameter( addAttributesParam.release() );
+
   addParameter( new QgsProcessingParameterFeatureSink( u"OUTPUT"_s, QObject::tr( "Delaunay triangulation" ), Qgis::ProcessingSourceType::VectorPolygon ) );
 }
 

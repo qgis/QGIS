@@ -101,6 +101,7 @@ void QgsKeepNBiggestPartsAlgorithm::initParameters( const QVariantMap & )
   partsToKeep->setIsDynamic( true );
   partsToKeep->setDynamicPropertyDefinition( QgsPropertyDefinition( u"PARTS"_s, QObject::tr( "Parts to keep" ), QgsPropertyDefinition::IntegerPositive ) );
   partsToKeep->setDynamicLayerParameterName( u"POLYGONS"_s );
+  partsToKeep->setHelp( QObject::tr( "Number of parts to keep. If 1, only the biggest part of the feature will be kept." ) );
   addParameter( partsToKeep.release() );
 }
 

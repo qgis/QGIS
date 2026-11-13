@@ -101,6 +101,7 @@ void QgsSetMValueAlgorithm::initParameters( const QVariantMap & )
   mValueParam->setIsDynamic( true );
   mValueParam->setDynamicPropertyDefinition( QgsPropertyDefinition( u"M_VALUE"_s, QObject::tr( "M Value" ), QgsPropertyDefinition::Double ) );
   mValueParam->setDynamicLayerParameterName( u"INPUT"_s );
+  mValueParam->setHelp( QObject::tr( "M value to assign to the feature geometries." ) );
   addParameter( mValueParam.release() );
 }
 

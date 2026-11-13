@@ -143,7 +143,9 @@ QgsFeatureSink::SinkFlags QgsExtractSpecificVerticesAlgorithm::sinkFlags() const
 
 void QgsExtractSpecificVerticesAlgorithm::initParameters( const QVariantMap & )
 {
-  addParameter( new QgsProcessingParameterString( u"VERTICES"_s, QObject::tr( "Vertex indices" ), u"0"_s ) );
+  auto verticesParam = std::make_unique<QgsProcessingParameterString>( u"VERTICES"_s, QObject::tr( "Vertex indices" ), u"0"_s );
+  verticesParam->setHelp( QObject::tr( "Comma-separated string of the indices of the vertices to extract. Indices start at 0. Negative indices count from the end of the geometry." ) );
+  addParameter( verticesParam.release() );
 }
 
 bool QgsExtractSpecificVerticesAlgorithm::prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback * )
