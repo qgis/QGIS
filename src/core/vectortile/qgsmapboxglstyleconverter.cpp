@@ -3621,7 +3621,7 @@ QString QgsMapBoxGlStyleConverter::interpolateExpression(
   }
 
   // special case where min = max !
-  if ( valueMin.canConvert( QMetaType::Double ) && valueMax.canConvert( QMetaType::Double ) )
+  if ( valueMin.canConvert<double>() && valueMax.canConvert<double>() )
   {
     bool minDoubleOk = true;
     const double min = valueMin.toDouble( &minDoubleOk );
@@ -4713,7 +4713,7 @@ void QgsMapBoxGlStyleConverter::parseRasterSource( const QVariantMap &source, co
 
 bool QgsMapBoxGlStyleConverter::numericArgumentsOnly( const QVariant &bottomVariant, const QVariant &topVariant, double &bottom, double &top )
 {
-  if ( bottomVariant.canConvert( QMetaType::Double ) && topVariant.canConvert( QMetaType::Double ) )
+  if ( bottomVariant.canConvert<double>() && topVariant.canConvert<double>() )
   {
     bool bDoubleOk, tDoubleOk;
     bottom = bottomVariant.toDouble( &bDoubleOk );

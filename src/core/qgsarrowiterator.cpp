@@ -376,7 +376,7 @@ namespace
     switch ( columnTypeView.type )
     {
       case NANOARROW_TYPE_BOOL:
-        if ( v.canConvert( QMetaType::Bool ) )
+        if ( v.canConvert<bool>() )
         {
           QGIS_NANOARROW_THROW_NOT_OK( ArrowArrayAppendInt( col, v.toBool() ) );
           return;
@@ -386,7 +386,7 @@ namespace
       case NANOARROW_TYPE_UINT16:
       case NANOARROW_TYPE_UINT32:
       case NANOARROW_TYPE_UINT64:
-        if ( v.canConvert( QMetaType::ULongLong ) )
+        if ( v.canConvert<qulonglong>() )
         {
           QGIS_NANOARROW_THROW_NOT_OK( ArrowArrayAppendUInt( col, v.toULongLong() ) );
           return;
@@ -396,7 +396,7 @@ namespace
       case NANOARROW_TYPE_INT16:
       case NANOARROW_TYPE_INT32:
       case NANOARROW_TYPE_INT64:
-        if ( v.canConvert( QMetaType::LongLong ) )
+        if ( v.canConvert<qlonglong>() )
         {
           QGIS_NANOARROW_THROW_NOT_OK( ArrowArrayAppendInt( col, v.toLongLong() ) );
           return;
@@ -405,7 +405,7 @@ namespace
       case NANOARROW_TYPE_HALF_FLOAT:
       case NANOARROW_TYPE_FLOAT:
       case NANOARROW_TYPE_DOUBLE:
-        if ( v.canConvert( QMetaType::Double ) )
+        if ( v.canConvert<double>() )
         {
           QGIS_NANOARROW_THROW_NOT_OK( ArrowArrayAppendDouble( col, v.toDouble() ) );
           return;
@@ -415,7 +415,7 @@ namespace
       case NANOARROW_TYPE_LARGE_STRING:
       case NANOARROW_TYPE_STRING_VIEW:
       {
-        if ( v.canConvert( QMetaType::QString ) )
+        if ( v.canConvert<QString>() )
         {
           const QByteArray string = v.toString().toUtf8();
           struct ArrowBufferView bytesView;
@@ -432,7 +432,7 @@ namespace
       case NANOARROW_TYPE_BINARY_VIEW:
       case NANOARROW_TYPE_FIXED_SIZE_BINARY:
       {
-        if ( v.canConvert( QMetaType::QByteArray ) )
+        if ( v.canConvert<QByteArray>() )
         {
           const QByteArray bytes = v.toByteArray();
           struct ArrowBufferView bytesView;
@@ -446,7 +446,7 @@ namespace
 
       case NANOARROW_TYPE_DATE32:
       {
-        if ( v.canConvert( QMetaType::QDate ) )
+        if ( v.canConvert<QDate>() )
         {
           static QDate epoch = QDate( 1970, 1, 1 );
           int64_t daysSinceEpoch = epoch.daysTo( v.toDate() );
@@ -458,7 +458,7 @@ namespace
 
       case NANOARROW_TYPE_DATE64:
       {
-        if ( v.canConvert( QMetaType::QDate ) )
+        if ( v.canConvert<QDate>() )
         {
           static QDate epoch = QDate( 1970, 1, 1 );
           int64_t daysSinceEpoch = epoch.daysTo( v.toDate() );
@@ -471,7 +471,7 @@ namespace
 
       case NANOARROW_TYPE_TIMESTAMP:
       {
-        if ( v.canConvert( QMetaType::QDateTime ) )
+        if ( v.canConvert<QDateTime>() )
         {
           const QDateTime dateTime = v.toDateTime().toUTC();
           switch ( columnTypeView.time_unit )
@@ -496,7 +496,7 @@ namespace
       case NANOARROW_TYPE_TIME32:
       case NANOARROW_TYPE_TIME64:
       {
-        if ( v.canConvert( QMetaType::QTime ) )
+        if ( v.canConvert<QTime>() )
         {
           const QTime time = v.toTime();
           switch ( columnTypeView.time_unit )
@@ -525,7 +525,7 @@ namespace
       case NANOARROW_TYPE_LIST_VIEW:
       case NANOARROW_TYPE_LARGE_LIST_VIEW:
       {
-        if ( v.canConvert( QMetaType::QVariantList ) )
+        if ( v.canConvert<QVariantList>() )
         {
           const QVariantList variantList = v.toList();
           struct ArrowSchemaView dummyListType {};

@@ -494,7 +494,7 @@ bool QgsRasterAttributeTable::insertRow( int position, const QVariantList &rowDa
     {
       dataValid.append( QVariant() );
     }
-    else if ( !cell.canConvert( type ) || !cell.convert( type ) )
+    else if ( !cell.canConvert( QMetaType( type ) ) || !cell.convert( type ) )
     {
       if ( errorMessage )
       {
@@ -776,7 +776,7 @@ bool QgsRasterAttributeTable::setValue( const int row, const int column, const Q
   }
 
   QVariant newVal = value;
-  if ( column >= mFields.length() || !value.canConvert( mFields.at( column ).type ) || !newVal.convert( mFields.at( column ).type ) )
+  if ( column >= mFields.length() || !value.canConvert( QMetaType( mFields.at( column ).type ) ) || !newVal.convert( mFields.at( column ).type ) )
   {
     return false;
   }

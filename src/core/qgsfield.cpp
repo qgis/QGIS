@@ -571,7 +571,7 @@ bool QgsField::convertCompatible( QVariant &v, QString *errorMessage ) const
 
   //String representations of doubles in QVariant will return false to convert( QVariant::Int )
   //work around this by first converting to double, and then checking whether the double is convertible to int
-  if ( d->type == QMetaType::Type::Int && v.canConvert( QMetaType::Type::Double ) )
+  if ( d->type == QMetaType::Type::Int && v.canConvert<double>() )
   {
     bool ok = false;
     const double dbl = v.toDouble( &ok );
@@ -603,7 +603,7 @@ bool QgsField::convertCompatible( QVariant &v, QString *errorMessage ) const
 
   //String representations of doubles in QVariant will return false to convert( QVariant::LongLong )
   //work around this by first converting to double, and then checking whether the double is convertible to longlong
-  if ( d->type == QMetaType::Type::LongLong && v.canConvert( QMetaType::Type::Double ) )
+  if ( d->type == QMetaType::Type::LongLong && v.canConvert<double>() )
   {
     //firstly test the conversion to longlong because conversion to double will rounded the value
     QVariant tmp( v );
