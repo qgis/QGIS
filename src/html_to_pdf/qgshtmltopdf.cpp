@@ -39,12 +39,15 @@ using namespace Qt::StringLiterals;
 #include <QJsonObject>
 #include <QFileInfo>
 #include <QDir>
+#include <QtWebEngineCoreVersion>
 
 #include <iostream>
 
 QgsHtmlToPdf::QgsHtmlToPdf()
 {
+#if QTWEBENGINECORE_VERSION >= QT_VERSION_CHECK( 6, 9, 0 )
   mPage.settings()->setAttribute( QWebEngineSettings::TouchEventsApiEnabled, false );
+#endif
 
   connect( &mPage, &QWebEnginePage::loadFinished, this, &QgsHtmlToPdf::onLoadFinished );
   connect( &mPage, &QWebEnginePage::loadProgress, this, []( int progress ) { std::cout << progress << std::endl; } );
