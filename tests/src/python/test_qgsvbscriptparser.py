@@ -1555,6 +1555,69 @@ End Function
             script.rootBlock().statements()[0].expression().fieldName(), "oid OID"
         )
 
+    def test_array_assignment(self):
+        script = QgsVbScript('my_array(1) = "abc"')
+        self.assertFalse(script.hasParserError())
+
+        self.assertIsInstance(script.rootBlock(), QgsVbScriptBlockStatement)
+        self.assertEqual(script.rootBlock().count(), 1)
+
+        self.assertIsInstance(
+            script.rootBlock().statements()[0],
+            QgsVbScriptAssignmentStatement,
+        )
+
+        self.assertIsInstance(
+            script.rootBlock().statements()[0].target().targetExpression(),
+            QgsVbScriptVariableReferenceExpression,
+        )
+        self.assertEqual(
+            script.rootBlock().statements()[0].target().targetExpression().name(),
+            "my_array",
+        )
+
+        self.assertIsInstance(
+            script.rootBlock().statements()[0].value(),
+            QgsVbScriptLiteralExpression,
+        )
+        self.assertEqual(script.rootBlock().statements()[0].value().value(), "abc")
+
+    def test_isolated_binary_operation(self):
+        script = QgsVbScript('[VISUALCODE] = "abc"')
+        self.assertFalse(script.hasParserError())
+
+        self.assertIsInstance(script.rootBlock(), QgsVbScriptBlockStatement)
+        self.assertEqual(script.rootBlock().count(), 1)
+
+        self.assertIsInstance(
+            script.rootBlock().statements()[0],
+            QgsVbScriptExpressionStatement,
+        )
+        self.assertIsInstance(
+            script.rootBlock().statements()[0].expression(),
+            QgsVbScriptBinaryOperatorExpression,
+        )
+        self.assertEqual(
+            script.rootBlock().statements()[0].expression().binaryOperator(),
+            QgsVbScriptBinaryOperatorExpression.BinaryOperator.Equal,
+        )
+        self.assertIsInstance(
+            script.rootBlock().statements()[0].expression().leftOperand(),
+            QgsVbScriptFieldReferenceExpression,
+        )
+        self.assertEqual(
+            script.rootBlock().statements()[0].expression().leftOperand().fieldName(),
+            "VISUALCODE",
+        )
+        self.assertIsInstance(
+            script.rootBlock().statements()[0].expression().rightOperand(),
+            QgsVbScriptLiteralExpression,
+        )
+        self.assertEqual(
+            script.rootBlock().statements()[0].expression().rightOperand().value(),
+            "abc",
+        )
+
 
 if __name__ == "__main__":
     unittest.main()

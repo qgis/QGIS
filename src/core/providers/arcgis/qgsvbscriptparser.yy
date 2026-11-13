@@ -102,7 +102,7 @@ struct vbscript_parser_context
 // non-terminal type associations
 %type <blockStatement> statement_list opt_else_clause
 %type <statement> statement simple_statement var_declaration assignment_statement if_statement inline_if_statement for_statement while_statement exit_statement function_declaration expression_statement
-%type <expression> expr primary_expr postfix_expr unary_expr exponent_expr multiplicative_expr integer_divide_expr modulo_expr additive_expr concat_expr relational_expr logical_not_expr logical_and_expr logical_or_expr logical_xor_expr logical_eqv_expr logical_imp_expr opt_step_clause
+%type <expression> expr lvalue_expr non_lvalue_primary_expr postfix_expr unary_expr exponent_expr multiplicative_expr integer_divide_expr modulo_expr additive_expr concat_expr relational_expr logical_not_expr logical_and_expr logical_or_expr logical_xor_expr logical_eqv_expr logical_imp_expr opt_step_clause
 %type <expressionList> opt_argument_list argument_list
 %type <identifierList> opt_parameter_list parameter_list identifier_list opt_param_clause
 %type <text> parameter_name
@@ -241,11 +241,11 @@ identifier_list:
 ;
 
 assignment_statement:
-    postfix_expr '=' expr
+    lvalue_expr '=' expr
     {
       $$ = new QgsVbScriptAssignmentStatement( $1, $3, false );
     }
-  | SET postfix_expr '=' expr
+  | SET lvalue_expr '=' expr
     {
       $$ = new QgsVbScriptAssignmentStatement( $2, $4, true );
     }
@@ -654,9 +654,20 @@ exponent_expr:
 ;
 
 postfix_expr:
-    primary_expr
+    lvalue_expr
     {
       $$ = $1;
+    }
+  | non_lvalue_primary_expr
+    {
+      $$ = $1;
+    }
+
+lvalue_expr:
+    IDENTIFIER
+    {
+      $$ = new QgsVbScriptVariableReferenceExpression( *$1 );
+      delete $1;
     }
   | postfix_expr '.' IDENTIFIER
     {
@@ -670,7 +681,7 @@ postfix_expr:
     }
 ;
 
-primary_expr:
+non_lvalue_primary_expr:
     NUMBER_INT
     {
       $$ = new QgsVbScriptLiteralExpression( QVariant( $1 ) );
@@ -703,11 +714,6 @@ primary_expr:
   | NOTHING_LITERAL
     {
       $$ = new QgsVbScriptLiteralExpression( QVariant() );
-    }
-  | IDENTIFIER
-    {
-      $$ = new QgsVbScriptVariableReferenceExpression( *$1 );
-      delete $1;
     }
   | FIELD_REFERENCE
     {
