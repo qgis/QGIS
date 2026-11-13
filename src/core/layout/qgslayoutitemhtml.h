@@ -285,6 +285,11 @@ class CORE_EXPORT QgsLayoutItemHtml : public QgsLayoutMultiFrame
 
     void refreshDataDefinedProperty( QgsLayoutObject::DataDefinedProperty property = QgsLayoutObject::DataDefinedProperty::AllProperties ) override;
 
+    /**
+     * Invalidates cached renders.
+     *
+     * \since QGIS 4.4
+     */
     void invalidateCache();
 
   signals:
