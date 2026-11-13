@@ -47,6 +47,7 @@ class QgsHtmlToPdf : public QObject
       LoadFailed = 1,
       LoadJsFailed = 2,
       PrintFailed = 3,
+      LoadSettingsFailed = 4
     };
 
     struct Settings

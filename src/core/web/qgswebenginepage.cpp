@@ -44,6 +44,21 @@ using namespace Qt::StringLiterals;
 #include "qgsexception.h"
 #endif
 
+
+//
+// QgsHtmlRenderSettings
+//
+
+bool QgsHtmlRenderSettings::isEmpty() const
+{
+  return mBaseUrl.isEmpty() && mUserStylesheet.isEmpty() && mFeatureJson.isEmpty();
+}
+
+
+//
+// QgsWebEnginePage
+//
+
 QgsWebEnginePage::QgsWebEnginePage( QObject *parent )
   : QObject( parent )
   , mPage { std::make_unique< QWebEnginePage >() }
@@ -285,6 +300,11 @@ QString QgsWebEnginePage::htmlToPdfReturnCodeToString( int code )
       return tr( "Printing HTML to PDF failed" );
     }
 
+    case 4:
+    {
+      return tr( "Loading settings JSON failed" );
+    }
+
     default:
     {
       return tr( "Unknown error" );
@@ -302,35 +322,38 @@ bool QgsWebEnginePage::doPrintToPdf( const QStringList &args, const QgsHtmlRende
     return false;
   }
 
-  QStringList allArgs = args;
-
   const QTemporaryDir tempDir;
-  const QString settingsFilename = tempDir.filePath( u"settings.json"_s );
-  allArgs.append( u"--settings=%1"_s.arg( settingsFilename ) );
 
-  QJsonObject settingsObj;
-  if ( !settings.baseUrl().isEmpty() )
+  QStringList allArgs = args;
+  if ( !settings.isEmpty() )
   {
-    settingsObj.insert( u"baseUrl"_s, QJsonValue::fromVariant( settings.baseUrl() ) );
-  }
-  if ( !settings.userStylesheet().isEmpty() )
-  {
-    settingsObj.insert( u"userStylesheet"_s, QJsonValue::fromVariant( settings.userStylesheet() ) );
-  }
-  if ( !settings.featureJson().isEmpty() )
-  {
-    settingsObj.insert( u"feature"_s, QJsonValue::fromVariant( settings.featureJson() ) );
-  }
-  QJsonDocument jsonDocument( settingsObj );
-  QFile settingsFile( settingsFilename );
-  if ( !settingsFile.open( QFile::WriteOnly | QFile::Truncate ) )
-  {
-    errorMessage = tr( "writing settings to temporary file failed" );
-    return false;
-  }
+    const QString settingsFilename = tempDir.filePath( u"settings.json"_s );
+    allArgs.append( u"--settings=%1"_s.arg( settingsFilename ) );
 
-  settingsFile.write( jsonDocument.toJson() );
-  settingsFile.close();
+    QJsonObject settingsObj;
+    if ( !settings.baseUrl().isEmpty() )
+    {
+      settingsObj.insert( u"baseUrl"_s, QJsonValue::fromVariant( settings.baseUrl() ) );
+    }
+    if ( !settings.userStylesheet().isEmpty() )
+    {
+      settingsObj.insert( u"userStylesheet"_s, QJsonValue::fromVariant( settings.userStylesheet() ) );
+    }
+    if ( !settings.featureJson().isEmpty() )
+    {
+      settingsObj.insert( u"feature"_s, QJsonValue::fromVariant( settings.featureJson() ) );
+    }
+    QJsonDocument jsonDocument( settingsObj );
+    QFile settingsFile( settingsFilename );
+    if ( !settingsFile.open( QFile::WriteOnly | QFile::Truncate ) )
+    {
+      errorMessage = tr( "writing settings to temporary file failed" );
+      return false;
+    }
+
+    settingsFile.write( jsonDocument.toJson() );
+    settingsFile.close();
+  }
 
   QgsBlockingProcess process( executable, allArgs );
   process.setStdErrHandler( []( const QByteArray &ba ) { QgsDebugError( ba ); } );

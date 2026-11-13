@@ -25,6 +25,11 @@ Encapsulates settings for rendering HTML content.
 #include "qgswebenginepage.h"
 %End
   public:
+    bool isEmpty() const;
+%Docstring
+Returns ``True`` no settings are set.
+%End
+
     QUrl baseUrl() const;
 %Docstring
 Returns the base URL used when resolving relative links.

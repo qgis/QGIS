@@ -340,7 +340,7 @@ class TestWebEnginePage(QgisTestCase):
             html, painter, QRectF(0, 0, 600, 423), settings
         )
         painter.end()
-        self.assertTrue(res)
+        self.assertTrue(res, error)
         self.assertEqual(size.width(), 600)
         self.assertAlmostEqual(size.height(), 200, places=-2)
 
@@ -395,7 +395,7 @@ class TestWebEnginePage(QgisTestCase):
             html, painter, QRectF(0, 0, 600, 423), settings
         )
         painter.end()
-        self.assertTrue(res)
+        self.assertTrue(res, error)
         self.assertEqual(size.width(), 600)
         self.assertAlmostEqual(size.height(), 52, places=0)
 
