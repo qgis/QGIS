@@ -101,6 +101,11 @@ class CORE_EXPORT QgsHtmlRenderSettings
      */
     QVariantMap featureJson() const { return mFeatureJson; }
 
+    /**
+     * Returns the settings encapsulated in a variantmap, for passing to the qgis_html_to_pdf utility.
+     */
+    QVariantMap asMap() const;
+
   private:
     QUrl mBaseUrl;
     QString mUserStylesheet;

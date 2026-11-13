@@ -54,6 +54,24 @@ bool QgsHtmlRenderSettings::isEmpty() const
   return mBaseUrl.isEmpty() && mUserStylesheet.isEmpty() && mFeatureJson.isEmpty();
 }
 
+QVariantMap QgsHtmlRenderSettings::asMap() const
+{
+  QVariantMap res;
+  if ( !baseUrl().isEmpty() )
+  {
+    res.insert( u"baseUrl"_s, QJsonValue::fromVariant( baseUrl() ) );
+  }
+  if ( !userStylesheet().isEmpty() )
+  {
+    res.insert( u"userStylesheet"_s, QJsonValue::fromVariant( userStylesheet() ) );
+  }
+  if ( !featureJson().isEmpty() )
+  {
+    res.insert( u"feature"_s, QJsonValue::fromVariant( featureJson() ) );
+  }
+  return res;
+}
+
 
 //
 // QgsWebEnginePage
@@ -330,19 +348,7 @@ bool QgsWebEnginePage::doPrintToPdf( const QStringList &args, const QgsHtmlRende
     const QString settingsFilename = tempDir.filePath( u"settings.json"_s );
     allArgs.append( u"--settings=%1"_s.arg( settingsFilename ) );
 
-    QJsonObject settingsObj;
-    if ( !settings.baseUrl().isEmpty() )
-    {
-      settingsObj.insert( u"baseUrl"_s, QJsonValue::fromVariant( settings.baseUrl() ) );
-    }
-    if ( !settings.userStylesheet().isEmpty() )
-    {
-      settingsObj.insert( u"userStylesheet"_s, QJsonValue::fromVariant( settings.userStylesheet() ) );
-    }
-    if ( !settings.featureJson().isEmpty() )
-    {
-      settingsObj.insert( u"feature"_s, QJsonValue::fromVariant( settings.featureJson() ) );
-    }
+    QJsonObject settingsObj = QJsonObject::fromVariantMap( settings.asMap() );
     QJsonDocument jsonDocument( settingsObj );
     QFile settingsFile( settingsFilename );
     if ( !settingsFile.open( QFile::WriteOnly | QFile::Truncate ) )
