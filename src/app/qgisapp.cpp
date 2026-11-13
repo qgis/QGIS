@@ -11034,7 +11034,6 @@ bool QgisApp::toggleEditingVectorLayer( QgsVectorLayer *vlayer, bool allowCancel
     QStringList rollBackErrors;
     QgsProject::instance()->rollBack( rollBackErrors, true, vlayer );
 
-    res = true;
     vlayer->triggerRepaint();
   }
 
@@ -11057,7 +11056,7 @@ bool QgisApp::toggleEditingMeshLayer( QgsMeshLayer *mlayer, bool allowCancel )
   if ( !mlayer->supportsEditing() )
     return false;
 
-  bool res = false;
+  bool res = true;
 
   QgsCoordinateTransform transform( mlayer->crs(), mMapCanvas->mapSettings().destinationCrs(), QgsProject::instance() );
 
@@ -11202,7 +11201,7 @@ bool QgisApp::toggleEditingPointCloudLayer( QgsPointCloudLayer *pclayer, bool al
   if ( !pclayer->supportsEditing() )
     return false;
 
-  bool res = false;
+  bool res = true;
 
   if ( !pclayer->isEditable() )
   {
@@ -11931,8 +11930,7 @@ void QgisApp::removeLayer()
 
   for ( QgsMapLayer *layer : selectedLayers )
   {
-    QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( layer );
-    if ( vlayer && vlayer->isEditable() && !toggleEditing( vlayer, true ) )
+    if ( layer->isEditable() && !toggleEditing( layer, true ) )
       return;
   }
 
