@@ -44,6 +44,11 @@ class CORE_EXPORT QgsHtmlRenderSettings
 {
   public:
     /**
+   * Returns TRUE no settings are set.
+   */
+    bool isEmpty() const;
+
+    /**
    * Returns the base URL used when resolving relative links.
    *
    * \see setBaseUrl()

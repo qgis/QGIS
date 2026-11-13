@@ -134,7 +134,7 @@ int main( int argc, char *argv[] )
     if ( !settingsFile.open( QIODevice::ReadOnly ) )
     {
       std::cerr << "Error: Could not open settings file: " << settingsPath.toStdString() << "\n";
-      return 1;
+      return QgsHtmlToPdf::ReturnCode::LoadSettingsFailed;
     }
 
     QJsonParseError parseError;
@@ -142,7 +142,7 @@ int main( int argc, char *argv[] )
     if ( parseError.error != QJsonParseError::NoError || !doc.isObject() )
     {
       std::cerr << "Error: Failed to parse settings JSON: " << parseError.errorString().toStdString() << "\n";
-      return 1;
+      return QgsHtmlToPdf::ReturnCode::LoadSettingsFailed;
     }
 
     const QJsonObject settingsObj = doc.object();
