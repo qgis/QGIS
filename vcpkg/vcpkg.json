@@ -343,6 +343,21 @@
           ]
         }
       ]
+    },
+    "webengine": {
+      "description": "Build with QtWebEngine and PDF4QT support",
+      "dependencies": [
+        {
+          "name": "qtwebengine",
+          "default-features": false,
+          "features": [
+            "qtwebenginewidgets"
+          ]
+        },
+        "asmjit",
+        "blend2d",
+        "py-pyqt6-webengine"
+      ]
     }
   }
 }
