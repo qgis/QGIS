@@ -149,13 +149,6 @@ void QgsDualView::init( QgsVectorLayer *layer, QgsMapCanvas *mapCanvas, const Qg
 
   mLayer = layer;
 
-  // Keep fields order in sync: force config reset
-  connect( mLayer, &QgsVectorLayer::updatedFields, this, [this] {
-    // Prevent crash if a field was deleted when the sort expression contained a reference to it.
-    mConfig.update( mLayer->fields() );
-    mFilterModel->setAttributeTableConfig( attributeTableConfig(), /* force */ true );
-  } );
-
   mEditorContext = context;
 
   // create an empty form to find out if it needs geometry or not
@@ -179,6 +172,12 @@ void QgsDualView::init( QgsVectorLayer *layer, QgsMapCanvas *mapCanvas, const Qg
 
   connect( mFilterModel, &QgsAttributeTableFilterModel::sortColumnChanged, this, &QgsDualView::onSortColumnChanged );
   connect( mLayer, &QgsVectorLayer::afterCommitChanges, this, [this] { mFeatureListView->setCurrentFeatureEdited( false ); } );
+  // Keep fields order in sync: force config reset -- connection needs to be made _after_ initModels() is called.
+  connect( mLayer, &QgsVectorLayer::updatedFields, this, [this] {
+    // Prevent crash if a field was deleted when the sort expression contained a reference to it.
+    mConfig.update( mLayer->fields() );
+    mFilterModel->setAttributeTableConfig( attributeTableConfig(), /* force */ true );
+  } );
 
   if ( mFeatureListPreviewButton->defaultAction() )
   {
