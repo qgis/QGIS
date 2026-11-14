@@ -5,6 +5,7 @@ on:
     branches:
       - master
       - release-*
+      - blacksmith
   pull_request:
   release:
     types: ['published']
@@ -29,7 +30,7 @@ jobs:
             deployment-target: "11.0"
             osx-architecture: "arm64"
     name: build (macos)
-    runs-on: macos-26
+    runs-on: blacksmith-6vcpu-macos-latest
     env:
       FC: gfortran
       GCC_VERSION: 15
