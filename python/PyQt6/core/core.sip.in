@@ -100,6 +100,7 @@ done:
 %Feature PYQT6
 %Feature HAVE_SFCGAL_SIP
 %Feature MOVABLE_MAPPED_TYPE
+%Feature SIP_NEEDS_CONVERSION_QMAP_INT_INT
 
 %Import QtXml/QtXmlmod.sip
 %Import QtNetwork/QtNetworkmod.sip
