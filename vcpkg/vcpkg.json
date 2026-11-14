@@ -95,6 +95,18 @@
       ]
     },
     {
+      "$comment": "For crosscompiling on macos (x64), could go to the upstream qtwebengine port",
+      "name": "qtbase",
+      "default-features": false,
+      "host": true,
+      "features": [
+        "freetype",
+        "harfbuzz",
+        "jpeg",
+        "png"
+      ]
+    },
+    {
       "name": "qtmultimedia",
       "default-features": false,
       "platform": "emscripten"
