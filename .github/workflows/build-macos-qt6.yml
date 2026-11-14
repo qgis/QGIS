@@ -5,7 +5,6 @@ on:
     branches:
       - master
       - release-*
-      - blacksmith
   pull_request:
   release:
     types: ['published']
@@ -31,9 +30,6 @@ jobs:
             osx-architecture: "arm64"
     name: build (macos)
     runs-on: blacksmith-6vcpu-macos-latest
-    env:
-      FC: gfortran
-      GCC_VERSION: 15
 
     steps:
       - name: 🐣 Checkout
@@ -63,26 +59,6 @@ jobs:
           echo $(brew --prefix flex)/bin >> $GITHUB_PATH
           echo $(brew --prefix libtool)/bin >> $GITHUB_PATH
 
-      - name: Symlink gfortran (macOS)
-        if: matrix.os == 'macos-15'
-        run: |
-          # make sure gfortran is available
-          # https://github.com/actions/runner-images/blob/main/images/macos/macos-15-Readme.md
-          # https://github.com/actions/runner-images/issues/3371
-          sudo ln -fs /opt/homebrew/bin/gfortran-${GCC_VERSION} /usr/local/bin/gfortran
-          sudo mkdir -p /usr/local/gfortran
-          sudo ln -sf /opt/homebrew/Cellar/gcc@${GCC_VERSION}/*/lib/gcc/${GCC_VERSION} /usr/local/gfortran/lib
-
-      - name: Symlink gfortran (macOS-intel)
-        if: matrix.os == 'macos-15-intel'
-        run: |
-          # make sure gfortran is available
-          # https://github.com/actions/runner-images/blob/main/images/macos/macos-15-Readme.md
-          # https://github.com/actions/runner-images/issues/3371
-          sudo ln -fs /usr/local/bin/gfortran-${GCC_VERSION} /usr/local/bin/gfortran
-          sudo mkdir -p /usr/local/gfortran
-          sudo ln -sf /usr/local/Cellar/gcc@${GCC_VERSION}/*/lib/gcc/${GCC_VERSION} /usr/local/gfortran/lib
-
       - uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0 # v7.1.0
         with:
           python-version: '3.11'
@@ -91,6 +67,9 @@ jobs:
         uses: maxim-lobanov/setup-xcode@ed7a3b1fda3918c0306d1b724322adc0b8cc0a90 # v1.7.0
         with:
           xcode-version: latest-stable
+      
+      - name: Install Metal Toolchain
+        run: xcodebuild -downloadComponent MetalToolchain
 
       - name: 🛍️ Setup ccache
         uses: hendrikmuhs/ccache-action@f09c25b45002a07be2955cbe52e8cee55643f89d  # v1.2.24
@@ -118,12 +97,13 @@ jobs:
                 -B build \
                 -D QGIS_APP_NAME="QGIS-${{steps.workflow-artifact-ids.outputs.display-name}}" \
                 -D WITH_VCPKG=ON \
-                -D WITH_QTWEBENGINE=OFF \
                 -D WITH_BINDINGS=ON \
                 -D WITH_ORACLE=ON \
                 -D WITH_GEOGRAPHICLIB=OFF \
                 -D WITH_SFCGAL=ON \
                 -D WITH_PROJ_DATA=ON \
+                -D WITH_QTWEBENGINE=ON \
+                -D WITH_PDF4QT=ON \
                 -D VCPKG_TARGET_TRIPLET="${{ matrix.triplet }}" \
                 -D VCPKG_HOST_TRIPLET="${{ matrix.host-triplet || matrix.triplet }}" \
                 -D VCPKG_INSTALL_OPTIONS="--only-binarycaching" \
