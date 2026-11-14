@@ -1110,6 +1110,8 @@ set(QGIS_CORE_SRCS
   vectortile/qgsvtpkvectortiledataprovider.cpp
   vectortile/qgsxyzvectortiledataprovider.cpp
 
+  web/qgshtmlrendersettings.cpp
+
   ${CMAKE_CURRENT_BINARY_DIR}/qgsexpression_texts.cpp
 
   qgsuserprofile.cpp
@@ -2312,6 +2314,8 @@ set(QGIS_CORE_HDRS
   vectortile/qgsvtpktiles.h
   vectortile/qgsvtpkvectortiledataprovider.h
   vectortile/qgsxyzvectortiledataprovider.h
+
+  web/qgshtmlrendersettings.h
 )
 
 set(QPDF_COMPILE_OPTIONS)
