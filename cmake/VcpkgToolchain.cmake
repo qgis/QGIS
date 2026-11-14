@@ -39,7 +39,7 @@ if(WITH_TRACY)
   list(APPEND VCPKG_MANIFEST_FEATURES "tracy")
 endif()
 if(WITH_QTWEBENGINE OR WITH_PDF4QT)
-  list(APPEND VCPKG_MANIFEST_FEATURES "qtwebengine")
+  list(APPEND VCPKG_MANIFEST_FEATURES "webengine")
 endif()
 # We cannot detect the EMSCRIPTEN variable yet, as we didn't load the toolchain file at this point.
 # So we use the target triplet to determine if we are building for wasm.
