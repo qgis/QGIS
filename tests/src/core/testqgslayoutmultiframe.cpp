@@ -56,7 +56,7 @@ class TestQgsLayoutMultiFrame : public QgsTest
     void writeReadXml();
     void noPageNoCrash();
     void variables();
-#ifdef HAVE_WEBENGINE
+#if defined( HAVE_WEBENGINE ) && defined( HAVE_PDF4QT )
     void frameIsEmpty();         //test if frame is empty works
     void addRemovePage();        //test if page is added and removed for RepeatUntilFinished mode
     void undoRedoRemovedFrame(); //test that undo doesn't crash with removed frames
@@ -483,7 +483,7 @@ void TestQgsLayoutMultiFrame::variables()
   QCOMPARE( context.variable( u"var2"_s ).toInt(), 7 );
 }
 
-#ifdef HAVE_WEBENGINE
+#if defined( HAVE_WEBENGINE ) && defined( HAVE_PDF4QT )
 void TestQgsLayoutMultiFrame::frameIsEmpty()
 {
   mLayout->renderContext().mIsPreviewRender = false;
