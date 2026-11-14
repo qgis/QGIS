@@ -40,6 +40,7 @@
 #if defined( HAVE_WEBENGINE ) && defined( HAVE_PDF4QT )
 #include "qgswebenginepage.h"
 #endif
+#include "qgshtmlrendersettings.h"
 
 #include <QString>
 

@@ -888,6 +888,7 @@
 %Include auto_generated/vectortile/qgsvectortileutils.sip
 %Include auto_generated/vectortile/qgsvectortilewriter.sip
 %Include auto_generated/vectortile/qgsvtpktiles.sip
+%Include auto_generated/web/qgshtmlrendersettings.sip
 %Include auto_generated/auth/qgsauthcertutils.sip
 %Include auto_generated/auth/qgsauthconfig.sip
 %Include auto_generated/auth/qgsauthconfigurationstorage.sip
