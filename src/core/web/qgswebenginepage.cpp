@@ -45,38 +45,6 @@ using namespace Qt::StringLiterals;
 #endif
 
 
-//
-// QgsHtmlRenderSettings
-//
-
-bool QgsHtmlRenderSettings::isEmpty() const
-{
-  return mBaseUrl.isEmpty() && mUserStylesheet.isEmpty() && mFeatureJson.isEmpty();
-}
-
-QVariantMap QgsHtmlRenderSettings::asMap() const
-{
-  QVariantMap res;
-  if ( !baseUrl().isEmpty() )
-  {
-    res.insert( u"baseUrl"_s, QJsonValue::fromVariant( baseUrl() ) );
-  }
-  if ( !userStylesheet().isEmpty() )
-  {
-    res.insert( u"userStylesheet"_s, QJsonValue::fromVariant( userStylesheet() ) );
-  }
-  if ( !featureJson().isEmpty() )
-  {
-    res.insert( u"feature"_s, QJsonValue::fromVariant( featureJson() ) );
-  }
-  return res;
-}
-
-
-//
-// QgsWebEnginePage
-//
-
 QgsWebEnginePage::QgsWebEnginePage( QObject *parent )
   : QObject( parent )
   , mPage { std::make_unique< QWebEnginePage >() }
@@ -423,7 +391,7 @@ bool QgsWebEnginePage::renderBlocking(
     return false;
   }
 
-  QgsPdfRenderer renderer( renderedPdfPath, Qgis::PdfRenderFlag::RenderTextAsText );
+  QgsPdfRenderer renderer( renderedPdfPath );
   return renderBlockingInternal( painter, renderer, errorMessage, painterRect, renderedSize );
 #else
   ( void ) html;
@@ -451,7 +419,7 @@ bool QgsWebEnginePage::renderBlocking( const QUrl &url, QPainter *painter, const
     return false;
   }
 
-  QgsPdfRenderer renderer( renderedPdfPath, Qgis::PdfRenderFlag::RenderTextAsText );
+  QgsPdfRenderer renderer( renderedPdfPath );
   return renderBlockingInternal( painter, renderer, errorMessage, painterRect, renderedSize );
 #else
   ( void ) url;

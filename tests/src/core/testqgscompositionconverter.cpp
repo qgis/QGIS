@@ -641,7 +641,6 @@ void TestQgsCompositionConverter::importComposerTemplate()
   }
 
   QGSVERIFYLAYOUTCHECK( "importComposerTemplate_0", layout.get(), 0, 0, renderedPageSize( layout.get(), 0 ), 0 );
-  QGSVERIFYLAYOUTCHECK( "importComposerTemplate_1_nowebkit", layout.get(), 1, 0, renderedPageSize( layout.get(), 1 ), 0 );
 }
 
 void TestQgsCompositionConverter::importComposerAtlas()

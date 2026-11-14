@@ -7,7 +7,3 @@ try:
     QgsWebEnginePage.__group__ = ['web']
 except (NameError, AttributeError):
     pass
-try:
-    QgsHtmlRenderSettings.__group__ = ['web']
-except (NameError, AttributeError):
-    pass

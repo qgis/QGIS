@@ -253,6 +253,12 @@ if(HAVE_OPENCL)
      )
 endif()
 
+if (WITH_QTWEBENGINE AND WITH_PDF4QT)
+  set(TESTS ${TESTS}
+    testqgslayouthtml.cpp
+     )
+endif()
+
 foreach(TESTSRC ${TESTS})
     add_qgis_test( ${TESTSRC} MODULE core LINKEDLIBRARIES qgis_core)
 endforeach(TESTSRC)
