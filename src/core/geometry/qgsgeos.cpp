@@ -1153,7 +1153,11 @@ QgsGeometryEngine::EngineOperationResult QgsGeos::splitGeometry(
     }
     else
     {
-      int nParts = GEOSGetNumGeometries_r( context, split.get() );
+      const int nParts = GEOSGetNumGeometries_r( context, split.get() );
+      if ( nParts == 0 )
+      {
+        return NothingHappened;
+      }
       for ( int i = 0; i < nParts; ++i )
       {
         newGeometries << QgsGeometry( fromGeos( GEOSGetGeometryN_r( context, split.get(), i ) ) );
@@ -1791,7 +1795,7 @@ std::unique_ptr<QgsAbstractGeometry> QgsGeos::fromGeos( const GEOSGeometry *geos
     case GEOS_MULTIPOINT:
     {
       auto multiPoint = std::make_unique<QgsMultiPoint>();
-      int nParts = GEOSGetNumGeometries_r( context, geos );
+      const int nParts = GEOSGetNumGeometries_r( context, geos );
       multiPoint->reserve( nParts );
       for ( int i = 0; i < nParts; ++i )
       {
@@ -1809,7 +1813,7 @@ std::unique_ptr<QgsAbstractGeometry> QgsGeos::fromGeos( const GEOSGeometry *geos
     case GEOS_MULTILINESTRING:
     {
       auto multiLineString = std::make_unique<QgsMultiLineString>();
-      int nParts = GEOSGetNumGeometries_r( context, geos );
+      const int nParts = GEOSGetNumGeometries_r( context, geos );
       multiLineString->reserve( nParts );
       for ( int i = 0; i < nParts; ++i )
       {
@@ -1825,7 +1829,7 @@ std::unique_ptr<QgsAbstractGeometry> QgsGeos::fromGeos( const GEOSGeometry *geos
     case GEOS_MULTICURVE:
     {
       auto multiCurve = std::make_unique<QgsMultiCurve>();
-      int nParts = GEOSGetNumGeometries_r( context, geos );
+      const int nParts = GEOSGetNumGeometries_r( context, geos );
       multiCurve->reserve( nParts );
       for ( int i = 0; i < nParts; ++i )
       {
@@ -1839,7 +1843,7 @@ std::unique_ptr<QgsAbstractGeometry> QgsGeos::fromGeos( const GEOSGeometry *geos
     {
       auto multiPolygon = std::make_unique<QgsMultiPolygon>();
 
-      int nParts = GEOSGetNumGeometries_r( context, geos );
+      const int nParts = GEOSGetNumGeometries_r( context, geos );
       multiPolygon->reserve( nParts );
       for ( int i = 0; i < nParts; ++i )
       {
@@ -1855,7 +1859,7 @@ std::unique_ptr<QgsAbstractGeometry> QgsGeos::fromGeos( const GEOSGeometry *geos
     case GEOS_MULTISURFACE:
     {
       auto multiSurface = std::make_unique<QgsMultiSurface>();
-      int nParts = GEOSGetNumGeometries_r( context, geos );
+      const int nParts = GEOSGetNumGeometries_r( context, geos );
       multiSurface->reserve( nParts );
       for ( int i = 0; i < nParts; ++i )
       {
@@ -1868,7 +1872,7 @@ std::unique_ptr<QgsAbstractGeometry> QgsGeos::fromGeos( const GEOSGeometry *geos
     case GEOS_GEOMETRYCOLLECTION:
     {
       auto geomCollection = std::make_unique<QgsGeometryCollection>();
-      int nParts = GEOSGetNumGeometries_r( context, geos );
+      const int nParts = GEOSGetNumGeometries_r( context, geos );
       geomCollection->reserve( nParts );
       for ( int i = 0; i < nParts; ++i )
       {
