@@ -135,6 +135,7 @@ class GUI_EXPORT QgsLayerTreeViewBase : public QTreeView
     explicit QgsLayerTreeViewBase( QWidget *parent SIP_TRANSFERTHIS = nullptr );
     ~QgsLayerTreeViewBase() override;
 
+    void mousePressEvent( QMouseEvent *event ) override;
     void mouseDoubleClickEvent( QMouseEvent *event ) override;
 
     /**
