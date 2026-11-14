@@ -2191,6 +2191,16 @@ void QgsApplication::setTemporarilyUntrustedProjectsFolders( const QStringList &
   instance()->mTemporarilyUntrustedProjectFolders = untrustedProjectsFolders;
 }
 
+Qgis::ProjectTrustStatus QgsApplication::currentProjectTemporaryTrustStatus()
+{
+  return instance()->mCurrentProjectTemporaryTrustStatus;
+}
+
+void QgsApplication::setCurrentProjectTemporaryTrustStatus( Qgis::ProjectTrustStatus trustStatus )
+{
+  instance()->mCurrentProjectTemporaryTrustStatus = trustStatus;
+}
+
 int QgsApplication::scaleIconSize( int standardSize, bool applyDevicePixelRatio )
 {
   QFontMetrics fm( ( QFont() ) );
