@@ -2990,6 +2990,15 @@ void TestQgsGeometry::splitGeometry()
   QCOMPARE( newGeoms[0].asWkt( 0 ), u"LineString ZM (110 110 11 21, 120 120 12 22)"_s );
   QCOMPARE( g2.asWkt( 0 ), u"LineString ZM (100 100 10 20, 110 110 11 21)"_s );
 #endif
+
+#if GEOS_VERSION_NUM >= GEOS_COMPUTE_VERSION( 3, 15, 0 )
+  // Empty GEOMETRY COLLECTION result
+  g2 = QgsGeometry::fromWkt( "CURVEPOLYGON ((295 -161, 218 -315, 437 -251, 295 -161))" );
+  testPoints.clear();
+  newGeoms.clear();
+  QCOMPARE( g2.splitGeometry( QgsPointSequence() << QgsPoint( 0, 0 ) << QgsPoint( 1, 1 ), newGeoms, false, testPoints, false ), Qgis::GeometryOperationResult::NothingHappened );
+  QCOMPARE( newGeoms.count(), 0 );
+#endif
 }
 
 void TestQgsGeometry::splitGeometryByCurve()
