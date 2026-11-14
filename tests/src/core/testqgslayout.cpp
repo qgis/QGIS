@@ -81,7 +81,7 @@ class TestQgsLayout : public QgsTest
     void mapLayersStyleOverrideRestoredFromTemplate();
     void atlasLayerRestoredFromTemplate();
     void overviewStackingLayerRestoredFromTemplate();
-#ifdef HAVE_WEBENGINE
+#if defined( HAVE_WEBENGINE ) && defined( HAVE_PDF4QT )
     void shouldExportPage();
 #endif
 };
@@ -1300,7 +1300,7 @@ void TestQgsLayout::overviewStackingLayerRestoredFromTemplate()
   QCOMPARE( map2->overview()->stackingLayer(), layer2 );
 }
 
-#ifdef HAVE_WEBENGINE
+#if defined( HAVE_WEBENGINE ) && defined( HAVE_PDF4QT )
 void TestQgsLayout::shouldExportPage()
 {
   QgsProject proj;
