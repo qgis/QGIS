@@ -20,9 +20,15 @@
 
 
 #include "qgis_sip.h"
+#include "qgsapplication.h"
 #include "qgsprocessingalgorithm.h"
 
+#include <QString>
+
 #define SIP_NO_FILE
+
+using namespace Qt::StringLiterals;
+
 
 ///@cond PRIVATE
 
@@ -36,6 +42,9 @@ class QgsPdalAlgorithmBase : public QgsProcessingAlgorithm
      * Builds a command line string to run required pdal_wrench tool.
      */
     virtual QStringList createArgumentLists( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback );
+
+    QIcon icon() const override { return QgsApplication::getThemeIcon( u"/mIconPointCloudLayer.svg"_s ); }
+    QString svgIconPath() const override { return QgsApplication::iconPath( u"/mIconPointCloudLayer.svg"_s ); }
 
   protected:
     void setOutputValue( const QString &name, const QVariant &value );
