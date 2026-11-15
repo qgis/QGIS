@@ -459,12 +459,12 @@ void QgsServerSettings::prioritize( const QMap<QgsServerSettingsEnv::EnvVar, QSt
       varValue.setValue( envIt.value() );
     }
 
-    if ( !QgsVariantUtils::isNull( varValue ) && varValue.canConvert( settingIt->type ) )
+    if ( !QgsVariantUtils::isNull( varValue ) && varValue.canConvert( QMetaType( settingIt->type ) ) )
     {
       settingIt->val = varValue;
       settingIt->src = QgsServerSettingsEnv::ENVIRONMENT_VARIABLE;
     }
-    else if ( !settingIt->iniKey.isEmpty() && QSettings().contains( settingIt->iniKey ) && QSettings().value( settingIt->iniKey ).canConvert( settingIt->type ) )
+    else if ( !settingIt->iniKey.isEmpty() && QSettings().contains( settingIt->iniKey ) && QSettings().value( settingIt->iniKey ).canConvert( QMetaType( settingIt->type ) ) )
     {
       settingIt->val = QSettings().value( settingIt->iniKey );
       settingIt->src = QgsServerSettingsEnv::INI_FILE;
