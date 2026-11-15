@@ -342,8 +342,7 @@ class CORE_EXPORT QgsLayoutItemHtml : public QgsLayoutMultiFrame
     QString mUserStylesheet;
     bool mEnableUserStylesheet = false;
 
-    //! JSON string representation of current atlas feature
-    QVariantMap mAtlasFeatureJSON;
+    QVariantMap mAtlasFeatureProperties;
 
     QgsNetworkContentFetcher *mFetcher = nullptr;
     bool mFetching = false;

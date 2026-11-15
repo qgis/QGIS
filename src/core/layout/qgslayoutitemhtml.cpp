@@ -354,7 +354,7 @@ void QgsLayoutItemHtml::recreateCachedImageInBackground()
   emit backgroundTaskCountChanged( 1 );
   mCacheInvalidated = false;
   mRenderJob = std::make_unique<
-    QgsLayoutItemHtmlRenderJob >( mEvaluatedHtml, mResolvedBaseUrl, mEnableUserStylesheet ? mUserStylesheet : QString(), mAtlasFeatureJSON, frameWidthLayoutUnits, layoutUnitsPerCssPixel() );
+    QgsLayoutItemHtmlRenderJob >( mEvaluatedHtml, mResolvedBaseUrl, mEnableUserStylesheet ? mUserStylesheet : QString(), mAtlasFeatureProperties, frameWidthLayoutUnits, layoutUnitsPerCssPixel() );
   connect( mRenderJob.get(), &QgsLayoutItemHtmlRenderJob::finished, this, &QgsLayoutItemHtml::htmlRenderFinished );
   mRenderJob->start();
 }
@@ -426,7 +426,7 @@ void QgsLayoutItemHtml::renderHtmlSynchronously()
   {
     htmlRenderSettings.setUserStylesheet( mUserStylesheet );
   }
-  htmlRenderSettings.setFeatureJson( mAtlasFeatureJSON );
+  htmlRenderSettings.setFeatureJson( mAtlasFeatureProperties );
 
 #if defined( HAVE_WEBENGINE ) && defined( HAVE_PDF4QT )
   if ( !QgsWebEnginePage::renderBlocking( mEvaluatedHtml, &painter, QRectF( 0, 0, widthCssPx, 9999 ), errorMessage, renderedSizeCssPx, htmlRenderSettings, nullptr ) )
@@ -880,11 +880,11 @@ void QgsLayoutItemHtml::setExpressionContext( const QgsFeature &feature, QgsVect
     // create JSON representation of feature
     QgsJsonExporter exporter( layer );
     exporter.setIncludeRelated( true );
-    mAtlasFeatureJSON = QgsJsonUtils::jsonToVariant( exporter.exportFeatureToJsonObject( feature ) ).toMap();
+    mAtlasFeatureProperties = QgsJsonUtils::jsonToVariant( exporter.exportFeatureToJsonObject( feature ) ).toMap();
   }
   else
   {
-    mAtlasFeatureJSON.clear();
+    mAtlasFeatureProperties.clear();
   }
 }
 
