@@ -70,7 +70,7 @@ class CORE_EXPORT QgsHtmlRenderSettings
     QString userStylesheet() const { return mUserStylesheet; }
 
     /**
-     * Sets the feature \a json.
+     * Sets the feature \a json (as a variant map).
      *
      * When the HTML has been loaded, an attempt will be made to call a "setFeature" function,
      * passing this custom json object.
@@ -80,7 +80,7 @@ class CORE_EXPORT QgsHtmlRenderSettings
     void setFeatureJson( const QVariantMap &json ) { mFeatureJson = json; }
 
     /**
-     * Returns the feature json.
+     * Returns the feature json (as a variant map).
      *
      * When the HTML has been loaded, an attempt will be made to call a "setFeature" function,
      * passing this custom json object.

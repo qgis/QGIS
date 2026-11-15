@@ -63,7 +63,7 @@ These overriding the styles specified within the HTML source.
 
     void setFeatureJson( const QVariantMap &json );
 %Docstring
-Sets the feature ``json``.
+Sets the feature ``json`` (as a variant map).
 
 When the HTML has been loaded, an attempt will be made to call a
 "setFeature" function, passing this custom json object.
@@ -73,7 +73,7 @@ When the HTML has been loaded, an attempt will be made to call a
 
     QVariantMap featureJson() const;
 %Docstring
-Returns the feature json.
+Returns the feature json (as a variant map).
 
 When the HTML has been loaded, an attempt will be made to call a
 "setFeature" function, passing this custom json object.
