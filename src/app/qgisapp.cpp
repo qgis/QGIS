@@ -2135,7 +2135,9 @@ QgisApp::QgisApp()
   mLayerTreeView = new QgsLayerTreeView( this );
   QgsLayerTreeModel *model = new QgsLayerTreeModel( QgsProject::instance()->layerTreeRoot(), this );
   mLayerTreeView->setModel( model );
-  mUndoWidget = new QgsUndoWidget( nullptr, mMapCanvas );
+  mUndoDock = new QgsDockWidget( tr( "Undo/Redo" ), this );
+  mUndoWidget = new QgsUndoWidget( mUndoDock, mMapCanvas );
+  mUndoDock->setWidget( mUndoWidget );
   mUserInputDockWidget = new QgsUserInputWidget( this );
   mInfoBar = new QgsMessageBar( centralWidget() );
   mLayerTreeView->setMessageBar( mInfoBar );
@@ -2153,6 +2155,8 @@ QgisApp::QgisApp()
   mMapCanvas->setMessageBar( mInfoBar );
 
   connect( mLayerTreeView, &QgsLayerTreeView::currentLayerChanged, this, &QgisApp::onActiveLayerChanged );
+
+  mFeatureActionMenu = new QMenu( this );
   // More tests may need more members to be initialized
 }
 
