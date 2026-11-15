@@ -1568,7 +1568,7 @@ void QgsAttributeForm::onUpdatedFields()
         attrs[i] = mFeature.attributes().at( idx );
         if ( mFeature.attributes().at( idx ).userType() != layer()->fields().at( i ).type() )
         {
-          attrs[i].convert( layer()->fields().at( i ).type() );
+          attrs[i].convert( QMetaType( layer()->fields().at( i ).type() ) );
         }
       }
       else
