@@ -22,6 +22,7 @@
 #include "qgis_sip.h"
 
 #include <QUrl>
+#include <QVariantMap>
 
 /**
  * \ingroup core
