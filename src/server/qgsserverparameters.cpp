@@ -405,7 +405,7 @@ double QgsServerParameterDefinition::toDouble( bool &ok ) const
 
 bool QgsServerParameterDefinition::isValid() const
 {
-  return mValue.canConvert( mType );
+  return mValue.canConvert( QMetaType( mType ) );
 }
 
 void QgsServerParameterDefinition::raiseError( const QString &msg )
