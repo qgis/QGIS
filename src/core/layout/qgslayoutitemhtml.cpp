@@ -38,17 +38,17 @@
 #include <QString>
 
 #if defined( HAVE_WEBENGINE ) && defined( HAVE_PDF4QT )
+#define CAN_RENDER
 #include "qgswebenginepage.h"
-#endif
-#include "qgshtmlrendersettings.h"
 
-#include <QString>
-
-#if defined( HAVE_WEBENGINE ) && defined( HAVE_PDF4QT )
 #include <QWebEnginePage>
 #include <QWebEngineSettings>
 #include <QWebEngineScript>
 #endif
+
+#include "qgshtmlrendersettings.h"
+
+#include <QString>
 
 #include <QAbstractTextDocumentLayout>
 #include <QCoreApplication>
@@ -113,7 +113,7 @@ QIcon QgsLayoutItemHtml::icon() const
 
 bool QgsLayoutItemHtml::isSupported()
 {
-#if defined( HAVE_WEBENGINE ) && defined( HAVE_PDF4QT )
+#ifdef CAN_RENDER
   return true;
 #else
   return false;
@@ -428,7 +428,7 @@ void QgsLayoutItemHtml::renderHtmlSynchronously()
   }
   htmlRenderSettings.setFeatureJson( mAtlasFeatureProperties );
 
-#if defined( HAVE_WEBENGINE ) && defined( HAVE_PDF4QT )
+#ifdef CAN_RENDER
   if ( !QgsWebEnginePage::renderBlocking( mEvaluatedHtml, &painter, QRectF( 0, 0, widthCssPx, 9999 ), errorMessage, renderedSizeCssPx, htmlRenderSettings, nullptr ) )
   {
     QgsDebugError( errorMessage );
@@ -508,7 +508,7 @@ QSizeF QgsLayoutItemHtml::totalSize() const
 
 void QgsLayoutItemHtml::render( QgsLayoutItemRenderContext &context, const QRectF &renderExtent, const int frameIndex )
 {
-#if defined( HAVE_WEBENGINE ) && defined( HAVE_PDF4QT )
+#ifdef CAN_RENDER
   QPainter *painter = context.renderContext().painter();
   if ( !painter )
     return;
@@ -955,7 +955,7 @@ bool QgsLayoutItemHtmlRenderJob::isCanceled() const
 
 void QgsLayoutItemHtmlRenderJob::run()
 {
-#if defined( HAVE_WEBENGINE ) && defined( HAVE_PDF4QT )
+#ifdef CAN_RENDER
   const double widthCssPx = mFrameWidthLayoutUnits / mUnitsPerCssPx;
 
   QPainter painter( &mPicture );
@@ -966,9 +966,7 @@ void QgsLayoutItemHtmlRenderJob::run()
   htmlRenderSettings.setUserStylesheet( mUserStylesheet );
   htmlRenderSettings.setFeatureJson( mFeatureJson );
 
-#if defined( HAVE_WEBENGINE ) && defined( HAVE_PDF4QT )
   mSuccess = QgsWebEnginePage::renderBlocking( mHtml, &painter, QRectF( 0, 0, widthCssPx, 9999 ), mErrorMessage, renderedSizeCssPx, htmlRenderSettings, &mFeedback );
-#endif
   painter.end();
 
   if ( mFeedback.isCanceled() )
