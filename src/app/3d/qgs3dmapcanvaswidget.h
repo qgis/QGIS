@@ -232,7 +232,9 @@ class APP_EXPORT Qgs3DMapCanvasWidget : public QWidget
     QgsMessageBar *mMessageBar = nullptr;
     bool mGpuMemoryLimitReachedReported = false;
 
-    //! Container QWidget that encapsulates 3D QWindow
+    //! Whether OpenGL is available for rendering the 3D view
+    bool mOpenGLSupported = true;
+    //! Container QWidget that encapsulates 3D QWindow (or label when OpenGL is not supported)
     QWidget *mContainer = nullptr;
     //! On-Screen Navigation widget.
     Qgs3DNavigationWidget *mNavigationWidget = nullptr;
