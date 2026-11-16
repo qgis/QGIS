@@ -396,12 +396,21 @@ class QgsPicturePaintEngine final : public QPaintEngine
         const int chunkSize = std::min( pointCount - offset, static_cast<int>( std::numeric_limits<quint16>::max() ) );
         const quint32 startIndex = static_cast<quint32>( mPicD->mPoints.size() );
         mPicD->mPoints.reserve( mPicD->mPoints.size() + chunkSize );
+        qreal minX = points[offset].x();
+        qreal maxX = minX;
+        qreal minY = points[offset].y();
+        qreal maxY = minY;
+
         for ( int i = 0; i < chunkSize; ++i )
         {
           const QPointF &pt = points[offset + i];
           mPicD->mPoints.append( pt );
-          recordBounds( QRectF( pt, QSizeF( 1.0, 1.0 ) ), true );
+          minX = std::min( minX, pt.x() );
+          maxX = std::max( maxX, pt.x() );
+          minY = std::min( minY, pt.y() );
+          maxY = std::max( maxY, pt.y() );
         }
+        recordBounds( QRectF( minX, minY, maxX - minX + 1.0, maxY - minY + 1.0 ), true );
         if ( chunkSize == 1 )
           mPicD->appendCommand( QgsPicturePrivate::CommandType::DrawPoint, startIndex );
         else
@@ -422,12 +431,20 @@ class QgsPicturePaintEngine final : public QPaintEngine
         const int chunkSize = std::min( pointCount - offset, static_cast<int>( std::numeric_limits<quint16>::max() ) );
         const quint32 startIndex = static_cast<quint32>( mPicD->mPoints.size() );
         mPicD->mPoints.reserve( mPicD->mPoints.size() + chunkSize );
+        qreal minX = points[offset].x();
+        qreal maxX = minX;
+        qreal minY = points[offset].y();
+        qreal maxY = minY;
         for ( int i = 0; i < chunkSize; ++i )
         {
           const QPointF pt( points[offset + i] );
           mPicD->mPoints.append( pt );
-          recordBounds( QRectF( pt, QSizeF( 1.0, 1.0 ) ), true );
+          minX = std::min( minX, pt.x() );
+          maxX = std::max( maxX, pt.x() );
+          minY = std::min( minY, pt.y() );
+          maxY = std::max( maxY, pt.y() );
         }
+        recordBounds( QRectF( minX, minY, maxX - minX + 1.0, maxY - minY + 1.0 ), true );
         if ( chunkSize == 1 )
           mPicD->appendCommand( QgsPicturePrivate::CommandType::DrawPoint, startIndex );
         else
@@ -448,12 +465,20 @@ class QgsPicturePaintEngine final : public QPaintEngine
         const int chunkSize = std::min( lineCount - offset, static_cast<int>( std::numeric_limits<quint16>::max() ) );
         const quint32 startIndex = static_cast<quint32>( mPicD->mLines.size() );
         mPicD->mLines.reserve( mPicD->mLines.size() + chunkSize );
+        qreal minX = std::min( lines[offset].x1(), lines[offset].x2() );
+        qreal maxX = std::max( lines[offset].x1(), lines[offset].x2() );
+        qreal minY = std::min( lines[offset].y1(), lines[offset].y2() );
+        qreal maxY = std::max( lines[offset].y1(), lines[offset].y2() );
         for ( int i = 0; i < chunkSize; ++i )
         {
           const QLineF &line = lines[offset + i];
           mPicD->mLines.append( line );
-          recordBounds( QRectF( line.p1(), line.p2() ).normalized(), true );
+          minX = std::min( { minX, line.x1(), line.x2() } );
+          maxX = std::max( { maxX, line.x1(), line.x2() } );
+          minY = std::min( { minY, line.y1(), line.y2() } );
+          maxY = std::max( { maxY, line.y1(), line.y2() } );
         }
+        recordBounds( QRectF( minX, minY, maxX - minX, maxY - minY ), true );
         if ( chunkSize == 1 )
           mPicD->appendCommand( QgsPicturePrivate::CommandType::DrawLine, startIndex );
         else
@@ -474,12 +499,20 @@ class QgsPicturePaintEngine final : public QPaintEngine
         const int chunkSize = std::min( lineCount - offset, static_cast<int>( std::numeric_limits<quint16>::max() ) );
         const quint32 startIndex = static_cast<quint32>( mPicD->mLines.size() );
         mPicD->mLines.reserve( mPicD->mLines.size() + chunkSize );
+        int minX = std::min( lines[offset].x1(), lines[offset].x2() );
+        int maxX = std::max( lines[offset].x1(), lines[offset].x2() );
+        int minY = std::min( lines[offset].y1(), lines[offset].y2() );
+        int maxY = std::max( lines[offset].y1(), lines[offset].y2() );
         for ( int i = 0; i < chunkSize; ++i )
         {
-          const QLineF line( lines[offset + i] );
-          mPicD->mLines.append( line );
-          recordBounds( QRectF( line.p1(), line.p2() ).normalized(), true );
+          const QLine &line = lines[offset + i];
+          mPicD->mLines.append( QLineF( line ) );
+          minX = std::min( { minX, line.x1(), line.x2() } );
+          maxX = std::max( { maxX, line.x1(), line.x2() } );
+          minY = std::min( { minY, line.y1(), line.y2() } );
+          maxY = std::max( { maxY, line.y1(), line.y2() } );
         }
+        recordBounds( QRectF( minX, minY, maxX - minX, maxY - minY ), true );
         if ( chunkSize == 1 )
           mPicD->appendCommand( QgsPicturePrivate::CommandType::DrawLine, startIndex );
         else
@@ -500,12 +533,18 @@ class QgsPicturePaintEngine final : public QPaintEngine
         const int chunkSize = std::min( rectCount - offset, static_cast<int>( std::numeric_limits<quint16>::max() ) );
         const quint32 startIndex = static_cast<quint32>( mPicD->mRects.size() );
         mPicD->mRects.reserve( mPicD->mRects.size() + chunkSize );
+        QRectF batchBounds = rects[offset].normalized();
         for ( int i = 0; i < chunkSize; ++i )
         {
           const QRectF &rect = rects[offset + i];
           mPicD->mRects.append( rect );
-          recordBounds( rect, true );
+          const QRectF norm = rect.normalized();
+          batchBounds.setLeft( std::min( batchBounds.left(), norm.left() ) );
+          batchBounds.setTop( std::min( batchBounds.top(), norm.top() ) );
+          batchBounds.setRight( std::max( batchBounds.right(), norm.right() ) );
+          batchBounds.setBottom( std::max( batchBounds.bottom(), norm.bottom() ) );
         }
+        recordBounds( batchBounds, true );
         if ( chunkSize == 1 )
           mPicD->appendCommand( QgsPicturePrivate::CommandType::DrawRect, startIndex );
         else
@@ -526,12 +565,18 @@ class QgsPicturePaintEngine final : public QPaintEngine
         const int chunkSize = std::min( rectCount - offset, static_cast<int>( std::numeric_limits<quint16>::max() ) );
         const quint32 startIndex = static_cast<quint32>( mPicD->mRects.size() );
         mPicD->mRects.reserve( mPicD->mRects.size() + chunkSize );
+        QRectF batchBounds = QRectF( rects[offset] ).normalized();
         for ( int i = 0; i < chunkSize; ++i )
         {
           const QRectF rect( rects[offset + i] );
           mPicD->mRects.append( rect );
-          recordBounds( rect, true );
+          const QRectF norm = rect.normalized();
+          batchBounds.setLeft( std::min( batchBounds.left(), norm.left() ) );
+          batchBounds.setTop( std::min( batchBounds.top(), norm.top() ) );
+          batchBounds.setRight( std::max( batchBounds.right(), norm.right() ) );
+          batchBounds.setBottom( std::max( batchBounds.bottom(), norm.bottom() ) );
         }
+        recordBounds( batchBounds, true );
         if ( chunkSize == 1 )
           mPicD->appendCommand( QgsPicturePrivate::CommandType::DrawRect, startIndex );
         else
