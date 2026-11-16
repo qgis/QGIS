@@ -1,0 +1,111 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/painting/qgspicture.h                                       *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
+ ************************************************************************/
+
+
+
+
+
+
+class QgsPicture : QPaintDevice
+{
+%Docstring(signature="appended")
+A replacement for QPicture which focuses on optimised in-memory QPainter
+replays only.
+
+In contrast to QPicture, the :py:class:`QgsPicture` class offers:
+
+- proper thread safety, and no crashes when replaying shared picture
+  copies
+- images are always stored as lossless QImage versions (as opposed to
+  PNG encoded versions of images, which are costly to record and replay)
+- the focus is on optimised recording and replay, as opposed to
+  QPicture's focus on writing and replaying from a stable binary format
+
+.. versionadded:: 4.4
+%End
+
+%TypeHeaderCode
+#include "qgspicture.h"
+%End
+  public:
+    explicit QgsPicture();
+%Docstring
+Constructor for an empty picture.
+%End
+    ~QgsPicture();
+
+    QgsPicture( const QgsPicture &other );
+
+    virtual int devType() const;
+
+    virtual QPaintEngine *paintEngine() const;
+
+
+    bool isNull() const;
+%Docstring
+Returns ``True`` if the picture contains no data.
+%End
+
+    bool play( QPainter *painter ) const;
+%Docstring
+Replays the picture using ``painter``.
+
+:return: ``True`` if the replay was successful.
+
+.. note::
+
+   This method is const and thread-safe, so multiple threads can concurrently
+   replay shared copies of the same QgsPicture onto separate painters.
+%End
+
+    QRect boundingRect() const;
+%Docstring
+Returns the picture's bounding rectangle or an invalid rectangle if the
+picture contains no data.
+
+.. seealso:: :py:func:`setBoundingRect`
+%End
+
+    void setBoundingRect( const QRect &rect );
+%Docstring
+Sets the picture's bounding rectangle to ``rect``.
+
+The automatically calculated value is overridden.
+
+.. seealso:: :py:func:`boundingRect`
+%End
+
+    void detach();
+%Docstring
+Detaches this picture instance from the shared picture data.
+
+.. seealso:: :py:func:`isDetached`
+%End
+
+    bool isDetached() const;
+%Docstring
+Returns ``True`` if this instance does not share its internal data with
+any other QgsPicture.
+
+.. seealso:: :py:func:`detach`
+%End
+
+
+  protected:
+    virtual int metric( PaintDeviceMetric m ) const;
+
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/painting/qgspicture.h                                       *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
+ ************************************************************************/
