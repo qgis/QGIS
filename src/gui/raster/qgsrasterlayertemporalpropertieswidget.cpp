@@ -110,6 +110,7 @@ QgsRasterLayerTemporalPropertiesWidget::QgsRasterLayerTemporalPropertiesWidget( 
   calculateFixedRangePerBandMenu->addAction( calculateUpperAction );
   connect( calculateUpperAction, &QAction::triggered, this, [this] { calculateRangeByExpression( true ); } );
 
+  connect( mReloadFromDataProvider, &QPushButton::clicked, this, &QgsRasterLayerTemporalPropertiesWidget::prefillFixedRangePerBandFromProvider );
 
   syncToLayer();
 }
@@ -198,6 +199,10 @@ void QgsRasterLayerTemporalPropertiesWidget::syncToLayer()
   mEndTemporalDateTimeEdit->setDateTime( temporalProperties->fixedTemporalRange().end() );
 
   mFixedRangePerBandModel->setLayerData( mLayer, temporalProperties->fixedRangePerBand() );
+
+  if ( !mFixedRangePerBandModel->hasAnyStartOrEndValue() )
+    prefillFixedRangePerBandFromProvider();
+
   updateFixedRangePerBandSummary();
   mBandRangesTable->horizontalHeader()->setSectionResizeMode( 0, QHeaderView::Stretch );
   mBandRangesTable->horizontalHeader()->setSectionResizeMode( 1, QHeaderView::Stretch );
@@ -356,6 +361,29 @@ void QgsRasterLayerTemporalPropertiesWidget::updateFixedRangePerBandSummary()
 
   mFixedRangePerBandSummaryLabel->setText( u"<html><head/><body><p>%1: %2</p></body></html>"_s.arg( dates, parts.join( ", "_L1 ) ) );
   mFixedRangePerBandSummaryLabel->show();
+}
+
+void QgsRasterLayerTemporalPropertiesWidget::prefillFixedRangePerBandFromProvider()
+{
+  const QgsRasterDataProvider *provider = mLayer ? mLayer->dataProvider() : nullptr;
+  if ( !provider )
+    return;
+
+  const QgsTimeDuration step = QgsNetCdfGribTimeParser::calculateRegularTimeStep( provider->sortedUniqueBandDateTimes() );
+  if ( step.isNull() )
+    return;
+
+  QMap<int, QgsDateTimeRange> ranges = mFixedRangePerBandModel->rangeData();
+  const QMap<int, QDateTime> bandDateTimes = provider->bandDateTimes();
+  for ( auto it = bandDateTimes.constBegin(); it != bandDateTimes.constEnd(); ++it )
+  {
+    if ( !it.value().isValid() )
+      continue;
+    ranges.insert( it.key(), QgsDateTimeRange( it.value(), step.addToDateTime( it.value() ), true, false ) );
+  }
+
+  mFixedRangePerBandModel->setLayerData( mLayer, ranges );
+  return;
 }
 
 QgsExpressionContext QgsRasterLayerTemporalPropertiesWidget::createExpressionContextForBand( int band ) const
@@ -553,6 +581,16 @@ bool QgsRasterBandFixedTemporalRangeModel::setData( const QModelIndex &index, co
       break;
   }
 
+  return false;
+}
+
+bool QgsRasterBandFixedTemporalRangeModel::hasAnyStartOrEndValue() const
+{
+  for ( auto it = mRanges.constBegin(); it != mRanges.constEnd(); ++it )
+  {
+    if ( it.value().begin().isValid() || it.value().end().isValid() )
+      return true;
+  }
   return false;
 }
 

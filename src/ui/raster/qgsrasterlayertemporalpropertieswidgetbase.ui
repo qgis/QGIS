@@ -337,6 +337,17 @@ background: white;QgsCollapsibleGroupBoxBasic::title, QgsCollapsibleGroupBox::ti
                     </spacer>
                    </item>
                    <item>
+                    <widget class="QPushButton" name="mReloadFromDataProvider">
+                     <property name="text">
+                      <string>Reload from Data</string>
+                     </property>
+                     <property name="icon">
+                      <iconset resource="../../../images/images.qrc">
+                       <normaloff>:/images/composer/refreshing_item.svg</normaloff>:/images/composer/refreshing_item.svg</iconset>
+                     </property>
+                    </widget>
+                   </item>
+                   <item>
                     <widget class="QToolButton" name="mCalculateFixedRangePerBandButton">
                      <property name="text">
                       <string>...</string>
