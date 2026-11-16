@@ -109,7 +109,7 @@ void TestQgsJsonUtils::testJsonArray()
   {
     QVERIFY( value.isNull() );
     QVERIFY( value.isValid() );
-    QCOMPARE( value, QVariant( QVariant::Type::Double ) );
+    QCOMPARE( value, QgsVariantUtils::createNullVariant( QMetaType::Type::Double ) );
   }
 }
 
