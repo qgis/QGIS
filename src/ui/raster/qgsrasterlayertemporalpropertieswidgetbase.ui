@@ -281,6 +281,13 @@ background: white;QgsCollapsibleGroupBoxBasic::title, QgsCollapsibleGroupBox::ti
                </widget>
               </item>
               <item row="1" column="0">
+               <widget class="QLabel" name="mFixedRangePerBandSummaryLabel">
+                <property name="text">
+                 <string/>
+                </property>
+               </widget>
+              </item>
+              <item row="2" column="0">
                <widget class="QWidget" name="mWidgetFixedRangePerBand" native="true">
                 <property name="minimumSize">
                  <size>
