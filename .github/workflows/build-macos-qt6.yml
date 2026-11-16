@@ -172,7 +172,7 @@ jobs:
 
   schedule_download_comment:
     name: Create dmg
-    runs-on: macos-latest
+    runs-on: blacksmith-6vcpu-macos-latest
     needs: build
     steps:
       - name: 🐣 Checkout
