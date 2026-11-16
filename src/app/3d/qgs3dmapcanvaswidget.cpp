@@ -67,15 +67,30 @@
 
 #include <QAction>
 #include <QActionGroup>
+#include <QLabel>
+#include <QOpenGLContext>
 #include <QProgressBar>
 #include <QShortcut>
 #include <QString>
+#include <QSurfaceFormat>
 #include <QToolBar>
 #include <QWidget>
 
 #include "moc_qgs3dmapcanvaswidget.cpp"
 
 using namespace Qt::StringLiterals;
+
+//! Returns TRUE if an OpenGL context can be created for the 3D map view
+static bool isOpenGLSupported()
+{
+#if defined( QT_NO_OPENGL )
+  return false;
+#else
+  QOpenGLContext context;
+  context.setFormat( QSurfaceFormat::defaultFormat() );
+  return context.create();
+#endif
+}
 
 const QgsSettingsEntryDouble *Qgs3DMapCanvasWidget::settingClippingTolerance
   = new QgsSettingsEntryDouble( u"tolerance"_s, QgsSettingsTree::sTree3DMap, 100, u"Tolerance distance for 3D Map cross section"_s, Qgis::SettingsOptions(), 0 );
@@ -515,13 +530,25 @@ Qgs3DMapCanvasWidget::Qgs3DMapCanvasWidget( const QString &name, bool isDocked )
   layout->addWidget( mEditingToolBar );
   layout->addWidget( mMessageBar );
 
-  // mContainer takes ownership of Qgs3DMapCanvas
-  mContainer = QWidget::createWindowContainer( mCanvas );
+  mOpenGLSupported = isOpenGLSupported();
+  if ( mOpenGLSupported )
+  {
+    // mContainer takes ownership of Qgs3DMapCanvas
+    mContainer = QWidget::createWindowContainer( mCanvas );
+    mContainer->setFocusPolicy( Qt::FocusPolicy::StrongFocus );
+    mContainer->installEventFilter( mCanvas );
+  }
+  else
+  {
+    mMessageBar->pushMessage( tr( "OpenGL not supported" ), tr( "No OpenGL context could be created. Graphics driver does not support OpenGL." ), Qgis::MessageLevel::Critical, 0 );
+
+    QLabel *label = new QLabel( tr( "3D view is not available." ), this );
+    label->setAlignment( Qt::AlignCenter );
+    label->setWordWrap( true );
+    mContainer = label;
+  }
   mContainer->setMinimumSize( QSize( 200, 200 ) );
   mContainer->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Expanding );
-  mContainer->setFocusPolicy( Qt::FocusPolicy::StrongFocus );
-
-  mContainer->installEventFilter( mCanvas );
 
   mNavigationWidget = new Qgs3DNavigationWidget( mCanvas );
   mNavigationWidget->setSizePolicy( QSizePolicy::Fixed, QSizePolicy::Expanding );
@@ -597,6 +624,9 @@ Qgs3DMapCanvasWidget::~Qgs3DMapCanvasWidget()
     mCrossSectionRubberBand.reset();
 
   delete mDockableWidgetHelper;
+
+  if ( !mOpenGLSupported )
+    delete mCanvas;
 }
 
 void Qgs3DMapCanvasWidget::saveAsImage()
@@ -815,6 +845,9 @@ bool Qgs3DMapCanvasWidget::eventFilter( QObject *watched, QEvent *event )
 void Qgs3DMapCanvasWidget::showEvent( QShowEvent *event )
 {
   QWidget::showEvent( event );
+  if ( !mOpenGLSupported )
+    return;
+
   mContainer->setFocus( Qt::OtherFocusReason );
   mCanvas->requestActivate();
 }
