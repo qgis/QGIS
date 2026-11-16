@@ -103,7 +103,7 @@ jobs:
                 -D WITH_SFCGAL=ON \
                 -D WITH_PROJ_DATA=ON \
                 -D WITH_QTWEBENGINE=ON \
-                -D WITH_PDF4QT=ON \
+                -D WITH_PDF4QT=OFF \
                 -D VCPKG_TARGET_TRIPLET="${{ matrix.triplet }}" \
                 -D VCPKG_HOST_TRIPLET="${{ matrix.host-triplet || matrix.triplet }}" \
                 -D VCPKG_INSTALL_OPTIONS="--only-binarycaching" \
