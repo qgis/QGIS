@@ -826,6 +826,47 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
     // Note: This method is not const because GDAL init on demand
     virtual QString bandDescription( int bandNumber );
 
+    /**
+     * Returns the date times associated with the raster bands (e.g. netCDF CF time dimension or GRIB valid time),
+     * as a map of band number to date time. Bands without an associated date time are not included.
+     *
+     * \see firstBandDateTime()
+     * \see lastBandDateTime()
+     * \see sortedUniqueBandDateTimes()
+     * \since QGIS 4.4
+     */
+    QMap<int, QDateTime> bandDateTimes() const;
+
+    /**
+     * Returns the sorted and unique date times associated with the raster bands.
+     *
+     * \see firstBandDateTime()
+     * \see lastBandDateTime()
+     * \see sortedUniqueBandDateTimes()
+     * \since QGIS 4.4
+     */
+    QList<QDateTime> sortedUniqueBandDateTimes() const;
+
+    /**
+     * Returns the earliest date time associated with the raster bands,
+     * or an invalid QDateTime if no band has a date time.
+     *
+     * \see lastBandDateTime()
+     * \see sortedUniqueBandDateTimes()
+     * \since QGIS 4.4
+     */
+    QDateTime firstBandDateTime() const;
+
+    /**
+     * Returns the latest date time associated with the raster bands,
+     * or an invalid QDateTime if no band has a date time.
+     *
+     * \see firstBandDateTime()
+     * \see sortedUniqueBandDateTimes()
+     * \since QGIS 4.4
+     */
+    QDateTime lastBandDateTime() const;
+
 
   signals:
 
@@ -916,6 +957,9 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
 
     //! Maximum boundary for oversampling (to avoid too much data traffic). Default: 2.0
     double mMaxOversampling = 2.0;
+
+    //! Store association between band numbers and their corresponding date times, where it makes sense
+    QMap<int, QDateTime> mBandDateTimes;
 
   private:
     /**
