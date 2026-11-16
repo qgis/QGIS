@@ -112,6 +112,11 @@ class GUI_EXPORT QgsRasterLayerTemporalPropertiesWidget : public QWidget, privat
     QgsExpressionContext createExpressionContextForBand( int band ) const;
 
     /**
+     * Update the summary (number of steps, step time) and first and last date time for the raster
+     */
+    void updateFixedRangePerBandSummary();
+
+    /**
      * The corresponding map layer with temporal attributes
      */
     QgsRasterLayer *mLayer = nullptr;

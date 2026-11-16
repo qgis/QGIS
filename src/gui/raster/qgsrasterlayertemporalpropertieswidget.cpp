@@ -27,6 +27,7 @@
 #include "qgsrasterlayertemporalproperties.h"
 #include "qgsrasterrenderer.h"
 #include "qgsrasterrendererregistry.h"
+#include "qgstemporalutils.h"
 #include "qgsunittypes.h"
 
 #include <QAction>
@@ -88,6 +89,7 @@ QgsRasterLayerTemporalPropertiesWidget::QgsRasterLayerTemporalPropertiesWidget( 
   QgsFixedTemporalRangeDelegate *tableDelegate = new QgsFixedTemporalRangeDelegate( mBandRangesTable );
   mBandRangesTable->setItemDelegateForColumn( 1, tableDelegate );
   mBandRangesTable->setItemDelegateForColumn( 2, tableDelegate );
+
 
   connect( mModeComboBox, qOverload<int>( &QComboBox::currentIndexChanged ), this, &QgsRasterLayerTemporalPropertiesWidget::modeChanged );
 
@@ -196,6 +198,7 @@ void QgsRasterLayerTemporalPropertiesWidget::syncToLayer()
   mEndTemporalDateTimeEdit->setDateTime( temporalProperties->fixedTemporalRange().end() );
 
   mFixedRangePerBandModel->setLayerData( mLayer, temporalProperties->fixedRangePerBand() );
+  updateFixedRangePerBandSummary();
   mBandRangesTable->horizontalHeader()->setSectionResizeMode( 0, QHeaderView::Stretch );
   mBandRangesTable->horizontalHeader()->setSectionResizeMode( 1, QHeaderView::Stretch );
   mBandRangesTable->horizontalHeader()->setSectionResizeMode( 2, QHeaderView::Stretch );
@@ -297,6 +300,62 @@ void QgsRasterLayerTemporalPropertiesWidget::calculateRangeByExpression( bool is
       mFixedRangePerBandModel->setData( mFixedRangePerBandModel->index( band - 1, isUpper ? 2 : 1 ), res, Qt::EditRole );
     }
   }
+}
+
+void QgsRasterLayerTemporalPropertiesWidget::updateFixedRangePerBandSummary()
+{
+  const QgsRasterDataProvider *provider = mLayer ? mLayer->dataProvider() : nullptr;
+  const QDateTime firstDateTime = provider ? provider->firstBandDateTime() : QDateTime();
+  const QDateTime lastDateTime = provider ? provider->lastBandDateTime() : QDateTime();
+
+  // if first or last date time is not valid, hide and skip
+  if ( !firstDateTime.isValid() || !lastDateTime.isValid() )
+  {
+    mFixedRangePerBandSummaryLabel->clear();
+    mFixedRangePerBandSummaryLabel->hide();
+    return;
+  }
+
+  const QList<QDateTime> dateTimes = provider->sortedUniqueBandDateTimes();
+
+  const QString dateTimeFormat = u"yyyy-MM-dd HH:mm"_s;
+  QStringList parts;
+  parts << tr( "<b>%1 time step(s)</b>" ).arg( dateTimes.size() );
+
+  if ( dateTimes.size() > 1 )
+  {
+    const QgsTimeDuration step = QgsNetCdfGribTimeParser::calculateRegularTimeStep( dateTimes );
+    if ( step.isNull() )
+    {
+      parts << tr( "irregular" );
+    }
+    else
+    {
+      QStringList stepParts;
+      if ( step.years )
+        stepParts << tr( "<b>%1 year(s)</b>" ).arg( step.years );
+      if ( step.months )
+        stepParts << tr( "<b>%1 month(s)</b>" ).arg( step.months );
+      if ( step.weeks )
+        stepParts << tr( "<b>%1 week(s)</b>" ).arg( step.weeks );
+      if ( step.days )
+        stepParts << tr( "<b>%1 day(s)</b>" ).arg( step.days );
+      if ( step.hours )
+        stepParts << tr( "<b>%1 hour(s)</b>" ).arg( step.hours );
+      if ( step.minutes )
+        stepParts << tr( "<b>%1 minute(s)</b>" ).arg( step.minutes );
+      if ( step.seconds != 0 )
+        stepParts << tr( "<b>%1 second(s)</b>" ).arg( step.seconds );
+      parts << tr( "<b>every %1</b>" ).arg( stepParts.join( ' '_L1 ) );
+    }
+  }
+
+  parts << tr( "from <b>%1</b> to <b>%2</b> (UTC, standard calendar)" ).arg( firstDateTime.toString( dateTimeFormat ), lastDateTime.toString( dateTimeFormat ) );
+
+  QString dates = tr( "Dates read from file" );
+
+  mFixedRangePerBandSummaryLabel->setText( u"<html><head/><body><p>%1: %2</p></body></html>"_s.arg( dates, parts.join( ", "_L1 ) ) );
+  mFixedRangePerBandSummaryLabel->show();
 }
 
 QgsExpressionContext QgsRasterLayerTemporalPropertiesWidget::createExpressionContextForBand( int band ) const
