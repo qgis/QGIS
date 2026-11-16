@@ -1045,7 +1045,15 @@ bool QgsPicture::play( QPainter *painter ) const
           flags |= Qt::TextJustificationForced | Qt::AlignJustify;
         }
         const QFont prevFont = painter->font();
-        painter->setFont( ti.font );
+
+        // we have to create a new QFont using this as the paint device, so that the font size
+        // is correctly scaled to account for THIS paint device's dpi (not the target device's DPI)
+        QFont scaledFont( ti.font );
+        if ( scaledFont.pixelSize() == -1 && painter->device() && painter->device()->logicalDpiY() > 0 && painter->device()->logicalDpiY() != logicalDpiY() )
+        {
+          scaledFont.setPointSizeF( scaledFont.pointSizeF() * static_cast<qreal>( logicalDpiY() ) / painter->device()->logicalDpiY() );
+        }
+        painter->setFont( scaledFont );
         painter->drawText( QRectF( ti.pos, size ), flags, ti.text );
         painter->setFont( prevFont );
         break;

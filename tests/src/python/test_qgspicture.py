@@ -29,6 +29,7 @@ from qgis.PyQt.QtGui import (
     QBrush,
     QColor,
     QConicalGradient,
+    QFont,
     QImage,
     QLinearGradient,
     QPainter,
@@ -593,6 +594,80 @@ class TestQgsPicture(QgisTestCase):
         rp.end()
 
         self.assertTrue(self.image_check("qgspicture_clip", "qgspicture_clip", image))
+
+    def test_high_dpi(self):
+        """
+        Test that QgsPicture replays correctly on a high-DPI target device.
+
+        (i.e. that the QgsPainting.drawPicture workaround isn't required)
+        """
+        point_font = QgsFontUtils.getStandardTestFont("Bold")
+        point_font.setPointSize(18)
+
+        picture = QgsPicture()
+        painter = QPainter(picture)
+        painter.setPen(QPen(QColor(20, 40, 180), 4))
+        painter.setBrush(QColor(100, 180, 240))
+        painter.drawRect(QRectF(10, 10, 180, 60))
+        painter.setFont(point_font)
+        painter.drawText(QPointF(20, 45), "Test QGIS")
+        painter.end()
+
+        # draw the same thing directly to a hi-dpi QImage so we can compare
+        image = QImage(200, 100, QImage.Format.Format_ARGB32_Premultiplied)
+        image.setDotsPerMeterX(round(300 / 0.0254))
+        image.setDotsPerMeterY(round(300 / 0.0254))
+        image.fill(Qt.GlobalColor.white)
+        painter = QPainter(image)
+        painter.setPen(QPen(QColor(20, 40, 180), 4))
+        painter.setBrush(QColor(100, 180, 240))
+        painter.drawRect(QRectF(10, 10, 180, 60))
+        reference_font = QFont(point_font)
+        reference_font.setPointSizeF(
+            point_font.pointSizeF() * picture.logicalDpiY() / image.logicalDpiY()
+        )
+        painter.setFont(reference_font)
+        painter.drawText(QPointF(20, 45), "Test QGIS")
+        painter.end()
+        self.assertTrue(
+            self.image_check("qgspicture_font_dpi", "qgspicture_font_dpi", image)
+        )
+
+        # now check if we get the same results when replaying the QgsPicture version
+        image = QImage(200, 100, QImage.Format.Format_ARGB32_Premultiplied)
+        image.setDotsPerMeterX(round(300 / 0.0254))
+        image.setDotsPerMeterY(round(300 / 0.0254))
+        image.fill(Qt.GlobalColor.white)
+        painter = QPainter(image)
+        self.assertTrue(picture.play(painter))
+        painter.end()
+        self.assertTrue(
+            self.image_check("qgspicture_font_dpi", "qgspicture_font_dpi", image)
+        )
+
+        # render to lower DPI images
+        image = QImage(200, 100, QImage.Format.Format_ARGB32_Premultiplied)
+        image.setDotsPerMeterX(round(150 / 0.0254))
+        image.setDotsPerMeterY(round(150 / 0.0254))
+        image.fill(Qt.GlobalColor.white)
+        painter = QPainter(image)
+        self.assertTrue(picture.play(painter))
+        painter.end()
+        self.assertTrue(
+            self.image_check("qgspicture_font_dpi", "qgspicture_font_dpi", image)
+        )
+
+        # render to lower DPI images
+        image = QImage(200, 100, QImage.Format.Format_ARGB32_Premultiplied)
+        image.setDotsPerMeterX(round(96 / 0.0254))
+        image.setDotsPerMeterY(round(96 / 0.0254))
+        image.fill(Qt.GlobalColor.white)
+        painter = QPainter(image)
+        self.assertTrue(picture.play(painter))
+        painter.end()
+        self.assertTrue(
+            self.image_check("qgspicture_font_dpi", "qgspicture_font_dpi", image)
+        )
 
 
 if __name__ == "__main__":
