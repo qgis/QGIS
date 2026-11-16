@@ -15,6 +15,7 @@
 
 #include "qgstemporalutils.h"
 
+#include <algorithm>
 #include <cstdlib>
 #include <optional>
 
@@ -685,4 +686,100 @@ QDateTime QgsNetCdfGribTimeParser::parseGribTime( const QString &metadataValue )
   // MDAL::DateTime( double value, Epoch::Unix )
   const int64_t unixEpoch = cfJulianTimeFromGregorianJulianCalendarDate( CFDateTimeValues { 1970, 1, 1, 0, 0, 0 } );
   return cfJulianTimeToDateTime( unixEpoch + cfRelativeTimestamp( value.value(), CFTimeUnit::Seconds ) );
+}
+
+QgsTimeDuration QgsNetCdfGribTimeParser::calculateRegularTimeStep( const QList<QDateTime> &dateTimes )
+{
+  if ( dateTimes.size() < 2 )
+    return QgsTimeDuration();
+
+  QList<QDateTime> sortedUniqueDateTimes;
+  sortedUniqueDateTimes.reserve( dateTimes.size() );
+  for ( const QDateTime &dateTime : dateTimes )
+  {
+    if ( dateTime.isValid() )
+      sortedUniqueDateTimes.append( dateTime );
+  }
+  std::sort( sortedUniqueDateTimes.begin(), sortedUniqueDateTimes.end() );
+  sortedUniqueDateTimes.erase( std::unique( sortedUniqueDateTimes.begin(), sortedUniqueDateTimes.end() ), sortedUniqueDateTimes.end() );
+
+  if ( sortedUniqueDateTimes.size() < 2 )
+    return QgsTimeDuration();
+
+  constexpr qint64 MS_IN_MINUTE = 60LL * 1000;
+  constexpr qint64 MS_IN_HOUR = 60 * MS_IN_MINUTE;
+  constexpr qint64 MS_IN_DAY = 24 * MS_IN_HOUR;
+
+  // fixed length step
+  const qint64 stepMilliseconds = sortedUniqueDateTimes.at( 0 ).msecsTo( sortedUniqueDateTimes.at( 1 ) );
+  bool isFixedStep = true;
+  for ( int i = 2; i < sortedUniqueDateTimes.size(); ++i )
+  {
+    if ( sortedUniqueDateTimes.at( i - 1 ).msecsTo( sortedUniqueDateTimes.at( i ) ) != stepMilliseconds )
+    {
+      isFixedStep = false;
+      break;
+    }
+  }
+
+  QgsTimeDuration step;
+  if ( isFixedStep )
+  {
+    qint64 remainder = stepMilliseconds;
+    step.days = static_cast<int>( remainder / MS_IN_DAY );
+    remainder %= MS_IN_DAY;
+    step.hours = static_cast<int>( remainder / MS_IN_HOUR );
+    remainder %= MS_IN_HOUR;
+    step.minutes = static_cast<int>( remainder / MS_IN_MINUTE );
+    remainder %= MS_IN_MINUTE;
+    step.seconds = static_cast<double>( remainder ) / 1000.0;
+    return step;
+  }
+
+  // special cases for month and year - dates that land on the same day of the month (and the same month
+  // of the year) with the same time, but whose length varies due to different month and year lengths.
+  // addMonths( 1 ) / addYears( 1 ) keep the day, month and time, and also ensure no month or year is skipped.
+  // If 31st of month would be used it would create irregular steps for months with fewer days, but if start of
+  // month is used it works consistently.
+  const qint64 stepDays = stepMilliseconds / MS_IN_DAY;
+
+  // Check for potential month steps
+  if ( stepDays >= 28 && stepDays <= 31 )
+  {
+    bool isMonthStep = true;
+    for ( int i = 1; i < sortedUniqueDateTimes.size(); ++i )
+    {
+      if ( sortedUniqueDateTimes.at( i - 1 ).addMonths( 1 ) != sortedUniqueDateTimes.at( i ) )
+      {
+        isMonthStep = false;
+        break;
+      }
+    }
+    if ( isMonthStep )
+    {
+      step.months = 1;
+      return step;
+    }
+  }
+
+  // Check for potential year steps
+  if ( stepDays >= 365 && stepDays <= 366 )
+  {
+    bool isYearStep = true;
+    for ( int i = 1; i < sortedUniqueDateTimes.size(); ++i )
+    {
+      if ( sortedUniqueDateTimes.at( i - 1 ).addYears( 1 ) != sortedUniqueDateTimes.at( i ) )
+      {
+        isYearStep = false;
+        break;
+      }
+    }
+    if ( isYearStep )
+    {
+      step.years = 1;
+      return step;
+    }
+  }
+
+  return QgsTimeDuration();
 }

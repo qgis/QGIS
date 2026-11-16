@@ -304,7 +304,7 @@ class CORE_EXPORT QgsNetCdfGribTimeParser
   public:
     /**
      * Converts a time \a value expressed following the CF (Climate and Forecast) conventions used
-     * by netCDF files to a date time, e.g. a value of 43465 with \a units "days since 1900-01-01 00:00:00"
+     * by netCDF files to a date time, e.g. a value of 43464 with \a units "days since 1900-01-01 00:00:00"
      * to 2019-01-01T00:00:00.
      *
      * Same as MDAL::DriverCF::parseTime() / MDAL::DriverGdalNetCDF::parseGlobals().
@@ -328,6 +328,20 @@ class CORE_EXPORT QgsNetCdfGribTimeParser
      * \returns the corresponding date time in UTC, expressed in the proleptic Gregorian calendar and rounded down to whole seconds. Invalid if \a metadataValue is empty or if the resulting year is not positive.
      */
     static QDateTime parseGribTime( const QString &metadataValue );
+
+    /**
+     * Calculates the regular time step between date times in the list.
+     *
+     * Invalid date times are ignored, the remaining date times are sorted and duplicates are removed.
+     *
+     * The step is regular if all steps have the same length (expressed using days, hours, minutes
+     * and seconds), or if each date time is exactly one calendar month or one calendar year after
+     * the previous one (same day of month and time).
+     *
+     * \param dateTimes list of date times to calculate the time step from
+     * \returns the calculated time step, if the result isNull() then there is no regular time step
+     */
+    static QgsTimeDuration calculateRegularTimeStep( const QList<QDateTime> &dateTimes );
 
   private:
     static constexpr double MILLISECONDS_IN_SECOND = 1000;
