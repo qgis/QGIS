@@ -206,6 +206,7 @@
         "py-numpy",
         "py-owslib",
         "py-pip",
+        "py-plotly",
         "py-psycopg",
         "py-psycopg2",
         {
