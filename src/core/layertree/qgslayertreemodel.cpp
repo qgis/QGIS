@@ -200,10 +200,10 @@ QVariant QgsLayerTreeModel::data( const QModelIndex &index, int role ) const
       const QString iconPath = node->customProperty( u"icon"_s ).toString();
       if ( !iconPath.isEmpty() )
       {
-        auto it = mGroupIcons.constFind( iconPath );
-        if ( it == mGroupIcons.constEnd() )
+        auto it = mNodeIcons.constFind( iconPath );
+        if ( it == mNodeIcons.constEnd() )
         {
-          it = mGroupIcons.insert( iconPath, QIcon( iconPath ) );
+          it = mNodeIcons.insert( iconPath, QIcon( iconPath ) );
         }
 
         return it->isNull() ? iconGroup() : *it;
@@ -220,8 +220,23 @@ QVariant QgsLayerTreeModel::data( const QModelIndex &index, int role ) const
       if ( !layer )
         return QVariant();
 
-      // icons possibly overriding default icon
-      QIcon icon = QgsIconUtils::iconForLayer( layer );
+      QIcon icon;
+
+      const QString iconPath = node->customProperty( u"icon"_s ).toString();
+      if ( !iconPath.isEmpty() )
+      {
+        auto it = mNodeIcons.constFind( iconPath );
+        if ( it == mNodeIcons.constEnd() )
+        {
+          it = mNodeIcons.insert( iconPath, QIcon( iconPath ) );
+        }
+
+        icon = it->isNull() ? QgsIconUtils::iconForLayer( layer ) : *it;
+      }
+      else
+      {
+        icon = QgsIconUtils::iconForLayer( layer );
+      }
 
       // if there's just on legend entry that should be embedded in layer - do that!
       if ( testFlag( ShowLegend ) && legendEmbeddedInParent( nodeLayer ) )
@@ -944,7 +959,7 @@ void QgsLayerTreeModel::nodeCustomPropertyChanged( QgsLayerTreeNode *node, const
 {
   if ( QgsLayerTree::isLayer( node ) && key == "showFeatureCount"_L1 )
     refreshLayerLegend( QgsLayerTree::toLayer( node ) );
-  else if ( QgsLayerTree::isGroup( node ) && key == "icon"_L1 )
+  else if ( ( QgsLayerTree::isGroup( node ) || QgsLayerTree::isLayer( node ) ) && key == "icon"_L1 )
   {
     const QModelIndex index = node2index( node );
     if ( index.isValid() )
