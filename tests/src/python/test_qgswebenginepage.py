@@ -408,6 +408,44 @@ class TestWebEnginePage(QgisTestCase):
             )
         )
 
+    def test_render_web_page_user_agent(self):
+        """
+        Test rendering web pages to a QPainter, checking user agent
+        """
+        image = QImage(600, 423, QImage.Format.Format_ARGB32_Premultiplied)
+        image.fill(Qt.GlobalColor.transparent)
+        painter = QPainter(image)
+
+        html = """
+                <html>
+                <head>
+                </head>
+                <body style="margin: 0px; padding: 0px">
+                <p id="userAgentOutput" style="font-weight: bold; font-size: 40pt"></p>
+                <script>
+                    const userAgent = navigator.userAgent;
+                    const trimmedAgent = userAgent.substring(0, 16);
+                    document.getElementById('userAgentOutput').textContent = trimmedAgent;
+                </script>
+                 </div>
+                """
+        settings = QgsHtmlRenderSettings()
+        res, error, size = QgsWebEnginePage.renderBlocking(
+            html, painter, QRectF(0, 0, 600, 423), settings
+        )
+        painter.end()
+        self.assertTrue(res, error)
+        self.assertEqual(size.width(), 600)
+
+        self.assertTrue(
+            self.image_check(
+                "Render QgsWebEnginePage to QPainter with QGIS user agent",
+                "render",
+                image,
+                "expected_render_with_user_agent",
+            )
+        )
+
 
 if __name__ == "__main__":
     unittest.main()
