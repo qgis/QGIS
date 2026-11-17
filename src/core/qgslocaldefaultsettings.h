@@ -15,6 +15,8 @@
 #ifndef QGSLOCALDEFAULTSETTINGS_H
 #define QGSLOCALDEFAULTSETTINGS_H
 
+#include <memory>
+
 #include "qgis_core.h"
 #include "qgis_sip.h"
 
