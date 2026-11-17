@@ -33,6 +33,8 @@
 class CORE_EXPORT QgsHtmlRenderSettings
 {
   public:
+    QgsHtmlRenderSettings();
+
     /**
    * Returns TRUE no settings are set.
    */
@@ -95,10 +97,29 @@ class CORE_EXPORT QgsHtmlRenderSettings
      */
     QVariantMap asMap() const;
 
+    /**
+     * Returns the user agent string to use when requesting the HTML.
+     *
+     * This defaults to the QGIS user agent.
+     *
+     * \see setUserAgent()
+     */
+    QString userAgent() const;
+
+    /**
+     * Sets the user \a agent string to use when requesting the HTML.
+     *
+     * This defaults to the QGIS user agent.
+     *
+     * \see userAgent()
+     */
+    void setUserAgent( const QString &agent );
+
   private:
     QUrl mBaseUrl;
     QString mUserStylesheet;
     QVariantMap mFeatureJson;
+    QString mUserAgent;
 };
 
 #endif // QGSHTMLRENDERSETTINGS_H
