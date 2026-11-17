@@ -272,9 +272,6 @@ background: white;QgsCollapsibleGroupBoxBasic::title, QgsCollapsibleGroupBox::ti
                   <verstretch>0</verstretch>
                  </sizepolicy>
                 </property>
-                <property name="text">
-                 <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Each band in the raster layer is associated with a fixed time range.&lt;/span&gt;&lt;/p&gt;&lt;p&gt;This mode can be used when a layer has temporal data exposed through different raster bands.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-                </property>
                 <property name="wordWrap">
                  <bool>true</bool>
                 </property>
