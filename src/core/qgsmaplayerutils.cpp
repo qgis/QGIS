@@ -98,7 +98,7 @@ QgsRectangle QgsMapLayerUtils::combinedExtent( const QList<QgsMapLayer *> &layer
   return fullExtent;
 }
 
-QgsAbstractDatabaseProviderConnection *QgsMapLayerUtils::databaseConnection( const QgsMapLayer *layer )
+std::unique_ptr<QgsAbstractDatabaseProviderConnection> QgsMapLayerUtils::databaseConnection( const QgsMapLayer *layer )
 {
   if ( !layer )
   {
@@ -114,7 +114,7 @@ QgsAbstractDatabaseProviderConnection *QgsMapLayerUtils::databaseConnection( con
     }
 
     std::unique_ptr< QgsAbstractDatabaseProviderConnection > conn { static_cast<QgsAbstractDatabaseProviderConnection *>( providerMetadata->createConnection( layer->source(), {} ) ) };
-    return conn.release();
+    return conn;
   }
   catch ( const QgsProviderConnectionException &ex )
   {
