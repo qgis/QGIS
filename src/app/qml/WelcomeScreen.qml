@@ -182,7 +182,7 @@ Item {
                     recentProjectsMenu.projectPinned = index;
                     recentProjectsMenu.projectPinned = Pinned;
                     recentProjectsMenu.projectExists = Exists;
-                    recentProjectsMenu.projectHasNativePath = ProjectNativePath != "";
+                    recentProjectsMenu.projectHasNativePath = HasNativePath;
 
                     const point = mapToItem(recentProjectsListView, mouse.x, mouse.y);
                     recentProjectsMenu.popup(point.x, point.y);
