@@ -108,12 +108,12 @@ class TestQgsVectorFileWriter : public QObject
     void testExportToGpxMultiLineStringForceRoute();
     //! Test export using custom field names
     void testExportCustomFieldNames();
-    //! Test that duplicated export names get uniquified
-    void testExportDuplicateCustomFieldNames();
-    //! Test that values stay aligned when export names are duplicated (end-to-end)
-    void testDuplicateExportNamesKeepValuesAligned();
-    //! Test PreferAlias dedup for fields sharing the same alias
-    void testPreferAliasDuplicateAliases();
+    //! Test dedup of field names when duplicated are passed to prepareWriteAsVectorFormat as options
+    void testExportDedupFieldNamesOnPrepareWriteAsVectorFormat();
+    //! Test dedup of field names when duplicated are passed to init as options
+    void testDedupFieldNamesOnInit();
+    //! Test dedup of field names when duplicated aliases are passed with the prefer alias flag
+    void testDedupPreferAliasWithDuplicateAliases();
     //! Test export to shape with NaN values for Z
     void testExportToShapeNanValuesForZ();
 
@@ -678,7 +678,7 @@ void TestQgsVectorFileWriter::testExportCustomFieldNames()
   QCOMPARE( details.outputFields.at( 1 ).name(), "customfieldname" );
 }
 
-void TestQgsVectorFileWriter::testExportDuplicateCustomFieldNames()
+void TestQgsVectorFileWriter::testExportDedupFieldNamesOnPrepareWriteAsVectorFormat()
 {
   QgsVectorFileWriter::PreparedWriterDetails details;
   QgsVectorFileWriter::SaveVectorOptions options;
@@ -692,7 +692,7 @@ void TestQgsVectorFileWriter::testExportDuplicateCustomFieldNames()
   QCOMPARE( details.outputFields.at( 3 ).name(), "other2" );
 }
 
-void TestQgsVectorFileWriter::testDuplicateExportNamesKeepValuesAligned()
+void TestQgsVectorFileWriter::testDedupFieldNamesOnInit()
 {
   QTemporaryFile tmpFile( QDir::tempPath() + "/test_qgsvectorfilewriter_dupnames_XXXXXX.gpkg" );
   QVERIFY( tmpFile.open() );
@@ -719,18 +719,19 @@ void TestQgsVectorFileWriter::testDuplicateExportNamesKeepValuesAligned()
 
   const QgsVectorLayer vl2( u"%1|layername=test"_s.arg( fileName ), "src_test", "ogr" );
   QVERIFY( vl2.isValid() );
-  QCOMPARE( vl2.fields().count(), 4 );
-  QCOMPARE( vl2.fields().at( 0 ).name(), "dup" );
-  QCOMPARE( vl2.fields().at( 1 ).name(), "dup_2" );
-  QCOMPARE( vl2.fields().at( 2 ).name(), "other" );
-  QCOMPARE( vl2.fields().at( 3 ).name(), "other2" );
-  QCOMPARE( vl2.getFeature( 1 ).attribute( 0 ).toString(), u"V1"_s );
-  QCOMPARE( vl2.getFeature( 1 ).attribute( 1 ).toString(), u"V2"_s );
-  QCOMPARE( vl2.getFeature( 1 ).attribute( 2 ).toString(), u"V3"_s );
-  QCOMPARE( vl2.getFeature( 1 ).attribute( 3 ).toString(), u"V4"_s );
+  QCOMPARE( vl2.fields().count(), 5 );
+  QCOMPARE( vl2.fields().at( 0 ).name(), "fid" );
+  QCOMPARE( vl2.fields().at( 1 ).name(), "dup" );
+  QCOMPARE( vl2.fields().at( 2 ).name(), "dup_2" );
+  QCOMPARE( vl2.fields().at( 3 ).name(), "other" );
+  QCOMPARE( vl2.fields().at( 4 ).name(), "other2" );
+  QCOMPARE( vl2.getFeature( 1 ).attribute( 1 ).toString(), u"V1"_s );
+  QCOMPARE( vl2.getFeature( 1 ).attribute( 2 ).toString(), u"V2"_s );
+  QCOMPARE( vl2.getFeature( 1 ).attribute( 3 ).toString(), u"V3"_s );
+  QCOMPARE( vl2.getFeature( 1 ).attribute( 4 ).toString(), u"V4"_s );
 }
 
-void TestQgsVectorFileWriter::testPreferAliasDuplicateAliases()
+void TestQgsVectorFileWriter::testDedupPreferAliasWithDuplicateAliases()
 {
   QTemporaryFile tmpFile( QDir::tempPath() + "/test_qgsvectorfilewriter_dupalias_XXXXXX.gpkg" );
   QVERIFY( tmpFile.open() );
@@ -758,13 +759,14 @@ void TestQgsVectorFileWriter::testPreferAliasDuplicateAliases()
 
   const QgsVectorLayer vl2( u"%1|layername=test"_s.arg( fileName ), "src_test", "ogr" );
   QVERIFY( vl2.isValid() );
-  QCOMPARE( vl2.fields().count(), 3 );
-  QCOMPARE( vl2.fields().at( 0 ).name(), "commonAlias" );
-  QCOMPARE( vl2.fields().at( 1 ).name(), "commonAlias_2" );
-  QCOMPARE( vl2.fields().at( 2 ).name(), "otherAlias" );
-  QCOMPARE( vl2.getFeature( 1 ).attribute( 0 ).toString(), u"V1"_s );
-  QCOMPARE( vl2.getFeature( 1 ).attribute( 1 ).toString(), u"V2"_s );
-  QCOMPARE( vl2.getFeature( 1 ).attribute( 2 ).toString(), u"V3"_s );
+  QCOMPARE( vl2.fields().count(), 4 );
+  QCOMPARE( vl2.fields().at( 0 ).name(), "fid" );
+  QCOMPARE( vl2.fields().at( 1 ).name(), "commonAlias" );
+  QCOMPARE( vl2.fields().at( 2 ).name(), "commonAlias_2" );
+  QCOMPARE( vl2.fields().at( 3 ).name(), "otherAlias" );
+  QCOMPARE( vl2.getFeature( 1 ).attribute( 1 ).toString(), u"V1"_s );
+  QCOMPARE( vl2.getFeature( 1 ).attribute( 2 ).toString(), u"V2"_s );
+  QCOMPARE( vl2.getFeature( 1 ).attribute( 3 ).toString(), u"V3"_s );
 }
 
 void TestQgsVectorFileWriter::testExportToShapeNanValuesForZ()
