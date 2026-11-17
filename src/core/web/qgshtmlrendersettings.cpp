@@ -17,14 +17,21 @@
 
 #include "qgshtmlrendersettings.h"
 
+#include "qgsnetworkaccessmanager.h"
+
 #include <QJsonValue>
 #include <QString>
 
 using namespace Qt::StringLiterals;
 
+QgsHtmlRenderSettings::QgsHtmlRenderSettings()
+{
+  mUserAgent = QgsNetworkAccessManager::userAgent();
+}
+
 bool QgsHtmlRenderSettings::isEmpty() const
 {
-  return mBaseUrl.isEmpty() && mUserStylesheet.isEmpty() && mFeatureJson.isEmpty();
+  return mBaseUrl.isEmpty() && mUserStylesheet.isEmpty() && mFeatureJson.isEmpty() && mUserAgent.isEmpty();
 }
 
 QVariantMap QgsHtmlRenderSettings::asMap() const
@@ -42,5 +49,19 @@ QVariantMap QgsHtmlRenderSettings::asMap() const
   {
     res.insert( u"feature"_s, featureJson() );
   }
+  if ( !userAgent().isEmpty() )
+  {
+    res.insert( u"userAgent"_s, userAgent() );
+  }
   return res;
+}
+
+QString QgsHtmlRenderSettings::userAgent() const
+{
+  return mUserAgent;
+}
+
+void QgsHtmlRenderSettings::setUserAgent( const QString &agent )
+{
+  mUserAgent = agent;
 }
