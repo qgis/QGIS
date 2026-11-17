@@ -9414,11 +9414,9 @@ QgsLineburstSymbolLayer: src/core/symbology/qgslinesymbollayer.h#L1458
 QgsListFieldFormatter.id: src/core/fieldformatter/qgslistfieldformatter.h#L34
 QgsListFieldFormatter.representValue: src/core/fieldformatter/qgslistfieldformatter.h#L36
 QgsListFieldFormatter: src/core/fieldformatter/qgslistfieldformatter.h#L30
-QgsLocalDefaultSettings.bearingFormat: src/core/qgslocaldefaultsettings.h#L57
-QgsLocalDefaultSettings.geographicCoordinateFormat: src/core/qgslocaldefaultsettings.h#L77
-QgsLocalDefaultSettings.setBearingFormat: src/core/qgslocaldefaultsettings.h#L48
-QgsLocalDefaultSettings.setGeographicCoordinateFormat: src/core/qgslocaldefaultsettings.h#L66
-QgsLocalDefaultSettings: src/core/qgslocaldefaultsettings.h#L40
+QgsLocalDefaultSettings.setBearingFormat: src/core/qgslocaldefaultsettings.h#L50
+QgsLocalDefaultSettings.setGeographicCoordinateFormat: src/core/qgslocaldefaultsettings.h#L68
+QgsLocalDefaultSettings: src/core/qgslocaldefaultsettings.h#L42
 QgsLocalizedDataPathRegistry.globalPath: src/core/qgslocalizeddatapathregistry.h#L50
 QgsLocalizedDataPathRegistry.localizedPath: src/core/qgslocalizeddatapathregistry.h#L53
 QgsLocalizedDataPathRegistry.paths: src/core/qgslocalizeddatapathregistry.h#L56
@@ -9915,7 +9913,6 @@ QgsMapLayerLegend: src/core/qgsmaplayerlegend.h#L49
 QgsMapLayerLegendUtils.applyLayerNodeProperties: src/core/qgsmaplayerlegend.h#L252
 QgsMapLayerLegendUtils.hasLegendNodeOrder: src/core/qgsmaplayerlegend.h#L138
 QgsMapLayerLegendUtils.hasLegendNodeUserLabel: src/core/qgsmaplayerlegend.h#L142
-QgsMapLayerLegendUtils.legendNodeColorRampSettings: src/core/qgsmaplayerlegend.h#L232
 QgsMapLayerLegendUtils.legendNodeColumnBreak: src/core/qgsmaplayerlegend.h#L249
 QgsMapLayerLegendUtils.legendNodePatchShape: src/core/qgsmaplayerlegend.h#L158
 QgsMapLayerLegendUtils.legendNodeSymbolSize: src/core/qgsmaplayerlegend.h#L180
@@ -10089,7 +10086,6 @@ QgsMapLayerTemporalProperties.setDefaultsFromDataProviderTemporalCapabilities: s
 QgsMapLayerTemporalProperties.writeXml: src/core/qgsmaplayertemporalproperties.h#L86
 QgsMapLayerTemporalProperties: src/core/qgsmaplayertemporalproperties.h#L43
 QgsMapLayerUtils.combinedExtent: src/core/qgsmaplayerutils.h#L46
-QgsMapLayerUtils.databaseConnection: src/core/qgsmaplayerutils.h#L53
 QgsMapLayerUtils.isOpenStreetMapLayer: src/core/qgsmaplayerutils.h#L121
 QgsMapLayerUtils.isOpenStreetMapUri: src/core/qgsmaplayerutils.h#L128
 QgsMapLayerUtils.launderLayerName: src/core/qgsmaplayerutils.h#L114
@@ -11630,8 +11626,6 @@ QgsOgcUtils.QgsOgcUtils: src/core/qgsogcutils.h#L62
 QgsOgcUtils.SQLStatementToOgcFilter: src/core/qgsogcutils.h#L283
 QgsOgcUtils.colorFromOgcFill: src/core/qgsogcutils.h#L151
 QgsOgcUtils.elseFilterExpression: src/core/qgsogcutils.h#L219
-QgsOgcUtils.expressionFromOgcFilter: src/core/qgsogcutils.h#L154
-QgsOgcUtils.expressionFromOgcFilter: src/core/qgsogcutils.h#L181
 QgsOgcUtils.expressionToOgcExpression: src/core/qgsogcutils.h#L212
 QgsOgcUtils.expressionToOgcExpression: src/core/qgsogcutils.h#L226
 QgsOgcUtils.expressionToOgcFilter: src/core/qgsogcutils.h#L162
