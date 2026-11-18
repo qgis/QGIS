@@ -17,7 +17,9 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifdef WITH_SFCGAL
+#include "qgsconfig.h"
+
+#ifdef HAVE_SFCGAL
 #ifndef QGSSGCGAL_GEOMETRY_H
 #define QGSSGCGAL_GEOMETRY_H
 

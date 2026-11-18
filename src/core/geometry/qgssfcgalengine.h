@@ -15,7 +15,11 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifdef WITH_SFCGAL
+#include "qgsconfig.h"
+
+#define SIP_NO_FILE
+
+#ifdef HAVE_SFCGAL
 #ifndef QGSSFCGALENGINE_H
 #define QGSSFCGALENGINE_H
 
@@ -31,7 +35,6 @@
 #include "qgspoint.h"
 #include "qgsvector3d.h"
 
-#define SIP_NO_FILE
 
 class QgsGeometry;
 class QgsSfcgalGeometry;

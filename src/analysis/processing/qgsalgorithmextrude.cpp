@@ -25,7 +25,7 @@
 
 using namespace Qt::StringLiterals;
 
-#ifdef WITH_SFCGAL
+#ifdef HAVE_SFCGAL
 #include "qgssfcgalgeometry.h"
 #endif
 
@@ -128,7 +128,7 @@ bool QgsExtrudeAlgorithm::prepareAlgorithm( const QVariantMap &parameters, QgsPr
 {
   Q_UNUSED( feedback )
 
-#ifdef WITH_SFCGAL
+#ifdef HAVE_SFCGAL
   mExtrudeX = parameterAsDouble( parameters, u"EXTRUDE_X"_s, context );
   mDynamicExtrudeX = QgsProcessingParameters::isDynamic( parameters, u"EXTRUDE_X"_s );
   if ( mDynamicExtrudeX )
@@ -152,7 +152,7 @@ bool QgsExtrudeAlgorithm::prepareAlgorithm( const QVariantMap &parameters, QgsPr
 #endif
 }
 
-#ifdef WITH_SFCGAL
+#ifdef HAVE_SFCGAL
 std::optional<QgsGeometry> QgsExtrudeAlgorithm::extrudePolygon( const QgsAbstractGeometry *polygon, const QgsVector3D &extrusion, const QgsFeatureId &featureId, QgsProcessingFeedback *feedback )
 {
   try
@@ -178,7 +178,7 @@ QgsFeatureList QgsExtrudeAlgorithm::processFeature( const QgsFeature &feature, Q
 {
   QGS_MARK_ALGORITHM_SOURCE
 
-#ifdef WITH_SFCGAL
+#ifdef HAVE_SFCGAL
   if ( !feature.hasGeometry() )
   {
     return QgsFeatureList() << feature;

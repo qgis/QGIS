@@ -501,7 +501,7 @@ if(WITH_CORE)
       message(FATAL_ERROR "Cannot build QGIS using SFCGAL older than 2.0")
     endif()
     if (WITH_SFCGAL)
-      add_definitions(-DWITH_SFCGAL)
+      set(HAVE_SFCGAL TRUE) # used in qgsconfig.h
       message(STATUS "SFCGAL support enabled")
     else()
       message(STATUS "SFCGAL support DISABLED.")

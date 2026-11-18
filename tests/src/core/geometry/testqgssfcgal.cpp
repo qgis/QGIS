@@ -12,7 +12,13 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#ifdef WITH_SFCGAL
+#include "qgsconfig.h"
+
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
+#ifdef HAVE_SFCGAL
 
 #include <cmath>
 #include <memory>
@@ -27,11 +33,8 @@
 #include <QObject>
 #include <QPainter>
 #include <QPointF>
-#include <QString>
 #include <QStringList>
 #include <QVector>
-
-using namespace Qt::StringLiterals;
 
 // qgis includes...
 #include <qgsapplication.h>
