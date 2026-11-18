@@ -2405,7 +2405,6 @@ class CORE_EXPORT QgsGeometry
      * \since QGIS 3.10
      */
     QVector< QgsPointXY > randomPointsInPolygon( int count, unsigned long seed = 0, QgsFeedback *feedback = nullptr ) const;
-    ///@cond PRIVATE
 #else
 // clang-format off
 
@@ -2445,7 +2444,6 @@ class CORE_EXPORT QgsGeometry
 
 // clang-format on
 #endif
-    ///@endcond
 
     /**
      * Returns the length of the QByteArray returned by asWkb()
