@@ -212,6 +212,7 @@ set(QGIS_3D_HDRS
   qgsraycastcontext.h
   qgsraycasthit.h
   qgsraycastresult.h
+  qgsrubberband3d.h
   qgsrulebased3drenderer.h
   qgstessellatedpolygongeometry.h
   qgstiledscenechunkloader_p.h
