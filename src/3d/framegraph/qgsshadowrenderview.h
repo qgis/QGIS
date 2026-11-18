@@ -67,7 +67,7 @@ class QgsLightSource;
  *
  * \since QGIS 3.44
  */
-class QgsShadowRenderView : public QgsAbstractRenderView
+class _3D_EXPORT QgsShadowRenderView : public QgsAbstractRenderView
 {
   public:
     //! Default constructor
