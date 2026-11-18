@@ -452,11 +452,14 @@ struct QgsWmtsTheme
     QString identifier;
     QString title, abstract;
     QStringList keywords;
-    QgsWmtsTheme *subTheme = nullptr;
+    std::unique_ptr< QgsWmtsTheme > subTheme;
     QStringList layerRefs;
 
     QgsWmtsTheme() = default;
-    ~QgsWmtsTheme() { delete subTheme; }
+    QgsWmtsTheme( const QgsWmtsTheme & ) = delete;
+    QgsWmtsTheme &operator=( const QgsWmtsTheme & ) = delete;
+
+    ~QgsWmtsTheme() = default;
 };
 
 struct QgsWmtsTileMatrixLimits;

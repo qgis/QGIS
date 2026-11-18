@@ -2450,7 +2450,7 @@ void QgsWmsCapabilities::parseTheme( const QDomElement &element, QgsWmtsTheme &t
   QDomElement themeElement = element.firstChildElement( u"ows:Theme"_s );
   if ( !themeElement.isNull() )
   {
-    theme.subTheme = new QgsWmtsTheme;
+    theme.subTheme = std::make_unique< QgsWmtsTheme >();
     parseTheme( themeElement, *theme.subTheme );
   }
   else
