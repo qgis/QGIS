@@ -17,7 +17,11 @@
 #define QGSRANGEWIDGETWRAPPER_H
 
 #include "qgis_gui.h"
+#include "qgsdial.h"
+#include "qgsdoublespinbox.h"
 #include "qgseditorwidgetwrapper.h"
+#include "qgsslider.h"
+#include "qgsspinbox.h"
 
 #include <QDoubleSpinBox>
 #include <QSpinBox>
@@ -44,6 +48,141 @@ class TestQgsRangeWidgetWrapper;
  * </ul>
  * \note not available in Python bindings
  */
+
+
+class GUI_EXPORT QgsRangeWidgetSpinBox : public QgsSpinBox
+{
+    Q_OBJECT
+  public:
+    /**
+     * Constructor for QgsRangeWidgetSpinBox.
+     * \param parent parent widget
+     */
+    explicit QgsRangeWidgetSpinBox( QWidget *parent SIP_TRANSFERTHIS = nullptr );
+
+    QString textFromValue( int val ) const override;
+
+    void stepBy( int steps ) override;
+
+    //not an override
+    int value();
+
+  public slots:
+    void setValuesTolerant( int val );
+
+  protected:
+    void paintEvent( QPaintEvent *event ) override;
+    void focusInEvent( QFocusEvent *event ) override;
+    void focusOutEvent( QFocusEvent *event ) override;
+    void wheelEvent( QWheelEvent *event ) override;
+
+  protected slots:
+    void setValues( int val );
+
+  private:
+    int mTolerantValue = 0;
+    bool mTouched = false;
+
+    friend class TestQgsRangeWidgetWrapper;
+};
+
+
+class GUI_EXPORT QgsRangeWidgetDoubleSpinBox : public QgsDoubleSpinBox
+{
+    Q_OBJECT
+  public:
+    /**
+     * Constructor for QgsRangeWidgetDoubleSpinBox.
+     * \param parent parent widget
+     */
+    explicit QgsRangeWidgetDoubleSpinBox( QWidget *parent SIP_TRANSFERTHIS = nullptr );
+
+    QString textFromValue( double val ) const override;
+
+    void stepBy( int steps ) override;
+
+    //not an override
+    double value();
+
+  public slots:
+    void setValuesTolerant( double val );
+
+  protected:
+    void paintEvent( QPaintEvent *event ) override;
+    void focusInEvent( QFocusEvent *event ) override;
+    void focusOutEvent( QFocusEvent *event ) override;
+    void wheelEvent( QWheelEvent *event ) override;
+
+  protected slots:
+    void setValues( double val );
+
+  private:
+    double mTolerantValue = 0.0;
+    bool mTouched = false;
+
+    friend class TestQgsRangeWidgetWrapper;
+};
+
+
+class GUI_EXPORT QgsRangeWidgetSlider : public QgsSlider
+{
+    Q_OBJECT
+  public:
+    /**
+     * Constructor for QgsRangeWidgetSlider.
+     * \param parent parent widget
+     */
+    QgsRangeWidgetSlider( QWidget *parent SIP_TRANSFERTHIS = nullptr );
+
+    //! Constructor for QgsRangeWidgetSlider
+    QgsRangeWidgetSlider( Qt::Orientation orientation, QWidget *parent SIP_TRANSFERTHIS = nullptr );
+
+    QVariant variantValue() const override;
+
+  public slots:
+    void setValuesTolerant( const QVariant &val );
+
+  protected:
+    void paintEvent( QPaintEvent *event ) override;
+    void focusInEvent( QFocusEvent *event ) override;
+    void focusOutEvent( QFocusEvent *event ) override;
+
+  protected slots:
+    void setValues( const QVariant &val );
+
+  private:
+    QVariant mTolerantValue;
+    bool mTouched = false;
+
+    friend class TestQgsRangeWidgetWrapper;
+};
+
+class GUI_EXPORT QgsRangeWidgetDial : public QgsDial
+{
+    Q_OBJECT
+  public:
+    //! Constructor for QgsRangeWidgetDial
+    explicit QgsRangeWidgetDial( QWidget *parent SIP_TRANSFERTHIS = nullptr );
+    QVariant variantValue() const override;
+
+  public slots:
+    void setValuesTolerant( const QVariant &val );
+
+  protected:
+    void paintEvent( QPaintEvent *event ) override;
+    void focusInEvent( QFocusEvent *event ) override;
+    void focusOutEvent( QFocusEvent *event ) override;
+
+  protected slots:
+    void setValues( const QVariant &val );
+
+  private:
+    QVariant mTolerantValue;
+    bool mTouched = false;
+
+    friend class TestQgsRangeWidgetWrapper;
+};
+
 
 class GUI_EXPORT QgsRangeWidgetWrapper : public QgsEditorWidgetWrapper
 {
@@ -91,11 +230,15 @@ class GUI_EXPORT QgsRangeWidgetWrapper : public QgsEditorWidgetWrapper
     void updateValues( const QVariant &value, const QVariantList & = QVariantList() ) override;
 
     QSpinBox *mIntSpinBox = nullptr;
+    QgsRangeWidgetSpinBox *mQgsRangeWidgetIntSpinBox = nullptr;
     QDoubleSpinBox *mDoubleSpinBox = nullptr;
+    QgsRangeWidgetDoubleSpinBox *mQgsRangeWidgetDoubleSpinBox = nullptr;
     QSlider *mSlider = nullptr;
     QDial *mDial = nullptr;
     QgsSlider *mQgsSlider = nullptr;
     QgsDial *mQgsDial = nullptr;
+    QgsRangeWidgetSlider *mQgsRangeWidgetSlider = nullptr;
+    QgsRangeWidgetDial *mQgsRangeWidgetDial = nullptr;
 
     friend class TestQgsRangeWidgetWrapper;
 };
