@@ -619,9 +619,9 @@ void QgsSingleColorPointCloud3DSymbolHandler::processNode( QgsPointCloudIndex &p
     if ( context.isCanceled() )
       break;
 
-    const qint32 ix = *( qint32 * ) ( ptr + i * recordSize + 0 );
-    const qint32 iy = *( qint32 * ) ( ptr + i * recordSize + 4 );
-    const qint32 iz = *( qint32 * ) ( ptr + i * recordSize + 8 );
+    const qint32 ix = *reinterpret_cast< const qint32 * >( ptr + i * recordSize + 0 );
+    const qint32 iy = *reinterpret_cast< const qint32 * >( ptr + i * recordSize + 4 );
+    const qint32 iz = *reinterpret_cast< const qint32 * >( ptr + i * recordSize + 8 );
 
     double x = blockOffset.x() + blockScale.x() * ix;
     double y = blockOffset.y() + blockScale.y() * iy;
@@ -742,9 +742,9 @@ void QgsColorRampPointCloud3DSymbolHandler::processNode( QgsPointCloudIndex &pc,
     if ( context.isCanceled() )
       break;
 
-    const qint32 ix = *( qint32 * ) ( ptr + i * recordSize + xOffset );
-    const qint32 iy = *( qint32 * ) ( ptr + i * recordSize + yOffset );
-    const qint32 iz = *( qint32 * ) ( ptr + i * recordSize + zOffset );
+    const qint32 ix = *reinterpret_cast< const qint32 * >( ptr + i * recordSize + xOffset );
+    const qint32 iy = *reinterpret_cast< const qint32 * >( ptr + i * recordSize + yOffset );
+    const qint32 iz = *reinterpret_cast< const qint32 * >( ptr + i * recordSize + zOffset );
 
     double x = blockOffset.x() + blockScale.x() * ix;
     double y = blockOffset.y() + blockScale.y() * iy;
@@ -865,9 +865,9 @@ void QgsRGBPointCloud3DSymbolHandler::processNode( QgsPointCloudIndex &pc, QgsPo
     if ( context.isCanceled() )
       break;
 
-    const qint32 ix = *( qint32 * ) ( ptr + i * recordSize + 0 );
-    const qint32 iy = *( qint32 * ) ( ptr + i * recordSize + 4 );
-    const qint32 iz = *( qint32 * ) ( ptr + i * recordSize + 8 );
+    const qint32 ix = *reinterpret_cast< const qint32 * >( ptr + i * recordSize + 0 );
+    const qint32 iy = *reinterpret_cast< const qint32 * >( ptr + i * recordSize + 4 );
+    const qint32 iz = *reinterpret_cast< const qint32 * >( ptr + i * recordSize + 8 );
     double x = blockOffset.x() + blockScale.x() * ix;
     double y = blockOffset.y() + blockScale.y() * iy;
     double z = ( blockOffset.z() + blockScale.z() * iz ) * zValueScale + zValueOffset;
@@ -1031,9 +1031,9 @@ void QgsClassificationPointCloud3DSymbolHandler::processNode( QgsPointCloudIndex
     if ( context.isCanceled() )
       break;
 
-    const qint32 ix = *( qint32 * ) ( ptr + i * recordSize + xOffset );
-    const qint32 iy = *( qint32 * ) ( ptr + i * recordSize + yOffset );
-    const qint32 iz = *( qint32 * ) ( ptr + i * recordSize + zOffset );
+    const qint32 ix = *reinterpret_cast< const qint32 * >( ptr + i * recordSize + xOffset );
+    const qint32 iy = *reinterpret_cast< const qint32 * >( ptr + i * recordSize + yOffset );
+    const qint32 iz = *reinterpret_cast< const qint32 * >( ptr + i * recordSize + zOffset );
 
     double x = blockOffset.x() + blockScale.x() * ix;
     double y = blockOffset.y() + blockScale.y() * iy;
