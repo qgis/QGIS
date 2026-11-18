@@ -530,7 +530,7 @@ QString QgsRangeWidgetSpinBox::textFromValue( int val ) const
 
 void QgsRangeWidgetSpinBox::stepBy( int steps )
 {
-  // in case of being lower minimum we have to reset the value to start with the first allowed value
+  // in case the value is below the minimum, we must reset it so that we start with the first valid value.
   QgsSpinBox::setValue( mTolerantValue );
   QgsSpinBox::stepBy( steps );
   // for the text output, the tolerant value must be updated
@@ -607,7 +607,7 @@ void QgsRangeWidgetSpinBox::focusInEvent( QFocusEvent *event )
 
 void QgsRangeWidgetSpinBox::focusOutEvent( QFocusEvent *event )
 {
-  // first the text values have to be set properly from the text
+  // first the values have to be set properly from the text
   setValues( valueFromText( lineEdit()->text() ) );
   QgsSpinBox::focusOutEvent( event );
   // and for the text output, the tolerant value must be updated with the (clamped) value
@@ -618,7 +618,7 @@ void QgsRangeWidgetSpinBox::focusOutEvent( QFocusEvent *event )
 
 void QgsRangeWidgetSpinBox::wheelEvent( QWheelEvent *event )
 {
-  // in case of being lower minimum we have to reset the value to start with the first allowed value
+  // in case the value is below the minimum, we must reset it so that we start with the first valid value.
   QgsSpinBox::setValue( mTolerantValue );
   QgsSpinBox::wheelEvent( event );
   // for the text output, the tolerant value must be updated
@@ -652,7 +652,7 @@ QString QgsRangeWidgetDoubleSpinBox::textFromValue( double val ) const
 
 void QgsRangeWidgetDoubleSpinBox::stepBy( int steps )
 {
-  // in case of being lower minimum we have to reset the value to start with the first allowed value
+  // in case the value is below the minimum, we must reset it so that we start with the first valid value.
   QgsDoubleSpinBox::setValue( mTolerantValue );
   QgsDoubleSpinBox::stepBy( steps );
   // for the text output, the tolerant value must be updated
@@ -730,7 +730,7 @@ void QgsRangeWidgetDoubleSpinBox::focusInEvent( QFocusEvent *event )
 
 void QgsRangeWidgetDoubleSpinBox::focusOutEvent( QFocusEvent *event )
 {
-  // first the text values have to be set properly from the text
+  // first the values have to be set properly from the text
   setValues( valueFromText( lineEdit()->text() ) );
   QgsDoubleSpinBox::focusOutEvent( event );
   // and for the text output, the tolerant value must be updated with the (clamped) value
@@ -741,7 +741,7 @@ void QgsRangeWidgetDoubleSpinBox::focusOutEvent( QFocusEvent *event )
 
 void QgsRangeWidgetDoubleSpinBox::wheelEvent( QWheelEvent *event )
 {
-  // in case of being lower minimum we have to reset the value to start with the first allowed value
+  // in case the value is below the minimum, we must reset it so that we start with the first valid value.
   QgsDoubleSpinBox::setValue( mTolerantValue );
   QgsDoubleSpinBox::wheelEvent( event );
   // for the text output, the tolerant value must be updated

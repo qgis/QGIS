@@ -37,19 +37,9 @@ class TestQgsRangeWidgetWrapper;
 
 /**
  * \ingroup gui
- * \brief Wraps a range widget.
- *
- * Options:
- * <ul>
- * <li><b>Style</b> <i>Can be "Dial" or "Slider"</i></li>
- * <li><b>Min</b> <i>The minimal allowed value</i></li>
- * <li><b>Max</b> <i>The maximal allowed value</i></li>
- * <li><b>Step</b> <i>The step size when incrementing/decrementing the value</i></li>
- * </ul>
- * \note not available in Python bindings
+ * \brief Extension of QgsSpinBox to allow values outside the valid range and return them as long as there has been no interaction with the widget.
+ * \since QGIS 4.2
  */
-
-
 class GUI_EXPORT QgsRangeWidgetSpinBox : public QgsSpinBox
 {
     Q_OBJECT
@@ -61,13 +51,18 @@ class GUI_EXPORT QgsRangeWidgetSpinBox : public QgsSpinBox
     explicit QgsRangeWidgetSpinBox( QWidget *parent SIP_TRANSFERTHIS = nullptr );
 
     QString textFromValue( int val ) const override;
-
     void stepBy( int steps ) override;
 
-    //not an override
+    /**
+     * Returns the tolerant value as long as there has been no interaction with the widget.
+     */
     int value();
 
   public slots:
+    /**
+     * Sets \a val as both the tolerance value and the base class value.
+     * If the value is below the minimum value, a valid value is set in the base class (to prevent it from being recognized as an invalid value).
+     */
     void setValuesTolerant( int val );
 
   protected:
@@ -77,6 +72,9 @@ class GUI_EXPORT QgsRangeWidgetSpinBox : public QgsSpinBox
     void wheelEvent( QWheelEvent *event ) override;
 
   protected slots:
+    /**
+     * Sets mTolerantValue and the value of the base class without checking for minimum value.
+     */
     void setValues( int val );
 
   private:
@@ -86,7 +84,11 @@ class GUI_EXPORT QgsRangeWidgetSpinBox : public QgsSpinBox
     friend class TestQgsRangeWidgetWrapper;
 };
 
-
+/**
+ * \ingroup gui
+ * \brief Extension of QgsDoubleSpinBox to allow values outside the valid range and return them as long as there has been no interaction with the widget.
+ * \since QGIS 4.2
+ */
 class GUI_EXPORT QgsRangeWidgetDoubleSpinBox : public QgsDoubleSpinBox
 {
     Q_OBJECT
@@ -98,13 +100,18 @@ class GUI_EXPORT QgsRangeWidgetDoubleSpinBox : public QgsDoubleSpinBox
     explicit QgsRangeWidgetDoubleSpinBox( QWidget *parent SIP_TRANSFERTHIS = nullptr );
 
     QString textFromValue( double val ) const override;
-
     void stepBy( int steps ) override;
 
-    //not an override
+    /**
+     * Returns the tolerant value as long as there has been no interaction with the widget.
+     */
     double value();
 
   public slots:
+    /**
+     * Sets \a val as both the tolerance value and the base class value.
+     * If the value is below the minimum value, a valid value is set in the base class (to prevent it from being recognized as an invalid value).
+     */
     void setValuesTolerant( double val );
 
   protected:
@@ -114,6 +121,9 @@ class GUI_EXPORT QgsRangeWidgetDoubleSpinBox : public QgsDoubleSpinBox
     void wheelEvent( QWheelEvent *event ) override;
 
   protected slots:
+    /**
+     * Sets mTolerantValue and the value of the base class without checking for minimum value.
+     */
     void setValues( double val );
 
   private:
@@ -123,7 +133,11 @@ class GUI_EXPORT QgsRangeWidgetDoubleSpinBox : public QgsDoubleSpinBox
     friend class TestQgsRangeWidgetWrapper;
 };
 
-
+/**
+ * \ingroup gui
+ * \brief Extension of QgsSlider to allow values outside the valid range and return them as long as there has been no interaction with the widget.
+ * \since QGIS 4.2
+ */
 class GUI_EXPORT QgsRangeWidgetSlider : public QgsSlider
 {
     Q_OBJECT
@@ -140,6 +154,10 @@ class GUI_EXPORT QgsRangeWidgetSlider : public QgsSlider
     QVariant variantValue() const override;
 
   public slots:
+    /**
+     * Sets \a val as both the tolerance value and the base class value.
+     * If the value is below the minimum value, a valid value is set in the base class (to prevent it from being recognized as an invalid value).
+     */
     void setValuesTolerant( const QVariant &val );
 
   protected:
@@ -148,6 +166,9 @@ class GUI_EXPORT QgsRangeWidgetSlider : public QgsSlider
     void focusOutEvent( QFocusEvent *event ) override;
 
   protected slots:
+    /**
+     * Sets mTolerantValue and the value of the base class without checking for minimum value.
+     */
     void setValues( const QVariant &val );
 
   private:
@@ -157,6 +178,11 @@ class GUI_EXPORT QgsRangeWidgetSlider : public QgsSlider
     friend class TestQgsRangeWidgetWrapper;
 };
 
+/**
+ * \ingroup gui
+ * \brief Extension of QgsDial to allow values outside the valid range and return them as long as there has been no interaction with the widget.
+ * \since QGIS 4.2
+ */
 class GUI_EXPORT QgsRangeWidgetDial : public QgsDial
 {
     Q_OBJECT
@@ -166,6 +192,10 @@ class GUI_EXPORT QgsRangeWidgetDial : public QgsDial
     QVariant variantValue() const override;
 
   public slots:
+    /**
+     * Sets \a val as both the tolerance value and the base class value.
+     * If the value is below the minimum value, a valid value is set in the base class (to prevent it from being recognized as an invalid value).
+     */
     void setValuesTolerant( const QVariant &val );
 
   protected:
@@ -174,6 +204,9 @@ class GUI_EXPORT QgsRangeWidgetDial : public QgsDial
     void focusOutEvent( QFocusEvent *event ) override;
 
   protected slots:
+    /**
+     * Sets mTolerantValue and the value of the base class without checking for minimum value.
+     */
     void setValues( const QVariant &val );
 
   private:
@@ -183,7 +216,19 @@ class GUI_EXPORT QgsRangeWidgetDial : public QgsDial
     friend class TestQgsRangeWidgetWrapper;
 };
 
-
+/**
+ * \ingroup gui
+ * \brief Wraps a range widget.
+ *
+ * Options:
+ * <ul>
+ * <li><b>Style</b> <i>Can be "Dial" or "Slider"</i></li>
+ * <li><b>Min</b> <i>The minimal allowed value</i></li>
+ * <li><b>Max</b> <i>The maximal allowed value</i></li>
+ * <li><b>Step</b> <i>The step size when incrementing/decrementing the value</i></li>
+ * </ul>
+ * \note not available in Python bindings
+ */
 class GUI_EXPORT QgsRangeWidgetWrapper : public QgsEditorWidgetWrapper
 {
     Q_OBJECT
