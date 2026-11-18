@@ -2452,12 +2452,12 @@ void QgsStyleManagerDialog::removeItem()
   mModified = true;
 }
 
-bool QgsStyleManagerDialog::removeSymbol()
+bool QgsStyleManagerDialog::removeSymbol() // cppcheck-suppress functionConst
 {
   return false;
 }
 
-bool QgsStyleManagerDialog::removeColorRamp()
+bool QgsStyleManagerDialog::removeColorRamp() // cppcheck-suppress functionConst
 {
   return false;
 }

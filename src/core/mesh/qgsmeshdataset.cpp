@@ -828,7 +828,7 @@ QgsMeshDatasetGroupTreeItem *QgsMeshDatasetGroupTreeItem::rootItem() const
   return const_cast<QgsMeshDatasetGroupTreeItem *>( baseItem );
 }
 
-void QgsMeshDatasetGroupTreeItem::freeAsDependency()
+void QgsMeshDatasetGroupTreeItem::freeAsDependency() // cppcheck-suppress functionConst
 {
   QgsMeshDatasetGroupTreeItem *root = rootItem();
   if ( !root )
@@ -842,7 +842,7 @@ void QgsMeshDatasetGroupTreeItem::freeAsDependency()
   }
 }
 
-void QgsMeshDatasetGroupTreeItem::freeFromDependencies()
+void QgsMeshDatasetGroupTreeItem::freeFromDependencies() // cppcheck-suppress functionConst
 {
   QgsMeshDatasetGroupTreeItem *root = rootItem();
   for ( const int index : mDatasetGroupDependencies )

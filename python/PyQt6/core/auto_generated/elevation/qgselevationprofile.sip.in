@@ -81,7 +81,7 @@ is ``True``.
 .. seealso:: :py:func:`setUseProjectLayerTree`
 %End
 
-    bool useProjectLayerTree();
+    bool useProjectLayerTree() const;
 %Docstring
 Returns ``True`` if the profile should always use the project's layer
 tree
