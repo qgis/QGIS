@@ -238,7 +238,7 @@ set(QGIS_3D_HDRS
   materials/qgsgoochmaterial.h
   materials/qgsgoochmaterial3dhandler.h
   materials/qgsmaterial.h
-  materials/qgsmaterial3dhandler.cpp
+  materials/qgsmaterial3dhandler.h
   materials/qgsmetalroughmaterial.h
   materials/qgsmetalroughmaterial3dhandler.h
   materials/qgsmetalroughtexturedmaterial3dhandler.h
