@@ -20,6 +20,7 @@
 #include "qgsfillsymbollayer.h"
 #include "qgsgeometrygeneratorsymbollayer.h"
 #include "qgsgraduatedsymbolrenderer.h"
+#include "qgsiconutils.h"
 #include "qgslayertree.h"
 #include "qgslayertreemodel.h"
 #include "qgslayertreemodellegendnode.h"
@@ -31,7 +32,6 @@
 #include "qgssettingsentryimpl.h"
 #include "qgstest.h"
 #include "qgsvectorlayer.h"
-#include "qgsvectorlayerdiagramprovider.h"
 #include "qgsvectorlayerlabelprovider.h"
 
 #include <QDir>
@@ -85,6 +85,7 @@ class TestQgsLayerTree : public QObject
     void testGroupIdCopyVsMove();
     void testGroupIdCreateCloneRemove();
     void testGroupIcon();
+    void testLayerIcon();
 
   private:
     QgsLayerTreeGroup *mRoot = nullptr;
@@ -1423,6 +1424,44 @@ void TestQgsLayerTree::testGroupIcon()
   // with search path
   QDir::addSearchPath( u"testgroupicon"_s, QStringLiteral( TEST_DATA_DIR ) );
   group->setCustomProperty( u"icon"_s, u"testgroupicon:sample_svg.svg"_s );
+  QCOMPARE( model.data( index, Qt::DecorationRole ).value<QIcon>().pixmap( 16 ).toImage(), svgImage );
+}
+
+void TestQgsLayerTree::testLayerIcon()
+{
+  QgsProject project;
+  QgsVectorLayer *vl = new QgsVectorLayer( u"Point?field=col1:integer"_s, u"vl"_s, u"memory"_s );
+  QVERIFY( vl->isValid() );
+  project.addMapLayer( vl, false );
+
+  QgsLayerTree root;
+  QgsLayerTreeLayer *n = root.addLayer( vl );
+  QgsLayerTreeModel model( &root );
+  model.setFlag( QgsLayerTreeModel::ShowLegend, false );
+
+  const QModelIndex index = model.node2index( n );
+  const QImage layerImage = QgsIconUtils::iconForLayer( vl ).pixmap( 16 ).toImage();
+  QCOMPARE( model.data( index, Qt::DecorationRole ).value<QIcon>().pixmap( 16 ).toImage(), layerImage );
+
+  // setting property
+  const QSignalSpy spy( &model, &QAbstractItemModel::dataChanged );
+  const QString svg = QStringLiteral( TEST_DATA_DIR ) + u"/sample_svg.svg"_s;
+  const QImage svgImage = QIcon( svg ).pixmap( 16 ).toImage();
+  n->setCustomProperty( u"icon"_s, svg );
+  QCOMPARE( spy.count(), 1 );
+  QCOMPARE( spy.at( 0 ).at( 0 ).toModelIndex(), index );
+  QCOMPARE( model.data( index, Qt::DecorationRole ).value<QIcon>().pixmap( 16 ).toImage(), svgImage );
+
+  // missing icon falls back to default
+  const QTemporaryDir dir;
+  const QString later = dir.filePath( u"missing.svg"_s );
+  n->setCustomProperty( u"icon"_s, later );
+  QCOMPARE( spy.count(), 2 );
+  QCOMPARE( model.data( index, Qt::DecorationRole ).value<QIcon>().pixmap( 16 ).toImage(), layerImage );
+
+  // with search path
+  QDir::addSearchPath( u"testgroupicon"_s, QStringLiteral( TEST_DATA_DIR ) );
+  n->setCustomProperty( u"icon"_s, u"testgroupicon:sample_svg.svg"_s );
   QCOMPARE( model.data( index, Qt::DecorationRole ).value<QIcon>().pixmap( 16 ).toImage(), svgImage );
 }
 
