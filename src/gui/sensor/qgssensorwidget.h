@@ -150,7 +150,7 @@ class GUI_EXPORT QgsSerialPortSensorWidget : public QgsAbstractSensorWidget, pri
 };
 #endif
 
-#endif
 ///@endcond
+#endif
 
 #endif // QGSSENSORWIDGET_H

@@ -243,6 +243,6 @@ QVariantMap QgsRescaleRasterAlgorithm::processAlgorithm( const QVariantMap &para
   return outputs;
 }
 
-#endif
-
 ///@endcond
+
+#endif
