@@ -202,7 +202,7 @@ void QgsLabelingEngineSettings::readXml( const QDomElement &element, const QgsRe
   }
 }
 
-void QgsLabelingEngineSettings::resolveReferences( const QgsProject *project )
+void QgsLabelingEngineSettings::resolveReferences( const QgsProject *project ) // cppcheck-suppress functionConst
 {
   for ( const auto &rule : mEngineRules )
   {

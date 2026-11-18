@@ -53,8 +53,8 @@ class QgsMapToolClippingPlanes : public QgsMapTool
     QgsGeometry clippedPolygon() const;
     //! Sets the type of capture: dynamic requires third point, static required just two points
     void setToleranceLocked( bool enable );
-    //!Returns the current capture type, true for dynamic, false for static
-    bool isToleranceLocked() { return mToleranceLocked; }
+    //! Returns the current capture type, true for dynamic, false for static
+    bool isToleranceLocked() const { return mToleranceLocked; }
 
   signals:
     void finishedSuccessfully();

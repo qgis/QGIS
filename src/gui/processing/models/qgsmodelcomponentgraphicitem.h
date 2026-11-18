@@ -578,7 +578,7 @@ class GUI_EXPORT QgsModelChildAlgorithmGraphicItem : public QgsModelComponentGra
      *
      * \since QGIS 4.0
      */
-    QgsProcessingModelChildAlgorithmResult results() { return mResults; };
+    QgsProcessingModelChildAlgorithmResult results() const { return mResults; };
 
     /**
      * Sets the child's \a progress.
