@@ -5365,7 +5365,6 @@ QgsGdalUtils.supportsTiffLercCompression: src/core/qgsgdalutils.h#L381
 QgsGdalUtils: src/core/qgsgdalutils.h#L99
 QgsGenericNumericTransformer.clone: src/core/qgspropertytransformer.h#L343
 QgsGenericNumericTransformer.exponent: src/core/qgspropertytransformer.h#L415
-QgsGenericNumericTransformer.fromExpression: src/core/qgspropertytransformer.h#L361
 QgsGenericNumericTransformer.loadVariant: src/core/qgspropertytransformer.h#L345
 QgsGenericNumericTransformer.maxOutputValue: src/core/qgspropertytransformer.h#L388
 QgsGenericNumericTransformer.minOutputValue: src/core/qgspropertytransformer.h#L374
@@ -15017,9 +15016,7 @@ QgsPropertyDefinition.standardTemplate: src/core/qgsproperty.h#L193
 QgsPropertyDefinition.supportsAssistant: src/core/qgsproperty.h#L199
 QgsPropertyDefinition: src/core/qgsproperty.h#L46
 QgsPropertyTransformer.clone: src/core/qgspropertytransformer.h#L217
-QgsPropertyTransformer.create: src/core/qgspropertytransformer.h#L195
 QgsPropertyTransformer.curveTransform: src/core/qgspropertytransformer.h#L270
-QgsPropertyTransformer.fromExpression: src/core/qgspropertytransformer.h#L301
 QgsPropertyTransformer.loadVariant: src/core/qgspropertytransformer.h#L225
 QgsPropertyTransformer.maxValue: src/core/qgspropertytransformer.h#L255
 QgsPropertyTransformer.minValue: src/core/qgspropertytransformer.h#L240
@@ -16189,7 +16186,6 @@ QgsRecentColorScheme.lastUsedColor: src/core/qgscolorscheme.h#L241
 QgsRecentColorScheme.schemeName: src/core/qgscolorscheme.h#L222
 QgsRecentColorScheme: src/core/qgscolorscheme.h#L217
 QgsRecentStyleHandler.pushRecentSymbol: src/core/qgsrecentstylehandler.h#L75
-QgsRecentStyleHandler.recentSymbol: src/core/qgsrecentstylehandler.h#L85
 QgsRecentStyleHandler: src/core/qgsrecentstylehandler.h#L39
 QgsRectangle.QVariant: src/core/geometry/qgsrectangle.h#L820
 QgsRectangle.QgsRectangle: src/core/geometry/qgsrectangle.h#L86
@@ -16849,7 +16845,6 @@ QgsSQLStatement.NodeCast: src/core/qgssqlstatement.h#L782
 QgsSQLStatement.NodeColumnRef.__repr__: src/core/qgssqlstatement.h#L680
 QgsSQLStatement.NodeColumnRef.accept: src/core/qgssqlstatement.h#L724
 QgsSQLStatement.NodeColumnRef.clone: src/core/qgssqlstatement.h#L725
-QgsSQLStatement.NodeColumnRef.cloneThis: src/core/qgssqlstatement.h#L727
 QgsSQLStatement.NodeColumnRef.distinct: src/core/qgssqlstatement.h#L719
 QgsSQLStatement.NodeColumnRef.dump: src/core/qgssqlstatement.h#L722
 QgsSQLStatement.NodeColumnRef.name: src/core/qgssqlstatement.h#L713
@@ -16861,7 +16856,6 @@ QgsSQLStatement.NodeColumnRef: src/core/qgssqlstatement.h#L662
 QgsSQLStatement.NodeColumnSorted.accept: src/core/qgssqlstatement.h#L976
 QgsSQLStatement.NodeColumnSorted.ascending: src/core/qgssqlstatement.h#L971
 QgsSQLStatement.NodeColumnSorted.clone: src/core/qgssqlstatement.h#L977
-QgsSQLStatement.NodeColumnSorted.cloneThis: src/core/qgssqlstatement.h#L979
 QgsSQLStatement.NodeColumnSorted.column: src/core/qgssqlstatement.h#L968
 QgsSQLStatement.NodeColumnSorted.dump: src/core/qgssqlstatement.h#L974
 QgsSQLStatement.NodeColumnSorted.nodeType: src/core/qgssqlstatement.h#L973
@@ -16884,7 +16878,6 @@ QgsSQLStatement.NodeInOperator.nodeType: src/core/qgssqlstatement.h#L498
 QgsSQLStatement.NodeInOperator: src/core/qgssqlstatement.h#L479
 QgsSQLStatement.NodeJoin.accept: src/core/qgssqlstatement.h#L934
 QgsSQLStatement.NodeJoin.clone: src/core/qgssqlstatement.h#L935
-QgsSQLStatement.NodeJoin.cloneThis: src/core/qgssqlstatement.h#L937
 QgsSQLStatement.NodeJoin.dump: src/core/qgssqlstatement.h#L932
 QgsSQLStatement.NodeJoin.nodeType: src/core/qgssqlstatement.h#L931
 QgsSQLStatement.NodeJoin.onExpr: src/core/qgssqlstatement.h#L923
@@ -16893,7 +16886,6 @@ QgsSQLStatement.NodeJoin.type: src/core/qgssqlstatement.h#L929
 QgsSQLStatement.NodeJoin: src/core/qgssqlstatement.h#L903
 QgsSQLStatement.NodeList.accept: src/core/qgssqlstatement.h#L340
 QgsSQLStatement.NodeList.append: src/core/qgssqlstatement.h#L329
-QgsSQLStatement.NodeList.clone: src/core/qgssqlstatement.h#L343
 QgsSQLStatement.NodeList.count: src/core/qgssqlstatement.h#L337
 QgsSQLStatement.NodeList.dump: src/core/qgssqlstatement.h#L346
 QgsSQLStatement.NodeList: src/core/qgssqlstatement.h#L322
@@ -16919,7 +16911,6 @@ QgsSQLStatement.NodeSelect: src/core/qgssqlstatement.h#L998
 QgsSQLStatement.NodeSelectedColumn.accept: src/core/qgssqlstatement.h#L760
 QgsSQLStatement.NodeSelectedColumn.alias: src/core/qgssqlstatement.h#L755
 QgsSQLStatement.NodeSelectedColumn.clone: src/core/qgssqlstatement.h#L761
-QgsSQLStatement.NodeSelectedColumn.cloneThis: src/core/qgssqlstatement.h#L763
 QgsSQLStatement.NodeSelectedColumn.column: src/core/qgssqlstatement.h#L752
 QgsSQLStatement.NodeSelectedColumn.dump: src/core/qgssqlstatement.h#L758
 QgsSQLStatement.NodeSelectedColumn.nodeType: src/core/qgssqlstatement.h#L757
@@ -16929,7 +16920,6 @@ QgsSQLStatement.NodeTableDef.__repr__: src/core/qgssqlstatement.h#L854
 QgsSQLStatement.NodeTableDef.accept: src/core/qgssqlstatement.h#L888
 QgsSQLStatement.NodeTableDef.alias: src/core/qgssqlstatement.h#L883
 QgsSQLStatement.NodeTableDef.clone: src/core/qgssqlstatement.h#L889
-QgsSQLStatement.NodeTableDef.cloneThis: src/core/qgssqlstatement.h#L891
 QgsSQLStatement.NodeTableDef.dump: src/core/qgssqlstatement.h#L886
 QgsSQLStatement.NodeTableDef.name: src/core/qgssqlstatement.h#L873
 QgsSQLStatement.NodeTableDef.nodeType: src/core/qgssqlstatement.h#L885
@@ -17918,7 +17908,6 @@ QgsSipUtils.isPyOwned: src/core/qgssiputils.h#L41
 QgsSipUtils: src/core/qgssiputils.h#L30
 QgsSizeScaleTransformer.clone: src/core/qgspropertytransformer.h#L463
 QgsSizeScaleTransformer.exponent: src/core/qgspropertytransformer.h#L532
-QgsSizeScaleTransformer.fromExpression: src/core/qgspropertytransformer.h#L476
 QgsSizeScaleTransformer.loadVariant: src/core/qgspropertytransformer.h#L465
 QgsSizeScaleTransformer.maxSize: src/core/qgspropertytransformer.h#L504
 QgsSizeScaleTransformer.minSize: src/core/qgspropertytransformer.h#L490
@@ -20654,7 +20643,6 @@ QgsVectorFileWriter.addFeatures: src/core/qgsvectorfilewriter.h#L916
 QgsVectorFileWriter.areThereNewFieldsToCreate: src/core/qgsvectorfilewriter.h#L1006
 QgsVectorFileWriter.capabilities: src/core/qgsvectorfilewriter.h#L911
 QgsVectorFileWriter.convertCodecNameForEncodingOption: src/core/qgsvectorfilewriter.h#L882
-QgsVectorFileWriter.create: src/core/qgsvectorfilewriter.h#L736
 QgsVectorFileWriter.defaultDatasetOptions: src/core/qgsvectorfilewriter.h#L976
 QgsVectorFileWriter.defaultLayerOptions: src/core/qgsvectorfilewriter.h#L983
 QgsVectorFileWriter.deleteShapeFile: src/core/qgsvectorfilewriter.h#L939
