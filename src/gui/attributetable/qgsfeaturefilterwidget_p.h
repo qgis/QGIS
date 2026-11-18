@@ -129,6 +129,6 @@ class GUI_EXPORT QgsFeatureFilterWidget : public QWidget, private Ui::QgsFeature
     QgsMessageBar *mMessageBar = nullptr;
 };
 
-#endif // QGSFEATUREFILTERWIDGET_P_H
-
 /// @endcond
+
+#endif // QGSFEATUREFILTERWIDGET_P_H

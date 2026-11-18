@@ -664,5 +664,6 @@ bool QgsJoinByLocationAlgorithm::processFeatureFromInputSource( QgsFeature &base
   return ok;
 }
 
-#endif
 ///@endcond
+
+#endif
