@@ -176,7 +176,7 @@ bool QgsBackgroundCachedSharedData::createCache()
   int tmpCounter = ++sTmpCounter;
   QString cacheDirectory( acquireCacheDirectory() );
   mCacheDbname = QDir( cacheDirectory ).filePath( u"cache_%1.sqlite"_s.arg( tmpCounter ) );
-  Q_ASSERT( !QFile::exists( mCacheDbname ) );
+  Q_ASSERT( !QFile::exists( mCacheDbname ) ); // cppcheck-suppress assertWithSideEffect
 
   QgsFields cacheFields;
   std::set<QString> setSQLiteColumnNameUpperCase;
@@ -243,7 +243,7 @@ bool QgsBackgroundCachedSharedData::createCache()
   // Copy the temporary database back to disk
   vsi_l_offset nLength = 0;
   GByte *pabyData = VSIGetMemFileBuffer( vsimemFilename.toUtf8().constData(), &nLength, TRUE );
-  Q_ASSERT( !QFile::exists( mCacheDbname ) );
+  Q_ASSERT( !QFile::exists( mCacheDbname ) ); // cppcheck-suppress assertWithSideEffect
   VSILFILE *fp = VSIFOpenL( mCacheDbname.toUtf8().constData(), "wb" );
   if ( fp )
   {
@@ -388,7 +388,7 @@ bool QgsBackgroundCachedSharedData::createCache()
   if ( mCacheIdDbname.isEmpty() )
   {
     mCacheIdDbname = QDir( cacheDirectory ).filePath( u"id_cache_%1.sqlite"_s.arg( tmpCounter ) );
-    Q_ASSERT( !QFile::exists( mCacheIdDbname ) );
+    Q_ASSERT( !QFile::exists( mCacheIdDbname ) ); // cppcheck-suppress assertWithSideEffect
     if ( mCacheIdDb.open( mCacheIdDbname ) != SQLITE_OK )
     {
       QgsMessageLog::logMessage( QObject::tr( "Cannot create temporary id cache" ), mComponentTranslated );
