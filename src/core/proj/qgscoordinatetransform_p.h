@@ -94,9 +94,6 @@ class QgsCoordinateTransformPrivate : public QSharedData
     //! QgsCoordinateReferenceSystem of the destination (map canvas) coordinate system
     QgsCoordinateReferenceSystem mDestCRS;
 
-    Q_DECL_DEPRECATED QString mSourceProjString;
-    Q_DECL_DEPRECATED QString mDestProjString;
-
     Q_DECL_DEPRECATED int mSourceDatumTransform = -1;
     Q_DECL_DEPRECATED int mDestinationDatumTransform = -1;
     QString mProjCoordinateOperation;
