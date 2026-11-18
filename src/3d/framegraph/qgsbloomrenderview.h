@@ -59,7 +59,7 @@ class QgsBloomUpsampleEntity;
  *
  * \since QGIS 4.2
  */
-class QgsBloomRenderView : public QgsAbstractRenderView
+class _3D_EXPORT QgsBloomRenderView : public QgsAbstractRenderView
 {
   public:
     //! Default constructor
