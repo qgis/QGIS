@@ -35,7 +35,6 @@ from .PointsDisplacement import PointsDisplacement
 from .PointsFromLines import PointsFromLines
 from .PolarPlot import PolarPlot
 from .RandomPointsAlongLines import RandomPointsAlongLines
-from .RandomPointsLayer import RandomPointsLayer
 from .RandomPointsPolygons import RandomPointsPolygons
 from .RasterCalculator import RasterCalculator
 from .RasterLayerHistogram import RasterLayerHistogram
@@ -76,7 +75,6 @@ class QgisAlgorithmProvider(QgsProcessingProvider):
             PointsFromLines(),
             PolarPlot(),
             RandomPointsAlongLines(),
-            RandomPointsLayer(),
             RandomPointsPolygons(),
             RasterCalculator(),
             RasterLayerHistogram(),
