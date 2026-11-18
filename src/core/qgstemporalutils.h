@@ -297,7 +297,7 @@ class CORE_EXPORT QgsTemporalUtils
  * If anything changes in this class it should likely be reflected in the corresponding MDAL function.
  *
  * \note Not available in Python bindings
- * \since QGIS 4.4
+ * \since QGIS 4.6
  */
 class CORE_EXPORT QgsNetCdfGribTimeParser
 {

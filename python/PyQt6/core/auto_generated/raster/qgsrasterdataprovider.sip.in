@@ -806,7 +806,7 @@ time. Bands without an associated date time are not included.
 
 .. seealso:: :py:func:`sortedUniqueBandDateTimes`
 
-.. versionadded:: 4.4
+.. versionadded:: 4.6
 %End
 
     QList<QDateTime> sortedUniqueBandDateTimes() const;
@@ -820,7 +820,7 @@ bands.
 
 .. seealso:: :py:func:`sortedUniqueBandDateTimes`
 
-.. versionadded:: 4.4
+.. versionadded:: 4.6
 %End
 
     QDateTime firstBandDateTime() const;
@@ -832,7 +832,7 @@ invalid QDateTime if no band has a date time.
 
 .. seealso:: :py:func:`sortedUniqueBandDateTimes`
 
-.. versionadded:: 4.4
+.. versionadded:: 4.6
 %End
 
     QDateTime lastBandDateTime() const;
@@ -844,7 +844,7 @@ invalid QDateTime if no band has a date time.
 
 .. seealso:: :py:func:`sortedUniqueBandDateTimes`
 
-.. versionadded:: 4.4
+.. versionadded:: 4.6
 %End
 
 

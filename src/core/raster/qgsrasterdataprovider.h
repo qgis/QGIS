@@ -833,7 +833,7 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
      * \see firstBandDateTime()
      * \see lastBandDateTime()
      * \see sortedUniqueBandDateTimes()
-     * \since QGIS 4.4
+     * \since QGIS 4.6
      */
     QMap<int, QDateTime> bandDateTimes() const;
 
@@ -843,7 +843,7 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
      * \see firstBandDateTime()
      * \see lastBandDateTime()
      * \see sortedUniqueBandDateTimes()
-     * \since QGIS 4.4
+     * \since QGIS 4.6
      */
     QList<QDateTime> sortedUniqueBandDateTimes() const;
 
@@ -853,7 +853,7 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
      *
      * \see lastBandDateTime()
      * \see sortedUniqueBandDateTimes()
-     * \since QGIS 4.4
+     * \since QGIS 4.6
      */
     QDateTime firstBandDateTime() const;
 
@@ -863,7 +863,7 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
      *
      * \see firstBandDateTime()
      * \see sortedUniqueBandDateTimes()
-     * \since QGIS 4.4
+     * \since QGIS 4.6
      */
     QDateTime lastBandDateTime() const;
 
