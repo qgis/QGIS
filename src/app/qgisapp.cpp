@@ -3804,10 +3804,6 @@ void QgisApp::createToolBars()
   QToolButton *tbAllEdits = qobject_cast<QToolButton *>( mDigitizeToolBar->widgetForAction( mActionAllEdits ) );
   tbAllEdits->setPopupMode( QToolButton::InstantPopup );
 
-  // new project from template tool button
-  QToolButton *tbNewProjectFromTemplate = qobject_cast<QToolButton *>( mFileToolBar->widgetForAction( mProjectFromTemplateMenu->menuAction() ) );
-  tbNewProjectFromTemplate->setPopupMode( QToolButton::InstantPopup );
-
   // new layer tool button
 
   bt = new QToolButton();
@@ -5508,7 +5504,24 @@ void QgisApp::updateProjectFromTemplates()
   if ( settingsNewProjectDefault->value() )
     mProjectFromTemplateMenu->addAction( tr( "< Blank >" ), this, [this]() { fileNewBlank(); } );
 
-  mProjectFromTemplateMenu->menuAction()->setEnabled( !mProjectFromTemplateMenu->isEmpty() );
+  if ( mProjectFromTemplateMenu->isEmpty() )
+  {
+    if ( mProjectTemplateToolbarAction )
+    {
+      mProjectTemplateToolbarAction->deleteLater();
+    }
+  }
+  else if ( !mProjectTemplateToolbarAction )
+  {
+    mProjectTemplateToolbarAction = new QgsToolButtonAction();
+    mProjectTemplateToolbarAction->setAutoRaise( true );
+    mProjectTemplateToolbarAction->setText( tr( "New from Template" ) );
+    mProjectTemplateToolbarAction->setToolTip( tr( "New from Template" ) );
+    mProjectTemplateToolbarAction->setIcon( QgsApplication::getThemeIcon( u"/mActionFileNewFromTemplate.svg"_s ) );
+    mProjectTemplateToolbarAction->setPopupMode( QToolButton::InstantPopup );
+    mProjectTemplateToolbarAction->setMenu( mProjectFromTemplateMenu );
+    mFileToolBar->insertAction( mActionOpenProject, mProjectTemplateToolbarAction );
+  }
 
   // Reload welcome screen
   if ( mWelcomeScreen )

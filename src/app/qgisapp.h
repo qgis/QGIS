@@ -2956,6 +2956,8 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     //! Project template directories to watch
     QFileSystemWatcher mProjectTemplateWatcher;
 
+    QPointer< QgsToolButtonAction > mProjectTemplateToolbarAction;
+
     friend class QgsCanvasRefreshBlocker;
     friend class QgsMapToolsDigitizingTechniqueManager;
     friend class QgsWelcomeScreenController;
