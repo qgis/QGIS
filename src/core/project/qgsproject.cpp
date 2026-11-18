@@ -127,7 +127,7 @@ const QgsSettingsEntryBool *QgsProject::settingsDefaultProjectPathsRelative = ne
  *
  * E.g., scope "someplugin" and key "/foo/bar/baz" will become a string list
  * of { "properties", "someplugin", "foo", "bar", "baz" }.  "properties" is
- * always first because that's the permanent ``root'' Property node.
+ * always first because that's the permanent "root" Property node.
  */
 QStringList makeKeyTokens_( const QString &scope, const QString &key )
 {
