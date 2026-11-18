@@ -145,13 +145,12 @@ void TestQgsRangeWidgetWrapper::test_setDoubleRange()
   // See https://github.com/qgis/QGIS/issues/25773
   // QGIS 3 Vector Layer Fields Garbled when Clicking the Toggle Editing Icon
 
-  QgsDoubleSpinBox *editor = qobject_cast<QgsDoubleSpinBox *>( widget1->createWidget( nullptr ) );
+  QgsRangeWidgetDoubleSpinBox *editor = qobject_cast<QgsRangeWidgetDoubleSpinBox *>( widget1->createWidget( nullptr ) );
   QVERIFY( editor );
   widget1->initWidget( editor );
-  QgsDoubleSpinBox *editor2 = qobject_cast<QgsDoubleSpinBox *>( widget2->createWidget( nullptr ) );
+  QgsRangeWidgetDoubleSpinBox *editor2 = qobject_cast<QgsRangeWidgetDoubleSpinBox *>( widget2->createWidget( nullptr ) );
   QVERIFY( editor2 );
   widget2->initWidget( editor2 );
-
   const QgsFeature feat( vl->getFeature( 1 ) );
   QVERIFY( feat.isValid() );
   QCOMPARE( feat.attribute( 1 ).toDouble(), 123.123456789 );
@@ -167,12 +166,30 @@ void TestQgsRangeWidgetWrapper::test_setDoubleRange()
   QCOMPARE( editor->valueFromText( feat.attribute( 1 ).toString() ), 123.123456789 );
   QCOMPARE( feat.attribute( 1 ).toString(), u"123.123456789"_s );
   QCOMPARE( editor2->valueFromText( feat.attribute( 1 ).toString() ), 123.123456789 );
+  //the values are still the tolerant values
+  QCOMPARE( editor->value(), 123.123456789 );
+  QCOMPARE( editor2->value(), 123.123456789 );
+  //but the texts are truncated
+  QCOMPARE( editor->text(), u"123.123456789"_s );
+  QCOMPARE( editor2->text(), u"123.1235"_s );
+  //let's touch it - then the values are truncated as well
+  editor->mTouched = true;  //simulating focus in
+  editor2->mTouched = true; //simulating focus in
   QCOMPARE( editor->value(), 123.123456789 );
   QCOMPARE( editor2->value(), 123.1235 );
   QCOMPARE( editor->minimum(), std::numeric_limits<double>::lowest() );
   QCOMPARE( editor2->minimum(), std::numeric_limits<double>::lowest() );
   QCOMPARE( editor->maximum(), std::numeric_limits<double>::max() );
   QCOMPARE( editor2->maximum(), std::numeric_limits<double>::max() );
+
+
+  //reinit editor
+  editor = qobject_cast<QgsRangeWidgetDoubleSpinBox *>( widget1->createWidget( nullptr ) );
+  QVERIFY( editor );
+  widget1->initWidget( editor );
+  editor2 = qobject_cast<QgsRangeWidgetDoubleSpinBox *>( widget2->createWidget( nullptr ) );
+  QVERIFY( editor2 );
+  widget2->initWidget( editor2 );
 
   widget1->setFeature( vl->getFeature( 2 ) );
   widget2->setFeature( vl->getFeature( 2 ) );
@@ -181,6 +198,15 @@ void TestQgsRangeWidgetWrapper::test_setDoubleRange()
 
   widget1->setFeature( vl->getFeature( 3 ) );
   widget2->setFeature( vl->getFeature( 3 ) );
+  //the values are still the tolerant values
+  QCOMPARE( editor->value(), -123.123456789 );
+  QCOMPARE( editor2->value(), -123.123456789 );
+  //but the texts are truncated
+  QCOMPARE( editor->text(), u"-123.123456789"_s );
+  QCOMPARE( editor2->text(), u"-123.1235"_s );
+  //let's touch it - then the values are truncated as well
+  editor->mTouched = true;  //simulating focus in
+  editor2->mTouched = true; //simulating focus in
   QCOMPARE( editor->value(), -123.123456789 );
   QCOMPARE( editor2->value(), -123.1235 );
 }
@@ -193,12 +219,12 @@ void TestQgsRangeWidgetWrapper::test_setDoubleSmallerRange()
   cfg.insert( u"Max"_s, 100.0 );
   cfg.insert( u"Step"_s, 1 );
   widget1->setConfig( cfg );
-  QgsDoubleSpinBox *editor = qobject_cast<QgsDoubleSpinBox *>( widget1->createWidget( nullptr ) );
+  QgsRangeWidgetDoubleSpinBox *editor = qobject_cast<QgsRangeWidgetDoubleSpinBox *>( widget1->createWidget( nullptr ) );
   QVERIFY( editor );
   widget1->initWidget( editor );
 
   widget2->setConfig( cfg );
-  QgsDoubleSpinBox *editor2 = qobject_cast<QgsDoubleSpinBox *>( widget2->createWidget( nullptr ) );
+  QgsRangeWidgetDoubleSpinBox *editor2 = qobject_cast<QgsRangeWidgetDoubleSpinBox *>( widget2->createWidget( nullptr ) );
   QVERIFY( editor2 );
   widget2->initWidget( editor2 );
 
@@ -215,10 +241,17 @@ void TestQgsRangeWidgetWrapper::test_setDoubleSmallerRange()
   QCOMPARE( editor->decimals(), vl->fields().at( 1 ).precision() );
   // for double fields without explicit precision, we should default to a reasonable, non-zero value (currently hardcoded to 4)
   QCOMPARE( editor2->decimals(), 4 );
-  // value was changed to the maximum (not NULL) accepted value
-  QCOMPARE( editor->value(), 100.0 );
-  // value was changed to the maximum (not NULL) accepted value
-  QCOMPARE( editor2->value(), 100.0 );
+  // value was *not* changed to the maximum (not NULL) accepted value because it's tolerant
+  QCOMPARE( editor->value(), 123.123456789 );
+  QCOMPARE( editor2->value(), 123.123456789 );
+  //and only the texts are truncated to the precisions
+  QCOMPARE( editor->text(), u"123.123456789"_s );
+  QCOMPARE( editor2->text(), u"123.1235"_s );
+  // let's touch it
+  editor->mTouched = true;  //simulating focus in
+  editor2->mTouched = true; //simulating focus in
+  QCOMPARE( editor->value(), editor->maximum() );
+  QCOMPARE( editor2->value(), editor2->maximum() );
   // minimum was lowered by the precision (10e-9)
   QCOMPARE( editor->minimum(), -100.000000001 );
   // minimum was lowered by step (1)
@@ -232,12 +265,79 @@ void TestQgsRangeWidgetWrapper::test_setDoubleSmallerRange()
   QCOMPARE( editor->value(), editor->minimum() );
   QCOMPARE( editor2->value(), editor2->minimum() );
 
+  // negative, negative (reinit the editors)
+  editor = qobject_cast<QgsRangeWidgetDoubleSpinBox *>( widget1->createWidget( nullptr ) );
+  QVERIFY( editor );
+  widget1->initWidget( editor );
+  editor2 = qobject_cast<QgsRangeWidgetDoubleSpinBox *>( widget2->createWidget( nullptr ) );
+  QVERIFY( editor2 );
+  widget2->initWidget( editor2 );
+
+  widget1->setFeature( vl->getFeature( 3 ) );
+  widget2->setFeature( vl->getFeature( 3 ) );
+  // value was *not* changed to the minimum because it's tolerant
+  QCOMPARE( editor->value(), -123.123456789 );
+  QCOMPARE( editor2->value(), -123.123456789 );
+  //and only the texts are truncated to the precisions
+  QCOMPARE( editor->text(), u"-123.123456789"_s );
+  QCOMPARE( editor2->text(), u"-123.1235"_s );
+  // but let's touch it
+  editor->mTouched = true;  //simulating focus in
+  editor2->mTouched = true; //simulating focus in
+  QCOMPARE( editor->value(), editor->minimum() );
+  QCOMPARE( editor2->value(), editor2->minimum() );
+
+  // Same test but with the "old" QgsDoubleSpinBox
+  cfg.clear();
+  cfg.insert( u"Min"_s, -100.0 );
+  cfg.insert( u"Max"_s, 100.0 );
+  cfg.insert( u"Step"_s, 1 );
+  widget1->setConfig( cfg );
+  QgsDoubleSpinBox *backwardsEditor = new QgsDoubleSpinBox();
+  QVERIFY( backwardsEditor );
+  widget1->initWidget( backwardsEditor );
+
+  widget2->setConfig( cfg );
+  QgsDoubleSpinBox *backwardsEditor2 = new QgsDoubleSpinBox();
+  QVERIFY( backwardsEditor2 );
+  widget2->initWidget( backwardsEditor2 );
+
+  const QgsFeature backwardsFeat( vl->getFeature( 1 ) );
+  QVERIFY( backwardsFeat.isValid() );
+  QCOMPARE( backwardsFeat.attribute( 1 ).toDouble(), 123.123456789 );
+  widget1->setFeature( vl->getFeature( 1 ) );
+  widget2->setFeature( vl->getFeature( 1 ) );
+
+  QCOMPARE( vl->fields().at( 1 ).precision(), 9 );
+  // Field precision is 0, which from the QgsField::precision docs indicates "not applicable" to this field.
+  // That is correct, as memory layers do not support field precision for real
+  QCOMPARE( vl->fields().at( 2 ).precision(), 0 );
+  QCOMPARE( backwardsEditor->decimals(), vl->fields().at( 1 ).precision() );
+  // for double fields without explicit precision, we should default to a reasonable, non-zero value (currently hardcoded to 4)
+  QCOMPARE( backwardsEditor2->decimals(), 4 );
+  // value was changed to the maximum (not NULL) accepted value
+  QCOMPARE( backwardsEditor->value(), 100.0 );
+  // value was changed to the maximum (not NULL) accepted value
+  QCOMPARE( backwardsEditor2->value(), 100.0 );
+  // minimum was lowered by the precision (10e-9)
+  QCOMPARE( backwardsEditor->minimum(), -100.000000001 );
+  // minimum was lowered by step (1)
+  QCOMPARE( backwardsEditor2->minimum(), ( double ) -100.0001 );
+  QCOMPARE( backwardsEditor->maximum(), ( double ) 100 );
+  QCOMPARE( backwardsEditor2->maximum(), ( double ) 100 );
+
+  // NULL, NULL
+  widget1->setFeature( vl->getFeature( 2 ) );
+  widget2->setFeature( vl->getFeature( 2 ) );
+  QCOMPARE( backwardsEditor->value(), backwardsEditor->minimum() );
+  QCOMPARE( backwardsEditor2->value(), backwardsEditor2->minimum() );
+
   // negative, negative
   widget1->setFeature( vl->getFeature( 3 ) );
   widget2->setFeature( vl->getFeature( 3 ) );
   // value was changed to the minimum
-  QCOMPARE( editor->value(), editor->minimum() );
-  QCOMPARE( editor2->value(), editor2->minimum() );
+  QCOMPARE( backwardsEditor->value(), backwardsEditor->minimum() );
+  QCOMPARE( backwardsEditor2->value(), backwardsEditor2->minimum() );
 }
 
 void TestQgsRangeWidgetWrapper::test_setDoubleLimits()
@@ -248,12 +348,12 @@ void TestQgsRangeWidgetWrapper::test_setDoubleLimits()
   cfg.insert( u"Max"_s, std::numeric_limits<double>::max() );
   cfg.insert( u"Step"_s, 1 );
   widget1->setConfig( cfg );
-  QgsDoubleSpinBox *editor = qobject_cast<QgsDoubleSpinBox *>( widget1->createWidget( nullptr ) );
+  QgsRangeWidgetDoubleSpinBox *editor = qobject_cast<QgsRangeWidgetDoubleSpinBox *>( widget1->createWidget( nullptr ) );
   QVERIFY( editor );
   widget1->initWidget( editor );
 
   widget2->setConfig( cfg );
-  QgsDoubleSpinBox *editor2 = qobject_cast<QgsDoubleSpinBox *>( widget2->createWidget( nullptr ) );
+  QgsRangeWidgetDoubleSpinBox *editor2 = qobject_cast<QgsRangeWidgetDoubleSpinBox *>( widget2->createWidget( nullptr ) );
   QVERIFY( editor2 );
   widget2->initWidget( editor2 );
 
@@ -275,6 +375,15 @@ void TestQgsRangeWidgetWrapper::test_setDoubleLimits()
   QCOMPARE( editor->decimals(), vl->fields().at( 1 ).precision() );
   // for double fields without explicit precision, we should default to a reasonable, non-zero value (currently hardcoded to 4)
   QCOMPARE( editor2->decimals(), 4 );
+  // the values are not truncated because of tolerant value
+  QCOMPARE( editor->value(), 123.123456789 );
+  QCOMPARE( editor2->value(), 123.123456789 );
+  //but the texts are truncated to the precisions
+  QCOMPARE( editor->text(), u"123.123456789"_s );
+  QCOMPARE( editor2->text(), u"123.1235"_s );
+  // let's touch it
+  editor->mTouched = true;  //simulating focus in
+  editor2->mTouched = true; //simulating focus in
   QCOMPARE( editor->value(), 123.123456789 );
   QCOMPARE( editor2->value(), 123.1235 );
 
@@ -285,9 +394,24 @@ void TestQgsRangeWidgetWrapper::test_setDoubleLimits()
   QCOMPARE( editor2->value(), editor2->minimum() );
 
   // negative, negative
+  editor = qobject_cast<QgsRangeWidgetDoubleSpinBox *>( widget1->createWidget( nullptr ) );
+  QVERIFY( editor );
+  widget1->initWidget( editor );
+  widget2->setConfig( cfg );
+  editor2 = qobject_cast<QgsRangeWidgetDoubleSpinBox *>( widget2->createWidget( nullptr ) );
+  QVERIFY( editor2 );
+  widget2->initWidget( editor2 );
   widget1->setFeature( vl->getFeature( 3 ) );
   widget2->setFeature( vl->getFeature( 3 ) );
-  // value was changed to the minimum
+  // the values are not truncated because of tolerant value
+  QCOMPARE( editor->value(), -123.123456789 );
+  QCOMPARE( editor2->value(), -123.123456789 );
+  //but the texts are truncated to the precisions
+  QCOMPARE( editor->text(), u"-123.123456789"_s );
+  QCOMPARE( editor2->text(), u"-123.1235"_s );
+  // let's touch it
+  editor->mTouched = true;  //simulating focus in
+  editor2->mTouched = true; //simulating focus in
   QCOMPARE( editor->value(), -123.123456789 );
   QCOMPARE( editor2->value(), -123.1235 );
 }
@@ -302,12 +426,12 @@ void TestQgsRangeWidgetWrapper::test_doubleExplicitPrecision()
   // explicitly set precision for field
   cfg.insert( u"Precision"_s, 3 );
   widget1->setConfig( cfg );
-  QgsDoubleSpinBox *editor = qobject_cast<QgsDoubleSpinBox *>( widget1->createWidget( nullptr ) );
+  QgsRangeWidgetDoubleSpinBox *editor = qobject_cast<QgsRangeWidgetDoubleSpinBox *>( widget1->createWidget( nullptr ) );
   QVERIFY( editor );
   widget1->initWidget( editor );
 
   widget2->setConfig( cfg );
-  QgsDoubleSpinBox *editor2 = qobject_cast<QgsDoubleSpinBox *>( widget2->createWidget( nullptr ) );
+  QgsRangeWidgetDoubleSpinBox *editor2 = qobject_cast<QgsRangeWidgetDoubleSpinBox *>( widget2->createWidget( nullptr ) );
   QVERIFY( editor2 );
   widget2->initWidget( editor2 );
 
@@ -328,6 +452,15 @@ void TestQgsRangeWidgetWrapper::test_doubleExplicitPrecision()
   QCOMPARE( vl->fields().at( 2 ).precision(), 0 );
   QCOMPARE( editor->decimals(), 3 );
   QCOMPARE( editor2->decimals(), 3 );
+  //the values are still the tolerant values
+  QCOMPARE( editor->value(), 123.123456789 );
+  QCOMPARE( editor2->value(), 123.123456789 );
+  //but the texts are truncated
+  QCOMPARE( editor->text(), u"123.123"_s );
+  QCOMPARE( editor2->text(), u"123.123"_s );
+  //let's touch it
+  editor->mTouched = true;  //simulating focus in
+  editor2->mTouched = true; //simulating focus in
   QCOMPARE( editor->value(), 123.123 );
   QCOMPARE( editor2->value(), 123.123 );
 
@@ -338,9 +471,25 @@ void TestQgsRangeWidgetWrapper::test_doubleExplicitPrecision()
   QCOMPARE( editor2->value(), editor2->minimum() );
 
   // negative, negative
+  editor = qobject_cast<QgsRangeWidgetDoubleSpinBox *>( widget1->createWidget( nullptr ) );
+  QVERIFY( editor );
+  widget1->initWidget( editor );
+  widget2->setConfig( cfg );
+  editor2 = qobject_cast<QgsRangeWidgetDoubleSpinBox *>( widget2->createWidget( nullptr ) );
+  QVERIFY( editor2 );
+  widget2->initWidget( editor2 );
+
   widget1->setFeature( vl->getFeature( 3 ) );
   widget2->setFeature( vl->getFeature( 3 ) );
-  // value was changed to the minimum
+  //the values are still the tolerant values
+  QCOMPARE( editor->value(), -123.123456789 );
+  QCOMPARE( editor2->value(), -123.123456789 );
+  //but the texts are truncated
+  QCOMPARE( editor->text(), u"-123.123"_s );
+  QCOMPARE( editor2->text(), u"-123.123"_s );
+  //let's touch it
+  editor->mTouched = true;  //simulating focus in
+  editor2->mTouched = true; //simulating focus in
   QCOMPARE( editor->value(), -123.123 );
   QCOMPARE( editor2->value(), -123.123 );
 }
@@ -355,41 +504,72 @@ void TestQgsRangeWidgetWrapper::test_nulls()
   cfg.insert( u"Step"_s, 1 );
   cfg.insert( u"Precision"_s, 0 );
   widget1->setConfig( cfg );
-  QgsDoubleSpinBox *editor1 = qobject_cast<QgsDoubleSpinBox *>( widget1->createWidget( nullptr ) );
+  QgsRangeWidgetDoubleSpinBox *editor1 = qobject_cast<QgsRangeWidgetDoubleSpinBox *>( widget1->createWidget( nullptr ) );
   QVERIFY( editor1 );
   widget1->initWidget( editor1 );
-  // Out of range
-  widget1->setFeature( vl->getFeature( 3 ) );
-  QCOMPARE( editor1->value(), editor1->minimum() );
-  QCOMPARE( widget1->value(), QgsVariantUtils::createNullVariant( QMetaType::Type::Double ) );
+  // Out of range - with QgsRangeWidgetDoubleSpinBox it does allow the out of range value - see the use case with QgsDoubleSpinBox below
+  // Continue with new feature
   widget1->setFeature( QgsFeature( vl->fields() ) );
   // Null
   QCOMPARE( editor1->value(), editor1->minimum() );
   QCOMPARE( widget1->value(), QgsVariantUtils::createNullVariant( QMetaType::Type::Double ) );
   QCOMPARE( editor1->mLineEdit->text(), SPECIAL_TEXT_WHEN_EMPTY );
-  editor1->mLineEdit->setText( QString( "151%1" ).arg( SPECIAL_TEXT_WHEN_EMPTY ) );
+  editor1->mTouched = true; //simulating focus in
+  editor1->mLineEdit->setText( QString( "151" ).arg( SPECIAL_TEXT_WHEN_EMPTY ) );
   QCOMPARE( widget1->value().toInt(), 151 );
   editor1->mLineEdit->setText( QString( SPECIAL_TEXT_WHEN_EMPTY ).append( u"161"_s ) );
   QCOMPARE( widget1->value().toInt(), 161 );
 
+  QgsDoubleSpinBox *backwardsEditor1 = new QgsDoubleSpinBox();
+  QVERIFY( backwardsEditor1 );
+  widget1->initWidget( backwardsEditor1 );
+  // Out of range - here this set's it to null (minimum)
+  widget1->setFeature( vl->getFeature( 3 ) );
+  QCOMPARE( backwardsEditor1->value(), backwardsEditor1->minimum() );
+  QCOMPARE( widget1->value(), QgsVariantUtils::createNullVariant( QMetaType::Type::Double ) );
+  widget1->setFeature( QgsFeature( vl->fields() ) );
+  // Null
+  QCOMPARE( backwardsEditor1->value(), backwardsEditor1->minimum() );
+  QCOMPARE( widget1->value(), QgsVariantUtils::createNullVariant( QMetaType::Type::Double ) );
+  QCOMPARE( backwardsEditor1->mLineEdit->text(), SPECIAL_TEXT_WHEN_EMPTY );
+  backwardsEditor1->mLineEdit->setText( QString( "151%1" ).arg( SPECIAL_TEXT_WHEN_EMPTY ) );
+  QCOMPARE( widget1->value().toInt(), 151 );
+  backwardsEditor1->mLineEdit->setText( QString( SPECIAL_TEXT_WHEN_EMPTY ).append( u"161"_s ) );
+  QCOMPARE( widget1->value().toInt(), 161 );
 
-  QgsSpinBox *editor0 = qobject_cast<QgsSpinBox *>( widget0->createWidget( nullptr ) );
+  QgsRangeWidgetSpinBox *editor0 = qobject_cast<QgsRangeWidgetSpinBox *>( widget0->createWidget( nullptr ) );
   QVERIFY( editor0 );
   widget0->setConfig( cfg );
   widget0->initWidget( editor0 );
-  // Out of range
-  widget0->setFeature( vl->getFeature( 3 ) );
-  QCOMPARE( editor0->value(), editor0->minimum() );
-  QCOMPARE( widget0->value(), QgsVariantUtils::createNullVariant( QMetaType::Type::Int ) );
+  // Out of range - with QgsRangeWidgetDoubleSpinBox it does allow the out of range value - see the use case with QgsDoubleSpinBox below
+  // Continue with new feature
   widget0->setFeature( QgsFeature( vl->fields() ) );
   // Null
   QCOMPARE( editor0->value(), editor0->minimum() );
   QCOMPARE( widget0->value(), QgsVariantUtils::createNullVariant( QMetaType::Type::Int ) );
   QCOMPARE( editor0->mLineEdit->text(), SPECIAL_TEXT_WHEN_EMPTY );
-
+  editor0->mTouched = true; //simulating focus in
   editor0->mLineEdit->setText( QString( "150%1" ).arg( SPECIAL_TEXT_WHEN_EMPTY ) );
   QCOMPARE( widget0->value().toInt(), 150 );
   editor0->mLineEdit->setText( QString( SPECIAL_TEXT_WHEN_EMPTY ).append( u"160"_s ) );
+  QCOMPARE( widget0->value().toInt(), 160 );
+
+  QgsSpinBox *backwardsEditor0 = new QgsSpinBox();
+  QVERIFY( backwardsEditor0 );
+  widget0->setConfig( cfg );
+  widget0->initWidget( backwardsEditor0 );
+  // Out of range
+  widget0->setFeature( vl->getFeature( 3 ) );
+  QCOMPARE( backwardsEditor0->value(), backwardsEditor0->minimum() );
+  QCOMPARE( widget0->value(), QgsVariantUtils::createNullVariant( QMetaType::Type::Int ) );
+  widget0->setFeature( QgsFeature( vl->fields() ) );
+  // Null
+  QCOMPARE( backwardsEditor0->value(), backwardsEditor0->minimum() );
+  QCOMPARE( widget0->value(), QgsVariantUtils::createNullVariant( QMetaType::Type::Int ) );
+  QCOMPARE( backwardsEditor0->mLineEdit->text(), SPECIAL_TEXT_WHEN_EMPTY );
+  backwardsEditor0->mLineEdit->setText( QString( "150%1" ).arg( SPECIAL_TEXT_WHEN_EMPTY ) );
+  QCOMPARE( widget0->value().toInt(), 150 );
+  backwardsEditor0->mLineEdit->setText( QString( SPECIAL_TEXT_WHEN_EMPTY ).append( u"160"_s ) );
   QCOMPARE( widget0->value().toInt(), 160 );
 }
 
@@ -400,7 +580,7 @@ void TestQgsRangeWidgetWrapper::test_negativeIntegers()
   QVariantMap cfg;
   widget3->setConfig( cfg );
 
-  QgsSpinBox *editor3 = qobject_cast<QgsSpinBox *>( widget3->createWidget( nullptr ) );
+  QgsRangeWidgetSpinBox *editor3 = qobject_cast<QgsRangeWidgetSpinBox *>( widget3->createWidget( nullptr ) );
   QVERIFY( editor3 );
   widget3->initWidget( editor3 );
 
@@ -414,14 +594,39 @@ void TestQgsRangeWidgetWrapper::test_negativeIntegers()
   widget3->setConfig( cfg );
   widget3->initWidget( editor3 );
   widget3->setFeature( feature );
+  //the widget value should not be null, because it's tolerant against negative values
+  QVERIFY( !widget3->value().isNull() );
+  QCOMPARE( widget3->value().toInt(), -12345 );
+  editor3->mTouched = true; //simulating focus in
+  //resets to null now
+  QVERIFY( widget3->value().isNull() );
+  QCOMPARE( widget3->value().toInt(), 0 );
+
+  cfg.clear();
+  widget3->setConfig( cfg );
+
+  QgsSpinBox *backwardsEditor3 = new QgsSpinBox();
+  QVERIFY( backwardsEditor3 );
+  widget3->initWidget( backwardsEditor3 );
+
+  QgsFeature backwardsFeature { vl->getFeature( 3 ) };
+  backwardsFeature.setAttribute( 3, -12345 );
+
+  widget3->setFeature( backwardsFeature );
+  QCOMPARE( widget3->value().toInt(), -12345 );
+
+  cfg.insert( u"Min"_s, 10 );
+  widget3->setConfig( cfg );
+  widget3->initWidget( backwardsEditor3 );
+  widget3->setFeature( backwardsFeature );
   QVERIFY( widget3->value().isNull() );
   QCOMPARE( widget3->value().toInt(), 0 );
 
   cfg.clear();
   cfg.insert( u"Min"_s, -12346 );
   widget3->setConfig( cfg );
-  widget3->initWidget( editor3 );
-  widget3->setFeature( feature );
+  widget3->initWidget( backwardsEditor3 );
+  widget3->setFeature( backwardsFeature );
   QCOMPARE( widget3->value().toInt(), -12345 );
 }
 
@@ -437,21 +642,21 @@ void TestQgsRangeWidgetWrapper::test_focus()
 
   //QgsDoubleSpinBox
   widget1->setConfig( cfg );
-  QgsDoubleSpinBox *editor1 = qobject_cast<QgsDoubleSpinBox *>( widget1->createWidget( w ) );
+  QgsRangeWidgetDoubleSpinBox *editor1 = qobject_cast<QgsRangeWidgetDoubleSpinBox *>( widget1->createWidget( w ) );
   QVERIFY( editor1 );
   widget1->initWidget( editor1 );
   widget1->setValue( QgsVariantUtils::createNullVariant( QMetaType::Type::Double ) );
 
   //QgsDoubleSpinBox
   widget2->setConfig( cfg );
-  QgsDoubleSpinBox *editor2 = qobject_cast<QgsDoubleSpinBox *>( widget2->createWidget( w ) );
+  QgsRangeWidgetDoubleSpinBox *editor2 = qobject_cast<QgsRangeWidgetDoubleSpinBox *>( widget2->createWidget( w ) );
   QVERIFY( editor2 );
   widget2->initWidget( editor2 );
   widget2->setValue( QgsVariantUtils::createNullVariant( QMetaType::Type::Double ) );
 
   //QgsSpinBox
   widget3->setConfig( cfg );
-  QgsSpinBox *editor3 = qobject_cast<QgsSpinBox *>( widget3->createWidget( w ) );
+  QgsRangeWidgetSpinBox *editor3 = qobject_cast<QgsRangeWidgetSpinBox *>( widget3->createWidget( w ) );
   QVERIFY( editor3 );
   widget3->initWidget( editor3 );
   widget3->setValue( QgsVariantUtils::createNullVariant( QMetaType::Type::Int ) );
@@ -529,7 +734,7 @@ void TestQgsRangeWidgetWrapper::testLongLong()
   auto wrapper = std::make_unique<QgsRangeWidgetWrapper>( vl.get(), 4, nullptr, nullptr );
 
   // should use a double spin box, as a integer spin box does not have sufficient range
-  QgsDoubleSpinBox *editor = qobject_cast<QgsDoubleSpinBox *>( wrapper->createWidget( nullptr ) );
+  QgsRangeWidgetDoubleSpinBox *editor = qobject_cast<QgsRangeWidgetDoubleSpinBox *>( wrapper->createWidget( nullptr ) );
   QVERIFY( editor );
   wrapper->initWidget( editor );
   // no decimals, it's for long long value editing!
