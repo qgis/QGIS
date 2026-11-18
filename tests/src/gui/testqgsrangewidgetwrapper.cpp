@@ -59,6 +59,7 @@ class TestQgsRangeWidgetWrapper : public QObject
     void test_nulls();
     void test_negativeIntegers(); // see GH issue #32149
     void test_focus();
+    void test_outofrange();
     void testLongLong();
     void testSlider();
     void testDial();
@@ -726,6 +727,242 @@ void TestQgsRangeWidgetWrapper::test_focus()
   QCOMPARE( editor1->mLineEdit->text(), u"151.000000000"_s );
   QCOMPARE( editor2->mLineEdit->text(), QString() );
   QCOMPARE( editor3->mLineEdit->text(), u"nope"_s );
+}
+
+void TestQgsRangeWidgetWrapper::test_outofrange()
+{
+  QgsApplication::setNullRepresentation( QString( "nope" ) );
+
+  QWidget *w = new QWidget(); //required for focus events
+  QApplication::setActiveWindow( w );
+
+  QVariantMap cfg;
+
+  //1 double spinbox with positive value 123.123456789
+  QgsFeature feat1 { vl->getFeature( 1 ) };
+  //a. in range 50 to 100 - above expects to clamp to max
+  QgsRangeWidgetDoubleSpinBox *editor1a = qobject_cast<QgsRangeWidgetDoubleSpinBox *>( widget2->createWidget( w ) );
+  QVERIFY( editor1a );
+  cfg.clear();
+  cfg.insert( u"AllowNull"_s, true );
+  cfg.insert( u"Min"_s, 50.00 );
+  cfg.insert( u"Max"_s, 100.00 );
+  widget2->setConfig( cfg );
+  widget2->initWidget( editor1a );
+  widget2->setFeature( feat1 );
+
+  // value persists
+  QCOMPARE( widget2->value(), 123.123456789 );
+  QCOMPARE( editor1a->text(), u"123.1235"_s );
+  // changes on touching widget
+  editor1a->setFocus();
+  editor1a->clearFocus();
+  QCOMPARE( widget2->value(), 100.0000 );
+  QCOMPARE( editor1a->text(), u"100.0000"_s );
+
+  // reinit for fresh widget
+  editor1a = qobject_cast<QgsRangeWidgetDoubleSpinBox *>( widget2->createWidget( w ) );
+  widget2->initWidget( editor1a );
+  // enter another a good value
+  editor1a->setFocus();
+  editor1a->mLineEdit->setText( u"75"_s );
+  editor1a->clearFocus();
+  QCOMPARE( editor1a->text(), u"75.0000"_s );
+  QCOMPARE( widget2->value(), 75.0000 );
+  // enter another a bad value
+  editor1a->setFocus();
+  editor1a->mLineEdit->setText( u"150"_s );
+  editor1a->clearFocus();
+  QCOMPARE( editor1a->text(), u"100.0000"_s );
+  QCOMPARE( widget2->value(), 100.0000 );
+
+  //b. in range -200 to -150 - above expects to clamp to max
+  QgsRangeWidgetDoubleSpinBox *editor1b = qobject_cast<QgsRangeWidgetDoubleSpinBox *>( widget2->createWidget( w ) );
+  QVERIFY( editor1b );
+  cfg.clear();
+  cfg.insert( u"AllowNull"_s, true );
+  cfg.insert( u"Min"_s, -200.00 );
+  cfg.insert( u"Max"_s, -150.00 );
+  widget2->setConfig( cfg );
+  widget2->initWidget( editor1b );
+  widget2->setFeature( feat1 );
+
+  // value persists
+  QCOMPARE( widget2->value(), 123.123456789 );
+  QCOMPARE( editor1b->text(), u"123.1235"_s );
+  // changes on touching
+  editor1b->setFocus();
+  editor1b->clearFocus();
+  QCOMPARE( widget2->value(), -150.0000 );
+  QCOMPARE( editor1b->text(), u"-150.0000"_s );
+
+  // reinit for fresh widget
+  editor1b = qobject_cast<QgsRangeWidgetDoubleSpinBox *>( widget2->createWidget( w ) );
+  widget2->initWidget( editor1b );
+  // enter another a good value
+  editor1b->setFocus();
+  editor1b->mLineEdit->setText( u"-175"_s );
+  editor1b->clearFocus();
+  QCOMPARE( editor1b->text(), u"-175.0000"_s );
+  QCOMPARE( widget2->value(), -175.0000 );
+  // enter another a bad value
+  editor1b->setFocus();
+  editor1b->mLineEdit->setText( u"-50"_s );
+  editor1b->clearFocus();
+  QCOMPARE( editor1b->text(), u"-150.0000"_s );
+  QCOMPARE( widget2->value(), -150.0000 );
+
+  //c. in range 150 to 200 - below expects to nullify
+  QgsRangeWidgetDoubleSpinBox *editor1c = qobject_cast<QgsRangeWidgetDoubleSpinBox *>( widget2->createWidget( w ) );
+  QVERIFY( editor1c );
+  cfg.clear();
+  cfg.insert( u"AllowNull"_s, true );
+  cfg.insert( u"Min"_s, 150.00 );
+  cfg.insert( u"Max"_s, 200.00 );
+  widget2->setConfig( cfg );
+  widget2->initWidget( editor1c );
+  widget2->setFeature( feat1 );
+
+  // value persists
+  QCOMPARE( widget2->value(), 123.123456789 );
+  QCOMPARE( editor1c->text(), u"123.1235"_s );
+  // changes on touching
+  editor1c->setFocus();
+  editor1c->clearFocus();
+  QVERIFY( widget2->value().isNull() );    //it's null
+  QCOMPARE( editor1c->value(), 149.9999 ); //the minimum minus step value
+  QCOMPARE( editor1c->text(), u"nope"_s ); //the null representer
+
+  // reinit for fresh widget
+  editor1c = qobject_cast<QgsRangeWidgetDoubleSpinBox *>( widget2->createWidget( w ) );
+  widget2->initWidget( editor1c );
+  // enter another a good value
+  editor1c->setFocus();
+  editor1c->mLineEdit->setText( u"175"_s );
+  editor1c->clearFocus();
+  QCOMPARE( editor1c->text(), u"175.0000"_s );
+  QCOMPARE( widget2->value(), 175.0000 );
+  // enter another a bad value
+  editor1c->setFocus();
+  editor1c->mLineEdit->setText( u"50"_s );
+  editor1c->clearFocus();
+  QVERIFY( widget2->value().isNull() );    //it's null
+  QCOMPARE( editor1c->value(), 149.9999 ); //the minimum minus step value
+  QCOMPARE( editor1c->text(), u"nope"_s ); //the null representer
+
+  //2 double spinbox with negative value -123.123456789
+  QgsFeature feat3 { vl->getFeature( 3 ) };
+  //a. in range 50 to 100 - below expects to nullify
+  QgsRangeWidgetDoubleSpinBox *editor2a = qobject_cast<QgsRangeWidgetDoubleSpinBox *>( widget2->createWidget( w ) );
+  QVERIFY( editor2a );
+  cfg.clear();
+  cfg.insert( u"AllowNull"_s, true );
+  cfg.insert( u"Min"_s, 50.00 );
+  cfg.insert( u"Max"_s, 100.00 );
+  widget2->setConfig( cfg );
+  widget2->initWidget( editor2a );
+  widget2->setFeature( feat3 );
+
+  // value persists
+  QCOMPARE( widget2->value(), -123.123456789 );
+  QCOMPARE( editor2a->text(), u"-123.1235"_s );
+  //changes on touching
+  editor2a->setFocus();
+  editor2a->clearFocus();
+  QVERIFY( widget2->value().isNull() );   //it's null
+  QCOMPARE( editor2a->value(), 49.9999 ); //the minimum minus step value
+  QCOMPARE( editor2a->text(), u"nope"_s );
+
+  // reinit for fresh widget
+  editor2a = qobject_cast<QgsRangeWidgetDoubleSpinBox *>( widget2->createWidget( w ) );
+  widget2->initWidget( editor2a );
+  // enter another a good value
+  editor2a->setFocus();
+  editor2a->mLineEdit->setText( u"75"_s );
+  editor2a->clearFocus();
+  QCOMPARE( editor2a->text(), u"75.0000"_s );
+  QCOMPARE( widget2->value(), 75.0000 );
+  // enter another a bad value
+  editor2a->setFocus();
+  editor2a->mLineEdit->setText( u"-50"_s );
+  editor2a->clearFocus();
+  QVERIFY( widget2->value().isNull() );    //it's null
+  QCOMPARE( editor2a->value(), 49.9999 );  //the minimum minus step value
+  QCOMPARE( editor2a->text(), u"nope"_s ); //the null representer
+
+  //b. in range -200 to -150 - above expects to clamp to max
+  QgsRangeWidgetDoubleSpinBox *editor2b = qobject_cast<QgsRangeWidgetDoubleSpinBox *>( widget2->createWidget( w ) );
+  QVERIFY( editor2b );
+  cfg.clear();
+  cfg.insert( u"AllowNull"_s, true );
+  cfg.insert( u"Min"_s, -200.00 );
+  cfg.insert( u"Max"_s, -150.00 );
+  widget2->setConfig( cfg );
+  widget2->initWidget( editor2b );
+  widget2->setFeature( feat3 );
+
+  // value persists
+  QCOMPARE( widget2->value(), -123.123456789 );
+  QCOMPARE( editor2b->text(), u"-123.1235"_s );
+  // changes on touching
+  editor2b->setFocus();
+  editor2b->clearFocus();
+  QCOMPARE( widget2->value(), -150.0000 );
+  QCOMPARE( editor2b->text(), u"-150.0000"_s );
+
+  // reinit for fresh widget
+  editor2b = qobject_cast<QgsRangeWidgetDoubleSpinBox *>( widget2->createWidget( w ) );
+  widget2->initWidget( editor2b );
+  // enter another a good value
+  editor2b->setFocus();
+  editor2b->mLineEdit->setText( u"-175"_s );
+  editor2b->clearFocus();
+  QCOMPARE( editor2b->text(), u"-175.0000"_s );
+  QCOMPARE( widget2->value(), -175.0000 );
+  // enter another a bad value
+  editor2b->setFocus();
+  editor2b->mLineEdit->setText( u"-50"_s );
+  editor2b->clearFocus();
+  QCOMPARE( editor2b->text(), u"-150.0000"_s );
+  QCOMPARE( widget2->value(), -150.0000 );
+
+  //c. in range 150 to 200 - below expects to nullify
+  QgsRangeWidgetDoubleSpinBox *editor2c = qobject_cast<QgsRangeWidgetDoubleSpinBox *>( widget2->createWidget( w ) );
+  QVERIFY( editor2c );
+  cfg.clear();
+  cfg.insert( u"AllowNull"_s, true );
+  cfg.insert( u"Min"_s, 150.00 );
+  cfg.insert( u"Max"_s, 200.00 );
+  widget2->setConfig( cfg );
+  widget2->initWidget( editor2c );
+  widget2->setFeature( feat3 );
+
+  // value persists
+  QCOMPARE( widget2->value(), -123.123456789 );
+  QCOMPARE( editor2c->text(), u"-123.1235"_s );
+  // changes on touching
+  editor2c->setFocus();
+  editor2c->clearFocus();
+  QVERIFY( widget2->value().isNull() );    //it's null
+  QCOMPARE( editor2c->value(), 149.9999 ); //the minimum minus step value
+  QCOMPARE( editor2c->text(), u"nope"_s ); //the null representer
+
+  // reinit for fresh widget
+  editor2c = qobject_cast<QgsRangeWidgetDoubleSpinBox *>( widget2->createWidget( w ) );
+  widget2->initWidget( editor2c );
+  // enter another a good value
+  editor2c->setFocus();
+  editor2c->mLineEdit->setText( u"175"_s );
+  editor2c->clearFocus();
+  QCOMPARE( editor2c->text(), u"175.0000"_s );
+  QCOMPARE( widget2->value(), 175.0000 );
+  // enter another a bad value
+  editor2c->setFocus();
+  editor2c->mLineEdit->setText( u"50"_s );
+  editor2c->clearFocus();
+  QVERIFY( widget2->value().isNull() );    //it's null
+  QCOMPARE( editor2c->value(), 149.9999 ); //the minimum minus step value
+  QCOMPARE( editor2c->text(), u"nope"_s ); //the null representer
 }
 
 void TestQgsRangeWidgetWrapper::testLongLong()
