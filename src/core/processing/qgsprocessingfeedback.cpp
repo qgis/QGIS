@@ -15,6 +15,7 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "qgsconfig.h"
 #include "qgsprocessingfeedback.h"
 
 #include <gdal_version.h>
@@ -35,7 +36,7 @@ using namespace Qt::StringLiterals;
 #include <pdal/pdal.hpp>
 #endif
 
-#ifdef WITH_SFCGAL
+#ifdef HAVE_SFCGAL
 #include <SFCGAL/capi/sfcgal_c.h>
 #endif
 
@@ -169,7 +170,7 @@ void QgsProcessingFeedback::pushVersionInfo( const QgsProcessingProvider *provid
 #endif
 #endif
 
-#ifdef WITH_SFCGAL
+#ifdef HAVE_SFCGAL
   pushDebugInfo( tr( "SFCGAL version: %1" ).arg( sfcgal_version() ) );
 #else
   pushDebugInfo( tr( "No support for SFCGAL" ) );

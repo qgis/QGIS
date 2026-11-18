@@ -87,6 +87,7 @@ using namespace Qt::StringLiterals;
 
 #include "qgsmaplayerutils.h"
 #include "qgsappmenuutils.h"
+#include "qgsconfig.h"
 #include "qgsscreenhelper.h"
 #include "qgssettingsregistrycore.h"
 #include "qgssettingsentryenumflag.h"
@@ -196,7 +197,7 @@ using namespace Qt::StringLiterals;
 #include "qgsdirectionallightsettings.h"
 #endif
 
-#ifdef WITH_SFCGAL
+#ifdef HAVE_SFCGAL
 #include <SFCGAL/capi/sfcgal_c.h>
 #include <SFCGAL/version.h>
 #endif
@@ -5738,7 +5739,7 @@ QString QgisApp::getVersionString()
   versionString += "</td></tr><tr>"_L1;
 
   // SFCGAL version
-#ifdef WITH_SFCGAL
+#ifdef HAVE_SFCGAL
   const QString sfcgalVersionCompiled { SFCGAL_VERSION };
   const QString sfcgalVersionRunning { sfcgal_version() };
   versionString += u"<td>%1</td><td>%2"_s.arg( tr( "SFCGAL version" ), sfcgalVersionCompiled );

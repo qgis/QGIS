@@ -19,6 +19,8 @@
 #define QGSALGORITHMAPPROXIMATEMEDIALAXIS_H
 
 
+#include "qgsconfig.h"
+
 #include "qgis_sip.h"
 #include "qgsprocessingalgorithm.h"
 
@@ -53,7 +55,7 @@ class QgsApproximateMedialAxisAlgorithm : public QgsProcessingFeatureBasedAlgori
     bool prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
     QgsFeatureList processFeature( const QgsFeature &feature, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
 
-#ifdef WITH_SFCGAL
+#ifdef HAVE_SFCGAL
   private:
     bool mExtendToEdges = false;
 #endif

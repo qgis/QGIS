@@ -15,6 +15,7 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "qgsconfig.h"
 #include "qgsprocess.h"
 
 #include "qgsacademicreference.h"
@@ -34,7 +35,7 @@ using namespace Qt::StringLiterals;
 #include "qgs3dalgorithms.h"
 #endif
 #include "qgspdalalgorithms.h"
-#ifdef WITH_SFCGAL
+#ifdef HAVE_SFCGAL
 #include <SFCGAL/capi/sfcgal_c.h>
 #endif
 #ifdef WITH_GEOGRAPHICLIB
@@ -1369,7 +1370,7 @@ void QgsProcessingExec::addVersionInformation( QVariantMap &json )
   PJ_INFO info = proj_info();
   json.insert( u"proj_version"_s, info.release );
 
-#ifdef WITH_SFCGAL
+#ifdef HAVE_SFCGAL
   json.insert( u"sfcgal_version"_s, sfcgal_version() );
 #else
   json.insert( u"sfcgal_version"_s, "no support" );

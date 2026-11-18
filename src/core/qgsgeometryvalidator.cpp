@@ -13,6 +13,7 @@ email                : jef at norbit dot de
  *                                                                         *
  ***************************************************************************/
 
+#include "qgsconfig.h"
 #include "qgsgeometryvalidator.h"
 
 #include "qgis.h"
@@ -30,7 +31,7 @@ email                : jef at norbit dot de
 
 using namespace Qt::StringLiterals;
 
-#ifdef WITH_SFCGAL
+#ifdef HAVE_SFCGAL
 #include "qgssfcgalgeometry.h"
 #endif
 
@@ -409,7 +410,7 @@ void QgsGeometryValidator::run()
         return;
       }
 
-#ifdef WITH_SFCGAL
+#ifdef HAVE_SFCGAL
       QString errorMsg;
       QgsGeometry errorLoc;
       const QgsSfcgalGeometry sfcgalGeom( mGeometry.constGet() );

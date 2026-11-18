@@ -13,6 +13,7 @@ email                : morb at ozemail dot com dot au
  *                                                                         *
  ***************************************************************************/
 
+#include "qgsconfig.h"
 #include "qgsgeometry.h"
 
 #include <cmath>
@@ -52,7 +53,7 @@ email                : morb at ozemail dot com dot au
 
 #include <QString>
 
-#ifdef WITH_SFCGAL
+#ifdef HAVE_SFCGAL
 #include "qgssfcgalgeometry.h"
 #endif
 
@@ -3940,7 +3941,7 @@ void QgsGeometry::validateGeometry( QVector<QgsGeometry::Error> &errors, const Q
     }
     case Qgis::GeometryValidationEngine::Sfcgal:
     {
-#ifdef WITH_SFCGAL
+#ifdef HAVE_SFCGAL
       QString errorMsg;
       QgsGeometry errorLoc;
       const QgsSfcgalGeometry sfcgalGeom( d->geometry.get() );

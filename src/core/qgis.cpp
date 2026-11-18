@@ -708,7 +708,7 @@ QString Qgis::geosVersion()
 
 bool Qgis::hasSfcgal()
 {
-#ifdef WITH_SFCGAL
+#ifdef HAVE_SFCGAL
   return true;
 #else
   return false;
@@ -717,7 +717,7 @@ bool Qgis::hasSfcgal()
 
 int Qgis::sfcgalVersionInt()
 {
-#ifdef WITH_SFCGAL
+#ifdef HAVE_SFCGAL
   return SFCGAL_VERSION_MAJOR_INT * 10000 + SFCGAL_VERSION_MINOR_INT * 100 + SFCGAL_VERSION_PATCH_INT;
 #else
   throw QgsNotSupportedException( QObject::tr( "This operation requires a QGIS build based SFCGAL." ) );
