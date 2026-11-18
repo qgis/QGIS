@@ -34,7 +34,9 @@ using namespace Qt::StringLiterals;
 QgsMapRendererStagedRenderJob::QgsMapRendererStagedRenderJob( const QgsMapSettings &settings, Flags flags )
   : QgsMapRendererAbstractCustomPainterJob( settings )
   , mFlags( flags )
-{}
+{
+  mJobIt = mLayerJobs.begin();
+}
 
 QgsMapRendererStagedRenderJob::~QgsMapRendererStagedRenderJob()
 {
