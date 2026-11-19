@@ -722,7 +722,7 @@ QString QgsPythonUtilsImpl::getTypeAsString( PyObject *obj )
   if ( PyType_Check( obj ) )
   {
     QgsDebugMsgLevel( u"got type"_s, 2 );
-    return QString( ( reinterpret_cast< PyTypeObject * >( obj )->tp_name );
+    return QString( reinterpret_cast< PyTypeObject * >( obj )->tp_name );
   }
   else
   {
