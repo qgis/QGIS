@@ -427,9 +427,10 @@ void QgsLayoutItemHtml::renderHtmlSynchronously()
   htmlRenderSettings.setFeatureJson( mAtlasFeatureProperties );
 
 #ifdef CAN_RENDER
+  QString errorMessage;
   if ( !QgsWebEnginePage::renderBlocking( mEvaluatedHtml, &painter, QRectF( 0, 0, widthCssPx, 9999 ), errorMessage, renderedSizeCssPx, htmlRenderSettings, nullptr ) )
   {
-    QgsDebugError( "Fail to render HTML" );
+    QgsDebugError( errorMessage );
   }
 #endif
   painter.end();
