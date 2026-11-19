@@ -157,7 +157,7 @@ void TestQgisAppClipboard::copyToText()
   // attributes only
   QgsSettings settings;
   settings.setEnumValue( u"/qgis/copyFeatureFormat"_s, QgsClipboard::AttributesOnly );
-  QString result, resultHtml;
+  QString result;
 
   QCOMPARE( QApplication::clipboard()->text(), QString( "int_field\tdouble_field\tstring_field\n9\t9.9\tval\n19\t19.19\tval2\n\t\t" ) );
 
@@ -266,7 +266,7 @@ void TestQgisAppClipboard::copyToTextNoFields()
   mQgisApp->clipboard()->replaceWithCopyOf( feats );
 
   QgsSettings settings;
-  QString result, resultHtml;
+  QString result;
 
   // attributes with WKT
   settings.setEnumValue( u"/qgis/copyFeatureFormat"_s, QgsClipboard::AttributesWithWKT );

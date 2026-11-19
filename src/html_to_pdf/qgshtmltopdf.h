@@ -24,6 +24,7 @@
 
 class QgsLoggingWebEnginePage : public QWebEnginePage
 {
+    Q_OBJECT
   protected:
     void javaScriptConsoleMessage( JavaScriptConsoleMessageLevel level, const QString &message, int lineNumber, const QString &sourceID ) override;
     // disable interactive javascript calls, these can't be used in the headless utility
