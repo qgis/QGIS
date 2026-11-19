@@ -22,6 +22,7 @@
 #include <QPointer>
 
 class Qgs3DMapCanvas;
+class QAction;
 class QMouseEvent;
 class QKeyEvent;
 class QWheelEvent;
@@ -68,12 +69,38 @@ class _3D_EXPORT Qgs3DMapTool : public QObject
     //! Returns the parent Qgs3DMapCanvas
     Qgs3DMapCanvas *canvas();
 
+    /**
+     * Use this to associate a QAction to this maptool. Then when the setMapTool
+     * method of mapcanvas is called the action state will be set to on.
+     * Usually this will cause e.g. a toolbutton to appear pressed in and
+     * the previously used toolbutton to pop out.
+     *
+     * \since QGIS 4.4
+     */
+    void setAction( QAction *action );
+
+    /**
+     * Returns associated action with map tool or NULLPTR if no action is associated
+     *
+     * \since QGIS 4.4
+     */
+    QAction *action() const;
+
   private slots:
     //! Called when canvas's map setting is changed
     virtual void onMapSettingsChanged();
 
+    //! clear pointer when action is destroyed
+    void actionDestroyed();
+
   protected:
     QPointer<Qgs3DMapCanvas> mCanvas;
+
+    /**
+     * Optional pointer to an action that will be checked on map tool activation
+     * and unchecked on map tool deactivation.
+     */
+    QAction *mAction = nullptr;
 };
 
 #endif // QGS3DMAPTOOL_H
