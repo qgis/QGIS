@@ -61,6 +61,16 @@ if(WITH_BINDINGS)
     PATTERN "*.sip" EXCLUDE)
 endif()
 
+if(WITH_QTWEBENGINE)
+  if(MSVC)
+    # TODO
+  else()
+    install(PROGRAMS "${VCPKG_BASE_DIR}/tools/Qt6/bin/QtWebEngineProcess" DESTINATION "${QGIS_BIN_SUBDIR}")
+    install(DIRECTORY "${VCPKG_BASE_DIR}/share/Qt6/resources/" DESTINATION "${APP_RESOURCES_DIR}/resources")
+    install(DIRECTORY "${VCPKG_BASE_DIR}/translations/Qt6/qtwebengine_locales" DESTINATION "${APP_RESOURCES_DIR}/translations")
+  endif()
+endif()
+
 function(fixup_shebang INPUT_FILE OUTPUT_VARIABLE)
   get_filename_component(_FILE ${INPUT_FILE} NAME)
   file(READ ${INPUT_FILE} CONTENTS)
