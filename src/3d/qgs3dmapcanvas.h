@@ -235,6 +235,14 @@ class _3D_EXPORT Qgs3DMapCanvas : public QWindow
     //! Emitted when the camera navigation \a speed is changed.
     void cameraNavigationSpeedChanged( double speed );
 
+    /**
+     * Emitted when the map tool is changed from \a oldTool to \a newTool
+     * Any of those two may be nullptr if there is no map tool.
+     *
+     * \since QGIS 4.4
+     */
+    void mapToolSet( Qgs3DMapTool *newTool, Qgs3DMapTool *oldTool );
+
 #endif
     /**
      *  Emitted when the cross section mode is enabled or disabled

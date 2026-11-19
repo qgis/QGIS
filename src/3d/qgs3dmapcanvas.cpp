@@ -287,12 +287,13 @@ void Qgs3DMapCanvas::setMapTool( Qgs3DMapTool *tool )
     return;
 
   // deactivate existing tool
-  if ( mMapTool )
-    mMapTool->deactivate();
+  Qgs3DMapTool *oldTool = mMapTool;
+  if ( oldTool )
+    oldTool->deactivate();
 
   // set new map tool and activate it
   mMapTool = tool;
-
+  emit mapToolSet( mMapTool, oldTool );
   if ( mMapTool )
   {
     mMapTool->activate();
