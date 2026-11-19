@@ -30,6 +30,7 @@ from qgis.core import (
     QgsProcessingAlgRunnerTask,
     QgsProcessingFeatureSourceDefinition,
     QgsProcessingOutputHtml,
+    QgsProcessingUtils,
     QgsProxyProgressTask,
 )
 from qgis.gui import (
@@ -50,7 +51,7 @@ from qgis.utils import iface
 
 from processing.core.ProcessingConfig import ProcessingConfig
 from processing.core.ProcessingResults import resultsList
-from processing.gui.AlgorithmExecutor import execute_in_place, executeIterating
+from processing.gui.AlgorithmExecutor import execute_in_place
 from processing.gui.BatchAlgorithmDialog import BatchAlgorithmDialog
 from processing.tools import dataobjects
 
@@ -267,7 +268,8 @@ class AlgorithmWidget(QgsProcessingAlgorithmWidget):
             self.cancelButton().setEnabled(
                 self.algorithm().flags() & QgsProcessingAlgorithm.Flag.FlagCanCancel
             )
-            if executeIterating(
+
+            if QgsProcessingUtils.executeIterating(
                 self.algorithm(),
                 parameters,
                 self.iterateParam,

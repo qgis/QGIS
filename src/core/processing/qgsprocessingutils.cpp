@@ -29,6 +29,7 @@
 #include "qgsprocessingalgorithm.h"
 #include "qgsprocessingcontext.h"
 #include "qgsprocessingparameters.h"
+#include "qgsprocessingregistry.h"
 #include "qgsproject.h"
 #include "qgsproviderregistry.h"
 #include "qgsrasterfilewriter.h"
@@ -1889,6 +1890,95 @@ QStringList QgsProcessingUtils::modelFolders()
   {
     return { defaultModelFolder() };
   }
+}
+
+bool QgsProcessingUtils::executeIterating(
+  QgsProcessingAlgorithm *algorithm, const QVariantMap &inputParameters, const QString &parameterToIterate, QgsProcessingContext &context, QgsProcessingFeedback *feedback
+)
+{
+  if ( !algorithm )
+    return false;
+
+  QVariantMap parameters = inputParameters;
+
+  const QgsProcessingParameterDefinition *parameterDefinition = algorithm->parameterDefinition( parameterToIterate );
+  if ( !parameterDefinition )
+    return false;
+
+  std::unique_ptr<QgsProcessingFeatureSource> iterSource = QgsProcessingParameters::parameterAsSource( parameterDefinition, parameters, context );
+  if ( !iterSource )
+    return false;
+
+  if ( iterSource->hasFeatures() == Qgis::FeatureAvailability::NoFeaturesAvailable )
+    return false;
+
+  QStringList sinkList;
+
+  QgsFeatureIterator features = iterSource->getFeatures();
+  const double step = iterSource->featureCount() > 0 ? 100 / iterSource->featureCount() : 0;
+  QgsFeature f;
+  long long i = 0;
+  while ( features.nextFeature( f ) )
+  {
+    if ( feedback->isCanceled() )
+      return false;
+
+    QString dest = u"memory:"_s;
+    std::unique_ptr<QgsFeatureSink> sink = QgsProcessingUtils::createFeatureSink( dest, context, iterSource->fields(), iterSource->wkbType(), iterSource->sourceCrs() );
+
+    sinkList.append( dest );
+    sink->addFeature( f, QgsFeatureSink::Flag::FastInsert );
+
+    i++;
+    feedback->setProgress( i * step );
+  }
+
+  // store output values to use them later as basenames for all outputs
+  QVariantMap outputs;
+  const QList< const QgsProcessingParameterDefinition * > destinations = algorithm->destinationParameterDefinitions();
+  for ( const QgsProcessingParameterDefinition *out : destinations )
+  {
+    if ( parameters.contains( out->name() ) )
+    {
+      outputs[out->name()] = parameters.value( out->name() );
+    }
+  }
+
+  // now run all the algorithms
+  i = 0;
+  for ( const QString &f : sinkList )
+  {
+    if ( feedback->isCanceled() )
+      return false;
+
+    // clear any model result stored in the last iteration
+    context.clearModelResult();
+
+    parameters.insert( parameterToIterate, f );
+    for ( const QgsProcessingParameterDefinition *out : destinations )
+    {
+      if ( !outputs.contains( out->name() ) )
+        continue;
+
+      const QVariant output = outputs.value( out->name() );
+      parameters.insert( out->name(), QgsProcessingUtils::generateIteratingDestination( output, i, context ) );
+    }
+
+    feedback->setProgressText( QObject::tr( "Executing iteration %1/%2…" ).arg( i + 1 ).arg( sinkList.count() ) );
+
+    feedback->setProgress( 100 * static_cast< double >( i + 1 ) / sinkList.count() );
+
+    bool ok = false;
+    const QVariantMap results = algorithm->run( parameters, context, feedback, &ok );
+    if ( !ok )
+    {
+      return false;
+    }
+
+    i++;
+  }
+
+  return QgsApplication::processingRegistry()->handleAlgorithmResults( algorithm, context, {}, feedback );
 }
 
 //
