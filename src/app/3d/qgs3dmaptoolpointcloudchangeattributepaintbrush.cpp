@@ -65,6 +65,8 @@ void Qgs3DMapToolPointCloudChangeAttributePaintbrush::activate()
   mHighlighterRubberBand = std::make_unique<QgsRubberBand3D>( mCanvas->scene(), Qgis::GeometryType::Polygon );
   mHighlighterRubberBand->setMarkersEnabled( false );
   mHighlighterRubberBand->setEdgesEnabled( false );
+
+  Qgs3DMapTool::activate();
 }
 
 void Qgs3DMapToolPointCloudChangeAttributePaintbrush::deactivate()
@@ -75,6 +77,8 @@ void Qgs3DMapToolPointCloudChangeAttributePaintbrush::deactivate()
   mSelectionRubberBand.reset();
   mIsActive = false;
   mCanvas->cameraController()->setInputHandlersEnabled( true );
+
+  Qgs3DMapTool::deactivate();
 }
 
 QCursor Qgs3DMapToolPointCloudChangeAttributePaintbrush::cursor() const

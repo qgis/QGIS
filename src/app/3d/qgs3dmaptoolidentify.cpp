@@ -190,11 +190,15 @@ void Qgs3DMapToolIdentify::mouseReleaseEvent( QMouseEvent *event )
 void Qgs3DMapToolIdentify::activate()
 {
   mIsActive = true;
+
+  Qgs3DMapTool::activate();
 }
 
 void Qgs3DMapToolIdentify::deactivate()
 {
   mIsActive = false;
+
+  Qgs3DMapTool::deactivate();
 }
 
 QCursor Qgs3DMapToolIdentify::cursor() const
