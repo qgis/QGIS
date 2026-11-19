@@ -61,7 +61,7 @@ class ANALYSIS_EXPORT QgsGeometryCheckRegistry
      *
      * \since QGIS 3.4
      */
-    QgsGeometryCheck *geometryCheck( const QString &checkId, QgsGeometryCheckContext *context, const QVariantMap &geometryCheckConfig ) SIP_FACTORY;
+    std::unique_ptr<QgsGeometryCheck> geometryCheck( const QString &checkId, QgsGeometryCheckContext *context, const QVariantMap &geometryCheckConfig );
 
     /**
      * Returns all geometry check factories that are compatible with \a layer and have all of the \a flags set.
