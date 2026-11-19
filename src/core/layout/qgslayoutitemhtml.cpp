@@ -180,7 +180,6 @@ void QgsLayoutItemHtml::loadHtml( const bool useCache, const QgsExpressionContex
   const QgsExpressionContext scopedContext = createExpressionContext();
   const QgsExpressionContext *evalContext = context ? context : &scopedContext;
 
-  QString loadedHtml;
   switch ( mContentMode )
   {
     case QgsLayoutItemHtml::Url:
@@ -411,7 +410,6 @@ void QgsLayoutItemHtml::renderHtmlSynchronously()
   const double unitsPerCssPx = layoutUnitsPerCssPixel();
   const double widthCssPx = frameWidthLayoutUnits / unitsPerCssPx;
 
-  QString errorMessage;
   mRenderedPicture = QPicture();
   QPainter painter( &mRenderedPicture );
   painter.setRenderHint( QPainter::Antialiasing, true );
@@ -431,7 +429,7 @@ void QgsLayoutItemHtml::renderHtmlSynchronously()
 #ifdef CAN_RENDER
   if ( !QgsWebEnginePage::renderBlocking( mEvaluatedHtml, &painter, QRectF( 0, 0, widthCssPx, 9999 ), errorMessage, renderedSizeCssPx, htmlRenderSettings, nullptr ) )
   {
-    QgsDebugError( errorMessage );
+    QgsDebugError( "Fail to render HTML" );
   }
 #endif
   painter.end();
