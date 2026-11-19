@@ -114,6 +114,7 @@ Qgs3DMapCanvasWidget::Qgs3DMapCanvasWidget( const QString &name, bool isDocked )
   QAction *actionCameraControl = toolBar->addAction( QIcon( QgsApplication::iconPath( "mActionPan.svg" ) ), tr( "Camera Control" ), this, &Qgs3DMapCanvasWidget::cameraControl );
   actionCameraControl->setObjectName( u"m3DActionCameraControl"_s );
   actionCameraControl->setCheckable( true );
+  actionCameraControl->setChecked( true );
 
   QAction *zoomFullAction = toolBar->addAction( QgsApplication::getThemeIcon( u"mActionZoomFullExtent.svg"_s ), tr( "Zoom Full" ), this, &Qgs3DMapCanvasWidget::resetView );
   zoomFullAction->setObjectName( u"m3DActionZoomFull"_s );
