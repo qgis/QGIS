@@ -24,6 +24,7 @@
 #include "qgsapplication.h"
 #include "qgscameracontroller.h"
 #include "qgschunkedentity.h"
+#include "qgsellipsoidutils.h"
 #include "qgsfeature.h"
 #include "qgsfeatureiterator.h"
 #include "qgsfeaturerequest.h"
@@ -420,6 +421,17 @@ float Qgs3DUtils::clampAltitude( const QgsPoint &p, Qgis::AltitudeClamping altCl
 
 void Qgs3DUtils::clampAltitudes( QgsLineString *lineString, Qgis::AltitudeClamping altClamp, Qgis::AltitudeBinding altBind, const QgsPoint &centroid, float offset, const Qgs3DRenderContext &context )
 {
+  double globeSemiMajorAxis = 0;
+  double globeSemiMinorAxis = 0;
+  if ( context.crs().type() == Qgis::CrsType::Geocentric )
+  {
+    const QgsEllipsoidUtils::EllipsoidParameters params = QgsEllipsoidUtils::ellipsoidParameters( context.crs().ellipsoidAcronym() );
+    if ( params.valid )
+    {
+      globeSemiMajorAxis = params.semiMajor;
+      globeSemiMinorAxis = params.semiMinor;
+    }
+  }
   for ( int i = 0; i < lineString->nCoordinates(); ++i )
   {
     float terrainZ = 0;
@@ -462,8 +474,20 @@ void Qgs3DUtils::clampAltitudes( QgsLineString *lineString, Qgis::AltitudeClampi
         break;
     }
 
-    const float z = ( terrainZ + geomZ ) * ( context.terrainSettings() ? static_cast<float>( context.terrainSettings()->verticalScale() ) : 1 ) + offset;
-    lineString->setZAt( i, z );
+    const float z = ( terrainZ + geomZ ) * ( context.terrainSettings() ? static_cast<float>( context.terrainSettings()->verticalScale() ) : 1 );
+
+    if ( globeSemiMajorAxis > 0 )
+    {
+      const QgsVector3D p( lineString->xAt( i ), lineString->yAt( i ), lineString->zAt( i ) );
+      const QgsVector3D offsetVector = QgsEllipsoidUtils::ellipsoidNormal( p, globeSemiMajorAxis, globeSemiMinorAxis ) * offset;
+      lineString->setXAt( i, p.x() + offsetVector.x() );
+      lineString->setYAt( i, p.y() + offsetVector.y() );
+      lineString->setZAt( i, p.z() + offsetVector.z() );
+    }
+    else
+    {
+      lineString->setZAt( i, z + offset );
+    }
   }
 }
 
