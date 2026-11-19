@@ -58,7 +58,7 @@ static bool getPoints( const QgsPointLocator::Match &match, QgsPoint &p1, QgsPoi
   const QgsFeatureId fid = match.featureId();
   const int vertex = match.vertexIndex();
 
-  if ( auto *lLayer = match.layer() )
+  if ( auto *lLayer = qobject_cast<QgsVectorLayer *>( match.layer() ) )
   {
     const QgsGeometry geom = lLayer->getGeometry( fid );
 
@@ -86,13 +86,13 @@ void QgsMapToolTrimExtendFeature::canvasMoveEvent( QgsMapMouseEvent *e )
     case StepLimit:
 
       match = mCanvas->snappingUtils()->snapToMap( mMapPoint, &filter, true );
-      if ( match.isValid() && match.layer() )
+      if ( QgsVectorLayer *matchLayer = match.isValid() ? qobject_cast<QgsVectorLayer *>( match.layer() ) : nullptr )
       {
-        mIs3DLayer = QgsWkbTypes::hasZ( match.layer()->wkbType() );
+        mIs3DLayer = QgsWkbTypes::hasZ( matchLayer->wkbType() );
 
         QgsPointXY p1, p2;
         match.edgePoints( p1, p2 );
-        mLimitLayer = match.layer();
+        mLimitLayer = matchLayer;
         mRubberBandLimit.reset( createRubberBand( Qgis::GeometryType::Line ) );
         mRubberBandLimitExtend.reset( createRubberBand( Qgis::GeometryType::Line ) );
         mRubberBandLimitExtend->setLineStyle( Qt::DotLine );
@@ -166,7 +166,7 @@ void QgsMapToolTrimExtendFeature::canvasMoveEvent( QgsMapMouseEvent *e )
 
         mSegmentIntersects = QgsGeometryUtils::segmentIntersection( pLimit1Projected, pLimit2Projected, pExtend1, pExtend2, mIntersection, mIsIntersection, 1e-8, true );
 
-        if ( mIs3DLayer && QgsWkbTypes::hasZ( match.layer()->wkbType() ) )
+        if ( mIs3DLayer && QgsWkbTypes::hasZ( mVlayer->wkbType() ) )
         {
           /* Z Interpolation */
           const QgsLineString line( pLimit1Projected, pLimit2Projected );
@@ -180,9 +180,9 @@ void QgsMapToolTrimExtendFeature::canvasMoveEvent( QgsMapMouseEvent *e )
           mRubberBandIntersection->addPoint( toMapCoordinates( mVlayer, QgsPointXY( mIntersection ) ) );
           mRubberBandIntersection->show();
 
-          mRubberBandExtend.reset( createRubberBand( match.layer()->geometryType() ) );
+          mRubberBandExtend.reset( createRubberBand( mVlayer->geometryType() ) );
 
-          mGeom = match.layer()->getGeometry( match.featureId() );
+          mGeom = mVlayer->getGeometry( match.featureId() );
           int index = match.vertexIndex();
 
           if ( !mSegmentIntersects )
@@ -261,7 +261,7 @@ void QgsMapToolTrimExtendFeature::canvasReleaseEvent( QgsMapMouseEvent *e )
           if ( getPoints( match, pLimit1, pLimit2 ) )
           {
             mStep = StepExtend;
-            mLimitLayer = match.layer();
+            mLimitLayer = qobject_cast<QgsVectorLayer *>( match.layer() );
           }
         }
         break;
@@ -271,7 +271,7 @@ void QgsMapToolTrimExtendFeature::canvasReleaseEvent( QgsMapMouseEvent *e )
           filter.setLayer( mVlayer );
           match = mCanvas->snappingUtils()->snapToMap( mMapPoint, &filter, true );
 
-          if ( auto *lLayer = match.layer() )
+          if ( auto *lLayer = qobject_cast<QgsVectorLayer *>( match.layer() ) )
           {
             lLayer->beginEditCommand( tr( "Trim/Extend feature" ) );
             lLayer->changeGeometry( match.featureId(), mGeom );

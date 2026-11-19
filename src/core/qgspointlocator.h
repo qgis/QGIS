@@ -140,26 +140,12 @@ class CORE_EXPORT QgsPointLocator : public QObject
     ~QgsPointLocator() override;
 
     /**
-     * Returns the associated vector layer, or NULLPTR if this locator was built for a
-     * non-vector layer such as an annotation layer. Use mapLayer() for the generic accessor.
-     *
-     * \since QGIS 4.4
-     */
-    QgsVectorLayer *vectorLayer() const { return qobject_cast<QgsVectorLayer *>( mLayer.data() ); }
-
-    /**
-     * Returns the associated vector layer.
-     *
-     * \deprecated QGIS 4.4. Use vectorLayer() or mapLayer() instead.
-     */
-    Q_DECL_DEPRECATED QgsVectorLayer *layer() const SIP_DEPRECATED { return vectorLayer(); }
-
-    /**
      * Returns the layer this locator was built for.
      *
-     * \since QGIS 4.4
+     * Since QGIS 4.4 this is not necessarily a vector layer (e.g. it can be an annotation layer),
+     * so callers which need vector layer specific API must cast the result.
      */
-    QgsMapLayer *mapLayer() const;
+    QgsMapLayer *layer() const { return mLayer.data(); }
 
     /**
      * Gets destination CRS - may be an invalid QgsCoordinateReferenceSystem if not doing OTF reprojection
@@ -222,12 +208,11 @@ class CORE_EXPORT QgsPointLocator : public QObject
         //! construct invalid match
         Match() = default;
 
-        Match( QgsPointLocator::Type t, QgsVectorLayer *vl, QgsFeatureId fid, double dist, const QgsPointXY &pt, int vertexIndex = 0, QgsPointXY *edgePoints = nullptr )
+        Match( QgsPointLocator::Type t, QgsMapLayer *layer, QgsFeatureId fid, double dist, const QgsPointXY &pt, int vertexIndex = 0, QgsPointXY *edgePoints = nullptr )
           : mType( t )
           , mDist( dist )
           , mPoint( pt )
-          , mLayer( vl )
-          , mMapLayer( vl )
+          , mLayer( layer )
           , mFid( fid )
           , mVertexIndex( vertexIndex )
         {
@@ -275,18 +260,13 @@ class CORE_EXPORT QgsPointLocator : public QObject
         int vertexIndex() const { return mVertexIndex; }
 
         /**
-         * The vector layer where the snap occurred, or NULLPTR for an intersection or a non-vector
-         * (e.g. annotation) layer; use mapLayer() in that case.
-         */
-        QgsVectorLayer *layer() const { return mLayer; }
-
-        /**
-         * The map layer where the snap occurred. Unlike layer(), populated for any layer type
-         * (including annotation); NULLPTR for an intersection snap.
+         * The layer where the snap occurred.
+         * Will be NULLPTR if the snap happened on an intersection.
          *
-         * \since QGIS 4.4
+         * Since QGIS 4.4 this is not necessarily a vector layer (e.g. it can be an annotation layer),
+         * so callers which need vector layer specific API must cast the result.
          */
-        QgsMapLayer *mapLayer() const { return mMapLayer; }
+        QgsMapLayer *layer() const { return mLayer; }
 
         /**
          * The id of the feature to which the snapped geometry belongs.
@@ -318,11 +298,11 @@ class CORE_EXPORT QgsPointLocator : public QObject
         {
           QgsPoint point;
 
-          if ( mLayer )
+          if ( QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( mLayer ) )
           {
             QgsPointXY snappedPoint( mPoint );
-            const QgsGeometry geom = mLayer->getGeometry( mFid );
-            QgsCoordinateTransform transform( destinationCrs, mLayer->crs(), mLayer->transformContext() );
+            const QgsGeometry geom = vl->getGeometry( mFid );
+            QgsCoordinateTransform transform( destinationCrs, vl->crs(), vl->transformContext() );
             if ( transform.isValid() )
             {
               try
@@ -374,7 +354,6 @@ class CORE_EXPORT QgsPointLocator : public QObject
                  && mDist == other.mDist
                  && mPoint == other.mPoint
                  && mLayer == other.mLayer
-                 && mMapLayer == other.mMapLayer
                  && mFid == other.mFid
                  && mItemId == other.mItemId
                  && mVertexIndex == other.mVertexIndex
@@ -388,8 +367,7 @@ class CORE_EXPORT QgsPointLocator : public QObject
         Type mType = Invalid;
         double mDist = 0;
         QgsPointXY mPoint;
-        QgsVectorLayer *mLayer = nullptr;
-        QgsMapLayer *mMapLayer = nullptr;
+        QgsMapLayer *mLayer = nullptr;
         QgsFeatureId mFid = 0;
         QString mItemId;
         int mVertexIndex = 0; // e.g. vertex index
@@ -565,7 +543,7 @@ class CORE_EXPORT QgsPointLocator : public QObject
     Qgis::GeometryType geometryType() const;
 
     /**
-     * Builds a fully-stamped Match. It resolves the vector layer, map layer and (for annotation
+     * Builds a fully-stamped Match. It resolves the map layer and (for annotation
      * sources) the item id from the source and the synthetic feature \a fid, so that the identity
      * is populated before any MatchFilter runs.
      */

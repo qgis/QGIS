@@ -72,29 +72,13 @@ item's :py:func:`~QgsPointLocator.snapGeometry`
 
     ~QgsPointLocator();
 
-    QgsVectorLayer *vectorLayer() const;
-%Docstring
-Returns the associated vector layer, or ``None`` if this locator was
-built for a non-vector layer such as an annotation layer. Use
-:py:func:`~QgsPointLocator.mapLayer` for the generic accessor.
-
-.. versionadded:: 4.4
-%End
-
- QgsVectorLayer *layer() const /Deprecated="Since 4.4. Use vectorLayer() or mapLayer() instead."/;
-%Docstring
-Returns the associated vector layer.
-
-.. deprecated:: 4.4
-
-   Use :py:func:`~QgsPointLocator.vectorLayer` or :py:func:`~QgsPointLocator.mapLayer` instead.
-%End
-
-    QgsMapLayer *mapLayer() const;
+    QgsMapLayer *layer() const;
 %Docstring
 Returns the layer this locator was built for.
 
-.. versionadded:: 4.4
+Since QGIS 4.4 this is not necessarily a vector layer (e.g. it can be an
+annotation layer), so callers which need vector layer specific API must
+cast the result.
 %End
 
     QgsCoordinateReferenceSystem destinationCrs() const;
@@ -168,7 +152,7 @@ Indicate whether the data have been already indexed
 construct invalid match
 %End
 
-        Match( QgsPointLocator::Type t, QgsVectorLayer *vl, QgsFeatureId fid, double dist, const QgsPointXY &pt, int vertexIndex = 0, QgsPointXY *edgePoints = 0 );
+        Match( QgsPointLocator::Type t, QgsMapLayer *layer, QgsFeatureId fid, double dist, const QgsPointXY &pt, int vertexIndex = 0, QgsPointXY *edgePoints = 0 );
 
         QgsPointLocator::Type type() const;
 
@@ -218,20 +202,14 @@ for vertex / edge match coords depending on what class returns it
 for vertex / edge match (first vertex of the edge)
 %End
 
-        QgsVectorLayer *layer() const;
+        QgsMapLayer *layer() const;
 %Docstring
-The vector layer where the snap occurred, or ``None`` for an
-intersection or a non-vector (e.g. annotation) layer; use
-:py:func:`~QgsPointLocator.mapLayer` in that case.
-%End
+The layer where the snap occurred. Will be ``None`` if the snap happened
+on an intersection.
 
-        QgsMapLayer *mapLayer() const;
-%Docstring
-The map layer where the snap occurred. Unlike
-:py:func:`~QgsPointLocator.layer`, populated for any layer type
-(including annotation); ``None`` for an intersection snap.
-
-.. versionadded:: 4.4
+Since QGIS 4.4 this is not necessarily a vector layer (e.g. it can be an
+annotation layer), so callers which need vector layer specific API must
+cast the result.
 %End
 
         QgsFeatureId featureId() const;

@@ -93,7 +93,7 @@ void QgsMapToolOffsetCurve::canvasReleaseEvent( QgsMapMouseEvent *e )
       match = mCanvas->snappingUtils()->snapToCurrentLayer( e->pos(), QgsPointLocator::Types( QgsPointLocator::Edge | QgsPointLocator::Area ) );
     }
 
-    if ( auto *lLayer = match.layer() )
+    if ( auto *lLayer = qobject_cast<QgsVectorLayer *>( match.layer() ) )
     {
       mSourceLayer = lLayer;
       QgsFeature fet;
@@ -497,7 +497,7 @@ void QgsMapToolOffsetCurve::canvasMoveEvent( QgsMapMouseEvent *e )
 
 void QgsMapToolOffsetCurve::prepareGeometry( const QgsPointLocator::Match &match, QgsFeature &snappedFeature )
 {
-  QgsVectorLayer *vl = match.layer();
+  QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( match.layer() );
   if ( !vl )
   {
     return;

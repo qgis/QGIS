@@ -317,7 +317,8 @@ QgsCadUtils::AlignMapPointOutput QgsCadUtils::alignMapPoint( const QgsPointXY &o
     const QgsPointLocator::Match snap = ctx.lockedSnapVertices().last();
     const QgsPointXY extensionPoint = snap.point();
 
-    if ( snap.layer() && !extensionPoint.isEmpty() )
+    QgsVectorLayer *snapLayer = qobject_cast<QgsVectorLayer *>( snap.layer() );
+    if ( snapLayer && !extensionPoint.isEmpty() )
     {
       auto checkLineExtension = [&]( QgsPoint vertex ) {
         if ( vertex.isEmpty() )
@@ -378,7 +379,7 @@ QgsCadUtils::AlignMapPointOutput QgsCadUtils::alignMapPoint( const QgsPointXY &o
       req.setFilterFid( snap.featureId() );
       req.setNoAttributes();
       req.setDestinationCrs( ctx.snappingUtils->mapSettings().destinationCrs(), ctx.snappingUtils->mapSettings().transformContext() );
-      QgsFeatureIterator featureIt = snap.layer()->getFeatures( req );
+      QgsFeatureIterator featureIt = snapLayer->getFeatures( req );
 
       QgsFeature feature;
       featureIt.nextFeature( feature );

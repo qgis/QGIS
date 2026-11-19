@@ -904,7 +904,7 @@ int QgsMapToolCapture::nextPoint( QPoint p, QgsPoint &layerPoint, QgsPoint &mapP
 int QgsMapToolCapture::fetchLayerPoint( const QgsPointLocator::Match &match, QgsPoint &layerPoint )
 {
   QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( layer() );
-  QgsVectorLayer *sourceLayer = match.layer();
+  QgsVectorLayer *sourceLayer = qobject_cast<QgsVectorLayer *>( match.layer() );
   if ( mCadDockWidget && mCadDockWidget->cadEnabled() )
   {
     layerPoint = mCadDockWidget->currentPointLayerCoordinates( layer() );
@@ -927,7 +927,7 @@ int QgsMapToolCapture::fetchLayerPoint( const QgsPointLocator::Match &match, Qgs
       QgsFeature f;
       QgsFeatureRequest request;
       request.setFilterFid( match.featureId() );
-      const bool fetched = match.layer()->getFeatures( request ).nextFeature( f );
+      const bool fetched = sourceLayer->getFeatures( request ).nextFeature( f );
       if ( fetched )
       {
         QgsVertexId vId;
@@ -1671,14 +1671,14 @@ QgsPoint QgsMapToolCapture::mapPoint( const QgsMapMouseEvent &e ) const
     {
       const QgsPointLocator::Match match = e.mapPointMatch();
 
-      if ( match.layer() )
+      if ( QgsVectorLayer *matchLayer = qobject_cast<QgsVectorLayer *>( match.layer() ) )
       {
-        const QgsFeature ft = match.layer()->getFeature( match.featureId() );
-        if ( QgsWkbTypes::hasZ( match.layer()->wkbType() ) )
+        const QgsFeature ft = matchLayer->getFeature( match.featureId() );
+        if ( QgsWkbTypes::hasZ( matchLayer->wkbType() ) )
         {
           newPoint.setZ( ft.geometry().vertexAt( match.vertexIndex() ).z() );
         }
-        if ( QgsWkbTypes::hasM( match.layer()->wkbType() ) )
+        if ( QgsWkbTypes::hasM( matchLayer->wkbType() ) )
         {
           newPoint.setM( ft.geometry().vertexAt( match.vertexIndex() ).m() );
         }

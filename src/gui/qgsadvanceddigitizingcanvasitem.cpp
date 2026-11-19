@@ -285,7 +285,7 @@ void QgsAdvancedDigitizingCanvasItem::paint( QPainter *painter )
     req.setFilterFid( snap.featureId() );
     req.setNoAttributes();
     req.setDestinationCrs( mMapCanvas->mapSettings().destinationCrs(), mMapCanvas->mapSettings().transformContext() );
-    QgsFeatureIterator featureIt = snap.layer()->getFeatures( req );
+    QgsFeatureIterator featureIt = qobject_cast<QgsVectorLayer *>( snap.layer() )->getFeatures( req );
 
     QgsFeature feature;
     featureIt.nextFeature( feature );

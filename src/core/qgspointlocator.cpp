@@ -922,14 +922,9 @@ QgsCoordinateReferenceSystem QgsPointLocator::destinationCrs() const
   return mTransform.isValid() ? mTransform.destinationCrs() : QgsCoordinateReferenceSystem();
 }
 
-QgsMapLayer *QgsPointLocator::mapLayer() const
-{
-  return mLayer;
-}
-
 Qgis::GeometryType QgsPointLocator::geometryType() const
 {
-  if ( QgsVectorLayer *vl = vectorLayer() )
+  if ( QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( mLayer.data() ) )
   {
     return vl->geometryType();
   }
@@ -940,10 +935,8 @@ Qgis::GeometryType QgsPointLocator::geometryType() const
 
 QgsPointLocator::Match QgsPointLocator::makeMatch( Type type, QgsFeatureId fid, double dist, const QgsPointXY &pt, int vertexIndex, QgsPointXY *edgePoints ) const
 {
-  // the Match constructor only carries the vector layer. Resolve the generic map layer and, for
-  // annotation sources, the item id here so the identity is populated before any MatchFilter runs
-  Match m( type, vectorLayer(), fid, dist, pt, vertexIndex, edgePoints );
-  m.mMapLayer = mLayer;
+  // resolve the item id for annotation sources here so the identity is populated before any MatchFilter runs
+  Match m( type, mLayer, fid, dist, pt, vertexIndex, edgePoints );
   if ( mSource )
     m.mItemId = mSource->itemId( fid );
   return m;
@@ -966,7 +959,7 @@ void QgsPointLocator::setRenderContext( const QgsRenderContext *context )
     // already indexing, return!
     return;
 
-  QgsVectorLayer *vl = vectorLayer();
+  QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( mLayer.data() );
   if ( !vl )
     // render-context based filtering is only supported for vector layers
     return;
@@ -1022,7 +1015,7 @@ bool QgsPointLocator::init( int maxFeaturesToIndex, bool relaxed )
 
   // build the geometry source snapshot on the main thread, so a relaxed rebuild can run on a
   // worker thread without touching the live layer
-  if ( QgsVectorLayer *vl = vectorLayer() )
+  if ( QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( mLayer.data() ) )
   {
     if ( !vl->dataProvider() || !vl->dataProvider()->isValid() )
       return false;
@@ -1189,7 +1182,7 @@ void QgsPointLocator::onFeatureAdded( QgsFeatureId fid )
     return; // nothing to do if we are not initialized yet
   }
 
-  QgsVectorLayer *vl = vectorLayer();
+  QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( mLayer.data() );
   if ( !vl )
     return; // incremental updates are only wired for vector layers
 

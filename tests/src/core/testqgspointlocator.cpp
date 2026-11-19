@@ -601,8 +601,9 @@ class TestQgsPointLocator : public QObject
       QVERIFY( mMarker.hasVertex() );
       QCOMPARE( mMarker.point(), QgsPointXY( 5, 5 ) );
       QGSCOMPARENEAR( mMarker.distance(), 0.2, 1e-9 );
-      // a Match on an annotation layer has no vector layer
-      QVERIFY( !mMarker.layer() );
+      // a Match on an annotation layer reports the annotation layer, which is not a vector layer
+      QCOMPARE( mMarker.layer(), layer.get() );
+      QVERIFY( !qobject_cast<QgsVectorLayer *>( mMarker.layer() ) );
       // the synthetic feature id maps back to the marker item
       QCOMPARE( mMarker.itemId(), markerId );
 
@@ -681,8 +682,7 @@ class TestQgsPointLocator : public QObject
       QVERIFY( m.isValid() );
       QVERIFY( m.hasVertex() );
       QCOMPARE( m.point(), QgsPointXY( 5, 5 ) );
-      QCOMPARE( m.mapLayer(), static_cast<QgsMapLayer *>( layer.get() ) );
-      QVERIFY( !m.layer() );
+      QCOMPARE( m.layer(), layer.get() );
       QCOMPARE( m.itemId(), markerId );
     }
 
@@ -704,7 +704,7 @@ class TestQgsPointLocator : public QObject
           {}
           bool acceptMatch( const QgsPointLocator::Match &match ) override
           {
-            const bool ok = match.mapLayer() == mLayer && !match.itemId().isEmpty();
+            const bool ok = match.layer() == mLayer && !match.itemId().isEmpty();
             if ( ok )
               sawIdentity = true;
             return ok;
@@ -714,7 +714,7 @@ class TestQgsPointLocator : public QObject
       const QgsPointLocator::Match m = loc.nearestVertex( QgsPointXY( 5.2, 5.0 ), 1.0, &filter );
       QVERIFY( m.isValid() );
       QVERIFY( filter.sawIdentity );
-      QCOMPARE( m.mapLayer(), static_cast<QgsMapLayer *>( layer.get() ) );
+      QCOMPARE( m.layer(), layer.get() );
       QCOMPARE( m.itemId(), markerId );
     }
 };
