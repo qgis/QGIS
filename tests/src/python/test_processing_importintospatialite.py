@@ -15,7 +15,6 @@ import tempfile
 import unittest
 
 from processing.core.Processing import Processing
-from processing.gui.AlgorithmExecutor import execute
 from qgis.analysis import QgsNativeAlgorithms
 from qgis.core import (
     QgsApplication,
@@ -99,8 +98,8 @@ class TestExportToSpatialite(QgisTestCase):
 
         feedback = ConsoleFeedBack()
         context = QgsProcessingContext()
-        # Note: the following returns true also in case of errors
-        self.assertTrue(execute(alg, parameters, context, feedback))
+        results, ok = alg.run(parameters, context, feedback)
+        self.assertTrue(ok)
         # so we check the log
         self.assertEqual(feedback._errors, [])
 
@@ -124,59 +123,55 @@ class TestExportToSpatialite(QgisTestCase):
         self.assertTrue(exported_f.isValid())
         self.assertEqual(exported_f.geometry().asWkt(), imported_f.geometry().asWkt())
 
-        def test_import_registered_db(self):
-            """Test import into registered database"""
+    def test_import_registered_db(self):
+        """Test import into registered database"""
 
-            input_file = unitTestDataPath() + "/points.shp"
-            alg = self.registry.createAlgorithmById(
-                "native:importintospatialiteregistered"
-            )
-            self.assertIsNotNone(alg)
+        input_file = unitTestDataPath() + "/points.shp"
+        alg = self.registry.createAlgorithmById("native:importintospatialiteregistered")
+        self.assertIsNotNone(alg)
 
-            table_name = "points2"
+        table_name = "points2"
 
-            parameters = {
-                "INPUT": input_file,
-                "DATABASE": "qgis_test",
-                "TABLENAME": table_name,
-                "PRIMARY_KEY": None,
-                "GEOMETRY_COLUMN": "geom",
-                "ENCODING": "UTF-8",
-                "OVERWRITE": True,
-                "CREATEINDEX": True,
-                "LOWERCASE_NAMES": True,
-                "DROP_STRING_LENGTH": False,
-                "FORCE_SINGLEPART": False,
-            }
+        parameters = {
+            "INPUT": input_file,
+            "DATABASE": "qgis_test",
+            "TABLENAME": table_name,
+            "PRIMARY_KEY": None,
+            "GEOMETRY_COLUMN": "geom",
+            "ENCODING": "UTF-8",
+            "OVERWRITE": True,
+            "CREATEINDEX": True,
+            "LOWERCASE_NAMES": True,
+            "DROP_STRING_LENGTH": False,
+            "FORCE_SINGLEPART": False,
+        }
 
-            feedback = ConsoleFeedBack()
-            context = QgsProcessingContext()
-            # Note: the following returns true also in case of errors
-            self.assertTrue(execute(alg, parameters, context, feedback))
-            # so we check the log
-            self.assertEqual(feedback._errors, [])
+        feedback = ConsoleFeedBack()
+        context = QgsProcessingContext()
+        results, ok = alg.run(parameters, context, feedback)
+        self.assertTrue(ok)
+        # so we check the log
+        self.assertEqual(feedback._errors, [])
 
-            # check that data have been imported correctly
-            exported = QgsVectorLayer(input_file, "exported")
-            self.assertTrue(exported.isValid())
-            imported = QgsVectorLayer(
-                f"dbname='{self.db_file}' table=\"{table_name}\" (geom) sql=",
-                "test",
-                "spatialite",
-            )
-            self.assertTrue(imported.isValid())
-            imported_fields = [f.name().lower() for f in imported.fields()]
-            for f in exported.fields():
-                self.assertIn(f.name().lower(), imported_fields)
+        # check that data have been imported correctly
+        exported = QgsVectorLayer(input_file, "exported")
+        self.assertTrue(exported.isValid())
+        imported = QgsVectorLayer(
+            f"dbname='{self.db_file}' table=\"{table_name}\" (geom) sql=",
+            "test",
+            "spatialite",
+        )
+        self.assertTrue(imported.isValid())
+        imported_fields = [f.name().lower() for f in imported.fields()]
+        for f in exported.fields():
+            self.assertIn(f.name().lower(), imported_fields)
 
-            # check data
-            imported_f = next(imported.getFeatures("class = 'Jet' AND heading = 85"))
-            self.assertTrue(imported_f.isValid())
-            exported_f = next(exported.getFeatures("class = 'Jet' AND heading = 85"))
-            self.assertTrue(exported_f.isValid())
-            self.assertEqual(
-                exported_f.geometry().asWkt(), imported_f.geometry().asWkt()
-            )
+        # check data
+        imported_f = next(imported.getFeatures("class = 'Jet' AND heading = 85"))
+        self.assertTrue(imported_f.isValid())
+        exported_f = next(exported.getFeatures("class = 'Jet' AND heading = 85"))
+        self.assertTrue(exported_f.isValid())
+        self.assertEqual(exported_f.geometry().asWkt(), imported_f.geometry().asWkt())
 
 
 if __name__ == "__main__":
