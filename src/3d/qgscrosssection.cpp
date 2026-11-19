@@ -56,7 +56,7 @@ QgsGeometry QgsCrossSection::asGeometry( const QgsCoordinateTransform *ct ) cons
   {
     try
     {
-      geom.transform( *ct, Qgis::TransformDirection::Reverse );
+      geom.transform( *ct );
     }
     catch ( const QgsCsException & )
     {

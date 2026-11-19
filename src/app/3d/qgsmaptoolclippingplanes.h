@@ -65,7 +65,8 @@ class QgsMapToolClippingPlanes : public QgsMapTool
     QObjectUniquePtr<QgsRubberBand> mRubberBandPolygon;
     QObjectUniquePtr<QgsRubberBand> mRubberBandLines;
     QObjectUniquePtr<QgsRubberBand> mRubberBandPoints;
-    std::unique_ptr<QgsCoordinateTransform> mCt;
+    std::unique_ptr<QgsCoordinateTransform> mCt2DTo3D;
+    std::unique_ptr<QgsCoordinateTransform> mCt3DTo2D;
     Qgs3DMapCanvasWidget *m3DCanvasWidget = nullptr;
     bool mToleranceLocked = true;
     double mRectangleWidth = 0.0;
