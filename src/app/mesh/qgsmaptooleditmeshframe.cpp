@@ -935,7 +935,7 @@ void QgsMapToolEditMeshFrame::cadCanvasMoveEvent( QgsMapMouseEvent *e )
         if ( mZValueWidget )
           mZValueWidget->setZValue( mapVertex( mCurrentVertexIndex ).z() );
       }
-      else if ( matchPoint.isValid() && matchPoint.layer() && QgsWkbTypes::hasZ( matchPoint.layer()->wkbType() ) )
+      else if ( QgsVectorLayer *matchLayer = matchPoint.isValid() ? qobject_cast<QgsVectorLayer *>( matchPoint.layer() ) : nullptr; matchLayer && QgsWkbTypes::hasZ( matchLayer->wkbType() ) )
       {
         mForceByLineRubberBand->movePoint( mapPoint );
         if ( mZValueWidget )
@@ -1100,7 +1100,7 @@ void QgsMapToolEditMeshFrame::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
         else
         {
           //only one vertex, change also the Z value if snap on a 3D vector layer
-          if ( e->mapPointMatch().isValid() && QgsWkbTypes::hasZ( e->mapPointMatch().layer()->wkbType() ) )
+          if ( e->mapPointMatch().isValid() && QgsWkbTypes::hasZ( qobject_cast<QgsVectorLayer *>( e->mapPointMatch().layer() )->wkbType() ) )
           {
             const QgsMeshVertex mapPointInMapCoordinate = QgsMeshVertex( mapPoint.x(), mapPoint.y(), e->mapPointMatch().interpolatedPoint( mCanvas->mapSettings().destinationCrs() ).z() );
 
@@ -2784,7 +2784,8 @@ void QgsMapToolEditMeshFrame::addVertex( const QgsPointXY &mapPoint, const QgsPo
   }
   else
   {
-    if ( mapPointMatch.isValid() && mapPointMatch.layer() && QgsWkbTypes::hasZ( mapPointMatch.layer()->wkbType() ) )
+    QgsVectorLayer *matchLayer = mapPointMatch.isValid() ? qobject_cast<QgsVectorLayer *>( mapPointMatch.layer() ) : nullptr;
+    if ( matchLayer && QgsWkbTypes::hasZ( matchLayer->wkbType() ) )
     {
       const QgsPoint layerPoint = mapPointMatch.interpolatedPoint( mCanvas->mapSettings().destinationCrs() );
       zValue = layerPoint.z();

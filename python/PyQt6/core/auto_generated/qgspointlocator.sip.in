@@ -57,11 +57,28 @@ If ``extent`` is not ``None``, the locator will index only a subset of
 the layer which falls within that extent.
 %End
 
+    explicit QgsPointLocator(
+      QgsAnnotationLayer *layer,
+      const QgsCoordinateReferenceSystem &destinationCrs = QgsCoordinateReferenceSystem(),
+      const QgsCoordinateTransformContext &transformContext = QgsCoordinateTransformContext(),
+      const QgsRectangle *extent = 0
+    );
+%Docstring
+Constructs a point locator for an annotation ``layer``, indexing each
+item's :py:func:`~QgsPointLocator.snapGeometry`
+
+.. versionadded:: 4.4
+%End
+
     ~QgsPointLocator();
 
-    QgsVectorLayer *layer() const;
+    QgsMapLayer *layer() const;
 %Docstring
-Gets associated layer
+Returns the layer this locator was built for.
+
+Since QGIS 4.4 this is not necessarily a vector layer (e.g. it can be an
+annotation layer), so callers which need vector layer specific API must
+cast the result.
 %End
 
     QgsCoordinateReferenceSystem destinationCrs() const;
@@ -135,7 +152,7 @@ Indicate whether the data have been already indexed
 construct invalid match
 %End
 
-        Match( QgsPointLocator::Type t, QgsVectorLayer *vl, QgsFeatureId fid, double dist, const QgsPointXY &pt, int vertexIndex = 0, QgsPointXY *edgePoints = 0 );
+        Match( QgsPointLocator::Type t, QgsMapLayer *layer, QgsFeatureId fid, double dist, const QgsPointXY &pt, int vertexIndex = 0, QgsPointXY *edgePoints = 0 );
 
         QgsPointLocator::Type type() const;
 
@@ -185,15 +202,27 @@ for vertex / edge match coords depending on what class returns it
 for vertex / edge match (first vertex of the edge)
 %End
 
-        QgsVectorLayer *layer() const;
+        QgsMapLayer *layer() const;
 %Docstring
-The vector layer where the snap occurred. Will be ``None`` if the snap
-happened on an intersection.
+The layer where the snap occurred. Will be ``None`` if the snap happened
+on an intersection.
+
+Since QGIS 4.4 this is not necessarily a vector layer (e.g. it can be an
+annotation layer), so callers which need vector layer specific API must
+cast the result.
 %End
 
         QgsFeatureId featureId() const;
 %Docstring
 The id of the feature to which the snapped geometry belongs.
+%End
+
+        QString itemId() const;
+%Docstring
+The annotation item id the snapped geometry belongs to, for snaps to an
+annotation layer. Empty otherwise.
+
+.. versionadded:: 4.4
 %End
 
         void edgePoints( QgsPointXY &pt1 /Out/, QgsPointXY &pt2 /Out/ ) const;
@@ -214,6 +243,7 @@ snapper: dest CRS)
         bool operator==( const QgsPointLocator::Match &other ) const;
 
       protected:
+
     };
 
     typedef QList<QgsPointLocator::Match> MatchList;
