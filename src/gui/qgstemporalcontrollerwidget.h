@@ -24,8 +24,6 @@
 #include "qgsrange.h"
 #include "qgstemporalnavigationobject.h"
 
-#include <qmenu.h>
-
 class QgsMapLayer;
 class QgsMapLayerModel;
 class QgsTemporalNavigationObject;
