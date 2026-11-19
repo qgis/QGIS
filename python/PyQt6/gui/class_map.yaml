@@ -1134,7 +1134,6 @@ QgsBarChartPlotWidget: src/gui/plot/qgsplotwidget.h#L102
 QgsBasicNumericFormatWidget.format: src/gui/numericformats/qgsnumericformatwidget.h#L101
 QgsBasicNumericFormatWidget.setFormat: src/gui/numericformats/qgsnumericformatwidget.h#L99
 QgsBasicNumericFormatWidget: src/gui/numericformats/qgsnumericformatwidget.h#L88
-QgsBearingNumericFormatDialog.format: src/gui/numericformats/qgsnumericformatwidget.h#L160
 QgsBearingNumericFormatDialog: src/gui/numericformats/qgsnumericformatwidget.h#L145
 QgsBearingNumericFormatWidget.format: src/gui/numericformats/qgsnumericformatwidget.h#L131
 QgsBearingNumericFormatWidget.setFormat: src/gui/numericformats/qgsnumericformatwidget.h#L129
@@ -1214,7 +1213,6 @@ QgsBrushStyleComboBox: src/gui/symbology/qgsbrushstylecombobox.h#L29
 QgsBusyIndicatorDialog.message: src/gui/qgsbusyindicatordialog.h#L46
 QgsBusyIndicatorDialog.setMessage: src/gui/qgsbusyindicatordialog.h#L47
 QgsBusyIndicatorDialog: src/gui/qgsbusyindicatordialog.h#L33
-QgsCalloutPanelWidget.callout: src/gui/callouts/qgscalloutpanelwidget.h#L94
 QgsCalloutPanelWidget.calloutChanged: src/gui/callouts/qgscalloutpanelwidget.h#L99
 QgsCalloutPanelWidget.context: src/gui/callouts/qgscalloutpanelwidget.h#L78
 QgsCalloutPanelWidget.geometryType: src/gui/callouts/qgscalloutpanelwidget.h#L66
@@ -3266,7 +3264,6 @@ QgsGdalCredentialOptionsWidget.setHandler: src/gui/providers/gdal/qgsgdalcredent
 QgsGdalCredentialOptionsWidget: src/gui/providers/gdal/qgsgdalcredentialoptionswidget.h#L113
 QgsGeocoderLocatorFilter.clone: src/gui/qgsgeocoderlocatorfilter.h#L62
 QgsGeocoderLocatorFilter: src/gui/qgsgeocoderlocatorfilter.h#L34
-QgsGeographicCoordinateNumericFormatDialog.format: src/gui/numericformats/qgsnumericformatwidget.h#L219
 QgsGeographicCoordinateNumericFormatDialog: src/gui/numericformats/qgsnumericformatwidget.h#L204
 QgsGeographicCoordinateNumericFormatWidget.format: src/gui/numericformats/qgsnumericformatwidget.h#L190
 QgsGeographicCoordinateNumericFormatWidget.setFormat: src/gui/numericformats/qgsnumericformatwidget.h#L188
