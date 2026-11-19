@@ -47,35 +47,6 @@ from qgis.utils import iface
 from processing.tools import dataobjects
 
 
-def execute(alg, parameters, context=None, feedback=None, catch_exceptions=True):
-    """Executes a given algorithm, showing its progress in the
-    progress object passed along.
-
-    Return true if everything went OK, false if the algorithm
-    could not be completed.
-    """
-
-    if feedback is None:
-        feedback = QgsProcessingFeedback()
-    if context is None:
-        context = dataobjects.createContext(feedback)
-
-    if catch_exceptions:
-        try:
-            results, ok = alg.run(parameters, context, feedback)
-            return ok, results
-        except QgsProcessingException as e:
-            QgsMessageLog.logMessage(
-                str(sys.exc_info()[0]), "Processing", Qgis.MessageLevel.Critical
-            )
-            if feedback is not None:
-                feedback.reportError(e.msg)
-            return False, {}
-    else:
-        results, ok = alg.run(parameters, context, feedback, {}, False)
-        return ok, results
-
-
 def execute_in_place_run(
     alg, parameters, context=None, feedback=None, raise_exceptions=False
 ):
@@ -483,7 +454,7 @@ def executeIterating(alg, parameters, paramToIter, context, feedback):
             ).format(i + 1, len(sink_list))
         )
         feedback.setProgress(int((i + 1) * 100 / len(sink_list)))
-        ret, results = execute(alg, parameters, context, feedback)
+        results, ret = alg.run(parameters, context, feedback)
         if not ret:
             return False
 
