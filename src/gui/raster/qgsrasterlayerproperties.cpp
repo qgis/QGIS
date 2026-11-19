@@ -686,6 +686,10 @@ void QgsRasterLayerProperties::setRendererWidget( const QString &rendererName )
   {
     mHistogramWidget->setRendererWidget( rendererName, mRendererWidget );
   }
+
+  // the renderer may not be applied to the layer yet at this point, so pass the info the temporal widget explicitly
+  const bool usesMultipleBands = QgsApplication::rasterRendererRegistry()->rendererCapabilities( rendererName ) & Qgis::RasterRendererCapability::UsesMultipleBands;
+  mTemporalWidget->setFixedRangePerBandAvailable( !usesMultipleBands );
 }
 
 void QgsRasterLayerProperties::sync()

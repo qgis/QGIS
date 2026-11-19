@@ -103,6 +103,13 @@ class GUI_EXPORT QgsRasterLayerTemporalPropertiesWidget : public QWidget, privat
      */
     void addWidget( QgsMapLayerConfigWidget *widget SIP_TRANSFER );
 
+    /**
+     * Sets whether the fixed range per band mode is \a available.
+     *
+     * \since QGIS 4.4
+     */
+    void setFixedRangePerBandAvailable( bool available );
+
   private slots:
     void temporalGroupBoxChecked( bool checked );
     void modeChanged();

@@ -48,6 +48,13 @@ Adds a child ``widget`` to the properties widget.
 .. versionadded:: 3.20
 %End
 
+    void setFixedRangePerBandAvailable( bool available );
+%Docstring
+Sets whether the fixed range per band mode is ``available``.
+
+.. versionadded:: 4.4
+%End
+
 };
 /************************************************************************
  * This file has been generated automatically from                      *
