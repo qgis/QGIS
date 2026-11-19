@@ -483,6 +483,9 @@ Qgs3DMapCanvasWidget::Qgs3DMapCanvasWidget( const QString &name, bool isDocked )
   connect( mCanvas, &Qgs3DMapCanvas::viewed2DExtentFrom3DChanged, this, &Qgs3DMapCanvasWidget::onViewed2DExtentFrom3DChanged );
   connect( mCanvas, &Qgs3DMapCanvas::crossSectionEnabledChanged, mActionDisableClippingPlanes, &QAction::setEnabled );
 
+  // The camera control is active when no map tool is set
+  connect( mCanvas, &Qgs3DMapCanvas::mapToolSet, actionCameraControl, [actionCameraControl]( Qgs3DMapTool *newTool ) { actionCameraControl->setChecked( !newTool ); } );
+
   QgsMapToolIdentifyAction *identifyTool2D = QgisApp::instance()->identifyMapTool();
   QgsIdentifyResultsDialog *resultDialog = identifyTool2D->resultsDialog();
   connect( resultDialog, &QgsIdentifyResultsDialog::featureHighlighted, mCanvas, &Qgs3DMapCanvas::highlightFeature );
