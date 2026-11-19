@@ -99,6 +99,7 @@ class TestQgs3DUtils : public QgsTest
     void testCalculateViewSpaceOrthographicBounds();
     void testDetermineTextureFormat_data();
     void testDetermineTextureFormat();
+    void testCrossSection();
 
   private:
     QgsRasterLayer *mLayerRgb;
@@ -777,6 +778,28 @@ void TestQgs3DUtils::testDetermineTextureFormat()
 
   QCOMPARE( actualFormat, expectedFormat );
   QCOMPARE( requiresConversionToRgb, expectedRequiresConversion );
+}
+
+void TestQgs3DUtils::testCrossSection()
+{
+  QgsPoint p1( 0, 0 );
+  QgsPoint p2( 0, 10 );
+  QgsCrossSection cs( p1, p2, 10 );
+
+  QCOMPARE( cs.asGeometry().asWkt(), u"Polygon ((-10 0, -10 10, 10 10, 10 0, -10 0))"_s );
+
+  QgsCoordinateTransformContext cx;
+  QgsCoordinateTransform ct( QgsCoordinateReferenceSystem( u"EPSG:3857"_s ), QgsCoordinateReferenceSystem( u"EPSG:4326"_s ), cx );
+  QCOMPARE( cs.asGeometry( &ct ).asWkt(), u"Polygon ((-0.00008983152841195 0, -0.00008983152841195 0.00008983152841192, 0.00008983152841195 0.00008983152841192, 0.00008983152841195 0, -0.00008983152841195 0))"_s );
+
+  // invalid
+  cs = QgsCrossSection( p1, p2, 0 );
+  QVERIFY( !cs.isValid() );
+  QVERIFY( cs.asGeometry().isEmpty() );
+
+  cs = QgsCrossSection( p1, p2, -10 );
+  QVERIFY( !cs.isValid() );
+  QVERIFY( cs.asGeometry().isEmpty() );
 }
 
 QGSTEST_MAIN( TestQgs3DUtils )
