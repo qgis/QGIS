@@ -438,12 +438,10 @@ void QgsRasterCalcDialog::setOutputToVirtual()
 bool QgsRasterCalcDialog::expressionValid() const
 {
   QString errorString;
-  QgsRasterCalcNode *testNode = QgsRasterCalcNode::parseRasterCalcString( mExpressionTextEdit->toPlainText(), errorString );
+  std::unique_ptr<QgsRasterCalcNode> testNode = QgsRasterCalcNode::parseRasterCalcString( mExpressionTextEdit->toPlainText(), errorString );
   if ( testNode )
-  {
-    delete testNode;
     return true;
-  }
+
   return false;
 }
 
