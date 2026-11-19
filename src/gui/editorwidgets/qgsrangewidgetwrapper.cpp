@@ -16,10 +16,6 @@
 #include "qgsrangewidgetwrapper.h"
 
 #include "qgsapplication.h"
-#include "qgsdial.h"
-#include "qgsdoublespinbox.h"
-#include "qgsslider.h"
-#include "qgsspinbox.h"
 #include "qgsvectorlayer.h"
 
 #include <QSettings>
@@ -832,6 +828,7 @@ QVariant QgsRangeWidgetDial::variantValue() const
   QVariant value = mTolerantValue;
   if ( mTouched )
   {
+    // returning the QDial value here makes it possible to use it with double fields as well
     value = QDial::value();
   }
   return value;
