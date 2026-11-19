@@ -66,7 +66,7 @@ After reading from XML, resolve references to any layers that have been
 read as layer IDs.
 %End
 
-    static QgsLightSource *createFromXml( const QDomElement &element, const QgsReadWriteContext &context ) /Factory/;
+    static std::unique_ptr<QgsLightSource> createFromXml( const QDomElement &element, const QgsReadWriteContext &context );
 %Docstring
 Creates a new light source from an XML element.
 %End
