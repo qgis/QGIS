@@ -74,7 +74,7 @@ fi
 
 if [ -n "$SCRIPT_INPUT" ]; then
   EXCLUDE=$(${GP}sed -e 's/\s*#.*$//' -e '/^\s*$/d' $AGIGNORE | tr '\n' '|' | ${GP}sed -e 's/|$//')
-  INPUTFILES=$(echo "$SCRIPT_INPUT" | tr -s '[[:blank:]]' '\n' | ${GP}grep -Eiv "$EXCLUDE" | tr '\n' ' ' )
+  INPUTFILES=$(echo "$SCRIPT_INPUT" | tr -s '[[:blank:]]' '\n' | ${GP}grep -Eiv "$EXCLUDE" | xargs )
   if [[ -z $INPUTFILES  ]]; then
     exit 0
   fi
