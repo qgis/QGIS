@@ -66,24 +66,24 @@ QString QgsGcpTransformerInterface::methodToString( QgsGcpTransformerInterface::
   }
 }
 
-QgsGcpTransformerInterface *QgsGcpTransformerInterface::create( QgsGcpTransformerInterface::TransformMethod method )
+std::unique_ptr<QgsGcpTransformerInterface> QgsGcpTransformerInterface::create( QgsGcpTransformerInterface::TransformMethod method )
 {
   switch ( method )
   {
     case TransformMethod::Linear:
-      return new QgsLinearGeorefTransform;
+      return std::make_unique<QgsLinearGeorefTransform>();
     case TransformMethod::Helmert:
-      return new QgsHelmertGeorefTransform;
+      return std::make_unique<QgsHelmertGeorefTransform>();
     case TransformMethod::PolynomialOrder1:
-      return new QgsGDALGeorefTransform( false, 1 );
+      return std::make_unique<QgsGDALGeorefTransform>( false, 1 );
     case TransformMethod::PolynomialOrder2:
-      return new QgsGDALGeorefTransform( false, 2 );
+      return std::make_unique<QgsGDALGeorefTransform>( false, 2 );
     case TransformMethod::PolynomialOrder3:
-      return new QgsGDALGeorefTransform( false, 3 );
+      return std::make_unique<QgsGDALGeorefTransform>( false, 3 );
     case TransformMethod::ThinPlateSpline:
-      return new QgsGDALGeorefTransform( true, 0 );
+      return std::make_unique<QgsGDALGeorefTransform>( true, 0 );
     case TransformMethod::Projective:
-      return new QgsProjectiveGeorefTransform;
+      return std::make_unique<QgsProjectiveGeorefTransform>();
     default:
       return nullptr;
   }
