@@ -100,7 +100,7 @@ class CORE_EXPORT Qgs3DSymbolAbstractMetadata
 };
 
 //! 3D symbol creation function
-typedef QgsAbstract3DSymbol *( *Qgs3DSymbolCreateFunc )() SIP_SKIP;
+typedef std::unique_ptr<QgsAbstract3DSymbol> ( *Qgs3DSymbolCreateFunc )() SIP_SKIP;
 
 //! 3D symbol widget creation function
 typedef QgsFeature3DHandler *( *Qgs3DSymbolFeatureHandlerFunc )( const QgsVectorLayer *, const QgsAbstract3DSymbol * ) SIP_SKIP;
@@ -158,7 +158,7 @@ class CORE_EXPORT Qgs3DSymbolMetadata : public Qgs3DSymbolAbstractMetadata
      */
     void setFeatureHandlerFunction( Qgs3DSymbolFeatureHandlerFunc function ) { mFeatureHandlerFunc = function; }
 
-    QgsAbstract3DSymbol *create() override SIP_FACTORY { return mCreateFunc ? mCreateFunc() : nullptr; }
+    QgsAbstract3DSymbol *create() override SIP_FACTORY;
     Qgs3DSymbolWidget *createSymbolWidget( QgsVectorLayer *vl ) override SIP_FACTORY { return mWidgetFunc ? mWidgetFunc( vl ) : nullptr; }
     QgsFeature3DHandler *createFeatureHandler( const QgsVectorLayer *layer, const QgsAbstract3DSymbol *symbol ) override SIP_FACTORY
     {

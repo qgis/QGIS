@@ -21,6 +21,11 @@
 
 using namespace Qt::StringLiterals;
 
+QgsAbstract3DSymbol *Qgs3DSymbolMetadata::create()
+{
+  return mCreateFunc ? mCreateFunc().release() : nullptr;
+}
+
 Qgs3DSymbolRegistry::Qgs3DSymbolRegistry()
 {}
 

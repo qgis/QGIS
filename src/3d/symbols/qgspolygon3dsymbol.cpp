@@ -153,9 +153,9 @@ void QgsPolygon3DSymbol::setDefaultPropertiesFromLayer( const QgsVectorLayer *la
   mOffset = static_cast<float>( props->zOffset() );
 }
 
-QgsAbstract3DSymbol *QgsPolygon3DSymbol::create()
+std::unique_ptr<QgsAbstract3DSymbol> QgsPolygon3DSymbol::create()
 {
-  return new QgsPolygon3DSymbol();
+  return std::make_unique<QgsPolygon3DSymbol>();
 }
 
 QgsAbstractMaterialSettings *QgsPolygon3DSymbol::materialSettings() const

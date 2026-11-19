@@ -37,7 +37,7 @@ class Dummy3DSymbol : public QgsAbstract3DSymbol
     void readXml( const QDomElement &, const QgsReadWriteContext & ) override {}
     void setMaterialSettings( QgsAbstractMaterialSettings * ) override {};
 
-    static QgsAbstract3DSymbol *create() { return new Dummy3DSymbol(); }
+    static std::unique_ptr<QgsAbstract3DSymbol> create() { return std::make_unique<Dummy3DSymbol>(); }
 };
 
 class TestQgs3DSymbolRegistry : public QgsTest

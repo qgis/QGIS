@@ -51,7 +51,7 @@ class _3D_EXPORT QgsPolygon3DSymbol : public QgsAbstract3DSymbol SIP_NODEFAULTCT
      *
      * Caller takes ownership of the returned symbol.
      */
-    static QgsAbstract3DSymbol *create() SIP_FACTORY;
+    static std::unique_ptr<QgsAbstract3DSymbol> create();
 
     //! Returns method that determines altitude (whether to clamp to feature to terrain)
     Qgis::AltitudeClamping altitudeClamping() const { return mAltClamping; }

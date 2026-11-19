@@ -40,7 +40,7 @@ class _3D_EXPORT QgsLine3DSymbol : public QgsAbstract3DSymbol SIP_NODEFAULTCTORS
      *
      * Caller takes ownership of the returned symbol.
      */
-    static QgsAbstract3DSymbol *create() SIP_FACTORY;
+    static std::unique_ptr<QgsAbstract3DSymbol> create();
 
     QString type() const override { return "line"; }
     QgsAbstract3DSymbol *clone() const override SIP_FACTORY;

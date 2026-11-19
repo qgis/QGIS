@@ -28,7 +28,7 @@ from lines using a buffer with given thickness).
     QgsLine3DSymbol();
     ~QgsLine3DSymbol();
 
-    static QgsAbstract3DSymbol *create() /Factory/;
+    static std::unique_ptr<QgsAbstract3DSymbol> create();
 %Docstring
 Creates a new QgsLine3DSymbol.
 
