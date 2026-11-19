@@ -203,7 +203,9 @@ jobs:
           mkdir -p arm64
           gtar --strip-components=5 -zxf ./artifacts/qgis-app-${STEPS_WORKFLOW_ARTIFACT_IDS_OUTPUTS_FILENAME}-arm64-osx-dynamic-release/qgis-app-${STEPS_WORKFLOW_ARTIFACT_IDS_OUTPUTS_FILENAME}-arm64-osx-dynamic-release.tar.gz -C arm64
 
-          pip install lipomerge
+          # See https://github.com/faaxm/lipomerge/pull/14
+          # Once released, go back to install plain `pip install lipomerge`
+          pip install https://github.com/m-kuhn/lipo-dir-merge/archive/copy_secondary.tar.gz
           lipomerge ./x64 ./arm64 universal
         env:
           STEPS_WORKFLOW_ARTIFACT_IDS_OUTPUTS_FILENAME: ${{steps.workflow-artifact-ids.outputs.filename}}
