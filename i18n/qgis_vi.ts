@@ -20615,14 +20615,6 @@ This can cause unexpected results.</source>
         <translation>Kiểu cho các lớp vùng</translation>
     </message>
     <message>
-        <source>Pre-execution script</source>
-        <translation>Tập lệnh tiền thực thi</translation>
-    </message>
-    <message>
-        <source>Post-execution script</source>
-        <translation>Tập lệnh hậu thực thi</translation>
-    </message>
-    <message>
         <source>Do not filter (better performance)</source>
         <translation>Không lọc (hiệu suất tốt hơn)</translation>
     </message>
@@ -23206,15 +23198,15 @@ Khoảng cách được chỉ định theo đơn vị của lớp và hướng t
         <location filename="../src/core/pal/feature.cpp" line="2451"/>
         <location filename="../src/core/pal/feature.cpp" line="2492"/>
         <location filename="../src/core/pal/geomfunction.cpp" line="343"/>
-        <location filename="../src/core/pal/labelposition.cpp" line="196"/>
-        <location filename="../src/core/pal/labelposition.cpp" line="223"/>
-        <location filename="../src/core/pal/labelposition.cpp" line="324"/>
-        <location filename="../src/core/pal/labelposition.cpp" line="382"/>
-        <location filename="../src/core/pal/labelposition.cpp" line="753"/>
-        <location filename="../src/core/pal/labelposition.cpp" line="794"/>
-        <location filename="../src/core/pal/labelposition.cpp" line="826"/>
-        <location filename="../src/core/pal/labelposition.cpp" line="861"/>
-        <location filename="../src/core/pal/labelposition.cpp" line="920"/>
+        <location filename="../src/core/pal/labelposition.cpp" line="189"/>
+        <location filename="../src/core/pal/labelposition.cpp" line="216"/>
+        <location filename="../src/core/pal/labelposition.cpp" line="317"/>
+        <location filename="../src/core/pal/labelposition.cpp" line="375"/>
+        <location filename="../src/core/pal/labelposition.cpp" line="746"/>
+        <location filename="../src/core/pal/labelposition.cpp" line="787"/>
+        <location filename="../src/core/pal/labelposition.cpp" line="819"/>
+        <location filename="../src/core/pal/labelposition.cpp" line="854"/>
+        <location filename="../src/core/pal/labelposition.cpp" line="913"/>
         <location filename="../src/core/pal/pointset.cpp" line="284"/>
         <location filename="../src/core/pal/pointset.cpp" line="623"/>
         <location filename="../src/core/pal/pointset.cpp" line="913"/>
@@ -23230,15 +23222,15 @@ Khoảng cách được chỉ định theo đơn vị của lớp và hướng t
         <location filename="../src/core/pal/feature.cpp" line="2451"/>
         <location filename="../src/core/pal/feature.cpp" line="2492"/>
         <location filename="../src/core/pal/geomfunction.cpp" line="343"/>
-        <location filename="../src/core/pal/labelposition.cpp" line="196"/>
-        <location filename="../src/core/pal/labelposition.cpp" line="223"/>
-        <location filename="../src/core/pal/labelposition.cpp" line="324"/>
-        <location filename="../src/core/pal/labelposition.cpp" line="382"/>
-        <location filename="../src/core/pal/labelposition.cpp" line="753"/>
-        <location filename="../src/core/pal/labelposition.cpp" line="794"/>
-        <location filename="../src/core/pal/labelposition.cpp" line="826"/>
-        <location filename="../src/core/pal/labelposition.cpp" line="861"/>
-        <location filename="../src/core/pal/labelposition.cpp" line="920"/>
+        <location filename="../src/core/pal/labelposition.cpp" line="189"/>
+        <location filename="../src/core/pal/labelposition.cpp" line="216"/>
+        <location filename="../src/core/pal/labelposition.cpp" line="317"/>
+        <location filename="../src/core/pal/labelposition.cpp" line="375"/>
+        <location filename="../src/core/pal/labelposition.cpp" line="746"/>
+        <location filename="../src/core/pal/labelposition.cpp" line="787"/>
+        <location filename="../src/core/pal/labelposition.cpp" line="819"/>
+        <location filename="../src/core/pal/labelposition.cpp" line="854"/>
+        <location filename="../src/core/pal/labelposition.cpp" line="913"/>
         <location filename="../src/core/pal/pointset.cpp" line="284"/>
         <location filename="../src/core/pal/pointset.cpp" line="623"/>
         <location filename="../src/core/pal/pointset.cpp" line="913"/>
@@ -27048,9 +27040,9 @@ Lỗi: %2</translation>
         <location filename="../src/providers/postgres/qgspostgresprovidermetadatautils.cpp" line="163"/>
         <location filename="../src/providers/postgres/qgspostgresutils.cpp" line="358"/>
         <location filename="../src/providers/postgres/qgspostgresutils.cpp" line="460"/>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2501"/>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2556"/>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2724"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2516"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2571"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2739"/>
         <location filename="../src/providers/spatialite/qgsspatialitedataitems.cpp" line="38"/>
         <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="164"/>
         <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="6030"/>
@@ -27249,7 +27241,7 @@ Lỗi CSDL: %2</translation>
     </message>
     <message>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="5234"/>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2564"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2579"/>
         <source>Unable to save layer style. It&apos;s not possible to create the destination table on the database. Maybe this is due to table permissions (user=%1). Please contact your database admin</source>
         <translation>Không thể lưu kiểu của lớp. Không thể tạo bảng đích trên CSDL. Có thể điều này là do quyền đối với bảng (người dùng=%1). Liên hệ với quản trị CSDL của bạn</translation>
     </message>
@@ -27287,13 +27279,13 @@ Lỗi CSDL: %2</translation>
     </message>
     <message>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="5246"/>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2576"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2591"/>
         <source>Unable to add column type to layer_styles table. Maybe this is due to table permissions (user=%1). Please contact your database admin</source>
         <translation>Không thể thêm kiểu cột cho bảng kiểu_lớp. Điều này có thể là do quyền đối với bảng (người_dùng=%1). Vui lòng liên hệ với quản trị viên csdl.</translation>
     </message>
     <message>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="5358"/>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2702"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2717"/>
         <source>Unable to save layer style. It&apos;s not possible to insert a new record into the style table. Maybe this is due to table permissions (user=%1). Please contact your database administrator.</source>
         <translation>Không thể lưu kiểu của lớp. Không thể chèn một bản ghi mới vào bảng kiểu. Có thể lý do là quyền đối với bảng (người dùng=%1). Vui lòng liên hệ người quản trị CSDL.</translation>
     </message>
@@ -27301,9 +27293,9 @@ Lỗi CSDL: %2</translation>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="5460"/>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="5546"/>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="5581"/>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2798"/>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2888"/>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2923"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2813"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2903"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2938"/>
         <source>Connection to database failed using username: %1</source>
         <translation>Kết nối vào CSDL thất bại với tên người dùng: %1</translation>
     </message>
@@ -27312,10 +27304,10 @@ Lỗi CSDL: %2</translation>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="5520"/>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="5561"/>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="5597"/>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2835"/>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2862"/>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2903"/>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2939"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2850"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2877"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2918"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2954"/>
         <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="6085"/>
         <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="6251"/>
         <source>Error executing query: %1</source>
@@ -27323,33 +27315,33 @@ Lỗi CSDL: %2</translation>
     </message>
     <message>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="5494"/>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2836"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2851"/>
         <source>Error executing the select query for related styles. The query was logged</source>
         <translation>Lỗi khi thực thi phép truy vấn chọn đối với các kiểu liên quan. Phép truy vấn này đã được ghi nhận lại.</translation>
     </message>
     <message>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="5521"/>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2863"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2878"/>
         <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="6417"/>
         <source>Error executing the select query for unrelated styles. The query was logged</source>
         <translation>Lỗi khi thực thi phép truy vấn chọn đối với các kiểu không liên quan. Phép truy vấn này đã được ghi nhận lại.</translation>
     </message>
     <message>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="5562"/>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2904"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2919"/>
         <source>Error executing the delete query. The query was logged</source>
         <translation>Lỗi xóa truy vấn. Truy vấn đã được lưu vào bản ghi vết</translation>
     </message>
     <message>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="5598"/>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2940"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2955"/>
         <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="6468"/>
         <source>Error executing the select query. The query was logged</source>
         <translation>Lỗi khi thực thi phép truy vấn chọn. Phép truy vấn này đã được lưu vào bản ghi vết.</translation>
     </message>
     <message>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="5593"/>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2935"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2950"/>
         <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="6462"/>
         <source>Consistency error in table &apos;%1&apos;. Style id should be unique</source>
         <translation>Lỗi nhất quán trong bảng &apos;%1&apos;. Nhận diện kiểu phải không được trùng</translation>
@@ -36367,7 +36359,7 @@ Các thuộc tính không bị thay đổi bởi thuật toán này.</translatio
     <message>
         <location filename="../src/core/layout/qgscompositionconverter.cpp" line="91"/>
         <location filename="../src/core/layout/qgslayoutobject.cpp" line="54"/>
-        <location filename="../src/core/symbology/qgssymbol.cpp" line="2282"/>
+        <location filename="../src/core/symbology/qgssymbol.cpp" line="2284"/>
         <location filename="../src/core/symbology/qgssymbollayer.cpp" line="89"/>
         <source>Opacity</source>
         <translation>Độ đục</translation>
@@ -42068,12 +42060,12 @@ Theo mặc định chỉ một giá trị m từ đỉnh đầu tiên của mỗ
         <translation>Thuật toán này gắn vào các trường biểu thị số đếm của mỗi giá trị không trùng từ một lớp raster chứa trong các khu vực được xác định là các vùng.</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsstringutils.cpp" line="67"/>
+        <location filename="../src/core/qgsstringutils.cpp" line="69"/>
         <source>a|an|and|as|at|but|by|en|for|if|in|nor|of|on|or|per|s|the|to|vs.|vs|via</source>
         <translation>một|một|và|như|tại|nhưng|bởi|trong|cho|nếu|trong|không|của|trên|hoặc|trên|số|đến|so với|so với|thông qua</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsstringutils.cpp" line="68"/>
+        <location filename="../src/core/qgsstringutils.cpp" line="70"/>
         <source>.|:</source>
         <translation>.|:</translation>
     </message>
@@ -53399,7 +53391,7 @@ For more details, please see the following papers:
         <translation>Lai</translation>
     </message>
     <message>
-        <location filename="../src/core/symbology/qgssymbol.cpp" line="2283"/>
+        <location filename="../src/core/symbology/qgssymbol.cpp" line="2285"/>
         <source>Extent buffer</source>
         <translation type="unfinished"/>
     </message>
@@ -58705,7 +58697,7 @@ If multiband rasters are used in the data raster stack, the algorithm will alway
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2588"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2603"/>
         <source>Unable to add column r_raster_column to layer_styles table. Maybe this is due to table permissions (user=%1). Please contact your database admin</source>
         <translation type="unfinished"/>
     </message>
@@ -67603,7 +67595,7 @@ Clicking the button will let you select an application to use as the action</sou
     </message>
     <message>
         <location filename="../src/ui/qgsattributetabledialog.ui"/>
-        <location filename="../src/app/qgsattributetabledialog.cpp" line="466"/>
+        <location filename="../src/app/qgsattributetabledialog.cpp" line="472"/>
         <source>Update All</source>
         <translation>Cập nhật tất cả</translation>
     </message>
@@ -67718,7 +67710,7 @@ Clicking the button will let you select an application to use as the action</sou
         <translation>Định dạng có điều kiện</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsattributetabledialog.cpp" line="310"/>
+        <location filename="../src/app/qgsattributetabledialog.cpp" line="316"/>
         <source>Dock Attribute Table</source>
         <translation>Gắn ụ Bảng Thuộc tính</translation>
     </message>
@@ -67749,116 +67741,116 @@ Clicking the button will let you select an application to use as the action</sou
         <translation>Ctrl+I</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsattributetabledialog.cpp" line="529"/>
+        <location filename="../src/app/qgsattributetabledialog.cpp" line="535"/>
         <source>An error occurred while trying to update the field %1</source>
         <translation>Đã xảy ra một lỗi khi cố gắng cập nhật trường %1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsattributetabledialog.cpp" line="613"/>
+        <location filename="../src/app/qgsattributetabledialog.cpp" line="619"/>
         <source>An error occurred while evaluating the calculation string:
 %1</source>
         <translation>Đã xảy ra một lỗi khi đánh giá chuỗi tính toán:
 %1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsattributetabledialog.cpp" line="529"/>
-        <location filename="../src/app/qgsattributetabledialog.cpp" line="613"/>
+        <location filename="../src/app/qgsattributetabledialog.cpp" line="535"/>
+        <location filename="../src/app/qgsattributetabledialog.cpp" line="619"/>
         <source>Update Attributes</source>
         <translation>Cập nhật các Thuộc tính</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsattributetabledialog.cpp" line="458"/>
+        <location filename="../src/app/qgsattributetabledialog.cpp" line="464"/>
         <source> %1 — Features Total: %L2, Filtered: %L3, Selected: %L4</source>
         <translation> %1 — Đối tượng Tổng số: %L2, Được lọc: %L3, Được chọn: %L4</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsattributetabledialog.cpp" line="972"/>
+        <location filename="../src/app/qgsattributetabledialog.cpp" line="978"/>
         <source>Failed to add field &apos;%1&apos; of type &apos;%2&apos;. Is the field name unique?</source>
         <translation>Thất bại khi thêm trường &apos;%1&apos; có kiểu &apos;%2&apos;. Tên trường có không bị trùng chứ?</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsattributetabledialog.cpp" line="468"/>
+        <location filename="../src/app/qgsattributetabledialog.cpp" line="474"/>
         <source>Update Filtered</source>
         <translation>Cập nhật phần được lọc</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsattributetabledialog.cpp" line="432"/>
+        <location filename="../src/app/qgsattributetabledialog.cpp" line="438"/>
         <source>Multiedit is not supported when using custom UI forms</source>
         <translation>Chỉnh sửa nhiều lần không được hỗ trợ khi dùng các biểu mẫu giao diện người dùng tùy chỉnh</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsattributetabledialog.cpp" line="434"/>
+        <location filename="../src/app/qgsattributetabledialog.cpp" line="440"/>
         <source>Search is not supported when using custom UI forms</source>
         <translation>Tìm kiếm không được hỗ trợ khi dùng các biểu mẫu giao diện người dùng tùy chỉnh</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsattributetabledialog.cpp" line="571"/>
+        <location filename="../src/app/qgsattributetabledialog.cpp" line="577"/>
         <source>Calculating field</source>
         <translation>Trường tính toán</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsattributetabledialog.cpp" line="741"/>
+        <location filename="../src/app/qgsattributetabledialog.cpp" line="747"/>
         <source>Feature Added</source>
         <translation>Đối tượng được thêm vào</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsattributetabledialog.cpp" line="959"/>
+        <location filename="../src/app/qgsattributetabledialog.cpp" line="965"/>
         <source>Attribute added</source>
         <translation>Thuộc tính được thêm vào</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsattributetabledialog.cpp" line="972"/>
+        <location filename="../src/app/qgsattributetabledialog.cpp" line="978"/>
         <source>Add Field</source>
         <translation>Thêm Trường</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsattributetabledialog.cpp" line="1000"/>
+        <location filename="../src/app/qgsattributetabledialog.cpp" line="1006"/>
         <source>Deleted attribute</source>
         <translation>Thuộc tính bị xoá</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsattributetabledialog.cpp" line="1010"/>
+        <location filename="../src/app/qgsattributetabledialog.cpp" line="1016"/>
         <source>The attribute(s) could not be deleted</source>
         <translation>(Các) thuộc tính không thể xoá được</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsattributetabledialog.cpp" line="1010"/>
+        <location filename="../src/app/qgsattributetabledialog.cpp" line="1016"/>
         <source>Attribute error</source>
         <translation>Lỗi thuộc tính</translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/app/qgsattributetabledialog.cpp" line="1061"/>
+        <location filename="../src/app/qgsattributetabledialog.cpp" line="1067"/>
         <source>%n feature(s) on layer &quot;%1&quot;, </source>
         <translation><numerusform>%n đối tượng trong lớp &quot;%1&quot;,</numerusform></translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/app/qgsattributetabledialog.cpp" line="1065"/>
+        <location filename="../src/app/qgsattributetabledialog.cpp" line="1071"/>
         <source>Delete at least %n feature(s) on other layer(s)</source>
         <translation type="unfinished"><numerusform></numerusform></translation>
     </message>
     <message>
-        <location filename="../src/app/qgsattributetabledialog.cpp" line="1065"/>
+        <location filename="../src/app/qgsattributetabledialog.cpp" line="1071"/>
         <source>Delete of feature on layer &quot;%1&quot;, %2 as well and all of its other descendants.
 Delete these features?</source>
         <translation type="unfinished"/>
     </message>
     <message numerus="yes">
-        <location filename="../src/app/qgsattributetabledialog.cpp" line="1083"/>
+        <location filename="../src/app/qgsattributetabledialog.cpp" line="1089"/>
         <source>%n feature(s) deleted: %1</source>
         <translation><numerusform>%n đối tượng bị xóa: %1</numerusform></translation>
     </message>
     <message>
-        <location filename="../src/app/qgsattributetabledialog.cpp" line="1080"/>
+        <location filename="../src/app/qgsattributetabledialog.cpp" line="1086"/>
         <source>%1 on layer %2. </source>
         <translation>%1 trong lớp %2.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsattributetabledialog.cpp" line="1091"/>
+        <location filename="../src/app/qgsattributetabledialog.cpp" line="1097"/>
         <source>Delete Feature</source>
         <translation>Xóa Đối tượng</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsattributetabledialog.cpp" line="710"/>
+        <location filename="../src/app/qgsattributetabledialog.cpp" line="716"/>
         <source>Geometryless feature added</source>
         <translation>Đối tượng không có hình học được thêm vào</translation>
     </message>
@@ -123161,7 +123153,7 @@ Raster hóa bản đồ được khuyến cáo để có thể kết xuất đú
     <name>QgsMapThemes</name>
     <message>
         <location filename="../src/app/qgsmapthemes.cpp" line="50"/>
-        <location filename="../src/app/qgsmapthemes.cpp" line="125"/>
+        <location filename="../src/app/qgsmapthemes.cpp" line="127"/>
         <source>Replace Theme</source>
         <translation>Thay thế Chủ đề</translation>
     </message>
@@ -123181,59 +123173,59 @@ Raster hóa bản đồ được khuyến cáo để có thể kết xuất đú
         <translation>Loại bỏ Chủ đề Hiện tại</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsmapthemes.cpp" line="96"/>
-        <location filename="../src/app/qgsmapthemes.cpp" line="154"/>
+        <location filename="../src/app/qgsmapthemes.cpp" line="98"/>
+        <location filename="../src/app/qgsmapthemes.cpp" line="156"/>
         <source>theme</source>
         <translation>chủ đề</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsmapthemes.cpp" line="96"/>
+        <location filename="../src/app/qgsmapthemes.cpp" line="98"/>
         <source>Theme</source>
         <translation>Chủ đề</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsmapthemes.cpp" line="97"/>
+        <location filename="../src/app/qgsmapthemes.cpp" line="99"/>
         <source>Map Themes</source>
         <translation>Các Chủ đề Bản đồ</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsmapthemes.cpp" line="98"/>
+        <location filename="../src/app/qgsmapthemes.cpp" line="100"/>
         <source>Name of the new theme</source>
         <translation>Tên của chủ đề mới</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsmapthemes.cpp" line="100"/>
-        <location filename="../src/app/qgsmapthemes.cpp" line="162"/>
+        <location filename="../src/app/qgsmapthemes.cpp" line="102"/>
+        <location filename="../src/app/qgsmapthemes.cpp" line="164"/>
         <source>A theme with this name already exists.</source>
         <translation>Một chủ đề với tên này đã có.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsmapthemes.cpp" line="125"/>
+        <location filename="../src/app/qgsmapthemes.cpp" line="127"/>
         <source>Are you sure you want to replace the existing theme “%1”?</source>
         <translation>Có chắc bạn muốn thay thế chủ đề hiện có &quot;%1&quot;?</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsmapthemes.cpp" line="155"/>
+        <location filename="../src/app/qgsmapthemes.cpp" line="157"/>
         <source>%1</source>
         <translation>%1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsmapthemes.cpp" line="159"/>
+        <location filename="../src/app/qgsmapthemes.cpp" line="161"/>
         <source>Rename Map Theme</source>
         <translation>Đặt lại Tên Chủ đề Bản đồ</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsmapthemes.cpp" line="160"/>
+        <location filename="../src/app/qgsmapthemes.cpp" line="162"/>
         <source>Enter the new name of the map theme</source>
         <translation>Nhập tên mới cho chủ đề bản đồ</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsmapthemes.cpp" line="179"/>
+        <location filename="../src/app/qgsmapthemes.cpp" line="182"/>
         <source>Remove Theme</source>
         <translation>Loại bỏ Chủ đề</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsmapthemes.cpp" line="179"/>
+        <location filename="../src/app/qgsmapthemes.cpp" line="182"/>
         <source>Are you sure you want to remove the existing theme “%1”?</source>
         <translation>Có chắc bạn muốn loại bỏ chủ đề hiện có &quot;%1&quot;?</translation>
     </message>
@@ -141833,50 +141825,50 @@ tăng cường</translation>
 <context>
     <name>QgsPostgresConn</name>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="403"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="406"/>
         <source>Connection to database failed</source>
         <translation>Kết nối đến CSDL thất bại</translation>
     </message>
     <message>
         <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="340"/>
         <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="349"/>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="403"/>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="458"/>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="585"/>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="879"/>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="985"/>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="1099"/>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="1114"/>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="1213"/>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="1228"/>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="1519"/>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="1541"/>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="1557"/>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="1567"/>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="1575"/>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="1582"/>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="1590"/>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="1595"/>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="1669"/>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="1673"/>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="2847"/>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="2856"/>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="2874"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="406"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="461"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="588"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="882"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="988"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="1102"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="1117"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="1216"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="1231"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="1522"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="1544"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="1560"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="1570"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="1578"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="1585"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="1593"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="1598"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="1672"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="1676"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="2850"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="2859"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="2877"/>
         <source>PostGIS</source>
         <translation>PostGIS</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="458"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="461"/>
         <source>Your PostGIS installation has no GEOS support. Feature selection and identification will not work properly. Please install PostGIS with GEOS support (http://geos.refractions.net)</source>
         <translation>Cài đặt PostGIS của bạn không có hỗ trợ GEOS. Phép chọn và nhận diện đối tượng sẽ không hoạt động đúng đắn. Vui lòng cài đặt PostGIS với hỗ trợ GEOS (http://geos.refractions.net)</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="1099"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="1102"/>
         <source>Database connection was successful, but the accessible tables could not be determined.</source>
         <translation>Kết nối đến CSDL thành công, nhưng không thể xác định được các bảng có thể truy cập được.</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="879"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="882"/>
         <source>Database connection was successful, but the accessible tables could not be determined. The error message from the database was:
 %1
 </source>
@@ -141901,8 +141893,8 @@ tăng cường</translation>
         <translation>Không thể loại bỏ chứng nhận: %0</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="585"/>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="2874"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="588"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="2877"/>
         <source>SQL: %1
 result: %2
 error: %3
@@ -141913,12 +141905,12 @@ lỗi: %3
 </translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="669"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="672"/>
         <source>Unsupported spatial column type %1</source>
         <translation>Kiểu cột không gian không được hỗ trợ %1</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="985"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="988"/>
         <source>Database connection was successful, but the accessible tables could not be determined.
 The error message from the database was:
 %1</source>
@@ -141927,104 +141919,104 @@ Thông báo lỗi từ CSDL là:
 %1</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="1114"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="1117"/>
         <source>Unable to get list of spatially enabled tables from the database</source>
         <translation>Không thể lấy danh sách các bảng được kích hoạt từ CSDL</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="1213"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="1216"/>
         <source>No PostGIS support in the database.</source>
         <translation>Không có hỗ trợ PostGIS trong csdl.</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="1228"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="1231"/>
         <source>Could not parse postgis version string &apos;%1&apos;</source>
         <translation>Không thể phân tách chuỗi phiên bản postgis &apos;%1&apos;</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="1534"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="1537"/>
         <source>Connection error: %1 returned %2 [%3]</source>
         <translation>Lỗi kết nối: %1 trả về %2 [%3]</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="1980"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="1983"/>
         <source>Whole Number (smallint - 16bit)</source>
         <translation>Số Nguyên (smallint - 16bit)</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="1979"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="1982"/>
         <source>Whole Number (integer - 32bit)</source>
         <translation>Số Nguyên (integer - 32bit)</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="1978"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="1981"/>
         <source>Whole Number (integer - 64bit)</source>
         <translation>Số Nguyên (integer - 64bit)</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="1981"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="1984"/>
         <source>Decimal Number (numeric)</source>
         <translation>Số Thập phân (kiểu số)</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="1982"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="1985"/>
         <source>Decimal Number (decimal)</source>
         <translation>Số Thập phân (kiểu thập phân)</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="1986"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="1989"/>
         <source>Decimal Number (real)</source>
         <translation>Số Thập phân (số thực)</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="1985"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="1988"/>
         <source>Decimal Number (double)</source>
         <translation>Số Thập phân (kiểu kép)</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="2001"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="2004"/>
         <source>Array of Number (integer - 32bit)</source>
         <translation>Mảng số (số nguyên - 32bit)</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="2002"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="2005"/>
         <source>Array of Number (integer - 64bit)</source>
         <translation>Mảng số (số nguyên - 64bit)</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="2003"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="2006"/>
         <source>Array of Number (double)</source>
         <translation>Mảng số (kiểu kép)</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="2004"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="2007"/>
         <source>Array of Text</source>
         <translation>Mảng chữ</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="2010"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="2013"/>
         <source>Binary Object (bytea)</source>
         <translation>Đối tượng Nhị phân (bytea)</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="1511"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="1514"/>
         <source>Erroneous query: %1 returned %2 [%3]</source>
         <translation>Truy vấn bị lỗi: %1 trả về %2 [%3]</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="1553"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="1556"/>
         <source>Query failed: %1
 Error: no result buffer</source>
         <translation>Truy vấn thất bại: %1
 Lỗi: không có đệm kết quả</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="1669"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="1672"/>
         <source>Query: %1 returned %2 [%3]</source>
         <translation>Truy vấn: %1 trả về %2 [%3]</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="1673"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="1676"/>
         <source>%1 cursor states lost.
 SQL: %2
 Result: %3 (%4)</source>
@@ -142033,103 +142025,103 @@ SQL: %2
 Kết quả: %3 (%4)</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="1567"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="1570"/>
         <source>resetting bad connection.</source>
         <translation>thiết lập lại kết nối tồi.</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="1575"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="1578"/>
         <source>retry after reset succeeded.</source>
         <translation>thử lại sau khi tái lập thành công.</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="1580"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="1583"/>
         <source>retry after reset failed again.</source>
         <translation>thử lại sau khi tái lập vẫn thất bại.</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="1588"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="1591"/>
         <source>connection still bad after reset.</source>
         <translation>kết nối vẫn tồi sau khi tái lập.</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="1595"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="1598"/>
         <source>bad connection, not retrying.</source>
         <translation>kết nối tồi, không thử lại.</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="1990"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="1993"/>
         <source>Text, fixed length (char)</source>
         <translation>Chữ, chiều dài cố định (char)</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="1989"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="1992"/>
         <source>Text, limited variable length (varchar)</source>
         <translation>Chữ, chiều dài thay đổi có hạn chế (varchar)</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="1991"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="1994"/>
         <source>Text, unlimited length (text)</source>
         <translation>Chữ, chiều dài không giới hạn (ký tự)</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="1992"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="1995"/>
         <source>Text, case-insensitive unlimited length (citext)</source>
         <translation>Chữ, chiều dài không giới hạn không phân biệt hoa-thường (citext)</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="2000"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="2003"/>
         <source>Map (hstore)</source>
         <translation>Bản đồ (hstore)</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="2014"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="2017"/>
         <source>JSON (json)</source>
         <translation>JSON (json)</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="2018"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="2021"/>
         <source>JSON (jsonb)</source>
         <translation>JSON (jsonb)</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="2599"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="2602"/>
         <source>None</source>
         <translation>Không có</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="2601"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="2604"/>
         <source>Geometry</source>
         <translation>Thuộc tính không gian</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="2603"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="2606"/>
         <source>Geography</source>
         <translation>Địa lý</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="2605"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="2608"/>
         <source>TopoGeometry</source>
         <translation>Không gian địa hình</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="2607"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="2610"/>
         <source>PcPatch</source>
         <translation>PcPatch</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="2609"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="2612"/>
         <source>Raster</source>
         <translation>Raster</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="2847"/>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="2856"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="2850"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="2859"/>
         <source>Query could not be canceled [%1]</source>
         <translation>Phép truy vấn không hủy được [%1]</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="2847"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="2850"/>
         <source>PQgetCancel failed</source>
         <translation>PQgetCancel thất bại</translation>
     </message>
@@ -143080,19 +143072,20 @@ PostGIS %2</translation>
         <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="551"/>
         <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="561"/>
         <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="571"/>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1007"/>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1721"/>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1837"/>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1858"/>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1864"/>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2077"/>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2087"/>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2115"/>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2149"/>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2185"/>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2206"/>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2211"/>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2216"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="936"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1020"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1736"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1852"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1873"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1879"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2092"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2102"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2130"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2164"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2200"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2221"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2226"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2231"/>
         <source>PostGIS</source>
         <translation>PostGIS</translation>
     </message>
@@ -143178,37 +143171,37 @@ Truy cập ghi sẽ bị từ chối.</translation>
         <translation>Không rõ kiểu dữ liệu đã nhận diện</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1122"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1135"/>
         <source>Band count and NoData items count differ</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1140"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1153"/>
         <source>Cannot convert NoData value &apos;%1&apos; to double</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1407"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1422"/>
         <source>Cannot convert NoData value &apos;%1&apos; to double, default to: %2</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2185"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2200"/>
         <source>Key field &apos;%1&apos; for view/query not found.</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2206"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2221"/>
         <source>Primary key field &apos;%1&apos; for view/query not unique.</source>
         <translation>Trường khóa chính &apos;%1&apos; dùng để xem/truy vấn không độc nhất.</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2211"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2226"/>
         <source>Keys for view/query undefined.</source>
         <translation>Các khóa dùng để xem/truy vấn không được định nghĩa.</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2216"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2231"/>
         <source>No key field for view/query given.</source>
         <translation>Trường khóa để xem/truy vấn không được cung cấp.</translation>
     </message>
@@ -143285,59 +143278,64 @@ Truy cập ghi sẽ bị từ chối.</translation>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1007"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="936"/>
+        <source>Unable to reload the PostgreSQL raster layer, the data source may no longer be available.</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1020"/>
         <source>PostgreSQL raster layer has no primary key.</source>
         <translation>Lớp raster PostgreSQL không có khóa chính.</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1101"/>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1384"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1114"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1399"/>
         <source>Cannot create CRS from EPSG: &apos;%1&apos;</source>
         <translation>Không thể tạo HTCTĐ từ EPSG: &apos;%1&apos;</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1109"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1122"/>
         <source>Cannot get band count from value: &apos;%1&apos;</source>
         <translation>Không thể lấy số đếm băng từ giá trị: &apos;%1&apos;</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1131"/>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1397"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1144"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1412"/>
         <source>Unsupported data type: &apos;%1&apos;</source>
         <translation>Kiểu dữ liệu không được hỗ trợ: &apos;%1&apos;</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1175"/>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1322"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1188"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1337"/>
         <source>Cannot get extent from raster</source>
         <translation>Không thể lấy phạm vi từ raster</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1186"/>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1339"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1199"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1354"/>
         <source>Cannot convert width &apos;%1&apos; to int</source>
         <translation>Không thể chuyển đổi chiều rộng &apos;%1&apos; thành số nguyên</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1193"/>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1347"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1206"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1362"/>
         <source>Cannot convert height &apos;%1&apos; to int</source>
         <translation>Không thể chuyển đổi chiều cao &apos;%1&apos; thành số nguyên</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1201"/>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1355"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1214"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1370"/>
         <source>Cannot convert scale X &apos;%1&apos; to double</source>
         <translation>Không thể chuyển đổi tỷ lệ X &apos;%1&apos; thành kiểu số kép</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1208"/>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1363"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1221"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1378"/>
         <source>Cannot convert scale Y &apos;%1&apos; to double</source>
         <translation>Không thể chuyển đổi tỷ lệ Y &apos;%1&apos; thành kiểu số kép</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1223"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1236"/>
         <source>An error occurred while fetching raster metadata for table %1: %2
 SQL: %3</source>
         <translation>Đã xảy ra một lỗi khi đang tìm nạp đặc tả dữ liệu raster trong bảng %1:
@@ -143345,132 +143343,132 @@ SQL: %3</source>
 SQL: %3</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1228"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1241"/>
         <source>An error occurred while fetching raster metadata for %1, proceeding with (possibly very slow) raster data analysis: %2
 Please consider adding raster constraints with PostGIS function AddRasterConstraints.</source>
         <translation>Đã xảy ra một lỗi khi đang tìm nạp đặc tả dữ liệu raster cho %1, tiếp tục (có thể là rất chậm) phân tích dữ liệu raster: %2
 Vui lòng xem xét bổ sung các giới hạn raster bằng hàm PostGIS AddRasterConstraints.</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1253"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1266"/>
         <source>Multiple raster column detected, using the first one</source>
         <translation>Phát hiện nhiều cột raster, dùng cái đầu tiên</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1259"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1272"/>
         <source>An error occurred while fetching raster column</source>
         <translation>Đã xảy ra một lỗi khi đang tìm nạp cột raster</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1328"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1343"/>
         <source>Cannot get metadata from raster</source>
         <translation>Không thể lấy đặc tả dữ liệu từ raster</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1419"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1434"/>
         <source>An error occurred while fetching raster metadata</source>
         <translation>Đã xảy ra một lỗi khi đang tìm nạp đặc tả dữ liệu raster</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1431"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1446"/>
         <source>An error occurred while fetching raster fields information</source>
         <translation>Đã xảy ra một lỗi khi đang tìm nạp thông tin trường raster</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1479"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1494"/>
         <source>Invalid default date in raster temporal capabilities for field %1: %2</source>
         <translation>Ngày tháng mặc định không hợp lệ trong các năng lực thời gian raster dùng cho trường %1: %2</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1501"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1516"/>
         <source>No temporal ranges detected in raster temporal capabilities for field %1: %2</source>
         <translation>Không có các miền thời gian được phát hiện trong các năng lực thời gian raster dùng cho trường %1: %2</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1506"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1521"/>
         <source>Invalid temporal range in raster temporal capabilities for field %1: %2 - %3</source>
         <translation>Miền thời gian không hợp lệ trong các năng lực thời gian raster dùng cho trường %1: %2 - %3</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1511"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1526"/>
         <source>An error occurred while fetching raster temporal capabilities for field: %1</source>
         <translation>Đã xảy ra một lỗi khi đang tìm nạp các năng lực thời gian raster dùng cho trường: %1</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1516"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1531"/>
         <source>Invalid field index for raster temporal capabilities: %1</source>
         <translation>Chỉ mục trường không hợp lệ dùng cho các năng lực thời gian raster: %1</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1721"/>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1806"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1736"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1821"/>
         <source>Unexpected formatted field type &apos;%1&apos; for field %2</source>
         <translation>Kiểu trường được định dạng không mong đợi &apos;%1&apos; dùng cho trường %2</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1837"/>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1858"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1852"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1873"/>
         <source>Field %1 ignored, because of unsupported type %2</source>
         <translation>Trường %1 bị bỏ qua, lý do là kiểu không được hỗ trợ %2</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1864"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1879"/>
         <source>Duplicate field %1 found
 </source>
         <translation>Tìm thấy trường lặp %1</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2069"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2084"/>
         <source>Primary key is ctid - changing of existing features disabled (%1; %2)</source>
         <translation>Khóa chính là ctid - việc thay đổi các đối tượng hiện có bị bất hoạt (%1; %2)</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2077"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2092"/>
         <source>The table has no column suitable for use as a key. QGIS requires a primary key, a PostgreSQL oid column or a ctid for tables.</source>
         <translation>Bảng này không có cột nào thích hợp để dùng làm khóa. QGIS cần một khóa chính, một cột oid kiểu PostgreSQL hoặc một ctid dùng cho các bảng.</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2087"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2102"/>
         <source>Unexpected relation type.</source>
         <translation>Kiểu mối liên hệ không mong đợi.</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2115"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2130"/>
         <source>Unique column &apos;%1&apos; doesn&apos;t have a NOT NULL constraint.</source>
         <translation>Cột không trùng &apos;%1&apos; không có hạn chế KHÔNG RỖNG.</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2149"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2164"/>
         <source>Ignoring key candidate because of NULL values or inherited table</source>
         <translation>Bỏ qua ứng viên khoá vì các giá trị RỖNG hoặc bảng có tính kế thừa</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2273"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2288"/>
         <source>Cannot convert overview factor &apos;%1&apos; to int</source>
         <translation>Không thể chuyển đổi hệ số tóm tắt &apos;%1&apos; thành số nguyên</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2280"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2295"/>
         <source>Table or schema is empty</source>
         <translation>Bảng hoặc lược đồ rỗng</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2288"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2303"/>
         <source>Error fetching overviews information: %1</source>
         <translation>Lỗi tìm nạp thông tin tóm tắt: %1</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2292"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2307"/>
         <source>No overviews found, performances may be affected for %1</source>
         <translation>Không tìm thấy các thông tin tóm tắt, hiệu suất có thể bị ảnh hưởng đối với %1</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2334"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2349"/>
         <source>Data type is unknown</source>
         <translation>Kiểu dữ liệu không rõ</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2443"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2458"/>
         <source>Error fetching statistics for %1: %2
 SQL: %3</source>
         <translation>Lỗi tìm nạp các thống kê cho %1: %2
@@ -151697,12 +151695,12 @@ p, li { white-space: pre-wrap; }
         <translation>Nhập Tập tin Kết quả</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsrastercalcdialog.cpp" line="369"/>
+        <location filename="../src/app/qgsrastercalcdialog.cpp" line="374"/>
         <source>Expression valid</source>
         <translation>Biểu thức hợp lệ</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsrastercalcdialog.cpp" line="378"/>
+        <location filename="../src/app/qgsrastercalcdialog.cpp" line="383"/>
         <source>Expression invalid</source>
         <translation>Biểu thức không hợp lệ</translation>
     </message>
@@ -152713,214 +152711,214 @@ Nhắp chuột vào nút trợ giúp để lấy các tùy chọn tạo hợp l�
         <translation>Không thiết lập</translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="425"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="434"/>
         <source>Information from provider</source>
         <translation>Thông tin từ nhà cung cấp</translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="429"/>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="508"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="438"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="517"/>
         <source>Extent</source>
         <translation>Phạm vi</translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="432"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="441"/>
         <source>Width</source>
         <translation>Chiều rộng</translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="436"/>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="444"/>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="540"/>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="551"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="445"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="453"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="549"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="560"/>
         <source>n/a</source>
         <translation>n/a</translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="440"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="449"/>
         <source>Height</source>
         <translation>Chiều cao</translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="448"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="457"/>
         <source>Data type</source>
         <translation>Kiểu dữ liệu</translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="503"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="512"/>
         <source>Identification</source>
         <translation>Nhận diện</translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="513"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="522"/>
         <source>Access</source>
         <translation>Truy cập</translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="518"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="527"/>
         <source>Bands</source>
         <translation>Các Băng</translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="521"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="530"/>
         <source>Band count</source>
         <translation>Đếm Băng</translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="525"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="534"/>
         <source>Number</source>
         <translation>Số</translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="526"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="535"/>
         <source>Min</source>
         <translation>Nhỏ nhất</translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="526"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="535"/>
         <source>Max</source>
         <translation>Lớn nhất</translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="561"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="570"/>
         <source>Contacts</source>
         <translation>Liên hệ</translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="566"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="575"/>
         <source>References</source>
         <translation>Các Tham chiếu</translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="571"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="580"/>
         <source>History</source>
         <translation>Lịch sử</translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="743"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="752"/>
         <source>Create %1 provider</source>
         <translation>Tạo nhà cung cấp %1</translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="1194"/>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="1201"/>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="1209"/>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2573"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="1203"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="1210"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="1218"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2582"/>
         <source>Raster</source>
         <translation>Raster</translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="489"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="498"/>
         <source>Could not determine raster data type.</source>
         <translation>Không thể xác định kiểu dữ liệu raster.</translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="453"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="462"/>
         <source>Byte - Eight bit unsigned integer</source>
         <translation>Byte - Số nguyên 8 bit không dấu</translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="456"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="465"/>
         <source>Int8 - Eight bit signed integer</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="459"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="468"/>
         <source>UInt16 - Sixteen bit unsigned integer </source>
         <translation>UInt 16 - Số nguyên 16 bit không dấu </translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="462"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="471"/>
         <source>Int16 - Sixteen bit signed integer </source>
         <translation>Int16 - Số nguyên 16 bit có dấu </translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="465"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="474"/>
         <source>UInt32 - Thirty two bit unsigned integer </source>
         <translation>UInt32 - Số nguyên 32 bit không dấu </translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="468"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="477"/>
         <source>Int32 - Thirty two bit signed integer </source>
         <translation>Int32 - Số nguyên 32 bit có dấu </translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="471"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="480"/>
         <source>Float32 - Thirty two bit floating point </source>
         <translation>Loat32 - Dấu chấm động 32 bit </translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="474"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="483"/>
         <source>Float64 - Sixty four bit floating point </source>
         <translation>Float64 - Dấu chấm động 64 bit </translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="477"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="486"/>
         <source>CInt16 - Complex Int16 </source>
         <translation>CInt16 - Số phức Int16 </translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="480"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="489"/>
         <source>CInt32 - Complex Int32 </source>
         <translation>CInt32 - Số phức Int32 </translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="483"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="492"/>
         <source>CFloat32 - Complex Float32 </source>
         <translation>CFloat32 - Số phức Float32 </translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="486"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="495"/>
         <source>CFloat64 - Complex Float64 </source>
         <translation>CFloat63 - Số phức Float64 </translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="525"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="534"/>
         <source>Band</source>
         <translation>Dải màu</translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="525"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="534"/>
         <source>NoData</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="751"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="760"/>
         <source>Cannot instantiate the &apos;%1&apos; data provider</source>
         <translation>Không thể tạo phiên bản trình cung cấp dữ liệu &apos;%1&apos;</translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="762"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="771"/>
         <source>Could not insert provider into layer pipe (provider: %1, URI: %2</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="769"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="778"/>
         <source>Provider is not valid (provider: %1, URI: %2</source>
         <translation>Trình cung cấp không hợp lệ (trình cung cấp: %1, URI: %2</translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="1194"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="1203"/>
         <source>Error reading raster attribute table: invalid band %1.</source>
         <translation>Lỗi đọc bảng thuộc tính raster: băng không hợp lệ %1.</translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="1201"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="1210"/>
         <source>Error loading raster attribute table, file not found: %1.</source>
         <translation>Lỗi nạp bảng thuộc tính raster, không tìm thấy tập tin: %1.</translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="1209"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="1218"/>
         <source>Error loading raster attribute table from path %1: %2</source>
         <translation>Lỗi nạp bảng thuộc tính raster từ đường dẫn %1: %2</translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2263"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2272"/>
         <source>Labeling</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2573"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2582"/>
         <source>&lt;maplayer&gt; not found.</source>
         <translation>không tìm thấy &lt;lớp.bản.đồ&gt;.</translation>
     </message>
@@ -166815,7 +166813,7 @@ Lỗi là: %2</translation>
   %1</translation>
     </message>
     <message>
-        <location filename="../src/core/vector/qgsvectorlayer.cpp" line="5983"/>
+        <location filename="../src/core/vector/qgsvectorlayer.cpp" line="5989"/>
         <source>Primary key attributes</source>
         <translation>Các thuộc tính của khóa chính</translation>
     </message>
@@ -166870,104 +166868,104 @@ Lỗi là: %2</translation>
         <translation>Các biểu đồ</translation>
     </message>
     <message>
-        <location filename="../src/core/vector/qgsvectorlayer.cpp" line="5215"/>
+        <location filename="../src/core/vector/qgsvectorlayer.cpp" line="5221"/>
         <source>Layer is invalid</source>
         <translation>Lớp không hợp lệ</translation>
     </message>
     <message>
-        <location filename="../src/core/vector/qgsvectorlayer.cpp" line="5900"/>
+        <location filename="../src/core/vector/qgsvectorlayer.cpp" line="5906"/>
         <source>Information from provider</source>
         <translation>Thông tin từ nhà cung cấp</translation>
     </message>
     <message>
-        <location filename="../src/core/vector/qgsvectorlayer.cpp" line="5906"/>
+        <location filename="../src/core/vector/qgsvectorlayer.cpp" line="5912"/>
         <source>Storage</source>
         <translation>Lưu trữ</translation>
     </message>
     <message>
-        <location filename="../src/core/vector/qgsvectorlayer.cpp" line="5918"/>
+        <location filename="../src/core/vector/qgsvectorlayer.cpp" line="5924"/>
         <source>Encoding</source>
         <translation>Mã hóa</translation>
     </message>
     <message>
-        <location filename="../src/core/vector/qgsvectorlayer.cpp" line="5934"/>
+        <location filename="../src/core/vector/qgsvectorlayer.cpp" line="5940"/>
         <source>Geometry</source>
         <translation>Hình học</translation>
     </message>
     <message>
-        <location filename="../src/core/vector/qgsvectorlayer.cpp" line="5941"/>
-        <location filename="../src/core/vector/qgsvectorlayer.cpp" line="5967"/>
+        <location filename="../src/core/vector/qgsvectorlayer.cpp" line="5947"/>
+        <location filename="../src/core/vector/qgsvectorlayer.cpp" line="5973"/>
         <source>Extent</source>
         <translation>Phạm vi</translation>
     </message>
     <message>
-        <location filename="../src/core/vector/qgsvectorlayer.cpp" line="5948"/>
+        <location filename="../src/core/vector/qgsvectorlayer.cpp" line="5954"/>
         <source>Feature count</source>
         <translation>Đếm đối tượng</translation>
     </message>
     <message>
-        <location filename="../src/core/vector/qgsvectorlayer.cpp" line="5949"/>
+        <location filename="../src/core/vector/qgsvectorlayer.cpp" line="5955"/>
         <source>unknown</source>
         <translation>không rõ</translation>
     </message>
     <message>
-        <location filename="../src/core/vector/qgsvectorlayer.cpp" line="5962"/>
+        <location filename="../src/core/vector/qgsvectorlayer.cpp" line="5968"/>
         <source>Identification</source>
         <translation>Nhận diện</translation>
     </message>
     <message>
-        <location filename="../src/core/vector/qgsvectorlayer.cpp" line="5972"/>
+        <location filename="../src/core/vector/qgsvectorlayer.cpp" line="5978"/>
         <source>Access</source>
         <translation>Truy cập</translation>
     </message>
     <message>
-        <location filename="../src/core/vector/qgsvectorlayer.cpp" line="5977"/>
+        <location filename="../src/core/vector/qgsvectorlayer.cpp" line="5983"/>
         <source>Fields</source>
         <translation>Các trường</translation>
     </message>
     <message>
-        <location filename="../src/core/vector/qgsvectorlayer.cpp" line="5995"/>
+        <location filename="../src/core/vector/qgsvectorlayer.cpp" line="6001"/>
         <source>Count</source>
         <translation>Đếm</translation>
     </message>
     <message>
-        <location filename="../src/core/vector/qgsvectorlayer.cpp" line="5998"/>
+        <location filename="../src/core/vector/qgsvectorlayer.cpp" line="6004"/>
         <source>Field</source>
         <translation>Trường</translation>
     </message>
     <message>
-        <location filename="../src/core/vector/qgsvectorlayer.cpp" line="5998"/>
+        <location filename="../src/core/vector/qgsvectorlayer.cpp" line="6004"/>
         <source>Type</source>
         <translation>Kiểu</translation>
     </message>
     <message>
-        <location filename="../src/core/vector/qgsvectorlayer.cpp" line="5998"/>
+        <location filename="../src/core/vector/qgsvectorlayer.cpp" line="6004"/>
         <source>Length</source>
         <translation>Chiều dài</translation>
     </message>
     <message>
-        <location filename="../src/core/vector/qgsvectorlayer.cpp" line="5998"/>
+        <location filename="../src/core/vector/qgsvectorlayer.cpp" line="6004"/>
         <source>Precision</source>
         <translation>Độ chính xác</translation>
     </message>
     <message>
-        <location filename="../src/core/vector/qgsvectorlayer.cpp" line="6013"/>
+        <location filename="../src/core/vector/qgsvectorlayer.cpp" line="6019"/>
         <source>Contacts</source>
         <translation>Liên hệ</translation>
     </message>
     <message>
-        <location filename="../src/core/vector/qgsvectorlayer.cpp" line="6018"/>
+        <location filename="../src/core/vector/qgsvectorlayer.cpp" line="6024"/>
         <source>Links</source>
         <translation>Các liên kết</translation>
     </message>
     <message>
-        <location filename="../src/core/vector/qgsvectorlayer.cpp" line="6023"/>
+        <location filename="../src/core/vector/qgsvectorlayer.cpp" line="6029"/>
         <source>History</source>
         <translation>Lịch sử</translation>
     </message>
     <message>
-        <location filename="../src/core/vector/qgsvectorlayer.cpp" line="5912"/>
-        <location filename="../src/core/vector/qgsvectorlayer.cpp" line="5998"/>
+        <location filename="../src/core/vector/qgsvectorlayer.cpp" line="5918"/>
+        <location filename="../src/core/vector/qgsvectorlayer.cpp" line="6004"/>
         <source>Comment</source>
         <translation>Ghi chú</translation>
     </message>
@@ -169009,8 +169007,8 @@ Lỗi là: %2</translation>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/gui/vectortile/qgsvectortilebasiclabelingwidget.cpp" line="345"/>
-        <location filename="../src/gui/vectortile/qgsvectortilebasiclabelingwidget.cpp" line="352"/>
+        <location filename="../src/gui/vectortile/qgsvectortilebasiclabelingwidget.cpp" line="347"/>
+        <location filename="../src/gui/vectortile/qgsvectortilebasiclabelingwidget.cpp" line="359"/>
         <source>Current zoom: %1</source>
         <translation>Mức độ phóng hiện tại: %1</translation>
     </message>
@@ -169101,8 +169099,8 @@ Lỗi là: %2</translation>
         <translation>Tô màu</translation>
     </message>
     <message>
-        <location filename="../src/gui/vectortile/qgsvectortilebasicrendererwidget.cpp" line="346"/>
-        <location filename="../src/gui/vectortile/qgsvectortilebasicrendererwidget.cpp" line="353"/>
+        <location filename="../src/gui/vectortile/qgsvectortilebasicrendererwidget.cpp" line="348"/>
+        <location filename="../src/gui/vectortile/qgsvectortilebasicrendererwidget.cpp" line="360"/>
         <source>Current zoom: %1</source>
         <translation>Mức độ phóng hiện tại: %1</translation>
     </message>

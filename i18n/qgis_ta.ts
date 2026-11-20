@@ -20625,14 +20625,6 @@ This can cause unexpected results.</source>
         <translation>பலகோண அடுக்குகளுக்கான உடை</translation>
     </message>
     <message>
-        <source>Pre-execution script</source>
-        <translation>முன் செயல்படுத்தல் ச்கிரிப்ட்</translation>
-    </message>
-    <message>
-        <source>Post-execution script</source>
-        <translation>பிந்தைய சாவுஒறுப்பு ச்கிரிப்ட்</translation>
-    </message>
-    <message>
         <source>Do not filter (better performance)</source>
         <translation>வடிகட்ட வேண்டாம் (சிறந்த செயல்திறன்)</translation>
     </message>
@@ -23228,15 +23220,15 @@ The distance is specified in layer units, and the bearing in degrees clockwise f
         <location filename="../src/core/pal/feature.cpp" line="2451"/>
         <location filename="../src/core/pal/feature.cpp" line="2492"/>
         <location filename="../src/core/pal/geomfunction.cpp" line="343"/>
-        <location filename="../src/core/pal/labelposition.cpp" line="196"/>
-        <location filename="../src/core/pal/labelposition.cpp" line="223"/>
-        <location filename="../src/core/pal/labelposition.cpp" line="324"/>
-        <location filename="../src/core/pal/labelposition.cpp" line="382"/>
-        <location filename="../src/core/pal/labelposition.cpp" line="753"/>
-        <location filename="../src/core/pal/labelposition.cpp" line="794"/>
-        <location filename="../src/core/pal/labelposition.cpp" line="826"/>
-        <location filename="../src/core/pal/labelposition.cpp" line="861"/>
-        <location filename="../src/core/pal/labelposition.cpp" line="920"/>
+        <location filename="../src/core/pal/labelposition.cpp" line="189"/>
+        <location filename="../src/core/pal/labelposition.cpp" line="216"/>
+        <location filename="../src/core/pal/labelposition.cpp" line="317"/>
+        <location filename="../src/core/pal/labelposition.cpp" line="375"/>
+        <location filename="../src/core/pal/labelposition.cpp" line="746"/>
+        <location filename="../src/core/pal/labelposition.cpp" line="787"/>
+        <location filename="../src/core/pal/labelposition.cpp" line="819"/>
+        <location filename="../src/core/pal/labelposition.cpp" line="854"/>
+        <location filename="../src/core/pal/labelposition.cpp" line="913"/>
         <location filename="../src/core/pal/pointset.cpp" line="284"/>
         <location filename="../src/core/pal/pointset.cpp" line="623"/>
         <location filename="../src/core/pal/pointset.cpp" line="913"/>
@@ -23252,15 +23244,15 @@ The distance is specified in layer units, and the bearing in degrees clockwise f
         <location filename="../src/core/pal/feature.cpp" line="2451"/>
         <location filename="../src/core/pal/feature.cpp" line="2492"/>
         <location filename="../src/core/pal/geomfunction.cpp" line="343"/>
-        <location filename="../src/core/pal/labelposition.cpp" line="196"/>
-        <location filename="../src/core/pal/labelposition.cpp" line="223"/>
-        <location filename="../src/core/pal/labelposition.cpp" line="324"/>
-        <location filename="../src/core/pal/labelposition.cpp" line="382"/>
-        <location filename="../src/core/pal/labelposition.cpp" line="753"/>
-        <location filename="../src/core/pal/labelposition.cpp" line="794"/>
-        <location filename="../src/core/pal/labelposition.cpp" line="826"/>
-        <location filename="../src/core/pal/labelposition.cpp" line="861"/>
-        <location filename="../src/core/pal/labelposition.cpp" line="920"/>
+        <location filename="../src/core/pal/labelposition.cpp" line="189"/>
+        <location filename="../src/core/pal/labelposition.cpp" line="216"/>
+        <location filename="../src/core/pal/labelposition.cpp" line="317"/>
+        <location filename="../src/core/pal/labelposition.cpp" line="375"/>
+        <location filename="../src/core/pal/labelposition.cpp" line="746"/>
+        <location filename="../src/core/pal/labelposition.cpp" line="787"/>
+        <location filename="../src/core/pal/labelposition.cpp" line="819"/>
+        <location filename="../src/core/pal/labelposition.cpp" line="854"/>
+        <location filename="../src/core/pal/labelposition.cpp" line="913"/>
         <location filename="../src/core/pal/pointset.cpp" line="284"/>
         <location filename="../src/core/pal/pointset.cpp" line="623"/>
         <location filename="../src/core/pal/pointset.cpp" line="913"/>
@@ -27086,9 +27078,9 @@ SQL:% 1
         <location filename="../src/providers/postgres/qgspostgresprovidermetadatautils.cpp" line="163"/>
         <location filename="../src/providers/postgres/qgspostgresutils.cpp" line="358"/>
         <location filename="../src/providers/postgres/qgspostgresutils.cpp" line="460"/>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2501"/>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2556"/>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2724"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2516"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2571"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2739"/>
         <location filename="../src/providers/spatialite/qgsspatialitedataitems.cpp" line="38"/>
         <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="164"/>
         <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="6030"/>
@@ -27287,7 +27279,7 @@ Database error: %2</source>
     </message>
     <message>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="5234"/>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2564"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2579"/>
         <source>Unable to save layer style. It&apos;s not possible to create the destination table on the database. Maybe this is due to table permissions (user=%1). Please contact your database admin</source>
         <translation>அடுக்கு நடையைச் சேமிக்க முடியவில்லை. தரவுத்தளத்தில் இலக்கு அட்டவணையை உருவாக்குவது சாத்தியமில்லை. இது அட்டவணை அனுமதிகளின் காரணமாக இருக்கலாம் (பயனர்=%1). உங்கள் தரவுத்தள நிர்வாகியைத் தொடர்பு கொள்ளவும்</translation>
     </message>
@@ -27325,13 +27317,13 @@ Database error: %2</source>
     </message>
     <message>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="5246"/>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2576"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2591"/>
         <source>Unable to add column type to layer_styles table. Maybe this is due to table permissions (user=%1). Please contact your database admin</source>
         <translation>layer_styles அட்டவணையில் நெடுவரிசை வகையைச் சேர்க்க முடியவில்லை. இது அட்டவணை அனுமதிகளின் காரணமாக இருக்கலாம் (பயனர்=%1). உங்கள் தரவுத்தள நிர்வாகியைத் தொடர்பு கொள்ளவும்</translation>
     </message>
     <message>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="5358"/>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2702"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2717"/>
         <source>Unable to save layer style. It&apos;s not possible to insert a new record into the style table. Maybe this is due to table permissions (user=%1). Please contact your database administrator.</source>
         <translation>அடுக்கு நடையைச் சேமிக்க முடியவில்லை. பாணி ​​டேபிளில் புதிய பதிவைச் செருக முடியாது. இது அட்டவணை அனுமதிகளின் காரணமாக இருக்கலாம் (பயனர்=%1). உங்கள் தரவுத்தள நிர்வாகியைத் தொடர்பு கொள்ளவும்.</translation>
     </message>
@@ -27339,9 +27331,9 @@ Database error: %2</source>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="5460"/>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="5546"/>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="5581"/>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2798"/>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2888"/>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2923"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2813"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2903"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2938"/>
         <source>Connection to database failed using username: %1</source>
         <translation>பயனர் பெயரைப் பயன்படுத்தி தரவுத்தளத்திற்கான இணைப்பு தோல்வியடைந்தது:% 1</translation>
     </message>
@@ -27350,10 +27342,10 @@ Database error: %2</source>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="5520"/>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="5561"/>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="5597"/>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2835"/>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2862"/>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2903"/>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2939"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2850"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2877"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2918"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2954"/>
         <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="6085"/>
         <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="6251"/>
         <source>Error executing query: %1</source>
@@ -27361,33 +27353,33 @@ Database error: %2</source>
     </message>
     <message>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="5494"/>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2836"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2851"/>
         <source>Error executing the select query for related styles. The query was logged</source>
         <translation>தொடர்புடைய பாணிகளுக்கான தேர்ந்தெடுக்கப்பட்ட வினவலைச் செயல்படுத்துவதில் பிழை. வினவல் பதிவு செய்யப்பட்டது</translation>
     </message>
     <message>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="5521"/>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2863"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2878"/>
         <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="6417"/>
         <source>Error executing the select query for unrelated styles. The query was logged</source>
         <translation>தொடர்பில்லாத பாணிகளுக்கான தேர்ந்தெடுக்கப்பட்ட வினவலை இயக்குவதில் பிழை. வினவல் பதிவு செய்யப்பட்டது</translation>
     </message>
     <message>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="5562"/>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2904"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2919"/>
         <source>Error executing the delete query. The query was logged</source>
         <translation>நீக்கு வினவலை செயல்படுத்துவதில் பிழை. வினவல் பதிவு செய்யப்பட்டது</translation>
     </message>
     <message>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="5598"/>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2940"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2955"/>
         <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="6468"/>
         <source>Error executing the select query. The query was logged</source>
         <translation>தேர்ந்தெடுக்கப்பட்ட வினவலை இயக்குவதில் பிழை. வினவல் பதிவு செய்யப்பட்டது</translation>
     </message>
     <message>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="5593"/>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2935"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2950"/>
         <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="6462"/>
         <source>Consistency error in table &apos;%1&apos;. Style id should be unique</source>
         <translation>அட்டவணை &apos;% 1&apos; இல் நிலைத்தன்மை பிழை. பாணி ​​ஐடி தனித்துவமாக இருக்க வேண்டும்</translation>
@@ -36474,7 +36466,7 @@ Attributes are not modified by this algorithm.</source>
     <message>
         <location filename="../src/core/layout/qgscompositionconverter.cpp" line="91"/>
         <location filename="../src/core/layout/qgslayoutobject.cpp" line="54"/>
-        <location filename="../src/core/symbology/qgssymbol.cpp" line="2282"/>
+        <location filename="../src/core/symbology/qgssymbol.cpp" line="2284"/>
         <location filename="../src/core/symbology/qgssymbollayer.cpp" line="89"/>
         <source>Opacity</source>
         <translation>ஒளிபுகாநிலை</translation>
@@ -42184,12 +42176,12 @@ By இயல்புநிலை only the m மதிப்பு இருந�
         <translation>This படிமுறை appends புலங்கள் representing counts of each unique மதிப்பு இருந்து a raster layer contained within zones defined அச் polygons.</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsstringutils.cpp" line="67"/>
+        <location filename="../src/core/qgsstringutils.cpp" line="69"/>
         <source>a|an|and|as|at|but|by|en|for|if|in|nor|of|on|or|per|s|the|to|vs.|vs|via</source>
         <translation>எ</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsstringutils.cpp" line="68"/>
+        <location filename="../src/core/qgsstringutils.cpp" line="70"/>
         <source>.|:</source>
         <translation>.|:</translation>
     </message>
@@ -53600,7 +53592,7 @@ For more details, please see the following papers:
         <translation>கலப்பினம்</translation>
     </message>
     <message>
-        <location filename="../src/core/symbology/qgssymbol.cpp" line="2283"/>
+        <location filename="../src/core/symbology/qgssymbol.cpp" line="2285"/>
         <source>Extent buffer</source>
         <translation>அளவு தாங்கல்</translation>
     </message>
@@ -58985,7 +58977,7 @@ If multiband rasters are used in the data raster stack, the algorithm will alway
         <translation>Failed பெறுநர் determine objectIdFieldName and/or objectIds</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2588"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2603"/>
         <source>Unable to add column r_raster_column to layer_styles table. Maybe this is due to table permissions (user=%1). Please contact your database admin</source>
         <translation>நெடுவரிசை r_raster_column ஐ layer_styles அட்டவணையில் சேர்க்க முடியவில்லை. இது அட்டவணை அனுமதிகளின் காரணமாக இருக்கலாம் (பயனர்=%1). உங்கள் தரவுத்தள நிர்வாகியைத் தொடர்பு கொள்ளவும்</translation>
     </message>
@@ -67905,7 +67897,7 @@ Clicking the button will let you select an application பெறுநர் use
     </message>
     <message>
         <location filename="../src/ui/qgsattributetabledialog.ui"/>
-        <location filename="../src/app/qgsattributetabledialog.cpp" line="466"/>
+        <location filename="../src/app/qgsattributetabledialog.cpp" line="472"/>
         <source>Update All</source>
         <translation>அனைத்தையும் புதுப்பிக்கவும்</translation>
     </message>
@@ -68020,7 +68012,7 @@ Clicking the button will let you select an application பெறுநர் use
         <translation>நிபந்தனை வடிவமைத்தல்</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsattributetabledialog.cpp" line="310"/>
+        <location filename="../src/app/qgsattributetabledialog.cpp" line="316"/>
         <source>Dock Attribute Table</source>
         <translation>டாக் பண்பு அட்டவணை</translation>
     </message>
@@ -68051,117 +68043,117 @@ Clicking the button will let you select an application பெறுநர் use
         <translation>Ctrl+I</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsattributetabledialog.cpp" line="529"/>
+        <location filename="../src/app/qgsattributetabledialog.cpp" line="535"/>
         <source>An error occurred while trying to update the field %1</source>
         <translation>% 1 புலத்தை புதுப்பிக்க முயற்சிக்கும் போது பிழை ஏற்பட்டது</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsattributetabledialog.cpp" line="613"/>
+        <location filename="../src/app/qgsattributetabledialog.cpp" line="619"/>
         <source>An error occurred while evaluating the calculation string:
 %1</source>
         <translation>கணக்கீட்டு சரத்தை மதிப்பிடும்போது பிழை ஏற்பட்டது: 
 % 1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsattributetabledialog.cpp" line="529"/>
-        <location filename="../src/app/qgsattributetabledialog.cpp" line="613"/>
+        <location filename="../src/app/qgsattributetabledialog.cpp" line="535"/>
+        <location filename="../src/app/qgsattributetabledialog.cpp" line="619"/>
         <source>Update Attributes</source>
         <translation>பண்புகளை புதுப்பிக்கவும்</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsattributetabledialog.cpp" line="458"/>
+        <location filename="../src/app/qgsattributetabledialog.cpp" line="464"/>
         <source> %1 — Features Total: %L2, Filtered: %L3, Selected: %L4</source>
         <translation>%1 — நற்பொருத்தங்கள் மொத்தம்: %L2, ​​வடிகட்டப்பட்டது: %L3, தேர்ந்தெடுக்கப்பட்டது: %L4</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsattributetabledialog.cpp" line="972"/>
+        <location filename="../src/app/qgsattributetabledialog.cpp" line="978"/>
         <source>Failed to add field &apos;%1&apos; of type &apos;%2&apos;. Is the field name unique?</source>
         <translation>&apos;%2&apos; வகையின் &apos;%1&apos; புலத்தைச் சேர்க்க முடியவில்லை. புலம் பெயர் தனித்துவமா?</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsattributetabledialog.cpp" line="468"/>
+        <location filename="../src/app/qgsattributetabledialog.cpp" line="474"/>
         <source>Update Filtered</source>
         <translation>புதுப்பிப்பு வடிகட்டப்பட்டது</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsattributetabledialog.cpp" line="432"/>
+        <location filename="../src/app/qgsattributetabledialog.cpp" line="438"/>
         <source>Multiedit is not supported when using custom UI forms</source>
         <translation>தனிப்பயன் இடைமுகம் படிவங்களைப் பயன்படுத்தும் போது Multiedit ஆதரிக்கப்படாது</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsattributetabledialog.cpp" line="434"/>
+        <location filename="../src/app/qgsattributetabledialog.cpp" line="440"/>
         <source>Search is not supported when using custom UI forms</source>
         <translation>தனிப்பயன் இடைமுகம் படிவங்களைப் பயன்படுத்தும் போது தேடல் ஆதரிக்கப்படாது</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsattributetabledialog.cpp" line="571"/>
+        <location filename="../src/app/qgsattributetabledialog.cpp" line="577"/>
         <source>Calculating field</source>
         <translation>கணக்கிடும் புலம்</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsattributetabledialog.cpp" line="741"/>
+        <location filename="../src/app/qgsattributetabledialog.cpp" line="747"/>
         <source>Feature Added</source>
         <translation>நற்பொருத்தம் சேர்க்கப்பட்டது</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsattributetabledialog.cpp" line="959"/>
+        <location filename="../src/app/qgsattributetabledialog.cpp" line="965"/>
         <source>Attribute added</source>
         <translation>பண்பு சேர்க்கப்பட்டது</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsattributetabledialog.cpp" line="972"/>
+        <location filename="../src/app/qgsattributetabledialog.cpp" line="978"/>
         <source>Add Field</source>
         <translation>புலத்தைச் சேர்க்கவும்</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsattributetabledialog.cpp" line="1000"/>
+        <location filename="../src/app/qgsattributetabledialog.cpp" line="1006"/>
         <source>Deleted attribute</source>
         <translation>நீக்கப்பட்ட பண்புக்கூறு</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsattributetabledialog.cpp" line="1010"/>
+        <location filename="../src/app/qgsattributetabledialog.cpp" line="1016"/>
         <source>The attribute(s) could not be deleted</source>
         <translation>பண்புக்கூறு(களை) நீக்க முடியவில்லை</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsattributetabledialog.cpp" line="1010"/>
+        <location filename="../src/app/qgsattributetabledialog.cpp" line="1016"/>
         <source>Attribute error</source>
         <translation>பண்பு பிழை</translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/app/qgsattributetabledialog.cpp" line="1061"/>
+        <location filename="../src/app/qgsattributetabledialog.cpp" line="1067"/>
         <source>%n feature(s) on layer &quot;%1&quot;, </source>
         <translation><numerusform>&quot;%1&quot; லேயரில் %n அம்சம்(கள்),</numerusform><numerusform>&quot;%1&quot; லேயரில் %n அம்சம்(கள்),</numerusform></translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/app/qgsattributetabledialog.cpp" line="1065"/>
+        <location filename="../src/app/qgsattributetabledialog.cpp" line="1071"/>
         <source>Delete at least %n feature(s) on other layer(s)</source>
         <translation><numerusform>மற்ற அடுக்குகளில் குறைந்தது %n அம்சங்களை நீக்கவும்)</numerusform><numerusform>மற்ற அடுக்குகளில் குறைந்தது %n அம்சங்களை நீக்கவும்)</numerusform></translation>
     </message>
     <message>
-        <location filename="../src/app/qgsattributetabledialog.cpp" line="1065"/>
+        <location filename="../src/app/qgsattributetabledialog.cpp" line="1071"/>
         <source>Delete of feature on layer &quot;%1&quot;, %2 as well and all of its other descendants.
 Delete these features?</source>
         <translation>அடுக்கு &quot;% 1&quot;, %2 மற்றும் அதன் பிற சந்ததிகள் அனைத்திலும் உள்ள அம்சத்தை நீக்கவும். 
 இந்த அம்சங்களை நீக்கவா?</translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/app/qgsattributetabledialog.cpp" line="1083"/>
+        <location filename="../src/app/qgsattributetabledialog.cpp" line="1089"/>
         <source>%n feature(s) deleted: %1</source>
         <translation><numerusform>%n அம்சம்(கள்) நீக்கப்பட்டது: %1</numerusform><numerusform>%n அம்சம்(கள்) நீக்கப்பட்டது: %1</numerusform></translation>
     </message>
     <message>
-        <location filename="../src/app/qgsattributetabledialog.cpp" line="1080"/>
+        <location filename="../src/app/qgsattributetabledialog.cpp" line="1086"/>
         <source>%1 on layer %2. </source>
         <translation>அடுக்கு% 2 இல் % 1.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsattributetabledialog.cpp" line="1091"/>
+        <location filename="../src/app/qgsattributetabledialog.cpp" line="1097"/>
         <source>Delete Feature</source>
         <translation>அம்சத்தை நீக்கு</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsattributetabledialog.cpp" line="710"/>
+        <location filename="../src/app/qgsattributetabledialog.cpp" line="716"/>
         <source>Geometryless feature added</source>
         <translation>வடிவியல் இல்லாத நற்பொருத்தம் சேர்க்கப்பட்டது</translation>
     </message>
@@ -123495,7 +123487,7 @@ Rasterizing map is recommended for proper rendering.</source>
     <name>QgsMapThemes</name>
     <message>
         <location filename="../src/app/qgsmapthemes.cpp" line="50"/>
-        <location filename="../src/app/qgsmapthemes.cpp" line="125"/>
+        <location filename="../src/app/qgsmapthemes.cpp" line="127"/>
         <source>Replace Theme</source>
         <translation>கருப்பொருள் மாற்றவும்</translation>
     </message>
@@ -123515,59 +123507,59 @@ Rasterizing map is recommended for proper rendering.</source>
         <translation>தற்போதைய கருப்பொருள் அகற்றவும்</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsmapthemes.cpp" line="96"/>
-        <location filename="../src/app/qgsmapthemes.cpp" line="154"/>
+        <location filename="../src/app/qgsmapthemes.cpp" line="98"/>
+        <location filename="../src/app/qgsmapthemes.cpp" line="156"/>
         <source>theme</source>
         <translation>கருப்பொருள்</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsmapthemes.cpp" line="96"/>
+        <location filename="../src/app/qgsmapthemes.cpp" line="98"/>
         <source>Theme</source>
         <translation>கருப்பொருள்</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsmapthemes.cpp" line="97"/>
+        <location filename="../src/app/qgsmapthemes.cpp" line="99"/>
         <source>Map Themes</source>
         <translation>வரைபட தீம்கள்</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsmapthemes.cpp" line="98"/>
+        <location filename="../src/app/qgsmapthemes.cpp" line="100"/>
         <source>Name of the new theme</source>
         <translation>புதிய கருப்பொருள் பெயர்</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsmapthemes.cpp" line="100"/>
-        <location filename="../src/app/qgsmapthemes.cpp" line="162"/>
+        <location filename="../src/app/qgsmapthemes.cpp" line="102"/>
+        <location filename="../src/app/qgsmapthemes.cpp" line="164"/>
         <source>A theme with this name already exists.</source>
         <translation>இந்தப் பெயரில் ஒரு கருப்பொருள் ஏற்கனவே உள்ளது.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsmapthemes.cpp" line="125"/>
+        <location filename="../src/app/qgsmapthemes.cpp" line="127"/>
         <source>Are you sure you want to replace the existing theme “%1”?</source>
         <translation>ஏற்கனவே இருக்கும் கருப்பொருள் &quot;% 1&quot; ஐ நிச்சயமாக மாற்ற விரும்புகிறீர்களா?</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsmapthemes.cpp" line="155"/>
+        <location filename="../src/app/qgsmapthemes.cpp" line="157"/>
         <source>%1</source>
         <translation>% 1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsmapthemes.cpp" line="159"/>
+        <location filename="../src/app/qgsmapthemes.cpp" line="161"/>
         <source>Rename Map Theme</source>
         <translation>வரைபட கருப்பொருள் மறுபெயரிடவும்</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsmapthemes.cpp" line="160"/>
+        <location filename="../src/app/qgsmapthemes.cpp" line="162"/>
         <source>Enter the new name of the map theme</source>
         <translation>வரைபட தீமின் புதிய பெயரை உள்ளிடவும்</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsmapthemes.cpp" line="179"/>
+        <location filename="../src/app/qgsmapthemes.cpp" line="182"/>
         <source>Remove Theme</source>
         <translation>கருப்பொருள் அகற்று</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsmapthemes.cpp" line="179"/>
+        <location filename="../src/app/qgsmapthemes.cpp" line="182"/>
         <source>Are you sure you want to remove the existing theme “%1”?</source>
         <translation>ஏற்கனவே உள்ள &quot;% 1&quot; கருப்பொருளை நிச்சயமாக அகற்ற விரும்புகிறீர்களா?</translation>
     </message>
@@ -142207,50 +142199,50 @@ enhancement</source>
 <context>
     <name>QgsPostgresConn</name>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="403"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="406"/>
         <source>Connection to database failed</source>
         <translation>தரவுத்தளத்திற்கான இணைப்பு தோல்வியடைந்தது</translation>
     </message>
     <message>
         <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="340"/>
         <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="349"/>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="403"/>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="458"/>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="585"/>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="879"/>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="985"/>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="1099"/>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="1114"/>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="1213"/>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="1228"/>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="1519"/>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="1541"/>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="1557"/>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="1567"/>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="1575"/>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="1582"/>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="1590"/>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="1595"/>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="1669"/>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="1673"/>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="2847"/>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="2856"/>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="2874"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="406"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="461"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="588"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="882"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="988"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="1102"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="1117"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="1216"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="1231"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="1522"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="1544"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="1560"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="1570"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="1578"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="1585"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="1593"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="1598"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="1672"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="1676"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="2850"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="2859"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="2877"/>
         <source>PostGIS</source>
         <translation>PostGIS</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="458"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="461"/>
         <source>Your PostGIS installation has no GEOS support. Feature selection and identification will not work properly. Please install PostGIS with GEOS support (http://geos.refractions.net)</source>
         <translation>உங்கள் PostGIS நிறுவலுக்கு GEOS உதவி இல்லை. நற்பொருத்தம் தேர்வு மற்றும் அடையாளம் சரியாக வேலை செய்யாது. GEOS ஆதரவுடன் PostGIS ஐ நிறுவவும் (http://geos.refractions.net)</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="1099"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="1102"/>
         <source>Database connection was successful, but the accessible tables could not be determined.</source>
         <translation>தரவுத்தள இணைப்பு வெற்றிகரமாக இருந்தது, ஆனால் அணுகக்கூடிய அட்டவணைகளைத் தீர்மானிக்க முடியவில்லை.</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="879"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="882"/>
         <source>Database connection was successful, but the accessible tables could not be determined. The error message from the database was:
 %1
 </source>
@@ -142275,8 +142267,8 @@ enhancement</source>
         <translation>சான்றிதழை அகற்ற முடியாது: % 0</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="585"/>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="2874"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="588"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="2877"/>
         <source>SQL: %1
 result: %2
 error: %3
@@ -142287,12 +142279,12 @@ error: %3
 </translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="669"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="672"/>
         <source>Unsupported spatial column type %1</source>
         <translation>ஆதரிக்கப்படாத ச்பேசியல் நெடுவரிசை வகை% 1</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="985"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="988"/>
         <source>Database connection was successful, but the accessible tables could not be determined.
 The error message from the database was:
 %1</source>
@@ -142301,104 +142293,104 @@ The error message from the database was:
 % 1</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="1114"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="1117"/>
         <source>Unable to get list of spatially enabled tables from the database</source>
         <translation>தரவுத்தளத்திலிருந்து இடஞ்சார்ந்த இயக்கப்பட்ட அட்டவணைகளின் பட்டியலைப் பெற முடியவில்லை</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="1213"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="1216"/>
         <source>No PostGIS support in the database.</source>
         <translation>தரவுத்தளத்தில் PostGIS உதவி இல்லை.</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="1228"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="1231"/>
         <source>Could not parse postgis version string &apos;%1&apos;</source>
         <translation>postgis பதிப்பு சரம் &apos;% 1&apos; ஐ அலச முடியவில்லை</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="1534"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="1537"/>
         <source>Connection error: %1 returned %2 [%3]</source>
         <translation>இணைப்புப் பிழை: %1 ஆனது %2 [%3]</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="1980"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="1983"/>
         <source>Whole Number (smallint - 16bit)</source>
         <translation>முழு எண் (சிறியது - 16 பிட்)</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="1979"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="1982"/>
         <source>Whole Number (integer - 32bit)</source>
         <translation>முழு எண் (முழு எண் - 32 பிட்)</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="1978"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="1981"/>
         <source>Whole Number (integer - 64bit)</source>
         <translation>முழு எண் (முழு எண் - 64 பிட்)</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="1981"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="1984"/>
         <source>Decimal Number (numeric)</source>
         <translation>தசம எண் (எண்)</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="1982"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="1985"/>
         <source>Decimal Number (decimal)</source>
         <translation>தசம எண் (தசமம்)</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="1986"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="1989"/>
         <source>Decimal Number (real)</source>
         <translation>தசம எண் (உண்மையான)</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="1985"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="1988"/>
         <source>Decimal Number (double)</source>
         <translation>தசம எண் (இரட்டை)</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="2001"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="2004"/>
         <source>Array of Number (integer - 32bit)</source>
         <translation>எண்ணின் வரிசை (முழு எண் - 32பிட்)</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="2002"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="2005"/>
         <source>Array of Number (integer - 64bit)</source>
         <translation>எண் வரிசை (முழு எண் - 64பிட்)</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="2003"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="2006"/>
         <source>Array of Number (double)</source>
         <translation>எண் வரிசை (இரட்டை)</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="2004"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="2007"/>
         <source>Array of Text</source>
         <translation>உரையின் வரிசை</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="2010"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="2013"/>
         <source>Binary Object (bytea)</source>
         <translation>பைனரி பொருள் (பைடீ)</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="1511"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="1514"/>
         <source>Erroneous query: %1 returned %2 [%3]</source>
         <translation>பிழையான வினவல்: %1 ஆனது %2 [%3]ஐ வழங்கியது</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="1553"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="1556"/>
         <source>Query failed: %1
 Error: no result buffer</source>
         <translation>வினவல் தோல்வியடைந்தது:% 1 
 பிழை: முடிவு தாங்கல் இல்லை</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="1669"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="1672"/>
         <source>Query: %1 returned %2 [%3]</source>
         <translation>வினவல்: %1 % 2 [%3] திரும்பியது</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="1673"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="1676"/>
         <source>%1 cursor states lost.
 SQL: %2
 Result: %3 (%4)</source>
@@ -142407,103 +142399,103 @@ SQL:% 2
 முடிவு:% 3 (%4)</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="1567"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="1570"/>
         <source>resetting bad connection.</source>
         <translation>தவறான இணைப்பை மீட்டமைத்தல்.</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="1575"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="1578"/>
         <source>retry after reset succeeded.</source>
         <translation>மீட்டமைக்கப்பட்ட பிறகு மீண்டும் முயற்சிக்கவும்.</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="1580"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="1583"/>
         <source>retry after reset failed again.</source>
         <translation>மீட்டமைக்கப்பட்ட பிறகு மீண்டும் முயற்சி தோல்வியடைந்தது.</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="1588"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="1591"/>
         <source>connection still bad after reset.</source>
         <translation>மீட்டமைத்த பிறகு இணைப்பு இன்னும் மோசமாக உள்ளது.</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="1595"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="1598"/>
         <source>bad connection, not retrying.</source>
         <translation>தவறான இணைப்பு, மீண்டும் முயற்சிக்கவில்லை.</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="1990"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="1993"/>
         <source>Text, fixed length (char)</source>
         <translation>உரை, நிலையான நீளம் (கரி)</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="1989"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="1992"/>
         <source>Text, limited variable length (varchar)</source>
         <translation>உரை, வரையறுக்கப்பட்ட மாறி நீளம் (varchar)</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="1991"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="1994"/>
         <source>Text, unlimited length (text)</source>
         <translation>உரை, வரம்பற்ற நீளம் (உரை)</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="1992"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="1995"/>
         <source>Text, case-insensitive unlimited length (citext)</source>
         <translation>உரை, கேச்-சென்சிட்டிவ் வரம்பற்ற நீளம் (citext)</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="2000"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="2003"/>
         <source>Map (hstore)</source>
         <translation>வரைபடம் (hstore)</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="2014"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="2017"/>
         <source>JSON (json)</source>
         <translation>சாதொபொகு (json)</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="2018"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="2021"/>
         <source>JSON (jsonb)</source>
         <translation>சாதொபொகு (jsonb)</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="2599"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="2602"/>
         <source>None</source>
         <translation>எதுவுமில்லை</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="2601"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="2604"/>
         <source>Geometry</source>
         <translation>வடிவியல்</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="2603"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="2606"/>
         <source>Geography</source>
         <translation>புவியியல்</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="2605"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="2608"/>
         <source>TopoGeometry</source>
         <translation>TopoGeometry</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="2607"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="2610"/>
         <source>PcPatch</source>
         <translation>PcPatch</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="2609"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="2612"/>
         <source>Raster</source>
         <translation>ராஸ்டர்</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="2847"/>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="2856"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="2850"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="2859"/>
         <source>Query could not be canceled [%1]</source>
         <translation>வினவலை ரத்து செய்ய முடியவில்லை [%1]</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="2847"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="2850"/>
         <source>PQgetCancel failed</source>
         <translation>PQgetCancel தோல்வியடைந்தது</translation>
     </message>
@@ -143456,19 +143448,20 @@ PostGIS% 2</translation>
         <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="551"/>
         <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="561"/>
         <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="571"/>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1007"/>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1721"/>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1837"/>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1858"/>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1864"/>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2077"/>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2087"/>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2115"/>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2149"/>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2185"/>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2206"/>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2211"/>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2216"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="936"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1020"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1736"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1852"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1873"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1879"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2092"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2102"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2130"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2164"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2200"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2221"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2226"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2231"/>
         <source>PostGIS</source>
         <translation>PostGIS</translation>
     </message>
@@ -143554,37 +143547,37 @@ Write accesses will be denied.</translation>
         <translation>அறியப்படாத அடையாளம் காணப்பட்ட தரவு வகை</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1122"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1135"/>
         <source>Band count and NoData items count differ</source>
         <translation>பேண்ட் எண்ணிக்கையும் நோடேட்டா உருப்படிகளின் எண்ணிக்கையும் வேறுபடுகின்றன</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1140"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1153"/>
         <source>Cannot convert NoData value &apos;%1&apos; to double</source>
         <translation>NoData மதிப்பை &apos;% 1&apos; ஐ இரட்டிப்பாக மாற்ற முடியாது</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1407"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1422"/>
         <source>Cannot convert NoData value &apos;%1&apos; to double, default to: %2</source>
         <translation>NoData மதிப்பான &apos;% 1&apos; ஐ இரட்டிப்பாக மாற்ற முடியாது, இயல்புநிலை: %2</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2185"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2200"/>
         <source>Key field &apos;%1&apos; for view/query not found.</source>
         <translation>பார்வை/கேள்விக்கான விசைப் புலம் &apos;% 1&apos; கிடைக்கவில்லை.</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2206"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2221"/>
         <source>Primary key field &apos;%1&apos; for view/query not unique.</source>
         <translation>பார்வை/வினவிற்கான முதன்மை விசைப் புலம் &apos;% 1&apos; தனித்துவமானது அல்ல.</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2211"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2226"/>
         <source>Keys for view/query undefined.</source>
         <translation>பார்வை/வினவிற்கான விசைகள் வரையறுக்கப்படவில்லை.</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2216"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2231"/>
         <source>No key field for view/query given.</source>
         <translation>பார்வை/கேள்விக்கான முக்கிய புலம் எதுவும் கொடுக்கப்படவில்லை.</translation>
     </message>
@@ -143661,192 +143654,197 @@ Write accesses will be denied.</translation>
         <translation>PostgreSQL WHERE விதி</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1007"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="936"/>
+        <source>Unable to reload the PostgreSQL raster layer, the data source may no longer be available.</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1020"/>
         <source>PostgreSQL raster layer has no primary key.</source>
         <translation>PostgreSQL ராச்டர் லேயருக்கு முதன்மை விசை இல்லை.</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1101"/>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1384"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1114"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1399"/>
         <source>Cannot create CRS from EPSG: &apos;%1&apos;</source>
         <translation>EPSG இலிருந்து CRS ஐ உருவாக்க முடியாது: &apos;% 1&apos;</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1109"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1122"/>
         <source>Cannot get band count from value: &apos;%1&apos;</source>
         <translation>மதிப்பிலிருந்து இசைக்குழு எண்ணிக்கையைப் பெற முடியவில்லை: &apos;% 1&apos;</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1131"/>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1397"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1144"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1412"/>
         <source>Unsupported data type: &apos;%1&apos;</source>
         <translation>ஆதரிக்கப்படாத தரவு வகை: &apos;% 1&apos;</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1175"/>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1322"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1188"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1337"/>
         <source>Cannot get extent from raster</source>
         <translation>ராச்டரிலிருந்து அளவைப் பெற முடியாது</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1186"/>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1339"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1199"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1354"/>
         <source>Cannot convert width &apos;%1&apos; to int</source>
         <translation>&apos;% 1&apos; அகலத்தை முழு எண்ணாக மாற்ற முடியாது</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1193"/>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1347"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1206"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1362"/>
         <source>Cannot convert height &apos;%1&apos; to int</source>
         <translation>&apos;% 1&apos; உயரத்தை முழு எண்ணாக மாற்ற முடியாது</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1201"/>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1355"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1214"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1370"/>
         <source>Cannot convert scale X &apos;%1&apos; to double</source>
         <translation>அளவு ஃச் &apos;% 1&apos; ஐ இரட்டிப்பாக மாற்ற முடியாது</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1208"/>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1363"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1221"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1378"/>
         <source>Cannot convert scale Y &apos;%1&apos; to double</source>
         <translation>ஒய் &apos;% 1&apos; அளவை இரட்டிப்பாக மாற்ற முடியாது</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1223"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1236"/>
         <source>An error occurred while fetching raster metadata for table %1: %2
 SQL: %3</source>
         <translation>அட்டவணை % 1: %2 க்கான ராச்டர் மெட்டாடேட்டாவைப் பெறும்போது பிழை ஏற்பட்டது 
 SQL:% 3</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1228"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1241"/>
         <source>An error occurred while fetching raster metadata for %1, proceeding with (possibly very slow) raster data analysis: %2
 Please consider adding raster constraints with PostGIS function AddRasterConstraints.</source>
         <translation>%1க்கான ராச்டர் மெட்டாடேட்டாவைப் பெறும்போது பிழை ஏற்பட்டது, (ஒருவேளை மிக மெதுவாக) ராச்டர் தரவு பகுப்பாய்வு: %2 
 PostGIS செயல்பாடு AddRasterConsstraints உடன் ராச்டர் கட்டுப்பாடுகளைச் சேர்ப்பதைக் கருத்தில் கொள்ளவும்.</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1253"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1266"/>
         <source>Multiple raster column detected, using the first one</source>
         <translation>முதல் ஒன்றைப் பயன்படுத்தி, பல ராச்டர் நெடுவரிசை கண்டறியப்பட்டது</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1259"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1272"/>
         <source>An error occurred while fetching raster column</source>
         <translation>ராச்டர் நெடுவரிசையைப் பெறும்போது பிழை ஏற்பட்டது</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1328"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1343"/>
         <source>Cannot get metadata from raster</source>
         <translation>ராச்டரிலிருந்து மெட்டாடேட்டாவைப் பெற முடியாது</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1419"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1434"/>
         <source>An error occurred while fetching raster metadata</source>
         <translation>ராச்டர் மெட்டாடேட்டாவைப் பெறும்போது பிழை ஏற்பட்டது</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1431"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1446"/>
         <source>An error occurred while fetching raster fields information</source>
         <translation>ராச்டர் புலங்கள் தகவலைப் பெறுவதில் பிழை ஏற்பட்டது</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1479"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1494"/>
         <source>Invalid default date in raster temporal capabilities for field %1: %2</source>
         <translation>புலம் % 1: % 2 க்கான ராச்டர் தற்காலிக திறன்களில் தவறான இயல்புநிலை தேதி</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1501"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1516"/>
         <source>No temporal ranges detected in raster temporal capabilities for field %1: %2</source>
         <translation>புலம் % 1:% 2 க்கான ராச்டர் தற்காலிக திறன்களில் தற்காலிக வரம்புகள் எதுவும் கண்டறியப்படவில்லை</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1506"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1521"/>
         <source>Invalid temporal range in raster temporal capabilities for field %1: %2 - %3</source>
         <translation>% 1 புலத்திற்கான ராச்டர் தற்காலிக திறன்களில் தவறான தற்காலிக வரம்பு: % 2 - %3</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1511"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1526"/>
         <source>An error occurred while fetching raster temporal capabilities for field: %1</source>
         <translation>புலத்திற்கான ராச்டர் தற்காலிக திறன்களைப் பெறும்போது பிழை ஏற்பட்டது:% 1</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1516"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1531"/>
         <source>Invalid field index for raster temporal capabilities: %1</source>
         <translation>ராச்டர் டெம்போரல் திறன்களுக்கான தவறான புல அட்டவணை: % 1</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1721"/>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1806"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1736"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1821"/>
         <source>Unexpected formatted field type &apos;%1&apos; for field %2</source>
         <translation>% 2 புலத்திற்கான எதிர்பாராத வடிவமைப்பு புல வகை &apos;% 1&apos;</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1837"/>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1858"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1852"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1873"/>
         <source>Field %1 ignored, because of unsupported type %2</source>
         <translation>% 2 வகை ஆதரிக்கப்படாததால், புலம் % 1 புறக்கணிக்கப்பட்டது</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1864"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1879"/>
         <source>Duplicate field %1 found
 </source>
         <translation>நகல் புலம்% 1 கண்டறியப்பட்டது
 </translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2069"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2084"/>
         <source>Primary key is ctid - changing of existing features disabled (%1; %2)</source>
         <translation>முதன்மை விசை ctid - ஏற்கனவே உள்ள அம்சங்களை மாற்றுவது முடக்கப்பட்டுள்ளது (%1;%2)</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2077"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2092"/>
         <source>The table has no column suitable for use as a key. QGIS requires a primary key, a PostgreSQL oid column or a ctid for tables.</source>
         <translation>அட்டவணையில் சாவியாகப் பயன்படுத்துவதற்கு ஏற்ற நெடுவரிசை எதுவும் இல்லை. QGIS க்கு முதன்மை விசை, PostgreSQL oid நெடுவரிசை அல்லது அட்டவணைகளுக்கான ctid தேவை.</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2087"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2102"/>
         <source>Unexpected relation type.</source>
         <translation>எதிர்பாராத உறவு வகை.</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2115"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2130"/>
         <source>Unique column &apos;%1&apos; doesn&apos;t have a NOT NULL constraint.</source>
         <translation>தனிப்பட்ட நெடுவரிசை &apos;% 1&apos; இல் பூச்யமான தடை இல்லை.</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2149"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2164"/>
         <source>Ignoring key candidate because of NULL values or inherited table</source>
         <translation>NULL மதிப்புகள் அல்லது பரம்பரை அட்டவணை காரணமாக முக்கிய வேட்பாளரை புறக்கணித்தல்</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2273"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2288"/>
         <source>Cannot convert overview factor &apos;%1&apos; to int</source>
         <translation>மேலோட்டக் காரணி &apos;% 1&apos; ஐ முழு எண்ணாக மாற்ற முடியாது</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2280"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2295"/>
         <source>Table or schema is empty</source>
         <translation>டேபிள் அல்லது ச்கீமா காலியாக உள்ளது</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2288"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2303"/>
         <source>Error fetching overviews information: %1</source>
         <translation>மேலோட்டத் தகவலைப் பெறுவதில் பிழை: % 1</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2292"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2307"/>
         <source>No overviews found, performances may be affected for %1</source>
         <translation>மேலோட்டங்கள் எதுவும் இல்லை, % 1 க்கு செயல்திறன் பாதிக்கப்படலாம்</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2334"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2349"/>
         <source>Data type is unknown</source>
         <translation>தரவு வகை தெரியவில்லை</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2443"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2458"/>
         <source>Error fetching statistics for %1: %2
 SQL: %3</source>
         <translation>% 1: %2க்கான புள்ளிவிவரங்களைப் பெறுவதில் பிழை 
@@ -152076,12 +152074,12 @@ p, li { white-space: pre-wrap; }
         <translation>முடிவு கோப்பை உள்ளிடவும்</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsrastercalcdialog.cpp" line="369"/>
+        <location filename="../src/app/qgsrastercalcdialog.cpp" line="374"/>
         <source>Expression valid</source>
         <translation>வெளிப்பாடு செல்லுபடியாகும்</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsrastercalcdialog.cpp" line="378"/>
+        <location filename="../src/app/qgsrastercalcdialog.cpp" line="383"/>
         <source>Expression invalid</source>
         <translation>வெளிப்பாடு தவறானது</translation>
     </message>
@@ -153092,214 +153090,214 @@ Click on help button to get valid creation options for this format.</source>
         <translation>அமைக்கப்படவில்லை</translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="425"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="434"/>
         <source>Information from provider</source>
         <translation>வழங்குநரிடமிருந்து செய்தி</translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="429"/>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="508"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="438"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="517"/>
         <source>Extent</source>
         <translation>நீட்டு</translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="432"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="441"/>
         <source>Width</source>
         <translation>அகலம்</translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="436"/>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="444"/>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="540"/>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="551"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="445"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="453"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="549"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="560"/>
         <source>n/a</source>
         <translation>இதற்கில்லை</translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="440"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="449"/>
         <source>Height</source>
         <translation>உயரம்</translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="448"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="457"/>
         <source>Data type</source>
         <translation>தரவு வகை</translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="503"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="512"/>
         <source>Identification</source>
         <translation>அடையாளம்</translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="513"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="522"/>
         <source>Access</source>
         <translation>அணுகல்</translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="518"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="527"/>
         <source>Bands</source>
         <translation>பட்டைகள்</translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="521"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="530"/>
         <source>Band count</source>
         <translation>இசைக்குழு எண்ணிக்கை</translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="525"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="534"/>
         <source>Number</source>
         <translation>எண்</translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="526"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="535"/>
         <source>Min</source>
         <translation>குறைந்தபட்சம்</translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="526"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="535"/>
         <source>Max</source>
         <translation>அதிகபட்சம்</translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="561"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="570"/>
         <source>Contacts</source>
         <translation>தொடர்புகள்</translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="566"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="575"/>
         <source>References</source>
         <translation>குறிப்புகள்</translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="571"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="580"/>
         <source>History</source>
         <translation>வரலாறு</translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="743"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="752"/>
         <source>Create %1 provider</source>
         <translation>% 1 வழங்குநரை உருவாக்கவும்</translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="1194"/>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="1201"/>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="1209"/>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2573"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="1203"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="1210"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="1218"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2582"/>
         <source>Raster</source>
         <translation>ராஸ்டர்</translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="489"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="498"/>
         <source>Could not determine raster data type.</source>
         <translation>ராச்டர் தரவு வகையைத் தீர்மானிக்க முடியவில்லை.</translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="453"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="462"/>
         <source>Byte - Eight bit unsigned integer</source>
         <translation>பைட் - எட்டு பிட் கையொப்பமிடப்படாத முழு எண்</translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="456"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="465"/>
         <source>Int8 - Eight bit signed integer</source>
         <translation>Int8 - எட்டு பிட் கையொப்பமிடப்பட்ட முழு எண்</translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="459"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="468"/>
         <source>UInt16 - Sixteen bit unsigned integer </source>
         <translation>UInt16 - பதினாறு பிட் கையொப்பமிடப்படாத முழு எண்</translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="462"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="471"/>
         <source>Int16 - Sixteen bit signed integer </source>
         <translation>Int16 - பதினாறு பிட் கையொப்பமிடப்பட்ட முழு எண்</translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="465"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="474"/>
         <source>UInt32 - Thirty two bit unsigned integer </source>
         <translation>UInt32 - முப்பத்திரண்டு பிட் கையொப்பமிடப்படாத முழு எண்</translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="468"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="477"/>
         <source>Int32 - Thirty two bit signed integer </source>
         <translation>Int32 - முப்பத்திரண்டு பிட் கையொப்பமிடப்பட்ட முழு எண்</translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="471"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="480"/>
         <source>Float32 - Thirty two bit floating point </source>
         <translation>Float32 - முப்பத்திரண்டு பிட் மிதக்கும் புள்ளி</translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="474"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="483"/>
         <source>Float64 - Sixty four bit floating point </source>
         <translation>Float64 - அறுபத்து நான்கு பிட் மிதக்கும் புள்ளி</translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="477"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="486"/>
         <source>CInt16 - Complex Int16 </source>
         <translation>CInt16 - காம்ப்ளக்ச் Int16</translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="480"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="489"/>
         <source>CInt32 - Complex Int32 </source>
         <translation>CInt32 - காம்ப்ளக்ச் Int32</translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="483"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="492"/>
         <source>CFloat32 - Complex Float32 </source>
         <translation>CFloat32 - சிக்கலான மிதவை32</translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="486"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="495"/>
         <source>CFloat64 - Complex Float64 </source>
         <translation>CFloat64 - சிக்கலான Float64</translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="525"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="534"/>
         <source>Band</source>
         <translation>பட்டை</translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="525"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="534"/>
         <source>NoData</source>
         <translation>நடதா</translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="751"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="760"/>
         <source>Cannot instantiate the &apos;%1&apos; data provider</source>
         <translation>&apos;% 1&apos; தரவு வழங்குநரைத் துரிதப்படுத்த முடியாது</translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="762"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="771"/>
         <source>Could not insert provider into layer pipe (provider: %1, URI: %2</source>
         <translation>லேயர் பைப்பில் வழங்குநரைச் செருக முடியவில்லை (வழங்குபவர்:%1, URI:%2</translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="769"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="778"/>
         <source>Provider is not valid (provider: %1, URI: %2</source>
         <translation>வழங்குநர் செல்லுபடியாகவில்லை (வழங்குபவர்: %1, URI:%2</translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="1194"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="1203"/>
         <source>Error reading raster attribute table: invalid band %1.</source>
         <translation>ராச்டர் பண்புக்கூறு அட்டவணையைப் படிப்பதில் பிழை: தவறான இசைக்குழு% 1.</translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="1201"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="1210"/>
         <source>Error loading raster attribute table, file not found: %1.</source>
         <translation>ராச்டர் பண்புக்கூறு அட்டவணையை ஏற்றுவதில் பிழை, கோப்பு காணப்படவில்லை: %1.</translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="1209"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="1218"/>
         <source>Error loading raster attribute table from path %1: %2</source>
         <translation>பாதை% 1:% 2 இலிருந்து ராச்டர் பண்புக்கூறு அட்டவணையை ஏற்றுவதில் பிழை</translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2263"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2272"/>
         <source>Labeling</source>
         <translation>லேபிளிங்</translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2573"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2582"/>
         <source>&lt;maplayer&gt; not found.</source>
         <translation>&lt;maplayer&gt; கிடைக்கவில்லை.</translation>
     </message>
@@ -167209,7 +167207,7 @@ Error was: %2</source>
 % 1</translation>
     </message>
     <message>
-        <location filename="../src/core/vector/qgsvectorlayer.cpp" line="5983"/>
+        <location filename="../src/core/vector/qgsvectorlayer.cpp" line="5989"/>
         <source>Primary key attributes</source>
         <translation>முதன்மை முக்கிய பண்புக்கூறுகள்</translation>
     </message>
@@ -167264,104 +167262,104 @@ Error was: %2</source>
         <translation>வரைபடங்கள்</translation>
     </message>
     <message>
-        <location filename="../src/core/vector/qgsvectorlayer.cpp" line="5215"/>
+        <location filename="../src/core/vector/qgsvectorlayer.cpp" line="5221"/>
         <source>Layer is invalid</source>
         <translation>அடுக்கு தவறானது</translation>
     </message>
     <message>
-        <location filename="../src/core/vector/qgsvectorlayer.cpp" line="5900"/>
+        <location filename="../src/core/vector/qgsvectorlayer.cpp" line="5906"/>
         <source>Information from provider</source>
         <translation>வழங்குநரிடமிருந்து செய்தி</translation>
     </message>
     <message>
-        <location filename="../src/core/vector/qgsvectorlayer.cpp" line="5906"/>
+        <location filename="../src/core/vector/qgsvectorlayer.cpp" line="5912"/>
         <source>Storage</source>
         <translation>சேமிப்பு</translation>
     </message>
     <message>
-        <location filename="../src/core/vector/qgsvectorlayer.cpp" line="5918"/>
+        <location filename="../src/core/vector/qgsvectorlayer.cpp" line="5924"/>
         <source>Encoding</source>
         <translation>குறியாக்கம்</translation>
     </message>
     <message>
-        <location filename="../src/core/vector/qgsvectorlayer.cpp" line="5934"/>
+        <location filename="../src/core/vector/qgsvectorlayer.cpp" line="5940"/>
         <source>Geometry</source>
         <translation>வடிவியல்</translation>
     </message>
     <message>
-        <location filename="../src/core/vector/qgsvectorlayer.cpp" line="5941"/>
-        <location filename="../src/core/vector/qgsvectorlayer.cpp" line="5967"/>
+        <location filename="../src/core/vector/qgsvectorlayer.cpp" line="5947"/>
+        <location filename="../src/core/vector/qgsvectorlayer.cpp" line="5973"/>
         <source>Extent</source>
         <translation>நீட்டு</translation>
     </message>
     <message>
-        <location filename="../src/core/vector/qgsvectorlayer.cpp" line="5948"/>
+        <location filename="../src/core/vector/qgsvectorlayer.cpp" line="5954"/>
         <source>Feature count</source>
         <translation>அம்ச எண்ணிக்கை</translation>
     </message>
     <message>
-        <location filename="../src/core/vector/qgsvectorlayer.cpp" line="5949"/>
+        <location filename="../src/core/vector/qgsvectorlayer.cpp" line="5955"/>
         <source>unknown</source>
         <translation>தெரியவில்லை</translation>
     </message>
     <message>
-        <location filename="../src/core/vector/qgsvectorlayer.cpp" line="5962"/>
+        <location filename="../src/core/vector/qgsvectorlayer.cpp" line="5968"/>
         <source>Identification</source>
         <translation>அடையாளம்</translation>
     </message>
     <message>
-        <location filename="../src/core/vector/qgsvectorlayer.cpp" line="5972"/>
+        <location filename="../src/core/vector/qgsvectorlayer.cpp" line="5978"/>
         <source>Access</source>
         <translation>அணுகல்</translation>
     </message>
     <message>
-        <location filename="../src/core/vector/qgsvectorlayer.cpp" line="5977"/>
+        <location filename="../src/core/vector/qgsvectorlayer.cpp" line="5983"/>
         <source>Fields</source>
         <translation>புலங்கள்</translation>
     </message>
     <message>
-        <location filename="../src/core/vector/qgsvectorlayer.cpp" line="5995"/>
+        <location filename="../src/core/vector/qgsvectorlayer.cpp" line="6001"/>
         <source>Count</source>
         <translation>கணக்கிடு</translation>
     </message>
     <message>
-        <location filename="../src/core/vector/qgsvectorlayer.cpp" line="5998"/>
+        <location filename="../src/core/vector/qgsvectorlayer.cpp" line="6004"/>
         <source>Field</source>
         <translation>புலம்</translation>
     </message>
     <message>
-        <location filename="../src/core/vector/qgsvectorlayer.cpp" line="5998"/>
+        <location filename="../src/core/vector/qgsvectorlayer.cpp" line="6004"/>
         <source>Type</source>
         <translation>வகை</translation>
     </message>
     <message>
-        <location filename="../src/core/vector/qgsvectorlayer.cpp" line="5998"/>
+        <location filename="../src/core/vector/qgsvectorlayer.cpp" line="6004"/>
         <source>Length</source>
         <translation>நீளம்</translation>
     </message>
     <message>
-        <location filename="../src/core/vector/qgsvectorlayer.cpp" line="5998"/>
+        <location filename="../src/core/vector/qgsvectorlayer.cpp" line="6004"/>
         <source>Precision</source>
         <translation>நுட்பம்</translation>
     </message>
     <message>
-        <location filename="../src/core/vector/qgsvectorlayer.cpp" line="6013"/>
+        <location filename="../src/core/vector/qgsvectorlayer.cpp" line="6019"/>
         <source>Contacts</source>
         <translation>தொடர்புகள்</translation>
     </message>
     <message>
-        <location filename="../src/core/vector/qgsvectorlayer.cpp" line="6018"/>
+        <location filename="../src/core/vector/qgsvectorlayer.cpp" line="6024"/>
         <source>Links</source>
         <translation>இணைப்புகள்</translation>
     </message>
     <message>
-        <location filename="../src/core/vector/qgsvectorlayer.cpp" line="6023"/>
+        <location filename="../src/core/vector/qgsvectorlayer.cpp" line="6029"/>
         <source>History</source>
         <translation>வரலாறு</translation>
     </message>
     <message>
-        <location filename="../src/core/vector/qgsvectorlayer.cpp" line="5912"/>
-        <location filename="../src/core/vector/qgsvectorlayer.cpp" line="5998"/>
+        <location filename="../src/core/vector/qgsvectorlayer.cpp" line="5918"/>
+        <location filename="../src/core/vector/qgsvectorlayer.cpp" line="6004"/>
         <source>Comment</source>
         <translation>கருத்து</translation>
     </message>
@@ -169405,8 +169403,8 @@ Error was: %2</source>
         <translation>விதி அடிப்படையிலான லேபிளிங்</translation>
     </message>
     <message>
-        <location filename="../src/gui/vectortile/qgsvectortilebasiclabelingwidget.cpp" line="345"/>
-        <location filename="../src/gui/vectortile/qgsvectortilebasiclabelingwidget.cpp" line="352"/>
+        <location filename="../src/gui/vectortile/qgsvectortilebasiclabelingwidget.cpp" line="347"/>
+        <location filename="../src/gui/vectortile/qgsvectortilebasiclabelingwidget.cpp" line="359"/>
         <source>Current zoom: %1</source>
         <translation>தற்போதைய சூம்:% 1</translation>
     </message>
@@ -169497,8 +169495,8 @@ Error was: %2</source>
         <translation>நிரப்பவும்</translation>
     </message>
     <message>
-        <location filename="../src/gui/vectortile/qgsvectortilebasicrendererwidget.cpp" line="346"/>
-        <location filename="../src/gui/vectortile/qgsvectortilebasicrendererwidget.cpp" line="353"/>
+        <location filename="../src/gui/vectortile/qgsvectortilebasicrendererwidget.cpp" line="348"/>
+        <location filename="../src/gui/vectortile/qgsvectortilebasicrendererwidget.cpp" line="360"/>
         <source>Current zoom: %1</source>
         <translation>தற்போதைய சூம்:% 1</translation>
     </message>
