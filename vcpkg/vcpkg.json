@@ -95,6 +95,18 @@
       ]
     },
     {
+      "$comment": "For crosscompiling on macos (x64), could go to the upstream qtwebengine port",
+      "name": "qtbase",
+      "default-features": false,
+      "host": true,
+      "features": [
+        "freetype",
+        "harfbuzz",
+        "jpeg",
+        "png"
+      ]
+    },
+    {
       "name": "qtmultimedia",
       "default-features": false,
       "platform": "emscripten"
@@ -194,6 +206,7 @@
         "py-numpy",
         "py-owslib",
         "py-pip",
+        "py-plotly",
         "py-psycopg",
         "py-psycopg2",
         {
@@ -347,13 +360,6 @@
     "webengine": {
       "description": "Build with QtWebEngine and PDF4QT support",
       "dependencies": [
-        {
-          "name": "qtwebengine",
-          "default-features": false,
-          "features": [
-            "qtwebenginewidgets"
-          ]
-        },
         "asmjit",
         "blend2d",
         "py-pyqt6-webengine"
