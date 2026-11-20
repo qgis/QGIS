@@ -35,6 +35,7 @@
 #include <QList>
 #include <QNetworkReply>
 #include <QNetworkRequest>
+#include <QStyledItemDelegate>
 #include <QUrl>
 #include <QWidget>
 
@@ -132,6 +133,25 @@ class APP_EXPORT QgsIdentifyResultsWebViewItem : public QObject, public QTreeWid
 
   private:
     QgsIdentifyResultsWebView *mWebView = nullptr;
+};
+
+/**
+ * Item delegate which draws the icon stored in the TRAILING_ICON_ROLE item data role.
+ * Items without that icon are painted by the default implementation.
+ */
+class APP_EXPORT QgsIdentifyResultsTrailingIconDelegate : public QStyledItemDelegate
+{
+    Q_OBJECT
+
+  public:
+    using QStyledItemDelegate::QStyledItemDelegate;
+
+    void paint( QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index ) const override;
+    QSize sizeHint( const QStyleOptionViewItem &option, const QModelIndex &index ) const override;
+
+  private:
+    static int trailingIconSize( const QWidget *widget );
+    static int trailingIconSpacing( const QWidget *widget );
 };
 
 class APP_EXPORT QgsIdentifyPlotCurve

@@ -33,10 +33,12 @@
 #include <QMessageBox>
 #include <QNetworkReply>
 #include <QNetworkRequest>
+#include <QPainter>
 #include <QPixmap>
 #include <QPushButton>
 #include <QScreen>
 #include <QString>
+#include <QStyle>
 #include <QTextDocument>
 #include <QToolButton>
 #include <QTreeWidgetItem>
@@ -112,6 +114,7 @@ using namespace Qt::StringLiterals;
 // we store the representedValue to UserRole + 2 and read from that when copying to clipboard
 constexpr int REPRESENTED_VALUE_ROLE = Qt::UserRole + 2;
 constexpr int RAW_STRING_VALUE_ROLE = Qt::UserRole + 3;
+constexpr int TRAILING_ICON_ROLE = Qt::UserRole + 4;
 
 const QgsSettingsEntryBool *QgsIdentifyResultsDialog::settingHideNullValues
   = new QgsSettingsEntryBool( u"hide-null-values"_s, QgsSettingsTree::sTreeIdentify, false, u"Whether to hide attributes with NULL values in the identify feature result"_s );
@@ -2892,4 +2895,60 @@ void QgsIdentifyResultsDialog::setExpressionContextScope( const QgsExpressionCon
 QgsExpressionContextScope QgsIdentifyResultsDialog::expressionContextScope() const
 {
   return mExpressionContextScope;
+}
+
+void QgsIdentifyResultsTrailingIconDelegate::paint( QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index ) const
+{
+  const QIcon trailingIcon = index.data( TRAILING_ICON_ROLE ).value<QIcon>();
+  if ( trailingIcon.isNull() )
+  {
+    QStyledItemDelegate::paint( painter, option, index );
+    return;
+  }
+
+  QStyleOptionViewItem opt( option );
+  initStyleOption( &opt, index );
+  const QWidget *widget = opt.widget;
+  QStyle *style = widget ? widget->style() : QApplication::style();
+
+  const int iconSize = trailingIconSize( widget );
+  const int spacing = trailingIconSpacing( widget );
+  const int textMargin = style->pixelMetric( QStyle::PM_FocusFrameHMargin, nullptr, widget ) + 1;
+  const QRect textRect = style->subElementRect( QStyle::SE_ItemViewItemText, &opt, widget );
+
+  // elide the text ourselves, so that there is always room left for the icon
+  const int availableTextWidth = std::max( 0, textRect.width() - 2 * textMargin - spacing - iconSize );
+  opt.text = opt.fontMetrics.elidedText( opt.text, opt.textElideMode, availableTextWidth );
+  style->drawControl( QStyle::CE_ItemViewItem, &opt, painter, widget );
+
+  const int textWidth = opt.fontMetrics.horizontalAdvance( opt.text );
+  const int x = opt.direction == Qt::RightToLeft ? textRect.right() - textMargin - textWidth - spacing - iconSize : textRect.left() + textMargin + textWidth + spacing;
+  const QRect iconRect( x, textRect.top() + ( textRect.height() - iconSize ) / 2, iconSize, iconSize );
+
+  const QIcon::Mode mode = !( opt.state & QStyle::State_Enabled ) ? QIcon::Disabled : ( opt.state & QStyle::State_Selected ) ? QIcon::Selected : QIcon::Normal;
+  trailingIcon.paint( painter, iconRect, Qt::AlignCenter, mode );
+}
+
+QSize QgsIdentifyResultsTrailingIconDelegate::sizeHint( const QStyleOptionViewItem &option, const QModelIndex &index ) const
+{
+  QSize size = QStyledItemDelegate::sizeHint( option, index );
+  if ( !index.data( TRAILING_ICON_ROLE ).value<QIcon>().isNull() )
+  {
+    const int iconSize = trailingIconSize( option.widget );
+    size.setWidth( size.width() + trailingIconSpacing( option.widget ) + iconSize );
+    size.setHeight( std::max( size.height(), iconSize ) );
+  }
+  return size;
+}
+
+int QgsIdentifyResultsTrailingIconDelegate::trailingIconSize( const QWidget *widget )
+{
+  const QStyle *style = widget ? widget->style() : QApplication::style();
+  return style->pixelMetric( QStyle::PM_SmallIconSize, nullptr, widget );
+}
+
+int QgsIdentifyResultsTrailingIconDelegate::trailingIconSpacing( const QWidget *widget )
+{
+  const QStyle *style = widget ? widget->style() : QApplication::style();
+  return style->pixelMetric( QStyle::PM_FocusFrameHMargin, nullptr, widget ) + 2;
 }
