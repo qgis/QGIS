@@ -224,8 +224,11 @@ class _3D_EXPORT QgsCameraController : public QObject
      * while keeping the pivot point (given in world coordinates) at the
      * same screen coordinates after the zoom.
      * \since QGIS 3.44.4
+     * \deprecated QGIS 4.4. Use version without the first two arguments instead.
      */
-    void zoomCameraAroundPivot( const QVector3D &oldCameraPosition, double oldDistanceFromCenterPoint, double zoomFactor, const QVector3D &pivotPoint );
+    Q_DECL_DEPRECATED void zoomCameraAroundPivot( const QVector3D &oldCameraPosition, double oldDistanceFromCenterPoint, double zoomFactor, const QVector3D &pivotPoint );
+
+    void zoomCameraAroundPivot( double zoomFactor, const QVector3D &pivotPoint );
 
     /**
      * If the event is relevant, handles the event and returns TRUE, otherwise FALSE.
@@ -352,11 +355,8 @@ class _3D_EXPORT QgsCameraController : public QObject
     QgsCameraController( const QgsCameraController &other );
 #endif
 
-    /**
-     * Updates orthographic projection plane size based on distance from
-     * view center when orthographic projection is being used.
-     */
-    void updateOrthographicProjectionPlane();
+    //! Updates orthographic projection values from pose.
+    void updateOrthographicProjection();
     //! Sets mCamera parameters based on mCameraPose
     void updateCameraFromPose();
     //! Returns a pointer to the scene's engine's window or nullptr if engine is QgsOffscreen3DEngine
@@ -488,6 +488,7 @@ class _3D_EXPORT QgsCameraController : public QObject
     std::unique_ptr<Qt3DRender::QCamera> mDepthBufferCamera;
 
     std::unique_ptr<Qt3DRender::QCamera> mCameraBefore;
+    QgsCameraPose mCameraPoseBefore;
 
     bool mRotationCenterCalculated = false;
     QVector3D mRotationCenter;
