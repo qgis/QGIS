@@ -423,6 +423,8 @@ QgsIdentifyResultsDialog::QgsIdentifyResultsDialog( QgsMapCanvas *canvas, QWidge
   lstResults->setColumnCount( 2 );
   lstResults->sortByColumn( -1, Qt::AscendingOrder );
   lstResults->setIndentation( QgsGuiUtils::scaleIconSize( 12 ) );
+  // draws an optional icon right after the text in the name column (e.g. rendered band marker)
+  lstResults->setItemDelegateForColumn( 0, new QgsIdentifyResultsTrailingIconDelegate( lstResults ) );
   setColumnText( 0, tr( "Feature" ) );
   setColumnText( 1, tr( "Value" ) );
 
@@ -1183,11 +1185,36 @@ void QgsIdentifyResultsDialog::addFeature(
       attrItem->setContent( tr( "No attributes." ).toUtf8(), u"text/plain; charset=utf-8"_s );
     }
   }
-  else
+
+  // band currently rendered for the map's temporal/elevation range (if any)
+  const QString renderedBand = params.value( u"renderedBand"_s ).toString();
+  const auto markRenderedBandItem = []( QTreeWidgetItem *item ) {
+    const QString toolTip = tr( "Band currently rendered for the map's temporal/elevation range" );
+    // icon drawn by QgsIdentifyResultsTrailingIconDelegate directly after the band name
+    item->setData( 0, TRAILING_ICON_ROLE, QgsApplication::getThemeIcon( u"/mIndicatorTemporal.svg"_s ) );
+    item->setToolTip( 0, toolTip );
+    item->setToolTip( 1, toolTip );
+  };
+
+  // when a rendered band is known, it is shown in the (expanded) derived attributes
+  // and the values of all bands are grouped into a collapsed "Bands" item
+  QTreeWidgetItem *bandsItem = nullptr;
+  if ( currentFormat != Qgis::RasterIdentifyFormat::Html && currentFormat != Qgis::RasterIdentifyFormat::Text )
   {
+    QTreeWidgetItem *bandsParent = featItem;
+    if ( !renderedBand.isEmpty() )
+    {
+      bandsItem = new QTreeWidgetItem( QStringList() << tr( "Bands" ) );
+      bandsItem->setData( 0, Qt::UserRole, "bands" );
+      bandsParent = bandsItem;
+    }
+
     for ( QMap<QString, QString>::const_iterator it = attributes.begin(); it != attributes.end(); ++it )
     {
-      featItem->addChild( new QTreeWidgetItem( QStringList() << it.key() << it.value() ) );
+      QTreeWidgetItem *attrItem = new QTreeWidgetItem( QStringList() << it.key() << it.value() );
+      if ( !renderedBand.isEmpty() && it.key() == renderedBand )
+        markRenderedBandItem( attrItem );
+      bandsParent->addChild( attrItem );
     }
   }
 
@@ -1200,8 +1227,20 @@ void QgsIdentifyResultsDialog::addFeature(
 
     for ( QMap<QString, QString>::const_iterator it = derivedAttributes.begin(); it != derivedAttributes.end(); ++it )
     {
-      derivedItem->addChild( new QTreeWidgetItem( QStringList() << it.key() << it.value() ) );
+      QTreeWidgetItem *derivedAttrItem = new QTreeWidgetItem( QStringList() << it.key() << it.value() );
+      if ( !renderedBand.isEmpty() && it.key() == renderedBand )
+        markRenderedBandItem( derivedAttrItem );
+      derivedItem->addChild( derivedAttrItem );
     }
+
+    if ( !renderedBand.isEmpty() )
+      derivedItem->setExpanded( true );
+  }
+
+  if ( bandsItem )
+  {
+    // added after the derived attributes, collapsed by default
+    featItem->addChild( bandsItem );
   }
 
   // table
@@ -2627,6 +2666,16 @@ void QgsIdentifyResultsDialog::copyFeatureAttributes()
     for ( int i = 0; i < featItem->childCount(); i++ )
     {
       QTreeWidgetItem *item = featItem->child( i );
+      // if this item represents raster band values grouped under a "Bands" item
+      if ( item->data( 0, Qt::UserRole ).toString() == "bands"_L1 )
+      {
+        for ( int j = 0; j < item->childCount(); j++ )
+        {
+          QTreeWidgetItem *bandItem = item->child( j );
+          text += u"%1: %2\n"_s.arg( bandItem->data( 0, Qt::DisplayRole ).toString(), bandItem->data( 1, Qt::DisplayRole ).toString() );
+        }
+        continue;
+      }
       if ( item->childCount() > 0 )
         continue;
       text += u"%1: %2\n"_s.arg( item->data( 0, Qt::DisplayRole ).toString(), item->data( 1, Qt::DisplayRole ).toString() );
