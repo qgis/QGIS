@@ -34,12 +34,13 @@
 
 using namespace Qt::StringLiterals;
 
-QgsMeasureTool::QgsMeasureTool( QgsMapCanvas *canvas, bool measureArea )
+QgsMeasureTool::QgsMeasureTool( QgsMapCanvas *canvas, Qgis::MeasurementType mMeasurementType )
   : QgsMapTool( canvas )
-  , mMeasureArea( measureArea )
+  , mMeasurementType( mMeasurementType )
   , mSnapIndicator( new QgsSnapIndicator( canvas ) )
 {
-  mRubberBand = new QgsRubberBand( canvas, mMeasureArea ? Qgis::GeometryType::Polygon : Qgis::GeometryType::Line );
+  const Qgis::GeometryType rubberbandType = ( mMeasurementType == Qgis::MeasurementType::Area ) ? Qgis::GeometryType::Polygon : Qgis::GeometryType::Line;
+  mRubberBand = new QgsRubberBand( canvas, rubberbandType );
   mRubberBandPoints = new QgsRubberBand( canvas, Qgis::GeometryType::Point );
 
   mDestinationCrs = canvas->mapSettings().destinationCrs();
@@ -118,7 +119,8 @@ void QgsMeasureTool::restart()
 {
   mPoints.clear();
 
-  mRubberBand->reset( mMeasureArea ? Qgis::GeometryType::Polygon : Qgis::GeometryType::Line );
+  const Qgis::GeometryType rubberbandType = ( mMeasurementType == Qgis::MeasurementType::Area ) ? Qgis::GeometryType::Polygon : Qgis::GeometryType::Line;
+  mRubberBand->reset( rubberbandType );
   mRubberBandPoints->reset( Qgis::GeometryType::Point );
 
   mDone = true;
