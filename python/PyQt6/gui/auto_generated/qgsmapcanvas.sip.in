@@ -1301,7 +1301,8 @@ Emit key release event
 
     void mapToolSet( QgsMapTool *newTool, QgsMapTool *oldTool );
 %Docstring
-Emit map tool changed with the old tool
+Emit map tool changed with the old tool Any of those two may be None if
+there is no map tool.
 %End
 
     void selectionChanged( QgsMapLayer *layer );
