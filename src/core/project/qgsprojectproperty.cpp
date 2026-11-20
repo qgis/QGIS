@@ -232,73 +232,36 @@ bool QgsProjectPropertyValue::readXml( const QDomNode &keyNode )
 // keyElement is created by parent QgsProjectPropertyKey
 bool QgsProjectPropertyValue::writeXml( QString const &nodeName, QDomElement &keyElement, QDomDocument &document )
 {
+  QDomElement valueElement = document.createElement( u"properties"_s );
+
+  // remember the type so that we can rebuild it when the project is read in
+  valueElement.setAttribute( u"name"_s, nodeName );
+  valueElement.setAttribute( u"type"_s, mValue.typeName() );
+
+  // we handle string lists differently from other types in that we
+  // create a sequence of repeated elements to cover all the string list
+  // members; each value will be in a <value></value> tag.
+  // XXX Not the most elegant way to handle string lists?
+  if ( QMetaType::Type::QStringList == mValue.userType() )
   {
-    QDomElement valueElement = document.createElement( u"properties"_s );
+    QStringList sl = mValue.toStringList();
 
-    // remember the type so that we can rebuild it when the project is read in
-    valueElement.setAttribute( u"name"_s, nodeName );
-    valueElement.setAttribute( u"type"_s, mValue.typeName() );
-
-    // we handle string lists differently from other types in that we
-    // create a sequence of repeated elements to cover all the string list
-    // members; each value will be in a <value></value> tag.
-    // XXX Not the most elegant way to handle string lists?
-    if ( QMetaType::Type::QStringList == mValue.userType() )
+    for ( QStringList::iterator i = sl.begin(); i != sl.end(); ++i )
     {
-      QStringList sl = mValue.toStringList();
+      QDomElement stringListElement = document.createElement( u"value"_s );
+      QDomText valueText = document.createTextNode( *i );
+      stringListElement.appendChild( valueText );
 
-      for ( QStringList::iterator i = sl.begin(); i != sl.end(); ++i )
-      {
-        QDomElement stringListElement = document.createElement( u"value"_s );
-        QDomText valueText = document.createTextNode( *i );
-        stringListElement.appendChild( valueText );
-
-        valueElement.appendChild( stringListElement );
-      }
+      valueElement.appendChild( stringListElement );
     }
-    else // we just plop the value in as plain ole text
-    {
-      QDomText valueText = document.createTextNode( mValue.toString() );
-      valueElement.appendChild( valueText );
-    }
-
-    keyElement.appendChild( valueElement );
+  }
+  else // we just plop the value in as plain ole text
+  {
+    QDomText valueText = document.createTextNode( mValue.toString() );
+    valueElement.appendChild( valueText );
   }
 
-  {
-    // retain compatibility with QGIS 3 for the time being
-    // consider dropping after the second LTR of the 4.x cycle is out
-    QDomElement valueElement = document.createElement( nodeName );
-
-    // remember the type so that we can rebuild it when the project is read in
-    valueElement.setAttribute( u"type"_s, mValue.typeName() );
-
-    // we handle string lists differently from other types in that we
-    // create a sequence of repeated elements to cover all the string list
-    // members; each value will be in a <value></value> tag.
-    // XXX Not the most elegant way to handle string lists?
-    if ( QMetaType::Type::QStringList == mValue.userType() )
-    {
-      QStringList sl = mValue.toStringList();
-
-      for ( QStringList::iterator i = sl.begin(); i != sl.end(); ++i )
-      {
-        QDomElement stringListElement = document.createElement( u"value"_s );
-        QDomText valueText = document.createTextNode( *i );
-        stringListElement.appendChild( valueText );
-
-        valueElement.appendChild( stringListElement );
-      }
-    }
-    else
-    {
-      // we just plop the value in as plain ole text
-      QDomText valueText = document.createTextNode( mValue.toString() );
-      valueElement.appendChild( valueText );
-    }
-
-    keyElement.appendChild( valueElement );
-  }
+  keyElement.appendChild( valueElement );
 
   return true;
 }
@@ -383,44 +346,23 @@ void QgsProjectPropertyKey::dump( int tabs ) const
 
 bool QgsProjectPropertyKey::readXml( const QDomNode &keyNode )
 {
+  int i = 0;
   QDomNodeList subkeys = keyNode.childNodes();
-  bool hasModernProperties = false;
-  for ( int i = 0; i < subkeys.count(); i++ )
+
+  while ( i < subkeys.count() )
   {
     const QDomNode subkey = subkeys.item( i );
-    if ( subkey.nodeName() == "properties"_L1
-         && subkey.hasAttributes()
-         && // if we have attributes
-         subkey.isElement()
-         &&                                             // and we're an element
-         subkey.toElement().hasAttribute( u"name"_s ) ) // and we have a "name" attribute
-    {
-      hasModernProperties = true;
-    }
-  }
-
-  for ( int i = 0; i < subkeys.count(); i++ )
-  {
-    const QDomNode subkey = subkeys.item( i );
-
     QString name;
+
     if ( subkey.nodeName() == "properties"_L1
          && subkey.hasAttributes()
          && // if we have attributes
          subkey.isElement()
          &&                                             // and we're an element
          subkey.toElement().hasAttribute( u"name"_s ) ) // and we have a "name" attribute
-    {
       name = subkey.toElement().attribute( u"name"_s );
-    }
     else
-    {
-      if ( hasModernProperties )
-      {
-        continue;
-      }
       name = subkey.nodeName();
-    }
 
     // if the current node is an element that has a "type" attribute,
     // then we know it's a leaf node; i.e., a subkey _value_, and not
@@ -432,6 +374,7 @@ bool QgsProjectPropertyKey::readXml( const QDomNode &keyNode )
          subkey.toElement().hasAttribute( u"type"_s ) ) // and we have a "type" attribute
     {
       // then we're a key value
+      //
       delete mProperties.take( name );
       mProperties.insert( name, new QgsProjectPropertyValue );
 
@@ -449,6 +392,8 @@ bool QgsProjectPropertyKey::readXml( const QDomNode &keyNode )
         QgsDebugError( u"unable to parse subkey %1"_s.arg( name ) );
       }
     }
+
+    ++i;
   }
 
   return true;
@@ -464,55 +409,22 @@ bool QgsProjectPropertyKey::writeXml( QString const &nodeName, QDomElement &elem
   // If it's an _empty_ node (i.e., one with no properties) we need to emit
   // an empty place holder; else create new Dom elements as necessary.
 
+  QDomElement keyElement = document.createElement( "properties" ); // Dom element for this property key
+  keyElement.toElement().setAttribute( u"name"_s, nodeName );
+
+  if ( !mProperties.isEmpty() )
   {
-    QDomElement keyElement = document.createElement( "properties" ); // Dom element for this property key
-    keyElement.toElement().setAttribute( u"name"_s, nodeName );
+    auto keys = mProperties.keys();
+    std::sort( keys.begin(), keys.end() );
 
-    if ( !mProperties.isEmpty() )
+    for ( const auto &key : std::as_const( keys ) )
     {
-      auto keys = mProperties.keys();
-      std::sort( keys.begin(), keys.end() );
-
-      for ( const auto &key : std::as_const( keys ) )
-      {
-        if ( !mProperties.value( key )->writeXml( key, keyElement, document ) )
-          QgsMessageLog::logMessage( tr( "Failed to save project property %1" ).arg( key ) );
-      }
+      if ( !mProperties.value( key )->writeXml( key, keyElement, document ) )
+        QgsMessageLog::logMessage( tr( "Failed to save project property %1" ).arg( key ) );
     }
-
-    element.appendChild( keyElement );
   }
 
-  {
-    // retain compatibility with QGIS 3 for the time being
-    const bool isRootProperties = element == document.documentElement();
-    QDomElement keyElement;
-    if ( isRootProperties )
-    {
-      keyElement = document.documentElement().firstChildElement( u"properties"_s );
-    }
-    else
-    {
-      keyElement = document.createElement( nodeName ); // Dom element for this property key
-    }
-
-    if ( !mProperties.isEmpty() )
-    {
-      auto keys = mProperties.keys();
-      std::sort( keys.begin(), keys.end() );
-
-      for ( const auto &key : std::as_const( keys ) )
-      {
-        if ( !mProperties.value( key )->writeXml( key, keyElement, document ) )
-          QgsMessageLog::logMessage( tr( "Failed to save project property %1" ).arg( key ) );
-      }
-    }
-
-    if ( !isRootProperties )
-    {
-      element.appendChild( keyElement );
-    }
-  }
+  element.appendChild( keyElement );
 
   return true;
 }
