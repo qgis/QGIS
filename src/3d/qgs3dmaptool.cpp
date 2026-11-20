@@ -95,24 +95,7 @@ Qgs3DMapCanvas *Qgs3DMapTool::canvas()
 
 void Qgs3DMapTool::setAction( QAction *action )
 {
-  if ( mAction )
-  {
-    disconnect( mAction, &QObject::destroyed, this, &Qgs3DMapTool::actionDestroyed );
-  }
-
   mAction = action;
-  if ( mAction )
-  {
-    connect( mAction, &QObject::destroyed, this, &Qgs3DMapTool::actionDestroyed );
-  }
-}
-
-void Qgs3DMapTool::actionDestroyed()
-{
-  if ( mAction == sender() )
-  {
-    mAction = nullptr;
-  }
 }
 
 QAction *Qgs3DMapTool::action() const
