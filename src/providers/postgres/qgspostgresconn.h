@@ -489,9 +489,9 @@ class QgsPostgresConn : public QObject
     void lock() { mLock.lock(); }
     void unlock() { mLock.unlock(); }
 
-    QgsCoordinateReferenceSystem sridToCrs( int srsId );
+    QgsCoordinateReferenceSystem sridToCrs( int srsId, QString &errorMessage );
 
-    int crsToSrid( const QgsCoordinateReferenceSystem &crs );
+    int crsToSrid( const QgsCoordinateReferenceSystem &crs, QString &errorMessage );
 
     /**
      * Returns the connection part of the \a uri URI.

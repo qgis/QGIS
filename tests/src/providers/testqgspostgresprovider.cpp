@@ -488,6 +488,16 @@ void TestQgsPostgresProvider::testEwktInOut()
   ewkt_obtained = QgsPostgresProvider::toEwkt( g, conn );
   QVERIFY( !g.crs().isValid() ); // is unknown
   QCOMPARE( ewkt_obtained, QString( "SRID=0;Point (0 0)" ) );
+
+  g = QgsPostgresProvider::fromEwkt( "SRID=0;POINT(0 0)", conn );
+  QVERIFY( !g.isNull() );
+  QVERIFY( !g.crs().isValid() );
+  QCOMPARE( QgsPostgresProvider::toEwkt( g, conn ), QString( "SRID=0;Point (0 0)" ) );
+
+  g = QgsPostgresProvider::fromEwkt( "SRID=-1;POINT(0 0)", conn );
+  QVERIFY( !g.isNull() );
+  QVERIFY( !g.crs().isValid() );
+  QCOMPARE( QgsPostgresProvider::toEwkt( g, conn ), QString( "SRID=0;Point (0 0)" ) );
 }
 #endif // ENABLE_PGTEST
 
