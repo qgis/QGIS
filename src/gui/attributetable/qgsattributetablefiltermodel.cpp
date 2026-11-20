@@ -167,8 +167,8 @@ void QgsAttributeTableFilterModel::setSourceModel( QgsAttributeTableModel *sourc
   QSortFilterProxyModel::setSourceModel( sourceModel );
 
   // The following connections are needed in order to keep the filter model in sync, see: regression #15974
-  connect( mTableModel, &QAbstractItemModel::columnsAboutToBeInserted, this, &QgsAttributeTableFilterModel::onColumnsChanged );
-  connect( mTableModel, &QAbstractItemModel::columnsAboutToBeRemoved, this, &QgsAttributeTableFilterModel::onColumnsChanged );
+  connect( mTableModel, &QAbstractItemModel::columnsInserted, this, &QgsAttributeTableFilterModel::onColumnsChanged );
+  connect( mTableModel, &QAbstractItemModel::columnsRemoved, this, &QgsAttributeTableFilterModel::onColumnsChanged );
 }
 
 bool QgsAttributeTableFilterModel::selectedOnTop()

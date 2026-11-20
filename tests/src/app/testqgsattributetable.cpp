@@ -78,6 +78,7 @@ class TestQgsAttributeTable : public QObject
     void testOrderColumn();
     void testEmptyModelCrash();
     void testDeleteFieldCrash();
+    void testSortedDeletedFieldCrash();
 
   private:
     QgisApp *mQgisApp = nullptr;
@@ -962,6 +963,28 @@ void TestQgsAttributeTable::testDeleteFieldCrash()
   // this triggered the crash in QgsAttributeTableModel::getWidgetData
   // since the widgetData list was already cleared but the attributes were not.
   dlg->removeAttributes( QList<int>() << 1 );
+}
+
+void TestQgsAttributeTable::testSortedDeletedFieldCrash()
+{
+  auto tempLayer = std::make_unique<QgsVectorLayer>( u"Point?crs=epsg:4326&field=id:int"_s, u"vl"_s, u"memory"_s );
+  QVERIFY( tempLayer->isValid() );
+  QgsFeature f1( tempLayer->dataProvider()->fields(), 1 );
+  f1.setGeometry( QgsGeometry::fromPointXY( QgsPointXY( 0, 0 ) ) );
+  f1.setAttribute( u"id"_s, 1 );
+  QVERIFY( tempLayer->dataProvider()->addFeature( f1 ) );
+  QVERIFY( tempLayer->startEditing() );
+  auto dlg = std::make_unique<QgsAttributeTableDialog>( tempLayer.get() );
+  dlg->setView( QgsDualView::ViewMode::AttributeTable );
+  QgsAttributeTableConfig cfg;
+  const QString sortExpr( u"\"id\""_s );
+  cfg.setSortExpression( sortExpr );
+  dlg->mMainView->setSortExpression( sortExpr );
+  QVERIFY( tempLayer->deleteAttribute( 0 ) );
+  // should not crash!
+  QVERIFY( tempLayer->rollBack() );
+  QVERIFY( dlg->mMainView->tableView()->isSortingEnabled() );
+  QCOMPARE( tempLayer->attributeTableConfig().sortExpression(), sortExpr );
 }
 
 QGSTEST_MAIN( TestQgsAttributeTable )
