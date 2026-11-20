@@ -1,3 +1,274 @@
+    Jürgen E. Fischer <jef@norbit.de>AuthorDate: 2026-11-20
+Commit:     Jürgen E. Fischer <jef@norbit.de>
+CommitDate: 2026-11-20
+
+    translation update for 3.44.16 from transifex
+
+    Nyall Dawson <nyall.dawson@gmail.com>AuthorDate: 2026-11-18
+Commit:     Nyall Dawson <nyall.dawson@gmail.com>
+CommitDate: 2026-11-20
+
+    Don't crash when hitting some condition in labeling
+
+    Fixes #68210
+
+    Who knows what this code is supposed to do? Not me. It's ancient
+    remnants from before the dawn of time... At least we can make
+    it not crash.
+
+    Stefanos Natsis <uclaros@gmail.com>AuthorDate: 2026-11-10
+Commit:     Nyall Dawson <nyall.dawson@gmail.com>
+CommitDate: 2026-11-15
+
+    Minor optimization in vector population
+
+    Stefanos Natsis <uclaros@gmail.com>AuthorDate: 2026-11-10
+Commit:     Nyall Dawson <nyall.dawson@gmail.com>
+CommitDate: 2026-11-15
+
+    Fix out of bounds reading when length1 > length2
+
+    Stefanos Natsis <uclaros@gmail.com>AuthorDate: 2026-11-02
+Commit:     Nyall Dawson <nyall.dawson@gmail.com>
+CommitDate: 2026-11-05
+
+    Apply suggestion from @uclaros
+
+    Alexander Bruy <alexander.bruy@gmail.com>AuthorDate: 2026-10-31
+Commit:     Nyall Dawson <nyall.dawson@gmail.com>
+CommitDate: 2026-11-05
+
+    Update tests/src/core/testqgsfields.cpp
+
+    Stefanos Natsis <uclaros@gmail.com>AuthorDate: 2026-10-21
+Commit:     Nyall Dawson <nyall.dawson@gmail.com>
+CommitDate: 2026-11-05
+
+    Fix some out of bounds reading/writing
+
+    Nyall Dawson <nyall.dawson@gmail.com>AuthorDate: 2026-10-24
+Commit:     Nyall Dawson <nyall.dawson@gmail.com>
+CommitDate: 2026-10-25
+
+    Apply suggestion from @nyalldawson
+
+    Nyall Dawson <nyall.dawson@gmail.com>AuthorDate: 2026-10-22
+Commit:     Nyall Dawson <nyall.dawson@gmail.com>
+CommitDate: 2026-10-25
+
+    Fix hang when rendering labels with huge angle values
+
+    Fixes #67885
+
+    (cherry picked from commit 49a8f51550b36776679accb4c0960f20368786b4)
+
+    Andrea Giudiceandrea <andreaerdna@libero.it>AuthorDate: 2026-10-20
+Commit:     Nyall Dawson <nyall.dawson@gmail.com>
+CommitDate: 2026-10-24
+
+    add test cases
+
+    Co-authored-by: JanCaha <jan.caha@outlook.com>
+
+    (cherry picked from commit 0cbe3368e6a34eeeaf9d68b3f03e099981444625)
+
+    Andrea Giudiceandrea <andreaerdna@libero.it>AuthorDate: 2026-10-20
+Commit:     Nyall Dawson <nyall.dawson@gmail.com>
+CommitDate: 2026-10-24
+
+    add vsiSuffix to to path
+
+    Co-authored-by: JanCaha <jan.caha@outlook.com>
+
+    (cherry picked from commit 27534796653c50b48d041dd726191b44de20ad49)
+
+    Nyall Dawson <nyall.dawson@gmail.com>AuthorDate: 2026-10-22
+Commit:     Nyall Dawson <nyall.dawson@gmail.com>
+CommitDate: 2026-10-22
+
+    Apply suggestion from @alexbruy
+
+    Co-authored-by: Alexander Bruy <alexander.bruy@gmail.com>
+
+    Nyall Dawson <nyall.dawson@gmail.com>AuthorDate: 2026-10-22
+Commit:     Nyall Dawson <nyall.dawson@gmail.com>
+CommitDate: 2026-10-22
+
+    Fix hang when loading vector tiles as first layer in project
+
+    Protect against invalid map scales when trying to determine the current
+    tile zoom level
+
+Merge: 084acac7ccf 7088c19c82b
+    Alexander Bruy <alexander.bruy@gmail.com>AuthorDate: 2026-10-10
+Commit:     GitHub <noreply@github.com>
+CommitDate: 2026-10-10
+
+    Merge pull request #67738 from qgis/backport-67725-to-release-3_44
+
+    [Backport release-3_44] [locator] Fix broken settings locator filter
+
+    Mathieu Pellerin <nirvn.asia@gmail.com>AuthorDate: 2026-10-09
+Commit:     github-actions[bot] <github-actions[bot]@users.noreply.github.com>
+CommitDate: 2026-10-09
+
+    [locator] Fix broken settings locator filter
+
+    qgis-bot <58983587+qgis-bot@users.noreply.github.com>AuthorDate: 2026-10-06
+Commit:     GitHub <noreply@github.com>
+CommitDate: 2026-10-06
+
+    [oapif] Fix crash when setting geometry to null while having inverted axes (#67665)
+
+    Co-authored-by: Denis Rouzaud <denis.rouzaud@gmail.com>
+
+    Andrea Giudiceandrea <andreaerdna@libero.it>AuthorDate: 2026-10-04
+Commit:     Nyall Dawson <nyall.dawson@gmail.com>
+CommitDate: 2026-10-06
+
+    Fix docked attribute tables open side-by-side, not tabbed
+
+    Fixes #65633
+
+    Co-authored-by: Nyall Dawson <nyall.dawson@gmail.com>
+
+    (cherry picked from commit 20b58cf64bf82bb6a7f10afb6282548faf87788c)
+
+Merge: f37f55c1e49 5b2b772c253
+    Alexander Bruy <alexander.bruy@gmail.com>AuthorDate: 2026-09-29
+Commit:     GitHub <noreply@github.com>
+CommitDate: 2026-09-29
+
+    Merge pull request #67567 from qgis/backport-67560-to-release-3_44
+
+    [Backport release-3_44] Fix exceptions when running algorithms that output html files in batch mode
+
+    Nyall Dawson <nyall.dawson@gmail.com>AuthorDate: 2026-09-28
+Commit:     Nyall Dawson <nyall.dawson@gmail.com>
+CommitDate: 2026-09-29
+
+    Remove non-functional pre/post execution script setting
+
+    These settings haven't worked since 3.0, and are non-trivial to
+    get working now.
+
+    Since there's only been an issue recently filed about them there's
+    clearly little demand for this functionality.
+
+    Drop the non-functional settings to avoid user confusion.
+
+    Fixes #44651
+
+    Nyall Dawson <nyall.dawson@gmail.com>AuthorDate: 2026-09-28
+Commit:     github-actions[bot] <github-actions[bot]@users.noreply.github.com>
+CommitDate: 2026-09-28
+
+    Fix exceptions when running algorithms that output html files in batch mode
+
+    Nyall Dawson <nyall.dawson@gmail.com>AuthorDate: 2026-09-28
+Commit:     Nyall Dawson <nyall.dawson@gmail.com>
+CommitDate: 2026-09-29
+
+    Apply suggestion from @nyalldawson
+
+    Julien Cabieces <julien.cabieces@oslandia.com>AuthorDate: 2026-09-25
+Commit:     Nyall Dawson <nyall.dawson@gmail.com>
+CommitDate: 2026-09-29
+
+    fix(RasterCalc): Remove VRT from the list of output format
+
+    Since it makes no sense to write a pixel per pixel VRT file
+
+    Fixes #67457
+
+    Nyall Dawson <nyall.dawson@gmail.com>AuthorDate: 2026-09-21
+Commit:     Nyall Dawson <nyall.dawson@gmail.com>
+CommitDate: 2026-09-27
+
+    Use correct /TransferBack/ annotation for factory methods that return python subclasses
+
+    Fixes #67401
+
+    (cherry picked from commit 478fed1887da5f3454123fc4026171d7a8cd0e0b)
+
+    Nyall Dawson <nyall.dawson@gmail.com>AuthorDate: 2026-09-21
+Commit:     Nyall Dawson <nyall.dawson@gmail.com>
+CommitDate: 2026-09-27
+
+    Add test from #67401
+
+    (cherry picked from commit 30e44d65dece28614b32258f0b6787f4a5f47229)
+
+    Julien Cabieces <julien.cabieces@oslandia.com>AuthorDate: 2026-09-01
+Commit:     Nyall Dawson <nyall.dawson@gmail.com>
+CommitDate: 2026-09-27
+
+    fix(GetCap): Do not expose Style for group
+
+    They don't have actually style that could be ativated then with STYLE
+    parameter. It was a regression introduce in 3.44 during a
+    refactory. OGC WMS specification allows to have zero style.
+
+    Julien Cabieces <julien.cabieces@oslandia.com>AuthorDate: 2026-09-10
+Commit:     Nyall Dawson <nyall.dawson@gmail.com>
+CommitDate: 2026-09-27
+
+    [Backport to queued LTR][WMS] Include highligths when calling GetMap with pdf output (#67322)
+
+    Julien Cabieces <julien.cabieces@oslandia.com>AuthorDate: 2026-09-02
+Commit:     Nyall Dawson <nyall.dawson@gmail.com>
+CommitDate: 2026-09-27
+
+    fix(PGconn): Don't propagate session_role parameter to PQConnect
+
+    Fixes #67178
+
+    JuhoErvasti <juho.ervasti@gispo.fi>AuthorDate: 2026-09-05
+Commit:     Nyall Dawson <nyall.dawson@gmail.com>
+CommitDate: 2026-09-27
+
+    fix: set project dirty when editing map themes
+
+    fixes #67260
+
+    Nyall Dawson <nyall.dawson@gmail.com>AuthorDate: 2026-09-08
+Commit:     Nyall Dawson <nyall.dawson@gmail.com>
+CommitDate: 2026-09-27
+
+    Vertex markers should ignore symbology reference scale
+
+    We don't want these growing massive or disappearing depending on map scale
+
+    Julien Cabieces <julien.cabieces@oslandia.com>AuthorDate: 2026-09-08
+Commit:     Nyall Dawson <nyall.dawson@gmail.com>
+CommitDate: 2026-09-27
+
+    fix(WmsDimension): fix variant property access
+
+    Fixes #67153
+
+    vaahtokarkki <roni.lindholm@gmail.com>AuthorDate: 2026-07-31
+Commit:     Nyall Dawson <nyall.dawson@gmail.com>
+CommitDate: 2026-09-27
+
+    Add reload postgres raster provider data
+
+    Fixes #59381
+
+    Andrea Giudiceandrea <andreaerdna@libero.it>AuthorDate: 2026-09-03
+Commit:     Nyall Dawson <nyall.dawson@gmail.com>
+CommitDate: 2026-09-27
+
+    Fix QgsServerWmsDimensionProperties::readXml
+
+    Fixes an oversight that prevents QgsServerWmsDimensionProperties::readXml to properly read the reference value stored in the project
+
+    Jürgen E. Fischer <jef@norbit.de>AuthorDate: 2026-09-25
+Commit:     Jürgen E. Fischer <jef@norbit.de>
+CommitDate: 2026-09-25
+
+    Release of 3.44.15
+
     Jürgen E. Fischer <jef@norbit.de>AuthorDate: 2026-09-25
 Commit:     Jürgen E. Fischer <jef@norbit.de>
 CommitDate: 2026-09-25
