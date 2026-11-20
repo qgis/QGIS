@@ -19,7 +19,7 @@ permissions:
 jobs:
   build:
     name: build (windows)
-    runs-on: windows-2022
+    runs-on: blacksmith-4vcpu-windows-2025
 
     steps:
       - name: 🐣 Checkout
