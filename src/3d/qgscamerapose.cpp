@@ -32,6 +32,7 @@ QDomElement QgsCameraPose::writeXml( QDomDocument &doc ) const
   elemCamera.setAttribute( u"dist"_s, mDistanceFromCenterPoint );
   elemCamera.setAttribute( u"pitch"_s, mPitchAngle );
   elemCamera.setAttribute( u"heading"_s, mHeadingAngle );
+  elemCamera.setAttribute( u"orthoWidth"_s, mOrthographicWidth );
   return elemCamera;
 }
 
@@ -45,6 +46,7 @@ void QgsCameraPose::readXml( const QDomElement &elem )
   mDistanceFromCenterPoint = elem.attribute( u"dist"_s ).toFloat();
   mPitchAngle = elem.attribute( u"pitch"_s ).toFloat();
   mHeadingAngle = elem.attribute( u"heading"_s ).toFloat();
+  mOrthographicWidth = elem.attribute( u"orthoWidth"_s ).toFloat();
 }
 
 void QgsCameraPose::setCenterPoint( const QgsVector3D &point )
@@ -65,6 +67,11 @@ void QgsCameraPose::setPitchAngle( float pitch )
 {
   // prevent going over the head
   mPitchAngle = std::clamp( pitch, 0.0f, 180.0f );
+}
+
+void QgsCameraPose::setOrthographicWidth( float width )
+{
+  mOrthographicWidth = width;
 }
 
 void QgsCameraPose::updateCamera( Qt3DRender::QCamera *camera )

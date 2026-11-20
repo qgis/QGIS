@@ -39,6 +39,7 @@ class QDomElement;
  * - distance from the center point - how far is the camera from the point towards which it is looking
  * - pitch angle - vertical rotation of the camera (0 degrees = camera looking down, 90 degrees = camera looking from the side)
  * - yaw angle - horizontal rotation of the camera
+ * - orthographic width - width of orthographic projection viewport in world units
  *
  * \since QGIS 3.4
  */
@@ -65,6 +66,11 @@ class _3D_EXPORT QgsCameraPose
     //! Sets heading (yaw) angle in degrees
     void setHeadingAngle( float heading ) { mHeadingAngle = heading; }
 
+    //! Returns orthographic viewport width in world units
+    float orthographicWidth() const { return mOrthographicWidth; }
+    //! Sets orthographic viewport width in world units
+    void setOrthographicWidth( float width );
+
     //! Update Qt3D camera view matrix based on the pose
     void updateCamera( Qt3DRender::QCamera *camera ) SIP_SKIP;
 
@@ -82,7 +88,11 @@ class _3D_EXPORT QgsCameraPose
     // TODO c++20 - replace with = default
     bool operator==( const QgsCameraPose &other ) const
     {
-      return mCenterPoint == other.mCenterPoint && mDistanceFromCenterPoint == other.mDistanceFromCenterPoint && mPitchAngle == other.mPitchAngle && mHeadingAngle == other.mHeadingAngle;
+      return mCenterPoint == other.mCenterPoint
+             && mDistanceFromCenterPoint == other.mDistanceFromCenterPoint
+             && mPitchAngle == other.mPitchAngle
+             && mHeadingAngle == other.mHeadingAngle
+             && mOrthographicWidth == other.mOrthographicWidth;
     }
     bool operator!=( const QgsCameraPose &other ) const { return !operator==( other ); }
 
@@ -100,6 +110,9 @@ class _3D_EXPORT QgsCameraPose
 
     //! aircraft nose left/right. angle in degrees
     float mHeadingAngle = 0;
+
+    //! Width of viewport in world units for orthographic projection
+    float mOrthographicWidth = 1000;
 };
 
 
