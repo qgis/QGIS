@@ -122,6 +122,7 @@ void QgsMaterial::disableClipping()
     if ( parameterName == QgsMaterial::CLIP_PLANE_ARRAY_PARAMETER_NAME || parameterName == QgsMaterial::CLIP_PLANE_MAX_PLANE_PARAMETER_NAME )
     {
       materialEffect->removeParameter( parameter );
+      delete parameter;
     }
   }
 
