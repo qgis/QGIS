@@ -1226,6 +1226,7 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView, public QgsExpressionContex
 
     /**
      * Emit map tool changed with the old tool
+     * Any of those two may be nullptr if there is no map tool.
      */
     void mapToolSet( QgsMapTool *newTool, QgsMapTool *oldTool );
 
