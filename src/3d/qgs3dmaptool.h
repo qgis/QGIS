@@ -90,9 +90,6 @@ class _3D_EXPORT Qgs3DMapTool : public QObject
     //! Called when canvas's map setting is changed
     virtual void onMapSettingsChanged();
 
-    //! clear pointer when action is destroyed
-    void actionDestroyed();
-
   protected:
     QPointer<Qgs3DMapCanvas> mCanvas;
 
@@ -100,7 +97,7 @@ class _3D_EXPORT Qgs3DMapTool : public QObject
      * Optional pointer to an action that will be checked on map tool activation
      * and unchecked on map tool deactivation.
      */
-    QAction *mAction = nullptr;
+    QPointer<QAction> mAction;
 };
 
 #endif // QGS3DMAPTOOL_H
