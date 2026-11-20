@@ -39,6 +39,9 @@ class QgsInterval;
 class GUI_EXPORT QgsTemporalControllerWidget : public QgsPanelWidget, private Ui::QgsTemporalControllerWidgetBase
 {
     Q_OBJECT
+
+    friend class TestQgsTemporalControllerWidget;
+
   public:
     /**
       * Constructor for QgsTemporalControllerWidget, with the specified \a parent widget.
