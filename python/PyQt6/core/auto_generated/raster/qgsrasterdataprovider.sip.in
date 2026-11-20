@@ -794,6 +794,59 @@ native attribute table.
 
     virtual QString bandDescription( int bandNumber );
 
+    QMap<int, QDateTime> bandDateTimes() const;
+%Docstring
+Returns the date times associated with the raster bands (e.g. netCDF CF
+time dimension or GRIB valid time), as a map of band number to date
+time. Bands without an associated date time are not included.
+
+.. seealso:: :py:func:`firstBandDateTime`
+
+.. seealso:: :py:func:`lastBandDateTime`
+
+.. seealso:: :py:func:`sortedUniqueBandDateTimes`
+
+.. versionadded:: 4.6
+%End
+
+    QList<QDateTime> sortedUniqueBandDateTimes() const;
+%Docstring
+Returns the sorted and unique date times associated with the raster
+bands.
+
+.. seealso:: :py:func:`firstBandDateTime`
+
+.. seealso:: :py:func:`lastBandDateTime`
+
+.. seealso:: :py:func:`sortedUniqueBandDateTimes`
+
+.. versionadded:: 4.6
+%End
+
+    QDateTime firstBandDateTime() const;
+%Docstring
+Returns the earliest date time associated with the raster bands, or an
+invalid QDateTime if no band has a date time.
+
+.. seealso:: :py:func:`lastBandDateTime`
+
+.. seealso:: :py:func:`sortedUniqueBandDateTimes`
+
+.. versionadded:: 4.6
+%End
+
+    QDateTime lastBandDateTime() const;
+%Docstring
+Returns the latest date time associated with the raster bands, or an
+invalid QDateTime if no band has a date time.
+
+.. seealso:: :py:func:`firstBandDateTime`
+
+.. seealso:: :py:func:`sortedUniqueBandDateTimes`
+
+.. versionadded:: 4.6
+%End
+
 
   signals:
 
@@ -818,6 +871,7 @@ Copy member variables from other raster data provider. Useful for
 implementation of :py:func:`~QgsRasterDataProvider.clone` method in
 subclasses
 %End
+
 
 
 

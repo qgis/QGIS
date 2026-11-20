@@ -46,6 +46,7 @@ using namespace Qt::StringLiterals;
 #include "qgssettings.h"
 #include "qgssettingsregistrycore.h"
 #include "qgsruntimeprofiler.h"
+#include "qgstemporalutils.h"
 #include "qgsprovidersublayerdetails.h"
 #include "qgsproviderutils.h"
 #include "qgscplerrorhandler_p.h"
@@ -266,6 +267,7 @@ QgsGdalProvider::QgsGdalProvider( const QgsGdalProvider &other )
   mSubLayers = other.mSubLayers;
   mMaskBandExposedAsAlpha = other.mMaskBandExposedAsAlpha;
   mBandCount = other.mBandCount;
+  mBandDateTimes = other.mBandDateTimes;
   copyBaseSettings( other );
 }
 
@@ -1372,7 +1374,14 @@ QString QgsGdalProvider::generateBandName( int bandNumber ) const
               QString dim = ( *j );
               if ( values.at( 0 ) != "NETCDF_DIM_" + dim && values.at( 0 ) != "GTIFF_DIM_" + dim )
                 continue;
-              if ( unitsMap.contains( dim ) && !unitsMap[dim].isEmpty() && unitsMap[dim] != "none"_L1 )
+              // CF time dimension (units "<unit> since <reference date time>"), show the date time parsed in initBandDateTimes()
+              QDateTime cfDateTime;
+              if ( unitsMap.value( dim ).contains( " since "_L1, Qt::CaseInsensitive ) )
+                cfDateTime = mBandDateTimes.value( bandNumber );
+
+              if ( cfDateTime.isValid() )
+                bandNameValues.append( u"%1 (UTC)"_s.arg( cfDateTime.toString( u"yyyy-MM-dd HH:mm:ss"_s ) ) );
+              else if ( unitsMap.contains( dim ) && !unitsMap[dim].isEmpty() && unitsMap[dim] != "none"_L1 )
                 bandNameValues.append( dim + '=' + values.at( 1 ) + " (" + unitsMap[dim] + ')' );
               else
                 bandNameValues.append( dim + '=' + values.at( 1 ) );
@@ -1395,11 +1404,111 @@ QString QgsGdalProvider::generateBandName( int bandNumber ) const
   }
 
   QString gdalBandName( GDALGetDescription( myGdalBand ) );
+
+  if ( mDriverName == "GRIB"_L1 )
+  {
+    const QDateTime gribDateTime = mBandDateTimes.value( bandNumber );
+    if ( gribDateTime.isValid() )
+    {
+      const QString timeString = u"%1 (UTC)"_s.arg( gribDateTime.toString( u"yyyy-MM-dd HH:mm:ss"_s ) );
+      gdalBandName = gdalBandName.isEmpty() ? timeString : u"%1 %2"_s.arg( gdalBandName, timeString );
+    }
+  }
+
   if ( !gdalBandName.isEmpty() )
   {
     return generatedBandName + u": "_s + gdalBandName;
   }
   return generatedBandName;
+}
+
+void QgsGdalProvider::initBandDateTimes()
+{
+  mBandDateTimes.clear();
+
+  const int gdalBandCount = GDALGetRasterCount( mGdalDataset );
+
+  if ( mDriverName == "netCDF"_L1 || mDriverName == "GTiff"_L1 )
+  {
+    CSLConstList GDALmetadata = GDALGetMetadata( mGdalDataset, nullptr );
+    if ( !GDALmetadata )
+      return;
+
+    QStringList metadata = QgsOgrUtils::cStringListToQStringList( GDALmetadata );
+    QStringList dimExtraValues;
+    QMap<QString, QString> unitsMap;
+    QMap<QString, QString> calendarMap;
+    for ( QStringList::const_iterator i = metadata.constBegin(); i != metadata.constEnd(); ++i )
+    {
+      QString val( *i );
+      if ( !val.startsWith( "NETCDF_DIM_EXTRA"_L1 ) && !val.startsWith( "GTIFF_DIM_EXTRA"_L1 ) && !val.contains( "#units="_L1 ) && !val.contains( "#calendar="_L1 ) )
+        continue;
+      QStringList values = val.split( '=' );
+      val = values.at( 1 );
+      if ( values.at( 0 ) == "NETCDF_DIM_EXTRA"_L1 || values.at( 0 ) == "GTIFF_DIM_EXTRA"_L1 )
+      {
+        dimExtraValues = val.replace( '{', QString() ).replace( '}', QString() ).split( ',' );
+      }
+      else if ( values.at( 0 ).endsWith( "#calendar"_L1 ) )
+      {
+        calendarMap[values.at( 0 ).split( '#' ).at( 0 )] = val;
+      }
+      else
+      {
+        unitsMap[values.at( 0 ).split( '#' ).at( 0 )] = val;
+      }
+    }
+
+    if ( dimExtraValues.isEmpty() )
+      return;
+
+    for ( int bandNumber = 1; bandNumber <= gdalBandCount; ++bandNumber )
+    {
+      GDALmetadata = GDALGetMetadata( GDALGetRasterBand( mGdalDataset, bandNumber ), nullptr );
+      if ( !GDALmetadata )
+        continue;
+
+      metadata = QgsOgrUtils::cStringListToQStringList( GDALmetadata );
+      for ( QStringList::const_iterator i = metadata.constBegin(); i != metadata.constEnd() && !mBandDateTimes.contains( bandNumber ); ++i )
+      {
+        const QString val( *i );
+        if ( !val.startsWith( "NETCDF_DIM_"_L1 ) && !val.startsWith( "GTIFF_DIM_"_L1 ) )
+          continue;
+        const QStringList values = val.split( '=' );
+        for ( QStringList::const_iterator j = dimExtraValues.constBegin(); j != dimExtraValues.constEnd(); ++j )
+        {
+          const QString dim = ( *j );
+          if ( values.at( 0 ) != "NETCDF_DIM_" + dim && values.at( 0 ) != "GTIFF_DIM_" + dim )
+            continue;
+          if ( !unitsMap.contains( dim ) )
+            continue;
+
+          // CF time dimension (units "<unit> since <reference date time>")
+          bool ok = false;
+          const double cfTimeValue = values.at( 1 ).trimmed().toDouble( &ok );
+          if ( !ok )
+            continue;
+
+          const QDateTime cfDateTime = QgsNetCdfGribTimeParser::parseCfTime( cfTimeValue, unitsMap[dim], calendarMap.value( dim ) );
+          if ( cfDateTime.isValid() )
+          {
+            mBandDateTimes.insert( bandNumber, cfDateTime );
+            break;
+          }
+        }
+      }
+    }
+  }
+  else if ( mDriverName == "GRIB"_L1 )
+  {
+    for ( int bandNumber = 1; bandNumber <= gdalBandCount; ++bandNumber )
+    {
+      GDALRasterBandH gdalBand = GDALGetRasterBand( mGdalDataset, bandNumber );
+      const QDateTime gribDateTime = QgsNetCdfGribTimeParser::parseGribTime( QString( GDALGetMetadataItem( gdalBand, "GRIB_VALID_TIME", nullptr ) ) );
+      if ( gribDateTime.isValid() )
+        mBandDateTimes.insert( bandNumber, gribDateTime );
+    }
+  }
 }
 
 QgsLayerMetadata QgsGdalProvider::layerMetadata() const
@@ -4088,6 +4197,8 @@ void QgsGdalProvider::initBaseDataset()
     mUseSrcNoDataValue.append( false );
     mGdalDataType.append( GDT_Byte );
   }
+
+  initBandDateTimes();
 
   loadMetadata();
 }
