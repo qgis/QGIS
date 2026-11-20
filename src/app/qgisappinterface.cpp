@@ -676,6 +676,16 @@ void QgisAppInterface::unregisterApplicationExitBlocker( QgsApplicationExitBlock
   qgis->unregisterApplicationExitBlocker( blocker );
 }
 
+void QgisAppInterface::register3DMapCanvasToolBarFactory( Qgs3DMapCanvasToolBarFactory *factory )
+{
+  qgis->register3DMapCanvasToolBarFactory( factory );
+}
+
+void QgisAppInterface::unregister3DMapCanvasToolBarFactory( Qgs3DMapCanvasToolBarFactory *factory )
+{
+  qgis->unregister3DMapCanvasToolBarFactory( factory );
+}
+
 void QgisAppInterface::registerMapToolHandler( QgsAbstractMapToolHandler *handler )
 {
   qgis->registerMapToolHandler( handler );

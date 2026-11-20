@@ -81,7 +81,26 @@ Mouse cursor to be used when the tool is active
 Returns the parent Qgs3DMapCanvas
 %End
 
+    void setAction( QAction *action );
+%Docstring
+Use this to associate a QAction to this maptool. Then when the
+setMapTool method of mapcanvas is called the action state will be set to
+on. Usually this will cause e.g. a toolbutton to appear pressed in and
+the previously used toolbutton to pop out.
+
+.. versionadded:: 4.4
+%End
+
+    QAction *action() const;
+%Docstring
+Returns associated action with map tool or ``None`` if no action is
+associated
+
+.. versionadded:: 4.4
+%End
+
   protected:
+
 };
 
 /************************************************************************

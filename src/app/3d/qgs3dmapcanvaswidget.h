@@ -34,9 +34,11 @@ class QgsMapToolClippingPlanes;
 class Qgs3DMapToolPointCloudChangeAttributePaintbrush;
 class QLabel;
 class QProgressBar;
+class QVBoxLayout;
 
 class Qgs3DAnimationWidget;
 class Qgs3DMapCanvas;
+class Qgs3DMapCanvasToolBarFactory;
 class Qgs3DMapSettings;
 class Qgs3DMapToolIdentify;
 class Qgs3DMapToolMeasureLine;
@@ -121,6 +123,22 @@ class APP_EXPORT Qgs3DMapCanvasWidget : public QWidget
     void removeProfileData( QgsElevationProfile *profile );
 
     void updateProfileCursorPosition( QgsElevationProfile *profile, const QgsPointXY &mapPoint, const QgsProfilePoint &profilePoint );
+
+    /**
+     * Creates a toolbar from \a factory and adds it to the 3D map view.
+     * If the toolbar has already been created, nothing happens.
+     *
+     * \since QGIS 4.4
+     */
+    void addToolBarFromFactory( Qgs3DMapCanvasToolBarFactory *factory );
+
+    /**
+     * Removes the toolbar created from \a factory.
+     * If the toolbar does not exist, nothing happens.
+     *
+     * \since QGIS 4.4
+     */
+    void removeToolBarFromFactory( Qgs3DMapCanvasToolBarFactory *factory );
 
   private slots:
     void resetView();
@@ -253,6 +271,9 @@ class APP_EXPORT Qgs3DMapCanvasWidget : public QWidget
     Qgs3DMapClippingToleranceWidgetSettingsAction *mClippingToleranceAction = nullptr;
 
     QMenu *mToolbarMenu = nullptr;
+
+    QVBoxLayout *mFactoryToolBarsLayout = nullptr;
+    QHash<Qgs3DMapCanvasToolBarFactory *, QToolBar *> mFactoryToolBars;
 
     struct ElevationProfileData
     {

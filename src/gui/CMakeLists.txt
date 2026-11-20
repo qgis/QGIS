@@ -1135,6 +1135,7 @@ set(QGIS_GUI_HDRS
   qgsvscrollarea.h
   qgswindowmanagerinterface.h
 
+  3d/qgs3dmapcanvastoolbarfactory.h
   3d/qgsmaterialwidget.h
 
   actions/qgsactionmenu.h
