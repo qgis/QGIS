@@ -279,28 +279,39 @@ void Qgs3DMapCanvas::captureDepthBuffer()
 
 void Qgs3DMapCanvas::setMapTool( Qgs3DMapTool *tool )
 {
-  if ( !mScene )
-    return;
-
   if ( tool == mMapTool )
     return;
 
-  // For Camera Control tool
-  if ( mMapTool && !tool )
-  {
-    mScene->cameraController()->setEnabled( true );
-    setCursor( Qt::OpenHandCursor );
-  }
+  // map tools need the scene
+  if ( tool && !mScene )
+    return;
 
+  // deactivate existing tool
   if ( mMapTool )
     mMapTool->deactivate();
 
+  // set new map tool and activate it
   mMapTool = tool;
 
   if ( mMapTool )
   {
     mMapTool->activate();
     setCursor( mMapTool->cursor() );
+  }
+  else
+  {
+    // no map tool: switch back to camera control
+    if ( mScene )
+      mScene->cameraController()->setEnabled( true );
+    setCursor( Qt::OpenHandCursor );
+  }
+}
+
+void Qgs3DMapCanvas::unsetMapTool( Qgs3DMapTool *tool )
+{
+  if ( mMapTool && mMapTool == tool )
+  {
+    setMapTool( nullptr );
   }
 }
 

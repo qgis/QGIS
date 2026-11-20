@@ -778,9 +778,7 @@ void Qgs3DMapCanvasWidget::updateLayerRelatedActions( QgsMapLayer *layer )
     mActionUndo->setEnabled( false );
     mActionRedo->setEnabled( false );
 
-    if ( mCanvas->mapTool() && mCanvas->mapTool() == mMapToolChangeAttribute )
-      mCanvas->setMapTool( nullptr );
-
+    mCanvas->unsetMapTool( mMapToolChangeAttribute );
     return;
   }
 
