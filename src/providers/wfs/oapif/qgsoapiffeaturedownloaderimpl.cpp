@@ -435,8 +435,10 @@ void QgsOapifFeatureDownloaderImpl::runGenericDownload( QEventLoop &loop, QStrin
 
     QgsOapifItemsRequest itemsRequest( mShared->mURI.uri(), url, mShared->mFeatureFormat );
     connect( &itemsRequest, &QgsOapifItemsRequest::gotResponse, &loop, &QEventLoop::quit );
-    itemsRequest.request( false /* synchronous*/, true /* forceRefresh */ );
-    loop.exec( QEventLoop::ExcludeUserInputEvents );
+    if ( itemsRequest.request( false /* synchronous*/, true /* forceRefresh */ ) )
+    {
+      loop.exec( QEventLoop::ExcludeUserInputEvents );
+    }
     if ( mStop )
     {
       interrupted = true;
