@@ -8637,7 +8637,7 @@ void TestProcessingGui::testDatabaseSchemaWrapper()
   // using a parameter definition as initial values
   QgsProcessingParameterDatabaseSchema schemaParam( u"n"_s, u"test desc"_s, u"connparam"_s, u"aaa"_s, false );
   widget = std::make_unique<QgsProcessingParameterDefinitionWidget>( u"databaseschema"_s, context, widgetContext, &schemaParam );
-  def.reset( widget->createParameter( u"param_name"_s ) );
+  def = widget->createParameter( u"param_name"_s );
   QCOMPARE( def->name(), u"param_name"_s );
   QCOMPARE( def->description(), u"test desc"_s );
   QVERIFY( !( def->flags() & Qgis::ProcessingParameterFlag::Optional ) );
@@ -8647,7 +8647,7 @@ void TestProcessingGui::testDatabaseSchemaWrapper()
   schemaParam.setFlags( Qgis::ProcessingParameterFlag::Advanced | Qgis::ProcessingParameterFlag::Optional );
   schemaParam.setDefaultValue( u"xxx"_s );
   widget = std::make_unique<QgsProcessingParameterDefinitionWidget>( u"databaseschema"_s, context, widgetContext, &schemaParam );
-  def.reset( widget->createParameter( u"param_name"_s ) );
+  def = widget->createParameter( u"param_name"_s );
   QCOMPARE( def->name(), u"param_name"_s );
   QCOMPARE( def->description(), u"test desc"_s );
   QVERIFY( def->flags() & Qgis::ProcessingParameterFlag::Optional );
@@ -8655,7 +8655,7 @@ void TestProcessingGui::testDatabaseSchemaWrapper()
   QCOMPARE( static_cast<QgsProcessingParameterDatabaseSchema *>( def.get() )->defaultValue().toString(), u"xxx"_s );
   schemaParam.setDefaultValue( QVariant() );
   widget = std::make_unique<QgsProcessingParameterDefinitionWidget>( u"databaseschema"_s, context, widgetContext, &schemaParam );
-  def.reset( widget->createParameter( u"param_name"_s ) );
+  def = widget->createParameter( u"param_name"_s );
   QVERIFY( !static_cast<QgsProcessingParameterDatabaseSchema *>( def.get() )->defaultValue().isValid() );
 #endif
 }
@@ -8874,7 +8874,7 @@ void TestProcessingGui::testDatabaseTableWrapper()
   // using a parameter definition as initial values
   QgsProcessingParameterDatabaseTable tableParam( u"n"_s, u"test desc"_s, u"connparam"_s, u"schemaparam"_s, u"aaa"_s, false );
   widget = std::make_unique<QgsProcessingParameterDefinitionWidget>( u"databasetable"_s, context, widgetContext, &tableParam );
-  def.reset( widget->createParameter( u"param_name"_s ) );
+  def = widget->createParameter( u"param_name"_s );
   QCOMPARE( def->name(), u"param_name"_s );
   QCOMPARE( def->description(), u"test desc"_s );
   QVERIFY( !( def->flags() & Qgis::ProcessingParameterFlag::Optional ) );
@@ -8885,7 +8885,7 @@ void TestProcessingGui::testDatabaseTableWrapper()
   tableParam.setFlags( Qgis::ProcessingParameterFlag::Advanced | Qgis::ProcessingParameterFlag::Optional );
   tableParam.setDefaultValue( u"xxx"_s );
   widget = std::make_unique<QgsProcessingParameterDefinitionWidget>( u"databasetable"_s, context, widgetContext, &tableParam );
-  def.reset( widget->createParameter( u"param_name"_s ) );
+  def = widget->createParameter( u"param_name"_s );
   QCOMPARE( def->name(), u"param_name"_s );
   QCOMPARE( def->description(), u"test desc"_s );
   QVERIFY( def->flags() & Qgis::ProcessingParameterFlag::Optional );
@@ -8893,7 +8893,7 @@ void TestProcessingGui::testDatabaseTableWrapper()
   QCOMPARE( static_cast<QgsProcessingParameterDatabaseTable *>( def.get() )->defaultValue().toString(), u"xxx"_s );
   tableParam.setDefaultValue( QVariant() );
   widget = std::make_unique<QgsProcessingParameterDefinitionWidget>( u"databasetable"_s, context, widgetContext, &tableParam );
-  def.reset( widget->createParameter( u"param_name"_s ) );
+  def = widget->createParameter( u"param_name"_s );
   QVERIFY( !static_cast<QgsProcessingParameterDatabaseTable *>( def.get() )->defaultValue().isValid() );
 #endif
 }
