@@ -23,6 +23,8 @@ The pose is defined with the following parameters:
 - pitch angle - vertical rotation of the camera (0 degrees = camera
   looking down, 90 degrees = camera looking from the side)
 - yaw angle - horizontal rotation of the camera
+- orthographic width - width of orthographic projection viewport in
+  world units
 
 .. versionadded:: 3.4
 %End
@@ -65,6 +67,15 @@ Returns heading (yaw) angle in degrees
     void setHeadingAngle( float heading );
 %Docstring
 Sets heading (yaw) angle in degrees
+%End
+
+    float orthographicWidth() const;
+%Docstring
+Returns orthographic viewport width in world units
+%End
+    void setOrthographicWidth( float width );
+%Docstring
+Sets orthographic viewport width in world units
 %End
 
 
