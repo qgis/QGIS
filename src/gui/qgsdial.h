@@ -74,7 +74,7 @@ class GUI_EXPORT QgsDial : public QDial
     QVariant singleStep() const { return mStep; };
 
     void setValue( const QVariant &value );
-    QVariant variantValue() const;
+    virtual QVariant variantValue() const;
 
   signals:
     void valueChanged( const QVariant & );
