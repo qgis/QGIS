@@ -1225,7 +1225,9 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView, public QgsExpressionContex
     void keyReleased( QKeyEvent *e );
 
     /**
-     * Emit map tool changed with the old tool
+     * Emitted when the current map tool is changed from \a oldTool to \a newTool.
+     *
+     * Either \a oldTool or \a newTool may be NULLPTR if there is no associated map tool.
      */
     void mapToolSet( QgsMapTool *newTool, QgsMapTool *oldTool );
 
