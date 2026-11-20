@@ -625,6 +625,8 @@ void QgsVectorFileWriter::init(
         CSLDestroy( domainNames );
       }
 #endif
+
+      QSet< QString > usedExportFieldNames;
 #if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION( 3, 6, 0 )
       QSet< QString > usedAlternativeNames;
 #endif
@@ -652,6 +654,7 @@ void QgsVectorFileWriter::init(
           {
             mAttrIdxToProviderIdx.insert( fldIdx, ogrIdx );
             mAttrIdxToOgrLayerIdx.insert( fldIdx, ogrIdx );
+            usedExportFieldNames.insert( attrField.name().toLower() );
             continue;
           }
         }
@@ -667,6 +670,18 @@ void QgsVectorFileWriter::init(
             name = !attrField.alias().isEmpty() ? attrField.alias() : attrField.name();
             break;
         }
+
+        if ( usedExportFieldNames.contains( name.toLower() ) )
+        {
+          const QString originalName = name;
+          int counter = 1;
+          while ( usedExportFieldNames.contains( name.toLower() ) )
+          {
+            name = originalName + '_' + QString::number( ++counter );
+          }
+          QgsMessageLog::logMessage( QObject::tr( "Duplicated output field name '%1' renamed to '%2'" ).arg( originalName, name ), QObject::tr( "OGR" ) );
+        }
+        usedExportFieldNames.insert( name.toLower() );
 
         OGRFieldType ogrType = OFTString; //default to string
         OGRFieldSubType ogrSubType = OFSTNone;
@@ -3709,18 +3724,36 @@ QgsVectorFileWriter::WriterError QgsVectorFileWriter::prepareWriteAsVectorFormat
 
   if ( !details.attributes.isEmpty() )
   {
+    QSet< QString > usedExportNames;
+    QStringList duplicatedNames;
     for ( int attrIdx : std::as_const( details.attributes ) )
     {
       if ( details.sourceFields.exists( attrIdx ) )
       {
         QgsField field = details.sourceFields.at( attrIdx );
-        field.setName( options.attributesExportNames.value( attrIdx, field.name() ) );
+        QString exportName = options.attributesExportNames.value( attrIdx, field.name() );
+        if ( usedExportNames.contains( exportName.toLower() ) )
+        {
+          const QString originalName = exportName;
+          int counter = 1;
+          while ( usedExportNames.contains( exportName.toLower() ) )
+          {
+            exportName = originalName + '_' + QString::number( ++counter );
+          }
+          duplicatedNames.append( u"'%1' renamed to '%2'"_s.arg( originalName, exportName ) );
+        }
+        field.setName( exportName );
+        usedExportNames.insert( exportName.toLower() );
         details.outputFields.append( field );
       }
       else
       {
         QgsDebugError( u"No such source field with index '%1' available."_s.arg( attrIdx ) );
       }
+    }
+    if ( !duplicatedNames.isEmpty() )
+    {
+      QgsMessageLog::logMessage( QObject::tr( "Duplicate exported field names found: %1" ).arg( duplicatedNames.join( ", "_L1 ) ), QObject::tr( "OGR" ) );
     }
   }
 
