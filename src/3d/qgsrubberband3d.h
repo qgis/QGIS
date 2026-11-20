@@ -232,10 +232,10 @@ class _3D_EXPORT QgsRubberBand3D
     bool mEdgesEnabled = true;
     bool mPolygonFillEnabled = true;
 
-    QObjectUniquePtr<Qt3DCore::QEntity> mLineEntity = nullptr;    // owned by parentEntity (from constructor)
-    QObjectUniquePtr<Qt3DCore::QEntity> mJoinEntity = nullptr;    // owned by parentEntity (from constructor)
-    QObjectUniquePtr<Qt3DCore::QEntity> mPolygonEntity = nullptr; // owned by parentEntity (from constructor)
-    QObjectUniquePtr<Qt3DCore::QEntity> mMarkerEntity = nullptr;  // owned by parentEntity (from constructor)
+    QObjectUniquePtr<Qt3DCore::QEntity> mLineEntity;    // owned by parentEntity (from constructor)
+    QObjectUniquePtr<Qt3DCore::QEntity> mJoinEntity;    // owned by parentEntity (from constructor)
+    QObjectUniquePtr<Qt3DCore::QEntity> mPolygonEntity; // owned by parentEntity (from constructor)
+    QObjectUniquePtr<Qt3DCore::QEntity> mMarkerEntity;  // owned by parentEntity (from constructor)
 
     QgsGeoTransform *mLineTransform = nullptr;
     QgsGeoTransform *mJoinTransform = nullptr;
