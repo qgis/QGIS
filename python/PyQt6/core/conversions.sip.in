@@ -2227,6 +2227,7 @@ template<TYPE>
 %End
 };
 
+%If (SIP_NEEDS_CONVERSION_QMAP_INT_INT)
 %MappedType QMap<int, int>
 {
   %TypeHeaderCode
@@ -2304,6 +2305,7 @@ template<TYPE>
   return sipGetState(sipTransferObj);
   %End
 };
+%End
 
 template<TYPE1, TYPE2>
 %MappedType QMap<TYPE1, TYPE2*>
