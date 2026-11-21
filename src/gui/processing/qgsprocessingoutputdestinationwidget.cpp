@@ -236,15 +236,16 @@ void QgsProcessingLayerOutputDestinationWidget::registerProcessingParametersGene
 void QgsProcessingLayerOutputDestinationWidget::addOpenAfterRunningOption()
 {
   Q_ASSERT( mOpenAfterRunningCheck == nullptr );
-  mOpenAfterRunningCheck = new QCheckBox( tr( "Open output file after running algorithm" ) );
-  mOpenAfterRunningCheck->setChecked( !outputIsSkipped() );
+  const bool isFile = mParameter->type() == QgsProcessingParameterFileDestination::typeName();
+  mOpenAfterRunningCheck = new QCheckBox( isFile ? tr( "Open output file with the default application after running algorithm" ) : tr( "Open output file after running algorithm" ) );
+  mOpenAfterRunningCheck->setChecked( !isFile && !outputIsSkipped() );
   mOpenAfterRunningCheck->setEnabled( !outputIsSkipped() );
   gridLayout->addWidget( mOpenAfterRunningCheck, 1, 0, 1, 2 );
 
-  connect( this, &QgsProcessingLayerOutputDestinationWidget::skipOutputChanged, this, [this]( bool skipped ) {
+  connect( this, &QgsProcessingLayerOutputDestinationWidget::skipOutputChanged, this, [this, isFile]( bool skipped ) {
     bool enabled = !skipped;
     mOpenAfterRunningCheck->setEnabled( enabled );
-    mOpenAfterRunningCheck->setChecked( enabled );
+    mOpenAfterRunningCheck->setChecked( enabled && !isFile );
   } );
 }
 
