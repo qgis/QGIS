@@ -264,10 +264,19 @@ QString QgsDissolveAlgorithm::groupId() const
 void QgsDissolveAlgorithm::initAlgorithm( const QVariantMap & )
 {
   addParameter( new QgsProcessingParameterFeatureSource( u"INPUT"_s, QObject::tr( "Input layer" ) ) );
-  addParameter( new QgsProcessingParameterField( u"FIELD"_s, QObject::tr( "Dissolve field(s)" ), QVariant(), u"INPUT"_s, Qgis::ProcessingFieldParameterDataType::Any, true, true ) );
+
+  auto fieldParam = std::make_unique<QgsProcessingParameterField>( u"FIELD"_s, QObject::tr( "Dissolve field(s)" ), QVariant(), u"INPUT"_s, Qgis::ProcessingFieldParameterDataType::Any, true, true );
+  fieldParam->setHelp(
+    QObject::tr(
+      "If specified, features having the same value for the selected field(s) will be replaced with a single feature with a merged geometry. If no field is provided then all the features are dissolved, "
+      "resulting in a single (multipart) feature."
+    )
+  );
+  addParameter( fieldParam.release() );
 
   auto disjointParam = std::make_unique<QgsProcessingParameterBoolean>( u"SEPARATE_DISJOINT"_s, QObject::tr( "Keep disjoint features separate" ), false );
   disjointParam->setFlags( disjointParam->flags() | Qgis::ProcessingParameterFlag::Advanced );
+  disjointParam->setHelp( QObject::tr( "Controls whether parts of dissolved features are exported as separate features (instead of parts of a multipart feature)." ) );
   addParameter( disjointParam.release() );
 
   addParameter( new QgsProcessingParameterFeatureSink( u"OUTPUT"_s, QObject::tr( "Dissolved" ) ) );
@@ -387,7 +396,10 @@ QVariantMap QgsCollectAlgorithm::processAlgorithm( const QVariantMap &parameters
 void QgsCollectAlgorithm::initAlgorithm( const QVariantMap & )
 {
   addParameter( new QgsProcessingParameterFeatureSource( u"INPUT"_s, QObject::tr( "Input layer" ) ) );
-  addParameter( new QgsProcessingParameterField( u"FIELD"_s, QObject::tr( "Unique ID fields" ), QVariant(), u"INPUT"_s, Qgis::ProcessingFieldParameterDataType::Any, true, true ) );
+
+  auto fieldParam = std::make_unique<QgsProcessingParameterField>( u"FIELD"_s, QObject::tr( "Unique ID fields" ), QVariant(), u"INPUT"_s, Qgis::ProcessingFieldParameterDataType::Any, true, true );
+  fieldParam->setHelp( QObject::tr( "Attributes used to collect the geometries." ) );
+  addParameter( fieldParam.release() );
 
   addParameter( new QgsProcessingParameterFeatureSink( u"OUTPUT"_s, QObject::tr( "Collected" ) ) );
 }

@@ -74,7 +74,10 @@ void QgsConvertGeometryTypeAlgorithm::initAlgorithm( const QVariantMap & )
 
   QStringList geometryTypes = QStringList() << QObject::tr( "Centroids" ) << QObject::tr( "Nodes" ) << QObject::tr( "Linestrings" ) << QObject::tr( "Multilinestrings" ) << QObject::tr( "Polygons" );
 
-  addParameter( new QgsProcessingParameterEnum( u"TYPE"_s, QObject::tr( "New geometry type" ), geometryTypes ) );
+  auto typeParam = std::make_unique<QgsProcessingParameterEnum>( u"TYPE"_s, QObject::tr( "New geometry type" ), geometryTypes );
+  typeParam->setHelp( QObject::tr( "Geometry type to apply to the output features." ) );
+  addParameter( typeParam.release() );
+
   addParameter( new QgsProcessingParameterFeatureSink( u"OUTPUT"_s, QObject::tr( "Converted" ) ) );
 }
 

@@ -103,6 +103,7 @@ void QgsInterpolatePointAlgorithm::initParameters( const QVariantMap & )
   distance->setIsDynamic( true );
   distance->setDynamicPropertyDefinition( QgsPropertyDefinition( u"DISTANCE"_s, QObject::tr( "Distance" ), QgsPropertyDefinition::DoublePositive ) );
   distance->setDynamicLayerParameterName( u"INPUT"_s );
+  distance->setHelp( QObject::tr( "Distance from the beginning of the line." ) );
   addParameter( distance.release() );
 }
 

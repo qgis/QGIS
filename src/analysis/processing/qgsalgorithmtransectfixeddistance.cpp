@@ -67,7 +67,10 @@ QgsTransectFixedDistanceAlgorithm *QgsTransectFixedDistanceAlgorithm::createInst
 
 void QgsTransectFixedDistanceAlgorithm::addAlgorithmParams()
 {
-  addParameter( new QgsProcessingParameterDistance( u"INTERVAL"_s, QObject::tr( "Fixed sampling interval" ), 10.0, u"INPUT"_s, false, 0.0001 ) );
+  auto intervalParam = std::make_unique<QgsProcessingParameterDistance>( u"INTERVAL"_s, QObject::tr( "Fixed sampling interval" ), 10.0, u"INPUT"_s, false, 0.0001 );
+  intervalParam->setHelp( QObject::tr( "Distance between transects along the line." ) );
+  addParameter( intervalParam.release() );
+
   addParameter( new QgsProcessingParameterBoolean( u"INCLUDE_START"_s, QObject::tr( "Include transect at start of line" ), true ) );
 }
 

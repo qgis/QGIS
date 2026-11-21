@@ -79,9 +79,15 @@ void QgsExtractZMValuesAlgorithmBase::initParameters( const QVariantMap & )
     statChoices << QgsStatisticalSummary::displayName( stat );
   }
 
-  addParameter( new QgsProcessingParameterEnum( u"SUMMARIES"_s, QObject::tr( "Summaries to calculate" ), statChoices, true, QVariantList() << 0 ) );
+  auto summariesParam = std::make_unique<QgsProcessingParameterEnum>( u"SUMMARIES"_s, QObject::tr( "Summaries to calculate" ), statChoices, true, QVariantList() << 0 );
+  summariesParam->setHelp(
+    QObject::tr( "Statistics on the Z or M values of a geometry." )
+  );
+  addParameter( summariesParam.release() );
 
-  addParameter( new QgsProcessingParameterString( u"COLUMN_PREFIX"_s, QObject::tr( "Output column prefix" ), mDefaultFieldPrefix, false, true ) );
+  auto columnPrefixParam = std::make_unique<QgsProcessingParameterString>( u"COLUMN_PREFIX"_s, QObject::tr( "Output column prefix" ), mDefaultFieldPrefix, false, true );
+  columnPrefixParam->setHelp( QObject::tr( "The prefix for the output (Z or M) column." ) );
+  addParameter( columnPrefixParam.release() );
 }
 
 QgsFields QgsExtractZMValuesAlgorithmBase::outputFields( const QgsFields &inputFields ) const

@@ -29,6 +29,7 @@ void QgsSubdivideAlgorithm::initParameters( const QVariantMap & )
   nodes->setIsDynamic( true );
   nodes->setDynamicPropertyDefinition( QgsPropertyDefinition( u"MAX_NODES"_s, QObject::tr( "Maximum nodes in parts" ), QgsPropertyDefinition::Integer ) );
   nodes->setDynamicLayerParameterName( u"INPUT"_s );
+  nodes->setHelp( QObject::tr( "Maximum number of vertices each new geometry part is allowed to have. Fewer sub-parts for higher values." ) );
 
   addParameter( nodes.release() );
 }

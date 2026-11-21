@@ -82,13 +82,17 @@ class EliminateSelection(QgisAlgorithm):
                 [QgsProcessing.SourceType.TypeVectorPolygon],
             )
         )
-        self.addParameter(
-            QgsProcessingParameterEnum(
-                self.MODE,
-                self.tr("Merge selection with the neighbouring polygon with the"),
-                options=self.modes,
+        modeParam = QgsProcessingParameterEnum(
+            self.MODE,
+            self.tr("Merge selection with the neighbouring polygon with the"),
+            options=self.modes,
+        )
+        modeParam.setHelp(
+            self.tr(
+                "Controls how selected polygons will be eliminated."
             )
         )
+        self.addParameter(modeParam)
 
         self.addParameter(
             QgsProcessingParameterFeatureSink(

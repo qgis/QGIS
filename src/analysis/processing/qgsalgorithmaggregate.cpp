@@ -80,8 +80,15 @@ QgsAggregateAlgorithm *QgsAggregateAlgorithm::createInstance() const
 void QgsAggregateAlgorithm::initAlgorithm( const QVariantMap & )
 {
   addParameter( new QgsProcessingParameterFeatureSource( u"INPUT"_s, QObject::tr( "Input layer" ), QList<int>() << static_cast<int>( Qgis::ProcessingSourceType::Vector ) ) );
-  addParameter( new QgsProcessingParameterExpression( u"GROUP_BY"_s, QObject::tr( "Group by expression (NULL to group all features)" ), u"NULL"_s, u"INPUT"_s ) );
-  addParameter( new QgsProcessingParameterAggregate( u"AGGREGATES"_s, QObject::tr( "Aggregates" ), u"INPUT"_s ) );
+
+  auto groupByParam = std::make_unique<QgsProcessingParameterExpression>( u"GROUP_BY"_s, QObject::tr( "Group by expression (NULL to group all features)" ), u"NULL"_s, u"INPUT"_s );
+  groupByParam->setHelp( QObject::tr( "The grouping expression. If set to NULL all features will be treated as a single group." ) );
+  addParameter( groupByParam.release() );
+
+  auto aggregatesParam = std::make_unique<QgsProcessingParameterAggregate>( u"AGGREGATES"_s, QObject::tr( "Aggregates" ), u"INPUT"_s );
+  aggregatesParam->setHelp( QObject::tr( "List of output layer field definitions." ) );
+  addParameter( aggregatesParam.release() );
+
   addParameter( new QgsProcessingParameterFeatureSink( u"OUTPUT"_s, QObject::tr( "Aggregated" ) ) );
 }
 

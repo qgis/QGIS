@@ -89,12 +89,14 @@ void QgsProjectPointCartesianAlgorithm::initParameters( const QVariantMap & )
   bearing->setIsDynamic( true );
   bearing->setDynamicPropertyDefinition( QgsPropertyDefinition( u"Bearing"_s, QObject::tr( "Bearing (degrees from North)" ), QgsPropertyDefinition::Double ) );
   bearing->setDynamicLayerParameterName( u"INPUT"_s );
+  bearing->setHelp( QObject::tr( "Clockwise angle starting from North, in degrees." ) );
   addParameter( bearing.release() );
 
   auto distance = std::make_unique<QgsProcessingParameterDistance>( u"DISTANCE"_s, QObject::tr( "Distance" ), 1, u"INPUT"_s, false );
   distance->setIsDynamic( true );
   distance->setDynamicPropertyDefinition( QgsPropertyDefinition( u"Distance"_s, QObject::tr( "Projection distance" ), QgsPropertyDefinition::Double ) );
   distance->setDynamicLayerParameterName( u"INPUT"_s );
+  distance->setHelp( QObject::tr( "Distance to offset geometries" ) );
   addParameter( distance.release() );
 }
 

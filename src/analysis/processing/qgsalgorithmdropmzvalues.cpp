@@ -76,8 +76,13 @@ bool QgsDropMZValuesAlgorithm::supportInPlaceEdit( const QgsMapLayer *layer ) co
 
 void QgsDropMZValuesAlgorithm::initParameters( const QVariantMap & )
 {
-  addParameter( new QgsProcessingParameterBoolean( u"DROP_M_VALUES"_s, QObject::tr( "Drop M Values" ), false ) );
-  addParameter( new QgsProcessingParameterBoolean( u"DROP_Z_VALUES"_s, QObject::tr( "Drop Z Values" ), false ) );
+  auto dropMParam = std::make_unique<QgsProcessingParameterBoolean>( u"DROP_M_VALUES"_s, QObject::tr( "Drop M Values" ), false );
+  dropMParam->setHelp( QObject::tr( "Removes the M values from the geometries." ) );
+  addParameter( dropMParam.release() );
+
+  auto dropZParam = std::make_unique<QgsProcessingParameterBoolean>( u"DROP_Z_VALUES"_s, QObject::tr( "Drop Z Values" ), false );
+  dropZParam->setHelp( QObject::tr( "Removes the Z values from the geometries." ) );
+  addParameter( dropZParam.release() );
 }
 
 Qgis::WkbType QgsDropMZValuesAlgorithm::outputWkbType( Qgis::WkbType inputWkbType ) const
