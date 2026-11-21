@@ -291,7 +291,10 @@ QgsOgrFeatureIterator::QgsOgrFeatureIterator( QgsOgrFeatureSource *source, bool 
   // unless it's a VRT data source filtered by geometry as we don't know which
   // attributes make up the geometry and OGR won't fetch them to evaluate the
   // filter if we choose to ignore them (fixes #11223)
-  if ( ( mSource->mDriverName != "VRT"_L1 && mSource->mDriverName != "OGR_VRT"_L1 ) || mFilterRect.isNull() )
+  // narrowing down to relevant fields can only happen when ResetReading is allowed
+  // as the function calls OGR_L_SetIgnoredFields which in turn can
+  // trigger a ResetReading against the OGR layer
+  if ( mAllowResetReading && ( ( mSource->mDriverName != "VRT"_L1 && mSource->mDriverName != "OGR_VRT"_L1 ) || mFilterRect.isNull() ) )
   {
     QgsOgrProviderUtils::setRelevantFields( mOgrLayer, mSource->mFields.count(), mFetchGeometry, attrs, mSource->mFirstFieldIsFid, mSource->mSubsetString );
     if ( mOgrLayerOri && mOgrLayerOri != mOgrLayer )
