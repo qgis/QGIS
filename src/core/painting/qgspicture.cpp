@@ -664,10 +664,6 @@ class QgsPicturePaintEngine final : public QPaintEngine
       flushState( true );
 
       QFont fnt = ti.font();
-      fnt.setUnderline( false );
-      fnt.setStrikeOut( false );
-      fnt.setOverline( false );
-
       const QFontMetricsF fm( fnt );
       const QPointF topLeft( p.x(), p.y() - fm.ascent() );
 
