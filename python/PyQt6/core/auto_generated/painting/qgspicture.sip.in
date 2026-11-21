@@ -26,7 +26,7 @@ In contrast to QPicture, the :py:class:`QgsPicture` class offers:
 - the focus is on optimised recording and replay, as opposed to
   QPicture's focus on writing and replaying from a stable binary format
 
-.. versionadded:: 4.4
+.. versionadded:: 4.4.1
 %End
 
 %TypeHeaderCode

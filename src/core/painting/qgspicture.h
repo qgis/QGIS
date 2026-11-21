@@ -40,7 +40,7 @@ class QgsPicturePrivate;
  * - images are always stored as lossless QImage versions (as opposed to PNG encoded versions of images, which are costly to record and replay)
  * - the focus is on optimised recording and replay, as opposed to QPicture's focus on writing and replaying from a stable binary format
  *
- * \since QGIS 4.4
+ * \since QGIS 4.4.1
  */
 class CORE_EXPORT QgsPicture : public QPaintDevice
 {
