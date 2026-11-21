@@ -45,11 +45,33 @@ Sets the source ``picture`` to cache.
 .. seealso:: :py:func:`picture`
 %End
 
+    void setPicture( const QgsPicture &picture );
+%Docstring
+Sets the source ``picture`` to cache.
+
+.. seealso:: :py:func:`qgsPicture`
+
+.. versionadded:: 4.4.1
+%End
+
     QPicture picture() const;
 %Docstring
 Returns the current source QPicture.
 
+Will be a null QPicture if not set, or a :py:class:`QgsPicture` was set.
+
 .. seealso:: :py:func:`setPicture`
+%End
+
+    QgsPicture qgsPicture() const;
+%Docstring
+Returns the current source :py:class:`QgsPicture`.
+
+Will be a null :py:class:`QgsPicture` if not set, or a QPicture was set.
+
+.. seealso:: :py:func:`setPicture`
+
+.. versionadded:: 4.4.1
 %End
 
     void clear();

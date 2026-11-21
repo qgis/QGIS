@@ -20,6 +20,7 @@
 
 #include "qgis.h"
 #include "qgis_core.h"
+#include "qgspicture.h"
 
 #include <QFutureWatcher>
 #include <QImage>
@@ -36,6 +37,7 @@ class QgsPictureRasterizerJob : public QObject
 
   public:
     QgsPictureRasterizerJob( const QPicture &picture, const QSize &targetSize );
+    QgsPictureRasterizerJob( const QgsPicture &picture, const QSize &targetSize );
 
     void cancelWithoutBlocking();
     void cancelAndWait();
@@ -85,11 +87,32 @@ class CORE_EXPORT QgsPictureRasterizer : public QObject
     void setPicture( const QPicture &picture );
 
     /**
+     * Sets the source \a picture to cache.
+     *
+     * \see qgsPicture()
+     *
+     * \since QGIS 4.4.1
+     */
+    void setPicture( const QgsPicture &picture );
+
+    /**
      * Returns the current source QPicture.
+     *
+     * Will be a null QPicture if not set, or a QgsPicture was set.
      *
      * \see setPicture()
      */
     QPicture picture() const { return mPicture; }
+
+    /**
+     * Returns the current source QgsPicture.
+     *
+     * Will be a null QgsPicture if not set, or a QPicture was set.
+     *
+     * \see setPicture()
+     * \since QGIS 4.4.1
+     */
+    QgsPicture qgsPicture() const { return mQgsPicture; }
 
     /**
      * Clears the source picture and cached image, canceling any in-progress background render.
@@ -148,6 +171,7 @@ class CORE_EXPORT QgsPictureRasterizer : public QObject
     void cancelRunningJob( bool block );
 
     QPicture mPicture;
+    QgsPicture mQgsPicture;
 
     QImage mCachedImage;
     QSize mTargetSize;

@@ -74,6 +74,47 @@ QgsPictureRasterizerJob::QgsPictureRasterizerJob( const QPicture &picture, const
   } ) );
 }
 
+QgsPictureRasterizerJob::QgsPictureRasterizerJob( const QgsPicture &picture, const QSize &targetSize )
+  : mTargetSize( targetSize )
+  , mFeedback( std::make_unique< QgsFeedback >() )
+{
+  connect( &mWatcher, &QFutureWatcher< QImage >::finished, this, &QgsPictureRasterizerJob::finished );
+
+  QgsFeedback *feedback = mFeedback.get();
+  mWatcher.setFuture( QtConcurrent::run( [picture, targetSize, feedback]() -> QImage {
+    if ( picture.isNull() || ( feedback && feedback->isCanceled() ) )
+      return QImage();
+
+    const QRectF bounds = QRectF( picture.boundingRect() );
+    if ( bounds.isEmpty() )
+      return QImage();
+
+    const QSize outputSize = !targetSize.isEmpty() ? targetSize : bounds.size().toSize();
+    if ( outputSize.isEmpty() )
+      return QImage();
+
+    QImage image( outputSize, QImage::Format_ARGB32_Premultiplied );
+    image.fill( Qt::transparent );
+    if ( feedback && feedback->isCanceled() )
+      return QImage();
+
+    QPainter painter( &image );
+    painter.setRenderHint( QPainter::Antialiasing, true );
+    painter.setRenderHint( QPainter::TextAntialiasing, true );
+    painter.setRenderHint( QPainter::SmoothPixmapTransform, true );
+
+    painter.scale( outputSize.width() / bounds.width(), outputSize.height() / bounds.height() );
+    painter.translate( -bounds.topLeft() );
+    picture.play( &painter );
+    painter.end();
+
+    if ( feedback && feedback->isCanceled() )
+      return QImage();
+
+    return image;
+  } ) );
+}
+
 void QgsPictureRasterizerJob::cancelWithoutBlocking()
 {
   mFeedback->cancel();
@@ -111,6 +152,7 @@ QgsPictureRasterizer::~QgsPictureRasterizer()
 
 void QgsPictureRasterizer::setPicture( const QPicture &picture )
 {
+  mQgsPicture = QgsPicture();
   mPicture = QgsPainting::deepCopyQPicture( picture );
 
   mInvalidated = true;
@@ -125,12 +167,30 @@ void QgsPictureRasterizer::setPicture( const QPicture &picture )
   }
 }
 
+void QgsPictureRasterizer::setPicture( const QgsPicture &picture )
+{
+  mPicture = QPicture();
+  mQgsPicture = picture;
+
+  mInvalidated = true;
+
+  cancelRunningJob( false );
+
+  if ( mQgsPicture.isNull() || mQgsPicture.boundingRect().isEmpty() )
+  {
+    mUpdateTimer->stop();
+    mCachedImage = QImage();
+    mInvalidated = false;
+  }
+}
+
 void QgsPictureRasterizer::clear()
 {
   mUpdateTimer->stop();
   cancelRunningJob( false );
 
   mPicture = QPicture();
+  mQgsPicture = QgsPicture();
   mCachedImage = QImage();
   mTargetSize = QSize();
   mInvalidated = false;
@@ -139,7 +199,7 @@ void QgsPictureRasterizer::clear()
 void QgsPictureRasterizer::invalidate()
 {
   mInvalidated = true;
-  if ( !mPicture.isNull() && !mPicture.boundingRect().isEmpty() && !mTargetSize.isEmpty() )
+  if ( ( ( !mPicture.isNull() && !mPicture.boundingRect().isEmpty() ) || ( !mQgsPicture.isNull() && !mQgsPicture.boundingRect().isEmpty() ) ) && !mTargetSize.isEmpty() )
   {
     mUpdateTimer->start( 1 );
   }
@@ -147,7 +207,7 @@ void QgsPictureRasterizer::invalidate()
 
 QImage QgsPictureRasterizer::image( const QSize &targetSize )
 {
-  if ( targetSize.isEmpty() || mPicture.isNull() || mPicture.boundingRect().isEmpty() )
+  if ( targetSize.isEmpty() || ( mPicture.isNull() && mQgsPicture.isNull() ) || ( mPicture.boundingRect().isEmpty() && mQgsPicture.boundingRect().isEmpty() ) )
     return QImage();
 
   // force size to match picture aspect ratio
@@ -192,12 +252,19 @@ void QgsPictureRasterizer::startRenderJob()
 {
   cancelRunningJob( false );
 
-  if ( mPicture.isNull() || mPicture.boundingRect().isEmpty() || mTargetSize.isEmpty() )
+  if ( ( mPicture.isNull() && mQgsPicture.isNull() ) || ( mPicture.boundingRect().isEmpty() && mQgsPicture.boundingRect().isEmpty() ) || mTargetSize.isEmpty() )
     return;
 
   mInvalidated = false;
-  const QPicture pictureCopy = QgsPainting::deepCopyQPicture( mPicture );
-  mJob = std::make_unique< QgsPictureRasterizerJob >( pictureCopy, mTargetSize );
+  if ( !mPicture.isNull() )
+  {
+    const QPicture pictureCopy = QgsPainting::deepCopyQPicture( mPicture );
+    mJob = std::make_unique< QgsPictureRasterizerJob >( pictureCopy, mTargetSize );
+  }
+  else
+  {
+    mJob = std::make_unique< QgsPictureRasterizerJob >( mQgsPicture, mTargetSize );
+  }
   connect( mJob.get(), &QgsPictureRasterizerJob::finished, this, &QgsPictureRasterizer::onRenderJobFinished );
 }
 
