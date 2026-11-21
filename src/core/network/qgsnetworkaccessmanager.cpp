@@ -243,6 +243,15 @@ QgsNetworkAccessManager::QgsNetworkAccessManager( QObject *parent )
   setStrictTransportSecurityEnabled( true );
 }
 
+QString QgsNetworkAccessManager::userAgent()
+{
+  QString userAgent = settingsUserAgent->value();
+  if ( !userAgent.isEmpty() )
+    userAgent += ' ';
+  userAgent += u"QGIS/%1/%2"_s.arg( Qgis::versionInt() ).arg( QSysInfo::prettyProductName() );
+  return userAgent;
+}
+
 void QgsNetworkAccessManager::setSslErrorHandler( std::unique_ptr<QgsSslErrorHandler> handler )
 {
   Q_ASSERT( sMainNAM == this );
@@ -337,11 +346,7 @@ QNetworkReply *QgsNetworkAccessManager::createRequest( QNetworkAccessManager::Op
   constexpr QNetworkRequest::Attribute attrSuffix = static_cast< QNetworkRequest::Attribute >( QgsNetworkRequestParameters::AttributeUserAgentSuffix );
   const QVariant userAgentCustomSuffix = modifiedRequest.attribute( attrSuffix );
 
-  QString userAgent = settingsUserAgent->value();
-  if ( !userAgent.isEmpty() )
-    userAgent += ' ';
-  userAgent += u"QGIS/%1/%2"_s.arg( Qgis::versionInt() ).arg( QSysInfo::prettyProductName() );
-
+  QString userAgent = QgsNetworkAccessManager::userAgent();
   if ( !userAgentCustomSuffix.toString().isEmpty() )
   {
     userAgent.append( ' ' + userAgentCustomSuffix.toString() );

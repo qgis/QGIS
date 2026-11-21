@@ -278,6 +278,13 @@ class CORE_EXPORT QgsNetworkAccessManager : public QNetworkAccessManager
 
     QgsNetworkAccessManager( QObject *parent = nullptr );
 
+    /**
+     * Returns the user agent string used by QGIS for network requests.
+     *
+     * \since QGIS 4.4
+     */
+    static QString userAgent();
+
 #ifndef SIP_RUN
 
     /**
