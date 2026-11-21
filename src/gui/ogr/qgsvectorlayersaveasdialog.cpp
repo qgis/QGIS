@@ -65,12 +65,12 @@ QgsVectorLayerSaveAsDialog::QgsVectorLayerSaveAsDialog( QgsVectorLayer *layer, Q
   {
     mSelectedCrs = layer->crs();
     mLayerExtent = layer->extent();
+    mDefaultOutputLayerNameFromInputLayerName = QgsMapLayerUtils::launderLayerName( layer->name() );
   }
   setup();
 
   if ( layer )
   {
-    mDefaultOutputLayerNameFromInputLayerName = QgsMapLayerUtils::launderLayerName( layer->name() );
     leLayername->setDefaultValue( mDefaultOutputLayerNameFromInputLayerName );
     leLayername->setClearMode( QgsFilterLineEdit::ClearToDefault );
     if ( leLayername->isEnabled() )
@@ -112,7 +112,6 @@ QgsVectorLayerSaveAsDialog::QgsVectorLayerSaveAsDialog( QgsVectorLayer *layer, Q
   }
 
   mSelectedOnly->setEnabled( layer && layer->selectedFeatureCount() != 0 );
-  mButtonBox->button( QDialogButtonBox::Ok )->setDisabled( true );
 }
 
 void QgsVectorLayerSaveAsDialog::setup()
@@ -184,7 +183,6 @@ void QgsVectorLayerSaveAsDialog::setup()
   mUserDefinedCrs = mSelectedCrs;
 
   mEncodingComboBox->setCurrentIndex( idx );
-  mFormatComboBox_currentIndexChanged( mFormatComboBox->currentIndex() );
 
   //symbology export combo box
   mSymbologyExportComboBox->addItem( tr( "No Symbology" ), QVariant::fromValue( Qgis::FeatureSymbologyExport::NoSymbology ) );
@@ -200,10 +198,14 @@ void QgsVectorLayerSaveAsDialog::setup()
   mExtentGroupBox->setChecked( false );
   mExtentGroupBox->setCollapsed( true );
 
+  QDir startingDir = QDir( settings.value( u"UI/lastVectorFileFilterDir"_s, QDir::homePath() ).toString() );
+  const QString absoluteFilePath = startingDir.absoluteFilePath( mDefaultOutputLayerNameFromInputLayerName );
   mFilename->setStorageMode( QgsFileWidget::SaveFile );
   mFilename->setDialogTitle( tr( "Save Layer As" ) );
-  mFilename->setDefaultRoot( settings.value( u"UI/lastVectorFileFilterDir"_s, QDir::homePath() ).toString() );
+  mFilename->setDefaultRoot( startingDir.absolutePath() );
+  mFilename->setFilePath( absoluteFilePath );
   mFilename->setConfirmOverwrite( false );
+  mFormatComboBox_currentIndexChanged( mFormatComboBox->currentIndex() );
   connect( mFilename, &QgsFileWidget::fileChanged, this, [this]( const QString &filePath ) {
     QgsSettings settings;
     QFileInfo tmplFileInfo( filePath );
@@ -220,6 +222,17 @@ void QgsVectorLayerSaveAsDialog::setup()
       leLayername->setText( suggestedLayerName );
     }
     mButtonBox->button( QDialogButtonBox::Ok )->setEnabled( !filePath.isEmpty() );
+  } );
+
+  connect( mFilename->lineEdit(), &QLineEdit::editingFinished, this, [this] {
+    QDir startingDir = QDir( mFilename->defaultRoot() );
+    const QString filename = !mFilename->lineEdit()->text().isEmpty() ? mFilename->lineEdit()->text() : mDefaultOutputLayerNameFromInputLayerName;
+    const QString absolutePath = startingDir.absoluteFilePath( filename );
+    mFilename->setFilePath( QDir::cleanPath( absolutePath ) );
+    if ( !filename.isEmpty() )
+    {
+      mFormatComboBox_currentIndexChanged( mFormatComboBox->currentIndex() );
+    }
   } );
 
   try
@@ -377,7 +390,15 @@ void QgsVectorLayerSaveAsDialog::accept()
   }
 #endif
 
-  if ( QFile::exists( fileName() ) )
+  const QFileInfo outputFile( fileName() );
+  const bool isGdb = ( format() == "OpenFileGDB"_L1 || format() == "FileGDB"_L1 ) && outputFile.suffix().compare( "gdb"_L1, Qt::CaseInsensitive ) == 0;
+  if ( outputFile.isDir() && !isGdb )
+  {
+    QMessageBox::warning( this, tr( "Save Vector Layer As" ), tr( "Output file path cannot be a directory!" ) );
+    return;
+  }
+
+  if ( outputFile.exists() )
   {
     QgsVectorFileWriter::EditionCapabilities caps = QgsVectorFileWriter::editionCapabilities( fileName() );
     bool layerExists = QgsVectorFileWriter::targetLayerExists( fileName(), layerName() );
@@ -511,8 +532,20 @@ void QgsVectorLayerSaveAsDialog::mFormatComboBox_currentIndexChanged( int idx )
     const QString ext = rx.match( filter ).captured( 1 );
     if ( !ext.isEmpty() )
     {
-      QFileInfo fi( mFilename->filePath() );
-      mFilename->setFilePath( u"%1/%2.%3"_s.arg( fi.path(), fi.baseName(), ext ) );
+      const QFileInfo fi( mFilename->filePath() );
+      if ( fi.isDir() )
+      {
+        // if we don't have a name, we leave the OK button press to warn the user if the path is a dir
+        if ( !mDefaultOutputLayerNameFromInputLayerName.isEmpty() )
+          mFilename->setFilePath( QDir( fi.absoluteFilePath() ).filePath( u"%1.%2"_s.arg( mDefaultOutputLayerNameFromInputLayerName, ext ) ) );
+      }
+      else
+      {
+        // if user entered something different manually, let's keep it, but otherwise, replace the extension
+        const bool supportedExtension = QgsVectorFileWriter::supportedFormatExtensions().contains( fi.suffix(), Qt::CaseInsensitive );
+        const QString baseName = supportedExtension ? fi.completeBaseName() : fi.fileName();
+        mFilename->setFilePath( QDir( fi.path() ).filePath( u"%1.%2"_s.arg( baseName, ext ) ) );
+      }
     }
   }
 
