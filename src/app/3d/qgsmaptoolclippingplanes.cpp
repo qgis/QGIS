@@ -57,7 +57,8 @@ void QgsMapToolClippingPlanes::activate()
   mRubberBandPoints->show();
   mRubberBandLines->show();
   mRubberBandPolygon->show();
-  mCt = std::make_unique<QgsCoordinateTransform>( mCanvas->mapSettings().destinationCrs(), m3DCanvasWidget->mapCanvas3D()->mapSettings()->crs(), mCanvas->mapSettings().transformContext() );
+  mCt2DTo3D = std::make_unique<QgsCoordinateTransform>( mCanvas->mapSettings().destinationCrs(), m3DCanvasWidget->mapCanvas3D()->mapSettings()->crs(), mCanvas->mapSettings().transformContext() );
+  mCt3DTo2D = std::make_unique<QgsCoordinateTransform>( m3DCanvasWidget->mapCanvas3D()->mapSettings()->crs(), mCanvas->mapSettings().destinationCrs(), mCanvas->mapSettings().transformContext() );
 }
 
 void QgsMapToolClippingPlanes::keyReleaseEvent( QKeyEvent *e )
@@ -85,13 +86,14 @@ void QgsMapToolClippingPlanes::canvasMoveEvent( QgsMapMouseEvent *e )
     // Let's do the Cartesian math in 3d map coordinates which are guaranteed to be projected
     try
     {
-      const QgsPointXY startPointMap3d = mCt->transform( *mRubberBandPoints->getPoint( 0, 0 ) );
-      const QgsPointXY endPointMap3d = mCt->transform( *mRubberBandPoints->getPoint( 0, 1 ) );
-      const QgsPointXY widthPointMap3d = mCt->transform( point );
+      const QgsPointXY startPointMap3d = mCt2DTo3D->transform( *mRubberBandPoints->getPoint( 0, 0 ) );
+      const QgsPointXY endPointMap3d = mCt2DTo3D->transform( *mRubberBandPoints->getPoint( 0, 1 ) );
+      const QgsPointXY widthPointMap3d = mCt2DTo3D->transform( point );
       mRectangleWidth = endPointMap3d.distance( widthPointMap3d );
 
       QgsCrossSection crossSection( QgsPoint( startPointMap3d ), QgsPoint( endPointMap3d ), mRectangleWidth );
-      mRubberBandPolygon->setToGeometry( crossSection.asGeometry( mCt.get() ) );
+      const QgsGeometry geom = crossSection.asGeometry( mCt3DTo2D.get() );
+      mRubberBandPolygon->setToGeometry( geom );
     }
     catch ( const QgsCsException & )
     {
@@ -127,8 +129,8 @@ void QgsMapToolClippingPlanes::canvasReleaseEvent( QgsMapMouseEvent *e )
 
       try
       {
-        const QgsPointXY startPointMap3d = mCt->transform( pt0 );
-        const QgsPointXY endPointMap3d = mCt->transform( pt1 );
+        const QgsPointXY startPointMap3d = mCt2DTo3D->transform( pt0 );
+        const QgsPointXY endPointMap3d = mCt2DTo3D->transform( pt1 );
 
         QgsCrossSection crossSection( QgsPoint( startPointMap3d ), QgsPoint( endPointMap3d ), 0.0 );
         m3DCanvasWidget->mapCanvas3D()->setCrossSection( crossSection );
@@ -148,8 +150,8 @@ void QgsMapToolClippingPlanes::canvasReleaseEvent( QgsMapMouseEvent *e )
       QgsCrossSection crossSection;
       try
       {
-        pt0 = mCt->transform( pt0 );
-        pt1 = mCt->transform( pt1 );
+        pt0 = mCt2DTo3D->transform( pt0 );
+        pt1 = mCt2DTo3D->transform( pt1 );
         crossSection = QgsCrossSection( QgsPoint( pt0 ), QgsPoint( pt1 ), mRectangleWidth );
       }
       catch ( const QgsCsException & )
