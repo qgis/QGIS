@@ -45,6 +45,7 @@
 #include "qgsrasteridentifyresult.h"
 #include "qgsrasterlayer.h"
 #include "qgsrasterlayerelevationproperties.h"
+#include "qgsrasterlayerutils.h"
 #include "qgsrenderer.h"
 #include "qgssettingsentryenumflag.h"
 #include "qgssettingsregistrycore.h"
@@ -1394,8 +1395,29 @@ bool QgsMapToolIdentify::identifyRasterLayer(
         feature.setGeometry( QgsGeometry::fromRect( pixelRect ) );
       }
 
+      // pass information about rendered band to results
+      QString renderedBandName;
+      bool renderedBandMatched = false;
+      int renderedBand = -1;
+      if ( identifyContext.isTemporal() && layer->temporalProperties()->isActive() )
+      {
+        renderedBand = QgsRasterLayerUtils::renderedBandForElevationAndTemporalRange( layer, identifyContext.temporalRange(), identifyContext.zRange(), renderedBandMatched );
+      }
+      if ( renderedBandMatched && renderedBand > 0 )
+      {
+        renderedBandName = dprovider->generateBandName( renderedBand );
+        // add band name and value to derived attributes
+        derivedAttributes.insert( renderedBandName, attributes.value( renderedBandName ) );
+      }
+
       IdentifyResult result( qobject_cast<QgsMapLayer *>( layer ), label, QgsFields(), feature, derivedAttributes );
       result.mAttributes = attributes;
+      if ( !renderedBandName.isEmpty() )
+      {
+        // store the rendered band name in the result parameters for reference
+        result.mParams.insert( u"renderedBand"_s, renderedBandName );
+      }
+
       results->append( result );
     }
     else if ( format == Qgis::RasterIdentifyFormat::Feature )
