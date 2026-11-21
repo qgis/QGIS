@@ -86,6 +86,7 @@ try:
     QgsProcessingUtils.defaultOutputFolder = staticmethod(QgsProcessingUtils.defaultOutputFolder)
     QgsProcessingUtils.defaultModelFolder = staticmethod(QgsProcessingUtils.defaultModelFolder)
     QgsProcessingUtils.modelFolders = staticmethod(QgsProcessingUtils.modelFolders)
+    QgsProcessingUtils.executeIterating = staticmethod(QgsProcessingUtils.executeIterating)
     QgsProcessingUtils.__group__ = ['processing']
 except (NameError, AttributeError):
     pass

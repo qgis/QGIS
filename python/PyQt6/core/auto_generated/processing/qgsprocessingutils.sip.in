@@ -768,6 +768,22 @@ Returns the list of locations for reading Processing model files.
 .. versionadded:: 4.4
 %End
 
+    static bool executeIterating( QgsProcessingAlgorithm* algorithm, const QVariantMap& parameters, const QString& parameterToIterate, QgsProcessingContext& context, QgsProcessingFeedback* feedback );
+%Docstring
+Executes an ``algorithm`` in the iterating mode.
+
+:param algorithm: algorithm to execute
+:param parameters: algorithm parameters
+:param parameterToIterate: name of parameter corresponding to the layer
+                           to iterate over
+:param context: Processing context
+:param feedback: feedback object
+
+:return: ``True`` if all executions were successful
+
+.. versionadded:: 4.4
+%End
+
 };
 
 class QgsProcessingFeatureSource : QgsFeatureSource

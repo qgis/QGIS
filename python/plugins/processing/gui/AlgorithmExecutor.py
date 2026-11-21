@@ -23,57 +23,23 @@ import sys
 
 from qgis.core import (
     Qgis,
-    QgsApplication,
     QgsExpression,
     QgsFeature,
     QgsFeatureRequest,
     QgsFeatureSink,
-    QgsGeometry,
     QgsMessageLog,
     QgsProcessingException,
     QgsProcessingFeatureSource,
     QgsProcessingFeatureSourceDefinition,
     QgsProcessingFeedback,
-    QgsProcessingParameters,
     QgsProcessingUtils,
-    QgsProject,
     QgsVectorLayer,
     QgsVectorLayerUtils,
-    QgsWkbTypes,
 )
 from qgis.PyQt.QtCore import QCoreApplication
 from qgis.utils import iface
 
 from processing.tools import dataobjects
-
-
-def execute(alg, parameters, context=None, feedback=None, catch_exceptions=True):
-    """Executes a given algorithm, showing its progress in the
-    progress object passed along.
-
-    Return true if everything went OK, false if the algorithm
-    could not be completed.
-    """
-
-    if feedback is None:
-        feedback = QgsProcessingFeedback()
-    if context is None:
-        context = dataobjects.createContext(feedback)
-
-    if catch_exceptions:
-        try:
-            results, ok = alg.run(parameters, context, feedback)
-            return ok, results
-        except QgsProcessingException as e:
-            QgsMessageLog.logMessage(
-                str(sys.exc_info()[0]), "Processing", Qgis.MessageLevel.Critical
-            )
-            if feedback is not None:
-                feedback.reportError(e.msg)
-            return False, {}
-    else:
-        results, ok = alg.run(parameters, context, feedback, {}, False)
-        return ok, results
 
 
 def execute_in_place_run(
@@ -421,76 +387,6 @@ def execute_in_place(alg, parameters, context=None, feedback=None):
         if layer:
             layer.triggerRepaint()
     return ok, results
-
-
-def executeIterating(alg, parameters, paramToIter, context, feedback):
-    # Generate all single-feature layers
-    parameter_definition = alg.parameterDefinition(paramToIter)
-    if not parameter_definition:
-        return False
-
-    iter_source = QgsProcessingParameters.parameterAsSource(
-        parameter_definition, parameters, context
-    )
-    sink_list = []
-    if iter_source.featureCount() == 0:
-        return False
-
-    step = 100.0 / iter_source.featureCount()
-    for current, feat in enumerate(iter_source.getFeatures()):
-        if feedback.isCanceled():
-            return False
-
-        sink, sink_id = QgsProcessingUtils.createFeatureSink(
-            "memory:",
-            context,
-            iter_source.fields(),
-            iter_source.wkbType(),
-            iter_source.sourceCrs(),
-        )
-        sink_list.append(sink_id)
-        sink.addFeature(feat, QgsFeatureSink.Flag.FastInsert)
-        del sink
-
-        feedback.setProgress(int((current + 1) * step))
-
-    # store output values to use them later as basenames for all outputs
-    outputs = {}
-    for out in alg.destinationParameterDefinitions():
-        if out.name() in parameters:
-            outputs[out.name()] = parameters[out.name()]
-
-    # now run all the algorithms
-    for i, f in enumerate(sink_list):
-        if feedback.isCanceled():
-            return False
-
-        # clear any model result stored in the last iteration
-        context.clearModelResult()
-
-        parameters[paramToIter] = f
-        for out in alg.destinationParameterDefinitions():
-            if out.name() not in outputs:
-                continue
-
-            o = outputs[out.name()]
-            parameters[out.name()] = QgsProcessingUtils.generateIteratingDestination(
-                o, i, context
-            )
-        feedback.setProgressText(
-            QCoreApplication.translate(
-                "AlgorithmExecutor", "Executing iteration {0}/{1}…"
-            ).format(i + 1, len(sink_list))
-        )
-        feedback.setProgress(int((i + 1) * 100 / len(sink_list)))
-        ret, results = execute(alg, parameters, context, feedback)
-        if not ret:
-            return False
-
-    QgsApplication.processingRegistry().handleAlgorithmResults(
-        alg, context, {}, feedback
-    )
-    return True
 
 
 def tr(string, context=""):

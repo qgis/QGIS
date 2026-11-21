@@ -49,7 +49,6 @@ from qgis.utils import iface
 
 import processing
 from processing.core.ProcessingConfig import ProcessingConfig
-from processing.gui.AlgorithmExecutor import execute
 from processing.gui.MessageBarProgress import MessageBarProgress
 from processing.script import ScriptUtils
 from processing.tools import dataobjects
@@ -222,9 +221,7 @@ class Processing:
                 )
             )
 
-        ret, results = execute(
-            alg, parameters, context, feedback, catch_exceptions=False
-        )
+        results, ret = alg.run(parameters, context, feedback, catchExceptions=False)
         if ret:
             feedback.pushInfo(Processing.tr("Results: {}").format(results))
 
