@@ -255,6 +255,7 @@
             "archive",
             "arrow-adbc",
             "kea",
+            "muparser",
             "parquet",
             "poppler",
             "tools"
