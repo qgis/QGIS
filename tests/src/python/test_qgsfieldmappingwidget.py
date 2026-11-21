@@ -401,7 +401,7 @@ class TestPyQgsFieldMappingModel(QgisTestCase):
             [m.field.typeName() for m in model.mapping()],
             [
                 "input_string_type",
-                "input_string_type",
+                "input_short_string",
                 "input_int_type",
                 "input_double_type",
                 "input_date_type",
