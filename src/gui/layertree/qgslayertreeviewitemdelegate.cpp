@@ -71,14 +71,11 @@ void QgsLayerTreeViewProxyStyle::drawPrimitive( QStyle::PrimitiveElement element
       if ( node )
       {
         QgsLayerTreeGroup *group = qobject_cast<QgsLayerTreeGroup *>( node->parent() );
-        if ( group )
+        if ( group && group->isMutuallyExclusive() )
         {
-          if ( group->isMutuallyExclusive() )
-          {
-            // Draw a radio button instead of a checkbox if we're drawing an item inside a mutually exclusive group
-            QgsProxyStyle::drawPrimitive( QStyle::PE_IndicatorRadioButton, option, painter, widget );
-            return;
-          }
+          // Draw a radio button instead of a checkbox if we're drawing an item inside a mutually exclusive group
+          QgsProxyStyle::drawPrimitive( QStyle::PE_IndicatorRadioButton, option, painter, widget );
+          return;
         }
       }
     }
