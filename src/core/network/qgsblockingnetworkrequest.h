@@ -201,6 +201,34 @@ class CORE_EXPORT QgsBlockingNetworkRequest : public QObject
     ErrorCode put( QNetworkRequest &request, const QByteArray &data, QgsFeedback *feedback = nullptr );
 
     /**
+     * Performs a "patch" operation on the specified \a request, using the given \a data.
+     *
+     * If an authCfg() has been set, then any authentication configuration required will automatically be applied to
+     * \a request. There is no need to manually apply the authentication to the request prior to calling
+     * this method.
+     *
+     * The optional \a feedback argument can be used to abort ongoing requests.
+     *
+     * The method will return NoError if the get operation was successful. The contents of the reply can be retrieved
+     * by calling reply().
+     *
+     * If an error was encountered then a specific ErrorCode will be returned, and a detailed error message
+     * can be retrieved by calling errorMessage().
+     *
+     * \since QGIS 4.6
+     */
+    ErrorCode patch( QNetworkRequest &request, QIODevice *data, QgsFeedback *feedback = nullptr );
+
+    /**
+     * This is an overloaded function.
+     *
+     * Performs a "patch" operation on the specified \a request, using the given \a data.
+     * \since QGIS 4.6
+     */
+    ErrorCode patch( QNetworkRequest &request, const QByteArray &data, QgsFeedback *feedback = nullptr );
+
+
+    /**
      * Performs a "delete" operation on the specified \a request.
      *
      * If an authCfg() has been set, then any authentication configuration required will automatically be applied to
