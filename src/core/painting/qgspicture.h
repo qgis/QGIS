@@ -55,7 +55,9 @@ class CORE_EXPORT QgsPicture : public QPaintDevice
 
     QgsPicture( const QgsPicture &other );
     QgsPicture &operator=( const QgsPicture &other );
+    //! Move constructor
     QgsPicture( QgsPicture &&other ) noexcept SIP_SKIP;
+    //! Move assignment operator
     QgsPicture &operator=( QgsPicture &&other ) noexcept SIP_SKIP;
 
     int devType() const override;

@@ -39,6 +39,7 @@
 Q_GUI_EXPORT extern int qt_defaultDpiX();
 Q_GUI_EXPORT extern int qt_defaultDpiY();
 
+///@cond PRIVATE
 
 // NOTE: These classes started life as direct 1:1 copies of the QPicture equivalents,
 // but then were heavily revised to remove all the assumptions about encoding to binary
@@ -833,6 +834,8 @@ class QgsPicturePaintEngine final : public QPaintEngine
 
     bool mRecordedClipEnabled = false;
 };
+
+///@endcond
 
 //
 // QgsPicture
