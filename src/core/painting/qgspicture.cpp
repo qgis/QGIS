@@ -851,6 +851,7 @@ QgsPicture::~QgsPicture() = default;
 QgsPicture::QgsPicture( const QgsPicture &other )
   : QPaintDevice()
   , d_ptr( other.d_ptr )
+  , mPaintEngine( nullptr )
 {}
 
 QgsPicture &QgsPicture::operator=( const QgsPicture &other )
@@ -866,6 +867,7 @@ QgsPicture &QgsPicture::operator=( const QgsPicture &other )
 QgsPicture::QgsPicture( QgsPicture &&other ) noexcept
   : QPaintDevice()
   , d_ptr( std::move( other.d_ptr ) )
+  , mPaintEngine( nullptr )
 {}
 
 QgsPicture &QgsPicture::operator=( QgsPicture &&other ) noexcept
@@ -873,7 +875,7 @@ QgsPicture &QgsPicture::operator=( QgsPicture &&other ) noexcept
   if ( this != &other )
   {
     d_ptr = std::move( other.d_ptr );
-    mPaintEngine.reset();
+    mPaintEngine = std::move( other.mPaintEngine );
   }
   return *this;
 }
