@@ -35,6 +35,32 @@ QgsLayerTreeViewProxyStyle::QgsLayerTreeViewProxyStyle( QgsLayerTreeView *treeVi
   , mLayerTreeView( treeView )
 {}
 
+QModelIndex QgsLayerTreeViewProxyStyle::lastVisibleItem( const QModelIndex &index ) const
+{
+  // https://stackoverflow.com/questions/19712609/how-to-get-last-visible-item-in-qtreeview
+  QTreeView *treeView = mLayerTreeView;
+  QAbstractItemModel *model = treeView->model();
+  int rowCount = model->rowCount( index );
+  if ( rowCount > 0 )
+  {
+    // Find the last item in this level of hierarchy.
+    QModelIndex lastIndex = model->index( rowCount - 1, 0, index );
+    if ( model->hasChildren( lastIndex ) && treeView->isExpanded( lastIndex ) )
+    {
+      // There is even deeper hierarchy. Drill down with recursion.
+      return lastVisibleItem( lastIndex );
+    }
+    else
+    {
+      // Test the last item in the tree.
+      return lastIndex;
+    }
+  }
+  else
+  {
+    return index;
+  }
+}
 
 QRect QgsLayerTreeViewProxyStyle::subElementRect( QStyle::SubElement element, const QStyleOption *option, const QWidget *widget ) const
 {
@@ -62,6 +88,34 @@ QRect QgsLayerTreeViewProxyStyle::subElementRect( QStyle::SubElement element, co
 
 void QgsLayerTreeViewProxyStyle::drawPrimitive( QStyle::PrimitiveElement element, const QStyleOption *option, QPainter *painter, const QWidget *widget ) const
 {
+  if ( element == QStyle::PE_IndicatorItemViewItemDrop && option->rect.height() > 0 )
+  {
+    QColor highlightColor = option->palette.highlight().color();
+    highlightColor.setAlpha( 50 );
+    painter->setPen( Qt::NoPen );
+    painter->setBrush( highlightColor );
+
+    QModelIndex hoveredIndex = mLayerTreeView->indexAt( option->rect.center() );
+    QRect modifiedRect = mLayerTreeView->visualRect( hoveredIndex );
+    QModelIndex siblingIndex;
+
+    siblingIndex = hoveredIndex.siblingAtRow( hoveredIndex.row() + 1 );
+    if ( siblingIndex.isValid() )
+    {
+      modifiedRect.setBottom( mLayerTreeView->visualRect( siblingIndex ).top() );
+    }
+    else if ( hoveredIndex.isValid() )
+    {
+      siblingIndex = lastVisibleItem( hoveredIndex );
+      modifiedRect.setBottom( mLayerTreeView->visualRect( siblingIndex ).bottom() );
+    }
+
+    QStyleOption modifiedOption( *option );
+    modifiedOption.rect = modifiedRect;
+    QProxyStyle::drawPrimitive( element, &modifiedOption, painter, widget );
+    return;
+  }
+
   if ( element == QStyle::PE_IndicatorItemViewItemCheck )
   {
     const QStyleOptionViewItem *vopt = qstyleoption_cast<const QStyleOptionViewItem *>( option );
