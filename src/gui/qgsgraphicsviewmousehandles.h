@@ -207,6 +207,22 @@ class GUI_EXPORT QgsGraphicsViewMouseHandles : public QObject, public QGraphicsR
     void mouseMoveEvent( QGraphicsSceneMouseEvent *event ) override;
     void mouseReleaseEvent( QGraphicsSceneMouseEvent *event ) override;
 
+    /**
+     * Called when a move operation is about to start.
+     *
+     * \see endMoveOperation()
+     * \since QGIS 4.6
+     */
+    virtual void startMoveOperation();
+
+    /**
+     * Called when a move operation is ended, after the operation has been applied.
+     *
+     * \see startMoveOperation()
+     * \since QGIS 4.6
+     */
+    virtual void endMoveOperation();
+
     //resets the layout designer status bar to the default message
     void resetStatusBar();
 
@@ -256,6 +272,13 @@ class GUI_EXPORT QgsGraphicsViewMouseHandles : public QObject, public QGraphicsR
      * \returns position scaled to range specified by afterMin and afterMax
      */
     static double relativePosition( double position, double beforeMin, double beforeMax, double afterMin, double afterMax );
+
+    /**
+     * Filters a list of \a items to those which should have a move operation applied to them.
+     *
+     * \since QGIS 4.6
+     */
+    virtual QList<QGraphicsItem *> filterItemListForMoveOperation( const QList<QGraphicsItem *> &items );
 
   private:
     QGraphicsView *mView = nullptr;

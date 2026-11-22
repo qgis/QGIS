@@ -66,7 +66,9 @@ class GUI_EXPORT QgsModelViewMouseHandles : public QgsGraphicsViewMouseHandles
     void startMacroCommand( const QString &text ) override;
     void endMacroCommand() override;
     QPointF snapPoint( QPointF originalPoint, SnapGuideMode mode, bool snapHorizontal = true, bool snapVertical = true ) override;
-
+    QList<QGraphicsItem *> filterItemListForMoveOperation( const QList<QGraphicsItem *> &items ) override;
+    void startMoveOperation() override;
+    void endMoveOperation() override;
   public slots:
 
     //! Sets up listeners to sizeChanged signal for all selected items
@@ -76,6 +78,7 @@ class GUI_EXPORT QgsModelViewMouseHandles : public QgsGraphicsViewMouseHandles
     QgsModelGraphicsScene *modelScene() const;
 
     QPointer<QgsModelGraphicsView> mView;
+    QList< QGraphicsItem * > mMovingItems;
 };
 
 ///@endcond PRIVATE

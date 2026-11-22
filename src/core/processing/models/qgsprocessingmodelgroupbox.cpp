@@ -40,6 +40,7 @@ QVariant QgsProcessingModelGroupBox::toVariant() const
 {
   QVariantMap map;
   map.insert( u"uuid"_s, mUuid );
+  map.insert( u"moveContents"_s, mMoveContents );
   saveCommonProperties( map );
   return map;
 }
@@ -49,12 +50,23 @@ bool QgsProcessingModelGroupBox::loadVariant( const QVariantMap &map, bool ignor
   restoreCommonProperties( map );
   if ( !ignoreUuid )
     mUuid = map.value( u"uuid"_s ).toString();
+  mMoveContents = map.value( u"moveContents"_s ).toBool();
   return true;
 }
 
 QString QgsProcessingModelGroupBox::uuid() const
 {
   return mUuid;
+}
+
+bool QgsProcessingModelGroupBox::moveContents() const
+{
+  return mMoveContents;
+}
+
+void QgsProcessingModelGroupBox::setMoveContents( bool enabled )
+{
+  mMoveContents = enabled;
 }
 
 

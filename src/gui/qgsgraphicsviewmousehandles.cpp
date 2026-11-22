@@ -691,6 +691,7 @@ void QgsGraphicsViewMouseHandles::mousePressEvent( QGraphicsSceneMouseEvent *eve
   {
     case Qgis::MouseHandlesAction::MoveItem:
       //moving items
+      startMoveOperation();
       mIsDragging = true;
       break;
 
@@ -806,7 +807,11 @@ void QgsGraphicsViewMouseHandles::mouseReleaseEvent( QGraphicsSceneMouseEvent *e
   const bool isClick = std::fabs( diffX ) < std::numeric_limits<double>::min() && std::fabs( diffY ) < std::numeric_limits<double>::min();
   if ( isClick )
   {
-    mIsDragging = false;
+    if ( mIsDragging )
+    {
+      mIsDragging = false;
+      endMoveOperation();
+    }
     mIsResizing = false;
     mIsRotating = false;
     update();
@@ -825,7 +830,7 @@ void QgsGraphicsViewMouseHandles::mouseReleaseEvent( QGraphicsSceneMouseEvent *e
     double deltaY = mEndHandleMovePos.y() - mBeginHandlePos.y();
 
     //move all selected items
-    const QList<QGraphicsItem *> selectedItems = selectedSceneItems( false );
+    const QList<QGraphicsItem *> selectedItems = filterItemListForMoveOperation( selectedSceneItems( false ) );
     for ( QGraphicsItem *item : selectedItems )
     {
       if ( itemIsLocked( item ) || ( item->flags() & QGraphicsItem::ItemIsSelectable ) == 0 || itemIsGroupMember( item ) )
@@ -841,6 +846,7 @@ void QgsGraphicsViewMouseHandles::mouseReleaseEvent( QGraphicsSceneMouseEvent *e
     endMacroCommand();
 
     mIsDragging = false;
+    endMoveOperation();
   }
   else if ( mIsResizing )
   {
@@ -918,6 +924,12 @@ void QgsGraphicsViewMouseHandles::mouseReleaseEvent( QGraphicsSceneMouseEvent *e
 
   reset();
 }
+
+void QgsGraphicsViewMouseHandles::startMoveOperation()
+{}
+
+void QgsGraphicsViewMouseHandles::endMoveOperation()
+{}
 
 bool QgsGraphicsViewMouseHandles::selectionRotation( double &rotation ) const
 {
@@ -1457,6 +1469,11 @@ double QgsGraphicsViewMouseHandles::relativePosition( double position, double be
 
   //return linearly scaled position
   return m * position + c;
+}
+
+QList<QGraphicsItem *> QgsGraphicsViewMouseHandles::filterItemListForMoveOperation( const QList<QGraphicsItem *> &items )
+{
+  return items;
 }
 
 ///@endcond PRIVATE

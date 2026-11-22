@@ -125,7 +125,7 @@ void QgsModelViewMouseHandles::moveItem( QGraphicsItem *item, double deltaX, dou
 {
   if ( QgsModelComponentGraphicItem *componentItem = dynamic_cast<QgsModelComponentGraphicItem *>( item ) )
   {
-    componentItem->moveComponentBy( deltaX, deltaY );
+    componentItem->moveComponentBy( deltaX, deltaY, mMovingItems );
   }
 }
 
@@ -133,7 +133,7 @@ void QgsModelViewMouseHandles::previewItemMove( QGraphicsItem *item, double delt
 {
   if ( QgsModelComponentGraphicItem *componentItem = dynamic_cast<QgsModelComponentGraphicItem *>( item ) )
   {
-    componentItem->previewItemMove( deltaX, deltaY );
+    componentItem->previewItemMove( deltaX, deltaY, mMovingItems );
   }
 }
 
@@ -178,6 +178,55 @@ QPointF QgsModelViewMouseHandles::snapPoint( QPointF originalPoint, QgsGraphicsV
   }
 
   return snapped ? snappedPoint : originalPoint;
+}
+
+QList<QGraphicsItem *> QgsModelViewMouseHandles::filterItemListForMoveOperation( const QList<QGraphicsItem *> &items )
+{
+  QList<QGraphicsItem *> result;
+  result.reserve( items.size() );
+  for ( QGraphicsItem *item : items )
+  {
+    if ( QgsModelComponentGraphicItem *componentItem = dynamic_cast< QgsModelComponentGraphicItem * >( item ) )
+    {
+      QgsModelGroupBoxGraphicItem *parentGroup = mView->parentGroupBoxForItem( componentItem );
+      if ( parentGroup && items.contains( parentGroup ) )
+      {
+        // skip this item, it will get moved by its parent group
+        continue;
+      }
+    }
+    result << item;
+  }
+
+  return result;
+}
+
+void QgsModelViewMouseHandles::startMoveOperation()
+{
+  mMovingItems = selectedSceneItems( false );
+  // expand move operation to include group child items
+  // we need to record these upfront at the start of the move, so we don't accidentally "collect"
+  // new items as the group is temporarily moved over other ones
+  const QList< QGraphicsItem * > pendingItems = mMovingItems;
+  for ( QGraphicsItem *item : pendingItems )
+  {
+    if ( auto groupItem = dynamic_cast< QgsModelGroupBoxGraphicItem * >( item ) )
+    {
+      const QList<QgsModelComponentGraphicItem *> children = mView->groupBoxChildren( groupItem );
+      for ( QgsModelComponentGraphicItem *child : children )
+      {
+        if ( !mMovingItems.contains( child ) )
+        {
+          mMovingItems << child;
+        }
+      }
+    }
+  }
+}
+
+void QgsModelViewMouseHandles::endMoveOperation()
+{
+  mMovingItems.clear();
 }
 
 

@@ -21,6 +21,7 @@
 #include "qgscolorbutton.h"
 #include "qgsgui.h"
 
+#include <QCheckBox>
 #include <QDialogButtonBox>
 #include <QLabel>
 #include <QString>
@@ -46,6 +47,10 @@ QgsModelGroupBoxDefinitionPanelWidget::QgsModelGroupBoxDefinitionPanelWidget( co
   mCommentEdit->setAcceptRichText( false );
   mCommentEdit->setText( box.description() );
   commentLayout->addWidget( mCommentEdit, 1 );
+
+  mMoveContentsCheck = new QCheckBox( tr( "Move contents with group" ) );
+  mMoveContentsCheck->setChecked( box.moveContents() );
+  commentLayout->addWidget( mMoveContentsCheck );
 
   QHBoxLayout *hl = new QHBoxLayout();
   hl->setContentsMargins( 0, 0, 0, 0 );
@@ -73,6 +78,7 @@ QgsModelGroupBoxDefinitionPanelWidget::QgsModelGroupBoxDefinitionPanelWidget( co
 
   connect( mCommentEdit, &QTextEdit::textChanged, this, &QgsPanelWidget::changed );
   connect( mCommentColorButton, &QgsColorButton::colorChanged, this, &QgsPanelWidget::changed );
+  connect( mMoveContentsCheck, &QCheckBox::toggled, this, &QgsPanelWidget::changed );
 }
 
 QgsProcessingModelGroupBox QgsModelGroupBoxDefinitionPanelWidget::groupBox() const
@@ -80,6 +86,7 @@ QgsProcessingModelGroupBox QgsModelGroupBoxDefinitionPanelWidget::groupBox() con
   QgsProcessingModelGroupBox box = mBox;
   box.setColor( mCommentColorButton->isNull() ? QColor() : mCommentColorButton->color() );
   box.setDescription( mCommentEdit->toPlainText() );
+  box.setMoveContents( mMoveContentsCheck->isChecked() );
   return box;
 }
 

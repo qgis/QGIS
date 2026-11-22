@@ -373,7 +373,7 @@ void QgsModelGraphicsView::keyPressEvent( QKeyEvent *event )
       startMacroCommand( tr( "Move Items" ) );
       for ( QgsModelComponentGraphicItem *item : itemList )
       {
-        item->moveComponentBy( delta.x(), delta.y() );
+        item->moveComponentBy( delta.x(), delta.y(), {} );
       }
       itemList.at( 0 )->changed();
       endMacroCommand();
@@ -889,6 +889,70 @@ void QgsModelGraphicsView::pasteItems( QgsModelGraphicsView::PasteMode mode )
   }
 
   modelScene()->emit rebuildRequired();
+}
+
+QgsModelGroupBoxGraphicItem *QgsModelGraphicsView::parentGroupBoxForItem( QgsModelComponentGraphicItem *item )
+{
+  const QRectF itemRect = item->mapRectToScene( item->itemRect() );
+  const QList< QGraphicsItem * > candidates = modelScene()->items( itemRect );
+
+  QgsModelGroupBoxGraphicItem *bestParent = nullptr;
+  double bestParentArea = std::numeric_limits< double >::max();
+
+  for ( QGraphicsItem *candidate : candidates )
+  {
+    if ( candidate == item )
+      continue;
+
+    auto groupBoxItem = dynamic_cast< QgsModelGroupBoxGraphicItem * >( candidate );
+    if ( !groupBoxItem || !groupBoxItem->moveContents() )
+      continue;
+
+    // group box must fully enclose this item
+    const QRectF groupBoxRect = groupBoxItem->mapRectToScene( groupBoxItem->itemRect() );
+    if ( !groupBoxRect.contains( itemRect ) )
+      continue;
+
+    const double thisGroupArea = groupBoxRect.width() * groupBoxRect.height();
+    if ( thisGroupArea < bestParentArea )
+    {
+      bestParentArea = thisGroupArea;
+      bestParent = groupBoxItem;
+    }
+  }
+  if ( !bestParent )
+    return nullptr;
+
+  return bestParent;
+}
+
+QList<QgsModelComponentGraphicItem *> QgsModelGraphicsView::groupBoxChildren( QgsModelGroupBoxGraphicItem *groupBox )
+{
+  const QRectF groupBoxRect = groupBox->mapRectToScene( groupBox->itemRect() );
+  const QList< QGraphicsItem * > candidates = modelScene()->items( groupBoxRect );
+  QList<QgsModelComponentGraphicItem *> result;
+  result.reserve( candidates.size() );
+  for ( QGraphicsItem *candidate : candidates )
+  {
+    if ( candidate == groupBox )
+      continue;
+
+    auto componentItem = dynamic_cast< QgsModelComponentGraphicItem * >( candidate );
+    if ( !componentItem )
+      continue;
+
+    // group box must fully enclose this item
+    const QRectF itemRect = componentItem->mapRectToScene( componentItem->itemRect() );
+    if ( !groupBoxRect.contains( itemRect ) )
+      continue;
+
+    // might be within the group, but not the smallest group containing it
+    if ( parentGroupBoxForItem( componentItem ) != groupBox )
+      continue;
+
+    result << componentItem;
+  }
+  return result;
 }
 
 QgsModelViewSnapMarker::QgsModelViewSnapMarker()

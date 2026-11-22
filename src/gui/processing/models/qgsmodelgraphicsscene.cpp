@@ -173,7 +173,7 @@ QgsModelComponentGraphicItem *QgsModelGraphicsScene::createCommentGraphicItem( Q
   return new QgsModelCommentGraphicItem( comment, parentItem, model, nullptr );
 }
 
-QgsModelComponentGraphicItem *QgsModelGraphicsScene::createGroupBoxGraphicItem( QgsProcessingModelAlgorithm *model, QgsProcessingModelGroupBox *box ) const
+QgsModelGroupBoxGraphicItem *QgsModelGraphicsScene::createGroupBoxGraphicItem( QgsProcessingModelAlgorithm *model, QgsProcessingModelGroupBox *box ) const
 {
   return new QgsModelGroupBoxGraphicItem( box, model, nullptr );
 }
@@ -185,7 +185,7 @@ void QgsModelGraphicsScene::createItems( QgsProcessingModelAlgorithm *model, Qgs
   mGroupBoxItems.clear();
   for ( const QgsProcessingModelGroupBox &box : boxes )
   {
-    QgsModelComponentGraphicItem *item = createGroupBoxGraphicItem( model, box.clone() );
+    QgsModelGroupBoxGraphicItem *item = createGroupBoxGraphicItem( model, box.clone() );
     item->registerWidgetContextGenerator( mWidgetContextGenerator );
     addItem( item );
     item->setPos( box.position().x(), box.position().y() );
@@ -446,7 +446,7 @@ QgsModelComponentGraphicItem *QgsModelGraphicsScene::componentItemAt( QPointF po
   return nullptr;
 }
 
-QgsModelComponentGraphicItem *QgsModelGraphicsScene::groupBoxItem( const QString &uuid )
+QgsModelGroupBoxGraphicItem *QgsModelGraphicsScene::groupBoxItem( const QString &uuid )
 {
   return mGroupBoxItems.value( uuid );
 }
