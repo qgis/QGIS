@@ -2075,6 +2075,7 @@ Qgis.HttpMethod.Post.__doc__ = "POST method"
 Qgis.HttpMethod.Head.__doc__ = "HEAD method. \n.. versionadded:: 3.44"
 Qgis.HttpMethod.Put.__doc__ = "PUT method. \n.. versionadded:: 3.44"
 Qgis.HttpMethod.Delete.__doc__ = "DELETE method. \n.. versionadded:: 3.44"
+Qgis.HttpMethod.Patch.__doc__ = "PATCH method. \n.. versionadded:: 4.6"
 Qgis.HttpMethod.__doc__ = """Different methods of HTTP requests
 
 .. versionadded:: 3.22
@@ -2092,6 +2093,10 @@ Qgis.HttpMethod.__doc__ = """Different methods of HTTP requests
 * ``Delete``: DELETE method.
 
   .. versionadded:: 3.44
+
+* ``Patch``: PATCH method.
+
+  .. versionadded:: 4.6
 
 
 """

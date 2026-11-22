@@ -1141,6 +1141,7 @@ int QgisEvent = QEvent::User + 1;
       Head,     //!< HEAD method. \since QGIS 3.44
       Put,      //!< PUT method. \since QGIS 3.44
       Delete,   //!< DELETE method. \since QGIS 3.44
+      Patch,    //!< PATCH method. \since QGIS 4.6
     };
     Q_ENUM( HttpMethod )
 
