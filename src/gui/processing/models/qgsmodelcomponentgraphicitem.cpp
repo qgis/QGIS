@@ -127,7 +127,7 @@ void QgsModelComponentGraphicItem::setFont( const QFont &font )
   update();
 }
 
-void QgsModelComponentGraphicItem::moveComponentBy( qreal dx, qreal dy )
+void QgsModelComponentGraphicItem::moveComponentBy( qreal dx, qreal dy, const QList<QGraphicsItem *> & )
 {
   setPos( mComponent->position().x() + dx, mComponent->position().y() + dy );
   mComponent->setPosition( pos() );
@@ -140,7 +140,7 @@ void QgsModelComponentGraphicItem::moveComponentBy( qreal dx, qreal dy )
   emit updateArrowPaths();
 }
 
-void QgsModelComponentGraphicItem::previewItemMove( qreal dx, qreal dy )
+void QgsModelComponentGraphicItem::previewItemMove( qreal dx, qreal dy, const QList<QGraphicsItem *> & )
 {
   setPos( mComponent->position().x() + dx, mComponent->position().y() + dy );
   emit updateArrowPaths();
@@ -2123,6 +2123,61 @@ bool QgsModelGroupBoxGraphicItem::canDeleteComponent()
   return false;
 }
 
+void QgsModelGroupBoxGraphicItem::moveComponentBy( qreal dx, qreal dy, const QList<QGraphicsItem *> &selectedItems )
+{
+  auto groupBox = dynamic_cast<QgsProcessingModelGroupBox *>( component() );
+  if ( !groupBox || !groupBox->moveContents() )
+  {
+    QgsModelComponentGraphicItem::moveComponentBy( dx, dy, selectedItems );
+    return;
+  }
+
+  // move contents along with box
+  auto view = qobject_cast< QgsModelGraphicsView * >( this->scene()->views().at( 0 ) );
+  if ( !view )
+    return;
+
+  const QList<QgsModelComponentGraphicItem *> children = view->groupBoxChildren( this );
+  for ( QgsModelComponentGraphicItem *child : children )
+  {
+    // only move items which were actually inside the group at the start of the move, so we don't accidentally "collect"
+    // new items as the group is temporarily moved over other ones
+    // (the "selectedItems.empty()" check is triggered when the move is performed via a keyevent)
+    if ( selectedItems.empty() || selectedItems.contains( child ) )
+    {
+      child->moveComponentBy( dx, dy, selectedItems );
+    }
+  }
+  QgsModelComponentGraphicItem::moveComponentBy( dx, dy, selectedItems );
+}
+
+void QgsModelGroupBoxGraphicItem::previewItemMove( qreal dx, qreal dy, const QList<QGraphicsItem *> &selectedItems )
+{
+  auto groupBox = dynamic_cast<QgsProcessingModelGroupBox *>( component() );
+  if ( !groupBox || !groupBox->moveContents() )
+  {
+    QgsModelComponentGraphicItem::previewItemMove( dx, dy, selectedItems );
+    return;
+  }
+
+  // move contents along with box
+  auto view = qobject_cast< QgsModelGraphicsView * >( this->scene()->views().at( 0 ) );
+  if ( !view )
+    return;
+
+  const QList<QgsModelComponentGraphicItem *> children = view->groupBoxChildren( this );
+  for ( QgsModelComponentGraphicItem *child : children )
+  {
+    // only move items which were actually inside the group at the start of the move, so we don't accidentally "collect"
+    // new items as the group is temporarily moved over other ones
+    if ( selectedItems.contains( child ) )
+    {
+      child->previewItemMove( dx, dy, selectedItems );
+    }
+  }
+  QgsModelComponentGraphicItem::previewItemMove( dx, dy, selectedItems );
+}
+
 void QgsModelGroupBoxGraphicItem::applyEdit( const QgsProcessingModelGroupBox &groupBox )
 {
   QgsProcessingModelGroupBox newGroupBox = groupBox;
@@ -2143,6 +2198,12 @@ void QgsModelGroupBoxGraphicItem::applyEdit( const QgsProcessingModelGroupBox &g
   model()->addGroupBox( newGroupBox );
   emit changed();
   emit requestModelRepaint();
+}
+
+bool QgsModelGroupBoxGraphicItem::moveContents() const
+{
+  auto groupBox = dynamic_cast<const QgsProcessingModelGroupBox *>( component() );
+  return groupBox && groupBox->moveContents();
 }
 
 void QgsModelGroupBoxGraphicItem::deleteComponent()

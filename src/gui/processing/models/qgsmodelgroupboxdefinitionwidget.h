@@ -58,6 +58,7 @@ class GUI_EXPORT QgsModelGroupBoxDefinitionPanelWidget : public QgsProcessingMod
 
   private:
     QTextEdit *mCommentEdit = nullptr;
+    QCheckBox *mMoveContentsCheck = nullptr;
     QgsColorButton *mCommentColorButton = nullptr;
     QgsProcessingModelGroupBox mBox;
 };

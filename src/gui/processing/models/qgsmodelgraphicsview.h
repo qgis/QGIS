@@ -33,6 +33,7 @@ class QgsModelViewToolTemporaryMousePan;
 class QgsModelComponentGraphicItem;
 class QgsModelGraphicsScene;
 class QgsModelViewSnapMarker;
+class QgsModelGroupBoxGraphicItem;
 
 ///@cond NOT_STABLE
 
@@ -166,6 +167,31 @@ class GUI_EXPORT QgsModelGraphicsView : public QGraphicsView
      * \see hasItemsInClipboard()
      */
     void pasteItems( PasteMode mode );
+
+    /**
+     * Returns the parent group box for an \a item.
+     *
+     * The parent group box is the smallest group box which completely encloses the \a item,
+     * and which has the QgsProcessingModelGroupBox::moveContents() flag set.
+     *
+     * Returns NULLPTR if the item has no parent group box.
+     *
+     * \since QGIS 4.6
+     */
+    QgsModelGroupBoxGraphicItem *parentGroupBoxForItem( QgsModelComponentGraphicItem *item );
+
+    /**
+     * Returns the child belonging to a parent group box item.
+     *
+     * The parent group box is the smallest group box which completely encloses each item,
+     * and which has the QgsProcessingModelGroupBox::moveContents() flag set.
+     *
+     * If an item falls within multiple candidate group boxes, it is considered as being a child
+     * of the smallest group box only.
+     *
+     * \since QGIS 4.6
+     */
+    QList< QgsModelComponentGraphicItem * > groupBoxChildren( QgsModelGroupBoxGraphicItem *groupBox );
 
   public slots:
 

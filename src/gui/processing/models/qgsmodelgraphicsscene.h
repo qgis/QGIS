@@ -24,6 +24,7 @@
 
 class QgsProcessingModelAlgorithm;
 class QgsModelComponentGraphicItem;
+class QgsModelGroupBoxGraphicItem;
 class QgsProcessingModelParameter;
 class QgsProcessingModelChildAlgorithm;
 class QgsProcessingModelOutput;
@@ -122,7 +123,7 @@ class GUI_EXPORT QgsModelGraphicsScene : public QGraphicsScene
     /**
      * Returns the graphic item corresponding to the specified group box \a uuid.
      */
-    SIP_SKIP QgsModelComponentGraphicItem *groupBoxItem( const QString &uuid );
+    SIP_SKIP QgsModelGroupBoxGraphicItem *groupBoxItem( const QString &uuid );
 
     /**
      * Returns the graphic item corresponding to the specified child algorithm
@@ -315,7 +316,7 @@ class GUI_EXPORT QgsModelGraphicsScene : public QGraphicsScene
     /**
      * Creates a new graphic item for a model group box.
      */
-    SIP_SKIP QgsModelComponentGraphicItem *createGroupBoxGraphicItem( QgsProcessingModelAlgorithm *model, QgsProcessingModelGroupBox *box ) const;
+    SIP_SKIP QgsModelGroupBoxGraphicItem *createGroupBoxGraphicItem( QgsProcessingModelAlgorithm *model, QgsProcessingModelGroupBox *box ) const;
 
   private:
     struct LinkSource
@@ -336,7 +337,7 @@ class GUI_EXPORT QgsModelGraphicsScene : public QGraphicsScene
     QMap<QString, QgsModelComponentGraphicItem *> mParameterItems;
     QMap<QString, QgsModelChildAlgorithmGraphicItem *> mChildAlgorithmItems;
     QMap<QString, QMap<QString, QgsModelComponentGraphicItem *>> mOutputItems;
-    QMap<QString, QgsModelComponentGraphicItem *> mGroupBoxItems;
+    QMap<QString, QgsModelGroupBoxGraphicItem *> mGroupBoxItems;
     QgsProcessingModelResult mLastResult;
     QMap<QString, long long> mLastResultCount;
 

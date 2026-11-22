@@ -131,12 +131,12 @@ class GUI_EXPORT QgsModelComponentGraphicItem : public QGraphicsObject, public Q
      *
      * \warning Call this method, not QGraphicsItem::moveBy!
      */
-    void moveComponentBy( qreal dx, qreal dy );
+    virtual void moveComponentBy( qreal dx, qreal dy, const QList<QGraphicsItem *> &selectedItems );
 
     /**
      * Shows a preview of moving the item from its stored position by \a dx, \a dy.
      */
-    void previewItemMove( qreal dx, qreal dy );
+    virtual void previewItemMove( qreal dx, qreal dy, const QList<QGraphicsItem *> &selectedItems );
 
     /**
      * Sets a new scene \a rect for the item.
@@ -821,13 +821,21 @@ class GUI_EXPORT QgsModelGroupBoxGraphicItem : public QgsModelComponentGraphicIt
     ~QgsModelGroupBoxGraphicItem() override;
     void contextMenuEvent( QGraphicsSceneContextMenuEvent *event ) override;
     bool canDeleteComponent() override;
-
+    void moveComponentBy( qreal dx, qreal dy, const QList<QGraphicsItem *> &selectedItems ) override;
+    void previewItemMove( qreal dx, qreal dy, const QList<QGraphicsItem *> &selectedItems ) override;
     /**
      * Applies edits to the item, using an updated \a groupBox definition.
      *
      * \since QGIS 4.0
      */
     void applyEdit( const QgsProcessingModelGroupBox &groupBox );
+
+    /**
+     * Returns TRUE if items placed within the group should be moved when the group is moved.
+     *
+     * \since QGIS 4.6
+     */
+    bool moveContents() const;
 
   protected:
     QColor fillColor( State state ) const override;

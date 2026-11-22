@@ -50,6 +50,26 @@ Loads this group box from a QVariantMap.
 Returns the unique ID associated with this group box.
 %End
 
+    bool moveContents() const;
+%Docstring
+Returns ``True`` if items placed within the group should be moved when
+the group is moved.
+
+.. seealso:: :py:func:`setMoveContents`
+
+.. versionadded:: 4.6
+%End
+
+    void setMoveContents( bool enabled );
+%Docstring
+Sets whether items placed within the group should be moved when the
+group is moved.
+
+.. seealso:: :py:func:`moveContents`
+
+.. versionadded:: 4.6
+%End
+
 };
 
 

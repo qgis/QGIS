@@ -57,8 +57,25 @@ class CORE_EXPORT QgsProcessingModelGroupBox : public QgsProcessingModelComponen
      */
     QString uuid() const;
 
+    /**
+     * Returns TRUE if items placed within the group should be moved when the group is moved.
+     *
+     * \see setMoveContents()
+     * \since QGIS 4.6
+     */
+    bool moveContents() const;
+
+    /**
+     * Sets whether items placed within the group should be moved when the group is moved.
+     *
+     * \see moveContents()
+     * \since QGIS 4.6
+     */
+    void setMoveContents( bool enabled );
+
   private:
     QString mUuid;
+    bool mMoveContents = false;
 };
 
 ///@endcond

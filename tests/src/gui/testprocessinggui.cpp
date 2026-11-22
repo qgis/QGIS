@@ -336,6 +336,7 @@ class TestProcessingGui : public QgsTest
     void testMeshDatasetWrapperLayerInProject();
     void testMeshDatasetWrapperLayerOutsideProject();
     void testModelGraphicsView();
+    void testModelGraphicsViewGroupBoxLogic();
     void testExecuteSqlWidget();
     void testExecuteSqlWidgetWrapper();
     void testInterpolationSourceWidget();
@@ -12199,6 +12200,149 @@ void TestProcessingGui::testModelGraphicsView()
   QCOMPARE( algDest.childAlgorithms().size(), 3 );
   QCOMPARE( algDest.childAlgorithms().value( u"native:buffer_2"_s ).modelOutputs().size(), 1 );
   QCOMPARE( algDest.childAlgorithms().value( u"native:buffer_2"_s ).modelOutputs().value( algDest.childAlgorithms().value( u"native:buffer_2"_s ).modelOutputs().keys().at( 0 ) ).comment()->description(), u"output comm"_s );
+}
+
+void TestProcessingGui::testModelGraphicsViewGroupBoxLogic()
+{
+  // test model
+  QgsProcessingModelAlgorithm model1;
+
+  QgsProcessingModelChildAlgorithm algc1;
+  algc1.setChildId( "buffer" );
+  algc1.setAlgorithmId( "native:buffer" );
+  algc1.setSize( QSizeF( 100, 100 ) );
+  algc1.setPosition( QPointF( 200, 500 ) );
+
+  QgsProcessingModelParameter param;
+  param.setParameterName( u"LAYER"_s );
+  param.setSize( QSizeF( 100, 100 ) );
+  param.setPosition( QPointF( 400, 500 ) );
+  model1.addModelParameter( new QgsProcessingParameterMapLayer( u"LAYER"_s ), param );
+  algc1.addParameterSources( u"INPUT"_s, QList<QgsProcessingModelChildParameterSource>() << QgsProcessingModelChildParameterSource::fromModelParameter( u"LAYER"_s ) );
+
+  QgsProcessingModelOutput modelOut;
+  modelOut.setChildId( algc1.childId() );
+  modelOut.setChildOutputName( u"my_output"_s );
+  modelOut.setSize( QSizeF( 100, 100 ) );
+  modelOut.setPosition( QPointF( 700, 600 ) );
+
+  QMap<QString, QgsProcessingModelOutput> outs;
+  outs.insert( u"OUTPUT"_s, modelOut );
+  algc1.setModelOutputs( outs );
+  model1.addChildAlgorithm( algc1 );
+
+  QgsProcessingModelGroupBox groupBox;
+  groupBox.setDescription( u"group"_s );
+  groupBox.setSize( QSizeF( 160, 160 ) );
+  groupBox.setPosition( QPointF( 380, 480 ) );
+  model1.addGroupBox( groupBox );
+
+  QgsProcessingContext context;
+  auto scene = std::make_unique< QgsModelGraphicsScene >();
+  scene->setModel( &model1 );
+  scene->createItems( &model1, context );
+
+  auto view = std::make_unique< QgsModelGraphicsView >();
+  view->setModelScene( scene.get() );
+
+  QList<QgsModelComponentGraphicItem *> children = view->groupBoxChildren( scene->groupBoxItem( groupBox.uuid() ) );
+  // should be no children, group box is not a container
+  QCOMPARE( children.size(), 0 );
+
+  // set group box as a container, retry
+  groupBox.setMoveContents( true );
+  model1.addGroupBox( groupBox );
+  view.reset();
+  scene.reset();
+
+  scene = std::make_unique< QgsModelGraphicsScene >();
+  scene->setModel( &model1 );
+  scene->createItems( &model1, context );
+  view = std::make_unique< QgsModelGraphicsView >();
+  view->setModelScene( scene.get() );
+
+  children = view->groupBoxChildren( scene->groupBoxItem( groupBox.uuid() ) );
+  QCOMPARE( children.size(), 1 );
+  QCOMPARE( dynamic_cast< QgsProcessingModelParameter * >( children.at( 0 )->component() )->parameterName(), u"LAYER"_s );
+
+  QCOMPARE( view->parentGroupBoxForItem( scene->groupBoxItem( groupBox.uuid() ) ), nullptr );
+  QCOMPARE( view->parentGroupBoxForItem( scene->childAlgorithmItem( u"buffer"_s ) ), nullptr );
+  QCOMPARE( view->parentGroupBoxForItem( children.at( 0 ) ), scene->groupBoxItem( groupBox.uuid() ) );
+
+  // group box only partial intersects item, should no longer be considered a child
+  groupBox.setSize( QSizeF( 60, 60 ) );
+  model1.addGroupBox( groupBox );
+  view.reset();
+  scene.reset();
+
+  scene = std::make_unique< QgsModelGraphicsScene >();
+  scene->setModel( &model1 );
+  scene->createItems( &model1, context );
+  view = std::make_unique< QgsModelGraphicsView >();
+  view->setModelScene( scene.get() );
+
+  children = view->groupBoxChildren( scene->groupBoxItem( groupBox.uuid() ) );
+  QCOMPARE( children.size(), 0 );
+
+  QCOMPARE( view->parentGroupBoxForItem( scene->groupBoxItem( groupBox.uuid() ) ), nullptr );
+  QCOMPARE( view->parentGroupBoxForItem( scene->childAlgorithmItem( u"buffer"_s ) ), nullptr );
+  QCOMPARE( view->parentGroupBoxForItem( scene->parameterItem( u"LAYER"_s ) ), nullptr );
+
+  // a big group box which covers all items
+  groupBox.setSize( QSizeF( 160, 160 ) );
+  model1.addGroupBox( groupBox );
+  QgsProcessingModelGroupBox groupBox2;
+  groupBox2.setDescription( u"group"_s );
+  groupBox2.setSize( QSizeF( 1660, 1660 ) );
+  groupBox2.setPosition( QPointF( 80, 80 ) );
+  groupBox2.setMoveContents( true );
+  model1.addGroupBox( groupBox2 );
+
+  view.reset();
+  scene.reset();
+
+  scene = std::make_unique< QgsModelGraphicsScene >();
+  scene->setModel( &model1 );
+  scene->createItems( &model1, context );
+  view = std::make_unique< QgsModelGraphicsView >();
+  view->setModelScene( scene.get() );
+
+  children = view->groupBoxChildren( scene->groupBoxItem( groupBox.uuid() ) );
+  QCOMPARE( children.size(), 1 );
+  QCOMPARE( dynamic_cast< QgsProcessingModelParameter * >( children.at( 0 )->component() )->parameterName(), u"LAYER"_s );
+
+  children = view->groupBoxChildren( scene->groupBoxItem( groupBox2.uuid() ) );
+  QCOMPARE( children.size(), 3 );
+
+  QgsModelOutputGraphicItem *outputItem = nullptr;
+  QgsModelChildAlgorithmGraphicItem *childItem = nullptr;
+  QgsModelGroupBoxGraphicItem *groupBoxItem = nullptr;
+  for ( QgsModelComponentGraphicItem *item : children )
+  {
+    if ( auto output = dynamic_cast< QgsModelOutputGraphicItem * >( item ) )
+    {
+      outputItem = output;
+    }
+    else if ( auto child = dynamic_cast< QgsModelChildAlgorithmGraphicItem * >( item ) )
+    {
+      childItem = child;
+    }
+    else if ( auto groupBox = dynamic_cast< QgsModelGroupBoxGraphicItem * >( item ) )
+    {
+      groupBoxItem = groupBox;
+    }
+  }
+
+  QCOMPARE( dynamic_cast< QgsProcessingModelChildAlgorithm * >( childItem->component() )->childId(), u"buffer"_s );
+  QCOMPARE( dynamic_cast< QgsProcessingModelOutput * >( outputItem->component() )->childOutputName(), u"my_output"_s );
+  // little group is a child of the big group
+  QCOMPARE( dynamic_cast< QgsProcessingModelGroupBox * >( groupBoxItem->component() )->uuid(), groupBox.uuid() );
+
+  QCOMPARE( view->parentGroupBoxForItem( scene->groupBoxItem( groupBox.uuid() ) ), scene->groupBoxItem( groupBox2.uuid() ) );
+  QCOMPARE( view->parentGroupBoxForItem( scene->childAlgorithmItem( u"buffer"_s ) ), scene->groupBoxItem( groupBox2.uuid() ) );
+  QCOMPARE( view->parentGroupBoxForItem( groupBoxItem ), scene->groupBoxItem( groupBox2.uuid() ) );
+
+  view.reset();
 }
 
 void TestProcessingGui::testExecuteSqlWidget()
