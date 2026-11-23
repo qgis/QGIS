@@ -16,6 +16,7 @@
 
 #include "qgsexpressionfunction.h"
 
+#include <algorithm>
 #include <random>
 #include <sqlite3.h>
 
