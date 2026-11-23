@@ -230,7 +230,7 @@ default settigns when rendering the legend node.
 .. versionadded:: 3.18
 %End
 
-    static QgsColorRampLegendNodeSettings *legendNodeColorRampSettings( QgsLayerTreeLayer *nodeLayer, int originalIndex ) /Factory/;
+    static std::unique_ptr<QgsColorRampLegendNodeSettings> legendNodeColorRampSettings( QgsLayerTreeLayer *nodeLayer, int originalIndex );
 %Docstring
 Returns the custom legend color ramp settings for the legend node
 belonging to ``nodeLayer`` at the specified ``originalIndex``.

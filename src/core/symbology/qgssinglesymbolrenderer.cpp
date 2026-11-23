@@ -200,7 +200,7 @@ std::unique_ptr<QgsFeatureRenderer> QgsSingleSymbolRenderer::create( QDomElement
   const QDomElement ddsLegendSizeElem = element.firstChildElement( u"data-defined-size-legend"_s );
   if ( !ddsLegendSizeElem.isNull() )
   {
-    r->mDataDefinedSizeLegend.reset( QgsDataDefinedSizeLegend::readXml( ddsLegendSizeElem, context ) );
+    r->mDataDefinedSizeLegend = QgsDataDefinedSizeLegend::readXml( ddsLegendSizeElem, context );
   }
 
   // TODO: symbol levels

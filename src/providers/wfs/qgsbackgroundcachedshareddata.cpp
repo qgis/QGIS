@@ -176,7 +176,7 @@ bool QgsBackgroundCachedSharedData::createCache()
   int tmpCounter = ++sTmpCounter;
   QString cacheDirectory( acquireCacheDirectory() );
   mCacheDbname = QDir( cacheDirectory ).filePath( u"cache_%1.sqlite"_s.arg( tmpCounter ) );
-  Q_ASSERT( !QFile::exists( mCacheDbname ) );
+  Q_ASSERT( !QFile::exists( mCacheDbname ) ); // cppcheck-suppress assertWithSideEffect
 
   QgsFields cacheFields;
   std::set<QString> setSQLiteColumnNameUpperCase;
@@ -243,7 +243,7 @@ bool QgsBackgroundCachedSharedData::createCache()
   // Copy the temporary database back to disk
   vsi_l_offset nLength = 0;
   GByte *pabyData = VSIGetMemFileBuffer( vsimemFilename.toUtf8().constData(), &nLength, TRUE );
-  Q_ASSERT( !QFile::exists( mCacheDbname ) );
+  Q_ASSERT( !QFile::exists( mCacheDbname ) ); // cppcheck-suppress assertWithSideEffect
   VSILFILE *fp = VSIFOpenL( mCacheDbname.toUtf8().constData(), "wb" );
   if ( fp )
   {
@@ -388,7 +388,7 @@ bool QgsBackgroundCachedSharedData::createCache()
   if ( mCacheIdDbname.isEmpty() )
   {
     mCacheIdDbname = QDir( cacheDirectory ).filePath( u"id_cache_%1.sqlite"_s.arg( tmpCounter ) );
-    Q_ASSERT( !QFile::exists( mCacheIdDbname ) );
+    Q_ASSERT( !QFile::exists( mCacheIdDbname ) ); // cppcheck-suppress assertWithSideEffect
     if ( mCacheIdDb.open( mCacheIdDbname ) != SQLITE_OK )
     {
       QgsMessageLog::logMessage( QObject::tr( "Cannot create temporary id cache" ), mComponentTranslated );
@@ -1144,7 +1144,7 @@ QString QgsBackgroundCachedSharedData::getMD5( const QgsFeature &f )
   for ( int i = 0; i < attrs.size(); i++ )
   {
     const QVariant &v = attrs[i];
-    hash.addData( QByteArray( ( const char * ) &i, sizeof( i ) ) );
+    hash.addData( QByteArray( reinterpret_cast< const char * >( &i ), sizeof( i ) ) );
     if ( QgsVariantUtils::isNull( v ) )
     {
       // nothing to do
@@ -1152,17 +1152,17 @@ QString QgsBackgroundCachedSharedData::getMD5( const QgsFeature &f )
     else if ( v.userType() == QMetaType::Type::QDateTime )
     {
       qint64 val = v.toDateTime().toMSecsSinceEpoch();
-      hash.addData( QByteArray( ( const char * ) &val, sizeof( val ) ) );
+      hash.addData( QByteArray( reinterpret_cast< const char * >( &val ), sizeof( val ) ) );
     }
     else if ( v.userType() == QMetaType::Type::Int )
     {
       int val = v.toInt();
-      hash.addData( QByteArray( ( const char * ) &val, sizeof( val ) ) );
+      hash.addData( QByteArray( reinterpret_cast< const char * >( &val ), sizeof( val ) ) );
     }
     else if ( v.userType() == QMetaType::Type::LongLong )
     {
       qint64 val = v.toLongLong();
-      hash.addData( QByteArray( ( const char * ) &val, sizeof( val ) ) );
+      hash.addData( QByteArray( reinterpret_cast< const char * >( &val ), sizeof( val ) ) );
     }
     else if ( v.userType() == QMetaType::Type::QString )
     {
@@ -1176,7 +1176,7 @@ QString QgsBackgroundCachedSharedData::getMD5( const QgsFeature &f )
   }
 
   const int attrCount = attrs.size();
-  hash.addData( QByteArray( ( const char * ) &attrCount, sizeof( attrCount ) ) );
+  hash.addData( QByteArray( reinterpret_cast< const char * >( &attrCount ), sizeof( attrCount ) ) );
   QgsGeometry geometry = f.geometry();
   if ( !geometry.isNull() )
   {

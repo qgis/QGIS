@@ -13,6 +13,7 @@ email                : morb at ozemail dot com dot au
  *                                                                         *
  ***************************************************************************/
 
+#include "qgsconfig.h"
 #include "qgsgeometry.h"
 
 #include <cmath>
@@ -52,7 +53,7 @@ email                : morb at ozemail dot com dot au
 
 #include <QString>
 
-#ifdef WITH_SFCGAL
+#ifdef HAVE_SFCGAL
 #include "qgssfcgalgeometry.h"
 #endif
 
@@ -3302,6 +3303,25 @@ QgsGeometry QgsGeometry::cleanCoverage( const QgsCoverageCleanParameters &parame
   return result;
 }
 
+QgsGeometry QgsGeometry::extractCoverageEdges( Qgis::CoverageEdgeType edgeType, QgsFeedback *feedback ) const
+{
+  if ( !d->geometry )
+  {
+    return QgsGeometry();
+  }
+
+  if ( QgsWkbTypes::flatType( d->geometry->wkbType() ) != Qgis::WkbType::GeometryCollection
+       && QgsWkbTypes::flatType( d->geometry->wkbType() ) != Qgis::WkbType::MultiPolygon
+       && QgsWkbTypes::flatType( d->geometry->wkbType() ) != Qgis::WkbType::Polygon )
+    return QgsGeometry();
+
+  QgsGeos geos( d->geometry.get() );
+  mLastError.clear();
+  const QgsGeometry result( geos.extractCoverageEdges( edgeType, &mLastError, feedback ) );
+  result.mLastError = mLastError;
+  return result;
+}
+
 QgsGeometry QgsGeometry::node() const
 {
   if ( !d->geometry )
@@ -3940,7 +3960,7 @@ void QgsGeometry::validateGeometry( QVector<QgsGeometry::Error> &errors, const Q
     }
     case Qgis::GeometryValidationEngine::Sfcgal:
     {
-#ifdef WITH_SFCGAL
+#ifdef HAVE_SFCGAL
       QString errorMsg;
       QgsGeometry errorLoc;
       const QgsSfcgalGeometry sfcgalGeom( d->geometry.get() );

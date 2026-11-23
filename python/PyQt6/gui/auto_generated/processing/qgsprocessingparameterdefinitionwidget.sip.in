@@ -147,7 +147,7 @@ Additionally, the optional ``algorithm`` parameter may be used to
 specify the algorithm or model associated with the parameter.
 %End
 
-    QgsProcessingParameterDefinition *createParameter( const QString &name = QString() ) const /Factory/;
+    std::unique_ptr<QgsProcessingParameterDefinition> createParameter( const QString &name = QString() ) const;
 %Docstring
 Returns a new instance of a parameter definition, using the current
 settings defined in the dialog.
@@ -214,7 +214,7 @@ Additionally, the optional ``algorithm`` parameter may be used to
 specify the algorithm or model associated with the parameter.
 %End
 
-    QgsProcessingParameterDefinition *createParameter( const QString &name = QString() ) const /Factory/;
+    std::unique_ptr<QgsProcessingParameterDefinition> createParameter( const QString &name = QString() ) const;
 %Docstring
 Returns a new instance of a parameter definition, using the current
 settings defined in the dialog.
@@ -301,7 +301,7 @@ Additionally, the optional ``algorithm`` parameter may be used to
 specify the algorithm or model associated with the parameter.
 %End
 
-    QgsProcessingParameterDefinition *createParameter( const QString &name = QString() ) const /Factory/;
+    std::unique_ptr<QgsProcessingParameterDefinition> createParameter( const QString &name = QString() ) const;
 %Docstring
 Returns a new instance of a parameter definition, using the current
 settings defined in the dialog.

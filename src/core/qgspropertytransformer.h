@@ -192,7 +192,7 @@ class CORE_EXPORT QgsPropertyTransformer
      * Factory method for creating a new property transformer of the specified type.
      * \param type transformer type to create
      */
-    static QgsPropertyTransformer *create( Type type ) SIP_FACTORY;
+    static std::unique_ptr<QgsPropertyTransformer> create( Type type );
 
     /**
      * Constructor for QgsPropertyTransformer
@@ -298,7 +298,7 @@ class CORE_EXPORT QgsPropertyTransformer
      * \param fieldName will be set to a field name which is used to calculate the input to the property transformer. This will be set to an empty string if an expression is the transformer input.
      * \returns corresponding property transformer, or NULLPTR if expression could not be parsed to a transformer.
      */
-    static QgsPropertyTransformer *fromExpression( const QString &expression, QString &baseExpression SIP_OUT, QString &fieldName SIP_OUT ) SIP_FACTORY;
+    static std::unique_ptr<QgsPropertyTransformer> fromExpression( const QString &expression, QString &baseExpression SIP_OUT, QString &fieldName SIP_OUT );
 
   protected:
     /**
@@ -358,7 +358,7 @@ class CORE_EXPORT QgsGenericNumericTransformer : public QgsPropertyTransformer
      * \returns corresponding QgsSizeScaleTransformer, or NULLPTR if expression could not
      * be parsed to a size scale transformer.
      */
-    static QgsGenericNumericTransformer *fromExpression( const QString &expression, QString &baseExpression SIP_OUT, QString &fieldName SIP_OUT ) SIP_FACTORY; // cppcheck-suppress duplInheritedMember
+    static std::unique_ptr<QgsGenericNumericTransformer> fromExpression( const QString &expression, QString &baseExpression SIP_OUT, QString &fieldName SIP_OUT ); // cppcheck-suppress duplInheritedMember
 
     /**
      * Calculates the size corresponding to a specific \a input value.
@@ -473,7 +473,7 @@ class CORE_EXPORT QgsSizeScaleTransformer : public QgsPropertyTransformer
      * \param fieldName will be set to a field name which is used to calculate the input to the property transformer. This will be set to an empty string if an expression is the transformer input.
      * \returns corresponding QgsSizeScaleTransformer, or NULLPTR if expression could not be parsed to a size scale transformer.
      */
-    static QgsSizeScaleTransformer *fromExpression( const QString &expression, QString &baseExpression SIP_OUT, QString &fieldName SIP_OUT ) SIP_FACTORY; // cppcheck-suppress duplInheritedMember
+    static std::unique_ptr<QgsSizeScaleTransformer> fromExpression( const QString &expression, QString &baseExpression SIP_OUT, QString &fieldName SIP_OUT ); // cppcheck-suppress duplInheritedMember
 
     /**
      * Calculates the size corresponding to a specific value.

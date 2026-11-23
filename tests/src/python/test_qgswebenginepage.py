@@ -217,7 +217,7 @@ class TestWebEnginePage(QgisTestCase):
       }
     </style>
   </head>
-  <body>
+  <body style="margin: 0px; padding: 0px">
     <table style="width: 100%">
       <tbody>
         <tr><td></td><td></td></tr>
@@ -266,7 +266,7 @@ class TestWebEnginePage(QgisTestCase):
       }
     </style>
   </head>
-  <body>
+  <body style="margin: 0px; padding: 0px">
     <table style="width: 100%">
       <tbody>
         <tr><td></td><td></td></tr>
@@ -315,7 +315,7 @@ class TestWebEnginePage(QgisTestCase):
       }
     </style>
   </head>
-  <body>
+  <body style="margin: 0px; padding: 0px">
     <table style="width: 100%">
       <tbody>
         <tr><td></td><td></td></tr>
@@ -373,7 +373,7 @@ class TestWebEnginePage(QgisTestCase):
                 }
                 </script>
                 </head>
-                <body>
+                <body style="margin: 0px; padding: 0px">
                 <div id="box" style="background-color: red; width: 100%; border: 5px solid black; height: 20px; box-sizing: border-box;">
                  </div>
                 """

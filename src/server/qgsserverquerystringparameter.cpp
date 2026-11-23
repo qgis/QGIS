@@ -79,7 +79,7 @@ QVariant QgsServerQueryStringParameter::value( const QgsServerApiContext &contex
     if ( value.userType() != targetType )
     {
       bool ok = false;
-      if ( value.canConvert( static_cast<int>( targetType ) ) )
+      if ( value.canConvert( QMetaType( targetType ) ) )
       {
         ok = true;
         switch ( mType )

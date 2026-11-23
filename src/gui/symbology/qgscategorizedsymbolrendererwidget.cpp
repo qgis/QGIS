@@ -1047,7 +1047,7 @@ void QgsCategorizedSymbolRendererWidget::dataDefinedSizeLegend()
   if ( panel )
   {
     connect( panel, &QgsPanelWidget::changed, this, [this, panel] {
-      mRenderer->setDataDefinedSizeLegend( panel->dataDefinedSizeLegend() );
+      mRenderer->setDataDefinedSizeLegend( panel->dataDefinedSizeLegend().release() );
       emit changed();
     } );
     openPanel( panel ); // takes ownership of the panel

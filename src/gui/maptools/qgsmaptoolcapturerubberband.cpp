@@ -39,7 +39,7 @@ QgsMapToolCaptureRubberBand::QgsMapToolCaptureRubberBand( QgsMapCanvas *mapCanva
 
 QgsMapToolCaptureRubberBand::~QgsMapToolCaptureRubberBand() = default;
 
-QgsCurve *QgsMapToolCaptureRubberBand::curve()
+std::unique_ptr<QgsCurve> QgsMapToolCaptureRubberBand::curve()
 {
   if ( mPoints.empty() )
     return nullptr;
@@ -47,12 +47,12 @@ QgsCurve *QgsMapToolCaptureRubberBand::curve()
   switch ( mStringType )
   {
     case Qgis::WkbType::LineString:
-      return new QgsLineString( mPoints );
+      return std::make_unique<QgsLineString>( mPoints );
       break;
     case Qgis::WkbType::CircularString:
       if ( mPoints.size() != 3 )
         return nullptr;
-      return new QgsCircularString( mPoints[0], mPoints[1], mPoints[2] );
+      return std::make_unique<QgsCircularString>( mPoints[0], mPoints[1], mPoints[2] );
       break;
     case Qgis::WkbType::NurbsCurve:
       if ( mPoints.size() < 4 )
@@ -182,13 +182,13 @@ void QgsMapToolCaptureRubberBand::updateCurve()
   switch ( mStringType )
   {
     case Qgis::WkbType::LineString:
-      curve.reset( createLinearString() );
+      curve = createLinearString();
       break;
     case Qgis::WkbType::CircularString:
-      curve.reset( createCircularString() );
+      curve = createCircularString();
       break;
     case Qgis::WkbType::NurbsCurve:
-      curve.reset( createNurbsCurve() );
+      curve = createNurbsCurve();
       break;
     default:
       return;
@@ -210,7 +210,7 @@ void QgsMapToolCaptureRubberBand::updateCurve()
   updateControlPolygon();
 }
 
-QgsCurve *QgsMapToolCaptureRubberBand::createLinearString()
+std::unique_ptr<QgsCurve> QgsMapToolCaptureRubberBand::createLinearString()
 {
   auto curve = std::make_unique<QgsLineString>();
   if ( geometryType() == Qgis::GeometryType::Polygon )
@@ -222,10 +222,10 @@ QgsCurve *QgsMapToolCaptureRubberBand::createLinearString()
   else
     curve->setPoints( mPoints );
 
-  return curve.release();
+  return curve;
 }
 
-QgsCurve *QgsMapToolCaptureRubberBand::createCircularString()
+std::unique_ptr<QgsCurve> QgsMapToolCaptureRubberBand::createCircularString()
 {
   auto curve = std::make_unique<QgsCircularString>();
   curve->setPoints( mPoints );
@@ -237,13 +237,13 @@ QgsCurve *QgsMapToolCaptureRubberBand::createCircularString()
     if ( !mPoints.empty() )
       polygonCurve->addVertex( mPoints.first() );
     polygonCurve->addCurve( curve.release() );
-    return polygonCurve.release();
+    return polygonCurve;
   }
   else
-    return curve.release();
+    return curve;
 }
 
-QgsCurve *QgsMapToolCaptureRubberBand::createNurbsCurve()
+std::unique_ptr<QgsCurve> QgsMapToolCaptureRubberBand::createNurbsCurve()
 {
   // Use control points from mPoints
   QgsPointSequence controlPoints = mPoints;
@@ -265,7 +265,7 @@ QgsCurve *QgsMapToolCaptureRubberBand::createNurbsCurve()
     degree = std::max( 1, n - 1 );
     if ( n < 2 )
     {
-      return new QgsLineString( controlPoints );
+      return std::make_unique<QgsLineString>( controlPoints );
     }
   }
 
@@ -298,10 +298,10 @@ QgsCurve *QgsMapToolCaptureRubberBand::createNurbsCurve()
     // For polygons, we need to close the curve
     auto polygonCurve = std::make_unique<QgsCompoundCurve>();
     polygonCurve->addCurve( curve.release() );
-    return polygonCurve.release();
+    return polygonCurve;
   }
   else
-    return curve.release();
+    return curve;
 }
 
 void QgsMapToolCaptureRubberBand::updateControlPolygon()

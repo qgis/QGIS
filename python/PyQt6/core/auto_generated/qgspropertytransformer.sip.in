@@ -171,7 +171,7 @@ or color from a gradient.
       ColorRampTransformer,
     };
 
-    static QgsPropertyTransformer *create( Type type ) /Factory/;
+    static std::unique_ptr<QgsPropertyTransformer> create( Type type );
 %Docstring
 Factory method for creating a new property transformer of the specified
 type.
@@ -291,7 +291,7 @@ Converts the transformer to a QGIS expression string. The
 parent property's state.
 %End
 
-    static QgsPropertyTransformer *fromExpression( const QString &expression, QString &baseExpression /Out/, QString &fieldName /Out/ ) /Factory/;
+    static std::unique_ptr<QgsPropertyTransformer> fromExpression( const QString &expression, QString &baseExpression /Out/, QString &fieldName /Out/ );
 %Docstring
 Attempts to parse an expression into a corresponding property
 transformer.
@@ -355,7 +355,7 @@ Constructor for QgsGenericNumericTransformer.
     virtual QString toExpression( const QString &baseExpression ) const;
 
 
-    static QgsGenericNumericTransformer *fromExpression( const QString &expression, QString &baseExpression /Out/, QString &fieldName /Out/ ) /Factory/;
+    static std::unique_ptr<QgsGenericNumericTransformer> fromExpression( const QString &expression, QString &baseExpression /Out/, QString &fieldName /Out/ );
 %Docstring
 Attempts to parse an expression into a corresponding
 :py:class:`QgsSizeScaleTransformer`.
@@ -499,7 +499,7 @@ Constructor for QgsSizeScaleTransformer.
     virtual QString toExpression( const QString &baseExpression ) const;
 
 
-    static QgsSizeScaleTransformer *fromExpression( const QString &expression, QString &baseExpression /Out/, QString &fieldName /Out/ ) /Factory/;
+    static std::unique_ptr<QgsSizeScaleTransformer> fromExpression( const QString &expression, QString &baseExpression /Out/, QString &fieldName /Out/ );
 %Docstring
 Attempts to parse an expression into a corresponding
 QgsSizeScaleTransformer.

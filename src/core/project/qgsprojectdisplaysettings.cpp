@@ -46,8 +46,8 @@ QgsProjectDisplaySettings::~QgsProjectDisplaySettings() = default;
 void QgsProjectDisplaySettings::reset()
 {
   // inherit local default settings
-  mBearingFormat.reset( QgsLocalDefaultSettings::bearingFormat() );
-  mGeographicCoordinateFormat.reset( QgsLocalDefaultSettings::geographicCoordinateFormat() );
+  mBearingFormat = QgsLocalDefaultSettings::bearingFormat();
+  mGeographicCoordinateFormat = QgsLocalDefaultSettings::geographicCoordinateFormat();
 
   mCoordinateType = Qgis::CoordinateDisplayType::MapCrs;
   mCoordinateCustomCrs = QgsCoordinateReferenceSystem( "EPSG:4326" );
@@ -182,12 +182,12 @@ bool QgsProjectDisplaySettings::readXml( const QDomElement &element, const QgsRe
       }
       else
       {
-        mGeographicCoordinateFormat.reset( QgsLocalDefaultSettings::geographicCoordinateFormat() );
+        mGeographicCoordinateFormat = QgsLocalDefaultSettings::geographicCoordinateFormat();
       }
     }
     else
     {
-      mGeographicCoordinateFormat.reset( QgsLocalDefaultSettings::geographicCoordinateFormat() );
+      mGeographicCoordinateFormat = QgsLocalDefaultSettings::geographicCoordinateFormat();
     }
     emit geographicCoordinateFormatChanged();
   }

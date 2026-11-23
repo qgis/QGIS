@@ -64,7 +64,7 @@ bool QgsRecentProjectsMenuEventFilter::eventFilter( QObject *obj, QEvent *event 
 
   const QModelIndex modelIndex = mWelcomeScreen->recentProjectsModel()->index( actionIndex, 0 );
 
-  QMenu subMenu( mWelcomeScreen );
+  QMenu subMenu( menu );
   const bool pinned = mWelcomeScreen->recentProjectsModel()->data( modelIndex, static_cast<int>( QgsRecentProjectItemsModel::CustomRole::PinnedRole ) ).toBool();
   if ( pinned )
   {

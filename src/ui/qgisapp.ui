@@ -476,7 +476,6 @@
     <bool>false</bool>
    </attribute>
    <addaction name="mActionNewProject"/>
-   <addaction name="mProjectFromTemplateMenu"/>
    <addaction name="mActionOpenProject"/>
    <addaction name="mActionSaveProject"/>
    <addaction name="mActionNewPrintLayout"/>

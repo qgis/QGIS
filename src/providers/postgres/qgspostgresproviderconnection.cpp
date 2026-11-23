@@ -672,9 +672,9 @@ QVariantList QgsPostgresProviderResultIterator::nextRowPrivate()
           val = boolStrVal == 't';
         }
       }
-      else if ( val.canConvert( static_cast<int>( vType ) ) )
+      else if ( val.canConvert( QMetaType( vType ) ) )
       {
-        val.convert( static_cast<int>( vType ) );
+        val.convert( QMetaType( vType ) );
       }
       row.push_back( val );
     }

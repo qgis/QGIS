@@ -689,6 +689,33 @@ class TestQgsVectorLayerEditUtils(QgisTestCase):
         self.assertTrue(any_curve)
         layer.rollBack()
 
+    @unittest.skipIf(Qgis.geosVersionInt() < 31500, "GEOS 3.15 required")
+    def testSplitCurvePolygonFeaturesWithSegmentNoCrash(self):
+        # Bug in GEOS 3.15.0, anyway, don't crash!
+        # See QGIS issue #68203
+        layer = createEmptyCurvePolygonLayer()
+        self.assertTrue(layer.startEditing())
+
+        # Add one CurvePolygon feature
+        f = QgsFeature(layer.fields(), 1)
+        f.setGeometry(
+            QgsGeometry.fromWkt(
+                "CURVEPOLYGON ((295 -161, 218 -315, 437 -251, 295 -161))"
+            )
+        )
+        assert layer.addFeatures([f])
+        layer.commitChanges(stopEditing=False)
+
+        self.assertEqual(layer.featureCount(), 1)
+
+        vle = QgsVectorLayerEditUtils(layer)
+
+        split_curve = QgsLineString()
+        split_curve.fromWkt("LineString (166 -179, 427 -312)")
+
+        vle.splitFeatures(split_curve, preserveCircular=True, topologicalEditing=False)
+        layer.rollBack()
+
     def testSplitParts(self):
         layer = createEmptyMultiPolygonLayer()
         self.assertTrue(layer.startEditing())

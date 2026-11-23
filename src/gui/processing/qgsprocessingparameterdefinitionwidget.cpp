@@ -125,7 +125,7 @@ QgsProcessingParameterDefinitionWidget::QgsProcessingParameterDefinitionWidget(
   setLayout( vlayout );
 }
 
-QgsProcessingParameterDefinition *QgsProcessingParameterDefinitionWidget::createParameter( const QString &name ) const
+std::unique_ptr<QgsProcessingParameterDefinition> QgsProcessingParameterDefinitionWidget::createParameter( const QString &name ) const
 {
   std::unique_ptr<QgsProcessingParameterDefinition> param;
   Qgis::ProcessingParameterFlags flags;
@@ -152,7 +152,7 @@ QgsProcessingParameterDefinition *QgsProcessingParameterDefinitionWidget::create
     }
   }
 
-  return param.release();
+  return param;
 }
 
 void QgsProcessingParameterDefinitionWidget::registerProcessingContextGenerator( QgsProcessingContextGenerator *generator )
@@ -224,7 +224,7 @@ QgsProcessingParameterDefinitionPanelWidget::QgsProcessingParameterDefinitionPan
   );
 }
 
-QgsProcessingParameterDefinition *QgsProcessingParameterDefinitionPanelWidget::createParameter( const QString &name ) const
+std::unique_ptr<QgsProcessingParameterDefinition> QgsProcessingParameterDefinitionPanelWidget::createParameter( const QString &name ) const
 {
   return mWidget->createParameter( name );
 }
@@ -314,7 +314,7 @@ QgsProcessingParameterDefinitionDialog::QgsProcessingParameterDefinitionDialog(
   QgsGui::enableAutoGeometryRestore( this );
 }
 
-QgsProcessingParameterDefinition *QgsProcessingParameterDefinitionDialog::createParameter( const QString &name ) const
+std::unique_ptr<QgsProcessingParameterDefinition> QgsProcessingParameterDefinitionDialog::createParameter( const QString &name ) const
 {
   return mWidget->createParameter( name );
 }

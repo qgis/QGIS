@@ -260,7 +260,7 @@ QString QgsOapifSharedData::compileExpressionNodeUsingPart1( const QgsExpression
     ret = u"datetime=0000-01-01T00:00:00Z%2F"_s + maxDateStr;
   }
 
-  for ( const QString &equalityComparison : equalityComparisons )
+  for ( const QString &equalityComparison : std::as_const( equalityComparisons ) )
   {
     if ( !ret.isEmpty() )
       ret += '&'_L1;

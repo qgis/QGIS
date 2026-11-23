@@ -581,8 +581,8 @@ class CORE_EXPORT QgsLayerTreeModel : public QAbstractItemModel
   private:
     void handleHitTestResults();
 
-    //! The icons of the groups customized using the "icon" custom property
-    mutable QHash<QString, QIcon> mGroupIcons;
+    //! The icons of the groups and layers customized using the "icon" custom property
+    mutable QHash<QString, QIcon> mNodeIcons;
 };
 
 Q_DECLARE_OPERATORS_FOR_FLAGS( QgsLayerTreeModel::Flags )

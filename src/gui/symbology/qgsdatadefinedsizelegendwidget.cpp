@@ -141,12 +141,12 @@ QgsDataDefinedSizeLegendWidget::QgsDataDefinedSizeLegendWidget( const QgsDataDef
 QgsDataDefinedSizeLegendWidget::~QgsDataDefinedSizeLegendWidget()
 {}
 
-QgsDataDefinedSizeLegend *QgsDataDefinedSizeLegendWidget::dataDefinedSizeLegend() const
+std::unique_ptr<QgsDataDefinedSizeLegend> QgsDataDefinedSizeLegendWidget::dataDefinedSizeLegend() const
 {
   if ( radDisabled->isChecked() )
     return nullptr;
 
-  QgsDataDefinedSizeLegend *ddsLegend = new QgsDataDefinedSizeLegend;
+  auto ddsLegend = std::make_unique<QgsDataDefinedSizeLegend>();
   ddsLegend->setLegendType( radSeparated->isChecked() ? QgsDataDefinedSizeLegend::LegendSeparated : QgsDataDefinedSizeLegend::LegendCollapsed );
   ddsLegend->setVerticalAlignment( cboAlignSymbols->currentIndex() == 0 ? QgsDataDefinedSizeLegend::AlignBottom : QgsDataDefinedSizeLegend::AlignCenter );
   if ( !mOverrideSymbol )
@@ -177,7 +177,7 @@ void QgsDataDefinedSizeLegendWidget::updatePreview()
   QgsMarkerSymbol *symbol = mSourceSymbol->clone();
   symbol->setDataDefinedSize( mSizeProperty );
   QgsSingleSymbolRenderer *r = new QgsSingleSymbolRenderer( symbol );
-  r->setDataDefinedSizeLegend( dataDefinedSizeLegend() );
+  r->setDataDefinedSizeLegend( dataDefinedSizeLegend().release() );
   mPreviewLayer->setRenderer( r );
   mPreviewModel->refreshLayerLegend( mPreviewLayerNode );
   viewLayerTree->expandAll();

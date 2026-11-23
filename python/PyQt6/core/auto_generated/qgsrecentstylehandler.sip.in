@@ -59,7 +59,7 @@ Example
 .. seealso:: :py:func:`recentSymbol`
 %End
 
-    QgsSymbol *recentSymbol( const QString &identifier ) const /Factory/;
+    std::unique_ptr<QgsSymbol> recentSymbol( const QString &identifier ) const;
 %Docstring
 Returns a copy of the recently used symbol with the specified
 ``identifier``, or ``None`` if no symbol with the identifier exists.

@@ -15,7 +15,13 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifdef WITH_SFCGAL
+#include "qgsconfig.h"
+
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
+#ifdef HAVE_SFCGAL
 #include "qgssfcgalengine.h"
 
 #include <SFCGAL/capi/sfcgal_c.h>
@@ -25,9 +31,6 @@
 #include "qgsgeometryfactory.h"
 #include "qgssfcgalgeometry.h"
 
-#include <QString>
-
-using namespace Qt::StringLiterals;
 
 // ===================================
 // sfcgal namespace
@@ -1446,4 +1449,4 @@ sfcgal::shared_prim QgsSfcgalEngine::primitiveScale( const sfcgal::primitive *pr
 #endif
 
 
-#endif // #ifdef WITH_SFCGAL
+#endif // #ifdef HAVE_SFCGAL

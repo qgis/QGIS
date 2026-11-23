@@ -2235,6 +2235,33 @@ class TestPyQgsOGRProviderGpkg(QgisTestCase):
         self.assertEqual(len([f for f in shops_layer.getFeatures()]), 1)
         self.assertTrue(p.rollBack(True, shops_layer))
 
+    def testTransactionGroupOuterInnerFeatureIteration(self):
+        tmpfile = os.path.join(
+            self.basetestpath, "testTransactionGroupOuterInnerFeatureIteration.gpkg"
+        )
+        testdata_path = unitTestDataPath("provider")
+        shutil.copy(os.path.join(testdata_path, "geopackage.gpkg"), tmpfile)
+        point_layer = QgsVectorLayer(f"{tmpfile}|layername=geopackage", "test", "ogr")
+        assert point_layer.isValid()
+
+        project = QgsProject()
+        project.setTransactionMode(Qgis.TransactionMode.AutomaticGroups)
+        project.addMapLayers([point_layer])
+
+        self.assertTrue(point_layer.startEditing())
+        self.assertTrue(point_layer.isEditable())
+        self.assertTrue(point_layer.dataProvider().transaction())
+
+        count = 0
+        outer_it = point_layer.getFeatures(QgsFeatureRequest())
+        for outer_feature in outer_it:
+            inner_feature = point_layer.getFeature(outer_feature.id())
+            count = count + 1
+            if count > 10:
+                break
+
+        self.assertEqual(count, 5)
+
     def testJson(self):
         tmpfile = os.path.join(self.basetestpath, "test_json.gpkg")
         testdata_path = unitTestDataPath("provider")

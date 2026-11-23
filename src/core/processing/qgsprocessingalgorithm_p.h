@@ -79,7 +79,7 @@ namespace QgsProcessingAlgorithmPrivate
 // represents the source that reflects the internal logic of the algorithm. (Most of the time this will be at the start of the algorithm's
 // processAlgorithm implementation)
 #define QGS_MARK_ALGORITHM_SOURCE ( void ) QgsProcessingAlgorithmPrivate::QgsSourceLocationRegistrar<std::remove_pointer_t<decltype( this )>, __LINE__, __FILE__>::registered;
-#endif
 ///@endcond PRIVATE
+#endif
 
 #endif // QGSPROCESSINGALGORITHMP_H

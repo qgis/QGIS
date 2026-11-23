@@ -36,6 +36,7 @@ cppcheck --library=qt.cfg --inline-suppr \
          -DSIP_DOCSTRING_OUT= \
          -DSIP_FACTORY= \
          -DSIP_PYNAME= \
+         -DSIP_SKIP= \
          -DSIP_THROW= \
          -DSIP_INSERT_QLIST_ENUM_CONVERSION_CODE= \
          -DFINAL="final" \

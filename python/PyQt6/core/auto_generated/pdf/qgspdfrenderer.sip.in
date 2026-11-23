@@ -38,6 +38,14 @@ Constructs a PDF renderer for the file at the specified ``path``.
     ~QgsPdfRenderer();
 
 
+    static bool isAvailable();
+%Docstring
+Returns ``True`` if the PDF rendering capability is available on the
+system.
+
+.. versionadded:: 4.4
+%End
+
     QString path() const;
 %Docstring
 Returns the file path of the associated PDF file.

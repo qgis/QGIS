@@ -38,7 +38,7 @@ given from outside rather than being set inside
 %End
     ~QgsDataDefinedSizeLegendWidget();
 
-    QgsDataDefinedSizeLegend *dataDefinedSizeLegend() const /Factory/;
+    std::unique_ptr<QgsDataDefinedSizeLegend> dataDefinedSizeLegend() const;
 %Docstring
 Returns configuration as set up in the dialog (may be ``None``).
 Ownership is passed to the caller.

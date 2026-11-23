@@ -339,6 +339,7 @@ void QgsForwardRenderView::removeClipPlanes()
     if ( qobject_cast<Qt3DRender::QClipPlane *>( state ) )
     {
       mClipRenderStateSet->removeRenderState( state );
+      delete state;
     }
   }
 }

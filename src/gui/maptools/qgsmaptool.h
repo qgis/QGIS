@@ -345,10 +345,6 @@ class GUI_EXPORT QgsMapTool : public QObject
      */
     void reactivated();
 
-  private slots:
-    //! clear pointer when action is destroyed
-    void actionDestroyed();
-
   protected:
     //! Constructor takes a map canvas as a parameter.
     QgsMapTool( QgsMapCanvas *canvas SIP_TRANSFERTHIS );
@@ -409,7 +405,7 @@ class GUI_EXPORT QgsMapTool : public QObject
      * Optional pointer to an action that will be checked on map tool activation
      * and unchecked on map tool deactivation.
      */
-    QAction *mAction = nullptr;
+    QPointer<QAction> mAction;
 
     /**
      * Optional pointer to a button that will be checked on map tool activation

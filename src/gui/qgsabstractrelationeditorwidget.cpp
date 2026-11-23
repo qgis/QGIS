@@ -147,7 +147,7 @@ QString QgsAbstractRelationEditorWidget::label() const
   return QString();
 }
 
-void QgsAbstractRelationEditorWidget::setLabel( const QString &label )
+void QgsAbstractRelationEditorWidget::setLabel( const QString &label ) // cppcheck-suppress functionConst
 {
   Q_UNUSED( label )
 }
@@ -157,7 +157,7 @@ bool QgsAbstractRelationEditorWidget::showLabel() const
   return false;
 }
 
-void QgsAbstractRelationEditorWidget::setShowLabel( bool showLabel )
+void QgsAbstractRelationEditorWidget::setShowLabel( bool showLabel ) // cppcheck-suppress functionConst
 {
   Q_UNUSED( showLabel )
 }

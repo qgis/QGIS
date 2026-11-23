@@ -55,6 +55,11 @@
 #include <time.h>
 #endif
 
+static void initresources(void)
+{
+    Q_INIT_RESOURCE(aatl);
+}
+
 namespace pdf
 {
 
@@ -479,6 +484,7 @@ PDFCertificateEntries PDFCertificateStore::getAATLCertificates()
 {
     PDFCertificateEntries result;
 
+    initresources();
     QFile aatlFile(":/aatl/SecuritySettings.xml");
     if (aatlFile.open(QFile::ReadOnly))
     {
