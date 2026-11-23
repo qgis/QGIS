@@ -736,7 +736,7 @@ QPointF QgsModelComponentGraphicItem::linkPoint( Qt::Edge edge, int index, bool 
           offsetX = 17;
         }
         const QFontMetricsF fm( mFont );
-        const double hbase = -itemSize().height() / 2.0 - fm.height() / 2.0 - fm.height() * 1.2 + 8;
+        const double hbase = -itemSize().height() / 2.0 - fm.height() / 2.0 - 6.4;
         const double y = hbase - ( fm.height() * 1.2 ) * ( paramIndex + 1 );
         const double x = -itemSize().width() / 2 + offsetX;
         return QPointF( x, y );
