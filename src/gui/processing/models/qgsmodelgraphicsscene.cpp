@@ -153,7 +153,7 @@ void QgsModelGraphicsScene::registerWidgetContextGenerator( QgsProcessingWidgetC
   mWidgetContextGenerator = generator;
 }
 
-QgsModelComponentGraphicItem *QgsModelGraphicsScene::createParameterGraphicItem( QgsProcessingModelAlgorithm *model, QgsProcessingModelParameter *param ) const
+QgsModelParameterGraphicItem *QgsModelGraphicsScene::createParameterGraphicItem( QgsProcessingModelAlgorithm *model, QgsProcessingModelParameter *param ) const
 {
   return new QgsModelParameterGraphicItem( param, model, nullptr );
 }
@@ -163,12 +163,12 @@ QgsModelChildAlgorithmGraphicItem *QgsModelGraphicsScene::createChildAlgGraphicI
   return new QgsModelChildAlgorithmGraphicItem( child, model, nullptr );
 }
 
-QgsModelComponentGraphicItem *QgsModelGraphicsScene::createOutputGraphicItem( QgsProcessingModelAlgorithm *model, QgsProcessingModelOutput *output ) const
+QgsModelOutputGraphicItem *QgsModelGraphicsScene::createOutputGraphicItem( QgsProcessingModelAlgorithm *model, QgsProcessingModelOutput *output ) const
 {
   return new QgsModelOutputGraphicItem( output, model, nullptr );
 }
 
-QgsModelComponentGraphicItem *QgsModelGraphicsScene::createCommentGraphicItem( QgsProcessingModelAlgorithm *model, QgsProcessingModelComment *comment, QgsModelComponentGraphicItem *parentItem ) const
+QgsModelCommentGraphicItem *QgsModelGraphicsScene::createCommentGraphicItem( QgsProcessingModelAlgorithm *model, QgsProcessingModelComment *comment, QgsModelComponentGraphicItem *parentItem ) const
 {
   return new QgsModelCommentGraphicItem( comment, parentItem, model, nullptr );
 }
@@ -199,7 +199,7 @@ void QgsModelGraphicsScene::createItems( QgsProcessingModelAlgorithm *model, Qgs
   const QMap<QString, QgsProcessingModelParameter> params = model->parameterComponents();
   for ( auto it = params.constBegin(); it != params.constEnd(); ++it )
   {
-    QgsModelComponentGraphicItem *item = createParameterGraphicItem( model, it.value().clone() );
+    QgsModelParameterGraphicItem *item = createParameterGraphicItem( model, it.value().clone() );
     item->registerWidgetContextGenerator( mWidgetContextGenerator );
     addItem( item );
     item->setPos( it.value().position().x(), it.value().position().y() );
@@ -347,7 +347,7 @@ void QgsModelGraphicsScene::createItems( QgsProcessingModelAlgorithm *model, Qgs
   for ( auto it = childAlgs.constBegin(); it != childAlgs.constEnd(); ++it )
   {
     const QMap<QString, QgsProcessingModelOutput> outputs = it.value().modelOutputs();
-    QMap<QString, QgsModelComponentGraphicItem *> outputItems;
+    QMap<QString, QgsModelOutputGraphicItem *> outputItems;
 
     // offsets from algorithm item needed to correctly place output items
     // which does not have valid position assigned (https://github.com/qgis/QGIS/issues/48132)
@@ -357,7 +357,7 @@ void QgsModelGraphicsScene::createItems( QgsProcessingModelAlgorithm *model, Qgs
 
     for ( auto outputIt = outputs.constBegin(); outputIt != outputs.constEnd(); ++outputIt )
     {
-      QgsModelComponentGraphicItem *item = createOutputGraphicItem( model, outputIt.value().clone() );
+      QgsModelOutputGraphicItem *item = createOutputGraphicItem( model, outputIt.value().clone() );
       item->registerWidgetContextGenerator( mWidgetContextGenerator );
       addItem( item );
       connect( item, &QgsModelComponentGraphicItem::requestModelRepaint, this, &QgsModelGraphicsScene::rebuildRequired );
@@ -477,12 +477,12 @@ void QgsModelGraphicsScene::resetChildAlgorithmItems( const QSet<QString> &child
   }
 }
 
-QgsModelComponentGraphicItem *QgsModelGraphicsScene::parameterItem( const QString &name )
+QgsModelParameterGraphicItem *QgsModelGraphicsScene::parameterItem( const QString &name )
 {
   return mParameterItems.value( name );
 }
 
-QgsModelComponentGraphicItem *QgsModelGraphicsScene::outputItem( const QString &childId, const QString &childOutputName )
+QgsModelOutputGraphicItem *QgsModelGraphicsScene::outputItem( const QString &childId, const QString &childOutputName )
 {
   auto it = mOutputItems.constFind( childId );
   if ( it == mOutputItems.constEnd() )

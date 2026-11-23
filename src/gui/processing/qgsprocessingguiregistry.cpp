@@ -473,7 +473,7 @@ QgsProcessingModelConfigWidget *QgsProcessingGuiInternalModelConfigWidgetFactory
       if ( !modelScene )
         return;
 
-      QgsModelParameterGraphicItem *graphicItem = dynamic_cast< QgsModelParameterGraphicItem * >( modelScene->parameterItem( componentName ) );
+      QgsModelParameterGraphicItem *graphicItem = modelScene->parameterItem( componentName );
       if ( !graphicItem )
         return; // should not happen
 
@@ -516,7 +516,7 @@ QgsProcessingModelConfigWidget *QgsProcessingGuiInternalModelConfigWidgetFactory
       if ( !modelScene )
         return;
 
-      QgsModelOutputGraphicItem *graphicItem = dynamic_cast< QgsModelOutputGraphicItem * >( modelScene->outputItem( childId, childOutputName ) );
+      QgsModelOutputGraphicItem *graphicItem = modelScene->outputItem( childId, childOutputName );
       if ( !graphicItem )
         return; // should not happen
 

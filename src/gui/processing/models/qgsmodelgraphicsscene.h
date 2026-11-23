@@ -35,6 +35,9 @@ class QgsMessageBar;
 class QgsModelArrowItem;
 class QgsProcessingModelFeedback;
 class QgsProcessingWidgetContextGenerator;
+class QgsModelParameterGraphicItem;
+class QgsModelOutputGraphicItem;
+class QgsModelCommentGraphicItem;
 
 ///@cond NOT_STABLE
 
@@ -146,14 +149,14 @@ class GUI_EXPORT QgsModelGraphicsScene : public QGraphicsScene
      *
      * \since QGIS 3.44
      */
-    SIP_SKIP QgsModelComponentGraphicItem *parameterItem( const QString &name );
+    SIP_SKIP QgsModelParameterGraphicItem *parameterItem( const QString &name );
 
     /**
      * Returns the QgsModelComponentGraphicItem corresponding to the specified child algorithm output
      *
      * \since QGIS 4.0
      */
-    SIP_SKIP QgsModelComponentGraphicItem *outputItem( const QString &childId, const QString &childOutputName );
+    SIP_SKIP QgsModelOutputGraphicItem *outputItem( const QString &childId, const QString &childOutputName );
 
     /**
      * Selects all the components in the scene.
@@ -295,7 +298,7 @@ class GUI_EXPORT QgsModelGraphicsScene : public QGraphicsScene
     /**
      * Creates a new graphic item for a model parameter.
      */
-    SIP_SKIP QgsModelComponentGraphicItem *createParameterGraphicItem( QgsProcessingModelAlgorithm *model, QgsProcessingModelParameter *param ) const;
+    SIP_SKIP QgsModelParameterGraphicItem *createParameterGraphicItem( QgsProcessingModelAlgorithm *model, QgsProcessingModelParameter *param ) const;
 
     /**
      * Creates a new graphic item for a model child algorithm.
@@ -305,12 +308,12 @@ class GUI_EXPORT QgsModelGraphicsScene : public QGraphicsScene
     /**
      * Creates a new graphic item for a model output.
      */
-    SIP_SKIP QgsModelComponentGraphicItem *createOutputGraphicItem( QgsProcessingModelAlgorithm *model, QgsProcessingModelOutput *output ) const;
+    SIP_SKIP QgsModelOutputGraphicItem *createOutputGraphicItem( QgsProcessingModelAlgorithm *model, QgsProcessingModelOutput *output ) const;
 
     /**
      * Creates a new graphic item for a model comment.
      */
-    SIP_SKIP QgsModelComponentGraphicItem *createCommentGraphicItem( QgsProcessingModelAlgorithm *model, QgsProcessingModelComment *comment, QgsModelComponentGraphicItem *parentItem ) const;
+    SIP_SKIP QgsModelCommentGraphicItem *createCommentGraphicItem( QgsProcessingModelAlgorithm *model, QgsProcessingModelComment *comment, QgsModelComponentGraphicItem *parentItem ) const;
 
     /**
      * Creates a new graphic item for a model group box.
@@ -333,9 +336,9 @@ class GUI_EXPORT QgsModelGraphicsScene : public QGraphicsScene
 
     QgsProcessingModelAlgorithm *mModel = nullptr;
 
-    QMap<QString, QgsModelComponentGraphicItem *> mParameterItems;
+    QMap<QString, QgsModelParameterGraphicItem *> mParameterItems;
     QMap<QString, QgsModelChildAlgorithmGraphicItem *> mChildAlgorithmItems;
-    QMap<QString, QMap<QString, QgsModelComponentGraphicItem *>> mOutputItems;
+    QMap<QString, QMap<QString, QgsModelOutputGraphicItem *>> mOutputItems;
     QMap<QString, QgsModelComponentGraphicItem *> mGroupBoxItems;
     QgsProcessingModelResult mLastResult;
     QMap<QString, long long> mLastResultCount;
