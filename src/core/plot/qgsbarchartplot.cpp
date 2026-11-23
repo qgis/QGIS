@@ -30,7 +30,7 @@ using namespace Qt::StringLiterals;
 
 QgsBarChartPlot::QgsBarChartPlot()
 {
-  setFillSymbolAt( 0, QgsPlotDefaultSettings::barChartFillSymbol() );
+  setFillSymbolAt( 0, QgsPlotDefaultSettings::barChartFillSymbol().release() );
 }
 
 void QgsBarChartPlot::renderContent( QgsRenderContext &context, QgsPlotRenderContext &, const QRectF &plotArea, const QgsPlotData &plotData )
@@ -234,9 +234,9 @@ bool QgsBarChartPlot::readXml( const QDomElement &element, const QgsReadWriteCon
   return true;
 }
 
-QgsBarChartPlot *QgsBarChartPlot::create()
+std::unique_ptr<QgsBarChartPlot> QgsBarChartPlot::create()
 {
-  return new QgsBarChartPlot();
+  return std::make_unique<QgsBarChartPlot>();
 }
 
 QgsVectorLayerAbstractPlotDataGatherer *QgsBarChartPlot::createDataGatherer( QgsPlot *plot )

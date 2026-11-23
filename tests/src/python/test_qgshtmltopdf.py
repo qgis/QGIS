@@ -15,6 +15,7 @@ import subprocess
 import sys
 import tempfile
 
+from qgis.core import QgsApplication
 from qgis.PyQt.QtGui import QImage
 from qgis.testing import QgisTestCase, unittest
 from utilities import start_app, unitTestDataPath
@@ -45,23 +46,29 @@ class TestQgsHtmlToPdf(QgisTestCase):
     def control_path_prefix(cls):
         return "html_to_pdf"
 
-    def run_html_to_pdf(self, arguments):
-        call = [QGIS_HTML_TO_PDF_BIN] + arguments
-        print(" ".join(call))
+    def run_html_to_pdf(self, arguments, settings_json):
+        with tempfile.TemporaryDirectory() as tmp_dir:
+            if settings_json:
+                with open(tmp_dir + "/settings.json", "w", encoding="utf8") as f:
+                    f.write(json.dumps(settings_json))
+                arguments.append(f"--settings={tmp_dir}/settings.json")
 
-        myenv = os.environ.copy()
-        myenv["QGIS_DEBUG"] = "0"
+            call = [QGIS_HTML_TO_PDF_BIN] + arguments
+            print(" ".join(call))
 
-        p = subprocess.Popen(
-            call, stdout=subprocess.PIPE, stderr=subprocess.PIPE, env=myenv
-        )
-        output, err = p.communicate()
-        rc = p.returncode
+            myenv = os.environ.copy()
+            myenv["QGIS_DEBUG"] = "0"
 
-        return rc, output.decode(), err.decode()
+            p = subprocess.Popen(
+                call, stdout=subprocess.PIPE, stderr=subprocess.PIPE, env=myenv
+            )
+            output, err = p.communicate()
+            rc = p.returncode
+
+            return rc, output.decode(), err.decode()
 
     def testNoArgs(self):
-        rc, output, err = self.run_html_to_pdf([])
+        rc, output, err = self.run_html_to_pdf([], {})
         self.assertIn("QGIS HTML to PDF converter utility", output)
         self.assertFalse(self.strip_std_ignorable_errors(err))
         self.assertEqual(rc, 1)
@@ -71,7 +78,9 @@ class TestQgsHtmlToPdf(QgisTestCase):
         with tempfile.TemporaryDirectory() as tmp_dir:
             pdf_path = tmp_dir + "/test.pdf"
             png_path = tmp_dir + "/test.png"
-            rc, output, err = self.run_html_to_pdf([html_path, pdf_path, "--width=400"])
+            rc, output, err = self.run_html_to_pdf(
+                [html_path, pdf_path, "--width=400"], {}
+            )
             self.assertEqual(rc, 0)
 
             self.pdf_to_png(pdf_path, png_path, dpi=96, page=1)
@@ -91,14 +100,16 @@ class TestQgsHtmlToPdf(QgisTestCase):
             with open(html_path, "w", encoding="utf8") as f_out:
                 f_out.write("""
                 <html>
-                <body>
+                <body style="margin: 0px; padding: 0px">
                 <div style="background-color: yellow; width: 100%; border: 3px solid blue; height: 30px">
                 </div>
                 """)
 
             pdf_path = tmp_dir + "/test.pdf"
             png_path = tmp_dir + "/test.png"
-            rc, output, err = self.run_html_to_pdf([html_path, pdf_path, "--width=400"])
+            rc, output, err = self.run_html_to_pdf(
+                [html_path, pdf_path, "--width=400"], {}
+            )
             self.assertEqual(rc, 0)
 
             self.pdf_to_png(pdf_path, png_path, dpi=96, page=1)
@@ -112,7 +123,9 @@ class TestQgsHtmlToPdf(QgisTestCase):
                 )
             )
 
-            rc, output, err = self.run_html_to_pdf([html_path, pdf_path, "--width=600"])
+            rc, output, err = self.run_html_to_pdf(
+                [html_path, pdf_path, "--width=600"], {}
+            )
             self.assertEqual(rc, 0)
 
             self.pdf_to_png(pdf_path, png_path, dpi=96, page=1)
@@ -122,6 +135,89 @@ class TestQgsHtmlToPdf(QgisTestCase):
                 self.image_check(
                     "dynamic_width_600",
                     "dynamic_width_600",
+                    image,
+                )
+            )
+
+    def test_user_stylesheet(self):
+        with tempfile.TemporaryDirectory() as tmp_dir:
+            html_path = tmp_dir + "/test.html"
+            with open(html_path, "w", encoding="utf8") as f_out:
+                f_out.write("""
+                <html>
+                <body style="margin: 0px; padding: 0px">
+                <div style="background-color: yellow; width: 100%; border: 3px solid blue; height: 30px">\
+                </div>
+                """)
+
+            pdf_path = tmp_dir + "/test.pdf"
+            png_path = tmp_dir + "/test.png"
+            rc, output, err = self.run_html_to_pdf(
+                [html_path, pdf_path, "--width=400"],
+                {
+                    "userStylesheet": """div { background-color: blue !important; border: 5px solid yellow  !important;}"""
+                },
+            )
+            self.assertEqual(rc, 0)
+
+            self.pdf_to_png(pdf_path, png_path, dpi=96, page=1)
+
+            image = QImage(png_path)
+            self.assertTrue(
+                self.image_check(
+                    "user_stylesheet",
+                    "user_stylesheet",
+                    image,
+                )
+            )
+
+    def test_feature_json(self):
+        with tempfile.TemporaryDirectory() as tmp_dir:
+            html_path = tmp_dir + "/test.html"
+            with open(html_path, "w", encoding="utf8") as f_out:
+                f_out.write("""
+                <html>
+                <head>
+                <script>
+                function setFeature(feature) {
+                    const box = document.getElementById('box');
+                    box.style.backgroundColor = feature.properties.bg;
+                    box.style.borderColor = feature.properties.border;
+                    box.style.height = feature.properties.height + 'px';
+                }
+                </script>
+                </head>
+                <body style="margin: 0px; padding: 0px">
+                <div id="box" style="background-color: red; width: 100%; border: 5px solid black; height: 20px; box-sizing: border-box;">
+                 </div>
+                """)
+
+            pdf_path = tmp_dir + "/test.pdf"
+            png_path = tmp_dir + "/test.png"
+            rc, output, err = self.run_html_to_pdf(
+                [html_path, pdf_path, "--width=400"],
+                {
+                    "feature": {
+                        "type": "Feature",
+                        "id": 1,
+                        "geometry": None,
+                        "properties": {
+                            "bg": "green",
+                            "border": "yellow",
+                            "height": 50,
+                        },
+                    }
+                },
+            )
+            self.assertEqual(rc, 0)
+
+            self.pdf_to_png(pdf_path, png_path, dpi=96, page=1)
+
+            image = QImage(png_path)
+            self.assertTrue(
+                self.image_check(
+                    "feature_json",
+                    "feature_json",
                     image,
                 )
             )
@@ -130,8 +226,8 @@ class TestQgsHtmlToPdf(QgisTestCase):
 if __name__ == "__main__":
     # look for qgis bin path
     QGIS_HTML_TO_PDF_BIN = ""
-    prefixPath = os.environ["QGIS_PREFIX_PATH"]
-    # see qgsapplication.cpp:98
+
+    prefixPath = QgsApplication.libexecPath()
     for f in ["", "..", "bin"]:
         d = os.path.join(prefixPath, f)
         b = os.path.abspath(os.path.join(d, "qgis_html_to_pdf"))
@@ -155,7 +251,7 @@ if __name__ == "__main__":
             if found:
                 break
 
-    print(f"\nQGIS_PROCESS_BIN: {QGIS_HTML_TO_PDF_BIN}")
+    print(f"\nQGIS_HTML_TO_PDF_BIN: {QGIS_HTML_TO_PDF_BIN}")
     assert QGIS_HTML_TO_PDF_BIN, (
         "qgis_html_to_pdf binary not found, skipping test suite"
     )

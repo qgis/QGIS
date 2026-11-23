@@ -54,7 +54,7 @@ class QgsAmbientOcclusionBlurEntity;
  *
  * \since QGIS 3.44
  */
-class QgsAmbientOcclusionRenderView : public QgsAbstractRenderView
+class _3D_EXPORT QgsAmbientOcclusionRenderView : public QgsAbstractRenderView
 {
   public:
     //! Default constructor

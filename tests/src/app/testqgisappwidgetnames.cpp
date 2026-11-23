@@ -90,12 +90,17 @@ void TestQgisAppWidgetNames::cleanup()
 
 void TestQgisAppWidgetNames::validWidgetNames()
 {
+  const QList<QToolBar *> allToolBars = mQgisApp->findChildren<QToolBar *>();
+  for ( const QToolBar *toolBar : allToolBars )
+  {
+    QVERIFY2( !toolBar->objectName().isEmpty(), qPrintable( u"QToolBar has no objectName (parent=%1)"_s.arg( toolBar->parent() ? toolBar->parent()->metaObject()->className() : "null" ) ) );
+  }
+
   QList<QPair<QString, const QWidget *>> widgets = { { "/MainWindow/menuBar", mQgisApp->menuBar() } };
 
   const QList<QToolBar *> toolBars = mQgisApp->findChildren<QToolBar *>( Qt::FindDirectChildrenOnly );
   for ( const QToolBar *toolBar : toolBars )
   {
-    QVERIFY2( !toolBar->objectName().isEmpty(), qPrintable( u"QToolBar has no objectName"_s ) );
     widgets << QPair<QString, const QWidget *> { "/MainWindow/" + toolBar->objectName(), toolBar };
   }
 

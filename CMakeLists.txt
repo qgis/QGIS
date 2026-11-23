@@ -26,6 +26,7 @@ set (WITH_ORACLE FALSE CACHE BOOL "Determines whether Oracle support should be b
 set (WITH_PDAL TRUE CACHE BOOL "Determines whether PDAL support should be built")
 set (WITH_QGIS_PROCESS TRUE CACHE BOOL "Determines whether the standalone \"qgis_process\" tool should be built")
 set (WITH_QTPOSITIONING TRUE CACHE BOOL "Determines whether QtPositioning support should be included")
+set (WITH_TBB FALSE CACHE BOOL "Determines whether TBB support should be included")
 set (WITH_VCPKG FALSE CACHE BOOL "Use the vcpkg submodule for dependency management.")
 set (WITH_TRACY FALSE CACHE BOOL "Determines whether Tracy profiler support should be included")
 
@@ -69,7 +70,7 @@ endif()
 #############################################################
 # Project and version
 set(CPACK_PACKAGE_VERSION_MAJOR "4")
-set(CPACK_PACKAGE_VERSION_MINOR "3")
+set(CPACK_PACKAGE_VERSION_MINOR "5")
 set(CPACK_PACKAGE_VERSION_PATCH "0")
 set(COMPLETE_VERSION ${CPACK_PACKAGE_VERSION_MAJOR}.${CPACK_PACKAGE_VERSION_MINOR}.${CPACK_PACKAGE_VERSION_PATCH})
 set(RELEASE_NAME "Master")
@@ -499,12 +500,10 @@ if(WITH_CORE)
     if(SFCGAL_VERSION VERSION_LESS "2.0")
       message(FATAL_ERROR "Cannot build QGIS using SFCGAL older than 2.0")
     endif()
-    if (WITH_SFCGAL)
-      add_definitions(-DWITH_SFCGAL)
-      message(STATUS "SFCGAL support enabled")
-    else()
-      message(STATUS "SFCGAL support DISABLED.")
-    endif()
+    set(HAVE_SFCGAL TRUE) # used in qgsconfig.h
+    message(STATUS "SFCGAL support enabled")
+  else()
+    message(STATUS "SFCGAL support DISABLED.")
   endif()
 
   if (WITH_GEOGRAPHICLIB)
@@ -582,6 +581,10 @@ if(WITH_CORE)
     set(HAVE_TRACY TRUE)
   endif()
 
+  if (WITH_TBB)
+    find_package(TBB REQUIRED)
+  endif()
+
   #############################################################
   # search for Qt
 
@@ -612,6 +615,10 @@ if(WITH_CORE)
   set (WITH_PDF4QT FALSE CACHE BOOL "Determines whether the embedded PDF4Qt library should be build for PDF and HTML to QPainter conversion")
   if (WITH_PDF4QT)
     set(HAVE_PDF4QT TRUE)  # used in qgisconfig.h
+    if((UNIX AND NOT APPLE) AND NOT WITH_TBB)
+      message(FATAL_ERROR "PDF4Qt requires TBB support. Set WITH_TBB to TRUE.")
+    endif()
+    set (WITH_INTERNAL_BLEND2D FALSE CACHE BOOL "Determines whether the embedded PDF4Qt library should be build with internal BLEND2D")
     message(STATUS "PDF4Qt enabled")
   else()
     message(STATUS "PDF4Qt disabled")

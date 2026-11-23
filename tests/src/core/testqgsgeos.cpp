@@ -631,6 +631,9 @@ void TestQgsGeos::splitGeometry_data()
   QTest::newRow( "Split an invalid geometry" ) << u"Point (0, 0)"_s << u"LineString (0 0, 1 1)"_s << QStringList() << QgsGeometryEngine::InvalidBaseGeometry;
   QTest::newRow( "Split with invalid geometry" ) << u"LineString (0 0, 1 1)"_s << u"Point (0, 0)"_s << QStringList() << QgsGeometryEngine::InvalidInput;
 
+  //Empty GEOMETRY COLLECTION result
+  QTest::newRow( "Empty result: nothing happened" ) << u"CURVEPOLYGON ((295 -161, 218 -315, 437 -251, 295 -161))"_s << u"LineString (0 0, 1 1)"_s << QStringList() << QgsGeometryEngine::NothingHappened;
+
   //Points
   QTest::newRow( "Split point" ) << u"Point (0 0)"_s << u"LineString (0 0, 1 1)"_s << QStringList() << QgsGeometryEngine::SplitCannotSplitPoint;
 

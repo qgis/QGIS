@@ -33,19 +33,19 @@ using namespace Qt::StringLiterals;
 // QgsPropertyTransformer
 //
 
-QgsPropertyTransformer *QgsPropertyTransformer::create( QgsPropertyTransformer::Type type )
+std::unique_ptr<QgsPropertyTransformer> QgsPropertyTransformer::create( QgsPropertyTransformer::Type type )
 {
-  QgsPropertyTransformer *transformer = nullptr;
+  std::unique_ptr<QgsPropertyTransformer> transformer;
   switch ( type )
   {
     case GenericNumericTransformer:
-      transformer = new QgsGenericNumericTransformer();
+      transformer = std::make_unique<QgsGenericNumericTransformer>();
       break;
     case SizeScaleTransformer:
-      transformer = new QgsSizeScaleTransformer();
+      transformer = std::make_unique<QgsSizeScaleTransformer>();
       break;
     case ColorRampTransformer:
-      transformer = new QgsColorRampTransformer();
+      transformer = std::make_unique<QgsColorRampTransformer>();
       break;
   }
   return transformer;
@@ -108,12 +108,12 @@ QVariant QgsPropertyTransformer::toVariant() const
   return transformerMap;
 }
 
-QgsPropertyTransformer *QgsPropertyTransformer::fromExpression( const QString &expression, QString &baseExpression, QString &fieldName )
+std::unique_ptr<QgsPropertyTransformer> QgsPropertyTransformer::fromExpression( const QString &expression, QString &baseExpression, QString &fieldName )
 {
   baseExpression.clear();
   fieldName.clear();
 
-  if ( QgsPropertyTransformer *sizeScale = QgsSizeScaleTransformer::fromExpression( expression, baseExpression, fieldName ) )
+  if ( std::unique_ptr<QgsPropertyTransformer> sizeScale = QgsSizeScaleTransformer::fromExpression( expression, baseExpression, fieldName ) )
     return sizeScale;
   else
     return nullptr;
@@ -229,7 +229,7 @@ QString QgsGenericNumericTransformer::toExpression( const QString &baseExpressio
     return u"coalesce(scale_polynomial(%1, %2, %3, %4, %5, %6), %7)"_s.arg( baseExpression, minValueString, maxValueString, minOutputString, maxOutputString, exponentString, nullOutputString );
 }
 
-QgsGenericNumericTransformer *QgsGenericNumericTransformer::fromExpression( const QString &expression, QString &baseExpression, QString &fieldName ) // cppcheck-suppress duplInheritedMember
+std::unique_ptr<QgsGenericNumericTransformer> QgsGenericNumericTransformer::fromExpression( const QString &expression, QString &baseExpression, QString &fieldName ) // cppcheck-suppress duplInheritedMember
 {
   bool ok = false;
 
@@ -303,7 +303,7 @@ QgsGenericNumericTransformer *QgsGenericNumericTransformer::fromExpression( cons
   {
     baseExpression = args[0]->dump();
   }
-  return new QgsGenericNumericTransformer( minValue, maxValue, minOutput, maxOutput, nullValue, exponent );
+  return std::make_unique<QgsGenericNumericTransformer>( minValue, maxValue, minOutput, maxOutput, nullValue, exponent );
 }
 
 
@@ -441,7 +441,7 @@ QString QgsSizeScaleTransformer::toExpression( const QString &baseExpression ) c
   return QString();
 }
 
-QgsSizeScaleTransformer *QgsSizeScaleTransformer::fromExpression( const QString &expression, QString &baseExpression, QString &fieldName ) // cppcheck-suppress duplInheritedMember
+std::unique_ptr<QgsSizeScaleTransformer> QgsSizeScaleTransformer::fromExpression( const QString &expression, QString &baseExpression, QString &fieldName ) // cppcheck-suppress duplInheritedMember
 {
   bool ok = false;
 
@@ -523,7 +523,7 @@ QgsSizeScaleTransformer *QgsSizeScaleTransformer::fromExpression( const QString 
   {
     baseExpression = args[0]->dump();
   }
-  return new QgsSizeScaleTransformer( type, minValue, maxValue, minSize, maxSize, nullSize, exponent );
+  return std::make_unique<QgsSizeScaleTransformer>( type, minValue, maxValue, minSize, maxSize, nullSize, exponent );
 }
 
 

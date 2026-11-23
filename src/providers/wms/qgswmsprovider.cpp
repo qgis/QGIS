@@ -863,7 +863,8 @@ QImage QgsWmsProvider::draw( const QgsRectangle &viewExtent, int pixelWidth, int
   const int maxWidth { maxTileSize.width() };
   const int maxHeight { maxTileSize.height() };
 
-  if ( !mSettings.mTiled && pixelWidth <= maxWidth && pixelHeight <= maxHeight )
+  const bool requestedImageIsTooBig = ( pixelWidth > maxWidth || pixelHeight > maxHeight );
+  if ( !mSettings.mTiled && !requestedImageIsTooBig )
   {
     QUrl url = createRequestUrlWMS( viewExtent, pixelWidth, pixelHeight );
 
@@ -904,13 +905,13 @@ QImage QgsWmsProvider::draw( const QgsRectangle &viewExtent, int pixelWidth, int
 
       tileMode = mTileLayer->tileMode;
     }
-    else if ( ( mSettings.mMaxWidth != 0 && mSettings.mMaxHeight != 0 ) || pixelWidth > maxWidth || pixelHeight > maxHeight )
+    else if ( ( mSettings.mMaxWidth != 0 && mSettings.mMaxHeight != 0 ) || requestedImageIsTooBig )
     {
       int w = mSettings.mMaxWidth != 0 && mSettings.mMaxWidth < maxWidth ? mSettings.mMaxWidth : maxWidth;
       int h = mSettings.mMaxHeight != 0 && mSettings.mMaxHeight < maxHeight ? mSettings.mMaxHeight : maxHeight;
 
-      // this is an ordinary WMS server, but the user requested tiled approach
-      // so we will pretend it is a WMS-C server with just one tile matrix
+      // this is an ordinary WMS server, but the user requested tiled approach (or image is too big)
+      // so we will tile it ourselves. We pretend it is a WMS-C server with just one tile matrix
       tempTm = std::make_unique<QgsWmtsTileMatrix>();
       tempTm->topLeft = QgsPointXY( mLayerExtent.xMinimum(), mLayerExtent.yMaximum() );
       tempTm->tileWidth = w;

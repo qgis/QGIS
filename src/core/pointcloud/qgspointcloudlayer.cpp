@@ -286,7 +286,7 @@ bool QgsPointCloudLayer::readStyle( const QDomNode &node, QString &, QgsReadWrit
     // make sure layer has a renderer - if none exists, fallback to a default renderer
     if ( !mRenderer )
     {
-      setRenderer( QgsPointCloudRendererRegistry::defaultRenderer( this ) );
+      setRenderer( QgsPointCloudRendererRegistry::defaultRenderer( this ).release() );
     }
   }
 
@@ -507,7 +507,7 @@ void QgsPointCloudLayer::setDataSourcePrivate( const QString &dataSource, const 
     if ( !defaultLoadedFlag )
     {
       // all else failed, create default renderer
-      setRenderer( QgsPointCloudRendererRegistry::defaultRenderer( this ) );
+      setRenderer( QgsPointCloudRendererRegistry::defaultRenderer( this ).release() );
     }
   }
 }
@@ -925,7 +925,7 @@ void QgsPointCloudLayer::resetRenderer()
   }
   if ( !mRenderer || mRenderer->type() == "extent"_L1 )
   {
-    setRenderer( QgsPointCloudRendererRegistry::defaultRenderer( this ) );
+    setRenderer( QgsPointCloudRendererRegistry::defaultRenderer( this ).release() );
   }
   triggerRepaint();
 

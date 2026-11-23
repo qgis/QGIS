@@ -135,13 +135,15 @@ class TestPyQgsPostgresProvider(QgisTestCase, ProviderTestCase):
         cur.close()
         self.con.commit()
 
-    def assertAcceptableEstimatedExtent(self, realExt, estmExt, msg):
-        # 1. test that the estimated extent contains the real one
+    def assertEstimatedExtentContainsRealExtent(self, realExt, estmExt, msg):
         self.assertTrue(
             estmExt.contains(realExt),
-            f"Estimated extent {estmExt} does not contain real extent {realExt}",
+            f"Estimated extent {estmExt} does not contain real extent {realExt} ({msg})",
         )
-        # 2. test that the estimated extent is not larger than 10% of real extent
+
+    def assertAcceptableEstimatedExtent(self, realExt, estmExt, msg):
+        self.assertEstimatedExtentContainsRealExtent(realExt, estmExt, msg)
+        # Test that estimated geometry extents stay within 10% of the real extent.
         self.assertLess(
             estmExt.width() - realExt.width(),
             realExt.width() / 10,
@@ -4897,7 +4899,7 @@ INSERT INTO public.test_ext(g)
         md = QgsProviderRegistry.instance().providerMetadata("postgres")
         conn = md.createConnection(self.dbconn, {})
 
-        # Create a 10 rows table with extent -10 -10 to 10 10
+        # Create points with extent -40 -10 to 40 10.
         conn.executeSql(
             """
 DROP TABLE IF EXISTS public.test_geog_ext;
@@ -4924,20 +4926,46 @@ INSERT INTO public.test_geog_ext(g)
         )
         self.assertTrue(vlEstm.isValid())
 
-        # No stats
-        self.assertAcceptableEstimatedExtent(
-            realExtent, vlEstm.extent(), "with no stats"
+        # Without statistics, estimated metadata falls back to the exact extent.
+        self.assertEqual(vlEstm.extent(), realExtent)
+
+        postgisVersion = tuple(
+            int(part)
+            for part in conn.executeSql("SELECT postgis_lib_version()")[0][0].split(
+                "."
+            )[:2]
         )
 
-        # Add stats
-        conn.executeSql("ANALYZE public.test_geog_ext")
-        vlEstm.updateExtents()
-        self.assertAcceptableEstimatedExtent(realExtent, vlEstm.extent(), "with stats")
+        def assertEstimatedGeographyExtent():
+            vlEstm.updateExtents()
+            estimatedExtent = vlEstm.extent()
+            if postgisVersion < (3, 5):
+                # QGIS disables geography estimates from older PostGIS versions.
+                self.assertEqual(realExtent, estimatedExtent)
+                return
 
-        # Add index
+            box = conn.executeSql(
+                "SELECT ST_EstimatedExtent('public', 'test_geog_ext', 'g')::text"
+            )[0][0]
+            self.assertIsNotNone(box)
+            xmin, ymin, xmax, ymax = (
+                float(value) for value in box[4:-1].replace(",", " ").split()
+            )
+            self.assertEqual(estimatedExtent, QgsRectangle(xmin, ymin, xmax, ymax))
+            self.assertEstimatedExtentContainsRealExtent(
+                realExtent, estimatedExtent, "geography"
+            )
+            # The original regression returned the extent of the whole world.
+            self.assertGreater(estimatedExtent.xMinimum(), -180)
+            self.assertLess(estimatedExtent.xMaximum(), 180)
+            self.assertGreater(estimatedExtent.yMinimum(), -90)
+            self.assertLess(estimatedExtent.yMaximum(), 90)
+
+        conn.executeSql("ANALYZE public.test_geog_ext")
+        assertEstimatedGeographyExtent()
+
         conn.executeSql("CREATE INDEX ON public.test_geog_ext using gist (g)")
-        vlEstm.updateExtents()
-        self.assertAcceptableEstimatedExtent(realExtent, vlEstm.extent(), "with index")
+        assertEstimatedGeographyExtent()
 
         # Cleanup
         conn.executeSql("DROP TABLE public.test_geog_ext")
@@ -6051,6 +6079,7 @@ class TestPyQgsPostgresProviderBigintSinglePk(QgisTestCase, ProviderTestCase):
         feature = next(vl.getFeatures())
         # make sure we get a QgsReferenceGeometry and not "just" a string
         self.assertEqual(feature["geom"].crs().authid(), "EPSG:4326")
+        column_crs = feature["geom"].crs()
 
         vl.startEditing()
 
@@ -6065,11 +6094,16 @@ class TestPyQgsPostgresProviderBigintSinglePk(QgisTestCase, ProviderTestCase):
         feature["geom"] = QgsReferencedGeometry()
         self.assertTrue(vl.updateFeature(feature))
 
-        # Layer will not accept invalid crs
+        # PostGIS assigns the column's CRS to a geometry with an unset CRS.
         feature["geom"] = QgsReferencedGeometry(
             QgsGeometry.fromWkt("POINT(1 1)"), QgsCoordinateReferenceSystem()
         )
-        self.assertFalse(vl.updateFeature(feature))
+        self.assertTrue(vl.updateFeature(feature))
+        stored_geom = next(
+            vl.dataProvider().getFeatures(QgsFeatureRequest(feature.id()))
+        )["geom"]
+        self.assertEqual(stored_geom.asWkt(), QgsGeometry.fromWkt("POINT(1 1)").asWkt())
+        self.assertEqual(stored_geom.crs(), column_crs)
 
         # EWKT strings are accepted too
         feature["geom"] = "SRID=4326;Point (71 78)"

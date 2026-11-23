@@ -48,7 +48,6 @@ RUN dnf -y --refresh install \
     protobuf-devel \
     protobuf-lite-devel \
     python3-devel \
-    python3-mock \
     python3-oauthlib \
     python3-OWSLib \
     python3-pyqt6 \
@@ -78,6 +77,7 @@ RUN dnf -y --refresh install \
     sip6 \
     spatialindex-devel \
     sqlite-devel \
+    tbb-devel \
     unzip \
     unixODBC-devel \
     xorg-x11-server-Xvfb \

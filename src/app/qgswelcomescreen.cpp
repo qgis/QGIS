@@ -53,7 +53,7 @@ void QgsWelcomeScreenController::openProject( const QString &path )
 void QgsWelcomeScreenController::createBlankProject()
 {
   // QTimer needed to prevent crashes when the Item bound to the calling function is deleted by the ListView
-  QTimer::singleShot( 1, this, []() { QgisApp::instance()->newProject(); } );
+  QTimer::singleShot( 1, this, []() { QgisApp::instance()->fileNew( true, true ); } );
 }
 
 void QgsWelcomeScreenController::createProjectFromBasemap()
@@ -201,6 +201,8 @@ void QgsWelcomeScreen::showScene()
   }
   refreshGeometry();
   show();
+  setFocus( Qt::OtherFocusReason );
+  emit mWelcomeScreenController->welcomeScreenShown();
 }
 
 void QgsWelcomeScreen::hideScene()

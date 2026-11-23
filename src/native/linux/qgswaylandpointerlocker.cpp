@@ -29,6 +29,7 @@
 
 class WaylandPointerConstraints : public QWaylandClientExtensionTemplate<WaylandPointerConstraints>, public QtWayland::zwp_pointer_constraints_v1
 {
+    Q_OBJECT
   public:
     WaylandPointerConstraints()
       : QWaylandClientExtensionTemplate( 1 )
@@ -37,6 +38,7 @@ class WaylandPointerConstraints : public QWaylandClientExtensionTemplate<Wayland
 
 class WaylandRelativePointerManager : public QWaylandClientExtensionTemplate<WaylandRelativePointerManager>, public QtWayland::zwp_relative_pointer_manager_v1
 {
+    Q_OBJECT
   public:
     WaylandRelativePointerManager()
       : QWaylandClientExtensionTemplate( 1 )
@@ -177,3 +179,5 @@ void QgsWaylandPointerLocker::handleRelativeMotion( double dx, double dy )
 {
   emit pointerMoved( dx, dy );
 }
+
+#include "qgswaylandpointerlocker.moc"

@@ -270,7 +270,7 @@ void QgsSettingsTreeWidgetOld::updateChildItems( QTreeWidgetItem *parent )
     }
     else
     {
-      child->setText( ColumnType, QVariant::typeToName( QgsVariantDelegate::type( value ) ) );
+      child->setText( ColumnType, QMetaType( QgsVariantDelegate::type( value ) ).name() );
     }
     child->setText( ColumnValue, QgsVariantDelegate::displayText( value ) );
     child->setData( ColumnValue, Qt::UserRole, value );

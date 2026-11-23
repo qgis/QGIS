@@ -113,7 +113,7 @@ QgsLineDensityAlgorithm *QgsLineDensityAlgorithm::createInstance() const
 bool QgsLineDensityAlgorithm::prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
   Q_UNUSED( feedback );
-  mSource.reset( parameterAsSource( parameters, u"INPUT"_s, context ) );
+  mSource = parameterAsSource( parameters, u"INPUT"_s, context );
   if ( !mSource )
     throw QgsProcessingException( invalidSourceError( parameters, u"INPUT"_s ) );
 

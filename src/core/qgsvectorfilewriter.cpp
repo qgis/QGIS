@@ -136,7 +136,7 @@ QgsVectorFileWriter::QgsVectorFileWriter(
   init( vectorFileName, fileEncoding, fields, geometryType, srs, driverName, datasourceOptions, layerOptions, newFilename, fieldValueConverter, layerName, action, newLayer, sinkFlags, transformContext, fieldNameSource, sourceDatabaseProviderConnection );
 }
 
-QgsVectorFileWriter *QgsVectorFileWriter::create(
+std::unique_ptr<QgsVectorFileWriter> QgsVectorFileWriter::create(
   const QString &fileName,
   const QgsFields &fields,
   Qgis::WkbType geometryType,
@@ -149,7 +149,7 @@ QgsVectorFileWriter *QgsVectorFileWriter::create(
 )
 {
   Q_NOWARN_DEPRECATED_PUSH
-  return new QgsVectorFileWriter(
+  QgsVectorFileWriter *writer = new QgsVectorFileWriter(
     fileName,
     options.fileEncoding,
     fields,
@@ -172,6 +172,7 @@ QgsVectorFileWriter *QgsVectorFileWriter::create(
     options.sourceDatabaseProviderConnection
   );
   Q_NOWARN_DEPRECATED_POP
+  return std::unique_ptr<QgsVectorFileWriter>( writer );
 }
 
 bool QgsVectorFileWriter::supportsFeatureStyles( const QString &driverName )
@@ -996,11 +997,11 @@ void QgsVectorFileWriter::init(
 #endif
 
         // create the field
-        QgsDebugMsgLevel( "creating field " + attrField.name() + " type " + QString( QVariant::typeToName( attrField.type() ) ) + " width " + QString::number( ogrWidth ) + " precision " + QString::number( ogrPrecision ), 2 );
+        QgsDebugMsgLevel( "creating field " + attrField.name() + " type " + QString( QMetaType( attrField.type() ).name() ) + " width " + QString::number( ogrWidth ) + " precision " + QString::number( ogrPrecision ), 2 );
         if ( OGR_L_CreateField( mLayer, fld.get(), true ) != OGRERR_NONE )
         {
           QgsDebugError( "error creating field " + attrField.name() );
-          mErrorMessage = QObject::tr( "Creation of field %1 (%2) failed (OGR error: %3)" ).arg( attrField.name(), QVariant::typeToName( attrField.type() ), QString::fromUtf8( CPLGetLastErrorMsg() ) );
+          mErrorMessage = QObject::tr( "Creation of field %1 (%2) failed (OGR error: %3)" ).arg( attrField.name(), QMetaType( attrField.type() ).name(), QString::fromUtf8( CPLGetLastErrorMsg() ) );
           mError = ErrAttributeCreationFailed;
           return;
         }
@@ -3781,7 +3782,7 @@ QgsVectorFileWriter::WriterError QgsVectorFileWriter::prepareWriteAsVectorFormat
 
   if ( !options.sourceDatabaseProviderConnection )
   {
-    details.sourceDatabaseProviderConnection.reset( QgsMapLayerUtils::databaseConnection( layer ) );
+    details.sourceDatabaseProviderConnection = QgsMapLayerUtils::databaseConnection( layer );
   }
 
   return NoError;

@@ -30,7 +30,7 @@ The ``crs`` argument specifies the desired coordinate reference system
 for the combined extent.
 %End
 
-    static QgsAbstractDatabaseProviderConnection *databaseConnection( const QgsMapLayer *layer ) /Factory/;
+    static std::unique_ptr<QgsAbstractDatabaseProviderConnection> databaseConnection( const QgsMapLayer *layer );
 %Docstring
 Creates and returns the (possibly ``None``) database connection for a
 ``layer``. Ownership is transferred to the caller.

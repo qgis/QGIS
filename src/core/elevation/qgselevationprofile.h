@@ -109,7 +109,7 @@ class CORE_EXPORT QgsElevationProfile : public QObject
      * \see setUseProjectLayerTree()
      * \see layerTree()
      */
-    bool useProjectLayerTree() { return mUseProjectLayerTree; }
+    bool useProjectLayerTree() const { return mUseProjectLayerTree; }
 
     /**
      * Returns the crs associated with the profile's map coordinates.

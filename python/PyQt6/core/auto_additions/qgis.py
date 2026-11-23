@@ -2075,6 +2075,7 @@ Qgis.HttpMethod.Post.__doc__ = "POST method"
 Qgis.HttpMethod.Head.__doc__ = "HEAD method. \n.. versionadded:: 3.44"
 Qgis.HttpMethod.Put.__doc__ = "PUT method. \n.. versionadded:: 3.44"
 Qgis.HttpMethod.Delete.__doc__ = "DELETE method. \n.. versionadded:: 3.44"
+Qgis.HttpMethod.Patch.__doc__ = "PATCH method. \n.. versionadded:: 4.6"
 Qgis.HttpMethod.__doc__ = """Different methods of HTTP requests
 
 .. versionadded:: 3.22
@@ -2092,6 +2093,10 @@ Qgis.HttpMethod.__doc__ = """Different methods of HTTP requests
 * ``Delete``: DELETE method.
 
   .. versionadded:: 3.44
+
+* ``Patch``: PATCH method.
+
+  .. versionadded:: 4.6
 
 
 """
@@ -4237,6 +4242,21 @@ Qgis.CoverageValidityResult.__doc__ = """Coverage validity results.
 """
 # --
 Qgis.CoverageValidityResult.baseClass = Qgis
+# monkey patching scoped based enum
+Qgis.CoverageEdgeType.AllEdges.__doc__ = "All edges (both exterior and interior)"
+Qgis.CoverageEdgeType.Exterior.__doc__ = "Exterior (non-shared) edges"
+Qgis.CoverageEdgeType.Interior.__doc__ = "Interior (shared) edges"
+Qgis.CoverageEdgeType.__doc__ = """Coverage edge types.
+
+.. versionadded:: 4.4
+
+* ``AllEdges``: All edges (both exterior and interior)
+* ``Exterior``: Exterior (non-shared) edges
+* ``Interior``: Interior (shared) edges
+
+"""
+# --
+Qgis.CoverageEdgeType.baseClass = Qgis
 # monkey patching scoped based enum
 Qgis.MakeValidMethod.Linework.__doc__ = "Combines all rings into a set of noded lines and then extracts valid polygons from that linework."
 Qgis.MakeValidMethod.Structure.__doc__ = "Structured method, first makes all rings valid and then merges shells and subtracts holes from shells to generate valid result. Assumes that holes and shells are correctly categorized. Requires GEOS 3.10+."

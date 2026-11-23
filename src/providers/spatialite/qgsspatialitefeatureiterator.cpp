@@ -620,7 +620,7 @@ QVariant QgsSpatiaLiteFeatureIterator::getFeatureAttribute( sqlite3_stmt *stmt, 
     {
       // assume arrays are stored as JSON
       QVariant result = QVariant( QgsJsonUtils::parseArray( txt, subType ) );
-      if ( !result.convert( static_cast<int>( type ) ) )
+      if ( !result.convert( QMetaType( type ) ) )
       {
         QgsDebugMsgLevel( u"Could not convert JSON value to requested QVariant type"_s.arg( txt ), 3 );
       }

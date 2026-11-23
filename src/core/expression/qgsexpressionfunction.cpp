@@ -7776,7 +7776,7 @@ static QVariant fcnArraySum( const QVariantList &values, const QgsExpressionCont
 static QVariant convertToSameType( const QVariant &value, QMetaType::Type type )
 {
   QVariant result = value;
-  ( void ) result.convert( static_cast<int>( type ) );
+  ( void ) result.convert( QMetaType( type ) );
   return result;
 }
 

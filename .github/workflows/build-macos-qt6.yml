@@ -19,19 +19,17 @@ jobs:
     strategy:
       matrix:
         include:
-          - os: macos-15-intel
+          -
             triplet: x64-osx-dynamic-release
+            host-triplet: arm64-osx-dynamic-release
             deployment-target: "10.15"
             osx-architecture: "x86_64"
-          - os: macos-15
+          -
             triplet: arm64-osx-dynamic-release
             deployment-target: "11.0"
             osx-architecture: "arm64"
     name: build (macos)
-    runs-on: ${{ matrix.os }}
-    env:
-      FC: gfortran
-      GCC_VERSION: 15
+    runs-on: blacksmith-6vcpu-macos-latest
 
     steps:
       - name: 🐣 Checkout
@@ -61,26 +59,6 @@ jobs:
           echo $(brew --prefix flex)/bin >> $GITHUB_PATH
           echo $(brew --prefix libtool)/bin >> $GITHUB_PATH
 
-      - name: Symlink gfortran (macOS)
-        if: matrix.os == 'macos-15'
-        run: |
-          # make sure gfortran is available
-          # https://github.com/actions/runner-images/blob/main/images/macos/macos-15-Readme.md
-          # https://github.com/actions/runner-images/issues/3371
-          sudo ln -fs /opt/homebrew/bin/gfortran-${GCC_VERSION} /usr/local/bin/gfortran
-          sudo mkdir -p /usr/local/gfortran
-          sudo ln -sf /opt/homebrew/Cellar/gcc@${GCC_VERSION}/*/lib/gcc/${GCC_VERSION} /usr/local/gfortran/lib
-
-      - name: Symlink gfortran (macOS-intel)
-        if: matrix.os == 'macos-15-intel'
-        run: |
-          # make sure gfortran is available
-          # https://github.com/actions/runner-images/blob/main/images/macos/macos-15-Readme.md
-          # https://github.com/actions/runner-images/issues/3371
-          sudo ln -fs /usr/local/bin/gfortran-${GCC_VERSION} /usr/local/bin/gfortran
-          sudo mkdir -p /usr/local/gfortran
-          sudo ln -sf /usr/local/Cellar/gcc@${GCC_VERSION}/*/lib/gcc/${GCC_VERSION} /usr/local/gfortran/lib
-
       - uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0 # v7.1.0
         with:
           python-version: '3.11'
@@ -88,7 +66,10 @@ jobs:
       - name: 🍭 Setup XCode
         uses: maxim-lobanov/setup-xcode@ed7a3b1fda3918c0306d1b724322adc0b8cc0a90 # v1.7.0
         with:
-          xcode-version: latest-stable
+          xcode-version: '26'
+      
+      - name: Install Metal Toolchain
+        run: xcodebuild -downloadComponent MetalToolchain
 
       - name: 🛍️ Setup ccache
         uses: hendrikmuhs/ccache-action@f09c25b45002a07be2955cbe52e8cee55643f89d  # v1.2.24
@@ -116,14 +97,15 @@ jobs:
                 -B build \
                 -D QGIS_APP_NAME="QGIS-${{steps.workflow-artifact-ids.outputs.display-name}}" \
                 -D WITH_VCPKG=ON \
-                -D WITH_QTWEBENGINE=OFF \
                 -D WITH_BINDINGS=ON \
                 -D WITH_ORACLE=ON \
                 -D WITH_GEOGRAPHICLIB=OFF \
                 -D WITH_SFCGAL=ON \
                 -D WITH_PROJ_DATA=ON \
+                -D WITH_QTWEBENGINE=ON \
+                -D WITH_PDF4QT=OFF \
                 -D VCPKG_TARGET_TRIPLET="${{ matrix.triplet }}" \
-                -D VCPKG_HOST_TRIPLET="${{ matrix.triplet }}" \
+                -D VCPKG_HOST_TRIPLET="${{ matrix.host-triplet || matrix.triplet }}" \
                 -D VCPKG_INSTALL_OPTIONS="--only-binarycaching" \
                 -D CMAKE_OSX_DEPLOYMENT_TARGET=${{ matrix.deployment-target }} \
                 -D CMAKE_OSX_ARCHITECTURES=${{ matrix.osx-architecture }} \
@@ -190,7 +172,7 @@ jobs:
 
   schedule_download_comment:
     name: Create dmg
-    runs-on: macos-latest
+    runs-on: blacksmith-6vcpu-macos-latest
     needs: build
     steps:
       - name: 🐣 Checkout
@@ -221,7 +203,9 @@ jobs:
           mkdir -p arm64
           gtar --strip-components=5 -zxf ./artifacts/qgis-app-${STEPS_WORKFLOW_ARTIFACT_IDS_OUTPUTS_FILENAME}-arm64-osx-dynamic-release/qgis-app-${STEPS_WORKFLOW_ARTIFACT_IDS_OUTPUTS_FILENAME}-arm64-osx-dynamic-release.tar.gz -C arm64
 
-          pip install lipomerge
+          # See https://github.com/faaxm/lipomerge/pull/14
+          # Once released, go back to install plain `pip install lipomerge`
+          pip install https://github.com/m-kuhn/lipo-dir-merge/archive/copy_secondary.tar.gz
           lipomerge ./x64 ./arm64 universal
         env:
           STEPS_WORKFLOW_ARTIFACT_IDS_OUTPUTS_FILENAME: ${{steps.workflow-artifact-ids.outputs.filename}}

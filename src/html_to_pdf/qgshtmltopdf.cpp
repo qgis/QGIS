@@ -34,18 +34,24 @@ using namespace Qt::StringLiterals;
 #include <QWebEngineLoadingInfo>
 #include <QWebEngineProfile>
 #include <QWebEngineSettings>
+#include <QJsonArray>
+#include <QJsonDocument>
+#include <QJsonObject>
 #include <QFileInfo>
 #include <QDir>
+#include <QtWebEngineCoreVersion>
 
 #include <iostream>
 
 QgsHtmlToPdf::QgsHtmlToPdf()
 {
+#if QTWEBENGINECORE_VERSION >= QT_VERSION_CHECK( 6, 9, 0 )
   mPage.settings()->setAttribute( QWebEngineSettings::TouchEventsApiEnabled, false );
+#endif
 
   connect( &mPage, &QWebEnginePage::loadFinished, this, &QgsHtmlToPdf::onLoadFinished );
   connect( &mPage, &QWebEnginePage::loadProgress, this, []( int progress ) { std::cout << progress << std::endl; } );
-  connect( &mPage, &QWebEnginePage::loadingChanged, this, []( const QWebEngineLoadingInfo &info ) {
+  connect( &mPage, &QWebEnginePage::loadingChanged, this, [this]( const QWebEngineLoadingInfo &info ) {
     if ( info.status() == QWebEngineLoadingInfo::LoadFailedStatus )
     {
       std::cerr
@@ -58,10 +64,11 @@ QgsHtmlToPdf::QgsHtmlToPdf()
         << "  Error String: "
         << info.errorString().toStdString()
         << "\n";
+      mReturnCode = ReturnCode::LoadFailed;
     }
     else if ( info.status() == QWebEngineLoadingInfo::LoadStartedStatus )
     {
-      std::cerr << "[NETWORK] Loading initiated...\n";
+      std::cout << "[NETWORK] Loading initiated...\n";
     }
   } );
   connect( &mPage, &QWebEnginePage::permissionRequested, this, []( QWebEnginePermission permissionRequest ) { permissionRequest.deny(); } );
@@ -69,30 +76,51 @@ QgsHtmlToPdf::QgsHtmlToPdf()
   connect( &mPage, &QWebEnginePage::pdfPrintingFinished, this, &QgsHtmlToPdf::onPdfFinished );
 }
 
-void QgsHtmlToPdf::run( const QString &url, const QString &pdfFileName, int width, const QString &userAgent )
+void QgsHtmlToPdf::run( const QString &url, const QString &pdfFileName, const Settings &settings )
 {
   mPdfFileName = pdfFileName;
-  mWidth = width;
-  mUserAgent = userAgent;
+  mSettings = settings;
 
-  if ( !mUserAgent.isEmpty() )
+  if ( !mSettings.userAgent.isEmpty() )
   {
-    mPage.profile()->setHttpUserAgent( mUserAgent );
+    mPage.profile()->setHttpUserAgent( mSettings.userAgent );
   }
 
   const QFileInfo fi( url );
-  const QUrl resolvedUrl = fi.exists() ? QUrl::fromLocalFile( fi.absoluteFilePath() ) : QUrl::fromUserInput( url, QDir::currentPath(), QUrl::AssumeLocalFile );
-
-  mPage.load( resolvedUrl );
+  if ( fi.isFile() && fi.exists() && !mSettings.baseUrl.isEmpty() )
+  {
+    QFile htmlFile( url );
+    if ( htmlFile.open( QIODevice::ReadOnly ) )
+    {
+      mPage.setHtml( htmlFile.readAll(), QUrl::fromUserInput( mSettings.baseUrl ) );
+    }
+    else
+    {
+      mReturnCode = LoadFailed;
+      emit finished( mReturnCode );
+      return;
+    }
+  }
+  else
+  {
+    const QUrl resolvedUrl = QUrl::fromUserInput( url );
+    mPage.load( resolvedUrl );
+  }
 }
 
 void QgsHtmlToPdf::onLoadFinished( bool ok )
 {
   if ( !ok )
   {
-    emit finished( 1 );
+    mReturnCode = LoadFailed;
+    emit finished( mReturnCode );
     return;
   }
+
+  // NOTE:
+  // the only option for user stylesheets is injecting javascript -- see
+  // https://doc.qt.io/qt-5/qtwebengine-webenginewidgets-stylesheetbrowser-example.html
+  // https://bugreports.qt.io/browse/QTBUG-51192?jql=text%20~%20%22setUserStyleSheetUrl%22
 
   // a whole lot of unreliable approaches to try to constrain the page to a desired width
   // and then get the actual CONTENT height. The current iteration works ok for basic HTML... but
@@ -103,11 +131,6 @@ void QgsHtmlToPdf::onLoadFinished( bool ok )
       // try to clear page margins
       const style = document.createElement('style');
       style.textContent = `
-        @page { margin: 0 !important; size: auto; }
-        html, body {
-          margin: 0 !important;
-          padding: 0 !important;
-        }
         *, *::before, *::after {
           break-inside: auto !important;
           page-break-inside: auto !important;
@@ -119,6 +142,15 @@ void QgsHtmlToPdf::onLoadFinished( bool ok )
       `;
       (document.head || document.documentElement).appendChild(style);
 
+      const userCss = %2[0];
+      if (userCss) {
+        const userStyle = document.createElement('style');
+        userStyle.type = 'text/css';
+        userStyle.id = '__qgis_user_stylesheet';
+        userStyle.textContent = userCss;
+        (document.head || document.documentElement).appendChild(userStyle);
+      }
+
       const targetWidth = %1;
 
       if (targetWidth > 0 && document.body) {
@@ -127,6 +159,15 @@ void QgsHtmlToPdf::onLoadFinished( bool ok )
         document.documentElement.style.boxSizing = 'border-box';
         document.body.style.boxSizing = 'border-box';
         void document.body.offsetHeight;
+      }
+
+      const feature = %3;
+      if (feature && typeof setFeature === "function") {
+        try {
+          setFeature(feature);
+        } catch (err) {
+          console.error("Error in setFeature:", err);
+        }
       }
 
       // try to work out actual document height at this width... not very reliable ;)
@@ -164,7 +205,9 @@ void QgsHtmlToPdf::onLoadFinished( bool ok )
       return [contentWidth, contentHeight];
     })()
   )js"_s )
-                               .arg( mWidth );
+                               .arg( mSettings.width )
+                               .arg( QString::fromUtf8( QJsonDocument( QJsonArray { mSettings.userStylesheet } ).toJson( QJsonDocument::Compact ) ) )
+                               .arg( mSettings.featureJson.isEmpty() ? u"null"_s : QString::fromUtf8( QJsonDocument( mSettings.featureJson ).toJson( QJsonDocument::Compact ) ) );
 
   mPage.runJavaScript( jsTemplate, [this]( QVariant res ) { onLoadJsFinished( res ); } );
 }
@@ -174,7 +217,8 @@ void QgsHtmlToPdf::onLoadJsFinished( const QVariant &res )
   const QVariantList list = res.toList();
   if ( list.size() < 2 )
   {
-    emit finished( 1 );
+    mReturnCode = ReturnCode::LoadJsFailed;
+    emit finished( mReturnCode );
     return;
   }
 
@@ -199,7 +243,12 @@ void QgsHtmlToPdf::onLoadJsFinished( const QVariant &res )
 
 void QgsHtmlToPdf::onPdfFinished( const QString &, bool ok )
 {
-  emit finished( ok ? 0 : 1 );
+  if ( !ok )
+  {
+    mReturnCode = ReturnCode::PrintFailed;
+  }
+
+  emit finished( mReturnCode );
 }
 
 
@@ -209,5 +258,14 @@ void QgsHtmlToPdf::onPdfFinished( const QString &, bool ok )
 
 void QgsLoggingWebEnginePage::javaScriptConsoleMessage( JavaScriptConsoleMessageLevel level, const QString &message, int lineNumber, const QString &sourceID )
 {
-  std::cerr << " [JS CONSOLE] " << ( level == ErrorMessageLevel ? "ERROR: " : "WARN/INFO: " ) << message.toStdString() << " (Line: " << lineNumber << ", Source: " << sourceID.toStdString() << ")\n";
+  switch ( level )
+  {
+    case QWebEnginePage::InfoMessageLevel:
+    case QWebEnginePage::WarningMessageLevel:
+      std::cout << " [JS CONSOLE] " << message.toStdString() << " (Line: " << lineNumber << ", Source: " << sourceID.toStdString() << ")\n";
+      break;
+    case QWebEnginePage::ErrorMessageLevel:
+      std::cerr << " [JS CONSOLE ERROR] " << message.toStdString() << " (Line: " << lineNumber << ", Source: " << sourceID.toStdString() << ")\n";
+      break;
+  }
 }

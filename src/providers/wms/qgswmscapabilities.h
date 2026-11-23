@@ -450,13 +450,41 @@ struct QgsWmstDimensionExtent
 struct QgsWmtsTheme
 {
     QString identifier;
-    QString title, abstract;
+    QString title;
+    QString abstract;
     QStringList keywords;
-    QgsWmtsTheme *subTheme = nullptr;
+    std::unique_ptr< QgsWmtsTheme > subTheme;
     QStringList layerRefs;
 
     QgsWmtsTheme() = default;
-    ~QgsWmtsTheme() { delete subTheme; }
+
+    QgsWmtsTheme( const QgsWmtsTheme &other )
+      : identifier( other.identifier )
+      , title( other.title )
+      , abstract( other.abstract )
+      , keywords( other.keywords )
+      , subTheme( other.subTheme ? std::make_unique< QgsWmtsTheme>( *other.subTheme ) : nullptr )
+      , layerRefs( other.layerRefs )
+    {}
+    QgsWmtsTheme &operator=( const QgsWmtsTheme &other )
+    {
+      identifier = other.identifier;
+      title = other.title;
+      abstract = other.abstract;
+      keywords = other.keywords;
+      if ( other.subTheme )
+      {
+        subTheme = std::make_unique< QgsWmtsTheme>( *other.subTheme );
+      }
+      else
+      {
+        subTheme.reset();
+      }
+      layerRefs = other.layerRefs;
+      return *this;
+    }
+
+    ~QgsWmtsTheme() = default;
 };
 
 struct QgsWmtsTileMatrixLimits;

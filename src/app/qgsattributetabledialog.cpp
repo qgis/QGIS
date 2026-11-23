@@ -658,7 +658,10 @@ void QgsAttributeTableDialog::runFieldCalculation( QgsVectorLayer *layer, const 
     // fixes https://github.com/qgis/QGIS/issues/25210
     QgsAttributeTableModel *masterModel = mMainView->masterModel();
     int modelColumn = masterModel->fieldCol( fieldindex );
-    masterModel->reload( masterModel->index( 0, modelColumn ), masterModel->index( masterModel->rowCount() - 1, modelColumn ) );
+    if ( masterModel->rowCount() > 0 )
+    {
+      masterModel->reload( masterModel->index( 0, modelColumn ), masterModel->index( masterModel->rowCount() - 1, modelColumn ) );
+    }
   }
 }
 
@@ -723,7 +726,7 @@ void QgsAttributeTableDialog::mActionOpenFieldCalculator_triggered()
   {
     int col = masterModel->fieldCol( calc.changedAttributeId() );
 
-    if ( col >= 0 )
+    if ( col >= 0 && masterModel->rowCount() > 0 )
     {
       masterModel->reload( masterModel->index( 0, col ), masterModel->index( masterModel->rowCount() - 1, col ) );
     }
@@ -774,7 +777,10 @@ void QgsAttributeTableDialog::mActionAddFeatureViaAttributeTable_triggered()
   {
     case QgsFeatureAction::AddFeatureResult::Success:
     case QgsFeatureAction::AddFeatureResult::Pending:
-      masterModel->reload( masterModel->index( 0, 0 ), masterModel->index( masterModel->rowCount() - 1, masterModel->columnCount() - 1 ) );
+      if ( masterModel->rowCount() > 0 )
+      {
+        masterModel->reload( masterModel->index( 0, 0 ), masterModel->index( masterModel->rowCount() - 1, masterModel->columnCount() - 1 ) );
+      }
       mMainView->setCurrentEditSelection( QgsFeatureIds() << action.feature().id() );
       mMainView->tableView()->scrollToFeature( action.feature().id(), 0 );
       break;
@@ -811,7 +817,10 @@ void QgsAttributeTableDialog::mActionAddFeatureViaAttributeForm_triggered()
   {
     case QgsFeatureAction::AddFeatureResult::Success:
     case QgsFeatureAction::AddFeatureResult::Pending:
-      masterModel->reload( masterModel->index( 0, 0 ), masterModel->index( masterModel->rowCount() - 1, masterModel->columnCount() - 1 ) );
+      if ( masterModel->rowCount() > 0 )
+      {
+        masterModel->reload( masterModel->index( 0, 0 ), masterModel->index( masterModel->rowCount() - 1, masterModel->columnCount() - 1 ) );
+      }
       mMainView->setCurrentEditSelection( QgsFeatureIds() << action.feature().id() );
       mMainView->tableView()->scrollToFeature( action.feature().id(), 0 );
       break;
@@ -1039,7 +1048,10 @@ void QgsAttributeTableDialog::addAttribute( const QgsField &field )
   }
 
   // update model - a field has been added or updated
-  masterModel->reload( masterModel->index( 0, 0 ), masterModel->index( masterModel->rowCount() - 1, masterModel->columnCount() - 1 ) );
+  if ( masterModel->rowCount() > 0 )
+  {
+    masterModel->reload( masterModel->index( 0, 0 ), masterModel->index( masterModel->rowCount() - 1, masterModel->columnCount() - 1 ) );
+  }
 }
 
 void QgsAttributeTableDialog::mActionAddAttribute_triggered()

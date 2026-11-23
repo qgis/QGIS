@@ -22,7 +22,11 @@
 #include "qgshtmltopdf.h"
 
 #include <QCommandLineParser>
+#include <QFile>
 #include <QGuiApplication>
+#include <QJsonDocument>
+#include <QJsonObject>
+#include <QJsonParseError>
 #include <QString>
 #include <QSurfaceFormat>
 #include <QTimer>
@@ -94,8 +98,8 @@ int main( int argc, char *argv[] )
   const QCommandLineOption widthOption( QStringList() << "w" << "width", "Target page width in CSS pixels (e.g. 1024). Content height will adjust to fit.", "width" );
   parser.addOption( widthOption );
 
-  const QCommandLineOption userAgentOption( "user-agent", "User agent string.", "user-agent" );
-  parser.addOption( userAgentOption );
+  const QCommandLineOption settingsOption( "settings", "Extra settings JSON file.", "settings" );
+  parser.addOption( settingsOption );
 
   parser.addPositionalArgument( "url", "Source HTML URL." );
   parser.addPositionalArgument( "destination", "Destination PDF file." );
@@ -111,27 +115,55 @@ int main( int argc, char *argv[] )
   const QString url = args.at( 0 );
   const QString destination = args.at( 1 );
 
-  int width = 0;
+  QgsHtmlToPdf::Settings settings;
   if ( parser.isSet( widthOption ) )
   {
     bool ok = false;
-    width = parser.value( widthOption ).toInt( &ok );
-    if ( !ok || width <= 0 )
+    settings.width = parser.value( widthOption ).toInt( &ok );
+    if ( !ok || settings.width <= 0 )
     {
       std::cerr << "Error: --width must be a positive integer.\n";
       return 1;
     }
   }
 
-  QString userAgent;
-  if ( parser.isSet( userAgentOption ) )
+  if ( parser.isSet( settingsOption ) )
   {
-    userAgent = parser.value( userAgentOption );
+    const QString settingsPath = parser.value( settingsOption );
+    QFile settingsFile( settingsPath );
+    if ( !settingsFile.open( QIODevice::ReadOnly ) )
+    {
+      std::cerr << "Error: Could not open settings file: " << settingsPath.toStdString() << "\n";
+      return QgsHtmlToPdf::ReturnCode::LoadSettingsFailed;
+    }
+
+    QJsonParseError parseError;
+    const QJsonDocument doc = QJsonDocument::fromJson( settingsFile.readAll(), &parseError );
+    if ( parseError.error != QJsonParseError::NoError || !doc.isObject() )
+    {
+      std::cerr << "Error: Failed to parse settings JSON: " << parseError.errorString().toStdString() << "\n";
+      return QgsHtmlToPdf::ReturnCode::LoadSettingsFailed;
+    }
+
+    const QJsonObject settingsObj = doc.object();
+    settings.userAgent = settingsObj.value( u"userAgent"_s ).toString();
+    settings.baseUrl = settingsObj.value( u"baseUrl"_s ).toString();
+    settings.userStylesheet = settingsObj.value( u"userStylesheet"_s ).toString();
+
+    const QJsonValue featureVal = settingsObj.value( u"feature"_s );
+    if ( featureVal.isObject() )
+    {
+      settings.featureJson = featureVal.toObject();
+    }
+    else if ( featureVal.isString() )
+    {
+      settings.featureJson = QJsonDocument::fromJson( featureVal.toString().toUtf8() ).object();
+    }
   }
 
   QgsHtmlToPdf converter;
   QObject::connect( &converter, &QgsHtmlToPdf::finished, &app, &QGuiApplication::exit );
-  QTimer::singleShot( 0, &converter, [&converter, url, destination, width, userAgent] { converter.run( url, destination, width, userAgent ); } );
+  QTimer::singleShot( 0, &converter, [&converter, url, destination, settings] { converter.run( url, destination, settings ); } );
 
   return QCoreApplication::exec();
 }

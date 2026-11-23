@@ -578,7 +578,7 @@ void QgsOfflineEditing::convertToOfflineLayer( QgsVectorLayer *layer, sqlite3 *d
         }
         else
         {
-          showWarning( tr( "%1: Unknown data type %2. Not using type affinity for the field." ).arg( field.name(), QVariant::typeToName( type ) ) );
+          showWarning( tr( "%1: Unknown data type %2. Not using type affinity for the field." ).arg( field.name(), QMetaType( type ).name() ) );
         }
 
         sql += delim + u"'%1' %2"_s.arg( field.name(), dataType );

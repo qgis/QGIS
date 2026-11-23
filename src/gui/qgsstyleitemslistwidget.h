@@ -64,8 +64,8 @@ class QgsStyleModelDelegate : public QStyledItemDelegate
     void paint( QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index ) const override;
 };
 
-#endif
 ///@endcond
+#endif
 
 /**
  * \ingroup gui

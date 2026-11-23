@@ -388,6 +388,8 @@ QgsModelDesignerDialog::QgsModelDesignerDialog( QWidget *parent, Qt::WindowFlags
 
   // restore the toolbar and dock widgets positions using Qt settings API
   restoreState( settings.value( u"ModelDesigner/state"_s, QByteArray(), QgsSettings::App ).toByteArray() );
+
+  repaintModel();
 }
 
 QgsModelDesignerDialog::~QgsModelDesignerDialog()
@@ -986,7 +988,7 @@ void QgsModelDesignerDialog::addInput( const QString &parameterType, const QPoin
   if ( !dlg.exec() )
     return;
 
-  newParam.reset( dlg.createParameter() );
+  newParam = dlg.createParameter();
   if ( !newParam )
     return;
 
@@ -1731,7 +1733,7 @@ void QgsModelDesignerDialog::showChildAlgorithmOutputs( const QString &childId )
     if ( !output.isValid() )
       continue;
 
-    if ( output.type() == QVariant::String )
+    if ( output.typeId() == QMetaType::Type::QString )
     {
       if ( QgsMapLayer *resultLayer = QgsProcessingUtils::mapLayerFromString( output.toString(), mLayerStore ) )
       {

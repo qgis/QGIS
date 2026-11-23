@@ -76,7 +76,7 @@ unsigned int QgsListWidgetFactory::fieldScore( const QgsVectorLayer *vl, int fie
         // Read the list from a string or a list
         QJsonArray jsonArray;
         bool validArray = false;
-        if ( value.type() == QVariant::Type::List )
+        if ( value.typeId() == QMetaType::Type::QVariantList )
         {
           validArray = true;
           jsonArray = QJsonArray::fromVariantList( value.toList() );

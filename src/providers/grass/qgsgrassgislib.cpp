@@ -810,13 +810,13 @@ int QgsGrassGisLib::readRasterRow( int fd, void *buf, int row, RASTER_MAP_TYPE d
         switch ( data_type )
         {
           case CELL_TYPE:
-            G_zero( ( char * ) &( ( CELL * ) buf )[i], G_raster_size( data_type ) );
+            G_zero( reinterpret_cast<char *>( static_cast<CELL *>( buf ) + i ), G_raster_size( data_type ) );
             break;
           case FCELL_TYPE:
-            G_zero( ( char * ) &( ( FCELL * ) buf )[i], G_raster_size( data_type ) );
+            G_zero( reinterpret_cast<char *>( static_cast<CELL *>( buf ) + i ), G_raster_size( data_type ) );
             break;
           case DCELL_TYPE:
-            G_zero( ( char * ) &( ( DCELL * ) buf )[i], G_raster_size( data_type ) );
+            G_zero( reinterpret_cast<char *>( static_cast<CELL *>( buf ) + i ), G_raster_size( data_type ) );
             break;
           default:
             break;

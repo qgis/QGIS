@@ -212,6 +212,7 @@ set(QGIS_3D_HDRS
   qgsraycastcontext.h
   qgsraycasthit.h
   qgsraycastresult.h
+  qgsrubberband3d.h
   qgsrulebased3drenderer.h
   qgstessellatedpolygongeometry.h
   qgstiledscenechunkloader_p.h
@@ -238,7 +239,7 @@ set(QGIS_3D_HDRS
   materials/qgsgoochmaterial.h
   materials/qgsgoochmaterial3dhandler.h
   materials/qgsmaterial.h
-  materials/qgsmaterial3dhandler.cpp
+  materials/qgsmaterial3dhandler.h
   materials/qgsmetalroughmaterial.h
   materials/qgsmetalroughmaterial3dhandler.h
   materials/qgsmetalroughtexturedmaterial3dhandler.h
@@ -381,6 +382,10 @@ elseif (APPLE)
   include_directories(${CMAKE_SOURCE_DIR}/src/native/mac)
 elseif (UNIX)
   include_directories(${CMAKE_SOURCE_DIR}/src/native/linux)
+endif()
+
+if(WITH_TBB)
+   target_link_libraries(qgis_3d TBB::tbb)
 endif()
 
 target_link_libraries(qgis_3d

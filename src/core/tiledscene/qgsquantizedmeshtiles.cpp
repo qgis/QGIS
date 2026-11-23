@@ -269,7 +269,7 @@ tinygltf::Model QgsQuantizedMeshTile::toGltf( bool addSkirt, double skirtDepth, 
     vertexBuffer.data.resize( vertexBuffer.data.size() + ( edgeVertexCount * 3 + skirtBottomCoordCount ) * sizeof( float ) );
     float *skirtVertexCoords = ( float * ) ( vertexBuffer.data.data() + ( skirtVerticesIdxStart * 3 * sizeof( float ) ) );
     auto addSkirtVertices = [&]( const std::vector<uint32_t> &idxs ) {
-      size_t startIdx = ( ( uint8_t * ) skirtVertexCoords - vertexBuffer.data.data() ) / sizeof( float ) / 3;
+      size_t startIdx = ( reinterpret_cast< uint8_t * >( skirtVertexCoords ) - vertexBuffer.data.data() ) / sizeof( float ) / 3;
       for ( uint32_t idx : idxs )
       {
         *skirtVertexCoords++ = mVertexCoords[idx * 3] / 32767.0f;

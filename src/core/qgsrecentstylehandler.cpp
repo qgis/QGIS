@@ -27,11 +27,11 @@ void QgsRecentStyleHandler::pushRecentSymbol( const QString &identifier, QgsSymb
   mRecentSymbols[identifier] = std::unique_ptr< QgsSymbol >( symbol );
 }
 
-QgsSymbol *QgsRecentStyleHandler::recentSymbol( const QString &identifier ) const
+std::unique_ptr<QgsSymbol> QgsRecentStyleHandler::recentSymbol( const QString &identifier ) const
 {
   auto it = mRecentSymbols.find( identifier );
   if ( it != mRecentSymbols.end() )
-    return it->second->clone();
+    return std::unique_ptr<QgsSymbol>( it->second->clone() );
   else
     return nullptr;
 }

@@ -272,7 +272,7 @@ bool QgsMapBoxGlStyleConverter::parseFillLayer( const QVariantMap &jsonLayer, Qg
 
       default:
       {
-        context.pushWarning( QObject::tr( "%1: Skipping unsupported fill-color type (%2)" ).arg( context.layerId(), QMetaType::typeName( static_cast<QMetaType::Type>( jsonFillColor.userType() ) ) ) );
+        context.pushWarning( QObject::tr( "%1: Skipping unsupported fill-color type (%2)" ).arg( context.layerId(), jsonFillColor.metaType().name() ) );
         break;
       }
     }
@@ -314,9 +314,7 @@ bool QgsMapBoxGlStyleConverter::parseFillLayer( const QVariantMap &jsonLayer, Qg
           break;
 
         default:
-          context.pushWarning(
-            QObject::tr( "%1: Skipping unsupported fill-outline-color type (%2)" ).arg( context.layerId(), QMetaType::typeName( static_cast<QMetaType::Type>( jsonFillOutlineColor.userType() ) ) )
-          );
+          context.pushWarning( QObject::tr( "%1: Skipping unsupported fill-outline-color type (%2)" ).arg( context.layerId(), jsonFillOutlineColor.metaType().name() ) );
           break;
       }
     }
@@ -365,7 +363,7 @@ bool QgsMapBoxGlStyleConverter::parseFillLayer( const QVariantMap &jsonLayer, Qg
         break;
 
       default:
-        context.pushWarning( QObject::tr( "%1: Skipping unsupported fill-opacity type (%2)" ).arg( context.layerId(), QMetaType::typeName( static_cast<QMetaType::Type>( jsonFillOpacity.userType() ) ) ) );
+        context.pushWarning( QObject::tr( "%1: Skipping unsupported fill-opacity type (%2)" ).arg( context.layerId(), jsonFillOpacity.metaType().name() ) );
         break;
     }
   }
@@ -398,9 +396,7 @@ bool QgsMapBoxGlStyleConverter::parseFillLayer( const QVariantMap &jsonLayer, Qg
       }
 
       default:
-        context.pushWarning(
-          QObject::tr( "%1: Skipping unsupported fill-translate type (%2)" ).arg( context.layerId(), QMetaType::typeName( static_cast<QMetaType::Type>( jsonFillTranslate.userType() ) ) )
-        );
+        context.pushWarning( QObject::tr( "%1: Skipping unsupported fill-translate type (%2)" ).arg( context.layerId(), jsonFillTranslate.metaType().name() ) );
         break;
     }
   }
@@ -568,7 +564,7 @@ bool QgsMapBoxGlStyleConverter::parseLineLayer( const QVariantMap &jsonLayer, Qg
         break;
 
       default:
-        context.pushWarning( QObject::tr( "%1: Skipping unsupported line-color type (%2)" ).arg( context.layerId(), QMetaType::typeName( static_cast<QMetaType::Type>( jsonLineColor.userType() ) ) ) );
+        context.pushWarning( QObject::tr( "%1: Skipping unsupported line-color type (%2)" ).arg( context.layerId(), jsonLineColor.metaType().name() ) );
         break;
     }
   }
@@ -617,7 +613,7 @@ bool QgsMapBoxGlStyleConverter::parseLineLayer( const QVariantMap &jsonLayer, Qg
       }
 
       default:
-        context.pushWarning( QObject::tr( "%1: Skipping unsupported fill-width type (%2)" ).arg( context.layerId(), QMetaType::typeName( static_cast<QMetaType::Type>( jsonLineWidth.userType() ) ) ) );
+        context.pushWarning( QObject::tr( "%1: Skipping unsupported fill-width type (%2)" ).arg( context.layerId(), jsonLineWidth.metaType().name() ) );
         break;
     }
   }
@@ -645,7 +641,7 @@ bool QgsMapBoxGlStyleConverter::parseLineLayer( const QVariantMap &jsonLayer, Qg
         break;
 
       default:
-        context.pushWarning( QObject::tr( "%1: Skipping unsupported line-offset type (%2)" ).arg( context.layerId(), QMetaType::typeName( static_cast<QMetaType::Type>( jsonLineOffset.userType() ) ) ) );
+        context.pushWarning( QObject::tr( "%1: Skipping unsupported line-offset type (%2)" ).arg( context.layerId(), jsonLineOffset.metaType().name() ) );
         break;
     }
   }
@@ -690,7 +686,7 @@ bool QgsMapBoxGlStyleConverter::parseLineLayer( const QVariantMap &jsonLayer, Qg
         break;
 
       default:
-        context.pushWarning( QObject::tr( "%1: Skipping unsupported line-opacity type (%2)" ).arg( context.layerId(), QMetaType::typeName( static_cast<QMetaType::Type>( jsonLineOpacity.userType() ) ) ) );
+        context.pushWarning( QObject::tr( "%1: Skipping unsupported line-opacity type (%2)" ).arg( context.layerId(), jsonLineOpacity.metaType().name() ) );
         break;
     }
   }
@@ -793,9 +789,7 @@ bool QgsMapBoxGlStyleConverter::parseLineLayer( const QVariantMap &jsonLayer, Qg
       }
 
       default:
-        context.pushWarning(
-          QObject::tr( "%1: Skipping unsupported line-dasharray type (%2)" ).arg( context.layerId(), QMetaType::typeName( static_cast<QMetaType::Type>( jsonLineDashArray.userType() ) ) )
-        );
+        context.pushWarning( QObject::tr( "%1: Skipping unsupported line-dasharray type (%2)" ).arg( context.layerId(), jsonLineDashArray.metaType().name() ) );
         break;
     }
   }
@@ -920,7 +914,7 @@ bool QgsMapBoxGlStyleConverter::parseCircleLayer( const QVariantMap &jsonLayer, 
         break;
 
       default:
-        context.pushWarning( QObject::tr( "%1: Skipping unsupported circle-color type (%2)" ).arg( context.layerId(), QMetaType::typeName( static_cast<QMetaType::Type>( jsonCircleColor.userType() ) ) ) );
+        context.pushWarning( QObject::tr( "%1: Skipping unsupported circle-color type (%2)" ).arg( context.layerId(), jsonCircleColor.metaType().name() ) );
         break;
     }
   }
@@ -954,9 +948,7 @@ bool QgsMapBoxGlStyleConverter::parseCircleLayer( const QVariantMap &jsonLayer, 
         break;
 
       default:
-        context.pushWarning(
-          QObject::tr( "%1: Skipping unsupported circle-radius type (%2)" ).arg( context.layerId(), QMetaType::typeName( static_cast<QMetaType::Type>( jsonCircleRadius.userType() ) ) )
-        );
+        context.pushWarning( QObject::tr( "%1: Skipping unsupported circle-radius type (%2)" ).arg( context.layerId(), jsonCircleRadius.metaType().name() ) );
         break;
     }
   }
@@ -983,9 +975,7 @@ bool QgsMapBoxGlStyleConverter::parseCircleLayer( const QVariantMap &jsonLayer, 
         break;
 
       default:
-        context.pushWarning(
-          QObject::tr( "%1: Skipping unsupported circle-opacity type (%2)" ).arg( context.layerId(), QMetaType::typeName( static_cast<QMetaType::Type>( jsonCircleOpacity.userType() ) ) )
-        );
+        context.pushWarning( QObject::tr( "%1: Skipping unsupported circle-opacity type (%2)" ).arg( context.layerId(), jsonCircleOpacity.metaType().name() ) );
         break;
     }
   }
@@ -1015,9 +1005,7 @@ bool QgsMapBoxGlStyleConverter::parseCircleLayer( const QVariantMap &jsonLayer, 
         break;
 
       default:
-        context.pushWarning(
-          QObject::tr( "%1: Skipping unsupported circle-stroke-color type (%2)" ).arg( context.layerId(), QMetaType::typeName( static_cast<QMetaType::Type>( jsonCircleStrokeColor.userType() ) ) )
-        );
+        context.pushWarning( QObject::tr( "%1: Skipping unsupported circle-stroke-color type (%2)" ).arg( context.layerId(), jsonCircleStrokeColor.metaType().name() ) );
         break;
     }
   }
@@ -1046,9 +1034,7 @@ bool QgsMapBoxGlStyleConverter::parseCircleLayer( const QVariantMap &jsonLayer, 
         break;
 
       default:
-        context.pushWarning(
-          QObject::tr( "%1: Skipping unsupported circle-stroke-width type (%2)" ).arg( context.layerId(), QMetaType::typeName( static_cast<QMetaType::Type>( circleStrokeWidthJson.userType() ) ) )
-        );
+        context.pushWarning( QObject::tr( "%1: Skipping unsupported circle-stroke-width type (%2)" ).arg( context.layerId(), circleStrokeWidthJson.metaType().name() ) );
         break;
     }
   }
@@ -1076,9 +1062,7 @@ bool QgsMapBoxGlStyleConverter::parseCircleLayer( const QVariantMap &jsonLayer, 
         break;
 
       default:
-        context.pushWarning(
-          QObject::tr( "%1: Skipping unsupported circle-stroke-opacity type (%2)" ).arg( context.layerId(), QMetaType::typeName( static_cast<QMetaType::Type>( jsonCircleStrokeOpacity.userType() ) ) )
-        );
+        context.pushWarning( QObject::tr( "%1: Skipping unsupported circle-stroke-opacity type (%2)" ).arg( context.layerId(), jsonCircleStrokeOpacity.metaType().name() ) );
         break;
     }
   }
@@ -1105,9 +1089,7 @@ bool QgsMapBoxGlStyleConverter::parseCircleLayer( const QVariantMap &jsonLayer, 
         break;
 
       default:
-        context.pushWarning(
-          QObject::tr( "%1: Skipping unsupported circle-translate type (%2)" ).arg( context.layerId(), QMetaType::typeName( static_cast<QMetaType::Type>( jsonCircleTranslate.userType() ) ) )
-        );
+        context.pushWarning( QObject::tr( "%1: Skipping unsupported circle-translate type (%2)" ).arg( context.layerId(), jsonCircleTranslate.metaType().name() ) );
         break;
     }
   }
@@ -1199,7 +1181,7 @@ void QgsMapBoxGlStyleConverter::parseSymbolLayer(
         break;
 
       default:
-        context.pushWarning( QObject::tr( "%1: Skipping unsupported text-size type (%2)" ).arg( context.layerId(), QMetaType::typeName( static_cast<QMetaType::Type>( jsonTextSize.userType() ) ) ) );
+        context.pushWarning( QObject::tr( "%1: Skipping unsupported text-size type (%2)" ).arg( context.layerId(), jsonTextSize.metaType().name() ) );
         break;
     }
 
@@ -1234,9 +1216,7 @@ void QgsMapBoxGlStyleConverter::parseSymbolLayer(
         break;
 
       default:
-        context.pushWarning(
-          QObject::tr( "%1: Skipping unsupported text-max-width type (%2)" ).arg( context.layerId(), QMetaType::typeName( static_cast<QMetaType::Type>( jsonTextMaxWidth.userType() ) ) )
-        );
+        context.pushWarning( QObject::tr( "%1: Skipping unsupported text-max-width type (%2)" ).arg( context.layerId(), jsonTextMaxWidth.metaType().name() ) );
         break;
     }
   }
@@ -1268,9 +1248,7 @@ void QgsMapBoxGlStyleConverter::parseSymbolLayer(
         break;
 
       default:
-        context.pushWarning(
-          QObject::tr( "%1: Skipping unsupported text-letter-spacing type (%2)" ).arg( context.layerId(), QMetaType::typeName( static_cast<QMetaType::Type>( jsonTextLetterSpacing.userType() ) ) )
-        );
+        context.pushWarning( QObject::tr( "%1: Skipping unsupported text-letter-spacing type (%2)" ).arg( context.layerId(), jsonTextLetterSpacing.metaType().name() ) );
         break;
     }
   }
@@ -1344,7 +1322,7 @@ void QgsMapBoxGlStyleConverter::parseSymbolLayer(
          && jsonTextFont.userType() != QMetaType::Type::QString
          && jsonTextFont.userType() != QMetaType::Type::QVariantMap )
     {
-      context.pushWarning( QObject::tr( "%1: Skipping unsupported text-font type (%2)" ).arg( context.layerId(), QMetaType::typeName( static_cast<QMetaType::Type>( jsonTextFont.userType() ) ) ) );
+      context.pushWarning( QObject::tr( "%1: Skipping unsupported text-font type (%2)" ).arg( context.layerId(), jsonTextFont.metaType().name() ) );
     }
     else
     {
@@ -1495,7 +1473,7 @@ void QgsMapBoxGlStyleConverter::parseSymbolLayer(
         break;
 
       default:
-        context.pushWarning( QObject::tr( "%1: Skipping unsupported text-color type (%2)" ).arg( context.layerId(), QMetaType::typeName( static_cast<QMetaType::Type>( jsonTextColor.userType() ) ) ) );
+        context.pushWarning( QObject::tr( "%1: Skipping unsupported text-color type (%2)" ).arg( context.layerId(), jsonTextColor.metaType().name() ) );
         break;
     }
   }
@@ -1526,9 +1504,7 @@ void QgsMapBoxGlStyleConverter::parseSymbolLayer(
         break;
 
       default:
-        context.pushWarning(
-          QObject::tr( "%1: Skipping unsupported text-halo-color type (%2)" ).arg( context.layerId(), QMetaType::typeName( static_cast<QMetaType::Type>( jsonBufferColor.userType() ) ) )
-        );
+        context.pushWarning( QObject::tr( "%1: Skipping unsupported text-halo-color type (%2)" ).arg( context.layerId(), jsonBufferColor.metaType().name() ) );
         break;
     }
   }
@@ -1562,7 +1538,7 @@ void QgsMapBoxGlStyleConverter::parseSymbolLayer(
         break;
 
       default:
-        context.pushWarning( QObject::tr( "%1: Skipping unsupported text-halo-width type (%2)" ).arg( context.layerId(), QMetaType::typeName( static_cast<QMetaType::Type>( jsonHaloWidth.userType() ) ) ) );
+        context.pushWarning( QObject::tr( "%1: Skipping unsupported text-halo-width type (%2)" ).arg( context.layerId(), jsonHaloWidth.metaType().name() ) );
         break;
     }
 
@@ -1607,9 +1583,7 @@ void QgsMapBoxGlStyleConverter::parseSymbolLayer(
       }
 
       default:
-        context.pushWarning(
-          QObject::tr( "%1: Skipping unsupported text-halo-blur type (%2)" ).arg( context.layerId(), QMetaType::typeName( static_cast<QMetaType::Type>( jsonTextHaloBlur.userType() ) ) )
-        );
+        context.pushWarning( QObject::tr( "%1: Skipping unsupported text-halo-blur type (%2)" ).arg( context.layerId(), jsonTextHaloBlur.metaType().name() ) );
         break;
     }
   }
@@ -1741,7 +1715,7 @@ void QgsMapBoxGlStyleConverter::parseSymbolLayer(
       }
 
       default:
-        context.pushWarning( QObject::tr( "%1: Skipping unsupported text-field type (%2)" ).arg( context.layerId(), QMetaType::typeName( static_cast<QMetaType::Type>( jsonTextField.userType() ) ) ) );
+        context.pushWarning( QObject::tr( "%1: Skipping unsupported text-field type (%2)" ).arg( context.layerId(), jsonTextField.metaType().name() ) );
         break;
     }
   }
@@ -1780,7 +1754,7 @@ void QgsMapBoxGlStyleConverter::parseSymbolLayer(
       }
 
       default:
-        context.pushWarning( QObject::tr( "%1: Skipping unsupported text-rotate type (%2)" ).arg( context.layerId(), QMetaType::typeName( static_cast<QMetaType::Type>( jsonTextRotate.userType() ) ) ) );
+        context.pushWarning( QObject::tr( "%1: Skipping unsupported text-rotate type (%2)" ).arg( context.layerId(), jsonTextRotate.metaType().name() ) );
         break;
     }
   }
@@ -1852,9 +1826,7 @@ void QgsMapBoxGlStyleConverter::parseSymbolLayer(
               break;
 
             default:
-              context.pushWarning(
-                QObject::tr( "%1: Skipping unsupported text-offset type (%2)" ).arg( context.layerId(), QMetaType::typeName( static_cast<QMetaType::Type>( jsonTextOffset.userType() ) ) )
-              );
+              context.pushWarning( QObject::tr( "%1: Skipping unsupported text-offset type (%2)" ).arg( context.layerId(), jsonTextOffset.metaType().name() ) );
               break;
           }
 
@@ -1905,7 +1877,7 @@ void QgsMapBoxGlStyleConverter::parseSymbolLayer(
         break;
 
       default:
-        context.pushWarning( QObject::tr( "%1: Skipping unsupported text-justify type (%2)" ).arg( context.layerId(), QMetaType::typeName( static_cast<QMetaType::Type>( jsonTextJustify.userType() ) ) ) );
+        context.pushWarning( QObject::tr( "%1: Skipping unsupported text-justify type (%2)" ).arg( context.layerId(), jsonTextJustify.metaType().name() ) );
         break;
     }
 
@@ -1957,7 +1929,7 @@ void QgsMapBoxGlStyleConverter::parseSymbolLayer(
           break;
 
         default:
-          context.pushWarning( QObject::tr( "%1: Skipping unsupported text-anchor type (%2)" ).arg( context.layerId(), QMetaType::typeName( static_cast<QMetaType::Type>( jsonTextAnchor.userType() ) ) ) );
+          context.pushWarning( QObject::tr( "%1: Skipping unsupported text-anchor type (%2)" ).arg( context.layerId(), jsonTextAnchor.metaType().name() ) );
           break;
       }
 
@@ -1999,7 +1971,7 @@ void QgsMapBoxGlStyleConverter::parseSymbolLayer(
           break;
 
         default:
-          context.pushWarning( QObject::tr( "%1: Skipping unsupported text-offset type (%2)" ).arg( context.layerId(), QMetaType::typeName( static_cast<QMetaType::Type>( jsonTextOffset.userType() ) ) ) );
+          context.pushWarning( QObject::tr( "%1: Skipping unsupported text-offset type (%2)" ).arg( context.layerId(), jsonTextOffset.metaType().name() ) );
           break;
       }
 
@@ -2047,9 +2019,7 @@ void QgsMapBoxGlStyleConverter::parseSymbolLayer(
             property = parseValueList( jsonIconSize.toList(), PropertyType::Numeric, context );
             break;
           default:
-            context.pushWarning(
-              QObject::tr( "%1: Skipping non-implemented icon-size type (%2)" ).arg( context.layerId(), QMetaType::typeName( static_cast<QMetaType::Type>( jsonIconSize.userType() ) ) )
-            );
+            context.pushWarning( QObject::tr( "%1: Skipping non-implemented icon-size type (%2)" ).arg( context.layerId(), jsonIconSize.metaType().name() ) );
             break;
         }
 
@@ -2130,7 +2100,7 @@ void QgsMapBoxGlStyleConverter::parseSymbolLayer(
       }
 
       default:
-        context.pushWarning( QObject::tr( "%1: Skipping unsupported symbol-spacing type (%2)" ).arg( context.layerId(), QMetaType::typeName( static_cast<QMetaType::Type>( jsonSpacing.userType() ) ) ) );
+        context.pushWarning( QObject::tr( "%1: Skipping unsupported symbol-spacing type (%2)" ).arg( context.layerId(), jsonSpacing.metaType().name() ) );
         break;
     }
 
@@ -2195,7 +2165,7 @@ bool QgsMapBoxGlStyleConverter::parseSymbolLayerAsRenderer( const QVariantMap &j
           break;
 
         default:
-          context.pushWarning( QObject::tr( "%1: Skipping unsupported symbol-spacing type (%2)" ).arg( context.layerId(), QMetaType::typeName( static_cast<QMetaType::Type>( jsonSpacing.userType() ) ) ) );
+          context.pushWarning( QObject::tr( "%1: Skipping unsupported symbol-spacing type (%2)" ).arg( context.layerId(), jsonSpacing.metaType().name() ) );
           break;
       }
     }
@@ -2242,7 +2212,7 @@ bool QgsMapBoxGlStyleConverter::parseSymbolLayerAsRenderer( const QVariantMap &j
           break;
 
         default:
-          context.pushWarning( QObject::tr( "%1: Skipping unsupported icon-rotate type (%2)" ).arg( context.layerId(), QMetaType::typeName( static_cast<QMetaType::Type>( jsonIconRotate.userType() ) ) ) );
+          context.pushWarning( QObject::tr( "%1: Skipping unsupported icon-rotate type (%2)" ).arg( context.layerId(), jsonIconRotate.metaType().name() ) );
           break;
       }
     }
@@ -2303,7 +2273,7 @@ bool QgsMapBoxGlStyleConverter::parseSymbolLayerAsRenderer( const QVariantMap &j
           property = parseValueList( jsonIconSize.toList(), PropertyType::Numeric, context );
           break;
         default:
-          context.pushWarning( QObject::tr( "%1: Skipping non-implemented icon-size type (%2)" ).arg( context.layerId(), QMetaType::typeName( static_cast<QMetaType::Type>( jsonIconSize.userType() ) ) ) );
+          context.pushWarning( QObject::tr( "%1: Skipping non-implemented icon-size type (%2)" ).arg( context.layerId(), jsonIconSize.metaType().name() ) );
           break;
       }
       markerLayer->setSize( size * spriteSize.width() );
@@ -2343,9 +2313,7 @@ bool QgsMapBoxGlStyleConverter::parseSymbolLayerAsRenderer( const QVariantMap &j
           break;
 
         default:
-          context.pushWarning(
-            QObject::tr( "%1: Skipping unsupported icon-opacity type (%2)" ).arg( context.layerId(), QMetaType::typeName( static_cast<QMetaType::Type>( jsonIconOpacity.userType() ) ) )
-          );
+          context.pushWarning( QObject::tr( "%1: Skipping unsupported icon-opacity type (%2)" ).arg( context.layerId(), jsonIconOpacity.metaType().name() ) );
           break;
       }
     }
@@ -2418,9 +2386,7 @@ bool QgsMapBoxGlStyleConverter::parseSymbolLayerAsRenderer( const QVariantMap &j
             property = parseValueList( jsonIconSize.toList(), PropertyType::Numeric, context );
             break;
           default:
-            context.pushWarning(
-              QObject::tr( "%1: Skipping non-implemented icon-size type (%2)" ).arg( context.layerId(), QMetaType::typeName( static_cast<QMetaType::Type>( jsonIconSize.userType() ) ) )
-            );
+            context.pushWarning( QObject::tr( "%1: Skipping non-implemented icon-size type (%2)" ).arg( context.layerId(), jsonIconSize.metaType().name() ) );
             break;
         }
         rasterMarker->setSize( size * spriteSize.width() );
@@ -2460,9 +2426,7 @@ bool QgsMapBoxGlStyleConverter::parseSymbolLayerAsRenderer( const QVariantMap &j
             break;
 
           default:
-            context.pushWarning(
-              QObject::tr( "%1: Skipping unsupported icon-rotate type (%2)" ).arg( context.layerId(), QMetaType::typeName( static_cast<QMetaType::Type>( jsonIconRotate.userType() ) ) )
-            );
+            context.pushWarning( QObject::tr( "%1: Skipping unsupported icon-rotate type (%2)" ).arg( context.layerId(), jsonIconRotate.metaType().name() ) );
             break;
         }
       }
@@ -2489,9 +2453,7 @@ bool QgsMapBoxGlStyleConverter::parseSymbolLayerAsRenderer( const QVariantMap &j
             break;
 
           default:
-            context.pushWarning(
-              QObject::tr( "%1: Skipping unsupported icon-opacity type (%2)" ).arg( context.layerId(), QMetaType::typeName( static_cast<QMetaType::Type>( jsonIconOpacity.userType() ) ) )
-            );
+            context.pushWarning( QObject::tr( "%1: Skipping unsupported icon-opacity type (%2)" ).arg( context.layerId(), jsonIconOpacity.metaType().name() ) );
             break;
         }
       }
@@ -2951,7 +2913,7 @@ QString QgsMapBoxGlStyleConverter::parsePointStops(
     const QVariant bv = stops.value( i ).toList().value( 1 );
     if ( bv.userType() != QMetaType::Type::QVariantList && bv.userType() != QMetaType::Type::QStringList )
     {
-      context.pushWarning( QObject::tr( "%1: Skipping unsupported offset interpolation type (%2)." ).arg( context.layerId(), QMetaType::typeName( static_cast<QMetaType::Type>( bz.userType() ) ) ) );
+      context.pushWarning( QObject::tr( "%1: Skipping unsupported offset interpolation type (%2)." ).arg( context.layerId(), bz.metaType().name() ) );
       return QString();
     }
 
@@ -2960,7 +2922,7 @@ QString QgsMapBoxGlStyleConverter::parsePointStops(
     const QVariant tv = stops.value( i + 1 ).toList().value( 1 );
     if ( tv.userType() != QMetaType::Type::QVariantList && tv.userType() != QMetaType::Type::QStringList )
     {
-      context.pushWarning( QObject::tr( "%1: Skipping unsupported offset interpolation type (%2)." ).arg( context.layerId(), QMetaType::typeName( static_cast<QMetaType::Type>( tz.userType() ) ) ) );
+      context.pushWarning( QObject::tr( "%1: Skipping unsupported offset interpolation type (%2)." ).arg( context.layerId(), tz.metaType().name() ) );
       return QString();
     }
 
@@ -3659,7 +3621,7 @@ QString QgsMapBoxGlStyleConverter::interpolateExpression(
   }
 
   // special case where min = max !
-  if ( valueMin.canConvert( QMetaType::Double ) && valueMax.canConvert( QMetaType::Double ) )
+  if ( valueMin.canConvert<double>() && valueMax.canConvert<double>() )
   {
     bool minDoubleOk = true;
     const double min = valueMin.toDouble( &minDoubleOk );
@@ -4308,7 +4270,7 @@ QString QgsMapBoxGlStyleConverter::retrieveSpriteAsBase64WithProperties(
             }
 
             default:
-              context.pushWarning( QObject::tr( "%1: Skipping unsupported sprite type (%2)." ).arg( context.layerId(), QMetaType::typeName( static_cast<QMetaType::Type>( value.userType() ) ) ) );
+              context.pushWarning( QObject::tr( "%1: Skipping unsupported sprite type (%2)." ).arg( context.layerId(), value.metaType().name() ) );
               break;
           }
 
@@ -4517,7 +4479,7 @@ QString QgsMapBoxGlStyleConverter::retrieveSpriteAsBase64WithProperties(
     }
 
     default:
-      context.pushWarning( QObject::tr( "%1: Skipping unsupported sprite type (%2)." ).arg( context.layerId(), QMetaType::typeName( static_cast<QMetaType::Type>( value.userType() ) ) ) );
+      context.pushWarning( QObject::tr( "%1: Skipping unsupported sprite type (%2)." ).arg( context.layerId(), value.metaType().name() ) );
       break;
   }
 
@@ -4751,7 +4713,7 @@ void QgsMapBoxGlStyleConverter::parseRasterSource( const QVariantMap &source, co
 
 bool QgsMapBoxGlStyleConverter::numericArgumentsOnly( const QVariant &bottomVariant, const QVariant &topVariant, double &bottom, double &top )
 {
-  if ( bottomVariant.canConvert( QMetaType::Double ) && topVariant.canConvert( QMetaType::Double ) )
+  if ( bottomVariant.canConvert<double>() && topVariant.canConvert<double>() )
   {
     bool bDoubleOk, tDoubleOk;
     bottom = bottomVariant.toDouble( &bDoubleOk );

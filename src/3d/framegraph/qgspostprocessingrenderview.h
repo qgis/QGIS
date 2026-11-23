@@ -50,7 +50,7 @@ class QgsOverlayTextureRenderView;
  *
  * \since QGIS 4.2
  */
-class QgsPostprocessingRenderView : public QgsAbstractRenderView
+class _3D_EXPORT QgsPostprocessingRenderView : public QgsAbstractRenderView
 {
   public:
     //! Default constructor

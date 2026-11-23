@@ -307,7 +307,7 @@ Returns the number of nodes in the list.
 Accept visitor
 %End
 
-        QgsSQLStatement::NodeList *clone() const /Factory/;
+        std::unique_ptr<QgsSQLStatement::NodeList> clone() const;
 %Docstring
 Creates a deep copy of this list. Ownership is transferred to the caller
 %End
@@ -674,7 +674,7 @@ Whether this is prefixed by DISTINCT
         virtual void accept( QgsSQLStatement::Visitor &v ) const;
         virtual QgsSQLStatement::Node *clone() const /Factory/;
 
-        QgsSQLStatement::NodeColumnRef *cloneThis() const /Factory/;
+        std::unique_ptr<QgsSQLStatement::NodeColumnRef> cloneThis() const;
 %Docstring
 Clone with same type return
 %End
@@ -716,7 +716,7 @@ Alias name
         virtual void accept( QgsSQLStatement::Visitor &v ) const;
         virtual QgsSQLStatement::Node *clone() const /Factory/;
 
-        QgsSQLStatement::NodeSelectedColumn *cloneThis() const /Factory/;
+        std::unique_ptr<QgsSQLStatement::NodeSelectedColumn> cloneThis() const;
 %Docstring
 Clone with same type return
 %End
@@ -829,7 +829,7 @@ Table alias
         virtual void accept( QgsSQLStatement::Visitor &v ) const;
         virtual QgsSQLStatement::Node *clone() const /Factory/;
 
-        QgsSQLStatement::NodeTableDef *cloneThis() const /Factory/;
+        std::unique_ptr<QgsSQLStatement::NodeTableDef> cloneThis() const;
 %Docstring
 Clone with same type return
 %End
@@ -881,7 +881,7 @@ Join type
         virtual void accept( QgsSQLStatement::Visitor &v ) const;
         virtual QgsSQLStatement::Node *clone() const /Factory/;
 
-        QgsSQLStatement::NodeJoin *cloneThis() const /Factory/;
+        std::unique_ptr<QgsSQLStatement::NodeJoin> cloneThis() const;
 %Docstring
 Clone with same type return
 %End
@@ -920,7 +920,7 @@ Whether the column is sorted in ascending order
         virtual void accept( QgsSQLStatement::Visitor &v ) const;
         virtual QgsSQLStatement::Node *clone() const /Factory/;
 
-        QgsSQLStatement::NodeColumnSorted *cloneThis() const /Factory/;
+        std::unique_ptr<QgsSQLStatement::NodeColumnSorted> cloneThis() const;
 %Docstring
 Clone with same type return
 %End

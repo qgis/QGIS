@@ -15,6 +15,7 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "qgsconfig.h"
 #include "qgscommandlineutils.h"
 
 #include <gdal_version.h>
@@ -32,7 +33,7 @@
 
 using namespace Qt::StringLiterals;
 
-#ifdef WITH_SFCGAL
+#ifdef HAVE_SFCGAL
 #include <SFCGAL/capi/sfcgal_c.h>
 #include <SFCGAL/version.h>
 #endif
@@ -124,7 +125,7 @@ QString QgsCommandLineUtils::allVersions()
   }
 
   // SFCGAL version
-#ifdef WITH_SFCGAL
+#ifdef HAVE_SFCGAL
   const QString sfcgalVersionCompiled { SFCGAL_VERSION };
   const QString sfcgalVersionRunning { sfcgal_version() };
   if ( sfcgalVersionCompiled != sfcgalVersionRunning )

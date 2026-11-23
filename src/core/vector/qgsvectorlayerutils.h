@@ -584,7 +584,7 @@ class CORE_EXPORT QgsVectorLayerUtils
 
         default:
         {
-          PyErr_SetString( PyExc_TypeError, u"Field type (%1) cannot be converted to a data array."_s.arg( QMetaType::typeName( field.type() ) ).toUtf8().constData() );
+          PyErr_SetString( PyExc_TypeError, u"Field type (%1) cannot be converted to a data array."_s.arg( QMetaType( field.type() ).name() ).toUtf8().constData() );
           sipIsErr = 1;
         }
       }

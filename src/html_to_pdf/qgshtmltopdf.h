@@ -17,12 +17,14 @@
 #ifndef QGSHTMLTOPDF_H
 #define QGSHTMLTOPDF_H
 
+#include <QJsonObject>
 #include <QObject>
 #include <QString>
 #include <QWebEnginePage>
 
 class QgsLoggingWebEnginePage : public QWebEnginePage
 {
+    Q_OBJECT
   protected:
     void javaScriptConsoleMessage( JavaScriptConsoleMessageLevel level, const QString &message, int lineNumber, const QString &sourceID ) override;
     // disable interactive javascript calls, these can't be used in the headless utility
@@ -40,9 +42,26 @@ class QgsHtmlToPdf : public QObject
     Q_OBJECT
 
   public:
+    enum ReturnCode
+    {
+      Success = 0,
+      LoadFailed = 1,
+      LoadJsFailed = 2,
+      PrintFailed = 3,
+      LoadSettingsFailed = 4
+    };
+
+    struct Settings
+    {
+        int width = 0;
+        QString userAgent;
+        QString baseUrl;
+        QString userStylesheet;
+        QJsonObject featureJson;
+    };
     QgsHtmlToPdf();
 
-    void run( const QString &url, const QString &pdfFileName, int width, const QString &userAgent );
+    void run( const QString &url, const QString &pdfFileName, const Settings &settings );
 
   signals:
     void finished( int statusCode );
@@ -53,8 +72,9 @@ class QgsHtmlToPdf : public QObject
 
     QString mPdfFileName;
     QgsLoggingWebEnginePage mPage;
-    int mWidth = 0;
-    QString mUserAgent;
+    Settings mSettings;
+
+    ReturnCode mReturnCode = ReturnCode::Success;
 
     void onLoadFinished( bool ok );
     void onLoadJsFinished( const QVariant &res );

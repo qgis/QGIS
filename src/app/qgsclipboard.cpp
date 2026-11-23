@@ -478,11 +478,11 @@ std::unique_ptr<QgsVectorLayer> QgsClipboard::pasteToNewMemoryVector( QgsMessage
   layer->startEditing();
   for ( const QgsField &f : fields )
   {
-    QgsDebugMsgLevel( u"field %1 (%2)"_s.arg( f.name(), QVariant::typeToName( f.type() ) ), 2 );
+    QgsDebugMsgLevel( u"field %1 (%2)"_s.arg( f.name(), QMetaType( f.type() ).name() ), 2 );
     if ( !layer->addAttribute( f ) )
     {
       if ( messageBar )
-        messageBar->pushMessage( tr( "Paste features" ), tr( "Cannot create field %1 (%2,%3), falling back to string type" ).arg( f.name(), f.typeName(), QVariant::typeToName( f.type() ) ), Qgis::MessageLevel::Warning );
+        messageBar->pushMessage( tr( "Paste features" ), tr( "Cannot create field %1 (%2,%3), falling back to string type" ).arg( f.name(), f.typeName(), QMetaType( f.type() ).name() ), Qgis::MessageLevel::Warning );
 
       // Fallback to string
       QgsField strField { f };
@@ -490,7 +490,7 @@ std::unique_ptr<QgsVectorLayer> QgsClipboard::pasteToNewMemoryVector( QgsMessage
       if ( !layer->addAttribute( strField ) )
       {
         if ( messageBar )
-          messageBar->pushMessage( tr( "Paste features" ), tr( "Cannot create field %1 (%2,%3)" ).arg( strField.name(), strField.typeName(), QVariant::typeToName( strField.type() ) ), Qgis::MessageLevel::Critical );
+          messageBar->pushMessage( tr( "Paste features" ), tr( "Cannot create field %1 (%2,%3)" ).arg( strField.name(), strField.typeName(), QMetaType( strField.type() ).name() ), Qgis::MessageLevel::Critical );
         return nullptr;
       }
     }

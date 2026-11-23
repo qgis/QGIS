@@ -258,7 +258,7 @@ void QgsVariantDelegate::setModelData( QWidget *editor, QAbstractItemModel *mode
       break;
       default:
         value = text;
-        value.convert( QgsVariantDelegate::type( originalValue ) );
+        value.convert( QMetaType( QgsVariantDelegate::type( originalValue ) ) );
     }
   }
 

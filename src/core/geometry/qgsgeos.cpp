@@ -1153,7 +1153,11 @@ QgsGeometryEngine::EngineOperationResult QgsGeos::splitGeometry(
     }
     else
     {
-      int nParts = GEOSGetNumGeometries_r( context, split.get() );
+      const int nParts = GEOSGetNumGeometries_r( context, split.get() );
+      if ( nParts == 0 )
+      {
+        return NothingHappened;
+      }
       for ( int i = 0; i < nParts; ++i )
       {
         newGeometries << QgsGeometry( fromGeos( GEOSGetGeometryN_r( context, split.get(), i ) ) );
@@ -1791,7 +1795,7 @@ std::unique_ptr<QgsAbstractGeometry> QgsGeos::fromGeos( const GEOSGeometry *geos
     case GEOS_MULTIPOINT:
     {
       auto multiPoint = std::make_unique<QgsMultiPoint>();
-      int nParts = GEOSGetNumGeometries_r( context, geos );
+      const int nParts = GEOSGetNumGeometries_r( context, geos );
       multiPoint->reserve( nParts );
       for ( int i = 0; i < nParts; ++i )
       {
@@ -1809,7 +1813,7 @@ std::unique_ptr<QgsAbstractGeometry> QgsGeos::fromGeos( const GEOSGeometry *geos
     case GEOS_MULTILINESTRING:
     {
       auto multiLineString = std::make_unique<QgsMultiLineString>();
-      int nParts = GEOSGetNumGeometries_r( context, geos );
+      const int nParts = GEOSGetNumGeometries_r( context, geos );
       multiLineString->reserve( nParts );
       for ( int i = 0; i < nParts; ++i )
       {
@@ -1825,7 +1829,7 @@ std::unique_ptr<QgsAbstractGeometry> QgsGeos::fromGeos( const GEOSGeometry *geos
     case GEOS_MULTICURVE:
     {
       auto multiCurve = std::make_unique<QgsMultiCurve>();
-      int nParts = GEOSGetNumGeometries_r( context, geos );
+      const int nParts = GEOSGetNumGeometries_r( context, geos );
       multiCurve->reserve( nParts );
       for ( int i = 0; i < nParts; ++i )
       {
@@ -1839,7 +1843,7 @@ std::unique_ptr<QgsAbstractGeometry> QgsGeos::fromGeos( const GEOSGeometry *geos
     {
       auto multiPolygon = std::make_unique<QgsMultiPolygon>();
 
-      int nParts = GEOSGetNumGeometries_r( context, geos );
+      const int nParts = GEOSGetNumGeometries_r( context, geos );
       multiPolygon->reserve( nParts );
       for ( int i = 0; i < nParts; ++i )
       {
@@ -1855,7 +1859,7 @@ std::unique_ptr<QgsAbstractGeometry> QgsGeos::fromGeos( const GEOSGeometry *geos
     case GEOS_MULTISURFACE:
     {
       auto multiSurface = std::make_unique<QgsMultiSurface>();
-      int nParts = GEOSGetNumGeometries_r( context, geos );
+      const int nParts = GEOSGetNumGeometries_r( context, geos );
       multiSurface->reserve( nParts );
       for ( int i = 0; i < nParts; ++i )
       {
@@ -1868,7 +1872,7 @@ std::unique_ptr<QgsAbstractGeometry> QgsGeos::fromGeos( const GEOSGeometry *geos
     case GEOS_GEOMETRYCOLLECTION:
     {
       auto geomCollection = std::make_unique<QgsGeometryCollection>();
-      int nParts = GEOSGetNumGeometries_r( context, geos );
+      const int nParts = GEOSGetNumGeometries_r( context, geos );
       geomCollection->reserve( nParts );
       for ( int i = 0; i < nParts; ++i )
       {
@@ -2795,6 +2799,48 @@ std::unique_ptr< QgsAbstractGeometry > QgsGeos::cleanCoverage( const QgsCoverage
     }
     return nullptr;
   }
+#endif
+}
+
+std::unique_ptr<QgsAbstractGeometry> QgsGeos::extractCoverageEdges( Qgis::CoverageEdgeType edgeType, QString *errorMsg, QgsFeedback *feedback ) const
+{
+#if GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR < 15
+  ( void ) edgeType;
+  ( void ) errorMsg;
+  ( void ) feedback;
+  throw QgsNotSupportedException( QObject::tr( "Extracting coverage edges requires a QGIS build based on GEOS 3.15 or later" ) );
+#else
+  if ( !mGeos )
+  {
+    if ( errorMsg )
+      *errorMsg = u"Input geometry was not set"_s;
+    return nullptr;
+  }
+
+  int geosEdgeType = 0;
+  switch ( edgeType )
+  {
+    case Qgis::CoverageEdgeType::AllEdges:
+      geosEdgeType = 0;
+      break;
+    case Qgis::CoverageEdgeType::Exterior:
+      geosEdgeType = 1;
+      break;
+    case Qgis::CoverageEdgeType::Interior:
+      geosEdgeType = 2;
+      break;
+  }
+
+  try
+  {
+    QgsScopedGeosContextRegisterFeedback interrupt( feedback );
+    geos::unique_ptr edges( GEOSCoverageEdges_r( QgsGeosContext::get(), mGeos.get(), geosEdgeType ) );
+
+    std::unique_ptr< QgsAbstractGeometry> result = fromGeos( edges.get() );
+
+    return result;
+  }
+  CATCH_GEOS_WITH_ERRMSG( nullptr )
 #endif
 }
 

@@ -206,7 +206,7 @@ void QgsFontButton::copyFormat()
       break;
 
     case ModeQFont:
-      QApplication::clipboard()->setMimeData( QgsFontUtils::toMimeData( mFont ) );
+      QApplication::clipboard()->setMimeData( QgsFontUtils::toMimeData( mFont ).release() );
       break;
   }
 }
@@ -292,7 +292,7 @@ void QgsFontButton::mouseMoveEvent( QMouseEvent *e )
       break;
 
     case ModeQFont:
-      drag->setMimeData( QgsFontUtils::toMimeData( mFont ) );
+      drag->setMimeData( QgsFontUtils::toMimeData( mFont ).release() );
       break;
   }
   const int iconSize = QgsGuiUtils::scaleIconSize( 50 );

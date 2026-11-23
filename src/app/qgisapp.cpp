@@ -87,6 +87,7 @@ using namespace Qt::StringLiterals;
 
 #include "qgsmaplayerutils.h"
 #include "qgsappmenuutils.h"
+#include "qgsconfig.h"
 #include "qgsscreenhelper.h"
 #include "qgssettingsregistrycore.h"
 #include "qgssettingsentryenumflag.h"
@@ -196,7 +197,7 @@ using namespace Qt::StringLiterals;
 #include "qgsdirectionallightsettings.h"
 #endif
 
-#ifdef WITH_SFCGAL
+#ifdef HAVE_SFCGAL
 #include <SFCGAL/capi/sfcgal_c.h>
 #include <SFCGAL/version.h>
 #endif
@@ -1928,7 +1929,7 @@ QgisApp::QgisApp(
   std::sort( actions.begin(), actions.end(), cmpByText_ );
   mPanelMenu->insertActions( nullptr, actions );
 
-  mBearingNumericFormat.reset( QgsLocalDefaultSettings::bearingFormat() );
+  mBearingNumericFormat = QgsLocalDefaultSettings::bearingFormat();
 
   mNetworkLoggerWidgetFactory.reset( std::make_unique<QgsNetworkLoggerWidgetFactory>( mNetworkLogger ) );
   mQueryLoggerWidgetFactory.reset( std::make_unique<QgsDatabaseQueryLoggerWidgetFactory>( mQueryLogger ) );
@@ -2135,7 +2136,9 @@ QgisApp::QgisApp()
   mLayerTreeView = new QgsLayerTreeView( this );
   QgsLayerTreeModel *model = new QgsLayerTreeModel( QgsProject::instance()->layerTreeRoot(), this );
   mLayerTreeView->setModel( model );
-  mUndoWidget = new QgsUndoWidget( nullptr, mMapCanvas );
+  mUndoDock = new QgsDockWidget( tr( "Undo/Redo" ), this );
+  mUndoWidget = new QgsUndoWidget( mUndoDock, mMapCanvas );
+  mUndoDock->setWidget( mUndoWidget );
   mUserInputDockWidget = new QgsUserInputWidget( this );
   mInfoBar = new QgsMessageBar( centralWidget() );
   mLayerTreeView->setMessageBar( mInfoBar );
@@ -2147,12 +2150,14 @@ QgisApp::QgisApp()
   mDigitizingTechniqueManager = new QgsMapToolsDigitizingTechniqueManager( this );
 
   mVectorLayerTools = new QgsGuiVectorLayerTools();
-  mBearingNumericFormat.reset( QgsLocalDefaultSettings::bearingFormat() );
+  mBearingNumericFormat = QgsLocalDefaultSettings::bearingFormat();
 
   mMapCanvas->setUserInputWidget( mUserInputDockWidget );
   mMapCanvas->setMessageBar( mInfoBar );
 
   connect( mLayerTreeView, &QgsLayerTreeView::currentLayerChanged, this, &QgisApp::onActiveLayerChanged );
+
+  mFeatureActionMenu = new QMenu( this );
   // More tests may need more members to be initialized
 }
 
@@ -3804,10 +3809,6 @@ void QgisApp::createToolBars()
   QToolButton *tbAllEdits = qobject_cast<QToolButton *>( mDigitizeToolBar->widgetForAction( mActionAllEdits ) );
   tbAllEdits->setPopupMode( QToolButton::InstantPopup );
 
-  // new project from template tool button
-  QToolButton *tbNewProjectFromTemplate = qobject_cast<QToolButton *>( mFileToolBar->widgetForAction( mProjectFromTemplateMenu->menuAction() ) );
-  tbNewProjectFromTemplate->setPopupMode( QToolButton::InstantPopup );
-
   // new layer tool button
 
   bt = new QToolButton();
@@ -5050,6 +5051,7 @@ void QgisApp::initLayerTreeView()
   connect( actionCollapseAll, &QAction::triggered, mLayerTreeView, &QgsLayerTreeView::collapseAllNodes );
 
   QToolBar *toolbar = new QToolBar();
+  toolbar->setObjectName( u"mLayerTreeToolBar"_s );
   toolbar->setIconSize( QgsGui::iconSize( Qgis::UserInterfaceIconType::DockedToolbar ) );
   toolbar->addAction( mActionStyleDock );
   toolbar->addAction( actionAddGroup );
@@ -5326,7 +5328,7 @@ void QgisApp::updateRecentProjectPaths()
   if ( !mRecentProjects.isEmpty() )
   {
     mRecentProjectsMenu->addSeparator();
-    QAction *clearRecentProjectsAction = mRecentProjectsMenu->addAction( tr( "Clear List" ) );
+    QAction *clearRecentProjectsAction = mRecentProjectsMenu->addAction( tr( "Clear List…" ) );
     connect( clearRecentProjectsAction, &QAction::triggered, mWelcomeScreen, [this]() { mWelcomeScreen->clearRecentProjects(); } );
   }
 
@@ -5508,7 +5510,24 @@ void QgisApp::updateProjectFromTemplates()
   if ( settingsNewProjectDefault->value() )
     mProjectFromTemplateMenu->addAction( tr( "< Blank >" ), this, [this]() { fileNewBlank(); } );
 
-  mProjectFromTemplateMenu->menuAction()->setEnabled( !mProjectFromTemplateMenu->isEmpty() );
+  if ( mProjectFromTemplateMenu->isEmpty() )
+  {
+    if ( mProjectTemplateToolbarAction )
+    {
+      mProjectTemplateToolbarAction->deleteLater();
+    }
+  }
+  else if ( !mProjectTemplateToolbarAction )
+  {
+    mProjectTemplateToolbarAction = new QgsToolButtonAction();
+    mProjectTemplateToolbarAction->setAutoRaise( true );
+    mProjectTemplateToolbarAction->setText( tr( "New from Template" ) );
+    mProjectTemplateToolbarAction->setToolTip( tr( "New from Template" ) );
+    mProjectTemplateToolbarAction->setIcon( QgsApplication::getThemeIcon( u"/mActionFileNewFromTemplate.svg"_s ) );
+    mProjectTemplateToolbarAction->setPopupMode( QToolButton::InstantPopup );
+    mProjectTemplateToolbarAction->setMenu( mProjectFromTemplateMenu );
+    mFileToolBar->insertAction( mActionOpenProject, mProjectTemplateToolbarAction );
+  }
 
   // Reload welcome screen
   if ( mWelcomeScreen )
@@ -5725,7 +5744,7 @@ QString QgisApp::getVersionString()
   versionString += "</td></tr><tr>"_L1;
 
   // SFCGAL version
-#ifdef WITH_SFCGAL
+#ifdef HAVE_SFCGAL
   const QString sfcgalVersionCompiled { SFCGAL_VERSION };
   const QString sfcgalVersionRunning { sfcgal_version() };
   versionString += u"<td>%1</td><td>%2"_s.arg( tr( "SFCGAL version" ), sfcgalVersionCompiled );
@@ -8418,16 +8437,17 @@ void QgisApp::makeMemoryLayerPermanent( QgsVectorLayer *layer )
         layerNameForRename = newLayerName;
       }
 
-      if ( layerNameForRename != vl->name() )
+      if ( layerNameForRename.compare( vl->name(), Qt::CaseInsensitive ) != 0 )
       {
         QPushButton *button = new QPushButton( tr( "Also rename layer in layers panel" ), this );
         barItem->setWidget( button );
 
         connect( vl, &QgsVectorLayer::willBeDeleted, barItem, [button]() { button->setEnabled( false ); } );
 
-        connect( button, &QPushButton::clicked, vl, [button, vl, layerNameForRename]() {
+        connect( button, &QPushButton::clicked, vl, [this, button, vl, layerNameForRename, barItem]() {
           vl->setName( layerNameForRename );
           button->setEnabled( false );
+          visibleMessageBar()->popWidget( barItem );
         } );
       }
 
@@ -11033,7 +11053,6 @@ bool QgisApp::toggleEditingVectorLayer( QgsVectorLayer *vlayer, bool allowCancel
     QStringList rollBackErrors;
     QgsProject::instance()->rollBack( rollBackErrors, true, vlayer );
 
-    res = true;
     vlayer->triggerRepaint();
   }
 
@@ -11056,7 +11075,7 @@ bool QgisApp::toggleEditingMeshLayer( QgsMeshLayer *mlayer, bool allowCancel )
   if ( !mlayer->supportsEditing() )
     return false;
 
-  bool res = false;
+  bool res = true;
 
   QgsCoordinateTransform transform( mlayer->crs(), mMapCanvas->mapSettings().destinationCrs(), QgsProject::instance() );
 
@@ -11201,7 +11220,7 @@ bool QgisApp::toggleEditingPointCloudLayer( QgsPointCloudLayer *pclayer, bool al
   if ( !pclayer->supportsEditing() )
     return false;
 
-  bool res = false;
+  bool res = true;
 
   if ( !pclayer->isEditable() )
   {
@@ -11930,8 +11949,7 @@ void QgisApp::removeLayer()
 
   for ( QgsMapLayer *layer : selectedLayers )
   {
-    QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( layer );
-    if ( vlayer && vlayer->isEditable() && !toggleEditing( vlayer, true ) )
+    if ( layer->isEditable() && !toggleEditing( layer, true ) )
       return;
   }
 
