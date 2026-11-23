@@ -1,0 +1,70 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/qgsfilterablecombobox.h                                      *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
+ ************************************************************************/
+
+
+
+
+
+class QgsFilterableComboBox : QComboBox
+{
+%Docstring(signature="appended")
+A QComboBox with entries that can be filtered by partial string match.
+
+Combobox entries will be filtered when the widget is focused and the
+user starts to enter a text string. The filtering is case-insensitive,
+and filters on any partial match.
+
+The filtering is transient, and will be immediately cleared when the
+widget is defocused. This ensures that the user is forced to have a
+valid selection from the combo box entries and cannot have the widget
+set to an ad-hoc string.
+
+.. versionadded:: 4.6
+%End
+
+%TypeHeaderCode
+#include "qgsfilterablecombobox.h"
+%End
+  public:
+    QgsFilterableComboBox( QWidget *parent = 0 );
+%Docstring
+Constructor for QgsFilterableComboBox, with the specified ``parent``
+widget.
+%End
+
+  signals:
+
+    void itemDataPreselected( const QVariant &data );
+%Docstring
+Emitted when a item is preselected (eg hovered with the mouse).
+
+``param`` data preselected item data.
+
+.. seealso:: :py:func:`itemDataPreselectionCleared`
+%End
+
+    void itemDataPreselectionCleared();
+%Docstring
+Emitted when no item is preselected anymore.
+
+.. seealso:: :py:func:`itemDataPreselected`
+%End
+
+  protected:
+    virtual bool eventFilter( QObject *obj, QEvent *event );
+
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/qgsfilterablecombobox.h                                      *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
+ ************************************************************************/

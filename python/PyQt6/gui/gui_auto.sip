@@ -87,6 +87,7 @@
 %Include auto_generated/qgsfilecontentsourcelineedit.sip
 %Include auto_generated/qgsfiledownloaderdialog.sip
 %Include auto_generated/qgsfilewidget.sip
+%Include auto_generated/qgsfilterablecombobox.sip
 %Include auto_generated/qgsexternalstoragefilewidget.sip
 %Include auto_generated/qgsfilterlineedit.sip
 %Include auto_generated/qgsfindfilesbypatternwidget.sip

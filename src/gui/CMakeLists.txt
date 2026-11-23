@@ -678,6 +678,7 @@ set(QGIS_GUI_SRCS
   qgsfieldvalueslineedit.cpp
   qgsfilecontentsourcelineedit.cpp
   qgsfilewidget.cpp
+  qgsfilterablecombobox.cpp
   qgsexternalstoragefilewidget.cpp
   qgsfilterlineedit.cpp
   qgsfindfilesbypatternwidget.cpp
@@ -957,6 +958,7 @@ set(QGIS_GUI_HDRS
   qgsfilecontentsourcelineedit.h
   qgsfiledownloaderdialog.h
   qgsfilewidget.h
+  qgsfilterablecombobox.h
   qgsexternalstoragefilewidget.h
   qgsfilterlineedit.h
   qgsfindfilesbypatternwidget.h
