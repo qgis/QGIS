@@ -312,7 +312,6 @@ Qgs25DRendererWidget.create: src/gui/symbology/qgs25drendererwidget.h#L43
 Qgs25DRendererWidget.renderer: src/gui/symbology/qgs25drendererwidget.h#L54
 Qgs25DRendererWidget: src/gui/symbology/qgs25drendererwidget.h#L32
 Qgs3DSymbolDialog.buttonBox: src/gui/qgs3dsymbolwidget.h#L121
-Qgs3DSymbolDialog.symbol: src/gui/qgs3dsymbolwidget.h#L116
 Qgs3DSymbolDialog: src/gui/qgs3dsymbolwidget.h#L101
 Qgs3DSymbolWidget.renderingTechnique: src/gui/qgs3dsymbolwidget.h#L72
 Qgs3DSymbolWidget.renderingTechniqueChanged: src/gui/qgs3dsymbolwidget.h#L92
@@ -1599,7 +1598,6 @@ QgsColorPreviewWidget.sizeHint: src/gui/qgscolorwidgets.h#L854
 QgsColorPreviewWidget: src/gui/qgscolorwidgets.h#L842
 QgsColorRampButton.acceptLiveUpdates: src/gui/qgscolorrampbutton.h#L85
 QgsColorRampButton.changeEvent: src/gui/qgscolorrampbutton.h#L280
-QgsColorRampButton.colorRamp: src/gui/qgscolorrampbutton.h#L64
 QgsColorRampButton.colorRampChanged: src/gui/qgscolorrampbutton.h#L272
 QgsColorRampButton.colorRampDialogTitle: src/gui/qgscolorrampbutton.h#L78
 QgsColorRampButton.colorRampName: src/gui/qgscolorrampbutton.h#L212
@@ -2880,12 +2878,10 @@ QgsFieldConditionalFormatWidget.viewRules: src/gui/attributetable/qgsfieldcondit
 QgsFieldConditionalFormatWidget: src/gui/attributetable/qgsfieldconditionalformatwidget.h#L35
 QgsFieldDomainDialog.QgsFieldDomainDialog: src/gui/qgsfielddomainwidget.h#L287
 QgsFieldDomainDialog.accept: src/gui/qgsfielddomainwidget.h#L321
-QgsFieldDomainDialog.createFieldDomain: src/gui/qgsfielddomainwidget.h#L303
 QgsFieldDomainDialog.setFieldDomain: src/gui/qgsfielddomainwidget.h#L294
 QgsFieldDomainDialog.setNameEditable: src/gui/qgsfielddomainwidget.h#L310
 QgsFieldDomainDialog.setPoliciesEditable: src/gui/qgsfielddomainwidget.h#L317
 QgsFieldDomainDialog: src/gui/qgsfielddomainwidget.h#L279
-QgsFieldDomainWidget.createFieldDomain: src/gui/qgsfielddomainwidget.h#L236
 QgsFieldDomainWidget.isValid: src/gui/qgsfielddomainwidget.h#L243
 QgsFieldDomainWidget.setFieldDomain: src/gui/qgsfielddomainwidget.h#L227
 QgsFieldDomainWidget.setNameEditable: src/gui/qgsfielddomainwidget.h#L250
@@ -4959,7 +4955,6 @@ QgsMessageViewer: src/gui/qgsmessageviewer.h#L32
 QgsMetadataWidget.acceptMetadata: src/gui/qgsmetadatawidget.h#L125
 QgsMetadataWidget.checkMetadata: src/gui/qgsmetadatawidget.h#L115
 QgsMetadataWidget.crsChanged: src/gui/qgsmetadatawidget.h#L120
-QgsMetadataWidget.metadata: src/gui/qgsmetadatawidget.h#L101
 QgsMetadataWidget.mode: src/gui/qgsmetadatawidget.h#L79
 QgsMetadataWidget.parseLicenses: src/gui/qgsmetadatawidget.h#L135
 QgsMetadataWidget.parseLinkTypes: src/gui/qgsmetadatawidget.h#L141
