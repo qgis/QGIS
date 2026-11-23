@@ -179,7 +179,7 @@ Item {
                   recentProjectsListView.currentIndex = index;
 
                   if (mouse.button === Qt.RightButton) {
-                    recentProjectsMenu.projectPinned = index;
+                    recentProjectsMenu.projectIndex = index;
                     recentProjectsMenu.projectPinned = Pinned;
                     recentProjectsMenu.projectExists = Exists;
                     recentProjectsMenu.projectHasNativePath = HasNativePath;
