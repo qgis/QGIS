@@ -206,6 +206,26 @@ class GUI_EXPORT QgsProcessingModelerParameterWidget : public QWidget, public Qg
      */
     void changed();
 
+    /**
+     * Emitted when an input parameter is temporarily highlighted (preselected) in the widget.
+     *
+     * \a parameterName will be empty if a previously highlighted parameter has been unhighlighted.
+     *
+     * \see childAlgorithmOutputHighlighted()
+     * \since QGIS 4.6
+     */
+    void inputParameterHighlighted( const QString &parameterName );
+
+    /**
+     * Emitted when an child algorithm output is temporarily highlighted (preselected) in the widget.
+     *
+     * \a childId will be empty if a previously highlighted output has been unhighlighted.
+     *
+     * \see inputParameterHighlighted()
+     * \since QGIS 4.6
+     */
+    void childAlgorithmOutputHighlighted( const QString &childId, const QString &outputName );
+
   private slots:
 
     void sourceMenuAboutToShow();

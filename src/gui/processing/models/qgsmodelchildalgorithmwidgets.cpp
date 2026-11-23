@@ -150,6 +150,8 @@ void QgsProcessingModelerParametersPanelWidget::setupUi()
       widget->setDialog( mDialog );
       widget->registerProcessingContextGenerator( this );
       connect( widget, &QgsProcessingModelerParameterWidget::changed, this, &QgsProcessingModelerParametersPanelWidget::emitChangedSignal );
+      connect( widget, &QgsProcessingModelerParameterWidget::inputParameterHighlighted, this, &QgsProcessingModelerParametersPanelWidget::inputParameterHighlighted );
+      connect( widget, &QgsProcessingModelerParameterWidget::childAlgorithmOutputHighlighted, this, &QgsProcessingModelerParametersPanelWidget::childAlgorithmOutputHighlighted );
       mWrappers.insert( parameter->name(), widget );
 
       QLabel *label = widget->createLabel();
@@ -182,6 +184,8 @@ void QgsProcessingModelerParametersPanelWidget::setupUi()
       widget->setDialog( mDialog );
       widget->registerProcessingContextGenerator( this );
       connect( widget, &QgsProcessingModelerParameterWidget::changed, this, &QgsProcessingModelerParametersPanelWidget::emitChangedSignal );
+      connect( widget, &QgsProcessingModelerParameterWidget::inputParameterHighlighted, this, &QgsProcessingModelerParametersPanelWidget::inputParameterHighlighted );
+      connect( widget, &QgsProcessingModelerParameterWidget::childAlgorithmOutputHighlighted, this, &QgsProcessingModelerParametersPanelWidget::childAlgorithmOutputHighlighted );
 
       mWrappers.insert( output->name(), widget );
 
@@ -510,6 +514,9 @@ QgsProcessingModelerParametersWidget::QgsProcessingModelerParametersWidget(
 {
   mParametersPanel = new QgsProcessingModelerParametersPanelWidget( childAlgorithm, model, context, childId, configuration, this, dialog );
   connect( mParametersPanel, &QgsProcessingModelerParametersPanelWidget::changed, this, &QgsProcessingModelConfigWidget::changed );
+
+  connect( mParametersPanel, &QgsProcessingModelerParametersPanelWidget::inputParameterHighlighted, this, &QgsProcessingModelerParametersWidget::inputParameterHighlighted );
+  connect( mParametersPanel, &QgsProcessingModelerParametersPanelWidget::childAlgorithmOutputHighlighted, this, &QgsProcessingModelerParametersWidget::childAlgorithmOutputHighlighted );
 
   setupUi();
 }

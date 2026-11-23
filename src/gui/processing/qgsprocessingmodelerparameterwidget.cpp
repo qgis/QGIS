@@ -109,6 +109,8 @@ QgsProcessingModelerParameterWidget::QgsProcessingModelerParameterWidget(
   connect( mExpressionWidget, &QgsExpressionLineEdit::expressionChanged, this, &QgsProcessingModelerParameterWidget::emitChangedSignal );
 
   mModelInputCombo = new QgsFilterableComboBox();
+  connect( mModelInputCombo, &QgsFilterableComboBox::itemDataPreselected, this, [this]( const QVariant &data ) { emit inputParameterHighlighted( data.toString() ); } );
+  connect( mModelInputCombo, &QgsFilterableComboBox::itemDataPreselectionCleared, this, [this] { emit inputParameterHighlighted( QString() ); } );
 
   QHBoxLayout *hLayout2 = new QHBoxLayout();
   hLayout2->setContentsMargins( 0, 0, 0, 0 );
@@ -120,6 +122,17 @@ QgsProcessingModelerParameterWidget::QgsProcessingModelerParameterWidget(
   connect( mModelInputCombo, qOverload< int >( &QComboBox::currentIndexChanged ), this, &QgsProcessingModelerParameterWidget::emitChangedSignal );
 
   mChildOutputCombo = new QgsFilterableComboBox();
+  connect( mChildOutputCombo, &QgsFilterableComboBox::itemDataPreselected, this, [this]( const QVariant &data ) {
+    const QStringList dataList = data.toStringList();
+    if ( dataList.size() != 2 )
+    {
+      QgsDebugError( u"Unexpected child output item data size, expected 2 got %1"_s.arg( dataList.size() ) );
+      emit childAlgorithmOutputHighlighted( QString(), QString() );
+      return;
+    }
+    emit childAlgorithmOutputHighlighted( dataList.at( 0 ), dataList.at( 1 ) );
+  } );
+  connect( mChildOutputCombo, &QgsFilterableComboBox::itemDataPreselectionCleared, this, [this] { emit childAlgorithmOutputHighlighted( QString(), QString() ); } );
 
   QHBoxLayout *hLayout3 = new QHBoxLayout();
   hLayout3->setContentsMargins( 0, 0, 0, 0 );

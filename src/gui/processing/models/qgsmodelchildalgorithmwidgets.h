@@ -100,6 +100,28 @@ class GUI_EXPORT QgsProcessingModelerParametersPanelWidget : public QgsPanelWidg
      */
     void setStateFromChildAlgorithm();
 
+  signals:
+
+    /**
+     * Emitted when an input parameter is temporarily highlighted (preselected) in the widget.
+     *
+     * \a parameterName will be empty if a previously highlighted parameter has been unhighlighted.
+     *
+     * \see childAlgorithmOutputHighlighted()
+     * \since QGIS 4.6
+     */
+    void inputParameterHighlighted( const QString &parameterName );
+
+    /**
+     * Emitted when an child algorithm output is temporarily highlighted (preselected) in the widget.
+     *
+     * \a childId will be empty if a previously highlighted output has been unhighlighted.
+     *
+     * \see inputParameterHighlighted()
+     * \since QGIS 4.6
+     */
+    void childAlgorithmOutputHighlighted( const QString &childId, const QString &outputName );
+
   private:
     void setupUi();
     void emitChangedSignal();
@@ -205,6 +227,28 @@ class GUI_EXPORT QgsProcessingModelerParametersWidget : public QgsProcessingMode
    * Creates the child algorithm instance, populated with the current widget parameter values and comments.
    */
     std::unique_ptr< QgsProcessingModelChildAlgorithm > createAlgorithm();
+
+  signals:
+
+    /**
+     * Emitted when an input parameter is temporarily highlighted (preselected) in the widget.
+     *
+     * \a parameterName will be empty if a previously highlighted parameter has been unhighlighted.
+     *
+     * \see childAlgorithmOutputHighlighted()
+     * \since QGIS 4.6
+     */
+    void inputParameterHighlighted( const QString &parameterName );
+
+    /**
+     * Emitted when an child algorithm output is temporarily highlighted (preselected) in the widget.
+     *
+     * \a childId will be empty if a previously highlighted output has been unhighlighted.
+     *
+     * \see inputParameterHighlighted()
+     * \since QGIS 4.6
+     */
+    void childAlgorithmOutputHighlighted( const QString &childId, const QString &outputName );
 
   private:
     void setupUi();

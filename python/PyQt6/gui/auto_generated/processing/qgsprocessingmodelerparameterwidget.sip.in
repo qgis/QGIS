@@ -191,6 +191,32 @@ widget.
 .. versionadded:: 4.0
 %End
 
+    void inputParameterHighlighted( const QString &parameterName );
+%Docstring
+Emitted when an input parameter is temporarily highlighted (preselected)
+in the widget.
+
+``parameterName`` will be empty if a previously highlighted parameter
+has been unhighlighted.
+
+.. seealso:: :py:func:`childAlgorithmOutputHighlighted`
+
+.. versionadded:: 4.6
+%End
+
+    void childAlgorithmOutputHighlighted( const QString &childId, const QString &outputName );
+%Docstring
+Emitted when an child algorithm output is temporarily highlighted
+(preselected) in the widget.
+
+``childId`` will be empty if a previously highlighted output has been
+unhighlighted.
+
+.. seealso:: :py:func:`inputParameterHighlighted`
+
+.. versionadded:: 4.6
+%End
+
 };
 
 
