@@ -216,9 +216,9 @@ std::unique_ptr<QMatrix4x4> QgsGltfUtils::parseNodeTransform( const tinygltf::No
   else if ( node.translation.size() || node.rotation.size() || node.scale.size() )
   {
     matrix = std::make_unique<QMatrix4x4>();
-    if ( node.scale.size() )
+    if ( node.translation.size() )
     {
-      matrix->scale( static_cast< float >( node.scale[0] ), static_cast< float >( node.scale[1] ), static_cast< float >( node.scale[2] ) );
+      matrix->translate( static_cast< float >( node.translation[0] ), static_cast< float >( node.translation[1] ), static_cast< float >( node.translation[2] ) );
     }
     if ( node.rotation.size() )
     {
@@ -226,9 +226,9 @@ std::unique_ptr<QMatrix4x4> QgsGltfUtils::parseNodeTransform( const tinygltf::No
         QQuaternion( static_cast< float >( node.rotation[3] ), static_cast< float >( node.rotation[0] ), static_cast< float >( node.rotation[1] ), static_cast< float >( node.rotation[2] ) )
       );
     }
-    if ( node.translation.size() )
+    if ( node.scale.size() )
     {
-      matrix->translate( static_cast< float >( node.translation[0] ), static_cast< float >( node.translation[1] ), static_cast< float >( node.translation[2] ) );
+      matrix->scale( static_cast< float >( node.scale[0] ), static_cast< float >( node.scale[1] ), static_cast< float >( node.scale[2] ) );
     }
   }
   return matrix;
