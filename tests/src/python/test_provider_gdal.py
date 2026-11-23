@@ -16,13 +16,14 @@ import struct
 import unittest
 
 import numpy as np
-from osgeo import gdal
+from osgeo import gdal, ogr, osr
 from qgis.core import (
     Qgis,
     QgsPointXY,
     QgsProviderRegistry,
     QgsRasterLayer,
     QgsRectangle,
+    QgsVectorLayer,
 )
 from qgis.PyQt.QtCore import QTemporaryDir
 from qgis.testing import QgisTestCase, start_app
@@ -757,6 +758,47 @@ class PyQgsGdalProvider(QgisTestCase, RasterProviderTestCase):
         pos = QgsPointXY(1, -1)
         value_sample = raster_layer.dataProvider().sample(pos, 1)[0]
         self.assertEqual(value_sample, full_content[3])
+
+    def test_gpkg_mixed_crs(self):
+        """Test issue GH #67713 - mixed CRS in GPKG"""
+
+        # Create a mixed CRS GPKG with one raster in EPSG:25830 and a vector in EPSG:4326
+        tmp_dir = QTemporaryDir()
+        gpkg_path = os.path.join(tmp_dir.path(), "mixed_crs.gpkg")
+
+        utm = osr.SpatialReference()
+        utm.ImportFromEPSG(25830)
+        src = gdal.GetDriverByName("MEM").Create("", 256, 256, 3, gdal.GDT_Byte)
+        src.SetSpatialRef(utm)
+        src.SetGeoTransform([436800, 0.1, 0, 4484240, 0, -0.1])
+        gdal.GetDriverByName("GPKG").CreateCopy(
+            gpkg_path, src, options=["RASTER_TABLE=ortho"]
+        )
+
+        wgs84 = osr.SpatialReference()
+        wgs84.ImportFromEPSG(4326)
+        ds = gdal.OpenEx(gpkg_path, gdal.OF_VECTOR | gdal.OF_UPDATE)
+        layer = ds.CreateLayer("zones", wgs84, ogr.wkbPolygon)
+        feature = ogr.Feature(layer.GetLayerDefn())
+        feature.SetGeometry(
+            ogr.CreateGeometryFromWkt(
+                "POLYGON((40.5 -3.74,40.5 -3.73,40.51 -3.73,40.5 -3.74))"
+            )
+        )
+        layer.CreateFeature(feature)
+
+        del layer
+        del ds
+
+        # Open the raster and check that it is valid and has the correct CRS
+        raster_layer = QgsRasterLayer(gpkg_path, "mixed_crs", "gdal")
+        self.assertTrue(raster_layer.isValid())
+        self.assertEqual(raster_layer.crs().authid(), "EPSG:25830")
+
+        # Open the vector and check that it is valid and has the correct CRS
+        vector_layer = QgsVectorLayer(f"{gpkg_path}|layername=zones", "zones", "ogr")
+        self.assertTrue(vector_layer.isValid())
+        self.assertEqual(vector_layer.crs().authid(), "EPSG:4326")
 
 
 if __name__ == "__main__":

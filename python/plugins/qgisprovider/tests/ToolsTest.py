@@ -23,13 +23,19 @@ import os
 import shutil
 import unittest
 
-from processing.tests.TestData import points
 from qgis.core import NULL, QgsVectorLayer
 from qgis.testing import QgisTestCase, start_app
+from utilities import unitTestDataPath
+
+TEST_DATA_DIR = unitTestDataPath()
+testDataPath = os.path.join(TEST_DATA_DIR, "processing")
 
 from qgisprovider import vector
 
-testDataPath = os.path.join(os.path.dirname(__file__), "testdata")
+
+def points():
+    return os.path.join(testDataPath, "points.gml")
+
 
 start_app()
 

@@ -42,7 +42,7 @@ from qgis.core import (
     QgsSettingsTree,
     qgsfunction,
 )
-from qgis.gui import QgsMessageBar
+from qgis.gui import QgisInterface, QgsMessageBar
 from qgis.PyQt.QtCore import (
     QT_VERSION_STR,
     QCoreApplication,
@@ -243,11 +243,10 @@ def uninstallErrorHook():
 
 
 # initialize 'iface' object
-iface = None
+iface: QgisInterface | None = None
 
 
 def initInterface(pointer):
-    from qgis.gui import QgisInterface
     from qgis.PyQt.sip import wrapinstance
 
     global iface

@@ -34,7 +34,7 @@ QgsMesh3DAveragingMethod::QgsMesh3DAveragingMethod( Method method )
   : mMethod( method )
 {}
 
-QgsMesh3DAveragingMethod *QgsMesh3DAveragingMethod::createFromXml( const QDomElement &elem )
+std::unique_ptr<QgsMesh3DAveragingMethod> QgsMesh3DAveragingMethod::createFromXml( const QDomElement &elem )
 {
   std::unique_ptr<QgsMesh3DAveragingMethod> ret;
 
@@ -55,7 +55,7 @@ QgsMesh3DAveragingMethod *QgsMesh3DAveragingMethod::createFromXml( const QDomEle
       break;
   }
   ret->readXml( elem );
-  return ret.release();
+  return ret;
 }
 
 QgsMeshDataBlock QgsMesh3DAveragingMethod::calculate( const QgsMesh3DDataBlock &block3d, QgsFeedback *feedback ) const

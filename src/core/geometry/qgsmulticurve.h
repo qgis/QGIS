@@ -98,7 +98,7 @@ class CORE_EXPORT QgsMultiCurve : public QgsGeometryCollection
     /**
      * Returns a copy of the multi curve, where each component curve has had its line direction reversed.
      */
-    QgsMultiCurve *reversed() const SIP_FACTORY;
+    std::unique_ptr<QgsMultiCurve> reversed() const;
 
     QgsAbstractGeometry *boundary() const override SIP_FACTORY;
 

@@ -340,7 +340,7 @@ class ProcessingHistoryRootNode : public ProcessingHistoryBaseNode
       : ProcessingHistoryBaseNode( entry, provider )
     {
       const QVariant parameters = mEntry.entry.value( u"parameters"_s );
-      if ( parameters.type() == QVariant::Map )
+      if ( parameters.typeId() == QMetaType::Type::QVariantMap )
       {
         mDescription = QgsProcessingUtils::variantToPythonLiteral( mInputs );
       }

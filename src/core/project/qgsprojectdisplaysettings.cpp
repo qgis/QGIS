@@ -46,8 +46,8 @@ QgsProjectDisplaySettings::~QgsProjectDisplaySettings() = default;
 void QgsProjectDisplaySettings::reset()
 {
   // inherit local default settings
-  mBearingFormat.reset( QgsLocalDefaultSettings::bearingFormat() );
-  mGeographicCoordinateFormat.reset( QgsLocalDefaultSettings::geographicCoordinateFormat() );
+  mBearingFormat = QgsLocalDefaultSettings::bearingFormat();
+  mGeographicCoordinateFormat = QgsLocalDefaultSettings::geographicCoordinateFormat();
 
   mCoordinateType = Qgis::CoordinateDisplayType::MapCrs;
   mCoordinateCustomCrs = QgsCoordinateReferenceSystem( "EPSG:4326" );
@@ -182,12 +182,12 @@ bool QgsProjectDisplaySettings::readXml( const QDomElement &element, const QgsRe
       }
       else
       {
-        mGeographicCoordinateFormat.reset( QgsLocalDefaultSettings::geographicCoordinateFormat() );
+        mGeographicCoordinateFormat = QgsLocalDefaultSettings::geographicCoordinateFormat();
       }
     }
     else
     {
-      mGeographicCoordinateFormat.reset( QgsLocalDefaultSettings::geographicCoordinateFormat() );
+      mGeographicCoordinateFormat = QgsLocalDefaultSettings::geographicCoordinateFormat();
     }
     emit geographicCoordinateFormatChanged();
   }
@@ -229,7 +229,7 @@ bool QgsProjectDisplaySettings::readXml( const QDomElement &element, const QgsRe
   }
   else if ( project )
   {
-    setCoordinateAxisOrder( qgsEnumKeyToValue( QgsProject::instance()->readEntry( u"PositionPrecision"_s, u"/CoordinateOrder"_s ), Qgis::CoordinateOrder::Default ) ); // skip-keyword-check
+    setCoordinateAxisOrder( qgsEnumKeyToValue( project->readEntry( u"PositionPrecision"_s, u"/CoordinateOrder"_s ), Qgis::CoordinateOrder::Default ) ); // skip-keyword-check
   }
 
   return true;

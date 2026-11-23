@@ -30,6 +30,7 @@
 using namespace Qt::StringLiterals;
 
 class QgsCoordinateTransformPrivate;
+class QgsBox3D;
 class QgsPointXY;
 class QgsRectangle;
 class QPolygonF;
@@ -267,6 +268,24 @@ class CORE_EXPORT QgsCoordinateTransform
     QgsRectangle transformBoundingBox( const QgsRectangle &rectangle, Qgis::TransformDirection direction = Qgis::TransformDirection::Forward, bool handle180Crossover = false ) const SIP_THROW(
       QgsCsException
     );
+
+    /**
+     * Transforms a 3D box from the source CRS to the destination CRS.
+     * If the direction is ForwardTransform then coordinates are transformed from source to destination,
+     * otherwise points are transformed from destination to source CRS.
+     * This method assumes that the box is a bounding box, and creates a bounding box
+     * in the projected CRS, such that all points from the source box are within
+     * the returned box.
+     *
+     * If the box has no Z values then a Z of 0 is assumed.
+     *
+     * \param box box to transform
+     * \param direction transform direction (defaults to ForwardTransform)
+     * \returns box in destination CRS
+     * \throws QgsCsException if the transformation fails
+     * \since QGIS 4.4
+     */
+    QgsBox3D transformBox3D( const QgsBox3D &box, Qgis::TransformDirection direction = Qgis::TransformDirection::Forward ) const SIP_THROW( QgsCsException );
 
     /**
      * Transforms an array of x, y and z double coordinates in place, from the source CRS to the destination CRS.

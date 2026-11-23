@@ -16,12 +16,13 @@ import tempfile
 import unittest
 from shutil import rmtree
 
-from processing.algs.gdal.GdalUtils import GdalConnectionDetails, GdalUtils
+from gdalprovider.gdal_utils import GdalConnectionDetails, GdalUtils
 from qgis.core import (
     QgsApplication,
     QgsAuthMethodConfig,
     QgsDataSourceUri,
     QgsRasterLayer,
+    QgsVectorLayer,
 )
 from qgis.testing import QgisTestCase, start_app
 
@@ -112,6 +113,43 @@ class TestProcessingAlgsGdalGdalUtils(QgisTestCase):
             GdalUtils.ogrLayerName('"base_path|layername=some_table|other=field"'),
             "some_table",
         )
+
+    def test_gdal_connection_details_from_layer_VSIZIP(self):
+        """
+        Test GdalUtils.gdal_connection_details_from_layer
+
+        Paths used in this test are not real and valid, but it does not matter here.
+        """
+
+        rl = QgsRasterLayer(
+            "/vsizip//path/to/file.zip/data.tiff",
+            "zipped_layer",
+            "gdal",
+        )
+
+        self.assertEqual(rl.providerType(), "gdal")
+
+        connection_details = GdalUtils.gdal_connection_details_from_layer(rl)
+        s = connection_details.connection_string
+
+        self.assertTrue(s.lower().startswith("/vsizip/"))
+        self.assertTrue("/path/to/file.zip" in s)
+        self.assertTrue("/data.tiff" in s)
+
+        vl = QgsVectorLayer(
+            "/vsizip//path/to/file.zip/data.shp|layername=data",
+            "zipped_layer",
+            "ogr",
+        )
+
+        self.assertEqual(vl.providerType(), "ogr")
+
+        connection_details = GdalUtils.gdal_connection_details_from_layer(vl)
+        s = connection_details.connection_string
+
+        self.assertTrue(s.lower().startswith("/vsizip/"))
+        self.assertTrue("/path/to/file.zip" in s)
+        self.assertTrue("/data.shp" in s)
 
 
 if __name__ == "__main__":

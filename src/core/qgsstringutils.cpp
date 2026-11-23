@@ -16,6 +16,7 @@
 #include "qgsstringutils.h"
 
 #include <cstdlib>
+#include <numeric>
 
 #include "qgslogger.h"
 
@@ -28,10 +29,18 @@
 
 using namespace Qt::StringLiterals;
 
-QHash<QString, QString> QgsStringUtils::UNACCENT_MAP = QgsStringUtils::createUnaccentMap();
-
 QString QgsStringUtils::unaccent( const QString &input )
 {
+  // do a cheap scan ahead first, if all characters are simple ascii characters then we don't have to
+  // do anything
+  constexpr char16_t MAX_SIMPLE_CHAR = 127;
+  if ( std::none_of( input.cbegin(), input.cend(), []( QChar c ) { return c.unicode() > MAX_SIMPLE_CHAR; } ) )
+  {
+    return input;
+  }
+
+  static const QHash<char32_t, QString> UNACCENT_MAP = QgsStringUtils::createUnaccentMap();
+
   // Normalize input to NFC so that Unicode characters composed of base +
   // combining marks are converted to their canonical composed form.
   // This ensures lookups match the keys in UNACCENT_MAP, which are stored
@@ -46,23 +55,43 @@ QString QgsStringUtils::unaccent( const QString &input )
   while ( i < n )
   {
     const QChar c = in.at( i );
+
+    if ( c.unicode() <= MAX_SIMPLE_CHAR )
+    {
+      // basic ascii character, just skip the costly logic entirely
+      out.append( c );
+      ++i;
+      continue;
+    }
+
     int len = 1;
+
+    char32_t ucs4 = c.unicode();
 
     // Detect surrogate pair (non-BMP)
     if ( c.isHighSurrogate() && i + 1 < n )
     {
       const QChar c2 = in.at( i + 1 );
       if ( c2.isLowSurrogate() )
+      {
+        ucs4 = QChar::surrogateToUcs4( c, c2 );
         len = 2;
+      }
     }
 
-    const QString key = in.mid( i, len ).normalized( QString::NormalizationForm_C );
-
-    auto it = UNACCENT_MAP.constFind( key );
+    auto it = UNACCENT_MAP.constFind( ucs4 );
     if ( it != UNACCENT_MAP.constEnd() )
+    {
       out.append( it.value() );
+    }
     else
-      out.append( key );
+    {
+      out.append( c );
+      if ( len == 2 )
+      {
+        out.append( in.at( i + 1 ) );
+      }
+    }
 
     i += len;
   }
@@ -240,17 +269,15 @@ int QgsStringUtils::levenshteinDistance( const QString &string1, const QString &
   if ( length1 > length2 )
   {
     std::swap( s1, s2 );
+    std::swap( s1Char, s2Char );
     std::swap( length1, length2 );
   }
 
   //levenshtein algorithm begins here
   std::vector< int > col( length2 + 1, 0 );
-  std::vector< int > prevCol;
-  prevCol.reserve( length2 + 1 );
-  for ( int i = 0; i < length2 + 1; ++i )
-  {
-    prevCol.emplace_back( i );
-  }
+  std::vector< int > prevCol( length2 + 1, 0 );
+  std::iota( prevCol.begin(), prevCol.end(), 0 );
+
   const QChar *s2start = s2Char;
   for ( int i = 0; i < length1; ++i )
   {

@@ -299,6 +299,11 @@ int QgsSimpleCurve::dimension() const
   return 1;
 }
 
+bool QgsSimpleCurve::isSimpleCurve() const
+{
+  return true;
+}
+
 QgsPoint QgsSimpleCurve::startPoint() const
 {
   if ( numPoints() < 1 )

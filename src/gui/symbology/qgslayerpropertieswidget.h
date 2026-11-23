@@ -82,11 +82,6 @@ class GUI_EXPORT QgsLayerPropertiesWidget : public QgsPanelWidget, public QgsExp
   signals:
 
     /**
-     * Emitted when the symbol layer configuration is changed in the widget.
-     */
-    void changed();
-
-    /**
      * Emitted when the symbol \a layer is changed in the widget.
      */
     void changeLayer( QgsSymbolLayer *layer );

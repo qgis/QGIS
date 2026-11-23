@@ -30,6 +30,7 @@
 #include "qgslayoutpagecollection.h"
 #include "qgslayoutrendercontext.h"
 #include "qgslayoutundostack.h"
+#include "qgspainting.h"
 #include "qgsproject.h"
 #include "qgsreadwritecontext.h"
 #include "qgstest.h"
@@ -65,12 +66,11 @@ class TestItem : public QgsLayoutItem
     void draw( QgsLayoutItemRenderContext &context ) override
     {
       QPainter *painter = context.renderContext().painter();
-      painter->save();
+      QgsScopedQPainterState painterState( painter );
       painter->setRenderHint( QPainter::Antialiasing, false );
       painter->setPen( Qt::NoPen );
       painter->setBrush( QColor( 255, 100, 100, 200 ) );
       painter->drawRect( rect() );
-      painter->restore();
     }
 
     QSizeF applyItemSizeConstraint( QSizeF targetSize ) override
@@ -1427,14 +1427,14 @@ void TestQgsLayoutItem::variables()
   const int before = scope->variableCount();
 
   QgsExpressionContextUtils::setLayoutItemVariable( map.get(), u"var"_s, 5 );
-  scope.reset( QgsExpressionContextUtils::layoutItemScope( map.get() ) );
+  scope = QgsExpressionContextUtils::layoutItemScope( map.get() );
   QCOMPARE( scope->variableCount(), before + 1 );
   QCOMPARE( scope->variable( u"var"_s ).toInt(), 5 );
 
   QVariantMap vars;
   vars.insert( u"var2"_s, 7 );
   QgsExpressionContextUtils::setLayoutItemVariables( map.get(), vars );
-  scope.reset( QgsExpressionContextUtils::layoutItemScope( map.get() ) );
+  scope = QgsExpressionContextUtils::layoutItemScope( map.get() );
   QCOMPARE( scope->variableCount(), before + 1 );
   QVERIFY( !scope->hasVariable( u"var"_s ) );
   QCOMPARE( scope->variable( u"var2"_s ).toInt(), 7 );

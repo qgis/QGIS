@@ -134,7 +134,7 @@ QList<QgsMapToolIdentify::IdentifyResult> QgsMapToolIdentify::identify(
   mLastExtent = mCanvas->extent();
   mLastMapUnitsPerPixel = mCanvas->mapUnitsPerPixel();
 
-  mCoordinatePrecision = QgsCoordinateUtils::calculateCoordinatePrecision( mLastMapUnitsPerPixel, mCanvas->mapSettings().destinationCrs() );
+  mCoordinatePrecision = QgsCoordinateUtils::calculateCoordinatePrecision( mLastMapUnitsPerPixel, mCanvas->mapSettings().destinationCrs(), QgsProject::instance() );
 
   if ( mode == DefaultQgsSetting )
   {
@@ -507,7 +507,7 @@ bool QgsMapToolIdentify::identifyVectorTileLayer( QList<QgsMapToolIdentify::Iden
           selectionGeom.transform( ct );
 
         // use prepared geometry for faster intersection test
-        selectionGeomPrepared.reset( QgsGeometry::createGeometryEngine( selectionGeom.constGet() ) );
+        selectionGeomPrepared = QgsGeometry::createGeometryEngine( selectionGeom.constGet() );
       }
     }
 
@@ -687,7 +687,7 @@ bool QgsMapToolIdentify::identifyVectorLayer( QList<QgsMapToolIdentify::Identify
           selectionGeom.transform( ct );
 
         // use prepared geometry for faster intersection test
-        selectionGeomPrepared.reset( QgsGeometry::createGeometryEngine( selectionGeom.constGet() ) );
+        selectionGeomPrepared = QgsGeometry::createGeometryEngine( selectionGeom.constGet() );
       }
     }
 

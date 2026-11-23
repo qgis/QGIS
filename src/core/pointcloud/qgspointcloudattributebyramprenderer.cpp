@@ -75,7 +75,7 @@ void QgsPointCloudAttributeByRampRenderer::renderBlock( const QgsPointCloudBlock
 
   const bool renderElevation = context.renderContext().elevationMap();
   const QgsDoubleRange zRange = context.renderContext().zRange();
-  const bool considerZ = !zRange.isInfinite() || renderElevation;
+  const bool considerZ = !zRange.isInfinite() || renderElevation || !context.mapCrsZFilter().isInfinite();
 
   const bool applyZOffset = attribute->name() == "Z"_L1;
   const bool applyXOffset = attribute->name() == "X"_L1;
@@ -124,6 +124,9 @@ void QgsPointCloudAttributeByRampRenderer::renderBlock( const QgsPointCloudBlock
         }
       }
 
+      if ( !context.mapCrsZFilter().contains( z ) )
+        continue;
+
       double attributeValue = 0;
       context.getAttribute( ptr, i * recordSize + attributeOffset, attributeType, attributeValue );
 
@@ -160,7 +163,7 @@ void QgsPointCloudAttributeByRampRenderer::renderBlock( const QgsPointCloudBlock
 }
 
 
-QgsPointCloudRenderer *QgsPointCloudAttributeByRampRenderer::create( QDomElement &element, const QgsReadWriteContext &context )
+std::unique_ptr<QgsPointCloudRenderer> QgsPointCloudAttributeByRampRenderer::create( QDomElement &element, const QgsReadWriteContext &context )
 {
   auto r = std::make_unique< QgsPointCloudAttributeByRampRenderer >();
 
@@ -174,7 +177,7 @@ QgsPointCloudRenderer *QgsPointCloudAttributeByRampRenderer::create( QDomElement
 
   r->restoreCommonProperties( element, context );
 
-  return r.release();
+  return r;
 }
 
 QDomElement QgsPointCloudAttributeByRampRenderer::save( QDomDocument &doc, const QgsReadWriteContext &context ) const

@@ -595,8 +595,8 @@ const QStringList QgsAggregateMappingDelegate::aggregates()
   std::call_once( initialized, []() {
     sAggregates << u"first_value"_s << u"last_value"_s;
 
-    const QList<QgsExpressionFunction *> functions = QgsExpression::Functions();
-    for ( const QgsExpressionFunction *function : functions )
+    const QgsExpression::FunctionListSnapshot functions = QgsExpression::getFunctionsSnapshot();
+    for ( const QgsExpression::SharedFunctionPtr &function : *functions )
     {
       if ( !function || function->isDeprecated() || function->name().isEmpty() || function->name().at( 0 ) == '_' )
         continue;

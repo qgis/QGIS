@@ -53,7 +53,7 @@ void QgsWelcomeScreenController::openProject( const QString &path )
 void QgsWelcomeScreenController::createBlankProject()
 {
   // QTimer needed to prevent crashes when the Item bound to the calling function is deleted by the ListView
-  QTimer::singleShot( 1, this, []() { QgisApp::instance()->newProject(); } );
+  QTimer::singleShot( 1, this, []() { QgisApp::instance()->fileNew( true, true ); } );
 }
 
 void QgsWelcomeScreenController::createProjectFromBasemap()
@@ -156,7 +156,7 @@ QgsWelcomeScreen::QgsWelcomeScreen( bool skipVersionCheck, QWidget *parent )
   }
 
   QgsSettings settings;
-  mVersionInfo = new QgsVersionInfo();
+  mVersionInfo = new QgsVersionInfo( this );
   if ( !QgsApplication::isRunningFromBuildDir() && settings.value( u"/qgis/allowVersionCheck"_s, true ).toBool() && settingsCheckVersion->value() && !skipVersionCheck )
   {
     connect( mVersionInfo, &QgsVersionInfo::versionInfoAvailable, this, &QgsWelcomeScreen::versionInfoReceived );
@@ -201,6 +201,8 @@ void QgsWelcomeScreen::showScene()
   }
   refreshGeometry();
   show();
+  setFocus( Qt::OtherFocusReason );
+  emit mWelcomeScreenController->welcomeScreenShown();
 }
 
 void QgsWelcomeScreen::hideScene()
@@ -288,13 +290,12 @@ void QgsWelcomeScreen::versionInfoReceived()
     return;
   }
 
-  QgsVersionInfo *versionInfo = qobject_cast<QgsVersionInfo *>( sender() );
-  Q_ASSERT( versionInfo );
+  Q_ASSERT( mVersionInfo );
 
-  if ( versionInfo->newVersionAvailable() )
+  if ( mVersionInfo->newVersionAvailable() )
   {
     QString latestVersion;
-    const QString latestVersionCode = QString::number( versionInfo->latestVersionCode() );
+    const QString latestVersionCode = QString::number( mVersionInfo->latestVersionCode() );
     if ( latestVersionCode.size() >= 5 )
     {
       int major = latestVersionCode.mid( 0, latestVersionCode.size() - 4 ).toInt();
@@ -305,6 +306,8 @@ void QgsWelcomeScreen::versionInfoReceived()
     }
     emit mWelcomeScreenController->newVersionAvailable( latestVersion );
   }
+  mVersionInfo->deleteLater();
+  mVersionInfo = nullptr;
 }
 
 void QgsWelcomeScreen::pluginUpdatesAvailableReceived( const QStringList &plugins )

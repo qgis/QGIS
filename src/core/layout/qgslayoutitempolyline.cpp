@@ -24,6 +24,7 @@
 #include "qgslayoutrendercontext.h"
 #include "qgslayoututils.h"
 #include "qgslinesymbol.h"
+#include "qgspainting.h"
 #include "qgsreadwritecontext.h"
 #include "qgsstyleentityvisitor.h"
 #include "qgssvgcache.h"

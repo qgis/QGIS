@@ -22,6 +22,7 @@
 #include "qgslayertreemodel.h"
 #include "qgslegendsettings.h"
 #include "qgsnumericformat.h"
+#include "qgspainting.h"
 #include "qgssymbollayerutils.h"
 #include "qgstextrenderer.h"
 

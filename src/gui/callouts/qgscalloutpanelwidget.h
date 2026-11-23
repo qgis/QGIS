@@ -91,7 +91,7 @@ class GUI_EXPORT QgsCalloutPanelWidget : public QgsPanelWidget, private Ui::QgsC
      *
      * \see setCallout()
      */
-    QgsCallout *callout() SIP_FACTORY;
+    std::unique_ptr<QgsCallout> callout();
 
   signals:
 

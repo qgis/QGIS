@@ -79,6 +79,7 @@ QgsScaleBarSettings::QgsScaleBarSettings( const QgsScaleBarSettings &other )
   , mLabelBarSpace( other.mLabelBarSpace )
   , mLabelVerticalPlacement( other.mLabelVerticalPlacement )
   , mLabelHorizontalPlacement( other.mLabelHorizontalPlacement )
+  , mUnitLabelPlacements( other.mUnitLabelPlacements )
   , mBoxContentSpace( other.mBoxContentSpace )
   , mAlignment( other.mAlignment )
   , mUnits( other.mUnits )
@@ -110,6 +111,7 @@ QgsScaleBarSettings &QgsScaleBarSettings::operator=( const QgsScaleBarSettings &
   mLabelBarSpace = other.mLabelBarSpace;
   mLabelVerticalPlacement = other.mLabelVerticalPlacement;
   mLabelHorizontalPlacement = other.mLabelHorizontalPlacement;
+  mUnitLabelPlacements = other.mUnitLabelPlacements;
   mBoxContentSpace = other.mBoxContentSpace;
   mAlignment = other.mAlignment;
   mUnits = other.mUnits;

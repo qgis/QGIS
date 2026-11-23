@@ -340,7 +340,7 @@ class CORE_EXPORT QgsSQLStatement
         void accept( QgsSQLStatement::Visitor &v ) const;
 
         //! Creates a deep copy of this list. Ownership is transferred to the caller
-        QgsSQLStatement::NodeList *clone() const SIP_FACTORY;
+        std::unique_ptr<QgsSQLStatement::NodeList> clone() const;
 
         //! Dump list
         virtual QString dump() const;
@@ -724,7 +724,7 @@ class CORE_EXPORT QgsSQLStatement
         void accept( QgsSQLStatement::Visitor &v ) const override { v.visit( *this ); }
         QgsSQLStatement::Node *clone() const override SIP_FACTORY;
         //! Clone with same type return
-        QgsSQLStatement::NodeColumnRef *cloneThis() const SIP_FACTORY;
+        std::unique_ptr<QgsSQLStatement::NodeColumnRef> cloneThis() const;
 
       protected:
         QString mTableName;
@@ -760,7 +760,7 @@ class CORE_EXPORT QgsSQLStatement
         void accept( QgsSQLStatement::Visitor &v ) const override { v.visit( *this ); }
         QgsSQLStatement::Node *clone() const override SIP_FACTORY;
         //! Clone with same type return
-        QgsSQLStatement::NodeSelectedColumn *cloneThis() const SIP_FACTORY;
+        std::unique_ptr<QgsSQLStatement::NodeSelectedColumn> cloneThis() const;
 
       private:
         NodeSelectedColumn( const NodeSelectedColumn &other ) = delete;
@@ -888,7 +888,7 @@ class CORE_EXPORT QgsSQLStatement
         void accept( QgsSQLStatement::Visitor &v ) const override { v.visit( *this ); }
         QgsSQLStatement::Node *clone() const override SIP_FACTORY;
         //! Clone with same type return
-        QgsSQLStatement::NodeTableDef *cloneThis() const SIP_FACTORY;
+        std::unique_ptr<QgsSQLStatement::NodeTableDef> cloneThis() const;
 
       protected:
         QString mName;
@@ -934,7 +934,7 @@ class CORE_EXPORT QgsSQLStatement
         void accept( QgsSQLStatement::Visitor &v ) const override { v.visit( *this ); }
         QgsSQLStatement::Node *clone() const override SIP_FACTORY;
         //! Clone with same type return
-        QgsSQLStatement::NodeJoin *cloneThis() const SIP_FACTORY;
+        std::unique_ptr<QgsSQLStatement::NodeJoin> cloneThis() const;
 
       private:
         NodeJoin( const NodeJoin &other ) = delete;
@@ -976,7 +976,7 @@ class CORE_EXPORT QgsSQLStatement
         void accept( QgsSQLStatement::Visitor &v ) const override { v.visit( *this ); }
         QgsSQLStatement::Node *clone() const override SIP_FACTORY;
         //! Clone with same type return
-        QgsSQLStatement::NodeColumnSorted *cloneThis() const SIP_FACTORY;
+        std::unique_ptr<QgsSQLStatement::NodeColumnSorted> cloneThis() const;
 
       private:
         NodeColumnSorted( const NodeColumnSorted &other ) = delete;

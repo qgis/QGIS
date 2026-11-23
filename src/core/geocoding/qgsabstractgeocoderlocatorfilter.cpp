@@ -83,6 +83,7 @@ QgsGeocoderResult QgsAbstractGeocoderLocatorFilter::locatorResultToGeocoderResul
   geocodeResult.setViewport( attrs.value( u"viewport"_s ).value< QgsRectangle >() );
   geocodeResult.setDescription( result.description );
   geocodeResult.setGroup( result.group );
+  geocodeResult.setIcon( result.icon );
   return geocodeResult;
 }
 
@@ -97,5 +98,6 @@ QgsLocatorResult QgsAbstractGeocoderLocatorFilter::geocoderResultToLocatorResult
   QgsLocatorResult res( this, result.identifier(), attrs );
   res.description = result.description();
   res.group = result.group();
+  res.icon = result.icon();
   return res;
 }

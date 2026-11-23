@@ -18,6 +18,7 @@
 #include "qgsexpressioncontextutils.h"
 #include "qgslabelingresults.h"
 #include "qgsmapcanvas.h"
+#include "qgspainting.h"
 #include "qgstextrenderer.h"
 #include "qgsvectorlayer.h"
 
@@ -98,22 +99,35 @@ void QgsVectorLayerLabelRubberBandPreview::render( QgsRenderContext &context )
     return;
   }
 
-  const QVector< QgsGeometry> previewGeomParts = previewGeom.asGeometryCollection();
-  int index = 0;
-  for ( const QgsFeature &feature : std::as_const( mFeatures ) )
+  if ( mFeatures.size() > 1 )
   {
-    if ( index >= previewGeomParts.size() )
-      break;
+    // when multiple features are being rendered, each individual part of the rubber
+    // band's geometry corresponds to an individual feature,
+    // so we re-associate them here
+    // NOTE: we need a better way to handle this, it assumes all features are single-parts themselves...
+    const QVector< QgsGeometry> previewGeomParts = previewGeom.asGeometryCollection();
+    int index = 0;
+    for ( const QgsFeature &feature : std::as_const( mFeatures ) )
+    {
+      if ( index >= previewGeomParts.size() )
+        break;
 
-    // each individual part of the rubber band's geometry corresponds to an individual feature,
-    // so we re-associate them here:
-    QgsFeature tempFeature = feature;
-    tempFeature.setGeometry( previewGeomParts.at( index ) );
+      QgsFeature tempFeature = feature;
+      tempFeature.setGeometry( previewGeomParts.at( index ) );
 
+      featureScope->setFeature( tempFeature );
+      featureScope->setFields( tempFeature.fields() );
+      provider->registerFeature( tempFeature, context, QgsLabelFeatureDetails() );
+      index++;
+    }
+  }
+  else if ( mFeatures.size() == 1 )
+  {
+    QgsFeature tempFeature = mFeatures.at( 0 );
+    tempFeature.setGeometry( previewGeom );
     featureScope->setFeature( tempFeature );
     featureScope->setFields( tempFeature.fields() );
-    provider->registerFeature( tempFeature, context );
-    index++;
+    provider->registerFeature( tempFeature, context, QgsLabelFeatureDetails() );
   }
 
   QgsScopedQPainterState painterState( context.painter() );

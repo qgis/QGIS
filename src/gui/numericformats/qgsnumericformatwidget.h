@@ -70,13 +70,6 @@ class GUI_EXPORT QgsNumericFormatWidget : public QgsPanelWidget, public QgsExpre
 
     QgsExpressionContext createExpressionContext() const override;
 
-  signals:
-
-    /**
-     * Emitted whenever the configuration of the numeric format is changed.
-     */
-    void changed();
-
   private:
     QgsExpressionContextGenerator *mExpressionContextGenerator = nullptr;
 };
@@ -164,7 +157,7 @@ class GUI_EXPORT QgsBearingNumericFormatDialog : public QDialog
      *
      * Ownership of the returned object is transferred to the caller
      */
-    QgsBearingNumericFormat *format() SIP_FACTORY;
+    std::unique_ptr<QgsBearingNumericFormat> format();
 
   private:
     QgsBearingNumericFormatWidget *mWidget = nullptr;
@@ -223,7 +216,7 @@ class GUI_EXPORT QgsGeographicCoordinateNumericFormatDialog : public QDialog
      *
      * Ownership of the returned object is transferred to the caller
      */
-    QgsGeographicCoordinateNumericFormat *format() SIP_FACTORY;
+    std::unique_ptr<QgsGeographicCoordinateNumericFormat> format();
 
   private:
     QgsGeographicCoordinateNumericFormatWidget *mWidget = nullptr;

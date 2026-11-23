@@ -27,9 +27,8 @@ from qgis.core import (
     QgsProcessingProjectModelProvider,
     QgsProject,
 )
+from qgis.gui import QgsModelDesignerDialog
 from qgis.testing import QgisTestCase, start_app
-
-from processing.modeler.ModelerDialog import ModelerDialog
 
 start_app()
 
@@ -46,7 +45,8 @@ class ProjectProviderGuiTest(QgisTestCase):
         # make an algorithm
         alg = QgsProcessingModelAlgorithm("test name", "test group")
 
-        dialog = ModelerDialog(alg)
+        dialog = QgsModelDesignerDialog()
+        dialog.setModel(alg)
         dialog.saveInProject()
 
         self.assertEqual(len(provider.algorithms()), 1)

@@ -106,9 +106,7 @@ class APP_EXPORT QgsSnappingWidget : public QWidget
 
     void changeTolerance( double tolerance );
 
-    void changeMinScale( double minScale );
-
-    void changeMaxScale( double maxScale );
+    void changeScale( double boundary1, double boundary2 );
 
     void changeUnit( int idx );
 
@@ -177,6 +175,8 @@ class APP_EXPORT QgsSnappingWidget : public QWidget
     QWidget *mAdvancedConfigWidget = nullptr;
 
     bool mRequireLayerTreeViewUpdate = false;
+
+    int mBlockChangeUpdates = 0;
 
     void cleanGroup( QgsLayerTreeNode *node );
 };

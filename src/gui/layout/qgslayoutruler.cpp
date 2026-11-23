@@ -22,6 +22,7 @@
 #include "qgslayoutpagecollection.h"
 #include "qgslayoutview.h"
 #include "qgslogger.h"
+#include "qgspainting.h"
 
 #include <QDragEnterEvent>
 #include <QGraphicsLineItem>

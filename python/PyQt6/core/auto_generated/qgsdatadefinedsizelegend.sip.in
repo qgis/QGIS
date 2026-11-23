@@ -194,7 +194,7 @@ Returns output image that would be shown in the legend. Returns invalid
 image if legend is not configured as collapsed.
 %End
 
-    static QgsDataDefinedSizeLegend *readXml( const QDomElement &elem, const QgsReadWriteContext &context ) /Factory/;
+    static std::unique_ptr<QgsDataDefinedSizeLegend> readXml( const QDomElement &elem, const QgsReadWriteContext &context );
 %Docstring
 Creates instance from given element and returns it (caller takes
 ownership). Returns ``None`` on error.

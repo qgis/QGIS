@@ -739,28 +739,6 @@ bool QgsPolyhedralSurface::moveVertex( QgsVertexId vId, const QgsPoint &newPos )
   return success;
 }
 
-bool QgsPolyhedralSurface::deleteVertex( QgsVertexId vId )
-{
-  if ( vId.part < 0 || vId.part >= partCount() )
-  {
-    return false;
-  }
-
-  QgsPolygon *patch = mPatches.at( vId.part );
-  bool success = patch->deleteVertex( QgsVertexId( 0, vId.ring, vId.vertex ) );
-  if ( success )
-  {
-    // if the patch has lost its exterior ring, remove it
-    if ( !patch->exteriorRing() )
-    {
-      delete mPatches.takeAt( vId.part );
-    }
-    clearCache();
-  }
-
-  return success;
-}
-
 bool QgsPolyhedralSurface::deleteVertices( const QSet<QgsVertexId> &positions )
 {
   QMap<int, QSet<QgsVertexId>> partVertices;
@@ -993,7 +971,7 @@ bool QgsPolyhedralSurface::transform( QgsAbstractGeometryTransformer *transforme
   return res;
 }
 
-QgsMultiPolygon *QgsPolyhedralSurface::toMultiPolygon() const
+std::unique_ptr<QgsMultiPolygon> QgsPolyhedralSurface::toMultiPolygon() const
 {
   auto multiPolygon = std::make_unique< QgsMultiPolygon >();
   multiPolygon->reserve( mPatches.size() );
@@ -1001,7 +979,7 @@ QgsMultiPolygon *QgsPolyhedralSurface::toMultiPolygon() const
   {
     multiPolygon->addGeometry( polygon->clone() );
   }
-  return multiPolygon.release();
+  return multiPolygon;
 }
 
 void QgsPolyhedralSurface::filterVertices( const std::function<bool( const QgsPoint & )> &filter )

@@ -81,6 +81,7 @@
 #include "qgstaskmanager.h"
 #include "qgsthreadingutils.h"
 #include "qgstransaction.h"
+#include "qgstransactiongroup.h"
 #include "qgsvectordataprovider.h"
 #include "qgsvectorlayereditbuffer.h"
 #include "qgsvectorlayereditpassthrough.h"
@@ -2354,32 +2355,6 @@ bool QgsVectorLayer::setDataProvider( QString const &provider, const QgsDataProv
   {
     // update datasource from data provider computed one
     mDataSource = mDataProvider->dataSourceUri( false );
-
-    QgsDebugMsgLevel( u"Beautifying layer name %1"_s.arg( name() ), 3 );
-
-    // adjust the display name for postgres layers
-    const thread_local QRegularExpression reg( R"lit("[^"]+"\."([^"] + )"( \([^)]+\))?)lit" );
-    const QRegularExpressionMatch match = reg.match( name() );
-    if ( match.hasMatch() )
-    {
-      QStringList stuff = match.capturedTexts();
-      QString lName = stuff[1];
-
-      const QMap<QString, QgsMapLayer *> &layers = QgsProject::instance()->mapLayers(); // skip-keyword-check
-
-      QMap<QString, QgsMapLayer *>::const_iterator it;
-      for ( it = layers.constBegin(); it != layers.constEnd() && ( *it )->name() != lName; ++it )
-        ;
-
-      if ( it != layers.constEnd() && stuff.size() > 2 )
-      {
-        lName += '.' + stuff[2].mid( 2, stuff[2].length() - 3 );
-      }
-
-      if ( !lName.isEmpty() )
-        setName( lName );
-    }
-    QgsDebugMsgLevel( u"Beautified layer name %1"_s.arg( name() ), 3 );
   }
   else if ( mProviderKey == "osm"_L1 )
   {
@@ -2965,7 +2940,7 @@ bool QgsVectorLayer::readStyle( const QDomNode &node, QString &errorMessage, Qgs
       QgsReadWriteContextCategoryPopper p = context.enterCategory( tr( "Labeling" ) );
 
       QDomElement labelingElement = node.firstChildElement( u"labeling"_s );
-      QgsAbstractVectorLayerLabeling *labeling = nullptr;
+      std::unique_ptr<QgsAbstractVectorLayerLabeling> labeling;
       if ( labelingElement.isNull() || ( labelingElement.attribute( u"type"_s ) == "simple"_L1 && labelingElement.firstChildElement( u"settings"_s ).isNull() ) )
       {
         // make sure we have custom properties for labeling for 2.x projects
@@ -2980,7 +2955,7 @@ bool QgsVectorLayer::readStyle( const QDomNode &node, QString &errorMessage, Qgs
       {
         labeling = QgsAbstractVectorLayerLabeling::create( labelingElement, context );
       }
-      setLabeling( labeling );
+      setLabeling( labeling.release() );
 
       if ( node.toElement().hasAttribute( u"labelsEnabled"_s ) )
         mLabelsEnabled = node.toElement().attribute( u"labelsEnabled"_s ).toInt();
@@ -4195,18 +4170,36 @@ bool QgsVectorLayer::commitChanges( bool stopEditing )
     return false;
   }
 
-  emit beforeCommitChanges( stopEditing );
+  if ( project() && project()->transactionMode() == Qgis::TransactionMode::AutomaticGroups )
+  {
+    QSet<QgsVectorLayer *> otherTransactionLayers;
+    otherTransactionLayers = transactionLayers();
 
-  if ( !mAllowCommit )
-    return false;
+    emit beforeCommitChanges( stopEditing );
+
+    if ( !otherTransactionLayers.isEmpty() )
+    {
+      // if it's in a transaction group we cannot continue, when one layer does not allow commits (yet)
+      for ( const QgsVectorLayer *layer : otherTransactionLayers )
+      {
+        if ( !layer->allowCommit() )
+          return false;
+      }
+    }
+  }
+  else
+  {
+    // trigger the checks (on transaction groups they are triggered in the specific functions via beforeCommitChanges)
+    emit beforeCommitChecks( stopEditing );
+    // as well as the beforeCommitChanges (for individual provider implementations e.g. grassprovider)
+    emit beforeCommitChanges( stopEditing );
+    if ( !mAllowCommit )
+      return false;
+  }
 
   mCommitChangesActive = true;
 
-  bool success = false;
-  if ( mEditBuffer->editBufferGroup() )
-    success = mEditBuffer->editBufferGroup()->commitChanges( mCommitErrors, stopEditing );
-  else
-    success = mEditBuffer->commitChanges( mCommitErrors );
+  bool success = mEditBuffer->commitChanges( mCommitErrors );
 
   mCommitChangesActive = false;
 
@@ -4710,6 +4703,9 @@ void QgsVectorLayer::removeExpressionField( int index )
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
+  if ( mFields.fieldOrigin( index ) != Qgis::FieldOrigin::Expression )
+    return;
+
   emit beforeRemovingExpressionField( index );
   int oi = mFields.fieldOriginIndex( index );
   mExpressionFieldBuffer->removeExpression( oi );
@@ -4734,6 +4730,9 @@ QString QgsVectorLayer::expressionField( int index ) const
 void QgsVectorLayer::updateExpressionField( int index, const QString &exp )
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
+  if ( mFields.fieldOrigin( index ) != Qgis::FieldOrigin::Expression )
+    return;
 
   int oi = mFields.fieldOriginIndex( index );
   mExpressionFieldBuffer->updateExpression( oi, exp );
@@ -5388,6 +5387,24 @@ void QgsVectorLayer::applyRendererSettings()
     );
 }
 
+QSet<QgsVectorLayer *> QgsVectorLayer::transactionLayers()
+{
+  QSet<QgsVectorLayer *> transactionLayers;
+  if ( project() )
+  {
+    QString connString = QgsTransaction::connectionString( source() );
+    QString key = providerType();
+
+    QMap<QPair<QString, QString>, QgsTransactionGroup *> transactionGroups = project()->transactionGroups();
+    QMap<QPair<QString, QString>, QgsTransactionGroup *>::iterator tIt = transactionGroups.find( qMakePair( key, connString ) );
+    QgsTransactionGroup *tg = ( tIt != transactionGroups.end() ? tIt.value() : nullptr );
+
+    if ( tg && tg->layers().contains( this ) )
+      transactionLayers = tg->layers();
+  }
+  return transactionLayers;
+}
+
 QVariant QgsVectorLayer::aggregate(
   Qgis::Aggregate aggregate,
   const QString &fieldOrExpression,
@@ -5619,7 +5636,7 @@ void QgsVectorLayer::readSldLabeling( const QDomNode &node )
         }
         else if ( childElem.localName() == "Filter"_L1 )
         {
-          QgsExpression *filter = QgsOgcUtils::expressionFromOgcFilter( childElem );
+          std::unique_ptr<QgsExpression> filter = QgsOgcUtils::expressionFromOgcFilter( childElem );
           if ( filter )
           {
             if ( filter->hasParserError() )
@@ -5630,7 +5647,6 @@ void QgsVectorLayer::readSldLabeling( const QDomNode &node )
             {
               filterExp = filter->expression();
             }
-            delete filter;
           }
         }
         else if ( childElem.localName() == "MinScaleDenominator"_L1 )
@@ -6106,7 +6122,7 @@ QgsExpressionContextScope *QgsVectorLayer::createExpressionContextScope() const
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
-  return QgsExpressionContextUtils::layerScope( this );
+  return QgsExpressionContextUtils::layerScope( this ).release();
 }
 
 void QgsVectorLayer::setDiagramLayerSettings( const QgsDiagramLayerSettings &s )
@@ -6726,11 +6742,11 @@ QgsEditorWidgetSetup QgsVectorLayer::editorWidgetSetup( int index ) const
   return mFields.at( index ).editorWidgetSetup();
 }
 
-QgsAbstractVectorLayerLabeling *QgsVectorLayer::readLabelingFromCustomProperties()
+std::unique_ptr<QgsAbstractVectorLayerLabeling> QgsVectorLayer::readLabelingFromCustomProperties()
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
-  QgsAbstractVectorLayerLabeling *labeling = nullptr;
+  std::unique_ptr<QgsAbstractVectorLayerLabeling> labeling;
   if ( customProperty( u"labeling"_s ).toString() == "pal"_L1 )
   {
     if ( customProperty( u"labeling/enabled"_s, QVariant( false ) ).toBool() )
@@ -6738,7 +6754,7 @@ QgsAbstractVectorLayerLabeling *QgsVectorLayer::readLabelingFromCustomProperties
       // try to load from custom properties
       QgsPalLayerSettings settings;
       settings.readFromLayerCustomProperties( this );
-      labeling = new QgsVectorLayerSimpleLabeling( settings );
+      labeling = std::make_unique<QgsVectorLayerSimpleLabeling>( settings );
     }
 
     // also clear old-style labeling config

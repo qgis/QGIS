@@ -59,8 +59,8 @@ class QgsCheckableStyleModel : public QgsStyleProxyModel
     QString mCheckTag;
     bool mReadOnly = false;
 };
-#endif
 ///@endcond
+#endif
 
 /**
  * \ingroup gui

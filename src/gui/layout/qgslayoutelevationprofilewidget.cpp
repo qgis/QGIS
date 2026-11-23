@@ -85,6 +85,56 @@ QgsLayoutElevationProfileWidget::QgsLayoutElevationProfileWidget( QgsLayoutItemE
   connect( mLayerTree.get(), &QgsLayerTree::layerOrderChanged, this, &QgsLayoutElevationProfileWidget::updateItemSources );
   connect( mLayerTree.get(), &QgsLayerTreeGroup::visibilityChanged, this, &QgsLayoutElevationProfileWidget::updateItemSources );
 
+  mRangeMethodCombo->addItem( tr( "Manual Ranges" ), QVariant::fromValue( Qgis::ElevationProfileRangeMethod::ManualRange ) );
+  mRangeMethodCombo->addItem( tr( "Fixed Scales" ), QVariant::fromValue( Qgis::ElevationProfileRangeMethod::FixedScale ) );
+  mRangesStackedWidget->setSizeMode( QgsStackedWidget::SizeMode::CurrentPageOnly );
+  connect( mRangeMethodCombo, qOverload<int>( &QComboBox::currentIndexChanged ), this, [this]( int ) {
+    if ( !mProfile || mBlockChanges )
+      return;
+
+    const Qgis::ElevationProfileRangeMethod method = mRangeMethodCombo->currentData().value< Qgis::ElevationProfileRangeMethod >();
+    switch ( method )
+    {
+      case Qgis::ElevationProfileRangeMethod::ManualRange:
+        mRangesStackedWidget->setCurrentWidget( mPageManualRanges );
+        break;
+
+      case Qgis::ElevationProfileRangeMethod::FixedScale:
+        mRangesStackedWidget->setCurrentWidget( mPageFixedScales );
+        break;
+    }
+
+    mProfile->beginCommand( tr( "Change Profile Range Method" ) );
+    mProfile->setRangeMethod( method );
+    mProfile->invalidateCache();
+    mProfile->update();
+    mProfile->endCommand();
+  } );
+
+  connect( mDistanceScaleWidget, &QgsScaleWidget::scaleChanged, this, [this]( double ) {
+    if ( !mProfile || mBlockChanges )
+      return;
+
+    mProfile->beginCommand( tr( "Change Distance Scale" ) );
+    mProfile->setDistanceScale( mDistanceScaleWidget->scale() );
+    mProfile->invalidateCache();
+    mProfile->update();
+    mProfile->endCommand();
+  } );
+
+  // the standard distance scales aren't so useful for elevation ranges!
+  mElevationScaleWidget->setPredefinedScales( { 5000, 2500, 1000, 500, 250, 100, 50, 10 } );
+  connect( mElevationScaleWidget, &QgsScaleWidget::scaleChanged, this, [this]( double ) {
+    if ( !mProfile || mBlockChanges )
+      return;
+
+    mProfile->beginCommand( tr( "Change Elevation Scale" ) );
+    mProfile->setElevationScale( mElevationScaleWidget->scale() );
+    mProfile->invalidateCache();
+    mProfile->update();
+    mProfile->endCommand();
+  } );
+
   mSpinTolerance->setClearValue( 0 );
   connect( mSpinTolerance, qOverload<double>( &QDoubleSpinBox::valueChanged ), this, [this]( double value ) {
     if ( !mProfile || mBlockChanges )
@@ -160,6 +210,11 @@ QgsLayoutElevationProfileWidget::QgsLayoutElevationProfileWidget( QgsLayoutItemE
   } );
 
   mSpinMinElevation->setClearValue( 0 );
+  mSpinMinElevation2->setClearValue( 0 );
+  // we have two minimum elevation spins (on different pages of the range type stacked widget), keep these in sync
+  connect( mSpinMinElevation, qOverload<double>( &QDoubleSpinBox::valueChanged ), mSpinMinElevation2, &QDoubleSpinBox::setValue );
+  connect( mSpinMinElevation2, qOverload<double>( &QDoubleSpinBox::valueChanged ), mSpinMinElevation, &QDoubleSpinBox::setValue );
+
   connect( mSpinMinElevation, qOverload<double>( &QDoubleSpinBox::valueChanged ), this, [this]( double value ) {
     if ( !mProfile || mBlockChanges )
       return;
@@ -193,7 +248,7 @@ QgsLayoutElevationProfileWidget::QgsLayoutElevationProfileWidget( QgsLayoutItemE
     mProfile->update();
     mProfile->endCommand();
   } );
-  mDistanceAxisMajorLinesSymbolButton->setDefaultSymbol( QgsPlotDefaultSettings::axisGridMajorSymbol() );
+  mDistanceAxisMajorLinesSymbolButton->setDefaultSymbol( QgsPlotDefaultSettings::axisGridMajorSymbol().release() );
 
   mDistanceAxisMinorLinesSymbolButton->setSymbolType( Qgis::SymbolType::Line );
   connect( mDistanceAxisMinorLinesSymbolButton, &QgsSymbolButton::changed, this, [this] {
@@ -206,7 +261,7 @@ QgsLayoutElevationProfileWidget::QgsLayoutElevationProfileWidget( QgsLayoutItemE
     mProfile->update();
     mProfile->endCommand();
   } );
-  mDistanceAxisMinorLinesSymbolButton->setDefaultSymbol( QgsPlotDefaultSettings::axisGridMinorSymbol() );
+  mDistanceAxisMinorLinesSymbolButton->setDefaultSymbol( QgsPlotDefaultSettings::axisGridMinorSymbol().release() );
 
   connect( mDistanceAxisMajorIntervalSpin, qOverload<double>( &QDoubleSpinBox::valueChanged ), this, [this]( double value ) {
     if ( !mProfile || mBlockChanges )
@@ -252,7 +307,7 @@ QgsLayoutElevationProfileWidget::QgsLayoutElevationProfileWidget( QgsLayoutItemE
     mProfile->update();
     mProfile->endCommand();
   } );
-  mElevationAxisMajorLinesSymbolButton->setDefaultSymbol( QgsPlotDefaultSettings::axisGridMajorSymbol() );
+  mElevationAxisMajorLinesSymbolButton->setDefaultSymbol( QgsPlotDefaultSettings::axisGridMajorSymbol().release() );
 
   mElevationAxisMinorLinesSymbolButton->setSymbolType( Qgis::SymbolType::Line );
   connect( mElevationAxisMinorLinesSymbolButton, &QgsSymbolButton::changed, this, [this] {
@@ -265,7 +320,7 @@ QgsLayoutElevationProfileWidget::QgsLayoutElevationProfileWidget( QgsLayoutItemE
     mProfile->update();
     mProfile->endCommand();
   } );
-  mElevationAxisMinorLinesSymbolButton->setDefaultSymbol( QgsPlotDefaultSettings::axisGridMinorSymbol() );
+  mElevationAxisMinorLinesSymbolButton->setDefaultSymbol( QgsPlotDefaultSettings::axisGridMinorSymbol().release() );
 
   connect( mElevationAxisLabelIntervalSpin, qOverload<double>( &QDoubleSpinBox::valueChanged ), this, [this]( double value ) {
     if ( !mProfile || mBlockChanges )
@@ -311,7 +366,7 @@ QgsLayoutElevationProfileWidget::QgsLayoutElevationProfileWidget( QgsLayoutItemE
     mProfile->update();
     mProfile->endCommand();
   } );
-  mChartBackgroundSymbolButton->setDefaultSymbol( QgsPlotDefaultSettings::chartBackgroundSymbol() );
+  mChartBackgroundSymbolButton->setDefaultSymbol( QgsPlotDefaultSettings::chartBackgroundSymbol().release() );
 
   mChartBorderSymbolButton->setSymbolType( Qgis::SymbolType::Fill );
   connect( mChartBorderSymbolButton, &QgsSymbolButton::changed, this, [this] {
@@ -324,7 +379,7 @@ QgsLayoutElevationProfileWidget::QgsLayoutElevationProfileWidget( QgsLayoutItemE
     mProfile->update();
     mProfile->endCommand();
   } );
-  mChartBorderSymbolButton->setDefaultSymbol( QgsPlotDefaultSettings::chartBorderSymbol() );
+  mChartBorderSymbolButton->setDefaultSymbol( QgsPlotDefaultSettings::chartBorderSymbol().release() );
 
   connect( mDistanceAxisLabelFormatButton, &QPushButton::clicked, this, [this] {
     if ( !mProfile || mBlockChanges )
@@ -524,6 +579,7 @@ QgsLayoutElevationProfileWidget::QgsLayoutElevationProfileWidget( QgsLayoutItemE
   mBlockChanges--;
 
   setGuiElementValues();
+  connect( mProfile, &QgsLayoutObject::changed, this, &QgsLayoutElevationProfileWidget::setGuiElementValues );
 
   mSubsectionsSymbolButton->registerExpressionContextGenerator( mProfile );
   mDistanceAxisMajorLinesSymbolButton->registerExpressionContextGenerator( mProfile );
@@ -669,9 +725,7 @@ void QgsLayoutElevationProfileWidget::copySettingsFromProfileCanvas( QgsElevatio
 
   QList<QgsMapLayer *> canvasLayers = canvas->layers();
   mProfile->setLayers( canvasLayers );
-
-  QList<QgsAbstractProfileSource *> canvasSources = canvas->sources();
-  mProfile->setSources( canvasSources );
+  mProfile->setSources( canvas->rawSources() );
 
   syncLayerTreeAndProfileItemSources();
 
@@ -768,6 +822,21 @@ void QgsLayoutElevationProfileWidget::setGuiElementValues()
   mSpinTolerance->setValue( mProfile->tolerance() );
   mCheckControlledByAtlas->setChecked( mProfile->atlasDriven() );
 
+  mRangeMethodCombo->setCurrentIndex( mRangeMethodCombo->findData( QVariant::fromValue( mProfile->rangeMethod() ) ) );
+  switch ( mProfile->rangeMethod() )
+  {
+    case Qgis::ElevationProfileRangeMethod::ManualRange:
+      mRangesStackedWidget->setCurrentWidget( mPageManualRanges );
+      break;
+
+    case Qgis::ElevationProfileRangeMethod::FixedScale:
+      mRangesStackedWidget->setCurrentWidget( mPageFixedScales );
+      break;
+  }
+
+  mDistanceScaleWidget->setScale( mProfile->distanceScale() );
+  mElevationScaleWidget->setScale( mProfile->elevationScale() );
+
   mSpinMinDistance->setValue( mProfile->plot()->xMinimum() );
   mSpinMaxDistance->setValue( mProfile->plot()->xMaximum() );
   mSpinMinElevation->setValue( mProfile->plot()->yMinimum() );
@@ -839,7 +908,7 @@ void QgsLayoutElevationProfileWidget::updateItemSources()
     return;
 
   QList<QgsMapLayer *> layers;
-  QList<QgsAbstractProfileSource *> sources;
+  QList< std::variant< QgsMapLayer *, QgsAbstractProfileSource * > > sources;
   const QList<QgsLayerTreeNode *> layerAndCustomNodeOrder = mLayerTree->layerAndCustomNodeOrder();
   for ( QgsLayerTreeNode *node : layerAndCustomNodeOrder )
   {
@@ -849,7 +918,7 @@ void QgsLayoutElevationProfileWidget::updateItemSources()
       if ( mLayerTree->findLayer( layer )->isVisible() )
       {
         layers << layer;
-        sources << layer->profileSource();
+        sources << layer;
       }
     }
     else if ( QgsLayerTree::isCustomNode( node ) && node->customProperty( u"source"_s ) == QgsElevationProfileLayerTreeView::CUSTOM_NODE_ELEVATION_PROFILE_SOURCE )

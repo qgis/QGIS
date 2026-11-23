@@ -19,6 +19,10 @@
 
 #include "qgsconfig.h"
 
+#include <memory>
+#include <shared_mutex>
+#include <utility>
+
 #include "qgis_core.h"
 #include "qgsfeedback.h"
 
@@ -35,7 +39,6 @@ using namespace Qt::StringLiterals;
 #endif
 #include <QSemaphore>
 #include <QCoreApplication>
-#include <memory>
 
 
 #if defined( Q_OS_LINUX ) && !defined( QT_LINUXBASE )
@@ -433,5 +436,48 @@ class QgsScopedThreadName
 #endif
 };
 
+/**
+ * An atomic shared_ptr, for use in LLVM/clang builds (temporarily, until LLVM adds support for c++20 atomic shared_ptr)
+ * \ingroup core
+ * \since QGIS 4.4
+ */
+template<typename T> class AtomicSharedPtr
+{
+  public:
+    AtomicSharedPtr() = default;
 
+    //! Constructor for an atomic shared pointer.
+    explicit AtomicSharedPtr( T p )
+      : p_( std::move( p ) )
+    {}
+
+    AtomicSharedPtr( const AtomicSharedPtr & ) = delete;
+    AtomicSharedPtr &operator=( const AtomicSharedPtr & ) = delete;
+    AtomicSharedPtr( AtomicSharedPtr && ) = delete;
+    AtomicSharedPtr &operator=( AtomicSharedPtr && ) = delete;
+
+    //! Atomic load (multiple readers allowed simultaneously)
+    [[nodiscard]] T load( std::memory_order order = std::memory_order_seq_cst ) const
+    {
+      ( void ) order;
+      std::shared_lock lock( m_ );
+      return p_;
+    }
+
+    //! Atomic store
+    void store( T p, std::memory_order order = std::memory_order_seq_cst )
+    {
+      ( void ) order;
+      // keeps the previous owner alive so its deleter runs outside the lock
+      T old;
+      {
+        std::unique_lock lock( m_ );
+        old = std::exchange( p_, std::move( p ) );
+      }
+    }
+
+  private:
+    mutable std::shared_mutex m_;
+    T p_;
+};
 #endif

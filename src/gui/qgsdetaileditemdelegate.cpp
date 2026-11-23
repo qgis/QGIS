@@ -19,6 +19,7 @@
 
 #include "qgsdetaileditemdata.h"
 #include "qgsdetaileditemwidget.h"
+#include "qgspainting.h"
 #include "qgsrendercontext.h"
 
 #include <QCheckBox>

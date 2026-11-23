@@ -82,6 +82,11 @@ QColor QgsProcessingOutputVectorLayer::modelColor() const
   return QColor( 122, 0, 47 ); /* burgundy */
 }
 
+QgsProcessingOutputDefinition *QgsProcessingOutputVectorLayer::clone() const
+{
+  return new QgsProcessingOutputVectorLayer( *this );
+}
+
 bool QgsProcessingOutputVectorLayer::isMapLayer() const
 {
   return true;
@@ -96,6 +101,11 @@ QColor QgsProcessingOutputRasterLayer::modelColor() const
   return QColor( 0, 180, 180 ); /* turquoise */
 }
 
+QgsProcessingOutputDefinition *QgsProcessingOutputRasterLayer::clone() const
+{
+  return new QgsProcessingOutputRasterLayer( *this );
+}
+
 bool QgsProcessingOutputRasterLayer::isMapLayer() const
 {
   return true;
@@ -104,6 +114,11 @@ bool QgsProcessingOutputRasterLayer::isMapLayer() const
 QgsProcessingOutputPointCloudLayer::QgsProcessingOutputPointCloudLayer( const QString &name, const QString &description )
   : QgsProcessingOutputDefinition( name, description )
 {}
+
+QgsProcessingOutputDefinition *QgsProcessingOutputPointCloudLayer::clone() const
+{
+  return new QgsProcessingOutputPointCloudLayer( *this );
+}
 
 bool QgsProcessingOutputPointCloudLayer::isMapLayer() const
 {
@@ -117,6 +132,11 @@ QgsProcessingOutputVectorTileLayer::QgsProcessingOutputVectorTileLayer( const QS
 QColor QgsProcessingOutputVectorTileLayer::modelColor() const
 {
   return QColor( 137, 150, 171 ); /* cold gray */
+}
+
+QgsProcessingOutputDefinition *QgsProcessingOutputVectorTileLayer::clone() const
+{
+  return new QgsProcessingOutputVectorTileLayer( *this );
 }
 
 bool QgsProcessingOutputVectorTileLayer::isMapLayer() const
@@ -142,6 +162,11 @@ QString QgsProcessingOutputHtml::valueAsFormattedString( const QVariant &value, 
 QColor QgsProcessingOutputHtml::modelColor() const
 {
   return QColor( 255, 131, 23 ); /* orange */
+}
+
+QgsProcessingOutputDefinition *QgsProcessingOutputHtml::clone() const
+{
+  return new QgsProcessingOutputHtml( *this );
 }
 
 QgsProcessingOutputNumber::QgsProcessingOutputNumber( const QString &name, const QString &description )
@@ -171,6 +196,11 @@ QColor QgsProcessingOutputNumber::modelColor() const
   return QColor( 34, 157, 214 ); /* blue */
 }
 
+QgsProcessingOutputDefinition *QgsProcessingOutputNumber::clone() const
+{
+  return new QgsProcessingOutputNumber( *this );
+}
+
 QgsProcessingOutputString::QgsProcessingOutputString( const QString &name, const QString &description )
   : QgsProcessingOutputDefinition( name, description )
 {}
@@ -178,6 +208,11 @@ QgsProcessingOutputString::QgsProcessingOutputString( const QString &name, const
 QColor QgsProcessingOutputString::modelColor() const
 {
   return QColor( 255, 131, 23 ); /* orange */
+}
+
+QgsProcessingOutputDefinition *QgsProcessingOutputString::clone() const
+{
+  return new QgsProcessingOutputString( *this );
 }
 
 QgsProcessingOutputBoolean::QgsProcessingOutputBoolean( const QString &name, const QString &description )
@@ -200,6 +235,11 @@ QColor QgsProcessingOutputBoolean::modelColor() const
   return QColor( 51, 201, 28 ); /* green */
 }
 
+QgsProcessingOutputDefinition *QgsProcessingOutputBoolean::clone() const
+{
+  return new QgsProcessingOutputBoolean( *this );
+}
+
 QgsProcessingOutputFolder::QgsProcessingOutputFolder( const QString &name, const QString &description )
   : QgsProcessingOutputDefinition( name, description )
 {}
@@ -218,6 +258,11 @@ QString QgsProcessingOutputFolder::valueAsFormattedString( const QVariant &value
 QColor QgsProcessingOutputFolder::modelColor() const
 {
   return QColor( 80, 80, 80 ); /* dark gray */
+}
+
+QgsProcessingOutputDefinition *QgsProcessingOutputFolder::clone() const
+{
+  return new QgsProcessingOutputFolder( *this );
 }
 
 QgsProcessingOutputFile::QgsProcessingOutputFile( const QString &name, const QString &description )
@@ -240,6 +285,11 @@ QColor QgsProcessingOutputFile::modelColor() const
   return QColor( 80, 80, 80 ); /* dark gray */
 }
 
+QgsProcessingOutputDefinition *QgsProcessingOutputFile::clone() const
+{
+  return new QgsProcessingOutputFile( *this );
+}
+
 QgsProcessingOutputMapLayer::QgsProcessingOutputMapLayer( const QString &name, const QString &description )
   : QgsProcessingOutputDefinition( name, description )
 {}
@@ -259,9 +309,19 @@ QColor QgsProcessingOutputMapLayer::modelColor() const
   return QColor( 137, 150, 171 ); /* cold gray */
 }
 
+QgsProcessingOutputDefinition *QgsProcessingOutputMapLayer::clone() const
+{
+  return new QgsProcessingOutputMapLayer( *this );
+}
+
 QgsProcessingOutputMultipleLayers::QgsProcessingOutputMultipleLayers( const QString &name, const QString &description )
   : QgsProcessingOutputDefinition( name, description )
 {}
+
+QgsProcessingOutputDefinition *QgsProcessingOutputMultipleLayers::clone() const
+{
+  return new QgsProcessingOutputMultipleLayers( *this );
+}
 
 QString QgsProcessingOutputMultipleLayers::type() const
 {
@@ -313,9 +373,19 @@ QgsProcessingOutputConditionalBranch::QgsProcessingOutputConditionalBranch( cons
   : QgsProcessingOutputDefinition( name, description )
 {}
 
+QgsProcessingOutputDefinition *QgsProcessingOutputConditionalBranch::clone() const
+{
+  return new QgsProcessingOutputConditionalBranch( *this );
+}
+
 QgsProcessingOutputVariant::QgsProcessingOutputVariant( const QString &name, const QString &description )
   : QgsProcessingOutputDefinition( name, description )
 {}
+
+QgsProcessingOutputDefinition *QgsProcessingOutputVariant::clone() const
+{
+  return new QgsProcessingOutputVariant( *this );
+}
 
 QString QgsProcessingOutputVariant::type() const
 {

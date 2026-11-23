@@ -42,6 +42,7 @@ class QgsCompoundCurve;
 struct DxfLayerJob;
 class QgsSymbolRenderContext;
 class QgsMarkerSymbolLayer;
+class QTextCodec;
 
 #define DXF_HANDSEED 100
 #define DXF_HANDMAX 9999999
@@ -181,7 +182,8 @@ class CORE_EXPORT QgsDxfExport : public QgsLabelSink
       Success = 0,            //!< Successful export
       InvalidDeviceError,     //!< Invalid device error
       DeviceNotWritableError, //!< Device not writable error
-      EmptyExtentError        //!< Empty extent, no extent given and no extent could be derived from layers
+      EmptyExtentError,       //!< Empty extent, no extent given and no extent could be derived from layers
+      InvalidEncodingError    //!< The requested text encoding is not supported \since QGIS 4.4
     };
 
     /**
@@ -624,7 +626,8 @@ class CORE_EXPORT QgsDxfExport : public QgsLabelSink
     Qgis::DistanceUnit mMapUnits = Qgis::DistanceUnit::Meters;
     bool mLayerTitleAsName = false;
 
-    QTextStream mTextStream;
+    QIODevice *mDevice = nullptr;
+    QTextCodec *mCodec = nullptr;
 
     int mSymbolLayerCounter = 0; //internal counter
     int mNextHandleId = DXF_HANDSEED;

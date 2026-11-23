@@ -296,9 +296,9 @@ class GUI_EXPORT QgsGui : public QObject
     /**
      * Samples the color on screen at the specified global \a point (pixel).
      *
-     * \since QGIS 3.10
+     * \deprecated QGIS 4.4. Does not work reliably across different platforms.
      */
-    static QColor sampleColor( QPoint point );
+    Q_DECL_DEPRECATED static QColor sampleColor( QPoint point ) SIP_DEPRECATED;
 
     /**
      * Returns the screen at the given global \a point (pixel).
@@ -373,6 +373,13 @@ class GUI_EXPORT QgsGui : public QObject
      */
     void setApplicationStyleSheet( const QString &styleSheet ) SIP_SKIP;
 
+    /**
+     * Triggers executeAlgorithm signal, for when a Processing algorithm should be executed through the GUI.
+     *
+     * \warning This is private API, to be removed after Processing GUI has been fully ported to c++.
+     */
+    void emitExecuteAlgorithm( const QString &algorithmId, bool useInPlaceMode = false, bool useBatchMode = false ) SIP_SKIP;
+
   signals:
 
     /**
@@ -394,6 +401,13 @@ class GUI_EXPORT QgsGui : public QObject
      * \since QGIS 4.4
      */
     void applicationStyleSheetChanged( const QString &styleSheet );
+
+    /**
+     * Emitted when a Processing algorithm should be executed through the GUI.
+     *
+     * \warning This is private API, exposed for use in the Processing plugin only.
+     */
+    void executeAlgorithm( const QString &algorithmId, bool useInPlaceMode, bool useBatchMode );
 
   private:
     QgsGui();

@@ -39,6 +39,7 @@
 #include "qgsmaplayerstylemanager.h"
 #include "qgsmapsettingsutils.h"
 #include "qgsmapthemecollection.h"
+#include "qgspainting.h"
 #include "qgsprojoperation.h"
 #include "qgssettingstree.h"
 #include "qgsstyleentityvisitor.h"

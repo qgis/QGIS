@@ -1244,7 +1244,7 @@ class CORE_EXPORT QgsGeometry
      * \param splitLine the line that splits the geometry
      * \param[out] newGeometries list of new geometries that have been created with the split
      * \param topological TRUE if topological editing is enabled
-     * \param[out] topologyTestPoints points that need to be tested for topological completeness in the dataset
+     * \param[out] topologyTestPoints points that need to be tested for topological completeness in the dataset. Points from curve geometries are not yet fully supported.
      * \param splitFeature Set to TRUE if you want to split a feature, otherwise set to FALSE to split parts
      * \returns Qgis::GeometryOperationResult a result code: success or reason of failure
      * \deprecated QGIS 3.12. Will be removed in QGIS 5.0. Use the variant which accepts QgsPoint objects instead of QgsPointXY.
@@ -1256,7 +1256,7 @@ class CORE_EXPORT QgsGeometry
      * \param splitLine the line that splits the geometry
      * \param[out] newGeometries list of new geometries that have been created with the ``splitLine``. If the geometry is 3D, a linear interpolation of the z value is performed on the geometry at split points, see example.
      * \param topological TRUE if topological editing is enabled
-     * \param[out] topologyTestPoints points that need to be tested for topological completeness in the dataset
+     * \param[out] topologyTestPoints points that need to be tested for topological completeness in the dataset. Points from curve geometries are not yet fully supported.
      * \param splitFeature Set to TRUE if you want to split a feature, otherwise set to FALSE to split parts
      * \param skipIntersectionTest set to TRUE to skip the potentially expensive initial intersection check. Only set this flag if an intersection
      * test has already been performed by the caller! Not available in Python bindings.
@@ -1373,9 +1373,9 @@ class CORE_EXPORT QgsGeometry
     * Splits this geometry according to a given curve.
     * \param curve the curve that splits the geometry
     * \param[out] newGeometries list of new geometries that have been created with the ``splitLine``. If the geometry is 3D, a linear interpolation of the z value is performed on the geometry at split points, see example.
-    * \param preserveCircular whether if circular strings are preserved after splitting
+    * \param preserveCircular whether if circular strings are reconstructed from segmentized geometries after splitting. From GEOS 3.15 on, this parameter is unused, and circular strings are preserved.
     * \param topological TRUE if topological editing is enabled
-    * \param[out] topologyTestPoints points that need to be tested for topological completeness in the dataset
+    * \param[out] topologyTestPoints points that need to be tested for topological completeness in the dataset. Points from curve geometries are not yet fully supported.
     * \param splitFeature Set to TRUE if you want to split a feature, otherwise set to FALSE to split parts
     * \returns OperationResult a result code: success or reason of failure
     * \since QGIS 3.16
@@ -2189,6 +2189,23 @@ class CORE_EXPORT QgsGeometry
     QgsGeometry cleanCoverage( const QgsCoverageCleanParameters &parameters, QgsFeedback *feedback = nullptr ) const SIP_THROW( QgsNotSupportedException );
 
     /**
+     * Operates on a coverage (represented as a list of polygonal geometry with exactly matching edge geometry) to extract unique edges.
+     *
+     * The input is a collection of polygons, and the output is a multi linestring containing all unique edges from the polygonal coverage.
+     *
+     * The optional \a feedback argument supports early cancellation of the operation.
+     *
+     * This method requires a QGIS build based on GEOS 3.15 or later.
+     *
+     * \throws QgsNotSupportedException on QGIS builds based on GEOS 3.14 or earlier.
+     * \see validateCoverage()
+     * \since QGIS 4.4
+     */
+    QgsGeometry extractCoverageEdges(
+        Qgis::CoverageEdgeType edgeType = Qgis::CoverageEdgeType::AllEdges, QgsFeedback *feedback = nullptr
+        ) const SIP_THROW( QgsNotSupportedException );
+
+    /**
      * Returns a (Multi)LineString representing the fully noded version of a collection of linestrings.
      *
      * The noding preserves all of the input nodes, and introduces the least possible number of new nodes.
@@ -2405,7 +2422,6 @@ class CORE_EXPORT QgsGeometry
      * \since QGIS 3.10
      */
     QVector< QgsPointXY > randomPointsInPolygon( int count, unsigned long seed = 0, QgsFeedback *feedback = nullptr ) const;
-    ///@cond PRIVATE
 #else
 // clang-format off
 
@@ -2445,7 +2461,6 @@ class CORE_EXPORT QgsGeometry
 
 // clang-format on
 #endif
-    ///@endcond
 
     /**
      * Returns the length of the QByteArray returned by asWkb()
@@ -2845,7 +2860,16 @@ class CORE_EXPORT QgsGeometry
 #endif
 
     /**
-     * Returns contents of the geometry as a list of geometries
+     * Returns the contents of the geometry as a list of single-part geometries.
+     *
+     * If the original geometry is already a single-part geometry then it will
+     * be the only element in the returned list.
+     *
+     * If the original geometry is a multi-part geometry, then the returned list
+     * will contain separate elements containing single-part geometry versions of
+     * each part in the original geometry. For instance, if the original geometry
+     * is a MultiPoint geometry, then the returned list will contain all the Point
+     * geometries from the MultiPoint.
      */
     QVector<QgsGeometry> asGeometryCollection() const;
 
@@ -3466,7 +3490,7 @@ class CORE_EXPORT QgsGeometry
      *
      * QgsGeometryEngine operations are backed by the GEOS library (https://trac.osgeo.org/geos/).
      */
-    static QgsGeometryEngine *createGeometryEngine( const QgsAbstractGeometry *geometry, double precision = 0.0, Qgis::GeosCreationFlags flags = Qgis::GeosCreationFlag::SkipEmptyInteriorRings ) SIP_FACTORY;
+    static std::unique_ptr<QgsGeometryEngine> createGeometryEngine( const QgsAbstractGeometry *geometry, double precision = 0.0, Qgis::GeosCreationFlags flags = Qgis::GeosCreationFlag::SkipEmptyInteriorRings );
 
     /**
      * Upgrades a point list from QgsPointXY to QgsPoint
@@ -3629,6 +3653,10 @@ class CORE_EXPORT QgsGeometry
     std::unique_ptr< QgsPolygon > smoothPolygon( const QgsPolygon &polygon, unsigned int iterations = 1, double offset = 0.25, double minimumDistance = -1, double maxAngle = 180.0 ) const;
 
     QgsGeometry doChamferFillet( ChamferFilletOperationType op, int vertexIndex, double distance1, double distance2, int segments ) const;
+
+    QVector< QgsGeometry > collectSplitFeatures( const QVector< QgsGeometry> newGeoms ) const;
+    QVector< QgsGeometry > collectSplitParts( const QVector< QgsGeometry> newGeoms ) const;
+    QVector< QgsGeometry > collectSplitGeometries( const QVector< QgsGeometry> newGeomsTemp, const bool splitFeatures );
 
     friend class QgsInternalGeometryEngine;
 

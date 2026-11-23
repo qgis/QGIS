@@ -1543,33 +1543,6 @@ bool QgsLineString::insertVertex( QgsVertexId position, const QgsPoint &vertex )
   return true;
 }
 
-bool QgsLineString::deleteVertex( QgsVertexId position )
-{
-  if ( position.vertex >= mX.size() || position.vertex < 0 )
-  {
-    return false;
-  }
-
-  mX.remove( position.vertex );
-  mY.remove( position.vertex );
-  if ( is3D() )
-  {
-    mZ.remove( position.vertex );
-  }
-  if ( isMeasure() )
-  {
-    mM.remove( position.vertex );
-  }
-
-  if ( numPoints() == 1 )
-  {
-    clear();
-  }
-
-  clearCache(); //set bounding box invalid
-  return true;
-}
-
 bool QgsLineString::deleteVertices( const QSet<QgsVertexId> &positions )
 {
   if ( positions.isEmpty() )

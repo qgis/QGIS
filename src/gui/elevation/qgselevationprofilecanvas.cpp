@@ -27,7 +27,9 @@
 #include "qgsgeos.h"
 #include "qgsmaplayerelevationproperties.h"
 #include "qgsmaplayerlistutils_p.h"
+#include "qgsmessagelog.h"
 #include "qgsnumericformat.h"
+#include "qgspainting.h"
 #include "qgsplot.h"
 #include "qgsplotcanvasitem.h"
 #include "qgspoint.h"
@@ -326,7 +328,7 @@ class QgsElevationProfileCrossHairsItem : public QgsPlotCanvasItem
       if ( crossHairPlotPoint.isEmpty() )
         return;
 
-      painter->save();
+      QgsScopedQPainterState painterState( painter );
       painter->setBrush( Qt::NoBrush );
       QPen crossHairPen;
       crossHairPen.setCosmetic( true );
@@ -406,7 +408,6 @@ class QgsElevationProfileCrossHairsItem : public QgsPlotCanvasItem
 
       painter->drawText( xCoordOrigin, xCoordinateText );
       painter->drawText( yCoordOrigin, yCoordinateText );
-      painter->restore();
     }
 
   private:
@@ -1195,19 +1196,30 @@ QList<QgsMapLayer *> QgsElevationProfileCanvas::layers() const
   return _qgis_listQPointerToRaw( mLayers );
 }
 
-void QgsElevationProfileCanvas::setSources( const QList<QgsAbstractProfileSource *> &sources )
+void QgsElevationProfileCanvas::setSources( const QList< std::variant< QgsMapLayer *, QgsAbstractProfileSource * > > &sources )
 {
   mSources.clear();
   mSources.reserve( sources.count() );
-  for ( QgsAbstractProfileSource *profileSource : sources )
+
+  for ( const auto &source : sources )
   {
-    if ( auto layer = dynamic_cast<QgsMapLayer *>( profileSource ) )
+    if ( auto *layer = std::get_if< QgsMapLayer * >( &source ) )
     {
-      mSources << QgsWeakMapLayerPointer( layer );
+      if ( ( *layer )->profileSource() )
+      {
+        mSources << QgsWeakMapLayerPointer( *layer );
+      }
     }
-    else if ( QgsApplication::profileSourceRegistry()->findSourceById( profileSource->profileSourceId() ) )
+    else if ( auto *profileSource = std::get_if< QgsAbstractProfileSource * >( &source ) )
     {
-      mSources << profileSource;
+      if ( QgsApplication::profileSourceRegistry()->findSourceById( ( *profileSource )->profileSourceId() ) )
+      {
+        mSources << *profileSource;
+      }
+      else
+      {
+        QgsMessageLog::logMessage( tr( "Could not find profile source with id '%1' in the registry. Skipping..." ).arg( ( *profileSource )->profileSourceId() ) );
+      }
     }
   }
 }
@@ -1248,11 +1260,44 @@ QList<QgsAbstractProfileSource *> QgsElevationProfileCanvas::sources() const
         sources << layer->profileSource();
       }
     }
-    else if ( auto profileSource = std::get_if< QgsAbstractProfileSource * >( &source ) )
+    else if ( auto *profileSource = std::get_if< QgsAbstractProfileSource * >( &source ) )
     {
       if ( QgsApplication::profileSourceRegistry()->findSourceById( ( *profileSource )->profileSourceId() ) )
       {
         sources << *profileSource;
+      }
+      else
+      {
+        QgsMessageLog::logMessage( tr( "Could not find profile source with id '%1' in the registry. Skipping..." ).arg( ( *profileSource )->profileSourceId() ) );
+      }
+    }
+  }
+
+  return sources;
+}
+
+QList< std::variant< QgsMapLayer *, QgsAbstractProfileSource * > > QgsElevationProfileCanvas::rawSources() const
+{
+  QList< std::variant< QgsMapLayer *, QgsAbstractProfileSource * > > sources;
+  sources.reserve( mSources.count() );
+  for ( const auto &source : mSources )
+  {
+    if ( const QgsWeakMapLayerPointer *weakLayerPointer = std::get_if< QgsWeakMapLayerPointer >( &source ) )
+    {
+      if ( QgsMapLayer *layer = weakLayerPointer->data() )
+      {
+        sources << layer;
+      }
+    }
+    else if ( auto *profileSource = std::get_if< QgsAbstractProfileSource * >( &source ) )
+    {
+      if ( QgsApplication::profileSourceRegistry()->findSourceById( ( *profileSource )->profileSourceId() ) )
+      {
+        sources << *profileSource;
+      }
+      else
+      {
+        QgsMessageLog::logMessage( tr( "Could not find profile source with id '%1' in the registry. Skipping..." ).arg( ( *profileSource )->profileSourceId() ) );
       }
     }
   }

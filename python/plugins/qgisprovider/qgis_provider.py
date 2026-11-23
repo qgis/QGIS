@@ -43,8 +43,6 @@ from .RectanglesOvalsDiamondsVariable import RectanglesOvalsDiamondsVariable
 from .RegularPoints import RegularPoints
 from .SetRasterStyle import SetRasterStyle
 from .SetVectorStyle import SetVectorStyle
-from .StatisticsByCategories import StatisticsByCategories
-from .TextToFloat import TextToFloat
 from .TopoColors import TopoColor
 from .VariableDistanceBuffer import VariableDistanceBuffer
 from .VectorLayerHistogram import VectorLayerHistogram
@@ -86,8 +84,6 @@ class QgisAlgorithmProvider(QgsProcessingProvider):
             RegularPoints(),
             SetRasterStyle(),
             SetVectorStyle(),
-            StatisticsByCategories(),
-            TextToFloat(),
             TopoColor(),
             VariableDistanceBuffer(),
             VectorLayerHistogram(),

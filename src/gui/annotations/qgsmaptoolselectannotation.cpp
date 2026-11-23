@@ -266,6 +266,12 @@ void QgsMapToolSelectAnnotation::cadCanvasMoveEvent( QgsMapMouseEvent *event )
     }
     else
     {
+      if ( mCanceled )
+      {
+        mDragging = false;
+        return;
+      }
+
       if ( !mDragging )
       {
         mDragging = true;
@@ -314,10 +320,19 @@ void QgsMapToolSelectAnnotation::cadCanvasPressEvent( QgsMapMouseEvent *event )
   }
 
   mLastScenePos = scenePos;
+  mCanceled = false;
 }
 
 void QgsMapToolSelectAnnotation::cadCanvasReleaseEvent( QgsMapMouseEvent *event )
 {
+  if ( event->button() == Qt::RightButton )
+  {
+    mMouseHandles->reset();
+    mSelectionRubberBand.reset();
+    mCanceled = true;
+    return;
+  }
+
   if ( event->button() != Qt::LeftButton )
   {
     return;
@@ -367,6 +382,12 @@ void QgsMapToolSelectAnnotation::keyPressEvent( QKeyEvent *event )
 {
   if ( mMouseHandles->isDragging() || mMouseHandles->isResizing() || mMouseHandles->isRotating() )
   {
+    if ( event->key() == Qt::Key_Escape )
+    {
+      mMouseHandles->reset();
+      mSelectionRubberBand.reset();
+      mCanceled = true;
+    }
     return;
   }
 

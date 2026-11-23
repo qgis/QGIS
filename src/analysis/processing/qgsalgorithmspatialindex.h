@@ -41,6 +41,7 @@ class QgsSpatialIndexAlgorithm : public QgsProcessingAlgorithm
     QString groupId() const override;
     Qgis::ProcessingAlgorithmFlags flags() const override;
     QString shortHelpString() const override;
+    QString shortDescription() const override;
     QgsSpatialIndexAlgorithm *createInstance() const override SIP_FACTORY;
 
   protected:

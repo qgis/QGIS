@@ -60,6 +60,25 @@ class TestQgsMapLayer(QgisTestCase):
             self.assertNotIn(l.id(), ids)
             ids.add(l.id())
 
+    def test_generate_id(self):
+        # ids use uuids, so we can't check an exact match...
+        res1 = QgsMapLayer.generateId("")
+        self.assertEqual(len(res1), 36)
+        res2 = QgsMapLayer.generateId("")
+        self.assertEqual(len(res2), 36)
+        self.assertNotEqual(res1, res2)
+
+        res1 = QgsMapLayer.generateId("title")
+        self.assertEqual(res1[:6], "title_")
+        self.assertEqual(len(res1), 42)
+        res2 = QgsMapLayer.generateId("title")
+        self.assertNotEqual(res1, res2)
+
+        # long title clipping
+        res1 = QgsMapLayer.generateId("T" * 10000)
+        self.assertEqual(res1[:64], "T" * 63 + "_")
+        self.assertEqual(len(res1), 100)
+
     def copyLayerViaXmlReadWrite(self, source, dest):
         # write to xml
         doc = QDomDocument("testdoc")

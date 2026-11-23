@@ -377,6 +377,13 @@ Returns a reference to the main window "Mesh" menu.
 .. versionadded:: 3.34
 %End
 
+    virtual QMenu *processingMenu() = 0 /DisallowNone/;
+%Docstring
+Returns a reference to the main window "Processing" menu.
+
+.. versionadded:: 4.4
+%End
+
     virtual QMenu *firstRightStandardMenu() = 0 /DisallowNone/;
 %Docstring
 Returns a reference to the right most standard menu, which is usually
@@ -483,6 +490,13 @@ Returns a reference to the main window "Database" toolbar.
     virtual QToolBar *webToolBar() = 0 /DisallowNone/;
 %Docstring
 Returns a reference to the main window "Web" toolbar.
+%End
+
+    virtual QToolBar *processingToolboxToolBar() = 0 /DisallowNone/;
+%Docstring
+Returns a reference to the Processing toolbox dock widget toolbar.
+
+.. versionadded:: 4.4
 %End
 
     virtual QAction *actionNewProject() = 0 /DisallowNone/;
@@ -796,6 +810,11 @@ dialog.
 Returns the native draw action.
 %End
 
+    virtual QAction *actionNew3DMapCanvas() = 0 /DisallowNone/;
+%Docstring
+Returns the native action for creating a new 3d map canvas.
+%End
+
     virtual QAction *actionNewVectorLayer() = 0 /DisallowNone/;
     virtual QAction *actionAddOgrLayer() = 0 /DisallowNone/;
     virtual QAction *actionAddRasterLayer() = 0 /DisallowNone/;
@@ -894,6 +913,13 @@ Returns the Hide Deselected Layers action.
     virtual QAction *actionQgisHomePage() = 0 /DisallowNone/;
     virtual QAction *actionCheckQgisVersion() = 0 /DisallowNone/;
     virtual QAction *actionAbout() = 0 /DisallowNone/;
+
+    virtual QAction *actionEditFeaturesInPlace() = 0 /DisallowNone/;
+%Docstring
+Returns the Processing "Edit Features in Place" action.
+
+.. versionadded:: 4.4
+%End
 
 
  virtual QAction *actionCircle2Points() /Deprecated="Since 3.26. Shape digitizing is now part of the add feature tool. To enable the shape tool, use QgsMapToolCapture.setCurrentCaptureTechnique() and then QgsMapToolCapture.setCurrentShapeMapTool()."/;
@@ -1421,6 +1447,16 @@ brings an already open designer window to the foreground if one is
 already created for the layout.
 %End
 
+
+    virtual QgsModelDesignerDialog *openModelDesigner( QgsProcessingModelAlgorithm *model /Transfer/ ) = 0;
+%Docstring
+Opens a new model designer dialog for the specified ``model``, or brings
+an already open designer window to the foreground if one is already
+created for the model.
+
+.. versionadded:: 4.4
+%End
+
     virtual void showOptionsDialog( QWidget *parent = 0, const QString &currentPage = QString() ) = 0;
 %Docstring
 Opens the options dialog.
@@ -1523,6 +1559,20 @@ Adds an ``action`` to the Mesh menu
 Removes ``action`` from the Mesh menu
 
 .. versionadded:: 3.24
+%End
+
+    virtual void addPluginToProcessingMenu( const QString &name, QAction *action ) = 0;
+%Docstring
+Adds an ``action`` to the Processing menu.
+
+.. versionadded:: 4.4
+%End
+
+    virtual void removePluginProcessingMenu( const QString &name, QAction *action ) = 0;
+%Docstring
+Removes ``action`` from the Processing menu.
+
+.. versionadded:: 4.4
 %End
 
     virtual void addDockWidget( Qt::DockWidgetArea area, QDockWidget *dockwidget ) = 0;

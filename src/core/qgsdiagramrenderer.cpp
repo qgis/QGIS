@@ -394,9 +394,9 @@ void QgsDiagramSettings::readXml( const QDomElement &elem, const QgsReadWriteCon
 
   const QDomElement effectElem = elem.firstChildElement( u"effect"_s );
   if ( !effectElem.isNull() )
-    setPaintEffect( QgsApplication::paintEffectRegistry()->createEffect( effectElem ) );
+    setPaintEffect( QgsApplication::paintEffectRegistry()->createEffect( effectElem ).release() );
   else
-    setPaintEffect( QgsPaintEffectRegistry::defaultStack() );
+    setPaintEffect( QgsPaintEffectRegistry::defaultStack().release() );
 }
 
 void QgsDiagramSettings::writeXml( QDomElement &rendererElem, QDomDocument &doc, const QgsReadWriteContext &context ) const
@@ -848,7 +848,7 @@ void QgsLinearlyInterpolatedDiagramRenderer::readXml( const QDomElement &elem, c
   const QDomElement ddsLegendSizeElem = elem.firstChildElement( u"data-defined-size-legend"_s );
   if ( !ddsLegendSizeElem.isNull() )
   {
-    mDataDefinedSizeLegend.reset( QgsDataDefinedSizeLegend::readXml( ddsLegendSizeElem, context ) );
+    mDataDefinedSizeLegend = QgsDataDefinedSizeLegend::readXml( ddsLegendSizeElem, context );
   }
   else
   {

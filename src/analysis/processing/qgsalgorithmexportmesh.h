@@ -69,6 +69,7 @@ class QgsExportMeshVerticesAlgorithm : public QgsExportMeshOnElement
     QString shortDescription() const override;
     QString name() const override;
     QString displayName() const override;
+    QStringList tags() const override;
 
   protected:
     QgsProcessingAlgorithm *createInstance() const override;
@@ -88,6 +89,7 @@ class QgsExportMeshFacesAlgorithm : public QgsExportMeshOnElement
     QString shortDescription() const override;
     QString name() const override;
     QString displayName() const override;
+    QStringList tags() const override;
 
   protected:
     QgsProcessingAlgorithm *createInstance() const override;
@@ -107,6 +109,7 @@ class QgsExportMeshEdgesAlgorithm : public QgsExportMeshOnElement
     QString shortDescription() const override;
     QString name() const override;
     QString displayName() const override;
+    QStringList tags() const override;
 
   protected:
     QgsProcessingAlgorithm *createInstance() const override;
@@ -125,6 +128,7 @@ class QgsExportMeshOnGridAlgorithm : public QgsProcessingAlgorithm
   public:
     QString name() const override;
     QString displayName() const override;
+    QStringList tags() const override;
     QString group() const override;
     QString groupId() const override;
     QString shortHelpString() const override;
@@ -152,6 +156,7 @@ class QgsMeshRasterizeAlgorithm : public QgsProcessingAlgorithm
   public:
     QString name() const override;
     QString displayName() const override;
+    QStringList tags() const override;
     QString group() const override;
     QString groupId() const override;
     QString shortHelpString() const override;
@@ -178,6 +183,7 @@ class QgsMeshContoursAlgorithm : public QgsProcessingAlgorithm
   public:
     QString name() const override;
     QString displayName() const override;
+    QStringList tags() const override;
     QString group() const override;
     QString groupId() const override;
     QString shortHelpString() const override;
@@ -207,6 +213,7 @@ class QgsMeshExportCrossSection : public QgsProcessingAlgorithm
   public:
     QString name() const override;
     QString displayName() const override;
+    QStringList tags() const override;
     QString group() const override;
     QString groupId() const override;
     QString shortHelpString() const override;
@@ -233,6 +240,7 @@ class QgsMeshExportTimeSeries : public QgsProcessingAlgorithm
   public:
     QString name() const override;
     QString displayName() const override;
+    QStringList tags() const override;
     QString group() const override;
     QString groupId() const override;
     QString shortHelpString() const override;
@@ -259,7 +267,6 @@ class QgsMeshExportTimeSeries : public QgsProcessingAlgorithm
     QMap<qint64, QMap<int, int>> mRelativeTimeToData;
     QMap<int, QgsMeshDatasetGroupMetadata> mGroupsMetadata;
 };
-
 
 ///@endcond PRIVATE
 

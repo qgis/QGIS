@@ -109,7 +109,7 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
       const QString &uri, const QgsDataProvider::ProviderOptions &providerOptions = QgsDataProvider::ProviderOptions(), Qgis::DataProviderReadFlags flags = Qgis::DataProviderReadFlags()
     );
 
-    QgsRasterDataProvider *clone() const override = 0;
+    QgsRasterDataProvider *clone() const override = 0 SIP_FACTORY;
 
 
     /**

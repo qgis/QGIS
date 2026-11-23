@@ -19,6 +19,7 @@
 
 #include "qgslogger.h"
 #include "qgsmaptopixel.h"
+#include "qgspainting.h"
 #include "qgsrasterblock.h"
 #include "qgsrasterinterface.h"
 #include "qgsrasteriterator.h"

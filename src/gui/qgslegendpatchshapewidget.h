@@ -55,13 +55,6 @@ class GUI_EXPORT QgsLegendPatchShapeWidget : public QgsPanelWidget, private Ui::
      */
     void setShape( const QgsLegendPatchShape &shape );
 
-  signals:
-
-    /**
-     * Emitted whenever the patch shape defined by the widget is changed.
-     */
-    void changed();
-
   private slots:
     void setShapeFromStyle( const QString &name, QgsStyle::StyleEntity type, const QString &stylePath );
     void saveShape();

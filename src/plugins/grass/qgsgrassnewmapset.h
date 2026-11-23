@@ -45,7 +45,7 @@ class QgsGrassNewMapset : public QWizard, private Ui::QgsGrassNewMapsetBase
     enum Page
     {
       Database,
-      Location,
+      Project,
       Crs,
       Region,
       MapSet,

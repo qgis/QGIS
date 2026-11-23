@@ -277,8 +277,9 @@ class GUI_EXPORT QgsFontButton : public QToolButton
     void showEvent( QShowEvent *e ) override;
     void resizeEvent( QResizeEvent *event ) override;
 
-    // Reimplemented to detect right mouse button clicks on the color button and allow dragging colors
+    // Reimplemented to allow dragging colors
     void mousePressEvent( QMouseEvent *e ) override;
+    void contextMenuEvent( QContextMenuEvent *e ) override;
     // Reimplemented to allow dragging fonts from button
     void mouseMoveEvent( QMouseEvent *e ) override;
 

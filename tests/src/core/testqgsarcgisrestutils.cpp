@@ -69,6 +69,7 @@ class TestQgsArcGisRestUtils : public QObject
     void testParseRendererSimple();
     void testParseRendererCategorized();
     void testParseRendererCategorizedNullValue();
+    void testParseRendererCategorizedValueExpression();
     void testRendererTransparency();
     void testVisualVariableRotationGeographic();
     void testVisualVariableRotationArithmetic();
@@ -78,6 +79,7 @@ class TestQgsArcGisRestUtils : public QObject
     void testVisualVariableRotationCategorizedRenderer();
     void testVisualVariableRotationGraduatedRenderer();
     void testParseLabeling();
+    void testParseLabelingRepeat();
     void testParseCompoundCurve();
     void testParsePolyline();
     void testParsePolylineZ();
@@ -782,6 +784,129 @@ void TestQgsArcGisRestUtils::testParseRendererCategorizedNullValue()
   QVERIFY( catRenderer->categories().at( 1 ).symbol() );
 }
 
+void TestQgsArcGisRestUtils::testParseRendererCategorizedValueExpression()
+{
+  const QVariantMap map = jsonStringToMap(
+    "{"
+    "\"type\": \"uniqueValue\","
+    "\"valueExpression\": \"(($feature['ModulNr'] + ' ') + $feature['Modul'])\","
+    "\"valueExpressionTitle\": \"Custom\","
+    "\"uniqueValueGroups\": ["
+    "{"
+    "\"heading\": \"\\\"ModulNr\\\" || ' ' ||  \\\"Modul\\\" \","
+    "\"classes\": ["
+    "{"
+    "\"symbol\": {"
+    "\"type\": \"esriSFS\","
+    "\"style\": \"esriSFSSolid\","
+    "\"color\": ["
+    "196,"
+    "205,"
+    "27,"
+    "255"
+    "]"
+    "},"
+    "\"values\": ["
+    "["
+    "\"11 Genève\""
+    "]"
+    "]"
+    "},"
+    "{"
+    "\"symbol\": {"
+    "\"type\": \"esriSFS\","
+    "\"style\": \"esriSFSSolid\","
+    "\"color\": ["
+    "196,"
+    "205,"
+    "27,"
+    "255"
+    "]"
+    "},"
+    "\"values\": ["
+    "["
+    "\"12 Neuchâtel\""
+    "]"
+    "]"
+    "}"
+    "]"
+    "}"
+    "],"
+    "\"uniqueValueInfos\": ["
+    "{"
+    "\"symbol\": {"
+    "\"type\": \"esriSFS\","
+    "\"style\": \"esriSFSSolid\","
+    "\"color\": ["
+    "196,"
+    "205,"
+    "27,"
+    "255"
+    "],"
+    "\"outline\": {"
+    "\"type\": \"esriSLS\","
+    "\"style\": \"esriSLSSolid\","
+    "\"color\": ["
+    "50,"
+    "11,"
+    "128,"
+    "255"
+    "],"
+    "\"width\": 0.737007409759112"
+    "}"
+    "},"
+    "\"value\": \"11 Genève\","
+    "\"label\": \"11 Genève\""
+    "},"
+    "{"
+    "\"symbol\": {"
+    "\"type\": \"esriSFS\","
+    "\"style\": \"esriSFSSolid\","
+    "\"color\": ["
+    "196,"
+    "205,"
+    "27,"
+    "255"
+    "],"
+    "\"outline\": {"
+    "\"type\": \"esriSLS\","
+    "\"style\": \"esriSLSSolid\","
+    "\"color\": ["
+    "50,"
+    "11,"
+    "128,"
+    "255"
+    "],"
+    "\"width\": 0.737007409759112"
+    "}"
+    "},"
+    "\"value\": \"12 Neuchâtel\","
+    "\"label\": \"12 Neuchâtel\""
+    "}"
+    "],"
+    "\"fieldDelimiter\": \",\""
+    "}"
+  );
+  QVERIFY( !map.isEmpty() );
+  QgsReadWriteContext rwContext;
+  QgsSymbolConverterContext context( rwContext );
+  const std::unique_ptr<QgsFeatureRenderer> renderer( QgsArcGisRestUtils::convertRenderer( map, context ) );
+  QgsCategorizedSymbolRenderer *catRenderer = dynamic_cast<QgsCategorizedSymbolRenderer *>( renderer.get() );
+  QVERIFY( catRenderer );
+  QCOMPARE( catRenderer->classAttribute(), u"\"ModulNr\" + ' ' + \"Modul\""_s );
+
+  QCOMPARE( catRenderer->categories().count(), 2 );
+  QVERIFY( catRenderer->categories().at( 0 ).value().isValid() );
+  QCOMPARE( catRenderer->categories().at( 0 ).value().toString(), u"11 Genève"_s );
+  QCOMPARE( catRenderer->categories().at( 0 ).label(), u"11 Genève"_s );
+  QVERIFY( catRenderer->categories().at( 0 ).symbol() );
+
+  QVERIFY( catRenderer->categories().at( 1 ).value().isValid() );
+  QCOMPARE( catRenderer->categories().at( 1 ).value().toString(), u"12 Neuchâtel"_s );
+  QCOMPARE( catRenderer->categories().at( 1 ).label(), u"12 Neuchâtel"_s );
+  QVERIFY( catRenderer->categories().at( 1 ).symbol() );
+}
+
 void TestQgsArcGisRestUtils::testRendererTransparency()
 {
   // transparency at drawingInfo level is now a layer-level rendering setting,
@@ -1231,9 +1356,157 @@ void TestQgsArcGisRestUtils::testParseLabeling()
   QCOMPARE( textFormat.buffer().sizeUnit(), Qgis::RenderUnit::Points );
 }
 
+void TestQgsArcGisRestUtils::testParseLabelingRepeat()
+{
+  const QVariantMap map = jsonStringToMap(
+    "{"
+    "\"labelingInfo\": ["
+    "{"
+    "\"labelExpression\": \"[Hierarchy]\","
+    "\"labelPlacement\": \"esriServerLinePlacementCenterAlong\","
+    "\"textLayout\": \"straight\","
+    "\"deconflictionStrategy\": \"dynamic\","
+    "\"allowOverrun\": true,"
+    "\"repeatLabel\": true,"
+    "\"repeatLabelDistance\": 150,"
+    "\"lineConnection\": \"minimizeLabels\","
+    "\"useClippedGeometry\": true,"
+    "\"stackLabel\": true,"
+    "\"stackAlignment\": \"dynamic\","
+    "\"removeDuplicates\": \"none\","
+    "\"stackRowLength\": 24,"
+    "\"where\": \"(\\\"Hierarchy\\\"  = 'XX' )\","
+    "\"useCodedValues\": true,"
+    "\"maxScale\": 0,"
+    "\"minScale\": 0,"
+    "\"name\": \"XX\","
+    "\"priority\": 1,"
+    "\"symbol\": {"
+    "\"type\": \"esriTS\","
+    "\"color\": ["
+    "0,"
+    "92,"
+    "230,"
+    "255"
+    "],"
+    "\"backgroundColor\": null,"
+    "\"borderLineColor\": null,"
+    "\"borderLineSize\": null,"
+    "\"verticalAlignment\": \"baseline\","
+    "\"horizontalAlignment\": \"left\","
+    "\"rightToLeft\": false,"
+    "\"angle\": 0,"
+    "\"xoffset\": 0,"
+    "\"yoffset\": 0,"
+    "\"kerning\": true,"
+    "\"haloColor\": ["
+    "251,"
+    "251,"
+    "251,"
+    "255"
+    "],"
+    "\"haloSize\": 2,"
+    "\"font\": {"
+    "\"family\": \"Arial\","
+    "\"size\": 14,"
+    "\"style\": \"normal\","
+    "\"weight\": \"bold\","
+    "\"decoration\": \"none\""
+    "}"
+    "}"
+    "},"
+    "{"
+    "\"labelExpression\": \"[Hierarchy]\","
+    "\"labelPlacement\": \"esriServerLinePlacementCenterAlong\","
+    "\"textLayout\": \"straight\","
+    "\"deconflictionStrategy\": \"dynamic\","
+    "\"allowOverrun\": true,"
+    "\"repeatLabel\": true,"
+    "\"repeatLabelDistance\": 290,"
+    "\"lineConnection\": \"minimizeLabels\","
+    "\"useClippedGeometry\": true,"
+    "\"stackLabel\": true,"
+    "\"stackAlignment\": \"dynamic\","
+    "\"removeDuplicates\": \"none\","
+    "\"stackRowLength\": 24,"
+    "\"where\": \"(\\\"Hierarchy\\\"  = 'XXXX' )\","
+    "\"useCodedValues\": true,"
+    "\"maxScale\": 0,"
+    "\"minScale\": 0,"
+    "\"name\": \"XXXX\","
+    "\"priority\": 2,"
+    "\"symbol\": {"
+    "\"type\": \"esriTS\","
+    "\"color\": ["
+    "0,"
+    "92,"
+    "230,"
+    "255"
+    "],"
+    "\"backgroundColor\": null,"
+    "\"borderLineColor\": null,"
+    "\"borderLineSize\": null,"
+    "\"verticalAlignment\": \"baseline\","
+    "\"horizontalAlignment\": \"left\","
+    "\"rightToLeft\": false,"
+    "\"angle\": 0,"
+    "\"xoffset\": 0,"
+    "\"yoffset\": 0,"
+    "\"kerning\": true,"
+    "\"haloColor\": ["
+    "251,"
+    "251,"
+    "251,"
+    "255"
+    "],"
+    "\"haloSize\": 2,"
+    "\"font\": {"
+    "\"family\": \"Arial\","
+    "\"size\": 14,"
+    "\"style\": \"normal\","
+    "\"weight\": \"bold\","
+    "\"decoration\": \"none\""
+    "}"
+    "}"
+    "}"
+    "]"
+    "}"
+  );
+
+  const std::unique_ptr<QgsAbstractVectorLayerLabeling> labeling( QgsArcGisRestUtils::convertLabeling( map.value( u"labelingInfo"_s ).toList() ) );
+  QVERIFY( labeling );
+  QgsRuleBasedLabeling *rules = dynamic_cast<QgsRuleBasedLabeling *>( labeling.get() );
+  QVERIFY( rules );
+  QgsRuleBasedLabeling::Rule *root = rules->rootRule();
+  QVERIFY( root );
+
+  const QgsRuleBasedLabeling::RuleList children = root->children();
+  QCOMPARE( children.count(), 2 );
+
+  QgsPalLayerSettings *settings = children.at( 0 )->settings();
+  QVERIFY( settings );
+  QCOMPARE( settings->placement, Qgis::LabelPlacement::Line );
+  QCOMPARE( settings->repeatDistance, 150 );
+  QCOMPARE( settings->repeatDistanceUnit, Qgis::RenderUnit::Points );
+
+  settings = children.at( 1 )->settings();
+  QVERIFY( settings );
+  QCOMPARE( settings->placement, Qgis::LabelPlacement::Line );
+  QCOMPARE( settings->repeatDistance, 290 );
+  QCOMPARE( settings->repeatDistanceUnit, Qgis::RenderUnit::Points );
+}
+
 QVariantMap TestQgsArcGisRestUtils::jsonStringToMap( const QString &string ) const
 {
-  const QJsonDocument doc = QJsonDocument::fromJson( string.toUtf8() );
+  QJsonParseError parseError;
+  const QJsonDocument doc = QJsonDocument::fromJson( string.toUtf8(), &parseError );
+
+  if ( QJsonParseError::NoError != parseError.error )
+  {
+    QgsDebugMsgLevel( parseError.errorString(), 1 );
+    return QVariantMap();
+  }
+
   if ( doc.isNull() )
   {
     return QVariantMap();

@@ -40,7 +40,7 @@ QgsPointCloudExtentRendererWidget::QgsPointCloudExtentRendererWidget( QgsPointCl
   }
   else
   {
-    mSymbolButton->setSymbol( QgsPointCloudExtentRenderer::defaultFillSymbol() );
+    mSymbolButton->setSymbol( QgsPointCloudExtentRenderer::defaultFillSymbol().release() );
   }
 
   connect( mSymbolButton, &QgsSymbolButton::changed, this, &QgsPointCloudExtentRendererWidget::emitWidgetChanged );
@@ -66,7 +66,7 @@ QgsPointCloudRenderer *QgsPointCloudExtentRendererWidget::renderer()
 void QgsPointCloudExtentRendererWidget::emitWidgetChanged()
 {
   if ( !mBlockChangedSignal )
-    emit widgetChanged();
+    emit changed();
 }
 
 void QgsPointCloudExtentRendererWidget::setFromRenderer( const QgsPointCloudRenderer *r )
@@ -78,7 +78,7 @@ void QgsPointCloudExtentRendererWidget::setFromRenderer( const QgsPointCloudRend
   }
   else
   {
-    mSymbolButton->setSymbol( QgsPointCloudExtentRenderer::defaultFillSymbol() );
+    mSymbolButton->setSymbol( QgsPointCloudExtentRenderer::defaultFillSymbol().release() );
   }
   mBlockChangedSignal = false;
 }

@@ -104,7 +104,7 @@ void QgsFontButton::showSettingsDialog()
         mActivePanel->setPanelTitle( mDialogTitle );
         mActivePanel->setContext( symbolContext );
 
-        connect( mActivePanel, &QgsTextFormatPanelWidget::widgetChanged, this, [this] {
+        connect( mActivePanel, &QgsTextFormatPanelWidget::changed, this, [this] {
           setTextFormat( mActivePanel->format() );
           QgsFontUtils::addRecentFontFamily( mActivePanel->format().font().family() );
         } );
@@ -202,11 +202,11 @@ void QgsFontButton::copyFormat()
   switch ( mMode )
   {
     case ModeTextRenderer:
-      QApplication::clipboard()->setMimeData( mFormat.toMimeData() );
+      QApplication::clipboard()->setMimeData( mFormat.toMimeData().release() );
       break;
 
     case ModeQFont:
-      QApplication::clipboard()->setMimeData( QgsFontUtils::toMimeData( mFont ) );
+      QApplication::clipboard()->setMimeData( QgsFontUtils::toMimeData( mFont ).release() );
       break;
   }
 }
@@ -252,16 +252,17 @@ bool QgsFontButton::event( QEvent *e )
 
 void QgsFontButton::mousePressEvent( QMouseEvent *e )
 {
-  if ( e->button() == Qt::RightButton )
-  {
-    QToolButton::showMenu();
-    return;
-  }
-  else if ( e->button() == Qt::LeftButton )
+  if ( e->button() == Qt::LeftButton )
   {
     mDragStartPosition = e->pos();
   }
   QToolButton::mousePressEvent( e );
+}
+
+void QgsFontButton::contextMenuEvent( QContextMenuEvent *e )
+{
+  QToolButton::showMenu();
+  e->accept();
 }
 
 void QgsFontButton::mouseMoveEvent( QMouseEvent *e )
@@ -287,11 +288,11 @@ void QgsFontButton::mouseMoveEvent( QMouseEvent *e )
   switch ( mMode )
   {
     case ModeTextRenderer:
-      drag->setMimeData( mFormat.toMimeData() );
+      drag->setMimeData( mFormat.toMimeData().release() );
       break;
 
     case ModeQFont:
-      drag->setMimeData( QgsFontUtils::toMimeData( mFont ) );
+      drag->setMimeData( QgsFontUtils::toMimeData( mFont ).release() );
       break;
   }
   const int iconSize = QgsGuiUtils::scaleIconSize( 50 );

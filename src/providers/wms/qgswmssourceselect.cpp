@@ -497,7 +497,8 @@ void QgsWMSSourceSelect::btnConnect_clicked()
     return;
   }
 
-  QgsWmsCapabilitiesDownload capDownload( wmsSettings.baseUrl(), wmsSettings.authorization(), true );
+  const bool disableDecompressedSafetyCheckThreshold { mUri.hasParam( u"disableDecompressedSafetyCheckThreshold"_s ) };
+  QgsWmsCapabilitiesDownload capDownload( wmsSettings.baseUrl(), wmsSettings.authorization(), true, disableDecompressedSafetyCheckThreshold );
   connect( &capDownload, &QgsWmsCapabilitiesDownload::statusChanged, this, &QgsWMSSourceSelect::showStatusMessage );
 
   QApplication::setOverrideCursor( Qt::WaitCursor );

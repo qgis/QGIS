@@ -182,7 +182,7 @@ void TestQgsLayoutHtml::htmlMultiFrameSmartBreak()
   l.initializeDefaults();
   QgsLayoutItemHtml *htmlItem = new QgsLayoutItemHtml( &l );
   QgsLayoutFrame *htmlFrame = new QgsLayoutFrame( &l, htmlItem );
-  htmlFrame->attemptSetSceneRect( QRectF( 10, 10, 100, 52 ) );
+  htmlFrame->attemptSetSceneRect( QRectF( 10, 10, 100, 45 ) );
   htmlItem->addFrame( htmlFrame );
   htmlItem->setResizeMode( QgsLayoutMultiFrame::RepeatUntilFinished );
   htmlItem->setUseSmartBreaks( true );
@@ -252,7 +252,7 @@ void TestQgsLayoutHtml::javascriptSetFeature()
   htmlItem->setEvaluateExpressions( true );
   // hopefully arial bold 40px is big enough to avoid cross-platform rendering issues
   htmlItem->setHtml( QString(
-    "<body style=\"margin: 10px; font-family: Arial; font-weight: bold; font-size: 40px;\">"
+    "<body style=\"margin: 10px; font-family: Arial; font-weight: 900; font-size: 40px;\">"
     "<div id=\"dest\"></div><script>setFeature=function(feature){"
     "document.getElementById('dest').innerHTML = feature.properties.foreignkey + ',' +"
     "  feature.properties['relation one'][0].z + ',' + feature.properties['relation one'][1].z;}"

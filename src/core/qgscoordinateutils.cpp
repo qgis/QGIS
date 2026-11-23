@@ -41,7 +41,14 @@ using namespace Qt::StringLiterals;
 int QgsCoordinateUtils::calculateCoordinatePrecision( double mapUnitsPerPixel, const QgsCoordinateReferenceSystem &mapCrs, QgsProject *project )
 {
   if ( !project )
-    project = QgsProject::instance(); // skip-keyword-check
+  {
+    // No project settings available, calculate an automatic precision based on map units
+    int dp = 0;
+    if ( !qgsDoubleNear( mapUnitsPerPixel, 0.0 ) )
+      dp = static_cast<int>( std::ceil( -1.0 * std::log10( mapUnitsPerPixel ) ) );
+    return std::max( dp, 0 );
+  }
+
   // Get the display precision from the project settings
   const bool automatic = project->readBoolEntry( u"PositionPrecision"_s, u"/Automatic"_s );
   int dp = 0;
@@ -87,21 +94,28 @@ int QgsCoordinateUtils::calculateCoordinatePrecision( double mapUnitsPerPixel, c
   return dp;
 }
 
+int QgsCoordinateUtils::calculateCoordinatePrecision( double mapUnitsPerPixel, const QgsCoordinateReferenceSystem &mapCrs )
+{
+  return calculateCoordinatePrecision( mapUnitsPerPixel, mapCrs, QgsProject::instance() ); // skip-keyword-check
+}
+
 int QgsCoordinateUtils::calculateCoordinatePrecisionForCrs( const QgsCoordinateReferenceSystem &crs, QgsProject *project )
 {
-  QgsProject *prj = project;
-  if ( !prj )
+  if ( project )
   {
-    prj = QgsProject::instance(); // skip-keyword-check
-  }
-
-  const bool automatic = prj->readBoolEntry( u"PositionPrecision"_s, u"/Automatic"_s );
-  if ( !automatic )
-  {
-    return prj->readNumEntry( u"PositionPrecision"_s, u"/DecimalPlaces"_s, 6 );
+    const bool automatic = project->readBoolEntry( u"PositionPrecision"_s, u"/Automatic"_s );
+    if ( !automatic )
+    {
+      return project->readNumEntry( u"PositionPrecision"_s, u"/DecimalPlaces"_s, 6 );
+    }
   }
 
   return calculateCoordinatePrecision( crs );
+}
+
+int QgsCoordinateUtils::calculateCoordinatePrecisionForCrs( const QgsCoordinateReferenceSystem &crs )
+{
+  return calculateCoordinatePrecisionForCrs( crs, QgsProject::instance() ); // skip-keyword-check
 }
 
 int QgsCoordinateUtils::calculateCoordinatePrecision( const QgsCoordinateReferenceSystem &crs )

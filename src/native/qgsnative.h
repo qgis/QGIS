@@ -24,10 +24,49 @@
 
 #include <QImage>
 #include <QObject>
+#include <QPointer>
 #include <QVariant>
+#include <QWindow>
 
 class QString;
-class QWindow;
+
+/**
+ * \class QgsNative
+ * \ingroup native
+ * \brief Abstract base class for an object which constrains the movement of a mouse cursor.
+ *
+ * \since QGIS 4.4
+ */
+class NATIVE_EXPORT QgsPointerLocker : public QObject
+{
+    Q_OBJECT
+  public:
+    /**
+     * Constructor for QgsPointerLocker, with the specified \a parent.
+     */
+    QgsPointerLocker( QWindow *window, QObject *parent );
+
+    /**
+     * Locks the pointer.
+     */
+    virtual bool lock() = 0;
+
+    /**
+     * Unlocks the pointer.
+     */
+    virtual bool unlock() = 0;
+
+  signals:
+
+    /**
+     * Emitted when the pointer has a (virtual) relative movement.
+     */
+    void pointerMoved( double dx, double dy );
+
+  protected:
+    QPointer< QWindow > mWindow;
+};
+
 
 /**
  * \class QgsNative
@@ -41,11 +80,12 @@ class NATIVE_EXPORT QgsNative : public QObject
 
   public:
     //! Native interface capabilities
-    enum Capability
+    enum class Capability : int
     {
       NativeDesktopNotifications = 1 << 1, //!< Native desktop notifications are supported. See showDesktopNotification().
       NativeFilePropertiesDialog = 1 << 2, //!< Platform can show a native "file" (or folder) properties dialog.
       NativeOpenTerminalAtPath = 1 << 3,   //!< Platform can open a terminal (command line) at a specific path
+      NativePointerLock = 1 << 4,          //!< Platform has native method to handle pointer lock/cursor warping \since QGIS 4.4
     };
     Q_DECLARE_FLAGS( Capabilities, Capability )
 
@@ -242,6 +282,15 @@ class NATIVE_EXPORT QgsNative : public QObject
      * \since QGIS 3.4
      */
     virtual void onRecentProjectsChanged( const std::vector<RecentProjectProperties> &recentProjects );
+
+    /**
+     * Creates a new pointer locker, with the specified \a parent object.
+     *
+     * Will return NULLPTR if the NativePointerLock capability is not present.
+     *
+     * \since QGIS 4.4
+     */
+    virtual QgsPointerLocker *createPointerLocker( QWindow *window, QObject *parent );
 
   signals:
 

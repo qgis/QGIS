@@ -2,6 +2,7 @@
 try:
     QgsRectangle.fromWkt = staticmethod(QgsRectangle.fromWkt)
     QgsRectangle.fromCenterAndSize = staticmethod(QgsRectangle.fromCenterAndSize)
+    QgsRectangle.fromEdges = staticmethod(QgsRectangle.fromEdges)
     QgsRectangle.__group__ = ['geometry']
 except (NameError, AttributeError):
     pass

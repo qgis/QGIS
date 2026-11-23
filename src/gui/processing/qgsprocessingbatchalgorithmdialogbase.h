@@ -76,11 +76,6 @@ class GUI_EXPORT QgsProcessingBatchAlgorithmDialogBase : public QgsProcessingAlg
     virtual QgsProcessingContext *createContext( QgsProcessingFeedback *feedback ) = 0 SIP_FACTORY;
 
     /**
-     * Called when the dialog should handle the results of an algorithm, e.g. by loading layers into the current project.
-     */
-    virtual void handleAlgorithmResults( QgsProcessingAlgorithm *algorithm, QgsProcessingContext &context, QgsProcessingFeedback *feedback, const QVariantMap &parameters ) = 0;
-
-    /**
      * Populates the HTML results dialog as a result of a successful algorithm execution.
      */
     virtual void loadHtmlResults( const QVariantMap &results, int index ) = 0;

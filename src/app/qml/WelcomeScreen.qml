@@ -1,7 +1,6 @@
 import QtQuick
 import QtQuick.Layouts
 import QtQuick.Controls
-import QtQuick.Effects
 import QtQuick.Controls.Material
 
 import org.qgis.app
@@ -17,8 +16,8 @@ Item {
   property real titleFontSize: Application.font.pointSize * 1.3 * layoutSizeFactor
   property real largeFontSize: Application.font.pointSize * 1.1 * layoutSizeFactor
   property real normalFontSize: Application.font.pointSize * layoutSizeFactor
-  property real smallFontSize: Application.font.pointSize * 0.925 * layoutSizeFactor
-  property real tinyFontSize: Application.font.pointSize * 0.875 * layoutSizeFactor
+  property real smallFontSize: Application.font.pointSize * 0.95 * layoutSizeFactor
+  property real tinyFontSize: Application.font.pointSize * 0.925 * layoutSizeFactor
 
   width: 2100
   height: 1420
@@ -125,6 +124,7 @@ Item {
                 visible: recentProjectsListView.count > 0
                 width: recentProjectsListView.count > 0 ? implicitWidth : 0
                 background: null
+                focusPolicy: Qt.NoFocus
               }
               TabButton {
                 text: qsTr("Templates")
@@ -132,6 +132,18 @@ Item {
                 font.pointSize: largeFontSize
                 font.bold: true
                 background: null
+                focusPolicy: Qt.NoFocus
+              }
+
+              onCurrentIndexChanged: focusCurrentList()
+
+              function focusCurrentList() {
+                if (currentIndex === 0) {
+                  recentProjectsListView.forceActiveFocus();
+                }
+                else if (currentIndex === 1) {
+                  templateProjectsListView.forceActiveFocus();
+                }
               }
             }
           }
@@ -163,19 +175,33 @@ Item {
                 radius: 6
 
                 onClicked: (mouse) => {
-                             if (mouse.button == Qt.LeftButton && isEnabled) {
-                               welcomeScreenController.openProject(ProjectPath);
-                               welcomeScreenController.hideScene();
-                             } else if (mouse.button == Qt.RightButton) {
-                               recentProjectsMenu.projectIndex = index;
-                               recentProjectsMenu.projectPinned = Pinned;
-                               recentProjectsMenu.projectExists = Exists;
-                               recentProjectsMenu.projectHasNativePath = ProjectNativePath != "";
-                               
-                               const point = mapToItem(recentProjectsListView, mouse.x, mouse.y);
-                               recentProjectsMenu.popup(point.x, point.y);
-                             }
-                           }
+                  tabBar.focusCurrentList()
+                  recentProjectsListView.currentIndex = index;
+
+                  if (mouse.button === Qt.RightButton) {
+                    recentProjectsMenu.projectPinned = index;
+                    recentProjectsMenu.projectPinned = Pinned;
+                    recentProjectsMenu.projectExists = Exists;
+                    recentProjectsMenu.projectHasNativePath = HasNativePath;
+
+                    const point = mapToItem(recentProjectsListView, mouse.x, mouse.y);
+                    recentProjectsMenu.popup(point.x, point.y);
+                  }
+                }
+
+                onDoubleClicked: (mouse) => {
+                  if (mouse.button === Qt.LeftButton) {
+                    activate();
+                  }
+                }
+
+                function activate() {
+                  if (isEnabled) {
+                    welcomeScreenController.openProject(ProjectPath);
+                    welcomeScreenController.hideScene();
+                    recentProjectsListView.currentIndex = 0;
+                  }
+                }
               }
 
               ScrollBar.vertical: CustomScrollBar {
@@ -188,30 +214,19 @@ Item {
                 }
               }
 
-              Menu {
-                id: templateProjectsMenu
-                
-                property int projectIndex: 0
-                
-                background: Rectangle {
-                  implicitWidth: 200
-                  implicitHeight: templateProjectsMenu.Material.menuItemHeight
-                  radius: templateProjectsMenu.Material.roundedScale
-                  color: templateProjectsMenu.Material.dialogColor
-                  border.color: templateProjectsMenu.Material.listHighlightColor
-                  border.width: 1
+              Keys.onPressed: (event) => {
+                if (event.key === Qt.Key_Right) {
+                  tabBar.currentIndex = 1;
+                  event.accepted = true;
+                  return;
                 }
-                
-                MenuItem {
-                  text: qsTr("Delete Template…")
-                  onClicked: {
-                    welcomeScreenController.removeTemplateProject(templateProjectsMenu.projectIndex)
-                  }
-                  background: Rectangle {
-                    implicitWidth: 200
-                    implicitHeight: parent.Material.menuItemHeight
-                    color: parent.highlighted ? parent.Material.listHighlightColor : "transparent"
-                  }
+
+                if (!currentItem)
+                  return;
+
+                if (event.key === Qt.Key_Enter || event.key === Qt.Key_Return) {
+                  currentItem.activate();
+                  event.accepted = true;
                 }
               }
 
@@ -225,13 +240,29 @@ Item {
 
                 background: Rectangle {
                   implicitWidth: 200
-                  implicitHeight: templateProjectsMenu.Material.menuItemHeight
-                  radius: templateProjectsMenu.Material.roundedScale
-                  color: templateProjectsMenu.Material.dialogColor
-                  border.color: templateProjectsMenu.Material.listHighlightColor
+                  implicitHeight: recentProjectsMenu.Material.menuItemHeight
+                  radius: recentProjectsMenu.Material.roundedScale
+                  color: recentProjectsMenu.Material.dialogColor
+                  border.color: recentProjectsMenu.Material.listHighlightColor
                   border.width: 1
                 }
                 
+                MenuItem {
+                  text: qsTr("Open Project")
+                  enabled: recentProjectsMenu.projectExists
+                  visible: enabled
+                  height: enabled ? implicitHeight : 0
+                  onClicked: {
+                    const delegate = recentProjectsListView.itemAtIndex( recentProjectsMenu.projectIndex );
+                    if ( delegate )
+                      delegate.activate();
+                  }
+                  background: Rectangle {
+                    implicitWidth: 200
+                    implicitHeight: parent.Material.menuItemHeight
+                    color: parent.highlighted ? parent.Material.listHighlightColor : "transparent"
+                  }
+                }
                 MenuItem {
                   text: recentProjectsMenu.projectPinned? qsTr("Unpin from List") : qsTr("Pin to List")
                   onClicked: {
@@ -262,7 +293,7 @@ Item {
                   }
                 }
                 MenuItem {
-                  text: qsTr("Open Directory…")
+                  text: qsTr("Open Directory")
                   enabled: recentProjectsMenu.projectExists && recentProjectsMenu.projectHasNativePath
                   visible: enabled
                   height: enabled ? implicitHeight : 0
@@ -288,7 +319,7 @@ Item {
                 }
                 MenuSeparator {}
                 MenuItem {
-                  text: qsTr("Clear List")
+                  text: qsTr("Clear List…")
                   onClicked: {
                     welcomeScreenController.clearRecentProjects();
                   }
@@ -302,16 +333,52 @@ Item {
             }
 
             ListView {
-              id: templatesListView
+              id: templateProjectsListView
               anchors.fill: parent
               spacing: 8
               clip: true
               visible: tabBar.currentIndex === 1
+              maximumFlickVelocity: 2000
 
               model: templateProjectsModel
 
+              // Group the templates by directory: a header is shown each time the
+              // section changes between two consecutive projects.
+              section.property: "Section"
+              section.criteria: ViewSection.FullString
+              section.delegate: Item {
+                id: sectionHeader
+                required property string section
+
+                width: templateProjectsListView.width - 12
+                height: section === "" ? 24 : sectionTitle.implicitHeight + 20
+
+                Text {
+                  id: sectionTitle
+                  visible: sectionHeader.section !== ""
+                  anchors.left: parent.left
+                  anchors.right: parent.right
+                  anchors.top: parent.top
+                  anchors.topMargin: 8
+                  anchors.leftMargin: 4
+                  text: sectionHeader.section
+                  font.pointSize: smallFontSize
+                  font.bold: true
+                  color: "#ffffff"
+                  elide: Text.ElideMiddle
+                }
+
+                Rectangle {
+                  width: parent.width
+                  height: 1
+                  color: "#566775"
+                  anchors.bottom: parent.bottom
+                  anchors.bottomMargin: sectionHeader.section === "" ? 12 : 6
+                }
+              }
+
               delegate: ProjectCard {
-                width: templatesListView.width - 12
+                width: templateProjectsListView.width - 12
                 backgroundColor: CanvasColor || "#ffffff"
                 title: Title || ""
                 subtitle: Crs || ""
@@ -325,38 +392,109 @@ Item {
                     return PreviewImagePath || "";
                   }
                 }
-                isSelected: templatesListView.currentIndex === index
+                isSelected: templateProjectsListView.currentIndex === index
                 radius: 6
 
                 onClicked: (mouse) => {
-                  if (mouse.button == Qt.LeftButton) {
-                    switch (Type) {
-                    case TemplateProjectsModel.TemplateType.Blank:
-                      welcomeScreenController.createBlankProject(); //#spellok
-                      welcomeScreenController.hideScene();
-                      return;
-                    case TemplateProjectsModel.TemplateType.Basemap:
-                      welcomeScreenController.createProjectFromBasemap();
-                      welcomeScreenController.hideScene();
-                      return;
-                    default:
-                      welcomeScreenController.createProjectFromTemplate(TemplateNativePath || ""); //#spellok
-                      welcomeScreenController.hideScene();
-                      return;
-                    }
-                  } else if (mouse.button == Qt.RightButton) {
-                    if (Type == TemplateProjectsModel.TemplateType.File && Writable) {
-                      templateProjectsMenu.projectIndex = index;
-                      
-                      const point = mapToItem(templatesListView, mouse.x, mouse.y);
-                      templateProjectsMenu.popup(point.x, point.y);
-                    }
+                  tabBar.focusCurrentList()
+                  templateProjectsListView.currentIndex = index;
+
+                  if (mouse.button === Qt.RightButton) {
+                    templateProjectsMenu.templateIndex = index;
+                    templateProjectsMenu.templateDeletable = ( Type === TemplateProjectsModel.TemplateType.File && Writable );
+
+                    const point = mapToItem(templateProjectsListView, mouse.x, mouse.y);
+                    templateProjectsMenu.popup(point.x, point.y);
+                  }
+                }
+
+                onDoubleClicked: (mouse) => {
+                  if (mouse.button === Qt.LeftButton) {
+                    activate();
+                  }
+                }
+
+                function activate() {
+                  switch (Type) {
+                  case TemplateProjectsModel.TemplateType.Blank:
+                    welcomeScreenController.createBlankProject(); //#spellok
+                    welcomeScreenController.hideScene();
+                    return;
+                  case TemplateProjectsModel.TemplateType.Basemap:
+                    welcomeScreenController.createProjectFromBasemap();
+                    welcomeScreenController.hideScene();
+                    return;
+                  default:
+                    welcomeScreenController.createProjectFromTemplate(TemplateNativePath || ""); //#spellok
+                    welcomeScreenController.hideScene();
+                    return;
                   }
                 }
               }
 
               ScrollBar.vertical: CustomScrollBar {
                 policy: ScrollBar.AsNeeded
+              }
+
+              Keys.onPressed: (event) => {
+                if (event.key === Qt.Key_Left && recentProjectsListView.count > 0) {
+                  tabBar.currentIndex = 0;
+                  event.accepted = true;
+                  return;
+                }
+
+                if (!currentItem)
+                  return;
+
+                if (event.key === Qt.Key_Enter || event.key === Qt.Key_Return) {
+                  currentItem.activate();
+                  event.accepted = true;
+                }
+              }
+
+              Menu {
+                id: templateProjectsMenu
+
+                property int templateIndex: 0
+                property bool templateDeletable: false
+
+                background: Rectangle {
+                  implicitWidth: 200
+                  implicitHeight: templateProjectsMenu.Material.menuItemHeight
+                  radius: templateProjectsMenu.Material.roundedScale
+                  color: templateProjectsMenu.Material.dialogColor
+                  border.color: templateProjectsMenu.Material.listHighlightColor
+                  border.width: 1
+                }
+
+                MenuItem {
+                  text: qsTr("Use Template")
+                  onClicked: {
+                    const delegate = templateProjectsListView.itemAtIndex( templateProjectsMenu.templateIndex );
+                    if ( delegate )
+                      delegate.activate();
+                  }
+                  background: Rectangle {
+                    implicitWidth: 200
+                    implicitHeight: parent.Material.menuItemHeight
+                    color: parent.highlighted ? parent.Material.listHighlightColor : "transparent"
+                  }
+                }
+
+                MenuItem {
+                  text: qsTr("Delete Template…")
+                  enabled: templateProjectsMenu.templateDeletable
+                  visible: enabled
+                  height: enabled ? implicitHeight : 0
+                  onClicked: {
+                    welcomeScreenController.removeTemplateProject(templateProjectsMenu.templateIndex)
+                  }
+                  background: Rectangle {
+                    implicitWidth: 200
+                    implicitHeight: parent.Material.menuItemHeight
+                    color: parent.highlighted ? parent.Material.listHighlightColor : "transparent"
+                  }
+                }
               }
             }
           }
@@ -486,7 +624,7 @@ Item {
                   anchors.fill: parent
                   anchors.margins: 16
                   text: qsTr("The free and open-source geographic information system that empowers users worldwide to create, edit, visualize, analyze, and share geospatial data. Whether you're a beginner or a seasoned GIS expert, QGIS gives you the tools to turn spatial data into impactful maps and insights. Join our vibrant global community and start exploring the world through the power of open-source geospatial technology.")
-                  font.pointSize: tinyFontSize
+                  font.pointSize: smallFontSize
                   color: "black"
                   wrapMode: Text.WordWrap
                   lineHeight: 1.3
@@ -516,7 +654,7 @@ Item {
                   Text {
                     Layout.fillWidth: true
                     text: qsTr("Would you like to enable the QGIS news feed to stay updated on new features, releases, and community highlights?")
-                    font.pointSize: tinyFontSize
+                    font.pointSize: smallFontSize
                     color: "black"
                     wrapMode: Text.WordWrap
                   }
@@ -668,10 +806,10 @@ Item {
     UpdateNotificationBar {
       id: pluginsUpdateBar
       Layout.fillWidth: true
-      Layout.preferredHeight: 50
-      radius: 16
+      Layout.preferredHeight: 54
+      radius: mainCard.radius
       visible: false
-      color: mainCard.color
+      color: "#ed7913"
 
       onInstallClicked: {
         visible = false;
@@ -682,8 +820,8 @@ Item {
     UpdateNotificationBar {
       id: qgisUpdateBar
       Layout.fillWidth: true
-      Layout.preferredHeight: 50
-      radius: 16
+      Layout.preferredHeight: 54
+      radius: mainCard.radius
       visible: false
       color: mainCard.color
 
@@ -717,10 +855,14 @@ Item {
       pluginsUpdateBar.message = qsTr("The following plugin(s) have available updates: %1", "", plugins.length).arg(plugins.join(", "));
       pluginsUpdateBar.visible = true;
     }
+
+    function onWelcomeScreenShown() {
+      tabBar.focusCurrentList();
+    }
   }
 
   Component.onCompleted: {
-    tabBar.currentIndex = recentProjectsListView.count > 0 ? 0 : 1
+    tabBar.currentIndex = recentProjectsListView.count > 0 ? 0 : 1;
     if (newsFeedParser.enabled) {
       newsFeedParser.fetch();
     }

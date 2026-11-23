@@ -193,12 +193,12 @@ class CORE_EXPORT QgsQuadrilateral
     /**
      * Returns the quadrilateral as a new polygon. Ownership is transferred to the caller.
      */
-    QgsPolygon *toPolygon( bool force2D = false ) const SIP_FACTORY;
+    std::unique_ptr<QgsPolygon> toPolygon( bool force2D = false ) const;
 
     /**
      * Returns the quadrilateral as a new linestring. Ownership is transferred to the caller.
      */
-    QgsLineString *toLineString( bool force2D = false ) const SIP_FACTORY;
+    std::unique_ptr<QgsLineString> toLineString( bool force2D = false ) const;
 
     /**
      * Returns a string representation of the quadrilateral.

@@ -18,6 +18,7 @@
 #include "qgslinechartplot.h"
 
 #include "qgsexpressioncontextutils.h"
+#include "qgspainting.h"
 #include "qgssymbol.h"
 #include "qgssymbollayer.h"
 #include "qgssymbollayerutils.h"
@@ -29,8 +30,8 @@ using namespace Qt::StringLiterals;
 
 QgsLineChartPlot::QgsLineChartPlot()
 {
-  setMarkerSymbolAt( 0, QgsPlotDefaultSettings::lineChartMarkerSymbol() );
-  setLineSymbolAt( 0, QgsPlotDefaultSettings::lineChartLineSymbol() );
+  setMarkerSymbolAt( 0, QgsPlotDefaultSettings::lineChartMarkerSymbol().release() );
+  setLineSymbolAt( 0, QgsPlotDefaultSettings::lineChartLineSymbol().release() );
 }
 
 void QgsLineChartPlot::renderContent( QgsRenderContext &context, QgsPlotRenderContext &, const QRectF &plotArea, const QgsPlotData &plotData )
@@ -63,7 +64,7 @@ void QgsLineChartPlot::renderContent( QgsRenderContext &context, QgsPlotRenderCo
   QgsExpressionContextScope *chartScope = new QgsExpressionContextScope( u"chart"_s );
   const QgsExpressionContextScopePopper scopePopper( context.expressionContext(), chartScope );
 
-  context.painter()->save();
+  QgsScopedQPainterState painterState( context.painter() );
   context.painter()->setClipRect( plotArea );
 
   double minX = xMinimum();
@@ -232,8 +233,6 @@ void QgsLineChartPlot::renderContent( QgsRenderContext &context, QgsPlotRenderCo
 
     seriesIndex++;
   }
-
-  context.painter()->restore();
 }
 
 QgsMarkerSymbol *QgsLineChartPlot::markerSymbolAt( int index ) const
@@ -364,9 +363,9 @@ bool QgsLineChartPlot::readXml( const QDomElement &element, const QgsReadWriteCo
   return true;
 }
 
-QgsLineChartPlot *QgsLineChartPlot::create()
+std::unique_ptr<QgsLineChartPlot> QgsLineChartPlot::create()
 {
-  return new QgsLineChartPlot();
+  return std::make_unique<QgsLineChartPlot>();
 }
 
 QgsVectorLayerAbstractPlotDataGatherer *QgsLineChartPlot::createDataGatherer( QgsPlot *plot )

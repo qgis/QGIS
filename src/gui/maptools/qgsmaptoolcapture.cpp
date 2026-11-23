@@ -1045,9 +1045,9 @@ int QgsMapToolCapture::addVertex( const QgsPointXY &point, const QgsPointLocator
       mTempRubberBand->movePoint( mapPoint );   //move the last point of the temp rubberband before operating with it
       if ( mTempRubberBand->curveIsComplete() ) //2 points for line and 3 points for circular
       {
-        if ( QgsCurve *curve = mTempRubberBand->curve() )
+        if ( std::unique_ptr<QgsCurve> curve = mTempRubberBand->curve() )
         {
-          addCurve( curve );
+          addCurve( curve.release() );
           // add curve append only invalid match to mSnappingMatches,
           // so we need to remove them and add the one from here if it is valid
           if ( match.isValid() && mSnappingMatches.count() > 0 && !mSnappingMatches.last().isValid() )

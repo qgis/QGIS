@@ -118,6 +118,8 @@ class QgsPGLayerItem : public QgsLayerItem
 
     QVector<QgsDataItem *> createChildren() override;
 
+    Qgis::LayerItemCapabilities layerCapabilities() const override;
+
   private:
     QgsPostgresLayerProperty mLayerProperty;
 };
@@ -161,6 +163,13 @@ class QgsPGProjectItem : public QgsProjectItem
 
     using QgsProjectItem::refresh;
     void refresh() override;
+
+    /*
+    * Returns the tooltip text for a project item from its last modified \a time, \a user and \a comment.
+    *
+    * \since QGIS 4.4
+    */
+    static QString formatTooltip( const QString &time, const QString &user, const QString &comment );
 
   private:
     void refreshTooltip();

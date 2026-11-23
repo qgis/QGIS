@@ -24,6 +24,7 @@
 #include "qgsinterval.h"
 #include "qgsmapclippingutils.h"
 #include "qgsmessagelog.h"
+#include "qgspainting.h"
 #include "qgsrasterdataprovider.h"
 #include "qgsrasterdrawer.h"
 #include "qgsrasteriterator.h"

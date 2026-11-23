@@ -16,6 +16,7 @@
 #include "qgsstacitemlistmodel.h"
 
 #include "qgsnetworkcontentfetcher.h"
+#include "qgspainting.h"
 #include "qgsstaccollection.h"
 #include "qgsstacitem.h"
 
@@ -213,7 +214,7 @@ QSize QgsStacItemDelegate::sizeHint( const QStyleOptionViewItem &option, const Q
 
 void QgsStacItemDelegate::paint( QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index ) const
 {
-  painter->save();
+  QgsScopedQPainterState painterState( painter );
   QTextDocument doc;
   const QPixmap icon = qvariant_cast<QPixmap>( index.data( Qt::DecorationRole ) );
 
@@ -276,7 +277,6 @@ void QgsStacItemDelegate::paint( QPainter *painter, const QStyleOptionViewItem &
   ctx.clip
     = QRectF( 0, 0, option.rect.width() - ( !icon.isNull() ? iconSize.width() - 4.375 * mRoundedRectSizePixels : 3.125 * mRoundedRectSizePixels ), option.rect.height() - 3.125 * mRoundedRectSizePixels );
   doc.documentLayout()->draw( painter, ctx );
-  painter->restore();
 }
 
 ///@endcond

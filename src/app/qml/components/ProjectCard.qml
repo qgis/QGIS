@@ -2,7 +2,6 @@ import QtQuick
 import QtQuick.Layouts
 import QtQuick.Controls
 import QtQuick.Controls.Material.impl
-import QtQuick.Effects
 
 Rectangle {
   id: root
@@ -20,6 +19,7 @@ Rectangle {
   property bool isPressed: false
   property bool isEnabled: true
 
+  signal doubleClicked(MouseEvent mouse)
   signal clicked(MouseEvent mouse)
 
   Rectangle {
@@ -43,7 +43,7 @@ Rectangle {
       radius: root.radius
       gradient: Gradient {
         orientation: Gradient.Horizontal
-        GradientStop { position: 0.0; color: "#ffffff" }
+        GradientStop { position: 0.0; color: root.isSelected ? "#93b023" : "#ffffff" }
         GradientStop { position: 1.0; color: "transparent" }
       }
     }
@@ -78,7 +78,7 @@ Rectangle {
       text: root.title
       font.pointSize: normalFontSize
       font.bold: true
-      color: "#2d3748"
+      color: root.isSelected ? "#000000" : "#2d3748"
       wrapMode: Text.Wrap
       elide: Text.ElideRight
       opacity: root.isEnabled ? 1.0 : 0.5
@@ -90,7 +90,7 @@ Rectangle {
       visible: root.crs != ""
       text: root.crs
       font.pointSize: smallFontSize
-      color: "#4a5568"
+      color: root.isSelected ? "#000000" : "#4a5568"
       wrapMode: Text.NoWrap
       elide: Text.ElideRight
       opacity: root.isEnabled ? 1.0 : 0.5
@@ -102,7 +102,7 @@ Rectangle {
       Layout.fillHeight: true
       text: root.subtitle
       font.pointSize: smallFontSize
-      color: "#4a5568"
+      color: root.isSelected ? "#000000" : "#4a5568"
       wrapMode: Text.Wrap
       elide: Text.ElideRight
       opacity: root.isEnabled ? 1.0 : 0.5
@@ -116,7 +116,11 @@ Rectangle {
     cursorShape: Qt.PointingHandCursor
     
     onClicked: (mouse) => {
-                 root.clicked(mouse);
-               }
+      root.clicked(mouse);
+    }
+
+    onDoubleClicked: (mouse) => {
+      root.doubleClicked(mouse);
+    }
   }
 }

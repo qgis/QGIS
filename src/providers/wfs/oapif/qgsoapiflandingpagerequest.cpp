@@ -30,7 +30,7 @@ using namespace nlohmann;
 #include <QTextCodec>
 
 QgsOapifLandingPageRequest::QgsOapifLandingPageRequest( const QgsDataSourceUri &uri )
-  : QgsBaseNetworkRequest( QgsAuthorizationSettings( uri.username(), uri.password(), QgsHttpHeaders(), uri.authConfigId() ), "OAPIF" )
+  : QgsBaseNetworkRequest( QgsAuthorizationSettings( uri.username(), uri.password(), QgsHttpHeaders(), uri.authConfigId() ), tr( "OAPIF" ), uri.hasParam( QgsWFSConstants::URI_PARAM_DISABLE_DECOMPRESSED_SAFETY_CHECK_THRESHOLD ) )
   , mUri( uri )
 {
   // Using Qt::DirectConnection since the download might be running on a different thread.
@@ -42,7 +42,7 @@ QgsOapifLandingPageRequest::QgsOapifLandingPageRequest( const QgsDataSourceUri &
 
 bool QgsOapifLandingPageRequest::request( bool synchronous, bool forceRefresh )
 {
-  if ( !sendGET( QUrl( mUri.param( QgsWFSConstants::URI_PARAM_URL ) ), QString( "application/json" ), synchronous, forceRefresh ) )
+  if ( !sendGET( QUrl( mUri.param( QgsWFSConstants::URI_PARAM_URL ) ), QgsOapifUtils::MEDIA_TYPE_JSON, synchronous, forceRefresh ) )
   {
     emit gotResponse();
     return false;
@@ -93,9 +93,9 @@ void QgsOapifLandingPageRequest::processReply()
 
     const auto links = QgsOAPIFJson::parseLinks( j );
     QStringList apiTypes;
-    apiTypes << u"application/vnd.oai.openapi+json;version=3.0"_s;
+    apiTypes << QgsOapifUtils::MEDIA_TYPE_OAI_OPENAPI_JSON_3_0;
 #ifndef REMOVE_SUPPORT_DRAFT_VERSIONS
-    apiTypes << u"application/openapi+json;version=3.0"_s;
+    apiTypes << QgsOapifUtils::MEDIA_TYPE_OPENAPI_JSON_3_0;
 #endif
     mApiUrl = QgsOAPIFJson::findLink( links, u"service-desc"_s, apiTypes );
 #ifndef REMOVE_SUPPORT_DRAFT_VERSIONS
@@ -112,7 +112,7 @@ void QgsOapifLandingPageRequest::processReply()
 #endif
 
     QStringList collectionsTypes;
-    collectionsTypes << u"application/json"_s;
+    collectionsTypes << QgsOapifUtils::MEDIA_TYPE_JSON;
     mCollectionsUrl = QgsOAPIFJson::findLink( links, u"data"_s, collectionsTypes );
 #ifndef REMOVE_SUPPORT_DRAFT_VERSIONS
     if ( mCollectionsUrl.isEmpty() )

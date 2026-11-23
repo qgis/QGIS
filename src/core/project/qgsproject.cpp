@@ -127,7 +127,7 @@ const QgsSettingsEntryBool *QgsProject::settingsDefaultProjectPathsRelative = ne
  *
  * E.g., scope "someplugin" and key "/foo/bar/baz" will become a string list
  * of { "properties", "someplugin", "foo", "bar", "baz" }.  "properties" is
- * always first because that's the permanent ``root'' Property node.
+ * always first because that's the permanent "root" Property node.
  */
 QStringList makeKeyTokens_( const QString &scope, const QString &key )
 {
@@ -2141,32 +2141,44 @@ bool QgsProject::readProjectFile( const QString &filename, Qgis::ProjectReadFlag
     return false;
   }
 
-  QTextStream textStream( &projectFile );
-  QString projectString = textStream.readAll();
-  projectFile.close();
-
-  for ( int i = 0; i < 32; i++ )
+  if ( !doc->setContent( &projectFile ) )
   {
-    if ( i == 9 || i == 10 || i == 13 )
+    projectFile.seek( 0 );
+    QTextStream textStream( &projectFile );
+    QString projectString;
+    while ( true )
     {
-      continue;
+      QString part = textStream.read( 65536 );
+      if ( part.isEmpty() )
+        break;
+
+      for ( int i = 0; i < 32; i++ )
+      {
+        if ( i == 9 || i == 10 || i == 13 )
+        {
+          continue;
+        }
+        part.replace( QChar( i ), u"%1%2%1"_s.arg( FONTMARKER_CHR_FIX, QString::number( i ) ) );
+      }
+      projectString.append( part );
     }
-    projectString.replace( QChar( i ), u"%1%2%1"_s.arg( FONTMARKER_CHR_FIX, QString::number( i ) ) );
-  }
+    projectFile.close();
 
-  // location of problem associated with errorMsg
-  int line, column;
-  QString errorMsg;
-  if ( !doc->setContent( projectString, &errorMsg, &line, &column ) )
+    int line, column;
+    QString errorMsg;
+    if ( !doc->setContent( projectString, &errorMsg, &line, &column ) )
+    {
+      const QString errorString = tr( "Project file read error in file %1: %2 at line %3 column %4" ).arg( projectFile.fileName(), errorMsg ).arg( line ).arg( column );
+      QgsDebugError( errorString );
+      setError( errorString );
+
+      return false;
+    }
+  }
+  else
   {
-    const QString errorString = tr( "Project file read error in file %1: %2 at line %3 column %4" ).arg( projectFile.fileName(), errorMsg ).arg( line ).arg( column );
-    QgsDebugError( errorString );
-    setError( errorString );
-
-    return false;
+    projectFile.close();
   }
-
-  projectFile.close();
 
   QgsDebugMsgLevel( "Opened document " + projectFile.fileName(), 2 );
 
@@ -2965,6 +2977,8 @@ QgsExpressionContextScope *QgsProject::createExpressionContextScope() const
 
     // neither this function
     projectScope->addFunction( u"sensor_data"_s, new GetSensorData( sensorManager()->sensorsData() ) );
+
+    projectScope->addLayerStore( mLayerStore.get() );
 
     return projectScope.release();
   }
@@ -3809,7 +3823,7 @@ QString QgsProject::readEntry( const QString &scope, const QString &key, const Q
   {
     value = property->value();
 
-    const bool valid = value.canConvert( QMetaType::Type::QString );
+    const bool valid = value.canConvert<QString>();
     if ( ok )
       *ok = valid;
 
@@ -3835,7 +3849,7 @@ int QgsProject::readNumEntry( const QString &scope, const QString &key, int def,
     value = property->value();
   }
 
-  const bool valid = value.canConvert( QMetaType::Type::Int );
+  const bool valid = value.canConvert<int>();
 
   if ( ok )
   {
@@ -3859,7 +3873,7 @@ double QgsProject::readDoubleEntry( const QString &scope, const QString &key, do
   {
     const QVariant value = property->value();
 
-    const bool valid = value.canConvert( QMetaType::Type::Double );
+    const bool valid = value.canConvert<double>();
     if ( ok )
       *ok = valid;
 
@@ -3882,7 +3896,7 @@ bool QgsProject::readBoolEntry( const QString &scope, const QString &key, bool d
   {
     const QVariant value = property->value();
 
-    const bool valid = value.canConvert( QMetaType::Type::Bool );
+    const bool valid = value.canConvert<bool>();
     if ( ok )
       *ok = valid;
 

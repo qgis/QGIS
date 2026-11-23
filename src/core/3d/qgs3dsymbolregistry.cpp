@@ -38,15 +38,15 @@ bool Qgs3DSymbolRegistry::addSymbolType( Qgs3DSymbolAbstractMetadata *metadata )
   return true;
 }
 
-QgsAbstract3DSymbol *Qgs3DSymbolRegistry::createSymbol( const QString &type ) const
+std::unique_ptr<QgsAbstract3DSymbol> Qgs3DSymbolRegistry::createSymbol( const QString &type ) const
 {
   if ( !mMetadata.contains( type ) )
     return nullptr;
 
-  return mMetadata[type]->create();
+  return std::unique_ptr<QgsAbstract3DSymbol>( mMetadata[type]->create() );
 }
 
-QgsAbstract3DSymbol *Qgs3DSymbolRegistry::defaultSymbolForGeometryType( Qgis::GeometryType type )
+std::unique_ptr<QgsAbstract3DSymbol> Qgs3DSymbolRegistry::defaultSymbolForGeometryType( Qgis::GeometryType type )
 {
   switch ( type )
   {

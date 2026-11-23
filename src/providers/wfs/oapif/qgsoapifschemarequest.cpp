@@ -34,7 +34,7 @@ using namespace nlohmann;
 #include <QTextCodec>
 
 QgsOapifSchemaRequest::QgsOapifSchemaRequest( const QgsDataSourceUri &uri )
-  : QgsBaseNetworkRequest( QgsAuthorizationSettings( uri.username(), uri.password(), QgsHttpHeaders(), uri.authConfigId() ), "OAPIF" )
+  : QgsBaseNetworkRequest( QgsAuthorizationSettings( uri.username(), uri.password(), QgsHttpHeaders(), uri.authConfigId() ), tr( "OAPIF" ), uri.hasParam( QgsWFSConstants::URI_PARAM_DISABLE_DECOMPRESSED_SAFETY_CHECK_THRESHOLD ) )
 {
   // Using Qt::DirectConnection since the download might be running on a different thread.
   // In this case, the request was sent from the main thread and is executed with the main
@@ -46,7 +46,7 @@ QgsOapifSchemaRequest::QgsOapifSchemaRequest( const QgsDataSourceUri &uri )
 const QgsOapifSchemaRequest::Schema &QgsOapifSchemaRequest::schema( const QUrl &schemaUrl )
 {
   mUrl = schemaUrl;
-  sendGET( schemaUrl, QString( "application/schema+json" ), /*synchronous=*/true, /*forceRefresh=*/false );
+  sendGET( schemaUrl, QgsOapifUtils::MEDIA_TYPE_SCHEMA_JSON, /*synchronous=*/true, /*forceRefresh=*/false );
   return mSchema;
 }
 

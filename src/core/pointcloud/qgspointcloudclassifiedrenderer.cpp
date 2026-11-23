@@ -88,7 +88,7 @@ void QgsPointCloudClassifiedRenderer::renderBlock( const QgsPointCloudBlock *blo
 
   const bool renderElevation = context.renderContext().elevationMap();
   const QgsDoubleRange zRange = context.renderContext().zRange();
-  const bool considerZ = !zRange.isInfinite() || renderElevation;
+  const bool considerZ = !zRange.isInfinite() || renderElevation || !context.mapCrsZFilter().isInfinite();
 
   int rendered = 0;
   double x = 0;
@@ -151,6 +151,9 @@ void QgsPointCloudClassifiedRenderer::renderBlock( const QgsPointCloudBlock *blo
         }
       }
 
+      if ( !context.mapCrsZFilter().contains( z ) )
+        continue;
+
       if ( renderAsTriangles() )
       {
         addPointToTriangulation( x, y, z, color, context );
@@ -187,7 +190,7 @@ bool QgsPointCloudClassifiedRenderer::willRenderPoint( const QVariantMap &pointA
   return false;
 }
 
-QgsPointCloudRenderer *QgsPointCloudClassifiedRenderer::create( QDomElement &element, const QgsReadWriteContext &context )
+std::unique_ptr<QgsPointCloudRenderer> QgsPointCloudClassifiedRenderer::create( QDomElement &element, const QgsReadWriteContext &context )
 {
   auto r = std::make_unique< QgsPointCloudClassifiedRenderer >();
 
@@ -218,7 +221,7 @@ QgsPointCloudRenderer *QgsPointCloudClassifiedRenderer::create( QDomElement &ele
 
   r->restoreCommonProperties( element, context );
 
-  return r.release();
+  return r;
 }
 
 QgsPointCloudCategoryList QgsPointCloudClassifiedRenderer::defaultCategories()

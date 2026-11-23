@@ -143,6 +143,11 @@ Returns ``True`` if this range overlaps another range.
 
 
 
+%ModuleHeaderCode
+#include "qgsrange.h"
+typedef QgsRange<double> QgsRangedoubleBase;
+%End
+
 typedef QgsRange<double> QgsRangedoubleBase /NoTypeName/;
 
 class QgsDoubleRange : QgsRangedoubleBase
@@ -159,7 +164,6 @@ class QgsDoubleRange : QgsRangedoubleBase
 
 %TypeHeaderCode
 #include "qgsrange.h"
-typedef QgsRange<double> QgsRangedoubleBase;
 %End
   public:
     QgsDoubleRange( double lower, double upper, Qgis::RangeLimits limits );
@@ -210,6 +214,11 @@ Returns ``True`` if the range consists of all possible values.
 
 
 
+%ModuleHeaderCode
+#include "qgsrange.h"
+typedef QgsRange<int> QgsRangeintBase;
+%End
+
 typedef QgsRange<int> QgsRangeintBase /NoTypeName/;
 
 class QgsIntRange : QgsRangeintBase
@@ -226,7 +235,6 @@ class QgsIntRange : QgsRangeintBase
 
 %TypeHeaderCode
 #include "qgsrange.h"
-typedef QgsRange<int> QgsRangeintBase;
 %End
   public:
     QgsIntRange( int lower, int upper, Qgis::RangeLimits limits );

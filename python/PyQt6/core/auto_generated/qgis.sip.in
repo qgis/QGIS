@@ -170,6 +170,15 @@ The development version
     typedef QFlags<Qgis::LayerFilter> LayerFilters;
 
 
+
+    enum class LayerItemCapability /BaseType=IntFlag/
+    {
+      AddComments,
+    };
+
+    typedef QFlags<Qgis::LayerItemCapability> LayerItemCapabilities;
+
+
     enum class LoadStyleFlag /BaseType=IntFlag/
     {
       IgnoreMissingStyleErrors,
@@ -679,6 +688,7 @@ The development version
       Head,
       Put,
       Delete,
+      Patch,
     };
 
     enum class VectorExportResult /BaseType=IntEnum/
@@ -1358,11 +1368,19 @@ The development version
       Error,
     };
 
+    enum class CoverageEdgeType /BaseType=IntEnum/
+    {
+      AllEdges,
+      Exterior,
+      Interior,
+    };
+
     enum class MakeValidMethod /BaseType=IntEnum/
     {
       Linework,
       Structure,
     };
+
 
     enum class FeatureRequestFlag /BaseType=IntFlag/
     {
@@ -1670,6 +1688,12 @@ The development version
       ForceVector,
     };
 
+    enum class RenderFormat /BaseType=IntEnum/
+    {
+      Raster,
+      Vector,
+    };
+
     enum class MapSettingsFlag /BaseType=IntFlag/
     {
       Antialiasing,
@@ -1691,6 +1715,7 @@ The development version
       ForceRasterMasks,
       RecordProfile,
       AlwaysUseGlobalMasks,
+      DrawLabelSelection
     };
     typedef QFlags<Qgis::MapSettingsFlag> MapSettingsFlags;
 
@@ -1719,7 +1744,8 @@ The development version
       RecordProfile,
       AlwaysUseGlobalMasks,
       DisableSymbolClippingToExtent,
-      RenderLayerTree
+      RenderLayerTree,
+      DrawLabelSelection
     };
     typedef QFlags<Qgis::RenderContextFlag> RenderContextFlags;
 
@@ -2212,6 +2238,22 @@ The development version
       Modeler,
     };
 
+    enum class ProcessingMenu
+    {
+      VectorAnalysis,
+      VectorResearch,
+      VectorGeoprocessing,
+      VectorGeometry,
+      VectorDataManagement,
+      VectorGeneral,
+      RasterProjections,
+      RasterConversion,
+      RasterExtraction,
+      RasterAnalysis,
+      RasterMiscellaneous,
+      RasterGeneral,
+    };
+
     enum class ProcessingFeatureSourceDefinitionFlag /BaseType=IntFlag/
     {
       OverrideDefaultGeometryCheck,
@@ -2476,6 +2518,12 @@ The development version
       TrianglesFromModel,
       TrianglesDataDefined,
       Billboards,
+    };
+
+    enum class MaterialWidgetMode /BaseType=IntEnum/
+    {
+      Compact,
+      Full,
     };
 
     enum class InstancedMaterialFlag /BaseType=IntFlag/
@@ -3173,6 +3221,16 @@ The development version
       Unknown,
     };
 
+    enum class WindSpeedUnit /BaseType=IntEnum/
+    {
+      MetersPerSecond,
+      KilometersPerHour,
+      Knots,
+      MilesPerHour,
+      FeetPerSecond,
+      OtherUnit
+    };
+
     enum class TemporalUnit /BaseType=IntEnum/
     {
       Milliseconds,
@@ -3280,6 +3338,25 @@ The development version
       CenteredSegment,
     };
 
+    enum class ScaleBarUnitLabelPlacement /BaseType=IntFlag/
+    {
+      BeforeBar,
+      AfterBar,
+      LeftAbove,
+      CenteredAbove,
+      RightAbove,
+      LeftBelow,
+      CenteredBelow,
+      RightBelow,
+      BeforeFirstDistanceLabel,
+      AfterLastDistanceLabel,
+      OnBarAfterFirstDivision,
+      BeforeEveryDistanceLabel,
+      AfterEveryDistanceLabel,
+    };
+
+    typedef QFlags<Qgis::ScaleBarUnitLabelPlacement> ScaleBarUnitLabelPlacements;
+
 
     enum class MapGridUnit /BaseType=IntEnum/
     {
@@ -3379,6 +3456,12 @@ The development version
       Latitude
     };
 
+    enum class ElevationProfileRangeMethod /BaseType=IntEnum/
+    {
+      ManualRange,
+      FixedScale
+    };
+
     enum class InputControllerType /BaseType=IntEnum/
     {
       Map2D,
@@ -3407,6 +3490,7 @@ The development version
       SetTableComment,
       EditFieldDomain,
       DeleteFieldDomain,
+      StyleStorage,
     };
     typedef QFlags<Qgis::DatabaseProviderConnectionCapability2> DatabaseProviderConnectionCapabilities2;
 
@@ -3973,12 +4057,71 @@ The development version
       DockedToolbar,
     };
 
+    enum class VectorFieldArrowScalingMethod /BaseType=IntEnum/
+    {
+      MinMax,
+      Scaled,
+      Fixed
+    };
+
+    enum class VectorFieldSymbology /BaseType=IntEnum/
+    {
+      Arrows,
+      Streamlines,
+      Traces,
+      WindBarbs
+    };
+
+    enum class VectorFieldSeedingMethod /BaseType=IntEnum/
+    {
+      Gridded,
+      Random
+    };
+
+    enum class RasterVectorFieldSourceMode /BaseType=IntEnum/
+    {
+      CartesianComponents,
+      EncodedDirection,
+    };
+
+    enum class RasterDirectionEncoding /BaseType=IntEnum/
+    {
+      Esri,
+      Grass,
+      Saga,
+      PcRaster,
+    };
+
     enum class LinearMatrixMethod /BaseType=IntEnum/
     {
       Lu,
       Svd,
       LuWithSvdFallback
     };
+
+    enum class AttributeTableFilterMode /BaseType=IntEnum/
+    {
+      ShowAll,
+      ShowSelected,
+      ShowVisible,
+      ShowFilteredList,
+      ShowEdited,
+      ShowInvalid,
+    };
+
+    enum class PointCloudOutputsTypes /BaseType=IntEnum/
+    {
+      All,
+      OnlyVPC,
+    };
+
+    enum class SaveStyleFormat /BaseType=IntFlag/
+    {
+      QML,
+      SLD,
+    };
+    typedef QFlags<Qgis::SaveStyleFormat> SaveStyleFormats;
+
 
     static const double DEFAULT_SEARCH_RADIUS_MM;
 
@@ -4330,6 +4473,10 @@ QFlags<Qgis::SensorThingsExtension> operator|(Qgis::SensorThingsExtension f1, QF
 QFlags<Qgis::PdfRenderFlag> operator|(Qgis::PdfRenderFlag f1, QFlags<Qgis::PdfRenderFlag> f2);
 
 QFlags<Qgis::RubberBandComponent> operator|(Qgis::RubberBandComponent f1, QFlags<Qgis::RubberBandComponent> f2);
+
+QFlags<Qgis::ScaleBarUnitLabelPlacement> operator|(Qgis::ScaleBarUnitLabelPlacement f1, QFlags<Qgis::ScaleBarUnitLabelPlacement> f2);
+
+QFlags<Qgis::SaveStyleFormat> operator|(Qgis::SaveStyleFormat f1, QFlags<Qgis::SaveStyleFormat> f2);
 
 
 

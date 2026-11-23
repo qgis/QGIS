@@ -24,6 +24,7 @@
 #include "qgscolorrampimpl.h"
 #include "qgscolorutils.h"
 #include "qgscurvepolygon.h"
+#include "qgsdatadefinedutils.h"
 #include "qgsdxfexport.h"
 #include "qgsexpressioncontextutils.h"
 #include "qgsfeedback.h"
@@ -37,6 +38,7 @@
 #include "qgslogger.h"
 #include "qgsmarkersymbol.h"
 #include "qgsmultipolygon.h"
+#include "qgspainting.h"
 #include "qgspolygon.h"
 #include "qgsproperty.h"
 #include "qgsrendercontext.h"
@@ -311,8 +313,11 @@ void QgsSimpleLineSymbolLayer::renderPolygonStroke( const QPolygonF &points, con
     scopePopper = std::make_unique< QgsExpressionContextScopePopper >( context.renderContext().expressionContext(), scope );
   }
 
+  QgsScopedQPainterState painterState( p, QgsScopedQPainterState::InitialState::NoSave );
   if ( mDrawInsidePolygon )
-    p->save();
+  {
+    painterState.save();
+  }
 
   switch ( mRingFilter )
   {
@@ -373,12 +378,6 @@ void QgsSimpleLineSymbolLayer::renderPolygonStroke( const QPolygonF &points, con
       case ExteriorRingOnly:
         break;
     }
-  }
-
-  if ( mDrawInsidePolygon )
-  {
-    //restore painter to reset clip path
-    p->restore();
   }
 }
 
@@ -478,13 +477,13 @@ void QgsSimpleLineSymbolLayer::renderPolyline( const QPolygonF &pts, QgsSymbolRe
   p->setBrush( Qt::NoBrush );
 
   // Disable 'Antialiasing' if the geometry was generalized in the current RenderContext (We known that it must have least #2 points).
-  std::unique_ptr< QgsScopedQPainterState > painterState;
+  QgsScopedQPainterState painterState( p, QgsScopedQPainterState::InitialState::NoSave );
   if ( points.size() <= 2
        && ( context.renderContext().vectorSimplifyMethod().simplifyHints() & Qgis::VectorRenderingSimplificationFlag::AntialiasingSimplification )
        && QgsAbstractGeometrySimplifier::isGeneralizableByDeviceBoundingBox( points, context.renderContext().vectorSimplifyMethod().threshold() )
        && ( p->renderHints() & QPainter::Antialiasing ) )
   {
-    painterState = std::make_unique< QgsScopedQPainterState >( p );
+    painterState.save();
     p->setRenderHint( QPainter::Antialiasing, false );
   }
 
@@ -1245,37 +1244,22 @@ void QgsTemplatedLineSymbolLayerBase::renderPolyline( const QPolygonF &pts, QgsS
     if ( !QgsVariantUtils::isNull( exprVal ) )
     {
       QString placementString = exprVal.toString();
-      if ( placementString.compare( "interval"_L1, Qt::CaseInsensitive ) == 0 )
+
+      static constexpr auto PLACEMENT_MAP = makeDataDefinedStringDecoder<Qgis::MarkerLinePlacements>( {
+        { u"interval", Qgis::MarkerLinePlacement::Interval },
+        { u"vertex", Qgis::MarkerLinePlacement::Vertex },
+        { u"innervertices", Qgis::MarkerLinePlacement::InnerVertices },
+        { u"lastvertex", Qgis::MarkerLinePlacement::LastVertex },
+        { u"firstvertex", Qgis::MarkerLinePlacement::FirstVertex },
+        { u"centerpoint", Qgis::MarkerLinePlacement::CentralPoint },
+        { u"curvepoint", Qgis::MarkerLinePlacement::CurvePoint },
+        { u"segmentcenter", Qgis::MarkerLinePlacement::SegmentCenter },
+      } );
+
+      auto evaluatedPlacement = PLACEMENT_MAP.lookup( placementString );
+      if ( evaluatedPlacement )
       {
-        placements = Qgis::MarkerLinePlacement::Interval;
-      }
-      else if ( placementString.compare( "vertex"_L1, Qt::CaseInsensitive ) == 0 )
-      {
-        placements = Qgis::MarkerLinePlacement::Vertex;
-      }
-      else if ( placementString.compare( "innervertices"_L1, Qt::CaseInsensitive ) == 0 )
-      {
-        placements = Qgis::MarkerLinePlacement::InnerVertices;
-      }
-      else if ( placementString.compare( "lastvertex"_L1, Qt::CaseInsensitive ) == 0 )
-      {
-        placements = Qgis::MarkerLinePlacement::LastVertex;
-      }
-      else if ( placementString.compare( "firstvertex"_L1, Qt::CaseInsensitive ) == 0 )
-      {
-        placements = Qgis::MarkerLinePlacement::FirstVertex;
-      }
-      else if ( placementString.compare( "centerpoint"_L1, Qt::CaseInsensitive ) == 0 )
-      {
-        placements = Qgis::MarkerLinePlacement::CentralPoint;
-      }
-      else if ( placementString.compare( "curvepoint"_L1, Qt::CaseInsensitive ) == 0 )
-      {
-        placements = Qgis::MarkerLinePlacement::CurvePoint;
-      }
-      else if ( placementString.compare( "segmentcenter"_L1, Qt::CaseInsensitive ) == 0 )
-      {
-        placements = Qgis::MarkerLinePlacement::SegmentCenter;
+        placements = *evaluatedPlacement;
       }
       else
       {

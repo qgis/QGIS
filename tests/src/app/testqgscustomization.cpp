@@ -55,6 +55,7 @@ class TestQgsCustomization : public QgsTest
     void testModelProcessing();
     void testModelUserAction_data();
     void testModelUserAction();
+    void testModelLoad();
     void testToolBarPosition();
     void testMenuOrder();
 
@@ -160,15 +161,15 @@ void TestQgsCustomization::init()
   // Random crashes if this is is visible
   mQgisApp->mLayerTreeView->setVisible( false );
 
-  mQgisApp->show();
-
-  QVERIFY( findQWidget<QMenu>( "Menus/mHelpMenu" ) );
-  QVERIFY( findQWidget<QToolBar>( "ToolBars/mHelpToolBar" ) );
-
   mCustomizationFile = std::make_unique<QTemporaryFile>();
   QVERIFY( mCustomizationFile->open() ); // fileName is not available until open
   auto customization = std::make_unique<QgsCustomization>( mCustomizationFile->fileName() );
   mQgisApp->setCustomization( std::move( customization ) );
+
+  mQgisApp->show();
+
+  QVERIFY( findQWidget<QMenu>( "Menus/mHelpMenu" ) );
+  QVERIFY( findQWidget<QToolBar>( "ToolBars/mHelpToolBar" ) );
 }
 
 void TestQgsCustomization::cleanup()
@@ -204,6 +205,10 @@ void TestQgsCustomization::testLoadApply()
     QVERIFY( getItem<QgsCustomization::QgsActionItem>( "ToolBars/testToolBar/testToolBarToolButton/testToolBarMenuAction1" ) );
     getItem<QgsCustomization::QgsActionItem>( "ToolBars/testToolBar/testToolBarToolButton/testToolBarMenuAction1" )->setVisible( visible );
   };
+
+  // test that status bar widgets are visible at startup
+  QVERIFY( getItem<QgsCustomization::QgsStatusBarWidgetItem>( "StatusBarWidgets/mScaleWidget" ) );
+  QVERIFY( getItem<QgsCustomization::QgsStatusBarWidgetItem>( "StatusBarWidgets/mScaleWidget" )->isVisible() );
 
   setAllVisible( false );
 
@@ -251,6 +256,9 @@ void TestQgsCustomization::testLoadApply()
   QVERIFY( getItem<QgsCustomization::QgsActionItem>( "ToolBars/testToolBar/testToolBarToolButton/testToolBarMenuAction2" ) );
   QVERIFY( getItem<QgsCustomization::QgsActionItem>( "ToolBars/testToolBar/testToolBarToolButton/testToolBarMenuAction2" )->isVisible() );
 
+  QVERIFY( getItem<QgsCustomization::QgsStatusBarWidgetItem>( "StatusBarWidgets/mScaleWidget" ) );
+  QVERIFY( getItem<QgsCustomization::QgsStatusBarWidgetItem>( "StatusBarWidgets/mScaleWidget" )->isVisible() );
+
   // test initial situation
   QVERIFY( findQWidget<QMenu>( "Menus/mHelpMenu" ) );
   QVERIFY( findQAction( "Menus/mEditMenu/mActionUndo" ) );
@@ -268,6 +276,7 @@ void TestQgsCustomization::testLoadApply()
   QVERIFY( findQWidget<QDockWidget>( "Docks/QgsAdvancedDigitizingDockWidgetBase" )->isVisible() );
   QVERIFY( findQWidget<QWidget>( "StatusBarWidgets/LocatorWidget" ) );
   QVERIFY( findQWidget<QWidget>( "StatusBarWidgets/LocatorWidget" )->isVisible() );
+  QVERIFY( findQWidget<QWidget>( "StatusBarWidgets/mScaleWidget" )->isVisible() );
   QVERIFY( findQAction( "ToolBars/testToolBar/testToolBarToolButton/testToolBarMenuAction1" ) );
   QVERIFY( findQAction( "ToolBars/testToolBar/testToolBarToolButton/testToolBarMenuAction1" )->isVisible() );
 
@@ -287,6 +296,7 @@ void TestQgsCustomization::testLoadApply()
   QVERIFY( !findQWidget<QDockWidget>( "Docks/QgsAdvancedDigitizingDockWidgetBase" )->isVisible() );
   QVERIFY( findQWidget<QWidget>( "StatusBarWidgets/LocatorWidget" ) );
   QVERIFY( !findQWidget<QWidget>( "StatusBarWidgets/LocatorWidget" )->isVisible() );
+  QVERIFY( findQWidget<QWidget>( "StatusBarWidgets/mScaleWidget" )->isVisible() );
   QVERIFY( !findQAction( "ToolBars/testToolBar/testToolBarToolButton/testToolBarMenuAction1" ) );
   QVERIFY( mQgisApp->browserWidget()->browserWidget()->mDisabledDataItemsKeys.contains( "special:Home" ) );
 
@@ -312,6 +322,7 @@ void TestQgsCustomization::testLoadApply()
   QVERIFY( findQWidget<QDockWidget>( "Docks/QgsAdvancedDigitizingDockWidgetBase" )->isVisible() );
   QVERIFY( findQWidget<QWidget>( "StatusBarWidgets/LocatorWidget" ) );
   QVERIFY( findQWidget<QWidget>( "StatusBarWidgets/LocatorWidget" )->isVisible() );
+  QVERIFY( findQWidget<QWidget>( "StatusBarWidgets/mScaleWidget" )->isVisible() );
   QVERIFY( findQAction( "ToolBars/testToolBar/testToolBarToolButton/testToolBarMenuAction1" ) );
   QVERIFY( findQAction( "ToolBars/testToolBar/testToolBarToolButton/testToolBarMenuAction1" )->isVisible() );
 }
@@ -445,7 +456,7 @@ void TestQgsCustomization::testBackwardCompatibility()
     settings.setValue( "Customization/Menus/mViewMenu/mMenuMeasure/mActionMeasureAngle", false );
 
     settings.setValue( "Customization/Docks/AdvancedDigitizingTools", true );
-    settings.setValue( "Customization/Docks/BookmarksDockWidget", false );
+    settings.setValue( "Customization/Docks/Browser", false );
 
     settings.setValue( "Customization/StatusBar", false );
     settings.setValue( "Customization/StatusBar/LocatorWidget", true );
@@ -453,6 +464,7 @@ void TestQgsCustomization::testBackwardCompatibility()
 
     settings.setValue( "Customization/Browser/GPKG", true );
     settings.setValue( "Customization/Browser/MSSQL", false );
+    settings.setValue( "Customization/Browser/special:Home", false );
   }
 
   auto customization = std::make_unique<QgsCustomization>( ( QString() ) );
@@ -485,8 +497,8 @@ void TestQgsCustomization::testBackwardCompatibility()
 
   QVERIFY( getItem<QgsCustomization::QgsDockItem>( customization.get(), "Docks/AdvancedDigitizingTools" ) );
   QVERIFY( getItem<QgsCustomization::QgsDockItem>( customization.get(), "Docks/AdvancedDigitizingTools" )->isVisible() );
-  QVERIFY( getItem<QgsCustomization::QgsDockItem>( customization.get(), "Docks/BookmarksDockWidget" ) );
-  QVERIFY( !getItem<QgsCustomization::QgsDockItem>( customization.get(), "Docks/BookmarksDockWidget" )->isVisible() );
+  QVERIFY( getItem<QgsCustomization::QgsDockItem>( customization.get(), "Docks/Browser" ) );
+  QVERIFY( !getItem<QgsCustomization::QgsDockItem>( customization.get(), "Docks/Browser" )->isVisible() );
 
   QVERIFY( !customization->statusBarWidgetsItem()->isVisible() );
   QVERIFY( getItem<QgsCustomization::QgsStatusBarWidgetItem>( customization.get(), "StatusBarWidgets/LocatorWidget" ) );
@@ -498,6 +510,30 @@ void TestQgsCustomization::testBackwardCompatibility()
   QVERIFY( getItem<QgsCustomization::QgsBrowserElementItem>( customization.get(), "BrowserItems/GPKG" )->isVisible() );
   QVERIFY( getItem<QgsCustomization::QgsBrowserElementItem>( customization.get(), "BrowserItems/MSSQL" ) );
   QVERIFY( !getItem<QgsCustomization::QgsBrowserElementItem>( customization.get(), "BrowserItems/MSSQL" )->isVisible() );
+  QVERIFY( getItem<QgsCustomization::QgsBrowserElementItem>( customization.get(), "BrowserItems/special:Home" ) );
+  QVERIFY( !getItem<QgsCustomization::QgsBrowserElementItem>( customization.get(), "BrowserItems/special:Home" )->isVisible() );
+
+  // set loaded customization
+  mQgisApp->setCustomization( std::move( customization ) );
+
+  // check that title are now restored
+  QVERIFY( getItem<QgsCustomization::QgsToolBarItem>( "ToolBars/mAttributesToolBar" ) );
+  QVERIFY( !getItem<QgsCustomization::QgsToolBarItem>( "ToolBars/mAttributesToolBar" )->title().isEmpty() );
+
+  QVERIFY( getItem<QgsCustomization::QgsActionItem>( "Menus/mViewMenu/mMenuMeasure" ) );
+  QVERIFY( !getItem<QgsCustomization::QgsActionItem>( "Menus/mViewMenu/mMenuMeasure" )->title().isEmpty() );
+
+  QVERIFY( getItem<QgsCustomization::QgsActionItem>( "Menus/mEditMenu/mActionCopyFeatures" ) );
+  QVERIFY( !getItem<QgsCustomization::QgsActionItem>( "Menus/mEditMenu/mActionCopyFeatures" )->title().isEmpty() );
+
+  QVERIFY( getItem<QgsCustomization::QgsBrowserElementItem>( "BrowserItems/GPKG" ) );
+  QVERIFY( !getItem<QgsCustomization::QgsBrowserElementItem>( "BrowserItems/GPKG" )->title().isEmpty() );
+
+  QVERIFY( getItem<QgsCustomization::QgsBrowserElementItem>( "BrowserItems/special:Home" ) );
+  QVERIFY( !getItem<QgsCustomization::QgsBrowserElementItem>( "BrowserItems/special:Home" )->title().isEmpty() );
+
+  QVERIFY( getItem<QgsCustomization::QgsDockItem>( "Docks/Browser" ) );
+  QVERIFY( !getItem<QgsCustomization::QgsDockItem>( "Docks/Browser" )->title().isEmpty() );
 }
 
 void TestQgsCustomization::testClone()
@@ -830,9 +866,9 @@ void TestQgsCustomization::testModel()
 
     // drop an action ref in the toolbar
 
-    QVERIFY( model.canDropMimeData( mimeData.get(), Qt::DropAction::LinkAction, 0, 0, newItemIndex ) );
+    QVERIFY( model.canDropMimeData( mimeData.get(), Qt::DropAction::CopyAction, 0, 0, newItemIndex ) );
     QCOMPARE( model.rowCount( newItemIndex ), 0 );
-    QVERIFY( modelActionSelector.dropMimeData( mimeData.get(), Qt::DropAction::LinkAction, 0, 0, newItemIndex ) );
+    QVERIFY( modelActionSelector.dropMimeData( mimeData.get(), Qt::DropAction::CopyAction, 0, 0, newItemIndex ) );
     QCOMPARE( model.rowCount( newItemIndex ), 1 );
 
     QModelIndex actionIndex = model.index( 0, 0, newItemIndex );
@@ -893,17 +929,19 @@ void TestQgsCustomization::testModelProcessing()
     const QModelIndex menusIndex = model.index( 2, 0 );
     QCOMPARE( model.data( menusIndex, Qt::ItemDataRole::DisplayRole ), u"Menus"_s );
 
-    QModelIndex newMenuItemIndex = model.addUserItem( menusIndex );
+    const QModelIndex newMenuItemIndex = model.addUserItem( menusIndex );
     QCOMPARE( model.data( newMenuItemIndex, Qt::ItemDataRole::DisplayRole ), u"UserMenu_1"_s );
 
     model.apply();
     QVERIFY( getItem<QgsCustomization::QgsUserMenuItem>( "Menus/UserMenu_1" ) );
     QVERIFY( findQWidget( "Menus/UserMenu_1" ) );
 
-    QVERIFY( model.canDropMimeData( mimeData.get(), Qt::DropAction::LinkAction, 0, 0, newMenuItemIndex ) );
-
     QCOMPARE( model.rowCount( newMenuItemIndex ), 0 );
-    QVERIFY( model.dropMimeData( mimeData.get(), Qt::DropAction::LinkAction, 0, 0, newMenuItemIndex ) );
+
+    // try to drop on parent column 1, it should work the same way as if we drop on column 0
+    const QModelIndex newMenuItemColumnOneIndex = model.index( newMenuItemIndex.row(), 1, newMenuItemIndex.parent() );
+    QVERIFY( model.canDropMimeData( mimeData.get(), Qt::DropAction::CopyAction, 0, 1, newMenuItemColumnOneIndex ) );
+    QVERIFY( model.dropMimeData( mimeData.get(), Qt::DropAction::CopyAction, 0, 1, newMenuItemColumnOneIndex ) );
     QCOMPARE( model.rowCount( newMenuItemIndex ), 1 );
 
     QModelIndex actionIndex = model.index( 0, 0, newMenuItemIndex );
@@ -951,10 +989,10 @@ void TestQgsCustomization::testModelProcessing()
     QVERIFY( getItem<QgsCustomization::QgsUserToolBarItem>( "ToolBars/UserToolBar_1" ) );
     QVERIFY( findQWidget( "ToolBars/UserToolBar_1" ) );
 
-    QVERIFY( model.canDropMimeData( mimeData.get(), Qt::DropAction::LinkAction, 0, 0, newToolBarItemIndex ) );
+    QVERIFY( model.canDropMimeData( mimeData.get(), Qt::DropAction::CopyAction, 0, 0, newToolBarItemIndex ) );
 
     QCOMPARE( model.rowCount( newToolBarItemIndex ), 0 );
-    QVERIFY( model.dropMimeData( mimeData.get(), Qt::DropAction::LinkAction, 0, 0, newToolBarItemIndex ) );
+    QVERIFY( model.dropMimeData( mimeData.get(), Qt::DropAction::CopyAction, 0, 0, newToolBarItemIndex ) );
     QCOMPARE( model.rowCount( newToolBarItemIndex ), 1 );
 
     QModelIndex actionIndex = model.index( 0, 0, newToolBarItemIndex );
@@ -1035,9 +1073,9 @@ void TestQgsCustomization::testModelUserAction()
     std::unique_ptr<QMimeData> mimeData( modelActionSelector.mimeData( QModelIndexList() << addPartActionIndexes.at( 0 ) ) );
     QVERIFY( mimeData );
 
-    QVERIFY( model.canDropMimeData( mimeData.get(), Qt::DropAction::LinkAction, -1, 0, newItemIndex ) );
+    QVERIFY( model.canDropMimeData( mimeData.get(), Qt::DropAction::CopyAction, -1, 0, newItemIndex ) );
     QCOMPARE( model.rowCount( newItemIndex ), 0 );
-    QVERIFY( model.dropMimeData( mimeData.get(), Qt::DropAction::LinkAction, -1, 0, newItemIndex ) );
+    QVERIFY( model.dropMimeData( mimeData.get(), Qt::DropAction::CopyAction, -1, 0, newItemIndex ) );
     QCOMPARE( model.rowCount( newItemIndex ), 1 );
 
     QModelIndex actionIndex = model.index( 0, 0, newItemIndex );
@@ -1055,10 +1093,13 @@ void TestQgsCustomization::testModelUserAction()
     QVERIFY( mimeData );
 
     // drop a processing action ref
-    QVERIFY( model.canDropMimeData( mimeData.get(), Qt::DropAction::LinkAction, -1, 0, newItemIndex ) );
+
+    // try to drop on parent column 1, it should work the same way as if we drop on column 0
+    const QModelIndex newItemColumnOneIndex = model.index( newItemIndex.row(), 1, newItemIndex.parent() );
+    QVERIFY( model.canDropMimeData( mimeData.get(), Qt::DropAction::CopyAction, -1, 0, newItemColumnOneIndex ) );
 
     QCOMPARE( model.rowCount( newItemIndex ), 1 );
-    QVERIFY( model.dropMimeData( mimeData.get(), Qt::DropAction::LinkAction, -1, 0, newItemIndex ) );
+    QVERIFY( model.dropMimeData( mimeData.get(), Qt::DropAction::CopyAction, -1, 0, newItemColumnOneIndex ) );
     QCOMPARE( model.rowCount( newItemIndex ), 2 );
 
     QModelIndex actionIndex = model.index( 1, 0, newItemIndex );
@@ -1181,6 +1222,63 @@ void TestQgsCustomization::testMenuOrder()
   QCOMPARE( menu->actions().at( 1 )->text(), "My sub menu" );
   QVERIFY( !menu->actions().at( 2 )->menu() );
   QCOMPARE( menu->actions().at( 2 )->text(), "&Undo" );
+}
+
+void TestQgsCustomization::testModelLoad()
+{
+  // copy customization and modify exit action visibility
+  auto customization = std::make_unique<QgsCustomization>( *mQgisApp->customization() );
+
+  QVERIFY( getItem<QgsCustomization::QgsActionItem>( customization.get(), "Menus/mProjectMenu/mActionExit" ) );
+  QVERIFY( getItem<QgsCustomization::QgsActionItem>( customization.get(), "Menus/mProjectMenu/mActionExit" )->isVisible() );
+  getItem<QgsCustomization::QgsActionItem>( customization.get(), "Menus/mProjectMenu/mActionExit" )->setVisible( false );
+  QVERIFY( !getItem<QgsCustomization::QgsActionItem>( customization.get(), "Menus/mProjectMenu/mActionExit" )->isVisible() );
+
+  mCustomizationFile = std::make_unique<QTemporaryFile>();
+  QVERIFY( mCustomizationFile->open() ); // fileName is not available until open
+
+  customization->writeFile( mCustomizationFile->fileName() );
+
+  QgsCustomizationDialog::QgsCustomizationModel model( mQgisApp.get(), QgsCustomizationDialog::QgsCustomizationModel::Mode::ItemVisibility );
+  QAbstractItemModelTester modelTester( &model, QAbstractItemModelTester::FailureReportingMode::Fatal );
+
+  // initially action exit is checked
+  {
+    QCOMPARE( model.rowCount(), 5 );
+
+    const QModelIndex menusIndex = model.index( 2, 0 );
+    QCOMPARE( model.data( menusIndex, Qt::ItemDataRole::DisplayRole ), u"Menus"_s );
+
+    QModelIndexList items = model.match( model.index( 0, 0, menusIndex ), Qt::DisplayRole, "mProjectMenu", 1 );
+    QCOMPARE( items.count(), 1 );
+    QModelIndex projectMenuIndex = items.first();
+
+    items = model.match( model.index( 0, 0, projectMenuIndex ), Qt::DisplayRole, "mActionExit", 1 );
+    QCOMPARE( items.count(), 1 );
+    QModelIndex exitActionIndex = items.first();
+
+    QCOMPARE( model.data( exitActionIndex, Qt::ItemDataRole::CheckStateRole ), Qt::CheckState::Checked );
+  }
+
+  model.readFile( mCustomizationFile->fileName() );
+
+  // action exit is now unchecked
+  {
+    QCOMPARE( model.rowCount(), 5 );
+
+    const QModelIndex menusIndex = model.index( 2, 0 );
+    QCOMPARE( model.data( menusIndex, Qt::ItemDataRole::DisplayRole ), u"Menus"_s );
+
+    QModelIndexList items = model.match( model.index( 0, 0, menusIndex ), Qt::DisplayRole, "mProjectMenu", 1 );
+    QCOMPARE( items.count(), 1 );
+    QModelIndex projectMenuIndex = items.first();
+
+    items = model.match( model.index( 0, 0, projectMenuIndex ), Qt::DisplayRole, "mActionExit", 1 );
+    QCOMPARE( items.count(), 1 );
+    QModelIndex exitActionIndex = items.first();
+
+    QCOMPARE( model.data( exitActionIndex, Qt::ItemDataRole::CheckStateRole ), Qt::CheckState::Unchecked );
+  }
 }
 
 QGSTEST_MAIN( TestQgsCustomization )

@@ -18,6 +18,8 @@ Content-Type: application/json
     "http://www.opengis.net/spec/ogcapi-features-1/1.0/conf/oas30",
     "http://www.opengis.net/spec/ogcapi-features-1/1.0/conf/html",
     "http://www.opengis.net/spec/ogcapi-features-1/1.0/conf/geojson",
+    "http://www.opengis.net/spec/ogcapi-features-4/1.0/conf/create-replace-delete",
+    "http://www.opengis.net/spec/ogcapi-features-4/1.0/conf/update",
     "http://www.opengis.net/spec/ogcapi-features-5/1.0/conf/schemas",
     "http://www.opengis.net/spec/ogcapi-features-5/1.0/conf/profile-codelists",
     "http://www.opengis.net/spec/ogcapi-features-5/1.0/conf/profile-parameter",

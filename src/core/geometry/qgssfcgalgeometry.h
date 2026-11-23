@@ -17,7 +17,9 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifdef WITH_SFCGAL
+#include "qgsconfig.h"
+
+#ifdef HAVE_SFCGAL
 #ifndef QGSSGCGAL_GEOMETRY_H
 #define QGSSGCGAL_GEOMETRY_H
 
@@ -826,7 +828,7 @@ class CORE_EXPORT QgsSfcgalGeometry
     sfcgal::shared_geom mSfcgalGeom;
     bool mIsPrimitive = false;
 
-#if SFCGAL_VERSION_NUM >= SFCGAL_MAKE_VERSION( 2, 3, 0 )
+#if SFCGAL_VERSION_NUM >= SFCGAL_COMPUTE_VERSION( 2, 3, 0 )
     sfcgal::shared_prim mSfcgalPrim;
     sfcgal::primitiveType mPrimType;
 #endif

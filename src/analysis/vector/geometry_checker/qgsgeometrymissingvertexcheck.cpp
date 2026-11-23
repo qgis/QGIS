@@ -159,11 +159,11 @@ void QgsGeometryMissingVertexCheck::processPolygon(
   const int numRings = polygon->numInteriorRings();
   for ( int i = 0; i < numRings; ++i )
   {
-    geomEngine.reset( QgsGeometry::createGeometryEngine( polygon->interiorRing( i ), mContext->tolerance ) );
+    geomEngine = QgsGeometry::createGeometryEngine( polygon->interiorRing( i ), mContext->tolerance );
     boundaries->addGeometry( geomEngine->buffer( mContext->tolerance, 5, nullptr, feedback ) );
   }
 
-  geomEngine.reset( QgsGeometry::createGeometryEngine( boundaries.get(), mContext->tolerance ) );
+  geomEngine = QgsGeometry::createGeometryEngine( boundaries.get(), mContext->tolerance );
   geomEngine->prepareGeometry();
 
   const QgsFeatureIds fids = featurePool->getIntersects( boundaries->boundingBox() );
@@ -184,7 +184,7 @@ void QgsGeometryMissingVertexCheck::processPolygon(
       while ( vertexIterator.hasNext() )
       {
         const QgsPoint &pt = vertexIterator.next();
-        if ( geomEngine->intersects( &pt ) )
+        if ( geomEngine->intersects( &pt, nullptr, feedback ) )
         {
           QgsVertexId vertexId;
           QgsPoint closestVertex = QgsGeometryUtils::closestVertex( *polygon, pt, vertexId );

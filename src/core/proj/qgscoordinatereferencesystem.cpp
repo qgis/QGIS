@@ -723,6 +723,7 @@ bool QgsCoordinateReferenceSystem::loadFromDatabase( const QString &db, const QS
       d->mIsValid = d->hasPj();
       setMapUnits();
     }
+    setExtraProperties();
 
     if ( !d->mIsValid )
     {
@@ -1447,6 +1448,11 @@ bool QgsCoordinateReferenceSystem::isGeographic() const
   return d->mIsGeographic;
 }
 
+bool QgsCoordinateReferenceSystem::isGeographicCrossingAntimeridian() const
+{
+  return d->mIsGeographicCrossingAntimeridian;
+}
+
 bool QgsCoordinateReferenceSystem::isDynamic() const
 {
   const PJ *pj = projObject();
@@ -1736,6 +1742,7 @@ void QgsCoordinateReferenceSystem::setProjString( const QString &proj4String )
   }
 
   setMapUnits();
+  setExtraProperties();
 }
 
 bool QgsCoordinateReferenceSystem::setWktString( const QString &wkt )
@@ -1808,6 +1815,7 @@ bool QgsCoordinateReferenceSystem::setWktString( const QString &wkt )
     d->mIsValid = true;
     d->mDescription = QString( proj_get_name( d->threadLocalProjObject() ) );
     setMapUnits();
+    setExtraProperties();
   }
 
   return d->mIsValid;
@@ -1974,6 +1982,30 @@ void QgsCoordinateReferenceSystem::setMapUnits()
   }
 }
 
+void QgsCoordinateReferenceSystem::setExtraProperties()
+{
+  d->mIsGeographicCrossingAntimeridian = false;
+
+  // for geographic CRS, determine if the area of use crosses the antimeridian.
+  // Shortcut this test for commonly used geographic CRS where we know the area does NOT
+  // cross, to avoid the cost of calling proj_get_area_of_use
+  if ( d->mIsGeographic && ( d->mAuthId != "EPSG:4326"_L1 ) )
+  {
+    if ( PJ *obj = d->threadLocalProjObject() )
+    {
+      double westLon = 0;
+      double southLat = 0;
+      double eastLon = 0;
+      double northLat = 0;
+      if ( proj_get_area_of_use( QgsProjContext::get(), obj, &westLon, &southLat, &eastLon, &northLat, nullptr ) )
+      {
+        d->mIsGeographicCrossingAntimeridian = westLon > eastLon;
+      }
+      ( void ) southLat;
+      ( void ) northLat;
+    }
+  }
+}
 
 long QgsCoordinateReferenceSystem::findMatchingProj()
 {
@@ -2229,6 +2261,7 @@ bool QgsCoordinateReferenceSystem::readXml( const QDomNode &node )
 
       //make sure the map units have been set
       setMapUnits();
+      setExtraProperties();
     }
 
     const QString epoch = srsNode.toElement().attribute( u"coordinateEpoch"_s );
@@ -2594,6 +2627,7 @@ bool QgsCoordinateReferenceSystem::loadFromAuthCode( const QString &auth, const 
   }
 
   setMapUnits();
+  setExtraProperties();
 
   return true;
 }
@@ -3450,6 +3484,7 @@ bool QgsCoordinateReferenceSystem::createFromProjObject( PJ *object )
       d->mDescription = QString( proj_get_name( d->threadLocalProjObject() ) );
       setMapUnits();
       d->mIsGeographic = testIsGeographic( d->threadLocalProjObject() );
+      setExtraProperties();
     }
   }
 

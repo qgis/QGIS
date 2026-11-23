@@ -46,7 +46,7 @@ namespace Qt3DCore
  *
  * \since QGIS 4.4
  */
-class QgsRubberBandRenderView : public QgsAbstractRenderView
+class _3D_EXPORT QgsRubberBandRenderView : public QgsAbstractRenderView
 {
   public:
     //! Default constructor

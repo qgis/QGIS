@@ -147,7 +147,7 @@ void QgsPointClusterRendererWidget::mRendererComboBox_currentIndexChanged( int i
     mRenderer->setEmbeddedRenderer( tempRenderWidget->renderer()->clone() );
     delete tempRenderWidget;
   }
-  emit widgetChanged();
+  emit changed();
 }
 
 void QgsPointClusterRendererWidget::mRendererSettingsButton_clicked()
@@ -170,7 +170,7 @@ void QgsPointClusterRendererWidget::mRendererSettingsButton_clicked()
     context.setAdditionalExpressionContextScopes( scopes );
     w->setContext( context );
     w->disableSymbolLevels();
-    connect( w, &QgsPanelWidget::widgetChanged, this, &QgsPointClusterRendererWidget::updateRendererFromWidget );
+    connect( w, &QgsPanelWidget::changed, this, &QgsPointClusterRendererWidget::updateRendererFromWidget );
     w->setDockMode( this->dockMode() );
     openPanel( w );
   }
@@ -182,7 +182,7 @@ void QgsPointClusterRendererWidget::mDistanceSpinBox_valueChanged( double d )
   {
     mRenderer->setTolerance( d );
   }
-  emit widgetChanged();
+  emit changed();
 }
 
 void QgsPointClusterRendererWidget::mDistanceUnitWidget_changed()
@@ -192,7 +192,7 @@ void QgsPointClusterRendererWidget::mDistanceUnitWidget_changed()
     mRenderer->setToleranceUnit( mDistanceUnitWidget->unit() );
     mRenderer->setToleranceMapUnitScale( mDistanceUnitWidget->getMapUnitScale() );
   }
-  emit widgetChanged();
+  emit changed();
 }
 
 void QgsPointClusterRendererWidget::blockAllSignals( bool block )
@@ -227,7 +227,7 @@ QgsExpressionContext QgsPointClusterRendererWidget::createExpressionContext() co
 void QgsPointClusterRendererWidget::centerSymbolChanged()
 {
   mRenderer->setClusterSymbol( mCenterSymbolToolButton->clonedSymbol<QgsMarkerSymbol>() );
-  emit widgetChanged();
+  emit changed();
 }
 
 void QgsPointClusterRendererWidget::updateRendererFromWidget()
@@ -237,7 +237,7 @@ void QgsPointClusterRendererWidget::updateRendererFromWidget()
     return;
 
   mRenderer->setEmbeddedRenderer( w->renderer()->clone() );
-  emit widgetChanged();
+  emit changed();
 }
 
 void QgsPointClusterRendererWidget::setupBlankUi( const QString &layerName )

@@ -26,6 +26,8 @@
 #include <QLabel>
 #include <QWidget>
 
+class QgsSettingsEntryStringList;
+
 /**
  * \ingroup gui
  * \brief Selector widget for authentication configs.
@@ -51,6 +53,9 @@ class GUI_EXPORT QgsAuthConfigSelect : public QWidget, private Ui::QgsAuthConfig
 
     //! Sets key of layer provider, if applicable
     void setDataProviderKey( const QString &key );
+
+    //! Settings entry details not displayed auth stores
+    static const QgsSettingsEntryStringList *settingsDetailsNotDisplayedAuthStores SIP_SKIP;
 
   signals:
     //! Emitted when authentication config is changed or missing
@@ -84,6 +89,8 @@ class GUI_EXPORT QgsAuthConfigSelect : public QWidget, private Ui::QgsAuthConfig
 
   private:
     void loadAvailableConfigs();
+    //! Returns true if the details of mAuthCfg should be displayed
+    bool authCfgDetailsDisplayed() const;
 
     QString mAuthCfg;
     QString mDataProvider;

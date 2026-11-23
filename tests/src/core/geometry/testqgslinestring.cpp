@@ -115,6 +115,7 @@ class TestQgsLineString : public QObject
     void visitPoints();
     void setPointsFromData();
     void cast();
+    void isSimpleCurve();
 };
 
 void TestQgsLineString::constructorEmpty()
@@ -3054,6 +3055,12 @@ void TestQgsLineString::cast()
   QVERIFY( QgsLineString::cast( &cs ) );
   QVERIFY( QgsSimpleCurve::cast( &cs ) );
   QVERIFY( QgsCurve::cast( &cs ) );
+}
+
+void TestQgsLineString::isSimpleCurve()
+{
+  QgsLineString curve;
+  QVERIFY( curve.isSimpleCurve() );
 }
 
 QGSTEST_MAIN( TestQgsLineString )

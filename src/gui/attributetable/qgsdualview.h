@@ -19,9 +19,9 @@
 #include "ui_qgsdualviewbase.h"
 
 #include "qgis_gui.h"
+#include "qgis_sip.h"
 #include "qgsattributeeditorcontext.h"
 #include "qgsattributeform.h"
-#include "qgsattributetablefiltermodel.h"
 
 #include <QPointer>
 #include <QStackedWidget>
@@ -50,7 +50,6 @@ class GUI_EXPORT QgsDualView : public QStackedWidget, private Ui::QgsDualViewBas
     Q_OBJECT
 
   public:
-
     static const QgsSettingsEntryBool *settingsFeatureListHighlightFeature SIP_SKIP;
 
     static const QgsSettingsEntryInteger *settingsAttributeTableRowCache SIP_SKIP;
@@ -134,14 +133,14 @@ class GUI_EXPORT QgsDualView : public QStackedWidget, private Ui::QgsDualViewBas
      *
      * \param filterMode
      */
-    void setFilterMode( QgsAttributeTableFilterModel::FilterMode filterMode );
+    void setFilterMode( Qgis::AttributeTableFilterMode filterMode );
 
     /**
      * Gets the filter mode
      *
      * \returns the filter mode
      */
-    QgsAttributeTableFilterModel::FilterMode filterMode() { return mFilterModel->filterMode(); }
+    Qgis::AttributeTableFilterMode filterMode() const;
 
     /**
      * Toggle the selectedOnTop flag. If enabled, selected features will be moved to top.
@@ -186,7 +185,7 @@ class GUI_EXPORT QgsDualView : public QStackedWidget, private Ui::QgsDualViewBas
     /**
      * Gets a list of currently visible feature ids.
      */
-    QgsFeatureIds filteredFeatures() { return mFilterModel->filteredFeatures(); }
+    QgsFeatureIds filteredFeatures() const;
 
     /**
      * Returns the model which has the information about all features (not only filtered)
@@ -462,6 +461,8 @@ class GUI_EXPORT QgsDualView : public QStackedWidget, private Ui::QgsDualViewBas
     QgsFeatureIds mLastFeatureSet;
     bool mBrowsingAutoPanScaleAllowed = true;
     ViewMode mPreviousView = AttributeTable;
+
+    bool mSkipDisplayExpressionChangedSignal = false;
 
     friend class TestQgsDualView;
     friend class TestQgsAttributeTable;

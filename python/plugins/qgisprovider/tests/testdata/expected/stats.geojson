@@ -1,9 +1,0 @@
-{
-"type": "FeatureCollection",
-"name": "stats",
-"crs": { "type": "name", "properties": { "name": "urn:ogc:def:crs:OGC:1.3:CRS84" } },
-"features": [
-{ "type": "Feature", "properties": { "fid": "polygon_mask.0", "stats_count": 24882.0, "stats_sum": 89005.0, "stats_mean": 3.5770838357045251, "stats_median": 6.0, "stats_stdev": 2.4739349627559846, "stats_min": 1.0, "stats_max": 6.0, "stats_range": 5.0, "stats_minority": 4.0, "stats_majority": 6.0, "stats_variety": 4.0, "stats_variance": 6.1203541999464539 }, "geometry": { "type": "MultiPolygon", "coordinates": [ [ [ [ 18.6744202640594, 45.798496472749385 ], [ 18.683204095342351, 45.807861586984885 ], [ 18.68966279481511, 45.80456765025378 ], [ 18.694829754393322, 45.800175734612303 ], [ 18.694442232424951, 45.796235927933921 ], [ 18.683849965289628, 45.790358511413707 ], [ 18.675970351932861, 45.790229337424257 ], [ 18.673193111159573, 45.789970989445344 ], [ 18.6744202640594, 45.798496472749385 ] ] ] ] } },
-{ "type": "Feature", "properties": { "fid": "polygon_mask.1", "stats_count": 14055.0, "stats_sum": 42165.0, "stats_mean": 3.0, "stats_median": 3.0, "stats_stdev": 0.0, "stats_min": 3.0, "stats_max": 3.0, "stats_range": 0.0, "stats_minority": 3.0, "stats_majority": 3.0, "stats_variety": 1.0, "stats_variance": 0.0 }, "geometry": { "type": "MultiPolygon", "coordinates": [ [ [ [ 18.690696186730751, 45.786612465719514 ], [ 18.694442232424951, 45.791133555350441 ], [ 18.70090093189771, 45.785643660798598 ], [ 18.699738365992616, 45.781122571167664 ], [ 18.688435641915287, 45.777957808426017 ], [ 18.680491441563792, 45.779895418267841 ], [ 18.6800393326007, 45.783318528988403 ], [ 18.690696186730751, 45.786612465719514 ] ] ] ] } }
-]
-}

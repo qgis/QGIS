@@ -32,7 +32,7 @@ class DummyMaterialSettings : public QgsAbstractMaterialSettings
   public:
     DummyMaterialSettings() = default;
     QString type() const override { return u"Dummy"_s; }
-    static QgsAbstractMaterialSettings *create() { return new DummyMaterialSettings(); }
+    static std::unique_ptr<QgsAbstractMaterialSettings> create() { return std::make_unique<DummyMaterialSettings>(); }
     DummyMaterialSettings *clone() const override { return new DummyMaterialSettings(); }
     static bool supportsTechnique( Qgis::MaterialRenderingTechnique ) { return true; }
     void readXml( const QDomElement &, const QgsReadWriteContext & ) override {}

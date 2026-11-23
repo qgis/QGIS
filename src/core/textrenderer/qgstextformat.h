@@ -712,7 +712,7 @@ class CORE_EXPORT QgsTextFormat
      * Caller takes responsibility for deleting the returned object.
      * \see fromMimeData()
      */
-    QMimeData *toMimeData() const SIP_FACTORY;
+    std::unique_ptr<QMimeData> toMimeData() const;
 
     /**
      * Returns a text format matching the settings from an input \a font.

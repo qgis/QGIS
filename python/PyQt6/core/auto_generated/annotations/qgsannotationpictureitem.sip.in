@@ -37,7 +37,7 @@ Constructor for QgsAnnotationPictureItem, rendering the specified image
     virtual QgsAnnotationPictureItem *clone() const /Factory/;
 
 
-    static QgsAnnotationPictureItem *create() /Factory/;
+    static std::unique_ptr<QgsAnnotationPictureItem> create();
 %Docstring
 Creates a new polygon annotation item.
 %End

@@ -134,7 +134,7 @@ Returns a list of names for nodes. Unnamed nodes will be indicated by an
 empty string in the list.
 %End
 
-        QgsExpressionNode::NodeList *clone() const /Factory/;
+        std::unique_ptr<QgsExpressionNode::NodeList> clone() const;
 %Docstring
 Creates a deep copy of this list. Ownership is transferred to the caller
 %End

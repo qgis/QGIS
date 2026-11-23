@@ -32,7 +32,8 @@ bool QgsTrackedVectorLayerTools::addFeatureV2(
   const_cast<QgsVectorLayerTools *>( mBackend )->setForceSuppressFormPopup( forceSuppressFormPopup() );
   if ( mBackend->addFeatureV2( layer, defaultValues, defaultGeometry, f, context ) )
   {
-    mAddedFeatures[layer].insert( f->id() );
+    connect( layer, &QgsVectorLayer::willBeDeleted, this, &QgsTrackedVectorLayerTools::layerWillBeDeleted, Qt::UniqueConnection );
+    mAddedFeatures[layer->id()].insert( f->id() );
     if ( !feature )
       delete f;
     return true;
@@ -74,12 +75,25 @@ void QgsTrackedVectorLayerTools::setVectorLayerTools( const QgsVectorLayerTools 
 
 void QgsTrackedVectorLayerTools::rollback()
 {
-  QMapIterator<QgsVectorLayer *, QgsFeatureIds> it( mAddedFeatures );
-  while ( it.hasNext() )
-  {
-    it.next();
-    it.key()->deleteFeatures( it.value() );
-  }
+  QgsProject *p = project();
+  if ( !p )
+    return;
 
+  for ( auto it = mAddedFeatures.constBegin(); it != mAddedFeatures.constEnd(); ++it )
+  {
+    if ( QgsVectorLayer *layer = qobject_cast< QgsVectorLayer * >( p->mapLayer( it.key() ) ) )
+    {
+      layer->deleteFeatures( it.value() );
+    }
+  }
   mAddedFeatures.clear();
+}
+
+void QgsTrackedVectorLayerTools::layerWillBeDeleted()
+{
+  if ( QgsVectorLayer *layer = qobject_cast< QgsVectorLayer * >( sender() ) )
+  {
+    // make sure there's no dangling references left to a layer which will be deleted
+    mAddedFeatures.remove( layer->id() );
+  }
 }

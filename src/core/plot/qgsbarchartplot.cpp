@@ -18,6 +18,7 @@
 #include "qgsbarchartplot.h"
 
 #include "qgsexpressioncontextutils.h"
+#include "qgspainting.h"
 #include "qgssymbol.h"
 #include "qgssymbollayer.h"
 #include "qgssymbollayerutils.h"
@@ -29,7 +30,7 @@ using namespace Qt::StringLiterals;
 
 QgsBarChartPlot::QgsBarChartPlot()
 {
-  setFillSymbolAt( 0, QgsPlotDefaultSettings::barChartFillSymbol() );
+  setFillSymbolAt( 0, QgsPlotDefaultSettings::barChartFillSymbol().release() );
 }
 
 void QgsBarChartPlot::renderContent( QgsRenderContext &context, QgsPlotRenderContext &, const QRectF &plotArea, const QgsPlotData &plotData )
@@ -62,7 +63,7 @@ void QgsBarChartPlot::renderContent( QgsRenderContext &context, QgsPlotRenderCon
   QgsExpressionContextScope *chartScope = new QgsExpressionContextScope( u"chart"_s );
   const QgsExpressionContextScopePopper scopePopper( context.expressionContext(), chartScope );
 
-  context.painter()->save();
+  QgsScopedQPainterState painterState( context.painter() );
   context.painter()->setClipRect( plotArea );
 
   double minX = xMinimum();
@@ -160,8 +161,6 @@ void QgsBarChartPlot::renderContent( QgsRenderContext &context, QgsPlotRenderCon
     symbol->stopRender( context );
     seriesIndex++;
   }
-
-  context.painter()->restore();
 }
 
 QgsFillSymbol *QgsBarChartPlot::fillSymbolAt( int index ) const
@@ -235,9 +234,9 @@ bool QgsBarChartPlot::readXml( const QDomElement &element, const QgsReadWriteCon
   return true;
 }
 
-QgsBarChartPlot *QgsBarChartPlot::create()
+std::unique_ptr<QgsBarChartPlot> QgsBarChartPlot::create()
 {
-  return new QgsBarChartPlot();
+  return std::make_unique<QgsBarChartPlot>();
 }
 
 QgsVectorLayerAbstractPlotDataGatherer *QgsBarChartPlot::createDataGatherer( QgsPlot *plot )

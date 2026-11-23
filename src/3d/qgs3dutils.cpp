@@ -535,10 +535,10 @@ QColor Qgs3DUtils::srgbToLinear( const QColor &color )
   return QColor::fromRgbF( srgbFloatToLinear( color.redF() ), srgbFloatToLinear( color.greenF() ), srgbFloatToLinear( color.blueF() ), color.alphaF() );
 }
 
-void Qgs3DUtils::extractPointPositions(
-  const QgsFeature &f, const Qgs3DRenderContext &context, const QgsVector3D &chunkOrigin, Qgis::AltitudeClamping altClamp, QVector<QVector3D> &positions, const QgsVector3D &translation
-)
+void Qgs3DUtils::extractPointPositions( const QgsFeature &f, const Qgs3DRenderContext &context, const QgsVector3D &chunkOrigin, Qgis::AltitudeClamping altClamp, QVector<QVector3D> &positions )
 {
+  const bool isGeocentric = context.crs().type() == Qgis::CrsType::Geocentric;
+  const bool useTerrainHeight = !isGeocentric && context.terrainRenderingEnabled() && context.terrainGenerator();
   const QgsAbstractGeometry *g = f.geometry().constGet();
   for ( auto it = g->vertices_begin(); it != g->vertices_end(); ++it )
   {
@@ -548,27 +548,38 @@ void Qgs3DUtils::extractPointPositions(
     {
       geomZ = pt.z();
     }
-    const float terrainZ = context.terrainRenderingEnabled() && context.terrainGenerator()
-                             ? static_cast<float>( context.terrainGenerator()->heightAt( pt.x(), pt.y(), context ) * ( context.terrainSettings() ? context.terrainSettings()->verticalScale() : 1 ) )
-                             : 0.f;
+
     float h = 0.0f;
-    switch ( altClamp )
+    if ( isGeocentric )
     {
-      case Qgis::AltitudeClamping::Absolute:
-        h = geomZ;
-        break;
-      case Qgis::AltitudeClamping::Terrain:
-        h = terrainZ;
-        break;
-      case Qgis::AltitudeClamping::Relative:
-        h = terrainZ + geomZ;
-        break;
+      // keep the original Z from geocentric coordinates
+      // (we do not support terrains in globe mode yet)
+      h = geomZ;
     }
+    else
+    {
+      const float terrainZ = useTerrainHeight
+                               ? static_cast<float>( context.terrainGenerator()->heightAt( pt.x(), pt.y(), context ) * ( context.terrainSettings() ? context.terrainSettings()->verticalScale() : 1 ) )
+                               : 0.f;
+      switch ( altClamp )
+      {
+        case Qgis::AltitudeClamping::Absolute:
+          h = geomZ;
+          break;
+        case Qgis::AltitudeClamping::Terrain:
+          h = terrainZ;
+          break;
+        case Qgis::AltitudeClamping::Relative:
+          h = terrainZ + geomZ;
+          break;
+      }
+    }
+
     // clang-format off
     positions.append( QVector3D(
-      static_cast<float>( pt.x() - chunkOrigin.x() + translation.x() ),
-      static_cast<float>( pt.y() - chunkOrigin.y() + translation.y() ),
-      static_cast<float>( h - chunkOrigin.z() + translation.z() )
+      static_cast<float>( pt.x() - chunkOrigin.x() ),
+      static_cast<float>( pt.y() - chunkOrigin.y() ),
+      static_cast<float>( h - chunkOrigin.z() )
     ) );
     // clang-format on
     QgsDebugMsgLevel( u"%1 %2 %3"_s.arg( positions.last().x() ).arg( positions.last().y() ).arg( positions.last().z() ), 2 );
@@ -796,25 +807,42 @@ QgsRay3D Qgs3DUtils::rayFromScreenPoint( const QPoint &point, const QSize &windo
   const QVector3D deviceCoords( point.x(), point.y(), 0.0 );
   // normalized device coordinates
   const QVector3D normDeviceCoords( 2.0 * deviceCoords.x() / windowSize.width() - 1.0f, 1.0f - 2.0 * deviceCoords.y() / windowSize.height(), camera->nearPlane() );
-  // clip coordinates
-  const QVector4D rayClip( normDeviceCoords.x(), normDeviceCoords.y(), -1.0, 0.0 );
+  // clip coordinates of point on ray (its "end")
+  const QVector4D rayEndClip( normDeviceCoords.x(), normDeviceCoords.y(), 0.0, 1.0 );
 
   const QMatrix4x4 invertedProjMatrix = camera->projectionMatrix().inverted();
   const QMatrix4x4 invertedViewMatrix = camera->viewMatrix().inverted();
 
-  // ray direction in view coordinates
-  QVector4D rayDirView = invertedProjMatrix * rayClip;
-  // ray origin in world coordinates
-  const QVector4D rayOriginWorld = invertedViewMatrix * QVector4D( 0.0f, 0.0f, 0.0f, 1.0f );
+  QVector3D rayOriginWorld; // ray origin in world coordinates
+  switch ( camera->projectionType() )
+  {
+    case Qt3DRender::QCameraLens::PerspectiveProjection:
+    {
+      // In perspective projection, the ray always comes from the camera centre.
+      rayOriginWorld = QVector3D( invertedViewMatrix * QVector4D( 0.0f, 0.0f, 0.0f, 1.0f ) );
+      break;
+    }
+    case Qt3DRender::QCameraLens::OrthographicProjection:
+    {
+      // In orthographic projection, the ray centre shifts with the cursor, the
+      // ray is always perpendicular to the projection plane.
+      QVector4D rayOriginView = invertedProjMatrix * rayEndClip;
+      rayOriginView.setZ( 0.0f );
+      rayOriginWorld = QVector3D( invertedViewMatrix * rayOriginView );
+      break;
+    }
+    default:
+      QgsDebugError( "Unhandled 3D projection type" );
+  }
 
-  // ray direction in world coordinates
-  rayDirView.setZ( -1.0f );
-  rayDirView.setW( 0.0f );
-  const QVector4D rayDirWorld4D = invertedViewMatrix * rayDirView;
-  QVector3D rayDirWorld( rayDirWorld4D.x(), rayDirWorld4D.y(), rayDirWorld4D.z() );
+  // Find ray direction by first unprojecting the ray end's position
+  const QVector4D rayEndView = invertedProjMatrix * rayEndClip;
+  const QVector4D rayEndWorld4D = invertedViewMatrix * rayEndView;
+  const QVector3D rayEndWorld = rayEndWorld4D.toVector3DAffine();
+  QVector3D rayDirWorld = rayEndWorld - rayOriginWorld;
   rayDirWorld = rayDirWorld.normalized();
 
-  return QgsRay3D( QVector3D( rayOriginWorld ), rayDirWorld );
+  return QgsRay3D( rayOriginWorld, rayDirWorld );
 }
 
 QVector3D Qgs3DUtils::screenPointToWorldPos( const QPoint &screenPoint, double depth, const QSize &screenSize, Qt3DRender::QCamera *camera )
@@ -1285,11 +1313,22 @@ std::unique_ptr<Qt3DRender::QCamera> Qgs3DUtils::copyCamera( Qt3DRender::QCamera
   copy->setPosition( cam->position() );
   copy->setViewCenter( cam->viewCenter() );
   copy->setUpVector( cam->upVector() );
-  copy->setProjectionMatrix( cam->projectionMatrix() );
-  copy->setNearPlane( cam->nearPlane() );
-  copy->setFarPlane( cam->farPlane() );
-  copy->setAspectRatio( cam->aspectRatio() );
-  copy->setFieldOfView( cam->fieldOfView() );
+
+  switch ( cam->projectionType() )
+  {
+    case Qt3DRender::QCameraLens::OrthographicProjection:
+      copy->lens()->setOrthographicProjection( cam->left(), cam->right(), cam->bottom(), cam->top(), cam->nearPlane(), cam->farPlane() );
+      break;
+    case Qt3DRender::QCameraLens::FrustumProjection:
+      copy->lens()->setFrustumProjection( cam->left(), cam->right(), cam->bottom(), cam->top(), cam->nearPlane(), cam->farPlane() );
+      break;
+    case Qt3DRender::QCameraLens::PerspectiveProjection:
+      copy->lens()->setPerspectiveProjection( cam->fieldOfView(), cam->aspectRatio(), cam->nearPlane(), cam->farPlane() );
+      break;
+    case Qt3DRender::QCameraLens::CustomProjection:
+      copy->setProjectionMatrix( cam->projectionMatrix() );
+      break;
+  }
   return copy;
 }
 

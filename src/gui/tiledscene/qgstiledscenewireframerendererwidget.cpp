@@ -64,7 +64,7 @@ QgsTiledSceneRenderer *QgsTiledSceneWireframeRendererWidget::renderer()
 void QgsTiledSceneWireframeRendererWidget::emitWidgetChanged()
 {
   if ( !mBlockChangedSignal )
-    emit widgetChanged();
+    emit changed();
 }
 
 void QgsTiledSceneWireframeRendererWidget::setFromRenderer( const QgsTiledSceneRenderer *renderer )

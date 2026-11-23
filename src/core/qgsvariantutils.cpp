@@ -744,13 +744,13 @@ QString QgsVariantUtils::variantToHtml( const QVariantMap &variantMap, const QSt
   }
   for ( auto it = variantMap.constBegin(); it != variantMap.constEnd(); ++it )
   {
-    if ( ( it.value().type() == QVariant::List || it.value().type() == QVariant::StringList ) )
+    if ( ( it.value().typeId() == QMetaType::Type::QVariantList || it.value().typeId() == QMetaType::Type::QStringList ) )
     {
       const QVariantList childList = it.value().toList();
       result += u"<tr><td class=\"highlight\">%1</td><td><ul>"_s.arg( it.key() );
       for ( const QVariant &v : childList )
       {
-        if ( v.type() == QVariant::Map )
+        if ( v.typeId() == QMetaType::Type::QVariantMap )
         {
           const QVariantMap grandChildMap = v.toMap();
           result += u"<li><table>%1</table></li>"_s.arg( variantToHtml( grandChildMap ) );
@@ -762,7 +762,7 @@ QString QgsVariantUtils::variantToHtml( const QVariantMap &variantMap, const QSt
       }
       result += "</ul></td></tr>"_L1;
     }
-    else if ( it.value().type() == QVariant::Map )
+    else if ( it.value().typeId() == QMetaType::Type::QVariantMap )
     {
       const QVariantMap childMap = it.value().toMap();
       result += u"<tr><td class=\"highlight\">%1</td><td><table>%2</table></td></tr>"_s.arg( it.key(), variantToHtml( childMap ) );

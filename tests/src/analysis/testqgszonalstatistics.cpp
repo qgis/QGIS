@@ -52,6 +52,8 @@ class TestQgsZonalStatistics : public QgsTest
     void testNoData();
     void testSmallPolygons();
     void testShortName();
+    void testNonShapefileExistingFields();
+    void testOverwriteExistingFields();
 
   private:
     QgsVectorLayer *mVectorLayer = nullptr;
@@ -367,6 +369,73 @@ void TestQgsZonalStatistics::testShortName()
   QCOMPARE( QgsZonalStatistics::shortName( Qgis::ZonalStatistic::Majority ), u"majority"_s );
   QCOMPARE( QgsZonalStatistics::shortName( Qgis::ZonalStatistic::Variety ), u"variety"_s );
   QCOMPARE( QgsZonalStatistics::shortName( Qgis::ZonalStatistic::Variance ), u"variance"_s );
+}
+
+void TestQgsZonalStatistics::testNonShapefileExistingFields()
+{
+  auto memoryLayer = std::make_unique<QgsVectorLayer>( u"Polygon?crs=EPSG:4326&field=id:integer&field=count:double"_s, u"polygons"_s, u"memory"_s );
+  QVERIFY( memoryLayer->isValid() );
+
+  QgsFeature f;
+  QgsFeatureIterator it = mVectorLayer->getFeatures();
+  QgsFeatureList features;
+  while ( it.nextFeature( f ) )
+  {
+    QgsFeature newFeature( memoryLayer->fields() );
+    newFeature.setGeometry( f.geometry() );
+    newFeature.setAttribute( u"id"_s, f.id() );
+    newFeature.setAttribute( u"count"_s, 999.0 );
+    features << newFeature;
+  }
+  memoryLayer->dataProvider()->addFeatures( features );
+  QCOMPARE( memoryLayer->featureCount(), mVectorLayer->featureCount() );
+  QgsZonalStatistics zs( memoryLayer.get(), mRasterLayer, QString(), 1, Qgis::ZonalStatistic::Count | Qgis::ZonalStatistic::Sum );
+  QCOMPARE( zs.calculateStatistics( nullptr ), Qgis::ZonalStatisticResult::Success );
+
+  QVERIFY( memoryLayer->fields().indexFromName( u"count_1"_s ) != -1 );
+  QVERIFY( memoryLayer->fields().indexFromName( u"sum"_s ) != -1 );
+
+  QgsFeatureRequest request;
+  request.setFilterFid( 1 );
+  QVERIFY( memoryLayer->getFeatures( request ).nextFeature( f ) );
+  QCOMPARE( f.attribute( u"count"_s ).toDouble(), 999.0 );
+  QCOMPARE( f.attribute( u"count_1"_s ).toDouble(), 12.0 );
+  QCOMPARE( f.attribute( u"sum"_s ).toDouble(), 8.0 );
+}
+
+void TestQgsZonalStatistics::testOverwriteExistingFields()
+{
+  auto memoryLayer = std::make_unique<QgsVectorLayer>( u"Polygon?crs=EPSG:4326&field=id:integer&field=count:double"_s, u"polygons"_s, u"memory"_s );
+  QVERIFY( memoryLayer->isValid() );
+
+  QgsFeature f;
+  QgsFeatureIterator it = mVectorLayer->getFeatures();
+  QgsFeatureList features;
+  while ( it.nextFeature( f ) )
+  {
+    QgsFeature newFeature( memoryLayer->fields() );
+    newFeature.setGeometry( f.geometry() );
+    newFeature.setAttribute( u"id"_s, f.id() );
+    newFeature.setAttribute( u"count"_s, 999.0 );
+    features << newFeature;
+  }
+  memoryLayer->dataProvider()->addFeatures( features );
+  QCOMPARE( memoryLayer->featureCount(), mVectorLayer->featureCount() );
+
+  int initialFieldCount = memoryLayer->fields().count();
+
+  QgsZonalStatistics zs( memoryLayer.get(), mRasterLayer, QString(), 1, Qgis::ZonalStatistic::Count | Qgis::ZonalStatistic::Sum, true );
+  QCOMPARE( zs.calculateStatistics( nullptr ), Qgis::ZonalStatisticResult::Success );
+
+  QCOMPARE( memoryLayer->fields().count(), initialFieldCount + 1 );
+  QCOMPARE( memoryLayer->fields().indexFromName( u"count_1"_s ), -1 );
+  QVERIFY( memoryLayer->fields().indexFromName( u"sum"_s ) != -1 );
+
+  QgsFeatureRequest request;
+  request.setFilterFid( 1 );
+  QVERIFY( memoryLayer->getFeatures( request ).nextFeature( f ) );
+  QCOMPARE( f.attribute( u"count"_s ).toDouble(), 12.0 );
+  QCOMPARE( f.attribute( u"sum"_s ).toDouble(), 8.0 );
 }
 
 QGSTEST_MAIN( TestQgsZonalStatistics )

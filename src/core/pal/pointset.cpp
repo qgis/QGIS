@@ -109,7 +109,7 @@ void PointSet::createGeosGeom() const
   }
 
   GEOSCoordSequence *coord = nullptr;
-#if GEOS_VERSION_MAJOR > 3 || ( GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR >= 10 )
+#if GEOS_VERSION_NUM >= GEOS_COMPUTE_VERSION( 3, 10, 0 )
   if ( !needClose )
   {
     // use optimised method if we don't have to force close an open ring
@@ -585,7 +585,7 @@ void PointSet::offsetCurveByDistance( double distance )
       newGeos = std::move( longestPartClone );
     }
 
-#if GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR < 11
+#if GEOS_VERSION_NUM < GEOS_COMPUTE_VERSION( 3, 11, 0 )
     if ( distance < 0 )
     {
       // geos < 3.11 reverses the direction of offset curves with negative distances -- we don't want that!

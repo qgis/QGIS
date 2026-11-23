@@ -233,7 +233,7 @@ void QgsEffectStackPropertiesWidget::updatePreview()
   painter.end();
 
   lblPreview->setPixmap( QPixmap::fromImage( previewImage ) );
-  emit widgetChanged();
+  emit changed();
 }
 
 EffectItem *QgsEffectStackPropertiesWidget::currentEffectItem()
@@ -471,7 +471,7 @@ void QgsEffectStackCompactWidget::showDialog()
     QgsEffectStackPropertiesWidget *widget = new QgsEffectStackPropertiesWidget( clone, nullptr );
     widget->setPreviewPicture( mPreviewPicture );
 
-    connect( widget, &QgsPanelWidget::widgetChanged, this, &QgsEffectStackCompactWidget::updateEffectLive );
+    connect( widget, &QgsPanelWidget::changed, this, &QgsEffectStackCompactWidget::updateEffectLive );
     connect( widget, &QgsPanelWidget::panelAccepted, this, &QgsEffectStackCompactWidget::updateAcceptWidget );
     panel->openPanel( widget );
   }

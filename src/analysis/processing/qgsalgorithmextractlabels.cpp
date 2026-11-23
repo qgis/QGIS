@@ -226,7 +226,7 @@ class ExtractLabelSink : public QgsLabelSink
           break;
       }
 
-      const double labelRotation = !qgsDoubleNear( label->getAlpha(), 0.0 ) ? -( label->getAlpha() * 180 / M_PI ) + 360 : 0.0;
+      const double labelRotation = !qgsDoubleNear( label->angleRadians(), 0.0 ) ? -( label->angleRadians() * 180 / M_PI ) + 360 : 0.0;
 
       const QFont font = labelFeature->definedFont();
       const QString fontFamily = font.family();

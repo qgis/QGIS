@@ -15,9 +15,15 @@
 #ifndef QGSAPPPROCESSINGUTILS_H
 #define QGSAPPPROCESSINGUTILS_H
 
+#include "qgsprocessingguiregistry.h"
+#include "qgsprocessingpostprocessor.h"
 #include "qgsprocessingwidgetcontext.h"
 
+#include <QObject>
+#include <QPointer>
+
 class QgisApp;
+class QToolBar;
 
 class QgsAppProcessingWidgetContextGenerator : public QgsProcessingWidgetContextGenerator
 {
@@ -30,10 +36,128 @@ class QgsAppProcessingWidgetContextGenerator : public QgsProcessingWidgetContext
     QgisApp *mQgisApp = nullptr;
 };
 
-class QgsAppProcessingUtils
+class QgsAppProcessingContextFactory : public QgsProcessingContextFactory
 {
   public:
-    static void initProjectModelProvider();
+    QgsAppProcessingContextFactory( QgisApp *app );
+
+    QgsProcessingContext *createContext( QgsProcessingFeedback *feedback = nullptr ) final;
+
+    QgsExpressionContext createExpressionContext() const;
+
+  private:
+    QgisApp *mQgisApp = nullptr;
+};
+
+
+class QgsAppProcessingLayerPostProcessor : public QgsProcessingLayerPostProcessor
+{
+  public:
+    QgsAppProcessingLayerPostProcessor() = default;
+
+    void postProcessLayer( QgsMapLayer *layer, const QString &outputName, const QgsProcessingAlgorithm *algorithm ) final;
+};
+
+
+class QgsAppProcessingResultsHandler : public QgsProcessingResultsHandler
+{
+  public:
+    QgsAppProcessingResultsHandler( QgisApp *app );
+
+  protected:
+    QgsProcessingResultsHandler::ResultDetails handleAlgorithmResultsProtected(
+      const QgsProcessingAlgorithm *algorithm, QgsProcessingContext &context, const QVariantMap &parameters, QgsProcessingFeedback *feedback
+    ) final;
+    QgsMapLayer *handleAddResultLayers( const QgsProcessingResultsHandler::ResultDetails &details, const QgsProcessingContext &context ) final;
+    void setNewActiveLayer( QgsMapLayer *layer ) final;
+
+  private:
+    QgisApp *mQgisApp = nullptr;
+    QPointer< QgsLayerTreeNode > mCurrentSelectedNode;
+};
+
+
+class QgsAppProcessingUtils : public QObject
+{
+    Q_OBJECT
+  public:
+    QgsAppProcessingUtils( QgisApp *app );
+
+    void registerActions();
+
+    void openHistory();
+
+    void initProjectModelProvider();
+
+    /**
+     * Returns the toolbar for algorithms, creating it if it does not yet exist.
+     */
+    QToolBar *algorithmsToolBar();
+
+    /**
+     * Checks the definitions of the default menus, pushing message log warnings when they are invalid
+     */
+    void validateDefaultAlgorithmActions();
+
+    /**
+     * Creates algorithm actions for all algorithms shown in menus and toolbars, and populates those menus
+     * and toolbars accordingly.
+     *
+     * Any existing algorithm actions will be deleted.
+     */
+    QList< QAction * > createAlgorithmActions();
+
+    /**
+     * Adds some predefined actions to default toolbars, such as the "select by..." algorithms to the selection toolbar.
+     */
+    void addAlgorithmsToDefaultToolbars();
+
+    /**
+     * Opens a model designer dialog for an existing \a model.
+     * If a designer already exists for this model then it will be activated.
+     *
+     * Ownership of \a model is transferred to the dialog.
+     *
+     * \since QGIS 4.4
+     */
+    QgsModelDesignerDialog *openModelDesignerDialog( QgsProcessingModelAlgorithm *model );
+
+  private slots:
+
+    //! Adds projects models to menu
+    void updateProjectModelMenu();
+
+  private:
+    QList< QAction * > createAlgorithmActionsForProvider( const QgsProcessingProvider *provider );
+
+    QAction *createActionForAlgorithm( const QgsProcessingAlgorithm *algorithm, const QString &iconPath = QString() );
+
+    /**
+     *  Returns the menu title to use for a Processing menu. This is not a "stable" string, and is used for
+     *  GUI display only.
+     */
+    QString menuTitle( Qgis::ProcessingMenu menu );
+
+    /**
+     * Returns the older menu titles used in processing settings for menu configuration.
+     * This is a quasi-stable string, as changing it would break user menu configuration.
+     */
+    QString legacyMenuTitle( Qgis::ProcessingMenu menu );
+
+    std::optional< Qgis::ProcessingMenu > menuForLegacySettingValue( const QString &settingValue );
+
+    QMenu *parentMenu( Qgis::ProcessingMenu menu );
+
+    //! Finds the matching Processing menu, creating it if required.
+    QMenu *processingToolMenu( Qgis::ProcessingMenu menu );
+
+    static QString algorithmActionText( const QgsProcessingAlgorithm *algorithm );
+
+    QgisApp *mQgisApp = nullptr;
+    QList< QAction * > mAlgorithmActions;
+    QToolBar *mAlgorithmsToolbar = nullptr;
+
+    QSet<QgsModelDesignerDialog *> mModelDesignerDialogs;
 };
 
 #endif // QGSAPPPROCESSINGUTILS_H

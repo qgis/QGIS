@@ -28,12 +28,11 @@ try:
 except (NameError, AttributeError):
     pass
 try:
-    QgsAggregateMappingWidget.__attribute_docs__ = {'changed': 'Emitted when the aggregates defined in the widget are changed.\n'}
-    QgsAggregateMappingWidget.__group__ = ['processing']
+    QgsAggregateMappingModel.__overridden_methods__ = ['rowCount', 'columnCount', 'data', 'headerData', 'flags', 'setData']
+    QgsAggregateMappingModel.__group__ = ['processing']
 except (NameError, AttributeError):
     pass
 try:
-    QgsAggregateMappingModel.__overridden_methods__ = ['rowCount', 'columnCount', 'data', 'headerData', 'flags', 'setData']
-    QgsAggregateMappingModel.__group__ = ['processing']
+    QgsAggregateMappingWidget.__group__ = ['processing']
 except (NameError, AttributeError):
     pass

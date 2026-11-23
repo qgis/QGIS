@@ -1,91 +1,91 @@
 # The following has been generated automatically from src/core/processing/qgsprocessingoutputs.h
 try:
     QgsProcessingOutputMapLayer.typeName = staticmethod(QgsProcessingOutputMapLayer.typeName)
-    QgsProcessingOutputMapLayer.__overridden_methods__ = ['modelColor', 'type', 'isMapLayer']
+    QgsProcessingOutputMapLayer.__overridden_methods__ = ['modelColor', 'clone', 'type', 'isMapLayer']
     QgsProcessingOutputMapLayer.__group__ = ['processing']
 except (NameError, AttributeError):
     pass
 try:
     QgsProcessingOutputVectorLayer.typeName = staticmethod(QgsProcessingOutputVectorLayer.typeName)
-    QgsProcessingOutputVectorLayer.__overridden_methods__ = ['modelColor', 'type', 'isMapLayer']
+    QgsProcessingOutputVectorLayer.__overridden_methods__ = ['modelColor', 'clone', 'type', 'isMapLayer']
     QgsProcessingOutputVectorLayer.__group__ = ['processing']
 except (NameError, AttributeError):
     pass
 try:
     QgsProcessingOutputRasterLayer.typeName = staticmethod(QgsProcessingOutputRasterLayer.typeName)
-    QgsProcessingOutputRasterLayer.__overridden_methods__ = ['modelColor', 'type', 'isMapLayer']
+    QgsProcessingOutputRasterLayer.__overridden_methods__ = ['modelColor', 'clone', 'type', 'isMapLayer']
     QgsProcessingOutputRasterLayer.__group__ = ['processing']
 except (NameError, AttributeError):
     pass
 try:
     QgsProcessingOutputPointCloudLayer.typeName = staticmethod(QgsProcessingOutputPointCloudLayer.typeName)
-    QgsProcessingOutputPointCloudLayer.__overridden_methods__ = ['type', 'isMapLayer']
+    QgsProcessingOutputPointCloudLayer.__overridden_methods__ = ['clone', 'type', 'isMapLayer']
     QgsProcessingOutputPointCloudLayer.__group__ = ['processing']
 except (NameError, AttributeError):
     pass
 try:
     QgsProcessingOutputMultipleLayers.typeName = staticmethod(QgsProcessingOutputMultipleLayers.typeName)
-    QgsProcessingOutputMultipleLayers.__overridden_methods__ = ['type', 'modelColor', 'valueAsString', 'isMapLayer']
+    QgsProcessingOutputMultipleLayers.__overridden_methods__ = ['clone', 'type', 'modelColor', 'valueAsString', 'isMapLayer']
     QgsProcessingOutputMultipleLayers.__group__ = ['processing']
 except (NameError, AttributeError):
     pass
 try:
     QgsProcessingOutputHtml.typeName = staticmethod(QgsProcessingOutputHtml.typeName)
-    QgsProcessingOutputHtml.__overridden_methods__ = ['type', 'modelColor', 'valueAsFormattedString']
+    QgsProcessingOutputHtml.__overridden_methods__ = ['clone', 'type', 'modelColor', 'valueAsFormattedString']
     QgsProcessingOutputHtml.__group__ = ['processing']
 except (NameError, AttributeError):
     pass
 try:
     QgsProcessingOutputVariant.typeName = staticmethod(QgsProcessingOutputVariant.typeName)
-    QgsProcessingOutputVariant.__overridden_methods__ = ['type', 'valueAsString']
+    QgsProcessingOutputVariant.__overridden_methods__ = ['clone', 'type', 'valueAsString']
     QgsProcessingOutputVariant.__group__ = ['processing']
 except (NameError, AttributeError):
     pass
 try:
     QgsProcessingOutputNumber.typeName = staticmethod(QgsProcessingOutputNumber.typeName)
-    QgsProcessingOutputNumber.__overridden_methods__ = ['modelColor', 'type', 'valueAsString']
+    QgsProcessingOutputNumber.__overridden_methods__ = ['modelColor', 'clone', 'type', 'valueAsString']
     QgsProcessingOutputNumber.__group__ = ['processing']
 except (NameError, AttributeError):
     pass
 try:
     QgsProcessingOutputString.typeName = staticmethod(QgsProcessingOutputString.typeName)
-    QgsProcessingOutputString.__overridden_methods__ = ['modelColor', 'type']
+    QgsProcessingOutputString.__overridden_methods__ = ['clone', 'modelColor', 'type']
     QgsProcessingOutputString.__group__ = ['processing']
 except (NameError, AttributeError):
     pass
 try:
     QgsProcessingOutputBoolean.typeName = staticmethod(QgsProcessingOutputBoolean.typeName)
-    QgsProcessingOutputBoolean.__overridden_methods__ = ['modelColor', 'type', 'valueAsString']
+    QgsProcessingOutputBoolean.__overridden_methods__ = ['modelColor', 'clone', 'type', 'valueAsString']
     QgsProcessingOutputBoolean.__group__ = ['processing']
 except (NameError, AttributeError):
     pass
 try:
     QgsProcessingOutputFolder.typeName = staticmethod(QgsProcessingOutputFolder.typeName)
-    QgsProcessingOutputFolder.__overridden_methods__ = ['type', 'modelColor', 'valueAsFormattedString']
+    QgsProcessingOutputFolder.__overridden_methods__ = ['clone', 'type', 'modelColor', 'valueAsFormattedString']
     QgsProcessingOutputFolder.__group__ = ['processing']
 except (NameError, AttributeError):
     pass
 try:
     QgsProcessingOutputFile.typeName = staticmethod(QgsProcessingOutputFile.typeName)
-    QgsProcessingOutputFile.__overridden_methods__ = ['type', 'modelColor', 'valueAsFormattedString']
+    QgsProcessingOutputFile.__overridden_methods__ = ['clone', 'type', 'modelColor', 'valueAsFormattedString']
     QgsProcessingOutputFile.__group__ = ['processing']
 except (NameError, AttributeError):
     pass
 try:
     QgsProcessingOutputConditionalBranch.typeName = staticmethod(QgsProcessingOutputConditionalBranch.typeName)
-    QgsProcessingOutputConditionalBranch.__overridden_methods__ = ['type']
+    QgsProcessingOutputConditionalBranch.__overridden_methods__ = ['clone', 'type']
     QgsProcessingOutputConditionalBranch.__group__ = ['processing']
 except (NameError, AttributeError):
     pass
 try:
     QgsProcessingOutputVectorTileLayer.typeName = staticmethod(QgsProcessingOutputVectorTileLayer.typeName)
-    QgsProcessingOutputVectorTileLayer.__overridden_methods__ = ['modelColor', 'type', 'isMapLayer']
+    QgsProcessingOutputVectorTileLayer.__overridden_methods__ = ['modelColor', 'clone', 'type', 'isMapLayer']
     QgsProcessingOutputVectorTileLayer.__group__ = ['processing']
 except (NameError, AttributeError):
     pass
 try:
     QgsProcessingOutputDefinition.__virtual_methods__ = ['modelColor', 'valueAsString', 'valueAsFormattedString', 'isMapLayer']
-    QgsProcessingOutputDefinition.__abstract_methods__ = ['type']
+    QgsProcessingOutputDefinition.__abstract_methods__ = ['clone', 'type']
     QgsProcessingOutputDefinition.__group__ = ['processing']
 except (NameError, AttributeError):
     pass

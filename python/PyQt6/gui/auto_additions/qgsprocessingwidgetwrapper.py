@@ -15,6 +15,26 @@ QgsProcessingParametersGenerator.Flag.__doc__ = """Flags controlling parameter g
 """
 # --
 QgsProcessingParametersGenerator.Flags = lambda flags=0: QgsProcessingParametersGenerator.Flag(flags)
+# monkey patching scoped based enum
+QgsProcessingParametersGenerator.ValidationResult.Valid.__doc__ = "Parameter value is valid"
+QgsProcessingParametersGenerator.ValidationResult.InvalidOutputExtension.__doc__ = "Output parameter extension is invalid"
+QgsProcessingParametersGenerator.ValidationResult.InvalidValue.__doc__ = "Generic result for invalid parameter values"
+QgsProcessingParametersGenerator.ValidationResult.__doc__ = """Results of validating a parameter.
+
+.. versionadded:: 4.4
+
+* ``Valid``: Parameter value is valid
+* ``InvalidOutputExtension``: Output parameter extension is invalid
+* ``InvalidValue``: Generic result for invalid parameter values
+
+"""
+# --
+try:
+    QgsProcessingParametersGenerator.ParameterValidationResult.__attribute_docs__ = {'parameterName': 'Associated parameter name', 'result': 'Validation result', 'message': 'Validation message'}
+    QgsProcessingParametersGenerator.ParameterValidationResult.__annotations__ = {'parameterName': str, 'result': 'QgsProcessingParametersGenerator.ValidationResult', 'message': str}
+    QgsProcessingParametersGenerator.ParameterValidationResult.__group__ = ['processing']
+except (NameError, AttributeError):
+    pass
 try:
     QgsAbstractProcessingParameterWidgetWrapper.__attribute_docs__ = {'widgetValueHasChanged': 'Emitted whenever the parameter value (as defined by the wrapped widget)\nis changed.\n'}
     QgsAbstractProcessingParameterWidgetWrapper.__virtual_methods__ = ['setWidgetContext', 'customProperties', 'registerProcessingContextGenerator', 'postInitialize', 'stretch', 'setDialog', 'createLabel']

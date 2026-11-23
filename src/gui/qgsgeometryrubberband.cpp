@@ -19,6 +19,7 @@
 
 #include "qgsabstractgeometry.h"
 #include "qgsmapcanvas.h"
+#include "qgspainting.h"
 #include "qgspoint.h"
 #include "qgsrendercontext.h"
 

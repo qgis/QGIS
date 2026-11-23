@@ -145,7 +145,7 @@ void QgsMeshDatasetGroupTreeModel::syncToLayer( QgsMeshLayer *layer )
 {
   beginResetModel();
   if ( layer && layer->datasetGroupTreeRootItem() )
-    mRootItem.reset( layer->datasetGroupTreeRootItem()->clone() );
+    mRootItem = layer->datasetGroupTreeRootItem()->clone();
   else
     mRootItem.reset();
   endResetModel();
@@ -189,7 +189,7 @@ void QgsMeshDatasetGroupTreeModel::resetDefault( QgsMeshLayer *meshLayer )
 
   beginResetModel();
   meshLayer->resetDatasetGroupTreeItem();
-  mRootItem.reset( meshLayer->datasetGroupTreeRootItem()->clone() );
+  mRootItem = meshLayer->datasetGroupTreeRootItem()->clone();
   endResetModel();
 }
 
@@ -598,7 +598,7 @@ void QgsMeshDatasetGroupTreeView::contextMenuEvent( QContextMenuEvent *event )
 
   std::unique_ptr<QMenu> menu( createContextMenu() );
   if ( menu && menu->actions().count() != 0 )
-    menu->exec( mapToGlobal( event->pos() ) );
+    menu->exec( event->globalPos() );
 }
 
 void QgsMeshDatasetGroupTreeView::removeCurrentItem()
@@ -637,7 +637,7 @@ void QgsMeshDatasetGroupTreeView::onDatasetGroupSaved( const QString &uri )
 
 QMenu *QgsMeshDatasetGroupTreeView::createContextMenu()
 {
-  QMenu *contextMenu = new QMenu;
+  QMenu *contextMenu = new QMenu( this );
 
   const QModelIndex &index = currentIndex();
   if ( !index.isValid() )

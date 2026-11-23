@@ -30,6 +30,7 @@
 #include "qgslayertreemodel.h"
 #include "qgslegendsettings.h"
 #include "qgsmarkersymbol.h"
+#include "qgspainting.h"
 #include "qgspointcloudlayer.h"
 #include "qgspointcloudrenderer.h"
 #include "qgsrasterlayer.h"
@@ -500,7 +501,7 @@ void QgsSymbolLegendNode::setSymbol( QgsSymbol *symbol )
   vlayer->triggerRepaint();
 }
 
-QgsRenderContext *QgsLayerTreeModelLegendNode::createTemporaryRenderContext() const
+std::unique_ptr<QgsRenderContext> QgsLayerTreeModelLegendNode::createTemporaryRenderContext() const
 {
   double scale = 0.0;
   double mupp = 0.0;
@@ -529,7 +530,7 @@ QgsRenderContext *QgsLayerTreeModelLegendNode::createTemporaryRenderContext() co
   expContext.appendScopes( QgsExpressionContextUtils::globalProjectLayerScopes( mLayerNode ? mLayerNode->layer() : nullptr ) );
   context->setExpressionContext( expContext );
 
-  return context.release();
+  return context;
 }
 
 void QgsLayerTreeModelLegendNode::checkAll( bool state )
@@ -834,10 +835,9 @@ QSizeF QgsSymbolLegendNode::drawSymbol( const QgsLegendSettings &settings, ItemC
       const int maxBleed = static_cast< int >( std::ceil( QgsSymbolLayerUtils::estimateMaxSymbolBleed( s, *context ) ) );
       const QSize symbolSize( static_cast< int >( std::round( width * dotsPerMM ) ), static_cast<int >( std::round( height * dotsPerMM ) ) );
       const QSize maxSize( symbolSize.width() + maxBleed * 2, symbolSize.height() + maxBleed * 2 );
-      p->save();
+      QgsScopedQPainterState painterState( p );
       p->setClipRect( -maxBleed, -maxBleed, maxSize.width(), maxSize.height(), Qt::IntersectClip );
       s->drawPreviewIcon( p, symbolSize, context, false, nullptr, &patchShape, ctx->screenProperties );
-      p->restore();
     }
     else
     {
@@ -980,8 +980,8 @@ QString QgsSymbolLegendNode::evaluateLabel( const QgsExpressionContext &context,
   if ( vl )
   {
     QgsExpressionContext contextCopy = QgsExpressionContext( context );
-    QgsExpressionContextScope *symbolScope = createSymbolScope();
-    contextCopy.appendScope( symbolScope );
+    std::unique_ptr<QgsExpressionContextScope> symbolScope = createSymbolScope();
+    contextCopy.appendScope( std::move( symbolScope ) );
     contextCopy.appendScope( vl->createExpressionContextScope() );
 
     if ( label.isEmpty() )
@@ -1006,11 +1006,11 @@ QString QgsSymbolLegendNode::evaluateLabel( const QgsExpressionContext &context,
   return mLabel;
 }
 
-QgsExpressionContextScope *QgsSymbolLegendNode::createSymbolScope() const
+std::unique_ptr<QgsExpressionContextScope> QgsSymbolLegendNode::createSymbolScope() const
 {
   QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( mLayerNode->layer() );
 
-  QgsExpressionContextScope *scope = new QgsExpressionContextScope( tr( "Symbol scope" ) );
+  auto scope = std::make_unique<QgsExpressionContextScope>( tr( "Symbol scope" ) );
   scope->addVariable( QgsExpressionContextScope::StaticVariable( u"symbol_label"_s, symbolLabel().remove( "[%" ).remove( "%]" ), true ) );
   scope->addVariable( QgsExpressionContextScope::StaticVariable( u"symbol_id"_s, mItem.ruleKey(), true ) );
   if ( vl )
@@ -1560,9 +1560,9 @@ QgsLayerTreeModelLegendNode::ItemMetrics QgsDataDefinedSizeLegendNode::draw( con
     context = tempRenderContext.get();
   }
 
+  QgsScopedQPainterState painterState( context->painter() );
   if ( context->painter() )
   {
-    context->painter()->save();
     context->painter()->translate( ctx.columnLeft, ctx.top );
 
     // scale to pixels
@@ -1576,9 +1576,6 @@ QgsLayerTreeModelLegendNode::ItemMetrics QgsDataDefinedSizeLegendNode::draw( con
   QSizeF contentSize;
   double labelXOffset;
   ddsLegend.drawCollapsedLegend( *context, &contentSize, &labelXOffset );
-
-  if ( context->painter() )
-    context->painter()->restore();
 
   ItemMetrics im;
   im.symbolSize = QSizeF( ( contentSize.width() - labelXOffset ) / context->scaleFactor(), contentSize.height() / context->scaleFactor() );

@@ -50,9 +50,6 @@ class QgsSingleSymbol3DRendererWidget : public QgsPanelWidget
     std::unique_ptr<QgsAbstract3DSymbol> symbol();
     void setDockMode( bool dockMode ) override;
 
-  signals:
-    void widgetChanged();
-
   private:
     QgsSymbol3DWidget *widgetSymbol = nullptr;
     QgsVectorLayer *mLayer = nullptr;

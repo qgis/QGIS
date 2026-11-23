@@ -337,13 +337,8 @@ emitted to avoid infinite loops.
 
     virtual void resizeEvent( QResizeEvent *event );
 
+    virtual void contextMenuEvent( QContextMenuEvent *e );
 
-    virtual void mousePressEvent( QMouseEvent *e );
-
-%Docstring
-Reimplemented to detect right mouse button clicks on the color ramp
-button
-%End
 
 };
 

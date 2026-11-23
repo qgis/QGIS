@@ -199,9 +199,9 @@ Qgis::AnnotationItemFlags QgsAnnotationLineItem::flags() const
   return Qgis::AnnotationItemFlag::SupportsReferenceScale;
 }
 
-QgsAnnotationLineItem *QgsAnnotationLineItem::create()
+std::unique_ptr<QgsAnnotationLineItem> QgsAnnotationLineItem::create()
 {
-  return new QgsAnnotationLineItem( new QgsLineString() );
+  return std::make_unique<QgsAnnotationLineItem>( new QgsLineString() );
 }
 
 bool QgsAnnotationLineItem::readXml( const QDomElement &element, const QgsReadWriteContext &context )

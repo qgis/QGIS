@@ -13,6 +13,7 @@ __author__ = "Even Rouault"
 __date__ = "2016-04-21"
 __copyright__ = "Copyright 2016, Even Rouault"
 
+import json
 import math
 import os
 import re
@@ -38,6 +39,7 @@ from qgis.core import (
     QgsFields,
     QgsGeometry,
     QgsLayerMetadata,
+    QgsMapLayer,
     QgsPointXY,
     QgsProject,
     QgsProviderMetadata,
@@ -45,6 +47,7 @@ from qgis.core import (
     QgsRectangle,
     QgsRelation,
     QgsRelationContext,
+    QgsSaveStyleResult,
     QgsSettings,
     QgsSettingsTree,
     QgsVectorDataProvider,
@@ -80,6 +83,8 @@ def GDAL_COMPUTE_VERSION(maj, min, rev):
 
 
 class TestPyQgsOGRProviderGpkgConformance(QgisTestCase, ProviderTestCase):
+    runConcurrentLayerAccessThreadSafetyTest = True
+
     @classmethod
     def setUpClass(cls):
         """Run before all tests"""
@@ -890,6 +895,128 @@ class TestPyQgsOGRProviderGpkg(QgisTestCase):
         sublayers = vl.dataProvider().subLayers()
         self.assertEqual(2, vl.dataProvider().subLayerCount())
         self.assertEqual(len(sublayers), 2, sublayers)
+
+    def testSaveStyleToDatabaseV3(self):
+        """Test saveStyleToDatabaseV3() with the various style formats"""
+        tmpfile = os.path.join(self.basetestpath, "testSaveStyleToDatabaseV3.gpkg")
+        ds = ogr.GetDriverByName("GPKG").CreateDataSource(tmpfile)
+        lyr = ds.CreateLayer("test", geom_type=ogr.wkbPoint)
+        lyr.CreateField(ogr.FieldDefn("foo", ogr.OFTString))
+        f = ogr.Feature(lyr.GetLayerDefn())
+        f["foo"] = "bar"
+        f.SetGeometry(ogr.CreateGeometryFromWkt("POINT(1 2)"))
+        lyr.CreateFeature(f)
+        f = None
+        ds = None
+
+        vl = QgsVectorLayer(f"{tmpfile}|layername=test", "test", "ogr")
+        self.assertTrue(vl.isValid())
+
+        style_path = os.path.join(
+            unitTestDataPath(), "symbol_layer", "singleSymbol.qml"
+        )
+        _, status = vl.loadNamedStyle(style_path)
+        self.assertTrue(status)
+
+        # helper functions
+        def get_stored_style(style_name: str):
+            ds = ogr.Open(tmpfile)
+            sql_lyr = ds.ExecuteSQL(
+                "SELECT styleQML, styleSLD, useAsDefault, description "
+                f"FROM layer_styles WHERE styleName = '{style_name}'"
+            )
+            rows = [
+                (f["styleQML"], f["styleSLD"], f["useAsDefault"], f["description"])
+                for f in sql_lyr
+            ]
+            ds.ReleaseResultSet(sql_lyr)
+            ds = None
+            self.assertEqual(len(rows), 1)
+            return rows[0]
+
+        def assert_style_export_success(result: QgsSaveStyleResult):
+            self.assertEqual(result.saveResult, QgsMapLayer.SaveStyleResult.Success)
+            self.assertEqual(result.providerSaveStyleError, "")
+            self.assertEqual(result.qmlError, "")
+            self.assertEqual(result.sldErrorMessages, [])
+
+        # both QML and SLD are saved
+        result = vl.saveStyleToDatabaseV3(
+            "both formats",
+            "qml and sld",
+            False,
+            "",
+            Qgis.SaveStyleFormat.QML | Qgis.SaveStyleFormat.SLD,
+        )
+        assert_style_export_success(result)
+        qml, sld, use_as_default, description = get_stored_style("both formats")
+        self.assertIn("<qgis", qml)
+        self.assertIn("StyledLayerDescriptor", sld)
+        self.assertFalse(use_as_default)
+        self.assertEqual(description, "qml and sld")
+
+        # QML only - SLD must be empty
+        result = vl.saveStyleToDatabaseV3(
+            "qml only",
+            "qml",
+            False,
+            "",
+            Qgis.SaveStyleFormats(Qgis.SaveStyleFormat.QML),
+        )
+        assert_style_export_success(result)
+        qml, sld, _, _ = get_stored_style("qml only")
+        self.assertIn("<qgis", qml)
+        self.assertFalse(sld)
+
+        # SLD only - QML must be empty
+        result = vl.saveStyleToDatabaseV3(
+            "sld only",
+            "sld",
+            True,
+            "",
+            Qgis.SaveStyleFormats(Qgis.SaveStyleFormat.SLD),
+        )
+        assert_style_export_success(result)
+        qml, sld, use_as_default, _ = get_stored_style("sld only")
+        self.assertFalse(qml)
+        self.assertIn("StyledLayerDescriptor", sld)
+        self.assertTrue(use_as_default)
+
+        # all three styles are listed for the layer
+        related_count, _, namelist, _, errmsg = vl.listStylesInDatabase()
+        self.assertFalse(errmsg)
+        self.assertEqual(related_count, 3)
+        self.assertCountEqual(namelist, ["both formats", "qml only", "sld only"])
+
+        # saving again under the same name overwrites the existing style
+        result = vl.saveStyleToDatabaseV3(
+            "qml only",
+            "qml and sld now",
+            False,
+            "",
+            Qgis.SaveStyleFormat.QML | Qgis.SaveStyleFormat.SLD,
+        )
+        assert_style_export_success(result)
+        qml, sld, _, description = get_stored_style("qml only")
+        self.assertIn("<qgis", qml)
+        self.assertIn("StyledLayerDescriptor", sld)
+        self.assertEqual(description, "qml and sld now")
+        related_count, _, _, _, _ = vl.listStylesInDatabase()
+        self.assertEqual(related_count, 3)
+
+        # fail to store style in DB is properly reported
+        vl_non_valid = QgsVectorLayer("/does/not/exist.gpkg", "not valid layer", "ogr")
+        result = vl_non_valid.saveStyleToDatabaseV3(
+            "fail",
+            "fail",
+            False,
+            "",
+            Qgis.SaveStyleFormat.QML | Qgis.SaveStyleFormat.SLD,
+        )
+        self.assertEqual(
+            result.saveResult, QgsMapLayer.SaveStyleResult.DatabaseWriteFailed
+        )
+        self.assertTrue(result.providerSaveStyleError)
 
     @staticmethod
     def _getJournalMode(filename):
@@ -2108,6 +2235,33 @@ class TestPyQgsOGRProviderGpkg(QgisTestCase):
         self.assertEqual(len([f for f in shops_layer.getFeatures()]), 1)
         self.assertTrue(p.rollBack(True, shops_layer))
 
+    def testTransactionGroupOuterInnerFeatureIteration(self):
+        tmpfile = os.path.join(
+            self.basetestpath, "testTransactionGroupOuterInnerFeatureIteration.gpkg"
+        )
+        testdata_path = unitTestDataPath("provider")
+        shutil.copy(os.path.join(testdata_path, "geopackage.gpkg"), tmpfile)
+        point_layer = QgsVectorLayer(f"{tmpfile}|layername=geopackage", "test", "ogr")
+        assert point_layer.isValid()
+
+        project = QgsProject()
+        project.setTransactionMode(Qgis.TransactionMode.AutomaticGroups)
+        project.addMapLayers([point_layer])
+
+        self.assertTrue(point_layer.startEditing())
+        self.assertTrue(point_layer.isEditable())
+        self.assertTrue(point_layer.dataProvider().transaction())
+
+        count = 0
+        outer_it = point_layer.getFeatures(QgsFeatureRequest())
+        for outer_feature in outer_it:
+            inner_feature = point_layer.getFeature(outer_feature.id())
+            count = count + 1
+            if count > 10:
+                break
+
+        self.assertEqual(count, 5)
+
     def testJson(self):
         tmpfile = os.path.join(self.basetestpath, "test_json.gpkg")
         testdata_path = unitTestDataPath("provider")
@@ -2178,9 +2332,6 @@ class TestPyQgsOGRProviderGpkg(QgisTestCase):
                 )
             )
         )
-        self.assertTrue(vl.commitChanges())
-
-        vl.startEditing()
         self.assertTrue(
             vl.addAttribute(
                 QgsField(
@@ -2194,17 +2345,32 @@ class TestPyQgsOGRProviderGpkg(QgisTestCase):
                 )
             )
         )
-        self.assertTrue(vl.commitChanges())
 
         # test setting values to new attributes
+        fi = vl.getFeatures(QgsFeatureRequest())
+        f = QgsFeature()
         while fi.nextFeature(f):
             if f["fid"] == 2:
                 f["json_content"] = {"uno": "foo"}
                 f["json_content2"] = ["uno", "due", "tre"]
                 f["json_content3"] = {"uno": ["uno", "due", "tre"]}
-                self.assertEqual(f["json_content"], {"foo": "baz"})
+                vl.updateFeature(f)
+                self.assertEqual(f["json_content"], {"uno": "foo"})
                 self.assertEqual(f["json_content2"], ["uno", "due", "tre"])
                 self.assertEqual(f["json_content3"], {"uno": ["uno", "due", "tre"]})
+                break
+        self.assertTrue(vl.commitChanges())
+
+        # read back again
+        vl2 = QgsVectorLayer(f"{tmpfile}|layerid=0", "foo", "ogr")
+        fi = vl2.getFeatures(QgsFeatureRequest())
+        f = QgsFeature()
+        while fi.nextFeature(f):
+            if f["fid"] == 2:
+                self.assertEqual(f["json_content"], {"uno": "foo"})
+                self.assertEqual(f["json_content2"], ["uno", "due", "tre"])
+                self.assertEqual(f["json_content3"], {"uno": ["uno", "due", "tre"]})
+                break
 
         # test deleting attribute
         vl.startEditing()
@@ -2214,6 +2380,108 @@ class TestPyQgsOGRProviderGpkg(QgisTestCase):
         # test if index of existent field is not -1 and the one of the deleted is -1
         self.assertNotEqual(vl.fields().indexFromName("json_content2"), -1)
         self.assertEqual(vl.fields().indexFromName("json_content3"), -1)
+
+        # test text fields containing json
+        vl.startEditing()
+        self.assertTrue(
+            vl.addAttribute(
+                QgsField(
+                    "text_content",
+                    QVariant.String,
+                    "text",
+                    0,
+                    0,
+                    "no comment",
+                    QVariant.Invalid,
+                )
+            )
+        )
+        self.assertTrue(
+            vl.addAttribute(
+                QgsField(
+                    "text_content2",
+                    QVariant.String,
+                    "text",
+                    60,
+                    0,
+                    "no comment",
+                    QVariant.Invalid,
+                )
+            )
+        )
+        self.assertTrue(
+            vl.addAttribute(
+                QgsField(
+                    "text_content3",
+                    QVariant.String,
+                    "text",
+                    60,
+                    0,
+                    "no comment",
+                    QVariant.Invalid,
+                )
+            )
+        )
+        self.assertTrue(
+            vl.addAttribute(
+                QgsField(
+                    "text_content4",
+                    QVariant.String,
+                    "text",
+                    60,
+                    0,
+                    "no comment",
+                    QVariant.Invalid,
+                )
+            )
+        )
+
+        fi = vl.getFeatures(QgsFeatureRequest())
+        f = QgsFeature()
+        while fi.nextFeature(f):
+            if f["fid"] == 3:
+                f["text_content"] = "hallo"
+                f["text_content2"] = {"hey": "ho"}
+                f["text_content3"] = ["unu", "du", "tri"]
+                f["text_content4"] = {"unu": ["unu", "du", "tri"]}
+                vl.updateFeature(f)
+                self.assertEqual(f["text_content"], "hallo")
+                self.assertEqual(f["text_content2"], {"hey": "ho"})
+                self.assertEqual(f["text_content3"], ["unu", "du", "tri"])
+                self.assertEqual(f["text_content4"], {"unu": ["unu", "du", "tri"]})
+                break
+        self.assertTrue(vl.commitChanges())
+
+        # read back again
+        vl3 = QgsVectorLayer(f"{tmpfile}|layerid=0", "foo", "ogr")
+        fi = vl3.getFeatures(QgsFeatureRequest())
+        f = QgsFeature()
+
+        fields = vl.dataProvider().fields()
+        self.assertEqual(
+            fields.at(fields.indexFromName("text_content")).type(), QVariant.String
+        )
+        self.assertEqual(
+            fields.at(fields.indexFromName("text_content2")).type(), QVariant.String
+        )
+        self.assertEqual(
+            fields.at(fields.indexFromName("text_content3")).type(), QVariant.String
+        )
+        self.assertEqual(
+            fields.at(fields.indexFromName("text_content4")).type(), QVariant.String
+        )
+
+        # test if the json values are correctly written to the text field, they are actually strings now.
+        # they can be converted to lists and maps when opening with the dedicated widgets
+        fi = vl.getFeatures(QgsFeatureRequest())
+        f = QgsFeature()
+        while fi.nextFeature(f):
+            if f["fid"] == 3:
+                self.assertEqual(f["text_content"], "hallo")
+                self.assertEqual(f["text_content2"], '{"hey":"ho"}')
+                self.assertEqual(f["text_content3"], '["unu","du","tri"]')
+                self.assertEqual(f["text_content4"], '{"unu":["unu","du","tri"]}')
+                break
 
     def test_quote_identifier(self):
         """Regression #21100"""
@@ -3937,6 +4205,120 @@ class TestPyQgsOGRProviderGpkg(QgisTestCase):
             vl.dataProvider().capabilities()
             & Qgis.VectorProviderCapability.ReadFieldDomains
         )
+
+    def testUniqueWithBufferedTransactionGroup(self):
+        # Create a GeoPackage with a unique constraint on a field
+
+        tmpfile = os.path.join(
+            self.basetestpath, "testUniqueWithBufferedTransactionGroup.gpkg"
+        )
+        ds = ogr.GetDriverByName("GPKG").CreateDataSource(tmpfile)
+
+        # Create a layer with a constraint on the "hausnummer" field
+        lyr = ds.CreateLayer("eingang", geom_type=ogr.wkbPoint)
+        lyr.CreateField(ogr.FieldDefn("hausnummer", ogr.OFTInteger))
+        lyr = None
+        sql = "CREATE UNIQUE INDEX unique_index ON eingang(hausnummer)"
+        ds.ExecuteSQL(sql)
+
+        ds = None
+
+        vl = QgsVectorLayer(f"{tmpfile}|layername=eingang", "test", "ogr")
+        self.assertTrue(vl.isSpatial())
+        self.assertTrue(vl.isValid())
+        self.assertTrue(
+            vl.dataProvider().capabilities()
+            & QgsVectorDataProvider.ChangeAttributeValues
+        )
+
+        # Start a buffered transaction group (even though there is only one layer)
+        # and try to add two features with the same value for the unique field
+        p = QgsProject()
+        p.setTransactionMode(Qgis.TransactionMode.BufferedGroups)
+        p.setFlags(Qgis.ProjectFlag.EvaluateDefaultValuesOnProviderSide)
+        self.assertTrue(p.addMapLayer(vl))
+        self.assertTrue(vl.startEditing())
+        self.assertTrue(vl.isEditable())
+        self.assertFalse(vl.isModified())
+
+        f1 = QgsFeature(vl.fields())
+        f1.setAttribute("hausnummer", 1)
+        f1.setGeometry(QgsGeometry.fromWkt("POINT(0 0)"))
+        self.assertTrue(vl.addFeatures([f1]))
+
+        # Add a feature with a duplicate value for the unique field
+        f2 = QgsFeature(vl.fields())
+        f2.setAttribute("hausnummer", 1)
+        f2.setGeometry(QgsGeometry.fromWkt("POINT(1 1)"))
+        self.assertTrue(vl.addFeatures([f2]))
+
+        self.assertTrue(vl.isModified())
+        res, errors = p.commitChanges(False, vl)
+        self.assertTrue(len(errors) > 0)
+        self.assertIn("UNIQUE constraint failed", vl.dataProvider().lastError())
+        self.assertFalse(res)
+        self.assertTrue(vl.isEditable())
+        self.assertTrue(vl.isModified())
+        self.assertEqual(len([f for f in vl.getFeatures()]), 2)
+        # This fails because of an upstream issue in OGR
+        # which doesn't properly report the number of features
+        # in the layer after a rollback
+        # TODO: fix this in OGR and re-enable the test
+        # self.assertEqual(vl.featureCount(), 2)
+        self.assertTrue(vl.rollBack())
+        self.assertFalse(vl.isEditable())
+
+        # Verify that the layer is empty after the rollback
+        vl2 = QgsVectorLayer(f"{tmpfile}|layername=eingang", "test", "ogr")
+        self.assertTrue(vl2.isValid())
+        self.assertEqual(len([f for f in vl2.getFeatures()]), 0)
+        del vl2
+
+        # Check again but change the conflicting feature to have a unique value and commit again
+        self.assertTrue(vl.startEditing())
+        f1 = QgsFeature(vl.fields())
+        f1.setAttribute("hausnummer", 1)
+        f1.setGeometry(QgsGeometry.fromWkt("POINT(0 0)"))
+        self.assertTrue(vl.addFeatures([f1]))
+
+        # Add a feature with a duplicate value for the unique field
+        f2 = QgsFeature(vl.fields())
+        f2.setAttribute("hausnummer", 1)
+        f2.setGeometry(QgsGeometry.fromWkt("POINT(1 1)"))
+        self.assertTrue(vl.addFeatures([f2]))
+
+        self.assertTrue(vl.isModified())
+        res, errors = p.commitChanges(False, vl)
+        self.assertTrue(len(errors) > 0)
+        self.assertIn("UNIQUE constraint failed", vl.dataProvider().lastError())
+        self.assertFalse(res)
+        self.assertTrue(vl.isEditable())
+        self.assertTrue(vl.isModified())
+        self.assertEqual(len([f for f in vl.getFeatures()]), 2)
+
+        # Change f2 to have a unique value and commit again
+        # Retrieve the feature from the layer to ensure we have the correct feature ID
+        fids = [f.id() for f in vl.getFeatures()]
+        f2 = vl.getFeature(fids[1])
+        f2.setAttribute("hausnummer", 2)
+        self.assertTrue(vl.isModified())
+        self.assertTrue(vl.updateFeature(f2))
+        self.assertTrue(vl.isModified())
+        res, errors = p.commitChanges(False, vl)
+        self.assertTrue(res)
+        self.assertEqual(len(errors), 1)
+        # Not really an error, but a message from the provider
+        self.assertEqual(errors[0], "SUCCESS: 2 feature(s) added.")
+        self.assertTrue(vl.isEditable())
+        self.assertFalse(vl.isModified())
+        self.assertTrue(vl.commitChanges())
+        self.assertFalse(vl.isEditable())
+
+        # Verify that the features have the expected values
+        features = {f["hausnummer"]: f for f in vl.getFeatures()}
+        self.assertEqual(len(features), 2)
+        self.assertIn(1, features)
+        self.assertIn(2, features)
 
 
 if __name__ == "__main__":

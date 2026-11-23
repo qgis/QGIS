@@ -198,6 +198,9 @@ class CORE_EXPORT QgsRemappingProxyFeatureSink : public QgsFeatureSink
 
     ~QgsRemappingProxyFeatureSink() override;
 
+    QgsRemappingProxyFeatureSink( QgsRemappingProxyFeatureSink &other ) = delete;
+    QgsRemappingProxyFeatureSink &operator=( const QgsRemappingProxyFeatureSink & ) = delete;
+
     /**
      * Sets the expression \a context to use when evaluating mapped field values.
      */
@@ -224,6 +227,9 @@ class CORE_EXPORT QgsRemappingProxyFeatureSink : public QgsFeatureSink
     QgsFeatureSink *destinationSink() { return mSink; }
 
   private:
+#ifdef SIP_RUN
+    QgsRemappingProxyFeatureSink( const QgsRemappingProxyFeatureSink & );
+#endif
     QgsRemappingSinkDefinition mDefinition;
     QgsCoordinateTransform mTransform;
     QgsFeatureSink *mSink = nullptr;

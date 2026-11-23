@@ -35,6 +35,7 @@ set(QGIS_3D_SRCS
   qgsfonttextureatlasgenerator.cpp
   qgsgeotransform.cpp
   qgsglobechunkedentity.cpp
+  qgsglobeutils_p.cpp
   qgsgltf3dutils.cpp
   qgsimagetexture.cpp
   qgslayoutitem3dmap.cpp
@@ -76,7 +77,6 @@ set(QGIS_3D_SRCS
   chunks/qgschunklist_p.cpp
   chunks/qgschunkloader.cpp
   chunks/qgschunknode.cpp
-  chunks/qgschunkqueuejob.cpp
 
   lights/qgsdirectionallightsettings.cpp
   lights/qgslightsource.cpp
@@ -159,7 +159,6 @@ set(QGIS_3D_SRCS
   terrain/qgsterraingenerator.cpp
   terrain/qgsterraintexturegenerator_p.cpp
   terrain/qgsterraintextureimage_p.cpp
-  terrain/qgsterraintileloader.cpp
 
   mesh/qgsmesh3dgeometry_p.cpp
   mesh/qgsmesh3dentity_p.cpp
@@ -213,6 +212,7 @@ set(QGIS_3D_HDRS
   qgsraycastcontext.h
   qgsraycasthit.h
   qgsraycastresult.h
+  qgsrubberband3d.h
   qgsrulebased3drenderer.h
   qgstessellatedpolygongeometry.h
   qgstiledscenechunkloader_p.h
@@ -239,7 +239,7 @@ set(QGIS_3D_HDRS
   materials/qgsgoochmaterial.h
   materials/qgsgoochmaterial3dhandler.h
   materials/qgsmaterial.h
-  materials/qgsmaterial3dhandler.cpp
+  materials/qgsmaterial3dhandler.h
   materials/qgsmetalroughmaterial.h
   materials/qgsmetalroughmaterial3dhandler.h
   materials/qgsmetalroughtexturedmaterial3dhandler.h
@@ -297,11 +297,9 @@ set(QGIS_3D_HDRS
   terrain/qgsquantizedmeshterrainsettings.h
   terrain/qgsterraindownloader.h
   terrain/qgsterraingenerator.h
-  terrain/qgsterraintileloader.h
   terrain/qgsterrainentity.h
 
   chunks/qgschunkloader.h
-  chunks/qgschunkqueuejob.h
   chunks/qgschunknode.h
   chunks/qgschunkedentity.h
 
@@ -309,6 +307,7 @@ set(QGIS_3D_HDRS
 )
 
 set(QGIS_3D_PRIVATE_HDRS
+  qgsglobeutils_p.h
   qgsrulebasedchunkloader_p.h
   qgsvectorlayerchunkloader_p.h
   qgspointcloudlayerchunkloader_p.h
@@ -329,7 +328,6 @@ set(QGIS_3D_PRIVATE_HDRS
   mesh/qgsmesh3dentity_p.h
   mesh/qgsmesh3dgeometry_p.h
   mesh/qgsmesh3dmaterial_p.h
-  mesh/qgsmeshterraintileloader_p.h
   qgscolorramptexture.h
 )
 
@@ -378,6 +376,18 @@ target_include_directories(qgis_3d PUBLIC
   ${CMAKE_SOURCE_DIR}/external/earcut
 )
 
+if (WIN32)
+  include_directories(${CMAKE_SOURCE_DIR}/src/native/win)
+elseif (APPLE)
+  include_directories(${CMAKE_SOURCE_DIR}/src/native/mac)
+elseif (UNIX)
+  include_directories(${CMAKE_SOURCE_DIR}/src/native/linux)
+endif()
+
+if(WITH_TBB)
+   target_link_libraries(qgis_3d TBB::tbb)
+endif()
+
 target_link_libraries(qgis_3d
   ${QT_VERSION_BASE}::3DCore
   ${QT_VERSION_BASE}::3DRender
@@ -403,7 +413,7 @@ if (NOT ANDROID)
     )
 endif()
 
-target_link_libraries(qgis_3d qgis_core)
+target_link_libraries(qgis_3d qgis_core qgis_gui qgis_native)
 
 # clang-tidy
 if(CLANG_TIDY_EXE)

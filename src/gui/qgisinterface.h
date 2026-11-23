@@ -50,7 +50,9 @@ class QgsLayerTreeView;
 class QgsLayerTreeGroup;
 class QgsLayout;
 class QgsMasterLayoutInterface;
+class QgsProcessingModelAlgorithm;
 class QgsLayoutDesignerInterface;
+class QgsModelDesignerDialog;
 class QgsMapCanvas;
 class QgsMapLayer;
 class QgsMapLayerConfigWidgetFactory;
@@ -397,6 +399,13 @@ class GUI_EXPORT QgisInterface : public QObject
     virtual QMenu *meshMenu() = 0 SIP_DISALLOWNONE;
 
     /**
+     * Returns a reference to the main window "Processing" menu.
+     *
+     * \since QGIS 4.4
+     */
+    virtual QMenu *processingMenu() = 0 SIP_DISALLOWNONE;
+
+    /**
      * Returns a reference to the right most standard menu, which is
      * usually the last menu item before the "Help" menu.
      *
@@ -502,6 +511,13 @@ class GUI_EXPORT QgisInterface : public QObject
      * Returns a reference to the main window "Web" toolbar.
      */
     virtual QToolBar *webToolBar() = 0 SIP_DISALLOWNONE;
+
+    /**
+     * Returns a reference to the Processing toolbox dock widget toolbar.
+     *
+     * \since QGIS 4.4
+     */
+    virtual QToolBar *processingToolboxToolBar() = 0 SIP_DISALLOWNONE;
 
     // Project menu actions
     //! Returns the native New Project action.
@@ -748,6 +764,9 @@ class GUI_EXPORT QgisInterface : public QObject
      */
     virtual QAction *actionDraw() = 0 SIP_DISALLOWNONE;
 
+    //! Returns the native action for creating a new 3d map canvas.
+    virtual QAction *actionNew3DMapCanvas() = 0 SIP_DISALLOWNONE;
+
     // Layer menu actions
     virtual QAction *actionNewVectorLayer() = 0 SIP_DISALLOWNONE;
     virtual QAction *actionAddOgrLayer() = 0 SIP_DISALLOWNONE;
@@ -841,6 +860,14 @@ class GUI_EXPORT QgisInterface : public QObject
     virtual QAction *actionQgisHomePage() = 0 SIP_DISALLOWNONE;
     virtual QAction *actionCheckQgisVersion() = 0 SIP_DISALLOWNONE;
     virtual QAction *actionAbout() = 0 SIP_DISALLOWNONE;
+
+    // Processing actions
+    /**
+     * Returns the Processing "Edit Features in Place" action.
+     *
+     * \since QGIS 4.4
+     */
+    virtual QAction *actionEditFeaturesInPlace() = 0 SIP_DISALLOWNONE;
 
     // Shape digitize actions
 
@@ -1259,6 +1286,16 @@ class GUI_EXPORT QgisInterface : public QObject
      */
     virtual QgsLayoutDesignerInterface *openLayoutDesigner( QgsMasterLayoutInterface *layout ) = 0;
 
+
+    /**
+     * Opens a new model designer dialog for the specified \a model, or
+     * brings an already open designer window to the foreground if one
+     * is already created for the model.
+     *
+     * \since QGIS 4.4
+     */
+    virtual QgsModelDesignerDialog *openModelDesigner( QgsProcessingModelAlgorithm *model SIP_TRANSFER ) = 0;
+
     /**
      * Opens the options dialog.
      *
@@ -1334,6 +1371,20 @@ class GUI_EXPORT QgisInterface : public QObject
      * \since QGIS 3.24
      */
     virtual void removePluginMeshMenu( const QString &name, QAction *action ) = 0;
+
+    /**
+     * Adds an \a action to the Processing menu.
+     *
+     * \since QGIS 4.4
+     */
+    virtual void addPluginToProcessingMenu( const QString &name, QAction *action ) = 0;
+
+    /**
+     * Removes \a action from the Processing menu.
+     *
+     * \since QGIS 4.4
+     */
+    virtual void removePluginProcessingMenu( const QString &name, QAction *action ) = 0;
 
     /**
      * Adds a \a dock widget to the main window, in the specified dock \a area.

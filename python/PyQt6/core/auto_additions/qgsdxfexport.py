@@ -8,6 +8,7 @@ QgsDxfExport.ExportResult.Success.__doc__ = "Successful export"
 QgsDxfExport.ExportResult.InvalidDeviceError.__doc__ = "Invalid device error"
 QgsDxfExport.ExportResult.DeviceNotWritableError.__doc__ = "Device not writable error"
 QgsDxfExport.ExportResult.EmptyExtentError.__doc__ = "Empty extent, no extent given and no extent could be derived from layers"
+QgsDxfExport.ExportResult.InvalidEncodingError.__doc__ = "The requested text encoding is not supported \n.. versionadded:: 4.4"
 QgsDxfExport.ExportResult.__doc__ = """The result of an export as dxf operation
 
 .. versionadded:: 3.10.1
@@ -16,6 +17,10 @@ QgsDxfExport.ExportResult.__doc__ = """The result of an export as dxf operation
 * ``InvalidDeviceError``: Invalid device error
 * ``DeviceNotWritableError``: Device not writable error
 * ``EmptyExtentError``: Empty extent, no extent given and no extent could be derived from layers
+* ``InvalidEncodingError``: The requested text encoding is not supported
+
+  .. versionadded:: 4.4
+
 
 """
 # --

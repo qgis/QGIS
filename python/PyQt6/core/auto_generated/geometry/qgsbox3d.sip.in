@@ -421,9 +421,11 @@ A null box is also an empty box.
 
     bool isEmpty() const /HoldGIL/;
 %Docstring
-Returns ``True`` if the box is empty. An empty box may still be non-null
-if it contains valid spatial information (e.g. bounding box of a point
-or of a vertical or horizontal segment).
+Returns ``True`` if the box is empty, i.e. it has no volume.
+
+An empty box may still be non-null if it contains valid spatial
+information (e.g. bounding box of a point or of a vertical or horizontal
+segment).
 
 .. versionadded:: 3.34
 %End

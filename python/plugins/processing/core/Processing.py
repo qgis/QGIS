@@ -30,6 +30,7 @@ from qgis.core import (
     QgsProcessingAlgorithm,
     QgsProcessingException,
     QgsProcessingFeedback,
+    QgsProcessingModelProvider,
     QgsProcessingOutputMapLayer,
     QgsProcessingOutputMultipleLayers,
     QgsProcessingOutputPointCloudLayer,
@@ -50,20 +51,13 @@ import processing
 from processing.core.ProcessingConfig import ProcessingConfig
 from processing.gui.AlgorithmExecutor import execute
 from processing.gui.MessageBarProgress import MessageBarProgress
-from processing.gui.RenderingStyles import RenderingStyles
 from processing.script import ScriptUtils
 from processing.tools import dataobjects
-
-with QgsRuntimeProfiler.profile("Import GDAL Provider"):
-    from processing.algs.gdal.GdalAlgorithmProvider import GdalAlgorithmProvider  # NOQA
 
 with QgsRuntimeProfiler.profile("Import Script Provider"):
     from processing.script.ScriptAlgorithmProvider import (
         ScriptAlgorithmProvider,
     )  # NOQA
-
-# should be loaded last - ensures that all dependent algorithms are available when loading models
-from processing.modeler.ModelerAlgorithmProvider import ModelerAlgorithmProvider  # NOQA
 
 
 class Processing:
@@ -135,24 +129,15 @@ class Processing:
 
             # Add the basic providers
             basic_providers = [
-                GdalAlgorithmProvider,
                 ScriptAlgorithmProvider,
             ]
-
-            # model providers are deferred for qgis_process startup
-            if QgsApplication.platform() != "qgis_process":
-                basic_providers.extend(
-                    [
-                        ModelerAlgorithmProvider,
-                    ]
-                )
 
             for c in basic_providers:
                 p = c()
                 if QgsApplication.processingRegistry().addProvider(p):
                     Processing.BASIC_PROVIDERS.append(p)
 
-            if QgsApplication.platform() == "external":
+            if QgsApplication.platform() in ("external", "qgis_process"):
                 # for external applications we must also load the builtin providers stored in separate plugins
                 try:
                     from qgisprovider.qgis_provider import QgisAlgorithmProvider
@@ -162,6 +147,17 @@ class Processing:
                         Processing.BASIC_PROVIDERS.append(p)
                 except ImportError:
                     pass
+                try:
+                    from gdalprovider.gdal_algorithm_provider import (
+                        GdalAlgorithmProvider,
+                    )
+
+                    p = GdalAlgorithmProvider()
+                    if QgsApplication.processingRegistry().addProvider(p):
+                        Processing.BASIC_PROVIDERS.append(p)
+                except ImportError:
+                    pass
+            if QgsApplication.platform() == "external":
                 try:
                     from grassprovider.grass_provider import GrassProvider
 
@@ -175,25 +171,15 @@ class Processing:
                 if QgsApplication.processingRegistry().addProvider(p):
                     Processing.BASIC_PROVIDERS.append(p)
 
+            # model providers are deferred for qgis_process startup
+            if QgsApplication.platform() == "external":
+                QgsApplication.processingRegistry().addProvider(
+                    QgsProcessingModelProvider(QgsApplication.processingRegistry())
+                )
+
             # And initialize
             ProcessingConfig.initialize()
             ProcessingConfig.readSettings()
-            RenderingStyles.loadStyles()
-
-    @staticmethod
-    def perform_deferred_model_initialization():
-        if "model" in [p.id() for p in QgsApplication.processingRegistry().providers()]:
-            return
-
-        # Add the model providers
-        # note that we don't add the Project Provider, as this cannot be called
-        # from qgis_process
-        model_providers = [ModelerAlgorithmProvider]
-
-        for c in model_providers:
-            p = c()
-            if QgsApplication.processingRegistry().addProvider(p):
-                Processing.BASIC_PROVIDERS.append(p)
 
     @staticmethod
     def deinitialize():

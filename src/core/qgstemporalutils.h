@@ -134,6 +134,13 @@ class CORE_EXPORT QgsTemporalUtils
     //! Contains settings relating to exporting animations
     struct AnimationExportSettings
     {
+        /**
+         * Animation mode.
+         *
+         * \since QGIS 4.4
+         */
+        Qgis::TemporalNavigationMode animationMode = Qgis::TemporalNavigationMode::Animated;
+
         //! Dictates the overall temporal range of the animation.
         QgsDateTimeRange animationRange;
 
@@ -146,6 +153,13 @@ class CORE_EXPORT QgsTemporalUtils
        * \since QGIS 4.0
        */
         bool temporalRangeCumulative = false;
+
+        /**
+         * Total frame count, for Qgis::TemporalNavigationMode::Movie mode only.
+         *
+         * \since QGIS 4.4
+         */
+        long long totalMovieFrames = 0;
 
         //! Destination directory for created image files.
         QString outputDirectory;

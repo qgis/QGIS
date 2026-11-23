@@ -50,7 +50,7 @@ class CORE_EXPORT QgsAnnotationLineItem : public QgsAnnotationItem
     /**
      * Creates a new linestring annotation item.
      */
-    static QgsAnnotationLineItem *create() SIP_FACTORY;
+    static std::unique_ptr<QgsAnnotationLineItem> create();
 
     bool readXml( const QDomElement &element, const QgsReadWriteContext &context ) override;
 

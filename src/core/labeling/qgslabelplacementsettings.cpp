@@ -15,6 +15,7 @@
 
 #include "qgslabelplacementsettings.h"
 
+#include "qgsdatadefinedutils.h"
 #include "qgsexpressioncontext.h"
 #include "qgspallabeling.h"
 #include "qgspropertycollection.h"
@@ -34,13 +35,18 @@ void QgsLabelPlacementSettings::updateDataDefinedProperties( const QgsPropertyCo
   if ( properties.isActive( QgsPalLayerSettings::Property::OverlapHandling ) )
   {
     const QString handlingString = properties.valueAsString( QgsPalLayerSettings::Property::OverlapHandling, context );
-    const QString cleanedString = handlingString.trimmed();
-    if ( cleanedString.compare( "prevent"_L1, Qt::CaseInsensitive ) == 0 )
-      mOverlapHandling = Qgis::LabelOverlapHandling::PreventOverlap;
-    else if ( cleanedString.compare( "allowifneeded"_L1, Qt::CaseInsensitive ) == 0 )
-      mOverlapHandling = Qgis::LabelOverlapHandling::AllowOverlapIfRequired;
-    else if ( cleanedString.compare( "alwaysallow"_L1, Qt::CaseInsensitive ) == 0 )
-      mOverlapHandling = Qgis::LabelOverlapHandling::AllowOverlapAtNoCost;
+
+    static constexpr auto OVERLAP_HANDLING_MAP = makeDataDefinedStringDecoder<Qgis::LabelOverlapHandling>( {
+      { u"prevent", Qgis::LabelOverlapHandling::PreventOverlap },
+      { u"allowifneeded", Qgis::LabelOverlapHandling::AllowOverlapIfRequired },
+      { u"alwaysallow", Qgis::LabelOverlapHandling::AllowOverlapAtNoCost },
+    } );
+
+    auto evaluatedHandling = OVERLAP_HANDLING_MAP.lookup( handlingString );
+    if ( evaluatedHandling )
+    {
+      mOverlapHandling = *evaluatedHandling;
+    }
   }
 
   // this property is messy - to avoid breaking old projects we need to also allow it to be treated as a boolean
@@ -50,21 +56,17 @@ void QgsLabelPlacementSettings::updateDataDefinedProperties( const QgsPropertyCo
     bool handledAsString = false;
     if ( !stringValue.isEmpty() )
     {
-      const QString cleanedString = stringValue.trimmed();
-      if ( cleanedString.compare( "LargestPartOnly"_L1, Qt::CaseInsensitive ) == 0 )
+      static constexpr auto MULTIPART_HANDLING_MAP = makeDataDefinedStringDecoder<Qgis::MultiPartLabelingBehavior>( {
+        { u"largestpartonly", Qgis::MultiPartLabelingBehavior::LabelLargestPartOnly },
+        { u"labeleverypart", Qgis::MultiPartLabelingBehavior::LabelEveryPartWithEntireLabel },
+        { u"splitlabeltextlinesoverparts", Qgis::MultiPartLabelingBehavior::SplitLabelTextLinesOverParts },
+      } );
+
+      auto evaluatedHandling = MULTIPART_HANDLING_MAP.lookup( stringValue );
+      if ( evaluatedHandling )
       {
         handledAsString = true;
-        mMultiPartBehavior = Qgis::MultiPartLabelingBehavior::LabelLargestPartOnly;
-      }
-      else if ( cleanedString.compare( "LabelEveryPart"_L1, Qt::CaseInsensitive ) == 0 )
-      {
-        handledAsString = true;
-        mMultiPartBehavior = Qgis::MultiPartLabelingBehavior::LabelEveryPartWithEntireLabel;
-      }
-      else if ( cleanedString.compare( "SplitLabelTextLinesOverParts"_L1, Qt::CaseInsensitive ) == 0 )
-      {
-        handledAsString = true;
-        mMultiPartBehavior = Qgis::MultiPartLabelingBehavior::SplitLabelTextLinesOverParts;
+        mMultiPartBehavior = *evaluatedHandling;
       }
     }
 
@@ -86,13 +88,19 @@ void QgsLabelPlacementSettings::updateDataDefinedProperties( const QgsPropertyCo
   if ( properties.isActive( QgsPalLayerSettings::Property::WhitespaceCollisionHandling ) )
   {
     bool ok = false;
-    const QString value = properties.valueAsString( QgsPalLayerSettings::Property::WhitespaceCollisionHandling, context, QString(), &ok ).trimmed();
+    const QString value = properties.valueAsString( QgsPalLayerSettings::Property::WhitespaceCollisionHandling, context, QString(), &ok );
     if ( ok )
     {
-      if ( value.compare( "TreatWhitespaceAsCollision"_L1, Qt::CaseInsensitive ) == 0 )
-        mWhitespaceCollisionHandling = Qgis::LabelWhitespaceCollisionHandling::TreatWhitespaceAsCollision;
-      else if ( value.compare( "IgnoreWhitespaceCollisions"_L1, Qt::CaseInsensitive ) == 0 )
-        mWhitespaceCollisionHandling = Qgis::LabelWhitespaceCollisionHandling::IgnoreWhitespaceCollisions;
+      static constexpr auto WHITESPACE_HANDLING_MAP = makeDataDefinedStringDecoder<Qgis::LabelWhitespaceCollisionHandling>(
+        { { u"treatwhitespaceascollision", Qgis::LabelWhitespaceCollisionHandling::TreatWhitespaceAsCollision },
+          { u"ignorewhitespacecollisions", Qgis::LabelWhitespaceCollisionHandling::IgnoreWhitespaceCollisions } }
+      );
+
+      auto evaluatedHandling = WHITESPACE_HANDLING_MAP.lookup( value );
+      if ( evaluatedHandling )
+      {
+        mWhitespaceCollisionHandling = *evaluatedHandling;
+      }
     }
   }
 }

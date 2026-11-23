@@ -125,7 +125,7 @@ QgsProcessingParameterDefinitionWidget::QgsProcessingParameterDefinitionWidget(
   setLayout( vlayout );
 }
 
-QgsProcessingParameterDefinition *QgsProcessingParameterDefinitionWidget::createParameter( const QString &name ) const
+std::unique_ptr<QgsProcessingParameterDefinition> QgsProcessingParameterDefinitionWidget::createParameter( const QString &name ) const
 {
   std::unique_ptr<QgsProcessingParameterDefinition> param;
   Qgis::ProcessingParameterFlags flags;
@@ -152,7 +152,7 @@ QgsProcessingParameterDefinition *QgsProcessingParameterDefinitionWidget::create
     }
   }
 
-  return param.release();
+  return param;
 }
 
 void QgsProcessingParameterDefinitionWidget::registerProcessingContextGenerator( QgsProcessingContextGenerator *generator )
@@ -186,7 +186,7 @@ QgsProcessingParameterDefinitionPanelWidget::QgsProcessingParameterDefinitionPan
   QVBoxLayout *vLayout2 = new QVBoxLayout();
   mWidget = new QgsProcessingParameterDefinitionWidget( type, context, widgetContext, definition, algorithm );
 
-  connect( mWidget, &QgsProcessingParameterDefinitionWidget::changed, this, &QgsProcessingParameterDefinitionPanelWidget::widgetChanged );
+  connect( mWidget, &QgsProcessingParameterDefinitionWidget::changed, this, &QgsProcessingParameterDefinitionPanelWidget::changed );
 
   vLayout2->addWidget( mWidget );
   QWidget *w = new QWidget();
@@ -198,7 +198,7 @@ QgsProcessingParameterDefinitionPanelWidget::QgsProcessingParameterDefinitionPan
   mCommentEdit->setAcceptRichText( false );
   commentLayout->addWidget( mCommentEdit, 1 );
 
-  connect( mCommentEdit, &QTextEdit::textChanged, this, &QgsProcessingParameterDefinitionPanelWidget::widgetChanged );
+  connect( mCommentEdit, &QTextEdit::textChanged, this, &QgsProcessingParameterDefinitionPanelWidget::changed );
 
   QHBoxLayout *hl = new QHBoxLayout();
   hl->setContentsMargins( 0, 0, 0, 0 );
@@ -210,7 +210,7 @@ QgsProcessingParameterDefinitionPanelWidget::QgsProcessingParameterDefinitionPan
   hl->addWidget( mCommentColorButton );
   commentLayout->addLayout( hl );
 
-  connect( mCommentColorButton, &QgsColorButton::colorChanged, this, &QgsProcessingParameterDefinitionPanelWidget::widgetChanged );
+  connect( mCommentColorButton, &QgsColorButton::colorChanged, this, &QgsProcessingParameterDefinitionPanelWidget::changed );
 
   QWidget *w2 = new QWidget();
   w2->setLayout( commentLayout );
@@ -224,7 +224,7 @@ QgsProcessingParameterDefinitionPanelWidget::QgsProcessingParameterDefinitionPan
   );
 }
 
-QgsProcessingParameterDefinition *QgsProcessingParameterDefinitionPanelWidget::createParameter( const QString &name ) const
+std::unique_ptr<QgsProcessingParameterDefinition> QgsProcessingParameterDefinitionPanelWidget::createParameter( const QString &name ) const
 {
   return mWidget->createParameter( name );
 }
@@ -314,7 +314,7 @@ QgsProcessingParameterDefinitionDialog::QgsProcessingParameterDefinitionDialog(
   QgsGui::enableAutoGeometryRestore( this );
 }
 
-QgsProcessingParameterDefinition *QgsProcessingParameterDefinitionDialog::createParameter( const QString &name ) const
+std::unique_ptr<QgsProcessingParameterDefinition> QgsProcessingParameterDefinitionDialog::createParameter( const QString &name ) const
 {
   return mWidget->createParameter( name );
 }

@@ -148,3 +148,8 @@ void QgsLine3DSymbolWidget::simple3DLinesToggled( bool active )
     }
   }
 }
+
+void QgsLine3DSymbolWidget::setMode( Qgis::MaterialWidgetMode mode )
+{
+  widgetMaterial->setMode( mode );
+}

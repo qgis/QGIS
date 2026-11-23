@@ -204,6 +204,7 @@ source if owned by iterator, 2. notification of open/closed iterator.
   public:
     QgsAbstractFeatureIteratorFromSource( T *source, bool ownSource, const QgsFeatureRequest &request );
 
+
     ~QgsAbstractFeatureIteratorFromSource();
 
   protected:
@@ -213,6 +214,9 @@ to be called by from subclass in
 :py:func:`~QgsAbstractFeatureIteratorFromSource.close`
 %End
 
+
+  private:
+    QgsAbstractFeatureIteratorFromSource( const QgsAbstractFeatureIteratorFromSource & );
 };
 
 

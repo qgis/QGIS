@@ -285,7 +285,12 @@ bool GeomFunction::reorderPolygon( std::vector<double> &x, std::vector<double> &
   for ( std::size_t i = 0; i < x.size(); i++ )
     pts[i] = static_cast< int >( i );
 
-  std::vector< int > convexHull = convexHullId( pts, x, y );
+  const std::vector< int > convexHull = convexHullId( pts, x, y );
+  if ( convexHull.size() < 3 )
+  {
+    // who knows what this means? absolutely no one... at least lets not crash
+    return false;
+  }
 
   int inc = 0;
   if ( pts[convexHull[0]] < pts[convexHull[1]] && pts[convexHull[1]] < pts[convexHull[2]] )

@@ -32,9 +32,10 @@ using namespace Qt::StringLiterals;
 namespace QgsWms
 {
 
-  QgsMapRendererJobProxy::QgsMapRendererJobProxy( bool parallelRendering, int maxThreads, QgsFeatureFilterProvider *featureFilterProvider )
+  QgsMapRendererJobProxy::QgsMapRendererJobProxy( bool parallelRendering, int maxThreads, QgsFeatureFilterProvider *featureFilterProvider, QHash<QgsMapLayer *, QgsDateTimeRange> perLayerTemporalRange )
     : mParallelRendering( parallelRendering )
     , mFeatureFilterProvider( featureFilterProvider )
+    , mPerLayerTemporalRange( perLayerTemporalRange )
   {
 #ifndef HAVE_SERVER_PYTHON_PLUGINS
     Q_UNUSED( mFeatureFilterProvider )
@@ -92,6 +93,7 @@ namespace QgsWms
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
       renderJob.setFeatureFilterProvider( mFeatureFilterProvider );
 #endif
+      renderJob.setPerLayerTemporalRange( mPerLayerTemporalRange );
       if ( !feedback || !feedback->isCanceled() )
         renderJob.renderSynchronously();
 

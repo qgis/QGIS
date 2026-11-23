@@ -140,9 +140,9 @@ bool QgsCopcPointCloudIndex::loadSchema( QgsLazInfo &lazInfo )
 
 std::unique_ptr<QgsPointCloudBlock> QgsCopcPointCloudIndex::nodeData( QgsPointCloudNodeId n, const QgsPointCloudRequest &request )
 {
-  if ( QgsPointCloudBlock *cached = getNodeDataFromCache( n, request ) )
+  if ( std::unique_ptr<QgsPointCloudBlock> cached = getNodeDataFromCache( n, request ) )
   {
-    return std::unique_ptr<QgsPointCloudBlock>( cached );
+    return cached;
   }
 
   std::unique_ptr<QgsPointCloudBlock> block;
@@ -191,9 +191,9 @@ QgsPointCloudBlockRequest *QgsCopcPointCloudIndex::asyncNodeData( QgsPointCloudN
 {
   if ( mAccessType == Qgis::PointCloudAccessType::Local )
     return nullptr; // TODO
-  if ( QgsPointCloudBlock *cached = getNodeDataFromCache( n, request ) )
+  if ( std::unique_ptr<QgsPointCloudBlock> cached = getNodeDataFromCache( n, request ) )
   {
-    return new QgsCachedPointCloudBlockRequest( cached, n, mUri, attributes(), request.attributes(), scale(), offset(), mFilterExpression, request.filterRect() );
+    return new QgsCachedPointCloudBlockRequest( cached.release(), n, mUri, attributes(), request.attributes(), scale(), offset(), mFilterExpression, request.filterRect() );
   }
 
   if ( !fetchNodeHierarchy( n ) )

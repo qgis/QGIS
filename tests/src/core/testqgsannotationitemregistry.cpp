@@ -38,7 +38,7 @@ class TestItem : public QgsAnnotationItem
       : QgsAnnotationItem()
     {}
 
-    static QgsAnnotationItem *create() { return new TestItem(); }
+    static std::unique_ptr<QgsAnnotationItem> create() { return std::make_unique<TestItem>(); }
 
     //implement pure virtual methods
     QString type() const override { return u"test_item"_s; }
@@ -168,7 +168,7 @@ void TestQgsAnnotationItemRegistry::createItem()
   QVERIFY( dummyItem );
 
   //try creating a bad symbol
-  item.reset( registry->createItem( u"bad item"_s ) );
+  item = registry->createItem( u"bad item"_s );
   QVERIFY( !item.get() );
 }
 

@@ -75,13 +75,13 @@ QgsGeometryCheck::Result QgsGeometryPointInPolygonCheck::collectErrors(
 
         // if the point is inside the polygon, it's ok, we incremented nInside to match nTested
         // and we go the the next polygon.
-        if ( testGeomEngine->contains( point ) )
+        if ( testGeomEngine->contains( point, nullptr, feedback ) )
         {
           ++nInside;
         }
         // else, if the point and the polygon do not touch each other, then this polygon is not meant
         // to be tested here.
-        else if ( !testGeomEngine->touches( point ) )
+        else if ( !testGeomEngine->touches( point, nullptr, feedback ) )
         {
           --nTested;
         }

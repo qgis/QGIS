@@ -810,7 +810,7 @@ Write settings into a DOM element.
 .. seealso:: :py:func:`readXml`
 %End
 
-    QMimeData *toMimeData() const /Factory/;
+    std::unique_ptr<QMimeData> toMimeData() const;
 %Docstring
 Returns new mime data representing the text format settings. Caller
 takes responsibility for deleting the returned object.

@@ -22,6 +22,8 @@
 #include <QImage>
 #include <QUrl>
 
+// Default cache size is 256 tiles (considering tiles 256x256)
+// TODO: make this configurable!
 QCache<QUrl, QImage> QgsTileCache::sTileCache( 256 );
 QMutex QgsTileCache::sTileCacheMutex;
 
@@ -29,7 +31,12 @@ QMutex QgsTileCache::sTileCacheMutex;
 void QgsTileCache::insertTile( const QUrl &url, const QImage &image )
 {
   const QMutexLocker locker( &sTileCacheMutex );
-  sTileCache.insert( url, new QImage( image ) );
+  // The cache default size is 256 tiles, but since this is also used for caching tiles
+  // from cascading WMS servers which can become quite large, we use the number of pixels
+  // in the image as multiple of a "standard" tile of 256x256 to calculate a cost for the cache.
+  // This way, the cache will be able to store more smaller tiles and less larger tiles
+  // using approximately the same amount of memory.
+  sTileCache.insert( url, new QImage( image ), std::max( static_cast<qsizetype>( 1 ), static_cast<qsizetype>( image.width() * image.height() / ( 256 * 256 ) ) ) );
 }
 
 bool QgsTileCache::tile( const QUrl &url, QImage &image )

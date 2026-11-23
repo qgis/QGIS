@@ -551,6 +551,22 @@ class CORE_EXPORT QgsScaleBarSettings
     void setLabelHorizontalPlacement( Qgis::ScaleBarDistanceLabelHorizontalPlacement placement ) { mLabelHorizontalPlacement = placement; }
 
     /**
+     * Returns the placements for unit labels.
+     *
+     * \see setUnitLabelPlacements()
+     * \since QGIS 4.4
+     */
+    Qgis::ScaleBarUnitLabelPlacements unitLabelPlacements() const { return mUnitLabelPlacements; }
+
+    /**
+     * Sets the \a placements for unit labels.
+     *
+     * \see unitLabelPlacements()
+     * \since QGIS 4.4
+     */
+    void setUnitLabelPlacements( Qgis::ScaleBarUnitLabelPlacements placements ) { mUnitLabelPlacements = placements; }
+
+    /**
      * Returns the spacing (margin) between the scalebar box and content in millimeters.
      * \see setBoxContentSpace()
      */
@@ -661,6 +677,8 @@ class CORE_EXPORT QgsScaleBarSettings
     Qgis::ScaleBarDistanceLabelVerticalPlacement mLabelVerticalPlacement = Qgis::ScaleBarDistanceLabelVerticalPlacement::AboveSegment;
     //! Label's horizontal placement
     Qgis::ScaleBarDistanceLabelHorizontalPlacement mLabelHorizontalPlacement = Qgis::ScaleBarDistanceLabelHorizontalPlacement::CenteredEdge;
+
+    Qgis::ScaleBarUnitLabelPlacements mUnitLabelPlacements = Qgis::ScaleBarUnitLabelPlacement::AfterLastDistanceLabel;
 
     //! Space between content and item box
     double mBoxContentSpace = 1.0;

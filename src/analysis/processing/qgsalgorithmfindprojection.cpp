@@ -161,7 +161,7 @@ QVariantMap QgsFindProjectionAlgorithm::processAlgorithm( const QVariantMap &par
 
     try
     {
-      if ( engine->intersects( transformedBounds.constGet() ) )
+      if ( engine->intersects( transformedBounds.constGet(), nullptr, feedback ) )
       {
         feedback->pushInfo( QObject::tr( "Found candidate CRS: %1." ).arg( candidateCrs.authid() ) );
         QgsFeature f = QgsFeature( fields );

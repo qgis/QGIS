@@ -72,11 +72,13 @@ QgsLayoutPolylineWidget::QgsLayoutPolylineWidget( QgsLayoutItemPolyline *polylin
   mArrowHeadStrokeColorButton->setAllowOpacity( true );
   mArrowHeadStrokeColorButton->setContext( u"composer"_s );
   mArrowHeadStrokeColorButton->setNoColorString( tr( "Transparent Stroke" ) );
+  mArrowHeadStrokeColorButton->setOpaqueColorString( tr( "Opaque Stroke" ) );
   mArrowHeadStrokeColorButton->setShowNoColor( true );
   mArrowHeadFillColorButton->setColorDialogTitle( tr( "Select Arrow Head Fill Color" ) );
   mArrowHeadFillColorButton->setAllowOpacity( true );
   mArrowHeadFillColorButton->setContext( u"composer"_s );
   mArrowHeadFillColorButton->setNoColorString( tr( "Transparent Fill" ) );
+  mArrowHeadFillColorButton->setOpaqueColorString( tr( "Opaque Fill" ) );
   mArrowHeadFillColorButton->setShowNoColor( true );
 
   //add widget for general composer item properties

@@ -30,7 +30,7 @@
 using namespace Qt::StringLiterals;
 
 #ifdef ENABLE_MODELTEST
-#include "modeltest.h"
+#include <QAbstractItemModelTester>
 #endif
 
 #include <QMimeData>
@@ -245,7 +245,7 @@ void TestQgsAttributesFormModel::testAvailableWidgetsModel()
   QgsAttributesAvailableWidgetsModel availableWidgetsModel( mLayer, mProject );
 
 #ifdef ENABLE_MODELTEST
-  new ModelTest( &availableWidgetsModel, this ); // for model validity checking
+  new QAbstractItemModelTester( &availableWidgetsModel, QAbstractItemModelTester::FailureReportingMode::QtTest, this );
 #endif
 
   QCOMPARE( availableWidgetsModel.columnCount(), 1 );
@@ -349,7 +349,7 @@ void TestQgsAttributesFormModel::testAvailableWidgetsModelIndexOderInDragAndDrop
   QgsAttributesAvailableWidgetsModel availableWidgetsModel( mLayer, mProject );
 
 #ifdef ENABLE_MODELTEST
-  new ModelTest( &availableWidgetsModel, this ); // for model validity checking
+  new QAbstractItemModelTester( &availableWidgetsModel, QAbstractItemModelTester::FailureReportingMode::QtTest, this );
 #endif
 
   QCOMPARE( availableWidgetsModel.columnCount(), 1 );
@@ -379,7 +379,7 @@ void TestQgsAttributesFormModel::testAvailableWidgetsModelIndexOderInDragAndDrop
     expectedItemIds << index.data( QgsAttributesFormModel::ItemIdRole ).toString();
   }
 
-  QMimeData *data = availableWidgetsModel.mimeData( indexes );
+  std::unique_ptr< QMimeData > data( availableWidgetsModel.mimeData( indexes ) );
   QByteArray itemData = data->data( u"application/x-qgsattributesformavailablewidgetsrelement"_s );
   QDataStream stream( &itemData, QIODevice::ReadOnly );
   QStringList obtainedItemIds;
@@ -413,7 +413,7 @@ void TestQgsAttributesFormModel::testAvailableWidgetsModelIndexOderInDragAndDrop
   // Fields item is above the relations one, so it is expected first
   expectedItemIds.insert( 0, tmpIndex.data( QgsAttributesFormModel::ItemIdRole ).toString() );
 
-  data = availableWidgetsModel.mimeData( indexes );
+  data.reset( availableWidgetsModel.mimeData( indexes ) );
   itemData = data->data( u"application/x-qgsattributesformavailablewidgetsrelement"_s );
   QDataStream stream2 = QDataStream( &itemData, QIODevice::ReadOnly );
 
@@ -439,7 +439,7 @@ void TestQgsAttributesFormModel::testFormLayoutModel()
   QModelIndex rootIndex = QModelIndex();
 
 #ifdef ENABLE_MODELTEST
-  new ModelTest( &formLayoutModel, this ); // for model validity checking
+  new QAbstractItemModelTester( &formLayoutModel, QAbstractItemModelTester::FailureReportingMode::QtTest, this );
 #endif
 
   QCOMPARE( formLayoutModel.columnCount(), 1 );
@@ -599,7 +599,7 @@ void TestQgsAttributesFormModel::testFormLayoutModelOrphanFields()
   QModelIndex rootIndex = QModelIndex();
 
 #ifdef ENABLE_MODELTEST
-  new ModelTest( &formLayoutModel, this ); // for model validity checking
+  new QAbstractItemModelTester( &formLayoutModel, QAbstractItemModelTester::FailureReportingMode::QtTest, this );
 #endif
 
   QCOMPARE( formLayoutModel.columnCount(), 1 );
@@ -700,12 +700,12 @@ void TestQgsAttributesFormModel::testFormLayoutModelDragAndDrop()
 
       // mimeData() records the dragged source item, so dropMimeData() performs a
       // true in-place move: the source is relocated, not copied and left behind.
-      QMimeData *mimeData = model.mimeData( QModelIndexList() << groupIndex );
+      std::unique_ptr< QMimeData > mimeData( model.mimeData( QModelIndexList() << groupIndex ) );
       QVERIFY( mimeData );
 
-      const bool dropped = model.dropMimeData( mimeData, Qt::MoveAction, targetRow, 0, tabIndex );
+      const bool dropped = model.dropMimeData( mimeData.get(), Qt::MoveAction, targetRow, 0, tabIndex );
       QVERIFY( dropped );
-      delete mimeData;
+      mimeData.reset();
       // The internal move is performed from a queued call (see dropMimeData)
       QCoreApplication::processEvents();
 
@@ -886,7 +886,7 @@ void TestQgsAttributesFormModel::testInvalidRelationInAvailableWidgets()
   QgsAttributesAvailableWidgetsModel availableWidgetsModel( mLayer, mProject );
 
 #ifdef ENABLE_MODELTEST
-  new ModelTest( &availableWidgetsModel, this ); // for model validity checking
+  new QAbstractItemModelTester( &availableWidgetsModel, QAbstractItemModelTester::FailureReportingMode::QtTest, this );
 #endif
 
   QCOMPARE( availableWidgetsModel.columnCount(), 1 );
@@ -931,7 +931,7 @@ void TestQgsAttributesFormModel::testInvalidRelationInFormLayout()
   QModelIndex rootIndex = QModelIndex();
 
 #ifdef ENABLE_MODELTEST
-  new ModelTest( &formLayoutModel, this ); // for model validity checking
+  new QAbstractItemModelTester( &formLayoutModel, QAbstractItemModelTester::FailureReportingMode::QtTest, this );
 #endif
 
   QCOMPARE( formLayoutModel.columnCount(), 1 );

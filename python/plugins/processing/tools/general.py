@@ -19,9 +19,13 @@ __author__ = "Victor Olaya"
 __date__ = "April 2013"
 __copyright__ = "(C) 2013, Victor Olaya"
 
+from typing import Optional
+
 from qgis.core import (
     QgsApplication,
     QgsProcessingAlgorithm,
+    QgsProcessingContext,
+    QgsProcessingFeedback,
     QgsProcessingOutputLayerDefinition,
     QgsProcessingParameterDefinition,
     QgsProcessingParameterEnum,
@@ -34,7 +38,6 @@ from qgis.utils import iface
 
 from processing.core.Processing import Processing
 from processing.gui.algorithm_widget import AlgorithmWidget
-from processing.gui.Postprocessing import handleAlgorithmResults
 
 
 # changing this signature? make sure you update the signature in
@@ -123,6 +126,17 @@ def run(
         )
 
 
+def _handle_algorithm_results(
+    alg: QgsProcessingAlgorithm,
+    context: QgsProcessingContext,
+    feedback: Optional[QgsProcessingFeedback] = None,
+    parameters: Optional[dict] = None,
+):
+    return QgsApplication.processingRegistry().handleAlgorithmResults(
+        alg, context, parameters or {}, feedback
+    )
+
+
 # changing this signature? make sure you update the signature in
 # python/processing/__init__.py too!
 # Docstring for this function is in python/processing/__init__.py
@@ -157,7 +171,7 @@ def runAndLoadResults(algOrName, parameters, feedback=None, context=None):
     return Processing.runAlgorithm(
         alg,
         parameters=parameters,
-        onFinish=handleAlgorithmResults,
+        onFinish=_handle_algorithm_results,
         feedback=feedback,
         context=context,
     )
