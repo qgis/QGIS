@@ -92,6 +92,15 @@ direction, with the remaining basis axis derived as their cross product.
 .. versionadded:: 4.4
 %End
 
+    static QgsVector3D ellipsoidNormal( const QgsVector3D &position, double semiMajorAxis, double semiMinorAxis );
+%Docstring
+Returns the unit surface normal (geodetic "up" direction) of the
+ellipsoid with the given ``semiMajorAxis`` and ``semiMinorAxis`` at the
+ECEF ``position``.
+
+.. versionadded:: 4.4
+%End
+
     static QQuaternion ellipsoidEastNorthUpRotation( const QgsVector3D &position, double semiMajorAxis, double semiMinorAxis );
 %Docstring
 Returns a rotation quaternion for the east-north-up (ENU) reference

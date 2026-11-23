@@ -19,6 +19,7 @@ try:
     QgsEllipsoidUtils.acronyms = staticmethod(QgsEllipsoidUtils.acronyms)
     QgsEllipsoidUtils.celestialBodies = staticmethod(QgsEllipsoidUtils.celestialBodies)
     QgsEllipsoidUtils.quaternionFromNormalUpRight = staticmethod(QgsEllipsoidUtils.quaternionFromNormalUpRight)
+    QgsEllipsoidUtils.ellipsoidNormal = staticmethod(QgsEllipsoidUtils.ellipsoidNormal)
     QgsEllipsoidUtils.ellipsoidEastNorthUpRotation = staticmethod(QgsEllipsoidUtils.ellipsoidEastNorthUpRotation)
     QgsEllipsoidUtils.__group__ = ['proj']
 except (NameError, AttributeError):
