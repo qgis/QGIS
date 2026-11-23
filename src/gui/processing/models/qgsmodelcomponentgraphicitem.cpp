@@ -683,6 +683,9 @@ QString QgsModelComponentGraphicItem::linkPointText( Qt::Edge, int ) const
 
 QPointF QgsModelComponentGraphicItem::linkPoint( Qt::Edge edge, int index, bool incoming ) const
 {
+  constexpr double OFFSET_FROM_EDGE = 6.4;
+  constexpr double FONT_HEIGHT_SCALE = 1.2;
+
   switch ( edge )
   {
     case Qt::BottomEdge:
@@ -691,8 +694,8 @@ QPointF QgsModelComponentGraphicItem::linkPoint( Qt::Edge edge, int index, bool 
       {
         const int pointIndex = !mComponent->linksCollapsed( Qt::BottomEdge ) ? index : -1;
         const QFontMetricsF fm( mFont );
-        const double hbase = itemSize().height() / 2.0 + fm.height() / 2.0 + 6.4;
-        const double y = hbase + fm.height() * 1.2 * ( pointIndex + 1 );
+        const double hbase = itemSize().height() / 2.0 + fm.height() / 2.0 + OFFSET_FROM_EDGE;
+        const double y = hbase + fm.height() * FONT_HEIGHT_SCALE * ( pointIndex + 1 );
         double x;
         if ( !mComponent->linksCollapsed( Qt::BottomEdge ) )
         {
@@ -736,8 +739,8 @@ QPointF QgsModelComponentGraphicItem::linkPoint( Qt::Edge edge, int index, bool 
           offsetX = 17;
         }
         const QFontMetricsF fm( mFont );
-        const double hbase = -itemSize().height() / 2.0 - fm.height() / 2.0 - 6.4;
-        const double y = hbase - ( fm.height() * 1.2 ) * ( paramIndex + 1 );
+        const double hbase = -itemSize().height() / 2.0 - fm.height() / 2.0 - OFFSET_FROM_EDGE;
+        const double y = hbase - ( fm.height() * FONT_HEIGHT_SCALE ) * ( paramIndex + 1 );
         const double x = -itemSize().width() / 2 + offsetX;
         return QPointF( x, y );
       }
