@@ -29,6 +29,7 @@
 #include "qgsmaprendererstagedrenderjob.h"
 #include "qgsmapsettingsutils.h"
 #include "qgsogrutils.h"
+#include "qgspainting.h"
 #include "qgsrenderedfeaturehandlerinterface.h"
 #include "qgsvectorlayer.h"
 

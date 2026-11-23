@@ -438,3 +438,8 @@ void QgsPoint3DSymbolWidget::onShapeChanged()
 
   emit changed();
 }
+
+void QgsPoint3DSymbolWidget::setMode( Qgis::MaterialWidgetMode mode )
+{
+  widgetMaterial->setMode( mode );
+}

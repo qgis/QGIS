@@ -81,24 +81,24 @@ QStringList QgsPointCloudRendererRegistry::renderersList() const
   return renderers;
 }
 
-QgsPointCloudRenderer *QgsPointCloudRendererRegistry::defaultRenderer( const QgsPointCloudLayer *layer )
+std::unique_ptr<QgsPointCloudRenderer> QgsPointCloudRendererRegistry::defaultRenderer( const QgsPointCloudLayer *layer )
 {
   const QgsPointCloudDataProvider *provider = layer->dataProvider();
   if ( !provider )
-    return new QgsPointCloudAttributeByRampRenderer();
+    return std::make_unique<QgsPointCloudAttributeByRampRenderer>();
 
   const QgsPointCloudStatistics stats = layer->statistics();
 
   if ( ( provider->name() == "pdal"_L1 ) && ( !provider->hasValidIndex() ) )
   {
     // for now, default to extent renderer only for las/laz files
-    return new QgsPointCloudExtentRenderer();
+    return std::make_unique<QgsPointCloudExtentRenderer>();
   }
 
   // If we are calculating statistics, we default to the extent renderer until the statistics calculation finishes
   if ( layer->statisticsCalculationState() == QgsPointCloudLayer::PointCloudStatisticsCalculationState::Calculating )
   {
-    return new QgsPointCloudExtentRenderer();
+    return std::make_unique<QgsPointCloudExtentRenderer>();
   }
 
   const QgsPointCloudAttributeCollection attributes = provider->attributes();
@@ -153,7 +153,7 @@ QgsPointCloudRenderer *QgsPointCloudRendererRegistry::defaultRenderer( const Qgs
     }
 
     if ( renderer )
-      return renderer.release();
+      return renderer;
   }
 
   // otherwise try a classified renderer...
@@ -168,7 +168,7 @@ QgsPointCloudRenderer *QgsPointCloudRendererRegistry::defaultRenderer( const Qgs
     {
       const QgsPointCloudCategoryList categories = classificationAttributeCategories( layer );
       auto renderer = std::make_unique< QgsPointCloudClassifiedRenderer >( "Classification"_L1, categories );
-      return renderer.release();
+      return renderer;
     }
   }
 
@@ -190,7 +190,7 @@ QgsPointCloudRenderer *QgsPointCloudRendererRegistry::defaultRenderer( const Qgs
     shader.classifyColorRamp( 5, -1, QgsRectangle(), nullptr );
     renderer->setColorRampShader( shader );
   }
-  return renderer.release();
+  return renderer;
 }
 
 QgsPointCloudCategoryList QgsPointCloudRendererRegistry::classificationAttributeCategories( const QgsPointCloudLayer *layer )

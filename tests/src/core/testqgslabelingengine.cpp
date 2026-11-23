@@ -58,6 +58,7 @@ class TestQgsLabelingEngine : public QgsTest
     void testBasic();
     void testDiagrams();
     void testRuleBased();
+    void testSelectedState();
     void zOrder(); //test that labels are stacked correctly
     void testEncodeDecodePositionOrder();
     void testEncodeDecodeLinePlacement();
@@ -490,7 +491,7 @@ void TestQgsLabelingEngine::testRuleBased()
   // read saved rules
   doc2.setContent( doc.toString() );
   const QDomElement e2 = doc2.documentElement();
-  QgsRuleBasedLabeling *rl2 = QgsRuleBasedLabeling::create( e2, QgsReadWriteContext() );
+  std::unique_ptr<QgsRuleBasedLabeling> rl2 = QgsRuleBasedLabeling::create( e2, QgsReadWriteContext() );
   QVERIFY( rl2 );
   // check that another save will keep the data the same
   const QDomElement e3 = rl2->save( doc3, QgsReadWriteContext() );
@@ -498,8 +499,6 @@ void TestQgsLabelingEngine::testRuleBased()
   QCOMPARE( doc.toString(), doc3.toString() );
 
   vl->setLabeling( nullptr );
-
-  delete rl2;
 
 #if 0
   QPainter p( &img );
@@ -511,6 +510,39 @@ void TestQgsLabelingEngine::testRuleBased()
   engine.addProvider( new QgsRuleBasedLabelProvider(, vl ) );
   engine.run( context );
 #endif
+}
+
+void TestQgsLabelingEngine::testSelectedState()
+{
+  const QSize size( 640, 480 );
+  QgsMapSettings mapSettings;
+  mapSettings.setLabelingEngineSettings( createLabelEngineSettings() );
+  mapSettings.setOutputSize( size );
+  mapSettings.setExtent( vl->extent() );
+  mapSettings.setLayers( QList<QgsMapLayer *>() << vl );
+  mapSettings.setOutputDpi( 96 );
+  mapSettings.setFlag( Qgis::MapSettingsFlag::DrawLabelSelection );
+
+  QgsPalLayerSettings settings;
+  settings.fieldName = u"Class"_s;
+  setDefaultLabelParams( settings );
+
+  vl->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );
+  vl->setLabelsEnabled( true );
+  vl->selectByExpression( u"Class='B52'"_s );
+  QCOMPARE( vl->selectedFeatureCount(), 4 );
+
+  QgsDefaultLabelingEngine engine( mapSettings );
+
+  engine.addProvider( new QgsVectorLayerLabelProvider( vl, QString(), true, &settings ) );
+
+  QgsMapRendererSequentialJob job( mapSettings );
+
+  job.start();
+  job.waitForFinished();
+  QImage img = job.renderedImage();
+
+  QGSVERIFYIMAGECHECK( "labeling_selection", "labeling_selection", img, QString(), 20, QSize( 0, 0 ), 2 );
 }
 
 void TestQgsLabelingEngine::zOrder()

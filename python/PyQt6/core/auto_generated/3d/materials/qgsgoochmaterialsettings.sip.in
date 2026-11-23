@@ -33,7 +33,7 @@ model with three color components: ambient, diffuse and specular.
     virtual QString type() const;
 
 
-    static QgsAbstractMaterialSettings *create() /Factory/;
+    static std::unique_ptr<QgsAbstractMaterialSettings> create();
 %Docstring
 Returns a new instance of QgsGoochMaterialSettings.
 %End

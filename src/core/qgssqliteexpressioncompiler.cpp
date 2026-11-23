@@ -70,7 +70,7 @@ QgsSqlExpressionCompiler::Result QgsSQLiteExpressionCompiler::compileNode( const
     case QgsExpressionNode::ntFunction:
     {
       const QgsExpressionNodeFunction *n = static_cast<const QgsExpressionNodeFunction *>( node );
-      QgsExpressionFunction *fd = QgsExpression::Functions()[n->fnIndex()];
+      const QgsExpression::SharedFunctionPtr fd = n->function();
 
       if ( fd->name() == "make_datetime"_L1 || fd->name() == "make_date"_L1 || fd->name() == "make_time"_L1 )
       {

@@ -608,7 +608,6 @@ void ColorRampDelegate::paint( QPainter *painter, const QStyleOptionViewItem &op
   gradient.setColorAt( 0, ramp.color1() );
   gradient.setColorAt( 1, ramp.color2() );
   const QRect r = option.rect.adjusted( 1, 1, -1, -1 );
-  const QgsScopedQPainterState painterState( painter );
   painter->fillRect( r, QBrush { gradient } );
 }
 

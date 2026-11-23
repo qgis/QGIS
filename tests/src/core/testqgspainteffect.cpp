@@ -62,7 +62,7 @@ class DummyPaintEffect : public QgsPaintEffect
     {}
     QString type() const override { return u"Dummy"_s; }
     QgsPaintEffect *clone() const override { return new DummyPaintEffect( mProp1, mProp2 ); }
-    static QgsPaintEffect *create( const QVariantMap &props ) { return new DummyPaintEffect( props[u"testProp"_s].toString(), props[u"testProp2"_s].toString() ); }
+    static std::unique_ptr<QgsPaintEffect> create( const QVariantMap &props ) { return std::make_unique<DummyPaintEffect>( props[u"testProp"_s].toString(), props[u"testProp2"_s].toString() ); }
     QVariantMap properties() const override
     {
       QVariantMap props;
@@ -198,7 +198,7 @@ void TestQgsPaintEffect::saveRestore()
   QCOMPARE( effectElem.attribute( "type" ), QString( "Dummy" ) );
 
   //test reading empty node
-  QgsPaintEffect *restoredEffect = QgsApplication::paintEffectRegistry()->createEffect( noNode );
+  std::unique_ptr<QgsPaintEffect> restoredEffect = QgsApplication::paintEffectRegistry()->createEffect( noNode );
   QVERIFY( !restoredEffect );
 
   //test reading bad node
@@ -210,15 +210,12 @@ void TestQgsPaintEffect::saveRestore()
   //test reading node
   restoredEffect = QgsApplication::paintEffectRegistry()->createEffect( effectElem );
   QVERIFY( restoredEffect );
-  DummyPaintEffect *restoredDummyEffect = dynamic_cast<DummyPaintEffect *>( restoredEffect );
+  auto restoredDummyEffect = qgis::unique_ptr_dynamic_cast<DummyPaintEffect>( std::move( restoredEffect ) );
   QVERIFY( restoredDummyEffect );
 
   //test properties
   QCOMPARE( restoredDummyEffect->prop1(), effect->prop1() );
   QCOMPARE( restoredDummyEffect->prop2(), effect->prop2() );
-
-  delete effect;
-  delete restoredEffect;
 }
 
 void TestQgsPaintEffect::stackSaveRestore()
@@ -258,9 +255,9 @@ void TestQgsPaintEffect::stackSaveRestore()
   QCOMPARE( childNodeList.at( 1 ).toElement().attribute( "type" ), shadow->type() );
 
   //test reading node
-  QgsPaintEffect *restoredEffect = QgsApplication::paintEffectRegistry()->createEffect( effectElem );
+  std::unique_ptr<QgsPaintEffect> restoredEffect = QgsApplication::paintEffectRegistry()->createEffect( effectElem );
   QVERIFY( restoredEffect );
-  QgsEffectStack *restoredStack = dynamic_cast<QgsEffectStack *>( restoredEffect );
+  auto restoredStack = qgis::unique_ptr_dynamic_cast<QgsEffectStack>( std::move( restoredEffect ) );
   QVERIFY( restoredStack );
   QCOMPARE( restoredStack->enabled(), stack->enabled() );
 
@@ -268,9 +265,6 @@ void TestQgsPaintEffect::stackSaveRestore()
   QCOMPARE( restoredStack->effectList()->length(), 2 );
   QCOMPARE( restoredStack->effectList()->at( 0 )->type(), blur->type() );
   QCOMPARE( restoredStack->effectList()->at( 1 )->type(), shadow->type() );
-
-  delete stack;
-  delete restoredStack;
 }
 
 void TestQgsPaintEffect::painterFlags()
@@ -337,14 +331,13 @@ void TestQgsPaintEffect::drawSource()
 
   //read/write
   const QVariantMap props = effect->properties();
-  QgsPaintEffect *readEffect = QgsDrawSourceEffect::create( props );
-  QgsDrawSourceEffect *readCast = dynamic_cast<QgsDrawSourceEffect *>( readEffect );
+  std::unique_ptr<QgsPaintEffect> readEffect = QgsDrawSourceEffect::create( props );
+  auto readCast = qgis::unique_ptr_dynamic_cast<QgsDrawSourceEffect>( std::move( readEffect ) );
   QVERIFY( readCast );
   QCOMPARE( readCast->blendMode(), effect->blendMode() );
   QCOMPARE( readCast->opacity(), effect->opacity() );
   QCOMPARE( readCast->enabled(), effect->enabled() );
   QCOMPARE( readCast->drawMode(), effect->drawMode() );
-  delete readCast;
 
   delete effect;
 
@@ -411,8 +404,8 @@ void TestQgsPaintEffect::blur()
 
   //read/write
   const QVariantMap props = effect->properties();
-  QgsPaintEffect *readEffect = QgsBlurEffect::create( props );
-  QgsBlurEffect *readCast = dynamic_cast<QgsBlurEffect *>( readEffect );
+  std::unique_ptr<QgsPaintEffect> readEffect = QgsBlurEffect::create( props );
+  auto readCast = qgis::unique_ptr_dynamic_cast<QgsBlurEffect>( std::move( readEffect ) );
   QVERIFY( readCast );
   QCOMPARE( readCast->blendMode(), effect->blendMode() );
   QCOMPARE( readCast->opacity(), effect->opacity() );
@@ -420,7 +413,6 @@ void TestQgsPaintEffect::blur()
   QCOMPARE( readCast->blurLevel(), effect->blurLevel() );
   QCOMPARE( readCast->blurMethod(), effect->blurMethod() );
   QCOMPARE( readCast->drawMode(), effect->drawMode() );
-  delete readCast;
 
   delete effect;
 
@@ -504,8 +496,8 @@ void TestQgsPaintEffect::dropShadow()
 
   //read/write
   const QVariantMap props = effect->properties();
-  QgsPaintEffect *readEffect = QgsDropShadowEffect::create( props );
-  QgsDropShadowEffect *readCast = dynamic_cast<QgsDropShadowEffect *>( readEffect );
+  std::unique_ptr<QgsPaintEffect> readEffect = QgsDropShadowEffect::create( props );
+  auto readCast = qgis::unique_ptr_dynamic_cast<QgsDropShadowEffect>( std::move( readEffect ) );
   QVERIFY( readCast );
   QCOMPARE( readCast->blendMode(), effect->blendMode() );
   QCOMPARE( readCast->opacity(), effect->opacity() );
@@ -518,7 +510,6 @@ void TestQgsPaintEffect::dropShadow()
   QCOMPARE( readCast->offsetMapUnitScale().maxScale, effect->offsetMapUnitScale().maxScale );
   QCOMPARE( readCast->color(), effect->color() );
   QCOMPARE( readCast->drawMode(), effect->drawMode() );
-  delete readCast;
 
   delete effect;
 
@@ -606,8 +597,8 @@ void TestQgsPaintEffect::glow()
 
   //read/write
   const QVariantMap props = effect->properties();
-  QgsPaintEffect *readEffect = QgsOuterGlowEffect::create( props );
-  QgsOuterGlowEffect *readCast = dynamic_cast<QgsOuterGlowEffect *>( readEffect );
+  std::unique_ptr<QgsPaintEffect> readEffect = QgsOuterGlowEffect::create( props );
+  auto readCast = qgis::unique_ptr_dynamic_cast<QgsOuterGlowEffect>( std::move( readEffect ) );
   QVERIFY( readCast );
   QCOMPARE( readCast->blendMode(), effect->blendMode() );
   QCOMPARE( readCast->opacity(), effect->opacity() );
@@ -621,7 +612,6 @@ void TestQgsPaintEffect::glow()
   QCOMPARE( readCast->ramp()->color( 0 ), effect->ramp()->color( 0 ) );
   QCOMPARE( readCast->color(), effect->color() );
   QCOMPARE( readCast->drawMode(), effect->drawMode() );
-  delete readCast;
 
   delete effect;
 

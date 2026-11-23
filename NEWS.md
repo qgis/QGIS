@@ -1,5 +1,60 @@
 Change history for the QGIS Project
 
+# What's new in Version 4.4 'Auckland'?
+
+This release has following new features:
+
+- Documentation: Add a Help button to the attribute table
+- User Interface: Disassociate welcome page visibility at startup from handling of project at startup
+- Symbology: "Opaque Fill" option in color menu
+- Symbology: Add checkboxes to quickly enable or disable a symbol layer
+- Annotations: Annotation rotation (part 3): rotation aware map tools
+- Annotations: Support text alignment for text on line annotation item types
+- Labelling: Render labels for selected features in a visible state
+- Labelling: Support rotation for line horizontal labels
+- Rendering: Elevation controller improvements
+- Rendering: Vector Field renderer for raster layers
+- 3D Features: Add single color, unlit material type
+- 3D Features: Add support for picture annotation items in 3d maps
+- 3D Features: 3d symbology widgets: simplify main panel and introduce an advanced panel
+- 3D Features: Add support for creating 3D symbology from 2D symbology
+- Print Layouts: Add control over layout scale bar unit position
+- Expressions: Add version argument for uuid expression function
+- Expressions: Add optional deflection angles to extend expression function
+- Digitising: Show dynamic label preview while editing vector features
+- Data Management: GeoJSON profiles support (RFC7946,  JSON-FG JSON-FG-PLUS  core support)
+- Data Management: Drop db manager
+- Forms and Widgets: Implement attribute form QML editor widget's editing capabilities
+- Processing: Optional "Maximum zoom extents" for XYZ algorithms
+- Processing: New algorithm to create XYZ raster tiles GeoPackage
+- Processing: Allow webp as image format option for generate XYZ tiles algorithms
+- Processing: Option to skip empty tiles in xyz tile algorithms
+- Processing: Add native ports of SAGA's 'Channel Network and Drainage Basins'
+- Processing: Port SAGA D8 flow direction, connectivity, and Strahler order tools to native processing algorithms
+- Processing: Port SAGA Upslope Area tool to native processing algorithm
+- Processing: Native SAGA's thin plate spline interpolation tools
+- Processing: Model designer "autocomplete"
+- Processing: Add profile selection options to qgis_process
+- Processing: Expose GEOS Coverage Cleaner functionality and add a processing algorithm for it
+- Application and Project Options: Handle multi-directories for project templates
+- Profile Plots: "Fixed scale" mode for layout elevation profile ranges
+- QGIS Server: Expose JSON-FG and time to QGIS server OAPIF
+- QGIS Server: QEP 414 - Various enhancements including feature schema
+- QGIS Server: Support "default" value for Time dimension in WMS GetCapabilities
+- Programmability: Port SAGA 'Raster grid cell index' algorithm to new QgsSortedRasterBlockIndex API
+- Programmability: Remove deprecated Processing WidgetWrapper subclasses
+- Notable Fixes: Bug fixes by Alessandro Pasotti (QCooperative)
+- Notable Fixes: Bug fixes by Julien Cabieces (Oslandia)
+- Notable Fixes: Bug fixes by Jean Felder (Oslandia)
+- Notable Fixes: Bug fixes by Loïc Bartoletti (Oslandia)
+- Notable Fixes: Bug fixes by Germán Carrillo (OPENGIS.ch)
+- Notable Fixes: Bug fixes by Alexander Bruy (QCooperative)
+- Notable Fixes: Bug fixes by Celia Buira (OPENGIS.ch)
+- Notable Fixes: Bug fixes by Stefanos Natsis (Lutra Consulting)
+- Notable Fixes: Bug fixes by Jan Caha (Lutra Consulting)
+-
+
+
 # What's new in Version 4.2 'Belém do Pará'?
 
 This release has following new features:

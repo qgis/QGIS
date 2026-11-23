@@ -234,13 +234,6 @@ Sets the picture to use for effect previews for the dialog
 :param picture: preview picture
 %End
 
-  signals:
-
-    void changed();
-%Docstring
-Emitted when the paint effect properties change
-%End
-
 };
 
 /************************************************************************

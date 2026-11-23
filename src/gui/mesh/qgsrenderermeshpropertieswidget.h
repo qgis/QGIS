@@ -71,6 +71,9 @@ class GUI_EXPORT QgsRendererMeshPropertiesWidget : public QgsMapLayerConfigWidge
     void syncToLayerPrivate();
 
   private:
+    //! Pushes the state of the dataset group \a groupIndex of the layer into the vector field settings widget
+    void syncVectorFieldSettingsWidget( int groupIndex );
+
     QgsMeshLayer *mMeshLayer = nullptr; //not owned
 };
 

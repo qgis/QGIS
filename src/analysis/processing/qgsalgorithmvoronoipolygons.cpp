@@ -80,7 +80,7 @@ bool QgsVoronoiPolygonsAlgorithm::prepareAlgorithm( const QVariantMap &parameter
 {
   Q_UNUSED( feedback );
 
-  mSource.reset( parameterAsSource( parameters, u"INPUT"_s, context ) );
+  mSource = parameterAsSource( parameters, u"INPUT"_s, context );
   if ( !mSource )
     throw QgsProcessingException( invalidSourceError( parameters, u"INPUT"_s ) );
 
@@ -196,11 +196,11 @@ QString QgsVoronoiPolygonsAlgorithm::voronoiWithAttributes( const QVariantMap &p
       {
         f.setGeometry( QgsGeometry( voronoiClippedToExtent.constGet()->simplifiedTypeRef()->clone() ) );
         const QList<QgsFeatureId> intersected = index.intersects( collectionPart.boundingBox() );
-        engine.reset( QgsGeometry::createGeometryEngine( collectionPart.constGet() ) );
+        engine = QgsGeometry::createGeometryEngine( collectionPart.constGet() );
         engine->prepareGeometry();
         for ( const QgsFeatureId id : intersected )
         {
-          if ( engine->intersects( index.geometry( id ).constGet() ) )
+          if ( engine->intersects( index.geometry( id ).constGet(), nullptr, feedback ) )
           {
             f.setAttributes( attributeCache.value( id ) );
             break;

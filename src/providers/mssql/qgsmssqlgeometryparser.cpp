@@ -142,11 +142,11 @@ SegmentType (1 byte)
 #define SMT_FIRSTLINE 2
 #define SMT_FIRSTARC 3
 
-#define ReadInt32( nPos ) ( *( ( unsigned int * ) ( mData + ( nPos ) ) ) )
+#define ReadInt32( nPos ) ( *( reinterpret_cast< unsigned int * >( mData + ( nPos ) ) ) )
 
 #define ReadByte( nPos ) ( mData[nPos] )
 
-#define ReadDouble( nPos ) ( *( ( double * ) ( mData + ( nPos ) ) ) )
+#define ReadDouble( nPos ) ( *( reinterpret_cast< double * >( mData + ( nPos ) ) ) )
 
 #define ParentOffset( iShape ) ( ReadInt32( mShapePos + ( iShape ) * 9 ) )
 #define FigureOffset( iShape ) ( ReadInt32( mShapePos + ( iShape ) * 9 + 4 ) )

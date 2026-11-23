@@ -56,7 +56,7 @@ Sets the fill ``symbol`` to use for the series with matching ``index``.
 Returns the fill symbols list count.
 %End
 
-    static QgsBarChartPlot *create() /Factory/;
+    static std::unique_ptr<QgsBarChartPlot> create();
 %Docstring
 Returns a new bar chart.
 %End

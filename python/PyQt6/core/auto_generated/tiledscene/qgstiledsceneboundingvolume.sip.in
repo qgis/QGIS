@@ -37,7 +37,7 @@ whenever the volume needs to be transformed into a specific destination
 CRS, in order to correctly handle 3D coordinate transforms.
 %End
 
-    QgsAbstractGeometry *as2DGeometry( const QgsCoordinateTransform &transform = QgsCoordinateTransform(), Qgis::TransformDirection direction = Qgis::TransformDirection::Forward ) const /Factory/;
+    std::unique_ptr<QgsAbstractGeometry> as2DGeometry( const QgsCoordinateTransform &transform = QgsCoordinateTransform(), Qgis::TransformDirection direction = Qgis::TransformDirection::Forward ) const;
 %Docstring
 Returns a new geometry representing the 2-dimensional X/Y center slice
 of the volume.

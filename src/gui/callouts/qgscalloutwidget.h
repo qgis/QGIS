@@ -248,7 +248,7 @@ class GUI_EXPORT QgsBalloonCalloutWidget : public QgsCalloutWidget, private Ui::
     std::unique_ptr<QgsBalloonCallout> mCallout;
 };
 
-#endif
 ///@endcond
+#endif
 
 #endif // QGSCALLOUTWIDGET_H

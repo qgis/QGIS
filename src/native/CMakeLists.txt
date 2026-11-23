@@ -56,6 +56,14 @@ if(UNIX AND NOT APPLE AND NOT ANDROID)
   set (QGIS_NATIVE_HDRS ${QGIS_NATIVE_HDRS}
      linux/qgslinuxnative.h
   )
+  if (WITH_WAYLAND)
+    set(QGIS_NATIVE_SRCS ${QGIS_NATIVE_SRCS}
+      linux/qgswaylandpointerlocker.cpp
+    )
+    set (QGIS_NATIVE_HDRS ${QGIS_NATIVE_HDRS}
+       linux/qgswaylandpointerlocker.h
+    )
+  endif()
 endif()
 
 #############################################################
@@ -104,6 +112,18 @@ target_link_libraries(qgis_native ${QT_VERSION_BASE}::Core ${QT_VERSION_BASE}::G
 
 if (UNIX AND NOT APPLE AND NOT ANDROID)
   target_link_libraries(qgis_native ${QT_VERSION_BASE}::DBus)
+
+  if (WITH_WAYLAND)
+    target_link_libraries(qgis_native ${QT_VERSION_BASE}::WaylandClient Wayland::Client)
+
+    pkg_check_modules(WAYLAND_PROTOCOLS REQUIRED wayland-protocols)
+    pkg_get_variable(WAYLAND_PROTOCOLS_PKGDATADIR wayland-protocols pkgdatadir)
+
+    qt_generate_wayland_protocol_client_sources(qgis_native FILES
+          ${CMAKE_CURRENT_SOURCE_DIR}/linux/relative-pointer-unstable-v1.xml
+          ${CMAKE_CURRENT_SOURCE_DIR}/linux/pointer-constraints-unstable-v1.xml
+    )
+  endif()
 endif()
 
 # install

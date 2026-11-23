@@ -10,6 +10,18 @@ ADD_FLEX_BISON_DEPENDENCY(QgsSqlStatementLexer QgsSqlStatementParser)
 BISON_TARGET(QgsMeshCalcParser mesh/qgsmeshcalcparser.yy ${CMAKE_CURRENT_BINARY_DIR}/qgsmeshcalcparser.cpp COMPILE_FLAGS "-p mesh_")
 FLEX_TARGET(QgsMeshCalcLexer mesh/qgsmeshcalclexer.ll ${CMAKE_CURRENT_BINARY_DIR}/qgsmeshcalclexer.cpp)
 ADD_FLEX_BISON_DEPENDENCY(QgsMeshCalcLexer QgsMeshCalcParser)
+BISON_TARGET(QgsEsriArcadeParser providers/arcgis/qgsesriarcadescriptparser.yy ${CMAKE_CURRENT_BINARY_DIR}/qgsesriarcadeparser.cpp COMPILE_FLAGS "-p arcade_")
+FLEX_TARGET(QgsEsriArcadeLexer providers/arcgis/qgsesriarcadescriptlexer.ll ${CMAKE_CURRENT_BINARY_DIR}/qgsesriarcadelexer.cpp)
+ADD_FLEX_BISON_DEPENDENCY(QgsEsriArcadeLexer QgsEsriArcadeParser)
+
+BISON_TARGET(QgsVbScriptParser providers/arcgis/qgsvbscriptparser.yy ${CMAKE_CURRENT_BINARY_DIR}/qgsvbscriptparser.cpp COMPILE_FLAGS "-p vbscript_")
+FLEX_TARGET(QgsVbScriptLexer providers/arcgis/qgsvbscriptlexer.ll ${CMAKE_CURRENT_BINARY_DIR}/qgsvbscriptlexer.cpp)
+ADD_FLEX_BISON_DEPENDENCY(QgsVbScriptLexer QgsVbScriptParser)
+
+# LAZPerf-priority
+if(WITH_INTERNAL_LAZPERF)
+  include_directories(BEFORE SYSTEM ${CMAKE_SOURCE_DIR}/external/lazperf)
+endif()
 
 if (WITH_PDF4QT)
   SET(PDF4QT_BUILD_ONLY_CORE_LIBRARY TRUE)
@@ -37,6 +49,10 @@ set(QGIS_CORE_SRCS
   ${BISON_QgsSqlStatementParser_OUTPUTS}
   ${FLEX_QgsMeshCalcLexer_OUTPUTS}
   ${BISON_QgsMeshCalcParser_OUTPUTS}
+  ${FLEX_QgsEsriArcadeLexer_OUTPUTS}
+  ${BISON_QgsEsriArcadeParser_OUTPUTS}
+  ${FLEX_QgsVbScriptLexer_OUTPUTS}
+  ${BISON_QgsVbScriptParser_OUTPUTS}
 
   actions/qgsaction.cpp
   actions/qgsactionscope.cpp
@@ -285,8 +301,10 @@ set(QGIS_CORE_SRCS
   processing/qgsprocessingalgrunnertask.cpp
   processing/qgsprocessingbatch.cpp
   processing/qgsprocessingcontext.cpp
+  processing/qgsprocessingdefaultstyleregistry.cpp
   processing/qgsprocessingfeedback.cpp
   processing/qgsprocessingoutputs.cpp
+  processing/qgsprocessingmodelprovider.cpp
   processing/qgsprocessingparameteraggregate.cpp
   processing/qgsprocessingparameterdxflayers.cpp
   processing/qgsprocessingparameterfieldmap.cpp
@@ -298,8 +316,10 @@ set(QGIS_CORE_SRCS
   processing/qgsprocessingparameterreliefcolors.cpp
   processing/qgsprocessingparametertininputlayers.cpp
   processing/qgsprocessingparametertype.cpp
+  processing/qgsprocessingparametertileextentmaxzoomlist.cpp
   processing/qgsprocessingparametervectortilewriterlayers.cpp
   processing/qgsprocessingparameteralignrasterlayers.cpp
+  processing/qgsprocessingpostprocessor.cpp
   processing/qgsprocessingprojectmodelprovider.cpp
   processing/qgsprocessingprovider.cpp
   processing/qgsprocessingregistry.cpp
@@ -331,6 +351,9 @@ set(QGIS_CORE_SRCS
   providers/arcgis/qgsarcgisportalutils.cpp
   providers/arcgis/qgsarcgisrestquery.cpp
   providers/arcgis/qgsarcgisrestutils.cpp
+  providers/arcgis/qgsesriarcadeconverter.cpp
+  providers/arcgis/qgsesriarcadescript.cpp
+  providers/arcgis/qgsvbscript.cpp
 
   providers/gdal/qgsgdalcloudconnection.cpp
   providers/gdal/qgsgdalclouddataitems.cpp
@@ -511,12 +534,14 @@ set(QGIS_CORE_SRCS
   qgsfields.cpp
   qgsfileutils.cpp
   qgsfontutils.cpp
+  qgsfutureutils.cpp
   qgsgdalutils.cpp
   qgsgeometrysimplifier.cpp
   qgsgeometryvalidator.cpp
   qgsgeometryoptions.cpp
   qgsgml.cpp
   qgsgmlschema.cpp
+  qgsgpkgtiles.cpp
   qgsgroupedfeaturefilterprovider.cpp
   qgsgrouplayer.cpp
   qgsgrouplayerrenderer.cpp
@@ -581,6 +606,7 @@ set(QGIS_CORE_SRCS
   qgsoptionalexpression.cpp
   qgsowsconnection.cpp
   qgspathresolver.cpp
+  qgspicturerasterizer.cpp
   qgspluginlayer.cpp
   qgspluginlayerregistry.cpp
   qgspointxy.cpp
@@ -845,6 +871,8 @@ set(QGIS_CORE_SRCS
   raster/qgsrastershader.cpp
   raster/qgsrastershaderfunction.cpp
   raster/qgsrastertransparency.cpp
+  raster/qgsrastervectorfieldrenderer.cpp
+  raster/qgsrastervectorfieldvaluesource.cpp
   raster/qgssortedrasterblockindex.cpp
 
   raster/qgsbilinearrasterresampler.cpp
@@ -883,6 +911,7 @@ set(QGIS_CORE_SRCS
   mesh/qgsmeshspatialindex.cpp
   mesh/qgsmeshtimesettings.cpp
   mesh/qgsmeshtracerenderer.cpp
+  mesh/qgsmeshvectorfieldvaluesource.cpp
   mesh/qgsmeshvectorrenderer.cpp
   mesh/qgstriangularmesh.cpp
   mesh/qgsmeshcalcnode.cpp
@@ -1055,6 +1084,16 @@ set(QGIS_CORE_SRCS
   vector/qgsvectorlayerundopassthroughcommand.cpp
   vector/qgsvectorlayerutils.cpp
 
+  vectorfield/qgsvectorfieldarrowsettings.cpp
+  vectorfield/qgsvectorfieldengine.cpp
+  vectorfield/qgsvectorfieldsettings.cpp
+  vectorfield/qgsvectorfieldstreamfield.cpp
+  vectorfield/qgsvectorfieldstreamlinesettings.cpp
+  vectorfield/qgsvectorfieldtraceanimationgenerator.cpp
+  vectorfield/qgsvectorfieldtracessettings.cpp
+  vectorfield/qgsvectorfieldvaluesource.cpp
+  vectorfield/qgsvectorfieldwindbarbsettings.cpp
+
   vectortile/qgsarcgisvectortileservicedataprovider.cpp
   vectortile/qgsmapboxglstyleconverter.cpp
   vectortile/qgsmbtilesvectortiledataprovider.cpp
@@ -1077,6 +1116,8 @@ set(QGIS_CORE_SRCS
   vectortile/qgsvtpktiles.cpp
   vectortile/qgsvtpkvectortiledataprovider.cpp
   vectortile/qgsxyzvectortiledataprovider.cpp
+
+  web/qgshtmlrendersettings.cpp
 
   ${CMAKE_CURRENT_BINARY_DIR}/qgsexpression_texts.cpp
 
@@ -1121,16 +1162,6 @@ add_custom_command(OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/qgsexpression_texts.cpp
   WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
 )
 
-if(ENABLE_MODELTEST)
-  set(MODELTEST_SRCS
-    ../../tests/qt_modeltest/modeltest.cpp
-    ../../tests/qt_modeltest/dynamictreemodel.cpp
-  )
-  set(QGIS_CORE_SRCS ${QGIS_CORE_SRCS}
-    ${MODELTEST_SRCS}
-  )
-endif()
-
 if (CMAKE_CXX_COMPILER_ID MATCHES "Clang")
   # spatialindex headers produce warnings
   set_source_files_properties(qgsspatialindex.cpp PROPERTIES COMPILE_FLAGS -Wno-overloaded-virtual)
@@ -1148,6 +1179,10 @@ if(NOT MSVC)
     ${BISON_QgsSqlStatementParser_OUTPUTS}
     ${FLEX_QgsMeshCalcLexer_OUTPUTS}
     ${BISON_QgsMeshCalcParser_OUTPUTS}
+    ${FLEX_QgsEsriArcadeLexer_OUTPUTS}
+    ${BISON_QgsEsriArcadeParser_OUTPUTS}
+    ${FLEX_QgsVbScriptLexer_OUTPUTS}
+    ${BISON_QgsVbScriptParser_OUTPUTS}
     PROPERTIES COMPILE_FLAGS -w)
 else()
   # -wd4702 unreachable code
@@ -1164,6 +1199,10 @@ else()
     ${BISON_QgsSqlStatementParser_OUTPUTS}
     ${FLEX_QgsMeshCalcLexer_OUTPUTS}
     ${BISON_QgsMeshCalcParser_OUTPUTS}
+    ${FLEX_QgsEsriArcadeLexer_OUTPUTS}
+    ${BISON_QgsEsriArcadeParser_OUTPUTS}
+    ${FLEX_QgsVbScriptLexer_OUTPUTS}
+    ${BISON_QgsVbScriptParser_OUTPUTS}
     PROPERTIES COMPILE_FLAGS /W0)
 endif()
 
@@ -1213,6 +1252,7 @@ set(QGIS_CORE_HDRS
   qgsdatabaseschemamodel.h
   qgsdatabasetablemodel.h
   qgsdatadefinedsizelegend.h
+  qgsdatadefinedutils.h
   qgsdataproviderelevationproperties.h
   qgsdataprovidertemporalcapabilities.h
   qgsdatasourceuri.h
@@ -1257,11 +1297,13 @@ set(QGIS_CORE_HDRS
   qgsfilefiltergenerator.h
   qgsfileutils.h
   qgsfontutils.h
+  qgsfutureutils.h
   qgsgdalutils.h
   qgsgenericspatialindex.h
   qgsgeometryoptions.h
   qgsgeometrysimplifier.h
   qgsgeometryvalidator.h
+  qgsgpkgtiles.h
   qgsgml.h
   qgsgmlschema.h
   qgsgroupedfeaturefilterprovider.h
@@ -1354,6 +1396,7 @@ set(QGIS_CORE_HDRS
   qgsreadwritelocker.h
   qgsrecentstylehandler.h
   qgsrelation.h
+  qgspicturerasterizer.h
   qgspolymorphicrelation.h
   qgsrelationcontext.h
   qgsremappingproxyfeaturesink.h
@@ -1779,6 +1822,7 @@ set(QGIS_CORE_HDRS
   mesh/qgsmeshspatialindex.h
   mesh/qgsmeshtimesettings.h
   mesh/qgsmeshtracerenderer.h
+  mesh/qgsmeshvectorfieldvaluesource.h
   mesh/qgsmeshvectorrenderer.h
   mesh/qgstriangularmesh.h
   mesh/qgsmeshcalcnode.h
@@ -1921,8 +1965,10 @@ set(QGIS_CORE_HDRS
   processing/qgsprocessingalgrunnertask.h
   processing/qgsprocessingbatch.h
   processing/qgsprocessingcontext.h
+  processing/qgsprocessingdefaultstyleregistry.h
   processing/qgsprocessingfeedback.h
   processing/qgsprocessingoutputs.h
+  processing/qgsprocessingmodelprovider.h
   processing/qgsprocessingparameteraggregate.h
   processing/qgsprocessingparameterdxflayers.h
   processing/qgsprocessingparameterfieldmap.h
@@ -1932,11 +1978,13 @@ set(QGIS_CORE_HDRS
   processing/qgsprocessingparametermeshdataset.h
   processing/qgsprocessingparameterreliefcolors.h
   processing/qgsprocessingparameters.h
+  processing/qgsprocessingparametertileextentmaxzoomlist.h
   processing/qgsprocessingparametertininputlayers.h
   processing/qgsprocessingparametertype.h
   processing/qgsprocessingparametertypeimpl.h
   processing/qgsprocessingparametervectortilewriterlayers.h
   processing/qgsprocessingparameteralignrasterlayers.h
+  processing/qgsprocessingpostprocessor.h
   processing/qgsprocessingprojectmodelprovider.h
   processing/qgsprocessingprovider.h
   processing/qgsprocessingregistry.h
@@ -1980,6 +2028,9 @@ set(QGIS_CORE_HDRS
   providers/arcgis/qgsarcgisportalutils.h
   providers/arcgis/qgsarcgisrestquery.h
   providers/arcgis/qgsarcgisrestutils.h
+  providers/arcgis/qgsesriarcadeconverter.h
+  providers/arcgis/qgsesriarcadescript.h
+  providers/arcgis/qgsvbscript.h
 
   providers/gdal/qgsgdalcloudconnection.h
   providers/gdal/qgsgdalclouddataitems.h
@@ -2062,6 +2113,8 @@ set(QGIS_CORE_HDRS
   raster/qgsrastershader.h
   raster/qgsrastershaderfunction.h
   raster/qgsrastertransparency.h
+  raster/qgsrastervectorfieldrenderer.h
+  raster/qgsrastervectorfieldvaluesource.h
   raster/qgsrasterviewport.h
   raster/qgssinglebandcolordatarenderer.h
   raster/qgssinglebandgrayrenderer.h
@@ -2240,6 +2293,16 @@ set(QGIS_CORE_HDRS
   vector/qgsvectorlayerundopassthroughcommand.h
   vector/qgsvectorlayerutils.h
 
+  vectorfield/qgsvectorfieldarrowsettings.h
+  vectorfield/qgsvectorfieldengine.h
+  vectorfield/qgsvectorfieldsettings.h
+  vectorfield/qgsvectorfieldstreamfield.h
+  vectorfield/qgsvectorfieldstreamlinesettings.h
+  vectorfield/qgsvectorfieldtraceanimationgenerator.h
+  vectorfield/qgsvectorfieldtracessettings.h
+  vectorfield/qgsvectorfieldvaluesource.h
+  vectorfield/qgsvectorfieldwindbarbsettings.h
+
   vectortile/qgsarcgisvectortileservicedataprovider.h
   vectortile/qgsmapboxglstyleconverter.h
   vectortile/qgsmbtilesvectortiledataprovider.h
@@ -2263,6 +2326,8 @@ set(QGIS_CORE_HDRS
   vectortile/qgsvtpktiles.h
   vectortile/qgsvtpkvectortiledataprovider.h
   vectortile/qgsxyzvectortiledataprovider.h
+
+  web/qgshtmlrendersettings.h
 )
 
 set(QPDF_COMPILE_OPTIONS)
@@ -2763,6 +2828,7 @@ target_include_directories(qgis_core PUBLIC
   tiledscene
   validity
   vector
+  vectorfield
   vectortile
   web
   ${CMAKE_SOURCE_DIR}/external/delaunator-cpp
@@ -2875,6 +2941,10 @@ target_link_libraries(qgis_core
   PROJ::proj
   nlohmann_json::nlohmann_json
 )
+
+if(WITH_TBB)
+   target_link_libraries(qgis_core TBB::tbb)
+endif()
 
 if(WITH_QTPOSITIONING)
   target_link_libraries(qgis_core

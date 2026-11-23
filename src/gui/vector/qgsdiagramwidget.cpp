@@ -179,7 +179,7 @@ void QgsDiagramWidget::mDiagramTypeComboBox_currentIndexChanged( int index )
         singleWidget->setDiagramType( QgsStackedBarDiagram::DIAGRAM_NAME_STACKED_BAR );
 
       connect( singleWidget, &QgsPanelWidget::showPanel, this, &QgsPanelWidget::openPanel );
-      connect( singleWidget, &QgsDiagramProperties::widgetChanged, this, &QgsDiagramWidget::widgetChanged );
+      connect( singleWidget, &QgsDiagramProperties::changed, this, &QgsDiagramWidget::changed );
       connect( singleWidget, &QgsDiagramProperties::auxiliaryFieldCreated, this, &QgsDiagramWidget::auxiliaryFieldCreated );
 
       mWidget = singleWidget;
@@ -192,7 +192,7 @@ void QgsDiagramWidget::mDiagramTypeComboBox_currentIndexChanged( int index )
       QgsStackedDiagramProperties *stackedWidget = new QgsStackedDiagramProperties( mLayer, this, mCanvas );
       stackedWidget->setDockMode( dockMode() );
       connect( stackedWidget, &QgsPanelWidget::showPanel, this, &QgsPanelWidget::openPanel );
-      connect( stackedWidget, &QgsStackedDiagramProperties::widgetChanged, this, &QgsDiagramWidget::widgetChanged );
+      connect( stackedWidget, &QgsStackedDiagramProperties::changed, this, &QgsDiagramWidget::changed );
 
       mWidget = stackedWidget;
       mStackedWidget->addWidget( mWidget );
@@ -202,7 +202,7 @@ void QgsDiagramWidget::mDiagramTypeComboBox_currentIndexChanged( int index )
     case ModeNone:
       break;
   }
-  emit widgetChanged();
+  emit changed();
 }
 
 void QgsDiagramWidget::showEngineConfigDialog()
@@ -211,7 +211,7 @@ void QgsDiagramWidget::showEngineConfigDialog()
   if ( panel && panel->dockMode() )
   {
     QgsLabelEngineConfigWidget *widget = new QgsLabelEngineConfigWidget( mCanvas );
-    connect( widget, &QgsLabelEngineConfigWidget::widgetChanged, widget, &QgsLabelEngineConfigWidget::apply );
+    connect( widget, &QgsLabelEngineConfigWidget::changed, widget, &QgsLabelEngineConfigWidget::apply );
     panel->openPanel( widget );
   }
   else

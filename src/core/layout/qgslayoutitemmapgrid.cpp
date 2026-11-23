@@ -23,6 +23,7 @@
 #include "qgscolorutils.h"
 #include "qgscoordinateformatter.h"
 #include "qgscoordinatereferencesystem.h"
+#include "qgsdatadefinedutils.h"
 #include "qgsexception.h"
 #include "qgsexpressioncontext.h"
 #include "qgsexpressioncontextutils.h"
@@ -35,6 +36,7 @@
 #include "qgslinesymbol.h"
 #include "qgslogger.h"
 #include "qgsmarkersymbol.h"
+#include "qgspainting.h"
 #include "qgsreadwritecontext.h"
 #include "qgsrendercontext.h"
 #include "qgssettingsentryimpl.h"
@@ -660,7 +662,7 @@ void QgsLayoutItemMapGrid::draw( QPainter *p )
     return;
   }
 
-  p->save();
+  QgsScopedQPainterState painterState( p );
   p->setCompositionMode( mBlendMode );
   p->setRenderHint( QPainter::Antialiasing, mMap->layout()->renderContext().flags() & Qgis::LayoutRenderFlag::Antialiasing );
 
@@ -702,7 +704,7 @@ void QgsLayoutItemMapGrid::draw( QPainter *p )
       drawGridNoTransform( context, dotsPerMM );
       break;
   }
-  p->restore();
+  painterState.restore();
 
   p->setClipping( false );
 #ifdef Q_OS_MAC
@@ -910,9 +912,9 @@ void QgsLayoutItemMapGrid::drawGridNoTransform( QgsRenderContext &context, doubl
 
 void QgsLayoutItemMapGrid::drawGridFrame( QPainter *p, GridExtension *extension ) const
 {
+  QgsScopedQPainterState painterState( p );
   if ( p )
   {
-    p->save();
     p->setRenderHint( QPainter::Antialiasing, mMap->layout()->renderContext().flags() & Qgis::LayoutRenderFlag::Antialiasing );
   }
 
@@ -938,9 +940,6 @@ void QgsLayoutItemMapGrid::drawGridFrame( QPainter *p, GridExtension *extension 
     case Qgis::MapGridFrameStyle::NoFrame:
       break;
   }
-
-  if ( p )
-    p->restore();
 }
 
 void QgsLayoutItemMapGrid::drawGridLine( const QLineF &line, QgsRenderContext &context ) const
@@ -1421,12 +1420,12 @@ void QgsLayoutItemMapGrid::drawCoordinateAnnotation(
     return;
 
   // painter is in MM, scale to dots
-  std::unique_ptr< QgsScopedQPainterState > painterState;
+  QgsScopedQPainterState painterState( context.painter(), QgsScopedQPainterState::InitialState::NoSave );
   double dotsPerMM = 1;
 
   if ( context.painter() && context.painter()->device() )
   {
-    painterState = std::make_unique< QgsScopedQPainterState >( context.painter() );
+    painterState.save();
     dotsPerMM = context.painter()->device()->logicalDpiX() / 25.4;
     context.painter()->scale( 1 / dotsPerMM, 1 / dotsPerMM ); //scale painter from mm to dots
   }
@@ -2249,16 +2248,22 @@ bool QgsLayoutItemMapGrid::shouldShowForDisplayMode( Qgis::MapGridAnnotationType
 
 Qgis::MapGridComponentVisibility gridAnnotationDisplayModeFromDD( QString ddValue, Qgis::MapGridComponentVisibility defValue )
 {
-  if ( ddValue.compare( "x_only"_L1, Qt::CaseInsensitive ) == 0 )
-    return Qgis::MapGridComponentVisibility::LatitudeOnly;
-  else if ( ddValue.compare( "y_only"_L1, Qt::CaseInsensitive ) == 0 )
-    return Qgis::MapGridComponentVisibility::LongitudeOnly;
-  else if ( ddValue.compare( "disabled"_L1, Qt::CaseInsensitive ) == 0 )
-    return Qgis::MapGridComponentVisibility::HideAll;
-  else if ( ddValue.compare( "all"_L1, Qt::CaseInsensitive ) == 0 )
-    return Qgis::MapGridComponentVisibility::ShowAll;
+  static constexpr auto VISIBILITY_MAP = makeDataDefinedStringDecoder<Qgis::MapGridComponentVisibility>( {
+    { u"xonly", Qgis::MapGridComponentVisibility::LatitudeOnly },
+    { u"yonly", Qgis::MapGridComponentVisibility::LongitudeOnly },
+    { u"disabled", Qgis::MapGridComponentVisibility::HideAll },
+    { u"all", Qgis::MapGridComponentVisibility::ShowAll },
+  } );
+
+  auto evaluatedVisibility = VISIBILITY_MAP.lookup( ddValue );
+  if ( evaluatedVisibility )
+  {
+    return *evaluatedVisibility;
+  }
   else
+  {
     return defValue;
+  }
 }
 
 void QgsLayoutItemMapGrid::refreshDataDefinedProperties()

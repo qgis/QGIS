@@ -465,7 +465,7 @@ bool QgsLayoutItemAttributeTable::getTableContents( QgsLayoutTableContents &cont
       Q_UNUSED( cse )
       return false;
     }
-    visibleMapEngine.reset( QgsGeometry::createGeometryEngine( visibleRegion.constGet() ) );
+    visibleMapEngine = QgsGeometry::createGeometryEngine( visibleRegion.constGet() );
     visibleMapEngine->prepareGeometry();
   }
 
@@ -485,7 +485,7 @@ bool QgsLayoutItemAttributeTable::getTableContents( QgsLayoutTableContents &cont
         selectionRect = selectionRect.intersect( atlasGeometry.boundingBox() );
       }
 
-      atlasGeometryEngine.reset( QgsGeometry::createGeometryEngine( atlasGeometry.constGet() ) );
+      atlasGeometryEngine = QgsGeometry::createGeometryEngine( atlasGeometry.constGet() );
       atlasGeometryEngine->prepareGeometry();
     }
     else

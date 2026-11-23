@@ -24,6 +24,12 @@ using namespace Qt::StringLiterals;
 #include "qgstiledscenetexturerenderer.h"
 #include "qgstiledscenewireframerenderer.h"
 
+QgsTiledSceneRenderer *QgsTiledSceneRendererMetadata::createRenderer( QDomElement &elem, const QgsReadWriteContext &context )
+{
+  return mCreateFunc ? mCreateFunc( elem, context ).release() : nullptr;
+}
+
+
 QgsTiledSceneRendererRegistry::QgsTiledSceneRendererRegistry()
 {
   // add default renderers
@@ -74,7 +80,7 @@ QStringList QgsTiledSceneRendererRegistry::renderersList() const
   return renderers;
 }
 
-QgsTiledSceneRenderer *QgsTiledSceneRendererRegistry::defaultRenderer( const QgsTiledSceneLayer * )
+std::unique_ptr<QgsTiledSceneRenderer> QgsTiledSceneRendererRegistry::defaultRenderer( const QgsTiledSceneLayer * )
 {
-  return new QgsTiledSceneTextureRenderer();
+  return std::make_unique<QgsTiledSceneTextureRenderer>();
 }

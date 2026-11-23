@@ -60,7 +60,7 @@ class GUI_EXPORT QgsDataDefinedSizeLegendWidget : public QgsPanelWidget, private
     ~QgsDataDefinedSizeLegendWidget() override;
 
     //! Returns configuration as set up in the dialog (may be NULLPTR). Ownership is passed to the caller.
-    QgsDataDefinedSizeLegend *dataDefinedSizeLegend() const SIP_FACTORY;
+    std::unique_ptr<QgsDataDefinedSizeLegend> dataDefinedSizeLegend() const;
 
   signals:
 

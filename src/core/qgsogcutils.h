@@ -151,7 +151,7 @@ class CORE_EXPORT QgsOgcUtils
     static QColor colorFromOgcFill( const QDomElement &fillElement );
 
     //! Parse XML with OGC filter into QGIS expression
-    static QgsExpression *expressionFromOgcFilter( const QDomElement &element, QgsVectorLayer *layer = nullptr ) SIP_FACTORY;
+    static std::unique_ptr<QgsExpression> expressionFromOgcFilter( const QDomElement &element, QgsVectorLayer *layer = nullptr );
 
     /**
      * Creates OGC filter XML element. Supports minimum standard filter
@@ -178,7 +178,7 @@ class CORE_EXPORT QgsOgcUtils
      * \param layer Layer to use to retrieve field values from literal filters
      * \since QGIS 3.4
      */
-    static QgsExpression *expressionFromOgcFilter( const QDomElement &element, FilterVersion version, QgsVectorLayer *layer = nullptr ) SIP_FACTORY;
+    static std::unique_ptr<QgsExpression> expressionFromOgcFilter( const QDomElement &element, FilterVersion version, QgsVectorLayer *layer = nullptr );
 
     /**
      * Creates OGC filter XML element. Supports minimum standard filter

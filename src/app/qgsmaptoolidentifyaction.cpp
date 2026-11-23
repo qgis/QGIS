@@ -102,7 +102,7 @@ void QgsMapToolIdentifyAction::showAttributeTable( QgsMapLayer *layer, const QLi
   }
   const QString filter = u"$id IN (%1)"_s.arg( idList.join( ',' ) );
 
-  QgsAttributeTableDialog *tableDialog = new QgsAttributeTableDialog( vl, QgsAttributeTableFilterModel::ShowFilteredList );
+  QgsAttributeTableDialog *tableDialog = new QgsAttributeTableDialog( vl, Qgis::AttributeTableFilterMode::ShowFilteredList );
   tableDialog->setFilterExpression( filter );
   tableDialog->show();
 }

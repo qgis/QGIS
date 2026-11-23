@@ -135,6 +135,21 @@ QgsLayoutScaleBarWidget::QgsLayoutScaleBarWidget( QgsLayoutItemScaleBar *scaleBa
   mUnitsComboBox->addItem( tr( "Millimeters" ), static_cast<int>( Qgis::DistanceUnit::Millimeters ) );
   mUnitsComboBox->addItem( tr( "Inches" ), static_cast<int>( Qgis::DistanceUnit::Inches ) );
 
+  mUnitLabelPlacementComboBox->addItemWithCheckState( tr( "Before First Distance Label" ), Qt::CheckState::Unchecked, QVariant::fromValue( Qgis::ScaleBarUnitLabelPlacement::BeforeFirstDistanceLabel ) );
+  mUnitLabelPlacementComboBox->addItemWithCheckState( tr( "After Last Distance Label" ), Qt::CheckState::Unchecked, QVariant::fromValue( Qgis::ScaleBarUnitLabelPlacement::AfterLastDistanceLabel ) );
+  mUnitLabelPlacementComboBox->addItemWithCheckState( tr( "Before Every Distance Label" ), Qt::CheckState::Unchecked, QVariant::fromValue( Qgis::ScaleBarUnitLabelPlacement::BeforeEveryDistanceLabel ) );
+  mUnitLabelPlacementComboBox->addItemWithCheckState( tr( "After Every Distance Label" ), Qt::CheckState::Unchecked, QVariant::fromValue( Qgis::ScaleBarUnitLabelPlacement::AfterEveryDistanceLabel ) );
+  mUnitLabelPlacementComboBox->addItemWithCheckState( tr( "Before Bar" ), Qt::CheckState::Unchecked, QVariant::fromValue( Qgis::ScaleBarUnitLabelPlacement::BeforeBar ) );
+  mUnitLabelPlacementComboBox->addItemWithCheckState( tr( "After Bar" ), Qt::CheckState::Unchecked, QVariant::fromValue( Qgis::ScaleBarUnitLabelPlacement::AfterBar ) );
+  mUnitLabelPlacementComboBox->addItemWithCheckState( tr( "Above Bar, Left" ), Qt::CheckState::Unchecked, QVariant::fromValue( Qgis::ScaleBarUnitLabelPlacement::LeftAbove ) );
+  mUnitLabelPlacementComboBox->addItemWithCheckState( tr( "Above Bar, Center" ), Qt::CheckState::Unchecked, QVariant::fromValue( Qgis::ScaleBarUnitLabelPlacement::CenteredAbove ) );
+  mUnitLabelPlacementComboBox->addItemWithCheckState( tr( "Above Bar, Right" ), Qt::CheckState::Unchecked, QVariant::fromValue( Qgis::ScaleBarUnitLabelPlacement::RightAbove ) );
+  mUnitLabelPlacementComboBox->addItemWithCheckState( tr( "Below Bar, Left" ), Qt::CheckState::Unchecked, QVariant::fromValue( Qgis::ScaleBarUnitLabelPlacement::LeftBelow ) );
+  mUnitLabelPlacementComboBox->addItemWithCheckState( tr( "Below Bar, Center" ), Qt::CheckState::Unchecked, QVariant::fromValue( Qgis::ScaleBarUnitLabelPlacement::CenteredBelow ) );
+  mUnitLabelPlacementComboBox->addItemWithCheckState( tr( "Below Bar, Right" ), Qt::CheckState::Unchecked, QVariant::fromValue( Qgis::ScaleBarUnitLabelPlacement::RightBelow ) );
+  mUnitLabelPlacementComboBox->addItemWithCheckState( tr( "On Bar, After First Division" ), Qt::CheckState::Unchecked, QVariant::fromValue( Qgis::ScaleBarUnitLabelPlacement::OnBarAfterFirstDivision ) );
+  connect( mUnitLabelPlacementComboBox, &QgsCheckableComboBox::checkedItemsChanged, this, &QgsLayoutScaleBarWidget::labelUnitPlacementChanged );
+
   mLineStyleButton->setSymbolType( Qgis::SymbolType::Line );
   connect( mLineStyleButton, &QgsSymbolButton::changed, this, &QgsLayoutScaleBarWidget::lineSymbolChanged );
 
@@ -326,6 +341,8 @@ void QgsLayoutScaleBarWidget::setGuiElements()
   mDistanceLabelPlacementComboBox->setCurrentIndex(
     mDistanceLabelPlacementComboBox->findData( static_cast<int>( distanceLabelPlacement( mScalebar->labelHorizontalPlacement(), mScalebar->labelVerticalPlacement() ) ) )
   );
+
+  mUnitLabelPlacementComboBox->setCheckedItemsFromFlags< Qgis::ScaleBarUnitLabelPlacement >( mScalebar->unitLabelPlacements() );
 
   //alignment
 
@@ -772,6 +789,7 @@ void QgsLayoutScaleBarWidget::blockMemberSignals( bool block )
   mMinWidthSpinBox->blockSignals( block );
   mMaxWidthSpinBox->blockSignals( block );
   mScaleMethodWidget->blockSignals( block );
+  mUnitLabelPlacementComboBox->blockSignals( block );
 }
 
 void QgsLayoutScaleBarWidget::connectUpdateSignal()
@@ -862,6 +880,21 @@ void QgsLayoutScaleBarWidget::mMaxWidthSpinBox_valueChanged( double )
   mScalebar->beginCommand( tr( "Set Scalebar Size Mode" ), QgsLayoutItem::UndoScaleBarSegmentSize );
   disconnectUpdateSignal();
   mScalebar->setMaximumBarWidth( mMaxWidthSpinBox->value() );
+  mScalebar->update();
+  connectUpdateSignal();
+  mScalebar->endCommand();
+}
+
+void QgsLayoutScaleBarWidget::labelUnitPlacementChanged()
+{
+  if ( !mScalebar )
+  {
+    return;
+  }
+
+  mScalebar->beginCommand( tr( "Set Scalebar Label Unit Placement" ) );
+  disconnectUpdateSignal();
+  mScalebar->setUnitLabelPlacements( mUnitLabelPlacementComboBox->flagsFromCheckedItems<Qgis::ScaleBarUnitLabelPlacement >() );
   mScalebar->update();
   connectUpdateSignal();
   mScalebar->endCommand();

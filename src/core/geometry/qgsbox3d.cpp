@@ -311,7 +311,7 @@ void QgsBox3D::grow( double delta )
 bool QgsBox3D::isNull() const
 {
   return ( std::isnan( mBounds2d.xMinimum() ) && std::isnan( mBounds2d.xMaximum() )
-           && std::isnan( mBounds2d.yMinimum() ) && std::isnan( mBounds2d.xMaximum() )
+           && std::isnan( mBounds2d.yMinimum() ) && std::isnan( mBounds2d.yMaximum() )
            && std::isnan( mZmin ) && std::isnan( mZmax ) )
          ||
          ( mBounds2d.xMinimum() == std::numeric_limits<double>::max() && mBounds2d.yMinimum() == std::numeric_limits<double>::max() && mZmin == std::numeric_limits<double>::max()
@@ -320,7 +320,7 @@ bool QgsBox3D::isNull() const
 
 bool QgsBox3D::isEmpty() const
 {
-  return mZmax < mZmin || qgsDoubleNear( mZmax, mZmin ) || mBounds2d.isEmpty();
+  return qgsDoubleNear( mZmax, mZmin ) || mBounds2d.isEmpty();
 }
 
 QString QgsBox3D::toString( int precision ) const

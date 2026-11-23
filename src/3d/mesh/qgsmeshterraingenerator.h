@@ -55,7 +55,7 @@ class _3D_EXPORT QgsMeshTerrainGenerator : public QgsTerrainGenerator
 
     void setCrs( const QgsCoordinateReferenceSystem &crs, const QgsCoordinateTransformContext &context ) override;
 
-    QgsChunkLoader *createChunkLoader( QgsChunkNode *node ) const override SIP_FACTORY;
+    QFuture<QgsChunkLoaderResult> loadChunk( QgsChunkNode *node ) override;
     float rootChunkError( const Qgs3DMapSettings &map ) const override;
     void rootChunkHeightRange( float &hMin, float &hMax ) const override;
     QgsTerrainGenerator *clone() const override SIP_FACTORY;

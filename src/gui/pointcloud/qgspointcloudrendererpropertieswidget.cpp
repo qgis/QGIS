@@ -113,6 +113,8 @@ QgsPointCloudRendererPropertiesWidget::QgsPointCloudRendererPropertiesWidget( Qg
   );
 
   connect( mPointSizeSpinBox, qOverload<double>( &QgsDoubleSpinBox::valueChanged ), this, &QgsPointCloudRendererPropertiesWidget::emitWidgetChanged );
+  mPointSizeSpinBox->setClearValue( 1.0 );
+
   connect( mPointSizeUnitWidget, &QgsUnitSelectionWidget::changed, this, &QgsPointCloudRendererPropertiesWidget::emitWidgetChanged );
 
   mDrawOrderComboBox->addItem( tr( "Default" ), QVariant::fromValue( Qgis::PointCloudDrawOrder::Default ) );
@@ -129,7 +131,10 @@ QgsPointCloudRendererPropertiesWidget::QgsPointCloudRendererPropertiesWidget( Qg
 
   mHillshadingZFactorSpinBox->setClearValue( 1.0 );
   connect( mHillshadingZFactorSpinBox, qOverload<double>( &QDoubleSpinBox::valueChanged ), this, &QgsPointCloudRendererPropertiesWidget::emitWidgetChanged );
-  connect( mHillshadingMultidirCheckBox, &QCheckBox::toggled, this, &QgsPointCloudRendererPropertiesWidget::emitWidgetChanged );
+  connect( mHillshadingMultidirCheckBox, &QCheckBox::toggled, this, [this]( bool checked ) {
+    mDirectionalLightWidget->setEnableAzimuth( !checked );
+    emitWidgetChanged();
+  } );
 
   mMaxErrorUnitWidget->setUnits(
     { Qgis::RenderUnit::Millimeters, Qgis::RenderUnit::MetersInMapUnits, Qgis::RenderUnit::MapUnits, Qgis::RenderUnit::Pixels, Qgis::RenderUnit::Points, Qgis::RenderUnit::Inches }
@@ -427,7 +432,7 @@ void QgsPointCloudRendererPropertiesWidget::rendererChanged()
       mActiveWidget->setContext( mContext );
     }
 
-    connect( mActiveWidget, &QgsPanelWidget::widgetChanged, this, &QgsPointCloudRendererPropertiesWidget::widgetChanged );
+    connect( mActiveWidget, &QgsPanelWidget::changed, this, &QgsPointCloudRendererPropertiesWidget::changed );
     connect( mActiveWidget, &QgsPanelWidget::showPanel, this, &QgsPointCloudRendererPropertiesWidget::openPanel );
     widget->setDockMode( dockMode() );
   }
@@ -442,7 +447,7 @@ void QgsPointCloudRendererPropertiesWidget::rendererChanged()
 void QgsPointCloudRendererPropertiesWidget::emitWidgetChanged()
 {
   if ( !mBlockChangedSignal )
-    emit widgetChanged();
+    emit changed();
 }
 
 void QgsPointCloudRendererPropertiesWidget::updateDataDefinedProperty()

@@ -25,6 +25,7 @@
 #include "qgslayoutrendercontext.h"
 #include "qgslayoututils.h"
 #include "qgspagesizeregistry.h"
+#include "qgspainting.h"
 #include "qgsstyle.h"
 #include "qgsstyleentityvisitor.h"
 #include "qgssymbollayerutils.h"

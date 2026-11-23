@@ -1,0 +1,203 @@
+name: "Build"
+on:
+  push:
+  pull_request:
+
+concurrency:
+  group: "${{github.workflow}}-${{github.ref}}"
+  cancel-in-progress: ${{github.ref != 'refs/heads/master'}}
+
+defaults:
+  run:
+    shell: bash
+
+jobs:
+  build:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - { title: "linux/analyze-build", host: "ubuntu-24.04"    , arch: "x64"    , cc: "clang-19", conf: "Debug"  , defs: "BLEND2D_TEST=0"                   , diagnostics: "analyze-build" }
+          - { title: "linux/asan"         , host: "ubuntu-24.04"    , arch: "x64"    , cc: "clang-19", conf: "Release", defs: "BLEND2D_TEST=1"                   , diagnostics: "asan" }
+          - { title: "linux/msan/no-jit"  , host: "ubuntu-24.04"    , arch: "x64"    , cc: "clang-19", conf: "Release", defs: "BLEND2D_TEST=1,BLEND2D_NO_JIT=1"  , diagnostics: "msan" }
+          - { title: "linux/tsan"         , host: "ubuntu-24.04"    , arch: "x64"    , cc: "clang-19", conf: "Release", defs: "BLEND2D_TEST=1"                   , diagnostics: "tsan" }
+          - { title: "linux/tsan/no-futex", host: "ubuntu-24.04"    , arch: "x64"    , cc: "clang-19", conf: "Release", defs: "BLEND2D_TEST=1,BLEND2D_NO_FUTEX=1", diagnostics: "tsan" }
+          - { title: "linux/ubsan"        , host: "ubuntu-24.04"    , arch: "x64"    , cc: "clang-19", conf: "Release", defs: "BLEND2D_TEST=1"                   , diagnostics: "ubsan" }
+          - { title: "linux/hardened"     , host: "ubuntu-24.04"    , arch: "x64"    , cc: "clang-19", conf: "Release", defs: "BLEND2D_TEST=1"                   , diagnostics: "hardened" }
+          - { title: "linux/valgrind"     , host: "ubuntu-24.04"    , arch: "x64"    , cc: "clang-19", conf: "Release", defs: "BLEND2D_TEST=1"                   , diagnostics: "valgrind" }
+          - { title: "linux/no-jit"       , host: "ubuntu-24.04"    , arch: "x64"    , cc: "clang-19", conf: "Release", defs: "BLEND2D_TEST=1,BLEND2D_NO_JIT=1" }
+          - { title: "linux/no-tls"       , host: "ubuntu-24.04"    , arch: "x64"    , cc: "clang-19", conf: "Release", defs: "BLEND2D_TEST=1,BLEND2D_NO_TLS=1" }
+          - { title: "linux/no-futex"     , host: "ubuntu-24.04"    , arch: "x64"    , cc: "clang-19", conf: "Release", defs: "BLEND2D_TEST=1,BLEND2D_NO_FUTEX=1" }
+          - { title: "linux/use-c++20"    , host: "ubuntu-24.04"    , arch: "x64"    , cc: "clang-19", conf: "Debug"  , defs: "BLEND2D_TEST=1,CMAKE_CXX_FLAGS=-std=c++20" }
+          - { title: "linux/use-c++23"    , host: "ubuntu-24.04"    , arch: "x64"    , cc: "clang-19", conf: "Debug"  , defs: "BLEND2D_TEST=1,CMAKE_CXX_FLAGS=-std=c++23" }
+          - { title: "linux/use-sse4.2"   , host: "ubuntu-24.04"    , arch: "x64"    , cc: "clang-19", conf: "Release", defs: "BLEND2D_TEST=1,CMAKE_CXX_FLAGS=-msse4.2" }
+          - { title: "linux/use-avx"      , host: "ubuntu-24.04"    , arch: "x64"    , cc: "clang-19", conf: "Release", defs: "BLEND2D_TEST=1,CMAKE_CXX_FLAGS=-mavx" }
+          - { title: "linux/use-avx2"     , host: "ubuntu-24.04"    , arch: "x64"    , cc: "clang-19", conf: "Release", defs: "BLEND2D_TEST=1,CMAKE_CXX_FLAGS=-mavx2" }
+          - { title: "linux"              , host: "ubuntu-24.04"    , arch: "x86"    , cc: "gcc-9"   , conf: "Debug"  , defs: "BLEND2D_TEST=1" }
+          - { title: "linux"              , host: "ubuntu-24.04"    , arch: "x86"    , cc: "gcc-9"   , conf: "Release", defs: "BLEND2D_TEST=1" }
+          - { title: "linux"              , host: "ubuntu-24.04"    , arch: "x64"    , cc: "gcc-9"   , conf: "Debug"  , defs: "BLEND2D_TEST=1" }
+          - { title: "linux"              , host: "ubuntu-24.04"    , arch: "x64"    , cc: "gcc-9"   , conf: "Release", defs: "BLEND2D_TEST=1" }
+          - { title: "linux"              , host: "ubuntu-24.04"    , arch: "x86"    , cc: "gcc-10"  , conf: "Debug"  , defs: "BLEND2D_TEST=1" }
+          - { title: "linux"              , host: "ubuntu-24.04"    , arch: "x86"    , cc: "gcc-10"  , conf: "Release", defs: "BLEND2D_TEST=1" }
+          - { title: "linux"              , host: "ubuntu-24.04"    , arch: "x64"    , cc: "gcc-10"  , conf: "Debug"  , defs: "BLEND2D_TEST=1" }
+          - { title: "linux"              , host: "ubuntu-24.04"    , arch: "x64"    , cc: "gcc-10"  , conf: "Release", defs: "BLEND2D_TEST=1" }
+          - { title: "linux"              , host: "ubuntu-24.04"    , arch: "x86"    , cc: "gcc-11"  , conf: "Debug"  , defs: "BLEND2D_TEST=1" }
+          - { title: "linux"              , host: "ubuntu-24.04"    , arch: "x86"    , cc: "gcc-11"  , conf: "Release", defs: "BLEND2D_TEST=1" }
+          - { title: "linux"              , host: "ubuntu-24.04"    , arch: "x64"    , cc: "gcc-11"  , conf: "Debug"  , defs: "BLEND2D_TEST=1" }
+          - { title: "linux"              , host: "ubuntu-24.04"    , arch: "x64"    , cc: "gcc-11"  , conf: "Release", defs: "BLEND2D_TEST=1" }
+          - { title: "linux"              , host: "ubuntu-24.04"    , arch: "x86"    , cc: "gcc-12"  , conf: "Debug"  , defs: "BLEND2D_TEST=1" }
+          - { title: "linux"              , host: "ubuntu-24.04"    , arch: "x86"    , cc: "gcc-12"  , conf: "Release", defs: "BLEND2D_TEST=1" }
+          - { title: "linux"              , host: "ubuntu-24.04"    , arch: "x64"    , cc: "gcc-12"  , conf: "Debug"  , defs: "BLEND2D_TEST=1" }
+          - { title: "linux"              , host: "ubuntu-24.04"    , arch: "x64"    , cc: "gcc-12"  , conf: "Release", defs: "BLEND2D_TEST=1" }
+          - { title: "linux"              , host: "ubuntu-24.04"    , arch: "x86"    , cc: "gcc-13"  , conf: "Debug"  , defs: "BLEND2D_TEST=1" }
+          - { title: "linux"              , host: "ubuntu-24.04"    , arch: "x86"    , cc: "gcc-13"  , conf: "Release", defs: "BLEND2D_TEST=1" }
+          - { title: "linux"              , host: "ubuntu-24.04"    , arch: "x64"    , cc: "gcc-13"  , conf: "Debug"  , defs: "BLEND2D_TEST=1" }
+          - { title: "linux"              , host: "ubuntu-24.04"    , arch: "x64"    , cc: "gcc-13"  , conf: "Release", defs: "BLEND2D_TEST=1" }
+          - { title: "linux"              , host: "ubuntu-24.04"    , arch: "x86"    , cc: "gcc-14"  , conf: "Debug"  , defs: "BLEND2D_TEST=1" }
+          - { title: "linux"              , host: "ubuntu-24.04"    , arch: "x86"    , cc: "gcc-14"  , conf: "Release", defs: "BLEND2D_TEST=1" }
+          - { title: "linux"              , host: "ubuntu-24.04"    , arch: "x64"    , cc: "gcc-14"  , conf: "Debug"  , defs: "BLEND2D_TEST=1" }
+          - { title: "linux"              , host: "ubuntu-24.04"    , arch: "x64"    , cc: "gcc-14"  , conf: "Release", defs: "BLEND2D_TEST=1" }
+          - { title: "linux"              , host: "ubuntu-24.04"    , arch: "x86"    , cc: "clang-14", conf: "Debug"  , defs: "BLEND2D_TEST=1" }
+          - { title: "linux"              , host: "ubuntu-24.04"    , arch: "x86"    , cc: "clang-14", conf: "Release", defs: "BLEND2D_TEST=1" }
+          - { title: "linux"              , host: "ubuntu-24.04"    , arch: "x64"    , cc: "clang-14", conf: "Debug"  , defs: "BLEND2D_TEST=1" }
+          - { title: "linux"              , host: "ubuntu-24.04"    , arch: "x64"    , cc: "clang-14", conf: "Release", defs: "BLEND2D_TEST=1" }
+          - { title: "linux"              , host: "ubuntu-24.04"    , arch: "x86"    , cc: "clang-15", conf: "Debug"  , defs: "BLEND2D_TEST=1" }
+          - { title: "linux"              , host: "ubuntu-24.04"    , arch: "x86"    , cc: "clang-15", conf: "Release", defs: "BLEND2D_TEST=1" }
+          - { title: "linux"              , host: "ubuntu-24.04"    , arch: "x64"    , cc: "clang-15", conf: "Debug"  , defs: "BLEND2D_TEST=1" }
+          - { title: "linux"              , host: "ubuntu-24.04"    , arch: "x64"    , cc: "clang-15", conf: "Release", defs: "BLEND2D_TEST=1" }
+          - { title: "linux"              , host: "ubuntu-24.04"    , arch: "x86"    , cc: "clang-16", conf: "Debug"  , defs: "BLEND2D_TEST=1" }
+          - { title: "linux"              , host: "ubuntu-24.04"    , arch: "x86"    , cc: "clang-16", conf: "Release", defs: "BLEND2D_TEST=1" }
+          - { title: "linux"              , host: "ubuntu-24.04"    , arch: "x64"    , cc: "clang-16", conf: "Debug"  , defs: "BLEND2D_TEST=1" }
+          - { title: "linux"              , host: "ubuntu-24.04"    , arch: "x64"    , cc: "clang-16", conf: "Release", defs: "BLEND2D_TEST=1" }
+          - { title: "linux"              , host: "ubuntu-24.04"    , arch: "x86"    , cc: "clang-17", conf: "Debug"  , defs: "BLEND2D_TEST=1" }
+          - { title: "linux"              , host: "ubuntu-24.04"    , arch: "x86"    , cc: "clang-17", conf: "Release", defs: "BLEND2D_TEST=1" }
+          - { title: "linux"              , host: "ubuntu-24.04"    , arch: "x64"    , cc: "clang-17", conf: "Debug"  , defs: "BLEND2D_TEST=1" }
+          - { title: "linux"              , host: "ubuntu-24.04"    , arch: "x64"    , cc: "clang-17", conf: "Release", defs: "BLEND2D_TEST=1" }
+          - { title: "linux"              , host: "ubuntu-24.04"    , arch: "x86"    , cc: "clang-18", conf: "Debug"  , defs: "BLEND2D_TEST=1" }
+          - { title: "linux"              , host: "ubuntu-24.04"    , arch: "x86"    , cc: "clang-18", conf: "Release", defs: "BLEND2D_TEST=1" }
+          - { title: "linux"              , host: "ubuntu-24.04"    , arch: "x64"    , cc: "clang-18", conf: "Debug"  , defs: "BLEND2D_TEST=1" }
+          - { title: "linux"              , host: "ubuntu-24.04"    , arch: "x64"    , cc: "clang-18", conf: "Release", defs: "BLEND2D_TEST=1" }
+          - { title: "linux"              , host: "ubuntu-24.04"    , arch: "x86"    , cc: "clang-19", conf: "Debug"  , defs: "BLEND2D_TEST=1" }
+          - { title: "linux"              , host: "ubuntu-24.04"    , arch: "x86"    , cc: "clang-19", conf: "Release", defs: "BLEND2D_TEST=1" }
+          - { title: "linux"              , host: "ubuntu-24.04"    , arch: "x64"    , cc: "clang-19", conf: "Debug"  , defs: "BLEND2D_TEST=1" }
+          - { title: "linux"              , host: "ubuntu-24.04"    , arch: "x64"    , cc: "clang-19", conf: "Release", defs: "BLEND2D_TEST=1" }
+          - { title: "linux"              , host: "ubuntu-24.04-arm", arch: "arm64"  , cc: "clang-19", conf: "Debug"  , defs: "BLEND2D_TEST=1" }
+          - { title: "linux"              , host: "ubuntu-24.04-arm", arch: "arm64"  , cc: "clang-19", conf: "Release", defs: "BLEND2D_TEST=1" }
+          - { title: "macos"              , host: "macos-13"        , arch: "x64"    , cc: "gcc-14"  , conf: "Debug"  , defs: "BLEND2D_TEST=1" }
+          - { title: "macos"              , host: "macos-13"        , arch: "x64"    , cc: "gcc-14"  , conf: "Release", defs: "BLEND2D_TEST=1" }
+          - { title: "macos"              , host: "macos-13"        , arch: "x64"    , cc: "clang"   , conf: "Debug"  , defs: "BLEND2D_TEST=1" }
+          - { title: "macos"              , host: "macos-13"        , arch: "x64"    , cc: "clang"   , conf: "Release", defs: "BLEND2D_TEST=1" }
+          - { title: "macos"              , host: "macos-14"        , arch: "arm64"  , cc: "clang"   , conf: "Debug"  , defs: "BLEND2D_TEST=1" }
+          - { title: "macos"              , host: "macos-14"        , arch: "arm64"  , cc: "clang"   , conf: "Release", defs: "BLEND2D_TEST=1" }
+          - { title: "windows"            , host: "windows-2022"    , arch: "x86"    , cc: "vs2022"  , conf: "Debug"  , defs: "BLEND2D_TEST=1" }
+          - { title: "windows"            , host: "windows-2022"    , arch: "x86"    , cc: "vs2022"  , conf: "Release", defs: "BLEND2D_TEST=1" }
+          - { title: "windows"            , host: "windows-2022"    , arch: "x64"    , cc: "vs2022"  , conf: "Debug"  , defs: "BLEND2D_TEST=1" }
+          - { title: "windows"            , host: "windows-2022"    , arch: "x64"    , cc: "vs2022"  , conf: "Release", defs: "BLEND2D_TEST=1" }
+          - { title: "windows"            , host: "windows-11-arm"  , arch: "arm64"  , cc: "vs2022"  , conf: "Debug"  , defs: "BLEND2D_TEST=1" }
+          - { title: "windows"            , host: "windows-11-arm"  , arch: "arm64"  , cc: "vs2022"  , conf: "Release", defs: "BLEND2D_TEST=1" }
+
+          # Cross compiled, cannot run tests (Windows/UWP).
+          - { title: "windows/uwp"        , host: "windows-2022"  , arch: "x64"    , cc: "vs2022"  , conf: "Release", defs: "BLEND2D_TEST=0,CMAKE_SYSTEM_NAME=WindowsStore,CMAKE_SYSTEM_VERSION=10.0" }
+
+          - { title: "freebsd"            , host: "ubuntu-latest" , arch: "x64"    , cc: "clang"   , conf: "Release", vm: "freebsd", vm_ver: "14.2", defs: "BLEND2D_TEST=1" }
+          - { title: "freebsd"            , host: "ubuntu-latest" , arch: "arm64"  , cc: "clang"   , conf: "Release", vm: "freebsd", vm_ver: "14.2", defs: "BLEND2D_TEST=1" }
+          - { title: "netbsd"             , host: "ubuntu-latest" , arch: "x64"    , cc: "clang"   , conf: "Release", vm: "netbsd" , vm_ver: "10.1", defs: "BLEND2D_TEST=1" }
+          - { title: "netbsd"             , host: "ubuntu-latest" , arch: "arm64"  , cc: "clang"   , conf: "Release", vm: "netbsd" , vm_ver: "10.1", defs: "BLEND2D_TEST=1" }
+          - { title: "openbsd"            , host: "ubuntu-latest" , arch: "x64"    , cc: "clang"   , conf: "Release", vm: "openbsd", vm_ver: "7.4" , defs: "BLEND2D_TEST=1" }
+          - { title: "openbsd"            , host: "ubuntu-latest" , arch: "arm64"  , cc: "clang"   , conf: "Release", vm: "openbsd", vm_ver: "7.4" , defs: "BLEND2D_TEST=1" }
+          - { title: "debian"             , host: "ubuntu-latest" , arch: "arm/v7" , cc: "clang"   , conf: "Release", vm: "debian:unstable", defs: "BLEND2D_TEST=1" }
+          - { title: "debian"             , host: "ubuntu-latest" , arch: "riscv64", cc: "clang"   , conf: "Release", vm: "debian:unstable", defs: "BLEND2D_TEST=1" }
+          - { title: "debian"             , host: "ubuntu-latest" , arch: "ppc64le", cc: "clang"   , conf: "Release", vm: "debian:unstable", defs: "BLEND2D_TEST=1" }
+
+    name: "${{matrix.title}}/${{matrix.arch}}, ${{matrix.cc}} ${{matrix.conf}}"
+    runs-on: "${{matrix.host}}"
+
+    steps:
+      - name: "Checkout Blend2D"
+        uses: actions/checkout@v4
+        with:
+          path: "source"
+
+      - name: "Checkout AsmJit"
+        uses: actions/checkout@v4
+        with:
+          repository: asmjit/asmjit
+          path: "source/3rdparty/asmjit"
+
+      - name: "Checkout Build Actions"
+        uses: actions/checkout@v4
+        with:
+          repository: build-actions/build-actions
+          path: "build-actions"
+
+      - name: "Python"
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.x"
+
+      - name: QEMU
+        if: ${{matrix.vm && !matrix.vm_ver}}
+        uses: docker/setup-qemu-action@v3
+        with:
+          platforms: linux/${{matrix.arch}}
+
+      - name: "Build & Test - Native"
+        if: ${{!matrix.vm}}
+        run: python build-actions/action.py
+               --source-dir=source
+               --config=source/.github/workflows/build-config.json
+               --compiler=${{matrix.cc}}
+               --diagnostics=${{matrix.diagnostics}}
+               --architecture=${{matrix.arch}}
+               --problem-matcher=auto
+               --build-type=${{matrix.conf}}
+               --build-defs=${{matrix.defs}}
+
+      - name: "Build & Test - Cross Platform Actions"
+        if: ${{matrix.vm && matrix.vm_ver}}
+        uses: cross-platform-actions/action@master
+        with:
+          operating_system: ${{matrix.vm}}
+          architecture: ${{matrix.arch}}
+          version: ${{matrix.vm_ver}}
+          sync_files: "runner-to-vm"
+          shutdown_vm: false
+          shell: bash
+          run: |
+            set -e
+
+            PATH="/usr/sbin:/usr/pkg/sbin:/usr/pkg/bin:$PATH:$(pwd)/build-actions"
+            CI_NETBSD_USE_PKGIN=1
+
+            export PATH
+            export CI_NETBSD_USE_PKGIN
+
+            sh ./build-actions/prepare-environment.sh
+            python3 build-actions/action.py                        \
+              --source-dir=source                                  \
+              --config=source/.github/workflows/build-config.json  \
+              --compiler=${{matrix.cc}}                            \
+              --diagnostics=${{matrix.diagnostics}}                \
+              --architecture=${{matrix.arch}}                      \
+              --problem-matcher=auto                               \
+              --build-type=${{matrix.conf}}                        \
+              --build-defs=${{matrix.defs}}
+
+      - name: "Build & Test - Docker + QEMU"
+        if: ${{matrix.vm && !matrix.vm_ver}}
+        run: |
+          docker run                                               \
+            --rm                                                   \
+            -v $(pwd):/${{github.workspace}}                       \
+            -w ${{github.workspace}}/build-actions                 \
+            --platform linux/${{matrix.arch}}                      \
+            ${{matrix.vm}}                                         \
+            bash action.sh                                         \
+            --source-dir=../source                                 \
+            --config=../source/.github/workflows/build-config.json \
+            --compiler=${{matrix.cc}}                              \
+            --diagnostics=${{matrix.diagnostics}}                  \
+            --architecture=${{matrix.arch}}                        \
+            --problem-matcher=auto                                 \
+            --build-type=${{matrix.conf}}                          \
+            --build-defs=${{matrix.defs}}

@@ -288,7 +288,7 @@ namespace pal
       /**
        * Returns the angle to rotate text (in radians).
        */
-      double getAlpha() const;
+      double angleRadians() const;
 
       /**
        * Returns TRUE if the label direction is the reversed from the line or polygon ring direction.

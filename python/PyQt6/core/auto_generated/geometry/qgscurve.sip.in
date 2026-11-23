@@ -50,6 +50,14 @@ Returns the end point of the curve.
 .. seealso:: :py:func:`startPoint`
 %End
 
+    virtual bool isSimpleCurve() const = 0;
+%Docstring
+This method returns ``True`` for classes that can be cast to the
+:py:class:`QgsSimpleCurve` class.
+
+.. versionadded:: 4.4
+%End
+
     virtual bool isClosed() const /HoldGIL/;
 %Docstring
 Returns ``True`` if the curve is closed.

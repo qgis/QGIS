@@ -362,11 +362,11 @@ void QgsAppDirectoryItemGuiProvider::populateContextMenu( QgsDataItem *item, QMe
 
   menu->addSeparator();
 
-  QAction *openFolder = new QAction( QgsApplication::getThemeIcon( u"mIconFolder.svg"_s ), tr( "Open Directory…" ), menu );
+  QAction *openFolder = new QAction( QgsApplication::getThemeIcon( u"mIconFolder.svg"_s ), tr( "Open Directory" ), menu );
   connect( openFolder, &QAction::triggered, this, [directoryItem] { QDesktopServices::openUrl( QUrl::fromLocalFile( directoryItem->dirPath() ) ); } );
   menu->addAction( openFolder );
 
-  if ( QgsGui::nativePlatformInterface()->capabilities() & QgsNative::NativeOpenTerminalAtPath )
+  if ( QgsGui::nativePlatformInterface()->capabilities() & QgsNative::Capability::NativeOpenTerminalAtPath )
   {
     QAction *openTerminal = new QAction( QgsApplication::getThemeIcon( u"mActionTerminal.svg"_s ), tr( "Open in Terminal…" ), menu );
     connect( openTerminal, &QAction::triggered, this, [directoryItem] { QgsGui::nativePlatformInterface()->openTerminalAtPath( directoryItem->dirPath() ); } );
@@ -378,7 +378,7 @@ void QgsAppDirectoryItemGuiProvider::populateContextMenu( QgsDataItem *item, QMe
   connect( propertiesAction, &QAction::triggered, this, [this, directoryItem, context] { showProperties( directoryItem, context ); } );
   menu->addAction( propertiesAction );
 
-  if ( QgsGui::nativePlatformInterface()->capabilities() & QgsNative::NativeFilePropertiesDialog )
+  if ( QgsGui::nativePlatformInterface()->capabilities() & QgsNative::Capability::NativeFilePropertiesDialog )
   {
     if ( QgsDirectoryItem *dirItem = qobject_cast<QgsDirectoryItem *>( item ) )
     {
@@ -790,7 +790,7 @@ void QgsAppFileItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *m
       menu->addMenu( manageFileMenu );
     }
 
-    if ( QgsGui::nativePlatformInterface()->capabilities() & QgsNative::NativeFilePropertiesDialog )
+    if ( QgsGui::nativePlatformInterface()->capabilities() & QgsNative::Capability::NativeFilePropertiesDialog )
     {
       if ( QFileInfo::exists( item->path() ) )
       {
@@ -1521,7 +1521,7 @@ void QgsFieldItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *men
           connect( setCommentAction, &QAction::triggered, fieldsItem, [md, fieldsItem, itemName, comment, context] {
             bool ok = false;
 
-            const QString newComment = QInputDialog::getMultiLineText( QgisApp::instance(), tr( "Set Comment For %1" ).arg( itemName ), tr( "Comment" ), comment, &ok );
+            const QString newComment = QgsDialog::getMultiLineText( QgisApp::instance(), tr( "Set Comment For %1" ).arg( itemName ), tr( "Comment" ), comment, &ok );
             if ( ok && comment != newComment )
             {
               std::unique_ptr<QgsAbstractDatabaseProviderConnection> conn2 { static_cast<QgsAbstractDatabaseProviderConnection *>( md->createConnection( fieldsItem->connectionUri(), {} ) ) };
@@ -2226,7 +2226,10 @@ void QgsDatabaseItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *
       }
     }
 
-    if ( isTable && conn && conn->capabilities2().testFlag( Qgis::DatabaseProviderConnectionCapability2::SetTableComment ) )
+    if ( isTable
+         && layerItem->layerCapabilities().testFlag( Qgis::LayerItemCapability::AddComments )
+         && conn
+         && conn->capabilities2().testFlag( Qgis::DatabaseProviderConnectionCapability2::SetTableComment ) )
     {
       QAction *editComment = new QAction( tr( "Set Comment…" ), menu );
 
@@ -2253,6 +2256,8 @@ void QgsDatabaseItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *
         else
           fullName = u"%1.%2"_s.arg( schemaName, tableName );
 
+        bool ok = false;
+
         if ( conn2 )
         {
           QString comment;
@@ -2267,10 +2272,8 @@ void QgsDatabaseItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *
             errCause = ex.what();
           }
 
-          bool ok = false;
-
           if ( errCause.isEmpty() )
-            newComment = QInputDialog::getMultiLineText( QgisApp::instance(), tr( "Table Comment" ), tr( "Comment" ), comment, &ok );
+            newComment = QgsDialog::getMultiLineText( QgisApp::instance(), tr( "Table Comment" ), tr( "Comment" ), comment, &ok );
 
           if ( ok && comment != newComment )
           {
@@ -2295,7 +2298,7 @@ void QgsDatabaseItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *
           notify( tr( "Cannot edit comment on %1" ).arg( fullName ), errCause, context, Qgis::MessageLevel::Critical );
           return;
         }
-        else if ( context.messageBar() )
+        else if ( ok && context.messageBar() )
         {
           if ( item->parent() )
             item->parent()->refresh();
@@ -2409,7 +2412,7 @@ bool QgsDatabaseItemGuiProvider::handleDrop( QgsDataItem *item, QgsDataItemGuiCo
       if ( dropUri.layerType == "vector"_L1 )
       {
         // open the source layer
-        srcLayer = dropUri.vectorLayer( owner, error );
+        srcLayer = dropUri.vectorLayer( owner, error, QgsProject::instance() );
       }
       else
       {

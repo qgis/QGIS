@@ -26,6 +26,7 @@
 #include "qgslayertreegroup.h"
 #include "qgsmodule.h"
 #include "qgsserversettings.h"
+#include "qgswmslayerinfos.h"
 
 class QgsRectangle;
 
@@ -79,6 +80,12 @@ namespace QgsWms
    */
   void collectAcceptableLayersAndRequestNames( QHash<const QgsMapLayer *, QStringList> &acceptableLayersAndRequestNames, const QgsProject &project, const QStringList &requestedLayerNames = QStringList() );
 
+  /**
+   * Update recursively \a dateRanges with all \a layerTreeGroup children date ranges.
+   * Won't return a date range for layers not published in \a wmsLayerInfos or for groups which appear in \a restrictedLayers
+   * \since QGIS 4.4
+   */
+  void getChildRanges( const QgsLayerTreeGroup *layerTreeGroup, const QMap<QString, QgsWmsLayerInfos> &wmsLayerInfos, const QStringList &restrictedLayers, QList<QgsDateTimeRange> &dateRanges );
 
 } // namespace QgsWms
 

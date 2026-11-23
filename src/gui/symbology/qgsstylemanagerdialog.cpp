@@ -747,14 +747,14 @@ void QgsStyleManagerDialog::copyItem()
     case QgsStyle::TextFormatEntity:
     {
       const QgsTextFormat format( mStyle->textFormat( details.name ) );
-      QApplication::clipboard()->setMimeData( format.toMimeData() );
+      QApplication::clipboard()->setMimeData( format.toMimeData().release() );
       break;
     }
 
     case QgsStyle::LabelSettingsEntity:
     {
       const QgsPalLayerSettings labelSettings( mStyle->labelSettings( details.name ) );
-      QApplication::clipboard()->setMimeData( labelSettings.toMimeData() );
+      QApplication::clipboard()->setMimeData( labelSettings.toMimeData().release() );
       break;
     }
 
@@ -1697,7 +1697,7 @@ QString QgsStyleManagerDialog::addColorRampStatic( QWidget *parent, QgsStyle *st
     name = QFileInfo( dlg.ramp().schemeName() ).baseName() + dlg.ramp().variantName();
     if ( dlg.saveAsGradientRamp() )
     {
-      ramp.reset( dlg.ramp().cloneGradientRamp() );
+      ramp = dlg.ramp().cloneGradientRamp();
     }
     else
     {
@@ -1938,7 +1938,7 @@ bool QgsStyleManagerDialog::editColorRamp()
     }
     if ( dlg.saveAsGradientRamp() )
     {
-      ramp.reset( dlg.ramp().cloneGradientRamp() );
+      ramp = dlg.ramp().cloneGradientRamp();
     }
     else
     {
@@ -2452,12 +2452,12 @@ void QgsStyleManagerDialog::removeItem()
   mModified = true;
 }
 
-bool QgsStyleManagerDialog::removeSymbol()
+bool QgsStyleManagerDialog::removeSymbol() // cppcheck-suppress functionConst
 {
   return false;
 }
 
-bool QgsStyleManagerDialog::removeColorRamp()
+bool QgsStyleManagerDialog::removeColorRamp() // cppcheck-suppress functionConst
 {
   return false;
 }

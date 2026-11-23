@@ -1,0 +1,99 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/processing/qgsprocessingparametertileextentmaxzoomlist.h    *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
+ ************************************************************************/
+
+
+
+
+
+struct QgsTileExtentMaxZoomRegion
+{
+%TypeHeaderCode
+#include "qgsprocessingparametertileextentmaxzoomlist.h"
+%End
+    QgsReferencedRectangle extent;
+
+    int maxZoom;
+};
+
+class QgsProcessingParameterTileExtentMaxZoomList : QgsProcessingParameterDefinition
+{
+%Docstring(signature="appended")
+A Processing algorithm parameter for defining a list of spatial extents,
+each with an associated maximum zoom level override.
+
+.. versionadded:: 4.4
+%End
+
+%TypeHeaderCode
+#include "qgsprocessingparametertileextentmaxzoomlist.h"
+%End
+  public:
+    explicit QgsProcessingParameterTileExtentMaxZoomList( const QString &name, const QString &description = QString(), const QVariant &defaultValue = QVariant(), bool optional = false );
+%Docstring
+Constructor for QgsProcessingParameterTileExtentMaxZoomList.
+%End
+
+    virtual QgsProcessingParameterTileExtentMaxZoomList *clone() const /Factory/;
+
+    virtual QString type() const;
+
+    virtual bool checkValueIsAcceptable( const QVariant &input, QgsProcessingContext *context = 0 ) const;
+
+    virtual QString valueAsPythonString( const QVariant &value, QgsProcessingContext &context ) const;
+
+
+    virtual QString valueAsString( const QVariant &value, QgsProcessingContext &context, bool &ok /Out/ ) const;
+
+    virtual QVariant valueAsJsonObject( const QVariant &value, QgsProcessingContext &context ) const;
+
+
+    static QString typeName();
+%Docstring
+Returns the type name for the parameter class.
+%End
+
+    QList<QgsTileExtentMaxZoomRegion> parameterAsRegionList( const QVariant &variant, QgsProcessingContext &context ) const;
+%Docstring
+Converts a parameter ``variant`` value to a list of
+:py:class:`QgsTileExtentMaxZoomRegion` objects.
+%End
+
+    static QVariant toVariant( const QList<QgsTileExtentMaxZoomRegion> &regions );
+%Docstring
+Converts a list of ``regions`` to variant value.
+%End
+
+    QgsTileExtentMaxZoomRegion regionFromVariant( const QVariant &variant, QgsProcessingContext &context ) const;
+%Docstring
+Converts a variant to a region value.
+%End
+
+    static int maxZoomForTile( const QgsRectangle &tileExtent, const QList<QgsTileExtentMaxZoomRegion> &regions, int defaultMaxZoom );
+%Docstring
+Evaluates the effective maximum zoom level for a given ``tileExtent``.
+
+If the tile intersects one or more regions, the LARGEST maxZoom among
+all intersecting regions is returned. If no region covers the tile,
+``defaultMaxZoom`` is returned.
+
+.. warning::
+
+   This method requires that the CRS for ``tileExtent`` and ALL ``regions`` is equal. The caller
+   must take care to transform all ``regions`` to a matching CRS in advance.
+%End
+
+};
+
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/processing/qgsprocessingparametertileextentmaxzoomlist.h    *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
+ ************************************************************************/

@@ -23,12 +23,14 @@ using namespace nlohmann;
 
 #include "qgslogger.h"
 #include "qgsoapifapirequest.h"
+#include "qgsoapifutils.h"
 #include "moc_qgsoapifapirequest.cpp"
+#include "qgswfsconstants.h"
 
 #include <QTextCodec>
 
 QgsOapifApiRequest::QgsOapifApiRequest( const QgsDataSourceUri &baseUri, const QString &url )
-  : QgsBaseNetworkRequest( QgsAuthorizationSettings( baseUri.username(), baseUri.password(), QgsHttpHeaders(), baseUri.authConfigId() ), tr( "OAPIF" ) )
+  : QgsBaseNetworkRequest( QgsAuthorizationSettings( baseUri.username(), baseUri.password(), QgsHttpHeaders(), baseUri.authConfigId() ), tr( "OAPIF" ), baseUri.hasParam( QgsWFSConstants::URI_PARAM_DISABLE_DECOMPRESSED_SAFETY_CHECK_THRESHOLD ) )
   , mUrl( url )
 {
   // Using Qt::DirectConnection since the download might be running on a different thread.
@@ -40,7 +42,7 @@ QgsOapifApiRequest::QgsOapifApiRequest( const QgsDataSourceUri &baseUri, const Q
 
 bool QgsOapifApiRequest::request( bool synchronous, bool forceRefresh )
 {
-  if ( !sendGET( QUrl( mUrl ), u"application/vnd.oai.openapi+json;version=3.0, application/openapi+json;version=3.0, application/json"_s, synchronous, forceRefresh ) )
+  if ( !sendGET( QUrl( mUrl ), QString( "%1, %2, %3" ).arg( QgsOapifUtils::MEDIA_TYPE_OAI_OPENAPI_JSON_3_0, QgsOapifUtils::MEDIA_TYPE_OPENAPI_JSON_3_0, QgsOapifUtils::MEDIA_TYPE_JSON ), synchronous, forceRefresh ) )
   {
     emit gotResponse();
     return false;

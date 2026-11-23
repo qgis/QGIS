@@ -122,11 +122,28 @@ bool QgsVectorLayerEditBufferGroup::commitChanges( QStringList &commitErrors, bo
   bool success = true;
 
   const QSet<QgsVectorLayer *> constModifiedLayers = modifiedLayers();
+
   if ( constModifiedLayers.isEmpty() )
   {
     editingFinished( stopEditing );
     mIsEditing = !stopEditing;
     return success;
+  }
+
+  // trigger geometry checks for all the modified layers
+  for ( QgsVectorLayer *modifiedLayer : constModifiedLayers )
+  {
+    emit modifiedLayer->beforeCommitChecks( stopEditing );
+  }
+
+  // and if at least one does not allow commit, return
+  for ( const QgsVectorLayer *modifiedLayer : constModifiedLayers )
+  {
+    if ( !modifiedLayer->allowCommit() )
+    {
+      commitErrors << tr( "ERROR: Commit not allowed because of failed checks." );
+      return false;
+    }
   }
 
   QMap<QString, QSet<QgsVectorLayer *> > connectionStringsLayers;
@@ -258,7 +275,7 @@ bool QgsVectorLayerEditBufferGroup::commitChanges( QStringList &commitErrors, bo
     for ( orderedLayersIterator = orderedLayers.constBegin(); orderedLayersIterator != orderedLayers.constEnd(); ++orderedLayersIterator )
     {
       bool featuresAdded;
-      ( *orderedLayersIterator )->editBuffer()->commitChangesAddFeatures( featuresAdded, commitErrors );
+      success = ( *orderedLayersIterator )->editBuffer()->commitChangesAddFeatures( featuresAdded, commitErrors );
       if ( !success )
         break;
 
@@ -402,8 +419,11 @@ QList<QgsVectorLayer *> QgsVectorLayerEditBufferGroup::orderLayersParentsToChild
     QSet<QgsVectorLayer *>::iterator unorderedLayerIterator = unorderedLayers.begin();
     while ( unorderedLayerIterator != unorderedLayers.end() )
     {
+      // TODO QGIS 5.0 -- if layer has no associated project, return empty list of referencing relations insted of getting it from project instance
       // Get referencing relation to find referenced layers
-      const QList<QgsRelation> referencingRelations = QgsProject::instance()->relationManager()->referencingRelations( *unorderedLayerIterator ); // skip-keyword-check
+      const QList<QgsRelation> referencingRelations = !layers.empty() && *layers.constBegin()
+                                                        ? ( *layers.constBegin() )->project()->relationManager()->referencingRelations( *unorderedLayerIterator )
+                                                        : QgsProject::instance()->relationManager()->referencingRelations( *unorderedLayerIterator ); // skip-keyword-check
 
       // If this layer references at least one modified layer continue
       bool layerReferencingModifiedLayer = false;

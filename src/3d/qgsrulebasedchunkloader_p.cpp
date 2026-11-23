@@ -15,6 +15,8 @@
 
 #include "qgsrulebasedchunkloader_p.h"
 
+#include <functional>
+
 #include "qgs3dutils.h"
 #include "qgsabstractterrainsettings.h"
 #include "qgschunknode.h"
@@ -25,10 +27,12 @@
 #include "qgspoint3dsymbol.h"
 #include "qgspolygon3dsymbol.h"
 #include "qgsrulebased3drenderer.h"
+#include "qgsthreadingutils.h"
 #include "qgsvectorlayer.h"
 #include "qgsvectorlayerchunkloader_p.h"
 #include "qgsvectorlayerfeatureiterator.h"
 
+#include <QMutex>
 #include <QString>
 #include <Qt3DCore/QTransform>
 #include <QtConcurrentRun>
@@ -40,153 +44,11 @@ using namespace Qt::StringLiterals;
 ///@cond PRIVATE
 
 
-QgsRuleBasedChunkLoader::QgsRuleBasedChunkLoader( const QgsRuleBasedChunkLoaderFactory *factory, QgsChunkNode *node )
-  : QgsChunkLoader( node )
-  , mFactory( factory )
-  , mContext( factory->mRenderContext )
-  , mSource( new QgsVectorLayerFeatureSource( factory->mLayer ) )
-{}
-
-void QgsRuleBasedChunkLoader::start()
-{
-  QgsChunkNode *node = chunk();
-
-  QgsVectorLayer *layer = mFactory->mLayer;
-
-  QgsExpressionContext exprContext;
-  exprContext.appendScopes( QgsExpressionContextUtils::globalProjectLayerScopes( layer ) );
-  exprContext.setFields( layer->fields() );
-  mContext.setExpressionContext( exprContext );
-
-  // factory is shared among multiple loaders which may be run at the same time
-  // so we need a local copy of our rule tree that does not intefere with others
-  // (e.g. it happened that filter expressions with invalid syntax would cause
-  // nasty crashes when trying to simultaneously record evaluation error)
-  mRootRule.reset( mFactory->mRootRule->clone() );
-
-  mRootRule->createHandlers( layer, mHandlers );
-
-  QSet<QString> attributeNames;
-  mRootRule->prepare( mContext, attributeNames, node->box3D(), mHandlers );
-
-  // build the feature request
-  // only a subset of data to be queried
-  const QgsRectangle rect = node->box3D().toRectangle();
-  QgsFeatureRequest req;
-  req.setDestinationCrs( mContext.crs(), mContext.transformContext() );
-  req.setSubsetOfAttributes( attributeNames, layer->fields() );
-  req.setFilterRect( rect );
-
-  //
-  // this will be run in a background thread
-  //
-  mFutureWatcher = new QFutureWatcher<void>( this );
-
-  connect( mFutureWatcher, &QFutureWatcher<void>::finished, this, [this] {
-    if ( !mCanceled )
-      mFactory->mNodesAreLeafs[mNode->tileId().text()] = mNodeIsLeaf;
-  } );
-
-  connect( mFutureWatcher, &QFutureWatcher<void>::finished, this, &QgsChunkQueueJob::finished );
-
-  const QFuture<void> future = QtConcurrent::run( [req = std::move( req ), this] {
-    const QgsScopedEvent e( u"3D"_s, u"RB chunk load"_s );
-
-    QgsFeature f;
-    QgsFeatureIterator fi = mSource->getFeatures( req );
-    int featureCount = 0;
-    bool featureLimitReached = false;
-    while ( fi.nextFeature( f ) )
-    {
-      if ( mCanceled )
-        break;
-
-      if ( ++featureCount > mFactory->mMaxFeatures )
-      {
-        featureLimitReached = true;
-        break;
-      }
-
-      mContext.expressionContext().setFeature( f );
-      mRootRule->registerFeature( f, mContext, mHandlers );
-    }
-    if ( !featureLimitReached )
-    {
-      QgsDebugMsgLevel( u"All features fetched for node: %1"_s.arg( mNode->tileId().text() ), 3 );
-
-      if ( featureCount == 0 || std::max<double>( mNode->box3D().width(), mNode->box3D().height() ) < QgsVectorLayer3DTilingSettings::maximumLeafExtent() )
-        mNodeIsLeaf = true;
-    }
-  } );
-
-  // emit finished() as soon as the handler is populated with features
-  mFutureWatcher->setFuture( future );
-}
-
-QgsRuleBasedChunkLoader::~QgsRuleBasedChunkLoader()
-{
-  if ( mFutureWatcher && !mFutureWatcher->isFinished() )
-  {
-    disconnect( mFutureWatcher, &QFutureWatcher<void>::finished, this, &QgsChunkQueueJob::finished );
-    mFutureWatcher->waitForFinished();
-  }
-
-  qDeleteAll( mHandlers );
-  mHandlers.clear();
-}
-
-void QgsRuleBasedChunkLoader::cancel()
-{
-  mCanceled = true;
-}
-
-Qt3DCore::QEntity *QgsRuleBasedChunkLoader::createEntity( Qt3DCore::QEntity *parent )
-{
-  long long featureCount = 0;
-  for ( auto it = mHandlers.constBegin(); it != mHandlers.constEnd(); ++it )
-  {
-    featureCount += it.value()->featureCount();
-  }
-  if ( featureCount == 0 )
-  {
-    // an empty node, so we return no entity. This tags the node as having no data and effectively removes it.
-    return nullptr;
-  }
-
-  Qt3DCore::QEntity *entity = new Qt3DCore::QEntity( parent );
-  float zMin = std::numeric_limits<float>::max();
-  float zMax = std::numeric_limits<float>::lowest();
-  for ( auto it = mHandlers.constBegin(); it != mHandlers.constEnd(); ++it )
-  {
-    QgsFeature3DHandler *handler = it.value();
-    handler->finalize( entity, mContext );
-    if ( handler->zMinimum() < zMin )
-      zMin = handler->zMinimum();
-    if ( handler->zMaximum() > zMax )
-      zMax = handler->zMaximum();
-  }
-
-  // fix the vertical range of the node from the estimated vertical range to the true range
-  if ( zMin != std::numeric_limits<float>::max() && zMax != std::numeric_limits<float>::lowest() )
-  {
-    QgsBox3D box = mNode->box3D();
-    box.setZMinimum( zMin );
-    box.setZMaximum( zMax );
-    mNode->setExactBox3D( box );
-    mNode->updateParentBoundingBoxesRecursively();
-  }
-
-  return entity;
-}
-
-
-///////////////
-
-
-QgsRuleBasedChunkLoaderFactory::QgsRuleBasedChunkLoaderFactory( const Qgs3DRenderContext &context, QgsVectorLayer *vl, QgsRuleBased3DRenderer::Rule *rootRule, double zMin, double zMax, int maxFeatures )
+QgsRuleBasedChunkLoader::QgsRuleBasedChunkLoader( const Qgs3DRenderContext &context, QgsVectorLayer *vl, QgsRuleBased3DRenderer::Rule *rootRule, double zMin, double zMax, int maxFeatures )
   : mRenderContext( context )
   , mLayer( vl )
   , mRootRule( rootRule->clone() )
+  , mNodesAreLeafs( std::make_shared<NodeIsLeafMap>() )
   , mMaxFeatures( maxFeatures )
 {
   if ( context.crs().type() == Qgis::CrsType::Geocentric )
@@ -216,24 +78,143 @@ QgsRuleBasedChunkLoaderFactory::QgsRuleBasedChunkLoaderFactory( const Qgs3DRende
   }
 }
 
-QgsRuleBasedChunkLoaderFactory::~QgsRuleBasedChunkLoaderFactory() = default;
+QgsRuleBasedChunkLoader::~QgsRuleBasedChunkLoader() = default;
 
-QgsChunkLoader *QgsRuleBasedChunkLoaderFactory::createChunkLoader( QgsChunkNode *node ) const
+QFuture<QgsChunkLoaderResult> QgsRuleBasedChunkLoader::loadChunk( QgsChunkNode *node )
 {
-  return new QgsRuleBasedChunkLoader( this, node );
+  QgsExpressionContext exprContext;
+  exprContext.appendScopes( QgsExpressionContextUtils::globalProjectLayerScopes( mLayer ) );
+  exprContext.setFields( mLayer->fields() );
+  Qgs3DRenderContext renderCtx = mRenderContext; // Copy since we mutate it
+  renderCtx.setExpressionContext( exprContext );
+
+  // loader is shared among multiple threads which may be run at the same time
+  // so we need a local copy of our rule tree that does not intefere with others
+  // (e.g. it happened that filter expressions with invalid syntax would cause
+  // nasty crashes when trying to simultaneously record evaluation error)
+  std::unique_ptr<QgsRuleBased3DRenderer::Rule> rootRule( mRootRule->clone() );
+
+  QgsRuleBased3DRenderer::RuleToHandlerMap handlers;
+  rootRule->createHandlers( mLayer, handlers );
+
+  QSet<QString> attributeNames;
+  rootRule->prepare( renderCtx, attributeNames, node->box3D(), handlers );
+
+  // build the feature request
+  // only a subset of data to be queried
+  const QgsRectangle rect = node->box3D().toRectangle();
+  QgsFeatureRequest req;
+  req.setDestinationCrs( renderCtx.crs(), renderCtx.transformContext() );
+  req.setSubsetOfAttributes( attributeNames, mLayer->fields() );
+  req.setFilterRect( rect );
+
+  auto source = std::make_unique<QgsVectorLayerFeatureSource>( mLayer );
+
+  return QtConcurrent::run( &QgsRuleBasedChunkLoader::loadChunkInWorker, std::move( handlers ), std::move( renderCtx ), std::move( rootRule ), std::move( source ), std::move( req ), node, mMaxFeatures, mNodesAreLeafs )
+    .then( this, [this, node]( ChunkData data ) { return QgsChunkLoaderResult { std::bind_front( &QgsRuleBasedChunkLoader::createEntity, this, node, data ) }; } );
 }
 
-bool QgsRuleBasedChunkLoaderFactory::canCreateChildren( QgsChunkNode *node )
+void QgsRuleBasedChunkLoader::loadChunkInWorker(
+  QPromise<ChunkData> &promise,
+  QgsRuleBased3DRenderer::RuleToHandlerMap handlers,
+  Qgs3DRenderContext renderCtx,
+  const std::unique_ptr<QgsRuleBased3DRenderer::Rule> &rootRule,
+  const std::unique_ptr<QgsVectorLayerFeatureSource> &source,
+  const QgsFeatureRequest &req,
+  QgsChunkNode *node,
+  int maxFeatures,
+  const std::shared_ptr<NodeIsLeafMap> &nodesAreLeaves
+)
 {
-  return mNodesAreLeafs.contains( node->tileId().text() );
+  const QgsScopedEvent e( u"3D"_s, u"RB chunk load"_s );
+
+  QgsFeature f;
+  QgsFeatureIterator fi = source->getFeatures( req );
+  int featureCount = 0;
+  bool featureLimitReached = false;
+  while ( fi.nextFeature( f ) )
+  {
+    if ( promise.isCanceled() )
+      break;
+
+    if ( ++featureCount > maxFeatures )
+    {
+      featureLimitReached = true;
+      break;
+    }
+
+    renderCtx.expressionContext().setFeature( f );
+    rootRule->registerFeature( f, renderCtx, handlers );
+  }
+
+  bool nodeIsLeaf = false;
+  if ( !featureLimitReached )
+  {
+    QgsDebugMsgLevel( u"All features fetched for node: %1"_s.arg( node->tileId().text() ), 3 );
+
+    if ( featureCount == 0 || std::max<double>( node->box3D().width(), node->box3D().height() ) < QgsVectorLayer3DTilingSettings::maximumLeafExtent() )
+      nodeIsLeaf = true;
+  }
+
+  {
+    QMutexLocker<QMutex> locker( &nodesAreLeaves->mutex );
+    nodesAreLeaves->map[node->tileId().text()] = nodeIsLeaf;
+  }
+
+  promise.addResult( ChunkData { .handlers = std::move( handlers ), .renderCtx = std::move( renderCtx ) } );
 }
 
-QVector<QgsChunkNode *> QgsRuleBasedChunkLoaderFactory::createChildren( QgsChunkNode *node ) const
+Qt3DCore::QEntity *QgsRuleBasedChunkLoader::createEntity( QgsChunkNode *node, ChunkData data, Qt3DCore::QEntity *parent )
 {
-  if ( mNodesAreLeafs.value( node->tileId().text(), false ) )
-    return {};
+  QGIS_CHECK_MAIN_THREAD_ACCESS
+  long long featureCount = 0;
+  for ( auto it = data.handlers.constBegin(); it != data.handlers.constEnd(); ++it )
+  {
+    featureCount += it.value()->featureCount();
+  }
+  if ( featureCount == 0 )
+  {
+    // an empty node, so we return no entity. This tags the node as having no data and effectively removes it.
+    return nullptr;
+  }
 
-  return QgsQuadtreeChunkLoaderFactory::createChildren( node );
+  Qt3DCore::QEntity *entity = new Qt3DCore::QEntity( parent );
+  float zMin = std::numeric_limits<float>::max();
+  float zMax = std::numeric_limits<float>::lowest();
+  for ( auto it = data.handlers.constBegin(); it != data.handlers.constEnd(); ++it )
+  {
+    QgsFeature3DHandler *handler = it.value();
+    handler->finalize( entity, data.renderCtx );
+    if ( handler->zMinimum() < zMin )
+      zMin = handler->zMinimum();
+    if ( handler->zMaximum() > zMax )
+      zMax = handler->zMaximum();
+  }
+  // fix the vertical range of the node from the estimated vertical range to the true range
+  if ( zMin != std::numeric_limits<float>::max() && zMax != std::numeric_limits<float>::lowest() )
+  {
+    QgsBox3D box = node->box3D();
+    box.setZMinimum( zMin );
+    box.setZMaximum( zMax );
+    node->setExactBox3D( box );
+    node->updateParentBoundingBoxesRecursively();
+  }
+
+  // TODO: Use smart pointers not to leak data.handlers if createEntity is never called.
+  qDeleteAll( data.handlers );
+
+  return entity;
+}
+
+QFuture<QVector<QgsChunkNode *>> QgsRuleBasedChunkLoader::createChildren( QgsChunkNode *node )
+{
+  {
+    QMutexLocker<QMutex> locker( &mNodesAreLeafs->mutex );
+    if ( mNodesAreLeafs->map.value( node->tileId().text(), false ) )
+      return QtFuture::makeReadyValueFuture( QVector<QgsChunkNode *> {} );
+  }
+
+  return QgsQuadtreeChunkLoader::createChildren( node );
 }
 
 ///////////////
@@ -241,7 +222,7 @@ QVector<QgsChunkNode *> QgsRuleBasedChunkLoaderFactory::createChildren( QgsChunk
 QgsRuleBasedChunkedEntity::QgsRuleBasedChunkedEntity(
   Qgs3DMapSettings *map, QgsVectorLayer *vl, double zMin, double zMax, const QgsVectorLayer3DTilingSettings &tilingSettings, QgsRuleBased3DRenderer::Rule *rootRule
 )
-  : QgsAbstractFeatureBasedChunkedEntity( map, 3, new QgsRuleBasedChunkLoaderFactory( Qgs3DRenderContext::fromMapSettings( map ), vl, rootRule, zMin, zMax, tilingSettings.maximumChunkFeatures() ), true )
+  : QgsAbstractFeatureBasedChunkedEntity( map, 3, new QgsRuleBasedChunkLoader( Qgs3DRenderContext::fromMapSettings( map ), vl, rootRule, zMin, zMax, tilingSettings.maximumChunkFeatures() ), true )
 {
   onTerrainElevationOffsetChanged();
   setShowBoundingBoxes( tilingSettings.showBoundingBoxes() );
@@ -256,10 +237,10 @@ QgsRuleBasedChunkedEntity::~QgsRuleBasedChunkedEntity()
 // if the AltitudeClamping is `Absolute`, do not apply the offset
 bool QgsRuleBasedChunkedEntity::applyTerrainOffset() const
 {
-  QgsRuleBasedChunkLoaderFactory *loaderFactory = static_cast<QgsRuleBasedChunkLoaderFactory *>( mChunkLoaderFactory );
-  if ( loaderFactory )
+  QgsRuleBasedChunkLoader *loader = static_cast<QgsRuleBasedChunkLoader *>( mChunkLoader );
+  if ( loader )
   {
-    QgsRuleBased3DRenderer::Rule *rootRule = loaderFactory->mRootRule.get();
+    QgsRuleBased3DRenderer::Rule *rootRule = loader->mRootRule.get();
     const QgsRuleBased3DRenderer::RuleList rules = rootRule->children();
     for ( const auto &rule : rules )
     {

@@ -92,8 +92,8 @@ QgsRasterBlock *QgsSingleBandColorDataRenderer::block( int bandNo, QgsRectangle 
   // make sure input is also premultiplied!
   inputBlock->convert( Qgis::DataType::ARGB32_Premultiplied );
 
-  QRgb *inputBits = ( QRgb * ) inputBlock->bits();
-  QRgb *outputBits = ( QRgb * ) outputBlock->bits();
+  const QRgb *inputBits = reinterpret_cast< const QRgb * >( inputBlock->constBits() );
+  QRgb *outputBits = reinterpret_cast< QRgb * >( outputBlock->bits() );
   for ( qgssize i = 0; i < ( qgssize ) width * height; i++ )
   {
     const QRgb c = inputBits[i];

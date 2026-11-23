@@ -47,10 +47,6 @@ class GUI_EXPORT QgsProcessingAggregatePanelWidget : public QgsPanelWidget, priv
      */
     void registerExpressionContextGenerator( const QgsExpressionContextGenerator *generator );
 
-  signals:
-
-    void changed();
-
   private slots:
     void loadFieldsFromLayer();
     void addField();

@@ -32,7 +32,7 @@ using namespace Qt::StringLiterals;
 QgsFeatureListComboBox::QgsFeatureListComboBox( QWidget *parent )
   : QComboBox( parent )
   , mModel( new QgsFeatureFilterModel( this ) )
-  , mCompleter( new QCompleter( mModel ) )
+  , mCompleter( new QCompleter( mModel, this ) )
 {
   setMinimumContentsLength( 1 );
   setSizeAdjustPolicy( QComboBox::SizeAdjustPolicy::AdjustToMinimumContentsLengthWithIcon );

@@ -15,12 +15,14 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "qgsconfig.h"
 #include "qgsprocess.h"
 
 #include "qgsacademicreference.h"
 #include "qgscommandlineutils.h"
 #include "qgsnativealgorithms.h"
 #include "qgsprocessingalgorithm.h"
+#include "qgsprocessingmodelprovider.h"
 #include "qgsprocessingregistry.h"
 
 #include <QString>
@@ -33,7 +35,7 @@ using namespace Qt::StringLiterals;
 #include "qgs3dalgorithms.h"
 #endif
 #include "qgspdalalgorithms.h"
-#ifdef WITH_SFCGAL
+#ifdef HAVE_SFCGAL
 #include <SFCGAL/capi/sfcgal_c.h>
 #endif
 #ifdef WITH_GEOGRAPHICLIB
@@ -301,6 +303,7 @@ int QgsProcessingExec::run( const QStringList &args, Qgis::ProcessingLogLevel lo
       {
         loadPlugins();
       }
+
       listPlugins( mFlags & Flag::UseJson, !( mFlags & Flag::SkipLoadingPlugins ) );
       return 0;
     }
@@ -321,6 +324,7 @@ int QgsProcessingExec::run( const QStringList &args, Qgis::ProcessingLogLevel lo
     {
       loadPlugins();
     }
+    addModelProvider();
     listAlgorithms();
     return 0;
   }
@@ -336,6 +340,7 @@ int QgsProcessingExec::run( const QStringList &args, Qgis::ProcessingLogLevel lo
     {
       loadPlugins();
     }
+    addModelProvider();
     const QString algId = args.at( 2 );
     return showAlgorithmHelp( algId );
   }
@@ -351,6 +356,7 @@ int QgsProcessingExec::run( const QStringList &args, Qgis::ProcessingLogLevel lo
     {
       loadPlugins();
     }
+    addModelProvider();
 
     const QString algId = args.at( 2 );
 
@@ -456,7 +462,7 @@ int QgsProcessingExec::run( const QStringList &args, Qgis::ProcessingLogLevel lo
             if ( params.contains( name ) )
             {
               // parameter specified multiple times, store all of them in a list...
-              if ( params.value( name ).type() == QVariant::StringList )
+              if ( params.value( name ).typeId() == QMetaType::Type::QStringList )
               {
                 // append to existing list
                 QStringList listValue = params.value( name ).toStringList();
@@ -497,7 +503,7 @@ int QgsProcessingExec::run( const QStringList &args, Qgis::ProcessingLogLevel lo
           if ( params.contains( name ) )
           {
             // parameter specified multiple times, store all of them in a list...
-            if ( params.value( name ).type() == QVariant::StringList )
+            if ( params.value( name ).typeId() == QMetaType::Type::QStringList )
             {
               // append to existing list
               QStringList listValue = params.value( name ).toStringList();
@@ -605,6 +611,12 @@ void QgsProcessingExec::loadPlugins()
   }
 
 #endif
+}
+
+void QgsProcessingExec::addModelProvider()
+{
+  // model provider is deferred for qgis_process startup, so we only load when required
+  QgsApplication::processingRegistry()->addProvider( new QgsProcessingModelProvider( QgsApplication::processingRegistry() ) );
 }
 
 void QgsProcessingExec::listAlgorithms()
@@ -1315,7 +1327,7 @@ int QgsProcessingExec::execute(
       QVariant result = it.value();
       if ( !( mFlags & Flag::UseJson ) )
       {
-        if ( result.type() == QVariant::List || result.type() == QVariant::StringList )
+        if ( result.typeId() == QMetaType::Type::QVariantList || result.typeId() == QMetaType::Type::QStringList )
         {
           QStringList list;
           for ( const QVariant &v : result.toList() )
@@ -1358,7 +1370,7 @@ void QgsProcessingExec::addVersionInformation( QVariantMap &json )
   PJ_INFO info = proj_info();
   json.insert( u"proj_version"_s, info.release );
 
-#ifdef WITH_SFCGAL
+#ifdef HAVE_SFCGAL
   json.insert( u"sfcgal_version"_s, sfcgal_version() );
 #else
   json.insert( u"sfcgal_version"_s, "no support" );

@@ -42,6 +42,10 @@ class GUI_EXPORT QgsAttributeEditorContext
 {
     Q_GADGET
 
+    Q_PROPERTY( QgsAttributeEditorContext::Mode attributeFormMode READ attributeFormMode )
+    Q_PROPERTY( QgsFeature formFeature READ formFeature )
+    Q_PROPERTY( QgsFeature parentFormFeature READ parentFormFeature )
+
   public:
     //! modes
     enum Mode

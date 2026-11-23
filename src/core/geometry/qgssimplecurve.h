@@ -636,6 +636,7 @@ class CORE_EXPORT QgsSimpleCurve : public QgsCurve SIP_ABSTRACT
     int numPoints() const override SIP_HOLDGIL;
     int nCoordinates() const override SIP_HOLDGIL;
     int dimension() const override SIP_HOLDGIL;
+    bool isSimpleCurve() const override SIP_HOLDGIL;
 
     bool addMValue( double mValue = 0 ) override;
     bool addZValue( double zValue = 0 ) override;

@@ -19,6 +19,7 @@
 
 #include "qgscachedfeatureiterator.h"
 #include "qgscacheindex.h"
+#include "qgsthreadingutils.h"
 #include "qgsvectorlayer.h"
 #include "qgsvectorlayerjoinbuffer.h"
 #include "qgsvectorlayerjoininfo.h"
@@ -31,9 +32,11 @@ QgsVectorLayerCache::QgsVectorLayerCache( QgsVectorLayer *layer, int cacheSize, 
   : QObject( parent )
   , mLayer( layer )
 {
+  QGIS_CHECK_QOBJECT_THREAD_EQUALITY( layer )
+
   mCache.setMaxCost( cacheSize );
 
-  connect( mLayer, &QgsVectorLayer::featureDeleted, this, &QgsVectorLayerCache::featureDeleted );
+  connect( mLayer, &QgsVectorLayer::featureDeleted, this, &QgsVectorLayerCache::onFeatureDeleted );
   connect( mLayer, &QgsVectorLayer::featureAdded, this, &QgsVectorLayerCache::onFeatureAdded );
   connect( mLayer, &QgsVectorLayer::destroyed, this, &QgsVectorLayerCache::layerDeleted );
 
@@ -55,18 +58,24 @@ QgsVectorLayerCache::~QgsVectorLayerCache()
   mCacheIndices.clear();
 }
 
-void QgsVectorLayerCache::setCacheSize( int cacheSize )
+void QgsVectorLayerCache::setCacheSize( long long cacheSize )
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   mCache.setMaxCost( cacheSize );
 }
 
-int QgsVectorLayerCache::cacheSize()
+long long QgsVectorLayerCache::cacheSize() const
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   return mCache.maxCost();
 }
 
 void QgsVectorLayerCache::setCacheGeometry( bool cacheGeometry )
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   bool shouldCacheGeometry = cacheGeometry && mLayer->isSpatial();
   bool mustInvalidate = shouldCacheGeometry && !mCacheGeometry; // going from no geometry -> geometry, so have to clear existing cache entries
   mCacheGeometry = shouldCacheGeometry;
@@ -86,6 +95,8 @@ void QgsVectorLayerCache::setCacheGeometry( bool cacheGeometry )
 
 void QgsVectorLayerCache::setCacheSubsetOfAttributes( const QgsAttributeList &attributes )
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   if ( !mCache.isEmpty() && !QSet<int>( mCachedAttributes.cbegin(), mCachedAttributes.cend() ).contains( QSet<int>( attributes.cbegin(), attributes.cend() ) ) )
     invalidate();
   mCachedAttributes = attributes;
@@ -93,11 +104,15 @@ void QgsVectorLayerCache::setCacheSubsetOfAttributes( const QgsAttributeList &at
 
 QgsAttributeList QgsVectorLayerCache::cacheSubsetOfAttributes() const
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   return mCachedAttributes;
 }
 
 void QgsVectorLayerCache::setFullCache( bool fullCache )
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   mFullCache = fullCache;
 
   if ( mFullCache )
@@ -139,12 +154,20 @@ void QgsVectorLayerCache::setFullCache( bool fullCache )
 
 void QgsVectorLayerCache::addCacheIndex( QgsAbstractCacheIndex *cacheIndex )
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   mCacheIndices.append( cacheIndex );
 }
 
 void QgsVectorLayerCache::setCacheAddedAttributes( bool cacheAddedAttributes )
 {
-  if ( cacheAddedAttributes )
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
+  if ( cacheAddedAttributes == mCacheAddedAttributes )
+    return;
+
+  mCacheAddedAttributes = cacheAddedAttributes;
+  if ( mCacheAddedAttributes )
   {
     connect( mLayer, &QgsVectorLayer::attributeAdded, this, &QgsVectorLayerCache::attributeAdded );
   }
@@ -156,6 +179,8 @@ void QgsVectorLayerCache::setCacheAddedAttributes( bool cacheAddedAttributes )
 
 bool QgsVectorLayerCache::featureAtId( QgsFeatureId featureId, QgsFeature &feature, bool skipCache )
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   bool featureFound = false;
 
   QgsCachedFeature *cachedFeature = nullptr;
@@ -167,7 +192,7 @@ bool QgsVectorLayerCache::featureAtId( QgsFeatureId featureId, QgsFeature &featu
 
   if ( cachedFeature )
   {
-    feature = QgsFeature( *cachedFeature->feature() );
+    feature = cachedFeature->feature();
     featureFound = true;
   }
   else
@@ -194,6 +219,8 @@ bool QgsVectorLayerCache::featureAtId( QgsFeatureId featureId, QgsFeature &featu
 
 bool QgsVectorLayerCache::featureAtIdWithAllAttributes( QgsFeatureId featureId, QgsFeature &feature, bool skipCache )
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   bool featureFound = false;
 
   QgsCachedFeature *cachedFeature = nullptr;
@@ -205,7 +232,7 @@ bool QgsVectorLayerCache::featureAtIdWithAllAttributes( QgsFeatureId featureId, 
 
   if ( cachedFeature && cachedFeature->allAttributesFetched() )
   {
-    feature = QgsFeature( *cachedFeature->feature() );
+    feature = cachedFeature->feature();
     featureFound = true;
   }
   else if ( mLayer->getFeatures( QgsFeatureRequest().setFilterFid( featureId ).setFlags( !mCacheGeometry ? Qgis::FeatureRequestFlag::NoGeometry : Qgis::FeatureRequestFlags() ) ).nextFeature( feature ) )
@@ -219,6 +246,8 @@ bool QgsVectorLayerCache::featureAtIdWithAllAttributes( QgsFeatureId featureId, 
 
 bool QgsVectorLayerCache::completeFeatureAtId( QgsFeatureId featureId, QgsFeature &feature, bool skipCache )
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   bool featureFound = false;
 
   QgsCachedFeature *cachedFeature = nullptr;
@@ -230,7 +259,7 @@ bool QgsVectorLayerCache::completeFeatureAtId( QgsFeatureId featureId, QgsFeatur
 
   if ( cachedFeature && cachedFeature->allAttributesFetched() && cachedFeature->geometryFetched() )
   {
-    feature = QgsFeature( *cachedFeature->feature() );
+    feature = cachedFeature->feature();
     featureFound = true;
   }
   else if ( mLayer->getFeatures( QgsFeatureRequest().setFilterFid( featureId ) ).nextFeature( feature ) )
@@ -244,6 +273,8 @@ bool QgsVectorLayerCache::completeFeatureAtId( QgsFeatureId featureId, QgsFeatur
 
 bool QgsVectorLayerCache::removeCachedFeature( QgsFeatureId fid )
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   bool removed = mCache.remove( fid );
   if ( removed )
   {
@@ -260,33 +291,45 @@ bool QgsVectorLayerCache::removeCachedFeature( QgsFeatureId fid )
 
 QgsVectorLayer *QgsVectorLayerCache::layer()
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   return mLayer;
 }
 
 QgsCoordinateReferenceSystem QgsVectorLayerCache::sourceCrs() const
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   return mLayer->crs();
 }
 
 Qgis::WkbType QgsVectorLayerCache::wkbType() const
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   return mLayer->wkbType();
 }
 
 QgsFields QgsVectorLayerCache::fields() const
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   return mLayer->fields();
 }
 
 long long QgsVectorLayerCache::featureCount() const
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   return mLayer->featureCount();
 }
 
 void QgsVectorLayerCache::requestCompleted( const QgsFeatureRequest &featureRequest, const QgsFeatureIds &fids )
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   // If a request is too large for the cache don't notify to prevent from indexing incomplete requests
-  if ( fids.count() <= mCache.size() )
+  if ( fids.count() <= mCache.maxCost() )
   {
     for ( const auto &idx : std::as_const( mCacheIndices ) )
     {
@@ -302,6 +345,8 @@ void QgsVectorLayerCache::requestCompleted( const QgsFeatureRequest &featureRequ
 
 void QgsVectorLayerCache::featureRemoved( QgsFeatureId fid )
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   const auto constMCacheIndices = mCacheIndices;
   for ( QgsAbstractCacheIndex *idx : constMCacheIndices )
   {
@@ -311,11 +356,13 @@ void QgsVectorLayerCache::featureRemoved( QgsFeatureId fid )
 
 void QgsVectorLayerCache::onAttributeValueChanged( QgsFeatureId fid, int field, const QVariant &value )
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   QgsCachedFeature *cachedFeat = mCache[fid];
 
   if ( cachedFeat )
   {
-    cachedFeat->mFeature->setAttribute( field, value );
+    cachedFeat->mFeature.setAttribute( field, value );
   }
 
   emit attributeValueChanged( fid, field, value );
@@ -323,6 +370,8 @@ void QgsVectorLayerCache::onAttributeValueChanged( QgsFeatureId fid, int field, 
 
 void QgsVectorLayerCache::onJoinAttributeValueChanged( QgsFeatureId fid, int field, const QVariant &value )
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   const QgsVectorLayer *joinLayer = qobject_cast<const QgsVectorLayer *>( sender() );
 
   const auto constVectorJoins = mLayer->vectorJoins();
@@ -344,8 +393,11 @@ void QgsVectorLayerCache::onJoinAttributeValueChanged( QgsFeatureId fid, int fie
   }
 }
 
-void QgsVectorLayerCache::featureDeleted( QgsFeatureId fid )
+void QgsVectorLayerCache::onFeatureDeleted( QgsFeatureId fid )
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
+  emit featureAboutToBeDeleted( fid );
   mCache.remove( fid );
 
   if ( auto it = mCacheUnorderedKeys.find( fid ); it != mCacheUnorderedKeys.end() )
@@ -354,10 +406,15 @@ void QgsVectorLayerCache::featureDeleted( QgsFeatureId fid )
     if ( auto orderedIt = std::find( mCacheOrderedKeys.begin(), mCacheOrderedKeys.end(), fid ); orderedIt != mCacheOrderedKeys.end() )
       mCacheOrderedKeys.erase( orderedIt );
   }
+  emit featureDeleted( fid );
 }
 
 void QgsVectorLayerCache::onFeatureAdded( QgsFeatureId fid )
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
+  emit featureAboutToBeAdded( fid );
+
   if ( mFullCache )
   {
     if ( cacheSize() <= mLayer->featureCount() )
@@ -373,13 +430,19 @@ void QgsVectorLayerCache::onFeatureAdded( QgsFeatureId fid )
 
 void QgsVectorLayerCache::attributeAdded( int field )
 {
-  Q_UNUSED( field )
-  mCachedAttributes.append( field );
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
+  if ( !mCachedAttributes.contains( field ) )
+  {
+    mCachedAttributes.append( field );
+  }
   invalidate();
 }
 
 void QgsVectorLayerCache::attributeDeleted( int field )
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   const QgsAttributeList attrs = mCachedAttributes;
   mCachedAttributes.clear();
 
@@ -390,26 +453,33 @@ void QgsVectorLayerCache::attributeDeleted( int field )
     else if ( attr > field )
       mCachedAttributes << attr - 1;
   }
+  invalidate();
 }
 
 void QgsVectorLayerCache::geometryChanged( QgsFeatureId fid, const QgsGeometry &geom )
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   QgsCachedFeature *cachedFeat = mCache[fid];
 
   if ( cachedFeat )
   {
-    cachedFeat->mFeature->setGeometry( geom );
+    cachedFeat->mFeature.setGeometry( geom );
   }
 }
 
 void QgsVectorLayerCache::layerDeleted()
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   emit cachedLayerDeleted();
   mLayer = nullptr;
 }
 
 void QgsVectorLayerCache::invalidate()
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   if ( !mCache.isEmpty() )
   {
     mCache.clear();
@@ -422,6 +492,8 @@ void QgsVectorLayerCache::invalidate()
 
 bool QgsVectorLayerCache::canUseCacheForRequest( const QgsFeatureRequest &featureRequest, QgsFeatureIterator &it )
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   // check first for available indices
   const auto constMCacheIndices = mCacheIndices;
   for ( QgsAbstractCacheIndex *idx : constMCacheIndices )
@@ -469,6 +541,8 @@ bool QgsVectorLayerCache::canUseCacheForRequest( const QgsFeatureRequest &featur
 
 QgsFeatureIterator QgsVectorLayerCache::getFeatures( const QgsFeatureRequest &featureRequest )
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   QgsFeatureIterator it;
   bool requiresWriterIt = true; // If a not yet cached, but cacheable request is made, this stays true.
 
@@ -529,17 +603,23 @@ QgsFeatureIterator QgsVectorLayerCache::getFeatures( const QgsFeatureRequest &fe
 
 bool QgsVectorLayerCache::isFidCached( const QgsFeatureId fid ) const
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   return mCache.contains( fid );
 }
 
 QgsFeatureIds QgsVectorLayerCache::cachedFeatureIds() const
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   const QList< QgsFeatureId > keys = mCache.keys();
   return QgsFeatureIds( keys.begin(), keys.end() );
 }
 
 bool QgsVectorLayerCache::checkInformationCovered( const QgsFeatureRequest &featureRequest )
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   QgsAttributeList requestedAttributes;
 
   if ( !featureRequest.flags().testFlag( Qgis::FeatureRequestFlag::SubsetOfAttributes ) )
@@ -567,6 +647,8 @@ bool QgsVectorLayerCache::checkInformationCovered( const QgsFeatureRequest &feat
 
 void QgsVectorLayerCache::connectJoinedLayers() const
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   const auto constVectorJoins = mLayer->vectorJoins();
   for ( const QgsVectorLayerJoinInfo &info : constVectorJoins )
   {

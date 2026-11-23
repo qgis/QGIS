@@ -542,9 +542,9 @@ void QgsEditFormConfig::readXml( const QDomNode &node, QgsReadWriteContext &cont
         fixLegacyConfig( elem );
 
         const QString layerId = node.namedItem( u"id"_s ).toElement().text();
-        QgsAttributeEditorElement *attributeEditorWidget = QgsAttributeEditorElement::create( elem, layerId, d->mFields, context, nullptr );
+        std::unique_ptr<QgsAttributeEditorElement> attributeEditorWidget = QgsAttributeEditorElement::create( elem, layerId, d->mFields, context, nullptr );
         if ( attributeEditorWidget )
-          addTab( attributeEditorWidget );
+          addTab( attributeEditorWidget.release() );
       }
 
       onRelationsLoaded();
@@ -708,5 +708,5 @@ void QgsEditFormConfig::writeXml( QDomNode &node, const QgsReadWriteContext &con
 
 QgsAttributeEditorElement *QgsEditFormConfig::attributeEditorElementFromDomElement( QDomElement &elem, QgsAttributeEditorElement *parent, const QString &layerId, const QgsReadWriteContext &context )
 {
-  return QgsAttributeEditorElement::create( elem, layerId, d->mFields, context, parent );
+  return QgsAttributeEditorElement::create( elem, layerId, d->mFields, context, parent ).release();
 }

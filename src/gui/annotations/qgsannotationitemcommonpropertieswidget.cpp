@@ -86,7 +86,7 @@ void QgsAnnotationItemCommonPropertiesWidget::openCalloutProperties()
 {
   QgsCalloutPanelWidget *widget = new QgsCalloutPanelWidget();
   if ( !mCallout )
-    mCallout.reset( QgsApplication::calloutRegistry()->defaultCallout() );
+    mCallout = QgsApplication::calloutRegistry()->defaultCallout();
   widget->setCallout( mCallout.get() );
 
   connect( widget, &QgsCalloutPanelWidget::calloutChanged, this, [this, widget] {

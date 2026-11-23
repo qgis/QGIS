@@ -404,6 +404,7 @@ void QgsNewHttpConnection::updateServiceSpecificSettings()
   cbxWmsInvertAxisOrientation->setChecked( QgsOwsConnection::settingsInvertAxisOrientation->value( detailsParameters ) );
   cbxIgnoreGetFeatureInfoURI->setChecked( QgsOwsConnection::settingsIgnoreGetFeatureInfoURI->value( detailsParameters ) );
   cbxSmoothPixmapTransform->setChecked( QgsOwsConnection::settingsSmoothPixmapTransform->value( detailsParameters ) );
+  cbxDisableDecompressedSafetyCheckThreshold->setChecked( QgsOwsConnection::settingsDisableDecompressedSafetyCheckThreshold->value( detailsParameters ) );
 
   Qgis::DpiMode dpiMode = QgsOwsConnection::settingsDpiMode->value( detailsParameters );
   cmbDpiMode->setCurrentIndex( cmbDpiMode->findData( static_cast<int>( dpiMode ) ) );
@@ -597,6 +598,7 @@ void QgsNewHttpConnection::accept()
     const QString featureMode = mComboWfsFeatureMode->currentData().toString();
     QgsOwsConnection::settingsWfsFeatureMode->setValue( featureMode, detailsParameters );
   }
+  QgsOwsConnection::settingsDisableDecompressedSafetyCheckThreshold->setValue( cbxDisableDecompressedSafetyCheckThreshold->isChecked(), detailsParameters );
 
   QStringList credentialsParameters = { mServiceName.toLower(), newConnectionName };
   QgsOwsConnection::settingsUsername->setValue( mAuthSettings->username(), credentialsParameters );

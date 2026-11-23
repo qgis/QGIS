@@ -28,7 +28,7 @@
 
 using namespace Qt::StringLiterals;
 
-#if GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR < 10
+#if GEOS_VERSION_NUM < GEOS_COMPUTE_VERSION( 3, 10, 0 )
 #include "qgsmessagelog.h"
 #endif
 
@@ -144,7 +144,7 @@ void QgsAbstractLabelingEngineRuleDistanceFromFeature::alterCandidateCost( pal::
 
 bool QgsAbstractLabelingEngineRuleDistanceFromFeature::isAvailable() const
 {
-#if GEOS_VERSION_MAJOR > 3 || ( GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR >= 10 )
+#if GEOS_VERSION_NUM >= GEOS_COMPUTE_VERSION( 3, 10, 0 )
   return true;
 #else
   return false;
@@ -222,7 +222,7 @@ bool QgsAbstractLabelingEngineRuleDistanceFromFeature::candidateExceedsTolerance
     try
     {
       geos::unique_ptr featureCandidate = QgsGeos::asGeos( mIndex->geometry( overlapCandidateId ).constGet() );
-#if GEOS_VERSION_MAJOR > 3 || ( GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR >= 10 )
+#if GEOS_VERSION_NUM >= GEOS_COMPUTE_VERSION( 3, 10, 0 )
       if ( GEOSPreparedDistanceWithin_r( geosctxt, candidateGeos, featureCandidate.get(), mDistanceMapUnits ) )
       {
         return mMustBeDistant;
@@ -365,7 +365,7 @@ QString QgsLabelingEngineRuleMinimumDistanceLabelToLabel::description() const
 
 bool QgsLabelingEngineRuleMinimumDistanceLabelToLabel::isAvailable() const
 {
-#if GEOS_VERSION_MAJOR > 3 || ( GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR >= 10 )
+#if GEOS_VERSION_NUM >= GEOS_COMPUTE_VERSION( 3, 10, 0 )
   return true;
 #else
   return false;
@@ -442,7 +442,7 @@ bool QgsLabelingEngineRuleMinimumDistanceLabelToLabel::candidatesAreConflicting(
     GEOSContextHandle_t geosctxt = QgsGeosContext::get();
     try
     {
-#if GEOS_VERSION_MAJOR > 3 || ( GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR >= 10 )
+#if GEOS_VERSION_NUM >= GEOS_COMPUTE_VERSION( 3, 10, 0 )
       if ( GEOSPreparedDistanceWithin_r( geosctxt, lp1->preparedMultiPartGeom(), lp2->multiPartGeom(), mDistanceMapUnits ) )
       {
         return true;

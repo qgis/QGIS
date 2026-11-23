@@ -93,7 +93,7 @@ QgsRuleBasedLabelingWidget::QgsRuleBasedLabelingWidget( QgsVectorLayer *layer, Q
   if ( mLayer->labeling() && mLayer->labeling()->type() == "rule-based"_L1 )
   {
     const QgsRuleBasedLabeling *rl = static_cast<const QgsRuleBasedLabeling *>( mLayer->labeling() );
-    mRootRule.reset( rl->rootRule()->clone( false ) );
+    mRootRule = rl->rootRule()->clone( false );
   }
   else if ( mLayer->labeling() && mLayer->labeling()->type() == "simple"_L1 )
   {
@@ -111,9 +111,9 @@ QgsRuleBasedLabelingWidget::QgsRuleBasedLabelingWidget( QgsVectorLayer *layer, Q
   mModel = new QgsRuleBasedLabelingModel( mRootRule.get() );
   viewRules->setModel( mModel );
 
-  connect( mModel, &QAbstractItemModel::dataChanged, this, &QgsRuleBasedLabelingWidget::widgetChanged );
-  connect( mModel, &QAbstractItemModel::rowsInserted, this, &QgsRuleBasedLabelingWidget::widgetChanged );
-  connect( mModel, &QAbstractItemModel::rowsRemoved, this, &QgsRuleBasedLabelingWidget::widgetChanged );
+  connect( mModel, &QAbstractItemModel::dataChanged, this, &QgsRuleBasedLabelingWidget::changed );
+  connect( mModel, &QAbstractItemModel::rowsInserted, this, &QgsRuleBasedLabelingWidget::changed );
+  connect( mModel, &QAbstractItemModel::rowsRemoved, this, &QgsRuleBasedLabelingWidget::changed );
 }
 
 QgsRuleBasedLabelingWidget::~QgsRuleBasedLabelingWidget()
@@ -191,7 +191,7 @@ void QgsRuleBasedLabelingWidget::editRule( const QModelIndex &index )
     QgsLabelingRulePropsWidget *widget = new QgsLabelingRulePropsWidget( rule, mLayer, this, mCanvas );
     widget->setPanelTitle( tr( "Edit Rule" ) );
     connect( widget, &QgsPanelWidget::panelAccepted, this, &QgsRuleBasedLabelingWidget::ruleWidgetPanelAccepted );
-    connect( widget, &QgsLabelingRulePropsWidget::widgetChanged, this, &QgsRuleBasedLabelingWidget::liveUpdateRuleFromPanel );
+    connect( widget, &QgsLabelingRulePropsWidget::changed, this, &QgsRuleBasedLabelingWidget::liveUpdateRuleFromPanel );
     openPanel( widget );
     return;
   }
@@ -200,7 +200,7 @@ void QgsRuleBasedLabelingWidget::editRule( const QModelIndex &index )
   if ( dlg.exec() )
   {
     mModel->updateRule( index.parent(), index.row() );
-    emit widgetChanged();
+    emit changed();
   }
 }
 
@@ -542,7 +542,7 @@ QMimeData *QgsRuleBasedLabelingModel::mimeData( const QModelIndexList &indexes )
 
     // we use a clone of the existing rule because it has a new unique rule key
     // non-unique rule keys would confuse other components using them (e.g. legend)
-    QgsRuleBasedLabeling::Rule *rule = ruleForIndex( index )->clone();
+    std::unique_ptr<QgsRuleBasedLabeling::Rule> rule = ruleForIndex( index )->clone();
     QDomDocument doc;
 
     QDomElement rootElem = doc.createElement( u"rule_mime"_s );
@@ -550,8 +550,6 @@ QMimeData *QgsRuleBasedLabelingModel::mimeData( const QModelIndexList &indexes )
     const QDomElement rulesElem = rule->save( doc, QgsReadWriteContext() );
     rootElem.appendChild( rulesElem );
     doc.appendChild( rootElem );
-
-    delete rule;
 
     stream << doc.toString( -1 );
   }
@@ -597,9 +595,9 @@ bool QgsRuleBasedLabelingModel::dropMimeData( const QMimeData *data, Qt::DropAct
     QDomElement ruleElem = rootElem.firstChildElement( u"rule"_s );
     if ( rootElem.attribute( u"type"_s ) == "renderer"_L1 )
       _renderer2labelingRules( ruleElem ); // do some modifications so that we load the rules more nicely
-    QgsRuleBasedLabeling::Rule *rule = QgsRuleBasedLabeling::Rule::create( ruleElem, QgsReadWriteContext(), false );
+    std::unique_ptr<QgsRuleBasedLabeling::Rule> rule = QgsRuleBasedLabeling::Rule::create( ruleElem, QgsReadWriteContext(), false );
 
-    insertRule( parent, row + rows, rule );
+    insertRule( parent, row + rows, rule.release() );
 
     ++rows;
   }
@@ -705,12 +703,12 @@ QgsLabelingRulePropsWidget::QgsLabelingRulePropsWidget( QgsRuleBasedLabeling::Ru
 
   connect( btnExpressionBuilder, &QAbstractButton::clicked, this, &QgsLabelingRulePropsWidget::buildExpression );
   connect( btnTestFilter, &QAbstractButton::clicked, this, &QgsLabelingRulePropsWidget::testFilter );
-  connect( editFilter, &QLineEdit::textEdited, this, &QgsLabelingRulePropsWidget::widgetChanged );
-  connect( editDescription, &QLineEdit::textChanged, this, &QgsLabelingRulePropsWidget::widgetChanged );
-  connect( groupScale, &QGroupBox::toggled, this, &QgsLabelingRulePropsWidget::widgetChanged );
-  connect( mScaleRangeWidget, &QgsScaleRangeWidget::rangeChanged, this, &QgsLabelingRulePropsWidget::widgetChanged );
-  connect( groupSettings, &QGroupBox::toggled, this, &QgsLabelingRulePropsWidget::widgetChanged );
-  connect( mLabelingGui, &QgsTextFormatWidget::widgetChanged, this, &QgsLabelingRulePropsWidget::widgetChanged );
+  connect( editFilter, &QLineEdit::textEdited, this, &QgsLabelingRulePropsWidget::changed );
+  connect( editDescription, &QLineEdit::textChanged, this, &QgsLabelingRulePropsWidget::changed );
+  connect( groupScale, &QGroupBox::toggled, this, &QgsLabelingRulePropsWidget::changed );
+  connect( mScaleRangeWidget, &QgsScaleRangeWidget::rangeChanged, this, &QgsLabelingRulePropsWidget::changed );
+  connect( groupSettings, &QGroupBox::toggled, this, &QgsLabelingRulePropsWidget::changed );
+  connect( mLabelingGui, &QgsTextFormatWidget::widgetChanged, this, &QgsLabelingRulePropsWidget::changed );
   connect( mFilterRadio, &QRadioButton::toggled, this, [this]( bool toggled ) { filterFrame->setEnabled( toggled ); } );
   connect( mElseRadio, &QRadioButton::toggled, this, [this]( bool toggled ) {
     if ( toggled )

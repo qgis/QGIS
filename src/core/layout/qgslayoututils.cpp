@@ -19,10 +19,12 @@
 
 #include <cmath>
 
+#include "qgsdatadefinedutils.h"
 #include "qgslayout.h"
 #include "qgslayoutitemmap.h"
 #include "qgslayoutitempicture.h"
 #include "qgslayoutrendercontext.h"
+#include "qgspainting.h"
 #include "qgsprojectviewsettings.h"
 #include "qgsrendercontext.h"
 #include "qgssettingsregistrycore.h"
@@ -396,19 +398,22 @@ QRectF QgsLayoutUtils::largestRotatedRectWithinBounds( const QRectF &originalRec
 
 QgsLayoutItemPage::Orientation QgsLayoutUtils::decodePaperOrientation( const QString &string, bool &ok )
 {
-  QString s = string.trimmed();
-  if ( s.compare( "Portrait"_L1, Qt::CaseInsensitive ) == 0 )
+  static constexpr auto ORIENTATION_MAP = makeDataDefinedStringDecoder<QgsLayoutItemPage::Orientation>( {
+    { u"portrait", QgsLayoutItemPage::Orientation::Portrait },
+    { u"landscape", QgsLayoutItemPage::Orientation::Landscape },
+  } );
+
+  auto evaluatedAnchor = ORIENTATION_MAP.lookup( string );
+  if ( evaluatedAnchor )
   {
     ok = true;
-    return QgsLayoutItemPage::Portrait;
+    return *evaluatedAnchor;
   }
-  else if ( s.compare( "Landscape"_L1, Qt::CaseInsensitive ) == 0 )
+  else
   {
-    ok = true;
-    return QgsLayoutItemPage::Landscape;
+    ok = false;
+    return QgsLayoutItemPage::Landscape; // default to landscape
   }
-  ok = false;
-  return QgsLayoutItemPage::Landscape; // default to landscape
 }
 
 double QgsLayoutUtils::scaleFactorFromItemStyle( const QStyleOptionGraphicsItem *style )

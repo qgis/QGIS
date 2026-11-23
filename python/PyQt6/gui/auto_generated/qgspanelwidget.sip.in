@@ -169,12 +169,26 @@ Emit when you require a panel to be show in the interface.
    given panels showPanel signal as they can be nested.
 %End
 
-    void widgetChanged();
+ void widgetChanged() /Deprecated="Since 4.4. Use changed() instead."/;
 %Docstring
 Emitted when the widget state changes. Connect to this to pull any
 changes off the widget when needed. As panels are non blocking "dialogs"
 you should listen to this signal to give the user feedback when
 something changes.
+
+.. deprecated:: 4.4
+
+   Use :py:func:`~QgsPanelWidget.changed` instead.
+%End
+
+    void changed();
+%Docstring
+Emitted when the widget state changes. Connect to this to pull any
+changes off the widget when needed. As panels are non blocking "dialogs"
+you should listen to this signal to give the user feedback when
+something changes.
+
+.. versionadded:: 4.4
 %End
 
   public slots:

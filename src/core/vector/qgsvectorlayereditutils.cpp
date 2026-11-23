@@ -21,6 +21,7 @@
 #include "qgscurvepolygon.h"
 #include "qgsfeatureiterator.h"
 #include "qgsgeometryoptions.h"
+#include "qgsgeos.h"
 #include "qgslinestring.h"
 #include "qgslogger.h"
 #include "qgspoint.h"
@@ -567,7 +568,9 @@ Qgis::GeometryOperationResult QgsVectorLayerEditUtils::splitFeatures( const QgsC
   QgsVectorLayerUtils::QgsFeaturesDataList featuresDataToAdd;
 
   const int fieldCount = mLayer->fields().count();
+#if GEOS_VERSION_NUM < GEOS_COMPUTE_VERSION( 3, 15, 0 )
   const bool splitCurveContainsCurves = curve->hasCurvedSegments();
+#endif
 
   QgsFeature feat;
   while ( features.nextFeature( feat ) )
@@ -581,11 +584,15 @@ Qgis::GeometryOperationResult QgsVectorLayerEditUtils::splitFeatures( const QgsC
     const QgsGeometry originalGeom = feat.geometry();
     QgsGeometry featureGeom = originalGeom;
 
+#if GEOS_VERSION_NUM >= GEOS_COMPUTE_VERSION( 3, 15, 0 )
+    splitFunctionReturn = featureGeom.splitGeometry( curve, newGeometries, preserveCircular, topologicalEditing, featureTopologyTestPoints );
+#else
     // For the current geometry, make sure preserveCircular is not forced, unless
     // the input param is true and one of the involved geometries contains curves
     bool preserveCircularForGeom = preserveCircular;
     preserveCircularForGeom &= ( splitCurveContainsCurves || featureGeom.constGet()->hasCurvedSegments() );
     splitFunctionReturn = featureGeom.splitGeometry( curve, newGeometries, preserveCircularForGeom, topologicalEditing, featureTopologyTestPoints );
+#endif
 
     topologyTestPoints.append( featureTopologyTestPoints );
     if ( splitFunctionReturn == Qgis::GeometryOperationResult::Success )

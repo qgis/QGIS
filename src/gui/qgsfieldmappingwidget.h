@@ -140,13 +140,6 @@ class GUI_EXPORT QgsFieldMappingWidget : public QgsPanelWidget
      */
     void registerExpressionContextGenerator( const QgsExpressionContextGenerator *generator );
 
-  signals:
-
-    /**
-     *Emitted when the fields defined in the widget are changed.
-     */
-    void changed();
-
   public slots:
 
     //! Appends a new \a field to the model, with an optional \a expression

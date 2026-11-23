@@ -55,6 +55,7 @@ class QgsEditorWidgetSetup;
 class QgsSettingsEntryBool;
 class QgsSettingsEntryInteger;
 class QgsTiledSceneLayer;
+class QgsToolButtonAction;
 
 class QwtPlotCurve;
 
@@ -341,7 +342,7 @@ class APP_EXPORT QgsIdentifyResultsDialog : public QDialog, private Ui::QgsIdent
     QList<QgsFeature> mFeatures;
     QMap<QString, QMap<QString, QVariant>> mWidgetCaches;
     QgsExpressionContextScope mExpressionContextScope;
-    QToolButton *mSelectModeButton = nullptr;
+    QgsToolButtonAction *mSelectModeButtonAction = nullptr;
 
     QgsMapLayer *layer( QTreeWidgetItem *item );
     static QgsVectorLayer *vectorLayer( QTreeWidgetItem *item );

@@ -71,7 +71,7 @@ QgsVirtualLayerFeatureIterator::QgsVirtualLayerFeatureIterator( QgsVirtualLayerF
       if ( !mRequest.referenceGeometry().isEmpty() )
       {
         mDistanceWithinGeom = mRequest.referenceGeometry();
-        mDistanceWithinEngine.reset( QgsGeometry::createGeometryEngine( mDistanceWithinGeom.constGet() ) );
+        mDistanceWithinEngine = QgsGeometry::createGeometryEngine( mDistanceWithinGeom.constGet() );
         mDistanceWithinEngine->prepareGeometry();
       }
       break;
@@ -136,7 +136,7 @@ QgsVirtualLayerFeatureIterator::QgsVirtualLayerFeatureIterator( QgsVirtualLayerF
       {
         // if an exact intersection is requested, prepare the geometry to intersect
         const QgsGeometry rectGeom = QgsGeometry::fromRect( mFilterRect );
-        mRectEngine.reset( QgsGeometry::createGeometryEngine( rectGeom.constGet() ) );
+        mRectEngine = QgsGeometry::createGeometryEngine( rectGeom.constGet() );
         mRectEngine->prepareGeometry();
       }
     }

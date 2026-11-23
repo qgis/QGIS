@@ -97,7 +97,7 @@ class QgsLinearReferencingSymbolLayerLabelProvider final : public QgsAbstractLab
       const QPointF outPt = context.mapToPixel().transform( label->getX(), label->getY() ).toQPointF();
 
       QgsTextLabelFeatureWithFormat *lf = qgis::down_cast<QgsTextLabelFeatureWithFormat *>( label->getFeaturePart()->feature() );
-      QgsTextRenderer::drawDocument( outPt, lf->mFormat, lf->document(), lf->documentMetrics(), context, Qgis::TextHorizontalAlignment::Left, label->getAlpha() );
+      QgsTextRenderer::drawDocument( outPt, lf->mFormat, lf->document(), lf->documentMetrics(), context, Qgis::TextHorizontalAlignment::Left, label->angleRadians() );
     }
 
   private:

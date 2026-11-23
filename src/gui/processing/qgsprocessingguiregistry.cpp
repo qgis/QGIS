@@ -38,6 +38,7 @@
 #include "qgsprocessingmodelgroupbox.h"
 #include "qgsprocessingmodelparameter.h"
 #include "qgsprocessingparameters.h"
+#include "qgsprocessingprovideractions.h"
 #include "qgsprocessingrasteroptionswidgetwrapper.h"
 #include "qgsprocessingtininputlayerswidget.h"
 #include "qgsprocessingvectortilewriterlayerswidgetwrapper.h"
@@ -48,6 +49,22 @@
 #include "moc_qgsprocessingguiregistry.cpp"
 
 using namespace Qt::StringLiterals;
+
+//
+// QgsProcessingDialogFactory
+//
+
+QgsProcessingDialogFactory::~QgsProcessingDialogFactory() = default;
+
+//
+// QgsProcessingContextFactory
+//
+
+QgsProcessingContextFactory::~QgsProcessingContextFactory() = default;
+
+//
+// QgsProcessingGuiRegistry
+//
 
 QgsProcessingGuiRegistry::QgsProcessingGuiRegistry()
 {
@@ -113,6 +130,7 @@ QgsProcessingGuiRegistry::QgsProcessingGuiRegistry()
   addParameterWidgetFactory( new QgsProcessingExecuteSqlWidgetWrapper() );
   addParameterWidgetFactory( new QgsProcessingInterpolationPixelSizeWidgetWrapper() );
   addParameterWidgetFactory( new QgsProcessingInterpolationSourceWidgetWrapper() );
+  addParameterWidgetFactory( new QgsProcessingTileExtentMaxZoomWidgetWrapper() );
 
   mModelConfigWidgetFactory = std::make_unique< QgsProcessingGuiInternalModelConfigWidgetFactory >();
   registerModelConfigWidgetFactory( mModelConfigWidgetFactory.get() );
@@ -120,6 +138,18 @@ QgsProcessingGuiRegistry::QgsProcessingGuiRegistry()
 
 QgsProcessingGuiRegistry::~QgsProcessingGuiRegistry()
 {
+  for ( auto it = mProviderToolboxActions.constBegin(); it != mProviderToolboxActions.constEnd(); ++it )
+  {
+    qDeleteAll( it.value() );
+  }
+  mProviderToolboxActions.clear();
+
+  for ( auto it = mProviderToolboxContextActions.constBegin(); it != mProviderToolboxContextActions.constEnd(); ++it )
+  {
+    qDeleteAll( it.value() );
+  }
+  mProviderToolboxContextActions.clear();
+
   const QList<QgsProcessingAlgorithmConfigurationWidgetFactory *> factories = mAlgorithmConfigurationWidgetFactories;
   for ( QgsProcessingAlgorithmConfigurationWidgetFactory *factory : factories )
     removeAlgorithmConfigurationWidgetFactory( factory );
@@ -269,6 +299,82 @@ QgsProcessingParameterWidgetContext QgsProcessingGuiRegistry::createWidgetContex
   return QgsProcessingParameterWidgetContext();
 }
 
+void QgsProcessingGuiRegistry::registerProviderToolboxAction( const QString &providerId, QgsProcessingToolboxAction *action )
+{
+  mProviderToolboxActions[providerId].append( action );
+}
+
+void QgsProcessingGuiRegistry::deregisterProviderToolboxActions( const QString &providerId )
+{
+  QList< QgsProcessingToolboxAction * > actions = mProviderToolboxActions.take( providerId );
+  qDeleteAll( actions );
+}
+
+QList<QgsProcessingToolboxAction *> QgsProcessingGuiRegistry::toolboxActionsForProvider( const QString &providerId ) const
+{
+  return mProviderToolboxActions.value( providerId );
+}
+
+void QgsProcessingGuiRegistry::registerProviderToolboxContextAction( const QString &providerId, QgsProcessingToolboxContextAction *action )
+{
+  mProviderToolboxContextActions[providerId].append( action );
+}
+
+void QgsProcessingGuiRegistry::deregisterProviderToolboxContextActions( const QString &providerId )
+{
+  QList< QgsProcessingToolboxContextAction * > actions = mProviderToolboxContextActions.take( providerId );
+  qDeleteAll( actions );
+}
+
+void QgsProcessingGuiRegistry::deregisterProviderToolboxContextAction( QgsProcessingToolboxContextAction *action )
+{
+  for ( auto it = mProviderToolboxContextActions.begin(); it != mProviderToolboxContextActions.end(); ++it )
+  {
+    if ( it.value().contains( action ) )
+    {
+      QList< QgsProcessingToolboxContextAction * > actions = it.value();
+      actions.removeAll( action );
+      mProviderToolboxContextActions.insert( it.key(), actions );
+      break;
+    }
+  }
+}
+
+QList<QgsProcessingToolboxContextAction *> QgsProcessingGuiRegistry::toolboxContextActions() const
+{
+  QList<QgsProcessingToolboxContextAction *> res;
+  for ( auto it = mProviderToolboxContextActions.constBegin(); it != mProviderToolboxContextActions.constEnd(); ++it )
+  {
+    res.append( it.value() );
+  }
+  return res;
+}
+
+void QgsProcessingGuiRegistry::setDialogFactory( QgsProcessingDialogFactory *factory )
+{
+  mProcessingDialogFactory.reset( factory );
+}
+
+QgsProcessingDialogFactory *QgsProcessingGuiRegistry::dialogFactory()
+{
+  return mProcessingDialogFactory.get();
+}
+
+void QgsProcessingGuiRegistry::setContextFactory( QgsProcessingContextFactory *factory )
+{
+  mContextFactory.reset( factory );
+}
+
+QgsProcessingContextFactory *QgsProcessingGuiRegistry::contextFactory()
+{
+  return mContextFactory.get();
+}
+
+QList<QgsProcessingToolboxContextAction *> QgsProcessingGuiRegistry::toolboxContextActionsForProvider( const QString &providerId ) const
+{
+  return mProviderToolboxContextActions.value( providerId );
+}
+
 /// @cond PRIVATE
 bool QgsProcessingGuiInternalModelConfigWidgetFactory::supportsComponent( QgsProcessingModelComponent *component ) const
 {
@@ -297,7 +403,7 @@ QgsProcessingModelConfigWidget *QgsProcessingGuiInternalModelConfigWidgetFactory
     const QString boxUuid = groupBox->uuid();
 
     auto widget = new QgsModelGroupBoxDefinitionPanelWidget( *groupBox );
-    connect( widget, &QgsModelGroupBoxDefinitionPanelWidget::widgetChanged, this, [dialog, boxUuid, widget] {
+    connect( widget, &QgsModelGroupBoxDefinitionPanelWidget::changed, this, [dialog, boxUuid, widget] {
       QgsModelGraphicsScene *modelScene = dialog->modelScene();
       QgsModelGroupBoxGraphicItem *graphicItem = dynamic_cast< QgsModelGroupBoxGraphicItem * >( modelScene->groupBoxItem( boxUuid ) );
       if ( !graphicItem )
@@ -322,7 +428,7 @@ QgsProcessingModelConfigWidget *QgsProcessingGuiInternalModelConfigWidgetFactory
     widgetContextCopy.setModelChildAlgorithmId( childId );
     widget->setWidgetContext( widgetContextCopy );
 
-    connect( widget, &QgsProcessingModelConfigWidget::widgetChanged, this, [dialog, childId, widget] {
+    connect( widget, &QgsProcessingModelConfigWidget::changed, this, [dialog, childId, widget] {
       QgsModelGraphicsScene *modelScene = dialog->modelScene();
       QgsModelChildAlgorithmGraphicItem *graphicItem = modelScene->childAlgorithmItem( childId );
       if ( !graphicItem )
@@ -362,7 +468,7 @@ QgsProcessingModelConfigWidget *QgsProcessingGuiInternalModelConfigWidgetFactory
 
     auto existingParamName = std::make_shared< QString >( existingParam->name() );
 
-    connect( widget, &QgsProcessingParameterDefinitionPanelWidget::widgetChanged, this, [dialog, componentName, oldDescription, oldName, existingParamName, widget] {
+    connect( widget, &QgsProcessingParameterDefinitionPanelWidget::changed, this, [dialog, componentName, oldDescription, oldName, existingParamName, widget] {
       QgsModelGraphicsScene *modelScene = dialog->modelScene();
       if ( !modelScene )
         return;
@@ -405,7 +511,7 @@ QgsProcessingModelConfigWidget *QgsProcessingGuiInternalModelConfigWidgetFactory
       widget->registerProcessingContextGenerator( widgetContext.processingContextGenerator() );
     }
 
-    connect( widget, &QgsProcessingParameterDefinitionPanelWidget::widgetChanged, this, [dialog, childId, childOutputName, widget] {
+    connect( widget, &QgsProcessingParameterDefinitionPanelWidget::changed, this, [dialog, childId, childOutputName, widget] {
       QgsModelGraphicsScene *modelScene = dialog->modelScene();
       if ( !modelScene )
         return;
@@ -427,4 +533,6 @@ QgsProcessingModelConfigWidget *QgsProcessingGuiInternalModelConfigWidgetFactory
 
   return nullptr;
 }
+
+
 /// @endcond PRIVATE

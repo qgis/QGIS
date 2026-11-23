@@ -361,11 +361,11 @@ QVariantMap QgsJoinByLocationSummaryAlgorithm::processAlgorithm( const QVariantM
 
       if ( !engine )
       {
-        engine.reset( QgsGeometry::createGeometryEngine( f.geometry().constGet() ) );
+        engine = QgsGeometry::createGeometryEngine( f.geometry().constGet() );
         engine->prepareGeometry();
       }
 
-      if ( QgsJoinByLocationAlgorithm::featureFilter( testJoinFeature, engine.get(), true, predicates ) )
+      if ( QgsJoinByLocationAlgorithm::featureFilter( testJoinFeature, engine.get(), true, predicates, feedback ) )
       {
         QgsAttributes joinAttributes;
         joinAttributes.reserve( joinFieldIndices.size() );

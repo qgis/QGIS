@@ -231,7 +231,7 @@ class CORE_EXPORT QgsFileUtils
     /**
      * Creates a unique file path name from a desired path by appending ``_<n>`` (where ``<n>`` is an integer number) before the file suffix.
      *
-     * E.g. if ``/path/my_image.png`` already exists ``/path/my_image_2.png`` (and ``_3`, ``_4`` etc.) will be checked until a file path that does not already exist is found.
+     * E.g. if ``/path/my_image.png`` already exists ``/path/my_image_2.png`` (and ``_3``, ``_4`` etc.) will be checked until a file path that does not already exist is found.
      *
      * \param path the desired path.
      * \return the unmodified path if path is already unique or the new path with ``_<n>`` (where ``<n>`` is an integer number) appended to the file name before the suffix.
@@ -286,6 +286,15 @@ class CORE_EXPORT QgsFileUtils
      * \since QGIS 4.0
      */
     static bool replaceTextInFile( const QString &path, const QString &searchString, const QString &replacement );
+
+    /**
+     * Replaces all occurrences of a content found by \a regularExpression with \a replacement in a file located at \a path.
+     *
+     * Returns TRUE if the replacement was successful and the file updated.
+     *
+     * \since QGIS 4.4
+     */
+    static bool replaceInFile( const QString &path, const QRegularExpression &regularExpression, const QString &replacement );
 };
 
 Q_DECLARE_OPERATORS_FOR_FLAGS( QgsFileUtils::CopyFlags )

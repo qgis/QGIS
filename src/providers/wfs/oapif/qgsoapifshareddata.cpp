@@ -21,6 +21,7 @@
 #include "qgsoapifcql2textexpressioncompiler.h"
 #include "qgsoapiffeaturedownloaderimpl.h"
 #include "qgsoapifutils.h"
+#include "qgswkbtypes.h"
 
 #include <QString>
 #include <QUrl>
@@ -51,6 +52,11 @@ QString QgsOapifSharedData::appendExtraQueryParameters( const QString &url ) con
   if ( nPos < 0 )
     return url + '?' + mExtraQueryParameters;
   return url + '&' + mExtraQueryParameters;
+}
+
+bool QgsOapifSharedData::shouldWriteJsonFg() const
+{
+  return mServerSupportsJsonFgWrites && QgsWkbTypes::isCurvedType( mWKBType );
 }
 
 bool QgsOapifSharedData::isRestrictedToRequestBBOX() const
@@ -85,6 +91,7 @@ QgsOapifSharedData *QgsOapifSharedData::clone() const
   copy->mServerSupportsLikeBetweenIn = mServerSupportsLikeBetweenIn;
   copy->mServerSupportsCaseI = mServerSupportsCaseI;
   copy->mServerSupportsBasicSpatialFunctions = mServerSupportsBasicSpatialFunctions;
+  copy->mServerSupportsJsonFgWrites = mServerSupportsJsonFgWrites;
   copy->mQueryables = mQueryables;
   QgsBackgroundCachedSharedData::copyStateToClone( copy );
 
@@ -253,7 +260,7 @@ QString QgsOapifSharedData::compileExpressionNodeUsingPart1( const QgsExpression
     ret = u"datetime=0000-01-01T00:00:00Z%2F"_s + maxDateStr;
   }
 
-  for ( const QString &equalityComparison : equalityComparisons )
+  for ( const QString &equalityComparison : std::as_const( equalityComparisons ) )
   {
     if ( !ret.isEmpty() )
       ret += '&'_L1;
@@ -309,15 +316,15 @@ bool QgsOapifSharedData::computeFilter( const QgsExpression &expr, QgsOapifFilte
     QgsOapifCql2TextExpressionCompiler::Result res = compiler.compile( &expr );
     if ( res == QgsOapifCql2TextExpressionCompiler::Fail )
     {
-      clientSideFilterExpression = expr.rootNode()->dump();
-      translationState = QgsOapifFilterTranslationState::FULLY_CLIENT;
+      // Fall back to part 1
+      serverSideParameters = compileExpressionNodeUsingPart1( rootNode, translationState, clientSideFilterExpression );
       return true;
     }
     serverSideParameters = getEncodedQueryParam( u"filter"_s, compiler.result() );
     serverSideParameters += "&filter-lang=cql2-text"_L1;
     if ( compiler.geometryLiteralUsed() )
     {
-      if ( mSourceCrs != QgsCoordinateReferenceSystem::fromOgcWmsCrs( OAPIF_PROVIDER_DEFAULT_CRS ) )
+      if ( mSourceCrs != QgsCoordinateReferenceSystem::fromOgcWmsCrs( QgsOapifUtils::DEFAULT_CRS ) )
       {
         serverSideParameters += u"&filter-crs=%1"_s.arg( mSourceCrs.toOgcUri() );
       }

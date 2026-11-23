@@ -48,7 +48,6 @@ RUN dnf -y --refresh install \
     protobuf-devel \
     protobuf-lite-devel \
     python3-devel \
-    python3-mock \
     python3-oauthlib \
     python3-OWSLib \
     python3-pyqt6 \
@@ -70,6 +69,7 @@ RUN dnf -y --refresh install \
     qt6-qtdeclarative-devel \
     qt6-qt5compat-devel \
     qt6-qtmultimedia-devel \
+    qt6-qtwayland-devel \
     qt6-qtwebengine-devel \
     qtkeychain-qt6-devel \
     qwt-qt6-devel \
@@ -77,10 +77,13 @@ RUN dnf -y --refresh install \
     sip6 \
     spatialindex-devel \
     sqlite-devel \
+    tbb-devel \
     unzip \
     unixODBC-devel \
     xorg-x11-server-Xvfb \
     util-linux \
+    wayland-devel \
+    wayland-protocols-devel \
     wget \
     openssl-devel \
     libsecret-devel \

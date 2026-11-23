@@ -21,6 +21,10 @@
 #include "qgslayoutitem.h"
 #include "qgsmaplayerref.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 class QgsLayoutItemElevationProfilePlot;
 class Qgs2DXyPlot;
 class QgsProfileRequest;
@@ -93,12 +97,81 @@ class CORE_EXPORT QgsLayoutItemElevationProfile : public QgsLayoutItem
      */
     QList<QgsAbstractProfileSource *> sources() const;
 
+#ifndef SIP_RUN
     /**
      * Sets the list of \a sources participating in the elevation profile.
      *
      * \see sources()
      */
-    void setSources( const QList<QgsAbstractProfileSource *> &sources );
+    void setSources( const QList< std::variant< QgsMapLayer *, QgsAbstractProfileSource * > > &sources );
+#else
+    // clang-format off
+
+    /**
+     * Sets the list of \a sources participating in the elevation profile.
+     *
+     * \see sources()
+     */
+    void setSources( SIP_PYOBJECT sources SIP_TYPEHINT( List[Union[QgsMapLayer, QgsAbstractProfileSource]] ) );
+    % MethodCode
+        if ( PyList_Check( a0 ) && PyList_GET_SIZE( a0 ) )
+    {
+      sipIsErr = 0;
+      QList< std::variant< QgsMapLayer *, QgsAbstractProfileSource * > > sourcesList;
+      for ( SIP_SSIZE_T i = 0; i < PyList_GET_SIZE( a0 ); ++i )
+      {
+        PyObject *p0 = PyList_GetItem( a0, i );
+        int state;
+
+        const sipTypeDef *source_type = sipFindType( "QgsAbstractProfileSource" );
+
+        if ( sipCanConvertToType( p0, sipType_QgsMapLayer, SIP_NOT_NONE ) )
+        {
+          QgsMapLayer *layerSource = reinterpret_cast<QgsMapLayer *>( sipConvertToType( p0, sipType_QgsMapLayer, 0, SIP_NOT_NONE, &state, &sipIsErr ) );
+          if ( !sipIsErr )
+          {
+            if ( layerSource->profileSource() )
+            {
+              sourcesList << layerSource;
+            }
+            else
+            {
+              sipIsErr = 1;
+              PyErr_SetString( PyExc_ValueError, u"The input list contains a map layer that does not provide a valid profile source!"_s.toUtf8().constData() );
+            }
+          }
+
+          sipReleaseType( layerSource, sipType_QgsMapLayer, state );
+        }
+        else if ( sipCanConvertToType( p0, source_type, SIP_NOT_NONE ) )
+        {
+          QgsAbstractProfileSource *profileSource = reinterpret_cast<QgsAbstractProfileSource *>( sipConvertToType( p0, source_type, 0, SIP_NOT_NONE, &state, &sipIsErr ) );
+          if ( !sipIsErr )
+          {
+            sourcesList << profileSource;
+          }
+
+          sipReleaseType( profileSource, source_type, state );
+        }
+        else
+        {
+          sipIsErr = 1;
+          PyErr_SetString( PyExc_TypeError, u"The input list contains an element with unexpected type!"_s.toUtf8().constData() );
+        }
+      }
+      if ( !sipIsErr )
+      {
+        sipCpp->setSources( sourcesList );
+      }
+    }
+    else
+    {
+      sipIsErr = 1;
+      PyErr_SetString( PyExc_TypeError, u"First argument is not a list or is empty."_s.toUtf8().constData() );
+    }
+    % End
+// clang-format on
+#endif
 
     /**
      * Sets the cross section profile \a curve, which represents the line along which the profile should be generated.
@@ -218,6 +291,78 @@ class CORE_EXPORT QgsLayoutItemElevationProfile : public QgsLayoutItem
      */
     void setSubsectionsSymbol( QgsLineSymbol *symbol SIP_TRANSFER );
 
+    /**
+     * Returns the method used to determine the elevation/distance ranges on the profile.
+     *
+     * \see setRangeMethod()
+     * \since QGIS 4.4
+     */
+    Qgis::ElevationProfileRangeMethod rangeMethod() const;
+
+    /**
+     * Sets the \a method used to determine the elevation/distance ranges on the profile.
+     *
+     * \see rangeMethod()
+     * \since QGIS 4.4
+     */
+    void setRangeMethod( Qgis::ElevationProfileRangeMethod method );
+
+    /**
+     * Returns the denominator of the elevation scale.
+     *
+     * This represents the desired scale denominator for the elevation axis, eg 1000.0 for a 1:1000 axis.
+     *
+     * \note This is only used when rangeMethod() is Qgis::ElevationProfileRangeMethod::FixedScale.
+     *
+     * \see distanceScale()
+     * \see setElevationScale()
+     *
+     * \since QGIS 4.4
+     */
+    double elevationScale() const;
+
+    /**
+     * Sets the denominator of the elevation \a scale.
+     *
+     * This represents the desired scale denominator for the elevation axis, eg 1000.0 for a 1:1000 axis.
+     *
+     * \note This is only used when rangeMethod() is Qgis::ElevationProfileRangeMethod::FixedScale.
+     *
+     * \see setDistanceScale()
+     * \see elevationScale()
+     *
+     * \since QGIS 4.4
+     */
+    void setElevationScale( double scale );
+
+    /**
+     * Returns the denominator of the distance scale.
+     *
+     * This represents the desired scale denominator for the distance axis, eg 1000.0 for a 1:1000 axis.
+     *
+     * \note This is only used when rangeMethod() is Qgis::ElevationProfileRangeMethod::FixedScale.
+     *
+     * \see elevationScale()
+     * \see setDistanceScale()
+     *
+     * \since QGIS 4.4
+     */
+    double distanceScale() const;
+
+    /**
+     * Sets the denominator of the distance \a scale.
+     *
+     * This represents the desired scale denominator for the distance axis, eg 1000.0 for a 1:1000 axis.
+     *
+     * \note This is only used when rangeMethod() is Qgis::ElevationProfileRangeMethod::FixedScale.
+     *
+     * \see setElevationScale()
+     * \see distanceScale()
+     *
+     * \since QGIS 4.4
+     */
+    void setDistanceScale( double scale );
+
   public slots:
 
     void refresh() override;
@@ -244,10 +389,16 @@ class CORE_EXPORT QgsLayoutItemElevationProfile : public QgsLayoutItem
     void setSourcesPrivate();
 
   private:
+    void calculateAxisRanges( QgsRenderContext &context );
+
     std::unique_ptr< QgsLayoutItemElevationProfilePlot > mPlot;
 
     QList< QgsMapLayerRef > mLayers;
     QList< std::variant< QgsMapLayerRef, QgsAbstractProfileSource * > > mSources;
+
+    Qgis::ElevationProfileRangeMethod mRangeMethod = Qgis::ElevationProfileRangeMethod::ManualRange;
+    double mElevationScale = 10;
+    double mDistanceScale = 1000;
 
     QgsCoordinateReferenceSystem mCrs;
     Qgis::DistanceUnit mDistanceUnit = Qgis::DistanceUnit::Unknown;

@@ -939,11 +939,21 @@ bool QgsBookmarksItemGuiProvider::acceptDrop( QgsDataItem *item, QgsDataItemGuiC
 
 bool QgsBookmarksItemGuiProvider::handleDrop( QgsDataItem *item, QgsDataItemGuiContext, const QMimeData *data, Qt::DropAction )
 {
-  QgsBookmarkManagerItem *managerItem = qobject_cast<QgsBookmarkManagerItem *>( item );
+  QgsBookmarkManager *target = nullptr;
+
   QgsBookmarkGroupItem *groupItem = qobject_cast<QgsBookmarkGroupItem *>( item );
-  if ( managerItem || groupItem )
+
+  if ( QgsBookmarkManagerItem *managerItem = qobject_cast<QgsBookmarkManagerItem *>( item ) )
   {
-    QgsBookmarkManager *target = managerItem ? managerItem->manager() : groupItem->manager();
+    target = managerItem->manager();
+  }
+  else if ( groupItem )
+  {
+    target = groupItem->manager();
+  }
+
+  if ( target )
+  {
     if ( QgsMimeDataUtils::isUriList( data ) )
     {
       const QgsMimeDataUtils::UriList list = QgsMimeDataUtils::decodeUriList( data );

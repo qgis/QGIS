@@ -156,7 +156,7 @@ void QgsAnnotationItemPropertiesWidget::onChanged()
     mBlockItemUpdates = false;
   }
 
-  emit widgetChanged();
+  emit changed();
 }
 
 void QgsAnnotationItemPropertiesWidget::onLayerItemsChanged()
@@ -175,7 +175,7 @@ void QgsAnnotationItemPropertiesWidget::onLayerPropertyChanged()
   if ( mBlockLayerUpdates )
     return;
 
-  emit widgetChanged();
+  emit changed();
 }
 
 void QgsAnnotationItemPropertiesWidget::setItemId( const QString &itemId )

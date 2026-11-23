@@ -130,6 +130,8 @@ void QgsOracleProviderConnection::setDefaultCapabilities()
     Qgis::SqlLayerDefinitionCapability::GeometryColumn,
     Qgis::SqlLayerDefinitionCapability::PrimaryKeys,
   };
+
+  mCapabilities2 = { Qgis::DatabaseProviderConnectionCapability2::StyleStorage };
 }
 
 QgsAbstractDatabaseProviderConnection::SqlVectorLayerOptions QgsOracleProviderConnection::sqlOptions( const QString &layerSource )

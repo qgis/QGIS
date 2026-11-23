@@ -168,7 +168,7 @@ class GUI_EXPORT QgsProcessingParameterDefinitionWidget : public QWidget
      *
      * The \a name parameter specifies the name for the newly created parameter.
      */
-    QgsProcessingParameterDefinition *createParameter( const QString &name = QString() ) const SIP_FACTORY;
+    std::unique_ptr<QgsProcessingParameterDefinition> createParameter( const QString &name = QString() ) const;
 
     /**
      * Registers a Processing context \a generator class that will be used to retrieve
@@ -237,7 +237,7 @@ class GUI_EXPORT QgsProcessingParameterDefinitionPanelWidget : public QgsProcess
      *
      * The \a name parameter specifies the name for the newly created parameter.
      */
-    QgsProcessingParameterDefinition *createParameter( const QString &name = QString() ) const SIP_FACTORY;
+    std::unique_ptr<QgsProcessingParameterDefinition> createParameter( const QString &name = QString() ) const;
 
     /**
      * Sets the comments for the parameter.
@@ -323,7 +323,7 @@ class GUI_EXPORT QgsProcessingParameterDefinitionDialog : public QDialog
      *
      * The \a name parameter specifies the name for the newly created parameter.
      */
-    QgsProcessingParameterDefinition *createParameter( const QString &name = QString() ) const SIP_FACTORY;
+    std::unique_ptr<QgsProcessingParameterDefinition> createParameter( const QString &name = QString() ) const;
 
     /**
      * Sets the comments for the parameter.

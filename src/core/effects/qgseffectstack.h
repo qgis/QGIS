@@ -53,7 +53,7 @@ class CORE_EXPORT QgsEffectStack : public QgsPaintEffect SIP_NODEFAULTCTORS
      * \param map unused encoded properties string map
      * \returns new QgsEffectStack
      */
-    static QgsPaintEffect *create( const QVariantMap &map ) SIP_FACTORY;
+    static std::unique_ptr<QgsPaintEffect> create( const QVariantMap &map );
 
     QgsEffectStack() = default;
 

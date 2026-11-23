@@ -49,3 +49,13 @@ void QgsGeocoderResult::setDescription( const QString &description )
 {
   mDescription = description;
 }
+
+QIcon QgsGeocoderResult::icon() const
+{
+  return mIcon;
+}
+
+void QgsGeocoderResult::setIcon( const QIcon &icon )
+{
+  mIcon = icon;
+}

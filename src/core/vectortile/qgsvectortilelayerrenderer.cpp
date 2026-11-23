@@ -23,6 +23,7 @@
 #include "qgslabelingengine.h"
 #include "qgslogger.h"
 #include "qgsmapclippingutils.h"
+#include "qgspainting.h"
 #include "qgsrendercontext.h"
 #include "qgsruntimeprofiler.h"
 #include "qgstextrenderer.h"

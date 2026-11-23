@@ -40,7 +40,7 @@
 using namespace Qt::StringLiterals;
 
 #ifdef ENABLE_MODELTEST
-#include "modeltest.h"
+#include <QAbstractItemModelTester>
 #endif
 
 
@@ -77,7 +77,7 @@ QgsPalettedRendererWidget::QgsPalettedRendererWidget( QgsRasterLayer *layer, con
   connect( this, &QgsPalettedRendererWidget::widgetChanged, this, [this] { mProxyModel->sort( QgsPalettedRendererModel::Column::ValueColumn ); } );
 
 #ifdef ENABLE_MODELTEST
-  new ModelTest( mModel, this );
+  new QAbstractItemModelTester( mModel, QAbstractItemModelTester::FailureReportingMode::Fatal, this );
 #endif
 
   mTreeView->setItemDelegateForColumn( QgsPalettedRendererModel::ColorColumn, new QgsColorSwatchDelegate( this ) );

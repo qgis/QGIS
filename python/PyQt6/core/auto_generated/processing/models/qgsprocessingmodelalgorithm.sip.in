@@ -450,6 +450,15 @@ Reads the model from a file, at the specified ``path``.
 .. seealso:: :py:func:`toFile`
 %End
 
+    static std::unique_ptr< QgsProcessingModelAlgorithm > loadModel( const QString &path );
+%Docstring
+Returns a new instance of QgsProcessingModelAlgorithm loaded from the
+file ``path``. This is a thin wrapper around fromFile that returns a new
+instance of QgsProcessingModelAlgorithm.
+
+.. versionadded:: 4.4
+%End
+
     QVariant toVariant() const;
 %Docstring
 Saves this model to a QVariantMap, wrapped in a QVariant. You can use
@@ -469,6 +478,17 @@ document.
 .. seealso:: :py:func:`toVariant`
 
 .. versionadded:: 3.4
+%End
+
+    QString modelQgisVersion() const;
+%Docstring
+Returns the QGIS version the model was originally created (or last
+saved) in.
+
+If the model was saved in QGIS versions prior to 4.4, this version will
+default to 0.0.0.
+
+.. versionadded:: 4.4
 %End
 
     QVariantMap &helpContent();
@@ -679,6 +699,7 @@ camel case string.
 
 .. versionadded:: 3.26
 %End
+
 
 
   protected:

@@ -113,11 +113,13 @@ QgsGradientColorRampDialog::QgsGradientColorRampDialog( const QgsGradientColorRa
   btnColor1->setContext( u"symbology"_s );
   btnColor1->setShowNoColor( true );
   btnColor1->setNoColorString( tr( "Transparent" ) );
+  btnColor1->setOpaqueColorString( tr( "Opaque" ) );
   btnColor2->setAllowOpacity( true );
   btnColor2->setColorDialogTitle( tr( "Select Ramp Color" ) );
   btnColor2->setContext( u"symbology"_s );
   btnColor2->setShowNoColor( true );
   btnColor2->setNoColorString( tr( "Transparent" ) );
+  btnColor2->setOpaqueColorString( tr( "Opaque" ) );
   updateColorButtons();
   connect( btnColor1, &QgsColorButton::colorChanged, this, &QgsGradientColorRampDialog::setColor1 );
   connect( btnColor2, &QgsColorButton::colorChanged, this, &QgsGradientColorRampDialog::setColor2 );

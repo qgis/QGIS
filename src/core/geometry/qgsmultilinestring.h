@@ -176,7 +176,7 @@ class CORE_EXPORT QgsMultiLineString : public QgsMultiCurve
      *
      * \since QGIS 3.36
      */
-    QgsMultiLineString *measuredLine( double start, double end ) const SIP_FACTORY;
+    std::unique_ptr<QgsMultiLineString> measuredLine( double start, double end ) const;
 
   protected:
 

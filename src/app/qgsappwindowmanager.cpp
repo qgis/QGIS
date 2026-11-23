@@ -82,6 +82,8 @@ QWidget *QgsAppWindowManager::openApplicationDialog( QgsAppWindowManager::Applic
       m3DMapViewsManagerDialog->setWindowState( m3DMapViewsManagerDialog->windowState() & ~Qt::WindowMinimized );
       m3DMapViewsManagerDialog->activateWindow();
       return m3DMapViewsManagerDialog;
+#else
+      break;
 #endif
     }
     case ApplicationDialog::ElevationProfileManager:

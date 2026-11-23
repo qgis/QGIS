@@ -64,6 +64,16 @@ class APP_EXPORT QgsAnimationExportDialog : public QDialog, private Ui::QgsAnima
     QgsInterval frameInterval() const;
 
     /**
+     * Returns the navigation animation mode.
+     */
+    Qgis::TemporalNavigationMode mode() const;
+
+    /**
+     * Total frame count, for Movie mode only.
+     */
+    long long totalMovieFrames() const { return mTotalMovieFrames; }
+
+    /**
      * Returns the animation temporal range cumulative settings.
      *
      * \since QGIS 4.0
@@ -98,6 +108,11 @@ class APP_EXPORT QgsAnimationExportDialog : public QDialog, private Ui::QgsAnima
     QSize mSize;
 
     QString mInfoDetails;
+
+    Qgis::TemporalNavigationMode mMode = Qgis::TemporalNavigationMode::Animated;
+
+    //! Total frame count, for Movie mode only
+    long long mTotalMovieFrames = 100;
 };
 
 #endif // QGSANIMATIONEXPORTDIALOG_H

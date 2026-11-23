@@ -58,7 +58,7 @@ QgsCustomizationDialog::QgsCustomizationModel::QgsCustomizationModel( QgisApp *q
   , mMode( mode )
   , mQgisApp( qgisApp )
 {
-  init();
+  initFromQgisApp();
 }
 
 QVariant QgsCustomizationDialog::QgsCustomizationModel::data( const QModelIndex &index, int role ) const
@@ -149,7 +149,11 @@ Qt::ItemFlags QgsCustomizationDialog::QgsCustomizationModel::flags( const QModel
       if ( item && item->hasCapability( QgsCustomization::QgsItem::ItemCapability::Rename ) && index.column() == 1 )
         flags |= Qt::ItemIsEditable;
 
-      flags |= Qt::ItemIsDropEnabled;
+      if ( item
+           && ( item->hasCapability( QgsCustomization::QgsItem::ItemCapability::AddActionRefChild ) || item->hasCapability( QgsCustomization::QgsItem::ItemCapability::AddProcessingAlgorithmRefChild ) ) )
+      {
+        flags |= Qt::ItemIsDropEnabled;
+      }
   }
   return flags;
 }
@@ -220,10 +224,15 @@ int QgsCustomizationDialog::QgsCustomizationModel::columnCount( const QModelInde
   return 2;
 }
 
-void QgsCustomizationDialog::QgsCustomizationModel::init()
+void QgsCustomizationDialog::QgsCustomizationModel::initFromQgisApp()
 {
   mCustomization = std::make_unique<QgsCustomization>( *mQgisApp->customization() );
   mCustomization->load();
+  initRootItems();
+}
+
+void QgsCustomizationDialog::QgsCustomizationModel::initRootItems()
+{
   mRootItems.clear();
   switch ( mMode )
   {
@@ -242,7 +251,7 @@ void QgsCustomizationDialog::QgsCustomizationModel::reset()
 {
   // restore application state
   beginResetModel();
-  init();
+  initFromQgisApp();
   endResetModel();
 }
 
@@ -261,6 +270,7 @@ QString QgsCustomizationDialog::QgsCustomizationModel::readFile( const QString &
 {
   beginResetModel();
   QString error = mCustomization->readFile( filePath );
+  initRootItems();
   endResetModel();
 
   return error;
@@ -402,29 +412,28 @@ QMimeData *QgsCustomizationDialog::QgsCustomizationModel::mimeData( const QModel
   return mimeData;
 }
 
+Qt::DropActions QgsCustomizationDialog::QgsCustomizationModel::supportedDropActions() const
+{
+  return Qt::DropAction::CopyAction;
+}
+
 bool QgsCustomizationDialog::QgsCustomizationModel::canDropMimeData( const QMimeData *data, Qt::DropAction action, int, int, const QModelIndex & ) const
 {
-  // QgsCustomization::Item *item = parent.isValid() ? static_cast<QgsCustomization::Item *>( parent.internalPointer() ) : nullptr;
-  return ( action == Qt::DropAction::LinkAction || action == Qt::DropAction::MoveAction || action == Qt::DropAction::CopyAction )
-         // TODO Qt issue https://qt-project.atlassian.net/browse/QTBUG-76418?focusedCommentId=465643
-         // canDropMimeData() doesn't work if the result value differs from one index to another, specially
-         // when we start with a cannot-drop-item after we start dragging
-         // Try to see if we can workaround thin in dragEnterEvent
-         // uncomment the following lines when fixed
-         /* && item && item->hasCapability( QgsCustomization::Item::ItemCapability::UserMenuChild ) */
-         && data
-         && ( data->hasFormat( ACTIONPATHS_MIMEDATA_NAME ) || data->hasFormat( PROCESSING_ALGORITHM_IDS_MIMEDATA_NAME ) );
+  return action == Qt::DropAction::CopyAction && data && ( data->hasFormat( ACTIONPATHS_MIMEDATA_NAME ) || data->hasFormat( PROCESSING_ALGORITHM_IDS_MIMEDATA_NAME ) );
 }
 
 bool QgsCustomizationDialog::QgsCustomizationModel::dropMimeData( const QMimeData *data, Qt::DropAction action, int row, int, const QModelIndex &parent )
 {
-  if ( action == Qt::IgnoreAction )
+  if ( action != Qt::DropAction::CopyAction )
     return true;
 
-  if ( row == -1 )
-    row = rowCount( parent ); // if dropped directly onto group item, insert at last position
+  // Child item need to be added on parent column 0
+  const QModelIndex p = index( parent.row(), 0, parent.parent() );
 
-  return dropMimeDataActions( data, row, parent ) || dropMimeDataProcessingAlgorithms( data, row, parent );
+  if ( row == -1 )
+    row = rowCount( p ); // if dropped directly onto group item, insert at last position
+
+  return dropMimeDataActions( data, row, p ) || dropMimeDataProcessingAlgorithms( data, row, p );
 }
 
 bool QgsCustomizationDialog::QgsCustomizationModel::dropMimeDataActions( const QMimeData *data, int row, const QModelIndex &parent )

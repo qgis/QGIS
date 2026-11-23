@@ -1258,8 +1258,9 @@ void QgsExpressionBuilderWidget::indicatorClicked( int line, int index, Qt::Keyb
   {
     int position = txtExpressionString->positionFromLineIndex( line, index );
     long fncIndex = txtExpressionString->SendScintilla( QsciScintilla::SCI_INDICATORVALUEAT, FUNCTION_MARKER_ID, static_cast<long int>( position ) );
-    QgsExpressionFunction *func = QgsExpression::Functions()[fncIndex];
-    QString help = getFunctionHelp( func );
+    const QgsExpression::FunctionListSnapshot functions = QgsExpression::getFunctionsSnapshot();
+    const QgsExpression::SharedFunctionPtr func = functions->getFunction( fncIndex );
+    QString help = getFunctionHelp( func.get() );
     txtHelpText->setText( help );
   }
 }

@@ -59,7 +59,10 @@ class DummyCallout : public QgsCallout
     {}
     QString type() const override { return u"Dummy"_s; }
     QgsCallout *clone() const override { return new DummyCallout( mProp1, mProp2 ); }
-    static QgsCallout *create( const QVariantMap &props, const QgsReadWriteContext & ) { return new DummyCallout( props[u"testProp"_s].toString(), props[u"testProp2"_s].toString() ); }
+    static std::unique_ptr<QgsCallout> create( const QVariantMap &props, const QgsReadWriteContext & )
+    {
+      return std::make_unique<DummyCallout>( props[u"testProp"_s].toString(), props[u"testProp2"_s].toString() );
+    }
     QVariantMap properties( const QgsReadWriteContext & ) const override
     {
       QVariantMap props;
@@ -249,11 +252,11 @@ void TestQgsCallout::saveRestore()
 
   //test reading bad node
   const QDomElement badCalloutElem = doc.createElement( u"parent"_s );
-  restoredCallout.reset( QgsApplication::calloutRegistry()->createCallout( u"Dummy"_s, badCalloutElem, QgsReadWriteContext() ) );
+  restoredCallout = QgsApplication::calloutRegistry()->createCallout( u"Dummy"_s, badCalloutElem, QgsReadWriteContext() );
   QVERIFY( restoredCallout );
 
   //test reading node
-  restoredCallout.reset( QgsApplication::calloutRegistry()->createCallout( u"Dummy"_s, calloutElem, QgsReadWriteContext() ) );
+  restoredCallout = QgsApplication::calloutRegistry()->createCallout( u"Dummy"_s, calloutElem, QgsReadWriteContext() );
   QVERIFY( restoredCallout );
   DummyCallout *restoredDummyCallout = dynamic_cast<DummyCallout *>( restoredCallout.get() );
   QVERIFY( restoredDummyCallout );

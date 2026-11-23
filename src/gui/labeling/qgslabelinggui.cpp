@@ -769,7 +769,7 @@ QgsPalLayerSettings QgsLabelingGui::layerSettings()
     callout.reset( pew->callout()->clone() );
   }
   if ( !callout )
-    callout.reset( QgsApplication::calloutRegistry()->createCallout( calloutType ) );
+    callout = QgsApplication::calloutRegistry()->createCallout( calloutType );
 
   callout->setEnabled( mCalloutsDrawCheckBox->isChecked() );
   lyr.setCallout( callout.release() );

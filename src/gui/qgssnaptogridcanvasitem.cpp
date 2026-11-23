@@ -16,6 +16,7 @@
 #include "qgssnaptogridcanvasitem.h"
 
 #include "qgsmapcanvas.h"
+#include "qgspainting.h"
 #include "qgsrendercontext.h"
 
 #include "moc_qgssnaptogridcanvasitem.cpp"

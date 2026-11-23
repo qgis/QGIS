@@ -72,7 +72,7 @@ units, scale factors and optionally oversampling)
 Draws text within a rectangle using the specified settings.
 
 :param rect: destination rectangle for text, in painter units
-:param rotation: text rotation
+:param rotation: text rotation in radians
 :param alignment: horizontal alignment
 :param textLines: list of lines of text to draw
 :param context: render context
@@ -128,7 +128,7 @@ have already been calculated.
 :param context: destination render context
 :param horizontalAlignment: horizontal alignment
 :param verticalAlignment: vertical alignment
-:param rotation: text rotation
+:param rotation: text rotation in radians
 :param mode: text layout mode. Only
              :py:class:`Qgis`.TextLayoutMode.Rectangle,
              :py:class:`Qgis`.TextLayoutMode.RectangleCapHeightBased and
@@ -146,7 +146,7 @@ have already been calculated.
 Draws text at a point origin using the specified settings.
 
 :param point: origin of text, in painter units
-:param rotation: text rotation
+:param rotation: text rotation in radians
 :param alignment: horizontal alignment
 :param textLines: list of lines of text to draw
 :param context: render context
@@ -190,7 +190,7 @@ have already been calculated.
 :param metrics: precalculated text metrics
 :param context: destination render context
 :param alignment: horizontal alignment
-:param rotation: text rotation
+:param rotation: text rotation in radians
 :param mode: optional layout mode (since QGIS 3.42)
 
 .. versionadded:: 3.40
@@ -284,7 +284,7 @@ Draws a text document along a line using the specified settings.
 Draws a single component of rendered text using the specified settings.
 
 :param rect: destination rectangle for text, in painter units
-:param rotation: text rotation
+:param rotation: text rotation in radians
 :param alignment: horizontal alignment
 :param textLines: list of lines of text to draw
 :param context: render context
@@ -323,7 +323,7 @@ Draws a single component of rendered text using the specified settings.
 
 :param origin: origin for start of text, in painter units. Y coordinate
                will be used as baseline.
-:param rotation: text rotation
+:param rotation: text rotation in radians
 :param alignment: horizontal alignment
 :param textLines: list of lines of text to draw
 :param context: render context

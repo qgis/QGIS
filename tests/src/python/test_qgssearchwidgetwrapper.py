@@ -655,10 +655,114 @@ class PyQgsCheckboxSearchWidgetWrapper(QgisTestCase):
 
 
 class PyQgsDateTimeSearchWidgetWrapper(QgisTestCase):
-    def testCreateExpression(self):
-        """Test creating an expression using the widget"""
+    def test_value_string_field(self):
+        layer = QgsVectorLayer(
+            "Point?field=date:string&field=time:string&field=datetime:string",
+            "test",
+            "memory",
+        )
+
+        # date field
+        w = QgsDateTimeSearchWidgetWrapper(layer, 0)
+        config = {"field_format": "yyyy-MM-dd", "display_format": "yyyy-MM-dd"}
+        w.setConfig(config)
+        c = w.widget()
+
+        c.setDateTime(QDateTime(QDate(2013, 4, 5), QTime()))
+        self.assertEqual(w.value(), "2013-04-05")
+        self.assertEqual(w.expression(), "\"date\" = '2013-04-05'")
+
+        # using dd/MM/yyyy format
+        w = QgsDateTimeSearchWidgetWrapper(layer, 0)
+        config = {"field_format": "dd/MM/yyyy", "display_format": "dd/MM/yyyy"}
+        w.setConfig(config)
+        c = w.widget()
+
+        c.setDateTime(QDateTime(QDate(2013, 4, 5), QTime()))
+        self.assertEqual(w.value(), "05/04/2013")
+        self.assertEqual(w.expression(), "\"date\" = '05/04/2013'")
+
+        # time field
+        w = QgsDateTimeSearchWidgetWrapper(layer, 1)
+        config = {"field_format": "hh:mm:ss", "display_format": "hh:mm:ss"}
+        w.setConfig(config)
+        c = w.widget()
+
+        c.setTime(QTime(13, 14, 15))
+        self.assertEqual(w.value(), "13:14:15")
+        self.assertEqual(w.expression(), "\"time\" = '13:14:15'")
+
+        # datetime field
+        w = QgsDateTimeSearchWidgetWrapper(layer, 2)
+        config = {
+            "field_format": "yyyy-MM-dd HH:mm:ss",
+            "display_format": "yyyy-MM-dd HH:mm:ss",
+        }
+        w.setConfig(config)
+        c = w.widget()
+
+        c.setDateTime(QDateTime(QDate(2013, 4, 5), QTime(12, 13, 14)))
+        self.assertEqual(w.value(), "2013-04-05 12:13:14")
+        self.assertEqual(w.expression(), "\"datetime\" = '2013-04-05 12:13:14'")
+
+        # using ISO format
+        w = QgsDateTimeSearchWidgetWrapper(layer, 2)
+        config = {"field_iso_format": True}
+        w.setConfig(config)
+        c = w.widget()
+
+        c.setDateTime(QDateTime(QDate(2013, 4, 5), QTime(12, 13, 14)))
+        self.assertEqual(w.value(), "2013-04-05T12:13:14")
+        self.assertEqual(w.expression(), "\"datetime\" = '2013-04-05T12:13:14'")
+
+    def test_value_date_time_field(self):
         layer = QgsVectorLayer(
             "Point?field=date:date&field=time:time&field=datetime:datetime",
+            "test",
+            "memory",
+        )
+
+        # date field
+        w = QgsDateTimeSearchWidgetWrapper(layer, 0)
+        # NOTE: field formats should be ignored for native date/time fields
+        config = {"field_format": "dd/MM/yyyy", "display_format": "dd/MM/yyyy"}
+        w.setConfig(config)
+        c = w.widget()
+
+        c.setDateTime(QDateTime(QDate(2013, 4, 5), QTime()))
+        self.assertEqual(w.value(), QDate(2013, 4, 5))
+        # should always be in ISO format!
+        self.assertEqual(w.expression(), "\"date\" = to_date('2013-04-05')")
+
+        # time field
+        w = QgsDateTimeSearchWidgetWrapper(layer, 1)
+        config = {"field_format": "hh-mm-ss", "display_format": "hh-mm-ss"}
+        w.setConfig(config)
+        c = w.widget()
+
+        c.setTime(QTime(13, 14, 15))
+        self.assertEqual(w.value(), QTime(13, 14, 15))
+        self.assertEqual(w.expression(), "\"time\" = to_time('13:14:15')")
+
+        # datetime field
+        w = QgsDateTimeSearchWidgetWrapper(layer, 2)
+        config = {
+            "field_format": "yyyy-MM-ddZZZZHH:mm:ss",
+            "display_format": "yyyy-MM-ddZZZZHH:mm:ss",
+        }
+        w.setConfig(config)
+        c = w.widget()
+
+        c.setDateTime(QDateTime(QDate(2013, 4, 5), QTime(12, 13, 14)))
+        self.assertEqual(w.value(), QDateTime(QDate(2013, 4, 5), QTime(12, 13, 14)))
+        self.assertEqual(
+            w.expression(), "\"datetime\" = to_datetime('2013-04-05T12:13:14')"
+        )
+
+    def testCreateExpressionStringFields(self):
+        """Test creating an expression using the widget with string fields"""
+        layer = QgsVectorLayer(
+            "Point?field=date:string&field=time:string&field=datetime:string",
             "test",
             "memory",
         )
@@ -784,6 +888,137 @@ class PyQgsDateTimeSearchWidgetWrapper(QgisTestCase):
         self.assertEqual(
             w.createExpression(QgsSearchWidgetWrapper.FilterFlag.LessThanOrEqualTo),
             "\"datetime\"<='2013-04-05 13:14:15'",
+        )
+
+    def testCreateExpression(self):
+        """Test creating an expression using the widget"""
+        layer = QgsVectorLayer(
+            "Point?field=date:date&field=time:time&field=datetime:datetime",
+            "test",
+            "memory",
+        )
+
+        w = QgsDateTimeSearchWidgetWrapper(layer, 0)
+        # NOTE : field formats should be ignored when using native date/time field types
+        config = {"field_format": "dd/MM/yyyy", "display_format": "dd/MM/yyyy"}
+        w.setConfig(config)
+        c = w.widget()
+
+        c.setDateTime(QDateTime(QDate(2013, 4, 5), QTime()))
+        self.assertEqual(
+            w.createExpression(QgsSearchWidgetWrapper.FilterFlag.IsNull),
+            '"date" IS NULL',
+        )
+        self.assertEqual(
+            w.createExpression(QgsSearchWidgetWrapper.FilterFlag.IsNotNull),
+            '"date" IS NOT NULL',
+        )
+        self.assertEqual(
+            w.createExpression(QgsSearchWidgetWrapper.FilterFlag.EqualTo),
+            "\"date\"=to_date('2013-04-05')",
+        )
+        self.assertEqual(
+            w.createExpression(QgsSearchWidgetWrapper.FilterFlag.NotEqualTo),
+            "\"date\"<>to_date('2013-04-05')",
+        )
+        self.assertEqual(
+            w.createExpression(QgsSearchWidgetWrapper.FilterFlag.GreaterThan),
+            "\"date\">to_date('2013-04-05')",
+        )
+        self.assertEqual(
+            w.createExpression(QgsSearchWidgetWrapper.FilterFlag.LessThan),
+            "\"date\"<to_date('2013-04-05')",
+        )
+        self.assertEqual(
+            w.createExpression(QgsSearchWidgetWrapper.FilterFlag.GreaterThanOrEqualTo),
+            "\"date\">=to_date('2013-04-05')",
+        )
+        self.assertEqual(
+            w.createExpression(QgsSearchWidgetWrapper.FilterFlag.LessThanOrEqualTo),
+            "\"date\"<=to_date('2013-04-05')",
+        )
+
+        # time field type
+        w = QgsDateTimeSearchWidgetWrapper(layer, 1)
+        config = {"field_format": "HH - mm - ss", "display_format": "HH - mm - ss"}
+        w.setConfig(config)
+        c = w.widget()
+
+        c.setDateTime(QDateTime(QDate(2013, 4, 5), QTime(13, 14, 15)))
+        self.assertEqual(
+            w.createExpression(QgsSearchWidgetWrapper.FilterFlag.IsNull),
+            '"time" IS NULL',
+        )
+        self.assertEqual(
+            w.createExpression(QgsSearchWidgetWrapper.FilterFlag.IsNotNull),
+            '"time" IS NOT NULL',
+        )
+        self.assertEqual(
+            w.createExpression(QgsSearchWidgetWrapper.FilterFlag.EqualTo),
+            "\"time\"=to_time('13:14:15')",
+        )
+        self.assertEqual(
+            w.createExpression(QgsSearchWidgetWrapper.FilterFlag.NotEqualTo),
+            "\"time\"<>to_time('13:14:15')",
+        )
+        self.assertEqual(
+            w.createExpression(QgsSearchWidgetWrapper.FilterFlag.GreaterThan),
+            "\"time\">to_time('13:14:15')",
+        )
+        self.assertEqual(
+            w.createExpression(QgsSearchWidgetWrapper.FilterFlag.LessThan),
+            "\"time\"<to_time('13:14:15')",
+        )
+        self.assertEqual(
+            w.createExpression(QgsSearchWidgetWrapper.FilterFlag.GreaterThanOrEqualTo),
+            "\"time\">=to_time('13:14:15')",
+        )
+        self.assertEqual(
+            w.createExpression(QgsSearchWidgetWrapper.FilterFlag.LessThanOrEqualTo),
+            "\"time\"<=to_time('13:14:15')",
+        )
+
+        # datetime field type
+        w = QgsDateTimeSearchWidgetWrapper(layer, 2)
+        config = {
+            "field_format": "yyyy-MM-ddZZZZHH:mm:ss",
+            "display_format": "yyyy-MM-ddZZZZHH:mm:ss",
+        }
+        w.setConfig(config)
+        c = w.widget()
+
+        c.setDateTime(QDateTime(QDate(2013, 4, 5), QTime(13, 14, 15)))
+        self.assertEqual(
+            w.createExpression(QgsSearchWidgetWrapper.FilterFlag.IsNull),
+            '"datetime" IS NULL',
+        )
+        self.assertEqual(
+            w.createExpression(QgsSearchWidgetWrapper.FilterFlag.IsNotNull),
+            '"datetime" IS NOT NULL',
+        )
+        self.assertEqual(
+            w.createExpression(QgsSearchWidgetWrapper.FilterFlag.EqualTo),
+            "\"datetime\"=to_datetime('2013-04-05T13:14:15')",
+        )
+        self.assertEqual(
+            w.createExpression(QgsSearchWidgetWrapper.FilterFlag.NotEqualTo),
+            "\"datetime\"<>to_datetime('2013-04-05T13:14:15')",
+        )
+        self.assertEqual(
+            w.createExpression(QgsSearchWidgetWrapper.FilterFlag.GreaterThan),
+            "\"datetime\">to_datetime('2013-04-05T13:14:15')",
+        )
+        self.assertEqual(
+            w.createExpression(QgsSearchWidgetWrapper.FilterFlag.LessThan),
+            "\"datetime\"<to_datetime('2013-04-05T13:14:15')",
+        )
+        self.assertEqual(
+            w.createExpression(QgsSearchWidgetWrapper.FilterFlag.GreaterThanOrEqualTo),
+            "\"datetime\">=to_datetime('2013-04-05T13:14:15')",
+        )
+        self.assertEqual(
+            w.createExpression(QgsSearchWidgetWrapper.FilterFlag.LessThanOrEqualTo),
+            "\"datetime\"<=to_datetime('2013-04-05T13:14:15')",
         )
 
 

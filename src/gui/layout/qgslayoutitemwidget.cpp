@@ -75,6 +75,10 @@ void QgsLayoutConfigObject::updateDataDefinedProperty()
 
   const bool propertyAssociatesWithMultiFrame = QgsLayoutObject::propertyAssociatesWithParentMultiframe( key );
 
+  auto undoLayoutObject = dynamic_cast<QgsLayoutUndoObjectInterface *>( mLayoutObject.data() );
+  if ( undoLayoutObject )
+    mLayoutObject->layout()->undoStack()->beginCommand( undoLayoutObject, tr( "Change Data Defined Property" ) );
+
   //set the data defined property and refresh the item
   if ( propertyAssociatesWithMultiFrame )
   {
@@ -97,6 +101,9 @@ void QgsLayoutConfigObject::updateDataDefinedProperty()
     mLayoutObject->dataDefinedProperties().setProperty( key, ddButton->toProperty() );
     mLayoutObject->refresh();
   }
+
+  if ( undoLayoutObject )
+    mLayoutObject->layout()->undoStack()->endCommand();
 }
 
 void QgsLayoutConfigObject::updateDataDefinedButtons()
@@ -500,6 +507,8 @@ void QgsLayoutItemPropertiesWidget::variablesChanged()
   if ( !mItem )
     return;
 
+  mItem->layout()->undoStack()->beginCommand( mItem, tr( "Change Item Variables" ) );
+
   if ( QgsLayoutFrame *frame = qobject_cast<QgsLayoutFrame *>( mItem ) )
   {
     if ( QgsLayoutMultiFrame *mf = frame->multiFrame() )
@@ -511,6 +520,7 @@ void QgsLayoutItemPropertiesWidget::variablesChanged()
   {
     QgsExpressionContextUtils::setLayoutItemVariables( mItem, mVariableEditor->variablesInActiveScope() );
   }
+  mItem->layout()->undoStack()->endCommand();
 }
 
 QgsLayoutItem::ReferencePoint QgsLayoutItemPropertiesWidget::positionMode() const

@@ -189,7 +189,7 @@ class CORE_EXPORT QgsLayoutTableColumn
      * \returns a new QgsLayoutTableColumn with same properties as this column.
      * \deprecated QGIS 3.14. Use a copy instead.
      */
-    Q_DECL_DEPRECATED QgsLayoutTableColumn *clone() SIP_DEPRECATED SIP_FACTORY { return new QgsLayoutTableColumn( *this ); }
+    Q_DECL_DEPRECATED std::unique_ptr<QgsLayoutTableColumn> clone() SIP_DEPRECATED { return std::make_unique<QgsLayoutTableColumn>( *this ); }
 
     bool operator==( const QgsLayoutTableColumn &other ) const
     {

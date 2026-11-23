@@ -33,7 +33,7 @@ class DummyPaintEffect : public QgsPaintEffect
     DummyPaintEffect() = default;
     QString type() const override { return u"Dummy"_s; }
     QgsPaintEffect *clone() const override { return new DummyPaintEffect(); }
-    static QgsPaintEffect *create( const QVariantMap & ) { return new DummyPaintEffect(); }
+    static std::unique_ptr<QgsPaintEffect> create( const QVariantMap & ) { return std::make_unique<DummyPaintEffect>(); }
     QVariantMap properties() const override { return QVariantMap(); }
     using QgsPaintEffect::readProperties;
     void readProperties( const QVariantMap &props ) override { Q_UNUSED( props ); }
@@ -145,12 +145,11 @@ void TestQgsPaintEffectRegistry::fetchEffects()
 void TestQgsPaintEffectRegistry::createEffect()
 {
   QgsPaintEffectRegistry *registry = QgsApplication::paintEffectRegistry();
-  QgsPaintEffect *effect = registry->createEffect( u"Dummy"_s );
+  std::unique_ptr<QgsPaintEffect> effect = registry->createEffect( u"Dummy"_s );
 
   QVERIFY( effect );
-  DummyPaintEffect *dummyEffect = dynamic_cast<DummyPaintEffect *>( effect );
+  auto dummyEffect = qgis::unique_ptr_dynamic_cast<DummyPaintEffect>( std::move( effect ) );
   QVERIFY( dummyEffect );
-  delete effect;
 
   //try creating a bad effect
   effect = registry->createEffect( u"bad effect"_s );
@@ -160,28 +159,27 @@ void TestQgsPaintEffectRegistry::createEffect()
 void TestQgsPaintEffectRegistry::defaultStack()
 {
   QgsPaintEffectRegistry *registry = QgsApplication::paintEffectRegistry();
-  QgsEffectStack *effect = static_cast<QgsEffectStack *>( QgsPaintEffectRegistry::defaultStack() );
-  QVERIFY( registry->isDefaultStack( effect ) );
+  auto effect = qgis::unique_ptr_static_cast<QgsEffectStack>( QgsPaintEffectRegistry::defaultStack() );
+  QVERIFY( registry->isDefaultStack( effect.get() ) );
   effect->effect( 1 )->setEnabled( true );
-  QVERIFY( !registry->isDefaultStack( effect ) );
+  QVERIFY( !registry->isDefaultStack( effect.get() ) );
   effect->effect( 1 )->setEnabled( false );
   effect->effect( 2 )->setEnabled( false ); //third effect should be enabled by default
-  QVERIFY( !registry->isDefaultStack( effect ) );
+  QVERIFY( !registry->isDefaultStack( effect.get() ) );
   effect->effect( 2 )->setEnabled( true );
   effect->appendEffect( new QgsEffectStack() );
-  QVERIFY( !registry->isDefaultStack( effect ) );
-  delete effect;
+  QVERIFY( !registry->isDefaultStack( effect.get() ) );
   QgsPaintEffect *effect2 = new DummyPaintEffect();
   QVERIFY( !registry->isDefaultStack( effect2 ) );
   delete effect2;
 
-  effect = static_cast<QgsEffectStack *>( QgsPaintEffectRegistry::defaultStack() );
+  effect = qgis::unique_ptr_static_cast<QgsEffectStack>( QgsPaintEffectRegistry::defaultStack() );
   static_cast<QgsDrawSourceEffect *>( effect->effect( 2 ) )->setOpacity( 0.5 );
-  QVERIFY( !registry->isDefaultStack( effect ) );
+  QVERIFY( !registry->isDefaultStack( effect.get() ) );
   static_cast<QgsDrawSourceEffect *>( effect->effect( 2 ) )->setOpacity( 1.0 );
-  QVERIFY( registry->isDefaultStack( effect ) );
+  QVERIFY( registry->isDefaultStack( effect.get() ) );
   static_cast<QgsDrawSourceEffect *>( effect->effect( 2 ) )->setBlendMode( QPainter::CompositionMode_Lighten );
-  QVERIFY( !registry->isDefaultStack( effect ) );
+  QVERIFY( !registry->isDefaultStack( effect.get() ) );
 }
 
 QGSTEST_MAIN( TestQgsPaintEffectRegistry )

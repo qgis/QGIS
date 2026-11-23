@@ -244,13 +244,6 @@ class GUI_EXPORT QgsEffectStackCompactWidget : public QgsPanelWidget
      */
     void setPreviewPicture( const QPicture &picture );
 
-  signals:
-
-    /**
-     * Emitted when the paint effect properties change
-     */
-    void changed();
-
   private slots:
 
     void showDialog();

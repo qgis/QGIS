@@ -72,7 +72,7 @@ QgsAppLayerTreeViewMenuProvider::QgsAppLayerTreeViewMenuProvider( QgsLayerTreeVi
 
 QMenu *QgsAppLayerTreeViewMenuProvider::createContextMenu()
 {
-  QMenu *menu = new QMenu;
+  QMenu *menu = new QMenu( mView );
 
   QgsLayerTreeViewDefaultActions *actions = mView->defaultActions();
 
@@ -146,6 +146,9 @@ QMenu *QgsAppLayerTreeViewMenuProvider::createContextMenu()
 
       if ( !mView->selectedNodes( true ).empty() )
         menu->addAction( actions->actionGroupSelected( menu ) );
+
+      if ( mView->selectedNodes( true ).count() == 1 )
+        menu->addAction( actions->actionRemoveGroupPromoteLayers( menu ) );
 
       if ( QgisApp::instance()->clipboard()->hasFormat( QGSCLIPBOARD_STYLE_MIME ) )
       {
@@ -446,7 +449,7 @@ QMenu *QgsAppLayerTreeViewMenuProvider::createContextMenu()
         if ( vlayer && mView->selectedLayerNodes().count() == 1 )
         {
           QgsSettings settings;
-          const QgsAttributeTableFilterModel::FilterMode initialMode = settings.enumValue( u"qgis/attributeTableBehavior"_s, QgsAttributeTableFilterModel::ShowAll );
+          const Qgis::AttributeTableFilterMode initialMode = settings.enumValue( u"qgis/attributeTableBehavior"_s, Qgis::AttributeTableFilterMode::ShowAll );
           const auto lambdaOpenAttributeTable = [initialMode] { QgisApp::instance()->attributeTable( initialMode ); };
           QAction *attributeTableAction = menu->addAction( QgsApplication::getThemeIcon( u"/mActionOpenTable.svg"_s ), tr( "Open &Attribute Table" ), QgisApp::instance(), lambdaOpenAttributeTable );
           attributeTableAction->setEnabled( vlayer->isValid() );
@@ -1007,7 +1010,7 @@ QMenu *QgsAppLayerTreeViewMenuProvider::createContextMenu()
             QString filterExp = layer->renderer() ? layer->renderer()->legendKeyToExpression( ruleKey, layer, ok ) : QString();
             if ( ok )
             {
-              QgisApp::instance()->attributeTable( QgsAttributeTableFilterModel::ShowFilteredList, filterExp );
+              QgisApp::instance()->attributeTable( Qgis::AttributeTableFilterMode::ShowFilteredList, filterExp );
             }
           }
         } );

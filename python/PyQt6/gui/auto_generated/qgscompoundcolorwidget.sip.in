@@ -145,18 +145,6 @@ Sets the color to show in an optional "previous color" section
     virtual void hideEvent( QHideEvent *e );
 
 
-    virtual void mousePressEvent( QMouseEvent *e );
-
-
-    virtual void mouseMoveEvent( QMouseEvent *e );
-
-
-    virtual void mouseReleaseEvent( QMouseEvent *e );
-
-
-    virtual void keyPressEvent( QKeyEvent *e );
-
-
 };
 
 /************************************************************************

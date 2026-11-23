@@ -18,6 +18,7 @@
 
 #include "qgslayoututils.h"
 #include "qgsnumericformat.h"
+#include "qgspainting.h"
 #include "qgsscalebarsettings.h"
 #include "qgstextrenderer.h"
 

@@ -107,7 +107,7 @@ QgsGpsCanvasBridge::QgsGpsCanvasBridge( QgsAppGpsConnection *connection, QgsMapC
   connect( mCanvas, &QgsMapCanvas::xyCoordinates, this, &QgsGpsCanvasBridge::cursorCoordinateChanged );
   connect( mCanvas, &QgsMapCanvas::tapAndHoldGestureOccurred, this, &QgsGpsCanvasBridge::tapAndHold );
 
-  mBearingNumericFormat.reset( QgsLocalDefaultSettings::bearingFormat() );
+  mBearingNumericFormat = QgsLocalDefaultSettings::bearingFormat();
   connect( QgsProject::instance()->displaySettings(), &QgsProjectDisplaySettings::bearingFormatChanged, this, [this] {
     mBearingNumericFormat.reset( QgsProject::instance()->displaySettings()->bearingFormat()->clone() );
     updateGpsDistanceStatusMessage( false );

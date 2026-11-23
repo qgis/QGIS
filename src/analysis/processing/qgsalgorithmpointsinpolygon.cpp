@@ -83,8 +83,9 @@ QString QgsPointsInPolygonAlgorithm::groupId() const
 QString QgsPointsInPolygonAlgorithm::shortHelpString() const
 {
   return QObject::tr(
-    "This algorithm takes a points layer and a polygon layer and counts the number of points from "
-    "the first one in each polygons of the second one.\n\n"
+    "This algorithm takes a point layer and a polygon layer and counts the number of points from "
+    "the first layer in each polygon from the second layer. "
+    "Points falling exactly on the boundary of polygons are ignored.\n\n"
     "A new polygons layer is generated, with the exact same content as the input polygons layer, but "
     "containing an additional field with the points count corresponding to each polygon.\n\n"
     "An optional weight field can be used to assign weights to each point. If set, the count generated "
@@ -144,7 +145,7 @@ bool QgsPointsInPolygonAlgorithm::prepareAlgorithm( const QVariantMap &parameter
   mFieldName = parameterAsString( parameters, u"FIELD"_s, context );
   mWeightFieldName = parameterAsString( parameters, u"WEIGHT"_s, context );
   mClassFieldName = parameterAsString( parameters, u"CLASSFIELD"_s, context );
-  mPointSource.reset( parameterAsSource( parameters, u"POINTS"_s, context ) );
+  mPointSource = parameterAsSource( parameters, u"POINTS"_s, context );
   if ( !mPointSource )
     throw QgsProcessingException( invalidSourceError( parameters, u"POINTS"_s ) );
 

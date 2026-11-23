@@ -363,7 +363,7 @@ class CORE_EXPORT QgsAbstractPointCloudIndex
      * If not found in the cache, nullptr is returned.
      * Caller takes ownership of the returned object.
      */
-    QgsPointCloudBlock *getNodeDataFromCache( QgsPointCloudNodeId node, const QgsPointCloudRequest &request );
+    std::unique_ptr<QgsPointCloudBlock> getNodeDataFromCache( QgsPointCloudNodeId node, const QgsPointCloudRequest &request );
 
     /**
      * Stores existing \a data to the cache for the specified \a node and \a request. Ownership is not transferred, block gets cloned in the cache.
@@ -650,7 +650,7 @@ class CORE_EXPORT QgsPointCloudIndex SIP_NODEFAULTCTORS
      *
      * \see QgsAbstractPointCloudIndex::getNodeDataFromCache
      */
-    QgsPointCloudBlock *getNodeDataFromCache( QgsPointCloudNodeId node, const QgsPointCloudRequest &request ) SIP_SKIP;
+    std::unique_ptr<QgsPointCloudBlock> getNodeDataFromCache( QgsPointCloudNodeId node, const QgsPointCloudRequest &request ) SIP_SKIP;
 
     /**
      * Stores existing \a data to the cache for the specified \a node and \a request. Ownership is not transferred, block gets cloned in the cache.

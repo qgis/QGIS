@@ -90,7 +90,7 @@ void QgsPlotCanvas::refresh()
 
 void QgsPlotCanvas::showContextMenu( QgsPlotMouseEvent *event )
 {
-  QMenu menu;
+  QMenu menu( this );
 
   if ( mTool )
   {

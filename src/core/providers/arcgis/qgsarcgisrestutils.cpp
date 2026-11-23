@@ -25,6 +25,7 @@
 #include "qgsclassificationstandarddeviation.h"
 #include "qgscolorrampimpl.h"
 #include "qgscurve.h"
+#include "qgsesriarcadeconverter.h"
 #include "qgsfields.h"
 #include "qgsgeometryengine.h"
 #include "qgsgraduatedsymbolrenderer.h"
@@ -517,7 +518,7 @@ std::unique_ptr< QgsMultiSurface > QgsArcGisRestUtils::convertGeometryPolygon( c
         {
           newPolygon->addInteriorRing( curve );
           it.remove();
-          engine.reset( QgsGeometry::createGeometryEngine( newPolygon ) );
+          engine = QgsGeometry::createGeometryEngine( newPolygon );
           engine->prepareGeometry();
         }
       }
@@ -720,6 +721,17 @@ std::unique_ptr<QgsAbstractVectorLayerLabeling > QgsArcGisRestUtils::convertLabe
       settings->placement = Qgis::LabelPlacement::Horizontal;
     }
 
+    const bool repeatLabel = labeling.value( u"repeatLabel"_s ).toBool();
+    if ( repeatLabel && settings->placement == Qgis::LabelPlacement::Line )
+    {
+      const double repeatLabelDistance = labeling.value( u"repeatLabelDistance"_s ).toDouble();
+      if ( repeatLabelDistance > 0.0 )
+      {
+        settings->repeatDistance = repeatLabelDistance;
+        settings->repeatDistanceUnit = Qgis::RenderUnit::Points;
+      }
+    }
+
     const double minScale = labeling.value( u"minScale"_s ).toDouble();
     const double maxScale = labeling.value( u"maxScale"_s ).toDouble();
 
@@ -861,6 +873,20 @@ std::unique_ptr< QgsFeatureRenderer > QgsArcGisRestUtils::convertRenderer( const
     else
     {
       attribute = field1;
+    }
+
+    const QString valueExpression = rendererData.value( u"valueExpression"_s ).toString();
+    if ( attribute.isEmpty() && !valueExpression.isEmpty() )
+    {
+      QgsEsriArcadeConverter converter( valueExpression );
+      if ( converter.result() == QgsEsriArcadeConverter::Result::Success )
+      {
+        attribute = converter.expression();
+      }
+      else
+      {
+        context.pushWarning( QObject::tr( "The Arcade valueExpression '%1' could not be converted to a QGIS expression: '%2'" ).arg( valueExpression ).arg( converter.errorMessage() ) );
+      }
     }
 
     const QVariantList categories = rendererData.value( u"uniqueValueInfos"_s ).toList();

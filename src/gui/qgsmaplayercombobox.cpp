@@ -175,7 +175,7 @@ QgsMapLayer *QgsMapLayerComboBox::compatibleMapLayerFromMimeData( const QMimeDat
   for ( const QgsMimeDataUtils::Uri &u : uriList )
   {
     // is this uri from the current project?
-    if ( QgsMapLayer *layer = u.mapLayer() )
+    if ( QgsMapLayer *layer = u.mapLayer( QgsProject::instance() ) )
     {
       if ( mProxyModel->acceptsLayer( layer ) )
         return layer;

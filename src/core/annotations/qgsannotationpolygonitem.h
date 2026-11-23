@@ -50,7 +50,7 @@ class CORE_EXPORT QgsAnnotationPolygonItem : public QgsAnnotationItem
     /**
      * Creates a new polygon annotation item.
      */
-    static QgsAnnotationPolygonItem *create() SIP_FACTORY;
+    static std::unique_ptr<QgsAnnotationPolygonItem> create();
 
     bool readXml( const QDomElement &element, const QgsReadWriteContext &context ) override;
     QgsAnnotationPolygonItem *clone() const override SIP_FACTORY;

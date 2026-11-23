@@ -56,6 +56,7 @@ email                : sherman at mrcc.com
 #include "qgsmessagelog.h"
 #include "qgsmimedatautils.h"
 #include "qgsoverlaywidgetlayout.h"
+#include "qgspainting.h"
 #include "qgsproject.h"
 #include "qgsprojectionselectiondialog.h"
 #include "qgsprojectviewsettings.h"
@@ -184,6 +185,7 @@ QgsMapCanvas::QgsMapCanvas( QWidget *parent )
     mSettings.setFlag( Qgis::MapSettingsFlag::DrawEditingInfo );
     mSettings.setFlag( Qgis::MapSettingsFlag::UseRenderingOptimization );
     mSettings.setFlag( Qgis::MapSettingsFlag::RenderPartialOutput );
+    mSettings.setFlag( Qgis::MapSettingsFlag::DrawLabelSelection );
     mSettings.setEllipsoid( QgsProject::instance()->ellipsoid() );
     connect( QgsProject::instance(), &QgsProject::ellipsoidChanged, this, [this] {
       mSettings.setEllipsoid( QgsProject::instance()->ellipsoid() );
@@ -716,9 +718,9 @@ QgsMapLayer *QgsMapCanvas::currentLayer()
   return mCurrentLayer;
 }
 
-QgsExpressionContextScope *QgsMapCanvas::defaultExpressionContextScope() const
+std::unique_ptr<QgsExpressionContextScope> QgsMapCanvas::defaultExpressionContextScope() const
 {
-  QgsExpressionContextScope *s = new QgsExpressionContextScope( QObject::tr( "Map Canvas" ) );
+  auto s = std::make_unique<QgsExpressionContextScope>( QObject::tr( "Map Canvas" ) );
   s->setVariable( u"canvas_cursor_point"_s, QgsGeometry::fromPointXY( cursorPoint() ), true );
   return s;
 }
@@ -1218,7 +1220,7 @@ void QgsMapCanvas::showContextMenu( QgsMapMouseEvent *event )
 {
   const QgsPointXY mapPoint = event->originalMapPoint();
 
-  QMenu menu;
+  QMenu menu( this );
 
   QMenu *copyCoordinateMenu = new QMenu( tr( "Copy Coordinate" ), &menu );
   copyCoordinateMenu->setIcon( QgsApplication::getThemeIcon( u"/mActionEditCopy.svg"_s ) );
@@ -2909,12 +2911,18 @@ void QgsMapCanvas::unsetMapTool( QgsMapTool *tool )
 void QgsMapCanvas::setProject( QgsProject *project )
 {
   if ( mProject )
+  {
     disconnect( mProject, &QgsProject::elevationShadingRendererChanged, this, &QgsMapCanvas::onElevationShadingRendererChanged );
+    disconnect( mProject, &QgsProject::cleared, this, &QgsMapCanvas::onElevationShadingRendererChanged );
+  }
 
   mProject = project;
 
   if ( mProject )
+  {
     connect( mProject, &QgsProject::elevationShadingRendererChanged, this, &QgsMapCanvas::onElevationShadingRendererChanged );
+    connect( mProject, &QgsProject::cleared, this, &QgsMapCanvas::onElevationShadingRendererChanged );
+  }
 }
 
 void QgsMapCanvas::setCanvasColor( const QColor &color )

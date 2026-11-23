@@ -577,3 +577,8 @@ bool QgsLayoutMultiFrame::readPropertiesFromElement( const QDomElement &, const 
 {
   return true;
 }
+
+bool QgsLayoutMultiFrame::renderInProgress() const
+{
+  return false;
+}

@@ -26,9 +26,9 @@ import subprocess
 import sys
 from pathlib import Path
 
-from processing.algs.gdal.GdalUtils import GdalUtils
+from gdalprovider.gdal_utils import GdalUtils
 from processing.core.ProcessingConfig import ProcessingConfig
-from processing.tools.system import mkdir, userFolder
+from processing.tools.system import mkdir
 from qgis.core import (
     Qgis,
     QgsApplication,
@@ -297,7 +297,7 @@ class GrassUtils:
         Creates and returns a directory for users to create additional algorithm descriptions.
         Or modified versions of stock algorithm descriptions shipped with QGIS.
         """
-        folder = Path(userFolder(), "grassaddons", "description")
+        folder = Path(QgsProcessingUtils.userFolder(), "grassaddons", "description")
         folder.mkdir(parents=True, exist_ok=True)
         return folder
 

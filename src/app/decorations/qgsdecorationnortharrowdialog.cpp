@@ -211,7 +211,6 @@ void QgsDecorationNorthArrowDialog::drawNorthArrow()
     const double centerXDouble = size.width() / 2.0;
     const double centerYDouble = size.height() / 2.0;
     //save the current canvas rotation
-    myQPainter.save();
     myQPainter.translate( ( maxLength - size.width() ) / 2, ( maxLength - size.height() ) / 2 );
 
     //rotate the canvas
@@ -227,7 +226,6 @@ void QgsDecorationNorthArrowDialog::drawNorthArrow()
     svg.render( &myQPainter, QRectF( 0, 0, size.width(), size.height() ) );
 
     //unrotate the canvas again
-    myQPainter.restore();
     myQPainter.end();
 
     pixmapLabel->setPixmap( myPainterPixmap );

@@ -217,5 +217,6 @@ void QgsFilterVerticesByZ::filter( QgsGeometry &geometry, double min, double max
   geometry.filterVertices( [min, max]( const QgsPoint &point ) -> bool { return ( std::isnan( min ) || point.z() >= min ) && ( std::isnan( max ) || point.z() <= max ); } );
 }
 
-#endif
 ///@endcond
+
+#endif

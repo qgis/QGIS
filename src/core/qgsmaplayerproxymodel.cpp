@@ -124,7 +124,7 @@ void QgsMapLayerProxyModel::setExceptedLayerIds( const QStringList &ids )
   const auto constIds = ids;
   for ( const QString &id : constIds )
   {
-    QgsMapLayer *l = QgsProject::instance()->mapLayer( id ); // skip-keyword-check
+    QgsMapLayer *l = mModel->project()->mapLayer( id );
     if ( l )
       mExceptList << l;
   }

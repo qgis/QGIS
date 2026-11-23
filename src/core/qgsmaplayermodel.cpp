@@ -619,3 +619,8 @@ bool QgsMapLayerModel::setData( const QModelIndex &index, const QVariant &value,
 
   return false;
 }
+
+QgsProject *QgsMapLayerModel::project()
+{
+  return mProject;
+}

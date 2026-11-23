@@ -386,7 +386,13 @@ json QgsJsonExporter::exportFeatureToJsonObject( const QgsFeature &feature, cons
     // related attributes
     if ( mLayer && mIncludeRelatedAttributes )
     {
-      QList< QgsRelation > relations = QgsProject::instance()->relationManager()->referencedRelations( mLayer.data() ); // skip-keyword-check
+      QList< QgsRelation > relations;
+
+      if ( QgsProject *project = mLayer->project() )
+      {
+        relations = project->relationManager()->referencedRelations( mLayer.data() );
+      }
+
       for ( const auto &relation : std::as_const( relations ) )
       {
         QgsFeatureRequest req = relation.getRelatedFeaturesRequest( feature );
@@ -616,7 +622,7 @@ QVariantList QgsJsonUtils::parseArray( const QString &json, QMetaType::Type type
       // If a destination type was specified (it's not invalid), try to convert
       if ( type != QMetaType::Type::UnknownType )
       {
-        if ( !v.convert( static_cast<int>( type ) ) )
+        if ( !v.convert( QMetaType( type ) ) )
         {
           QgsLogger::warning( u"Cannot convert json array element to specified type, ignoring: %1"_s.arg( v.toString() ) );
         }

@@ -156,7 +156,7 @@ QVariantMap QgsLineIntersectionAlgorithm::processAlgorithm( const QVariantMap &p
         }
 
         QgsGeometry tmpGeom = inFeatureB.geometry();
-        if ( engine->intersects( tmpGeom.constGet() ) )
+        if ( engine->intersects( tmpGeom.constGet(), nullptr, feedback ) )
         {
           QgsMultiPointXY points;
           QgsGeometry intersectGeom = inGeom.intersection( tmpGeom, QgsGeometryParameters(), feedback );

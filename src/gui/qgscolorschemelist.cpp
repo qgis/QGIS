@@ -18,6 +18,7 @@
 #include "qgsapplication.h"
 #include "qgscolordialog.h"
 #include "qgslogger.h"
+#include "qgspainting.h"
 #include "qgssettings.h"
 #include "qgssymbollayerutils.h"
 
@@ -35,7 +36,7 @@
 using namespace Qt::StringLiterals;
 
 #ifdef ENABLE_MODELTEST
-#include "modeltest.h"
+#include <QAbstractItemModelTester>
 #endif
 
 QgsColorSchemeList::QgsColorSchemeList( QWidget *parent, QgsColorScheme *scheme, const QString &context, const QColor &baseColor )
@@ -44,7 +45,7 @@ QgsColorSchemeList::QgsColorSchemeList( QWidget *parent, QgsColorScheme *scheme,
 {
   mModel = new QgsColorSchemeModel( scheme, context, baseColor, this );
 #ifdef ENABLE_MODELTEST
-  new ModelTest( mModel, this );
+  new QAbstractItemModelTester( mModel, QAbstractItemModelTester::FailureReportingMode::Fatal, this );
 #endif
   setModel( mModel );
 

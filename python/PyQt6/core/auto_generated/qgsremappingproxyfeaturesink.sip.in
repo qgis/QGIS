@@ -185,6 +185,7 @@ destination ``sink``.
 
     ~QgsRemappingProxyFeatureSink();
 
+
     void setExpressionContext( const QgsExpressionContext &context ) const;
 %Docstring
 Sets the expression ``context`` to use when evaluating mapped field
@@ -217,6 +218,8 @@ Returns the destination :py:class:`QgsFeatureSink` which the proxy will
 forward features to.
 %End
 
+  private:
+    QgsRemappingProxyFeatureSink( const QgsRemappingProxyFeatureSink & );
 };
 
 /************************************************************************

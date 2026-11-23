@@ -47,7 +47,7 @@ class CORE_EXPORT QgsAnnotationPointTextItem : public QgsAnnotationItem
     /**
      * Creates a new text at point annotation item.
      */
-    static QgsAnnotationPointTextItem *create() SIP_FACTORY;
+    static std::unique_ptr<QgsAnnotationPointTextItem> create();
 
     bool readXml( const QDomElement &element, const QgsReadWriteContext &context ) override;
     QgsAnnotationPointTextItem *clone() const override SIP_FACTORY;

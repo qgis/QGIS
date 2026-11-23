@@ -170,13 +170,13 @@ Set all points Returns ``False`` if the QgsQuadrilateral is not valid:
 Returns a list including the vertices of the quadrilateral.
 %End
 
-    QgsPolygon *toPolygon( bool force2D = false ) const /Factory/;
+    std::unique_ptr<QgsPolygon> toPolygon( bool force2D = false ) const;
 %Docstring
 Returns the quadrilateral as a new polygon. Ownership is transferred to
 the caller.
 %End
 
-    QgsLineString *toLineString( bool force2D = false ) const /Factory/;
+    std::unique_ptr<QgsLineString> toLineString( bool force2D = false ) const;
 %Docstring
 Returns the quadrilateral as a new linestring. Ownership is transferred
 to the caller.

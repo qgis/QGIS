@@ -80,7 +80,7 @@ QgsMapCanvasDockWidget::QgsMapCanvasDockWidget( const QString &name, QWidget *pa
 
   mMainWidget->layout()->addWidget( mMapCanvas );
 
-  mMenu = new QMenu();
+  mMenu = new QMenu( this );
   connect( mMenu, &QMenu::aboutToShow, this, &QgsMapCanvasDockWidget::menuAboutToShow );
 
   mToolbar->addSeparator();
@@ -93,8 +93,8 @@ QgsMapCanvasDockWidget::QgsMapCanvasDockWidget( const QString &name, QWidget *pa
   btnMapThemes->setMenu( mMenu );
   mToolbar->addWidget( btnMapThemes );
 
-  QMenu *settingsMenu = new QMenu();
   QToolButton *settingsButton = new QToolButton();
+  QMenu *settingsMenu = new QMenu( settingsButton );
   settingsButton->setAutoRaise( true );
   settingsButton->setToolTip( tr( "View Settings" ) );
   settingsButton->setMenu( settingsMenu );

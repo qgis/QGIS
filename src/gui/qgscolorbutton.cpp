@@ -17,6 +17,7 @@
 
 #include "qgsapplication.h"
 #include "qgscolordialog.h"
+#include "qgscolorpickerhelper.h"
 #include "qgscolorschemeregistry.h"
 #include "qgscolorswatchgrid.h"
 #include "qgscolortooltip_p.h"
@@ -43,6 +44,7 @@
 #include <QStyle>
 #include <QStyleOptionToolButton>
 #include <QWidgetAction>
+#include <QWindow>
 
 #include "moc_qgscolorbutton.cpp"
 
@@ -51,7 +53,9 @@ using namespace Qt::StringLiterals;
 QgsColorButton::QgsColorButton( QWidget *parent, const QString &cdt, QgsColorSchemeRegistry *registry )
   : QToolButton( parent )
   , mColorDialogTitle( cdt.isEmpty() ? tr( "Select Color" ) : cdt )
+  , mPickerHelper( new QgsColorPickerHelper( this ) )
   , mNoColorString( tr( "No color" ) )
+  , mOpaqueColorString( tr( "Opaque color" ) )
 {
   //if a color scheme registry was specified, use it, otherwise use the global instance
   mColorSchemeRegistry = registry ? registry : QgsApplication::colorSchemeRegistry();
@@ -76,6 +80,10 @@ QgsColorButton::QgsColorButton( QWidget *parent, const QString &cdt, QgsColorSch
 
   // If project colors change, we need to redraw the button, as it may be set to follow a project color
   connect( QgsProject::instance(), &QgsProject::projectColorsChanged, this, [this] { setButtonBackground(); } );
+
+  connect( mPickerHelper, &QgsColorPickerHelper::colorPicked, this, &QgsColorButton::onColorPicked );
+  connect( mPickerHelper, &QgsColorPickerHelper::canceled, this, &QgsColorButton::colorPickingCanceled );
+  connect( mPickerHelper, &QgsColorPickerHelper::colorHovered, this, &QgsColorButton::onColorHovered );
 }
 
 QSize QgsColorButton::minimumSizeHint() const
@@ -196,25 +204,26 @@ void QgsColorButton::setToNoColor()
   setColor( noColor );
 }
 
+void QgsColorButton::setToOpaqueColor()
+{
+  QColor opaqueColor = QColor( mColor );
+  opaqueColor.setAlpha( 255 );
+  setColor( opaqueColor );
+}
+
 void QgsColorButton::mousePressEvent( QMouseEvent *e )
 {
-  if ( mPickingColor )
-  {
-    //don't show dialog if in color picker mode
-    e->accept();
-    return;
-  }
-
-  if ( e->button() == Qt::RightButton )
-  {
-    QToolButton::showMenu();
-    return;
-  }
-  else if ( e->button() == Qt::LeftButton )
+  if ( e->button() == Qt::LeftButton )
   {
     mDragStartPosition = e->pos();
   }
   QToolButton::mousePressEvent( e );
+}
+
+void QgsColorButton::contextMenuEvent( QContextMenuEvent *e )
+{
+  QToolButton::showMenu();
+  e->accept();
 }
 
 bool QgsColorButton::colorFromMimeData( const QMimeData *mimeData, QColor &resultColor )
@@ -247,13 +256,6 @@ bool QgsColorButton::colorFromMimeData( const QMimeData *mimeData, QColor &resul
 
 void QgsColorButton::mouseMoveEvent( QMouseEvent *e )
 {
-  if ( mPickingColor )
-  {
-    setButtonBackground( QgsGui::sampleColor( e->globalPos() ) );
-    e->accept();
-    return;
-  }
-
   //handle dragging colors from button
   QColor c = linkedProjectColor();
   if ( !c.isValid() )
@@ -281,37 +283,29 @@ void QgsColorButton::mouseMoveEvent( QMouseEvent *e )
   setDown( false );
 }
 
-void QgsColorButton::mouseReleaseEvent( QMouseEvent *e )
+void QgsColorButton::onColorPicked( const QColor &color )
 {
-  if ( mPickingColor )
+  if ( color.isValid() )
   {
-    //end color picking operation by sampling the color under cursor
-    stopPicking( e->globalPos() );
-    e->accept();
-    return;
+    setColor( color );
+    addRecentColor( mColor );
   }
-
-  QToolButton::mouseReleaseEvent( e );
-}
-
-void QgsColorButton::stopPicking( QPoint eventPos, bool samplingColor )
-{
-  //release mouse and keyboard, and reset cursor
-  releaseMouse();
-  releaseKeyboard();
-  QgsApplication::restoreOverrideCursor();
-  setMouseTracking( false );
-  mPickingColor = false;
-
-  if ( !samplingColor )
+  else
   {
     //not sampling color, restore old color
     setButtonBackground();
     return;
   }
+}
 
-  setColor( QgsGui::sampleColor( eventPos ) );
-  addRecentColor( mColor );
+void QgsColorButton::onColorHovered( const QColor &color )
+{
+  setButtonBackground( color );
+}
+
+void QgsColorButton::colorPickingCanceled()
+{
+  setButtonBackground();
 }
 
 QColor QgsColorButton::linkedProjectColor() const
@@ -334,19 +328,6 @@ QColor QgsColorButton::linkedProjectColor() const
     }
   }
   return QColor();
-}
-
-void QgsColorButton::keyPressEvent( QKeyEvent *e )
-{
-  if ( !mPickingColor )
-  {
-    //if not picking a color, use default tool button behavior
-    QToolButton::keyPressEvent( e );
-    return;
-  }
-
-  //cancel picking, sampling the color if space was pressed
-  stopPicking( QCursor::pos(), e->key() == Qt::Key_Space );
 }
 
 void QgsColorButton::dragEnterEvent( QDragEnterEvent *e )
@@ -505,12 +486,22 @@ void QgsColorButton::prepareMenu()
       connect( defaultColorAction, &QAction::triggered, this, &QgsColorButton::setToDefaultColor );
     }
 
-    if ( mShowNoColorOption )
+    if ( mShowNoColorOption && mColor.alpha() > 0 )
     {
       QAction *noColorAction = new QAction( mNoColorString, this );
       noColorAction->setIcon( createMenuIcon( Qt::transparent, false ) );
       mMenu->addAction( noColorAction );
       connect( noColorAction, &QAction::triggered, this, &QgsColorButton::setToNoColor );
+    }
+
+    if ( ( mAllowOpacity || mShowNoColorOption ) && mColor.isValid() && mColor.alpha() < 255 )
+    {
+      QColor opaqueColor = QColor( mColor );
+      opaqueColor.setAlpha( 255 );
+      QAction *opaqueColorAction = new QAction( mOpaqueColorString, this );
+      opaqueColorAction->setIcon( createMenuIcon( opaqueColor ) );
+      mMenu->addAction( opaqueColorAction );
+      connect( opaqueColorAction, &QAction::triggered, this, &QgsColorButton::setToOpaqueColor );
     }
 
     mMenu->addSeparator();
@@ -765,14 +756,7 @@ void QgsColorButton::pasteColor()
 
 void QgsColorButton::activatePicker()
 {
-  //activate picker color
-  // Store current color
-  mCurrentColor = mColor;
-  QApplication::setOverrideCursor( QgsApplication::getThemeCursor( QgsApplication::Cursor::Sampler ) );
-  grabMouse();
-  grabKeyboard();
-  mPickingColor = true;
-  setMouseTracking( true );
+  mPickerHelper->activate();
 }
 
 QColor QgsColorButton::color() const

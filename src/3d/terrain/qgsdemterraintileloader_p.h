@@ -28,10 +28,10 @@
 //
 
 
+#include "qgschunkloader.h"
 #include "qgschunknode.h"
 #include "qgscoordinatetransformcontext.h"
 #include "qgsrectangle.h"
-#include "qgsterraintileloader.h"
 #include "qgstilingscheme.h"
 
 #include <QElapsedTimer>
@@ -45,34 +45,6 @@ class QgsRasterLayer;
 class QgsRasterBlock;
 class QgsCoordinateTransformContext;
 class QgsTerrainGenerator;
-
-/**
- * \ingroup qgis_3d
- * \brief Chunk loader for DEM terrain tiles.
- */
-class QgsDemTerrainTileLoader : public QgsTerrainTileLoader
-{
-    Q_OBJECT
-  public:
-    //! Constructs loader for the given chunk node
-    QgsDemTerrainTileLoader( QgsTerrainEntity *terrain, QgsChunkNode *node, QgsTerrainGenerator *terrainGenerator );
-
-    void start() override;
-
-    Qt3DCore::QEntity *createEntity( Qt3DCore::QEntity *parent ) override;
-
-  private slots:
-    void onHeightMapReady( int jobId, const QByteArray &heightMap );
-
-  private:
-    int mHeightMapJobId = -1;
-    QByteArray mHeightMap;
-    int mResolution = 0;
-    float mSkirtHeight = 0;
-    QgsTerrainGenerator *mTerrainGenerator;
-};
-
-
 class QgsTerrainDownloader;
 
 /**
@@ -91,9 +63,9 @@ class QgsDemHeightMapGenerator : public QObject
     ~QgsDemHeightMapGenerator() override;
 
     //! asynchronous terrain read for a tile (array of floats)
-    int render( const QgsChunkNodeId &nodeId );
+    QFuture<QByteArray> render( const QgsChunkNodeId &nodeId );
 
-    //! Waits for the tile to finish rendering
+    //! Waits for all tiles to finish rendering
     void waitForFinished();
 
     //! Returns resolution(number of height values on each side of tile)
@@ -101,13 +73,6 @@ class QgsDemHeightMapGenerator : public QObject
 
     //! returns height at given position (in terrain's CRS)
     float heightAt( double x, double y );
-
-  signals:
-    //! emitted when a previously requested heightmap is ready
-    void heightMapReady( int jobId, const QByteArray &heightMap );
-
-  private slots:
-    void onFutureFinished();
 
   private:
     //! dtm raster layer's extent in layer crs
@@ -120,20 +85,9 @@ class QgsDemHeightMapGenerator : public QObject
 
     int mResolution;
 
-    int mLastJobId = 0;
-
     std::unique_ptr<QgsTerrainDownloader> mDownloader;
 
-    struct JobData
-    {
-        int jobId;
-        QgsChunkNodeId tileId;
-        QgsRectangle extent;
-        QFuture<QByteArray> future;
-        QElapsedTimer timer;
-    };
-
-    QHash<QFutureWatcher<QByteArray> *, JobData> mJobs;
+    QHash<QFutureWatcher<QByteArray> *, QFuture<QByteArray>> mJobs;
 
     void lazyLoadDtmCoarseData( int res, const QgsRectangle &rect );
     mutable QMutex mLazyLoadDtmCoarseDataMutex;

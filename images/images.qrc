@@ -312,6 +312,7 @@
         <file>themes/default/mActionExpandTree.svg</file>
         <file>themes/default/mActionFileExit.svg</file>
         <file>themes/default/mActionFileNew.svg</file>
+        <file>themes/default/mActionFileNewFromTemplate.svg</file>
         <file>themes/default/mActionFileOpen.svg</file>
         <file>themes/default/mActionFilePrint.svg</file>
         <file>themes/default/mActionFileSave.svg</file>
@@ -1066,6 +1067,7 @@
         <file>themes/default/field_indicators/mIndicatorConstraintHard.svg</file>
         <file>themes/default/field_indicators/mIndicatorDefaultValue.svg</file>
         <file>themes/default/field_indicators/mIndicatorDefaultValueApplyOnUpdate.svg</file>
+        <file>themes/default/field_indicators/mIndicatorFieldDomain.svg</file>
         <file>themes/default/mIconRenderOnTerrain.svg</file>
         <file>themes/default/mIconFloaterCartesian.svg</file>
         <file>themes/default/mIconFloaterEllipsoid.svg</file>
@@ -1103,6 +1105,7 @@
         <file>themes/default/mIconEsriRest.svg</file>
         <file>themes/default/mIconImageServer.svg</file>
         <file>themes/default/mIconUnlitMaterial.svg</file>
+        <file>themes/default/mActionSetTimeZone.svg</file>
     </qresource>
     <qresource prefix="/images/tips">
         <file alias="symbol_levels.png">qgis_tips/symbol_levels.png</file>

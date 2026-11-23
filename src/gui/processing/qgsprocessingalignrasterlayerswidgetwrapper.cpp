@@ -76,9 +76,9 @@ QgsProcessingAlignRasterLayerDetailsWidget::QgsProcessingAlignRasterLayerDetails
   cmbResamplingMethod->setCurrentIndex( cmbResamplingMethod->findData( static_cast<int>( item.resampleMethod ) ) );
   chkRescaleValues->setChecked( item.rescaleValues );
 
-  connect( mOutputFileWidget, &QgsFileWidget::fileChanged, this, &QgsPanelWidget::widgetChanged );
-  connect( cmbResamplingMethod, qOverload<int>( &QComboBox::currentIndexChanged ), this, &QgsPanelWidget::widgetChanged );
-  connect( chkRescaleValues, &QCheckBox::stateChanged, this, &QgsPanelWidget::widgetChanged );
+  connect( mOutputFileWidget, &QgsFileWidget::fileChanged, this, &QgsPanelWidget::changed );
+  connect( cmbResamplingMethod, qOverload<int>( &QComboBox::currentIndexChanged ), this, &QgsPanelWidget::changed );
+  connect( chkRescaleValues, &QCheckBox::stateChanged, this, &QgsPanelWidget::changed );
 }
 
 QVariant QgsProcessingAlignRasterLayerDetailsWidget::value() const
@@ -152,7 +152,7 @@ void QgsProcessingAlignRasterLayersPanelWidget::configureRaster()
     widget->setPanelTitle( tr( "Configure Raster" ) );
     widget->buttonBox()->hide();
 
-    connect( widget, &QgsProcessingAlignRasterLayerDetailsWidget::widgetChanged, this, [this, item, widget]() { setItemValue( item, widget->value() ); } );
+    connect( widget, &QgsProcessingAlignRasterLayerDetailsWidget::changed, this, [this, item, widget]() { setItemValue( item, widget->value() ); } );
     panel->openPanel( widget );
   }
   else

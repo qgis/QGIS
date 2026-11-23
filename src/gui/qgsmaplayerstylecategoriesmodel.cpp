@@ -16,6 +16,7 @@
 #include "qgsmaplayerstylecategoriesmodel.h"
 
 #include "qgsapplication.h"
+#include "qgspainting.h"
 
 #include <QString>
 
@@ -579,11 +580,11 @@ void QgsCategoryDisplayLabelDelegate::drawDisplay( QPainter *painter, const QSty
   label.setAttribute( Qt::WA_TranslucentBackground );
   label.setMargin( 3 );
   label.setWordWrap( true );
-  painter->save();
+
+  QgsScopedQPainterState painterState( painter );
   painter->translate( rect.topLeft() );
   label.resize( rect.size() );
   label.render( painter );
-  painter->restore();
 }
 
 QSize QgsCategoryDisplayLabelDelegate::sizeHint( const QStyleOptionViewItem &option, const QModelIndex &index ) const

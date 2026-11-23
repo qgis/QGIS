@@ -16,6 +16,7 @@ set(QGIS_APP_SRCS
   qgsappcoordinateoperationhandlers.cpp
   qgsappdbutils.cpp
   qgsapplayertreeviewmenuprovider.cpp
+  qgsappmenuutils.cpp
   qgsappwindowmanager.cpp
   qgsappscreenshots.cpp
   qgsanimationexportdialog.cpp
@@ -156,6 +157,7 @@ set(QGIS_APP_SRCS
   qgsrelationmanagerdialog.cpp
   qgsrelationadddlg.cpp
   qgsrelationaddpolymorphicdialog.cpp
+  qgssaveprojecttemplatedialog.cpp
   qgsselectbyformdialog.cpp
   qgsstatisticalsummarydockwidget.cpp
   qgstextannotationdialog.cpp
@@ -302,6 +304,7 @@ set(QGIS_APP_SRCS
   mesh/qgsmeshselectbyexpressiondialog.cpp
 
   processing/qgsappprocessingutils.cpp
+  processing/qgsprocessingtoolboxdock.cpp
 
   vector/qgsvectorelevationpropertieswidget.cpp
 )
@@ -463,10 +466,6 @@ elseif(MINGW)
   )
 endif()
 
-if(ENABLE_MODELTEST)
-  include_directories(../../tests/qt_modeltest)
-endif()
-
 if (ANDROID)
   include_directories(SYSTEM ${ANDROID_NDK_TOOLCHAIN_ROOT}/sysroot/usr/include)
 endif()
@@ -622,6 +621,10 @@ target_link_libraries(qgis_app
   qgis_native
   libdxfrw
 )
+
+if(WITH_TBB)
+   target_link_libraries(qgis_app PUBLIC TBB::tbb)
+endif()
 
 target_compile_definitions(qgis_app PRIVATE "-DQT_NO_FOREACH")
 

@@ -20,6 +20,7 @@
 #include "qgslinesymbol.h"
 #include "qgslogger.h"
 #include "qgsmapcanvas.h"
+#include "qgspainting.h"
 #include "qgspallabeling.h"
 #include "qgsrenderchecker.h"
 #include "qgsrubberband.h"
@@ -103,6 +104,7 @@ class TestQgsRubberband : public QgsTest
     void testLabelPreview();
     void testLabelPreviewCurved();
     void testLabelPreviewReferenceScale();
+    void testLabelPreviewMultiPart();
 
   private:
     QgsMapCanvas *mCanvas = nullptr;
@@ -662,6 +664,54 @@ void TestQgsRubberband::testLabelPreviewReferenceScale()
   painter.end();
 
   QGSVERIFYIMAGECHECK( u"label_preview_item_reference_scale"_s, u"label_preview_item_reference_scale"_s, image );
+}
+
+void TestQgsRubberband::testLabelPreviewMultiPart()
+{
+  auto canvas = std::make_unique<QgsMapCanvas>();
+  canvas->setDestinationCrs( QgsCoordinateReferenceSystem( u"EPSG:4326"_s ) );
+  canvas->setFrameStyle( 0 );
+  canvas->resize( 600, 400 );
+  canvas->setExtent( QgsRectangle( 0, 0, 200, 200 ) );
+  canvas->show();
+
+  auto layer = std::make_unique<QgsVectorLayer>( u"MultiPoint?crs=epsg:4326&field=name:string"_s, u"test_layer"_s, u"memory"_s );
+  QVERIFY( layer->isValid() );
+
+  QgsPalLayerSettings settings;
+  settings.fieldName = u"name"_s;
+  settings.isExpression = false;
+  settings.wrapChar = u" "_s;
+  settings.placementSettings().setMultiPartBehavior( Qgis::MultiPartLabelingBehavior::SplitLabelTextLinesOverParts );
+
+  QgsTextFormat format;
+  format.setFont( QgsFontUtils::getStandardTestFont( u"Bold"_s ) );
+  format.setSize( 16 );
+  format.setColor( QColor( 255, 0, 0 ) );
+  settings.setFormat( format );
+
+  layer->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );
+  layer->setLabelsEnabled( true );
+
+  QgsFeature feature( layer->fields() );
+  feature.setAttribute( u"name"_s, u"Preview Label"_s );
+  feature.setGeometry( QgsGeometry::fromPointXY( QgsPointXY( 100, 100 ) ) );
+  feature.setGeometry( QgsGeometry::fromWkt( u"MultiPoint(100 100, 100 130)"_s ) );
+  QVERIFY( layer->dataProvider()->addFeature( feature ) );
+
+  QgsRubberBand r( canvas.get(), Qgis::GeometryType::Point );
+  r.setColor( QColor( 0, 255, 255 ) );
+  r.setToGeometry( feature.geometry(), layer.get() );
+
+  r.addPreviewItem( new QgsVectorLayerLabelRubberBandPreview( &r, { feature.id() }, layer.get() ) );
+
+  QImage image( canvas->size(), QImage::Format_ARGB32_Premultiplied );
+  image.fill( Qt::white );
+  QPainter painter( &image );
+  canvas->render( &painter );
+  painter.end();
+
+  QGSVERIFYIMAGECHECK( u"label_preview_item_multipart"_s, u"label_preview_item_multipart"_s, image );
 }
 
 QGSTEST_MAIN( TestQgsRubberband )

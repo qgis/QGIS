@@ -21,6 +21,7 @@
 
 #include "qgis.h"
 #include "qgslayoututils.h"
+#include "qgspainting.h"
 #include "qgsrendercontext.h"
 
 #include <QGraphicsSceneHoverEvent>
@@ -85,6 +86,25 @@ void QgsGraphicsViewMouseHandles::setResizeEnabled( bool enable )
 
   mResizeEnabled = enable;
   update();
+}
+
+void QgsGraphicsViewMouseHandles::reset()
+{
+  mIsDragging = false;
+  mIsDragStarting = false;
+  mIsResizing = false;
+  mIsRotating = false;
+
+  hideAlignItems();
+
+  //reset default action
+  mCurrentMouseMoveAction = Qgis::MouseHandlesAction::MoveItem;
+  //redraw handles
+  resetTransform();
+  update();
+  updateHandles();
+  //reset status bar message
+  resetStatusBar();
 }
 
 void QgsGraphicsViewMouseHandles::paintInternal( QPainter *painter, bool showHandles, bool showStaticBoundingBoxes, bool showTemporaryBoundingBoxes, const QStyleOptionGraphicsItem *, QWidget * )
@@ -198,10 +218,11 @@ void QgsGraphicsViewMouseHandles::drawHandles( QPainter *painter, double rectHan
     transform.reset();
     transform.translate( rectHandlerSize, rectHandlerSize );
     transform.scale( scale, scale );
-    painter->save();
+
+    QgsScopedQPainterState painterState( painter );
     painter->setTransform( transform, true );
     painter->drawPath( mRotationHandlePath );
-    painter->restore();
+    painterState.restore();
 
     //top right
     if ( drawRightRotationHandles )
@@ -210,10 +231,10 @@ void QgsGraphicsViewMouseHandles::drawHandles( QPainter *painter, double rectHan
       transform.translate( rect().width() - rectHandlerSize, rectHandlerSize );
       transform.rotate( 90 );
       transform.scale( scale, scale );
-      painter->save();
+      painterState.save();
       painter->setTransform( transform, true );
       painter->drawPath( mRotationHandlePath );
-      painter->restore();
+      painterState.restore();
     }
 
     if ( drawBottomRotationHandles )
@@ -223,10 +244,10 @@ void QgsGraphicsViewMouseHandles::drawHandles( QPainter *painter, double rectHan
       transform.translate( rectHandlerSize, rect().height() - rectHandlerSize );
       transform.rotate( 270 );
       transform.scale( scale, scale );
-      painter->save();
+      painterState.save();
       painter->setTransform( transform, true );
       painter->drawPath( mRotationHandlePath );
-      painter->restore();
+      painterState.restore();
     }
 
     if ( drawBottomRotationHandles && drawRightRotationHandles )
@@ -236,10 +257,10 @@ void QgsGraphicsViewMouseHandles::drawHandles( QPainter *painter, double rectHan
       transform.translate( rect().width() - rectHandlerSize, rect().height() - rectHandlerSize );
       transform.rotate( 180 );
       transform.scale( scale, scale );
-      painter->save();
+      painterState.save();
       painter->setTransform( transform, true );
       painter->drawPath( mRotationHandlePath );
-      painter->restore();
+      painterState.restore();
     }
   }
 }
@@ -895,16 +916,7 @@ void QgsGraphicsViewMouseHandles::mouseReleaseEvent( QGraphicsSceneMouseEvent *e
     mIsRotating = false;
   }
 
-  hideAlignItems();
-
-  //reset default action
-  mCurrentMouseMoveAction = Qgis::MouseHandlesAction::MoveItem;
-  //redraw handles
-  resetTransform();
-  update();
-  updateHandles();
-  //reset status bar message
-  resetStatusBar();
+  reset();
 }
 
 bool QgsGraphicsViewMouseHandles::selectionRotation( double &rotation ) const

@@ -76,6 +76,7 @@
 #include "qgsalgorithmconverttocurves.h"
 #include "qgsalgorithmconvexhull.h"
 #include "qgsalgorithmcoverageclean.h"
+#include "qgsalgorithmcoverageedges.h"
 #include "qgsalgorithmcoveragesimplify.h"
 #include "qgsalgorithmcoverageunion.h"
 #include "qgsalgorithmcoveragevalidate.h"
@@ -289,6 +290,7 @@ using namespace Qt::StringLiterals;
 #include "qgsalgorithmsplitlinesbylength.h"
 #include "qgsalgorithmsplitvectorlayer.h"
 #include "qgsalgorithmsplitwithlines.h"
+#include "qgsalgorithmstatisticsbycategories.h"
 #include "qgsalgorithmstdbscanclustering.h"
 #include "qgsalgorithmstringconcatenation.h"
 #include "qgsalgorithmsubdivide.h"
@@ -296,6 +298,7 @@ using namespace Qt::StringLiterals;
 #include "qgsalgorithmswapxy.h"
 #include "qgsalgorithmsymmetricaldifference.h"
 #include "qgsalgorithmtaperedbuffer.h"
+#include "qgsalgorithmtexttofloat.h"
 #include "qgsalgorithmtininterpolation.h"
 #include "qgsalgorithmtinmeshcreation.h"
 #include "qgsalgorithmtotalcurvature.h"
@@ -308,6 +311,7 @@ using namespace Qt::StringLiterals;
 #include "qgsalgorithmunion.h"
 #include "qgsalgorithmuniquevalues.h"
 #include "qgsalgorithmuniquevalueindex.h"
+#include "qgsalgorithmupslopearea.h"
 #include "qgsalgorithmurlopener.h"
 #include "qgsalgorithmhttprequest.h"
 #include "qgsalgorithmvalidatenetwork.h"
@@ -327,6 +331,10 @@ using namespace Qt::StringLiterals;
 #include "qgsmetadataalgorithms.h"
 #include "qgsprojectstylealgorithms.h"
 #include "qgsstylealgorithms.h"
+#include "qgsalgorithmflowconnectivity.h"
+#include "qgsalgorithmflowdirection.h"
+#include "qgsalgorithmstrahlerorder.h"
+#include "qgsalgorithmchannelnetwork.h"
 
 ///@cond PRIVATE
 
@@ -404,6 +412,8 @@ void QgsNativeAlgorithms::loadAlgorithms()
   addAlgorithm( new QgsCellStatisticsPercentRankFromRasterAlgorithm() );
   addAlgorithm( new QgsCellStatisticsPercentRankFromValueAlgorithm() );
   addAlgorithm( new QgsCentroidAlgorithm() );
+  addAlgorithm( new QgsChannelNetworkFromDemAlgorithm() );
+  addAlgorithm( new QgsChannelNetworkFromFlowDirAndOrderAlgorithm() );
   addAlgorithm( new QgsCheckValidityAlgorithm() );
   addAlgorithm( new QgsGeometryCheckSegmentLengthAlgorithm() );
   addAlgorithm( new QgsGeometryCheckAngleAlgorithm() );
@@ -439,6 +449,7 @@ void QgsNativeAlgorithms::loadAlgorithms()
   addAlgorithm( new QgsConvertGeometryTypeAlgorithm() );
   addAlgorithm( new QgsConvexHullAlgorithm() );
   addAlgorithm( new QgsCopyLayerMetadataAlgorithm() );
+  addAlgorithm( new QgsCoverageEdgesAlgorithm() );
   addAlgorithm( new QgsCoverageSimplifyAlgorithm() );
   addAlgorithm( new QgsCoverageUnionAlgorithm() );
   addAlgorithm( new QgsCoverageValidateAlgorithm() );
@@ -506,6 +517,8 @@ void QgsNativeAlgorithms::loadAlgorithms()
   addAlgorithm( new QgsFindProjectionAlgorithm() );
   addAlgorithm( new QgsFixGeometriesAlgorithm() );
   addAlgorithm( new QgsFlattenRelationshipsAlgorithm() );
+  addAlgorithm( new QgsFlowConnectivityD8Algorithm() );
+  addAlgorithm( new QgsFlowDirectionD8Algorithm() );
   addAlgorithm( new QgsForceCCWAlgorithm() );
   addAlgorithm( new QgsForceCWAlgorithm() );
   addAlgorithm( new QgsForceRHRAlgorithm() );
@@ -682,7 +695,10 @@ void QgsNativeAlgorithms::loadAlgorithms()
   addAlgorithm( new QgsSplitLinesByLengthAlgorithm() );
   addAlgorithm( new QgsSplitVectorLayerAlgorithm() );
   addAlgorithm( new QgsSplitWithLinesAlgorithm() );
+  addAlgorithm( new QgsStatisticsByCategoriesAlgorithm() );
   addAlgorithm( new QgsStDbscanClusteringAlgorithm() );
+  addAlgorithm( new QgsStrahlerOrderFromDemAlgorithm() );
+  addAlgorithm( new QgsStrahlerOrderFromFlowDirectionAlgorithm() );
   addAlgorithm( new QgsStringConcatenationAlgorithm() );
   addAlgorithm( new QgsStyleFromProjectAlgorithm() );
   addAlgorithm( new QgsSubdivideAlgorithm() );
@@ -690,6 +706,7 @@ void QgsNativeAlgorithms::loadAlgorithms()
   addAlgorithm( new QgsSwapXYAlgorithm() );
   addAlgorithm( new QgsSymmetricalDifferenceAlgorithm() );
   addAlgorithm( new QgsTaperedBufferAlgorithm() );
+  addAlgorithm( new QgsTextToFloatAlgorithm() );
   addAlgorithm( new QgsTinInterpolationAlgorithm() );
   addAlgorithm( new QgsTinMeshCreationAlgorithm() );
   addAlgorithm( new QgsTotalCurvatureAlgorithm() );
@@ -705,6 +722,8 @@ void QgsNativeAlgorithms::loadAlgorithms()
   addAlgorithm( new QgsValidateNetworkAlgorithm() );
   addAlgorithm( new QgsOpenUrlAlgorithm() );
   addAlgorithm( new QgsHttpRequestAlgorithm() );
+  addAlgorithm( new QgsUpslopeAreaPointAlgorithm() );
+  addAlgorithm( new QgsUpslopeAreaLayerAlgorithm() );
   addAlgorithm( new QgsVariableWidthBufferByMAlgorithm() );
   addAlgorithm( new QgsVirtualRasterCalculatorAlgorithm() );
   addAlgorithm( new QgsVirtualRasterCalculatorModelerAlgorithm() );
@@ -714,6 +733,7 @@ void QgsNativeAlgorithms::loadAlgorithms()
   addAlgorithm( new QgsWriteVectorTilesMbtilesAlgorithm() );
   addAlgorithm( new QgsXyzTilesDirectoryAlgorithm() );
   addAlgorithm( new QgsXyzTilesMbtilesAlgorithm() );
+  addAlgorithm( new QgsXyzTilesGpkgAlgorithm() );
   addAlgorithm( new QgsZonalHistogramAlgorithm() );
   addAlgorithm( new QgsZonalMinimumMaximumPointAlgorithm() );
   addAlgorithm( new QgsZonalStatisticsAlgorithm() );

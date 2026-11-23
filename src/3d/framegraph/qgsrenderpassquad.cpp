@@ -45,7 +45,7 @@ QgsRenderPassQuad::QgsRenderPassQuad( Qt3DRender::QLayer *layer, QNode *parent )
                                 1.0f, 1.0f, 0.0f };
   // clang-format on
 
-  const QByteArray vertexArr( ( const char * ) vert.constData(), vert.size() * sizeof( float ) );
+  const QByteArray vertexArr( reinterpret_cast< const char * >( vert.constData() ), vert.size() * sizeof( float ) );
   Qt3DCore::QBuffer *vertexBuffer = nullptr;
   vertexBuffer = new Qt3DCore::QBuffer( this );
   vertexBuffer->setData( vertexArr );

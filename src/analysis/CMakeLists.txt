@@ -61,9 +61,11 @@ set(QGIS_ANALYSIS_SRCS
   processing/qgsalgorithmcategorizeusingstyle.cpp
   processing/qgsalgorithmcellstatistics.cpp
   processing/qgsalgorithmcentroid.cpp
+  processing/qgsalgorithmchannelnetwork.cpp
   processing/qgsalgorithmcheckgeometrysegmentlength.cpp
   processing/qgsalgorithmcheckgeometryangle.cpp
   processing/qgsalgorithmcheckvalidity.cpp
+  processing/qgsalgorithmd8base.cpp
   processing/qgsalgorithmexecutesql.cpp
   processing/qgsalgorithmextrude.cpp
   processing/qgsalgorithmfixgeometryduplicatenodes.cpp
@@ -105,6 +107,7 @@ set(QGIS_ANALYSIS_SRCS
   processing/qgsalgorithmconverttocurves.cpp
   processing/qgsalgorithmconvertgeometrytype.cpp
   processing/qgsalgorithmconvexhull.cpp
+  processing/qgsalgorithmcoverageedges.cpp
   processing/qgsalgorithmcoveragesimplify.cpp
   processing/qgsalgorithmcoverageunion.cpp
   processing/qgsalgorithmcoveragevalidate.cpp
@@ -164,6 +167,8 @@ set(QGIS_ANALYSIS_SRCS
   processing/qgsalgorithmfindprojection.cpp
   processing/qgsalgorithmfixgeometries.cpp
   processing/qgsalgorithmflattenrelationships.cpp
+  processing/qgsalgorithmflowconnectivity.cpp
+  processing/qgsalgorithmflowdirection.cpp
   processing/qgsalgorithmforceccw.cpp
   processing/qgsalgorithmforcecw.cpp
   processing/qgsalgorithmforcerhr.cpp
@@ -300,13 +305,16 @@ set(QGIS_ANALYSIS_SRCS
   processing/qgsalgorithmsplitlinesbylength.cpp
   processing/qgsalgorithmsplitvectorlayer.cpp
   processing/qgsalgorithmsplitwithlines.cpp
+  processing/qgsalgorithmstatisticsbycategories.cpp
   processing/qgsalgorithmstdbscanclustering.cpp
+  processing/qgsalgorithmstrahlerorder.cpp
   processing/qgsalgorithmstringconcatenation.cpp
   processing/qgsalgorithmswapxy.cpp
   processing/qgsalgorithmsubdivide.cpp
   processing/qgsalgorithmsumlinelength.cpp
   processing/qgsalgorithmsymmetricaldifference.cpp
   processing/qgsalgorithmtaperedbuffer.cpp
+  processing/qgsalgorithmtexttofloat.cpp
   processing/qgsalgorithmtininterpolation.cpp
   processing/qgsalgorithmtinmeshcreation.cpp
   processing/qgsalgorithmtotalcurvature.cpp
@@ -320,6 +328,7 @@ set(QGIS_ANALYSIS_SRCS
   processing/qgsalgorithmunion.cpp
   processing/qgsalgorithmuniquevalues.cpp
   processing/qgsalgorithmuniquevalueindex.cpp
+  processing/qgsalgorithmupslopearea.cpp
   processing/qgsalgorithmurlopener.cpp
   processing/qgsalgorithmhttprequest.cpp
   processing/qgsalgorithmvalidatenetwork.cpp
@@ -667,6 +676,10 @@ endif()
 
 if (WITH_SFCGAL)
   target_link_libraries(qgis_analysis SFCGAL::SFCGAL)
+endif()
+
+if(WITH_TBB)
+   target_link_libraries(qgis_analysis TBB::tbb)
 endif()
 
 target_compile_definitions(qgis_analysis PRIVATE "-DQT_NO_FOREACH")

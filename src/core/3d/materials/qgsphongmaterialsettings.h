@@ -49,7 +49,7 @@ class CORE_EXPORT QgsPhongMaterialSettings : public QgsAbstractMaterialSettings
     /**
      * Returns a new instance of QgsPhongMaterialSettings.
      */
-    static QgsAbstractMaterialSettings *create() SIP_FACTORY;
+    static std::unique_ptr<QgsAbstractMaterialSettings> create();
 
     QgsPhongMaterialSettings *clone() const override SIP_FACTORY;
     bool equals( const QgsAbstractMaterialSettings *other ) const override;

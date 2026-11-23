@@ -97,6 +97,8 @@ bool QgsTemporalUtils::exportAnimation( const QgsMapSettings &mapSettings, const
   QgsTemporalNavigationObject navigator;
   navigator.setTemporalExtents( settings.animationRange );
   navigator.setFrameDuration( settings.frameDuration );
+  navigator.setNavigationMode( settings.animationMode );
+  navigator.setTotalMovieFrames( settings.totalMovieFrames );
   if ( settings.frameDuration.originalUnit() == Qgis::TemporalUnit::IrregularStep )
   {
     navigator.setAvailableTemporalRanges( settings.availableTemporalRanges );

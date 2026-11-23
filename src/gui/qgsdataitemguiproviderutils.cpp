@@ -20,17 +20,22 @@
 #include "qgsdataitem.h"
 #include "qgsdataitemguiprovider.h"
 #include "qgsdbimportvectorlayerdialog.h"
+#include "qgsmaplayerutils.h"
 #include "qgsmessagebar.h"
 #include "qgsmessagebaritem.h"
 #include "qgsmessageoutput.h"
 #include "qgsprovidermetadata.h"
 #include "qgsproviderregistry.h"
 #include "qgstaskmanager.h"
+#include "qgsvectorlayer.h"
 #include "qgsvectorlayerexporter.h"
 
 #include <QMessageBox>
 #include <QPointer>
 #include <QPushButton>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 void QgsDataItemGuiProviderUtils::deleteConnectionsPrivate( const QStringList &connectionNames, const std::function<void( const QString & )> &deleteConnection, QPointer<QgsDataItem> firstParent )
 {
@@ -104,6 +109,7 @@ bool QgsDataItemGuiProviderUtils::handleDropUriForConnection(
   const QString destSchema = dialog.schema();
   const QString destTableName = dialog.tableName();
   const QString tableComment = dialog.tableComment();
+  const QString destGeometryColumn = dialog.geometryColumn();
 
   auto pushError = [shortTitle, longTitle, context]( const QString &error ) {
     QgsMessageBarItem *item = new QgsMessageBarItem( shortTitle, QObject::tr( "Import failed." ), Qgis::MessageLevel::Warning, 0, nullptr );
@@ -118,10 +124,15 @@ bool QgsDataItemGuiProviderUtils::handleDropUriForConnection(
     context.messageBar()->pushWidget( item, Qgis::MessageLevel::Warning );
   };
 
+  QgsVectorLayer *styleSourceLayer = dialog.saveStyleToDatabase() ? dialog.sourceLayer() : nullptr;
+
   // when export is successful:
-  QObject::
-    connect( exportTask.get(), &QgsVectorLayerExporterTask::exportComplete, connectionContext, [onSuccessfulCompletion, connectionUri, longTitle, pushError, connectionProvider, destSchema, destTableName, tableComment, shortTitle, context]() {
-      if ( !tableComment.isEmpty() )
+  QObject::connect(
+    exportTask.get(),
+    &QgsVectorLayerExporterTask::exportComplete,
+    connectionContext,
+    [onSuccessfulCompletion, connectionUri, longTitle, pushError, connectionProvider, destSchema, destTableName, tableComment, destGeometryColumn, styleSourceLayer, shortTitle, context]() {
+      if ( !tableComment.isEmpty() || styleSourceLayer )
       {
         std::unique_ptr<QgsAbstractDatabaseProviderConnection> connection;
         try
@@ -135,20 +146,45 @@ bool QgsDataItemGuiProviderUtils::handleDropUriForConnection(
           return;
         }
 
-        try
+        if ( !tableComment.isEmpty() )
         {
-          connection->setTableComment( destSchema, destTableName, tableComment );
+          try
+          {
+            connection->setTableComment( destSchema, destTableName, tableComment );
+          }
+          catch ( QgsProviderConnectionException &e )
+          {
+            pushError( QObject::tr( "Failed to set new table comment!\n\n" ) + e.what() );
+            return;
+          }
         }
-        catch ( QgsProviderConnectionException &e )
+
+        if ( styleSourceLayer )
         {
-          pushError( QObject::tr( "Failed to set new table comment!\n\n" ) + e.what() );
-          return;
+          QString styleUri;
+          try
+          {
+            styleUri = connection->styleStorageUri( destSchema, destTableName, destGeometryColumn, styleSourceLayer->wkbType() );
+          }
+          catch ( QgsProviderConnectionException &e )
+          {
+            pushError( QObject::tr( "Failed to save style to database!\n\n" ) + e.what() );
+            return;
+          }
+          const QgsSaveStyleResult styleResult = QgsMapLayerUtils::saveLayerStyleToDatabase( styleSourceLayer, connectionProvider, styleUri, destTableName, QString(), true, QString() );
+          const QString errMsg = styleResult.providerSaveStyleError.isEmpty() ? styleResult.qmlError : styleResult.providerSaveStyleError;
+          if ( !errMsg.isEmpty() )
+          {
+            pushError( QObject::tr( "Failed to save style to database!\n\n" ) + errMsg );
+            return;
+          }
         }
       }
 
       context.messageBar()->pushSuccess( shortTitle, QObject::tr( "Import was successful." ) );
       onSuccessfulCompletion();
-    } );
+    }
+  );
 
   // when an error occurs:
   QObject::connect( exportTask.get(), &QgsVectorLayerExporterTask::errorOccurred, connectionContext, [onError, shortTitle, pushError, longTitle]( Qgis::VectorExportResult error, const QString &errorMessage ) {
@@ -195,6 +231,7 @@ void QgsDataItemGuiProviderUtils::handleImportVectorLayerForConnection(
   const QString destSchema = dialog.schema();
   const QString destTableName = dialog.tableName();
   const QString tableComment = dialog.tableComment();
+  const QString destGeometryColumn = dialog.geometryColumn();
 
   auto pushError = [shortTitle, longTitle, context]( const QString &error ) {
     QgsMessageBarItem *item = new QgsMessageBarItem( shortTitle, QObject::tr( "Import failed." ), Qgis::MessageLevel::Warning, 0, nullptr );
@@ -209,10 +246,15 @@ void QgsDataItemGuiProviderUtils::handleImportVectorLayerForConnection(
     context.messageBar()->pushWidget( item, Qgis::MessageLevel::Warning );
   };
 
+  QgsVectorLayer *styleSourceLayer = dialog.saveStyleToDatabase() ? dialog.sourceLayer() : nullptr;
+
   // when export is successful:
-  QObject::
-    connect( exportTask.get(), &QgsVectorLayerExporterTask::exportComplete, connectionContext, [onSuccessfulCompletion, connectionUri, longTitle, pushError, connectionProvider, destSchema, destTableName, tableComment, shortTitle, context]() {
-      if ( !tableComment.isEmpty() )
+  QObject::connect(
+    exportTask.get(),
+    &QgsVectorLayerExporterTask::exportComplete,
+    connectionContext,
+    [onSuccessfulCompletion, connectionUri, longTitle, pushError, connectionProvider, destSchema, destTableName, tableComment, destGeometryColumn, styleSourceLayer, shortTitle, context]() {
+      if ( !tableComment.isEmpty() || styleSourceLayer )
       {
         std::unique_ptr<QgsAbstractDatabaseProviderConnection> connection;
         try
@@ -226,20 +268,45 @@ void QgsDataItemGuiProviderUtils::handleImportVectorLayerForConnection(
           return;
         }
 
-        try
+        if ( !tableComment.isEmpty() )
         {
-          connection->setTableComment( destSchema, destTableName, tableComment );
+          try
+          {
+            connection->setTableComment( destSchema, destTableName, tableComment );
+          }
+          catch ( QgsProviderConnectionException &e )
+          {
+            pushError( QObject::tr( "Failed to set new table comment!\n\n" ) + e.what() );
+            return;
+          }
         }
-        catch ( QgsProviderConnectionException &e )
+
+        if ( styleSourceLayer )
         {
-          pushError( QObject::tr( "Failed to set new table comment!\n\n" ) + e.what() );
-          return;
+          QString styleUri;
+          try
+          {
+            styleUri = connection->styleStorageUri( destSchema, destTableName, destGeometryColumn, styleSourceLayer->wkbType() );
+          }
+          catch ( QgsProviderConnectionException &e )
+          {
+            pushError( QObject::tr( "Failed to save style to database!\n\n" ) + e.what() );
+            return;
+          }
+          const QgsSaveStyleResult styleResult = QgsMapLayerUtils::saveLayerStyleToDatabase( styleSourceLayer, connectionProvider, styleUri, destTableName, QString(), true, QString() );
+          const QString errMsg = styleResult.providerSaveStyleError.isEmpty() ? styleResult.qmlError : styleResult.providerSaveStyleError;
+          if ( !errMsg.isEmpty() )
+          {
+            pushError( QObject::tr( "Failed to save style to database!\n\n" ) + errMsg );
+            return;
+          }
         }
       }
 
       context.messageBar()->pushSuccess( shortTitle, QObject::tr( "Import was successful." ) );
       onSuccessfulCompletion();
-    } );
+    }
+  );
 
   // when an error occurs:
   QObject::connect( exportTask.get(), &QgsVectorLayerExporterTask::errorOccurred, connectionContext, [onError, shortTitle, pushError, longTitle]( Qgis::VectorExportResult error, const QString &errorMessage ) {

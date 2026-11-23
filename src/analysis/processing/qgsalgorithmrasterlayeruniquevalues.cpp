@@ -126,7 +126,7 @@ QVariantMap QgsRasterLayerUniqueValuesReportAlgorithm::processAlgorithm( const Q
     outFields.append( QgsField( u"value"_s, QMetaType::Type::Double, QString(), 20, 8 ) );
     outFields.append( QgsField( u"count"_s, QMetaType::Type::LongLong, QString(), 20 ) );
     outFields.append( QgsField( areaUnit.replace( u"²"_s, "2"_L1 ), QMetaType::Type::Double, QString(), 20, 8 ) );
-    sink.reset( parameterAsSink( parameters, u"OUTPUT_TABLE"_s, context, tableDest, outFields, Qgis::WkbType::NoGeometry, QgsCoordinateReferenceSystem() ) );
+    sink = parameterAsSink( parameters, u"OUTPUT_TABLE"_s, context, tableDest, outFields, Qgis::WkbType::NoGeometry, QgsCoordinateReferenceSystem() );
     if ( !sink )
       throw QgsProcessingException( invalidSinkError( parameters, u"OUTPUT_TABLE"_s ) );
   }

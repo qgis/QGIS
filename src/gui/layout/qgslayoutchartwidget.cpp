@@ -231,7 +231,7 @@ void QgsLayoutChartWidget::mChartPropertiesButton_clicked()
   widget->registerExpressionContextGenerator( mChartItem );
   widget->setPlot( mChartItem->plot() );
 
-  connect( widget, &QgsPanelWidget::widgetChanged, this, [this, widget]() {
+  connect( widget, &QgsPanelWidget::changed, this, [this, widget]() {
     if ( !mChartItem )
     {
       return;
@@ -436,7 +436,7 @@ void QgsLayoutChartWidget::mSeriesPropertiesButton_clicked()
   QgsLayoutChartSeriesDetailsWidget *widget = new QgsLayoutChartSeriesDetailsWidget( mChartItem->sourceLayer(), idx, seriesList[idx], mGenerateCategoriesFromRendererCheckBox->isChecked(), this );
   widget->registerExpressionContextGenerator( mChartItem );
   widget->setPanelTitle( tr( "Series Details" ) );
-  connect( widget, &QgsPanelWidget::widgetChanged, this, [this, widget]() {
+  connect( widget, &QgsPanelWidget::changed, this, [this, widget]() {
     if ( !mChartItem )
     {
       return;

@@ -19,6 +19,7 @@
 
 #include "qgscolorutils.h"
 #include "qgsimageoperation.h"
+#include "qgspainting.h"
 #include "qgssymbollayerutils.h"
 #include "qgsunittypes.h"
 
@@ -75,10 +76,9 @@ void QgsShadowEffect::draw( QgsRenderContext &context )
   }
   else
   {
-    QImage *imb = QgsImageOperation::gaussianBlur( colorisedIm, blurLevel, context.feedback() );
-    if ( !imb->isNull() )
-      colorisedIm = QImage( *imb );
-    delete imb;
+    QImage imb = QgsImageOperation::gaussianBlur( colorisedIm, blurLevel, context.feedback() );
+    if ( !imb.isNull() )
+      colorisedIm = imb;
   }
 
   const double offsetDist = context.convertToPainterUnits( mOffsetDist, mOffsetUnit, mOffsetMapUnitScale );
@@ -204,9 +204,9 @@ QRectF QgsShadowEffect::boundingRect( const QRectF &rect, const QgsRenderContext
 // QgsDropShadowEffect
 //
 
-QgsPaintEffect *QgsDropShadowEffect::create( const QVariantMap &map )
+std::unique_ptr<QgsPaintEffect> QgsDropShadowEffect::create( const QVariantMap &map )
 {
-  QgsDropShadowEffect *effect = new QgsDropShadowEffect();
+  auto effect = std::make_unique<QgsDropShadowEffect>();
   effect->readProperties( map );
   return effect;
 }
@@ -235,9 +235,9 @@ bool QgsDropShadowEffect::exteriorShadow() const
 // QgsInnerShadowEffect
 //
 
-QgsPaintEffect *QgsInnerShadowEffect::create( const QVariantMap &map )
+std::unique_ptr<QgsPaintEffect> QgsInnerShadowEffect::create( const QVariantMap &map )
 {
-  QgsInnerShadowEffect *effect = new QgsInnerShadowEffect();
+  auto effect = std::make_unique<QgsInnerShadowEffect>();
   effect->readProperties( map );
   return effect;
 }

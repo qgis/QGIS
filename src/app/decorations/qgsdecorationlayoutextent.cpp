@@ -28,6 +28,7 @@
 #include "qgslayoutdesignerdialog.h"
 #include "qgslayoutitemmap.h"
 #include "qgslinesymbollayer.h"
+#include "qgspainting.h"
 #include "qgsproject.h"
 #include "qgsreadwritecontext.h"
 #include "qgssymbollayerutils.h"

@@ -696,7 +696,7 @@ QgsScopedRuntimeProfile::~QgsScopedRuntimeProfile()
   QgsApplication::profiler()->end( mGroup );
 }
 
-void QgsScopedRuntimeProfile::switchTask( const QString &name )
+void QgsScopedRuntimeProfile::switchTask( const QString &name ) // cppcheck-suppress functionConst
 {
   QgsApplication::profiler()->end( mGroup );
   QgsApplication::profiler()->start( name, mGroup );

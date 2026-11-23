@@ -79,7 +79,7 @@ void QgsTiledSceneElevationPropertiesWidget::apply()
 void QgsTiledSceneElevationPropertiesWidget::onChanged()
 {
   if ( !mBlockUpdates )
-    emit widgetChanged();
+    emit changed();
 }
 
 void QgsTiledSceneElevationPropertiesWidget::shiftSceneZAxis()

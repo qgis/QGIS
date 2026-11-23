@@ -22,7 +22,7 @@ rotate) to a picture.
 #include "qgstransformeffect.h"
 %End
   public:
-    static QgsPaintEffect *create( const QVariantMap &map ) /Factory/;
+    static std::unique_ptr<QgsPaintEffect> create( const QVariantMap &map );
 %Docstring
 Creates a new QgsTransformEffect effect from a properties string map.
 

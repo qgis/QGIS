@@ -370,7 +370,7 @@ try:
     QgsProcessingParameterPointCloudDestination.typeName = staticmethod(QgsProcessingParameterPointCloudDestination.typeName)
     QgsProcessingParameterPointCloudDestination.fromScriptCode = staticmethod(QgsProcessingParameterPointCloudDestination.fromScriptCode)
     QgsProcessingParameterPointCloudDestination.__virtual_methods__ = ['supportedOutputPointCloudLayerExtensions']
-    QgsProcessingParameterPointCloudDestination.__overridden_methods__ = ['clone', 'type', 'checkValueIsAcceptable', 'valueAsPythonString', 'toOutputDefinition', 'defaultFileExtension', 'createFileFilter']
+    QgsProcessingParameterPointCloudDestination.__overridden_methods__ = ['clone', 'type', 'checkValueIsAcceptable', 'valueAsPythonString', 'asPythonString', 'toOutputDefinition', 'defaultFileExtension', 'createFileFilter', 'toVariantMap', 'fromVariantMap']
     QgsProcessingParameterPointCloudDestination.__group__ = ['processing']
 except (NameError, AttributeError):
     pass

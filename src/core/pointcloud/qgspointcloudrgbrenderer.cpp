@@ -98,7 +98,7 @@ void QgsPointCloudRgbRenderer::renderBlock( const QgsPointCloudBlock *block, Qgs
 
   const bool renderElevation = context.renderContext().elevationMap();
   const QgsDoubleRange zRange = context.renderContext().zRange();
-  const bool considerZ = !zRange.isInfinite() || renderElevation;
+  const bool considerZ = !zRange.isInfinite() || renderElevation || !context.mapCrsZFilter().isInfinite();
 
   int rendered = 0;
   double x = 0;
@@ -137,6 +137,9 @@ void QgsPointCloudRgbRenderer::renderBlock( const QgsPointCloudBlock *block, Qgs
           continue;
         }
       }
+
+      if ( !context.mapCrsZFilter().contains( z ) )
+        continue;
 
       int red = 0;
       context.getAttribute( ptr, i * recordSize + redOffset, redType, red );
@@ -195,7 +198,7 @@ void QgsPointCloudRgbRenderer::renderBlock( const QgsPointCloudBlock *block, Qgs
 }
 
 
-QgsPointCloudRenderer *QgsPointCloudRgbRenderer::create( QDomElement &element, const QgsReadWriteContext &context )
+std::unique_ptr<QgsPointCloudRenderer> QgsPointCloudRgbRenderer::create( QDomElement &element, const QgsReadWriteContext &context )
 {
   auto r = std::make_unique< QgsPointCloudRgbRenderer >();
 
@@ -233,7 +236,7 @@ QgsPointCloudRenderer *QgsPointCloudRgbRenderer::create( QDomElement &element, c
     r->setBlueContrastEnhancement( blueContrastEnhancement );
   }
 
-  return r.release();
+  return r;
 }
 
 QDomElement QgsPointCloudRgbRenderer::save( QDomDocument &doc, const QgsReadWriteContext &context ) const
@@ -271,9 +274,9 @@ QDomElement QgsPointCloudRgbRenderer::save( QDomDocument &doc, const QgsReadWrit
   return rendererElem;
 }
 
-QSet<QString> QgsPointCloudRgbRenderer::usedAttributes( const QgsPointCloudRenderContext & ) const
+QSet<QString> QgsPointCloudRgbRenderer::usedAttributes( const QgsPointCloudRenderContext &context ) const
 {
-  QSet<QString> res;
+  QSet<QString> res = QgsPointCloudRenderer::usedAttributes( context );
   res << mRedAttribute << mGreenAttribute << mBlueAttribute;
   return res;
 }

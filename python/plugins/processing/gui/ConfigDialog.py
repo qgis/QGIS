@@ -48,9 +48,14 @@ from qgis.PyQt.QtWidgets import (
 from qgis.utils import OverrideCursor
 
 from processing.core.Processing import Processing
-from processing.core.ProcessingConfig import ProcessingConfig, Setting, settingsWatcher
+from processing.core.ProcessingConfig import (
+    DEFAULT_MENU_ENTRIES,
+    MENU_SETTINGS_GROUP,
+    ProcessingConfig,
+    Setting,
+    settingsWatcher,
+)
 from processing.gui.DirectorySelectorDialog import DirectorySelectorDialog
-from processing.gui.menus import defaultMenuEntries, menusSettingsGroup
 
 pluginPath = os.path.split(os.path.dirname(__file__))[0]
 with warnings.catch_warnings():
@@ -214,7 +219,7 @@ class ConfigDialog(BASE, WIDGET):
 
         rootItem.insertRow(0, [providersItem, emptyItem])
         for group in list(settings.keys()):
-            if group in priorityKeys or group == menusSettingsGroup:
+            if group in priorityKeys or group == MENU_SETTINGS_GROUP:
                 continue
 
             groupItem = QStandardItem(group)
@@ -302,7 +307,7 @@ class ConfigDialog(BASE, WIDGET):
     def resetMenusToDefaults(self):
         for provider in QgsApplication.processingRegistry().providers():
             for alg in provider.algorithms():
-                d = defaultMenuEntries.get(alg.id(), "")
+                d = DEFAULT_MENU_ENTRIES.get(alg.id(), "")
                 setting = ProcessingConfig.settings["MENU_" + alg.id()]
                 item = self.items[setting]
                 item.setData(d, Qt.ItemDataRole.EditRole)
@@ -311,7 +316,7 @@ class ConfigDialog(BASE, WIDGET):
     def accept(self):
         qsettings = QgsSettings()
         for setting in list(self.items.keys()):
-            if setting.group != menusSettingsGroup or self.saveMenus:
+            if setting.group != MENU_SETTINGS_GROUP or self.saveMenus:
                 if isinstance(setting.value, bool):
                     setting.setValue(
                         self.items[setting].checkState() == Qt.CheckState.Checked
