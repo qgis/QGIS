@@ -33,6 +33,7 @@ class QgsExpressionLineEdit;
 class QgsProcessingModelAlgorithm;
 class QgsProcessingParameterWidgetContext;
 class QgsProcessingContextGenerator;
+class QgsFilterableComboBox;
 class QgsFilterLineEdit;
 
 class QLabel;
@@ -244,8 +245,8 @@ class GUI_EXPORT QgsProcessingModelerParameterWidget : public QWidget, public Qg
     bool mHasStaticWrapper = false;
     std::unique_ptr<QgsAbstractProcessingParameterWidgetWrapper> mStaticWidgetWrapper;
     QgsExpressionLineEdit *mExpressionWidget = nullptr;
-    QComboBox *mModelInputCombo = nullptr;
-    QComboBox *mChildOutputCombo = nullptr;
+    QgsFilterableComboBox *mModelInputCombo = nullptr;
+    QgsFilterableComboBox *mChildOutputCombo = nullptr;
     QgsFilterLineEdit *mModelOutputName = nullptr;
 
     QList<Qgis::ProcessingModelChildParameterSource> mLimitedSources;

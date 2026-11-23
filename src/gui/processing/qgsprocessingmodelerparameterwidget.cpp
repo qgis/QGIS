@@ -23,6 +23,7 @@
 #include "qgsexpressioncontext.h"
 #include "qgsexpressioncontextutils.h"
 #include "qgsexpressionlineedit.h"
+#include "qgsfilterablecombobox.h"
 #include "qgsfilterlineedit.h"
 #include "qgsgui.h"
 #include "qgsguiutils.h"
@@ -107,8 +108,8 @@ QgsProcessingModelerParameterWidget::QgsProcessingModelerParameterWidget(
   mStackedWidget->addWidget( mExpressionWidget );
   connect( mExpressionWidget, &QgsExpressionLineEdit::expressionChanged, this, &QgsProcessingModelerParameterWidget::emitChangedSignal );
 
-  mModelInputCombo = new QComboBox();
-  mModelInputCombo->setSizeAdjustPolicy( QComboBox::SizeAdjustPolicy::AdjustToMinimumContentsLengthWithIcon );
+  mModelInputCombo = new QgsFilterableComboBox();
+
   QHBoxLayout *hLayout2 = new QHBoxLayout();
   hLayout2->setContentsMargins( 0, 0, 0, 0 );
   hLayout2->addWidget( new QLabel( tr( "Using model input" ) ) );
@@ -118,8 +119,8 @@ QgsProcessingModelerParameterWidget::QgsProcessingModelerParameterWidget(
   mStackedWidget->addWidget( hWidget2 );
   connect( mModelInputCombo, qOverload< int >( &QComboBox::currentIndexChanged ), this, &QgsProcessingModelerParameterWidget::emitChangedSignal );
 
-  mChildOutputCombo = new QComboBox();
-  mChildOutputCombo->setSizeAdjustPolicy( QComboBox::SizeAdjustPolicy::AdjustToMinimumContentsLengthWithIcon );
+  mChildOutputCombo = new QgsFilterableComboBox();
+
   QHBoxLayout *hLayout3 = new QHBoxLayout();
   hLayout3->setContentsMargins( 0, 0, 0, 0 );
   hLayout3->addWidget( new QLabel( tr( "Using algorithm output" ) ) );
