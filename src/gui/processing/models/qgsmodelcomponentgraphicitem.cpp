@@ -738,9 +738,16 @@ QPointF QgsModelComponentGraphicItem::linkPoint( Qt::Edge edge, int index, bool 
           paramIndex = -1;
           offsetX = 17;
         }
+
         const QFontMetricsF fm( mFont );
-        const double hbase = -itemSize().height() / 2.0 - fm.height() / 2.0 - OFFSET_FROM_EDGE;
-        const double y = hbase - ( fm.height() * FONT_HEIGHT_SCALE ) * ( paramIndex + 1 );
+        double hbase = -itemSize().height() / 2.0 - fm.height() / 2.0 - OFFSET_FROM_EDGE;
+        if ( paramIndex != -1 )
+        {
+          // start from the most top link point
+          const int nbLinkPoint = linkPointCount( Qt::TopEdge );
+          hbase = hbase - ( fm.height() * FONT_HEIGHT_SCALE * ( nbLinkPoint + 1 ) );
+        }
+        const double y = hbase + ( fm.height() * FONT_HEIGHT_SCALE ) * ( paramIndex + 1 );
         const double x = -itemSize().width() / 2 + offsetX;
         return QPointF( x, y );
       }
