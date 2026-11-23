@@ -1767,7 +1767,7 @@ static QVariant fcnRepeat( const QVariantList &values, const QgsExpressionContex
 {
   const QString string = QgsExpressionUtils::getStringValue( values.at( 0 ), parent );
   const qlonglong number = QgsExpressionUtils::getIntValue( values.at( 1 ), parent );
-  return string.repeated( std::max( static_cast< int >( number ), 0 ) );
+  return string.repeated( std::clamp( static_cast< int >( number ), 0, 1000000 ) );
 }
 
 static QVariant fcnReplace( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
