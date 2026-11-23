@@ -1,4 +1,5 @@
 set(QGIS_GUI_SRCS
+  3d/qgs3dmapcanvastoolbarfactory.cpp
   3d/qgsmaterialwidget.cpp
 
   actions/qgsactionmenu.cpp

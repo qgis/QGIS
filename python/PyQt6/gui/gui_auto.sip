@@ -238,6 +238,7 @@
 %Include auto_generated/qgsvertexmarker.sip
 %Include auto_generated/qgsvscrollarea.sip
 %Include auto_generated/qgswindowmanagerinterface.sip
+%Include auto_generated/./3d/qgs3dmapcanvastoolbarfactory.sip
 %Include auto_generated/actions/qgsactionmenu.sip
 %Include auto_generated/actions/qgsmaplayeraction.sip
 %Include auto_generated/actions/qgsmaplayeractioncontext.sip

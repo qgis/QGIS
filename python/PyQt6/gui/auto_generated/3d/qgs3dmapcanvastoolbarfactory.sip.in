@@ -1,0 +1,43 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/./3d/qgs3dmapcanvastoolbarfactory.h                          *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
+ ************************************************************************/
+
+
+
+
+class Qgs3DMapCanvasToolBarFactory
+{
+%Docstring(signature="appended")
+Factory for creating custom toolbars inside 3D map views.
+
+Factories are registered through
+QgisInterface.register3DMapCanvasToolBarFactory(). The created toolbar
+is shown below the 3D map view's own toolbars.
+
+.. versionadded:: 4.4.1
+%End
+
+%TypeHeaderCode
+#include "qgs3dmapcanvastoolbarfactory.h"
+%End
+  public:
+    virtual ~Qgs3DMapCanvasToolBarFactory();
+
+    virtual QToolBar *createToolBar( Qgs3DMapCanvas *canvas, QWidget *parent ) = 0 /Factory/;
+%Docstring
+Creates a new toolbar for the 3D map ``canvas`` with the specified
+``parent``.
+%End
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/./3d/qgs3dmapcanvastoolbarfactory.h                          *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
+ ************************************************************************/

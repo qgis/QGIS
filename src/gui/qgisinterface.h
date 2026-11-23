@@ -1591,7 +1591,7 @@ class GUI_EXPORT QgisInterface : public QObject
      * \see unregister3DMapCanvasToolBarFactory()
      * \since QGIS 4.4.1
      */
-    virtual void register3DMapCanvasToolBarFactory( Qgs3DMapCanvasToolBarFactory *factory ) SIP_SKIP;
+    virtual void register3DMapCanvasToolBarFactory( Qgs3DMapCanvasToolBarFactory *factory ) = 0;
 
     /**
      * Unregisters a previously registered 3D map view toolbar \a factory.
@@ -1602,7 +1602,7 @@ class GUI_EXPORT QgisInterface : public QObject
      * \see register3DMapCanvasToolBarFactory()
      * \since QGIS 4.4.1
      */
-    virtual void unregister3DMapCanvasToolBarFactory( Qgs3DMapCanvasToolBarFactory *factory ) SIP_SKIP;
+    virtual void unregister3DMapCanvasToolBarFactory( Qgs3DMapCanvasToolBarFactory *factory ) = 0;
 
     /**
      * Registers a new application map tool \a handler, which can be used to automatically setup all connections

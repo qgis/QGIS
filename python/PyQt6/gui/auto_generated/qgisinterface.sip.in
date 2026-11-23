@@ -1826,7 +1826,34 @@ Unregisters a previously registered application exit ``blocker``.
 .. versionadded:: 3.16
 %End
 
+    virtual void register3DMapCanvasToolBarFactory( Qgs3DMapCanvasToolBarFactory *factory ) = 0;
+%Docstring
+Registers a ``factory`` for creating a custom toolbar in every 3D map
+view.
 
+The factory adds a toolbar to every 3D map view.
+
+.. note::
+
+   Ownership of ``factory`` is not transferred, and the factory must
+   be unregistered when a plugin is unloaded.
+
+.. seealso:: :py:func:`unregister3DMapCanvasToolBarFactory`
+
+.. versionadded:: 4.4.1
+%End
+
+    virtual void unregister3DMapCanvasToolBarFactory( Qgs3DMapCanvasToolBarFactory *factory ) = 0;
+%Docstring
+Unregisters a previously registered 3D map view toolbar ``factory``.
+
+The toolbars created by ``factory`` are removed from all the open 3D map
+views and deleted.
+
+.. seealso:: :py:func:`register3DMapCanvasToolBarFactory`
+
+.. versionadded:: 4.4.1
+%End
 
     virtual void registerMapToolHandler( QgsAbstractMapToolHandler *handler ) = 0;
 %Docstring
