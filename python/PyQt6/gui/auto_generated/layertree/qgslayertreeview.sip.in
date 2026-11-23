@@ -115,6 +115,8 @@ Constructor for QgsLayerTreeViewBase
 %End
     ~QgsLayerTreeViewBase();
 
+    virtual void mousePressEvent( QMouseEvent *event );
+
     virtual void mouseDoubleClickEvent( QMouseEvent *event );
 
 
