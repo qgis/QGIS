@@ -41,7 +41,7 @@ permissions:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: blacksmith-4vcpu-ubuntu-2604
     steps:
       - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -68,14 +68,12 @@ jobs:
 
       - name: Build Docker Container
         id: docker-build
-        uses: docker/build-push-action@c3c9e263c25d99ce0380d002d59b67737d91b0dc  # v7.4.0
+        uses: useblacksmith/build-push-action@v2
         with:
+          cache-key: Dockerfile
           tags: qgis/qgis-deps-ogc:${{ github.event.pull_request.base.ref || github.ref_name }}
           context: .ci/ogc
           file: .ci/ogc/Dockerfile
-          cache-from: type=registry,ref=ghcr.io/qgis/qgis-deps-ogc:buildcache
-          #  Replace with ${{ github.event_name == 'push' && 'type=registry,ref=ghcr.io/qgis/qgis-deps-ogc:buildcache,mode=min' || '' }}
-          cache-to: type=registry,ref=ghcr.io/qgis/qgis-deps-ogc:buildcache,mode=min
           load: true
 
       - name: Run build
