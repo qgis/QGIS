@@ -64,13 +64,6 @@ jobs:
         with: 
           cache-key: Dockerfile
 
-      - name: Login to GitHub Container Registry
-        uses: docker/login-action@v4.7.0
-        with:
-          registry: ghcr.io
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
-
       - name: Build Docker Container
         id: docker-build
         uses: useblacksmith/build-push-action@v2
@@ -86,7 +79,7 @@ jobs:
 
       - name: Save build cache for push only
         uses: actions/cache/save@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
-        if: ${{ github.event_name == 'push' }}
+        # if: ${{ github.event_name == 'push' }}
         with:
           path: /home/runner/QGIS/.ccache
           key: build-ccache-ogc-${{ github.ref_name }}-${{ github.run_id }}
