@@ -172,11 +172,11 @@ QString Qgs3DViewsManagerDialog::askUserForATitle( QString oldTitle, QString act
   if ( allowExistingTitle )
     notAllowedTitles.removeOne( oldTitle );
   QgsNewNameDialog dlg( tr( "3D view" ), newTitle, QStringList(), notAllowedTitles, Qt::CaseSensitive, this );
-  dlg.setWindowTitle( tr( "%1 3D Map View" ).arg( action ) );
-  dlg.setHintString( tr( "Enter a unique 3D map view title" ) );
+  dlg.setWindowTitle( tr( "%1 3D View" ).arg( action ) );
+  dlg.setHintString( tr( "Enter a unique 3D view title" ) );
   dlg.setOverwriteEnabled( false );
   dlg.setAllowEmptyName( false );
-  dlg.setConflictingNameWarning( tr( "A 3D map view with this title already exists." ) );
+  dlg.setConflictingNameWarning( tr( "A 3D view with this title already exists." ) );
 
   if ( dlg.exec() != QDialog::Accepted )
     return QString();

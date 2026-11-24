@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>3D Map Views Manager</string>
+   <string>3D Views Manager</string>
   </property>
   <layout class="QGridLayout" name="gridLayout">
    <item row="1" column="2">
