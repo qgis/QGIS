@@ -12246,22 +12246,6 @@ void TestProcessingGui::testModelGraphicsViewGroupBoxLogic()
   view->setModelScene( scene.get() );
 
   QList<QgsModelComponentGraphicItem *> children = view->groupBoxChildren( scene->groupBoxItem( groupBox.uuid() ) );
-  // should be no children, group box is not a container
-  QCOMPARE( children.size(), 0 );
-
-  // set group box as a container, retry
-  groupBox.setMoveContents( true );
-  model1.addGroupBox( groupBox );
-  view.reset();
-  scene.reset();
-
-  scene = std::make_unique< QgsModelGraphicsScene >();
-  scene->setModel( &model1 );
-  scene->createItems( &model1, context );
-  view = std::make_unique< QgsModelGraphicsView >();
-  view->setModelScene( scene.get() );
-
-  children = view->groupBoxChildren( scene->groupBoxItem( groupBox.uuid() ) );
   QCOMPARE( children.size(), 1 );
   QCOMPARE( dynamic_cast< QgsProcessingModelParameter * >( children.at( 0 )->component() )->parameterName(), u"LAYER"_s );
 
@@ -12295,7 +12279,6 @@ void TestProcessingGui::testModelGraphicsViewGroupBoxLogic()
   groupBox2.setDescription( u"group"_s );
   groupBox2.setSize( QSizeF( 1660, 1660 ) );
   groupBox2.setPosition( QPointF( 80, 80 ) );
-  groupBox2.setMoveContents( true );
   model1.addGroupBox( groupBox2 );
 
   view.reset();
