@@ -441,6 +441,16 @@ QgsProcessingModelConfigWidget *QgsProcessingGuiInternalModelConfigWidgetFactory
       }
     } );
 
+    connect( widget, &QgsProcessingModelerParametersWidget::inputParameterHighlighted, this, [dialog]( const QString &parameterName ) {
+      QgsModelGraphicsScene *modelScene = dialog->modelScene();
+      modelScene->highlightInputParameter( parameterName );
+    } );
+
+    connect( widget, &QgsProcessingModelerParametersWidget::childAlgorithmOutputHighlighted, this, [dialog]( const QString &childId, const QString &outputName ) {
+      QgsModelGraphicsScene *modelScene = dialog->modelScene();
+      modelScene->highlightChildAlgorithmOutput( childId, outputName );
+    } );
+
     return widget;
   }
   else if ( QgsProcessingModelParameter *modelParam = dynamic_cast< QgsProcessingModelParameter * >( component ) )

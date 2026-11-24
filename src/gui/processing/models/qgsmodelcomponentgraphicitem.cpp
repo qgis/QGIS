@@ -367,6 +367,10 @@ void QgsModelComponentGraphicItem::paintBackground( QPainter *painter, const QSt
         color = color.darker( 105 );
         break;
 
+      case Highlighted:
+        color = color.lighter( 105 );
+        break;
+
       case Normal:
         break;
     }
@@ -422,6 +426,9 @@ void QgsModelComponentGraphicItem::paint( QPainter *painter, const QStyleOptionG
         break;
       case Hover:
         color = color.darker( 105 );
+        break;
+      case Highlighted:
+        color = color.lighter( 105 );
         break;
 
       case Normal:
@@ -668,9 +675,20 @@ void QgsModelComponentGraphicItem::setLabel( const QString &label )
   update();
 }
 
+void QgsModelComponentGraphicItem::setHighlighted( bool highlighted )
+{
+  if ( highlighted == mIsHighlighted )
+    return;
+
+  mIsHighlighted = highlighted;
+  update();
+}
+
 QgsModelComponentGraphicItem::State QgsModelComponentGraphicItem::state() const
 {
-  if ( isSelected() )
+  if ( mIsHighlighted )
+    return Highlighted;
+  else if ( isSelected() )
     return Selected;
   else if ( mIsHovering )
     return Hover;
@@ -930,7 +948,9 @@ QColor QgsModelParameterGraphicItem::fillColor( QgsModelComponentGraphicItem::St
     case Hover:
       c = c.darker( 105 );
       break;
-
+    case Highlighted:
+      c = c.lighter( 105 );
+      break;
     case Normal:
       break;
   }
@@ -945,6 +965,7 @@ QColor QgsModelParameterGraphicItem::strokeColor( QgsModelComponentGraphicItem::
       return QColor( 116, 113, 68 );
     case Hover:
     case Normal:
+    case Highlighted:
       return QColor( 234, 226, 118 );
   }
   return QColor();
@@ -1307,6 +1328,9 @@ QColor QgsModelChildAlgorithmGraphicItem::fillColor( QgsModelComponentGraphicIte
     case Hover:
       c = c.darker( 105 );
       break;
+    case Highlighted:
+      c = c.darker( 105 );
+      break;
 
     case Normal:
       break;
@@ -1322,6 +1346,7 @@ QColor QgsModelChildAlgorithmGraphicItem::strokeColor( QgsModelComponentGraphicI
       return mIsValid ? QColor( 50, 50, 50 ) : QColor( 80, 0, 0 );
     case Hover:
     case Normal:
+    case Highlighted:
       return mIsValid ? Qt::gray : QColor( 134, 0, 0 );
   }
   return QColor();
@@ -1734,7 +1759,9 @@ void QgsModelChildAlgorithmGraphicItem::paintBackground( QPainter *painter, cons
       case Hover:
         color = color.darker( 105 );
         break;
-
+      case Highlighted:
+        color = color.lighter( 105 );
+        break;
       case Normal:
         break;
     }
@@ -1882,6 +1909,9 @@ QColor QgsModelOutputGraphicItem::fillColor( QgsModelComponentGraphicItem::State
     case Hover:
       c = c.darker( 105 );
       break;
+    case Highlighted:
+      c = c.lighter( 105 );
+      break;
 
     case Normal:
       break;
@@ -1897,6 +1927,7 @@ QColor QgsModelOutputGraphicItem::strokeColor( QgsModelComponentGraphicItem::Sta
       return QColor( 42, 65, 42 );
     case Hover:
     case Normal:
+    case Highlighted:
       return QColor( 90, 140, 90 );
   }
   return QColor();
@@ -2066,6 +2097,9 @@ QColor QgsModelGroupBoxGraphicItem::fillColor( QgsModelComponentGraphicItem::Sta
     case Hover:
       c = c.darker( 105 );
       break;
+    case Highlighted:
+      c = c.lighter( 105 );
+      break;
 
     case Normal:
       break;
@@ -2081,6 +2115,7 @@ QColor QgsModelGroupBoxGraphicItem::strokeColor( QgsModelComponentGraphicItem::S
       return QColor( 50, 50, 50 );
     case Hover:
     case Normal:
+    case Highlighted:
       return QColor( 150, 150, 150 );
   }
   return QColor();
@@ -2205,6 +2240,9 @@ QColor QgsModelCommentGraphicItem::fillColor( QgsModelComponentGraphicItem::Stat
     case Hover:
       c = c.darker( 105 );
       break;
+    case Highlighted:
+      c = c.lighter( 105 );
+      break;
 
     case Normal:
       break;
@@ -2220,6 +2258,7 @@ QColor QgsModelCommentGraphicItem::strokeColor( QgsModelComponentGraphicItem::St
       return QColor( 50, 50, 50 );
     case Hover:
     case Normal:
+    case Highlighted:
       return QColor( 150, 150, 150 );
   }
   return QColor();

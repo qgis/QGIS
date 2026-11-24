@@ -153,6 +153,25 @@ void QgsModelGraphicsScene::registerWidgetContextGenerator( QgsProcessingWidgetC
   mWidgetContextGenerator = generator;
 }
 
+void QgsModelGraphicsScene::highlightInputParameter( const QString &parameterName )
+{
+  for ( auto it = mParameterItems.constBegin(); it != mParameterItems.constEnd(); ++it )
+  {
+    it.value()->setHighlighted( it.key() == parameterName && !parameterName.isEmpty() );
+  }
+}
+
+void QgsModelGraphicsScene::highlightChildAlgorithmOutput( const QString &childId, const QString &outputName )
+{
+  // maybe in future also highlight a particular outputname?
+  ( void ) outputName;
+
+  for ( auto it = mChildAlgorithmItems.constBegin(); it != mChildAlgorithmItems.constEnd(); ++it )
+  {
+    it.value()->setHighlighted( it.key() == childId && !childId.isEmpty() );
+  }
+}
+
 QgsModelParameterGraphicItem *QgsModelGraphicsScene::createParameterGraphicItem( QgsProcessingModelAlgorithm *model, QgsProcessingModelParameter *param ) const
 {
   return new QgsModelParameterGraphicItem( param, model, nullptr );

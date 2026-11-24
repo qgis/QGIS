@@ -59,9 +59,10 @@ class GUI_EXPORT QgsModelComponentGraphicItem : public QGraphicsObject, public Q
     //! Available item states
     enum State
     {
-      Normal,   //!< Normal state
-      Selected, //!< Item is selected
-      Hover,    //!< Cursor is hovering over an deselected item
+      Normal,      //!< Normal state
+      Selected,    //!< Item is selected
+      Hover,       //!< Cursor is hovering over an deselected item
+      Highlighted, //!< Component is being highlighted, eg to draw attention to it
     };
 
     //! Available flags
@@ -212,6 +213,13 @@ class GUI_EXPORT QgsModelComponentGraphicItem : public QGraphicsObject, public Q
      * Returns the item's current state.
      */
     State state() const;
+
+    /**
+     * Sets whether the component should be shown in a highlighted state.
+     *
+     * \since QGIS 4.6
+     */
+    void setHighlighted( bool highlighted );
 
     /**
      * Returns the number of link points associated with the component on the specified \a edge.
@@ -464,6 +472,7 @@ class GUI_EXPORT QgsModelComponentGraphicItem : public QGraphicsObject, public Q
     QFont mFont;
 
     bool mIsHovering = false;
+    bool mIsHighlighted = false;
     QSizeF mTempSize;
 };
 Q_DECLARE_OPERATORS_FOR_FLAGS( QgsModelComponentGraphicItem::Flags )

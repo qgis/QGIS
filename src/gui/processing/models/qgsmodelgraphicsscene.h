@@ -240,6 +240,20 @@ class GUI_EXPORT QgsModelGraphicsScene : public QGraphicsScene
      */
     void registerWidgetContextGenerator( QgsProcessingWidgetContextGenerator *generator );
 
+    /**
+     * Highlights an input parameter in the scene.
+     *
+     * If \a parameterName is empty then all parameters will be unhighlighted.
+     */
+    void highlightInputParameter( const QString &parameterName );
+
+    /**
+     * Highlights an child algorithm output in the scene.
+     *
+     * If \a childId is empty then all child outputs will be unhighlighted.
+     */
+    void highlightChildAlgorithmOutput( const QString &childId, const QString &outputName );
+
   signals:
 
     /**

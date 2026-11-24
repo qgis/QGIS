@@ -187,6 +187,20 @@ to retrieve a widget context for the scene when required.
 .. versionadded:: 4.4
 %End
 
+    void highlightInputParameter( const QString &parameterName );
+%Docstring
+Highlights an input parameter in the scene.
+
+If ``parameterName`` is empty then all parameters will be unhighlighted.
+%End
+
+    void highlightChildAlgorithmOutput( const QString &childId, const QString &outputName );
+%Docstring
+Highlights an child algorithm output in the scene.
+
+If ``childId`` is empty then all child outputs will be unhighlighted.
+%End
+
   signals:
 
     void rebuildRequired();
