@@ -440,6 +440,8 @@ class GUI_EXPORT QgsModelComponentGraphicItem : public QGraphicsObject, public Q
 
     void fold( Qt::Edge edge, bool folded );
 
+    void paintHighlight( QPainter *painter );
+
     std::unique_ptr<QgsProcessingModelComponent> mComponent;
     QgsProcessingModelAlgorithm *mModel = nullptr;
 
@@ -467,6 +469,7 @@ class GUI_EXPORT QgsModelComponentGraphicItem : public QGraphicsObject, public Q
     static constexpr double TEXT_MARGIN = 4;
     static constexpr double RECT_PEN_SIZE = 2;
     static constexpr double RECT_OUTLINE_SIZE = 10;
+    static constexpr double HIGHLIGHT_SIZE = 14.0;
     QSizeF mButtonSize { DEFAULT_BUTTON_WIDTH, DEFAULT_BUTTON_HEIGHT };
 
     QFont mFont;

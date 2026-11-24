@@ -42,6 +42,7 @@
 #include <QPalette>
 #include <QPicture>
 #include <QString>
+#include <QStyleOptionGraphicsItem>
 #include <QSvgRenderer>
 
 #include "moc_qgsmodelcomponentgraphicitem.cpp"
@@ -327,6 +328,20 @@ QRectF QgsModelComponentGraphicItem::boundingRect() const
     outlineSize = RECT_OUTLINE_SIZE + 0.5; // 0.5 for antialiasing
   }
 
+  if ( state() == Highlighted )
+  {
+    // we want the highlight effect to be independent on the view zoom
+    double scale = 1.0;
+    if ( scene() && !scene()->views().isEmpty() )
+    {
+      scale = QStyleOptionGraphicsItem::levelOfDetailFromTransform( scene()->views().constFirst()->transform() );
+      if ( scale <= 0 )
+        scale = 1;
+    }
+    const double highlightSize = HIGHLIGHT_SIZE / scale;
+    outlineSize = std::max( outlineSize, highlightSize + 0.5 / scale );
+  }
+
   return QRectF(
     -( itemSize().width() ) / 2 - RECT_PEN_SIZE - outlineSize,
     -( itemSize().height() ) / 2 - hUp - RECT_PEN_SIZE - outlineSize,
@@ -393,6 +408,11 @@ void QgsModelComponentGraphicItem::paintBackground( QPainter *painter, const QSt
 
 void QgsModelComponentGraphicItem::paintOutline( QPainter *painter, const QStyleOptionGraphicsItem *, QWidget * )
 {
+  if ( state() == Highlighted )
+  {
+    paintHighlight( painter );
+  }
+
   const QColor outline = outlineColor();
   if ( outline.isValid() )
   {
@@ -664,6 +684,52 @@ void QgsModelComponentGraphicItem::fold( Qt::Edge edge, bool folded )
   update();
 }
 
+void QgsModelComponentGraphicItem::paintHighlight( QPainter *painter )
+{
+  // highlight effect should be constant in terms of pixels, ie it shouldn't scale with the view zoom
+  double scale = QStyleOptionGraphicsItem::levelOfDetailFromTransform( painter->transform() );
+  if ( scale <= 0.0 )
+    scale = 1;
+  const double highlightSize = HIGHLIGHT_SIZE / scale;
+
+  const QColor highlightColor = strokeColor( Highlighted );
+
+  painter->save();
+  painter->setRenderHint( QPainter::RenderHint::Antialiasing, true );
+  painter->setPen( Qt::NoPen );
+
+  // the highlight effect is an "outer glow". But to keep things cheap we
+  // just use a basic vector outer glow, by stacking a few rectangles of growing
+  // size on top of each other. This is just to draw attention to a component,
+  // we don't need anything fancy...
+  const QRectF actualRect = itemRect();
+  constexpr int STEPS = 5; // more steps = smoother. I think this actually looks nicer with a visible step, not completely smooth
+  constexpr double CORNER_RADIUS = 0.8;
+  for ( int i = STEPS; i >= 1; --i )
+  {
+    const double thisStepFraction = static_cast<double>( i ) / STEPS;
+    const double thisStepSize = highlightSize * thisStepFraction;
+    const QRectF thisStepRect = actualRect.adjusted( -thisStepSize, -thisStepSize, thisStepSize, thisStepSize );
+
+    const double thisStepCornerRadius = thisStepSize * CORNER_RADIUS;
+
+    QColor thisStepColor = highlightColor;
+    // nothing special about these numbers, they just look nicer then a straight linear opacity gradient!
+    const double thisStepOpacity = std::clamp( std::pow( 1.0 - thisStepFraction, 1.5 ) * 0.5, 0.0, 1.0 );
+    thisStepColor.setAlphaF( thisStepOpacity );
+    painter->setBrush( thisStepColor );
+
+    // draw this step's rect as a hollow glow (ie clip out the center bit)
+    QPainterPath path;
+    path.setFillRule( Qt::OddEvenFill );
+    path.addRoundedRect( thisStepRect, thisStepCornerRadius, thisStepCornerRadius );
+    path.addRect( actualRect );
+    painter->drawPath( path );
+  }
+
+  painter->restore();
+}
+
 QString QgsModelComponentGraphicItem::label() const
 {
   return mLabel;
@@ -680,6 +746,7 @@ void QgsModelComponentGraphicItem::setHighlighted( bool highlighted )
   if ( highlighted == mIsHighlighted )
     return;
 
+  prepareGeometryChange();
   mIsHighlighted = highlighted;
   update();
 }
