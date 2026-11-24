@@ -264,9 +264,9 @@ void QgsMapToolMoveFeature::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
 
           if ( QgsProject::instance()->topologicalEditing() )
           {
-            if ( mSnapIndicator->match().layer() )
+            if ( QgsVectorLayer *snapLayer = qobject_cast<QgsVectorLayer *>( mSnapIndicator->match().layer() ) )
             {
-              mSnapIndicator->match().layer()->addTopologicalPoints( vlayer->getGeometry( id ) );
+              snapLayer->addTopologicalPoints( vlayer->getGeometry( id ) );
             }
             vlayer->addTopologicalPoints( vlayer->getGeometry( id ) );
           }
@@ -281,7 +281,9 @@ void QgsMapToolMoveFeature::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
         request.setFilterFids( mMovedFeatures );
         QString errorMsg;
         QString childrenInfoMsg;
-        if ( !QgisApp::instance()->vectorLayerTools()->copyMoveFeatures( vlayer, request, dx, dy, &errorMsg, QgsProject::instance()->topologicalEditing(), mSnapIndicator->match().layer(), &childrenInfoMsg ) )
+        if ( !QgisApp::instance()
+                ->vectorLayerTools()
+                ->copyMoveFeatures( vlayer, request, dx, dy, &errorMsg, QgsProject::instance()->topologicalEditing(), qobject_cast<QgsVectorLayer *>( mSnapIndicator->match().layer() ), &childrenInfoMsg ) )
         {
           emit messageEmitted( errorMsg, Qgis::MessageLevel::Critical );
           deleteRubberband();

@@ -353,7 +353,7 @@ void QgsMapToolChamferFillet::canvasReleaseEvent( QgsMapMouseEvent *e )
 
     match = mCanvas->snappingUtils()->snapToCurrentLayer( e->pos(), QgsPointLocator::Types( QgsPointLocator::Vertex ) );
 
-    if ( QgsVectorLayer *lLayer = match.layer() )
+    if ( QgsVectorLayer *lLayer = qobject_cast<QgsVectorLayer *>( match.layer() ) )
     {
       mSourceLayer = lLayer;
       QgsFeature fet;
@@ -440,7 +440,7 @@ void QgsMapToolChamferFillet::canvasMoveEvent( QgsMapMouseEvent *e )
 
 bool QgsMapToolChamferFillet::prepareGeometry( const QgsPointLocator::Match &match, QgsFeature &snappedFeature )
 {
-  if ( !match.layer() )
+  if ( !qobject_cast<QgsVectorLayer *>( match.layer() ) )
   {
     return false;
   }
