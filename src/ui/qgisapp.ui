@@ -104,7 +104,7 @@
     </property>
     <widget class="QMenu" name="m3DMapViewsMenu">
      <property name="title">
-      <string>&amp;3D Map Views</string>
+      <string>&amp;3D Views</string>
      </property>
      <addaction name="mActionNew3DMapCanvas"/>
      <addaction name="mActionNew3DMapCanvasGlobe"/>
@@ -3376,7 +3376,7 @@ Shows placeholders for labels which could not be placed, e.g. due to overlaps wi
   </action>
   <action name="mActionManage3DMapViews">
    <property name="text">
-    <string>Manage 3D Map Views…</string>
+    <string>Manage 3D Views…</string>
    </property>
   </action>
   <action name="mActionDigitizeWithSegment">
