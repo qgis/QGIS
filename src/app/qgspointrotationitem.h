@@ -16,6 +16,8 @@
 #ifndef QGSPOINTROTATIONITEM_H
 #define QGSPOINTROTATIONITEM_H
 
+#include <optional>
+
 #include "qgis_app.h"
 #include "qgsmapcanvasitem.h"
 #include "qgsunittypes.h"
@@ -47,6 +49,13 @@ class APP_EXPORT QgsPointRotationItem : public QgsMapCanvasItem
      */
     void setRotationUnit( Qgis::AngleUnit rotationUnit );
 
+    /**
+     * Sets the rotation \a value in the rotation unit.
+     * If not set, the text shows the symbol rotation in degrees.
+     * \since QGIS 4.6
+     */
+    void setRotationValue( double value ) { mRotationValue = value; }
+
     //! Sets rotation symbol from image (takes ownership)
     void setSymbol( const QImage &symbolImage );
 
@@ -64,6 +73,7 @@ class APP_EXPORT QgsPointRotationItem : public QgsMapCanvasItem
     QPixmap mPixmap;
     int mRotation = 0.0;
     Qgis::AngleUnit mRotationUnit = Qgis::AngleUnit::Degrees;
+    std::optional<double> mRotationValue;
     QPainterPath mArrowPath;
 };
 

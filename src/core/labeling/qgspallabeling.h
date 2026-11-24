@@ -532,6 +532,52 @@ class CORE_EXPORT QgsPalLayerSettings
     void setRotationUnit( Qgis::AngleUnit angleUnit );
 
     /**
+     * Returns the direction of the label at a rotation of 0
+     * \see setRotationStart()
+     * \see rotationDirection()
+     * \since QGIS 4.6
+     */
+    Qgis::CardinalDirection rotationStart() const { return mRotationStart; }
+
+    /**
+     * Sets the \a direction of the label at a rotation of 0.
+     * \see rotationStart()
+     * \since QGIS 4.6
+     */
+    void setRotationStart( Qgis::CardinalDirection direction ) { mRotationStart = direction; }
+
+    /**
+     * Returns the direction of the label, clockwise by default.
+     * \see setRotationDirection()
+     * \see rotationStart()
+     * \since QGIS 4.6
+     */
+    Qgis::RotationDirection rotationDirection() const { return mRotationDirection; }
+
+    /**
+     * Sets the \a direction of the label
+     * \see rotationDirection()
+     * \since QGIS 4.6
+     */
+    void setRotationDirection( Qgis::RotationDirection direction ) { mRotationDirection = direction; }
+
+    /**
+     * Converts a data defined \a rotation, in the rotationUnit(), from the rotationStart() and in the rotationDirection(),
+     * to degrees clockwise from the horizontal (as the label is drawn) as a normalized angle.
+     * \see rotationFromDegrees()
+     * \since QGIS 4.6
+     */
+    double rotationToDegrees( double rotation ) const;
+
+    /**
+     * Converts \a degrees clockwise from the horizontal (as the label is drawn) to a data defined rotation, in the rotationUnit(),
+     * from the rotationStart() and in the rotationDirection() as a normalized angle.
+     * \see rotationToDegrees()
+     * \since QGIS 4.6
+     */
+    double rotationFromDegrees( double degrees ) const;
+
+    /**
      * Maximum angle between inside curved label characters (valid range 20.0 to 60.0).
      * \see maxCurvedCharAngleOut
      */
@@ -1093,6 +1139,8 @@ class CORE_EXPORT QgsPalLayerSettings
 
     //! Unit for rotation of labels.
     Qgis::AngleUnit mRotationUnit = Qgis::AngleUnit::Degrees;
+    Qgis::CardinalDirection mRotationStart = Qgis::CardinalDirection::East;
+    Qgis::RotationDirection mRotationDirection = Qgis::RotationDirection::Clockwise;
 
     static void initPropertyDefinitions();
 
