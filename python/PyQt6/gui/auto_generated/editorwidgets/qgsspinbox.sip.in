@@ -175,12 +175,14 @@ edit.
 
   signals:
 
+
     void returnPressed();
 %Docstring
 Emitted when the Return or Enter key is used in the line edit
 
 .. versionadded:: 3.40
 %End
+
 
     void textEdited( const QString &text );
 %Docstring
