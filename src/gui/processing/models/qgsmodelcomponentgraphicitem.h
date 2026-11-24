@@ -232,6 +232,14 @@ class GUI_EXPORT QgsModelComponentGraphicItem : public QGraphicsObject, public Q
     virtual QString linkPointText( Qt::Edge edge, int index ) const;
 
     /**
+     * Returns TRUE if the link point with the specified \a index on the specified \a edge should be shown
+     * in a highlighted state.
+     *
+     * \since QGIS 4.6
+     */
+    virtual bool shouldHighlightLinkPoint( Qt::Edge edge, int index ) const;
+
+    /**
      * Returns the location of the link point with the specified \a index on the specified \a edge.
      */
     QPointF linkPoint( Qt::Edge edge, int index, bool incoming ) const;
@@ -637,6 +645,13 @@ class GUI_EXPORT QgsModelChildAlgorithmGraphicItem : public QgsModelComponentGra
      */
     void applyEdit( const QgsProcessingModelChildAlgorithm &algorithm );
 
+    /**
+     * Sets the output name to highlight, or an empty string to remove the highlight.
+     *
+     * \since QGIS 4.6
+     */
+    void setHighlightedOutput( const QString &outputName );
+
   signals:
 
     /**
@@ -687,6 +702,7 @@ class GUI_EXPORT QgsModelChildAlgorithmGraphicItem : public QgsModelComponentGra
 
     int linkPointCount( Qt::Edge edge ) const override;
     QString linkPointText( Qt::Edge edge, int index ) const override;
+    bool shouldHighlightLinkPoint( Qt::Edge edge, int index ) const override;
     void updateStoredComponentPosition( const QPointF &pos, const QSizeF &size ) override;
 
   protected slots:
@@ -712,6 +728,7 @@ class GUI_EXPORT QgsModelChildAlgorithmGraphicItem : public QgsModelComponentGra
     QgsProcessingModelChildAlgorithmResult mResults;
     double mProgress = -1;
     bool mIsValid = true;
+    QString mHighlightedOutputName;
 };
 
 /**

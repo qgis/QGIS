@@ -460,16 +460,23 @@ void QgsModelComponentGraphicItem::paint( QPainter *painter, const QStyleOptionG
   {
     foreColor = textColor( state() );
   }
-  painter->setFont( font() );
+  const QFont standardFont = font();
+  QFont highlightedFont = standardFont;
+  highlightedFont.setBold( true );
+
+  painter->setFont( standardFont );
   painter->setPen( QPen( foreColor ) );
 
   QString text;
 
   const QSizeF componentSize = itemSize();
 
-  const QFontMetricsF fm( font() );
+  const QFontMetricsF fm( standardFont );
+  const QFontMetricsF highlightMetrics( highlightedFont );
   double h = fm.ascent();
   QPointF pt( -componentSize.width() / 2 + 25, componentSize.height() / 2.0 - h + 1 );
+
+  const bool isHighlighted = state() == Highlighted;
 
   if ( iconPicture().isNull() && iconPixmap().isNull() )
   {
@@ -498,6 +505,8 @@ void QgsModelComponentGraphicItem::paint( QPainter *painter, const QStyleOptionG
       for ( int idx = 0; idx < linkPointCount( Qt::TopEdge ); ++idx )
       {
         text = linkPointText( Qt::TopEdge, idx );
+        const bool highlighted = isHighlighted && shouldHighlightLinkPoint( Qt::TopEdge, idx );
+        painter->setFont( highlighted ? highlightedFont : standardFont );
         h = -( fm.height() * 1.2 ) * ( i + 1 );
         h = h - componentSize.height() / 2.0 + 5;
         pt = QPointF( -componentSize.width() / 2 + SOCKET_MARGIN + 10, h );
@@ -506,6 +515,7 @@ void QgsModelComponentGraphicItem::paint( QPainter *painter, const QStyleOptionG
       }
     }
   }
+  painter->setFont( standardFont );
   if ( linkPointCount( Qt::BottomEdge ) )
   {
     h = fm.height() * 1.1;
@@ -518,9 +528,11 @@ void QgsModelComponentGraphicItem::paint( QPainter *painter, const QStyleOptionG
       for ( int idx = 0; idx < linkPointCount( Qt::BottomEdge ); ++idx )
       {
         text = linkPointText( Qt::BottomEdge, idx );
+        const bool highlighted = isHighlighted && shouldHighlightLinkPoint( Qt::BottomEdge, idx );
+        painter->setFont( highlighted ? highlightedFont : standardFont );
         h = fm.height() * 1.2 * ( idx + 2 );
         h = h + componentSize.height() / 2.0;
-        double w = fm.boundingRect( text ).width();
+        const double w = highlighted ? highlightMetrics.boundingRect( text ).width() : fm.boundingRect( text ).width();
 
         const double x = componentSize.width() / 2.0 - w - SOCKET_MARGIN - 10;
 
@@ -528,6 +540,7 @@ void QgsModelComponentGraphicItem::paint( QPainter *painter, const QStyleOptionG
       }
     }
   }
+  painter->setFont( standardFont );
 
   const QPixmap px = iconPixmap();
   if ( !px.isNull() )
@@ -771,6 +784,11 @@ int QgsModelComponentGraphicItem::linkPointCount( Qt::Edge ) const
 QString QgsModelComponentGraphicItem::linkPointText( Qt::Edge, int ) const
 {
   return QString();
+}
+
+bool QgsModelComponentGraphicItem::shouldHighlightLinkPoint( Qt::Edge, int ) const
+{
+  return false;
 }
 
 QPointF QgsModelComponentGraphicItem::linkPoint( Qt::Edge edge, int index, bool incoming ) const
@@ -1622,6 +1640,21 @@ QString QgsModelChildAlgorithmGraphicItem::linkPointText( Qt::Edge edge, int ind
   return QString();
 }
 
+bool QgsModelChildAlgorithmGraphicItem::shouldHighlightLinkPoint( Qt::Edge edge, int index ) const
+{
+  if ( mHighlightedOutputName.isEmpty() || edge != Qt::Edge::BottomEdge )
+    return false;
+
+  const QgsProcessingModelChildAlgorithm *child = dynamic_cast<const QgsProcessingModelChildAlgorithm *>( component() );
+  if ( !child || !child->algorithm() || index >= child->algorithm()->outputDefinitions().length() )
+  {
+    return false;
+  }
+
+  const QgsProcessingOutputDefinition *output = child->algorithm()->outputDefinitions().at( index );
+  return output->name() == mHighlightedOutputName;
+}
+
 void QgsModelChildAlgorithmGraphicItem::updateStoredComponentPosition( const QPointF &pos, const QSizeF &size )
 {
   if ( QgsProcessingModelChildAlgorithm *child = dynamic_cast<QgsProcessingModelChildAlgorithm *>( component() ) )
@@ -1800,6 +1833,15 @@ void QgsModelChildAlgorithmGraphicItem::applyEdit( const QgsProcessingModelChild
   model()->setChildAlgorithm( newAlgorithm );
   emit requestModelRepaint();
   emit changed();
+}
+
+void QgsModelChildAlgorithmGraphicItem::setHighlightedOutput( const QString &outputName )
+{
+  if ( mHighlightedOutputName == outputName )
+    return;
+
+  mHighlightedOutputName = outputName;
+  update();
 }
 
 void QgsModelChildAlgorithmGraphicItem::paintBackground( QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget )

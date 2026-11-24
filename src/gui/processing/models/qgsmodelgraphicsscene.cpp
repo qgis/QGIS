@@ -163,12 +163,10 @@ void QgsModelGraphicsScene::highlightInputParameter( const QString &parameterNam
 
 void QgsModelGraphicsScene::highlightChildAlgorithmOutput( const QString &childId, const QString &outputName )
 {
-  // maybe in future also highlight a particular outputname?
-  ( void ) outputName;
-
   for ( auto it = mChildAlgorithmItems.constBegin(); it != mChildAlgorithmItems.constEnd(); ++it )
   {
     it.value()->setHighlighted( it.key() == childId && !childId.isEmpty() );
+    it.value()->setHighlightedOutput( outputName );
   }
 }
 
