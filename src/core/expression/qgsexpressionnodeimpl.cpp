@@ -2049,17 +2049,13 @@ QVariant QgsExpressionNodeColumnRef::evalNode( QgsExpression *parent, const QgsE
   Q_UNUSED( parent )
   int index = mIndex;
 
-  // mName may be quoted by QgsExpressionNodeColumnRef::dump()
-  const bool trimQuotes = index < 0 && mName.startsWith( '"' ) && mName.endsWith( '"' ) && mName.size() > 1;
-  const QString cleanName = trimQuotes ? mName.mid( 1, mName.size() - 2 ) : mName;
-
   if ( index < 0 )
   {
     // have not yet found field index - first check explicitly set fields collection
     if ( context && context->hasVariable( QgsExpressionContext::EXPR_FIELDS ) )
     {
       QgsFields fields = qvariant_cast<QgsFields>( context->variable( QgsExpressionContext::EXPR_FIELDS ) );
-      index = fields.lookupField( cleanName );
+      index = fields.lookupField( mName );
     }
   }
 
@@ -2071,15 +2067,15 @@ QVariant QgsExpressionNodeColumnRef::evalNode( QgsExpression *parent, const QgsE
       if ( index >= 0 )
         return feature.attribute( index );
       else
-        return feature.attribute( cleanName );
+        return feature.attribute( mName );
     }
     else
     {
-      parent->setEvalErrorString( tr( "No feature available for field '%1' evaluation" ).arg( cleanName ) );
+      parent->setEvalErrorString( tr( "No feature available for field '%1' evaluation" ).arg( mName ) );
     }
   }
   if ( index < 0 )
-    parent->setEvalErrorString( tr( "Field '%1' not found" ).arg( cleanName ) );
+    parent->setEvalErrorString( tr( "Field '%1' not found" ).arg( mName ) );
   return QVariant();
 }
 
