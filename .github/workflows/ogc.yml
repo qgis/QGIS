@@ -37,7 +37,6 @@ on:
 
 permissions:
   contents: read
-  packages: write
   actions: write
 
 jobs:
@@ -83,7 +82,7 @@ jobs:
         # if: ${{ github.event_name == 'push' }}
         with:
           path: /home/runner/QGIS/.ccache
-          key: build-ccache-ogc-${{ github.ref_name }}-${{ github.run_id }}
+          key: build-ccache-ogc-${{ github.event.pull_request.base.ref || github.ref_name }}
 
       - name: Install pyogctest
         run: |
