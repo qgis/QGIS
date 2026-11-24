@@ -59,18 +59,22 @@ class PointsFromLines(QgisAlgorithm):
         super().__init__()
 
     def initAlgorithm(self, config=None):
-        self.addParameter(
-            QgsProcessingParameterRasterLayer(
-                self.INPUT_RASTER, self.tr("Raster layer")
-            )
+        param = QgsProcessingParameterRasterLayer(
+            self.INPUT_RASTER, self.tr("Raster layer")
         )
-        self.addParameter(
-            QgsProcessingParameterFeatureSource(
-                self.INPUT_VECTOR,
-                self.tr("Vector layer"),
-                [QgsProcessing.SourceType.TypeVectorLine],
-            )
+        param.setHelp(self.tr("Raster layer whose pixel centroids are generated."))
+        self.addParameter(param)
+
+        param = QgsProcessingParameterFeatureSource(
+            self.INPUT_VECTOR,
+            self.tr("Vector layer"),
+            [QgsProcessing.SourceType.TypeVectorLine],
         )
+        param.setHelp(
+            self.tr("Line layer along which the pixel centroids are generated.")
+        )
+        self.addParameter(param)
+
         self.addParameter(
             QgsProcessingParameterFeatureSink(
                 self.OUTPUT,

@@ -38,9 +38,17 @@ QString QgsVectorizeAlgorithmBase::groupId() const
 
 void QgsVectorizeAlgorithmBase::initAlgorithm( const QVariantMap & )
 {
-  addParameter( new QgsProcessingParameterRasterLayer( u"INPUT_RASTER"_s, QObject::tr( "Raster layer" ) ) );
-  addParameter( new QgsProcessingParameterBand( u"RASTER_BAND"_s, QObject::tr( "Band number" ), 1, u"INPUT_RASTER"_s ) );
-  addParameter( new QgsProcessingParameterString( u"FIELD_NAME"_s, QObject::tr( "Field name" ), u"VALUE"_s ) );
+  auto inputRasterParam = std::make_unique<QgsProcessingParameterRasterLayer>( u"INPUT_RASTER"_s, QObject::tr( "Raster layer" ) );
+  inputRasterParam->setHelp( QObject::tr( "Raster layer to convert." ) );
+  addParameter( inputRasterParam.release() );
+
+  auto rasterBandParam = std::make_unique<QgsProcessingParameterBand>( u"RASTER_BAND"_s, QObject::tr( "Band number" ), 1, u"INPUT_RASTER"_s );
+  rasterBandParam->setHelp( QObject::tr( "Raster band to extract data from." ) );
+  addParameter( rasterBandParam.release() );
+
+  auto fieldNameParam = std::make_unique<QgsProcessingParameterString>( u"FIELD_NAME"_s, QObject::tr( "Field name" ), u"VALUE"_s );
+  fieldNameParam->setHelp( QObject::tr( "Name of the field to store the raster band value." ) );
+  addParameter( fieldNameParam.release() );
 
   addParameter( new QgsProcessingParameterFeatureSink( u"OUTPUT"_s, outputName(), outputType() ) );
 }

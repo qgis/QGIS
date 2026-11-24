@@ -80,10 +80,25 @@ QString QgsPointsToPathsAlgorithm::groupId() const
 void QgsPointsToPathsAlgorithm::initAlgorithm( const QVariantMap & )
 {
   addParameter( std::make_unique<QgsProcessingParameterFeatureSource>( u"INPUT"_s, QObject::tr( "Input layer" ), QList<int>() << static_cast<int>( Qgis::ProcessingSourceType::VectorPoint ) ) );
-  addParameter( std::make_unique<QgsProcessingParameterBoolean>( u"CLOSE_PATH"_s, QObject::tr( "Create closed paths" ), false ) );
-  addParameter( std::make_unique<QgsProcessingParameterExpression>( u"ORDER_EXPRESSION"_s, QObject::tr( "Order expression" ), QVariant(), u"INPUT"_s, true ) );
-  addParameter( std::make_unique<QgsProcessingParameterBoolean>( u"NATURAL_SORT"_s, QObject::tr( "Sort text containing numbers naturally" ), false ) );
-  addParameter( std::make_unique<QgsProcessingParameterExpression>( u"GROUP_EXPRESSION"_s, QObject::tr( "Path group expression" ), QVariant(), u"INPUT"_s, true ) );
+
+  auto closePathParam = std::make_unique<QgsProcessingParameterBoolean>( u"CLOSE_PATH"_s, QObject::tr( "Create closed paths" ), false );
+  closePathParam->setHelp( QObject::tr( "If checked, the first and last points of the line will be connected and close the generated path." ) );
+  addParameter( closePathParam.release() );
+
+  auto orderExpressionParam = std::make_unique<QgsProcessingParameterExpression>( u"ORDER_EXPRESSION"_s, QObject::tr( "Order expression" ), QVariant(), u"INPUT"_s, true );
+  orderExpressionParam->setHelp( QObject::tr( "Field or expression providing the order to connect the points in the path. If not set, the feature ID ($id) is used." ) );
+  addParameter( orderExpressionParam.release() );
+
+  auto naturalSortParam = std::make_unique<QgsProcessingParameterBoolean>( u"NATURAL_SORT"_s, QObject::tr( "Sort text containing numbers naturally" ), false );
+  naturalSortParam->setHelp( QObject::tr( "If checked, naturally sorts the features based on the provided expression (i.e., 'a9' < 'a10')." ) );
+  addParameter( naturalSortParam.release() );
+
+  auto groupExpressionParam = std::make_unique<QgsProcessingParameterExpression>( u"GROUP_EXPRESSION"_s, QObject::tr( "Path group expression" ), QVariant(), u"INPUT"_s, true );
+  groupExpressionParam->setHelp(
+    QObject::tr( "Point features of the same value in the field or expression will be grouped in the same line. If not set, a single path is drawn with all the input points." )
+  );
+  addParameter( groupExpressionParam.release() );
+
   addParameter( std::make_unique<QgsProcessingParameterFeatureSink>( u"OUTPUT"_s, QObject::tr( "Paths" ), Qgis::ProcessingSourceType::VectorLine ) );
   // TODO QGIS 5: remove parameter. move logic to separate algorithm if needed.
   addParameter( std::make_unique<QgsProcessingParameterFolderDestination>( u"OUTPUT_TEXT_DIR"_s, QObject::tr( "Directory for text output" ), QVariant(), true, false ) );

@@ -30,7 +30,10 @@ QString QgsExtentToLayerAlgorithm::name() const
 
 void QgsExtentToLayerAlgorithm::initAlgorithm( const QVariantMap & )
 {
-  addParameter( new QgsProcessingParameterExtent( u"INPUT"_s, QObject::tr( "Extent" ) ) );
+  auto inputParam = std::make_unique<QgsProcessingParameterExtent>( u"INPUT"_s, QObject::tr( "Extent" ) );
+  inputParam->setHelp( QObject::tr( "Extent to convert into a polygon layer." ) );
+  addParameter( inputParam.release() );
+
   addParameter( new QgsProcessingParameterFeatureSink( u"OUTPUT"_s, QObject::tr( "Extent" ), Qgis::ProcessingSourceType::VectorPolygon ) );
 }
 
