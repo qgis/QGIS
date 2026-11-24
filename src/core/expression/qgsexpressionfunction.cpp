@@ -76,6 +76,13 @@
 #include <QUrlQuery>
 #include <QUuid>
 
+// Maximum string length resulting from expression function evaluation. This is a safeguard against
+// functions that can return very large strings, which can cause memory issues especially in a server context.
+// The value is set to 42 million characters, which should be sufficient for most use cases while preventing
+// excessive memory usage.
+// The number 42 is a reference to "The Hitchhiker's Guide to the Galaxy" by Douglas Adams, where 42 is humorously
+// described as the "Answer to the Ultimate Question of Life, the Universe, and Everything."
+static constexpr int MAXIMUM_STRING_LENGTH_RESULTING_FROM_EXPRESSION_FUNCTION = 42E+6;
 using namespace Qt::StringLiterals;
 
 Q_DECLARE_METATYPE( QgsSpatialIndex )
@@ -846,7 +853,7 @@ static QVariant fcnAggregate( const QVariantList &values, const QgsExpressionCon
     }
     else
     {
-      for ( const QString &varName : allVars )
+      for ( const QString &varName : std::as_const( allVars ) )
       {
         const QgsExpressionContextScope *scope = context->activeScopeForVariable( varName );
         if ( scope && !scope->isStatic( varName ) )
@@ -1767,8 +1774,12 @@ static QVariant fcnLength3D( const QVariantList &values, const QgsExpressionCont
 static QVariant fcnRepeat( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
 {
   const QString string = QgsExpressionUtils::getStringValue( values.at( 0 ), parent );
-  const qlonglong number = QgsExpressionUtils::getIntValue( values.at( 1 ), parent );
-  return string.repeated( std::clamp( static_cast< int >( number ), 0, 1000000 ) );
+  qlonglong number = QgsExpressionUtils::getIntValue( values.at( 1 ), parent );
+  if ( number * static_cast< qlonglong >( string.length() ) > MAXIMUM_STRING_LENGTH_RESULTING_FROM_EXPRESSION_FUNCTION )
+  {
+    number = static_cast<qlonglong>( MAXIMUM_STRING_LENGTH_RESULTING_FROM_EXPRESSION_FUNCTION / static_cast< qlonglong >( string.length() ) );
+  }
+  return string.repeated( std::max( number, static_cast<qlonglong>( 0 ) ) );
 }
 
 static QVariant fcnReplace( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
@@ -2963,24 +2974,26 @@ static QVariant fcnLeft( const QVariantList &values, const QgsExpressionContext 
 static QVariant fcnRPad( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
 {
   const QString string = QgsExpressionUtils::getStringValue( values.at( 0 ), parent );
-  const int length = QgsExpressionUtils::getNativeIntValue( values.at( 1 ), parent );
   QString fill = QgsExpressionUtils::getStringValue( values.at( 2 ), parent );
   if ( fill.isEmpty() )
   {
     fill = u" "_s;
   }
+  const int length
+    = std::min( MAXIMUM_STRING_LENGTH_RESULTING_FROM_EXPRESSION_FUNCTION, static_cast<int>( string.length() + fill.length() * QgsExpressionUtils::getNativeIntValue( values.at( 1 ), parent ) ) );
   return string.leftJustified( length, fill.at( 0 ), true );
 }
 
 static QVariant fcnLPad( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
 {
   const QString string = QgsExpressionUtils::getStringValue( values.at( 0 ), parent );
-  const int length = QgsExpressionUtils::getNativeIntValue( values.at( 1 ), parent );
   QString fill = QgsExpressionUtils::getStringValue( values.at( 2 ), parent );
   if ( fill.isEmpty() )
   {
     fill = u" "_s;
   }
+  const int length
+    = std::min( MAXIMUM_STRING_LENGTH_RESULTING_FROM_EXPRESSION_FUNCTION, static_cast<int>( string.length() + fill.length() * QgsExpressionUtils::getNativeIntValue( values.at( 1 ), parent ) ) );
   return string.rightJustified( length, fill.at( 0 ), true );
 }
 
@@ -2997,6 +3010,7 @@ static QVariant fcnFormatString( const QVariantList &values, const QgsExpression
   {
     string = string.arg( QgsExpressionUtils::getStringValue( values.at( n ), parent ) );
   }
+  string.truncate( MAXIMUM_STRING_LENGTH_RESULTING_FROM_EXPRESSION_FUNCTION );
   return string;
 }
 
@@ -6569,7 +6583,7 @@ static QVariant fcnFormatNumber( const QVariantList &values, const QgsExpression
       res.truncate( trimPoint + 1 );
     }
   }
-
+  res.truncate( MAXIMUM_STRING_LENGTH_RESULTING_FROM_EXPRESSION_FUNCTION );
   return res;
 }
 
@@ -7645,7 +7659,7 @@ static QVariant fcnArrayAll( const QVariantList &values, const QgsExpressionCont
   QVariantList listA = QgsExpressionUtils::getListValue( values.at( 0 ), parent );
   QVariantList listB = QgsExpressionUtils::getListValue( values.at( 1 ), parent );
   int match = 0;
-  for ( const auto &item : listB )
+  for ( const auto &item : std::as_const( listB ) )
   {
     if ( listA.contains( item ) )
       match++;
