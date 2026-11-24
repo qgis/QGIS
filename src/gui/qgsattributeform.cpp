@@ -1846,6 +1846,9 @@ void QgsAttributeForm::init()
 
   mFormEditorWidgets.clear();
   mFormWidgets.clear();
+  mEditableDataDefinedProperties.clear();
+  mLabelDataDefinedProperties.clear();
+  mCustomCommentDataDefinedProperties.clear();
 
   // a bar to warn the user with non-blocking messages
   setContentsMargins( 0, 0, 0, 0 );
