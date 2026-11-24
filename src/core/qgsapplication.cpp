@@ -1357,7 +1357,7 @@ void QgsApplication::setProjectTemplatePaths( const QStringList &projectTemplate
 
 QStringList QgsApplication::projectTemplatePaths()
 {
-  QStringList configuredPaths = settingsProjectTemplatePaths->value();
+  QStringList configuredPaths = settingsProjectTemplatePaths->valueWithDefaultOverride( QgsApplication::defaultProjectTemplatePaths() );
 
   // Normalize the paths and avoid duplicates
   QStringList paths;
