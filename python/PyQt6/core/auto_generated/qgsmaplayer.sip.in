@@ -2139,7 +2139,7 @@ Sets the list of dependencies.
 Set whether provider notification is connected to triggerRepaint
 %End
 
-    void setRefreshOnNofifyMessage( const QString &message );
+    void setRefreshOnNotifyMessage( const QString &message );
 %Docstring
 Set the notification message that triggers repaint If refresh on
 notification is enabled, the notification will triggerRepaint only if

@@ -820,7 +820,7 @@ void QgsVectorLayerProperties::apply()
   mRefreshSettingsWidget->saveToLayer();
 
   mLayer->setRefreshOnNotifyEnabled( mRefreshLayerNotificationCheckBox->isChecked() );
-  mLayer->setRefreshOnNofifyMessage( mNotificationMessageCheckBox->isChecked() ? mNotifyMessageValueLineEdit->text() : QString() );
+  mLayer->setRefreshOnNotifyMessage( mNotificationMessageCheckBox->isChecked() ? mNotifyMessageValueLineEdit->text() : QString() );
 
   mOldJoins = mLayer->vectorJoins();
 

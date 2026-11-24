@@ -699,7 +699,7 @@ bool QgsMapLayer::readLayerXml( const QDomElement &layerElement, QgsReadWriteCon
   {
     setAutoRefreshMode( layerElement.attribute( u"autoRefreshEnabled"_s, u"0"_s ).toInt() ? Qgis::AutoRefreshMode::RedrawOnly : Qgis::AutoRefreshMode::Disabled );
   }
-  setRefreshOnNofifyMessage( layerElement.attribute( u"refreshOnNotifyMessage"_s, QString() ) );
+  setRefreshOnNotifyMessage( layerElement.attribute( u"refreshOnNotifyMessage"_s, QString() ) );
   setRefreshOnNotifyEnabled( layerElement.attribute( u"refreshOnNotifyEnabled"_s, u"0"_s ).toInt() );
 
   // geographic extent is read only if necessary
@@ -774,8 +774,8 @@ bool QgsMapLayer::writeLayerXml( QDomElement &layerElement, QDomDocument &docume
 
   layerElement.setAttribute( u"autoRefreshTime"_s, QString::number( mRefreshTimer->interval() ) );
   layerElement.setAttribute( u"autoRefreshMode"_s, qgsEnumValueToKey( mAutoRefreshMode ) );
-  layerElement.setAttribute( u"refreshOnNotifyEnabled"_s, mIsRefreshOnNofifyEnabled ? 1 : 0 );
-  layerElement.setAttribute( u"refreshOnNotifyMessage"_s, mRefreshOnNofifyMessage );
+  layerElement.setAttribute( u"refreshOnNotifyEnabled"_s, mIsRefreshOnNotifyEnabled ? 1 : 0 );
+  layerElement.setAttribute( u"refreshOnNotifyMessage"_s, mRefreshOnNotifyMessage );
 
   // ID
   QDomElement layerId = document.createElement( u"id"_s );
@@ -3012,7 +3012,7 @@ void QgsMapLayer::setRefreshOnNotifyEnabled( bool enabled )
     // we don't want to disable provider listening because someone else could need it (e.g. actions)
     disconnect( lDataProvider, &QgsDataProvider::notify, this, &QgsMapLayer::onNotified );
   }
-  mIsRefreshOnNofifyEnabled = enabled;
+  mIsRefreshOnNotifyEnabled = enabled;
 }
 
 QgsProject *QgsMapLayer::project() const

@@ -452,12 +452,12 @@ void TestQgsMapLayer::notify()
   QCOMPARE( spyDataChanged.count(), 1 );
 
   vl->setRefreshOnNotifyEnabled( true );
-  vl->setRefreshOnNofifyMessage( "test" );
+  vl->setRefreshOnNotifyMessage( "test" );
   emit vl->dataProvider()->notify( "test" );
   QCOMPARE( spyRepaint.count(), 2 );
   QCOMPARE( spyDataChanged.count(), 2 );
 
-  vl->setRefreshOnNofifyMessage( "test" );
+  vl->setRefreshOnNotifyMessage( "test" );
   emit vl->dataProvider()->notify( "nottest" );
   QCOMPARE( spyRepaint.count(), 2 );
   QCOMPARE( spyDataChanged.count(), 2 );
