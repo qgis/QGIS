@@ -1076,7 +1076,7 @@ bool QgsExpressionNodeBinaryOperator::prepareNode( QgsExpression *parent, const 
           // If left is a column ref and right is a literal, collect
           if ( ( dynamic_cast<QgsExpressionNodeColumnRef *>( op->opLeft() ) && dynamic_cast<QgsExpressionNodeLiteral *>( op->opRight() ) ) )
           {
-            const QString fieldName = op->opLeft()->dump();
+            const QString fieldName = static_cast<QgsExpressionNodeColumnRef *>( op->opLeft() )->name();
             if ( !orValuesMap.contains( fieldName ) )
             {
               orFieldNames.append( fieldName );
@@ -1087,7 +1087,7 @@ bool QgsExpressionNodeBinaryOperator::prepareNode( QgsExpression *parent, const 
           }
           else if ( ( dynamic_cast<QgsExpressionNodeColumnRef *>( op->opRight() ) && dynamic_cast<QgsExpressionNodeLiteral *>( op->opLeft() ) ) )
           {
-            const QString fieldName = op->opRight()->dump();
+            const QString fieldName = static_cast<QgsExpressionNodeColumnRef *>( op->opRight() )->name();
             if ( !orValuesMap.contains( fieldName ) )
             {
               orFieldNames.append( fieldName );
@@ -1111,7 +1111,7 @@ bool QgsExpressionNodeBinaryOperator::prepareNode( QgsExpression *parent, const 
           return false;
         }
 
-        const QString fieldName = inOp->node()->dump();
+        const QString fieldName = static_cast<QgsExpressionNodeColumnRef *>( inOp->node() )->name();
 
         // Check if all nodes are literals
         const auto nodes = inOp->list()->list();
