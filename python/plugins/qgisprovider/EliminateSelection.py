@@ -87,11 +87,7 @@ class EliminateSelection(QgisAlgorithm):
             self.tr("Merge selection with the neighbouring polygon with the"),
             options=self.modes,
         )
-        modeParam.setHelp(
-            self.tr(
-                "Controls how selected polygons will be eliminated."
-            )
-        )
+        modeParam.setHelp(self.tr("Controls how selected polygons will be eliminated."))
         self.addParameter(modeParam)
 
         self.addParameter(

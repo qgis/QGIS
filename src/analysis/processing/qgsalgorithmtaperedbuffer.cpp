@@ -243,9 +243,7 @@ void QgsVariableWidthBufferByMAlgorithm::initParameters( const QVariantMap & )
   segments->setIsDynamic( true );
   segments->setDynamicPropertyDefinition( QgsPropertyDefinition( u"SEGMENTS"_s, QObject::tr( "Segments" ), QgsPropertyDefinition::IntegerPositiveGreaterZero ) );
   segments->setDynamicLayerParameterName( u"INPUT"_s );
-  segments->setHelp(
-    QObject::tr( "Number of the buffer segments per quarter circle." )
-  );
+  segments->setHelp( QObject::tr( "Number of the buffer segments per quarter circle." ) );
   addParameter( segments.release() );
 }
 
