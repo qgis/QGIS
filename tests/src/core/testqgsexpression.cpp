@@ -6821,6 +6821,7 @@ class TestQgsExpression : public QObject
       QTest::newRow( "OR conditions mixed IN reverse" ) << ( QStringList() << u"field IN ('value','value2') OR field = 'value3'"_s ) << true << "\"field\" IN ('value','value2','value3')";
       QTest::newRow( "OR conditions mixed IN different fields" ) << ( QStringList() << u"field2 IN ('value','value2') OR field = 'value3'"_s ) << false << QString();
       QTest::newRow( "OR conditions" ) << ( QStringList() << u"field = 'value' OR field = 'value2'"_s ) << true << "\"field\" IN ('value','value2')";
+      QTest::newRow( "OR conditions with quoted field" ) << ( QStringList() << u"\"field name\" = 'value' OR \"field name\" = 'value2'"_s ) << true << "\"field name\" IN ('value','value2')";
       QTest::newRow( "OR conditions different fields" ) << ( QStringList() << u"field = 'value' OR field2 = 'value2'"_s ) << false << QString();
       QTest::newRow( "OR conditions three" ) << ( QStringList() << u"field = 'value' OR field = 'value2' OR field = 'value3'"_s ) << true << "\"field\" IN ('value','value2','value3')";
       QTest::newRow( "empty" ) << QStringList() << false << QString();
@@ -6831,7 +6832,12 @@ class TestQgsExpression : public QObject
       QTest::newRow( "one NOT IN expression" ) << ( QStringList() << u"field NOT IN ('value', 'value2')"_s ) << false << "\"field\" NOT IN ('value','value2')";
       QTest::newRow( "one IN expression non-literal" ) << ( QStringList() << u"field IN ('value', 'value2', \"a field\")"_s ) << false << QString();
       QTest::newRow( "two expressions" ) << ( QStringList() << u"field = 'value'"_s << u"field = 'value2'"_s ) << true << "\"field\" IN ('value','value2')";
+      QTest::newRow( "two expressions with quoted field" ) << ( QStringList() << u"\"field name\" = 'value'"_s << u"\"field name\" = 'value2'"_s ) << true << "\"field name\" IN ('value','value2')";
       QTest::newRow( "two expressions with IN" ) << ( QStringList() << u"field = 'value'"_s << u"field IN ('value2', 'value3')"_s ) << true << "\"field\" IN ('value','value2','value3')";
+      QTest::newRow( "two expressions with IN and quoted field" )
+        << ( QStringList() << u"\"field name\" = 'value'"_s << u"\"field name\" IN ('value2', 'value3')"_s )
+        << true
+        << "\"field name\" IN ('value','value2','value3')";
       QTest::newRow( "two expressions with a not IN" ) << ( QStringList() << u"field = 'value'"_s << u"field NOT IN ('value2', 'value3')"_s ) << false << QString();
       QTest::newRow( "two expressions with IN not literal" ) << ( QStringList() << u"field = 'value'"_s << u"field IN ('value2', 'value3', \"a field\")"_s ) << false << QString();
       QTest::newRow( "two expressions with IN different field" ) << ( QStringList() << u"field = 'value'"_s << u"field2 IN ('value2', 'value3')"_s ) << false << QString();
@@ -6889,6 +6895,10 @@ class TestQgsExpression : public QObject
       QTest::newRow( "no reduction 1" ) << u"field = 'value' OR field2 = 'value2'"_s << u"field = 'value' OR field2 = 'value2'"_s;
       // this could theoretically be reduced, but we don't currently support this
       QTest::newRow( "no reduction 2" ) << u"field = 'value' OR field != 'value2' OR field = 'value3'"_s << u"field = 'value' OR field <> 'value2' OR field = 'value3'"_s;
+
+      // test with quoted field names
+      QTest::newRow( "OR with spaces" ) << u"\"field name\" = 'value' OR \"field name\" = 'value2'"_s << u"\"field name\" IN ('value', 'value2')"_s;
+      QTest::newRow( "OR with ugly name" ) << u"\"field \"\" name\" = 'value' OR \"field \"\" name\" = 'value2'"_s << u"\"field \"\" name\" IN ('value', 'value2')"_s;
     }
 
     void testCollapseOrValues()
