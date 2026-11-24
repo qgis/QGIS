@@ -79,7 +79,7 @@ jobs:
 
       - name: Save build cache for push only
         uses: actions/cache/save@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
-        # if: ${{ github.event_name == 'push' }}
+        if: ${{ github.event_name == 'push' }}
         with:
           path: /home/runner/QGIS/.ccache
           key: build-ccache-ogc-${{ github.event.pull_request.base.ref || github.ref_name }}
