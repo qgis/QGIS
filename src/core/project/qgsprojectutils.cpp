@@ -190,7 +190,7 @@ Qgis::ProjectTrustStatus QgsProjectUtils::checkUserTrust( QgsProject *project )
         }
       }
 
-      return Qgis::ProjectTrustStatus::Undetermined;
+      return QgsApplication::currentProjectTemporaryTrustStatus();
     }
   }
 

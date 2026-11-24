@@ -1220,6 +1220,22 @@ determined as untrusted by the user.
 .. versionadded:: 4.0
 %End
 
+  static Qgis::ProjectTrustStatus currentProjectTemporaryTrustStatus();
+%Docstring
+Returns the temporary (session based) trust status of the currently open
+project.
+
+.. versionadded:: 4.4
+%End
+
+  static void setCurrentProjectTemporaryTrustStatus(Qgis::ProjectTrustStatus trustStatus);
+%Docstring
+Sets the temporary (session based) trust status of the currently open
+project.
+
+.. versionadded:: 4.4
+%End
+
   static int scaleIconSize(int standardSize,
                            bool applyDevicePixelRatio = false);
 %Docstring
