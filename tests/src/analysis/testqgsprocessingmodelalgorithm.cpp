@@ -377,7 +377,6 @@ void TestQgsProcessingModelAlgorithm::modelerAlgorithm()
   QgsProcessingModelGroupBox groupBox;
   groupBox.setSize( QSizeF( 9, 8 ) );
   QCOMPARE( groupBox.size(), QSizeF( 9, 8 ) );
-  QVERIFY( !groupBox.moveContents() );
   groupBox.setPosition( QPointF( 11, 14 ) );
   QCOMPARE( groupBox.position(), QPointF( 11, 14 ) );
   groupBox.setDescription( u"a comment"_s );
@@ -391,7 +390,6 @@ void TestQgsProcessingModelAlgorithm::modelerAlgorithm()
   QCOMPARE( groupClone->description(), u"a comment"_s );
   QCOMPARE( groupClone->color(), QColor( 123, 45, 67 ) );
   QCOMPARE( groupClone->uuid(), groupBox.uuid() );
-  QVERIFY( !groupClone->moveContents() );
   QgsProcessingModelGroupBox groupBox2;
   groupBox2.loadVariant( groupBox.toVariant().toMap() );
   QCOMPARE( groupBox2.size(), QSizeF( 9, 8 ) );
@@ -399,11 +397,6 @@ void TestQgsProcessingModelAlgorithm::modelerAlgorithm()
   QCOMPARE( groupBox2.description(), u"a comment"_s );
   QCOMPARE( groupBox2.color(), QColor( 123, 45, 67 ) );
   QCOMPARE( groupBox2.uuid(), groupBox.uuid() );
-  QVERIFY( !groupBox2.moveContents() );
-
-  groupBox.setMoveContents( true );
-  groupBox2.loadVariant( groupBox.toVariant().toMap() );
-  QVERIFY( groupBox2.moveContents() );
 
   const QMap<QString, QString> friendlyOutputNames;
   QgsProcessingModelChildAlgorithm child( u"some_id"_s );

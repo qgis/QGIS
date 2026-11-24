@@ -2126,7 +2126,7 @@ bool QgsModelGroupBoxGraphicItem::canDeleteComponent()
 void QgsModelGroupBoxGraphicItem::moveComponentBy( qreal dx, qreal dy, const QList<QGraphicsItem *> &selectedItems )
 {
   auto groupBox = dynamic_cast<QgsProcessingModelGroupBox *>( component() );
-  if ( !groupBox || !groupBox->moveContents() )
+  if ( !groupBox )
   {
     QgsModelComponentGraphicItem::moveComponentBy( dx, dy, selectedItems );
     return;
@@ -2154,7 +2154,7 @@ void QgsModelGroupBoxGraphicItem::moveComponentBy( qreal dx, qreal dy, const QLi
 void QgsModelGroupBoxGraphicItem::previewItemMove( qreal dx, qreal dy, const QList<QGraphicsItem *> &selectedItems )
 {
   auto groupBox = dynamic_cast<QgsProcessingModelGroupBox *>( component() );
-  if ( !groupBox || !groupBox->moveContents() )
+  if ( !groupBox )
   {
     QgsModelComponentGraphicItem::previewItemMove( dx, dy, selectedItems );
     return;
@@ -2198,12 +2198,6 @@ void QgsModelGroupBoxGraphicItem::applyEdit( const QgsProcessingModelGroupBox &g
   model()->addGroupBox( newGroupBox );
   emit changed();
   emit requestModelRepaint();
-}
-
-bool QgsModelGroupBoxGraphicItem::moveContents() const
-{
-  auto groupBox = dynamic_cast<const QgsProcessingModelGroupBox *>( component() );
-  return groupBox && groupBox->moveContents();
 }
 
 void QgsModelGroupBoxGraphicItem::deleteComponent()

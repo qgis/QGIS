@@ -905,7 +905,7 @@ QgsModelGroupBoxGraphicItem *QgsModelGraphicsView::parentGroupBoxForItem( QgsMod
       continue;
 
     auto groupBoxItem = dynamic_cast< QgsModelGroupBoxGraphicItem * >( candidate );
-    if ( !groupBoxItem || !groupBoxItem->moveContents() )
+    if ( !groupBoxItem )
       continue;
 
     // group box must fully enclose this item

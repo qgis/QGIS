@@ -830,13 +830,6 @@ class GUI_EXPORT QgsModelGroupBoxGraphicItem : public QgsModelComponentGraphicIt
      */
     void applyEdit( const QgsProcessingModelGroupBox &groupBox );
 
-    /**
-     * Returns TRUE if items placed within the group should be moved when the group is moved.
-     *
-     * \since QGIS 4.6
-     */
-    bool moveContents() const;
-
   protected:
     QColor fillColor( State state ) const override;
     QColor strokeColor( State state ) const override;
