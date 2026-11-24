@@ -61,7 +61,7 @@ void QgsImportPhotosAlgorithm::initAlgorithm( const QVariantMap & )
   addParameter( folderParam.release() );
 
   auto recursiveParam = std::make_unique<QgsProcessingParameterBoolean>( u"RECURSIVE"_s, QObject::tr( "Scan recursively" ), false );
-  recursiveParam->setHelp( QObject::tr( "If checked, the folder and its subfolders will be scanned." ) );
+  recursiveParam->setHelp( QObject::tr( "If checked, both the selected folder and all its subfolders will also be scanned." ) );
   addParameter( recursiveParam.release() );
 
   auto output = std::make_unique<QgsProcessingParameterFeatureSink>( u"OUTPUT"_s, QObject::tr( "Photos" ), Qgis::ProcessingSourceType::VectorPoint, QVariant(), true );
