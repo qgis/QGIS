@@ -46,20 +46,41 @@ void QgsJoinByLocationAlgorithm::initAlgorithm( const QVariantMap & )
   widgetMetadata.insert( u"columns"_s, 2 );
   predicateMetadata.insert( u"widget_wrapper"_s, widgetMetadata );
   predicateParam->setMetadata( predicateMetadata );
-  addParameter( predicateParam.release() );
-  addParameter( new QgsProcessingParameterFeatureSource( u"JOIN"_s, QObject::tr( "By comparing to" ), QList<int>() << static_cast<int>( Qgis::ProcessingSourceType::VectorAnyGeometry ) ) );
-  addParameter(
-    new QgsProcessingParameterField( u"JOIN_FIELDS"_s, QObject::tr( "Fields to add (leave empty to use all fields)" ), QVariant(), u"JOIN"_s, Qgis::ProcessingFieldParameterDataType::Any, true, true )
+  predicateParam->setHelp(
+    QObject::tr(
+      "Type of spatial relation the source feature should have with the target feature so that they could be joined. If more than one condition is chosen, at least one of them (OR operation) "
+      "has to be met for a feature to be joined."
+    )
   );
+  addParameter( predicateParam.release() );
+
+  auto joinParam = std::make_unique<QgsProcessingParameterFeatureSource>( u"JOIN"_s, QObject::tr( "By comparing to" ), QList<int>() << static_cast<int>( Qgis::ProcessingSourceType::VectorAnyGeometry ) );
+  joinParam->setHelp( QObject::tr( "The join layer. Features of this vector layer will add their attributes to the source layer attribute table if they satisfy the spatial relationship." ) );
+  addParameter( joinParam.release() );
+
+  auto joinFieldsParam = std::make_unique<
+    QgsProcessingParameterField>( u"JOIN_FIELDS"_s, QObject::tr( "Fields to add (leave empty to use all fields)" ), QVariant(), u"JOIN"_s, Qgis::ProcessingFieldParameterDataType::Any, true, true );
+  joinFieldsParam->setHelp( QObject::tr( "Specific fields to add from the join layer. By default all the fields are added." ) );
+  addParameter( joinFieldsParam.release() );
 
   QStringList joinMethods;
   joinMethods
     << QObject::tr( "Create separate feature for each matching feature (one-to-many)" )
     << QObject::tr( "Take attributes of the first matching feature only (one-to-one)" )
     << QObject::tr( "Take attributes of the feature with largest overlap only (one-to-one)" );
-  addParameter( new QgsProcessingParameterEnum( u"METHOD"_s, QObject::tr( "Join type" ), joinMethods, false, static_cast<int>( OneToMany ) ) );
-  addParameter( new QgsProcessingParameterBoolean( u"DISCARD_NONMATCHING"_s, QObject::tr( "Discard records which could not be joined" ), false ) );
-  addParameter( new QgsProcessingParameterString( u"PREFIX"_s, QObject::tr( "Joined field prefix" ), QVariant(), false, true ) );
+
+  auto methodParam = std::make_unique<QgsProcessingParameterEnum>( u"METHOD"_s, QObject::tr( "Join type" ), joinMethods, false, static_cast<int>( OneToMany ) );
+  methodParam->setHelp( QObject::tr( "The type of the final joined layer." ) );
+  addParameter( methodParam.release() );
+
+  auto discardNonMatchingParam = std::make_unique<QgsProcessingParameterBoolean>( u"DISCARD_NONMATCHING"_s, QObject::tr( "Discard records which could not be joined" ), false );
+  discardNonMatchingParam->setHelp( QObject::tr( "If checked, the input layer's features which could not be joined are removed from the output." ) );
+  addParameter( discardNonMatchingParam.release() );
+
+  auto prefixParam = std::make_unique<QgsProcessingParameterString>( u"PREFIX"_s, QObject::tr( "Joined field prefix" ), QVariant(), false, true );
+  prefixParam->setHelp( QObject::tr( "Prefix added to joined fields in order to easily identify them and avoid field name collision." ) );
+  addParameter( prefixParam.release() );
+
   addParameter( new QgsProcessingParameterFeatureSink( u"OUTPUT"_s, QObject::tr( "Joined layer" ), Qgis::ProcessingSourceType::VectorAnyGeometry, QVariant(), true, true ) );
   addParameter( new QgsProcessingParameterFeatureSink( u"NON_MATCHING"_s, QObject::tr( "Unjoinable features from first layer" ), Qgis::ProcessingSourceType::VectorAnyGeometry, QVariant(), true, false ) );
   addOutput( new QgsProcessingOutputNumber( u"JOINED_COUNT"_s, QObject::tr( "Number of joined features from input table" ) ) );

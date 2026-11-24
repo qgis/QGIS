@@ -57,19 +57,31 @@ QString QgsJoinByNearestAlgorithm::groupId() const
 void QgsJoinByNearestAlgorithm::initAlgorithm( const QVariantMap & )
 {
   addParameter( new QgsProcessingParameterFeatureSource( u"INPUT"_s, QObject::tr( "Input layer" ) ) );
-  addParameter( new QgsProcessingParameterFeatureSource( u"INPUT_2"_s, QObject::tr( "Input layer 2" ) ) );
 
-  addParameter(
-    new QgsProcessingParameterField( u"FIELDS_TO_COPY"_s, QObject::tr( "Layer 2 fields to copy (leave empty to copy all fields)" ), QVariant(), u"INPUT_2"_s, Qgis::ProcessingFieldParameterDataType::Any, true, true )
-  );
+  auto input2Param = std::make_unique<QgsProcessingParameterFeatureSource>( u"INPUT_2"_s, QObject::tr( "Input layer 2" ) );
+  input2Param->setHelp( QObject::tr( "The join layer." ) );
+  addParameter( input2Param.release() );
 
-  addParameter( new QgsProcessingParameterBoolean( u"DISCARD_NONMATCHING"_s, QObject::tr( "Discard records which could not be joined" ), false ) );
+  auto fieldsToCopyParam = std::make_unique<
+    QgsProcessingParameterField>( u"FIELDS_TO_COPY"_s, QObject::tr( "Layer 2 fields to copy (leave empty to copy all fields)" ), QVariant(), u"INPUT_2"_s, Qgis::ProcessingFieldParameterDataType::Any, true, true );
+  fieldsToCopyParam->setHelp( QObject::tr( "Join layer fields to copy. If empty, all fields will be copied." ) );
+  addParameter( fieldsToCopyParam.release() );
 
-  addParameter( new QgsProcessingParameterString( u"PREFIX"_s, QObject::tr( "Joined field prefix" ), QVariant(), false, true ) );
+  auto discardNonMatchingParam = std::make_unique<QgsProcessingParameterBoolean>( u"DISCARD_NONMATCHING"_s, QObject::tr( "Discard records which could not be joined" ), false );
+  discardNonMatchingParam->setHelp( QObject::tr( "If checked, the input layer's features which could not be joined are removed from the output." ) );
+  addParameter( discardNonMatchingParam.release() );
 
-  addParameter( new QgsProcessingParameterNumber( u"NEIGHBORS"_s, QObject::tr( "Maximum nearest neighbors" ), Qgis::ProcessingNumberParameterType::Integer, 1, false, 1 ) );
+  auto prefixParam = std::make_unique<QgsProcessingParameterString>( u"PREFIX"_s, QObject::tr( "Joined field prefix" ), QVariant(), false, true );
+  prefixParam->setHelp( QObject::tr( "Prefix added to joined fields in order to easily identify them and avoid field name collision." ) );
+  addParameter( prefixParam.release() );
 
-  addParameter( new QgsProcessingParameterDistance( u"MAX_DISTANCE"_s, QObject::tr( "Maximum distance" ), QVariant(), u"INPUT"_s, true, 0 ) );
+  auto neighborsParam = std::make_unique<QgsProcessingParameterNumber>( u"NEIGHBORS"_s, QObject::tr( "Maximum nearest neighbors" ), Qgis::ProcessingNumberParameterType::Integer, 1, false, 1 );
+  neighborsParam->setHelp( QObject::tr( "Maximum number of nearest neighbors to join." ) );
+  addParameter( neighborsParam.release() );
+
+  auto maxDistanceParam = std::make_unique<QgsProcessingParameterDistance>( u"MAX_DISTANCE"_s, QObject::tr( "Maximum distance" ), QVariant(), u"INPUT"_s, true, 0 );
+  maxDistanceParam->setHelp( QObject::tr( "Maximum search distance. If not set, there is no distance limit." ) );
+  addParameter( maxDistanceParam.release() );
 
   addParameter( new QgsProcessingParameterFeatureSink( u"OUTPUT"_s, QObject::tr( "Joined layer" ), Qgis::ProcessingSourceType::VectorAnyGeometry, QVariant(), true, true ) );
 

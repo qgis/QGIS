@@ -73,7 +73,10 @@ QgsSetLayerEncodingAlgorithm *QgsSetLayerEncodingAlgorithm::createInstance() con
 void QgsSetLayerEncodingAlgorithm::initAlgorithm( const QVariantMap & )
 {
   addParameter( new QgsProcessingParameterVectorLayer( u"INPUT"_s, QObject::tr( "Input layer" ) ) );
-  addParameter( new QgsProcessingParameterString( u"ENCODING"_s, QObject::tr( "Encoding" ) ) );
+
+  auto encodingParam = std::make_unique<QgsProcessingParameterString>( u"ENCODING"_s, QObject::tr( "Encoding" ) );
+  encodingParam->setHelp( QObject::tr( "Text encoding to assign to the layer in the current QGIS session." ) );
+  addParameter( encodingParam.release() );
 
   addOutput( new QgsProcessingOutputVectorLayer( u"OUTPUT"_s, QObject::tr( "Output layer" ) ) );
 }

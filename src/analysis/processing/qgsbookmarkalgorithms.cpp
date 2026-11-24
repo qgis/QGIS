@@ -38,6 +38,7 @@ void QgsBookmarksToLayerAlgorithm::initAlgorithm( const QVariantMap & )
   QVariantMap metadata;
   metadata.insert( u"widget_wrapper"_s, wrapperMetadata );
   sourceParam->setMetadata( metadata );
+  sourceParam->setHelp( QObject::tr( "The source(s) of the bookmarks." ) );
   addParameter( sourceParam.release() );
   addParameter( new QgsProcessingParameterCrs( u"CRS"_s, QObject::tr( "Output CRS" ), QgsCoordinateReferenceSystem( u"EPSG:4326"_s ) ) );
   addParameter( new QgsProcessingParameterFeatureSink( u"OUTPUT"_s, QObject::tr( "Output" ), Qgis::ProcessingSourceType::VectorPolygon ) );
@@ -186,10 +187,16 @@ void QgsLayerToBookmarksAlgorithm::initAlgorithm( const QVariantMap & )
 
   auto sourceParam = std::make_unique<
     QgsProcessingParameterEnum>( u"DESTINATION"_s, QObject::tr( "Bookmark destination" ), QStringList() << QObject::tr( "Project bookmarks" ) << QObject::tr( "User bookmarks" ), false, 0 );
+  sourceParam->setHelp( QObject::tr( "The destination for the bookmarks." ) );
   addParameter( sourceParam.release() );
 
-  addParameter( new QgsProcessingParameterExpression( u"NAME_EXPRESSION"_s, QObject::tr( "Name field" ), QVariant(), u"INPUT"_s ) );
-  addParameter( new QgsProcessingParameterExpression( u"GROUP_EXPRESSION"_s, QObject::tr( "Group field" ), QVariant(), u"INPUT"_s, true ) );
+  auto nameExpressionParam = std::make_unique<QgsProcessingParameterExpression>( u"NAME_EXPRESSION"_s, QObject::tr( "Name field" ), QVariant(), u"INPUT"_s );
+  nameExpressionParam->setHelp( QObject::tr( "Field or expression that will give names to the generated bookmarks." ) );
+  addParameter( nameExpressionParam.release() );
+
+  auto groupExpressionParam = std::make_unique<QgsProcessingParameterExpression>( u"GROUP_EXPRESSION"_s, QObject::tr( "Group field" ), QVariant(), u"INPUT"_s, true );
+  groupExpressionParam->setHelp( QObject::tr( "Field or expression that will provide groups for the generated bookmarks." ) );
+  addParameter( groupExpressionParam.release() );
 
   addOutput( new QgsProcessingOutputNumber( u"COUNT"_s, QObject::tr( "Count of bookmarks added" ) ) );
 }

@@ -54,9 +54,18 @@ QString QgsOrderByExpressionAlgorithm::groupId() const
 void QgsOrderByExpressionAlgorithm::initAlgorithm( const QVariantMap & )
 {
   addParameter( new QgsProcessingParameterFeatureSource( u"INPUT"_s, QObject::tr( "Input layer" ), QList<int>() << static_cast<int>( Qgis::ProcessingSourceType::Vector ) ) );
-  addParameter( new QgsProcessingParameterExpression( u"EXPRESSION"_s, QObject::tr( "Expression" ), QVariant(), u"INPUT"_s ) );
-  addParameter( new QgsProcessingParameterBoolean( u"ASCENDING"_s, QObject::tr( "Sort ascending" ), true ) );
-  addParameter( new QgsProcessingParameterBoolean( u"NULLS_FIRST"_s, QObject::tr( "Sort nulls first" ), false ) );
+
+  auto expressionParam = std::make_unique<QgsProcessingParameterExpression>( u"EXPRESSION"_s, QObject::tr( "Expression" ), QVariant(), u"INPUT"_s );
+  expressionParam->setHelp( QObject::tr( "Expression to use for the sorting." ) );
+  addParameter( expressionParam.release() );
+
+  auto ascendingParam = std::make_unique<QgsProcessingParameterBoolean>( u"ASCENDING"_s, QObject::tr( "Sort ascending" ), true );
+  ascendingParam->setHelp( QObject::tr( "If checked, the vector layer will be sorted from small to large values." ) );
+  addParameter( ascendingParam.release() );
+
+  auto nullsFirstParam = std::make_unique<QgsProcessingParameterBoolean>( u"NULLS_FIRST"_s, QObject::tr( "Sort nulls first" ), false );
+  nullsFirstParam->setHelp( QObject::tr( "If checked, NULL values are placed first." ) );
+  addParameter( nullsFirstParam.release() );
 
   addParameter( new QgsProcessingParameterFeatureSink( u"OUTPUT"_s, QObject::tr( "Ordered" ) ) );
 }

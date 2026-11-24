@@ -58,7 +58,9 @@ void QgsMergeVectorAlgorithm::initAlgorithm( const QVariantMap & )
   addParameter( new QgsProcessingParameterFeatureSink( u"OUTPUT"_s, QObject::tr( "Merged" ) ) );
 
   // new boolean parameter to add source layer information
-  addParameter( new QgsProcessingParameterBoolean( u"ADD_SOURCE_FIELDS"_s, QObject::tr( "Add source layer information (layer name and path)" ), true ) );
+  auto addSourceFieldsParam = std::make_unique<QgsProcessingParameterBoolean>( u"ADD_SOURCE_FIELDS"_s, QObject::tr( "Add source layer information (layer name and path)" ), true );
+  addSourceFieldsParam->setHelp( QObject::tr( "If checked, fields storing the original layer name and path will be added to the output." ) );
+  addParameter( addSourceFieldsParam.release() );
 }
 
 QString QgsMergeVectorAlgorithm::shortDescription() const

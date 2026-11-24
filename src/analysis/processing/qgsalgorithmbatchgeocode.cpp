@@ -50,7 +50,9 @@ void QgsBatchGeocodeAlgorithm::initParameters( const QVariantMap &configuration 
 {
   mIsInPlace = configuration.value( u"IN_PLACE"_s ).toBool();
 
-  addParameter( new QgsProcessingParameterField( u"FIELD"_s, QObject::tr( "Address field" ), QVariant(), u"INPUT"_s, Qgis::ProcessingFieldParameterDataType::String ) );
+  auto fieldParam = std::make_unique<QgsProcessingParameterField>( u"FIELD"_s, QObject::tr( "Address field" ), QVariant(), u"INPUT"_s, Qgis::ProcessingFieldParameterDataType::String );
+  fieldParam->setHelp( QObject::tr( "Field containing the addresses to geocode." ) );
+  addParameter( fieldParam.release() );
 
   if ( mIsInPlace )
   {
