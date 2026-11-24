@@ -69,7 +69,9 @@ void QgsRasterStatisticsAlgorithm::initAlgorithm( const QVariantMap & )
   addParameter( new QgsProcessingParameterRasterLayer( u"INPUT"_s, QObject::tr( "Input layer" ) ) );
   addParameter( new QgsProcessingParameterBand( u"BAND"_s, QObject::tr( "Band number" ), 1, u"INPUT"_s ) );
 
-  addParameter( new QgsProcessingParameterFileDestination( u"OUTPUT_HTML_FILE"_s, QObject::tr( "Statistics" ), QObject::tr( "HTML files (*.html *.HTML)" ), QVariant(), true ) );
+  addParameter(
+    new QgsProcessingParameterFileDestination( u"OUTPUT_HTML_FILE"_s, QObject::tr( "Statistics" ), QgsFileFilterGenerator::fileFilter( QgsFileFilterGenerator::StandardFileFormat::HTML ), QVariant(), true )
+  );
   addOutput( new QgsProcessingOutputNumber( u"COUNT"_s, QObject::tr( "Count of non-NoData pixels" ) ) );
   addOutput( new QgsProcessingOutputNumber( u"MIN"_s, QObject::tr( "Minimum value" ) ) );
   addOutput( new QgsProcessingOutputNumber( u"MAX"_s, QObject::tr( "Maximum value" ) ) );

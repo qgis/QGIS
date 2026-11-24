@@ -69,7 +69,7 @@ QgsPdalInformationAlgorithm *QgsPdalInformationAlgorithm::createInstance() const
 void QgsPdalInformationAlgorithm::initAlgorithm( const QVariantMap & )
 {
   addParameter( new QgsProcessingParameterPointCloudLayer( u"INPUT"_s, QObject::tr( "Input layer" ) ) );
-  addParameter( new QgsProcessingParameterFileDestination( u"OUTPUT"_s, QObject::tr( "Layer information" ), QObject::tr( "HTML files (*.html)" ) ) );
+  addParameter( new QgsProcessingParameterFileDestination( u"OUTPUT"_s, QObject::tr( "Layer information" ), QgsFileFilterGenerator::fileFilter( QgsFileFilterGenerator::StandardFileFormat::HTML ) ) );
 }
 
 QVariantMap QgsPdalInformationAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )

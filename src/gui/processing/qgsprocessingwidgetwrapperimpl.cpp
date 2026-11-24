@@ -2444,8 +2444,8 @@ QgsProcessingFileParameterDefinitionWidget::QgsProcessingFileParameterDefinition
   // add some standard ones -- these also act as a demonstration of the required format
   mFilterComboBox->addItem( tr( "All Files (*.*)" ) );
   mFilterComboBox->addItem( tr( "CSV Files (*.csv)" ) );
-  mFilterComboBox->addItem( tr( "HTML Files (*.html *.htm)" ) );
-  mFilterComboBox->addItem( tr( "Text Files (*.txt)" ) );
+  mFilterComboBox->addItem( QgsFileFilterGenerator::fileFilter( QgsFileFilterGenerator::StandardFileFormat::HTML ) );
+  mFilterComboBox->addItem( QgsFileFilterGenerator::fileFilter( QgsFileFilterGenerator::StandardFileFormat::TXT ) );
   if ( const QgsProcessingParameterFile *fileParam = dynamic_cast<const QgsProcessingParameterFile *>( definition ) )
     mFilterComboBox->setCurrentText( fileParam->fileFilter() );
   else

@@ -16,6 +16,7 @@
 #include "qgsmaplayerloadstyledialog.h"
 
 #include "qgsapplication.h"
+#include "qgsfilefiltergenerator.h"
 #include "qgsgui.h"
 #include "qgshelp.h"
 #include "qgslayerpropertiesdialog.h"
@@ -91,7 +92,9 @@ QgsMapLayerLoadStyleDialog::QgsMapLayerLoadStyleDialog( QgsMapLayer *layer, QWid
       break;
 
     case Qgis::LayerType::VectorTile:
-      mFileWidget->setFilter( tr( "All Styles" ) + u" (*.qml *.json);;"_s + tr( "QGIS Layer Style File" ) + u" (*.qml);;"_s + tr( "MapBox GL Style JSON File" ) + u" (*.json)"_s );
+      mFileWidget->setFilter(
+        tr( "All Styles" ) + u" (*.qml *.json);;"_s + QgsFileFilterGenerator::fileFilter( QgsFileFilterGenerator::StandardFileFormat::QML ) + u";;"_s + tr( "MapBox GL Style JSON File" ) + u" (*.json)"_s
+      );
       break;
 
     case Qgis::LayerType::Raster:

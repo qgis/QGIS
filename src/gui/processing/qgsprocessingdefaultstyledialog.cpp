@@ -43,7 +43,7 @@ QWidget *QgsProcessingDefaultStyleDelegate::createEditor( QWidget *parent, const
   {
     auto *editor = new QgsFileWidget( parent );
     editor->setStorageMode( QgsFileWidget::StorageMode::GetFile );
-    editor->setFilter( u"%1 (*.qml *.QML)"_s.arg( tr( "QGIS Layer Style File" ) ) );
+    editor->setFilter( QgsFileFilterGenerator::fileFilter( QgsFileFilterGenerator::StandardFileFormat::QML ) );
 
     return editor;
   }

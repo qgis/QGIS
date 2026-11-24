@@ -729,10 +729,9 @@ void QgsProcessingAlgorithmWidgetBase::saveLog()
   const QString lastUsedDir = settings.value( u"/Processing/lastUsedLogDirectory"_s, QDir::homePath() ).toString();
 
   QString filter;
-  const QString txtExt = tr( "Text files" ) + u" (*.txt *.TXT)"_s;
-  const QString htmlExt = tr( "HTML files" ) + u" (*.html *.HTML)"_s;
 
-  const QString path = QFileDialog::getSaveFileName( this, tr( "Save Log to File" ), lastUsedDir, txtExt + ";;" + htmlExt, &filter );
+  const QString path = QFileDialog::
+    getSaveFileName( this, tr( "Save Log to File" ), lastUsedDir, QgsFileFilterGenerator::filterString( { QgsFileFilterGenerator::StandardFileFormat::TXT, QgsFileFilterGenerator::StandardFileFormat::HTML } ), &filter );
   // return dialog focus on Mac
   activateWindow();
   raise();
@@ -744,7 +743,7 @@ void QgsProcessingAlgorithmWidgetBase::saveLog()
   settings.setValue( u"/Processing/lastUsedLogDirectory"_s, QFileInfo( path ).path() );
 
   LogFormat format = QgsProcessingAlgorithmWidgetBase::LogFormat::FormatPlainText;
-  if ( filter == htmlExt )
+  if ( filter == QgsFileFilterGenerator::fileFilter( QgsFileFilterGenerator::StandardFileFormat::HTML ) )
   {
     format = QgsProcessingAlgorithmWidgetBase::LogFormat::FormatHtml;
   }

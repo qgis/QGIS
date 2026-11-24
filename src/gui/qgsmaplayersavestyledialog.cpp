@@ -15,6 +15,7 @@
 
 #include "qgsmaplayersavestyledialog.h"
 
+#include "qgsfilefiltergenerator.h"
 #include "qgsgui.h"
 #include "qgshelp.h"
 #include "qgsmaplayerstylecategoriesmodel.h"
@@ -52,7 +53,10 @@ QgsMapLayerSaveStyleDialog::QgsMapLayerSaveStyleDialog( QgsMapLayer *layer, QWid
       type == QgsLayerPropertiesDialog::SLD && layer->type() == Qgis::LayerType::Vector && static_cast<QgsVectorLayer *>( layer )->geometryType() == Qgis::GeometryType::Polygon
     );
     mStyleCategoriesListView->setEnabled( type != QgsLayerPropertiesDialog::SLD );
-    mFileWidget->setFilter( type == QgsLayerPropertiesDialog::QML ? tr( "QGIS Layer Style File (*.qml)" ) : tr( "SLD File (*.sld)" ) );
+    mFileWidget->setFilter(
+      type == QgsLayerPropertiesDialog::QML ? QgsFileFilterGenerator::fileFilter( QgsFileFilterGenerator::StandardFileFormat::QML )
+                                            : QgsFileFilterGenerator::fileFilter( QgsFileFilterGenerator::StandardFileFormat::SLD )
+    );
     updateSaveButtonState();
   } );
 

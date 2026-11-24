@@ -21,6 +21,7 @@
 #include "qgscolorramp.h"
 #include "qgscolorrampbutton.h"
 #include "qgscolorramplegendnodewidget.h"
+#include "qgsfilefiltergenerator.h"
 #include "qgsfileutils.h"
 #include "qgsguiutils.h"
 #include "qgslocaleawarenumericlineeditdelegate.h"
@@ -468,7 +469,7 @@ void QgsColorRampShaderWidget::mLoadFromFileButton_clicked()
 {
   QgsSettings settings;
   QString lastDir = settings.value( u"lastColorMapDir"_s, QDir::homePath() ).toString();
-  const QString fileName = QFileDialog::getOpenFileName( this, tr( "Load Color Map from File" ), lastDir, tr( "Textfile (*.txt)" ) );
+  const QString fileName = QFileDialog::getOpenFileName( this, tr( "Load Color Map from File" ), lastDir, QgsFileFilterGenerator::fileFilter( QgsFileFilterGenerator::StandardFileFormat::TXT ) );
   if ( fileName.isEmpty() )
     return;
 
@@ -507,7 +508,7 @@ void QgsColorRampShaderWidget::mExportToFileButton_clicked()
 {
   QgsSettings settings;
   QString lastDir = settings.value( u"lastColorMapDir"_s, QDir::homePath() ).toString();
-  QString fileName = QFileDialog::getSaveFileName( this, tr( "Save Color Map as File" ), lastDir, tr( "Textfile (*.txt)" ) );
+  QString fileName = QFileDialog::getSaveFileName( this, tr( "Save Color Map as File" ), lastDir, QgsFileFilterGenerator::fileFilter( QgsFileFilterGenerator::StandardFileFormat::TXT ) );
   if ( fileName.isEmpty() )
     return;
 
