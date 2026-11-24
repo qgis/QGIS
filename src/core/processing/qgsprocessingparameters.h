@@ -2402,6 +2402,26 @@ class CORE_EXPORT QgsProcessingParameterMultipleLayers : public QgsProcessingPar
      */
     void setMinimumNumberInputs( int minimum );
 
+    /**
+     * Returns the file filter string for files compatible with this parameter.
+     *
+     * This is only used when the layerType() is Qgis::ProcessingSourceType::File.
+     *
+     * \see setFileFilter()
+     * \since QGIS 4.6
+     */
+    QString fileFilter() const;
+
+    /**
+     * Sets the file \a filter string for files compatible with this parameter.
+     *
+     * This is only used when the layerType() is Qgis::ProcessingSourceType::File.
+     *
+     * \see fileFilter()
+     * \since QGIS 4.6
+     */
+    void setFileFilter( const QString &filter );
+
     QVariantMap toVariantMap() const override;
     bool fromVariantMap( const QVariantMap &map ) override;
 
@@ -2413,6 +2433,7 @@ class CORE_EXPORT QgsProcessingParameterMultipleLayers : public QgsProcessingPar
   private:
     Qgis::ProcessingSourceType mLayerType = Qgis::ProcessingSourceType::VectorAnyGeometry;
     int mMinimumNumberInputs = 0;
+    QString mFileFilter;
 };
 
 /**
