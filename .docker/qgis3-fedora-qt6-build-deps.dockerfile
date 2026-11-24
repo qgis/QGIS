@@ -27,6 +27,7 @@ RUN dnf -y --refresh install \
     grass-devel \
     gsl-devel \
     lcms2-devel \
+    liberation-serif-fonts \
     libjpeg-turbo-devel \
     libpq-devel \
     libspatialite-devel \
