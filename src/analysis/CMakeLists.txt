@@ -44,6 +44,7 @@ set(QGIS_ANALYSIS_SRCS
   processing/qgsalgorithmangletonearest.cpp
   processing/qgsalgorithmannotations.cpp
   processing/qgsalgorithmapplylayerstyle.cpp
+  processing/qgsalgorithmapplylayerstyles.cpp
   processing/qgsalgorithmapproximatemedialaxis.cpp
   processing/qgsalgorithmarraytranslatedfeatures.cpp
   processing/qgsalgorithmaspect.cpp
