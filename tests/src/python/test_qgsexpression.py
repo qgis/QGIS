@@ -597,10 +597,10 @@ class TestQgsExpressionCustomFunctions(unittest.TestCase):
         self.assertEqual(exp.simplified().dump(), "FALSE")
 
         exp = QgsExpression('"my_field" IN (1 + 1, 2 * 3)')
-        self.assertEqual(exp.simplified().dump(), "my_field  IN (2, 6)")
+        self.assertEqual(exp.simplified().dump(), "my_field IN (2, 6)")
 
         exp = QgsExpression('5 IN (1 + 1, 2 * 3, "a")')
-        self.assertEqual(exp.simplified().dump(), "5  IN (2, 6, a)")
+        self.assertEqual(exp.simplified().dump(), "5 IN (2, 6, a)")
 
         exp = QgsExpression('6 IN (1 + 1, 2 * 3, "a")')
         self.assertEqual(exp.simplified().dump(), "TRUE")

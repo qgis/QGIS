@@ -6871,22 +6871,23 @@ class TestQgsExpression : public QObject
       QTest::addColumn<QString>( "expected" );
 
 
-      QTest::newRow( "simple" ) << u"field = 'value' OR field = 'value2'"_s << u"field  IN ('value', 'value2')"_s;
-      QTest::newRow( "simple 2" ) << u"\"field\" = 'value' OR field = 'value2' OR field = 'value3'"_s << u"field  IN ('value', 'value2', 'value3')"_s;
-      QTest::newRow( "simple3 mixed" ) << u"field = 'value' OR field = 'value2' OR field2 = 'value3'"_s << u"field  IN ('value', 'value2') OR field2 = 'value3'"_s;
-      QTest::newRow( "simple3 mixed 2" ) << u"field2 = 'value3' OR field = 'value1' OR field = 'value2'"_s << u"field2 = 'value3' OR field  IN ('value1', 'value2')"_s;
-      QTest::newRow( "simple3 mixed 3" ) << u"field = 'value1' OR field2 = 'value3' OR field = 'value2'"_s << u"field  IN ('value1', 'value2') OR field2 = 'value3'"_s;
-      QTest::newRow( "simple mixed order" ) << u"field = 'value' OR 'value2' = field OR field = 'value3'"_s << u"field  IN ('value', 'value2', 'value3')"_s;
+      QTest::newRow( "simple" ) << u"field = 'value' OR field = 'value2'"_s << u"field IN ('value', 'value2')"_s;
+      QTest::newRow( "simple 2" ) << u"\"field\" = 'value' OR field = 'value2' OR field = 'value3'"_s << u"field IN ('value', 'value2', 'value3')"_s;
+      QTest::newRow( "simple3 mixed" ) << u"field = 'value' OR field = 'value2' OR field2 = 'value3'"_s << u"field IN ('value', 'value2') OR field2 = 'value3'"_s;
+      QTest::newRow( "simple3 mixed 2" ) << u"field2 = 'value3' OR field = 'value1' OR field = 'value2'"_s << u"field2 = 'value3' OR field IN ('value1', 'value2')"_s;
+      QTest::newRow( "simple3 mixed 3" ) << u"field = 'value1' OR field2 = 'value3' OR field = 'value2'"_s << u"field IN ('value1', 'value2') OR field2 = 'value3'"_s;
+      QTest::newRow( "simple mixed order" ) << u"field = 'value' OR 'value2' = field OR field = 'value3'"_s << u"field IN ('value', 'value2', 'value3')"_s;
 
       // test with IN
-      QTest::newRow( "simple IN" ) << u"field IN ('value', 'value2') OR field = 'value3'"_s << u"field  IN ('value', 'value2', 'value3')"_s;
-      QTest::newRow( "simple IN 2" ) << u"field = 'value' OR field IN ('value2', 'value3')"_s << u"field  IN ('value', 'value2', 'value3')"_s;
+      QTest::newRow( "simple IN" ) << u"field IN ('value', 'value2') OR field = 'value3'"_s << u"field IN ('value', 'value2', 'value3')"_s;
+      QTest::newRow( "simple IN 2" ) << u"field = 'value' OR field IN ('value2', 'value3')"_s << u"field IN ('value', 'value2', 'value3')"_s;
+      QTest::newRow( "IN with spaces" ) << u"\"field name\" = 'value' OR \"field name\" IN ('value2', 'value3')"_s << u"\"field name\" IN ('value', 'value2', 'value3')"_s;
       // not in, should fail
       QTest::newRow( "not IN left" ) << u"field NOT IN ('value', 'value2') OR field = 'value3'"_s << u"field NOT IN ('value', 'value2') OR field = 'value3'"_s;
-      QTest::newRow( "not IN right" ) << u"field IN ('value', 'value2') OR field NOT IN ('value3')"_s << u"field  IN ('value', 'value2') OR field NOT IN ('value3')"_s;
-      QTest::newRow( "not IN left same" ) << u"field NOT IN ('value') OR field IN ('value')"_s << u"field NOT IN ('value') OR field  IN ('value')"_s;
-      QTest::newRow( "not IN right same" ) << u"field IN ('value') OR field NOT IN ('value')"_s << u"field  IN ('value') OR field NOT IN ('value')"_s;
-      QTest::newRow( "not IN three" ) << u"\"TYPE\" in ('a') OR \"TYPE\" not in ('b') OR \"TYPE\" in ('c')"_s << u"TYPE  IN ('a') OR TYPE NOT IN ('b') OR TYPE  IN ('c')"_s;
+      QTest::newRow( "not IN right" ) << u"field IN ('value', 'value2') OR field NOT IN ('value3')"_s << u"field IN ('value', 'value2') OR field NOT IN ('value3')"_s;
+      QTest::newRow( "not IN left same" ) << u"field NOT IN ('value') OR field IN ('value')"_s << u"field NOT IN ('value') OR field IN ('value')"_s;
+      QTest::newRow( "not IN right same" ) << u"field IN ('value') OR field NOT IN ('value')"_s << u"field IN ('value') OR field NOT IN ('value')"_s;
+      QTest::newRow( "not IN three" ) << u"\"TYPE\" in ('a') OR \"TYPE\" not in ('b') OR \"TYPE\" in ('c')"_s << u"TYPE IN ('a') OR TYPE NOT IN ('b') OR TYPE IN ('c')"_s;
 
       // could be handled, but isn't right now
       QTest::newRow( "not IN both" ) << u"field NOT IN ('value', 'value2') OR field NOT IN ('value3')"_s << u"field NOT IN ('value', 'value2') OR field NOT IN ('value3')"_s;

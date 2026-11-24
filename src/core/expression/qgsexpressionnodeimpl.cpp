@@ -1543,7 +1543,7 @@ bool QgsExpressionNodeInOperator::prepareNode( QgsExpression *parent, const QgsE
 
 QString QgsExpressionNodeInOperator::dump() const
 {
-  return u"%1 %2 IN (%3)"_s.arg( mNode->dump(), mNotIn ? "NOT" : "", mList->dump() );
+  return u"%1%2 IN (%3)"_s.arg( mNode->dump(), mNotIn ? " NOT" : "", mList->dump() );
 }
 
 QgsExpressionNode *QgsExpressionNodeInOperator::clone() const
