@@ -2291,7 +2291,7 @@ void QgsOptions::addProjectTemplatePath()
 
   if ( !myDir.isEmpty() )
   {
-    if ( mListProjectTemplatePaths->findItems( myDir, Qt::MatchExactly ).count() > 0 )
+    if ( !mListProjectTemplatePaths->findItems( myDir, Qt::MatchExactly ).isEmpty() )
     {
       QMessageBox::warning( this, tr( "Add Project Template Path" ), tr( "This directory is already in the template paths list" ) );
       return;

@@ -705,7 +705,7 @@ void QgsAttributesFormProperties::addContainer()
   QList<QgsAddAttributeFormContainerDialog::ContainerPair> existingContainerList = mFormLayoutModel->listOfContainers();
 
   QModelIndex currentItem;
-  if ( mFormLayoutView->selectionModel()->selectedRows().count() > 0 )
+  if ( !mFormLayoutView->selectionModel()->selectedRows().isEmpty() )
     currentItem = mFormLayoutView->firstSelectedIndex();
 
   QgsAddAttributeFormContainerDialog dialog( mLayer, existingContainerList, currentItem, this );
@@ -751,7 +751,7 @@ void QgsAttributesFormProperties::mEditorLayoutComboBox_currentIndexChanged( int
     mAvailableWidgetsView->selectionModel()->clear();
   }
 
-  if ( mFormLayoutView->selectionModel()->selectedRows().count() > 0 )
+  if ( !mFormLayoutView->selectionModel()->selectedRows().isEmpty() )
   {
     mFormLayoutView->selectionModel()->clear(); // Get rid of e.g., container selection
   }

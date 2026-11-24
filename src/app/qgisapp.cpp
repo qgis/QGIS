@@ -6709,7 +6709,7 @@ bool QgisApp::addProject( const QString &projectFile )
     mFilterLegendByMapContentAction->setChecked( QgsProject::instance()->readBoolEntry( u"Legend"_s, u"filterByMap"_s ) );
 
     // Select the first layer
-    if ( mLayerTreeView->layerTreeModel()->rootGroup()->findLayers().count() > 0 )
+    if ( !mLayerTreeView->layerTreeModel()->rootGroup()->findLayers().isEmpty() )
     {
       mLayerTreeView->setCurrentLayer( mLayerTreeView->layerTreeModel()->rootGroup()->findLayers().at( 0 )->layer() );
     }

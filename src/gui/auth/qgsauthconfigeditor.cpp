@@ -283,7 +283,7 @@ void QgsAuthConfigEditor::checkSelection()
 {
   if ( !mIsReadOnly )
   {
-    const bool hasselection = tableViewConfigs->selectionModel()->selection().length() > 0;
+    const bool hasselection = !tableViewConfigs->selectionModel()->selection().isEmpty();
     btnEditConfig->setEnabled( hasselection );
     btnRemoveConfig->setEnabled( hasselection );
   }

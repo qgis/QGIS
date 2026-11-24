@@ -159,7 +159,7 @@ void QgsSearchWidgetToolButton::aboutToShowMenu()
   connect( clearAction, &QAction::triggered, this, &QgsSearchWidgetToolButton::setInactive );
   clearAction->setCheckable( true );
   clearAction->setChecked( !fieldActive );
-  if ( mMenu->actions().count() > 0 )
+  if ( !mMenu->actions().isEmpty() )
   {
     mMenu->insertAction( mMenu->actions().at( 0 ), clearAction );
     mMenu->insertSeparator( mMenu->actions().at( 1 ) );

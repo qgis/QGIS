@@ -1937,7 +1937,7 @@ QgsFields QgsPostgresProviderConnection::fields( const QString &schema, const QS
         tUri.setSrid( QString::number( geomCol.crs.postgisSrid() ) );
       }
 
-      if ( tableInfo.primaryKeyColumns().count() > 0 )
+      if ( !tableInfo.primaryKeyColumns().isEmpty() )
       {
         const auto constPkCols( tableInfo.primaryKeyColumns() );
         tUri.setKeyColumn( constPkCols.first() );

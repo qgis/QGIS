@@ -124,7 +124,7 @@ void QgsMesh3DMaterial::configure()
 {
   // Create the texture to pass the color ramp
   Qt3DRender::QTexture1D *colorRampTexture = new Qt3DRender::QTexture1D( this );
-  if ( mSymbol->colorRampShader().colorRampItemList().count() > 0 )
+  if ( !mSymbol->colorRampShader().colorRampItemList().isEmpty() )
   {
     switch ( mMagnitudeType )
     {

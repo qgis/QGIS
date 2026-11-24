@@ -346,7 +346,7 @@ void QgsAuthAuthoritiesEditor::checkSelection()
 {
   bool iscert = false;
   bool isdbcert = false;
-  if ( treeWidgetCAs->selectionModel()->selection().length() > 0 )
+  if ( !treeWidgetCAs->selectionModel()->selection().isEmpty() )
   {
     QTreeWidgetItem *item( treeWidgetCAs->currentItem() );
 
@@ -505,7 +505,7 @@ void QgsAuthAuthoritiesEditor::btnRemoveCa_clicked()
 
 void QgsAuthAuthoritiesEditor::btnInfoCa_clicked()
 {
-  if ( treeWidgetCAs->selectionModel()->selection().length() > 0 )
+  if ( !treeWidgetCAs->selectionModel()->selection().isEmpty() )
   {
     QTreeWidgetItem *item( treeWidgetCAs->currentItem() );
     handleDoubleClick( item, 0 );
