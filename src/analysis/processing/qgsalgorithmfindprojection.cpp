@@ -76,7 +76,10 @@ QgsFindProjectionAlgorithm *QgsFindProjectionAlgorithm::createInstance() const
 void QgsFindProjectionAlgorithm::initAlgorithm( const QVariantMap & )
 {
   addParameter( new QgsProcessingParameterFeatureSource( u"INPUT"_s, QObject::tr( "Input layer" ) ) );
-  addParameter( new QgsProcessingParameterExtent( u"TARGET_AREA"_s, QObject::tr( "Target area for layer" ) ) );
+
+  auto targetAreaParam = std::make_unique<QgsProcessingParameterExtent>( u"TARGET_AREA"_s, QObject::tr( "Target area for layer" ) );
+  targetAreaParam->setHelp( QObject::tr( "The area that the layer covers." ) );
+  addParameter( targetAreaParam.release() );
 
   // deprecated
   auto crsParam = std::make_unique<QgsProcessingParameterCrs>( u"TARGET_AREA_CRS"_s, QObject::tr( "Target area CRS" ), QVariant(), true );

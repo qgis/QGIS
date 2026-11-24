@@ -83,10 +83,17 @@ QList<int> QgsSplitFeaturesByAttributeCharacterAlgorithm::inputLayerTypes() cons
 
 void QgsSplitFeaturesByAttributeCharacterAlgorithm::initParameters( const QVariantMap & )
 {
-  addParameter( new QgsProcessingParameterField( u"FIELD"_s, QObject::tr( "Split using values in field" ), QVariant(), u"INPUT"_s ) );
-  addParameter( new QgsProcessingParameterString( u"CHAR"_s, QObject::tr( "Split values using character" ) ) );
+  auto fieldParam = std::make_unique<QgsProcessingParameterField>( u"FIELD"_s, QObject::tr( "Split using values in field" ), QVariant(), u"INPUT"_s );
+  fieldParam->setHelp( QObject::tr( "Field to use for splitting." ) );
+  addParameter( fieldParam.release() );
+
+  auto charParam = std::make_unique<QgsProcessingParameterString>( u"CHAR"_s, QObject::tr( "Split values using character" ) );
+  charParam->setHelp( QObject::tr( "Character to use for splitting." ) );
+  addParameter( charParam.release() );
+
   std::unique_ptr<QgsProcessingParameterDefinition> regexParam = std::make_unique<QgsProcessingParameterBoolean>( u"REGEX"_s, QObject::tr( "Use regular expression separator" ) );
   regexParam->setFlags( regexParam->flags() | Qgis::ProcessingParameterFlag::Advanced );
+  regexParam->setHelp( QObject::tr( "If checked, the splitting character is treated as a regular expression." ) );
   addParameter( regexParam.release() );
 }
 

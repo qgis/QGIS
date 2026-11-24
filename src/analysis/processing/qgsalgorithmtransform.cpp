@@ -47,6 +47,12 @@ void QgsTransformAlgorithm::initParameters( const QVariantMap & )
   auto crsOpParam
     = std::make_unique<QgsProcessingParameterCoordinateOperation>( u"OPERATION"_s, QObject::tr( "Coordinate operation" ), QVariant(), u"INPUT"_s, u"TARGET_CRS"_s, QVariant(), QVariant(), true );
   crsOpParam->setFlags( crsOpParam->flags() | Qgis::ProcessingParameterFlag::Advanced );
+  crsOpParam->setHelp(
+    QObject::tr(
+      "Specific operation to use for a particular reprojection task, instead of always forcing use of the current project's transformation settings. Useful when reprojecting a particular layer "
+      "and control over the exact transformation pipeline is required."
+    )
+  );
   addParameter( crsOpParam.release() );
 }
 
