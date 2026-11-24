@@ -52,11 +52,12 @@ class CORE_EXPORT QgsFileFilterGenerator
      */
     enum class StandardFileFormat
     {
-      QML,      //!< QML Files
-      HTML,     //!< HTML Files
-      TXT,      //!< Text files
-      SLD,      //!< SLD files
-      AllFiles, //!< All files (*.*)
+      QML,               //!< QML Files
+      HTML,              //!< HTML Files
+      TXT,               //!< Text files
+      SLD,               //!< SLD files
+      QgisStyleDbExport, //!< QGIS exported style database
+      AllFiles,          //!< All files (*.*)
     };
 
     /**

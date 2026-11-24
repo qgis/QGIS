@@ -39,6 +39,7 @@ this interface and return a file filter.
       HTML,
       TXT,
       SLD,
+      QgisStyleDbExport,
       AllFiles,
     };
 

@@ -4,6 +4,7 @@ QgsFileFilterGenerator.StandardFileFormat.QML.__doc__ = "QML Files"
 QgsFileFilterGenerator.StandardFileFormat.HTML.__doc__ = "HTML Files"
 QgsFileFilterGenerator.StandardFileFormat.TXT.__doc__ = "Text files"
 QgsFileFilterGenerator.StandardFileFormat.SLD.__doc__ = "SLD files"
+QgsFileFilterGenerator.StandardFileFormat.QgisStyleDbExport.__doc__ = "QGIS exported style database"
 QgsFileFilterGenerator.StandardFileFormat.AllFiles.__doc__ = "All files (*.*)"
 QgsFileFilterGenerator.StandardFileFormat.__doc__ = """Standard file filters.
 
@@ -13,6 +14,7 @@ QgsFileFilterGenerator.StandardFileFormat.__doc__ = """Standard file filters.
 * ``HTML``: HTML Files
 * ``TXT``: Text files
 * ``SLD``: SLD files
+* ``QgisStyleDbExport``: QGIS exported style database
 * ``AllFiles``: All files (*.*)
 
 """

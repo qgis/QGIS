@@ -33,6 +33,8 @@ QString QgsFileFilterGenerator::fileFilter( StandardFileFormat format )
       return u"%1 (*.txt *.TXT)"_s.arg( tr( "Text Files" ) );
     case StandardFileFormat::SLD:
       return u"%1 (*.sld *.SLD)"_s.arg( tr( "SLD Files" ) );
+    case StandardFileFormat::QgisStyleDbExport:
+      return u"%1 (*.xml *.XML)"_s.arg( tr( "QGIS Style Database" ) );
     case StandardFileFormat::AllFiles:
       return u"%1 (*.*)"_s.arg( tr( "All Files" ) );
   }
