@@ -532,6 +532,7 @@ set(QGIS_CORE_SRCS
   qgsfieldmodel.cpp
   qgsfieldproxymodel.cpp
   qgsfields.cpp
+  qgsfilefiltergenerator.cpp
   qgsfileutils.cpp
   qgsfontutils.cpp
   qgsfutureutils.cpp

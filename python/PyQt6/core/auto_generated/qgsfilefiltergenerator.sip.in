@@ -32,6 +32,32 @@ filter string, for use in file open or file save dialogs.
 This method needs to be reimplemented in all classes which implement
 this interface and return a file filter.
 %End
+
+    enum class StandardFileFormat
+    {
+      QML,
+      HTML,
+      TXT,
+      SLD,
+      AllFiles,
+    };
+
+    static QString fileFilter( QgsFileFilterGenerator::StandardFileFormat format );
+%Docstring
+Generates a file format for the specified ``format``.
+
+.. versionadded:: 4.6
+%End
+
+    static QString filterString( const QList< QgsFileFilterGenerator::StandardFileFormat > &formats, bool includeAllFiles = false );
+%Docstring
+Generates a complete file filter string for all specified ``formats``.
+
+If ``includeAllFiles`` is ``True`` then an "All Files (*.*)" option will
+be added to the end of the string.
+
+.. versionadded:: 4.6
+%End
 };
 
 /************************************************************************
