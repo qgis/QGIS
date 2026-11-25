@@ -15,10 +15,12 @@
 
 #include "qgsoapifoptionsrequest.h"
 
+#include "qgswfsconstants.h"
+
 #include "moc_qgsoapifoptionsrequest.cpp"
 
 QgsOapifOptionsRequest::QgsOapifOptionsRequest( const QgsDataSourceUri &uri )
-  : QgsBaseNetworkRequest( QgsAuthorizationSettings( uri.username(), uri.password(), QgsHttpHeaders(), uri.authConfigId() ), "OAPIF" )
+  : QgsBaseNetworkRequest( QgsAuthorizationSettings( uri.username(), uri.password(), QgsHttpHeaders(), uri.authConfigId() ), tr( "OAPIF" ), uri.hasParam( QgsWFSConstants::URI_PARAM_DISABLE_DECOMPRESSED_SAFETY_CHECK_THRESHOLD ) )
 {}
 
 QString QgsOapifOptionsRequest::errorMessageWithReason( const QString &reason )

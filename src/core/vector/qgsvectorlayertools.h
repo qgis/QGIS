@@ -204,7 +204,7 @@ class CORE_EXPORT QgsVectorLayerTools : public QObject
     QgsProject *project() const { return mProject; }
 
   private:
-    QgsProject *mProject = nullptr;
+    QPointer< QgsProject > mProject;
     bool mForceSuppressFormPopup { false };
 };
 

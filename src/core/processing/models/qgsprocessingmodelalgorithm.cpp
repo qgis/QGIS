@@ -1814,6 +1814,7 @@ QVariant QgsProcessingModelAlgorithm::toVariant() const
   map.insert( u"model_group"_s, mModelGroup );
   map.insert( u"help"_s, mHelpContent );
   map.insert( u"internal_version"_s, qgsEnumValueToKey( mInternalVersion ) );
+  map.insert( u"qgis_version"_s, mModelQgisVersion );
 
   QVariantMap childMap;
   QMap< QString, QgsProcessingModelChildAlgorithm >::const_iterator childIt = mChildAlgorithms.constBegin();
@@ -1863,6 +1864,13 @@ bool QgsProcessingModelAlgorithm::loadVariant( const QVariant &model )
   mModelName = map.value( u"model_name"_s ).toString();
   mModelGroup = map.value( u"model_group"_s ).toString();
   mModelGroupId = map.value( u"model_group"_s ).toString();
+  mModelQgisVersion = map.value( u"qgis_version"_s, QString() ).toString();
+
+  if ( mModelQgisVersion == QString() )
+  {
+    mModelQgisVersion = QgsProjectVersion( 0, 0, 0 ).text();
+  }
+
   mHelpContent = map.value( u"help"_s ).toMap();
 
   mInternalVersion = qgsEnumKeyToValue( map.value( u"internal_version"_s ).toString(), InternalVersion::Version1 );
@@ -1993,7 +2001,9 @@ void QgsProcessingModelAlgorithm::reattachAlgorithms() const
 bool QgsProcessingModelAlgorithm::toFile( const QString &path ) const
 {
   QDomDocument doc = QDomDocument( u"model"_s );
-  QDomElement elem = QgsXmlUtils::writeVariant( toVariant(), doc );
+  QVariantMap map = toVariant().toMap();
+  map.insert( u"qgis_version"_s, Qgis::version() );
+  QDomElement elem = QgsXmlUtils::writeVariant( map, doc );
   doc.appendChild( elem );
 
   QFile file( path );
@@ -2027,6 +2037,21 @@ bool QgsProcessingModelAlgorithm::fromFile( const QString &path )
   QVariant props = QgsXmlUtils::readVariant( doc.firstChildElement() );
   return loadVariant( props );
 }
+
+std::unique_ptr< QgsProcessingModelAlgorithm > QgsProcessingModelAlgorithm::loadModel( const QString &path )
+{
+  auto alg = std::make_unique<QgsProcessingModelAlgorithm>();
+  if ( alg->fromFile( path ) )
+  {
+    alg->setProvider( QgsApplication::processingRegistry()->providerById( QgsProcessing::MODEL_PROVIDER_ID ) );
+    alg->setSourceFilePath( path );
+    return alg;
+  }
+
+  QgsMessageLog::logMessage( QObject::tr( "Could not load model %1" ).arg( path ), QObject::tr( "Processing" ), Qgis::MessageLevel::Critical );
+  return nullptr;
+}
+
 
 void QgsProcessingModelAlgorithm::setChildAlgorithms( const QMap<QString, QgsProcessingModelChildAlgorithm> &childAlgorithms )
 {

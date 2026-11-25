@@ -3,11 +3,12 @@ Content-Type: text/xml; charset=utf-8
 
 <?xml version="1.0" encoding="UTF-8"?>
 <GetFeatureInfoResponse>
- <Layer title="json" name="json">
+ <Layer name="json" title="json">
   <Feature id="1">
-   <Attribute value="1" name="pk"/>
-   <Attribute value="[&#xa;    1,&#xa;    2,&#xa;    3&#xa;]&#xa;" name="jvalue"/>
-   <Attribute value="[&#xa;    4,&#xa;    5,&#xa;    6&#xa;]&#xa;" name="jbvalue"/>
+   <Attribute name="pk" value="1"/>
+   <Attribute name="jvalue" value="[&#xa;    1,&#xa;    2,&#xa;    3&#xa;]&#xa;"/>
+   <Attribute name="jbvalue" value="[&#xa;    4,&#xa;    5,&#xa;    6&#xa;]&#xa;"/>
+   <Attribute name="textfield" value="[7,8,9]"/>
   </Feature>
  </Layer>
 </GetFeatureInfoResponse>

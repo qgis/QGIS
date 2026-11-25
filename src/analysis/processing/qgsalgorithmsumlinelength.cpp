@@ -149,7 +149,7 @@ bool QgsSumLineLengthAlgorithm::prepareAlgorithm( const QVariantMap &parameters,
   mLengthFieldName = parameterAsString( parameters, u"LEN_FIELD"_s, context );
   mCountFieldName = parameterAsString( parameters, u"COUNT_FIELD"_s, context );
 
-  mLinesSource.reset( parameterAsSource( parameters, u"LINES"_s, context ) );
+  mLinesSource = parameterAsSource( parameters, u"LINES"_s, context );
   if ( !mLinesSource )
     throw QgsProcessingException( invalidSourceError( parameters, u"LINES"_s ) );
 

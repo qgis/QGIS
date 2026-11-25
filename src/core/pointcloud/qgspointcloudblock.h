@@ -48,7 +48,7 @@ class CORE_EXPORT QgsPointCloudBlock
      * Caller takes ownership of the returned object.
      * \since QGIS 3.36
      */
-    QgsPointCloudBlock *clone() const SIP_FACTORY;
+    std::unique_ptr<QgsPointCloudBlock> clone() const;
 
     //! Returns raw pointer to data
     const char *data() const;

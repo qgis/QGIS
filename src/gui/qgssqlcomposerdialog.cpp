@@ -143,7 +143,7 @@ bool QgsSQLComposerDialog::eventFilter( QObject *obj, QEvent *event )
   // Custom search in table combobox
   if ( event->type() == QEvent::KeyPress && obj == mTablesCombo->view() )
   {
-    QString currentString = ( ( QKeyEvent * ) event )->text();
+    QString currentString = static_cast< QKeyEvent * >( event )->text();
     if ( !currentString.isEmpty()
          && ( ( currentString[0] >= 'a' && currentString[0] <= 'z' ) || ( currentString[0] >= 'A' && currentString[0] <= 'Z' ) || ( currentString[0] >= '0' && currentString[0] <= '9' ) || currentString[0] == ':' || currentString[0] == '_' || currentString[0] == ' ' || currentString[0] == '(' || currentString[0] == ')' ) )
     {

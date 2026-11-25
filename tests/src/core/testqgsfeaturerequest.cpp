@@ -116,8 +116,7 @@ void TestQgsFeatureRequest::assignmentOperatorTest()
   f2.setInvalidGeometryCheck( Qgis::InvalidGeometryCheck::SkipInvalid );
   f2.setInvalidGeometryCallback( []( const QgsFeature & ) {} );
   f2.setFilterExpression( "this not that" );
-  QgsExpressionContextScope *scope = QgsExpressionContextUtils::globalScope();
-  f2.setExpressionContext( QgsExpressionContext( { scope } ) );
+  f2.setExpressionContext( QgsExpressionContext( QgsExpressionContextUtils::globalScope() ) );
   f2.addOrderBy( "someField" );
   f2.setLimit( 5 );
   f2.setFlags( Qgis::FeatureRequestFlag::NoGeometry );

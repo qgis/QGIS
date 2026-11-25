@@ -229,7 +229,7 @@ class CORE_EXPORT QgsMapLayerLegendUtils
      * \see setLegendNodeColorRampSettings()
      * \since QGIS 3.18
      */
-    static QgsColorRampLegendNodeSettings *legendNodeColorRampSettings( QgsLayerTreeLayer *nodeLayer, int originalIndex ) SIP_FACTORY;
+    static std::unique_ptr<QgsColorRampLegendNodeSettings> legendNodeColorRampSettings( QgsLayerTreeLayer *nodeLayer, int originalIndex );
 
 
     /**

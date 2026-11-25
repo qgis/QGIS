@@ -46,7 +46,7 @@ QgsEditorConfigWidget *QgsKeyValueWidgetFactory::configWidget( QgsVectorLayer *v
 unsigned int QgsKeyValueWidgetFactory::fieldScore( const QgsVectorLayer *vl, int fieldIdx ) const
 {
   const QgsField field = vl->fields().field( fieldIdx );
-  // Handle the json field
+  // on json fields, we check the first features
   if ( field.typeName().compare( u"json"_s, Qt::CaseInsensitive ) == 0 || field.typeName().compare( u"jsonb"_s, Qt::CaseInsensitive ) == 0 )
   {
     // Look for the values in the first 20 features check if it contains only maps
@@ -77,7 +77,7 @@ unsigned int QgsKeyValueWidgetFactory::fieldScore( const QgsVectorLayer *vl, int
         // Read the object from string or map
         QJsonObject jsonObject;
         bool validObject = false;
-        if ( value.type() == QVariant::Type::Map )
+        if ( value.typeId() == QMetaType::Type::QVariantMap )
         {
           validObject = true;
           jsonObject = QJsonObject::fromVariantMap( value.toMap() );
@@ -140,5 +140,12 @@ unsigned int QgsKeyValueWidgetFactory::fieldScore( const QgsVectorLayer *vl, int
     }
   }
 
+  // on string allow it with 5 - it should not become best fit
+  if ( field.type() == QMetaType::Type::QString )
+  {
+    return 5;
+  }
+
+  // on variant map return 20 - it should become best fit
   return field.type() == QMetaType::Type::QVariantMap && field.subType() != QMetaType::Type::UnknownType ? 20 : 0;
 }

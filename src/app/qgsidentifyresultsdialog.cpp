@@ -1676,7 +1676,7 @@ void QgsIdentifyResultsDialog::contextMenuEvent( QContextMenuEvent *event )
   }
 
   delete mActionPopup;
-  mActionPopup = new QMenu();
+  mActionPopup = new QMenu( this );
 
   int idx = -1;
   // QTreeWidgetItem *featItem = featureItem( item );

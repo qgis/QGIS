@@ -15,6 +15,7 @@
 
 #include "qgslayertreeviewitemdelegate.h"
 
+#include "qgslayertreegroup.h"
 #include "qgslayertreemodel.h"
 #include "qgslayertreeview.h"
 #include "qgslayertreeviewindicator.h"
@@ -57,6 +58,29 @@ QRect QgsLayerTreeViewProxyStyle::subElementRect( QStyle::SubElement element, co
     }
   }
   return QProxyStyle::subElementRect( element, option, widget );
+}
+
+void QgsLayerTreeViewProxyStyle::drawPrimitive( QStyle::PrimitiveElement element, const QStyleOption *option, QPainter *painter, const QWidget *widget ) const
+{
+  if ( element == QStyle::PE_IndicatorItemViewItemCheck )
+  {
+    const QStyleOptionViewItem *vopt = qstyleoption_cast<const QStyleOptionViewItem *>( option );
+    if ( vopt )
+    {
+      QgsLayerTreeNode *node = mLayerTreeView->index2node( vopt->index );
+      if ( node )
+      {
+        QgsLayerTreeGroup *group = qobject_cast<QgsLayerTreeGroup *>( node->parent() );
+        if ( group && group->isMutuallyExclusive() )
+        {
+          // Draw a radio button instead of a checkbox if we're drawing an item inside a mutually exclusive group
+          QgsProxyStyle::drawPrimitive( QStyle::PE_IndicatorRadioButton, option, painter, widget );
+          return;
+        }
+      }
+    }
+  }
+  QgsProxyStyle::drawPrimitive( element, option, painter, widget );
 }
 
 

@@ -157,7 +157,7 @@ bool QgsRelationWidgetWrapper::showLabel() const
   return false;
 }
 
-void QgsRelationWidgetWrapper::setShowLabel( bool showLabel )
+void QgsRelationWidgetWrapper::setShowLabel( bool showLabel ) // cppcheck-suppress functionConst
 {
   Q_UNUSED( showLabel )
 }
@@ -304,7 +304,7 @@ QVariant QgsRelationWidgetWrapper::nmRelationId() const
 }
 
 
-void QgsRelationWidgetWrapper::setLabel( const QString &label )
+void QgsRelationWidgetWrapper::setLabel( const QString &label ) // cppcheck-suppress functionConst
 {
   Q_UNUSED( label )
 }

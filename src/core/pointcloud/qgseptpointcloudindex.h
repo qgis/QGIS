@@ -76,7 +76,7 @@ class CORE_EXPORT QgsEptPointCloudIndex : public QgsAbstractPointCloudIndex
 
     struct AttributeStatistics
     {
-        int count = -1;
+        qint64 count = -1;
         QVariant minimum;
         QVariant maximum;
         double mean = std::numeric_limits< double >::quiet_NaN();
@@ -86,7 +86,7 @@ class CORE_EXPORT QgsEptPointCloudIndex : public QgsAbstractPointCloudIndex
 
     QMap< QString, AttributeStatistics > mMetadataStats;
 
-    QMap< QString, QMap< int, int > > mAttributeClasses;
+    QMap< QString, QMap< int, qint64 > > mAttributeClasses;
     QVariantMap mOriginalMetadata;
 };
 

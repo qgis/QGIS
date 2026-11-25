@@ -61,7 +61,7 @@ class GUI_EXPORT QgsColorRampButton : public QToolButton
      * Returns a copy of the current color ramp.
      * \see setColorRamp()
      */
-    QgsColorRamp *colorRamp() const SIP_FACTORY;
+    std::unique_ptr<QgsColorRamp> colorRamp() const;
 
     /**
      * Set the title for the color ramp dialog window.
@@ -280,11 +280,7 @@ class GUI_EXPORT QgsColorRampButton : public QToolButton
     void changeEvent( QEvent *e ) override;
     void showEvent( QShowEvent *e ) override;
     void resizeEvent( QResizeEvent *event ) override;
-
-    /**
-     * Reimplemented to detect right mouse button clicks on the color ramp button
-     */
-    void mousePressEvent( QMouseEvent *e ) override;
+    void contextMenuEvent( QContextMenuEvent *e ) override;
 
   private:
     QString mColorRampDialogTitle;

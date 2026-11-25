@@ -67,10 +67,14 @@ class CORE_EXPORT QgsTrackedVectorLayerTools : public QgsVectorLayerTools
      */
     void rollback();
 
+  private slots:
+
+    void layerWillBeDeleted();
+
   private:
     const QgsVectorLayerTools *mBackend = nullptr;
     // TODO QGIS5: remove mutable once methods are no longer const
-    mutable QMap<QgsVectorLayer *, QgsFeatureIds> mAddedFeatures;
+    mutable QMap<QString, QgsFeatureIds> mAddedFeatures;
 };
 
 #endif // QGSTRACKEDVECTORLAYERTOOLS_H

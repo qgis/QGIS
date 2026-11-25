@@ -101,7 +101,7 @@ void QgsNetworkAnalysisAlgorithmBase::loadCommonParams( const QVariantMap &param
 {
   Q_UNUSED( feedback )
 
-  mNetwork.reset( parameterAsSource( parameters, u"INPUT"_s, context ) );
+  mNetwork = parameterAsSource( parameters, u"INPUT"_s, context );
   if ( !mNetwork )
     throw QgsProcessingException( invalidSourceError( parameters, u"INPUT"_s ) );
 

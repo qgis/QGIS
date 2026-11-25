@@ -134,7 +134,7 @@ Constructor for QgsBearingNumericFormatDialog, initially showing the
 specified ``format``.
 %End
 
-    QgsBearingNumericFormat *format() /Factory/;
+    std::unique_ptr<QgsBearingNumericFormat> format();
 %Docstring
 Returns the format defined by the current settings in the dialog.
 
@@ -192,7 +192,7 @@ Constructor for QgsGeographicCoordinateNumericFormatDialog, initially
 showing the specified ``format``.
 %End
 
-    QgsGeographicCoordinateNumericFormat *format() /Factory/;
+    std::unique_ptr<QgsGeographicCoordinateNumericFormat> format();
 %Docstring
 Returns the format defined by the current settings in the dialog.
 

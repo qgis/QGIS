@@ -59,9 +59,9 @@ Qgs3DSymbolDialog::Qgs3DSymbolDialog( const QgsAbstract3DSymbol *symbol, QWidget
   setWindowTitle( tr( "3D Symbol" ) );
 }
 
-QgsAbstract3DSymbol *Qgs3DSymbolDialog::symbol() const
+std::unique_ptr<QgsAbstract3DSymbol> Qgs3DSymbolDialog::symbol() const
 {
-  return mWidget ? mWidget->symbol() : nullptr;
+  return mWidget ? std::unique_ptr<QgsAbstract3DSymbol>( mWidget->symbol() ) : nullptr;
 }
 
 QDialogButtonBox *Qgs3DSymbolDialog::buttonBox() const

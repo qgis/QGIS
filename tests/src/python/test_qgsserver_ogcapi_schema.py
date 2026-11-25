@@ -121,6 +121,7 @@ class QgsServerOgcApiSchemaTest(QgsServerAPITestBase):
         ds = driver.CreateDataSource(temp_db_path)
         layer = ds.CreateLayer("layer1", geom_type=ogr.wkbPoint, srs=None)
         field_defn = ogr.FieldDefn("field1_string", ogr.OFTString)
+        field_defn.SetComment("A test string field")
         layer.CreateField(field_defn)
 
         # Add a feature to the layer
@@ -155,6 +156,9 @@ class QgsServerOgcApiSchemaTest(QgsServerAPITestBase):
         self.assertEqual(j["properties"]["fid"]["format"], "int64")
         self.assertEqual(j["properties"]["fid"]["x-ogc-propertySeq"], 1)
         self.assertEqual(j["properties"]["field1_string"]["type"], "string")
+        self.assertEqual(
+            j["properties"]["field1_string"]["description"], "A test string field"
+        )
         self.assertEqual(j["properties"]["field1_string"]["x-ogc-propertySeq"], 2)
         self.assertEqual(j["properties"]["geometry"]["format"], "geometry-point")
         self.assertEqual(j["properties"]["geometry"]["x-ogc-propertySeq"], 3)
@@ -306,6 +310,15 @@ class QgsServerOgcApiSchemaTest(QgsServerAPITestBase):
             {"type": "string", "maxLength": 10, "x-ogc-propertySeq": 2},
         )
 
+        # Field with type date-time
+        field = QgsField("field1", QtCore.QMetaType.Type.QDateTime)
+        _test_widget_conf(
+            field,
+            "TextEdit",
+            {},
+            {"format": "date-time", "type": "string", "x-ogc-propertySeq": 2},
+        )
+
         # Field with alias
         field = QgsField("field1", QtCore.QMetaType.Type.QString)
         field.setAlias("My Field")
@@ -381,6 +394,44 @@ class QgsServerOgcApiSchemaTest(QgsServerAPITestBase):
             "UuidGenerator",
             {},
             {"format": "uuid", "type": "string", "x-ogc-propertySeq": 2},
+        )
+
+        ### DateTime Widget
+
+        # String field with DateTime widget and a format config for ISO 8601 date-time
+        field = QgsField("field1", QtCore.QMetaType.Type.QString)
+        _test_widget_conf(
+            field,
+            "DateTime",
+            {"field_format": "yyyy-MM-dd HH:mm:ss+t"},
+            {"format": "date-time", "type": "string", "x-ogc-propertySeq": 2},
+        )
+
+        # String field with DateTime widget and a format config for time
+        field = QgsField("field1", QtCore.QMetaType.Type.QString)
+        _test_widget_conf(
+            field,
+            "DateTime",
+            {"field_format": "HH:mm:ss"},
+            {"format": "time", "type": "string", "x-ogc-propertySeq": 2},
+        )
+
+        # Date field with a DateTime widget without format config
+        field = QgsField("field1", QtCore.QMetaType.Type.QDate)
+        _test_widget_conf(
+            field,
+            "DateTime",
+            {},
+            {"format": "date", "type": "string", "x-ogc-propertySeq": 2},
+        )
+
+        # Datetime field with a DateTime widget overwriting the date-time format to date
+        field = QgsField("field1", QtCore.QMetaType.Type.QDateTime)
+        _test_widget_conf(
+            field,
+            "DateTime",
+            {"field_format": "yyyy-MM-dd"},
+            {"format": "date", "type": "string", "x-ogc-propertySeq": 2},
         )
 
     def test_enum(self):

@@ -331,14 +331,15 @@ QgsSnappingWidget::QgsSnappingWidget( QgsProject *project, QgsMapCanvas *canvas,
   else
   {
     mMinScaleWidget = new QgsScaleWidget();
-    mMinScaleWidget->setToolTip( tr( "Minimum scale from which snapping is enabled (i.e. most \"zoomed out\" scale)" ) );
+    mMinScaleWidget->setToolTip( tr( "Start scale from which snapping is enabled" ) );
     mMinScaleWidget->setObjectName( u"SnappingMinScaleSpinBox"_s );
-    connect( mMinScaleWidget, &QgsScaleWidget::scaleChanged, this, &QgsSnappingWidget::changeMinScale );
 
     mMaxScaleWidget = new QgsScaleWidget();
-    mMaxScaleWidget->setToolTip( tr( "Maximum scale up to which snapping is enabled (i.e. most \"zoomed in\" scale)" ) );
+    mMaxScaleWidget->setToolTip( tr( "End scale up to which snapping is enabled" ) );
     mMaxScaleWidget->setObjectName( u"SnappingMaxScaleSpinBox"_s );
-    connect( mMaxScaleWidget, &QgsScaleWidget::scaleChanged, this, &QgsSnappingWidget::changeMaxScale );
+
+    connect( mMinScaleWidget, &QgsScaleWidget::scaleChanged, this, [=, this]( double minValue ) { QgsSnappingWidget::changeScale( minValue, mMaxScaleWidget->scale() ); } );
+    connect( mMaxScaleWidget, &QgsScaleWidget::scaleChanged, this, [=, this]( double maxValue ) { QgsSnappingWidget::changeScale( maxValue, mMinScaleWidget->scale() ); } );
 
     mSnappingScaleModeButton = new QToolButton();
     mSnappingScaleModeButton->setToolTip( tr( "Snapping scale mode" ) );
@@ -435,6 +436,8 @@ QgsSnappingWidget::~QgsSnappingWidget()
 
 void QgsSnappingWidget::projectSnapSettingsChanged()
 {
+  ScopedIntIncrementor blockChanges( &mBlockChangeUpdates );
+
   QgsSnappingConfig config = mProject->snappingConfig();
   if ( mConfig == config )
     return;
@@ -552,6 +555,9 @@ void QgsSnappingWidget::projectTopologicalEditingChanged()
 void QgsSnappingWidget::enableSnapping( bool checked )
 {
   toggleSnappingWidgets( checked );
+  if ( mBlockChangeUpdates )
+    return;
+
   mConfig.setEnabled( checked );
   mProject->setSnappingConfig( mConfig );
 }
@@ -585,24 +591,26 @@ void QgsSnappingWidget::toggleSnappingWidgets( bool enabled )
 
 void QgsSnappingWidget::changeTolerance( double tolerance )
 {
+  if ( mBlockChangeUpdates )
+    return;
   mConfig.setTolerance( tolerance );
   mProject->setSnappingConfig( mConfig );
 }
 
-void QgsSnappingWidget::changeMinScale( double minScale )
+void QgsSnappingWidget::changeScale( double boundary1, double boundary2 )
 {
-  mConfig.setMinimumScale( minScale );
-  mProject->setSnappingConfig( mConfig );
-}
-
-void QgsSnappingWidget::changeMaxScale( double maxScale )
-{
-  mConfig.setMaximumScale( maxScale );
+  if ( mBlockChangeUpdates )
+    return;
+  mConfig.setMinimumScale( std::max( boundary1, boundary2 ) );
+  mConfig.setMaximumScale( std::min( boundary1, boundary2 ) );
   mProject->setSnappingConfig( mConfig );
 }
 
 void QgsSnappingWidget::changeUnit( int idx )
 {
+  if ( mBlockChangeUpdates )
+    return;
+
   Qgis::MapToolUnit unit = mUnitsComboBox->itemData( idx ).value<Qgis::MapToolUnit>();
   mConfig.setUnits( unit );
   mProject->setSnappingConfig( mConfig );
@@ -612,17 +620,26 @@ void QgsSnappingWidget::changeUnit( int idx )
 
 void QgsSnappingWidget::enableTopologicalEditing( bool enabled )
 {
+  if ( mBlockChangeUpdates )
+    return;
+
   mProject->setTopologicalEditing( enabled );
 }
 
 void QgsSnappingWidget::enableIntersectionSnapping( bool enabled )
 {
+  if ( mBlockChangeUpdates )
+    return;
+
   mConfig.setIntersectionSnapping( enabled );
   mProject->setSnappingConfig( mConfig );
 }
 
 void QgsSnappingWidget::enableSelfSnapping( bool enabled )
 {
+  if ( mBlockChangeUpdates )
+    return;
+
   mConfig.setSelfSnapping( enabled );
   mProject->setSnappingConfig( mConfig );
 }
@@ -643,6 +660,9 @@ void QgsSnappingWidget::onSnappingTreeLayersChanged()
 
 void QgsSnappingWidget::avoidIntersectionsModeButtonTriggered( QAction *action )
 {
+  if ( mBlockChangeUpdates )
+    return;
+
   if ( action != mAllowIntersectionsAction && action != mAvoidIntersectionsCurrentLayerAction && action != mAvoidIntersectionsLayersAction )
   {
     return;
@@ -668,6 +688,9 @@ void QgsSnappingWidget::avoidIntersectionsModeButtonTriggered( QAction *action )
 
 void QgsSnappingWidget::modeButtonTriggered( QAction *action )
 {
+  if ( mBlockChangeUpdates )
+    return;
+
   if ( action != mAllLayersAction && action != mActiveLayerAction && action != mAdvancedModeAction )
   {
     return;
@@ -696,6 +719,9 @@ void QgsSnappingWidget::modeButtonTriggered( QAction *action )
 
 void QgsSnappingWidget::typeButtonTriggered( QAction *action )
 {
+  if ( mBlockChangeUpdates )
+    return;
+
   unsigned int type = static_cast<int>( mConfig.typeFlag() );
 
   const Qgis::SnappingTypes actionFlag = static_cast<Qgis::SnappingTypes>( action->data().toInt() );
@@ -725,6 +751,9 @@ void QgsSnappingWidget::typeButtonTriggered( QAction *action )
 
 void QgsSnappingWidget::snappingScaleModeTriggered( QAction *action )
 {
+  if ( mBlockChangeUpdates )
+    return;
+
   mSnappingScaleModeButton->setDefaultAction( action );
   QgsSnappingConfig::ScaleDependencyMode mode = mConfig.scaleDependencyMode();
 

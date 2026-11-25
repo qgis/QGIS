@@ -26,7 +26,7 @@
 
 using namespace Qt::StringLiterals;
 
-QgsAbstractMeshLayerLabeling *QgsAbstractMeshLayerLabeling::create( const QDomElement &element, const QgsReadWriteContext &context )
+std::unique_ptr<QgsAbstractMeshLayerLabeling> QgsAbstractMeshLayerLabeling::create( const QDomElement &element, const QgsReadWriteContext &context )
 {
   const QString type = element.attribute( u"type"_s );
   if ( type == "simple"_L1 )
@@ -115,7 +115,7 @@ bool QgsMeshLayerSimpleLabeling::hasNonDefaultCompositionMode() const
          || mSettings->format().hasNonDefaultCompositionMode();
 }
 
-QgsMeshLayerSimpleLabeling *QgsMeshLayerSimpleLabeling::create( const QDomElement &element, const QgsReadWriteContext &context ) // cppcheck-suppress duplInheritedMember
+std::unique_ptr<QgsMeshLayerSimpleLabeling> QgsMeshLayerSimpleLabeling::create( const QDomElement &element, const QgsReadWriteContext &context ) // cppcheck-suppress duplInheritedMember
 {
   const QDomElement settingsElem = element.firstChildElement( u"settings"_s );
   if ( !settingsElem.isNull() )
@@ -123,10 +123,10 @@ QgsMeshLayerSimpleLabeling *QgsMeshLayerSimpleLabeling::create( const QDomElemen
     QgsPalLayerSettings settings;
     settings.readXml( settingsElem, context );
     const bool labelFaces = element.attribute( u"labelFaces"_s, u"0"_s ).toInt();
-    return new QgsMeshLayerSimpleLabeling( settings, labelFaces );
+    return std::make_unique<QgsMeshLayerSimpleLabeling>( settings, labelFaces );
   }
 
-  return new QgsMeshLayerSimpleLabeling( QgsPalLayerSettings() );
+  return std::make_unique<QgsMeshLayerSimpleLabeling>( QgsPalLayerSettings() );
 }
 
 void QgsMeshLayerSimpleLabeling::multiplyOpacity( double opacityFactor )

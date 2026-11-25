@@ -240,9 +240,9 @@ QgsExpressionContext QgsProcessingAlgorithm::createExpressionContext( const QVar
   // If there's a source capable of generating a context scope, use it
   if ( source )
   {
-    QgsExpressionContextScope *scope = source->createExpressionContextScope();
+    std::unique_ptr<QgsExpressionContextScope> scope = source->createExpressionContextScope();
     if ( scope )
-      c << scope;
+      c << std::move( scope );
   }
   else if ( c.scopeCount() == 0 )
   {
@@ -827,7 +827,7 @@ bool QgsProcessingAlgorithm::parameterAsBoolean( const QVariantMap &parameters, 
   return QgsProcessingParameters::parameterAsBool( parameterDefinition( name ), parameters, context );
 }
 
-QgsFeatureSink *QgsProcessingAlgorithm::parameterAsSink(
+std::unique_ptr<QgsFeatureSink> QgsProcessingAlgorithm::parameterAsSink(
   const QVariantMap &parameters,
   const QString &name,
   QgsProcessingContext &context,
@@ -847,7 +847,7 @@ QgsFeatureSink *QgsProcessingAlgorithm::parameterAsSink(
   return QgsProcessingParameters::parameterAsSink( parameterDefinition( name ), parameters, fields, geometryType, crs, context, destinationIdentifier, sinkFlags, createOptions, datasourceOptions, layerOptions );
 }
 
-QgsProcessingFeatureSource *QgsProcessingAlgorithm::parameterAsSource( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context ) const
+std::unique_ptr<QgsProcessingFeatureSource> QgsProcessingAlgorithm::parameterAsSource( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context ) const
 {
   return QgsProcessingParameters::parameterAsSource( parameterDefinition( name ), parameters, context );
 }
@@ -1375,7 +1375,7 @@ void QgsProcessingFeatureBasedAlgorithm::prepareSource( const QVariantMap &param
 {
   if ( !mSource )
   {
-    mSource.reset( parameterAsSource( parameters, inputParameterName(), context ) );
+    mSource = parameterAsSource( parameters, inputParameterName(), context );
     if ( !mSource )
       throw QgsProcessingException( invalidSourceError( parameters, inputParameterName() ) );
   }

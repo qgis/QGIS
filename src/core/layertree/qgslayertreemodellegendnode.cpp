@@ -501,7 +501,7 @@ void QgsSymbolLegendNode::setSymbol( QgsSymbol *symbol )
   vlayer->triggerRepaint();
 }
 
-QgsRenderContext *QgsLayerTreeModelLegendNode::createTemporaryRenderContext() const
+std::unique_ptr<QgsRenderContext> QgsLayerTreeModelLegendNode::createTemporaryRenderContext() const
 {
   double scale = 0.0;
   double mupp = 0.0;
@@ -530,7 +530,7 @@ QgsRenderContext *QgsLayerTreeModelLegendNode::createTemporaryRenderContext() co
   expContext.appendScopes( QgsExpressionContextUtils::globalProjectLayerScopes( mLayerNode ? mLayerNode->layer() : nullptr ) );
   context->setExpressionContext( expContext );
 
-  return context.release();
+  return context;
 }
 
 void QgsLayerTreeModelLegendNode::checkAll( bool state )
@@ -980,8 +980,8 @@ QString QgsSymbolLegendNode::evaluateLabel( const QgsExpressionContext &context,
   if ( vl )
   {
     QgsExpressionContext contextCopy = QgsExpressionContext( context );
-    QgsExpressionContextScope *symbolScope = createSymbolScope();
-    contextCopy.appendScope( symbolScope );
+    std::unique_ptr<QgsExpressionContextScope> symbolScope = createSymbolScope();
+    contextCopy.appendScope( std::move( symbolScope ) );
     contextCopy.appendScope( vl->createExpressionContextScope() );
 
     if ( label.isEmpty() )
@@ -1006,11 +1006,11 @@ QString QgsSymbolLegendNode::evaluateLabel( const QgsExpressionContext &context,
   return mLabel;
 }
 
-QgsExpressionContextScope *QgsSymbolLegendNode::createSymbolScope() const
+std::unique_ptr<QgsExpressionContextScope> QgsSymbolLegendNode::createSymbolScope() const
 {
   QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( mLayerNode->layer() );
 
-  QgsExpressionContextScope *scope = new QgsExpressionContextScope( tr( "Symbol scope" ) );
+  auto scope = std::make_unique<QgsExpressionContextScope>( tr( "Symbol scope" ) );
   scope->addVariable( QgsExpressionContextScope::StaticVariable( u"symbol_label"_s, symbolLabel().remove( "[%" ).remove( "%]" ), true ) );
   scope->addVariable( QgsExpressionContextScope::StaticVariable( u"symbol_id"_s, mItem.ruleKey(), true ) );
   if ( vl )

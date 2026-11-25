@@ -42,7 +42,7 @@ try:
     QgsProcessingAlgorithmWidgetBase.formatStringForLog = staticmethod(QgsProcessingAlgorithmWidgetBase.formatStringForLog)
     QgsProcessingAlgorithmWidgetBase.__virtual_methods__ = ['setParameters', 'isRunning', 'resetAdditionalGui', 'blockAdditionalControlsWhileRunning', 'isFinalized', 'finished', 'runAlgorithm', 'algExecuted']
     QgsProcessingAlgorithmWidgetBase.__overridden_methods__ = ['closeEvent']
-    QgsProcessingAlgorithmWidgetBase.__signal_arguments__ = {'algorithmAboutToRun': ['context: QgsProcessingContext'], 'algorithmFinished': ['successful: bool', 'result: Dict[str, object]']}
+    QgsProcessingAlgorithmWidgetBase.__signal_arguments__ = {'algorithmAboutToRun': ['context: QgsProcessingContext'], 'algorithmFinished': ['successful: bool', 'result: Dict[str, object]', 'context: QgsProcessingContext']}
     QgsProcessingAlgorithmWidgetBase.__group__ = ['processing']
 except (NameError, AttributeError):
     pass

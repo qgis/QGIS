@@ -24,6 +24,19 @@
 
 #include "moc_qgsnative.cpp"
 
+//
+// QgsPointerLocker
+//
+
+QgsPointerLocker::QgsPointerLocker( QWindow *window, QObject *parent )
+  : QObject( parent )
+  , mWindow( window )
+{}
+
+//
+// QgsNative
+//
+
 void QgsNative::cleanup()
 {}
 
@@ -68,6 +81,11 @@ bool QgsNative::hasDarkTheme()
 bool QgsNative::openTerminalAtPath( const QString & )
 {
   return false;
+}
+
+QgsPointerLocker *QgsNative::createPointerLocker( QWindow *, QObject * )
+{
+  return nullptr;
 }
 
 QgsNative::NotificationResult QgsNative::showDesktopNotification( const QString &, const QString &, const NotificationSettings & )

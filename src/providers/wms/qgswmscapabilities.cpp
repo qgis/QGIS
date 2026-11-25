@@ -73,7 +73,7 @@ bool QgsWmsSettings::parseUri( const QString &uriString )
     mTileMatrixSetId = u"tms0"_s;
     mMaxWidth = 0;
     mMaxHeight = 0;
-    mHttpUri = uri.param( u"url"_s );
+    mHttpUri = QUrl::fromPercentEncoding( uri.param( u"url"_s ).toUtf8() );
 
     // automatically replace outdated references to http OpenStreetMap tiles with correct https URI
     const thread_local QRegularExpression sRegExOSMTiles( u"^https?://(?:[a-z]\\.)?tile\\.openstreetmap\\.org"_s );
@@ -2450,7 +2450,7 @@ void QgsWmsCapabilities::parseTheme( const QDomElement &element, QgsWmtsTheme &t
   QDomElement themeElement = element.firstChildElement( u"ows:Theme"_s );
   if ( !themeElement.isNull() )
   {
-    theme.subTheme = new QgsWmtsTheme;
+    theme.subTheme = std::make_unique< QgsWmtsTheme >();
     parseTheme( themeElement, *theme.subTheme );
   }
   else
@@ -2800,7 +2800,7 @@ void QgsWmsCapabilitiesDownload::capabilitiesReplyFinished()
            errorString.contains( u"The decompressed output exceeds the limits specified by QNetworkRequest::decompressedSafetyCheckThreshold"_s ) )
       {
         const QString compressErrorTip = tr(
-          "The server returned a compressed response that exceeds the maximum allowed size. "
+          "The server returned a compressed response that exceeds the safety check limits. "
           "This is likely due to a large number of layers or complex capabilities. "
           "If you trust this server you can disable this check in the WMS server connection settings."
         );

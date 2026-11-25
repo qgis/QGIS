@@ -82,7 +82,7 @@ class CORE_EXPORT QgsRecentStyleHandler
      *
      * \see pushRecentSymbol()
      */
-    QgsSymbol *recentSymbol( const QString &identifier ) const SIP_FACTORY;
+    std::unique_ptr<QgsSymbol> recentSymbol( const QString &identifier ) const;
 
     /**
      * Returns a copy of the recently used symbol with the specified \a identifier, or NULLPTR if no symbol

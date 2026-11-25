@@ -111,7 +111,7 @@ void QgsSymbolLayer::initPropertyDefinitions()
         "placement",
         QgsPropertyDefinition::DataTypeString,
         QObject::tr( "Marker placement" ),
-        QObject::tr( "string " ) + "[<b>interval</b>|<b>innervertices</b>|<b>vertex</b>|<b>lastvertex</b>|<b>firstvertex</b>|<b>centerpoint</b>|<b>curvepoint</b>|<b>segmentcenter</b>]",
+        QObject::tr( "string " ) + "[<b>interval</b>|<b>inner_vertices</b>|<b>vertex</b>|<b>last_vertex</b>|<b>first_vertex</b>|<b>center_point</b>|<b>curve_point</b>|<b>segment_center</b>]",
         origin
       ) },
     { static_cast< int >( QgsSymbolLayer::Property::Interval ), QgsPropertyDefinition( "interval", QObject::tr( "Marker interval" ), QgsPropertyDefinition::DoublePositive, origin ) },
@@ -129,7 +129,7 @@ void QgsSymbolLayer::initPropertyDefinitions()
     { static_cast< int >( QgsSymbolLayer::Property::ArrowHeadType ),
       QgsPropertyDefinition( "arrowHeadType", QgsPropertyDefinition::DataTypeString, QObject::tr( "Arrow head type" ), QObject::tr( "string " ) + "[<b>single</b>|<b>reversed</b>|<b>double</b>]"_L1, origin ) },
     { static_cast< int >( QgsSymbolLayer::Property::ArrowType ),
-      QgsPropertyDefinition( "arrowType", QgsPropertyDefinition::DataTypeString, QObject::tr( "Arrow type" ), QObject::tr( "string " ) + "[<b>plain</b>|<b>lefthalf</b>|<b>righthalf</b>]"_L1, origin ) },
+      QgsPropertyDefinition( "arrowType", QgsPropertyDefinition::DataTypeString, QObject::tr( "Arrow type" ), QObject::tr( "string " ) + "[<b>plain</b>|<b>left_half</b>|<b>right_half</b>]"_L1, origin ) },
     { static_cast< int >( QgsSymbolLayer::Property::PointCount ), QgsPropertyDefinition( "pointCount", QObject::tr( "Point count" ), QgsPropertyDefinition::IntegerPositive, origin ) },
     { static_cast< int >( QgsSymbolLayer::Property::RandomSeed ),
       QgsPropertyDefinition( "randomSeed", QgsPropertyDefinition::DataTypeNumeric, QObject::tr( "Random number seed" ), QObject::tr( "integer > 0, or 0 for completely random sequence" ), origin ) },
@@ -1117,7 +1117,7 @@ QPainterPath generateClipPath( const QgsRenderContext &renderContext, const QStr
       QgsGeos geos( mergedGeom.constGet() );
       mergedGeom = QgsGeometry( geos.simplify( renderContext.maskSettings().simplifyTolerance(), nullptr, renderContext.feedback() ) );
     }
-#if GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR < 10
+#if GEOS_VERSION_NUM < GEOS_COMPUTE_VERSION( 3, 10, 0 )
     // structure would be better, but too old GEOS
     mergedGeom = mergedGeom.makeValid( Qgis::MakeValidMethod::Linework, false, renderContext.feedback() );
 #else

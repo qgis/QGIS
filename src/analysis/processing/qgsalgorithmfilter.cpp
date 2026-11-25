@@ -107,7 +107,7 @@ QVariantMap QgsFilterAlgorithm::processAlgorithm( const QVariantMap &parameters,
   QgsExpressionContext expressionContext = createExpressionContext( parameters, context, source.get() );
   for ( Output *output : std::as_const( mOutputs ) )
   {
-    output->sink.reset( parameterAsSink( parameters, output->name, context, output->destinationIdentifier, source->fields(), source->wkbType(), source->sourceCrs() ) );
+    output->sink = parameterAsSink( parameters, output->name, context, output->destinationIdentifier, source->fields(), source->wkbType(), source->sourceCrs() );
     if ( !output->sink )
       throw QgsProcessingException( invalidSinkError( parameters, output->name ) );
     output->expression.prepare( &expressionContext );

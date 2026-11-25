@@ -382,7 +382,7 @@ class CORE_EXPORT QgsLayerTreeModelLegendNode : public QObject
     explicit QgsLayerTreeModelLegendNode( QgsLayerTreeLayer *nodeL, QObject *parent SIP_TRANSFERTHIS = nullptr );
 
     //! Returns a temporary context or NULLPTR if legendMapViewData are not valid
-    QgsRenderContext *createTemporaryRenderContext() const SIP_FACTORY;
+    std::unique_ptr<QgsRenderContext> createTemporaryRenderContext() const;
 
   protected:
     QgsLayerTreeLayer *mLayerNode = nullptr;
@@ -572,7 +572,7 @@ class CORE_EXPORT QgsSymbolLegendNode : public QgsLayerTreeModelLegendNode
      *
      * \since QGIS 3.36
      */
-    QgsExpressionContextScope *createSymbolScope() const SIP_FACTORY;
+    std::unique_ptr<QgsExpressionContextScope> createSymbolScope() const;
 
 #ifdef SIP_RUN
     // clang-format off

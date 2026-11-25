@@ -79,7 +79,7 @@ QgsPointCloudRenderer::QgsPointCloudRenderer()
   mElevationShadingRenderer.setActiveHillshading( false );
 }
 
-QgsPointCloudRenderer *QgsPointCloudRenderer::load( QDomElement &element, const QgsReadWriteContext &context )
+std::unique_ptr<QgsPointCloudRenderer> QgsPointCloudRenderer::load( QDomElement &element, const QgsReadWriteContext &context )
 {
   if ( element.isNull() )
     return nullptr;
@@ -92,7 +92,7 @@ QgsPointCloudRenderer *QgsPointCloudRenderer::load( QDomElement &element, const 
     return nullptr;
 
   std::unique_ptr< QgsPointCloudRenderer > r( m->createRenderer( element, context ) );
-  return r.release();
+  return r;
 }
 
 QSet<QString> QgsPointCloudRenderer::usedAttributes( const QgsPointCloudRenderContext & ) const

@@ -113,6 +113,12 @@ class CORE_EXPORT QgsRasterAttributeTable
          */
         bool isRamp() const;
 
+        /**
+         * Comparison operator for Field objects. Two fields are considered equal if they have the same name, usage and type.
+         * \since QGIS 4.4
+         */
+        bool operator==( const Field &other ) const { return name == other.name && usage == other.usage && type == other.type; }
+
         QString name;
         Qgis::RasterAttributeTableFieldUsage usage;
         QMetaType::Type type;

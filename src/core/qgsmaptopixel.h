@@ -217,7 +217,7 @@ class CORE_EXPORT QgsMapToPixel
      * Transforms device coordinates to map (world) coordinates.
      *
      * \param p Point to be converted to map cooordinates
-     * \returns QgsPointXY in map coorndiates
+     * \returns QgsPointXY in map coordinates
      */
     QgsPointXY toMapCoordinates( QPoint p ) const
     {

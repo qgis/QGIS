@@ -128,7 +128,7 @@ QgsGeosContext::QgsGeosContext()
   GEOSContext_setNoticeHandler_r( mContext, printGEOSNotice );
   GEOSContext_setErrorHandler_r( mContext, throwQgsGeosException );
 
-#if GEOS_VERSION_MAJOR > 3 || ( GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR >= 15 )
+#if GEOS_VERSION_NUM >= GEOS_COMPUTE_VERSION( 3, 15, 0 )
   // Set CurveToLine and LineToCurve default params to the context.
   // This ensures that if a GEOS method does not support curves, it will linearize
   // any curve geometry input if needed, and will also convert any linear output
@@ -232,7 +232,7 @@ std::unique_ptr<QgsAbstractGeometry> QgsGeos::makeValid( Qgis::MakeValidMethod m
 
   GEOSContextHandle_t context = QgsGeosContext::get();
 
-#if GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR < 10
+#if GEOS_VERSION_NUM < GEOS_COMPUTE_VERSION( 3, 10, 0 )
   if ( method != Qgis::MakeValidMethod::Linework )
     throw QgsNotSupportedException( QObject::tr( "The structured method to make geometries valid requires a QGIS build based on GEOS 3.10 or later" ) );
 
@@ -322,7 +322,7 @@ void QgsGeos::prepareGeometry()
   }
   if ( mGeos )
   {
-#if GEOS_VERSION_MAJOR > 3 || ( GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR >= 15 )
+#if GEOS_VERSION_NUM >= GEOS_COMPUTE_VERSION( 3, 15, 0 )
     if ( mGeometry->hasCurvedSegments() )
     {
       // Segmentize the input until GEOSPrepare_r accepts curves
@@ -333,7 +333,7 @@ void QgsGeos::prepareGeometry()
     {
 #endif
       mGeosPrepared.reset( GEOSPrepare_r( QgsGeosContext::get(), mGeos.get() ) );
-#if GEOS_VERSION_MAJOR > 3 || ( GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR >= 15 )
+#if GEOS_VERSION_NUM >= GEOS_COMPUTE_VERSION( 3, 15, 0 )
     }
 #endif
   }
@@ -742,7 +742,7 @@ bool QgsGeos::distanceWithin( const QgsAbstractGeometry *geom, double maxdist, Q
   {
     if ( mGeosPrepared && !isZVerticalLine( mGeometry->simplifiedTypeRef() ) )
     {
-#if GEOS_VERSION_MAJOR > 3 || ( GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR >= 10 )
+#if GEOS_VERSION_NUM >= GEOS_COMPUTE_VERSION( 3, 10, 0 )
       return GEOSPreparedDistanceWithin_r( context, mGeosPrepared.get(), otherGeosGeom.get(), maxdist );
 #else
       GEOSPreparedDistance_r( context, mGeosPrepared.get(), otherGeosGeom.get(), &distance );
@@ -750,7 +750,7 @@ bool QgsGeos::distanceWithin( const QgsAbstractGeometry *geom, double maxdist, Q
     }
     else
     {
-#if GEOS_VERSION_MAJOR > 3 || ( GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR >= 10 )
+#if GEOS_VERSION_NUM >= GEOS_COMPUTE_VERSION( 3, 10, 0 )
       return GEOSDistanceWithin_r( context, mGeos.get(), otherGeosGeom.get(), maxdist );
 #else
       GEOSDistance_r( context, mGeos.get(), otherGeosGeom.get(), &distance );
@@ -769,7 +769,7 @@ bool QgsGeos::contains( double x, double y, QString *errorMsg, QgsFeedback *feed
   QgsScopedGeosContextRegisterFeedback interrupt( feedback );
   try
   {
-#if GEOS_VERSION_MAJOR > 3 || ( GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR >= 12 )
+#if GEOS_VERSION_NUM >= GEOS_COMPUTE_VERSION( 3, 12, 0 )
     // defer point creation until after prepared geometry check, we may not need it
 #else
     geos::unique_ptr point = createGeosPointXY( x, y, false, 0, false, 0, 2, 0 );
@@ -778,14 +778,14 @@ bool QgsGeos::contains( double x, double y, QString *errorMsg, QgsFeedback *feed
 #endif
     if ( mGeosPrepared ) //use faster version with prepared geometry
     {
-#if GEOS_VERSION_MAJOR > 3 || ( GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR >= 12 )
+#if GEOS_VERSION_NUM >= GEOS_COMPUTE_VERSION( 3, 12, 0 )
       return GEOSPreparedContainsXY_r( context, mGeosPrepared.get(), x, y ) == 1;
 #else
       return GEOSPreparedContains_r( context, mGeosPrepared.get(), point.get() ) == 1;
 #endif
     }
 
-#if GEOS_VERSION_MAJOR > 3 || ( GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR >= 12 )
+#if GEOS_VERSION_NUM >= GEOS_COMPUTE_VERSION( 3, 12, 0 )
     geos::unique_ptr point = createGeosPointXY( x, y, false, 0, false, 0, 2, 0 );
     if ( !point )
       return false;
@@ -910,7 +910,7 @@ bool QgsGeos::intersects( const QgsAbstractGeometry *geom, QString *errorMsg, Qg
   }
 
   QgsScopedGeosContextRegisterFeedback interrupt( feedback );
-#if GEOS_VERSION_MAJOR > 3 || ( GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR >= 12 )
+#if GEOS_VERSION_NUM >= GEOS_COMPUTE_VERSION( 3, 12, 0 )
   // special optimised case for point intersects
   if ( const QgsPoint *point = qgsgeometry_cast< const QgsPoint * >( geom->simplifiedTypeRef() ) )
   {
@@ -963,7 +963,7 @@ bool QgsGeos::contains( const QgsAbstractGeometry *geom, QString *errorMsg, QgsF
     return false;
   }
 
-#if GEOS_VERSION_MAJOR > 3 || ( GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR >= 12 )
+#if GEOS_VERSION_NUM >= GEOS_COMPUTE_VERSION( 3, 12, 0 )
   // special optimised case for point containment
   if ( const QgsPoint *point = qgsgeometry_cast< const QgsPoint * >( geom->simplifiedTypeRef() ) )
   {
@@ -1103,7 +1103,7 @@ QgsGeometryEngine::EngineOperationResult QgsGeos::splitGeometry(
   const QgsAbstractGeometry &splitGeom, QVector<QgsGeometry > &newGeometries, bool topological, QgsPointSequence &topologyTestPoints, QString *errorMsg
 ) const
 {
-#if GEOS_VERSION_MAJOR > 3 || ( GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR >= 15 )
+#if GEOS_VERSION_NUM >= GEOS_COMPUTE_VERSION( 3, 15, 0 )
   if ( !mGeos || !mGeometry )
   {
     return InvalidBaseGeometry;
@@ -1153,7 +1153,11 @@ QgsGeometryEngine::EngineOperationResult QgsGeos::splitGeometry(
     }
     else
     {
-      int nParts = GEOSGetNumGeometries_r( context, split.get() );
+      const int nParts = GEOSGetNumGeometries_r( context, split.get() );
+      if ( nParts == 0 )
+      {
+        return NothingHappened;
+      }
       for ( int i = 0; i < nParts; ++i )
       {
         newGeometries << QgsGeometry( fromGeos( GEOSGetGeometryN_r( context, split.get(), i ) ) );
@@ -1761,7 +1765,7 @@ std::unique_ptr<QgsAbstractGeometry> QgsGeos::fromGeos( const GEOSGeometry *geos
     {
       return sequenceToLinestring( geos, hasZ, hasM );
     }
-#if GEOS_VERSION_MAJOR > 3 || ( GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR >= 15 )
+#if GEOS_VERSION_NUM >= GEOS_COMPUTE_VERSION( 3, 15, 0 )
     case GEOS_CIRCULARSTRING:
     {
       return sequenceToCircularString( geos, hasZ, hasM );
@@ -1782,7 +1786,7 @@ std::unique_ptr<QgsAbstractGeometry> QgsGeos::fromGeos( const GEOSGeometry *geos
     {
       return fromGeosPolygon( geos );
     }
-#if GEOS_VERSION_MAJOR > 3 || ( GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR >= 15 )
+#if GEOS_VERSION_NUM >= GEOS_COMPUTE_VERSION( 3, 15, 0 )
     case GEOS_CURVEPOLYGON:
     {
       return fromGeosCurvePolygon( geos );
@@ -1791,7 +1795,7 @@ std::unique_ptr<QgsAbstractGeometry> QgsGeos::fromGeos( const GEOSGeometry *geos
     case GEOS_MULTIPOINT:
     {
       auto multiPoint = std::make_unique<QgsMultiPoint>();
-      int nParts = GEOSGetNumGeometries_r( context, geos );
+      const int nParts = GEOSGetNumGeometries_r( context, geos );
       multiPoint->reserve( nParts );
       for ( int i = 0; i < nParts; ++i )
       {
@@ -1809,7 +1813,7 @@ std::unique_ptr<QgsAbstractGeometry> QgsGeos::fromGeos( const GEOSGeometry *geos
     case GEOS_MULTILINESTRING:
     {
       auto multiLineString = std::make_unique<QgsMultiLineString>();
-      int nParts = GEOSGetNumGeometries_r( context, geos );
+      const int nParts = GEOSGetNumGeometries_r( context, geos );
       multiLineString->reserve( nParts );
       for ( int i = 0; i < nParts; ++i )
       {
@@ -1821,11 +1825,11 @@ std::unique_ptr<QgsAbstractGeometry> QgsGeos::fromGeos( const GEOSGeometry *geos
       }
       return std::move( multiLineString );
     }
-#if GEOS_VERSION_MAJOR > 3 || ( GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR >= 15 )
+#if GEOS_VERSION_NUM >= GEOS_COMPUTE_VERSION( 3, 15, 0 )
     case GEOS_MULTICURVE:
     {
       auto multiCurve = std::make_unique<QgsMultiCurve>();
-      int nParts = GEOSGetNumGeometries_r( context, geos );
+      const int nParts = GEOSGetNumGeometries_r( context, geos );
       multiCurve->reserve( nParts );
       for ( int i = 0; i < nParts; ++i )
       {
@@ -1839,7 +1843,7 @@ std::unique_ptr<QgsAbstractGeometry> QgsGeos::fromGeos( const GEOSGeometry *geos
     {
       auto multiPolygon = std::make_unique<QgsMultiPolygon>();
 
-      int nParts = GEOSGetNumGeometries_r( context, geos );
+      const int nParts = GEOSGetNumGeometries_r( context, geos );
       multiPolygon->reserve( nParts );
       for ( int i = 0; i < nParts; ++i )
       {
@@ -1851,11 +1855,11 @@ std::unique_ptr<QgsAbstractGeometry> QgsGeos::fromGeos( const GEOSGeometry *geos
       }
       return std::move( multiPolygon );
     }
-#if GEOS_VERSION_MAJOR > 3 || ( GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR >= 15 )
+#if GEOS_VERSION_NUM >= GEOS_COMPUTE_VERSION( 3, 15, 0 )
     case GEOS_MULTISURFACE:
     {
       auto multiSurface = std::make_unique<QgsMultiSurface>();
-      int nParts = GEOSGetNumGeometries_r( context, geos );
+      const int nParts = GEOSGetNumGeometries_r( context, geos );
       multiSurface->reserve( nParts );
       for ( int i = 0; i < nParts; ++i )
       {
@@ -1868,7 +1872,7 @@ std::unique_ptr<QgsAbstractGeometry> QgsGeos::fromGeos( const GEOSGeometry *geos
     case GEOS_GEOMETRYCOLLECTION:
     {
       auto geomCollection = std::make_unique<QgsGeometryCollection>();
-      int nParts = GEOSGetNumGeometries_r( context, geos );
+      const int nParts = GEOSGetNumGeometries_r( context, geos );
       geomCollection->reserve( nParts );
       for ( int i = 0; i < nParts; ++i )
       {
@@ -1884,7 +1888,7 @@ std::unique_ptr<QgsAbstractGeometry> QgsGeos::fromGeos( const GEOSGeometry *geos
   return nullptr;
 }
 
-#if GEOS_VERSION_MAJOR > 3 || ( GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR >= 15 )
+#if GEOS_VERSION_NUM >= GEOS_COMPUTE_VERSION( 3, 15, 0 )
 std::unique_ptr<QgsCurvePolygon> QgsGeos::fromGeosCurvePolygon( const GEOSGeometry *geos )
 {
   GEOSContextHandle_t context = QgsGeosContext::get();
@@ -2011,7 +2015,7 @@ std::unique_ptr<QgsSimpleCurve> QgsGeos::sequenceToSimpleCurve( const GEOSGeomet
   double *z = zOut.data();
   double *m = mOut.data();
 
-#if GEOS_VERSION_MAJOR > 3 || ( GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR >= 10 )
+#if GEOS_VERSION_NUM >= GEOS_COMPUTE_VERSION( 3, 10, 0 )
   GEOSCoordSeq_copyToArrays_r( context, cs, x, y, hasZ ? z : nullptr, hasM ? m : nullptr );
 #else
   for ( unsigned int i = 0; i < nPoints; ++i )
@@ -2044,7 +2048,7 @@ std::unique_ptr<QgsLineString> QgsGeos::sequenceToLinestring( const GEOSGeometry
   return std::unique_ptr<QgsLineString>( qgis::down_cast<QgsLineString *>( sequenceToSimpleCurve( geos, hasZ, hasM ).release() ) );
 }
 
-#if GEOS_VERSION_MAJOR > 3 || ( GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR >= 15 )
+#if GEOS_VERSION_NUM >= GEOS_COMPUTE_VERSION( 3, 15, 0 )
 std::unique_ptr<QgsCircularString> QgsGeos::sequenceToCircularString( const GEOSGeometry *geos, bool hasZ, bool hasM )
 {
   return std::unique_ptr<QgsCircularString>( qgis::down_cast<QgsCircularString *>( sequenceToSimpleCurve( geos, hasZ, hasM ).release() ) );
@@ -2127,20 +2131,20 @@ geos::unique_ptr QgsGeos::asGeos( const QgsAbstractGeometry *geom, double precis
         break;
 
       case Qgis::WkbType::MultiLineString:
-#if !( GEOS_VERSION_MAJOR > 3 || ( GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR >= 15 ) )
+#if GEOS_VERSION_NUM < GEOS_COMPUTE_VERSION( 3, 15, 0 )
       case Qgis::WkbType::MultiCurve:
 #endif
         geosType = GEOS_MULTILINESTRING;
         break;
 
       case Qgis::WkbType::MultiPolygon:
-#if !( GEOS_VERSION_MAJOR > 3 || ( GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR >= 15 ) )
+#if GEOS_VERSION_NUM < GEOS_COMPUTE_VERSION( 3, 15, 0 )
       case Qgis::WkbType::MultiSurface:
 #endif
         geosType = GEOS_MULTIPOLYGON;
         break;
 
-#if GEOS_VERSION_MAJOR > 3 || ( GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR >= 15 )
+#if GEOS_VERSION_NUM >= GEOS_COMPUTE_VERSION( 3, 15, 0 )
       case Qgis::WkbType::MultiCurve:
         geosType = GEOS_MULTICURVE;
         break;
@@ -2188,7 +2192,7 @@ geos::unique_ptr QgsGeos::asGeos( const QgsAbstractGeometry *geom, double precis
       case Qgis::WkbType::LineString:
       case Qgis::WkbType::CircularString:
       case Qgis::WkbType::NurbsCurve:
-#if !( GEOS_VERSION_MAJOR > 3 || ( GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR >= 15 ) )
+#if GEOS_VERSION_NUM < GEOS_COMPUTE_VERSION( 3, 15, 0 )
       case Qgis::WkbType::CompoundCurve:
         return createGeosLinestring( geom, precision, flags );
 #else // GEOS >= 3.15
@@ -2200,12 +2204,12 @@ geos::unique_ptr QgsGeos::asGeos( const QgsAbstractGeometry *geom, double precis
 
       case Qgis::WkbType::Polygon:
       case Qgis::WkbType::Triangle:
-#if !( GEOS_VERSION_MAJOR > 3 || ( GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR >= 15 ) )
+#if GEOS_VERSION_NUM < GEOS_COMPUTE_VERSION( 3, 15, 0 )
       case Qgis::WkbType::CurvePolygon:
 #endif
         return createGeosPolygon( geom, precision, flags );
 
-#if GEOS_VERSION_MAJOR > 3 || ( GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR >= 15 )
+#if GEOS_VERSION_NUM >= GEOS_COMPUTE_VERSION( 3, 15, 0 )
       case Qgis::WkbType::CurvePolygon:
         return createGeosCurvePolygon( geom, precision, flags );
 #endif
@@ -2300,7 +2304,7 @@ std::unique_ptr<QgsAbstractGeometry> QgsGeos::overlay( const QgsAbstractGeometry
           unionGeometry.reset( GEOSUnion_r( context, mGeos.get(), geosGeom.get() ) );
         }
 
-#if !( GEOS_VERSION_MAJOR > 3 || ( GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR >= 15 ) )
+#if GEOS_VERSION_NUM < GEOS_COMPUTE_VERSION( 3, 15, 0 )
         if ( unionGeometry && GEOSGeomTypeId_r( context, unionGeometry.get() ) == GEOS_MULTILINESTRING )
         {
           geos::unique_ptr mergedLines( GEOSLineMerge_r( context, unionGeometry.get() ) );
@@ -2592,7 +2596,7 @@ QgsAbstractGeometry *QgsGeos::convexHull( QString *errorMsg, QgsFeedback *feedba
 
 std::unique_ptr< QgsAbstractGeometry > QgsGeos::concaveHull( double targetPercent, bool allowHoles, QString *errorMsg, QgsFeedback *feedback ) const
 {
-#if GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR < 11
+#if GEOS_VERSION_NUM < GEOS_COMPUTE_VERSION( 3, 11, 0 )
   ( void ) allowHoles;
   ( void ) targetPercent;
   ( void ) errorMsg;
@@ -2616,7 +2620,7 @@ std::unique_ptr< QgsAbstractGeometry > QgsGeos::concaveHull( double targetPercen
 
 std::unique_ptr<QgsAbstractGeometry> QgsGeos::concaveHullOfPolygons( double lengthRatio, bool allowHoles, bool isTight, QString *errorMsg, QgsFeedback *feedback ) const
 {
-#if GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR < 11
+#if GEOS_VERSION_NUM < GEOS_COMPUTE_VERSION( 3, 11, 0 )
   ( void ) allowHoles;
   ( void ) targetPercent;
   ( void ) errorMsg;
@@ -2640,7 +2644,7 @@ std::unique_ptr<QgsAbstractGeometry> QgsGeos::concaveHullOfPolygons( double leng
 
 Qgis::CoverageValidityResult QgsGeos::validateCoverage( double gapWidth, std::unique_ptr<QgsAbstractGeometry> *invalidEdges, QString *errorMsg, QgsFeedback *feedback ) const
 {
-#if GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR < 12
+#if GEOS_VERSION_NUM < GEOS_COMPUTE_VERSION( 3, 12, 0 )
   ( void ) gapWidth;
   ( void ) invalidEdges;
   ( void ) errorMsg;
@@ -2686,7 +2690,7 @@ Qgis::CoverageValidityResult QgsGeos::validateCoverage( double gapWidth, std::un
 
 std::unique_ptr<QgsAbstractGeometry> QgsGeos::simplifyCoverageVW( double tolerance, bool preserveBoundary, QString *errorMsg, QgsFeedback *feedback ) const
 {
-#if GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR < 12
+#if GEOS_VERSION_NUM < GEOS_COMPUTE_VERSION( 3, 12, 0 )
   ( void ) tolerance;
   ( void ) preserveBoundary;
   ( void ) errorMsg;
@@ -2731,7 +2735,7 @@ std::unique_ptr<QgsAbstractGeometry> QgsGeos::unionCoverage( QString *errorMsg, 
 
 std::unique_ptr< QgsAbstractGeometry > QgsGeos::cleanCoverage( const QgsCoverageCleanParameters &parameters, QString *errorMsg, QgsFeedback *feedback ) const
 {
-#if GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR < 14
+#if GEOS_VERSION_NUM < GEOS_COMPUTE_VERSION( 3, 14, 0 )
   ( void ) parameters;
   ( void ) errorMsg;
   ( void ) feedback;
@@ -2795,6 +2799,48 @@ std::unique_ptr< QgsAbstractGeometry > QgsGeos::cleanCoverage( const QgsCoverage
     }
     return nullptr;
   }
+#endif
+}
+
+std::unique_ptr<QgsAbstractGeometry> QgsGeos::extractCoverageEdges( Qgis::CoverageEdgeType edgeType, QString *errorMsg, QgsFeedback *feedback ) const
+{
+#if GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR < 15
+  ( void ) edgeType;
+  ( void ) errorMsg;
+  ( void ) feedback;
+  throw QgsNotSupportedException( QObject::tr( "Extracting coverage edges requires a QGIS build based on GEOS 3.15 or later" ) );
+#else
+  if ( !mGeos )
+  {
+    if ( errorMsg )
+      *errorMsg = u"Input geometry was not set"_s;
+    return nullptr;
+  }
+
+  int geosEdgeType = 0;
+  switch ( edgeType )
+  {
+    case Qgis::CoverageEdgeType::AllEdges:
+      geosEdgeType = 0;
+      break;
+    case Qgis::CoverageEdgeType::Exterior:
+      geosEdgeType = 1;
+      break;
+    case Qgis::CoverageEdgeType::Interior:
+      geosEdgeType = 2;
+      break;
+  }
+
+  try
+  {
+    QgsScopedGeosContextRegisterFeedback interrupt( feedback );
+    geos::unique_ptr edges( GEOSCoverageEdges_r( QgsGeosContext::get(), mGeos.get(), geosEdgeType ) );
+
+    std::unique_ptr< QgsAbstractGeometry> result = fromGeos( edges.get() );
+
+    return result;
+  }
+  CATCH_GEOS_WITH_ERRMSG( nullptr )
 #endif
 }
 
@@ -2937,7 +2983,7 @@ GEOSCoordSequence *QgsGeos::createCoordinateSequence( const QgsCurve *curve, dou
   GEOSContextHandle_t context = QgsGeosContext::get();
   const QgsSimpleCurve *simpleCurve;
 
-#if GEOS_VERSION_MAJOR > 3 || ( GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR >= 15 )
+#if GEOS_VERSION_NUM >= GEOS_COMPUTE_VERSION( 3, 15, 0 )
   if ( QgsWkbTypes::flatType( curve->wkbType() ) == Qgis::WkbType::CircularString )
   {
     simpleCurve = qgsgeometry_cast< const QgsCircularString * >( curve );
@@ -2953,7 +2999,7 @@ GEOSCoordSequence *QgsGeos::createCoordinateSequence( const QgsCurve *curve, dou
       segmentized.reset( curve->curveToLine() );
       simpleCurve = segmentized.get();
     }
-#if GEOS_VERSION_MAJOR > 3 || ( GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR >= 15 )
+#if GEOS_VERSION_NUM >= GEOS_COMPUTE_VERSION( 3, 15, 0 )
   }
 #endif
 
@@ -2972,7 +3018,7 @@ GEOSCoordSequence *QgsGeos::createCoordinateSequence( const QgsCurve *curve, dou
   const bool hasM = false; //disabled until geos supports m-coordinates
 #endif
 
-#if GEOS_VERSION_MAJOR > 3 || ( GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR >= 10 )
+#if GEOS_VERSION_NUM >= GEOS_COMPUTE_VERSION( 3, 10, 0 )
   if ( qgsDoubleNear( precision, 0 ) )
   {
     if ( !forceClose || ( simpleCurve->pointN( 0 ) == simpleCurve->pointN( numPoints - 1 ) ) )
@@ -3208,7 +3254,7 @@ geos::unique_ptr QgsGeos::createGeosLinestring( const QgsAbstractGeometry *curve
   return geosGeom;
 }
 
-#if GEOS_VERSION_MAJOR > 3 || ( GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR >= 15 )
+#if GEOS_VERSION_NUM >= GEOS_COMPUTE_VERSION( 3, 15, 0 )
 geos::unique_ptr QgsGeos::createGeosSimpleCurve( const QgsAbstractGeometry *curve, double precision, Qgis::GeosCreationFlags )
 {
   const QgsCurve *c = qgsgeometry_cast<const QgsCurve *>( curve );
@@ -3992,7 +4038,7 @@ std::unique_ptr<QgsAbstractGeometry> QgsGeos::delaunayTriangulation( double tole
 
 std::unique_ptr<QgsAbstractGeometry> QgsGeos::constrainedDelaunayTriangulation( QString *errorMsg, QgsFeedback *feedback ) const
 {
-#if GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR < 11
+#if GEOS_VERSION_NUM < GEOS_COMPUTE_VERSION( 3, 11, 0 )
   ( void ) errorMsg;
   throw QgsNotSupportedException( QObject::tr( "Calculating constrainedDelaunayTriangulation requires a QGIS build based on GEOS 3.11 or later" ) );
 #else
@@ -4552,7 +4598,7 @@ int QgsGeos::geomDigits( const GEOSGeometry *geom )
 }
 
 QgsScopedGeosContextRegisterFeedback::QgsScopedGeosContextRegisterFeedback( QgsFeedback *feedback )
-#if GEOS_VERSION_MAJOR > 3 || ( GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR >= 14 )
+#if GEOS_VERSION_NUM >= GEOS_COMPUTE_VERSION( 3, 14, 0 )
   : mFeedback( feedback )
 {
   GEOSContext_setInterruptCallback_r( QgsGeosContext::get(), &callback, reinterpret_cast< void * >( mFeedback ) );
@@ -4566,12 +4612,12 @@ QgsScopedGeosContextRegisterFeedback::QgsScopedGeosContextRegisterFeedback( QgsF
 
 QgsScopedGeosContextRegisterFeedback::~QgsScopedGeosContextRegisterFeedback()
 {
-#if GEOS_VERSION_MAJOR > 3 || ( GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR >= 14 )
+#if GEOS_VERSION_NUM >= GEOS_COMPUTE_VERSION( 3, 14, 0 )
   GEOSContext_setInterruptCallback_r( QgsGeosContext::get(), nullptr, nullptr );
 #endif
 }
 
-#if GEOS_VERSION_MAJOR > 3 || ( GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR >= 14 )
+#if GEOS_VERSION_NUM >= GEOS_COMPUTE_VERSION( 3, 14, 0 )
 int QgsScopedGeosContextRegisterFeedback::callback( void *userData )
 {
   if ( !userData )

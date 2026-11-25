@@ -48,7 +48,7 @@ class GUI_EXPORT QgsMapToolCaptureRubberBand : public QgsGeometryRubberBand
      *
      * The caller takes onwnership of the returned object.
      */
-    QgsCurve *curve() SIP_FACTORY;
+    std::unique_ptr<QgsCurve> curve();
 
     /**
      * Returns if the curve defined by the rubber band is complete :
@@ -120,9 +120,9 @@ class GUI_EXPORT QgsMapToolCaptureRubberBand : public QgsGeometryRubberBand
     void setGeometry( QgsAbstractGeometry *geom ) override;
     void updateCurve();
 
-    QgsCurve *createLinearString();
-    QgsCurve *createCircularString();
-    QgsCurve *createNurbsCurve();
+    std::unique_ptr<QgsCurve> createLinearString();
+    std::unique_ptr<QgsCurve> createCircularString();
+    std::unique_ptr<QgsCurve> createNurbsCurve();
 
     QgsPointSequence mPoints;
     QVector<double> mWeights; //!< Weights for NURBS control points

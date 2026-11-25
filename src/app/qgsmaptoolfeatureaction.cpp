@@ -144,7 +144,7 @@ bool QgsMapToolFeatureAction::doAction( QgsVectorLayer *layer, int x, int y )
       QgsExpression exp( layer->displayExpression() );
       exp.prepare( &context );
 
-      QMenu *featureMenu = new QMenu();
+      QMenu *featureMenu = new QMenu( mCanvas );
       for ( const QgsFeature &feature : std::as_const( features ) )
       {
         context.setFeature( feature );
@@ -163,6 +163,7 @@ bool QgsMapToolFeatureAction::doAction( QgsVectorLayer *layer, int x, int y )
         }
       } );
       featureMenu->exec( position );
+      delete featureMenu;
     }
     return true;
   }

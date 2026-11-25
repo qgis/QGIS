@@ -550,6 +550,7 @@ ALLOWED_NON_CLASS_ENUMS = [
 CLASS_HEADERFILES = {
     "QgsAbstractFeatureIteratorFromSource": "qgsfeatureiterator.h",
     "QgsSettingsEntryBaseTemplate": "qgssettingsentry.h",
+    "QgsSettingsEditorWidgetWrapperTemplate": "qgssettingseditorwidgetwrapperimpl.h",
 }
 
 QLIST_ENUM_CONVERSION_CODE = """
@@ -2487,7 +2488,7 @@ def process_class_decl():
         # Nested classes don't need this #include, since SIP will also include
         # the one defined on the parent class
         write_include = len(CONTEXT.class_and_struct) <= 1
-        write_header_code = write_include or template_inheritance_template
+        write_header_code = write_include
         if write_header_code:
             CONTEXT.current_line += "\n%TypeHeaderCode"
         if write_include:
@@ -2504,26 +2505,38 @@ def process_class_decl():
             cls3 = template_inheritance_class3.pop()
 
             if cls2 == "":
-                # We use /NoTypeName/ to say that this typedef is not present in actual QGIS headers
-                CONTEXT.current_line = f"\ntypedef {tpl}<{cls1}> {tpl}{cls1}Base /NoTypeName/;\n\n{CONTEXT.current_line}"
+                base_type = f"{tpl}<{cls1}>"
+                base_name = f"{tpl}{cls1}Base"
             elif cls3 == "":
-                CONTEXT.current_line = f"\ntypedef {tpl}<{cls1},{cls2}> {tpl}{cls1}{cls2}Base /NoTypeName/;\n\n{CONTEXT.current_line}"
+                base_type = f"{tpl}<{cls1},{cls2}>"
+                base_name = f"{tpl}{cls1}{cls2}Base"
             else:
-                CONTEXT.current_line = f"\ntypedef {tpl}<{cls1},{cls2},{cls3}> {tpl}{cls1}{cls2}{cls3}Base /NoTypeName/;\n\n{CONTEXT.current_line}"
+                base_type = f"{tpl}<{cls1},{cls2},{cls3}>"
+                base_name = f"{tpl}{cls1}{cls2}{cls3}Base"
 
-            if tpl not in CONTEXT.declared_classes:
+            if base_name not in CONTEXT.declared_classes:
+                CONTEXT.declared_classes.append(base_name)
+
                 tpl_header = CLASS_HEADERFILES.get(tpl, f"{tpl.lower()}.h")
-                CONTEXT.current_line += f'\n#include "{tpl_header}"'
+                include_code = f'#include "{tpl_header}"\n'
 
-            if cls2 == "":
-                CONTEXT.current_line += f"\ntypedef {tpl}<{cls1}> {tpl}{cls1}Base;"
-            elif cls3 == "":
-                CONTEXT.current_line += (
-                    f"\ntypedef {tpl}<{cls1},{cls2}> {tpl}{cls1}{cls2}Base;"
+                # template typedefs HAVE to be present up at the module level, otherwise
+                # sip's splitting code doesn't prevent the typedef from being placed into a different
+                # cpp file to the class which inherits it, which is fragile and randomly breaks
+                # the sip build as the part splitting breaks jump around...
+                module_header = (
+                    f"\n%ModuleHeaderCode\n"
+                    f"{include_code}"
+                    f"typedef {base_type} {base_name};\n"
+                    f"%End\n"
                 )
-            else:
-                CONTEXT.current_line += f"\ntypedef {tpl}<{cls1},{cls2},{cls3}> {tpl}{cls1}{cls2}{cls3}Base;"
 
+                # We use /NoTypeName/ to say that this typedef is not present in actual QGIS headers
+                sip_typedef = f"\ntypedef {base_type} {base_name} /NoTypeName/;\n\n"
+
+                CONTEXT.current_line = (
+                    f"{module_header}{sip_typedef}{CONTEXT.current_line}"
+                )
         if (
             any(x == Visibility.Private for x in CONTEXT.access)
             and len(CONTEXT.access) != 1

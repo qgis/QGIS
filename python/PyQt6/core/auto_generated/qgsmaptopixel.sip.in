@@ -135,7 +135,7 @@ Transforms device coordinates to map (world) coordinates.
 
 :param p: Point to be converted to map cooordinates
 
-:return: :py:class:`QgsPointXY` in map coorndiates
+:return: :py:class:`QgsPointXY` in map coordinates
 %End
 
  QgsPointXY toMapPoint( double x, double y ) const /Deprecated="Since 3.4. Use toMapCoordinates() instead."/;

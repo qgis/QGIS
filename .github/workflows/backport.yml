@@ -17,9 +17,16 @@ jobs:
       pull-requests: write
 
     steps:
+      - name: Generate update bot token
+        id: bot-token
+        uses: actions/create-github-app-token@v3
+        with:
+          client-id: ${{ secrets.QGIS_APP_BOT_CLIENT_ID }}
+          private-key: ${{ secrets.QGIS_APP_BOT_PRIVATE_KEY }}
+          
       - name: Backport Bot
         id: backport
         if: github.event.pull_request.merged && ( ( github.event.action == 'closed' && contains( join( github.event.pull_request.labels.*.name ), 'backport') ) || contains( github.event.label.name, 'backport' ) )
         uses: m-kuhn/backport@b136a03dc85314c06e342394a581d30b65018916 #v1.2.8
         with:
-          github_token: ${{ secrets.GH_TOKEN_BOT }}
+          github_token: ${{ steps.bot-token.outputs.token }}

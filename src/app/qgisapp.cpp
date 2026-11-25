@@ -87,6 +87,7 @@ using namespace Qt::StringLiterals;
 
 #include "qgsmaplayerutils.h"
 #include "qgsappmenuutils.h"
+#include "qgsconfig.h"
 #include "qgsscreenhelper.h"
 #include "qgssettingsregistrycore.h"
 #include "qgssettingsentryenumflag.h"
@@ -118,6 +119,7 @@ using namespace Qt::StringLiterals;
 #include "qgsmaplayerfactory.h"
 #include "qgsprocessingwidgetcontext.h"
 #include "qgsprocessingmodelprovider.h"
+#include "qgsmodeldesignerdialog.h"
 #include "processing/qgsprocessingtoolboxdock.h"
 
 #include "qgsbrowserwidget.h"
@@ -195,7 +197,7 @@ using namespace Qt::StringLiterals;
 #include "qgsdirectionallightsettings.h"
 #endif
 
-#ifdef WITH_SFCGAL
+#ifdef HAVE_SFCGAL
 #include <SFCGAL/capi/sfcgal_c.h>
 #include <SFCGAL/version.h>
 #endif
@@ -271,6 +273,7 @@ using namespace Qt::StringLiterals;
 #include "qgsbookmarkeditordialog.h"
 #include "qgsbrowserdockwidget.h"
 #include "qgsclipboard.h"
+#include "qgscolorschemeregistry.h"
 #include "qgsconfigureshortcutsdialog.h"
 #include "qgscoordinatetransform.h"
 #include "qgscoordinateutils.h"
@@ -345,6 +348,7 @@ using namespace Qt::StringLiterals;
 #include "qgslayoutatlas.h"
 #include "qgslayoutcustomdrophandler.h"
 #include "qgslayoutdesignerdialog.h"
+#include "qgsprocessingmodelalgorithm.h"
 #include "qgslayoutitemguiregistry.h"
 #include "qgslayoutmanager.h"
 #include "qgslayoutqptdrophandler.h"
@@ -748,7 +752,7 @@ void QgisApp::layerTreeViewDoubleClicked( const QModelIndex &index )
     case Qgis::LegendLayerDoubleClickAction::AttributeTable:
     {
       QgsSettings settings;
-      QgsAttributeTableFilterModel::FilterMode initialMode = settings.enumValue( u"qgis/attributeTableBehavior"_s, QgsAttributeTableFilterModel::ShowAll );
+      Qgis::AttributeTableFilterMode initialMode = settings.enumValue( u"qgis/attributeTableBehavior"_s, Qgis::AttributeTableFilterMode::ShowAll );
       QgisApp::instance()->attributeTable( initialMode );
       break;
     }
@@ -1030,8 +1034,6 @@ const QgsSettingsEntryBool *QgisApp::settingsProjOpenedOKAtLaunch
   = new QgsSettingsEntryBool( u"project-opened-ok-at-launch"_s, QgsSettingsTree::sTreeProject, true, u"Whether the project specified to open at launch was opened successfully last time"_s );
 const QgsSettingsEntryBool *QgisApp::settingsShowScriptWarning
   = new QgsSettingsEntryBool( u"show-script-warning"_s, QgsSettingsTree::sTreeApp, true, u"Whether to warn the user before running a Python script embedded in a project"_s );
-const QgsSettingsEntryBool *QgisApp::settingsDisplayWaylandWarning
-  = new QgsSettingsEntryBool( u"display-wayland-warning"_s, QgsSettingsTree::sTreeGui, true, u"Whether to show the warning dialog when running QGIS under Wayland"_s );
 const QgsSettingsEntryBool *QgisApp::settingsRestoreDefaultWindowState
   = new QgsSettingsEntryBool( u"restore-default-window-state"_s, QgsSettingsTree::sTreeApp, false, u"Whether to restore the default window state on next QGIS startup"_s );
 
@@ -1153,6 +1155,10 @@ QgisApp::QgisApp(
   // set project linked to main canvas
   mMapCanvas->setProject( QgsProject::instance() );
   endProfile();
+
+  QgsApplication::colorSchemeRegistry()->setProject( QgsProject::instance() );
+  connect( this, &QgisApp::newProject, this, [] { QgsApplication::colorSchemeRegistry()->setProject( QgsProject::instance() ); } );
+  connect( this, &QgisApp::projectRead, this, [] { QgsApplication::colorSchemeRegistry()->setProject( QgsProject::instance() ); } );
 
   // what type of project to auto-open
   mProjOpen = settingsProjOpenAtLaunch->value();
@@ -1814,7 +1820,7 @@ QgisApp::QgisApp(
     toggleMapTips( true );
   }
 
-  connect( mActionModelDesigner, &QAction::triggered, mAppProcessingUtils.get(), &QgsAppProcessingUtils::openModelDesigner );
+  connect( mActionModelDesigner, &QAction::triggered, mAppProcessingUtils.get(), [this] { mAppProcessingUtils->openModelDesignerDialog( nullptr ); } );
   connect( mProcessingHistoryAction, &QAction::triggered, mAppProcessingUtils.get(), &QgsAppProcessingUtils::openHistory );
 
   mPythonMacrosEnabled = false;
@@ -1923,7 +1929,7 @@ QgisApp::QgisApp(
   std::sort( actions.begin(), actions.end(), cmpByText_ );
   mPanelMenu->insertActions( nullptr, actions );
 
-  mBearingNumericFormat.reset( QgsLocalDefaultSettings::bearingFormat() );
+  mBearingNumericFormat = QgsLocalDefaultSettings::bearingFormat();
 
   mNetworkLoggerWidgetFactory.reset( std::make_unique<QgsNetworkLoggerWidgetFactory>( mNetworkLogger ) );
   mQueryLoggerWidgetFactory.reset( std::make_unique<QgsDatabaseQueryLoggerWidgetFactory>( mQueryLogger ) );
@@ -2045,46 +2051,6 @@ QgisApp::QgisApp(
 
   mDevToolsWidget->setActiveTab( lastDevToolsTab );
 
-  if ( QGuiApplication::platformName() == "wayland"_L1 )
-  {
-    const bool displayWaylandWarning = settingsDisplayWaylandWarning->value();
-    if ( displayWaylandWarning )
-    {
-      const QString shortMessage = tr( "Wayland session detected: User experience will be degraded" );
-      QgsMessageBarItem *messageWidget = QgsMessageBar::createMessage( QString(), shortMessage );
-
-      QPushButton *detailsButton = new QPushButton( tr( "More Info" ) );
-      connect( detailsButton, &QPushButton::clicked, this, [detailsButton] {
-        QgsMessageViewer *dialog = new QgsMessageViewer( detailsButton );
-        dialog->setTitle( tr( "Wayland Session Detected" ) );
-        // NOTE: black coloring MUST be specified here or the message shows white-on-white on wayland sessions 🙃
-        const QString warning = u"<p style=\"color: black\">%1</p><p style=\"color: black\"><b>%2</b></p>"_s.arg(
-          tr(
-            "Running QGIS in a Wayland session will result "
-            "in a degraded experience due to limitations in the "
-            "underlying Qt library and current versions of the Wayland protocol."
-          ),
-          tr(
-            "It is highly recommended that you switch to a traditional X11 session "
-            "for an optimal user experience."
-          )
-        );
-        dialog->setMessageAsHtml( warning );
-        dialog->showMessage();
-      } );
-      messageWidget->layout()->addWidget( detailsButton );
-
-      QPushButton *ignoreButton = new QPushButton( tr( "Ignore" ) );
-      connect( ignoreButton, &QPushButton::clicked, this, [this, messageWidget] {
-        QgisApp::settingsDisplayWaylandWarning->setValue( false );
-        messageBar()->popWidget( messageWidget );
-      } );
-      messageWidget->layout()->addWidget( ignoreButton );
-
-      messageBar()->pushWidget( messageWidget, Qgis::MessageLevel::Critical, 0 );
-    }
-  }
-
   startProfile( tr( "Welcome screen" ) );
   connect( this, &QgisApp::pluginUpdatesAvailable, this, [this]( const QStringList &plugins ) {
     const QString updateMessage = tr( "Plugin update(s) available: %1" ).arg( plugins.join( ", "_L1 ) );
@@ -2170,7 +2136,9 @@ QgisApp::QgisApp()
   mLayerTreeView = new QgsLayerTreeView( this );
   QgsLayerTreeModel *model = new QgsLayerTreeModel( QgsProject::instance()->layerTreeRoot(), this );
   mLayerTreeView->setModel( model );
-  mUndoWidget = new QgsUndoWidget( nullptr, mMapCanvas );
+  mUndoDock = new QgsDockWidget( tr( "Undo/Redo" ), this );
+  mUndoWidget = new QgsUndoWidget( mUndoDock, mMapCanvas );
+  mUndoDock->setWidget( mUndoWidget );
   mUserInputDockWidget = new QgsUserInputWidget( this );
   mInfoBar = new QgsMessageBar( centralWidget() );
   mLayerTreeView->setMessageBar( mInfoBar );
@@ -2182,12 +2150,14 @@ QgisApp::QgisApp()
   mDigitizingTechniqueManager = new QgsMapToolsDigitizingTechniqueManager( this );
 
   mVectorLayerTools = new QgsGuiVectorLayerTools();
-  mBearingNumericFormat.reset( QgsLocalDefaultSettings::bearingFormat() );
+  mBearingNumericFormat = QgsLocalDefaultSettings::bearingFormat();
 
   mMapCanvas->setUserInputWidget( mUserInputDockWidget );
   mMapCanvas->setMessageBar( mInfoBar );
 
   connect( mLayerTreeView, &QgsLayerTreeView::currentLayerChanged, this, &QgisApp::onActiveLayerChanged );
+
+  mFeatureActionMenu = new QMenu( this );
   // More tests may need more members to be initialized
 }
 
@@ -3171,12 +3141,12 @@ void QgisApp::createActions()
   connect( mActionAddVirtualLayer, &QAction::triggered, this, [this] { dataSourceManager( u"virtual"_s ); } );
   connect( mActionOpenTable, &QAction::triggered, this, [this] {
     QgsSettings settings;
-    QgsAttributeTableFilterModel::FilterMode initialMode = settings.enumValue( u"qgis/attributeTableBehavior"_s, QgsAttributeTableFilterModel::ShowAll );
+    Qgis::AttributeTableFilterMode initialMode = settings.enumValue( u"qgis/attributeTableBehavior"_s, Qgis::AttributeTableFilterMode::ShowAll );
     attributeTable( initialMode );
   } );
-  connect( mActionOpenTableSelected, &QAction::triggered, this, [this] { attributeTable( QgsAttributeTableFilterModel::ShowSelected ); } );
-  connect( mActionOpenTableVisible, &QAction::triggered, this, [this] { attributeTable( QgsAttributeTableFilterModel::ShowVisible ); } );
-  connect( mActionOpenTableEdited, &QAction::triggered, this, [this] { attributeTable( QgsAttributeTableFilterModel::ShowEdited ); } );
+  connect( mActionOpenTableSelected, &QAction::triggered, this, [this] { attributeTable( Qgis::AttributeTableFilterMode::ShowSelected ); } );
+  connect( mActionOpenTableVisible, &QAction::triggered, this, [this] { attributeTable( Qgis::AttributeTableFilterMode::ShowVisible ); } );
+  connect( mActionOpenTableEdited, &QAction::triggered, this, [this] { attributeTable( Qgis::AttributeTableFilterMode::ShowEdited ); } );
   connect( mActionOpenFieldCalc, &QAction::triggered, this, &QgisApp::fieldCalculator );
   connect( mActionToggleEditing, &QAction::triggered, this, [this] { toggleEditing(); } );
   connect( mActionSaveLayerEdits, &QAction::triggered, this, &QgisApp::saveActiveLayerEdits );
@@ -3838,10 +3808,6 @@ void QgisApp::createToolBars()
   // vector layer edits tool buttons
   QToolButton *tbAllEdits = qobject_cast<QToolButton *>( mDigitizeToolBar->widgetForAction( mActionAllEdits ) );
   tbAllEdits->setPopupMode( QToolButton::InstantPopup );
-
-  // new project from template tool button
-  QToolButton *tbNewProjectFromTemplate = qobject_cast<QToolButton *>( mFileToolBar->widgetForAction( mProjectFromTemplateMenu->menuAction() ) );
-  tbNewProjectFromTemplate->setPopupMode( QToolButton::InstantPopup );
 
   // new layer tool button
 
@@ -4571,6 +4537,7 @@ void QgisApp::setupConnections()
   connect( this, &QgisApp::initializationCompleted, this, [this] {
     fileOpenAfterLaunch();
     connect( QgsProject::instance(), &QgsProject::layersAdded, this, &QgisApp::showMapCanvas );
+    connect( this, &QgisApp::newProject, this, &QgisApp::showMapCanvas );
   } );
 
   // Connect warning dialog from project reading
@@ -5084,6 +5051,7 @@ void QgisApp::initLayerTreeView()
   connect( actionCollapseAll, &QAction::triggered, mLayerTreeView, &QgsLayerTreeView::collapseAllNodes );
 
   QToolBar *toolbar = new QToolBar();
+  toolbar->setObjectName( u"mLayerTreeToolBar"_s );
   toolbar->setIconSize( QgsGui::iconSize( Qgis::UserInterfaceIconType::DockedToolbar ) );
   toolbar->addAction( mActionStyleDock );
   toolbar->addAction( actionAddGroup );
@@ -5360,7 +5328,7 @@ void QgisApp::updateRecentProjectPaths()
   if ( !mRecentProjects.isEmpty() )
   {
     mRecentProjectsMenu->addSeparator();
-    QAction *clearRecentProjectsAction = mRecentProjectsMenu->addAction( tr( "Clear List" ) );
+    QAction *clearRecentProjectsAction = mRecentProjectsMenu->addAction( tr( "Clear List…" ) );
     connect( clearRecentProjectsAction, &QAction::triggered, mWelcomeScreen, [this]() { mWelcomeScreen->clearRecentProjects(); } );
   }
 
@@ -5502,8 +5470,14 @@ void QgisApp::updateProjectFromTemplates()
 {
   // Remove existing entries
   mProjectFromTemplateMenu->clear();
-  mProjectTemplateWatcher.removePaths( mProjectTemplateWatcher.directories() );
-  mProjectTemplateWatcher.addPaths( QgsApplication::projectTemplatePaths() );
+  if ( !mProjectTemplateWatcher.directories().isEmpty() )
+  {
+    mProjectTemplateWatcher.removePaths( mProjectTemplateWatcher.directories() );
+  }
+  if ( !QgsApplication::projectTemplatePaths().isEmpty() )
+  {
+    mProjectTemplateWatcher.addPaths( QgsApplication::projectTemplatePaths() );
+  }
 
   const QFontMetrics fontMetrics = mProjectFromTemplateMenu->fontMetrics();
   const int maxLabelWidth = Qgis::UI_SCALE_FACTOR * fontMetrics.horizontalAdvance( 'X' ) * 35;
@@ -5527,16 +5501,33 @@ void QgisApp::updateProjectFromTemplates()
       QMenu *dirMenu = mProjectFromTemplateMenu->addMenu( fontMetrics.elidedText( label, Qt::ElideLeft, maxLabelWidth ) );
       for ( const QString &templateFile : templateFiles )
       {
-        dirMenu->addAction( templateFile, [this, templateDirName, templateFile]() { fileNewFromTemplate( templateDirName + QDir::separator() + templateFile ); } );
+        dirMenu->addAction( templateFile, this, [this, templateDirName, templateFile]() { fileNewFromTemplate( templateDirName + QDir::separator() + templateFile ); } );
       }
     }
   }
 
   // add <blank> entry, which loads a blank template (regardless of "default template")
   if ( settingsNewProjectDefault->value() )
-    mProjectFromTemplateMenu->addAction( tr( "< Blank >" ), [this]() { fileNewBlank(); } );
+    mProjectFromTemplateMenu->addAction( tr( "< Blank >" ), this, [this]() { fileNewBlank(); } );
 
-  mProjectFromTemplateMenu->menuAction()->setEnabled( !mProjectFromTemplateMenu->isEmpty() );
+  if ( mProjectFromTemplateMenu->isEmpty() )
+  {
+    if ( mProjectTemplateToolbarAction )
+    {
+      mProjectTemplateToolbarAction->deleteLater();
+    }
+  }
+  else if ( !mProjectTemplateToolbarAction )
+  {
+    mProjectTemplateToolbarAction = new QgsToolButtonAction();
+    mProjectTemplateToolbarAction->setAutoRaise( true );
+    mProjectTemplateToolbarAction->setText( tr( "New from Template" ) );
+    mProjectTemplateToolbarAction->setToolTip( tr( "New from Template" ) );
+    mProjectTemplateToolbarAction->setIcon( QgsApplication::getThemeIcon( u"/mActionFileNewFromTemplate.svg"_s ) );
+    mProjectTemplateToolbarAction->setPopupMode( QToolButton::InstantPopup );
+    mProjectTemplateToolbarAction->setMenu( mProjectFromTemplateMenu );
+    mFileToolBar->insertAction( mActionOpenProject, mProjectTemplateToolbarAction );
+  }
 
   // Reload welcome screen
   if ( mWelcomeScreen )
@@ -5753,7 +5744,7 @@ QString QgisApp::getVersionString()
   versionString += "</td></tr><tr>"_L1;
 
   // SFCGAL version
-#ifdef WITH_SFCGAL
+#ifdef HAVE_SFCGAL
   const QString sfcgalVersionCompiled { SFCGAL_VERSION };
   const QString sfcgalVersionRunning { sfcgal_version() };
   versionString += u"<td>%1</td><td>%2"_s.arg( tr( "SFCGAL version" ), sfcgalVersionCompiled );
@@ -8206,7 +8197,7 @@ void QgisApp::fieldCalculator()
   }
 }
 
-void QgisApp::attributeTable( QgsAttributeTableFilterModel::FilterMode filter, const QString &filterExpression )
+void QgisApp::attributeTable( Qgis::AttributeTableFilterMode filter, const QString &filterExpression )
 {
   QgsVectorLayer *myLayer = qobject_cast<QgsVectorLayer *>( activeLayer() );
   if ( !myLayer || !myLayer->dataProvider() )
@@ -8446,16 +8437,17 @@ void QgisApp::makeMemoryLayerPermanent( QgsVectorLayer *layer )
         layerNameForRename = newLayerName;
       }
 
-      if ( layerNameForRename != vl->name() )
+      if ( layerNameForRename.compare( vl->name(), Qt::CaseInsensitive ) != 0 )
       {
         QPushButton *button = new QPushButton( tr( "Also rename layer in layers panel" ), this );
         barItem->setWidget( button );
 
         connect( vl, &QgsVectorLayer::willBeDeleted, barItem, [button]() { button->setEnabled( false ); } );
 
-        connect( button, &QPushButton::clicked, vl, [button, vl, layerNameForRename]() {
+        connect( button, &QPushButton::clicked, vl, [this, button, vl, layerNameForRename, barItem]() {
           vl->setName( layerNameForRename );
           button->setEnabled( false );
+          visibleMessageBar()->popWidget( barItem );
         } );
       }
 
@@ -10224,7 +10216,7 @@ void QgisApp::selectByForm()
       return;
     }
 
-    QgsAttributeTableDialog *dialog = new QgsAttributeTableDialog( vlayer, QgsAttributeTableFilterModel::FilterMode::ShowFilteredList );
+    QgsAttributeTableDialog *dialog = new QgsAttributeTableDialog( vlayer, Qgis::AttributeTableFilterMode::ShowFilteredList );
     dialog->setFilterExpression( filter );
     dialog->setView( QgsDualView::ViewMode::AttributeEditor );
     dialog->show();
@@ -10317,7 +10309,7 @@ void QgisApp::pasteFromClipboard( QgsMapLayer *destinationLayer )
   const bool duplicateFeature = clipboard()->layer() == pasteVectorLayer;
 
   pasteVectorLayer->beginEditCommand( tr( "Features pasted" ) );
-  QgsFeatureList features = clipboard()->transformedCopyOf( pasteVectorLayer->crs(), pasteVectorLayer->fields() );
+  QgsFeatureList features = clipboard()->transformedCopyOf( pasteVectorLayer );
   int nTotalFeatures = features.count();
   QgsFeatureList pastedFeatures;
   // Count collapsed geometries
@@ -11061,7 +11053,6 @@ bool QgisApp::toggleEditingVectorLayer( QgsVectorLayer *vlayer, bool allowCancel
     QStringList rollBackErrors;
     QgsProject::instance()->rollBack( rollBackErrors, true, vlayer );
 
-    res = true;
     vlayer->triggerRepaint();
   }
 
@@ -11084,7 +11075,7 @@ bool QgisApp::toggleEditingMeshLayer( QgsMeshLayer *mlayer, bool allowCancel )
   if ( !mlayer->supportsEditing() )
     return false;
 
-  bool res = false;
+  bool res = true;
 
   QgsCoordinateTransform transform( mlayer->crs(), mMapCanvas->mapSettings().destinationCrs(), QgsProject::instance() );
 
@@ -11229,7 +11220,7 @@ bool QgisApp::toggleEditingPointCloudLayer( QgsPointCloudLayer *pclayer, bool al
   if ( !pclayer->supportsEditing() )
     return false;
 
-  bool res = false;
+  bool res = true;
 
   if ( !pclayer->isEditable() )
   {
@@ -11958,8 +11949,7 @@ void QgisApp::removeLayer()
 
   for ( QgsMapLayer *layer : selectedLayers )
   {
-    QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( layer );
-    if ( vlayer && vlayer->isEditable() && !toggleEditing( vlayer, true ) )
+    if ( layer->isEditable() && !toggleEditing( layer, true ) )
       return;
   }
 
@@ -16712,7 +16702,7 @@ void QgisApp::readProject( const QDomDocument &doc )
         if ( layer->isValid() )
         {
           bool initiallyDocked = attributeTableElement.attribute( u"isDocked"_s, u"0"_s ).toInt() == 1;
-          const QgsAttributeTableFilterModel::FilterMode filterMode = qgsEnumKeyToValue( attributeTableElement.attribute( u"filterMode"_s ), QgsAttributeTableFilterModel::ShowAll );
+          const Qgis::AttributeTableFilterMode filterMode = qgsEnumKeyToValue( attributeTableElement.attribute( u"filterMode"_s ), Qgis::AttributeTableFilterMode::ShowAll );
 
           QgsAttributeTableDialog *dialog = new QgsAttributeTableDialog( layer, filterMode, nullptr, Qt::Window, &initiallyDocked );
           dialog->readXml( attributeTableElement );

@@ -47,7 +47,7 @@ namespace Qt3DRender
  *
  * \since QGIS 3.44
  */
-class QgsForwardRenderView : public QgsAbstractRenderView
+class _3D_EXPORT QgsForwardRenderView : public QgsAbstractRenderView
 {
   public:
     //! Constructor with 3D scene camera

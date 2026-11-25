@@ -23,6 +23,7 @@
 #include "qgscolorutils.h"
 #include "qgscoordinateformatter.h"
 #include "qgscoordinatereferencesystem.h"
+#include "qgsdatadefinedutils.h"
 #include "qgsexception.h"
 #include "qgsexpressioncontext.h"
 #include "qgsexpressioncontextutils.h"
@@ -2247,16 +2248,22 @@ bool QgsLayoutItemMapGrid::shouldShowForDisplayMode( Qgis::MapGridAnnotationType
 
 Qgis::MapGridComponentVisibility gridAnnotationDisplayModeFromDD( QString ddValue, Qgis::MapGridComponentVisibility defValue )
 {
-  if ( ddValue.compare( "x_only"_L1, Qt::CaseInsensitive ) == 0 )
-    return Qgis::MapGridComponentVisibility::LatitudeOnly;
-  else if ( ddValue.compare( "y_only"_L1, Qt::CaseInsensitive ) == 0 )
-    return Qgis::MapGridComponentVisibility::LongitudeOnly;
-  else if ( ddValue.compare( "disabled"_L1, Qt::CaseInsensitive ) == 0 )
-    return Qgis::MapGridComponentVisibility::HideAll;
-  else if ( ddValue.compare( "all"_L1, Qt::CaseInsensitive ) == 0 )
-    return Qgis::MapGridComponentVisibility::ShowAll;
+  static constexpr auto VISIBILITY_MAP = makeDataDefinedStringDecoder<Qgis::MapGridComponentVisibility>( {
+    { u"xonly", Qgis::MapGridComponentVisibility::LatitudeOnly },
+    { u"yonly", Qgis::MapGridComponentVisibility::LongitudeOnly },
+    { u"disabled", Qgis::MapGridComponentVisibility::HideAll },
+    { u"all", Qgis::MapGridComponentVisibility::ShowAll },
+  } );
+
+  auto evaluatedVisibility = VISIBILITY_MAP.lookup( ddValue );
+  if ( evaluatedVisibility )
+  {
+    return *evaluatedVisibility;
+  }
   else
+  {
     return defValue;
+  }
 }
 
 void QgsLayoutItemMapGrid::refreshDataDefinedProperties()

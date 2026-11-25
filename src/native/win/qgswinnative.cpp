@@ -69,7 +69,7 @@ void QgsWinNative::initializeMainWindow( QWindow *window, const QString &applica
   if ( WinToastLib::WinToast::instance()->initialize() )
   {
     mWinToastInitialized = true;
-    mCapabilities = mCapabilities | NativeDesktopNotifications;
+    mCapabilities = mCapabilities | QgsNative::Capability::NativeDesktopNotifications;
   }
 
   mNativeEventFilter = new QgsWinNativeEventFilter();

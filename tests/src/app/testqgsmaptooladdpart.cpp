@@ -13,11 +13,11 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <geos_c.h>
 #include <memory>
 
 #include "qgisapp.h"
 #include "qgsgeometry.h"
+#include "qgsgeos.h"
 #include "qgsmapcanvas.h"
 #include "qgsmapmouseevent.h"
 #include "qgsmaptooladdpart.h"
@@ -280,7 +280,7 @@ void TestQgsMapToolAddPart::testAddPartAvoidOverlap()
   mCaptureTool->cadCanvasReleaseEvent( event.get() );
 
   // Added part should have an inner ring (hole)
-#if GEOS_VERSION_MAJOR > 3 || ( GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR >= 15 )
+#if GEOS_VERSION_NUM >= GEOS_COMPUTE_VERSION( 3, 15, 0 )
   const QString expectedWkt = "MultiPolygon (((2 2, 4 2, 4 4, 2 4, 2 2)),((5 1, 5 5, 1 5, 1 1, 5 1),(2 2, 2 4, 4 4, 4 2, 2 2)),((6 5, 6 1, 7 1, 7 5, 6 5)))";
 #else
   const QString expectedWkt = "MultiPolygon (((2 2, 4 2, 4 4, 2 4, 2 2)),((1 1, 5 1, 5 5, 1 5, 1 1),(2 2, 2 4, 4 4, 4 2, 2 2)),((7 5, 6 5, 6 1, 7 1, 7 5)))";

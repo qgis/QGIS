@@ -179,6 +179,29 @@ class TestQgsGeometryValidator(QgisTestCase):
             "segment 1 of ring 1 of polygon 0 intersects segment 2 of ring 2 of polygon 0 at 2, 7",
         )
 
+        # test ring touches itself
+        g = QgsGeometry.fromWkt(
+            "Polygon ((8 0, 0 0, 0 8, 8 8, 8 0),(4 4, 3 5, 3 3, 4 4, 5 3, 5 5, 4 4))"
+        )
+
+        validator = QgsGeometryValidator(g)
+        spy = QSignalSpy(validator.errorFound)
+        validator.run()
+
+        self.assertEqual(len(spy), 2)
+
+        self.assertEqual(spy[0][0].where(), QgsPointXY(4, 4))
+        self.assertEqual(
+            spy[0][0].what(),
+            "segments 0 and 2 of line 1 intersect at 4, 4",
+        )
+
+        self.assertEqual(spy[1][0].where(), QgsPointXY(4, 4))
+        self.assertEqual(
+            spy[1][0].what(),
+            "segments 3 and 5 of line 1 intersect at 4, 4",
+        )
+
     def test_line_vertices(self):
         # valid line
         g = QgsGeometry.fromWkt("LineString (0 0, 10 0)")

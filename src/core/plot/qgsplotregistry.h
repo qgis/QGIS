@@ -93,7 +93,7 @@ class CORE_EXPORT QgsPlotAbstractMetadata
 };
 
 //! Plot creation function
-typedef std::function<QgsPlot *()> QgsPlotCreateFunc SIP_SKIP;
+typedef std::function<std::unique_ptr<QgsPlot>()> QgsPlotCreateFunc SIP_SKIP;
 typedef std::function<QgsVectorLayerAbstractPlotDataGatherer *( QgsPlot *plot )> QgsPlotDataGathererCreateFunc SIP_SKIP;
 typedef std::function<QgsPlotWidget *( QWidget *parent )> QgsPlotWidgetCreateFunc SIP_SKIP;
 
@@ -141,7 +141,7 @@ class CORE_EXPORT QgsPlotMetadata : public QgsPlotAbstractMetadata
      */
     void setWidgetCreateFunction( QgsPlotWidgetCreateFunc function ) SIP_SKIP { mWidgetCreateFunc = std::move( function ); }
 
-    QgsPlot *createPlot() override { return mCreateFunc ? mCreateFunc() : nullptr; }
+    QgsPlot *createPlot() override { return mCreateFunc ? mCreateFunc().release() : nullptr; }
     QgsVectorLayerAbstractPlotDataGatherer *createPlotDataGatherer( QgsPlot *plot = nullptr ) override { return mDataGathererCreateFunc ? mDataGathererCreateFunc( plot ) : nullptr; }
     QgsPlotWidget *createPlotWidget( QWidget *parent = nullptr ) override { return mWidgetCreateFunc ? mWidgetCreateFunc( parent ) : nullptr; }
 

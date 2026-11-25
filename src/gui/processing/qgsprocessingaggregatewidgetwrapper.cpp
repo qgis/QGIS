@@ -137,7 +137,7 @@ void QgsProcessingAggregatePanelWidget::setValue( const QVariant &value )
     const QgsField
       f( map.value( u"name"_s ).toString(),
          static_cast<QMetaType::Type>( map.value( u"type"_s, static_cast<int>( QMetaType::Type::UnknownType ) ).toInt() ),
-         map.value( u"type_name"_s, QVariant::typeToName( static_cast<QMetaType::Type>( map.value( u"type"_s, static_cast<int>( QMetaType::Type::UnknownType ) ).toInt() ) ) ).toString(),
+         map.value( u"type_name"_s, QMetaType( map.value( u"type"_s ).toInt() ).name() ).toString(),
          map.value( u"length"_s, 0 ).toInt(),
          map.value( u"precision"_s, 0 ).toInt(),
          QString(),

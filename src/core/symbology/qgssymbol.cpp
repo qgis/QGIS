@@ -819,13 +819,13 @@ std::unique_ptr<QgsSymbol> QgsSymbol::defaultSymbol( Qgis::GeometryType geomType
   switch ( geomType )
   {
     case Qgis::GeometryType::Point:
-      s.reset( QgsProject::instance()->styleSettings()->defaultSymbol( Qgis::SymbolType::Marker ) ); // skip-keyword-check
+      s = QgsProject::instance()->styleSettings()->defaultSymbol( Qgis::SymbolType::Marker ); // skip-keyword-check
       break;
     case Qgis::GeometryType::Line:
-      s.reset( QgsProject::instance()->styleSettings()->defaultSymbol( Qgis::SymbolType::Line ) ); // skip-keyword-check
+      s = QgsProject::instance()->styleSettings()->defaultSymbol( Qgis::SymbolType::Line ); // skip-keyword-check
       break;
     case Qgis::GeometryType::Polygon:
-      s.reset( QgsProject::instance()->styleSettings()->defaultSymbol( Qgis::SymbolType::Fill ) ); // skip-keyword-check
+      s = QgsProject::instance()->styleSettings()->defaultSymbol( Qgis::SymbolType::Fill ); // skip-keyword-check
       break;
     default:
       break;

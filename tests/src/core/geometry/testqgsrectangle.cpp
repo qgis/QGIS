@@ -60,18 +60,19 @@ class TestQgsRectangle : public QObject
 void TestQgsRectangle::isEmpty()
 {
   QVERIFY( QgsRectangle().isEmpty() );
+  QVERIFY( QgsRectangle( 1, 2, 1, 2 ).isEmpty() );
   QVERIFY( QgsRectangle( 1, 2, 1, 4 ).isEmpty() );
   QVERIFY( QgsRectangle( 2, 1, 4, 1 ).isEmpty() );
   //constructor should normalize
   QVERIFY( !QgsRectangle( 2, 2, 1, 4 ).isEmpty() );
   QVERIFY( !QgsRectangle( 1, 2, 2, 1 ).isEmpty() );
 
-  QgsRectangle r( 2, 2, 3, 4 );
-  r.setXMaximum( 1 );
-  QVERIFY( r.isEmpty() );
-  r = QgsRectangle( 2, 2, 3, 4 );
-  r.setYMaximum( 1 );
-  QVERIFY( r.isEmpty() );
+  // non normalized rectangles should not be treated as empty, unless they actually have zero area
+  QVERIFY( !QgsRectangle( 2, 2, 3, 4 ).isEmpty() );
+  QVERIFY( !QgsRectangle( 2, 2, 1, 4, false ).isEmpty() );
+  QVERIFY( QgsRectangle( 2, 4, 1, 4, false ).isEmpty() );
+  QVERIFY( !QgsRectangle( 2, 2, 3, 1, false ).isEmpty() );
+  QVERIFY( QgsRectangle( 2, 2, 2, 1, false ).isEmpty() );
 }
 
 void TestQgsRectangle::isNull()

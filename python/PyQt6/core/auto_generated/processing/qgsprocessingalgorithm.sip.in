@@ -849,8 +849,8 @@ value.
 .. versionadded:: 3.8
 %End
 
-    QgsFeatureSink *parameterAsSink( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context, QString &destinationIdentifier /Out/,
-                                     const QgsFields &fields, Qgis::WkbType geometryType = Qgis::WkbType::NoGeometry, const QgsCoordinateReferenceSystem &crs = QgsCoordinateReferenceSystem(), QgsFeatureSink::SinkFlags sinkFlags = QgsFeatureSink::SinkFlags(), const QVariantMap &createOptions = QVariantMap(), const QStringList &datasourceOptions = QStringList(), const QStringList &layerOptions = QStringList() ) const  /Factory/;
+    std::unique_ptr<QgsFeatureSink> parameterAsSink( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context, QString &destinationIdentifier /Out/,
+                                     const QgsFields &fields, Qgis::WkbType geometryType = Qgis::WkbType::NoGeometry, const QgsCoordinateReferenceSystem &crs = QgsCoordinateReferenceSystem(), QgsFeatureSink::SinkFlags sinkFlags = QgsFeatureSink::SinkFlags(), const QVariantMap &createOptions = QVariantMap(), const QStringList &datasourceOptions = QStringList(), const QStringList &layerOptions = QStringList() ) const;
 %Docstring
 Evaluates the parameter with matching ``name`` to a feature sink.
 
@@ -876,7 +876,7 @@ for deleting the returned object.
 :raises QgsProcessingException: 
 %End
 
-    QgsProcessingFeatureSource *parameterAsSource( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context ) const /Factory/;
+    std::unique_ptr<QgsProcessingFeatureSource> parameterAsSource( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context ) const;
 %Docstring
 Evaluates the parameter with matching ``name`` to a feature source.
 

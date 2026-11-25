@@ -733,7 +733,7 @@ class CORE_EXPORT QgsVectorFileWriter : public QgsFeatureSink
      * \param newLayer potentially modified layer name (output parameter)
      * \since QGIS 3.10.3
      */
-    static QgsVectorFileWriter *create(
+    static std::unique_ptr<QgsVectorFileWriter> create(
       const QString &fileName,
       const QgsFields &fields,
       Qgis::WkbType geometryType,
@@ -743,7 +743,7 @@ class CORE_EXPORT QgsVectorFileWriter : public QgsFeatureSink
       QgsFeatureSink::SinkFlags sinkFlags = QgsFeatureSink::SinkFlags(),
       QString *newFilename = nullptr,
       QString *newLayer = nullptr
-    ) SIP_FACTORY;
+    );
 
     /**
      * Writes a layer out to a vector file.

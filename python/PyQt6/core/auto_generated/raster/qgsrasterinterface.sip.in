@@ -130,6 +130,7 @@ etc.
 #include "qgssinglebandpseudocolorrenderer.h"
 #include "qgsrastersinglecolorrenderer.h"
 #include "qgsrastercontourrenderer.h"
+#include "qgsrastervectorfieldrenderer.h"
 %End
 %ConvertToSubClassCode
     if ( dynamic_cast<QgsBrightnessContrastFilter *>( sipCpp ) )
@@ -165,6 +166,8 @@ etc.
         sipType = sipType_QgsRasterSingleColorRenderer;
       else if ( dynamic_cast<QgsRasterContourRenderer *>( sipCpp ) )
         sipType = sipType_QgsRasterContourRenderer;
+      else if ( dynamic_cast<QgsRasterVectorFieldRenderer *>( sipCpp ) )
+        sipType = sipType_QgsRasterVectorFieldRenderer;
       else
         sipType = sipType_QgsRasterRenderer;
     }

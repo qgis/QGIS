@@ -98,7 +98,7 @@ class GUI_EXPORT QgsMetadataWidget : public QWidget, private Ui::QgsMetadataWidg
      *
      * \see saveMetadata()
      */
-    QgsAbstractMetadataBase *metadata() SIP_FACTORY;
+    std::unique_ptr<QgsAbstractMetadataBase> metadata();
 
     /**
      * Save all fields in a metadata object.

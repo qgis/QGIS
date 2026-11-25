@@ -68,7 +68,7 @@ Returns the curve with the specified ``index``.
     virtual QgsMultiCurve *simplifyByDistance( double tolerance ) const /Factory/;
 
 
-    QgsMultiCurve *reversed() const /Factory/;
+    std::unique_ptr<QgsMultiCurve> reversed() const;
 %Docstring
 Returns a copy of the multi curve, where each component curve has had
 its line direction reversed.

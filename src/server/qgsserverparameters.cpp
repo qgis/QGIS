@@ -47,7 +47,7 @@ QgsServerParameterDefinition::QgsServerParameterDefinition( const QVariant::Type
 
 QString QgsServerParameterDefinition::typeName() const
 {
-  return QVariant::typeToName( mType );
+  return QMetaType( mType ).name();
 }
 
 QColor QgsServerParameterDefinition::toColor( bool &ok ) const
@@ -405,7 +405,7 @@ double QgsServerParameterDefinition::toDouble( bool &ok ) const
 
 bool QgsServerParameterDefinition::isValid() const
 {
-  return mValue.canConvert( mType );
+  return mValue.canConvert( QMetaType( mType ) );
 }
 
 void QgsServerParameterDefinition::raiseError( const QString &msg )

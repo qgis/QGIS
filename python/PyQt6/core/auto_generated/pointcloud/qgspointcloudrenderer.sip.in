@@ -252,7 +252,7 @@ rendered By default if not overridden in the subclass renderer will
 return true ( the renderer is responsible for the filtering behavior )
 %End
 
-    static QgsPointCloudRenderer *load( QDomElement &element, const QgsReadWriteContext &context ) /Factory/;
+    static std::unique_ptr<QgsPointCloudRenderer> load( QDomElement &element, const QgsReadWriteContext &context );
 %Docstring
 Creates a renderer from an XML ``element``.
 

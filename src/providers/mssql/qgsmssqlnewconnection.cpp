@@ -107,7 +107,7 @@ QgsMssqlNewConnection::QgsMssqlNewConnection( QWidget *parent, const QString &co
   schemaView->setContextMenuPolicy( Qt::CustomContextMenu );
 
   connect( schemaView, &QWidget::customContextMenuRequested, this, [this]( const QPoint &p ) {
-    QMenu menu;
+    QMenu menu( this );
     menu.addAction( tr( "Check All" ), this, [this] { mSchemaModel.checkAll(); } );
 
     menu.addAction( tr( "Uncheck All" ), this, [this] { mSchemaModel.unCheckAll(); } );

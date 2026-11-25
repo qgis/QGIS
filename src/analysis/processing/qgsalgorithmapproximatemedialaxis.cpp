@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 
+#include "qgsconfig.h"
 #include "qgsalgorithmapproximatemedialaxis.h"
 
 #include "qgsexception.h"
@@ -24,7 +25,7 @@
 
 using namespace Qt::StringLiterals;
 
-#ifdef WITH_SFCGAL
+#ifdef HAVE_SFCGAL
 #include "qgssfcgalgeometry.h"
 #endif
 
@@ -117,10 +118,10 @@ bool QgsApproximateMedialAxisAlgorithm::prepareAlgorithm( const QVariantMap &par
   Q_UNUSED( context )
   Q_UNUSED( feedback )
 
-#ifdef WITH_SFCGAL
+#ifdef HAVE_SFCGAL
   mExtendToEdges = parameterAsBool( parameters, "EXTEND_TO_EDGES", context );
 
-#if SFCGAL_VERSION_NUM < SFCGAL_MAKE_VERSION( 2, 3, 0 )
+#if SFCGAL_VERSION_NUM < SFCGAL_COMPUTE_VERSION( 2, 3, 0 )
   if ( mExtendToEdges )
   {
     throw QgsProcessingException( QObject::tr( "The \"extend to the polygon boundary\" option requires a QGIS build based on SFCGAL 2.3 or later." ) );
@@ -139,7 +140,7 @@ QgsFeatureList QgsApproximateMedialAxisAlgorithm::processFeature( const QgsFeatu
 
   Q_UNUSED( context )
 
-#ifdef WITH_SFCGAL
+#ifdef HAVE_SFCGAL
   QgsFeature modifiedFeature = feature;
   if ( modifiedFeature.hasGeometry() )
   {

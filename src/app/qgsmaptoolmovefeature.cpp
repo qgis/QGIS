@@ -67,8 +67,8 @@ void QgsMapToolMoveFeature::cadCanvasMoveEvent( QgsMapMouseEvent *e )
       // Else, recreate the rubber band from the translated geometries
       else
       {
-        const QgsPointXY startPointLayerCoords = toLayerCoordinates( ( QgsMapLayer * ) vlayer, mStartPointMapCoords );
-        const QgsPointXY stopPointLayerCoords = toLayerCoordinates( ( QgsMapLayer * ) vlayer, e->mapPoint() );
+        const QgsPointXY startPointLayerCoords = toLayerCoordinates( qobject_cast< QgsMapLayer * >( vlayer ), mStartPointMapCoords );
+        const QgsPointXY stopPointLayerCoords = toLayerCoordinates( qobject_cast< QgsMapLayer * >( vlayer ), e->mapPoint() );
 
         const double dx = stopPointLayerCoords.x() - startPointLayerCoords.x();
         const double dy = stopPointLayerCoords.y() - startPointLayerCoords.y();
@@ -211,8 +211,8 @@ void QgsMapToolMoveFeature::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
       return;
     }
 
-    const QgsPointXY startPointLayerCoords = toLayerCoordinates( ( QgsMapLayer * ) vlayer, mStartPointMapCoords );
-    const QgsPointXY stopPointLayerCoords = toLayerCoordinates( ( QgsMapLayer * ) vlayer, e->mapPoint() );
+    const QgsPointXY startPointLayerCoords = toLayerCoordinates( qobject_cast< QgsMapLayer * >( vlayer ), mStartPointMapCoords );
+    const QgsPointXY stopPointLayerCoords = toLayerCoordinates( qobject_cast< QgsMapLayer * >( vlayer ), e->mapPoint() );
 
     const double dx = stopPointLayerCoords.x() - startPointLayerCoords.x();
     const double dy = stopPointLayerCoords.y() - startPointLayerCoords.y();

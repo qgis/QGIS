@@ -23,13 +23,10 @@
 #include "qgsattributedialog.h"
 #include "qgsdistancearea.h"
 #include "qgshighlight.h"
-#include "qgslogger.h"
 #include "qgsproject.h"
 #include "qgssettingsentryimpl.h"
 #include "qgssettingsregistrycore.h"
-#include "qgsvectordataprovider.h"
 #include "qgsvectorlayer.h"
-#include "qgsvectorlayerutils.h"
 
 #include <QPushButton>
 #include <QString>
@@ -65,7 +62,7 @@ QgsAttributeDialog *QgsFeatureAction::newDialog( bool cloneFeature )
   context.setDistanceArea( myDa );
   context.setFormMode( QgsAttributeEditorContext::StandaloneDialog );
 
-  QgsAttributeDialog *dialog = new QgsAttributeDialog( mLayer, f, cloneFeature, parentWidget(), true, context );
+  QgsAttributeDialog *dialog = new QgsAttributeDialog( mLayer, f, cloneFeature, QgisApp::instance(), true, context );
 
   // Skip this code on windows, because the Qt::Tool flag prevents the maximize button to be shown
 #ifndef Q_OS_WIN
@@ -174,19 +171,19 @@ bool QgsFeatureAction::editFeature( bool showModal )
 }
 
 QgsFeatureAction::AddFeatureResult QgsFeatureAction::addFeature(
-  const QgsAttributeMap &defaultAttributes, bool showModal, std::unique_ptr<QgsExpressionContextScope> scope, bool hideParent, std::unique_ptr<QgsHighlight> highlight
+  const QgsVectorLayerToolsContext &context, const QgsAttributeMap &defaultAttributes, std::unique_ptr<QgsExpressionContextScope> scope, std::unique_ptr<QgsHighlight> highlight
 )
 {
   if ( !mLayer || !mLayer->isEditable() )
     return AddFeatureResult::LayerStateError;
 
-  QgsExpressionContext context = mLayer->createExpressionContext();
+  QgsExpressionContext expressionContext = mLayer->createExpressionContext();
   if ( scope )
   {
-    context.appendScope( scope.release() );
+    expressionContext.appendScope( scope.release() );
   }
 
-  const QgsFeature newFeature = QgsAttributeForm::createFeature( mLayer, mFeature->geometry(), defaultAttributes, context );
+  const QgsFeature newFeature = QgsAttributeForm::createFeature( mLayer, mFeature->geometry(), defaultAttributes, expressionContext );
   *mFeature = newFeature;
 
   //show the dialog to enter attribute values
@@ -252,17 +249,18 @@ QgsFeatureAction::AddFeatureResult QgsFeatureAction::addFeature(
 
     connect( dialog->attributeForm(), &QgsAttributeForm::featureSaved, this, &QgsFeatureAction::onFeatureSaved );
 
-    if ( !showModal )
+    if ( !context.showModal() )
     {
-      setParent( dialog ); // keep dialog until the dialog is closed and destructed
+      setParent( dialog ); // keep this action alive until the dialog is closed and destructed
       connect( dialog, &QgsAttributeDialog::finished, this, &QgsFeatureAction::addFeatureFinished );
       dialog->show();
 
-      if ( hideParent )
+      if ( context.hideParent() && context.parentWidget() )
       {
         connect( this, &QgsFeatureAction::addFeatureFinished, this, &QgsFeatureAction::unhideParentWidget );
-        hideParentWidget();
+        hideParentDialog( context.parentWidget() );
       }
+
       mFeature = nullptr;
       return AddFeatureResult::Pending;
     }
@@ -295,25 +293,27 @@ void QgsFeatureAction::onFeatureSaved( const QgsFeature &feature )
   mFeatureSaved = true;
 }
 
-void QgsFeatureAction::hideParentWidget()
+void QgsFeatureAction::hideParentDialog( QWidget *targetWidget )
 {
-  QWidget *dialog = parentWidget();
-  if ( dialog )
+  if ( !targetWidget )
+    return;
+
+  QWidget *window = targetWidget->window();
+  if ( window && window->objectName() != "QgisApp"_L1 )
   {
-    QWidget *triggerWidget = dialog->parentWidget();
-    if ( triggerWidget && triggerWidget->window()->objectName() != "QgisApp"_L1 )
-      triggerWidget->window()->setVisible( false );
+    window->setVisible( false );
+    mHiddenWindow = window;
   }
 }
 
 void QgsFeatureAction::unhideParentWidget()
 {
-  QWidget *dialog = parentWidget();
-  if ( dialog )
+  if ( mHiddenWindow )
   {
-    QWidget *triggerWidget = dialog->parentWidget();
-    if ( triggerWidget )
-      triggerWidget->window()->setVisible( true );
+    mHiddenWindow->setVisible( true );
+    mHiddenWindow->activateWindow();
+    mHiddenWindow->raise();
+    mHiddenWindow = nullptr;
   }
 }
 
