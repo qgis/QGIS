@@ -23,6 +23,7 @@
 #include "qgsapplication.h"
 #include "qgscircularstring.h"
 #include "qgscompoundcurve.h"
+#include "qgscoordinatetransform.h"
 #include "qgsfeedback.h"
 #include "qgsgeometryutils.h"
 #include "qgslinestring.h"
@@ -1022,6 +1023,14 @@ void QgsCurvePolygon::draw( QPainter &p ) const
 
 void QgsCurvePolygon::transform( const QgsCoordinateTransform &ct, Qgis::TransformDirection d, bool transformZ )
 {
+  const bool transformingToGeocentric = ( d == Qgis::TransformDirection::Forward ? ct.destinationCrs() : ct.sourceCrs() ).type() == Qgis::CrsType::Geocentric;
+  if ( transformingToGeocentric )
+  {
+    transformZ = true;
+    if ( !is3D() )
+      addZValue( 0 );
+  }
+
   if ( mExteriorRing )
   {
     mExteriorRing->transform( ct, d, transformZ );

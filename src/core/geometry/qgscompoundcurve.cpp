@@ -22,6 +22,7 @@
 
 #include "qgsapplication.h"
 #include "qgscircularstring.h"
+#include "qgscoordinatetransform.h"
 #include "qgsfeedback.h"
 #include "qgsgeometryutils.h"
 #include "qgslinestring.h"
@@ -720,6 +721,14 @@ void QgsCompoundCurve::draw( QPainter &p ) const
 
 void QgsCompoundCurve::transform( const QgsCoordinateTransform &ct, Qgis::TransformDirection d, bool transformZ )
 {
+  const bool transformingToGeocentric = ( d == Qgis::TransformDirection::Forward ? ct.destinationCrs() : ct.sourceCrs() ).type() == Qgis::CrsType::Geocentric;
+  if ( transformingToGeocentric )
+  {
+    transformZ = true;
+    if ( !is3D() )
+      addZValue( 0 );
+  }
+
   for ( QgsCurve *curve : std::as_const( mCurves ) )
   {
     curve->transform( ct, d, transformZ );
