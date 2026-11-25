@@ -16,6 +16,7 @@
 #ifndef QGSTESSELLATEDPOLYGONGEOMETRY_H
 #define QGSTESSELLATEDPOLYGONGEOMETRY_H
 
+#include "qgis_3d.h"
 #include "qgsfeatureid.h"
 
 #include <Qt3DCore/QGeometry>
@@ -42,7 +43,7 @@ namespace Qt3DCore
  * \note Not available in Python bindings
  *
  */
-class QgsTessellatedPolygonGeometry : public Qt3DCore::QGeometry
+class _3D_EXPORT QgsTessellatedPolygonGeometry : public Qt3DCore::QGeometry
 {
     Q_OBJECT
   public:
