@@ -1185,8 +1185,21 @@ sfcgal::shared_prim QgsSfcgalEngine::createTorus( double mainRadius, double tube
   sfcgal::primitive *result = sfcgal_primitive_create( SFCGAL_TYPE_TORUS );
   CHECK_SUCCESS( errorMsg, nullptr );
 
-  sfcgal_primitive_set_parameter_double( result, "main_radius", mainRadius );
-  sfcgal_primitive_set_parameter_double( result, "tube_radius", tubeRadius );
+  // SFCGAL checks that main_radius > tube_radius after each set
+  // Insertion order depends on current values
+  const double currentTubeRadius = sfcgal_primitive_parameter_double( result, "tube_radius" );
+  if ( mainRadius > currentTubeRadius )
+  {
+    sfcgal_primitive_set_parameter_double( result, "main_radius", mainRadius );
+    sfcgal_primitive_set_parameter_double( result, "tube_radius", tubeRadius );
+  }
+  else
+  {
+    sfcgal_primitive_set_parameter_double( result, "tube_radius", tubeRadius );
+    sfcgal_primitive_set_parameter_double( result, "main_radius", mainRadius );
+  }
+
+
   sfcgal_primitive_set_parameter_int( result, "main_num_radial", mainRadial );
   sfcgal_primitive_set_parameter_int( result, "tube_num_radial", tubeRadial );
   CHECK_SUCCESS( errorMsg, nullptr );
