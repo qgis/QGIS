@@ -99,11 +99,20 @@ void QgsOrthogonalizeAlgorithm::initParameters( const QVariantMap & )
   angleToleranceParam->setIsDynamic( true );
   angleToleranceParam->setDynamicPropertyDefinition( QgsPropertyDefinition( u"Angle tolerance"_s, QObject::tr( "Maximum angle tolerance (degrees)" ), QgsPropertyDefinition::Double ) );
   angleToleranceParam->setDynamicLayerParameterName( u"INPUT"_s );
+  angleToleranceParam->setHelp(
+    QObject::tr(
+      "Specify the maximum deviation from a right angle or straight line a vertex can have for it to be adjusted. Smaller tolerances mean that only vertices which are already closer to right angles "
+      "will be adjusted, and larger tolerances mean that vertices which deviate further from right angles will also be adjusted."
+    )
+  );
   addParameter( angleToleranceParam.release() );
 
   auto maxIterations
     = std::make_unique<QgsProcessingParameterNumber>( u"MAX_ITERATIONS"_s, QObject::tr( "Maximum algorithm iterations" ), Qgis::ProcessingNumberParameterType::Integer, 1000, false, 1, 10000 );
   maxIterations->setFlags( maxIterations->flags() | Qgis::ProcessingParameterFlag::Advanced );
+  maxIterations->setHelp(
+    QObject::tr( "Sets the maximum number of iterations that the orthoganlization will apply. A larger number will allow the algorithm to make more adjustments to achieve orthogonality." )
+  );
   addParameter( maxIterations.release() );
 }
 

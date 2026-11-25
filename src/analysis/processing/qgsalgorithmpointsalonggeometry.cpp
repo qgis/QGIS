@@ -117,18 +117,21 @@ void QgsPointsAlongGeometryAlgorithm::initParameters( const QVariantMap & )
   distance->setIsDynamic( true );
   distance->setDynamicPropertyDefinition( QgsPropertyDefinition( u"DISTANCE"_s, QObject::tr( "Distance" ), QgsPropertyDefinition::DoublePositive ) );
   distance->setDynamicLayerParameterName( u"INPUT"_s );
+  distance->setHelp( QObject::tr( "Distance between two consecutive points along the line." ) );
   addParameter( distance.release() );
 
   auto startOffset = std::make_unique<QgsProcessingParameterDistance>( u"START_OFFSET"_s, QObject::tr( "Start offset" ), 0.0, u"INPUT"_s, false, 0 );
   startOffset->setIsDynamic( true );
   startOffset->setDynamicPropertyDefinition( QgsPropertyDefinition( u"START_OFFSET"_s, QObject::tr( "Start offset" ), QgsPropertyDefinition::DoublePositive ) );
   startOffset->setDynamicLayerParameterName( u"INPUT"_s );
+  startOffset->setHelp( QObject::tr( "Distance from the beginning of the input line, representing the position of the first point." ) );
   addParameter( startOffset.release() );
 
   auto endOffset = std::make_unique<QgsProcessingParameterDistance>( u"END_OFFSET"_s, QObject::tr( "End offset" ), 0.0, u"INPUT"_s, false, 0 );
   endOffset->setIsDynamic( true );
   endOffset->setDynamicPropertyDefinition( QgsPropertyDefinition( u"END_OFFSET"_s, QObject::tr( "End offset" ), QgsPropertyDefinition::DoublePositive ) );
   endOffset->setDynamicLayerParameterName( u"INPUT"_s );
+  endOffset->setHelp( QObject::tr( "Distance from the end of the input line, representing the position beyond which no point feature should be created." ) );
   addParameter( endOffset.release() );
 }
 

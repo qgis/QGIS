@@ -82,12 +82,19 @@ void QgsConvertToCurvesAlgorithm::initParameters( const QVariantMap & )
   tolerance->setIsDynamic( true );
   tolerance->setDynamicPropertyDefinition( QgsPropertyDefinition( u"DISTANCE"_s, QObject::tr( "Maximum distance tolerance" ), QgsPropertyDefinition::DoublePositive ) );
   tolerance->setDynamicLayerParameterName( u"INPUT"_s );
+  tolerance->setHelp( QObject::tr( "The maximum distance allowed between the original location of vertices and where they would fall on the converted curved geometries." ) );
   addParameter( tolerance.release() );
 
   auto angleTolerance = std::make_unique<QgsProcessingParameterNumber>( u"ANGLE"_s, QObject::tr( "Maximum angle tolerance" ), Qgis::ProcessingNumberParameterType::Double, 0.000001, false, 0, 45.0 );
   angleTolerance->setIsDynamic( true );
   angleTolerance->setDynamicPropertyDefinition( QgsPropertyDefinition( u"ANGLE"_s, QObject::tr( "Maximum angle tolerance" ), QgsPropertyDefinition::DoublePositive ) );
   angleTolerance->setDynamicLayerParameterName( u"INPUT"_s );
+  angleTolerance->setHelp(
+    QObject::tr(
+      "Segments are considered as suitable for replacing with an arc if the points are all regularly spaced on the candidate arc. This parameter specifies the maximum angular deviation (in degrees) "
+      "allowed when testing for regular point spacing. Between 0 and 45°."
+    )
+  );
   addParameter( angleTolerance.release() );
 }
 

@@ -70,12 +70,14 @@ void QgsFilterVerticesAlgorithmBase::initParameters( const QVariantMap & )
   min->setIsDynamic( true );
   min->setDynamicPropertyDefinition( QgsPropertyDefinition( u"Minimum"_s, QObject::tr( "Minimum value" ), QgsPropertyDefinition::Double ) );
   min->setDynamicLayerParameterName( u"INPUT"_s );
+  min->setHelp( QObject::tr( "Minimum %1 allowed." ).arg( componentString() ) );
   addParameter( min.release() );
 
   auto max = std::make_unique<QgsProcessingParameterNumber>( u"MAX"_s, QObject::tr( "Maximum" ), Qgis::ProcessingNumberParameterType::Double, QVariant(), true );
   max->setIsDynamic( true );
   max->setDynamicPropertyDefinition( QgsPropertyDefinition( u"Maximum"_s, QObject::tr( "Maximum value" ), QgsPropertyDefinition::Double ) );
   max->setDynamicLayerParameterName( u"INPUT"_s );
+  max->setHelp( QObject::tr( "Maximum %1 allowed." ).arg( componentString() ) );
   addParameter( max.release() );
 }
 

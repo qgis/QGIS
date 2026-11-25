@@ -88,12 +88,14 @@ void QgsExtendLinesAlgorithm::initParameters( const QVariantMap & )
   startDistance->setIsDynamic( true );
   startDistance->setDynamicPropertyDefinition( QgsPropertyDefinition( u"Start Distance"_s, QObject::tr( "Start distance" ), QgsPropertyDefinition::DoublePositive ) );
   startDistance->setDynamicLayerParameterName( u"INPUT"_s );
+  startDistance->setHelp( QObject::tr( "Distance by which to extend the first segment of the line (starting point)." ) );
   addParameter( startDistance.release() );
 
   auto endDistance = std::make_unique<QgsProcessingParameterDistance>( u"END_DISTANCE"_s, QObject::tr( "End distance" ), 0.0, u"INPUT"_s, false, 0 );
   endDistance->setIsDynamic( true );
   endDistance->setDynamicPropertyDefinition( QgsPropertyDefinition( u"End Distance"_s, QObject::tr( "End distance" ), QgsPropertyDefinition::DoublePositive ) );
   endDistance->setDynamicLayerParameterName( u"INPUT"_s );
+  endDistance->setHelp( QObject::tr( "Distance by which to extend the last segment of the line (ending point)." ) );
   addParameter( endDistance.release() );
 }
 
