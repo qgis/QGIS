@@ -339,7 +339,7 @@ void QgsLayoutItemHtml::recreateCachedImageInBackground()
     mCacheInvalidated = false;
     mLastRenderedWidth = frameWidthLayoutUnits;
     mSize = QSizeF( 0, 0 );
-    mRenderedPicture = QPicture();
+    mRenderedPicture = QgsPicture();
     mRenderedPage = QImage();
     mPictureRasterizer->clear();
     recalculateFrameSizes();
@@ -370,7 +370,7 @@ void QgsLayoutItemHtml::htmlRenderFinished()
 
   mLastRenderedWidth = mRenderJob->frameWidthLayoutUnits();
   mSize = mRenderJob->size();
-  mRenderedPicture = QgsPainting::deepCopyQPicture( mRenderJob->picture() );
+  mRenderedPicture = mRenderJob->picture();
   mRenderedPage = mRenderJob->renderedPage();
   mRenderJob.reset();
 
@@ -399,7 +399,7 @@ void QgsLayoutItemHtml::renderHtmlSynchronously()
   if ( frameWidthLayoutUnits <= 0 || mEvaluatedHtml.isEmpty() )
   {
     mSize = QSizeF( 0, 0 );
-    mRenderedPicture = QPicture();
+    mRenderedPicture = QgsPicture();
     mRenderedPage = QImage();
     mPictureRasterizer->clear();
     recalculateFrameSizes();
@@ -410,7 +410,7 @@ void QgsLayoutItemHtml::renderHtmlSynchronously()
   const double unitsPerCssPx = layoutUnitsPerCssPixel();
   const double widthCssPx = frameWidthLayoutUnits / unitsPerCssPx;
 
-  mRenderedPicture = QPicture();
+  mRenderedPicture = QgsPicture();
   QPainter painter( &mRenderedPicture );
   painter.setRenderHint( QPainter::Antialiasing, true );
   painter.setRenderHint( QPainter::TextAntialiasing, true );
@@ -446,7 +446,7 @@ void QgsLayoutItemHtml::renderHtmlSynchronously()
     mRenderedPage = QImage( pageSizeCssPx, QImage::Format_ARGB32 );
     mRenderedPage.fill( Qt::transparent );
     QPainter imagePainter( &mRenderedPage );
-    QgsPainting::drawPicture( &imagePainter, QPointF( 0, 0 ), mRenderedPicture );
+    mRenderedPicture.play( &imagePainter );
     imagePainter.end();
   }
   else
@@ -580,7 +580,7 @@ void QgsLayoutItemHtml::render( QgsLayoutItemRenderContext &context, const QRect
   const double unitsPerCssPx = layoutUnitsPerCssPixel();
   painter->scale( unitsPerCssPx, unitsPerCssPx );
 
-  QgsPainting::drawPicture( painter, QPointF( 0, 0 ), mRenderedPicture );
+  mRenderedPicture.play( painter );
 #else
   Q_UNUSED( renderExtent )
   if ( mLayout->renderContext().isPreviewRender() )
@@ -766,7 +766,7 @@ void QgsLayoutItemHtml::setUseSmartBreaks( bool useSmartBreaks )
       mRenderedPage = QImage( pageSizeCssPx, QImage::Format_ARGB32 );
       mRenderedPage.fill( Qt::transparent );
       QPainter imagePainter( &mRenderedPage );
-      QgsPainting::drawPicture( &imagePainter, QPointF( 0, 0 ), mRenderedPicture );
+      mRenderedPicture.play( &imagePainter );
       imagePainter.end();
     }
   }
@@ -981,7 +981,7 @@ void QgsLayoutItemHtmlRenderJob::run()
     mRenderedPage = QImage( pageSizeCssPx, QImage::Format_ARGB32 );
     mRenderedPage.fill( Qt::transparent );
     QPainter imagePainter( &mRenderedPage );
-    QgsPainting::drawPicture( &imagePainter, QPointF( 0, 0 ), mPicture );
+    mPicture.play( &imagePainter );
     imagePainter.end();
   }
 #else

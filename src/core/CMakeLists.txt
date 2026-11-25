@@ -293,6 +293,7 @@ set(QGIS_CORE_SRCS
   painting/qgsnullpainterdevice.cpp
   painting/qgspaintenginehack.cpp
   painting/qgspainting.cpp
+  painting/qgspicture.cpp
 
   pdf/qgspdfrenderer.cpp
 
@@ -1843,6 +1844,7 @@ set(QGIS_CORE_HDRS
   painting/qgsnullpainterdevice.h
   painting/qgspaintenginehack.h
   painting/qgspainting.h
+  painting/qgspicture.h
 
   pal/costcalculator.h
   pal/feature.h

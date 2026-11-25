@@ -22,9 +22,9 @@
 #include "qgsfeature.h"
 #include "qgsfeedback.h"
 #include "qgslayoutmultiframe.h"
+#include "qgspicture.h"
 
 #include <QFutureWatcher>
-#include <QPicture>
 #include <QUrl>
 
 class QgsWebPage;
@@ -54,7 +54,7 @@ class QgsLayoutItemHtmlRenderJob : public QObject
     QString errorMessage() const { return mErrorMessage; }
     double frameWidthLayoutUnits() const { return mFrameWidthLayoutUnits; }
     QSizeF size() const { return mSize; }
-    QPicture picture() const { return mPicture; }
+    QgsPicture picture() const { return mPicture; }
     QImage renderedPage() const { return mRenderedPage; }
 
   signals:
@@ -76,7 +76,7 @@ class QgsLayoutItemHtmlRenderJob : public QObject
     bool mSuccess = false;
     QString mErrorMessage;
     QSizeF mSize;
-    QPicture mPicture;
+    QgsPicture mPicture;
     QImage mRenderedPage;
 };
 #endif
@@ -328,7 +328,7 @@ class CORE_EXPORT QgsLayoutItemHtml : public QgsLayoutMultiFrame
     QString mActualFetchedUrl; //may be different if page was redirected
     QSizeF mSize;              //total size in layout units
 
-    QPicture mRenderedPicture;
+    QgsPicture mRenderedPicture;
     QImage mRenderedPage;
 
     bool mEvaluateExpressions = true;
