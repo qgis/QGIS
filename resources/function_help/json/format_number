@@ -32,6 +32,9 @@
   }, {
     "expression": "format_number(10000000.332,2,'fr')",
     "returns": "'10 000 000,33'"
+  }, {
+    "expression": "format_number(200000.3423, 2, language:='ro', omit_group_separators:=true)",
+    "returns": "'200000,34'"
   }],
   "tags": ["formatted", "truncates", "places", "separator", "decimal", "default", "thousands", "locale", "language"]
 }
