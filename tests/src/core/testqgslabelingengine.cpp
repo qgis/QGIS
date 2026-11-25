@@ -119,6 +119,7 @@ class TestQgsLabelingEngine : public QgsTest
     void testLabelBlockingRegion();
     void testLabelRotationWithReprojection();
     void testLabelRotationUnit();
+    void testLabelRotationStart();
     void drawUnplaced();
     void labelingResults();
     void labelingResultsCurved();
@@ -4159,6 +4160,52 @@ void TestQgsLabelingEngine::testLabelRotationUnit()
   p.end();
 
   QGSVERIFYIMAGECHECK( "label_rotate_unit", "label_rotate_unit", img, QString(), 20, QSize( 0, 0 ), 2 );
+
+  vl->setLabeling( nullptr );
+}
+
+void TestQgsLabelingEngine::testLabelRotationStart()
+{
+  QSize size( 640, 480 );
+  QgsMapSettings mapSettings;
+  mapSettings.setLabelingEngineSettings( createLabelEngineSettings() );
+  mapSettings.setOutputSize( size );
+  mapSettings.setExtent( vl->extent() );
+  mapSettings.setLayers( QList<QgsMapLayer *>() << vl );
+  mapSettings.setOutputDpi( 96 );
+
+  // first render the map and labeling separately
+
+  QgsMapRendererSequentialJob job( mapSettings );
+  job.start();
+  job.waitForFinished();
+
+  QImage img = job.renderedImage();
+
+  QPainter p( &img );
+  QgsRenderContext context = QgsRenderContext::fromMapSettings( mapSettings );
+  context.setPainter( &p );
+
+  QgsPalLayerSettings settings;
+  settings.fieldName = u"Class"_s;
+  setDefaultLabelParams( settings );
+
+  settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::Property::LabelRotation, QgsProperty::fromExpression( QString::number( 100 ) ) );
+  settings.setRotationUnit( Qgis::AngleUnit::Gon );
+  settings.setRotationStart( Qgis::CardinalDirection::North );
+  settings.setRotationDirection( Qgis::RotationDirection::CounterClockwise );
+
+  vl->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) ); // TODO: this should not be necessary!
+  vl->setLabelsEnabled( true );
+
+  QgsDefaultLabelingEngine engine( mapSettings );
+
+  engine.addProvider( new QgsVectorLayerLabelProvider( vl, QString(), true, &settings ) );
+  engine.run( context );
+
+  p.end();
+
+  QGSVERIFYIMAGECHECK( "label_rotate_start", "label_rotate_start", img, QString(), 20, QSize( 0, 0 ), 2 );
 
   vl->setLabeling( nullptr );
 }

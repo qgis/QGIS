@@ -45,6 +45,7 @@ class TestQgsPalLabeling : public QgsTest
     void graphemes();              //test splitting strings to graphemes
     void testGeometryGenerator();
     void testLabelSettingsToFromMime();
+    void testRotationStartAndDirection();
 };
 
 void TestQgsPalLabeling::cleanupTestCase()
@@ -269,6 +270,8 @@ void TestQgsPalLabeling::testLabelSettingsToFromMime()
   settings.fieldName = u"'X'"_s;
   settings.isExpression = true;
   settings.placement = Qgis::LabelPlacement::OverPoint;
+  settings.setRotationStart( Qgis::CardinalDirection::North );
+  settings.setRotationDirection( Qgis::RotationDirection::CounterClockwise );
 
   const std::unique_ptr<QMimeData> md = settings.toMimeData();
 
@@ -280,6 +283,35 @@ void TestQgsPalLabeling::testLabelSettingsToFromMime()
   QCOMPARE( from_mime.fieldName, settings.fieldName );
   QCOMPARE( from_mime.isExpression, settings.isExpression );
   QCOMPARE( from_mime.placement, settings.placement );
+  QCOMPARE( from_mime.rotationStart(), Qgis::CardinalDirection::North );
+  QCOMPARE( from_mime.rotationDirection(), Qgis::RotationDirection::CounterClockwise );
+  QCOMPARE( QgsPalLayerSettings( from_mime ).rotationStart(), Qgis::CardinalDirection::North );
+}
+
+void TestQgsPalLabeling::testRotationStartAndDirection()
+{
+  QgsPalLayerSettings settings;
+  // by default degrees clockwise from the east
+  QCOMPARE( settings.rotationStart(), Qgis::CardinalDirection::East );
+  QCOMPARE( settings.rotationDirection(), Qgis::RotationDirection::Clockwise );
+  QGSCOMPARENEAR( settings.rotationToDegrees( 30 ), 30, 0.0000001 );
+  QGSCOMPARENEAR( settings.rotationToDegrees( -30 ), 330, 0.0000001 );
+  QGSCOMPARENEAR( settings.rotationFromDegrees( -30 ), 330, 0.0000001 );
+
+  // an azimuth in gon, clockwise from north: 100 is horizontal
+  settings.setRotationUnit( Qgis::AngleUnit::Gon );
+  settings.setRotationStart( Qgis::CardinalDirection::North );
+  QGSCOMPARENEAR( settings.rotationToDegrees( 100 ), 0, 0.0000001 );
+  QGSCOMPARENEAR( settings.rotationToDegrees( 150 ), 45, 0.0000001 );
+  QGSCOMPARENEAR( settings.rotationFromDegrees( 45 ), 150, 0.0000001 );
+  QGSCOMPARENEAR( settings.rotationFromDegrees( -90 ), 0, 0.0000001 );
+
+  // degrees counter-clockwise from the west
+  settings.setRotationUnit( Qgis::AngleUnit::Degrees );
+  settings.setRotationStart( Qgis::CardinalDirection::West );
+  settings.setRotationDirection( Qgis::RotationDirection::CounterClockwise );
+  QGSCOMPARENEAR( settings.rotationToDegrees( 90 ), 90, 0.0000001 );
+  QGSCOMPARENEAR( settings.rotationFromDegrees( 0 ), 180, 0.0000001 );
 }
 
 QGSTEST_MAIN( TestQgsPalLabeling )
