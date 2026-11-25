@@ -264,6 +264,24 @@ Tessellates a triangle and adds its vertex entries to the output data
 array
 %End
 
+    void addGeometry( const QgsAbstractGeometry &geometry, float extrusionHeight = 0 );
+%Docstring
+Tessellates a surface geometry and adds its vertex entries to the output
+data array.
+
+Supported geometries are polygons, polyhedral surfaces and collections
+of these geometries.
+
+.. note::
+
+   Curved geometries are supported but they are segmentized with the default
+   segmentation tolerance.
+
+.. seealso:: :py:func:`addPolygon`
+
+.. versionadded:: 4.6
+%End
+
  QVector<float> data() const /Deprecated="Since 4.0. Use vertexBuffer() in combination with indexBuffer()."/;
 %Docstring
 Returns array of triangle vertex data
