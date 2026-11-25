@@ -17,6 +17,7 @@ try:
     QgsGeometryUtilsBase.sweepAngle = staticmethod(QgsGeometryUtilsBase.sweepAngle)
     QgsGeometryUtilsBase.interpolateArcValue = staticmethod(QgsGeometryUtilsBase.interpolateArcValue)
     QgsGeometryUtilsBase.normalizedAngle = staticmethod(QgsGeometryUtilsBase.normalizedAngle)
+    QgsGeometryUtilsBase.normalizedAngleDegrees = staticmethod(QgsGeometryUtilsBase.normalizedAngleDegrees)
     QgsGeometryUtilsBase.lineAngle = staticmethod(QgsGeometryUtilsBase.lineAngle)
     QgsGeometryUtilsBase.angleBetweenThreePoints = staticmethod(QgsGeometryUtilsBase.angleBetweenThreePoints)
     QgsGeometryUtilsBase.linePerpendicularAngle = staticmethod(QgsGeometryUtilsBase.linePerpendicularAngle)

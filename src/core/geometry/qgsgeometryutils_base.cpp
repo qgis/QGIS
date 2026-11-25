@@ -352,6 +352,20 @@ double QgsGeometryUtilsBase::normalizedAngle( double angle )
   return clippedAngle;
 }
 
+double QgsGeometryUtilsBase::normalizedAngleDegrees( double angle )
+{
+  double clippedAngle = angle;
+  if ( clippedAngle >= 360.0 || clippedAngle <= -360.0 )
+  {
+    clippedAngle = std::fmod( clippedAngle, 360.0 );
+  }
+  if ( clippedAngle < 0.0 )
+  {
+    clippedAngle += 360.0;
+  }
+  return clippedAngle;
+}
+
 
 int QgsGeometryUtilsBase::closestSideOfRectangle( double right, double bottom, double left, double top, double x, double y )
 {
