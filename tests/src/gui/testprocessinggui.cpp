@@ -7578,13 +7578,12 @@ void TestProcessingGui::testLayerDefinitionWidgetDefaultValue()
   QCOMPARE( layerComboBox->currentLayer(), lineLayer );
   QCOMPARE( defaultValue().toString(), lineLayer->id() );
 
-  // the layer name is also stored in feature source definitions
+  // only the layer name is stored from feature source definitions
   pointLayer->dataProvider()->addFeature( *std::make_unique<QgsFeature>() );
   pointLayer->selectAll();
   layerComboBox->setValue( QgsProcessingFeatureSourceDefinition( pointLayer->id(), true ), context );
-  const QgsProcessingFeatureSourceDefinition sourceDefinition = defaultValue().value<QgsProcessingFeatureSourceDefinition>();
-  QCOMPARE( sourceDefinition.source.staticValue().toString(), u"point"_s );
-  QVERIFY( sourceDefinition.selectedFeaturesOnly );
+  QCOMPARE( defaultValue().userType(), QMetaType::Type::QString );
+  QCOMPARE( defaultValue().toString(), u"point"_s );
   pointLayer->removeSelection();
 
   // map layer
@@ -7606,8 +7605,19 @@ void TestProcessingGui::testLayerDefinitionWidgetDefaultValue()
   createWidget( u"multilayer"_s, &multiParam );
   QgsProcessingMultipleLayerPanelWidget *multiPanel = widget->findChild<QgsProcessingMultipleLayerPanelWidget *>();
   QVERIFY( multiPanel );
-  QCOMPARE( multiPanel->value().toList(), QVariantList() << pointLayer->source() );
+  // not all layers are available, so the widget is not prefilled, but the default is kept
+  QVERIFY( multiPanel->value().toList().isEmpty() );
   QCOMPARE( defaultValue().toList(), QVariantList() << u"point"_s << u"layer from other project"_s );
+  // all layers are available, so the widget is prefilled
+  multiParam.setDefaultValue( QVariantList() << u"point"_s << u"line"_s );
+  createWidget( u"multilayer"_s, &multiParam );
+  multiPanel = widget->findChild<QgsProcessingMultipleLayerPanelWidget *>();
+  QVERIFY( multiPanel );
+  QCOMPARE( multiPanel->value().toList(), QVariantList() << pointLayer->source() << lineLayer->source() );
+  QCOMPARE( defaultValue().toList(), QVariantList() << u"point"_s << u"line"_s );
+  // only layer IDs are converted to names, layers referenced by source (e.g. file paths) are stored as is
+  multiPanel->setValue( QVariantList() << lineLayer->source() << pointsFile );
+  QCOMPARE( defaultValue().toList(), QVariantList() << lineLayer->source() << pointsFile );
   multiPanel->setValue( QVariantList() << pointLayer->id() << lineLayer->id() );
   QCOMPARE( defaultValue().toList(), QVariantList() << u"point"_s << u"line"_s );
   widget.reset();
