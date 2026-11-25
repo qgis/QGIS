@@ -69,41 +69,58 @@ class RegularPoints(QgisAlgorithm):
         super().__init__()
 
     def initAlgorithm(self, config=None):
-        self.addParameter(
-            QgsProcessingParameterExtent(
-                self.EXTENT, self.tr("Input extent"), optional=False
+        param = QgsProcessingParameterExtent(
+            self.EXTENT, self.tr("Input extent"), optional=False
+        )
+        param.setHelp(self.tr("Map extent for the regular points."))
+        self.addParameter(param)
+
+        param = QgsProcessingParameterDistance(
+            self.SPACING,
+            self.tr("Point spacing/count"),
+            100,
+            self.CRS,
+            False,
+            0.000001,
+        )
+        param.setHelp(
+            self.tr(
+                "Spacing between the points, or the number of points, depending on whether “Use point spacing” is checked or not."
             )
         )
-        self.addParameter(
-            QgsProcessingParameterDistance(
-                self.SPACING,
-                self.tr("Point spacing/count"),
-                100,
-                self.CRS,
-                False,
-                0.000001,
+        self.addParameter(param)
+
+        param = QgsProcessingParameterDistance(
+            self.INSET,
+            self.tr("Initial inset from corner (LH side)"),
+            0.0,
+            self.CRS,
+            False,
+            0.0,
+        )
+        param.setHelp(
+            self.tr(
+                "Offsets the points relative to the upper left corner. The value is used for both the X and Y axis."
             )
         )
-        self.addParameter(
-            QgsProcessingParameterDistance(
-                self.INSET,
-                self.tr("Initial inset from corner (LH side)"),
-                0.0,
-                self.CRS,
-                False,
-                0.0,
+        self.addParameter(param)
+
+        param = QgsProcessingParameterBoolean(
+            self.RANDOMIZE, self.tr("Apply random offset to point spacing"), False
+        )
+        param.setHelp(self.tr("If checked, the points will have a random spacing."))
+        self.addParameter(param)
+
+        param = QgsProcessingParameterBoolean(
+            self.IS_SPACING, self.tr("Use point spacing"), True
+        )
+        param.setHelp(
+            self.tr(
+                "If checked, “Point spacing/count” is used as the spacing between the points, otherwise as the number of points."
             )
         )
-        self.addParameter(
-            QgsProcessingParameterBoolean(
-                self.RANDOMIZE, self.tr("Apply random offset to point spacing"), False
-            )
-        )
-        self.addParameter(
-            QgsProcessingParameterBoolean(
-                self.IS_SPACING, self.tr("Use point spacing"), True
-            )
-        )
+        self.addParameter(param)
+
         self.addParameter(
             QgsProcessingParameterCrs(
                 self.CRS, self.tr("Output layer CRS"), "ProjectCrs"

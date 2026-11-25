@@ -56,14 +56,24 @@ QString QgsRandomPointsExtentAlgorithm::groupId() const
 
 void QgsRandomPointsExtentAlgorithm::initAlgorithm( const QVariantMap & )
 {
-  addParameter( new QgsProcessingParameterExtent( u"EXTENT"_s, QObject::tr( "Input extent" ) ) );
-  addParameter( new QgsProcessingParameterNumber( u"POINTS_NUMBER"_s, QObject::tr( "Number of points" ), Qgis::ProcessingNumberParameterType::Integer, 1, false, 1 ) );
-  addParameter( new QgsProcessingParameterDistance( u"MIN_DISTANCE"_s, QObject::tr( "Minimum distance between points" ), 0, u"TARGET_CRS"_s, true, 0 ) );
+  auto extentParam = std::make_unique<QgsProcessingParameterExtent>( u"EXTENT"_s, QObject::tr( "Input extent" ) );
+  extentParam->setHelp( QObject::tr( "Map extent for the random points." ) );
+  addParameter( extentParam.release() );
+
+  auto pointsNumberParam = std::make_unique<QgsProcessingParameterNumber>( u"POINTS_NUMBER"_s, QObject::tr( "Number of points" ), Qgis::ProcessingNumberParameterType::Integer, 1, false, 1 );
+  pointsNumberParam->setHelp( QObject::tr( "Number of points to create." ) );
+  addParameter( pointsNumberParam.release() );
+
+  auto minDistanceParam = std::make_unique<QgsProcessingParameterDistance>( u"MIN_DISTANCE"_s, QObject::tr( "Minimum distance between points" ), 0, u"TARGET_CRS"_s, true, 0 );
+  minDistanceParam->setHelp( QObject::tr( "The minimum distance between points." ) );
+  addParameter( minDistanceParam.release() );
+
   addParameter( new QgsProcessingParameterCrs( u"TARGET_CRS"_s, QObject::tr( "Target CRS" ), u"ProjectCrs"_s, false ) );
 
   auto maxAttempts_param = std::make_unique<
     QgsProcessingParameterNumber>( u"MAX_ATTEMPTS"_s, QObject::tr( "Maximum number of search attempts given the minimum distance" ), Qgis::ProcessingNumberParameterType::Integer, 200, true, 1 );
   maxAttempts_param->setFlags( maxAttempts_param->flags() | Qgis::ProcessingParameterFlag::Advanced );
+  maxAttempts_param->setHelp( QObject::tr( "Maximum number of attempts to place the points." ) );
   addParameter( maxAttempts_param.release() );
 
   addParameter( new QgsProcessingParameterFeatureSink( u"OUTPUT"_s, QObject::tr( "Random points" ), Qgis::ProcessingSourceType::VectorPoint ) );

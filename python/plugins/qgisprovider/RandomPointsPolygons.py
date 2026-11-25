@@ -89,11 +89,12 @@ class RandomPointsPolygons(QgisAlgorithm):
                 [QgsProcessing.SourceType.TypeVectorPolygon],
             )
         )
-        self.addParameter(
-            QgsProcessingParameterEnum(
-                self.STRATEGY, self.tr("Sampling strategy"), self.strategies, False, 0
-            )
+        param = QgsProcessingParameterEnum(
+            self.STRATEGY, self.tr("Sampling strategy"), self.strategies, False, 0
         )
+        param.setHelp(self.tr("Sampling strategy to use."))
+        self.addParameter(param)
+
         value_param = QgsProcessingParameterNumber(
             self.VALUE,
             self.tr("Point count or density"),
@@ -110,6 +111,11 @@ class RandomPointsPolygons(QgisAlgorithm):
                 QgsPropertyDefinition.StandardPropertyTemplate.Double,
             )
         )
+        value_param.setHelp(
+            self.tr(
+                "The number or density of points, depending on the chosen sampling strategy."
+            )
+        )
         self.addParameter(value_param)
 
         # deprecated expression parameter - overrides value parameter if set
@@ -124,17 +130,18 @@ class RandomPointsPolygons(QgisAlgorithm):
         )
         self.addParameter(exp_param)
 
-        self.addParameter(
-            QgsProcessingParameterDistance(
-                self.MIN_DISTANCE,
-                self.tr("Minimum distance between points"),
-                None,
-                self.INPUT,
-                True,
-                0,
-                1000000000,
-            )
+        param = QgsProcessingParameterDistance(
+            self.MIN_DISTANCE,
+            self.tr("Minimum distance between points"),
+            None,
+            self.INPUT,
+            True,
+            0,
+            1000000000,
         )
+        param.setHelp(self.tr("The minimum distance between points."))
+        self.addParameter(param)
+
         self.addParameter(
             QgsProcessingParameterFeatureSink(
                 self.OUTPUT,

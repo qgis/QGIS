@@ -60,16 +60,21 @@ void QgsRandomPointsOnLinesAlgorithm::initAlgorithm( const QVariantMap & )
   numberPointsParam->setIsDynamic( true );
   numberPointsParam->setDynamicPropertyDefinition( QgsPropertyDefinition( POINTS_NUMBER, QObject::tr( "Number of points for each feature" ), QgsPropertyDefinition::IntegerPositive ) );
   numberPointsParam->setDynamicLayerParameterName( u"INPUT"_s );
+  numberPointsParam->setHelp( QObject::tr( "Number of points to create for each feature." ) );
   addParameter( numberPointsParam.release() );
 
   auto minDistParam = std::make_unique<QgsProcessingParameterDistance>( MIN_DISTANCE, QObject::tr( "Minimum distance between points" ), 0, INPUT, true, 0 );
   minDistParam->setIsDynamic( true );
   minDistParam->setDynamicPropertyDefinition( QgsPropertyDefinition( MIN_DISTANCE, QObject::tr( "Minimum distance between points (per feature)" ), QgsPropertyDefinition::DoublePositive ) );
   minDistParam->setDynamicLayerParameterName( u"INPUT"_s );
+  minDistParam->setHelp( QObject::tr( "The minimum distance between points within one line feature." ) );
   addParameter( minDistParam.release() );
 
   auto minDistGlobalParam = std::make_unique<QgsProcessingParameterDistance>( MIN_DISTANCE_GLOBAL, QObject::tr( "Global minimum distance between points" ), 0, INPUT, true, 0 );
   minDistGlobalParam->setFlags( minDistGlobalParam->flags() | Qgis::ProcessingParameterFlag::Advanced );
+  minDistGlobalParam->setHelp(
+    QObject::tr( "The global minimum distance between points. Should be smaller than the “Minimum distance between points” (per feature) for that parameter to have an effect." )
+  );
   addParameter( minDistGlobalParam.release() );
 
   auto maxAttemptsParam = std::make_unique<
@@ -80,14 +85,17 @@ void QgsRandomPointsOnLinesAlgorithm::initAlgorithm( const QVariantMap & )
     QgsPropertyDefinition( MAX_TRIES_PER_POINT, QObject::tr( "Maximum number of search attempts (for Min. dist. > 0)" ), QgsPropertyDefinition::IntegerPositiveGreaterZero )
   );
   maxAttemptsParam->setDynamicLayerParameterName( u"INPUT"_s );
+  maxAttemptsParam->setHelp( QObject::tr( "The maximum number of tries per point. Only relevant if the minimum distance between points is set (and greater than 0)." ) );
   addParameter( maxAttemptsParam.release() );
 
   auto randomSeedParam = std::make_unique<QgsProcessingParameterNumber>( SEED, QObject::tr( "Random seed" ), Qgis::ProcessingNumberParameterType::Integer, QVariant(), true, 1 );
   randomSeedParam->setFlags( randomSeedParam->flags() | Qgis::ProcessingParameterFlag::Advanced );
+  randomSeedParam->setHelp( QObject::tr( "The seed to use for the random number generator." ) );
   addParameter( randomSeedParam.release() );
 
   auto includeLineAttrParam = std::make_unique<QgsProcessingParameterBoolean>( INCLUDE_LINE_ATTRIBUTES, QObject::tr( "Include line attributes" ), true );
   includeLineAttrParam->setFlags( includeLineAttrParam->flags() | Qgis::ProcessingParameterFlag::Advanced );
+  includeLineAttrParam->setHelp( QObject::tr( "If checked, a point will get the attributes from the line on which it is placed." ) );
   addParameter( includeLineAttrParam.release() );
 
   addParameter( new QgsProcessingParameterFeatureSink( OUTPUT, QObject::tr( "Random points on lines" ), Qgis::ProcessingSourceType::VectorPoint ) );

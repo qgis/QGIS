@@ -57,21 +57,35 @@ QString QgsGridAlgorithm::groupId() const
 
 void QgsGridAlgorithm::initAlgorithm( const QVariantMap & )
 {
-  addParameter( new QgsProcessingParameterEnum(
+  auto typeParam = std::make_unique<QgsProcessingParameterEnum>(
     u"TYPE"_s,
     QObject::tr( "Grid type" ),
     QStringList() << QObject::tr( "Point" ) << QObject::tr( "Line" ) << QObject::tr( "Rectangle (Polygon)" ) << QObject::tr( "Diamond (Polygon)" ) << QObject::tr( "Hexagon (Polygon)" ),
     false,
     0
-  ) );
+  );
+  typeParam->setHelp( QObject::tr( "Shape of the grid." ) );
+  addParameter( typeParam.release() );
 
-  addParameter( new QgsProcessingParameterExtent( u"EXTENT"_s, QObject::tr( "Grid extent" ) ) );
+  auto extentParam = std::make_unique<QgsProcessingParameterExtent>( u"EXTENT"_s, QObject::tr( "Grid extent" ) );
+  extentParam->setHelp( QObject::tr( "Extent of the grid." ) );
+  addParameter( extentParam.release() );
 
-  addParameter( new QgsProcessingParameterDistance( u"HSPACING"_s, QObject::tr( "Horizontal spacing" ), 1, u"CRS"_s, false, 0, 1000000000.0 ) );
-  addParameter( new QgsProcessingParameterDistance( u"VSPACING"_s, QObject::tr( "Vertical spacing" ), 1, u"CRS"_s, false, 0, 1000000000.0 ) );
+  auto hSpacingParam = std::make_unique<QgsProcessingParameterDistance>( u"HSPACING"_s, QObject::tr( "Horizontal spacing" ), 1, u"CRS"_s, false, 0, 1000000000.0 );
+  hSpacingParam->setHelp( QObject::tr( "Size of a grid cell on the X axis." ) );
+  addParameter( hSpacingParam.release() );
 
-  addParameter( new QgsProcessingParameterDistance( u"HOVERLAY"_s, QObject::tr( "Horizontal overlay" ), 0, u"CRS"_s, false ) );
-  addParameter( new QgsProcessingParameterDistance( u"VOVERLAY"_s, QObject::tr( "Vertical overlay" ), 0, u"CRS"_s, false ) );
+  auto vSpacingParam = std::make_unique<QgsProcessingParameterDistance>( u"VSPACING"_s, QObject::tr( "Vertical spacing" ), 1, u"CRS"_s, false, 0, 1000000000.0 );
+  vSpacingParam->setHelp( QObject::tr( "Size of a grid cell on the Y axis." ) );
+  addParameter( vSpacingParam.release() );
+
+  auto hOverlayParam = std::make_unique<QgsProcessingParameterDistance>( u"HOVERLAY"_s, QObject::tr( "Horizontal overlay" ), 0, u"CRS"_s, false );
+  hOverlayParam->setHelp( QObject::tr( "Overlay distance between two consecutive grid cells on the X axis." ) );
+  addParameter( hOverlayParam.release() );
+
+  auto vOverlayParam = std::make_unique<QgsProcessingParameterDistance>( u"VOVERLAY"_s, QObject::tr( "Vertical overlay" ), 0, u"CRS"_s, false );
+  vOverlayParam->setHelp( QObject::tr( "Overlay distance between two consecutive grid cells on the Y axis." ) );
+  addParameter( vOverlayParam.release() );
 
   addParameter( new QgsProcessingParameterCrs( u"CRS"_s, QObject::tr( "Grid CRS" ), u"ProjectCrs"_s ) );
 

@@ -76,8 +76,14 @@ QgsPixelCentroidsFromPolygonsAlgorithm *QgsPixelCentroidsFromPolygonsAlgorithm::
 
 void QgsPixelCentroidsFromPolygonsAlgorithm::initAlgorithm( const QVariantMap & )
 {
-  addParameter( new QgsProcessingParameterRasterLayer( u"INPUT_RASTER"_s, QObject::tr( "Raster layer" ) ) );
-  addParameter( new QgsProcessingParameterFeatureSource( u"INPUT_VECTOR"_s, QObject::tr( "Vector layer" ), QList<int>() << static_cast<int>( Qgis::ProcessingSourceType::VectorPolygon ) ) );
+  auto inputRasterParam = std::make_unique<QgsProcessingParameterRasterLayer>( u"INPUT_RASTER"_s, QObject::tr( "Raster layer" ) );
+  inputRasterParam->setHelp( QObject::tr( "Raster layer whose pixel centroids are generated." ) );
+  addParameter( inputRasterParam.release() );
+
+  auto inputVectorParam
+    = std::make_unique<QgsProcessingParameterFeatureSource>( u"INPUT_VECTOR"_s, QObject::tr( "Vector layer" ), QList<int>() << static_cast<int>( Qgis::ProcessingSourceType::VectorPolygon ) );
+  inputVectorParam->setHelp( QObject::tr( "Polygon layer inside which the pixel centroids are generated." ) );
+  addParameter( inputVectorParam.release() );
 
   addParameter( new QgsProcessingParameterFeatureSink( u"OUTPUT"_s, QObject::tr( "Pixel centroids" ), Qgis::ProcessingSourceType::VectorPoint ) );
 }
