@@ -134,20 +134,7 @@ QgsFeatureList QgsTessellateAlgorithm::processFeature( const QgsFeature &feature
         QgsTessellator t;
         t.setBounds( bounds );
 
-        if ( f.geometry().isMultipart() )
-        {
-          const QgsMultiSurface *ms = qgsgeometry_cast<const QgsMultiSurface *>( f.geometry().constGet() );
-          for ( int i = 0; i < ms->numGeometries(); ++i )
-          {
-            const std::unique_ptr<QgsPolygon> p( qgsgeometry_cast<QgsPolygon *>( ms->geometryN( i )->segmentize() ) );
-            t.addPolygon( *p, 0 );
-          }
-        }
-        else
-        {
-          const std::unique_ptr<QgsPolygon> p( qgsgeometry_cast<QgsPolygon *>( f.geometry().constGet()->segmentize() ) );
-          t.addPolygon( *p, 0 );
-        }
+        t.addGeometry( *f.geometry().constGet() );
         QgsGeometry g( t.asMultiPolygon() );
         if ( !g.isEmpty() )
         {
