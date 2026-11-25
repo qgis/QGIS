@@ -20,6 +20,7 @@
 #include "qgis_sip.h"
 #include "qgsrectangle.h"
 
+class QgsAbstractGeometry;
 class QgsPolygon;
 class QgsMultiPolygon;
 class QgsLineString;
@@ -229,6 +230,20 @@ class CORE_EXPORT QgsTessellator
 
     //! Tessellates a triangle and adds its vertex entries to the output data array
     void addPolygon( const QgsPolygon &polygon, float extrusionHeight );
+
+    /**
+     * Tessellates a surface geometry and adds its vertex entries to the output data array.
+     *
+     * Supported geometries are polygons, polyhedral surfaces and collections of these geometries.
+     *
+     * \note Curved geometries are supported but they are segmentized with the default
+     *       segmentation tolerance.
+     *
+     * \see addPolygon()
+     *
+     * \since QGIS 4.6
+     */
+    void addGeometry( const QgsAbstractGeometry &geometry, float extrusionHeight = 0 );
 
     /**
      * Returns array of triangle vertex data

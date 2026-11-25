@@ -21,12 +21,14 @@
 
 #include "poly2tri.h"
 #include "qgis.h"
+#include "qgsabstractgeometry.h"
 #include "qgscurve.h"
 #include "qgsgeometry.h"
 #include "qgsgeometryutils_base.h"
 #include "qgsmultipolygon.h"
 #include "qgspoint.h"
 #include "qgspolygon.h"
+#include "qgspolyhedralsurface.h"
 #include "qgstriangle.h"
 
 #include <QMatrix4x4>
@@ -962,6 +964,40 @@ void QgsTessellator::addPolygon( const QgsPolygon &polygon, float extrusionHeigh
     makeWalls( *exterior, false, extrusionHeight );
     for ( int i = 0; i < polygon.numInteriorRings(); ++i )
       makeWalls( *qgsgeometry_cast< const QgsLineString * >( polygon.interiorRing( i ) ), true, extrusionHeight );
+  }
+}
+
+void QgsTessellator::addGeometry( const QgsAbstractGeometry &geometry, float extrusionHeight )
+{
+  if ( const QgsPolygon *polygon = qgsgeometry_cast<const QgsPolygon *>( &geometry ) )
+  {
+    addPolygon( *polygon, extrusionHeight );
+  }
+  else if ( const QgsCurvePolygon *curvePolygon = qgsgeometry_cast<const QgsCurvePolygon *>( &geometry ) )
+  {
+    std::unique_ptr<QgsPolygon> segmentized( qgsgeometry_cast<QgsPolygon *>( curvePolygon->segmentize() ) );
+    if ( segmentized )
+    {
+      addPolygon( *segmentized, extrusionHeight );
+    }
+  }
+  else if ( const QgsPolyhedralSurface *surface = qgsgeometry_cast<const QgsPolyhedralSurface *>( &geometry ) )
+  {
+    for ( int i = 0; i < surface->numPatches(); ++i )
+    {
+      addPolygon( *surface->patchN( i ), extrusionHeight );
+    }
+  }
+  else if ( const QgsGeometryCollection *collection = qgsgeometry_cast<const QgsGeometryCollection *>( &geometry ) )
+  {
+    for ( int i = 0; i < collection->numGeometries(); ++i )
+    {
+      addGeometry( *collection->geometryN( i ), extrusionHeight );
+    }
+  }
+  else
+  {
+    mError = QObject::tr( "Unsupported geometry type %1" ).arg( QgsWkbTypes::displayString( geometry.wkbType() ) );
   }
 }
 

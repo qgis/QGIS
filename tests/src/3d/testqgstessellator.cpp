@@ -17,6 +17,7 @@
 #include "qgslogger.h"
 #include "qgsmultipolygon.h"
 #include "qgspolygon.h"
+#include "qgspolyhedralsurface.h"
 #include "qgstessellator.h"
 #include "qgstest.h"
 
@@ -272,6 +273,7 @@ class TestQgsTessellator : public QgsTest
     void testDuplicatePoints();
     void testRoofs();
     void testFloorsAndRoofs();
+    void testAddGeometry();
 
   private:
 };
@@ -1427,6 +1429,50 @@ void TestQgsTessellator::testFloorsAndRoofs()
     t.addPolygon( polygonZnonFlat, 10 );
 
     QVERIFY( checkTriangleOutput( extractTriangles( t, false ), tc ) );
+  }
+}
+
+void TestQgsTessellator::testAddGeometry()
+{
+  // test a cube
+  {
+    QgsTessellator tessellator;
+    tessellator.setTriangulationAlgorithm( Qgis::TriangulationAlgorithm::Earcut );
+
+    QgsPolyhedralSurface phs;
+    phs.fromWkt(
+      u"POLYHEDRALSURFACE Z (((-0.5 -0.5 -0.5,-0.5 0.5 -0.5,0.5 0.5 -0.5,0.5 -0.5 -0.5,-0.5 -0.5 -0.5)),((-0.5 -0.5 0.5,0.5 -0.5 0.5,0.5 0.5 0.5,-0.5 0.5 0.5,-0.5 -0.5 0.5)),((-0.5 -0.5 -0.5,0.5 -0.5 -0.5,0.5 -0.5 0.5,-0.5 -0.5 0.5,-0.5 -0.5 -0.5)),((-0.5 0.5 -0.5,-0.5 0.5 0.5,0.5 0.5 0.5,0.5 0.5 -0.5,-0.5 0.5 -0.5)),((0.5 -0.5 -0.5,0.5 0.5 -0.5,0.5 0.5 0.5,0.5 -0.5 0.5,0.5 -0.5 -0.5)),((-0.5 -0.5 -0.5,-0.5 -0.5 0.5,-0.5 0.5 0.5,-0.5 0.5 -0.5,-0.5 -0.5 -0.5)))"_s
+    );
+    tessellator.addGeometry( phs );
+    QVERIFY( tessellator.error().isEmpty() );
+    QCOMPARE( tessellator.indexBuffer().size() / tessellator.indexStride(), 36 );
+
+    QList<TriangleCoords> tc;
+    tc << TriangleCoords( QVector3D( -0.5, -0.5, -0.5 ), QVector3D( -0.5, -0.5, 0.5 ), QVector3D( -0.5, 0.5, 0.5 ) );
+    tc << TriangleCoords( QVector3D( -0.5, -0.5, -0.5 ), QVector3D( -0.5, 0.5, -0.5 ), QVector3D( 0.5, 0.5, -0.5 ) );
+    tc << TriangleCoords( QVector3D( -0.5, -0.5, -0.5 ), QVector3D( 0.5, -0.5, -0.5 ), QVector3D( 0.5, -0.5, 0.5 ) );
+    tc << TriangleCoords( QVector3D( -0.5, -0.5, 0.5 ), QVector3D( 0.5, -0.5, 0.5 ), QVector3D( 0.5, 0.5, 0.5 ) );
+    tc << TriangleCoords( QVector3D( -0.5, 0.5, -0.5 ), QVector3D( -0.5, 0.5, 0.5 ), QVector3D( 0.5, 0.5, 0.5 ) );
+    tc << TriangleCoords( QVector3D( -0.5, 0.5, 0.5 ), QVector3D( -0.5, 0.5, -0.5 ), QVector3D( -0.5, -0.5, -0.5 ) );
+    tc << TriangleCoords( QVector3D( 0.5, -0.5, -0.5 ), QVector3D( 0.5, 0.5, -0.5 ), QVector3D( 0.5, 0.5, 0.5 ) );
+    tc << TriangleCoords( QVector3D( 0.5, -0.5, 0.5 ), QVector3D( -0.5, -0.5, 0.5 ), QVector3D( -0.5, -0.5, -0.5 ) );
+    tc << TriangleCoords( QVector3D( 0.5, 0.5, -0.5 ), QVector3D( 0.5, -0.5, -0.5 ), QVector3D( -0.5, -0.5, -0.5 ) );
+    tc << TriangleCoords( QVector3D( 0.5, 0.5, 0.5 ), QVector3D( -0.5, 0.5, 0.5 ), QVector3D( -0.5, -0.5, 0.5 ) );
+    tc << TriangleCoords( QVector3D( 0.5, 0.5, 0.5 ), QVector3D( 0.5, -0.5, 0.5 ), QVector3D( 0.5, -0.5, -0.5 ) );
+    tc << TriangleCoords( QVector3D( 0.5, 0.5, 0.5 ), QVector3D( 0.5, 0.5, -0.5 ), QVector3D( -0.5, 0.5, -0.5 ) );
+
+    QVERIFY( checkTriangleOutput( extractTriangles( tessellator, false ), tc ) );
+  }
+
+  // does not work with a point
+  {
+    QgsTessellator tessellator;
+    tessellator.setTriangulationAlgorithm( Qgis::TriangulationAlgorithm::Earcut );
+
+    QgsPoint point;
+    point.fromWkt( u"POINT Z (0 0 1)"_s );
+    tessellator.addGeometry( point );
+    QVERIFY( !tessellator.error().isEmpty() );
   }
 }
 
