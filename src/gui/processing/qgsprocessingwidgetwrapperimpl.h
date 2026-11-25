@@ -1669,13 +1669,6 @@ class GUI_EXPORT QgsProcessingLayerDefaultValueWidget : public QWidget
 
     QVariant value() const { return mValue; }
 
-    /**
-     * Returns TRUE if the layer \a source of a default value matches a layer in the \a project
-     * (by name or layer ID) or an existing file. It is used to check if the default value
-     * should be suggested to the user.
-     */
-    static bool isAvailableLayerSource( const QString &source, const QgsProject *project );
-
   signals:
 
     //! Emitted when the default value is changed by the user
@@ -1684,11 +1677,11 @@ class GUI_EXPORT QgsProcessingLayerDefaultValueWidget : public QWidget
   private:
     void clearWidget();
 
-    //! Replaces any project layer IDs in a widget \a value by the corresponding layer names
-    QVariant layerIdsToNames( const QVariant &value ) const;
-
-    //! Returns the parts of a default \a value which match layers in the current project or existing files, or an invalid value if nothing matches
-    QVariant availableLayersOnly( const QVariant &value ) const;
+    /**
+     * Converts a widget \a value to the value stored as default: project layer IDs are replaced by layer names,
+     * other layer sources (e.g. file paths) are kept. Returns a list for multiple layers, a string otherwise.
+     */
+    QVariant layerNames( const QVariant &value ) const;
 
     QgsProcessingContext &mContext;
     QgsProcessingParameterWidgetContext mWidgetContext;

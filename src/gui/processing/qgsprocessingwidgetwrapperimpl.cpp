@@ -74,6 +74,7 @@
 #include "qgsprocessingpointcloudexpressionlineedit.h"
 #include "qgsprocessingrastercalculatorexpressionlineedit.h"
 #include "qgsprocessingregistry.h"
+#include "qgsprocessingutils.h"
 #include "qgsproject.h"
 #include "qgsprojectionselectionwidget.h"
 #include "qgsproviderconnectioncombobox.h"
@@ -83,12 +84,12 @@
 #include "qgssnapindicator.h"
 #include "qgsspinbox.h"
 #include "qgsunittypes.h"
+#include "qgsvariantutils.h"
 
 #include <QButtonGroup>
 #include <QCheckBox>
 #include <QComboBox>
 #include <QFileDialog>
-#include <QFileInfo>
 #include <QHBoxLayout>
 #include <QInputDialog>
 #include <QLabel>
@@ -6590,7 +6591,7 @@ void QgsProcessingMapLayerWidgetWrapper::setWidgetContext( const QgsProcessingPa
 bool QgsProcessingMapLayerWidgetWrapper::isMissingModelDefaultLayer( const QVariant &value, QgsProcessingContext &context ) const
 {
   // no default value
-  if ( !value.isValid() )
+  if ( QgsVariantUtils::isNull( value ) )
     return false;
 
   if ( type() != Qgis::ProcessingMode::Standard || !dynamic_cast<const QgsProcessingModelAlgorithm *>( parameterDefinition()->algorithm() ) )
@@ -6599,29 +6600,9 @@ bool QgsProcessingMapLayerWidgetWrapper::isMissingModelDefaultLayer( const QVari
   if ( value != parameterDefinition()->defaultValueForGui() )
     return false;
 
-  QVariant val = value;
-  if ( val.userType() == qMetaTypeId<QgsProcessingFeatureSourceDefinition>() )
-    val = val.value<QgsProcessingFeatureSourceDefinition>().source;
-  else if ( val.userType() == qMetaTypeId<QgsProcessingRasterLayerDefinition>() )
-    val = val.value<QgsProcessingRasterLayerDefinition>().source;
-
-  if ( val.userType() == qMetaTypeId<QgsProperty>() )
-  {
-    if ( val.value<QgsProperty>().propertyType() != Qgis::PropertyType::Static )
-      return false;
-    val = val.value<QgsProperty>().staticValue();
-  }
-
-  if ( val.userType() != QMetaType::Type::QString )
-    return false;
-
-  const QString string = val.toString();
-  if ( string.isEmpty() )
-    return false;
-
   // model parameters store project layers by name (or by layer ID in older models), file based layers by path
-  const QgsProject *project = context.project() ? context.project() : widgetContext().project();
-  return !QgsProcessingLayerDefaultValueWidget::isAvailableLayerSource( string, project );
+  const QStringList sources = QgsProcessingUtils::layerSources( value );
+  return !sources.isEmpty() && !QgsProcessingUtils::isAvailableLayerSource( sources.first(), context );
 }
 
 void QgsProcessingMapLayerWidgetWrapper::setWidgetValue( const QVariant &value, QgsProcessingContext &context )
@@ -10399,18 +10380,6 @@ QString QgsProcessingTileExtentMaxZoomWidgetWrapper::modelerExpressionFormatStri
 // QgsProcessingLayerDefaultValueWidget
 //
 
-bool QgsProcessingLayerDefaultValueWidget::isAvailableLayerSource( const QString &source, const QgsProject *project )
-{
-  if ( source.isEmpty() )
-    return false;
-
-  if ( project && ( project->mapLayer( source ) || !project->mapLayersByName( source ).isEmpty() ) )
-    return true;
-
-  // file based sources may include additional parts, e.g. "|layername=..."
-  return QFileInfo::exists( source.section( '|', 0, 0 ) );
-}
-
 QgsProcessingLayerDefaultValueWidget::QgsProcessingLayerDefaultValueWidget(
   QgsProcessingContext &context, const QgsProcessingParameterWidgetContext &widgetContext, const QVariant &defaultValue, QWidget *parent
 )
@@ -10446,9 +10415,11 @@ void QgsProcessingLayerDefaultValueWidget::setParameter( const QgsProcessingPara
   // mandatory parameter can still have no default value
   mParameter->setFlags( mParameter->flags() | Qgis::ProcessingParameterFlag::Optional );
   mParameter->setIsDynamic( false );
-  // the widget is only prefilled with layers from the current project or existing files,
+  // the widget is only prefilled if all default layers are in the current project or are existing files,
   // values which do not match (a layer name from another project, non-existing file) are not shown
-  mParameter->setDefaultValue( availableLayersOnly( mValue ) );
+  const QStringList sources = QgsProcessingUtils::layerSources( mValue );
+  const bool allAvailable = std::all_of( sources.cbegin(), sources.cend(), [this]( const QString &source ) { return QgsProcessingUtils::isAvailableLayerSource( source, mContext ); } );
+  mParameter->setDefaultValue( allAvailable ? mValue : QVariant() );
 
   mWrapper.reset( QgsGui::processingGuiRegistry()->createParameterWidgetWrapper( mParameter.get(), Qgis::ProcessingMode::Standard ) );
   if ( !mWrapper )
@@ -10462,118 +10433,29 @@ void QgsProcessingLayerDefaultValueWidget::setParameter( const QgsProcessingPara
     layout()->addWidget( mWidget );
 
   connect( mWrapper.get(), &QgsAbstractProcessingParameterWidgetWrapper::widgetValueHasChanged, this, [this] {
-    mValue = layerIdsToNames( mWrapper->parameterValue() );
+    mValue = layerNames( mWrapper->parameterValue() );
     emit changed();
   } );
 }
 
-QVariant QgsProcessingLayerDefaultValueWidget::availableLayersOnly( const QVariant &value ) const
+QVariant QgsProcessingLayerDefaultValueWidget::layerNames( const QVariant &value ) const
 {
-  // no default value
-  if ( !value.isValid() )
+  const QgsProject *project = mContext.project();
+  QVariantList names;
+  const QStringList sources = QgsProcessingUtils::layerSources( value );
+  for ( const QString &source : sources )
+  {
+    const QgsMapLayer *layer = project ? project->mapLayer( source ) : nullptr;
+    names << ( layer ? layer->name() : source );
+  }
+
+  if ( names.isEmpty() )
     return QVariant();
 
-  const QgsProject *project = mContext.project() ? mContext.project() : mWidgetContext.project();
-  auto isAvailable = [project]( const QString &string ) -> bool { return isAvailableLayerSource( string, project ); };
-
-  if ( value.userType() == qMetaTypeId<QgsProcessingFeatureSourceDefinition>() )
-  {
-    const QgsProcessingFeatureSourceDefinition definition = value.value<QgsProcessingFeatureSourceDefinition>();
-    if ( definition.source.propertyType() == Qgis::PropertyType::Static && isAvailable( definition.source.staticValue().toString() ) )
-      return value;
-  }
-  else if ( value.userType() == qMetaTypeId<QgsProcessingRasterLayerDefinition>() )
-  {
-    const QgsProcessingRasterLayerDefinition definition = value.value<QgsProcessingRasterLayerDefinition>();
-    if ( definition.source.propertyType() == Qgis::PropertyType::Static && isAvailable( definition.source.staticValue().toString() ) )
-      return value;
-  }
-  else if ( value.userType() == QMetaType::Type::QVariantList )
-  {
-    QVariantList layers;
-    const QVariantList values = value.toList();
-    for ( const QVariant &v : values )
-    {
-      const QVariant layer = availableLayersOnly( v );
-      if ( layer.isValid() )
-        layers << layer;
-    }
-    return layers.isEmpty() ? QVariant() : QVariant( layers );
-  }
-  else if ( value.userType() == QMetaType::Type::QStringList )
-  {
-    QStringList layers;
-    const QStringList values = value.toStringList();
-    for ( const QString &v : values )
-    {
-      if ( isAvailable( v ) )
-        layers << v;
-    }
-    return layers.isEmpty() ? QVariant() : QVariant( layers );
-  }
-  else if ( value.userType() == QMetaType::Type::QString )
-  {
-    if ( isAvailable( value.toString() ) )
-      return value;
-  }
-
-  return QVariant();
-}
-
-QVariant QgsProcessingLayerDefaultValueWidget::layerIdsToNames( const QVariant &value ) const
-{
-  // no default value
-  if ( !value.isValid() )
-    return value;
-
-  QgsProject *project = mContext.project() ? mContext.project() : mWidgetContext.project();
-  if ( !project )
-    return value;
-
-  // layer names are resolved when the model is run, in the same way as layer IDs
-  auto layerIdToLayerName = [project]( const QString &string ) -> QString {
-    if ( const QgsMapLayer *layer = project->mapLayer( string ) )
-      return layer->name();
-    return string;
-  };
-
-  if ( value.userType() == qMetaTypeId<QgsProcessingFeatureSourceDefinition>() )
-  {
-    QgsProcessingFeatureSourceDefinition definition = value.value<QgsProcessingFeatureSourceDefinition>();
-    if ( definition.source.propertyType() == Qgis::PropertyType::Static )
-      definition.source = QgsProperty::fromValue( layerIdToLayerName( definition.source.staticValue().toString() ) );
-    return QVariant::fromValue( definition );
-  }
-  else if ( value.userType() == qMetaTypeId<QgsProcessingRasterLayerDefinition>() )
-  {
-    QgsProcessingRasterLayerDefinition definition = value.value<QgsProcessingRasterLayerDefinition>();
-    if ( definition.source.propertyType() == Qgis::PropertyType::Static )
-      definition.source = QgsProperty::fromValue( layerIdToLayerName( definition.source.staticValue().toString() ) );
-    return QVariant::fromValue( definition );
-  }
-  else if ( value.userType() == QMetaType::Type::QVariantList )
-  {
-    // multiple layers
-    QVariantList names;
-    const QVariantList values = value.toList();
-    for ( const QVariant &v : values )
-      names << layerIdsToNames( v );
+  if ( value.userType() == QMetaType::Type::QVariantList || value.userType() == QMetaType::Type::QStringList )
     return names;
-  }
-  else if ( value.userType() == QMetaType::Type::QStringList )
-  {
-    QStringList names;
-    const QStringList values = value.toStringList();
-    for ( const QString &v : values )
-      names << layerIdToLayerName( v );
-    return names;
-  }
-  else if ( value.userType() == QMetaType::Type::QString )
-  {
-    return layerIdToLayerName( value.toString() );
-  }
 
-  return value;
+  return names.first();
 }
 
 void QgsProcessingLayerDefaultValueWidget::clearWidget()

@@ -696,6 +696,28 @@ class CORE_EXPORT QgsProcessingUtils
      */
     static QStringList modelFolders();
 
+    /**
+     * Returns TRUE if a layer \a source string refers to a layer available within the \a context,
+     * i.e. a layer from the context's project or temporary layer store (matched by layer ID,
+     * name or source) or an existing file.
+     *
+     * \see layerSources()
+     * \since QGIS 4.6
+     */
+    static bool isAvailableLayerSource( const QString &source, QgsProcessingContext &context );
+
+    /**
+     * Returns all layer source strings referred to by a layer parameter \a value.
+     *
+     * \param value can be a layer source string, a list of layer source strings, or a
+     * QgsProcessingFeatureSourceDefinition or QgsProcessingRasterLayerDefinition. Only static
+     * sources are returned, definitions with non-static sources and empty strings are ignored.
+     *
+     * \see isAvailableLayerSource()
+     * \since QGIS 4.6
+     */
+    static QStringList layerSources( const QVariant &value );
+
   private:
     static bool canUseLayer( const QgsRasterLayer *layer );
     static bool canUseLayer( const QgsMeshLayer *layer );
