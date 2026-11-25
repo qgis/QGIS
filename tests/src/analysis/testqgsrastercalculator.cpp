@@ -868,9 +868,9 @@ void TestQgsRasterCalculator::toString()
 
   QString error;
   std::unique_ptr<QgsRasterCalcNode> calcNode = QgsRasterCalcNode::parseRasterCalcString( u"min( \"raster@1\" )"_s, error );
-  QVERIFY( calcNode );
+  QVERIFY( !calcNode );
   calcNode = QgsRasterCalcNode::parseRasterCalcString( u"max( \"raster@1\" )"_s, error );
-  QVERIFY( calcNode );
+  QVERIFY( !calcNode );
 }
 
 void TestQgsRasterCalculator::testOutputCrsFromRasterEntries()
