@@ -740,6 +740,8 @@ class TestQgsProcessing : public QgsTest
     void mapLayers();
     void mapLayerFromStore();
     void mapLayerFromString();
+    void isAvailableLayerSource();
+    void layerSources();
     void algorithm();
     void features();
     void uniqueValues();
@@ -1791,6 +1793,83 @@ void TestQgsProcessing::mapLayerFromString()
   QCOMPARE( loadedLayer->type(), Qgis::LayerType::Raster );
   // should now be in temporary store
   QCOMPARE( c.temporaryLayerStore()->mapLayer( loadedLayer->id() ), loadedLayer );
+}
+
+void TestQgsProcessing::isAvailableLayerSource()
+{
+  QgsProcessingContext c;
+  QgsProject p;
+
+  const QString testDataDir = QStringLiteral( TEST_DATA_DIR ) + '/';
+  const QString pointsFile = testDataDir + "points.shp";
+  const QString raster = testDataDir + "tenbytenraster.asc";
+
+  QgsRasterLayer *r1 = new QgsRasterLayer( raster, u"R1"_s );
+  QVERIFY( r1->isValid() );
+  QgsVectorLayer *v1 = new QgsVectorLayer( u"Point"_s, u"v1"_s, u"memory"_s );
+  p.addMapLayers( QList<QgsMapLayer *>() << r1 << v1 );
+
+  // empty source
+  QVERIFY( !QgsProcessingUtils::isAvailableLayerSource( QString(), c ) );
+
+  // no project set, only existing files are available
+  QVERIFY( !QgsProcessingUtils::isAvailableLayerSource( u"v1"_s, c ) );
+  QVERIFY( !QgsProcessingUtils::isAvailableLayerSource( v1->id(), c ) );
+  QVERIFY( QgsProcessingUtils::isAvailableLayerSource( pointsFile, c ) );
+
+  c.setProject( &p );
+
+  // project layers by name, ID or source
+  QVERIFY( QgsProcessingUtils::isAvailableLayerSource( u"v1"_s, c ) );
+  QVERIFY( QgsProcessingUtils::isAvailableLayerSource( v1->id(), c ) );
+  QVERIFY( QgsProcessingUtils::isAvailableLayerSource( u"R1"_s, c ) );
+  QVERIFY( QgsProcessingUtils::isAvailableLayerSource( r1->id(), c ) );
+  QVERIFY( QgsProcessingUtils::isAvailableLayerSource( raster, c ) );
+
+  // layers from the temporary layer store
+  QgsVectorLayer *v2 = new QgsVectorLayer( u"Point"_s, u"v2"_s, u"memory"_s );
+  c.temporaryLayerStore()->addMapLayer( v2 );
+  QVERIFY( QgsProcessingUtils::isAvailableLayerSource( u"v2"_s, c ) );
+  QVERIFY( QgsProcessingUtils::isAvailableLayerSource( v2->id(), c ) );
+
+  // existing files, even with additional parts
+  QVERIFY( QgsProcessingUtils::isAvailableLayerSource( pointsFile, c ) );
+  QVERIFY( QgsProcessingUtils::isAvailableLayerSource( pointsFile + u"|layername=points"_s, c ) );
+
+  // missing
+  QVERIFY( !QgsProcessingUtils::isAvailableLayerSource( u"layer from other project"_s, c ) );
+  QVERIFY( !QgsProcessingUtils::isAvailableLayerSource( testDataDir + "looks_like_a_filename_but_does_not_exist.shp", c ) );
+}
+
+void TestQgsProcessing::layerSources()
+{
+  // null and empty values
+  QVERIFY( QgsProcessingUtils::layerSources( QVariant() ).isEmpty() );
+  QVERIFY( QgsProcessingUtils::layerSources( QString() ).isEmpty() );
+  QVERIFY( QgsProcessingUtils::layerSources( QString( "" ) ).isEmpty() );
+
+  // strings
+  QCOMPARE( QgsProcessingUtils::layerSources( u"v1"_s ), QStringList() << u"v1"_s );
+
+  // string lists
+  QCOMPARE( QgsProcessingUtils::layerSources( QStringList() << u"v1"_s << QString() << u"/some/file.shp"_s ), QStringList() << u"v1"_s << u"/some/file.shp"_s );
+
+  // variant lists
+  QCOMPARE( QgsProcessingUtils::layerSources( QVariantList() << u"v1"_s << QVariant::fromValue( QgsProcessingFeatureSourceDefinition( u"v2"_s ) ) ), QStringList() << u"v1"_s << u"v2"_s );
+
+  // feature source and raster layer definitions
+  QCOMPARE( QgsProcessingUtils::layerSources( QVariant::fromValue( QgsProcessingFeatureSourceDefinition( u"v1"_s, true, 5 ) ) ), QStringList() << u"v1"_s );
+  QCOMPARE( QgsProcessingUtils::layerSources( QVariant::fromValue( QgsProcessingRasterLayerDefinition( u"r1"_s, 1000, 150 ) ) ), QStringList() << u"r1"_s );
+
+  // static properties
+  QCOMPARE( QgsProcessingUtils::layerSources( QVariant::fromValue( QgsProperty::fromValue( u"v1"_s ) ) ), QStringList() << u"v1"_s );
+
+  // expression sources
+  QVERIFY( QgsProcessingUtils::layerSources( QVariant::fromValue( QgsProcessingFeatureSourceDefinition( QgsProperty::fromExpression( u"'abc'"_s ) ) ) ).isEmpty() );
+  QVERIFY( QgsProcessingUtils::layerSources( QVariant::fromValue( QgsProperty::fromExpression( u"'abc'"_s ) ) ).isEmpty() );
+
+  // other type
+  QVERIFY( QgsProcessingUtils::layerSources( 5 ).isEmpty() );
 }
 
 void TestQgsProcessing::algorithm()
