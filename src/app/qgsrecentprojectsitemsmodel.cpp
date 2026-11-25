@@ -130,6 +130,30 @@ QVariant QgsRecentProjectItemsModel::data( const QModelIndex &index, int role ) 
       return !filePath.isEmpty() ? filePath : path;
     }
 
+    case static_cast< int >( CustomRole::HasNativePathRole ):
+    {
+      const QString path = mRecentProjects.at( index.row() ).path;
+      QgsProjectStorage *projectStorage = QgsApplication::projectStorageRegistry()->projectStorageFromUri( path );
+      if ( projectStorage )
+      {
+        return !projectStorage->filePath( path ).isEmpty();
+      }
+
+      QUrl url( path );
+      if ( url.isLocalFile() )
+      {
+        return true;
+      }
+
+      if ( !url.scheme().isEmpty() )
+      {
+        return false;
+      }
+
+      QFileInfo fileInfo( path );
+      return fileInfo.exists();
+    }
+
     default:
       return QVariant();
   }
@@ -148,6 +172,7 @@ QHash<int, QByteArray> QgsRecentProjectItemsModel::roleNames() const
   roles[static_cast< int >( CustomRole::PinnedRole )] = "Pinned";
   roles[static_cast< int >( CustomRole::AnonymisedNativePathRole )] = "AnonymisedNativePath";
   roles[static_cast< int >( CustomRole::PreviewImagePathRole )] = "PreviewImagePath";
+  roles[static_cast< int >( CustomRole::HasNativePathRole )] = "HasNativePath";
   return roles;
 }
 

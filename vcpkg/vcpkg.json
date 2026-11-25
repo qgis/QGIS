@@ -2,13 +2,13 @@
   "vcpkg-configuration": {
     "default-registry": {
       "kind": "git",
-      "baseline": "b3ae22aef2b857af6e80d756c13f15db12be4e8a",
+      "baseline": "177e8175121536d414f405ed8b3099b325a42638",
       "repository": "https://github.com/microsoft/vcpkg"
     },
     "registries": [
       {
         "kind": "git",
-        "baseline": "783012f7fdf4dbc99cbab8715350e92462cf1e3e",
+        "baseline": "c990291f2c4a3040cd021a2763333d6bee8c88d3",
         "repository": "https://github.com/open-vcpkg/python-registry",
         "packages": [
           "arrow",
@@ -92,6 +92,18 @@
       "host": true,
       "features": [
         "thread"
+      ]
+    },
+    {
+      "$comment": "For crosscompiling on macos (x64), could go to the upstream qtwebengine port",
+      "name": "qtbase",
+      "default-features": false,
+      "host": true,
+      "features": [
+        "freetype",
+        "harfbuzz",
+        "jpeg",
+        "png"
       ]
     },
     {
@@ -194,6 +206,7 @@
         "py-numpy",
         "py-owslib",
         "py-pip",
+        "py-plotly",
         "py-psycopg",
         "py-psycopg2",
         {
@@ -342,6 +355,14 @@
             "on-demand"
           ]
         }
+      ]
+    },
+    "webengine": {
+      "description": "Build with QtWebEngine and PDF4QT support",
+      "dependencies": [
+        "asmjit",
+        "blend2d",
+        "py-pyqt6-webengine"
       ]
     }
   }

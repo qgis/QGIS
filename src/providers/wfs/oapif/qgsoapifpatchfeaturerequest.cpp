@@ -27,9 +27,10 @@ using namespace nlohmann;
 #include "moc_qgsoapifpatchfeaturerequest.cpp"
 #include "qgsoapifshareddata.h"
 #include "qgsoapifutils.h"
+#include "qgswfsconstants.h"
 
 QgsOapifPatchFeatureRequest::QgsOapifPatchFeatureRequest( const QgsDataSourceUri &uri )
-  : QgsBaseNetworkRequest( QgsAuthorizationSettings( uri.username(), uri.password(), QgsHttpHeaders(), uri.authConfigId() ), "OAPIF" )
+  : QgsBaseNetworkRequest( QgsAuthorizationSettings( uri.username(), uri.password(), QgsHttpHeaders(), uri.authConfigId() ), tr( "OAPIF" ), uri.hasParam( QgsWFSConstants::URI_PARAM_DISABLE_DECOMPRESSED_SAFETY_CHECK_THRESHOLD ) )
 {}
 
 bool QgsOapifPatchFeatureRequest::patchFeature( const QgsOapifSharedData *sharedData, const QString &jsonId, const QgsGeometry &geom, const QString &contentCrs, bool hasAxisInverted )

@@ -221,9 +221,9 @@ QgsBearingNumericFormatDialog::QgsBearingNumericFormatDialog( const QgsNumericFo
   QgsGui::enableAutoGeometryRestore( this );
 }
 
-QgsBearingNumericFormat *QgsBearingNumericFormatDialog::format()
+std::unique_ptr<QgsBearingNumericFormat> QgsBearingNumericFormatDialog::format()
 {
-  return static_cast<QgsBearingNumericFormat *>( mWidget->format() );
+  return qgis::unique_ptr_static_cast<QgsBearingNumericFormat>( std::unique_ptr<QgsNumericFormat>( mWidget->format() ) );
 }
 
 
@@ -329,9 +329,9 @@ QgsGeographicCoordinateNumericFormatDialog::QgsGeographicCoordinateNumericFormat
   QgsGui::enableAutoGeometryRestore( this );
 }
 
-QgsGeographicCoordinateNumericFormat *QgsGeographicCoordinateNumericFormatDialog::format()
+std::unique_ptr<QgsGeographicCoordinateNumericFormat> QgsGeographicCoordinateNumericFormatDialog::format()
 {
-  return static_cast<QgsGeographicCoordinateNumericFormat *>( mWidget->format() );
+  return qgis::unique_ptr_static_cast<QgsGeographicCoordinateNumericFormat>( std::unique_ptr<QgsNumericFormat>( mWidget->format() ) );
 }
 
 

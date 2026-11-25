@@ -20,6 +20,7 @@
 #include <mutex>
 
 #include "qgscircularstring.h"
+#include "qgsdatadefinedutils.h"
 #include "qgsfillsymbol.h"
 #include "qgsfillsymbollayer.h"
 #include "qgsgeometryutils.h"
@@ -62,11 +63,11 @@ void QgsCallout::initPropertyDefinitions()
         QgsPropertyDefinition::DataTypeString,
         QObject::tr( "Label's anchor point position" ),
         QObject::tr( "string " )
-          + "[<b>point_on_exterior</b>|<b>centroid</b>|<b>TL</b>=Top left|<b>T</b>=Top middle|"
-            "<b>TR</b>=Top right|<br>"
-            "<b>L</b>=Left|<b>R</b>=Right|<br>"
-            "<b>BL</b>=Bottom left|<b>B</b>=Bottom middle|"
-            "<b>BR</b>=Bottom right]",
+          + "[<b>point_on_exterior</b>|<b>centroid</b>|<b>top_left</b>=Top left|<b>top</b>=Top middle|"
+            "<b>top_right</b>=Top right|<br>"
+            "<b>left</b>=Left|<b>right</b>=Right|<br>"
+            "<b>bottom_left</b>=Bottom left|<b>bottom</b>=Bottom middle|"
+            "<b>bottom_right</b>=Bottom right]",
         origin
       ) },
     { static_cast< int >( QgsCallout::Property::OriginX ), QgsPropertyDefinition( "OriginX", QObject::tr( "Callout origin (X)" ), QgsPropertyDefinition::Double, origin ) },
@@ -75,7 +76,7 @@ void QgsCallout::initPropertyDefinitions()
     { static_cast< int >( QgsCallout::Property::DestinationY ), QgsPropertyDefinition( "DestinationY", QObject::tr( "Callout destination (Y)" ), QgsPropertyDefinition::Double, origin ) },
     { static_cast< int >( QgsCallout::Property::Curvature ), QgsPropertyDefinition( "Curvature", QObject::tr( "Callout line curvature" ), QgsPropertyDefinition::Double, origin ) },
     { static_cast< int >( QgsCallout::Property::Orientation ),
-      QgsPropertyDefinition( "Orientation", QgsPropertyDefinition::DataTypeString, QObject::tr( "Callout curve orientation" ), QObject::tr( "string " ) + "[<b>auto</b>|<b>clockwise</b>|<b>counterclockwise</b>]", origin ) },
+      QgsPropertyDefinition( "Orientation", QgsPropertyDefinition::DataTypeString, QObject::tr( "Callout curve orientation" ), QObject::tr( "string " ) + "[<b>auto</b>|<b>clockwise</b>|<b>counter_clockwise</b>]", origin ) },
     { static_cast< int >( QgsCallout::Property::Margins ),
       QgsPropertyDefinition( "Margins", QgsPropertyDefinition::DataTypeString, QObject::tr( "Margins" ), QObject::tr( "string of four doubles '<b>top,right,bottom,left</b>' or array of doubles <b>[top, right, bottom, left]</b>" ) ) },
     { static_cast< int >( QgsCallout::Property::WedgeWidth ), QgsPropertyDefinition( "WedgeWidth", QObject::tr( "Wedge width" ), QgsPropertyDefinition::DoublePositive, origin ) },
@@ -206,20 +207,25 @@ QgsCallout::AnchorPoint QgsCallout::decodeAnchorPoint( const QString &name, bool
 {
   if ( ok )
     *ok = true;
-  const QString cleaned = name.toLower().trimmed();
 
-  if ( cleaned == "pole_of_inaccessibility"_L1 )
+  static constexpr auto ANCHOR_MAP = makeDataDefinedStringDecoder<QgsCallout::AnchorPoint>( {
+    { u"poleofinaccessibility", QgsCallout::AnchorPoint::PoleOfInaccessibility },
+    { u"pointonexterior", QgsCallout::AnchorPoint::PointOnExterior },
+    { u"pointonsurface", QgsCallout::AnchorPoint::PointOnSurface },
+    { u"centroid", QgsCallout::AnchorPoint::Centroid },
+  } );
+
+  auto evaluatedAnchor = ANCHOR_MAP.lookup( name );
+  if ( evaluatedAnchor )
+  {
+    return *evaluatedAnchor;
+  }
+  else
+  {
+    if ( ok )
+      *ok = false;
     return PoleOfInaccessibility;
-  else if ( cleaned == "point_on_exterior"_L1 )
-    return PointOnExterior;
-  else if ( cleaned == "point_on_surface"_L1 )
-    return PointOnSurface;
-  else if ( cleaned == "centroid"_L1 )
-    return Centroid;
-
-  if ( ok )
-    *ok = false;
-  return PoleOfInaccessibility;
+  }
 }
 
 QString QgsCallout::encodeAnchorPoint( AnchorPoint anchor )
@@ -271,32 +277,39 @@ QgsCallout::LabelAnchorPoint QgsCallout::decodeLabelAnchorPoint( const QString &
 {
   if ( ok )
     *ok = true;
-  const QString cleaned = name.toLower().trimmed();
 
-  if ( cleaned == "point_on_exterior"_L1 )
+  static constexpr auto ANCHOR_MAP = makeDataDefinedStringDecoder<QgsCallout::LabelAnchorPoint>( {
+    { u"pointonexterior", QgsCallout::LabelAnchorPoint::LabelPointOnExterior },
+    { u"centroid", QgsCallout::LabelAnchorPoint::LabelCentroid },
+    { u"tl", QgsCallout::LabelAnchorPoint::LabelTopLeft },
+    { u"topleft", QgsCallout::LabelAnchorPoint::LabelTopLeft },
+    { u"t", QgsCallout::LabelAnchorPoint::LabelTopMiddle },
+    { u"top", QgsCallout::LabelAnchorPoint::LabelTopMiddle },
+    { u"tr", QgsCallout::LabelAnchorPoint::LabelTopRight },
+    { u"topright", QgsCallout::LabelAnchorPoint::LabelTopRight },
+    { u"l", QgsCallout::LabelAnchorPoint::LabelMiddleLeft },
+    { u"left", QgsCallout::LabelAnchorPoint::LabelMiddleLeft },
+    { u"r", QgsCallout::LabelAnchorPoint::LabelMiddleRight },
+    { u"right", QgsCallout::LabelAnchorPoint::LabelMiddleRight },
+    { u"bl", QgsCallout::LabelAnchorPoint::LabelBottomLeft },
+    { u"bottomleft", QgsCallout::LabelAnchorPoint::LabelBottomLeft },
+    { u"b", QgsCallout::LabelAnchorPoint::LabelBottomMiddle },
+    { u"bottom", QgsCallout::LabelAnchorPoint::LabelBottomMiddle },
+    { u"br", QgsCallout::LabelAnchorPoint::LabelBottomRight },
+    { u"bottomright", QgsCallout::LabelAnchorPoint::LabelBottomRight },
+  } );
+
+  auto evaluatedAnchor = ANCHOR_MAP.lookup( name );
+  if ( evaluatedAnchor )
+  {
+    return *evaluatedAnchor;
+  }
+  else
+  {
+    if ( ok )
+      *ok = false;
     return LabelPointOnExterior;
-  else if ( cleaned == "centroid"_L1 )
-    return LabelCentroid;
-  else if ( cleaned == "tl"_L1 )
-    return LabelTopLeft;
-  else if ( cleaned == "t"_L1 )
-    return LabelTopMiddle;
-  else if ( cleaned == "tr"_L1 )
-    return LabelTopRight;
-  else if ( cleaned == "l"_L1 )
-    return LabelMiddleLeft;
-  else if ( cleaned == "r"_L1 )
-    return LabelMiddleRight;
-  else if ( cleaned == "bl"_L1 )
-    return LabelBottomLeft;
-  else if ( cleaned == "b"_L1 )
-    return LabelBottomMiddle;
-  else if ( cleaned == "br"_L1 )
-    return LabelBottomRight;
-
-  if ( ok )
-    *ok = false;
-  return LabelPointOnExterior;
+  }
 }
 
 QgsGeometry QgsCallout::labelAnchorGeometry( const QRectF &rect, const double angle, LabelAnchorPoint anchor ) const
@@ -981,14 +994,21 @@ QgsCurve *QgsCurvedLineCallout::createCalloutLine(
 
 QgsCurvedLineCallout::Orientation QgsCurvedLineCallout::decodeOrientation( const QString &string )
 {
-  const QString cleaned = string.toLower().trimmed();
-  if ( cleaned == "auto"_L1 )
+  static constexpr auto ORIENTATION_MAP = makeDataDefinedStringDecoder<QgsCurvedLineCallout::Orientation>( {
+    { u"auto", Automatic },
+    { u"clockwise", Clockwise },
+    { u"counterclockwise", CounterClockwise },
+  } );
+
+  auto evaluatedAnchor = ORIENTATION_MAP.lookup( string );
+  if ( evaluatedAnchor )
+  {
+    return *evaluatedAnchor;
+  }
+  else
+  {
     return Automatic;
-  if ( cleaned == "clockwise"_L1 )
-    return Clockwise;
-  if ( cleaned == "counterclockwise"_L1 )
-    return CounterClockwise;
-  return Automatic;
+  }
 }
 
 QString QgsCurvedLineCallout::encodeOrientation( QgsCurvedLineCallout::Orientation orientation )

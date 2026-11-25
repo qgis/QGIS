@@ -85,9 +85,13 @@ void PDFCertificateManager::createCertificate(const NewCertificateInfo& info)
             X509_gmtime_adj(X509_getm_notAfter(certificate.get()), info.validityInSeconds);
 
             // Set name
-            X509_NAME* name = X509_get_subject_name(certificate.get());
+            const X509_NAME* name = X509_get_subject_name(certificate.get());
+            std::unique_ptr<X509_NAME, decltype(&X509_NAME_free)> nameCopy(
+              X509_NAME_dup(name),
+              X509_NAME_free
+              );
 
-            auto addString = [name](const char* identifier, QString string)
+            auto addString = [&nameCopy](const char* identifier, QString string)
             {
                 if (string.isEmpty())
                 {
@@ -95,7 +99,7 @@ void PDFCertificateManager::createCertificate(const NewCertificateInfo& info)
                 }
 
                 QByteArray stringUtf8 = string.toUtf8();
-                X509_NAME_add_entry_by_txt(name, identifier, MBSTRING_UTF8, reinterpret_cast<const unsigned char*>(stringUtf8.constData()), stringUtf8.length(), -1, 0);
+                X509_NAME_add_entry_by_txt(nameCopy.get(), identifier, MBSTRING_UTF8, reinterpret_cast<const unsigned char*>(stringUtf8.constData()), stringUtf8.length(), -1, 0);
             };
             addString("C", info.certCountryCode);
             addString("O", info.certOrganization);
@@ -111,7 +115,7 @@ void PDFCertificateManager::createCertificate(const NewCertificateInfo& info)
             X509_add_ext(certificate.get(), extension, -1);
             X509_EXTENSION_free(extension);
 
-            X509_set_issuer_name(certificate.get(), name);
+            X509_set_issuer_name(certificate.get(), nameCopy.get());
 
             // Set public key
             X509_set_pubkey(certificate.get(), privateKey.get());

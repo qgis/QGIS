@@ -1220,7 +1220,7 @@ void QgsMapCanvas::showContextMenu( QgsMapMouseEvent *event )
 {
   const QgsPointXY mapPoint = event->originalMapPoint();
 
-  QMenu menu;
+  QMenu menu( this );
 
   QMenu *copyCoordinateMenu = new QMenu( tr( "Copy Coordinate" ), &menu );
   copyCoordinateMenu->setIcon( QgsApplication::getThemeIcon( u"/mActionEditCopy.svg"_s ) );
@@ -2911,12 +2911,18 @@ void QgsMapCanvas::unsetMapTool( QgsMapTool *tool )
 void QgsMapCanvas::setProject( QgsProject *project )
 {
   if ( mProject )
+  {
     disconnect( mProject, &QgsProject::elevationShadingRendererChanged, this, &QgsMapCanvas::onElevationShadingRendererChanged );
+    disconnect( mProject, &QgsProject::cleared, this, &QgsMapCanvas::onElevationShadingRendererChanged );
+  }
 
   mProject = project;
 
   if ( mProject )
+  {
     connect( mProject, &QgsProject::elevationShadingRendererChanged, this, &QgsMapCanvas::onElevationShadingRendererChanged );
+    connect( mProject, &QgsProject::cleared, this, &QgsMapCanvas::onElevationShadingRendererChanged );
+  }
 }
 
 void QgsMapCanvas::setCanvasColor( const QColor &color )

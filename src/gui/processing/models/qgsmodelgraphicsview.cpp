@@ -888,7 +888,7 @@ void QgsModelGraphicsView::pasteItems( QgsModelGraphicsView::PasteMode mode )
     }
   }
 
-  modelScene()->rebuildRequired();
+  modelScene()->emit rebuildRequired();
 }
 
 QgsModelViewSnapMarker::QgsModelViewSnapMarker()

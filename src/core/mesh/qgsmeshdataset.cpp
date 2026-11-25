@@ -576,16 +576,16 @@ QgsMeshDatasetGroupTreeItem::~QgsMeshDatasetGroupTreeItem()
   }
 }
 
-QgsMeshDatasetGroupTreeItem *QgsMeshDatasetGroupTreeItem::clone() const
+std::unique_ptr<QgsMeshDatasetGroupTreeItem> QgsMeshDatasetGroupTreeItem::clone() const
 {
-  QgsMeshDatasetGroupTreeItem *other = new QgsMeshDatasetGroupTreeItem( mOriginalName, mSourceName, mIsVector, mDatasetGroupIndex );
+  auto other = std::make_unique<QgsMeshDatasetGroupTreeItem>( mOriginalName, mSourceName, mIsVector, mDatasetGroupIndex );
   *other = *this;
 
   other->mChildren.clear();
   other->mDatasetGroupIndexToChild.clear();
   if ( !mChildren.empty() )
     for ( int i = 0; i < mChildren.count(); ++i )
-      other->appendChild( mChildren.at( i )->clone() );
+      other->appendChild( mChildren.at( i )->clone().release() );
 
   return other;
 }
@@ -828,7 +828,7 @@ QgsMeshDatasetGroupTreeItem *QgsMeshDatasetGroupTreeItem::rootItem() const
   return const_cast<QgsMeshDatasetGroupTreeItem *>( baseItem );
 }
 
-void QgsMeshDatasetGroupTreeItem::freeAsDependency()
+void QgsMeshDatasetGroupTreeItem::freeAsDependency() // cppcheck-suppress functionConst
 {
   QgsMeshDatasetGroupTreeItem *root = rootItem();
   if ( !root )
@@ -842,7 +842,7 @@ void QgsMeshDatasetGroupTreeItem::freeAsDependency()
   }
 }
 
-void QgsMeshDatasetGroupTreeItem::freeFromDependencies()
+void QgsMeshDatasetGroupTreeItem::freeFromDependencies() // cppcheck-suppress functionConst
 {
   QgsMeshDatasetGroupTreeItem *root = rootItem();
   for ( const int index : mDatasetGroupDependencies )

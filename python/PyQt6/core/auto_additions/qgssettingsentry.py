@@ -1,5 +1,6 @@
 # The following has been generated automatically from src/core/settings/qgssettingsentry.h
 try:
+    QgsSettingsEntryBase.setGlobalSettingsPath = staticmethod(QgsSettingsEntryBase.setGlobalSettingsPath)
     QgsSettingsEntryBase.dynamicKeyPartToList = staticmethod(QgsSettingsEntryBase.dynamicKeyPartToList)
     QgsSettingsEntryBase.__virtual_methods__ = ['typeId', 'settingsType', 'checkValueVariant']
     QgsSettingsEntryBase.__group__ = ['settings']

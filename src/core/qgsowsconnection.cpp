@@ -289,6 +289,7 @@ QgsDataSourceUri &QgsOwsConnection::addWfsConnectionSettings( QgsDataSourceUri &
     case Qgis::HttpMethod::Head:
     case Qgis::HttpMethod::Put:
     case Qgis::HttpMethod::Delete:
+    case Qgis::HttpMethod::Patch:
       // not supported
       break;
   }
@@ -325,7 +326,7 @@ void QgsOwsConnection::addCommonConnectionSettings( QgsDataSourceUri &uri, const
   }
   if ( settings.value( key + u"/disableDecompressedSafetyCheckThreshold"_s, false ).toBool() )
   {
-    uri.setParam( u"DisableDecompressedSafetyCheckThreshold"_s, u"1"_s );
+    uri.setParam( u"disableDecompressedSafetyCheckThreshold"_s, u"1"_s );
   }
 }
 
@@ -341,7 +342,7 @@ void QgsOwsConnection::addCommonConnectionSettings( QgsDataSourceUri &uri, const
   }
   if ( settingsDisableDecompressedSafetyCheckThreshold->value( { service.toLower(), connectionName } ) )
   {
-    uri.setParam( u"DisableDecompressedSafetyCheckThreshold"_s, u"1"_s );
+    uri.setParam( u"disableDecompressedSafetyCheckThreshold"_s, u"1"_s );
   }
 }
 

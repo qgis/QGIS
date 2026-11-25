@@ -122,11 +122,28 @@ bool QgsVectorLayerEditBufferGroup::commitChanges( QStringList &commitErrors, bo
   bool success = true;
 
   const QSet<QgsVectorLayer *> constModifiedLayers = modifiedLayers();
+
   if ( constModifiedLayers.isEmpty() )
   {
     editingFinished( stopEditing );
     mIsEditing = !stopEditing;
     return success;
+  }
+
+  // trigger geometry checks for all the modified layers
+  for ( QgsVectorLayer *modifiedLayer : constModifiedLayers )
+  {
+    emit modifiedLayer->beforeCommitChecks( stopEditing );
+  }
+
+  // and if at least one does not allow commit, return
+  for ( const QgsVectorLayer *modifiedLayer : constModifiedLayers )
+  {
+    if ( !modifiedLayer->allowCommit() )
+    {
+      commitErrors << tr( "ERROR: Commit not allowed because of failed checks." );
+      return false;
+    }
   }
 
   QMap<QString, QSet<QgsVectorLayer *> > connectionStringsLayers;

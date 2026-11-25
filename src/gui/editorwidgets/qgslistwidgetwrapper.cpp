@@ -19,6 +19,7 @@
 #include "qgslistwidget.h"
 
 #include <QString>
+#include <qjsonarray.h>
 
 #include "moc_qgslistwidgetwrapper.cpp"
 
@@ -47,7 +48,13 @@ QWidget *QgsListWidgetWrapper::createWidget( QWidget *parent )
   ret->setFrameShape( QFrame::StyledPanel );
   QHBoxLayout *layout = new QHBoxLayout( ret );
   layout->setContentsMargins( 0, 0, 0, 0 );
-  QgsListWidget *widget = new QgsListWidget( field().subType(), ret );
+  QMetaType::Type usedSubType = field().subType();
+  // on a string field, we set also the subtype to string
+  if ( field().type() == QMetaType::Type::QString )
+  {
+    usedSubType = QMetaType::Type::QString;
+  }
+  QgsListWidget *widget = new QgsListWidget( usedSubType, ret );
   layout->addWidget( widget );
 
   if ( isInTable( parent ) )
@@ -76,7 +83,17 @@ bool QgsListWidgetWrapper::valid() const
 
 void QgsListWidgetWrapper::updateValues( const QVariant &value, const QVariantList & )
 {
-  mWidget->setList( value.toList() );
+  QVariantList listValue = value.toList();
+  // on a string field, we convert the json content to variant list
+  if ( field().type() == QMetaType::Type::QString )
+  {
+    const QJsonDocument doc = QJsonDocument::fromJson( value.toString().toUtf8() );
+    if ( !doc.isNull() && doc.isArray() )
+    {
+      listValue = doc.array().toVariantList();
+    }
+  }
+  mWidget->setList( listValue );
 }
 
 QVariant QgsListWidgetWrapper::value() const

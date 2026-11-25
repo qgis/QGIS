@@ -124,7 +124,7 @@ void QgsDistanceMatrixAlgorithm::initAlgorithm( const QVariantMap & )
 
 bool QgsDistanceMatrixAlgorithm::prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback * )
 {
-  mSource.reset( parameterAsSource( parameters, u"INPUT"_s, context ) );
+  mSource = parameterAsSource( parameters, u"INPUT"_s, context );
   if ( !mSource )
   {
     throw QgsProcessingException( invalidSourceError( parameters, u"INPUT"_s ) );
@@ -135,7 +135,7 @@ bool QgsDistanceMatrixAlgorithm::prepareAlgorithm( const QVariantMap &parameters
     throw QgsProcessingException( QObject::tr( "Input point layer is a MultiPoint layer - convert to single points before using this algorithm." ) );
   }
 
-  mTarget.reset( parameterAsSource( parameters, u"TARGET"_s, context ) );
+  mTarget = parameterAsSource( parameters, u"TARGET"_s, context );
   if ( !mTarget )
   {
     throw QgsProcessingException( invalidSourceError( parameters, u"TARGET"_s ) );

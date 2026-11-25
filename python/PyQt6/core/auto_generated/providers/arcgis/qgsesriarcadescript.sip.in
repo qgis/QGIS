@@ -964,7 +964,7 @@ Returns the entry value expression.
 Returns ``True`` if the entry was defined using auto-keys.
 %End
 
-    QgsEsriArcadeDictionaryElement *clone() const /Factory/;
+    std::unique_ptr<QgsEsriArcadeDictionaryElement> clone() const;
 %Docstring
 Creates a deep copy of the element.
 

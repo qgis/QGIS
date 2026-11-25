@@ -48,6 +48,8 @@ class QgsLayerTreeViewProxyStyle : public QgsProxyStyle
 
     QRect subElementRect( SubElement element, const QStyleOption *option, const QWidget *widget ) const override;
 
+    void drawPrimitive( QStyle::PrimitiveElement element, const QStyleOption *option, QPainter *painter, const QWidget *widget = nullptr ) const override;
+
     static const auto SE_LayerTreeItemIndicator = SE_CustomBase + 1;
 
   private:

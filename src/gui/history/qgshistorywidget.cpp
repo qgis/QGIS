@@ -124,7 +124,7 @@ void QgsHistoryWidget::showNodeContextMenu( const QPoint &pos )
 {
   if ( QgsHistoryEntryNode *node = mModel->index2node( mProxyModel->mapToSource( mTreeView->currentIndex() ) ) )
   {
-    QMenu *menu = new QMenu();
+    QMenu *menu = new QMenu( this );
 
     node->populateContextMenu( menu, mContext );
     if ( !menu->isEmpty() )

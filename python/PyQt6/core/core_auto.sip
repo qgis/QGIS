@@ -164,6 +164,7 @@
 %Include auto_generated/qgsreadwritelocker.sip
 %Include auto_generated/qgsrecentstylehandler.sip
 %Include auto_generated/qgsrelation.sip
+%Include auto_generated/qgspicturerasterizer.sip
 %Include auto_generated/qgspolymorphicrelation.sip
 %Include auto_generated/qgsrelationcontext.sip
 %Include auto_generated/qgsremappingproxyfeaturesink.sip
@@ -675,7 +676,9 @@
 %Include auto_generated/providers/qgsproviderutils.sip
 %Include auto_generated/providers/arcgis/qgsarcgisportalutils.sip
 %Include auto_generated/providers/arcgis/qgsarcgisrestutils.sip
+%Include auto_generated/providers/arcgis/qgsesriarcadeconverter.sip
 %Include auto_generated/providers/arcgis/qgsesriarcadescript.sip
+%Include auto_generated/providers/arcgis/qgsvbscript.sip
 %Include auto_generated/providers/memory/qgsmemoryproviderutils.sip
 %Include auto_generated/providers/sensorthings/qgssensorthingsutils.sip
 %Include auto_generated/raster/qgsrasterattributetable.sip
@@ -885,6 +888,7 @@
 %Include auto_generated/vectortile/qgsvectortileutils.sip
 %Include auto_generated/vectortile/qgsvectortilewriter.sip
 %Include auto_generated/vectortile/qgsvtpktiles.sip
+%Include auto_generated/web/qgshtmlrendersettings.sip
 %Include auto_generated/auth/qgsauthcertutils.sip
 %Include auto_generated/auth/qgsauthconfig.sip
 %Include auto_generated/auth/qgsauthconfigurationstorage.sip

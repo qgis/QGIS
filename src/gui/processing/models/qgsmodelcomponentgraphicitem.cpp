@@ -440,9 +440,6 @@ void QgsModelComponentGraphicItem::paint( QPainter *painter, const QStyleOptionG
 
   const QSizeF componentSize = itemSize();
 
-  const QFontMetricsF fm( font() );
-  double h = fm.ascent();
-  QPointF pt( -componentSize.width() / 2 + 25, componentSize.height() / 2.0 - h + 1 );
 
   if ( iconPicture().isNull() && iconPixmap().isNull() )
   {
@@ -459,45 +456,41 @@ void QgsModelComponentGraphicItem::paint( QPainter *painter, const QStyleOptionG
 
   painter->setPen( QPen( QApplication::palette().color( QPalette::Text ) ) );
 
+  const QFontMetricsF fm( font() );
+  double y;
+  QPointF pt;
   if ( linkPointCount( Qt::TopEdge ) )
   {
-    h = -( fm.height() * 1.2 );
-    h = h - componentSize.height() / 2.0 + 5;
-    pt = QPointF( -componentSize.width() / 2 + SOCKET_MARGIN, h );
+    y = linkPoint( Qt::TopEdge, -1, false ).y() + fm.capHeight() / 2.0;
+    pt = QPointF( -componentSize.width() / 2 + SOCKET_MARGIN, y );
     painter->drawText( pt, QObject::tr( "In" ) );
-    int i = 1;
     if ( !mComponent->linksCollapsed( Qt::TopEdge ) )
     {
       for ( int idx = 0; idx < linkPointCount( Qt::TopEdge ); ++idx )
       {
         text = linkPointText( Qt::TopEdge, idx );
-        h = -( fm.height() * 1.2 ) * ( i + 1 );
-        h = h - componentSize.height() / 2.0 + 5;
-        pt = QPointF( -componentSize.width() / 2 + SOCKET_MARGIN + 10, h );
+        y = linkPoint( Qt::TopEdge, idx, false ).y() + fm.capHeight() / 2.0;
+        pt = QPointF( -componentSize.width() / 2 + SOCKET_MARGIN + 10, y );
         painter->drawText( pt, text );
-        i += 1;
       }
     }
   }
   if ( linkPointCount( Qt::BottomEdge ) )
   {
-    h = fm.height() * 1.1;
-    h = h + componentSize.height() / 2.0;
+    y = linkPoint( Qt::BottomEdge, -1, false ).y() + fm.capHeight() / 2.0;
     const double w = fm.boundingRect( "Out" ).width(); // Only to know the width ot the text
-    pt = QPointF( componentSize.width() / 2 - SOCKET_MARGIN - w, h );
+    pt = QPointF( componentSize.width() / 2 - SOCKET_MARGIN - w, y );
     painter->drawText( pt, QObject::tr( "Out" ) );
     if ( !mComponent->linksCollapsed( Qt::BottomEdge ) )
     {
       for ( int idx = 0; idx < linkPointCount( Qt::BottomEdge ); ++idx )
       {
         text = linkPointText( Qt::BottomEdge, idx );
-        h = fm.height() * 1.2 * ( idx + 2 );
-        h = h + componentSize.height() / 2.0;
+        y = linkPoint( Qt::BottomEdge, idx, false ).y() + fm.capHeight() / 2.0;
         double w = fm.boundingRect( text ).width();
-
         const double x = componentSize.width() / 2.0 - w - SOCKET_MARGIN - 10;
 
-        painter->drawText( QPointF( x, h ), text );
+        painter->drawText( QPointF( x, y ), text );
       }
     }
   }
@@ -690,6 +683,9 @@ QString QgsModelComponentGraphicItem::linkPointText( Qt::Edge, int ) const
 
 QPointF QgsModelComponentGraphicItem::linkPoint( Qt::Edge edge, int index, bool incoming ) const
 {
+  constexpr double OFFSET_FROM_EDGE = 6.4;
+  constexpr double FONT_HEIGHT_SCALE = 1.2;
+
   switch ( edge )
   {
     case Qt::BottomEdge:
@@ -698,8 +694,8 @@ QPointF QgsModelComponentGraphicItem::linkPoint( Qt::Edge edge, int index, bool 
       {
         const int pointIndex = !mComponent->linksCollapsed( Qt::BottomEdge ) ? index : -1;
         const QFontMetricsF fm( mFont );
-        const double h = fm.height() * 1.2 * ( pointIndex + 1 ) + fm.height() / 2.0;
-        const double y = h + itemSize().height() / 2.0 + 6.4;
+        const double hbase = itemSize().height() / 2.0 + fm.height() / 2.0 + OFFSET_FROM_EDGE;
+        const double y = hbase + fm.height() * FONT_HEIGHT_SCALE * ( pointIndex + 1 );
         double x;
         if ( !mComponent->linksCollapsed( Qt::BottomEdge ) )
         {
@@ -742,9 +738,16 @@ QPointF QgsModelComponentGraphicItem::linkPoint( Qt::Edge edge, int index, bool 
           paramIndex = -1;
           offsetX = 17;
         }
+
         const QFontMetricsF fm( mFont );
-        const double h = -( fm.height() * 1.2 ) * ( paramIndex + 2 ) - fm.height() / 2.0 + 8;
-        const double y = h - itemSize().height() / 2.0;
+        double hbase = -itemSize().height() / 2.0 - fm.height() / 2.0 - OFFSET_FROM_EDGE;
+        if ( paramIndex != -1 )
+        {
+          // start from the most top link point
+          const int nbLinkPoint = linkPointCount( Qt::TopEdge );
+          hbase = hbase - ( fm.height() * FONT_HEIGHT_SCALE * ( nbLinkPoint + 1 ) );
+        }
+        const double y = hbase + ( fm.height() * FONT_HEIGHT_SCALE ) * ( paramIndex + 1 );
         const double x = -itemSize().width() / 2 + offsetX;
         return QPointF( x, y );
       }

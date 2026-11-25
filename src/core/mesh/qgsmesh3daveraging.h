@@ -98,7 +98,7 @@ class CORE_EXPORT QgsMesh3DAveragingMethod SIP_ABSTRACT
     virtual QDomElement writeXml( QDomDocument &doc ) const = 0;
 
     //! Creates the instance from XML by calling readXml of derived classes
-    static QgsMesh3DAveragingMethod *createFromXml( const QDomElement &elem ) SIP_FACTORY;
+    static std::unique_ptr<QgsMesh3DAveragingMethod> createFromXml( const QDomElement &elem );
 
     //! Reads configuration from the given DOM element
     virtual void readXml( const QDomElement &elem ) = 0;

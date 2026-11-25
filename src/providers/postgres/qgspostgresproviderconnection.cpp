@@ -134,7 +134,11 @@ void QgsPostgresProviderConnection::setDefaultCapabilities()
     Qgis::SqlLayerDefinitionCapability::UnstableFeatureIds,
   };
 
-  mCapabilities2 |= Qgis::DatabaseProviderConnectionCapability2::SetFieldComment | Qgis::DatabaseProviderConnectionCapability2::SetTableComment;
+  mCapabilities2 = {
+    Qgis::DatabaseProviderConnectionCapability2::SetFieldComment,
+    Qgis::DatabaseProviderConnectionCapability2::SetTableComment,
+    Qgis::DatabaseProviderConnectionCapability2::StyleStorage,
+  };
 
   // see https://www.postgresql.org/docs/current/ddl-system-columns.html
   mIllegalFieldNames = {
@@ -668,9 +672,9 @@ QVariantList QgsPostgresProviderResultIterator::nextRowPrivate()
           val = boolStrVal == 't';
         }
       }
-      else if ( val.canConvert( static_cast<int>( vType ) ) )
+      else if ( val.canConvert( QMetaType( vType ) ) )
       {
-        val.convert( static_cast<int>( vType ) );
+        val.convert( QMetaType( vType ) );
       }
       row.push_back( val );
     }

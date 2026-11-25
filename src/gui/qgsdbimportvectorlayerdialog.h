@@ -28,6 +28,7 @@
 class QgsAbstractDatabaseProviderConnection;
 class QgsVectorLayerExporterTask;
 class QgsDatabaseSchemaComboBox;
+class QgsVectorLayer;
 
 
 /**
@@ -77,6 +78,21 @@ class GUI_EXPORT QgsDbImportVectorLayerDialog : public QDialog, private Ui::QgsD
      * Returns the optional comment to use for the new table.
      */
     QString tableComment() const;
+
+    /**
+     * Returns TRUE if the style should be saved to the database after import.
+     */
+    bool saveStyleToDatabase() const;
+
+    /**
+     * Returns the source layer, or NULLPTR if no source layer is set.
+     */
+    QgsVectorLayer *sourceLayer() const;
+
+    /**
+     * Returns the geometry column name for the destination table.
+     */
+    QString geometryColumn() const;
 
     /**
      * Sets a map \a canvas to associate with the dialog.

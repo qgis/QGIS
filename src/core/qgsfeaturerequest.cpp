@@ -240,7 +240,7 @@ QgsFeatureRequest &QgsFeatureRequest::setDistanceWithin( const QgsGeometry &geom
   mReferenceGeometry = geometry;
   if ( !mReferenceGeometry.isEmpty() )
   {
-    mReferenceGeometryEngine.reset( QgsGeometry::createGeometryEngine( mReferenceGeometry.constGet() ) );
+    mReferenceGeometryEngine = QgsGeometry::createGeometryEngine( mReferenceGeometry.constGet() );
     mReferenceGeometryEngine->prepareGeometry();
   }
   else

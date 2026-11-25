@@ -99,7 +99,7 @@ Constructor for Qgs3DSymbolDialog, initially showing the specified
 ``symbol``.
 %End
 
-    QgsAbstract3DSymbol *symbol() const /Factory/;
+    std::unique_ptr<QgsAbstract3DSymbol> symbol() const;
 %Docstring
 Returns a new instance of the symbol defined by the dialog.
 

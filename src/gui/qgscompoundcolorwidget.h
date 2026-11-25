@@ -24,6 +24,7 @@
 #include "qgspanelwidget.h"
 
 class QgsScreenHelper;
+class QgsColorPickerHelper;
 
 /**
  * \ingroup gui
@@ -143,14 +144,6 @@ class GUI_EXPORT QgsCompoundColorWidget : public QgsPanelWidget, private Ui::Qgs
   protected:
     void hideEvent( QHideEvent *e ) override;
 
-    void mousePressEvent( QMouseEvent *e ) override;
-
-    void mouseMoveEvent( QMouseEvent *e ) override;
-
-    void mouseReleaseEvent( QMouseEvent *e ) override;
-
-    void keyPressEvent( QKeyEvent *e ) override;
-
   private slots:
 
     void onColorButtonGroupToggled( int, bool checked );
@@ -192,8 +185,6 @@ class GUI_EXPORT QgsCompoundColorWidget : public QgsPanelWidget, private Ui::Qgs
 
     int mLastCustomColorIndex = 0;
 
-    bool mPickingColor = false;
-
     bool mDiscarded = false;
 
     QList<QPair<QRadioButton *, QgsColorWidget::ColorComponent>> mRgbRadios;
@@ -201,32 +192,12 @@ class GUI_EXPORT QgsCompoundColorWidget : public QgsPanelWidget, private Ui::Qgs
     QButtonGroup *mCmykGroup = nullptr;
     QButtonGroup *mRgbGroup = nullptr;
 
+    QgsColorPickerHelper *mPickerHelper = nullptr;
+
     /**
      * Saves all widget settings
      */
     void saveSettings();
-
-    /**
-     * Ends a color picking operation
-     * \param eventPos global position of pixel to sample color from
-     * \param takeSample set to TRUE to actually sample the color, FALSE to just cancel
-     * the color picking operation
-     */
-    void stopPicking( QPoint eventPos, bool takeSample = true );
-
-    /**
-     * Returns the average color from the pixels in an image
-     * \param image image to sample
-     * \returns average color from image
-     */
-    QColor averageColor( const QImage &image ) const;
-
-    /**
-     * Samples a color from the desktop
-     * \param point position of color to sample
-     * \returns average color from sampled position
-     */
-    QColor sampleColor( QPoint point ) const;
 
     /**
      * Repopulates the scheme combo box with current color schemes
@@ -240,6 +211,10 @@ class GUI_EXPORT QgsCompoundColorWidget : public QgsPanelWidget, private Ui::Qgs
 
     //! Updates the state of actions for the current selected scheme
     void updateActionsForCurrentScheme();
+
+    void onColorPicked( const QColor &color );
+    void onColorHovered( const QColor &color );
+    void colorPickingCanceled();
 
     friend class TestQgsCompoundColorWidget;
 };

@@ -109,6 +109,17 @@ class _3D_EXPORT Qgs3DMapCanvas : public QWindow
     void setMapTool( Qgs3DMapTool *tool );
 
     /**
+     * Unsets the map \a tool if it is the active map tool. Does nothing otherwise.
+     *
+     * This is called from destructor of map tools to make sure
+     * that this map tool won't be used any more.
+     * You don't have to call it manually, Qgs3DMapTool takes care of it.
+     *
+     * \since QGIS 4.4
+     */
+    void unsetMapTool( Qgs3DMapTool *tool );
+
+    /**
      * Returns the active map tool that will receive events from the 3D canvas.
      * If the tool is NULLPTR, events will be used for camera manipulation.
      * \since QGIS 4.0
@@ -224,6 +235,14 @@ class _3D_EXPORT Qgs3DMapCanvas : public QWindow
     //! Emitted when the camera navigation \a speed is changed.
     void cameraNavigationSpeedChanged( double speed );
 
+    /**
+     * Emitted when the map tool is changed from \a oldTool to \a newTool
+     * Any of those two may be nullptr if there is no map tool.
+     *
+     * \since QGIS 4.4
+     */
+    void mapToolSet( Qgs3DMapTool *newTool, Qgs3DMapTool *oldTool );
+
 #endif
     /**
      *  Emitted when the cross section mode is enabled or disabled
@@ -266,6 +285,13 @@ class _3D_EXPORT Qgs3DMapCanvas : public QWindow
     void resizeEvent( QResizeEvent * ) override;
 
     bool eventFilter( QObject *watched, QEvent *event ) override;
+
+  private:
+    //! Events handled by the canvas
+    bool canvasEventFilter( QEvent *event );
+
+    //! Events handled by the container
+    bool containerEventFilter( QEvent *event );
 
   private:
     std::unique_ptr<Qt3DCore::QAspectEngine> m_aspectEngine;

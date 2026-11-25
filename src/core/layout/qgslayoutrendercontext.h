@@ -397,6 +397,7 @@ class CORE_EXPORT QgsLayoutRenderContext : public QObject
     friend class LayoutContextPreviewSettingRestorer;
     friend class TestQgsLayoutMap;
     friend class TestQgsLayoutLabel;
+    friend class TestQgsLayoutMultiFrame;
 };
 
 

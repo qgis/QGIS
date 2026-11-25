@@ -164,7 +164,7 @@ Constructor for QgsPointCloudClassifiedRenderer.
     virtual void checkLegendItem( const QString &key, bool state = true );
 
 
-    static QgsPointCloudRenderer *create( QDomElement &element, const QgsReadWriteContext &context ) /Factory/;
+    static std::unique_ptr<QgsPointCloudRenderer> create( QDomElement &element, const QgsReadWriteContext &context );
 %Docstring
 Creates an RGB renderer from an XML ``element``.
 %End

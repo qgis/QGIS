@@ -18,6 +18,7 @@ __author__ = "Matthias Kuhn"
 __date__ = "2015-04-23"
 __copyright__ = "Copyright 2015, The QGIS Project"
 
+import json
 import os
 import time
 import unittest
@@ -29,17 +30,22 @@ from qgis.analysis import QgsNativeAlgorithms
 from qgis.core import (
     NULL,
     Qgis,
+    QgsAbstractFeatureIterator,
     QgsApplication,
     QgsCoordinateReferenceSystem,
     QgsDataProvider,
     QgsDataSourceUri,
     QgsDefaultValue,
+    QgsExpression,
+    QgsExpressionContext,
+    QgsExpressionContextUtils,
     QgsFeature,
     QgsFeatureRequest,
     QgsFeatureSink,
     QgsFeatureSource,
     QgsFieldConstraints,
     QgsGeometry,
+    QgsMapLayer,
     QgsProcessingContext,
     QgsProcessingFeedback,
     QgsProcessingUtils,
@@ -49,6 +55,7 @@ from qgis.core import (
     QgsReadWriteContext,
     QgsRectangle,
     QgsReferencedGeometry,
+    QgsSaveStyleResult,
     QgsSettings,
     QgsSettingsTree,
     QgsTransactionGroup,
@@ -128,13 +135,15 @@ class TestPyQgsPostgresProvider(QgisTestCase, ProviderTestCase):
         cur.close()
         self.con.commit()
 
-    def assertAcceptableEstimatedExtent(self, realExt, estmExt, msg):
-        # 1. test that the estimated extent contains the real one
+    def assertEstimatedExtentContainsRealExtent(self, realExt, estmExt, msg):
         self.assertTrue(
             estmExt.contains(realExt),
-            f"Estimated extent {estmExt} does not contain real extent {realExt}",
+            f"Estimated extent {estmExt} does not contain real extent {realExt} ({msg})",
         )
-        # 2. test that the estimated extent is not larger than 10% of real extent
+
+    def assertAcceptableEstimatedExtent(self, realExt, estmExt, msg):
+        self.assertEstimatedExtentContainsRealExtent(realExt, estmExt, msg)
+        # Test that estimated geometry extents stay within 10% of the real extent.
         self.assertLess(
             estmExt.width() - realExt.width(),
             realExt.width() / 10,
@@ -325,6 +334,43 @@ class TestPyQgsPostgresProvider(QgisTestCase, ProviderTestCase):
             f.attributes()[datetime_idx],
             QDateTime(QDate(2004, 3, 4), QTime(13, 41, 52)),
         )
+
+    # https://github.com/qgis/QGIS/issues/62577
+    def testCompileIntervalValue(self):
+        """
+        QgsInterval value (in to_interval()) needs to be compiled
+        into a PostgreSQL interval.
+        """
+        vl = QgsVectorLayer(
+            f'{self.dbconn} table="qgis_test"."date_times" sql=',
+            "testdatetimes",
+            "postgres",
+        )
+        self.assertTrue(vl.isValid())
+
+        # get the current settings
+        compile_expressions = QgsSettings().value("/qgis/compileExpressions")
+        self.enableCompiler()
+
+        # prepare the expression, so that to_interval() is cached as a static QgsInterval value
+        expression = QgsExpression(
+            '"datetime_field" > "datetime_field" - to_interval(\'1 day\')'
+        )
+        context = QgsExpressionContext(
+            QgsExpressionContextUtils.globalProjectLayerScopes(vl)
+        )
+        expression.prepare(context)
+
+        it = vl.dataProvider().getFeatures(QgsFeatureRequest(expression, context))
+        self.assertEqual([f["id"] for f in it], [1])
+        self.assertEqual(
+            it.compileStatus(), QgsAbstractFeatureIterator.CompileStatus.Compiled
+        )
+        # invalid compiled SQL would silently fall back to local evaluation, check explicitly for it
+        self.assertFalse(it.compileFailed())
+
+        # restore the original settings
+        QgsSettings().setValue("/qgis/compileExpressions", compile_expressions)
 
     def testBooleanType(self):
         vl = QgsVectorLayer(
@@ -1999,7 +2045,9 @@ class TestPyQgsPostgresProvider(QgisTestCase, ProviderTestCase):
 
     def testJson(self):
         vl = QgsVectorLayer(
-            '%s table="qgis_test"."json" sql=' % (self.dbconn), "testjson", "postgres"
+            '%s table="qgis_test"."json" sql=' % (self.dbconn),
+            "testjson",
+            "postgres",
         )
         self.assertTrue(vl.isValid())
 
@@ -2041,7 +2089,11 @@ class TestPyQgsPostgresProvider(QgisTestCase, ProviderTestCase):
             },
         )
         json_idx = vl.fields().lookupField("jvalue")
+        self.assertEqual(vl.fields().at(json_idx).type(), QVariant.Map)
         jsonb_idx = vl.fields().lookupField("jbvalue")
+        self.assertEqual(vl.fields().at(jsonb_idx).type(), QVariant.Map)
+        text_idx = vl.fields().lookupField("textfield")
+        self.assertEqual(vl.fields().at(text_idx).type(), QVariant.String)
 
         for attr in attrs:
             # Add a new feature
@@ -2052,7 +2104,7 @@ class TestPyQgsPostgresProvider(QgisTestCase, ProviderTestCase):
             )
             self.assertTrue(vl2.startEditing())
             f = QgsFeature(vl2.fields())
-            f.setAttributes([None, attr, attr])
+            f.setAttributes([None, attr, attr, attr])
             self.assertTrue(vl2.addFeatures([f]))
             self.assertTrue(vl2.commitChanges(), attr)
             # Read back
@@ -2063,7 +2115,13 @@ class TestPyQgsPostgresProvider(QgisTestCase, ProviderTestCase):
             )
             fid = [f.id() for f in vl2.getFeatures()][-1]
             f = vl2.getFeature(fid)
-            self.assertEqual(f.attributes(), [fid, attr, attr])
+            string_attr = attr
+            if isinstance(attr, (dict, list, int, float)):
+                # Here we have to convert the check values for the text field (last one) to json-string
+                string_attr = json.dumps(
+                    attr, separators=(",", ":"), ensure_ascii=False
+                )
+            self.assertEqual(f.attributes(), [fid, attr, attr, string_attr])
             # Change attribute values
             vl2 = QgsVectorLayer(
                 '%s table="qgis_test"."json" sql=' % (self.dbconn),
@@ -2073,7 +2131,9 @@ class TestPyQgsPostgresProvider(QgisTestCase, ProviderTestCase):
             fid = [f.id() for f in vl2.getFeatures()][-1]
             self.assertTrue(vl2.startEditing())
             self.assertTrue(
-                vl2.changeAttributeValues(fid, {json_idx: attr, jsonb_idx: attr})
+                vl2.changeAttributeValues(
+                    fid, {json_idx: attr, jsonb_idx: attr, text_idx: attr}
+                )
             )
             self.assertTrue(vl2.commitChanges())
             # Read back
@@ -2083,7 +2143,13 @@ class TestPyQgsPostgresProvider(QgisTestCase, ProviderTestCase):
                 "postgres",
             )
             f = vl2.getFeature(fid)
-            self.assertEqual(f.attributes(), [fid, attr, attr])
+            string_attr = attr
+            if isinstance(attr, (dict, list, int, float)):
+                # Here we have to convert the check values for the text field (last one) to json-string
+                string_attr = json.dumps(
+                    attr, separators=(",", ":"), ensure_ascii=False
+                )
+            self.assertEqual(f.attributes(), [fid, attr, attr, string_attr])
 
         # Let's check changeFeatures:
         for attr in attrs2:
@@ -2096,7 +2162,7 @@ class TestPyQgsPostgresProvider(QgisTestCase, ProviderTestCase):
             self.assertTrue(vl2.startEditing())
             self.assertTrue(
                 vl2.dataProvider().changeFeatures(
-                    {fid: {json_idx: attr, jsonb_idx: attr}}, {}
+                    {fid: {json_idx: attr, jsonb_idx: attr, text_idx: attr}}, {}
                 )
             )
             self.assertTrue(vl2.commitChanges())
@@ -2108,7 +2174,14 @@ class TestPyQgsPostgresProvider(QgisTestCase, ProviderTestCase):
                 "postgres",
             )
             f = vl2.getFeature(fid)
-            self.assertEqual(f.attributes(), [fid, attr, attr])
+
+            string_attr = attr
+            if isinstance(attr, (dict, list, int, float)):
+                # Here we have to convert the check values for the text field (last one) to json-string
+                string_attr = json.dumps(
+                    attr, separators=(",", ":"), ensure_ascii=False
+                )
+            self.assertEqual(f.attributes(), [fid, attr, attr, string_attr])
 
     def testStringArray(self):
         vl = QgsVectorLayer(
@@ -2851,6 +2924,120 @@ class TestPyQgsPostgresProvider(QgisTestCase, ProviderTestCase):
         )
         self.assertFalse(res)
         self.assertFalse(err)
+
+    def testSaveStyleToDatabaseV3(self):
+        """Test saveStyleToDatabaseV3() with the various style formats"""
+        self.execSQLCommand("DROP TABLE IF EXISTS layer_styles CASCADE")
+
+        vl = self.getEditableLayer()
+        self.assertTrue(vl.isValid())
+
+        style_path = QDir.toNativeSeparators(
+            f"{unitTestDataPath()}/symbol_layer/singleSymbol.qml"
+        )
+        status = vl.loadNamedStyle(style_path)
+        self.assertTrue(status)
+
+        # helper functions
+        def get_stored_style(style_name: str):
+            cur = self.con.cursor()
+            cur.execute(
+                "SELECT styleqml::text, stylesld::text, useasdefault, description "
+                "FROM layer_styles WHERE stylename = %s",
+                (style_name,),
+            )
+            rows = cur.fetchall()
+            cur.close()
+            self.assertEqual(len(rows), 1)
+            return rows[0]
+
+        def assert_style_export_success(result: QgsSaveStyleResult):
+            self.assertEqual(result.saveResult, QgsMapLayer.SaveStyleResult.Success)
+            self.assertEqual(result.providerSaveStyleError, "")
+            self.assertEqual(result.qmlError, "")
+            self.assertEqual(result.sldErrorMessages, [])
+
+        # both QML and SLD are saved
+        result = vl.saveStyleToDatabaseV3(
+            "both formats",
+            "qml and sld",
+            False,
+            "",
+            Qgis.SaveStyleFormat.QML | Qgis.SaveStyleFormat.SLD,
+        )
+        assert_style_export_success(result)
+        qml, sld, use_as_default, description = get_stored_style("both formats")
+        self.assertIn("<qgis", qml)
+        self.assertIn("StyledLayerDescriptor", sld)
+        self.assertFalse(use_as_default)
+        self.assertEqual(description, "qml and sld")
+
+        # QML only - SLD must be empty
+        result = vl.saveStyleToDatabaseV3(
+            "qml only",
+            "qml",
+            False,
+            "",
+            Qgis.SaveStyleFormats(Qgis.SaveStyleFormat.QML),
+        )
+        assert_style_export_success(result)
+        qml, sld, _, _ = get_stored_style("qml only")
+        self.assertIn("<qgis", qml)
+        self.assertFalse(sld)
+
+        # SLD only - QML must be empty
+        result = vl.saveStyleToDatabaseV3(
+            "sld only",
+            "sld",
+            True,
+            "",
+            Qgis.SaveStyleFormats(Qgis.SaveStyleFormat.SLD),
+        )
+        assert_style_export_success(result)
+        qml, sld, use_as_default, _ = get_stored_style("sld only")
+        self.assertFalse(qml)
+        self.assertIn("StyledLayerDescriptor", sld)
+        self.assertTrue(use_as_default)
+
+        # all three styles are listed for the layer
+        related_count, _, namelist, _, errmsg = vl.listStylesInDatabase()
+        self.assertFalse(errmsg)
+        self.assertEqual(related_count, 3)
+        self.assertCountEqual(namelist, ["both formats", "qml only", "sld only"])
+
+        # saving again under the same name overwrites the existing style
+        result = vl.saveStyleToDatabaseV3(
+            "qml only",
+            "qml and sld now",
+            False,
+            "",
+            Qgis.SaveStyleFormat.QML | Qgis.SaveStyleFormat.SLD,
+        )
+        assert_style_export_success(result)
+        qml, sld, _, description = get_stored_style("qml only")
+        self.assertIn("<qgis", qml)
+        self.assertIn("StyledLayerDescriptor", sld)
+        self.assertEqual(description, "qml and sld now")
+        related_count, _, _, _, _ = vl.listStylesInDatabase()
+        self.assertEqual(related_count, 3)
+
+        # fail to store style in DB is properly reported
+        uri = QgsDataSourceUri(vl.source())
+        uri.setDatabase("qgis_test_non_existent_database")
+        vl_non_valid = QgsVectorLayer(uri.uri(False), "not valid layer", "postgres")
+        result = vl_non_valid.saveStyleToDatabaseV3(
+            "fail",
+            "fail",
+            False,
+            "",
+            Qgis.SaveStyleFormat.QML | Qgis.SaveStyleFormat.SLD,
+        )
+        self.assertEqual(
+            result.saveResult, QgsMapLayer.SaveStyleResult.DatabaseWriteFailed
+        )
+        self.assertTrue(result.providerSaveStyleError)
+
+        self.execSQLCommand("DROP TABLE IF EXISTS layer_styles CASCADE")
 
     def testStyleWithGeometryType(self):
         """Test saving styles with the additional geometry type
@@ -4712,7 +4899,7 @@ INSERT INTO public.test_ext(g)
         md = QgsProviderRegistry.instance().providerMetadata("postgres")
         conn = md.createConnection(self.dbconn, {})
 
-        # Create a 10 rows table with extent -10 -10 to 10 10
+        # Create points with extent -40 -10 to 40 10.
         conn.executeSql(
             """
 DROP TABLE IF EXISTS public.test_geog_ext;
@@ -4739,23 +4926,65 @@ INSERT INTO public.test_geog_ext(g)
         )
         self.assertTrue(vlEstm.isValid())
 
-        # No stats
-        self.assertAcceptableEstimatedExtent(
-            realExtent, vlEstm.extent(), "with no stats"
+        # Without statistics, estimated metadata falls back to the exact extent.
+        self.assertEqual(vlEstm.extent(), realExtent)
+
+        postgisVersion = tuple(
+            int(part)
+            for part in conn.executeSql("SELECT postgis_lib_version()")[0][0].split(
+                "."
+            )[:2]
         )
 
-        # Add stats
-        conn.executeSql("ANALYZE public.test_geog_ext")
-        vlEstm.updateExtents()
-        self.assertAcceptableEstimatedExtent(realExtent, vlEstm.extent(), "with stats")
+        def assertEstimatedGeographyExtent():
+            vlEstm.updateExtents()
+            estimatedExtent = vlEstm.extent()
+            if postgisVersion < (3, 5):
+                # QGIS disables geography estimates from older PostGIS versions.
+                self.assertEqual(realExtent, estimatedExtent)
+                return
 
-        # Add index
+            box = conn.executeSql(
+                "SELECT ST_EstimatedExtent('public', 'test_geog_ext', 'g')::text"
+            )[0][0]
+            self.assertIsNotNone(box)
+            xmin, ymin, xmax, ymax = (
+                float(value) for value in box[4:-1].replace(",", " ").split()
+            )
+            self.assertEqual(estimatedExtent, QgsRectangle(xmin, ymin, xmax, ymax))
+            self.assertEstimatedExtentContainsRealExtent(
+                realExtent, estimatedExtent, "geography"
+            )
+            # The original regression returned the extent of the whole world.
+            self.assertGreater(estimatedExtent.xMinimum(), -180)
+            self.assertLess(estimatedExtent.xMaximum(), 180)
+            self.assertGreater(estimatedExtent.yMinimum(), -90)
+            self.assertLess(estimatedExtent.yMaximum(), 90)
+
+        conn.executeSql("ANALYZE public.test_geog_ext")
+        assertEstimatedGeographyExtent()
+
         conn.executeSql("CREATE INDEX ON public.test_geog_ext using gist (g)")
-        vlEstm.updateExtents()
-        self.assertAcceptableEstimatedExtent(realExtent, vlEstm.extent(), "with index")
+        assertEstimatedGeographyExtent()
 
         # Cleanup
         conn.executeSql("DROP TABLE public.test_geog_ext")
+
+    def testTopoGeometryEstimatedExtent(self):
+        # https://github.com/qgis/QGIS/issues/60593
+        # the test with TopoGeometry provides extent but estimating raises
+        # unnecessary error message the test needs to check the extent
+        # (but it is not estimated) but also needs to check that no
+        # errors have been raised
+        vl = QgsVectorLayer(
+            f'{self.dbconn} estimatedmetadata=\'true\' table="qgis_test"."TopoLayer1" (topogeom)',
+            "topo",
+            "postgres",
+        )
+        if not vl.isValid():
+            self.skipTest("postgis_topology not available")
+        self.assertEqual(vl.extent(), QgsRectangle(0, 0, 10, 10))
+        self.assertFalse(vl.dataProvider().hasErrors(), vl.dataProvider().errors())
 
     # See: https://github.com/qgis/QGIS/issues/55856
     def testPktLowerCase(self):
@@ -5850,6 +6079,7 @@ class TestPyQgsPostgresProviderBigintSinglePk(QgisTestCase, ProviderTestCase):
         feature = next(vl.getFeatures())
         # make sure we get a QgsReferenceGeometry and not "just" a string
         self.assertEqual(feature["geom"].crs().authid(), "EPSG:4326")
+        column_crs = feature["geom"].crs()
 
         vl.startEditing()
 
@@ -5864,11 +6094,16 @@ class TestPyQgsPostgresProviderBigintSinglePk(QgisTestCase, ProviderTestCase):
         feature["geom"] = QgsReferencedGeometry()
         self.assertTrue(vl.updateFeature(feature))
 
-        # Layer will not accept invalid crs
+        # PostGIS assigns the column's CRS to a geometry with an unset CRS.
         feature["geom"] = QgsReferencedGeometry(
             QgsGeometry.fromWkt("POINT(1 1)"), QgsCoordinateReferenceSystem()
         )
-        self.assertFalse(vl.updateFeature(feature))
+        self.assertTrue(vl.updateFeature(feature))
+        stored_geom = next(
+            vl.dataProvider().getFeatures(QgsFeatureRequest(feature.id()))
+        )["geom"]
+        self.assertEqual(stored_geom.asWkt(), QgsGeometry.fromWkt("POINT(1 1)").asWkt())
+        self.assertEqual(stored_geom.crs(), column_crs)
 
         # EWKT strings are accepted too
         feature["geom"] = "SRID=4326;Point (71 78)"

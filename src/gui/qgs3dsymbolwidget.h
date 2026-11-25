@@ -113,7 +113,7 @@ class GUI_EXPORT Qgs3DSymbolDialog : public QDialog
      *
      * Caller takes ownership of the returned symbol.
      */
-    QgsAbstract3DSymbol *symbol() const SIP_FACTORY;
+    std::unique_ptr<QgsAbstract3DSymbol> symbol() const;
 
     /**
      * Returns a reference to the dialog's button box.

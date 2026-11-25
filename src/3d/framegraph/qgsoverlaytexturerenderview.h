@@ -36,7 +36,7 @@ namespace Qt3DRender
  *
  * \since QGIS 3.44
  */
-class QgsOverlayTextureRenderView : public QgsAbstractRenderView
+class _3D_EXPORT QgsOverlayTextureRenderView : public QgsAbstractRenderView
 {
   public:
     //! Constructor

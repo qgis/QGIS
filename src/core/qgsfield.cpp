@@ -490,7 +490,7 @@ bool QgsField::convertCompatible( QVariant &v, QString *errorMessage ) const
 
   if ( QgsVariantUtils::isNull( v ) )
   {
-    ( void ) v.convert( d->type );
+    ( void ) v.convert( QMetaType( d->type ) );
     return true;
   }
 
@@ -512,7 +512,7 @@ bool QgsField::convertCompatible( QVariant &v, QString *errorMessage ) const
   if ( d->type == QMetaType::Type::Double && v.userType() == QMetaType::Type::QString )
   {
     QVariant tmp( v );
-    if ( !tmp.convert( d->type ) )
+    if ( !tmp.convert( QMetaType( d->type ) ) )
     {
       // This might be a string with thousand separator: use locale to convert
       bool ok = false;
@@ -539,7 +539,7 @@ bool QgsField::convertCompatible( QVariant &v, QString *errorMessage ) const
   if ( d->type == QMetaType::Type::Int && v.userType() == QMetaType::Type::QString )
   {
     QVariant tmp( v );
-    if ( !tmp.convert( d->type ) )
+    if ( !tmp.convert( QMetaType( d->type ) ) )
     {
       // This might be a string with thousand separator: use locale to convert
       bool ok;
@@ -556,7 +556,7 @@ bool QgsField::convertCompatible( QVariant &v, QString *errorMessage ) const
   if ( d->type == QMetaType::Type::LongLong && v.userType() == QMetaType::Type::QString )
   {
     QVariant tmp( v );
-    if ( !tmp.convert( d->type ) )
+    if ( !tmp.convert( QMetaType( d->type ) ) )
     {
       // This might be a string with thousand separator: use locale to convert
       bool ok;
@@ -571,7 +571,7 @@ bool QgsField::convertCompatible( QVariant &v, QString *errorMessage ) const
 
   //String representations of doubles in QVariant will return false to convert( QVariant::Int )
   //work around this by first converting to double, and then checking whether the double is convertible to int
-  if ( d->type == QMetaType::Type::Int && v.canConvert( QMetaType::Type::Double ) )
+  if ( d->type == QMetaType::Type::Int && v.canConvert<double>() )
   {
     bool ok = false;
     const double dbl = v.toDouble( &ok );
@@ -603,11 +603,11 @@ bool QgsField::convertCompatible( QVariant &v, QString *errorMessage ) const
 
   //String representations of doubles in QVariant will return false to convert( QVariant::LongLong )
   //work around this by first converting to double, and then checking whether the double is convertible to longlong
-  if ( d->type == QMetaType::Type::LongLong && v.canConvert( QMetaType::Type::Double ) )
+  if ( d->type == QMetaType::Type::LongLong && v.canConvert<double>() )
   {
     //firstly test the conversion to longlong because conversion to double will rounded the value
     QVariant tmp( v );
-    if ( !tmp.convert( d->type ) )
+    if ( !tmp.convert( QMetaType( d->type ) ) )
     {
       bool ok = false;
       const double dbl = v.toDouble( &ok );
@@ -709,7 +709,7 @@ bool QgsField::convertCompatible( QVariant &v, QString *errorMessage ) const
     }
     return false;
   }
-  else if ( !v.convert( d->type ) )
+  else if ( !v.convert( QMetaType( d->type ) ) )
   {
     v = QgsVariantUtils::createNullVariant( d->type );
 

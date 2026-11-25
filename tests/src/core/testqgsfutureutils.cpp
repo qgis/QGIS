@@ -60,7 +60,7 @@ void TestQgsFutureUtils::clone()
   QPromise<void> promise;
   QFuture<bool> clonedFuture = QgsFutureUtils::clone( promise.future() ).then( [&promise]() -> bool { return promise.future().isFinished(); } );
   promise.finish();
-  QgsFutureUtils::waitForFinished( clonedFuture );
+  QgsFutureUtils::waitForFinished( QFuture<void>( clonedFuture ) );
   QVERIFY( clonedFuture.isFinished() );
   QCOMPARE( clonedFuture.result(), true );
 }
@@ -70,7 +70,7 @@ void TestQgsFutureUtils::combineOk()
   QFuture<int> future1 = QtFuture::makeReadyValueFuture( 1 );
   QFuture<int> future2 = QtFuture::makeReadyValueFuture( 2 );
   QFuture<std::tuple<int, int>> combined = QgsFutureUtils::combine( future1, future2 );
-  QgsFutureUtils::waitForFinished( combined );
+  QgsFutureUtils::waitForFinished( QFuture<void>( combined ) );
   QVERIFY( combined.isValid() );
   QCOMPARE( combined.resultCount(), 1 );
   QCOMPARE( combined.result(), ( std::tuple<int, int> { 1, 2 } ) );
@@ -82,7 +82,7 @@ void TestQgsFutureUtils::combineNoResult()
   QPromise<int> promise2;
   QFuture<std::tuple<int, int>> combined = QgsFutureUtils::combine( future1, promise2.future() );
   promise2.finish();
-  QgsFutureUtils::waitForFinished( combined );
+  QgsFutureUtils::waitForFinished( QFuture<void>( combined ) );
   QVERIFY( combined.isValid() );
   QCOMPARE( combined.resultCount(), 0 );
 }
@@ -96,7 +96,7 @@ void TestQgsFutureUtils::combineException()
     return 2;
   } );
   QFuture<std::tuple<int, int>> combined = QgsFutureUtils::combine( future1, future2 );
-  QVERIFY_THROWS_EXCEPTION( QException, QgsFutureUtils::waitForFinished( combined ) );
+  QVERIFY_THROWS_EXCEPTION( QException, QgsFutureUtils::waitForFinished( QFuture<void>( combined ) ) );
   QVERIFY( !combined.isValid() );
   QCOMPARE( combined.resultCount(), 0 );
 }

@@ -145,7 +145,7 @@ bool QgsPointsInPolygonAlgorithm::prepareAlgorithm( const QVariantMap &parameter
   mFieldName = parameterAsString( parameters, u"FIELD"_s, context );
   mWeightFieldName = parameterAsString( parameters, u"WEIGHT"_s, context );
   mClassFieldName = parameterAsString( parameters, u"CLASSFIELD"_s, context );
-  mPointSource.reset( parameterAsSource( parameters, u"POINTS"_s, context ) );
+  mPointSource = parameterAsSource( parameters, u"POINTS"_s, context );
   if ( !mPointSource )
     throw QgsProcessingException( invalidSourceError( parameters, u"POINTS"_s ) );
 

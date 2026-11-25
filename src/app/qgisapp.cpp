@@ -87,6 +87,7 @@ using namespace Qt::StringLiterals;
 
 #include "qgsmaplayerutils.h"
 #include "qgsappmenuutils.h"
+#include "qgsconfig.h"
 #include "qgsscreenhelper.h"
 #include "qgssettingsregistrycore.h"
 #include "qgssettingsentryenumflag.h"
@@ -118,6 +119,7 @@ using namespace Qt::StringLiterals;
 #include "qgsmaplayerfactory.h"
 #include "qgsprocessingwidgetcontext.h"
 #include "qgsprocessingmodelprovider.h"
+#include "qgsmodeldesignerdialog.h"
 #include "processing/qgsprocessingtoolboxdock.h"
 
 #include "qgsbrowserwidget.h"
@@ -195,7 +197,7 @@ using namespace Qt::StringLiterals;
 #include "qgsdirectionallightsettings.h"
 #endif
 
-#ifdef WITH_SFCGAL
+#ifdef HAVE_SFCGAL
 #include <SFCGAL/capi/sfcgal_c.h>
 #include <SFCGAL/version.h>
 #endif
@@ -271,6 +273,7 @@ using namespace Qt::StringLiterals;
 #include "qgsbookmarkeditordialog.h"
 #include "qgsbrowserdockwidget.h"
 #include "qgsclipboard.h"
+#include "qgscolorschemeregistry.h"
 #include "qgsconfigureshortcutsdialog.h"
 #include "qgscoordinatetransform.h"
 #include "qgscoordinateutils.h"
@@ -345,6 +348,7 @@ using namespace Qt::StringLiterals;
 #include "qgslayoutatlas.h"
 #include "qgslayoutcustomdrophandler.h"
 #include "qgslayoutdesignerdialog.h"
+#include "qgsprocessingmodelalgorithm.h"
 #include "qgslayoutitemguiregistry.h"
 #include "qgslayoutmanager.h"
 #include "qgslayoutqptdrophandler.h"
@@ -1030,8 +1034,6 @@ const QgsSettingsEntryBool *QgisApp::settingsProjOpenedOKAtLaunch
   = new QgsSettingsEntryBool( u"project-opened-ok-at-launch"_s, QgsSettingsTree::sTreeProject, true, u"Whether the project specified to open at launch was opened successfully last time"_s );
 const QgsSettingsEntryBool *QgisApp::settingsShowScriptWarning
   = new QgsSettingsEntryBool( u"show-script-warning"_s, QgsSettingsTree::sTreeApp, true, u"Whether to warn the user before running a Python script embedded in a project"_s );
-const QgsSettingsEntryBool *QgisApp::settingsDisplayWaylandWarning
-  = new QgsSettingsEntryBool( u"display-wayland-warning"_s, QgsSettingsTree::sTreeGui, true, u"Whether to show the warning dialog when running QGIS under Wayland"_s );
 const QgsSettingsEntryBool *QgisApp::settingsRestoreDefaultWindowState
   = new QgsSettingsEntryBool( u"restore-default-window-state"_s, QgsSettingsTree::sTreeApp, false, u"Whether to restore the default window state on next QGIS startup"_s );
 
@@ -1153,6 +1155,10 @@ QgisApp::QgisApp(
   // set project linked to main canvas
   mMapCanvas->setProject( QgsProject::instance() );
   endProfile();
+
+  QgsApplication::colorSchemeRegistry()->setProject( QgsProject::instance() );
+  connect( this, &QgisApp::newProject, this, [] { QgsApplication::colorSchemeRegistry()->setProject( QgsProject::instance() ); } );
+  connect( this, &QgisApp::projectRead, this, [] { QgsApplication::colorSchemeRegistry()->setProject( QgsProject::instance() ); } );
 
   // what type of project to auto-open
   mProjOpen = settingsProjOpenAtLaunch->value();
@@ -1814,7 +1820,7 @@ QgisApp::QgisApp(
     toggleMapTips( true );
   }
 
-  connect( mActionModelDesigner, &QAction::triggered, mAppProcessingUtils.get(), &QgsAppProcessingUtils::openModelDesigner );
+  connect( mActionModelDesigner, &QAction::triggered, mAppProcessingUtils.get(), [this] { mAppProcessingUtils->openModelDesignerDialog( nullptr ); } );
   connect( mProcessingHistoryAction, &QAction::triggered, mAppProcessingUtils.get(), &QgsAppProcessingUtils::openHistory );
 
   mPythonMacrosEnabled = false;
@@ -1923,7 +1929,7 @@ QgisApp::QgisApp(
   std::sort( actions.begin(), actions.end(), cmpByText_ );
   mPanelMenu->insertActions( nullptr, actions );
 
-  mBearingNumericFormat.reset( QgsLocalDefaultSettings::bearingFormat() );
+  mBearingNumericFormat = QgsLocalDefaultSettings::bearingFormat();
 
   mNetworkLoggerWidgetFactory.reset( std::make_unique<QgsNetworkLoggerWidgetFactory>( mNetworkLogger ) );
   mQueryLoggerWidgetFactory.reset( std::make_unique<QgsDatabaseQueryLoggerWidgetFactory>( mQueryLogger ) );
@@ -2045,46 +2051,6 @@ QgisApp::QgisApp(
 
   mDevToolsWidget->setActiveTab( lastDevToolsTab );
 
-  if ( QGuiApplication::platformName() == "wayland"_L1 )
-  {
-    const bool displayWaylandWarning = settingsDisplayWaylandWarning->value();
-    if ( displayWaylandWarning )
-    {
-      const QString shortMessage = tr( "Wayland session detected: User experience will be degraded" );
-      QgsMessageBarItem *messageWidget = QgsMessageBar::createMessage( QString(), shortMessage );
-
-      QPushButton *detailsButton = new QPushButton( tr( "More Info" ) );
-      connect( detailsButton, &QPushButton::clicked, this, [detailsButton] {
-        QgsMessageViewer *dialog = new QgsMessageViewer( detailsButton );
-        dialog->setTitle( tr( "Wayland Session Detected" ) );
-        // NOTE: black coloring MUST be specified here or the message shows white-on-white on wayland sessions 🙃
-        const QString warning = u"<p style=\"color: black\">%1</p><p style=\"color: black\"><b>%2</b></p>"_s.arg(
-          tr(
-            "Running QGIS in a Wayland session will result "
-            "in a degraded experience due to limitations in the "
-            "underlying Qt library and current versions of the Wayland protocol."
-          ),
-          tr(
-            "It is highly recommended that you switch to a traditional X11 session "
-            "for an optimal user experience."
-          )
-        );
-        dialog->setMessageAsHtml( warning );
-        dialog->showMessage();
-      } );
-      messageWidget->layout()->addWidget( detailsButton );
-
-      QPushButton *ignoreButton = new QPushButton( tr( "Ignore" ) );
-      connect( ignoreButton, &QPushButton::clicked, this, [this, messageWidget] {
-        QgisApp::settingsDisplayWaylandWarning->setValue( false );
-        messageBar()->popWidget( messageWidget );
-      } );
-      messageWidget->layout()->addWidget( ignoreButton );
-
-      messageBar()->pushWidget( messageWidget, Qgis::MessageLevel::Critical, 0 );
-    }
-  }
-
   startProfile( tr( "Welcome screen" ) );
   connect( this, &QgisApp::pluginUpdatesAvailable, this, [this]( const QStringList &plugins ) {
     const QString updateMessage = tr( "Plugin update(s) available: %1" ).arg( plugins.join( ", "_L1 ) );
@@ -2170,7 +2136,9 @@ QgisApp::QgisApp()
   mLayerTreeView = new QgsLayerTreeView( this );
   QgsLayerTreeModel *model = new QgsLayerTreeModel( QgsProject::instance()->layerTreeRoot(), this );
   mLayerTreeView->setModel( model );
-  mUndoWidget = new QgsUndoWidget( nullptr, mMapCanvas );
+  mUndoDock = new QgsDockWidget( tr( "Undo/Redo" ), this );
+  mUndoWidget = new QgsUndoWidget( mUndoDock, mMapCanvas );
+  mUndoDock->setWidget( mUndoWidget );
   mUserInputDockWidget = new QgsUserInputWidget( this );
   mInfoBar = new QgsMessageBar( centralWidget() );
   mLayerTreeView->setMessageBar( mInfoBar );
@@ -2182,12 +2150,14 @@ QgisApp::QgisApp()
   mDigitizingTechniqueManager = new QgsMapToolsDigitizingTechniqueManager( this );
 
   mVectorLayerTools = new QgsGuiVectorLayerTools();
-  mBearingNumericFormat.reset( QgsLocalDefaultSettings::bearingFormat() );
+  mBearingNumericFormat = QgsLocalDefaultSettings::bearingFormat();
 
   mMapCanvas->setUserInputWidget( mUserInputDockWidget );
   mMapCanvas->setMessageBar( mInfoBar );
 
   connect( mLayerTreeView, &QgsLayerTreeView::currentLayerChanged, this, &QgisApp::onActiveLayerChanged );
+
+  mFeatureActionMenu = new QMenu( this );
   // More tests may need more members to be initialized
 }
 
@@ -3839,10 +3809,6 @@ void QgisApp::createToolBars()
   QToolButton *tbAllEdits = qobject_cast<QToolButton *>( mDigitizeToolBar->widgetForAction( mActionAllEdits ) );
   tbAllEdits->setPopupMode( QToolButton::InstantPopup );
 
-  // new project from template tool button
-  QToolButton *tbNewProjectFromTemplate = qobject_cast<QToolButton *>( mFileToolBar->widgetForAction( mProjectFromTemplateMenu->menuAction() ) );
-  tbNewProjectFromTemplate->setPopupMode( QToolButton::InstantPopup );
-
   // new layer tool button
 
   bt = new QToolButton();
@@ -4571,6 +4537,7 @@ void QgisApp::setupConnections()
   connect( this, &QgisApp::initializationCompleted, this, [this] {
     fileOpenAfterLaunch();
     connect( QgsProject::instance(), &QgsProject::layersAdded, this, &QgisApp::showMapCanvas );
+    connect( this, &QgisApp::newProject, this, &QgisApp::showMapCanvas );
   } );
 
   // Connect warning dialog from project reading
@@ -5084,6 +5051,7 @@ void QgisApp::initLayerTreeView()
   connect( actionCollapseAll, &QAction::triggered, mLayerTreeView, &QgsLayerTreeView::collapseAllNodes );
 
   QToolBar *toolbar = new QToolBar();
+  toolbar->setObjectName( u"mLayerTreeToolBar"_s );
   toolbar->setIconSize( QgsGui::iconSize( Qgis::UserInterfaceIconType::DockedToolbar ) );
   toolbar->addAction( mActionStyleDock );
   toolbar->addAction( actionAddGroup );
@@ -5360,7 +5328,7 @@ void QgisApp::updateRecentProjectPaths()
   if ( !mRecentProjects.isEmpty() )
   {
     mRecentProjectsMenu->addSeparator();
-    QAction *clearRecentProjectsAction = mRecentProjectsMenu->addAction( tr( "Clear List" ) );
+    QAction *clearRecentProjectsAction = mRecentProjectsMenu->addAction( tr( "Clear List…" ) );
     connect( clearRecentProjectsAction, &QAction::triggered, mWelcomeScreen, [this]() { mWelcomeScreen->clearRecentProjects(); } );
   }
 
@@ -5542,7 +5510,24 @@ void QgisApp::updateProjectFromTemplates()
   if ( settingsNewProjectDefault->value() )
     mProjectFromTemplateMenu->addAction( tr( "< Blank >" ), this, [this]() { fileNewBlank(); } );
 
-  mProjectFromTemplateMenu->menuAction()->setEnabled( !mProjectFromTemplateMenu->isEmpty() );
+  if ( mProjectFromTemplateMenu->isEmpty() )
+  {
+    if ( mProjectTemplateToolbarAction )
+    {
+      mProjectTemplateToolbarAction->deleteLater();
+    }
+  }
+  else if ( !mProjectTemplateToolbarAction )
+  {
+    mProjectTemplateToolbarAction = new QgsToolButtonAction();
+    mProjectTemplateToolbarAction->setAutoRaise( true );
+    mProjectTemplateToolbarAction->setText( tr( "New from Template" ) );
+    mProjectTemplateToolbarAction->setToolTip( tr( "New from Template" ) );
+    mProjectTemplateToolbarAction->setIcon( QgsApplication::getThemeIcon( u"/mActionFileNewFromTemplate.svg"_s ) );
+    mProjectTemplateToolbarAction->setPopupMode( QToolButton::InstantPopup );
+    mProjectTemplateToolbarAction->setMenu( mProjectFromTemplateMenu );
+    mFileToolBar->insertAction( mActionOpenProject, mProjectTemplateToolbarAction );
+  }
 
   // Reload welcome screen
   if ( mWelcomeScreen )
@@ -5759,7 +5744,7 @@ QString QgisApp::getVersionString()
   versionString += "</td></tr><tr>"_L1;
 
   // SFCGAL version
-#ifdef WITH_SFCGAL
+#ifdef HAVE_SFCGAL
   const QString sfcgalVersionCompiled { SFCGAL_VERSION };
   const QString sfcgalVersionRunning { sfcgal_version() };
   versionString += u"<td>%1</td><td>%2"_s.arg( tr( "SFCGAL version" ), sfcgalVersionCompiled );
@@ -8452,16 +8437,17 @@ void QgisApp::makeMemoryLayerPermanent( QgsVectorLayer *layer )
         layerNameForRename = newLayerName;
       }
 
-      if ( layerNameForRename != vl->name() )
+      if ( layerNameForRename.compare( vl->name(), Qt::CaseInsensitive ) != 0 )
       {
         QPushButton *button = new QPushButton( tr( "Also rename layer in layers panel" ), this );
         barItem->setWidget( button );
 
         connect( vl, &QgsVectorLayer::willBeDeleted, barItem, [button]() { button->setEnabled( false ); } );
 
-        connect( button, &QPushButton::clicked, vl, [button, vl, layerNameForRename]() {
+        connect( button, &QPushButton::clicked, vl, [this, button, vl, layerNameForRename, barItem]() {
           vl->setName( layerNameForRename );
           button->setEnabled( false );
+          visibleMessageBar()->popWidget( barItem );
         } );
       }
 
@@ -10323,7 +10309,7 @@ void QgisApp::pasteFromClipboard( QgsMapLayer *destinationLayer )
   const bool duplicateFeature = clipboard()->layer() == pasteVectorLayer;
 
   pasteVectorLayer->beginEditCommand( tr( "Features pasted" ) );
-  QgsFeatureList features = clipboard()->transformedCopyOf( pasteVectorLayer->crs(), pasteVectorLayer->fields() );
+  QgsFeatureList features = clipboard()->transformedCopyOf( pasteVectorLayer );
   int nTotalFeatures = features.count();
   QgsFeatureList pastedFeatures;
   // Count collapsed geometries
@@ -11067,7 +11053,6 @@ bool QgisApp::toggleEditingVectorLayer( QgsVectorLayer *vlayer, bool allowCancel
     QStringList rollBackErrors;
     QgsProject::instance()->rollBack( rollBackErrors, true, vlayer );
 
-    res = true;
     vlayer->triggerRepaint();
   }
 
@@ -11090,7 +11075,7 @@ bool QgisApp::toggleEditingMeshLayer( QgsMeshLayer *mlayer, bool allowCancel )
   if ( !mlayer->supportsEditing() )
     return false;
 
-  bool res = false;
+  bool res = true;
 
   QgsCoordinateTransform transform( mlayer->crs(), mMapCanvas->mapSettings().destinationCrs(), QgsProject::instance() );
 
@@ -11235,7 +11220,7 @@ bool QgisApp::toggleEditingPointCloudLayer( QgsPointCloudLayer *pclayer, bool al
   if ( !pclayer->supportsEditing() )
     return false;
 
-  bool res = false;
+  bool res = true;
 
   if ( !pclayer->isEditable() )
   {
@@ -11964,8 +11949,7 @@ void QgisApp::removeLayer()
 
   for ( QgsMapLayer *layer : selectedLayers )
   {
-    QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( layer );
-    if ( vlayer && vlayer->isEditable() && !toggleEditing( vlayer, true ) )
+    if ( layer->isEditable() && !toggleEditing( layer, true ) )
       return;
   }
 

@@ -297,7 +297,7 @@ void QgsGeometryValidationService::enableLayerChecks( QgsVectorLayer *layer )
   if ( checkInformation.connections.empty() )
   {
     // Connect to all modifications on a layer that can introduce a geometry or topology error
-    // Also connect to the beforeCommitChanges signal, so we can trigger topology checks
+    // Also connect to the beforeCommitChecks signal, so we can trigger topology checks
     // We keep all connections around in a list, so if in the future all checks get disabled
     // we can kill those connections to be sure the layer does not even get a tiny bit of overhead.
     checkInformation.connections << connect( layer, &QgsVectorLayer::featureAdded, this, [this, layer]( QgsFeatureId fid ) { onFeatureAdded( layer, fid ); } );
@@ -305,7 +305,7 @@ void QgsGeometryValidationService::enableLayerChecks( QgsVectorLayer *layer )
       onGeometryChanged( layer, fid, geometry );
     } );
     checkInformation.connections << connect( layer, &QgsVectorLayer::featureDeleted, this, [this, layer]( QgsFeatureId fid ) { onFeatureDeleted( layer, fid ); } );
-    checkInformation.connections << connect( layer, &QgsVectorLayer::beforeCommitChanges, this, [this, layer]( bool stopEditing ) { onBeforeCommitChanges( layer, stopEditing ); } );
+    checkInformation.connections << connect( layer, &QgsVectorLayer::beforeCommitChecks, this, [this, layer]( bool stopEditing ) { onBeforeCommitChanges( layer, stopEditing ); } );
     checkInformation.connections << connect( layer, &QgsVectorLayer::editingStopped, this, [this, layer]() { onEditingStopped( layer ); } );
   }
 }

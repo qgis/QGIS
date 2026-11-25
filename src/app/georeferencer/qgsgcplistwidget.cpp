@@ -174,7 +174,7 @@ void QgsGCPListWidget::showContextMenu( QPoint p )
   if ( !mGCPList || 0 == mGCPList->count() )
     return;
 
-  QMenu m; // = new QMenu(this);
+  QMenu m( this );
   const QModelIndex index = indexAt( p );
   if ( index == QModelIndex() )
     return;

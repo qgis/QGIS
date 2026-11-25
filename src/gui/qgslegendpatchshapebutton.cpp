@@ -176,14 +176,10 @@ void QgsLegendPatchShapeButton::setShape( const QgsLegendPatchShape &shape )
   emit changed();
 }
 
-void QgsLegendPatchShapeButton::mousePressEvent( QMouseEvent *e )
+void QgsLegendPatchShapeButton::contextMenuEvent( QContextMenuEvent *e )
 {
-  if ( e->button() == Qt::RightButton )
-  {
-    QToolButton::showMenu();
-    return;
-  }
-  QToolButton::mousePressEvent( e );
+  QToolButton::showMenu();
+  e->accept();
 }
 
 void QgsLegendPatchShapeButton::prepareMenu()

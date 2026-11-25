@@ -23,6 +23,8 @@
 #include "qgsvectorlayer.h"
 
 #include <QIcon>
+#include <QPainter>
+#include <QPixmap>
 #include <QString>
 
 using namespace Qt::StringLiterals;
@@ -200,4 +202,28 @@ QIcon QgsIconUtils::iconForLayerType( Qgis::LayerType type )
       break;
   }
   return QIcon();
+}
+
+QIcon QgsIconUtils::addOverlay( const QIcon &icon, const QString &overlayPath, QSize size )
+{
+  if ( icon.isNull() )
+    return icon;
+
+  size = icon.actualSize( size );
+  const qreal dpr = icon.pixmap( size ).devicePixelRatio();
+
+  // Render through a QIcon so the SVG scales correctly and honours device pixel ratio
+  // (QPixmap loaded directly from a file ignores the size argument when no colors are passed).
+  const QIcon overlayIcon( overlayPath );
+
+  QPixmap pixmap( size * dpr );
+  pixmap.setDevicePixelRatio( dpr );
+  pixmap.fill( Qt::transparent );
+
+  QPainter painter( &pixmap );
+  painter.drawPixmap( 0, 0, icon.pixmap( size, dpr ) );
+  painter.drawPixmap( 0, 0, overlayIcon.pixmap( size, dpr ) );
+  painter.end();
+
+  return QIcon( pixmap );
 }

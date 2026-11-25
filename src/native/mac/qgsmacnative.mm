@@ -82,7 +82,7 @@ void QgsMacNative::openFileExplorerAndSelectFile(const QString &path) {
 }
 
 QgsNative::Capabilities QgsMacNative::capabilities() const {
-  return NativeDesktopNotifications;
+  return QgsNative::Capability::NativeDesktopNotifications;
 }
 
 QgsNative::NotificationResult QgsMacNative::showDesktopNotification(

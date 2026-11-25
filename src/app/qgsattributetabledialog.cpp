@@ -658,7 +658,10 @@ void QgsAttributeTableDialog::runFieldCalculation( QgsVectorLayer *layer, const 
     // fixes https://github.com/qgis/QGIS/issues/25210
     QgsAttributeTableModel *masterModel = mMainView->masterModel();
     int modelColumn = masterModel->fieldCol( fieldindex );
-    masterModel->reload( masterModel->index( 0, modelColumn ), masterModel->index( masterModel->rowCount() - 1, modelColumn ) );
+    if ( masterModel->rowCount() > 0 )
+    {
+      masterModel->reload( masterModel->index( 0, modelColumn ), masterModel->index( masterModel->rowCount() - 1, modelColumn ) );
+    }
   }
 }
 
@@ -723,7 +726,7 @@ void QgsAttributeTableDialog::mActionOpenFieldCalculator_triggered()
   {
     int col = masterModel->fieldCol( calc.changedAttributeId() );
 
-    if ( col >= 0 )
+    if ( col >= 0 && masterModel->rowCount() > 0 )
     {
       masterModel->reload( masterModel->index( 0, col ), masterModel->index( masterModel->rowCount() - 1, col ) );
     }
@@ -767,12 +770,17 @@ void QgsAttributeTableDialog::mActionAddFeatureViaAttributeTable_triggered()
   QgsFeatureAction action( tr( "Geometryless feature added" ), f, mLayer, QUuid(), -1, this );
   action.setForceSuppressFormPopup( true ); // we're already showing the table, allowing users to enter the new feature's attributes directly
 
-  const QgsFeatureAction::AddFeatureResult result = action.addFeature();
+  QgsVectorLayerToolsContext context;
+
+  const QgsFeatureAction::AddFeatureResult result = action.addFeature( context );
   switch ( result )
   {
     case QgsFeatureAction::AddFeatureResult::Success:
     case QgsFeatureAction::AddFeatureResult::Pending:
-      masterModel->reload( masterModel->index( 0, 0 ), masterModel->index( masterModel->rowCount() - 1, masterModel->columnCount() - 1 ) );
+      if ( masterModel->rowCount() > 0 )
+      {
+        masterModel->reload( masterModel->index( 0, 0 ), masterModel->index( masterModel->rowCount() - 1, masterModel->columnCount() - 1 ) );
+      }
       mMainView->setCurrentEditSelection( QgsFeatureIds() << action.feature().id() );
       mMainView->tableView()->scrollToFeature( action.feature().id(), 0 );
       break;
@@ -802,12 +810,17 @@ void QgsAttributeTableDialog::mActionAddFeatureViaAttributeForm_triggered()
   QgsFeatureAction action( tr( "Feature Added" ), f, mLayer, QUuid(), -1, this );
   QgsAttributeTableModel *masterModel = mMainView->masterModel();
 
-  const QgsFeatureAction::AddFeatureResult result = action.addFeature();
+  QgsVectorLayerToolsContext context;
+
+  const QgsFeatureAction::AddFeatureResult result = action.addFeature( context );
   switch ( result )
   {
     case QgsFeatureAction::AddFeatureResult::Success:
     case QgsFeatureAction::AddFeatureResult::Pending:
-      masterModel->reload( masterModel->index( 0, 0 ), masterModel->index( masterModel->rowCount() - 1, masterModel->columnCount() - 1 ) );
+      if ( masterModel->rowCount() > 0 )
+      {
+        masterModel->reload( masterModel->index( 0, 0 ), masterModel->index( masterModel->rowCount() - 1, masterModel->columnCount() - 1 ) );
+      }
       mMainView->setCurrentEditSelection( QgsFeatureIds() << action.feature().id() );
       mMainView->tableView()->scrollToFeature( action.feature().id(), 0 );
       break;
@@ -999,7 +1012,7 @@ void QgsAttributeTableDialog::editingToggled()
   }
   else
   {
-    QMenu *actionMenu = new QMenu();
+    QMenu *actionMenu = new QMenu( mActionFeatureActions );
     const auto constActions = actions;
     for ( const QgsAction &action : constActions )
     {
@@ -1035,7 +1048,10 @@ void QgsAttributeTableDialog::addAttribute( const QgsField &field )
   }
 
   // update model - a field has been added or updated
-  masterModel->reload( masterModel->index( 0, 0 ), masterModel->index( masterModel->rowCount() - 1, masterModel->columnCount() - 1 ) );
+  if ( masterModel->rowCount() > 0 )
+  {
+    masterModel->reload( masterModel->index( 0, 0 ), masterModel->index( masterModel->rowCount() - 1, masterModel->columnCount() - 1 ) );
+  }
 }
 
 void QgsAttributeTableDialog::mActionAddAttribute_triggered()

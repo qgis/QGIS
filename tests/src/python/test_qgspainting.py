@@ -24,8 +24,8 @@ import unittest
 from qgis.core import (
     QgsPainting,
 )
-from qgis.PyQt.QtCore import QPointF, Qt
-from qgis.PyQt.QtGui import QImage, QPainter, QPolygonF
+from qgis.PyQt.QtCore import QPointF, QRect, QRectF, Qt
+from qgis.PyQt.QtGui import QBrush, QColor, QImage, QPainter, QPicture, QPolygonF
 from qgis.testing import QgisTestCase
 from utilities import start_app, unitTestDataPath
 
@@ -114,6 +114,28 @@ class TestQgsPainting(QgisTestCase):
         self.assertTrue(
             self.image_check("triangle_texture", "triangle_texture", render_image)
         )
+
+    def test_qpicture_deep_copy(self):
+        """
+        Test deep copies of QPicture
+        """
+        picture = QPicture()
+        painter = QPainter(picture)
+        for x in range(1, 10):
+            for y in range(1, 10):
+                color = QColor(x * 20, y * 20, 0)
+                painter.setBrush(QBrush(color))
+                painter.setPen(Qt.PenStyle.NoPen)
+                painter.drawRect(QRectF(x * 100, y * 100, 30, 30))
+        painter.end()
+        self.assertEqual(picture.boundingRect(), QRect(100, 100, 830, 830))
+        # override with manual bounding rect
+        picture.setBoundingRect(QRect(100, 100, 1030, 1030))
+
+        picture2 = QgsPainting.deepCopyQPicture(picture)
+        self.assertEqual(picture2.data(), picture.data())
+        self.assertEqual(picture2.size(), picture.size())
+        self.assertEqual(picture2.boundingRect(), QRect(100, 100, 1030, 1030))
 
 
 if __name__ == "__main__":

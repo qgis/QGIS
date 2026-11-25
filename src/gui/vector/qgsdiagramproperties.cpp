@@ -1235,7 +1235,7 @@ void QgsDiagramProperties::showSizeLegendDialog()
   connect( buttonBox, &QDialogButtonBox::rejected, &dlg, &QDialog::reject );
   dlg.layout()->addWidget( buttonBox );
   if ( dlg.exec() )
-    mSizeLegend.reset( panel->dataDefinedSizeLegend() );
+    mSizeLegend = panel->dataDefinedSizeLegend();
 }
 
 void QgsDiagramProperties::showHelp()

@@ -228,7 +228,7 @@ QString QgsMssqlUtils::columnDefinitionForField( const QgsField &field, bool ign
           type = u"nvarchar(max)"_s;
         break;
       default:
-        QgsDebugError( u"Unhandled variant type for column %1"_s.arg( QMetaType::typeName( field.type() ) ) );
+        QgsDebugError( u"Unhandled variant type for column %1"_s.arg( QMetaType( field.type() ).name() ) );
         return QString();
     }
   }

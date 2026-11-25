@@ -8,7 +8,10 @@ add_custom_target (server_landingpage ALL DEPENDS ${CMAKE_CURRENT_BINARY_DIR}/di
 
 # add_custom_command does not support OUTPUT_QUIET, so we need to make a cmake subcommand first:
 file(WRITE ${CMAKE_CURRENT_BINARY_DIR}/yarn_commands.cmake
-"execute_process(
+"
+set(ENV{HOME} ${CMAKE_CURRENT_BINARY_DIR}/yarn-home)
+
+execute_process(
   COMMAND ${YARN} install ${YARN_INSTALL_OPT}
   WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
   OUTPUT_QUIET
@@ -18,7 +21,7 @@ file(WRITE ${CMAKE_CURRENT_BINARY_DIR}/yarn_commands.cmake
 )
 if(NOT YARN_RESULT EQUAL 0)
   file(READ ${CMAKE_CURRENT_BINARY_DIR}/yarn.log ERROR_CONTENTS)
-  message(FATAL_ERROR \${ERROR_CONTENTS})
+  message(FATAL_ERROR install result: \${ERROR_CONTENTS})
 endif()
 
 execute_process(
@@ -31,7 +34,7 @@ execute_process(
 )
 if(NOT YARN_RESULT EQUAL 0)
   file(READ ${CMAKE_CURRENT_BINARY_DIR}/yarn.log ERROR_CONTENTS)
-  message(FATAL_ERROR \${ERROR_CONTENTS})
+  message(FATAL_ERROR build result: \${ERROR_CONTENTS})
 endif()
 ")
 

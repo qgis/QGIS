@@ -733,6 +733,7 @@ class CORE_EXPORT QgsLayout : public QGraphicsScene, public QgsExpressionContext
 
   private slots:
     void itemBackgroundTaskCountChanged( int count );
+    void multiFrameBackgroundTaskCountChanged( int count );
 
   private:
     QgsProject *mProject = nullptr;
@@ -756,6 +757,7 @@ class CORE_EXPORT QgsLayout : public QGraphicsScene, public QgsExpressionContext
     QString mWorldFileMapId;
 
     QHash< QgsLayoutItem *, int > mBackgroundTaskCount;
+    QHash< QgsLayoutMultiFrame *, int > mMultiFrameBackgroundTaskCount;
 
     //! Writes only the layout settings (not member settings like grid settings, etc) to XML
     void writeXmlLayoutSettings( QDomElement &element, QDomDocument &document, const QgsReadWriteContext &context ) const;

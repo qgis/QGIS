@@ -1011,7 +1011,7 @@ class CORE_EXPORT QgsEsriArcadeDictionaryElement
    *
    * Caller takes ownership of the returned object.
    */
-    QgsEsriArcadeDictionaryElement *clone() const SIP_FACTORY;
+    std::unique_ptr<QgsEsriArcadeDictionaryElement> clone() const;
 
     /**
    * Formats the element as string.

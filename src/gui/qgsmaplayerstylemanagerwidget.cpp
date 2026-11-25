@@ -180,6 +180,7 @@ QgsMapLayerStyleManagerWidget::QgsMapLayerStyleManagerWidget( QgsMapLayer *layer
   mStyleList->setResizeMode( QListView::Adjust );
 
   QToolBar *toolbar = new QToolBar( this );
+  toolbar->setObjectName( u"mMapLayerStyleManagerToolBar"_s );
   QAction *addAction = toolbar->addAction( tr( "Add" ) );
   addAction->setIcon( QgsApplication::getThemeIcon( u"symbologyAdd.svg"_s ) );
   connect( addAction, &QAction::triggered, this, &QgsMapLayerStyleManagerWidget::addStyle );

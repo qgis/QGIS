@@ -905,7 +905,7 @@ class CORE_EXPORT QgsMeshDatasetGroupTreeItem
      *
      * \return the cloned item
      */
-    QgsMeshDatasetGroupTreeItem *clone() const SIP_FACTORY;
+    std::unique_ptr<QgsMeshDatasetGroupTreeItem> clone() const;
 
     /**
      * Appends a child \a item.

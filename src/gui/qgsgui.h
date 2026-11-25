@@ -296,9 +296,9 @@ class GUI_EXPORT QgsGui : public QObject
     /**
      * Samples the color on screen at the specified global \a point (pixel).
      *
-     * \since QGIS 3.10
+     * \deprecated QGIS 4.4. Does not work reliably across different platforms.
      */
-    static QColor sampleColor( QPoint point );
+    Q_DECL_DEPRECATED static QColor sampleColor( QPoint point ) SIP_DEPRECATED;
 
     /**
      * Returns the screen at the given global \a point (pixel).

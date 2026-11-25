@@ -64,7 +64,7 @@ bool QgsRecentProjectsMenuEventFilter::eventFilter( QObject *obj, QEvent *event 
 
   const QModelIndex modelIndex = mWelcomeScreen->recentProjectsModel()->index( actionIndex, 0 );
 
-  QMenu subMenu;
+  QMenu subMenu( menu );
   const bool pinned = mWelcomeScreen->recentProjectsModel()->data( modelIndex, static_cast<int>( QgsRecentProjectItemsModel::CustomRole::PinnedRole ) ).toBool();
   if ( pinned )
   {
@@ -80,7 +80,7 @@ bool QgsRecentProjectsMenuEventFilter::eventFilter( QObject *obj, QEvent *event 
   const QString path = mWelcomeScreen->recentProjectsModel()->data( modelIndex, static_cast<int>( QgsRecentProjectItemsModel::CustomRole::NativePathRole ) ).toString();
   if ( !path.isEmpty() )
   {
-    QAction *openFolderAction = subMenu.addAction( tr( "Open Directory…" ) );
+    QAction *openFolderAction = subMenu.addAction( tr( "Open Directory" ) );
     connect( openFolderAction, &QAction::triggered, this, [this, actionIndex] { mWelcomeScreen->recentProjectsModel()->openProject( actionIndex ); } );
   }
 

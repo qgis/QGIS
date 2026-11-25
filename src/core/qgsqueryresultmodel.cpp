@@ -133,7 +133,7 @@ QVariant QgsQueryResultModel::data( const QModelIndex &index, int role ) const
         {
           return QgsApplication::nullRepresentation();
         }
-        else if ( value.type() == QVariant::ByteArray )
+        else if ( value.typeId() == QMetaType::Type::QByteArray )
         {
           return tr( "Binary (%1)" ).arg( QgsFileUtils::representFileSize( value.value< QByteArray >().size() ) );
         }

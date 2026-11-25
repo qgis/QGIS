@@ -72,7 +72,7 @@ QgsAppLayerTreeViewMenuProvider::QgsAppLayerTreeViewMenuProvider( QgsLayerTreeVi
 
 QMenu *QgsAppLayerTreeViewMenuProvider::createContextMenu()
 {
-  QMenu *menu = new QMenu;
+  QMenu *menu = new QMenu( mView );
 
   QgsLayerTreeViewDefaultActions *actions = mView->defaultActions();
 
@@ -146,6 +146,9 @@ QMenu *QgsAppLayerTreeViewMenuProvider::createContextMenu()
 
       if ( !mView->selectedNodes( true ).empty() )
         menu->addAction( actions->actionGroupSelected( menu ) );
+
+      if ( mView->selectedNodes( true ).count() == 1 )
+        menu->addAction( actions->actionRemoveGroupPromoteLayers( menu ) );
 
       if ( QgisApp::instance()->clipboard()->hasFormat( QGSCLIPBOARD_STYLE_MIME ) )
       {

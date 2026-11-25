@@ -261,6 +261,9 @@ template<typename T> class QgsAbstractFeatureIteratorFromSource : public QgsAbst
       mSource->iteratorOpened( this );
     }
 
+    QgsAbstractFeatureIteratorFromSource( const QgsAbstractFeatureIteratorFromSource & ) = delete;
+    QgsAbstractFeatureIteratorFromSource &operator=( QgsAbstractFeatureIteratorFromSource &other ) = delete;
+
     ~QgsAbstractFeatureIteratorFromSource() override
     {
       if ( mOwnSource )
@@ -273,6 +276,11 @@ template<typename T> class QgsAbstractFeatureIteratorFromSource : public QgsAbst
 
     T *mSource = nullptr;
     bool mOwnSource;
+
+  private:
+#ifdef SIP_RUN
+    QgsAbstractFeatureIteratorFromSource( const QgsAbstractFeatureIteratorFromSource & );
+#endif
 };
 
 

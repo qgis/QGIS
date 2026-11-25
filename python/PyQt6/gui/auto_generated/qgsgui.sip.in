@@ -262,11 +262,13 @@ Returns the platform's HIG flags.
 
     ~QgsGui();
 
-    static QColor sampleColor( QPoint point );
+ static QColor sampleColor( QPoint point ) /Deprecated="Since 4.4. Does not work reliably across different platforms."/;
 %Docstring
 Samples the color on screen at the specified global ``point`` (pixel).
 
-.. versionadded:: 3.10
+.. deprecated:: 4.4
+
+   Does not work reliably across different platforms.
 %End
 
     static QScreen *findScreenAt( QPoint point );

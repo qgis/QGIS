@@ -807,25 +807,42 @@ QgsRay3D Qgs3DUtils::rayFromScreenPoint( const QPoint &point, const QSize &windo
   const QVector3D deviceCoords( point.x(), point.y(), 0.0 );
   // normalized device coordinates
   const QVector3D normDeviceCoords( 2.0 * deviceCoords.x() / windowSize.width() - 1.0f, 1.0f - 2.0 * deviceCoords.y() / windowSize.height(), camera->nearPlane() );
-  // clip coordinates
-  const QVector4D rayClip( normDeviceCoords.x(), normDeviceCoords.y(), -1.0, 0.0 );
+  // clip coordinates of point on ray (its "end")
+  const QVector4D rayEndClip( normDeviceCoords.x(), normDeviceCoords.y(), 0.0, 1.0 );
 
   const QMatrix4x4 invertedProjMatrix = camera->projectionMatrix().inverted();
   const QMatrix4x4 invertedViewMatrix = camera->viewMatrix().inverted();
 
-  // ray direction in view coordinates
-  QVector4D rayDirView = invertedProjMatrix * rayClip;
-  // ray origin in world coordinates
-  const QVector4D rayOriginWorld = invertedViewMatrix * QVector4D( 0.0f, 0.0f, 0.0f, 1.0f );
+  QVector3D rayOriginWorld; // ray origin in world coordinates
+  switch ( camera->projectionType() )
+  {
+    case Qt3DRender::QCameraLens::PerspectiveProjection:
+    {
+      // In perspective projection, the ray always comes from the camera centre.
+      rayOriginWorld = QVector3D( invertedViewMatrix * QVector4D( 0.0f, 0.0f, 0.0f, 1.0f ) );
+      break;
+    }
+    case Qt3DRender::QCameraLens::OrthographicProjection:
+    {
+      // In orthographic projection, the ray centre shifts with the cursor, the
+      // ray is always perpendicular to the projection plane.
+      QVector4D rayOriginView = invertedProjMatrix * rayEndClip;
+      rayOriginView.setZ( 0.0f );
+      rayOriginWorld = QVector3D( invertedViewMatrix * rayOriginView );
+      break;
+    }
+    default:
+      QgsDebugError( "Unhandled 3D projection type" );
+  }
 
-  // ray direction in world coordinates
-  rayDirView.setZ( -1.0f );
-  rayDirView.setW( 0.0f );
-  const QVector4D rayDirWorld4D = invertedViewMatrix * rayDirView;
-  QVector3D rayDirWorld( rayDirWorld4D.x(), rayDirWorld4D.y(), rayDirWorld4D.z() );
+  // Find ray direction by first unprojecting the ray end's position
+  const QVector4D rayEndView = invertedProjMatrix * rayEndClip;
+  const QVector4D rayEndWorld4D = invertedViewMatrix * rayEndView;
+  const QVector3D rayEndWorld = rayEndWorld4D.toVector3DAffine();
+  QVector3D rayDirWorld = rayEndWorld - rayOriginWorld;
   rayDirWorld = rayDirWorld.normalized();
 
-  return QgsRay3D( QVector3D( rayOriginWorld ), rayDirWorld );
+  return QgsRay3D( rayOriginWorld, rayDirWorld );
 }
 
 QVector3D Qgs3DUtils::screenPointToWorldPos( const QPoint &screenPoint, double depth, const QSize &screenSize, Qt3DRender::QCamera *camera )
@@ -1296,11 +1313,22 @@ std::unique_ptr<Qt3DRender::QCamera> Qgs3DUtils::copyCamera( Qt3DRender::QCamera
   copy->setPosition( cam->position() );
   copy->setViewCenter( cam->viewCenter() );
   copy->setUpVector( cam->upVector() );
-  copy->setProjectionMatrix( cam->projectionMatrix() );
-  copy->setNearPlane( cam->nearPlane() );
-  copy->setFarPlane( cam->farPlane() );
-  copy->setAspectRatio( cam->aspectRatio() );
-  copy->setFieldOfView( cam->fieldOfView() );
+
+  switch ( cam->projectionType() )
+  {
+    case Qt3DRender::QCameraLens::OrthographicProjection:
+      copy->lens()->setOrthographicProjection( cam->left(), cam->right(), cam->bottom(), cam->top(), cam->nearPlane(), cam->farPlane() );
+      break;
+    case Qt3DRender::QCameraLens::FrustumProjection:
+      copy->lens()->setFrustumProjection( cam->left(), cam->right(), cam->bottom(), cam->top(), cam->nearPlane(), cam->farPlane() );
+      break;
+    case Qt3DRender::QCameraLens::PerspectiveProjection:
+      copy->lens()->setPerspectiveProjection( cam->fieldOfView(), cam->aspectRatio(), cam->nearPlane(), cam->farPlane() );
+      break;
+    case Qt3DRender::QCameraLens::CustomProjection:
+      copy->setProjectionMatrix( cam->projectionMatrix() );
+      break;
+  }
   return copy;
 }
 

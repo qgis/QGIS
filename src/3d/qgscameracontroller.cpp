@@ -22,7 +22,9 @@
 #include "qgs3dutils.h"
 #include "qgscrosssection.h"
 #include "qgseventtracing.h"
+#include "qgsgui.h"
 #include "qgslogger.h"
+#include "qgsnative.h"
 #include "qgsray3d.h"
 #include "qgsraycastcontext.h"
 #include "qgsraycasthit.h"
@@ -50,6 +52,19 @@ QgsCameraController::QgsCameraController( Qgs3DMapScene *scene )
   , mKeyboardHandler( new Qt3DInput::QKeyboardHandler )
   , mOrigin( scene->mapSettings()->origin() )
 {
+  if ( QgsGui::nativePlatformInterface()->capabilities() & QgsNative::Capability::NativePointerLock )
+  {
+    mPointerLocker = QgsGui::nativePlatformInterface()->createPointerLocker( window(), this );
+    if ( mPointerLocker )
+    {
+      connect( mPointerLocker, &QgsPointerLocker::pointerMoved, this, [this]( double dx, double dy ) {
+        if ( !mCaptureFpsMouseMovements || !mInputHandlersEnabled )
+          return;
+        applyRelativePointerRotation( dx, dy );
+      } );
+    }
+  }
+
   mMouseHandler->setSourceDevice( new Qt3DInput::QMouseDevice() );
   connect( mMouseHandler, &Qt3DInput::QMouseHandler::positionChanged, this, &QgsCameraController::onPositionChanged );
   connect( mMouseHandler, &Qt3DInput::QMouseHandler::wheel, this, &QgsCameraController::onWheel );
@@ -412,6 +427,16 @@ QgsVector3D QgsCameraController::moveGeocentricPoint( const QgsVector3D &point, 
   }
 }
 
+void QgsCameraController::applyRelativePointerRotation( double dx, double dy )
+{
+  float diffPitch = -0.2f * static_cast<float>( dy );
+  if ( mVerticalAxisInversion & Qgis::VerticalAxisInversion::WhenRotatingCaptured )
+    diffPitch *= -1;
+
+  const float diffYaw = -0.2f * static_cast<float>( dx );
+  rotateCamera( diffPitch, diffYaw );
+}
+
 void QgsCameraController::globeMoveCenterPoint( double latDiff, double lonDiff )
 {
   const QgsVector3D viewCenter = mCameraPose.centerPoint() + mOrigin;
@@ -604,11 +629,7 @@ void QgsCameraController::onPositionChangedTerrainNavigation( Qt3DInput::QMouseE
   {
     setMouseParameters( MouseOperation::RotationCamera );
     // rotate/tilt using mouse (camera stays at one position as it rotates)
-    float diffPitch = -0.2f * static_cast<float>( dy );
-    const float diffYaw = -0.2f * dx;
-    if ( mVerticalAxisInversion & Qgis::VerticalAxisInversion::WhenRotatingDragging )
-      diffPitch *= -1.0f;
-    rotateCamera( diffPitch, diffYaw );
+    applyRelativePointerRotation( dx, dy );
   }
   else if ( hasLeftButton && !hasShift && !hasCtrl )
   {
@@ -1123,12 +1144,21 @@ bool QgsCameraController::onKeyPressedFlyNavigation( QKeyEvent *event )
       // toggle mouse lock mode
       mCaptureFpsMouseMovements = !mCaptureFpsMouseMovements;
       mIgnoreNextMouseMove = true;
+
       if ( mCaptureFpsMouseMovements )
       {
+        if ( mPointerLocker )
+        {
+          mPointerLocker->lock();
+        }
         qApp->setOverrideCursor( QCursor( Qt::BlankCursor ) );
       }
       else
       {
+        if ( mPointerLocker )
+        {
+          mPointerLocker->unlock();
+        }
         qApp->restoreOverrideCursor();
       }
       event->accept();
@@ -1142,6 +1172,11 @@ bool QgsCameraController::onKeyPressedFlyNavigation( QKeyEvent *event )
       {
         mCaptureFpsMouseMovements = false;
         mIgnoreNextMouseMove = true;
+        if ( mPointerLocker )
+        {
+          mPointerLocker->unlock();
+        }
+
         qApp->restoreOverrideCursor();
         event->accept();
         return true;
@@ -1281,30 +1316,26 @@ void QgsCameraController::onPositionChangedFlyNavigation( Qt3DInput::QMouseEvent
   {
     if ( mCaptureFpsMouseMovements )
     {
-      float diffPitch = -0.2f * dy;
-      if ( mVerticalAxisInversion & Qgis::VerticalAxisInversion::WhenRotatingCaptured )
-        diffPitch *= -1;
-
-      const float diffYaw = -0.2f * dx;
-      rotateCamera( diffPitch, diffYaw );
+      // if we have a pointer locker this is handled elsewhere
+      if ( !mPointerLocker )
+      {
+        applyRelativePointerRotation( dx, dy );
+      }
     }
     else if ( mouse->buttons() & Qt::LeftButton )
     {
-      float diffPitch = -0.2f * dy;
-      if ( mVerticalAxisInversion & Qgis::VerticalAxisInversion::WhenRotatingDragging )
-        diffPitch *= -1;
-
-      const float diffYaw = -0.2f * dx;
-      rotateCamera( diffPitch, diffYaw );
+      applyRelativePointerRotation( dx, dy );
     }
   }
 
   if ( mCaptureFpsMouseMovements )
   {
-    mIgnoreNextMouseMove = true;
-
-    // reset cursor back to center of map widget
-    emit setCursorPosition( QPoint( mScene->engine()->size().width() / 2, mScene->engine()->size().height() / 2 ) );
+    if ( !mPointerLocker )
+    {
+      // reset cursor back to center of map widget
+      mIgnoreNextMouseMove = true;
+      emit setCursorPosition( QPoint( mScene->engine()->size().width() / 2, mScene->engine()->size().height() / 2 ) );
+    }
   }
 }
 

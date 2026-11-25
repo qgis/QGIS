@@ -15,7 +15,13 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifdef WITH_SFCGAL
+#include "qgsconfig.h"
+
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
+#ifdef HAVE_SFCGAL
 
 #include "qgssfcgalgeometry.h"
 
@@ -23,9 +29,6 @@
 #include "qgswkbptr.h"
 
 #include <QByteArray>
-#include <QString>
-
-using namespace Qt::StringLiterals;
 
 QgsSfcgalGeometry::QgsSfcgalGeometry()
   : mIsPrimitive( false )

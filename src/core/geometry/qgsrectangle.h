@@ -494,7 +494,16 @@ class CORE_EXPORT QgsRectangle
      */
     bool contains( const QgsRectangle &rect ) const SIP_HOLDGIL
     {
-      return ( rect.mXmin >= mXmin && rect.mXmax <= mXmax && rect.mYmin >= mYmin && rect.mYmax <= mYmax );
+      // simple case, both rectangles are normalized
+      if ( isNormalized() && rect.isNormalized() )
+      {
+        return qgsDoubleGreaterThanOrNear( rect.mXmin, mXmin ) && qgsDoubleLessThanOrNear( rect.mXmax, mXmax )
+               && qgsDoubleGreaterThanOrNear( rect.mYmin, mYmin ) && qgsDoubleLessThanOrNear( rect.mYmax, mYmax );
+      }
+      else
+      {
+        return containsRange(mXmin, mXmax, rect.mXmin, rect.mXmax) && containsRange(mYmin, mYmax, rect.mYmin, rect.mYmax);
+      }
     }
 
     /**
@@ -593,9 +602,9 @@ class CORE_EXPORT QgsRectangle
     /**
      * Returns TRUE if the rectangle has no area.
      *
-     * An empty rectangle may still be non-null if it contains valid
-     * spatial information (e.g. bounding box of a point or of a vertical
-     * or horizontal segment).
+     * While a null rectangle is always considered empty, an empty rectangle
+     * may still be non-null if it contains valid spatial information (e.g. the
+     * bounding box of a point or of a vertical or horizontal segment).
      *
      * \warning Do not use this method to determine if the rectangle
      * represents the bounding box of a point. The isPoint() method
@@ -606,7 +615,7 @@ class CORE_EXPORT QgsRectangle
      */
     bool isEmpty() const
     {
-      return isNull() || mXmax <= mXmin || mYmax <= mYmin || qgsDoubleNear( mXmax, mXmin ) || qgsDoubleNear( mYmax, mYmin );
+      return isNull() || qgsDoubleNear( mXmax, mXmin ) || qgsDoubleNear( mYmax, mYmin );
     }
 
     /**
@@ -621,6 +630,18 @@ class CORE_EXPORT QgsRectangle
     bool isPoint() const
     {
       return qgsDoubleNear( mXmax, mXmin ) && qgsDoubleNear( mYmax, mYmin ) && !isNull();
+    }
+
+    /**
+     * Returns TRUE if the rectangle is normalized.
+     *
+     * A rectangle is normalized if the xMinimum() <= xMaximum() and yMinimum() <= yMaximum().
+     *
+     * \since QGIS 4.4
+     */
+    bool isNormalized() const
+    {
+      return qgsDoubleLessThanOrNear( mXmin, mXmax ) && qgsDoubleLessThanOrNear( mYmin, mYmax );
     }
 
     /**
@@ -774,6 +795,24 @@ class CORE_EXPORT QgsRectangle
      */
     QgsBox3D toBox3d( double zMin, double zMax ) const;
 
+    /**
+     * Splits the rectangle at the antimeridian (longitude 180 degrees).
+     *
+     * Returns two normalized rectangles, one representing the part to the west of the
+     * antimeridian and one which represents the part to the east.
+     *
+     * If the rectangle does not cross the antimeridian then the second returned
+     * rectangle will be a null rectangle.
+     *
+     * \warning This method is only valid for calling on rectangles which represent
+     * geographic extents (i.e. contain latitude/longitude coordinates). If the
+     * extent is in a projected CRS, then the results will be incorrect, even
+     * if that projected rectangle crosses the antimeridian.
+     *
+     * \since QGIS 4.4
+     */
+    std::pair< QgsRectangle, QgsRectangle > splitAtAntimeridian() const;
+
     //! Allows direct construction of QVariants from rectangles.
     operator QVariant() const
     {
@@ -808,6 +847,35 @@ class CORE_EXPORT QgsRectangle
     double mYmin = std::numeric_limits<double>::max();
     double mXmax = -std::numeric_limits<double>::max();
     double mYmax = -std::numeric_limits<double>::max();
+
+    /**
+     * Tests for range containment, handling non-normalized ranges where max < min
+     * (these are treated as "everything outside the value")
+     */
+    static bool containsRange(double aMin, double aMax, double bMin, double bMax)
+    {
+      const bool aNormalized = (aMax >= aMin);
+      const bool bNormalized = (bMax >= bMin);
+
+      if (aNormalized && bNormalized)
+      {
+        // both ranges normal, nice and easy
+        return qgsDoubleGreaterThanOrNear( bMin, aMin ) && qgsDoubleLessThanOrNear( bMax, aMax );
+      }
+      else if (!aNormalized && bNormalized)
+      {
+        return qgsDoubleGreaterThanOrNear( bMin, aMin ) || qgsDoubleLessThanOrNear( bMax, aMax );
+      }
+      else if ( aNormalized && !bNormalized )
+      {
+        // a cannot possibly contain b
+        return false;
+      }
+      else {
+        // both non-normalized
+        return qgsDoubleLessThanOrNear( aMin, bMin ) && qgsDoubleGreaterThanOrNear( aMax, bMax );
+      }
+    }
 
 };
 

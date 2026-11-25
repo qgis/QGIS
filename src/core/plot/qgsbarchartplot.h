@@ -66,7 +66,7 @@ class CORE_EXPORT QgsBarChartPlot : public Qgs2DXyPlot
     int fillSymbolCount() const { return mFillSymbols.size(); }
 
     //! Returns a new bar chart.
-    static QgsBarChartPlot *create() SIP_FACTORY;
+    static std::unique_ptr<QgsBarChartPlot> create();
 
     //! Returns a new data gatherer for a given bar chart \a plot.
     static QgsVectorLayerAbstractPlotDataGatherer *createDataGatherer( QgsPlot *plot ) SIP_TRANSFERBACK;

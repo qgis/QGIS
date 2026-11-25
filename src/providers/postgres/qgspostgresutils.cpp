@@ -894,3 +894,17 @@ QList<QgsPostgresRasterOverviewLayerProperty> QgsPostgresUtils::rasterOverviews(
   }
   return overviews;
 }
+
+QString QgsPostgresUtils::sqlQgsProjectsInfo( const QString &schema, const bool &hasCommentColumn )
+{
+  const QString sql = QStringLiteral(
+                        "SELECT name,"
+                        "(metadata->>'last_modified_time')::timestamp(0)::TEXT AS time, "
+                        "metadata->>'last_modified_user' AS user "
+                        "%1"
+                        "FROM %2.qgis_projects"
+  )
+                        .arg( hasCommentColumn ? u", comment "_s : u""_s, QgsPostgresConn::quotedIdentifier( schema ) );
+
+  return sql;
+}

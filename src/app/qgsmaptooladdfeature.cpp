@@ -78,7 +78,7 @@ std::unique_ptr<QgsHighlight> QgsMapToolAddFeature::createHighlight( QgsVectorLa
   return highlight;
 };
 
-bool QgsMapToolAddFeature::addFeature( QgsVectorLayer *vlayer, const QgsFeature &f, bool showModal )
+bool QgsMapToolAddFeature::addFeature( QgsVectorLayer *vlayer, const QgsFeature &f, const QgsVectorLayerToolsContext &context )
 {
   QgsFeature feat( f );
   std::unique_ptr<QgsExpressionContextScope> scope( QgsExpressionContextUtils::mapToolCaptureScope( snappingMatches() ) );
@@ -98,8 +98,8 @@ bool QgsMapToolAddFeature::addFeature( QgsVectorLayer *vlayer, const QgsFeature 
   if ( vlayer->isSpatial() )
     highlight = createHighlight( vlayer, f );
 
-  const QgsFeatureAction::AddFeatureResult res = action->addFeature( QgsAttributeMap(), showModal, std::move( scope ), false, std::move( highlight ) );
-  if ( showModal )
+  const QgsFeatureAction::AddFeatureResult res = action->addFeature( context, QgsAttributeMap(), std::move( scope ), std::move( highlight ) );
+  if ( context.showModal() )
     delete action;
 
   switch ( res )
@@ -118,7 +118,10 @@ bool QgsMapToolAddFeature::addFeature( QgsVectorLayer *vlayer, const QgsFeature 
 void QgsMapToolAddFeature::featureDigitized( const QgsFeature &feature )
 {
   QgsVectorLayer *vlayer = currentVectorLayer();
-  const bool res = addFeature( vlayer, feature, false );
+
+  QgsVectorLayerToolsContext context;
+  context.setShowModal( false );
+  const bool res = addFeature( vlayer, feature, context );
 
   if ( res )
   {

@@ -409,7 +409,7 @@ void QgsCategorized3DRendererWidget::applyColorRamp()
 {
   if ( !mBtnColorRamp->isNull() )
   {
-    mRenderer->updateColorRamp( mBtnColorRamp->colorRamp() );
+    mRenderer->updateColorRamp( mBtnColorRamp->colorRamp().release() );
   }
   mModel->updateSymbology();
 }

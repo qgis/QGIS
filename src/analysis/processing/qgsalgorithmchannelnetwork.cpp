@@ -642,7 +642,7 @@ QVariantMap QgsChannelNetworkFromDemAlgorithm::processAlgorithm( const QVariantM
   std::unique_ptr<QgsFeatureSink> channelSink;
   if ( !QgsVariantUtils::isNull( parameters.value( u"CHANNELS"_s ) ) )
   {
-    channelSink.reset( parameterAsSink( parameters, u"CHANNELS"_s, context, channelsDest, channelFields(), Qgis::WkbType::LineStringZ, mCrs ) );
+    channelSink = parameterAsSink( parameters, u"CHANNELS"_s, context, channelsDest, channelFields(), Qgis::WkbType::LineStringZ, mCrs );
     if ( !channelSink )
     {
       throw QgsProcessingException( invalidSinkError( parameters, u"CHANNELS"_s ) );
@@ -653,7 +653,7 @@ QVariantMap QgsChannelNetworkFromDemAlgorithm::processAlgorithm( const QVariantM
   std::unique_ptr<QgsFeatureSink> basinSink;
   if ( !QgsVariantUtils::isNull( parameters.value( u"BASINS"_s ) ) )
   {
-    basinSink.reset( parameterAsSink( parameters, u"BASINS"_s, context, basinsDest, basinFields(), Qgis::WkbType::Polygon, mCrs ) );
+    basinSink = parameterAsSink( parameters, u"BASINS"_s, context, basinsDest, basinFields(), Qgis::WkbType::Polygon, mCrs );
     if ( !basinSink )
     {
       throw QgsProcessingException( invalidSinkError( parameters, u"BASINS"_s ) );
@@ -664,7 +664,7 @@ QVariantMap QgsChannelNetworkFromDemAlgorithm::processAlgorithm( const QVariantM
   std::unique_ptr<QgsFeatureSink> junctionSink;
   if ( !QgsVariantUtils::isNull( parameters.value( u"JUNCTIONS"_s ) ) )
   {
-    junctionSink.reset( parameterAsSink( parameters, u"JUNCTIONS"_s, context, junctionsDest, junctionFields(), Qgis::WkbType::PointZ, mCrs ) );
+    junctionSink = parameterAsSink( parameters, u"JUNCTIONS"_s, context, junctionsDest, junctionFields(), Qgis::WkbType::PointZ, mCrs );
     if ( !junctionSink )
     {
       throw QgsProcessingException( invalidSinkError( parameters, u"JUNCTIONS"_s ) );
@@ -820,7 +820,7 @@ QVariantMap QgsChannelNetworkFromFlowDirAndOrderAlgorithm::processAlgorithm( con
   std::unique_ptr<QgsFeatureSink> channelSink;
   if ( !QgsVariantUtils::isNull( parameters.value( u"CHANNELS"_s ) ) )
   {
-    channelSink.reset( parameterAsSink( parameters, u"CHANNELS"_s, context, channelsDest, channelFields(), Qgis::WkbType::LineStringZ, mCrs ) );
+    channelSink = parameterAsSink( parameters, u"CHANNELS"_s, context, channelsDest, channelFields(), Qgis::WkbType::LineStringZ, mCrs );
     if ( !channelSink )
     {
       throw QgsProcessingException( invalidSinkError( parameters, u"CHANNELS"_s ) );
@@ -831,7 +831,7 @@ QVariantMap QgsChannelNetworkFromFlowDirAndOrderAlgorithm::processAlgorithm( con
   std::unique_ptr<QgsFeatureSink> basinSink;
   if ( !QgsVariantUtils::isNull( parameters.value( u"BASINS"_s ) ) )
   {
-    basinSink.reset( parameterAsSink( parameters, u"BASINS"_s, context, basinsDest, basinFields(), Qgis::WkbType::Polygon, mCrs ) );
+    basinSink = parameterAsSink( parameters, u"BASINS"_s, context, basinsDest, basinFields(), Qgis::WkbType::Polygon, mCrs );
     if ( !basinSink )
     {
       throw QgsProcessingException( invalidSinkError( parameters, u"BASINS"_s ) );
@@ -842,7 +842,7 @@ QVariantMap QgsChannelNetworkFromFlowDirAndOrderAlgorithm::processAlgorithm( con
   std::unique_ptr<QgsFeatureSink> junctionSink;
   if ( !QgsVariantUtils::isNull( parameters.value( u"JUNCTIONS"_s ) ) )
   {
-    junctionSink.reset( parameterAsSink( parameters, u"JUNCTIONS"_s, context, junctionsDest, junctionFields(), Qgis::WkbType::PointZ, mCrs ) );
+    junctionSink = parameterAsSink( parameters, u"JUNCTIONS"_s, context, junctionsDest, junctionFields(), Qgis::WkbType::PointZ, mCrs );
     if ( !junctionSink )
     {
       throw QgsProcessingException( invalidSinkError( parameters, u"JUNCTIONS"_s ) );

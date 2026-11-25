@@ -243,8 +243,16 @@ class TestPyQgsProviderConnectionPostgres(
 
         self.assertIn("geometries_table", table_names)
 
-        # Revoke select permissions on topology.topology from qgis_test_user
-        conn.executeSql("REVOKE SELECT ON topology.topology FROM qgis_test_user")
+        # PostGIS 3 may also grant SELECT to PUBLIC. Save that grant so the
+        # database permissions can be restored after this test.
+        public_topology_select = conn.executeSql(
+            "SELECT EXISTS (SELECT 1 FROM information_schema.role_table_grants "
+            "WHERE table_schema = 'topology' AND table_name = 'topology' "
+            "AND grantee = 'PUBLIC' AND privilege_type = 'SELECT')"
+        )[0][0]
+        conn.executeSql(
+            "REVOKE SELECT ON topology.topology FROM PUBLIC, qgis_test_user"
+        )
 
         # Revoke select permissions on pointcloud_format from qgis_test_user
         conn.executeSql("REVOKE SELECT ON pointcloud_formats FROM qgis_test_user")
@@ -284,6 +292,8 @@ class TestPyQgsProviderConnectionPostgres(
 
         # Grant select permissions back on topology.topology to qgis_test_user
         conn.executeSql("GRANT SELECT ON topology.topology TO qgis_test_user")
+        if public_topology_select:
+            conn.executeSql("GRANT SELECT ON topology.topology TO PUBLIC")
 
         # Grant select permissions back on pointcloud_formats to qgis_test_user
         conn.executeSql("GRANT SELECT ON pointcloud_formats TO qgis_test_user")

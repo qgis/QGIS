@@ -72,6 +72,15 @@ QgsPdfRenderer::QgsPdfRenderer( const QString &path, Qgis::PdfRenderFlags flags 
 
 QgsPdfRenderer::~QgsPdfRenderer() = default;
 
+bool QgsPdfRenderer::isAvailable()
+{
+#ifdef HAVE_PDF4QT
+  return true;
+#else
+  return false;
+#endif
+}
+
 #ifdef HAVE_PDF4QT
 int QgsPdfRenderer::pageCount() const
 {

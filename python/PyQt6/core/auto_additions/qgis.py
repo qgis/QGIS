@@ -2075,6 +2075,7 @@ Qgis.HttpMethod.Post.__doc__ = "POST method"
 Qgis.HttpMethod.Head.__doc__ = "HEAD method. \n.. versionadded:: 3.44"
 Qgis.HttpMethod.Put.__doc__ = "PUT method. \n.. versionadded:: 3.44"
 Qgis.HttpMethod.Delete.__doc__ = "DELETE method. \n.. versionadded:: 3.44"
+Qgis.HttpMethod.Patch.__doc__ = "PATCH method. \n.. versionadded:: 4.6"
 Qgis.HttpMethod.__doc__ = """Different methods of HTTP requests
 
 .. versionadded:: 3.22
@@ -2092,6 +2093,10 @@ Qgis.HttpMethod.__doc__ = """Different methods of HTTP requests
 * ``Delete``: DELETE method.
 
   .. versionadded:: 3.44
+
+* ``Patch``: PATCH method.
+
+  .. versionadded:: 4.6
 
 
 """
@@ -4237,6 +4242,21 @@ Qgis.CoverageValidityResult.__doc__ = """Coverage validity results.
 """
 # --
 Qgis.CoverageValidityResult.baseClass = Qgis
+# monkey patching scoped based enum
+Qgis.CoverageEdgeType.AllEdges.__doc__ = "All edges (both exterior and interior)"
+Qgis.CoverageEdgeType.Exterior.__doc__ = "Exterior (non-shared) edges"
+Qgis.CoverageEdgeType.Interior.__doc__ = "Interior (shared) edges"
+Qgis.CoverageEdgeType.__doc__ = """Coverage edge types.
+
+.. versionadded:: 4.4
+
+* ``AllEdges``: All edges (both exterior and interior)
+* ``Exterior``: Exterior (non-shared) edges
+* ``Interior``: Interior (shared) edges
+
+"""
+# --
+Qgis.CoverageEdgeType.baseClass = Qgis
 # monkey patching scoped based enum
 Qgis.MakeValidMethod.Linework.__doc__ = "Combines all rings into a set of noded lines and then extracts valid polygons from that linework."
 Qgis.MakeValidMethod.Structure.__doc__ = "Structured method, first makes all rings valid and then merges shells and subtracts holes from shells to generate valid result. Assumes that holes and shells are correctly categorized. Requires GEOS 3.10+."
@@ -11850,6 +11870,7 @@ Qgis.DatabaseProviderConnectionCapability2.SetFieldAlias.__doc__ = "Can set alia
 Qgis.DatabaseProviderConnectionCapability2.SetTableComment.__doc__ = "Can set comments for tables via setTableComment() \n.. versionadded:: 3.44"
 Qgis.DatabaseProviderConnectionCapability2.EditFieldDomain.__doc__ = "Can edit existing field domain \n.. versionadded:: 4.0"
 Qgis.DatabaseProviderConnectionCapability2.DeleteFieldDomain.__doc__ = "Can delete existing field domain \n.. versionadded:: 4.0"
+Qgis.DatabaseProviderConnectionCapability2.StyleStorage.__doc__ = "Can save/load styles to/from the database \n.. versionadded:: 4.4"
 Qgis.DatabaseProviderConnectionCapability2.__doc__ = """The Capability enum represents the extended operations supported by the connection.
 
 .. versionadded:: 3.32
@@ -11867,6 +11888,10 @@ Qgis.DatabaseProviderConnectionCapability2.__doc__ = """The Capability enum repr
 * ``DeleteFieldDomain``: Can delete existing field domain
 
   .. versionadded:: 4.0
+
+* ``StyleStorage``: Can save/load styles to/from the database
+
+  .. versionadded:: 4.4
 
 
 """
@@ -13560,6 +13585,35 @@ Qgis.AttributeTableFilterMode.__doc__ = """Defines how rows in attribute tables 
 """
 # --
 Qgis.AttributeTableFilterMode.baseClass = Qgis
+# monkey patching scoped based enum
+Qgis.PointCloudOutputsTypes.All.__doc__ = "All point cloud formats supported by the processing provider"
+Qgis.PointCloudOutputsTypes.OnlyVPC.__doc__ = "Only virtual point cloud formats (VPC and VPZ)"
+Qgis.PointCloudOutputsTypes.__doc__ = """Point cloud output formats allowed for a point cloud destination.
+
+.. versionadded:: 4.4
+
+* ``All``: All point cloud formats supported by the processing provider
+* ``OnlyVPC``: Only virtual point cloud formats (VPC and VPZ)
+
+"""
+# --
+Qgis.PointCloudOutputsTypes.baseClass = Qgis
+# monkey patching scoped based enum
+Qgis.SaveStyleFormat.QML.__doc__ = "QML style format"
+Qgis.SaveStyleFormat.SLD.__doc__ = "SLD style format"
+Qgis.SaveStyleFormat.__doc__ = """Style save format
+
+.. versionadded:: 4.4
+
+* ``QML``: QML style format
+* ``SLD``: SLD style format
+
+"""
+# --
+Qgis.SaveStyleFormat.baseClass = Qgis
+Qgis.SaveStyleFormats = lambda flags=0: Qgis.SaveStyleFormat(flags)
+Qgis.SaveStyleFormats.baseClass = Qgis
+SaveStyleFormats = Qgis  # dirty hack since SIP seems to introduce the flags in module
 try:
     Qgis.__attribute_docs__ = {'QGIS_DEV_VERSION': 'The development version', 'DEFAULT_SEARCH_RADIUS_MM': 'Identify search radius in mm', 'DEFAULT_MAPTOPIXEL_THRESHOLD': 'Default threshold between map coordinates and device coordinates for map2pixel simplification', 'DEFAULT_HIGHLIGHT_COLOR': 'Default highlight color.  The transparency is expected to only be applied to polygon\nfill. Lines and outlines are rendered opaque.', 'DEFAULT_HIGHLIGHT_BUFFER_MM': 'Default highlight buffer in mm.', 'DEFAULT_HIGHLIGHT_MIN_WIDTH_MM': 'Default highlight line/stroke minimum width in mm.', 'SCALE_PRECISION': 'Fudge factor used to compare two scales. The code is often going from scale to scale\ndenominator. So it looses precision and, when a limit is inclusive, can lead to errors.\nTo avoid that, use this factor instead of using <= or >=.\n\n.. deprecated:: 3.40\n\n   No longer used by QGIS and will be removed in QGIS 5.0.', 'DEFAULT_Z_COORDINATE': 'Default Z coordinate value.\nThis value have to be assigned to the Z coordinate for the vertex.', 'DEFAULT_M_COORDINATE': 'Default M coordinate value.\nThis value have to be assigned to the M coordinate for the vertex.\n\n.. versionadded:: 3.20', 'UI_SCALE_FACTOR': 'UI scaling factor. This should be applied to all widget sizes obtained from font metrics,\nto account for differences in the default font sizes across different platforms.', 'DEFAULT_SNAP_TOLERANCE': 'Default snapping distance tolerance.', 'DEFAULT_SNAP_UNITS': 'Default snapping distance units.', 'USER_CRS_START_ID': 'Minimum ID number for a user-defined projection.', 'DEFAULT_POINT_SIZE': 'The default size (in millimeters) for point marker symbols', 'DEFAULT_LINE_WIDTH': 'The default width (in millimeters) for line symbols', 'DEFAULT_SEGMENT_EPSILON': 'Default snapping tolerance for segments'}
     Qgis.__annotations__ = {'QGIS_DEV_VERSION': str, 'DEFAULT_SEARCH_RADIUS_MM': float, 'DEFAULT_MAPTOPIXEL_THRESHOLD': float, 'DEFAULT_HIGHLIGHT_COLOR': 'QColor', 'DEFAULT_HIGHLIGHT_BUFFER_MM': float, 'DEFAULT_HIGHLIGHT_MIN_WIDTH_MM': float, 'SCALE_PRECISION': float, 'DEFAULT_Z_COORDINATE': float, 'DEFAULT_M_COORDINATE': float, 'UI_SCALE_FACTOR': float, 'DEFAULT_SNAP_TOLERANCE': float, 'DEFAULT_SNAP_UNITS': 'Qgis.MapToolUnit', 'USER_CRS_START_ID': int, 'DEFAULT_POINT_SIZE': float, 'DEFAULT_LINE_WIDTH': float, 'DEFAULT_SEGMENT_EPSILON': float}

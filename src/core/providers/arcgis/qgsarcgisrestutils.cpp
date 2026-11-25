@@ -25,6 +25,7 @@
 #include "qgsclassificationstandarddeviation.h"
 #include "qgscolorrampimpl.h"
 #include "qgscurve.h"
+#include "qgsesriarcadeconverter.h"
 #include "qgsfields.h"
 #include "qgsgeometryengine.h"
 #include "qgsgraduatedsymbolrenderer.h"
@@ -517,7 +518,7 @@ std::unique_ptr< QgsMultiSurface > QgsArcGisRestUtils::convertGeometryPolygon( c
         {
           newPolygon->addInteriorRing( curve );
           it.remove();
-          engine.reset( QgsGeometry::createGeometryEngine( newPolygon ) );
+          engine = QgsGeometry::createGeometryEngine( newPolygon );
           engine->prepareGeometry();
         }
       }
@@ -872,6 +873,20 @@ std::unique_ptr< QgsFeatureRenderer > QgsArcGisRestUtils::convertRenderer( const
     else
     {
       attribute = field1;
+    }
+
+    const QString valueExpression = rendererData.value( u"valueExpression"_s ).toString();
+    if ( attribute.isEmpty() && !valueExpression.isEmpty() )
+    {
+      QgsEsriArcadeConverter converter( valueExpression );
+      if ( converter.result() == QgsEsriArcadeConverter::Result::Success )
+      {
+        attribute = converter.expression();
+      }
+      else
+      {
+        context.pushWarning( QObject::tr( "The Arcade valueExpression '%1' could not be converted to a QGIS expression: '%2'" ).arg( valueExpression ).arg( converter.errorMessage() ) );
+      }
     }
 
     const QVariantList categories = rendererData.value( u"uniqueValueInfos"_s ).toList();

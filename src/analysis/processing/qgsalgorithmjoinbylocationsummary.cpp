@@ -361,7 +361,7 @@ QVariantMap QgsJoinByLocationSummaryAlgorithm::processAlgorithm( const QVariantM
 
       if ( !engine )
       {
-        engine.reset( QgsGeometry::createGeometryEngine( f.geometry().constGet() ) );
+        engine = QgsGeometry::createGeometryEngine( f.geometry().constGet() );
         engine->prepareGeometry();
       }
 

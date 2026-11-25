@@ -107,6 +107,7 @@ set(QGIS_ANALYSIS_SRCS
   processing/qgsalgorithmconverttocurves.cpp
   processing/qgsalgorithmconvertgeometrytype.cpp
   processing/qgsalgorithmconvexhull.cpp
+  processing/qgsalgorithmcoverageedges.cpp
   processing/qgsalgorithmcoveragesimplify.cpp
   processing/qgsalgorithmcoverageunion.cpp
   processing/qgsalgorithmcoveragevalidate.cpp
@@ -675,6 +676,10 @@ endif()
 
 if (WITH_SFCGAL)
   target_link_libraries(qgis_analysis SFCGAL::SFCGAL)
+endif()
+
+if(WITH_TBB)
+   target_link_libraries(qgis_analysis TBB::tbb)
 endif()
 
 target_compile_definitions(qgis_analysis PRIVATE "-DQT_NO_FOREACH")

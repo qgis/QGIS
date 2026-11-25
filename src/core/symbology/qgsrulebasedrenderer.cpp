@@ -764,9 +764,26 @@ QgsRuleBasedRenderer::RuleList QgsRuleBasedRenderer::Rule::rulesForFeature( cons
   if ( onlyActive )
     listChildren = mActiveChildren;
 
+  bool matchedNonElseRule = false;
   for ( Rule *rule : std::as_const( listChildren ) )
   {
-    lst += rule->rulesForFeature( feature, context, onlyActive );
+    if ( rule->isElse() )
+      continue;
+
+    const RuleList childRules = rule->rulesForFeature( feature, context, onlyActive );
+    matchedNonElseRule |= !childRules.isEmpty();
+    lst += childRules;
+  }
+
+  if ( !matchedNonElseRule )
+  {
+    for ( Rule *rule : std::as_const( mElseRules ) )
+    {
+      if ( onlyActive && !mActiveChildren.contains( rule ) )
+        continue;
+
+      lst += rule->rulesForFeature( feature, context, onlyActive );
+    }
   }
   return lst;
 }
@@ -900,7 +917,7 @@ std::unique_ptr<QgsRuleBasedRenderer::Rule> QgsRuleBasedRenderer::Rule::createFr
     }
     else if ( childElem.localName() == "Filter"_L1 )
     {
-      QgsExpression *filter = QgsOgcUtils::expressionFromOgcFilter( childElem );
+      std::unique_ptr<QgsExpression> filter = QgsOgcUtils::expressionFromOgcFilter( childElem );
       if ( filter )
       {
         if ( filter->hasParserError() )
@@ -911,7 +928,6 @@ std::unique_ptr<QgsRuleBasedRenderer::Rule> QgsRuleBasedRenderer::Rule::createFr
         {
           filterExp = filter->expression();
         }
-        delete filter;
       }
     }
     else if ( childElem.localName() == "ElseFilter"_L1 )
@@ -1521,7 +1537,7 @@ std::unique_ptr<QgsRuleBasedRenderer> QgsRuleBasedRenderer::convertFromRenderer(
         for ( const QVariant &v : list )
         {
           //If the value is a number, we can use it directly, otherwise we need to quote it in the rule
-          if ( QVariant( v ).convert( QMetaType::Type::Double ) )
+          if ( QVariant( v ).convert( QMetaType::fromType<double>() ) )
           {
             values << v.toString();
           }
@@ -1543,7 +1559,7 @@ std::unique_ptr<QgsRuleBasedRenderer> QgsRuleBasedRenderer::convertFromRenderer(
       else
       {
         //If the value is a number, we can use it directly, otherwise we need to quote it in the rule
-        if ( category.value().convert( QMetaType::Type::Double ) )
+        if ( category.value().convert( QMetaType::fromType<double>() ) )
         {
           value = category.value().toString();
         }

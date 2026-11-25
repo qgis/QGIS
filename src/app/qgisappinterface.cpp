@@ -18,6 +18,7 @@
 
 #include "qgisappinterface.h"
 
+#include "processing/qgsappprocessingutils.h"
 #include "qgisapp.h"
 #include "qgisappstylesheet.h"
 #include "qgsappgpsdigitizing.h"
@@ -492,6 +493,11 @@ QgsLayoutDesignerInterface *QgisAppInterface::openLayoutDesigner( QgsMasterLayou
     return designer->iface();
   }
   return nullptr;
+}
+
+QgsModelDesignerDialog *QgisAppInterface::openModelDesigner( QgsProcessingModelAlgorithm *model )
+{
+  return qgis->appProcessingUtils()->openModelDesignerDialog( model );
 }
 
 void QgisAppInterface::showOptionsDialog( QWidget *parent, const QString &currentPage )

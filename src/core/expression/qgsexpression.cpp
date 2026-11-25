@@ -1229,7 +1229,7 @@ QString QgsExpression::formatPreviewString( const QVariant &value, const bool ht
     listStr += ']'_L1;
     return listStr;
   }
-  else if ( value.type() == QVariant::Color )
+  else if ( value.typeId() == QMetaType::Type::QColor )
   {
     const QColor color = value.value<QColor>();
 

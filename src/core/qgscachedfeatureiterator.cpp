@@ -47,7 +47,7 @@ QgsCachedFeatureIterator::QgsCachedFeatureIterator( QgsVectorLayerCache *vlCache
       if ( !mRequest.referenceGeometry().isEmpty() )
       {
         mDistanceWithinGeom = mRequest.referenceGeometry();
-        mDistanceWithinEngine.reset( QgsGeometry::createGeometryEngine( mDistanceWithinGeom.constGet() ) );
+        mDistanceWithinEngine = QgsGeometry::createGeometryEngine( mDistanceWithinGeom.constGet() );
         mDistanceWithinEngine->prepareGeometry();
         mDistanceWithin = mRequest.distanceWithin();
       }

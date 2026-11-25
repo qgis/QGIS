@@ -25,6 +25,7 @@ import functools
 import hashlib
 import inspect
 import os
+import subprocess
 import sys
 import tempfile
 import unittest
@@ -60,6 +61,8 @@ unittest.util._MAX_LENGTH = 2000
 
 
 class QgisTestCase(unittest.TestCase):
+    PDFUTIL = None
+
     @staticmethod
     def is_ci_run() -> bool:
         """
@@ -368,6 +371,89 @@ class QgisTestCase(unittest.TestCase):
         ).replace(">", "_").replace('"', "_").replace("'", "_").replace(
             " ", "_"
         ).replace(":", "_").replace("/", "_").replace("\n", "_")
+
+    @staticmethod
+    def get_pdf_to_image_utility():
+        if QgisTestCase.PDFUTIL:
+            return QgisTestCase.PDFUTIL
+
+        from utilities import getExecutablePath
+
+        # PDF-to-image utility
+        # look for Poppler w/ Cairo, then muPDF
+        # * Poppler w/ Cairo renders correctly
+        # * Poppler w/o Cairo does not always correctly render vectors in PDF to image
+        # * muPDF renders correctly, but slightly shifts colors
+        for util in [
+            "pdftocairo",
+            # 'mudraw',
+        ]:
+            QgisTestCase.PDFUTIL = getExecutablePath(util)
+            if QgisTestCase.PDFUTIL:
+                break
+
+        # noinspection PyUnboundLocalVariable
+        if not QgisTestCase.PDFUTIL:
+            raise Exception(
+                "PDF-to-image utility not found on PATH: install Poppler (with Cairo)"
+            )
+
+        return QgisTestCase.PDFUTIL
+
+    @staticmethod
+    def pdf_to_png(pdf_file_path, rendered_file_path, page, dpi=96):
+        """
+        Exports a PDF to a PNG file
+        """
+        util = QgisTestCase.get_pdf_to_image_utility()
+        if util.strip().endswith("pdftocairo"):
+            filebase = os.path.join(
+                os.path.dirname(rendered_file_path),
+                os.path.splitext(os.path.basename(rendered_file_path))[0],
+            )
+            call = [
+                util,
+                "-png",
+                "-singlefile",
+                "-r",
+                str(dpi),
+                "-x",
+                "0",
+                "-y",
+                "0",
+                "-f",
+                str(page),
+                "-l",
+                str(page),
+                pdf_file_path,
+                filebase,
+            ]
+        elif util.strip().endswith("mudraw"):
+            call = [
+                util,
+                "-c",
+                "rgba",
+                "-r",
+                str(dpi),
+                "-f",
+                str(page),
+                "-l",
+                str(page),
+                # '-b', '8',
+                "-o",
+                rendered_file_path,
+                pdf_file_path,
+            ]
+        else:
+            return False, ""
+
+        print(f"pdf_to_png call: {' '.join(call)}")
+        try:
+            subprocess.check_call(call)
+        except subprocess.CalledProcessError as e:
+            assert False, (
+                f"pdf_to_png failed!\ncmd: {e.cmd}\nreturncode: {e.returncode}\nmessage: {e.message}"
+            )
 
     def assertLayersEqual(self, layer_expected, layer_result, **kwargs):
         """

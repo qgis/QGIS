@@ -792,13 +792,13 @@ void TestQgsProperty::propertyTransformerFromExpression()
   QVERIFY( fieldName.isEmpty() );
 
   // convertible to a size scale transformer
-  exp.reset( QgsPropertyTransformer::fromExpression( u"coalesce(scale_linear(column, 1, 7, 2, 10), 0)"_s, baseExpression, fieldName ) );
+  exp = QgsPropertyTransformer::fromExpression( u"coalesce(scale_linear(column, 1, 7, 2, 10), 0)"_s, baseExpression, fieldName );
   QVERIFY( exp.get() );
   QCOMPARE( exp->transformerType(), QgsPropertyTransformer::SizeScaleTransformer );
   QCOMPARE( fieldName, u"column"_s );
   QVERIFY( baseExpression.isEmpty() );
 
-  exp.reset( QgsPropertyTransformer::fromExpression( u"coalesce(scale_linear(column * 2, 1, 7, 2, 10), 0)"_s, baseExpression, fieldName ) );
+  exp = QgsPropertyTransformer::fromExpression( u"coalesce(scale_linear(column * 2, 1, 7, 2, 10), 0)"_s, baseExpression, fieldName );
   QVERIFY( exp.get() );
   QCOMPARE( exp->transformerType(), QgsPropertyTransformer::SizeScaleTransformer );
   QCOMPARE( baseExpression, u"column * 2"_s );
@@ -956,7 +956,7 @@ void TestQgsProperty::genericNumericTransformerFromExpression()
   QCOMPARE( exp->maxOutputValue(), 10. );
   QCOMPARE( exp->nullOutputValue(), 0.0 );
 
-  exp.reset( QgsGenericNumericTransformer::fromExpression( u"scale_linear(column, 1, 7, 2, 10)"_s, baseExpression, fieldName ) );
+  exp = QgsGenericNumericTransformer::fromExpression( u"scale_linear(column, 1, 7, 2, 10)"_s, baseExpression, fieldName );
   QVERIFY( exp.get() );
   QCOMPARE( fieldName, u"column"_s );
   QVERIFY( baseExpression.isEmpty() );
@@ -965,7 +965,7 @@ void TestQgsProperty::genericNumericTransformerFromExpression()
   QCOMPARE( exp->minOutputValue(), 2. );
   QCOMPARE( exp->maxOutputValue(), 10. );
 
-  exp.reset( QgsGenericNumericTransformer::fromExpression( u"scale_linear(column * 2, 1, 7, 2, 10)"_s, baseExpression, fieldName ) );
+  exp = QgsGenericNumericTransformer::fromExpression( u"scale_linear(column * 2, 1, 7, 2, 10)"_s, baseExpression, fieldName );
   QVERIFY( exp.get() );
   QCOMPARE( baseExpression, u"column * 2"_s );
   QVERIFY( fieldName.isEmpty() );
@@ -974,7 +974,7 @@ void TestQgsProperty::genericNumericTransformerFromExpression()
   QCOMPARE( exp->minOutputValue(), 2. );
   QCOMPARE( exp->maxOutputValue(), 10. );
 
-  exp.reset( QgsGenericNumericTransformer::fromExpression( u"coalesce(scale_polynomial(column, 1, 7, 2, 10, 0.51), 1)"_s, baseExpression, fieldName ) );
+  exp = QgsGenericNumericTransformer::fromExpression( u"coalesce(scale_polynomial(column, 1, 7, 2, 10, 0.51), 1)"_s, baseExpression, fieldName );
   QVERIFY( exp.get() );
   QCOMPARE( exp->minValue(), 1. );
   QCOMPARE( exp->maxValue(), 7. );
@@ -1165,15 +1165,15 @@ void TestQgsProperty::sizeScaleTransformerFromExpression()
   QCOMPARE( exp->maxSize(), 10. );
   QCOMPARE( exp->nullSize(), 0.0 );
 
-  exp.reset( QgsSizeScaleTransformer::fromExpression( u"coalesce(scale_polynomial(column, 1, 7, 2, 10, 0.5), 0)"_s, baseExpression, fieldName ) );
+  exp = QgsSizeScaleTransformer::fromExpression( u"coalesce(scale_polynomial(column, 1, 7, 2, 10, 0.5), 0)"_s, baseExpression, fieldName );
   QVERIFY( exp.get() );
   QCOMPARE( exp->type(), QgsSizeScaleTransformer::Area );
 
-  exp.reset( QgsSizeScaleTransformer::fromExpression( u"coalesce(scale_polynomial(column, 1, 7, 2, 10, 0.57), 0)"_s, baseExpression, fieldName ) );
+  exp = QgsSizeScaleTransformer::fromExpression( u"coalesce(scale_polynomial(column, 1, 7, 2, 10, 0.57), 0)"_s, baseExpression, fieldName );
   QVERIFY( exp.get() );
   QCOMPARE( exp->type(), QgsSizeScaleTransformer::Flannery );
 
-  exp.reset( QgsSizeScaleTransformer::fromExpression( u"scale_linear(column, 1, 7, 2, 10)"_s, baseExpression, fieldName ) );
+  exp = QgsSizeScaleTransformer::fromExpression( u"scale_linear(column, 1, 7, 2, 10)"_s, baseExpression, fieldName );
   QVERIFY( exp.get() );
   QCOMPARE( exp->type(), QgsSizeScaleTransformer::Linear );
   QCOMPARE( fieldName, u"column"_s );
@@ -1183,7 +1183,7 @@ void TestQgsProperty::sizeScaleTransformerFromExpression()
   QCOMPARE( exp->minSize(), 2. );
   QCOMPARE( exp->maxSize(), 10. );
 
-  exp.reset( QgsSizeScaleTransformer::fromExpression( u"scale_linear(column * 2, 1, 7, 2, 10)"_s, baseExpression, fieldName ) );
+  exp = QgsSizeScaleTransformer::fromExpression( u"scale_linear(column * 2, 1, 7, 2, 10)"_s, baseExpression, fieldName );
   QVERIFY( exp.get() );
   QCOMPARE( exp->type(), QgsSizeScaleTransformer::Linear );
   QCOMPARE( baseExpression, u"column * 2"_s );
@@ -1193,15 +1193,15 @@ void TestQgsProperty::sizeScaleTransformerFromExpression()
   QCOMPARE( exp->minSize(), 2. );
   QCOMPARE( exp->maxSize(), 10. );
 
-  exp.reset( QgsSizeScaleTransformer::fromExpression( u"scale_polynomial(column, 1, 7, 2, 10, 0.5)"_s, baseExpression, fieldName ) );
+  exp = QgsSizeScaleTransformer::fromExpression( u"scale_polynomial(column, 1, 7, 2, 10, 0.5)"_s, baseExpression, fieldName );
   QVERIFY( exp.get() );
   QCOMPARE( exp->type(), QgsSizeScaleTransformer::Area );
 
-  exp.reset( QgsSizeScaleTransformer::fromExpression( u"scale_polynomial(column, 1, 7, 2, 10, 0.57)"_s, baseExpression, fieldName ) );
+  exp = QgsSizeScaleTransformer::fromExpression( u"scale_polynomial(column, 1, 7, 2, 10, 0.57)"_s, baseExpression, fieldName );
   QVERIFY( exp.get() );
   QCOMPARE( exp->type(), QgsSizeScaleTransformer::Flannery );
 
-  exp.reset( QgsSizeScaleTransformer::fromExpression( u"coalesce(scale_polynomial(column, 1, 7, 2, 10, 0.51), 22)"_s, baseExpression, fieldName ) );
+  exp = QgsSizeScaleTransformer::fromExpression( u"coalesce(scale_polynomial(column, 1, 7, 2, 10, 0.51), 22)"_s, baseExpression, fieldName );
   QVERIFY( exp.get() );
   QCOMPARE( exp->type(), QgsSizeScaleTransformer::Exponential );
   QCOMPARE( exp->nullSize(), 22.0 );

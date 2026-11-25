@@ -1,0 +1,8 @@
+@PACKAGE_INIT@
+
+if("@BLEND2D_EXTERNAL_ASMJIT@" AND "@BLEND2D_STATIC@")
+    include(CMakeFindDependencyMacro)
+    find_dependency(asmjit)
+endif()
+
+include("${CMAKE_CURRENT_LIST_DIR}/blend2d-targets.cmake")

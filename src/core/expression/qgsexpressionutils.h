@@ -112,7 +112,7 @@ class CORE_EXPORT QgsExpressionUtils
 
       //handle some special cases
       int userType = value.userType();
-      if ( value.type() == QVariant::UserType )
+      if ( value.typeId() >= QMetaType::Type::User )
       {
         if ( userType == qMetaTypeId< QgsGeometry>() || userType == qMetaTypeId<QgsReferencedGeometry>() )
         {
