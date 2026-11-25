@@ -794,48 +794,6 @@ bool QgsEsriI3SDataProvider::loadFromSlpk( const QString &uri, json &layerJson, 
     isExtracted = true;
   }
 
-  QByteArray metadataContent;
-  QString metadataFileName = u"metadata.json"_s;
-  if ( isExtracted ) // if a directory, read directly as Extracted SLPK
-  {
-    const QString metadataDirPath = QDir( uri ).filePath( metadataFileName );
-    QFile fMetadata( metadataDirPath );
-    if ( !fMetadata.open( QIODevice::ReadOnly ) )
-    {
-      appendError( QgsErrorMessage( tr( "Failed to read layer metadata: %1" ).arg( metadataDirPath ), u"I3S"_s ) );
-      return false;
-    }
-    metadataContent = fMetadata.readAll();
-  }
-  else // SLPK
-  {
-    if ( !QgsZipUtils::extractFileFromZip( uri, metadataFileName, metadataContent ) )
-    {
-      appendError( QgsErrorMessage( tr( "Failed to read %1 in file: %2" ).arg( metadataFileName ).arg( uri ), u"I3S"_s ) );
-      return false;
-    }
-  }
-
-  json metadataJson;
-  try
-  {
-    metadataJson = json::parse( metadataContent.toStdString() );
-  }
-  catch ( const json::parse_error & )
-  {
-    appendError( QgsErrorMessage( tr( "Unable to parse %1 in: %2" ).arg( metadataFileName ).arg( uri ), u"I3S"_s ) );
-    return false;
-  }
-
-  if ( !metadataJson.contains( "I3SVersion" ) )
-  {
-    appendError( QgsErrorMessage( tr( "Missing I3S version in %1 in: %2" ).arg( metadataFileName ).arg( uri ), u"I3S"_s ) );
-    return false;
-  }
-  i3sVersion = QString::fromStdString( metadataJson["I3SVersion"].get<std::string>() );
-  if ( !checkI3SVersion( i3sVersion ) )
-    return false;
-
   QByteArray sceneLayerContentGzipped;
   const QString sceneLayerContentFileName = u"3dSceneLayer.json.gz"_s;
   if ( isExtracted ) // if a directory, read directly as Extracted SLPK
@@ -874,6 +832,19 @@ bool QgsEsriI3SDataProvider::loadFromSlpk( const QString &uri, json &layerJson, 
     appendError( QgsErrorMessage( tr( "Unable to parse %1 in: %2" ).arg( sceneLayerContentFileName ).arg( uri ), u"I3S"_s ) );
     return false;
   }
+
+  // The version mentioned in metadata.json is optional and some writers don't write it, so we completely skip reading it.
+  // The definitive source of truth is the one in store.version
+  if ( !layerJson.contains( "store" ) || !layerJson["store"].contains( "version" ) )
+  {
+    appendError( QgsErrorMessage( tr( "Missing store.version in 3dSceneLayer.json.gz: %1" ).arg( uri ), u"I3S"_s ) );
+    return false;
+  }
+
+  i3sVersion = QString::fromStdString( layerJson["store"]["version"].get<std::string>() );
+
+  if ( !checkI3SVersion( i3sVersion ) )
+    return false;
 
   return true;
 }
