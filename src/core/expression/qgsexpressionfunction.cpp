@@ -2975,12 +2975,15 @@ static QVariant fcnRPad( const QVariantList &values, const QgsExpressionContext 
 {
   const QString string = QgsExpressionUtils::getStringValue( values.at( 0 ), parent );
   QString fill = QgsExpressionUtils::getStringValue( values.at( 2 ), parent );
+  int length = QgsExpressionUtils::getNativeIntValue( values.at( 1 ), parent );
   if ( fill.isEmpty() )
   {
     fill = u" "_s;
   }
-  const int length
-    = std::min( MAXIMUM_STRING_LENGTH_RESULTING_FROM_EXPRESSION_FUNCTION, static_cast<int>( string.length() + fill.length() * QgsExpressionUtils::getNativeIntValue( values.at( 1 ), parent ) ) );
+  if ( string.length() + fill.length() * length > MAXIMUM_STRING_LENGTH_RESULTING_FROM_EXPRESSION_FUNCTION )
+  {
+    length = ( MAXIMUM_STRING_LENGTH_RESULTING_FROM_EXPRESSION_FUNCTION - string.length() ) / fill.length();
+  }
   return string.leftJustified( length, fill.at( 0 ), true );
 }
 
@@ -2988,12 +2991,15 @@ static QVariant fcnLPad( const QVariantList &values, const QgsExpressionContext 
 {
   const QString string = QgsExpressionUtils::getStringValue( values.at( 0 ), parent );
   QString fill = QgsExpressionUtils::getStringValue( values.at( 2 ), parent );
+  int length = QgsExpressionUtils::getNativeIntValue( values.at( 1 ), parent );
   if ( fill.isEmpty() )
   {
     fill = u" "_s;
   }
-  const int length
-    = std::min( MAXIMUM_STRING_LENGTH_RESULTING_FROM_EXPRESSION_FUNCTION, static_cast<int>( string.length() + fill.length() * QgsExpressionUtils::getNativeIntValue( values.at( 1 ), parent ) ) );
+  if ( string.length() + fill.length() * length > MAXIMUM_STRING_LENGTH_RESULTING_FROM_EXPRESSION_FUNCTION )
+  {
+    length = ( MAXIMUM_STRING_LENGTH_RESULTING_FROM_EXPRESSION_FUNCTION - string.length() ) / fill.length();
+  }
   return string.rightJustified( length, fill.at( 0 ), true );
 }
 
@@ -6554,6 +6560,12 @@ static QVariant fcnFormatNumber( const QVariantList &values, const QgsExpression
     return QVariant();
   }
 
+  if ( places > 17 )
+  {
+    parent->setEvalErrorString( QObject::tr( "Number of places must be less than or equal to 17" ) );
+    return QVariant();
+  }
+
   const bool omitGroupSeparator = values.value( 3 ).toBool();
   const bool trimTrailingZeros = values.value( 4 ).toBool();
 
@@ -6583,7 +6595,6 @@ static QVariant fcnFormatNumber( const QVariantList &values, const QgsExpression
       res.truncate( trimPoint + 1 );
     }
   }
-  res.truncate( MAXIMUM_STRING_LENGTH_RESULTING_FROM_EXPRESSION_FUNCTION );
   return res;
 }
 

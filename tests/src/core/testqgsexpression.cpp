@@ -2372,6 +2372,10 @@ class TestQgsExpression : public QObject
       QTest::newRow( "format_number trim trailing zeros many" ) << "format_number(123.45600,10,trim_trailing_zeroes:=true)" << false << QVariant( "123.456" );
       QTest::newRow( "format_number trim trailing zeros no decimal" ) << "format_number(123,0,trim_trailing_zeroes:=true)" << false << QVariant( "123" );
       QTest::newRow( "format_number language parameter" ) << "format_number(123457.00,2,'fr')" << false << QVariant( "123\u202F457,00" );
+      QTest::newRow( "format_number 10" ) << "format_number(123457.00,10,omit_group_separators:=true)" << false << QVariant( "123457.0000000000" );
+      QTest::newRow( "format_number 17" ) << "format_number(123457.00,17,omit_group_separators:=true)" << false << QVariant( "123457.00000000000000000" );
+      QTest::newRow( "format_number 18" ) << "format_number(123457.00,18)" << true << QVariant();
+      QTest::newRow( "format_number -1" ) << "format_number(123457.00,-1)" << true << QVariant();
       QTest::newRow( "lower" ) << "lower('HeLLo')" << false << QVariant( "hello" );
       QTest::newRow( "upper" ) << "upper('HeLLo')" << false << QVariant( "HELLO" );
       QTest::newRow( "length" ) << "length('HeLLo')" << false << QVariant( 5 );
