@@ -2595,6 +2595,18 @@ int QgisEvent = QEvent::User + 1;
     Q_ENUM( CrsAxisDirection )
 
     /**
+     * Directions of a rotation.
+     *
+     * \since QGIS 4.6
+     */
+    enum class RotationDirection : int
+    {
+      Clockwise,        //!< Clockwise
+      CounterClockwise, //!< Counter-clockwise
+    };
+    Q_ENUM( RotationDirection )
+
+    /**
      * Order of coordinates.
      *
      * \since QGIS 3.26

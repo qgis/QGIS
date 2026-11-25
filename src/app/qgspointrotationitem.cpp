@@ -134,7 +134,7 @@ void QgsPointRotationItem::setSymbol( const QImage &symbolImage )
 
 int QgsPointRotationItem::painterRotation( int rotation ) const
 {
-  if ( mOrientation == Clockwise )
+  if ( mOrientation == Qgis::RotationDirection::Clockwise )
   {
     return rotation;
   }

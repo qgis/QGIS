@@ -178,7 +178,7 @@ void QgsMapToolRotateLabel::canvasPressEvent( QgsMapMouseEvent *e )
         createRotationPreviewBox();
 
         mRotationItem = new QgsPointRotationItem( mCanvas );
-        mRotationItem->setOrientation( QgsPointRotationItem::Clockwise );
+        mRotationItem->setOrientation( Qgis::RotationDirection::Clockwise );
         mRotationItem->setPointLocation( mRotationPoint );
         mRotationItem->setRotationUnit( mCurrentLabel.settings.rotationUnit() );
         mRotationItem->setSymbolRotation( static_cast<int>( mCurrentRotation ) );

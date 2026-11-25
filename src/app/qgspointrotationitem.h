@@ -27,12 +27,6 @@
 class APP_EXPORT QgsPointRotationItem : public QgsMapCanvasItem
 {
   public:
-    enum Orientation
-    {
-      Clockwise = 0,
-      Counterclockwise
-    };
-
     QgsPointRotationItem( QgsMapCanvas *canvas );
 
     using QgsMapCanvasItem::paint;
@@ -56,14 +50,14 @@ class APP_EXPORT QgsPointRotationItem : public QgsMapCanvasItem
     //! Sets rotation symbol from image (takes ownership)
     void setSymbol( const QImage &symbolImage );
 
-    void setOrientation( Orientation o ) { mOrientation = o; }
-    Orientation orientation() const { return mOrientation; }
+    void setOrientation( Qgis::RotationDirection o ) { mOrientation = o; }
+    Qgis::RotationDirection orientation() const { return mOrientation; }
 
   private:
     //! Converts rotation into QPainter rotation considering mOrientation
     int painterRotation( int rotation ) const;
     //! Clockwise (default) or counterclockwise
-    Orientation mOrientation = Clockwise;
+    Qgis::RotationDirection mOrientation = Qgis::RotationDirection::Clockwise;
     //! Font to display the numerical rotation values
     QFont mFont;
     //! Symbol pixmap
