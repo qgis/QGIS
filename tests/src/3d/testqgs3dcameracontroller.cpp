@@ -169,6 +169,7 @@ void TestQgs3DCameraController::testTranslate()
   QCOMPARE( scene->cameraController()->mCurrentOperation, QgsCameraController::MouseOperation::None );
 
   delete scene;
+  delete mapSettings;
 }
 
 void TestQgs3DCameraController::testZoom()
@@ -245,6 +246,7 @@ void TestQgs3DCameraController::testZoom()
   QCOMPARE( scene->cameraController()->mCurrentOperation, QgsCameraController::MouseOperation::None );
 
   delete scene;
+  delete mapSettings;
 }
 
 void TestQgs3DCameraController::testZoomWheel()
@@ -292,6 +294,7 @@ void TestQgs3DCameraController::testZoomWheel()
   QCOMPARE( scene->cameraController()->mCurrentOperation, QgsCameraController::MouseOperation::None );
 
   delete scene;
+  delete mapSettings;
 }
 
 void TestQgs3DCameraController::testRotationCenter()
@@ -371,6 +374,7 @@ void TestQgs3DCameraController::testRotationCenter()
   QCOMPARE( scene->cameraController()->mCurrentOperation, QgsCameraController::MouseOperation::None );
 
   delete scene;
+  delete mapSettings;
 }
 
 void TestQgs3DCameraController::testRotationCamera()
@@ -451,6 +455,7 @@ void TestQgs3DCameraController::testRotationCamera()
   QCOMPARE( scene->cameraController()->mCurrentOperation, QgsCameraController::MouseOperation::None );
 
   delete scene;
+  delete mapSettings;
 }
 
 void TestQgs3DCameraController::testRotationCenterZoomWheelRotationCenter()
@@ -601,6 +606,7 @@ void TestQgs3DCameraController::testRotationCenterZoomWheelRotationCenter()
   QCOMPARE( scene->cameraController()->mCurrentOperation, QgsCameraController::MouseOperation::None );
 
   delete scene;
+  delete mapSettings;
 }
 
 void TestQgs3DCameraController::testTranslateRotationCenterTranslate()
@@ -754,6 +760,7 @@ void TestQgs3DCameraController::testTranslateRotationCenterTranslate()
   QCOMPARE( scene->cameraController()->mCurrentOperation, QgsCameraController::MouseOperation::None );
 
   delete scene;
+  delete mapSettings;
 }
 
 void TestQgs3DCameraController::testTranslateZoomWheelTranslate()
@@ -894,6 +901,7 @@ void TestQgs3DCameraController::testTranslateZoomWheelTranslate()
   QCOMPARE( scene->cameraController()->mCurrentOperation, QgsCameraController::MouseOperation::None );
 
   delete scene;
+  delete mapSettings;
 }
 
 void TestQgs3DCameraController::testTranslateRotationCameraTranslate()
@@ -1043,6 +1051,7 @@ void TestQgs3DCameraController::testTranslateRotationCameraTranslate()
   QCOMPARE( scene->cameraController()->mCurrentOperation, QgsCameraController::MouseOperation::None );
 
   delete scene;
+  delete mapSettings;
 }
 
 void TestQgs3DCameraController::testRotationCenterRotationCameraRotationCenter()
@@ -1200,6 +1209,7 @@ void TestQgs3DCameraController::testRotationCenterRotationCameraRotationCenter()
   QCOMPARE( scene->cameraController()->mCurrentOperation, QgsCameraController::MouseOperation::None );
 
   delete scene;
+  delete mapSettings;
 }
 
 void TestQgs3DCameraController::waitForNearPlane( QgsOffscreen3DEngine &engine, Qgs3DMapScene *scene, float atLeast ) //#spellok
@@ -1247,6 +1257,7 @@ void TestQgs3DCameraController::testResetViewRaster()
   QGSCOMPARENEAR( scene->cameraController()->distance(), 2172, 1 );
 
   delete scene;
+  delete mapSettings;
 }
 
 void TestQgs3DCameraController::testResetViewPointCloud()
@@ -1295,6 +1306,7 @@ void TestQgs3DCameraController::testResetViewPointCloud()
   QGSCOMPARENEAR( scene->cameraController()->distance(), 86, 1 );
 
   delete scene;
+  delete mapSettings;
 
   delete vpcLayer;
   delete pcLayer;
