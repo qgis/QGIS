@@ -66,8 +66,8 @@ class TestQgs3DCameraController : public QgsTest
   private:
     void waitForNearPlane( QgsOffscreen3DEngine &engine, Qgs3DMapScene *scene, float atLeast ); //#spellok
 
-    QgsRasterLayer *mLayerRgb = nullptr;
-    QgsVectorLayer *mLayerBuildings = nullptr;
+    std::unique_ptr<QgsRasterLayer> mLayerRgb;
+    std::unique_ptr<QgsVectorLayer> mLayerBuildings;
 };
 
 // runs before all tests
@@ -78,10 +78,10 @@ void TestQgs3DCameraController::initTestCase()
   QgsApplication::initQgis();
   Qgs3D::initialize();
 
-  mLayerRgb = new QgsRasterLayer( testDataPath( "/3d/rgb.tif" ), "rgb", "gdal" );
+  mLayerRgb = std::make_unique<QgsRasterLayer>( testDataPath( "/3d/rgb.tif" ), "rgb", "gdal" );
   QVERIFY( mLayerRgb->isValid() );
 
-  mLayerBuildings = new QgsVectorLayer( testDataPath( "/3d/buildings.shp" ), "buildings", "ogr" );
+  mLayerBuildings = std::make_unique<QgsVectorLayer>( testDataPath( "/3d/buildings.shp" ), "buildings", "ogr" );
   QVERIFY( mLayerBuildings->isValid() );
 
   // best to keep buildings without 2D renderer so it is not painted on the terrain
@@ -100,6 +100,8 @@ void TestQgs3DCameraController::initTestCase()
 //runs after all tests
 void TestQgs3DCameraController::cleanupTestCase()
 {
+  mLayerRgb.reset();
+  mLayerBuildings.reset();
   QgsApplication::exitQgis();
 }
 
@@ -110,7 +112,7 @@ void TestQgs3DCameraController::testTranslate()
   Qgs3DMapSettings *mapSettings = new Qgs3DMapSettings;
   mapSettings->setCrs( mLayerRgb->crs() );
   mapSettings->setExtent( fullExtent );
-  mapSettings->setLayers( QList<QgsMapLayer *>() << mLayerRgb << mLayerBuildings );
+  mapSettings->setLayers( QList<QgsMapLayer *>() << mLayerRgb.get() << mLayerBuildings.get() );
 
   QgsFlatTerrainGenerator *flatTerrain = new QgsFlatTerrainGenerator;
   flatTerrain->setCrs( mapSettings->crs(), QgsCoordinateTransformContext() );
@@ -167,7 +169,6 @@ void TestQgs3DCameraController::testTranslate()
   QCOMPARE( scene->cameraController()->mCurrentOperation, QgsCameraController::MouseOperation::None );
 
   delete scene;
-  mapSettings->setLayers( {} );
 }
 
 void TestQgs3DCameraController::testZoom()
@@ -177,7 +178,7 @@ void TestQgs3DCameraController::testZoom()
   Qgs3DMapSettings *mapSettings = new Qgs3DMapSettings;
   mapSettings->setCrs( mLayerRgb->crs() );
   mapSettings->setExtent( fullExtent );
-  mapSettings->setLayers( QList<QgsMapLayer *>() << mLayerRgb << mLayerBuildings );
+  mapSettings->setLayers( QList<QgsMapLayer *>() << mLayerRgb.get() << mLayerBuildings.get() );
 
   QgsFlatTerrainGenerator *flatTerrain = new QgsFlatTerrainGenerator;
   flatTerrain->setCrs( mapSettings->crs(), QgsCoordinateTransformContext() );
@@ -244,7 +245,6 @@ void TestQgs3DCameraController::testZoom()
   QCOMPARE( scene->cameraController()->mCurrentOperation, QgsCameraController::MouseOperation::None );
 
   delete scene;
-  mapSettings->setLayers( {} );
 }
 
 void TestQgs3DCameraController::testZoomWheel()
@@ -254,7 +254,7 @@ void TestQgs3DCameraController::testZoomWheel()
   Qgs3DMapSettings *mapSettings = new Qgs3DMapSettings;
   mapSettings->setCrs( mLayerRgb->crs() );
   mapSettings->setExtent( fullExtent );
-  mapSettings->setLayers( QList<QgsMapLayer *>() << mLayerRgb << mLayerBuildings );
+  mapSettings->setLayers( QList<QgsMapLayer *>() << mLayerRgb.get() << mLayerBuildings.get() );
 
   QgsFlatTerrainGenerator *flatTerrain = new QgsFlatTerrainGenerator;
   flatTerrain->setCrs( mapSettings->crs(), QgsCoordinateTransformContext() );
@@ -292,7 +292,6 @@ void TestQgs3DCameraController::testZoomWheel()
   QCOMPARE( scene->cameraController()->mCurrentOperation, QgsCameraController::MouseOperation::None );
 
   delete scene;
-  mapSettings->setLayers( {} );
 }
 
 void TestQgs3DCameraController::testRotationCenter()
@@ -302,7 +301,7 @@ void TestQgs3DCameraController::testRotationCenter()
   Qgs3DMapSettings *mapSettings = new Qgs3DMapSettings;
   mapSettings->setCrs( mLayerRgb->crs() );
   mapSettings->setExtent( fullExtent );
-  mapSettings->setLayers( QList<QgsMapLayer *>() << mLayerRgb << mLayerBuildings );
+  mapSettings->setLayers( QList<QgsMapLayer *>() << mLayerRgb.get() << mLayerBuildings.get() );
 
   QgsFlatTerrainGenerator *flatTerrain = new QgsFlatTerrainGenerator;
   flatTerrain->setCrs( mapSettings->crs(), QgsCoordinateTransformContext() );
@@ -372,7 +371,6 @@ void TestQgs3DCameraController::testRotationCenter()
   QCOMPARE( scene->cameraController()->mCurrentOperation, QgsCameraController::MouseOperation::None );
 
   delete scene;
-  mapSettings->setLayers( {} );
 }
 
 void TestQgs3DCameraController::testRotationCamera()
@@ -382,7 +380,7 @@ void TestQgs3DCameraController::testRotationCamera()
   Qgs3DMapSettings *mapSettings = new Qgs3DMapSettings;
   mapSettings->setCrs( mLayerRgb->crs() );
   mapSettings->setExtent( fullExtent );
-  mapSettings->setLayers( QList<QgsMapLayer *>() << mLayerRgb << mLayerBuildings );
+  mapSettings->setLayers( QList<QgsMapLayer *>() << mLayerRgb.get() << mLayerBuildings.get() );
 
   QgsFlatTerrainGenerator *flatTerrain = new QgsFlatTerrainGenerator;
   flatTerrain->setCrs( mapSettings->crs(), QgsCoordinateTransformContext() );
@@ -453,7 +451,6 @@ void TestQgs3DCameraController::testRotationCamera()
   QCOMPARE( scene->cameraController()->mCurrentOperation, QgsCameraController::MouseOperation::None );
 
   delete scene;
-  mapSettings->setLayers( {} );
 }
 
 void TestQgs3DCameraController::testRotationCenterZoomWheelRotationCenter()
@@ -463,7 +460,7 @@ void TestQgs3DCameraController::testRotationCenterZoomWheelRotationCenter()
   Qgs3DMapSettings *mapSettings = new Qgs3DMapSettings;
   mapSettings->setCrs( mLayerRgb->crs() );
   mapSettings->setExtent( fullExtent );
-  mapSettings->setLayers( QList<QgsMapLayer *>() << mLayerRgb << mLayerBuildings );
+  mapSettings->setLayers( QList<QgsMapLayer *>() << mLayerRgb.get() << mLayerBuildings.get() );
 
   QgsFlatTerrainGenerator *flatTerrain = new QgsFlatTerrainGenerator;
   flatTerrain->setCrs( mapSettings->crs(), QgsCoordinateTransformContext() );
@@ -604,7 +601,6 @@ void TestQgs3DCameraController::testRotationCenterZoomWheelRotationCenter()
   QCOMPARE( scene->cameraController()->mCurrentOperation, QgsCameraController::MouseOperation::None );
 
   delete scene;
-  mapSettings->setLayers( {} );
 }
 
 void TestQgs3DCameraController::testTranslateRotationCenterTranslate()
@@ -614,7 +610,7 @@ void TestQgs3DCameraController::testTranslateRotationCenterTranslate()
   Qgs3DMapSettings *mapSettings = new Qgs3DMapSettings;
   mapSettings->setCrs( mLayerRgb->crs() );
   mapSettings->setExtent( fullExtent );
-  mapSettings->setLayers( QList<QgsMapLayer *>() << mLayerRgb << mLayerBuildings );
+  mapSettings->setLayers( QList<QgsMapLayer *>() << mLayerRgb.get() << mLayerBuildings.get() );
 
   QgsFlatTerrainGenerator *flatTerrain = new QgsFlatTerrainGenerator;
   flatTerrain->setCrs( mapSettings->crs(), QgsCoordinateTransformContext() );
@@ -758,7 +754,6 @@ void TestQgs3DCameraController::testTranslateRotationCenterTranslate()
   QCOMPARE( scene->cameraController()->mCurrentOperation, QgsCameraController::MouseOperation::None );
 
   delete scene;
-  mapSettings->setLayers( {} );
 }
 
 void TestQgs3DCameraController::testTranslateZoomWheelTranslate()
@@ -768,7 +763,7 @@ void TestQgs3DCameraController::testTranslateZoomWheelTranslate()
   Qgs3DMapSettings *mapSettings = new Qgs3DMapSettings;
   mapSettings->setCrs( mLayerRgb->crs() );
   mapSettings->setExtent( fullExtent );
-  mapSettings->setLayers( QList<QgsMapLayer *>() << mLayerRgb << mLayerBuildings );
+  mapSettings->setLayers( QList<QgsMapLayer *>() << mLayerRgb.get() << mLayerBuildings.get() );
 
   QgsFlatTerrainGenerator *flatTerrain = new QgsFlatTerrainGenerator;
   flatTerrain->setCrs( mapSettings->crs(), QgsCoordinateTransformContext() );
@@ -899,7 +894,6 @@ void TestQgs3DCameraController::testTranslateZoomWheelTranslate()
   QCOMPARE( scene->cameraController()->mCurrentOperation, QgsCameraController::MouseOperation::None );
 
   delete scene;
-  mapSettings->setLayers( {} );
 }
 
 void TestQgs3DCameraController::testTranslateRotationCameraTranslate()
@@ -909,7 +903,7 @@ void TestQgs3DCameraController::testTranslateRotationCameraTranslate()
   Qgs3DMapSettings *mapSettings = new Qgs3DMapSettings;
   mapSettings->setCrs( mLayerRgb->crs() );
   mapSettings->setExtent( fullExtent );
-  mapSettings->setLayers( QList<QgsMapLayer *>() << mLayerRgb << mLayerBuildings );
+  mapSettings->setLayers( QList<QgsMapLayer *>() << mLayerRgb.get() << mLayerBuildings.get() );
 
   QgsFlatTerrainGenerator *flatTerrain = new QgsFlatTerrainGenerator;
   flatTerrain->setCrs( mapSettings->crs(), QgsCoordinateTransformContext() );
@@ -1049,7 +1043,6 @@ void TestQgs3DCameraController::testTranslateRotationCameraTranslate()
   QCOMPARE( scene->cameraController()->mCurrentOperation, QgsCameraController::MouseOperation::None );
 
   delete scene;
-  mapSettings->setLayers( {} );
 }
 
 void TestQgs3DCameraController::testRotationCenterRotationCameraRotationCenter()
@@ -1059,7 +1052,7 @@ void TestQgs3DCameraController::testRotationCenterRotationCameraRotationCenter()
   Qgs3DMapSettings *mapSettings = new Qgs3DMapSettings;
   mapSettings->setCrs( mLayerRgb->crs() );
   mapSettings->setExtent( fullExtent );
-  mapSettings->setLayers( QList<QgsMapLayer *>() << mLayerRgb << mLayerBuildings );
+  mapSettings->setLayers( QList<QgsMapLayer *>() << mLayerRgb.get() << mLayerBuildings.get() );
 
   QgsFlatTerrainGenerator *flatTerrain = new QgsFlatTerrainGenerator;
   flatTerrain->setCrs( mapSettings->crs(), QgsCoordinateTransformContext() );
@@ -1207,7 +1200,6 @@ void TestQgs3DCameraController::testRotationCenterRotationCameraRotationCenter()
   QCOMPARE( scene->cameraController()->mCurrentOperation, QgsCameraController::MouseOperation::None );
 
   delete scene;
-  mapSettings->setLayers( {} );
 }
 
 void TestQgs3DCameraController::waitForNearPlane( QgsOffscreen3DEngine &engine, Qgs3DMapScene *scene, float atLeast ) //#spellok
@@ -1235,7 +1227,7 @@ void TestQgs3DCameraController::testResetViewRaster()
   Qgs3DMapSettings *mapSettings = new Qgs3DMapSettings;
   mapSettings->setCrs( mLayerRgb->crs() );
   mapSettings->setExtent( fullExtent );
-  mapSettings->setLayers( QList<QgsMapLayer *>() << mLayerRgb << mLayerBuildings );
+  mapSettings->setLayers( QList<QgsMapLayer *>() << mLayerRgb.get() << mLayerBuildings.get() );
 
   QgsFlatTerrainGenerator *flatTerrain = new QgsFlatTerrainGenerator;
   flatTerrain->setCrs( mapSettings->crs(), QgsCoordinateTransformContext() );
@@ -1253,6 +1245,8 @@ void TestQgs3DCameraController::testResetViewRaster()
   // compare raster layer + vector layer
   scene->viewZoomFull();
   QGSCOMPARENEAR( scene->cameraController()->distance(), 2172, 1 );
+
+  delete scene;
 }
 
 void TestQgs3DCameraController::testResetViewPointCloud()
@@ -1300,6 +1294,8 @@ void TestQgs3DCameraController::testResetViewPointCloud()
   scene->viewZoomFull();
   QGSCOMPARENEAR( scene->cameraController()->distance(), 86, 1 );
 
+  delete scene;
+
   delete vpcLayer;
   delete pcLayer;
 }
@@ -1337,7 +1333,7 @@ void TestQgs3DCameraController::testOrthographic()
   Qgs3DMapSettings *mapSettings = new Qgs3DMapSettings;
   mapSettings->setCrs( mLayerRgb->crs() );
   mapSettings->setExtent( fullExtent );
-  mapSettings->setLayers( QList<QgsMapLayer *>() << mLayerRgb << mLayerBuildings );
+  mapSettings->setLayers( QList<QgsMapLayer *>() << mLayerRgb.get() << mLayerBuildings.get() );
 
   QgsFlatTerrainGenerator *flatTerrain = new QgsFlatTerrainGenerator;
   flatTerrain->setCrs( mapSettings->crs(), QgsCoordinateTransformContext() );
@@ -1432,7 +1428,6 @@ void TestQgs3DCameraController::testOrthographic()
   QGSCOMPARENEARVECTOR3D( scene->cameraController()->cameraPose().centerPoint(), QgsVector3D( -1853, 502, 137 ), 5 );
 
   delete scene;
-  mapSettings->setLayers( {} );
   delete mapSettings;
 }
 
