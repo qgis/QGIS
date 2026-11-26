@@ -40,7 +40,7 @@ not usually directly created, but rather accessed through
 
     ~QgsGeometryCheckRegistry();
 
-    QgsGeometryCheck *geometryCheck( const QString &checkId, QgsGeometryCheckContext *context, const QVariantMap &geometryCheckConfig ) /Factory/;
+    std::unique_ptr<QgsGeometryCheck> geometryCheck( const QString &checkId, QgsGeometryCheckContext *context, const QVariantMap &geometryCheckConfig );
 %Docstring
 Create a new geometryCheck of type ``checkId`` Pass the ``context`` and
 ``geometryCheckConfiguration`` to the newly created check. Ownership is

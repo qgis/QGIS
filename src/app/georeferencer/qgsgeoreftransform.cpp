@@ -46,7 +46,7 @@ void QgsGeorefTransform::setMethod( TransformMethod parametrisation )
 {
   if ( parametrisation != mTransformParametrisation )
   {
-    mGeorefTransformImplementation.reset( QgsGcpTransformerInterface::create( parametrisation ) );
+    mGeorefTransformImplementation = QgsGcpTransformerInterface::create( parametrisation );
     mParametersInitialized = false;
     mTransformParametrisation = parametrisation;
   }

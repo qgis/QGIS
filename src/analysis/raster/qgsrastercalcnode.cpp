@@ -417,10 +417,10 @@ QList<const QgsRasterCalcNode *> QgsRasterCalcNode::findNodes( const QgsRasterCa
   return nodeList;
 }
 
-QgsRasterCalcNode *QgsRasterCalcNode::parseRasterCalcString( const QString &str, QString &parserErrorMsg )
+std::unique_ptr<QgsRasterCalcNode> QgsRasterCalcNode::parseRasterCalcString( const QString &str, QString &parserErrorMsg )
 {
   extern QgsRasterCalcNode *localParseRasterCalcString( const QString &str, QString &parserErrorMsg );
-  return localParseRasterCalcString( str, parserErrorMsg );
+  return std::unique_ptr<QgsRasterCalcNode>( localParseRasterCalcString( str, parserErrorMsg ) );
 }
 
 QStringList QgsRasterCalcNode::referencedLayerNames() const
