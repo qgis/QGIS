@@ -1262,7 +1262,7 @@ void TestQgs3DCameraController::testResetViewRaster()
 
 void TestQgs3DCameraController::testResetViewPointCloud()
 {
-  QgsMapLayer *vpcLayer = new QgsPointCloudLayer( testDataPath( "/point_clouds/virtual/sunshine-coast/combined-with-overview.vpc" ), "vpc", "vpc" );
+  auto vpcLayer = std::make_unique<QgsPointCloudLayer>( testDataPath( "/point_clouds/virtual/sunshine-coast/combined-with-overview.vpc" ), "vpc", "vpc" );
   QgsPointCloudLayer3DRenderer *renderer = new QgsPointCloudLayer3DRenderer;
   QgsSingleColorPointCloud3DSymbol *symbol = new QgsSingleColorPointCloud3DSymbol;
   symbol->setSingleColor( QColor( 255, 0, 0 ) );
@@ -1273,7 +1273,7 @@ void TestQgs3DCameraController::testResetViewPointCloud()
   Qgs3DMapSettings *mapSettings = new Qgs3DMapSettings;
   mapSettings->setCrs( vpcLayer->crs() );
   mapSettings->setExtent( fullExtent );
-  mapSettings->setLayers( QList<QgsMapLayer *>() << vpcLayer );
+  mapSettings->setLayers( QList<QgsMapLayer *>() << vpcLayer.get() );
 
   QgsFlatTerrainGenerator *flatTerrain = new QgsFlatTerrainGenerator;
   flatTerrain->setCrs( mapSettings->crs(), QgsCoordinateTransformContext() );
@@ -1292,13 +1292,13 @@ void TestQgs3DCameraController::testResetViewPointCloud()
   scene->viewZoomFull();
   QGSCOMPARENEAR( scene->cameraController()->distance(), 86, 1 );
 
-  QgsMapLayer *pcLayer = new QgsPointCloudLayer( testDataPath( "/point_clouds/copc/sunshine-coast.copc.laz" ), "test", "copc" );
+  auto pcLayer = std::make_unique<QgsPointCloudLayer>( testDataPath( "/point_clouds/copc/sunshine-coast.copc.laz" ), "test", "copc" );
   QgsPointCloudLayer3DRenderer *renderer2 = new QgsPointCloudLayer3DRenderer;
   QgsSingleColorPointCloud3DSymbol *symbol2 = new QgsSingleColorPointCloud3DSymbol;
   symbol2->setSingleColor( QColor( 255, 0, 0 ) );
   renderer2->setSymbol( symbol2 );
   pcLayer->setRenderer3D( renderer2 );
-  mapSettings->setLayers( QList<QgsMapLayer *>() << pcLayer );
+  mapSettings->setLayers( QList<QgsMapLayer *>() << pcLayer.get() );
   scene->cameraController()->setViewFromTop( 0, 0, 10 );
 
   // compare point cloud layer
@@ -1307,9 +1307,6 @@ void TestQgs3DCameraController::testResetViewPointCloud()
 
   delete scene;
   delete mapSettings;
-
-  delete vpcLayer;
-  delete pcLayer;
 }
 
 void TestQgs3DCameraController::testChangeNavigationMode()
