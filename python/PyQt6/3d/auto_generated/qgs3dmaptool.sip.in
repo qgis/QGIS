@@ -61,6 +61,15 @@ Reimplement to handle mouse wheel ``event`` forwarded by the parent
 Qgs3DMapCanvas
 %End
 
+    virtual bool shortcutEvent( QKeyEvent *event /DisallowNone/ );
+%Docstring
+Shortcut events coming from the application for overriding. The default
+implementation does nothing. Returns whether the event was handled by
+the tool and should not be propagated further.
+
+.. versionadded:: 4.4.1
+%End
+
     virtual void activate();
 %Docstring
 Called when set as currently active map tool
