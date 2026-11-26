@@ -68,12 +68,12 @@ Returns the target filename.
 %Docstring
 Sets the target ``fileName``.
 
-If ``fileName`` does not end with an extension, that format's extension
-is appended.
+If ``fileName`` does not end with an extension, then the current
+:py:func:`~QgsVectorLayerSaveAsDialog.format`'s extension is appended.
 
 .. seealso:: :py:func:`fileName`
 
-.. versionadded:: 4.4
+.. versionadded:: 4.6
 %End
 
     QString layerName() const;
