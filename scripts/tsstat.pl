@@ -62,6 +62,7 @@ my $translators= {
 	'it' => 'Marco Braida, Stefano Campus, Roberta Castelli, Francesco D\'Amore, Eleonora D\'Elia, Simone Falceri, Giulio Fattori, Matteo Ghetta, Federico Gianoli, Marco Grisolia, Italang, Luca76, Pipep, Valerio Pinna, Alberto Vallortigara, Salvatore Fiandaca (reporter), Giuseppe Mattiozzi (documentation)',
 	'ja' => 'BABA Yoshihiko, Yoichi Kayama, Minoru Akagi, Takayuki Nuimura, Takayuki Mizutani, Norihiro Yamate, Kohei Tomita',
 	'ka' => 'Shota Murtskhvaladze, George Machitidze',
+	'kk' => 'Baurzhan Muftakhidinov',
 	'km' => 'Khoem Sokhem',
 	'ko' => 'OSGeo Korean Chapter',
 	'ky' => 'Stéphane Henriod, Azamat Karypov, Salaidin Kamaldinov, Akylbek Chymyrov, Chinara Saparova, Almaz Abdiev, Nurlan Tokbaev, Tatygul Urmambetova, Adilet Bekturov, Nursultan Ismailov, Nurlan Zhusupov',
