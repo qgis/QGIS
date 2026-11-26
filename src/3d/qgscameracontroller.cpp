@@ -920,6 +920,10 @@ void QgsCameraController::onWheel( Qt3DInput::QWheelEvent *wheel )
   if ( !mInputHandlersEnabled )
     return;
 
+  // when cross section is active, do not move camera when alt is pressed, cross section adjusts camera position after the cross section has been nudged
+  if ( !mScene->clipPlaneEquations().isEmpty() && ( wheel->modifiers() & Qt3DInput::QWheelEvent::Modifiers::AltModifier ) != 0 )
+    return;
+
   switch ( mCameraNavigationMode )
   {
     case Qgis::NavigationMode::Walk:

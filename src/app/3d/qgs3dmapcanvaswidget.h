@@ -114,7 +114,7 @@ class APP_EXPORT Qgs3DMapCanvasWidget : public QWidget
 
     void nudgeRight();
 
-    void nudgeCurve( Qgis::BufferSide side );
+    void nudgeCurve( Qgis::BufferSide side, double distance );
 
     void setProfileData( QgsElevationProfile *profile, double zMin, double zMax );
 
@@ -171,6 +171,7 @@ class APP_EXPORT Qgs3DMapCanvasWidget : public QWidget
     void setClippingTolerance( double tolerance );
     void lockCrossSectionTolerance( bool enabled );
     void updateClippingRubberBand();
+    void handleCrossSectionWheelNudge( QWheelEvent *event );
     void updateProfileRubberBands( QgsElevationProfile *profile );
     void hideProfileRubberBands( QgsElevationProfile *profile );
 
