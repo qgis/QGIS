@@ -1512,6 +1512,24 @@ void QgsVectorLayerProperties::addWmsDimensionInfoToTreeWidget( const QgsMapLaye
   childWmsDimensionRefValue->setFlags( Qt::ItemIsEnabled );
   wmsDimensionItem->addChild( childWmsDimensionRefValue );
 
+  QTreeWidgetItem *childWmsDimensionUseInterval = new QTreeWidgetItem();
+  childWmsDimensionUseInterval->setText( 0, tr( "Use interval" ) );
+  childWmsDimensionUseInterval->setText( 1, wmsDim.useInterval ? tr( "true" ) : tr( "false" ) );
+  childWmsDimensionUseInterval->setFlags( Qt::ItemIsEnabled );
+  wmsDimensionItem->addChild( childWmsDimensionUseInterval );
+
+  QTreeWidgetItem *childWmsDimensionResolutionType = new QTreeWidgetItem();
+  childWmsDimensionResolutionType->setText( 0, tr( "Resolution type" ) );
+  childWmsDimensionResolutionType->setText( 1, wmsDim.resolutionTypeToString( wmsDim.resolutionType ) );
+  childWmsDimensionResolutionType->setFlags( Qt::ItemIsEnabled );
+  wmsDimensionItem->addChild( childWmsDimensionResolutionType );
+
+  QTreeWidgetItem *childWmsDimensionCustomResolution = new QTreeWidgetItem();
+  childWmsDimensionCustomResolution->setText( 0, tr( "Custom resolution" ) );
+  childWmsDimensionCustomResolution->setText( 1, wmsDim.customResolution );
+  childWmsDimensionCustomResolution->setFlags( Qt::ItemIsEnabled );
+  wmsDimensionItem->addChild( childWmsDimensionCustomResolution );
+
   if ( insertIndex >= 0 )
     mWmsDimensionsTreeWidget->insertTopLevelItem( insertIndex, wmsDimensionItem );
   else

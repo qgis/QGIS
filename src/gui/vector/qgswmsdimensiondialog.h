@@ -58,6 +58,8 @@ class GUI_EXPORT QgsWmsDimensionDialog : public QDialog, private Ui::QgsWmsDimen
     void nameChanged( const QString &name );
     void fieldChanged();
     void defaultDisplayChanged( int index );
+    void resolutionTypeChanged( int index );
+    void initializeIntervalControls();
 
   private:
     //! Target layer
