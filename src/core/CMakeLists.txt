@@ -1059,6 +1059,7 @@ set(QGIS_CORE_SRCS
   validity/qgsvaliditycheckregistry.cpp
 
   vector/qgsfielddomain.cpp
+  vector/qgsfieldpropertycollectortask.cpp
   vector/qgsvectordataprovider.cpp
   vector/qgsvectordataprovidertemporalcapabilities.cpp
   vector/qgsvectorlayer.cpp
@@ -2267,6 +2268,7 @@ set(QGIS_CORE_HDRS
   validity/qgsvaliditycheckregistry.h
 
   vector/qgsfielddomain.h
+  vector/qgsfieldpropertycollectortask.h
   vector/qgsvectordataprovider.h
   vector/qgsvectordataprovidertemporalcapabilities.h
   vector/qgsvectorlayer.h
