@@ -257,6 +257,7 @@ void QgsMapToolRotateFeature::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
       mAutoSetAnchorPoint = true;
     }
 
+    QgsCoordinateTransform ct = mCanvas->mapSettings().layerTransform( vlayer );
     if ( vlayer->selectedFeatureCount() == 0 )
     {
       QgsFeatureIterator fit = vlayer->getFeatures( QgsFeatureRequest().setFilterRect( selectRect ).setNoAttributes() );
@@ -291,10 +292,22 @@ void QgsMapToolRotateFeature::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
         return;
       }
 
-      const QgsRectangle bound = cf.geometry().boundingBox();
+      mGeom = cf.geometry();
+
+      try
+      {
+        mGeom.transform( ct );
+      }
+      catch ( QgsCsException & )
+      {
+        emit messageEmitted( tr( "Could not transform feature to map CRS." ) );
+        return;
+      }
+
+      const QgsRectangle bound = mGeom.boundingBox();
       if ( mAutoSetAnchorPoint )
       {
-        mStartPointMapCoords = toMapCoordinates( vlayer, bound.center() );
+        mStartPointMapCoords = bound.center();
         mAnchorPoint->setCenter( mStartPointMapCoords );
       }
       else
@@ -308,8 +321,8 @@ void QgsMapToolRotateFeature::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
       mRotatedFeatures << cf.id(); //todo: take the closest feature, not the first one...
 
       mRubberBand = createRubberBandForLayer( vlayer, { cf.id() } );
-      mGeom = cf.geometry();
-      mRubberBand->setToGeometry( mGeom, vlayer );
+
+      mRubberBand->setToGeometry( mGeom, mCanvas->mapSettings().destinationCrs() );
     }
     else
     {
@@ -321,13 +334,23 @@ void QgsMapToolRotateFeature::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
       QList< QgsFeatureId > fids;
       while ( it.nextFeature( feat ) )
       {
-        selectedGeometries << feat.geometry();
+        QgsGeometry geom = feat.geometry();
+        try
+        {
+          geom.transform( ct );
+        }
+        catch ( QgsCsException & )
+        {
+          emit messageEmitted( tr( "Could not transform feature to map CRS." ) );
+          return;
+        }
+        selectedGeometries << geom;
         fids << feat.id();
       }
       mRubberBand = createRubberBandForLayer( vlayer, fids );
 
       mGeom = QgsGeometry::collectGeometry( selectedGeometries );
-      mRubberBand->setToGeometry( mGeom, vlayer );
+      mRubberBand->setToGeometry( mGeom, mCanvas->mapSettings().destinationCrs() );
     }
 
     mRubberBand->show();
@@ -376,24 +399,10 @@ void QgsMapToolRotateFeature::updateRubberband( double rotation )
 
     if ( mRubberBand )
     {
-      QgsVectorLayer *vlayer = currentVectorLayer();
-
-      // When MapCanvas crs == layer crs, fast rubberband rotation
-      if ( vlayer->crs() == canvas()->mapSettings().destinationCrs() )
-      {
-        const double offsetX = mStPoint.x() - mRubberBand->x();
-        const double offsetY = mStPoint.y() - mRubberBand->y();
-        mRubberBand->setTransform( QTransform().translate( offsetX, offsetY ).rotate( mRotation ).translate( -1 * offsetX, -1 * offsetY ) );
-        mRubberBand->update();
-      }
-      // Else, recreate the rubber band from the rotated geometries
-      else
-      {
-        const QgsPointXY anchorPoint = toLayerCoordinates( vlayer, mStartPointMapCoords );
-        QgsGeometry geom = mGeom;
-        geom.rotate( mRotation, anchorPoint );
-        mRubberBand->setToGeometry( geom, vlayer );
-      }
+      const double offsetX = mStPoint.x() - mRubberBand->x();
+      const double offsetY = mStPoint.y() - mRubberBand->y();
+      mRubberBand->setTransform( QTransform().translate( offsetX, offsetY ).rotate( mRotation ).translate( -1 * offsetX, -1 * offsetY ) );
+      mRubberBand->update();
     }
   }
 }
@@ -413,8 +422,6 @@ void QgsMapToolRotateFeature::applyRotation( double rotation )
     return;
   }
 
-  const QgsPointXY anchorPoint = toLayerCoordinates( vlayer, mStartPointMapCoords );
-
   vlayer->beginEditCommand( tr( "Features Rotated" ) );
 
   QgsFeatureRequest request;
@@ -428,11 +435,36 @@ void QgsMapToolRotateFeature::applyRotation( double rotation )
   // when removing intersections don't check for intersections with selected features
   const QHash<QgsVectorLayer *, QSet<QgsFeatureId>> ignoreFeatures { { vlayer, mRotatedFeatures } };
 
+  QgsCoordinateTransform ct = mCanvas->mapSettings().layerTransform( vlayer );
+
   while ( fi.nextFeature( f ) )
   {
     const QgsFeatureId id = f.id();
     QgsGeometry geom = f.geometry();
-    geom.rotate( mRotation, anchorPoint );
+
+    // rotation must happen in map coordinates to match the preview rubber band,
+    // so we transform to map coordinates, rotate, and then transform back
+    try
+    {
+      geom.transform( ct );
+    }
+    catch ( QgsCsException & )
+    {
+      emit messageEmitted( tr( "Could not transform feature to map CRS." ) );
+      return;
+    }
+
+    geom.rotate( mRotation, mStartPointMapCoords );
+
+    try
+    {
+      geom.transform( ct, Qgis::TransformDirection::Reverse );
+    }
+    catch ( QgsCsException & )
+    {
+      emit messageEmitted( tr( "Could not transform feature to map CRS." ) );
+      return;
+    }
 
     if ( vlayer->geometryType() == Qgis::GeometryType::Polygon )
     {
