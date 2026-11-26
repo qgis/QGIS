@@ -51,7 +51,7 @@ const QgsSettingsEntryBool *QgsMeasureDialog::settingClipboardAlwaysUseDecimalPo
 
 QgsMeasureDialog::QgsMeasureDialog( QgsMeasureTool *tool, Qt::WindowFlags f )
   : QDialog( tool->canvas()->topLevelWidget(), f )
-  , mMeasureArea( tool->measureArea() )
+  , mMeasurementType( tool->measurementType() )
   , mTool( tool )
   , mCanvas( tool->canvas() )
 {
@@ -72,7 +72,7 @@ QgsMeasureDialog::QgsMeasureDialog( QgsMeasureTool *tool, Qt::WindowFlags f )
   buttonBox->addButton( cb, QDialogButtonBox::ActionRole );
   connect( cb, &QAbstractButton::clicked, this, &QgsMeasureDialog::openConfigTab );
 
-  if ( !mMeasureArea )
+  if ( mMeasurementType == Qgis::MeasurementType::Length )
   {
     QAction *copyAction = new QAction( tr( "Copy" ), this );
     QPushButton *cpb = new QPushButton( tr( "Copy" ) );
@@ -85,8 +85,9 @@ QgsMeasureDialog::QgsMeasureDialog( QgsMeasureTool *tool, Qt::WindowFlags f )
     mTable->addAction( copyAction );
   }
 
-  repopulateComboBoxUnits( mMeasureArea );
-  if ( mMeasureArea )
+  const bool isArea = mMeasurementType == Qgis::MeasurementType::Area;
+  repopulateComboBoxUnits( isArea );
+  if ( isArea )
   {
     if ( mUseMapUnits )
       mUnitsCombo->setCurrentIndex( mUnitsCombo->findData( static_cast<int>( Qgis::AreaUnit::Unknown ) ) );
@@ -104,7 +105,7 @@ QgsMeasureDialog::QgsMeasureDialog( QgsMeasureTool *tool, Qt::WindowFlags f )
   if ( !mCanvas->mapSettings().destinationCrs().isValid() )
   {
     mUnitsCombo->setEnabled( false );
-    if ( mMeasureArea )
+    if ( mMeasurementType == Qgis::MeasurementType::Area )
       mUnitsCombo->setCurrentIndex( mUnitsCombo->findData( static_cast<int>( Qgis::DistanceUnit::Unknown ) ) );
     else
       mUnitsCombo->setCurrentIndex( mUnitsCombo->findData( static_cast<int>( Qgis::AreaUnit::Unknown ) ) );
@@ -145,7 +146,7 @@ void QgsMeasureDialog::crsChanged()
   if ( !mCanvas->mapSettings().destinationCrs().isValid() )
   {
     mUnitsCombo->setEnabled( false );
-    if ( mMeasureArea )
+    if ( mMeasurementType == Qgis::MeasurementType::Area )
       mUnitsCombo->setCurrentIndex( mUnitsCombo->findData( static_cast<int>( Qgis::DistanceUnit::Unknown ) ) );
     else
       mUnitsCombo->setCurrentIndex( mUnitsCombo->findData( static_cast<int>( Qgis::AreaUnit::Unknown ) ) );
@@ -189,7 +190,7 @@ void QgsMeasureDialog::updateSettings()
 
 void QgsMeasureDialog::unitsChanged( int index )
 {
-  if ( mMeasureArea )
+  if ( mMeasurementType == Qgis::MeasurementType::Area )
   {
     mAreaUnits = static_cast<Qgis::AreaUnit>( mUnitsCombo->itemData( index ).toInt() );
   }
@@ -204,7 +205,7 @@ void QgsMeasureDialog::unitsChanged( int index )
 
 void QgsMeasureDialog::updateUnitsMembers()
 {
-  if ( mMeasureArea )
+  if ( mMeasurementType == Qgis::MeasurementType::Area )
   {
     if ( mAreaUnits == Qgis::AreaUnit::Unknown )
     {
@@ -243,7 +244,7 @@ void QgsMeasureDialog::mouseMove( const QgsPointXY &point )
   // show current distance/area while moving the point
   // by creating a temporary copy of point array
   // and adding moving point at the end
-  if ( mMeasureArea && mTool->points().size() >= 2 )
+  if ( ( mMeasurementType == Qgis::MeasurementType::Area ) && mTool->points().size() >= 2 )
   {
     QVector<QgsPointXY> tmpPoints = mTool->points();
     tmpPoints.append( point );
@@ -260,7 +261,7 @@ void QgsMeasureDialog::mouseMove( const QgsPointXY &point )
 
     editTotal->setText( formatArea( area ) );
   }
-  else if ( !mMeasureArea && !mTool->points().empty() )
+  else if ( ( mMeasurementType == Qgis::MeasurementType::Length ) && !mTool->points().empty() )
   {
     const QVector<QgsPointXY> tmpPoints = mTool->points();
     QgsPointXY p1( tmpPoints.at( tmpPoints.size() - 1 ) ), p2( point );
@@ -291,7 +292,7 @@ void QgsMeasureDialog::mouseMove( const QgsPointXY &point )
 void QgsMeasureDialog::addPoint()
 {
   const int numPoints = mTool->points().size();
-  if ( mMeasureArea && numPoints > 2 )
+  if ( ( mMeasurementType == Qgis::MeasurementType::Area ) && numPoints > 2 )
   {
     double area = 0;
     try
@@ -306,7 +307,7 @@ void QgsMeasureDialog::addPoint()
 
     editTotal->setText( formatArea( area ) );
   }
-  else if ( !mMeasureArea && numPoints >= 1 )
+  else if ( ( mMeasurementType == Qgis::MeasurementType::Length ) && numPoints >= 1 )
   {
     if ( !mTool->done() )
     {
@@ -348,7 +349,7 @@ void QgsMeasureDialog::addPoint()
 void QgsMeasureDialog::removeLastPoint()
 {
   const int numPoints = mTool->points().size();
-  if ( mMeasureArea )
+  if ( mMeasurementType == Qgis::MeasurementType::Area )
   {
     if ( numPoints > 1 )
     {
@@ -372,7 +373,7 @@ void QgsMeasureDialog::removeLastPoint()
       editTotal->setText( formatArea( 0 ) );
     }
   }
-  else if ( !mMeasureArea && numPoints >= 1 )
+  else if ( ( mMeasurementType == Qgis::MeasurementType::Length ) && numPoints >= 1 )
   {
     //remove final row
     delete mTable->takeTopLevelItem( mTable->topLevelItemCount() - 1 );
@@ -428,7 +429,7 @@ void QgsMeasureDialog::restorePosition()
 {
   const QgsSettings settings;
   int wh;
-  if ( mMeasureArea )
+  if ( mMeasurementType == Qgis::MeasurementType::Area )
     wh = settings.value( u"Windows/Measure/hNoTable"_s, 70 ).toInt();
   else
     wh = settings.value( u"Windows/Measure/h"_s, 200 ).toInt();
@@ -439,7 +440,7 @@ void QgsMeasureDialog::restorePosition()
 void QgsMeasureDialog::saveWindowLocation()
 {
   QgsSettings settings;
-  const QString &key = mMeasureArea ? "/Windows/Measure/hNoTable" : "/Windows/Measure/h";
+  const QString &key = ( mMeasurementType == Qgis::MeasurementType::Area ) ? "/Windows/Measure/hNoTable" : "/Windows/Measure/h";
   settings.setValue( key, height() );
 }
 
@@ -501,7 +502,7 @@ void QgsMeasureDialog::updateUi()
     return ellipsoid;
   };
 
-  if ( mMeasureArea )
+  if ( mMeasurementType == Qgis::MeasurementType::Area )
   {
     if ( mCartesian->isChecked() || !mCanvas->mapSettings().destinationCrs().isValid() )
     {
@@ -661,7 +662,7 @@ void QgsMeasureDialog::updateUi()
   mTable->setToolTip( toolTip );
   mNotesLabel->setText( toolTip );
 
-  if ( mMeasureArea )
+  if ( mMeasurementType == Qgis::MeasurementType::Area )
   {
     if ( mUseMapUnits )
       mUnitsCombo->setCurrentIndex( mUnitsCombo->findData( static_cast<int>( Qgis::AreaUnit::Unknown ) ) );
@@ -685,7 +686,7 @@ void QgsMeasureDialog::updateUi()
     }
   }
 
-  if ( mMeasureArea )
+  if ( mMeasurementType == Qgis::MeasurementType::Area )
   {
     double area = 0.0;
     if ( mTool->points().size() > 1 )

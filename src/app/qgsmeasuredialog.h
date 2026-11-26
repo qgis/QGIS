@@ -115,8 +115,8 @@ class APP_EXPORT QgsMeasureDialog : public QDialog, private Ui::QgsMeasureBase
 
     double mTotal = 0.0;
 
-    //! indicates whether we're measuring distances or areas
-    bool mMeasureArea = false;
+    //! Indicates the type of measurement.
+    Qgis::MeasurementType mMeasurementType = Qgis::MeasurementType::Length;
 
     //! Indicates whether the user chose "Map units" instead of directly selecting a unit
     bool mUseMapUnits = false;

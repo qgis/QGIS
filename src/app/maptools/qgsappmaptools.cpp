@@ -69,8 +69,8 @@ QgsAppMapTools::QgsAppMapTools( QgsMapCanvas *canvas, QgsAdvancedDigitizingDockW
   mTools.insert( Tool::Pan, new QgsMapToolPan( canvas ) );
   mTools.insert( Tool::Identify, new QgsMapToolIdentifyAction( canvas ) );
   mTools.insert( Tool::FeatureAction, new QgsMapToolFeatureAction( canvas ) );
-  mTools.insert( Tool::MeasureDistance, new QgsMeasureTool( canvas, false /* area */ ) );
-  mTools.insert( Tool::MeasureArea, new QgsMeasureTool( canvas, true /* area */ ) );
+  mTools.insert( Tool::MeasureDistance, new QgsMeasureTool( canvas, Qgis::MeasurementType::Length ) );
+  mTools.insert( Tool::MeasureArea, new QgsMeasureTool( canvas, Qgis::MeasurementType::Area ) );
   mTools.insert( Tool::MeasureAngle, new QgsMapToolMeasureAngle( canvas ) );
   mTools.insert( Tool::MeasureBearing, new QgsMapToolMeasureBearing( canvas ) );
   mTools.insert( Tool::FormAnnotation, new QgsMapToolFormAnnotation( canvas ) );

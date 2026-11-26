@@ -5775,6 +5775,18 @@ int QgisEvent = QEvent::User + 1;
     Q_ENUM( TemporalUnit )
 
     /**
+     * Types of measurement.
+     *
+     * \since QGIS 4.6
+     */
+    enum class MeasurementType : int
+    {
+      Length = 0, //!< Length measurement
+      Area,       //!< Area measurement
+    };
+    Q_ENUM( MeasurementType )
+
+    /**
      * Rendering size units
      *
      * \note Prior to QGIS 3.30 this was available as QgsUnitTypes::RenderUnit.
