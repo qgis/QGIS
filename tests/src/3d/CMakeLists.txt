@@ -40,6 +40,7 @@ set(TESTS
   testqgsmaterialregistry.cpp
   testqgsmesh3drendering.cpp
   testqgspointcloud3drendering.cpp
+  testqgsprocessing3dalgs.cpp
   testqgsrubberband3drendering.cpp
   testqgstessellator.cpp
   testqgstilingscheme.cpp
