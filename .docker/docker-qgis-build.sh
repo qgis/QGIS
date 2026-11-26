@@ -94,7 +94,6 @@ cmake \
  -DENABLE_HANATEST=${WITH_HANA_TEST} \
  -DENABLE_ORACLETEST=${WITH_ORACLE_TEST} \
  -DENABLE_UNITY_BUILDS=${ENABLE_UNITY_BUILDS} \
- -DPUSH_TO_CDASH=${PUSH_TO_CDASH} \
  -DWITH_HANA=ON \
  -DWITH_QGIS_PROCESS=ON \
  -DWITH_QSPATIALITE=${WITH_QSPATIALITE} \
@@ -130,7 +129,7 @@ git config --global --add safe.directory ${CTEST_BUILD_DIR}
 #######
 echo "${bold}Building QGIS...${endbold}"
 echo "::group::build"
-ctest -VV -S ${CTEST_SOURCE_DIR}/.ci/config_build.ctest
+ninja
 echo "::endgroup::"
 
 ########################

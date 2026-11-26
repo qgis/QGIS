@@ -97,7 +97,6 @@ jobs:
     outputs:
       compile_outcome: ${{ steps.compile.outcome }}
       tests_failing: ${{ steps.tests.outputs.TESTS_FAILING }}
-      cdash_url: ${{ steps.tests.outputs.CDASH_URL }}
       runners_outcome: ${{ steps.runners.outcome }}
 
     steps:
@@ -123,15 +122,12 @@ jobs:
         run: |
           # Be aware that these instructions are duplicated in run-tests job
           DOCKER_TAG=$(echo $( [[ ${GITHUB_EVENT_NAME} == pull_request ]] && echo ${GITHUB_BASE_REF} || echo ${GITHUB_REF##*/} ) | sed 's/^master$/latest/')
-          CTEST_BUILD_NAME=$( [[ ${GITHUB_EVENT_NAME} == pull_request ]] && echo "PR${GITHUB_PR_NUMBER}" || echo ${GITHUB_REF##*/} )"_${GITHUB_SHA}"
           echo "DOCKER_TAG=${DOCKER_TAG}" >> $GITHUB_ENV
-          echo "CTEST_BUILD_NAME=${CTEST_BUILD_NAME}" >> $GITHUB_ENV
           echo "QT_VERSION=${{ matrix.qt-version }}" >> $GITHUB_ENV
 
       - name: Print vars
         run: |
           echo DOCKER_TAG: ${DOCKER_TAG}
-          echo CTEST_BUILD_NAME: ${CTEST_BUILD_NAME}
           echo QT_VERSION: ${QT_VERSION}
 
       - name: Login to Docker Hub
@@ -174,7 +170,6 @@ jobs:
                      -v /home/runner/QGIS/.ccache:/root/.ccache \
                      --env-file .docker/docker-variables.env \
                      --env CCACHE_DIR=/root/.ccache \
-                     --env PUSH_TO_CDASH=true \
                      --env WITH_QUICK=${{ matrix.with-quick }} \
                      --env WITH_3D=${{ matrix.with-3d }} \
                      --env WITH_GRASS7=${{ matrix.with-grass7 }} \
@@ -336,13 +331,7 @@ jobs:
           GITHUB_PR_NUMBER: ${{github.event.number}}
         run: |
           # Be aware that these instructions are duplicated in build job
-          CTEST_BUILD_NAME=$( [[ ${GITHUB_EVENT_NAME} == pull_request ]] && echo "PR${GITHUB_PR_NUMBER}" || echo ${GITHUB_REF##*/} )"_${GITHUB_SHA}_${{ matrix.test-batch }}"
-          echo "CTEST_BUILD_NAME=${CTEST_BUILD_NAME}" >> $GITHUB_ENV
           echo "QT_VERSION=${{ matrix.qt-version }}" >> $GITHUB_ENV
-
-      - name: Print vars
-        run: |
-          echo CTEST_BUILD_NAME: ${CTEST_BUILD_NAME}
 
       - name: Login to Docker Hub
         if: ${{ github.event_name == 'push' && github.repository == 'qgis/QGIS' }}
