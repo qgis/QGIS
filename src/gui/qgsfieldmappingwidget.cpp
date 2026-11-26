@@ -269,7 +269,7 @@ void QgsFieldMappingExpressionDelegate::setEditorData( QWidget *editor, const QM
     return;
 
   const QVariant value = index.model()->data( index, Qt::EditRole );
-  editorWidget->setField( value.toString() );
+  whileBlocking( editorWidget )->setField( value.toString() );
 }
 
 QWidget *QgsFieldMappingExpressionDelegate::createEditor( QWidget *parent, const QStyleOptionViewItem &option, const QModelIndex &index ) const
@@ -358,7 +358,7 @@ void QgsFieldMappingTypeDelegate::setEditorData( QWidget *editor, const QModelIn
     return;
 
   const QVariant value = index.model()->data( index, Qt::EditRole );
-  editorWidget->setCurrentIndex( editorWidget->findData( value ) );
+  whileBlocking( editorWidget )->setCurrentIndex( editorWidget->findData( value ) );
 }
 
 void QgsFieldMappingTypeDelegate::setModelData( QWidget *editor, QAbstractItemModel *model, const QModelIndex &index ) const
