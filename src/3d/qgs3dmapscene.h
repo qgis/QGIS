@@ -356,6 +356,7 @@ class _3D_EXPORT Qgs3DMapScene : public QObject
     void createTerrainDeferred();
     void onBackgroundColorChanged();
     void updateLights();
+    void onProjectionTypeChanged();
     void updateCameraLens();
     void onBackgroundSettingsChanged();
     void onShadowSettingsChanged();

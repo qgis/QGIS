@@ -156,7 +156,7 @@ Qgs3DMapScene::Qgs3DMapScene( Qgs3DMapSettings &map, QgsAbstract3DEngine *engine
   connect( &map, &Qgs3DMapSettings::lightSourcesChanged, this, &Qgs3DMapScene::updateLights );
   connect( &map, &Qgs3DMapSettings::showLightSourceOriginsChanged, this, &Qgs3DMapScene::updateLights );
   connect( &map, &Qgs3DMapSettings::fieldOfViewChanged, this, &Qgs3DMapScene::updateCameraLens );
-  connect( &map, &Qgs3DMapSettings::projectionTypeChanged, this, &Qgs3DMapScene::updateCameraLens );
+  connect( &map, &Qgs3DMapSettings::projectionTypeChanged, this, &Qgs3DMapScene::onProjectionTypeChanged );
   connect( &map, &Qgs3DMapSettings::shadowSettingsChanged, this, &Qgs3DMapScene::onShadowSettingsChanged );
   connect( &map, &Qgs3DMapSettings::ambientOcclusionSettingsChanged, this, &Qgs3DMapScene::onAmbientOcclusionSettingsChanged );
   connect( &map, &Qgs3DMapSettings::bloomSettingsChanged, this, &Qgs3DMapScene::onBloomSettingsChanged );
@@ -426,7 +426,6 @@ bool Qgs3DMapScene::updateScene( bool forceUpdate )
 
   Qgs3DMapSceneEntity::SceneContext sceneContext;
   Qt3DRender::QCamera *camera = mEngine->camera();
-  sceneContext.cameraFov = camera->fieldOfView();
   sceneContext.cameraPos = camera->position();
   const QSize size = mEngine->size();
   sceneContext.screenSizePx = std::max( size.width(), size.height() ); // TODO: is this correct?
@@ -442,6 +441,8 @@ bool Qgs3DMapScene::updateScene( bool forceUpdate )
   {
     case Qgis::Map3DProjectionType::Perspective:
     {
+      sceneContext.cameraFov = camera->fieldOfView();
+
       float fovRadians = ( camera->fieldOfView() / 2.0f ) * static_cast<float>( M_PI ) / 180.0f;
       float fovCotan = std::cos( fovRadians ) / std::sin( fovRadians );
       // clang-format off
@@ -456,13 +457,16 @@ bool Qgs3DMapScene::updateScene( bool forceUpdate )
     }
     case Qgis::Map3DProjectionType::Orthographic:
     {
+      // No such thing as FOV with orthographic projection
+      sceneContext.cameraFov = 0;
+
       Qt3DRender::QCameraLens *lens = camera->lens();
       // clang-format off
       projMatrix = {
-        2.0f / ( lens->right() - lens->left() ), 0, 0, 0,
-        0, 2.0f / ( lens->top() - lens->bottom() ), 0, 0,
-        0, 0, 1, 0,
-        -( lens->left() + lens->right() ) / ( lens->right() - lens->left() ), -( lens->top() + lens->bottom() ) / ( lens->top() - lens->bottom() ), -1.0f, 1.0f
+        2.0f / ( lens->right() - lens->left() ), 0, 0, -( lens->right() + lens->left() ) / ( lens->right() - lens->left() ),
+        0, 2.0f / ( lens->top() - lens->bottom() ), 0, -( lens->top() + lens->bottom() ) / ( lens->top() - lens->bottom() ),
+        0, 0, 0, 0,  // Set Z to zero to also capture point behind the camera
+        0, 0, 0, 1.0f
       };
       // clang-format on
       break;
@@ -510,6 +514,11 @@ bool Qgs3DMapScene::updateCameraNearFarPlanes()
   float fnear = 1e9;
   float ffar = 0;
 
+  const float distance = cameraController()->cameraPose().distanceFromCenterPoint();
+  // Optimal distance of camera from centre to show every entity (have every
+  // suggested near plane in front).
+  float optDistance = 100;
+
   // Iterate all scene entities to make sure that they will not get
   // clipped by the near or far plane
   for ( Qgs3DMapSceneEntity *se : std::as_const( mSceneEntities ) )
@@ -518,6 +527,7 @@ bool Qgs3DMapScene::updateCameraNearFarPlanes()
 
     fnear = std::min( fnear, depthRange.lower() );
     ffar = std::max( ffar, depthRange.upper() );
+    optDistance = std::max( optDistance, distance - depthRange.lower() );
   }
 
   if ( fnear < 1 )
@@ -537,6 +547,29 @@ bool Qgs3DMapScene::updateCameraNearFarPlanes()
   // when zooming in a lot, fnear can become smaller than ffar. This should not happen
   if ( fnear > ffar )
     std::swap( fnear, ffar );
+
+  if ( mapSettings()->projectionType() == Qgis::Map3DProjectionType::Orthographic )
+  {
+    const float newOptDistance = optDistance * 2;
+    if ( !qgsFloatNear( newOptDistance, cameraController()->cameraPose().distanceFromCenterPoint() ) )
+    {
+      // Change near/far planes conservatively to make sure they still
+      // encompasses all entities.
+      float distanceDiff = newOptDistance - distance;
+      if ( distanceDiff > 0 )
+      {
+        ffar += distanceDiff;
+      }
+      else
+      {
+        fnear += distanceDiff;
+      }
+
+      QgsCameraPose newPose = cameraController()->cameraPose();
+      newPose.setDistanceFromCenterPoint( newOptDistance );
+      cameraController()->setCameraPose( newPose );
+    }
+  }
 
   // set near/far plane - with some tolerance in front/behind expected near/far planes
   float newFar = ffar * 2;
@@ -763,9 +796,34 @@ void Qgs3DMapScene::updateLights()
   onShadowSettingsChanged();
 }
 
+void Qgs3DMapScene::onProjectionTypeChanged()
+{
+  mEngine->camera()->lens()->setFieldOfView( static_cast< float >( mMap.fieldOfView() ) );
+
+  // Set up crude bijection between perspective and orthographic parameters
+  // showing roughly the same part of the scene.
+  QgsCameraPose newPose = cameraController()->cameraPose();
+  switch ( mMap.projectionType() )
+  {
+    case Qgis::Map3DProjectionType::Perspective:
+      // Presuming previous was orthographic
+      newPose.setDistanceFromCenterPoint( mCameraController->cameraPose().orthographicWidth() );
+      break;
+    case Qgis::Map3DProjectionType::Orthographic:
+      // Presuming previous was perspective
+      newPose.setOrthographicWidth( mCameraController->cameraPose().distanceFromCenterPoint() );
+      break;
+  }
+  cameraController()->setCameraPose( newPose );
+  mEngine->camera()->lens()->setProjectionType( static_cast<Qt3DRender::QCameraLens::ProjectionType>( mMap.projectionType() ) );
+
+  updateCameraLens();
+}
+
 void Qgs3DMapScene::updateCameraLens()
 {
   mEngine->camera()->lens()->setFieldOfView( static_cast< float >( mMap.fieldOfView() ) );
+
   mEngine->camera()->lens()->setProjectionType( static_cast<Qt3DRender::QCameraLens::ProjectionType>( mMap.projectionType() ) );
   onCameraChanged();
 }

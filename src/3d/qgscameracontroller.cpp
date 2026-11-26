@@ -225,12 +225,49 @@ void QgsCameraController::zoomCameraAroundPivot( const QVector3D &oldCameraPosit
   updateCameraFromPose();
 }
 
+void QgsCameraController::zoomCameraAroundPivot( double zoomFactor, const QVector3D &pivotPoint )
+{
+  switch ( mScene->mapSettings()->projectionType() )
+  {
+    case Qgis::Map3DProjectionType::Perspective:
+    {
+      // step 1: move camera along the line connecting reference camera position and our pivot point
+      QVector3D newCamPosition = pivotPoint + ( mCameraBefore->position() - pivotPoint ) * zoomFactor;
+      const double newDistance = mCameraPoseBefore.distanceFromCenterPoint() * zoomFactor;
+
+      // step 2: using the new camera position and distance from center, calculate new view center
+      QQuaternion q = Qgs3DUtils::rotationFromPitchHeadingAngles( mCameraPose.pitchAngle(), mCameraPose.headingAngle() );
+      QVector3D cameraToCenter = q * QVector3D( 0, 0, -newDistance );
+      QVector3D newViewCenter = newCamPosition + cameraToCenter;
+
+      mCameraPose.setDistanceFromCenterPoint( newDistance );
+      mCameraPose.setCenterPoint( newViewCenter );
+      updateCameraFromPose();
+      break;
+    }
+    case Qgis::Map3DProjectionType::Orthographic:
+    {
+      // Move view centre along line connecting it to the pivot point in the plane of terrain
+      QVector3D newViewCenter = pivotPoint + ( mCameraPoseBefore.centerPoint().toVector3D() - pivotPoint ) * zoomFactor;
+      newViewCenter.setZ( mCameraPoseBefore.centerPoint().z() );
+      mCameraPose.setCenterPoint( newViewCenter );
+
+      // change width to "zoom in"
+      float newWidth = mCameraPoseBefore.orthographicWidth() * zoomFactor;
+      mCameraPose.setOrthographicWidth( newWidth );
+
+      updateCameraFromPose();
+      break;
+    }
+  }
+}
+
 void QgsCameraController::frameTriggered( float dt )
 {
   Q_UNUSED( dt )
 
   // In case viewport size has changed
-  updateOrthographicProjectionPlane();
+  updateOrthographicProjection();
 
   if ( mCameraChanged )
   {
@@ -258,8 +295,11 @@ void QgsCameraController::setViewFromTop( float worldX, float worldY, float dist
   QgsTerrainEntity *terrain = mScene->terrainEntity();
   const float terrainElevationOffset = terrain ? terrain->terrainElevationOffset() : 0.0f;
   camPose.setCenterPoint( QgsVector3D( worldX, worldY, terrainElevationOffset - mScene->mapSettings()->origin().z() ) );
-  camPose.setDistanceFromCenterPoint( distance );
   camPose.setHeadingAngle( yaw );
+  camPose.setDistanceFromCenterPoint( distance );
+
+  // Find some value to put here so that roughly something is visible in orthographic projection.
+  camPose.setOrthographicWidth( distance );
 
   // a basic setup to make frustum depth range long enough that it does not cull everything
   mCamera->setNearPlane( distance / 2 );
@@ -447,7 +487,15 @@ void QgsCameraController::globeMoveCenterPoint( double latDiff, double lonDiff )
 
 void QgsCameraController::globeZoom( float factor )
 {
-  mCameraPose.setDistanceFromCenterPoint( mCameraPose.distanceFromCenterPoint() * factor );
+  switch ( mScene->mapSettings()->projectionType() )
+  {
+    case Qgis::Map3DProjectionType::Perspective:
+      mCameraPose.setDistanceFromCenterPoint( mCameraPose.distanceFromCenterPoint() * factor );
+      break;
+    case Qgis::Map3DProjectionType::Orthographic:
+      mCameraPose.setOrthographicWidth( mCameraPose.orthographicWidth() * factor );
+      break;
+  }
   updateCameraFromPose();
 }
 
@@ -482,16 +530,16 @@ void QgsCameraController::resetGlobe( float distance, double lat, double lon )
   setCameraPose( cp );
 }
 
-void QgsCameraController::updateOrthographicProjectionPlane()
+void QgsCameraController::updateOrthographicProjection()
 {
   // When using orthographic projection, reuse the distance to center (which
   // ordinarily wouldn't do anything) to set the viewport size in the world.
   if ( mScene->mapSettings()->projectionType() == Qgis::Map3DProjectionType::Orthographic )
   {
     const QSize viewportRect = mScene->engine()->size();
-    const float viewWidthFromCenter = distance();
-    const float viewHeightFromCenter = distance() * static_cast<float>( viewportRect.height() ) / static_cast<float>( viewportRect.width() );
-    mCamera->lens()->setOrthographicProjection( -viewWidthFromCenter, viewWidthFromCenter, -viewHeightFromCenter, viewHeightFromCenter, mCamera->nearPlane(), mCamera->farPlane() );
+    const float width = cameraPose().orthographicWidth();
+    const float height = cameraPose().orthographicWidth() * static_cast<float>( viewportRect.height() ) / static_cast<float>( viewportRect.width() );
+    mCamera->lens()->setOrthographicProjection( -width / 2, width / 2, -height / 2, height / 2, mCamera->nearPlane(), mCamera->farPlane() );
   }
 }
 
@@ -521,7 +569,7 @@ void QgsCameraController::updateCameraFromPose()
       mCameraPose.updateCamera( mCamera );
     }
 
-    updateOrthographicProjectionPlane();
+    updateOrthographicProjection();
 
     mCameraChanged = true;
   }
@@ -774,7 +822,7 @@ void QgsCameraController::onPositionChangedTerrainNavigation( Qt3DInput::QMouseE
     }
 
     const double zoomFactor = newDist / oldDist;
-    zoomCameraAroundPivot( mCameraBefore->position(), mCameraBefore->viewCenter().distanceToPoint( mCameraBefore->position() ), zoomFactor, mDragPoint );
+    zoomCameraAroundPivot( zoomFactor, mDragPoint );
   }
 
   mMousePos = QPoint( mouse->x(), mouse->y() );
@@ -878,9 +926,23 @@ void QgsCameraController::onPositionChangedGlobeTerrainNavigation( Qt3DInput::QM
 void QgsCameraController::zoom( float factor )
 {
   // zoom in/out
-  float dist = mCameraPose.distanceFromCenterPoint();
-  dist -= dist * factor * 0.01f;
-  mCameraPose.setDistanceFromCenterPoint( dist );
+  switch ( mScene->mapSettings()->projectionType() )
+  {
+    case Qgis::Map3DProjectionType::Perspective:
+    {
+      float dist = mCameraPose.distanceFromCenterPoint();
+      dist -= dist * factor * 0.01f;
+      mCameraPose.setDistanceFromCenterPoint( dist );
+      break;
+    }
+    case Qgis::Map3DProjectionType::Orthographic:
+    {
+      float width = mCameraPose.orthographicWidth();
+      width -= width * factor * 0.01f;
+      mCameraPose.setOrthographicWidth( width );
+      break;
+    }
+  }
   updateCameraFromPose();
 }
 
@@ -909,7 +971,7 @@ void QgsCameraController::handleTerrainNavigationWheelZoom()
   // Don't change the distance too suddenly to hopefully prevent numerical instability
   zoomFactor = std::clamp( zoomFactor, 0.01, 100.0 );
 
-  zoomCameraAroundPivot( mCameraBefore->position(), mCameraBefore->viewCenter().distanceToPoint( mCameraBefore->position() ), zoomFactor, mZoomPoint );
+  zoomCameraAroundPivot( zoomFactor, mZoomPoint );
 
   mCumulatedWheelY = 0;
   setMouseParameters( MouseOperation::None );
@@ -956,7 +1018,7 @@ void QgsCameraController::onWheel( Qt3DInput::QWheelEvent *wheel )
       float wheelAmount = static_cast<float>( wheel->angleDelta().y() );
       float factor = abs( wheelAmount ) / 1000.f;
       float mulFactor = wheelAmount > 0 ? ( 1 - factor ) : ( 1 + factor );
-      mCameraPose.setDistanceFromCenterPoint( mCameraPose.distanceFromCenterPoint() * mulFactor );
+      globeZoom( mulFactor );
       updateCameraFromPose();
       break;
     }
@@ -1526,6 +1588,7 @@ void QgsCameraController::setMouseParameters( const MouseOperation &newOperation
   {
     mMousePressViewCenter = mCameraPose.centerPoint() + mOrigin;
     mCameraBefore = Qgs3DUtils::copyCamera( mCamera );
+    mCameraPoseBefore = mCameraPose;
 
     emit requestDepthBufferCapture();
   }

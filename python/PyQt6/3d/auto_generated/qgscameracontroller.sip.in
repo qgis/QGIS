@@ -218,13 +218,26 @@ coordinates after the zoom.
    Use version with oldDistanceFromCenterPoint argument instead.
 %End
 
-    void zoomCameraAroundPivot( const QVector3D &oldCameraPosition, double oldDistanceFromCenterPoint, double zoomFactor, const QVector3D &pivotPoint );
+ void zoomCameraAroundPivot( const QVector3D &oldCameraPosition, double oldDistanceFromCenterPoint, double zoomFactor, const QVector3D &pivotPoint );
 %Docstring
 Zooms camera by given zoom factor (>1 one means zoom in) while keeping
 the pivot point (given in world coordinates) at the same screen
 coordinates after the zoom.
 
 .. versionadded:: 3.44.4
+
+.. deprecated:: 4.6
+
+   Use version without the first two arguments instead.
+%End
+
+    void zoomCameraAroundPivot( double zoomFactor, const QVector3D &pivotPoint );
+%Docstring
+Zooms camera by given zoom factor (>1 one means zoom in) while keeping
+the pivot point (given in world coordinates) at the same screen
+coordinates after the zoom. Uses internal copies of camera.
+
+.. versionadded:: 4.6
 %End
 
     bool keyboardEventFilter( QKeyEvent *event );
