@@ -541,6 +541,7 @@ Qgs3DMapCanvasWidget::Qgs3DMapCanvasWidget( const QString &name, bool isDocked )
     mContainer = QWidget::createWindowContainer( mCanvas );
     mContainer->setFocusPolicy( Qt::FocusPolicy::StrongFocus );
     mContainer->installEventFilter( mCanvas );
+    mCanvas->installEventFilter( this );
   }
   else
   {
@@ -840,6 +841,15 @@ bool Qgs3DMapCanvasWidget::eventFilter( QObject *watched, QEvent *event )
     // window container must be focused in order for keyboard events to be passed to it
     // so we treat a click on the canvas as focusing the container (Qt doesn't do this automatically)
     mContainer->setFocus( Qt::MouseFocusReason );
+  }
+  else if ( watched == mCanvas && event->type() == QEvent::Wheel )
+  {
+    QWheelEvent *wheelEvent = static_cast<QWheelEvent *>( event );
+    if ( ( wheelEvent->modifiers() & Qt::AltModifier ) && mCanvas->crossSection().isValid() )
+    {
+      handleCrossSectionWheelNudge( wheelEvent );
+      return true;
+    }
   }
   return QObject::eventFilter( watched, event );
 }
@@ -1496,18 +1506,25 @@ void Qgs3DMapCanvasWidget::disableCrossSection()
 
 void Qgs3DMapCanvasWidget::nudgeLeft()
 {
-  nudgeCurve( Qgis::BufferSide::Left );
+  const QgsCrossSection crossSection = mCanvas->crossSection();
+  if ( !crossSection.isValid() )
+    return;
+
+  nudgeCurve( Qgis::BufferSide::Left, mCanvas->crossSection().halfWidth() * 2 );
 }
 
 void Qgs3DMapCanvasWidget::nudgeRight()
 {
-  nudgeCurve( Qgis::BufferSide::Right );
+  const QgsCrossSection crossSection = mCanvas->crossSection();
+  if ( !crossSection.isValid() )
+    return;
+
+  nudgeCurve( Qgis::BufferSide::Right, mCanvas->crossSection().halfWidth() * 2 );
 }
 
-void Qgs3DMapCanvasWidget::nudgeCurve( Qgis::BufferSide side )
+void Qgs3DMapCanvasWidget::nudgeCurve( Qgis::BufferSide side, double distance )
 {
   QgsCrossSection crossSection = mCanvas->crossSection();
-  double distance = crossSection.halfWidth() * 2;
 
   const QgsPoint previousStartPoint = crossSection.startPoint();
 
@@ -1524,6 +1541,33 @@ void Qgs3DMapCanvasWidget::nudgeCurve( Qgis::BufferSide side )
   mCrossSectionRubberBand->setToGeometry( crossSection.asGeometry( &ct ) );
 
   mCanvas->scene()->cameraController()->moveCenterPoint( QVector3D( static_cast<float>( cameraOffset.x() ), static_cast<float>( cameraOffset.y() ), 0 ) );
+}
+
+void Qgs3DMapCanvasWidget::handleCrossSectionWheelNudge( QWheelEvent *event )
+{
+  event->accept();
+
+  const QgsCrossSection crossSection = mCanvas->crossSection();
+  if ( !crossSection.isValid() )
+    return;
+
+  const QPoint angleDelta = event->angleDelta();
+  // alt modifier turns this into a horizontal scroll, so we check if y is 0 and use x
+  // it is possible this is different across OSes, so we check for both
+  const int delta = angleDelta.y() ? angleDelta.y() : angleDelta.x();
+  if ( delta == 0 )
+    return;
+
+  const double steps = static_cast<double>( delta ) / 120.0;
+  const double smoothness = ( event->modifiers() & Qt::ControlModifier ) ? 0.01 : 0.1;
+  const double distance = steps * smoothness * crossSection.halfWidth() * 2;
+
+  const QgsVector leftVector = QgsVector( crossSection.endPoint() - crossSection.startPoint() ).normalized().perpVector();
+  const QVector3D viewVector = mCanvas->camera()->viewVector();
+  const double dot = leftVector.x() * viewVector.x() + leftVector.y() * viewVector.y();
+  const bool moveLeft = ( distance > 0 ) == ( dot >= 0 );
+
+  nudgeCurve( moveLeft ? Qgis::BufferSide::Left : Qgis::BufferSide::Right, std::fabs( distance ) );
 }
 
 void Qgs3DMapCanvasWidget::updateClippingRubberBand()
