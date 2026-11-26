@@ -8377,9 +8377,16 @@ QString QgisApp::saveAsRasterFile( QgsRasterLayer *rasterLayer, const bool defau
   return d.outputFileName();
 }
 
-
 QString QgisApp::saveAsFile( QgsMapLayer *layer, const bool onlySelected, const bool defaultToAddToMap, const QString &destinationFolder )
 {
+  bool supported = false;
+  return saveAsFile( layer, onlySelected, defaultToAddToMap, destinationFolder, supported );
+}
+
+QString QgisApp::saveAsFile( QgsMapLayer *layer, const bool onlySelected, const bool defaultToAddToMap, const QString &destinationFolder, bool &isSupportedLayer )
+{
+  isSupportedLayer = false;
+
   if ( !layer )
     layer = activeLayer();
 
@@ -8390,12 +8397,15 @@ QString QgisApp::saveAsFile( QgsMapLayer *layer, const bool onlySelected, const 
   switch ( layerType )
   {
     case Qgis::LayerType::Raster:
+      isSupportedLayer = true;
       return saveAsRasterFile( qobject_cast<QgsRasterLayer *>( layer ), defaultToAddToMap, destinationFolder );
 
     case Qgis::LayerType::Vector:
+      isSupportedLayer = true;
       return saveAsVectorFileGeneral( qobject_cast<QgsVectorLayer *>( layer ), true, onlySelected, defaultToAddToMap, destinationFolder );
 
     case Qgis::LayerType::PointCloud:
+      isSupportedLayer = true;
       return saveAsPointCloudLayer( qobject_cast<QgsPointCloudLayer *>( layer ), destinationFolder );
 
     case Qgis::LayerType::Mesh:

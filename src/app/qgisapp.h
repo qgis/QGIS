@@ -1049,6 +1049,16 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     QString saveAsFile( QgsMapLayer *layer = nullptr, bool onlySelected = false, bool defaultToAddToMap = true, const QString &destinationFolder = QString() );
 
     /**
+     * Saves \a layer using the Save As dialog for its type.
+     *
+     * \a isSupportedLayer is set to TRUE when the layer type can be saved,
+     * or FALSE when it cannot (no dialog is shown; returns an empty string).
+     *
+     * \see saveAsFile( QgsMapLayer *, bool, bool, const QString & )
+     */
+    QString saveAsFile( QgsMapLayer *layer, bool onlySelected, bool defaultToAddToMap, const QString &destinationFolder, bool &isSupportedLayer );
+
+    /**
      * Makes a memory layer permanent, by prompting users to save the layer to a disk-based (OGR)
      * format, and then replacing the layer's data source in place.
      */

@@ -456,23 +456,15 @@ void QgsAppDirectoryItemGuiProvider::saveLayersToDirectory( const QList<QPointer
   // a single layer uses the regular "Save As" dialog, with the output preset to the directory
   if ( validLayers.size() == 1 )
   {
-    switch ( QgsMapLayer *layer = validLayers.at( 0 ); layer->type() )
-    {
-      case Qgis::LayerType::Vector:
-      case Qgis::LayerType::Raster:
-      case Qgis::LayerType::PointCloud:
-        QgisApp::instance()->saveAsFile( layer, false, false, directory );
-        break;
+    bool isSupported = false;
 
-      case Qgis::LayerType::Mesh:
-      case Qgis::LayerType::VectorTile:
-      case Qgis::LayerType::Plugin:
-      case Qgis::LayerType::Annotation:
-      case Qgis::LayerType::Group:
-      case Qgis::LayerType::TiledScene:
-        notify( title, tr( "Layer “%1” cannot be saved: layer type not supported." ).arg( layer->name() ), context, Qgis::MessageLevel::Warning );
-        break;
+    QgisApp::instance()->saveAsFile( validLayers.at( 0 ), false, false, directory, isSupported );
+
+    if ( !isSupported )
+    {
+      notify( title, tr( "Layer “%1” cannot be saved: layer type not supported." ).arg( validLayers.at( 0 )->name() ), context, Qgis::MessageLevel::Warning );
     }
+
     return;
   }
 
