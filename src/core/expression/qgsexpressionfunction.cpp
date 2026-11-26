@@ -6552,17 +6552,11 @@ static QVariant fcnPi( const QVariantList &values, const QgsExpressionContext *,
 static QVariant fcnFormatNumber( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
 {
   const double value = QgsExpressionUtils::getDoubleValue( values.at( 0 ), parent );
-  const int places = QgsExpressionUtils::getNativeIntValue( values.at( 1 ), parent );
+  const int places = std::min( 17, QgsExpressionUtils::getNativeIntValue( values.at( 1 ), parent ) );
   const QString language = QgsExpressionUtils::getStringValue( values.at( 2 ), parent );
   if ( places < 0 )
   {
     parent->setEvalErrorString( QObject::tr( "Number of places must be positive" ) );
-    return QVariant();
-  }
-
-  if ( places > 17 )
-  {
-    parent->setEvalErrorString( QObject::tr( "Number of places must be less than or equal to 17" ) );
     return QVariant();
   }
 
