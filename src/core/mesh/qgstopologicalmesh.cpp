@@ -572,7 +572,7 @@ QgsMeshEditingError QgsTopologicalMesh::checkConsistency() const
       if ( !mMesh->face( mVertexToFace.at( vertexIndex ) ).contains( vertexIndex ) )
         return QgsMeshEditingError( Qgis::MeshEditingErrorType::InvalidVertex, vertexIndex );
 
-      if ( facesAroundVertex( vertexIndex ).count() == 0 )
+      if ( facesAroundVertex( vertexIndex ).isEmpty() )
         return QgsMeshEditingError( Qgis::MeshEditingErrorType::InvalidVertex, vertexIndex );
     }
   }

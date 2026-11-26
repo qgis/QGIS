@@ -540,7 +540,7 @@ void QgsSettingsRegistryCore::migrateOldSettings()
 
   // babel devices settings - added in 3.30
   {
-    if ( QgsBabelFormatRegistry::sTreeBabelDevices->items().count() == 0 )
+    if ( QgsBabelFormatRegistry::sTreeBabelDevices->items().isEmpty() )
     {
       const QStringList deviceNames = QgsSettingsEntryBase::userSettings().value( u"/Plugin-GPS/devices/deviceList"_s ).toStringList();
 

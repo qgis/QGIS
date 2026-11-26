@@ -923,7 +923,7 @@ void QgsAuthOAuth2Edit::populateQueryPairs( const QVariantMap &querypairs, bool 
 
 void QgsAuthOAuth2Edit::queryTableSelectionChanged()
 {
-  const bool hassel = tblwdgQueryPairs->selectedItems().count() > 0;
+  const bool hassel = !tblwdgQueryPairs->selectedItems().isEmpty();
   btnRemoveQueryPair->setEnabled( hassel );
 }
 

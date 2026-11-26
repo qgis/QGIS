@@ -220,7 +220,7 @@ void QgsAuthIdentitiesEditor::selectionChanged( const QItemSelection &selected, 
 void QgsAuthIdentitiesEditor::checkSelection()
 {
   bool iscert = false;
-  if ( treeIdentities->selectionModel()->selection().length() > 0 )
+  if ( !treeIdentities->selectionModel()->selection().isEmpty() )
   {
     QTreeWidgetItem *item( treeIdentities->currentItem() );
 
@@ -334,7 +334,7 @@ void QgsAuthIdentitiesEditor::btnRemoveIdentity_clicked()
 
 void QgsAuthIdentitiesEditor::btnInfoIdentity_clicked()
 {
-  if ( treeIdentities->selectionModel()->selection().length() > 0 )
+  if ( !treeIdentities->selectionModel()->selection().isEmpty() )
   {
     QTreeWidgetItem *item( treeIdentities->currentItem() );
     handleDoubleClick( item, 0 );

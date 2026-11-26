@@ -124,7 +124,7 @@ void QgsAuthApiHeaderEdit::populateHeaderPairs( const QgsStringMap &headerpairs,
 
 void QgsAuthApiHeaderEdit::headerTableSelectionChanged()
 {
-  const bool hasPair = tblwdgHeaderPairs->selectedItems().count() > 0;
+  const bool hasPair = !tblwdgHeaderPairs->selectedItems().isEmpty();
   btnRemoveHeaderPair->setEnabled( hasPair );
   validateConfig();
 }

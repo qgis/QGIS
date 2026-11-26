@@ -199,7 +199,7 @@ void QgsAuthServersEditor::selectionChanged( const QItemSelection &selected, con
 void QgsAuthServersEditor::checkSelection()
 {
   bool isconfig = false;
-  if ( treeServerConfigs->selectionModel()->selection().length() > 0 )
+  if ( !treeServerConfigs->selectionModel()->selection().isEmpty() )
   {
     QTreeWidgetItem *item( treeServerConfigs->currentItem() );
 

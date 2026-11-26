@@ -216,7 +216,7 @@ void QgsAuthTrustedCAsDialog::selectionChanged( const QItemSelection &selected, 
 void QgsAuthTrustedCAsDialog::checkSelection()
 {
   bool iscert = false;
-  if ( treeTrustedCAs->selectionModel()->selection().length() > 0 )
+  if ( !treeTrustedCAs->selectionModel()->selection().isEmpty() )
   {
     QTreeWidgetItem *item( treeTrustedCAs->currentItem() );
 
@@ -258,7 +258,7 @@ void QgsAuthTrustedCAsDialog::handleDoubleClick( QTreeWidgetItem *item, int col 
 
 void QgsAuthTrustedCAsDialog::btnInfoCa_clicked()
 {
-  if ( treeTrustedCAs->selectionModel()->selection().length() > 0 )
+  if ( !treeTrustedCAs->selectionModel()->selection().isEmpty() )
   {
     QTreeWidgetItem *item( treeTrustedCAs->currentItem() );
     handleDoubleClick( item, 0 );

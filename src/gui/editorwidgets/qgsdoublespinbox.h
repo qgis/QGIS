@@ -177,11 +177,15 @@ class GUI_EXPORT QgsDoubleSpinBox : public QDoubleSpinBox
 
   signals:
 
+#if QT_VERSION < QT_VERSION_CHECK( 6, 10, 0 )
+
     /**
      * Emitted when the Return or Enter key is used in the line edit.
      * \since QGIS 3.40
      */
     void returnPressed();
+
+#endif
 
     /**
      * Emitted when the the value has been manually edited via line edit.

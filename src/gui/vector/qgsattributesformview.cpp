@@ -57,7 +57,7 @@ QgsAttributesFormBaseView::QgsAttributesFormBaseView( QgsVectorLayer *layer, QWi
 
 QModelIndex QgsAttributesFormBaseView::firstSelectedIndex() const
 {
-  if ( selectionModel()->selectedRows( 0 ).count() == 0 )
+  if ( selectionModel()->selectedRows( 0 ).isEmpty() )
     return QModelIndex();
 
   return mModel->mapToSource( selectionModel()->selectedRows( 0 ).at( 0 ) );

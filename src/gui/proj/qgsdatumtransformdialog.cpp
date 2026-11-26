@@ -224,7 +224,7 @@ QgsDatumTransformDialog::TransformInfo QgsDatumTransformDialog::defaultDatumTran
 
 void QgsDatumTransformDialog::applyDefaultTransform()
 {
-  if ( mCoordinateOperationsWidget->availableOperations().count() > 0 )
+  if ( !mCoordinateOperationsWidget->availableOperations().isEmpty() )
   {
     QgsCoordinateTransformContext context = QgsProject::instance()->transformContext();
     const TransformInfo dt = defaultDatumTransform();
