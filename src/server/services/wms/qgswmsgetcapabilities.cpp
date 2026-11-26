@@ -1401,14 +1401,27 @@ namespace QgsWms
                 dimElem.setAttribute( u"fieldName"_s, dim.fieldName );
                 dimElem.setAttribute( u"endFieldName"_s, dim.endFieldName );
               }
-              // values list
-              QStringList strValues;
-              for ( const QVariant &v : values )
+              // values extent
+              QString dimValuesText;
+              if ( dim.useInterval )
               {
-                strValues << v.toString();
+                dimValuesText = u"%1/%2"_s.arg( values.first().toString(), values.last().toString() );
+                if ( !dim.resolution().isEmpty() )
+                {
+                  dimValuesText += u"/%1"_s.arg( dim.resolution() );
+                }
               }
-              QDomText dimValuesText = doc.createTextNode( strValues.join( ", "_L1 ) );
-              dimElem.appendChild( dimValuesText );
+              else
+              {
+                QStringList strValues;
+                for ( const QVariant &v : values )
+                {
+                  strValues << v.toString();
+                }
+                dimValuesText = strValues.join( ", "_L1 );
+              }
+              QDomText dimValuesDomText = doc.createTextNode( dimValuesText );
+              dimElem.appendChild( dimValuesDomText );
               layerElem.appendChild( dimElem );
             }
           }
