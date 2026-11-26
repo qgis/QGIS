@@ -103,6 +103,79 @@ void QgsServerMetadataUrlProperties::writeXml( QDomNode &layer_node, QDomDocumen
   }
 }
 
+
+// QgsMapLayerServerProperties::WmsDimensionInfo
+
+QString QgsMapLayerServerProperties::WmsDimensionInfo::resolution() const
+{
+  switch ( resolutionType )
+  {
+    case Qgis::WmsDimensionResolutionType::Disabled:
+      return u""_s;
+
+    case Qgis::WmsDimensionResolutionType::Custom:
+      return customResolution.trimmed();
+
+    case Qgis::WmsDimensionResolutionType::Yearly:
+      return u"P1Y"_s;
+
+    case Qgis::WmsDimensionResolutionType::Monthly:
+      return u"P1M"_s;
+
+    case Qgis::WmsDimensionResolutionType::Weekly:
+      return u"P1W"_s;
+
+    case Qgis::WmsDimensionResolutionType::Daily:
+      return u"P1D"_s;
+
+    case Qgis::WmsDimensionResolutionType::Hourly:
+      return u"PT1H"_s;
+
+    case Qgis::WmsDimensionResolutionType::EveryMinute:
+      return u"PT1M"_s;
+
+    case Qgis::WmsDimensionResolutionType::EverySecond:
+      return u"PT1S"_s;
+  }
+
+  BUILTIN_UNREACHABLE
+}
+
+QString QgsMapLayerServerProperties::WmsDimensionInfo::resolutionTypeToString( Qgis::WmsDimensionResolutionType resolutionUnit )
+{
+  switch ( resolutionUnit )
+  {
+    case Qgis::WmsDimensionResolutionType::Disabled:
+      return QObject::tr( "Disabled" );
+
+    case Qgis::WmsDimensionResolutionType::Custom:
+      return QObject::tr( "Custom" );
+
+    case Qgis::WmsDimensionResolutionType::Yearly:
+      return QObject::tr( "Yearly" );
+
+    case Qgis::WmsDimensionResolutionType::Monthly:
+      return QObject::tr( "Monthly" );
+
+    case Qgis::WmsDimensionResolutionType::Weekly:
+      return QObject::tr( "Weekly" );
+
+    case Qgis::WmsDimensionResolutionType::Daily:
+      return QObject::tr( "Daily" );
+
+    case Qgis::WmsDimensionResolutionType::Hourly:
+      return QObject::tr( "Hourly" );
+
+    case Qgis::WmsDimensionResolutionType::EveryMinute:
+      return QObject::tr( "Every Minute" );
+
+    case Qgis::WmsDimensionResolutionType::EverySecond:
+      return QObject::tr( "Every Second" );
+  }
+
+  BUILTIN_UNREACHABLE
+}
+
 // QgsServerWmsDimensionProperties
 
 bool QgsServerWmsDimensionProperties::operator==( const QgsServerWmsDimensionProperties &other ) const
@@ -209,6 +282,10 @@ void QgsServerWmsDimensionProperties::readXml( const QDomNode &layer_node )
     const Qgis::WmsDimensionDefaultDisplay dimDefaultDisplayType = static_cast<Qgis::WmsDimensionDefaultDisplay>( dimElem.attribute( u"defaultDisplayType"_s ).toInt() );
     const QString dimRefValueStr = dimElem.attribute( u"referenceValue"_s );
 
+    const bool dimUseInterval = dimElem.attribute( u"useInterval"_s, u"0"_s ) == "1"_L1;
+    const Qgis::WmsDimensionResolutionType dimResolutionType = qgsEnumKeyToValue( dimElem.attribute( u"resolutionType"_s ), Qgis::WmsDimensionResolutionType::Disabled );
+    const QString dimCustomResolution = dimElem.attribute( u"customResolution"_s );
+
     QVariant dimRefValue;
     if ( vl )
     {
@@ -233,7 +310,7 @@ void QgsServerWmsDimensionProperties::readXml( const QDomNode &layer_node )
     }
 
     QgsServerWmsDimensionProperties::WmsDimensionInfo
-      dim( dimName, dimFieldName, dimElem.attribute( u"endFieldName"_s ), dimElem.attribute( u"units"_s ), dimElem.attribute( u"unitSymbol"_s ), dimDefaultDisplayType, dimRefValue );
+      dim( dimName, dimFieldName, dimElem.attribute( u"endFieldName"_s ), dimElem.attribute( u"units"_s ), dimElem.attribute( u"unitSymbol"_s ), dimDefaultDisplayType, dimRefValue, dimUseInterval, dimResolutionType, dimCustomResolution );
     //XXX This add O(n^2) complexity !!!!
     // addWmsDimension( dim );
     // Better to trust the XML:
@@ -268,6 +345,10 @@ void QgsServerWmsDimensionProperties::writeXml( QDomNode &layer_node, QDomDocume
 
       if ( !dim.referenceValue().isNull() )
         dimElem.setAttribute( u"referenceValue"_s, dim.referenceValue().toString() );
+
+      dimElem.setAttribute( u"useInterval"_s, dim.useInterval ? u"1"_s : u"0"_s );
+      dimElem.setAttribute( u"resolutionType"_s, qgsEnumValueToKey( dim.resolutionType ) );
+      dimElem.setAttribute( u"customResolution"_s, dim.customResolution );
 
       wmsDimsElem.appendChild( dimElem );
     }

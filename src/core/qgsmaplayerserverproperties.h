@@ -170,7 +170,10 @@ class CORE_EXPORT QgsServerWmsDimensionProperties
           const QString &dimUnits = QString(),
           const QString &dimUnitSymbol = QString(),
           Qgis::WmsDimensionDefaultDisplay dimDefaultDisplayType = Qgis::WmsDimensionDefaultDisplay::AllValues,
-          const QVariant &dimReferenceValue = QVariant()
+          const QVariant &dimReferenceValue = QVariant(),
+          const bool dimUseInterval = false,
+          Qgis::WmsDimensionResolutionType dimResolutionType = Qgis::WmsDimensionResolutionType::Disabled,
+          const QString &dimCustomResolution = QString()
         )
           : name( dimName )
           , fieldName( dimFieldName )
@@ -178,6 +181,9 @@ class CORE_EXPORT QgsServerWmsDimensionProperties
           , units( dimUnits )
           , unitSymbol( dimUnitSymbol )
           , defaultDisplayType( dimDefaultDisplayType )
+          , useInterval( dimUseInterval )
+          , resolutionType( dimResolutionType )
+          , customResolution( dimCustomResolution )
           , mReferenceValue( dimReferenceValue )
         {}
 
@@ -212,6 +218,19 @@ class CORE_EXPORT QgsServerWmsDimensionProperties
      */
         void setReferenceValue( const QVariant &referenceValue ) { mReferenceValue = referenceValue; }
 
+        /**
+     * Returns the dimension resolution (periodicity) of the available values.
+     *
+     * \since QGIS 4.6
+     */
+        QString resolution() const;
+
+        /**
+     * Returns a display string corresponding to the dimension resolution (periodicity) type of the available values.
+     *
+     * \since QGIS 4.6
+     */
+        static QString resolutionTypeToString( Qgis::WmsDimensionResolutionType resolutionUnit );
 
         QString name;
         QString fieldName;
@@ -219,6 +238,9 @@ class CORE_EXPORT QgsServerWmsDimensionProperties
         QString units;
         QString unitSymbol;
         Qgis::WmsDimensionDefaultDisplay defaultDisplayType;
+        bool useInterval = false;
+        Qgis::WmsDimensionResolutionType resolutionType = Qgis::WmsDimensionResolutionType::Disabled;
+        QString customResolution;
 
       private:
         QVariant mReferenceValue;

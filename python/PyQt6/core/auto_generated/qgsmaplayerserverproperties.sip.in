@@ -117,7 +117,10 @@ Manages QGIS Server properties for WMS dimensions.
           const QString &dimUnits = QString(),
           const QString &dimUnitSymbol = QString(),
           Qgis::WmsDimensionDefaultDisplay dimDefaultDisplayType = Qgis::WmsDimensionDefaultDisplay::AllValues,
-          const QVariant &dimReferenceValue = QVariant()
+          const QVariant &dimReferenceValue = QVariant(),
+          const bool dimUseInterval = false,
+          Qgis::WmsDimensionResolutionType dimResolutionType = Qgis::WmsDimensionResolutionType::Disabled,
+          const QString &dimCustomResolution = QString()
         );
 %Docstring
 Constructor for WmsDimensionInfo.
@@ -157,6 +160,20 @@ Set ``referenceValue`` used when default display type is
 .. versionadded:: 4.4
 %End
 
+        QString resolution() const;
+%Docstring
+Returns the dimension resolution (periodicity) of the available values.
+
+.. versionadded:: 4.6
+%End
+
+        static QString resolutionTypeToString( Qgis::WmsDimensionResolutionType resolutionUnit );
+%Docstring
+Returns a display string corresponding to the dimension resolution
+(periodicity) type of the available values.
+
+.. versionadded:: 4.6
+%End
 
         QString name;
         QString fieldName;
@@ -164,6 +181,9 @@ Set ``referenceValue`` used when default display type is
         QString units;
         QString unitSymbol;
         Qgis::WmsDimensionDefaultDisplay defaultDisplayType;
+        bool useInterval;
+        Qgis::WmsDimensionResolutionType resolutionType;
+        QString customResolution;
 
     };
 
