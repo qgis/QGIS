@@ -366,10 +366,12 @@ bool Qgs3DMapCanvas::containerEventFilter( QEvent *event )
   // it as if it were a KeyPress.
   if ( event->type() == QEvent::KeyPress || event->type() == QEvent::KeyRelease || event->type() == QEvent::ShortcutOverride )
   {
-    // if the camera controller will handle a key event, don't allow it to propagate
+    QKeyEvent *keyEvent = static_cast<QKeyEvent *>( event );
+
+    // if the camera controller or the map tool will handle a key event, don't allow it to propagate
     // outside of the 3d window or it may be grabbed by a parent window level shortcut
-    // and accordingly never be received by the camera controller
-    if ( cameraController() && cameraController()->keyboardEventFilter( static_cast<QKeyEvent *>( event ) ) )
+    // and accordingly never be received by them
+    if ( ( event->type() == QEvent::ShortcutOverride && mMapTool && mMapTool->shortcutEvent( keyEvent ) ) || ( cameraController() && cameraController()->keyboardEventFilter( keyEvent ) ) )
     {
       event->accept();
       return true;

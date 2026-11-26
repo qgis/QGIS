@@ -62,6 +62,12 @@ void Qgs3DMapTool::mouseWheelEvent( QWheelEvent *event )
   Q_UNUSED( event )
 }
 
+bool Qgs3DMapTool::shortcutEvent( QKeyEvent *event )
+{
+  Q_UNUSED( event )
+  return false;
+}
+
 void Qgs3DMapTool::activate()
 {}
 

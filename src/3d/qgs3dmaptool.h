@@ -17,6 +17,7 @@
 #define QGS3DMAPTOOL_H
 
 #include "qgis_3d.h"
+#include "qgis_sip.h"
 
 #include <QObject>
 #include <QPointer>
@@ -55,6 +56,15 @@ class _3D_EXPORT Qgs3DMapTool : public QObject
     virtual void keyReleaseEvent( QKeyEvent *event );
     //! Reimplement to handle mouse wheel \a event forwarded by the parent Qgs3DMapCanvas
     virtual void mouseWheelEvent( QWheelEvent *event );
+
+    /**
+     * Shortcut events coming from the application for overriding. The default
+     * implementation does nothing. Returns whether the event was handled by
+     * the tool and should not be propagated further.
+     *
+     * \since QGIS 4.4.1
+     */
+    virtual bool shortcutEvent( QKeyEvent *event SIP_DISALLOWNONE );
 
     //! Called when set as currently active map tool
     virtual void activate();
