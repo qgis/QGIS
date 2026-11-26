@@ -16,6 +16,7 @@
 
 #include "qgsfieldmappingmodel.h"
 
+#include "qgsapplication.h"
 #include "qgsexpressioncontextutils.h"
 #include "qgsexpressionnodeimpl.h"
 #include "qgsvariantutils.h"
@@ -115,6 +116,23 @@ int QgsFieldMappingModel::columnCount( const QModelIndex &parent ) const
 
 QVariant QgsFieldMappingModel::data( const QModelIndex &index, int role ) const
 {
+  auto newStringFieldWidthIsTooShort = [this]( const Field &f, QString &sourceFieldName, qsizetype &sourceFieldMaxlength ) {
+    if ( f.field.type() == QMetaType::QString && f.field.length() > 0 )
+    {
+      QgsExpression candidate( f.expression );
+      if ( candidate.isField() )
+      {
+        sourceFieldName = qgis::down_cast<const QgsExpressionNodeColumnRef *>( candidate.rootNode() )->name();
+        sourceFieldMaxlength = mMaximumSourceFieldLengths.value( sourceFieldName );
+        if ( sourceFieldMaxlength > 0 && sourceFieldMaxlength > f.field.length() )
+        {
+          return true;
+        }
+      }
+    }
+    return false;
+  };
+
   if ( index.isValid() )
   {
     const ColumnDataIndex col { static_cast<ColumnDataIndex>( index.column() ) };
@@ -183,6 +201,15 @@ QVariant QgsFieldMappingModel::data( const QModelIndex &index, int role ) const
           }
           return constraintDescription.join( "<br>"_L1 );
         }
+        else if ( col == ColumnDataIndex::DestinationLength )
+        {
+          qsizetype sourceFieldMaxlength = 0;
+          QString sourceFieldName;
+          if ( newStringFieldWidthIsTooShort( f, sourceFieldName, sourceFieldMaxlength ) )
+          {
+            return tr( "Output field length %1 is shorter than the maximum string length found in source field '%2' (%3)." ).arg( f.field.length() ).arg( sourceFieldName ).arg( sourceFieldMaxlength );
+          }
+        }
         break;
       }
       case Qt::BackgroundRole:
@@ -193,6 +220,18 @@ QVariant QgsFieldMappingModel::data( const QModelIndex &index, int role ) const
         }
         break;
       }
+
+      case Qt::DecorationRole:
+        if ( col == ColumnDataIndex::DestinationLength )
+        {
+          qsizetype sourceFieldMaxlength = 0;
+          QString sourceFieldName;
+          if ( newStringFieldWidthIsTooShort( f, sourceFieldName, sourceFieldMaxlength ) )
+          {
+            return QgsApplication::getThemeIcon( u"mIconWarning.svg"_s );
+          }
+        }
+        break;
 
       default:
         break;
@@ -408,6 +447,15 @@ void QgsFieldMappingModel::setDestinationFields( const QgsFields &destinationFie
     mMapping.push_back( f );
   }
   endResetModel();
+}
+
+void QgsFieldMappingModel::setMaximumStringLengths( const QMap<QString, qsizetype> &lengths )
+{
+  mMaximumSourceFieldLengths = lengths;
+  if ( rowCount() > 0 )
+  {
+    emit dataChanged( index( 0, static_cast< int >( ColumnDataIndex::DestinationLength ) ), index( rowCount() - 1, static_cast< int >( ColumnDataIndex::DestinationLength ) ) );
+  }
 }
 
 bool QgsFieldMappingModel::destinationEditable() const

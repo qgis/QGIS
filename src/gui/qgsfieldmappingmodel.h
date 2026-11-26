@@ -165,6 +165,14 @@ class GUI_EXPORT QgsFieldMappingModel : public QAbstractTableModel
      */
     void setDestinationFields( const QgsFields &destinationFields, const QMap<QString, QString> &expressions = QMap<QString, QString>() );
 
+    /**
+     * Sets the maximum length of source data string field values.
+     *
+     * \note Not available in Python bindings
+     *
+     * \since QGIS 4.6
+     */
+    SIP_SKIP void setMaximumStringLengths( const QMap<QString, qsizetype> &lengths );
 
     // QAbstractItemModel interface
     int rowCount( const QModelIndex &parent = QModelIndex() ) const override;
@@ -225,6 +233,7 @@ class GUI_EXPORT QgsFieldMappingModel : public QAbstractTableModel
     bool mDestinationEditable = false;
     QgsFields mSourceFields;
     std::unique_ptr<ExpressionContextGenerator> mExpressionContextGenerator;
+    QMap<QString, qsizetype> mMaximumSourceFieldLengths;
 
     friend class QgsAggregateMappingModel;
 };

@@ -144,6 +144,7 @@ void QgsFieldMappingWidget::setSourceLayer( QgsVectorLayer *layer )
           mMaxStringLengths[field.name()] = mFieldPropertyTask->maximumStringFieldLength( index );
         }
       }
+      model()->setMaximumStringLengths( mMaxStringLengths );
       mFieldPropertyTask = nullptr;
     }
   } );
