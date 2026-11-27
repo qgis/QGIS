@@ -5506,9 +5506,13 @@ void QgisApp::updateProjectFromTemplates()
     }
   }
 
+  mProjectFromTemplateMenu->addSeparator();
+
   // add <blank> entry, which loads a blank template (regardless of "default template")
   if ( settingsNewProjectDefault->value() )
-    mProjectFromTemplateMenu->addAction( tr( "< Blank >" ), this, [this]() { fileNewBlank(); } );
+    mProjectFromTemplateMenu->addAction( tr( "New Empty Project" ), this, [this]() { fileNewBlank(); } );
+
+  mProjectFromTemplateMenu->addAction( tr( "OpenStreetMap Basemap" ), this, [this]() { fileNewWithBasemap(); } );
 
   if ( mProjectFromTemplateMenu->isEmpty() )
   {
