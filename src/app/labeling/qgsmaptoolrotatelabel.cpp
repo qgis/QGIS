@@ -76,6 +76,7 @@ void QgsMapToolRotateLabel::canvasMoveEvent( QgsMapMouseEvent *e )
     if ( mRotationItem )
     {
       mRotationItem->setSymbolRotation( displayValue );
+      mRotationItem->setRotationValue( mCurrentLabel.settings.rotationFromDegrees( displayValue ) );
       setRotationPreviewBox( displayValue - mStartRotation );
       mRotationItem->update();
     }
@@ -168,9 +169,11 @@ void QgsMapToolRotateLabel::canvasPressEvent( QgsMapMouseEvent *e )
         {
           mCurrentRotation = 0;
         }
-
-        // Convert to degree
-        mCurrentRotation = mCurrentRotation * QgsUnitTypes::fromUnitToUnitFactor( mCurrentLabel.settings.rotationUnit(), Qgis::AngleUnit::Degrees );
+        else
+        {
+          // Convert to degrees clockwise from the horizontal
+          mCurrentRotation = mCurrentLabel.settings.rotationToDegrees( mCurrentRotation );
+        }
 
         mStartRotation = mCurrentRotation;
         createRubberBands();
@@ -178,10 +181,11 @@ void QgsMapToolRotateLabel::canvasPressEvent( QgsMapMouseEvent *e )
         createRotationPreviewBox();
 
         mRotationItem = new QgsPointRotationItem( mCanvas );
-        mRotationItem->setOrientation( QgsPointRotationItem::Clockwise );
+        mRotationItem->setOrientation( Qgis::RotationDirection::Clockwise );
         mRotationItem->setPointLocation( mRotationPoint );
         mRotationItem->setRotationUnit( mCurrentLabel.settings.rotationUnit() );
         mRotationItem->setSymbolRotation( static_cast<int>( mCurrentRotation ) );
+        mRotationItem->setRotationValue( mCurrentLabel.settings.rotationFromDegrees( mCurrentRotation ) );
       }
     }
   }
@@ -225,8 +229,8 @@ void QgsMapToolRotateLabel::canvasPressEvent( QgsMapMouseEvent *e )
           return;
         }
 
-        // Convert back to settings unit
-        const double rotation = rotationDegree * QgsUnitTypes::fromUnitToUnitFactor( Qgis::AngleUnit::Degrees, mCurrentLabel.settings.rotationUnit() );
+        // Convert back to the unit, start and direction of the settings
+        const double rotation = mCurrentLabel.settings.rotationFromDegrees( rotationDegree );
 
         vlayer->beginEditCommand( tr( "Rotated label" ) + u" '%1'"_s.arg( currentLabelText( 24 ) ) );
         if ( !vlayer->changeAttributeValue( mCurrentLabel.pos.featureId, rotationCol, rotation ) )

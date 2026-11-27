@@ -25,6 +25,7 @@
 
 #define SIP_NO_FILE
 
+class QActionGroup;
 class QDialogButtonBox;
 
 class QgsMeshLayer;
@@ -136,6 +137,11 @@ class GUI_EXPORT QgsLabelingGui : public QgsTextFormatWidget
     QgsLabelObstacleSettings mObstacleSettings;
     QgsLabelLineSettings mLineSettings;
     QgsLabelThinningSettings mThinningSettings;
+
+    QActionGroup *mCoordRotationDirectionGroup = nullptr;
+    QActionGroup *mCoordRotationStartGroup = nullptr;
+
+    void updateCoordRotationButtonToolTip();
 
     QgsExpressionContext createExpressionContext() const override;
 

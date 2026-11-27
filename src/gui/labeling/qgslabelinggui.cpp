@@ -36,7 +36,9 @@
 #include "qgsvectorlayer.h"
 #include "qgsvectortilelayer.h"
 
+#include <QActionGroup>
 #include <QButtonGroup>
+#include <QMenu>
 #include <QMessageBox>
 #include <QString>
 
@@ -340,6 +342,32 @@ void QgsLabelingGui::init()
   mCoordRotationUnitComboBox->addItem( QgsUnitTypes::toString( Qgis::AngleUnit::MilliradiansSI ), static_cast<int>( Qgis::AngleUnit::MilliradiansSI ) );
   mCoordRotationUnitComboBox->addItem( QgsUnitTypes::toString( Qgis::AngleUnit::MilNATO ), static_cast<int>( Qgis::AngleUnit::MilNATO ) );
 
+  // the direction and the start of a data defined rotation
+  QMenu *rotationMenu = new QMenu( mCoordRotationButton );
+  auto addRotationAction = [rotationMenu]( QActionGroup *group, const QString &text, const QVariant &value, bool checked = false ) {
+    QAction *action = rotationMenu->addAction( text );
+    action->setCheckable( true );
+    action->setChecked( checked );
+    action->setData( value );
+    group->addAction( action );
+  };
+  mCoordRotationDirectionGroup = new QActionGroup( rotationMenu );
+  addRotationAction( mCoordRotationDirectionGroup, tr( "Clockwise" ), QVariant::fromValue( Qgis::RotationDirection::Clockwise ), true );
+  addRotationAction( mCoordRotationDirectionGroup, tr( "Counter-clockwise" ), QVariant::fromValue( Qgis::RotationDirection::CounterClockwise ) );
+  rotationMenu->addSeparator();
+  mCoordRotationStartGroup = new QActionGroup( rotationMenu );
+  addRotationAction( mCoordRotationStartGroup, tr( "0 reads east" ), QVariant::fromValue( Qgis::CardinalDirection::East ), true );
+  addRotationAction( mCoordRotationStartGroup, tr( "0 reads north" ), QVariant::fromValue( Qgis::CardinalDirection::North ) );
+  addRotationAction( mCoordRotationStartGroup, tr( "0 reads west" ), QVariant::fromValue( Qgis::CardinalDirection::West ) );
+  addRotationAction( mCoordRotationStartGroup, tr( "0 reads south" ), QVariant::fromValue( Qgis::CardinalDirection::South ) );
+  mCoordRotationButton->setMenu( rotationMenu );
+  mCoordRotationButton->setIcon( QgsApplication::getThemeIcon( u"/mActionRotateLabel.svg"_s ) );
+  updateCoordRotationButtonToolTip();
+  connect( rotationMenu, &QMenu::triggered, this, [this] {
+    updateCoordRotationButtonToolTip();
+    updatePreview();
+  } );
+
   // connections for groupboxes with separate activation checkboxes (that need to honor data defined setting)
   connect( mBufferDrawChkBx, &QAbstractButton::toggled, this, &QgsLabelingGui::updateUi );
   connect( mBufferDrawDDBtn, &QgsPropertyOverrideButton::changed, this, &QgsLabelingGui::updateUi );
@@ -546,6 +574,11 @@ void QgsLabelingGui::setLayer( QgsMapLayer *mapLayer )
   mCoordRotationUnitComboBox->setCurrentIndex( 0 );
   if ( mCoordRotationUnitComboBox->findData( static_cast<unsigned int>( mSettings.rotationUnit() ) ) >= 0 )
     mCoordRotationUnitComboBox->setCurrentIndex( mCoordRotationUnitComboBox->findData( static_cast<unsigned int>( mSettings.rotationUnit() ) ) );
+  for ( QAction *action : mCoordRotationDirectionGroup->actions() )
+    action->setChecked( action->data().value<Qgis::RotationDirection>() == mSettings.rotationDirection() );
+  for ( QAction *action : mCoordRotationStartGroup->actions() )
+    action->setChecked( action->data().value<Qgis::CardinalDirection>() == mSettings.rotationStart() );
+  updateCoordRotationButtonToolTip();
 
   mScaleBasedVisibilityChkBx->setChecked( mSettings.scaleVisibility );
   mMinScaleWidget->setScale( mSettings.minimumScale );
@@ -750,6 +783,8 @@ QgsPalLayerSettings QgsLabelingGui::layerSettings()
   lyr.multilineAlign = static_cast<Qgis::LabelMultiLineAlignment>( mFontMultiLineAlignComboBox->currentData().toInt() );
   lyr.preserveRotation = chkPreserveRotation->isChecked();
   lyr.setRotationUnit( static_cast<Qgis::AngleUnit>( mCoordRotationUnitComboBox->currentData().toInt() ) );
+  lyr.setRotationDirection( static_cast<Qgis::RotationDirection>( mCoordRotationDirectionGroup->checkedAction()->data().toInt() ) );
+  lyr.setRotationStart( static_cast<Qgis::CardinalDirection>( mCoordRotationStartGroup->checkedAction()->data().toInt() ) );
   lyr.geometryGenerator = mGeometryGenerator->text();
   lyr.geometryGeneratorType = mGeometryGeneratorType->currentData().value<Qgis::GeometryType>();
   lyr.geometryGeneratorEnabled = mGeometryGeneratorGroupBox->isChecked();
@@ -939,6 +974,11 @@ void QgsLabelingGui::saveFormat()
     case QgsStyle::MaterialSettingsEntity:
       break;
   }
+}
+
+void QgsLabelingGui::updateCoordRotationButtonToolTip()
+{
+  mCoordRotationButton->setToolTip( u"%1, %2"_s.arg( mCoordRotationDirectionGroup->checkedAction()->text(), mCoordRotationStartGroup->checkedAction()->text() ) );
 }
 
 void QgsLabelingGui::updateGeometryTypeBasedWidgets()

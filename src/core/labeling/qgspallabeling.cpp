@@ -32,6 +32,7 @@
 #include "qgsfontutils.h"
 #include "qgsgeometry.h"
 #include "qgsgeometrycollection.h"
+#include "qgsgeometryutils_base.h"
 #include "qgslabelingengine.h"
 #include "qgslogger.h"
 #include "qgsmaptopixelgeometrysimplifier.h"
@@ -440,6 +441,8 @@ QgsPalLayerSettings &QgsPalLayerSettings::operator=( const QgsPalLayerSettings &
   angleOffset = s.angleOffset;
   preserveRotation = s.preserveRotation;
   mRotationUnit = s.mRotationUnit;
+  mRotationStart = s.mRotationStart;
+  mRotationDirection = s.mRotationDirection;
   maxCurvedCharAngleIn = s.maxCurvedCharAngleIn;
   maxCurvedCharAngleOut = s.maxCurvedCharAngleOut;
   priority = s.priority;
@@ -737,6 +740,39 @@ Qgis::AngleUnit QgsPalLayerSettings::rotationUnit() const
 void QgsPalLayerSettings::setRotationUnit( Qgis::AngleUnit angleUnit )
 {
   mRotationUnit = angleUnit;
+}
+
+// the direction of a rotation of 0, in degrees clockwise from the east
+static double rotationStartDegrees( Qgis::CardinalDirection direction )
+{
+  switch ( direction )
+  {
+    case Qgis::CardinalDirection::North:
+      return -90;
+    case Qgis::CardinalDirection::East:
+      return 0;
+    case Qgis::CardinalDirection::South:
+      return 90;
+    case Qgis::CardinalDirection::West:
+      return 180;
+  }
+  BUILTIN_UNREACHABLE
+}
+
+double QgsPalLayerSettings::rotationToDegrees( double rotation ) const
+{
+  double degrees = rotation * QgsUnitTypes::fromUnitToUnitFactor( mRotationUnit, Qgis::AngleUnit::Degrees );
+  if ( mRotationDirection == Qgis::RotationDirection::CounterClockwise )
+    degrees = -degrees;
+  return QgsGeometryUtilsBase::normalizedAngleDegrees( degrees + rotationStartDegrees( mRotationStart ) );
+}
+
+double QgsPalLayerSettings::rotationFromDegrees( double degrees ) const
+{
+  double rotation = degrees - rotationStartDegrees( mRotationStart );
+  if ( mRotationDirection == Qgis::RotationDirection::CounterClockwise )
+    rotation = -rotation;
+  return QgsGeometryUtilsBase::normalizedAngleDegrees( rotation ) * QgsUnitTypes::fromUnitToUnitFactor( Qgis::AngleUnit::Degrees, mRotationUnit );
 }
 
 QString updateDataDefinedString( const QString &value )
@@ -1211,6 +1247,8 @@ void QgsPalLayerSettings::readXml( const QDomElement &elem, const QgsReadWriteCo
 
     mRotationUnit = qgsEnumKeyToValue( rotationUnitString, Qgis::AngleUnit::Degrees );
   }
+  mRotationStart = qgsEnumKeyToValue( placementElem.attribute( u"rotationStart"_s ), Qgis::CardinalDirection::East );
+  mRotationDirection = qgsEnumKeyToValue( placementElem.attribute( u"rotationDirection"_s ), Qgis::RotationDirection::Clockwise );
   maxCurvedCharAngleIn = placementElem.attribute( u"maxCurvedCharAngleIn"_s, u"25"_s ).toDouble();
   maxCurvedCharAngleOut = placementElem.attribute( u"maxCurvedCharAngleOut"_s, u"-25"_s ).toDouble();
   priority = placementElem.attribute( u"priority"_s ).toInt();
@@ -1489,6 +1527,8 @@ QDomElement QgsPalLayerSettings::writeXml( QDomDocument &doc, const QgsReadWrite
     const QString rotationUnitString = u"Angle"_s + qgsEnumValueToKey( mRotationUnit );
     placementElem.setAttribute( u"rotationUnit"_s, rotationUnitString );
   }
+  placementElem.setAttribute( u"rotationStart"_s, qgsEnumValueToKey( mRotationStart ) );
+  placementElem.setAttribute( u"rotationDirection"_s, qgsEnumValueToKey( mRotationDirection ) );
   placementElem.setAttribute( u"maxCurvedCharAngleIn"_s, maxCurvedCharAngleIn );
   placementElem.setAttribute( u"maxCurvedCharAngleOut"_s, maxCurvedCharAngleOut );
   placementElem.setAttribute( u"priority"_s, priority );
@@ -3047,7 +3087,7 @@ std::unique_ptr< QgsTextLabelFeature> QgsPalLayerSettings::generateLabelFeature(
       {
         dataDefinedRotation = true;
 
-        double rotationDegrees = rotation * QgsUnitTypes::fromUnitToUnitFactor( mRotationUnit, Qgis::AngleUnit::Degrees );
+        double rotationDegrees = rotationToDegrees( rotation );
 
         // TODO: add setting to disable having data defined rotation follow
         //       map rotation ?

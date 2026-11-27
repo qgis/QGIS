@@ -50,6 +50,8 @@ class TestQgsGeometryUtils : public QObject
     void testCircleLength();
     void testNormalizedAngle_data();
     void testNormalizedAngle();
+    void testNormalizedAngleDegrees_data();
+    void testNormalizedAngleDegrees();
     void testLineAngle_data();
     void testLineAngle();
     void testLinePerpendicularAngle_data();
@@ -330,6 +332,27 @@ void TestQgsGeometryUtils::testNormalizedAngle()
   QFETCH( double, input );
   QFETCH( double, expected );
   QGSCOMPARENEAR( expected, QgsGeometryUtilsBase::normalizedAngle( input ), 0.0001 );
+}
+
+void TestQgsGeometryUtils::testNormalizedAngleDegrees_data()
+{
+  QTest::addColumn<double>( "input" );
+  QTest::addColumn<double>( "expected" );
+  QTest::newRow( "normalizedAngleDegrees 0" ) << 0.0 << 0.0;
+  QTest::newRow( "normalizedAngleDegrees 30" ) << 30.0 << 30.0;
+  QTest::newRow( "normalizedAngleDegrees 60" ) << 60.0 << 60.0;
+  QTest::newRow( "normalizedAngleDegrees 360" ) << 360.0 << 0.0;
+  QTest::newRow( "normalizedAngleDegrees 390" ) << 390.0 << 30.0;
+  QTest::newRow( "normalizedAngleDegrees 720" ) << 720.0 << 0.0;
+  QTest::newRow( "normalizedAngleDegrees -30" ) << -30.0 << 330.0;
+  QTest::newRow( "normalizedAngleDegrees -390" ) << -390.0 << 330.0;
+}
+
+void TestQgsGeometryUtils::testNormalizedAngleDegrees()
+{
+  QFETCH( double, input );
+  QFETCH( double, expected );
+  QGSCOMPARENEAR( QgsGeometryUtilsBase::normalizedAngleDegrees( input ), expected, 0 );
 }
 
 void TestQgsGeometryUtils::testLineAngle_data()

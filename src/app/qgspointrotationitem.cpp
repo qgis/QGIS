@@ -84,7 +84,7 @@ void QgsPointRotationItem::paint( QPainter *painter )
   bufferPen.setWidthF( QgsGuiUtils::scaleIconSize( 4 ) );
   const QFontMetricsF fm( mFont );
   QPainterPath label;
-  const double rotationText = mRotation * QgsUnitTypes::fromUnitToUnitFactor( Qgis::AngleUnit::Degrees, mRotationUnit );
+  const double rotationText = mRotationValue ? *mRotationValue : mRotation * QgsUnitTypes::fromUnitToUnitFactor( Qgis::AngleUnit::Degrees, mRotationUnit );
   label.addText( mPixmap.width(), mPixmap.height() / 2.0 + fm.height() / 2.0, mFont, QgsUnitTypes::formatAngle( rotationText, -1, mRotationUnit ) );
   painter->setPen( bufferPen );
   painter->setBrush( Qt::NoBrush );
@@ -134,7 +134,7 @@ void QgsPointRotationItem::setSymbol( const QImage &symbolImage )
 
 int QgsPointRotationItem::painterRotation( int rotation ) const
 {
-  if ( mOrientation == Clockwise )
+  if ( mOrientation == Qgis::RotationDirection::Clockwise )
   {
     return rotation;
   }

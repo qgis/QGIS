@@ -212,6 +212,19 @@ Ensures that an angle is in the range 0 <= angle < 2 pi.
 :return: equivalent angle within the range [0, 2 pi)
 %End
 
+    static double normalizedAngleDegrees( double angle ) /HoldGIL/;
+%Docstring
+Ensures that an angle is in the range 0 <= angle < 360.
+
+:param angle: angle in degrees
+
+:return: equivalent angle within the range [0, 360)
+
+.. seealso:: :py:func:`normalizedAngle`
+
+.. versionadded:: 4.6
+%End
+
     static double lineAngle( double x1, double y1, double x2, double y2 ) /HoldGIL/;
 %Docstring
 Calculates the direction of line joining two points in radians,

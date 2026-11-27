@@ -340,6 +340,72 @@ Set unit for rotation of labels.
 .. versionadded:: 3.22
 %End
 
+    Qgis::CardinalDirection rotationStart() const;
+%Docstring
+Returns the direction of the label at a rotation of 0
+
+.. seealso:: :py:func:`setRotationStart`
+
+.. seealso:: :py:func:`rotationDirection`
+
+.. versionadded:: 4.6
+%End
+
+    void setRotationStart( Qgis::CardinalDirection direction );
+%Docstring
+Sets the ``direction`` of the label at a rotation of 0.
+
+.. seealso:: :py:func:`rotationStart`
+
+.. versionadded:: 4.6
+%End
+
+    Qgis::RotationDirection rotationDirection() const;
+%Docstring
+Returns the direction of the label, clockwise by default.
+
+.. seealso:: :py:func:`setRotationDirection`
+
+.. seealso:: :py:func:`rotationStart`
+
+.. versionadded:: 4.6
+%End
+
+    void setRotationDirection( Qgis::RotationDirection direction );
+%Docstring
+Sets the ``direction`` of the label
+
+.. seealso:: :py:func:`rotationDirection`
+
+.. versionadded:: 4.6
+%End
+
+    double rotationToDegrees( double rotation ) const;
+%Docstring
+Converts a data defined ``rotation``, in the
+:py:func:`~QgsPalLayerSettings.rotationUnit`, from the
+:py:func:`~QgsPalLayerSettings.rotationStart` and in the
+:py:func:`~QgsPalLayerSettings.rotationDirection`, to degrees clockwise
+from the horizontal (as the label is drawn) as a normalized angle.
+
+.. seealso:: :py:func:`rotationFromDegrees`
+
+.. versionadded:: 4.6
+%End
+
+    double rotationFromDegrees( double degrees ) const;
+%Docstring
+Converts ``degrees`` clockwise from the horizontal (as the label is
+drawn) to a data defined rotation, in the
+:py:func:`~QgsPalLayerSettings.rotationUnit`, from the
+:py:func:`~QgsPalLayerSettings.rotationStart` and in the
+:py:func:`~QgsPalLayerSettings.rotationDirection` as a normalized angle.
+
+.. seealso:: :py:func:`rotationToDegrees`
+
+.. versionadded:: 4.6
+%End
+
     double maxCurvedCharAngleIn;
 
     double maxCurvedCharAngleOut;

@@ -238,6 +238,15 @@ class CORE_EXPORT QgsGeometryUtilsBase
     static double normalizedAngle( double angle ) SIP_HOLDGIL;
 
     /**
+     * Ensures that an angle is in the range 0 <= angle < 360.
+     * \param angle angle in degrees
+     * \returns equivalent angle within the range [0, 360)
+     * \see normalizedAngle()
+     * \since QGIS 4.6
+     */
+    static double normalizedAngleDegrees( double angle ) SIP_HOLDGIL;
+
+    /**
      * Calculates the direction of line joining two points in radians, clockwise from the north direction.
      * \param x1 x-coordinate of line start
      * \param y1 y-coordinate of line start

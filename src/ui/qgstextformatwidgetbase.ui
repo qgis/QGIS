@@ -5788,6 +5788,13 @@ font-style: italic;</string>
                            <item>
                             <widget class="QComboBox" name="mCoordRotationUnitComboBox"/>
                            </item>
+                           <item>
+                            <widget class="QToolButton" name="mCoordRotationButton">
+                             <property name="popupMode">
+                              <enum>QToolButton::InstantPopup</enum>
+                             </property>
+                            </widget>
+                           </item>
                           </layout>
                          </item>
                          <item row="4" column="1">
@@ -7488,6 +7495,7 @@ This limit is inclusive, that means the label will be displayed on this scale.</
   <tabstop>mMinSizeSpinBox</tabstop>
   <tabstop>mFitInsidePolygonCheckBox</tabstop>
   <tabstop>mCoordRotationUnitComboBox</tabstop>
+  <tabstop>mCoordRotationButton</tabstop>
   <tabstop>mLineDistanceDDBtn</tabstop>
   <tabstop>mLineDistanceSpnBx</tabstop>
   <tabstop>mLineDistanceUnitWidget</tabstop>

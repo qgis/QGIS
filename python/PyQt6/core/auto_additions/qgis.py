@@ -4633,6 +4633,36 @@ From "Geographic information — Well-known text representation of coordinate re
 # --
 Qgis.CrsAxisDirection.baseClass = Qgis
 # monkey patching scoped based enum
+Qgis.CardinalDirection.North.__doc__ = "North"
+Qgis.CardinalDirection.East.__doc__ = "East"
+Qgis.CardinalDirection.South.__doc__ = "South"
+Qgis.CardinalDirection.West.__doc__ = "West"
+Qgis.CardinalDirection.__doc__ = """Cardinal directions.
+
+.. versionadded:: 4.6
+
+* ``North``: North
+* ``East``: East
+* ``South``: South
+* ``West``: West
+
+"""
+# --
+Qgis.CardinalDirection.baseClass = Qgis
+# monkey patching scoped based enum
+Qgis.RotationDirection.Clockwise.__doc__ = "Clockwise"
+Qgis.RotationDirection.CounterClockwise.__doc__ = "Counter-clockwise"
+Qgis.RotationDirection.__doc__ = """Directions of a rotation.
+
+.. versionadded:: 4.6
+
+* ``Clockwise``: Clockwise
+* ``CounterClockwise``: Counter-clockwise
+
+"""
+# --
+Qgis.RotationDirection.baseClass = Qgis
+# monkey patching scoped based enum
 Qgis.CoordinateOrder.Default.__doc__ = "Respect the default axis ordering for the CRS, as defined in the CRS's parameters"
 Qgis.CoordinateOrder.XY.__doc__ = "Easting/Northing (or Longitude/Latitude for geographic CRS)"
 Qgis.CoordinateOrder.YX.__doc__ = "Northing/Easting (or Latitude/Longitude for geographic CRS)"

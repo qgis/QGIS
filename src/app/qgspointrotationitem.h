@@ -16,6 +16,8 @@
 #ifndef QGSPOINTROTATIONITEM_H
 #define QGSPOINTROTATIONITEM_H
 
+#include <optional>
+
 #include "qgis_app.h"
 #include "qgsmapcanvasitem.h"
 #include "qgsunittypes.h"
@@ -27,12 +29,6 @@
 class APP_EXPORT QgsPointRotationItem : public QgsMapCanvasItem
 {
   public:
-    enum Orientation
-    {
-      Clockwise = 0,
-      Counterclockwise
-    };
-
     QgsPointRotationItem( QgsMapCanvas *canvas );
 
     using QgsMapCanvasItem::paint;
@@ -53,23 +49,31 @@ class APP_EXPORT QgsPointRotationItem : public QgsMapCanvasItem
      */
     void setRotationUnit( Qgis::AngleUnit rotationUnit );
 
+    /**
+     * Sets the rotation \a value in the rotation unit.
+     * If not set, the text shows the symbol rotation in degrees.
+     * \since QGIS 4.6
+     */
+    void setRotationValue( double value ) { mRotationValue = value; }
+
     //! Sets rotation symbol from image (takes ownership)
     void setSymbol( const QImage &symbolImage );
 
-    void setOrientation( Orientation o ) { mOrientation = o; }
-    Orientation orientation() const { return mOrientation; }
+    void setOrientation( Qgis::RotationDirection o ) { mOrientation = o; }
+    Qgis::RotationDirection orientation() const { return mOrientation; }
 
   private:
     //! Converts rotation into QPainter rotation considering mOrientation
     int painterRotation( int rotation ) const;
     //! Clockwise (default) or counterclockwise
-    Orientation mOrientation = Clockwise;
+    Qgis::RotationDirection mOrientation = Qgis::RotationDirection::Clockwise;
     //! Font to display the numerical rotation values
     QFont mFont;
     //! Symbol pixmap
     QPixmap mPixmap;
     int mRotation = 0.0;
     Qgis::AngleUnit mRotationUnit = Qgis::AngleUnit::Degrees;
+    std::optional<double> mRotationValue;
     QPainterPath mArrowPath;
 };
 

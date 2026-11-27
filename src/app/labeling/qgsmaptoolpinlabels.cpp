@@ -384,7 +384,7 @@ bool QgsMapToolPinLabels::pinUnpinCurrentLabel( bool pin )
 
     double labelX = referencePoint.x();
     double labelY = referencePoint.y();
-    double labelR = labelpos.rotation;
+    double labelR = mCurrentLabel.settings.rotationFromDegrees( labelpos.rotation );
 
     // transform back to layer crs
     QgsPointXY transformedPoint = mCanvas->mapSettings().mapToLayerCoordinates( vlayer, referencePoint );
