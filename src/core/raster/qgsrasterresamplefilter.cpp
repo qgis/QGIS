@@ -190,6 +190,20 @@ QgsRasterBlock *QgsRasterResampleFilter::block( int bandNo, QgsRectangle const &
 
   const QgsRectangle bufferedExtent( extent.xMinimum() - sourceTileBufferSize, extent.yMinimum() - sourceTileBufferSize, extent.xMaximum() + sourceTileBufferSize, extent.yMaximum() + sourceTileBufferSize );
 
+  //for resample image
+  const int resampleWidth = static_cast< int >( std::round( width * ( bufferedExtent.width() / extent.width() ) ) );
+  const int resampleHeight = static_cast< int >( std::round( height * ( bufferedExtent.height() / extent.height() ) ) );
+
+  // limit the size of the resampled image to avoid excessive memory usage
+  // this only applies to very small extents where ratio of bufferedExtent to extent is large
+  // if more than four times larger than the requested size, skip resampling and return the original block
+  constexpr double MAX_RESAMPLED_RATIO = 4.0;
+  if ( resampleWidth > width * MAX_RESAMPLED_RATIO || resampleHeight > height * MAX_RESAMPLED_RATIO )
+  {
+    QgsDebugMsgLevel( u"Resampled image too large, no oversampling."_s, 4 );
+    return mInput->block( bandNumber, extent, width, height, feedback );
+  }
+
   const int resWidth = static_cast< int >( std::round( width * oversamplingX ) ) + 2 * tileBufferPixels;
   const int resHeight = static_cast< int >( std::round( height * oversamplingY ) ) + 2 * tileBufferPixels;
 
@@ -207,19 +221,6 @@ QgsRasterBlock *QgsRasterResampleFilter::block( int bandNo, QgsRectangle const &
 
   //resample image
   const QImage img = inputBlock->image();
-
-  const int resampleWidth = static_cast< int >( std::round( width * ( bufferedExtent.width() / extent.width() ) ) );
-  const int resampleHeight = static_cast< int >( std::round( height * ( bufferedExtent.height() / extent.height() ) ) );
-
-  // limit the size of the resampled image to avoid excessive memory usage
-  // this only applies to very small extents where ratio of bufferExtent to extent is large
-  // if more then two times larger than the original size, skip oversampling and return the original block
-  constexpr double MAX_RESAMPLED_RATIO = 4.0;
-  if ( resampleWidth > width * MAX_RESAMPLED_RATIO || resampleHeight > height * MAX_RESAMPLED_RATIO )
-  {
-    QgsDebugMsgLevel( u"Resampled image too large no oversampling."_s, 4 );
-    return mInput->block( bandNumber, extent, width, height, feedback );
-  }
 
   QImage dstImg;
   if ( mZoomedInResampler && ( oversamplingX < 1.0 || qgsDoubleNear( oversampling, 1.0 ) ) )
