@@ -2926,8 +2926,9 @@ QString QgsPostgresConn::currentDatabase() const
   return database;
 }
 
-QgsCoordinateReferenceSystem QgsPostgresConn::sridToCrs( int srid )
+QgsCoordinateReferenceSystem QgsPostgresConn::sridToCrs( int srid, QString &errorMessage )
 {
+  errorMessage.clear();
   QgsCoordinateReferenceSystem crs;
 
   QMutexLocker locker( &mCrsCacheMutex );
@@ -2936,56 +2937,72 @@ QgsCoordinateReferenceSystem QgsPostgresConn::sridToCrs( int srid )
   else
   {
     QgsPostgresResult result( LoggedPQexec( u"QgsPostgresProvider"_s, u"SELECT auth_name, auth_srid, srtext, proj4text FROM spatial_ref_sys WHERE srid=%1"_s.arg( srid ) ) );
-    if ( result.PQresultStatus() == PGRES_TUPLES_OK )
+    if ( result.PQresultStatus() == PGRES_TUPLES_OK && result.PQntuples() > 0 )
     {
-      if ( result.PQntuples() > 0 )
+      const QString authName = result.PQgetvalue( 0, 0 );
+      const QString authSRID = result.PQgetvalue( 0, 1 );
+      const QString srText = result.PQgetvalue( 0, 2 );
+      bool ok = false;
+      if ( authName.compare( "EPSG"_L1, Qt::CaseInsensitive ) == 0 || authName.compare( "ESRI"_L1, Qt::CaseInsensitive ) == 0 )
       {
-        const QString authName = result.PQgetvalue( 0, 0 );
-        const QString authSRID = result.PQgetvalue( 0, 1 );
-        const QString srText = result.PQgetvalue( 0, 2 );
-        bool ok = false;
-        if ( authName == "EPSG"_L1 || authName == "ESRI"_L1 )
-        {
-          ok = crs.createFromUserInput( authName + ':' + authSRID );
-        }
-        if ( !ok && !srText.isEmpty() )
-        {
-          ok = crs.createFromUserInput( srText );
-        }
-        if ( !ok )
-          crs = QgsCoordinateReferenceSystem::fromProj( result.PQgetvalue( 0, 3 ) );
+        ok = crs.createFromUserInput( authName + ':' + authSRID );
       }
-      mCrsCache.insert( srid, crs );
+      if ( !ok && !srText.isEmpty() )
+        ok = crs.createFromUserInput( srText );
+      if ( !ok )
+        crs = QgsCoordinateReferenceSystem::fromProj( result.PQgetvalue( 0, 3 ) );
+
+      if ( crs.isValid() )
+        mCrsCache.insert( srid, crs );
+      else
+        errorMessage = QObject::tr( "Could not create a valid CRS for SRID %1. Please check the definition in the PostGIS spatial_ref_sys table for validity." ).arg( srid );
     }
+    else if ( result.PQresultStatus() != PGRES_TUPLES_OK )
+      errorMessage = QObject::tr( "Could not query PostGIS spatial_ref_sys table for SRID %1: %2" ).arg( srid ).arg( result.PQresultErrorMessage() );
+    else
+      errorMessage = QObject::tr( "No record for SRID %1 was found in spatial_ref_sys." ).arg( srid );
   }
   return crs;
 }
 
-int QgsPostgresConn::crsToSrid( const QgsCoordinateReferenceSystem &crs )
+int QgsPostgresConn::crsToSrid( const QgsCoordinateReferenceSystem &crs, QString &errorMessage )
 {
+  errorMessage.clear();
   QMutexLocker locker( &mCrsCacheMutex );
-  int srid = mCrsCache.key( crs );
+  const int srid = mCrsCache.key( crs );
 
-  if ( srid > -1 )
+  if ( srid > 0 )
     return srid;
-  else
-  {
-    QStringList authParts = crs.authid().split( ':' );
-    if ( authParts.size() != 2 )
-      return -1;
-    const QString authName = authParts.first();
-    const QString authId = authParts.last();
-    QgsPostgresResult result( PQexec( u"SELECT srid FROM spatial_ref_sys WHERE auth_name=%1 AND auth_srid=%2"_s.arg( quotedString( authName ), authId ) ) );
 
-    if ( result.PQresultStatus() == PGRES_TUPLES_OK )
-    {
-      int srid = result.PQgetvalue( 0, 0 ).toInt();
-      mCrsCache.insert( srid, crs );
-      return srid;
-    }
+  const QStringList authParts = crs.authid().split( ':' );
+  if ( authParts.size() != 2 )
+  {
+    errorMessage = QObject::tr( "CRS %1 does not contain a valid authority ID." ).arg( crs.authid() );
+    return -1;
   }
 
-  return -1;
+  const QString authName = authParts.first();
+  const QString authId = authParts.last();
+  const QString sql = u"SELECT srid FROM spatial_ref_sys WHERE auth_name=%1 AND auth_srid=%2"_s.arg( quotedString( authName ), authId );
+  QgsDebugMsgLevel( u"Getting SRID for CRS %1 using: %2"_s.arg( crs.authid(), sql ), 2 );
+  QgsPostgresResult result( LoggedPQexec( "QgsPostgresConn", sql ) );
+
+  if ( result.PQresultStatus() != PGRES_TUPLES_OK )
+  {
+    errorMessage = QObject::tr( "Could not query PostGIS spatial_ref_sys table for CRS %1: %2" ).arg( crs.authid(), result.PQresultErrorMessage() );
+    return -1;
+  }
+
+  if ( result.PQntuples() == 0 )
+  {
+    errorMessage = QObject::tr( "Query ran successfully, but no record matching CRS %1 was found in spatial_ref_sys." ).arg( crs.authid() );
+    return -1;
+  }
+
+  const int resultSrid = result.PQgetvalue( 0, 0 ).toInt();
+  QgsDebugMsgLevel( u"CRS %1 maps to PostGIS SRID %2"_s.arg( crs.authid() ).arg( resultSrid ), 2 );
+  mCrsCache.insert( resultSrid, crs );
+  return resultSrid;
 }
 
 QString QgsPostgresConn::connectionInfo( const QgsDataSourceUri &uri, const bool expandAuthCfg )

@@ -411,8 +411,7 @@ void QgsPostgresProvider::setTransaction( QgsTransaction *transaction )
 
 QgsReferencedGeometry QgsPostgresProvider::fromEwkt( const QString &ewkt, QgsPostgresConn *conn )
 {
-  thread_local const QRegularExpression regularExpressionSRID( "^SRID=(\\d+);" );
-
+  thread_local const QRegularExpression regularExpressionSRID( "^SRID=(-?\\d+);" );
   QRegularExpressionMatch regularExpressionMatch = regularExpressionSRID.match( ewkt );
   if ( !regularExpressionMatch.hasMatch() )
   {
@@ -423,16 +422,23 @@ QgsReferencedGeometry QgsPostgresProvider::fromEwkt( const QString &ewkt, QgsPos
 
   QString wkt = ewkt.mid( regularExpressionMatch.captured( 0 ).size() );
   int srid = regularExpressionMatch.captured( 1 ).toInt();
-
+  if ( srid < 0 )
+    srid = 0;
 
   QgsGeometry geom = QgsGeometry::fromWkt( wkt );
+  if ( srid == 0 )
+    return QgsReferencedGeometry( geom, QgsCoordinateReferenceSystem() );
+
   return QgsReferencedGeometry( geom, sridToCrs( srid, conn ) );
 }
 
 QString QgsPostgresProvider::toEwkt( const QgsReferencedGeometry &geom, QgsPostgresConn *conn )
 {
   if ( !geom.isNull() )
-    return u"SRID=%1;%2"_s.arg( QString::number( crsToSrid( geom.crs(), conn ) ), geom.asWkt() );
+  {
+    const int srid = geom.crs().isValid() ? crsToSrid( geom.crs(), conn ) : 0;
+    return u"SRID=%1;%2"_s.arg( QString::number( srid ), geom.asWkt() );
+  }
   else
     return QString();
 }
@@ -449,7 +455,10 @@ int QgsPostgresProvider::crsToSrid( const QgsCoordinateReferenceSystem &crs, Qgs
 {
   int srid = -1;
   if ( conn )
-    srid = conn->crsToSrid( crs );
+  {
+    QString errorMessage;
+    srid = conn->crsToSrid( crs, errorMessage );
+  }
   return srid;
 }
 
@@ -457,7 +466,10 @@ QgsCoordinateReferenceSystem QgsPostgresProvider::sridToCrs( int srid, QgsPostgr
 {
   QgsCoordinateReferenceSystem crs;
   if ( conn )
-    crs = conn->sridToCrs( srid );
+  {
+    QString errorMessage;
+    crs = conn->sridToCrs( srid, errorMessage );
+  }
   return crs;
 }
 
@@ -4660,15 +4672,35 @@ Qgis::VectorExportResult QgsPostgresProvider::createEmptyLayer(
     if ( result.PQresultStatus() != PGRES_COMMAND_OK )
       throw PGException( result );
 
-    // get geometry type, dim and srid
+    // get geometry type and dimension
     int dim = 2;
-    long srid = srs.postgisSrid();
-
     postgisGeometryType( wkbType, geometryType, dim );
 
-    // create geometry column
     if ( !geometryType.isEmpty() )
     {
+      if ( srs.authid().isEmpty() )
+      {
+        if ( errorMessage )
+          *errorMessage = QObject::tr( "Creation of data source %1 failed: CRS has no authority ID" ).arg( schemaTableName );
+
+        conn->LoggedPQexecNR( "QgsPostgresProvider", u"ROLLBACK"_s );
+        conn->unref();
+        return Qgis::VectorExportResult::ErrorCreatingLayer;
+      }
+
+      QString sridError;
+      const int srid = conn->crsToSrid( srs, sridError );
+      if ( srid < 0 )
+      {
+        if ( errorMessage )
+          *errorMessage = QObject::tr( "Creation of data source %1 failed:\n%2" ).arg( schemaTableName, sridError );
+
+        conn->LoggedPQexecNR( "QgsPostgresProvider", u"ROLLBACK"_s );
+        conn->unref();
+        return Qgis::VectorExportResult::ErrorCreatingLayer;
+      }
+
+      // create geometry column
       sql = u"SELECT AddGeometryColumn(%1,%2,%3,%4,%5,%6)"_s.arg( quotedValue( schemaName ), quotedValue( tableName ), quotedValue( geometryColumn ) ).arg( srid ).arg( quotedValue( geometryType ) ).arg( dim );
 
       result = conn->LoggedPQexec( "QgsPostgresProvider", sql );
