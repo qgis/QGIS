@@ -335,7 +335,7 @@ echo "::endgroup::"
 export QTWEBENGINE_DISABLE_SANDBOX=1
 
 cd "${CTEST_BUILD_DIR:-/root/QGIS/build}"
-python3 ${SRCDIR}/.ci/ctest2ci.py xvfb-run ctest -V $CTEST_OPTIONS -E "${EXCLUDE_TESTS}" --output-on-failure
+python3 ${SRCDIR}/.ci/ctest2ci.py xvfb-run ctest $CTEST_OPTIONS -E "${EXCLUDE_TESTS}" --output-on-failure
 
 echo "::group::Print disk space after running tests"
 df -h
