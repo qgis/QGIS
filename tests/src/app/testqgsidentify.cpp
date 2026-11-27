@@ -35,6 +35,7 @@
 #include "qgspointcloudlayer.h"
 #include "qgsproject.h"
 #include "qgsrasterlayer.h"
+#include "qgsrasterlayerelevationproperties.h"
 #include "qgsrasterlayertemporalproperties.h"
 #include "qgssettings.h"
 #include "qgssettingsregistrycore.h"
@@ -80,6 +81,7 @@ class TestQgsIdentify : public QObject
     void identifyPointCloud();
     void identifyVirtualPointCloud();
     void testSearchRadius();
+    void identifyRasterTemporalRenderedBand(); // test rendered band reported for fixed range per band rasters
 
   private:
     void doAction();
@@ -1395,6 +1397,90 @@ void TestQgsIdentify::testSearchRadius()
   // de-magnify canvas, search radius should increase
   canvas.setMagnificationFactor( 0.5 );
   QGSCOMPARENEAR( tool->searchRadiusMU( &canvas ), 0.09448, 0.001 );
+}
+
+void TestQgsIdentify::identifyRasterTemporalRenderedBand()
+{
+  // 3 band raster, 10x10 pixels, extent -3,-4 : 7,6
+  const QString raster = QStringLiteral( TEST_DATA_DIR ) + "/raster/band3_byte_noct_epsg4326.tif";
+  auto tempLayer = std::make_unique<QgsRasterLayer>( raster );
+  QVERIFY( tempLayer->isValid() );
+
+  canvas->setDestinationCrs( tempLayer->crs() );
+  canvas->setExtent( tempLayer->extent() );
+
+  // each band represents one month
+  QgsRasterLayerTemporalProperties *temporalProperties = qobject_cast<QgsRasterLayerTemporalProperties *>( tempLayer->temporalProperties() );
+  temporalProperties->setIsActive( true );
+  temporalProperties->setMode( Qgis::RasterTemporalMode::FixedRangePerBand );
+  temporalProperties->setFixedRangePerBand(
+    { { 1, QgsDateTimeRange( QDateTime( QDate( 2020, 1, 1 ), QTime( 0, 0, 0 ), Qt::UTC ), QDateTime( QDate( 2020, 2, 1 ), QTime( 0, 0, 0 ), Qt::UTC ), true, false ) },
+      { 2, QgsDateTimeRange( QDateTime( QDate( 2020, 2, 1 ), QTime( 0, 0, 0 ), Qt::UTC ), QDateTime( QDate( 2020, 3, 1 ), QTime( 0, 0, 0 ), Qt::UTC ), true, false ) },
+      { 3, QgsDateTimeRange( QDateTime( QDate( 2020, 3, 1 ), QTime( 0, 0, 0 ), Qt::UTC ), QDateTime( QDate( 2020, 4, 1 ), QTime( 0, 0, 0 ), Qt::UTC ), true, false ) } }
+  );
+
+  const QgsDateTimeRange february( QDateTime( QDate( 2020, 2, 10 ), QTime( 0, 0, 0 ), Qt::UTC ), QDateTime( QDate( 2020, 2, 11 ), QTime( 0, 0, 0 ), Qt::UTC ) );
+  const QgsDateTimeRange march( QDateTime( QDate( 2020, 3, 10 ), QTime( 0, 0, 0 ), Qt::UTC ), QDateTime( QDate( 2020, 3, 11 ), QTime( 0, 0, 0 ), Qt::UTC ) );
+
+  // temporal controller active - band 2 is rendered
+  canvas->setTemporalRange( february );
+  QList<QgsMapToolIdentify::IdentifyResult> results = testIdentifyRaster( tempLayer.get(), -2.5, 5.5 );
+  QCOMPARE( results.length(), 1 );
+  QCOMPARE( results.at( 0 ).mParams.value( u"renderedBand"_s ).toString(), u"Band 2"_s );
+  // rendered band with its value is part of the derived attributes
+  QVERIFY( results.at( 0 ).mDerivedAttributes.contains( u"Band 2"_s ) );
+  QCOMPARE( results.at( 0 ).mDerivedAttributes.value( u"Band 2"_s ), results.at( 0 ).mAttributes.value( u"Band 2"_s ) );
+  QCOMPARE( results.at( 0 ).mDerivedAttributes.value( u"Band 2"_s ), u"2"_s );
+  QVERIFY( !results.at( 0 ).mDerivedAttributes.contains( u"Band 1"_s ) );
+  QVERIFY( !results.at( 0 ).mDerivedAttributes.contains( u"Band 3"_s ) );
+  // all band values are still reported
+  QCOMPARE( results.at( 0 ).mAttributes.count(), 3 );
+
+  // different time - band 3 is rendered
+  canvas->setTemporalRange( march );
+  results = testIdentifyRaster( tempLayer.get(), -2.5, 5.5 );
+  QCOMPARE( results.length(), 1 );
+  QCOMPARE( results.at( 0 ).mParams.value( u"renderedBand"_s ).toString(), u"Band 3"_s );
+  QVERIFY( results.at( 0 ).mDerivedAttributes.contains( u"Band 3"_s ) );
+  QVERIFY( !results.at( 0 ).mDerivedAttributes.contains( u"Band 2"_s ) );
+
+  // temporal controller off - no rendered band
+  canvas->setTemporalRange( QgsDateTimeRange() );
+  results = testIdentifyRaster( tempLayer.get(), -2.5, 5.5 );
+  QCOMPARE( results.length(), 1 );
+  QVERIFY( !results.at( 0 ).mParams.contains( u"renderedBand"_s ) );
+  QVERIFY( !results.at( 0 ).mDerivedAttributes.contains( u"Band 1"_s ) );
+  QVERIFY( !results.at( 0 ).mDerivedAttributes.contains( u"Band 2"_s ) );
+  QVERIFY( !results.at( 0 ).mDerivedAttributes.contains( u"Band 3"_s ) );
+
+  // layer temporal properties not active - no rendered band
+  canvas->setTemporalRange( february );
+  temporalProperties->setIsActive( false );
+  results = testIdentifyRaster( tempLayer.get(), -2.5, 5.5 );
+  QCOMPARE( results.length(), 1 );
+  QVERIFY( !results.at( 0 ).mParams.contains( u"renderedBand"_s ) );
+  QVERIFY( !results.at( 0 ).mDerivedAttributes.contains( u"Band 2"_s ) );
+  temporalProperties->setIsActive( true );
+
+  // other temporal mode - no rendered band
+  temporalProperties->setMode( Qgis::RasterTemporalMode::FixedTemporalRange );
+  temporalProperties->setFixedTemporalRange( QgsDateTimeRange( QDateTime( QDate( 2020, 1, 1 ), QTime( 0, 0, 0 ), Qt::UTC ), QDateTime( QDate( 2020, 4, 1 ), QTime( 0, 0, 0 ), Qt::UTC ) ) );
+  results = testIdentifyRaster( tempLayer.get(), -2.5, 5.5 );
+  QCOMPARE( results.length(), 1 );
+  QVERIFY( !results.at( 0 ).mParams.contains( u"renderedBand"_s ) );
+  temporalProperties->setIsActive( false );
+
+  // action
+  auto action = std::make_unique<QgsMapToolIdentifyAction>( canvas );
+  const QgsPointXY mapPoint = canvas->getCoordinateTransform()->transform( -2.5, 5.5 );
+  QgsIdentifyContext identifyContext;
+  identifyContext.setZRange( QgsDoubleRange( 12, 15 ) );
+  results = action->identify( mapPoint.x(), mapPoint.y(), QList<QgsMapLayer *>() << tempLayer.get(), QgsMapToolIdentify::DefaultQgsSetting, identifyContext );
+  for ( const QgsMapToolIdentify::IdentifyResult &result : std::as_const( results ) )
+  {
+    QVERIFY( !result.mParams.contains( u"renderedBand"_s ) );
+    QVERIFY( !result.mDerivedAttributes.contains( u"Band 2"_s ) );
+  }
 }
 
 QGSTEST_MAIN( TestQgsIdentify )

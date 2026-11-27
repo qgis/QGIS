@@ -33,10 +33,12 @@
 #include <QMessageBox>
 #include <QNetworkReply>
 #include <QNetworkRequest>
+#include <QPainter>
 #include <QPixmap>
 #include <QPushButton>
 #include <QScreen>
 #include <QString>
+#include <QStyle>
 #include <QTextDocument>
 #include <QToolButton>
 #include <QTreeWidgetItem>
@@ -112,6 +114,7 @@ using namespace Qt::StringLiterals;
 // we store the representedValue to UserRole + 2 and read from that when copying to clipboard
 constexpr int REPRESENTED_VALUE_ROLE = Qt::UserRole + 2;
 constexpr int RAW_STRING_VALUE_ROLE = Qt::UserRole + 3;
+constexpr int TRAILING_ICON_ROLE = Qt::UserRole + 4;
 
 const QgsSettingsEntryBool *QgsIdentifyResultsDialog::settingHideNullValues
   = new QgsSettingsEntryBool( u"hide-null-values"_s, QgsSettingsTree::sTreeIdentify, false, u"Whether to hide attributes with NULL values in the identify feature result"_s );
@@ -420,6 +423,8 @@ QgsIdentifyResultsDialog::QgsIdentifyResultsDialog( QgsMapCanvas *canvas, QWidge
   lstResults->setColumnCount( 2 );
   lstResults->sortByColumn( -1, Qt::AscendingOrder );
   lstResults->setIndentation( QgsGuiUtils::scaleIconSize( 12 ) );
+  // draws an optional icon right after the text in the name column (e.g. rendered band marker)
+  lstResults->setItemDelegateForColumn( 0, new QgsIdentifyResultsTrailingIconDelegate( lstResults ) );
   setColumnText( 0, tr( "Feature" ) );
   setColumnText( 1, tr( "Value" ) );
 
@@ -1180,11 +1185,36 @@ void QgsIdentifyResultsDialog::addFeature(
       attrItem->setContent( tr( "No attributes." ).toUtf8(), u"text/plain; charset=utf-8"_s );
     }
   }
-  else
+
+  // band currently rendered for the map's temporal/elevation range (if any)
+  const QString renderedBand = params.value( u"renderedBand"_s ).toString();
+  const auto markRenderedBandItem = []( QTreeWidgetItem *item ) {
+    const QString toolTip = tr( "Band currently rendered for the map's temporal/elevation range" );
+    // icon drawn by QgsIdentifyResultsTrailingIconDelegate directly after the band name
+    item->setData( 0, TRAILING_ICON_ROLE, QgsApplication::getThemeIcon( u"/mIndicatorTemporal.svg"_s ) );
+    item->setToolTip( 0, toolTip );
+    item->setToolTip( 1, toolTip );
+  };
+
+  // when a rendered band is known, it is shown in the (expanded) derived attributes
+  // and the values of all bands are grouped into a collapsed "Bands" item
+  QTreeWidgetItem *bandsItem = nullptr;
+  if ( currentFormat != Qgis::RasterIdentifyFormat::Html && currentFormat != Qgis::RasterIdentifyFormat::Text )
   {
+    QTreeWidgetItem *bandsParent = featItem;
+    if ( !renderedBand.isEmpty() )
+    {
+      bandsItem = new QTreeWidgetItem( QStringList() << tr( "Bands" ) );
+      bandsItem->setData( 0, Qt::UserRole, "bands" );
+      bandsParent = bandsItem;
+    }
+
     for ( QMap<QString, QString>::const_iterator it = attributes.begin(); it != attributes.end(); ++it )
     {
-      featItem->addChild( new QTreeWidgetItem( QStringList() << it.key() << it.value() ) );
+      QTreeWidgetItem *attrItem = new QTreeWidgetItem( QStringList() << it.key() << it.value() );
+      if ( !renderedBand.isEmpty() && it.key() == renderedBand )
+        markRenderedBandItem( attrItem );
+      bandsParent->addChild( attrItem );
     }
   }
 
@@ -1197,8 +1227,20 @@ void QgsIdentifyResultsDialog::addFeature(
 
     for ( QMap<QString, QString>::const_iterator it = derivedAttributes.begin(); it != derivedAttributes.end(); ++it )
     {
-      derivedItem->addChild( new QTreeWidgetItem( QStringList() << it.key() << it.value() ) );
+      QTreeWidgetItem *derivedAttrItem = new QTreeWidgetItem( QStringList() << it.key() << it.value() );
+      if ( !renderedBand.isEmpty() && it.key() == renderedBand )
+        markRenderedBandItem( derivedAttrItem );
+      derivedItem->addChild( derivedAttrItem );
     }
+
+    if ( !renderedBand.isEmpty() )
+      derivedItem->setExpanded( true );
+  }
+
+  if ( bandsItem )
+  {
+    // added after the derived attributes, collapsed by default
+    featItem->addChild( bandsItem );
   }
 
   // table
@@ -2624,6 +2666,16 @@ void QgsIdentifyResultsDialog::copyFeatureAttributes()
     for ( int i = 0; i < featItem->childCount(); i++ )
     {
       QTreeWidgetItem *item = featItem->child( i );
+      // if this item represents raster band values grouped under a "Bands" item
+      if ( item->data( 0, Qt::UserRole ).toString() == "bands"_L1 )
+      {
+        for ( int j = 0; j < item->childCount(); j++ )
+        {
+          QTreeWidgetItem *bandItem = item->child( j );
+          text += u"%1: %2\n"_s.arg( bandItem->data( 0, Qt::DisplayRole ).toString(), bandItem->data( 1, Qt::DisplayRole ).toString() );
+        }
+        continue;
+      }
       if ( item->childCount() > 0 )
         continue;
       text += u"%1: %2\n"_s.arg( item->data( 0, Qt::DisplayRole ).toString(), item->data( 1, Qt::DisplayRole ).toString() );
@@ -2892,4 +2944,60 @@ void QgsIdentifyResultsDialog::setExpressionContextScope( const QgsExpressionCon
 QgsExpressionContextScope QgsIdentifyResultsDialog::expressionContextScope() const
 {
   return mExpressionContextScope;
+}
+
+void QgsIdentifyResultsTrailingIconDelegate::paint( QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index ) const
+{
+  const QIcon trailingIcon = index.data( TRAILING_ICON_ROLE ).value<QIcon>();
+  if ( trailingIcon.isNull() )
+  {
+    QStyledItemDelegate::paint( painter, option, index );
+    return;
+  }
+
+  QStyleOptionViewItem opt( option );
+  initStyleOption( &opt, index );
+  const QWidget *widget = opt.widget;
+  QStyle *style = widget ? widget->style() : QApplication::style();
+
+  const int iconSize = trailingIconSize( widget );
+  const int spacing = trailingIconSpacing( widget );
+  const int textMargin = style->pixelMetric( QStyle::PM_FocusFrameHMargin, nullptr, widget ) + 1;
+  const QRect textRect = style->subElementRect( QStyle::SE_ItemViewItemText, &opt, widget );
+
+  // elide the text ourselves, so that there is always room left for the icon
+  const int availableTextWidth = std::max( 0, textRect.width() - 2 * textMargin - spacing - iconSize );
+  opt.text = opt.fontMetrics.elidedText( opt.text, opt.textElideMode, availableTextWidth );
+  style->drawControl( QStyle::CE_ItemViewItem, &opt, painter, widget );
+
+  const int textWidth = opt.fontMetrics.horizontalAdvance( opt.text );
+  const int x = opt.direction == Qt::RightToLeft ? textRect.right() - textMargin - textWidth - spacing - iconSize : textRect.left() + textMargin + textWidth + spacing;
+  const QRect iconRect( x, textRect.top() + ( textRect.height() - iconSize ) / 2, iconSize, iconSize );
+
+  const QIcon::Mode mode = !( opt.state & QStyle::State_Enabled ) ? QIcon::Disabled : ( opt.state & QStyle::State_Selected ) ? QIcon::Selected : QIcon::Normal;
+  trailingIcon.paint( painter, iconRect, Qt::AlignCenter, mode );
+}
+
+QSize QgsIdentifyResultsTrailingIconDelegate::sizeHint( const QStyleOptionViewItem &option, const QModelIndex &index ) const
+{
+  QSize size = QStyledItemDelegate::sizeHint( option, index );
+  if ( !index.data( TRAILING_ICON_ROLE ).value<QIcon>().isNull() )
+  {
+    const int iconSize = trailingIconSize( option.widget );
+    size.setWidth( size.width() + trailingIconSpacing( option.widget ) + iconSize );
+    size.setHeight( std::max( size.height(), iconSize ) );
+  }
+  return size;
+}
+
+int QgsIdentifyResultsTrailingIconDelegate::trailingIconSize( const QWidget *widget )
+{
+  const QStyle *style = widget ? widget->style() : QApplication::style();
+  return style->pixelMetric( QStyle::PM_SmallIconSize, nullptr, widget );
+}
+
+int QgsIdentifyResultsTrailingIconDelegate::trailingIconSpacing( const QWidget *widget )
+{
+  const QStyle *style = widget ? widget->style() : QApplication::style();
+  return style->pixelMetric( QStyle::PM_FocusFrameHMargin, nullptr, widget ) + 2;
 }
