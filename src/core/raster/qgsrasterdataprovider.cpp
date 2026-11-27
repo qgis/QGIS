@@ -17,6 +17,8 @@
 
 #include "qgsrasterdataprovider.h"
 
+#include <algorithm>
+
 #include "qgslogger.h"
 #include "qgspoint.h"
 #include "qgsproviderregistry.h"
@@ -773,6 +775,32 @@ QString QgsRasterDataProvider::bandDescription( int bandNumber )
 {
   Q_UNUSED( bandNumber )
   return QString();
+}
+
+QMap<int, QDateTime> QgsRasterDataProvider::bandDateTimes() const
+{
+  return mBandDateTimes;
+}
+
+QList<QDateTime> QgsRasterDataProvider::sortedUniqueBandDateTimes() const
+{
+  QList<QDateTime> dateTimes = mBandDateTimes.values();
+  std::sort( dateTimes.begin(), dateTimes.end() );
+  dateTimes.erase( std::unique( dateTimes.begin(), dateTimes.end() ), dateTimes.end() );
+
+  return dateTimes;
+}
+
+QDateTime QgsRasterDataProvider::firstBandDateTime() const
+{
+  const QList<QDateTime> dateTimes = sortedUniqueBandDateTimes();
+  return dateTimes.isEmpty() ? QDateTime() : dateTimes.constFirst();
+}
+
+QDateTime QgsRasterDataProvider::lastBandDateTime() const
+{
+  const QList<QDateTime> dateTimes = sortedUniqueBandDateTimes();
+  return dateTimes.isEmpty() ? QDateTime() : dateTimes.constLast();
 }
 
 bool QgsRasterDataProvider::readFileBasedAttributeTable( int bandNumber, const QString &path, QString *errorMessage )

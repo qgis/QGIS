@@ -221,6 +221,7 @@ set(TESTS
  testqgstemporalnavigationobject.cpp
  testqgstemporalproperty.cpp
  testqgstemporalrangeobject.cpp
+ testqgstemporalutils.cpp
  testqgstiledsceneconnection.cpp
  testqgstiledscenerendererregistry.cpp
  testqgstiledownloadmanager.cpp

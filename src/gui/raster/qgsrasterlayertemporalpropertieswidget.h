@@ -49,6 +49,11 @@ class QgsRasterBandFixedTemporalRangeModel : public QAbstractItemModel
     void setLayerData( QgsRasterLayer *layer, const QMap<int, QgsDateTimeRange> &ranges );
     QMap<int, QgsDateTimeRange> rangeData() const { return mRanges; }
 
+    /**
+     * Returns TRUE if any band has a valid start or end date time filled.
+     */
+    bool hasAnyStartOrEndValue() const;
+
   private:
     int mBandCount = 0;
     QMap<int, QString> mBandNames;
@@ -110,6 +115,17 @@ class GUI_EXPORT QgsRasterLayerTemporalPropertiesWidget : public QWidget, privat
 
   private:
     QgsExpressionContext createExpressionContextForBand( int band ) const;
+
+    /**
+     * Update the summary (number of steps, step time) and first and last date time for the raster
+     */
+    void updateFixedRangePerBandSummary();
+
+    /**
+     * Prefills the fixed ranges for bands from band date times and regular time step.
+     * If time steps are not regular or date times not valid the model is not filled.
+     */
+    void prefillFixedRangePerBandFromProvider();
 
     /**
      * The corresponding map layer with temporal attributes

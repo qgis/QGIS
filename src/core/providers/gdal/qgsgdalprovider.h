@@ -29,6 +29,7 @@
 #include "qgsrasterdataprovider.h"
 #include "qgsrectangle.h"
 
+#include <QDateTime>
 #include <QDomElement>
 #include <QMap>
 #include <QString>
@@ -284,6 +285,9 @@ class QgsGdalProvider final : public QgsRasterDataProvider, QgsGdalProviderBase
 
     //! Do some initialization on the dataset (e.g. handling of south-up datasets)
     void initBaseDataset();
+
+    //! Fills mBandDateTimes with date times parsed from netCDF (CF conventions) or GRIB band metadata
+    void initBandDateTimes();
 
     /**
      * Flag indicating if the layer data source is a valid layer

@@ -281,6 +281,13 @@ background: white;QgsCollapsibleGroupBoxBasic::title, QgsCollapsibleGroupBox::ti
                </widget>
               </item>
               <item row="1" column="0">
+               <widget class="QLabel" name="mFixedRangePerBandSummaryLabel">
+                <property name="text">
+                 <string/>
+                </property>
+               </widget>
+              </item>
+              <item row="2" column="0">
                <widget class="QWidget" name="mWidgetFixedRangePerBand" native="true">
                 <property name="minimumSize">
                  <size>
@@ -328,6 +335,17 @@ background: white;QgsCollapsibleGroupBoxBasic::title, QgsCollapsibleGroupBox::ti
                       </size>
                      </property>
                     </spacer>
+                   </item>
+                   <item>
+                    <widget class="QPushButton" name="mReloadFromDataProvider">
+                     <property name="text">
+                      <string>Reload from Data</string>
+                     </property>
+                     <property name="icon">
+                      <iconset resource="../../../images/images.qrc">
+                       <normaloff>:/images/composer/refreshing_item.svg</normaloff>:/images/composer/refreshing_item.svg</iconset>
+                     </property>
+                    </widget>
                    </item>
                    <item>
                     <widget class="QToolButton" name="mCalculateFixedRangePerBandButton">
