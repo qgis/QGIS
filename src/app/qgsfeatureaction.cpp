@@ -48,7 +48,7 @@ void QgsFeatureAction::execute()
   mLayer->actions()->doAction( mActionId, *mFeature, mIdx );
 }
 
-QgsAttributeDialog *QgsFeatureAction::newDialog( bool cloneFeature )
+QgsAttributeDialog *QgsFeatureAction::newDialog( bool cloneFeature, QWidget *parent )
 {
   QgsFeature *f = cloneFeature ? new QgsFeature( *mFeature ) : mFeature;
 
@@ -62,7 +62,8 @@ QgsAttributeDialog *QgsFeatureAction::newDialog( bool cloneFeature )
   context.setDistanceArea( myDa );
   context.setFormMode( QgsAttributeEditorContext::StandaloneDialog );
 
-  QgsAttributeDialog *dialog = new QgsAttributeDialog( mLayer, f, cloneFeature, QgisApp::instance(), true, context );
+  QWidget *dialogParent = parent ? parent : QgisApp::instance();
+  QgsAttributeDialog *dialog = new QgsAttributeDialog( mLayer, f, cloneFeature, dialogParent, true, context );
 
   // Skip this code on windows, because the Qt::Tool flag prevents the maximize button to be shown
 #ifndef Q_OS_WIN
@@ -237,7 +238,14 @@ QgsFeatureAction::AddFeatureResult QgsFeatureAction::addFeature(
   }
   else
   {
-    QgsAttributeDialog *dialog = newDialog( false );
+    // Use the context's parent widget as the parent of the dialog,
+    // except with context.hideParent():  newDialog() will then fall back to the main window.
+    QWidget *parent = nullptr;
+    if ( context.parentWidget() && !context.hideParent() )
+    {
+      parent = context.parentWidget()->window();
+    }
+    QgsAttributeDialog *dialog = newDialog( false, parent );
     // delete the dialog when it is closed
     dialog->setAttribute( Qt::WA_DeleteOnClose );
     dialog->setMode( QgsAttributeEditorContext::AddFeatureMode );
