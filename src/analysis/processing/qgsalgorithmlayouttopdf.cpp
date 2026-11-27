@@ -118,7 +118,9 @@ void QgsLayoutToPdfAlgorithm::initAlgorithm( const QVariantMap & )
   layeredExport->setFlags( layeredExport->flags() | Qgis::ProcessingParameterFlag::Advanced );
   addParameter( layeredExport.release() );
 
-  addParameter( new QgsProcessingParameterFileDestination( u"OUTPUT"_s, QObject::tr( "PDF file" ), QObject::tr( "PDF Format" ) + " (*.pdf *.PDF)" ) );
+  auto output = std::make_unique<QgsProcessingParameterFileDestination>( u"OUTPUT"_s, QObject::tr( "PDF file" ), QObject::tr( "PDF Format" ) + " (*.pdf *.PDF)" );
+  output->setSupportsOpenOnCompletion( true );
+  addParameter( output.release() );
 }
 
 Qgis::ProcessingAlgorithmFlags QgsLayoutToPdfAlgorithm::flags() const

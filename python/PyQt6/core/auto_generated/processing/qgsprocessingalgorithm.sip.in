@@ -1015,7 +1015,11 @@ attempted to be guessed from the file name extension.
     QString parameterAsFileOutput( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context ) const;
 %Docstring
 Evaluates the parameter with matching ``name`` to a file based output
-destination.
+destination. For a file destination supporting opening on completion,
+the file is added to
+:py:func:`QgsProcessingContext.filesToOpenOnCompletion()`.
+
+.. seealso:: :py:func:`QgsProcessingParameterFileDestination.setSupportsOpenOnCompletion`
 %End
 
     QgsVectorLayer *parameterAsVectorLayer( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context ) const;

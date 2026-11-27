@@ -43,9 +43,12 @@
 #include "qgspointcloudlayer3drenderer.h"
 #endif
 
+#include <QDesktopServices>
 #include <QFileDialog>
+#include <QFileInfo>
 #include <QMessageBox>
 #include <QString>
+#include <QUrl>
 
 #include "moc_qgsappprocessingutils.cpp"
 
@@ -520,6 +523,15 @@ QgsProcessingResultsHandler::ResultDetails QgsAppProcessingResultsHandler::handl
   QgsProcessingResultsHandler::ResultDetails results = QgsProcessingResultsHandler::handleAlgorithmResultsProtected( algorithm, context, parameters, feedback );
 
   mQgisApp->layerTreeView()->setUpdatesEnabled( true );
+
+  const QStringList files = context.filesToOpenOnCompletion();
+  for ( const QString &file : files )
+  {
+    if ( QFileInfo::exists( file ) )
+    {
+      QDesktopServices::openUrl( QUrl::fromLocalFile( file ) );
+    }
+  }
 
   return results;
 }

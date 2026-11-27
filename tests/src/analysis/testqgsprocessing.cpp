@@ -90,11 +90,13 @@ class DummyAlgorithm : public QgsProcessingAlgorithm
     // we use static members here as the algorithm instance will be internally privately cloned before executing
     static bool mRaiseProcessException;
     static bool mPrepared;
+    static bool mFailPrepare;
 
-    bool prepareAlgorithm( const QVariantMap &, QgsProcessingContext &, QgsProcessingFeedback * ) final
+    bool prepareAlgorithm( const QVariantMap &, QgsProcessingContext &context, QgsProcessingFeedback * ) final
     {
       mPrepared = true;
-      return true;
+      context.addFileToOpenOnCompletion( u"/prepared.txt"_s );
+      return !mFailPrepare;
     }
     static bool mProcessed;
     QVariantMap processAlgorithm( const QVariantMap &, QgsProcessingContext &context, QgsProcessingFeedback * ) final
@@ -103,6 +105,7 @@ class DummyAlgorithm : public QgsProcessingAlgorithm
 
       QgsVectorLayer *layer3111 = new QgsVectorLayer( "Point?crs=epsg:3111", "v1", "memory" );
       context.temporaryLayerStore()->addMapLayer( layer3111 );
+      context.addFileToOpenOnCompletion( u"/dummy.txt"_s );
 
       if ( mRaiseProcessException )
         throw QgsProcessingException( QString() );
@@ -572,6 +575,7 @@ class DummyProvider : public QgsProcessingProvider // clazy:exclude=missing-qobj
     friend class TestQgsProcessing;
 };
 bool DummyAlgorithm::mPrepared = false;
+bool DummyAlgorithm::mFailPrepare = false;
 bool DummyAlgorithm::mRaiseProcessException = false;
 bool DummyAlgorithm::mProcessed = false;
 bool DummyAlgorithm::mPostProcessed = false;
@@ -9099,6 +9103,41 @@ void TestQgsProcessing::parameterFileOut()
   params.insert( u"non_optional"_s, QVariant::fromValue( fs ) );
   QCOMPARE( QgsProcessingParameters::parameterAsFileOutput( def.get(), params, context ).right( 18 ), u"/non_optional.file"_s );
 
+  // openFileOnCompletion asks for the file to open for an output that supports it only
+  QVERIFY( !def->supportsOpenOnCompletion() );
+  QgsProcessingOutputLayerDefinition notToOpen( u"test1.txt"_s );
+  QVERIFY( !notToOpen.openFileOnCompletion );
+  QgsProcessingOutputLayerDefinition toOpen( u"test2.txt"_s );
+  toOpen.openFileOnCompletion = true;
+  QVERIFY( toOpen != QgsProcessingOutputLayerDefinition( u"test2.txt"_s ) );
+  params.insert( u"non_optional"_s, QVariant::fromValue( notToOpen ) );
+  QCOMPARE( QgsProcessingParameters::parameterAsFileOutput( def.get(), params, context ), u"test1.txt"_s );
+  params.insert( u"non_optional"_s, QVariant::fromValue( toOpen ) );
+  QCOMPARE( QgsProcessingParameters::parameterAsFileOutput( def.get(), params, context ), u"test2.txt"_s );
+  QVERIFY( context.filesToOpenOnCompletion().isEmpty() );
+  def->setSupportsOpenOnCompletion( true );
+  QVERIFY( def->supportsOpenOnCompletion() );
+  // without the flag, the file does not open
+  QCOMPARE( QgsProcessingParameters::parameterAsFileOutput( def.get(), QVariant::fromValue( notToOpen ), context ), u"test1.txt"_s );
+  QVERIFY( context.filesToOpenOnCompletion().isEmpty() );
+  // a destination project alone loads layers, it does not open the file
+  QgsProcessingParameters::parameterAsFileOutput( def.get(), QVariant::fromValue( QgsProcessingOutputLayerDefinition( u"test2.txt"_s, &p ) ), context );
+  QVERIFY( context.filesToOpenOnCompletion().isEmpty() );
+  QCOMPARE( QgsProcessingParameters::parameterAsFileOutput( def.get(), params, context ), u"test2.txt"_s );
+  QCOMPARE( context.filesToOpenOnCompletion(), QStringList() << u"test2.txt"_s );
+  fs.openFileOnCompletion = true;
+  params.insert( u"non_optional"_s, QVariant::fromValue( fs ) );
+  const QString temporaryFile = QgsProcessingParameters::parameterAsFileOutput( def.get(), params, context );
+  QCOMPARE( context.filesToOpenOnCompletion(), QStringList() << u"test2.txt"_s << temporaryFile );
+  // a layer output as a file output does not open
+  const QgsProcessingParameterVectorDestination vectorDef( u"vector"_s );
+  QgsProcessingOutputLayerDefinition vectorToOpen( u"vector.gpkg"_s );
+  vectorToOpen.openFileOnCompletion = true;
+  QgsProcessingParameters::parameterAsFileOutput( &vectorDef, QVariant::fromValue( vectorToOpen ), context );
+  QCOMPARE( context.filesToOpenOnCompletion().count(), 2 );
+  context.setFilesToOpenOnCompletion( QStringList() );
+
+
   QCOMPARE( def->valueAsPythonString( QVariant(), context ), u"None"_s );
   QCOMPARE( def->valueAsPythonString( u"abc"_s, context ), u"'abc'"_s );
   QCOMPARE( def->valueAsPythonString( QVariant::fromValue( QgsProcessingOutputLayerDefinition( "abc" ) ), context ), u"'abc'"_s );
@@ -12816,6 +12855,17 @@ void TestQgsProcessing::runAlgorithm()
   // ensure layer added by the algorithm in processAlgorithm is present in context
   QCOMPARE( context.temporaryLayerStore()->count(), 1 );
   context.temporaryLayerStore()->removeAllMapLayers();
+  QCOMPARE( context.filesToOpenOnCompletion(), QStringList() << u"/prepared.txt"_s << u"/dummy.txt"_s );
+  // the files of earlier runs stay
+  context.setFilesToOpenOnCompletion( QStringList() << u"/earlier.txt"_s );
+  // an algorithm which fails to prepare falls back to original set of files
+  a = std::make_unique<DummyAlgorithm>( "asd" );
+  a->mFailPrepare = true;
+  ok = false;
+  res = a->run( QVariantMap(), context, &feedback, &ok );
+  QVERIFY( !ok );
+  QCOMPARE( context.filesToOpenOnCompletion(), QStringList() << u"/earlier.txt"_s );
+  a->mFailPrepare = false;
 
   // try with an algorithm which raises an exception, postProcessAlgorithm should not be called
   a = std::make_unique<DummyAlgorithm>( "asd" );
@@ -12833,6 +12883,8 @@ void TestQgsProcessing::runAlgorithm()
   // always be the case even if an exception occurs
   QCOMPARE( context.temporaryLayerStore()->count(), 1 );
   context.temporaryLayerStore()->removeAllMapLayers();
+  // but the files of a failed run do not open
+  QCOMPARE( context.filesToOpenOnCompletion(), QStringList() << u"/earlier.txt"_s );
 
   // try without internally catching exceptions in run, postProcessAlgorithm should not be called
   a = std::make_unique<DummyAlgorithm>( "asd" );
@@ -12859,6 +12911,7 @@ void TestQgsProcessing::runAlgorithm()
   // always be the case even if an exception occurs
   QCOMPARE( context.temporaryLayerStore()->count(), 1 );
   context.temporaryLayerStore()->removeAllMapLayers();
+  QCOMPARE( context.filesToOpenOnCompletion(), QStringList() << u"/earlier.txt"_s );
 }
 
 void TestQgsProcessing::combineLayerExtent()

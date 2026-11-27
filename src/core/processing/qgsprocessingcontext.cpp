@@ -67,6 +67,14 @@ void QgsProcessingContext::setLayersToLoadOnCompletion( const QMap<QString, QgsP
   mLayersToLoadOnCompletion = layers;
 }
 
+void QgsProcessingContext::addFileToOpenOnCompletion( const QString &path )
+{
+  if ( !mFilesToOpenOnCompletion.contains( path ) )
+  {
+    mFilesToOpenOnCompletion.append( path );
+  }
+}
+
 void QgsProcessingContext::addLayerToLoadOnCompletion( const QString &layer, const QgsProcessingContext::LayerDetails &details )
 {
   if ( mLayersToLoadOnCompletion.contains( layer ) && mLayersToLoadOnCompletion.value( layer ).postProcessor() != details.postProcessor() )
@@ -145,8 +153,14 @@ std::function<void( const QgsFeature & )> QgsProcessingContext::defaultInvalidGe
 void QgsProcessingContext::takeResultsFrom( QgsProcessingContext &context )
 {
   setLayersToLoadOnCompletion( context.mLayersToLoadOnCompletion );
+  // adding not replacing since some files might have been added in prepareAlgorithm()
+  for ( const QString &path : std::as_const( context.mFilesToOpenOnCompletion ) )
+  {
+    addFileToOpenOnCompletion( path );
+  }
   mModelResult = context.mModelResult;
   context.mLayersToLoadOnCompletion.clear();
+  context.mFilesToOpenOnCompletion.clear();
   tempLayerStore.transferLayersFromStore( context.temporaryLayerStore() );
 }
 

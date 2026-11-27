@@ -136,6 +136,7 @@ bool QgsProcessingOutputLayerDefinition::operator==( const QgsProcessingOutputLa
 {
   return sink == other.sink
          && destinationProject == other.destinationProject
+         && openFileOnCompletion == other.openFileOnCompletion
          && destinationName == other.destinationName
          && createOptions == other.createOptions
          && mUseRemapping == other.mUseRemapping
@@ -1124,10 +1125,12 @@ QString QgsProcessingParameters::parameterAsFileOutput( const QgsProcessingParam
 {
   QVariant val = value;
 
+  bool openFileOnCompletion = false;
   if ( val.userType() == qMetaTypeId<QgsProcessingOutputLayerDefinition>() )
   {
     // input is a QgsProcessingOutputLayerDefinition - get extra properties from it
     const QgsProcessingOutputLayerDefinition fromVar = qvariant_cast<QgsProcessingOutputLayerDefinition>( val );
+    openFileOnCompletion = fromVar.openFileOnCompletion;
     val = fromVar.sink;
   }
 
@@ -1150,6 +1153,13 @@ QString QgsProcessingParameters::parameterAsFileOutput( const QgsProcessingParam
     if ( const QgsProcessingDestinationParameter *destParam = dynamic_cast< const QgsProcessingDestinationParameter * >( definition ) )
       dest = destParam->generateTemporaryDestination( &context );
   }
+
+  const QgsProcessingParameterFileDestination *fileDefinition = dynamic_cast< const QgsProcessingParameterFileDestination * >( definition );
+  if ( openFileOnCompletion && fileDefinition && fileDefinition->supportsOpenOnCompletion() && !dest.isEmpty() )
+  {
+    context.addFileToOpenOnCompletion( dest );
+  }
+
   return dest;
 }
 
@@ -7336,10 +7346,21 @@ void QgsProcessingParameterFileDestination::setFileFilter( const QString &fileFi
   mFileFilter = fileFilter;
 }
 
+bool QgsProcessingParameterFileDestination::supportsOpenOnCompletion() const
+{
+  return mSupportsOpenOnCompletion;
+}
+
+void QgsProcessingParameterFileDestination::setSupportsOpenOnCompletion( bool supports )
+{
+  mSupportsOpenOnCompletion = supports;
+}
+
 QVariantMap QgsProcessingParameterFileDestination::toVariantMap() const
 {
   QVariantMap map = QgsProcessingDestinationParameter::toVariantMap();
   map.insert( u"file_filter"_s, mFileFilter );
+  map.insert( u"supports_open_on_completion"_s, mSupportsOpenOnCompletion );
   return map;
 }
 
@@ -7347,6 +7368,7 @@ bool QgsProcessingParameterFileDestination::fromVariantMap( const QVariantMap &m
 {
   QgsProcessingDestinationParameter::fromVariantMap( map );
   mFileFilter = map.value( u"file_filter"_s ).toString();
+  mSupportsOpenOnCompletion = map.value( u"supports_open_on_completion"_s, false ).toBool();
   return true;
 }
 

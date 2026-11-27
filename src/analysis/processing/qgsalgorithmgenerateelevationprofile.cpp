@@ -147,7 +147,9 @@ void QgsGenerateElevationProfileAlgorithm::initAlgorithm( const QVariantMap & )
   dpiParam->setFlags( dpiParam->flags() | Qgis::ProcessingParameterFlag::Advanced );
   addParameter( dpiParam.release() );
 
-  addParameter( new QgsProcessingParameterFileDestination( u"OUTPUT"_s, QObject::tr( "Output image" ), QgsProcessingUtils::supportedImageFileFilters() ) );
+  auto output = std::make_unique<QgsProcessingParameterFileDestination>( u"OUTPUT"_s, QObject::tr( "Output image" ), QgsProcessingUtils::supportedImageFileFilters() );
+  output->setSupportsOpenOnCompletion( true );
+  addParameter( output.release() );
 }
 
 QString QgsGenerateElevationProfileAlgorithm::name() const
@@ -254,7 +256,7 @@ QVariantMap QgsGenerateElevationProfileAlgorithm::processAlgorithm( const QVaria
   const int height = parameterAsInt( parameters, u"HEIGHT"_s, context );
   const int dpi = parameterAsInt( parameters, u"DPI"_s, context );
 
-  const QString outputImage = parameterAsString( parameters, u"OUTPUT"_s, context );
+  const QString outputImage = parameterAsFileOutput( parameters, u"OUTPUT"_s, context );
 
   const QColor textColor = parameterAsColor( parameters, u"TEXT_COLOR"_s, context );
   const QColor backgroundColor = parameterAsColor( parameters, u"BACKGROUND_COLOR"_s, context );

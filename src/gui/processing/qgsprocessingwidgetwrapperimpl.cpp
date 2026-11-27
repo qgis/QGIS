@@ -8474,7 +8474,12 @@ QWidget *QgsProcessingOutputWidgetWrapper::createWidget()
       } );
 
       if ( type() == Qgis::ProcessingMode::Standard
-           && ( destParam->type() == QgsProcessingParameterRasterDestination::typeName() || destParam->type() == QgsProcessingParameterFeatureSink::typeName() || destParam->type() == QgsProcessingParameterVectorDestination::typeName() || destParam->type() == QgsProcessingParameterPointCloudDestination::typeName() || destParam->type() == QgsProcessingParameterVectorTileDestination::typeName() ) )
+           && ( destParam->type() == QgsProcessingParameterRasterDestination::typeName()
+                || destParam->type() == QgsProcessingParameterFeatureSink::typeName()
+                || destParam->type() == QgsProcessingParameterVectorDestination::typeName()
+                || destParam->type() == QgsProcessingParameterPointCloudDestination::typeName()
+                || destParam->type() == QgsProcessingParameterVectorTileDestination::typeName()
+                || ( destParam->type() == QgsProcessingParameterFileDestination::typeName() && static_cast<const QgsProcessingParameterFileDestination *>( destParam )->supportsOpenOnCompletion() ) ) )
         mOutputWidget->addOpenAfterRunningOption();
 
       return mOutputWidget;
