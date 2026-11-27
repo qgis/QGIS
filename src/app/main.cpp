@@ -113,6 +113,7 @@ typedef SInt32 SRefCon;
 #include "qgsuserprofile.h"
 #include "layers/qgsapplayerhandling.h"
 #include "options/qgsuserprofileselectiondialog.h"
+#include "qgsgdalutils.h"
 
 #ifdef HAVE_OPENCL
 #include "qgsopenclutils.h"
@@ -1557,6 +1558,11 @@ int main( int argc, char *argv[] )
       }
     }
   }
+
+#ifndef QT_NO_NETWORKPROXY
+  // set up the gdal proxy environment variables
+  QgsGdalUtils::setupProxy();
+#endif
 
 #ifdef QGISDEBUG
   QgsFontUtils::loadStandardTestFonts( QStringList() << u"Roman"_s << u"Bold"_s );
