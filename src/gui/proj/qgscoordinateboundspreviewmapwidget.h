@@ -58,6 +58,8 @@ class GUI_EXPORT QgsCoordinateBoundsPreviewMapWidget : public QgsMapCanvas
     void setPreviewRect( const QgsRectangle &rect );
 
   private:
+    QgsGeometry setBandGeometryToRect( QgsRubberBand *band, const QgsRectangle &rect ) const;
+
     QgsRubberBand *mPreviewBand = nullptr;
     QgsRubberBand *mCanvasPreviewBand = nullptr;
     QgsVertexMarker *mCanvasCenterMarker = nullptr;

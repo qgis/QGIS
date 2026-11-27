@@ -18,11 +18,24 @@
 #include "qgsconfig.h"
 #include "qgswebenginepage.h"
 
+#include "qgsapplication.h"
+#include "qgslogger.h"
+#include "qgsrunprocess.h"
+
+#include <QCoreApplication>
+#include <QDir>
 #include <QEventLoop>
+#include <QJsonDocument>
+#include <QJsonObject>
+#include <QPainter>
 #include <QSizeF>
+#include <QString>
+#include <QTemporaryDir>
 #include <QWebEnginePage>
 
 #include "moc_qgswebenginepage.cpp"
+
+using namespace Qt::StringLiterals;
 
 #ifdef HAVE_PDF4QT
 #include "qgspdfrenderer.h"
@@ -30,6 +43,7 @@
 #else
 #include "qgsexception.h"
 #endif
+
 
 QgsWebEnginePage::QgsWebEnginePage( QObject *parent )
   : QObject( parent )
@@ -184,6 +198,7 @@ void QgsWebEnginePage::handlePostBlockingLoadOperations()
   mCachedSize = QSize( width, height );
 }
 
+
 #ifdef HAVE_PDF4QT
 bool QgsWebEnginePage::render( QPainter *painter, const QRectF &painterRect )
 {
@@ -226,9 +241,217 @@ bool QgsWebEnginePage::render( QPainter *painter, const QRectF &painterRect )
   }
   return printOk;
 }
+
 #else
 bool QgsWebEnginePage::render( QPainter *, const QRectF & )
 {
   throw QgsNotSupportedException( QObject::tr( "Rendering web pages requires a QGIS build with PDF4Qt library support" ) );
+}
+#endif
+
+QString QgsWebEnginePage::htmlToPdfExecutable()
+{
+  QString executable = QProcessEnvironment::systemEnvironment().value( u"QGIS_HTML_TO_PDF_EXECUTABLE"_s );
+  if ( executable.isEmpty() )
+  {
+#if defined( Q_OS_WIN )
+    executable = QgsApplication::libexecPath() + "qgis_html_to_pdf.exe";
+#else
+    executable = QgsApplication::libexecPath() + "qgis_html_to_pdf";
+#endif
+  }
+  return executable;
+}
+
+QString QgsWebEnginePage::htmlToPdfReturnCodeToString( int code )
+{
+  // matches values in QgsHtmlToPdf::ResultCode
+  switch ( code )
+  {
+    case 0:
+      return QString();
+
+    case 1:
+    {
+      return tr( "Loading HTML failed" );
+    }
+
+    case 2:
+    {
+      return tr( "Executing Javascript initialization code failed" );
+    }
+
+    case 3:
+    {
+      return tr( "Printing HTML to PDF failed" );
+    }
+
+    case 4:
+    {
+      return tr( "Loading settings JSON failed" );
+    }
+
+    default:
+    {
+      return tr( "Unknown error" );
+    }
+  }
+  BUILTIN_UNREACHABLE
+}
+
+bool QgsWebEnginePage::doPrintToPdf( const QStringList &args, const QgsHtmlRenderSettings &settings, QString &errorMessage, QgsFeedback *feedback )
+{
+  const QString executable = htmlToPdfExecutable();
+  if ( executable.isEmpty() || !QFile::exists( executable ) )
+  {
+    errorMessage = tr( "qgis_html_to_pdf utility not found" );
+    return false;
+  }
+
+  const QTemporaryDir tempDir;
+
+  QStringList allArgs = args;
+  if ( !settings.isEmpty() )
+  {
+    const QString settingsFilename = tempDir.filePath( u"settings.json"_s );
+    allArgs.append( u"--settings=%1"_s.arg( settingsFilename ) );
+
+    QJsonObject settingsObj = QJsonObject::fromVariantMap( settings.asMap() );
+    QJsonDocument jsonDocument( settingsObj );
+    QFile settingsFile( settingsFilename );
+    if ( !settingsFile.open( QFile::WriteOnly | QFile::Truncate ) )
+    {
+      errorMessage = tr( "writing settings to temporary file failed" );
+      return false;
+    }
+
+    settingsFile.write( jsonDocument.toJson() );
+    settingsFile.close();
+  }
+
+  QgsBlockingProcess process( executable, allArgs );
+  process.setStdErrHandler( []( const QByteArray &ba ) { QgsDebugError( ba ); } );
+  process.setStdOutHandler( []( const QByteArray &ba ) { QgsDebugMsgLevel( ba, 2 ); } );
+  const int returnCode = process.run( feedback );
+  errorMessage = htmlToPdfReturnCodeToString( returnCode );
+  return returnCode == 0;
+}
+
+bool QgsWebEnginePage::printToPdfBlocking( const QString &html, const QString &pdfFileName, QString &errorMessage, int width, const QgsHtmlRenderSettings &settings, QgsFeedback *feedback )
+{
+  const QString executable = htmlToPdfExecutable();
+  if ( executable.isEmpty() || !QFile::exists( executable ) )
+  {
+    errorMessage = tr( "qgis_html_to_pdf utility not found" );
+    return false;
+  }
+
+  const QTemporaryDir tempDir;
+  const QString outputFilename = tempDir.filePath( u"content.html"_s );
+  QFile outputFile( outputFilename );
+  if ( !outputFile.open( QFile::WriteOnly | QFile::Truncate ) )
+  {
+    errorMessage = tr( "writing HTML to temporary file failed" );
+    return false;
+  }
+
+  outputFile.write( html.toUtf8() );
+  outputFile.close();
+
+  const QStringList args { outputFilename, pdfFileName, u"--width=%1"_s.arg( width ) };
+  return doPrintToPdf( args, settings, errorMessage, feedback );
+}
+
+bool QgsWebEnginePage::printToPdfBlocking( const QUrl &url, const QString &pdfFileName, QString &errorMessage, int width, const QgsHtmlRenderSettings &settings, QgsFeedback *feedback )
+{
+  const QString executable = htmlToPdfExecutable();
+  if ( executable.isEmpty() || !QFile::exists( executable ) )
+  {
+    errorMessage = tr( "qgis_html_to_pdf utility not found" );
+    return false;
+  }
+
+  const QStringList args { url.toString(), pdfFileName, u"--width=%1"_s.arg( width ) };
+  return doPrintToPdf( args, settings, errorMessage, feedback );
+}
+
+bool QgsWebEnginePage::renderBlocking(
+  const QString &html, QPainter *painter, const QRectF &painterRect, QString &errorMessage, QSizeF &renderedSize, const QgsHtmlRenderSettings &settings, QgsFeedback *feedback
+)
+{
+#ifdef HAVE_PDF4QT
+  const QTemporaryDir tempDir;
+  const QString renderedPdfPath = tempDir.filePath( u"content.pdf"_s );
+
+  const double dpi = ( painter && painter->device() ) ? painter->device()->logicalDpiX() : 96.0;
+  const int cssWidth = std::max( 1, static_cast< int >( std::round( painterRect.width() * 96.0 / dpi ) ) );
+
+  if ( !printToPdfBlocking( html, renderedPdfPath, errorMessage, cssWidth, settings, feedback ) )
+  {
+    return false;
+  }
+
+  QgsPdfRenderer renderer( renderedPdfPath );
+  return renderBlockingInternal( painter, renderer, errorMessage, painterRect, renderedSize );
+#else
+  ( void ) html;
+  ( void ) painter;
+  ( void ) painterRect;
+  ( void ) errorMessage;
+  ( void ) settings;
+  ( void ) feedback;
+  ( void ) renderedSize;
+  throw QgsNotSupportedException( QObject::tr( "Rendering HTML requires a QGIS build with PDF4Qt library support" ) );
+#endif
+}
+
+bool QgsWebEnginePage::renderBlocking( const QUrl &url, QPainter *painter, const QRectF &painterRect, QString &errorMessage, QSizeF &renderedSize, const QgsHtmlRenderSettings &settings, QgsFeedback *feedback )
+{
+#ifdef HAVE_PDF4QT
+  const QTemporaryDir tempDir;
+  const QString renderedPdfPath = tempDir.filePath( u"content.pdf"_s );
+
+  const double dpi = ( painter && painter->device() ) ? painter->device()->logicalDpiX() : 96.0;
+  const int cssWidth = std::max( 1, static_cast< int >( std::round( painterRect.width() * 96.0 / dpi ) ) );
+
+  if ( !printToPdfBlocking( url, renderedPdfPath, errorMessage, cssWidth, settings, feedback ) )
+  {
+    return false;
+  }
+
+  QgsPdfRenderer renderer( renderedPdfPath );
+  return renderBlockingInternal( painter, renderer, errorMessage, painterRect, renderedSize );
+#else
+  ( void ) url;
+  ( void ) painter;
+  ( void ) painterRect;
+  ( void ) errorMessage;
+  ( void ) feedback;
+  ( void ) renderedSize;
+  ( void ) settings;
+  throw QgsNotSupportedException( QObject::tr( "Rendering HTML requires a QGIS build with PDF4Qt library support" ) );
+#endif
+}
+
+#ifdef HAVE_PDF4QT
+bool QgsWebEnginePage::renderBlockingInternal( QPainter *painter, QgsPdfRenderer &renderer, QString &errorMessage, const QRectF &painterRect, QSizeF &renderedSize )
+{
+  if ( renderer.pageCount() < 1 )
+  {
+    errorMessage = tr( "Generated PDF contains no pages" );
+    return false;
+  }
+
+  const QRectF mediaBox = renderer.pageMediaBox( 0 );
+  if ( mediaBox.isEmpty() || mediaBox.width() <= 0 )
+    return false;
+
+  // Calculate target height preserving the content's natural aspect ratio
+  const double aspectRatio = mediaBox.height() / mediaBox.width();
+  const double targetHeight = painterRect.width() * aspectRatio;
+
+  const QRectF targetRect( painterRect.left(), painterRect.top(), painterRect.width(), targetHeight );
+  renderedSize = targetRect.size();
+  return renderer.render( painter, targetRect, 0 );
 }
 #endif

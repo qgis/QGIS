@@ -80,13 +80,21 @@ QgsSplitVectorLayerAlgorithm *QgsSplitVectorLayerAlgorithm::createInstance() con
 void QgsSplitVectorLayerAlgorithm::initAlgorithm( const QVariantMap & )
 {
   addParameter( new QgsProcessingParameterFeatureSource( u"INPUT"_s, QObject::tr( "Input layer" ), QList<int>() << static_cast<int>( Qgis::ProcessingSourceType::Vector ) ) );
-  addParameter( new QgsProcessingParameterField( u"FIELD"_s, QObject::tr( "Unique ID field" ), QVariant(), u"INPUT"_s ) );
+
+  auto fieldParam = std::make_unique<QgsProcessingParameterField>( u"FIELD"_s, QObject::tr( "Unique ID field" ), QVariant(), u"INPUT"_s );
+  fieldParam->setHelp( QObject::tr( "Field to use for splitting." ) );
+  addParameter( fieldParam.release() );
+
   auto prefixFieldParam = std::make_unique<QgsProcessingParameterBoolean>( u"PREFIX_FIELD"_s, QObject::tr( "Add field prefix to file names" ), true );
+  prefixFieldParam->setHelp( QObject::tr( "If checked, the name of the split field is added as a prefix to the output file names." ) );
   addParameter( prefixFieldParam.release() );
 
   const QStringList options = QgsVectorFileWriter::supportedFormatExtensions();
   auto fileTypeParam = std::make_unique<QgsProcessingParameterEnum>( u"FILE_TYPE"_s, QObject::tr( "Output file type" ), options, false, 0, true );
   fileTypeParam->setFlags( fileTypeParam->flags() | Qgis::ProcessingParameterFlag::Advanced );
+  fileTypeParam->setHelp(
+    QObject::tr( "Extension of the output files. If not specified or invalid, the output files format will be the one set in the “Default output vector layer extension” Processing setting." )
+  );
   addParameter( fileTypeParam.release() );
 
   addParameter( new QgsProcessingParameterFolderDestination( u"OUTPUT"_s, QObject::tr( "Output directory" ) ) );
@@ -159,7 +167,7 @@ QVariantMap QgsSplitVectorLayerAlgorithm::processAlgorithm( const QVariantMap &p
     }
     feedback->pushInfo( QObject::tr( "Creating layer: %1" ).arg( fileName ) );
 
-    sink.reset( QgsProcessingUtils::createFeatureSink( fileName, context, fields, geometryType, crs ) );
+    sink = QgsProcessingUtils::createFeatureSink( fileName, context, fields, geometryType, crs );
     const QString expr = QgsExpression::createFieldEqualityExpression( fieldName, *it );
     QgsFeatureIterator features = source->getFeatures( QgsFeatureRequest().setFilterExpression( expr ), Qgis::ProcessingFeatureSourceFlag::SkipGeometryValidityChecks );
     count = 0;

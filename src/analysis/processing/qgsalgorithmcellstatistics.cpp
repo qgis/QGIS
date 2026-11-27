@@ -874,6 +874,6 @@ void QgsCellStatisticsPercentRankFromRasterAlgorithm::processRasterStack( QgsPro
   mOutputRasterDataProvider->setEditable( false );
 }
 
-#endif
-
 ///@endcond
+
+#endif

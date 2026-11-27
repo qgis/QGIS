@@ -256,11 +256,17 @@ int QgsBlockingProcess::run( QgsFeedback *feedback )
 
     connect( &p, &QProcess::readyReadStandardOutput, &p, [&p, this] {
       const QByteArray ba = p.readAllStandardOutput();
-      mStdoutHandler( ba );
+      if ( mStdoutHandler )
+      {
+        mStdoutHandler( ba );
+      }
     } );
     connect( &p, &QProcess::readyReadStandardError, &p, [&p, this] {
       const QByteArray ba = p.readAllStandardError();
-      mStderrHandler( ba );
+      if ( mStderrHandler )
+      {
+        mStderrHandler( ba );
+      }
     } );
     p.start( mProcess, mArguments, QProcess::Unbuffered | QProcess::ReadWrite );
     if ( !p.waitForStarted() )
@@ -274,8 +280,14 @@ int QgsBlockingProcess::run( QgsFeedback *feedback )
       loop.exec();
     }
 
-    mStdoutHandler( p.readAllStandardOutput() );
-    mStderrHandler( p.readAllStandardError() );
+    if ( mStderrHandler )
+    {
+      mStdoutHandler( p.readAllStandardOutput() );
+    }
+    if ( mStderrHandler )
+    {
+      mStderrHandler( p.readAllStandardError() );
+    }
   };
 
   if ( requestMadeFromMainThread )

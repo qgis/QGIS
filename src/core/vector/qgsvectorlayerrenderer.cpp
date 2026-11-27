@@ -533,17 +533,17 @@ static std::unique_ptr< QgsGeometryEngine > prepareClipGeometry( bool applyClipF
   if ( applyClipFilter && !horizonGeom.isEmpty() )
   {
     const QgsGeometry visibleRegionGeom = clipFilterGeom.intersection( horizonGeom );
-    clipEngine.reset( QgsGeometry::createGeometryEngine( visibleRegionGeom.constGet() ) );
+    clipEngine = QgsGeometry::createGeometryEngine( visibleRegionGeom.constGet() );
     clipEngine->prepareGeometry();
   }
   else if ( applyClipFilter && horizonGeom.isEmpty() )
   {
-    clipEngine.reset( QgsGeometry::createGeometryEngine( clipFilterGeom.constGet() ) );
+    clipEngine = QgsGeometry::createGeometryEngine( clipFilterGeom.constGet() );
     clipEngine->prepareGeometry();
   }
   else if ( !applyClipFilter && !horizonGeom.isEmpty() )
   {
-    clipEngine.reset( QgsGeometry::createGeometryEngine( horizonGeom.constGet() ) );
+    clipEngine = QgsGeometry::createGeometryEngine( horizonGeom.constGet() );
     clipEngine->prepareGeometry();
   }
   return clipEngine;

@@ -495,7 +495,7 @@ QgsPropertyColorAssistantWidget::QgsPropertyColorAssistantWidget( QWidget *paren
 
 QgsColorRampTransformer *QgsPropertyColorAssistantWidget::createTransformer( double minValue, double maxValue ) const
 {
-  QgsColorRampTransformer *transformer = new QgsColorRampTransformer( minValue, maxValue, mColorRampButton->colorRamp(), mNullColorButton->color(), mColorRampButton->colorRampName() );
+  QgsColorRampTransformer *transformer = new QgsColorRampTransformer( minValue, maxValue, mColorRampButton->colorRamp().release(), mNullColorButton->color(), mColorRampButton->colorRampName() );
   return transformer;
 }
 

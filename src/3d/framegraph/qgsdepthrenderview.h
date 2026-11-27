@@ -48,7 +48,7 @@ namespace Qt3DCore
  *
  * \since QGIS 3.44
  */
-class QgsDepthRenderView : public QgsAbstractRenderView
+class _3D_EXPORT QgsDepthRenderView : public QgsAbstractRenderView
 {
   public:
     //! Constructor

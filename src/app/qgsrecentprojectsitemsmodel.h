@@ -42,6 +42,7 @@ class QgsRecentProjectItemsModel : public QAbstractListModel
       PinnedRole,
       AnonymisedNativePathRole,
       PreviewImagePathRole,
+      HasNativePathRole,
     };
     Q_ENUM( CustomRole )
 

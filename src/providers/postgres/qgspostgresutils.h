@@ -219,6 +219,13 @@ class QgsPostgresUtils
      * \since QGIS 4.4
      */
     static QList<QgsPostgresRasterOverviewLayerProperty> rasterOverviews( QgsPostgresConn *conn, const QString &schema, const QString &table );
+
+    /**
+     * Returns the SQL query for retrieving QGIS projects information from the specified schema.
+     *
+     * \since QGIS 4.4
+     */
+    static QString sqlQgsProjectsInfo( const QString &schema, const bool &hasCommentColumn );
 };
 
 #endif

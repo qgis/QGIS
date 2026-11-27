@@ -248,7 +248,7 @@ QgsLayoutElevationProfileWidget::QgsLayoutElevationProfileWidget( QgsLayoutItemE
     mProfile->update();
     mProfile->endCommand();
   } );
-  mDistanceAxisMajorLinesSymbolButton->setDefaultSymbol( QgsPlotDefaultSettings::axisGridMajorSymbol() );
+  mDistanceAxisMajorLinesSymbolButton->setDefaultSymbol( QgsPlotDefaultSettings::axisGridMajorSymbol().release() );
 
   mDistanceAxisMinorLinesSymbolButton->setSymbolType( Qgis::SymbolType::Line );
   connect( mDistanceAxisMinorLinesSymbolButton, &QgsSymbolButton::changed, this, [this] {
@@ -261,7 +261,7 @@ QgsLayoutElevationProfileWidget::QgsLayoutElevationProfileWidget( QgsLayoutItemE
     mProfile->update();
     mProfile->endCommand();
   } );
-  mDistanceAxisMinorLinesSymbolButton->setDefaultSymbol( QgsPlotDefaultSettings::axisGridMinorSymbol() );
+  mDistanceAxisMinorLinesSymbolButton->setDefaultSymbol( QgsPlotDefaultSettings::axisGridMinorSymbol().release() );
 
   connect( mDistanceAxisMajorIntervalSpin, qOverload<double>( &QDoubleSpinBox::valueChanged ), this, [this]( double value ) {
     if ( !mProfile || mBlockChanges )
@@ -307,7 +307,7 @@ QgsLayoutElevationProfileWidget::QgsLayoutElevationProfileWidget( QgsLayoutItemE
     mProfile->update();
     mProfile->endCommand();
   } );
-  mElevationAxisMajorLinesSymbolButton->setDefaultSymbol( QgsPlotDefaultSettings::axisGridMajorSymbol() );
+  mElevationAxisMajorLinesSymbolButton->setDefaultSymbol( QgsPlotDefaultSettings::axisGridMajorSymbol().release() );
 
   mElevationAxisMinorLinesSymbolButton->setSymbolType( Qgis::SymbolType::Line );
   connect( mElevationAxisMinorLinesSymbolButton, &QgsSymbolButton::changed, this, [this] {
@@ -320,7 +320,7 @@ QgsLayoutElevationProfileWidget::QgsLayoutElevationProfileWidget( QgsLayoutItemE
     mProfile->update();
     mProfile->endCommand();
   } );
-  mElevationAxisMinorLinesSymbolButton->setDefaultSymbol( QgsPlotDefaultSettings::axisGridMinorSymbol() );
+  mElevationAxisMinorLinesSymbolButton->setDefaultSymbol( QgsPlotDefaultSettings::axisGridMinorSymbol().release() );
 
   connect( mElevationAxisLabelIntervalSpin, qOverload<double>( &QDoubleSpinBox::valueChanged ), this, [this]( double value ) {
     if ( !mProfile || mBlockChanges )
@@ -366,7 +366,7 @@ QgsLayoutElevationProfileWidget::QgsLayoutElevationProfileWidget( QgsLayoutItemE
     mProfile->update();
     mProfile->endCommand();
   } );
-  mChartBackgroundSymbolButton->setDefaultSymbol( QgsPlotDefaultSettings::chartBackgroundSymbol() );
+  mChartBackgroundSymbolButton->setDefaultSymbol( QgsPlotDefaultSettings::chartBackgroundSymbol().release() );
 
   mChartBorderSymbolButton->setSymbolType( Qgis::SymbolType::Fill );
   connect( mChartBorderSymbolButton, &QgsSymbolButton::changed, this, [this] {
@@ -379,7 +379,7 @@ QgsLayoutElevationProfileWidget::QgsLayoutElevationProfileWidget( QgsLayoutItemE
     mProfile->update();
     mProfile->endCommand();
   } );
-  mChartBorderSymbolButton->setDefaultSymbol( QgsPlotDefaultSettings::chartBorderSymbol() );
+  mChartBorderSymbolButton->setDefaultSymbol( QgsPlotDefaultSettings::chartBorderSymbol().release() );
 
   connect( mDistanceAxisLabelFormatButton, &QPushButton::clicked, this, [this] {
     if ( !mProfile || mBlockChanges )
@@ -725,9 +725,7 @@ void QgsLayoutElevationProfileWidget::copySettingsFromProfileCanvas( QgsElevatio
 
   QList<QgsMapLayer *> canvasLayers = canvas->layers();
   mProfile->setLayers( canvasLayers );
-
-  QList<QgsAbstractProfileSource *> canvasSources = canvas->sources();
-  mProfile->setSources( canvasSources );
+  mProfile->setSources( canvas->rawSources() );
 
   syncLayerTreeAndProfileItemSources();
 
@@ -910,7 +908,7 @@ void QgsLayoutElevationProfileWidget::updateItemSources()
     return;
 
   QList<QgsMapLayer *> layers;
-  QList<QgsAbstractProfileSource *> sources;
+  QList< std::variant< QgsMapLayer *, QgsAbstractProfileSource * > > sources;
   const QList<QgsLayerTreeNode *> layerAndCustomNodeOrder = mLayerTree->layerAndCustomNodeOrder();
   for ( QgsLayerTreeNode *node : layerAndCustomNodeOrder )
   {
@@ -920,7 +918,7 @@ void QgsLayoutElevationProfileWidget::updateItemSources()
       if ( mLayerTree->findLayer( layer )->isVisible() )
       {
         layers << layer;
-        sources << layer->profileSource();
+        sources << layer;
       }
     }
     else if ( QgsLayerTree::isCustomNode( node ) && node->customProperty( u"source"_s ) == QgsElevationProfileLayerTreeView::CUSTOM_NODE_ELEVATION_PROFILE_SOURCE )

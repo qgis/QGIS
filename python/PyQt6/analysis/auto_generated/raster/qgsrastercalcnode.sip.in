@@ -96,7 +96,7 @@ Returns a list of nodes of a specific ``type``
 .. versionadded:: 3.6
 %End
 
-    static QgsRasterCalcNode *parseRasterCalcString( const QString &str, QString &parserErrorMsg ) /Factory/;
+    static std::unique_ptr<QgsRasterCalcNode> parseRasterCalcString( const QString &str, QString &parserErrorMsg );
 
     QStringList referencedLayerNames() const;
 %Docstring

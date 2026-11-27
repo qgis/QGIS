@@ -1820,17 +1820,17 @@ QColor QgsOgcUtils::colorFromOgcFill( const QDomElement &fillElement )
 }
 
 
-QgsExpression *QgsOgcUtils::expressionFromOgcFilter( const QDomElement &element, QgsVectorLayer *layer )
+std::unique_ptr<QgsExpression> QgsOgcUtils::expressionFromOgcFilter( const QDomElement &element, QgsVectorLayer *layer )
 {
   return expressionFromOgcFilter( element, QgsOgcUtils::FILTER_OGC_1_0, layer );
 }
 
-QgsExpression *QgsOgcUtils::expressionFromOgcFilter( const QDomElement &element, const FilterVersion version, QgsVectorLayer *layer )
+std::unique_ptr<QgsExpression> QgsOgcUtils::expressionFromOgcFilter( const QDomElement &element, const FilterVersion version, QgsVectorLayer *layer )
 {
   if ( element.isNull() || !element.hasChildNodes() )
     return nullptr;
 
-  QgsExpression *expr = new QgsExpression();
+  auto expr = std::make_unique<QgsExpression>();
 
   // check if it is a single string value not having DOM elements
   // that express OGC operators

@@ -172,7 +172,7 @@ QgsColorRampShader QgsColorRampShaderWidget::shader() const
 
   if ( !btnColorRamp->isNull() )
   {
-    colorRampShader.setSourceColorRamp( btnColorRamp->colorRamp() );
+    colorRampShader.setSourceColorRamp( btnColorRamp->colorRamp().release() );
   }
 
   colorRampShader.setLegendSettings( new QgsColorRampLegendNodeSettings( mLegendSettings ) );

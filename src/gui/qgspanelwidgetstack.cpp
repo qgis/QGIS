@@ -185,12 +185,8 @@ void QgsPanelWidgetStack::closePanel( QgsPanelWidget *panel )
   {
     mBackButton->hide();
     mTitleText->hide();
-    mMenuButton->hide();
   }
-  else
-  {
-    updateMenuButton();
-  }
+  updateMenuButton();
   this->updateBreadcrumb();
 }
 
@@ -225,14 +221,16 @@ void QgsPanelWidgetStack::updateBreadcrumb()
 
 void QgsPanelWidgetStack::updateMenuButton()
 {
-  if ( QMenu *menu = currentPanel()->menuButtonMenu() )
+  if ( QgsPanelWidget *panel = currentPanel() )
   {
-    mMenuButton->setVisible( true );
-    mMenuButton->setToolTip( currentPanel()->menuButtonTooltip() );
-    mMenuButton->setMenu( menu );
+    if ( QMenu *menu = panel->menuButtonMenu() )
+    {
+      mMenuButton->setVisible( true );
+      mMenuButton->setToolTip( currentPanel()->menuButtonTooltip() );
+      mMenuButton->setMenu( menu );
+      return;
+    }
   }
-  else
-  {
-    mMenuButton->setVisible( false );
-  }
+
+  mMenuButton->setVisible( false );
 }

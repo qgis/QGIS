@@ -78,12 +78,15 @@ void QgsSaveFeaturesAlgorithm::initAlgorithm( const QVariantMap & )
 
   auto param = std::make_unique<QgsProcessingParameterString>( u"LAYER_NAME"_s, QObject::tr( "Layer name" ), QVariant(), false, true );
   param->setFlags( param->flags() | Qgis::ProcessingParameterFlag::Advanced );
+  param->setHelp( QObject::tr( "Name to use for the output layer." ) );
   addParameter( param.release() );
   param = std::make_unique<QgsProcessingParameterString>( u"DATASOURCE_OPTIONS"_s, QObject::tr( "GDAL dataset options (separate individual options with semicolons)" ), QVariant(), false, true );
   param->setFlags( param->flags() | Qgis::ProcessingParameterFlag::Advanced );
+  param->setHelp( QObject::tr( "GDAL dataset creation options of the output format. Separate individual options with semicolons." ) );
   addParameter( param.release() );
   param = std::make_unique<QgsProcessingParameterString>( u"LAYER_OPTIONS"_s, QObject::tr( "GDAL layer options (separate individual options with semicolons)" ), QVariant(), false, true );
   param->setFlags( param->flags() | Qgis::ProcessingParameterFlag::Advanced );
+  param->setHelp( QObject::tr( "GDAL layer creation options of the output format. Separate individual options with semicolons." ) );
   addParameter( param.release() );
 
   auto paramEnum = std::make_unique<QgsProcessingParameterEnum>(
@@ -98,6 +101,7 @@ void QgsSaveFeaturesAlgorithm::initAlgorithm( const QVariantMap & )
     0
   );
   paramEnum->setFlags( paramEnum->flags() | Qgis::ProcessingParameterFlag::Advanced );
+  paramEnum->setHelp( QObject::tr( "Controls how to handle an already existing output file and its features." ) );
   addParameter( paramEnum.release() );
 
   addOutput( new QgsProcessingOutputString( u"FILE_PATH"_s, QObject::tr( "File name and path" ) ) );

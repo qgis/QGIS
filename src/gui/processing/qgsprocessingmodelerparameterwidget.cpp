@@ -283,18 +283,18 @@ QgsExpressionContext QgsProcessingModelerParameterWidget::createExpressionContex
     const QgsProcessingAlgorithm *alg = nullptr;
     if ( mModel->childAlgorithms().contains( mChildId ) )
       alg = mModel->childAlgorithm( mChildId ).algorithm();
-    QgsExpressionContextScope *algorithmScope = QgsExpressionContextUtils::processingAlgorithmScope( alg, QVariantMap(), mContext );
-    c << algorithmScope;
-    QgsExpressionContextScope *modelScope = QgsExpressionContextUtils::processingModelAlgorithmScope( mModel, QVariantMap(), mContext );
-    c << modelScope;
-    QgsExpressionContextScope *childScope = mModel->createExpressionContextScopeForChildAlgorithm( mChildId, mContext, QVariantMap(), QVariantMap() ).release();
-    c << childScope;
+    std::unique_ptr<QgsExpressionContextScope> algorithmScope = QgsExpressionContextUtils::processingAlgorithmScope( alg, QVariantMap(), mContext );
+    std::unique_ptr<QgsExpressionContextScope> modelScope = QgsExpressionContextUtils::processingModelAlgorithmScope( mModel, QVariantMap(), mContext );
+    std::unique_ptr<QgsExpressionContextScope> childScope = mModel->createExpressionContextScopeForChildAlgorithm( mChildId, mContext, QVariantMap(), QVariantMap() );
 
     QStringList highlightedVariables = childScope->variableNames();
     QStringList highlightedFunctions = childScope->functionNames();
     highlightedVariables += algorithmScope->variableNames();
     highlightedVariables += mModel->variables().keys();
     highlightedFunctions += algorithmScope->functionNames();
+    c << std::move( algorithmScope );
+    c << std::move( modelScope );
+    c << std::move( childScope );
     c.setHighlightedVariables( highlightedVariables );
     c.setHighlightedFunctions( highlightedFunctions );
   }

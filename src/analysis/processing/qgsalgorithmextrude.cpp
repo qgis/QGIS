@@ -25,7 +25,7 @@
 
 using namespace Qt::StringLiterals;
 
-#ifdef WITH_SFCGAL
+#ifdef HAVE_SFCGAL
 #include "qgssfcgalgeometry.h"
 #endif
 
@@ -109,18 +109,21 @@ void QgsExtrudeAlgorithm::initParameters( const QVariantMap & )
   xExtrude->setIsDynamic( true );
   xExtrude->setDynamicPropertyDefinition( QgsPropertyDefinition( u"EXTRUDE_X"_s, QObject::tr( "Extrusion (x-axis)" ), QgsPropertyDefinition::Double ) );
   xExtrude->setDynamicLayerParameterName( u"INPUT"_s );
+  xExtrude->setHelp( QObject::tr( "Specifies the extrusion value along the X-axis." ) );
   addParameter( xExtrude.release() );
 
   auto yExtrude = std::make_unique<QgsProcessingParameterNumber>( u"EXTRUDE_Y"_s, QObject::tr( "Extrusion (y-axis)" ), Qgis::ProcessingNumberParameterType::Double, 0.0 );
   yExtrude->setIsDynamic( true );
   yExtrude->setDynamicPropertyDefinition( QgsPropertyDefinition( u"EXTRUDE_Y"_s, QObject::tr( "Extrusion (y-axis)" ), QgsPropertyDefinition::Double ) );
   yExtrude->setDynamicLayerParameterName( u"INPUT"_s );
+  yExtrude->setHelp( QObject::tr( "Specify the extrusion value along the Y-axis." ) );
   addParameter( yExtrude.release() );
 
   auto zExtrude = std::make_unique<QgsProcessingParameterNumber>( u"EXTRUDE_Z"_s, QObject::tr( "Extrusion (z-axis)" ), Qgis::ProcessingNumberParameterType::Double, 0.0 );
   zExtrude->setIsDynamic( true );
   zExtrude->setDynamicPropertyDefinition( QgsPropertyDefinition( u"EXTRUDE_Z"_s, QObject::tr( "Extrusion (z-axis)" ), QgsPropertyDefinition::Double ) );
   zExtrude->setDynamicLayerParameterName( u"INPUT"_s );
+  zExtrude->setHelp( QObject::tr( "Specify the extrusion value along the Z-axis." ) );
   addParameter( zExtrude.release() );
 }
 
@@ -128,7 +131,7 @@ bool QgsExtrudeAlgorithm::prepareAlgorithm( const QVariantMap &parameters, QgsPr
 {
   Q_UNUSED( feedback )
 
-#ifdef WITH_SFCGAL
+#ifdef HAVE_SFCGAL
   mExtrudeX = parameterAsDouble( parameters, u"EXTRUDE_X"_s, context );
   mDynamicExtrudeX = QgsProcessingParameters::isDynamic( parameters, u"EXTRUDE_X"_s );
   if ( mDynamicExtrudeX )
@@ -152,7 +155,7 @@ bool QgsExtrudeAlgorithm::prepareAlgorithm( const QVariantMap &parameters, QgsPr
 #endif
 }
 
-#ifdef WITH_SFCGAL
+#ifdef HAVE_SFCGAL
 std::optional<QgsGeometry> QgsExtrudeAlgorithm::extrudePolygon( const QgsAbstractGeometry *polygon, const QgsVector3D &extrusion, const QgsFeatureId &featureId, QgsProcessingFeedback *feedback )
 {
   try
@@ -178,7 +181,7 @@ QgsFeatureList QgsExtrudeAlgorithm::processFeature( const QgsFeature &feature, Q
 {
   QGS_MARK_ALGORITHM_SOURCE
 
-#ifdef WITH_SFCGAL
+#ifdef HAVE_SFCGAL
   if ( !feature.hasGeometry() )
   {
     return QgsFeatureList() << feature;

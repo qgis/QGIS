@@ -218,11 +218,11 @@ QVariant QgsProcessingParameterTileExtentMaxZoomList::toVariant( const QList<Qgs
 
 QgsTileExtentMaxZoomRegion QgsProcessingParameterTileExtentMaxZoomList::regionFromVariant( const QVariant &variant, QgsProcessingContext &context ) const
 {
-  if ( variant.userType() == QVariant::Map )
+  if ( variant.userType() == QMetaType::Type::QVariantMap )
   {
     return regionFromVariantMap( variant.toMap(), context );
   }
-  else if ( variant.userType() == QVariant::String )
+  else if ( variant.userType() == QMetaType::Type::QString )
   {
     const QString regionString = variant.toString();
     const int sepPos = regionString.indexOf( ':' );

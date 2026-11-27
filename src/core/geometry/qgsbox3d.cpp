@@ -320,7 +320,7 @@ bool QgsBox3D::isNull() const
 
 bool QgsBox3D::isEmpty() const
 {
-  return mZmax < mZmin || qgsDoubleNear( mZmax, mZmin ) || mBounds2d.isEmpty();
+  return qgsDoubleNear( mZmax, mZmin ) || mBounds2d.isEmpty();
 }
 
 QString QgsBox3D::toString( int precision ) const

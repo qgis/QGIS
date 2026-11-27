@@ -25,9 +25,11 @@
 #include "qgsmaplayer.h"
 #include "qgsprovidermetadata.h"
 #include "qgsproviderregistry.h"
+#include "qgsreadwritecontext.h"
 #include "qgsrectangle.h"
 #include "qgssettingsentryimpl.h"
 #include "qgssettingsregistrycore.h"
+#include "qgssldexportcontext.h"
 #include "qgsvectorlayer.h"
 
 #include <QRegularExpression>
@@ -96,7 +98,7 @@ QgsRectangle QgsMapLayerUtils::combinedExtent( const QList<QgsMapLayer *> &layer
   return fullExtent;
 }
 
-QgsAbstractDatabaseProviderConnection *QgsMapLayerUtils::databaseConnection( const QgsMapLayer *layer )
+std::unique_ptr<QgsAbstractDatabaseProviderConnection> QgsMapLayerUtils::databaseConnection( const QgsMapLayer *layer )
 {
   if ( !layer )
   {
@@ -112,7 +114,7 @@ QgsAbstractDatabaseProviderConnection *QgsMapLayerUtils::databaseConnection( con
     }
 
     std::unique_ptr< QgsAbstractDatabaseProviderConnection > conn { static_cast<QgsAbstractDatabaseProviderConnection *>( providerMetadata->createConnection( layer->source(), {} ) ) };
-    return conn.release();
+    return conn;
   }
   catch ( const QgsProviderConnectionException &ex )
   {
@@ -289,4 +291,62 @@ QString QgsMapLayerUtils::layerToolTip( const QgsMapLayer *layer )
     return parts.join( "<br/>"_L1 );
   }
   return QString();
+}
+
+QgsSaveStyleResult QgsMapLayerUtils::saveLayerStyleToDatabase(
+  QgsMapLayer *layer,
+  const QString &providerKey,
+  const QString &dataSource,
+  const QString &name,
+  const QString &description,
+  bool useAsDefault,
+  const QString &uiFileContent,
+  const Qgis::SaveStyleFormats formats,
+  QgsMapLayer::StyleCategories categories
+)
+{
+  QgsSaveStyleResult result;
+
+  QString sldStyle, qmlStyle, qmlError;
+
+  if ( formats.testFlag( Qgis::SaveStyleFormat::QML ) )
+  {
+    QDomDocument qmlDocument;
+    QgsReadWriteContext context;
+    layer->exportNamedStyle( qmlDocument, qmlError, context, categories );
+    if ( !qmlError.isEmpty() )
+    {
+      result.saveResult.setFlag( QgsMapLayer::SaveStyleResult::QmlGenerationFailed );
+      result.qmlError = qmlError;
+    }
+    else
+    {
+      qmlStyle = qmlDocument.toString();
+    }
+  }
+
+  if ( formats.testFlag( Qgis::SaveStyleFormat::SLD ) )
+  {
+    QgsSldExportContext sldContext;
+    QDomDocument sldDocument = layer->exportSldStyleV3( sldContext );
+    if ( !sldContext.errors().empty() )
+    {
+      result.saveResult.setFlag( QgsMapLayer::SaveStyleResult::SldGenerationFailed );
+      result.sldErrorMessages.append( sldContext.errors() );
+      result.sldWarningMessages.append( sldContext.warnings() );
+    }
+    else
+    {
+      sldStyle = sldDocument.toString();
+    }
+  }
+
+  QString providerSaveStyleError;
+  if ( !QgsProviderRegistry::instance()->saveStyle( providerKey, dataSource, qmlStyle, sldStyle, name, description, uiFileContent, useAsDefault, providerSaveStyleError ) )
+  {
+    result.saveResult.setFlag( QgsMapLayer::SaveStyleResult::DatabaseWriteFailed );
+    result.providerSaveStyleError = providerSaveStyleError;
+  }
+
+  return result;
 }

@@ -34,10 +34,8 @@ using namespace Qt::StringLiterals;
 
 ///@cond PRIVATE
 
-QgsAbstractFeatureBasedChunkedEntity::QgsAbstractFeatureBasedChunkedEntity(
-  Qgs3DMapSettings *mapSettings, float tau, QgsChunkLoaderFactory *loaderFactory, bool ownsFactory, int primitivesBudget, Qt3DCore::QNode *parent
-)
-  : QgsChunkedEntity( mapSettings, tau, loaderFactory, ownsFactory, primitivesBudget, parent )
+QgsAbstractFeatureBasedChunkedEntity::QgsAbstractFeatureBasedChunkedEntity( Qgs3DMapSettings *mapSettings, float tau, QgsChunkLoader *loader, bool ownsLoader, int primitivesBudget, Qt3DCore::QNode *parent )
+  : QgsChunkedEntity( mapSettings, tau, loader, ownsLoader, primitivesBudget, parent )
 {
   mTransform = new Qt3DCore::QTransform;
   this->addComponent( mTransform );

@@ -51,7 +51,10 @@ QString QgsRemoveDuplicatesByAttributeAlgorithm::groupId() const
 void QgsRemoveDuplicatesByAttributeAlgorithm::initAlgorithm( const QVariantMap & )
 {
   addParameter( new QgsProcessingParameterFeatureSource( u"INPUT"_s, QObject::tr( "Input layer" ), QList<int>() << static_cast<int>( Qgis::ProcessingSourceType::Vector ) ) );
-  addParameter( new QgsProcessingParameterField( u"FIELDS"_s, QObject::tr( "Field to match duplicates by" ), QVariant(), u"INPUT"_s, Qgis::ProcessingFieldParameterDataType::Any, true ) );
+
+  auto fieldsParam = std::make_unique<QgsProcessingParameterField>( u"FIELDS"_s, QObject::tr( "Field to match duplicates by" ), QVariant(), u"INPUT"_s, Qgis::ProcessingFieldParameterDataType::Any, true );
+  fieldsParam->setHelp( QObject::tr( "Fields defining duplicates. Features with identical values for all these fields are considered duplicates." ) );
+  addParameter( fieldsParam.release() );
 
   addParameter( new QgsProcessingParameterFeatureSink( u"OUTPUT"_s, QObject::tr( "Filtered (no duplicates)" ) ) );
   QgsProcessingParameterFeatureSink *failOutput

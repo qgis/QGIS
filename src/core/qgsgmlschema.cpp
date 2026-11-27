@@ -550,7 +550,7 @@ void QgsGmlSchema::addAttribute( const QString &name, const QString &value )
       type = QMetaType::Type::Double;
     }
   }
-  //QgsDebugMsgLevel( "mStringCash = " + mStringCash + " type = " + QVariant::typeToName( type ),2 );
+  //QgsDebugMsgLevel( "mStringCash = " + mStringCash + " type = " + QMetaType( type ).name(), 2 );
   //QMap<QString, QgsField> & fields = mFeatureClassMap[mCurrentFeatureName].fields();
   QList<QgsField> &fields = mFeatureClassMap[mCurrentFeatureName].fields();
   const int fieldIndex = mFeatureClassMap[mCurrentFeatureName].fieldIndex( name );

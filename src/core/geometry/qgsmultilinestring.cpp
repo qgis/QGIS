@@ -249,13 +249,13 @@ bool QgsMultiLineString::wktOmitChildType() const
   return true;
 }
 
-QgsMultiLineString *QgsMultiLineString::measuredLine( double start, double end ) const
+std::unique_ptr<QgsMultiLineString> QgsMultiLineString::measuredLine( double start, double end ) const
 {
   auto result = std::make_unique< QgsMultiLineString >();
   if ( isEmpty() )
   {
     result->convertTo( QgsWkbTypes::addM( mWkbType ) );
-    return result.release();
+    return result;
   }
 
   /* Calculate the total length of the line */
@@ -277,5 +277,5 @@ QgsMultiLineString *QgsMultiLineString::measuredLine( double start, double end )
     lengthSoFar += subLength;
   }
 
-  return result.release();
+  return result;
 }

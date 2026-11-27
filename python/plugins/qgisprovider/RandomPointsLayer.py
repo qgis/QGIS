@@ -79,28 +79,30 @@ class RandomPointsLayer(QgisAlgorithm):
                 [QgsProcessing.SourceType.TypeVectorPolygon],
             )
         )
-        self.addParameter(
-            QgsProcessingParameterNumber(
-                self.POINTS_NUMBER,
-                self.tr("Number of points"),
-                QgsProcessingParameterNumber.Type.Integer,
-                1,
-                False,
-                1,
-                1000000000,
-            )
+        param = QgsProcessingParameterNumber(
+            self.POINTS_NUMBER,
+            self.tr("Number of points"),
+            QgsProcessingParameterNumber.Type.Integer,
+            1,
+            False,
+            1,
+            1000000000,
         )
-        self.addParameter(
-            QgsProcessingParameterDistance(
-                self.MIN_DISTANCE,
-                self.tr("Minimum distance between points"),
-                0,
-                self.INPUT,
-                False,
-                0,
-                1000000000,
-            )
+        param.setHelp(self.tr("Number of points to create."))
+        self.addParameter(param)
+
+        param = QgsProcessingParameterDistance(
+            self.MIN_DISTANCE,
+            self.tr("Minimum distance between points"),
+            0,
+            self.INPUT,
+            False,
+            0,
+            1000000000,
         )
+        param.setHelp(self.tr("The minimum distance between points."))
+        self.addParameter(param)
+
         self.addParameter(
             QgsProcessingParameterFeatureSink(
                 self.OUTPUT,

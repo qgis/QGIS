@@ -39,7 +39,7 @@ namespace Qt3DRender
  *
  * \since QGIS 4.0
  */
-class QgsHighlightsRenderView : public QgsAbstractRenderView
+class _3D_EXPORT QgsHighlightsRenderView : public QgsAbstractRenderView
 {
   public:
     //! Constructor

@@ -31,6 +31,7 @@ set(QGIS_GUI_SRCS
   raster/qgsrastersinglecolorrendererwidget.cpp
   raster/qgsrendererrasterpropertieswidget.cpp
   raster/qgsrastertransparencywidget.cpp
+  raster/qgsrastervectorfieldrendererwidget.cpp
   raster/qgshillshaderendererwidget.cpp
   raster/qgsresamplingutils.cpp
 
@@ -616,6 +617,7 @@ set(QGIS_GUI_SRCS
   qgscollapsiblegroupbox.cpp
   qgscolorbrewercolorrampdialog.cpp
   qgscolorbutton.cpp
+  qgscolorpickerhelper.cpp
   qgscolorrampbutton.cpp
   qgscolordialog.cpp
   qgscolorramplegendnodewidget.cpp
@@ -892,6 +894,7 @@ set(QGIS_GUI_HDRS
   qgscolorbrewercolorrampdialog.h
   qgscolorbutton.h
   qgscolordialog.h
+  qgscolorpickerhelper.h
   qgscolorrampbutton.h
   qgscolorramplegendnodewidget.h
   qgscolorschemelist.h
@@ -1601,6 +1604,7 @@ set(QGIS_GUI_HDRS
   raster/qgsrasterminmaxwidget.h
   raster/qgsrasterrendererwidget.h
   raster/qgsrastertransparencywidget.h
+  raster/qgsrastervectorfieldrendererwidget.h
   raster/qgsrendererrasterpropertieswidget.h
   raster/qgssinglebandgrayrendererwidget.h
   raster/qgssinglebandpseudocolorrendererwidget.h
@@ -2077,6 +2081,10 @@ if (WITH_QTGAMEPAD)
     target_link_libraries(qgis_gui
       Qt::GamepadLegacy
     )
+endif()
+
+if(WITH_TBB)
+   target_link_libraries(qgis_gui TBB::tbb)
 endif()
 
 if (FORCE_STATIC_LIBS)

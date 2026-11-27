@@ -20,6 +20,9 @@
 #include "qgsmaplayerlegend.h"
 #include "qgsmaplayerstore.h"
 #include "qgsmaplayerstylemanager.h"
+#include "qgsmesheditor.h"
+#include "qgsmeshlayer.h"
+#include "qgspointcloudlayer.h"
 #include "qgsproject.h"
 #include "qgsrasterlayer.h"
 #include "qgssinglesymbolrenderer.h"
@@ -27,6 +30,7 @@
 #include "qgstest.h"
 
 #include <QApplication>
+#include <QMessageBox>
 #include <QString>
 
 using namespace Qt::StringLiterals;
@@ -35,12 +39,14 @@ using namespace Qt::StringLiterals;
  * \ingroup UnitTests
  * This is a unit test for the QgisApp
  */
-class TestQgisApp : public QObject
+class TestQgisApp : public QgsTest
 {
     Q_OBJECT
 
   public:
-    TestQgisApp();
+    TestQgisApp()
+      : QgsTest( u"QgisApp tests"_s, u"3d"_s )
+    {}
 
   private slots:
     void initTestCase();    // will be called before the first testfunction is executed.
@@ -50,6 +56,12 @@ class TestQgisApp : public QObject
     //! Test for issue GH #63346
     void pasteRasterStyleCategory();
     void copyPasteMultipleStyles();
+    void toggleEditingVectorLayer();
+    void toggleEditingMeshLayer();
+    void toggleEditingPointCloudsLayer();
+    void removeVectorLayerFromProject();
+    void removePointCloudLayerFromProject();
+    void removeMeshFromProject();
 
   public slots:
     void addVectorLayerShp();
@@ -64,7 +76,42 @@ class TestQgisApp : public QObject
     QString mTestDataDir;
 };
 
-TestQgisApp::TestQgisApp() = default;
+void static clickSave()
+{
+  QMessageBox *box = qobject_cast<QMessageBox *>( QApplication::activeModalWidget() );
+  box->button( QMessageBox::Save )->click();
+}
+
+void static clickDiscard()
+{
+  QMessageBox *box = qobject_cast<QMessageBox *>( QApplication::activeModalWidget() );
+  box->button( QMessageBox::Discard )->click();
+}
+
+void static clickCancel()
+{
+  QMessageBox *box = qobject_cast<QMessageBox *>( QApplication::activeModalWidget() );
+  box->button( QMessageBox::Cancel )->click();
+}
+
+void static clickOK()
+{
+  QMessageBox *box = qobject_cast<QMessageBox *>( QApplication::activeModalWidget() );
+  box->button( QMessageBox::Ok )->click();
+}
+
+void static clickEditCurrentMesh()
+{
+  QMessageBox *box = qobject_cast<QMessageBox *>( QApplication::activeModalWidget() );
+  for ( QAbstractButton *b : box->buttons() )
+  {
+    if ( b->text() == "Edit Current Mesh" )
+    {
+      b->click();
+      return;
+    }
+  }
+}
 
 //runs before all tests
 void TestQgisApp::initTestCase()
@@ -286,6 +333,409 @@ void TestQgisApp::copyPasteMultipleStyles()
   QVERIFY( sourceLayer->styleManager()->styles().contains( u"third style" ) );
 }
 
+void TestQgisApp::toggleEditingVectorLayer()
+{
+  const QString path = copyTestData( u"points_gpkg.gpkg"_s );
+  auto vectorLayer = std::make_unique<QgsVectorLayer>( path + u"|layername=points_gpkg"_s, u"points"_s, u"ogr"_s );
+  QVERIFY( vectorLayer->isValid() );
+
+  // start editing
+  QVERIFY( mQgisApp->toggleEditing( vectorLayer.get() ) );
+
+  // close editing, no changes were made, no dialogs should popup
+  QVERIFY( mQgisApp->toggleEditing( vectorLayer.get() ) );
+
+  // restart editing
+  QVERIFY( mQgisApp->toggleEditing( vectorLayer.get() ) );
+
+  const int featureCountStart = vectorLayer->featureCount(); // to compare against feature count later
+  QgsFeature f( vectorLayer->fields() );
+  f.setGeometry( QgsGeometry::fromWkt( u"Point(15 45)"_s ) );
+  QVERIFY( vectorLayer->addFeature( f ) );
+  QVERIFY( vectorLayer->isModified() );
+
+  // cancel stop editing
+  QTimer::singleShot( 0, clickCancel );
+  QVERIFY( !mQgisApp->toggleEditing( vectorLayer.get() ) );
+
+  // discard changes
+  QTimer::singleShot( 0, clickDiscard );
+  QVERIFY( mQgisApp->toggleEditing( vectorLayer.get() ) );
+
+  // restart editing
+  QVERIFY( mQgisApp->toggleEditing( vectorLayer.get() ) );
+
+  // modify layer again
+  QVERIFY( vectorLayer->addFeature( f ) );
+  QVERIFY( vectorLayer->isModified() );
+
+  // save changes
+  QTimer::singleShot( 0, clickSave );
+  QVERIFY( mQgisApp->toggleEditing( vectorLayer.get() ) );
+
+  // test layer was changed, reload from disk
+  vectorLayer.reset();
+  auto vectorLayerNew = std::make_unique<QgsVectorLayer>( path, u"pc"_s, u"ogr"_s );
+  QVERIFY( vectorLayerNew->featureCount() == featureCountStart + 1 );
+}
+
+void TestQgisApp::toggleEditingMeshLayer()
+{
+  const QString path = copyTestData( u"/mesh/quad_and_triangle.2dm"_s );
+  auto meshLayer = std::make_unique<QgsMeshLayer>( path, u"mesh"_s, u"mdal"_s );
+  QVERIFY( meshLayer->isValid() );
+
+  // start editing
+  QTimer::singleShot( 0, clickEditCurrentMesh );
+  QVERIFY( mQgisApp->toggleEditing( meshLayer.get() ) );
+
+  // close editing, no changes were made, no dialogs should popup
+  QVERIFY( mQgisApp->toggleEditing( meshLayer.get() ) );
+
+  // restart editing
+  QTimer::singleShot( 0, clickEditCurrentMesh );
+  QVERIFY( mQgisApp->toggleEditing( meshLayer.get() ) );
+
+  const int verticesCountStart = meshLayer->meshVertexCount();
+  QCOMPARE( meshLayer->meshEditor()->addVertices( { QgsMeshVertex( 2500, 3500, 0 ) }, 10 ), 1 );
+  QVERIFY( meshLayer->isModified() );
+
+  // cancel stop editing
+  QTimer::singleShot( 0, clickCancel );
+  QVERIFY( !mQgisApp->toggleEditing( meshLayer.get() ) );
+
+  // discard changes
+  QTimer::singleShot( 0, clickDiscard );
+  QVERIFY( mQgisApp->toggleEditing( meshLayer.get() ) );
+
+  // restart editing
+  QTimer::singleShot( 0, clickEditCurrentMesh );
+  QVERIFY( mQgisApp->toggleEditing( meshLayer.get() ) );
+
+  // modify layer again
+  QCOMPARE( meshLayer->meshEditor()->addVertices( { QgsMeshVertex( 2500, 3500, 0 ) }, 10 ), 1 );
+  QVERIFY( meshLayer->isModified() );
+
+  // save changes
+  QTimer::singleShot( 0, clickSave );
+  QVERIFY( mQgisApp->toggleEditing( meshLayer.get() ) );
+
+  // test layer was changed, reload from disk
+  meshLayer.reset();
+  auto meshLayerNew = std::make_unique<QgsMeshLayer>( path, u"mesh"_s, u"mdal"_s );
+  QVERIFY( meshLayerNew->meshVertexCount() == verticesCountStart + 1 );
+}
+
+void TestQgisApp::toggleEditingPointCloudsLayer()
+{
+  const QString pcPath = copyTestData( u"point_clouds/copc/sunshine-coast.copc.laz"_s );
+  auto pointCloudLayer = std::make_unique<QgsPointCloudLayer>( pcPath, u"pc"_s, u"copc"_s );
+  QVERIFY( pointCloudLayer->isValid() );
+
+  QVERIFY( mQgisApp->toggleEditing( pointCloudLayer.get() ) );
+
+  // close editing, no changes were made, no dialogs should popup
+  QVERIFY( mQgisApp->toggleEditing( pointCloudLayer.get() ) );
+
+  // restart editing
+  QVERIFY( mQgisApp->toggleEditing( pointCloudLayer.get() ) );
+
+  QgsPointCloudAttribute at( u"Classification"_s, QgsPointCloudAttribute::UChar );
+  QgsPointCloudNodeId n( 0, 0, 0, 0 );
+  QgsPointCloudRequest request;
+  request.setAttributes( QgsPointCloudAttributeCollection( QVector<QgsPointCloudAttribute>() << at ) );
+
+  // check values before any changes
+  std::unique_ptr<QgsPointCloudBlock> block0 = pointCloudLayer->index().nodeData( n, request );
+  const char *block0Data = block0->data();
+  QCOMPARE( block0Data[0], 2 );
+  QCOMPARE( block0Data[1], 2 );
+  QCOMPARE( block0Data[2], 2 );
+
+  QVERIFY( pointCloudLayer->changeAttributeValue( n, { 0, 1, 2 }, at, 6 ) );
+  QVERIFY( pointCloudLayer->isModified() );
+
+  // cancel stop editing
+
+  QTimer::singleShot( 0, clickCancel );
+  QVERIFY( !mQgisApp->toggleEditing( pointCloudLayer.get() ) );
+
+  // discard changes
+  QTimer::singleShot( 0, clickDiscard );
+  QVERIFY( mQgisApp->toggleEditing( pointCloudLayer.get() ) );
+
+  // restart editing
+  QVERIFY( mQgisApp->toggleEditing( pointCloudLayer.get() ) );
+
+  // modify layer again
+  QVERIFY( pointCloudLayer->changeAttributeValue( n, { 0, 1, 2 }, at, 6 ) );
+  QVERIFY( pointCloudLayer->isModified() );
+
+  // save changes
+  QTimer::singleShot( 0, clickSave );
+  QVERIFY( mQgisApp->toggleEditing( pointCloudLayer.get() ) );
+
+  // test layer was changed, reload from disk
+  pointCloudLayer.reset();
+  auto pointCloudLayerNew = std::make_unique<QgsPointCloudLayer>( pcPath, u"pc"_s, u"copc"_s );
+  std::unique_ptr<QgsPointCloudBlock> block1 = pointCloudLayerNew->index().nodeData( n, request );
+  const char *block1Data = block1->data();
+  QCOMPARE( block1Data[0], 6 );
+  QCOMPARE( block1Data[1], 6 );
+  QCOMPARE( block1Data[2], 6 );
+}
+
+void TestQgisApp::removeVectorLayerFromProject()
+{
+  const QString path = copyTestData( u"points_gpkg.gpkg"_s );
+  QgsVectorLayer *vectorLayer = mQgisApp->addVectorLayer( path + u"|layername=points_gpkg"_s, u"points"_s, u"ogr"_s );
+  QVERIFY( vectorLayer->isValid() );
+
+  // select layer
+  QVERIFY( mQgisApp->setActiveLayer( vectorLayer ) );
+
+  // cancel layer removal, no edits made
+  QTimer::singleShot( 0, clickCancel );
+  mQgisApp->removeLayer();
+  vectorLayer = qobject_cast<QgsVectorLayer *>( mQgisApp->activeLayer() );
+  QVERIFY( vectorLayer );
+
+  // no edits made, remove layer
+  QTimer::singleShot( 0, clickOK );
+  mQgisApp->removeLayer();
+  vectorLayer = qobject_cast<QgsVectorLayer *>( mQgisApp->activeLayer() );
+  QVERIFY( !vectorLayer );
+
+  // do not ask for confirmation to remove the layer from now on
+  QgsSettings settings;
+  settings.setValue( u"qgis/askToDeleteLayers"_s, false );
+
+  // reload layer
+  vectorLayer = mQgisApp->addVectorLayer( path + u"|layername=points_gpkg"_s, u"points"_s, u"ogr"_s );
+  QVERIFY( vectorLayer->isValid() );
+  QVERIFY( mQgisApp->setActiveLayer( vectorLayer ) );
+
+  // start editing
+  QVERIFY( mQgisApp->toggleEditing( vectorLayer ) );
+
+  // stop editing, no changes made, no dialog should popup
+  mQgisApp->removeLayer();
+  vectorLayer = qobject_cast<QgsVectorLayer *>( mQgisApp->activeLayer() );
+  QVERIFY( !vectorLayer );
+
+  // reload layer
+  vectorLayer = mQgisApp->addVectorLayer( path + u"|layername=points_gpkg"_s, u"points"_s, u"ogr"_s );
+  QVERIFY( vectorLayer->isValid() );
+  QVERIFY( mQgisApp->setActiveLayer( vectorLayer ) );
+  QVERIFY( mQgisApp->toggleEditing( vectorLayer ) );
+
+  QgsFeature f( vectorLayer->fields() );
+  f.setGeometry( QgsGeometry::fromWkt( u"Point(15 45)"_s ) );
+  QVERIFY( vectorLayer->addFeature( f ) );
+  QVERIFY( vectorLayer->isModified() );
+
+  // cancel editing
+  QTimer::singleShot( 0, clickCancel );
+  mQgisApp->removeLayer();
+  QVERIFY( vectorLayer->isModified() );
+  vectorLayer = qobject_cast<QgsVectorLayer *>( mQgisApp->activeLayer() );
+  QVERIFY( vectorLayer );
+
+  // discard changes
+  QTimer::singleShot( 0, clickDiscard );
+  mQgisApp->removeLayer();
+  vectorLayer = qobject_cast<QgsVectorLayer *>( mQgisApp->activeLayer() );
+  QVERIFY( !vectorLayer );
+
+  // reload layer
+  vectorLayer = mQgisApp->addVectorLayer( path + u"|layername=points_gpkg"_s, u"points"_s, u"ogr"_s );
+  QVERIFY( vectorLayer->isValid() );
+  QVERIFY( mQgisApp->setActiveLayer( vectorLayer ) );
+
+  // start editing
+  QVERIFY( mQgisApp->toggleEditing( vectorLayer ) );
+  QVERIFY( vectorLayer->addFeature( f ) );
+  QVERIFY( vectorLayer->isModified() );
+
+  // save changes
+  QTimer::singleShot( 0, clickSave );
+  mQgisApp->removeLayer();
+  vectorLayer = qobject_cast<QgsVectorLayer *>( mQgisApp->activeLayer() );
+  QVERIFY( !vectorLayer );
+
+  settings.setValue( u"qgis/askToDeleteLayers"_s, true );
+}
+
+void TestQgisApp::removePointCloudLayerFromProject()
+{
+  const QString path = copyTestData( u"point_clouds/copc/sunshine-coast.copc.laz"_s );
+  QgsPointCloudLayer *pointCloudLayer = mQgisApp->addLayer<QgsPointCloudLayer>( path, u"pc"_s, u"copc"_s );
+  QVERIFY( pointCloudLayer->isValid() );
+
+  // select layer
+  QVERIFY( mQgisApp->setActiveLayer( pointCloudLayer ) );
+
+  // cancel layer removal, no edits made
+  QTimer::singleShot( 0, clickCancel );
+  mQgisApp->removeLayer();
+  pointCloudLayer = qobject_cast<QgsPointCloudLayer *>( mQgisApp->activeLayer() );
+  QVERIFY( pointCloudLayer );
+
+  // no edits made, remove layer
+  QTimer::singleShot( 0, clickOK );
+  mQgisApp->removeLayer();
+  pointCloudLayer = qobject_cast<QgsPointCloudLayer *>( mQgisApp->activeLayer() );
+  QVERIFY( !pointCloudLayer );
+
+  // do not ask for confirmation to remove the layer from now on
+  QgsSettings settings;
+  settings.setValue( u"qgis/askToDeleteLayers"_s, false );
+
+  // reload layer
+  pointCloudLayer = mQgisApp->addLayer<QgsPointCloudLayer>( path, u"pc"_s, u"copc"_s );
+  QVERIFY( pointCloudLayer->isValid() );
+  QVERIFY( mQgisApp->setActiveLayer( pointCloudLayer ) );
+
+  // start editing
+  QVERIFY( mQgisApp->toggleEditing( pointCloudLayer ) );
+
+  // stop editing, no changes made, no dialog should popup
+  mQgisApp->removeLayer();
+  pointCloudLayer = qobject_cast<QgsPointCloudLayer *>( mQgisApp->activeLayer() );
+  QVERIFY( !pointCloudLayer );
+
+  // reload layer
+  pointCloudLayer = mQgisApp->addLayer<QgsPointCloudLayer>( path, u"pc"_s, u"copc"_s );
+  QVERIFY( pointCloudLayer->isValid() );
+  QVERIFY( mQgisApp->setActiveLayer( pointCloudLayer ) );
+  QVERIFY( mQgisApp->toggleEditing( pointCloudLayer ) );
+
+  // modify layer
+  QgsPointCloudAttribute at( u"Classification"_s, QgsPointCloudAttribute::UChar );
+  QgsPointCloudNodeId n( 0, 0, 0, 0 );
+  QgsPointCloudRequest request;
+  request.setAttributes( QgsPointCloudAttributeCollection( QVector<QgsPointCloudAttribute>() << at ) );
+
+  // check values before any changes
+  std::unique_ptr<QgsPointCloudBlock> block0 = pointCloudLayer->index().nodeData( n, request );
+  QVERIFY( pointCloudLayer->changeAttributeValue( n, { 0, 1, 2 }, at, 6 ) );
+  QVERIFY( pointCloudLayer->isModified() );
+
+  // cancel editing
+  QTimer::singleShot( 0, clickCancel );
+  mQgisApp->removeLayer();
+  QVERIFY( pointCloudLayer->isModified() );
+  pointCloudLayer = qobject_cast<QgsPointCloudLayer *>( mQgisApp->activeLayer() );
+  QVERIFY( pointCloudLayer );
+
+  // discard changes
+  QTimer::singleShot( 0, clickDiscard );
+  mQgisApp->removeLayer();
+  pointCloudLayer = qobject_cast<QgsPointCloudLayer *>( mQgisApp->activeLayer() );
+  QVERIFY( !pointCloudLayer );
+
+  // reload layer
+  pointCloudLayer = mQgisApp->addLayer<QgsPointCloudLayer>( path, u"pc"_s, u"copc"_s );
+  QVERIFY( pointCloudLayer->isValid() );
+  QVERIFY( mQgisApp->setActiveLayer( pointCloudLayer ) );
+
+  // start editing
+  QVERIFY( mQgisApp->toggleEditing( pointCloudLayer ) );
+  QVERIFY( pointCloudLayer->changeAttributeValue( n, { 0, 1, 2 }, at, 6 ) );
+  QVERIFY( pointCloudLayer->isModified() );
+
+  // save changes
+  QTimer::singleShot( 0, clickSave );
+  mQgisApp->removeLayer();
+  pointCloudLayer = qobject_cast<QgsPointCloudLayer *>( mQgisApp->activeLayer() );
+  QVERIFY( !pointCloudLayer );
+
+  settings.setValue( u"qgis/askToDeleteLayers"_s, true );
+}
+
+void TestQgisApp::removeMeshFromProject()
+{
+  const QString path = copyTestData( u"/mesh/quad_and_triangle.2dm"_s );
+  QgsMeshLayer *meshLayer = mQgisApp->addMeshLayer( path, u"mesh"_s, u"mdal"_s );
+  QVERIFY( meshLayer->isValid() );
+
+  // select layer
+  QVERIFY( mQgisApp->setActiveLayer( meshLayer ) );
+
+  // cancel layer removal, no edits made
+  QTimer::singleShot( 0, clickCancel );
+  mQgisApp->removeLayer();
+  meshLayer = qobject_cast<QgsMeshLayer *>( mQgisApp->activeLayer() );
+  QVERIFY( meshLayer );
+
+  // no edits made, remove layer
+  QTimer::singleShot( 0, clickOK );
+  mQgisApp->removeLayer();
+  meshLayer = qobject_cast<QgsMeshLayer *>( mQgisApp->activeLayer() );
+  QVERIFY( !meshLayer );
+
+  // do not ask for confirmation to remove the layer from now on
+  QgsSettings settings;
+  settings.setValue( u"qgis/askToDeleteLayers"_s, false );
+
+  // reload layer
+  meshLayer = mQgisApp->addMeshLayer( path, u"mesh"_s, u"mdal"_s );
+  QVERIFY( meshLayer->isValid() );
+  QVERIFY( mQgisApp->setActiveLayer( meshLayer ) );
+
+  // start editing
+  QTimer::singleShot( 0, clickEditCurrentMesh );
+  QVERIFY( mQgisApp->toggleEditing( meshLayer ) );
+
+  // stop editing, no changes made, no dialog should popup
+  mQgisApp->removeLayer();
+  meshLayer = qobject_cast<QgsMeshLayer *>( mQgisApp->activeLayer() );
+  QVERIFY( !meshLayer );
+
+  // reload layer
+  meshLayer = mQgisApp->addMeshLayer( path, u"mesh"_s, u"mdal"_s );
+  QVERIFY( meshLayer->isValid() );
+  QVERIFY( mQgisApp->setActiveLayer( meshLayer ) );
+
+  QTimer::singleShot( 0, clickEditCurrentMesh );
+  QVERIFY( mQgisApp->toggleEditing( meshLayer ) );
+
+  // modify layer
+  QCOMPARE( meshLayer->meshEditor()->addVertices( { QgsMeshVertex( 2500, 3500, 0 ) }, 10 ), 1 );
+  QVERIFY( meshLayer->isModified() );
+
+  // cancel editing
+  QTimer::singleShot( 0, clickCancel );
+  mQgisApp->removeLayer();
+  QVERIFY( meshLayer->isModified() );
+  meshLayer = qobject_cast<QgsMeshLayer *>( mQgisApp->activeLayer() );
+  QVERIFY( meshLayer );
+
+  // discard changes
+  QTimer::singleShot( 0, clickDiscard );
+  mQgisApp->removeLayer();
+  meshLayer = qobject_cast<QgsMeshLayer *>( mQgisApp->activeLayer() );
+  QVERIFY( !meshLayer );
+
+  // reload layer
+  meshLayer = mQgisApp->addMeshLayer( path, u"mesh"_s, u"mdal"_s );
+  QVERIFY( meshLayer->isValid() );
+  QVERIFY( mQgisApp->setActiveLayer( meshLayer ) );
+
+  // start editing
+  QTimer::singleShot( 0, clickEditCurrentMesh );
+  QVERIFY( mQgisApp->toggleEditing( meshLayer ) );
+  QCOMPARE( meshLayer->meshEditor()->addVertices( { QgsMeshVertex( 2500, 3500, 0 ) }, 10 ), 1 );
+  QVERIFY( meshLayer->isModified() );
+
+  // save changes
+  QTimer::singleShot( 0, clickSave );
+  mQgisApp->removeLayer();
+  meshLayer = qobject_cast<QgsMeshLayer *>( mQgisApp->activeLayer() );
+  QVERIFY( !meshLayer );
+
+  settings.setValue( u"qgis/askToDeleteLayers"_s, true );
+}
 
 QGSTEST_MAIN( TestQgisApp )
 #include "testqgisapp.moc"

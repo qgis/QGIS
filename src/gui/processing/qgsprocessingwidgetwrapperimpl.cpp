@@ -3272,7 +3272,7 @@ void QgsProcessingEnumCheckboxPanelWidget::setValue( const QVariant &value )
 
 void QgsProcessingEnumCheckboxPanelWidget::showPopupMenu()
 {
-  QMenu popupMenu;
+  QMenu popupMenu( this );
   QAction *selectAllAction = new QAction( tr( "Select All" ), &popupMenu );
   connect( selectAllAction, &QAction::triggered, this, &QgsProcessingEnumCheckboxPanelWidget::selectAll );
   QAction *clearAllAction = new QAction( tr( "Clear Selection" ), &popupMenu );

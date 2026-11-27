@@ -1,0 +1,51 @@
+{
+  "diagnostics": {
+    "asan": { "definitions": ["BLEND2D_SANITIZE=address"] },
+    "msan": { "definitions": ["BLEND2D_SANITIZE=memory"] },
+    "tsan": { "definitions": ["BLEND2D_SANITIZE=thread"] },
+    "ubsan": { "definitions": ["BLEND2D_SANITIZE=undefined"] }
+  },
+
+  "valgrind_arguments": [
+    "--leak-check=full",
+    "--show-reachable=yes",
+    "--track-origins=yes"
+  ],
+
+  "tests": [
+    { "optional": true, "cmd": ["bl_test_runner", "--quick"] },
+
+    { "optional": true, "cmd": ["bl_test_context_simple", "--count=128", "--style=random", "--comp-op=all"] },
+
+    { "optional": true, "cmd": ["bl_test_context_jit"   , "--count=128" , "--style=solid"                  , "--comp-op=all", "--opacity-op=all", "--simd-level=all", "--quiet"] },
+    { "optional": true, "cmd": ["bl_test_context_jit"   , "--count=128" , "--style=gradient-linear"        , "--comp-op=all", "--opacity-op=all", "--simd-level=all", "--quiet"] },
+    { "optional": true, "cmd": ["bl_test_context_jit"   , "--count=128" , "--style=gradient-linear-dither" , "--comp-op=all", "--opacity-op=all", "--simd-level=all", "--quiet"] },
+    { "optional": true, "cmd": ["bl_test_context_jit"   , "--count=128" , "--style=gradient-radial"        , "--comp-op=all", "--opacity-op=all", "--simd-level=all", "--quiet"] },
+    { "optional": true, "cmd": ["bl_test_context_jit"   , "--count=128" , "--style=gradient-radial-dither" , "--comp-op=all", "--opacity-op=all", "--simd-level=all", "--quiet"] },
+    { "optional": true, "cmd": ["bl_test_context_jit"   , "--count=128" , "--style=gradient-conic"         , "--comp-op=all", "--opacity-op=all", "--simd-level=all", "--quiet"] },
+    { "optional": true, "cmd": ["bl_test_context_jit"   , "--count=128" , "--style=gradient-conic-dither"  , "--comp-op=all", "--opacity-op=all", "--simd-level=all", "--quiet"] },
+    { "optional": true, "cmd": ["bl_test_context_jit"   , "--count=128" , "--style=pattern-aligned"        , "--comp-op=all", "--opacity-op=all", "--simd-level=all", "--quiet"] },
+    { "optional": true, "cmd": ["bl_test_context_jit"   , "--count=128" , "--style=pattern-fx"             , "--comp-op=all", "--opacity-op=all", "--simd-level=all", "--quiet"] },
+    { "optional": true, "cmd": ["bl_test_context_jit"   , "--count=128" , "--style=pattern-fy"             , "--comp-op=all", "--opacity-op=all", "--simd-level=all", "--quiet"] },
+    { "optional": true, "cmd": ["bl_test_context_jit"   , "--count=128" , "--style=pattern-fx-fy"          , "--comp-op=all", "--opacity-op=all", "--simd-level=all", "--quiet"] },
+    { "optional": true, "cmd": ["bl_test_context_jit"   , "--count=128" , "--style=pattern-affine-nearest" , "--comp-op=all", "--opacity-op=all", "--simd-level=all", "--quiet"] },
+    { "optional": true, "cmd": ["bl_test_context_jit"   , "--count=128" , "--style=pattern-affine-bilinear", "--comp-op=all", "--opacity-op=all", "--simd-level=all", "--quiet"] },
+
+    { "optional": true, "cmd": ["bl_test_context_mt"    , "--count=4097", "--style=solid" , "--comp-op=random", "--opacity-op=random", "--thread-count=2"                ] },
+    { "optional": true, "cmd": ["bl_test_context_mt"    , "--count=4097", "--style=solid" , "--comp-op=random", "--opacity-op=random", "--thread-count=2", "--flush-sync"] },
+    { "optional": true, "cmd": ["bl_test_context_mt"    , "--count=4097", "--style=random", "--comp-op=random", "--opacity-op=random", "--thread-count=3"                ] },
+    { "optional": true, "cmd": ["bl_test_context_mt"    , "--count=4097", "--style=random", "--comp-op=random", "--opacity-op=random", "--thread-count=3", "--flush-sync"] },
+    { "optional": true, "cmd": ["bl_test_context_mt"    , "--count=4097", "--style=random", "--comp-op=random", "--opacity-op=random", "--thread-count=4"                ] },
+    { "optional": true, "cmd": ["bl_test_context_mt"    , "--count=4097", "--style=random", "--comp-op=random", "--opacity-op=random", "--thread-count=4", "--flush-sync"] },
+
+    { "optional": true, "cmd": ["bl_sample_1"] },
+    { "optional": true, "cmd": ["bl_sample_2"] },
+    { "optional": true, "cmd": ["bl_sample_3"] },
+    { "optional": true, "cmd": ["bl_sample_4"] },
+    { "optional": true, "cmd": ["bl_sample_5"] },
+    { "optional": true, "cmd": ["bl_sample_6"] },
+    { "optional": true, "cmd": ["bl_sample_7"] },
+    { "optional": true, "cmd": ["bl_sample_8"] },
+    { "optional": true, "cmd": ["bl_sample_capi"] }
+  ]
+}

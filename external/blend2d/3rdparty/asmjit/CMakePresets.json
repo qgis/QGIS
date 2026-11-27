@@ -1,0 +1,51 @@
+{
+  "version": 10,
+  "configurePresets": [
+    {
+      "name": "conf-base",
+      "hidden": true,
+      "description": "${presetName}",
+      "binaryDir": "${sourceDir}/build/${presetName}",
+      "cacheVariables": { "CMAKE_EXPORT_COMPILE_COMMANDS": "ON" }
+    },
+
+    {
+      "name": "conf-debug",
+      "hidden": true,
+      "inherits": "conf-base",
+      "cacheVariables": { "CMAKE_BUILD_TYPE": "Debug" }
+    },
+
+    {
+      "name": "conf-release",
+      "hidden": true,
+      "inherits": "conf-base",
+      "cacheVariables": { "CMAKE_BUILD_TYPE": "Release", "CMAKE_INTERPROCEDURAL_OPTIMIZATION": "ON" }
+    },
+
+    { "name": "conf-test"        , "hidden": true, "cacheVariables": { "ASMJIT_TEST": "ON" } },
+    { "name": "conf-static"      , "hidden": true, "cacheVariables": { "ASMJIT_STATIC": "ON" } },
+    { "name": "conf-shared"      , "hidden": true, "cacheVariables": { "ASMJIT_STATIC": "OFF" } },
+    { "name": "conf-asan"        , "hidden": true, "cacheVariables": { "ASMJIT_SANITIZE": "address" } },
+    { "name": "conf-msan"        , "hidden": true, "cacheVariables": { "ASMJIT_SANITIZE": "memory" } },
+    { "name": "conf-tsan"        , "hidden": true, "cacheVariables": { "ASMJIT_SANITIZE": "thread" } },
+    { "name": "conf-ubsan"       , "hidden": true, "cacheVariables": { "ASMJIT_SANITIZE": "undefined" } },
+    { "name": "conf-32"          , "hidden": true, "environment": { "CFLAGS": "-m32", "CXXFLAGS": "-m32" } },
+
+    { "name": "debug"            , "inherits": ["conf-debug", "conf-test", "conf-static"] },
+    { "name": "debug-asan"       , "inherits": ["conf-debug", "conf-test", "conf-static", "conf-asan"] },
+    { "name": "debug-msan"       , "inherits": ["conf-debug", "conf-test", "conf-static", "conf-msan"] },
+    { "name": "debug-ubsan"      , "inherits": ["conf-debug", "conf-test", "conf-static", "conf-ubsan"] },
+    { "name": "debug-32"         , "inherits": ["conf-debug", "conf-test", "conf-static", "conf-32"] },
+    { "name": "debug-shared"     , "inherits": ["conf-debug", "conf-test", "conf-shared"] },
+    { "name": "debug-shared-32"  , "inherits": ["conf-debug", "conf-test", "conf-shared", "conf-32"] },
+
+    { "name": "release"          , "inherits": ["conf-release", "conf-test", "conf-static"] },
+    { "name": "release-asan"     , "inherits": ["conf-release", "conf-test", "conf-static", "conf-asan"] },
+    { "name": "release-msan"     , "inherits": ["conf-release", "conf-test", "conf-static", "conf-msan"] },
+    { "name": "release-ubsan"    , "inherits": ["conf-release", "conf-test", "conf-static", "conf-ubsan"] },
+    { "name": "release-32"       , "inherits": ["conf-release", "conf-test", "conf-static", "conf-32"] },
+    { "name": "release-shared"   , "inherits": ["conf-release", "conf-test", "conf-shared"] },
+    { "name": "release-shared-32", "inherits": ["conf-release", "conf-test", "conf-shared", "conf-32"] }
+  ]
+}

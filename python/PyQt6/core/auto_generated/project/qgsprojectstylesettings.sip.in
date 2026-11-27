@@ -32,7 +32,7 @@ Ownership is transferred to the ``project``.
 
     ~QgsProjectStyleSettings();
 
-    QgsSymbol *defaultSymbol( Qgis::SymbolType symbolType ) const /Factory/;
+    std::unique_ptr<QgsSymbol> defaultSymbol( Qgis::SymbolType symbolType ) const;
 %Docstring
 Returns the project default symbol for a given type.
 
@@ -57,7 +57,7 @@ Sets the project default symbol for a given type.
    the symbol ownership is not transferred
 %End
 
-    QgsColorRamp *defaultColorRamp() const /Factory/;
+    std::unique_ptr<QgsColorRamp> defaultColorRamp() const;
 %Docstring
 Returns the project default color ramp.
 

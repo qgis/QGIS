@@ -52,18 +52,18 @@ QgsProjectStyleSettings::~QgsProjectStyleSettings()
   }
 }
 
-QgsSymbol *QgsProjectStyleSettings::defaultSymbol( Qgis::SymbolType symbolType ) const
+std::unique_ptr<QgsSymbol> QgsProjectStyleSettings::defaultSymbol( Qgis::SymbolType symbolType ) const
 {
   switch ( symbolType )
   {
     case Qgis::SymbolType::Marker:
-      return mDefaultMarkerSymbol ? mDefaultMarkerSymbol->clone() : nullptr;
+      return mDefaultMarkerSymbol ? std::unique_ptr<QgsSymbol>( mDefaultMarkerSymbol->clone() ) : nullptr;
 
     case Qgis::SymbolType::Line:
-      return mDefaultLineSymbol ? mDefaultLineSymbol->clone() : nullptr;
+      return mDefaultLineSymbol ? std::unique_ptr<QgsSymbol>( mDefaultLineSymbol->clone() ) : nullptr;
 
     case Qgis::SymbolType::Fill:
-      return mDefaultFillSymbol ? mDefaultFillSymbol->clone() : nullptr;
+      return mDefaultFillSymbol ? std::unique_ptr<QgsSymbol>( mDefaultFillSymbol->clone() ) : nullptr;
 
     case Qgis::SymbolType::Hybrid:
       break;
@@ -108,9 +108,9 @@ void QgsProjectStyleSettings::setDefaultSymbol( Qgis::SymbolType symbolType, Qgs
   }
 }
 
-QgsColorRamp *QgsProjectStyleSettings::defaultColorRamp() const
+std::unique_ptr<QgsColorRamp> QgsProjectStyleSettings::defaultColorRamp() const
 {
-  return mDefaultColorRamp ? mDefaultColorRamp->clone() : nullptr;
+  return mDefaultColorRamp ? std::unique_ptr<QgsColorRamp>( mDefaultColorRamp->clone() ) : nullptr;
 }
 
 void QgsProjectStyleSettings::setDefaultColorRamp( QgsColorRamp *colorRamp )

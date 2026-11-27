@@ -358,6 +358,7 @@ void QgsProviderSublayersDialog::treeSelectionChanged( const QItemSelection &sel
 
 void QgsProviderSublayersDialog::selectAll()
 {
+  mBlockSelectionChanges = true;
   mLayersTree->selectionModel()->clear();
 
   std::function<void( const QModelIndex & )> selectAllInParent;
@@ -377,4 +378,6 @@ void QgsProviderSublayersDialog::selectAll()
   selectAllInParent( QModelIndex() );
 
   mButtonBox->button( QDialogButtonBox::Ok )->setFocus();
+  mBlockSelectionChanges = false;
+  treeSelectionChanged( mLayersTree->selectionModel()->selection(), {} );
 }

@@ -19,6 +19,8 @@
 #define QGSALGORITHMEXTRUDE_H
 
 
+#include "qgsconfig.h"
+
 #include "qgis_sip.h"
 #include "qgsprocessingalgorithm.h"
 
@@ -53,24 +55,24 @@ class QgsExtrudeAlgorithm : public QgsProcessingFeatureBasedAlgorithm
     QgsFeatureList processFeature( const QgsFeature &feature, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
 
   private:
-#ifdef WITH_SFCGAL
+#ifdef HAVE_SFCGAL
     std::optional<QgsGeometry> extrudePolygon( const QgsAbstractGeometry *polygon, const QgsVector3D &extrusion, const QgsFeatureId &featureId, QgsProcessingFeedback *feedback );
 #endif
 
   private:
-#ifdef WITH_SFCGAL
+#ifdef HAVE_SFCGAL
     double mExtrudeX = 0.0;
     bool mDynamicExtrudeX = false;
 #endif
     QgsProperty mExtrudeXProperty;
 
-#ifdef WITH_SFCGAL
+#ifdef HAVE_SFCGAL
     double mExtrudeY = 0.0;
     bool mDynamicExtrudeY = false;
 #endif
     QgsProperty mExtrudeYProperty;
 
-#ifdef WITH_SFCGAL
+#ifdef HAVE_SFCGAL
     double mExtrudeZ = 0.0;
     bool mDynamicExtrudeZ = false;
 #endif

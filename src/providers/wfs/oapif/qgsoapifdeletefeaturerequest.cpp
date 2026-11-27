@@ -16,11 +16,12 @@
 #include "qgsoapifdeletefeaturerequest.h"
 
 #include "qgslogger.h"
+#include "qgswfsconstants.h"
 
 #include "moc_qgsoapifdeletefeaturerequest.cpp"
 
 QgsOapifDeleteFeatureRequest::QgsOapifDeleteFeatureRequest( const QgsDataSourceUri &uri )
-  : QgsBaseNetworkRequest( QgsAuthorizationSettings( uri.username(), uri.password(), QgsHttpHeaders(), uri.authConfigId() ), "OAPIF" )
+  : QgsBaseNetworkRequest( QgsAuthorizationSettings( uri.username(), uri.password(), QgsHttpHeaders(), uri.authConfigId() ), tr( "OAPIF" ), uri.hasParam( QgsWFSConstants::URI_PARAM_DISABLE_DECOMPRESSED_SAFETY_CHECK_THRESHOLD ) )
 {}
 
 QString QgsOapifDeleteFeatureRequest::errorMessageWithReason( const QString &reason )

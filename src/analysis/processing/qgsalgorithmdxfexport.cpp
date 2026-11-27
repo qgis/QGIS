@@ -71,26 +71,51 @@ QgsDxfExportAlgorithm *QgsDxfExportAlgorithm::createInstance() const
 void QgsDxfExportAlgorithm::initAlgorithm( const QVariantMap & )
 {
   addParameter( new QgsProcessingParameterDxfLayers( u"LAYERS"_s, QObject::tr( "Input layers" ) ) );
-  addParameter(
-    new QgsProcessingParameterEnum( u"SYMBOLOGY_MODE"_s, QObject::tr( "Symbology mode" ), QStringList() << QObject::tr( "No Symbology" ) << QObject::tr( "Feature Symbology" ) << QObject::tr( "Symbol Layer Symbology" ), false, 0 )
-  );
-  addParameter( new QgsProcessingParameterScale( u"SYMBOLOGY_SCALE"_s, QObject::tr( "Symbology scale" ), 1000000 ) );
+
+  auto symbologyModeParam = std::make_unique<
+    QgsProcessingParameterEnum>( u"SYMBOLOGY_MODE"_s, QObject::tr( "Symbology mode" ), QStringList() << QObject::tr( "No Symbology" ) << QObject::tr( "Feature Symbology" ) << QObject::tr( "Symbol Layer Symbology" ), false, 0 );
+  symbologyModeParam->setHelp( QObject::tr( "Type of symbology to apply to output layers." ) );
+  addParameter( symbologyModeParam.release() );
+
+  auto symbologyScaleParam = std::make_unique<QgsProcessingParameterScale>( u"SYMBOLOGY_SCALE"_s, QObject::tr( "Symbology scale" ), 1000000 );
+  symbologyScaleParam->setHelp( QObject::tr( "Default scale of data export." ) );
+  addParameter( symbologyScaleParam.release() );
+
   auto mapThemeParam = std::make_unique<QgsProcessingParameterMapTheme>( u"MAP_THEME"_s, QObject::tr( "Map theme" ), QVariant(), true );
   mapThemeParam->setHelp( QObject::tr( "Match layer styling to the provided map theme" ) );
   addParameter( mapThemeParam.release() );
   const QStringList encodings = QgsDxfExport::encodings();
-  addParameter( new QgsProcessingParameterEnum( u"ENCODING"_s, QObject::tr( "Encoding" ), encodings, false, encodings.at( 0 ), false, true ) );
+
+  auto encodingParam = std::make_unique<QgsProcessingParameterEnum>( u"ENCODING"_s, QObject::tr( "Encoding" ), encodings, false, encodings.at( 0 ), false, true );
+  encodingParam->setHelp( QObject::tr( "Encoding to apply to layers." ) );
+  addParameter( encodingParam.release() );
+
   addParameter( new QgsProcessingParameterCrs( u"CRS"_s, QObject::tr( "CRS" ), u"EPSG:4326"_s ) );
+
   auto extentParam = std::make_unique<QgsProcessingParameterExtent>( u"EXTENT"_s, QObject::tr( "Extent" ), QVariant(), true );
   extentParam->setHelp( QObject::tr( "Limit exported features to those with geometries intersecting the provided extent" ) );
   addParameter( extentParam.release() );
-  addParameter( new QgsProcessingParameterBoolean( u"SELECTED_FEATURES_ONLY"_s, QObject::tr( "Use only selected features" ), false ) );
+
+  auto selectedFeaturesOnlyParam = std::make_unique<QgsProcessingParameterBoolean>( u"SELECTED_FEATURES_ONLY"_s, QObject::tr( "Use only selected features" ), false );
+  selectedFeaturesOnlyParam->setHelp( QObject::tr( "If checked, only the selected features will be exported." ) );
+  addParameter( selectedFeaturesOnlyParam.release() );
+
   auto useTitleParam = std::make_unique<QgsProcessingParameterBoolean>( u"USE_LAYER_TITLE"_s, QObject::tr( "Use layer title as name" ), false );
   useTitleParam->setHelp( QObject::tr( "If no attribute is chosen and layer name is not being overridden, prefer layer title (set in layer properties) to layer name" ) );
   addParameter( useTitleParam.release() );
-  addParameter( new QgsProcessingParameterBoolean( u"FORCE_2D"_s, QObject::tr( "Force 2D output" ), false ) );
-  addParameter( new QgsProcessingParameterBoolean( u"MTEXT"_s, QObject::tr( "Export labels as MTEXT elements" ), true ) );
-  addParameter( new QgsProcessingParameterBoolean( u"EXPORT_LINES_WITH_ZERO_WIDTH"_s, QObject::tr( "Export lines with zero width" ) ), false );
+
+  auto force2DParam = std::make_unique<QgsProcessingParameterBoolean>( u"FORCE_2D"_s, QObject::tr( "Force 2D output" ), false );
+  force2DParam->setHelp( QObject::tr( "If checked, the Z values are dropped and the geometries are exported as 2D." ) );
+  addParameter( force2DParam.release() );
+
+  auto mTextParam = std::make_unique<QgsProcessingParameterBoolean>( u"MTEXT"_s, QObject::tr( "Export labels as MTEXT elements" ), true );
+  mTextParam->setHelp( QObject::tr( "If checked, labels are exported as MTEXT elements, otherwise as TEXT elements." ) );
+  addParameter( mTextParam.release() );
+
+  auto exportLinesWithZeroWidthParam = std::make_unique<QgsProcessingParameterBoolean>( u"EXPORT_LINES_WITH_ZERO_WIDTH"_s, QObject::tr( "Export lines with zero width" ) );
+  exportLinesWithZeroWidthParam->setHelp( QObject::tr( "If checked, lines are exported with zero width (hairlines), regardless of the symbol width." ) );
+  addParameter( exportLinesWithZeroWidthParam.release(), false );
+
   addParameter( new QgsProcessingParameterFileDestination( u"OUTPUT"_s, QObject::tr( "DXF" ), QObject::tr( "DXF Files" ) + " (*.dxf *.DXF)" ) );
 }
 

@@ -85,8 +85,6 @@ class QgsAppProcessingUtils : public QObject
 
     void registerActions();
 
-    void openModelDesigner();
-
     void openHistory();
 
     void initProjectModelProvider();
@@ -114,9 +112,17 @@ class QgsAppProcessingUtils : public QObject
      */
     void addAlgorithmsToDefaultToolbars();
 
-  private slots:
+    /**
+     * Opens a model designer dialog for an existing \a model.
+     * If a designer already exists for this model then it will be activated.
+     *
+     * Ownership of \a model is transferred to the dialog.
+     *
+     * \since QGIS 4.4
+     */
+    QgsModelDesignerDialog *openModelDesignerDialog( QgsProcessingModelAlgorithm *model );
 
-    void updateModels();
+  private slots:
 
     //! Adds projects models to menu
     void updateProjectModelMenu();
@@ -150,6 +156,8 @@ class QgsAppProcessingUtils : public QObject
     QgisApp *mQgisApp = nullptr;
     QList< QAction * > mAlgorithmActions;
     QToolBar *mAlgorithmsToolbar = nullptr;
+
+    QSet<QgsModelDesignerDialog *> mModelDesignerDialogs;
 };
 
 #endif // QGSAPPPROCESSINGUTILS_H

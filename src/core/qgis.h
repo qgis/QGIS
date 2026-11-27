@@ -1141,6 +1141,7 @@ int QgisEvent = QEvent::User + 1;
       Head,     //!< HEAD method. \since QGIS 3.44
       Put,      //!< PUT method. \since QGIS 3.44
       Delete,   //!< DELETE method. \since QGIS 3.44
+      Patch,    //!< PATCH method. \since QGIS 4.6
     };
     Q_ENUM( HttpMethod )
 
@@ -2356,6 +2357,19 @@ int QgisEvent = QEvent::User + 1;
     Q_ENUM( CoverageValidityResult )
 
     /**
+     * Coverage edge types.
+     *
+     * \since QGIS 4.4
+     */
+    enum class CoverageEdgeType : int
+    {
+      AllEdges = 0, //!< All edges (both exterior and interior)
+      Exterior = 1, //!< Exterior (non-shared) edges
+      Interior = 2, //!< Interior (shared) edges
+    };
+    Q_ENUM( CoverageEdgeType )
+
+    /**
      * Algorithms to use when repairing invalid geometries.
      *
      * \since QGIS 3.28
@@ -2366,6 +2380,7 @@ int QgisEvent = QEvent::User + 1;
       Structure = 1, //!< Structured method, first makes all rings valid and then merges shells and subtracts holes from shells to generate valid result. Assumes that holes and shells are correctly categorized. Requires GEOS 3.10+.
     };
     Q_ENUM( MakeValidMethod )
+
 
     /**
      * Flags for controlling feature requests.
@@ -2919,6 +2934,18 @@ int QgisEvent = QEvent::User + 1;
       ForceVector, //!< Always force vector-based rendering, even when the result will be visually different to a raster-based render. For example, this policy will ignore effects which require flattened rasters during renders such as layer-wide opacity or blend modes.
     };
     Q_ENUM( RasterizedRenderingPolicy )
+
+    /**
+     * Rendering formats.
+     *
+     * \since QGIS 4.4
+     */
+    enum class RenderFormat : int
+    {
+      Raster, //!< Raster-based rendering
+      Vector, //!< Vector-based rendering
+    };
+    Q_ENUM( RenderFormat )
 
     /**
      * Flags which adjust the way maps are rendered.
@@ -6213,6 +6240,7 @@ int QgisEvent = QEvent::User + 1;
       SetTableComment = 1 << 2,   //!< Can set comments for tables via setTableComment() \since QGIS 3.44
       EditFieldDomain = 1 << 3,   //!< Can edit existing field domain \since QGIS 4.0
       DeleteFieldDomain = 1 << 4, //!< Can delete existing field domain \since QGIS 4.0
+      StyleStorage = 1 << 5,      //!< Can save/load styles to/from the database \since QGIS 4.4
     };
     Q_ENUM( DatabaseProviderConnectionCapability2 )
     Q_DECLARE_FLAGS( DatabaseProviderConnectionCapabilities2, DatabaseProviderConnectionCapability2 )
@@ -7254,6 +7282,34 @@ int QgisEvent = QEvent::User + 1;
     Q_ENUM( VectorFieldSeedingMethod )
 
     /**
+     * Defines how a raster vector field renderer reads the vectors from the raster bands.
+     *
+     * \since QGIS 4.4
+     */
+    enum class RasterVectorFieldSourceMode : int
+    {
+      CartesianComponents = 0, //!< Two bands holding the x and y components of the vectors
+      EncodedDirection,        //!< A single band holding integer coded compass directions, see Qgis::RasterDirectionEncoding
+    };
+    Q_ENUM( RasterVectorFieldSourceMode )
+
+    /**
+     * Schemes used to encode a compass direction as an integer raster value.
+     *
+     * These are the conventions of the D8 flow direction rasters produced by different software
+     *
+     * \since QGIS 4.4
+     */
+    enum class RasterDirectionEncoding : int
+    {
+      Esri = 0, //!< Esri: 1=E, 2=SE, 4=S, 8=SW, 16=W, 32=NW, 64=N, 128=NE
+      Grass,    //!< GRASS: 1=NE, 2=N, 3=NW, 4=W, 5=SW, 6=S, 7=SE, 8=E
+      Saga,     //!< SAGA: 0=N, 1=NE, 2=E, 3=SE, 4=S, 5=SW, 6=W, 7=NW
+      PcRaster, //!< PCRaster: 1=SW, 2=S, 3=SE, 4=W, 6=E, 7=NW, 8=N, 9=NE
+    };
+    Q_ENUM( RasterDirectionEncoding )
+
+    /**
      * Mathematical methods to use for solving linear matrix equations.
      *
      * \since QGIS 4.4
@@ -7265,6 +7321,50 @@ int QgisEvent = QEvent::User + 1;
       LuWithSvdFallback = 2 //!< Try LU first; fallback to SVD on singularity
     };
     Q_ENUM( LinearMatrixMethod )
+
+    /**
+     * Defines how rows in attribute tables should be filtered.
+     *
+     * \note Prior to QGIS 4.4 this was available as QgsAttributeTableFilterModel::FilterMode.
+     *
+     * \since QGIS 4.4
+     */
+    enum class AttributeTableFilterMode : int
+    {
+      ShowAll,          //!< Show all features
+      ShowSelected,     //!< Show only selected features
+      ShowVisible,      //!< Show only visible features (depends on the map canvas)
+      ShowFilteredList, //!< Show only features whose IDs are on the filter list
+      ShowEdited,       //!< Show only features which have unsaved changes
+      ShowInvalid,      //!< Show only features not respecting constraints \since QGIS 3.30
+    };
+    Q_ENUM( AttributeTableFilterMode )
+
+    /**
+     * Point cloud output formats allowed for a point cloud destination.
+     *
+     * \since QGIS 4.4
+     */
+    enum class PointCloudOutputsTypes : int
+    {
+      All,     //!< All point cloud formats supported by the processing provider
+      OnlyVPC, //!< Only virtual point cloud formats (VPC and VPZ)
+    };
+    Q_ENUM( PointCloudOutputsTypes )
+
+    /**
+     * Style save format
+     *
+     * \since QGIS 4.4
+     */
+    enum class SaveStyleFormat : int SIP_ENUM_BASETYPE( IntFlag )
+    {
+      QML = 1 << 0, //!< QML style format
+      SLD = 1 << 1, //!< SLD style format
+    };
+    Q_ENUM( SaveStyleFormat )
+    Q_DECLARE_FLAGS( SaveStyleFormats, SaveStyleFormat )
+    Q_FLAG( SaveStyleFormats )
 
     /**
      * Identify search radius in mm
@@ -7563,6 +7663,7 @@ Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::SensorThingsExtensions )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::PdfRenderFlags )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::RubberBandComponents )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::ScaleBarUnitLabelPlacements )
+Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::SaveStyleFormats )
 Q_DECLARE_METATYPE( Qgis::LayoutRenderFlags )
 Q_DECLARE_METATYPE( QTimeZone )
 

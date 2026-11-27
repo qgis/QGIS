@@ -866,14 +866,14 @@ void QgsGraduatedSymbolRendererWidget::methodComboBox_currentIndexChanged( int )
     case ColorMode:
     {
       mRenderer->setGraduatedMethod( Qgis::GraduatedMethod::Color );
-      QgsColorRamp *ramp = btnColorRamp->colorRamp();
+      std::unique_ptr<QgsColorRamp> ramp = btnColorRamp->colorRamp();
 
       if ( !ramp )
       {
         QMessageBox::critical( this, tr( "Select Method" ), tr( "No color ramp defined." ) );
         return;
       }
-      mRenderer->setSourceColorRamp( ramp );
+      mRenderer->setSourceColorRamp( ramp.release() );
       reapplyColorRamp();
       break;
     }
@@ -1097,6 +1097,10 @@ void QgsGraduatedSymbolRendererWidget::classifyGraduatedImpl()
     double symmetryPoint = QgsDoubleValidator::toDouble( cboSymmetryPoint->currentText() );
     bool astride = cbxAstride->isChecked();
     mClassificationMethod->setSymmetricMode( true, symmetryPoint, astride );
+  }
+  else
+  {
+    mClassificationMethod->setSymmetricMode( false );
   }
 
   QVariantMap parameterValues;
@@ -1508,7 +1512,7 @@ void QgsGraduatedSymbolRendererWidget::dataDefinedSizeLegend()
   if ( panel )
   {
     connect( panel, &QgsPanelWidget::changed, this, [this, panel] {
-      mRenderer->setDataDefinedSizeLegend( panel->dataDefinedSizeLegend() );
+      mRenderer->setDataDefinedSizeLegend( panel->dataDefinedSizeLegend().release() );
       emit changed();
     } );
     openPanel( panel ); // takes ownership of the panel

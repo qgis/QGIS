@@ -20,7 +20,9 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-add_library(Pdf4QtLibCore SHARED
+set(CMAKE_POSITION_INDEPENDENT_CODE ON)
+
+add_library(Pdf4QtLibCore STATIC
     sources/pdfglobal.h
     sources/pdfaction.cpp
     sources/pdfaction.h
@@ -193,8 +195,8 @@ target_include_directories(Pdf4QtLibCore PRIVATE SYSTEM
                            ${FREETYPE_INCLUDE_DIRS}
                            ${Fontconfig_INCLUDE_DIRS})
 
-if(LINUX_GCC)
-   # target_link_libraries(Pdf4QtLibCore PUBLIC TBB::tbb)
+if(UNIX AND NOT APPLE)
+   target_link_libraries(Pdf4QtLibCore PUBLIC TBB::tbb)
 endif()
 
 set(PDF4QT_COMPILE_OPTIONS)
@@ -208,6 +210,10 @@ if (PDF4QT_COMPILE_OPTIONS)
   target_compile_options(Pdf4QtLibCore PRIVATE "${PDF4QT_COMPILE_OPTIONS}")
 endif()
 
+if(APPLE)
+  target_compile_options(Pdf4QtLibCore PRIVATE -fexperimental-library)
+  target_link_options(Pdf4QtLibCore PRIVATE -fexperimental-library)
+endif()
 
 if(MINGW)
     target_link_libraries(Pdf4QtLibCore PRIVATE Secur32 Mscms Gdi32 User32 crypt32)
@@ -216,14 +222,20 @@ endif()
 target_include_directories(Pdf4QtLibCore INTERFACE ${CMAKE_CURRENT_SOURCE_DIR}/sources)
 target_include_directories(Pdf4QtLibCore PUBLIC ${CMAKE_BINARY_DIR}/${INSTALL_INCLUDEDIR})
 
-find_library(blend2d blend2d REQUIRED)
-target_include_directories(Pdf4QtLibCore PRIVATE ${blend2d_INCLUDES})
-target_link_libraries(Pdf4QtLibCore PRIVATE blend2d)
+if(NOT WITH_INTERNAL_BLEND2D)
+  find_package(blend2d CONFIG REQUIRED)
+  target_link_libraries(Pdf4QtLibCore PRIVATE blend2d::blend2d)
+else()
+  set(BLEND2D_STATIC ON)
+  set(BLEND2D_NO_INSTALL ON)
+  subdirs(${CMAKE_SOURCE_DIR}/external/blend2d)
+  set(blend2d_INCLUDES ${CMAKE_SOURCE_DIR}/external/blend2d)
+  target_include_directories(Pdf4QtLibCore PRIVATE ${blend2d_INCLUDES})
+  target_link_libraries(Pdf4QtLibCore PRIVATE blend2d)
+endif()
 
 set_target_properties(Pdf4QtLibCore PROPERTIES
                       VERSION ${PDF4QT_VERSION}
                       SOVERSION ${PDF4QT_VERSION}
                       LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/${PDF4QT_INSTALL_LIB_DIR}
                       RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/${PDF4QT_INSTALL_BIN_DIR})
-
-install(TARGETS Pdf4QtLibCore RUNTIME DESTINATION ${PDF4QT_INSTALL_BIN_DIR} LIBRARY DESTINATION ${PDF4QT_INSTALL_LIB_DIR})

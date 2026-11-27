@@ -188,7 +188,7 @@ QgsMeshDatasetGroupTreeItem *QgsMeshDatasetGroupStore::datasetGroupTreeItem() co
 void QgsMeshDatasetGroupStore::setDatasetGroupTreeItem( const QgsMeshDatasetGroupTreeItem *rootItem )
 {
   if ( rootItem )
-    mDatasetGroupTreeRootItem.reset( rootItem->clone() );
+    mDatasetGroupTreeRootItem = rootItem->clone();
   else
     mDatasetGroupTreeRootItem.reset();
 

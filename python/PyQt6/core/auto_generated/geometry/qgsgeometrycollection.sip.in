@@ -348,7 +348,7 @@ Iterates through all geometries in the collection.
     sipRes = sipConvertFromNewType( new QgsGeometryPartIterator( sipCpp ), sipType_QgsGeometryPartIterator, Py_None );
 %End
 
-    QgsGeometryCollection *extractPartsByType( Qgis::WkbType type, bool useFlatType = true ) const /Factory/;
+    std::unique_ptr<QgsGeometryCollection> extractPartsByType( Qgis::WkbType type, bool useFlatType = true ) const;
 %Docstring
 Returns a new QgsGeometryCollection subclass which consists of the parts
 of this collection which match the specified WKB ``type``.

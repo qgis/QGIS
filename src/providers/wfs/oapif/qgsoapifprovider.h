@@ -125,6 +125,9 @@ class QgsOapifProvider final : public QgsVectorDataProvider
     //! Set to true by reloadProviderData()
     mutable bool mUpdateFeatureCountAtNextFeatureCountRequest = true;
 
+    //! Whether to disable decompressedSafetyCheckThreshold
+    bool mDisableDecompressedSafetyCheckThreshold = false;
+
     //! Initial requests
     bool init();
 

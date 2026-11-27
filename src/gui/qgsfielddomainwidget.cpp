@@ -422,7 +422,7 @@ void QgsFieldDomainWidget::setFieldDomain( const QgsFieldDomain *domain )
     mDomainWidget->setFieldDomain( domain );
 }
 
-QgsFieldDomain *QgsFieldDomainWidget::createFieldDomain() const
+std::unique_ptr<QgsFieldDomain> QgsFieldDomainWidget::createFieldDomain() const
 {
   if ( !mDomainWidget )
     return nullptr;
@@ -431,7 +431,7 @@ QgsFieldDomain *QgsFieldDomainWidget::createFieldDomain() const
 
   res->setMergePolicy( static_cast<Qgis::FieldDomainMergePolicy>( mComboMergePolicy->currentData().toInt() ) );
   res->setSplitPolicy( static_cast<Qgis::FieldDomainSplitPolicy>( mComboSplitPolicy->currentData().toInt() ) );
-  return res.release();
+  return res;
 }
 
 bool QgsFieldDomainWidget::isValid() const
@@ -473,7 +473,7 @@ void QgsFieldDomainDialog::setFieldDomain( const QgsFieldDomain *domain )
   mWidget->setFieldDomain( domain );
 }
 
-QgsFieldDomain *QgsFieldDomainDialog::createFieldDomain() const
+std::unique_ptr<QgsFieldDomain> QgsFieldDomainDialog::createFieldDomain() const
 {
   return mWidget->createFieldDomain();
 }

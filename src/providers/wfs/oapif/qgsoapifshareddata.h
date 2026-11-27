@@ -113,6 +113,12 @@ class QgsOapifSharedData final : public QObject, public QgsBackgroundCachedShare
     //! Whether server supports CQL2 basic-spatial-functions conformance class (S_INTERSECTS(,BBOX() or POINT()))
     bool mServerSupportsBasicSpatialFunctions = false;
 
+    //! Whether the server supports writing JSON-FG (OGC API Features Part 3) or not
+    bool mServerSupportsJsonFgWrites = false;
+
+    //! Whether the geometry or feature should be written in JSON-FG (OGC API Features Part 3) or not, depending on the collection geometry type
+    bool shouldWriteJsonFg() const;
+
     // Map of queryables items for CQL2 request. The key of the map is a queryable name.
     QMap<QString, QgsOapifQueryablesRequest::Queryable> mQueryables;
 

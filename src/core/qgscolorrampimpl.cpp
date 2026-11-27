@@ -659,7 +659,7 @@ QgsLimitedRandomColorRamp::QgsLimitedRandomColorRamp( int count, int hueMin, int
   updateColors();
 }
 
-QgsColorRamp *QgsLimitedRandomColorRamp::create( const QVariantMap &props )
+std::unique_ptr<QgsColorRamp> QgsLimitedRandomColorRamp::create( const QVariantMap &props )
 {
   int count = DEFAULT_RANDOM_COUNT;
   int hueMin = DEFAULT_RANDOM_HUE_MIN, hueMax = DEFAULT_RANDOM_HUE_MAX;
@@ -681,7 +681,7 @@ QgsColorRamp *QgsLimitedRandomColorRamp::create( const QVariantMap &props )
   if ( props.contains( u"valMax"_s ) )
     valMax = props[u"valMax"_s].toInt();
 
-  return new QgsLimitedRandomColorRamp( count, hueMin, hueMax, satMin, satMax, valMin, valMax );
+  return std::make_unique<QgsLimitedRandomColorRamp>( count, hueMin, hueMax, satMin, satMax, valMin, valMax );
 }
 
 double QgsLimitedRandomColorRamp::value( int index ) const
@@ -864,7 +864,7 @@ QgsColorBrewerColorRamp::QgsColorBrewerColorRamp( const QString &schemeName, int
   loadPalette();
 }
 
-QgsColorRamp *QgsColorBrewerColorRamp::create( const QVariantMap &props )
+std::unique_ptr<QgsColorRamp> QgsColorBrewerColorRamp::create( const QVariantMap &props )
 {
   QString schemeName = DEFAULT_COLORBREWER_SCHEMENAME;
   int colors = DEFAULT_COLORBREWER_COLORS;
@@ -877,7 +877,7 @@ QgsColorRamp *QgsColorBrewerColorRamp::create( const QVariantMap &props )
   if ( props.contains( u"inverted"_s ) )
     inverted = props[u"inverted"_s].toInt();
 
-  return new QgsColorBrewerColorRamp( schemeName, colors, inverted );
+  return std::make_unique<QgsColorBrewerColorRamp>( schemeName, colors, inverted );
 }
 
 void QgsColorBrewerColorRamp::loadPalette()
@@ -1025,9 +1025,9 @@ void QgsCptCityColorRamp::copy( const QgsCptCityColorRamp *other )
   mInverted = other->mInverted;
 }
 
-QgsGradientColorRamp *QgsCptCityColorRamp::cloneGradientRamp() const
+std::unique_ptr<QgsGradientColorRamp> QgsCptCityColorRamp::cloneGradientRamp() const
 {
-  QgsGradientColorRamp *ramp = new QgsGradientColorRamp( mColor1, mColor2, mDiscrete, mStops );
+  auto ramp = std::make_unique<QgsGradientColorRamp>( mColor1, mColor2, mDiscrete, mStops );
   // add author and copyright information
   // TODO also add COPYING.xml file/link?
   QgsStringMap info = copyingInfo();
@@ -1192,7 +1192,7 @@ QgsPresetSchemeColorRamp::QgsPresetSchemeColorRamp( const QgsNamedColorList &col
     mColors << qMakePair( QColor( 250, 75, 60 ), u"#fa4b3c"_s );
 }
 
-QgsColorRamp *QgsPresetSchemeColorRamp::create( const QVariantMap &properties )
+std::unique_ptr<QgsColorRamp> QgsPresetSchemeColorRamp::create( const QVariantMap &properties )
 {
   QgsNamedColorList colors;
 
@@ -1207,7 +1207,7 @@ QgsColorRamp *QgsPresetSchemeColorRamp::create( const QVariantMap &properties )
     colorName = properties.value( u"preset_color_name_%1"_s.arg( i ), QString() ).toString();
   }
 
-  return new QgsPresetSchemeColorRamp( colors );
+  return std::make_unique<QgsPresetSchemeColorRamp>( colors );
 }
 
 QList<QColor> QgsPresetSchemeColorRamp::colors() const

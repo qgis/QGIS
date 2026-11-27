@@ -40,6 +40,7 @@
 #include <QMimeData>
 #include <QPlainTextEdit>
 #include <QPushButton>
+#include <QSpacerItem>
 #include <QSpinBox>
 #include <QString>
 #include <QTreeView>
@@ -415,23 +416,77 @@ void QgsAttributesFormLayoutView::onItemDoubleClicked( const QModelIndex &index 
 
       //templates
       QComboBox *qmlObjectTemplate = new QComboBox();
-      qmlObjectTemplate->addItem( tr( "Free Text…" ) );
+      qmlObjectTemplate->addItem( tr( "Attribute Form Interaction" ) );
       qmlObjectTemplate->addItem( tr( "Rectangle" ) );
       qmlObjectTemplate->addItem( tr( "Pie Chart" ) );
       qmlObjectTemplate->addItem( tr( "Bar Chart" ) );
-      connect( qmlObjectTemplate, qOverload<int>( &QComboBox::currentIndexChanged ), qmlCode, [qmlCode]( int index ) {
+      QToolButton *objectTemplateButton = new QToolButton();
+      objectTemplateButton->setText( tr( "Load Template" ) );
+      connect( objectTemplateButton, &QAbstractButton::clicked, qmlCode, [qmlCode, qmlObjectTemplate]() {
         qmlCode->clear();
-        switch ( index )
+        switch ( qmlObjectTemplate->currentIndex() )
         {
           case 0:
           {
-            qmlCode->setText( QString() );
+            qmlCode->setText( QStringLiteral(
+              "import QtQuick\n"
+              "import QtQuick.Layouts\n"
+              "import QtQuick.Controls.Material\n"
+              "\n"
+              "Item {\n"
+              "  width: Math.max(parent.width || 0, 200)\n"
+              "  height: mainLayout.childrenRect.height + mainLayout.anchors.margins * 2\n"
+              "\n"
+              "  ColumnLayout {\n"
+              "    id: mainLayout\n"
+              "    anchors.fill: parent\n"
+              "    anchors.margins: 4\n"
+              "\n"
+              "    RowLayout {\n"
+              "      Text {\n"
+              "        // The attributeFormBridge.layer property provides access to the\n"
+              "        // vector layer attached to the attribute form\n"
+              "        text: \"Current layer name: \" + (attributeFormBridge.layer ? attributeFormBridge.layer.name : \"N/A\")\n"
+              "      }\n"
+              "    }\n"
+              "\n"
+              "    RowLayout {\n"
+              "      id: rowLayout\n"
+              "      spacing: 4\n"
+              "\n"
+              "      TextField {\n"
+              "        id: myAttributeTextEdit\n"
+              "        Layout.fillWidth: true\n"
+              "\n"
+              "        // The attributeFormBridge.editable property reflects the\n"
+              "        // editable state of the attribute form\n"
+              "        enabled: attributeFormBridge.editable\n"
+              "\n"
+              "        // The attributeFormBridge.currentFormFeature provides an up-to-date\n"
+              "        // QgsFeature object with all of its properties and invokable functions\n"
+              "        text: attributeFormBridge.currentFormFeature.attribute(\"my_attribute\") || \"\"\n"
+              "      }\n"
+              "\n"
+              "      RoundButton {\n"
+              "        text: \"Change\"\n"
+              "        background.layer.enabled: false\n"
+              "        onClicked: {\n"
+              "          // The attributeFormBridge enables the change of field values through\n"
+              "          // changeAttribute(field_name, value) as well as the change of geometry\n"
+              "          // through changeGeometry(geometry)\n"
+              "          attributeFormBridge.changeAttribute(\"my_attribute\", myAttributeTextEdit.text);\n"
+              "        }\n"
+              "      }\n"
+              "    }\n"
+              "  }\n"
+              "}\n"
+            ) );
             break;
           }
           case 1:
           {
             qmlCode->setText( QStringLiteral(
-              "import QtQuick 2.0\n"
+              "import QtQuick\n"
               "\n"
               "Rectangle {\n"
               "    width: 100\n"
@@ -445,8 +500,8 @@ void QgsAttributesFormLayoutView::onItemDoubleClicked( const QModelIndex &index 
           case 2:
           {
             qmlCode->setText( QStringLiteral(
-              "import QtQuick 2.0\n"
-              "import QtCharts 2.0\n"
+              "import QtQuick\n"
+              "import QtCharts\n"
               "\n"
               "ChartView {\n"
               "    width: 400\n"
@@ -465,8 +520,8 @@ void QgsAttributesFormLayoutView::onItemDoubleClicked( const QModelIndex &index 
           case 3:
           {
             qmlCode->setText( QStringLiteral(
-              "import QtQuick 2.0\n"
-              "import QtCharts 2.0\n"
+              "import QtQuick\n"
+              "import QtCharts\n"
               "\n"
               "ChartView {\n"
               "    title: \"Bar series\"\n"
@@ -531,12 +586,20 @@ void QgsAttributesFormLayoutView::onItemDoubleClicked( const QModelIndex &index 
 
       layout->addWidget( new QLabel( tr( "Title" ) ) );
       layout->addWidget( title );
+
       QGroupBox *qmlCodeBox = new QGroupBox( tr( "QML Code" ) );
-      qmlCodeBox->setLayout( new QVBoxLayout );
-      qmlCodeBox->layout()->addWidget( qmlObjectTemplate );
+      qmlCodeBox->setLayout( new QVBoxLayout() );
+
+      QWidget *qmlObjectTemplateBox = new QWidget();
+      qmlCodeBox->layout()->addWidget( qmlObjectTemplateBox );
+      qmlObjectTemplateBox->setLayout( new QHBoxLayout() );
+      qmlObjectTemplateBox->layout()->setContentsMargins( 0, 0, 0, 0 );
+      qmlObjectTemplateBox->layout()->addWidget( qmlObjectTemplate );
+      qmlObjectTemplateBox->layout()->addWidget( objectTemplateButton );
+
       QWidget *expressionWidgetBox = new QWidget();
       qmlCodeBox->layout()->addWidget( expressionWidgetBox );
-      expressionWidgetBox->setLayout( new QHBoxLayout );
+      expressionWidgetBox->setLayout( new QHBoxLayout() );
       expressionWidgetBox->layout()->setContentsMargins( 0, 0, 0, 0 );
       expressionWidgetBox->layout()->addWidget( expressionWidget );
       expressionWidgetBox->layout()->addWidget( addFieldButton );
@@ -583,9 +646,21 @@ void QgsAttributesFormLayoutView::onItemDoubleClicked( const QModelIndex &index 
       } );
 
       QScrollArea *qmlPreviewBox = new QgsScrollArea();
+      qmlPreviewBox->setWidgetResizable( true );
       qmlPreviewBox->setMinimumWidth( 200 );
-      qmlPreviewBox->setWidget( qmlWrapper->widget() );
-      //emit to load preview for the first time
+      qmlPreviewBox->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Expanding );
+
+      qmlWrapper->widget()->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Preferred );
+
+      QWidget *qmlContainerWidget = new QWidget( qmlPreviewBox );
+      qmlContainerWidget->setMinimumSize( 200, 0 );
+      qmlContainerWidget->setSizePolicy( QSizePolicy::MinimumExpanding, QSizePolicy::Preferred );
+      QVBoxLayout *qmlLayout = new QVBoxLayout( qmlContainerWidget );
+      qmlLayout->addWidget( qmlWrapper->widget() );
+      qmlLayout->addSpacerItem( new QSpacerItem( 20, 40, QSizePolicy::Expanding, QSizePolicy::Expanding ) );
+      qmlContainerWidget->setLayout( qmlLayout );
+      qmlPreviewBox->setWidget( qmlContainerWidget );
+
       emit qmlCode->editingTimeout();
       qmlSplitter->addWidget( qmlPreviewBox );
       qmlSplitter->setChildrenCollapsible( false );

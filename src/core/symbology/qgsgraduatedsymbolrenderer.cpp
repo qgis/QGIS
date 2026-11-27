@@ -689,7 +689,7 @@ std::unique_ptr<QgsFeatureRenderer> QgsGraduatedSymbolRenderer::create( QDomElem
   QDomElement ddsLegendSizeElem = element.firstChildElement( u"data-defined-size-legend"_s );
   if ( !ddsLegendSizeElem.isNull() )
   {
-    r->mDataDefinedSizeLegend.reset( QgsDataDefinedSizeLegend::readXml( ddsLegendSizeElem, context ) );
+    r->mDataDefinedSizeLegend = QgsDataDefinedSizeLegend::readXml( ddsLegendSizeElem, context );
   }
   // TODO: symbol levels
   return r;
@@ -1164,6 +1164,9 @@ void QgsGraduatedSymbolRenderer::addClass( const QgsRendererRange &range )
 
 void QgsGraduatedSymbolRenderer::deleteClass( int idx )
 {
+  if ( idx < 0 || idx >= mRanges.size() )
+    return;
+
   mRanges.removeAt( idx );
 }
 

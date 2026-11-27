@@ -208,7 +208,7 @@ void QgsMetadataWidget::setMetadata( const QgsAbstractMetadataBase *metadata )
   setUiFromMetadata();
 }
 
-QgsAbstractMetadataBase *QgsMetadataWidget::metadata()
+std::unique_ptr<QgsAbstractMetadataBase> QgsMetadataWidget::metadata()
 {
   std::unique_ptr<QgsAbstractMetadataBase> md;
   switch ( mMode )
@@ -222,7 +222,7 @@ QgsAbstractMetadataBase *QgsMetadataWidget::metadata()
       break;
   }
   saveMetadata( md.get() );
-  return md.release();
+  return md;
 }
 
 void QgsMetadataWidget::fillSourceFromLayer()

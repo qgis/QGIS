@@ -85,24 +85,28 @@ void QgsSnapToGridAlgorithm::initParameters( const QVariantMap & )
   hSpacing->setIsDynamic( true );
   hSpacing->setDynamicPropertyDefinition( QgsPropertyDefinition( u"HSPACING"_s, QObject::tr( "X Grid Spacing" ), QgsPropertyDefinition::DoublePositive ) );
   hSpacing->setDynamicLayerParameterName( u"INPUT"_s );
+  hSpacing->setHelp( QObject::tr( "Grid spacing on the X axis." ) );
   addParameter( hSpacing.release() );
 
   auto vSpacing = std::make_unique<QgsProcessingParameterDistance>( u"VSPACING"_s, QObject::tr( "Y Grid Spacing" ), 1, u"INPUT"_s, false, 0 );
   vSpacing->setIsDynamic( true );
   vSpacing->setDynamicPropertyDefinition( QgsPropertyDefinition( u"VSPACING"_s, QObject::tr( "Y Grid Spacing" ), QgsPropertyDefinition::DoublePositive ) );
   vSpacing->setDynamicLayerParameterName( u"INPUT"_s );
+  vSpacing->setHelp( QObject::tr( "Grid spacing on the Y axis." ) );
   addParameter( vSpacing.release() );
 
   auto zSpacing = std::make_unique<QgsProcessingParameterNumber>( u"ZSPACING"_s, QObject::tr( "Z Grid Spacing" ), Qgis::ProcessingNumberParameterType::Double, 0, false, 0 );
   zSpacing->setIsDynamic( true );
   zSpacing->setDynamicPropertyDefinition( QgsPropertyDefinition( u"ZSPACING"_s, QObject::tr( "Z Grid Spacing" ), QgsPropertyDefinition::DoublePositive ) );
   zSpacing->setDynamicLayerParameterName( u"INPUT"_s );
+  zSpacing->setHelp( QObject::tr( "Grid spacing on the Z axis." ) );
   addParameter( zSpacing.release() );
 
   auto mSpacing = std::make_unique<QgsProcessingParameterNumber>( u"MSPACING"_s, QObject::tr( "M Grid Spacing" ), Qgis::ProcessingNumberParameterType::Double, 0, false, 0 );
   mSpacing->setIsDynamic( true );
   mSpacing->setDynamicPropertyDefinition( QgsPropertyDefinition( u"MSPACING"_s, QObject::tr( "M Grid Spacing" ), QgsPropertyDefinition::DoublePositive ) );
   mSpacing->setDynamicLayerParameterName( u"INPUT"_s );
+  mSpacing->setHelp( QObject::tr( "Grid spacing on the M axis." ) );
   addParameter( mSpacing.release() );
 }
 

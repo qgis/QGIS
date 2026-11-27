@@ -425,7 +425,7 @@ class AlgorithmWidget(QgsProcessingAlgorithmWidget):
             self.tr("Algorithm '{0}' finished").format(self.algorithm().displayName()),
             escapeHtml=False,
         )
-        self.algorithmFinished.emit(successful, result)
+        self.algorithmFinished.emit(successful, result, self.context)
 
         if not in_place and not keepOpen:
             self.close()

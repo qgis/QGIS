@@ -95,7 +95,7 @@ Returns a translated string representing the specified transform
 ``method``.
 %End
 
-    static QgsGcpTransformerInterface *create( TransformMethod method ) /Factory/;
+    static std::unique_ptr<QgsGcpTransformerInterface> create( TransformMethod method );
 %Docstring
 Creates a new QgsGcpTransformerInterface subclass representing the
 specified transform ``method``.

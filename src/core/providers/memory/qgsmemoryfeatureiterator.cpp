@@ -57,7 +57,7 @@ QgsMemoryFeatureIterator::QgsMemoryFeatureIterator( QgsMemoryFeatureSource *sour
       if ( !mFilterRect.isNull() && ( mRequest.flags() & Qgis::FeatureRequestFlag::ExactIntersect ) )
       {
         mSelectRectGeom = QgsGeometry::fromRect( mFilterRect );
-        mSelectRectEngine.reset( QgsGeometry::createGeometryEngine( mSelectRectGeom.constGet() ) );
+        mSelectRectEngine = QgsGeometry::createGeometryEngine( mSelectRectGeom.constGet() );
         mSelectRectEngine->prepareGeometry();
       }
       break;
@@ -66,7 +66,7 @@ QgsMemoryFeatureIterator::QgsMemoryFeatureIterator( QgsMemoryFeatureSource *sour
       if ( !mRequest.referenceGeometry().isEmpty() )
       {
         mDistanceWithinGeom = mRequest.referenceGeometry();
-        mDistanceWithinEngine.reset( QgsGeometry::createGeometryEngine( mDistanceWithinGeom.constGet() ) );
+        mDistanceWithinEngine = QgsGeometry::createGeometryEngine( mDistanceWithinGeom.constGet() );
         mDistanceWithinEngine->prepareGeometry();
       }
       break;
@@ -300,9 +300,8 @@ QgsExpressionContext *QgsMemoryFeatureSource::expressionContext()
   // iterating over a memory layer with a subset string set
   if ( !mExpressionContext )
   {
-    mExpressionContext = std::make_unique< QgsExpressionContext >(
-      QList<QgsExpressionContextScope *>() << QgsExpressionContextUtils::globalScope() << QgsExpressionContextUtils::projectScope( QgsProject::instance() ) // skip-keyword-check
-    );
+    mExpressionContext = std::make_unique< QgsExpressionContext >();
+    *mExpressionContext << QgsExpressionContextUtils::globalScope() << QgsExpressionContextUtils::projectScope( QgsProject::instance() ); // skip-keyword-check
     mExpressionContext->setFields( mFields );
   }
   return mExpressionContext.get();

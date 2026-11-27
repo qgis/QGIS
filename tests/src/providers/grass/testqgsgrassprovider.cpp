@@ -153,7 +153,7 @@ QString TestQgsGrassCommand::toString() const
   else if ( command == AddAttribute )
   {
     string += "AddAttribute "_L1;
-    string += "name: " + field.name() + " type: " + QVariant::typeToName( field.type() );
+    string += "name: " + field.name() + " type: " + QMetaType( field.type() ).name();
   }
   else if ( command == DeleteAttribute )
   {

@@ -44,13 +44,22 @@ void QgsJoinByLocationSummaryAlgorithm::initAlgorithm( const QVariantMap & )
   widgetMetadata.insert( u"columns"_s, 2 );
   predicateMetadata.insert( u"widget_wrapper"_s, widgetMetadata );
   predicateParam->setMetadata( predicateMetadata );
+  predicateParam->setHelp(
+    QObject::tr(
+      "Type of spatial relation the source feature should have with the target feature so that they could be joined. If more than one condition is chosen, at least one of them (OR operation) "
+      "has to be met for a feature to be joined."
+    )
+  );
   addParameter( predicateParam.release() );
 
-  addParameter( new QgsProcessingParameterFeatureSource( u"JOIN"_s, QObject::tr( "By comparing to" ), QList<int>() << static_cast<int>( Qgis::ProcessingSourceType::VectorAnyGeometry ) ) );
+  auto joinParam = std::make_unique<QgsProcessingParameterFeatureSource>( u"JOIN"_s, QObject::tr( "By comparing to" ), QList<int>() << static_cast<int>( Qgis::ProcessingSourceType::VectorAnyGeometry ) );
+  joinParam->setHelp( QObject::tr( "The join layer. Features of this vector layer will add summaries of their attributes to the source layer attribute table if they satisfy the spatial relationship." ) );
+  addParameter( joinParam.release() );
 
-  addParameter(
-    new QgsProcessingParameterField( u"JOIN_FIELDS"_s, QObject::tr( "Fields to summarise (leave empty to use all fields)" ), QVariant(), u"JOIN"_s, Qgis::ProcessingFieldParameterDataType::Any, true, true )
-  );
+  auto joinFieldsParam = std::make_unique<
+    QgsProcessingParameterField>( u"JOIN_FIELDS"_s, QObject::tr( "Fields to summarise (leave empty to use all fields)" ), QVariant(), u"JOIN"_s, Qgis::ProcessingFieldParameterDataType::Any, true, true );
+  joinFieldsParam->setHelp( QObject::tr( "Specific fields to summarize from the join layer. By default all the fields are summarized." ) );
+  addParameter( joinFieldsParam.release() );
 
   mAllSummaries
     << QObject::tr( "count" )
@@ -74,9 +83,13 @@ void QgsJoinByLocationSummaryAlgorithm::initAlgorithm( const QVariantMap & )
     << QObject::tr( "mean_length" );
 
   auto summaryParam = std::make_unique<QgsProcessingParameterEnum>( u"SUMMARIES"_s, QObject::tr( "Summaries to calculate (leave empty to use all available)" ), mAllSummaries, true, QVariant(), true );
+  summaryParam->setHelp( QObject::tr( "Statistics to calculate for each input feature on the joined fields of its matching features. By default all the available statistics are calculated." ) );
   addParameter( summaryParam.release() );
 
-  addParameter( new QgsProcessingParameterBoolean( u"DISCARD_NONMATCHING"_s, QObject::tr( "Discard records which could not be joined" ), false ) );
+  auto discardNonMatchingParam = std::make_unique<QgsProcessingParameterBoolean>( u"DISCARD_NONMATCHING"_s, QObject::tr( "Discard records which could not be joined" ), false );
+  discardNonMatchingParam->setHelp( QObject::tr( "If checked, the input layer's features which could not be joined are removed from the output." ) );
+  addParameter( discardNonMatchingParam.release() );
+
   addParameter( new QgsProcessingParameterFeatureSink( u"OUTPUT"_s, QObject::tr( "Joined layer" ) ) );
 }
 
@@ -361,7 +374,7 @@ QVariantMap QgsJoinByLocationSummaryAlgorithm::processAlgorithm( const QVariantM
 
       if ( !engine )
       {
-        engine.reset( QgsGeometry::createGeometryEngine( f.geometry().constGet() ) );
+        engine = QgsGeometry::createGeometryEngine( f.geometry().constGet() );
         engine->prepareGeometry();
       }
 

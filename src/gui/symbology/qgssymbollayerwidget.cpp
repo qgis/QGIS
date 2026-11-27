@@ -1915,11 +1915,11 @@ void QgsShapeburstFillSymbolLayerWidget::mRadioUseWholeShape_toggled( bool value
 
 void QgsShapeburstFillSymbolLayerWidget::applyColorRamp()
 {
-  QgsColorRamp *ramp = btnColorRamp->colorRamp();
+  std::unique_ptr<QgsColorRamp> ramp = btnColorRamp->colorRamp();
   if ( !ramp )
     return;
 
-  mLayer->setColorRamp( ramp );
+  mLayer->setColorRamp( ramp.release() );
   emit changed();
 }
 

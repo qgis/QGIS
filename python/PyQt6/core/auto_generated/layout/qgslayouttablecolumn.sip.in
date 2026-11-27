@@ -228,7 +228,7 @@ sort ``rank`` is <= 0 then the column is not being sorted.
    The order is now hold in a dedicated model.
 %End
 
- QgsLayoutTableColumn *clone() /Deprecated="Since 3.14. Use a copy instead.",Factory/;
+ std::unique_ptr<QgsLayoutTableColumn> clone() /Deprecated="Since 3.14. Use a copy instead."/;
 %Docstring
 Creates a duplicate column which is a deep copy of this column.
 

@@ -41,7 +41,7 @@ Constructor for QgsPointCloudRgbRenderer.
     virtual QSet< QString > usedAttributes( const QgsPointCloudRenderContext &context ) const;
 
 
-    static QgsPointCloudRenderer *create( QDomElement &element, const QgsReadWriteContext &context ) /Factory/;
+    static std::unique_ptr<QgsPointCloudRenderer> create( QDomElement &element, const QgsReadWriteContext &context );
 %Docstring
 Creates an RGB renderer from an XML ``element``.
 %End

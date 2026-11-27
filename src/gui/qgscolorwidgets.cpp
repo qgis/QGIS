@@ -1645,7 +1645,7 @@ void QgsColorTextWidget::textChanged()
 
 void QgsColorTextWidget::showMenu()
 {
-  QMenu colorContextMenu;
+  QMenu colorContextMenu( this );
   QAction *hexRgbaAction = nullptr;
   QAction *rgbaAction = nullptr;
 

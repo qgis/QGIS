@@ -426,6 +426,12 @@ void QgsMemoryProvider::handlePostCloneOperations( QgsVectorDataProvider *source
     mFeatures = other->mFeatures;
     mNextFeatureId = other->mNextFeatureId;
     mExtent3D = other->mExtent3D;
+    if ( other->mSpatialIndex )
+    {
+      mSpatialIndex = std::make_unique<QgsSpatialIndex>( *other->mSpatialIndex.get() );
+      // immediately detach spatial index, so we aren't sharing the mutex with the original layer, which would cause temporary hangs during render
+      mSpatialIndex->detach();
+    }
   }
 }
 

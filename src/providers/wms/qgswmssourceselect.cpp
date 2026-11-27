@@ -497,7 +497,7 @@ void QgsWMSSourceSelect::btnConnect_clicked()
     return;
   }
 
-  const bool disableDecompressedSafetyCheckThreshold = mUri.hasParam( u"DisableDecompressedSafetyCheckThreshold"_s );
+  const bool disableDecompressedSafetyCheckThreshold { mUri.hasParam( u"disableDecompressedSafetyCheckThreshold"_s ) };
   QgsWmsCapabilitiesDownload capDownload( wmsSettings.baseUrl(), wmsSettings.authorization(), true, disableDecompressedSafetyCheckThreshold );
   connect( &capDownload, &QgsWmsCapabilitiesDownload::statusChanged, this, &QgsWMSSourceSelect::showStatusMessage );
 

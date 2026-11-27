@@ -103,6 +103,43 @@ class TestQgsListWidget : public QObject
       QVERIFY( widget->valid() );
     }
 
+    void testStringUpdateOnString()
+    {
+      const QgsListWidgetFactory factory( u"testList"_s );
+      QgsVectorLayer vl( u"Point?field=fld:string"_s, u"test"_s, u"memory"_s );
+      QgsEditorWidgetWrapper *wrapper = factory.create( &vl, 0, nullptr, nullptr );
+      QVERIFY( wrapper );
+      QCOMPARE( wrapper->field().type(), QMetaType::Type::QString );
+      const QSignalSpy spy( wrapper, SIGNAL( valueChanged( const QVariant & ) ) );
+
+      QgsListWidget *widget = wrapper->widget()->findChild<QgsListWidget *>();
+      QVERIFY( widget );
+
+      QString initialString = "[\"one\",\"two\"]";
+      wrapper->setValues( initialString, QVariantList() );
+
+      QStringList expected;
+      expected << u"one"_s << u"two"_s;
+
+      const QVariant value = wrapper->value();
+      QCOMPARE( int( static_cast<QMetaType::Type>( value.userType() ) ), int( QMetaType::Type::QVariantList ) );
+      QCOMPARE( value.toStringList(), expected );
+      QCOMPARE( spy.count(), 0 );
+
+      QAbstractItemModel *model = widget->tableView->model();
+      model->setData( model->index( 0, 0 ), "hello" );
+      QCOMPARE( spy.count(), 1 );
+      QVERIFY( widget->valid() );
+
+      expected[0] = u"hello"_s;
+      const QVariant eventValue = spy.at( 0 ).at( 0 ).value<QVariant>();
+      QCOMPARE( int( static_cast<QMetaType::Type>( eventValue.userType() ) ), int( QMetaType::Type::QVariantList ) );
+      QCOMPARE( eventValue.toStringList(), expected );
+      QCOMPARE( wrapper->value().toStringList(), expected );
+      QCOMPARE( spy.count(), 1 );
+      QVERIFY( widget->valid() );
+    }
+
     void testIntUpdate()
     {
       const QgsListWidgetFactory factory( u"testList"_s );
@@ -152,6 +189,43 @@ class TestQgsListWidget : public QObject
       QCOMPARE( wrapper->value().toList(), expected );
       QVERIFY( widget->valid() );
     }
+
+    void testIntUpdateOnString()
+    {
+      const QgsListWidgetFactory factory( u"testList"_s );
+      QgsVectorLayer vl( u"Point?field=fld:string"_s, u"test"_s, u"memory"_s );
+      QgsEditorWidgetWrapper *wrapper = factory.create( &vl, 0, nullptr, nullptr );
+      QVERIFY( wrapper );
+      QCOMPARE( wrapper->field().type(), QMetaType::Type::QString );
+      const QSignalSpy spy( wrapper, SIGNAL( valueChanged( const QVariant & ) ) );
+
+      QgsListWidget *widget = wrapper->widget()->findChild<QgsListWidget *>();
+      QVERIFY( widget );
+
+      QString initialString = "[1,-2]";
+      wrapper->setValues( initialString, QVariantList() );
+
+      QVariantList expected;
+      expected << 1 << -2;
+
+      const QVariant value = wrapper->value();
+      QCOMPARE( int( static_cast<QMetaType::Type>( value.userType() ) ), int( QMetaType::Type::QVariantList ) );
+      QCOMPARE( value.toList(), expected );
+      QCOMPARE( spy.count(), 0 );
+
+      QAbstractItemModel *model = widget->tableView->model();
+      model->setData( model->index( 0, 0 ), 3 );
+      QCOMPARE( spy.count(), 1 );
+
+      expected[0] = 3;
+      QCOMPARE( spy.count(), 1 );
+      QVariant eventValue = spy.at( 0 ).at( 0 ).value<QVariant>();
+      QCOMPARE( int( static_cast<QMetaType::Type>( eventValue.userType() ) ), int( QMetaType::Type::QVariantList ) );
+      QCOMPARE( eventValue.toList(), expected );
+      QCOMPARE( wrapper->value().toList(), expected );
+      QVERIFY( widget->valid() );
+    }
+
 
 #ifdef ENABLE_PGTEST
     void testPostgres()

@@ -569,8 +569,18 @@ void QgsApplication::init( QString profileFolder )
   // This is cheap to call anyway, so there's no harm in being overly vigilant...
   ( void ) QgsExpression::getFunctionsSnapshot();
 
+  // trigger creation of default style, but defer initialization until
+  // it's actually required
+  // The default style creation should be done before instantiating the QgsProject singleton
+  QgsStyle *defaultStyle = QgsStyle::defaultStyle( false );
+  if ( !members()->mStyleModel )
+    members()->mStyleModel = std::make_unique<QgsStyleModel>( defaultStyle );
+
   {
     QgsScopedRuntimeProfile profile( tr( "Load color schemes" ) );
+    // TODO QGIS 5.0 - remove the default inclusion of the project instance
+    // the default inclusion of the project instance ensures that the "Project colors" scheme is available as it was before
+    colorSchemeRegistry()->setProject( QgsProject::instance() ); // skip-keyword-check
     colorSchemeRegistry()->addDefaultSchemes();
     colorSchemeRegistry()->initStyleScheme();
   }
@@ -579,12 +589,6 @@ void QgsApplication::init( QString profileFolder )
     QgsScopedRuntimeProfile profile( tr( "Load bookmarks" ) );
     bookmarkManager()->initialize( QgsApplication::qgisSettingsDirPath() + "/bookmarks.xml" );
   }
-
-  // trigger creation of default style, but defer initialization until
-  // it's actually required
-  QgsStyle *defaultStyle = QgsStyle::defaultStyle( false );
-  if ( !members()->mStyleModel )
-    members()->mStyleModel = std::make_unique<QgsStyleModel>( defaultStyle );
 
   QgsApplication::processingRegistry()->defaultStyleRegistry()->loadStyles();
 
@@ -628,7 +632,7 @@ void QgsApplication::installTranslators()
      * the About, Preferences and Quit items to the Mac Application menu.
      * These items must be translated identically in both qt_ and qgis_ files.
      */
-    QString qtTranslationsPath = QLibraryInfo::location( QLibraryInfo::TranslationsPath );
+    QString qtTranslationsPath = QLibraryInfo::path( QLibraryInfo::TranslationsPath );
 #ifdef __MINGW32__
     QString prefix = QDir( QString( "%1/../" ).arg( QApplication::applicationDirPath() ) ).absolutePath();
     qtTranslationsPath = prefix + qtTranslationsPath.mid( QLibraryInfo::location( QLibraryInfo::PrefixPath ).length() );
@@ -1015,8 +1019,8 @@ QCursor QgsApplication::getThemeCursor( Cursor cursor )
       activeY = 6;
       break;
     case Sampler:
-      activeX = 5;
-      activeY = 5;
+      activeX = 0;
+      activeY = 0;
       name = u"mSampler.svg"_s;
       break;
       // No default
@@ -1030,7 +1034,7 @@ QCursor QgsApplication::getThemeCursor( Cursor cursor )
   if ( !icon.isNull() )
   {
     // Apply scaling
-    float scale = Qgis::UI_SCALE_FACTOR * QgsApplication::fontMetrics().height() / 32.0;
+    float scale = Qgis::UI_SCALE_FACTOR * QFontMetricsF( QgsApplication::font() ).height() / 32.0;
     cursorIcon = QCursor( icon.pixmap( std::ceil( scale * 32 ), std::ceil( scale * 32 ) ), std::ceil( scale * activeX ), std::ceil( scale * activeY ) );
   }
   if ( app )
@@ -1353,7 +1357,7 @@ void QgsApplication::setProjectTemplatePaths( const QStringList &projectTemplate
 
 QStringList QgsApplication::projectTemplatePaths()
 {
-  QStringList configuredPaths = settingsProjectTemplatePaths->value();
+  QStringList configuredPaths = settingsProjectTemplatePaths->valueWithDefaultOverride( QgsApplication::defaultProjectTemplatePaths() );
 
   // Normalize the paths and avoid duplicates
   QStringList paths;

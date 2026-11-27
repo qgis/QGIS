@@ -74,54 +74,74 @@ class VariableDistanceBuffer(QgisAlgorithm):
             QgsProcessingParameterFeatureSource(self.INPUT, self.tr("Input layer"))
         )
 
-        self.addParameter(
-            QgsProcessingParameterField(
-                self.FIELD,
-                self.tr("Distance field"),
-                parentLayerParameterName=self.INPUT,
+        param = QgsProcessingParameterField(
+            self.FIELD,
+            self.tr("Distance field"),
+            parentLayerParameterName=self.INPUT,
+        )
+        param.setHelp(
+            self.tr(
+                "Field containing the buffer distance (from the boundary of each feature)."
             )
         )
-        self.addParameter(
-            QgsProcessingParameterNumber(
-                self.SEGMENTS,
-                self.tr("Segments"),
-                type=QgsProcessingParameterNumber.Type.Integer,
-                minValue=1,
-                defaultValue=5,
+        self.addParameter(param)
+        param = QgsProcessingParameterNumber(
+            self.SEGMENTS,
+            self.tr("Segments"),
+            type=QgsProcessingParameterNumber.Type.Integer,
+            minValue=1,
+            defaultValue=5,
+        )
+        param.setHelp(
+            self.tr(
+                "Controls the number of line segments to use to approximate a quarter circle when creating rounded offsets."
             )
         )
-        self.addParameter(
-            QgsProcessingParameterBoolean(
-                self.DISSOLVE, self.tr("Dissolve result"), defaultValue=False
+        self.addParameter(param)
+        param = QgsProcessingParameterBoolean(
+            self.DISSOLVE, self.tr("Dissolve result"), defaultValue=False
+        )
+        param.setHelp(
+            self.tr(
+                "Dissolve the final buffer. If True (checked), all features will be dissolved (combined) into a single multipart feature."
             )
         )
+        self.addParameter(param)
         self.end_cap_styles = [self.tr("Round"), "Flat", "Square"]
-        self.addParameter(
-            QgsProcessingParameterEnum(
-                self.END_CAP_STYLE,
-                self.tr("End cap style"),
-                options=self.end_cap_styles,
-                defaultValue=0,
-            )
+        param = QgsProcessingParameterEnum(
+            self.END_CAP_STYLE,
+            self.tr("End cap style"),
+            options=self.end_cap_styles,
+            defaultValue=0,
         )
+        param.setHelp(self.tr("Controls how line endings are handled in the buffer."))
+        self.addParameter(param)
         self.join_styles = [self.tr("Round"), "Miter", "Bevel"]
-        self.addParameter(
-            QgsProcessingParameterEnum(
-                self.JOIN_STYLE,
-                self.tr("Join style"),
-                options=self.join_styles,
-                defaultValue=0,
+        param = QgsProcessingParameterEnum(
+            self.JOIN_STYLE,
+            self.tr("Join style"),
+            options=self.join_styles,
+            defaultValue=0,
+        )
+        param.setHelp(
+            self.tr(
+                "Specifies whether round, miter or beveled joins should be used when offsetting corners in a line."
             )
         )
-        self.addParameter(
-            QgsProcessingParameterNumber(
-                self.MITER_LIMIT,
-                self.tr("Miter limit"),
-                type=QgsProcessingParameterNumber.Type.Double,
-                minValue=0,
-                defaultValue=2,
+        self.addParameter(param)
+        param = QgsProcessingParameterNumber(
+            self.MITER_LIMIT,
+            self.tr("Miter limit"),
+            type=QgsProcessingParameterNumber.Type.Double,
+            minValue=0,
+            defaultValue=2,
+        )
+        param.setHelp(
+            self.tr(
+                "Sets the maximum distance from the offset geometry to use when creating a mitered join as a factor of the offset distance (only applicable for miter join styles)."
             )
         )
+        self.addParameter(param)
 
         self.addParameter(
             QgsProcessingParameterFeatureSink(

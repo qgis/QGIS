@@ -68,7 +68,7 @@ QVariantMap QgsExpressionBasedNumericFormat::configuration( const QgsReadWriteCo
   return res;
 }
 
-void QgsExpressionBasedNumericFormat::setExpression( const QString &expression )
+void QgsExpressionBasedNumericFormat::setExpression( const QString &expression ) // cppcheck-suppress functionConst
 {
   mExpression = QgsExpression( expression );
 }

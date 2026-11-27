@@ -55,6 +55,27 @@ settings description for the gui.
 %End
   public:
 
+    static bool setGlobalSettingsPath( const QString &path );
+%Docstring
+Sets the path to the global settings INI file and loads all keys into an
+in-memory hash for use as default values by
+:py:class:`QgsSettingsEntry`.
+
+This must be called once at application startup, before
+:py:class:`QgsApplication` initialization, and only from the main
+thread.
+
+:param path: the path to the global settings INI file.
+
+:return: ``True`` if the file was successfully loaded, ``False`` if the
+         path was empty or the file did not exist.
+
+.. versionadded:: 4.2
+%End
+
+
+
+
 
 
     static QStringList dynamicKeyPartToList( const QString &dynamicKeyPart );
@@ -182,6 +203,11 @@ Returns the origin of the setting if it exists
 .. note::
 
    it will return :py:class:`Qgis`.SettingsOrigin.Any if the key doesn't exist
+
+.. note::
+
+   Global takes precedence: if the key is defined in the global settings file,
+   the origin is :py:class:`Qgis`.SettingsOrigin.Global regardless of whether the user also overrides it.
 
 .. versionadded:: 3.30
 %End

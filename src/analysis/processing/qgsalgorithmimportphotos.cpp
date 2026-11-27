@@ -56,8 +56,13 @@ QString QgsImportPhotosAlgorithm::groupId() const
 
 void QgsImportPhotosAlgorithm::initAlgorithm( const QVariantMap & )
 {
-  addParameter( new QgsProcessingParameterFile( u"FOLDER"_s, QObject::tr( "Input folder" ), Qgis::ProcessingFileParameterBehavior::Folder ) );
-  addParameter( new QgsProcessingParameterBoolean( u"RECURSIVE"_s, QObject::tr( "Scan recursively" ), false ) );
+  auto folderParam = std::make_unique<QgsProcessingParameterFile>( u"FOLDER"_s, QObject::tr( "Input folder" ), Qgis::ProcessingFileParameterBehavior::Folder );
+  folderParam->setHelp( QObject::tr( "Path to the source folder containing the geotagged photos." ) );
+  addParameter( folderParam.release() );
+
+  auto recursiveParam = std::make_unique<QgsProcessingParameterBoolean>( u"RECURSIVE"_s, QObject::tr( "Scan recursively" ), false );
+  recursiveParam->setHelp( QObject::tr( "If checked, both the selected folder and all its subfolders will also be scanned." ) );
+  addParameter( recursiveParam.release() );
 
   auto output = std::make_unique<QgsProcessingParameterFeatureSink>( u"OUTPUT"_s, QObject::tr( "Photos" ), Qgis::ProcessingSourceType::VectorPoint, QVariant(), true );
   output->setCreateByDefault( true );

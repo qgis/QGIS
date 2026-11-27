@@ -66,8 +66,8 @@ class TestQgs3DCameraController : public QgsTest
   private:
     void waitForNearPlane( QgsOffscreen3DEngine &engine, Qgs3DMapScene *scene, float atLeast ); //#spellok
 
-    QgsRasterLayer *mLayerRgb = nullptr;
-    QgsVectorLayer *mLayerBuildings = nullptr;
+    std::unique_ptr<QgsRasterLayer> mLayerRgb;
+    std::unique_ptr<QgsVectorLayer> mLayerBuildings;
 };
 
 // runs before all tests
@@ -78,10 +78,10 @@ void TestQgs3DCameraController::initTestCase()
   QgsApplication::initQgis();
   Qgs3D::initialize();
 
-  mLayerRgb = new QgsRasterLayer( testDataPath( "/3d/rgb.tif" ), "rgb", "gdal" );
+  mLayerRgb = std::make_unique<QgsRasterLayer>( testDataPath( "/3d/rgb.tif" ), "rgb", "gdal" );
   QVERIFY( mLayerRgb->isValid() );
 
-  mLayerBuildings = new QgsVectorLayer( testDataPath( "/3d/buildings.shp" ), "buildings", "ogr" );
+  mLayerBuildings = std::make_unique<QgsVectorLayer>( testDataPath( "/3d/buildings.shp" ), "buildings", "ogr" );
   QVERIFY( mLayerBuildings->isValid() );
 
   // best to keep buildings without 2D renderer so it is not painted on the terrain
@@ -100,6 +100,8 @@ void TestQgs3DCameraController::initTestCase()
 //runs after all tests
 void TestQgs3DCameraController::cleanupTestCase()
 {
+  mLayerRgb.reset();
+  mLayerBuildings.reset();
   QgsApplication::exitQgis();
 }
 
@@ -110,7 +112,7 @@ void TestQgs3DCameraController::testTranslate()
   Qgs3DMapSettings *mapSettings = new Qgs3DMapSettings;
   mapSettings->setCrs( mLayerRgb->crs() );
   mapSettings->setExtent( fullExtent );
-  mapSettings->setLayers( QList<QgsMapLayer *>() << mLayerRgb << mLayerBuildings );
+  mapSettings->setLayers( QList<QgsMapLayer *>() << mLayerRgb.get() << mLayerBuildings.get() );
 
   QgsFlatTerrainGenerator *flatTerrain = new QgsFlatTerrainGenerator;
   flatTerrain->setCrs( mapSettings->crs(), QgsCoordinateTransformContext() );
@@ -134,7 +136,8 @@ void TestQgs3DCameraController::testTranslate()
   Qgs3DUtils::captureSceneImage( engine, scene );
 
   QMouseEvent mousePressEvent( QEvent::MouseButtonPress, midPos, Qt::LeftButton, Qt::LeftButton, Qt::NoModifier );
-  scene->cameraController()->onMousePressed( new Qt3DInput::QMouseEvent( mousePressEvent ) );
+  Qt3DInput::QMouseEvent qt3dPress( mousePressEvent );
+  scene->cameraController()->onMousePressed( &qt3dPress );
 
   QCOMPARE( scene->cameraController()->mClickPoint, midPos );
   QCOMPARE( scene->cameraController()->mMousePos, midPos );
@@ -145,7 +148,8 @@ void TestQgs3DCameraController::testTranslate()
 
   QPoint movement1( 220, 42 );
   QMouseEvent mouseMoveEvent1( QEvent::MouseMove, midPos + movement1, Qt::LeftButton, Qt::LeftButton, Qt::NoModifier );
-  scene->cameraController()->onPositionChanged( new Qt3DInput::QMouseEvent( mouseMoveEvent1 ) );
+  Qt3DInput::QMouseEvent qt3dMove( mouseMoveEvent1 );
+  scene->cameraController()->onPositionChanged( &qt3dMove );
   QCOMPARE( scene->cameraController()->mClickPoint, midPos );
   QCOMPARE( scene->cameraController()->mMousePos, midPos + movement1 );
   QCOMPARE( scene->cameraController()->mCurrentOperation, QgsCameraController::MouseOperation::Translation );
@@ -158,13 +162,14 @@ void TestQgs3DCameraController::testTranslate()
   QCOMPARE( scene->cameraController()->yaw(), initialYaw );
 
   QMouseEvent mouseReleaseEvent( QEvent::MouseButtonRelease, midPos, Qt::LeftButton, Qt::LeftButton, Qt::NoModifier );
-  scene->cameraController()->onMouseReleased( new Qt3DInput::QMouseEvent( mouseReleaseEvent ) );
+  Qt3DInput::QMouseEvent qt3dRelease( mouseReleaseEvent );
+  scene->cameraController()->onMouseReleased( &qt3dRelease );
 
   QCOMPARE( scene->cameraController()->mClickPoint, QPoint() );
   QCOMPARE( scene->cameraController()->mCurrentOperation, QgsCameraController::MouseOperation::None );
 
   delete scene;
-  mapSettings->setLayers( {} );
+  delete mapSettings;
 }
 
 void TestQgs3DCameraController::testZoom()
@@ -174,7 +179,7 @@ void TestQgs3DCameraController::testZoom()
   Qgs3DMapSettings *mapSettings = new Qgs3DMapSettings;
   mapSettings->setCrs( mLayerRgb->crs() );
   mapSettings->setExtent( fullExtent );
-  mapSettings->setLayers( QList<QgsMapLayer *>() << mLayerRgb << mLayerBuildings );
+  mapSettings->setLayers( QList<QgsMapLayer *>() << mLayerRgb.get() << mLayerBuildings.get() );
 
   QgsFlatTerrainGenerator *flatTerrain = new QgsFlatTerrainGenerator;
   flatTerrain->setCrs( mapSettings->crs(), QgsCoordinateTransformContext() );
@@ -198,7 +203,8 @@ void TestQgs3DCameraController::testZoom()
   Qgs3DUtils::captureSceneImage( engine, scene );
 
   QMouseEvent mousePressEvent( QEvent::MouseButtonPress, midPos, Qt::RightButton, Qt::RightButton, Qt::NoModifier );
-  scene->cameraController()->onMousePressed( new Qt3DInput::QMouseEvent( mousePressEvent ) );
+  Qt3DInput::QMouseEvent qt3dMousePressEvent( mousePressEvent );
+  scene->cameraController()->onMousePressed( &qt3dMousePressEvent );
 
   QCOMPARE( scene->cameraController()->mClickPoint, midPos );
   QCOMPARE( scene->cameraController()->mMousePos, midPos );
@@ -211,14 +217,16 @@ void TestQgs3DCameraController::testZoom()
   // the second one will update the camera
   QPoint movement1( 220, 42 );
   QMouseEvent mouseMoveEvent1( QEvent::MouseMove, midPos + movement1, Qt::RightButton, Qt::RightButton, Qt::NoModifier );
-  scene->cameraController()->onPositionChanged( new Qt3DInput::QMouseEvent( mouseMoveEvent1 ) );
+  Qt3DInput::QMouseEvent qt3dMouseMoveEvent1( mouseMoveEvent1 );
+  scene->cameraController()->onPositionChanged( &qt3dMouseMoveEvent1 );
   QCOMPARE( scene->cameraController()->mClickPoint, midPos );
   QCOMPARE( scene->cameraController()->mMousePos, midPos + movement1 );
   QCOMPARE( scene->cameraController()->mCurrentOperation, QgsCameraController::MouseOperation::Zoom );
 
   QPoint movement2( 1, 1 );
   QMouseEvent mouseMoveEvent2( QEvent::MouseMove, midPos + movement1 + movement2, Qt::RightButton, Qt::RightButton, Qt::NoModifier );
-  scene->cameraController()->onPositionChanged( new Qt3DInput::QMouseEvent( mouseMoveEvent2 ) );
+  Qt3DInput::QMouseEvent qt3dMouseMoveEvent2( mouseMoveEvent2 );
+  scene->cameraController()->onPositionChanged( &qt3dMouseMoveEvent2 );
   QCOMPARE( scene->cameraController()->mClickPoint, midPos );
   QCOMPARE( scene->cameraController()->mMousePos, midPos + movement1 + movement2 );
   QCOMPARE( scene->cameraController()->mCurrentOperation, QgsCameraController::MouseOperation::Zoom );
@@ -231,13 +239,14 @@ void TestQgs3DCameraController::testZoom()
   QCOMPARE( scene->cameraController()->yaw(), initialYaw );
 
   QMouseEvent mouseReleaseEvent( QEvent::MouseButtonRelease, midPos, Qt::RightButton, Qt::RightButton, Qt::NoModifier );
-  scene->cameraController()->onMouseReleased( new Qt3DInput::QMouseEvent( mouseReleaseEvent ) );
+  Qt3DInput::QMouseEvent qt3dMouseReleaseEvent( mouseReleaseEvent );
+  scene->cameraController()->onMouseReleased( &qt3dMouseReleaseEvent );
 
   QCOMPARE( scene->cameraController()->mClickPoint, QPoint() );
   QCOMPARE( scene->cameraController()->mCurrentOperation, QgsCameraController::MouseOperation::None );
 
   delete scene;
-  mapSettings->setLayers( {} );
+  delete mapSettings;
 }
 
 void TestQgs3DCameraController::testZoomWheel()
@@ -247,7 +256,7 @@ void TestQgs3DCameraController::testZoomWheel()
   Qgs3DMapSettings *mapSettings = new Qgs3DMapSettings;
   mapSettings->setCrs( mLayerRgb->crs() );
   mapSettings->setExtent( fullExtent );
-  mapSettings->setLayers( QList<QgsMapLayer *>() << mLayerRgb << mLayerBuildings );
+  mapSettings->setLayers( QList<QgsMapLayer *>() << mLayerRgb.get() << mLayerBuildings.get() );
 
   QgsFlatTerrainGenerator *flatTerrain = new QgsFlatTerrainGenerator;
   flatTerrain->setCrs( mapSettings->crs(), QgsCoordinateTransformContext() );
@@ -267,7 +276,8 @@ void TestQgs3DCameraController::testZoomWheel()
   Qgs3DUtils::captureSceneImage( engine, scene );
 
   QWheelEvent wheelEvent( midPos, midPos, QPoint(), QPoint( 0, 200 ), Qt::NoButton, Qt::NoModifier, Qt::NoScrollPhase, false, Qt::MouseEventSynthesizedByApplication );
-  scene->cameraController()->onWheel( new Qt3DInput::QWheelEvent( wheelEvent ) );
+  Qt3DInput::QWheelEvent qt3dWheelEvent( wheelEvent );
+  scene->cameraController()->onWheel( &qt3dWheelEvent );
   QCOMPARE( scene->cameraController()->mClickPoint, QPoint() );
   QCOMPARE( scene->cameraController()->mCurrentOperation, QgsCameraController::MouseOperation::ZoomWheel );
   QCOMPARE( scene->cameraController()->mCumulatedWheelY, wheelEvent.angleDelta().y() / 120.0 );
@@ -284,7 +294,7 @@ void TestQgs3DCameraController::testZoomWheel()
   QCOMPARE( scene->cameraController()->mCurrentOperation, QgsCameraController::MouseOperation::None );
 
   delete scene;
-  mapSettings->setLayers( {} );
+  delete mapSettings;
 }
 
 void TestQgs3DCameraController::testRotationCenter()
@@ -294,7 +304,7 @@ void TestQgs3DCameraController::testRotationCenter()
   Qgs3DMapSettings *mapSettings = new Qgs3DMapSettings;
   mapSettings->setCrs( mLayerRgb->crs() );
   mapSettings->setExtent( fullExtent );
-  mapSettings->setLayers( QList<QgsMapLayer *>() << mLayerRgb << mLayerBuildings );
+  mapSettings->setLayers( QList<QgsMapLayer *>() << mLayerRgb.get() << mLayerBuildings.get() );
 
   QgsFlatTerrainGenerator *flatTerrain = new QgsFlatTerrainGenerator;
   flatTerrain->setCrs( mapSettings->crs(), QgsCoordinateTransformContext() );
@@ -319,7 +329,8 @@ void TestQgs3DCameraController::testRotationCenter()
   Qgs3DUtils::captureSceneImage( engine, scene );
 
   QMouseEvent mousePressEvent( QEvent::MouseButtonPress, midPos, Qt::LeftButton, Qt::LeftButton, Qt::ShiftModifier );
-  scene->cameraController()->onMousePressed( new Qt3DInput::QMouseEvent( mousePressEvent ) );
+  Qt3DInput::QMouseEvent qt3dMousePressEvent( mousePressEvent );
+  scene->cameraController()->onMousePressed( &qt3dMousePressEvent );
 
   QCOMPARE( scene->cameraController()->mClickPoint, midPos );
   QCOMPARE( scene->cameraController()->mMousePos, midPos );
@@ -332,14 +343,16 @@ void TestQgs3DCameraController::testRotationCenter()
   // the second one will update the camera
   QPoint movement1( 220, 42 );
   QMouseEvent mouseMoveEvent1( QEvent::MouseMove, midPos + movement1, Qt::LeftButton, Qt::LeftButton, Qt::ShiftModifier );
-  scene->cameraController()->onPositionChanged( new Qt3DInput::QMouseEvent( mouseMoveEvent1 ) );
+  Qt3DInput::QMouseEvent qt3dMouseMoveEvent1( mouseMoveEvent1 );
+  scene->cameraController()->onPositionChanged( &qt3dMouseMoveEvent1 );
   QCOMPARE( scene->cameraController()->mClickPoint, midPos );
   QCOMPARE( scene->cameraController()->mMousePos, midPos + movement1 );
   QCOMPARE( scene->cameraController()->mCurrentOperation, QgsCameraController::MouseOperation::RotationCenter );
 
   QPoint movement2( 1, 1 );
   QMouseEvent mouseMoveEvent2( QEvent::MouseMove, midPos + movement1 + movement2, Qt::LeftButton, Qt::LeftButton, Qt::ShiftModifier );
-  scene->cameraController()->onPositionChanged( new Qt3DInput::QMouseEvent( mouseMoveEvent2 ) );
+  Qt3DInput::QMouseEvent qt3dMouseMoveEvent2( mouseMoveEvent2 );
+  scene->cameraController()->onPositionChanged( &qt3dMouseMoveEvent2 );
   QCOMPARE( scene->cameraController()->mClickPoint, midPos );
   QCOMPARE( scene->cameraController()->mMousePos, midPos + movement1 + movement2 );
   QCOMPARE( scene->cameraController()->mCurrentOperation, QgsCameraController::MouseOperation::RotationCenter );
@@ -354,13 +367,14 @@ void TestQgs3DCameraController::testRotationCenter()
   QGSCOMPARENEAR( diffYaw, -62.2, 0.1 );
 
   QMouseEvent mouseReleaseEvent( QEvent::MouseButtonRelease, midPos, Qt::RightButton, Qt::RightButton, Qt::NoModifier );
-  scene->cameraController()->onMouseReleased( new Qt3DInput::QMouseEvent( mouseReleaseEvent ) );
+  Qt3DInput::QMouseEvent qt3dMouseReleaseEvent( mouseReleaseEvent );
+  scene->cameraController()->onMouseReleased( &qt3dMouseReleaseEvent );
 
   QCOMPARE( scene->cameraController()->mClickPoint, QPoint() );
   QCOMPARE( scene->cameraController()->mCurrentOperation, QgsCameraController::MouseOperation::None );
 
   delete scene;
-  mapSettings->setLayers( {} );
+  delete mapSettings;
 }
 
 void TestQgs3DCameraController::testRotationCamera()
@@ -370,7 +384,7 @@ void TestQgs3DCameraController::testRotationCamera()
   Qgs3DMapSettings *mapSettings = new Qgs3DMapSettings;
   mapSettings->setCrs( mLayerRgb->crs() );
   mapSettings->setExtent( fullExtent );
-  mapSettings->setLayers( QList<QgsMapLayer *>() << mLayerRgb << mLayerBuildings );
+  mapSettings->setLayers( QList<QgsMapLayer *>() << mLayerRgb.get() << mLayerBuildings.get() );
 
   QgsFlatTerrainGenerator *flatTerrain = new QgsFlatTerrainGenerator;
   flatTerrain->setCrs( mapSettings->crs(), QgsCoordinateTransformContext() );
@@ -395,7 +409,8 @@ void TestQgs3DCameraController::testRotationCamera()
   Qgs3DUtils::captureSceneImage( engine, scene );
 
   QMouseEvent mousePressEvent( QEvent::MouseButtonPress, midPos, Qt::LeftButton, Qt::LeftButton, Qt::ControlModifier );
-  scene->cameraController()->onMousePressed( new Qt3DInput::QMouseEvent( mousePressEvent ) );
+  Qt3DInput::QMouseEvent qt3dMousePressEvent( mousePressEvent );
+  scene->cameraController()->onMousePressed( &qt3dMousePressEvent );
 
   QCOMPARE( scene->cameraController()->mClickPoint, midPos );
   QCOMPARE( scene->cameraController()->mMousePos, midPos );
@@ -408,14 +423,16 @@ void TestQgs3DCameraController::testRotationCamera()
   // the second one will update the camera
   QPoint movement1( 220, 42 );
   QMouseEvent mouseMoveEvent1( QEvent::MouseMove, midPos + movement1, Qt::LeftButton, Qt::LeftButton, Qt::ControlModifier );
-  scene->cameraController()->onPositionChanged( new Qt3DInput::QMouseEvent( mouseMoveEvent1 ) );
+  Qt3DInput::QMouseEvent qt3dMouseMoveEvent1( mouseMoveEvent1 );
+  scene->cameraController()->onPositionChanged( &qt3dMouseMoveEvent1 );
   QCOMPARE( scene->cameraController()->mClickPoint, midPos );
   QCOMPARE( scene->cameraController()->mMousePos, midPos + movement1 );
   QCOMPARE( scene->cameraController()->mCurrentOperation, QgsCameraController::MouseOperation::RotationCamera );
 
   QPoint movement2( 1, 1 );
   QMouseEvent mouseMoveEvent2( QEvent::MouseMove, midPos + movement1 + movement2, Qt::LeftButton, Qt::LeftButton, Qt::ControlModifier );
-  scene->cameraController()->onPositionChanged( new Qt3DInput::QMouseEvent( mouseMoveEvent2 ) );
+  Qt3DInput::QMouseEvent qt3dMouseMoveEvent2( mouseMoveEvent2 );
+  scene->cameraController()->onPositionChanged( &qt3dMouseMoveEvent2 );
   QCOMPARE( scene->cameraController()->mClickPoint, midPos );
   QCOMPARE( scene->cameraController()->mMousePos, midPos + movement1 + movement2 );
   QCOMPARE( scene->cameraController()->mCurrentOperation, QgsCameraController::MouseOperation::RotationCamera );
@@ -431,13 +448,14 @@ void TestQgs3DCameraController::testRotationCamera()
   QGSCOMPARENEAR( diffYaw, -44.2, 0.1 );
 
   QMouseEvent mouseReleaseEvent( QEvent::MouseButtonRelease, midPos, Qt::LeftButton, Qt::LeftButton, Qt::ControlModifier );
-  scene->cameraController()->onMouseReleased( new Qt3DInput::QMouseEvent( mouseReleaseEvent ) );
+  Qt3DInput::QMouseEvent qt3dMouseReleaseEvent( mouseReleaseEvent );
+  scene->cameraController()->onMouseReleased( &qt3dMouseReleaseEvent );
 
   QCOMPARE( scene->cameraController()->mClickPoint, QPoint() );
   QCOMPARE( scene->cameraController()->mCurrentOperation, QgsCameraController::MouseOperation::None );
 
   delete scene;
-  mapSettings->setLayers( {} );
+  delete mapSettings;
 }
 
 void TestQgs3DCameraController::testRotationCenterZoomWheelRotationCenter()
@@ -447,7 +465,7 @@ void TestQgs3DCameraController::testRotationCenterZoomWheelRotationCenter()
   Qgs3DMapSettings *mapSettings = new Qgs3DMapSettings;
   mapSettings->setCrs( mLayerRgb->crs() );
   mapSettings->setExtent( fullExtent );
-  mapSettings->setLayers( QList<QgsMapLayer *>() << mLayerRgb << mLayerBuildings );
+  mapSettings->setLayers( QList<QgsMapLayer *>() << mLayerRgb.get() << mLayerBuildings.get() );
 
   QgsFlatTerrainGenerator *flatTerrain = new QgsFlatTerrainGenerator;
   flatTerrain->setCrs( mapSettings->crs(), QgsCoordinateTransformContext() );
@@ -471,7 +489,8 @@ void TestQgs3DCameraController::testRotationCenterZoomWheelRotationCenter()
   float initialYaw = scene->cameraController()->yaw();
 
   QMouseEvent mousePressEvent( QEvent::MouseButtonPress, midPos, Qt::LeftButton, Qt::LeftButton, Qt::ShiftModifier );
-  scene->cameraController()->onMousePressed( new Qt3DInput::QMouseEvent( mousePressEvent ) );
+  Qt3DInput::QMouseEvent qt3dMousePressEvent( mousePressEvent );
+  scene->cameraController()->onMousePressed( &qt3dMousePressEvent );
 
   QCOMPARE( scene->cameraController()->mClickPoint, midPos );
   QCOMPARE( scene->cameraController()->mMousePos, midPos );
@@ -488,14 +507,16 @@ void TestQgs3DCameraController::testRotationCenterZoomWheelRotationCenter()
   // the second one will update the camera
   QPoint movement1( 220, 42 );
   QMouseEvent mouseMoveEvent1( QEvent::MouseMove, midPos + movement1, Qt::LeftButton, Qt::LeftButton, Qt::ShiftModifier );
-  scene->cameraController()->onPositionChanged( new Qt3DInput::QMouseEvent( mouseMoveEvent1 ) );
+  Qt3DInput::QMouseEvent qt3dMouseMoveEvent1( mouseMoveEvent1 );
+  scene->cameraController()->onPositionChanged( &qt3dMouseMoveEvent1 );
   QCOMPARE( scene->cameraController()->mClickPoint, midPos );
   QCOMPARE( scene->cameraController()->mMousePos, midPos + movement1 );
   QCOMPARE( scene->cameraController()->mCurrentOperation, QgsCameraController::MouseOperation::RotationCenter );
 
   QPoint movement2( 1, 1 );
   QMouseEvent mouseMoveEvent2( QEvent::MouseMove, midPos + movement1 + movement2, Qt::LeftButton, Qt::LeftButton, Qt::ShiftModifier );
-  scene->cameraController()->onPositionChanged( new Qt3DInput::QMouseEvent( mouseMoveEvent2 ) );
+  Qt3DInput::QMouseEvent qt3dMouseMoveEvent2( mouseMoveEvent2 );
+  scene->cameraController()->onPositionChanged( &qt3dMouseMoveEvent2 );
   QCOMPARE( scene->cameraController()->mClickPoint, midPos );
   QCOMPARE( scene->cameraController()->mMousePos, midPos + movement1 + movement2 );
   QCOMPARE( scene->cameraController()->mCurrentOperation, QgsCameraController::MouseOperation::RotationCenter );
@@ -519,7 +540,8 @@ void TestQgs3DCameraController::testRotationCenterZoomWheelRotationCenter()
   initialYaw = scene->cameraController()->yaw();
 
   QWheelEvent wheelEvent( midPos, midPos, QPoint(), QPoint( 0, 200 ), Qt::NoButton, Qt::NoModifier, Qt::NoScrollPhase, false, Qt::MouseEventSynthesizedByApplication );
-  scene->cameraController()->onWheel( new Qt3DInput::QWheelEvent( wheelEvent ) );
+  Qt3DInput::QWheelEvent qt3dWheelEvent( wheelEvent );
+  scene->cameraController()->onWheel( &qt3dWheelEvent );
   QCOMPARE( scene->cameraController()->mClickPoint, midPos );
   QCOMPARE( scene->cameraController()->mCurrentOperation, QgsCameraController::MouseOperation::ZoomWheel );
   QCOMPARE( scene->cameraController()->mCumulatedWheelY, wheelEvent.angleDelta().y() / 120.0 );
@@ -551,7 +573,8 @@ void TestQgs3DCameraController::testRotationCenterZoomWheelRotationCenter()
   // the first mouse event only updates the mouse position
   // the second one will update the camera
   QMouseEvent mouseMoveEvent3( QEvent::MouseMove, midPos + movement1 + movement2, Qt::LeftButton, Qt::LeftButton, Qt::ShiftModifier );
-  scene->cameraController()->onPositionChanged( new Qt3DInput::QMouseEvent( mouseMoveEvent3 ) );
+  Qt3DInput::QMouseEvent qt3dMouseMoveEvent3( mouseMoveEvent3 );
+  scene->cameraController()->onPositionChanged( &qt3dMouseMoveEvent3 );
   QCOMPARE( scene->cameraController()->mClickPoint, midPos + movement1 + movement2 );
   QCOMPARE( scene->cameraController()->mMousePos, midPos + movement1 + movement2 );
   QCOMPARE( scene->cameraController()->mCurrentOperation, QgsCameraController::MouseOperation::RotationCenter );
@@ -560,7 +583,8 @@ void TestQgs3DCameraController::testRotationCenterZoomWheelRotationCenter()
   scene->cameraController()->depthBufferCaptured( depthImage );
 
   QMouseEvent mouseMoveEvent4( QEvent::MouseMove, midPos + movement1 + 10 * movement2, Qt::LeftButton, Qt::LeftButton, Qt::ShiftModifier );
-  scene->cameraController()->onPositionChanged( new Qt3DInput::QMouseEvent( mouseMoveEvent4 ) );
+  Qt3DInput::QMouseEvent qt3dMouseMoveEvent4( mouseMoveEvent4 );
+  scene->cameraController()->onPositionChanged( &qt3dMouseMoveEvent4 );
   QCOMPARE( scene->cameraController()->mClickPoint, midPos + movement1 + movement2 );
   QCOMPARE( scene->cameraController()->mMousePos, midPos + movement1 + 10 * movement2 );
   QCOMPARE( scene->cameraController()->mCurrentOperation, QgsCameraController::MouseOperation::RotationCenter );
@@ -575,13 +599,14 @@ void TestQgs3DCameraController::testRotationCenterZoomWheelRotationCenter()
   QGSCOMPARENEAR( diffYaw, -2.5, 0.1 );
 
   QMouseEvent mouseReleaseEvent( QEvent::MouseButtonRelease, midPos, Qt::RightButton, Qt::RightButton, Qt::NoModifier );
-  scene->cameraController()->onMouseReleased( new Qt3DInput::QMouseEvent( mouseReleaseEvent ) );
+  Qt3DInput::QMouseEvent qt3dMouseReleaseEvent( mouseReleaseEvent );
+  scene->cameraController()->onMouseReleased( &qt3dMouseReleaseEvent );
 
   QCOMPARE( scene->cameraController()->mClickPoint, QPoint() );
   QCOMPARE( scene->cameraController()->mCurrentOperation, QgsCameraController::MouseOperation::None );
 
   delete scene;
-  mapSettings->setLayers( {} );
+  delete mapSettings;
 }
 
 void TestQgs3DCameraController::testTranslateRotationCenterTranslate()
@@ -591,7 +616,7 @@ void TestQgs3DCameraController::testTranslateRotationCenterTranslate()
   Qgs3DMapSettings *mapSettings = new Qgs3DMapSettings;
   mapSettings->setCrs( mLayerRgb->crs() );
   mapSettings->setExtent( fullExtent );
-  mapSettings->setLayers( QList<QgsMapLayer *>() << mLayerRgb << mLayerBuildings );
+  mapSettings->setLayers( QList<QgsMapLayer *>() << mLayerRgb.get() << mLayerBuildings.get() );
 
   QgsFlatTerrainGenerator *flatTerrain = new QgsFlatTerrainGenerator;
   flatTerrain->setCrs( mapSettings->crs(), QgsCoordinateTransformContext() );
@@ -619,7 +644,8 @@ void TestQgs3DCameraController::testTranslateRotationCenterTranslate()
   //
 
   QMouseEvent mousePressEvent( QEvent::MouseButtonPress, midPos, Qt::LeftButton, Qt::LeftButton, Qt::NoModifier );
-  scene->cameraController()->onMousePressed( new Qt3DInput::QMouseEvent( mousePressEvent ) );
+  Qt3DInput::QMouseEvent qt3dMousePressEvent( mousePressEvent );
+  scene->cameraController()->onMousePressed( &qt3dMousePressEvent );
 
   QCOMPARE( scene->cameraController()->mClickPoint, midPos );
   QCOMPARE( scene->cameraController()->mMousePos, midPos );
@@ -632,7 +658,8 @@ void TestQgs3DCameraController::testTranslateRotationCenterTranslate()
   // the second one will update the camera
   QPoint movement1( 220, 42 );
   QMouseEvent mouseMoveEvent1( QEvent::MouseMove, midPos + movement1, Qt::LeftButton, Qt::LeftButton, Qt::NoModifier );
-  scene->cameraController()->onPositionChanged( new Qt3DInput::QMouseEvent( mouseMoveEvent1 ) );
+  Qt3DInput::QMouseEvent qt3dMouseMoveEvent1( mouseMoveEvent1 );
+  scene->cameraController()->onPositionChanged( &qt3dMouseMoveEvent1 );
   QCOMPARE( scene->cameraController()->mClickPoint, midPos );
   QCOMPARE( scene->cameraController()->mMousePos, midPos + movement1 );
   QCOMPARE( scene->cameraController()->mCurrentOperation, QgsCameraController::MouseOperation::Translation );
@@ -655,7 +682,8 @@ void TestQgs3DCameraController::testTranslateRotationCenterTranslate()
 
   QPoint movement2( 1, 1 );
   QMouseEvent mouseMoveEvent3( QEvent::MouseMove, midPos + movement1 + movement2, Qt::LeftButton, Qt::LeftButton, Qt::ShiftModifier );
-  scene->cameraController()->onPositionChanged( new Qt3DInput::QMouseEvent( mouseMoveEvent3 ) );
+  Qt3DInput::QMouseEvent qt3dMouseMoveEvent3( mouseMoveEvent3 );
+  scene->cameraController()->onPositionChanged( &qt3dMouseMoveEvent3 );
   QCOMPARE( scene->cameraController()->mClickPoint, midPos + movement1 );
   // mMousePos is not updated, because processing the event is cut short by not having the depth buffer
   QCOMPARE( scene->cameraController()->mMousePos, midPos + movement1 );
@@ -665,7 +693,8 @@ void TestQgs3DCameraController::testTranslateRotationCenterTranslate()
   scene->cameraController()->depthBufferCaptured( depthImage );
 
   QMouseEvent mouseMoveEvent4( QEvent::MouseMove, midPos + movement1 + 10 * movement2, Qt::LeftButton, Qt::LeftButton, Qt::ShiftModifier );
-  scene->cameraController()->onPositionChanged( new Qt3DInput::QMouseEvent( mouseMoveEvent4 ) );
+  Qt3DInput::QMouseEvent qt3dMouseMoveEvent4( mouseMoveEvent4 );
+  scene->cameraController()->onPositionChanged( &qt3dMouseMoveEvent4 );
   QCOMPARE( scene->cameraController()->mClickPoint, midPos + movement1 );
   QCOMPARE( scene->cameraController()->mMousePos, midPos + movement1 + 10 * movement2 );
   QCOMPARE( scene->cameraController()->mCurrentOperation, QgsCameraController::MouseOperation::RotationCenter );
@@ -690,7 +719,8 @@ void TestQgs3DCameraController::testTranslateRotationCenterTranslate()
 
   // switch to translation
   QMouseEvent mouseMoveEvent5( QEvent::MouseMove, midPos + movement1 + 10 * movement2, Qt::LeftButton, Qt::LeftButton, Qt::NoModifier );
-  scene->cameraController()->onPositionChanged( new Qt3DInput::QMouseEvent( mouseMoveEvent5 ) );
+  Qt3DInput::QMouseEvent qt3dMouseMoveEvent5( mouseMoveEvent5 );
+  scene->cameraController()->onPositionChanged( &qt3dMouseMoveEvent5 );
   QCOMPARE( scene->cameraController()->mClickPoint, midPos + movement1 + 10 * movement2 );
   QCOMPARE( scene->cameraController()->mMousePos, midPos + movement1 + 10 * movement2 );
   QCOMPARE( scene->cameraController()->mCurrentOperation, QgsCameraController::MouseOperation::Translation );
@@ -700,7 +730,8 @@ void TestQgs3DCameraController::testTranslateRotationCenterTranslate()
 
   // this updates the mouse position
   QMouseEvent mouseMoveEvent6( QEvent::MouseMove, midPos + movement1 + 15 * movement2, Qt::LeftButton, Qt::LeftButton, Qt::NoModifier );
-  scene->cameraController()->onPositionChanged( new Qt3DInput::QMouseEvent( mouseMoveEvent6 ) );
+  Qt3DInput::QMouseEvent qt3dMouseMoveEvent6( mouseMoveEvent6 );
+  scene->cameraController()->onPositionChanged( &qt3dMouseMoveEvent6 );
   QCOMPARE( scene->cameraController()->mClickPoint, midPos + movement1 + 10 * movement2 );
   QCOMPARE( scene->cameraController()->mMousePos, midPos + movement1 + 15 * movement2 );
   QCOMPARE( scene->cameraController()->mCurrentOperation, QgsCameraController::MouseOperation::Translation );
@@ -708,7 +739,8 @@ void TestQgs3DCameraController::testTranslateRotationCenterTranslate()
 
   // this updates the camera
   QMouseEvent mouseMoveEvent7( QEvent::MouseMove, midPos + movement1 + 15 * movement2, Qt::LeftButton, Qt::LeftButton, Qt::NoModifier );
-  scene->cameraController()->onPositionChanged( new Qt3DInput::QMouseEvent( mouseMoveEvent7 ) );
+  Qt3DInput::QMouseEvent qt3dMouseMoveEvent7( mouseMoveEvent7 );
+  scene->cameraController()->onPositionChanged( &qt3dMouseMoveEvent7 );
   QCOMPARE( scene->cameraController()->mClickPoint, midPos + movement1 + 10 * movement2 );
   QCOMPARE( scene->cameraController()->mMousePos, midPos + movement1 + 15 * movement2 );
   QCOMPARE( scene->cameraController()->mCurrentOperation, QgsCameraController::MouseOperation::Translation );
@@ -721,13 +753,14 @@ void TestQgs3DCameraController::testTranslateRotationCenterTranslate()
   QCOMPARE( scene->cameraController()->yaw(), initialYaw );
 
   QMouseEvent mouseReleaseEvent( QEvent::MouseButtonRelease, midPos, Qt::LeftButton, Qt::LeftButton, Qt::NoModifier );
-  scene->cameraController()->onMouseReleased( new Qt3DInput::QMouseEvent( mouseReleaseEvent ) );
+  Qt3DInput::QMouseEvent qt3dMouseReleaseEvent( mouseReleaseEvent );
+  scene->cameraController()->onMouseReleased( &qt3dMouseReleaseEvent );
 
   QCOMPARE( scene->cameraController()->mClickPoint, QPoint() );
   QCOMPARE( scene->cameraController()->mCurrentOperation, QgsCameraController::MouseOperation::None );
 
   delete scene;
-  mapSettings->setLayers( {} );
+  delete mapSettings;
 }
 
 void TestQgs3DCameraController::testTranslateZoomWheelTranslate()
@@ -737,7 +770,7 @@ void TestQgs3DCameraController::testTranslateZoomWheelTranslate()
   Qgs3DMapSettings *mapSettings = new Qgs3DMapSettings;
   mapSettings->setCrs( mLayerRgb->crs() );
   mapSettings->setExtent( fullExtent );
-  mapSettings->setLayers( QList<QgsMapLayer *>() << mLayerRgb << mLayerBuildings );
+  mapSettings->setLayers( QList<QgsMapLayer *>() << mLayerRgb.get() << mLayerBuildings.get() );
 
   QgsFlatTerrainGenerator *flatTerrain = new QgsFlatTerrainGenerator;
   flatTerrain->setCrs( mapSettings->crs(), QgsCoordinateTransformContext() );
@@ -763,7 +796,8 @@ void TestQgs3DCameraController::testTranslateZoomWheelTranslate()
   //
 
   QMouseEvent mousePressEvent( QEvent::MouseButtonPress, midPos, Qt::LeftButton, Qt::LeftButton, Qt::NoModifier );
-  scene->cameraController()->onMousePressed( new Qt3DInput::QMouseEvent( mousePressEvent ) );
+  Qt3DInput::QMouseEvent qt3dMousePressEvent( mousePressEvent );
+  scene->cameraController()->onMousePressed( &qt3dMousePressEvent );
 
   QCOMPARE( scene->cameraController()->mClickPoint, midPos );
   QCOMPARE( scene->cameraController()->mMousePos, midPos );
@@ -774,7 +808,8 @@ void TestQgs3DCameraController::testTranslateZoomWheelTranslate()
 
   QPoint movement1( 220, 42 );
   QMouseEvent mouseMoveEvent1( QEvent::MouseMove, midPos + movement1, Qt::LeftButton, Qt::LeftButton, Qt::NoModifier );
-  scene->cameraController()->onPositionChanged( new Qt3DInput::QMouseEvent( mouseMoveEvent1 ) );
+  Qt3DInput::QMouseEvent qt3dMouseMoveEvent1( mouseMoveEvent1 );
+  scene->cameraController()->onPositionChanged( &qt3dMouseMoveEvent1 );
   QCOMPARE( scene->cameraController()->mClickPoint, midPos );
   QCOMPARE( scene->cameraController()->mMousePos, midPos + movement1 );
   QCOMPARE( scene->cameraController()->mCurrentOperation, QgsCameraController::MouseOperation::Translation );
@@ -795,7 +830,8 @@ void TestQgs3DCameraController::testTranslateZoomWheelTranslate()
   initialCamPosition = scene->cameraController()->camera()->position();
 
   QWheelEvent wheelEvent( midPos + movement1, midPos + movement1, QPoint(), QPoint( 0, 200 ), Qt::NoButton, Qt::NoModifier, Qt::NoScrollPhase, false, Qt::MouseEventSynthesizedByApplication );
-  scene->cameraController()->onWheel( new Qt3DInput::QWheelEvent( wheelEvent ) );
+  Qt3DInput::QWheelEvent qt3dWheelEvent( wheelEvent );
+  scene->cameraController()->onWheel( &qt3dWheelEvent );
   QCOMPARE( scene->cameraController()->mClickPoint, midPos );
   QCOMPARE( scene->cameraController()->mCurrentOperation, QgsCameraController::MouseOperation::ZoomWheel );
   QCOMPARE( scene->cameraController()->mCumulatedWheelY, wheelEvent.angleDelta().y() / 120.0 );
@@ -823,7 +859,8 @@ void TestQgs3DCameraController::testTranslateZoomWheelTranslate()
 
   // switch to translation
   QMouseEvent mouseMoveEvent3( QEvent::MouseMove, midPos + movement1, Qt::LeftButton, Qt::LeftButton, Qt::NoModifier );
-  scene->cameraController()->onPositionChanged( new Qt3DInput::QMouseEvent( mouseMoveEvent3 ) );
+  Qt3DInput::QMouseEvent qt3dMouseMoveEvent3( mouseMoveEvent3 );
+  scene->cameraController()->onPositionChanged( &qt3dMouseMoveEvent3 );
   QCOMPARE( scene->cameraController()->mClickPoint, midPos + movement1 );
   QCOMPARE( scene->cameraController()->mMousePos, midPos + movement1 );
   QCOMPARE( scene->cameraController()->mCurrentOperation, QgsCameraController::MouseOperation::Translation );
@@ -834,7 +871,8 @@ void TestQgs3DCameraController::testTranslateZoomWheelTranslate()
   // this updates the mouse position
   QPoint movement2( 1, 1 );
   QMouseEvent mouseMoveEvent4( QEvent::MouseMove, midPos + movement1 + 5 * movement2, Qt::LeftButton, Qt::LeftButton, Qt::NoModifier );
-  scene->cameraController()->onPositionChanged( new Qt3DInput::QMouseEvent( mouseMoveEvent4 ) );
+  Qt3DInput::QMouseEvent qt3dMouseMoveEvent4( mouseMoveEvent4 );
+  scene->cameraController()->onPositionChanged( &qt3dMouseMoveEvent4 );
   QCOMPARE( scene->cameraController()->mClickPoint, midPos + movement1 );
   QCOMPARE( scene->cameraController()->mMousePos, midPos + movement1 + 5 * movement2 );
   QCOMPARE( scene->cameraController()->mCurrentOperation, QgsCameraController::MouseOperation::Translation );
@@ -842,7 +880,8 @@ void TestQgs3DCameraController::testTranslateZoomWheelTranslate()
 
   // this updates the camera
   QMouseEvent mouseMoveEvent5( QEvent::MouseMove, midPos + movement1 + 5 * movement2, Qt::LeftButton, Qt::LeftButton, Qt::NoModifier );
-  scene->cameraController()->onPositionChanged( new Qt3DInput::QMouseEvent( mouseMoveEvent5 ) );
+  Qt3DInput::QMouseEvent qt3dMouseMoveEvent5( mouseMoveEvent5 );
+  scene->cameraController()->onPositionChanged( &qt3dMouseMoveEvent5 );
   QCOMPARE( scene->cameraController()->mClickPoint, midPos + movement1 );
   QCOMPARE( scene->cameraController()->mMousePos, midPos + movement1 + 5 * movement2 );
   QCOMPARE( scene->cameraController()->mCurrentOperation, QgsCameraController::MouseOperation::Translation );
@@ -855,13 +894,14 @@ void TestQgs3DCameraController::testTranslateZoomWheelTranslate()
   QCOMPARE( scene->cameraController()->yaw(), initialYaw );
 
   QMouseEvent mouseReleaseEvent( QEvent::MouseButtonRelease, midPos, Qt::LeftButton, Qt::LeftButton, Qt::NoModifier );
-  scene->cameraController()->onMouseReleased( new Qt3DInput::QMouseEvent( mouseReleaseEvent ) );
+  Qt3DInput::QMouseEvent qt3dMouseReleaseEvent( mouseReleaseEvent );
+  scene->cameraController()->onMouseReleased( &qt3dMouseReleaseEvent );
 
   QCOMPARE( scene->cameraController()->mClickPoint, QPoint() );
   QCOMPARE( scene->cameraController()->mCurrentOperation, QgsCameraController::MouseOperation::None );
 
   delete scene;
-  mapSettings->setLayers( {} );
+  delete mapSettings;
 }
 
 void TestQgs3DCameraController::testTranslateRotationCameraTranslate()
@@ -871,7 +911,7 @@ void TestQgs3DCameraController::testTranslateRotationCameraTranslate()
   Qgs3DMapSettings *mapSettings = new Qgs3DMapSettings;
   mapSettings->setCrs( mLayerRgb->crs() );
   mapSettings->setExtent( fullExtent );
-  mapSettings->setLayers( QList<QgsMapLayer *>() << mLayerRgb << mLayerBuildings );
+  mapSettings->setLayers( QList<QgsMapLayer *>() << mLayerRgb.get() << mLayerBuildings.get() );
 
   QgsFlatTerrainGenerator *flatTerrain = new QgsFlatTerrainGenerator;
   flatTerrain->setCrs( mapSettings->crs(), QgsCoordinateTransformContext() );
@@ -900,7 +940,8 @@ void TestQgs3DCameraController::testTranslateRotationCameraTranslate()
   //
 
   QMouseEvent mousePressEvent( QEvent::MouseButtonPress, midPos, Qt::LeftButton, Qt::LeftButton, Qt::NoModifier );
-  scene->cameraController()->onMousePressed( new Qt3DInput::QMouseEvent( mousePressEvent ) );
+  Qt3DInput::QMouseEvent qt3dMousePressEvent( mousePressEvent );
+  scene->cameraController()->onMousePressed( &qt3dMousePressEvent );
 
   QCOMPARE( scene->cameraController()->mClickPoint, midPos );
   QCOMPARE( scene->cameraController()->mMousePos, midPos );
@@ -911,7 +952,8 @@ void TestQgs3DCameraController::testTranslateRotationCameraTranslate()
 
   QPoint movement1( 220, 42 );
   QMouseEvent mouseMoveEvent1( QEvent::MouseMove, midPos + movement1, Qt::LeftButton, Qt::LeftButton, Qt::NoModifier );
-  scene->cameraController()->onPositionChanged( new Qt3DInput::QMouseEvent( mouseMoveEvent1 ) );
+  Qt3DInput::QMouseEvent qt3dMouseMoveEvent1( mouseMoveEvent1 );
+  scene->cameraController()->onPositionChanged( &qt3dMouseMoveEvent1 );
   QCOMPARE( scene->cameraController()->mClickPoint, midPos );
   QCOMPARE( scene->cameraController()->mMousePos, midPos + movement1 );
   QCOMPARE( scene->cameraController()->mCurrentOperation, QgsCameraController::MouseOperation::Translation );
@@ -932,7 +974,8 @@ void TestQgs3DCameraController::testTranslateRotationCameraTranslate()
 
   QPoint movement2( 1, 1 );
   QMouseEvent mouseMoveEvent3( QEvent::MouseMove, midPos + movement1, Qt::LeftButton, Qt::LeftButton, Qt::ControlModifier );
-  scene->cameraController()->onPositionChanged( new Qt3DInput::QMouseEvent( mouseMoveEvent3 ) );
+  Qt3DInput::QMouseEvent qt3dMouseMoveEvent3( mouseMoveEvent3 );
+  scene->cameraController()->onPositionChanged( &qt3dMouseMoveEvent3 );
   QCOMPARE( scene->cameraController()->mClickPoint, QPoint() );
   QCOMPARE( scene->cameraController()->mMousePos, midPos + movement1 );
   QCOMPARE( scene->cameraController()->mCurrentOperation, QgsCameraController::MouseOperation::RotationCamera );
@@ -941,7 +984,8 @@ void TestQgs3DCameraController::testTranslateRotationCameraTranslate()
   scene->cameraController()->depthBufferCaptured( depthImage );
 
   QMouseEvent mouseMoveEvent4( QEvent::MouseMove, midPos + movement1 + 10 * movement2, Qt::LeftButton, Qt::LeftButton, Qt::ControlModifier );
-  scene->cameraController()->onPositionChanged( new Qt3DInput::QMouseEvent( mouseMoveEvent4 ) );
+  Qt3DInput::QMouseEvent qt3dMouseMoveEvent4( mouseMoveEvent4 );
+  scene->cameraController()->onPositionChanged( &qt3dMouseMoveEvent4 );
   QCOMPARE( scene->cameraController()->mClickPoint, QPoint() );
   QCOMPARE( scene->cameraController()->mMousePos, midPos + movement1 + 10 * movement2 );
   QCOMPARE( scene->cameraController()->mCurrentOperation, QgsCameraController::MouseOperation::RotationCamera );
@@ -966,7 +1010,8 @@ void TestQgs3DCameraController::testTranslateRotationCameraTranslate()
 
   // switch to translation
   QMouseEvent mouseMoveEvent5( QEvent::MouseMove, midPos + movement1 + 10 * movement2, Qt::LeftButton, Qt::LeftButton, Qt::NoModifier );
-  scene->cameraController()->onPositionChanged( new Qt3DInput::QMouseEvent( mouseMoveEvent5 ) );
+  Qt3DInput::QMouseEvent qt3dMouseMoveEvent5( mouseMoveEvent5 );
+  scene->cameraController()->onPositionChanged( &qt3dMouseMoveEvent5 );
   QCOMPARE( scene->cameraController()->mClickPoint, midPos + movement1 + 10 * movement2 );
   QCOMPARE( scene->cameraController()->mMousePos, midPos + movement1 + 10 * movement2 );
   QCOMPARE( scene->cameraController()->mCurrentOperation, QgsCameraController::MouseOperation::Translation );
@@ -976,7 +1021,8 @@ void TestQgs3DCameraController::testTranslateRotationCameraTranslate()
 
   // this updates the mouse position
   QMouseEvent mouseMoveEvent6( QEvent::MouseMove, midPos + movement1 + 15 * movement2, Qt::LeftButton, Qt::LeftButton, Qt::NoModifier );
-  scene->cameraController()->onPositionChanged( new Qt3DInput::QMouseEvent( mouseMoveEvent6 ) );
+  Qt3DInput::QMouseEvent qt3dMouseMoveEvent6( mouseMoveEvent6 );
+  scene->cameraController()->onPositionChanged( &qt3dMouseMoveEvent6 );
   QCOMPARE( scene->cameraController()->mClickPoint, midPos + movement1 + 10 * movement2 );
   QCOMPARE( scene->cameraController()->mMousePos, midPos + movement1 + 15 * movement2 );
   QCOMPARE( scene->cameraController()->mCurrentOperation, QgsCameraController::MouseOperation::Translation );
@@ -984,7 +1030,8 @@ void TestQgs3DCameraController::testTranslateRotationCameraTranslate()
 
   // this updates the camera
   QMouseEvent mouseMoveEvent7( QEvent::MouseMove, midPos + movement1 + 15 * movement2, Qt::LeftButton, Qt::LeftButton, Qt::NoModifier );
-  scene->cameraController()->onPositionChanged( new Qt3DInput::QMouseEvent( mouseMoveEvent7 ) );
+  Qt3DInput::QMouseEvent qt3dMouseMoveEvent7( mouseMoveEvent7 );
+  scene->cameraController()->onPositionChanged( &qt3dMouseMoveEvent7 );
   QCOMPARE( scene->cameraController()->mClickPoint, midPos + movement1 + 10 * movement2 );
   QCOMPARE( scene->cameraController()->mMousePos, midPos + movement1 + 15 * movement2 );
   QCOMPARE( scene->cameraController()->mCurrentOperation, QgsCameraController::MouseOperation::Translation );
@@ -997,13 +1044,14 @@ void TestQgs3DCameraController::testTranslateRotationCameraTranslate()
   QCOMPARE( scene->cameraController()->yaw(), initialYaw );
 
   QMouseEvent mouseReleaseEvent( QEvent::MouseButtonRelease, midPos, Qt::LeftButton, Qt::LeftButton, Qt::NoModifier );
-  scene->cameraController()->onMouseReleased( new Qt3DInput::QMouseEvent( mouseReleaseEvent ) );
+  Qt3DInput::QMouseEvent qt3dMouseReleaseEvent( mouseReleaseEvent );
+  scene->cameraController()->onMouseReleased( &qt3dMouseReleaseEvent );
 
   QCOMPARE( scene->cameraController()->mClickPoint, QPoint() );
   QCOMPARE( scene->cameraController()->mCurrentOperation, QgsCameraController::MouseOperation::None );
 
   delete scene;
-  mapSettings->setLayers( {} );
+  delete mapSettings;
 }
 
 void TestQgs3DCameraController::testRotationCenterRotationCameraRotationCenter()
@@ -1013,7 +1061,7 @@ void TestQgs3DCameraController::testRotationCenterRotationCameraRotationCenter()
   Qgs3DMapSettings *mapSettings = new Qgs3DMapSettings;
   mapSettings->setCrs( mLayerRgb->crs() );
   mapSettings->setExtent( fullExtent );
-  mapSettings->setLayers( QList<QgsMapLayer *>() << mLayerRgb << mLayerBuildings );
+  mapSettings->setLayers( QList<QgsMapLayer *>() << mLayerRgb.get() << mLayerBuildings.get() );
 
   QgsFlatTerrainGenerator *flatTerrain = new QgsFlatTerrainGenerator;
   flatTerrain->setCrs( mapSettings->crs(), QgsCoordinateTransformContext() );
@@ -1038,7 +1086,8 @@ void TestQgs3DCameraController::testRotationCenterRotationCameraRotationCenter()
   Qgs3DUtils::captureSceneImage( engine, scene );
 
   QMouseEvent mousePressEvent( QEvent::MouseButtonPress, midPos, Qt::LeftButton, Qt::LeftButton, Qt::ShiftModifier );
-  scene->cameraController()->onMousePressed( new Qt3DInput::QMouseEvent( mousePressEvent ) );
+  Qt3DInput::QMouseEvent qt3dMousePressEvent( mousePressEvent );
+  scene->cameraController()->onMousePressed( &qt3dMousePressEvent );
 
   QCOMPARE( scene->cameraController()->mClickPoint, midPos );
   QCOMPARE( scene->cameraController()->mMousePos, midPos );
@@ -1055,14 +1104,16 @@ void TestQgs3DCameraController::testRotationCenterRotationCameraRotationCenter()
   // the second one will update the camera
   QPoint movement1( 220, 42 );
   QMouseEvent mouseMoveEvent1( QEvent::MouseMove, midPos + movement1, Qt::LeftButton, Qt::LeftButton, Qt::ShiftModifier );
-  scene->cameraController()->onPositionChanged( new Qt3DInput::QMouseEvent( mouseMoveEvent1 ) );
+  Qt3DInput::QMouseEvent qt3dMouseMoveEvent1( mouseMoveEvent1 );
+  scene->cameraController()->onPositionChanged( &qt3dMouseMoveEvent1 );
   QCOMPARE( scene->cameraController()->mClickPoint, midPos );
   QCOMPARE( scene->cameraController()->mMousePos, midPos + movement1 );
   QCOMPARE( scene->cameraController()->mCurrentOperation, QgsCameraController::MouseOperation::RotationCenter );
 
   QPoint movement2( 1, 1 );
   QMouseEvent mouseMoveEvent2( QEvent::MouseMove, midPos + movement1 + movement2, Qt::LeftButton, Qt::LeftButton, Qt::ShiftModifier );
-  scene->cameraController()->onPositionChanged( new Qt3DInput::QMouseEvent( mouseMoveEvent2 ) );
+  Qt3DInput::QMouseEvent qt3dMouseMoveEvent2( mouseMoveEvent2 );
+  scene->cameraController()->onPositionChanged( &qt3dMouseMoveEvent2 );
   QCOMPARE( scene->cameraController()->mClickPoint, midPos );
   QCOMPARE( scene->cameraController()->mMousePos, midPos + movement1 + movement2 );
   QCOMPARE( scene->cameraController()->mCurrentOperation, QgsCameraController::MouseOperation::RotationCenter );
@@ -1088,7 +1139,8 @@ void TestQgs3DCameraController::testRotationCenterRotationCameraRotationCenter()
   // the first mouse event only updates the mouse position
   // the second one will update the camera
   QMouseEvent mouseMoveEvent3( QEvent::MouseMove, midPos + movement1 + movement2, Qt::LeftButton, Qt::LeftButton, Qt::ControlModifier );
-  scene->cameraController()->onPositionChanged( new Qt3DInput::QMouseEvent( mouseMoveEvent3 ) );
+  Qt3DInput::QMouseEvent qt3dMouseMoveEvent3( mouseMoveEvent3 );
+  scene->cameraController()->onPositionChanged( &qt3dMouseMoveEvent3 );
   QCOMPARE( scene->cameraController()->mClickPoint, QPoint() );
   QCOMPARE( scene->cameraController()->mMousePos, midPos + movement1 + movement2 );
   QCOMPARE( scene->cameraController()->mCurrentOperation, QgsCameraController::MouseOperation::RotationCamera );
@@ -1097,7 +1149,8 @@ void TestQgs3DCameraController::testRotationCenterRotationCameraRotationCenter()
   scene->cameraController()->depthBufferCaptured( depthImage );
 
   QMouseEvent mouseMoveEvent4( QEvent::MouseMove, midPos + movement1 + 10 * movement2, Qt::LeftButton, Qt::LeftButton, Qt::ControlModifier );
-  scene->cameraController()->onPositionChanged( new Qt3DInput::QMouseEvent( mouseMoveEvent4 ) );
+  Qt3DInput::QMouseEvent qt3dMouseMoveEvent4( mouseMoveEvent4 );
+  scene->cameraController()->onPositionChanged( &qt3dMouseMoveEvent4 );
   QCOMPARE( scene->cameraController()->mClickPoint, QPoint() );
   QCOMPARE( scene->cameraController()->mMousePos, midPos + movement1 + 10 * movement2 );
   QCOMPARE( scene->cameraController()->mCurrentOperation, QgsCameraController::MouseOperation::RotationCamera );
@@ -1123,7 +1176,8 @@ void TestQgs3DCameraController::testRotationCenterRotationCameraRotationCenter()
   // the first mouse event only updates the mouse position
   // the second one will update the camera
   QMouseEvent mouseMoveEvent5( QEvent::MouseMove, midPos + movement1 + 10 * movement2, Qt::LeftButton, Qt::LeftButton, Qt::ShiftModifier );
-  scene->cameraController()->onPositionChanged( new Qt3DInput::QMouseEvent( mouseMoveEvent5 ) );
+  Qt3DInput::QMouseEvent qt3dMouseMoveEvent5( mouseMoveEvent5 );
+  scene->cameraController()->onPositionChanged( &qt3dMouseMoveEvent5 );
   QCOMPARE( scene->cameraController()->mClickPoint, midPos + movement1 + 10 * movement2 );
   QCOMPARE( scene->cameraController()->mMousePos, midPos + movement1 + 10 * movement2 );
   QCOMPARE( scene->cameraController()->mCurrentOperation, QgsCameraController::MouseOperation::RotationCenter );
@@ -1132,7 +1186,8 @@ void TestQgs3DCameraController::testRotationCenterRotationCameraRotationCenter()
   scene->cameraController()->depthBufferCaptured( depthImage );
 
   QMouseEvent mouseMoveEvent6( QEvent::MouseMove, midPos + movement1 + 12 * movement2, Qt::LeftButton, Qt::LeftButton, Qt::ShiftModifier );
-  scene->cameraController()->onPositionChanged( new Qt3DInput::QMouseEvent( mouseMoveEvent6 ) );
+  Qt3DInput::QMouseEvent qt3dMouseMoveEvent6( mouseMoveEvent6 );
+  scene->cameraController()->onPositionChanged( &qt3dMouseMoveEvent6 );
   QCOMPARE( scene->cameraController()->mClickPoint, midPos + movement1 + 10 * movement2 );
   QCOMPARE( scene->cameraController()->mMousePos, midPos + movement1 + 12 * movement2 );
   QCOMPARE( scene->cameraController()->mCurrentOperation, QgsCameraController::MouseOperation::RotationCenter );
@@ -1147,13 +1202,14 @@ void TestQgs3DCameraController::testRotationCenterRotationCameraRotationCenter()
   QGSCOMPARENEAR( diffYaw, -0.6, 0.1 );
 
   QMouseEvent mouseReleaseEvent( QEvent::MouseButtonRelease, midPos, Qt::RightButton, Qt::RightButton, Qt::NoModifier );
-  scene->cameraController()->onMouseReleased( new Qt3DInput::QMouseEvent( mouseReleaseEvent ) );
+  Qt3DInput::QMouseEvent qt3dMouseReleaseEvent( mouseReleaseEvent );
+  scene->cameraController()->onMouseReleased( &qt3dMouseReleaseEvent );
 
   QCOMPARE( scene->cameraController()->mClickPoint, QPoint() );
   QCOMPARE( scene->cameraController()->mCurrentOperation, QgsCameraController::MouseOperation::None );
 
   delete scene;
-  mapSettings->setLayers( {} );
+  delete mapSettings;
 }
 
 void TestQgs3DCameraController::waitForNearPlane( QgsOffscreen3DEngine &engine, Qgs3DMapScene *scene, float atLeast ) //#spellok
@@ -1181,7 +1237,7 @@ void TestQgs3DCameraController::testResetViewRaster()
   Qgs3DMapSettings *mapSettings = new Qgs3DMapSettings;
   mapSettings->setCrs( mLayerRgb->crs() );
   mapSettings->setExtent( fullExtent );
-  mapSettings->setLayers( QList<QgsMapLayer *>() << mLayerRgb << mLayerBuildings );
+  mapSettings->setLayers( QList<QgsMapLayer *>() << mLayerRgb.get() << mLayerBuildings.get() );
 
   QgsFlatTerrainGenerator *flatTerrain = new QgsFlatTerrainGenerator;
   flatTerrain->setCrs( mapSettings->crs(), QgsCoordinateTransformContext() );
@@ -1199,11 +1255,14 @@ void TestQgs3DCameraController::testResetViewRaster()
   // compare raster layer + vector layer
   scene->viewZoomFull();
   QGSCOMPARENEAR( scene->cameraController()->distance(), 2172, 1 );
+
+  delete scene;
+  delete mapSettings;
 }
 
 void TestQgs3DCameraController::testResetViewPointCloud()
 {
-  QgsMapLayer *vpcLayer = new QgsPointCloudLayer( testDataPath( "/point_clouds/virtual/sunshine-coast/combined-with-overview.vpc" ), "vpc", "vpc" );
+  auto vpcLayer = std::make_unique<QgsPointCloudLayer>( testDataPath( "/point_clouds/virtual/sunshine-coast/combined-with-overview.vpc" ), "vpc", "vpc" );
   QgsPointCloudLayer3DRenderer *renderer = new QgsPointCloudLayer3DRenderer;
   QgsSingleColorPointCloud3DSymbol *symbol = new QgsSingleColorPointCloud3DSymbol;
   symbol->setSingleColor( QColor( 255, 0, 0 ) );
@@ -1214,7 +1273,7 @@ void TestQgs3DCameraController::testResetViewPointCloud()
   Qgs3DMapSettings *mapSettings = new Qgs3DMapSettings;
   mapSettings->setCrs( vpcLayer->crs() );
   mapSettings->setExtent( fullExtent );
-  mapSettings->setLayers( QList<QgsMapLayer *>() << vpcLayer );
+  mapSettings->setLayers( QList<QgsMapLayer *>() << vpcLayer.get() );
 
   QgsFlatTerrainGenerator *flatTerrain = new QgsFlatTerrainGenerator;
   flatTerrain->setCrs( mapSettings->crs(), QgsCoordinateTransformContext() );
@@ -1233,28 +1292,31 @@ void TestQgs3DCameraController::testResetViewPointCloud()
   scene->viewZoomFull();
   QGSCOMPARENEAR( scene->cameraController()->distance(), 86, 1 );
 
-  QgsMapLayer *pcLayer = new QgsPointCloudLayer( testDataPath( "/point_clouds/copc/sunshine-coast.copc.laz" ), "test", "copc" );
+  auto pcLayer = std::make_unique<QgsPointCloudLayer>( testDataPath( "/point_clouds/copc/sunshine-coast.copc.laz" ), "test", "copc" );
   QgsPointCloudLayer3DRenderer *renderer2 = new QgsPointCloudLayer3DRenderer;
   QgsSingleColorPointCloud3DSymbol *symbol2 = new QgsSingleColorPointCloud3DSymbol;
   symbol2->setSingleColor( QColor( 255, 0, 0 ) );
   renderer2->setSymbol( symbol2 );
   pcLayer->setRenderer3D( renderer2 );
-  mapSettings->setLayers( QList<QgsMapLayer *>() << pcLayer );
+  mapSettings->setLayers( QList<QgsMapLayer *>() << pcLayer.get() );
   scene->cameraController()->setViewFromTop( 0, 0, 10 );
 
   // compare point cloud layer
   scene->viewZoomFull();
   QGSCOMPARENEAR( scene->cameraController()->distance(), 86, 1 );
 
-  delete vpcLayer;
-  delete pcLayer;
+  delete scene;
+  delete mapSettings;
 }
 
 void TestQgs3DCameraController::testChangeNavigationMode()
 {
-  auto canvas3D = std::make_unique<Qgs3DMapCanvas>();
-  canvas3D->show();
-  QVERIFY( QTest::qWaitForWindowExposed( canvas3D.get() ) );
+  auto canvas3D = make_qobject_unique<Qgs3DMapCanvas>();
+  std::unique_ptr<QWidget> container( QWidget::createWindowContainer( canvas3D.get() ) );
+  container->installEventFilter( canvas3D.get() );
+  container->show();
+
+  QVERIFY( QTest::qWaitForWindowExposed( container.get() ) );
 
   Qgs3DMapSettings *mapSettings = new Qgs3DMapSettings;
   canvas3D->setMapSettings( mapSettings );
@@ -1263,12 +1325,12 @@ void TestQgs3DCameraController::testChangeNavigationMode()
   QCOMPARE( canvas3D->cameraController()->cameraNavigationMode(), Qgis::NavigationMode::TerrainBased );
 
   QKeyEvent changeNavigationModeEvent( QEvent::ShortcutOverride, Qt::Key_QuoteLeft, Qt::ControlModifier );
-  QApplication::sendEvent( canvas3D.get(), &changeNavigationModeEvent );
+  QApplication::sendEvent( container.get(), &changeNavigationModeEvent );
 
   QCOMPARE( canvas3D->cameraController()->cameraNavigationMode(), Qgis::NavigationMode::Walk );
   QCOMPARE( mapSettings->cameraNavigationMode(), Qgis::NavigationMode::Walk );
 
-  QApplication::sendEvent( canvas3D.get(), &changeNavigationModeEvent );
+  QApplication::sendEvent( container.get(), &changeNavigationModeEvent );
   QCOMPARE( canvas3D->cameraController()->cameraNavigationMode(), Qgis::NavigationMode::TerrainBased );
   QCOMPARE( mapSettings->cameraNavigationMode(), Qgis::NavigationMode::TerrainBased );
 }
@@ -1280,7 +1342,7 @@ void TestQgs3DCameraController::testOrthographic()
   Qgs3DMapSettings *mapSettings = new Qgs3DMapSettings;
   mapSettings->setCrs( mLayerRgb->crs() );
   mapSettings->setExtent( fullExtent );
-  mapSettings->setLayers( QList<QgsMapLayer *>() << mLayerRgb << mLayerBuildings );
+  mapSettings->setLayers( QList<QgsMapLayer *>() << mLayerRgb.get() << mLayerBuildings.get() );
 
   QgsFlatTerrainGenerator *flatTerrain = new QgsFlatTerrainGenerator;
   flatTerrain->setCrs( mapSettings->crs(), QgsCoordinateTransformContext() );
@@ -1304,7 +1366,8 @@ void TestQgs3DCameraController::testOrthographic()
 
   // Zoom in
   QWheelEvent wheelEvent( midPos, midPos, QPoint(), QPoint( 0, 200 ), Qt::NoButton, Qt::NoModifier, Qt::NoScrollPhase, false, Qt::MouseEventSynthesizedByApplication );
-  scene->cameraController()->onWheel( new Qt3DInput::QWheelEvent( wheelEvent ) );
+  Qt3DInput::QWheelEvent qt3dWheelEvent( wheelEvent );
+  scene->cameraController()->onWheel( &qt3dWheelEvent );
 
   QImage depthImage = Qgs3DUtils::captureSceneDepthBuffer( engine, scene );
   scene->cameraController()->depthBufferCaptured( depthImage );
@@ -1316,33 +1379,39 @@ void TestQgs3DCameraController::testOrthographic()
 
   // Pan right
   QMouseEvent mousePressEvent1( QEvent::MouseButtonPress, midPos, Qt::LeftButton, Qt::LeftButton, Qt::NoModifier );
-  scene->cameraController()->onMousePressed( new Qt3DInput::QMouseEvent( mousePressEvent1 ) );
+  Qt3DInput::QMouseEvent qt3dMousePressEvent1( mousePressEvent1 );
+  scene->cameraController()->onMousePressed( &qt3dMousePressEvent1 );
 
   depthImage = Qgs3DUtils::captureSceneDepthBuffer( engine, scene );
   scene->cameraController()->depthBufferCaptured( depthImage );
 
   QPoint movement1( 200, 0 );
   QMouseEvent mouseMoveEvent1( QEvent::MouseMove, midPos + movement1, Qt::LeftButton, Qt::LeftButton, Qt::NoModifier );
-  scene->cameraController()->onPositionChanged( new Qt3DInput::QMouseEvent( mouseMoveEvent1 ) );
+  Qt3DInput::QMouseEvent qt3dMouseMoveEvent1( mouseMoveEvent1 );
+  scene->cameraController()->onPositionChanged( &qt3dMouseMoveEvent1 );
 
   QMouseEvent mouseReleaseEvent1( QEvent::MouseButtonRelease, midPos + movement1, Qt::LeftButton, Qt::LeftButton, Qt::NoModifier );
-  scene->cameraController()->onMouseReleased( new Qt3DInput::QMouseEvent( mouseReleaseEvent1 ) );
+  Qt3DInput::QMouseEvent qt3dMouseReleaseEvent1( mouseReleaseEvent1 );
+  scene->cameraController()->onMouseReleased( &qt3dMouseReleaseEvent1 );
 
   QGSCOMPARENEARVECTOR3D( scene->cameraController()->cameraPose().centerPoint(), QgsVector3D( -1853, 582, 0 ), 5 );
 
   // Rotate to look sideways
   QMouseEvent mousePressEvent2( QEvent::MouseButtonPress, midPos, Qt::LeftButton, Qt::LeftButton, Qt::ControlModifier );
-  scene->cameraController()->onMousePressed( new Qt3DInput::QMouseEvent( mousePressEvent2 ) );
+  Qt3DInput::QMouseEvent qt3dMousePressEvent2( mousePressEvent2 );
+  scene->cameraController()->onMousePressed( &qt3dMousePressEvent2 );
 
   depthImage = Qgs3DUtils::captureSceneDepthBuffer( engine, scene );
   scene->cameraController()->depthBufferCaptured( depthImage );
 
   QPoint movement2( 0, 200 );
   QMouseEvent mouseMoveEvent2( QEvent::MouseMove, midPos + movement2, Qt::LeftButton, Qt::LeftButton, Qt::ControlModifier );
-  scene->cameraController()->onPositionChanged( new Qt3DInput::QMouseEvent( mouseMoveEvent2 ) );
+  Qt3DInput::QMouseEvent qt3dMouseMoveEvent2( mouseMoveEvent2 );
+  scene->cameraController()->onPositionChanged( &qt3dMouseMoveEvent2 );
 
   QMouseEvent mouseReleaseEvent2( QEvent::MouseButtonRelease, midPos + movement2, Qt::LeftButton, Qt::LeftButton, Qt::ControlModifier );
-  scene->cameraController()->onMouseReleased( new Qt3DInput::QMouseEvent( mouseReleaseEvent2 ) );
+  Qt3DInput::QMouseEvent qt3dMouseReleaseEvent2( mouseReleaseEvent2 );
+  scene->cameraController()->onMouseReleased( &qt3dMouseReleaseEvent2 );
 
   QGSCOMPARENEARVECTOR3D( scene->cameraController()->cameraPose().centerPoint(), QgsVector3D( -1853, 1690, 403 ), 5 );
   QGSCOMPARENEAR( scene->cameraController()->pitch(), 40, 1 );
@@ -1350,22 +1419,24 @@ void TestQgs3DCameraController::testOrthographic()
 
   // Pan up
   QMouseEvent mousePressEvent3( QEvent::MouseButtonPress, midPos, Qt::LeftButton, Qt::LeftButton, Qt::NoModifier );
-  scene->cameraController()->onMousePressed( new Qt3DInput::QMouseEvent( mousePressEvent3 ) );
+  Qt3DInput::QMouseEvent qt3dMousePressEvent3( mousePressEvent3 );
+  scene->cameraController()->onMousePressed( &qt3dMousePressEvent3 );
 
   depthImage = Qgs3DUtils::captureSceneDepthBuffer( engine, scene );
   scene->cameraController()->depthBufferCaptured( depthImage );
 
   QPoint movement3( 0, -200 );
   QMouseEvent mouseMoveEvent3( QEvent::MouseMove, midPos + movement3, Qt::LeftButton, Qt::LeftButton, Qt::NoModifier );
-  scene->cameraController()->onPositionChanged( new Qt3DInput::QMouseEvent( mouseMoveEvent3 ) );
+  Qt3DInput::QMouseEvent qt3dMouseMoveEvent3( mouseMoveEvent3 );
+  scene->cameraController()->onPositionChanged( &qt3dMouseMoveEvent3 );
 
   QMouseEvent mouseReleaseEvent3( QEvent::MouseButtonRelease, midPos + movement3, Qt::LeftButton, Qt::LeftButton, Qt::NoModifier );
-  scene->cameraController()->onMouseReleased( new Qt3DInput::QMouseEvent( mouseReleaseEvent3 ) );
+  Qt3DInput::QMouseEvent qt3dMouseReleaseEvent3( mouseReleaseEvent3 );
+  scene->cameraController()->onMouseReleased( &qt3dMouseReleaseEvent3 );
 
   QGSCOMPARENEARVECTOR3D( scene->cameraController()->cameraPose().centerPoint(), QgsVector3D( -1853, 502, 137 ), 5 );
 
   delete scene;
-  mapSettings->setLayers( {} );
   delete mapSettings;
 }
 

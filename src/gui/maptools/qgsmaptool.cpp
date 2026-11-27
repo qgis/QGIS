@@ -139,17 +139,7 @@ void QgsMapTool::clean()
 
 void QgsMapTool::setAction( QAction *action )
 {
-  if ( mAction )
-    disconnect( mAction, &QObject::destroyed, this, &QgsMapTool::actionDestroyed );
   mAction = action;
-  if ( mAction )
-    connect( mAction, &QObject::destroyed, this, &QgsMapTool::actionDestroyed );
-}
-
-void QgsMapTool::actionDestroyed()
-{
-  if ( mAction == sender() )
-    mAction = nullptr;
 }
 
 QAction *QgsMapTool::action()

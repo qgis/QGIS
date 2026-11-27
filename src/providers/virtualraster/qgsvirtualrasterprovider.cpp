@@ -62,7 +62,7 @@ QgsVirtualRasterProvider::QgsVirtualRasterProvider( const QString &uri, const Qg
   mFormulaString = decodedUriParams.formula;
 
   mLastError.clear();
-  mCalcNode.reset( QgsRasterCalcNode::parseRasterCalcString( mFormulaString, mLastError ) );
+  mCalcNode = QgsRasterCalcNode::parseRasterCalcString( mFormulaString, mLastError );
 
   if ( !mCalcNode )
   {
@@ -143,7 +143,7 @@ QgsVirtualRasterProvider::QgsVirtualRasterProvider( const QgsVirtualRasterProvid
     }
   }
 
-  mCalcNode.reset( QgsRasterCalcNode::parseRasterCalcString( mFormulaString, mLastError ) );
+  mCalcNode = QgsRasterCalcNode::parseRasterCalcString( mFormulaString, mLastError );
 }
 
 QgsVirtualRasterProvider::~QgsVirtualRasterProvider()

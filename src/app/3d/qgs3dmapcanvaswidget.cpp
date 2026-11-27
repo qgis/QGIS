@@ -67,15 +67,30 @@
 
 #include <QAction>
 #include <QActionGroup>
+#include <QLabel>
+#include <QOpenGLContext>
 #include <QProgressBar>
 #include <QShortcut>
 #include <QString>
+#include <QSurfaceFormat>
 #include <QToolBar>
 #include <QWidget>
 
 #include "moc_qgs3dmapcanvaswidget.cpp"
 
 using namespace Qt::StringLiterals;
+
+//! Returns TRUE if an OpenGL context can be created for the 3D map view
+static bool isOpenGLSupported()
+{
+#if defined( QT_NO_OPENGL )
+  return false;
+#else
+  QOpenGLContext context;
+  context.setFormat( QSurfaceFormat::defaultFormat() );
+  return context.create();
+#endif
+}
 
 const QgsSettingsEntryDouble *Qgs3DMapCanvasWidget::settingClippingTolerance
   = new QgsSettingsEntryDouble( u"tolerance"_s, QgsSettingsTree::sTree3DMap, 100, u"Tolerance distance for 3D Map cross section"_s, Qgis::SettingsOptions(), 0 );
@@ -99,6 +114,7 @@ Qgs3DMapCanvasWidget::Qgs3DMapCanvasWidget( const QString &name, bool isDocked )
   QAction *actionCameraControl = toolBar->addAction( QIcon( QgsApplication::iconPath( "mActionPan.svg" ) ), tr( "Camera Control" ), this, &Qgs3DMapCanvasWidget::cameraControl );
   actionCameraControl->setObjectName( u"m3DActionCameraControl"_s );
   actionCameraControl->setCheckable( true );
+  actionCameraControl->setChecked( true );
 
   QAction *zoomFullAction = toolBar->addAction( QgsApplication::getThemeIcon( u"mActionZoomFullExtent.svg"_s ), tr( "Zoom Full" ), this, &Qgs3DMapCanvasWidget::resetView );
   zoomFullAction->setObjectName( u"m3DActionZoomFull"_s );
@@ -184,6 +200,7 @@ Qgs3DMapCanvasWidget::Qgs3DMapCanvasWidget( const QString &name, bool isDocked )
   mPointCloudEditingToolbar->addWidget( new QLabel( tr( "Attribute" ) ) )->setObjectName( u"m3DActionAttributeLabel"_s );
   mCboChangeAttribute = new QComboBox();
   mCboChangeAttribute->setObjectName( u"m3DCboChangeAttribute"_s );
+  mCboChangeAttribute->setSizeAdjustPolicy( QComboBox::AdjustToContents );
   mPointCloudEditingToolbar->addWidget( mCboChangeAttribute )->setObjectName( u"m3DActionChangeAttribute"_s );
   mSpinChangeAttributeValue = new QgsDoubleSpinBox();
   mSpinChangeAttributeValue->setObjectName( u"m3DSpinChangeAttributeValue"_s );
@@ -195,6 +212,7 @@ Qgs3DMapCanvasWidget::Qgs3DMapCanvasWidget( const QString &name, bool isDocked )
   mCboChangeAttributeValue = new QComboBox();
   mCboChangeAttributeValue->setObjectName( u"m3DCboChangeAttributeValue"_s );
   mCboChangeAttributeValue->setEditable( true );
+  mCboChangeAttributeValue->setSizeAdjustPolicy( QComboBox::AdjustToContents );
   mClassValidator = new ClassValidator( this );
   mCboChangeAttributeValueAction = mPointCloudEditingToolbar->addWidget( mCboChangeAttributeValue );
   mCboChangeAttributeValueAction->setObjectName( u"m3DActionChangeAttributeValueCombo"_s );
@@ -465,6 +483,9 @@ Qgs3DMapCanvasWidget::Qgs3DMapCanvasWidget( const QString &name, bool isDocked )
   connect( mCanvas, &Qgs3DMapCanvas::viewed2DExtentFrom3DChanged, this, &Qgs3DMapCanvasWidget::onViewed2DExtentFrom3DChanged );
   connect( mCanvas, &Qgs3DMapCanvas::crossSectionEnabledChanged, mActionDisableClippingPlanes, &QAction::setEnabled );
 
+  // The camera control is active when no map tool is set
+  connect( mCanvas, &Qgs3DMapCanvas::mapToolSet, actionCameraControl, [actionCameraControl]( Qgs3DMapTool *newTool ) { actionCameraControl->setChecked( !newTool ); } );
+
   QgsMapToolIdentifyAction *identifyTool2D = QgisApp::instance()->identifyMapTool();
   QgsIdentifyResultsDialog *resultDialog = identifyTool2D->resultsDialog();
   connect( resultDialog, &QgsIdentifyResultsDialog::featureHighlighted, mCanvas, &Qgs3DMapCanvas::highlightFeature );
@@ -513,10 +534,26 @@ Qgs3DMapCanvasWidget::Qgs3DMapCanvasWidget( const QString &name, bool isDocked )
   layout->addWidget( mEditingToolBar );
   layout->addWidget( mMessageBar );
 
-  // mContainer takes ownership of Qgs3DMapCanvas
-  mContainer = QWidget::createWindowContainer( mCanvas );
+  mOpenGLSupported = isOpenGLSupported();
+  if ( mOpenGLSupported )
+  {
+    // mContainer takes ownership of Qgs3DMapCanvas
+    mContainer = QWidget::createWindowContainer( mCanvas );
+    mContainer->setFocusPolicy( Qt::FocusPolicy::StrongFocus );
+    mContainer->installEventFilter( mCanvas );
+  }
+  else
+  {
+    mMessageBar->pushMessage( tr( "OpenGL not supported" ), tr( "No OpenGL context could be created. Graphics driver does not support OpenGL." ), Qgis::MessageLevel::Critical, 0 );
+
+    QLabel *label = new QLabel( tr( "3D view is not available." ), this );
+    label->setAlignment( Qt::AlignCenter );
+    label->setWordWrap( true );
+    mContainer = label;
+  }
   mContainer->setMinimumSize( QSize( 200, 200 ) );
   mContainer->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Expanding );
+
   mNavigationWidget = new Qgs3DNavigationWidget( mCanvas );
   mNavigationWidget->setSizePolicy( QSizePolicy::Fixed, QSizePolicy::Expanding );
   mDebugWidget = new Qgs3DDebugWidget( mCanvas );
@@ -560,6 +597,14 @@ Qgs3DMapCanvasWidget::Qgs3DMapCanvasWidget( const QString &name, bool isDocked )
   updateLayerRelatedActions( QgisApp::instance()->activeLayer() );
   mEditingToolBar->setVisible( setting.value( u"/3D/editingToolbar/visibility"_s, false, QgsSettings::Gui ).toBool() );
 
+  toolBar->addSeparator();
+
+  //  Help button
+  QAction *helpAction = new QAction( QgsApplication::getThemeIcon( u"mActionHelpContents.svg"_s ), tr( "Open Help" ), this );
+  helpAction->setObjectName( u"m3DActionHelp"_s );
+  connect( helpAction, &QAction::triggered, this, []() { QgsHelp::openHelp( u"map_views/3d_map_view.html"_s ); } );
+  toolBar->addAction( helpAction );
+
   QList<QAction *> toolbarMenuActions;
   // Set action names so that they can be used in customization
   for ( QToolBar *toolBar : { mEditingToolBar } )
@@ -583,6 +628,9 @@ Qgs3DMapCanvasWidget::~Qgs3DMapCanvasWidget()
     mCrossSectionRubberBand.reset();
 
   delete mDockableWidgetHelper;
+
+  if ( !mOpenGLSupported )
+    delete mCanvas;
 }
 
 void Qgs3DMapCanvasWidget::saveAsImage()
@@ -733,9 +781,7 @@ void Qgs3DMapCanvasWidget::updateLayerRelatedActions( QgsMapLayer *layer )
     mActionUndo->setEnabled( false );
     mActionRedo->setEnabled( false );
 
-    if ( mCanvas->mapTool() && mCanvas->mapTool() == mMapToolChangeAttribute )
-      mCanvas->setMapTool( nullptr );
-
+    mCanvas->unsetMapTool( mMapToolChangeAttribute );
     return;
   }
 
@@ -789,7 +835,23 @@ bool Qgs3DMapCanvasWidget::eventFilter( QObject *watched, QEvent *event )
     mToolbarMenu->exec( mouseEvent->globalPos() );
     return false;
   }
+  else if ( watched == mCanvas && event->type() == QEvent::MouseButtonPress )
+  {
+    // window container must be focused in order for keyboard events to be passed to it
+    // so we treat a click on the canvas as focusing the container (Qt doesn't do this automatically)
+    mContainer->setFocus( Qt::MouseFocusReason );
+  }
   return QObject::eventFilter( watched, event );
+}
+
+void Qgs3DMapCanvasWidget::showEvent( QShowEvent *event )
+{
+  QWidget::showEvent( event );
+  if ( !mOpenGLSupported )
+    return;
+
+  mContainer->setFocus( Qt::OtherFocusReason );
+  mCanvas->requestActivate();
 }
 
 void Qgs3DMapCanvasWidget::toggleNavigationWidget( const bool visibility )
@@ -935,7 +997,7 @@ void Qgs3DMapCanvasWidget::configure()
 
   mConfigureDialog = new QDialog( this );
   mConfigureDialog->setAttribute( Qt::WA_DeleteOnClose );
-  mConfigureDialog->setWindowTitle( tr( "3D Configuration" ) );
+  mConfigureDialog->setWindowTitle( tr( "3D Configuration - %1" ).arg( mCanvasName ) );
   mConfigureDialog->setObjectName( u"3DConfigurationDialog"_s );
   mConfigureDialog->setMinimumSize( 600, 460 );
   QgsGui::enableAutoGeometryRestore( mConfigureDialog );
@@ -1256,7 +1318,7 @@ void Qgs3DMapCanvasWidget::onPointCloudChangeAttributeSettingsChanged()
       }
 
       // then add missing classes from the layer stats too
-      const QMap<int, int> statisticsClasses = layer->statistics().availableClasses( u"Classification"_s );
+      const QMap<int, qint64> statisticsClasses = layer->statistics().availableClasses( u"Classification"_s );
       for ( auto it = statisticsClasses.constBegin(); it != statisticsClasses.constEnd(); ++it )
       {
         if ( !classes.contains( it.key() ) )
@@ -1291,7 +1353,7 @@ void Qgs3DMapCanvasWidget::onPointCloudChangeAttributeSettingsChanged()
     }
     else
     {
-      whileBlocking( mCboChangeAttributeValue )->addItem( u"%1 ()"_s.arg( oldValue ), oldValue );
+      whileBlocking( mCboChangeAttributeValue )->addItem( u"%1 (%2)"_s.arg( oldValue ).arg( lasCodes.value( oldValue ) ), oldValue );
       mCboChangeAttributeValue->setCurrentIndex( mCboChangeAttributeValue->count() - 1 );
     }
   }

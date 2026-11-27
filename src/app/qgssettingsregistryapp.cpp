@@ -96,8 +96,6 @@ QgsSettingsRegistryApp::QgsSettingsRegistryApp()
   QgsWelcomeScreen::settingsCheckVersion->copyValueFromKey( u"qgis/checkVersion"_s, true );
   QgsWelcomeScreen::settingsCheckVersion->copyValueFromKey( u"/qgis/checkVersion"_s, true );
   QgisApp::settingsShowScriptWarning->copyValueFromKey( u"UI/showScriptWarning"_s, true );
-  QgisApp::settingsDisplayWaylandWarning->copyValueFromKey( u"UI/displayWaylandWarning"_s, true );
-  QgisApp::settingsDisplayWaylandWarning->copyValueFromKey( u"/UI/displayWaylandWarning"_s, true );
   QgisApp::settingsRestoreDefaultWindowState->copyValueFromKey( u"qgis/restoreDefaultWindowState"_s, true );
   QgisApp::settingsRestoreDefaultWindowState->copyValueFromKey( u"/qgis/restoreDefaultWindowState"_s, true );
   QgsMapLayerStyleCommand::settingsStyleUndoMergeTimeout->copyValueFromKey( u"UI/styleUndoMergeTimeout"_s, true );

@@ -58,6 +58,12 @@
 #pragma comment(lib, "User32")
 #endif
 
+static void initresources(void)
+{
+  Q_INIT_RESOURCE(fonts);
+  Q_INIT_RESOURCE(cmaps);
+}
+
 namespace pdf
 {
 
@@ -400,6 +406,7 @@ SystemFontData PDFSystemFontInfoStorage::loadFont(const CIDSystemInfo* cidSystem
 
     if (!standardFontSubstituteFileName.isEmpty())
     {
+        initresources();
         QFile file(QString(":/fonts/liberation-fonts-ttf/%1").arg(standardFontSubstituteFileName));
         if (file.open(QFile::ReadOnly))
         {
@@ -2979,6 +2986,7 @@ const QByteArray* FontDescriptor::getEmbeddedFontData() const
 
 PDFFontCMap PDFFontCMap::createFromName(const QByteArray& name)
 {
+    initresources();
     QFile file(QString(":/cmaps/%1").arg(QString::fromLatin1(name)));
     if (file.exists())
     {

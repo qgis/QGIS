@@ -102,7 +102,7 @@ available within the layer.
 .. seealso:: :py:func:`setAdditionalExpressionContextScopes`
 %End
 
-    QList<QgsExpressionContextScope *> globalProjectAtlasMapLayerScopes( const QgsMapLayer *layer ) const /Factory/;
+    std::vector<std::unique_ptr<QgsExpressionContextScope>> globalProjectAtlasMapLayerScopes( const QgsMapLayer *layer ) const;
 %Docstring
 Returns list of scopes: global, project, atlas, map, layer. Ownership is
 transferred to the caller.

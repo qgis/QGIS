@@ -15,6 +15,8 @@
 #ifndef QGSLOCALDEFAULTSETTINGS_H
 #define QGSLOCALDEFAULTSETTINGS_H
 
+#include <memory>
+
 #include "qgis_core.h"
 #include "qgis_sip.h"
 
@@ -54,7 +56,7 @@ class CORE_EXPORT QgsLocalDefaultSettings
      *
      * \see setBearingFormat()
      */
-    static QgsBearingNumericFormat *bearingFormat() SIP_FACTORY;
+    static std::unique_ptr<QgsBearingNumericFormat> bearingFormat();
 
     /**
      * Sets the default geographic coordinate \a format, which controls how geographic coordinates are displayed.
@@ -74,7 +76,7 @@ class CORE_EXPORT QgsLocalDefaultSettings
      *
      * \since QGIS 3.26
      */
-    static QgsGeographicCoordinateNumericFormat *geographicCoordinateFormat() SIP_FACTORY;
+    static std::unique_ptr<QgsGeographicCoordinateNumericFormat> geographicCoordinateFormat();
 };
 
 #endif // QGSLOCALDEFAULTSETTINGS_H

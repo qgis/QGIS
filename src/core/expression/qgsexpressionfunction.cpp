@@ -875,12 +875,12 @@ static QVariant fcnAggregate( const QVariantList &values, const QgsExpressionCon
       const QString contextHash = context->uniqueHash( ok, allVars );
       if ( ok )
       {
-        cacheKey = u"aggfcn:%1:%2:%3:%4:%5:%6"_s.arg( vl->id(), QString::number( static_cast< int >( aggregate ) ), subExpression, parameters.filter, orderBy, contextHash );
+        cacheKey = u"aggfcn:%1:%2:%3:%4:%5:%6:%7"_s.arg( vl->id(), QString::number( static_cast< int >( aggregate ) ), subExpression, parameters.filter, parameters.delimiter, orderBy, contextHash );
       }
     }
     else
     {
-      cacheKey = u"aggfcn:%1:%2:%3:%4:%5"_s.arg( vl->id(), QString::number( static_cast< int >( aggregate ) ), subExpression, parameters.filter, orderBy );
+      cacheKey = u"aggfcn:%1:%2:%3:%4:%5:%6"_s.arg( vl->id(), QString::number( static_cast< int >( aggregate ) ), subExpression, parameters.filter, parameters.delimiter, orderBy );
     }
 
     if ( !cacheKey.isEmpty() && context->hasCachedValue( cacheKey ) )
@@ -1024,7 +1024,7 @@ static QVariant fcnAggregateRelation( const QVariantList &values, const QgsExpre
 
   parameters.filter = relation.getRelatedFeaturesFilter( f );
 
-  const QString cacheKey = u"relagg:%1%:%2:%3:%4:%5:%6"_s.arg( relationId, vl->id(), QString::number( static_cast< int >( aggregate ) ), subExpression, parameters.filter, orderBy );
+  const QString cacheKey = u"relagg:%1%:%2:%3:%4:%5:%6:%7"_s.arg( relationId, vl->id(), QString::number( static_cast< int >( aggregate ) ), subExpression, parameters.filter, parameters.delimiter, orderBy );
   if ( context->hasCachedValue( cacheKey ) )
     return context->cachedValue( cacheKey );
 
@@ -1151,12 +1151,12 @@ static QVariant fcnAggregateGeneric(
     const QString contextHash = context->uniqueHash( ok, refVars );
     if ( ok )
     {
-      cacheKey = u"agg:%1:%2:%3:%4:%5:%6"_s.arg( vl->id(), QString::number( static_cast< int >( aggregate ) ), subExpression, parameters.filter, orderBy, contextHash );
+      cacheKey = u"agg:%1:%2:%3:%4:%5:%6:%7"_s.arg( vl->id(), QString::number( static_cast< int >( aggregate ) ), subExpression, parameters.filter, orderBy, parameters.delimiter, contextHash );
     }
   }
   else
   {
-    cacheKey = u"agg:%1:%2:%3:%4:%5"_s.arg( vl->id(), QString::number( static_cast< int >( aggregate ) ), subExpression, parameters.filter, orderBy );
+    cacheKey = u"agg:%1:%2:%3:%4:%5:%6"_s.arg( vl->id(), QString::number( static_cast< int >( aggregate ) ), subExpression, parameters.filter, parameters.delimiter, orderBy );
   }
 
   if ( context->hasCachedValue( cacheKey ) )
@@ -3659,7 +3659,7 @@ static QVariant fcnGeomMakeValid( const QVariantList &values, const QgsExpressio
     return QVariant();
 
   const QString methodString = QgsExpressionUtils::getStringValue( values.at( 1 ), parent ).trimmed();
-#if GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR < 10
+#if GEOS_VERSION_NUM < GEOS_COMPUTE_VERSION( 3, 10, 0 )
   Qgis::MakeValidMethod method = Qgis::MakeValidMethod::Linework;
 #else
   Qgis::MakeValidMethod method = Qgis::MakeValidMethod::Structure;
@@ -5828,7 +5828,7 @@ static QVariant fcnConvexHull( const QVariantList &values, const QgsExpressionCo
   return result;
 }
 
-#if GEOS_VERSION_MAJOR > 3 || ( GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR >= 11 )
+#if GEOS_VERSION_NUM >= GEOS_COMPUTE_VERSION( 3, 11, 0 )
 static QVariant fcnConcaveHull( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
 {
   try
@@ -7776,7 +7776,7 @@ static QVariant fcnArraySum( const QVariantList &values, const QgsExpressionCont
 static QVariant convertToSameType( const QVariant &value, QMetaType::Type type )
 {
   QVariant result = value;
-  ( void ) result.convert( static_cast<int>( type ) );
+  ( void ) result.convert( QMetaType( type ) );
   return result;
 }
 
@@ -7890,7 +7890,9 @@ static QVariant fcnArrayPrepend( const QVariantList &values, const QgsExpression
 static QVariant fcnArrayInsert( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
 {
   QVariantList list = QgsExpressionUtils::getListValue( values.at( 0 ), parent );
-  list.insert( QgsExpressionUtils::getNativeIntValue( values.at( 1 ), parent ), values.at( 2 ) );
+  int position = QgsExpressionUtils::getNativeIntValue( values.at( 1 ), parent );
+  // TODO QGIS 5: allow negative positions like fcnArrayRemoveAt
+  list.insert( std::clamp( position, 0, static_cast<int>( list.size() ) ), values.at( 2 ) );
   return convertToSameType( list, static_cast<QMetaType::Type>( values.at( 0 ).userType() ) );
 }
 
@@ -10087,7 +10089,7 @@ const QgsExpression::FunctionListSnapshot QgsExpression::getFunctionsSnapshot()
            u"make_valid"_s,
            QgsExpressionFunction::ParameterList {
              QgsExpressionFunction::Parameter( u"geometry"_s ),
-#if GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR < 10
+#if GEOS_VERSION_NUM < GEOS_COMPUTE_VERSION( 3, 10, 0 )
              QgsExpressionFunction::Parameter( u"method"_s, true, u"linework"_s ),
 #else
              QgsExpressionFunction::Parameter( u"method"_s, true, u"structure"_s ),
@@ -10435,7 +10437,7 @@ const QgsExpression::FunctionListSnapshot QgsExpression::getFunctionsSnapshot()
          )
       << std::make_shared<
            QgsStaticExpressionFunction >( u"convex_hull"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"geometry"_s ), fcnConvexHull, u"GeometryGroup"_s, QString(), false, QSet<QString>(), false, QStringList() << u"convexHull"_s )
-#if GEOS_VERSION_MAJOR > 3 || ( GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR >= 11 )
+#if GEOS_VERSION_NUM >= GEOS_COMPUTE_VERSION( 3, 11, 0 )
       << std::make_shared< QgsStaticExpressionFunction >(
            u"concave_hull"_s,
            QgsExpressionFunction::ParameterList()

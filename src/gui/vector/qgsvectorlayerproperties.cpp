@@ -47,6 +47,7 @@
 #include "qgsmaptip.h"
 #include "qgsmaskingwidget.h"
 #include "qgsmessagebar.h"
+#include "qgsmessagebaritem.h"
 #include "qgsmetadatawidget.h"
 #include "qgsnative.h"
 #include "qgsnewauxiliaryfielddialog.h"

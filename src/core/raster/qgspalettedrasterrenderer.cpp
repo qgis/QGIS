@@ -254,7 +254,7 @@ QgsRasterBlock *QgsPalettedRasterRenderer::block( int, QgsRectangle const &exten
   //use direct data access instead of QgsRasterBlock::setValue
   //because of performance
   Q_ASSERT( outputBlock ); // to make cppcheck happy
-  unsigned int *outputData = ( unsigned int * ) ( outputBlock->bits() );
+  unsigned int *outputData = reinterpret_cast< unsigned int * >( outputBlock->bits() );
 
   const qgssize rasterSize = ( qgssize ) width * height;
   bool isNoData = false;

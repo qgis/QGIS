@@ -695,7 +695,7 @@ void TestQgsRasterCalculator::findNodes()
 
   auto _test = [&]( QString exp, const QgsRasterCalcNode::Type type ) -> QList<const QgsRasterCalcNode *> {
     QString error;
-    calcNode.reset( QgsRasterCalcNode::parseRasterCalcString( exp, error ) );
+    calcNode = QgsRasterCalcNode::parseRasterCalcString( exp, error );
     return calcNode->findNodes( type );
   };
 
@@ -708,7 +708,7 @@ void TestQgsRasterCalculator::findNodes()
 
   // Test parser with valid and invalid expressions
   QString errorString;
-  const QgsRasterCalcNode *node { QgsRasterCalcNode::parseRasterCalcString( QString(), errorString ) };
+  std::unique_ptr<QgsRasterCalcNode> node = QgsRasterCalcNode::parseRasterCalcString( QString(), errorString );
   QVERIFY( !node );
   QVERIFY( !errorString.isEmpty() );
   errorString = QString();
@@ -867,10 +867,10 @@ void TestQgsRasterCalculator::toString()
   QCOMPARE( _test( u"if( \"raster@1\" > 5 , 100 , 5)"_s, true ), QString( " ( bool ) ( ( float ) ( ( float ) \"raster@1\" > ( float ) 5 ) ) ? ( ( float ) 100 ) : ( ( float ) 5 ) " ) );
 
   QString error;
-  std::unique_ptr<QgsRasterCalcNode> calcNode( QgsRasterCalcNode::parseRasterCalcString( u"min( \"raster@1\" )"_s, error ) );
-  QVERIFY( calcNode == nullptr );
-  calcNode.reset( QgsRasterCalcNode::parseRasterCalcString( u"max( \"raster@1\" )"_s, error ) );
-  QVERIFY( calcNode == nullptr );
+  std::unique_ptr<QgsRasterCalcNode> calcNode = QgsRasterCalcNode::parseRasterCalcString( u"min( \"raster@1\" )"_s, error );
+  QVERIFY( !calcNode );
+  calcNode = QgsRasterCalcNode::parseRasterCalcString( u"max( \"raster@1\" )"_s, error );
+  QVERIFY( !calcNode );
 }
 
 void TestQgsRasterCalculator::testOutputCrsFromRasterEntries()
@@ -1011,7 +1011,7 @@ void TestQgsRasterCalculator::testStatistics()
 void TestQgsRasterCalculator::parseFunctionTypeString()
 {
   QString errorString;
-  const QgsRasterCalcNode *node { QgsRasterCalcNode::parseRasterCalcString( QString(), errorString ) };
+  std::unique_ptr<QgsRasterCalcNode> node = QgsRasterCalcNode::parseRasterCalcString( QString(), errorString );
   QVERIFY( !node );
   QVERIFY( !errorString.isEmpty() );
 

@@ -688,6 +688,7 @@ The development version
       Head,
       Put,
       Delete,
+      Patch,
     };
 
     enum class VectorExportResult /BaseType=IntEnum/
@@ -1367,11 +1368,19 @@ The development version
       Error,
     };
 
+    enum class CoverageEdgeType /BaseType=IntEnum/
+    {
+      AllEdges,
+      Exterior,
+      Interior,
+    };
+
     enum class MakeValidMethod /BaseType=IntEnum/
     {
       Linework,
       Structure,
     };
+
 
     enum class FeatureRequestFlag /BaseType=IntFlag/
     {
@@ -1677,6 +1686,12 @@ The development version
       Default,
       PreferVector,
       ForceVector,
+    };
+
+    enum class RenderFormat /BaseType=IntEnum/
+    {
+      Raster,
+      Vector,
     };
 
     enum class MapSettingsFlag /BaseType=IntFlag/
@@ -3475,6 +3490,7 @@ The development version
       SetTableComment,
       EditFieldDomain,
       DeleteFieldDomain,
+      StyleStorage,
     };
     typedef QFlags<Qgis::DatabaseProviderConnectionCapability2> DatabaseProviderConnectionCapabilities2;
 
@@ -4062,12 +4078,50 @@ The development version
       Random
     };
 
+    enum class RasterVectorFieldSourceMode /BaseType=IntEnum/
+    {
+      CartesianComponents,
+      EncodedDirection,
+    };
+
+    enum class RasterDirectionEncoding /BaseType=IntEnum/
+    {
+      Esri,
+      Grass,
+      Saga,
+      PcRaster,
+    };
+
     enum class LinearMatrixMethod /BaseType=IntEnum/
     {
       Lu,
       Svd,
       LuWithSvdFallback
     };
+
+    enum class AttributeTableFilterMode /BaseType=IntEnum/
+    {
+      ShowAll,
+      ShowSelected,
+      ShowVisible,
+      ShowFilteredList,
+      ShowEdited,
+      ShowInvalid,
+    };
+
+    enum class PointCloudOutputsTypes /BaseType=IntEnum/
+    {
+      All,
+      OnlyVPC,
+    };
+
+    enum class SaveStyleFormat /BaseType=IntFlag/
+    {
+      QML,
+      SLD,
+    };
+    typedef QFlags<Qgis::SaveStyleFormat> SaveStyleFormats;
+
 
     static const double DEFAULT_SEARCH_RADIUS_MM;
 
@@ -4421,6 +4475,8 @@ QFlags<Qgis::PdfRenderFlag> operator|(Qgis::PdfRenderFlag f1, QFlags<Qgis::PdfRe
 QFlags<Qgis::RubberBandComponent> operator|(Qgis::RubberBandComponent f1, QFlags<Qgis::RubberBandComponent> f2);
 
 QFlags<Qgis::ScaleBarUnitLabelPlacement> operator|(Qgis::ScaleBarUnitLabelPlacement f1, QFlags<Qgis::ScaleBarUnitLabelPlacement> f2);
+
+QFlags<Qgis::SaveStyleFormat> operator|(Qgis::SaveStyleFormat f1, QFlags<Qgis::SaveStyleFormat> f2);
 
 
 

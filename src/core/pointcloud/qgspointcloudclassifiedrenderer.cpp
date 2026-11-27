@@ -190,7 +190,7 @@ bool QgsPointCloudClassifiedRenderer::willRenderPoint( const QVariantMap &pointA
   return false;
 }
 
-QgsPointCloudRenderer *QgsPointCloudClassifiedRenderer::create( QDomElement &element, const QgsReadWriteContext &context )
+std::unique_ptr<QgsPointCloudRenderer> QgsPointCloudClassifiedRenderer::create( QDomElement &element, const QgsReadWriteContext &context )
 {
   auto r = std::make_unique< QgsPointCloudClassifiedRenderer >();
 
@@ -221,7 +221,7 @@ QgsPointCloudRenderer *QgsPointCloudClassifiedRenderer::create( QDomElement &ele
 
   r->restoreCommonProperties( element, context );
 
-  return r.release();
+  return r;
 }
 
 QgsPointCloudCategoryList QgsPointCloudClassifiedRenderer::defaultCategories()

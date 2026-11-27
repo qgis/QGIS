@@ -20,9 +20,15 @@
 
 
 #include "qgis_sip.h"
+#include "qgsapplication.h"
 #include "qgsprocessingalgorithm.h"
 
+#include <QString>
+
 #define SIP_NO_FILE
+
+using namespace Qt::StringLiterals;
+
 
 ///@cond PRIVATE
 
@@ -41,6 +47,8 @@ class QgsPdalCreateCopcAlgorithm : public QgsProcessingAlgorithm
     QStringList tags() const override;
     QString shortHelpString() const override;
     QString shortDescription() const override;
+    QIcon icon() const override { return QgsApplication::getThemeIcon( u"/mIconPointCloudLayer.svg"_s ); }
+    QString svgIconPath() const override { return QgsApplication::iconPath( u"/mIconPointCloudLayer.svg"_s ); }
     QgsPdalCreateCopcAlgorithm *createInstance() const override SIP_FACTORY;
 
   protected:

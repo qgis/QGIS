@@ -34,9 +34,9 @@ using namespace Qt::StringLiterals;
 
 QgsPieChartPlot::QgsPieChartPlot()
 {
-  setFillSymbolAt( 0, QgsPlotDefaultSettings::pieChartFillSymbol() );
-  setColorRampAt( 0, QgsPlotDefaultSettings::pieChartColorRamp() );
-  mNumericFormat.reset( QgsPlotDefaultSettings::pieChartNumericFormat() );
+  setFillSymbolAt( 0, QgsPlotDefaultSettings::pieChartFillSymbol().release() );
+  setColorRampAt( 0, QgsPlotDefaultSettings::pieChartColorRamp().release() );
+  mNumericFormat.reset( QgsPlotDefaultSettings::pieChartNumericFormat().release() );
 }
 
 void QgsPieChartPlot::renderContent( QgsRenderContext &context, QgsPlotRenderContext &, const QRectF &plotArea, const QgsPlotData &plotData )
@@ -115,7 +115,6 @@ void QgsPieChartPlot::renderContent( QgsRenderContext &context, QgsPlotRenderCon
   }
 
   QgsNumericFormatContext numericContext;
-  QMap<QString, QColor> categoriesColor;
   int seriesIndex = 0;
   for ( const QgsAbstractPlotSeries *series : seriesList )
   {
@@ -128,6 +127,7 @@ void QgsPieChartPlot::renderContent( QgsRenderContext &context, QgsPlotRenderCon
     symbol->startRender( context );
     const double pieWidth = pieArea - QgsSymbolLayerUtils::estimateMaxSymbolBleed( symbol, context ) - maxLabelHeight * 3;
 
+    QMap<QString, QColor> categoriesColor;
     QgsColorRamp *ramp = colorRampAt( seriesIndex % mColorRamps.size() );
     if ( QgsRandomColorRamp *randomRamp = dynamic_cast<QgsRandomColorRamp *>( ramp ) )
     {
@@ -414,9 +414,9 @@ bool QgsPieChartPlot::readXml( const QDomElement &element, const QgsReadWriteCon
   return true;
 }
 
-QgsPieChartPlot *QgsPieChartPlot::create()
+std::unique_ptr<QgsPieChartPlot> QgsPieChartPlot::create()
 {
-  return new QgsPieChartPlot();
+  return std::make_unique<QgsPieChartPlot>();
 }
 
 QgsVectorLayerAbstractPlotDataGatherer *QgsPieChartPlot::createDataGatherer( QgsPlot *plot )

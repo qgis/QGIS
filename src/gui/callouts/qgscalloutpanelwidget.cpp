@@ -69,7 +69,7 @@ void QgsCalloutPanelWidget::setCallout( const QgsCallout *callout )
   }
 }
 
-QgsCallout *QgsCalloutPanelWidget::callout()
+std::unique_ptr<QgsCallout> QgsCalloutPanelWidget::callout()
 {
   const QString calloutType = mCalloutStyleComboBox->currentData().toString();
   std::unique_ptr<QgsCallout> callout;
@@ -81,7 +81,7 @@ QgsCallout *QgsCalloutPanelWidget::callout()
     callout = QgsApplication::calloutRegistry()->createCallout( calloutType );
 
   callout->setEnabled( true );
-  return callout.release();
+  return callout;
 }
 
 void QgsCalloutPanelWidget::calloutTypeChanged()

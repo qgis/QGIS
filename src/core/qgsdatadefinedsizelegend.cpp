@@ -369,11 +369,11 @@ QImage QgsDataDefinedSizeLegend::collapsedLegendImage( QgsRenderContext &context
   return img;
 }
 
-QgsDataDefinedSizeLegend *QgsDataDefinedSizeLegend::readXml( const QDomElement &elem, const QgsReadWriteContext &context )
+std::unique_ptr<QgsDataDefinedSizeLegend> QgsDataDefinedSizeLegend::readXml( const QDomElement &elem, const QgsReadWriteContext &context )
 {
   if ( elem.isNull() )
     return nullptr;
-  QgsDataDefinedSizeLegend *ddsLegend = new QgsDataDefinedSizeLegend;
+  auto ddsLegend = std::make_unique<QgsDataDefinedSizeLegend>();
   ddsLegend->setLegendType( elem.attribute( u"type"_s ) == "collapsed"_L1 ? LegendCollapsed : LegendSeparated );
   ddsLegend->setVerticalAlignment( elem.attribute( u"valign"_s ) == "center"_L1 ? AlignCenter : AlignBottom );
   ddsLegend->setTitle( elem.attribute( u"title"_s ) );

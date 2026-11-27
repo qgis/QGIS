@@ -43,26 +43,34 @@ QString QgsDrapeAlgorithmBase::outputName() const
 
 void QgsDrapeAlgorithmBase::initParameters( const QVariantMap & )
 {
-  addParameter( new QgsProcessingParameterRasterLayer( u"RASTER"_s, QObject::tr( "Raster layer" ) ) );
-  addParameter( new QgsProcessingParameterBand( u"BAND"_s, QObject::tr( "Band number" ), 1, u"RASTER"_s ) );
+  auto rasterParam = std::make_unique<QgsProcessingParameterRasterLayer>( u"RASTER"_s, QObject::tr( "Raster layer" ) );
+  rasterParam->setHelp( QObject::tr( "Raster layer with Z or M values." ) );
+  addParameter( rasterParam.release() );
+
+  auto bandParam = std::make_unique<QgsProcessingParameterBand>( u"BAND"_s, QObject::tr( "Band number" ), 1, u"RASTER"_s );
+  bandParam->setHelp( QObject::tr( "The raster band from which the Z or M values are taken." ) );
+  addParameter( bandParam.release() );
 
   // nodata value
   auto nodata = std::make_unique<QgsProcessingParameterNumber>( u"NODATA"_s, QObject::tr( "Value for NoData or non-intersecting vertices" ), Qgis::ProcessingNumberParameterType::Double, 0.0 );
   nodata->setIsDynamic( true );
   nodata->setDynamicPropertyDefinition( QgsPropertyDefinition( u"NODATA"_s, QObject::tr( "Value for NoData or non-intersecting vertices" ), QgsPropertyDefinition::Double ) );
   nodata->setDynamicLayerParameterName( u"INPUT"_s );
+  nodata->setHelp( QObject::tr( "Value to use in case the vertex does not intersect (a valid pixel of) the raster." ) );
   addParameter( nodata.release() );
 
   auto scaleParam = std::make_unique<QgsProcessingParameterNumber>( u"SCALE"_s, QObject::tr( "Scale factor" ), Qgis::ProcessingNumberParameterType::Double, 1.0, false, 0.0 );
   scaleParam->setIsDynamic( true );
   scaleParam->setDynamicPropertyDefinition( QgsPropertyDefinition( u"SCALE"_s, QObject::tr( "Scale factor" ), QgsPropertyDefinition::Double ) );
   scaleParam->setDynamicLayerParameterName( u"INPUT"_s );
+  scaleParam->setHelp( QObject::tr( "Scaling value: the band values are multiplied by this value." ) );
   addParameter( scaleParam.release() );
 
   auto offsetParam = std::make_unique<QgsProcessingParameterNumber>( u"OFFSET"_s, QObject::tr( "Offset" ), Qgis::ProcessingNumberParameterType::Double, 0.0 );
   offsetParam->setIsDynamic( true );
   offsetParam->setDynamicPropertyDefinition( QgsPropertyDefinition( u"OFFSET"_s, QObject::tr( "Offset" ), QgsPropertyDefinition::Double ) );
   offsetParam->setDynamicLayerParameterName( u"INPUT"_s );
+  offsetParam->setHelp( QObject::tr( "Offset value: it is algebraically added to the band values after applying the “Scale factor”." ) );
   addParameter( offsetParam.release() );
 }
 

@@ -81,10 +81,23 @@ QgsPointsLayerFromTableAlgorithm *QgsPointsLayerFromTableAlgorithm::createInstan
 void QgsPointsLayerFromTableAlgorithm::initAlgorithm( const QVariantMap & )
 {
   addParameter( new QgsProcessingParameterFeatureSource( u"INPUT"_s, QObject::tr( "Input layer" ), QList<int>() << static_cast<int>( Qgis::ProcessingSourceType::Vector ) ) );
-  addParameter( new QgsProcessingParameterField( u"XFIELD"_s, QObject::tr( "X field" ), QVariant(), u"INPUT"_s, Qgis::ProcessingFieldParameterDataType::Any ) );
-  addParameter( new QgsProcessingParameterField( u"YFIELD"_s, QObject::tr( "Y field" ), QVariant(), u"INPUT"_s, Qgis::ProcessingFieldParameterDataType::Any ) );
-  addParameter( new QgsProcessingParameterField( u"ZFIELD"_s, QObject::tr( "Z field" ), QVariant(), u"INPUT"_s, Qgis::ProcessingFieldParameterDataType::Any, false, true ) );
-  addParameter( new QgsProcessingParameterField( u"MFIELD"_s, QObject::tr( "M field" ), QVariant(), u"INPUT"_s, Qgis::ProcessingFieldParameterDataType::Any, false, true ) );
+
+  auto xFieldParam = std::make_unique<QgsProcessingParameterField>( u"XFIELD"_s, QObject::tr( "X field" ), QVariant(), u"INPUT"_s, Qgis::ProcessingFieldParameterDataType::Any );
+  xFieldParam->setHelp( QObject::tr( "Field containing the X coordinate." ) );
+  addParameter( xFieldParam.release() );
+
+  auto yFieldParam = std::make_unique<QgsProcessingParameterField>( u"YFIELD"_s, QObject::tr( "Y field" ), QVariant(), u"INPUT"_s, Qgis::ProcessingFieldParameterDataType::Any );
+  yFieldParam->setHelp( QObject::tr( "Field containing the Y coordinate." ) );
+  addParameter( yFieldParam.release() );
+
+  auto zFieldParam = std::make_unique<QgsProcessingParameterField>( u"ZFIELD"_s, QObject::tr( "Z field" ), QVariant(), u"INPUT"_s, Qgis::ProcessingFieldParameterDataType::Any, false, true );
+  zFieldParam->setHelp( QObject::tr( "Field containing the Z coordinate." ) );
+  addParameter( zFieldParam.release() );
+
+  auto mFieldParam = std::make_unique<QgsProcessingParameterField>( u"MFIELD"_s, QObject::tr( "M field" ), QVariant(), u"INPUT"_s, Qgis::ProcessingFieldParameterDataType::Any, false, true );
+  mFieldParam->setHelp( QObject::tr( "Field containing the M value." ) );
+  addParameter( mFieldParam.release() );
+
   addParameter( new QgsProcessingParameterCrs( u"TARGET_CRS"_s, QObject::tr( "Target CRS" ), u"EPSG:4326"_s ) );
 
   addParameter( new QgsProcessingParameterFeatureSink( u"OUTPUT"_s, QObject::tr( "Points from table" ), Qgis::ProcessingSourceType::VectorPoint ) );

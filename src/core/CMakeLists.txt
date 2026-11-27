@@ -10,6 +10,13 @@ ADD_FLEX_BISON_DEPENDENCY(QgsSqlStatementLexer QgsSqlStatementParser)
 BISON_TARGET(QgsMeshCalcParser mesh/qgsmeshcalcparser.yy ${CMAKE_CURRENT_BINARY_DIR}/qgsmeshcalcparser.cpp COMPILE_FLAGS "-p mesh_")
 FLEX_TARGET(QgsMeshCalcLexer mesh/qgsmeshcalclexer.ll ${CMAKE_CURRENT_BINARY_DIR}/qgsmeshcalclexer.cpp)
 ADD_FLEX_BISON_DEPENDENCY(QgsMeshCalcLexer QgsMeshCalcParser)
+BISON_TARGET(QgsEsriArcadeParser providers/arcgis/qgsesriarcadescriptparser.yy ${CMAKE_CURRENT_BINARY_DIR}/qgsesriarcadeparser.cpp COMPILE_FLAGS "-p arcade_")
+FLEX_TARGET(QgsEsriArcadeLexer providers/arcgis/qgsesriarcadescriptlexer.ll ${CMAKE_CURRENT_BINARY_DIR}/qgsesriarcadelexer.cpp)
+ADD_FLEX_BISON_DEPENDENCY(QgsEsriArcadeLexer QgsEsriArcadeParser)
+
+BISON_TARGET(QgsVbScriptParser providers/arcgis/qgsvbscriptparser.yy ${CMAKE_CURRENT_BINARY_DIR}/qgsvbscriptparser.cpp COMPILE_FLAGS "-p vbscript_")
+FLEX_TARGET(QgsVbScriptLexer providers/arcgis/qgsvbscriptlexer.ll ${CMAKE_CURRENT_BINARY_DIR}/qgsvbscriptlexer.cpp)
+ADD_FLEX_BISON_DEPENDENCY(QgsVbScriptLexer QgsVbScriptParser)
 
 # LAZPerf-priority
 if(WITH_INTERNAL_LAZPERF)
@@ -42,6 +49,10 @@ set(QGIS_CORE_SRCS
   ${BISON_QgsSqlStatementParser_OUTPUTS}
   ${FLEX_QgsMeshCalcLexer_OUTPUTS}
   ${BISON_QgsMeshCalcParser_OUTPUTS}
+  ${FLEX_QgsEsriArcadeLexer_OUTPUTS}
+  ${BISON_QgsEsriArcadeParser_OUTPUTS}
+  ${FLEX_QgsVbScriptLexer_OUTPUTS}
+  ${BISON_QgsVbScriptParser_OUTPUTS}
 
   actions/qgsaction.cpp
   actions/qgsactionscope.cpp
@@ -340,6 +351,9 @@ set(QGIS_CORE_SRCS
   providers/arcgis/qgsarcgisportalutils.cpp
   providers/arcgis/qgsarcgisrestquery.cpp
   providers/arcgis/qgsarcgisrestutils.cpp
+  providers/arcgis/qgsesriarcadeconverter.cpp
+  providers/arcgis/qgsesriarcadescript.cpp
+  providers/arcgis/qgsvbscript.cpp
 
   providers/gdal/qgsgdalcloudconnection.cpp
   providers/gdal/qgsgdalclouddataitems.cpp
@@ -520,6 +534,7 @@ set(QGIS_CORE_SRCS
   qgsfields.cpp
   qgsfileutils.cpp
   qgsfontutils.cpp
+  qgsfutureutils.cpp
   qgsgdalutils.cpp
   qgsgeometrysimplifier.cpp
   qgsgeometryvalidator.cpp
@@ -591,6 +606,7 @@ set(QGIS_CORE_SRCS
   qgsoptionalexpression.cpp
   qgsowsconnection.cpp
   qgspathresolver.cpp
+  qgspicturerasterizer.cpp
   qgspluginlayer.cpp
   qgspluginlayerregistry.cpp
   qgspointxy.cpp
@@ -855,6 +871,8 @@ set(QGIS_CORE_SRCS
   raster/qgsrastershader.cpp
   raster/qgsrastershaderfunction.cpp
   raster/qgsrastertransparency.cpp
+  raster/qgsrastervectorfieldrenderer.cpp
+  raster/qgsrastervectorfieldvaluesource.cpp
   raster/qgssortedrasterblockindex.cpp
 
   raster/qgsbilinearrasterresampler.cpp
@@ -1099,6 +1117,8 @@ set(QGIS_CORE_SRCS
   vectortile/qgsvtpkvectortiledataprovider.cpp
   vectortile/qgsxyzvectortiledataprovider.cpp
 
+  web/qgshtmlrendersettings.cpp
+
   ${CMAKE_CURRENT_BINARY_DIR}/qgsexpression_texts.cpp
 
   qgsuserprofile.cpp
@@ -1159,6 +1179,10 @@ if(NOT MSVC)
     ${BISON_QgsSqlStatementParser_OUTPUTS}
     ${FLEX_QgsMeshCalcLexer_OUTPUTS}
     ${BISON_QgsMeshCalcParser_OUTPUTS}
+    ${FLEX_QgsEsriArcadeLexer_OUTPUTS}
+    ${BISON_QgsEsriArcadeParser_OUTPUTS}
+    ${FLEX_QgsVbScriptLexer_OUTPUTS}
+    ${BISON_QgsVbScriptParser_OUTPUTS}
     PROPERTIES COMPILE_FLAGS -w)
 else()
   # -wd4702 unreachable code
@@ -1175,6 +1199,10 @@ else()
     ${BISON_QgsSqlStatementParser_OUTPUTS}
     ${FLEX_QgsMeshCalcLexer_OUTPUTS}
     ${BISON_QgsMeshCalcParser_OUTPUTS}
+    ${FLEX_QgsEsriArcadeLexer_OUTPUTS}
+    ${BISON_QgsEsriArcadeParser_OUTPUTS}
+    ${FLEX_QgsVbScriptLexer_OUTPUTS}
+    ${BISON_QgsVbScriptParser_OUTPUTS}
     PROPERTIES COMPILE_FLAGS /W0)
 endif()
 
@@ -1224,6 +1252,7 @@ set(QGIS_CORE_HDRS
   qgsdatabaseschemamodel.h
   qgsdatabasetablemodel.h
   qgsdatadefinedsizelegend.h
+  qgsdatadefinedutils.h
   qgsdataproviderelevationproperties.h
   qgsdataprovidertemporalcapabilities.h
   qgsdatasourceuri.h
@@ -1268,6 +1297,7 @@ set(QGIS_CORE_HDRS
   qgsfilefiltergenerator.h
   qgsfileutils.h
   qgsfontutils.h
+  qgsfutureutils.h
   qgsgdalutils.h
   qgsgenericspatialindex.h
   qgsgeometryoptions.h
@@ -1366,6 +1396,7 @@ set(QGIS_CORE_HDRS
   qgsreadwritelocker.h
   qgsrecentstylehandler.h
   qgsrelation.h
+  qgspicturerasterizer.h
   qgspolymorphicrelation.h
   qgsrelationcontext.h
   qgsremappingproxyfeaturesink.h
@@ -1997,6 +2028,9 @@ set(QGIS_CORE_HDRS
   providers/arcgis/qgsarcgisportalutils.h
   providers/arcgis/qgsarcgisrestquery.h
   providers/arcgis/qgsarcgisrestutils.h
+  providers/arcgis/qgsesriarcadeconverter.h
+  providers/arcgis/qgsesriarcadescript.h
+  providers/arcgis/qgsvbscript.h
 
   providers/gdal/qgsgdalcloudconnection.h
   providers/gdal/qgsgdalclouddataitems.h
@@ -2079,6 +2113,8 @@ set(QGIS_CORE_HDRS
   raster/qgsrastershader.h
   raster/qgsrastershaderfunction.h
   raster/qgsrastertransparency.h
+  raster/qgsrastervectorfieldrenderer.h
+  raster/qgsrastervectorfieldvaluesource.h
   raster/qgsrasterviewport.h
   raster/qgssinglebandcolordatarenderer.h
   raster/qgssinglebandgrayrenderer.h
@@ -2290,6 +2326,8 @@ set(QGIS_CORE_HDRS
   vectortile/qgsvtpktiles.h
   vectortile/qgsvtpkvectortiledataprovider.h
   vectortile/qgsxyzvectortiledataprovider.h
+
+  web/qgshtmlrendersettings.h
 )
 
 set(QPDF_COMPILE_OPTIONS)
@@ -2903,6 +2941,10 @@ target_link_libraries(qgis_core
   PROJ::proj
   nlohmann_json::nlohmann_json
 )
+
+if(WITH_TBB)
+   target_link_libraries(qgis_core TBB::tbb)
+endif()
 
 if(WITH_QTPOSITIONING)
   target_link_libraries(qgis_core

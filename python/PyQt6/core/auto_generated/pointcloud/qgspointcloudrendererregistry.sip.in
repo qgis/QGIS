@@ -159,7 +159,7 @@ matching renderer was not found in the registry.
 Returns a list of available renderers.
 %End
 
-    static QgsPointCloudRenderer *defaultRenderer( const QgsPointCloudLayer *layer ) /Factory/;
+    static std::unique_ptr<QgsPointCloudRenderer> defaultRenderer( const QgsPointCloudLayer *layer );
 %Docstring
 Returns a new default point cloud renderer for a specified ``layer``.
 

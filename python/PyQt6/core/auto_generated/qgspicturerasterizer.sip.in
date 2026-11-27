@@ -1,0 +1,114 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgspicturerasterizer.h                                      *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
+ ************************************************************************/
+
+
+
+
+
+
+
+class QgsPictureRasterizer : QObject
+{
+%Docstring(signature="appended")
+Rasterizes and caches a QPicture as a QImage at a requested size.
+
+Allows for background asynchronous regeneration of the cached image at a
+different size.
+
+This class is useful for generating pre-rendered versions of QPictures
+for rendering on the main GUI thread, where those pictures are too
+expensive to draw directly.
+
+.. versionadded:: 4.4
+%End
+
+%TypeHeaderCode
+#include "qgspicturerasterizer.h"
+%End
+  public:
+    explicit QgsPictureRasterizer( QObject *parent /TransferThis/ = 0 );
+%Docstring
+Constructor for QgsPictureRasterizer, with the specified ``parent``
+object.
+%End
+    ~QgsPictureRasterizer();
+
+    void setPicture( const QPicture &picture );
+%Docstring
+Sets the source ``picture`` to cache.
+
+.. seealso:: :py:func:`picture`
+%End
+
+    QPicture picture() const;
+%Docstring
+Returns the current source QPicture.
+
+.. seealso:: :py:func:`setPicture`
+%End
+
+    void clear();
+%Docstring
+Clears the source picture and cached image, canceling any in-progress
+background render.
+%End
+
+    void invalidate();
+%Docstring
+Immediately invalidates the current cached image.
+%End
+
+    QImage image( const QSize &targetSize );
+%Docstring
+Immediately returns the best available QImage for the given
+``targetSize``.
+
+This method never blocks. If no cached image exists for the specified
+``targetSize`` or the cache has been invalidated then the previously
+cached image is returned, and a background render at the desired
+``targetSize`` will be started.
+%End
+
+    bool isRendering() const;
+%Docstring
+Returns ``True`` if a background job is currently running or scheduled.
+%End
+
+    void setMaxCacheSize( int maxSize );
+%Docstring
+Sets the maximum width or height (in pixels) of the cached QImage.
+
+.. seealso:: :py:func:`maxCacheSize`
+%End
+
+    int maxCacheSize() const;
+%Docstring
+Returns the maximum width or height (in pixels) of the cached QImage.
+
+.. seealso:: :py:func:`setMaxCacheSize`
+%End
+
+  signals:
+
+    void rendered();
+%Docstring
+Emitted when a background rasterization finishes and a new cached image
+is available.
+%End
+
+  private:
+    QgsPictureRasterizer( const QgsPictureRasterizer & );
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgspicturerasterizer.h                                      *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
+ ************************************************************************/

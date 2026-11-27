@@ -1088,7 +1088,7 @@ QHash<QString, QgsMaskedLayers> QgsVectorLayerUtils::collectObjectsMaskedByLabel
 
   LabelMasksVisitor visitor;
 
-  if ( layer->labeling() )
+  if ( layer->labelsEnabled() && layer->labeling() )
   {
     layer->labeling()->accept( &visitor );
   }

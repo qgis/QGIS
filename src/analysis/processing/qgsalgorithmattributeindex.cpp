@@ -79,7 +79,10 @@ QgsAttributeIndexAlgorithm *QgsAttributeIndexAlgorithm::createInstance() const
 void QgsAttributeIndexAlgorithm::initAlgorithm( const QVariantMap & )
 {
   addParameter( new QgsProcessingParameterVectorLayer( u"INPUT"_s, QObject::tr( "Input layer" ), QList<int> { static_cast<int>( Qgis::ProcessingSourceType::Vector ) } ) );
-  addParameter( new QgsProcessingParameterField( u"FIELD"_s, QObject::tr( "Attribute to index" ), QVariant(), u"INPUT"_s ) );
+
+  auto fieldParam = std::make_unique<QgsProcessingParameterField>( u"FIELD"_s, QObject::tr( "Attribute to index" ), QVariant(), u"INPUT"_s );
+  fieldParam->setHelp( QObject::tr( "Field of the vector layer to create an attribute index for." ) );
+  addParameter( fieldParam.release() );
 
   addOutput( new QgsProcessingOutputVectorLayer( u"OUTPUT"_s, QObject::tr( "Indexed layer" ) ) );
 }

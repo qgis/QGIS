@@ -96,6 +96,7 @@ void QgsRemoveHolesAlgorithm::initParameters( const QVariantMap & )
   minArea->setIsDynamic( true );
   minArea->setDynamicPropertyDefinition( QgsPropertyDefinition( u"MIN_AREA"_s, QObject::tr( "Remove holes with area less than" ), QgsPropertyDefinition::DoublePositive ) );
   minArea->setDynamicLayerParameterName( u"INPUT"_s );
+  minArea->setHelp( QObject::tr( "Only holes with an area less than this threshold will be deleted. With a value of 0.0, all the holes will be deleted." ) );
   addParameter( minArea.release() );
 }
 

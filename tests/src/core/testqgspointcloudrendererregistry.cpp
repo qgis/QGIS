@@ -33,7 +33,7 @@ class DummyRenderer : public QgsPointCloudRenderer
     DummyRenderer() = default;
     QString type() const override { return u"dummy"_s; }
     QgsPointCloudRenderer *clone() const override { return new DummyRenderer(); }
-    static QgsPointCloudRenderer *create( QDomElement &, const QgsReadWriteContext & ) { return new DummyRenderer(); }
+    static std::unique_ptr<QgsPointCloudRenderer> create( QDomElement &, const QgsReadWriteContext & ) { return std::make_unique<DummyRenderer>(); }
     void renderBlock( const QgsPointCloudBlock *, QgsPointCloudRenderContext & ) override {}
     QDomElement save( QDomDocument &doc, const QgsReadWriteContext & ) const override { return doc.createElement( u"test"_s ); }
 };

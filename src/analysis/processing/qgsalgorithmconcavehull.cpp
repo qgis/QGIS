@@ -17,6 +17,7 @@
 
 #include "qgsalgorithmconcavehull.h"
 
+#include "qgsgeos.h"
 #include "qgsmultipoint.h"
 #include "qgsprocessingregistry.h"
 #include "qgsspatialindex.h"
@@ -73,15 +74,22 @@ QgsConcaveHullAlgorithm *QgsConcaveHullAlgorithm::createInstance() const
 void QgsConcaveHullAlgorithm::initAlgorithm( const QVariantMap & )
 {
   addParameter( new QgsProcessingParameterFeatureSource( u"INPUT"_s, QObject::tr( "Input layer" ), QList<int>() << static_cast<int>( Qgis::ProcessingSourceType::VectorPoint ) ) );
-  addParameter( new QgsProcessingParameterNumber( u"ALPHA"_s, QObject::tr( "Threshold (0-1, where 1 is equivalent with Convex Hull)" ), Qgis::ProcessingNumberParameterType::Double, 0.3, false, 0, 1 ) );
-  addParameter( new QgsProcessingParameterBoolean( u"HOLES"_s, QObject::tr( "Allow holes" ), true ) );
-  addParameter( new QgsProcessingParameterBoolean( u"NO_MULTIGEOMETRY"_s, QObject::tr( "Split multipart geometry into singleparts" ), false ) );
+  auto alphaParam
+    = std::make_unique<QgsProcessingParameterNumber>( u"ALPHA"_s, QObject::tr( "Threshold (0-1, where 1 is equivalent with Convex Hull)" ), Qgis::ProcessingNumberParameterType::Double, 0.3, false, 0, 1 );
+  alphaParam->setHelp( QObject::tr( "Number from 0 (maximum concave hull) to 1 (convex hull)." ) );
+  addParameter( alphaParam.release() );
+  auto holesParam = std::make_unique<QgsProcessingParameterBoolean>( u"HOLES"_s, QObject::tr( "Allow holes" ), true );
+  holesParam->setHelp( QObject::tr( "Controls whether holes are allowed in the final concave hull." ) );
+  addParameter( holesParam.release() );
+  auto noMultiGeometryParam = std::make_unique<QgsProcessingParameterBoolean>( u"NO_MULTIGEOMETRY"_s, QObject::tr( "Split multipart geometry into singleparts" ), false );
+  noMultiGeometryParam->setHelp( QObject::tr( "Controls whether singlepart geometries will be created instead of multipart ones. A few feature will be created for each individual geometry part." ) );
+  addParameter( noMultiGeometryParam.release() );
   addParameter( new QgsProcessingParameterFeatureSink( u"OUTPUT"_s, QObject::tr( "Concave hull" ), Qgis::ProcessingSourceType::VectorPolygon ) );
 }
 
 bool QgsConcaveHullAlgorithm::prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback * )
 {
-  mSource.reset( parameterAsSource( parameters, u"INPUT"_s, context ) );
+  mSource = parameterAsSource( parameters, u"INPUT"_s, context );
   if ( !mSource )
     throw QgsProcessingException( invalidSourceError( parameters, u"INPUT"_s ) );
 
@@ -106,7 +114,7 @@ QVariantMap QgsConcaveHullAlgorithm::processAlgorithm( const QVariantMap &parame
   if ( !sink )
     throw QgsProcessingException( invalidSinkError( parameters, u"OUTPUT"_s ) );
 
-#if GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR < 11
+#if GEOS_VERSION_NUM < GEOS_COMPUTE_VERSION( 3, 11, 0 )
   concaveHullQgis( sink, parameters, context, feedback );
 #else
   concaveHullGeos( sink, parameters, feedback );

@@ -56,19 +56,35 @@ void QgsJoinByAttributeAlgorithm::initAlgorithm( const QVariantMap & )
   methods << QObject::tr( "Create separate feature for each matching feature (one-to-many)" ) << QObject::tr( "Take attributes of the first matching feature only (one-to-one)" );
 
   addParameter( new QgsProcessingParameterFeatureSource( u"INPUT"_s, QObject::tr( "Input layer" ), QList<int>() << static_cast<int>( Qgis::ProcessingSourceType::Vector ) ) );
-  addParameter( new QgsProcessingParameterField( u"FIELD"_s, QObject::tr( "Table field" ), QVariant(), u"INPUT"_s ) );
 
-  addParameter( new QgsProcessingParameterFeatureSource( u"INPUT_2"_s, QObject::tr( "Input layer 2" ), QList<int>() << static_cast<int>( Qgis::ProcessingSourceType::Vector ) ) );
-  addParameter( new QgsProcessingParameterField( u"FIELD_2"_s, QObject::tr( "Table field 2" ), QVariant(), u"INPUT_2"_s ) );
+  auto fieldParam = std::make_unique<QgsProcessingParameterField>( u"FIELD"_s, QObject::tr( "Table field" ), QVariant(), u"INPUT"_s );
+  fieldParam->setHelp( QObject::tr( "Field of the source layer to use for the join." ) );
+  addParameter( fieldParam.release() );
 
-  addParameter(
-    new QgsProcessingParameterField( u"FIELDS_TO_COPY"_s, QObject::tr( "Layer 2 fields to copy (leave empty to copy all fields)" ), QVariant(), u"INPUT_2"_s, Qgis::ProcessingFieldParameterDataType::Any, true, true )
-  );
+  auto input2Param = std::make_unique<QgsProcessingParameterFeatureSource>( u"INPUT_2"_s, QObject::tr( "Input layer 2" ), QList<int>() << static_cast<int>( Qgis::ProcessingSourceType::Vector ) );
+  input2Param->setHelp( QObject::tr( "Layer with the attribute table to join." ) );
+  addParameter( input2Param.release() );
 
-  addParameter( new QgsProcessingParameterEnum( u"METHOD"_s, QObject::tr( "Join type" ), methods, false, 1 ) );
-  addParameter( new QgsProcessingParameterBoolean( u"DISCARD_NONMATCHING"_s, QObject::tr( "Discard records which could not be joined" ), false ) );
+  auto field2Param = std::make_unique<QgsProcessingParameterField>( u"FIELD_2"_s, QObject::tr( "Table field 2" ), QVariant(), u"INPUT_2"_s );
+  field2Param->setHelp( QObject::tr( "Field of the second (join) layer to use for the join. The type of the field must be equal to (or compatible with) the input table field type." ) );
+  addParameter( field2Param.release() );
 
-  addParameter( new QgsProcessingParameterString( u"PREFIX"_s, QObject::tr( "Joined field prefix" ), QVariant(), false, true ) );
+  auto fieldsToCopyParam = std::make_unique<
+    QgsProcessingParameterField>( u"FIELDS_TO_COPY"_s, QObject::tr( "Layer 2 fields to copy (leave empty to copy all fields)" ), QVariant(), u"INPUT_2"_s, Qgis::ProcessingFieldParameterDataType::Any, true, true );
+  fieldsToCopyParam->setHelp( QObject::tr( "Specific fields to add from the second layer. By default all the fields are added." ) );
+  addParameter( fieldsToCopyParam.release() );
+
+  auto methodParam = std::make_unique<QgsProcessingParameterEnum>( u"METHOD"_s, QObject::tr( "Join type" ), methods, false, 1 );
+  methodParam->setHelp( QObject::tr( "The type of the final joined layer." ) );
+  addParameter( methodParam.release() );
+
+  auto discardNonMatchingParam = std::make_unique<QgsProcessingParameterBoolean>( u"DISCARD_NONMATCHING"_s, QObject::tr( "Discard records which could not be joined" ), false );
+  discardNonMatchingParam->setHelp( QObject::tr( "If checked, the input layer's features which could not be joined are removed from the output." ) );
+  addParameter( discardNonMatchingParam.release() );
+
+  auto prefixParam = std::make_unique<QgsProcessingParameterString>( u"PREFIX"_s, QObject::tr( "Joined field prefix" ), QVariant(), false, true );
+  prefixParam->setHelp( QObject::tr( "Prefix added to joined fields in order to easily identify them and avoid field name collision." ) );
+  addParameter( prefixParam.release() );
 
   addParameter( new QgsProcessingParameterFeatureSink( u"OUTPUT"_s, QObject::tr( "Joined layer" ), Qgis::ProcessingSourceType::VectorAnyGeometry, QVariant(), true, true ) );
 

@@ -500,7 +500,7 @@ execution.
 .. versionadded:: 3.38
 %End
 
-    void algorithmFinished( bool successful, const QVariantMap &result );
+    void algorithmFinished( bool successful, const QVariantMap &result, QgsProcessingContext *context );
 %Docstring
 Emitted whenever an algorithm has finished executing in the widget.
 

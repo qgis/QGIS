@@ -113,7 +113,7 @@ class ANALYSIS_EXPORT QgsGcpTransformerInterface SIP_ABSTRACT
      *
      * Caller takes ownership of the returned object.
      */
-    static QgsGcpTransformerInterface *create( TransformMethod method ) SIP_FACTORY;
+    static std::unique_ptr<QgsGcpTransformerInterface> create( TransformMethod method );
 
     /**
      * Creates a new QgsGcpTransformerInterface subclass representing the specified transform \a method, initialized

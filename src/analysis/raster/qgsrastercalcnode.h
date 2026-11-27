@@ -122,7 +122,7 @@ class ANALYSIS_EXPORT QgsRasterCalcNode
      */
     QList<const QgsRasterCalcNode *> findNodes( const QgsRasterCalcNode::Type type ) const;
 
-    static QgsRasterCalcNode *parseRasterCalcString( const QString &str, QString &parserErrorMsg ) SIP_FACTORY;
+    static std::unique_ptr<QgsRasterCalcNode> parseRasterCalcString( const QString &str, QString &parserErrorMsg );
 
     /**
      * Returns a list of raster layer names that are referenced in the formula without the quotation marks.

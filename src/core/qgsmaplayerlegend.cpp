@@ -263,7 +263,7 @@ void QgsMapLayerLegendUtils::setLegendNodeColorRampSettings( QgsLayerTreeLayer *
     nodeLayer->removeCustomProperty( "legend/custom-ramp-settings-" + QString::number( originalIndex ) );
 }
 
-QgsColorRampLegendNodeSettings *QgsMapLayerLegendUtils::legendNodeColorRampSettings( QgsLayerTreeLayer *nodeLayer, int originalIndex )
+std::unique_ptr<QgsColorRampLegendNodeSettings> QgsMapLayerLegendUtils::legendNodeColorRampSettings( QgsLayerTreeLayer *nodeLayer, int originalIndex )
 {
   const QString settingsDef = nodeLayer->customProperty( "legend/custom-ramp-settings-" + QString::number( originalIndex ) ).toString();
   if ( settingsDef.isEmpty() )
@@ -281,7 +281,7 @@ QgsColorRampLegendNodeSettings *QgsMapLayerLegendUtils::legendNodeColorRampSetti
 
   QgsColorRampLegendNodeSettings settings;
   settings.readXml( elem, rwContext );
-  return new QgsColorRampLegendNodeSettings( std::move( settings ) );
+  return std::make_unique<QgsColorRampLegendNodeSettings>( std::move( settings ) );
 }
 
 void QgsMapLayerLegendUtils::setLegendNodeColumnBreak( QgsLayerTreeLayer *nodeLayer, int originalIndex, bool columnBreakBeforeNode )

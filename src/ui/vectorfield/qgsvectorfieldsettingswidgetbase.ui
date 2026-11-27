@@ -6,14 +6,14 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>426</width>
-    <height>1006</height>
+    <width>455</width>
+    <height>1115</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string notr="true">Form</string>
   </property>
-  <layout class="QGridLayout" name="gridLayout">
+  <layout class="QGridLayout" name="gridLayout" columnstretch="0,1">
    <property name="leftMargin">
     <number>0</number>
    </property>
@@ -29,7 +29,7 @@
    <item row="16" column="0">
     <spacer name="verticalSpacer">
      <property name="orientation">
-      <enum>Qt::Vertical</enum>
+      <enum>Qt::Orientation::Vertical</enum>
      </property>
      <property name="sizeHint" stdset="0">
       <size>
@@ -39,59 +39,14 @@
      </property>
     </spacer>
    </item>
-   <item row="7" column="0" colspan="2">
-    <layout class="QGridLayout" name="gridLayout_3">
-     <item row="0" column="0" rowspan="2">
-      <widget class="QLabel" name="filterByMagnitudeLabel">
-       <property name="text">
-        <string>Filter by magnitude</string>
-       </property>
-      </widget>
-     </item>
-     <item row="1" column="1">
-      <widget class="QLabel" name="maximumMagLabel">
-       <property name="text">
-        <string>Max</string>
-       </property>
-      </widget>
-     </item>
-     <item row="1" column="2">
-      <widget class="QgsDoubleSpinBox" name="mMaxMagSpinBox">
-       <property name="sizePolicy">
-        <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-         <horstretch>0</horstretch>
-         <verstretch>0</verstretch>
-        </sizepolicy>
-       </property>
-       <property name="minimum">
-        <double>-1000000000000000.000000000000000</double>
-       </property>
-       <property name="maximum">
-        <double>1000000000000000.000000000000000</double>
-       </property>
-      </widget>
-     </item>
-     <item row="0" column="1">
-      <widget class="QLabel" name="minimumMagLabel">
-       <property name="text">
-        <string>Min</string>
-       </property>
-      </widget>
-     </item>
-     <item row="0" column="2">
-      <widget class="QgsDoubleSpinBox" name="mMinMagSpinBox">
-       <property name="minimum">
-        <double>-1000000000000000.000000000000000</double>
-       </property>
-       <property name="maximum">
-        <double>1000000000000000.000000000000000</double>
-       </property>
-      </widget>
-     </item>
-    </layout>
-   </item>
    <item row="5" column="1">
     <widget class="QgsColorButton" name="mColorWidget">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
      <property name="minimumSize">
       <size>
        <width>120</width>
@@ -143,7 +98,7 @@
          </size>
         </property>
         <property name="orientation">
-         <enum>Qt::Horizontal</enum>
+         <enum>Qt::Orientation::Horizontal</enum>
         </property>
        </widget>
       </item>
@@ -203,46 +158,7 @@
     </widget>
    </item>
    <item row="2" column="1">
-    <widget class="QComboBox" name="mSymbologyVectorComboBox">
-     <item>
-      <property name="text">
-       <string>Arrows</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>Streamlines</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>Traces</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>Wind Barbs</string>
-      </property>
-     </item>
-    </widget>
-   </item>
-   <item row="1" column="0">
-    <widget class="QWidget" name="widget" native="true">
-     <layout class="QVBoxLayout" name="verticalLayout_5">
-      <property name="leftMargin">
-       <number>0</number>
-      </property>
-      <property name="topMargin">
-       <number>0</number>
-      </property>
-      <property name="rightMargin">
-       <number>0</number>
-      </property>
-      <property name="bottomMargin">
-       <number>0</number>
-      </property>
-     </layout>
-    </widget>
+    <widget class="QComboBox" name="mSymbologyVectorComboBox"/>
    </item>
    <item row="11" column="0" colspan="2">
     <widget class="QGroupBox" name="mHeadOptionsGroupBox">
@@ -302,7 +218,7 @@
     </widget>
    </item>
    <item row="4" column="0">
-    <widget class="QLabel" name="label_4">
+    <widget class="QLabel" name="mColoringMethodLabel">
      <property name="text">
       <string>Coloring Method</string>
      </property>
@@ -318,7 +234,7 @@
        <widget class="QComboBox" name="mStreamlinesSeedingMethodComboBox">
         <item>
          <property name="text">
-          <string>On Mesh/Grid</string>
+          <string>On Data Points</string>
          </property>
         </item>
         <item>
@@ -369,7 +285,7 @@
      <property name="checked">
       <bool>false</bool>
      </property>
-     <layout class="QGridLayout" name="gridLayout_2">
+     <layout class="QGridLayout" name="gridLayout_2" columnstretch="0,1">
       <item row="0" column="0">
        <widget class="QLabel" name="xSpacingLabel">
         <property name="text">
@@ -461,7 +377,7 @@
          </size>
         </property>
         <property name="sizeAdjustPolicy">
-         <enum>QComboBox::AdjustToContents</enum>
+         <enum>QComboBox::SizeAdjustPolicy::AdjustToContents</enum>
         </property>
         <item>
          <property name="text">
@@ -592,7 +508,7 @@
      </property>
      <layout class="QVBoxLayout" name="verticalLayout_6">
       <property name="sizeConstraint">
-       <enum>QLayout::SetDefaultConstraint</enum>
+       <enum>QLayout::SizeConstraint::SetDefaultConstraint</enum>
       </property>
       <item>
        <layout class="QHBoxLayout" name="horizontalLayout_6">
@@ -763,6 +679,55 @@
      </layout>
     </widget>
    </item>
+   <item row="7" column="0" colspan="2">
+    <widget class="QGroupBox" name="mMagnitudeFilterGroupBox">
+     <property name="title">
+      <string>Filter by magnitude</string>
+     </property>
+     <layout class="QGridLayout" name="gridLayout_3">
+      <item row="1" column="1">
+       <widget class="QgsDoubleSpinBox" name="mMaxMagSpinBox">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="minimum">
+         <double>-1000000000000000.000000000000000</double>
+        </property>
+        <property name="maximum">
+         <double>1000000000000000.000000000000000</double>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="0">
+       <widget class="QLabel" name="maximumMagLabel">
+        <property name="text">
+         <string>Maximum</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="0">
+       <widget class="QLabel" name="minimumMagLabel">
+        <property name="text">
+         <string>Minimum</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="1">
+       <widget class="QgsDoubleSpinBox" name="mMinMagSpinBox">
+        <property name="minimum">
+         <double>-1000000000000000.000000000000000</double>
+        </property>
+        <property name="maximum">
+         <double>1000000000000000.000000000000000</double>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
   </layout>
  </widget>
  <customwidgets>
@@ -827,7 +792,6 @@
   <tabstop>mShaftLengthSpinBox</tabstop>
  </tabstops>
  <resources>
-  <include location="../../../images/images.qrc"/>
   <include location="../../../images/images.qrc"/>
  </resources>
  <connections/>

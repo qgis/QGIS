@@ -365,7 +365,7 @@ QgsCategorizedSymbolRendererWidget::QgsCategorizedSymbolRendererWidget( QgsVecto
   connect( btnColorRamp, &QgsColorRampButton::colorRampChanged, this, &QgsCategorizedSymbolRendererWidget::applyColorRamp );
 
   // menus for data-defined rotation/size
-  QMenu *advMenu = new QMenu;
+  QMenu *advMenu = new QMenu( this );
 
   advMenu->addAction( tr( "Match to Saved Symbols" ), this, &QgsCategorizedSymbolRendererWidget::matchToSymbolsFromLibrary );
   advMenu->addAction( tr( "Match to Symbols from File…" ), this, &QgsCategorizedSymbolRendererWidget::matchToSymbolsFromXml );
@@ -688,7 +688,7 @@ void QgsCategorizedSymbolRendererWidget::applyColorRamp()
 {
   if ( !btnColorRamp->isNull() )
   {
-    mRenderer->updateColorRamp( btnColorRamp->colorRamp() );
+    mRenderer->updateColorRamp( btnColorRamp->colorRamp().release() );
   }
   mModel->updateSymbology();
 }
@@ -1047,7 +1047,7 @@ void QgsCategorizedSymbolRendererWidget::dataDefinedSizeLegend()
   if ( panel )
   {
     connect( panel, &QgsPanelWidget::changed, this, [this, panel] {
-      mRenderer->setDataDefinedSizeLegend( panel->dataDefinedSizeLegend() );
+      mRenderer->setDataDefinedSizeLegend( panel->dataDefinedSizeLegend().release() );
       emit changed();
     } );
     openPanel( panel ); // takes ownership of the panel

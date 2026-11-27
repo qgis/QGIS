@@ -160,12 +160,12 @@ unchanged.
 Returns a list including the vertices of the regular polygon.
 %End
 
-    QgsPolygon *toPolygon() const /Factory/;
+    std::unique_ptr<QgsPolygon> toPolygon() const;
 %Docstring
 Returns as a polygon.
 %End
 
-    QgsLineString *toLineString() const /Factory/;
+    std::unique_ptr<QgsLineString> toLineString() const;
 %Docstring
 Returns as a linestring.
 %End

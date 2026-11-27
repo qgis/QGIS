@@ -622,7 +622,7 @@ QVariantList QgsJsonUtils::parseArray( const QString &json, QMetaType::Type type
       // If a destination type was specified (it's not invalid), try to convert
       if ( type != QMetaType::Type::UnknownType )
       {
-        if ( !v.convert( static_cast<int>( type ) ) )
+        if ( !v.convert( QMetaType( type ) ) )
         {
           QgsLogger::warning( u"Cannot convert json array element to specified type, ignoring: %1"_s.arg( v.toString() ) );
         }

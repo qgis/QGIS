@@ -92,7 +92,7 @@ QgsGeometryCheck::Result QgsGeometryGapCheck::collectErrors(
     // Create union of allowed gaps
     QString errMsg;
     allowedGapsGeom.reset( allowedGapsEngine->combine( allowedGaps, &errMsg, QgsGeometryParameters(), feedback ) );
-    allowedGapsGeomEngine.reset( QgsGeometry::createGeometryEngine( allowedGapsGeom.get(), mContext->tolerance ) );
+    allowedGapsGeomEngine = QgsGeometry::createGeometryEngine( allowedGapsGeom.get(), mContext->tolerance );
     allowedGapsGeomEngine->prepareGeometry();
   }
 
@@ -131,7 +131,7 @@ QgsGeometryCheck::Result QgsGeometryGapCheck::collectErrors(
   }
 
   // Get envelope of union
-  geomEngine.reset( QgsGeometry::createGeometryEngine( unionGeom.get(), mContext->tolerance ) );
+  geomEngine = QgsGeometry::createGeometryEngine( unionGeom.get(), mContext->tolerance );
   geomEngine->prepareGeometry();
   std::unique_ptr<QgsAbstractGeometry> envelope( geomEngine->envelope( &errMsg ) );
   if ( !envelope )
@@ -141,13 +141,13 @@ QgsGeometryCheck::Result QgsGeometryGapCheck::collectErrors(
   }
 
   // Buffer envelope
-  geomEngine.reset( QgsGeometry::createGeometryEngine( envelope.get(), mContext->tolerance ) );
+  geomEngine = QgsGeometry::createGeometryEngine( envelope.get(), mContext->tolerance );
   geomEngine->prepareGeometry();
   QgsAbstractGeometry *bufEnvelope = geomEngine->buffer( 2, 0, Qgis::EndCapStyle::Square, Qgis::JoinStyle::Miter, 4., nullptr, feedback ); //#spellok  //#spellok
   envelope.reset( bufEnvelope );
 
   // Compute difference between envelope and union to obtain gap polygons
-  geomEngine.reset( QgsGeometry::createGeometryEngine( envelope.get(), mContext->tolerance ) );
+  geomEngine = QgsGeometry::createGeometryEngine( envelope.get(), mContext->tolerance );
   geomEngine->prepareGeometry();
   std::unique_ptr<QgsAbstractGeometry> diffGeom( geomEngine->difference( unionGeom.get(), &errMsg, QgsGeometryParameters(), feedback ) );
   if ( !diffGeom )

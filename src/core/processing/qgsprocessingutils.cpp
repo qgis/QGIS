@@ -552,7 +552,7 @@ QgsMapLayer *QgsProcessingUtils::mapLayerFromString( const QString &string, QgsP
   }
 }
 
-QgsProcessingFeatureSource *QgsProcessingUtils::variantToSource( const QVariant &value, QgsProcessingContext &context, const QVariant &fallbackValue )
+std::unique_ptr<QgsProcessingFeatureSource> QgsProcessingUtils::variantToSource( const QVariant &value, QgsProcessingContext &context, const QVariant &fallbackValue )
 {
   QVariant val = value;
   bool selectedFeaturesOnly = false;
@@ -583,7 +583,7 @@ QgsProcessingFeatureSource *QgsProcessingUtils::variantToSource( const QVariant 
     auto source = std::make_unique< QgsProcessingFeatureSource >( layer, context, false, featureLimit, filterExpression );
     if ( overrideGeometryCheck )
       source->setInvalidGeometryCheck( geometryCheck );
-    return source.release();
+    return source;
   }
 
   QString layerRef;
@@ -599,7 +599,7 @@ QgsProcessingFeatureSource *QgsProcessingUtils::variantToSource( const QVariant 
       auto source = std::make_unique< QgsProcessingFeatureSource >( layer, context, false, featureLimit, filterExpression );
       if ( overrideGeometryCheck )
         source->setInvalidGeometryCheck( geometryCheck );
-      return source.release();
+      return source;
     }
 
     layerRef = fallbackValue.toString();
@@ -628,7 +628,7 @@ QgsProcessingFeatureSource *QgsProcessingUtils::variantToSource( const QVariant 
 
   if ( overrideGeometryCheck )
     source->setInvalidGeometryCheck( geometryCheck );
-  return source.release();
+  return source;
 }
 
 QgsCoordinateReferenceSystem QgsProcessingUtils::variantToCrs( const QVariant &value, QgsProcessingContext &context, const QVariant &fallbackValue )
@@ -959,7 +959,7 @@ void QgsProcessingUtils::parseDestinationString(
   }
 }
 
-QgsFeatureSink *QgsProcessingUtils::createFeatureSink(
+std::unique_ptr<QgsFeatureSink> QgsProcessingUtils::createFeatureSink(
   QString &destination,
   QgsProcessingContext &context,
   const QgsFields &fields,
@@ -1016,7 +1016,7 @@ QgsFeatureSink *QgsProcessingUtils::createFeatureSink(
     auto sink = std::make_unique<QgsProcessingFeatureSink>( layer->dataProvider(), destination, context );
     context.temporaryLayerStore()->addMapLayer( layer.release() );
 
-    return sink.release();
+    return sink;
   }
   else
   {
@@ -1088,10 +1088,10 @@ QgsFeatureSink *QgsProcessingUtils::createFeatureSink(
         auto remapSink = std::make_unique< QgsRemappingProxyFeatureSink >( *remappingDefinition, writer.release(), true );
         remapSink->setExpressionContext( context.expressionContext() );
         remapSink->setTransformContext( context.transformContext() );
-        return new QgsProcessingFeatureSink( remapSink.release(), destination, context, true );
+        return std::make_unique<QgsProcessingFeatureSink>( remapSink.release(), destination, context, true );
       }
       else
-        return new QgsProcessingFeatureSink( writer.release(), destination, context, true );
+        return std::make_unique<QgsProcessingFeatureSink>( writer.release(), destination, context, true );
     }
     else
     {
@@ -1136,7 +1136,7 @@ QgsFeatureSink *QgsProcessingUtils::createFeatureSink(
         remapSink->setExpressionContext( context.expressionContext() );
         remapSink->setTransformContext( context.transformContext() );
         context.expressionContext().setFields( fields );
-        return new QgsProcessingFeatureSink( remapSink.release(), destination, context, true );
+        return std::make_unique<QgsProcessingFeatureSink>( remapSink.release(), destination, context, true );
       }
       else
       {
@@ -1166,7 +1166,7 @@ QgsFeatureSink *QgsProcessingUtils::createFeatureSink(
           }
         }
 
-        return new QgsProcessingFeatureSink( exporter.release(), destination, context, true );
+        return std::make_unique<QgsProcessingFeatureSink>( exporter.release(), destination, context, true );
       }
     }
   }
@@ -1176,7 +1176,7 @@ void QgsProcessingUtils::createFeatureSinkPython(
   QgsFeatureSink **sink, QString &destination, QgsProcessingContext &context, const QgsFields &fields, Qgis::WkbType geometryType, const QgsCoordinateReferenceSystem &crs, const QVariantMap &options
 )
 {
-  *sink = createFeatureSink( destination, context, fields, geometryType, crs, options );
+  *sink = createFeatureSink( destination, context, fields, geometryType, crs, options ).release();
 }
 
 
@@ -2118,13 +2118,13 @@ Qgis::SpatialIndexPresence QgsProcessingFeatureSource::hasSpatialIndex() const
   return mSourceSpatialIndexPresence;
 }
 
-QgsExpressionContextScope *QgsProcessingFeatureSource::createExpressionContextScope() const
+std::unique_ptr<QgsExpressionContextScope> QgsProcessingFeatureSource::createExpressionContextScope() const
 {
-  QgsExpressionContextScope *expressionContextScope = nullptr;
+  std::unique_ptr<QgsExpressionContextScope> expressionContextScope;
   QgsExpressionContextScopeGenerator *generator = dynamic_cast<QgsExpressionContextScopeGenerator *>( mSource );
   if ( generator )
   {
-    expressionContextScope = generator->createExpressionContextScope();
+    expressionContextScope = std::unique_ptr<QgsExpressionContextScope>( generator->createExpressionContextScope() );
   }
   return expressionContextScope;
 }

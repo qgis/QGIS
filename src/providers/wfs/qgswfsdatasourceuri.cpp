@@ -198,6 +198,7 @@ QSet<QString> QgsWFSDataSourceURI::unknownParamKeys() const
     QgsWFSConstants::URI_PARAM_SQL,
     QgsWFSConstants::URI_PARAM_HTTPMETHOD,
     QgsWFSConstants::URI_PARAM_FEATURE_MODE,
+    QgsWFSConstants::URI_PARAM_DISABLE_DECOMPRESSED_SAFETY_CHECK_THRESHOLD,
   };
 
   QSet<QString> l_unknownParamKeys;
@@ -320,12 +321,18 @@ QUrl QgsWFSDataSourceURI::requestUrl( const QString &request, Qgis::HttpMethod m
     case Qgis::HttpMethod::Head:
     case Qgis::HttpMethod::Put:
     case Qgis::HttpMethod::Delete:
+    case Qgis::HttpMethod::Patch:
       // not supported, impossible to reach
       break;
   }
 
   url.setQuery( urlQuery );
   return url;
+}
+
+bool QgsWFSDataSourceURI::disableDecompressedSafetyCheckThreshold() const
+{
+  return mURI.hasParam( QgsWFSConstants::URI_PARAM_DISABLE_DECOMPRESSED_SAFETY_CHECK_THRESHOLD );
 }
 
 QString QgsWFSDataSourceURI::version() const

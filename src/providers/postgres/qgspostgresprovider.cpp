@@ -2480,6 +2480,14 @@ bool QgsPostgresProvider::addFeatures( QgsFeatureList &flist, Flags flags )
         {
           values += delim + quotedByteaValue( attributeValue );
         }
+        else if ( fieldTypeName == "text"_L1 )
+        {
+          //save maps and lists of string fields as json
+          if ( attributeValue.userType() == QMetaType::Type::QVariantMap || attributeValue.userType() == QMetaType::Type::QVariantList )
+            values += delim + quotedJsonValue( attributeValue );
+          else
+            values += delim + quotedValue( attributeValue );
+        }
         //TODO: convert arrays and hstore to native types
         else
         {
@@ -3080,6 +3088,14 @@ bool QgsPostgresProvider::changeAttributeValues( const QgsChangedAttributesMap &
           {
             sql += quotedByteaValue( attributeValue );
           }
+          else if ( fld.typeName() == "text"_L1 )
+          {
+            //save maps and lists of string fields as json
+            if ( attributeValue.userType() == QMetaType::Type::QVariantMap || attributeValue.userType() == QMetaType::Type::QVariantList )
+              sql += quotedJsonValue( attributeValue );
+            else
+              sql += quotedValue( attributeValue );
+          }
           else
           {
             sql += quotedValue( attributeValue );
@@ -3429,6 +3445,14 @@ bool QgsPostgresProvider::changeFeatures( const QgsChangedAttributesMap &attr_ma
           {
             sql += quotedByteaValue( value );
           }
+          else if ( fld.typeName() == "text"_L1 )
+          {
+            //save maps and lists of string fields as json
+            if ( value.userType() == QMetaType::Type::QVariantMap || value.userType() == QMetaType::Type::QVariantList )
+              sql += quotedJsonValue( value );
+            else
+              sql += quotedValue( value );
+          }
           else
           {
             sql += quotedValue( value );
@@ -3715,6 +3739,12 @@ bool QgsPostgresProvider::estimateExtent() const
   if ( mIsQuery )
   {
     QgsDebugMsgLevel( "Estimating extent of queries is not supported", 2 );
+    return false;
+  }
+
+  if ( mSpatialColType == SctTopoGeometry )
+  {
+    QgsDebugMsgLevel( "Estimating extent of topological geometries is not supported", 2 );
     return false;
   }
 
@@ -4742,7 +4772,7 @@ Qgis::VectorExportResult QgsPostgresProvider::createEmptyLayer(
       QgsDebugMsgLevel(
         u"creating field #%1 -> #%2 name %3 type %4 typename %5 width %6 precision %7"_s.arg( fldIdx )
           .arg( offset )
-          .arg( fld.name(), QVariant::typeToName( fld.type() ), fld.typeName() )
+          .arg( fld.name(), QMetaType( fld.type() ).name(), fld.typeName() )
           .arg( fld.length() )
           .arg( fld.precision() ),
         2
@@ -5013,7 +5043,7 @@ QVariant QgsPostgresProvider::convertValue( QMetaType::Type type, QMetaType::Typ
 
     default:
       result = value;
-      if ( !result.convert( type ) || value.isNull() )
+      if ( !result.convert( QMetaType( type ) ) || value.isNull() )
         result = QgsVariantUtils::createNullVariant( type );
       break;
   }

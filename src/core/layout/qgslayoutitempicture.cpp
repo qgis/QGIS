@@ -389,7 +389,7 @@ void QgsLayoutItemPicture::refreshPicture( const QgsExpressionContext *context )
     bool ok = false;
     const QgsProperty &sourceProperty = mDataDefinedProperties.property( QgsLayoutObject::DataDefinedProperty::PictureSource );
     source = sourceProperty.value( *evalContext, source, &ok );
-    if ( !ok || !source.canConvert( QMetaType::QString ) )
+    if ( !ok || !source.canConvert<QString>() )
     {
       mHasExpressionError = true;
       source = QString();

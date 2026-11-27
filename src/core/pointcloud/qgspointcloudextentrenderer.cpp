@@ -35,7 +35,7 @@
 using namespace Qt::StringLiterals;
 
 QgsPointCloudExtentRenderer::QgsPointCloudExtentRenderer( QgsFillSymbol *symbol )
-  : mFillSymbol( symbol ? symbol : defaultFillSymbol() )
+  : mFillSymbol( symbol ? symbol : defaultFillSymbol().release() )
 {}
 
 QgsPointCloudExtentRenderer::~QgsPointCloudExtentRenderer() = default;
@@ -55,7 +55,7 @@ QgsPointCloudRenderer *QgsPointCloudExtentRenderer::clone() const
 void QgsPointCloudExtentRenderer::renderBlock( const QgsPointCloudBlock *, QgsPointCloudRenderContext & )
 {}
 
-QgsPointCloudRenderer *QgsPointCloudExtentRenderer::create( QDomElement &element, const QgsReadWriteContext &context )
+std::unique_ptr<QgsPointCloudRenderer> QgsPointCloudExtentRenderer::create( QDomElement &element, const QgsReadWriteContext &context )
 {
   auto r = std::make_unique< QgsPointCloudExtentRenderer >();
 
@@ -66,7 +66,7 @@ QgsPointCloudRenderer *QgsPointCloudExtentRenderer::create( QDomElement &element
   }
 
   r->restoreCommonProperties( element, context );
-  return r.release();
+  return r;
 }
 
 void QgsPointCloudExtentRenderer::renderExtent( const QgsGeometry &extent, QgsPointCloudRenderContext &context )
@@ -115,14 +115,14 @@ void QgsPointCloudExtentRenderer::renderExtent( const QgsGeometry &extent, QgsPo
   }
 }
 
-QgsFillSymbol *QgsPointCloudExtentRenderer::defaultFillSymbol()
+std::unique_ptr<QgsFillSymbol> QgsPointCloudExtentRenderer::defaultFillSymbol()
 {
   auto layer = std::make_unique< QgsSimpleLineSymbolLayer >();
   layer->setColor( QColor( 228, 26, 28 ) );
   layer->setWidth( 0.960000 );
   layer->setPenStyle( Qt::DotLine );
   layer->setWidthUnit( Qgis::RenderUnit::Millimeters );
-  return new QgsFillSymbol( QgsSymbolLayerList() << layer.release() );
+  return std::make_unique<QgsFillSymbol>( QgsSymbolLayerList() << layer.release() );
 }
 
 QgsFillSymbol *QgsPointCloudExtentRenderer::fillSymbol() const

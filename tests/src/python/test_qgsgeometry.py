@@ -12815,7 +12815,20 @@ class TestQgsGeometry(QgisTestCase):
                 "POLYGON ((200 400, 400 400, 400 200, 300 200, 350 250, 250 250, 300 200, 200 200, 200 400))",
                 [QgsGeometry.Error("Ring self-intersection", QgsPointXY(300, 200))],
                 [],
-                [],
+                [
+                    QgsGeometry.Error(
+                        "segments 2 and 5 of line 0 intersect at 300, 200",
+                        QgsPointXY(300, 200),
+                    ),
+                    QgsGeometry.Error(
+                        "segments 3 and 5 of line 0 intersect at 300, 200",
+                        QgsPointXY(300, 200),
+                    ),
+                    QgsGeometry.Error(
+                        "segments 3 and 6 of line 0 intersect at 300, 200",
+                        QgsPointXY(300, 200),
+                    ),
+                ],
                 [QgsGeometry.Error("ring 0 self intersects")],
             ],
             [
@@ -12827,7 +12840,24 @@ class TestQgsGeometry(QgisTestCase):
                     )
                 ],
                 [],
-                [],
+                [
+                    QgsGeometry.Error(
+                        "segments 3 and 6 of line 0 intersect at 160163, 6.76866e+06",
+                        QgsPointXY(160163.27316101978067309, 6768658.37442017439752817),
+                    ),
+                    QgsGeometry.Error(
+                        "segments 3 and 7 of line 0 intersect at 160163, 6.76866e+06",
+                        QgsPointXY(160163.27316101978067309, 6768658.37442017439752817),
+                    ),
+                    QgsGeometry.Error(
+                        "segments 4 and 6 of line 0 intersect at 160163, 6.76866e+06",
+                        QgsPointXY(160163.27316101978067309, 6768658.37442017439752817),
+                    ),
+                    QgsGeometry.Error(
+                        "segments 4 and 7 of line 0 intersect at 160163, 6.76866e+06",
+                        QgsPointXY(160163.27316101978067309, 6768658.37442017439752817),
+                    ),
+                ],
                 [QgsGeometry.Error("Polygon 0 is invalid: ring 0 self intersects")],
             ],
             [
@@ -15141,6 +15171,38 @@ class TestQgsGeometry(QgisTestCase):
         self.assertEqual(
             res.asWkt(1),
             "GeometryCollection (Polygon ((1 1, 1 3, 4 3, 7 3, 9 3, 9 1, 1 1)),Polygon ((7 3, 7 9, 9 9, 9 3, 7 3)),Polygon ((4 3, 4 9, 7 9, 7 3, 4 3)),Polygon ((1 3, 1 9, 4 9, 4 3, 1 3)))",
+        )
+
+    @unittest.skipIf(Qgis.geosVersionInt() < 31500, "GEOS 3.15 required")
+    def testCoverageEdges(self):
+        """
+        Test QgsGeometry.extractCoverageEdges
+        """
+        g1 = QgsGeometry()
+        res = g1.extractCoverageEdges()
+        self.assertTrue(res.isNull())
+
+        g1 = QgsGeometry.fromWkt("Point(1 2)")
+        res = g1.extractCoverageEdges()
+        self.assertTrue(res.isNull())
+
+        g1 = QgsGeometry.fromWkt(
+            "MULTIPOLYGON(((0 0,10 0,10.1 5,10 10,0 10,0 0)), ((10 0,20 0,20 10,10 10,10.1 5,10 0)))"
+        )
+        res = g1.extractCoverageEdges()
+        self.assertEqual(
+            res.asWkt(0),
+            "MultiLineString ((10 0, 10 5, 10 10),(10 10, 0 10, 0 0, 10 0),(10 0, 20 0, 20 10, 10 10))",
+        )
+        res = g1.extractCoverageEdges(Qgis.CoverageEdgeType.Exterior)
+        self.assertEqual(
+            res.asWkt(0),
+            "MultiLineString ((10 10, 0 10, 0 0, 10 0),(10 0, 20 0, 20 10, 10 10))",
+        )
+        res = g1.extractCoverageEdges(Qgis.CoverageEdgeType.Interior)
+        self.assertEqual(
+            res.asWkt(0),
+            "MultiLineString ((10 0, 10 5, 10 10))",
         )
 
     def testPolygonOrientation(self):

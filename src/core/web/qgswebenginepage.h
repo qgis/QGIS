@@ -22,6 +22,7 @@
 
 #include "qgis_core.h"
 #include "qgis_sip.h"
+#include "qgshtmlrendersettings.h"
 
 #include <QObject>
 #include <QPageLayout>
@@ -32,6 +33,8 @@ SIP_IF_MODULE( HAVE_WEBENGINE_SIP )
 
 class QWebEnginePage;
 class QPainter;
+class QgsFeedback;
+class QgsPdfRenderer;
 
 /**
  * \ingroup core
@@ -121,6 +124,112 @@ class CORE_EXPORT QgsWebEnginePage : public QObject
      */
     bool render( QPainter *painter, const QRectF &painterRect ) SIP_THROW( QgsNotSupportedException );
 
+    /**
+     * Renders HTML content to a PDF file asynchronously.
+     *
+     * This method is safe to call on either the main or background threads, and will safely ensure
+     * that the main thread event loop is NOT run during the HTML rendering or PDF generation.
+     *
+     * \param html HTML content
+     * \param pdfFileName destination filename for PDF
+     * \param errorMessage will be set to a descriptive error message if the printing fails
+     * \param width page width
+     * \param settings optional HTML render settings
+     * \param feedback optional feedback for early cancellation
+     *
+     * \returns TRUE if the printing was successful
+     *
+     * \since QGIS 4.4
+     */
+    static bool printToPdfBlocking(
+      const QString &html, const QString &pdfFileName, QString &errorMessage SIP_OUT, int width, const QgsHtmlRenderSettings &settings = QgsHtmlRenderSettings(), QgsFeedback *feedback = nullptr
+    );
+
+    /**
+     * Renders HTML content to a PDF file asynchronously.
+     *
+     * This method is safe to call on either the main or background threads, and will safely ensure
+     * that the main thread event loop is NOT run during the HTML rendering or PDF generation.
+     *
+     * \param url URL of HTML content
+     * \param pdfFileName destination filename for PDF
+     * \param errorMessage will be set to a descriptive error message if the printing fails
+     * \param width page width
+     * \param settings optional HTML render settings
+     * \param feedback optional feedback for early cancellation
+     *
+     * \returns TRUE if the printing was successful
+     *
+     * \since QGIS 4.4
+     */
+    static bool printToPdfBlocking(
+      const QUrl &url, const QString &pdfFileName, QString &errorMessage SIP_OUT, int width, const QgsHtmlRenderSettings &settings = QgsHtmlRenderSettings(), QgsFeedback *feedback = nullptr
+    );
+
+    /**
+     * Renders HTML content to a \a painter asynchronously. Content will be rendered as vector objects.
+     *
+     * This method is safe to call on either the main or background threads, and will safely ensure
+     * that the main thread event loop is NOT run during the HTML rendering.
+     *
+     * \param html HTML content
+     * \param painter destination QPainter
+     * \param painterRect specifies the target rectangle for the page in \a painter coordinates
+     * \param errorMessage will be set to a descriptive error message if the printing fails
+     * \param renderedSize will be set to the actual size of the rendered HTML
+     * \param settings optional HTML render settings
+     * \param feedback optional feedback for early cancellation
+     *
+     * \warning This method requires a QGIS build with PDF4Qt library support.
+     *
+     * \returns TRUE if rendering was successful
+     *
+     * \throws QgsNotSupportedException on QGIS builds without PDF4Qt library support.
+     *
+     * \since QGIS 4.4
+     */
+    static bool renderBlocking(
+      const QString &html,
+      QPainter *painter,
+      const QRectF &painterRect,
+      QString &errorMessage SIP_OUT,
+      QSizeF &renderedSize SIP_OUT,
+      const QgsHtmlRenderSettings &settings = QgsHtmlRenderSettings(),
+      QgsFeedback *feedback = nullptr
+    ) SIP_THROW( QgsNotSupportedException );
+
+    /**
+     * Renders HTML content to a \a painter asynchronously. Content will be rendered as vector objects.
+     *
+     * This method is safe to call on either the main or background threads, and will safely ensure
+     * that the main thread event loop is NOT run during the HTML rendering.
+     *
+     * \param url URL of HTML content
+     * \param painter destination QPainter
+     * \param painterRect specifies the target rectangle for the page in \a painter coordinates
+     * \param errorMessage will be set to a descriptive error message if the printing fails
+     * \param renderedSize will be set to the actual size of the rendered HTML
+     * \param settings optional HTML render settings
+     * \param feedback optional feedback for early cancellation
+     *
+     * \warning This method requires a QGIS build with PDF4Qt library support.
+     *
+     * \returns TRUE if rendering was successful
+     *
+     * \throws QgsNotSupportedException on QGIS builds without PDF4Qt library support.
+     *
+     * \since QGIS 4.4
+     */
+    static bool renderBlocking(
+      const QUrl &url,
+      QPainter *painter,
+      const QRectF &painterRect,
+      QString &errorMessage SIP_OUT,
+      QSizeF &renderedSize SIP_OUT,
+      const QgsHtmlRenderSettings &settings = QgsHtmlRenderSettings(),
+      QgsFeedback *feedback = nullptr
+    ) SIP_THROW( QgsNotSupportedException );
+
   signals:
 
     /**
@@ -147,6 +256,12 @@ class CORE_EXPORT QgsWebEnginePage : public QObject
 
   private:
     void handlePostBlockingLoadOperations();
+
+    static QString htmlToPdfExecutable();
+
+    static QString htmlToPdfReturnCodeToString( int code );
+    static bool doPrintToPdf( const QStringList &args, const QgsHtmlRenderSettings &settings, QString &errorMessage, QgsFeedback *feedback );
+    static bool renderBlockingInternal( QPainter *painter, QgsPdfRenderer &renderer, QString &errorMessage, const QRectF &painterRect, QSizeF &renderedSize );
 
     std::unique_ptr< QWebEnginePage > mPage;
     mutable QSize mCachedSize;

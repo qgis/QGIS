@@ -555,6 +555,13 @@ QSet<QString> QgsExpression::referencedVariables( const QString &text )
 
 double QgsExpression::evaluateToDouble( const QString &text, const double fallbackValue )
 {
+  QgsExpressionContext context;
+  context << QgsExpressionContextUtils::globalScope() << QgsExpressionContextUtils::projectScope( QgsProject::instance() ); // skip-keyword-check
+  return evaluateToDouble( text, fallbackValue, &context );
+}
+
+double QgsExpression::evaluateToDouble( const QString &text, const double fallbackValue, const QgsExpressionContext *context )
+{
   bool ok;
   //first test if text is directly convertible to double
   // use system locale: e.g. in German locale, user is presented with numbers "1,23" instead of "1.23" in C locale
@@ -568,10 +575,7 @@ double QgsExpression::evaluateToDouble( const QString &text, const double fallba
   //otherwise try to evaluate as expression
   QgsExpression expr( text );
 
-  QgsExpressionContext context;
-  context << QgsExpressionContextUtils::globalScope() << QgsExpressionContextUtils::projectScope( QgsProject::instance() ); // skip-keyword-check
-
-  QVariant result = expr.evaluate( &context );
+  QVariant result = expr.evaluate( context );
   convertedValue = result.toDouble( &ok );
   if ( expr.hasEvalError() || !ok )
   {
@@ -1225,7 +1229,7 @@ QString QgsExpression::formatPreviewString( const QVariant &value, const bool ht
     listStr += ']'_L1;
     return listStr;
   }
-  else if ( value.type() == QVariant::Color )
+  else if ( value.typeId() == QMetaType::Type::QColor )
   {
     const QColor color = value.value<QColor>();
 

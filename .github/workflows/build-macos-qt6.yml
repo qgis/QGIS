@@ -19,19 +19,17 @@ jobs:
     strategy:
       matrix:
         include:
-          - os: macos-15-intel
+          -
             triplet: x64-osx-dynamic-release
+            host-triplet: arm64-osx-dynamic-release
             deployment-target: "10.15"
             osx-architecture: "x86_64"
-          - os: macos-15
+          -
             triplet: arm64-osx-dynamic-release
             deployment-target: "11.0"
             osx-architecture: "arm64"
     name: build (macos)
-    runs-on: ${{ matrix.os }}
-    env:
-      FC: gfortran
-      GCC_VERSION: 15
+    runs-on: blacksmith-6vcpu-macos-latest
 
     steps:
       - name: 🐣 Checkout
@@ -40,7 +38,7 @@ jobs:
           persist-credentials: false
 
       - name: 🐩 Install CMake and Ninja
-        uses: lukka/get-cmake@fffaaafeea488556c2c12dad60690008bc1caacb # latest
+        uses: lukka/get-cmake@a89e43e22a96abafcd7a62db652a65ecd33052c9 # latest
         with:
           # Pin to specific version to avoid rebuilding too often
           # Also helps to avoid spurious build failures like https://github.com/qgis/QGIS/pull/47098
@@ -61,34 +59,17 @@ jobs:
           echo $(brew --prefix flex)/bin >> $GITHUB_PATH
           echo $(brew --prefix libtool)/bin >> $GITHUB_PATH
 
-      - name: Symlink gfortran (macOS)
-        if: matrix.os == 'macos-15'
-        run: |
-          # make sure gfortran is available
-          # https://github.com/actions/runner-images/blob/main/images/macos/macos-15-Readme.md
-          # https://github.com/actions/runner-images/issues/3371
-          sudo ln -fs /opt/homebrew/bin/gfortran-${GCC_VERSION} /usr/local/bin/gfortran
-          sudo mkdir -p /usr/local/gfortran
-          sudo ln -sf /opt/homebrew/Cellar/gcc@${GCC_VERSION}/*/lib/gcc/${GCC_VERSION} /usr/local/gfortran/lib
-
-      - name: Symlink gfortran (macOS-intel)
-        if: matrix.os == 'macos-15-intel'
-        run: |
-          # make sure gfortran is available
-          # https://github.com/actions/runner-images/blob/main/images/macos/macos-15-Readme.md
-          # https://github.com/actions/runner-images/issues/3371
-          sudo ln -fs /usr/local/bin/gfortran-${GCC_VERSION} /usr/local/bin/gfortran
-          sudo mkdir -p /usr/local/gfortran
-          sudo ln -sf /usr/local/Cellar/gcc@${GCC_VERSION}/*/lib/gcc/${GCC_VERSION} /usr/local/gfortran/lib
-
-      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
+      - uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0 # v7.1.0
         with:
           python-version: '3.11'
 
       - name: 🍭 Setup XCode
         uses: maxim-lobanov/setup-xcode@ed7a3b1fda3918c0306d1b724322adc0b8cc0a90 # v1.7.0
         with:
-          xcode-version: latest-stable
+          xcode-version: '26'
+      
+      - name: Install Metal Toolchain
+        run: xcodebuild -downloadComponent MetalToolchain
 
       - name: 🛍️ Setup ccache
         uses: hendrikmuhs/ccache-action@f09c25b45002a07be2955cbe52e8cee55643f89d  # v1.2.24
@@ -116,14 +97,15 @@ jobs:
                 -B build \
                 -D QGIS_APP_NAME="QGIS-${{steps.workflow-artifact-ids.outputs.display-name}}" \
                 -D WITH_VCPKG=ON \
-                -D WITH_QTWEBENGINE=OFF \
                 -D WITH_BINDINGS=ON \
                 -D WITH_ORACLE=ON \
                 -D WITH_GEOGRAPHICLIB=OFF \
                 -D WITH_SFCGAL=ON \
                 -D WITH_PROJ_DATA=ON \
+                -D WITH_QTWEBENGINE=ON \
+                -D WITH_PDF4QT=OFF \
                 -D VCPKG_TARGET_TRIPLET="${{ matrix.triplet }}" \
-                -D VCPKG_HOST_TRIPLET="${{ matrix.triplet }}" \
+                -D VCPKG_HOST_TRIPLET="${{ matrix.host-triplet || matrix.triplet }}" \
                 -D VCPKG_INSTALL_OPTIONS="--only-binarycaching" \
                 -D CMAKE_OSX_DEPLOYMENT_TARGET=${{ matrix.deployment-target }} \
                 -D CMAKE_OSX_ARCHITECTURES=${{ matrix.osx-architecture }} \
@@ -140,7 +122,7 @@ jobs:
 
       - name: 📑 Upload vcpkg build logs
         id: upload-build-logs
-        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         if: failure()
         with:
           name: build-logs-${{ matrix.triplet }}
@@ -165,7 +147,7 @@ jobs:
 
       - name: 📤 Upload sdk
         if: github.event_name == 'workflow_dispatch' || github.event_name == 'release'
-        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           archive: false
           path: sdk/qgis-sdk-${{ matrix.triplet }}.zip
@@ -182,7 +164,7 @@ jobs:
           gtar -cpvzf qgis-app-${{steps.workflow-artifact-ids.outputs.filename}}-${{ matrix.triplet }}.tar.gz ./build/_CPack_Packages/Darwin/External/*/*.app
 
       - name: 📤 Upload app
-        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: qgis-app-${{steps.workflow-artifact-ids.outputs.filename}}-${{ matrix.triplet }}
           path: |
@@ -190,7 +172,7 @@ jobs:
 
   schedule_download_comment:
     name: Create dmg
-    runs-on: macos-latest
+    runs-on: blacksmith-6vcpu-macos-latest
     needs: build
     steps:
       - name: 🐣 Checkout
@@ -208,7 +190,7 @@ jobs:
         uses: ./.github/actions/get-workflow-artifact-ids
 
       - name: 📤 Download app
-        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c  # v8.0.1
+        uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333  # v8.0.2
         with:
           pattern: qgis-app-${{steps.workflow-artifact-ids.outputs.filename}}-*
           path: |
@@ -221,6 +203,7 @@ jobs:
           mkdir -p arm64
           gtar --strip-components=5 -zxf ./artifacts/qgis-app-${STEPS_WORKFLOW_ARTIFACT_IDS_OUTPUTS_FILENAME}-arm64-osx-dynamic-release/qgis-app-${STEPS_WORKFLOW_ARTIFACT_IDS_OUTPUTS_FILENAME}-arm64-osx-dynamic-release.tar.gz -C arm64
 
+          # See https://github.com/faaxm/lipomerge/pull/14
           pip install lipomerge
           lipomerge ./x64 ./arm64 universal
         env:
@@ -244,7 +227,7 @@ jobs:
           STEPS_WORKFLOW_ARTIFACT_IDS_OUTPUTS_DISPLAY_NAME: ${{steps.workflow-artifact-ids.outputs.display-name}}
 
       - name: 📤 Upload app
-        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         id: artifact-mac-qt6
         with:
           name: qgis-${{steps.workflow-artifact-ids.outputs.filename}}-dmg

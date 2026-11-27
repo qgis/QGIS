@@ -362,11 +362,11 @@ void QgsAppDirectoryItemGuiProvider::populateContextMenu( QgsDataItem *item, QMe
 
   menu->addSeparator();
 
-  QAction *openFolder = new QAction( QgsApplication::getThemeIcon( u"mIconFolder.svg"_s ), tr( "Open Directory…" ), menu );
+  QAction *openFolder = new QAction( QgsApplication::getThemeIcon( u"mIconFolder.svg"_s ), tr( "Open Directory" ), menu );
   connect( openFolder, &QAction::triggered, this, [directoryItem] { QDesktopServices::openUrl( QUrl::fromLocalFile( directoryItem->dirPath() ) ); } );
   menu->addAction( openFolder );
 
-  if ( QgsGui::nativePlatformInterface()->capabilities() & QgsNative::NativeOpenTerminalAtPath )
+  if ( QgsGui::nativePlatformInterface()->capabilities() & QgsNative::Capability::NativeOpenTerminalAtPath )
   {
     QAction *openTerminal = new QAction( QgsApplication::getThemeIcon( u"mActionTerminal.svg"_s ), tr( "Open in Terminal…" ), menu );
     connect( openTerminal, &QAction::triggered, this, [directoryItem] { QgsGui::nativePlatformInterface()->openTerminalAtPath( directoryItem->dirPath() ); } );
@@ -378,7 +378,7 @@ void QgsAppDirectoryItemGuiProvider::populateContextMenu( QgsDataItem *item, QMe
   connect( propertiesAction, &QAction::triggered, this, [this, directoryItem, context] { showProperties( directoryItem, context ); } );
   menu->addAction( propertiesAction );
 
-  if ( QgsGui::nativePlatformInterface()->capabilities() & QgsNative::NativeFilePropertiesDialog )
+  if ( QgsGui::nativePlatformInterface()->capabilities() & QgsNative::Capability::NativeFilePropertiesDialog )
   {
     if ( QgsDirectoryItem *dirItem = qobject_cast<QgsDirectoryItem *>( item ) )
     {
@@ -790,7 +790,7 @@ void QgsAppFileItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *m
       menu->addMenu( manageFileMenu );
     }
 
-    if ( QgsGui::nativePlatformInterface()->capabilities() & QgsNative::NativeFilePropertiesDialog )
+    if ( QgsGui::nativePlatformInterface()->capabilities() & QgsNative::Capability::NativeFilePropertiesDialog )
     {
       if ( QFileInfo::exists( item->path() ) )
       {

@@ -48,7 +48,7 @@ using namespace pal;
 LabelPosition::LabelPosition( int id, double x1, double y1, double w, double h, double alpha, double cost, FeaturePart *feature, LabelDirectionToLine directionToLine, Qgis::LabelQuadrantPosition quadrant )
   : id( id )
   , feature( feature )
-  , alpha( alpha )
+  , alpha( QgsGeometryUtilsBase::normalizedAngle( alpha ) )
   , w( w )
   , h( h )
   , mQuadrant( quadrant )
@@ -59,13 +59,6 @@ LabelPosition::LabelPosition( int id, double x1, double y1, double w, double h, 
   nbPoints = 4;
   x.resize( nbPoints );
   y.resize( nbPoints );
-
-  // alpha take his value bw 0 and 2*pi rad
-  while ( this->alpha > 2 * M_PI )
-    this->alpha -= 2 * M_PI;
-
-  while ( this->alpha < 0 )
-    this->alpha += 2 * M_PI;
 
   const double beta = this->alpha + M_PI_2;
 
@@ -289,7 +282,7 @@ bool LabelPosition::isInConflict( const LabelPosition *lp ) const
       {
         try
         {
-#if GEOS_VERSION_MAJOR > 3 || ( GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR >= 10 )
+#if GEOS_VERSION_NUM >= GEOS_COMPUTE_VERSION( 3, 10, 0 )
           if ( GEOSPreparedDistanceWithin_r( geosctxt, lp->preparedOuterBoundsGeom() ? lp->preparedOuterBoundsGeom() : lp->preparedGeom(), mOuterBoundsGeos ? mOuterBoundsGeos.get() : mGeos, minDuplicateSeparation ) )
           {
             return true;
@@ -348,7 +341,7 @@ bool LabelPosition::isInConflictMultiPart( const LabelPosition *lp ) const
 
     try
     {
-#if GEOS_VERSION_MAJOR > 3 || ( GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR >= 10 )
+#if GEOS_VERSION_NUM >= GEOS_COMPUTE_VERSION( 3, 10, 0 )
       if ( GEOSPreparedDistanceWithin_r( geosctxt, preparedMultiPartGeom(), lp->multiPartGeom(), minSeparation ) )
       {
         return true;
@@ -418,7 +411,7 @@ void LabelPosition::createOuterBoundsGeom()
   mOuterBoundsY[4] = mOuterBoundsY[0];
 
   GEOSCoordSequence *coord = nullptr;
-#if GEOS_VERSION_MAJOR > 3 || ( GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR >= 10 )
+#if GEOS_VERSION_NUM >= GEOS_COMPUTE_VERSION( 3, 10, 0 )
   // use optimised method if we don't have to force close an open ring
   coord = GEOSCoordSeq_copyFromArrays_r( geosctxt, mOuterBoundsX.data(), mOuterBoundsY.data(), nullptr, nullptr, 5 );
 #else

@@ -494,11 +494,11 @@ bool QgsRasterAttributeTable::insertRow( int position, const QVariantList &rowDa
     {
       dataValid.append( QVariant() );
     }
-    else if ( !cell.canConvert( type ) || !cell.convert( type ) )
+    else if ( !cell.canConvert( QMetaType( type ) ) || !cell.convert( QMetaType( type ) ) )
     {
       if ( errorMessage )
       {
-        *errorMessage = tr( "Row data at column %1 cannot be converted to field type (%2)." ).arg( idx ).arg( QVariant::typeToName( type ) );
+        *errorMessage = tr( "Row data at column %1 cannot be converted to field type (%2)." ).arg( idx ).arg( QMetaType( type ).name() );
       }
       return false;
     }
@@ -552,7 +552,7 @@ bool QgsRasterAttributeTable::writeToFile( const QString &path, QString *errorMe
 
   cleanedPath = QgsFileUtils::ensureFileNameHasExtension( cleanedPath, { { u".vat"_s } } );
 
-  writer.reset( QgsVectorFileWriter::create( cleanedPath, qgisFields(), Qgis::WkbType::NoGeometry, QgsCoordinateReferenceSystem(), QgsCoordinateTransformContext(), options ) );
+  writer = QgsVectorFileWriter::create( cleanedPath, qgisFields(), Qgis::WkbType::NoGeometry, QgsCoordinateReferenceSystem(), QgsCoordinateTransformContext(), options );
 
   cleanedPath.append( u".dbf"_s );
 
@@ -776,7 +776,8 @@ bool QgsRasterAttributeTable::setValue( const int row, const int column, const Q
   }
 
   QVariant newVal = value;
-  if ( column >= mFields.length() || !value.canConvert( mFields.at( column ).type ) || !newVal.convert( mFields.at( column ).type ) )
+  QMetaType fieldType = QMetaType( mFields.at( column ).type );
+  if ( column >= mFields.length() || !value.canConvert( fieldType ) || !newVal.convert( fieldType ) )
   {
     return false;
   }

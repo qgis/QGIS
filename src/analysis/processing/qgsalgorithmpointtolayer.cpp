@@ -30,7 +30,10 @@ QString QgsPointToLayerAlgorithm::name() const
 
 void QgsPointToLayerAlgorithm::initAlgorithm( const QVariantMap & )
 {
-  addParameter( new QgsProcessingParameterPoint( u"INPUT"_s, QObject::tr( "Point" ) ) );
+  auto inputParam = std::make_unique<QgsProcessingParameterPoint>( u"INPUT"_s, QObject::tr( "Point" ) );
+  inputParam->setHelp( QObject::tr( "Input point, including CRS info. If the CRS is not provided, the Project CRS will be used. The point can be specified by clicking on the map canvas." ) );
+  addParameter( inputParam.release() );
+
   addParameter( new QgsProcessingParameterFeatureSink( u"OUTPUT"_s, QObject::tr( "Point" ), Qgis::ProcessingSourceType::VectorPoint ) );
 }
 

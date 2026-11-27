@@ -117,7 +117,7 @@ QVariant QgsAggregateCalculator::calculate( Qgis::Aggregate aggregate, const QSt
   if ( context )
     request.setExpressionContext( *context );
 
-  request.setFeedback( feedback ? feedback : context->feedback() );
+  request.setFeedback( feedback ? feedback : ( context ? context->feedback() : nullptr ) );
 
   //determine result type
   QMetaType::Type resultType = QMetaType::Type::Double;
@@ -430,7 +430,7 @@ QVariant QgsAggregateCalculator::calculate(
         if ( resultType == QMetaType::Type::UnknownType )
           typeString = QObject::tr( "null" );
         else
-          typeString = resultType == QMetaType::Type::QString ? QObject::tr( "string" ) : QVariant::typeToName( resultType );
+          typeString = resultType == QMetaType::Type::QString ? QObject::tr( "string" ) : QMetaType( resultType ).name();
 
         if ( error )
           *error = expression ? QObject::tr( "Cannot calculate %1 on %3 values" ).arg( displayName( aggregate ), typeString )

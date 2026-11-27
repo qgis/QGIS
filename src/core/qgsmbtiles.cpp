@@ -59,6 +59,9 @@ bool QgsMbTiles::finalize()
   if ( !mDeferredIndexCreation ) // nothing to do!
     return true;
 
+  QString errorMessage;
+  mDatabase.exec( u"PRAGMA journal_mode = DELETE;"_s, errorMessage );
+
   const int result = mDatabase.exec( u"CREATE UNIQUE INDEX IF NOT EXISTS tile_index ON tiles (zoom_level, tile_column, tile_row);"_s, mLastError );
 
   return result == SQLITE_OK;

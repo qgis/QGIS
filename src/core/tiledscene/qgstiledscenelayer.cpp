@@ -61,7 +61,10 @@ QgsTiledSceneLayer::QgsTiledSceneLayer( const QString &uri, const QString &baseN
 #endif
 }
 
-QgsTiledSceneLayer::~QgsTiledSceneLayer() = default;
+QgsTiledSceneLayer::~QgsTiledSceneLayer()
+{
+  emit willBeDeleted();
+}
 
 QgsTiledSceneLayer *QgsTiledSceneLayer::clone() const
 {

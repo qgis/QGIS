@@ -63,8 +63,10 @@ class QgsLayerTreeMapCanvasBridge;
 class QgsLayerTreeView;
 class QgsLayout;
 class QgsMasterLayoutInterface;
+class QgsProcessingModelAlgorithm;
 class QgsLayoutCustomDropHandler;
 class QgsLayoutDesignerDialog;
+class QgsModelDesignerDialog;
 class QgsLayoutDesignerInterface;
 class QgsMapCanvas;
 class QgsMapCanvasDockWidget;
@@ -268,7 +270,6 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     static const QgsSettingsEntryString *settingsProjOpenAtLaunchPath SIP_SKIP;
     static const QgsSettingsEntryBool *settingsProjOpenedOKAtLaunch SIP_SKIP;
     static const QgsSettingsEntryBool *settingsShowScriptWarning SIP_SKIP;
-    static const QgsSettingsEntryBool *settingsDisplayWaylandWarning SIP_SKIP;
     static const QgsSettingsEntryBool *settingsRestoreDefaultWindowState SIP_SKIP;
 
     //! Constructor
@@ -809,6 +810,12 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     //! Returns the CAD dock widget
     QgsAdvancedDigitizingDockWidget *cadDockWidget() { return mAdvancedDigitizingDockWidget; }
 
+    /**
+     * Returns pointer to the app processing utils
+     * \since QGIS 4.4
+     */
+    QgsAppProcessingUtils *appProcessingUtils() { return mAppProcessingUtils.get(); }
+
     //! Returns map overview canvas
     QgsMapOverviewCanvas *mapOverviewCanvas() { return mOverviewCanvas; }
 
@@ -1081,7 +1088,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     void layerProperties();
 
     //! show the attribute table for the currently selected layer
-    void attributeTable( QgsAttributeTableFilterModel::FilterMode filter = QgsAttributeTableFilterModel::ShowAll, const QString &filterExpression = QString() );
+    void attributeTable( Qgis::AttributeTableFilterMode filter = Qgis::AttributeTableFilterMode::ShowAll, const QString &filterExpression = QString() );
 
     void fieldCalculator();
 
@@ -2948,6 +2955,8 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
 
     //! Project template directories to watch
     QFileSystemWatcher mProjectTemplateWatcher;
+
+    QPointer< QgsToolButtonAction > mProjectTemplateToolbarAction;
 
     friend class QgsCanvasRefreshBlocker;
     friend class QgsMapToolsDigitizingTechniqueManager;

@@ -14,6 +14,8 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
+#include "qgsconfig.h"
+
 #include <limits>
 #include <memory>
 
@@ -2486,7 +2488,7 @@ void TestQgsProcessingAlgsPt2::checkValidity()
   it.nextFeature( f );
   QCOMPARE( f.attributes(), QgsAttributes() << 1 << u"Self-intersection"_s );
 
-#ifdef WITH_SFCGAL
+#ifdef HAVE_SFCGAL
   // SFCGAL method
   parameters.insert( u"METHOD"_s, 3 );
 

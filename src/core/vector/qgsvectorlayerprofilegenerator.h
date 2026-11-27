@@ -153,6 +153,8 @@ class CORE_EXPORT QgsVectorLayerProfileGenerator : public QgsAbstractProfileSurf
     void clampAltitudes( QgsLineString *lineString, const QgsPoint &centroid, double offset ) const;
     bool clampAltitudes( QgsPolygon *polygon, double offset ) const;
 
+    void insertSurfaceSeparators();
+
     QString mId;
     std::unique_ptr<QgsFeedback> mFeedback = nullptr;
 
@@ -202,6 +204,8 @@ class CORE_EXPORT QgsVectorLayerProfileGenerator : public QgsAbstractProfileSurf
 
     // NOT for use in the background thread!
     QPointer< QgsVectorLayer > mLayer;
+
+    QVector<QPair<double, double>> mSurfaceIntervals;
 
     friend class QgsVectorLayerProfileResults;
 };

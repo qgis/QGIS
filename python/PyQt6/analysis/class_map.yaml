@@ -86,7 +86,6 @@ QgsGcpPoint.sourcePoint: src/analysis/georeferencing/qgsgcppoint.h#L57
 QgsGcpPoint.transformedDestinationPoint: src/analysis/georeferencing/qgsgcppoint.h#L99
 QgsGcpPoint: src/analysis/georeferencing/qgsgcppoint.h#L30
 QgsGcpTransformerInterface.clone: src/analysis/georeferencing/qgsgcptransformer.h#L73
-QgsGcpTransformerInterface.create: src/analysis/georeferencing/qgsgcptransformer.h#L116
 QgsGcpTransformerInterface.createFromParameters: src/analysis/georeferencing/qgsgcptransformer.h#L128
 QgsGcpTransformerInterface.method: src/analysis/georeferencing/qgsgcptransformer.h#L95
 QgsGcpTransformerInterface.methodToString: src/analysis/georeferencing/qgsgcptransformer.h#L109
@@ -142,7 +141,6 @@ QgsGeometryCheckFactoryT.flags: src/analysis/vector/geometry_checker/qgsgeometry
 QgsGeometryCheckFactoryT.id: src/analysis/vector/geometry_checker/qgsgeometrycheckfactory.h#L97
 QgsGeometryCheckFactoryT.isCompatible: src/analysis/vector/geometry_checker/qgsgeometrycheckfactory.h#L99
 QgsGeometryCheckFactoryT: src/analysis/vector/geometry_checker/qgsgeometrycheckfactory.h#L90
-QgsGeometryCheckRegistry.geometryCheck: src/analysis/vector/geometry_checker/qgsgeometrycheckregistry.h#L64
 QgsGeometryCheckRegistry.registerGeometryCheck: src/analysis/vector/geometry_checker/qgsgeometrycheckregistry.h#L78
 QgsGeometryCheckRegistry: src/analysis/vector/geometry_checker/qgsgeometrycheckregistry.h#L41
 QgsGeometryCheckResolutionMethod.description: src/analysis/vector/geometry_checker/qgsgeometrycheckresolutionmethod.h#L55
@@ -294,7 +292,6 @@ QgsPdalAlgorithms.supportsNonFileBasedOutput: src/analysis/processing/pdal/qgspd
 QgsPdalAlgorithms.svgIconPath: src/analysis/processing/pdal/qgspdalalgorithms.h#L43
 QgsPdalAlgorithms: src/analysis/processing/pdal/qgspdalalgorithms.h#L32
 QgsRasterCalcNode.cleanRasterReferences: src/analysis/raster/qgsrastercalcnode.h#L138
-QgsRasterCalcNode.parseRasterCalcString: src/analysis/raster/qgsrastercalcnode.h#L125
 QgsRasterCalcNode.referencedLayerNames: src/analysis/raster/qgsrastercalcnode.h#L132
 QgsRasterCalcNode.setLeft: src/analysis/raster/qgsrastercalcnode.h#L99
 QgsRasterCalcNode.setRight: src/analysis/raster/qgsrastercalcnode.h#L100
