@@ -160,14 +160,41 @@ Set ``referenceValue`` used when default display type is
 .. versionadded:: 4.4
 %End
 
-        QString resolution() const;
+        static QString resolutionString( Qgis::WmsDimensionResolutionType dimResolutionType, const QString &dimCustomResolution );
 %Docstring
 Returns the dimension resolution (periodicity) of the available values.
+
+:param dimResolutionType: Base resolution type.
+:param dimCustomResolution: Text with the custom resolution, if any.
 
 .. versionadded:: 4.6
 %End
 
-        static QString resolutionTypeToString( Qgis::WmsDimensionResolutionType resolutionUnit );
+        QString intervalResolutionString( const QVariant &minimumValue, const QVariant &maximumValue ) const;
+%Docstring
+Returns a display string corresponding to the dimension interval and
+resolution.
+
+The display string is ready to be used in the capabilities document. The
+interval is defined based on the ``minimumValue``, the ``maximumValue``,
+and the resolution set internally.
+
+.. versionadded:: 4.6
+%End
+
+        static QString intervalResolutionString( const QVariant &minimumValue, const QVariant &maximumValue, Qgis::WmsDimensionResolutionType dimResolutionType, const QString &dimCustomResolution );
+%Docstring
+Returns a display string corresponding to the dimension interval and
+resolution.
+
+The display string is ready to be used in the capabilities document. The
+interval is defined based on the ``minimumValue``, the ``maximumValue``,
+the ``dimResolutionType``, and the ``dimCustomResolution``, if any.
+
+.. versionadded:: 4.6
+%End
+
+        static QString resolutionTypeToString( Qgis::WmsDimensionResolutionType resolutionType );
 %Docstring
 Returns a display string corresponding to the dimension resolution
 (periodicity) type of the available values.

@@ -1405,11 +1405,7 @@ namespace QgsWms
               QString dimValuesText;
               if ( dim.useInterval )
               {
-                dimValuesText = u"%1/%2"_s.arg( values.first().toString(), values.last().toString() );
-                if ( !dim.resolution().isEmpty() )
-                {
-                  dimValuesText += u"/%1"_s.arg( dim.resolution() );
-                }
+                dimValuesText = dim.intervalResolutionString( values.first(), values.last() );
               }
               else
               {

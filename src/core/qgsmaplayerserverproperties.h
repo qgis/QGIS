@@ -221,16 +221,39 @@ class CORE_EXPORT QgsServerWmsDimensionProperties
         /**
      * Returns the dimension resolution (periodicity) of the available values.
      *
+     * \param dimResolutionType Base resolution type.
+     * \param dimCustomResolution Text with the custom resolution, if any.
+     *
      * \since QGIS 4.6
      */
-        QString resolution() const;
+        static QString resolutionString( Qgis::WmsDimensionResolutionType dimResolutionType, const QString &dimCustomResolution );
+
+        /**
+     * Returns a display string corresponding to the dimension interval and resolution.
+     *
+     * The display string is ready to be used in the capabilities document.
+     * The interval is defined based on the \a minimumValue, the \a maximumValue, and the resolution set internally.
+     *
+     * \since QGIS 4.6
+     */
+        QString intervalResolutionString( const QVariant &minimumValue, const QVariant &maximumValue ) const;
+
+        /**
+       * Returns a display string corresponding to the dimension interval and resolution.
+       *
+       * The display string is ready to be used in the capabilities document.
+       * The interval is defined based on the \a minimumValue, the \a maximumValue, the \a dimResolutionType, and the \a dimCustomResolution, if any.
+       *
+       * \since QGIS 4.6
+       */
+        static QString intervalResolutionString( const QVariant &minimumValue, const QVariant &maximumValue, Qgis::WmsDimensionResolutionType dimResolutionType, const QString &dimCustomResolution );
 
         /**
      * Returns a display string corresponding to the dimension resolution (periodicity) type of the available values.
      *
      * \since QGIS 4.6
      */
-        static QString resolutionTypeToString( Qgis::WmsDimensionResolutionType resolutionUnit );
+        static QString resolutionTypeToString( Qgis::WmsDimensionResolutionType resolutionType );
 
         QString name;
         QString fieldName;

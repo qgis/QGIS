@@ -106,15 +106,15 @@ void QgsServerMetadataUrlProperties::writeXml( QDomNode &layer_node, QDomDocumen
 
 // QgsMapLayerServerProperties::WmsDimensionInfo
 
-QString QgsMapLayerServerProperties::WmsDimensionInfo::resolution() const
+QString QgsMapLayerServerProperties::WmsDimensionInfo::resolutionString( Qgis::WmsDimensionResolutionType dimResolutionType, const QString &dimCustomResolution )
 {
-  switch ( resolutionType )
+  switch ( dimResolutionType )
   {
     case Qgis::WmsDimensionResolutionType::Disabled:
       return u""_s;
 
     case Qgis::WmsDimensionResolutionType::Custom:
-      return customResolution.trimmed();
+      return dimCustomResolution.trimmed();
 
     case Qgis::WmsDimensionResolutionType::Yearly:
       return u"P1Y"_s;
@@ -141,9 +141,14 @@ QString QgsMapLayerServerProperties::WmsDimensionInfo::resolution() const
   BUILTIN_UNREACHABLE
 }
 
-QString QgsMapLayerServerProperties::WmsDimensionInfo::resolutionTypeToString( Qgis::WmsDimensionResolutionType resolutionUnit )
+QString QgsMapLayerServerProperties::WmsDimensionInfo::intervalResolutionString( const QVariant &minimumValue, const QVariant &maximumValue ) const
 {
-  switch ( resolutionUnit )
+  return intervalResolutionString( minimumValue, maximumValue, resolutionType, customResolution );
+}
+
+QString QgsMapLayerServerProperties::WmsDimensionInfo::resolutionTypeToString( Qgis::WmsDimensionResolutionType resolutionType )
+{
+  switch ( resolutionType )
   {
     case Qgis::WmsDimensionResolutionType::Disabled:
       return QObject::tr( "Disabled" );
@@ -174,6 +179,15 @@ QString QgsMapLayerServerProperties::WmsDimensionInfo::resolutionTypeToString( Q
   }
 
   BUILTIN_UNREACHABLE
+}
+
+QString QgsMapLayerServerProperties::WmsDimensionInfo::intervalResolutionString(
+  const QVariant &minimumValue, const QVariant &maximumValue, Qgis::WmsDimensionResolutionType dimResolutionType, const QString &dimCustomResolution
+)
+{
+  const QString formattedInterval = u"%1/%2"_s.arg( minimumValue.toString(), maximumValue.toString() );
+  const QString formattedResolution = resolutionString( dimResolutionType, dimCustomResolution );
+  return formattedResolution.isEmpty() ? formattedInterval : u"%1/%2"_s.arg( formattedInterval, formattedResolution );
 }
 
 // QgsServerWmsDimensionProperties
