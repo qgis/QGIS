@@ -76,7 +76,7 @@ def setup_oauth(
     cfgjson = {
         "accessMethod": 0,
         "apiKey": "",
-        "clientId": "qgis_oauth_test",
+        "clientId": "my_id",  # must match client id from SimpleValidator.authenticate_client in qgis_wrapped_server
         "clientSecret": "",
         "configType": 1,
         "grantFlow": 2,
