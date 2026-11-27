@@ -811,6 +811,7 @@ void QgsAttributeTableDialog::mActionAddFeatureViaAttributeForm_triggered()
   QgsAttributeTableModel *masterModel = mMainView->masterModel();
 
   QgsVectorLayerToolsContext context;
+  context.setParentWidget( this );
 
   const QgsFeatureAction::AddFeatureResult result = action.addFeature( context );
   switch ( result )

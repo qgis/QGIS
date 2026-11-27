@@ -102,7 +102,7 @@ class APP_EXPORT QgsFeatureAction : public QAction
     void hideParentDialog( QWidget *targetWidget );
 
   private:
-    QgsAttributeDialog *newDialog( bool cloneFeature );
+    QgsAttributeDialog *newDialog( bool cloneFeature, QWidget *parent = nullptr );
 
     QgsVectorLayer *mLayer = nullptr;
     QgsFeature *mFeature = nullptr;
