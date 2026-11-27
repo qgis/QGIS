@@ -545,7 +545,7 @@ void QgsLayerStylingWidget::updateCurrentWidgetLayer()
 
     if ( !isReusableWidget )
     {
-      delete current;
+      current->deleteLater();
       current = nullptr;
     }
   }
