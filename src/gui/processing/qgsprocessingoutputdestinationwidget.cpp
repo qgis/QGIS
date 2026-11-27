@@ -237,7 +237,11 @@ void QgsProcessingLayerOutputDestinationWidget::addOpenAfterRunningOption()
 {
   Q_ASSERT( mOpenAfterRunningCheck == nullptr );
   const bool isFile = mParameter->type() == QgsProcessingParameterFileDestination::typeName();
-  mOpenAfterRunningCheck = new QCheckBox( isFile ? tr( "Open output file with the default application after running algorithm" ) : tr( "Open output file after running algorithm" ) );
+  mOpenAfterRunningCheck = new QCheckBox( tr( "Open output file after running algorithm" ) );
+  if ( isFile )
+  {
+    mOpenAfterRunningCheck->setToolTip( tr( "If checked, the output file will be opened with the default application after the algorithm finishes." ) );
+  }
   mOpenAfterRunningCheck->setChecked( !isFile && !outputIsSkipped() );
   mOpenAfterRunningCheck->setEnabled( !outputIsSkipped() );
   gridLayout->addWidget( mOpenAfterRunningCheck, 1, 0, 1, 2 );
