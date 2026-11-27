@@ -8479,7 +8479,7 @@ QWidget *QgsProcessingOutputWidgetWrapper::createWidget()
                 || destParam->type() == QgsProcessingParameterVectorDestination::typeName()
                 || destParam->type() == QgsProcessingParameterPointCloudDestination::typeName()
                 || destParam->type() == QgsProcessingParameterVectorTileDestination::typeName()
-                || destParam->type() == QgsProcessingParameterFileDestination::typeName() ) )
+                || ( destParam->type() == QgsProcessingParameterFileDestination::typeName() && static_cast<const QgsProcessingParameterFileDestination *>( destParam )->supportsOpenOnCompletion() ) ) )
         mOutputWidget->addOpenAfterRunningOption();
 
       return mOutputWidget;

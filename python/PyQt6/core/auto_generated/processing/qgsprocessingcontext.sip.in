@@ -345,6 +345,44 @@ on completion of the algorithm or model.
 .. versionadded:: 3.2
 %End
 
+    QStringList filesToOpenOnCompletion() const /HoldGIL/;
+%Docstring
+Returns the paths of the files to open with system default application
+when the algorithm finishes.
+
+.. seealso:: :py:func:`QgsProcessingParameterFileDestination.supportsOpenOnCompletion`
+
+.. seealso:: :py:func:`addFileToOpenOnCompletion`
+
+.. seealso:: :py:func:`setFilesToOpenOnCompletion`
+
+.. versionadded:: 4.6
+%End
+
+    void setFilesToOpenOnCompletion( const QStringList &paths ) /HoldGIL/;
+%Docstring
+Sets the ``paths`` of the files to open with their default application
+upon completion of the algorithm.
+
+.. seealso:: :py:func:`filesToOpenOnCompletion`
+
+.. seealso:: :py:func:`addFileToOpenOnCompletion`
+
+.. versionadded:: 4.6
+%End
+
+    void addFileToOpenOnCompletion( const QString &path ) /HoldGIL/;
+%Docstring
+Adds a file ``path`` to open with its default application upon
+completion of the algorithm, unless it is there already.
+
+.. seealso:: :py:func:`filesToOpenOnCompletion`
+
+.. seealso:: :py:func:`setFilesToOpenOnCompletion`
+
+.. versionadded:: 4.6
+%End
+
     Qgis::InvalidGeometryCheck invalidGeometryCheck() const /HoldGIL/;
 %Docstring
 Returns the behavior used for checking invalid geometries in input
@@ -466,8 +504,9 @@ current thread matches the existing thread affinity for the context (see
 Takes the results from another ``context`` and merges them with the
 results currently stored in this context. This includes settings like
 any layers loaded in the
-:py:func:`~QgsProcessingContext.temporaryLayerStore` and
-:py:func:`~QgsProcessingContext.layersToLoadOnCompletion`. This is only
+:py:func:`~QgsProcessingContext.temporaryLayerStore`,
+:py:func:`~QgsProcessingContext.layersToLoadOnCompletion` and
+:py:func:`~QgsProcessingContext.filesToOpenOnCompletion`. This is only
 safe to call when both this context and the other ``context`` share the
 same :py:func:`~QgsProcessingContext.thread` affinity, and that thread
 is the current thread.

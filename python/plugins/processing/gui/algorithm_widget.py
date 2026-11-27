@@ -30,7 +30,6 @@ from qgis.core import (
     QgsProcessingAlgRunnerTask,
     QgsProcessingFeatureSourceDefinition,
     QgsProcessingOutputHtml,
-    QgsProcessingParameterFileDestination,
     QgsProxyProgressTask,
 )
 from qgis.gui import (
@@ -40,8 +39,7 @@ from qgis.gui import (
     QgsProcessingParametersGenerator,
 )
 from qgis.PyQt import sip
-from qgis.PyQt.QtCore import QCoreApplication, QUrl
-from qgis.PyQt.QtGui import QDesktopServices
+from qgis.PyQt.QtCore import QCoreApplication
 from qgis.PyQt.QtWidgets import (
     QDialogButtonBox,
     QMainWindow,
@@ -420,15 +418,6 @@ class AlgorithmWidget(QgsProcessingAlgorithmWidget):
             ):
                 self.resetGui()
                 return
-            for param in self.algorithm().destinationParameterDefinitions():
-                wrapper = self.parametersWidget().wrapper(param.name())
-                if (
-                    param.type() == QgsProcessingParameterFileDestination.typeName()
-                    and result.get(param.name())
-                    and wrapper
-                    and wrapper.customProperties().get("OPEN_AFTER_RUNNING")
-                ):
-                    QDesktopServices.openUrl(QUrl.fromLocalFile(result[param.name()]))
 
         self.setExecuted(True)
         self.setResults(result)

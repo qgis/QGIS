@@ -326,6 +326,15 @@ class CORE_EXPORT QgsProcessingOutputLayerDefinition
     QgsProject *destinationProject = nullptr;
 
     /**
+     * TRUE if the file is to open with its default application when the algorithm finishes.
+     * Only for a QgsProcessingParameterFileDestination that supports it.
+     * Layers are loaded into destinationProject.
+     * \see QgsProcessingParameterFileDestination::setSupportsOpenOnCompletion()
+     * \since QGIS 4.6
+     */
+    bool openFileOnCompletion = false;
+
+    /**
      * Name to use for sink if it's to be loaded into a destination project.
      */
     QString destinationName;
@@ -1496,6 +1505,9 @@ class CORE_EXPORT QgsProcessingParameters
 
     /**
      * Evaluates the parameter with matching \a definition and \a value to a file based output destination.
+     * For a file destination that supports opening on completion
+     * and which QgsProcessingOutputLayerDefinition::openFileOnCompletion is set,
+     * the file is added to QgsProcessingContext::filesToOpenOnCompletion().
      * \since QGIS 3.4
      */
     static QString parameterAsFileOutput( const QgsProcessingParameterDefinition *definition, const QVariant &value, QgsProcessingContext &context );
@@ -3930,6 +3942,28 @@ class CORE_EXPORT QgsProcessingParameterFileDestination : public QgsProcessingDe
      */
     void setFileFilter( const QString &filter );
 
+    /**
+     * Returns TRUE if the file can be opened with the system default application when the algorithm finishes.
+     *
+     * \see setSupportsOpenOnCompletion()
+     * \see QgsProcessingContext::filesToOpenOnCompletion()
+     *
+     * \since QGIS 4.6
+     */
+    bool supportsOpenOnCompletion() const;
+
+    /**
+     * Sets whether the file can be opened with the system default application when the algorithm finishes.
+     * The algorithm dialog then offers it.
+     * This is FALSE by default.
+     *
+     * \see supportsOpenOnCompletion()
+     * \see QgsProcessingContext::filesToOpenOnCompletion()
+     *
+     * \since QGIS 4.6
+     */
+    void setSupportsOpenOnCompletion( bool supports );
+
     QVariantMap toVariantMap() const override;
     bool fromVariantMap( const QVariantMap &map ) override;
 
@@ -3941,6 +3975,7 @@ class CORE_EXPORT QgsProcessingParameterFileDestination : public QgsProcessingDe
 
   private:
     QString mFileFilter;
+    bool mSupportsOpenOnCompletion = false; // TODO QGIS 5 make it true by default
 };
 
 /**

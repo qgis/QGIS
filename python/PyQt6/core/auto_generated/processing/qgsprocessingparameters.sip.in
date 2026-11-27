@@ -237,6 +237,8 @@ resulting sink/layer after completing processing.
 
     QgsProject *destinationProject;
 
+    bool openFileOnCompletion;
+
     QString destinationName;
 
     QVariantMap createOptions;
@@ -1511,7 +1513,11 @@ output destination.
     static QString parameterAsFileOutput( const QgsProcessingParameterDefinition *definition, const QVariant &value, QgsProcessingContext &context );
 %Docstring
 Evaluates the parameter with matching ``definition`` and ``value`` to a
-file based output destination.
+file based output destination. For a file destination that supports
+opening on completion and which
+:py:class:`QgsProcessingOutputLayerDefinition`.openFileOnCompletion is
+set, the file is added to
+:py:func:`QgsProcessingContext.filesToOpenOnCompletion()`.
 
 .. versionadded:: 3.4
 %End
@@ -4374,6 +4380,31 @@ Sets the file ``filter`` string for file destinations compatible with
 this parameter.
 
 .. seealso:: :py:func:`fileFilter`
+%End
+
+    bool supportsOpenOnCompletion() const;
+%Docstring
+Returns ``True`` if the file can be opened with the system default
+application when the algorithm finishes.
+
+.. seealso:: :py:func:`setSupportsOpenOnCompletion`
+
+.. seealso:: :py:func:`QgsProcessingContext.filesToOpenOnCompletion`
+
+.. versionadded:: 4.6
+%End
+
+    void setSupportsOpenOnCompletion( bool supports );
+%Docstring
+Sets whether the file can be opened with the system default application
+when the algorithm finishes. The algorithm dialog then offers it. This
+is ``False`` by default.
+
+.. seealso:: :py:func:`supportsOpenOnCompletion`
+
+.. seealso:: :py:func:`QgsProcessingContext.filesToOpenOnCompletion`
+
+.. versionadded:: 4.6
 %End
 
     virtual QVariantMap toVariantMap() const;

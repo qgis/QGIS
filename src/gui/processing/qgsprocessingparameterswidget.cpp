@@ -139,10 +139,17 @@ QVariantMap QgsProcessingParametersWidget::createAndValidateParameters(
 
       QVariant value = wrapper->parameterValue();
 
-      QgsProject *destinationProject = nullptr;
-      if ( wrapper->customProperties().value( u"OPEN_AFTER_RUNNING"_s ).toBool() )
+      const bool openAfterRunning = wrapper->customProperties().value( u"OPEN_AFTER_RUNNING"_s ).toBool();
+      QgsProject *destinationProject = openAfterRunning ? QgsProject::instance() : nullptr;
+
+      // a file output stays a string unless it is to open: only algorithms that opted in accept a definition
+      // otherwise, algorithm relying on parameterAsString will break
+      // TODO QGIS 5: make all file outputs return a QgsProcessingOutputLayerDefinition?
+      if ( openAfterRunning && definition->type() == QgsProcessingParameterFileDestination::typeName() && !QgsVariantUtils::isNull( value ) )
       {
-        destinationProject = QgsProject::instance();
+        QgsProcessingOutputLayerDefinition fileDefinition( value.toString() );
+        fileDefinition.openFileOnCompletion = true;
+        value = QVariant::fromValue( fileDefinition );
       }
 
       if ( value.userType() == qMetaTypeId<QgsProcessingOutputLayerDefinition>() )

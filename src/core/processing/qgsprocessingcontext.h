@@ -402,6 +402,34 @@ class CORE_EXPORT QgsProcessingContext
     }
 
     /**
+     * Returns the paths of the files to open with system default application when the algorithm finishes.
+     *
+     * \see QgsProcessingParameterFileDestination::supportsOpenOnCompletion()
+     * \see addFileToOpenOnCompletion()
+     * \see setFilesToOpenOnCompletion()
+     * \since QGIS 4.6
+     */
+    QStringList filesToOpenOnCompletion() const SIP_HOLDGIL { return mFilesToOpenOnCompletion; }
+
+    /**
+     * Sets the \a paths of the files to open with their default application upon completion of the algorithm.
+     *
+     * \see filesToOpenOnCompletion()
+     * \see addFileToOpenOnCompletion()
+     * \since QGIS 4.6
+     */
+    void setFilesToOpenOnCompletion( const QStringList &paths ) SIP_HOLDGIL { mFilesToOpenOnCompletion = paths; }
+
+    /**
+     * Adds a file \a path to open with its default application upon completion of the algorithm,
+     * unless it is there already.
+     * \see filesToOpenOnCompletion()
+     * \see setFilesToOpenOnCompletion()
+     * \since QGIS 4.6
+     */
+    void addFileToOpenOnCompletion( const QString &path ) SIP_HOLDGIL;
+
+    /**
      * Returns the behavior used for checking invalid geometries in input layers.
      * \see setInvalidGeometryCheck()
      */
@@ -539,8 +567,8 @@ class CORE_EXPORT QgsProcessingContext
 
     /**
      * Takes the results from another \a context and merges them with the results currently
-     * stored in this context. This includes settings like any layers loaded in the temporaryLayerStore()
-     * and layersToLoadOnCompletion().
+     * stored in this context. This includes settings like any layers loaded in the temporaryLayerStore(),
+     * layersToLoadOnCompletion() and filesToOpenOnCompletion().
      * This is only safe to call when both this context and the other \a context share the same
      * thread() affinity, and that thread is the current thread.
      */
@@ -833,6 +861,7 @@ class CORE_EXPORT QgsProcessingContext
     std::function< void( const QgsFeature & ) > mTransformErrorCallback;
     QString mDefaultEncoding;
     QMap< QString, LayerDetails > mLayersToLoadOnCompletion;
+    QStringList mFilesToOpenOnCompletion;
 
     QPointer< QgsProcessingFeedback > mFeedback;
 

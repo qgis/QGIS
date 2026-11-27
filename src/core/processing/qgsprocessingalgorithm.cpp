@@ -651,17 +651,23 @@ bool QgsProcessingAlgorithm::prepare( const QVariantMap &parameters, QgsProcessi
   // cppcheck-suppress assertWithSideEffect
   Q_ASSERT_X( QThread::currentThread() == context.temporaryLayerStore()->thread(), "QgsProcessingAlgorithm::prepare", "prepare() must be called from the same thread as context was created in" );
   Q_ASSERT_X( !mHasPrepared, "QgsProcessingAlgorithm::prepare", "prepare() has already been called for the algorithm instance" );
+  mFilesToOpenBeforeRun = context.filesToOpenOnCompletion();
   try
   {
     mHasPrepared = prepareAlgorithm( parameters, context, feedback );
-    return mHasPrepared;
   }
   catch ( QgsProcessingException &e )
   {
     QgsMessageLog::logMessage( e.what(), QObject::tr( "Processing" ), Qgis::MessageLevel::Critical );
     feedback->reportError( e.what() );
-    return false;
   }
+
+  if ( !mHasPrepared )
+  {
+    context.setFilesToOpenOnCompletion( mFilesToOpenBeforeRun );
+  }
+
+  return mHasPrepared;
 }
 
 QVariantMap QgsProcessingAlgorithm::runPrepared( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
@@ -752,6 +758,11 @@ QVariantMap QgsProcessingAlgorithm::postProcess( QgsProcessingContext &context, 
     mLocalContext.reset();
   }
 
+  // the files of a failed run may be incomplete
+  if ( !runResult )
+  {
+    context.setFilesToOpenOnCompletion( mFilesToOpenBeforeRun );
+  }
   mHasPostProcessed = true;
   if ( runResult )
   {

@@ -917,6 +917,10 @@ class QgsAcademicReference;
 
     /**
      * Evaluates the parameter with matching \a name to a file based output destination.
+     * For a file destination supporting opening on completion,
+     * the file is added to QgsProcessingContext::filesToOpenOnCompletion().
+     *
+     * \see QgsProcessingParameterFileDestination::setSupportsOpenOnCompletion()
      */
     QString parameterAsFileOutput( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context ) const;
 
@@ -1207,6 +1211,8 @@ class QgsAcademicReference;
     bool mHasPrepared = false;
     bool mHasExecuted = false;
     bool mHasPostProcessed = false;
+    // kept in case the run fails to reset the files to be open
+    QStringList mFilesToOpenBeforeRun;
     std::unique_ptr< QgsProcessingContext > mLocalContext;
 
     bool createAutoOutputForParameter( const QgsProcessingParameterDefinition *parameter );
