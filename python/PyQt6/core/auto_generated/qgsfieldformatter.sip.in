@@ -57,6 +57,8 @@ This is an abstract base class and will always need to be subclassed.
 #include "qgsfieldformatter.h"
 %End
   public:
+    static const QString NULL_VALUE;
+
     QgsFieldFormatter();
 
     virtual ~QgsFieldFormatter();
