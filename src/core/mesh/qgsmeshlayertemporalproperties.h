@@ -78,10 +78,13 @@ class CORE_EXPORT QgsMeshLayerTemporalProperties : public QgsMapLayerTemporalPro
 
     /**
      * Sets the reference time and update the time extent from the temporal capabilities,
-     * if the temporal capabilities is null, set a void time extent (reference time to reference time)
+     * if the temporal capabilities are null, set a void time extent (reference time to reference time)
      *
      * \param referenceTime the reference time
      * \param capabilities the temporal capabilities of the data provider
+     *
+     * \note If the time zone of the \a referenceTime is not valid, the native time zone of the provider \a capabilities
+     * is used to define the reference time. If the temporal capabilities are null, or their native time zone is invalid, UTC is used as the time zone
      */
     void setReferenceTime( const QDateTime &referenceTime, const QgsDataProviderTemporalCapabilities *capabilities );
 
