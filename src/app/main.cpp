@@ -495,7 +495,11 @@ void myMessageOutput( QtMsgType type, const QMessageLogContext &, const QString 
            ||
 
            // coming from WebEngine:
-           msg.contains( "An OpenGL Core Profile was requested, but it is not supported on the current platform"_L1, Qt::CaseInsensitive ) )
+           msg.contains( "An OpenGL Core Profile was requested, but it is not supported on the current platform"_L1, Qt::CaseInsensitive )
+           ||
+
+           // ignore the warning happening on wayland when we do not have .desktop file
+           msg.contains( "Could not register app ID"_L1, Qt::CaseInsensitive ) )
         break;
 
       const thread_local QRegularExpression problematicSourceCodeRx( u".*[pP]roblematic .* source code.*"_s );
