@@ -1764,13 +1764,13 @@ class CORE_EXPORT QgsMapLayer : public QObject
      * Returns the message that should be notified by the provider to triggerRepaint
      *
      */
-    QString refreshOnNotifyMessage() const { return mRefreshOnNofifyMessage; }
+    QString refreshOnNotifyMessage() const { return mRefreshOnNotifyMessage; }
 
     /**
      * Returns TRUE if the refresh on provider nofification is enabled
      *
      */
-    bool isRefreshOnNotifyEnabled() const { return mIsRefreshOnNofifyEnabled; }
+    bool isRefreshOnNotifyEnabled() const { return mIsRefreshOnNotifyEnabled; }
 
     /**
      * Returns the XML properties of the original layer as they were when the layer
@@ -1991,7 +1991,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
      * if the notification message is equal to \param message
      *
      */
-    void setRefreshOnNofifyMessage( const QString &message ) { mRefreshOnNofifyMessage = message; }
+    void setRefreshOnNotifyMessage( const QString &message ) { mRefreshOnNotifyMessage = message; }
 
     /**
      * Sets the coordinate transform context to \a transformContext
@@ -2397,8 +2397,8 @@ class CORE_EXPORT QgsMapLayer : public QObject
      */
     Q_DECL_DEPRECATED bool hasDependencyCycle( const QSet<QgsMapLayerDependency> & ) const { return false; }
 
-    bool mIsRefreshOnNofifyEnabled = false;
-    QString mRefreshOnNofifyMessage;
+    bool mIsRefreshOnNotifyEnabled = false;
+    QString mRefreshOnNotifyMessage;
 
     //! Data provider key (name of the data provider)
     QString mProviderKey;

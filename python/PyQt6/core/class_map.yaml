@@ -9826,7 +9826,7 @@ QgsMapLayer.setName: src/core/qgsmaplayer.h#L303
 QgsMapLayer.setOpacity: src/core/qgsmaplayer.h#L539
 QgsMapLayer.setOriginalXmlProperties: src/core/qgsmaplayer.h#L1792
 QgsMapLayer.setProviderType: src/core/qgsmaplayer.h#L2356
-QgsMapLayer.setRefreshOnNofifyMessage: src/core/qgsmaplayer.h#L1994
+QgsMapLayer.setRefreshOnNotifyMessage: src/core/qgsmaplayer.h#L1994
 QgsMapLayer.setRefreshOnNotifyEnabled: src/core/qgsmaplayer.h#L1986
 QgsMapLayer.setRenderer3D: src/core/qgsmaplayer.h#L1630
 QgsMapLayer.setScaleBasedVisibility: src/core/qgsmaplayer.h#L1948
