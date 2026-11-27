@@ -17,7 +17,6 @@
 
 #include "qgsrasterlayertemporalpropertieswidget.h"
 
-#include "qgsapplication.h"
 #include "qgsdatetimeedit.h"
 #include "qgsexpressionbuilderdialog.h"
 #include "qgsexpressioncontextutils.h"
@@ -25,7 +24,6 @@
 #include "qgsrasterdataprovidertemporalcapabilities.h"
 #include "qgsrasterlayer.h"
 #include "qgsrasterlayertemporalproperties.h"
-#include "qgsrasterrenderer.h"
 #include "qgsrasterrendererregistry.h"
 #include "qgsunittypes.h"
 
@@ -43,6 +41,8 @@ QgsRasterLayerTemporalPropertiesWidget::QgsRasterLayerTemporalPropertiesWidget( 
 {
   Q_ASSERT( mLayer );
   setupUi( this );
+
+  setFixedRangePerBandAvailable( true );
 
   // make a useful default expression for per band ranges, just to give users some hints about how to do this...
   mFixedRangeLowerExpression = u"make_datetime(%1,1,1,0,0,0) + make_interval(days:=@band)"_s.arg( QDate::currentDate().year() );
@@ -182,12 +182,6 @@ void QgsRasterLayerTemporalPropertiesWidget::syncToLayer()
       break;
   }
 
-  if ( mLayer->renderer() && QgsApplication::rasterRendererRegistry()->rendererCapabilities( mLayer->renderer()->type() ) & Qgis::RasterRendererCapability::UsesMultipleBands )
-  {
-    mWidgetFixedRangePerBand->hide();
-    mFixedRangePerBandLabel->setText( tr( "This mode cannot be used with a multi-band renderer." ) );
-  }
-
   mBandComboBox->setLayer( mLayer );
   mBandComboBox->setBand( temporalProperties->bandNumber() );
 
@@ -218,6 +212,22 @@ void QgsRasterLayerTemporalPropertiesWidget::addWidget( QgsMapLayerConfigWidget 
 {
   mExtraWidgets << widget;
   mExtraWidgetLayout->insertWidget( mExtraWidgetLayout->count() - 1, widget );
+}
+
+void QgsRasterLayerTemporalPropertiesWidget::setFixedRangePerBandAvailable( bool available )
+{
+  mWidgetFixedRangePerBand->setVisible( available );
+  if ( available )
+  {
+    mFixedRangePerBandLabel->setText(
+      u"<p><b>%1</b></p><p>%2</p>"_s
+        .arg( tr( "Each band in the raster layer is associated with a fixed time range." ), tr( "This mode can be used when a layer has temporal data exposed through different raster bands." ) )
+    );
+  }
+  else
+  {
+    mFixedRangePerBandLabel->setText( tr( "This mode cannot be used with a multi-band renderer." ) );
+  }
 }
 
 void QgsRasterLayerTemporalPropertiesWidget::temporalGroupBoxChecked( bool checked )
