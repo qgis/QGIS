@@ -60,6 +60,17 @@ class GUI_EXPORT QgsPointCloudLayerSaveAsDialog : public QDialog, private Ui::Qg
     QString filename() const;
 
     /**
+     * Sets the target \a filename.
+     *
+     * If \a filename does not end with an extension, then the extension associated with exportFormat() is
+     * appended.
+     *
+     * \see filename()
+     * \since QGIS 4.6
+     */
+    void setFilename( const QString &filename );
+
+    /**
      * Returns the target layer name
      */
     QString layername() const;

@@ -93,6 +93,17 @@ class GUI_EXPORT QgsVectorLayerSaveAsDialog : public QDialog, private Ui::QgsVec
     QString fileName() const;
 
     /**
+     * Sets the target \a fileName.
+     *
+     * If \a fileName does not end with an extension, then the current format()'s extension is
+     * appended.
+     *
+     * \see fileName()
+     * \since QGIS 4.6
+     */
+    void setFileName( const QString &fileName );
+
+    /**
      * Returns the target layer name.
      *
      * \see fileName()
