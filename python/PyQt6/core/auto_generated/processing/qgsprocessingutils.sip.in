@@ -768,6 +768,35 @@ Returns the list of locations for reading Processing model files.
 .. versionadded:: 4.4
 %End
 
+    static bool isAvailableLayerSource( const QString &source, QgsProcessingContext &context );
+%Docstring
+Returns ``True`` if a layer ``source`` string refers to a layer
+available within the ``context``, i.e. a layer from the context's
+project or temporary layer store (matched by layer ID, name or source)
+or an existing file.
+
+.. seealso:: :py:func:`layerSources`
+
+.. versionadded:: 4.6
+%End
+
+    static QStringList layerSources( const QVariant &value );
+%Docstring
+Returns all layer source strings referred to by a layer parameter
+``value``.
+
+:param value: can be a layer source string, a list of layer source
+              strings, or a
+              :py:class:`QgsProcessingFeatureSourceDefinition` or
+              :py:class:`QgsProcessingRasterLayerDefinition`. Only
+              static sources are returned, definitions with non-static
+              sources and empty strings are ignored.
+
+.. seealso:: :py:func:`isAvailableLayerSource`
+
+.. versionadded:: 4.6
+%End
+
 };
 
 class QgsProcessingFeatureSource : QgsFeatureSource

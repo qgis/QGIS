@@ -86,6 +86,8 @@ try:
     QgsProcessingUtils.defaultOutputFolder = staticmethod(QgsProcessingUtils.defaultOutputFolder)
     QgsProcessingUtils.defaultModelFolder = staticmethod(QgsProcessingUtils.defaultModelFolder)
     QgsProcessingUtils.modelFolders = staticmethod(QgsProcessingUtils.modelFolders)
+    QgsProcessingUtils.isAvailableLayerSource = staticmethod(QgsProcessingUtils.isAvailableLayerSource)
+    QgsProcessingUtils.layerSources = staticmethod(QgsProcessingUtils.layerSources)
     QgsProcessingUtils.__group__ = ['processing']
 except (NameError, AttributeError):
     pass

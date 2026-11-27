@@ -40,6 +40,7 @@
 #include "qgsvectorlayerfeatureiterator.h"
 #include "qgsvectortilelayer.h"
 
+#include <QFileInfo>
 #include <QImageWriter>
 #include <QRegularExpression>
 #include <QString>
@@ -1889,6 +1890,57 @@ QStringList QgsProcessingUtils::modelFolders()
   {
     return { defaultModelFolder() };
   }
+}
+
+bool QgsProcessingUtils::isAvailableLayerSource( const QString &source, QgsProcessingContext &context )
+{
+  if ( source.isEmpty() )
+    return false;
+
+  if ( mapLayerFromString( source, context, false ) )
+    return true;
+
+  // file based sources may include additional parts, e.g. "|layername=..."
+  return QFileInfo::exists( source.section( '|', 0, 0 ) );
+}
+
+QStringList QgsProcessingUtils::layerSources( const QVariant &value )
+{
+  QVariant val = value;
+  if ( val.userType() == qMetaTypeId<QgsProcessingFeatureSourceDefinition>() )
+    val = val.value<QgsProcessingFeatureSourceDefinition>().source;
+  else if ( val.userType() == qMetaTypeId<QgsProcessingRasterLayerDefinition>() )
+    val = val.value<QgsProcessingRasterLayerDefinition>().source;
+
+  if ( val.userType() == qMetaTypeId<QgsProperty>() )
+  {
+    const QgsProperty property = val.value<QgsProperty>();
+    if ( property.propertyType() != Qgis::PropertyType::Static )
+      return QStringList();
+    val = property.staticValue();
+  }
+
+  QStringList sources;
+  if ( val.userType() == QMetaType::Type::QVariantList )
+  {
+    const QVariantList values = val.toList();
+    for ( const QVariant &v : values )
+      sources << layerSources( v );
+  }
+  else if ( val.userType() == QMetaType::Type::QStringList )
+  {
+    const QStringList values = val.toStringList();
+    for ( const QString &v : values )
+    {
+      if ( !v.isEmpty() )
+        sources << v;
+    }
+  }
+  else if ( val.userType() == QMetaType::Type::QString && !val.toString().isEmpty() )
+  {
+    sources << val.toString();
+  }
+  return sources;
 }
 
 //
