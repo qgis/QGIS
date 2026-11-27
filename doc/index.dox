@@ -34,7 +34,7 @@ See \ref api_break for information about incompatible changes to API between rel
 
 Earlier versions of the documentation are also available on the QGIS website:
 <a href="https://qgis.org/api/4.4">4.4 (LTR)</a>,
-<a href="https://qgis.org/api/4.2">4.2 (LTR)</a>,
+<a href="https://qgis.org/api/4.2">4.2</a>,
 <a href="https://qgis.org/api/4.0">4.0</a>,
 <a href="https://qgis.org/api/3.44">3.44 (LTR)</a>,
 <a href="https://qgis.org/api/3.42">3.42</a>,
