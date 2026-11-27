@@ -21,6 +21,7 @@
 #include <nlohmann/json.hpp>
 
 #include "qgsapplication.h"
+#include "qgscoordinatetransform.h"
 #include "qgscurve.h"
 #include "qgsfeedback.h"
 #include "qgsgeometryutils.h"
@@ -580,6 +581,14 @@ void QgsPolyhedralSurface::draw( QPainter &p ) const
 
 void QgsPolyhedralSurface::transform( const QgsCoordinateTransform &ct, Qgis::TransformDirection d, bool transformZ )
 {
+  const bool transformingToGeocentric = ( d == Qgis::TransformDirection::Forward ? ct.destinationCrs() : ct.sourceCrs() ).type() == Qgis::CrsType::Geocentric;
+  if ( transformingToGeocentric )
+  {
+    transformZ = true;
+    if ( !is3D() )
+      addZValue( 0 );
+  }
+
   for ( QgsPolygon *patch : std::as_const( mPatches ) )
   {
     patch->transform( ct, d, transformZ );

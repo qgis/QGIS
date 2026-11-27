@@ -1421,6 +1421,14 @@ double QgsNurbsCurve::closestSegment( const QgsPoint &pt, QgsPoint &segmentPt, Q
 
 void QgsNurbsCurve::transform( const QgsCoordinateTransform &ct, Qgis::TransformDirection d, bool transformZ )
 {
+  const bool transformingToGeocentric = ( d == Qgis::TransformDirection::Forward ? ct.destinationCrs() : ct.sourceCrs() ).type() == Qgis::CrsType::Geocentric;
+  if ( transformingToGeocentric )
+  {
+    transformZ = true;
+    if ( !is3D() )
+      addZValue( 0 );
+  }
+
   for ( QgsPoint &pt : mControlPoints )
   {
     double x = pt.x();

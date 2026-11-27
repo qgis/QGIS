@@ -380,7 +380,7 @@ Returns a KML representation of the geometry.
 
 
 
-    virtual void transform( const QgsCoordinateTransform &ct, Qgis::TransformDirection d = Qgis::TransformDirection::Forward, bool transformZ = false )  = 0;
+    virtual void transform( const QgsCoordinateTransform &ct, Qgis::TransformDirection d = Qgis::TransformDirection::Forward, bool transformZ = true )  = 0;
 %Docstring
 Transforms the geometry using a coordinate transform
 
@@ -392,7 +392,10 @@ Transforms the geometry using a coordinate transform
                    the source CRS (generally ellipsoidal heights) and
                    are expressed in its vertical units (generally
                    meters). If ``False``, then z coordinates will not be
-                   changed by the transform.
+                   changed by the transform. If the target CRS is
+                   geocentric, z coordinates are always transformed
+                   regardless of the flag, and 2D geometries are
+                   promoted to 3D geometries.
 %End
 
     virtual void transform( const QTransform &t, double zTranslate = 0.0, double zScale = 1.0,

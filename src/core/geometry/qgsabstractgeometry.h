@@ -428,9 +428,10 @@ class CORE_EXPORT QgsAbstractGeometry
      * the z coordinates in the geometry represent height relative to the vertical datum
      * of the source CRS (generally ellipsoidal heights) and are expressed in its vertical
      * units (generally meters). If FALSE, then z coordinates will not be changed by the
-     * transform.
+     * transform. If the target CRS is geocentric, z coordinates are always transformed regardless of the flag,
+     * and 2D geometries are promoted to 3D geometries.
      */
-    virtual void transform( const QgsCoordinateTransform &ct, Qgis::TransformDirection d = Qgis::TransformDirection::Forward, bool transformZ = false ) SIP_THROW( QgsCsException ) = 0;
+    virtual void transform( const QgsCoordinateTransform &ct, Qgis::TransformDirection d = Qgis::TransformDirection::Forward, bool transformZ = true ) SIP_THROW( QgsCsException ) = 0;
 
     /**
      * Transforms the x and y components of the geometry using a QTransform object \a t.

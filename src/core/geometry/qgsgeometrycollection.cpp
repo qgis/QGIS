@@ -20,6 +20,7 @@ email                : marco.hugentobler at sourcepole dot com
 
 #include "qgsapplication.h"
 #include "qgsbox3d.h"
+#include "qgscoordinatetransform.h"
 #include "qgsfeedback.h"
 #include "qgsgeometryfactory.h"
 #include "qgsgeometryutils.h"
@@ -304,6 +305,14 @@ QString QgsGeometryCollection::geometryType() const
 
 void QgsGeometryCollection::transform( const QgsCoordinateTransform &ct, Qgis::TransformDirection d, bool transformZ )
 {
+  const bool transformingToGeocentric = ( d == Qgis::TransformDirection::Forward ? ct.destinationCrs() : ct.sourceCrs() ).type() == Qgis::CrsType::Geocentric;
+  if ( transformingToGeocentric )
+  {
+    transformZ = true;
+    if ( !is3D() )
+      addZValue( 0 );
+  }
+
   for ( QgsAbstractGeometry *g : std::as_const( mGeometries ) )
   {
     g->transform( ct, d, transformZ );
