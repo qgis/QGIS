@@ -8,7 +8,7 @@
     "description": "the string to test against the regular expression"
   }, {
     "arg": "regex",
-    "description": "The regular expression to test against. Backslash characters must be double escaped (e.g., \"\\\\\\\\s\" to match a white space character or  \"\\\\\\\\b\" to match a word boundary)."
+    "description": "The regular expression to test against. The syntax is Perl-compatible (see <a href='https://doc.qt.io/qt-6/qregularexpression.html'>QRegularExpression</a>). Unicode support is enabled, so \"\\\\\\\\d\" and \"\\\\\\\\w\" also match non-ASCII digits and letters (e.g. 'ș'); use [0-9] or [A-Za-z] to match only ASCII characters."
   }],
   "examples": [{
     "expression": "regexp_match('QGIS ROCKS','\\\\\\\\sROCKS')",
@@ -16,6 +16,18 @@
   }, {
     "expression": "regexp_match('Buda\u010d','uda\u010d\\\\\\\\b')",
     "returns": "2"
+  }, {
+    "expression": "regexp_match('94204', '^[0-9]+$') > 0",
+    "returns": "TRUE",
+    "note": "checks that the string contains only digits"
+  }, {
+    "expression": "regexp_match('-30.510', '^-?[0-9]+(\\\\\\\\.[0-9]+)?$') > 0",
+    "returns": "TRUE",
+    "note": "checks that the string is a valid number, with an optional minus sign and an optional decimal part (a dot followed by at least one digit)"
+  }, {
+    "expression": "regexp_match('București', '^[A-Za-z]+$') > 0",
+    "returns": "FALSE",
+    "note": "checks that the string contains only letters of the English alphabet (A-Z, a-z); 'București' fails because of the letter 'ș'"
   }],
   "tags": ["return", "found", "matching", "unicode", "regular", "position", "substring", "first"]
 }
