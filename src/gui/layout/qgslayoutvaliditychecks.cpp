@@ -286,7 +286,7 @@ bool QgsLayoutHtmlItemValidityCheck::prepareCheck( const QgsValidityCheckContext
       QgsValidityCheckResult res;
       res.type = QgsValidityCheckResult::Warning;
       res.title = QObject::tr( "HTML item cannot be rendered" );
-      res.detailedDescription = QObject::tr( "HTML items cannot be rendered because this QGIS install was built without WebEngine or PDF4Qt support. These items will be missing from the export." );
+      res.detailedDescription = QObject::tr( "HTML items cannot be rendered because this QGIS install was built without WebEngine or PDF4QT support. These items will be missing from the export." );
       mResults.append( res );
       break;
 #endif
