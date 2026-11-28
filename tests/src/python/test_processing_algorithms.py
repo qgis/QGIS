@@ -124,7 +124,6 @@ class GenericAlgorithmsTest(QgisTestCase):
                 "qgis:distancetonearesthubpoints",
                 "qgis:eliminateselectedpolygons",
                 "qgis:generatepointspixelcentroidsalongline",
-                "qgis:linestopolygons",
                 "qgis:pointsdisplacement",
                 "qgis:randompointsalongline",
                 "qgis:randompointsinlayerbounds",

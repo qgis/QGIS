@@ -187,6 +187,7 @@ using namespace Qt::StringLiterals;
 #include "qgsalgorithmlinedensity.h"
 #include "qgsalgorithmlineintersection.h"
 #include "qgsalgorithmlinesubstring.h"
+#include "qgsalgorithmlinestopolygons.h"
 #include "qgsalgorithmloadlayer.h"
 #include "qgsalgorithmmeancoordinates.h"
 #include "qgsalgorithmmergelines.h"
@@ -564,6 +565,7 @@ void QgsNativeAlgorithms::loadAlgorithms()
   addAlgorithm( new QgsLineDensityAlgorithm() );
   addAlgorithm( new QgsLineIntersectionAlgorithm() );
   addAlgorithm( new QgsLineSubstringAlgorithm() );
+  addAlgorithm( new QgsLinesToPolygonsAlgorithm() );
   addAlgorithm( new QgsLoadLayerAlgorithm() );
   addAlgorithm( new QgsLocalThinPlateSplineAlgorithm() );
   addAlgorithm( new QgsMeanCoordinatesAlgorithm() );
