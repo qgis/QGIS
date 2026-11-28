@@ -423,10 +423,6 @@ QgsOgrProvider::QgsOgrProvider( QString const &uri, const ProviderOptions &optio
   //   a user does want/need to manually specify the encoding
   CPLSetConfigOption( "SHAPE_ENCODING", "" );
 
-#ifndef QT_NO_NETWORKPROXY
-  QgsGdalUtils::setupProxy();
-#endif
-
   // make connection to the data source
 
   QgsDebugMsgLevel( "Data source uri is [" + uri + ']', 2 );

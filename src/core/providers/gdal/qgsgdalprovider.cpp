@@ -170,10 +170,6 @@ QgsGdalProvider::QgsGdalProvider( const QString &uri, const ProviderOptions &opt
 
   QgsGdalProviderBase::registerGdalDrivers();
 
-#ifndef QT_NO_NETWORKPROXY
-  QgsGdalUtils::setupProxy();
-#endif
-
   std::unique_ptr< QgsScopedRuntimeProfile > profile;
   if ( QgsApplication::profiler()->groupIsActive( u"projectload"_s ) )
     profile = std::make_unique< QgsScopedRuntimeProfile >( tr( "Open data source" ), u"projectload"_s );

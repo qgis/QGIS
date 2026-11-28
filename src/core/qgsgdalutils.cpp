@@ -709,11 +709,9 @@ GDALResampleAlg QgsGdalUtils::gdalResamplingAlgorithm( Qgis::RasterResamplingMet
 #ifndef QT_NO_NETWORKPROXY
 void QgsGdalUtils::setupProxy()
 {
-  // Check proxy configuration, they are application level but
-  // instead of adding an API and complex signal/slot connections
-  // given the limited cost of checking them on every provider instantiation
-  // we can do it here so that new settings are applied whenever a new layer
-  // is created.
+  // Check proxy configuration, this is set as GDAL environment variables
+  // This configuration has precedence over manually set variables
+
   // Check that proxy is enabled
   if ( QgsNetworkAccessManager::settingsProxyEnabled->value() )
   {
@@ -737,7 +735,7 @@ void QgsGdalUtils::setupProxy()
         {
           connection += ':' + QString::number( proxyPort );
         }
-        CPLSetConfigOption( "GDAL_HTTP_PROXY", connection.toUtf8() );
+        setenv( "GDAL_HTTP_PROXY", connection.toUtf8().constData(), 1 );
         if ( !proxyUser.isEmpty() )
         {
           QString credentials( proxyUser );
@@ -745,10 +743,16 @@ void QgsGdalUtils::setupProxy()
           {
             credentials += ':' + proxyPassword;
           }
-          CPLSetConfigOption( "GDAL_HTTP_PROXYUSERPWD", credentials.toUtf8() );
+          setenv( "GDAL_HTTP_PROXYUSERPWD", credentials.toUtf8().constData(), 1 );
         }
       }
     }
+  }
+  else
+  {
+    // clean up gdal environment variables
+    unsetenv( "GDAL_HTTP_PROXY" );
+    unsetenv( "GDAL_HTTP_PROXYUSERPWD" );
   }
 }
 

@@ -1661,6 +1661,11 @@ void QgsOptions::saveOptions()
 
   QgisApp::instance()->namUpdate();
 
+#ifndef QT_NO_NETWORKPROXY
+  // set up the gdal proxy environment variables
+  QgsGdalUtils::setupProxy();
+#endif
+
   //general settings
   QgsMapTool::settingSearchRadiusMM->setValue( spinBoxIdentifyValue->value() );
   mSettings->setValue( u"/Map/highlight/color"_s, mIdentifyHighlightColorButton->color().name() );
