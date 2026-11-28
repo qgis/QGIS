@@ -22,6 +22,8 @@ Encapsulates settings for rendering HTML content.
 #include "qgshtmlrendersettings.h"
 %End
   public:
+    QgsHtmlRenderSettings();
+
     bool isEmpty() const;
 %Docstring
 Returns ``True`` no settings are set.
@@ -85,6 +87,24 @@ When the HTML has been loaded, an attempt will be made to call a
 %Docstring
 Returns the settings encapsulated in a variantmap, for passing to the
 qgis_html_to_pdf utility.
+%End
+
+    QString userAgent() const;
+%Docstring
+Returns the user agent string to use when requesting the HTML.
+
+This defaults to the QGIS user agent.
+
+.. seealso:: :py:func:`setUserAgent`
+%End
+
+    void setUserAgent( const QString &agent );
+%Docstring
+Sets the user ``agent`` string to use when requesting the HTML.
+
+This defaults to the QGIS user agent.
+
+.. seealso:: :py:func:`userAgent`
 %End
 
 };

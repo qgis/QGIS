@@ -148,6 +148,13 @@ thread. See in-depth discussion below.
 
     QgsNetworkAccessManager( QObject *parent = 0 );
 
+    static QString userAgent();
+%Docstring
+Returns the user agent string used by QGIS for network requests.
+
+.. versionadded:: 4.4
+%End
+
 
     void insertProxyFactory( QNetworkProxyFactory *factory /Transfer/ );
 %Docstring
