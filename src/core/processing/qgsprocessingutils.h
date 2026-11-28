@@ -696,6 +696,21 @@ class CORE_EXPORT QgsProcessingUtils
      */
     static QStringList modelFolders();
 
+    /**
+     * Executes an \a algorithm in the iterating mode.
+     *
+     * \param algorithm algorithm to execute
+     * \param parameters algorithm parameters
+     * \param parameterToIterate name of parameter corresponding to the layer to iterate over
+     * \param context Processing context
+     * \param feedback feedback object
+     *
+     * \returns TRUE if all executions were successful
+     *
+     * \since QGIS 4.4
+     */
+    static bool executeIterating( QgsProcessingAlgorithm* algorithm, const QVariantMap& parameters, const QString& parameterToIterate, QgsProcessingContext& context, QgsProcessingFeedback* feedback );
+
   private:
     static bool canUseLayer( const QgsRasterLayer *layer );
     static bool canUseLayer( const QgsMeshLayer *layer );

@@ -13,7 +13,6 @@ __copyright__ = "Copyright 2019, The QGIS Project"
 import unittest
 
 from processing.core.Processing import Processing
-from processing.gui.AlgorithmExecutor import execute
 from qgis.analysis import QgsNativeAlgorithms
 from qgis.core import (
     QgsApplication,
@@ -76,8 +75,8 @@ class TestExportToPostGis(QgisTestCase):
 
         feedback = ConsoleFeedBack()
         context = QgsProcessingContext()
-        # Note: the following returns true also in case of errors ...
-        self.assertTrue(execute(alg, parameters, context, feedback))
+        results, ok = alg.run(parameters, context, feedback)
+        self.assertTrue(ok)
         # ... so we check the log
         self.assertEqual(feedback._errors, [])
 

@@ -17,18 +17,14 @@ import tempfile
 import unittest
 
 from processing.core.Processing import Processing
-from processing.gui.AlgorithmExecutor import execute
-from qgis.analysis import QgsNativeAlgorithms
 from qgis.core import (
     Qgis,
     QgsApplication,
     QgsProcessingContext,
     QgsProcessingFeedback,
     QgsProperty,
-    QgsSettings,
     QgsVectorLayer,
 )
-from qgis.PyQt.QtCore import QTemporaryDir
 from qgis.testing import QgisTestCase
 from utilities import start_app, unitTestDataPath
 

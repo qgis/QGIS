@@ -73,7 +73,7 @@ from processing.core.ProcessingConfig import (
 )
 from processing.gui import TestTools
 from processing.gui.algorithm_widget import AlgorithmWidget
-from processing.gui.AlgorithmExecutor import execute, execute_in_place
+from processing.gui.AlgorithmExecutor import execute_in_place
 from processing.gui.AlgorithmLocatorFilter import (
     AlgorithmLocatorFilter,
     InPlaceAlgorithmLocatorFilter,
@@ -422,7 +422,7 @@ class ProcessingPlugin(QObject):
             feedback = MessageBarProgress(algname=alg.displayName())
             context = dataobjects.createContext(feedback)
             parameters = {}
-            ret, results = execute(alg, parameters, context, feedback)
+            results, ret = alg.run(parameters, context, feedback)
             QgsApplication.processingRegistry().handleAlgorithmResults(
                 alg, context, parameters, feedback
             )
