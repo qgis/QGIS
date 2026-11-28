@@ -163,6 +163,8 @@ class TestQgsProcessingAlgsPt1 : public QgsTest
     void renameField();
 
     void compareDatasets();
+    void compareDatasetsUniqueId();
+    void compareDatasetsWithoutGeometry();
     void shapefileEncoding();
     void setLayerEncoding();
 
@@ -5076,6 +5078,226 @@ void TestQgsProcessingAlgsPt1::compareDatasets()
   QVERIFY( featIt.nextFeature( outputFeat ) );
   QVERIFY( outputFeat.isValid() );
   QVERIFY( outputFeat.geometry().isEmpty() && !outputFeat.geometry().isNull() );
+
+  // the changed output is never populated without a unique ID
+  parameters.insert( u"CHANGED"_s, QgsProcessing::TEMPORARY_OUTPUT );
+  results = alg->run( parameters, *context, &feedback, &ok );
+  QVERIFY( ok );
+  QCOMPARE( results.value( u"CHANGED_COUNT"_s ).toLongLong(), 0LL );
+  QCOMPARE( qobject_cast<QgsVectorLayer *>( context->getMapLayer( results.value( u"CHANGED"_s ).toString() ) )->featureCount(), 0L );
+}
+
+void TestQgsProcessingAlgsPt1::compareDatasetsUniqueId()
+{
+  QgsProject p;
+  QgsVectorLayer *originalLayer = new QgsVectorLayer( u"LineString?crs=epsg:4326&field=pk:int&field=col1:string&field=num:int"_s, u"original"_s, u"memory"_s );
+  QVERIFY( originalLayer->isValid() );
+  p.addMapLayer( originalLayer );
+  // 64 bit integer fields in the revised layer, which must still match the 32 bit integer fields from the original layer
+  QgsVectorLayer *revisedLayer = new QgsVectorLayer( u"LineString?crs=epsg:4326&field=pk:long&field=col1:string&field=num:long"_s, u"revised"_s, u"memory"_s );
+  QVERIFY( revisedLayer->isValid() );
+  p.addMapLayer( revisedLayer );
+  QgsVectorLayer *noIdLayer = new QgsVectorLayer( u"LineString?crs=epsg:4326&field=id:int&field=col1:string&field=num:int"_s, u"noid"_s, u"memory"_s );
+  QVERIFY( noIdLayer->isValid() );
+  p.addMapLayer( noIdLayer );
+
+  QgsFeature f;
+  // unchanged
+  f.setAttributes( QgsAttributes() << 1 << u"a"_s << 10 );
+  f.setGeometry( QgsGeometry::fromWkt( u"LineString (0 0, 10 0)"_s ) );
+  originalLayer->dataProvider()->addFeature( f );
+  f.setAttributes( QgsAttributes() << 1LL << u"a"_s << 10LL );
+  revisedLayer->dataProvider()->addFeature( f );
+  // attribute changed
+  f.setAttributes( QgsAttributes() << 2 << u"b"_s << 20 );
+  f.setGeometry( QgsGeometry::fromWkt( u"LineString (0 1, 10 1)"_s ) );
+  originalLayer->dataProvider()->addFeature( f );
+  f.setAttributes( QgsAttributes() << 2LL << u"b2"_s << 20LL );
+  revisedLayer->dataProvider()->addFeature( f );
+  // geometry changed
+  f.setAttributes( QgsAttributes() << 3 << u"c"_s << 30 );
+  f.setGeometry( QgsGeometry::fromWkt( u"LineString (0 2, 10 2)"_s ) );
+  originalLayer->dataProvider()->addFeature( f );
+  f.setAttributes( QgsAttributes() << 3LL << u"c"_s << 30LL );
+  f.setGeometry( QgsGeometry::fromWkt( u"LineString (0 2, 11 2)"_s ) );
+  revisedLayer->dataProvider()->addFeature( f );
+  // deleted
+  f.setAttributes( QgsAttributes() << 4 << u"d"_s << 40 );
+  f.setGeometry( QgsGeometry::fromWkt( u"LineString (0 3, 10 3)"_s ) );
+  originalLayer->dataProvider()->addFeature( f );
+  // added
+  f.setAttributes( QgsAttributes() << 5LL << u"e"_s << 50LL );
+  f.setGeometry( QgsGeometry::fromWkt( u"LineString (0 4, 10 4)"_s ) );
+  revisedLayer->dataProvider()->addFeature( f );
+
+  std::unique_ptr<QgsProcessingAlgorithm> alg( QgsApplication::processingRegistry()->createAlgorithmById( u"native:detectvectorchanges"_s ) );
+  QVERIFY( alg != nullptr );
+
+  QVariantMap parameters;
+  parameters.insert( u"ORIGINAL"_s, QVariant::fromValue( originalLayer ) );
+  parameters.insert( u"REVISED"_s, QVariant::fromValue( noIdLayer ) );
+  parameters.insert( u"UNIQUE_ID"_s, u"pk"_s );
+  parameters.insert( u"COMPARE_ATTRIBUTES"_s, u"pk;col1;num"_s );
+  parameters.insert( u"UNCHANGED"_s, QgsProcessing::TEMPORARY_OUTPUT );
+  parameters.insert( u"ADDED"_s, QgsProcessing::TEMPORARY_OUTPUT );
+  parameters.insert( u"DELETED"_s, QgsProcessing::TEMPORARY_OUTPUT );
+  parameters.insert( u"CHANGED"_s, QgsProcessing::TEMPORARY_OUTPUT );
+
+  bool ok = false;
+  QgsProcessingFeedback feedback;
+  auto context = std::make_unique<QgsProcessingContext>();
+
+  // fail if unique ID field missing
+  QVariantMap results = alg->run( parameters, *context, &feedback, &ok );
+  QVERIFY( !ok );
+
+  parameters.insert( u"REVISED"_s, QVariant::fromValue( revisedLayer ) );
+  results = alg->run( parameters, *context, &feedback, &ok );
+  QVERIFY( ok );
+  QCOMPARE( results.value( u"UNCHANGED_COUNT"_s ).toLongLong(), 1LL );
+  QCOMPARE( results.value( u"ADDED_COUNT"_s ).toLongLong(), 1LL );
+  QCOMPARE( results.value( u"DELETED_COUNT"_s ).toLongLong(), 1LL );
+  QCOMPARE( results.value( u"CHANGED_COUNT"_s ).toLongLong(), 2LL );
+
+  const auto outputIds = [&context, &results]( const QString &output ) {
+    QList<long long> ids;
+    QgsFeatureIterator it = qobject_cast<QgsVectorLayer *>( context->getMapLayer( results.value( output ).toString() ) )->getFeatures();
+    QgsFeature feature;
+    while ( it.nextFeature( feature ) )
+      ids << feature.attribute( u"pk"_s ).toLongLong();
+    std::sort( ids.begin(), ids.end() );
+    return ids;
+  };
+  QCOMPARE( outputIds( u"UNCHANGED"_s ), QList<long long>() << 1 );
+  QCOMPARE( outputIds( u"ADDED"_s ), QList<long long>() << 5 );
+  QCOMPARE( outputIds( u"DELETED"_s ), QList<long long>() << 4 );
+  QCOMPARE( outputIds( u"CHANGED"_s ), QList<long long>() << 2 << 3 );
+
+  // changed features are taken from the revised layer
+  QgsVectorLayer *changedLayer = qobject_cast<QgsVectorLayer *>( context->getMapLayer( results.value( u"CHANGED"_s ).toString() ) );
+  QVERIFY( changedLayer->getFeatures( u"pk = 2"_s ).nextFeature( f ) );
+  QCOMPARE( f.attribute( u"col1"_s ).toString(), u"b2"_s );
+  QVERIFY( changedLayer->getFeatures( u"pk = 3"_s ).nextFeature( f ) );
+  QCOMPARE( f.geometry().asWkt(), u"LineString (0 2, 11 2)"_s );
+
+  // ignore geometry changes
+  parameters.insert( u"USE_GEOMETRY"_s, false );
+  results = alg->run( parameters, *context, &feedback, &ok );
+  QVERIFY( ok );
+  QCOMPARE( results.value( u"UNCHANGED_COUNT"_s ).toLongLong(), 2LL );
+  QCOMPARE( results.value( u"ADDED_COUNT"_s ).toLongLong(), 1LL );
+  QCOMPARE( results.value( u"DELETED_COUNT"_s ).toLongLong(), 1LL );
+  QCOMPARE( results.value( u"CHANGED_COUNT"_s ).toLongLong(), 1LL );
+  QCOMPARE( outputIds( u"UNCHANGED"_s ), QList<long long>() << 1 << 3 );
+  QCOMPARE( outputIds( u"CHANGED"_s ), QList<long long>() << 2 );
+  // geometries are still present in outputs
+  QgsVectorLayer *deletedLayer = qobject_cast<QgsVectorLayer *>( context->getMapLayer( results.value( u"DELETED"_s ).toString() ) );
+  QVERIFY( deletedLayer->getFeatures().nextFeature( f ) );
+  QCOMPARE( f.geometry().asWkt(), u"LineString (0 3, 10 3)"_s );
+
+  // ignore col1 changes
+  parameters.insert( u"USE_GEOMETRY"_s, true );
+  parameters.insert( u"COMPARE_ATTRIBUTES"_s, u"num"_s );
+  results = alg->run( parameters, *context, &feedback, &ok );
+  QVERIFY( ok );
+  QCOMPARE( outputIds( u"UNCHANGED"_s ), QList<long long>() << 1 << 2 );
+  QCOMPARE( outputIds( u"CHANGED"_s ), QList<long long>() << 3 );
+
+  // nothing to compare: alg should fail, even with a unique ID
+  parameters.insert( u"USE_GEOMETRY"_s, false );
+  parameters.insert( u"COMPARE_ATTRIBUTES"_s, QString() );
+  results = alg->run( parameters, *context, &feedback, &ok );
+  QVERIFY( !ok );
+  // the unique ID field itself is never compared
+  parameters.insert( u"COMPARE_ATTRIBUTES"_s, u"pk"_s );
+  results = alg->run( parameters, *context, &feedback, &ok );
+  QVERIFY( !ok );
+
+  // without a unique ID, changed features are considered as deleted and added
+  parameters.remove( u"UNIQUE_ID"_s );
+  parameters.remove( u"USE_GEOMETRY"_s );
+  parameters.insert( u"COMPARE_ATTRIBUTES"_s, u"col1"_s );
+  results = alg->run( parameters, *context, &feedback, &ok );
+  QVERIFY( ok );
+  QCOMPARE( outputIds( u"UNCHANGED"_s ), QList<long long>() << 1 );
+  QCOMPARE( outputIds( u"ADDED"_s ), QList<long long>() << 2 << 3 << 5 );
+  QCOMPARE( outputIds( u"DELETED"_s ), QList<long long>() << 2 << 3 << 4 );
+  QCOMPARE( results.value( u"CHANGED_COUNT"_s ).toLongLong(), 0LL );
+}
+
+void TestQgsProcessingAlgsPt1::compareDatasetsWithoutGeometry()
+{
+  QgsProject p;
+  QgsVectorLayer *originalLayer = new QgsVectorLayer( u"Point?crs=epsg:4326&field=pk:int&field=col1:string"_s, u"original"_s, u"memory"_s );
+  QVERIFY( originalLayer->isValid() );
+  p.addMapLayer( originalLayer );
+  // differing geometry types and CRS are fine when geometries aren't compared
+  QgsVectorLayer *revisedLayer = new QgsVectorLayer( u"LineString?crs=epsg:3857&field=pk:int&field=col1:string"_s, u"revised"_s, u"memory"_s );
+  QVERIFY( revisedLayer->isValid() );
+  p.addMapLayer( revisedLayer );
+
+  QgsFeature f;
+  f.setGeometry( QgsGeometry::fromWkt( u"Point (1 2)"_s ) );
+  f.setAttributes( QgsAttributes() << 1 << u"a"_s );
+  originalLayer->dataProvider()->addFeature( f );
+  f.setAttributes( QgsAttributes() << 2 << u"a"_s );
+  originalLayer->dataProvider()->addFeature( f );
+  f.setAttributes( QgsAttributes() << 3 << u"b"_s );
+  originalLayer->dataProvider()->addFeature( f );
+
+  f.setGeometry( QgsGeometry::fromWkt( u"LineString (0 0, 10 0)"_s ) );
+  f.setAttributes( QgsAttributes() << 11 << u"a"_s );
+  revisedLayer->dataProvider()->addFeature( f );
+  f.setAttributes( QgsAttributes() << 12 << u"a"_s );
+  revisedLayer->dataProvider()->addFeature( f );
+  f.setAttributes( QgsAttributes() << 13 << u"c"_s );
+  revisedLayer->dataProvider()->addFeature( f );
+
+  std::unique_ptr<QgsProcessingAlgorithm> alg( QgsApplication::processingRegistry()->createAlgorithmById( u"native:detectvectorchanges"_s ) );
+  QVERIFY( alg != nullptr );
+
+  QVariantMap parameters;
+  parameters.insert( u"ORIGINAL"_s, QVariant::fromValue( originalLayer ) );
+  parameters.insert( u"REVISED"_s, QVariant::fromValue( revisedLayer ) );
+  parameters.insert( u"COMPARE_ATTRIBUTES"_s, u"col1"_s );
+  parameters.insert( u"UNCHANGED"_s, QgsProcessing::TEMPORARY_OUTPUT );
+
+  bool ok = false;
+  QgsProcessingFeedback feedback;
+  auto context = std::make_unique<QgsProcessingContext>();
+
+  // differing geometry types - alg should fail
+  QVariantMap results = alg->run( parameters, *context, &feedback, &ok );
+  QVERIFY( !ok );
+
+  parameters.insert( u"USE_GEOMETRY"_s, false );
+  results = alg->run( parameters, *context, &feedback, &ok );
+  QVERIFY( ok );
+  // each "a" original feature is matched only once
+  QCOMPARE( results.value( u"UNCHANGED_COUNT"_s ).toLongLong(), 2LL );
+  QCOMPARE( results.value( u"ADDED_COUNT"_s ).toLongLong(), 1LL );
+  QCOMPARE( results.value( u"DELETED_COUNT"_s ).toLongLong(), 1LL );
+  QCOMPARE( results.value( u"CHANGED_COUNT"_s ).toLongLong(), 0LL );
+
+  // original geometries are kept in outputs
+  QgsVectorLayer *unchangedLayer = qobject_cast<QgsVectorLayer *>( context->getMapLayer( results.value( u"UNCHANGED"_s ).toString() ) );
+  QCOMPARE( unchangedLayer->featureCount(), 2L );
+  QVERIFY( unchangedLayer->getFeatures().nextFeature( f ) );
+  QCOMPARE( f.geometry().asWkt(), u"Point (1 2)"_s );
+
+  f.setGeometry( QgsGeometry::fromWkt( u"LineString (0 0, 10 0)"_s ) );
+  f.setAttributes( QgsAttributes() << 14 << u"a"_s );
+  revisedLayer->dataProvider()->addFeature( f );
+  results = alg->run( parameters, *context, &feedback, &ok );
+  QVERIFY( ok );
+  QCOMPARE( results.value( u"UNCHANGED_COUNT"_s ).toLongLong(), 2LL );
+  QCOMPARE( results.value( u"ADDED_COUNT"_s ).toLongLong(), 2LL );
+  QCOMPARE( results.value( u"DELETED_COUNT"_s ).toLongLong(), 1LL );
+
+  // nothing to compare - alg should fail
+  parameters.insert( u"COMPARE_ATTRIBUTES"_s, QString() );
+  results = alg->run( parameters, *context, &feedback, &ok );
+  QVERIFY( !ok );
 }
 
 void TestQgsProcessingAlgsPt1::shapefileEncoding()
