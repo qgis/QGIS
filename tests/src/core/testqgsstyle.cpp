@@ -130,7 +130,7 @@ class TestStyle : public QgsTest
 class Dummy3DSymbol : public QgsAbstract3DSymbol
 {
   public:
-    static QgsAbstract3DSymbol *create() { return new Dummy3DSymbol; }
+    static std::unique_ptr<QgsAbstract3DSymbol> create() { return std::make_unique<Dummy3DSymbol>(); }
     QString type() const override { return u"dummy"_s; }
     QgsAbstract3DSymbol *clone() const override
     {

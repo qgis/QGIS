@@ -189,8 +189,8 @@ void Qgs3DMapSettings::readXml( const QDomElement &elem, const QgsReadWriteConte
     for ( int i = 0; i < lightNodes.size(); ++i )
     {
       const QDomElement lightElement = lightNodes.at( i ).toElement();
-      if ( QgsLightSource *light = QgsLightSource::createFromXml( lightElement, context ) )
-        mLightSources << light;
+      if ( std::unique_ptr<QgsLightSource> light = QgsLightSource::createFromXml( lightElement, context ) )
+        mLightSources << light.release();
     }
   }
   else

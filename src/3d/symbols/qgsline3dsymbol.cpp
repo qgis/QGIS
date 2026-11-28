@@ -118,9 +118,9 @@ void QgsLine3DSymbol::setDefaultPropertiesFromLayer( const QgsVectorLayer *layer
   mOffset = static_cast<float>( props->zOffset() );
 }
 
-QgsAbstract3DSymbol *QgsLine3DSymbol::create()
+std::unique_ptr<QgsAbstract3DSymbol> QgsLine3DSymbol::create()
 {
-  return new QgsLine3DSymbol();
+  return std::make_unique<QgsLine3DSymbol>();
 }
 
 bool QgsLine3DSymbol::exportGeometries( Qgs3DSceneExporter *exporter, Qt3DCore::QEntity *entity, const QString &objectNamePrefix ) const

@@ -36,7 +36,7 @@ QgsLightSource::~QgsLightSource() = default;
 void QgsLightSource::resolveReferences( const QgsProject & )
 {}
 
-QgsLightSource *QgsLightSource::createFromXml( const QDomElement &element, const QgsReadWriteContext &context )
+std::unique_ptr<QgsLightSource> QgsLightSource::createFromXml( const QDomElement &element, const QgsReadWriteContext &context )
 {
   std::unique_ptr<QgsLightSource> res;
   if ( element.nodeName() == "point-light"_L1 )
@@ -55,5 +55,5 @@ QgsLightSource *QgsLightSource::createFromXml( const QDomElement &element, const
   if ( res )
     res->readXml( element, context );
 
-  return res.release();
+  return res;
 }

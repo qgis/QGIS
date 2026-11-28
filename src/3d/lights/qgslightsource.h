@@ -92,7 +92,7 @@ class _3D_EXPORT QgsLightSource SIP_ABSTRACT
     /**
      * Creates a new light source from an XML element.
      */
-    static QgsLightSource *createFromXml( const QDomElement &element, const QgsReadWriteContext &context ) SIP_FACTORY;
+    static std::unique_ptr<QgsLightSource> createFromXml( const QDomElement &element, const QgsReadWriteContext &context );
 
   protected:
     QgsLightSource();

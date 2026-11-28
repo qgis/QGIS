@@ -37,9 +37,9 @@ QgsAbstract3DSymbol *QgsPoint3DSymbol::clone() const
   return new QgsPoint3DSymbol( *this );
 }
 
-QgsAbstract3DSymbol *QgsPoint3DSymbol::create()
+std::unique_ptr<QgsAbstract3DSymbol> QgsPoint3DSymbol::create()
 {
-  return new QgsPoint3DSymbol();
+  return std::make_unique<QgsPoint3DSymbol>();
 }
 
 QgsPoint3DSymbol::QgsPoint3DSymbol()

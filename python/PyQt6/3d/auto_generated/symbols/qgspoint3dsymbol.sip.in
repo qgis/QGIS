@@ -36,7 +36,7 @@ billboardSymbol
 
     ~QgsPoint3DSymbol();
 
-    static QgsAbstract3DSymbol *create() /Factory/;
+    static std::unique_ptr<QgsAbstract3DSymbol> create();
 %Docstring
 Creates a new QgsPoint3DSymbol.
 

@@ -48,7 +48,7 @@ class _3D_EXPORT QgsPoint3DSymbol : public QgsAbstract3DSymbol SIP_NODEFAULTCTOR
      *
      * Caller takes ownership of the returned symbol.
      */
-    static QgsAbstract3DSymbol *create() SIP_FACTORY;
+    static std::unique_ptr<QgsAbstract3DSymbol> create();
 
     QString type() const override { return "point"; }
     QgsAbstract3DSymbol *clone() const override SIP_FACTORY;
