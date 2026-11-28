@@ -47,6 +47,7 @@ class TestQgsMapToolRotateFeature : public QObject
 
     void testRotateFeature();
     void testRotateFeatureManualAnchor();
+    void testRotateFeatureDifferentMapCrs();
     void testCancelManualAnchor();
     void testRotateFeatureManualAnchorAfterStartRotate();
     void testRotateFeatureManualAnchorSnapping();
@@ -158,7 +159,64 @@ void TestQgsMapToolRotateFeature::testRotateFeatureManualAnchor()
   QCOMPARE( mLayerBase->getFeature( 1 ).geometry().asWkt( 2 ), u"Polygon ((1.08 0.12, 0.87 1.1, 1.84 1.31, 2.06 0.34, 1.08 0.12))"_s );
   QCOMPARE( mLayerBase->getFeature( 2 ).geometry().asWkt( 2 ), u"Polygon ((1.1 0, 1.1 5, 2.1 5, 2.1 0, 1.1 0))"_s );
 
+  // clear anchor point
+  utils.mouseClick( 0, 5, Qt::RightButton, Qt::KeyboardModifiers(), true );
+
   mLayerBase->undoStack()->undo();
+}
+
+void TestQgsMapToolRotateFeature::testRotateFeatureDifferentMapCrs()
+{
+  const QgsRectangle prevExtent = mCanvas->extent();
+  const double offsetX = 1700000;
+  const double offsetY = 5200000;
+  mCanvas->setExtent( QgsRectangle( offsetX, offsetY, offsetX + 8, offsetY + 8 ) );
+
+  auto layerCrs = new QgsVectorLayer( u"Polygon?crs=EPSG:4326"_s, u"baselayer"_s, u"memory"_s );
+  QVERIFY( layerCrs->isValid() );
+
+  layerCrs->startEditing();
+  const QString wkt1 = u"Polygon ((1700000 5200000, 1700000 5200001, 1700001 5200001, 1700001 5200000, 1700000 5200000))"_s;
+  QgsFeature f1;
+
+  QgsGeometry geom = QgsGeometry::fromWkt( wkt1 );
+  QgsCoordinateTransform ct( mCanvas->mapSettings().destinationCrs(), layerCrs->crs(), QgsCoordinateTransformContext() );
+  geom.transform( ct );
+  f1.setGeometry( geom );
+  const QString wkt2 = u"Polygon ((1700001.1 5200000, 1700001.1 5200005, 1700002.1 5200005, 1700002.1 5200000, 1700001.1 5200000))"_s;
+  QgsFeature f2;
+  geom = QgsGeometry::fromWkt( wkt2 );
+  geom.transform( ct );
+  f2.setGeometry( geom );
+
+  QgsFeatureList flist;
+  flist << f1 << f2;
+  layerCrs->dataProvider()->addFeatures( flist );
+  QCOMPARE( layerCrs->featureCount(), 2L );
+
+  mCanvas->setLayers( { layerCrs } );
+  mCanvas->setCurrentLayer( layerCrs );
+  mCanvas->snappingUtils()->locatorForLayer( layerCrs )->init();
+
+  QgsProject::instance()->addMapLayers( QList<QgsMapLayer *>() << layerCrs );
+
+  TestQgsMapToolUtils utils( mRotateTool );
+
+  utils.mouseClick( offsetX + 1, offsetY + 1, Qt::LeftButton, Qt::KeyboardModifiers(), true );
+  utils.mouseMove( offsetX + 2, offsetY + 1 );
+  utils.mouseClick( offsetX + 2, offsetY + 1, Qt::LeftButton, Qt::KeyboardModifiers(), true );
+
+  geom = layerCrs->getFeature( 1 ).geometry();
+  geom.transform( ct, Qgis::TransformDirection::Reverse );
+  QCOMPARE( geom.asWkt( 2 ), u"Polygon ((1699999.83 5200000.28, 1700000.28 5200001.17, 1700001.17 5200000.72, 1700000.72 5199999.83, 1699999.83 5200000.28))"_s );
+  geom = layerCrs->getFeature( 2 ).geometry();
+  geom.transform( ct, Qgis::TransformDirection::Reverse );
+  QCOMPARE( geom.asWkt( 2 ), u"Polygon ((1700001.1 5200000, 1700001.1 5200005, 1700002.1 5200005, 1700002.1 5200000, 1700001.1 5200000))"_s );
+
+  mCanvas->setCurrentLayer( mLayerBase );
+  mCanvas->setLayers( { mLayerBase } );
+  mCanvas->setExtent( prevExtent );
+  QgsProject::instance()->removeMapLayer( layerCrs );
 }
 
 void TestQgsMapToolRotateFeature::testCancelManualAnchor()
