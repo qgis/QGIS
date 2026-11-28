@@ -92,7 +92,7 @@ void QgsLayerTreeViewProxyStyle::drawPrimitive( QStyle::PrimitiveElement element
   {
     QColor highlightColor = option->palette.highlight().color();
     highlightColor.setAlpha( 50 );
-    painter->setPen( Qt::NoPen );
+
     painter->setBrush( highlightColor );
 
     QModelIndex hoveredIndex = mLayerTreeView->indexAt( option->rect.center() );
@@ -100,6 +100,10 @@ void QgsLayerTreeViewProxyStyle::drawPrimitive( QStyle::PrimitiveElement element
     QModelIndex siblingIndex;
 
     siblingIndex = hoveredIndex.siblingAtRow( hoveredIndex.row() + 1 );
+
+    painter->drawLine( option->rect.bottomLeft(), option->rect.bottomRight() );
+    painter->setPen( Qt::NoPen );
+
     if ( siblingIndex.isValid() )
     {
       modifiedRect.setBottom( mLayerTreeView->visualRect( siblingIndex ).top() );
