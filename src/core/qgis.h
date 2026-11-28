@@ -7186,6 +7186,25 @@ int QgisEvent = QEvent::User + 1;
     Q_ENUM( WmsDimensionDefaultDisplay )
 
     /**
+     * QGIS Server WMS time dimension resolution type
+     *
+     * \since QGIS 4.6
+     */
+    enum class WmsDimensionResolutionType : int
+    {
+      Disabled = 0,
+      Yearly = 1,
+      Monthly = 2,
+      Weekly = 3,
+      Daily = 4,
+      Hourly = 5,
+      EveryMinute = 6,
+      EverySecond = 7,
+      Custom = 8,
+    };
+    Q_ENUM( WmsDimensionResolutionType )
+
+    /**
      * Rubber band icon type.
      *
      * \since QGIS 4.4. Prior to QGIS 4.4 this was available as QgsRubberBand::IconType

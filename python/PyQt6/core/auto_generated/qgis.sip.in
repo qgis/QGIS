@@ -4029,6 +4029,19 @@ The development version
       ReferenceValue,
     };
 
+    enum class WmsDimensionResolutionType /BaseType=IntEnum/
+    {
+      Disabled,
+      Yearly,
+      Monthly,
+      Weekly,
+      Daily,
+      Hourly,
+      EveryMinute,
+      EverySecond,
+      Custom,
+    };
+
     enum class RubberBandIconType /BaseType=IntEnum/
     {
       NoIcon,

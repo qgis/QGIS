@@ -13373,6 +13373,33 @@ Qgis.WmsDimensionDefaultDisplay.__doc__ = """QGIS Server WMS Dimension default d
 # --
 Qgis.WmsDimensionDefaultDisplay.baseClass = Qgis
 # monkey patching scoped based enum
+Qgis.WmsDimensionResolutionType.Disabled.__doc__ = ""
+Qgis.WmsDimensionResolutionType.Yearly.__doc__ = ""
+Qgis.WmsDimensionResolutionType.Monthly.__doc__ = ""
+Qgis.WmsDimensionResolutionType.Weekly.__doc__ = ""
+Qgis.WmsDimensionResolutionType.Daily.__doc__ = ""
+Qgis.WmsDimensionResolutionType.Hourly.__doc__ = ""
+Qgis.WmsDimensionResolutionType.EveryMinute.__doc__ = ""
+Qgis.WmsDimensionResolutionType.EverySecond.__doc__ = ""
+Qgis.WmsDimensionResolutionType.Custom.__doc__ = ""
+Qgis.WmsDimensionResolutionType.__doc__ = """QGIS Server WMS time dimension resolution type
+
+.. versionadded:: 4.6
+
+* ``Disabled``: 
+* ``Yearly``: 
+* ``Monthly``: 
+* ``Weekly``: 
+* ``Daily``: 
+* ``Hourly``: 
+* ``EveryMinute``: 
+* ``EverySecond``: 
+* ``Custom``: 
+
+"""
+# --
+Qgis.WmsDimensionResolutionType.baseClass = Qgis
+# monkey patching scoped based enum
 Qgis.RubberBandIconType.NoIcon.__doc__ = "No icon is used"
 Qgis.RubberBandIconType.CrossPlus.__doc__ = "A cross is used to highlight points (+)"
 Qgis.RubberBandIconType.CrossX.__doc__ = "A cross is used to highlight points (x)"

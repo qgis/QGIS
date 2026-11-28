@@ -11,6 +11,8 @@ MetadataUrl is a link to the detailed, standardized metadata about the data."""
 except (NameError, AttributeError):
     pass
 try:
+    QgsServerWmsDimensionProperties.resolutionString = staticmethod(QgsServerWmsDimensionProperties.resolutionString)
+    QgsServerWmsDimensionProperties.resolutionTypeToString = staticmethod(QgsServerWmsDimensionProperties.resolutionTypeToString)
     QgsServerWmsDimensionProperties.wmsDimensionDefaultDisplayLabels = staticmethod(QgsServerWmsDimensionProperties.wmsDimensionDefaultDisplayLabels)
 except (NameError, AttributeError):
     pass

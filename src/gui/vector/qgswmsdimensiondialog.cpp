@@ -56,6 +56,9 @@ QgsWmsDimensionDialog::QgsWmsDimensionDialog( QgsVectorLayer *layer, QStringList
   connect( mEndFieldComboBox, &QgsFieldComboBox::fieldChanged, this, &QgsWmsDimensionDialog::fieldChanged );
   connect( mNameComboBox, &QComboBox::editTextChanged, this, &QgsWmsDimensionDialog::nameChanged );
   connect( mDefaultDisplayComboBox, qOverload<int>( &QComboBox::currentIndexChanged ), this, &QgsWmsDimensionDialog::defaultDisplayChanged );
+  connect( mUseIntervalGroupBox, &QGroupBox::toggled, this, &QgsWmsDimensionDialog::updateIntervalResolutionPreview );
+  connect( mResolutionComboBox, qOverload<int>( &QComboBox::currentIndexChanged ), this, &QgsWmsDimensionDialog::resolutionTypeChanged );
+  connect( mCustomResolutionLineEdit, &QLineEdit::textChanged, this, &QgsWmsDimensionDialog::updateIntervalResolutionPreview );
 
   // Set available names
   const QMetaEnum pnMetaEnum( QMetaEnum::fromType<QgsMapLayerServerProperties::PredefinedWmsDimensionName>() );
@@ -80,6 +83,14 @@ QgsWmsDimensionDialog::QgsWmsDimensionDialog( QgsVectorLayer *layer, QStringList
 
   mReferenceValueLabel->setEnabled( false );
   mReferenceValueComboBox->setEnabled( false );
+
+  // Resolution options
+  for ( Qgis::WmsDimensionResolutionType resolutionType : qgsEnumList<Qgis::WmsDimensionResolutionType>() )
+  {
+    mResolutionComboBox->addItem( QgsMapLayerServerProperties::WmsDimensionInfo::resolutionTypeToString( resolutionType ), QVariant::fromValue( resolutionType ) );
+  }
+  // Set default resolution to Disabled
+  mResolutionComboBox->setCurrentIndex( mResolutionComboBox->findData( QVariant::fromValue( Qgis::WmsDimensionResolutionType::Disabled ) ) );
 
   fieldChanged();
 }
@@ -121,6 +132,10 @@ void QgsWmsDimensionDialog::setInfo( const QgsMapLayerServerProperties::WmsDimen
   {
     mReferenceValueComboBox->setCurrentIndex( 0 );
   }
+
+  mUseIntervalGroupBox->setChecked( info.useInterval );
+  mResolutionComboBox->setCurrentIndex( mResolutionComboBox->findData( QVariant::fromValue( info.resolutionType ) ) );
+  mCustomResolutionLineEdit->setText( info.customResolution );
 }
 
 QgsMapLayerServerProperties::WmsDimensionInfo QgsWmsDimensionDialog::info() const
@@ -146,7 +161,10 @@ QgsMapLayerServerProperties::WmsDimensionInfo QgsWmsDimensionDialog::info() cons
     mUnitsLineEdit->text(),
     mUnitSymbolLineEdit->text(),
     static_cast<Qgis::WmsDimensionDefaultDisplay>( mDefaultDisplayComboBox->currentData().toInt() ),
-    refValue
+    refValue,
+    mUseIntervalGroupBox->isChecked(),
+    static_cast<Qgis::WmsDimensionResolutionType>( mResolutionComboBox->currentData().toInt() ),
+    mCustomResolutionLineEdit->text()
   );
 }
 
@@ -207,6 +225,7 @@ void QgsWmsDimensionDialog::nameChanged( const QString &name )
     mEndFieldComboBox->setFilters( QgsFieldProxyModel::AllTypes );
   }
 
+  initializeIntervalControls();
   fieldChanged();
 }
 
@@ -232,6 +251,10 @@ void QgsWmsDimensionDialog::fieldChanged()
   {
     mReferenceValueComboBox->addItem( v.toString(), v );
   }
+
+  mCurrentMinimumValue = values.first();
+  mCurrentMaximumValue = values.last();
+  updateIntervalResolutionPreview();
 }
 
 void QgsWmsDimensionDialog::defaultDisplayChanged( int index )
@@ -245,5 +268,38 @@ void QgsWmsDimensionDialog::defaultDisplayChanged( int index )
   {
     mReferenceValueLabel->setEnabled( false );
     mReferenceValueComboBox->setEnabled( false );
+  }
+}
+
+void QgsWmsDimensionDialog::resolutionTypeChanged( int )
+{
+  bool enabled = mResolutionComboBox->currentData() == QVariant::fromValue( Qgis::WmsDimensionResolutionType::Custom );
+  mCustomResolutionLabel->setEnabled( enabled );
+  mCustomResolutionLineEdit->setEnabled( enabled );
+  updateIntervalResolutionPreview();
+}
+
+void QgsWmsDimensionDialog::initializeIntervalControls()
+{
+  mUseIntervalGroupBox->setChecked( false );
+  mResolutionComboBox->setCurrentIndex( mResolutionComboBox->findData( QVariant::fromValue( Qgis::WmsDimensionResolutionType::Disabled ) ) );
+  mCustomResolutionLineEdit->setText( u""_s );
+}
+
+void QgsWmsDimensionDialog::updateIntervalResolutionPreview()
+{
+  if ( mUseIntervalGroupBox->isChecked() )
+  {
+    mResolutionPreviewLabel->setText( u"%1: '%2'"_s.arg(
+      QObject::tr( "Preview" ),
+      QgsMapLayerServerProperties::WmsDimensionInfo::
+        intervalResolutionString( mCurrentMinimumValue, mCurrentMaximumValue, static_cast<Qgis::WmsDimensionResolutionType>( mResolutionComboBox->currentData().toInt() ), mCustomResolutionLineEdit->text() )
+    ) );
+    mResolutionPreviewLabel->setEnabled( true );
+  }
+  else
+  {
+    mResolutionPreviewLabel->setText( QObject::tr( "No preview" ) );
+    mResolutionPreviewLabel->setEnabled( false );
   }
 }

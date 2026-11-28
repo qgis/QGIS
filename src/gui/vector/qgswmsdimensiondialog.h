@@ -58,10 +58,16 @@ class GUI_EXPORT QgsWmsDimensionDialog : public QDialog, private Ui::QgsWmsDimen
     void nameChanged( const QString &name );
     void fieldChanged();
     void defaultDisplayChanged( int index );
+    void resolutionTypeChanged( int index );
+    void initializeIntervalControls();
+    void updateIntervalResolutionPreview();
 
   private:
     //! Target layer
     QgsVectorLayer *mLayer = nullptr;
+
+    QVariant mCurrentMinimumValue;
+    QVariant mCurrentMaximumValue;
 };
 
 
