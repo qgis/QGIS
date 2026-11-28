@@ -164,6 +164,12 @@ return sipGetState(sipTransferObj);
 };
 ]])
 endif()
+
+# build fails with PyQt6 >= 6.12.0 because of the duplicated mapped type
+if(${PYQT_VERSION_STR} VERSION_GREATER_EQUAL 6.12.0)
+  set(SIP_DISABLE_FEATURES ${SIP_DISABLE_FEATURES} SIP_NEEDS_CONVERSION_QMAP_INT_INT)
+endif()
+
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/PyQt6/core/conversions.sip.in ${CMAKE_CURRENT_BINARY_DIR}/PyQt6/core/conversions.sip @ONLY)
 
 # Deprecated annotation supports message only since version 6.9.0 with abi-version 12.16 / 13.9 and above
