@@ -44,6 +44,8 @@ accordingly. If the list is empty, then a set of default native types
 will be used instead.
 %End
 
+    ~QgsFieldMappingWidget();
+
     void setDestinationEditable( bool editable );
 %Docstring
 Sets the destination fields editable state to ``editable``

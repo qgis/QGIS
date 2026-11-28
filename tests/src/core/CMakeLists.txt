@@ -76,6 +76,7 @@ set(TESTS
  testqgsfeature.cpp
  testqgsfeaturerequest.cpp
  testqgsfield.cpp
+ testqgsfieldpropertycollectortask.cpp
  testqgsfields.cpp
  testqgsfilledmarker.cpp
  testqgsfontmarker.cpp

@@ -29,6 +29,7 @@ class QTableView;
 class QItemSelectionModel;
 class QgsVectorLayer;
 class QgsFieldMappingTypeDelegate;
+class QgsFieldPropertyCollectorTask;
 
 /**
  * \ingroup gui
@@ -60,6 +61,8 @@ class GUI_EXPORT QgsFieldMappingWidget : public QgsPanelWidget
       const QMap<QString, QString> &expressions = QMap<QString, QString>(),
       const QList< QgsVectorDataProvider::NativeType > &nativeTypes = QList< QgsVectorDataProvider::NativeType >()
     );
+
+    ~QgsFieldMappingWidget() override;
 
     //! Sets the destination fields editable state to \a editable
     void setDestinationEditable( bool editable );
@@ -168,6 +171,10 @@ class GUI_EXPORT QgsFieldMappingWidget : public QgsPanelWidget
     QgsFieldMappingTypeDelegate *mTypeDelegate = nullptr;
 
     QPointer<QgsVectorLayer> mSourceLayer;
+
+    QPointer<QgsFieldPropertyCollectorTask> mFieldPropertyTask;
+    QMap<QString, qsizetype> mMaxStringLengths;
+
     void updateColumns();
     //! Returns selected row indexes in ascending order
     std::list<int> selectedRows();

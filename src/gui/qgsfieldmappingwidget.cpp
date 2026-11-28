@@ -16,9 +16,12 @@
 
 #include "qgsfieldmappingwidget.h"
 
+#include "qgsapplication.h"
 #include "qgsexpression.h"
 #include "qgsfieldexpressionwidget.h"
+#include "qgsfieldpropertycollectortask.h"
 #include "qgsprocessingaggregatewidgets.h"
+#include "qgstaskmanager.h"
 #include "qgsvectordataprovider.h"
 #include "qgsvectorlayer.h"
 
@@ -62,6 +65,14 @@ QgsFieldMappingWidget::QgsFieldMappingWidget(
   connect( mModel, &QgsFieldMappingModel::rowsInserted, this, &QgsFieldMappingWidget::changed );
   connect( mModel, &QgsFieldMappingModel::rowsRemoved, this, &QgsFieldMappingWidget::changed );
   connect( mModel, &QgsFieldMappingModel::modelReset, this, &QgsFieldMappingWidget::changed );
+}
+
+QgsFieldMappingWidget::~QgsFieldMappingWidget()
+{
+  if ( mFieldPropertyTask )
+  {
+    mFieldPropertyTask->cancel();
+  }
 }
 
 void QgsFieldMappingWidget::setDestinationEditable( bool editable )
@@ -108,6 +119,37 @@ void QgsFieldMappingWidget::setSourceFields( const QgsFields &sourceFields )
 void QgsFieldMappingWidget::setSourceLayer( QgsVectorLayer *layer )
 {
   mSourceLayer = layer;
+
+  // start up the background task to collect existing layer field properties
+  if ( mFieldPropertyTask )
+  {
+    mFieldPropertyTask->cancel();
+    mFieldPropertyTask = nullptr;
+  }
+  mMaxStringLengths.clear();
+
+  mFieldPropertyTask = new QgsFieldPropertyCollectorTask( mSourceLayer );
+  QgsFieldPropertyCollectorTask *currentTask = mFieldPropertyTask;
+
+  connect( mFieldPropertyTask, &QgsTask::taskCompleted, this, [this, currentTask]() {
+    if ( mFieldPropertyTask == currentTask ) // ignore outdated task results
+    {
+      const QgsFields fields = mFieldPropertyTask->fields();
+      mMaxStringLengths.clear();
+      for ( int index = 0; index < fields.size(); ++index )
+      {
+        const QgsField &field = fields.at( index );
+        if ( field.type() == QMetaType::Type::QString )
+        {
+          mMaxStringLengths[field.name()] = mFieldPropertyTask->maximumStringFieldLength( index );
+        }
+      }
+      model()->setMaximumStringLengths( mMaxStringLengths );
+      mFieldPropertyTask = nullptr;
+    }
+  } );
+
+  QgsApplication::taskManager()->addTask( mFieldPropertyTask );
 }
 
 QgsVectorLayer *QgsFieldMappingWidget::sourceLayer()
@@ -269,7 +311,7 @@ void QgsFieldMappingExpressionDelegate::setEditorData( QWidget *editor, const QM
     return;
 
   const QVariant value = index.model()->data( index, Qt::EditRole );
-  editorWidget->setField( value.toString() );
+  whileBlocking( editorWidget )->setField( value.toString() );
 }
 
 QWidget *QgsFieldMappingExpressionDelegate::createEditor( QWidget *parent, const QStyleOptionViewItem &option, const QModelIndex &index ) const
@@ -358,7 +400,7 @@ void QgsFieldMappingTypeDelegate::setEditorData( QWidget *editor, const QModelIn
     return;
 
   const QVariant value = index.model()->data( index, Qt::EditRole );
-  editorWidget->setCurrentIndex( editorWidget->findData( value ) );
+  whileBlocking( editorWidget )->setCurrentIndex( editorWidget->findData( value ) );
 }
 
 void QgsFieldMappingTypeDelegate::setModelData( QWidget *editor, QAbstractItemModel *model, const QModelIndex &index ) const
