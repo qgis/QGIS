@@ -963,7 +963,7 @@ if( "${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang" OR "${CMAKE_CXX_COMPILER_ID}" ST
   include("cmake/modules/linker.cmake")
 endif()
 
-set(MIN_PYTHON_VERSION "3.11")
+set(MIN_PYTHON_VERSION "3.12")
 set(Python_FIND_FRAMEWORK "LAST")
 
 if (WITH_BINDINGS)
