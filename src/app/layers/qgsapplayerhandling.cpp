@@ -17,6 +17,7 @@
 #include "qgsapplayerhandling.h"
 
 #include "qgisapp.h"
+#include "qgsfilefiltergenerator.h"
 #include "qgsfileutils.h"
 #include "qgsmapcanvas.h"
 #include "qgsmaplayer.h"
@@ -1860,7 +1861,8 @@ void QgsAppLayerHandling::loadStyleFromFile( const QList<QgsMapLayer *> &layers 
       QgsSettings settings;
       const QString lastUsedDir = settings.value( u"style/lastStyleDir"_s, QDir::homePath() ).toString();
 
-      filePath = QFileDialog::getOpenFileName( nullptr, QObject::tr( "Load Layer Properties from Style File" ), lastUsedDir, QObject::tr( "QGIS Layer Style File" ) + u" (*.qml)"_s );
+      filePath
+        = QFileDialog::getOpenFileName( nullptr, QObject::tr( "Load Layer Properties from Style File" ), lastUsedDir, QgsFileFilterGenerator::fileFilter( QgsFileFilterGenerator::StandardFileFormat::QML ) );
       if ( filePath.isEmpty() )
         return;
 

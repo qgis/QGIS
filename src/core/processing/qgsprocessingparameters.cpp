@@ -4535,7 +4535,10 @@ QgsProcessingParameterMultipleLayers::QgsProcessingParameterMultipleLayers( cons
 
 QgsProcessingParameterDefinition *QgsProcessingParameterMultipleLayers::clone() const
 {
-  return new QgsProcessingParameterMultipleLayers( *this );
+  auto res = new QgsProcessingParameterMultipleLayers( *this );
+  res->setFileFilter( mFileFilter );
+  res->setMinimumNumberInputs( mMinimumNumberInputs );
+  return res;
 }
 
 bool QgsProcessingParameterMultipleLayers::checkValueIsAcceptable( const QVariant &v, QgsProcessingContext *context ) const
@@ -4569,9 +4572,17 @@ bool QgsProcessingParameterMultipleLayers::checkValueIsAcceptable( const QVarian
       return true;
 
     if ( mLayerType != Qgis::ProcessingSourceType::File )
+    {
       return QgsProcessingUtils::mapLayerFromString( input.toString(), *context, true, QgsProcessingUtils::LayerHint::UnknownType, QgsProcessing::LayerOptionsFlag::SkipIndexGeneration );
+    }
     else
+    {
+      if ( !mFileFilter.isEmpty() )
+      {
+        return QgsFileUtils::fileMatchesFilter( input.toString(), mFileFilter );
+      }
       return true;
+    }
   }
   else if ( input.userType() == QMetaType::Type::QVariantList )
   {
@@ -4596,6 +4607,19 @@ bool QgsProcessingParameterMultipleLayers::checkValueIsAcceptable( const QVarian
           return false;
       }
     }
+    else
+    {
+      if ( !mFileFilter.isEmpty() )
+      {
+        const auto constToList = input.toList();
+        for ( const QVariant &v : constToList )
+        {
+          if ( !QgsFileUtils::fileMatchesFilter( v.toString(), mFileFilter ) )
+            return false;
+        }
+      }
+      return true;
+    }
     return true;
   }
   else if ( input.userType() == QMetaType::Type::QStringList )
@@ -4617,6 +4641,19 @@ bool QgsProcessingParameterMultipleLayers::checkValueIsAcceptable( const QVarian
         if ( !QgsProcessingUtils::mapLayerFromString( v, *context, true, QgsProcessingUtils::LayerHint::UnknownType, QgsProcessing::LayerOptionsFlag::SkipIndexGeneration ) )
           return false;
       }
+    }
+    else
+    {
+      if ( !mFileFilter.isEmpty() )
+      {
+        const QStringList constToStringList = input.toStringList();
+        for ( const QString &v : constToStringList )
+        {
+          if ( !QgsFileUtils::fileMatchesFilter( v, mFileFilter ) )
+            return false;
+        }
+      }
+      return true;
     }
     return true;
   }
@@ -4748,23 +4785,24 @@ QString QgsProcessingParameterMultipleLayers::createFileFilter() const
   switch ( mLayerType )
   {
     case Qgis::ProcessingSourceType::File:
-      return QObject::tr( "All files (*.*)" );
+      return mFileFilter.isEmpty() ? QgsFileFilterGenerator::fileFilter( QgsFileFilterGenerator::StandardFileFormat::AllFiles )
+                                   : ( mFileFilter + u";;"_s + QgsFileFilterGenerator::fileFilter( QgsFileFilterGenerator::StandardFileFormat::AllFiles ) );
 
     case Qgis::ProcessingSourceType::Raster:
-      return QgsProviderRegistry::instance()->fileRasterFilters() + u";;"_s + QObject::tr( "All files (*.*)" );
+      return QgsProviderRegistry::instance()->fileRasterFilters() + u";;"_s + QgsFileFilterGenerator::fileFilter( QgsFileFilterGenerator::StandardFileFormat::AllFiles );
 
     case Qgis::ProcessingSourceType::Vector:
     case Qgis::ProcessingSourceType::VectorAnyGeometry:
     case Qgis::ProcessingSourceType::VectorPoint:
     case Qgis::ProcessingSourceType::VectorLine:
     case Qgis::ProcessingSourceType::VectorPolygon:
-      return QgsProviderRegistry::instance()->fileVectorFilters() + u";;"_s + QObject::tr( "All files (*.*)" );
+      return QgsProviderRegistry::instance()->fileVectorFilters() + u";;"_s + QgsFileFilterGenerator::fileFilter( QgsFileFilterGenerator::StandardFileFormat::AllFiles );
 
     case Qgis::ProcessingSourceType::Mesh:
-      return QgsProviderRegistry::instance()->fileMeshFilters() + u";;"_s + QObject::tr( "All files (*.*)" );
+      return QgsProviderRegistry::instance()->fileMeshFilters() + u";;"_s + QgsFileFilterGenerator::fileFilter( QgsFileFilterGenerator::StandardFileFormat::AllFiles );
 
     case Qgis::ProcessingSourceType::PointCloud:
-      return QgsProviderRegistry::instance()->filePointCloudFilters() + u";;"_s + QObject::tr( "All files (*.*)" );
+      return QgsProviderRegistry::instance()->filePointCloudFilters() + u";;"_s + QgsFileFilterGenerator::fileFilter( QgsFileFilterGenerator::StandardFileFormat::AllFiles );
 
     case Qgis::ProcessingSourceType::MapLayer:
     case Qgis::ProcessingSourceType::Plugin:
@@ -4797,11 +4835,23 @@ void QgsProcessingParameterMultipleLayers::setMinimumNumberInputs( int minimumNu
     mMinimumNumberInputs = minimumNumberInputs;
 }
 
+QString QgsProcessingParameterMultipleLayers::fileFilter() const
+{
+  return mFileFilter;
+}
+
+void QgsProcessingParameterMultipleLayers::setFileFilter( const QString &filter )
+{
+  mFileFilter = filter;
+}
+
 QVariantMap QgsProcessingParameterMultipleLayers::toVariantMap() const
 {
   QVariantMap map = QgsProcessingParameterDefinition::toVariantMap();
   map.insert( u"layer_type"_s, static_cast< int >( mLayerType ) );
   map.insert( u"min_inputs"_s, mMinimumNumberInputs );
+  if ( !mFileFilter.isEmpty() )
+    map.insert( u"filefilter"_s, mFileFilter );
   return map;
 }
 
@@ -4810,6 +4860,7 @@ bool QgsProcessingParameterMultipleLayers::fromVariantMap( const QVariantMap &ma
   QgsProcessingParameterDefinition::fromVariantMap( map );
   mLayerType = static_cast< Qgis::ProcessingSourceType >( map.value( u"layer_type"_s ).toInt() );
   mMinimumNumberInputs = map.value( u"min_inputs"_s ).toInt();
+  mFileFilter = map.value( u"filefilter"_s ).toString();
   return true;
 }
 
@@ -5228,7 +5279,7 @@ QVariant QgsProcessingParameterRasterLayer::valueAsJsonObject( const QVariant &v
 
 QString QgsProcessingParameterRasterLayer::createFileFilter() const
 {
-  return QgsProviderRegistry::instance()->fileRasterFilters() + u";;"_s + QObject::tr( "All files (*.*)" );
+  return QgsProviderRegistry::instance()->fileRasterFilters() + u";;"_s + QgsFileFilterGenerator::fileFilter( QgsFileFilterGenerator::StandardFileFormat::AllFiles );
 }
 
 std::unique_ptr<QgsProcessingParameterRasterLayer> QgsProcessingParameterRasterLayer::fromScriptCode( const QString &name, const QString &description, bool isOptional, const QString &definition )
@@ -5996,7 +6047,7 @@ QString QgsProcessingParameterVectorLayer::asPythonString( const QgsProcessing::
 
 QString QgsProcessingParameterVectorLayer::createFileFilter() const
 {
-  return QgsProviderRegistry::instance()->fileVectorFilters() + u";;"_s + QObject::tr( "All files (*.*)" );
+  return QgsProviderRegistry::instance()->fileVectorFilters() + u";;"_s + QgsFileFilterGenerator::fileFilter( QgsFileFilterGenerator::StandardFileFormat::AllFiles );
 }
 
 QList<int> QgsProcessingParameterLimitedDataTypes::dataTypes() const
@@ -6117,7 +6168,7 @@ QVariant QgsProcessingParameterMeshLayer::valueAsJsonObject( const QVariant &val
 
 QString QgsProcessingParameterMeshLayer::createFileFilter() const
 {
-  return QgsProviderRegistry::instance()->fileMeshFilters() + u";;"_s + QObject::tr( "All files (*.*)" );
+  return QgsProviderRegistry::instance()->fileMeshFilters() + u";;"_s + QgsFileFilterGenerator::fileFilter( QgsFileFilterGenerator::StandardFileFormat::AllFiles );
 }
 
 std::unique_ptr<QgsProcessingParameterMeshLayer> QgsProcessingParameterMeshLayer::fromScriptCode( const QString &name, const QString &description, bool isOptional, const QString &definition )
@@ -6682,7 +6733,7 @@ QString QgsProcessingParameterFeatureSource::asPythonString( const QgsProcessing
 
 QString QgsProcessingParameterFeatureSource::createFileFilter() const
 {
-  return QgsProviderRegistry::instance()->fileVectorFilters() + u";;"_s + QObject::tr( "All files (*.*)" );
+  return QgsProviderRegistry::instance()->fileVectorFilters() + u";;"_s + QgsFileFilterGenerator::fileFilter( QgsFileFilterGenerator::StandardFileFormat::AllFiles );
 }
 
 QgsProcessingParameterLimitedDataTypes::QgsProcessingParameterLimitedDataTypes( const QList<int> &types )
@@ -6912,7 +6963,7 @@ QString QgsProcessingParameterFeatureSink::createFileFilter() const
   {
     filters << QObject::tr( "%1 files (*.%2)" ).arg( ext.toUpper(), ext.toLower() );
   }
-  return filters.join( ";;"_L1 ) + u";;"_s + QObject::tr( "All files (*.*)" );
+  return filters.join( ";;"_L1 ) + u";;"_s + QgsFileFilterGenerator::fileFilter( QgsFileFilterGenerator::StandardFileFormat::AllFiles );
 }
 
 QStringList QgsProcessingParameterFeatureSink::supportedOutputVectorLayerExtensions() const
@@ -7160,7 +7211,7 @@ QString QgsProcessingParameterRasterDestination::createFileFilter() const
     }
   }
 
-  return filters.join( ";;"_L1 ) + u";;"_s + QObject::tr( "All files (*.*)" );
+  return filters.join( ";;"_L1 ) + u";;"_s + QgsFileFilterGenerator::fileFilter( QgsFileFilterGenerator::StandardFileFormat::AllFiles );
 }
 
 QStringList QgsProcessingParameterRasterDestination::supportedOutputRasterLayerExtensions() const

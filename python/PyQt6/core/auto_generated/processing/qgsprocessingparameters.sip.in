@@ -2592,6 +2592,33 @@ minimum must be >= 1 if the parameter is not optional.
 .. seealso:: :py:func:`minimumNumberInputs`
 %End
 
+    QString fileFilter() const;
+%Docstring
+Returns the file filter string for files compatible with this parameter.
+
+This is only used when the
+:py:func:`~QgsProcessingParameterMultipleLayers.layerType` is
+:py:class:`Qgis`.ProcessingSourceType.File.
+
+.. seealso:: :py:func:`setFileFilter`
+
+.. versionadded:: 4.6
+%End
+
+    void setFileFilter( const QString &filter );
+%Docstring
+Sets the file ``filter`` string for files compatible with this
+parameter.
+
+This is only used when the
+:py:func:`~QgsProcessingParameterMultipleLayers.layerType` is
+:py:class:`Qgis`.ProcessingSourceType.File.
+
+.. seealso:: :py:func:`fileFilter`
+
+.. versionadded:: 4.6
+%End
+
     virtual QVariantMap toVariantMap() const;
 
     virtual bool fromVariantMap( const QVariantMap &map );

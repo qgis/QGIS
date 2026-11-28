@@ -74,7 +74,9 @@ QgsSaveLogToFileAlgorithm *QgsSaveLogToFileAlgorithm::createInstance() const
 
 void QgsSaveLogToFileAlgorithm::initAlgorithm( const QVariantMap & )
 {
-  addParameter( new QgsProcessingParameterFileDestination( u"OUTPUT"_s, QObject::tr( "Log file" ), QObject::tr( "Text files (*.txt);;HTML files (*.html *.HTML)" ) ) );
+  addParameter(
+    new QgsProcessingParameterFileDestination( u"OUTPUT"_s, QObject::tr( "Log file" ), QgsFileFilterGenerator::filterString( { QgsFileFilterGenerator::StandardFileFormat::TXT, QgsFileFilterGenerator::StandardFileFormat::HTML } ) )
+  );
   addParameter( new QgsProcessingParameterBoolean( u"USE_HTML"_s, QObject::tr( "Use HTML formatting" ), false ) );
 }
 

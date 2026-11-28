@@ -20,6 +20,7 @@
 
 #include "qgis_core.h"
 
+#include <QCoreApplication>
 #include <QString>
 
 /**
@@ -33,6 +34,8 @@
  */
 class CORE_EXPORT QgsFileFilterGenerator
 {
+    Q_DECLARE_TR_FUNCTIONS( QgsFileFilterGenerator )
+
   public:
     virtual ~QgsFileFilterGenerator() = default;
 
@@ -41,6 +44,37 @@ class CORE_EXPORT QgsFileFilterGenerator
      * and return a file filter.
      */
     virtual QString createFileFilter() const = 0;
+
+    /**
+     * Standard file filters.
+     *
+     * \since QGIS 4.6
+     */
+    enum class StandardFileFormat
+    {
+      QML,               //!< QML Files
+      HTML,              //!< HTML Files
+      TXT,               //!< Text files
+      SLD,               //!< SLD files
+      QgisStyleDbExport, //!< QGIS exported style database
+      AllFiles,          //!< All files (*.*)
+    };
+
+    /**
+     * Generates a file format for the specified \a format.
+     *
+     * \since QGIS 4.6
+     */
+    static QString fileFilter( QgsFileFilterGenerator::StandardFileFormat format );
+
+    /**
+     * Generates a complete file filter string for all specified \a formats.
+     *
+     * If \a includeAllFiles is TRUE then an "All Files (*.*)" option will be added to the end of the string.
+     *
+     * \since QGIS 4.6
+     */
+    static QString filterString( const QList< QgsFileFilterGenerator::StandardFileFormat > &formats, bool includeAllFiles = false );
 };
 
 #endif // QGSPROCESSINGUTILS_H

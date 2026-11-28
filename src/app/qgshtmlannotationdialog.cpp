@@ -16,6 +16,7 @@
 
 #include "qgsannotationmanager.h"
 #include "qgsannotationwidget.h"
+#include "qgsfilefiltergenerator.h"
 #include "qgsgui.h"
 #include "qgshelp.h"
 #include "qgshtmlannotation.h"
@@ -118,7 +119,7 @@ void QgsHtmlAnnotationDialog::mBrowseToolButton_clicked()
   {
     directory = QDir::homePath();
   }
-  const QString filename = QFileDialog::getOpenFileName( nullptr, tr( "html" ), directory, u"HTML (*.html *.htm);;All files (*.*)"_s );
+  const QString filename = QFileDialog::getOpenFileName( nullptr, tr( "html" ), directory, QgsFileFilterGenerator::filterString( { QgsFileFilterGenerator::StandardFileFormat::HTML }, true ) );
   if ( filename.isEmpty() )
   {
     return;

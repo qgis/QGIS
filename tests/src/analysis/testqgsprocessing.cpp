@@ -765,6 +765,7 @@ class TestQgsProcessing : public QgsTest
     void parameterFile();
     void parameterMatrix();
     void parameterLayerList();
+    void parameterLayerListFiles();
     void parameterNumber();
     void parameterDistance();
     void parameterArea();
@@ -5184,7 +5185,7 @@ void TestQgsProcessing::parameterLayerList()
   QCOMPARE( fromCode->layerType(), Qgis::ProcessingSourceType::Raster );
 
   def = std::make_unique<QgsProcessingParameterMultipleLayers>( "type", QString(), Qgis::ProcessingSourceType::File );
-  QCOMPARE( def->createFileFilter(), u"All files (*.*)"_s );
+  QCOMPARE( def->createFileFilter(), u"All Files (*.*)"_s );
 
   pythonCode = def->asPythonString();
   QCOMPARE( pythonCode, u"QgsProcessingParameterMultipleLayers('type', '', layerType=QgsProcessing.TypeFile, defaultValue=None)"_s );
@@ -5283,6 +5284,57 @@ void TestQgsProcessing::parameterLayerList()
   QVERIFY( ok );
   QCOMPARE( def->valueAsStringList( QVariantList() << "c" << "d", context, ok ), QStringList( { "c", "d" } ) );
   QVERIFY( ok );
+}
+
+void TestQgsProcessing::parameterLayerListFiles()
+{
+  // setup a context
+  QgsProject p;
+  QgsProcessingContext context;
+  context.setProject( &p );
+
+  // not optional, no default value
+  auto def = std::make_unique<QgsProcessingParameterMultipleLayers>( "non_optional", QString(), Qgis::ProcessingSourceType::File, QVariant(), false );
+  QVERIFY( !def->checkValueIsAcceptable( false ) );
+  QVERIFY( !def->checkValueIsAcceptable( true ) );
+  QVERIFY( !def->checkValueIsAcceptable( 5 ) );
+  QVERIFY( def->checkValueIsAcceptable( "layer12312312" ) );
+  QVERIFY( !def->checkValueIsAcceptable( "" ) );
+  QVERIFY( !def->checkValueIsAcceptable( QVariant() ) );
+
+  // should be OK
+  QVERIFY( def->checkValueIsAcceptable( "c:/Users/admin/Desktop/roads_clipped_transformed_v1_reprojected_final_clipped_aAAA.shp" ) );
+  QVERIFY( def->checkValueIsAcceptable( QStringList() << "c:/Users/admin/Desktop/roads_clipped_transformed_v1_reprojected_final_clipped_aAAA.shp" ) );
+  QVERIFY( def->checkValueIsAcceptable( QVariantList() << "c:/Users/admin/Desktop/roads_clipped_transformed_v1_reprojected_final_clipped_aAAA.shp" ) );
+  QVERIFY( def->checkValueIsAcceptable( "c:/Users/admin/Desktop/roads_clipped_transformed_v1_reprojected_final_clipped_aAAA.shp", &context ) );
+  QVERIFY( def->checkValueIsAcceptable( QStringList() << "c:/Users/admin/Desktop/roads_clipped_transformed_v1_reprojected_final_clipped_aAAA.shp", &context ) );
+  QVERIFY( def->checkValueIsAcceptable( QVariantList() << "c:/Users/admin/Desktop/roads_clipped_transformed_v1_reprojected_final_clipped_aAAA.shp", &context ) );
+
+  QCOMPARE( def->createFileFilter(), u"All Files (*.*)"_s );
+
+  // with specific filter string
+  def->setFileFilter( u"PNG Files (*.png *.PNG)"_s );
+  QCOMPARE( def->fileFilter(), u"PNG Files (*.png *.PNG)"_s );
+  QCOMPARE( def->createFileFilter(), u"PNG Files (*.png *.PNG);;All Files (*.*)"_s );
+
+  QString pythonCode = def->asPythonString();
+  QCOMPARE( pythonCode, u"QgsProcessingParameterMultipleLayers('non_optional', '', layerType=QgsProcessing.TypeFile, defaultValue=None)"_s );
+
+  const QVariantMap map = def->toVariantMap();
+  QgsProcessingParameterMultipleLayers fromMap( "x" );
+  QVERIFY( fromMap.fromVariantMap( map ) );
+  QCOMPARE( fromMap.name(), def->name() );
+  QCOMPARE( fromMap.description(), def->description() );
+  QCOMPARE( fromMap.flags(), def->flags() );
+  QCOMPARE( fromMap.defaultValue(), def->defaultValue() );
+  QCOMPARE( fromMap.layerType(), def->layerType() );
+  QCOMPARE( fromMap.minimumNumberInputs(), def->minimumNumberInputs() );
+  QCOMPARE( fromMap.fileFilter(), def->fileFilter() );
+  def = qgis::unique_ptr_dynamic_cast<QgsProcessingParameterMultipleLayers>( QgsProcessingParameters::parameterFromVariantMap( map ) );
+  QVERIFY( dynamic_cast<QgsProcessingParameterMultipleLayers *>( def.get() ) );
+
+  std::unique_ptr< QgsProcessingParameterMultipleLayers > clone( static_cast< QgsProcessingParameterMultipleLayers * >( def->clone() ) );
+  QCOMPARE( clone->fileFilter(), def->fileFilter() );
 }
 
 void TestQgsProcessing::parameterDistance()

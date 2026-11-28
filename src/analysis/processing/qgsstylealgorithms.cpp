@@ -31,6 +31,10 @@ QgsCombineStylesAlgorithm::~QgsCombineStylesAlgorithm() = default;
 
 void QgsCombineStylesAlgorithm::initAlgorithm( const QVariantMap & )
 {
+  auto inputParam = new QgsProcessingParameterMultipleLayers( u"INPUT"_s, QObject::tr( "Input databases" ), Qgis::ProcessingSourceType::File );
+  inputParam->setFileFilter( QgsFileFilterGenerator::fileFilter( QgsFileFilterGenerator::StandardFileFormat::QgisStyleDbExport ) );
+  addParameter( inputParam );
+
   addParameter( new QgsProcessingParameterMultipleLayers( u"INPUT"_s, QObject::tr( "Input databases" ), Qgis::ProcessingSourceType::File ) );
 
   addParameter( new QgsProcessingParameterFileDestination( u"OUTPUT"_s, QObject::tr( "Output style database" ), QObject::tr( "Style files (*.xml)" ) ) );

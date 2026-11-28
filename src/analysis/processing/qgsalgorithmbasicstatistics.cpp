@@ -76,7 +76,9 @@ void QgsBasicStatisticsAlgorithm::initAlgorithm( const QVariantMap & )
   addParameter( new QgsProcessingParameterFeatureSource( u"INPUT_LAYER"_s, QObject::tr( "Input layer" ), QList<int>() << static_cast<int>( Qgis::ProcessingSourceType::Vector ) ) );
   addParameter( new QgsProcessingParameterField( u"FIELD_NAME"_s, QObject::tr( "Field to calculate statistics on" ), QVariant(), u"INPUT_LAYER"_s ) );
   addParameter( new QgsProcessingParameterFeatureSink( u"OUTPUT"_s, QObject::tr( "Statistics" ), Qgis::ProcessingSourceType::Vector, QVariant(), true ) );
-  addParameter( new QgsProcessingParameterFileDestination( u"OUTPUT_HTML_FILE"_s, QObject::tr( "Statistics report" ), QObject::tr( "'HTML files (*.html)" ), QVariant(), true ) );
+  addParameter(
+    new QgsProcessingParameterFileDestination( u"OUTPUT_HTML_FILE"_s, QObject::tr( "Statistics report" ), QgsFileFilterGenerator::fileFilter( QgsFileFilterGenerator::StandardFileFormat::HTML ), QVariant(), true )
+  );
 
   addOutput( new QgsProcessingOutputNumber( u"COUNT"_s, QObject::tr( "Count" ) ) );
   addOutput( new QgsProcessingOutputNumber( u"UNIQUE"_s, QObject::tr( "Number of unique values" ) ) );

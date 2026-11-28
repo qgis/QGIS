@@ -18,6 +18,7 @@
 #include "qgscodeeditorhtml.h"
 #include "qgsexpressionbuilderdialog.h"
 #include "qgsexpressionfinder.h"
+#include "qgsfilefiltergenerator.h"
 #include "qgslayout.h"
 #include "qgslayoutframe.h"
 #include "qgslayoutitemhtml.h"
@@ -167,7 +168,7 @@ void QgsLayoutHtmlWidget::mFileToolButton_clicked()
 {
   QgsSettings s;
   const QString lastDir = s.value( u"/UI/lastHtmlDir"_s, QDir::homePath() ).toString();
-  const QString file = QFileDialog::getOpenFileName( this, tr( "Select HTML document" ), lastDir, u"HTML (*.html *.htm);;All files (*.*)"_s );
+  const QString file = QFileDialog::getOpenFileName( this, tr( "Select HTML document" ), lastDir, QgsFileFilterGenerator::filterString( { QgsFileFilterGenerator::StandardFileFormat::HTML }, true ) );
   if ( !file.isEmpty() )
   {
     const QUrl url = QUrl::fromLocalFile( file );

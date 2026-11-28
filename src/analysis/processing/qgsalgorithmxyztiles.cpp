@@ -745,7 +745,8 @@ void QgsXyzTilesDirectoryAlgorithm::initAlgorithm( const QVariantMap & )
   outputDirParam->setHelp( QObject::tr( "Destination folder where the generated directory structure and tile files will be stored." ) );
   addParameter( outputDirParam.release() );
 
-  auto outputHtmlParam = std::make_unique<QgsProcessingParameterFileDestination>( u"OUTPUT_HTML"_s, QObject::tr( "Output HTML (Leaflet)" ), QObject::tr( "HTML files (*.html)" ), QVariant(), true );
+  auto outputHtmlParam = std::make_unique<
+    QgsProcessingParameterFileDestination>( u"OUTPUT_HTML"_s, QObject::tr( "Output HTML (Leaflet)" ), QgsFileFilterGenerator::fileFilter( QgsFileFilterGenerator::StandardFileFormat::HTML ), QVariant(), true );
   outputHtmlParam->setHelp( QObject::tr( "Destination file path for the optional Leaflet HTML web map preview." ) );
   addParameter( outputHtmlParam.release() );
 

@@ -90,7 +90,9 @@ QgsNearestNeighbourAnalysisAlgorithm *QgsNearestNeighbourAnalysisAlgorithm::crea
 void QgsNearestNeighbourAnalysisAlgorithm::initAlgorithm( const QVariantMap & )
 {
   addParameter( new QgsProcessingParameterFeatureSource( u"INPUT"_s, QObject::tr( "Input layer" ), QList<int>() << static_cast<int>( Qgis::ProcessingSourceType::VectorPoint ) ) );
-  addParameter( new QgsProcessingParameterFileDestination( u"OUTPUT_HTML_FILE"_s, QObject::tr( "Nearest neighbour" ), QObject::tr( "HTML files (*.html *.HTML)" ), QVariant(), true ) );
+  addParameter(
+    new QgsProcessingParameterFileDestination( u"OUTPUT_HTML_FILE"_s, QObject::tr( "Nearest neighbour" ), QgsFileFilterGenerator::fileFilter( QgsFileFilterGenerator::StandardFileFormat::HTML ), QVariant(), true )
+  );
   addOutput( new QgsProcessingOutputNumber( u"OBSERVED_MD"_s, QObject::tr( "Observed mean distance" ) ) );
   addOutput( new QgsProcessingOutputNumber( u"EXPECTED_MD"_s, QObject::tr( "Expected mean distance" ) ) );
   addOutput( new QgsProcessingOutputNumber( u"NN_INDEX"_s, QObject::tr( "Nearest neighbour index" ) ) );

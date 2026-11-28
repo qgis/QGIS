@@ -27,6 +27,7 @@
 #include "qgsalgorithmangletonearest.h"
 #include "qgsalgorithmannotations.h"
 #include "qgsalgorithmapplylayerstyle.h"
+#include "qgsalgorithmapplylayerstyles.h"
 #include "qgsalgorithmapproximatemedialaxis.h"
 #include "qgsalgorithmarraytranslatedfeatures.h"
 #include "qgsalgorithmaspect.h"
@@ -392,6 +393,7 @@ void QgsNativeAlgorithms::loadAlgorithms()
   addAlgorithm( new QgsAngleToNearestAlgorithm() );
   addAlgorithm( new QgsApplyLayerMetadataAlgorithm() );
   addAlgorithm( new QgsApplyLayerStyleAlgorithm() );
+  addAlgorithm( new QgsApplyLayerStylesAlgorithm() );
   addAlgorithm( new QgsApproximateMedialAxisAlgorithm() );
   addAlgorithm( new QgsArrayTranslatedFeaturesAlgorithm() );
   addAlgorithm( new QgsAspectAlgorithm() );

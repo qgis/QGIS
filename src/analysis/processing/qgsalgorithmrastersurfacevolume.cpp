@@ -63,7 +63,9 @@ void QgsRasterSurfaceVolumeAlgorithm::initAlgorithm( const QVariantMap & )
     QStringList() << QObject::tr( "Count Only Above Base Level" ) << QObject::tr( "Count Only Below Base Level" ) << QObject::tr( "Subtract Volumes Below Base Level" ) << QObject::tr( "Add Volumes Below Base Level" )
   ) );
 
-  addParameter( new QgsProcessingParameterFileDestination( u"OUTPUT_HTML_FILE"_s, QObject::tr( "Surface volume report" ), QObject::tr( "HTML files (*.html)" ), QVariant(), true ) );
+  addParameter(
+    new QgsProcessingParameterFileDestination( u"OUTPUT_HTML_FILE"_s, QObject::tr( "Surface volume report" ), QgsFileFilterGenerator::fileFilter( QgsFileFilterGenerator::StandardFileFormat::HTML ), QVariant(), true )
+  );
   addParameter( new QgsProcessingParameterFeatureSink( u"OUTPUT_TABLE"_s, QObject::tr( "Surface volume table" ), Qgis::ProcessingSourceType::Vector, QVariant(), true, false ) );
 
   addOutput( new QgsProcessingOutputNumber( u"VOLUME"_s, QObject::tr( "Volume" ) ) );

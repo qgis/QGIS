@@ -16,6 +16,7 @@
 
 #include "qgsdoublevalidator.h"
 #include "qgsexpressioncontextutils.h"
+#include "qgsfilefiltergenerator.h"
 #include "qgsmapcanvas.h"
 #include "qgsmapsettings.h"
 #include "qgsmaptoolemitpoint.h"
@@ -298,7 +299,7 @@ void QgsRasterTransparencyWidget::pbnExportTransparentPixelValues_clicked()
 {
   const QgsSettings myQSettings;
   const QString myLastDir = myQSettings.value( u"lastRasterFileFilterDir"_s, QDir::homePath() ).toString();
-  QString myFileName = QFileDialog::getSaveFileName( this, tr( "Save Pixel Values as File" ), myLastDir, tr( "Textfile" ) + " (*.txt)" );
+  QString myFileName = QFileDialog::getSaveFileName( this, tr( "Save Pixel Values as File" ), myLastDir, QgsFileFilterGenerator::fileFilter( QgsFileFilterGenerator::StandardFileFormat::TXT ) );
   if ( !myFileName.isEmpty() )
   {
     if ( !myFileName.endsWith( ".txt"_L1, Qt::CaseInsensitive ) )
@@ -362,7 +363,7 @@ void QgsRasterTransparencyWidget::pbnImportTransparentPixelValues_clicked()
   QString myBadLines;
   const QgsSettings myQSettings;
   const QString myLastDir = myQSettings.value( u"lastRasterFileFilterDir"_s, QDir::homePath() ).toString();
-  const QString myFileName = QFileDialog::getOpenFileName( this, tr( "Load Pixel Values from File" ), myLastDir, tr( "Textfile" ) + " (*.txt)" );
+  const QString myFileName = QFileDialog::getOpenFileName( this, tr( "Load Pixel Values from File" ), myLastDir, QgsFileFilterGenerator::fileFilter( QgsFileFilterGenerator::StandardFileFormat::TXT ) );
   QFile myInputFile( myFileName );
 
   const thread_local QRegularExpression sRxWhitespace( "\\s+" );

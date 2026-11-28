@@ -28,6 +28,7 @@
 #include "qgslayoutitemmap.h"
 #include "qgslayoutmanager.h"
 #include "qgslinesymbol.h"
+#include "qgsmaplayerstylemanager.h"
 #include "qgsmeshlayer.h"
 #include "qgsnativealgorithms.h"
 #include "qgspallabeling.h"
@@ -140,6 +141,8 @@ class TestQgsProcessingAlgsPt2 : public QgsTest
 
     void xyzTilesGpkgWebMercator();
     void xyzTilesGpkgCustomCrs();
+
+    void setLayerStyles();
 
   private:
     QString mPointLayerPath;
@@ -2716,6 +2719,68 @@ void TestQgsProcessingAlgsPt2::xyzTilesGpkgCustomCrs()
   QGSCOMPARENEAR( layer->extent().yMinimum(), 24.577735, 2 );
   QGSCOMPARENEAR( layer->extent().xMaximum(), -83.766612, 2 );
   QGSCOMPARENEAR( layer->extent().yMaximum(), 46.7261726, 2 );
+}
+
+void TestQgsProcessingAlgsPt2::setLayerStyles()
+{
+  std::unique_ptr<QgsProcessingAlgorithm> alg( QgsApplication::processingRegistry()->createAlgorithmById( u"native:setlayerstyles"_s ) );
+  QVERIFY( alg );
+
+  auto pointLayer = new QgsVectorLayer( testDataPath( u"/points.shp"_s ), u"points"_s, u"ogr"_s );
+  QVERIFY( pointLayer->isValid() );
+  QgsProject p;
+  p.addMapLayer( pointLayer );
+
+  QVariantMap parameters;
+  // not styles to load, remove existing
+  parameters.insert( u"INPUT"_s, pointLayer->id() );
+  parameters.insert( u"REMOVE_EXISTING"_s, true );
+
+  auto context = std::make_unique<QgsProcessingContext>();
+  context->setProject( &p );
+  QgsProcessingFeedback feedback;
+  QVariantMap results;
+  bool ok = false;
+  results = alg->run( parameters, *context, &feedback, &ok );
+  QVERIFY( ok );
+
+  QCOMPARE( pointLayer->styleManager()->styles().size(), 1 );
+  QCOMPARE( pointLayer->styleManager()->styles().at( 0 ), u"default"_s );
+
+  // with styles to load, appending to existing
+  parameters.insert( u"STYLES"_s, QStringList() << testDataPath( u"/points_graduated_symbol.qml"_s ) << testDataPath( u"/points_single_symbol.qml"_s ) << testDataPath( u"/points_single_symbol_datadefined_rotation.qml"_s ) );
+  parameters.insert( u"REMOVE_EXISTING"_s, false );
+  results = alg->run( parameters, *context, &feedback, &ok );
+  QVERIFY( ok );
+
+  QCOMPARE( pointLayer->styleManager()->styles().size(), 4 );
+  QVERIFY( pointLayer->styleManager()->styles().contains( u"default"_s ) );
+  QVERIFY( pointLayer->styleManager()->styles().contains( u"points_graduated_symbol"_s ) );
+  QVERIFY( pointLayer->styleManager()->styles().contains( u"points_single_symbol"_s ) );
+  QVERIFY( pointLayer->styleManager()->styles().contains( u"points_single_symbol_datadefined_rotation"_s ) );
+
+  // name de-duplication logic
+  parameters.insert( u"STYLES"_s, QStringList() << testDataPath( u"/points_graduated_symbol.qml"_s ) );
+  parameters.insert( u"REMOVE_EXISTING"_s, false );
+  results = alg->run( parameters, *context, &feedback, &ok );
+  QVERIFY( ok );
+
+  QCOMPARE( pointLayer->styleManager()->styles().size(), 5 );
+  QVERIFY( pointLayer->styleManager()->styles().contains( u"default"_s ) );
+  QVERIFY( pointLayer->styleManager()->styles().contains( u"points_graduated_symbol"_s ) );
+  QVERIFY( pointLayer->styleManager()->styles().contains( u"points_graduated_symbol (2)"_s ) );
+  QVERIFY( pointLayer->styleManager()->styles().contains( u"points_single_symbol"_s ) );
+  QVERIFY( pointLayer->styleManager()->styles().contains( u"points_single_symbol_datadefined_rotation"_s ) );
+
+  // remove existing
+  parameters.insert( u"STYLES"_s, QStringList() << testDataPath( u"/points_single_symbol.qml"_s ) << testDataPath( u"/points_single_symbol_datadefined_rotation.qml"_s ) );
+  parameters.insert( u"REMOVE_EXISTING"_s, true );
+  results = alg->run( parameters, *context, &feedback, &ok );
+  QVERIFY( ok );
+
+  QCOMPARE( pointLayer->styleManager()->styles().size(), 2 );
+  QVERIFY( pointLayer->styleManager()->styles().contains( u"points_single_symbol"_s ) );
+  QVERIFY( pointLayer->styleManager()->styles().contains( u"points_single_symbol_datadefined_rotation"_s ) );
 }
 
 QGSTEST_MAIN( TestQgsProcessingAlgsPt2 )

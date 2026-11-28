@@ -68,7 +68,9 @@ void QgsUniqueValuesAlgorithm::initAlgorithm( const QVariantMap & )
   addParameter( new QgsProcessingParameterFeatureSource( u"INPUT"_s, QObject::tr( "Input layer" ), QList<int>() << static_cast<int>( Qgis::ProcessingSourceType::Vector ) ) );
   addParameter( new QgsProcessingParameterField( u"FIELDS"_s, QObject::tr( "Target field(s)" ), QVariant(), u"INPUT"_s, Qgis::ProcessingFieldParameterDataType::Any, true ) );
   addParameter( new QgsProcessingParameterFeatureSink( u"OUTPUT"_s, QObject::tr( "Unique values" ), Qgis::ProcessingSourceType::Vector, QVariant(), true ) );
-  addParameter( new QgsProcessingParameterFileDestination( u"OUTPUT_HTML_FILE"_s, QObject::tr( "HTML report" ), QObject::tr( "HTML files (*.html *.htm)" ), QVariant(), true ) );
+  addParameter(
+    new QgsProcessingParameterFileDestination( u"OUTPUT_HTML_FILE"_s, QObject::tr( "HTML report" ), QgsFileFilterGenerator::fileFilter( QgsFileFilterGenerator::StandardFileFormat::HTML ), QVariant(), true )
+  );
   addOutput( new QgsProcessingOutputNumber( u"TOTAL_VALUES"_s, QObject::tr( "Total unique values" ) ) );
   addOutput( new QgsProcessingOutputString( u"UNIQUE_VALUES"_s, QObject::tr( "Unique values" ) ) );
 }

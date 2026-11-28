@@ -15,6 +15,7 @@
 
 #include "qgslayerpropertiesdialog.h"
 
+#include "qgsfilefiltergenerator.h"
 #include "qgsfileutils.h"
 #include "qgsmapcanvas.h"
 #include "qgsmaplayer.h"
@@ -169,7 +170,7 @@ void QgsLayerPropertiesDialog::loadStyleFromFile()
   QgsSettings settings;
   const QString lastUsedDir = settings.value( u"style/lastStyleDir"_s, QDir::homePath() ).toString();
 
-  QString fileName = QFileDialog::getOpenFileName( this, tr( "Load layer properties from style file" ), lastUsedDir, tr( "QGIS Layer Style File" ) + " (*.qml)" );
+  QString fileName = QFileDialog::getOpenFileName( this, tr( "Load layer properties from style file" ), lastUsedDir, QgsFileFilterGenerator::fileFilter( QgsFileFilterGenerator::StandardFileFormat::QML ) );
   if ( fileName.isEmpty() )
     return;
 
@@ -201,7 +202,8 @@ void QgsLayerPropertiesDialog::saveStyleToFile()
   QgsSettings settings;
   const QString lastUsedDir = settings.value( u"style/lastStyleDir"_s, QDir::homePath() ).toString();
 
-  QString outputFileName = QFileDialog::getSaveFileName( this, tr( "Save layer properties as style file" ), lastUsedDir, tr( "QGIS Layer Style File" ) + " (*.qml)" );
+  QString outputFileName
+    = QFileDialog::getSaveFileName( this, tr( "Save layer properties as style file" ), lastUsedDir, QgsFileFilterGenerator::fileFilter( QgsFileFilterGenerator::StandardFileFormat::QML ) );
   // return dialog focus on Mac
   activateWindow();
   raise();
