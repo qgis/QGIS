@@ -44,8 +44,9 @@ def start_fold(tag):
 
 def end_fold():
     try:
-        tag = fold_stack.pop()
-        sys.stdout.write("::endgroup::\n")
+        if fold_stack:
+            tag = fold_stack.pop()
+            sys.stdout.write("::endgroup::\n")
     except IndexError:
         updated_line = colored("======================", "magenta")
         updated_line += colored(
@@ -79,16 +80,19 @@ for line in p.stdout:
     updated_line = line.decode("utf-8")
     # remove non printable characters https://stackoverflow.com/a/8689826/1548052
     filter(lambda x: x in printable, updated_line)
-    if re.match("Run dashboard with model Experimental", updated_line):
-        start_fold("Run tests")
+    if re.match("Test project ", updated_line):
         updated_line = "{title}\n{line}".format(
             title=colored("Running tests...", "yellow", attrs=["bold"]),
             line=updated_line,
         )
 
-    elif re.match("Test project /home/runner/QGIS/QGIS/build", updated_line):
-        end_fold()  # tag=Run tests
-        start_test_fold()
+    start_match = re.match(r"^\s*Start\s+(\d+):\s+(\S+)", updated_line)
+    if start_match:
+        end_fold()
+        test_num, test_name = start_match.groups()
+        start_fold(f"test.{test_num} ({test_name})")
+        in_failing_test = False
+        in_failure = False
 
     if re.search(r"\*\*\*Failed", updated_line) or re.search(
         r"\*\*\*Timeout", updated_line
@@ -98,42 +102,31 @@ for line in p.stdout:
         in_failing_test = True
 
     if in_failing_test:
-        if re.match("        Start", updated_line):
-            start_test_fold()
-            in_failing_test = False
-        elif in_failure:
-            if re.match("PASS", updated_line) or re.match("Ran", updated_line):
+        if in_failure:
+            if re.match(r"^(PASS|Ran\s+\d+\s+test|Totals:)", updated_line):
                 in_failure = False
             else:
                 updated_line = colored(updated_line, "yellow")
         elif re.search(r"\*\*\* Segmentation fault", updated_line):
             start_fold("segfault")
             updated_line = colored(updated_line, "magenta")
-        elif re.match("  Test failed: Segmentation fault", updated_line):
+        elif re.match(r"\s*Test failed: Segmentation fault", updated_line):
             end_fold()
+        elif re.match(r"^(FAIL|ERROR|QFATAL)[:\!].*", updated_line):
+            updated_line = colored(updated_line, "yellow")
+            in_failure = True
 
-        else:
-            if re.match(r"(FAIL|ERROR)[:\!].*", updated_line):
-                updated_line = colored(updated_line, "yellow")
-                in_failure = True
-
-    if not in_failing_test and re.search(
-        "[0-9]+% tests passed, [0-9]+ tests failed out of", updated_line
-    ):
-        tests_failing = re.match(r".* ([0-9]+) tests failed", updated_line).group(1)
-        # updated_line += '\n::set-output name=TESTS_FAILING::{}'.format(tests_failing)
+    if re.search(r"[0-9]+% tests passed, [0-9]+ tests failed out of", updated_line):
         end_fold()
-
+        in_failing_test = False
+        in_failure = False
         if re.search("100% tests passed", updated_line):
             updated_line = colored(updated_line, "green")
 
-    if re.match("Submit files", updated_line):
-        start_fold("submit")
-    elif re.search("Test results submitted to", updated_line):
-        cdash_url = re.match(r".*(http.*)$", updated_line).group(1)
-        # updated_line += '\n::set-output name=CDASH_URL::{}'.format(cdash_url)
-        end_fold()
-
     sys.stdout.write(updated_line)
+
+while fold_stack:
+    # clean up final test run stack
+    end_fold()
 
 exit(p.wait())
