@@ -223,6 +223,7 @@ using namespace Qt::StringLiterals;
 #include "qgsalgorithmrandomextractwithinsubsets.h"
 #include "qgsalgorithmrandompointsextent.h"
 #include "qgsalgorithmrandompointsinpolygons.h"
+#include "qgsalgorithmrandompointslayer.h"
 #include "qgsalgorithmrandompointsonlines.h"
 #include "qgsalgorithmrandomraster.h"
 #include "qgsalgorithmrastercalculator.h"
@@ -612,6 +613,7 @@ void QgsNativeAlgorithms::loadAlgorithms()
   addAlgorithm( new QgsRandomNormalRasterAlgorithm() );
   addAlgorithm( new QgsRandomPointsExtentAlgorithm() );
   addAlgorithm( new QgsRandomPointsInPolygonsAlgorithm() );
+  addAlgorithm( new QgsRandomPointsLayerAlgorithm() );
   addAlgorithm( new QgsRandomPointsOnLinesAlgorithm() );
   addAlgorithm( new QgsRandomPoissonRasterAlgorithm() );
   addAlgorithm( new QgsRandomSelectionAlgorithm() );
