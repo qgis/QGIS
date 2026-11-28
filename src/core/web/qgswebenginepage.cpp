@@ -401,7 +401,7 @@ bool QgsWebEnginePage::renderBlocking(
   ( void ) settings;
   ( void ) feedback;
   ( void ) renderedSize;
-  throw QgsNotSupportedException( QObject::tr( "Rendering HTML requires a QGIS build with PDF4Qt library support" ) );
+  throw QgsNotSupportedException( QObject::tr( "Rendering HTML requires a QGIS build with PDF4QT library support" ) );
 #endif
 }
 
@@ -429,7 +429,7 @@ bool QgsWebEnginePage::renderBlocking( const QUrl &url, QPainter *painter, const
   ( void ) feedback;
   ( void ) renderedSize;
   ( void ) settings;
-  throw QgsNotSupportedException( QObject::tr( "Rendering HTML requires a QGIS build with PDF4Qt library support" ) );
+  throw QgsNotSupportedException( QObject::tr( "Rendering HTML requires a QGIS build with PDF4QT library support" ) );
 #endif
 }
 
