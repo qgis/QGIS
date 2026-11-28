@@ -34,6 +34,7 @@ SIP_NO_FILE
 class QgsLayerTreeView;
 
 #include "qgsproxystyle.h"
+#include <QTreeView>
 #include <QStyledItemDelegate>
 
 /**
@@ -51,6 +52,8 @@ class QgsLayerTreeViewProxyStyle : public QgsProxyStyle
     void drawPrimitive( QStyle::PrimitiveElement element, const QStyleOption *option, QPainter *painter, const QWidget *widget = nullptr ) const override;
 
     static const auto SE_LayerTreeItemIndicator = SE_CustomBase + 1;
+
+    QModelIndex lastVisibleItem( const QModelIndex &index = QModelIndex() ) const;
 
   private:
     QgsLayerTreeView *mLayerTreeView;
