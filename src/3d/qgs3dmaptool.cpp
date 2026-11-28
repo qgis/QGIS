@@ -17,6 +17,8 @@
 
 #include "qgs3dmapcanvas.h"
 
+#include <QAction>
+
 #include "moc_qgs3dmaptool.cpp"
 
 Qgs3DMapTool::Qgs3DMapTool( Qgs3DMapCanvas *canvas )
@@ -69,10 +71,20 @@ bool Qgs3DMapTool::shortcutEvent( QKeyEvent *event )
 }
 
 void Qgs3DMapTool::activate()
-{}
+{
+  if ( mAction )
+  {
+    mAction->setChecked( true );
+  }
+}
 
 void Qgs3DMapTool::deactivate()
-{}
+{
+  if ( mAction )
+  {
+    mAction->setChecked( false );
+  }
+}
 
 QCursor Qgs3DMapTool::cursor() const
 {
@@ -85,4 +97,14 @@ void Qgs3DMapTool::onMapSettingsChanged()
 Qgs3DMapCanvas *Qgs3DMapTool::canvas()
 {
   return mCanvas;
+}
+
+void Qgs3DMapTool::setAction( QAction *action )
+{
+  mAction = action;
+}
+
+QAction *Qgs3DMapTool::action() const
+{
+  return mAction;
 }

@@ -77,6 +77,7 @@ class QgsAbstractMapToolHandler;
 class QgsUserProfileManager;
 class QgsDataSourceManagerDialog;
 class Qgs3DMapCanvas SIP_EXTERNAL;
+class Qgs3DMapCanvasToolBarFactory;
 
 #ifdef SIP_RUN
 //%ModuleHeaderCode
@@ -1578,6 +1579,30 @@ class GUI_EXPORT QgisInterface : public QObject
      * \since QGIS 3.16
     */
     virtual void unregisterApplicationExitBlocker( QgsApplicationExitBlockerInterface *blocker ) = 0;
+
+    /**
+     * Registers a \a factory for creating a custom toolbar in every 3D map view.
+     *
+     * The factory adds a toolbar to every 3D map view.
+     *
+     * \note Ownership of \a factory is not transferred, and the factory must
+     *       be unregistered when a plugin is unloaded.
+     *
+     * \see unregister3DMapCanvasToolBarFactory()
+     * \since QGIS 4.4.1
+     */
+    virtual void register3DMapCanvasToolBarFactory( Qgs3DMapCanvasToolBarFactory *factory ) = 0;
+
+    /**
+     * Unregisters a previously registered 3D map view toolbar \a factory.
+     *
+     * The toolbars created by \a factory are removed from all the open 3D map views
+     * and deleted.
+     *
+     * \see register3DMapCanvasToolBarFactory()
+     * \since QGIS 4.4.1
+     */
+    virtual void unregister3DMapCanvasToolBarFactory( Qgs3DMapCanvasToolBarFactory *factory ) = 0;
 
     /**
      * Registers a new application map tool \a handler, which can be used to automatically setup all connections

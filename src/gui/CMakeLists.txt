@@ -1,4 +1,5 @@
 set(QGIS_GUI_SRCS
+  3d/qgs3dmapcanvastoolbarfactory.cpp
   3d/qgsmaterialwidget.cpp
 
   actions/qgsactionmenu.cpp
@@ -1135,6 +1136,7 @@ set(QGIS_GUI_HDRS
   qgsvscrollarea.h
   qgswindowmanagerinterface.h
 
+  3d/qgs3dmapcanvastoolbarfactory.h
   3d/qgsmaterialwidget.h
 
   actions/qgsactionmenu.h

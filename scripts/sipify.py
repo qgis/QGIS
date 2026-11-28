@@ -895,11 +895,11 @@ def exit_with_error(message):
 
 def sip_header_footer():
     header_footer = []
-    # small hack to turn files src/core/3d/X.h to src/core/./3d/X.h
+    # small hack to turn files src/{core,gui}/3d/X.h to src/{core,gui}/./3d/X.h
     # otherwise "sip up to date" test fails. This is because the test uses %Include entries
     # and over there we have to use ./3d/X.h entries because SIP parser does not allow a number
     # as the first letter of a relative path
-    headerfile_x = re.sub(r"src/core/3d", r"src/core/./3d", CONTEXT.header_file)
+    headerfile_x = re.sub(r"src/(core|gui)/3d", r"src/\1/./3d", CONTEXT.header_file)
     header_footer.append(
         "/************************************************************************\n"
     )
@@ -924,7 +924,7 @@ def sip_header_footer():
 
 def python_header():
     header = []
-    headerfile_x = re.sub(r"src/core/3d", r"src/core/./3d", CONTEXT.header_file)
+    headerfile_x = re.sub(r"src/(core|gui)/3d", r"src/\1/./3d", CONTEXT.header_file)
     header.append("# The following has been generated automatically from ")
     header.append(f"{headerfile_x}\n")
     return header

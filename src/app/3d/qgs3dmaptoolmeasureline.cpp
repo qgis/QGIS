@@ -60,6 +60,8 @@ void Qgs3DMapToolMeasureLine::activate()
   // Show dialog
   mDialog->updateSettings();
   mDialog->show();
+
+  Qgs3DMapTool::activate();
 }
 
 void Qgs3DMapToolMeasureLine::deactivate()
@@ -68,6 +70,8 @@ void Qgs3DMapToolMeasureLine::deactivate()
 
   // Hide dialog
   mDialog->hide();
+
+  Qgs3DMapTool::deactivate();
 }
 
 QCursor Qgs3DMapToolMeasureLine::cursor() const

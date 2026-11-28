@@ -166,11 +166,15 @@ void Qgs3DMapToolPointCloudChangeAttributePolygon::activate()
     mLineRubberBand = std::make_unique<QgsRubberBand3D>( mCanvas->scene(), Qgis::GeometryType::Line );
     mLineRubberBand->setHideLastMarker( true );
   }
+
+  Qgs3DMapTool::activate();
 }
 
 void Qgs3DMapToolPointCloudChangeAttributePolygon::deactivate()
 {
   restart();
+
+  Qgs3DMapTool::deactivate();
 }
 
 void Qgs3DMapToolPointCloudChangeAttributePolygon::run()
