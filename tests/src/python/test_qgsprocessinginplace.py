@@ -247,7 +247,7 @@ class TestQgsProcessingInPlace(QgisTestCase):
         self._support_inplace_edit_tester("native:subdivide", GEOMETRY_ONLY)
         self._support_inplace_edit_tester("native:translategeometry", GEOMETRY_ONLY)
         self._support_inplace_edit_tester("native:swapxy", GEOMETRY_ONLY)
-        self._support_inplace_edit_tester("qgis:linestopolygons", NONE)
+        self._support_inplace_edit_tester("native:linestopolygons", NONE)
         self._support_inplace_edit_tester("qgis:polygonstolines", NONE)
         self._support_inplace_edit_tester("native:boundary", NONE)
         self._support_inplace_edit_tester("native:clip", GEOMETRY_ONLY)

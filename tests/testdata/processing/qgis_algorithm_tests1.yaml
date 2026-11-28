@@ -41,7 +41,7 @@ tests:
             id2: skip
             fid: skip
 
-  - algorithm: qgis:linestopolygons
+  - algorithm: native:linestopolygons
     name: convert lines to polygon
     params:
       INPUT:

@@ -200,6 +200,7 @@ set(QGIS_ANALYSIS_SRCS
   processing/qgsalgorithmlinedensity.cpp
   processing/qgsalgorithmlineintersection.cpp
   processing/qgsalgorithmlinesubstring.cpp
+  processing/qgsalgorithmlinestopolygons.cpp
   processing/qgsalgorithmloadlayer.cpp
   processing/qgsalgorithmmeancoordinates.cpp
   processing/qgsalgorithmmergelines.cpp

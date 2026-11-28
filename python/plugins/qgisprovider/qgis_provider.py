@@ -29,7 +29,6 @@ from .FieldPyculator import FieldsPyculator
 from .HubDistanceLines import HubDistanceLines
 from .HubDistancePoints import HubDistancePoints
 from .KNearestConcaveHull import KNearestConcaveHull
-from .LinesToPolygons import LinesToPolygons
 from .MeanAndStdDevPlot import MeanAndStdDevPlot
 from .PointsDisplacement import PointsDisplacement
 from .PointsFromLines import PointsFromLines
@@ -70,7 +69,6 @@ class QgisAlgorithmProvider(QgsProcessingProvider):
             HubDistanceLines(),
             HubDistancePoints(),
             KNearestConcaveHull(),
-            LinesToPolygons(),
             MeanAndStdDevPlot(),
             PointsDisplacement(),
             PointsFromLines(),
